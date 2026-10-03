@@ -66,6 +66,206 @@ void pc_sym_report(FILE *out, const char *label) { (void)out; (void)label; }
 void pc_sym_report_start(FILE *out) { (void)out; }
 void pc_sym_frame(uint64_t frame) { (void)frame; }
 
+#elif defined(__wasm__)
+/*
+ * A wasm module has no symbol table for its data and no file to read one
+ * from, so this is 3ds/src/3ds_sym.c's answer: the only caller that needs
+ * names on this host is pc_fs_overlay.c, its name list is generated
+ * (pc/gen_overlay_statics.py --addr-table, OVSTATICS_FLAGS in
+ * pc/Makefile.wasm) and linked in, and pc/wasm/patch_ov_addrs.py writes the
+ * addresses into the finished module's data segment from the wasm-ld link
+ * map. Only the table's bytes change, so nothing it names can move.
+ *
+ * The entries keep the 3DS format, a signed offset from the table itself and
+ * the linker's size, although a module is never relocated and an absolute
+ * address would do: one format means one generator and one reader. An entry
+ * whose offset is -1 says in its size why it is not one: 0 nobody patched the
+ * module, 1 the link kept no copy (wasm-ld's default --gc-sections), >=2 that
+ * many addresses for the name, so it cannot be assigned without a file of
+ * origin and the caller skips it, as it does on the desktop.
+ *
+ * Every other name is unknown here and pc_sym_error() says so: no --watch by
+ * name on this host, the 3DS cost exactly.
+ */
+#include <string.h>
+
+#include <pc_wasm.h>
+
+struct pc_ov_static_desc {
+    unsigned overlay;
+    const char *name;
+    unsigned size;
+};
+
+struct pc_ov_static_addr {
+    int off;
+    unsigned size;
+};
+
+extern const struct pc_ov_static_desc pc_ov_static_desc[];
+extern const int pc_ov_static_desc_n;
+extern struct pc_ov_static_addr pc_ov_static_addr[];
+
+/* wasm-ld's end of static data (.data and .bss); the statics are below it. */
+extern char __data_end[];
+
+#define SYM_NOT_AN_OFFSET (-1)
+#define SYM_UNPATCHED 0u
+#define SYM_DROPPED 1u
+
+static const char *const kNoTable =
+    "this module carries no overlay statics' addresses: "
+    "pc/wasm/patch_ov_addrs.py did not run on it";
+static const char *const kOnlyOverlays =
+    "this module knows the overlay statics and nothing else; a wasm module "
+    "has no symbol table for its data";
+
+static int sChecked;
+static int sAnswered;
+
+static uint32_t addr_of(int i)
+{
+    return (uint32_t)(uintptr_t)((char *)pc_ov_static_addr
+                                 + pc_ov_static_addr[i].off);
+}
+
+/* Is the table there at all? Unpatched, every entry is the sentinel, and
+ * answering from it would restore statics out of the table's own bytes. A
+ * placed entry outside the module's static data is an offset written against
+ * the wrong base, and acting on it would overwrite arbitrary memory, so that
+ * is fatal rather than an answer. Once, at the first question. */
+static int table_ready(void)
+{
+    uint32_t lo = NP_GUEST_C_BASE;
+    uint32_t hi = (uint32_t)(uintptr_t)__data_end;
+    int i;
+
+    if (sChecked) {
+        return sAnswered > 0;
+    }
+    sChecked = 1;
+    for (i = 0; i < pc_ov_static_desc_n; i++) {
+        uint32_t a;
+
+        if (pc_ov_static_addr[i].off == SYM_NOT_AN_OFFSET) {
+            if (pc_ov_static_addr[i].size != SYM_UNPATCHED) {
+                sAnswered++;
+            }
+            continue;
+        }
+        sAnswered++;
+        a = addr_of(i);
+        if (a < lo || a > hi || pc_ov_static_addr[i].size > hi - a) {
+            pc_wasm_fatalf("pc_sym: overlay static %s resolves to "
+                           "0x%08x+%u, outside the module's static data "
+                           "0x%08x-0x%08x", pc_ov_static_desc[i].name,
+                           (unsigned)a, pc_ov_static_addr[i].size,
+                           (unsigned)lo, (unsigned)hi);
+        }
+    }
+    return sAnswered > 0;
+}
+
+static int index_of(const char *name)
+{
+    int i;
+
+    if (name == NULL) {
+        return -1;
+    }
+    for (i = 0; i < pc_ov_static_desc_n; i++) {
+        if (strcmp(pc_ov_static_desc[i].name, name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void pc_sym_set_exe(const char *hint) { (void)hint; }
+
+int pc_sym_count(void)
+{
+    return table_ready() ? sAnswered : -1;
+}
+
+const char *pc_sym_error(void)
+{
+    return table_ready() ? kOnlyOverlays : kNoTable;
+}
+
+int pc_sym_addresses(const char *name, uint32_t *out, int max)
+{
+    int i;
+
+    if (!table_ready()) {
+        return 0;
+    }
+    i = index_of(name);
+    if (i < 0) {
+        return 0;
+    }
+    if (pc_ov_static_addr[i].off == SYM_NOT_AN_OFFSET) {
+        if (pc_ov_static_addr[i].size == SYM_DROPPED) {
+            return PC_SYM_DROPPED;
+        }
+        /* Ambiguous: the count, so the caller skips rather than picks. */
+        return (int)pc_ov_static_addr[i].size;
+    }
+    if (out != NULL && max > 0) {
+        out[0] = addr_of(i);
+    }
+    return 1;
+}
+
+int pc_sym_lookup(const char *name, uint32_t *addr, uint32_t *size, int *ndup)
+{
+    int i;
+
+    if (ndup != NULL) {
+        *ndup = 0;
+    }
+    if (!table_ready()) {
+        return 0;
+    }
+    i = index_of(name);
+    if (i < 0 || pc_ov_static_addr[i].off == SYM_NOT_AN_OFFSET) {
+        return 0;
+    }
+    if (addr != NULL) {
+        *addr = addr_of(i);
+    }
+    /* The linker's size, from the link map, so the caller's comparison with
+     * the object's size in pc_ov_static_desc means something. */
+    if (size != NULL) {
+        *size = pc_ov_static_addr[i].size;
+    }
+    if (ndup != NULL) {
+        *ndup = 1;
+    }
+    return 1;
+}
+
+int pc_sym_space(uint32_t addr, uint32_t len)
+{
+    return armrec_guest_span_ok(addr, len) ? PC_SYM_SPACE_GUEST
+                                           : PC_SYM_SPACE_NONE;
+}
+
+int pc_sym_add_watch(const char *spec, FILE *err)
+{
+    if (err != NULL) {
+        fprintf(err, "pc-sym: --watch %s: %s.\n", spec ? spec : "",
+                pc_sym_error());
+    }
+    return 0;
+}
+
+int pc_sym_watch_count(void) { return 0; }
+void pc_sym_clear_watches(void) {}
+void pc_sym_report(FILE *out, const char *label) { (void)out; (void)label; }
+void pc_sym_report_start(FILE *out) { (void)out; }
+void pc_sym_frame(uint64_t frame) { (void)frame; }
+
 #else /* the real thing, over the ELF symtab */
 
 #include <elf.h>
@@ -581,4 +781,4 @@ void pc_sym_frame(uint64_t frame) {
     pc_sym_report(stderr, label);
 }
 
-#endif /* !_WIN32 */
+#endif /* !_WIN32 && !__wasm__ */

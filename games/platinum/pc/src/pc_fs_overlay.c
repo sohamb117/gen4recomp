@@ -32,7 +32,9 @@
  * CRT-initialised bytes and every later one copies that snapshot back. The
  * name list is generated from nm over each overlay's objects, and the
  * addresses come from the binary's own .symtab at runtime, because a generated
- * pointer table would move the very addresses it named.
+ * pointer table would move the very addresses it named. A host with no
+ * .symtab (3DS, wasm) carries them in a table of the generator's, patched
+ * into the finished image after the link; pc_sym.h answers the same way.
  */
 #include <nitro/fs.h>
 #include <stdio.h>
@@ -41,6 +43,10 @@
 
 #include "pc_overlay.h"
 #include "pc_sym.h"
+
+#if defined(__wasm__)
+#include <pc_wasm.h>
+#endif
 
 extern void *malloc(size_t n);
 extern void free(void *p);
@@ -169,6 +175,13 @@ static void ov_resolve(void)
     sOvResolved = 1;
 
     if (pc_sym_count() < 0) {
+#if defined(__wasm__)
+        /* Nothing to wait for on wasm: the table is part of the build, so
+           an unanswered one is a module whose post-link patch
+           (pc/wasm/patch_ov_addrs.py) never ran, and running on would
+           never reset an overlay's statics. */
+        pc_wasm_fatalf("pc_ov: %s", pc_sym_error());
+#endif
         /* Windows has no ELF reader yet. First load is CRT init; a later
            load will say so once rather than pretend the statics reset. */
         sOvNoSymtab = 1;

@@ -21,6 +21,9 @@ and only its CONTENTS are written afterwards; nothing moves. It is
 opt-in so that a build that does not need it links the same bytes it
 always did.
 
+A wasm object is read directly (its "linking" section), not through nm:
+see wasm_writable() for what nm gets wrong there.
+
 Usage: gen_overlay_statics.py [--addr-table] overlay-map.txt obj/game out.c
 """
 
@@ -48,8 +51,126 @@ def meson_flat(rel_o):
 RELRO_SECTIONS = (".data.rel.ro",)
 
 
+def _uleb(buf, pos):
+    """(value, next position) for the unsigned LEB128 at buf[pos]."""
+    value = shift = 0
+    while True:
+        byte = buf[pos]
+        pos += 1
+        value |= (byte & 0x7F) << shift
+        shift += 7
+        if not byte & 0x80:
+            return value, pos
+
+
+def _wasm_string(buf, pos):
+    n, pos = _uleb(buf, pos)
+    return buf[pos:pos + n].decode("utf-8", "replace"), pos + n
+
+
+# The wasm object's "linking" custom section (llvm's tool-conventions
+# Linking.md, version 2): the symbol table, and the data segment each data
+# symbol is defined in.
+WASM_SEGMENT_INFO = 5
+WASM_SYMBOL_TABLE = 8
+WASM_SYM_DATA, WASM_SYM_SECTION = 1, 3
+WASM_SYM_BINDING_LOCAL = 0x02
+WASM_SYM_UNDEFINED = 0x10
+WASM_SYM_EXPLICIT_NAME = 0x40
+WASM_SYM_TLS = 0x100
+WASM_SYM_ABSOLUTE = 0x200
+# Writable output segments. clang names every data symbol's segment after
+# the section it would have had on ELF (.data.<sym>, .bss.<sym>,
+# .rodata.<sym>), one symbol per segment, and wasm-ld merges them by that
+# prefix.
+WASM_WRITABLE_SEGMENTS = (".data", ".bss")
+
+
+def wasm_writable(path):
+    """nm_writable() for a wasm object, out of its linking section.
+
+    nm cannot answer this for wasm. A wasm object has one DATA section and
+    no per-symbol section in the sysv listing, so every data symbol comes
+    out `d` or `D`, .rodata and string literals included, and the host's
+    own nm (Apple's) prints every wasm symbol's size as 0, which the size
+    filter above turns into an empty table. Read the symbol table and the
+    segment names instead: a symbol is writable when its segment is .data*
+    or .bss*. `.L` names are the compiler's private labels (string
+    literals); an ELF assembler never puts them in the symtab, so they are
+    not overlay statics on any host.
+    """
+    with open(path, "rb") as fh:
+        buf = fh.read()
+    if buf[:8] != b"\0asm\x01\0\0\0":
+        return
+    segments = []
+    symbols = []
+    pos = 8
+    while pos < len(buf):
+        sid = buf[pos]
+        size, pos = _uleb(buf, pos + 1)
+        end = pos + size
+        if sid == 0:
+            name, p = _wasm_string(buf, pos)
+            if name == "linking":
+                _version, p = _uleb(buf, p)
+                while p < end:
+                    sub = buf[p]
+                    sublen, p = _uleb(buf, p + 1)
+                    subend = p + sublen
+                    if sub == WASM_SEGMENT_INFO:
+                        n, p = _uleb(buf, p)
+                        for _ in range(n):
+                            seg, p = _wasm_string(buf, p)
+                            _align, p = _uleb(buf, p)
+                            _flags, p = _uleb(buf, p)
+                            segments.append(seg)
+                    elif sub == WASM_SYMBOL_TABLE:
+                        n, p = _uleb(buf, p)
+                        for _ in range(n):
+                            kind = buf[p]
+                            flags, p = _uleb(buf, p + 1)
+                            defined = not flags & WASM_SYM_UNDEFINED
+                            if kind == WASM_SYM_DATA:
+                                sym, p = _wasm_string(buf, p)
+                                if defined:
+                                    seg, p = _uleb(buf, p)
+                                    _off, p = _uleb(buf, p)
+                                    sz, p = _uleb(buf, p)
+                                    symbols.append((sym, flags, seg, sz))
+                            elif kind == WASM_SYM_SECTION:
+                                _idx, p = _uleb(buf, p)
+                            else:
+                                # function, global, tag, table
+                                _idx, p = _uleb(buf, p)
+                                if defined or flags & WASM_SYM_EXPLICIT_NAME:
+                                    _sym, p = _wasm_string(buf, p)
+                    p = subend
+        pos = end
+    for name, flags, seg, size in symbols:
+        if flags & (WASM_SYM_ABSOLUTE | WASM_SYM_TLS):
+            continue
+        if size == 0 or not name or name.startswith(".L"):
+            continue
+        if seg >= len(segments):
+            sys.exit("gen_overlay_statics: %s: %s names data segment %d of %d"
+                     % (path, name, seg, len(segments)))
+        segname = segments[seg]
+        if not any(segname == s or segname.startswith(s + ".")
+                   for s in WASM_WRITABLE_SEGMENTS):
+            continue
+        bss = segname == ".bss" or segname.startswith(".bss.")
+        local = flags & WASM_SYM_BINDING_LOCAL
+        yield name, size, ("b" if bss else "d") if local else ("B" if bss else "D")
+
+
 def nm_writable(path):
     """Yield (name, size, type) for writable defined symbols in an object."""
+    with open(path, "rb") as fh:
+        is_wasm = fh.read(4) == b"\0asm"
+    if is_wasm:
+        yield from wasm_writable(path)
+        return
     try:
         # sysv format, because the section is the question and the default
         # format does not print it.
