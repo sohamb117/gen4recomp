@@ -1,0 +1,191 @@
+/*
+ * Shell application state, shared by the modules that make up the app:
+ *   main.c     SDL main callbacks, game session, frame pacing, autotest
+ *   input.c    keyboard/gamepad bindings, fingers, stylus, menu commands
+ *   touchpad.c on-screen touch controls
+ *   ui.c       bitmap-font drawing, launcher, options/controls/about pages
+ *   audio.c    SDL audio stream fed from the core
+ * Everything runs on the main thread except the file dialog callback, which
+ * only hands a path over through `import_lock`.
+ */
+#ifndef NP_APP_H
+#define NP_APP_H
+
+#include <SDL3/SDL.h>
+
+#include "layout.h"
+#include "np_core.h"
+#include "options.h"
+
+#define NP_MAX_PADS 8
+#define NP_MAX_FINGERS 10
+#define NP_MAX_HITS 64
+#define NP_MOUSE_FINGER ((SDL_FingerID)-2) /* the mouse acts as one more finger */
+
+typedef enum np_view { NP_VIEW_LAUNCHER, NP_VIEW_GAME } np_view;
+typedef enum np_page { NP_PAGE_NONE, NP_PAGE_OPTIONS, NP_PAGE_CONTROLS, NP_PAGE_ABOUT } np_page;
+
+typedef enum np_menu_cmd {
+    NP_CMD_NONE,
+    NP_CMD_UP,
+    NP_CMD_DOWN,
+    NP_CMD_LEFT,
+    NP_CMD_RIGHT,
+    NP_CMD_CONFIRM,
+    NP_CMD_BACK,
+    NP_CMD_CLOSE, /* leave the overlay entirely */
+} np_menu_cmd;
+
+/* A clickable region drawn this frame; `id` meaning depends on the page. */
+typedef struct np_hit {
+    SDL_FRect r;
+    int id;
+} np_hit;
+
+typedef enum np_finger_kind {
+    NP_FINGER_FREE,
+    NP_FINGER_STYLUS,  /* drives the DS touch screen */
+    NP_FINGER_CONTROL, /* on an on-screen button or the d-pad */
+    NP_FINGER_UI,      /* tapping a menu item */
+    NP_FINGER_IGNORED, /* landed on nothing; ignored until lifted */
+} np_finger_kind;
+
+typedef struct np_finger {
+    SDL_FingerID id;
+    np_finger_kind kind;
+    float x, y;
+} np_finger;
+
+/* NP_AUTOTEST: boot a core on a synthetic cartridge header with an
+ * in-memory save, run N frames through the real render path, write a PNG of
+ * the window and exit (see main.c). */
+typedef struct np_autotest {
+    int active;
+    int frames; /* frames to run after the save round-trip reboot */
+    int ran;
+    char png[1024];
+    np_input input;     /* fixed input fed to every frame */
+    uint8_t rom[0x200]; /* synthetic cartridge header */
+    uint8_t *save;      /* in-memory backup chip */
+    uint32_t save_len;
+    int saves, loads; /* successful save_store / save_load calls */
+    uint64_t audio_frames;
+    int audio_peak;
+    int page; /* captured view: 0 game, -1 launcher, or an np_page over the game */
+    int storage; /* use the real user-data root for saves instead of memory */
+    char import[1024]; /* ROM to run through the importer first (needs storage) */
+    char script[1024]; /* "frame:kind:args;..." synthetic events, see main.c */
+} np_autotest;
+
+typedef struct np_app {
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    SDL_Texture *screen_tex[2];
+    SDL_Texture *font_tex;
+    float out_w, out_h; /* render output, pixels */
+
+    np_options opt;
+    char options_path[1100];
+    int options_dirty;
+
+    np_view view;
+    np_page page;
+    np_page page_parent; /* where Back goes from the current page */
+    int sel, col, scroll;
+    int capture;              /* controls page: waiting for a key/button */
+    uint64_t capture_deadline; /* ns */
+    np_hit hits[NP_MAX_HITS];
+    int nhits;
+    int ui_press_hit; /* hit id under the pointer when it went down, or -1 */
+
+    int launcher_sel;
+    char status[320]; /* launcher message line */
+    char toast[160];
+    uint64_t toast_until;
+
+    SDL_Mutex *import_lock;
+    char import_path[1024]; /* path from the dialog/drop, or stage 3's message */
+    int import_stage;       /* 1: path waiting, 2: "Verifying" drawn, import now,
+                               3: the dialog failed, message in import_path */
+
+    np_core *core;
+    np_game game;
+    SDL_IOStream *rom_io;
+    np_host host;
+    np_frame frame;
+    int have_frame;
+    double accum_ns;
+    uint64_t last_ns;
+    int ff_toggle, ff_hold;
+    int backgrounded, minimized, focused;
+    np_layout layout;
+
+    SDL_Gamepad *pads[NP_MAX_PADS];
+    np_finger fingers[NP_MAX_FINGERS];
+    int touch_seen;
+    uint16_t control_keys; /* from the on-screen controls */
+    uint8_t trigger_down[NP_MAX_PADS][2];
+
+    SDL_AudioStream *audio;
+    int audio_running;
+
+    np_autotest autotest;
+} np_app;
+
+/* main.c */
+void np_app_toast(np_app *app, const char *fmt, ...);
+int np_app_start_game(np_app *app, np_game game);
+void np_app_stop_game(np_app *app);
+void np_app_request_import(np_app *app, const char *path);
+void np_app_open_import_dialog(np_app *app);
+void np_app_apply_video_options(np_app *app);
+void np_app_open_page(np_app *app, np_page page);
+int np_app_speed(const np_app *app); /* effective multiplier, 0 = uncapped */
+
+/* input.c */
+void np_input_gamepad_added(np_app *app, SDL_JoystickID id);
+void np_input_gamepad_removed(np_app *app, SDL_JoystickID id);
+void np_input_close_gamepads(np_app *app);
+/* DS keys and fast-forward-hold from keyboard, gamepads and touch controls. */
+uint16_t np_input_poll_keys(np_app *app, int *ff_hold);
+/* The gamepad binding value newly pressed by `e` (button down, or a trigger
+ * crossing its threshold), else NP_PAD_NONE. Call once per event. */
+int np_input_pad_press(np_app *app, const SDL_Event *e);
+/* The action bound to `scancode` (if nonzero) or `pad`, or -1. */
+int np_input_action_for(const np_app *app, int scancode, int pad);
+/* Maps a key/gamepad event to a menu command, or NP_CMD_NONE. */
+np_menu_cmd np_input_menu_cmd(const np_app *app, const SDL_Event *e, int pad);
+/* Finger/mouse tracking; returns 1 if the event was consumed. */
+int np_input_pointer_event(np_app *app, const SDL_Event *e);
+/* Stylus state for the next frame. */
+void np_input_stylus(const np_app *app, np_input *in);
+void np_input_release_all(np_app *app);
+
+/* touchpad.c */
+int np_touchpad_visible(const np_app *app);
+/* Hit-tests the on-screen controls: returns DS key bits, sets *ff / *menu. */
+uint16_t np_touchpad_hit(const np_app *app, float x, float y, int *ff, int *menu, int *any);
+void np_touchpad_draw(np_app *app);
+
+/* ui.c */
+int np_ui_init(np_app *app);
+void np_ui_destroy(np_app *app);
+float np_ui_scale(const np_app *app);
+void np_ui_text(np_app *app, float x, float y, float scale, const char *s, SDL_Color c);
+void np_ui_fill(np_app *app, SDL_FRect r, SDL_Color c);
+void np_ui_frame(np_app *app, SDL_FRect r, float t, SDL_Color c);
+void np_ui_draw(np_app *app); /* launcher or the open page, plus toast */
+void np_ui_command(np_app *app, np_menu_cmd cmd);
+/* Pointer press/move/release at render coordinates; button 3 = secondary. */
+void np_ui_pointer(np_app *app, float x, float y, int pressed, int released, int button);
+int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad); /* controls rebinding */
+
+/* audio.c */
+int np_audio_open(np_app *app);
+void np_audio_close(np_app *app);
+void np_audio_update_gain(np_app *app);
+void np_audio_set_paused(np_app *app, int paused);
+/* Drains the core after a batch of frames; `speed` as np_app_speed. */
+void np_audio_pump(np_app *app, int speed);
+
+#endif
