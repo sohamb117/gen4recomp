@@ -364,6 +364,85 @@ int pc_div0_selftest(void)
     return ok;
 }
 
+#elif defined(__wasm__)
+
+/*
+ * The wasm half. Here `/` and `%` are instructions again, and wasm's
+ * div/rem trap on a zero divisor (and div_s on INT_MIN / -1). Nothing in
+ * this file can answer that: there are no signals, and no call to wrap.
+ * The answer is given after the fact instead, by
+ * tools/wasm2c_postprocess.py, which rewrites the macros wasm2c turns every
+ * div/rem instruction into. It gives the ROM's answers, measured by running
+ * _s32_div_f, _u32_div_f and the four 64-bit routines out of main.sbin:
+ * the 32-bit ones above, INT_MIN / -1 == INT_MIN with remainder 0, and for
+ * 64-bit a / 0 == a AND a % 0 == a (mwcc's _ll_* return the numerator
+ * pair untouched for both). Its docstring has the disassembly.
+ *
+ * So there is nothing to fix up and nothing to count. The selftest still
+ * divides, and is a real check of the post-processing: run unpatched (raw
+ * wasm2c, or any wasm engine) it traps instead of returning. Same volatile
+ * discipline as the ARM half, for the same reason.
+ */
+
+unsigned long pc_div0_count(void)
+{
+    return 0;
+}
+
+int pc_div0_fixup(struct pc_x86_regs *g)
+{
+    (void)g;
+    return 0;
+}
+
+int pc_div0_selftest(void)
+{
+    volatile int32_t a, b, q;
+    volatile uint32_t ua, ub, uq;
+    volatile int64_t la, lb, lq;
+    volatile uint64_t lua, lub, luq;
+    int ok = 1;
+
+    b = 0;
+    ub = 0u;
+    lb = 0;
+    lub = 0u;
+
+    a = 7;            q = a / b;    ok &= (q == 7);
+                      q = a % b;    ok &= (q == 0);
+    a = -7;           q = a / b;    ok &= (q == -7);
+                      q = a % b;    ok &= (q == 0);
+    a = INT32_MIN;    q = a / b;    ok &= (q == INT32_MIN);
+                      q = a % b;    ok &= (q == 0);
+    ua = 0xFFFFFFFFu; uq = ua / ub; ok &= (uq == 0xFFFFFFFFu);
+                      uq = ua % ub; ok &= (uq == 0u);
+
+    /* The 64-bit runtime keeps the numerator for the remainder too. */
+    la = -7;          lq = la / lb; ok &= (lq == -7);
+                      lq = la % lb; ok &= (lq == -7);
+    lua = 1ull << 40; luq = lua / lub; ok &= (luq == 1ull << 40);
+                      luq = lua % lub; ok &= (luq == 1ull << 40);
+
+    /* Overflow: wasm traps, the ROM wraps. */
+    a = INT32_MIN; b = -1;  q = a / b;   ok &= (q == INT32_MIN);
+                            q = a % b;   ok &= (q == 0);
+    la = INT64_MIN; lb = -1; lq = la / lb; ok &= (lq == INT64_MIN);
+                             lq = la % lb; ok &= (lq == 0);
+
+    /* Non-zero divisors untouched. */
+    a = -7; b = 2;    q = a / b;    ok &= (q == -3);
+                      q = a % b;    ok &= (q == -1);
+    ua = 7u; ub = 2u; uq = ua / ub; ok &= (uq == 3u);
+                      uq = ua % ub; ok &= (uq == 1u);
+
+    if (!ok) {
+        fprintf(stderr, "pc-selftest div0: wasm division answers are not the "
+                        "cartridge's; was the wasm2c output run through "
+                        "tools/wasm2c_postprocess.py?\n");
+    }
+    return ok;
+}
+
 #else
 #error "pc_div0: this architecture has no answer for a division by zero yet"
 #endif
