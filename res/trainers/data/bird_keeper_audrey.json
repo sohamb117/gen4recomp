@@ -1,0 +1,68 @@
+{
+    "name": "Audrey",
+    "class": "TRAINER_CLASS_BIRD_KEEPER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_TAILLOW",
+            "form": 0,
+            "level": 51,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_FARFETCHD",
+            "form": 0,
+            "level": 53,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PIDGEOT",
+            "form": 0,
+            "level": 55,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I let my bird Pokémon carry me to\n",
+                "wherever. And so, here I am!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Sheesh... I arrive in a new place, and\n",
+                "it turns out to be the Battle Zone...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I was born in the Hoenn region.\n",
+                "I’ve only just recently flown here.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I let my bird Pokémon do as they\n",
+                "wish. And so, we train here daily!\r"
+            ]
+        }
+    ]
+}

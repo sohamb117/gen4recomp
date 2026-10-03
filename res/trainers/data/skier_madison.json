@@ -1,0 +1,49 @@
+{
+    "name": "Madison",
+    "class": "TRAINER_CLASS_SKIER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SNORUNT",
+            "form": 0,
+            "level": 39,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Rainy days make me feel blue...\r",
+                "But the instant it starts to snow,\n",
+                "I’m as happy as can be!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "The conditions weren’t very good.\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Can any of your Pokémon use that\n",
+                "hidden move to climb cliffs?\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "You really must like snow.\r",
+                "After all, if you didn’t, I doubt that\n",
+                "you’d come here so often!\r"
+            ]
+        }
+    ]
+}

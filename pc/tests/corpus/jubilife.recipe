@@ -1,0 +1,13 @@
+# Jubilife City, outside the Pokemon Center. The first town with the Poketch.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name JUBILIF
+gender GENDER_MALE
+trainer-id 10000
+money 3000
+item ITEM_POKE_BALL 10
+badge BADGE_ID_COAL
+party SPECIES_MONFERNO 18 ITEM_NONE
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_DOWN

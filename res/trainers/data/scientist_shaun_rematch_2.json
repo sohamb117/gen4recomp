@@ -1,0 +1,49 @@
+{
+    "name": "Shaun",
+    "class": "TRAINER_CLASS_SCIENTIST",
+    "items": [
+        "ITEM_X_ATTACK"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MAGNETON",
+            "form": 0,
+            "level": 46,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_KADABRA",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Oh, how do you do? May I investigate\n",
+                "how much tougher you’ve become since\f",
+                "our last encounter?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Our research arrived at this one\n",
+                "conclusion: you’re tough!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,199 @@
+{
+    "base_stats": {
+        "hp": 55,
+        "attack": 55,
+        "defense": 85,
+        "speed": 35,
+        "special_attack": 65,
+        "special_defense": 85
+    },
+    "types": [ "TYPE_WATER", "TYPE_ROCK" ],
+    "catch_rate": 60,
+    "base_exp_reward": 113,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 1
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_HARD_STONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_75",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_FAST",
+    "egg_groups": [ "EGG_GROUP_WATER_1", "EGG_GROUP_WATER_3" ],
+    "abilities": [ "ABILITY_HUSTLE", "ABILITY_NATURAL_CURE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PINK",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 4, "MOVE_HARDEN" ],
+            [ 8, "MOVE_BUBBLE" ],
+            [ 13, "MOVE_RECOVER" ],
+            [ 16, "MOVE_REFRESH" ],
+            [ 20, "MOVE_ROCK_BLAST" ],
+            [ 25, "MOVE_BUBBLE_BEAM" ],
+            [ 28, "MOVE_LUCKY_CHANT" ],
+            [ 32, "MOVE_ANCIENT_POWER" ],
+            [ 37, "MOVE_AQUA_RING" ],
+            [ 40, "MOVE_SPIKE_CANNON" ],
+            [ 44, "MOVE_POWER_GEM" ],
+            [ 48, "MOVE_MIRROR_COAT" ],
+            [ 53, "MOVE_EARTH_POWER" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM04",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM11",
+            "TM13",
+            "TM14",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM20",
+            "TM21",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM33",
+            "TM37",
+            "TM39",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM55",
+            "TM58",
+            "TM64",
+            "TM69",
+            "TM71",
+            "TM76",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM03",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_ROLLOUT",
+            "MOVE_SNORE",
+            "MOVE_ENDEAVOR",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_EARTH_POWER",
+            "MOVE_SUCKER_PUNCH"
+        ],
+        "egg_moves": [
+            "MOVE_ROCK_SLIDE",
+            "MOVE_SCREECH",
+            "MOVE_MIST",
+            "MOVE_AMNESIA",
+            "MOVE_BARRIER",
+            "MOVE_INGRAIN",
+            "MOVE_CONFUSE_RAY",
+            "MOVE_ICICLE_SPEAR",
+            "MOVE_NATURE_POWER",
+            "MOVE_AQUA_RING"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_CORSOLA",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 11.0,
+        "body_shape": "SHAPE_INSECTOID",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 341,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 341,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 23,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 23,
+        "en": {
+            "name": "CORSOLA",
+            "category": "Coral Pokémon",
+            "entry_text": [
+                "Many live in the clean seas of the\n",
+                "south. They apparently can’t live\n",
+                "in polluted waters."
+            ]
+        },
+        "fr": {
+            "name": "CORAYON",
+            "category": "Pokémon Corail",
+            "entry_text": [
+                "On en trouve beaucoup dans les\n",
+                "mers claires du sud. On dirait qu’il\n",
+                "ne peut pas vivre en eau polluée."
+            ]
+        },
+        "de": {
+            "name": "CORASONN",
+            "category": "Koralle",
+            "entry_text": [
+                "Viele von ihnen leben in den\n",
+                "sauberen Seen im Süden. In ver-\n",
+                "schmutzten können sie nicht leben."
+            ]
+        },
+        "it": {
+            "name": "CORSOLA",
+            "category": "Pokémon Corallo",
+            "entry_text": [
+                "Vivono numerosi nei limpidi mari del\n",
+                "sud. Pare che non riescano a\n",
+                "sopravvivere nelle acque inquinate."
+            ]
+        },
+        "es": {
+            "name": "CORSOLA",
+            "category": "Pokémon Coral",
+            "entry_text": [
+                "Muchos viven en los cristalinos\n",
+                "mares del sur. Son incapaces de\n",
+                "vivir en aguas contaminadas."
+            ]
+        },
+        "jp": {
+            "name": "サニ－ゴ",
+            "category": "さんごポケモン",
+            "entry_text": [
+                "みなみの　きれいな　うみには\n",
+                "たくさんの　サニ－ゴが　いる。\n",
+                "よごれた　うみでは　いきられない。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 2819
+    }
+}

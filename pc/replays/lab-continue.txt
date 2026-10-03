@@ -1,0 +1,16 @@
+# Boots a save and takes the CONTINUE option: intro, title, main menu, load.
+#
+# The waits are longer than they look like they need to be on purpose. The
+# main menu runs a wireless search for its first 120 frames and pressing a
+# button into that lands somewhere else entirely, and the intro's own skips
+# need a frame or two to take.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none

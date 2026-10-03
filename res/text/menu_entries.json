@@ -1,0 +1,1149 @@
+{
+  "key": 20529,
+  "messages": [
+    {
+      "id": "MenuEntries_Text_Status_Poisoned",
+      "en_US": "POISONED"
+    },
+    {
+      "id": "MenuEntries_Text_Status_Paralyzed",
+      "en_US": "PARALYZED"
+    },
+    {
+      "id": "MenuEntries_Text_Status_Asleep",
+      "en_US": "ASLEEP"
+    },
+    {
+      "id": "MenuEntries_Text_Status_Burned",
+      "en_US": "BURNED"
+    },
+    {
+      "id": "MenuEntries_Text_Status_Frozen",
+      "en_US": "FROZEN"
+    },
+    {
+      "id": "MenuEntries_Text_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_SingleBattle",
+      "en_US": "SINGLE BATTLE"
+    },
+    {
+      "id": "MenuEntries_Text_DoubleBattle",
+      "en_US": "DOUBLE BATTLE"
+    },
+    {
+      "id": "MenuEntries_Text_MixBattle",
+      "en_US": "MIX BATTLE"
+    },
+    {
+      "id": "MenuEntries_Text_MultiBattle",
+      "en_US": "MULTI BATTLE"
+    },
+    {
+      "id": "MenuEntries_Text_Info",
+      "en_US": "INFO"
+    },
+    {
+      "id": "MenuEntries_Text_Exit2",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_ListMenu_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_JoinGroup",
+      "en_US": "JOIN GROUP"
+    },
+    {
+      "id": "MenuEntries_Text_BecomeLeader",
+      "en_US": "BECOME LEADER"
+    },
+    {
+      "id": "pl_msg_00000361_00015",
+      "en_US": "Current Floor"
+    },
+    {
+      "id": "pl_msg_00000361_00016",
+      "en_US": "{STRVAR_1 50, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000361_00017",
+      "en_US": "COOL"
+    },
+    {
+      "id": "pl_msg_00000361_00018",
+      "en_US": "BEAUTY"
+    },
+    {
+      "id": "pl_msg_00000361_00019",
+      "en_US": "CUTE"
+    },
+    {
+      "id": "pl_msg_00000361_00020",
+      "en_US": "TOUGH"
+    },
+    {
+      "id": "pl_msg_00000361_00021",
+      "en_US": "SMART"
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Trade",
+      "en_US": "TRADE"
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "pl_msg_00000361_00024",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00025",
+      "garbage": 7
+    },
+    {
+      "id": "pl_msg_00000361_00026",
+      "garbage": 6
+    },
+    {
+      "id": "pl_msg_00000361_00027",
+      "garbage": 6
+    },
+    {
+      "id": "pl_msg_00000361_00028",
+      "garbage": 6
+    },
+    {
+      "id": "pl_msg_00000361_00029",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00030",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00031",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00032",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00033",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00034",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00035",
+      "en_US": "HALL OF FAME"
+    },
+    {
+      "id": "pl_msg_00000361_00036",
+      "en_US": "SWITCH OFF"
+    },
+    {
+      "id": "pl_msg_00000361_00037",
+      "garbage": 9
+    },
+    {
+      "id": "pl_msg_00000361_00038",
+      "garbage": 10
+    },
+    {
+      "id": "pl_msg_00000361_00039",
+      "en_US": "CONFIRM"
+    },
+    {
+      "id": "pl_msg_00000361_00040",
+      "en_US": "RULES"
+    },
+    {
+      "id": "MenuEntries_Text_Yes",
+      "en_US": "YES"
+    },
+    {
+      "id": "MenuEntries_Text_No",
+      "en_US": "NO"
+    },
+    {
+      "id": "MenuEntries_Text_TrainerAppearancesExit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_Fossil_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "MenuEntries_Text_TypePreferenceFire",
+      "en_US": "FIRE"
+    },
+    {
+      "id": "MenuEntries_Text_TypePreferenceWater",
+      "en_US": "WATER"
+    },
+    {
+      "id": "MenuEntries_Text_TypePreferenceGrass",
+      "en_US": "GRASS"
+    },
+    {
+      "id": "pl_msg_00000361_00048",
+      "garbage": 3
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Battle",
+      "en_US": "BATTLE"
+    },
+    {
+      "id": "MenuEntries_Text_TrainerAppearanceVariant1",
+      "en_US": "{STRVAR_1 3, 0, 0}"
+    },
+    {
+      "id": "MenuEntries_Text_TrainerAppearanceVariant2",
+      "en_US": "{STRVAR_1 3, 1, 0}"
+    },
+    {
+      "id": "MenuEntries_Text_TrainerAppearanceVariant3",
+      "en_US": "{STRVAR_1 3, 2, 0}"
+    },
+    {
+      "id": "MenuEntries_Text_TrainerAppearanceVariant4",
+      "en_US": "{STRVAR_1 3, 3, 0}"
+    },
+    {
+      "id": "pl_msg_00000361_00054",
+      "en_US": "FERTILIZE"
+    },
+    {
+      "id": "pl_msg_00000361_00055",
+      "en_US": "PLANT BERRY"
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Draw",
+      "en_US": "DRAW"
+    },
+    {
+      "id": "pl_msg_00000361_00057",
+      "garbage": 1
+    },
+    {
+      "id": "MenuEntries_Text_PC_SomeonesPC",
+      "en_US": "SOMEONE’S PC"
+    },
+    {
+      "id": "MenuEntries_Text_PC_BebesPC",
+      "en_US": "BEBE’S PC"
+    },
+    {
+      "id": "MenuEntries_Text_PC_PlayersPC",
+      "en_US": "{STRVAR_1 3, 0, 0}’s PC"
+    },
+    {
+      "id": "MenuEntries_Text_PC_HallOfFame",
+      "en_US": "HALL OF FAME"
+    },
+    {
+      "id": "MenuEntries_Text_PC_OaksPC",
+      "en_US": "OAK’S PC"
+    },
+    {
+      "id": "MenuEntries_Text_PC_RowansPC",
+      "en_US": "ROWAN’S PC"
+    },
+    {
+      "id": "MenuEntries_Text_PC_SwitchOff",
+      "en_US": "SWITCH OFF"
+    },
+    {
+      "id": "MenuEntries_Text_PC_DepositPokemon",
+      "en_US": "DEPOSIT POKéMON"
+    },
+    {
+      "id": "MenuEntries_Text_PC_WithdrawPokemon",
+      "en_US": "WITHDRAW POKéMON"
+    },
+    {
+      "id": "MenuEntries_Text_PC_MovePokemon",
+      "en_US": "MOVE POKéMON"
+    },
+    {
+      "id": "MenuEntries_Text_PC_MoveItems",
+      "en_US": "MOVE ITEMS"
+    },
+    {
+      "id": "MenuEntries_Text_PC_ComparePokemon",
+      "en_US": "COMPARE POKéMON"
+    },
+    {
+      "id": "MenuEntries_Text_PC_SeeYa",
+      "en_US": "SEE YA!"
+    },
+    {
+      "id": "MenuEntries_Text_PC_Mailbox",
+      "en_US": "MAILBOX"
+    },
+    {
+      "id": "MenuEntries_Text_PC_BallCapsules",
+      "en_US": "BALL CAPSULES"
+    },
+    {
+      "id": "MenuEntries_Text_PC_LogOut",
+      "en_US": "LOG OUT"
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionDepositPokemon",
+      "en_US": [
+        "Pokémon in your party may be stored\n",
+        "in the storage system’s Boxes."
+      ]
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionWithdrawPokemon",
+      "en_US": [
+        "Pokémon stored in Boxes may be added\n",
+        "to your party."
+      ]
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionMovePokemon",
+      "en_US": [
+        "You may sort the Pokémon in Boxes\n",
+        "and in your party."
+      ]
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionMoveItems",
+      "en_US": [
+        "You may sort the items held by your\n",
+        "Pokémon in Boxes and in your party."
+      ]
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionComparePokemon",
+      "en_US": [
+        "You may compare two Pokémon in Boxes\n",
+        "or your party side by side."
+      ]
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionSeeYa",
+      "en_US": [
+        "Log out of the Pokémon Storage\n",
+        "System."
+      ]
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionMailBox",
+      "en_US": [
+        "Up to 20 pieces of Mail can be\n",
+        "stored."
+      ]
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionBallCapsules",
+      "en_US": [
+        "You may set or edit capsules for\n",
+        "decorating Poké Balls."
+      ]
+    },
+    {
+      "id": "MenuEntries_Text_PC_DescriptionLogOut",
+      "en_US": "Log out of your PC."
+    },
+    {
+      "id": "pl_msg_00000361_00083",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "pl_msg_00000361_00084",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00085",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00086",
+      "garbage": 10
+    },
+    {
+      "id": "pl_msg_00000361_00087",
+      "garbage": 4
+    },
+    {
+      "id": "pl_msg_00000361_00088",
+      "garbage": 4
+    },
+    {
+      "id": "pl_msg_00000361_00089",
+      "garbage": 4
+    },
+    {
+      "id": "pl_msg_00000361_00090",
+      "garbage": 4
+    },
+    {
+      "id": "pl_msg_00000361_00091",
+      "garbage": 4
+    },
+    {
+      "id": "pl_msg_00000361_00092",
+      "garbage": 5
+    },
+    {
+      "id": "pl_msg_00000361_00093",
+      "garbage": 7
+    },
+    {
+      "id": "MenuEntries_Text_BattleTower_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "pl_msg_00000361_00095",
+      "garbage": 17
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_ContestBasics",
+      "en_US": "CONTEST BASICS"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_TypesOfContests",
+      "en_US": "TYPES OF CONTESTS"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_ContestRanks",
+      "en_US": "CONTEST RANKS"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "pl_msg_00000361_00100",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00101",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00102",
+      "garbage": 6
+    },
+    {
+      "id": "pl_msg_00000361_00103",
+      "garbage": 6
+    },
+    {
+      "id": "pl_msg_00000361_00104",
+      "garbage": 3
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_NormalRank",
+      "en_US": "NORMAL RANK"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_GreatRank",
+      "en_US": "GREAT RANK"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_UltraRank",
+      "en_US": "ULTRA RANK"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_MasterRank",
+      "en_US": "MASTER RANK"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_ContestRankExit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_CoolContest",
+      "en_US": "COOL CONTEST"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_BeautyContest",
+      "en_US": "BEAUTY CONTEST"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_CuteContest",
+      "en_US": "CUTE CONTEST"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_SmartContest",
+      "en_US": "SMART CONTEST"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_ToughContest",
+      "en_US": "TOUGH CONTEST"
+    },
+    {
+      "id": "MenuEntries_Text_ContestRegistration_ContestTypeExit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_1F",
+      "en_US": "1F"
+    },
+    {
+      "id": "MenuEntries_Text_2F",
+      "en_US": "2F"
+    },
+    {
+      "id": "MenuEntries_Text_3F",
+      "en_US": "3F"
+    },
+    {
+      "id": "MenuEntries_Text_4F",
+      "en_US": "4F"
+    },
+    {
+      "id": "MenuEntries_Text_5F",
+      "en_US": "5F"
+    },
+    {
+      "id": "MenuEntries_Text_B1F",
+      "en_US": "B1F"
+    },
+    {
+      "id": "MenuEntries_Text_B2F",
+      "en_US": "B2F"
+    },
+    {
+      "id": "pl_msg_00000361_00123",
+      "en_US": "LOOKOUT"
+    },
+    {
+      "id": "MenuEntries_Text_ElevatorExit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_GameCorner_50Coins",
+      "en_US": "50 Coins{CURSOR_X 60}$1,000"
+    },
+    {
+      "id": "MenuEntries_Text_GameCorner_500Coins",
+      "en_US": "500 Coins{CURSOR_X 60}$10,000"
+    },
+    {
+      "id": "MenuEntries_Text_GameCorner_NoThanks",
+      "en_US": "NO THANKS"
+    },
+    {
+      "id": "MenuEntries_Text_GTS_Info",
+      "en_US": "INFO"
+    },
+    {
+      "id": "MenuEntries_Text_GTS_Trade",
+      "en_US": "TRADE"
+    },
+    {
+      "id": "MenuEntries_Text_GTS_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_GTS_OfferPokemon",
+      "en_US": "OFFER POKéMON?"
+    },
+    {
+      "id": "MenuEntries_Text_GTS_SeekPokemon",
+      "en_US": "SEEK POKéMON?"
+    },
+    {
+      "id": "MenuEntries_Text_GTS_Understood",
+      "en_US": "UNDERSTOOD!"
+    },
+    {
+      "id": "MenuEntries_Text_DayCare_Pokemon1",
+      "en_US": "{STRVAR_1 0, 0, 0}{STRVAR_1 2, 2, 0}{CURSOR_X 90}Lv. {STRVAR_1 52, 1, 0}"
+    },
+    {
+      "id": "MenuEntries_Text_DayCare_Pokemon2",
+      "en_US": "{STRVAR_1 0, 0, 0}{STRVAR_1 2, 2, 0}{CURSOR_X 90}Lv. {STRVAR_1 52, 1, 0}"
+    },
+    {
+      "id": "MenuEntries_Text_DayCare_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "MenuEntries_Text_CounterpartHand_Right",
+      "en_US": "RIGHT"
+    },
+    {
+      "id": "MenuEntries_Text_CounterpartHand_Left",
+      "en_US": "LEFT"
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Spin",
+      "en_US": "SPIN"
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Records",
+      "en_US": "RECORDS"
+    },
+    {
+      "id": "MenuEntries_Text_BattleTower_Challenge",
+      "en_US": "CHALLENGE"
+    },
+    {
+      "id": "MenuEntries_Text_BattleTower_Info",
+      "en_US": "INFO"
+    },
+    {
+      "id": "MenuEntries_Text_BattleTower_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "pl_msg_00000361_00144",
+      "en_US": "SINGLE"
+    },
+    {
+      "id": "pl_msg_00000361_00145",
+      "en_US": "DOUBLE"
+    },
+    {
+      "id": "MenuEntries_Text_BattleTowerBattleRoom_KeepGoing",
+      "en_US": "KEEP GOING"
+    },
+    {
+      "id": "MenuEntries_Text_BattleTowerBattleRoom_Rest",
+      "en_US": "REST"
+    },
+    {
+      "id": "MenuEntries_Text_BattleTowerBattleRoom_Retire",
+      "en_US": "RETIRE"
+    },
+    {
+      "id": "pl_msg_00000361_00149",
+      "en_US": "BECOME LEADER"
+    },
+    {
+      "id": "pl_msg_00000361_00150",
+      "en_US": "JOIN GROUP"
+    },
+    {
+      "id": "MenuEntries_Text_BattleTower_CheckLeaders",
+      "en_US": "CHECK LEADERS"
+    },
+    {
+      "id": "MenuEntries_Text_BattleTower_ChallengeEarlierRoom",
+      "en_US": "CHALLENGE EARLIER ROOM"
+    },
+    {
+      "id": "MenuEntries_Text_PalPadInfo_RegisterAFriend",
+      "en_US": "REGISTER A FRIEND?"
+    },
+    {
+      "id": "MenuEntries_Text_PalPadInfo_Understood",
+      "en_US": "UNDERSTOOD!"
+    },
+    {
+      "id": "MenuEntries_Text_PalPadInfo_TellMeAgain",
+      "en_US": "TELL ME AGAIN"
+    },
+    {
+      "id": "MenuEntries_Text_Fossil_OldAmber",
+      "en_US": "OLD AMBER"
+    },
+    {
+      "id": "MenuEntries_Text_Fossil_Helix",
+      "en_US": "HELIX FOSSIL"
+    },
+    {
+      "id": "MenuEntries_Text_Fossil_Dome",
+      "en_US": "DOME FOSSIL"
+    },
+    {
+      "id": "MenuEntries_Text_Fossil_Root",
+      "en_US": "ROOT FOSSIL"
+    },
+    {
+      "id": "MenuEntries_Text_Fossil_Claw",
+      "en_US": "CLAW FOSSIL"
+    },
+    {
+      "id": "MenuEntries_Text_Fossil_Armor",
+      "en_US": "ARMOR FOSSIL"
+    },
+    {
+      "id": "MenuEntries_Text_Fossil_Skull",
+      "en_US": "SKULL FOSSIL"
+    },
+    {
+      "id": "MenuEntries_Text_BattlesForTwo",
+      "en_US": "BATTLES FOR TWO"
+    },
+    {
+      "id": "MenuEntries_Text_BattlesForFour",
+      "en_US": "BATTLES FOR FOUR"
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Greet",
+      "en_US": "GREET"
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Converse",
+      "en_US": "CONVERSE"
+    },
+    {
+      "id": "MenuEntries_Text_UnionRoom_Chat",
+      "en_US": "CHAT"
+    },
+    {
+      "id": "MenuEntries_Text_PrizeExchange_Prize",
+      "en_US": "{STRVAR_1 8, 0, 0}{CURSOR_X 96}{STRVAR_1 54, 1, 0}"
+    },
+    {
+      "id": "MenuEntries_Text_PrizeExchange_NoThanks",
+      "en_US": "NO THANKS"
+    },
+    {
+      "id": "pl_msg_00000361_00170",
+      "garbage": 17
+    },
+    {
+      "id": "pl_msg_00000361_00171",
+      "garbage": 17
+    },
+    {
+      "id": "pl_msg_00000361_00172",
+      "garbage": 17
+    },
+    {
+      "id": "pl_msg_00000361_00173",
+      "garbage": 4
+    },
+    {
+      "id": "MenuEntries_Text_CoinCaseClown_Right",
+      "en_US": "RIGHT"
+    },
+    {
+      "id": "MenuEntries_Text_CoinCaseClown_Left",
+      "en_US": "LEFT"
+    },
+    {
+      "id": "pl_msg_00000361_00176",
+      "en_US": "VISUAL"
+    },
+    {
+      "id": "pl_msg_00000361_00177",
+      "en_US": "DANCE"
+    },
+    {
+      "id": "pl_msg_00000361_00178",
+      "en_US": "ACTING"
+    },
+    {
+      "id": "pl_msg_00000361_00179",
+      "en_US": "PRACTICE"
+    },
+    {
+      "id": "MenuEntries_Text_UndergroundManHousePCHeading_Flags",
+      "en_US": "FLAGS"
+    },
+    {
+      "id": "MenuEntries_Text_UndergroundManHousePCHeading_Spheres",
+      "en_US": "SPHERES"
+    },
+    {
+      "id": "MenuEntries_Text_UndergroundManHousePCHeading_Traps",
+      "en_US": "TRAPS"
+    },
+    {
+      "id": "MenuEntries_Text_UndergroundManHousePCHeading_Goods",
+      "en_US": "GOODS"
+    },
+    {
+      "id": "MenuEntries_Text_UndergroundManHousePCHeading_Treasures",
+      "en_US": "TREASURES"
+    },
+    {
+      "id": "pl_msg_00000361_00185",
+      "en_US": "CHALLENGE EARLIER ROOM"
+    },
+    {
+      "id": "MenuEntries_Text_Area1",
+      "en_US": "AREA 1"
+    },
+    {
+      "id": "MenuEntries_Text_Area2",
+      "en_US": "AREA 2"
+    },
+    {
+      "id": "MenuEntries_Text_Area3",
+      "en_US": "AREA 3"
+    },
+    {
+      "id": "MenuEntries_Text_Area4",
+      "en_US": "AREA 4"
+    },
+    {
+      "id": "MenuEntries_Text_Area5",
+      "en_US": "AREA 5"
+    },
+    {
+      "id": "MenuEntries_Text_Area6",
+      "en_US": "AREA 6"
+    },
+    {
+      "id": "MenuEntries_Text_GreatMarshTramExit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "pl_msg_00000361_00193",
+      "en_US": "RED SHARD"
+    },
+    {
+      "id": "pl_msg_00000361_00194",
+      "en_US": "BLUE SHARD"
+    },
+    {
+      "id": "pl_msg_00000361_00195",
+      "en_US": "YELLOW SHARD"
+    },
+    {
+      "id": "pl_msg_00000361_00196",
+      "en_US": "GREEN SHARD"
+    },
+    {
+      "id": "pl_msg_00000361_00197",
+      "en_US": "{STRVAR_1 54, 0, 0} Coins"
+    },
+    {
+      "id": "MenuEntries_Text_PalPark_BasicRules",
+      "en_US": "BASIC RULES"
+    },
+    {
+      "id": "MenuEntries_Text_PalPark_CatchingShow",
+      "en_US": "CATCHING SHOW"
+    },
+    {
+      "id": "MenuEntries_Text_PalPark_StockingPokemon",
+      "en_US": "STOCKING POKéMON"
+    },
+    {
+      "id": "MenuEntries_Text_PalPark_Stocking2_Unused",
+      "en_US": "STOCKING 2"
+    },
+    {
+      "id": "MenuEntries_Text_PalPark_Understood",
+      "en_US": "UNDERSTOOD!"
+    },
+    {
+      "id": "MenuEntries_Text_PalPark_Enter",
+      "en_US": "ENTER"
+    },
+    {
+      "id": "MenuEntries_Text_PalPark_Info",
+      "en_US": "INFO"
+    },
+    {
+      "id": "MenuEntries_Text_PalPark_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "pl_msg_00000361_00206",
+      "garbage": 8
+    },
+    {
+      "id": "pl_msg_00000361_00207",
+      "garbage": 4
+    },
+    {
+      "id": "pl_msg_00000361_00208",
+      "garbage": 3
+    },
+    {
+      "id": "pl_msg_00000361_00209",
+      "en_US": "RED SHARD"
+    },
+    {
+      "id": "pl_msg_00000361_00210",
+      "en_US": "BLUE SHARD"
+    },
+    {
+      "id": "pl_msg_00000361_00211",
+      "en_US": "YELLOW SHARD"
+    },
+    {
+      "id": "pl_msg_00000361_00212",
+      "en_US": "GREEN SHARD"
+    },
+    {
+      "id": "MenuEntries_Text_CanalaveDock_IronIsland",
+      "en_US": "IRON ISLAND"
+    },
+    {
+      "id": "MenuEntries_Text_CanalaveDock_FullmoonIsland",
+      "en_US": "FULLMOON ISLAND"
+    },
+    {
+      "id": "MenuEntries_Text_CanalaveDock_NewmoonIsland",
+      "en_US": "NEWMOON ISLAND"
+    },
+    {
+      "id": "pl_msg_00000361_00216",
+      "en_US": "FIGHT AREA"
+    },
+    {
+      "id": "pl_msg_00000361_00217",
+      "en_US": "SNOWPOINT CITY"
+    },
+    {
+      "id": "MenuEntries_Text_CanalaveDock_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_FreshWater",
+      "en_US": "FRESH WATER{CURSOR_X 80}$200"
+    },
+    {
+      "id": "MenuEntries_Text_SodaPop",
+      "en_US": "SODA POP{CURSOR_X 80}$300"
+    },
+    {
+      "id": "MenuEntries_Text_Lemonade",
+      "en_US": "LEMONADE{CURSOR_X 80}$350"
+    },
+    {
+      "id": "MenuEntries_Text_NoThanks",
+      "en_US": "NO THANKS"
+    },
+    {
+      "id": "MenuEntries_Text_MulchShop_GrowthMulch",
+      "en_US": "GROWTH MULCH{CURSOR_X 90}$200"
+    },
+    {
+      "id": "MenuEntries_Text_MulchShop_DampMulch",
+      "en_US": "DAMP MULCH{CURSOR_X 90}$200"
+    },
+    {
+      "id": "MenuEntries_Text_MulchShop_StableMulch",
+      "en_US": "STABLE MULCH{CURSOR_X 90}$200"
+    },
+    {
+      "id": "MenuEntries_Text_MulchShop_GooeyMulch",
+      "en_US": "GOOEY MULCH{CURSOR_X 90}$200"
+    },
+    {
+      "id": "MenuEntries_Text_MulchShop_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_NothingThanks",
+      "en_US": "Nothing, thanks."
+    },
+    {
+      "id": "MenuEntries_Text_WhatIsRecommended",
+      "en_US": "What’s recommended?"
+    },
+    {
+      "id": "pl_msg_00000361_00230",
+      "en_US": "{STRVAR_1 53, 0, 0} BP"
+    },
+    {
+      "id": "MenuEntries_Text_UnusedPrizeExchange_Prize",
+      "en_US": "{STRVAR_1 8, 0, 0}{CURSOR_X 96}{STRVAR_1 52, 1, 0}BP"
+    },
+    {
+      "id": "MenuEntries_Text_UnusedPrizeExchange_NoThanks",
+      "en_US": "NO THANKS"
+    },
+    {
+      "id": "MenuEntries_Text_DigitalWatch",
+      "en_US": "DIGITAL WATCH"
+    },
+    {
+      "id": "MenuEntries_Text_Stopwatch",
+      "en_US": "STOPWATCH"
+    },
+    {
+      "id": "MenuEntries_Text_Calculator",
+      "en_US": "CALCULATOR"
+    },
+    {
+      "id": "MenuEntries_Text_MemoPad",
+      "en_US": "MEMO PAD"
+    },
+    {
+      "id": "MenuEntries_Text_AnalogWatch",
+      "en_US": "ANALOG WATCH"
+    },
+    {
+      "id": "MenuEntries_Text_DotArtist",
+      "en_US": "DOT ARTIST"
+    },
+    {
+      "id": "MenuEntries_Text_PokemonList",
+      "en_US": "POKéMON LIST"
+    },
+    {
+      "id": "MenuEntries_Text_FriendshipChecker",
+      "en_US": "FRIENDSHIP CHECKER"
+    },
+    {
+      "id": "MenuEntries_Text_DowsingMachine",
+      "en_US": "DOWSING MACHINE"
+    },
+    {
+      "id": "MenuEntries_Text_Counter",
+      "en_US": "COUNTER"
+    },
+    {
+      "id": "MenuEntries_Text_Pedometer",
+      "en_US": "PEDOMETER"
+    },
+    {
+      "id": "MenuEntries_Text_DayCareChecker",
+      "en_US": "DAY-CARE CHECKER"
+    },
+    {
+      "id": "MenuEntries_Text_Roulette",
+      "en_US": "ROULETTE"
+    },
+    {
+      "id": "MenuEntries_Text_CoinToss",
+      "en_US": "COIN TOSS"
+    },
+    {
+      "id": "MenuEntries_Text_MoveTester",
+      "en_US": "MOVE TESTER"
+    },
+    {
+      "id": "MenuEntries_Text_MatchupChecker",
+      "en_US": "MATCHUP CHECKER"
+    },
+    {
+      "id": "MenuEntries_Text_AlarmClock",
+      "en_US": "ALARM CLOCK"
+    },
+    {
+      "id": "MenuEntries_Text_KitchenTimer",
+      "en_US": "KITCHEN TIMER"
+    },
+    {
+      "id": "MenuEntries_Text_MarkingMap",
+      "en_US": "MARKING MAP"
+    },
+    {
+      "id": "MenuEntries_Text_BerrySearcher",
+      "en_US": "BERRY SEARCHER"
+    },
+    {
+      "id": "MenuEntries_Text_ColorChanger",
+      "en_US": "COLOR CHANGER"
+    },
+    {
+      "id": "MenuEntries_Text_Calendar",
+      "en_US": "CALENDAR"
+    },
+    {
+      "id": "MenuEntries_Text_LinkSearcher",
+      "en_US": "LINK SEARCHER"
+    },
+    {
+      "id": "MenuEntries_Text_TrainerCounter",
+      "en_US": "TRAINER COUNTER"
+    },
+    {
+      "id": "MenuEntries_Text_PokemonHistory",
+      "en_US": "POKéMON HISTORY"
+    },
+    {
+      "id": "MenuEntries_Text_PoketchDescriptionsExit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_SinnohFolkStory_Part1",
+      "en_US": "PART 1"
+    },
+    {
+      "id": "MenuEntries_Text_SinnohFolkStory_Part2",
+      "en_US": "PART 2"
+    },
+    {
+      "id": "MenuEntries_Text_SinnohFolkStory_Part3",
+      "en_US": "PART 3"
+    },
+    {
+      "id": "MenuEntries_Text_SinnohFolkStory_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_Article_DuskBall",
+      "en_US": "DUSK BALL"
+    },
+    {
+      "id": "MenuEntries_Text_Article_HealBall",
+      "en_US": "HEAL BALL"
+    },
+    {
+      "id": "MenuEntries_Text_Article_QuickBall",
+      "en_US": "QUICK BALL"
+    },
+    {
+      "id": "MenuEntries_Text_Article_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_Article_DiveBall",
+      "en_US": "DIVE BALL"
+    },
+    {
+      "id": "MenuEntries_Text_GalacticReport_CreationOfSpace",
+      "en_US": "THE CREATION OF SPACE"
+    },
+    {
+      "id": "MenuEntries_Text_GalacticReport_MythicalPokemon",
+      "en_US": "MYTHICAL POKéMON"
+    },
+    {
+      "id": "MenuEntries_Text_GalacticReport_RedChain",
+      "en_US": "RED CHAIN"
+    },
+    {
+      "id": "MenuEntries_Text_GalacticReport_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "MenuEntries_Text_Record",
+      "en_US": "RECORD"
+    },
+    {
+      "id": "pl_msg_00000361_00273",
+      "en_US": "RED SHARDS"
+    },
+    {
+      "id": "pl_msg_00000361_00274",
+      "en_US": "BLUE SHARDS"
+    },
+    {
+      "id": "pl_msg_00000361_00275",
+      "en_US": "YELLOW SHARDS"
+    },
+    {
+      "id": "pl_msg_00000361_00276",
+      "en_US": "GREEN SHARDS"
+    },
+    {
+      "id": "pl_msg_00000361_00277",
+      "en_US": "X {STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "MenuEntries_Text_StarPieces_1",
+      "en_US": "1"
+    },
+    {
+      "id": "MenuEntries_Text_StarPieces_10",
+      "en_US": "10"
+    }
+  ]
+}

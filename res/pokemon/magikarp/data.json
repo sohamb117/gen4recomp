@@ -1,0 +1,131 @@
+{
+    "base_stats": {
+        "hp": 20,
+        "attack": 10,
+        "defense": 55,
+        "speed": 80,
+        "special_attack": 15,
+        "special_defense": 20
+    },
+    "types": [ "TYPE_WATER", "TYPE_WATER" ],
+    "catch_rate": 255,
+    "base_exp_reward": 20,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 1,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 5,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_WATER_2", "EGG_GROUP_DRAGON" ],
+    "abilities": [ "ABILITY_SWIFT_SWIM", "ABILITY_NONE" ],
+    "safari_flee_rate": 90,
+    "body_color": "MON_COLOR_RED",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_SPLASH" ],
+            [ 15, "MOVE_TACKLE" ],
+            [ 30, "MOVE_FLAIL" ]
+        ],
+        "by_tm": [  ],
+        "by_tutor": [ "MOVE_BOUNCE" ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            20,
+            "SPECIES_GYARADOS"
+        ]
+    ],
+    "offspring": "SPECIES_MAGIKARP",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SLOW"
+    },
+    "pokedex_data": {
+        "height_inches": 35,
+        "weight_pounds": 22.0,
+        "body_shape": "SHAPE_FINS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 298,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 298,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65531,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65531,
+        "en": {
+            "name": "MAGIKARP",
+            "category": "Fish Pokémon",
+            "entry_text": [
+                "A MAGIKARP living for many years\n",
+                "can leap a mountain using Splash.\n",
+                "The move remains useless, though."
+            ]
+        },
+        "fr": {
+            "name": "MAGICARPE",
+            "category": "Pokémon Poisson",
+            "entry_text": [
+                "Ce Pokémon est réputé pour être\n",
+                "le plus faible au monde. Nul ne\n",
+                "sait comment son espèce perdure."
+            ]
+        },
+        "de": {
+            "name": "KARPADOR",
+            "category": "Fisch",
+            "entry_text": [
+                "Man sagt, es sei das schwächste\n",
+                "PKMN der Welt. Niemand weiß, wie\n",
+                "es bisher überleben konnte."
+            ]
+        },
+        "it": {
+            "name": "MAGIKARP",
+            "category": "Pokémon Pesce",
+            "entry_text": [
+                "Si dice che sia il Pokémon più\n",
+                "debole del mondo. Nessuno sa\n",
+                "come abbia fatto a sopravvivere."
+            ]
+        },
+        "es": {
+            "name": "MAGIKARP",
+            "category": "Pokémon Pez",
+            "entry_text": [
+                "Se dice que es el Pokémon más\n",
+                "débil del mundo. No se sabe cómo\n",
+                "ha logrado sobrevivir."
+            ]
+        },
+        "jp": {
+            "name": "コイキング",
+            "category": "さかなポケモン",
+            "entry_text": [
+                "せかいいち　よわいと　いわれる\n",
+                "コイキングが　なぜ　いきのこって\n",
+                "いるのか　だれも　わからない。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NORTH_EAST",
+        "catching_points": 30,
+        "rarity": 50,
+        "unused": 771
+    }
+}

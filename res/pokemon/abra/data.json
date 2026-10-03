@@ -1,0 +1,193 @@
+{
+    "base_stats": {
+        "hp": 25,
+        "attack": 20,
+        "defense": 15,
+        "speed": 90,
+        "special_attack": 105,
+        "special_defense": 55
+    },
+    "types": [ "TYPE_PSYCHIC", "TYPE_PSYCHIC" ],
+    "catch_rate": 200,
+    "base_exp_reward": 75,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 1,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_TWISTEDSPOON"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_25",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_HUMAN_LIKE", "EGG_GROUP_HUMAN_LIKE" ],
+    "abilities": [ "ABILITY_SYNCHRONIZE", "ABILITY_INNER_FOCUS" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TELEPORT" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM04",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM20",
+            "TM21",
+            "TM23",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM33",
+            "TM34",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM48",
+            "TM49",
+            "TM53",
+            "TM56",
+            "TM57",
+            "TM58",
+            "TM60",
+            "TM63",
+            "TM67",
+            "TM70",
+            "TM73",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM86",
+            "TM87",
+            "TM90",
+            "TM92"
+        ],
+        "by_tutor": [
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_ICE_PUNCH",
+            "MOVE_SNORE",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_TRICK",
+            "MOVE_KNOCK_OFF"
+        ],
+        "egg_moves": [
+            "MOVE_ENCORE",
+            "MOVE_BARRIER",
+            "MOVE_KNOCK_OFF",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_ICE_PUNCH",
+            "MOVE_POWER_TRICK",
+            "MOVE_GUARD_SWAP"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            16,
+            "SPECIES_KADABRA"
+        ]
+    ],
+    "offspring": "SPECIES_ABRA",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 35,
+        "weight_pounds": 43.0,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 364,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 364,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 25,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 25,
+        "en": {
+            "name": "ABRA",
+            "category": "Psi Pokémon",
+            "entry_text": [
+                "Using its psychic power is such a\n",
+                "strain on its brain that it needs\n",
+                "to sleep for 18 hours a day."
+            ]
+        },
+        "fr": {
+            "name": "ABRA",
+            "category": "Pokémon Psy",
+            "entry_text": [
+                "Il dort 18 heures par jour. Même\n",
+                "éveillé, il ne prend pas la peine\n",
+                "de se lever pour se téléporter."
+            ]
+        },
+        "de": {
+            "name": "ABRA",
+            "category": "Psi",
+            "entry_text": [
+                "18 Stunden am Tag schläft es. Und\n",
+                "wenn es wach ist, teleportiert es\n",
+                "sich, während es sitzen bleibt."
+            ]
+        },
+        "it": {
+            "name": "ABRA",
+            "category": "Pokémon Psico",
+            "entry_text": [
+                "Dorme per 18 ore al giorno.\n",
+                "Anche da sveglio, si teletrasporta\n",
+                "rimanendo seduto."
+            ]
+        },
+        "es": {
+            "name": "ABRA",
+            "category": "Pokémon Psi",
+            "entry_text": [
+                "Duerme 18 horas al día. Cuando\n",
+                "está despierto no se levanta ni\n",
+                "para teletransportarse."
+            ]
+        },
+        "jp": {
+            "name": "ケ－シィ",
+            "category": "ねんりきポケモン",
+            "entry_text": [
+                "まいにち　１８じかん　ねむる。\n",
+                "めざめている　ときも　すわったまま\n",
+                "テレポ－トで　いどうする。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 2570
+    }
+}

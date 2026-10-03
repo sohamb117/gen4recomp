@@ -1,0 +1,13 @@
+# Oreburgh City, the mining town at the mouth of the gate.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name OREBURG
+gender GENDER_MALE
+trainer-id 10137
+money 2400
+badge BADGE_ID_COAL
+item ITEM_POTION 5
+party SPECIES_PRINPLUP 20 ITEM_ORAN_BERRY
+map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN

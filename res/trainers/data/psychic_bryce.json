@@ -1,0 +1,63 @@
+{
+    "name": "Bryce",
+    "class": "TRAINER_CLASS_PSYCHIC_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_HAUNTER",
+            "form": 0,
+            "level": 43,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GARDEVOIR",
+            "form": 0,
+            "level": 46,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GENGAR",
+            "form": 0,
+            "level": 46,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I am a Psychic!\n",
+                "I can see your future!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "So be it! I will now divulge what\n",
+                "I know of your future... Hmm!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I see it now!\r",
+                "You will battle the Elite Four of the\n",
+                "Pokémon League!\n"
+            ]
+        }
+    ]
+}

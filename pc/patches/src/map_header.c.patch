@@ -1,0 +1,198 @@
+--- a/src/map_header.c
++++ b/src/map_header.c
+@@ -5,8 +5,49 @@
+ 
+ #include "data/map_headers.h"
+ 
++#include "pc_modfs.h"
++
++static const MapHeader *MapHeader_Lookup(enum MapHeaderID mapHeaderID)
++{
++    struct pc_modfs_map_header cooked;
++    static MapHeader sCooked;
++
++    if (pc_modfs_map_header((int)mapHeaderID, &cooked)) {
++        sCooked.areaDataArchiveID = (u8)cooked.area;
++        sCooked.preloadedMapObjectsArchiveID = (u8)cooked.preloaded;
++        sCooked.mapMatrixID = (u16)cooked.matrix;
++        sCooked.scriptsArchiveID = (u16)cooked.scripts;
++        sCooked.initScriptsArchiveID = (u16)cooked.init_scripts;
++        sCooked.msgArchiveID = (u16)cooked.msg;
++        sCooked.dayMusicID = (u16)cooked.day;
++        sCooked.nightMusicID = (u16)cooked.night;
++        sCooked.wildEncountersArchiveID = (u16)cooked.wild;
++        sCooked.eventsArchiveID = (u16)cooked.events;
++        sCooked.mapLabelTextID = (u16)cooked.label;
++        sCooked.mapLabelWindowID = (u16)cooked.window;
++        sCooked.weather = (u8)cooked.weather;
++        sCooked.cameraType = (u8)cooked.camera;
++        sCooked.mapType = (u16)cooked.map_type;
++        sCooked.battleBG = (u16)cooked.battle_bg;
++        sCooked.isBikeAllowed = cooked.bike ? 1 : 0;
++        sCooked.isRunningAllowed = cooked.run ? 1 : 0;
++        sCooked.isEscapeRopeAllowed = cooked.escape ? 1 : 0;
++        sCooked.isFlyAllowed = cooked.fly ? 1 : 0;
++        return &sCooked;
++    }
++
++    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
++    return &sMapHeaders[mapHeaderID];
++}
++
+ enum MapHeaderID MapHeader_IDBoundsCheck(enum MapHeaderID mapHeaderID)
+ {
++    struct pc_modfs_map_header cooked;
++
++    if (pc_modfs_map_header((int)mapHeaderID, &cooked)) {
++        return mapHeaderID;
++    }
++
+     if (mapHeaderID >= NELEMS(sMapHeaders)) {
+         GF_ASSERT(FALSE);
+         return MAP_HEADER_JUBILIFE_CITY;
+@@ -17,20 +58,17 @@
+ 
+ u16 MapHeader_GetAreaDataArchiveID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].areaDataArchiveID;
++    return MapHeader_Lookup(mapHeaderID)->areaDataArchiveID;
+ }
+ 
+ u16 MapHeader_GetPreloadedMapObjectsArchiveID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].preloadedMapObjectsArchiveID;
++    return MapHeader_Lookup(mapHeaderID)->preloadedMapObjectsArchiveID;
+ }
+ 
+ u16 MapHeader_GetMapMatrixID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    u16 mapMatrixID = sMapHeaders[mapHeaderID].mapMatrixID;
++    u16 mapMatrixID = MapHeader_Lookup(mapHeaderID)->mapMatrixID;
+ 
+     if (mapMatrixID == 22 && gGameVersion == VERSION_PEARL) {
+         mapMatrixID = 23;
+@@ -41,104 +79,87 @@
+ 
+ u32 MapHeader_GetMsgArchiveID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].msgArchiveID;
++    return MapHeader_Lookup(mapHeaderID)->msgArchiveID;
+ }
+ 
+ u32 MapHeader_GetScriptsArchiveID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].scriptsArchiveID;
++    return MapHeader_Lookup(mapHeaderID)->scriptsArchiveID;
+ }
+ 
+ u32 MapHeader_GetInitScriptsArchiveID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].initScriptsArchiveID;
++    return MapHeader_Lookup(mapHeaderID)->initScriptsArchiveID;
+ }
+ 
+ u16 MapHeader_GetDayMusicID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].dayMusicID;
++    return MapHeader_Lookup(mapHeaderID)->dayMusicID;
+ }
+ 
+ u16 MapHeader_GetNightMusicID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].nightMusicID;
++    return MapHeader_Lookup(mapHeaderID)->nightMusicID;
+ }
+ 
+ BOOL MapHeader_HasWildEncounters(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].wildEncountersArchiveID != 65535;
++    return MapHeader_Lookup(mapHeaderID)->wildEncountersArchiveID != 65535;
+ }
+ 
+ u32 MapHeader_GetWildEncountersArchiveID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].wildEncountersArchiveID;
++    return MapHeader_Lookup(mapHeaderID)->wildEncountersArchiveID;
+ }
+ 
+ u32 MapHeader_GetEventsArchiveID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].eventsArchiveID;
++    return MapHeader_Lookup(mapHeaderID)->eventsArchiveID;
+ }
+ 
+ u32 MapHeader_GetMapLabelTextID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].mapLabelTextID;
++    return MapHeader_Lookup(mapHeaderID)->mapLabelTextID;
+ }
+ 
+ u8 MapHeader_GetMapLabelWindowID(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].mapLabelWindowID;
++    return MapHeader_Lookup(mapHeaderID)->mapLabelWindowID;
+ }
+ 
+ u32 MapHeader_GetWeatherType(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].weather;
++    return MapHeader_Lookup(mapHeaderID)->weather;
+ }
+ 
+ u32 MapHeader_GetCameraType(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].cameraType;
++    return MapHeader_Lookup(mapHeaderID)->cameraType;
+ }
+ 
+ enum BattleBackground MapHeader_GetBattleBG(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].battleBG;
++    return MapHeader_Lookup(mapHeaderID)->battleBG;
+ }
+ 
+ BOOL MapHeader_IsEscapeRopeAllowed(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].isEscapeRopeAllowed;
++    return MapHeader_Lookup(mapHeaderID)->isEscapeRopeAllowed;
+ }
+ 
+ BOOL MapHeader_IsFlyAllowed(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].isFlyAllowed;
++    return MapHeader_Lookup(mapHeaderID)->isFlyAllowed;
+ }
+ 
+ BOOL MapHeader_IsBikeAllowed(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].isBikeAllowed;
++    return MapHeader_Lookup(mapHeaderID)->isBikeAllowed;
+ }
+ 
+ u32 MapHeader_GetMapType(enum MapHeaderID mapHeaderID)
+ {
+-    mapHeaderID = MapHeader_IDBoundsCheck(mapHeaderID);
+-    return sMapHeaders[mapHeaderID].mapType;
++    return MapHeader_Lookup(mapHeaderID)->mapType;
+ }
+ 
+ BOOL MapHeader_IsTeleportAllowed(enum MapHeaderID mapHeaderID)

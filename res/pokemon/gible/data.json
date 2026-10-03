@@ -1,0 +1,196 @@
+{
+    "base_stats": {
+        "hp": 58,
+        "attack": 70,
+        "defense": 45,
+        "speed": 42,
+        "special_attack": 40,
+        "special_defense": 45
+    },
+    "types": [ "TYPE_DRAGON", "TYPE_GROUND" ],
+    "catch_rate": 45,
+    "base_exp_reward": 67,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_HABAN_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 40,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_DRAGON" ],
+    "abilities": [ "ABILITY_SAND_VEIL", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 3, "MOVE_SAND_ATTACK" ],
+            [ 7, "MOVE_DRAGON_RAGE" ],
+            [ 13, "MOVE_SANDSTORM" ],
+            [ 15, "MOVE_TAKE_DOWN" ],
+            [ 19, "MOVE_SAND_TOMB" ],
+            [ 25, "MOVE_SLASH" ],
+            [ 27, "MOVE_DRAGON_CLAW" ],
+            [ 31, "MOVE_DIG" ],
+            [ 37, "MOVE_DRAGON_RUSH" ]
+        ],
+        "by_tm": [
+            "TM02",
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM32",
+            "TM35",
+            "TM37",
+            "TM38",
+            "TM39",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM59",
+            "TM65",
+            "TM71",
+            "TM76",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM06",
+            "HM08"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_IRON_HEAD",
+            "MOVE_SNORE",
+            "MOVE_OUTRAGE",
+            "MOVE_EARTH_POWER",
+            "MOVE_TWISTER",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_DRAGON_BREATH",
+            "MOVE_OUTRAGE",
+            "MOVE_TWISTER",
+            "MOVE_SCARY_FACE",
+            "MOVE_DOUBLE_EDGE",
+            "MOVE_THRASH",
+            "MOVE_METAL_CLAW",
+            "MOVE_SAND_TOMB",
+            "MOVE_BODY_SLAM",
+            "MOVE_IRON_HEAD"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            24,
+            "SPECIES_GABITE"
+        ]
+    ],
+    "offspring": "SPECIES_GIBLE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 28,
+        "weight_pounds": 45.2,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 333,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 333,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 18,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 18,
+        "en": {
+            "name": "GIBLE",
+            "category": "Land Shark Pokémon",
+            "entry_text": [
+                "It attacks using its huge mouth.\n",
+                "While its attacks are powerful, it\n",
+                "hurts itself out of clumsiness, too."
+            ]
+        },
+        "fr": {
+            "name": "GRIKNOT",
+            "category": "Pokémon Terrequin",
+            "entry_text": [
+                "Il niche dans les petits trous\n",
+                "horizontaux des murs des grottes.\n",
+                "Il bondit pour saisir sa proie."
+            ]
+        },
+        "de": {
+            "name": "KAUMALAT",
+            "category": "Landhai",
+            "entry_text": [
+                "Es nistet in kleinen Löchern in\n",
+                "Höhlenwänden. Es springt Beute, die\n",
+                "sich zu nah heranwagt, an."
+            ]
+        },
+        "it": {
+            "name": "GIBLE",
+            "category": "Pokémon Squaloterra",
+            "entry_text": [
+                "Nidifica in piccole cavità orizzontali\n",
+                "nelle pareti delle grotte. Si avven-\n",
+                "ta sulle prede che si avvicinano."
+            ]
+        },
+        "es": {
+            "name": "GIBLE",
+            "category": "Pokémon Terrascualo",
+            "entry_text": [
+                "Anida en pequeños agujeros en las\n",
+                "paredes de cuevas. Cuando una\n",
+                "presa pasa cerca, salta hacia ella."
+            ]
+        },
+        "jp": {
+            "name": "フカマル",
+            "category": "りくザメポケモン",
+            "entry_text": [
+                "どうくつの　ちいさな　よこあなを\n",
+                "ねぐらにする。えものが　ちかづくと\n",
+                "すばやく　とびだして　つかまえる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1030
+    }
+}

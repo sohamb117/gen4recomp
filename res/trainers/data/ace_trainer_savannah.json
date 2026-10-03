@@ -1,0 +1,80 @@
+{
+    "name": "Savannah",
+    "class": "TRAINER_CLASS_ACE_TRAINER_SNOW_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SNORUNT",
+            "form": 0,
+            "level": 39,
+            "item": null,
+            "moves": [
+                "MOVE_ICE_FANG",
+                "MOVE_CRUNCH",
+                "MOVE_HAIL",
+                "MOVE_PROTECT"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SNORUNT",
+            "form": 0,
+            "level": 40,
+            "item": null,
+            "moves": [
+                "MOVE_ICE_FANG",
+                "MOVE_CRUNCH",
+                "MOVE_HAIL",
+                "MOVE_PROTECT"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GLALIE",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": [
+                "MOVE_ICE_FANG",
+                "MOVE_CRUNCH",
+                "MOVE_HAIL",
+                "MOVE_PROTECT"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Is the Gym’s trick floor making you\n",
+                "a little hot under the collar?\r",
+                "If you can’t maintain your cool in\n",
+                "battle, you’ll freeze up.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "You were surprisingly cool...\n",
+                "At least I have my warm boots.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Your Pokémon look so hot in battle.\n",
+                "So hot, they’re cool! Hahah!"
+            ]
+        }
+    ]
+}

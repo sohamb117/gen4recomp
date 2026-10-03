@@ -1,0 +1,36 @@
+{
+    "name": "Cyndy",
+    "class": "TRAINER_CLASS_BEAUTY",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GLAMEOW",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Give this grown-up another chance to\n",
+                "demonstrate her technique.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That’s how you attack?\n",
+                "So harshly?\n"
+            ]
+        }
+    ]
+}

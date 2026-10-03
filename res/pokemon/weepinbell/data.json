@@ -1,0 +1,178 @@
+{
+    "base_stats": {
+        "hp": 65,
+        "attack": 90,
+        "defense": 50,
+        "speed": 55,
+        "special_attack": 85,
+        "special_defense": 45
+    },
+    "types": [ "TYPE_GRASS", "TYPE_POISON" ],
+    "catch_rate": 120,
+    "base_exp_reward": 151,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 2,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_GRASS", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_CHLOROPHYLL", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GREEN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_VINE_WHIP" ],
+            [ 1, "MOVE_GROWTH" ],
+            [ 1, "MOVE_WRAP" ],
+            [ 7, "MOVE_GROWTH" ],
+            [ 11, "MOVE_WRAP" ],
+            [ 13, "MOVE_SLEEP_POWDER" ],
+            [ 15, "MOVE_POISON_POWDER" ],
+            [ 17, "MOVE_STUN_SPORE" ],
+            [ 23, "MOVE_ACID" ],
+            [ 27, "MOVE_KNOCK_OFF" ],
+            [ 29, "MOVE_SWEET_SCENT" ],
+            [ 35, "MOVE_GASTRO_ACID" ],
+            [ 39, "MOVE_RAZOR_LEAF" ],
+            [ 41, "MOVE_SLAM" ],
+            [ 47, "MOVE_WRING_OUT" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM32",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM53",
+            "TM58",
+            "TM70",
+            "TM75",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM90",
+            "HM01"
+        ],
+        "by_tutor": [
+            "MOVE_GASTRO_ACID",
+            "MOVE_SNORE",
+            "MOVE_SYNTHESIS",
+            "MOVE_SEED_BOMB",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SUCKER_PUNCH"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_USE_ITEM",
+            "ITEM_LEAF_STONE",
+            "SPECIES_VICTREEBEL"
+        ]
+    ],
+    "offspring": "SPECIES_BELLSPROUT",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SLOW"
+    },
+    "pokedex_data": {
+        "height_inches": 39,
+        "weight_pounds": 14.1,
+        "body_shape": "SHAPE_HEAD_BASE",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 300,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 300,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 16,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 16,
+        "en": {
+            "name": "WEEPINBELL",
+            "category": "Flycatcher Pokémon",
+            "entry_text": [
+                "A Pokémon that appears to be a\n",
+                "plant. It captures unwary prey by\n",
+                "dousing them with a toxic powder."
+            ]
+        },
+        "fr": {
+            "name": "BOUSTIFLOR",
+            "category": "Pokémon Carnivore",
+            "entry_text": [
+                "Un Pokémon végétal. Il capture les\n",
+                "proies étourdies en les endormant\n",
+                "à l’aide d’une poudre toxique."
+            ]
+        },
+        "de": {
+            "name": "ULTRIGARIA",
+            "category": "Fliegentot",
+            "entry_text": [
+                "Ein Pokémon, das wie eine Pflanze\n",
+                "aussieht. Es fängt Beute, indem es\n",
+                "giftigen Puder darüber verteilt."
+            ]
+        },
+        "it": {
+            "name": "WEEPINBELL",
+            "category": "Pokémon Moschivoro",
+            "entry_text": [
+                "Questo Pokémon sembra una pianta.\n",
+                "Cattura le prede con una polvere\n",
+                "tossica."
+            ]
+        },
+        "es": {
+            "name": "WEEPINBELL",
+            "category": "Pokémon Matamoscas",
+            "entry_text": [
+                "Este Pokémon parece una planta.\n",
+                "Captura a sus presas usando polvo\n",
+                "tóxico cuando están desprevenidas."
+            ]
+        },
+        "jp": {
+            "name": "ウツドン",
+            "category": "ハエとりポケモン",
+            "entry_text": [
+                "しょくぶつに　そっくりな　ポケモン。\n",
+                "ゆだんして　ちかよってきた　えものに\n",
+                "どくのこなを　あびせて　つかまえる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1537
+    }
+}

@@ -1,0 +1,67 @@
+{
+    "name": "Destiny",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ELECTABUZZ",
+            "form": 0,
+            "level": 47,
+            "item": null,
+            "moves": [
+                "MOVE_THUNDERBOLT",
+                "MOVE_SHOCK_WAVE",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_IRON_TAIL"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_RAICHU",
+            "form": 0,
+            "level": 48,
+            "item": null,
+            "moves": [
+                "MOVE_THUNDERBOLT",
+                "MOVE_DIG",
+                "MOVE_THUNDER_WAVE",
+                "MOVE_LIGHT_SCREEN"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m not just looking for tough\n",
+                "Trainers to battle.\r",
+                "I’ve been battling here because\n",
+                "I want to feel the rush!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Your power is thrilling...\n",
+                "I’m thrilled down to my toes!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’m so glad that there are Pokémon!\r",
+                "There isn’t much else that gives me\n",
+                "the thrill that Pokémon do!\n"
+            ]
+        }
+    ]
+}

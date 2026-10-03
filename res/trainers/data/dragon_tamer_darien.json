@@ -1,0 +1,48 @@
+{
+    "name": "Darien",
+    "class": "TRAINER_CLASS_DRAGON_TAMER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_DRAGONITE",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": "My Pokémon and I seek only victory!\r"
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Arrrgh! My Pokémon...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I failed my Pokémon!\n",
+                "I wasn’t prepared enough to lead it!\r",
+                "I don’t ever want my precious Pokémon\n",
+                "to be humiliated again!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "You’ve beaten us once before, but we\n",
+                "won’t make the same mistake!\r"
+            ]
+        }
+    ]
+}

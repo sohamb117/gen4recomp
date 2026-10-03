@@ -1,0 +1,5 @@
+verdict HANG
+frames 8526
+quiet-vblanks 1200
+where the game
+guest-vblanks 6000

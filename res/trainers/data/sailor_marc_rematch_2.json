@@ -1,0 +1,56 @@
+{
+    "name": "Marc",
+    "class": "TRAINER_CLASS_SAILOR",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MANTINE",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LANTURN",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Oh, we’ll ride upon the sea,\n",
+                "in a boat, just you and me!\r",
+                "That’s the way of the Sailor!\n",
+                "Way of the Sailor. You sing, too!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Your Pokémon...\n",
+                "They’re looking good!\n"
+            ]
+        }
+    ]
+}

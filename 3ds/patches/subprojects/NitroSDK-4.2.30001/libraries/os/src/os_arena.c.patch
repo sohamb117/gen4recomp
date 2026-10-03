@@ -1,0 +1,56 @@
+--- a/os_arena.c
++++ b/os_arena.c
+@@ -12,9 +12,15 @@
+ 
+ #define OSi_GetArenaInfo()           (*(OSArenaInfo *)HW_ARENA_INFO_BUF)
+ 
+-extern void SDK_MAIN_ARENA_LO(void);
++/* This console cannot carry a relocation against a symbol whose value is not
++ * an address in the image, and the ROM link's values are exactly that. They
++ * come from the generated header instead, and the addresses among them are
++ * translated: a guest address is not a host address here. */
++#include <stdint.h>
++#include <3ds_absolutes.h>
++extern void *armrec_host_ptr(uint32_t guest);
+ 
+-#define OSi_MAIN_ARENA_LO_DEFAULT               ((u32)SDK_MAIN_ARENA_LO)
++#define OSi_MAIN_ARENA_LO_DEFAULT               ((u32)armrec_host_ptr(SDK_LCF_MAIN_ARENA_LO))
+ #define OSi_MAIN_ARENA_HI_DEFAULT               HW_MAIN_MEM_MAIN_END
+ 
+ #ifdef SDK_ARM7
+@@ -25,18 +31,14 @@
+ #endif
+ 
+ #ifdef SDK_ARM9
+-    extern void SDK_SECTION_ARENA_EX_START(void);
+-
+-    #define OSi_MAINEX_ARENA_LO_DEFAULT             ((u32)SDK_SECTION_ARENA_EX_START)
++    #define OSi_MAINEX_ARENA_LO_DEFAULT             ((u32)armrec_host_ptr(SDK_LCF_SECTION_ARENA_EX_START))
+     #define OSi_MAINEX_ARENA_HI_DEFAULT             HW_MAIN_MEM_DEBUGGER
+ #endif
+ 
+ #ifdef SDK_ARM9
+-    extern void SDK_SECTION_ARENA_DTCM_START(void);
+-    #define OSi_DTCM_ARENA_LO_DEFAULT               ((u32)SDK_SECTION_ARENA_DTCM_START)
++    #define OSi_DTCM_ARENA_LO_DEFAULT               ((u32)armrec_host_ptr(SDK_LCF_SECTION_ARENA_DTCM_START))
+ 
+-    extern void SDK_SECTION_ARENA_ITCM_START(void);
+-    #define OSi_ITCM_ARENA_LO_DEFAULT               ((u32)SDK_SECTION_ARENA_ITCM_START)
++    #define OSi_ITCM_ARENA_LO_DEFAULT               ((u32)armrec_host_ptr(SDK_LCF_SECTION_ARENA_ITCM_START))
+ #endif
+ 
+ #define OSi_WRAM_MAIN_ARENA_LO_DEFAULT          HW_WRAM
+@@ -54,11 +56,9 @@
+     #define OSi_WRAM_SUBPRIV_ARENA_HI_DEFAULT       HW_PRV_WRAM_END
+ #endif
+ 
+-extern void SDK_SYS_STACKSIZE(void);
+-#define OSi_SYS_STACKSIZE               ((int)SDK_SYS_STACKSIZE)
++#define OSi_SYS_STACKSIZE               ((int)SDK_LCF_SYS_STACKSIZE)
+ 
+-extern void SDK_IRQ_STACKSIZE(void);
+-#define OSi_IRQ_STACKSIZE               ((int)SDK_IRQ_STACKSIZE)
++#define OSi_IRQ_STACKSIZE               ((int)SDK_LCF_IRQ_STACKSIZE)
+ 
+ static BOOL OSi_Initialized = FALSE;
+ 

@@ -1,0 +1,38 @@
+{
+  "key": 17431,
+  "messages": [
+    {
+      "id": "JubilifeTV2F_Text_WhatAccessoriesWillGoWell",
+      "en_US": [
+        "I don’t know what to do.\r",
+        "What Accessories will go well with\n",
+        "my dress today?"
+      ]
+    },
+    {
+      "id": "JubilifeTV2F_Text_GiftForFutureStar",
+      "en_US": [
+        "The star of tomorrow is... You!\n",
+        "Your Pokémon has a glow about it!\r",
+        "So, a gift for our future star!\r"
+      ]
+    },
+    {
+      "id": "JubilifeTV2F_Text_IHopeYouCollectAccessories",
+      "en_US": [
+        "That’s a {STRVAR_1 31, 0, 0}!\r",
+        "I hope you get into collecting\n",
+        "Accessories for your Pokémon!"
+      ]
+    },
+    {
+      "id": "JubilifeTV2F_Text_FittingRoomAtTheBack",
+      "en_US": [
+        "The room at the back is our dreamy\n",
+        "fitting room.\r",
+        "Once you’re done in there, get our\n",
+        "dreamy Hiker to take a dreamy photo!"
+      ]
+    }
+  ]
+}

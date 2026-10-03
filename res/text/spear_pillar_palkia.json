@@ -1,0 +1,34 @@
+{
+  "key": 24610,
+  "messages": [
+    {
+      "id": "SpearPillarPalkia_Text_WillYouChallengePalkia",
+      "en_US": [
+        "On the other side of the rift...\n",
+        "In a fantastically bizarre place...\f",
+        "It’s PALKIA!\r",
+        "Will you challenge PALKIA?"
+      ]
+    },
+    {
+      "id": "SpearPillarPalkia_Text_PalkiaCry",
+      "en_US": "PALKIA: Gagyagyaah!\r"
+    },
+    {
+      "id": "SpearPillarPalkia_Text_SpaceEmanatesFromRift",
+      "en_US": [
+        "An overwhelming feeling of space\n",
+        "powerfully emanates from this rift...\r",
+        "Where does it lead to?"
+      ]
+    },
+    {
+      "id": "SpearPillarPalkia_Text_Dummy3",
+      "garbage": 11
+    },
+    {
+      "id": "SpearPillarPalkia_Text_Dummy4",
+      "garbage": 25
+    }
+  ]
+}

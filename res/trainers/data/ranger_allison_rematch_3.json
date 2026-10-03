@@ -1,0 +1,44 @@
+{
+    "name": "Allison",
+    "class": "TRAINER_CLASS_RANGER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_AZUMARILL",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LEAFEON",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "What do you think? The environment\n",
+                "is unharmed in this area.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "We have to get tougher than this..."
+        }
+    ]
+}

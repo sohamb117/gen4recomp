@@ -1,0 +1,59 @@
+{
+    "name": "Fabian",
+    "class": "TRAINER_CLASS_NINJA_BOY",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CROAGUNK",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_CROAGUNK",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I am one of the Ninja Trio!\n",
+                "Being discovered means I must battle!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "I concede defeat...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "My cover is blown, so what should\n",
+                "I do?\r",
+                "Maybe I’ll go catch some Contests in\n",
+                "Hearthome City. Maybe I’ll do that.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Do you remember me?\n",
+                "I am one of the Ninja Trio!\f",
+                "Being discovered means I must battle!\r"
+            ]
+        }
+    ]
+}

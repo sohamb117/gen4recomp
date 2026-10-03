@@ -1,0 +1,64 @@
+{
+    "name": "Clinton",
+    "class": "TRAINER_CLASS_DRAGON_TAMER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GIBLE",
+            "form": 0,
+            "level": 43,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SWABLU",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GABITE",
+            "form": 0,
+            "level": 47,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "This is a place where tough Trainers\n",
+                "naturally congregate.\r",
+                "It’s ideal for training!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That’s why I like it here; I get to\n",
+                "battle tough characters like you.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "When two roads diverge, you must\n",
+                "choose the path less traveled...\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1690 @@
+{
+  "key": 5120,
+  "messages": [
+    {
+      "id": "Restaurant_Text_PartakeInBattles",
+      "en_US": [
+        "At our restaurant, you can enjoy\n",
+        "more than just exquisite dining.\r",
+        "You may also partake in battles.\n",
+        "Bon appetit!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_WeAreNowClosed",
+      "en_US": [
+        "I am so sorry.\n",
+        "We are now closed.\f",
+        "Please do visit while we are open.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_IsmaelNeedMultiplePokemon",
+      "en_US": [
+        "Before we make our toast, I’d hoped\n",
+        "for a battle...\r",
+        "However, you seem to be short\n",
+        "a Pokémon for that."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_HarleyNeedMultiplePokemon",
+      "en_US": [
+        "If you want to have a battle with us,\n",
+        "you’ll need to bring more Pokémon."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_IsmaelIntro0",
+      "en_US": [
+        "With someone as beautiful as you for\n",
+        "my model, I am sure to paint\f",
+        "a masterpiece!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_IsmaelAskBattle0",
+      "en_US": [
+        "What is it?\n",
+        "Do you wish for a battle?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy6",
+      "garbage": 47
+    },
+    {
+      "id": "Restaurant_Text_IsmaelDefeated0",
+      "en_US": [
+        "Though we lost our battle...\n",
+        "A toast to your beauty, that no\f",
+        "painting could ever hope to capture!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_HarleyIntro0",
+      "en_US": [
+        "He said he’d treat me to a dinner\n",
+        "here if I agreed to model for him.\r",
+        "So, I came along, but I haven’t\n",
+        "made up my mind yet.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_HarleyAskBattle0",
+      "en_US": [
+        "When I can’t decide, I battle\n",
+        "to make the decision!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy10",
+      "garbage": 59
+    },
+    {
+      "id": "Restaurant_Text_HarleyDefeated0",
+      "en_US": [
+        "I’ve decided to model for him.\n",
+        "That’s given me an appetite!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_IsmaelIntro1",
+      "en_US": [
+        "There is no price too high for the\n",
+        "sake of my art...\r",
+        "That said, my oh my, these meals\n",
+        "look awfully pricey...\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_IsmaelAskBattle1",
+      "en_US": [
+        "What is it?\n",
+        "Are you feeling hungry, too?\r",
+        "Oh, I see, that’s not it!\n",
+        "You wanted a battle!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy14",
+      "garbage": 43
+    },
+    {
+      "id": "Restaurant_Text_IsmaelDefeated1",
+      "en_US": "My hors d’oeuvres have gone cold..."
+    },
+    {
+      "id": "Restaurant_Text_HarleyIntro1",
+      "en_US": [
+        "I have to slow down on eating these\n",
+        "delicious hors d’oeuvres.\r",
+        "I don’t want to be all bloated by\n",
+        "the time the main dish comes.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_HarleyAskBattle1",
+      "en_US": [
+        "I’d like a light battle to work up\n",
+        "my appetite.\r",
+        "Would you care to join us?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy18",
+      "garbage": 66
+    },
+    {
+      "id": "Restaurant_Text_HarleyDefeated1",
+      "en_US": [
+        "The hors d’oeuvres haven’t grown\n",
+        "cold...\r",
+        "These are supposed to be served\n",
+        "chilled!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_IsmaelIntro2",
+      "en_US": [
+        "The worth of a meal isn’t determined\n",
+        "merely by its flavor.\r",
+        "Presentation, that is, color and\n",
+        "placement, is vital.\r",
+        "In other words, a fine meal can be\n",
+        "likened to the finest work of art...\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_IsmaelAskBattle2",
+      "en_US": [
+        "And in Pokémon battles, I also hope\n",
+        "to see beauty.\r",
+        "You do agree with me, yes?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy22",
+      "garbage": 97
+    },
+    {
+      "id": "Restaurant_Text_IsmaelDefeated2",
+      "en_US": [
+        "The meals prepared here are not\n",
+        "merely tasty, they are also healthy.\r",
+        "Diners need not worry about ruining\n",
+        "their figures eating here."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_HarleyIntro2",
+      "en_US": [
+        "Today’s main dish is scrumptiously\n",
+        "delicious!\r",
+        "If I can keep eating this food,\n",
+        "I’ll model anytime I can!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_HarleyAskBattle2",
+      "en_US": [
+        "I feel guilty just eating all this\n",
+        "delicious food like this.\r",
+        "I’ll join in the battle, too!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy26",
+      "garbage": 62
+    },
+    {
+      "id": "Restaurant_Text_HarleyDefeated2",
+      "en_US": [
+        "The models of great paintings were\n",
+        "often rather plump.\r",
+        "That means I can keep eating without\n",
+        "obsessing over my figure!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RomanNeedMultiplePokemon",
+      "en_US": [
+        "If you want to challenge us, bring\n",
+        "some more Pokémon."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KylieNeedMultiplePokemon",
+      "en_US": [
+        "If you want to battle us, you have\n",
+        "to have at least two Pokémon!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RomanIntro0",
+      "en_US": [
+        "Actually, my father happens to be\n",
+        "the chef here.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RomanAskBattle0",
+      "en_US": [
+        "What is it? A battle?\n",
+        "Bahaha... You think you can beat me?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy32",
+      "garbage": 27
+    },
+    {
+      "id": "Restaurant_Text_RomanDefeated0",
+      "en_US": [
+        "We’ve lost, but let’s make a toast\n",
+        "to our future together anyway!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KylieIntro0",
+      "en_US": [
+        "Oh, my!\n",
+        "Your father is the chef here?\r",
+        "How wonderful!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KylieAskBattle0",
+      "en_US": [
+        "I haven’t told him, but my father owns\n",
+        "the hotel and restaurant...\r",
+        "Oh, but that’s beside the point.\n",
+        "Would you care for a battle?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy36",
+      "garbage": 43
+    },
+    {
+      "id": "Restaurant_Text_KylieDefeated0",
+      "en_US": [
+        "Let’s make a toast to the prosperity\n",
+        "of the restaurant!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RomanIntro1",
+      "en_US": [
+        "I have to hand it to my father--\n",
+        "these hors d’oeuvres are delicious!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RomanAskBattle1",
+      "en_US": [
+        "...Are you maybe asking me for\n",
+        "a battle?\r",
+        "Well, certainly!\n",
+        "I never back down from a challenge!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy40",
+      "garbage": 28
+    },
+    {
+      "id": "Restaurant_Text_RomanDefeated1",
+      "en_US": [
+        "Finally. Now we can go about enjoying\n",
+        "our meal without disruption."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KylieIntro1",
+      "en_US": [
+        "Yes! This meal is good enough to\n",
+        "serve at the hotel.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KylieAskBattle1",
+      "en_US": [
+        "Please don’t tell my date that my\n",
+        "father owns the restaurant.\r",
+        "I’ll have a battle with you if you\n",
+        "keep your mouth shut."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy44",
+      "garbage": 28
+    },
+    {
+      "id": "Restaurant_Text_KylieDefeated1",
+      "en_US": [
+        "My date did his best, but you were\n",
+        "better than the both of us."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RomanIntro2",
+      "en_US": [
+        "Fufufu, my date’s really enjoying\n",
+        "my dad’s cooking.\r",
+        "She has a dreamy expression after\n",
+        "every bite!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RomanAskBattle2",
+      "en_US": [
+        "I’m feeling great!\n",
+        "Sure, I’ll have a battle with you.\r",
+        "That’s why you approached us, right?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy48",
+      "garbage": 33
+    },
+    {
+      "id": "Restaurant_Text_RomanDefeated2",
+      "en_US": [
+        "My prowess as a Trainer isn’t up to\n",
+        "snuff...\r",
+        "It’s not like my father’s scrumptious\n",
+        "cooking..."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KylieIntro2",
+      "en_US": [
+        "This succulent flavor!\n",
+        "It reminds me of a world trip I took.\r",
+        "My father and I traveled everywhere\n",
+        "dining at only the best restaurants.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KylieAskBattle2",
+      "en_US": [
+        "Eating this fabulous meal has really\n",
+        "lifted my spirits.\r",
+        "Join us for a battle?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy52",
+      "garbage": 56
+    },
+    {
+      "id": "Restaurant_Text_KylieDefeated2",
+      "en_US": [
+        "Your father’s cooking has a very\n",
+        "magical quality to it.\r",
+        "It seems to perk people up with\n",
+        "energy."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_LeonardoNeedMultiplePokemon",
+      "en_US": [
+        "If your intention is to test your\n",
+        "skill on us, I daresay you ought to\f",
+        "bring at least another Pokémon."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RebeccaNeedMultiplePokemon",
+      "en_US": [
+        "Oh, you’re offering to do battle\n",
+        "with us? How nice of you.\r",
+        "Unfortunately, you simply cannot\n",
+        "battle us both with just one Pokémon."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_LeonardoIntro0",
+      "en_US": [
+        "Let me propose a toast to many\n",
+        "more happy years together.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_LeonardoAskBattle0",
+      "en_US": [
+        "Since I took my retirement, I’ve been\n",
+        "traveling with my wife.\r",
+        "We both enjoy searching for delicious\n",
+        "dining experiences.\r",
+        "You seem to enjoy battling with\n",
+        "Pokémon. Am I right?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy58",
+      "garbage": 31
+    },
+    {
+      "id": "Restaurant_Text_LeonardoDefeated0",
+      "en_US": [
+        "Well, so much for that. Let’s try to\n",
+        "enjoy the rest of our meal."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RebeccaIntro0",
+      "en_US": [
+        "To our health, welfare, and to fine\n",
+        "dining! Cheers!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RebeccaAskBattle0",
+      "en_US": [
+        "A toast before a meal helps stimulate\n",
+        "the appetite, I find.\r",
+        "But that’s neither here nor there.\n",
+        "You wanted a battle, surely?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy62",
+      "garbage": 24
+    },
+    {
+      "id": "Restaurant_Text_RebeccaDefeated0",
+      "en_US": [
+        "Gourmet dining in restaurants and\n",
+        "exhilarating Pokémon battles...\r",
+        "There is so much contentment in my\n",
+        "life!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_LeonardoIntro1",
+      "en_US": [
+        "Hmm!\n",
+        "Now, this is special!\r",
+        "It appears as if it were only grazed\n",
+        "with fire, but in reality, much\f",
+        "care has gone into its preparation!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_LeonardoAskBattle1",
+      "en_US": [
+        "When you get to be an accomplished\n",
+        "gourmet like myself, one can tell at\f",
+        "a glance if a dish is delicious or not.\r",
+        "You would battle against such\n",
+        "a discerning gourmet?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy66",
+      "garbage": 52
+    },
+    {
+      "id": "Restaurant_Text_LeonardoDefeated1",
+      "en_US": [
+        "Well, so much for that.\r",
+        "We’ll keep a stiff upper lip and look\n",
+        "forward to enjoying the main course."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RebeccaIntro1",
+      "en_US": [
+        "These hors d’oeuvres are simply\n",
+        "divine!\r",
+        "They tell me that I can expect the\n",
+        "main course to be fantastic!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RebeccaAskBattle1",
+      "en_US": [
+        "I thought the main course arrived\n",
+        "already...\r",
+        "You’re a Trainer seeking battle?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy70",
+      "garbage": 48
+    },
+    {
+      "id": "Restaurant_Text_RebeccaDefeated1",
+      "en_US": [
+        "The hors d’oeuvres were most\n",
+        "excellent!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_LeonardoIntro2",
+      "en_US": [
+        "Hmm!\n",
+        "The chef flambeed this to perfection!\r",
+        "The rich aromas and flavors fill my\n",
+        "mouth with joy!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_LeonardoAskBattle2",
+      "en_US": [
+        "You’re throwing down a challenge\n",
+        "in the middle of our meal?\r",
+        "I would say you’re a very dedicated\n",
+        "Trainer, especially for one so young!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy74",
+      "garbage": 54
+    },
+    {
+      "id": "Restaurant_Text_LeonardoDefeated2",
+      "en_US": [
+        "Ah... I’m very satisfied with our\n",
+        "meal and our battle."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RebeccaIntro2",
+      "en_US": [
+        "...!\n",
+        "This sauce!\r",
+        "It’s a spicy sauce in Hoenn style\n",
+        "made from grated Cheri Berries!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_RebeccaAskBattle2",
+      "en_US": [
+        "Would you like to sample a bite?\r",
+        "...\n",
+        "Oh, right. Pokémon?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy78",
+      "garbage": 46
+    },
+    {
+      "id": "Restaurant_Text_RebeccaDefeated2",
+      "en_US": [
+        "Battling is fine, of course.\r",
+        "But for me, I would rather be out\n",
+        "enjoying good meals."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EugeneNeedMultiplePokemon",
+      "en_US": [
+        "If you want to battle us, you\n",
+        "have to have two Pokémon."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_AlisonNeedMultiplePokemon",
+      "en_US": [
+        "Don’t you have two Pokémon?\n",
+        "We’ll have to battle another time!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EugeneIntro0",
+      "en_US": [
+        "Alison, um, I, er...\n",
+        "Thank you for coming today...\r",
+        "Should we make a toast?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EugeneAskBattle0",
+      "en_US": [
+        "She’s the girl from the Pokémon-goods\n",
+        "shop I go to all the time.\r",
+        "We’re incredibly happy together.\n",
+        "Would you like to battle us?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy84",
+      "garbage": 51
+    },
+    {
+      "id": "Restaurant_Text_EugeneDefeated0",
+      "en_US": [
+        "Oh, no, I’m sorry we lost.\n",
+        "Alison, you’re not upset?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_AlisonIntro0",
+      "en_US": [
+        "Fufu... Eugene, you act so different\n",
+        "from the way you do at the shop.\r",
+        "You’re surprisingly shy.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_AlisonAskBattle0",
+      "en_US": [
+        "I work at a Pokémon-goods shop\n",
+        "because I love Pokémon.\r",
+        "The job lets me be with Pokémon\n",
+        "all day long.\r",
+        "It naturally made me pretty decent\n",
+        "at battling. Want to try me?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy88",
+      "garbage": 45
+    },
+    {
+      "id": "Restaurant_Text_AlisonDefeated0",
+      "en_US": [
+        "I don’t worry much about winning\n",
+        "or losing.\r",
+        "I keep my Pokémon with me because\n",
+        "I love them!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EugeneIntro1",
+      "en_US": [
+        "If my Pokémon buddies hear I went\n",
+        "on a date with you, Alison...\r",
+        "They’re probably going to hate me\n",
+        "for it...\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EugeneAskBattle1",
+      "en_US": "Are you Alison’s fan, too?"
+    },
+    {
+      "id": "Restaurant_Text_Dummy92",
+      "garbage": 45
+    },
+    {
+      "id": "Restaurant_Text_EugeneDefeated1",
+      "en_US": [
+        "Alison, seeing your smiling face...\r",
+        "I can’t tell if these appetizers\n",
+        "are delicious or not!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_AlisonIntro1",
+      "en_US": [
+        "Sorry? What? Date?\r",
+        "Um... Eugene...\n",
+        "You are a valued customer and all...\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_AlisonAskBattle1",
+      "en_US": [
+        "...Even though I said that, I admit\n",
+        "the invitation was flattering.\r",
+        "So I accepted his invitation.\r",
+        "I’ll let my Pokémon decide for my fickle\n",
+        "heart. Let’s battle?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy96",
+      "garbage": 44
+    },
+    {
+      "id": "Restaurant_Text_AlisonDefeated1",
+      "en_US": [
+        "You know, it is true what they say.\n",
+        "There is no evil among Pokémon fans!\r",
+        "That goes for you and Eugene!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EugeneIntro2",
+      "en_US": [
+        "Looks like our main course is here.\n",
+        "Please, enjoy yourself.\r",
+        "I’ve got the bill covered today!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EugeneAskBattle2",
+      "en_US": [
+        "I’ll defeat you and collect the\n",
+        "prize money!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy100",
+      "garbage": 57
+    },
+    {
+      "id": "Restaurant_Text_EugeneDefeated2",
+      "en_US": [
+        "My wallet’s empty after paying the\n",
+        "prize money...\r",
+        "Oh, no, it’s OK! No need to worry!\n",
+        "I still have my secret stash of cash!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_AlisonIntro2",
+      "en_US": [
+        "Eugene, I think you’re a little\n",
+        "awkward, but you’re very earnest.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_AlisonAskBattle2",
+      "en_US": [
+        "If I team up with my date, it could\n",
+        "be an interesting combination.\r",
+        "I think we could battle in an intriguing\n",
+        "manner. Do you?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy104",
+      "garbage": 33
+    },
+    {
+      "id": "Restaurant_Text_AlisonDefeated2",
+      "en_US": [
+        "The meal was delicious, and our battle\n",
+        "was so much fun.\r",
+        "I really insist that we split the bill."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EstebanNeedMultiplePokemon",
+      "en_US": [
+        "If you have two Pokémon, I’ll take\n",
+        "you on with my mom."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_MeredithNeedMultiplePokemon",
+      "en_US": [
+        "I’m willing to have a battle with\n",
+        "my son, my pride and joy.\r",
+        "But you must bring more Pokémon\n",
+        "than that."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EstebanIntro0",
+      "en_US": [
+        "What should I have today?\n",
+        "Juice, ice cream, cake, and, and...\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EstebanAskBattle0",
+      "en_US": [
+        "Oh, hi, Trainer!\r",
+        "Want to battle Pokémon with us\n",
+        "before we have a yummy meal?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy110",
+      "garbage": 41
+    },
+    {
+      "id": "Restaurant_Text_EstebanDefeated0",
+      "en_US": [
+        "I don’t get it. Grown-ups always have\n",
+        "a toast before eating.\r",
+        "What’s that for?\n",
+        "And I don’t see any bread?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_MeredithIntro0",
+      "en_US": [
+        "My dear, Mommy is so proud of you\n",
+        "for doing so well on your test.\r",
+        "You may order anything you like.\n",
+        "It’s your reward, dearest!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_MeredithAskBattle0",
+      "en_US": [
+        "Did you know? My boy is not only a\n",
+        "genius at school, but he’s also\f",
+        "a Pokémon prodigy!\r",
+        "Would you like to challenge us and\n",
+        "see?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy114",
+      "garbage": 47
+    },
+    {
+      "id": "Restaurant_Text_MeredithDefeated0",
+      "en_US": [
+        "I wish to propose a toast.\r",
+        "May my darling Esteban get another\n",
+        "100% on a test!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EstebanIntro1",
+      "en_US": [
+        "Wow, they bring out things one dish\n",
+        "at a time!\r",
+        "It’s not like how it is at home!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EstebanAskBattle1",
+      "en_US": [
+        "I do my homework while eating.\n",
+        "I can battle anytime!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy118",
+      "garbage": 47
+    },
+    {
+      "id": "Restaurant_Text_EstebanDefeated1",
+      "en_US": [
+        "We’re going to eat this delicious\n",
+        "stuff now. Bye-bye!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_MeredithIntro1",
+      "en_US": [
+        "This restaurant is the talk of the\n",
+        "town for the delicious food.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_MeredithAskBattle1",
+      "en_US": [
+        "I beg your pardon?\n",
+        "You want a battle now?\r",
+        "Well, that’s all right.\n",
+        "It’s not as if I dislike it."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy122",
+      "garbage": 33
+    },
+    {
+      "id": "Restaurant_Text_MeredithDefeated1",
+      "en_US": [
+        "Thank you for letting my dear son\n",
+        "experience an invaluable lesson."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EstebanIntro2",
+      "en_US": [
+        "Do mothers and fathers go off to\n",
+        "eat like this?\r",
+        "I mean without taking their kids\n",
+        "along.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EstebanAskBattle2",
+      "en_US": [
+        "But that’s OK.\r",
+        "It’s way more fun for me to battle\n",
+        "than go eat fancy dinners!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy126",
+      "garbage": 50
+    },
+    {
+      "id": "Restaurant_Text_EstebanDefeated2",
+      "en_US": "Mom, you gotta make me this at home!"
+    },
+    {
+      "id": "Restaurant_Text_MeredithIntro2",
+      "en_US": [
+        "This is a special occasion, Esteban.\r",
+        "This is to celebrate your great\n",
+        "grades!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_MeredithAskBattle2",
+      "en_US": [
+        "Oh? A battle, you say?\n",
+        "Well, certainly. Why not?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy130",
+      "garbage": 47
+    },
+    {
+      "id": "Restaurant_Text_MeredithDefeated2",
+      "en_US": "Is the dessert coming soon?"
+    },
+    {
+      "id": "Restaurant_Text_EmanuelNeedMultiplePokemon",
+      "en_US": [
+        "My daughter and I always battle\n",
+        "together, none of that one-on-one."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_BlytheNeedMultiplePokemon",
+      "en_US": [
+        "I can go against you with Papa.\n",
+        "Please bring more Pokémon."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmanuelIntro0",
+      "en_US": [
+        "Here’s a toast for Mom.\n",
+        "May she always be healthy!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmanuelAskBattle0",
+      "en_US": [
+        "My wife’s in the hospital waiting for\n",
+        "the baby to arrive.\r",
+        "Since I can’t cook, I came here with\n",
+        "my daughter.\r",
+        "How would you like a battle with\n",
+        "us before we eat?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy136",
+      "garbage": 25
+    },
+    {
+      "id": "Restaurant_Text_EmanuelDefeated0",
+      "en_US": [
+        "The house will be a lot noisier when\n",
+        "the baby comes home with Mommy."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_BlytheIntro0",
+      "en_US": [
+        "I wonder what Mommy will bring home?\n",
+        "A baby boy? A baby girl?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_BlytheAskBattle0",
+      "en_US": [
+        "A boy will be a brother, and a girl\n",
+        "will be a sister.\r",
+        "I’m going to be the older sister,\n",
+        "so I should get better at Pokémon!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy140",
+      "garbage": 28
+    },
+    {
+      "id": "Restaurant_Text_BlytheDefeated0",
+      "en_US": [
+        "Little babies cry like Pokémon!\n",
+        "Piyaaaah!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmanuelIntro1",
+      "en_US": [
+        "Wow... Look at these appetizers.\n",
+        "This is just so extravagant.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmanuelAskBattle1",
+      "en_US": [
+        "I’m no cook, I’ll admit that freely.\r",
+        "But battling Pokémon... There’s\n",
+        "something I’m comfortable with."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy144",
+      "garbage": 28
+    },
+    {
+      "id": "Restaurant_Text_EmanuelDefeated1",
+      "en_US": [
+        "Let’s get over the sting of this loss\n",
+        "by enjoying this delicious meal!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_BlytheIntro1",
+      "en_US": [
+        "Wow!\n",
+        "This food looks really fancy!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_BlytheAskBattle1",
+      "en_US": [
+        "Papa is a rotten cook, so we can\n",
+        "go out and eat good food like this!\r",
+        "Did you come to this restaurant to\n",
+        "battle Pokémon?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy148",
+      "garbage": 15
+    },
+    {
+      "id": "Restaurant_Text_BlytheDefeated1",
+      "en_US": [
+        "I’ve never eaten anything like this\n",
+        "before."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmanuelIntro2",
+      "en_US": "Here’s the main dish!\r"
+    },
+    {
+      "id": "Restaurant_Text_EmanuelAskBattle2",
+      "en_US": [
+        "What is it?\n",
+        "Did you want to battle with us?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy152",
+      "garbage": 14
+    },
+    {
+      "id": "Restaurant_Text_EmanuelDefeated2",
+      "en_US": [
+        "Jocelyn, I hope the new baby will be\n",
+        "as kindhearted as you."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_BlytheIntro2",
+      "en_US": [
+        "I wish Mommy were here to eat with\n",
+        "us...\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_BlytheAskBattle2",
+      "en_US": [
+        "Mommy gave me my Pokémon.\n",
+        "Want to see how tough they are?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy156",
+      "garbage": 28
+    },
+    {
+      "id": "Restaurant_Text_BlytheDefeated2",
+      "en_US": [
+        "Next time, let’s come with everyone.\n",
+        "The baby, too!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_DarrylNeedMultiplePokemon",
+      "en_US": [
+        "Yeah? What’s up?\n",
+        "Did you want to be on TV, too?\r",
+        "Oh, right, sorry!\n",
+        "You wanted to battle!\r",
+        "You’ll be battling the two of us.\n",
+        "You need at least two Pokémon."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_ValerieNeedMultiplePokemon",
+      "en_US": [
+        "If you want an autograph, you’ll\n",
+        "have to wait till we finish filming.\r",
+        "Oh, and if you want to battle,\n",
+        "bring two Pokémon, OK?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_DarrylIntro0",
+      "en_US": [
+        "Let’s start with a shot of the\n",
+        "drinks as a camera test.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_DarrylAskBattle0",
+      "en_US": [
+        "Hunh? You’re inviting us to battle at\n",
+        "a time like this?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy162",
+      "garbage": 42
+    },
+    {
+      "id": "Restaurant_Text_DarrylDefeated0",
+      "en_US": [
+        "Oh, man...\n",
+        "Our drinks are lukewarm now."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_ValerieIntro0",
+      "en_US": [
+        "Today’s featured drink is freshly\n",
+        "squeezed juice made from ripened\f",
+        "Pecha Berries picked this morning!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_ValerieAskBattle0",
+      "en_US": [
+        "Pardon?\n",
+        "Pokémon?\r",
+        "OK, a quick one before we do any\n",
+        "filming for the show."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy166",
+      "garbage": 45
+    },
+    {
+      "id": "Restaurant_Text_ValerieDefeated0",
+      "en_US": [
+        "Do you think we should rehearse this\n",
+        "one more time?\r",
+        "Today’s featured drink is freshly\n",
+        "squeezed..."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_DarrylIntro1",
+      "en_US": [
+        "Hey, these appetizers sure do look\n",
+        "delicious.\r",
+        "Will someone bring me a mist spray\n",
+        "so they look even fresher?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_DarrylAskBattle1",
+      "en_US": [
+        "Thanks, that was quick!\r",
+        "...Wait, where’s the mist spray?\n",
+        "Oh, you want a battle?\r",
+        "Whatever, then.\n",
+        "I’m up for your challenge!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy170",
+      "garbage": 61
+    },
+    {
+      "id": "Restaurant_Text_DarrylDefeated1",
+      "en_US": [
+        "Photographing food isn’t easy.\n",
+        "It’s actually very technical."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_ValerieIntro1",
+      "en_US": [
+        "These look fabulous, too.\n",
+        "We need the camera to zoom in more!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_ValerieAskBattle1",
+      "en_US": [
+        "Please don’t talk to me while we’re\n",
+        "filming!\r",
+        "Oh, actually, hold on.\r",
+        "A Trainer barges in on our\n",
+        "fine-dining experience...\r",
+        "I like that!\n",
+        "It adds drama to our story!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy174",
+      "garbage": 31
+    },
+    {
+      "id": "Restaurant_Text_ValerieDefeated1",
+      "en_US": [
+        "Darling Darryl, are you ready?\r",
+        "When I take a bite, I want\n",
+        "a close-up of my lips, all right?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_DarrylIntro2",
+      "en_US": [
+        "Whoa...\n",
+        "So this is the main dish? Yowza!\r",
+        "Let’s get this filming done quick\n",
+        "so I can chow down, too!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_DarrylAskBattle2",
+      "en_US": [
+        "You’ve been sniffing around a lot...\n",
+        "Are you messing with our filming?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy178",
+      "garbage": 42
+    },
+    {
+      "id": "Restaurant_Text_DarrylDefeated2",
+      "en_US": [
+        "Oh, no... Everything’s gone cold while\n",
+        "we were battling..."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_ValerieIntro2",
+      "en_US": [
+        "Chomp!\r",
+        "Mmm... This is...\n",
+        "Light, and yet rich flavored...\f",
+        "It delectably melts away...\f",
+        "A hint of an aftertaste, yet crisp...\f",
+        "Neither too sweet nor too bitter...\f",
+        "My words can’t do this justice!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_ValerieAskBattle2",
+      "en_US": [
+        "It’s not easy trying to describe\n",
+        "food while you’re eating.\r",
+        "But I can battle anytime during\n",
+        "filming!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy182",
+      "garbage": 99
+    },
+    {
+      "id": "Restaurant_Text_ValerieDefeated2",
+      "en_US": [
+        "Do you know what the most important\n",
+        "thing is for gourmet reporting?\r",
+        "It’s a...thesaurus-like vocabulary!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KendrickNeedMultiplePokemon",
+      "en_US": [
+        "I’ll only say this once, so listen\n",
+        "closely. I’ll even say it slowly.\r",
+        "To battle against two Trainers, you\n",
+        "need two or more Pokémon.\r",
+        "Now if you were to bring more\n",
+        "Pokémon, I could consider a battle..."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_GabriellaNeedMultiplePokemon",
+      "en_US": [
+        "Oh, you’ll have to bring more Pokémon\n",
+        "than that to battle us!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KendrickIntro0",
+      "en_US": [
+        "And another brilliant day on the\n",
+        "markets! A toast to my Lady Luck!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KendrickAskBattle0",
+      "en_US": [
+        "Since I’ve been with her, I’ve been\n",
+        "riding a hot streak on the markets.\r",
+        "I’m surfing on a wave of good luck!\n",
+        "You’re sure you want to battle us?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy188",
+      "garbage": 28
+    },
+    {
+      "id": "Restaurant_Text_KendrickDefeated0",
+      "en_US": [
+        "This is just a minor setback.\n",
+        "I can easily make up for this!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_GabriellaIntro0",
+      "en_US": [
+        "Ooh! All your stocks went up again?\n",
+        "You haven’t guessed wrong yet!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_GabriellaAskBattle0",
+      "en_US": [
+        "My boyfriend’s a stock-market\n",
+        "wizard!\r",
+        "Did you know? Someone that lucky also\n",
+        "happens to make a tough Trainer.\r",
+        "Are you willing to try your luck\n",
+        "against that?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy192",
+      "garbage": 26
+    },
+    {
+      "id": "Restaurant_Text_GabriellaDefeated0",
+      "en_US": [
+        "It’s just one loss. We can make that\n",
+        "back with a big win next time!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KendrickIntro1",
+      "en_US": [
+        "There’s no need for technique.\r",
+        "You just have to read what’s in your\n",
+        "opponent’s heart.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KendrickAskBattle1",
+      "en_US": [
+        "When I say “heart,” I don’t mean\n",
+        "what that person’s thinking.\r",
+        "It’s about how they want to be\n",
+        "perceived.\r",
+        "Do you... Would you like me to think\n",
+        "of you as a tough Trainer?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy196",
+      "garbage": 31
+    },
+    {
+      "id": "Restaurant_Text_KendrickDefeated1",
+      "en_US": [
+        "I had a bad feeling about this\n",
+        "Trainer..."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_GabriellaIntro1",
+      "en_US": [
+        "No, really? Ooeeeh! That is so neat!\n",
+        "How can you tell these things?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_GabriellaAskBattle1",
+      "en_US": [
+        "My boyfriend could tell that deep\n",
+        "down, I’m actually a frightened and\f",
+        "lonely child!\r",
+        "I don’t think I could ever lose with\n",
+        "him. Want to try?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy200",
+      "garbage": 28
+    },
+    {
+      "id": "Restaurant_Text_GabriellaDefeated1",
+      "en_US": [
+        "It’s amazing that you predicted you\n",
+        "would lose!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KendrickIntro2",
+      "en_US": [
+        "Let’s savor this extravagant meal\n",
+        "and think of what it represents.\r",
+        "We can use that as motivation to\n",
+        "keep winning at life!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KendrickAskBattle2",
+      "en_US": [
+        "Personally, I think there are two\n",
+        "kinds of people.\r",
+        "Those who face up to challenges\n",
+        "and those who duck and cover.\r",
+        "You’re the type who accepts\n",
+        "challenges, am I right?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy204",
+      "garbage": 40
+    },
+    {
+      "id": "Restaurant_Text_KendrickDefeated2",
+      "en_US": [
+        "If I had the power of premonition,\n",
+        "I’d be a terror on the markets.\r",
+        "But you know that’s not really\n",
+        "possible."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_GabriellaIntro2",
+      "en_US": [
+        "How can you guess right about\n",
+        "everything all the time?\r",
+        "Do you really have the power of\n",
+        "premonition?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_GabriellaAskBattle2",
+      "en_US": [
+        "I’m convinced that he has some\n",
+        "extrasensory power or something.\r",
+        "I’m teaming up with a guy like that.\n",
+        "Are you sure you want to do this?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy208",
+      "garbage": 41
+    },
+    {
+      "id": "Restaurant_Text_GabriellaDefeated2",
+      "en_US": [
+        "If it’s not premonition, did you...\n",
+        "Maybe come from the future?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmilioNeedMultiplePokemon",
+      "en_US": [
+        "One Pokémon is insufficient if you\n",
+        "want to battle against us."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KayleeNeedMultiplePokemon",
+      "en_US": [
+        "If you’d bring two or more Pokémon,\n",
+        "we could have a battle with you."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmilioIntro0",
+      "en_US": [
+        "Hmm... This beverage’s coloration\n",
+        "borders on the positively toxic...\r",
+        "However, my analysis indicates that it\n",
+        "is composed of natural ingredients.\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmilioAskBattle0",
+      "en_US": [
+        "What is it?\n",
+        "You are?\r",
+        "...\n",
+        "...Oh, yes, a Trainer."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy214",
+      "garbage": 63
+    },
+    {
+      "id": "Restaurant_Text_EmilioDefeated0",
+      "en_US": [
+        "The results of that battle are\n",
+        "insignificant. Let’s drink up."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KayleeIntro0",
+      "en_US": [
+        "Oh, dear!\n",
+        "I wish you wouldn’t!\r",
+        "We’re at a fancy restaurant, and you\n",
+        "want to analyze what’s served?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KayleeAskBattle0",
+      "en_US": "Oh, you’re a Trainer?"
+    },
+    {
+      "id": "Restaurant_Text_Dummy218",
+      "garbage": 56
+    },
+    {
+      "id": "Restaurant_Text_KayleeDefeated0",
+      "en_US": [
+        "Cheers, dear!\r",
+        "Please don’t start analyzing what\n",
+        "we just drank!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmilioIntro1",
+      "en_US": [
+        "Interesting...\n",
+        "These hors d’oeuvres are fascinating.\r",
+        "Plant fiber 20%, iron 5%, protein 35%.\n",
+        "Curious and curiouser...\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmilioAskBattle1",
+      "en_US": [
+        "What is it now? Do you want me to\n",
+        "analyze your skill level?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy222",
+      "garbage": 61
+    },
+    {
+      "id": "Restaurant_Text_EmilioDefeated1",
+      "en_US": [
+        "I feel compelled to analyze that\n",
+        "which is unknown to me.\r",
+        "By defining its composition, I feel\n",
+        "reassured in my knowledge."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KayleeIntro1",
+      "en_US": [
+        "Oh, dear, must you go on that way?\n",
+        "It takes the magic out of a meal.\r",
+        "I wish you wouldn’t think about your\n",
+        "research while we’re out eating!\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KayleeAskBattle1",
+      "en_US": [
+        "My husband never ceases to amaze\n",
+        "me with his dedication to research.\r",
+        "Would you care to have a battle\n",
+        "with us?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy226",
+      "garbage": 54
+    },
+    {
+      "id": "Restaurant_Text_KayleeDefeated1",
+      "en_US": [
+        "If you were to ask me, I would\n",
+        "rather not know about what I don’t\f",
+        "understand. It’s simpler that way."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmilioIntro2",
+      "en_US": [
+        "By my calculations, the main dish\n",
+        "should have arrived by now.\r",
+        "Perhaps the thermal setting is too\n",
+        "low to prepare the food efficiently?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_EmilioAskBattle2",
+      "en_US": [
+        "You there!\n",
+        "Let’s battle to consume time!"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy230",
+      "garbage": 60
+    },
+    {
+      "id": "Restaurant_Text_EmilioDefeated2",
+      "en_US": [
+        "They brought the main course while\n",
+        "we were battling...\r",
+        "The calorie content appears to be\n",
+        "alarmingly high."
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KayleeIntro2",
+      "en_US": [
+        "There isn’t any point getting\n",
+        "impatient over the food, dear.\r",
+        "Isn’t this the sort of situation\n",
+        "that you brought your Pokémon for?\r"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_KayleeAskBattle2",
+      "en_US": [
+        "Oh, what good timing!\r",
+        "Would you join us for a quick\n",
+        "battle?"
+      ]
+    },
+    {
+      "id": "Restaurant_Text_Dummy234",
+      "garbage": 55
+    },
+    {
+      "id": "Restaurant_Text_KayleeDefeated2",
+      "en_US": [
+        "Oh, dear, if we take in too many\n",
+        "calories, we can always work them off\f",
+        "by battling!"
+      ]
+    }
+  ]
+}

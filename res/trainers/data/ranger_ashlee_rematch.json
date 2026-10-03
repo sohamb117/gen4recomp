@@ -1,0 +1,53 @@
+{
+    "name": "Ashlee",
+    "class": "TRAINER_CLASS_RANGER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_LINOONE",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BUTTERFREE",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ARBOK",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "By battling tough opponents, both\n",
+                "people and Pokémon grow tough!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "My, you are tough.\n"
+        }
+    ]
+}

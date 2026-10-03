@@ -1,0 +1,67 @@
+{
+    "name": "Paul",
+    "class": "TRAINER_CLASS_SAILOR",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_TENTACOOL",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PELIPPER",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Traveling alone, are you? That’s\n",
+                "impressive! How about we battle?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "You’re good, pip-squeak!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Maybe I’ll go work out down at the\n",
+                "restaurant again.\r",
+                "That place gets different people in\n",
+                "every day, and they all like battles.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Hey, lonesome traveler! Let’s break\n",
+                "the monotony with another battle!\r"
+            ]
+        }
+    ]
+}

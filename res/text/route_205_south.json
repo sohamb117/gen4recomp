@@ -1,0 +1,99 @@
+{
+  "key": 3454,
+  "messages": [
+    {
+      "id": "Route205South_Text_HelpIWantToSeeMyPapa",
+      "en_US": [
+        "Help, help, Trainer!\n",
+        "Please, I want to see my papa.\r",
+        "My papa and I lived at the Valley\n",
+        "Windworks.\r",
+        "But then a whole bunch of people\n",
+        "dressed like spacemen came...\r",
+        "They kicked me out, and they’re making\n",
+        "my papa do something.\r",
+        "Please, Trainer!\n",
+        "I miss my papa!"
+      ]
+    },
+    {
+      "id": "Route205South_Text_IWantToSeeMyPapa",
+      "en_US": [
+        "Please, Trainer! I want to see my papa.\n",
+        "He’s at the Valley Windworks..."
+      ]
+    },
+    {
+      "id": "Route205South_Text_TeamGalacticConductingResearch",
+      "en_US": [
+        "We, Team Galactic, are conducting\n",
+        "research in the Eterna Forest!\r",
+        "This is as far as you will go!\r"
+      ]
+    },
+    {
+      "id": "Route205South_Text_ResearchInvolvesCatchingPokemon1",
+      "en_US": [
+        "Our research involves catching Pokémon\n",
+        "in the flowery meadows of Floaroma.\r",
+        "We are also covertly stealing the\n",
+        "energy of the Valley Windworks.\r",
+        "But that is of no concern to you!\r"
+      ]
+    },
+    {
+      "id": "Route205South_Text_ResearchInvolvesCatchingPokemon2",
+      "en_US": [
+        "Our research involves catching Pokémon\n",
+        "in the flowery meadows of Floaroma.\r",
+        "We are also covertly stealing the\n",
+        "energy of the Valley Windworks.\r",
+        "But that is of no concern to you!"
+      ]
+    },
+    {
+      "id": "Route205South_Text_ManyPoisonTypePokemon",
+      "en_US": [
+        "Many Poison-type Pokémon make the\n",
+        "Eterna Forest their home.\r",
+        "But I didn’t buy any Antidotes.\n",
+        "What should I do?\f",
+        "Do I press on, or do I go back?"
+      ]
+    },
+    {
+      "id": "Route205South_Text_SlatherHoneyOnATree",
+      "en_US": [
+        "If you slather sweet Honey on\n",
+        "a sweet-smelling tree...\r",
+        "Pokémon may be attracted by that\n",
+        "sweet scent."
+      ]
+    },
+    {
+      "id": "Route205South_Text_SignFloaromaTown",
+      "en_US": [
+        "Rt. 205\n",
+        "Floaroma Town"
+      ]
+    },
+    {
+      "id": "Route205South_Text_SignEternaForest",
+      "en_US": [
+        "Rt. 205\n",
+        "Eterna Forest"
+      ]
+    },
+    {
+      "id": "Route205South_Text_TrainerTipsItemsAutomaticallySorted",
+      "en_US": [
+        "Trainer Tips!\r",
+        "The items placed in your Bag are\n",
+        "automatically sorted to the\f",
+        "appropriate pockets.\r",
+        "It’s very convenient!\n",
+        "It’s a Trainer’s best friend!"
+      ]
+    }
+  ]
+}

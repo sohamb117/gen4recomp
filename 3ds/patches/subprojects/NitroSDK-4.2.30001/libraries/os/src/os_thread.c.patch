@@ -1,0 +1,36 @@
+--- a/os_thread.c
++++ b/os_thread.c
+@@ -2,11 +2,17 @@
+ #include <nitro/mi.h>
+ #include <nitro/utest.h>
+ 
+-extern void SDK_SYS_STACKSIZE(void);
+-extern void SDK_IRQ_STACKSIZE(void);
++/* This console cannot carry a relocation against a symbol whose value is not
++ * an address in the image, and the ROM link's values are exactly that. They
++ * come from the generated header instead, and the addresses among them are
++ * translated: a guest address is not a host address here. */
++#include <stdint.h>
++#include <3ds_absolutes.h>
++extern void *armrec_host_ptr(uint32_t guest);
+ 
+-#define OSi_SYS_STACKSIZE    ((s32)SDK_SYS_STACKSIZE)
+-#define OSi_IRQ_STACKSIZE    ((s32)SDK_IRQ_STACKSIZE)
++
++#define OSi_SYS_STACKSIZE    ((s32)SDK_LCF_SYS_STACKSIZE)
++#define OSi_IRQ_STACKSIZE    ((s32)SDK_LCF_IRQ_STACKSIZE)
+ 
+ #ifdef SDK_ARM9
+     #define  OSi_STACK_CHECKNUM_BOTTOM     0xfddb597dUL
+@@ -19,10 +25,9 @@
+ #endif
+ 
+ #ifdef SDK_ARM9
+-extern void SDK_SECTION_ARENA_DTCM_START(void);
+ void SDK_AUTOLOAD_DTCM_END(void);
+ 
+-    #define  OSi_LAUNCHER_STACK_LO_DEFAULT    SDK_SECTION_ARENA_DTCM_START
++    #define  OSi_LAUNCHER_STACK_LO_DEFAULT    ((u32)armrec_host_ptr(SDK_LCF_SECTION_ARENA_DTCM_START))
+     #define  OSi_LAUNCHER_STACK_HI_MAX        (HW_DTCM_SVC_STACK - OSi_IRQ_STACKSIZE)
+     #define  OSi_LAUNCHER_STACK_BOTTOM        (HW_DTCM_SVC_STACK - OSi_IRQ_STACKSIZE)
+ #else

@@ -1,0 +1,189 @@
+{
+    "base_stats": {
+        "hp": 85,
+        "attack": 50,
+        "defense": 95,
+        "speed": 80,
+        "special_attack": 120,
+        "special_defense": 115
+    },
+    "types": [ "TYPE_NORMAL", "TYPE_FLYING" ],
+    "catch_rate": 30,
+    "base_exp_reward": 220,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 2,
+        "special_defense": 1
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 10,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_FAST",
+    "egg_groups": [ "EGG_GROUP_FLYING", "EGG_GROUP_FAIRY" ],
+    "abilities": [ "ABILITY_HUSTLE", "ABILITY_SERENE_GRACE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_WHITE",
+    "flip_sprite": true,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_SKY_ATTACK" ],
+            [ 1, "MOVE_EXTREME_SPEED" ],
+            [ 1, "MOVE_AURA_SPHERE" ],
+            [ 1, "MOVE_AIR_SLASH" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM03",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM20",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM31",
+            "TM32",
+            "TM33",
+            "TM34",
+            "TM35",
+            "TM38",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM47",
+            "TM51",
+            "TM56",
+            "TM58",
+            "TM60",
+            "TM62",
+            "TM68",
+            "TM70",
+            "TM73",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM86",
+            "TM87",
+            "TM88",
+            "TM90",
+            "HM02",
+            "HM05",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ROLLOUT",
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_AIR_CUTTER",
+            "MOVE_ENDEAVOR",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_TWISTER",
+            "MOVE_LAST_RESORT",
+            "MOVE_TRICK",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_TOGEPI",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 59,
+        "weight_pounds": 83.8,
+        "body_shape": "SHAPE_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 223,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 223,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65534,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65534,
+        "en": {
+            "name": "TOGEKISS",
+            "category": "Jubilee Pokémon",
+            "entry_text": [
+                "It shares many blessings with\n",
+                "people who respect one another’s\n",
+                "rights and avoid needless strife."
+            ]
+        },
+        "fr": {
+            "name": "TOGEKISS",
+            "category": "Pokémon Célébration",
+            "entry_text": [
+                "Il n’apparaît jamais en temps\n",
+                "de conflit. Récemment, il se\n",
+                "fait plus rare."
+            ]
+        },
+        "de": {
+            "name": "TOGEKISS",
+            "category": "Jubilierer",
+            "entry_text": [
+                "Es zeigt sich niemals dort, wo\n",
+                "es Streitigkeiten gibt. In letzter\n",
+                "Zeit wurde es nur selten gesehen."
+            ]
+        },
+        "it": {
+            "name": "TOGEKISS",
+            "category": "Pokémon Festa",
+            "entry_text": [
+                "Non si presenta mai dove c’è un\n",
+                "conflitto. Di recente le sue\n",
+                "apparizioni sono diventate rare."
+            ]
+        },
+        "es": {
+            "name": "TOGEKISS",
+            "category": "Pokémon Festejo",
+            "entry_text": [
+                "Nunca aparece donde hay peleas.\n",
+                "Últimamente no se deja ver muy\n",
+                "a menudo."
+            ]
+        },
+        "jp": {
+            "name": "トゲキッス",
+            "category": "しゅくふくポケモン",
+            "entry_text": [
+                "もめごとの　おこる　ばしょには\n",
+                "けっして　あらわれない。ちかごろは\n",
+                "すがたを　みかけなくなった。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 4357
+    }
+}

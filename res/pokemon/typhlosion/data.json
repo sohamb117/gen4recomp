@@ -1,0 +1,188 @@
+{
+    "base_stats": {
+        "hp": 78,
+        "attack": 84,
+        "defense": 78,
+        "speed": 100,
+        "special_attack": 109,
+        "special_defense": 85
+    },
+    "types": [ "TYPE_FIRE", "TYPE_FIRE" ],
+    "catch_rate": 45,
+    "base_exp_reward": 209,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 3,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_BLAZE", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_GYRO_BALL" ],
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_LEER" ],
+            [ 1, "MOVE_SMOKE_SCREEN" ],
+            [ 1, "MOVE_EMBER" ],
+            [ 4, "MOVE_SMOKE_SCREEN" ],
+            [ 10, "MOVE_EMBER" ],
+            [ 13, "MOVE_QUICK_ATTACK" ],
+            [ 20, "MOVE_FLAME_WHEEL" ],
+            [ 24, "MOVE_DEFENSE_CURL" ],
+            [ 31, "MOVE_SWIFT" ],
+            [ 35, "MOVE_LAVA_PLUME" ],
+            [ 42, "MOVE_FLAMETHROWER" ],
+            [ 46, "MOVE_ROLLOUT" ],
+            [ 53, "MOVE_DOUBLE_EDGE" ],
+            [ 57, "MOVE_ERUPTION" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM21",
+            "TM22",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM31",
+            "TM32",
+            "TM35",
+            "TM38",
+            "TM39",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM50",
+            "TM52",
+            "TM56",
+            "TM58",
+            "TM61",
+            "TM65",
+            "TM68",
+            "TM74",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM06",
+            "HM08"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_ROLLOUT",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_SNORE",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_CYNDAQUIL",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 67,
+        "weight_pounds": 175.3,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 241,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 241,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 3,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 3,
+        "en": {
+            "name": "TYPHLOSION",
+            "category": "Volcano Pokémon",
+            "entry_text": [
+                "It attacks using blasts of fire.\n",
+                "It creates heat shimmers with\n",
+                "intense fire to hide itself."
+            ]
+        },
+        "fr": {
+            "name": "TYPHLOSION",
+            "category": "Pokémon Volcan",
+            "entry_text": [
+                "Il attaque en projetant des\n",
+                "flammes. Il se dissimule derrière\n",
+                "les vagues de chaleur qu’il produit."
+            ]
+        },
+        "de": {
+            "name": "TORNUPTO",
+            "category": "Vulkan",
+            "entry_text": [
+                "Es greift seine Gegner mit Feuer\n",
+                "an. Dabei entsteht ein Hitze-\n",
+                "flimmern, in dem es sich versteckt."
+            ]
+        },
+        "it": {
+            "name": "TYPHLOSION",
+            "category": "Pokémon Vulcano",
+            "entry_text": [
+                "Attacca usando fiamme esplosive.\n",
+                "Si cela in una scintillante nube di\n",
+                "calore creata dalle fiamme roventi."
+            ]
+        },
+        "es": {
+            "name": "TYPHLOSION",
+            "category": "Pokémon Volcán",
+            "entry_text": [
+                "Ataca con llamaradas. Con ellas\n",
+                "crea reflejos de calor para\n",
+                "ocultarse."
+            ]
+        },
+        "jp": {
+            "name": "バクフ－ン",
+            "category": "かざんポケモン",
+            "entry_text": [
+                "ほのおの　ばくふうで　こうげき。\n",
+                "しゃくねつの　ほのおで　かげろうを\n",
+                "つくりだし　すがたを　かくす。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 514
+    }
+}

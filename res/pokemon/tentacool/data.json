@@ -1,0 +1,188 @@
+{
+    "base_stats": {
+        "hp": 40,
+        "attack": 40,
+        "defense": 35,
+        "speed": 70,
+        "special_attack": 50,
+        "special_defense": 100
+    },
+    "types": [ "TYPE_WATER", "TYPE_POISON" ],
+    "catch_rate": 190,
+    "base_exp_reward": 105,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 1
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_POISON_BARB"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_WATER_3", "EGG_GROUP_WATER_3" ],
+    "abilities": [ "ABILITY_CLEAR_BODY", "ABILITY_LIQUID_OOZE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_POISON_STING" ],
+            [ 5, "MOVE_SUPERSONIC" ],
+            [ 8, "MOVE_CONSTRICT" ],
+            [ 12, "MOVE_ACID" ],
+            [ 15, "MOVE_TOXIC_SPIKES" ],
+            [ 19, "MOVE_BUBBLE_BEAM" ],
+            [ 22, "MOVE_WRAP" ],
+            [ 26, "MOVE_BARRIER" ],
+            [ 29, "MOVE_WATER_PULSE" ],
+            [ 33, "MOVE_POISON_JAB" ],
+            [ 36, "MOVE_SCREECH" ],
+            [ 40, "MOVE_HYDRO_PUMP" ],
+            [ 43, "MOVE_WRING_OUT" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM17",
+            "TM18",
+            "TM19",
+            "TM21",
+            "TM27",
+            "TM32",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM55",
+            "TM58",
+            "TM66",
+            "TM75",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM03",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_ICY_WIND",
+            "MOVE_SNORE",
+            "MOVE_KNOCK_OFF"
+        ],
+        "egg_moves": [
+            "MOVE_AURORA_BEAM",
+            "MOVE_MIRROR_COAT",
+            "MOVE_RAPID_SPIN",
+            "MOVE_HAZE",
+            "MOVE_SAFEGUARD",
+            "MOVE_CONFUSE_RAY",
+            "MOVE_KNOCK_OFF",
+            "MOVE_ACUPRESSURE"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            30,
+            "SPECIES_TENTACRUEL"
+        ]
+    ],
+    "offspring": "SPECIES_TENTACOOL",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 35,
+        "weight_pounds": 100.3,
+        "body_shape": "SHAPE_TENTACLES",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 303,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 303,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65533,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65533,
+        "en": {
+            "name": "TENTACOOL",
+            "category": "Jellyfish Pokémon",
+            "entry_text": [
+                "Because its body is almost entirely\n",
+                "composed of water, it shrivels up if\n",
+                "it is washed ashore."
+            ]
+        },
+        "fr": {
+            "name": "TENTACOOL",
+            "category": "Pokémon Mollusque",
+            "entry_text": [
+                "Son corps est principalement\n",
+                "composé d’eau. Ses yeux cristallins\n",
+                "projettent d’étranges rayons."
+            ]
+        },
+        "de": {
+            "name": "TENTACHA",
+            "category": "Qualle",
+            "entry_text": [
+                "Sein Körper besteht aus Wasser.\n",
+                "Aus seinen kristallartigen Augen\n",
+                "verschießt es eigenartige Strahlen."
+            ]
+        },
+        "it": {
+            "name": "TENTACOOL",
+            "category": "Pokémon Medusa",
+            "entry_text": [
+                "Il suo corpo è quasi interamente\n",
+                "composto d’acqua. Emette dei raggi\n",
+                "misteriosi dagli occhi cristallini."
+            ]
+        },
+        "es": {
+            "name": "TENTACOOL",
+            "category": "Pokémon Medusa",
+            "entry_text": [
+                "Su cuerpo se compone casi en\n",
+                "exclusiva de agua. Lanza extraños\n",
+                "rayos con sus ojos cristalinos."
+            ]
+        },
+        "jp": {
+            "name": "メノクラゲ",
+            "category": "くらげポケモン",
+            "entry_text": [
+                "からだの　ほとんどが　すいぶん。\n",
+                "すいしょうのような　めだまから\n",
+                "ふしぎな　ビ－ムを　はっしゃする。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 30,
+        "rarity": 50,
+        "unused": 1539
+    }
+}

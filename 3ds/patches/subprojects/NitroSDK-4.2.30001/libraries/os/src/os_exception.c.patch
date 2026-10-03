@@ -1,0 +1,17 @@
+--- a/os_exception.c
++++ b/os_exception.c
+@@ -34,7 +34,13 @@
+
+ #include <nitro/codereset.h>
+
+-#define HW_EXCP_VECTOR_BUF_FOR_DEBUGGER  0x027ffd9c
++/* A LITERAL, WHICH IS WHY THE SHADOW MISSED IT. Every shared-work constant
++ * this file could have named is redefined onto the slab by 3ds_hw_host.h, and
++ * mmap_pin.py fails the build if one of them drifts, but that check reaches
++ * the SDK's macros, not a hand-written address in a source file. This one word
++ * was read and written at its DS address on every boot, which this console has
++ * nothing at. Same row, same offset, moved the same way. */
++#define HW_EXCP_VECTOR_BUF_FOR_DEBUGGER  HWi_SHARED_HOST(0x027ffd9cu)
+
+ void OS_InitException (void)
+ {

@@ -1,0 +1,9 @@
+/* pc stand-in for <cstdlib>, included (as C) by src/overlay017/ov17_0224A0FC.c.
+ * mwcc's MSL tolerated <cstdlib> in C translation units; map it to the C
+ * header so gcc does too. */
+#ifndef PC_CSTDLIB_SHIM_
+#define PC_CSTDLIB_SHIM_
+
+#include <stdlib.h>
+
+#endif

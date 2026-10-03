@@ -1,0 +1,180 @@
+{
+    "base_stats": {
+        "hp": 40,
+        "attack": 40,
+        "defense": 50,
+        "speed": 30,
+        "special_attack": 30,
+        "special_defense": 30
+    },
+    "types": [ "TYPE_GRASS", "TYPE_GRASS" ],
+    "catch_rate": 255,
+    "base_exp_reward": 74,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_CHLOROPHYLL", "ABILITY_EARLY_BIRD" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_BIDE" ],
+            [ 3, "MOVE_HARDEN" ],
+            [ 7, "MOVE_GROWTH" ],
+            [ 13, "MOVE_NATURE_POWER" ],
+            [ 21, "MOVE_SYNTHESIS" ],
+            [ 31, "MOVE_SUNNY_DAY" ],
+            [ 43, "MOVE_EXPLOSION" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM28",
+            "TM30",
+            "TM32",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM53",
+            "TM58",
+            "TM64",
+            "TM70",
+            "TM75",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM90",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_ROLLOUT",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_SYNTHESIS",
+            "MOVE_SEED_BOMB"
+        ],
+        "egg_moves": [
+            "MOVE_LEECH_SEED",
+            "MOVE_AMNESIA",
+            "MOVE_QUICK_ATTACK",
+            "MOVE_RAZOR_WIND",
+            "MOVE_TAKE_DOWN",
+            "MOVE_FALSE_SWIPE",
+            "MOVE_WORRY_SEED",
+            "MOVE_NASTY_PLOT"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            14,
+            "SPECIES_NUZLEAF"
+        ]
+    ],
+    "offspring": "SPECIES_SEEDOT",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SILENT"
+    },
+    "pokedex_data": {
+        "height_inches": 20,
+        "weight_pounds": 8.8,
+        "body_shape": "SHAPE_HEAD_LEGS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 358,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 358,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 24,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 24,
+        "en": {
+            "name": "SEEDOT",
+            "category": "Acorn Pokémon",
+            "entry_text": [
+                "When it dangles from a tree\n",
+                "branch, it looks just like an acorn.\n",
+                "It enjoys scaring other Pokémon."
+            ]
+        },
+        "fr": {
+            "name": "GRAINIPIOT",
+            "category": "Pokémon Gland",
+            "entry_text": [
+                "Il ressemble à un gland pendu\n",
+                "à une branche. Il adore effrayer\n",
+                "les autres Pokémon."
+            ]
+        },
+        "de": {
+            "name": "SAMURZEL",
+            "category": "Eichelnuss",
+            "entry_text": [
+                "Es sieht aus wie eine Eichel, die am\n",
+                "Baum hängt. Es liebt es, andere\n",
+                "PKMN zu erschrecken."
+            ]
+        },
+        "it": {
+            "name": "SEEDOT",
+            "category": "Pokémon Ghianda",
+            "entry_text": [
+                "Quando si attacca a un ramo,\n",
+                "sembra una vera ghianda. Si diverte\n",
+                "a spaventare gli altri Pokémon."
+            ]
+        },
+        "es": {
+            "name": "SEEDOT",
+            "category": "Pokémon Bellota",
+            "entry_text": [
+                "Cuando cuelga de las ramas\n",
+                "parece una bellota. Le encanta\n",
+                "asustar a otros Pokémon."
+            ]
+        },
+        "jp": {
+            "name": "タネボ－",
+            "category": "どんぐりポケモン",
+            "entry_text": [
+                "えだに　ぶらさがっていると\n",
+                "きのみに　そっくり。ついばもうとした\n",
+                "ポケモンを　おどろかせて　よろこぶ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 30,
+        "rarity": 50,
+        "unused": 257
+    }
+}

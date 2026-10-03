@@ -1,0 +1,188 @@
+{
+    "base_stats": {
+        "hp": 45,
+        "attack": 20,
+        "defense": 50,
+        "speed": 50,
+        "special_attack": 60,
+        "special_defense": 120
+    },
+    "types": [ "TYPE_WATER", "TYPE_FLYING" ],
+    "catch_rate": 25,
+    "base_exp_reward": 108,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 1
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 25,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_UNDISCOVERED", "EGG_GROUP_UNDISCOVERED" ],
+    "abilities": [ "ABILITY_SWIFT_SWIM", "ABILITY_WATER_ABSORB" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_BUBBLE" ],
+            [ 4, "MOVE_SUPERSONIC" ],
+            [ 10, "MOVE_BUBBLE_BEAM" ],
+            [ 13, "MOVE_HEADBUTT" ],
+            [ 19, "MOVE_AGILITY" ],
+            [ 22, "MOVE_WING_ATTACK" ],
+            [ 28, "MOVE_WATER_PULSE" ],
+            [ 31, "MOVE_TAKE_DOWN" ],
+            [ 37, "MOVE_CONFUSE_RAY" ],
+            [ 40, "MOVE_BOUNCE" ],
+            [ 46, "MOVE_AQUA_RING" ],
+            [ 49, "MOVE_HYDRO_PUMP" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM26",
+            "TM27",
+            "TM32",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM03",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_SNORE",
+            "MOVE_AIR_CUTTER",
+            "MOVE_HELPING_HAND",
+            "MOVE_BOUNCE",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_TWISTER",
+            "MOVE_HYDRO_PUMP",
+            "MOVE_HAZE",
+            "MOVE_SLAM",
+            "MOVE_MUD_SPORT",
+            "MOVE_ROCK_SLIDE",
+            "MOVE_MIRROR_COAT",
+            "MOVE_WATER_SPORT",
+            "MOVE_SPLASH",
+            "MOVE_SIGNAL_BEAM"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL_SPECIES_IN_PARTY",
+            "SPECIES_REMORAID",
+            "SPECIES_MANTINE"
+        ]
+    ],
+    "offspring": "SPECIES_MANTYKE",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 39,
+        "weight_pounds": 143.3,
+        "body_shape": "SHAPE_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 320,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 320,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65529,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65529,
+        "en": {
+            "name": "MANTYKE",
+            "category": "Kite Pokémon",
+            "entry_text": [
+                "People organize tours to see this\n",
+                "Pokémon frolic and skim the tops\n",
+                "of waves with REMORAID."
+            ]
+        },
+        "fr": {
+            "name": "BABIMANTA",
+            "category": "Pokémon Cervolant",
+            "entry_text": [
+                "Un Pokémon amical qui analyse\n",
+                "les mouvements subtils de l’eau de\n",
+                "mer grâce à ses deux antennes."
+            ]
+        },
+        "de": {
+            "name": "MANTIRPS",
+            "category": "Flugrochen",
+            "entry_text": [
+                "Ein freundliches PKMN, das mit\n",
+                "seinen zwei Antennen die\n",
+                "Strömungen des Meeres erkennt."
+            ]
+        },
+        "it": {
+            "name": "MANTYKE",
+            "category": "Pokémon Aquilone",
+            "entry_text": [
+                "Pokémon amichevole che con le\n",
+                "antenne è in grado di avvertire\n",
+                "anche minime correnti marine."
+            ]
+        },
+        "es": {
+            "name": "MANTYKE",
+            "category": "Pokémon Milano",
+            "entry_text": [
+                "Un Pokémon amable que captura\n",
+                "los débiles flujos de agua marina\n",
+                "con sus dos antenas."
+            ]
+        },
+        "jp": {
+            "name": "タマンタ",
+            "category": "カイトポケモン",
+            "entry_text": [
+                "２ほんの　しょっかくで　かいすいの\n",
+                "びみょうな　うごきを　キャッチする。\n",
+                "ひとなつっこい　ポケモン。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 3593
+    }
+}

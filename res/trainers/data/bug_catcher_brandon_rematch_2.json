@@ -1,0 +1,54 @@
+{
+    "name": "Brandon",
+    "class": "TRAINER_CLASS_BUG_CATCHER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_DUSTOX",
+            "form": 0,
+            "level": 30,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_KRICKETUNE",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SCYTHER",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "So, listen. Tell me you’ve grown to\n",
+                "like bug Pokémon since we last met.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I’m not going to be able to explain\n",
+                "the charms of bug Pokémon this way!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "name": "Sergio",
+    "class": "TRAINER_CLASS_ACE_TRAINER_SNOW_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SNOVER",
+            "form": 0,
+            "level": 41,
+            "item": null,
+            "moves": [
+                "MOVE_ICE_SHARD",
+                "MOVE_SWAGGER",
+                "MOVE_ICY_WIND",
+                "MOVE_WOOD_HAMMER"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SNEASEL",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": [
+                "MOVE_ICY_WIND",
+                "MOVE_SLASH",
+                "MOVE_FAINT_ATTACK",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "...It’s t-too cold.\n",
+                "I can’t even feel my t-tongue.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "This result...\n",
+                "...It’s cold. Bitter cold.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "The higher up you slide from, the\n",
+                "more speed you’ll have to smash\f",
+                "those big snowballs.\n"
+            ]
+        }
+    ]
+}

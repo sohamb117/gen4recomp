@@ -1,0 +1,65 @@
+{
+    "name": "Tad",
+    "class": "TRAINER_CLASS_GUITARIST",
+    "availableSets": [
+        "shedinja_1",
+        "shinx_1",
+        "chingling_1",
+        "riolu_1",
+        "shuppet_1",
+        "duskull_1",
+        "pikachu_1",
+        "baltoy_1",
+        "bronzor_1",
+        "croagunk_1",
+        "machop_1",
+        "smoochum_1",
+        "carvanha_1",
+        "mime_jr_1",
+        "slowpoke_1",
+        "natu_1",
+        "magnemite_1",
+        "exeggcute_1",
+        "drowzee_1",
+        "stunky_1",
+        "voltorb_1",
+        "chinchou_1",
+        "houndour_1",
+        "spoink_1",
+        "nuzleaf_1",
+        "drifloon_1",
+        "elekid_1",
+        "flaaffy_1",
+        "sableye_1",
+        "castform_1",
+        "haunter_1",
+        "murkrow_1",
+        "wobbuffet_1",
+        "plusle_1",
+        "minun_1",
+        "pachirisu_1"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "This is going out to all the ladies.\n",
+                "Babes, I sing and battle for you!"
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "My ladies, my babes, I won for you.\n",
+                "Your love is my power, right?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I lost, but my love for the babes can’t\n",
+                "be beat, maybe.\r"
+            ]
+        }
+    ]
+}

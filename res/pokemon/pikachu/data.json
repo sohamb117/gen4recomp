@@ -1,0 +1,184 @@
+{
+    "base_stats": {
+        "hp": 35,
+        "attack": 55,
+        "defense": 30,
+        "speed": 90,
+        "special_attack": 50,
+        "special_defense": 40
+    },
+    "types": [ "TYPE_ELECTRIC", "TYPE_ELECTRIC" ],
+    "catch_rate": 190,
+    "base_exp_reward": 82,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 2,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_ORAN_BERRY",
+        "rare": "ITEM_LIGHT_BALL"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 10,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FAIRY" ],
+    "abilities": [ "ABILITY_STATIC", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_THUNDER_SHOCK" ],
+            [ 1, "MOVE_GROWL" ],
+            [ 5, "MOVE_TAIL_WHIP" ],
+            [ 10, "MOVE_THUNDER_WAVE" ],
+            [ 13, "MOVE_QUICK_ATTACK" ],
+            [ 18, "MOVE_DOUBLE_TEAM" ],
+            [ 21, "MOVE_SLAM" ],
+            [ 26, "MOVE_THUNDERBOLT" ],
+            [ 29, "MOVE_FEINT" ],
+            [ 34, "MOVE_AGILITY" ],
+            [ 37, "MOVE_DISCHARGE" ],
+            [ 42, "MOVE_LIGHT_SCREEN" ],
+            [ 45, "MOVE_THUNDER" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM06",
+            "TM10",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM27",
+            "TM28",
+            "TM31",
+            "TM32",
+            "TM34",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM56",
+            "TM57",
+            "TM58",
+            "TM70",
+            "TM73",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ROLLOUT",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_MAGNET_RISE",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_USE_ITEM",
+            "ITEM_THUNDERSTONE",
+            "SPECIES_RAICHU"
+        ]
+    ],
+    "offspring": "SPECIES_PICHU",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 16,
+        "weight_pounds": 13.2,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 524,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 524,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 27,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 27,
+        "en": {
+            "name": "PIKACHU",
+            "category": "Mouse Pokémon",
+            "entry_text": [
+                "It occasionally uses an electric\n",
+                "shock to recharge a fellow PIKACHU\n",
+                "that is in a weakened state."
+            ]
+        },
+        "fr": {
+            "name": "PIKACHU",
+            "category": "Pokémon Souris",
+            "entry_text": [
+                "Il vit en forêt avec ses pairs.\n",
+                "Il accumule l’électricité dans\n",
+                "les poches de ses joues."
+            ]
+        },
+        "de": {
+            "name": "PIKACHU",
+            "category": "Maus",
+            "entry_text": [
+                "Es lebt zusammen mit anderen\n",
+                "in Wäldern. In seinen Backen-\n",
+                "taschen speichert es Elektrizität."
+            ]
+        },
+        "it": {
+            "name": "PIKACHU",
+            "category": "Pokémon Topo",
+            "entry_text": [
+                "Vive nelle foreste insieme agli\n",
+                "altri. Immagazzina elettricità\n",
+                "nelle sacche sulle guance."
+            ]
+        },
+        "es": {
+            "name": "PIKACHU",
+            "category": "Pokémon Ratón",
+            "entry_text": [
+                "Vive en grupo en los bosques.\n",
+                "Almacena electricidad en las\n",
+                "bolsas de sus mejillas."
+            ]
+        },
+        "jp": {
+            "name": "ピカチュウ",
+            "category": "ねずみポケモン",
+            "entry_text": [
+                "もりの　なかで　なかまと　くらす。\n",
+                "ほっぺたの　りょうがわにある\n",
+                "でんきぶくろに　でんきを　ためる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 1799
+    }
+}

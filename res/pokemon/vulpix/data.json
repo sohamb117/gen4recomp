@@ -1,0 +1,192 @@
+{
+    "base_stats": {
+        "hp": 38,
+        "attack": 41,
+        "defense": 40,
+        "speed": 65,
+        "special_attack": 50,
+        "special_defense": 65
+    },
+    "types": [ "TYPE_FIRE", "TYPE_FIRE" ],
+    "catch_rate": 190,
+    "base_exp_reward": 63,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 1,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_RAWST_BERRY",
+        "rare": "ITEM_RAWST_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_75",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_FLASH_FIRE", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_EMBER" ],
+            [ 4, "MOVE_TAIL_WHIP" ],
+            [ 7, "MOVE_ROAR" ],
+            [ 11, "MOVE_QUICK_ATTACK" ],
+            [ 14, "MOVE_WILL_O_WISP" ],
+            [ 17, "MOVE_CONFUSE_RAY" ],
+            [ 21, "MOVE_IMPRISON" ],
+            [ 24, "MOVE_FLAMETHROWER" ],
+            [ 27, "MOVE_SAFEGUARD" ],
+            [ 31, "MOVE_PAYBACK" ],
+            [ 34, "MOVE_FIRE_SPIN" ],
+            [ 37, "MOVE_CAPTIVATE" ],
+            [ 41, "MOVE_GRUDGE" ],
+            [ 44, "MOVE_EXTRASENSORY" ],
+            [ 47, "MOVE_FIRE_BLAST" ]
+        ],
+        "by_tm": [
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM20",
+            "TM21",
+            "TM23",
+            "TM27",
+            "TM28",
+            "TM32",
+            "TM35",
+            "TM38",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM50",
+            "TM58",
+            "TM61",
+            "TM66",
+            "TM77",
+            "TM78",
+            "TM79",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90"
+        ],
+        "by_tutor": [
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_FAINT_ATTACK",
+            "MOVE_HYPNOSIS",
+            "MOVE_FLAIL",
+            "MOVE_SPITE",
+            "MOVE_DISABLE",
+            "MOVE_HOWL",
+            "MOVE_PSYCH_UP",
+            "MOVE_HEAT_WAVE",
+            "MOVE_FLARE_BLITZ",
+            "MOVE_EXTRASENSORY",
+            "MOVE_ENERGY_BALL"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_USE_ITEM",
+            "ITEM_FIRE_STONE",
+            "SPECIES_NINETALES"
+        ]
+    ],
+    "offspring": "SPECIES_VULPIX",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 21.8,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 320,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 320,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 17,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 17,
+        "en": {
+            "name": "VULPIX",
+            "category": "Fox Pokémon",
+            "entry_text": [
+                "It controls balls of fire. As it\n",
+                "grows, its six tails split from\n",
+                "their tips to make more tails."
+            ]
+        },
+        "fr": {
+            "name": "GOUPIX",
+            "category": "Pokémon Renard",
+            "entry_text": [
+                "Il envoie des boules de feu. Avec\n",
+                "l’âge, ses six queues en forment de\n",
+                "nouvelles. "
+            ]
+        },
+        "de": {
+            "name": "VULPIX",
+            "category": "Fuchs",
+            "entry_text": [
+                "Es beherrscht Feuerbälle. Während\n",
+                "es wächst, teilen sich seine sechs\n",
+                "Schweife, um weitere zu bilden."
+            ]
+        },
+        "it": {
+            "name": "VULPIX",
+            "category": "Pokémon Volpe",
+            "entry_text": [
+                "Controlla palle infuocate. Via via\n",
+                "che cresce, dalle sue sei code\n",
+                "se ne generano delle altre."
+            ]
+        },
+        "es": {
+            "name": "VULPIX",
+            "category": "Pokémon Zorro",
+            "entry_text": [
+                "Controla bolas de fuego. A medida\n",
+                "que crece, sus seis colas se\n",
+                "multiplican."
+            ]
+        },
+        "jp": {
+            "name": "ロコン",
+            "category": "きつねポケモン",
+            "entry_text": [
+                "ほのおの　たまを　あやつる。\n",
+                "せいちょうすると　６ほんの　しっぽは\n",
+                "さきが　わかれて　さらに　ふえる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 514
+    }
+}

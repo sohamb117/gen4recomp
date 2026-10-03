@@ -1,0 +1,54 @@
+{
+    "name": "Patrick",
+    "class": "TRAINER_CLASS_DRAGON_TAMER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SHELGON",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 17
+        },
+        {
+            "species": "SPECIES_GABITE",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_DRAGONAIR",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "You again?\r",
+                "You must really like that dragon\n",
+                "Pokémon I use.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Oh... My... Gosh...\n"
+        }
+    ]
+}

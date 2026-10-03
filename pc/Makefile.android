@@ -1,0 +1,263 @@
+# Android (armeabi-v7a) cross build for the pokeplatinum PC port.
+#
+#   make -f pc/Makefile.android -j$(nproc) status   # build/pc-android/libpokeplatinum.so
+#
+# pc/Makefile retargeted at the NDK, the way pc/Makefile.win retargets it at
+# i686-w64-mingw32 and pc/Makefile.arm at arm-linux-gnueabihf: one pipeline,
+# four toolchains. This file sets only what genuinely differs.
+#
+# armeabi-v7a, never arm64-v8a, for the reason pc/Makefile.arm gives about
+# armhf: eight-byte pointers move every guest struct offset and the save format
+# with them.
+#
+# What Android changes from the armhf build, which is otherwise the same
+# instruction set and the same four-byte world:
+#
+#   * a shared object, so -fPIC and no -no-pie. An app is a library the
+#     framework loads and places, and Android has refused non-PIE executables
+#     since API 21. The guest map is identity-mapped at 0x02000000 and a PIE's
+#     own image is placed elsewhere, so whether MAP_FIXED still gets those
+#     addresses is a question for a device. pc/handheld_probe.c answers it.
+#
+#   * -Wl,-Ttext-segment is dropped, not adapted. It exists in the ELF build to
+#     put the program's own text above the guest regions; a shared object does
+#     not choose where it lands.
+#
+#   * softfp. armeabi-v7a passes floating point in core registers where armhf
+#     passes it in VFP registers. It moves no integer offset and no guest
+#     struct, but it is a different ABI and objects cannot be mixed across it.
+#
+#   * time_t is already four bytes. Bionic never made the 64-bit transition on
+#     32-bit Android, so -D_TIME_BITS=32 does not exist here and asking for it
+#     is an error. _FILE_OFFSET_BITS=64 still applies, honoured from API 24.
+#
+#   * -funwind-tables for the same reason as the armhf build: the fault handler
+#     walks unwind tables and ARM emits them only when asked.
+#
+# API 26 is the highest of three floors and not a preference: 21 is where
+# non-PIE was refused, 24 is where _FILE_OFFSET_BITS=64 is honoured, and 26 is
+# where AAudio arrives.
+
+WROOT := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))/..)
+
+NDK       ?= $(HOME)/.local/opt/android-ndk-r27c
+NDK_HOST  ?= linux-x86_64
+NDK_BIN   ?= $(NDK)/toolchains/llvm/prebuilt/$(NDK_HOST)/bin
+ANDROID_API  ?= 26
+ANDROID_ARCH ?= armv7a-linux-androideabi
+
+ANDROID_CC ?= $(NDK_BIN)/$(ANDROID_ARCH)$(ANDROID_API)-clang
+CC      := $(ANDROID_CC)
+NM      := $(NDK_BIN)/llvm-nm
+OBJCOPY := $(NDK_BIN)/llvm-objcopy
+AR      := $(NDK_BIN)/llvm-ar
+
+ifeq ($(shell command -v $(ANDROID_CC) 2>/dev/null),)
+$(error no $(ANDROID_CC); unpack an NDK under $(NDK), or set NDK)
+endif
+
+BUILD  := $(WROOT)/build/pc-android
+TARGET  = $(BUILD)/libpokeplatinum.so
+
+# NOT -fvisibility=hidden, YET, and the reason is that it was not measured.
+# It should be the other half of the version script: -fPIC has to assume every
+# global may be interposed, so each access goes through the GOT, and hidden
+# visibility would let the compiler address them PC-relative instead, which
+# on a port that is one enormous block of global state ought to matter. Tried
+# once and the frame read 50.9 ms against 37.6, which is not a result: both
+# runs were over a boot, where this build's own worst frame is 200 ms, so the
+# noise swamps whatever the flag did. A dedicated benchmark measures it properly.
+ABI := -fno-short-enums -fsigned-char -fPIC -D_FILE_OFFSET_BITS=64 \
+       -march=armv7ve
+# -march=armv7ve is a hardware floor and a measured win, not a tuning flag.
+# The baseline armv7-a triple has no divide instruction, so every division
+# in the tree is a call to __aeabi_uidiv's software loop, and the 3D
+# rasterizer divides once per covered pixel (interp_set_x's perspective
+# factor), which at --hd3d 2 is hundreds of thousands of libcalls a frame.
+# v7ve makes UDIV/SDIV real instructions. Every device this port targets
+# is an ARMv8 core running AArch32 (a Cortex-A76/A55 pairing), where the
+# instructions are architecturally guaranteed, and division by zero
+# WRITES ZERO in hardware, which is the same DS semantic the
+# __wrap___aeabi_uidiv wrapper preserves for the remaining libcalls.
+
+# See pc/Makefile.arm: ARM emits no unwind tables unless asked, and the fault
+# handler's backtrace answers zero frames without them. Set BEFORE the include
+# because the three *_CFLAGS are simply-expanded from BASEFLAGS as that file is
+# read.
+# Clang makes four C89-ISMS hard errors where GCC makes them warnings, and
+# this tree is 1392 translation units of decompiled ARM whose whole premise is
+# that the source is the cartridge's. Measured on the first Android build: 92
+# of those units refused to compile, and every single failure was one of these
+# four, 203 implicit calls to __msl_assertion_failed (the Metrowerks
+# assertion, which this port defines in pc/src), about 120 implicit pointer
+# and integer conversions, and a handful of implicit ints and missing
+# prototypes. Not one was a real disagreement about types on this target.
+#
+# So they are demoted to what the other three toolchains already do with them.
+# pc/Makefile passes -w, so on gcc these are silent; this makes clang silent
+# in the same four places and nowhere else. It is NOT -w and NOT
+# -Wno-everything: a diagnostic clang has that gcc does not is exactly the
+# kind of thing worth reading, and one of them found a real bug in the
+# frontend tree on the same day.
+ANDROID_C89 := -Wno-implicit-function-declaration -Wno-int-conversion \
+               -Wno-implicit-int -Wno-incompatible-pointer-types
+
+# NOT -funique-internal-linkage-names, and the reason is worth keeping.
+#
+# The first Android build stopped in pc/gen_overlay_statics.py with "writable
+# name(s) live in more than one overlay": Task_Main.stateFuncs from five
+# Poketch applications, and sWinTemplates from three frontier ones. clang names
+# every function-local static the same way where gcc numbers them, so the
+# obvious answer looked like the flag that makes internal-linkage names unique.
+#
+# It works and it is the WRONG answer, because it also renames the internal
+# statics pc/stubs.list traps by name, MicWaitBusy and nine others came out
+# as _ZL11MicWaitBusyv.__uniq.<hash> and the weak stub no longer matched.
+#
+# The real cause is -fPIC, not clang. Those arrays are `static const` holding
+# function pointers, so a position-independent build needs relocations for them
+# and puts them in .data.rel.ro, where nm calls them `d`; gcc's -fno-pie build
+# leaves them in .rodata, where the generator never looked. They are read-only
+# once the loader is done and were never overlay statics at all. The generator
+# skips that section now, which costs the other three toolchains nothing;
+# a non-PIC build has no such section.
+
+EXTRA_BASEFLAGS := -funwind-tables $(ANDROID_C89)
+
+HW_OPT := -O3 -mfpu=neon
+
+# --wrap is the divide-by-zero answer and it is load-bearing, exactly as in
+# pc/Makefile.arm: clang emits the same four AEABI entry points and
+# compiler-rt's __aeabi_idiv0 does not answer a/0 == a the way the cartridge's
+# runtime did.
+# ---------------------------------------------- what this object EXPORTS
+#
+# Nothing, unless EXPORTS names it, and that is a correctness fix.
+#
+# This port is a decompiled console SDK, and the SDK has its own `time()`,
+# `rand()`, `strtol()` and a hundred more. On every other host those lose to
+# libc inside one static link. Android is not like that: a shared object's
+# symbols go into the process's global lookup scope, and ELF says the first
+# definition wins, so an exported `time` is the `time` bionic itself calls.
+#
+# Measured on such a device: with 18,344 symbols exported, the first thing that
+# happened, before main() and before the ROM was opened, was
+#
+#   pc_os_lite: assertion failed: nonport.c:1639 (time): OS_IsTickAvailable() == TRUE
+#
+# which is bionic's start-up calling the DS's time() and getting a console that
+# has not booted. The app hung on the same thing with no message at all,
+# because an app has no stderr.
+#
+# A version script fixes it at the root: everything is local, and the frontend
+# names the handful the platform must find. It also takes an 18,344-entry
+# dynamic symbol table down to a few.
+EXPORTS ?=
+VERSCRIPT := $(BUILD)/exports.map
+
+$(VERSCRIPT): $(firstword $(MAKEFILE_LIST))
+	@mkdir -p $(dir $@)
+	@{ echo '{'; \
+	   $(if $(EXPORTS),echo '  global:'; for s in $(EXPORTS); do echo "    $$s;"; done;) \
+	   echo '  local: *;'; echo '};'; } > $@
+	@echo "  EXPORT  $(words $(EXPORTS)) symbol(s) global, everything else local"
+
+LDFLAGS = $(ABI) $(SANITIZE) -shared -Wl,-soname,libpokeplatinum.so \
+          -Wl,--version-script=$(VERSCRIPT) \
+          -Wl,--wrap=__aeabi_uidiv -Wl,--wrap=__aeabi_idiv \
+          -Wl,--wrap=__aeabi_uidivmod -Wl,--wrap=__aeabi_idivmod
+# bionic folds libm, libpthread and libdl into libc; -lm is accepted and empty.
+# -llog is the only Android library the port itself wants, for a line that
+# reaches logcat when there is no terminal to print to.
+# -landroid is ASharedMemory_create, which tools/armrec/armrec_rt.c falls back
+# to when memfd_create does not answer, bionic has no shm_open to fall back
+# on the way every other host does.
+# EXTRA_LDLIBS is the hook a frontend links its own framework libraries
+# through, EGL and GLESv2 for an app with a surface. This file does not
+# name them: an engine that draws into a page does not need a window.
+EXTRA_LDLIBS ?=
+LDLIBS  = -lm -llog -landroid $(EXTRA_LDLIBS)
+
+# `override`, and it is not decoration. EXTRA_OBJS is the seam a frontend
+# passes its own archive through, and a variable set on make's command line
+# beats a plain += in the makefile, so a fused build that named its archive
+# silently dropped this object, linked, installed, and died at dlopen on
+# "cannot locate symbol __wrap___aeabi_uidiv". The wrapper is part of this
+# target's ABI, not an option a caller gets to replace.
+override EXTRA_OBJS += $(BUILD)/pc_div0_wrap.o
+
+include $(WROOT)/pc/Makefile
+
+# The version script is an input to the link, so say so: TARGET is the base
+# file's, and a prerequisite added here appends to that rule.
+$(TARGET): $(VERSCRIPT)
+
+$(BUILD)/pc_div0_wrap.o: $(WROOT)/pc/src/pc_div0_wrap.s
+	@mkdir -p $(dir $@)
+	$(CC) $(ABI) -c -o $@ $<
+
+# ------------------------------------------------------------------- exe
+#
+# The same objects, as a command-line program. An app is not a place to debug
+# anything: no stdout, no /proc anybody can read, and a stall shows up as a
+# still picture. This links the identical build as a PIE executable that runs
+# from /data/local/tmp under `adb shell`, where the port's own knobs, its
+# watchdog and its dumps all work the way they do on a desktop, and it is
+# also what the replay and corpus pins run.
+#
+# It carries the version script for the same reason the library does: an
+# executable's symbols go into the global scope AHEAD of libc's, so an exported
+# `time` is the one bionic itself calls. That is not a theory, with 18,344
+# symbols exported this build printed
+#   pc_os_lite: assertion failed: nonport.c:1639 (time): OS_IsTickAvailable()
+# before main(), on `--help` as much as on a boot.
+EXEBUILD ?= $(WROOT)/build/pc-android-exe
+
+.PHONY: exe
+exe:
+	@$(MAKE) -f $(firstword $(MAKEFILE_LIST)) BUILD=$(EXEBUILD) \
+	  TARGET=$(EXEBUILD)/pokeplatinum \
+	  LDFLAGS='$(ABI) -pie -Wl,--version-script=$(EXEBUILD)/exports.map \
+	           -Wl,--wrap=__aeabi_uidiv -Wl,--wrap=__aeabi_idiv \
+	           -Wl,--wrap=__aeabi_uidivmod -Wl,--wrap=__aeabi_idivmod' \
+	  status
+
+# ------------------------------------------------- what bionic does not have
+#
+# A shared object may carry undefined symbols and this one does; Android's
+# linker binds them all at load. `nound` relinks with --no-undefined and prints
+# what is left, which is the honest measure of how far this build is from being
+# loadable.
+#
+# Nine at the time of writing, in four groups:
+#
+#   getcontext / makecontext / setcontext  bionic has no ucontext on 32-bit
+#       ARM. pc/src/pc_os_context.c runs the SDK's OSContext switches on host
+#       fibers and already has two implementations behind one seam; Android
+#       needs a third.
+#
+#   backtrace / backtrace_symbols_fd       bionic has no <execinfo.h>. The
+#       answer is _Unwind_Backtrace, which is what glibc's backtrace() wraps.
+#
+#   shm_open                               pc/src/pc_view.c, the frame page.
+#       An app is one process and the page is an allocation inside it.
+#
+#   _binary_logo_forChina_*                three end markers for the China
+#       region's blobs, unresolved in the ELF build too and dead code on every
+#       host. They need a definition rather than a port.
+.PHONY: nound
+nound:
+	@$(MAKE) -s -f $(firstword $(MAKEFILE_LIST)) \
+	   LDFLAGS='$(LDFLAGS) -Wl,--no-undefined' status 2>&1 | \
+	 grep -q '^link: ok' && \
+	 echo "  NOUND   nothing left: this object can be loaded" || \
+	 { $(READELF) --version >/dev/null 2>&1; \
+	   grep -oE 'undefined symbol: [A-Za-z_][A-Za-z0-9_]*' $(BUILD)/link.log | \
+	   sed 's/undefined symbol: /  NOUND   /' | sort -u; \
+	   echo "  NOUND   $$(grep -c 'undefined symbol' $(BUILD)/link.log) reference(s) bionic cannot resolve"; \
+	   exit 1; }
+# It EXITS NON-ZERO when something is left, so this can stand as a gate and
+# not only as a report. What that prevents is specific: a link that succeeded,
+# an APK that installed, and an activity that died at dlopen naming one symbol
+# and nothing else, twice in one afternoon, and neither name said where it
+# had gone.

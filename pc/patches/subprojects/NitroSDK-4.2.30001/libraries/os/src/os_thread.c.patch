@@ -1,0 +1,22 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/os/src/os_thread.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/os/src/os_thread.c
+@@ -351,6 +351,8 @@
+ 
+ #ifdef SDK_ARM9
+     OS_GetSystemWork()->threadinfo_mainp = &OSi_ThreadInfo;
++    { extern void pc_state_mark_host_field(const void *);
++      pc_state_mark_host_field(&OS_GetSystemWork()->threadinfo_mainp); }
+ #else
+     OS_GetSystemWork()->threadinfo_subp = &OSi_ThreadInfo;
+ #endif
+@@ -423,6 +425,10 @@
+ 
+     thread->context.r[0] = (u32)arg;
+     thread->context.lr = (u32)OS_ExitThread;
++    /* lr is OS_ExitThread, a host function. Guest-allocated threads
++     * only; the launcher/idle threads are host-static and ignored. */
++    { extern void pc_state_mark_host_field(const void *);
++      pc_state_mark_host_field(&thread->context.lr); }
+ 
+     MI_CpuClear32((void *)((u32)stack - stackSize + sizeof(u32)), stackSize - sizeof(u32) * 2);
+ 

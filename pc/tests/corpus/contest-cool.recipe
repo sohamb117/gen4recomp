@@ -1,0 +1,22 @@
+# A Cool contest at Normal rank, with a poffin-fed Roselia.
+#
+# The two halves of Hearthome meet in this recipe. The poffin is cooked the
+# way the pot cooks one, one flavour, an amount and a smoothness through
+# Poffin_MakePoffin, and then fed through the poffin case's own arithmetic,
+# which is what leaves `cool` at 60 and `sheen` at 30 on the entry. The
+# contest is judged on those numbers, so a station that set them by hand
+# would be asserting on its own input.
+#
+# The map is Hearthome City rather than the Contest Hall lobby: the lobby's
+# map change never finishes headless, and the contest lab does not need it --
+# the game's own practice path runs the same application from the lobby floor.
+
+name RIBBON
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_ROSELIA 30 ITEM_NONE
+poffin FLAVOR_SPICY 60 30
+feed-poffin 0 0
+map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

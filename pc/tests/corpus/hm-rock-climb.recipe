@@ -1,0 +1,14 @@
+# Rock Climb, on the wall inside Victory Road's first floor.
+#
+# The wall is a run of tile behaviours rather than an object, found with the
+# port's own map scan: a north-south rock-climb column with cave floor at its
+# foot. The player stands on that floor facing it.
+
+name CLIMBER
+gender GENDER_MALE
+trainer-id 30005
+money 3000
+badge BADGE_ID_ICICLE
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_ROCK_CLIMB
+map MAP_HEADER_VICTORY_ROAD_1F 22 38 FACE_UP

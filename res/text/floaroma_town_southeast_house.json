@@ -1,0 +1,22 @@
+{
+  "key": 1054,
+  "messages": [
+    {
+      "id": "FloaromaTownSoutheastHouse_Text_SomePokemonAppearOnlyByHoney",
+      "en_US": [
+        "Some kinds of Pokémon appear only\n",
+        "if they’re attracted by the sweet\f",
+        "scent of Honey."
+      ]
+    },
+    {
+      "id": "FloaromaTownSoutheastHouse_Text_PokemonHaveAcuteSmell",
+      "en_US": [
+        "Pokémon must have an acute sense\n",
+        "of smell.\r",
+        "They can sense the aroma of Honey\n",
+        "from very far away."
+      ]
+    }
+  ]
+}

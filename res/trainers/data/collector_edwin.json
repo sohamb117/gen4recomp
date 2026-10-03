@@ -1,0 +1,43 @@
+{
+    "name": "Edwin",
+    "class": "TRAINER_CLASS_COLLECTOR",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MUNCHLAX",
+            "form": 0,
+            "level": 25,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": "I’m a Collector, and I love Honey!\r"
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "What’ve you done to my Pokémon?!\r",
+                "It took me forever to catch it using\n",
+                "Honey!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I went through a lot of bother to catch\n",
+                "my Pokémon.\r",
+                "But since I’ve not raised it, it’s\n",
+                "as weak as when I caught it.\n"
+            ]
+        }
+    ]
+}

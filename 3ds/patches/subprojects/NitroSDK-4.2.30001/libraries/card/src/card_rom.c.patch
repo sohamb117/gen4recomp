@@ -1,0 +1,15 @@
+The shared work area is a slab row here, so HW_ROM_HEADER_BUF is
+armrec_shared_base plus an offset and cannot initialise a static.
+3ds/src/3ds_sdk_statics.c writes it once, after the slab exists.
+
+--- a/subprojects/NitroSDK-4.2.30001/libraries/card/src/card_rom.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/card/src/card_rom.c
+@@ -7,7 +7,7 @@
+
+ extern u32 cardi_rom_base;
+ u32 cardi_rom_base;
+-u32 cardi_rom_header_addr = HW_ROM_HEADER_BUF;
++u32 cardi_rom_header_addr;
+
+ SDK_COMPILER_ASSERT(sizeof(rom_stat) % 32 == 0);
+

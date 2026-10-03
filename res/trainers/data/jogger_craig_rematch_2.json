@@ -1,0 +1,42 @@
+{
+    "name": "Craig",
+    "class": "TRAINER_CLASS_JOGGER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_LUXRAY",
+            "form": 0,
+            "level": 59,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LUXRAY",
+            "form": 0,
+            "level": 59,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "If I battle now, won’t it mess up my\n",
+                "usual pace?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "My pace is completely off...\n"
+        }
+    ]
+}

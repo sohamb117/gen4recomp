@@ -1,0 +1,11 @@
+# Mail in the bag, which opens the mail application and the easy-chat
+# keyboard behind it.
+
+name POSTIE
+gender GENDER_MALE
+trainer-id 30123
+money 900
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_GROTLE 19 ITEM_NONE
+item ITEM_GRASS_MAIL 2
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

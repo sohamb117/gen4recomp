@@ -1,0 +1,17 @@
+--- a/src/overlay104/frontier_script_context.c
++++ b/src/overlay104/frontier_script_context.c
+@@ -71,6 +71,14 @@
+             }
+ 
+             u16 cmdCode = FrontierScriptContext_ReadHalfWord(ctx);
++            /* pc port: the frontier engine's own instruction set, counted by
++             * the same coverage accumulator as the field engine's. Its table
++             * is separate and so is its numbering, hence a second hook rather
++             * than a shared one (pc_probe2d.c owns the gate). */
++            {
++                extern void pc_frontier_script_trace(unsigned op, const void *at);
++                pc_frontier_script_trace(cmdCode, ctx->scriptPtr);
++            }
+             if (cmdCode >= ctx->cmdTableSize) {
+                 GF_ASSERT(FALSE);
+                 ctx->state = SCRIPT_STATE_STOPPED;

@@ -1,0 +1,23 @@
+# The Underground bags and a captured secret base, through the game's
+# own setters.
+#
+# These are what a vendor, a finished dig and a successful Digger Drill
+# leave in the save. A station that wanted them by playing those out
+# would need the comm loopback and a few thousand extra frames; this
+# writes the same slots those paths write, so the reader can see them.
+
+name STOWER
+gender GENDER_MALE
+trainer-id 20482
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+sphere SPHERE_PRISM 12
+sphere SPHERE_RED 4
+trap TRAP_SMOKE
+trap TRAP_DIGGER_DRILL
+good UG_GOOD_TV
+good UG_GOOD_WOODEN_CHAIR
+good-pc UG_GOOD_FEATHERY_BED
+secret-base 72 437 FACE_UP
+map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN

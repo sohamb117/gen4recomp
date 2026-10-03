@@ -1,0 +1,350 @@
+# 32-bit ARM (armhf) cross build for the pokeplatinum PC port.
+#
+#   make -f pc/Makefile.arm -j$(nproc) status   # build build/pc-arm/pokeplatinum
+#   make -f pc/Makefile.arm run ARGS='...'      # run it under qemu-arm
+#
+# pc/Makefile retargeted at arm-linux-gnueabihf, the same way pc/Makefile.win
+# retargets it at i686-w64-mingw32: ONE pipeline, three toolchains. This file
+# sets only what genuinely differs.
+#
+# WHY: the handheld port needs an engine that is already
+# proven on ARM, so the device work is about a device and not about a
+# compiler. What this file owes the frontend tree is a binary and a table of
+# numbers.
+#
+# armhf, NEVER aarch64. Eight-byte pointers move every guest struct offset and
+# the save format with them. A change here that reaches for aarch64 has
+# misread the phase.
+#
+# What the ARM ABI changes, every line of it measured with the toolchain this
+# file selects rather than quoted from another tree:
+#
+#   * -m32 does not exist on ARM ("unrecognized command-line option"). The
+#     x86 build's ABI line is two flags and neither survives, so ABI below is
+#     written from scratch instead of extended.
+#
+#   * long long is 8-ALIGNED under AAPCS where i386 aligns it to 4, and that
+#     silently moves every struct holding a u64. Measured: struct{char;long
+#     long;} is 12 bytes on i386 and 16 here, member at offset 4 against 8.
+#     The fix is aligned(4) on the u64/s64 typedefs in pc/include/nitro/
+#     types.h: GCC lets an aligned attribute REDUCE alignment when it is
+#     applied to a typedef, which was the open question, and the same struct
+#     then measures 12 bytes with the member at 4. -fpack-struct=4 would also
+#     do it and is the wrong tool: it repacks `u32 x : 20` bitfields too,
+#     moving nine structures, seven of them save data.
+#
+#   * -fno-short-enums. The ARM EABI shrinks an enum to the smallest type
+#     that holds it; the DS's is always four bytes. Ubuntu's armhf gcc
+#     already defaults to 32-bit enums, so the flag changes nothing HERE;
+#     it is set because it changes everything on a toolchain that does not
+#     (bare-metal EABI, the NDK), and because ld warns rather than errors
+#     when objects disagree. Measured both ways: -fshort-enums gives
+#     sizeof(enum)==1 and the linker warning, this gives 4.
+#
+#   * -fsigned-char because the ARM default is the other one. A bare `char`
+#     is signed on x86 and
+#     unsigned on ARM; GCC follows the target. The ROM is built with mwcc's
+#     `-char signed` (meson.build), so signed is what this source means
+#     everywhere a char is compared or sign-extended. Not measured here: the
+#     3DS port measured it, on hardware, by hashing the two ports' frames over
+#     one scripted session, identical polygon counts every frame, so the
+#     game was in lockstep, and different pixels from the moment anything was
+#     drawn. See 3ds/Makefile's GAMEABI, which is this same answer for a
+#     different ARM.
+#
+#   * time_t is eight bytes on Ubuntu 24.04 armhf, the 64-bit time_t
+#     transition, against four on i386. -D_TIME_BITS=32 puts it back, and
+#     the legacy 32-bit-time entry points are still exported, so a build with
+#     the flag links and runs. The only tree that reads a time_t is NitroDWC's GameSpy code.
+#
+#   * -D_FILE_OFFSET_BITS=64 is the flag the line above breaks. This compiler
+#     predefines both _TIME_BITS=64 and _FILE_OFFSET_BITS=64; asking for
+#     32-bit time takes the large-file interface down with it, because
+#     glibc's features.h ties the two together. off_t and ino_t then become
+#     four bytes, and on ARM the kernel hands getdents 64-bit directory
+#     cookies, so readdir() returns EOVERFLOW on the FIRST entry and every
+#     directory on the machine reads as empty. Measured on this host: three
+#     entries and errno 0 with no flags, ZERO entries and errno 75 with only
+#     the time flag, three again with both.
+#
+#     i386 never shows it: off_t is four bytes there and always was, and that
+#     kernel's cookies fit. So it is a trap that exists only on the target,
+#     created by a flag chosen for something else. It costs the guest ABI
+#     nothing, off_t, ino_t and struct stat are the host's file interface
+#     and appear in no DS structure, and what it costs to leave out is any
+#     code that lists a directory or stats a file the filesystem gave a
+#     large inode.
+#
+#   * -msse2 does not exist either, so HW_OPT is rewritten. NEON is the same
+#     bargain SSE2 was on x86: the -O3 per-pixel loops in pc/hw are integer
+#     work, no float or double appears in them, so the vector unit cannot
+#     move a rounding mode; it only lets the compiler pack four pixels into
+#     a register.
+#
+#   * division by zero still needs answering, and ARM was expected to make it
+#     free. pc/src/pc_div0.c exists because x86 `div` raises
+#     #DE where the cartridge's runtime returns a/0 == a, a%0 == 0. ARM was
+#     supposed to make that free. It does not: gcc calls __aeabi_idiv, and
+#     glibc's __aeabi_idiv0 RAISES SIGFPE, so an armhf build dies in exactly
+#     the three places the x86 build died before pc_div0.c existed. The
+#     answer is better here than on x86, no signal handler, no instruction
+#     decode, no stepping the program counter, because the four AEABI entry
+#     points can simply be wrapped, which is where the cartridge kept its own
+#     answer too. See --wrap below and pc_div0.c's ARM half.
+#
+# Requires arm-linux-gnueabihf-gcc. `sudo apt install -y
+# gcc-arm-linux-gnueabihf qemu-user` if root is available;
+# pc/install_arm_toolchain.sh does the same thing without it, and this file
+# looks in that script's prefix by itself.
+
+WROOT := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))/..)
+
+# The compiler is not whichever one is first on $PATH, and here that is a
+# trap rather than a preference: brew puts arm-none-eabi-gcc on PATH, which
+# is a BARE-METAL compiler with no Linux libc. It compiles this tree happily
+# and then fails at the link with missing libc symbols, a failure that
+# reads exactly like one of ours. So the triple is spelled out, and an
+# unpacked prefix is preferred over PATH because that is where
+# pc/install_arm_toolchain.sh puts a toolchain when apt could not be used.
+ARM        ?= arm-linux-gnueabihf
+ARM_PREFIX ?= $(HOME)/.local/opt/cross-armhf
+ARM_TOOLS  ?= $(if $(wildcard $(ARM_PREFIX)/usr/bin/$(ARM)-gcc),$(ARM_PREFIX)/usr/bin/$(ARM),$(ARM))
+ARM_CC     ?= $(ARM_TOOLS)-gcc
+CC      := $(ARM_CC)
+NM      := $(ARM_TOOLS)-nm
+OBJCOPY := $(ARM_TOOLS)-objcopy
+
+ifeq ($(shell command -v $(ARM_CC) 2>/dev/null),)
+$(error no $(ARM_CC); run pc/install_arm_toolchain.sh, or install \
+ gcc-arm-linux-gnueabihf and qemu-user)
+endif
+
+# The emulator, and the sysroot it needs to find the target's loader. Only
+# `make run` uses these; the build itself never emulates anything.
+QEMU_ARM  ?= $(if $(wildcard $(ARM_PREFIX)/usr/bin/qemu-arm-static),$(ARM_PREFIX)/usr/bin/qemu-arm-static,qemu-arm)
+QEMU_ROOT ?= $(if $(wildcard $(ARM_PREFIX)/usr/$(ARM)),$(ARM_PREFIX)/usr/$(ARM),/usr/$(ARM))
+
+BUILD  := $(WROOT)/build/pc-arm
+# Recursively expanded on purpose: pc/Makefile moves BUILD to a directory of
+# its own when MODS is set, and a := here would freeze the binary outside it.
+TARGET  = $(BUILD)/pokeplatinum
+
+# No -m32 (it is not an ARM flag and the toolchain has no other width); these
+# four are what replace it.
+ABI := -fno-short-enums -fsigned-char -fno-pie -D_TIME_BITS=32 \
+       -D_FILE_OFFSET_BITS=64
+
+# NEON in place of SSE2. See the header: integer pixel work only.
+HW_OPT := -O3 -mfpu=neon
+
+# Without this every fault report from an ARM BUILD has no stack in it.
+# pc/src/pc_main.c's fault handler calls glibc's backtrace(), which walks
+# unwind tables; on x86 gcc emits DWARF CFI for every function whether or not
+# anything asked, and on ARM it emits .ARM.exidx only when told. So
+# backtrace() answers 0 frames, and answers it silently. Measured with a
+# three-deep call on this toolchain: 0 frames without the flag, 5 with it, 6
+# on the i386 build that never needed it, and it is not static-versus-
+# dynamic, a dynamic armhf build says 0 too.
+#
+# Through pc/Makefile's EXTRA_BASEFLAGS hook and set BEFORE the include, which
+# is the only thing that works: GAME_CFLAGS, SDK_CFLAGS and PCSRC_CFLAGS are
+# simply-expanded from BASEFLAGS at the moment that file is read, so appending
+# to BASEFLAGS afterwards writes a variable nothing looks at again and the flag
+# reaches no compile at all, with no error and no warning.
+EXTRA_BASEFLAGS := -funwind-tables
+
+# Deferred (=) rather than := so SANITIZE, which pc/Makefile defines below
+# this include, still reaches the link when a detector build asks for it.
+#
+# --wrap is the divide-by-zero fix and it is load-bearing, not tuning. It
+# redirects the four AEABI entry points gcc emits for `/` and `%` at their
+# undefined references, so pc_div0.c gets to answer a zero divisor the way
+# the cartridge does and hand every other division straight to libgcc's own
+# routine, which stays exactly as fast as it was. Measured against the ROM's
+# _u32_div_f / _s32_div_f: 7/0==7, 7%0==0, -7/0==-7, -7%0==0, signed and
+# unsigned alike, with 7/3 and -7/3 untouched.
+LDFLAGS = $(ABI) $(SANITIZE) -no-pie -pthread -Wl,-Ttext-segment=0x10000000 \
+          -Wl,--wrap=__aeabi_uidiv -Wl,--wrap=__aeabi_idiv \
+          -Wl,--wrap=__aeabi_uidivmod -Wl,--wrap=__aeabi_idivmod
+LDLIBS  = -lm
+
+# ------------------------------------------------- the divide-by-zero wrappers
+#
+# The only assembly this port compiles on any host. It lives outside $(OBJ)
+# because the link globs that directory, and EXTRA_OBJS is the seam pc/Makefile
+# already has for an object that glob cannot see (pc/Makefile.win puts its
+# Windows resource object through the same one).
+#
+# BEFORE the include, not after: `$(TARGET): $(OBJS) ... $(EXTRA_OBJS)` expands
+# its prerequisites the moment make reads that line. Set afterwards, the object
+# still reaches the link command (which expands late) but was never built,
+# and the failure is `ld: cannot find ...`, which reads like a missing file
+# rather than a missing rule.
+# `override`, and it is not decoration. EXTRA_OBJS is the seam a frontend
+# passes its own archive through, and a variable set on make's command line
+# beats a plain += in the makefile, so a fused build that named its archive
+# silently dropped this object, linked, installed, and died at dlopen on
+# "cannot locate symbol __wrap___aeabi_uidiv". The wrapper is part of this
+# target's ABI, not an option a caller gets to replace.
+override EXTRA_OBJS += $(BUILD)/pc_div0_wrap.o
+
+include $(WROOT)/pc/Makefile
+
+$(BUILD)/pc_div0_wrap.o: $(WROOT)/pc/src/pc_div0_wrap.s
+	@mkdir -p $(dir $@)
+	$(CC) $(ABI) -c -o $@ $<
+
+# ------------------------------------------------------------------- run
+#
+# There is no ARM hardware on this host, so `run` means qemu-user. It is a
+# convenience for the short gates, the zeroed guest map, a scene or two,
+# and NOT where a long parity run should live: user-mode emulation is slow
+# enough that orders its tasks cheapest-proof-first for exactly
+# this reason.
+.PHONY: run
+run: $(TARGET)
+	$(QEMU_ARM) -L $(QEMU_ROOT) $(TARGET) $(ARGS)
+
+# ------------------------------------------------------------- PC_BIN shim
+#
+# pc/tests/run_tests.py drives whatever PC_BIN names, as one executable path
+# with no interpreter in front of it, so the emulator has to be on the inside.
+# This is that wrapper, written by the build rather than by hand so the paths
+# in it are the ones this makefile resolved:
+#
+#   PC_BIN=$(WRAPPER) python3 pc/tests/run_tests.py replay determinism ...
+#
+# The pinned tests then run against the armhf binary unchanged. What they can
+# and cannot pin across two toolchains is's answer, not this
+# file's.
+WRAPPER := $(BUILD)/pokeplatinum-qemu
+
+.PHONY: wrapper
+wrapper: $(WRAPPER)
+$(WRAPPER): $(THISMK)
+	@mkdir -p $(dir $@)
+	@printf '#!/bin/sh\nexec %s -L %s %s "$$@"\n' \
+	   '$(QEMU_ARM)' '$(QEMU_ROOT)' '$(TARGET)' > $@
+	@chmod +x $@
+	@echo "  WRAP    $@"
+
+# ------------------------------------------------------------ zero-digest
+#
+# The fourteen guest regions, identity-mapped and never written to, digested
+# by this toolchain and compared against the number the 3DS pinned. It links
+# no game code at all, armrec_rt.c and pc_state.c and a main() that calls
+# armrec_mem_init(), so what it answers is whether the ABI flags above and
+# the identity map are right, with nothing else able to be wrong.
+#
+# Seconds of runtime, and it fails on exactly what the struct survey cannot
+# see. Run it before anything long.
+ZERO_PIN  := $(shell sed -n 's/^\#define STATE_ZERO_DIGEST 0x\([0-9A-Fa-f]*\)ULL$$/\1/p' $(WROOT)/3ds/src/3ds_state.h)
+ZERO_BIN  := $(BUILD)/checks/pc_zero_digest
+
+.PHONY: zero-digest
+zero-digest: $(ZERO_BIN)
+	@got=$$($(QEMU_ARM) -L $(QEMU_ROOT) $(ZERO_BIN) | \
+	        sed -n 's/^pc_zero_digest: \([0-9A-F]*\) .*/\1/p'); \
+	 if [ "$$got" = "$(ZERO_PIN)" ]; then \
+	   echo "  ZERO    $$got, the zeroed guest map agrees with the pin"; \
+	 else \
+	   echo "  ZERO    FAILED: this build says $${got:-nothing}, the pin is $(ZERO_PIN)"; \
+	   exit 1; \
+	 fi
+
+$(ZERO_BIN): $(WROOT)/3ds/tests/pc_zero_digest.c $(WROOT)/pc/src/pc_state.c \
+             $(WROOT)/tools/armrec/armrec_rt.c
+	@mkdir -p $(dir $@)
+	$(CC) $(ABI) -O1 -w -std=gnu99 -no-pie \
+	  -I$(WROOT)/tools/armrec -I$(WROOT)/pc/src -I$(WROOT)/pc/include \
+	  -o $@ $^
+
+# ----------------------------------------------------------------- hooks
+#
+# Every weak host hook in armrec_rt.c, and whether this link bound it. The
+# hazard is silence: a hook nobody wrote links as the weak default and reports
+# nothing. Reads the finished binary and the objects' relocations, so it is a
+# statement about the link rather than about the source.
+#
+# The x86 build answers the same question with `python3 pc/weak_hooks.py`;
+# the two agreeing hook for hook is what says ARM inherited the arrangement
+# rather than accidentally matching it.
+.PHONY: hooks
+hooks: $(TARGET)
+	@$(PYTHON) $(WROOT)/pc/weak_hooks.py --binary $(TARGET) \
+	  --objects $(OBJ) --nm $(NM) --objdump $(ARM_TOOLS)-objdump
+
+# ------------------------------------------------------------------- vec
+#
+# Which pc/hw loops the vector unit actually took. HW_OPT names NEON the way
+# the ELF build names SSE2, no intrinsics, no inline asm, plain C the
+# compiler is expected to pack, and "expected to" is the whole reason this
+# target exists rather than a comment claiming it.
+#
+# `make -f pc/Makefile.arm vec` reports every vectorized loop; VECBASE=1
+# rebuilds them without -mfpu=neon, which is how the flag was shown to be
+# load-bearing rather than decorative.
+VECOPT := $(if $(VECBASE),$(filter-out -mfpu=neon,$(HW_CFLAGS)),$(HW_CFLAGS))
+
+.PHONY: vec
+vec:
+	@for f in $(WROOT)/pc/hw/*.c; do \
+	  n=$$($(CC) $(VECOPT) -fopt-info-vec -c -o /dev/null $$f 2>&1 \
+	       | grep -c 'loop vectorized'); \
+	  printf "  VEC     %-22s %s loop(s)\n" "$$(basename $$f)" "$$n"; \
+	done
+
+# ------------------------------------------------------- the device kit
+#
+# What a handheld can be handed before any frontend exists: a fully static
+# armhf port, a probe that answers the questions only a device can, and the
+# script that runs them. The handheld notes end on a list of shell lines to
+# retype; this is that list as something runnable.
+#
+# STATIC because the device's libc is not this one. armhf glibc 2.39 folds
+# pthread into libc, so -static costs nothing the worker pool needs, and a
+# binary that carries its own C library runs on ROCKNIX, on Termux and on a
+# stock Anbernic image without asking which.
+STATICBUILD := $(WROOT)/build/pc-arm-static
+KIT         := $(BUILD)/kit
+
+.PHONY: static
+static:
+	@$(MAKE) -f $(THISMK) BUILD=$(STATICBUILD) \
+	  LDFLAGS='$(ABI) -static -no-pie -pthread -Wl,-Ttext-segment=0x10000000 \
+	           -Wl,--wrap=__aeabi_uidiv -Wl,--wrap=__aeabi_idiv \
+	           -Wl,--wrap=__aeabi_uidivmod -Wl,--wrap=__aeabi_idivmod' \
+	  status
+
+# The probe links the port's OWN armrec_rt.c, so "can this device identity-map
+# 0x02000000" is answered by the code that will have to do it rather than by a
+# toy mmap. Static and non-PIE for the same reason the question is asked.
+PROBE := $(BUILD)/pc-probe
+
+.PHONY: probe
+probe: $(PROBE)
+$(PROBE): $(WROOT)/pc/handheld_probe.c $(WROOT)/pc/src/pc_state.c \
+          $(WROOT)/tools/armrec/armrec_rt.c
+	@mkdir -p $(dir $@)
+	$(CC) $(ABI) -O1 -w -std=gnu99 -static -no-pie \
+	  -I$(WROOT)/tools/armrec -I$(WROOT)/pc/src -I$(WROOT)/pc/include \
+	  -o $@ $^
+	@echo "  PROBE   $@"
+
+# Everything a device needs, in one directory to copy across. The ROM is not
+# in it and never will be; it is your own cartridge, not a build product.
+.PHONY: kit
+kit: probe static
+	@mkdir -p $(KIT)
+	@cp -f $(PROBE) $(KIT)/pc-probe
+	@cp -f $(STATICBUILD)/pokeplatinum $(KIT)/pokeplatinum
+	@# STRIPPED, and it is not a nicety: BASEFLAGS carries -g, so the static
+	@# port is 52.3 MB of which 48 are debug info that no handheld can use
+	@# and every transfer to one has to carry. 4.2 MB stripped, and it still
+	@# passes all six vector suites. Debug the ELF build, ship this one.
+	@$(ARM_TOOLS)-strip -s $(KIT)/pc-probe $(KIT)/pokeplatinum
+	@cp -f $(WROOT)/pc/handheld_probe.sh $(KIT)/handheld_probe.sh
+	@cp -f $(WROOT)/pc/replays/new-game.txt $(KIT)/new-game.txt
+	@chmod +x $(KIT)/handheld_probe.sh
+	@echo "  KIT     $(KIT), copy it to the device with the ROM beside it"
+	@ls -la $(KIT)

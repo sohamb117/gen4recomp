@@ -1,0 +1,69 @@
+{
+    "name": "Fredrick",
+    "class": "TRAINER_CLASS_SCIENTIST",
+    "items": [
+        "ITEM_X_DEFENSE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_KIRLIA",
+            "form": 0,
+            "level": 40,
+            "item": null,
+            "moves": [
+                "MOVE_PSYCHIC",
+                "MOVE_MAGICAL_LEAF",
+                "MOVE_HYPNOSIS",
+                "MOVE_FUTURE_SIGHT"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_KADABRA",
+            "form": 0,
+            "level": 40,
+            "item": null,
+            "moves": [
+                "MOVE_PSYCHIC",
+                "MOVE_PSYCHO_CUT",
+                "MOVE_THUNDER_WAVE",
+                "MOVE_RECOVER"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Hey, now! Our HQ is a state-of-the-\n",
+                "art facility!\r",
+                "A snot-nosed kid like you ought to\n",
+                "keep your dirty hands to yourself!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "You and your Pokémon weren’t part\n",
+                "of my calculations...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Our boss is trying to create an\n",
+                "entirely new world.\r",
+                "A world only for us!\n",
+                "For Team Galactic!\n"
+            ]
+        }
+    ]
+}

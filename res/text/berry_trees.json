@@ -1,0 +1,210 @@
+{
+  "key": 10527,
+  "messages": [
+    {
+      "id": "BerryTrees_Text_SoftEarthySoil",
+      "en_US": "It’s soft, earthy soil.\r"
+    },
+    {
+      "id": "BerryTrees_Text_MulchHasBeenLaidDown",
+      "en_US": "{STRVAR_1 8, 0, 0} has been laid down.\r"
+    },
+    {
+      "id": "BerryTrees_Text_Fertilize",
+      "en_US": "FERTILIZE"
+    },
+    {
+      "id": "BerryTrees_Text_PlantBerry",
+      "en_US": "PLANT BERRY"
+    },
+    {
+      "id": "BerryTrees_Text_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "BerryTrees_Text_PutDownSomeFertilizer",
+      "en_US": "Put down some fertilizer?"
+    },
+    {
+      "id": "BerryTrees_Text_Yes",
+      "en_US": "YES"
+    },
+    {
+      "id": "BerryTrees_Text_No",
+      "en_US": "NO"
+    },
+    {
+      "id": "BerryTrees_Text_WantToPlantBerry",
+      "en_US": "Want to plant a Berry?"
+    },
+    {
+      "id": "BerryTrees_Text_YesPlantBerry",
+      "en_US": "YES"
+    },
+    {
+      "id": "BerryTrees_Text_NoPlantBerry",
+      "en_US": "NO"
+    },
+    {
+      "id": "BerryTrees_Text_MulchWasScatteredOnSoil",
+      "en_US": [
+        "The {STRVAR_1 8, 0, 0} was scattered\n",
+        "on the soil.\r"
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_BerryWasPlantedInSoil",
+      "en_US": [
+        "The {STRVAR_1 8, 0, 0} was planted\n",
+        "in the soft, earthy soil."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_BerryWasPlantedHere",
+      "en_US": [
+        "{STRVAR_1 8, 0, 0} was planted\n",
+        "here.\r"
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_BerryPlantHasSprouted",
+      "en_US": [
+        "The {STRVAR_1 8, 0, 0} Berry Plant\n",
+        "has sprouted.\r"
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_BerryPlantIsGrowingBigger",
+      "en_US": [
+        "This {STRVAR_1 8, 0, 0} Plant is growing\n",
+        "bigger.\r"
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_BerryPlantIsInBloom",
+      "en_US": [
+        "This {STRVAR_1 8, 0, 0} Plant is\n",
+        "in bloom!\r"
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_WantToSprinkleWater",
+      "en_US": "Want to sprinkle some water?"
+    },
+    {
+      "id": "BerryTrees_Text_YesWater",
+      "en_US": "YES"
+    },
+    {
+      "id": "BerryTrees_Text_NoWater",
+      "en_US": "NO"
+    },
+    {
+      "id": "BerryTrees_Text_ThereAllHappy",
+      "en_US": "There! All happy!"
+    },
+    {
+      "id": "BerryTrees_Text_WantToPickBerries",
+      "en_US": [
+        "There are {STRVAR_1 51, 1, 0} {STRVAR_1 8, 0, 0}!\n",
+        "Want to pick them?"
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_YesPickBerries",
+      "en_US": "YES"
+    },
+    {
+      "id": "BerryTrees_Text_NoPickBerries",
+      "en_US": "NO"
+    },
+    {
+      "id": "BerryTrees_Text_PlayerLeftBerries",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} left the {STRVAR_1 8, 1, 0}\n",
+        "where they were."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_YouPickedTheBerries",
+      "en_US": "You picked the {STRVAR_1 51, 1, 0} {STRVAR_1 8, 0, 0}.\r"
+    },
+    {
+      "id": "BerryTrees_Text_BagIsFull",
+      "en_US": [
+        "Your Bag is full.\n",
+        "The {STRVAR_1 8, 0, 0} couldn’t be taken."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_PlayerPutBerriesInPocket",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} put away the {STRVAR_1 8, 1, 0}\n",
+        "in the Bag’s {STRVAR_1 18, 3, 0} Pocket.\r",
+        "The soil returned to its soft and\n",
+        "earthy state."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_SoftEarthySoilAfterHarvest",
+      "en_US": "It’s soft, earthy soil."
+    },
+    {
+      "id": "BerryTrees_Text_MulchLaidDownAfterHarvest",
+      "en_US": "{STRVAR_1 8, 0, 0} has been laid down."
+    },
+    {
+      "id": "BerryTrees_Text_MulchWasScatteredAfterHarvest",
+      "en_US": [
+        "The {STRVAR_1 8, 0, 0} was scattered\n",
+        "on the soil."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_BerryWasPlantedHereAfterHarvest",
+      "en_US": [
+        "{STRVAR_1 8, 0, 0} was planted\n",
+        "here."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_PlantHasSproutedAfterHarvest",
+      "en_US": [
+        "The {STRVAR_1 8, 0, 0} Berry Plant\n",
+        "has sprouted."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_PlantIsGrowingAfterHarvest",
+      "en_US": [
+        "The {STRVAR_1 8, 0, 0} Plant is growing\n",
+        "bigger."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_PlantIsInBloomAfterHarvest",
+      "en_US": [
+        "This {STRVAR_1 8, 0, 0} Plant is\n",
+        "in bloom!"
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_WantToPickBerry",
+      "en_US": [
+        "There is {STRVAR_1 8, 0, 0}!\n",
+        "Want to pick it?"
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_PlayerLeftBerry",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} left the {STRVAR_1 8, 1, 0}\n",
+        "where it was."
+      ]
+    },
+    {
+      "id": "BerryTrees_Text_YouPickedTheBerry",
+      "en_US": "You picked the {STRVAR_1 8, 0, 0}.\r"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+--- a/src/system.c
++++ b/src/system.c
+@@ -12,8 +12,17 @@
+ #include "sys_task_manager.h"
+ 
+ #define MAIN_TASK_MAX        160
+-#define VBLANK_TASK_MAX      32
+-#define POST_VBLANK_TASK_MAX 32
++/* pc port: 32 on hardware, where the VBlank IRQ drains one-shot tasks in
++ * real time while a map loads across many frames. This port delivers VBlank
++ * only when the game waits, so a whole map load runs between two VBlanks and
++ * every Simple3D texture-bind one-shot piles up at once, the bedroom's
++ * first load queues 45 before the field's own persistent upload task, and
++ * SysTaskManager_AddTask fails silently past capacity (GF_ASSERT is a no-op
++ * without a comm manager). The lost 46th task was the sprite-sheet uploader:
++ * the player rendered as an untextured square. Sized so no single-frame
++ * pileup can reach it. */
++#define VBLANK_TASK_MAX      256
++#define POST_VBLANK_TASK_MAX 256 /* pc port: same pileup exposure as VBLANK_TASK_MAX */
+ #define PRINT_TASK_MAX       4
+ 
+ #define CACHE_ENTRY_MAX 128

@@ -1,0 +1,18 @@
+# First visit to the Underground, via the Explorer Kit on Y.
+#
+# Oreburgh is on the main matrix and not a bridge, so CanUseExplorerKit
+# allows it. The kit is registered the way a rod is: Y is how a player
+# uses it. The Roark intro flag is left clear on purpose; that is what
+# makes CommManUnderground_InitUnderground set doNotConnectUnderground,
+# which is the solo first-visit path.
+
+name DIGGER
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+item ITEM_EXPLORER_KIT 1
+register-item ITEM_EXPLORER_KIT
+flag FLAG_RECEIVED_EXPLORER_KIT
+map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN

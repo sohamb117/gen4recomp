@@ -1,0 +1,51 @@
+{
+    "name": "Davido",
+    "class": "TRAINER_CLASS_NINJA_BOY",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MOTHIM",
+            "form": 0,
+            "level": 33,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "A ninja can use all kinds of skills.\n",
+                "Like this and like that!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Hmm...\n",
+                "My ninja techniques failed to work...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "There’s a ninja Gym Leader somewhere\n",
+                "far away.\r",
+                "I should become a devotee of theirs.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "What’s with you?\n",
+                "You’re not a ninja yet?\r"
+            ]
+        }
+    ]
+}

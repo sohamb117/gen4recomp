@@ -1,0 +1,176 @@
+{
+    "base_stats": {
+        "hp": 95,
+        "attack": 95,
+        "defense": 85,
+        "speed": 55,
+        "special_attack": 125,
+        "special_defense": 65
+    },
+    "types": [ "TYPE_GRASS", "TYPE_PSYCHIC" ],
+    "catch_rate": 45,
+    "base_exp_reward": 212,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 2,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_GRASS", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_CHLOROPHYLL", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_SEED_BOMB" ],
+            [ 1, "MOVE_BARRAGE" ],
+            [ 1, "MOVE_HYPNOSIS" ],
+            [ 1, "MOVE_CONFUSION" ],
+            [ 1, "MOVE_STOMP" ],
+            [ 17, "MOVE_STOMP" ],
+            [ 27, "MOVE_EGG_BOMB" ],
+            [ 37, "MOVE_WOOD_HAMMER" ],
+            [ 47, "MOVE_LEAF_STORM" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM16",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM29",
+            "TM32",
+            "TM33",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM48",
+            "TM53",
+            "TM58",
+            "TM64",
+            "TM68",
+            "TM70",
+            "TM75",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM86",
+            "TM87",
+            "TM90",
+            "TM92",
+            "HM04"
+        ],
+        "by_tutor": [
+            "MOVE_ROLLOUT",
+            "MOVE_SNORE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_SYNTHESIS",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_SEED_BOMB"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_EXEGGCUTE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SLOW"
+    },
+    "pokedex_data": {
+        "height_inches": 79,
+        "weight_pounds": 264.6,
+        "body_shape": "SHAPE_HEAD_LEGS",
+        "trainer_scale_f": 357,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 351,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 15,
+        "pokemon_pos_f": 2,
+        "trainer_pos_m": 14,
+        "pokemon_pos_m": 2,
+        "en": {
+            "name": "EXEGGUTOR",
+            "category": "Coconut Pokémon",
+            "entry_text": [
+                "It is called “The Walking Jungle.”\n",
+                "If a head grows too big, it falls\n",
+                "off and becomes an EXEGGCUTE."
+            ]
+        },
+        "fr": {
+            "name": "NOADKOKO",
+            "category": "Pokémon Fruitpalme",
+            "entry_text": [
+                "On l’appelle “jungle sur pattes”.\n",
+                "Si une tête devient trop grosse,\n",
+                "elle tombe et produit un NOEUNOEUF."
+            ]
+        },
+        "de": {
+            "name": "KOKOWEI",
+            "category": "Palmfrucht",
+            "entry_text": [
+                "Man nennt es den “Laufenden\n",
+                "Dschungel”. Wird ein Kopf zu groß,\n",
+                "fällt er ab und wird zu einem OWEI."
+            ]
+        },
+        "it": {
+            "name": "EXEGGUTOR",
+            "category": "Pokémon Nocecocco",
+            "entry_text": [
+                "Noto come “Giungla in moto”. Se\n",
+                "una testa diventa troppo grande,\n",
+                "cade e si trasforma in EXEGGCUTE."
+            ]
+        },
+        "es": {
+            "name": "EXEGGUTOR",
+            "category": "Pokémon Coco",
+            "entry_text": [
+                "Se le llama la “selva andante”.\n",
+                "Si una cabeza crece demasiado,\n",
+                "se cae y forma un EXEGGCUTE."
+            ]
+        },
+        "jp": {
+            "name": "ナッシ－",
+            "category": "やしのみポケモン",
+            "entry_text": [
+                "あるく　ねったいうりんと　よばれる。\n",
+                "おおきくなった　あたまの　ひとつが\n",
+                "じめんに　おちると　タマタマになる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 2561
+    }
+}

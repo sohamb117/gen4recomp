@@ -1,0 +1,51 @@
+{
+    "name": "Tiera",
+    "class": "TRAINER_CLASS_SCHOOL_KID_FEMALE",
+    "items": [
+        "ITEM_HYPER_POTION"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_PACHIRISU",
+            "form": 0,
+            "level": 47,
+            "item": null,
+            "moves": [
+                "MOVE_LAST_RESORT",
+                "MOVE_SUPER_FANG",
+                "MOVE_DISCHARGE",
+                "MOVE_SWEET_KISS"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Can you make it to the Gym Leader?\n",
+                "You sure now?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "The gears spin round and round...\n",
+                "I spin down and out...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Our Gym’s trick walkways are sure\n",
+                "to make your head spin!\n"
+            ]
+        }
+    ]
+}

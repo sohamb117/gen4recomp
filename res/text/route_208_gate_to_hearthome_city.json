@@ -1,0 +1,26 @@
+{
+  "key": 33826,
+  "messages": [
+    {
+      "id": "Route208GateToHearthomeCity_Text_HearthomeCityGreatPlace",
+      "en_US": [
+        "Hearthome City is a great place.\r",
+        "Every year, it gets voted the most\n",
+        "desirable place to live in Sinnoh."
+      ]
+    },
+    {
+      "id": "Route208GateToHearthomeCity_Text_YouSayHearthomeISayContests",
+      "en_US": [
+        "If you say Hearthome City, I only\n",
+        "say this: Pokémon Contests!\r",
+        "I’m going to enter my darling\n",
+        "Pokémon in them!"
+      ]
+    },
+    {
+      "id": "Route208GateToHearthomeCity_Text_ClefairyCryPippii",
+      "en_US": "CLEFAIRY: Pippii?!"
+    }
+  ]
+}

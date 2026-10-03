@@ -1,0 +1,55 @@
+{
+  "key": 25623,
+  "messages": [
+    {
+      "id": "OreburghCityNorthHouse2F_Text_SpecialPowerCalledAbility",
+      "en_US": [
+        "All Pokémon have a special power\n",
+        "called an ability."
+      ]
+    },
+    {
+      "id": "OreburghCityNorthHouse2F_Text_FavoriteAbilityIsPickup",
+      "en_US": [
+        "My favorite Pokémon ability is my\n",
+        "PACHIRISU’s Pickup.\r",
+        "My darling picks up a lot of dropped\n",
+        "items without me noticing!"
+      ]
+    },
+    {
+      "id": "OreburghCityNorthHouse2F_Text_ShowMeGeodude",
+      "en_US": [
+        "The view is good from the second floor,\n",
+        "but it’s a pain going outside.\r",
+        "If you don’t mind, how about showing me\n",
+        "a Pokémon called GEODUDE?"
+      ]
+    },
+    {
+      "id": "OreburghCityNorthHouse2F_Text_TokenOfMyThanks",
+      "en_US": [
+        "The view is good from the second floor,\n",
+        "but it’s a pain going outside.\r",
+        "If you don’t mind, how about showing me\n",
+        "a Pokémon called GEODUDE?\r",
+        "Oh! That Pokémon!\n",
+        "That’s a GEODUDE!\r",
+        "Wow, that’s cool...\n",
+        "It’s so cute...\r",
+        "That does it!\n",
+        "I’ll go out and catch Pokémon, too!\r",
+        "Thank you, my friend!\n",
+        "This is a token of my thanks!\r"
+      ]
+    },
+    {
+      "id": "OreburghCityNorthHouse2F_Text_SoManyKindsOfPokemon",
+      "en_US": [
+        "Yeah, there are so many kinds of\n",
+        "Pokémon out in the world.\r",
+        "I want to see them all now!"
+      ]
+    }
+  ]
+}

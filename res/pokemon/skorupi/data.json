@@ -1,0 +1,197 @@
+{
+    "base_stats": {
+        "hp": 40,
+        "attack": 50,
+        "defense": 90,
+        "speed": 65,
+        "special_attack": 30,
+        "special_defense": 55
+    },
+    "types": [ "TYPE_POISON", "TYPE_BUG" ],
+    "catch_rate": 120,
+    "base_exp_reward": 114,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_POISON_BARB"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_WATER_3" ],
+    "abilities": [ "ABILITY_BATTLE_ARMOR", "ABILITY_SNIPER" ],
+    "safari_flee_rate": 120,
+    "body_color": "MON_COLOR_PURPLE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_BITE" ],
+            [ 1, "MOVE_POISON_STING" ],
+            [ 1, "MOVE_LEER" ],
+            [ 6, "MOVE_KNOCK_OFF" ],
+            [ 12, "MOVE_PIN_MISSILE" ],
+            [ 17, "MOVE_ACUPRESSURE" ],
+            [ 23, "MOVE_SCARY_FACE" ],
+            [ 28, "MOVE_TOXIC_SPIKES" ],
+            [ 34, "MOVE_BUG_BITE" ],
+            [ 39, "MOVE_POISON_FANG" ],
+            [ 45, "MOVE_CRUNCH" ],
+            [ 50, "MOVE_CROSS_POISON" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM27",
+            "TM28",
+            "TM30",
+            "TM31",
+            "TM32",
+            "TM36",
+            "TM39",
+            "TM40",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM54",
+            "TM56",
+            "TM58",
+            "TM66",
+            "TM70",
+            "TM75",
+            "TM78",
+            "TM79",
+            "TM81",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_AQUA_TAIL",
+            "MOVE_SNORE",
+            "MOVE_KNOCK_OFF"
+        ],
+        "egg_moves": [
+            "MOVE_FAINT_ATTACK",
+            "MOVE_SCREECH",
+            "MOVE_SAND_ATTACK",
+            "MOVE_SLASH",
+            "MOVE_CONFUSE_RAY",
+            "MOVE_WHIRLWIND",
+            "MOVE_AGILITY",
+            "MOVE_PURSUIT",
+            "MOVE_NIGHT_SLASH"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            40,
+            "SPECIES_DRAPION"
+        ]
+    ],
+    "offspring": "SPECIES_SKORUPI",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_SCARY"
+    },
+    "pokedex_data": {
+        "height_inches": 31,
+        "weight_pounds": 26.5,
+        "body_shape": "SHAPE_INSECTOID",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 377,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 377,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 20,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 20,
+        "en": {
+            "name": "SKORUPI",
+            "category": "Scorpion Pokémon",
+            "entry_text": [
+                "As soon as the tail claws close,\n",
+                "its needle tips secrete poison.\n",
+                "It can survive a year without food."
+            ]
+        },
+        "fr": {
+            "name": "RAPION",
+            "category": "Pokémon Scorpion",
+            "entry_text": [
+                "Il saisit sa proie avec les pinces de\n",
+                "sa queue, lui injecte un poison et\n",
+                "la retient jusqu’à ce qu’il agisse."
+            ]
+        },
+        "de": {
+            "name": "PIONSKORA",
+            "category": "Skorpion",
+            "entry_text": [
+                "Es greift seine Beute mit den\n",
+                "Krallen an seinem Schweif und ver-\n",
+                "giftet sie. Dann wartet es ab..."
+            ]
+        },
+        "it": {
+            "name": "SKORUPI",
+            "category": "Pokémon Scorpione",
+            "entry_text": [
+                "Afferra le prede con gli artigli\n",
+                "della coda e non si allontana finché\n",
+                "il veleno che inietta non agisce."
+            ]
+        },
+        "es": {
+            "name": "SKORUPI",
+            "category": "Pokémon Escorpión",
+            "entry_text": [
+                "Agarra a sus presas con las garras\n",
+                "de la cola y les inyecta veneno.\n",
+                "Espera hasta que hace efecto."
+            ]
+        },
+        "jp": {
+            "name": "スコルピ",
+            "category": "さそりポケモン",
+            "entry_text": [
+                "しっぽの　ツメで　えものを　はさみ\n",
+                "どくを　おくりこむ。どくが　きくまで\n",
+                "ぜったいに　はなさない　しゅうねん。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 771
+    }
+}

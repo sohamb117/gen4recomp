@@ -1,0 +1,44 @@
+; 3ds/src/poly3d.v.pica, the 3D layer's vertex program.
+;
+; It has no matrix, and that is the point of the task. Present.v.pica
+; multiplies a display coordinate by its screen's orthographic matrix; there is
+; nothing to multiply here. pc_gpu3d.c has already done the projection, the
+; lighting, the clipping and the viewport transform, and 3ds_pica3d.c has
+; already multiplied the resulting screen position back through by W so that
+; this GPU's own perspective divide lands on the pixel the DS computed. So the
+; position arrives in clip space and leaves unchanged.
+;
+; What that buys is not the saved instructions. It is that every attribute
+; below is interpolated perspective-correctly against the SAME W the DS
+; interpolated with; which is what makes a textured floor look like the DS's
+; floor rather than an affine approximation of it.
+;
+; The colour carries the polygon's alpha in its w component. That is deliberate
+; and it is a performance decision: this game uses every alpha from 1 to 31, so
+; a uniform would put a draw call between almost every pair of polygons.
+
+.out outpos position
+.out outclr color
+.out outtc0 texcoord0
+
+.alias inpos v0
+.alias inclr v1
+.alias intex v2
+
+; A whole-picture slide, in clip space, for edge marking. The 3D pixel work needs to ask
+; what the pixel one to the left is, and the way a PICA answers that is to draw
+; the same geometry one pixel over and let the depth and stencil units compare.
+; x and y are already multiplied through by w, so a slide of `n` pixels is
+; (2n / target) * w, hence the multiply by inpos.w rather than a plain add.
+; Zero for every other pass, which is one instruction and no branch.
+.fvec uSlide
+
+.proc main
+	; Clip space already. The attribute loader hands over four floats.
+	mul r0, uSlide, inpos.wwww
+	add outpos, r0, inpos
+	mov outclr, inclr
+	mov outtc0, intex
+
+	end
+.end

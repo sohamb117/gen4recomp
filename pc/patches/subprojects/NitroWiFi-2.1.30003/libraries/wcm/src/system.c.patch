@@ -1,0 +1,59 @@
+--- a/subprojects/NitroWiFi-2.1.30003/libraries/wcm/src/system.c
++++ b/subprojects/NitroWiFi-2.1.30003/libraries/wcm/src/system.c
+@@ -67,7 +67,7 @@
+ 
+ 
+ #ifndef SDK_ASSERT_ON_COMPILE
+-#define SDK_ASSERT_ON_COMPILE(expr) extern assert_on_compile ## #__LINE__ (char a[(expr) ? 1 : -1])
++#define SDK_ASSERT_ON_COMPILE(expr) extern char sdk_assert_on_compile_dummy_[(expr) ? 1 : -1]
+ #endif
+ 
+ 
+@@ -1096,36 +1096,25 @@
+ 
+ 
+ 
+-static asm u32
++static u32
+ WcmCountBits( u32 arg )
+ {
+-    mov     r1, r0
+-    mov     r0, #0
+-    mov     r3, #1
+-@loop:
+-    clz     r2, r1
+-    rsbs    r2, r2, #31
+-#ifdef SP1P3_BUG_FOR_CONDITIONAL_ASM_INSTRUCTIONS
+-    bcc @bxcc1
+-    b @bxcc2
+-@bxcc1:
+-    bx lr
+-@bxcc2:
+-#else
+-    bxcc    lr
+-#endif
+-    bic     r1, r1, r3, LSL r2
+-    add     r0, r0, #1
+-    b       @loop
++    /* C retrace of the mwcc asm (clz/rsbs/bic loop): population count. */
++    u32 n = 0;
++    while (arg) { arg &= arg - 1; n++; }
++    return n;
+ }
+ 
+ 
+ 
+-static asm u32
++static u32
+ WcmCountLeadingZero( u32 arg )
+ {
+-    clz     r0, r0
+-    bx      lr
++    /* C retrace of the mwcc asm (single CLZ): 32 for zero input. */
++    u32 n = 0;
++    if (arg == 0) return 32;
++    while (!(arg & 0x80000000u)) { arg <<= 1; n++; }
++    return n;
+ }
+ #include <nitro/codereset.h>
+ 

@@ -1,0 +1,76 @@
+{
+    "name": "Jessica",
+    "class": "TRAINER_CLASS_SWIMMER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLDEEN",
+            "form": 0,
+            "level": 30,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLDEEN",
+            "form": 0,
+            "level": 30,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLDEEN",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SEAKING",
+            "form": 0,
+            "level": 33,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Swimming is a workout for your entire\n",
+                "body.\r",
+                "Jump in and swim!\n",
+                "Swim, you!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Sunk like a stone!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Well, Pokémon’s one thing, but you\n",
+                "should take up swimming, too!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Hiya, Pokémon-riding Trainer!\n",
+                "You should be swimming like me!\r"
+            ]
+        }
+    ]
+}

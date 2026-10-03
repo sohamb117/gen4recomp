@@ -1,0 +1,176 @@
+{
+    "base_stats": {
+        "hp": 95,
+        "attack": 60,
+        "defense": 79,
+        "speed": 81,
+        "special_attack": 100,
+        "special_defense": 125
+    },
+    "types": [ "TYPE_WATER", "TYPE_WATER" ],
+    "catch_rate": 60,
+    "base_exp_reward": 213,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 2
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_ERRATIC",
+    "egg_groups": [ "EGG_GROUP_WATER_1", "EGG_GROUP_DRAGON" ],
+    "abilities": [ "ABILITY_MARVEL_SCALE", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PINK",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_WATER_GUN" ],
+            [ 1, "MOVE_WRAP" ],
+            [ 5, "MOVE_WATER_SPORT" ],
+            [ 9, "MOVE_REFRESH" ],
+            [ 13, "MOVE_WATER_PULSE" ],
+            [ 17, "MOVE_TWISTER" ],
+            [ 21, "MOVE_RECOVER" ],
+            [ 25, "MOVE_CAPTIVATE" ],
+            [ 29, "MOVE_AQUA_TAIL" ],
+            [ 33, "MOVE_RAIN_DANCE" ],
+            [ 37, "MOVE_HYDRO_PUMP" ],
+            [ 41, "MOVE_ATTRACT" ],
+            [ 45, "MOVE_SAFEGUARD" ],
+            [ 49, "MOVE_AQUA_RING" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM20",
+            "TM21",
+            "TM23",
+            "TM27",
+            "TM32",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM59",
+            "TM68",
+            "TM72",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM03",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_IRON_HEAD",
+            "MOVE_AQUA_TAIL",
+            "MOVE_SNORE",
+            "MOVE_TWISTER",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_FEEBAS",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 244,
+        "weight_pounds": 357.1,
+        "body_shape": "SHAPE_SERPENTINE",
+        "trainer_scale_f": 349,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 357,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 15,
+        "pokemon_pos_f": 3,
+        "trainer_pos_m": 15,
+        "pokemon_pos_m": 3,
+        "en": {
+            "name": "MILOTIC",
+            "category": "Tender Pokémon",
+            "entry_text": [
+                "Its lovely scales are described as\n",
+                "rainbow colored. They change color\n",
+                "depending on the viewing angle."
+            ]
+        },
+        "fr": {
+            "name": "MILOBELLUS",
+            "category": "Pokémon Tendre",
+            "entry_text": [
+                "On raconte qu’il surgit du fond des\n",
+                "lacs pour calmer les esprits quand\n",
+                "les gens se querellent."
+            ]
+        },
+        "de": {
+            "name": "MILOTIC",
+            "category": "Zartheit",
+            "entry_text": [
+                "Wenn sich jemand streitet, steigt\n",
+                "es aus den Tiefen des Sees empor,\n",
+                "um die Streitenden zu beruhigen."
+            ]
+        },
+        "it": {
+            "name": "MILOTIC",
+            "category": "Pokémon Tenerezza",
+            "entry_text": [
+                "Si dice che sorga dai fondali dei\n",
+                "laghi per placare gli animi furiosi\n",
+                "delle persone che litigano."
+            ]
+        },
+        "es": {
+            "name": "MILOTIC",
+            "category": "Pokémon Tierno",
+            "entry_text": [
+                "Se dice que emerge del fondo de\n",
+                "los lagos cuando la gente discute\n",
+                "para apaciguarla."
+            ]
+        },
+        "jp": {
+            "name": "ミロカロス",
+            "category": "いつくしみポケモン",
+            "entry_text": [
+                "ひとびとが　あらそいを　はじめると\n",
+                "みずうみの　おくそこから　あらわれて\n",
+                "すさんだ　こころを　いやすという。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 771
+    }
+}

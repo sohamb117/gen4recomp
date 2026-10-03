@@ -1,0 +1,68 @@
+{
+    "name": "Stanley",
+    "class": "TRAINER_CLASS_DRAGON_TAMER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_DRATINI",
+            "form": 0,
+            "level": 55,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ALTARIA",
+            "form": 0,
+            "level": 57,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "How do you do?\n",
+                "I’m Stanley, and I’m a Dragon Tamer.\r",
+                "What do you say we let our Pokémon\n",
+                "have it out? Sound OK to you?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Victory!\n",
+                "That is, victory for you...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "It seems to me, there’s this certain\n",
+                "image that goes with a Dragon Tamer.\r",
+                "But me, I’d much sooner take it easy,\n",
+                "take it slow, and take it my own way.\r",
+                "I figure there’s more than my style\n",
+                "that I need to work on first.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Hey, how do you do again?\r",
+                "What do you say we let our Pokémon\n",
+                "have at it again? Sound OK to you?\r"
+            ]
+        }
+    ]
+}

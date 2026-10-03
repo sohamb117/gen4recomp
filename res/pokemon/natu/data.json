@@ -1,0 +1,206 @@
+{
+    "base_stats": {
+        "hp": 40,
+        "attack": 50,
+        "defense": 45,
+        "speed": 70,
+        "special_attack": 70,
+        "special_defense": 45
+    },
+    "types": [ "TYPE_PSYCHIC", "TYPE_FLYING" ],
+    "catch_rate": 190,
+    "base_exp_reward": 73,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 1,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FLYING", "EGG_GROUP_FLYING" ],
+    "abilities": [ "ABILITY_SYNCHRONIZE", "ABILITY_EARLY_BIRD" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GREEN",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_PECK" ],
+            [ 1, "MOVE_LEER" ],
+            [ 6, "MOVE_NIGHT_SHADE" ],
+            [ 9, "MOVE_TELEPORT" ],
+            [ 12, "MOVE_LUCKY_CHANT" ],
+            [ 17, "MOVE_MIRACLE_EYE" ],
+            [ 20, "MOVE_ME_FIRST" ],
+            [ 23, "MOVE_CONFUSE_RAY" ],
+            [ 28, "MOVE_WISH" ],
+            [ 33, "MOVE_PSYCHO_SHIFT" ],
+            [ 36, "MOVE_FUTURE_SIGHT" ],
+            [ 39, "MOVE_OMINOUS_WIND" ],
+            [ 44, "MOVE_POWER_SWAP" ],
+            [ 44, "MOVE_GUARD_SWAP" ],
+            [ 47, "MOVE_PSYCHIC" ]
+        ],
+        "by_tm": [
+            "TM04",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM33",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM47",
+            "TM48",
+            "TM51",
+            "TM58",
+            "TM62",
+            "TM70",
+            "TM73",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM86",
+            "TM87",
+            "TM88",
+            "TM89",
+            "TM90",
+            "TM92"
+        ],
+        "by_tutor": [
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_AIR_CUTTER",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_TWISTER",
+            "MOVE_TRICK",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_HAZE",
+            "MOVE_DRILL_PECK",
+            "MOVE_QUICK_ATTACK",
+            "MOVE_FAINT_ATTACK",
+            "MOVE_STEEL_WING",
+            "MOVE_PSYCH_UP",
+            "MOVE_FEATHER_DANCE",
+            "MOVE_REFRESH",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_SUCKER_PUNCH"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            25,
+            "SPECIES_XATU"
+        ]
+    ],
+    "offspring": "SPECIES_NATU",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 8,
+        "weight_pounds": 4.4,
+        "body_shape": "SHAPE_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 479,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 479,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 31,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 31,
+        "en": {
+            "name": "NATU",
+            "category": "Tiny Bird Pokémon",
+            "entry_text": [
+                "It picks food from cactus plants,\n",
+                "deftly avoiding buds and spines.\n",
+                "It seems to skip about to move."
+            ]
+        },
+        "fr": {
+            "name": "NATU",
+            "category": "Pokémon Minoiseau",
+            "entry_text": [
+                "Il mange des cactus en prenant\n",
+                "soin d’éviter les bourgeons et les\n",
+                "épines. Il ne tient pas en place. "
+            ]
+        },
+        "de": {
+            "name": "NATU",
+            "category": "Kleinvogel",
+            "entry_text": [
+                "Es pickt seine Nahrung aus\n",
+                "Kakteen, wobei es Knospen und\n",
+                "Dornen verschont."
+            ]
+        },
+        "it": {
+            "name": "NATU",
+            "category": "Pokémon Uccellino",
+            "entry_text": [
+                "Raccoglie cibo dai cactus, evitando\n",
+                "agilmente germogli e spine. Si muove\n",
+                "saltellando."
+            ]
+        },
+        "es": {
+            "name": "NATU",
+            "category": "Pokémon Pajarito",
+            "entry_text": [
+                "Recoge alimento de los cactos\n",
+                "evitando los pinchos. Se mueve\n",
+                "dando saltos."
+            ]
+        },
+        "jp": {
+            "name": "ネイティ",
+            "category": "ことりポケモン",
+            "entry_text": [
+                "サボテンの　つぼみや　トゲを\n",
+                "きように　よけながら　ついばむ。\n",
+                "とびはねるようにして　いどうする。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 4362
+    }
+}

@@ -1,0 +1,55 @@
+{
+    "name": "Farley",
+    "class": "TRAINER_CLASS_FISHERMAN",
+    "availableSets": [
+        "blastoise_3",
+        "feraligatr_3",
+        "swampert_3",
+        "empoleon_3",
+        "quagsire_3",
+        "lanturn_3",
+        "whiscash_3",
+        "dewgong_3",
+        "gastrodon_3",
+        "ludicolo_3",
+        "slowbro_3",
+        "slowking_3",
+        "floatzel_3",
+        "golduck_3",
+        "poliwrath_3",
+        "politoed_3",
+        "wailord_3",
+        "tentacruel_3",
+        "starmie_3",
+        "vaporeon_3",
+        "walrein_3",
+        "lapras_3",
+        "gyarados_3",
+        "kingdra_3",
+        "milotic_3",
+        "none_1"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Listen, I’m feeling bushed today.\n",
+                "Can we do this tomorrow first thing?"
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "Oh, all right. You’re impatient.\n",
+                "Couldn’t wait till tomorrow, oh no.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That’s why I said tomorrow.\n",
+                "I can barely stay awake now.\r"
+            ]
+        }
+    ]
+}

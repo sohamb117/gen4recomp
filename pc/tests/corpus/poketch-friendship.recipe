@@ -1,0 +1,12 @@
+# Friendship checker. One mon that hates the player, one that loves them.
+name WATCHER
+gender GENDER_MALE
+trainer-id 10000
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 14 ITEM_NONE
+party SPECIES_STARLY 10 ITEM_NONE
+condition 0 MON_DATA_FRIENDSHIP 0
+condition 1 MON_DATA_FRIENDSHIP 255
+poketch POKETCH_APPID_FRIENDSHIPCHECKER
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_DOWN

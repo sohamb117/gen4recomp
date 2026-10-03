@@ -1,0 +1,31 @@
+--- a/src/map_object.c
++++ b/src/map_object.c
+@@ -28,6 +28,7 @@
+ 
+ #include "berry_patch_graphics.h"
+ #include "heap.h"
++#include "pc_modfs.h"
+ #include "map_header_data.h"
+ #include "map_object_move.h"
+ #include "narc.h"
+@@ -2402,6 +2403,20 @@
+         v0++;
+     } while (v0->unk_00 != 0xffff);
+ 
++    /* Cooked billboard person: clone youngster's renderer. The four
++     * overlay005 tables are sentinel lists, not sized by the enum. */
++    if (pc_modfs_billboard_nsbtx((int)param0) >= 0) {
++        v0 = Unk_ov5_021FB97C;
++
++        do {
++            if (v0->unk_00 == OBJ_EVENT_GFX_YOUNGSTER) {
++                return v0->unk_04;
++            }
++
++            v0++;
++        } while (v0->unk_00 != 0xffff);
++    }
++
+     GF_ASSERT(FALSE);
+     return NULL;
+ }

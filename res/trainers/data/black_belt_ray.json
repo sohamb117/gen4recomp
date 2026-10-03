@@ -1,0 +1,61 @@
+{
+    "name": "Ray",
+    "class": "TRAINER_CLASS_BLACK_BELT",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_BRELOOM",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": [
+                "MOVE_SEED_BOMB",
+                "MOVE_MACH_PUNCH",
+                "MOVE_SKY_UPPERCUT",
+                "MOVE_SPORE"
+            ],
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_TOXICROAK",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": [
+                "MOVE_SLUDGE_BOMB",
+                "MOVE_NASTY_PLOT",
+                "MOVE_FOCUS_BLAST",
+                "MOVE_DARK_PULSE"
+            ],
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "My Pokémon can destroy anything.\n",
+                "And you think you can win?!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "We weren’t up to the task!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Even though my team could break\n",
+                "bricks and shatter boulders, they\f",
+                "failed to dent your spirits!\n"
+            ]
+        }
+    ]
+}

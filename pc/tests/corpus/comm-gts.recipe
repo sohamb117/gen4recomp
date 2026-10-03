@@ -1,0 +1,17 @@
+# GTS door, no Nintendo WFC login.
+#
+# The receptionist is at (7, 3) facing south. Standing on the tile in
+# front of her and talking is how a player starts a Global Trade. With
+# no DWC profile the script still walks through the door, then
+# TryStartGTSApp returns 0 and the player is walked back out. That is
+# the console's refusal, not a fabricated comms reply.
+
+name GTSER
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+flag FLAG_TALKED_TO_GLOBAL_TERMINAL_1F_RECEPTIONIST_GTS
+party SPECIES_TURTWIG 15 ITEM_NONE
+party SPECIES_STARLY 12 ITEM_NONE
+map MAP_HEADER_GLOBAL_TERMINAL_1F 7 4 FACE_UP

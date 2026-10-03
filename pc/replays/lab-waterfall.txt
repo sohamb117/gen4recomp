@@ -1,0 +1,39 @@
+# Boots a save on the bank of the river on Route 210 North, surfs out, rides
+# north to the foot of the waterfall and climbs it.
+#
+# The first lines are lab-continue.txt's, unchanged. Then two field moves in a
+# row, each the same three beats: A talks to the water, the yes/no menu opens
+# on YES so a second A answers it, and the message that follows clears on the
+# next one.
+#
+# The up hold is two tiles and no more. A waterfall refuses to be swum into,
+# so the third tile of a longer hold would be spent bumping the wall of water:
+# harmless, but the run would be pinning a picture of the player pushing
+# into it rather than sitting in front of it.
+#
+# The B at the end clears whatever message is still up, the way every other
+# lab script here settles.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3600 keys A
+3624 keys none
+3800 keys A
+3824 keys none
+4100 keys UP
+4160 keys none
+4400 keys A
+4424 keys none
+4600 keys A
+4624 keys none
+4800 keys A
+4824 keys none
+5000 keys B
+5024 keys none

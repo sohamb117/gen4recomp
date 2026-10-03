@@ -1,0 +1,46 @@
+{
+    "name": "Fernando",
+    "class": "TRAINER_CLASS_COLLECTOR",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_HERACROSS",
+            "form": 0,
+            "level": 25,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "We were having a heated discussion\n",
+                "over Pokémon the way Collectors do.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Knowledge alone isn’t everything,\n",
+                "you know...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’m more knowledgeable than anyone\n",
+                "else!\r",
+                "I have a rare Pokémon!\r",
+                "But, I’m weak at battling...\n",
+                "That’s a Pokémon Collector for you..."
+            ]
+        }
+    ]
+}

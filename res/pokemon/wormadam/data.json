@@ -1,0 +1,177 @@
+{
+    "base_stats": {
+        "hp": 60,
+        "attack": 59,
+        "defense": 85,
+        "speed": 36,
+        "special_attack": 79,
+        "special_defense": 105
+    },
+    "types": [ "TYPE_BUG", "TYPE_GRASS" ],
+    "catch_rate": 45,
+    "base_exp_reward": 159,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 2
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_SILVERPOWDER"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_ONLY",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_ANTICIPATION", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GRAY",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 10, "MOVE_PROTECT" ],
+            [ 15, "MOVE_BUG_BITE" ],
+            [ 20, "MOVE_HIDDEN_POWER" ],
+            [ 23, "MOVE_CONFUSION" ],
+            [ 26, "MOVE_RAZOR_LEAF" ],
+            [ 29, "MOVE_GROWTH" ],
+            [ 32, "MOVE_PSYBEAM" ],
+            [ 35, "MOVE_CAPTIVATE" ],
+            [ 38, "MOVE_FLAIL" ],
+            [ 41, "MOVE_ATTRACT" ],
+            [ 44, "MOVE_PSYCHIC" ],
+            [ 47, "MOVE_LEAF_STORM" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM19",
+            "TM20",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM48",
+            "TM53",
+            "TM58",
+            "TM68",
+            "TM70",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM86",
+            "TM87",
+            "TM90"
+        ],
+        "by_tutor": [
+            "MOVE_SNORE",
+            "MOVE_ENDEAVOR",
+            "MOVE_SYNTHESIS",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_SEED_BOMB",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_BURMY",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 20,
+        "weight_pounds": 14.3,
+        "body_shape": "SHAPE_SERPENTINE",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 503,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 503,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65524,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65524,
+        "en": {
+            "name": "WORMADAM",
+            "category": "Bagworm Pokémon",
+            "entry_text": [
+                "When evolving, its body takes in\n",
+                "surrounding materials. As a result,\n",
+                "there are many body variations."
+            ]
+        },
+        "fr": {
+            "name": "CHENISELLE",
+            "category": "Pokémon Ver Caché",
+            "entry_text": [
+                "Quand CHENITI a évolué, sa\n",
+                "cape a fusionné avec son corps.\n",
+                "CHENISELLE ne s’en sépare jamais."
+            ]
+        },
+        "de": {
+            "name": "BURMADAME",
+            "category": "Beutelwurm",
+            "entry_text": [
+                "Als sich BURMY entwickelte,\n",
+                "wurde sein Umhang Teil des Körpers.\n",
+                "Es legt den Umhang niemals ab."
+            ]
+        },
+        "it": {
+            "name": "WORMADAM",
+            "category": "Pokémon Larva",
+            "entry_text": [
+                "Con l’evoluzione, il manto di BURMY\n",
+                "diventa parte del corpo di questo\n",
+                "Pokémon. Non se ne separa mai."
+            ]
+        },
+        "es": {
+            "name": "WORMADAM",
+            "category": "Pokémon Larva",
+            "entry_text": [
+                "Cuando BURMY evolucionó,\n",
+                "su caparazón pasó a formar parte\n",
+                "de este Pokémon."
+            ]
+        },
+        "jp": {
+            "name": "ミノマダム",
+            "category": "みのむしポケモン",
+            "entry_text": [
+                "ミノムッチから　しんかしたとき\n",
+                "ミノが　からだの　いちぶに　なった。\n",
+                "いっしょう　ミノを　ぬぐことはない。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 260
+    }
+}

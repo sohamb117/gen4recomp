@@ -1,0 +1,60 @@
+{
+    "name": "Amber",
+    "class": "TRAINER_CLASS_BREEDER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MAGBY",
+            "form": 0,
+            "level": 23,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_TOGEPI",
+            "form": 0,
+            "level": 23,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m a rookie breeder, but I’ll do\n",
+                "my very best!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "It’s all right!\n",
+                "I’m still a rookie!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "The best way to raise Pokémon?\r",
+                "...Hmm, when it comes right down to it,\n",
+                "isn’t it all about love?\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I can’t be a rookie forever.\n",
+                "I’ve learned a lot since we last met.\r"
+            ]
+        }
+    ]
+}

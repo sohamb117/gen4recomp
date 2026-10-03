@@ -1,0 +1,188 @@
+{
+    "base_stats": {
+        "hp": 60,
+        "attack": 50,
+        "defense": 100,
+        "speed": 65,
+        "special_attack": 85,
+        "special_defense": 70
+    },
+    "types": [ "TYPE_WATER", "TYPE_FLYING" ],
+    "catch_rate": 45,
+    "base_exp_reward": 164,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 2,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_WATER_1", "EGG_GROUP_FLYING" ],
+    "abilities": [ "ABILITY_KEEN_EYE", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_GROWL" ],
+            [ 1, "MOVE_WATER_GUN" ],
+            [ 1, "MOVE_WATER_SPORT" ],
+            [ 1, "MOVE_WING_ATTACK" ],
+            [ 6, "MOVE_SUPERSONIC" ],
+            [ 11, "MOVE_WING_ATTACK" ],
+            [ 16, "MOVE_MIST" ],
+            [ 19, "MOVE_WATER_PULSE" ],
+            [ 24, "MOVE_PAYBACK" ],
+            [ 25, "MOVE_PROTECT" ],
+            [ 31, "MOVE_ROOST" ],
+            [ 38, "MOVE_STOCKPILE" ],
+            [ 38, "MOVE_SWALLOW" ],
+            [ 38, "MOVE_SPIT_UP" ],
+            [ 43, "MOVE_FLING" ],
+            [ 50, "MOVE_TAILWIND" ],
+            [ 57, "MOVE_HYDRO_PUMP" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM27",
+            "TM32",
+            "TM34",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM47",
+            "TM51",
+            "TM55",
+            "TM56",
+            "TM58",
+            "TM66",
+            "TM68",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM88",
+            "TM89",
+            "TM90",
+            "HM02",
+            "HM03",
+            "HM05"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_AIR_CUTTER",
+            "MOVE_GUNK_SHOT",
+            "MOVE_TWISTER",
+            "MOVE_SEED_BOMB",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SWIFT",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_WINGULL",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 47,
+        "weight_pounds": 61.7,
+        "body_shape": "SHAPE_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65531,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65531,
+        "en": {
+            "name": "PELIPPER",
+            "category": "Water Bird Pokémon",
+            "entry_text": [
+                "It is a messenger of the skies,\n",
+                "carrying small Pokémon and\n",
+                "eggs to safety in its bill."
+            ]
+        },
+        "fr": {
+            "name": "BEKIPAN",
+            "category": "Pokémon Oiseaudo",
+            "entry_text": [
+                "Il trempe son grand bec dans la\n",
+                "mer pour charrier de l’eau et\n",
+                "de nombreuses proies."
+            ]
+        },
+        "de": {
+            "name": "PELIPPER",
+            "category": "Wasservogel",
+            "entry_text": [
+                "Es taucht seinen großen Schnabel\n",
+                "ins Wasser und fängt so eine Menge\n",
+                "Beute."
+            ]
+        },
+        "it": {
+            "name": "PELIPPER",
+            "category": "Pokémon Alacquatico",
+            "entry_text": [
+                "Immerge il suo enorme becco nel\n",
+                "mare, raccogliendo acqua e\n",
+                "numerose prede."
+            ]
+        },
+        "es": {
+            "name": "PELIPPER",
+            "category": "Pokémon Ave Agua",
+            "entry_text": [
+                "Hunde su gran pico en el mar\n",
+                "para sacar numerosas presas\n",
+                "junto con mucha agua."
+            ]
+        },
+        "jp": {
+            "name": "ペリッパ－",
+            "category": "みずどりポケモン",
+            "entry_text": [
+                "おおきな　クチバシを　うみに　いれて\n",
+                "ひとすくいすると　エサが　たくさん\n",
+                "はいっているという　すんぽうだ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 4355
+    }
+}

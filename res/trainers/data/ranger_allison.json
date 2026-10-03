@@ -1,0 +1,58 @@
+{
+    "name": "Allison",
+    "class": "TRAINER_CLASS_RANGER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MARILL",
+            "form": 0,
+            "level": 29,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LEAFEON",
+            "form": 0,
+            "level": 29,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Protect the natural environment.\n",
+                "That’s what we Rangers do!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "We’ve got to get tougher than this..."
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I love how natural it is here.\n",
+                "I wish I could live out here.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "What do you think? The environment\n",
+                "is unharmed in this area.\r"
+            ]
+        }
+    ]
+}

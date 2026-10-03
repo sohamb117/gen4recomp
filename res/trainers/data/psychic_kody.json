@@ -1,0 +1,48 @@
+{
+    "name": "Kody",
+    "class": "TRAINER_CLASS_PSYCHIC_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MEDITITE",
+            "form": 0,
+            "level": 17,
+            "item": null,
+            "moves": [
+                "MOVE_CONFUSION",
+                "MOVE_BIDE",
+                "MOVE_MEDITATE"
+            ],
+            "iv_scale": 20,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "A strange presence has been felt...\n",
+                "It is emanating from...you!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh, no!\n",
+                "My MEDITITE!"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "The Old Chateau... I sense...\n",
+                "a particularly strong presence there."
+            ]
+        }
+    ]
+}

@@ -1,0 +1,639 @@
+/*
+ * The cartridge, backed by the tree's own ROM build.
+ *
+ * This decomp builds the real ROM (ninja -C build/rom ->
+ * pokeplatinum.us.nds), so the cartridge the game expects to read is a
+ * file this port can open. Every ROM read in the SDK funnels through
+ * CARDi_ReadRom (CARD_ReadRom / CARD_ReadRomAsync are header inlines over
+ * it), so that is the override point: a read of guest "ROM offset" src
+ * becomes a pread of the image. Reads complete synchronously, the card
+ * bus with a parked CPU, same reasoning as the DMA model, and the
+ * callback runs before return, a schedule every SDK caller must tolerate.
+ *
+ * CARD_Init is replaced too: the SDK's spins up the async transfer
+ * thread and the ARM7 handshake, none of which exists when every read
+ * completes before returning. The pieces of its state machine that later
+ * code observes (cardi_common.flag, the lock word) are set the same way.
+ *
+ * pc_rom_init() also places the ROM header at HW_ROM_HEADER_BUF
+ * (0x027FFE00), which on hardware the firmware does before the game ever
+ * runs, boot.c's anti-tamper check reads the FAT/FNT offsets out of
+ * that buffer to wire the "rom" archive.
+ *
+ * The image path: $PC_ROM if set, else <dir of the executable>
+ * /../rom/pokeplatinum.us.nds (the build tree layout), else
+ * ./build/rom/pokeplatinum.us.nds.
+ */
+#include "pc_bench.h"
+#include <nitro.h>
+#include <nitro/card/rom.h>
+/* The card library's private state (CARDiCommon, cardi_common), reached
+ * through the public include root on purpose, so this file states exactly
+ * which internal it shares with the SDK's own card_common.c. */
+#include <../libraries/card/include/card_common.h>
+
+#include <fcntl.h>
+
+/* Windows: fds default to TEXT mode, which rewrites bytes; and mingw has no
+ * pread/pwrite. A seek+read pair is equivalent here; every access is from
+ * one thread. O_BINARY is 0 where the concept does not exist. */
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+#if defined(_WIN32)
+#include <io.h>
+static long pc_pread(int fd, void *buf, unsigned len, long long off) {
+    if (_lseeki64(fd, off, SEEK_SET) < 0) return -1;
+    return read(fd, buf, len);
+}
+static long pc_pwrite(int fd, const void *buf, unsigned len, long long off) {
+    if (_lseeki64(fd, off, SEEK_SET) < 0) return -1;
+    return write(fd, buf, len);
+}
+#define pread(fd, buf, len, off)  pc_pread(fd, buf, len, off)
+#define pwrite(fd, buf, len, off) pc_pwrite(fd, buf, len, off)
+#define ssize_t long
+#elif defined(__3DS__)
+/* Same absence, different C library: newlib has neither call. The seek+read
+ * pair is equivalent for the same reason it is on Windows, every access
+ * here names its own offset and there is one thread, with the one
+ * difference that it moves the file position, which nothing in this file
+ * reads. */
+#include <unistd.h>
+static ssize_t pc_pread(int fd, void *buf, size_t len, off_t off) {
+    if (lseek(fd, off, SEEK_SET) < 0) return -1;
+    return read(fd, buf, len);
+}
+static ssize_t pc_pwrite(int fd, const void *buf, size_t len, off_t off) {
+    if (lseek(fd, off, SEEK_SET) < 0) return -1;
+    return write(fd, buf, len);
+}
+#define pread(fd, buf, len, off)  pc_pread(fd, buf, len, off)
+#define pwrite(fd, buf, len, off) pc_pwrite(fd, buf, len, off)
+#endif
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+static int sRomFd = -1;
+
+#if defined(__3DS__)
+/* The search happened at mount time: 3ds/src/3ds_rom.c tries the image packed
+ * into the 3dsx first and the SD card second, and hands back whichever it
+ * opened. There is nothing for this side to look for, no executable
+ * directory to walk to, no environment to read, and a working directory that
+ * depends on the loader. */
+static const char *rom_path(char *buf, size_t bufsize)
+{
+    extern int rom_fs_init(void);
+    extern const char *rom_fs_path(void);
+
+    (void)buf;
+    (void)bufsize;
+    if (rom_fs_path() == NULL) {
+        (void)rom_fs_init();
+    }
+    /* Still nothing: neither place had an image. Hand back the one the 3dsx
+     * is meant to carry so the failure below names a path. */
+    return rom_fs_path() ? rom_fs_path() : "romfs:/pokeplatinum.us.nds";
+}
+#else
+static const char *rom_path(char *buf, size_t bufsize)
+{
+    const char *env = getenv("PC_ROM");
+    ssize_t n;
+    char *slash;
+
+    if (env) {
+        return env;
+    }
+#if defined(_WIN32)
+    /* The exe's own directory, the /proc/self/exe of PE. pcw_module_dir
+     * strips the filename and hands back a trailing-slash-less dir. */
+    {
+        extern int pcw_module_dir(char *out, unsigned cap);
+
+        if (pcw_module_dir(buf, (unsigned)bufsize - 32)) {
+            n = (ssize_t)strlen(buf);
+            buf[n] = '/';
+            buf[n + 1] = '\0';
+            n += 1;
+        } else {
+            n = -1;
+        }
+    }
+#else
+    n = readlink("/proc/self/exe", buf, bufsize - 1);
+#endif
+    if (n > 0) {
+        buf[n] = '\0';
+        slash = strrchr(buf, '/');
+        if (slash) {
+            snprintf(slash + 1, bufsize - (size_t)(slash + 1 - buf),
+                     "../rom/pokeplatinum.us.nds");
+            if (access(buf, R_OK) == 0) {
+                return buf;
+            }
+        }
+    }
+    return "build/rom/pokeplatinum.us.nds";
+}
+#endif
+
+int pc_rom_init(void)
+{
+    char pathbuf[PATH_MAX];
+    const char *path = rom_path(pathbuf, sizeof pathbuf);
+    u8 header[0x200];
+    ssize_t n;
+
+    sRomFd = open(path, O_RDONLY | O_BINARY);
+    if (sRomFd < 0) {
+        fprintf(stderr,
+                "pokeplatinum-pc: cannot open the ROM image at %s\n"
+                "  (build it: ninja -C build/rom; or set PC_ROM)\n",
+                path);
+        return -1;
+    }
+    n = pread(sRomFd, header, sizeof header, 0);
+    if (n != (ssize_t)sizeof header) {
+        fprintf(stderr, "pokeplatinum-pc: short read on the ROM header\n");
+        return -1;
+    }
+    /* What the firmware leaves behind: the cart header at
+     * HW_ROM_HEADER_BUF. HW_CARD_ROM_HEADER_SIZE and not sizeof header;
+     * the buffer ends at 0x027FFF60 and what follows it is the PXI signal
+     * words, the thread-info pointers, HW_BUTTON_XY_BUF and every lock
+     * word. Nothing had read them yet at this point in start-up, so the
+     * 0xA0-byte overrun this used to do was invisible; it would stop being
+     * invisible the first time anything re-opened the cartridge. */
+    memcpy((void *)HW_ROM_HEADER_BUF, header, HW_CARD_ROM_HEADER_SIZE);
+    fprintf(stderr, "pokeplatinum-pc: rom: %s\n", path);
+    return 0;
+}
+
+/*
+ * Every card read is a pread of a 134 MB file, so the first touch of any
+ * region is a disk read inside the frame that asked for it; which is
+ * exactly the shape of a stall the pacer cannot do anything about. The span
+ * is here so the late-frame autopsy can say whether that is what it was.
+ */
+static void rom_read(u32 src, void *dst, u32 len)
+{
+    ssize_t n;
+
+    PC_BENCH_BEGIN(bench_t);
+    n = pread(sRomFd, dst, len, (off_t)src);
+    PC_BENCH_END(PC_BENCH_IO, bench_t);
+    if (n != (ssize_t)len) {
+        fprintf(stderr,
+                "pc_card_rom: read of %u bytes at rom:%#x returned %zd\n",
+                (unsigned)len, (unsigned)src, n);
+        abort();
+    }
+}
+
+void CARDi_ReadRom(u32 dma, const void *src, void *dst, u32 len,
+                   MIDmaCallback callback, void *arg, BOOL is_async)
+{
+    (void)dma;
+    (void)is_async;
+    if (sRomFd < 0) {
+        fprintf(stderr, "pc_card_rom: read before pc_rom_init\n");
+        abort();
+    }
+    rom_read((u32)src, dst, len);
+    if (callback) {
+        callback(arg);
+    }
+}
+
+void CARD_Init(void)
+{
+    CARDiCommon *const p = &cardi_common;
+    if (!p->flag) {
+        p->flag = CARD_STAT_INIT;
+        p->src = p->dst = p->len = 0;
+        p->dma = (u32)~0;
+        p->callback = NULL;
+        p->callback_arg = NULL;
+        /* The SDK's own state init: lock_owner = OS_LOCK_ID_ERROR (zeroed
+         * commons read as "locked by id 0" and the first CARD_LockBackup
+         * sleeps forever, measured, not hypothetical), and cmd wired to
+         * the file-static command block. What the SDK's CARD_Init does
+         * beyond this, the transfer thread, the pull-out callback, the
+         * rom accessor, has no counterpart when every request completes
+         * synchronously. */
+        CARDi_InitCommon();
+    }
+}
+
+/* Every read completed before it returned; asynchrony is never pending. */
+void CARD_WaitRomAsync(void)
+{
+}
+
+BOOL CARD_TryWaitRomAsync(void)
+{
+    return TRUE;
+}
+
+/* ------------------------------------------------------------------ */
+/* The save chip                                                       */
+/* ------------------------------------------------------------------ */
+
+/* On hardware every backup operation becomes a CARDi_Request: the command
+ * block at cardi_common.cmd goes to the ARM7 over PXI, the ARM7 runs the
+ * SPI transaction, writes cmd->result and acks. There is no ARM7 here, so
+ * the request IS the operation: it runs against a host-side image,
+ * synchronously, before returning, the same completed-before-you-looked
+ * schedule as the DMA and ROM models.
+ *
+ * The chip spec (size, sector/page geometry) is NOT this file's problem:
+ * CARDi_IdentifyBackupCore fills cmd->spec host-side from the type the
+ * game names before any request is issued. The image allocates lazily at
+ * spec.total_size, filled 0xFF (an erased chip, the honest state of a
+ * save that has never been written; the game's own "no save data" path
+ * handles it exactly as it would a fresh cartridge).
+ *
+ * Persistence: $PC_SAVE names the image file (default: beside the ROM,
+ * <rom>.sav). Loaded whole if present, written through whole on every
+ * mutating request; a save-file write is rare and small (<=512 KB), and
+ * write-through means a crash never loses a completed save. PC_SAVE=none
+ * disables persistence for scripted runs.
+ */
+#include <nitro/card/backup.h>
+
+static u8 *sBackupImage;
+static u32 sBackupSize;
+static char sSavePath[PATH_MAX];
+
+/*
+ * ROLLING BACKUP: the previous completed save, kept.
+ *
+ * The rotate happens once per SAVE, before the first write of it, and copies
+ * what is on disk; which is by definition the last save that finished. Not
+ * per sector write: the game's save is 506 flushes, and rotating on each
+ * would leave `.sav.bak` holding a half-written file, which is worse than no
+ * backup at all because it looks like one.
+ *
+ * A save is one burst, and that was measured rather than assumed: replaying
+ * the scripted flow that saves, all 506 writes land inside a single frame,
+ * and there is no second save to be confused with. Sixty frames of quiet is
+ * far clear of the gap inside a burst and a second short of any two saves a
+ * person could make.
+ *
+ * Best-effort and silent on failure. A backup that could stop a save from
+ * happening would have inverted the point of it.
+ */
+static void backup_rotate(void)
+{
+    extern unsigned long long pc_irq_frames(void);
+    static unsigned long long last_write;
+    static int seen;
+    unsigned long long now = pc_irq_frames();
+    /*
+     * Static, not automatic. These two are 66,560 bytes between them, which a
+     * desktop thread never notices and a console one does not have: on the
+     * 3DS the prologue moved the stack pointer clean out of the thread's
+     * stack, every store of the frame went to unmapped memory, and the return
+     * read a link register that had never been written, a branch to zero,
+     * every time the player saved. The function is already single-threaded
+     * and non-reentrant (`seen` and `last_write` below are static too), so
+     * there is nothing a per-call copy was buying.
+     */
+    static char bak[PATH_MAX];
+    static char buf[65536];
+    int in, out;
+    ssize_t n;
+
+    if (seen && now - last_write < 60) {
+        last_write = now;
+        return;                 /* still the same save */
+    }
+    seen = 1;
+    last_write = now;
+
+    snprintf(bak, sizeof bak, "%s.bak", sSavePath);
+    in = open(sSavePath, O_RDONLY | O_BINARY);
+    if (in < 0) {
+        return;                 /* nothing saved yet: nothing to keep */
+    }
+    out = open(bak, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0644);
+    if (out < 0) {
+        close(in);
+        return;
+    }
+    while ((n = read(in, buf, sizeof buf)) > 0) {
+        if (write(out, buf, (size_t)n) != n) {
+            break;
+        }
+    }
+    close(in);
+    close(out);
+    fprintf(stderr, "pc_card_rom: previous save kept as %s\n", bak);
+}
+
+/*
+ * The save file is never the file being written. Opening it O_TRUNC and
+ * writing 512 KB leaves a window where the player's save is a partial file,
+ * and the console is where that window is reachable: a close request or a
+ * flat battery lands whenever the system decides, not between frames. So the
+ * image goes to a temporary beside it, and only a complete temporary is
+ * renamed over the save.
+ *
+ * The unlink before the rename is the 3DS's. POSIX rename replaces the
+ * destination; libctru's SD device is FAT through FSUSER_RenameFile, which
+ * fails when the destination exists. Removing it first costs a window where
+ * neither name holds the current save, but the temporary is complete by
+ * then, so backup_ready() below adopts it on the next launch, and that is a
+ * smaller hole than the one it closes.
+ *
+ * A failed rename falls back to writing the save directly rather than losing
+ * it. That is the old behaviour and the old risk, taken only when the safe
+ * path is unavailable.
+ */
+static int backup_write(const char *path)
+{
+    int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0644);
+    int ok;
+
+    if (fd < 0) {
+        return 0;
+    }
+    ok = pwrite(fd, sBackupImage, sBackupSize, 0) == (ssize_t)sBackupSize;
+    close(fd);
+    return ok;
+}
+
+/*
+ * Why the write is deferred, and what it cost to learn.
+ *
+ * A save is one burst of about 506 card commands, and this used to write the
+ * whole 512 KB image on every one of them, 259 MB of file writes for one
+ * save. On a desktop and under an emulator that is invisible. On a real
+ * console it is minutes: measured on an Old 3DS, the save froze the port past
+ * the 20-second hang detector, which killed the process partway through the
+ * burst and left a half-written save the game then refused to load.
+ *
+ * Nothing the game can observe depends on the file. Every read, verify and
+ * erase above works on sBackupImage in memory; the file is only ever written.
+ * So a command marks the image dirty and the write happens once, after the
+ * burst has been quiet for CARD_SETTLE_FRAMES; one write per save instead of
+ * 506.
+ *
+ * The window this opens is a power cut in the fraction of a second between the
+ * last command and the write, and it is closed from three sides: the settle is
+ * short, the exit path syncs, and on the console the hang detector syncs before
+ * it gives up. CARD_DIRTY_MAX is the backstop for a game that dribbles writes
+ * out slowly enough never to settle.
+ */
+#define CARD_SETTLE_FRAMES 8ull
+#define CARD_DIRTY_MAX     300ull
+
+void pc_card_backup_sync(void);
+
+static int sBackupDirty;
+static unsigned long long sBackupDirtyAt;
+
+static void backup_touch(void)
+{
+    extern unsigned long long pc_irq_frames(void);
+
+    if (!sBackupDirty) {
+        sBackupDirty = 1;
+        sBackupDirtyAt = pc_irq_frames();
+    }
+}
+
+static void backup_write_now(void)
+{
+    static char tmp[PATH_MAX];
+
+    if (sSavePath[0] == '\0') {
+        return;
+    }
+    backup_rotate();
+
+    snprintf(tmp, sizeof tmp, "%s.tmp", sSavePath);
+    if (backup_write(tmp)) {
+        remove(sSavePath);
+        if (rename(tmp, sSavePath) == 0) {
+            return;
+        }
+        remove(tmp);
+    }
+    if (!backup_write(sSavePath)) {
+        fprintf(stderr, "pc_card_rom: save write to %s failed\n", sSavePath);
+    }
+}
+
+/*
+ * Write the image out now if anything is waiting. Public because more than the
+ * frame boundary needs it: the exit path calls it, and on the console so does
+ * the hang detector; a port that is about to be given up on should not take
+ * the player's save with it.
+ */
+void pc_card_backup_sync(void)
+{
+    if (!sBackupDirty) {
+        return;
+    }
+    sBackupDirty = 0;
+    backup_write_now();
+}
+
+/* One guest frame. OS_Halt calls this, so both hosts get it from the same
+ * place the rest of the port's per-frame work happens. */
+void pc_card_step(void)
+{
+    extern unsigned long long pc_irq_frames(void);
+    unsigned long long waited;
+
+    if (!sBackupDirty) {
+        return;
+    }
+    waited = pc_irq_frames() - sBackupDirtyAt;
+    if (waited >= CARD_SETTLE_FRAMES || waited >= CARD_DIRTY_MAX) {
+        pc_card_backup_sync();
+    }
+}
+
+static int backup_ready(CARDiCommandArg *cmd)
+{
+    if (sBackupImage) {
+        return 1;
+    }
+    if (cmd->spec.total_size == 0) {
+        return 0;
+    }
+    sBackupSize = cmd->spec.total_size;
+    sBackupImage = malloc(sBackupSize);
+    if (!sBackupImage) {
+        return 0;
+    }
+    memset(sBackupImage, 0xFF, sBackupSize);
+
+#if defined(__3DS__)
+    /*
+     * No environment to read on this console, and the rule the other hosts
+     * follow (the save sits beside the ROM) cannot be applied: the usual
+     * ROM is packed inside the 3dsx and romfs: is read-only. 3ds/src/3ds_rom.c
+     * names the SD-card directory instead and makes it if the card has none.
+     */
+    {
+        extern const char *rom_save_path(void);
+
+        snprintf(sSavePath, sizeof sSavePath, "%s", rom_save_path());
+    }
+#else
+    {
+        const char *env = getenv("PC_SAVE");
+        if (env && strcmp(env, "none") == 0) {
+            sSavePath[0] = '\0';
+        } else if (env) {
+            snprintf(sSavePath, sizeof sSavePath, "%s", env);
+        } else {
+            char buf[PATH_MAX];
+            snprintf(sSavePath, sizeof sSavePath, "%s.sav",
+                     rom_path(buf, sizeof buf));
+        }
+    }
+#endif
+    if (sSavePath[0]) {
+        int fd;
+
+        /* The save is written after the burst settles, so a run that ends
+         * between the last card command and that write would otherwise lose
+         * it. Registered once, here, because this is where the path is first
+         * known. */
+        atexit(pc_card_backup_sync);
+
+        fd = open(sSavePath, O_RDONLY | O_BINARY);
+        if (fd < 0) {
+            /*
+             * The save is gone but backup_flush()'s temporary is not: the run
+             * before this one was killed between the remove and the rename.
+             * The temporary was complete before either happened, so it is the
+             * save, adopt it under the right name rather than starting the
+             * player on an erased chip.
+             */
+            char tmp[PATH_MAX];
+
+            snprintf(tmp, sizeof tmp, "%s.tmp", sSavePath);
+            if (rename(tmp, sSavePath) == 0) {
+                fprintf(stderr, "pc_card_rom: recovered %s from %s\n",
+                        sSavePath, tmp);
+                fd = open(sSavePath, O_RDONLY | O_BINARY);
+            }
+        }
+        if (fd >= 0) {
+            ssize_t n = pread(fd, sBackupImage, sBackupSize, 0);
+            close(fd);
+            fprintf(stderr, "pc_card_rom: save: %s (%zd bytes)\n",
+                    sSavePath, n);
+        } else {
+            fprintf(stderr, "pc_card_rom: save: %s (new, erased chip)\n",
+                    sSavePath);
+        }
+    }
+    return 1;
+}
+
+BOOL CARDi_Request(CARDiCommon *p, int req_type, int retry_count)
+{
+    CARDiCommandArg *cmd = p->cmd;
+    (void)retry_count;
+
+    switch (req_type) {
+    case CARD_REQ_INIT:
+    case CARD_REQ_ACK:
+    case CARD_REQ_IDENTIFY:
+    case CARD_REQ_READ_ID:
+        break;
+    case CARD_REQ_READ_BACKUP:
+        if (!backup_ready(cmd)) {
+            cmd->result = CARD_RESULT_FAILURE;
+            return FALSE;
+        }
+        memcpy((void *)cmd->dst, sBackupImage + cmd->src, cmd->len);
+        break;
+    case CARD_REQ_WRITE_BACKUP:
+    case CARD_REQ_PROGRAM_BACKUP:
+        if (!backup_ready(cmd)) {
+            cmd->result = CARD_RESULT_FAILURE;
+            return FALSE;
+        }
+        memcpy(sBackupImage + cmd->dst, (const void *)cmd->src, cmd->len);
+        backup_touch();
+        break;
+    case CARD_REQ_VERIFY_BACKUP:
+        if (!backup_ready(cmd) ||
+            memcmp(sBackupImage + cmd->dst, (const void *)cmd->src,
+                   cmd->len) != 0) {
+            cmd->result = CARD_RESULT_FAILURE;
+            return FALSE;
+        }
+        break;
+    case CARD_REQ_ERASE_PAGE_BACKUP:
+        if (!backup_ready(cmd)) {
+            cmd->result = CARD_RESULT_FAILURE;
+            return FALSE;
+        }
+        memset(sBackupImage + cmd->dst, 0xFF, cmd->spec.page_size);
+        backup_touch();
+        break;
+    case CARD_REQ_ERASE_SECTOR_BACKUP:
+        if (!backup_ready(cmd)) {
+            cmd->result = CARD_RESULT_FAILURE;
+            return FALSE;
+        }
+        memset(sBackupImage + cmd->dst, 0xFF, cmd->spec.sect_size);
+        backup_touch();
+        break;
+    case CARD_REQ_ERASE_SUBSECTOR_BACKUP:
+        if (!backup_ready(cmd)) {
+            cmd->result = CARD_RESULT_FAILURE;
+            return FALSE;
+        }
+        memset(sBackupImage + cmd->dst, 0xFF, cmd->spec.subsect_size);
+        backup_touch();
+        break;
+    case CARD_REQ_ERASE_CHIP_BACKUP:
+        if (!backup_ready(cmd)) {
+            cmd->result = CARD_RESULT_FAILURE;
+            return FALSE;
+        }
+        memset(sBackupImage, 0xFF, sBackupSize);
+        backup_touch();
+        break;
+    case CARD_REQ_READ_STATUS:
+        /* The status register with no operation in flight: the chip's
+         * quiescent value, which the spec records. */
+        *(u8 *)cmd->dst = cmd->spec.initial_status;
+        break;
+    case CARD_REQ_WRITE_STATUS:
+        break;
+    default:
+        fprintf(stderr, "pc_card_rom: unmodeled card request %d\n", req_type);
+        cmd->result = CARD_RESULT_UNSUPPORTED;
+        return FALSE;
+    }
+    cmd->result = CARD_RESULT_SUCCESS;
+    return TRUE;
+}
+
+/* The async task queue: tasks ran on a dedicated card thread on hardware
+ * because requests slept on the ARM7. Every request above completes
+ * synchronously, so the task can simply run here and now, the callback
+ * ordering the caller observes is the legal "finished immediately"
+ * schedule. The SDK's CARDi_SetTask also bumped thread priority and woke
+ * the card thread; with no card thread there is nothing to wake. */
+void CARDi_SetTask(void (*task)(CARDiCommon *))
+{
+    CARDiCommon *const p = &cardi_common;
+    p->cur_th = OS_GetCurrentThread();
+    task(p);
+}

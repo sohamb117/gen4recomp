@@ -1,0 +1,53 @@
+{
+    "name": "Colin",
+    "class": "TRAINER_CLASS_WORKER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GEODUDE",
+            "form": 0,
+            "level": 6,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOP",
+            "form": 0,
+            "level": 8,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Fine, all righty then.\n",
+                "Just a quick battle on my break!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Wahaha!\n",
+                "Mercy, I cry mercy!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’d better get on back to work...\r",
+                "You know, I’d rather be traveling\n",
+                "around with Pokémon the way you do.\n"
+            ]
+        }
+    ]
+}

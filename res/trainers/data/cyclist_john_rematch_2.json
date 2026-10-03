@@ -1,0 +1,42 @@
+{
+    "name": "John",
+    "class": "TRAINER_CLASS_CYCLIST_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_STARAPTOR",
+            "form": 0,
+            "level": 43,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_STARAPTOR",
+            "form": 0,
+            "level": 43,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Is your bicycle geared to 3-speed now?\n",
+                "Or the 4-speed gearing?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Crash! Tinkle...\n"
+        }
+    ]
+}

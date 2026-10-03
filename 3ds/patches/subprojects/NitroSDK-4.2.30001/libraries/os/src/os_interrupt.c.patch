@@ -1,0 +1,35 @@
+--- a/os_interrupt.c
++++ b/os_interrupt.c
+@@ -141,13 +141,20 @@
+     #include <nitro/itcm_end.h>
+ #endif
+ 
+-extern void SDK_IRQ_STACKSIZE(void);
++/* This console cannot carry a relocation against a symbol whose value is not
++ * an address in the image, and the ROM link's values are exactly that. They
++ * come from the generated header instead, and the addresses among them are
++ * translated: a guest address is not a host address here. */
++#include <stdint.h>
++#include <3ds_absolutes.h>
++extern void *armrec_host_ptr(uint32_t guest);
++
+ 
+ #ifdef SDK_ARM9
+-    #define  OSi_IRQ_STACK_TOP                (HW_DTCM_SVC_STACK - ((s32)SDK_IRQ_STACKSIZE))
++    #define  OSi_IRQ_STACK_TOP                (HW_DTCM_SVC_STACK - ((s32)SDK_LCF_IRQ_STACKSIZE))
+     #define  OSi_IRQ_STACK_BOTTOM             HW_DTCM_SVC_STACK
+ #else
+-    #define  OSi_IRQ_STACK_TOP                (HW_PRV_WRAM_IRQ_STACK_END - ((s32)SDK_IRQ_STACKSIZE))
++    #define  OSi_IRQ_STACK_TOP                (HW_PRV_WRAM_IRQ_STACK_END - ((s32)SDK_LCF_IRQ_STACKSIZE))
+     #define  OSi_IRQ_STACK_BOTTOM             HW_PRV_WRAM_IRQ_STACK_END
+ #endif
+ 
+@@ -173,7 +180,7 @@
+ {
+     SDK_ASSERTMSG((offset & 3) == 0, "Offset must be aligned by 4");
+     SDK_ASSERTMSG(offset > 0, "Cannot set warning level to stack top.");
+-    SDK_ASSERTMSG(offset < ((u32)SDK_IRQ_STACKSIZE), "Cannot set warning level over stack bottom.");
++    SDK_ASSERTMSG(offset < ((u32)SDK_LCF_IRQ_STACKSIZE), "Cannot set warning level over stack bottom.");
+ 
+     OSi_IrqStackWarningOffset = offset;
+ 

@@ -1,0 +1,22 @@
+--- a/src/overlay_manager.c
++++ b/src/overlay_manager.c
+@@ -10,7 +10,7 @@
+ {
+     ApplicationManager *appMan = Heap_Alloc(heapID, sizeof(ApplicationManager));
+ 
+-    appMan->template = *template;
++    __builtin_memcpy((void *)&appMan->template, template, sizeof(ApplicationManagerTemplate));
+     appMan->execState = 0;
+     appMan->procState = 0;
+     appMan->args = args;
+@@ -18,6 +18,10 @@
+     appMan->parent = NULL;
+     appMan->child = NULL;
+ 
++    /* Host function pointers (init/main/exit) and args (the static
++     * Application). The digest skips exactly these words. */
++    { extern void pc_state_scan_mark_host_words(const void *, unsigned);
++      pc_state_scan_mark_host_words(appMan, sizeof *appMan); }
+     return appMan;
+ }
+ 

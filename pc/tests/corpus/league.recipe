@@ -1,0 +1,22 @@
+# The Pokemon League gates, a full team and every badge.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name LEAGUE
+gender GENDER_MALE
+trainer-id 11233
+money 45000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+badge BADGE_ID_BEACON
+item ITEM_FULL_RESTORE 10
+party SPECIES_TORTERRA 55 ITEM_NONE
+party SPECIES_LUXRAY 53 ITEM_NONE
+party SPECIES_MILOTIC 52 ITEM_NONE
+map MAP_HEADER_POKEMON_LEAGUE 0x34A 0x257 FACE_DOWN

@@ -1,0 +1,177 @@
+{
+    "base_stats": {
+        "hp": 50,
+        "attack": 95,
+        "defense": 95,
+        "speed": 70,
+        "special_attack": 35,
+        "special_defense": 110
+    },
+    "types": [ "TYPE_FIGHTING", "TYPE_FIGHTING" ],
+    "catch_rate": 45,
+    "base_exp_reward": 138,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 2
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_MALE_ONLY",
+    "hatch_cycles": 25,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_HUMAN_LIKE", "EGG_GROUP_HUMAN_LIKE" ],
+    "abilities": [ "ABILITY_INTIMIDATE", "ABILITY_TECHNICIAN" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_REVENGE" ],
+            [ 1, "MOVE_ROLLING_KICK" ],
+            [ 6, "MOVE_FOCUS_ENERGY" ],
+            [ 10, "MOVE_PURSUIT" ],
+            [ 15, "MOVE_QUICK_ATTACK" ],
+            [ 19, "MOVE_TRIPLE_KICK" ],
+            [ 24, "MOVE_RAPID_SPIN" ],
+            [ 28, "MOVE_COUNTER" ],
+            [ 33, "MOVE_FEINT" ],
+            [ 37, "MOVE_AGILITY" ],
+            [ 42, "MOVE_GYRO_BALL" ],
+            [ 46, "MOVE_DETECT" ],
+            [ 51, "MOVE_CLOSE_COMBAT" ],
+            [ 55, "MOVE_ENDEAVOR" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM08",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM31",
+            "TM32",
+            "TM37",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM58",
+            "TM71",
+            "TM74",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ROLLOUT",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_ENDEAVOR",
+            "MOVE_VACUUM_WAVE",
+            "MOVE_TWISTER",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_TYROGUE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 55,
+        "weight_pounds": 105.8,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 233,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 233,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 10,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 10,
+        "en": {
+            "name": "HITMONTOP",
+            "category": "Handstand Pokémon",
+            "entry_text": [
+                "It fights while spinning like a top.\n",
+                "The centrifugal force boosts its\n",
+                "destructive power by ten."
+            ]
+        },
+        "fr": {
+            "name": "KAPOERA",
+            "category": "Pokémon Poirier",
+            "entry_text": [
+                "Il combat en tournoyant comme une\n",
+                "toupie. La force centrifuge décuple\n",
+                "sa puissance destructrice."
+            ]
+        },
+        "de": {
+            "name": "KAPOERA",
+            "category": "Kopfstand",
+            "entry_text": [
+                "Es kämpft, während es sich wie ein\n",
+                "Kreisel dreht. Die Zentrifugalkraft\n",
+                "erhöht die Kampfkraft um 10."
+            ]
+        },
+        "it": {
+            "name": "HITMONTOP",
+            "category": "Pokémon Verticale",
+            "entry_text": [
+                "Combatte mentre gira come una\n",
+                "trottola. La forza centrifuga de-\n",
+                "cuplica il suo potere distruttivo."
+            ]
+        },
+        "es": {
+            "name": "HITMONTOP",
+            "category": "Pokémon Boca Abajo",
+            "entry_text": [
+                "Gira a gran velocidad al luchar.\n",
+                "La fuerza centrífuga multiplica su\n",
+                "poder de destrucción por diez."
+            ]
+        },
+        "jp": {
+            "name": "カポエラ－",
+            "category": "さかだちポケモン",
+            "entry_text": [
+                "コマのように　かいてんしながら\n",
+                "たたかう。えんしんりょくの　パワ－で\n",
+                "はかいりょくは　１０ばいだ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 2313
+    }
+}

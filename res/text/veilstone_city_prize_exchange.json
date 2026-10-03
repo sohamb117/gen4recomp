@@ -1,0 +1,119 @@
+{
+  "key": 9259,
+  "messages": [
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_ExchangeCoinsForPrizes",
+      "en_US": [
+        "Welcome!\r",
+        "You may exchange your Coins for\n",
+        "fabulous prizes here!\r"
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_WhichPrize",
+      "en_US": "Which prize would you like?"
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_IsYourChoiceThisItem",
+      "en_US": [
+        "So your choice is\n",
+        "the {STRVAR_1 8, 0, 0}?"
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_IsYourChoiceThisTM",
+      "en_US": [
+        "So your choice is {STRVAR_1 8, 0, 0}:\n",
+        "{STRVAR_1 6, 1, 0}?"
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_HereYouGo",
+      "en_US": "Here you go!"
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_NotEnoughCoins",
+      "en_US": "You don’t have enough Coins.\r"
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_NoRoomAvailable",
+      "en_US": [
+        "There isn’t any room available for\n",
+        "that {STRVAR_1 8, 0, 0}.\r"
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_OhIsThatSo",
+      "en_US": [
+        "Oh, is that so? \n",
+        "Please come back with some Coins!"
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_ICanTellHiddenPowerTypes",
+      "en_US": [
+        "I woke up and realized my potential!\r",
+        "So, what potential was woken in me?\n",
+        "What’s my hidden power, you ask?\r",
+        "It’s a power that lets me see the\n",
+        "Hidden Power of a Pokémon.\r",
+        "When they learn that move, I can tell\n",
+        "what type the move will be.\r",
+        "So, want me to use my hidden power?\r",
+        "I’ll tell you what type your Pokémon’s\n",
+        "Hidden Power will be."
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_IllTellHiddenPowerTypes",
+      "en_US": [
+        "I’ll tell you what type your Pokémon’s\n",
+        "Hidden Power will be.\r",
+        "My own hidden power lets me do that."
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_PokemonsHiddenPowerWouldBeType",
+      "en_US": [
+        "If this Pokémon were to learn\n",
+        "Hidden Power, the move’s type\f",
+        "would be {STRVAR_1 15, 0, 0}."
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_PokemonsHiddenPowerIsType",
+      "en_US": [
+        "This Pokémon’s Hidden Power is the\n",
+        "{STRVAR_1 15, 0, 0} type."
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_IfYouWantAskMe",
+      "en_US": [
+        "If you want to know, ask me, and I’ll\n",
+        "activate my hidden power for you."
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_EggsCantLearnMoves",
+      "en_US": [
+        "A move that an Egg can learn?!\n",
+        "That’s flat-out impossible."
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_PokemonCantLearnHiddenPower",
+      "en_US": [
+        "Oh, no. This Pokémon can’t learn the\n",
+        "move Hidden Power in the first place."
+      ]
+    },
+    {
+      "id": "VeilstoneCityPrizeExchange_Text_IHaveNoCoins",
+      "en_US": [
+        "They have prizes I really want.\n",
+        "But Coins, I have none!"
+      ]
+    }
+  ]
+}

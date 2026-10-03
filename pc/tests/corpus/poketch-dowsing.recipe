@@ -1,0 +1,8 @@
+# Dowsing machine, facing Jubilife's hidden Stardust (168, 795).
+name WATCHER
+gender GENDER_MALE
+trainer-id 10000
+money 3000
+party SPECIES_MONFERNO 18 ITEM_NONE
+poketch POKETCH_APPID_DOWSINGMACHINE
+map MAP_HEADER_JUBILIFE_CITY 168 796 FACE_UP

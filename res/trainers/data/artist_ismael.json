@@ -1,0 +1,29 @@
+{
+    "name": "Ismael",
+    "class": "TRAINER_CLASS_ARTIST",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_KRICKETUNE",
+            "form": 0,
+            "level": 28,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Does this mean I’m only talented as\n",
+                "an Artist?\n"
+            ]
+        }
+    ]
+}

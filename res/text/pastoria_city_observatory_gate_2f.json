@@ -1,0 +1,53 @@
+{
+  "key": 13327,
+  "messages": [
+    {
+      "id": "PastoriaCityObservatoryGate2F_Text_AskPut100InBinoculars",
+      "en_US": [
+        "It’s a pair of binoculars...\n",
+        "Put $100 in it?"
+      ]
+    },
+    {
+      "id": "PastoriaCityObservatoryGate2F_Text_NotEnoughMoney",
+      "en_US": "Not enough money..."
+    },
+    {
+      "id": "PastoriaCityObservatoryGate2F_Text_PokemonDifferFromYesterday",
+      "en_US": [
+        "Tell me I’m not imagining this...\r",
+        "The Great Marsh’s Pokémon seem to be\n",
+        "different from the ones yesterday..."
+      ]
+    },
+    {
+      "id": "PastoriaCityObservatoryGate2F_Text_YouCanSeePokemon",
+      "en_US": [
+        "Use a pair of binoculars to look out\n",
+        "over the Great Marsh.\r",
+        "You can see what kinds of Pokémon\n",
+        "can be caught, and where they are."
+      ]
+    },
+    {
+      "id": "PastoriaCityObservatoryGate2F_Text_TakeQuickTrams",
+      "en_US": [
+        "There are shuttle trains in the\n",
+        "marsh called Quick Trams.\r",
+        "You should take those if you’re going\n",
+        "to a deeper area in the marsh."
+      ]
+    },
+    {
+      "id": "PastoriaCityObservatoryGate2F_Text_YouCanSinkInBog",
+      "en_US": [
+        "When you’re walking on the bog,\n",
+        "you sometimes sink right in...\r",
+        "There’s something pretty cool\n",
+        "about it, though.\r",
+        "If you turn while you’re stuck,\n",
+        "sometimes Pokémon may pop out."
+      ]
+    }
+  ]
+}

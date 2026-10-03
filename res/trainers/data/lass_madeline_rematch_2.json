@@ -1,0 +1,43 @@
+{
+    "name": "Madeline",
+    "class": "TRAINER_CLASS_LASS",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLDUCK",
+            "form": 0,
+            "level": 33,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BUNEARY",
+            "form": 0,
+            "level": 33,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I got a nifty-keen Gym Badge from\n",
+                "the Gym Leader in Oreburgh City!\r",
+                "...Did I show you already?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Oh, I lost! Lalala!\n"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+# Cut, on the row of trees outside Eterna City's Pokemon Center.
+#
+# The tree's coordinates are its object event's own, out of
+# res/field/events/events_eterna_city.json; the player stands on the tile south
+# of it, so the shared north-walking script faces it, cuts it and walks through
+# where it was.
+
+name CUTTER
+gender GENDER_MALE
+trainer-id 30001
+money 3000
+badge BADGE_ID_FOREST
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_CUT
+map MAP_HEADER_ETERNA_CITY 304 522 FACE_UP

@@ -1,0 +1,47 @@
+{
+    "name": "Erica",
+    "class": "TRAINER_CLASS_SWIMMER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_FINNEON",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "The human body floats more easily in\n",
+                "the sea, so it’s easy to swim!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "The sea is salty, but all I taste is\n",
+                "bitterness...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": "I’ve got that sinking feeling...\n"
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Pokémon can stay afloat even while\n",
+                "carrying someone. That’s so cool!\r"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+# Two Pokemon left at the Solaceon day care, and one kept.
+#
+# The deposit is the day-care lady's own call, so the parents leave the party
+# and arrive in the day care with their step counters zeroed, exactly as they
+# would after the conversation. The tile is Solaceon Town's fly destination.
+
+name SITTER
+gender GENDER_MALE
+trainer-id 10412
+money 9000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+party SPECIES_BIBAREL 25 ITEM_NONE
+party SPECIES_BIBAREL 26 ITEM_NONE
+party SPECIES_STARAVIA 24 ITEM_NONE
+daycare 0
+daycare 0
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

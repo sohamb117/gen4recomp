@@ -1,0 +1,45 @@
+{
+    "name": "Derek",
+    "class": "TRAINER_CLASS_BLACK_BELT",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CROAGUNK",
+            "form": 0,
+            "level": 26,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Check the sharpness of my fighting\n",
+                "Pokémon’s moves.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "You’ve dulled its sharpness...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": "Back to training for us!\n"
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I sharpened my Pokémon’s moves more\n",
+                "for when I saw you again!\r"
+            ]
+        }
+    ]
+}

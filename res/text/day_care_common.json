@@ -1,0 +1,289 @@
+{
+  "key": 39226,
+  "messages": [
+    {
+      "id": "DayCareCommon_Text_ImTheDayCareMan",
+      "en_US": [
+        "I’m the Day-Care Man.\r",
+        "We look after the precious Pokémon\n",
+        "of other Trainers.\r",
+        "If you’d like us to raise your\n",
+        "Pokémon, have a word with my wife."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_PokemonHoldingEggYouWantIt",
+      "en_US": [
+        "Ah, it’s you!\r",
+        "We were raising your Pokémon,\n",
+        "and my goodness, were we surprised!\r",
+        "Your Pokémon was holding an Egg!\r",
+        "We don’t know how it got there,\n",
+        "but your Pokémon had it.\r",
+        "You do want it, don’t you?"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_PokemonIsDoingJustFine",
+      "en_US": [
+        "Ah, it’s you! Good to see you.\n",
+        "Your {STRVAR_1 0, 0, 0}’s doing just fine."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_IllHangOnToIt",
+      "en_US": [
+        "Well then, I’ll hang on to it.\n",
+        "Thanks!"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_YouHaveNoRoom",
+      "en_US": [
+        "You have no room for it right now...\n",
+        "Come back when you’ve made room."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_PlayerReceivedEgg",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} received the Egg from\n",
+        "the Day-Care Man."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_TakeGoodCareOfIt",
+      "en_US": "You take good care of it."
+    },
+    {
+      "id": "DayCareCommon_Text_SawPokemonReceivingMail",
+      "en_US": [
+        "By the way, I saw your {STRVAR_1 0, 0, 0}\n",
+        "cavorting with {STRVAR_1 3, 1, 0}’s\f",
+        "{STRVAR_1 0, 2, 0}.\r",
+        "I may even have seen it receiving\n",
+        "a piece of Mail."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_TalkToWifeToPickUpPokemon",
+      "en_US": [
+        "If you want to pick up your Pokémon,\n",
+        "have a word with my wife."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_PokemonAreDoingJustFine",
+      "en_US": [
+        "Ah, it’s you!\n",
+        "Good to see you!\r",
+        "Your {STRVAR_1 0, 0, 0} and {STRVAR_1 0, 1, 0}\n",
+        "are doing just fine.\r"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_YouDoWantThisYes",
+      "en_US": [
+        "I really will keep it.\n",
+        "You do want this, yes?"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_TheTwoGetAlongVeryWell",
+      "en_US": "The two seem to get along very well."
+    },
+    {
+      "id": "DayCareCommon_Text_TheTwoGetAlong",
+      "en_US": "The two seem to get along."
+    },
+    {
+      "id": "DayCareCommon_Text_TheTwoDontLikeEachOther",
+      "en_US": [
+        "The two don’t seem to like each\n",
+        "other much."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_TheTwoPlayWithOtherPokemon",
+      "en_US": [
+        "The two prefer to play with other\n",
+        "Pokémon more than with each other."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_ImTheDayCareLadyRaisePokemon",
+      "en_US": [
+        "I’m the Day-Care Lady.\n",
+        "We can raise Pokémon for you.\r",
+        "Would you like us to raise your\n",
+        "Pokémon?"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_RaiseWhichPokemon",
+      "en_US": [
+        "Which Pokémon should we raise for\n",
+        "you?\r"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_WellRaiseYourPokemon_ArrowPrompt",
+      "en_US": [
+        "Fine, we’ll raise your {STRVAR_1 0, 0, 0}\n",
+        "for a while.\r",
+        "Come back for it later.\r"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_RaiseAnotherPokemon",
+      "en_US": [
+        "We can raise two of your Pokémon.\n",
+        "Would you like us to raise another?"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_HusbandWasLookingForYou",
+      "en_US": [
+        "Ah, there you are!\n",
+        "My husband was looking for you."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_OhFineThen",
+      "en_US": [
+        "Oh, fine, then.\n",
+        "Come again."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_NotEnoughMoney",
+      "en_US": "You don’t have enough money..."
+    },
+    {
+      "id": "DayCareCommon_Text_DoYouWantOtherBackToo",
+      "en_US": [
+        "Do you want to take back the other\n",
+        "one, too?"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_VeryGoodComeAgain",
+      "en_US": [
+        "Very good.\n",
+        "Come again."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_AboutYourPokemon",
+      "en_US": [
+        "Ah, it’s you! Good to see you.\n",
+        "Now, about your Pokémon...\r"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_PokemonHasGrownXLevels",
+      "en_US": [
+        "By level, your {STRVAR_1 0, 0, 0} has\n",
+        "grown by about {STRVAR_1 51, 1, 0}.\r"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_TeamIsFull",
+      "en_US": [
+        "Your Pokémon team is full.\n",
+        "Make room, then come see me."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_TakeBackWhichPokemon",
+      "en_US": "Which Pokémon will you take back?"
+    },
+    {
+      "id": "DayCareCommon_Text_PokemonBackCostsX",
+      "en_US": [
+        "If you want your {STRVAR_1 0, 0, 0} back,\n",
+        "it will cost ${STRVAR_1 53, 1, 0}."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_HeresYourPokemon",
+      "en_US": [
+        "Excellent!\n",
+        "Here’s your Pokémon.\r"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_PlayerTookPokemonBack",
+      "en_US": [
+        "{STRVAR_1 3, 1, 0} took {STRVAR_1 0, 0, 0} back\n",
+        "from the Day-Care Lady.\r"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_OnlyOnePokemonWithYou",
+      "en_US": [
+        "Oh? But you only have one\n",
+        "Pokémon with you.\r",
+        "You can’t go off without a Pokémon.\n",
+        "Come back another time."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_DoYouWantPokemonBack",
+      "en_US": "Do you want your Pokémon back?"
+    },
+    {
+      "id": "DayCareCommon_Text_WhatWillYouBattleWith",
+      "en_US": [
+        "If you leave me that Pokémon,\n",
+        "what are you gonna battle with?\r",
+        "Come back another time."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_YoullBeLeftWithJustOne",
+      "en_US": [
+        "Huh? Now, now.\r",
+        "If you leave that Pokémon with\n",
+        "me, you’ll be left with just one.\r",
+        "You will be better off if you catch\n",
+        "some more, if I do say so myself."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_ThatIsMerelyAnEgg",
+      "en_US": [
+        "Now, now.\n",
+        "That is merely an Egg!"
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_WellRaiseYourPokemon",
+      "en_US": [
+        "Fine, we’ll raise your {STRVAR_1 0, 0, 0}\n",
+        "for a while.\r",
+        "Come back for it later."
+      ]
+    },
+    {
+      "id": "DayCareCommon_Text_Huh",
+      "en_US": "Huh?"
+    },
+    {
+      "id": "DayCareCommon_Text_00038",
+      "en_US": "Lv. {STRVAR_1 52, 1, 0}"
+    },
+    {
+      "id": "DayCareCommon_Text_00039",
+      "en_US": "{STRVAR_1 0, 0, 0}♂"
+    },
+    {
+      "id": "DayCareCommon_Text_00040",
+      "en_US": "{STRVAR_1 0, 0, 0}♀"
+    },
+    {
+      "id": "DayCareCommon_Text_00041",
+      "en_US": "{STRVAR_1 0, 0, 0}"
+    }
+  ]
+}

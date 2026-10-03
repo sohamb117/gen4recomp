@@ -1,0 +1,20 @@
+# The bicycle's default gear, ridden west out of Jubilife City.
+#
+# The tile is the one the game's own spawn table flies to, the same as the
+# jubilife station's, so nothing here is a guessed coordinate. West is the
+# direction with a clear run: the port's map scan says north is a door, and a
+# door is a collision that warps, so riding into one ends the station on the
+# wrong map; which is what the first version of this did.
+#
+# 72 held frames carry the default gear 12 tiles and the other gear 17, which
+# is the pair of numbers this station and bike-gear2 exist to hold apart.
+
+name RIDER
+gender GENDER_MALE
+trainer-id 30006
+money 3000
+badge BADGE_ID_COAL
+party SPECIES_BIBAREL 30 ITEM_NONE
+item ITEM_BICYCLE 1
+register-item ITEM_BICYCLE
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_LEFT

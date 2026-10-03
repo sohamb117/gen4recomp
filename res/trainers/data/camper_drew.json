@@ -1,0 +1,75 @@
+{
+    "name": "Drew",
+    "class": "TRAINER_CLASS_CAMPER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GASTLY",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": [
+                "MOVE_PAYBACK",
+                "MOVE_SUCKER_PUNCH",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GASTLY",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": [
+                "MOVE_SUCKER_PUNCH",
+                "MOVE_NIGHT_SHADE",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GASTLY",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": [
+                "MOVE_NIGHT_SHADE",
+                "MOVE_PAYBACK",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’ve been to all sorts of places.\n",
+                "That means I know tons of things!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Yeah, whatever.\n",
+                "You can battle, too...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’m gonna visit new places and find\n",
+                "new Pokémon so I’ll be a know-it-all!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,68 @@
+{
+    "name": "Desiree",
+    "class": "TRAINER_CLASS_PSYCHIC_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MR_MIME",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_PSYCHIC",
+                "MOVE_REFLECT",
+                "MOVE_LIGHT_SCREEN",
+                "MOVE_DRAIN_PUNCH"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MISMAGIUS",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_SHADOW_BALL",
+                "MOVE_MAGICAL_LEAF",
+                "MOVE_AERIAL_ACE",
+                "MOVE_SHOCK_WAVE"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Allow me to demonstrate how a true\n",
+                "Psychic conducts a battle!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Did I get to show you anything...?\n",
+                "Anything at all?\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "What can psychic power be used for?\r",
+                "Well, one mustn’t use it for committing\n",
+                "crimes.\r",
+                "But, I don’t use it for doing good,\n",
+                "either.\r",
+                "Using psychic power leaves me too worn\n",
+                "out!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,59 @@
+{
+    "name": "Brennan",
+    "class": "TRAINER_CLASS_NINJA_BOY",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ZUBAT",
+            "form": 0,
+            "level": 30,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SKORUPI",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I am one of the Ninja Trio!\n",
+                "Being discovered means I must battle!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "I concede defeat...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "While I hid in the tall grass, I\n",
+                "sensed Pokémon all around me!\r",
+                "Furtive sounds of movement...\n",
+                "Stifled cries... I heard them!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "You don’t remember me?\n",
+                "I am one of the Ninja Trio!\f",
+                "Being discovered means I must battle!\r"
+            ]
+        }
+    ]
+}

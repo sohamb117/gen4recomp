@@ -1,0 +1,172 @@
+{
+  "key": 40636,
+  "messages": [
+    {
+      "id": "Route209_Text_ThisIsTheLostTower",
+      "en_US": [
+        "Where departed Pokémon sleep...\n",
+        "This is the Lost Tower."
+      ]
+    },
+    {
+      "id": "Route209_Text_ThereIsABrokenTower",
+      "en_US": [
+        "There is a broken, crumbling tower\n",
+        "made of stone..."
+      ]
+    },
+    {
+      "id": "Route209_Text_UseTheOddKeystone",
+      "en_US": [
+        "There is a broken, crumbling tower\n",
+        "made of stone...\r",
+        "There seems to be a spot that would\n",
+        "be a perfect fit for the Odd Keystone.\r",
+        "Would you like to use the Odd\n",
+        "Keystone?"
+      ]
+    },
+    {
+      "id": "Route209_Text_PlayerUsedTheOddKeystone",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} pushed the Odd Keystone\n",
+        "into the stone tower.\r",
+        "The stone tower has been restored!\n",
+        "“Hallowed Tower” is written on it."
+      ]
+    },
+    {
+      "id": "Route209_Text_BuiltManyYearsAgo",
+      "en_US": [
+        "It’s the Hallowed Tower.\r",
+        "It appears to have been built\n",
+        "many years ago."
+      ]
+    },
+    {
+      "id": "Route209_Text_StonesAppearToHaveShifted",
+      "en_US": [
+        "It’s the Hallowed Tower.\r",
+        "Its stones appear to have shifted..."
+      ]
+    },
+    {
+      "id": "Route209_Text_CryingComingFromInside",
+      "en_US": [
+        "It’s the Hallowed Tower.\r",
+        "...Is that crying coming from inside\n",
+        "the tower?"
+      ]
+    },
+    {
+      "id": "Route209_Text_IsTheTowerShaking",
+      "en_US": [
+        "It’s the Hallowed Tower.\r",
+        "...Is the tower shaking ever so\n",
+        "slightly?"
+      ]
+    },
+    {
+      "id": "Route209_Text_SomeSortOfPresence",
+      "en_US": [
+        "It’s the Hallowed Tower.\r",
+        "There is some sort of presence...\n",
+        "It appears ready to emerge!"
+      ]
+    },
+    {
+      "id": "Route209_Text_SpiritombCry",
+      "en_US": "Yulaaah!\r"
+    },
+    {
+      "id": "Route209_Text_GoodRodIsReallyGood",
+      "en_US": [
+        "Hmm!\n",
+        "{STRVAR_1 8, 0, 0} is really good!\r",
+        "Wouldn’t you agree?"
+      ]
+    },
+    {
+      "id": "Route209_Text_TakeThisGoodRod",
+      "en_US": [
+        "Hmm!\n",
+        "We’re of identical minds!\r",
+        "Hmm!\n",
+        "Take this {STRVAR_1 8, 0, 0}!\r"
+      ]
+    },
+    {
+      "id": "Route209_Text_DoINeedToExplain",
+      "en_US": [
+        "Try fishing wherever there is\n",
+        "a body of water.\r",
+        "Oh, incidentally, do you need me to\n",
+        "explain how to use that fishing rod?"
+      ]
+    },
+    {
+      "id": "Route209_Text_YouDontLikeToFish",
+      "en_US": "You don’t like to fish?"
+    },
+    {
+      "id": "Route209_Text_ExplainHowToFish",
+      "en_US": [
+        "First, you face any body of water,\n",
+        "then you use your fishing rod.\r",
+        "Next, you must focus!\n",
+        "If a Pokémon bites, “!” appears.\f",
+        "That’s your cue to reel it in!"
+      ]
+    },
+    {
+      "id": "Route209_Text_WhenYouReelYouBattle",
+      "en_US": [
+        "When you’re fishing for Pokémon,\n",
+        "the first hurdle is getting a bite.\r",
+        "When you start to reel that Pokémon\n",
+        "in, you’ve got to battle it.\r",
+        "So, fishing gives you twice the fun!"
+      ]
+    },
+    {
+      "id": "Route209_Text_DoYouJogEveryMorning",
+      "en_US": [
+        "Do you jog every morning?\n",
+        "Well, I do!"
+      ]
+    },
+    {
+      "id": "Route209_Text_PokemonChasedAfterMe",
+      "en_US": [
+        "When I was jogging the other day,\n",
+        "a wild Pokémon chased after me.\r",
+        "I swear, I ran on top of the water!\n",
+        "I was so freaked out!"
+      ]
+    },
+    {
+      "id": "Route209_Text_SignHearthomeCity",
+      "en_US": [
+        "Rt. 209\n",
+        "Hearthome City"
+      ]
+    },
+    {
+      "id": "Route209_Text_SignSolaceonTown",
+      "en_US": [
+        "Rt. 209\n",
+        "Solaceon Town"
+      ]
+    },
+    {
+      "id": "Route209_Text_TrainerTipsRegisterKeyItems",
+      "en_US": [
+        "Trainer Tips\r",
+        "You may register one of the Key\n",
+        "Items in your Bag for instant use.\r",
+        "Simply press the Y Button to use the\n",
+        "registered item instantly."
+      ]
+    }
+  ]
+}

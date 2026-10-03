@@ -1,0 +1,130 @@
+{
+    "base_stats": {
+        "hp": 50,
+        "attack": 20,
+        "defense": 55,
+        "speed": 30,
+        "special_attack": 25,
+        "special_defense": 25
+    },
+    "types": [ "TYPE_BUG", "TYPE_BUG" ],
+    "catch_rate": 120,
+    "base_exp_reward": 72,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 2,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_SHED_SKIN", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GREEN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_HARDEN" ],
+            [ 7, "MOVE_HARDEN" ]
+        ],
+        "by_tm": [  ],
+        "by_tutor": [ "MOVE_IRON_DEFENSE" ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            10,
+            "SPECIES_BUTTERFREE"
+        ]
+    ],
+    "offspring": "SPECIES_CATERPIE",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SILENT"
+    },
+    "pokedex_data": {
+        "height_inches": 28,
+        "weight_pounds": 21.8,
+        "body_shape": "SHAPE_SERPENTINE",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 352,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 352,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 23,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 23,
+        "en": {
+            "name": "METAPOD",
+            "category": "Cocoon Pokémon",
+            "entry_text": [
+                "A steel-hard shell protects its\n",
+                "tender body. It quietly endures\n",
+                "hardships while awaiting evolution."
+            ]
+        },
+        "fr": {
+            "name": "CHRYSACIER",
+            "category": "Pokémon Cocon",
+            "entry_text": [
+                "Son corps frêle est protégé par sa\n",
+                "carapace d’acier. Il encaisse les\n",
+                "coups durs en attendant d’évoluer."
+            ]
+        },
+        "de": {
+            "name": "SAFCON",
+            "category": "Kokon",
+            "entry_text": [
+                "Der stahlharte Panzer schützt\n",
+                "seinen zarten Körper. Es wartet\n",
+                "geduldig auf seine Entwicklung."
+            ]
+        },
+        "it": {
+            "name": "METAPOD",
+            "category": "Pokémon Bozzolo",
+            "entry_text": [
+                "Ha una corazza dura come l’acciaio\n",
+                "che protegge il suo fragile corpo.\n",
+                "Attende immobile di evolversi."
+            ]
+        },
+        "es": {
+            "name": "METAPOD",
+            "category": "Pokémon Capullo",
+            "entry_text": [
+                "Su frágil cuerpo está recubierto\n",
+                "de una coraza dura como el acero.\n",
+                "Permanece quieto en su desarrollo."
+            ]
+        },
+        "jp": {
+            "name": "トランセル",
+            "category": "さなぎポケモン",
+            "entry_text": [
+                "こうてつのように　かたい　カラで\n",
+                "やわらかい　なかみを　まもっている。\n",
+                "しんかするまで　じっと　たえている。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1028
+    }
+}

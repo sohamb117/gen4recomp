@@ -1,0 +1,67 @@
+{
+  "key": 41986,
+  "messages": [
+    {
+      "id": "VictoryRoad1F_Text_AimForPokemonLeague",
+      "en_US": [
+        "Let me size you up...\r",
+        "Aim for the Pokémon League!\n",
+        "That’s all you should be thinking about."
+      ]
+    },
+    {
+      "id": "VictoryRoad1F_Text_YoullMeetManyPokemon",
+      "en_US": [
+        "Let me size you up...\r",
+        "You’ll meet many, many Pokémon.\n",
+        "That’s what you should be thinking.\r",
+        "Eventually, the world will appear bigger\n",
+        "to you!"
+      ]
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy2",
+      "garbage": 72
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy3",
+      "garbage": 32
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy4",
+      "garbage": 37
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy5",
+      "garbage": 26
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy6",
+      "garbage": 67
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy7",
+      "garbage": 15
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy8",
+      "garbage": 15
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy9",
+      "garbage": 22
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy10",
+      "garbage": 13
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy11",
+      "garbage": 14
+    },
+    {
+      "id": "VictoryRoad1F_Text_Dummy12",
+      "garbage": 11
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+    "name": "Alexander",
+    "class": "TRAINER_CLASS_HIKER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GRAVELER",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PROBOPASS",
+            "form": 0,
+            "level": 40,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "They call me the Echo Man!\n",
+                "Battle with me! Yahoo!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Ohh... Yo...\n",
+                "Yodelay...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Here’s good advice from the Echo Man!\r",
+                "If you’re at a loss as to where you\n",
+                "should be going, check the Town Map!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Oh, hi there! Remember us?\n",
+                "I’m the Echo Man!\r",
+                "Let’s have another battle!\n",
+                "Yahoo!\r"
+            ]
+        }
+    ]
+}

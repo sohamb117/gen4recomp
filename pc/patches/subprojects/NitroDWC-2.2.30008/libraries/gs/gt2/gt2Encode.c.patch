@@ -1,0 +1,11 @@
+--- a/subprojects/NitroDWC-2.2.30008/libraries/gs/gt2/gt2Encode.c
++++ b/subprojects/NitroDWC-2.2.30008/libraries/gs/gt2/gt2Encode.c
+@@ -119,7 +119,7 @@
+ 
+ #else
+ 
+-#define GT_ENCODE_ELEM(TYPE,b,l,args) {if (l < sizeof(TYPE)) return -1; gt2MemCopy(b,(const char *)&va_arg(*args,TYPE),sizeof(TYPE)); return sizeof(TYPE);}
++#define GT_ENCODE_ELEM(TYPE,b,l,args) {if (l < sizeof(TYPE)) return -1; { TYPE pc_tmp_ = va_arg(*args,TYPE); gt2MemCopy(b,(const char *)&pc_tmp_,sizeof(TYPE)); } return sizeof(TYPE);}
+ #define GT_DECODE_ELEM(TYPE,b,l,args) {if (l < sizeof(TYPE)) return -1; gt2MemCopy((char *)va_arg(*args,TYPE*),b,sizeof(TYPE)); return sizeof(TYPE);}
+ // nc = no endian convert
+ #define GT_ENCODE_ELEM_NC(TYPE,b,l,args) {if (l < sizeof(TYPE)) return -1; memcpy(b,&va_arg(*args,TYPE),sizeof(TYPE)); return sizeof(TYPE);}

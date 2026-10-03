@@ -1,0 +1,16 @@
+# The losing path, which nothing else in this corpus takes: the lead is far
+# too weak, the party faints, and the game whites out and moves the player.
+# A battle station that only ever wins never executes the half of the battle
+# code a player meets most often early on.
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20009
+money 4000
+party SPECIES_TURTWIG 5 ITEM_NONE
+# The lead's first move is set explicitly. A battle station is driven
+# with A alone, which picks move slot 0 every turn, so a lead whose
+# natural slot 0 is a status move never ends its fight, measured on a
+# level 22 Monferno, which drew a level 5 Starly out past 40,000 frames.
+party-move 0 0 MOVE_RAZOR_LEAF
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

@@ -1,0 +1,16 @@
+{
+  "key": 21526,
+  "messages": [
+    {
+      "id": "GreatMarsh2_Text_PokemonDifferDayToDay",
+      "en_US": [
+        "The Pokémon you see here are different\n",
+        "from day to day. Don’t you think so?"
+      ]
+    },
+    {
+      "id": "GreatMarsh2_Text_SignArea2",
+      "en_US": "Great Marsh Area 2"
+    }
+  ]
+}

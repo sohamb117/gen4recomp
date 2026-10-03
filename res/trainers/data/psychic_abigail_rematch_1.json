@@ -1,0 +1,56 @@
+{
+    "name": "Abigail",
+    "class": "TRAINER_CLASS_PSYCHIC_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CHIMECHO",
+            "form": 0,
+            "level": 41,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_DRIFBLIM",
+            "form": 0,
+            "level": 43,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GARDEVOIR",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Wah! That thing curled around your\n",
+                "neck!\r",
+                "...Nice scarf, kid!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "My plan to spook you didn’t go over\n",
+                "at all.\n"
+            ]
+        }
+    ]
+}

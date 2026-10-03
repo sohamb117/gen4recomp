@@ -1,0 +1,72 @@
+{
+    "name": "Colby",
+    "class": "TRAINER_CLASS_BLACK_BELT",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 23,
+            "item": null,
+            "moves": [
+                "MOVE_KARATE_CHOP",
+                "MOVE_LEER",
+                "MOVE_FORESIGHT"
+            ],
+            "iv_scale": 40,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 25,
+            "item": null,
+            "moves": [
+                "MOVE_LOW_KICK",
+                "MOVE_FORESIGHT"
+            ],
+            "iv_scale": 40,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": [
+                "MOVE_SUBMISSION",
+                "MOVE_LEER",
+                "MOVE_FORESIGHT"
+            ],
+            "iv_scale": 40,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "We’re the Karate Quads!\r",
+                "I will strike a blow for love with my\n",
+                "fist! Hiyah, looooooooove!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Argh! Crunched!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Your Pokémon sure are tough!\r",
+                "But our Gym Leader Maylene will\n",
+                "break you like a stack of bricks!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,186 @@
+{
+    "base_stats": {
+        "hp": 75,
+        "attack": 90,
+        "defense": 50,
+        "speed": 95,
+        "special_attack": 110,
+        "special_defense": 80
+    },
+    "types": [ "TYPE_DARK", "TYPE_FIRE" ],
+    "catch_rate": 45,
+    "base_exp_reward": 204,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 2,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 35,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_EARLY_BIRD", "ABILITY_FLASH_FIRE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLACK",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_THUNDER_FANG" ],
+            [ 1, "MOVE_LEER" ],
+            [ 1, "MOVE_EMBER" ],
+            [ 1, "MOVE_HOWL" ],
+            [ 1, "MOVE_SMOG" ],
+            [ 4, "MOVE_HOWL" ],
+            [ 9, "MOVE_SMOG" ],
+            [ 14, "MOVE_ROAR" ],
+            [ 17, "MOVE_BITE" ],
+            [ 22, "MOVE_ODOR_SLEUTH" ],
+            [ 28, "MOVE_BEAT_UP" ],
+            [ 32, "MOVE_FIRE_FANG" ],
+            [ 38, "MOVE_FAINT_ATTACK" ],
+            [ 44, "MOVE_EMBARGO" ],
+            [ 48, "MOVE_FLAMETHROWER" ],
+            [ 54, "MOVE_CRUNCH" ],
+            [ 60, "MOVE_NASTY_PLOT" ]
+        ],
+        "by_tm": [
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM15",
+            "TM17",
+            "TM21",
+            "TM22",
+            "TM23",
+            "TM27",
+            "TM30",
+            "TM32",
+            "TM35",
+            "TM36",
+            "TM38",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM49",
+            "TM50",
+            "TM58",
+            "TM61",
+            "TM63",
+            "TM66",
+            "TM68",
+            "TM78",
+            "TM79",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_SWIFT",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_HOUNDOUR",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SCARY"
+    },
+    "pokedex_data": {
+        "height_inches": 55,
+        "weight_pounds": 77.2,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 9,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 9,
+        "en": {
+            "name": "HOUNDOOM",
+            "category": "Dark Pokémon",
+            "entry_text": [
+                "The flames it breathes when angry\n",
+                "contain toxins. If they cause a\n",
+                "burn, it will hurt forever."
+            ]
+        },
+        "fr": {
+            "name": "DEMOLOSSE",
+            "category": "Pokémon Sombre",
+            "entry_text": [
+                "Jadis, les gens prenaient son\n",
+                "étrange hurlement pour\n",
+                "l’appel de la Faucheuse."
+            ]
+        },
+        "de": {
+            "name": "HUNDEMON",
+            "category": "Hades",
+            "entry_text": [
+                "In alten Zeiten glaubte man, das\n",
+                "Heulen dieses PKMN sei der Ruf\n",
+                "des Todes."
+            ]
+        },
+        "it": {
+            "name": "HOUNDOOM",
+            "category": "Pokémon Buio",
+            "entry_text": [
+                "Molto tempo fa, si riteneva che\n",
+                "le sue urla sinistre coincidessero\n",
+                "con la chiamata della morte."
+            ]
+        },
+        "es": {
+            "name": "HOUNDOOM",
+            "category": "Pokémon Siniestro",
+            "entry_text": [
+                "Hace mucho, la gente creía que\n",
+                "sus horripilantes aullidos eran de\n",
+                "la muerte personificada."
+            ]
+        },
+        "jp": {
+            "name": "ヘルガ－",
+            "category": "ダ－クポケモン",
+            "entry_text": [
+                "ヘルガ－の　ぶきみな　とおぼえは\n",
+                "じごくから　しにがみが　よぶ　こえと\n",
+                "むかしの　ひとは　そうぞうしていた。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 528
+    }
+}

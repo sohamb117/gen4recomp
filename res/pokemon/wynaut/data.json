@@ -1,0 +1,135 @@
+{
+    "base_stats": {
+        "hp": 95,
+        "attack": 23,
+        "defense": 48,
+        "speed": 23,
+        "special_attack": 23,
+        "special_defense": 48
+    },
+    "types": [ "TYPE_PSYCHIC", "TYPE_PSYCHIC" ],
+    "catch_rate": 125,
+    "base_exp_reward": 44,
+    "ev_yields": {
+        "hp": 1,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_UNDISCOVERED", "EGG_GROUP_UNDISCOVERED" ],
+    "abilities": [ "ABILITY_SHADOW_TAG", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_SPLASH" ],
+            [ 1, "MOVE_CHARM" ],
+            [ 1, "MOVE_ENCORE" ],
+            [ 15, "MOVE_COUNTER" ],
+            [ 15, "MOVE_MIRROR_COAT" ],
+            [ 15, "MOVE_SAFEGUARD" ],
+            [ 15, "MOVE_DESTINY_BOND" ]
+        ],
+        "by_tm": [  ],
+        "by_tutor": [  ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            15,
+            "SPECIES_WOBBUFFET"
+        ]
+    ],
+    "offspring": "SPECIES_WYNAUT",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SLOW"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 30.9,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 346,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 346,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 24,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 24,
+        "en": {
+            "name": "WYNAUT",
+            "category": "Bright Pokémon",
+            "entry_text": [
+                "It grows strong by pushing up\n",
+                "against others en masse.\n",
+                "It loves eating sweet fruit."
+            ]
+        },
+        "fr": {
+            "name": "OKEOKE",
+            "category": "Pokémon Ravi",
+            "entry_text": [
+                "Il se muscle en bousculant ses\n",
+                "semblables lors de mêlées. Il\n",
+                "raffole des fruits sucrés."
+            ]
+        },
+        "de": {
+            "name": "ISSO",
+            "category": "Strahlekind",
+            "entry_text": [
+                "Es wird stärker, indem es andere\n",
+                "ständig anrempelt. Es liebt\n",
+                "Süßigkeiten."
+            ]
+        },
+        "it": {
+            "name": "WYNAUT",
+            "category": "Pokémon Brillante",
+            "entry_text": [
+                "Questi Pokémon si allenano in\n",
+                "gruppo caricandosi l’un l’altro per\n",
+                "rafforzarsi. Amano i frutti dolci."
+            ]
+        },
+        "es": {
+            "name": "WYNAUT",
+            "category": "Pokémon Radiante",
+            "entry_text": [
+                "Se fortalecen empujándose unos\n",
+                "a otros en grupos. Les encantan\n",
+                "los dulces."
+            ]
+        },
+        "jp": {
+            "name": "ソ－ナノ",
+            "category": "ほがらかポケモン",
+            "entry_text": [
+                "なかまたちと　おしくらまんじゅうを\n",
+                "やることで　がまんづよく　そだつ。\n",
+                "あまい　くだものが　だいこうぶつ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 2570
+    }
+}

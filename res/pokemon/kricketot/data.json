@@ -1,0 +1,136 @@
+{
+    "base_stats": {
+        "hp": 37,
+        "attack": 25,
+        "defense": 41,
+        "speed": 25,
+        "special_attack": 25,
+        "special_defense": 41
+    },
+    "types": [ "TYPE_BUG", "TYPE_BUG" ],
+    "catch_rate": 255,
+    "base_exp_reward": 54,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_METRONOME"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_SHED_SKIN", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_RED",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_GROWL" ],
+            [ 1, "MOVE_BIDE" ],
+            [ 16, "MOVE_BUG_BITE" ]
+        ],
+        "by_tm": [  ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_SNORE",
+            "MOVE_ENDEAVOR",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            10,
+            "SPECIES_KRICKETUNE"
+        ]
+    ],
+    "offspring": "SPECIES_KRICKETOT",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 12,
+        "weight_pounds": 4.9,
+        "body_shape": "SHAPE_BIPEDAL_TAILLESS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 713,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 713,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 28,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 28,
+        "en": {
+            "name": "KRICKETOT",
+            "category": "Cricket Pokémon",
+            "entry_text": [
+                "Its legs are short. Whenever it\n",
+                "stumbles, its stiff antennae clack\n",
+                "with a xylophone-like sound."
+            ]
+        },
+        "fr": {
+            "name": "CRIKZIK",
+            "category": "Pokémon Criquet",
+            "entry_text": [
+                "Quand il bascule sa tête d’avant \n",
+                "en arrière, ses antennes se\n",
+                "heurtent dans un son de xylophone."
+            ]
+        },
+        "de": {
+            "name": "ZIRPURZE",
+            "category": "Zirper",
+            "entry_text": [
+                "Es schüttelt seinen Kopf, so dass\n",
+                "die beiden Antennen sich berühren\n",
+                "und wie ein Xylophon klingen."
+            ]
+        },
+        "it": {
+            "name": "KRICKETOT",
+            "category": "Pokémon Grillo",
+            "entry_text": [
+                "Muove la testa avanti e indietro\n",
+                "e le antenne, scontrandosi, produ-\n",
+                "cono un suono simile allo xilofono."
+            ]
+        },
+        "es": {
+            "name": "KRICKETOT",
+            "category": "Pokémon Grillo",
+            "entry_text": [
+                "Al agitar la cabeza de atrás hacia\n",
+                "delante, sus antenas chocan\n",
+                "y suenan como un xilófono."
+            ]
+        },
+        "jp": {
+            "name": "コロボ－シ",
+            "category": "こおろぎポケモン",
+            "entry_text": [
+                "あたまを　ぜんごに　ゆすって\n",
+                "しょっかくを　ぶつけあうことで\n",
+                "もっきんのような　おとを　ならす。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1028
+    }
+}

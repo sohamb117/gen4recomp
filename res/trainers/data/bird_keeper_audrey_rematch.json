@@ -1,0 +1,54 @@
+{
+    "name": "Audrey",
+    "class": "TRAINER_CLASS_BIRD_KEEPER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_FARFETCHD",
+            "form": 0,
+            "level": 57,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SWELLOW",
+            "form": 0,
+            "level": 59,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PIDGEOT",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I let my bird Pokémon do as they\n",
+                "wish. And so, we train here daily!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Sheesh... I arrive in a new place and\n",
+                "it turns out to be the Battle Zone...\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+# In front of a Pokemon Centre's PC, facing it.
+#
+# The PC has no bg event and no object: it is a tile behaviour, and
+# Field_TileBehaviorToScript only answers for it when the player is facing
+# NORTH, so the tile south of it and FACE_UP are both part of the recipe. The
+# two tiles are at (12,2) and (12,3) of the shared Pokemon Centre interior,
+# found by scanning the loaded map rather than by reading the matrices.
+
+name BOXER
+gender GENDER_MALE
+trainer-id 30121
+money 6000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+party SPECIES_BIDOOF 8 ITEM_NONE
+party SPECIES_STARLY 9 ITEM_NONE
+map MAP_HEADER_JUBILIFE_CITY_POKECENTER_1F 12 4 FACE_UP

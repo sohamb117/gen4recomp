@@ -1,0 +1,22 @@
+#include "macros/scrcmd.inc"
+#include "res/text/bank/team_galactic_eterna_building_2f.h"
+
+
+    ScriptEntry TeamGalacticEternaBuilding2F_GruntM
+    ScriptEntry TeamGalacticEternaBuilding2F_GruntF
+    ScriptEntry TeamGalacticEternaBuilding2F_BgSign
+    ScriptEntryEnd
+
+TeamGalacticEternaBuilding2F_GruntM:
+    NPCMessage TeamGalacticEternaBuilding2F_Text_WorkingToFindEnergySources
+    End
+
+TeamGalacticEternaBuilding2F_GruntF:
+    NPCMessage TeamGalacticEternaBuilding2F_Text_ResearchOnFormsOfEnergy
+    End
+
+TeamGalacticEternaBuilding2F_BgSign:
+    EventMessage TeamGalacticEternaBuilding2F_Text_MakeProgressTogether
+    End
+
+    .balign 4, 0

@@ -1,0 +1,102 @@
+{
+    "name": "Wake",
+    "class": "TRAINER_CLASS_LEADER_WAKE",
+    "items": [
+        "ITEM_FULL_RESTORE",
+        "ITEM_FULL_RESTORE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SHARPEDO",
+            "form": 0,
+            "level": 61,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_AQUA_JET",
+                "MOVE_NIGHT_SLASH",
+                "MOVE_SLASH",
+                "MOVE_ENDURE"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_QUAGSIRE",
+            "form": 0,
+            "level": 61,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_EARTHQUAKE",
+                "MOVE_STONE_EDGE",
+                "MOVE_YAWN",
+                "MOVE_SURF"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GYARADOS",
+            "form": 0,
+            "level": 62,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_AQUA_TAIL",
+                "MOVE_AVALANCHE",
+                "MOVE_BITE",
+                "MOVE_GIGA_IMPACT"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_FLOATZEL",
+            "form": 0,
+            "level": 63,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_BRINE",
+                "MOVE_ICE_FANG",
+                "MOVE_CRUNCH",
+                "MOVE_AQUA_JET"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LUDICOLO",
+            "form": 0,
+            "level": 65,
+            "item": "ITEM_SITRUS_BERRY",
+            "moves": [
+                "MOVE_SURF",
+                "MOVE_ICE_BEAM",
+                "MOVE_ENERGY_BALL",
+                "MOVE_FOCUS_BLAST"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_LAST_BATTLER_HALF_HP",
+            "en_US": [
+                "If we turn it around here, the\n",
+                "spectators will be stoked!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That puts a grin on my face!\n",
+                "Guhahaha! That was a blast!\n"
+            ]
+        }
+    ]
+}

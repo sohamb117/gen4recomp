@@ -1,0 +1,20 @@
+{
+  "key": 16011,
+  "messages": [
+    {
+      "id": "Route225House_Text_LetPokemonDrinkThis",
+      "en_US": [
+        "Isn’t it hot in the Battle Zone?\n",
+        "Why not let your Pokémon drink this?\r"
+      ]
+    },
+    {
+      "id": "Route225House_Text_WellspringOfLife",
+      "en_US": [
+        "Water is the wellspring of life.\r",
+        "Having said that, no one knows where\n",
+        "Pokémon originated."
+      ]
+    }
+  ]
+}

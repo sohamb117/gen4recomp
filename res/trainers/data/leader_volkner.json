@@ -1,0 +1,103 @@
+{
+    "name": "Volkner",
+    "class": "TRAINER_CLASS_LEADER_VOLKNER",
+    "items": [
+        "ITEM_HYPER_POTION",
+        "ITEM_FULL_RESTORE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_JOLTEON",
+            "form": 0,
+            "level": 46,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_THUNDER_WAVE",
+                "MOVE_CHARGE_BEAM",
+                "MOVE_IRON_TAIL",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_RAICHU",
+            "form": 0,
+            "level": 46,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_CHARGE_BEAM",
+                "MOVE_FOCUS_BLAST",
+                "MOVE_SIGNAL_BEAM",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LUXRAY",
+            "form": 0,
+            "level": 48,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_ICE_FANG",
+                "MOVE_THUNDER_FANG",
+                "MOVE_CRUNCH",
+                "MOVE_FIRE_FANG"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ELECTIVIRE",
+            "form": 0,
+            "level": 50,
+            "item": "ITEM_SITRUS_BERRY",
+            "moves": [
+                "MOVE_THUNDER_PUNCH",
+                "MOVE_FIRE_PUNCH",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_GIGA_IMPACT"
+            ],
+            "iv_scale": 2500,
+            "ball_seal": 14
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_FIRST_DAMAGE",
+            "en_US": [
+                "I get it! You guys are tough!\n",
+                "But we can match your toughness!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_LAST_BATTLER",
+            "en_US": [
+                "This is it!\n",
+                "My trump card!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_LAST_BATTLER_HALF_HP",
+            "en_US": "Shocking... I didn’t see this coming!\n"
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "You’ve got me beat...\r",
+                "Your desire and the noble way\n",
+                "your Pokémon battled for you...\r",
+                "I even felt thrilled during our\n",
+                "match.\r",
+                "That was a very good battle.\n"
+            ]
+        }
+    ]
+}

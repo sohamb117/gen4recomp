@@ -1,0 +1,48 @@
+{
+    "name": "Troy",
+    "class": "TRAINER_CLASS_SWIMMER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GYARADOS",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Yes, I know I can surf, but I’d\n",
+                "rather swim instead.\r",
+                "It does seem weird, I agree.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Kaploosh!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "If you don’t know how, I’m willing to\n",
+                "show you how to swim.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "If you rely on your Pokémon all the\n",
+                "time, you’ll never learn how to swim!\r"
+            ]
+        }
+    ]
+}

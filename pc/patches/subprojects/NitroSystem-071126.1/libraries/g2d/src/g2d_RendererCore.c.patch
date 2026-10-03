@@ -1,0 +1,12 @@
+--- a/subprojects/NitroSystem-071126.1/libraries/g2d/src/g2d_RendererCore.c
++++ b/subprojects/NitroSystem-071126.1/libraries/g2d/src/g2d_RendererCore.c
+@@ -496,6 +496,9 @@
+ 
+     pRnd->pFuncOamRegister = pFuncOamRegister;
+     pRnd->pFuncOamAffineRegister = pFuncOamAffineRegister;
++    { extern void pc_state_mark_host_field(const void *);
++      pc_state_mark_host_field(&pRnd->pFuncOamRegister);
++      pc_state_mark_host_field(&pRnd->pFuncOamAffineRegister); }
+ }
+ 
+ void NNS_G2dSetRndCoreAffineOverwriteMode (NNSG2dRndCoreInstance * pRnd, NNSG2dRendererAffineTypeOverwiteMode mode)

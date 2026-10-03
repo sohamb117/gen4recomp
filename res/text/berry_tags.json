@@ -1,0 +1,69 @@
+{
+  "key": 4362,
+  "messages": [
+    {
+      "id": "BerryTag_Text_BerryTag",
+      "en_US": "BERRY TAG"
+    },
+    {
+      "id": "BerryTag_Text_Spicy",
+      "en_US": "SPICY"
+    },
+    {
+      "id": "BerryTag_Text_Dry",
+      "en_US": "DRY"
+    },
+    {
+      "id": "BerryTag_Text_Sweet",
+      "en_US": "SWEET"
+    },
+    {
+      "id": "BerryTag_Text_Bitter",
+      "en_US": "BITTER"
+    },
+    {
+      "id": "BerryTag_Text_Sour",
+      "en_US": "SOUR"
+    },
+    {
+      "id": "BerryTag_Text_BerryID",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "BerryTag_Text_Unused",
+      "en_US": "{STRVAR_1 8, 0, 0}"
+    },
+    {
+      "id": "BerryTag_Text_LabelSize",
+      "en_US": "SIZE /"
+    },
+    {
+      "id": "BerryTag_Text_Size",
+      "en_US": "{STRVAR_1 51, 0, 0}.{STRVAR_1 50, 1, 0}”"
+    },
+    {
+      "id": "BerryTag_Text_LabelFirm",
+      "en_US": "FIRM /"
+    },
+    {
+      "id": "BerryTag_Text_VerySoft",
+      "en_US": "Very soft"
+    },
+    {
+      "id": "BerryTag_Text_Soft",
+      "en_US": "Soft"
+    },
+    {
+      "id": "BerryTag_Text_Hard",
+      "en_US": "Hard"
+    },
+    {
+      "id": "BerryTag_Text_VeryHard",
+      "en_US": "Very hard"
+    },
+    {
+      "id": "BerryTag_Text_SuperHard",
+      "en_US": "Super hard"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+    "name": "Grunt",
+    "class": "TRAINER_CLASS_GALACTIC_GRUNT_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLBAT",
+            "form": 0,
+            "level": 39,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_HOUNDOUR",
+            "form": 0,
+            "level": 39,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "You should be tired out by now.\n",
+                "It’s Team Galactic’s turn to shine!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "What? I don’t get it.\n",
+                "What’s your rush?\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Pokémon are that important to you?\n",
+                "Is that what this is all about?\n"
+            ]
+        }
+    ]
+}

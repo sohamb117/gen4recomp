@@ -1,0 +1,23 @@
+# A Tough contest at Master rank.
+#
+# Same maxed entry as contest-win, scarf and moves swapped for Tough.
+# Master's top visual bucket is 600; 255 in every condition plus sheen
+# is 637, which is the last rank the feeding cap still reaches.
+
+name MASTER
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_ROSELIA 30 ITEM_YELLOW_SCARF
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_MEGA_PUNCH
+party-move 0 2 MOVE_SLUDGE_BOMB
+party-move 0 3 MOVE_IRON_HEAD
+condition 0 MON_DATA_COOL 255
+condition 0 MON_DATA_BEAUTY 255
+condition 0 MON_DATA_CUTE 255
+condition 0 MON_DATA_SMART 255
+condition 0 MON_DATA_TOUGH 255
+condition 0 MON_DATA_SHEEN 255
+map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

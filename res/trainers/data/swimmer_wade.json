@@ -1,0 +1,65 @@
+{
+    "name": "Wade",
+    "class": "TRAINER_CLASS_SWIMMER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CARVANHA",
+            "form": 0,
+            "level": 53,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_CARVANHA",
+            "form": 0,
+            "level": 53,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SHARPEDO",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Me and my Pokémon are pumped up\n",
+                "and ready to go all out!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Our muscles are deflating...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Overwhelm with our dazzling physiques!\n",
+                "That was our game plan...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Me and my Pokémon are pumped up!\n",
+                "See, our muscles are twitching!\r"
+            ]
+        }
+    ]
+}

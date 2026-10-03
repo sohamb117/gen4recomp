@@ -1,0 +1,19 @@
+# Union-room door: CONTINUE's last A starts the west Teala.
+#
+# The Yes / No / Info menu is the door. Walking through it calls
+# CommManager_StartUnion, which needs the WM model. This script
+# stops at the menu.
+#
+# The first lines are lab-continue.txt's, unchanged.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+2800 keys A
+2824 keys none

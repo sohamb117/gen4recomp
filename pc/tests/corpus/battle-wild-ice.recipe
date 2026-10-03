@@ -1,0 +1,16 @@
+# A third wild fight, chosen for its MOVE ANIMATION rather than for its
+# matchup. The SIGFPE this task found came out of a particle emitter in a
+# move's animation, not out of battle logic, so every station that attacks
+# with a different move covers ground no amount of arithmetic does.
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20011
+money 19000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+party SPECIES_EMPOLEON 42 ITEM_NONE
+party-move 0 0 MOVE_ICE_BEAM
+map MAP_HEADER_CANALAVE_CITY 0x3A 0x2D3 FACE_DOWN

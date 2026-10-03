@@ -1,0 +1,194 @@
+{
+    "base_stats": {
+        "hp": 53,
+        "attack": 51,
+        "defense": 53,
+        "speed": 40,
+        "special_attack": 61,
+        "special_defense": 56
+    },
+    "types": [ "TYPE_WATER", "TYPE_WATER" ],
+    "catch_rate": 45,
+    "base_exp_reward": 66,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 1,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_WATER_1", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_TORRENT", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_POUND" ],
+            [ 4, "MOVE_GROWL" ],
+            [ 8, "MOVE_BUBBLE" ],
+            [ 11, "MOVE_WATER_SPORT" ],
+            [ 15, "MOVE_PECK" ],
+            [ 18, "MOVE_BUBBLE_BEAM" ],
+            [ 22, "MOVE_BIDE" ],
+            [ 25, "MOVE_FURY_ATTACK" ],
+            [ 29, "MOVE_BRINE" ],
+            [ 32, "MOVE_WHIRLPOOL" ],
+            [ 36, "MOVE_MIST" ],
+            [ 39, "MOVE_DRILL_PECK" ],
+            [ 43, "MOVE_HYDRO_PUMP" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM27",
+            "TM28",
+            "TM31",
+            "TM32",
+            "TM39",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM55",
+            "TM56",
+            "TM58",
+            "TM76",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM88",
+            "TM90",
+            "HM01",
+            "HM03",
+            "HM05",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_SNORE",
+            "MOVE_SIGNAL_BEAM"
+        ],
+        "egg_moves": [
+            "MOVE_DOUBLE_HIT",
+            "MOVE_SUPERSONIC",
+            "MOVE_YAWN",
+            "MOVE_MUD_SPORT",
+            "MOVE_MUD_SLAP",
+            "MOVE_SNORE",
+            "MOVE_FLAIL",
+            "MOVE_AGILITY",
+            "MOVE_AQUA_RING",
+            "MOVE_HYDRO_PUMP"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            16,
+            "SPECIES_PRINPLUP"
+        ]
+    ],
+    "offspring": "SPECIES_PIPLUP",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 16,
+        "weight_pounds": 11.5,
+        "body_shape": "SHAPE_BIPEDAL_TAILLESS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 405,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 405,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 28,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 28,
+        "en": {
+            "name": "PIPLUP",
+            "category": "Penguin Pokémon",
+            "entry_text": [
+                "A poor walker, it often falls down.\n",
+                "However, its strong pride makes it\n",
+                "puff up its chest without a care."
+            ]
+        },
+        "fr": {
+            "name": "TIPLOUF",
+            "category": "Pokémon Pingouin",
+            "entry_text": [
+                "Il est fier et déteste accepter\n",
+                "la nourriture qu’on lui offre. Son\n",
+                "pelage épais le protège du froid."
+            ]
+        },
+        "de": {
+            "name": "PLINFA",
+            "category": "Pinguin",
+            "entry_text": [
+                "Es ist sehr stolz und nimmt daher\n",
+                "kein Futter von anderen an. Seine\n",
+                "dicken Daunen schützen vor Kälte."
+            ]
+        },
+        "it": {
+            "name": "PIPLUP",
+            "category": "Pokémon Pinguino",
+            "entry_text": [
+                "È molto orgoglioso e odia accettare\n",
+                "cibo dalla gente. Le fitte piume lo\n",
+                "proteggono dal freddo."
+            ]
+        },
+        "es": {
+            "name": "PIPLUP",
+            "category": "Pokémon Pingüino",
+            "entry_text": [
+                "Es muy orgulloso, por lo que odia\n",
+                "aceptar comida de la gente. Su\n",
+                "grueso plumón le protege del frío."
+            ]
+        },
+        "jp": {
+            "name": "ポッチャマ",
+            "category": "ペンギンポケモン",
+            "entry_text": [
+                "プライドが　たかく　ひとから\n",
+                "たべものを　もらう　ことを　きらう。\n",
+                "ながい　うぶげが　さむさを　ふせぐ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NORTH_EAST",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 771
+    }
+}

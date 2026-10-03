@@ -1,0 +1,26 @@
+# A Cool contest at Normal rank that takes first.
+#
+# contest-cool is the poffin-fed twin and placed second: cool=60 is
+# seven visual hearts, one short of the Normal-rank bucket. This entry
+# sets the five conditions and the sheen at the feeding cap, holds the
+# matching scarf, and performs four Cool moves; the visual score is
+# then eight hearts at every rank, and the acting round's type match
+# is +10 rather than a miss. Winning is the only way to a ribbon.
+
+name WINNER
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_ROSELIA 30 ITEM_RED_SCARF
+party-move 0 0 MOVE_THUNDERBOLT
+party-move 0 1 MOVE_THUNDER
+party-move 0 2 MOVE_SWIFT
+party-move 0 3 MOVE_AERIAL_ACE
+condition 0 MON_DATA_COOL 255
+condition 0 MON_DATA_BEAUTY 255
+condition 0 MON_DATA_CUTE 255
+condition 0 MON_DATA_SMART 255
+condition 0 MON_DATA_TOUGH 255
+condition 0 MON_DATA_SHEEN 255
+map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

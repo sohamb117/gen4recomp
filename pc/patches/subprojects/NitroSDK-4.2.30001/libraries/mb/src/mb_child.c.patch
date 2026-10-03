@@ -1,0 +1,11 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/mb/src/mb_child.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/mb/src/mb_child.c
+@@ -258,7 +258,7 @@
+ 
+ 	if (type == MB_CALLBACK_END_COMPLETE) {
+ 		MI_CpuClear16(pCwork, sizeof(MB_CommCWork));
+-		pCwork = NULL;
++		mbc = NULL;
+ 	}
+ }
+ 

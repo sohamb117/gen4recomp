@@ -1,0 +1,24 @@
+# A tag double battle, BATTLE_TYPE_TAG_DOUBLES, two different enemy
+# trainers and no partner.
+#
+# The fourth variant, TRAINER_WITH_AI_PARTNER, is NOT a station and the
+# reason is written here rather than left as a gap: it asks the player to
+# pick a TARGET each turn, and a station driven with A alone sits on that
+# prompt. Driving it needs a script that knows the target grid's geometry,
+# which every other station here avoids on purpose.
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20007
+money 15000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+party SPECIES_INFERNAPE 40 ITEM_NONE
+party SPECIES_STARAPTOR 40 ITEM_NONE
+# The lead's first move is set explicitly. A battle station is driven
+# with A alone, which picks move slot 0 every turn, so a lead whose
+# natural slot 0 is a status move never ends its fight, measured on a
+# level 22 Monferno, which drew a level 5 Starly out past 40,000 frames.
+party-move 0 0 MOVE_FLAMETHROWER
+party-move 1 0 MOVE_BRAVE_BIRD
+map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

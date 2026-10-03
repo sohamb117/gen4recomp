@@ -1,0 +1,372 @@
+{
+  "key": 38210,
+  "messages": [
+    {
+      "id": "ContestEffects_Text_PerformFirst",
+      "en_US": "Perform first"
+    },
+    {
+      "id": "ContestEffects_Text_NextTurn1",
+      "en_US": "next turn."
+    },
+    {
+      "id": "ContestEffects_Text_PerformLast",
+      "en_US": "Perform last"
+    },
+    {
+      "id": "ContestEffects_Text_NextTurn2",
+      "en_US": "next turn."
+    },
+    {
+      "id": "ContestEffects_Text_EachDoubled",
+      "en_US": "Each doubled"
+    },
+    {
+      "id": "ContestEffects_Text_JudgePlusTwo",
+      "en_US": "Judge: +2"
+    },
+    {
+      "id": "ContestEffects_Text_IfTheVoltage",
+      "en_US": "If the Voltage"
+    },
+    {
+      "id": "ContestEffects_Text_GoesUpPlusTwo",
+      "en_US": "goes up: +2"
+    },
+    {
+      "id": "ContestEffects_Text_BasicAct",
+      "en_US": "A basic act."
+    },
+    {
+      "id": "ContestEffects_Text_Unused",
+      "garbage": 1
+    },
+    {
+      "id": "ContestEffects_Text_IfJudgesAre",
+      "en_US": "If Judges are"
+    },
+    {
+      "id": "ContestEffects_Text_NotDoubledPlusThree",
+      "en_US": "not doubled: +3"
+    },
+    {
+      "id": "ContestEffects_Text_PerformableTwo",
+      "en_US": "Performable two"
+    },
+    {
+      "id": "ContestEffects_Text_TurnsInARow",
+      "en_US": "turns in a row."
+    },
+    {
+      "id": "ContestEffects_Text_VoltagePts",
+      "en_US": "Voltage pts."
+    },
+    {
+      "id": "ContestEffects_Text_AreAdded",
+      "en_US": "are added."
+    },
+    {
+      "id": "ContestEffects_Text_IfAllChoose",
+      "en_US": "If all choose"
+    },
+    {
+      "id": "ContestEffects_Text_SameJudgePlusFifteen",
+      "en_US": "same Judge: +15"
+    },
+    {
+      "id": "ContestEffects_Text_LowersVoltage",
+      "en_US": "Lowers Voltage"
+    },
+    {
+      "id": "ContestEffects_Text_OfJudgesByOne",
+      "en_US": "of Judges by 1."
+    },
+    {
+      "id": "ContestEffects_Text_DoubleScoreIn",
+      "en_US": "Double score in"
+    },
+    {
+      "id": "ContestEffects_Text_NextTurn3",
+      "en_US": "next turn."
+    },
+    {
+      "id": "ContestEffects_Text_GetVoltage",
+      "en_US": "Get Voltage"
+    },
+    {
+      "id": "ContestEffects_Text_FromOneAhead",
+      "en_US": "from one ahead."
+    },
+    {
+      "id": "ContestEffects_Text_NoVoltageUp",
+      "en_US": "No Voltage up"
+    },
+    {
+      "id": "ContestEffects_Text_ThisTurn1",
+      "en_US": "this turn."
+    },
+    {
+      "id": "ContestEffects_Text_RandomOrder",
+      "en_US": "Random order"
+    },
+    {
+      "id": "ContestEffects_Text_NextTurn4",
+      "en_US": "next turn."
+    },
+    {
+      "id": "ContestEffects_Text_DoubleScore",
+      "en_US": "Double score"
+    },
+    {
+      "id": "ContestEffects_Text_ForFinalAct",
+      "en_US": "for final act."
+    },
+    {
+      "id": "ContestEffects_Text_HighScoreFor1",
+      "en_US": "High score for"
+    },
+    {
+      "id": "ContestEffects_Text_LowVoltage",
+      "en_US": "low Voltage."
+    },
+    {
+      "id": "ContestEffects_Text_IfFirst",
+      "en_US": "If first"
+    },
+    {
+      "id": "ContestEffects_Text_PerformancePlusTwo1",
+      "en_US": "performance: +2"
+    },
+    {
+      "id": "ContestEffects_Text_IfFinal",
+      "en_US": "If final"
+    },
+    {
+      "id": "ContestEffects_Text_PerformancePlusTwo2",
+      "en_US": "performance: +2"
+    },
+    {
+      "id": "ContestEffects_Text_NoVoltageDown",
+      "en_US": "No Voltage down"
+    },
+    {
+      "id": "ContestEffects_Text_ThisTurn2",
+      "en_US": "this turn."
+    },
+    {
+      "id": "ContestEffects_Text_IfVoltageGoes",
+      "en_US": "If Voltage goes"
+    },
+    {
+      "id": "ContestEffects_Text_UpInARowPlusThree",
+      "en_US": "up in a row: +3"
+    },
+    {
+      "id": "ContestEffects_Text_HighScoreFor2",
+      "en_US": "High score for"
+    },
+    {
+      "id": "ContestEffects_Text_ALaterTurn",
+      "en_US": "a later turn."
+    },
+    {
+      "id": "ContestEffects_Text_AfterVoltage",
+      "en_US": "After Voltage"
+    },
+    {
+      "id": "ContestEffects_Text_HitsMaxPlusThree",
+      "en_US": "hits max: +3"
+    },
+    {
+      "id": "ContestEffects_Text_IfRatedThe",
+      "en_US": "If rated the"
+    },
+    {
+      "id": "ContestEffects_Text_WorstPlusThree",
+      "en_US": "worst: +3"
+    },
+    {
+      "id": "pl_msg_00000210_00046",
+      "en_US": [
+        "Enables the user to\n",
+        "perform first in the\n",
+        "next turn."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00047",
+      "en_US": [
+        "Enables the user to\n",
+        "perform last in the\n",
+        "next turn."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00048",
+      "en_US": [
+        "Earn +2 for each\n",
+        "time the same Judge\n",
+        "is chosen."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00049",
+      "en_US": [
+        "Earn +2 if the\n",
+        "Judge’s Voltage goes\n",
+        "up."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00050",
+      "en_US": [
+        "A basic performance\n",
+        "using a move known\n",
+        "by the Pokémon."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00051",
+      "en_US": [
+        "Earn +3 if no other\n",
+        "Pokémon has chosen\n",
+        "the same Judge."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00052",
+      "en_US": [
+        "Allows performance\n",
+        "of the same move\n",
+        "twice in a row."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00053",
+      "en_US": [
+        "Increased Voltage is\n",
+        "added to the\n",
+        "performance score."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00054",
+      "en_US": [
+        "Earn +15 if all the\n",
+        "Pokémon choose the\n",
+        "same Judge."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00055",
+      "en_US": [
+        "Lowers the Voltage\n",
+        "of all Judges by one\n",
+        "each."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00056",
+      "en_US": [
+        "Earn double the\n",
+        "score in the next\n",
+        "turn."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00057",
+      "en_US": [
+        "Steals the Voltage\n",
+        "of the Pokémon that\n",
+        "just went."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00058",
+      "en_US": [
+        "Prevents the Voltage\n",
+        "from going up in the\n",
+        "same turn."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00059",
+      "en_US": [
+        "Makes the order of\n",
+        "contestants random\n",
+        "in the next turn."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00060",
+      "en_US": [
+        "Earns double the\n",
+        "score on the final\n",
+        "performance."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00061",
+      "en_US": [
+        "Raises the score if\n",
+        "the Voltage is low."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00062",
+      "en_US": [
+        "Earn +2 if the\n",
+        "Pokémon performs\n",
+        "first in the turn."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00063",
+      "en_US": [
+        "Earn +2 if the\n",
+        "Pokémon performs\n",
+        "last in the turn."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00064",
+      "en_US": [
+        "Prevents the Voltage\n",
+        "from going down in\n",
+        "the same turn."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00065",
+      "en_US": [
+        "Earn +3 if two\n",
+        "Pokémon raise the\n",
+        "Voltage in a row."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00066",
+      "en_US": [
+        "Earn a higher score\n",
+        "the later the\n",
+        "Pokémon performs."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00067",
+      "en_US": [
+        "Earn +3 if the\n",
+        "Pokémon that just\n",
+        "went hit max Voltage."
+      ]
+    },
+    {
+      "id": "pl_msg_00000210_00068",
+      "en_US": [
+        "Earn +3 if the\n",
+        "Pokémon gets the\n",
+        "lowest score."
+      ]
+    }
+  ]
+}

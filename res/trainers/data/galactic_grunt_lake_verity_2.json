@@ -1,0 +1,74 @@
+{
+    "name": "Grunt",
+    "class": "TRAINER_CLASS_GALACTIC_GRUNT_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GLAMEOW",
+            "form": 0,
+            "level": 33,
+            "item": null,
+            "moves": [
+                "MOVE_FURY_SWIPES",
+                "MOVE_FAINT_ATTACK",
+                "MOVE_GROWL",
+                "MOVE_FAKE_OUT"
+            ],
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLBAT",
+            "form": 0,
+            "level": 33,
+            "item": null,
+            "moves": [
+                "MOVE_AIR_CUTTER",
+                "MOVE_WING_ATTACK",
+                "MOVE_BITE",
+                "MOVE_SUPERSONIC"
+            ],
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MURKROW",
+            "form": 0,
+            "level": 36,
+            "item": null,
+            "moves": [
+                "MOVE_FAINT_ATTACK",
+                "MOVE_NIGHT_SHADE",
+                "MOVE_WING_ATTACK"
+            ],
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "In order for us to bring peace to\n",
+                "the world, we must control it!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "You’re too young to understand.\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Our boss always had plans for\n",
+                "the three lakes...\r",
+                "While you were blissfully ignorant,\n",
+                "our work went ahead...\n"
+            ]
+        }
+    ]
+}

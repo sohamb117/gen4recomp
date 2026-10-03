@@ -1,0 +1,180 @@
+{
+    "base_stats": {
+        "hp": 130,
+        "attack": 65,
+        "defense": 60,
+        "speed": 65,
+        "special_attack": 110,
+        "special_defense": 95
+    },
+    "types": [ "TYPE_WATER", "TYPE_WATER" ],
+    "catch_rate": 45,
+    "base_exp_reward": 196,
+    "ev_yields": {
+        "hp": 2,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 35,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_WATER_ABSORB", "ABILITY_WATER_ABSORB" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TAIL_WHIP" ],
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_HELPING_HAND" ],
+            [ 8, "MOVE_SAND_ATTACK" ],
+            [ 15, "MOVE_WATER_GUN" ],
+            [ 22, "MOVE_QUICK_ATTACK" ],
+            [ 29, "MOVE_BITE" ],
+            [ 36, "MOVE_AURORA_BEAM" ],
+            [ 43, "MOVE_AQUA_RING" ],
+            [ 50, "MOVE_LAST_RESORT" ],
+            [ 57, "MOVE_HAZE" ],
+            [ 64, "MOVE_ACID_ARMOR" ],
+            [ 71, "MOVE_HYDRO_PUMP" ],
+            [ 78, "MOVE_MUDDY_WATER" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM05",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM11",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM27",
+            "TM28",
+            "TM30",
+            "TM32",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM55",
+            "TM58",
+            "TM68",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM03",
+            "HM04",
+            "HM06",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_AQUA_TAIL",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_LAST_RESORT",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_EEVEE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 39,
+        "weight_pounds": 63.9,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 249,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 249,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 10,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 10,
+        "en": {
+            "name": "VAPOREON",
+            "category": "Bubble Jet Pokémon",
+            "entry_text": [
+                "Its cell composition is similar\n",
+                "to water molecules. As a result,\n",
+                "it can melt away into water."
+            ]
+        },
+        "fr": {
+            "name": "AQUALI",
+            "category": "Pokémon Bulleur",
+            "entry_text": [
+                "Il a évolué pour s’adapter au milieu\n",
+                "aquatique. Il peut se fondre et \n",
+                "disparaître dans l’élément liquide."
+            ]
+        },
+        "de": {
+            "name": "AQUANA",
+            "category": "Blubblase",
+            "entry_text": [
+                "Es hat sich so entwickelt, dass es\n",
+                "im Wasser leben kann. Im Wasser\n",
+                "selbst wird es unsichtbar."
+            ]
+        },
+        "it": {
+            "name": "VAPOREON",
+            "category": "Pokémon Bollajet",
+            "entry_text": [
+                "Si è evoluto per adattarsi alla vita\n",
+                "acquatica. Si può sciogliere\n",
+                "nell’acqua diventando invisibile."
+            ]
+        },
+        "es": {
+            "name": "VAPOREON",
+            "category": "Pokémon Burbuja",
+            "entry_text": [
+                "Ha evolucionado para adaptarse a\n",
+                "la vida acuática. Se mimetiza a\n",
+                "la perfección con el agua."
+            ]
+        },
+        "jp": {
+            "name": "シャワ－ズ",
+            "category": "あわはきポケモン",
+            "entry_text": [
+                "すいちゅうでの　せいかつに　てきした\n",
+                "からだに　しんかした。\n",
+                "みずに　とけると　みえなくなる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 771
+    }
+}

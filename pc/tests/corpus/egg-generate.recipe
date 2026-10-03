@@ -1,0 +1,31 @@
+# A compatible pair in the day care, one step short of the egg check.
+#
+# The pair has to be male and female and the lab cannot ask for a gender:
+# Pokemon_GiveMonFromScript rolls a personality and SpeciesData_GetGenderOf
+# reads the low byte of it against the species' ratio. These three Bibarel are
+# the mint's own first, second and third rolls, and of them the first is male
+# and the third female, so those two go in and the spare male stays in the
+# party. Deposits are by party slot AFTER the ones before them have left, which
+# is why the second line says 1.
+#
+# Same species and the same trainer gives PARENTS_MED_COMPATIBILITY, which is
+# the best a lab-minted pair can reach: PARENTS_MAX wants two different
+# original trainers and every mon here has the player's. That score is then
+# rolled against `LCRNG_Next() * 100 / 0xffff`, so half the frames the counter
+# could wrap on produce no egg at all, 254 was one of them and lost, 250 wins
+# on the fifth step of the walk. Nothing here is random; the frame the wrap
+# lands on is, and that is what the preload picks.
+
+name BREEDER
+gender GENDER_MALE
+trainer-id 10412
+money 9000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+party SPECIES_BIBAREL 25 ITEM_NONE
+party SPECIES_BIBAREL 26 ITEM_NONE
+party SPECIES_BIBAREL 27 ITEM_NONE
+daycare 0
+daycare 1
+daycare-steps 1 250
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

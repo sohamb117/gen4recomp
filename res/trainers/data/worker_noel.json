@@ -1,0 +1,50 @@
+{
+    "name": "Noel",
+    "class": "TRAINER_CLASS_WORKER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MAGNEMITE",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MAGNEMITE",
+            "form": 0,
+            "level": 36,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": "The working-class hero says hi!\r"
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "The working-class hero waves bye...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I used to work here a long time\n",
+                "ago, before it shut down.\r",
+                "I worked at the ironworks near\n",
+                "Floaroma Town, too.\r",
+                "You might say I’m drawn by iron\n",
+                "as if by magnet!\n"
+            ]
+        }
+    ]
+}

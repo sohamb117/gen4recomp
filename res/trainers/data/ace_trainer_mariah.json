@@ -1,0 +1,78 @@
+{
+    "name": "Mariah",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_BLISSEY",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": [
+                "MOVE_DOUBLE_EDGE",
+                "MOVE_SING",
+                "MOVE_SOFTBOILED",
+                "MOVE_LIGHT_SCREEN"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GLALIE",
+            "form": 0,
+            "level": 46,
+            "item": null,
+            "moves": [
+                "MOVE_ICE_BEAM",
+                "MOVE_CRUNCH",
+                "MOVE_HEADBUTT",
+                "MOVE_SHADOW_BALL"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MAGNEZONE",
+            "form": 0,
+            "level": 48,
+            "item": null,
+            "moves": [
+                "MOVE_DISCHARGE",
+                "MOVE_FLASH_CANNON",
+                "MOVE_THUNDER_WAVE",
+                "MOVE_BARRIER"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Show me how you’ve battled to get\n",
+                "here! Let’s do this!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "So, that’s how you battled...?\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Once you emerge from Victory Road,\n",
+                "the Pokémon League lies directly\f",
+                "ahead...\r",
+                "But many Trainers fail to ever find\n",
+                "their way on Victory Road...\n"
+            ]
+        }
+    ]
+}

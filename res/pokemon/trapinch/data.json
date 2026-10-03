@@ -1,0 +1,180 @@
+{
+    "base_stats": {
+        "hp": 45,
+        "attack": 100,
+        "defense": 45,
+        "speed": 10,
+        "special_attack": 45,
+        "special_defense": 45
+    },
+    "types": [ "TYPE_GROUND", "TYPE_GROUND" ],
+    "catch_rate": 255,
+    "base_exp_reward": 73,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_SOFT_SAND"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_HYPER_CUTTER", "ABILITY_ARENA_TRAP" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_BITE" ],
+            [ 9, "MOVE_SAND_ATTACK" ],
+            [ 17, "MOVE_FAINT_ATTACK" ],
+            [ 25, "MOVE_SAND_TOMB" ],
+            [ 33, "MOVE_CRUNCH" ],
+            [ 41, "MOVE_DIG" ],
+            [ 49, "MOVE_SANDSTORM" ],
+            [ 57, "MOVE_HYPER_BEAM" ],
+            [ 65, "MOVE_EARTH_POWER" ],
+            [ 73, "MOVE_EARTHQUAKE" ],
+            [ 81, "MOVE_FEINT" ],
+            [ 89, "MOVE_FISSURE" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM32",
+            "TM37",
+            "TM39",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_SNORE",
+            "MOVE_EARTH_POWER"
+        ],
+        "egg_moves": [
+            "MOVE_FOCUS_ENERGY",
+            "MOVE_QUICK_ATTACK",
+            "MOVE_GUST",
+            "MOVE_FLAIL",
+            "MOVE_FURY_CUTTER"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            35,
+            "SPECIES_VIBRAVA"
+        ]
+    ],
+    "offspring": "SPECIES_TRAPINCH",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SLOW"
+    },
+    "pokedex_data": {
+        "height_inches": 28,
+        "weight_pounds": 33.1,
+        "body_shape": "SHAPE_INSECTOID",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 21,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 21,
+        "en": {
+            "name": "TRAPINCH",
+            "category": "Ant Pit Pokémon",
+            "entry_text": [
+                "It makes a conical pit in desert\n",
+                "sand and lies in wait at the bottom\n",
+                "for prey to come tumbling down."
+            ]
+        },
+        "fr": {
+            "name": "KRAKNOIX",
+            "category": "Pokémon Piégeur",
+            "entry_text": [
+                "Il creuse un trou conique dans le\n",
+                "sable du désert et se terre en\n",
+                "attendant qu’une proie trébuche."
+            ]
+        },
+        "de": {
+            "name": "KNACKLION",
+            "category": "Ameisenlöwe",
+            "entry_text": [
+                "Es baut im Wüstensand eine\n",
+                "Fallgrube, setzt sich in ihr auf den\n",
+                "Boden und wartet auf Beute."
+            ]
+        },
+        "it": {
+            "name": "TRAPINCH",
+            "category": "Pokémon Trappola",
+            "entry_text": [
+                "Scava fosse coniche nella sabbia\n",
+                "del deserto e attende che le prede\n",
+                "cadano in trappola."
+            ]
+        },
+        "es": {
+            "name": "TRAPINCH",
+            "category": "Pokémon Hormigaleón",
+            "entry_text": [
+                "Cava fosas cóncavas en el desierto\n",
+                "y espera en el fondo a que las\n",
+                "presas caigan en ellas."
+            ]
+        },
+        "jp": {
+            "name": "ナックラ－",
+            "category": "ありじごくポケモン",
+            "entry_text": [
+                "さばくに　つくった　すりばちがたの\n",
+                "あなの　そこで　えものが　はまって\n",
+                "おちてくるのを　まちつづける。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 2056
+    }
+}

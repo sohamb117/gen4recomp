@@ -1,0 +1,183 @@
+{
+    "base_stats": {
+        "hp": 103,
+        "attack": 93,
+        "defense": 67,
+        "speed": 84,
+        "special_attack": 71,
+        "special_defense": 61
+    },
+    "types": [ "TYPE_POISON", "TYPE_DARK" ],
+    "catch_rate": 60,
+    "base_exp_reward": 209,
+    "ev_yields": {
+        "hp": 2,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_PECHA_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_STENCH", "ABILITY_AFTERMATH" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PURPLE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_SCRATCH" ],
+            [ 1, "MOVE_FOCUS_ENERGY" ],
+            [ 1, "MOVE_POISON_GAS" ],
+            [ 4, "MOVE_POISON_GAS" ],
+            [ 7, "MOVE_SCREECH" ],
+            [ 10, "MOVE_FURY_SWIPES" ],
+            [ 14, "MOVE_SMOKE_SCREEN" ],
+            [ 18, "MOVE_FEINT" ],
+            [ 22, "MOVE_SLASH" ],
+            [ 27, "MOVE_TOXIC" ],
+            [ 32, "MOVE_NIGHT_SLASH" ],
+            [ 34, "MOVE_FLAMETHROWER" ],
+            [ 42, "MOVE_MEMENTO" ],
+            [ 52, "MOVE_EXPLOSION" ]
+        ],
+        "by_tm": [
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM27",
+            "TM28",
+            "TM30",
+            "TM32",
+            "TM35",
+            "TM36",
+            "TM38",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM49",
+            "TM58",
+            "TM64",
+            "TM65",
+            "TM66",
+            "TM68",
+            "TM78",
+            "TM79",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM05",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_SNORE",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_STUNKY",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SCARY"
+    },
+    "pokedex_data": {
+        "height_inches": 39,
+        "weight_pounds": 83.8,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 289,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 289,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 15,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 15,
+        "en": {
+            "name": "SKUNTANK",
+            "category": "Skunk Pokémon",
+            "entry_text": [
+                "It attacks by spraying a horribly\n",
+                "smelly fluid from the tip of its tail.\n",
+                "Attacks from above confound it."
+            ]
+        },
+        "fr": {
+            "name": "MOUFFLAIR",
+            "category": "Pokémon Moufette",
+            "entry_text": [
+                "Il attaque en projetant un\n",
+                "liquide fétide du bout de sa queue.\n",
+                "Il peut tirer à 50 mètres."
+            ]
+        },
+        "de": {
+            "name": "SKUNTANK",
+            "category": "Stinktier",
+            "entry_text": [
+                "Über seine Schweifspitze versprüht\n",
+                "es eine übelriechende Substanz. Die\n",
+                "Reichweite liegt bei über 50 Metern."
+            ]
+        },
+        "it": {
+            "name": "SKUNTANK",
+            "category": "Pokémon Moffetta",
+            "entry_text": [
+                "Attacca spruzzando un fluido\n",
+                "puzzolente dalla coda. Ha un\n",
+                "raggio d’azione di oltre 50 metri."
+            ]
+        },
+        "es": {
+            "name": "SKUNTANK",
+            "category": "Pokémon Mofeta",
+            "entry_text": [
+                "Para atacar, emite un fluido\n",
+                "maloliente por la punta de su cola\n",
+                "que puede llegar a más de 50 m."
+            ]
+        },
+        "jp": {
+            "name": "スカタンク",
+            "category": "スカンクポケモン",
+            "entry_text": [
+                "しっぽの　さきから　ひどい　においの\n",
+                "えきたいを　とばして　こうげきする。\n",
+                "ひきょりは　５０メ－トルいじょう。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 2574
+    }
+}

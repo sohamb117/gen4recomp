@@ -1,0 +1,39 @@
+{
+  "key": 9262,
+  "messages": [
+    {
+      "id": "TwinleafTownSouthwestHouse_Text_PokemonProfessorReturned",
+      "en_US": [
+        "Did you hear?\r",
+        "The Pokémon Professor returned\n",
+        "to the next town over.\r",
+        "They say he was gone for four long\n",
+        "years.\r",
+        "I wonder if he found some amazing\n",
+        "Pokémon while he was gone?"
+      ]
+    },
+    {
+      "id": "TwinleafTownSouthwestHouse_Text_ProfRowanGavePokedex",
+      "en_US": [
+        "Well! Professor Rowan gave you a\n",
+        "Pokédex, did he?"
+      ]
+    },
+    {
+      "id": "TwinleafTownSouthwestHouse_Text_IWantACutePokemon",
+      "en_US": [
+        "Listen, listen, {STRVAR_1 3, 0, 0}.\n",
+        "I want a cute Pokémon!"
+      ]
+    },
+    {
+      "id": "TwinleafTownSouthwestHouse_Text_CanIBeFriendsWithPokemon",
+      "en_US": [
+        "Listen, listen, {STRVAR_1 3, 0, 0}.\r",
+        "Do you think I can be friends with\n",
+        "Pokémon like you are?"
+      ]
+    }
+  ]
+}

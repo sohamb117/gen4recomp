@@ -1,0 +1,14 @@
+# A rare candy out of the bag, a level, and the evolution that follows it.
+#
+# Caterpie evolves at level 7 and this one is level 6, so the candy is what
+# makes the question worth asking; the run uses it through the game's own
+# item-effect call and then asks Pokemon_GetEvolutionTargetSpecies the same
+# thing the party menu asks after a level-up item.
+
+name CANDY
+gender GENDER_MALE
+trainer-id 20301
+money 3000
+party SPECIES_CATERPIE 6 ITEM_NONE
+item ITEM_RARE_CANDY 1
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

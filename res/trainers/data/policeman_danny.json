@@ -1,0 +1,63 @@
+{
+    "name": "Danny",
+    "class": "TRAINER_CLASS_POLICEMAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_HOOTHOOT",
+            "form": 0,
+            "level": 26,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOP",
+            "form": 0,
+            "level": 28,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Your whole atmosphere is shady.\n",
+                "Cooperate in this investigation!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Defeated by sneakiness...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I mistook your toughness as shadiness!\n",
+                "It’s an honest mistake!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_NOT_NIGHT_UNUSED",
+            "en_US": [
+                "We’re constantly on patrol.\n",
+                "That way, it’s safe even at night.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Whoa! Hold it right there!\n",
+                "I’ve spotted a sneaky Trainer!\r"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,50 @@
+{
+    "name": "Isaiah",
+    "class": "TRAINER_CLASS_ACE_TRAINER_SNOW_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_PILOSWINE",
+            "form": 0,
+            "level": 44,
+            "item": null,
+            "moves": [
+                "MOVE_EARTHQUAKE",
+                "MOVE_FURY_ATTACK",
+                "MOVE_ICE_FANG",
+                "MOVE_ANCIENT_POWER"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "My willpower was shaped and tempered\n",
+                "by howling blizzards.\r",
+                "I’ll bring it to bear on you!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "You weren’t even fazed...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’ve battled countless Trainers\n",
+                "and many more Pokémon still.\r",
+                "My spirit has been hardened from all\n",
+                "the battles I have fought."
+            ]
+        }
+    ]
+}

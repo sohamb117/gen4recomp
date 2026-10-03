@@ -1,0 +1,35 @@
+{
+    "name": "Blythe",
+    "class": "TRAINER_CLASS_LASS",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CHINGLING",
+            "form": 0,
+            "level": 25,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BUNEARY",
+            "form": 0,
+            "level": 25,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "I was with my daddy, too...\n"
+        }
+    ]
+}

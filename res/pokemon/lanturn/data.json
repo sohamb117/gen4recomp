@@ -1,0 +1,181 @@
+{
+    "base_stats": {
+        "hp": 125,
+        "attack": 58,
+        "defense": 58,
+        "speed": 67,
+        "special_attack": 76,
+        "special_defense": 76
+    },
+    "types": [ "TYPE_WATER", "TYPE_ELECTRIC" ],
+    "catch_rate": 75,
+    "base_exp_reward": 156,
+    "ev_yields": {
+        "hp": 2,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_DEEPSEASCALE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_WATER_2", "EGG_GROUP_WATER_2" ],
+    "abilities": [ "ABILITY_VOLT_ABSORB", "ABILITY_ILLUMINATE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_BUBBLE" ],
+            [ 1, "MOVE_SUPERSONIC" ],
+            [ 1, "MOVE_THUNDER_WAVE" ],
+            [ 6, "MOVE_THUNDER_WAVE" ],
+            [ 9, "MOVE_FLAIL" ],
+            [ 12, "MOVE_WATER_GUN" ],
+            [ 17, "MOVE_CONFUSE_RAY" ],
+            [ 20, "MOVE_SPARK" ],
+            [ 23, "MOVE_TAKE_DOWN" ],
+            [ 27, "MOVE_STOCKPILE" ],
+            [ 27, "MOVE_SWALLOW" ],
+            [ 27, "MOVE_SPIT_UP" ],
+            [ 30, "MOVE_BUBBLE_BEAM" ],
+            [ 35, "MOVE_SIGNAL_BEAM" ],
+            [ 40, "MOVE_DISCHARGE" ],
+            [ 47, "MOVE_AQUA_RING" ],
+            [ 52, "MOVE_HYDRO_PUMP" ],
+            [ 57, "MOVE_CHARGE" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM24",
+            "TM25",
+            "TM27",
+            "TM32",
+            "TM34",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM55",
+            "TM57",
+            "TM58",
+            "TM68",
+            "TM70",
+            "TM73",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM03",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_ICY_WIND",
+            "MOVE_AQUA_TAIL",
+            "MOVE_SNORE",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_BOUNCE",
+            "MOVE_SUCKER_PUNCH"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_CHINCHOU",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 47,
+        "weight_pounds": 49.6,
+        "body_shape": "SHAPE_FINS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 304,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 304,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 2,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 2,
+        "en": {
+            "name": "LANTURN",
+            "category": "Light Pokémon",
+            "entry_text": [
+                "LANTURN’s light can shine up from\n",
+                "great depths. It is nicknamed\n",
+                "“The Deep-Sea Star.”"
+            ]
+        },
+        "fr": {
+            "name": "LANTURN",
+            "category": "Pokémon Lumière",
+            "entry_text": [
+                "La lumière de LANTURN surgit des\n",
+                "profondeurs. On le surnomme\n",
+                "“étoile des profondeurs”."
+            ]
+        },
+        "de": {
+            "name": "LANTURN",
+            "category": "Leuchte",
+            "entry_text": [
+                "LANTURNs Licht kann aus großen\n",
+                "Tiefen heraufscheinen. Man nennt\n",
+                "es auch “Tiefseestern”."
+            ]
+        },
+        "it": {
+            "name": "LANTURN",
+            "category": "Pokémon Luce",
+            "entry_text": [
+                "La sua luce è visibile anche quando\n",
+                "si trova in profondità. È sopranno-\n",
+                "minato “Stella degli abissi”."
+            ]
+        },
+        "es": {
+            "name": "LANTURN",
+            "category": "Pokémon Luz",
+            "entry_text": [
+                "La luz de LANTURN se puede ver\n",
+                "desde lo más profundo. Se le\n",
+                "llama la “estrella de alta mar”."
+            ]
+        },
+        "jp": {
+            "name": "ランタ－ン",
+            "category": "ライトポケモン",
+            "entry_text": [
+                "しんかいを　およぐ　ランタ－ンの\n",
+                "あかりは　すいめんまで　とどく。\n",
+                "しんかいのほし　と　よばれている。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 1795
+    }
+}

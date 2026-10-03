@@ -1,0 +1,180 @@
+{
+    "base_stats": {
+        "hp": 70,
+        "attack": 62,
+        "defense": 67,
+        "speed": 56,
+        "special_attack": 55,
+        "special_defense": 55
+    },
+    "types": [ "TYPE_POISON", "TYPE_POISON" ],
+    "catch_rate": 120,
+    "base_exp_reward": 117,
+    "ev_yields": {
+        "hp": 2,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_ONLY",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_UNDISCOVERED", "EGG_GROUP_UNDISCOVERED" ],
+    "abilities": [ "ABILITY_POISON_POINT", "ABILITY_RIVALRY" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_GROWL" ],
+            [ 1, "MOVE_SCRATCH" ],
+            [ 7, "MOVE_TAIL_WHIP" ],
+            [ 9, "MOVE_DOUBLE_KICK" ],
+            [ 13, "MOVE_POISON_STING" ],
+            [ 20, "MOVE_FURY_SWIPES" ],
+            [ 23, "MOVE_BITE" ],
+            [ 28, "MOVE_HELPING_HAND" ],
+            [ 35, "MOVE_TOXIC_SPIKES" ],
+            [ 38, "MOVE_FLATTER" ],
+            [ 43, "MOVE_CRUNCH" ],
+            [ 50, "MOVE_CAPTIVATE" ],
+            [ 58, "MOVE_POISON_FANG" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM13",
+            "TM14",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM27",
+            "TM28",
+            "TM32",
+            "TM34",
+            "TM36",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM58",
+            "TM65",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_USE_ITEM",
+            "ITEM_MOON_STONE",
+            "SPECIES_NIDOQUEEN"
+        ]
+    ],
+    "offspring": "SPECIES_NIDORAN_F",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 31,
+        "weight_pounds": 44.1,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 301,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 301,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 19,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 19,
+        "en": {
+            "name": "NIDORINA",
+            "category": "Poison Pin Pokémon",
+            "entry_text": [
+                "When it senses danger, it raises\n",
+                "all the barbs on its body. These\n",
+                "barbs grow slower than NIDORINO’s."
+            ]
+        },
+        "fr": {
+            "name": "NIDORINA",
+            "category": "Pokémon Venepic",
+            "entry_text": [
+                "Ce Pokémon dresse ses piquants\n",
+                "en cas de danger. Ils poussent\n",
+                "moins vite que ceux de NIDORINO."
+            ]
+        },
+        "de": {
+            "name": "NIDORINA",
+            "category": "Giftdorn",
+            "entry_text": [
+                "Bei Gefahr fährt es die Wider-\n",
+                "haken am Körper aus. Diese wachsen\n",
+                "langsamer als die von NIDORINO."
+            ]
+        },
+        "it": {
+            "name": "NIDORINA",
+            "category": "Pokémon Velenago",
+            "entry_text": [
+                "Quando avverte il pericolo, rizza\n",
+                "gli aculei, che fuoriescono più\n",
+                "lentamente di quelli di NIDORINO."
+            ]
+        },
+        "es": {
+            "name": "NIDORINA",
+            "category": "Pokémon Pin Veneno",
+            "entry_text": [
+                "Saca las púas de su cuerpo si\n",
+                "siente peligro. Sus púas crecen\n",
+                "más despacio que las de NIDORINO."
+            ]
+        },
+        "jp": {
+            "name": "ニドリ－ナ",
+            "category": "どくばりポケモン",
+            "entry_text": [
+                "きけんを　かんじると　ぜんしんの\n",
+                "トゲを　さかだてる。ニドリ－ノに\n",
+                "くらべて　トゲの　そだちが　おそい。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1542
+    }
+}

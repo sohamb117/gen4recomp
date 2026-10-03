@@ -1,0 +1,29 @@
+{
+    "name": "Lee",
+    "class": "TRAINER_CLASS_CLOWN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MIME_JR",
+            "form": 0,
+            "level": 23,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 3
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh, no, no, no!\n",
+                "Mwahahah?\n"
+            ]
+        }
+    ]
+}

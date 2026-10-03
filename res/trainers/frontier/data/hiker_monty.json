@@ -1,0 +1,73 @@
+{
+    "name": "Monty",
+    "class": "TRAINER_CLASS_HIKER",
+    "availableSets": [
+        "blaziken_3",
+        "swampert_3",
+        "torterra_3",
+        "infernape_3",
+        "dugtrio_3",
+        "marowak_3",
+        "medicham_3",
+        "quagsire_3",
+        "breloom_3",
+        "forretress_3",
+        "whiscash_3",
+        "hariyama_3",
+        "gastrodon_3",
+        "golem_3",
+        "rhydon_3",
+        "toxicroak_3",
+        "nidoqueen_3",
+        "nidoking_3",
+        "cradily_3",
+        "armaldo_3",
+        "bastiodon_3",
+        "poliwrath_3",
+        "heracross_3",
+        "donphan_3",
+        "claydol_3",
+        "rampardos_3",
+        "bronzong_3",
+        "machamp_3",
+        "shuckle_3",
+        "steelix_3",
+        "gliscor_3",
+        "aerodactyl_3",
+        "gallade_3",
+        "flygon_3",
+        "lucario_3",
+        "hippowdon_3",
+        "probopass_3",
+        "aggron_3",
+        "mamoswine_3",
+        "rhyperior_3",
+        "tyranitar_3",
+        "metagross_3",
+        "garchomp_3",
+        "none_1"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "My showdown against a man of the sea\n",
+                "draws near! Let me test my team!"
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "Everything went as calculated...\n",
+                "Be ready for me, man of the sea!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Beating the man of the sea is impossible\n",
+                "with an outcome this lame...\r"
+            ]
+        }
+    ]
+}

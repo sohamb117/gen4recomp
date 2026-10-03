@@ -1,0 +1,187 @@
+{
+    "base_stats": {
+        "hp": 50,
+        "attack": 75,
+        "defense": 35,
+        "speed": 40,
+        "special_attack": 70,
+        "special_defense": 30
+    },
+    "types": [ "TYPE_GRASS", "TYPE_POISON" ],
+    "catch_rate": 255,
+    "base_exp_reward": 84,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_GRASS", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_CHLOROPHYLL", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GREEN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_VINE_WHIP" ],
+            [ 7, "MOVE_GROWTH" ],
+            [ 11, "MOVE_WRAP" ],
+            [ 13, "MOVE_SLEEP_POWDER" ],
+            [ 15, "MOVE_POISON_POWDER" ],
+            [ 17, "MOVE_STUN_SPORE" ],
+            [ 23, "MOVE_ACID" ],
+            [ 27, "MOVE_KNOCK_OFF" ],
+            [ 29, "MOVE_SWEET_SCENT" ],
+            [ 35, "MOVE_GASTRO_ACID" ],
+            [ 39, "MOVE_RAZOR_LEAF" ],
+            [ 41, "MOVE_SLAM" ],
+            [ 47, "MOVE_WRING_OUT" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM32",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM53",
+            "TM58",
+            "TM70",
+            "TM75",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM90",
+            "HM01"
+        ],
+        "by_tutor": [
+            "MOVE_GASTRO_ACID",
+            "MOVE_SNORE",
+            "MOVE_SYNTHESIS",
+            "MOVE_SEED_BOMB",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SUCKER_PUNCH"
+        ],
+        "egg_moves": [
+            "MOVE_SWORDS_DANCE",
+            "MOVE_ENCORE",
+            "MOVE_REFLECT",
+            "MOVE_SYNTHESIS",
+            "MOVE_LEECH_LIFE",
+            "MOVE_INGRAIN",
+            "MOVE_MAGICAL_LEAF",
+            "MOVE_WORRY_SEED",
+            "MOVE_TICKLE"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            21,
+            "SPECIES_WEEPINBELL"
+        ]
+    ],
+    "offspring": "SPECIES_BELLSPROUT",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 28,
+        "weight_pounds": 8.8,
+        "body_shape": "SHAPE_BIPEDAL_TAILLESS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 341,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 341,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 22,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 22,
+        "en": {
+            "name": "BELLSPROUT",
+            "category": "Flower Pokémon",
+            "entry_text": [
+                "It prefers hot and humid\n",
+                "environments. It is quick at\n",
+                "capturing prey with its vines."
+            ]
+        },
+        "fr": {
+            "name": "CHETIFLOR",
+            "category": "Pokémon Fleur",
+            "entry_text": [
+                "Il préfère les climats chauds et\n",
+                "humides. Ses lianes peuvent\n",
+                "capturer une proie en un clin d’œil."
+            ]
+        },
+        "de": {
+            "name": "KNOFENSA",
+            "category": "Blume",
+            "entry_text": [
+                "Es bevorzugt heiße und feuchte\n",
+                "Umgebungen. Seine Beute fängt es\n",
+                "blitzschnell mit seinen Ranken."
+            ]
+        },
+        "it": {
+            "name": "BELLSPROUT",
+            "category": "Pokémon Fiore",
+            "entry_text": [
+                "Preferisce gli habitat caldi e umidi.\n",
+                "Cattura velocemente le prede \n",
+                "con i suoi rampicanti."
+            ]
+        },
+        "es": {
+            "name": "BELLSPROUT",
+            "category": "Pokémon Flor",
+            "entry_text": [
+                "Prefiere los lugares cálidos y\n",
+                "húmedos. Captura presas con sus \n",
+                "rápidas lianas."
+            ]
+        },
+        "jp": {
+            "name": "マダツボミ",
+            "category": "フラワ－ポケモン",
+            "entry_text": [
+                "こうおん　たしつの　とちを　このむ。\n",
+                "ツルを　のばして　えものを　とらえる\n",
+                "ときの　うごきは　とても　すばやい。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 30,
+        "rarity": 50,
+        "unused": 1537
+    }
+}

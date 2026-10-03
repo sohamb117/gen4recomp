@@ -1,0 +1,46 @@
+{
+  "key": 25718,
+  "messages": [
+    {
+      "id": "IcebergRuins_Text_ItsAStatueOfAPokemon",
+      "en_US": [
+        "It’s a statue of a Pokémon.\n",
+        "It seems to exude power...\r",
+        "From somewhere, something spoke out.\r",
+        "“With our Master, upon every lighted\n",
+        "tile you must tread.”"
+      ]
+    },
+    {
+      "id": "IcebergRuins_Text_SomethingChangedInTheAir",
+      "en_US": [
+        "Something changed in the air...\r",
+        "An indescribable power is emanating\n",
+        "from the Pokémon statue..."
+      ]
+    },
+    {
+      "id": "IcebergRuins_Text_RegiceCry",
+      "en_US": "Jakiih!\r"
+    },
+    {
+      "id": "IcebergRuins_Text_StatueStoppedEmanatingPower",
+      "en_US": [
+        "The Pokémon statue has stopped\n",
+        "emanating power."
+      ]
+    },
+    {
+      "id": "IcebergRuins_Text_BecomeStrongerYouMust",
+      "en_US": [
+        "It’s a statue of a Pokémon.\n",
+        "It seems to exude power...\r",
+        "From somewhere, something spoke out.\r",
+        "“The human in the company of our\n",
+        "Master, pay heed...\r",
+        "“Become stronger you must.\n",
+        "So much the others cannot but notice.”"
+      ]
+    }
+  ]
+}

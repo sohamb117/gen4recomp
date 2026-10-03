@@ -1,0 +1,28 @@
+--- a/src/player_move.c
++++ b/src/player_move.c
+@@ -1903,6 +1903,25 @@
+         collisionFlag |= PLAYER_COLLISION_WILL_COLLIDE;
+     }
+ 
++    /* pc port: PC_TRACE_FIELD=N prints this answer, the tile the player
++     * stands on, the direction asked for, the mask, and the tile behavior
++     * under the player and under the target. Stairs and doors refuse the
++     * move and ride a bit on the refusal, so a story that will not leave a
++     * room and a player walking into a wall are the same event here.
++     * pc/src/pc_probe2d.c owns the gate. */
++    {
++        extern void pc_field_trace_move(int x, int z, int dir, unsigned collision,
++            unsigned here, unsigned next);
++        FieldSystem *pcFieldSystem = MapObject_FieldSystem(mapObj);
++        int pcX = MapObject_GetX(mapObj);
++        int pcZ = MapObject_GetZ(mapObj);
++        pc_field_trace_move(pcX, pcZ, direction, collisionFlag,
++            TerrainCollisionManager_GetTileBehavior(pcFieldSystem, pcX, pcZ),
++            TerrainCollisionManager_GetTileBehavior(pcFieldSystem,
++                pcX + MapObject_GetDxFromDir(direction),
++                pcZ + MapObject_GetDzFromDir(direction)));
++    }
++
+     return collisionFlag;
+ }
+ 

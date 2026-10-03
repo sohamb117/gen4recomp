@@ -1,0 +1,19 @@
+{
+  "key": 21530,
+  "messages": [
+    {
+      "id": "GreatMarsh1_Text_ThisIsHowYouWin",
+      "en_US": [
+        "Go upstairs in the Observatory before\n",
+        "you start your Safari Game.\r",
+        "Check the marsh with the binoculars\n",
+        "to see where the Pokémon you want\f",
+        "happen to be. That’s how you win!"
+      ]
+    },
+    {
+      "id": "GreatMarsh1_Text_SignArea1",
+      "en_US": "Great Marsh Area 1"
+    }
+  ]
+}

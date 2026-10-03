@@ -1,0 +1,174 @@
+{
+    "base_stats": {
+        "hp": 75,
+        "attack": 75,
+        "defense": 55,
+        "speed": 30,
+        "special_attack": 105,
+        "special_defense": 85
+    },
+    "types": [ "TYPE_GRASS", "TYPE_GRASS" ],
+    "catch_rate": 120,
+    "base_exp_reward": 146,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 2,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_GRASS", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_CHLOROPHYLL", "ABILITY_SOLAR_POWER" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_ABSORB" ],
+            [ 1, "MOVE_POUND" ],
+            [ 1, "MOVE_GROWTH" ],
+            [ 5, "MOVE_MEGA_DRAIN" ],
+            [ 9, "MOVE_INGRAIN" ],
+            [ 13, "MOVE_GRASS_WHISTLE" ],
+            [ 17, "MOVE_LEECH_SEED" ],
+            [ 21, "MOVE_BULLET_SEED" ],
+            [ 25, "MOVE_WORRY_SEED" ],
+            [ 29, "MOVE_RAZOR_LEAF" ],
+            [ 33, "MOVE_PETAL_DANCE" ],
+            [ 37, "MOVE_SUNNY_DAY" ],
+            [ 41, "MOVE_SOLAR_BEAM" ],
+            [ 43, "MOVE_LEAF_STORM" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM16",
+            "TM17",
+            "TM19",
+            "TM20",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM32",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM53",
+            "TM58",
+            "TM68",
+            "TM70",
+            "TM75",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM90",
+            "HM01"
+        ],
+        "by_tutor": [
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_ENDEAVOR",
+            "MOVE_SYNTHESIS",
+            "MOVE_SEED_BOMB",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_SUNKERN",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 31,
+        "weight_pounds": 18.7,
+        "body_shape": "SHAPE_BIPEDAL_TAILLESS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 310,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 310,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 18,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 18,
+        "en": {
+            "name": "SUNFLORA",
+            "category": "Sun Pokémon",
+            "entry_text": [
+                "It gets energy from warm sunlight\n",
+                "and is known for its habit of\n",
+                "moving in pursuit of it."
+            ]
+        },
+        "fr": {
+            "name": "HELIATRONC",
+            "category": "Pokémon Soleil",
+            "entry_text": [
+                "Les rayons du soleil lui donnent de\n",
+                "l’énergie. Il est connu pour migrer\n",
+                "vers les régions ensoleillées."
+            ]
+        },
+        "de": {
+            "name": "SONNFLORA",
+            "category": "Sonne",
+            "entry_text": [
+                "Warmes Sonnenlicht gibt ihm\n",
+                "Energie. Daher wandert es stets\n",
+                "dem Sonnenlicht hinterher."
+            ]
+        },
+        "it": {
+            "name": "SUNFLORA",
+            "category": "Pokémon Sole",
+            "entry_text": [
+                "Trae energia dalla luce del sole e\n",
+                "si muove di continuo per cercare\n",
+                "di assorbirne sempre di più."
+            ]
+        },
+        "es": {
+            "name": "SUNFLORA",
+            "category": "Pokémon Sol",
+            "entry_text": [
+                "Obtiene energía de la luz solar.\n",
+                "Este Pokémon es famoso por\n",
+                "su heliotropismo."
+            ]
+        },
+        "jp": {
+            "name": "キマワリ",
+            "category": "たいようポケモン",
+            "entry_text": [
+                "あたたかい　ひざしが　エネルギ－。\n",
+                "たいようを　おいかけて　いどうする\n",
+                "しゅうせいで　しられている。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 257
+    }
+}

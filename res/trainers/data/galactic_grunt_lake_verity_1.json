@@ -1,0 +1,44 @@
+{
+    "name": "Grunt",
+    "class": "TRAINER_CLASS_GALACTIC_GRUNT_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CROAGUNK",
+            "form": 0,
+            "level": 37,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "It is our mission to stall you.\n",
+                "Sorry, but we gotta do our job.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Losing was a part of my job, too.\n",
+                "...I feel better by saying that.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "From three lakes, we must secure three\n",
+                "Pokémon.\r",
+                "You simply mustn’t interfere!\n"
+            ]
+        }
+    ]
+}

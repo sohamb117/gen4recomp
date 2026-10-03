@@ -1,0 +1,104 @@
+#include "macros/scrcmd.inc"
+#include "res/text/bank/distortion_world_b2f.h"
+
+    ScriptEntry DistortionWorldB2F_OnTransition
+    ScriptEntry DistortionWorldB2F_OnFrame_FirstEntry
+    ScriptEntry DistortionWorldB2F_Cynthia
+    ScriptEntryEnd
+
+DistortionWorldB2F_OnTransition:
+    InitPersistedMapFeaturesForDistortionWorld
+    End
+
+DistortionWorldB2F_OnFrame_FirstEntry:
+    PlaySE SE_CONFIRM_sseq_3
+    LockAll
+    GoToIfEq VAR_DISTORTION_WORLD_PROGRESS, DIST_WORLD_PROGRESS_TALKED_TO_B2F_CYNTHIA, DistortionWorldB2F_Cynthia
+    GetPlayer3DPos VAR_0x8004, VAR_0x8005, VAR_0x8006
+    GoToIfEq VAR_0x8005, 232, DistortionWorldB2F_LetsSplitUpY232
+    ApplyMovement DIST_WORLD_MAP_OBJECT_B2F_CYNTHIA, DistortionWorldB2F_Movement_CynthiaFaceSouth
+    WaitMovement
+    Message DistortionWorldB2F_Text_LetsSplitUp
+    CloseMessage
+    ApplyMovement DIST_WORLD_MAP_OBJECT_B2F_CYNTHIA, _00E4
+    WaitMovement
+    GoTo DistortionWorldB2F_IncreaseProgressVar
+
+DistortionWorldB2F_LetsSplitUpY232:
+    ApplyMovement DIST_WORLD_MAP_OBJECT_B2F_CYNTHIA, DistortionWorldB2F_Movement_CynthiaFaceEast
+    WaitMovement
+    Message DistortionWorldB2F_Text_LetsSplitUp
+    CloseMessage
+    ApplyMovement DIST_WORLD_MAP_OBJECT_B2F_CYNTHIA, _00F8
+    ApplyMovement LOCALID_PLAYER, _011C
+    WaitMovement
+DistortionWorldB2F_IncreaseProgressVar:
+    SetVar VAR_DISTORTION_WORLD_PROGRESS, DIST_WORLD_PROGRESS_TALKED_TO_B2F_CYNTHIA
+    ReleaseAll
+    End
+
+DistortionWorldB2F_Cynthia:
+    GetPlayer3DPos VAR_0x8004, VAR_0x8005, VAR_0x8006
+    GoToIfEq VAR_0x8005, 231, DistortionWorldB2F_CynthiaFaceEast
+    GoToIfEq VAR_0x8005, 232, DistortionWorldB2F_CynthiaFaceSouth
+    ApplyMovement DIST_WORLD_MAP_OBJECT_B2F_CYNTHIA, DistortionWorldB2F_Movement_CynthiaFaceWest
+    WaitMovement
+    GoTo DistortionWorldB2F_DontNeedToGoTogether
+
+DistortionWorldB2F_CynthiaFaceEast:
+    ApplyMovement DIST_WORLD_MAP_OBJECT_B2F_CYNTHIA, DistortionWorldB2F_Movement_CynthiaFaceEast2
+    WaitMovement
+    GoTo DistortionWorldB2F_DontNeedToGoTogether
+
+DistortionWorldB2F_CynthiaFaceSouth:
+    ApplyMovement DIST_WORLD_MAP_OBJECT_B2F_CYNTHIA, DistortionWorldB2F_Movement_CynthiaFaceSouth2
+    WaitMovement
+DistortionWorldB2F_DontNeedToGoTogether:
+    Message DistortionWorldB2F_Text_DontNeedToGoTogether
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+    .balign 4, 0
+DistortionWorldB2F_Movement_CynthiaFaceSouth:
+    FaceSouth
+    EndMovement
+
+    .balign 4, 0
+_00E4:
+    MoveAction_106
+    FaceWest
+    EndMovement
+
+    .balign 4, 0
+DistortionWorldB2F_Movement_CynthiaFaceEast:
+    FaceEast
+    EndMovement
+
+    .balign 4, 0
+_00F8:
+    MoveAction_106
+    FaceWest
+    EndMovement
+
+    .balign 4, 0
+DistortionWorldB2F_Movement_CynthiaFaceWest:
+    FaceWest
+    EndMovement
+
+    .balign 4, 0
+DistortionWorldB2F_Movement_CynthiaFaceEast2:
+    FaceEast
+    EndMovement
+
+    .balign 4, 0
+DistortionWorldB2F_Movement_CynthiaFaceSouth2:
+    FaceSouth
+    EndMovement
+
+    .balign 4, 0
+_011C:
+    MoveAction_107
+    FaceNorth
+    EndMovement

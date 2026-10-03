@@ -1,0 +1,29 @@
+{
+  "key": 58426,
+  "messages": [
+    {
+      "id": "OreburghCityEastHouse1F_Text_TrainInOreburghMine",
+      "en_US": [
+        "Hiya! Your Pokémon could use some\n",
+        "toughening up.\r",
+        "Why not try training in\n",
+        "the Oreburgh Mine?"
+      ]
+    },
+    {
+      "id": "OreburghCityEastHouse1F_Text_IAlwaysHaveARottenTime",
+      "en_US": [
+        "I always have a rotten time trying\n",
+        "to decide which moves my Pokémon\f",
+        "should learn."
+      ]
+    },
+    {
+      "id": "OreburghCityEastHouse1F_Text_RemindMeOfTimeIGotMyPokemon",
+      "en_US": [
+        "You remind me so much of the time\n",
+        "I got my first Pokémon."
+      ]
+    }
+  ]
+}

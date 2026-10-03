@@ -1,0 +1,43 @@
+# After CONTINUE: talk to the Poffin House cook, choose ALONE, put one Cheri
+# Berry in the pot, let the full minute run without stirring, and decline the
+# offer to cook again.
+#
+# Nothing stirs on purpose. The pot is a touch-panel minigame and a run that
+# never touches it burns the mixture every time, which is deterministic by
+# construction and produces a Foul Poffin, the one outcome a script can
+# reach without pinning a hand.
+#
+# The last answer is a touch and has to be. "Would you like to keep cooking
+# Poffins?" draws YES and NO as panel buttons with YES already highlighted,
+# and it reads neither the D-pad nor A: DOWN then A left the highlight where
+# it was and the run sat on the prompt until it ran out of frames.
+#
+# The press at the end closes "Please visit again whenever you get the urge
+# to cook!". Until that message is answered the script still holds LockAll,
+# the field never goes idle and the end-of-run save never fires, and one
+# press is the whole budget, because a spare A a few hundred frames later
+# starts a fresh conversation with the cook instead.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+2900 keys A
+2920 keys none
+3200 keys A
+3220 keys none
+3600 keys A
+3620 keys none
+3900 keys A
+3920 keys none
+4200 keys A
+4220 keys none
+10400 touch 218 121
+10440 release
+11400 keys A
+11420 keys none

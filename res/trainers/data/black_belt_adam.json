@@ -1,0 +1,51 @@
+{
+    "name": "Adam",
+    "class": "TRAINER_CLASS_BLACK_BELT",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "This buff physique isn’t just for\n",
+                "show!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "B-but!\n",
+                "My buff physique!"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Why? Is it because my training isn’t\n",
+                "enough?!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "My buff physique!\n",
+                "Feast your eyes on it again!\r"
+            ]
+        }
+    ]
+}

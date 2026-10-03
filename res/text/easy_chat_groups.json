@@ -1,0 +1,61 @@
+{
+  "key": 41845,
+  "messages": [
+    {
+      "id": "EasyChatGroups_Text_Pokemon",
+      "en_US": "POKéMON"
+    },
+    {
+      "id": "EasyChatGroups_Text_Pokemon2",
+      "en_US": "POKéMON 2"
+    },
+    {
+      "id": "EasyChatGroups_Text_Move",
+      "en_US": "MOVE"
+    },
+    {
+      "id": "EasyChatGroups_Text_Move2",
+      "en_US": "MOVE 2"
+    },
+    {
+      "id": "EasyChatGroups_Text_Status",
+      "en_US": "STATUS"
+    },
+    {
+      "id": "EasyChatGroups_Text_Trainer",
+      "en_US": "TRAINER"
+    },
+    {
+      "id": "EasyChatGroups_Text_People",
+      "en_US": "PEOPLE"
+    },
+    {
+      "id": "EasyChatGroups_Text_Greetings",
+      "en_US": "GREETINGS"
+    },
+    {
+      "id": "EasyChatGroups_Text_Lifestyle",
+      "en_US": "LIFESTYLE"
+    },
+    {
+      "id": "EasyChatGroups_Text_Feelings",
+      "en_US": "FEELINGS"
+    },
+    {
+      "id": "EasyChatGroups_Text_ToughWords",
+      "en_US": "TOUGH WORDS"
+    },
+    {
+      "id": "EasyChatGroups_Text_Union",
+      "en_US": "UNION"
+    },
+    {
+      "id": "EasyChatGroups_Text_QuestionMarks",
+      "en_US": "???"
+    },
+    {
+      "id": "EasyChatGroups_Text_Cancel",
+      "en_US": "CANCEL"
+    }
+  ]
+}

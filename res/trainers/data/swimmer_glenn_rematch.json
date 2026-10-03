@@ -1,0 +1,45 @@
+{
+    "name": "Glenn",
+    "class": "TRAINER_CLASS_SWIMMER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_OCTILLERY",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_POLITOED",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Yo, Pokémon-riding Trainer!\n",
+                "How about a rematch?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Awesome!\n",
+                "You’re a real wild child!\n"
+            ]
+        }
+    ]
+}

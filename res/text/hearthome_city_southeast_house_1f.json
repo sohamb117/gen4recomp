@@ -1,0 +1,34 @@
+{
+  "key": 1027,
+  "messages": [
+    {
+      "id": "HearthomeCitySoutheastHouse1F_Text_ThereAreTheContests",
+      "en_US": [
+        "There are the Contests!\n",
+        "Then, we have Amity Square!\r",
+        "Hearthome gets visitors from all over,\n",
+        "so things have to be nice and clean!"
+      ]
+    },
+    {
+      "id": "HearthomeCitySoutheastHouse1F_Text_CaptivateTheWholeWorld",
+      "en_US": [
+        "People all over the world follow\n",
+        "Pokémon Contests.\r",
+        "What should I do?\n",
+        "I could captivate the whole world!"
+      ]
+    },
+    {
+      "id": "HearthomeCitySoutheastHouse1F_Text_MyShroomishFindsBerries",
+      "en_US": [
+        "My SHROOMISH finds Berries and things\n",
+        "when we go to Amity Square."
+      ]
+    },
+    {
+      "id": "HearthomeCitySoutheastHouse1F_Text_ShroomishCryPofwaaah",
+      "en_US": "SHROOMISH: Pofwaaah!"
+    }
+  ]
+}

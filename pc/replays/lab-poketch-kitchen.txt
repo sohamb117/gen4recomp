@@ -1,0 +1,17 @@
+# After CONTINUE: add one minute on the kitchen timer and start it.
+#
+# Minutes-ones up (96, 88), START (48, 160).
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 touch 96 88
+3040 release
+3120 touch 48 160
+3160 release

@@ -1,0 +1,14 @@
+--- a/src/render_view.c
++++ b/src/render_view.c
+@@ -20,6 +20,10 @@
+ 
+     if (renderer) {
+         NNS_G2dAddRendererTargetSurface(renderer, surface);
+     }
++    /* Four NNS G2D cell/OAM callbacks plus the three OAM-manager
++     * function pointers just written. */
++    { extern void pc_state_scan_mark_host_words(const void *, unsigned);
++      pc_state_scan_mark_host_words(surface, sizeof *surface); }
+ }
+ 
+ void SetRenderSurfaceViewRect(NNSG2dRenderSurface *surface, NNSG2dViewRect *viewRect)

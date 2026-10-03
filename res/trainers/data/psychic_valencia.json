@@ -1,0 +1,62 @@
+{
+    "name": "Valencia",
+    "class": "TRAINER_CLASS_PSYCHIC_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CHIMECHO",
+            "form": 0,
+            "level": 44,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ABSOL",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_DUSKNOIR",
+            "form": 0,
+            "level": 46,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I am a Psychic!\n",
+                "I can see your past!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Your past...\n",
+                "You’ve been through a lot...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Let me guess.\n",
+                "Have you met any legendary Pokémon?\n"
+            ]
+        }
+    ]
+}

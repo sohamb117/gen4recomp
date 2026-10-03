@@ -1,0 +1,204 @@
+{
+    "base_stats": {
+        "hp": 80,
+        "attack": 90,
+        "defense": 80,
+        "speed": 110,
+        "special_attack": 130,
+        "special_defense": 110
+    },
+    "types": [ "TYPE_DRAGON", "TYPE_PSYCHIC" ],
+    "catch_rate": 3,
+    "base_exp_reward": 211,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 3,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_MALE_ONLY",
+    "hatch_cycles": 120,
+    "base_friendship": 90,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_UNDISCOVERED", "EGG_GROUP_UNDISCOVERED" ],
+    "abilities": [ "ABILITY_LEVITATE", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_PSYWAVE" ],
+            [ 5, "MOVE_HEAL_BLOCK" ],
+            [ 10, "MOVE_HELPING_HAND" ],
+            [ 15, "MOVE_SAFEGUARD" ],
+            [ 20, "MOVE_DRAGON_BREATH" ],
+            [ 25, "MOVE_PROTECT" ],
+            [ 30, "MOVE_REFRESH" ],
+            [ 35, "MOVE_LUSTER_PURGE" ],
+            [ 40, "MOVE_ZEN_HEADBUTT" ],
+            [ 45, "MOVE_RECOVER" ],
+            [ 50, "MOVE_PSYCHO_SHIFT" ],
+            [ 55, "MOVE_DRAGON_DANCE" ],
+            [ 60, "MOVE_MEMENTO" ],
+            [ 65, "MOVE_PSYCHIC" ],
+            [ 70, "MOVE_DRAGON_PULSE" ]
+        ],
+        "by_tm": [
+            "TM02",
+            "TM03",
+            "TM04",
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM13",
+            "TM15",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM20",
+            "TM21",
+            "TM22",
+            "TM24",
+            "TM25",
+            "TM26",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM33",
+            "TM34",
+            "TM37",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM47",
+            "TM51",
+            "TM53",
+            "TM57",
+            "TM58",
+            "TM59",
+            "TM65",
+            "TM68",
+            "TM70",
+            "TM73",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM86",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM02",
+            "HM03",
+            "HM05",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_ICY_WIND",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_OUTRAGE",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_TWISTER",
+            "MOVE_LAST_RESORT",
+            "MOVE_TRICK",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_LATIOS",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 79,
+        "weight_pounds": 132.3,
+        "body_shape": "SHAPE_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 0,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 0,
+        "en": {
+            "name": "LATIOS",
+            "category": "Eon Pokémon",
+            "entry_text": [
+                "A highly intelligent Pokémon.\n",
+                "By folding back its wings in flight,\n",
+                "it can overtake jet planes."
+            ]
+        },
+        "fr": {
+            "name": "LATIOS",
+            "category": "Pokémon Eon",
+            "entry_text": [
+                "Un Pokémon très intelligent. Il\n",
+                "peut voler plus vite qu’un avion à\n",
+                "réaction en repliant ses ailes."
+            ]
+        },
+        "de": {
+            "name": "LATIOS",
+            "category": "Äon",
+            "entry_text": [
+                "Ein hochintelligentes PKMN. Wenn es\n",
+                "im Flug seine Flügel nach hinten\n",
+                "legt, ist es schneller als ein Jet."
+            ]
+        },
+        "it": {
+            "name": "LATIOS",
+            "category": "Pokémon Eone",
+            "entry_text": [
+                "Pokémon molto intelligente.\n",
+                "Ripiegando indietro le ali, riesce a\n",
+                "volare più veloce di un jet."
+            ]
+        },
+        "es": {
+            "name": "LATIOS",
+            "category": "Pokémon Eón",
+            "entry_text": [
+                "Es un Pokémon muy inteligente.\n",
+                "Puede adelantar a aviones a\n",
+                "reacción plegando las alas."
+            ]
+        },
+        "jp": {
+            "name": "ラティオス",
+            "category": "むげんポケモン",
+            "entry_text": [
+                "たかい　ちのうを　もつ　ポケモン。\n",
+                "うでを　おりたたんで　とべば\n",
+                "ジェットきを　おいこす　スピ－ドだ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 2575
+    }
+}

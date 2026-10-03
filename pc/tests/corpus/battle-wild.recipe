@@ -1,0 +1,19 @@
+# A wild battle the lead wins outright, on Route 201's own tile.
+#
+# The lead is chosen so the fight ends inside the station's frames: A alone
+# picks the first move every turn, and a fight that outlasts that move's PP
+# stops making progress (measured; a level 50 legendary does exactly that).
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20001
+money 3000
+badge BADGE_ID_COAL
+party SPECIES_MONFERNO 18 ITEM_NONE
+item ITEM_POKE_BALL 10
+# The lead's first move is set explicitly. A battle station is driven
+# with A alone, which picks move slot 0 every turn, so a lead whose
+# natural slot 0 is a status move never ends its fight, measured on a
+# level 22 Monferno, which drew a level 5 Starly out past 40,000 frames.
+party-move 0 0 MOVE_FLAMETHROWER
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_DOWN

@@ -1,0 +1,11 @@
+# A thunderstone on a Pikachu, which is an evolution by item rather than by
+# level: nothing about the mon changes before the stone is used, so the whole
+# station is the item.
+
+name STONER
+gender GENDER_MALE
+trainer-id 20302
+money 3000
+party SPECIES_PIKACHU 12 ITEM_NONE
+item ITEM_THUNDERSTONE 1
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

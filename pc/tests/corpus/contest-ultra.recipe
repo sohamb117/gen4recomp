@@ -1,0 +1,22 @@
+# A Cute contest at Ultra rank.
+#
+# Same maxed entry as contest-win, scarf and moves swapped for Cute.
+# Ultra's top visual bucket is 380; the feeding cap still clears it.
+
+name ULTRA
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_ROSELIA 30 ITEM_PINK_SCARF
+party-move 0 0 MOVE_ATTRACT
+party-move 0 1 MOVE_CHARM
+party-move 0 2 MOVE_RETURN
+party-move 0 3 MOVE_FAKE_OUT
+condition 0 MON_DATA_COOL 255
+condition 0 MON_DATA_BEAUTY 255
+condition 0 MON_DATA_CUTE 255
+condition 0 MON_DATA_SMART 255
+condition 0 MON_DATA_TOUGH 255
+condition 0 MON_DATA_SHEEN 255
+map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

@@ -1,0 +1,19 @@
+# Sunyshore City, the solar-panel bridges.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name SUNYSHO
+gender GENDER_MALE
+trainer-id 11096
+money 28000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+party SPECIES_GARCHOMP 48 ITEM_NONE
+party SPECIES_ROSERADE 45 ITEM_NONE
+map MAP_HEADER_SUNYSHORE_CITY 0x35C 0x311 FACE_DOWN

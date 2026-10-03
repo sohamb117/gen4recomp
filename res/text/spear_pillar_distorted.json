@@ -1,0 +1,131 @@
+{
+  "key": 24594,
+  "messages": [
+    {
+      "id": "SpearPillarDistorted_Text_No",
+      "en_US": "Cynthia: No...!\r"
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy1",
+      "garbage": 11
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy2",
+      "garbage": 12
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy3",
+      "garbage": 12
+    },
+    {
+      "id": "SpearPillarDistorted_Text_SorryITookSoLong",
+      "en_US": [
+        "Cynthia: I’m sorry I took so long.\r",
+        "I think I finally found the answer\n",
+        "from studying the myths.\r",
+        "When this world was made, DIALGA and\n",
+        "PALKIA appeared.\r",
+        "Apparently, there was one more Pokémon\n",
+        "that appeared at the same time.\r",
+        "A Pokémon with as much power as DIALGA\n",
+        "and PALKIA...\r",
+        "But also one whose name was never to\n",
+        "be spoken--GIRATINA!\r",
+        "It’s said to lurk in another world...\n",
+        "A world on the opposite side of ours...\r",
+        "That’s what the shadow was.\n",
+        "It must have been GIRATINA.\r"
+      ]
+    },
+    {
+      "id": "SpearPillarDistorted_Text_WorldWillBeDestroyed",
+      "en_US": [
+        "The pillars are distorting...\r",
+        "It’s because of that portal.\n",
+        "It’s joined us to the other world.\r",
+        "If it’s not closed, the distortion\n",
+        "will spread to Sinnoh and beyond...\r",
+        "Our world will be destroyed...\r"
+      ]
+    },
+    {
+      "id": "SpearPillarDistorted_Text_AreYouReady",
+      "en_US": [
+        "Cynthia: Are you ready?\n",
+        "We have to chase Cyrus!"
+      ]
+    },
+    {
+      "id": "SpearPillarDistorted_Text_WeHaveToHurry",
+      "en_US": "Cynthia: We have to hurry!\r"
+    },
+    {
+      "id": "SpearPillarDistorted_Text_IllWaitHere",
+      "en_US": [
+        "Cynthia: You need to get ready?\n",
+        "I’ll wait here."
+      ]
+    },
+    {
+      "id": "SpearPillarDistorted_Text_WhereDidHeGo",
+      "en_US": [
+        "Mars: M-Master Cyrus?!\n",
+        "Where did he go?!"
+      ]
+    },
+    {
+      "id": "SpearPillarDistorted_Text_WhatWasIt",
+      "en_US": [
+        "Jupiter: That shadow...\n",
+        "What was it...?!"
+      ]
+    },
+    {
+      "id": "SpearPillarDistorted_Text_CanOnlyPanicAimlessly",
+      "en_US": [
+        "Without anyone to guide us, we can only\n",
+        "panic aimlessly..."
+      ]
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy12",
+      "garbage": 14
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy13",
+      "garbage": 17
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy14",
+      "garbage": 13
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy15",
+      "garbage": 14
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy16",
+      "garbage": 48
+    },
+    {
+      "id": "SpearPillarDistorted_Text_Dummy17",
+      "garbage": 22
+    },
+    {
+      "id": "SpearPillarDistorted_Text_TimeEmanatesFromRift",
+      "en_US": [
+        "An overwhelming feeling of time\n",
+        "emanates powerfully from this rift...\r",
+        "Where does it lead to?"
+      ]
+    },
+    {
+      "id": "SpearPillarDistorted_Text_SpaceEmanatesFromRift",
+      "en_US": [
+        "An overwhelming feeling of space\n",
+        "emanates powerfully from this rift...\r",
+        "Where does it lead to?"
+      ]
+    }
+  ]
+}

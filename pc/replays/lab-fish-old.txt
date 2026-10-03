@@ -1,0 +1,190 @@
+# Boots a save, casts the registered Old Rod at the water in front of the
+# player, and answers the bite.
+#
+# The first lines are lab-continue.txt's, unchanged. Y uses the registered
+# item, which is how a player fishes: a rod is a key item on the Y button.
+#
+# The a press at frame 5750 is the whole script. fishingTask_SetFishWait
+# draws the wait before the bite from the RNG and FishingTask_ReeledInEarly
+# answers an A press that arrives before it, so mashing A cannot catch
+# anything here. The window this run has to hit opens at frame 5707 and is
+# 90 frames wide, measured with PC_TRACE_FISH over this exact script,
+# because the run is deterministic and the frame is therefore a constant. It
+# is not a number to nudge: change anything before it and it has to be
+# measured again.
+#
+# The Old Rod's encounter rate is 25%, and this save's first three casts
+# came back empty, which is why its bite is 2000 frames later than the
+# other two rods'. The B presses are what closes "not even a nibble"
+# between them; B rather than A, because an A press during a cast is
+# the early reel-in.
+#
+# Everything after the catch is lab-battle.txt's A in bursts, which fights out
+# the wild encounter the catch starts and clears the messages either side of
+# it.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3600 keys Y
+3624 keys none
+3850 keys B
+3874 keys none
+3900 keys Y
+3924 keys none
+4150 keys B
+4174 keys none
+4200 keys Y
+4224 keys none
+4450 keys B
+4474 keys none
+4500 keys Y
+4524 keys none
+4750 keys B
+4774 keys none
+4800 keys Y
+4824 keys none
+5050 keys B
+5074 keys none
+5100 keys Y
+5124 keys none
+5350 keys B
+5374 keys none
+5400 keys Y
+5424 keys none
+5650 keys B
+5674 keys none
+5700 keys Y
+5724 keys none
+5750 keys A
+5774 keys none
+5850 keys A
+5874 keys none
+5898 keys A
+5922 keys none
+5946 keys A
+5970 keys none
+5994 keys A
+6018 keys none
+6042 keys A
+6066 keys none
+6090 keys A
+6114 keys none
+6138 keys A
+6162 keys none
+6186 keys A
+6210 keys none
+6234 keys A
+6258 keys none
+6282 keys A
+6306 keys none
+6330 keys A
+6354 keys none
+6378 keys A
+6402 keys none
+6426 keys A
+6450 keys none
+6474 keys A
+6498 keys none
+6522 keys A
+6546 keys none
+6570 keys A
+6594 keys none
+6618 keys A
+6642 keys none
+6666 keys A
+6690 keys none
+6714 keys A
+6738 keys none
+6762 keys A
+6786 keys none
+6810 keys A
+6834 keys none
+6858 keys A
+6882 keys none
+6906 keys A
+6930 keys none
+6954 keys A
+6978 keys none
+7002 keys A
+7026 keys none
+7050 keys A
+7074 keys none
+7098 keys A
+7122 keys none
+7146 keys A
+7170 keys none
+7194 keys A
+7218 keys none
+7242 keys A
+7266 keys none
+7290 keys A
+7314 keys none
+7338 keys A
+7362 keys none
+7386 keys A
+7410 keys none
+7434 keys A
+7458 keys none
+7482 keys A
+7506 keys none
+7530 keys A
+7554 keys none
+7578 keys A
+7602 keys none
+7626 keys A
+7650 keys none
+7674 keys A
+7698 keys none
+7722 keys A
+7746 keys none
+7770 keys A
+7794 keys none
+7818 keys A
+7842 keys none
+7866 keys A
+7890 keys none
+7914 keys A
+7938 keys none
+7962 keys A
+7986 keys none
+8010 keys A
+8034 keys none
+8058 keys A
+8082 keys none
+8106 keys A
+8130 keys none
+8154 keys A
+8178 keys none
+8202 keys A
+8226 keys none
+8250 keys A
+8274 keys none
+8298 keys A
+8322 keys none
+8346 keys A
+8370 keys none
+8394 keys A
+8418 keys none
+8442 keys A
+8466 keys none
+8490 keys A
+8514 keys none
+8538 keys A
+8562 keys none
+8586 keys A
+8610 keys none
+8634 keys A
+8658 keys none
+8682 keys A
+8706 keys none
+8730 keys A
+8754 keys none
+8778 keys A
+8802 keys none

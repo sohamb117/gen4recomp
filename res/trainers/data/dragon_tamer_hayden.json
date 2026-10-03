@@ -1,0 +1,63 @@
+{
+    "name": "Hayden",
+    "class": "TRAINER_CLASS_DRAGON_TAMER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ALTARIA",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SEADRA",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "My dragon Pokémon chose to become\n",
+                "powerful here. They sure like it!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Your battle style...\n",
+                "So savage...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "It’s been several years since I left\n",
+                "the Dragon’s Den.\r",
+                "I’ve got to say, your Pokémon are\n",
+                "in the top class for toughness."
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "My dragon Pokémon chose to remain\n",
+                "here to become powerful.\r"
+            ]
+        }
+    ]
+}

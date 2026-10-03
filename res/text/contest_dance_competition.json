@@ -1,0 +1,119 @@
+{
+  "key": 59653,
+  "messages": [
+    {
+      "id": "DanceCompetition_Text_Jump",
+      "en_US": "JUMP"
+    },
+    {
+      "id": "DanceCompetition_Text_Up",
+      "en_US": "UP"
+    },
+    {
+      "id": "DanceCompetition_Text_Front",
+      "en_US": "FRONT"
+    },
+    {
+      "id": "DanceCompetition_Text_Left",
+      "en_US": "LEFT"
+    },
+    {
+      "id": "DanceCompetition_Text_Right",
+      "en_US": "RIGHT"
+    },
+    {
+      "id": "DanceCompetition_Text_Excellent",
+      "en_US": "Excellent!"
+    },
+    {
+      "id": "DanceCompetition_Text_Good",
+      "en_US": "Good!"
+    },
+    {
+      "id": "DanceCompetition_Text_Miss",
+      "en_US": "Miss!"
+    },
+    {
+      "id": "DanceCompetition_Text_CompetitionIsReady",
+      "en_US": [
+        "The Dance Competition is ready to\n",
+        "get under way!\r",
+        "Can the backup dancers flawlessly\n",
+        "follow the main dancer’s steps?!\r",
+        "OK! Everybody, let’s dance!\n",
+        "Start the music!\r"
+      ]
+    },
+    {
+      "id": "DanceCompetition_Text_PerformStepsAsMainDancer",
+      "en_US": "{COLOR 2}Perform {STRVAR_1 50, 0, 0} steps as the main dancer!{COLOR 0}"
+    },
+    {
+      "id": "DanceCompetition_Text_CopyPokemonBeforeYou",
+      "en_US": "{COLOR 1}Copy the Pokémon before you!{COLOR 0}"
+    },
+    {
+      "id": "DanceCompetition_Text_Unused",
+      "garbage": 32
+    },
+    {
+      "id": "pl_msg_00000206_00012",
+      "garbage": 257
+    },
+    {
+      "id": "pl_msg_00000206_00013",
+      "garbage": 28
+    },
+    {
+      "id": "pl_msg_00000206_00014",
+      "garbage": 16
+    },
+    {
+      "id": "pl_msg_00000206_00015",
+      "garbage": 2
+    },
+    {
+      "id": "pl_msg_00000206_00016",
+      "garbage": 3
+    },
+    {
+      "id": "pl_msg_00000206_00017",
+      "garbage": 8
+    },
+    {
+      "id": "DanceCompetition_Text_AnnounceLeadingMon",
+      "en_US": [
+        "That’s it for the Dance Competition!\r",
+        "Leading in points right now is\n",
+        "{STRVAR_1 3, 0, 0}!\r",
+        "Can anyone turn things around in the\n",
+        "Acting Competition?\r"
+      ]
+    },
+    {
+      "id": "DanceCompetition_Text_ThanksForJoiningPracticeContest",
+      "en_US": [
+        "Welcome! Thanks for joining our\n",
+        "practice Contest!\r",
+        "Feel free to practice all you want\n",
+        "and train for the big show!\r",
+        "I’ll be taking part to practice up\n",
+        "on being an MC!\r"
+      ]
+    },
+    {
+      "id": "DanceCompetition_Text_EveryoneHereForPracticeContest",
+      "en_US": [
+        "Looks like everyone’s here, so let’s\n",
+        "get on with our dance practice!\r",
+        "{STRVAR_1 1, 0, 0}, you need to dance just\n",
+        "like the main dancer.\r",
+        "After dancing twice, the main dancer\n",
+        "switches with a backup dancer.\r",
+        "You get to be the main dancer last.\n",
+        "Do a dance that no one can imitate!\r",
+        "OK! Start it up!\r"
+      ]
+    }
+  ]
+}

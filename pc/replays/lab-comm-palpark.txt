@@ -1,0 +1,24 @@
+# Pal Park gate: talk, Enter, then the empty-stock refusal.
+#
+# CONTINUE's last A (2400) lands on the field and starts the conversation,
+# so the Enter / Info / Exit menu is up by 2600. One A picks Enter; the
+# next two walk the "not enough Pokemon" boxes; the last box, migrate
+# from Kanto or Hoenn, is left on screen for the pin.
+#
+# The first lines are lab-continue.txt's, unchanged.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+2800 keys A
+2824 keys none
+3100 keys A
+3124 keys none
+3400 keys A
+3424 keys none

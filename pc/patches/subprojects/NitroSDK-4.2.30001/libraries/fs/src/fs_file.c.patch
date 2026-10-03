@@ -1,0 +1,29 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/fs/src/fs_file.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/fs/src/fs_file.c
+@@ -219,6 +219,8 @@
+ 
+ 		if (!FSi_FindPath(&dir, path, p_file_id, NULL))
+ 			return FALSE;
++		{ extern void pc_state_mark_host_field(const void *);
++		  pc_state_mark_host_field(&p_file_id->arc); }
+ 	}
+ 
+ 	return TRUE;
+@@ -233,6 +235,8 @@
+ 
+ 	{
+ 		p_file->arc = p_arc;
++		{ extern void pc_state_mark_host_field(const void *);
++		  pc_state_mark_host_field(&p_file->arc); }
+ 		p_file->arg.openfiledirect.index = file_index;
+ 		p_file->arg.openfiledirect.top = image_top;
+ 		p_file->arg.openfiledirect.bottom = image_bottom;
+@@ -259,6 +263,8 @@
+ 			return FALSE;
+ 
+ 		p_file->arc = file_id.arc;
++		{ extern void pc_state_mark_host_field(const void *);
++		  pc_state_mark_host_field(&p_file->arc); }
+ 		p_file->arg.openfilefast.id = file_id;
+ 
+ 		if (!FSi_SendCommand(p_file, FS_COMMAND_OPENFILEFAST))

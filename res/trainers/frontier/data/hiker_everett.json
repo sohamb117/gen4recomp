@@ -1,0 +1,59 @@
+{
+    "name": "Everett",
+    "class": "TRAINER_CLASS_HIKER",
+    "availableSets": [
+        "riolu_1",
+        "bonsly_1",
+        "sandshrew_1",
+        "geodude_1",
+        "larvitar_1",
+        "baltoy_1",
+        "bronzor_1",
+        "gible_1",
+        "croagunk_1",
+        "machop_1",
+        "numel_1",
+        "cubone_1",
+        "magnemite_1",
+        "phanpy_1",
+        "aron_1",
+        "hippopotas_1",
+        "vibrava_1",
+        "rhyhorn_1",
+        "cranidos_1",
+        "shieldon_1",
+        "omanyte_1",
+        "kabuto_1",
+        "lileep_1",
+        "anorith_1",
+        "nosepass_1",
+        "corsola_1",
+        "mawile_1",
+        "onix_1",
+        "graveler_1",
+        "none_1"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "What’s that? I smell dusty?\n",
+                "Don’t you know the aroma of soil?"
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "See, that’s what you get!\n",
+                "Your team had to eat dirt, get it?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Dropped in the dirt by some kid who\n",
+                "doesn’t know the smell of soil!\r"
+            ]
+        }
+    ]
+}

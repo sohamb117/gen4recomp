@@ -1,0 +1,45 @@
+{
+    "name": "Grunt",
+    "class": "TRAINER_CLASS_GALACTIC_GRUNT_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GLAMEOW",
+            "form": 0,
+            "level": 41,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Who do you think you are?\n",
+                "Desecrating the halls of our HQ?!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "A tough little Trainer is what you\n",
+                "are...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "In our HQ, we get around by taking\n",
+                "warp panels.\r",
+                "I’d like to see you figure out how\n",
+                "they connect.\n"
+            ]
+        }
+    ]
+}

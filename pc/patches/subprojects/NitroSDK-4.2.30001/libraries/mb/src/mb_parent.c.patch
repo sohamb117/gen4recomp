@@ -1,0 +1,11 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/mb/src/mb_parent.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/mb/src/mb_parent.c
+@@ -315,7 +315,7 @@
+ 		MBCommPStateCallback tmpCb = pPwork->parent_callback;
+ 
+ 		MI_CpuClearFast(pPwork, sizeof(MB_CommPWork));
+-		pPwork = NULL;
++		mbc = NULL;
+ 		if (tmpCb) {
+ 			(*tmpCb)(0, MB_COMM_PSTATE_END, NULL);
+ 		}

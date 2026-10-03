@@ -1,0 +1,18 @@
+# GTS door: CONTINUE's last A starts the receptionist. Stop there.
+#
+# The Trade / Info / Exit menu is the door. Walking through it fades
+# into the WFC overlay, which needs the wireless driver to report
+# ready before NintendoWFC_Init runs. That is the WM model; this
+# script does not fake it.
+#
+# The first lines are lab-continue.txt's, unchanged.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none

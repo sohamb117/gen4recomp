@@ -1,0 +1,16 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/os/src/os_exception.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/os/src/os_exception.c
+@@ -59,8 +59,13 @@
+ 
+     if (!OSi_DebuggerHandler) {
+         *(u32 *)(HW_EXCP_VECTOR_BUF_FOR_DEBUGGER) = (u32)OSi_ExceptionHandler;
+         *(u32 *)(HW_EXCP_VECTOR_BUF) = (u32)OSi_ExceptionHandler;
++        /* Both words are in shared work / DTCM and hold a host
++         * function. */
++        { extern void pc_state_mark_host_word(unsigned);
++          pc_state_mark_host_word(HW_EXCP_VECTOR_BUF_FOR_DEBUGGER);
++          pc_state_mark_host_word(HW_EXCP_VECTOR_BUF); }
+     }
+ 
+     OSi_UserExceptionHandler = NULL;
+ }

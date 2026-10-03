@@ -1,0 +1,32 @@
+{
+  "key": 20107,
+  "messages": [
+    {
+      "id": "Route222WestHouse_Text_PikachuCryPikachuu",
+      "en_US": "PIKACHU: Pikachuu!"
+    },
+    {
+      "id": "Route222WestHouse_Text_PikachuCryPikaah",
+      "en_US": "PIKACHU: Pikaah!"
+    },
+    {
+      "id": "Route222WestHouse_Text_PikachuCryPikaPika",
+      "en_US": "PIKACHU: Pika pika?"
+    },
+    {
+      "id": "Route222WestHouse_Text_PikachuCryPiPikachu",
+      "en_US": "PIKACHU: Pi! Pikachu!"
+    },
+    {
+      "id": "Route222WestHouse_Text_PikachuCryPiiKaahchu",
+      "en_US": "PIKACHU: Pii! Kaahchu!"
+    },
+    {
+      "id": "Route222WestHouse_Text_OnlyPikachu",
+      "en_US": [
+        "Eehehe! I’m going for the Pokémon\n",
+        "Championship with only PIKACHU!"
+      ]
+    }
+  ]
+}

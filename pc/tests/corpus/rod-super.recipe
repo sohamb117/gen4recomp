@@ -1,0 +1,22 @@
+# The Super Rod, cast from the south bank of the river on Route 205.
+#
+# The tile is hm-surf's, which is already known to face water: CanUseFishingRod
+# refuses anywhere the tile in front is not surfable, so a rod station and a
+# Surf station want exactly the same spot. Route 205 South is one of the few
+# maps that carries all three rod tables (old 25%, good 50%, super 75%), so the
+# three rod stations differ only in which rod is registered.
+#
+# The lead is a level 70 Garchomp with one move so the fight the catch starts
+# is over in a turn: this station is about the rod, and a long battle would
+# make it about the battle engine instead.
+
+name ANGLER
+gender GENDER_MALE
+trainer-id 30009
+money 3000
+badge BADGE_ID_FEN
+party SPECIES_GARCHOMP 70 ITEM_NONE
+party-move 0 0 MOVE_DRAGON_CLAW
+item ITEM_SUPER_ROD 1
+register-item ITEM_SUPER_ROD
+map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP

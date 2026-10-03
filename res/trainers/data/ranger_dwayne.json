@@ -1,0 +1,70 @@
+{
+    "name": "Dwayne",
+    "class": "TRAINER_CLASS_RANGER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SKARMORY",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLDUCK",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_DONPHAN",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "We go on patrol to make sure there’s\n",
+                "nothing strange going on.\r",
+                "And occasionally, we battle!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Thanks much!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Using the Pokémon ability Pickup for\n",
+                "gathering dropped items is a good thing.\r",
+                "I think it’s ecological, even.\n",
+                "I am cleaning up the environment!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Patrols day in and day out!\n",
+                "And the occasional battle!\r"
+            ]
+        }
+    ]
+}

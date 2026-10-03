@@ -1,0 +1,58 @@
+{
+    "name": "Louis",
+    "class": "TRAINER_CLASS_HIKER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GEODUDE",
+            "form": 0,
+            "level": 14,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ONIX",
+            "form": 0,
+            "level": 18,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "See how Mt. Coronet towers above us.\n",
+                "I want to be big like that one day!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "You loom before me as a giant presence!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Mt. Coronet has long been known as\n",
+                "an ancient and mysterious mountain.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Hmm?! \n",
+                "You loom before me again?!\r",
+                "You’re like Mt. Coronet that way!\r"
+            ]
+        }
+    ]
+}

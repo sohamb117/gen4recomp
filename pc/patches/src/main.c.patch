@@ -1,0 +1,39 @@
+--- a/src/main.c
++++ b/src/main.c
+@@ -54,6 +54,8 @@
+ static void HeapCanaryFailed(int resetParam, int param1);
+ static void CheckHeapCanary(void);
+ 
++int pc_lab_boot(void *saveData); /* pc/src/pc_lab.c */
++
+ static Application sApplication;
+ // This variable doesn't really makes sense. If it's set to off, the game will
+ // repeatedly try to restore the backlight to its saved state.
+@@ -63,6 +65,8 @@
+ 
+ void NitroMain(void)
+ {
++    int labMode;
++
+     InitSystem();
+     InitVRAM();
+     InitKeypadAndTouchpad();
+@@ -90,6 +94,18 @@
+ 
+     if (SaveData_BackupExists(sApplication.args.saveData) == FALSE) {
+         sub_0209A74C(HEAP_ID_SYSTEM);
++    } else if ((labMode = pc_lab_boot(sApplication.args.saveData)) != 0) {
++        /* pc port: PC_LAB owns this boot, so it skips the title screen and
++         * whatever intro would come next. Mode 1 is a new game: pc_lab_boot
++         * has already run StartNewSave, and this application runs
++         * InitializeNewSave and hands off to the field system's new-game
++         * template; which is what runs INIT_NEW_GAME, the script that hides
++         * every story NPC. Mode 2 continues from the save already on the
++         * chip, through the same application the main menu's CONTINUE uses. */
++        sApplication.args.error = FALSE;
++        EnqueueApplication(FS_OVERLAY_ID(game_start),
++                           labMode == 2 ? &gGameStartLoadSaveAppTemplate
++                                        : &gGameStartNewSaveAppTemplate);
+     } else {
+         switch (OS_GetResetParameter()) {
+         case RESET_CLEAN:

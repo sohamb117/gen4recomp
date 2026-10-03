@@ -1,0 +1,46 @@
+--- a/src/comm_manager.c
++++ b/src/comm_manager.c
+@@ -70,6 +70,8 @@
+ } CommunicationManager;
+ 
+ static void CommManager_SetTask(CommTaskFunc task, int timer);
++
++BOOL CommSys_InitAlone(int maxPacketSize); /* pc/patches: communication_system.c */
+ static void CommTask_StartUnderground(void);
+ static void CommTask_ReinitUndergroundClient(void);
+ static void CommTask_ReinitUnderground(void);
+@@ -229,7 +231,13 @@
+  */
+ void CommManager_StartUnderground(SaveData *saveData)
+ {
++    /* pc port: CONTINUE's main-menu wireless search leaves sCommMan up.
++     * Returning here skipped CommTask_StartUnderground entirely, so the
++     * first-visit solo path never ran and the leftover WM state kicked
++     * the player to the title after the hole animation. Retask; the
++     * doNotConnect branch below opens the alone loopback without WM. */
+     if (sCommMan != NULL) {
++        CommManager_SetTask(CommTask_StartUnderground, 0);
+         return;
+     }
+ 
+@@ -720,6 +728,20 @@
+         return;
+     }
+ 
++    /* First visit is solo on hardware: InitUnderground sets
++     * doNotConnectUnderground so this task will not search. InitClient
++     * would still call WM_Initialize (PXI tag 10, no responder here)
++     * and COMM_ERROR_RESET_SAVEPOINT kicks the player to the title.
++     * Comm halves stay refused; only this already-solo visit is opened. */
++    if (sCommMan->doNotConnectUnderground) {
++        CommInfo_Init(sCommMan->saveData, NULL);
++        CommSys_InitAlone(500);
++        CommSys_SetAlone(TRUE);
++        CommSys_EnableSendMovementData();
++        CommManager_SetTask(CommTask_None, 0);
++        return;
++    }
++
+     CommServerClient_Init(sCommMan->trainerInfo, 1);
+     CommInfo_Init(sCommMan->saveData, NULL);
+     CommSys_SetAlone(TRUE);

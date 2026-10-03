@@ -1,0 +1,245 @@
+{
+  "key": 45992,
+  "messages": [
+    {
+      "id": "UndergroundRecords_Text_Name",
+      "en_US": "NAME"
+    },
+    {
+      "id": "UndergroundRecords_Text_BaseFlag",
+      "en_US": "BASE FLAG"
+    },
+    {
+      "id": "UndergroundRecords_Text_ID",
+      "en_US": "ID"
+    },
+    {
+      "id": "UndergroundRecords_Text_Colon_Unused",
+      "en_US": ":"
+    },
+    {
+      "id": "UndergroundRecords_Text_NameTemplate",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "UndergroundRecords_Text_IDTemplate",
+      "en_US": "{STRVAR_1 54, 6, 0}"
+    },
+    {
+      "id": "UndergroundRecords_Text_Score",
+      "en_US": "SCORE"
+    },
+    {
+      "id": "UndergroundRecords_Text_PeopleMet",
+      "en_US": "No. of people met:"
+    },
+    {
+      "id": "UndergroundRecords_Text_GiftsGiven",
+      "en_US": "No. of gifts given:"
+    },
+    {
+      "id": "UndergroundRecords_Text_FlagsObtained",
+      "en_US": "No. of Flags obtained:"
+    },
+    {
+      "id": "UndergroundRecords_Text_SpheresDug",
+      "en_US": "No. of Spheres dug:"
+    },
+    {
+      "id": "UndergroundRecords_Text_FossilsDug",
+      "en_US": "No. of Fossils dug:"
+    },
+    {
+      "id": "UndergroundRecords_Text_TrapHits",
+      "en_US": "No. of Trap hits:"
+    },
+    {
+      "id": "UndergroundRecords_Text_EntryTemplate",
+      "en_US": "{STRVAR_1 57, 6, 0}"
+    },
+    {
+      "id": "UndergroundRecords_Text_Dummy_00014",
+      "garbage": 1
+    },
+    {
+      "id": "UndergroundRecords_Text_Dummy_00015",
+      "garbage": 1
+    },
+    {
+      "id": "UndergroundRecords_Text_Dummy_00016",
+      "garbage": 1
+    },
+    {
+      "id": "UndergroundRecords_Text_Dummy_00017",
+      "garbage": 1
+    },
+    {
+      "id": "UndergroundRecords_Text_Dummy_00018",
+      "garbage": 1
+    },
+    {
+      "id": "UndergroundRecords_Text_Dummy_00019",
+      "garbage": 1
+    },
+    {
+      "id": "UndergroundRecords_Text_NormalFlag",
+      "en_US": "Normal Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_BronzeFlag",
+      "en_US": "Bronze Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_SilverFlag",
+      "en_US": "Silver Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_GoldFlag",
+      "en_US": "Gold Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_PlatinumFlag",
+      "en_US": "Platinum Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_PlatinumFlag2_Unused",
+      "en_US": "Platinum Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_PlatinumFlag3_Unused",
+      "en_US": "Platinum Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_PlatinumFlag4_Unused",
+      "en_US": "Platinum Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_PlatinumFlag5_Unused",
+      "en_US": "Platinum Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_PlatinumFlag6_Unused",
+      "en_US": "Platinum Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_PlatinumFlag7_Unused",
+      "en_US": "Platinum Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_PlatinumFlag8_Unused",
+      "en_US": "Platinum Flag"
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenTotalScore",
+      "en_US": [
+        "There’s something written here...\r",
+        "The total score so far:\n",
+        "{STRVAR_1 57, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenPeopleMet",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of people met\n",
+        "underground so far: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenGiftsGiven",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of goods given away as\n",
+        "gifts so far: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenFlagsObtained",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of Secret Base Flags\n",
+        "obtained so far: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenSpheresDug",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of Spheres dug so far:\n",
+        "{STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenFossilsDug",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of Fossils dug so far:\n",
+        "{STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenTrapHits",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of times other people\n",
+        "triggered my Traps: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenTrapsHit",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of times I triggered\n",
+        "Traps: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenOthersHelped",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of times others were helped\n",
+        "while underground: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenGiftsReceived",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of gifts received while\n",
+        "underground: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenOwnFlagsTaken",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of times my own Flag was\n",
+        "taken from the Secret Base: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenRecoveredFlags",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of recovered Flags:\n",
+        "{STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenTimesBaseMoved",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of times the Secret Base\n",
+        "was moved: {STRVAR_1 55, 6, 0}"
+      ]
+    },
+    {
+      "id": "UndergroundRecords_Text_SomethingWrittenFlagsRegistered",
+      "en_US": [
+        "There’s something written here...\r",
+        "Number of captured Flags registered\n",
+        "on the PC: {STRVAR_1 55, 6, 0}"
+      ]
+    }
+  ]
+}

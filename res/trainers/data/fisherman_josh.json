@@ -1,0 +1,59 @@
+{
+    "name": "Josh",
+    "class": "TRAINER_CLASS_FISHERMAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLDEEN",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLDEEN",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I wish some fishing-loving lady’d come\n",
+                "along. But no, it’s all just Trainers.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Sure, so I lost.\n",
+                "But I’ll keep on fishing.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "If you know of any ladies that like\n",
+                "fishing, help me reel ’em in!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Umm... Yeah. Weren’t you that person\n",
+                "who preferred Pokémon over fishing?\r"
+            ]
+        }
+    ]
+}

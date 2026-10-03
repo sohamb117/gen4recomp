@@ -1,0 +1,53 @@
+{
+    "name": "Natalie",
+    "class": "TRAINER_CLASS_LASS",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_BIDOOF",
+            "form": 0,
+            "level": 5,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I spy, with my little eye...\n",
+                "A Trainer!\r",
+                "A battle, please!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh, boo!\n",
+                "I can’t win!"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "My Pokémon are all tuckered out!\n",
+                "I need to go to a Pokémon Center!"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Oh, hi!\n",
+                "I remember you, Trainer!\r",
+                "A battle, please!\r"
+            ]
+        }
+    ]
+}

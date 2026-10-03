@@ -1,0 +1,63 @@
+{
+    "name": "Crystal",
+    "class": "TRAINER_CLASS_SWIMMER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_WINGULL",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SEAKING",
+            "form": 0,
+            "level": 44,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Your Pokémon doesn’t seem to be tiring\n",
+                "at all from carrying you on its back.\r",
+                "Let me see how strong it is!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I can’t take any more...\n",
+                "I’m all tired out!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "While floating here, I think about\n",
+                "everything and nothing.\r",
+                "Like how I should battle next, and\n",
+                "what’s for dinner tomorrow, and...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "How much stronger have your Pokémon\n",
+                "become?\r",
+                "Let me check ’em out, OK?\r"
+            ]
+        }
+    ]
+}

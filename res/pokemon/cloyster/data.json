@@ -1,0 +1,167 @@
+{
+    "base_stats": {
+        "hp": 50,
+        "attack": 95,
+        "defense": 180,
+        "speed": 70,
+        "special_attack": 85,
+        "special_defense": 45
+    },
+    "types": [ "TYPE_WATER", "TYPE_ICE" ],
+    "catch_rate": 60,
+    "base_exp_reward": 203,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 2,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_PEARL",
+        "rare": "ITEM_BIG_PEARL"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_WATER_3", "EGG_GROUP_WATER_3" ],
+    "abilities": [ "ABILITY_SHELL_ARMOR", "ABILITY_SKILL_LINK" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PURPLE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TOXIC_SPIKES" ],
+            [ 1, "MOVE_WITHDRAW" ],
+            [ 1, "MOVE_SUPERSONIC" ],
+            [ 1, "MOVE_AURORA_BEAM" ],
+            [ 1, "MOVE_PROTECT" ],
+            [ 28, "MOVE_SPIKES" ],
+            [ 40, "MOVE_SPIKE_CANNON" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM27",
+            "TM32",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM55",
+            "TM58",
+            "TM64",
+            "TM66",
+            "TM68",
+            "TM72",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM87",
+            "TM90",
+            "HM03"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_ICY_WIND",
+            "MOVE_SNORE",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_IRON_DEFENSE",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_SHELLDER",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 59,
+        "weight_pounds": 292.1,
+        "body_shape": "SHAPE_HEAD",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 233,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 233,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 9,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 9,
+        "en": {
+            "name": "CLOYSTER",
+            "category": "Bivalve Pokémon",
+            "entry_text": [
+                "It fights by keeping its shell\n",
+                "tightly shut for protection and\n",
+                "by shooting spikes to repel foes."
+            ]
+        },
+        "fr": {
+            "name": "CRUSTABRI",
+            "category": "Pokémon Bivalve",
+            "entry_text": [
+                "Il se défend en fermant sa coquille\n",
+                "et projette des piquants qui\n",
+                "repoussent ses agresseurs."
+            ]
+        },
+        "de": {
+            "name": "AUSTOS",
+            "category": "Muschel",
+            "entry_text": [
+                "Im Kampf schließt es seine Schale,\n",
+                "um sich zu schützen. Es schießt mit\n",
+                "Stacheln auf seine Gegner."
+            ]
+        },
+        "it": {
+            "name": "CLOYSTER",
+            "category": "Pokémon Bivalve",
+            "entry_text": [
+                "Quando lotta si protegge tenendo\n",
+                "la conchiglia chiusa e spara punte\n",
+                "per respingere i nemici."
+            ]
+        },
+        "es": {
+            "name": "CLOYSTER",
+            "category": "Pokémon Bivalvo",
+            "entry_text": [
+                "En la lucha se protege cerrando\n",
+                "su concha y lanzando pinchos\n",
+                "a sus oponentes."
+            ]
+        },
+        "jp": {
+            "name": "パルシェン",
+            "category": "２まいがいポケモン",
+            "entry_text": [
+                "カラを　しっかりと　とじて　みを\n",
+                "まもりながら　トゲを　とばして\n",
+                "てきを　げきたいする　せんぽう。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 3331
+    }
+}

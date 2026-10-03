@@ -1,0 +1,27 @@
+{
+  "key": 1039,
+  "messages": [
+    {
+      "id": "HearthomeCitySoutheastHouse2F_Text_SomethingForYourPokemon",
+      "en_US": [
+        "I have something for your Pokémon\n",
+        "to hold. Take this {STRVAR_1 8, 0, 0}.\r"
+      ]
+    },
+    {
+      "id": "HearthomeCitySoutheastHouse2F_Text_RegainHPWhenInflictingDamage",
+      "en_US": [
+        "The {STRVAR_1 8, 0, 0} should be held by\n",
+        "a Pokémon in battles.\r",
+        "The holder regains HP a little every\n",
+        "time it inflicts damage.\r",
+        "That was given to me when I was on\n",
+        "vacation, but I already had one."
+      ]
+    },
+    {
+      "id": "HearthomeCitySoutheastHouse2F_Text_ClefairyCryPippi",
+      "en_US": "CLEFAIRY: Pippi!"
+    }
+  ]
+}

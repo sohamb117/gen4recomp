@@ -1,0 +1,27 @@
+{
+  "key": 46114,
+  "messages": [
+    {
+      "id": "PastoriaCityNorthHouse_Text_QuickTramTransportation",
+      "en_US": [
+        "In the Great Marsh, Quick Trams on\n",
+        "rails are used for transportation.\r",
+        "They prevent damage to the Great\n",
+        "Marsh’s ecosystem."
+      ]
+    },
+    {
+      "id": "PastoriaCityNorthHouse_Text_PsyduckCry",
+      "en_US": "PSYDUCK: Gwah?!"
+    },
+    {
+      "id": "PastoriaCityNorthHouse_Text_QuickTramsAreSlow",
+      "en_US": [
+        "Though the name says “Quick,” their\n",
+        "movements are anything but!\r",
+        "They’re the Quick Trams that traverse\n",
+        "the Great Marsh."
+      ]
+    }
+  ]
+}

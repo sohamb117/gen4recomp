@@ -1,0 +1,21 @@
+# The Survival Area, north of the Fight Area.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name SURVIVA
+gender GENDER_MALE
+trainer-id 11507
+money 60000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+badge BADGE_ID_BEACON
+story-cleared 1
+national-dex 1
+party SPECIES_EMPOLEON 62 ITEM_NONE
+map MAP_HEADER_SURVIVAL_AREA 0x293 0x153 FACE_DOWN

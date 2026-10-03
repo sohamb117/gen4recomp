@@ -1,0 +1,17 @@
+# After CONTINUE: tap the centre of the Poketch screen.
+#
+# The first lines are lab-continue.txt's, unchanged. The tap is at the
+# middle of the app area (16..207, 16..175), held long enough for the
+# button manager to see a press and a release.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 touch 112 96
+3040 release

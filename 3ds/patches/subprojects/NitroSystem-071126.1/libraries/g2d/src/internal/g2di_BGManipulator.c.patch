@@ -1,0 +1,21 @@
+Every reg_* is an offset from armrec_io_base here, so the addresses of
+eight of them are not constant expressions and this table cannot be
+initialised statically. The header declares it `const` and is included
+by other files, so the declaration has to stay; what changes is where
+the object lives: an explicit .data section, because an uninitialised
+const array would otherwise land in .rodata and the fill would fault.
+3ds/src/3ds_sdk_statics.c fills it once, after the slab exists.
+
+--- a/subprojects/NitroSystem-071126.1/libraries/g2d/src/internal/g2di_BGManipulator.c
++++ b/subprojects/NitroSystem-071126.1/libraries/g2d/src/internal/g2di_BGManipulator.c
+@@ -1,9 +1,6 @@
+ #include "g2di_BGManipulator.h"
+
+-REGType16v * const NNSiG2dBGCNTTable[] = {
+-    &reg_G2_BG0CNT, &reg_G2_BG1CNT, &reg_G2_BG2CNT, &reg_G2_BG3CNT,
+-    &reg_G2S_DB_BG0CNT, &reg_G2S_DB_BG1CNT, &reg_G2S_DB_BG2CNT, &reg_G2S_DB_BG3CNT
+-};
++REGType16v * const NNSiG2dBGCNTTable[8] __attribute__((section(".data.g2dbgcnt")));
+
+ void NNSi_G2dBGGetCharSize (int * pWidth, int * pHeight, NNSG2dBGSelect n)
+ {

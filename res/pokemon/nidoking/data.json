@@ -1,0 +1,200 @@
+{
+    "base_stats": {
+        "hp": 81,
+        "attack": 92,
+        "defense": 77,
+        "speed": 85,
+        "special_attack": 85,
+        "special_defense": 75
+    },
+    "types": [ "TYPE_POISON", "TYPE_GROUND" ],
+    "catch_rate": 45,
+    "base_exp_reward": 195,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 3,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_MALE_ONLY",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_POISON_POINT", "ABILITY_RIVALRY" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PURPLE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_PECK" ],
+            [ 1, "MOVE_FOCUS_ENERGY" ],
+            [ 1, "MOVE_DOUBLE_KICK" ],
+            [ 1, "MOVE_POISON_STING" ],
+            [ 23, "MOVE_THRASH" ],
+            [ 43, "MOVE_EARTH_POWER" ],
+            [ 58, "MOVE_MEGAHORN" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM03",
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM30",
+            "TM31",
+            "TM32",
+            "TM34",
+            "TM35",
+            "TM36",
+            "TM37",
+            "TM38",
+            "TM39",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM52",
+            "TM56",
+            "TM58",
+            "TM59",
+            "TM65",
+            "TM68",
+            "TM71",
+            "TM72",
+            "TM76",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM03",
+            "HM04",
+            "HM06",
+            "HM08"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_ICY_WIND",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_SUPERPOWER",
+            "MOVE_ICE_PUNCH",
+            "MOVE_AQUA_TAIL",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_OUTRAGE",
+            "MOVE_EARTH_POWER",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_NIDORAN_M",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 55,
+        "weight_pounds": 136.7,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 269,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 269,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 9,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 9,
+        "en": {
+            "name": "NIDOKING",
+            "category": "Drill Pokémon",
+            "entry_text": [
+                "One swing of its mighty tail can\n",
+                "snap a telephone pole as if it were\n",
+                "a matchstick."
+            ]
+        },
+        "fr": {
+            "name": "NIDOKING",
+            "category": "Pokémon Perceur",
+            "entry_text": [
+                "Un coup de sa puissante queue\n",
+                "peut briser un poteau téléphonique\n",
+                "comme une allumette."
+            ]
+        },
+        "de": {
+            "name": "NIDOKING",
+            "category": "Bohrer",
+            "entry_text": [
+                "Ein Schlag mit seinem gewaltigen\n",
+                "Schweif kann einen Telegrafen-\n",
+                "masten knicken wie ein Streichholz."
+            ]
+        },
+        "it": {
+            "name": "NIDOKING",
+            "category": "Pokémon Trapano",
+            "entry_text": [
+                "Con un solo colpo della potente\n",
+                "coda può abbattere un palo del te-\n",
+                "lefono come se fosse un fiammifero."
+            ]
+        },
+        "es": {
+            "name": "NIDOKING",
+            "category": "Pokémon Taladro",
+            "entry_text": [
+                "Un golpe de su poderosa cola\n",
+                "puede partir un poste de teléfono\n",
+                "como si fuese una cerilla."
+            ]
+        },
+        "jp": {
+            "name": "ニドキング",
+            "category": "ドリルポケモン",
+            "entry_text": [
+                "しっぽの　いちげきは　でんちゅうを\n",
+                "まるで　マッチぼうのように\n",
+                "まっぷたつに　へしおってしまう。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 2054
+    }
+}

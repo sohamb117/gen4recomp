@@ -1,0 +1,156 @@
+{
+  "key": 14338,
+  "messages": [
+    {
+      "id": "CommunicationClub_Text_TakePositionStartBattle",
+      "en_US": [
+        "Please take your designated position\n",
+        "and start the battle."
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_PleaseWaitPressBToCancel",
+      "en_US": [
+        "Please wait a moment...\n",
+        "Press the B Button to cancel."
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_TrainerCaseNormalCard",
+      "en_US": [
+        "Let’s check out {STRVAR_1 3, 0, 0}’s\n",
+        "Trainer Case...\r",
+        "...It’s a Normal Card!"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_TrainerCaseBronzeCard",
+      "en_US": [
+        "Let’s check out {STRVAR_1 3, 0, 0}’s\n",
+        "Trainer Case...\r",
+        "...It’s a Bronze Card!"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_TrainerCaseCopperCard",
+      "en_US": [
+        "Let’s check out {STRVAR_1 3, 0, 0}’s\n",
+        "Trainer Case...\r",
+        "...It’s a Copper Card!"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_TrainerCaseSilverCard",
+      "en_US": [
+        "Let’s check out {STRVAR_1 3, 0, 0}’s\n",
+        "Trainer Case...\r",
+        "...It’s a Silver Card!"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_TrainerCaseGoldCard",
+      "en_US": [
+        "Let’s check out {STRVAR_1 3, 0, 0}’s\n",
+        "Trainer Case...\r",
+        "...It’s a Gold Card!"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_TrainerCaseBlackCard",
+      "en_US": [
+        "Let’s check out {STRVAR_1 3, 0, 0}’s\n",
+        "Trainer Case...\r",
+        "...It’s a Black Card!"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_Dummy8",
+      "garbage": 14
+    },
+    {
+      "id": "CommunicationClub_Text_OKToEndCommuncation",
+      "en_US": [
+        "Communication will be ended.\n",
+        "Is that OK?"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_Yes",
+      "en_US": "YES"
+    },
+    {
+      "id": "CommunicationClub_Text_No",
+      "en_US": "NO"
+    },
+    {
+      "id": "CommunicationClub_Text_EndingCommunication",
+      "en_US": [
+        "Ending communication.\n",
+        "Please wait."
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_ChoosePokemonToEnter",
+      "en_US": [
+        "Please choose the Pokémon to be\n",
+        "entered.\r"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_WaitingForPlayerToChoose",
+      "en_US": "Waiting for {STRVAR_1 3, 0, 0} to choose."
+    },
+    {
+      "id": "CommunicationClub_Text_BattleHasBeenCanceled",
+      "en_US": "The battle has been canceled."
+    },
+    {
+      "id": "CommunicationClub_Text_PleaseComeAgain",
+      "en_US": "Please come again."
+    },
+    {
+      "id": "CommunicationClub_Text_SelectOpponentsPokemon",
+      "en_US": [
+        "Please select one of your opponent’s\n",
+        "Pokémon."
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_IsPokemonYourChoice",
+      "en_US": "Is {STRVAR_1 0, 1, 0} your choice?"
+    },
+    {
+      "id": "CommunicationClub_Text_SelectThreePokemonToParticipate",
+      "en_US": [
+        "Please select the three Pokémon\n",
+        "that will participate.\r"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_ExplainMixBattle",
+      "en_US": [
+        "In a Mix Battle, you and your\n",
+        "opponent first choose one of each\f",
+        "other’s Pokémon.\r",
+        "Then, you exchange the chosen\n",
+        "Pokémon and battle.\r"
+      ]
+    },
+    {
+      "id": "CommunicationClub_Text_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "CommunicationClub_Text_Summary",
+      "en_US": "SUMMARY"
+    },
+    {
+      "id": "CommunicationClub_Text_OK",
+      "en_US": "OK"
+    },
+    {
+      "id": "CommunicationClub_Text_Cancel2",
+      "en_US": "CANCEL"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Veilstone City: the gym, the department store and the Galactic building.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name VEILSTO
+gender GENDER_MALE
+trainer-id 10548
+money 15000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+item ITEM_ULTRA_BALL 10
+party SPECIES_INFERNAPE 36 ITEM_NONE
+party SPECIES_GASTRODON 33 ITEM_NONE
+map MAP_HEADER_VEILSTONE_CITY 0x2CD 0x264 FACE_DOWN

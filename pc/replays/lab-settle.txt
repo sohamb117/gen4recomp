@@ -1,0 +1,85 @@
+# Clears whatever the field is showing when a lab run boots into it.
+#
+# A new game spawns in the bedroom in the middle of the TV scene, with a text
+# box open and waiting for A. A map change started under an open text printer
+# draws into a tilemap the map change has already freed, so the lab has to let
+# the scene finish before it does anything, and the only way to finish a
+# scene waiting for a button is to press the button.
+#
+# It stops well before the lab applies its recipe. Pressing A into the field
+# after the map change is not free: A is what the field's input handler turns
+# into a talk, and a station that walked into a conversation on arrival would
+# not be the station the recipe asked for.
+#
+# A alone, no direction: the player never moves, so this reaches the same
+# state whatever map the recipe eventually asks for.
+120 keys A
+132 keys none
+160 keys A
+172 keys none
+200 keys A
+212 keys none
+240 keys A
+252 keys none
+280 keys A
+292 keys none
+320 keys A
+332 keys none
+360 keys A
+372 keys none
+400 keys A
+412 keys none
+440 keys A
+452 keys none
+480 keys A
+492 keys none
+520 keys A
+532 keys none
+560 keys A
+572 keys none
+600 keys A
+612 keys none
+640 keys A
+652 keys none
+680 keys A
+692 keys none
+720 keys A
+732 keys none
+760 keys A
+772 keys none
+800 keys A
+812 keys none
+840 keys A
+852 keys none
+880 keys A
+892 keys none
+920 keys A
+932 keys none
+960 keys A
+972 keys none
+1000 keys A
+1012 keys none
+1040 keys A
+1052 keys none
+1080 keys A
+1092 keys none
+1120 keys A
+1132 keys none
+1160 keys A
+1172 keys none
+1200 keys A
+1212 keys none
+1240 keys A
+1252 keys none
+1280 keys A
+1292 keys none
+1320 keys A
+1332 keys none
+1360 keys A
+1372 keys none
+1400 keys A
+1412 keys none
+1440 keys A
+1452 keys none
+1480 keys A
+1492 keys none

@@ -1,0 +1,199 @@
+{
+    "base_stats": {
+        "hp": 78,
+        "attack": 84,
+        "defense": 78,
+        "speed": 100,
+        "special_attack": 109,
+        "special_defense": 85
+    },
+    "types": [ "TYPE_FIRE", "TYPE_FLYING" ],
+    "catch_rate": 45,
+    "base_exp_reward": 209,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 3,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_DRAGON" ],
+    "abilities": [ "ABILITY_BLAZE", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_RED",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_DRAGON_CLAW" ],
+            [ 1, "MOVE_SHADOW_CLAW" ],
+            [ 1, "MOVE_AIR_SLASH" ],
+            [ 1, "MOVE_SCRATCH" ],
+            [ 1, "MOVE_GROWL" ],
+            [ 1, "MOVE_EMBER" ],
+            [ 1, "MOVE_SMOKE_SCREEN" ],
+            [ 7, "MOVE_EMBER" ],
+            [ 10, "MOVE_SMOKE_SCREEN" ],
+            [ 17, "MOVE_DRAGON_RAGE" ],
+            [ 21, "MOVE_SCARY_FACE" ],
+            [ 28, "MOVE_FIRE_FANG" ],
+            [ 32, "MOVE_SLASH" ],
+            [ 36, "MOVE_WING_ATTACK" ],
+            [ 42, "MOVE_FLAMETHROWER" ],
+            [ 49, "MOVE_FIRE_SPIN" ],
+            [ 59, "MOVE_HEAT_WAVE" ],
+            [ 66, "MOVE_FLARE_BLITZ" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM02",
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM21",
+            "TM22",
+            "TM23",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM31",
+            "TM32",
+            "TM35",
+            "TM38",
+            "TM39",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM47",
+            "TM50",
+            "TM51",
+            "TM52",
+            "TM56",
+            "TM58",
+            "TM59",
+            "TM61",
+            "TM65",
+            "TM68",
+            "TM75",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM02",
+            "HM04",
+            "HM05",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_AIR_CUTTER",
+            "MOVE_OUTRAGE",
+            "MOVE_TWISTER",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_CHARMANDER",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 67,
+        "weight_pounds": 199.5,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 277,
+        "pokemon_scale_f": 248,
+        "trainer_scale_m": 261,
+        "pokemon_scale_m": 248,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 0,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 0,
+        "en": {
+            "name": "CHARIZARD",
+            "category": "Flame Pokémon",
+            "entry_text": [
+                "It is said that CHARIZARD’s fire\n",
+                "burns hotter if it has\n",
+                "experienced harsh battles."
+            ]
+        },
+        "fr": {
+            "name": "DRACAUFEU",
+            "category": "Pokémon Flamme",
+            "entry_text": [
+                "On raconte que la flamme du\n",
+                "DRACAUFEU s’intensifie après\n",
+                "un combat difficile."
+            ]
+        },
+        "de": {
+            "name": "GLURAK",
+            "category": "Flamme",
+            "entry_text": [
+                "Man sagt, GLURAKs Feuer lodert\n",
+                "stärker, wenn es harte Kämpfe\n",
+                "überstanden hat."
+            ]
+        },
+        "it": {
+            "name": "CHARIZARD",
+            "category": "Pokémon Fiamma",
+            "entry_text": [
+                "Pare che la temperatura della\n",
+                "fiamma di CHARIZARD aumenti\n",
+                "dopo che ha affrontato dure lotte."
+            ]
+        },
+        "es": {
+            "name": "CHARIZARD",
+            "category": "Pokémon Llama",
+            "entry_text": [
+                "Se dice que el fuego de CHARIZARD\n",
+                "arde con más fuerza si ha vivido\n",
+                "duras batallas."
+            ]
+        },
+        "jp": {
+            "name": "リザ－ドン",
+            "category": "かえんポケモン",
+            "entry_text": [
+                "くるしい　たたかいを　けいけんした\n",
+                "リザ－ドンほど　ほのおの　おんどが\n",
+                "たかくなると　いわれている。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 4354
+    }
+}

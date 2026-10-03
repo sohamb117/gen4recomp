@@ -1,0 +1,76 @@
+{
+    "name": "Caitlyn",
+    "class": "TRAINER_CLASS_TUBER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_AZURILL",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": [
+                "MOVE_WATER_GUN",
+                "MOVE_SLAM",
+                "MOVE_CHARM"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MARILL",
+            "form": 0,
+            "level": 29,
+            "item": null,
+            "moves": [
+                "MOVE_BUBBLE_BEAM",
+                "MOVE_ROLLOUT",
+                "MOVE_DEFENSE_CURL",
+                "MOVE_AQUA_RING"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_AZUMARILL",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": [
+                "MOVE_BUBBLE_BEAM",
+                "MOVE_DOUBLE_EDGE",
+                "MOVE_ROLLOUT",
+                "MOVE_AQUA_RING"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I want to become a strong Trainer\n",
+                "like Crasher Wake!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Groan...\n",
+                "You’re too much.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Maybe I’ll do like Wake...\r",
+                "I mean, Crasher Wake, and use\n",
+                "the same kinds of Pokémon.\n"
+            ]
+        }
+    ]
+}

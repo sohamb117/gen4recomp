@@ -1,0 +1,61 @@
+{
+    "name": "Utah",
+    "class": "TRAINER_CLASS_IDOL",
+    "availableSets": [
+        "venusaur_2",
+        "meganium_2",
+        "sceptile_2",
+        "torterra_2",
+        "granbull_2",
+        "breloom_2",
+        "staraptor_2",
+        "vileplume_2",
+        "victreebel_2",
+        "ludicolo_2",
+        "shiftry_2",
+        "exploud_2",
+        "lopunny_2",
+        "ambipom_2",
+        "kangaskhan_2",
+        "tauros_2",
+        "miltank_2",
+        "abomasnow_2",
+        "cradily_2",
+        "ursaring_2",
+        "roserade_2",
+        "porygon2_2",
+        "lickilicky_2",
+        "exeggutor_2",
+        "leafeon_2",
+        "tangrowth_2",
+        "porygon_z_2",
+        "snorlax_2",
+        "blissey_2",
+        "togekiss_2",
+        "slaking_2",
+        "none_1"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Are you another of my fans? I can give\n",
+                "you an autograph if you’d lose?"
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "Here’s your autograph! Cherish it!\n",
+                "Oh, sorry! I don’t do handshakes.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I’m sorry, I was acting GASTLY!\n",
+                "It was very DELCATTY of me!\r"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,92 @@
+{
+    "name": "Cedric",
+    "class": "TRAINER_CLASS_RIVAL",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_STARAVIA",
+            "form": 0,
+            "level": 25,
+            "item": null,
+            "moves": [
+                "MOVE_WING_ATTACK",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_ENDEAVOR",
+                "MOVE_DOUBLE_TEAM"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ROSELIA",
+            "form": 0,
+            "level": 23,
+            "item": null,
+            "moves": [
+                "MOVE_MEGA_DRAIN",
+                "MOVE_POISON_STING",
+                "MOVE_LEECH_SEED",
+                "MOVE_STUN_SPORE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PONYTA",
+            "form": 0,
+            "level": 23,
+            "item": null,
+            "moves": [
+                "MOVE_EMBER",
+                "MOVE_TACKLE",
+                "MOVE_TAIL_WHIP",
+                "MOVE_GROWL"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PRINPLUP",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": [
+                "MOVE_BUBBLE_BEAM",
+                "MOVE_PECK",
+                "MOVE_METAL_CLAW",
+                "MOVE_GROWL"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_FIRST_DAMAGE",
+            "en_US": [
+                "Oh, yeah?\n",
+                "I’ll show you something wicked, too!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_LAST_BATTLER_HALF_HP",
+            "en_US": [
+                "What the?! We’re in trouble?!\n",
+                "But there’s no giving up on me!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "What just happened?!\n",
+                "You’re telling me I lost?!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,200 @@
+{
+    "base_stats": {
+        "hp": 70,
+        "attack": 120,
+        "defense": 65,
+        "speed": 125,
+        "special_attack": 45,
+        "special_defense": 85
+    },
+    "types": [ "TYPE_DARK", "TYPE_ICE" ],
+    "catch_rate": 45,
+    "base_exp_reward": 199,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 1,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_GRIP_CLAW",
+        "rare": "ITEM_QUICK_CLAW"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 35,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_PRESSURE", "ABILITY_PRESSURE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLACK",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_EMBARGO" ],
+            [ 1, "MOVE_REVENGE" ],
+            [ 1, "MOVE_ASSURANCE" ],
+            [ 1, "MOVE_SCRATCH" ],
+            [ 1, "MOVE_LEER" ],
+            [ 1, "MOVE_TAUNT" ],
+            [ 1, "MOVE_QUICK_ATTACK" ],
+            [ 8, "MOVE_QUICK_ATTACK" ],
+            [ 10, "MOVE_SCREECH" ],
+            [ 14, "MOVE_FAINT_ATTACK" ],
+            [ 21, "MOVE_FURY_SWIPES" ],
+            [ 24, "MOVE_NASTY_PLOT" ],
+            [ 28, "MOVE_ICY_WIND" ],
+            [ 35, "MOVE_NIGHT_SLASH" ],
+            [ 38, "MOVE_FLING" ],
+            [ 42, "MOVE_METAL_CLAW" ],
+            [ 49, "MOVE_DARK_PULSE" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM04",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM27",
+            "TM28",
+            "TM30",
+            "TM31",
+            "TM32",
+            "TM40",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM49",
+            "TM52",
+            "TM54",
+            "TM56",
+            "TM58",
+            "TM63",
+            "TM65",
+            "TM66",
+            "TM68",
+            "TM72",
+            "TM75",
+            "TM77",
+            "TM78",
+            "TM79",
+            "TM81",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM85",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM03",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_ICY_WIND",
+            "MOVE_ICE_PUNCH",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_SNEASEL",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 43,
+        "weight_pounds": 75.0,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 313,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 313,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 13,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 13,
+        "en": {
+            "name": "WEAVILE",
+            "category": "Sharp Claw Pokémon",
+            "entry_text": [
+                "Evolution made it even more\n",
+                "devious. It communicates by clawing\n",
+                "signs in boulders."
+            ]
+        },
+        "fr": {
+            "name": "DIMORET",
+            "category": "Pokémon Grifacérée",
+            "entry_text": [
+                "Ils vivent par groupe de 4 ou 5\n",
+                "en région froide et chassent de\n",
+                "façon très organisée."
+            ]
+        },
+        "de": {
+            "name": "SNIBUNNA",
+            "category": "Stichklaue",
+            "entry_text": [
+                "Es lebt in kalten Gebieten in\n",
+                "Gruppen von 4 oder 5 PKMN, die bei\n",
+                "der Jagd großes Geschick zeigen."
+            ]
+        },
+        "it": {
+            "name": "WEAVILE",
+            "category": "Pokémon Lamartigli",
+            "entry_text": [
+                "Questi Pokémon vivono in zone fred-\n",
+                "de in gruppi di quattro o cinque.\n",
+                "Insieme sono cacciatori abilissimi."
+            ]
+        },
+        "es": {
+            "name": "WEAVILE",
+            "category": "Pokémon Garra Filo",
+            "entry_text": [
+                "Viven en zonas frías y forman\n",
+                "grupos de cuatro o cinco para\n",
+                "cazar con gran coordinación."
+            ]
+        },
+        "jp": {
+            "name": "マニュ－ラ",
+            "category": "かぎづめポケモン",
+            "entry_text": [
+                "さむい　ちいきで　くらす　ポケモン。\n",
+                "４、５ひきの　グル－プは　みごとな\n",
+                "れんけいで　えものを　おいつめる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 2063
+    }
+}

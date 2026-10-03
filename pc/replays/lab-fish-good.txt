@@ -1,0 +1,157 @@
+# Boots a save, casts the registered Good Rod at the water in front of the
+# player, and answers the bite.
+#
+# The first lines are lab-continue.txt's, unchanged. Y uses the registered
+# item, which is how a player fishes: a rod is a key item on the Y button.
+#
+# The a press at frame 3817 is the whole script. fishingTask_SetFishWait
+# draws the wait before the bite from the RNG and FishingTask_ReeledInEarly
+# answers an A press that arrives before it, so mashing A cannot catch
+# anything here. The window this run has to hit opens at frame 3787 and is
+# 60 frames wide, measured with PC_TRACE_FISH over this exact script,
+# because the run is deterministic and the frame is therefore a constant. It
+# is not a number to nudge: change anything before it and it has to be
+# measured again.
+#
+# The Good Rod's 50% rate bites on the first cast here, so there is no
+# empty cast to close a message box on.
+#
+# Everything after the catch is lab-battle.txt's A in bursts, which fights out
+# the wild encounter the catch starts and clears the messages either side of
+# it.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3600 keys Y
+3624 keys none
+3817 keys A
+3841 keys none
+3900 keys A
+3924 keys none
+3948 keys A
+3972 keys none
+3996 keys A
+4020 keys none
+4044 keys A
+4068 keys none
+4092 keys A
+4116 keys none
+4140 keys A
+4164 keys none
+4188 keys A
+4212 keys none
+4236 keys A
+4260 keys none
+4284 keys A
+4308 keys none
+4332 keys A
+4356 keys none
+4380 keys A
+4404 keys none
+4428 keys A
+4452 keys none
+4476 keys A
+4500 keys none
+4524 keys A
+4548 keys none
+4572 keys A
+4596 keys none
+4620 keys A
+4644 keys none
+4668 keys A
+4692 keys none
+4716 keys A
+4740 keys none
+4764 keys A
+4788 keys none
+4812 keys A
+4836 keys none
+4860 keys A
+4884 keys none
+4908 keys A
+4932 keys none
+4956 keys A
+4980 keys none
+5004 keys A
+5028 keys none
+5052 keys A
+5076 keys none
+5100 keys A
+5124 keys none
+5148 keys A
+5172 keys none
+5196 keys A
+5220 keys none
+5244 keys A
+5268 keys none
+5292 keys A
+5316 keys none
+5340 keys A
+5364 keys none
+5388 keys A
+5412 keys none
+5436 keys A
+5460 keys none
+5484 keys A
+5508 keys none
+5532 keys A
+5556 keys none
+5580 keys A
+5604 keys none
+5628 keys A
+5652 keys none
+5676 keys A
+5700 keys none
+5724 keys A
+5748 keys none
+5772 keys A
+5796 keys none
+5820 keys A
+5844 keys none
+5868 keys A
+5892 keys none
+5916 keys A
+5940 keys none
+5964 keys A
+5988 keys none
+6012 keys A
+6036 keys none
+6060 keys A
+6084 keys none
+6108 keys A
+6132 keys none
+6156 keys A
+6180 keys none
+6204 keys A
+6228 keys none
+6252 keys A
+6276 keys none
+6300 keys A
+6324 keys none
+6348 keys A
+6372 keys none
+6396 keys A
+6420 keys none
+6444 keys A
+6468 keys none
+6492 keys A
+6516 keys none
+6540 keys A
+6564 keys none
+6588 keys A
+6612 keys none
+6636 keys A
+6660 keys none
+6684 keys A
+6708 keys none
+6732 keys A
+6756 keys none
+6780 keys A
+6804 keys none

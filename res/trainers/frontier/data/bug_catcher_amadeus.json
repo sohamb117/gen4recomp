@@ -1,0 +1,65 @@
+{
+    "name": "Amadeus",
+    "class": "TRAINER_CLASS_BUG_CATCHER",
+    "availableSets": [
+        "bulbasaur_1",
+        "chikorita_1",
+        "treecko_1",
+        "turtwig_1",
+        "kricketot_1",
+        "burmy_1",
+        "shedinja_1",
+        "combee_1",
+        "cherubi_1",
+        "budew_1",
+        "venonat_1",
+        "oddish_1",
+        "exeggcute_1",
+        "skorupi_1",
+        "snover_1",
+        "cacnea_1",
+        "skiploom_1",
+        "lombre_1",
+        "nuzleaf_1",
+        "lileep_1",
+        "anorith_1",
+        "kricketune_1",
+        "butterfree_1",
+        "beedrill_1",
+        "beautifly_1",
+        "dustox_1",
+        "weepinbell_1",
+        "ledian_1",
+        "ariados_1",
+        "yanma_1",
+        "gloom_1",
+        "volbeat_1",
+        "illumise_1",
+        "roselia_1",
+        "parasect_1",
+        "none_1"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m breaking out of my shell!\n",
+                "I’m taking it to the next level!"
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "It’s like I’ve sprouted wings!\n",
+                "Viva to the new me!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Is it not my time yet?\n",
+                "Do I need to stay in my shell longer?\r"
+            ]
+        }
+    ]
+}

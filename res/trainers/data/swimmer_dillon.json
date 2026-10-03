@@ -1,0 +1,57 @@
+{
+    "name": "Dillon",
+    "class": "TRAINER_CLASS_SWIMMER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_REMORAID",
+            "form": 0,
+            "level": 33,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_FLOATZEL",
+            "form": 0,
+            "level": 33,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Well? Does it look like I’m swimming\n",
+                "gracefully?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "I’m finally feeling fatigued...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I may look like I’m swimming\n",
+                "gracefully, but beneath the surface\f",
+                "I’m kicking furiously.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "You were attracted by my graceful\n",
+                "swimming again, weren’t you?\r"
+            ]
+        }
+    ]
+}

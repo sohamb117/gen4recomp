@@ -1,0 +1,73 @@
+{
+    "name": "Dennis",
+    "class": "TRAINER_CLASS_ACE_TRAINER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GLISCOR",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": [
+                "MOVE_THUNDER_FANG",
+                "MOVE_X_SCISSOR",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_AERIAL_ACE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_FLOATZEL",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": [
+                "MOVE_AQUA_JET",
+                "MOVE_SWIFT",
+                "MOVE_CRUNCH",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_DRIFBLIM",
+            "form": 0,
+            "level": 59,
+            "item": null,
+            "moves": [
+                "MOVE_SWALLOW",
+                "MOVE_GUST",
+                "MOVE_STOCKPILE",
+                "MOVE_SHADOW_BALL"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’ll battle against people who’ve\n",
+                "beaten me again and again.\r",
+                "By doing that, we both grow a little\n",
+                "as Trainers.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "You won and I lost, but the both of\n",
+                "us gained something from this.\n"
+            ]
+        }
+    ]
+}

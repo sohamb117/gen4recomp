@@ -1,0 +1,20 @@
+# A Pikachu with four moves it already knows and one TM it can learn, which is
+# the only arrangement that reaches the move-overwrite prompt: a mon with a
+# free slot learns the move inside the app and never asks.
+#
+# The four moves are set explicitly rather than left to the level-up table,
+# because which moves a level-25 Pikachu happens to know is upstream's to
+# change and the prompt only appears when all four slots are full.
+
+name TEACHER
+gender GENDER_FEMALE
+trainer-id 30120
+money 4000
+var VAR_PLAYER_STARTER SPECIES_CHIMCHAR
+party SPECIES_PIKACHU 25 ITEM_NONE
+party-move 0 0 MOVE_THUNDER_SHOCK
+party-move 0 1 MOVE_GROWL
+party-move 0 2 MOVE_QUICK_ATTACK
+party-move 0 3 MOVE_THUNDER_WAVE
+item ITEM_TM24 1
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

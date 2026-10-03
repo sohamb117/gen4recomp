@@ -1,0 +1,40 @@
+; 3ds/src/present.v.pica, the whole vertex program this port's picture needs.
+;
+; One quad, no model transform: 3ds_gpu.c builds vertices in DISPLAY
+; coordinates (x right, y down, 0,0 at the top left of a 400x240 or 320x240
+; panel) and this multiplies them by the screen's own orthographic matrix.
+; That matrix is Mtx_OrthoTilt's, which carries the 90 degree rotation the
+; panels are mounted at; the same rotation 3ds_view.c does by hand for the
+; CPU blit, moved into four numbers the GPU applies for free.
+;
+; Nothing here is per-object state. There is no modelView because there is
+; nothing to move: every quad is already where it belongs on the panel, which
+; is what makes a pixel-exact picture possible at all. The GPU work's later tasks
+; add attributes to this file (a geometry shader for tiles at the background path); the
+; position and texcoord pair below is what they build on.
+
+.fvec projection[4]
+
+.constf myconst(0.0, 1.0, -1.0, 0.5)
+.alias  ones myconst.yyyy
+
+.out outpos position
+.out outtc0 texcoord0
+
+.alias inpos v0
+.alias intex v1
+
+.proc main
+	; The attribute loader hands over three floats; position is a vec4.
+	mov r0.xyz, inpos
+	mov r0.w,   ones
+
+	dp4 outpos.x, projection[0], r0
+	dp4 outpos.y, projection[1], r0
+	dp4 outpos.z, projection[2], r0
+	dp4 outpos.w, projection[3], r0
+
+	mov outtc0, intex
+
+	end
+.end

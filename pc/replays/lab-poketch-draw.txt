@@ -1,0 +1,17 @@
+# After CONTINUE: drag across the app so memo / dot-art / marking-map see a stroke.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 touch 64 80
+3020 touch 80 96
+3040 touch 96 112
+3060 touch 112 112
+3080 touch 128 96
+3100 release

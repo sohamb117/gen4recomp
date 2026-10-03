@@ -1,0 +1,54 @@
+{
+    "name": "Zach",
+    "class": "TRAINER_CLASS_NINJA_BOY",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLBAT",
+            "form": 0,
+            "level": 51,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_CROBAT",
+            "form": 0,
+            "level": 51,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_CROBAT",
+            "form": 0,
+            "level": 51,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "The shinobi live by speed!\n",
+                "I’ll get in my attacks before you!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "What’s with you?\n",
+                "You didn’t give me any openings!\n"
+            ]
+        }
+    ]
+}

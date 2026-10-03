@@ -1,0 +1,71 @@
+{
+    "name": "Dana",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MIGHTYENA",
+            "form": 0,
+            "level": 55,
+            "item": null,
+            "moves": [
+                "MOVE_CRUNCH",
+                "MOVE_SUCKER_PUNCH",
+                "MOVE_IRON_TAIL",
+                "MOVE_SCARY_FACE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_KIRLIA",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": [
+                "MOVE_PSYCHIC",
+                "MOVE_MAGICAL_LEAF",
+                "MOVE_SHOCK_WAVE",
+                "MOVE_SHADOW_BALL"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 21
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "You’re willing to battle?\n",
+                "Let me see what you have?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Your love of Pokémon really shows!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I grew up together with Felix and\n",
+                "my team, right from my childhood.\r",
+                "All our memories, we’ve always shared\n",
+                "them.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Oh, hi, we meet again.\r",
+                "May I see what you’ve done with your\n",
+                "Pokémon?\r"
+            ]
+        }
+    ]
+}

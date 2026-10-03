@@ -1,0 +1,51 @@
+{
+    "name": "Jeffery",
+    "class": "TRAINER_CLASS_BLACK_BELT",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_HERACROSS",
+            "form": 0,
+            "level": 28,
+            "item": null,
+            "moves": [
+                "MOVE_BRICK_BREAK",
+                "MOVE_AERIAL_ACE",
+                "MOVE_LEER"
+            ],
+            "iv_scale": 40,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "We’re the Karate Quads!\r",
+                "I will strike a blow for tears with\n",
+                "my fist! Hiyah, teeeeeeaaaaaaaaars!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I’m so hungry, kid...\n",
+                "I don’t have any strength left...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I lost because I didn’t eat\n",
+                "enough pizza.\r",
+                "...No. Anything I say will sound\n",
+                "like I’m making excuses."
+            ]
+        }
+    ]
+}

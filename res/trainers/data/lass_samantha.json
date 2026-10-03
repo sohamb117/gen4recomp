@@ -1,0 +1,51 @@
+{
+    "name": "Samantha",
+    "class": "TRAINER_CLASS_LASS",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_BUDEW",
+            "form": 0,
+            "level": 7,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "May I please trouble you for a\n",
+                "battle?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh...\n",
+                "You’re so strong...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Maybe I could have won if my Pokémon\n",
+                "was holding a Berry...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Excuse me, may I please trouble you to\n",
+                "have one more battle?\r"
+            ]
+        }
+    ]
+}

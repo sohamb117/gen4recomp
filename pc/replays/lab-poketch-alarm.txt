@@ -1,0 +1,19 @@
+# After CONTINUE: raise the alarm hour once and set it.
+#
+# EDIT (192, 120), HOUR_UP (72, 120), SET (192, 88).
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 touch 192 120
+3040 release
+3120 touch 72 120
+3160 release
+3240 touch 192 88
+3280 release

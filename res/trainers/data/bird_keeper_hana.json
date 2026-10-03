@@ -1,0 +1,50 @@
+{
+    "name": "Hana",
+    "class": "TRAINER_CLASS_BIRD_KEEPER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_NOCTOWL",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_TOGETIC",
+            "form": 0,
+            "level": 47,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I keep battling so I can soar\n",
+                "ever higher into the skies!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "It seems I’ve been grounded...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "The wings of freedom...\r",
+                "I know I’ll find them if I can win\n",
+                "my way through the Pokémon League...\n"
+            ]
+        }
+    ]
+}

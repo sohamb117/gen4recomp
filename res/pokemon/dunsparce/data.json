@@ -1,0 +1,204 @@
+{
+    "base_stats": {
+        "hp": 100,
+        "attack": 70,
+        "defense": 70,
+        "speed": 45,
+        "special_attack": 65,
+        "special_defense": 65
+    },
+    "types": [ "TYPE_NORMAL", "TYPE_NORMAL" ],
+    "catch_rate": 190,
+    "base_exp_reward": 125,
+    "ev_yields": {
+        "hp": 1,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_SERENE_GRACE", "ABILITY_RUN_AWAY" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_RAGE" ],
+            [ 5, "MOVE_DEFENSE_CURL" ],
+            [ 9, "MOVE_YAWN" ],
+            [ 13, "MOVE_GLARE" ],
+            [ 17, "MOVE_ROLLOUT" ],
+            [ 21, "MOVE_SPITE" ],
+            [ 25, "MOVE_PURSUIT" ],
+            [ 29, "MOVE_SCREECH" ],
+            [ 33, "MOVE_ROOST" ],
+            [ 37, "MOVE_TAKE_DOWN" ],
+            [ 41, "MOVE_ANCIENT_POWER" ],
+            [ 45, "MOVE_DIG" ],
+            [ 49, "MOVE_ENDEAVOR" ],
+            [ 53, "MOVE_FLAIL" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM04",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM13",
+            "TM14",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM22",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM30",
+            "TM32",
+            "TM34",
+            "TM35",
+            "TM38",
+            "TM39",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM51",
+            "TM57",
+            "TM58",
+            "TM73",
+            "TM74",
+            "TM76",
+            "TM77",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM85",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ROLLOUT",
+            "MOVE_AQUA_TAIL",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_ENDEAVOR",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_LAST_RESORT"
+        ],
+        "egg_moves": [
+            "MOVE_BIDE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_ROCK_SLIDE",
+            "MOVE_BITE",
+            "MOVE_HEADBUTT",
+            "MOVE_ASTONISH",
+            "MOVE_CURSE",
+            "MOVE_TRUMP_CARD",
+            "MOVE_MAGIC_COAT",
+            "MOVE_SNORE"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_DUNSPARCE",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SLOW"
+    },
+    "pokedex_data": {
+        "height_inches": 59,
+        "weight_pounds": 30.9,
+        "body_shape": "SHAPE_SERPENTINE",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 16,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 16,
+        "en": {
+            "name": "DUNSPARCE",
+            "category": "Land Snake Pokémon",
+            "entry_text": [
+                "It digs into the ground with its\n",
+                "tail and makes a mazelike nest.\n",
+                "It can fly just a little."
+            ]
+        },
+        "fr": {
+            "name": "INSOLOURDO",
+            "category": "Pokémon Serpent",
+            "entry_text": [
+                "Son nid est un véritable labyrinthe\n",
+                "qu’il creuse à l’aide de sa queue.\n",
+                "Il sait à peine voler."
+            ]
+        },
+        "de": {
+            "name": "DUMMISEL",
+            "category": "Schlange",
+            "entry_text": [
+                "Es gräbt sich mit seinem Schweif in\n",
+                "die Erde und baut ein labyrinth-\n",
+                "artiges Nest. Es kann kaum fliegen."
+            ]
+        },
+        "it": {
+            "name": "DUNSPARCE",
+            "category": "Pokémon Terraserpe",
+            "entry_text": [
+                "Scava nel terreno con la coda\n",
+                "creando una tana simile a un labi-\n",
+                "rinto. Sa spiccare brevissimi voli."
+            ]
+        },
+        "es": {
+            "name": "DUNSPARCE",
+            "category": "Pokémon Serptierra",
+            "entry_text": [
+                "Cava el suelo con su cola para\n",
+                "construir su madriguera. Puede\n",
+                "volar distancias cortas."
+            ]
+        },
+        "jp": {
+            "name": "ノコッチ",
+            "category": "つちへびポケモン",
+            "entry_text": [
+                "しっぽで　じめんを　ほって\n",
+                "めいろのような　すあなを　つくる。\n",
+                "はねで　すこしだけ　とべる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 1285
+    }
+}

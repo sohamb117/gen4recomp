@@ -1,0 +1,156 @@
+{
+  "key": 61075,
+  "messages": [
+    {
+      "id": "Route228NorthHouse_Text_RewardWithUltimateMove",
+      "en_US": [
+        "Your quest for power has brought\n",
+        "you here...\r",
+        "...Very well.\r",
+        "Let me reward your passion with some\n",
+        "absolutely astounding moves.\r",
+        "They’re the ultimate moves!\n",
+        "Shall I teach them to your Pokémon?"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_TeachUltimateMove",
+      "en_US": [
+        "The ultimate moves!\n",
+        "Shall I teach them to your Pokémon?"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_TeachWhichPokemon",
+      "en_US": [
+        "To which Pokémon should I teach\n",
+        "a move?\r"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_ThatIsFine",
+      "en_US": [
+        "Hmm... Well, that is fine, as well.\n",
+        "Visit if you have a change of heart."
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_TeachWhichPokemon2",
+      "en_US": [
+        "To which Pokémon should I teach\n",
+        "a move?"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_CantLearnMove",
+      "en_US": [
+        "That Pokémon can’t learn a move!\n",
+        "Read the poster! Keh!"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_CantTeachEgg",
+      "en_US": [
+        "Teach a move to an Egg?\n",
+        "Impossible even for me! Keh!"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_NotBondedEnough",
+      "en_US": [
+        "You’ve not bonded strongly enough\n",
+        "with your Pokémon! Keh!"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_AlreadyKnowsMove",
+      "en_US": [
+        "That Pokémon already knows the move\n",
+        "I’ve offered to teach! Keh!"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_TeachBlastBurn",
+      "en_US": [
+        "I should teach Blast Burn to\n",
+        "your {STRVAR_1 0, 0, 0}?"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_TeachHydroCannon",
+      "en_US": [
+        "I should teach Hydro Cannon to\n",
+        "your {STRVAR_1 0, 0, 0}?"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_TeachFrenzyPlant",
+      "en_US": [
+        "I should teach Frenzy Plant to\n",
+        "your {STRVAR_1 0, 0, 0}?"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_PokemonLearnedMove",
+      "en_US": [
+        "{STRVAR_1 0, 0, 0} learned\n",
+        "{STRVAR_1 6, 1, 0}!"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_DeleteOlderMove",
+      "en_US": [
+        "{STRVAR_1 0, 0, 0} is trying to learn\n",
+        "{STRVAR_1 6, 1, 0}.\r",
+        "But {STRVAR_1 0, 0, 0} can’t learn more\n",
+        "than four moves.\r",
+        "Delete an older move to make\n",
+        "room for {STRVAR_1 6, 1, 0}?"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_OKToForgetMove",
+      "en_US": [
+        "Is it OK to forget the\n",
+        "move {STRVAR_1 6, 1, 0}?"
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_ForgotMoveLearnedMove",
+      "en_US": [
+        "1, 2, and... ... ... Poof!\r",
+        "{STRVAR_1 0, 0, 0} forgot how to\n",
+        "use {STRVAR_1 6, 1, 0}.\r",
+        "And...\n",
+        "{STRVAR_1 0, 0, 0} learned {STRVAR_1 6, 2, 0}."
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_StopTryingToTeachMove",
+      "en_US": "Stop trying to teach {STRVAR_1 6, 1, 0}?"
+    },
+    {
+      "id": "Route228NorthHouse_Text_PokemonDidntLearnMove",
+      "en_US": [
+        "{STRVAR_1 0, 0, 0} did not learn\n",
+        "the move {STRVAR_1 6, 1, 0}."
+      ]
+    },
+    {
+      "id": "Route228NorthHouse_Text_PokemonListedLearnUltimateMoves",
+      "en_US": [
+        "To the Pokémon listed here,\n",
+        "the ultimate moves may be taught!\r",
+        "The blazing fire Pokémon\n",
+        "{CURSOR_X 7}CHARIZARD TYPHLOSION\f",
+        "{CURSOR_X 7}BLAZIKEN INFERNAPE\r",
+        "The restless water Pokémon\n",
+        "{CURSOR_X 7}BLASTOISE FERALIGATR\f",
+        "{CURSOR_X 7}SWAMPERT EMPOLEON\r",
+        "The quiet grass Pokémon\n",
+        "{CURSOR_X 7}VENUSAUR MEGANIUM\f",
+        "{CURSOR_X 7}SCEPTILE TORTERRA"
+      ]
+    }
+  ]
+}

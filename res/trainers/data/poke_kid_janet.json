@@ -1,0 +1,50 @@
+{
+    "name": "Janet",
+    "class": "TRAINER_CLASS_POKE_KID",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_PIKACHU",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PIKACHU",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Bika bikabika!\n",
+                "Pigachu!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Pikachu...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Pika...\r",
+                "I’ll need a lot more practice to\n",
+                "become a real PIKACHU...\n"
+            ]
+        }
+    ]
+}

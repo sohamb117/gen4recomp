@@ -1,0 +1,15 @@
+# A card worth drawing: four badges, a name, an ID and money are all on the
+# front of it, so the pinned picture changes if any of them stops being read
+# out of the save correctly.
+
+name CARDIE
+gender GENDER_MALE
+trainer-id 41234
+money 87654
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+var VAR_PLAYER_STARTER SPECIES_PIPLUP
+party SPECIES_PRINPLUP 20 ITEM_NONE
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

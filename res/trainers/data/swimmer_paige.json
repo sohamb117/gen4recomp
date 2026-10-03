@@ -1,0 +1,68 @@
+{
+    "name": "Paige",
+    "class": "TRAINER_CLASS_SWIMMER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MARILL",
+            "form": 0,
+            "level": 41,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_WINGULL",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLDUCK",
+            "form": 0,
+            "level": 43,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Deep breathing before battle!\n",
+                "Breathe in...and out!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Breathe in...and out.\n",
+                "Breathe in...and out!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Deep breathing after battle, too!\n",
+                "Breathe in...and out!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Deep breathing always!\n",
+                "Breathe in...and out!\r"
+            ]
+        }
+    ]
+}

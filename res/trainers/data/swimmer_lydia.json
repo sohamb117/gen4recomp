@@ -1,0 +1,72 @@
+{
+    "name": "Lydia",
+    "class": "TRAINER_CLASS_SWIMMER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MARILL",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SPHEAL",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_WAILMER",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I want to be with my water Pokémon!\n",
+                "That’s why I swim!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Glub glub...\n",
+                "I’m sinking...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I thought that everyone would be all\n",
+                "dedicated to training out here.\r",
+                "But most people are really laid back.\n",
+                "It’s not like what I imagined.\r",
+                "I guess being with Pokémon, people get\n",
+                "all mellowed out.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I want to be with water Pokémon!\n",
+                "That’s why I’m going to get tougher!\r"
+            ]
+        }
+    ]
+}

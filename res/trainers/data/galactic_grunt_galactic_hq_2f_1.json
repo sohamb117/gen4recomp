@@ -1,0 +1,61 @@
+{
+    "name": "Grunt",
+    "class": "TRAINER_CLASS_GALACTIC_GRUNT_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GLAMEOW",
+            "form": 0,
+            "level": 37,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MURKROW",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_CROAGUNK",
+            "form": 0,
+            "level": 39,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m, like, this close to getting my\n",
+                "promotion to Commander.\r",
+                "I’ll impress our great boss by making\n",
+                "you my newest trophy!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "...I wish this never happened."
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Losing sets me back to square one...\r",
+                "I’ll probably get busted down to the\n",
+                "gruntiest of the grunts... Humph!"
+            ]
+        }
+    ]
+}

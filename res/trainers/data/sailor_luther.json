@@ -1,0 +1,70 @@
+{
+    "name": "Luther",
+    "class": "TRAINER_CLASS_SAILOR",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_WINGULL",
+            "form": 0,
+            "level": 41,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GASTRODON",
+            "form": 0,
+            "level": 43,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "My dream’s a big one!\r",
+                "I want to battle every kind of Pokémon\n",
+                "from around the world!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I lost, but I am one step closer to\n",
+                "realizing my dream!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Listen, you! Whatever happens, never\n",
+                "lose sight of your dream!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "All right, you!\r",
+                "Help me realize my dream of battling\n",
+                "every kind of Pokémon there is!\r"
+            ]
+        }
+    ]
+}

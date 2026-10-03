@@ -1,0 +1,64 @@
+{
+    "name": "Felicia",
+    "class": "TRAINER_CLASS_RANGER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SKIPLOOM",
+            "form": 0,
+            "level": 59,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LOPUNNY",
+            "form": 0,
+            "level": 59,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "We’ve grown strong together in\n",
+                "nature and in the concrete jungle.\r",
+                "We make everywhere we go our\n",
+                "playground!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "You’re really tough, aren’t you?!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Look around you at this wildly\n",
+                "contorted terrain.\r",
+                "It’s no wonder that Pokémon would\n",
+                "grow tough in a place like this.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "We’re tough, but we know you’re just\n",
+                "as tough!\r",
+                "Let’s battle it out to see which one of\n",
+                "us is tougher!\r"
+            ]
+        }
+    ]
+}
