@@ -26,7 +26,12 @@
 
 include_guard(GLOBAL)
 
-set(_NP_GAMES diamond pearl platinum)
+# The functions are called from other directories (the shell's top level),
+# where directory-scope variables of core/ are not visible, so anything they
+# need is defined inside them or cached (NP_CORE_DIR, NP_WASM2C).
+macro(_np_games OUT)
+  set(${OUT} diamond pearl platinum)
+endmacro()
 
 function(np_guest_link_flags OUT)
   file(STRINGS "${NP_CORE_DIR}/include/np_guest_abi.h" _lines
@@ -54,8 +59,9 @@ endfunction()
 
 function(np_add_guest_module MODULE WASM_FILE)
   cmake_parse_arguments(ARG "" "TARGET;NUM_OUTPUTS;POSTPROCESS" "DEPENDS" ${ARGN})
-  if(NOT MODULE IN_LIST _NP_GAMES)
-    message(FATAL_ERROR "np_add_guest_module: module must be one of ${_NP_GAMES}, got '${MODULE}'")
+  _np_games(games)
+  if(NOT MODULE IN_LIST games)
+    message(FATAL_ERROR "np_add_guest_module: module must be one of ${games}, got '${MODULE}'")
   endif()
   if(NOT NP_WASM2C)
     message(FATAL_ERROR "np_add_guest_module: wasm2c not found; set NP_WABT_ROOT or NP_WASM2C")
@@ -130,7 +136,8 @@ endfunction()
 
 function(np_link_guest_modules EXE)
   set(decls "")
-  foreach(game IN LISTS _NP_GAMES)
+  _np_games(games)
+  foreach(game IN LISTS games)
     set(entry_${game} "NULL")
   endforeach()
   foreach(t IN LISTS ARGN)
