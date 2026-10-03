@@ -1,0 +1,80 @@
+
+Static arm7
+{
+	Address 0x02380000
+	StackSize 1024 1024
+}
+
+Autoload MAIN
+{
+	Address 0x027E0000
+	Object itcm.o
+}
+
+Autoload WRAM
+{
+	Address 0x037F8000
+	Object main.o
+	Object OS_irqHandler.o
+	Object OS_irqTable.o
+	Object OS_interrupt.o
+	Object OS_spinLock.o
+	Object OS_thread.o
+	Object OS_context.o
+	Object OS_message.o
+	Object OS_mutex.o
+	Object OS_init.o
+	Object OS_arena.o
+	Object OS_alloc.o
+	Object OS_timer.o
+	Object OS_tick.o
+	Object OS_alarm.o
+	Object OS_valarm.o
+	Object OS_system.o
+	Object OS_reset.o
+	Object OS_terminate_proc.o
+	Object MI_dma.o
+	Object MI_memory.o
+	Object MI_swap.o
+	Object PXI_init.o
+	Object PXI_fifo.o
+	Object EXI_genPort.o
+	Object PAD_xyButton.o
+	Object SND_global.o
+	Object SND_channel.o
+	Object SND_util.o
+	Object SND_main.o
+	Object SND_capture.o
+	Object SND_exChannel.o
+	Object SND_seq.o
+	Object SND_bank.o
+	Object SND_work.o
+	Object SND_alarm.o
+	Object SND_command.o
+	Object FS_file.o
+	Object CARD_common.o
+	Object CARD_spi.o
+	Object CARD_rom.o
+	Object CARD_thread.o
+	Object CARD_fifo.o
+	Object CARD_pullOut.o
+	Object libsyscall.o
+	Object SPI_main.o
+	Object SPI_tp.o
+	Object SPI_pm.o
+	Object SPI_mic.o
+	Object CTRDG.o
+	Object CTRDG_sp.o
+	Object NVRAM.o
+	Object RTC_external.o
+	Object RTC_internal.o
+	Object wram2.o
+	Object wram_bss.o
+}
+
+Autoload EXT
+{
+	Address 0x06000000
+	Object WM_sp.o
+	Object ext.o
+}

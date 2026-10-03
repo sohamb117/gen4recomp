@@ -1,0 +1,45 @@
+#ifndef POKEDIAMOND_GAME_INIT_H
+#define POKEDIAMOND_GAME_INIT_H
+
+#include "main.h"
+
+typedef volatile struct
+{
+    u8 sys_and_irq_stack[0x3F80];
+    u8 svc_stack[0x40];
+    u8 reserved[0x38];
+    u32 intr_check;
+    void *intr_vector;
+} OS_DTCM;
+
+#define DTCM (*(OS_DTCM *)HW_DTCM)
+
+void sub_02015EA0(void);
+void sub_02015ED4(void);
+void sub_02015EF4(void);
+void Main_SetVBlankIntrCB(void (*a0)(void *), void *a1);
+void sub_02015F1C(void);
+BOOL Main_SetHBlankIntrCB(void (*a0)(void *), void *a1);
+void Main_CallHBlankCallback(void);
+void Main_ToggleHBlankInterrupt(BOOL enableFlag);
+void sub_02015FC8(void);
+void InitSystemForTheGame(void);
+void InitGraphicMemory(void);
+void *AllocAndReadFile(enum HeapID heapID, const char *path);
+void OpenAndReadWholeFile(const char *path, void **ptr);
+u32 GetFilenameHash(const s8 *str);
+int GetFileCacheId(u32 hash);
+int AddFileToCache(void *contents, u32 hash);
+void ClearFileCache(void);
+void *OpenFileCached(const s8 *str, enum HeapID heapID);
+void InitKeypadAndTouchpad(void);
+void sub_02016438(u8 a0);
+void sub_02016444(u8 a0);
+void sub_02016454(u8 a0);
+void ReadKeypadAndTocuhpad(void);
+void ApplyButtonModeToInput(void);
+void SetKeyRepeatTimers(int continueDelay, int startDelay);
+void SetSoftResetDisableMask(u8 a0);
+void ClearSoftResetDisableMask(u8 a0);
+
+#endif // POKEDIAMOND_GAME_INIT_H
