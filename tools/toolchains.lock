@@ -1,0 +1,5 @@
+# sha256 of the archives tools/fetch_toolchains.sh downloads.
+# wabt: matches the .sha256 published with the release.
+# wasi-sdk: matches the asset digest GitHub reports for the release.
+NP_SHA_WASI_ARM64_MACOS=9c59398106b417f8f14913380fdf0097a8cc0ff4af9eb3ce0065a859e88d49e9
+NP_SHA_WABT_MACOS_ARM64=3f654779b436c628db3ca4323c51538815f5fbc887a6d5f3bb1c18d36281e240
