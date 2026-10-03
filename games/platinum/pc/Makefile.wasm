@@ -83,8 +83,9 @@ WGEN    := $(BUILD)/geninclude-wasm
 # int, int<->pointer and incompatible-pointer conversions hard errors, which
 # skipped ~50 game TUs on the first sweep. They are downgraded to the gcc
 # behaviour, not ignored: an implicitly declared function whose real wasm
-# signature differs is caught at the link, where wasm-ld reports every
-# "function signature mismatch" (see LINK_CHECK below).
+# signature differs is caught after the link: wasm-ld turns such a call into
+# a trapping thunk, and pc/wasm/check_module.py (POST_LINK) fails the build
+# on any thunk that is not a generated trap stub.
 ABI := -fno-short-enums -fsigned-char \
        -Wno-error=implicit-function-declaration -Wno-error=implicit-int \
        -Wno-error=int-conversion -Wno-error=incompatible-pointer-types \

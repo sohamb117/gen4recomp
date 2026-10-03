@@ -40,6 +40,17 @@ underneath is a DS, so the port supplies one:
 | `diff/` | the differential runner against melonDS |
 | `mods/` | mods and content packages; see `mods/README.md` |
 | `arm7snd/` | the ARM7 sound driver, compiled as host code |
+| `wasm/` | the wasm32 target's own sources, shadows, patches and checks |
+
+## The wasm32 target
+
+`make -f pc/Makefile.wasm -j10` builds `build/pc-wasm/pokeplatinum.wasm`, a
+wasm32-wasip1 module for the nativeplat runtime (contract:
+`core/include/np_guest_abi.h`). Inside linear memory a guest address is the DS
+address, so the identity map survives on hosts that cannot place memory at
+0x02000000. `make -f pc/Makefile.wasm wasm2c-check` converts the module with
+wasm2c and compiles the C natively. The header of `Makefile.wasm` lists what
+the object format changes and how each is answered.
 
 ## Inputs
 
