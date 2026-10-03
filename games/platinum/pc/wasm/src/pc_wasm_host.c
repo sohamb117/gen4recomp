@@ -10,6 +10,11 @@ np_frame_desc pc_wasm_frame = {
     .version = NP_GUEST_ABI_VERSION,
 };
 
+/* What NitroSDK's mb_fileinfo.c takes the address of in place of
+ * `_start_AutoloadDoneCallback` on wasm, where a symbol cannot be data in
+ * one object and a function in another; see pc/Makefile.wasm. */
+unsigned int pc_wasm_mb_autoload_anchor[1];
+
 void pc_wasm_fatal(const char *msg)
 {
     size_t n = strlen(msg);
@@ -26,4 +31,14 @@ void pc_wasm_fatalf(const char *fmt, ...)
     vsnprintf(buf, sizeof buf, fmt, ap);
     va_end(ap);
     pc_wasm_fatal(buf);
+}
+
+/* The port's fatal paths (gx_fatal in pc/hw, pc_mi, pc_os_lite, ...) print
+ * their reason to stderr and call abort(). wasi-libc's abort is a bare
+ * `unreachable`, which reaches the runtime as an anonymous trap; this one
+ * (linked ahead of libc, so libc's abort.o is never pulled) hands the
+ * runtime a message instead. The reason itself is already on stderr. */
+void abort(void)
+{
+    pc_wasm_fatal("abort() called; the reason is on stderr above");
 }

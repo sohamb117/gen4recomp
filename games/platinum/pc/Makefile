@@ -610,6 +610,11 @@ SRCDIRS = -I$(dir $<) -I$(dir $<).. -I$(dir $<)../include -I$(dir $<)../../inclu
 # are meson wraps that a re-download would reset. A patch that stops applying
 # fails loudly into the skip count with the reason in .o.err.
 PATCHES := $(ROOT)/pc/patches
+# A host's own patch tree, stacked on the base patch with the same layout,
+# for a change only one object format needs (pc/Makefile.wasm: a value the
+# ELF link supplies as an absolute symbol has to be a constant there). Empty
+# for every host this file builds by itself.
+HOST_PATCHES ?=
 
 # pc/mods: the same mechanism, opt-in, stacked after the base patch,
 # pc/mods/README.md is the contract. Each enabled mod may carry
@@ -682,6 +687,16 @@ define COMPILE_RULE
 	     src=$@.patched.c; \
 	   else \
 	     echo "  SKIP    $(patsubst $(ROOT)/%,%,$<) (pc/patches diff no longer applies)"; \
+	     : > $@.skipped; rm -f $@; exit 0; \
+	   fi; \
+	 fi; \
+	 hfile="$(HOST_PATCHES)/$(patsubst $(ROOT)/%,%,$<).patch"; \
+	 if [ -n "$(HOST_PATCHES)" ] && [ -f "$$hfile" ]; then \
+	   cp "$$src" $@.hpatched.c; \
+	   if patch --silent --forward $@.hpatched.c "$$hfile" >/dev/null 2>$@.err; then \
+	     src=$@.hpatched.c; \
+	   else \
+	     echo "  SKIP    $(patsubst $(ROOT)/%,%,$<) (host patch no longer applies)"; \
 	     : > $@.skipped; rm -f $@; exit 0; \
 	   fi; \
 	 fi; \

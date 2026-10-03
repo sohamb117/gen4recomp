@@ -75,10 +75,21 @@ BUILD   := $(WROOT)/build/pc-wasm
 TARGET   = $(BUILD)/pokeplatinum.wasm
 GEN     := $(BUILD)/geninclude
 WGEN    := $(BUILD)/geninclude-wasm
-
 # wasm32 is ILP32 with signed char and int-sized enums by default; spelled
 # out because the guest ABI rests on them, as pc/Makefile.arm does.
-ABI := -fno-short-enums -fsigned-char
+#
+# The -Wno-error= set: clang (unlike the gcc 13 the ELF build uses, where
+# these are warnings silenced by -w) makes implicit declarations, implicit
+# int, int<->pointer and incompatible-pointer conversions hard errors, which
+# skipped ~50 game TUs on the first sweep. They are downgraded to the gcc
+# behaviour, not ignored: an implicitly declared function whose real wasm
+# signature differs is caught at the link, where wasm-ld reports every
+# "function signature mismatch" (see LINK_CHECK below).
+ABI := -fno-short-enums -fsigned-char \
+       -Wno-error=implicit-function-declaration -Wno-error=implicit-int \
+       -Wno-error=int-conversion -Wno-error=incompatible-pointer-types \
+       -Wno-error=incompatible-function-pointer-types \
+       -Wno-error=return-type -Wno-error=return-mismatch
 
 # The game at -O2: the override-inlining hazard that holds the ELF build at
 # -O1 is closed here by the #pragma weak pass (see above). pc/hw at -O3;
@@ -93,23 +104,30 @@ DEBUGFLAGS  :=
 EXTRA_BASEFLAGS := -I$(WROOT)/pc/wasm/include -I$(WGEN) -I$(NPROOT)/core/include \
                    -include $(WROOT)/pc/wasm/include/pc_wasm_prelude.h
 
-# Host files wasm does not compile. Replaced by pc/wasm/src: none of these
-# can work over linear memory without the host OS they are written against.
-# Dropped: the GL renderer (no GL in a wasm module; the soft renderer is the
-# one that runs), the Windows halves.
-PC_SRCS_EXCLUDE := pc_gpu3d_gl.c pc_gpu3d_gl_tex.c \
-                   pc_win_fiber.c pc_win_ipc.c pc_win_clock.c
+# Host files wasm does not compile: the Windows halves, and pc_os_context.c
+# (ucontext/mmap), which pc/wasm/src/pc_os_context_wasm.c replaces with
+# np_host fibers. The GL renderer is NOT excluded: off Linux pc_gpu3d_gl.c
+# compiles to its refusing stubs (pc_gpu3d_gl_select answers "no GL") and
+# pc_gpu3d_gl_tex.c is plain C the soft renderer's texture cache shares, so
+# the soft renderer is what runs.
+PC_SRCS_EXCLUDE := pc_win_fiber.c pc_win_ipc.c pc_win_clock.c pc_os_context.c
 
 ABSOLUTE_SYMS := 0
 
-# The link. Addresses: everything the C runtime owns (data, heap, the main
-# shadow stack) lives at or above NP_GUEST_C_BASE (0x0B000000); below it is
-# the DS map. --no-stack-first keeps the main shadow stack after the data
-# rather than at address 0, inside the DS map. Memory is fixed at 256 MiB.
+# The link: core/cmake/NpGuestModule.cmake np_guest_link_flags(), the same
+# flags derived the same way from core/include/np_guest_abi.h. Everything
+# the C runtime owns (data, heap, the main shadow stack) lives at or above
+# NP_GUEST_C_BASE; below it is the DS map. --no-stack-first because
+# wasi-sdk 34's wasm-ld otherwise puts the shadow stack at address 0, inside
+# the DS map, whatever --global-base says. Memory is fixed. No --strip-all:
+# the runtime finds __stack_pointer by its name.
+np_abi_const = $(shell printf '%d' $$(sed -n 's/^\#define $(1) \(0x[0-9A-Fa-f]*\)u.*/\1/p' $(NPROOT)/core/include/np_guest_abi.h))
+NP_C_BASE := $(call np_abi_const,NP_GUEST_C_BASE)
+NP_MEMORY := $(call np_abi_const,NP_GUEST_MEMORY_BYTES)
 WASM_MAP := $(BUILD)/pokeplatinum.map
-LDFLAGS  := -Wl,--global-base=184549376 -Wl,--initial-memory=268435456 \
-            -Wl,--max-memory=268435456 -Wl,-z,stack-size=1048576 \
-            -Wl,--no-stack-first -Wl,-Map=$(WASM_MAP)
+LDFLAGS  := -Wl,--global-base=$(NP_C_BASE) -Wl,--no-stack-first \
+            -Wl,--initial-memory=$(NP_MEMORY) -Wl,--max-memory=$(NP_MEMORY) \
+            -Wl,-z,stack-size=1048576 -Wl,-Map=$(WASM_MAP)
 LDLIBS   := -lm
 
 # Overlay statics: no .symtab to read at runtime, so the table is generated
@@ -117,7 +135,17 @@ LDLIBS   := -lm
 # addresses are written into the finished module's data afterwards, from the
 # link map. Only bytes change, so nothing moves and there is no second link.
 OVSTATICS_FLAGS := --addr-table
-POST_LINK = $(PYTHON) $(WROOT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(OVERLAY_STATICS_C)
+#
+# Then check_module.py reads the finished module: imports exactly np_host
+# (names from the ABI header) + WASI, the three exports, the layout above
+# NP_GUEST_C_BASE, and no signature-mismatch thunk except the trap stubs'.
+NP_ABI_H := $(NPROOT)/core/include/np_guest_abi.h
+POST_LINK = $(PYTHON) $(WROOT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(OVERLAY_STATICS_C) && \
+            $(PYTHON) $(WROOT)/pc/wasm/check_module.py $(TARGET) $(NP_ABI_H) $(WROOT)/pc/stubs.list --map $(WASM_MAP)
+
+# wasm-only patches (COMPILE_RULE's HOST_PATCHES hook), same layout as
+# pc/patches and stacked on it.
+HOST_PATCHES := $(WROOT)/pc/wasm/patches
 
 # ------------------------------------------------------------- SDK weaken
 #
@@ -127,12 +155,68 @@ POST_LINK = $(PYTHON) $(WROOT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $
 # unstatic), makes each one weak at the source level. A pass-1 skip leaves an
 # empty header and pass 2 skips the same way.
 define SDK_WEAKEN
-@if test -f $@; then $(NM) --defined-only -g $@ | awk 'NF == 3 { print "#pragma weak " $$3 }' > $@.weak.h; \
+@if test -f $@; then $(NM) --defined-only -g $@ 2>/dev/null | awk 'NF == 3 { print "#pragma weak " $$3 }' > $@.weak.h; \
  else : > $@.weak.h; fi
 $(call COMPILE_RULE,$(SDK_CFLAGS) $(EXTRA_CFLAGS) -include $@.weak.h)
 endef
 
 include $(WROOT)/pc/Makefile
+
+# A host patch is a prerequisite of its object, as pc/patches' are.
+HOST_PATCH_FILES := $(shell find $(HOST_PATCHES) -name '*.c.patch' 2>/dev/null)
+$(foreach p,$(HOST_PATCH_FILES),\
+  $(eval $(OBJ)/game/$(patsubst $(HOST_PATCHES)/%.c.patch,%.o,$(p)): $(p)))
+
+# ------------------------------------------------- implicit declarations
+#
+# TUs that call a void function with no prototype in scope. The calls link
+# on ELF; on wasm they become trapping signature-mismatch thunks (see
+# pc/wasm/protos/game.h and check_module.py). The prototypes are
+# force-included into exactly these objects.
+# (Spelled per object: GAME_CFLAGS is simply-expanded, so a target-specific
+# += expands its text at parse time, before any per-target selector exists.)
+WGP := $(OBJ)/game/src
+WPROTO := -include $(WROOT)/pc/wasm/protos/game.h
+WPROTO_GAME := $(WGP)/applications/pokedex/pokedex_panel.o $(WGP)/password_word_bank.o \
+                $(WGP)/contest.o $(WGP)/underground/text_printer.o $(WGP)/battle/battle_display.o
+$(WGP)/applications/pokedex/pokedex_panel.o: GAME_CFLAGS += -DPC_WASM_PROTO_HEAP $(WPROTO)
+$(WGP)/password_word_bank.o:                 GAME_CFLAGS += -DPC_WASM_PROTO_HEAP $(WPROTO)
+$(WGP)/contest.o:                            GAME_CFLAGS += -DPC_WASM_PROTO_CONTEST $(WPROTO)
+$(WGP)/underground/text_printer.o:           GAME_CFLAGS += -DPC_WASM_PROTO_UNDERGROUND $(WPROTO)
+$(WGP)/battle/battle_display.o:              GAME_CFLAGS += -DPC_WASM_PROTO_BATTLE $(WPROTO)
+$(WPROTO_GAME): $(WROOT)/pc/wasm/protos/game.h
+
+# GameSpy's assert macro (gsAssert.h) calls __msl_assertion_failed, which
+# nothing declares; 33 gs TUs reach it. All of libraries/gs gets the
+# prototype; sb_queryengine.c also needs one of its own.
+GS := $(OBJ)/game/subprojects/NitroDWC-2.2.30008/libraries/gs
+$(GS)/%.o: EXTRA_CFLAGS = -include $(WROOT)/pc/wasm/protos/gamespy.h
+$(filter $(GS)/%,$(SDK_OBJS)): $(WROOT)/pc/wasm/protos/gamespy.h
+$(GS)/serverbrowsing/sb_queryengine.o: \
+    EXTRA_CFLAGS = -DPC_WASM_PROTO_SBSERVER -include $(WROOT)/pc/wasm/protos/gamespy.h
+
+# ------------------------------------------------------- VRAMCNT writers
+#
+# pc/Makefile compiles VRAMCNT_SRCS with -finstrument-functions so the bank
+# remap runs at every function exit there. clang's instrumentation passes a
+# return address the wasm backend cannot produce outside Emscripten, so these
+# compile through pc/wasm/cc_instrument.sh (IR, returnaddress -> null,
+# object; armrec_rt.c's hook ignores the argument). The wrapper is the
+# compiler only for these five objects, and only when -finstrument-functions
+# and -c are both on the line.
+$(patsubst %.c,$(OBJ)/game/%.o,$(VRAMCNT_SRCS)): \
+    CC := sh $(WROOT)/pc/wasm/cc_instrument.sh $(WASI_SDK)/bin/clang --target=wasm32-wasip1
+
+# NitroSDK's mb_fileinfo.c (DS Download Play host, unreachable in this
+# port) takes the address of `_start_AutoloadDoneCallback` through a local
+# `extern u32 _start_AutoloadDoneCallback[1];`, while pc/src/pc_boot_glue.c
+# defines that name as a function. ELF does not type symbols; wasm does, and
+# refuses the link ("symbol type mismatch"). That one TU's reference is
+# pointed at a data anchor instead (pc/wasm/src/pc_wasm_host.c). The
+# arithmetic it feeds was already meaningless on the ELF build, which
+# subtracted a DS address from a host function address.
+$(OBJ)/game/subprojects/NitroSDK-4.2.30001/libraries/mb/src/mb_fileinfo.o: \
+    EXTRA_CFLAGS := -D_start_AutoloadDoneCallback=pc_wasm_mb_autoload_anchor
 
 # -------------------------------------------------------------- arm7snd
 SND7_HDR := $(BUILD)/arm7snd-raw/ns.h
@@ -152,19 +236,21 @@ endef
 #
 # The overlay ordinals and the ROM link's values, from the two files the
 # pipeline above already generates (main.lsf and the xMAP remain the only
-# sources). gen_absolutes.py only rewrites its header when the contents
-# change; gen_lcf_vars.py likewise.
+# sources). Both generators rewrite a header only when its contents change,
+# so a stamp records that they ran: the headers' own mtimes are what the
+# shadow stamp (and with it every object) compares against.
 ABS_H    := $(WGEN)/pc_wasm_absolutes.h
 LCF_H    := $(WGEN)/pc_wasm_lcf.h
 LCF_VARS := $(BUILD)/pc_wasm_lcf.c
+WGEN_STAMP := $(WGEN)/.stamp
 
-$(ABS_H): $(OVERLAY_IDS_C) $(LCF_SYMS_C) $(ROOT)/3ds/gen_absolutes.py
+$(WGEN_STAMP): $(OVERLAY_IDS_C) $(LCF_SYMS_C) $(ROOT)/3ds/gen_absolutes.py \
+               $(WROOT)/pc/wasm/gen_lcf_vars.py
 	@mkdir -p $(WGEN)
-	@$(PYTHON) $(ROOT)/3ds/gen_absolutes.py $(OVERLAY_IDS_C) $(LCF_SYMS_C) $@
-
-$(LCF_H) $(LCF_VARS): $(LCF_SYMS_C) $(WROOT)/pc/wasm/gen_lcf_vars.py
-	@mkdir -p $(WGEN)
+	@$(PYTHON) $(ROOT)/3ds/gen_absolutes.py $(OVERLAY_IDS_C) $(LCF_SYMS_C) $(ABS_H)
 	@$(PYTHON) $(WROOT)/pc/wasm/gen_lcf_vars.py $(LCF_SYMS_C) $(LCF_H) $(LCF_VARS)
+	@touch $@
+$(ABS_H) $(LCF_H) $(LCF_VARS): $(WGEN_STAMP) ;
 
 # Every object sees the prelude, so the generated headers and the wasm
 # shadows join pc/include in the stamp that rebuilds the world.
@@ -204,4 +290,4 @@ wasm2c-check: $(TARGET)
 	$(PYTHON) $(NPROOT)/tools/wasm2c_postprocess.py $(W2C_DIR)/platinum.c
 	clang -O1 -c -w -I$(WABT)/include -I$(WABT)/share/wabt/wasm2c \
 	    -o $(W2C_DIR)/platinum.o $(W2C_DIR)/platinum.c
-	@$(PYTHON) $(WROOT)/pc/wasm/check_imports.py $(TARGET)
+	@$(PYTHON) $(WROOT)/pc/wasm/check_module.py $(TARGET) $(NP_ABI_H) $(WROOT)/pc/stubs.list --map $(WASM_MAP)

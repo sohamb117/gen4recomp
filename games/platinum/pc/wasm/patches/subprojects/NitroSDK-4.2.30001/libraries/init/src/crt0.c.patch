@@ -1,0 +1,23 @@
+--- a/crt0.c
++++ b/crt0.c
+@@ -44,12 +44,15 @@
+ /* armrec: asm function INITi_CpuClear32 stripped; see pc/src/ for the host implementation */
+ #endif
+ 
++/* wasm: these five are variables there (pc/wasm/gen_lcf_vars.py), which a
++ * static initializer cannot read; the same xMAP values as constants. */
++#include <pc_wasm_absolutes.h>
+ void *const _start_ModuleParams[] = {
+-	(void *)SDK_AUTOLOAD_LIST,
+-	(void *)SDK_AUTOLOAD_LIST_END,
+-	(void *)SDK_AUTOLOAD_START,
+-	(void *)SDK_STATIC_BSS_START,
+-	(void *)SDK_STATIC_BSS_END,
++	(void *)SDK_LCF_AUTOLOAD_LIST,
++	(void *)SDK_LCF_AUTOLOAD_LIST_END,
++	(void *)SDK_LCF_AUTOLOAD_START,
++	(void *)SDK_LCF_STATIC_BSS_START,
++	(void *)SDK_LCF_STATIC_BSS_END,
+ #ifdef SDK_ARM9
+ 	(void *)0,
+ 	(void *)SDK_VERSION_ID,

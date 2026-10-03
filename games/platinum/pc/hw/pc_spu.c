@@ -382,6 +382,14 @@ static void chan_set_srcaddr(struct spu_channel *c, uint32_t v)
         extern char __ImageBase;
         uint32_t lo = (uint32_t)(uintptr_t)&__ImageBase;
         uint32_t hi = lo + 0x10000000u;
+#elif defined(__wasm__)
+        /* No ELF image symbols in a wasm module. Everything the C runtime
+         * owns (data, heap, shadow stacks) is linked from __global_base
+         * (NP_GUEST_C_BASE) to the end of linear memory, so that span is
+         * "a host address" here. */
+        extern char __global_base;
+        uint32_t lo = (uint32_t)(uintptr_t)&__global_base;
+        uint32_t hi = (uint32_t)(__builtin_wasm_memory_size(0) * 65536u);
 #else
         extern char __executable_start, _end;
         uint32_t lo = (uint32_t)(uintptr_t)&__executable_start;

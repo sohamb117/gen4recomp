@@ -13,7 +13,9 @@ set -e
 obj=$1
 map=$2
 NM=${NM:-nm}
-bad=$($NM "$obj" | awk 'NF >= 2 { print $NF }' | sort -u | \
+# -g: external symbols only (defined globals and undefined references), the
+# set the ELF map covers; file-local statics are nobody else's business.
+bad=$($NM -g "$obj" | awk 'NF >= 2 { print $NF }' | sort -u | \
       grep -vE '^(arm7_.*|__.*|mem(cpy|set|move|cmp)|pc_spu_keyon_note)$' || true)
 if [ -n "$bad" ]; then
     echo "check_arm7ns: $obj has symbols outside the arm7_ namespace:" >&2
