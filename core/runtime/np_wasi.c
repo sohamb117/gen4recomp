@@ -6,7 +6,10 @@
  * preopened directories (fd_prestat_get answers EBADF at fd 3, which is how
  * wasi-libc learns that). stdout/stderr are line-buffered into host.log;
  * stdin is always at end of file. Calls on anything else return the errno a
- * real WASI host would (EBADF, ESPIPE, ENOTDIR, EFAULT, EINVAL).
+ * real WASI host would (EBADF, ESPIPE, ENOTDIR, ENOTSUP, EFAULT, EINVAL); the
+ * directory calls (path_*, fd_readdir) exist only because wasi-libc's
+ * mkdir/stat/opendir pull them into the port's debug paths, and they fail
+ * the same way any lookup without a preopen does.
  *
  * random_get is a fixed-seed xorshift64* stream reset per core, because the
  * port is deterministic and replays must not diverge on it. Clocks are real:
@@ -34,6 +37,7 @@ enum {
     WASI_EFAULT = 21,
     WASI_EINVAL = 28,
     WASI_ENOTDIR = 54,
+    WASI_ENOTSUP = 58,
     WASI_ESPIPE = 70,
 };
 
@@ -251,6 +255,32 @@ uint32_t w2c_wasi__snapshot__preview1_path_open(struct w2c_wasi__snapshot__previ
     (void)dirflags, (void)path, (void)path_len, (void)oflags, (void)rights_base, (void)rights_inheriting;
     (void)fdflags, (void)fd_out;
     return std_fd(w->core, dirfd) ? WASI_ENOTDIR : WASI_EBADF;
+}
+
+uint32_t w2c_wasi__snapshot__preview1_path_create_directory(struct w2c_wasi__snapshot__preview1 *w, uint32_t dirfd,
+                                                            uint32_t path, uint32_t path_len) {
+    (void)path, (void)path_len;
+    return std_fd(w->core, dirfd) ? WASI_ENOTDIR : WASI_EBADF;
+}
+
+uint32_t w2c_wasi__snapshot__preview1_path_filestat_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t dirfd,
+                                                        uint32_t flags, uint32_t path, uint32_t path_len,
+                                                        uint32_t out) {
+    (void)flags, (void)path, (void)path_len, (void)out;
+    return std_fd(w->core, dirfd) ? WASI_ENOTDIR : WASI_EBADF;
+}
+
+uint32_t w2c_wasi__snapshot__preview1_fd_readdir(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd, uint32_t buf,
+                                                 uint32_t buf_len, uint64_t cookie, uint32_t bufused_out) {
+    (void)buf, (void)buf_len, (void)cookie, (void)bufused_out;
+    return std_fd(w->core, fd) ? WASI_ENOTDIR : WASI_EBADF;
+}
+
+/* The standard streams are character devices with no settable flags. */
+uint32_t w2c_wasi__snapshot__preview1_fd_fdstat_set_flags(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd,
+                                                          uint32_t flags) {
+    if (!std_fd(w->core, fd)) return WASI_EBADF;
+    return flags == 0 ? WASI_ESUCCESS : WASI_ENOTSUP;
 }
 
 /* Validates an iovec array; returns its host address or NULL. */

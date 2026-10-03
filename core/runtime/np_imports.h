@@ -48,6 +48,15 @@ uint32_t w2c_wasi__snapshot__preview1_clock_time_get(struct w2c_wasi__snapshot__
 uint32_t w2c_wasi__snapshot__preview1_fd_close(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd);
 uint32_t w2c_wasi__snapshot__preview1_fd_fdstat_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd,
                                                     uint32_t out);
+uint32_t w2c_wasi__snapshot__preview1_fd_fdstat_set_flags(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd,
+                                                          uint32_t flags);
+uint32_t w2c_wasi__snapshot__preview1_fd_readdir(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd, uint32_t buf,
+                                                 uint32_t buf_len, uint64_t cookie, uint32_t bufused_out);
+uint32_t w2c_wasi__snapshot__preview1_path_create_directory(struct w2c_wasi__snapshot__preview1 *w, uint32_t dirfd,
+                                                            uint32_t path, uint32_t path_len);
+uint32_t w2c_wasi__snapshot__preview1_path_filestat_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t dirfd,
+                                                        uint32_t flags, uint32_t path, uint32_t path_len,
+                                                        uint32_t out);
 uint32_t w2c_wasi__snapshot__preview1_fd_prestat_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd,
                                                      uint32_t out);
 uint32_t w2c_wasi__snapshot__preview1_fd_prestat_dir_name(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd,

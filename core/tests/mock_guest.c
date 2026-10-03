@@ -29,6 +29,9 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 #include "np_guest_abi.h"
 
@@ -250,6 +253,16 @@ int main(int argc, char **argv) {
     if ((t1.tv_sec > t0.tv_sec || (t1.tv_sec == t0.tv_sec && t1.tv_nsec >= t0.tv_nsec)) && time(NULL) > 1600000000)
         status |= ST_CLOCK_OK;
     if (getentropy(&random_word, sizeof random_word) != 0) fail("mock: getentropy failed");
+
+    /* No filesystem: the directory calls the port's debug paths make must
+     * fail cleanly, and the streams accept no flags. This also links in the
+     * same WASI imports the real games declare. */
+    struct stat st;
+    DIR *dir = opendir(".");
+    if (dir && readdir(dir)) fail("mock: readdir found a filesystem");
+    if (mkdir("np_mock", 0777) == 0 || stat("np_mock", &st) == 0 || dir)
+        fail("mock: filesystem calls unexpectedly succeeded");
+    if (fcntl(1, F_SETFL, O_NONBLOCK) != -1 || fcntl(1, F_SETFL, 0) != 0) fail("mock: fd_fdstat_set_flags");
 
     audio_ring = calloc(AUDIO_RING, 4);
     if ((uintptr_t)&local >= NP_GUEST_C_BASE && (uintptr_t)top >= NP_GUEST_C_BASE &&
