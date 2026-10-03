@@ -1,0 +1,113 @@
+# wasm32 build of Pokémon Diamond / Pearl for the nativeplat runtime.
+#
+#   make -f pc/Makefile.wasm -j10                       build/pc-wasm/pokediamond.wasm
+#   make -f pc/Makefile.wasm -j10 GAME_VERSION=PEARL    build/pc-wasm/pokepearl.wasm
+#   make -f pc/Makefile.wasm wasm2c-check               convert + compile natively
+#
+# (run from games/diamond). The module contract is core/include/np_guest_abi.h,
+# exactly as for Platinum (games/platinum/pc/Makefile.wasm, whose header
+# explains the wasm32 decisions this build shares).
+#
+# Diamond/Pearl differ from Platinum in one structural way: most of the game
+# is still assembly. That assembly is recompiled to C by armrec
+# (games/platinum/tools/armrec), and the decompiled C, the recompiled C and
+# the host layer meet at a calling-convention boundary that i386 papered over
+# (cdecl tolerates any prototype) and wasm does not (every call is typed).
+# The bridge that makes it typed is pc/mk/bridge.mk; the pieces:
+#
+#   pc/mk/game.mk    the decompiled C (arm9/src, lib/NitroSDK, lib/libnns,
+#                    overlays/*/src) and its patches/shadows
+#   pc/mk/armrec.mk  every remaining .s (and asm-in-C bodies) through armrec
+#   pc/mk/bridge.mk  C -> LLVM IR -> rewritten IR -> object, plus generated
+#                    wrappers/adapters between C prototypes and armrec's
+#                    uniform uint64_t f(u32, u32, u32, u32)
+#   pc/mk/host.mk    the machine model shared with Platinum (games/platinum/
+#                    pc/src, pc/hw, tools/armrec/armrec_rt.c, pc/wasm/src)
+#
+# Every C translation unit goes through BRIDGE_COMPILE (bridge.mk), so each
+# fragment only lists sources and flags.
+
+ROOT    := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))/..)
+NPROOT  := $(abspath $(ROOT)/../..)
+PLAT    := $(NPROOT)/games/platinum
+ARMREC  := $(PLAT)/tools/armrec
+PCDIR   := $(ROOT)/pc
+
+TOOLCHAINS ?= $(NPROOT)/.cache/toolchains
+WASI_SDK   ?= $(TOOLCHAINS)/wasi-sdk
+WABT       ?= $(TOOLCHAINS)/wabt
+PYTHON     ?= python3
+
+GAME_VERSION ?= DIAMOND
+GAME_LANGUAGE := ENGLISH
+ifeq ($(GAME_VERSION),DIAMOND)
+VER := diamond
+else ifeq ($(GAME_VERSION),PEARL)
+VER := pearl
+else
+$(error GAME_VERSION must be DIAMOND or PEARL)
+endif
+
+BUILD  := $(ROOT)/build/pc-wasm/$(VER)
+OBJ    := $(BUILD)/obj
+TARGET := $(ROOT)/build/pc-wasm/poke$(VER).wasm
+# The ROM build's own outputs: the xMAP is the source of every address.
+ROMBUILD := $(ROOT)/arm9/build/$(VER).us
+ROM_XMAP := $(ROMBUILD)/arm9.elf.xMAP
+ROM_NDS  := $(ROOT)/build/$(VER).us/poke$(VER).us.nds
+
+CC  := $(WASI_SDK)/bin/clang --target=wasm32-wasip1
+NM  := $(WASI_SDK)/bin/llvm-nm
+
+# Shared by every C TU in the module (game, recompiled, host).
+WASM_ABI := -fno-short-enums -fsigned-char -fno-common -std=gnu99 \
+            -fms-extensions -fno-strict-aliasing -fwrapv -w \
+            -Wno-error=implicit-function-declaration -Wno-error=implicit-int \
+            -Wno-error=int-conversion -Wno-error=incompatible-pointer-types \
+            -Wno-error=incompatible-function-pointer-types \
+            -Wno-error=return-type -Wno-error=return-mismatch
+OPT    ?= -O2
+HW_OPT ?= -O3
+
+np_abi_const = $(shell printf '%d' $$(sed -n 's/^\#define $(1) \(0x[0-9A-Fa-f]*\)u.*/\1/p' $(NPROOT)/core/include/np_guest_abi.h))
+NP_C_BASE := $(call np_abi_const,NP_GUEST_C_BASE)
+NP_MEMORY := $(call np_abi_const,NP_GUEST_MEMORY_BYTES)
+WASM_MAP  := $(BUILD)/poke$(VER).map
+LDFLAGS   := -Wl,--global-base=$(NP_C_BASE) -Wl,--no-stack-first \
+             -Wl,--initial-memory=$(NP_MEMORY) -Wl,--max-memory=$(NP_MEMORY) \
+             -Wl,-z,stack-size=1048576 -Wl,-Map=$(WASM_MAP)
+LDLIBS    := -lm
+
+.DEFAULT_GOAL := all
+.PHONY: all clean wasm2c-check
+.SECONDEXPANSION:
+
+# Each fragment appends its objects to OBJS.
+OBJS :=
+include $(PCDIR)/mk/bridge.mk
+include $(PCDIR)/mk/game.mk
+include $(PCDIR)/mk/armrec.mk
+include $(PCDIR)/mk/host.mk
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS) $(LINK_EXTRA_DEPS)
+	@mkdir -p $(dir $@)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LINK_EXTRA_OBJS) $(LDLIBS)
+	@$(POST_LINK)
+
+POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
+               $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
+
+W2C_DIR := $(BUILD)/wasm2c
+wasm2c-check: $(TARGET)
+	@mkdir -p $(W2C_DIR)
+	$(WABT)/bin/wasm-validate $(TARGET)
+	$(WABT)/bin/wasm2c $(TARGET) -n $(VER) -o $(W2C_DIR)/$(VER).c
+	$(PYTHON) $(NPROOT)/tools/wasm2c_postprocess.py $(W2C_DIR)/$(VER).c
+	clang -O1 -c -w -I$(WABT)/include -I$(WABT)/share/wabt/wasm2c \
+	    -o $(W2C_DIR)/$(VER).o $(W2C_DIR)/$(VER).c
+	rm -rf $(W2C_DIR)
+
+clean:
+	rm -rf $(BUILD) $(TARGET)
