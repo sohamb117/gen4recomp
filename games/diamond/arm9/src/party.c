@@ -1,0 +1,114 @@
+#include "party.h"
+
+#include "global.h"
+
+#include "heap.h"
+
+void SaveArray_Party_Init(struct Party *party);
+void Party_InitWithMaxSize(struct Party *party, int count);
+
+u32 SaveArray_Party_sizeof(void) {
+    return sizeof(struct Party);
+}
+
+struct Party *SaveArray_Party_Alloc(enum HeapID heapID) {
+    struct Party *ret = (struct Party *)Heap_Alloc(heapID, sizeof(struct Party));
+    SaveArray_Party_Init(ret);
+    return ret;
+}
+
+void SaveArray_Party_Init(struct Party *party) {
+    Party_InitWithMaxSize(party, PARTY_SIZE);
+}
+
+void Party_InitWithMaxSize(struct Party *party, int count) {
+    int i;
+    GF_ASSERT(count <= PARTY_SIZE);
+    memset(party, 0, sizeof(struct Party));
+    party->curCount = 0;
+    party->maxCount = count;
+    for (i = 0; i < PARTY_SIZE; i++) {
+        ZeroMonData(&party->mons[i]);
+    }
+}
+
+BOOL Party_AddMon(struct Party *party, struct Pokemon *pokemon) {
+    if (party->curCount >= party->maxCount) {
+        return FALSE;
+    }
+    party->mons[party->curCount] = *pokemon;
+    party->curCount++;
+    return TRUE;
+}
+
+BOOL Party_RemoveMon(struct Party *party, int pos) {
+    int i;
+
+    GF_ASSERT(pos >= 0);
+    GF_ASSERT(pos < party->curCount);
+    GF_ASSERT(pos < party->maxCount);
+    GF_ASSERT(party->curCount > 0);
+
+    for (i = pos; i < party->curCount - 1; i++) {
+        party->mons[i] = party->mons[i + 1];
+    }
+
+    ZeroMonData(&party->mons[i]);
+    party->curCount--;
+    return TRUE;
+}
+
+int Party_GetCount(struct Party *party) {
+    return party->curCount;
+}
+
+struct Pokemon *Party_GetMonByIndex(struct Party *party, int pos) {
+    GF_ASSERT(pos >= 0);
+    GF_ASSERT(pos < party->curCount);
+    GF_ASSERT(pos < party->maxCount);
+    return &party->mons[pos];
+}
+
+void ReplacePartySlotWithMon(struct Party *party, int pos, struct Pokemon *pokemon) {
+    int r2;
+    GF_ASSERT(pos >= 0);
+    GF_ASSERT(pos < party->curCount);
+    GF_ASSERT(pos < party->maxCount);
+    r2 = (int)(GetMonData(&party->mons[pos], MON_DATA_SPECIES_EXISTS, NULL) - GetMonData(pokemon, MON_DATA_SPECIES_EXISTS, NULL));
+    party->mons[pos] = *pokemon;
+    party->curCount += r2;
+}
+
+BOOL SwapSlotsInParty(struct Party *party, int pos1, int pos2) {
+    struct Pokemon *buffer;
+    GF_ASSERT(pos1 >= 0);
+    GF_ASSERT(pos1 < party->curCount);
+    GF_ASSERT(pos1 < party->maxCount);
+    GF_ASSERT(pos2 >= 0);
+    GF_ASSERT(pos2 < party->curCount);
+    GF_ASSERT(pos2 < party->maxCount);
+    buffer = Heap_Alloc(HEAP_ID_DEFAULT, sizeof(struct Pokemon));
+    *buffer = party->mons[pos1];
+    party->mons[pos1] = party->mons[pos2];
+    party->mons[pos2] = *buffer;
+    Heap_Free(buffer);
+    return FALSE;
+}
+
+void CopyParty(struct Party *src, struct Party *dest) {
+    *dest = *src;
+}
+
+BOOL Party_HasMon(struct Party *party, u16 species) {
+    int i;
+    for (i = 0; i < party->curCount; i++) {
+        if (species == GetMonData(&party->mons[i], MON_DATA_SPECIES, NULL)) {
+            break;
+        }
+    }
+    return i != party->curCount;
+}
+
+struct Party *SaveArray_Party_Get(struct SaveData *ptr) {
+    return (struct Party *)SaveArray_Get(ptr, 2);
+}

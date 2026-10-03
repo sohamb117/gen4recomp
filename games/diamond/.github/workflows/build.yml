@@ -1,0 +1,55 @@
+name: build
+
+on: [push, pull_request, workflow_dispatch]
+
+env:
+  LM_LICENSE_FILE: "$GITHUB_WORKSPACE/tools/mwccarm/license.dat"
+  CC: gcc-10
+  CXX: g++-10
+  CALCROM_DISCORD_WEBHOOK_AVATAR_URL: "https://i.imgur.com/38BQHdd.png"
+  CALCROM_DISCORD_WEBHOOK_USERNAME: OK
+  CALCROM_WEBHOOK_URL: ${{ secrets.WEBHOOKURL }}
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Update and Install Software
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt update
+          sudo ACCEPT_EULA=Y apt -y --fix-missing --allow-downgrades upgrade
+          sudo apt -y --allow-downgrades install g++-10-multilib linux-libc-dev binutils-arm-none-eabi p7zip-full pkg-config ppa-purge libpugixml-dev
+          sudo ppa-purge -y ppa:ubuntu-toolchain-r/test || true
+          sudo dpkg --add-architecture i386
+          sudo mkdir -pm755 /etc/apt/keyrings
+          sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+          sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/$(lsb_release -cs)/winehq-$(lsb_release -cs).sources
+          sudo apt update
+          sudo apt -y --allow-downgrades install --install-recommends winehq-stable
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Setup Repo
+        run: |
+          mkdir -p ~/download
+          cd ~/download
+          wget https://github.com/pret/pokediamond/raw/assets/workflow/mwccarm.zip
+          wget https://github.com/pret/pokediamond/raw/assets/workflow/NitroSDK-3_2-060901.7z
+          unzip mwccarm.zip
+          mv mwccarm $GITHUB_WORKSPACE/tools
+          7z x NitroSDK-3_2-060901.7z
+          mv NitroSDK-3_2-060901/tools/bin $GITHUB_WORKSPACE/tools
+          mv NitroSDK-3_2-060901/include/nitro/specfiles/ARM7-TS.lcf.template $GITHUB_WORKSPACE/arm7
+          mv NitroSDK-3_2-060901/include/nitro/specfiles/ARM9-TS.lcf.template $GITHUB_WORKSPACE/arm9
+        working-directory: ~
+      - name: Build Diamond
+        run: make -j${nproc} diamond
+      - name: Build Pearl
+        run: make -j${nproc} pearl
+      - name: Webhook
+        run: |
+          sudo chmod 755 $GITHUB_WORKSPACE/.github/calcrom/webhook.sh
+          $GITHUB_WORKSPACE/.github/calcrom/webhook.sh pokediamond "$CALCROM_WEBHOOK_URL"
+        continue-on-error: true
