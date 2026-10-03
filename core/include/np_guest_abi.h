@@ -19,10 +19,12 @@
 
 #define NP_GUEST_ABI_VERSION 1
 
-/* Everything below this address belongs to the DS memory map. */
-#define NP_GUEST_C_BASE 0x08000000u
+/* Everything below this address belongs to the DS memory map, including the
+ * GBA slot (ROM 0x08000000-0x09FFFFFF, SRAM 0x0A000000-0x0A00FFFF), which
+ * CTRDG probes at boot and Pal Park reads through. */
+#define NP_GUEST_C_BASE 0x0B000000u
 /* Linear memory the guest is linked with (pages are committed lazily). */
-#define NP_GUEST_MEMORY_BYTES 0x0C000000u
+#define NP_GUEST_MEMORY_BYTES 0x10000000u
 
 #define NP_FRAME_MAGIC 0x4E504652u /* 'NPFR' */
 
@@ -45,6 +47,10 @@ typedef struct np_frame_desc {
     uint32_t audio_head;          /* frames ever produced (wraps mod 2^32) */
     uint32_t audio_rate;          /* Hz */
     uint32_t save_size;           /* backup chip bytes, 0 until identified */
+    uint32_t save_image;          /* guest address of the chip image, 0 until identified */
+    uint32_t save_dirty;          /* 1 while the image differs from what was last stored;
+                                     while the guest is parked the host may store
+                                     save_image itself and then write 0 here */
 
     /* host -> guest */
     uint32_t in_keys;     /* NP_KEY_* from np_core.h */

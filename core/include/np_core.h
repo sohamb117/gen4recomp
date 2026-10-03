@@ -110,7 +110,8 @@ int np_core_available(np_game game);
 int np_core_run_frame(np_core *core, const np_input *in, np_frame *out);
 
 /* Audio produced so far: interleaved signed 16-bit stereo at
- * np_core_audio_rate() Hz. Returns frames copied (each frame = 2 samples).
+ * np_core_audio_rate() Hz, which is 0 until the first frame has run (the
+ * guest announces it). Returns frames copied (each frame = 2 samples).
  * Unread audio older than the core's ring (about one second) is dropped. */
 uint32_t np_core_audio_rate(const np_core *core);
 size_t np_core_audio_read(np_core *core, int16_t *stereo, size_t max_frames);
