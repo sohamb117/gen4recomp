@@ -60,6 +60,8 @@
 #include "savedata_misc.h"
 #include "special_encounter.h"
 #include "field/field_system.h"
+#include "field_system.h"          /* FieldSystem_HasChildProcess */
+#include "overlay005/ov5_021EA714.h" /* FieldSystem_SendPoketchEvent */
 #include "field_map_change.h"
 #include "map_object.h"
 #include "map_tile_behavior.h"

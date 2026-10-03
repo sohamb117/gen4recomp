@@ -21,8 +21,8 @@
  * allocating. A band per hardware thread is already finer than a screen
  * wants, and past this the barrier costs more than the band saves. The
  * console draws serially, and there a 1 keeps every per-slice array the size
- * it was before this existed. */
-#if defined(__3DS__)
+ * it was before this existed; wasm has no threads and draws serially too. */
+#if defined(__3DS__) || defined(__wasm__)
 #define PC_WORKERS_MAX 1
 #else
 #define PC_WORKERS_MAX 16

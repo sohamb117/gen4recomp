@@ -28,12 +28,13 @@
 
 #include "pc_workers.h"
 
-#if defined(__3DS__)
+#if defined(__3DS__) || defined(__wasm__)
 
 /*
  * The console runs this serially. Its two cores are not symmetric, the second
  * is reserved by the OS unless asked for, and nothing in this port may
- * reference threadCreate; see the 3DS notes.
+ * reference threadCreate; see the 3DS notes. wasm32-wasip1 has no threads at
+ * all (its pthread_create fails), so it is the same single slice.
  */
 int pc_workers_slices(void) { return 1; }
 

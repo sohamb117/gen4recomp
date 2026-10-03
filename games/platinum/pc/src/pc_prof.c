@@ -20,7 +20,7 @@
 
 #include "pc_prof.h"
 
-#if !defined(_WIN32)
+#if !defined(_WIN32) && !defined(__wasm__)
 
 #include <stdint.h>
 #include <signal.h>
@@ -119,9 +119,10 @@ void pc_prof_frame(uint32_t work_us)
     (void)!write(pc_prof_fd, rec, sizeof rec);
 }
 
-#else /* _WIN32 */
+#else /* _WIN32 || __wasm__ */
 
-/* No ITIMER_PROF on Windows. Saying so beats sampling nothing silently. */
+/* No ITIMER_PROF on Windows, and no signals at all in wasm. Saying so beats
+ * sampling nothing silently. */
 void pc_prof_init(void)
 {
     if (getenv("PC_PROF") != NULL) {

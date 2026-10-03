@@ -36,7 +36,9 @@
 
 #include "armrec_rt.h"
 
+#if !defined(__wasm__)
 #include <signal.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 
@@ -348,7 +350,13 @@ void pc_state_report(FILE *out, const char *label) {
  */
 #define MAX_ENDING 4
 static FILE *report_out;
+#if defined(__wasm__)
+/* wasm has no signals: the only endings are exit (atexit, below) and a trap,
+ * which unwinds nothing and runs no handler. */
+static int reported;
+#else
 static volatile sig_atomic_t reported;
+#endif
 static pc_state_ending_fn ending[MAX_ENDING];
 static int nending;
 
@@ -362,6 +370,7 @@ static void report_once(const char *label) {
 
 static void report_at_exit(void) { report_once("exit"); }
 
+#if !defined(__wasm__)
 static void report_on_signal(int sig) {
     const char *label = "signal";
 
@@ -379,9 +388,11 @@ static void report_on_signal(int sig) {
     signal(sig, SIG_DFL);
     raise(sig);
 }
+#endif
 
 void pc_state_at_ending(pc_state_ending_fn fn, FILE *out)
 {
+#if !defined(__wasm__)
     /* SIGBUS is POSIX's; the other four are ISO C's own names and mingw has
      * them, so the Windows build loses only the bus-error label. */
     static const int sigs[] = { SIGSEGV,
@@ -389,8 +400,9 @@ void pc_state_at_ending(pc_state_ending_fn fn, FILE *out)
                                 SIGBUS,
 #endif
                                 SIGILL, SIGFPE, SIGABRT };
-    static int installed;
     size_t i;
+#endif
+    static int installed;
 
     if (fn == NULL || nending >= MAX_ENDING) return;
     ending[nending++] = fn;
@@ -398,9 +410,11 @@ void pc_state_at_ending(pc_state_ending_fn fn, FILE *out)
     if (installed) return;
     installed = 1;
     atexit(report_at_exit);
+#if !defined(__wasm__)
     for (i = 0; i < sizeof sigs / sizeof sigs[0]; i++) {
         signal(sigs[i], report_on_signal);
     }
+#endif
 }
 
 void pc_state_report_at_exit(FILE *out)

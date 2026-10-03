@@ -25,6 +25,10 @@
 #include <string.h>
 #if defined(_WIN32)
 #include "pc_win_fiber.h"   /* crash report + host-spin watchdog */
+#elif defined(__wasm__)
+/* No signals, no ucontext, no unwinder, no mmap: a wasm trap is reported by
+ * the native runtime, and fatal paths here go through pc_wasm_fatal. */
+#include <pc_wasm.h>
 #else
 #include <signal.h>
 #include <ucontext.h>
@@ -74,6 +78,14 @@ static int map_agb_slot(void)
 #if defined(_WIN32)
     extern void *pcw_valloc_fixed(void *want, unsigned len); /* armrec_rt.c */
     void *got = pcw_valloc_fixed(want, (unsigned)len);
+#elif defined(__wasm__)
+    /* Linear memory is the address space: 0x08000000-0x0A00FFFF is already
+     * there and zero-initialised, and the C runtime's own data starts at
+     * NP_GUEST_C_BASE, above it, so nothing has written to it before this.
+     * Zero-fill is the whole of the no-cartridge model, so there is nothing
+     * to map. */
+    void *got = want;
+    (void)len;
 #else
     void *got = mmap(want, len, PROT_READ | PROT_WRITE,
                      MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
@@ -85,7 +97,7 @@ static int map_agb_slot(void)
     return 0;
 }
 
-#if !defined(_WIN32)
+#if !defined(_WIN32) && !defined(__wasm__)
 
 #if defined(__BIONIC__)
 
@@ -309,7 +321,7 @@ static void install_fault_handlers(void)
     sigaction(SIGFPE, &sa, NULL);
 }
 
-#endif /* !_WIN32 */
+#endif /* !_WIN32 && !__wasm__ */
 
 int main(int argc, char **argv)
 {
@@ -384,6 +396,13 @@ int main(int argc, char **argv)
     if (getenv("PC_BOOT_WATCHDOG")) {
         pcw_install_watchdog();
     }
+#elif defined(__wasm__)
+    /* No signals and no timer: a wasm fault is a trap the native runtime
+     * reports, and a hang is the runtime's to time out. */
+    if (getenv("PC_BOOT_WATCHDOG")) {
+        fprintf(stderr, "pokeplatinum-pc: PC_BOOT_WATCHDOG has no timer in"
+                        " wasm; ignored\n");
+    }
 #else
     install_fault_handlers();
 
@@ -398,9 +417,14 @@ int main(int argc, char **argv)
 #endif
 
     if (armrec_mem_init() != 0) {
+#if defined(__wasm__)
+        pc_wasm_fatalf("pokeplatinum-pc: guest memory init failed: %s",
+                       armrec_mem_strerror());
+#else
         fprintf(stderr, "pokeplatinum-pc: guest memory init failed: %s\n",
                 armrec_mem_strerror());
         return 1;
+#endif
     }
     if (map_agb_slot() != 0) {
         return 1;
