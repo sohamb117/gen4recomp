@@ -45,7 +45,9 @@ extern "C" {
  * The ELF provides it rather than mmap, because some of what lives here is a
  * link-time object. pc/Makefile's PC_GUEST_BSS names the objects the linker
  * places here, and armrec_mem_init() must not map the region or an mmap would
- * replace the game's own statics with zeroed pages.
+ * replace the game's own statics with zeroed pages. Windows and wasm cannot
+ * link-place anything there, so on both it is ordinary memory and only
+ * pc_guest_window.c's run-time half exists.
  */
 #define ARM_PORT_WINDOW_BASE 0x02A00000u
 #define ARM_PORT_WINDOW_SIZE 0x00200000u /* 2 MB */
@@ -145,7 +147,8 @@ uint32_t armrec_io_mirror_at(int i, const char **name);
  * unmapped guard page below, or NULL when the arena is exhausted. Nothing
  * frees one. Every host stack the port executes on comes from here, because a
  * pointer to a decompiled caller's local reaches guest memory, and guest
- * memory does not move.
+ * memory does not move. On wasm32 it is a 16-byte-aligned heap block with no
+ * guard; armrec_rt.c says how much of the reason survives there.
  */
 void *armrec_host_stack(size_t size);
 
@@ -206,9 +209,10 @@ unsigned long armrec_vram_remaps(void);
 
 /*
  * The frame's render, bracketed. On POSIX these are no-ops, since every VRAM
- * view is the same memory by mmap. On Windows the 64 KB mapping granularity
- * forces a copy model (see vram_copy() in armrec_rt.c), and these are where
- * CPU writes reach the bank store and capture writes reach the windows.
+ * view is the same memory by mmap. On Windows the 64 KB mapping granularity,
+ * and on wasm32 the absence of any mapping, force a copy model (see
+ * vram_copy() in armrec_rt.c), and these are where CPU writes reach the bank
+ * store and capture writes reach the windows.
  */
 void armrec_vram_render_begin(void);
 void armrec_vram_render_end(void);

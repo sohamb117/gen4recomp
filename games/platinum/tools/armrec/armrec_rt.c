@@ -11,6 +11,11 @@
 
 #if defined(_WIN32)
 #include <windows.h>
+#elif defined(__wasm__)
+/* No mmap, no fd-backed shared objects, no mprotect: the DS map is plain
+ * linear memory at its own addresses (np_guest_abi.h), and pc_wasm.h's
+ * fatal is the trap. */
+#include <pc_wasm.h>
 #else
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -473,13 +478,24 @@ int armrec_vram_lookup(uint32_t a, int *bank, uint32_t *off) {
 /* ------------------------------------------------------------------ */
 
 /*
+ * Which of the two models below a host gets. Aliasing, one backing object with
+ * every window an mmap view of it, wherever mmap can place a 16 KB view at a
+ * 16 KB offset. Copying, a separate store reconciled with the windows by
+ * vram_copy(), where it cannot: Windows for its 64 KB granularity, wasm
+ * because linear memory has no mappings at all.
+ */
+#if defined(_WIN32) || defined(__wasm__)
+#define ARMREC_VRAM_COPY 1
+#endif
+
+/*
  * The backing object. One shared mapping of all nine banks, laid out as the
  * LCDC window lays them out, so that every guest address a bank is reachable
  * at is a view of the same bytes; which is the whole point, since a store
  * through the BG window has to be visible through LCDC after
  * GX_SetBankForLCDC and hardware has one memory, not five.
  */
-#if !defined(_WIN32)
+#if !defined(ARMREC_VRAM_COPY)
 static int vram_fd = -1;
 
 /*
@@ -593,7 +609,7 @@ static int vram_backing(void) {
  * is writable now, no decoder needed; the bounded deviation that buys and
  * why it cannot reach the renderer is argued at the mmap below.
  */
-#if defined(_WIN32)
+#if defined(ARMREC_VRAM_COPY)
 /*
  * On Windows the windows model is copying, not aliasing, and the granularity
  * is why. MapViewOfFileEx needs the target address and the file offset 64 KB
@@ -607,6 +623,22 @@ static int vram_backing(void) {
  * frame slice with no remap between, and writes through a mirror other than
  * the first, which propagate only at the next remap. Both are recorded here
  * rather than solved; the Linux build with its true aliasing is the oracle.
+ *
+ * wasm32 takes the same model unchanged, for a stronger reason: a guest
+ * address is a linear-memory offset and there is nothing to map, so no view
+ * of any granularity exists. The store is a static buffer (linked above
+ * NP_GUEST_C_BASE, so outside every DS address) and 0x06000000-0x07000000 is
+ * plain linear memory standing in for the windows.
+ *
+ * Why a store at all, rather than keeping each bank's bytes at "its" window
+ * address and moving them on a remap: a bank is in at most one window at a
+ * time (vram_place_bank() takes one case per VRAMCNT value) but not at one
+ * address. Every mirror of its window repeats it (vram_win[].span/period),
+ * F and G sit at two blocks of each mirror and H and I wrap over four or
+ * eight (vram_place_bank()'s F/G/H/I cases, vram_place()'s wrap), and a bank
+ * in a texture, texture-palette or extended-palette role is at no CPU
+ * address at all (vram_place_bank()'s fall-through). The store is the one
+ * place every bank always is, and armrec_vram_bank_ptr() names it.
  */
 static void vram_copy(int to_windows, int all_mirrors) {
     int w, i;
@@ -664,13 +696,13 @@ static void vram_copy(int to_windows, int all_mirrors) {
 
 /* The frame's render, bracketed, no-ops where the views alias for real. */
 void armrec_vram_render_begin(void) {
-#if defined(_WIN32)
+#if defined(ARMREC_VRAM_COPY)
     if (vram_mapped) vram_copy(0, 0);
 #endif
 }
 
 void armrec_vram_render_end(void) {
-#if defined(_WIN32)
+#if defined(ARMREC_VRAM_COPY)
     if (vram_mapped) vram_copy(1, 0);
 #endif
 }
@@ -678,7 +710,7 @@ void armrec_vram_render_end(void) {
 static int vram_remap(void) {
     int w, b, i;
 
-#if defined(_WIN32)
+#if defined(ARMREC_VRAM_COPY)
     /* Writes made through the old arrangement go home first; the map they
      * were made under is still in vram_map until the rebuild below. */
     if (vram_mapped) vram_copy(0, 0);
@@ -713,8 +745,13 @@ static int vram_remap(void) {
         if (full) {
             /* The floor: every VRAM address readable and zero, as on POSIX:
              * except writable, because there is no cheap way to trap a
-             * write here. */
+             * write here. On wasm it is zero already, linear memory starts
+             * zeroed and armrec_vram_free() re-zeroes it, and writing 16 MB
+             * of zeros would only make the native runtime commit the pages
+             * of a span the game mostly never touches. */
+#if !defined(__wasm__)
             memset((void *)(uintptr_t)ARM_VRAM_BASE, 0, ARM_VRAM_SIZE);
+#endif
             vram_copy(1, 1);
         } else {
             for (w = 0; w < VW_COUNT; w++) {
@@ -948,6 +985,16 @@ static int armrec_vram_init(void) {
     }
     memset(vram_cnt_live, 0, sizeof vram_cnt_live);
     return vram_remap();
+#elif defined(__wasm__)
+    /* The Windows model with nothing to allocate: the store is the static
+     * below, linked above NP_GUEST_C_BASE with the rest of the C runtime's
+     * data, and the windows are linear memory at their own addresses. Both
+     * are zero here, at instantiation and after armrec_vram_free(). */
+    static uint8_t vram_store_wasm[ARM_VRAM_STORE]
+        __attribute__((aligned(ARM_VRAM_BLK)));
+    vram_store = vram_store_wasm;
+    memset(vram_cnt_live, 0, sizeof vram_cnt_live);
+    return vram_remap();
 #else
     if (vram_backing() != 0) return -1;
     vram_store = mmap(NULL, ARM_VRAM_STORE, PROT_READ | PROT_WRITE,
@@ -976,6 +1023,11 @@ static void armrec_vram_free(void) {
 #if defined(_WIN32)
     if (vram_store) VirtualFree(vram_store, 0, MEM_RELEASE);
     VirtualFree((LPVOID)(uintptr_t)ARM_VRAM_BASE, 0, MEM_RELEASE);
+#elif defined(__wasm__)
+    /* Nothing to unmap. Zeroed instead, so the next armrec_vram_init()
+     * finds what a fresh mapping gives the other hosts. */
+    if (vram_store) memset(vram_store, 0, ARM_VRAM_STORE);
+    memset((void *)(uintptr_t)ARM_VRAM_BASE, 0, ARM_VRAM_SIZE);
 #else
     if (vram_store) munmap(vram_store, ARM_VRAM_STORE);
     munmap((void *)(uintptr_t)ARM_VRAM_BASE, ARM_VRAM_SIZE);
@@ -1176,12 +1228,33 @@ int armrec_cpu_switch(int cpu) {
 #define ARM_HOST_STACK_BASE 0x0E000000u
 #define ARM_HOST_STACK_SIZE 0x02000000u   /* 32 MB, up to -Ttext-segment */
 
+#if !defined(__wasm__)
 static char *host_stack_next;
+#endif
 
 void *armrec_host_stack(size_t size) {
 #ifdef _WIN32
     (void)size;
     return NULL;
+#elif defined(__wasm__)
+    /*
+     * No fixed address here, and none needed for the reason above's first
+     * half: a wasm module has no ASLR and no kernel stack. Its stacks are
+     * shadow stacks in linear memory (np_guest_abi.h, fiber_create), the
+     * main one placed by the link, and 0x0E000000 is inside the C runtime's
+     * own heap span (NP_GUEST_C_BASE up), so the arena becomes ordinary heap.
+     *
+     * The second half survives in part. The allocator is deterministic for an
+     * identical sequence of allocations, but wasi-libc mallocs argv
+     * (__main_void) and environ (on the first getenv) from this same heap, so
+     * a different argv or environment size moves every later block. Equal
+     * argv and environment from the native runtime make it exact again.
+     *
+     * No guard page: linear memory has no page protection. 16-byte aligned,
+     * the wasm C ABI's stack alignment; never freed, as above.
+     */
+    size = (size + 15u) & ~(size_t)15u;
+    return aligned_alloc(16, size);
 #else
     char *p;
 
@@ -1387,6 +1460,50 @@ static void mem_dump_low_map(void) {
 }
 #endif
 
+#if defined(__wasm__)
+/*
+ * The one way a map nobody makes can go wrong: the C runtime sitting on it.
+ * pc/Makefile.wasm links the data at --global-base=NP_GUEST_C_BASE, the main
+ * shadow stack after it (--no-stack-first) and the heap after that, so every
+ * byte the C runtime owns is above every DS address, the GBA slot included.
+ * Checked rather than trusted, from the linker's own symbols and from a
+ * static's and a local's address as the direct evidence, because a C object
+ * on top of main RAM would surface frames later as guest memory corruption.
+ * The memory itself has to reach the C base too, or the DS map is not there.
+ */
+static void mem_check_c_runtime(void) {
+    extern char __global_base[], __heap_base[];
+    volatile char probe = 0;
+    const struct { const char *what; uintptr_t at; } c[] = {
+        { "__global_base (the C data)", (uintptr_t)__global_base },
+        { "a static (mem_err)", (uintptr_t)mem_err },
+        { "the shadow stack (a local)", (uintptr_t)&probe },
+        { "__heap_base", (uintptr_t)__heap_base },
+    };
+    size_t i;
+
+    for (i = 0; i < sizeof c / sizeof c[0]; i++) {
+        if (c[i].at < NP_GUEST_C_BASE) {
+            pc_wasm_fatalf("armrec: %s is at 0x%08lX, below NP_GUEST_C_BASE "
+                           "0x%08X, inside the DS address map; the wasm link "
+                           "must place the C runtime above it "
+                           "(pc/Makefile.wasm, --global-base, "
+                           "--no-stack-first)",
+                           c[i].what, (unsigned long)c[i].at,
+                           (unsigned)NP_GUEST_C_BASE);
+        }
+    }
+    if ((uint64_t)__builtin_wasm_memory_size(0) * 65536u
+        < (uint64_t)NP_GUEST_MEMORY_BYTES) {
+        pc_wasm_fatalf("armrec: linear memory is 0x%llX bytes, the guest ABI "
+                       "fixes it at 0x%X",
+                       (unsigned long long)__builtin_wasm_memory_size(0)
+                           * 65536u,
+                       (unsigned)NP_GUEST_MEMORY_BYTES);
+    }
+}
+#endif
+
 int armrec_mem_init(void) {
     int i;
 
@@ -1425,6 +1542,18 @@ int armrec_mem_init(void) {
             return -1;
         }
     }
+#elif defined(__wasm__)
+    /*
+     * Nothing to map: each region is linear memory at its own address, there
+     * since instantiation and zero, because no data segment lies below
+     * NP_GUEST_C_BASE (checked here) and armrec_mem_free() re-zeroes what it
+     * releases. `provided` means nothing here either: as on Windows, nothing
+     * link-places into the port window (wasm-ld cannot put a section at
+     * 0x02A00000), so pc_guest_window.c's weak __pc_guest_window_free stays
+     * undefined, reads as 0, and its allocator starts at the region's base.
+     */
+    mem_check_c_runtime();
+    for (i = 0; i < NREGIONS; i++) region_mapped[i] = 1;
 #else
     for (i = 0; i < NREGIONS; i++) {
         void *want = (void *)(uintptr_t)regions[i].base;
@@ -1508,7 +1637,16 @@ int armrec_region_at(int i, uint32_t *base, uint32_t *size, const char **name) {
 }
 
 void armrec_mem_free(void) {
-#if !defined(_WIN32)
+#if defined(__wasm__)
+    /* Nothing to unmap; zeroed instead, so the next armrec_mem_init() finds
+     * what a fresh mapping gives the other hosts. */
+    int i;
+    for (i = 0; i < NREGIONS; i++)
+        if (region_mapped[i]) {
+            memset((void *)(uintptr_t)regions[i].base, 0, regions[i].size);
+            region_mapped[i] = 0;
+        }
+#elif !defined(_WIN32)
     int i;
     for (i = 0; i < NREGIONS; i++)
         if (region_mapped[i]) {
@@ -2676,6 +2814,25 @@ void armrec_icall_tail(void)
     fprintf(stderr, "armrec: armrec_icall_tail reached on ARM, the thunks "
                     "are i386 cdecl and this build has none\n");
     abort();
+}
+#elif defined(__wasm__)
+/*
+ * wasm32, for the ARM branch's reason: nothing in Platinum calls either entry
+ * point, and a frame-preserving tail jump to a resolved address has no wasm
+ * spelling at all (a call target is a table index with a fixed signature).
+ * Defined so the one file still links, and trapping so a tree that does
+ * recompile ARM finds out at the first call rather than returning wrongly.
+ */
+void armrec_icall(void)
+{
+    pc_wasm_fatal("armrec: armrec_icall reached on wasm32; the thunks are "
+                  "i386 cdecl and this build has none");
+}
+
+void armrec_icall_tail(void)
+{
+    pc_wasm_fatal("armrec: armrec_icall_tail reached on wasm32; the thunks "
+                  "are i386 cdecl and this build has none");
 }
 #else
 #error "armrec_icall is i386 cdecl; the port is -m32"
