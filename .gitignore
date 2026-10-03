@@ -1,0 +1,9 @@
+build/
+.cache/
+*.o
+*.wasm
+/out/
+.DS_Store
+# ROMs and saves are user-supplied; never commit them
+*.nds
+*.sav
