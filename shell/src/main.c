@@ -524,7 +524,8 @@ static uint16_t parse_keys(char *v)
  *   horizontal|hybrid|top|bottom][,rotation=0..3][,swap=1][,scale=integer]
  *   [,filter=linear][,touch=XxY][,keys=a+up][,controls=1][,size=WxH]
  *   [,page=launcher|options|controls|about]
- *   [,storage=1 (saves and options.ini in the real user-data root)]
+ *   [,storage=1 (saves and an options round-trip file in the user-data
+ *    root; portable mode only, so a test never touches a player's saves)]
  *   [,import=/path/to/rom.nds (run the importer first; implies storage=1)]
  *   [,script=F:kind:args;... (synthetic input, see autotest_script)]"
  * Returns -1 on a malformed value.
@@ -829,8 +830,12 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     app->import_lock = SDL_CreateMutex();
     if (!app->autotest.active || app->autotest.storage) {
         char err[512];
-        if (np_storage_init(err, sizeof err)) {
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "nativeplat", err, NULL);
+        /* Autotests may only write to a portable root, never a player's. */
+        if (np_storage_init(app->autotest.active, err, sizeof err)) {
+            if (app->autotest.active)
+                SDL_Log("autotest: %s", err);
+            else
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "nativeplat", err, NULL);
             return SDL_APP_FAILURE;
         }
         np_storage_path(app->options_path, sizeof app->options_path, "options.ini");
@@ -960,6 +965,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *e)
     case SDL_EVENT_WINDOW_FOCUS_GAINED:
     case SDL_EVENT_WINDOW_FOCUS_LOST:
         app->focused = e->type == SDL_EVENT_WINDOW_FOCUS_GAINED;
+        if (!app->focused)
+            np_input_release_all(app); /* the button-up may go to another app */
         np_audio_update_gain(app);
         return SDL_APP_CONTINUE;
     case SDL_EVENT_WINDOW_MINIMIZED: app->minimized = 1; return SDL_APP_CONTINUE;

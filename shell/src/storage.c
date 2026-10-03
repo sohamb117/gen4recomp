@@ -56,7 +56,7 @@ static int find_portable_root(char *out, size_t n)
     return 0;
 }
 
-int np_storage_init(char *err, size_t errn)
+int np_storage_init(int require_portable, char *err, size_t errn)
 {
     portable = find_portable_root(root, sizeof root);
     if (portable) {
@@ -64,6 +64,9 @@ int np_storage_init(char *err, size_t errn)
             SDL_snprintf(err, errn, "cannot create %s: %s", root, SDL_GetError());
             return -1;
         }
+    } else if (require_portable) {
+        SDL_snprintf(err, errn, "portable mode required: put portable.txt beside the executable");
+        return -1;
     } else {
         char *pref = SDL_GetPrefPath("nativeplat", "nativeplat");
         if (!pref) {

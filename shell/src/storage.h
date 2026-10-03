@@ -17,8 +17,10 @@
 
 #include "np_core.h"
 
-/* Picks the root and creates the subdirectories. Returns 0 on success. */
-int np_storage_init(char *err, size_t errn);
+/* Picks the root and creates the subdirectories. With `require_portable`,
+ * fails (writing nothing) unless portable.txt is present. Returns 0 on
+ * success. */
+int np_storage_init(int require_portable, char *err, size_t errn);
 const char *np_storage_root(void);
 int np_storage_is_portable(void);
 

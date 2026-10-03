@@ -104,6 +104,7 @@ Keys (comma separated): `frames`, `png`, `game`, `layout`
 (`vertical|horizontal|hybrid|top|bottom`), `rotation` (0-3), `swap`, `scale`
 (`integer`), `filter` (`linear`), `touch=XxY`, `keys=a+up`, `controls=1`,
 `size=WxH`, `page=launcher|options|controls|about`, `storage=1` (saves and an
-options round-trip file in the real user-data root), `import=<path>` (run the
+options round-trip file in the user-data root; refused unless portable mode is
+on, so tests never touch a player's data), `import=<path>` (run the
 importer), and `script=F:kind:args;...` to push synthetic `key`, mouse
 (`down/move/up`) and finger (`fdown/fmove/fup`) events before frame F.
