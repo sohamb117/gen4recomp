@@ -45,8 +45,11 @@ extern "C" {
  * -fpack-struct=4 reaches the same alignment and is the wrong tool: it also
  * repacks `u32 x : 20` bitfields, which moves nine structures, seven of them
  * save data.
+ *
+ * wasm32 is the same case as armhf: clang aligns a long long to 8 there and
+ * honours the same typedef-level reduction.
  */
-#ifdef __arm__
+#if defined(__arm__) || defined(__wasm__)
 #define PC_ALIGN64 __attribute__((aligned(4)))
 #else
 #define PC_ALIGN64

@@ -1,0 +1,207 @@
+# wasm32 build of the pokeplatinum PC port, for the nativeplat runtime.
+#
+#   make -f pc/Makefile.wasm -j10            build/pc-wasm/pokeplatinum.wasm
+#   make -f pc/Makefile.wasm wasm2c-check    convert it, compile the C natively,
+#                                            and print the module's imports
+#
+# pc/Makefile retargeted at wasm32-wasip1 (wasi-sdk clang), the way
+# pc/Makefile.win and pc/Makefile.arm retarget it: one pipeline, this file
+# sets only what genuinely differs.
+#
+# WHY wasm: the ELF build identity-maps the DS (main RAM at 0x02000000 is a
+# host address), which a 64-bit arm64 iOS/macOS process cannot do. Inside
+# wasm linear memory a guest address IS the DS address, the C is ILP32, and
+# wasm2c turns the module back into native C. The contract with the native
+# runtime is core/include/np_guest_abi.h: imports from module "np_host" plus
+# WASI preview1, exports _start, memory and np_fiber_entry.
+#
+# What wasm changes, each point checked against this toolchain:
+#
+#   * No common symbols: clang refuses -fcommon for wasm ("common symbols are
+#     not yet implemented for Wasm"), so COMMONFLAGS is -fno-common and the
+#     few tentative definitions that more than one TU carries are resolved in
+#     source (see the wasm notes beside each).
+#
+#   * No post-compile symbol surgery: llvm-objcopy cannot --weaken (silently
+#     does nothing on wasm) or --redefine-sym (errors). Both become source
+#     level:
+#       - SDK weakening is two-pass: compile, llvm-nm the TU's own defined
+#         globals into <obj>.weak.h as `#pragma weak <sym>`, recompile with it
+#         force-included. Same symbol set, every one weak. Stronger than the
+#         ELF weaken in one useful way: the compiler KNOWS they are weak, so a
+#         same-TU caller is never inlined past a pc/src override (the -O2
+#         hazard pc/Makefile's OPT comment describes cannot happen here).
+#       - arm7snd's namespace map becomes <map>.h, `#define sym arm7_sym`,
+#         force-included into a recompile of the driver; the result is checked
+#         with llvm-nm against the map (every defined or referenced name must
+#         be arm7_* or on the keep-list), so a macro that missed a symbol, or
+#         renamed something it should not, fails the build.
+#
+#   * No absolute symbols: overlay_ids.c / lcf_syms.c are `.set` directives,
+#     which a wasm object cannot express. The same two generated files become
+#     a header (3ds/gen_absolutes.py, the 3DS port has the same problem) and a
+#     force-included macro map: FS_OVERLAY_ID is an enum constant
+#     (pc/wasm/include/nitro/fs/overlay.h) and each SDK_* link value is a
+#     variable holding the xMAP number (pc/wasm/gen_lcf_vars.py). The xMAP is
+#     still the only source of the numbers.
+#
+#   * pc/wasm/include is searched FIRST (EXTRA_BASEFLAGS precedes INCLUDES):
+#     wasm-only shadows, invisible to every other host.
+#
+#   * long long / double: wasm32 aligns them to 8, mwcc and i386 to 4, so
+#     pc/include/nitro/types.h applies its typedef-level aligned(4) here too.
+#
+# Requires the pinned toolchains under .cache/toolchains (tools/ fetch
+# script): wasi-sdk 34 and wabt. Python 3, GNU make >= 3.81.
+
+WROOT  := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))/..)
+NPROOT := $(abspath $(WROOT)/../..)
+
+TOOLCHAINS ?= $(NPROOT)/.cache/toolchains
+WASI_SDK   ?= $(TOOLCHAINS)/wasi-sdk
+WABT       ?= $(TOOLCHAINS)/wabt
+
+ifeq ($(wildcard $(WASI_SDK)/bin/clang),)
+$(error no wasi-sdk at $(WASI_SDK); fetch the pinned toolchains first)
+endif
+
+CC      := $(WASI_SDK)/bin/clang --target=wasm32-wasip1
+NM      := $(WASI_SDK)/bin/llvm-nm
+# Nothing may call objcopy on a wasm object; `false` makes any path that
+# still does fail loudly instead of silently doing nothing.
+OBJCOPY := false
+
+BUILD   := $(WROOT)/build/pc-wasm
+TARGET   = $(BUILD)/pokeplatinum.wasm
+GEN     := $(BUILD)/geninclude
+WGEN    := $(BUILD)/geninclude-wasm
+
+# wasm32 is ILP32 with signed char and int-sized enums by default; spelled
+# out because the guest ABI rests on them, as pc/Makefile.arm does.
+ABI := -fno-short-enums -fsigned-char
+
+# The game at -O2: the override-inlining hazard that holds the ELF build at
+# -O1 is closed here by the #pragma weak pass (see above). pc/hw at -O3;
+# there is no SSE to name, wasm SIMD is not enabled (wasm2c's SIMD support
+# would tie the native side to it).
+OPT    := -O2
+HW_OPT := -O3
+
+COMMONFLAGS := -fno-common
+DEBUGFLAGS  :=
+
+EXTRA_BASEFLAGS := -I$(WROOT)/pc/wasm/include -I$(WGEN) -I$(NPROOT)/core/include \
+                   -include $(WROOT)/pc/wasm/include/pc_wasm_prelude.h
+
+# Host files wasm does not compile. Replaced by pc/wasm/src: none of these
+# can work over linear memory without the host OS they are written against.
+# Dropped: the GL renderer (no GL in a wasm module; the soft renderer is the
+# one that runs), the Windows halves.
+PC_SRCS_EXCLUDE := pc_gpu3d_gl.c pc_gpu3d_gl_tex.c \
+                   pc_win_fiber.c pc_win_ipc.c pc_win_clock.c
+
+ABSOLUTE_SYMS := 0
+
+# The link. Addresses: everything the C runtime owns (data, heap, the main
+# shadow stack) lives at or above NP_GUEST_C_BASE (0x0B000000); below it is
+# the DS map. --no-stack-first keeps the main shadow stack after the data
+# rather than at address 0, inside the DS map. Memory is fixed at 256 MiB.
+WASM_MAP := $(BUILD)/pokeplatinum.map
+LDFLAGS  := -Wl,--global-base=184549376 -Wl,--initial-memory=268435456 \
+            -Wl,--max-memory=268435456 -Wl,-z,stack-size=1048576 \
+            -Wl,--no-stack-first -Wl,-Map=$(WASM_MAP)
+LDLIBS   := -lm
+
+# Overlay statics: no .symtab to read at runtime, so the table is generated
+# at its final size (--addr-table, as the 3DS build does) and the real
+# addresses are written into the finished module's data afterwards, from the
+# link map. Only bytes change, so nothing moves and there is no second link.
+OVSTATICS_FLAGS := --addr-table
+POST_LINK = $(PYTHON) $(WROOT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(OVERLAY_STATICS_C)
+
+# ------------------------------------------------------------- SDK weaken
+#
+# Pass 1 is the ordinary COMPILE_RULE pass pc/Makefile already ran; this is
+# pass 2. The header lists every external definition pass 1 produced; the
+# recompile, through the very same COMPILE_RULE (strip_asm, patches,
+# unstatic), makes each one weak at the source level. A pass-1 skip leaves an
+# empty header and pass 2 skips the same way.
+define SDK_WEAKEN
+@if test -f $@; then $(NM) --defined-only -g $@ | awk 'NF == 3 { print "#pragma weak " $$3 }' > $@.weak.h; \
+ else : > $@.weak.h; fi
+$(call COMPILE_RULE,$(SDK_CFLAGS) $(EXTRA_CFLAGS) -include $@.weak.h)
+endef
+
+include $(WROOT)/pc/Makefile
+
+# -------------------------------------------------------------- arm7snd
+SND7_HDR := $(BUILD)/arm7snd-raw/ns.h
+
+$(SND7_HDR): $(SND7_MAP)
+	@awk 'NF == 2 { print "#define " $$1 " " $$2 }' $< > $@.tmp && mv $@.tmp $@
+
+$(SND7_OBJS): $(SND7_HDR) $(WROOT)/pc/wasm/check_arm7ns.sh
+
+define SND7_RENAME
+@$(CC) $(SND7_CFLAGS) -include $(SND7_HDR) -c -o $@.renamed $(ROOT)/pc/arm7snd/src/$*.c
+@NM="$(NM)" sh $(WROOT)/pc/wasm/check_arm7ns.sh $@.renamed $(SND7_MAP)
+@mv $@.renamed $@
+endef
+
+# ------------------------------------------------------- link constants
+#
+# The overlay ordinals and the ROM link's values, from the two files the
+# pipeline above already generates (main.lsf and the xMAP remain the only
+# sources). gen_absolutes.py only rewrites its header when the contents
+# change; gen_lcf_vars.py likewise.
+ABS_H    := $(WGEN)/pc_wasm_absolutes.h
+LCF_H    := $(WGEN)/pc_wasm_lcf.h
+LCF_VARS := $(BUILD)/pc_wasm_lcf.c
+
+$(ABS_H): $(OVERLAY_IDS_C) $(LCF_SYMS_C) $(ROOT)/3ds/gen_absolutes.py
+	@mkdir -p $(WGEN)
+	@$(PYTHON) $(ROOT)/3ds/gen_absolutes.py $(OVERLAY_IDS_C) $(LCF_SYMS_C) $@
+
+$(LCF_H) $(LCF_VARS): $(LCF_SYMS_C) $(WROOT)/pc/wasm/gen_lcf_vars.py
+	@mkdir -p $(WGEN)
+	@$(PYTHON) $(WROOT)/pc/wasm/gen_lcf_vars.py $(LCF_SYMS_C) $(LCF_H) $(LCF_VARS)
+
+# Every object sees the prelude, so the generated headers and the wasm
+# shadows join pc/include in the stamp that rebuilds the world.
+WASM_SHADOWS := $(shell find $(WROOT)/pc/wasm/include -type f | sort)
+$(SHADOWSTAMP): $(WASM_SHADOWS) $(ABS_H) $(LCF_H)
+
+# -------------------------------------------------- wasm-only host files
+#
+# pc/wasm/src: the host layer's wasm halves that have no business in
+# pc/src (every other host would compile them to nothing).
+WASM_SRCS := $(wildcard $(WROOT)/pc/wasm/src/*.c)
+WASM_OBJS := $(patsubst $(WROOT)/pc/wasm/src/%.c,$(OBJ)/pcwasm/%.o,$(WASM_SRCS)) \
+             $(OBJ)/pcwasm/pc_wasm_lcf.o
+
+$(OBJ)/pcwasm/%.o: $(WROOT)/pc/wasm/src/%.c $(CFLAGSTAMP) $(HDRSTAMP) $(SHADOWSTAMP)
+	@mkdir -p $(dir $@)
+	$(CC) $(PCSRC_CFLAGS) -c -o $@ $<
+
+$(OBJ)/pcwasm/pc_wasm_lcf.o: $(LCF_VARS) $(ABS_H)
+	@mkdir -p $(dir $@)
+	$(CC) $(PCSRC_CFLAGS) -c -o $@ $<
+
+$(TARGET): $(WASM_OBJS)
+
+# ------------------------------------------------------------ wasm2c check
+#
+# The acceptance gate for the module as a module: wasm-validate, wasm2c
+# accepts it, the C it writes compiles natively, and the import list is
+# exactly np_host + wasi_snapshot_preview1.
+W2C_DIR := $(BUILD)/wasm2c
+
+.PHONY: wasm2c-check
+wasm2c-check: $(TARGET)
+	@mkdir -p $(W2C_DIR)
+	$(WABT)/bin/wasm-validate $(TARGET)
+	$(WABT)/bin/wasm2c $(TARGET) -n platinum -o $(W2C_DIR)/platinum.c
+	$(PYTHON) $(NPROOT)/tools/wasm2c_postprocess.py $(W2C_DIR)/platinum.c
+	clang -O1 -c -w -I$(WABT)/include -I$(WABT)/share/wabt/wasm2c \
+	    -o $(W2C_DIR)/platinum.o $(W2C_DIR)/platinum.c
+	@$(PYTHON) $(WROOT)/pc/wasm/check_imports.py $(TARGET)

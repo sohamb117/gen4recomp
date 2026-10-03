@@ -76,7 +76,10 @@ OBJ      := $(BUILD)/obj
 MODSTAMP := $(BUILD)/.modstamp
 # Defined here because object rules above the recipe still expand it.
 CFLAGSTAMP := $(BUILD)/.cflagstamp
-GEN      := $(ROOT)/build/pc/geninclude
+# Overridable for the same reason BUILD is: a retargeting makefile whose
+# outputs must stay inside its own tree (pc/Makefile.wasm) points it there.
+# The headers are host-independent, so the default stays shared.
+GEN      ?= $(ROOT)/build/pc/geninclude
 TARGET   ?= $(BUILD)/pokeplatinum
 MAKEFILE := $(ROOT)/pc/Makefile
 # What `make status` recurses into: the makefile the user actually invoked,
@@ -237,8 +240,16 @@ DEFINES := -DPM_KEEP_ASSERTS \
 # the caller, ARM emits no unwind tables unless asked, and without them the
 # fault handler's backtrace() answers zero frames.
 EXTRA_BASEFLAGS ?=
+# Debug info and the common-symbol model, each a hook for one host that
+# cannot take the default: wasm objects have no common symbols at all (clang
+# refuses -fcommon there), and pc/Makefile.wasm resolves the duplicate
+# tentative definitions instead; it also builds without DWARF, which
+# wasm2c discards and which would triple the object tree. Everywhere else
+# these are -g and -fcommon, exactly as before.
+DEBUGFLAGS  ?= -g
+COMMONFLAGS ?= -fcommon
 
-BASEFLAGS := $(ABI) $(OPT) $(SANITIZE) $(EXTRA_BASEFLAGS) -g -std=gnu99 -fms-extensions -fno-strict-aliasing -fwrapv -fcommon \
+BASEFLAGS := $(ABI) $(OPT) $(SANITIZE) $(EXTRA_BASEFLAGS) $(DEBUGFLAGS) -std=gnu99 -fms-extensions -fno-strict-aliasing -fwrapv $(COMMONFLAGS) \
              -include $(ROOT)/pc/include/pc_prelude.h $(INCLUDES) -w $(DEFINES)
 
 # The ROM build force-includes include/pch/global_pch.h into every *game*
@@ -326,7 +337,11 @@ SDK_SRCS := $(filter-out $(SDK_ARM7), \
               $(shell find $(NITROSDK)/libraries $(NITROSYSTEM)/libraries \
                 $(NITROWIFI)/libraries $(NITRODWC)/libraries -name '*.c' 2>/dev/null | sort))
 
-PC_SRCS := $(wildcard $(ROOT)/pc/src/*.c)
+# A host that replaces or cannot compile a pc/src file names it here (bare
+# file names). Empty for every host this file builds by itself.
+PC_SRCS_EXCLUDE ?=
+PC_SRCS := $(filter-out $(addprefix $(ROOT)/pc/src/,$(PC_SRCS_EXCLUDE)), \
+             $(wildcard $(ROOT)/pc/src/*.c))
 
 # pc/hw: the melonDS-derived GPU cores (see pc/hw/README.md for provenance
 # and licence). Compiled like pc/src (strong symbols, never weakened) so
@@ -358,8 +373,8 @@ SND7_RAW  := $(patsubst $(ROOT)/pc/arm7snd/src/%.c,$(BUILD)/arm7snd-raw/%.o,$(SN
 SND7_OBJS := $(patsubst $(BUILD)/arm7snd-raw/%.o,$(OBJ)/arm7snd/%.o,$(SND7_RAW))
 SND7_MAP  := $(BUILD)/arm7snd-raw/ns.map
 
-SND7_CFLAGS := $(ABI) $(OPT) $(SANITIZE) $(GAME_SANITIZE) -g -std=gnu99 -fms-extensions -fno-strict-aliasing \
-               -fwrapv -w -fcommon -DPLATFORM_PC \
+SND7_CFLAGS := $(ABI) $(OPT) $(SANITIZE) $(GAME_SANITIZE) $(DEBUGFLAGS) -std=gnu99 -fms-extensions -fno-strict-aliasing \
+               -fwrapv -w $(COMMONFLAGS) -DPLATFORM_PC \
                -I$(ROOT)/pc/arm7snd/include \
                -I$(ROOT)/pc/include \
                -I$(ROOT)/subprojects/NitroSDK-4.2.30001/include
@@ -377,9 +392,13 @@ $(SND7_MAP): $(SND7_RAW) $(MAKEFILE)
 	  | awk -v p='$(SYMPFX)' '{ n = $$1; sub("^" p, "", n); print p n " " p "arm7_" n }' > $@
 	@echo "  SND7NS  $$(wc -l < $@) sound-driver symbols moved into the arm7_ namespace"
 
+# The rename is a hook because it is an object-format operation: wasm
+# objects cannot have symbols renamed after the fact, so pc/Makefile.wasm
+# recompiles the driver under a generated #define map instead.
+SND7_RENAME ?= @$(OBJCOPY) --redefine-syms=$(SND7_MAP) $< $@
 $(OBJ)/arm7snd/%.o: $(BUILD)/arm7snd-raw/%.o $(SND7_MAP)
 	@mkdir -p $(dir $@)
-	@$(OBJCOPY) --redefine-syms=$(SND7_MAP) $< $@
+	$(SND7_RENAME)
 
 OBJS += $(SND7_OBJS)
 
@@ -406,19 +425,27 @@ $(OBJ)/pc/overlay_ids.o: $(OVERLAY_IDS_C)
 	@mkdir -p $(dir $@)
 	$(CC) $(PCSRC_CFLAGS) -c -o $@ $<
 
+# ABSOLUTE_SYMS: whether the object format can carry an absolute symbol at
+# all (`.set`). ELF and PE can; wasm cannot, and pc/Makefile.wasm turns the
+# same two generated files into a header of constants instead.
+ABSOLUTE_SYMS ?= 1
+ifeq ($(ABSOLUTE_SYMS),1)
 OBJS += $(OBJ)/pc/overlay_ids.o
+endif
 
 # Overlay .data/.bss snapshot table: names and object-nm sizes, not
 # addresses. Generated AFTER the game objects exist so nm can see them,
 # and kept out of $(OBJS) so this rule can list $(OBJS) as a prerequisite
 # without a cycle. The link already globs $(OBJ), so the new object is
-# picked up once this target has run.
+# picked up once this target has run. OVSTATICS_FLAGS is --addr-table on a
+# host with no .symtab to read at runtime (wasm; the 3DS build's own rule).
 OVERLAY_STATICS_C := $(BUILD)/overlay_statics.c
 GEN_OVSTATICS     := $(ROOT)/pc/gen_overlay_statics.py
+OVSTATICS_FLAGS   ?=
 
 $(OBJ)/pc/overlay_statics.o: $(OVERLAY_MAP) $(GEN_OVSTATICS) $(OBJS)
 	@mkdir -p $(dir $@) $(BUILD)
-	@$(PYTHON) $(GEN_OVSTATICS) $(OVERLAY_MAP) $(OBJ)/game $(OVERLAY_STATICS_C)
+	@$(PYTHON) $(GEN_OVSTATICS) $(OVSTATICS_FLAGS) $(OVERLAY_MAP) $(OBJ)/game $(OVERLAY_STATICS_C)
 	$(CC) $(PCSRC_CFLAGS) -c -o $@ $(OVERLAY_STATICS_C)
 	@echo "  OVSTAT  $$(grep -c '{ [0-9]' $(OVERLAY_STATICS_C)) overlay statics"
 
@@ -470,7 +497,9 @@ $(OBJ)/pc/lcf_syms.o: $(LCF_SYMS_C)
 	@mkdir -p $(dir $@)
 	$(CC) $(PCSRC_CFLAGS) -c -o $@ $<
 
+ifeq ($(ABSOLUTE_SYMS),1)
 OBJS += $(OBJ)/pc/lcf_syms.o
+endif
 
 # The trainer AI's bytecode. It is data, not ARM, an offset-addressed
 # program the battle engine interprets, and the ROM build already
@@ -734,9 +763,13 @@ $(OBJ)/game/subprojects/NitroSystem-071126.1/libraries/snd/src/capture.o: \
 # stamp already digests every file under an enabled mod.
 .SECONDEXPANSION:
 
+# SDK_WEAKEN is the weaken step as a hook: an object format with no
+# post-compile weaken (wasm) supplies its own recipe for the same result.
+SDK_WEAKEN ?= @test ! -f $@ || $(OBJCOPY) --weaken $@
+
 $(OBJ)/game/subprojects/%.o: $(ROOT)/subprojects/%.c $(CFLAGSTAMP) $(HDRSTAMP) $(SHADOWSTAMP) $(MODSTAMP) $(PATCHSTAMP) $$(wildcard $(PATCHES)/subprojects/$$*.c.patch)
 	$(call COMPILE_RULE,$(SDK_CFLAGS) $(EXTRA_CFLAGS))
-	@test ! -f $@ || $(OBJCOPY) --weaken $@
+	$(SDK_WEAKEN)
 
 $(OBJ)/game/%.o: $(ROOT)/%.c $(CFLAGSTAMP) $(HDRSTAMP) $(SHADOWSTAMP) $(MODSTAMP) $(PATCHSTAMP) $$(wildcard $(PATCHES)/$$*.c.patch)
 	$(call COMPILE_RULE,$(GAME_CFLAGS))
