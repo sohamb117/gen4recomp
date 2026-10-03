@@ -7,3 +7,5 @@ build/
 # ROMs and saves are user-supplied; never commit them
 *.nds
 *.sav
+__pycache__/
+*.pyc
