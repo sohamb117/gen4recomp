@@ -22,7 +22,8 @@
  *
  * The image path: $PC_ROM if set, else <dir of the executable>
  * /../rom/pokeplatinum.us.nds (the build tree layout), else
- * ./build/rom/pokeplatinum.us.nds.
+ * ./build/rom/pokeplatinum.us.nds. The wasm guest names no path: the
+ * runtime owns the image and serves np_host_rom_size/np_host_rom_read.
  */
 #include "pc_bench.h"
 #include <nitro.h>
@@ -77,9 +78,18 @@ static ssize_t pc_pwrite(int fd, const void *buf, size_t len, off_t off) {
 #include <string.h>
 #include <unistd.h>
 
-static int sRomFd = -1;
+#if defined(__wasm__)
+#include <pc_wasm.h>
 
-#if defined(__3DS__)
+/* Bytes the runtime's image holds; 0 until pc_rom_init succeeded. */
+static u32 sRomSize;
+#else
+static int sRomFd = -1;
+#endif
+
+#if defined(__wasm__)
+/* No path: the runtime opened the image before the guest started. */
+#elif defined(__3DS__)
 /* The search happened at mount time: 3ds/src/3ds_rom.c tries the image packed
  * into the 3dsx first and the SD card second, and hands back whichever it
  * opened. There is nothing for this side to look for, no executable
@@ -142,6 +152,28 @@ static const char *rom_path(char *buf, size_t bufsize)
 }
 #endif
 
+#if defined(__wasm__)
+int pc_rom_init(void)
+{
+    u8 header[0x200];
+    u32 size = np_host_rom_size();
+
+    if (size < sizeof header) {
+        pc_wasm_fatalf("pc_card_rom: the runtime's ROM image is %u bytes, "
+                       "less than its own header", (unsigned)size);
+    }
+    if (np_host_rom_read(0, header, sizeof header) != 0) {
+        pc_wasm_fatal("pc_card_rom: reading the ROM header failed");
+    }
+    /* HW_CARD_ROM_HEADER_SIZE, not sizeof header: see the comment in the
+     * file-backed pc_rom_init below. */
+    memcpy((void *)HW_ROM_HEADER_BUF, header, HW_CARD_ROM_HEADER_SIZE);
+    sRomSize = size;
+    fprintf(stderr, "pokeplatinum-wasm: rom: %u bytes from the runtime\n",
+            (unsigned)size);
+    return 0;
+}
+#else
 int pc_rom_init(void)
 {
     char pathbuf[PATH_MAX];
@@ -173,6 +205,7 @@ int pc_rom_init(void)
     fprintf(stderr, "pokeplatinum-pc: rom: %s\n", path);
     return 0;
 }
+#endif
 
 /*
  * Every card read is a pread of a 134 MB file, so the first touch of any
@@ -180,6 +213,27 @@ int pc_rom_init(void)
  * exactly the shape of a stall the pacer cannot do anything about. The span
  * is here so the late-frame autopsy can say whether that is what it was.
  */
+#if defined(__wasm__)
+static void rom_read(u32 src, void *dst, u32 len)
+{
+    int32_t rc;
+
+    /* Same contract as the pread below: a read the image cannot satisfy
+     * whole is a fatal port bug, not a short read to hand back. */
+    if (src > sRomSize || len > sRomSize - src) {
+        pc_wasm_fatalf("pc_card_rom: read of %u bytes at rom:%#x is past "
+                       "the %u-byte image",
+                       (unsigned)len, (unsigned)src, (unsigned)sRomSize);
+    }
+    PC_BENCH_BEGIN(bench_t);
+    rc = np_host_rom_read(src, dst, len);
+    PC_BENCH_END(PC_BENCH_IO, bench_t);
+    if (rc != 0) {
+        pc_wasm_fatalf("pc_card_rom: read of %u bytes at rom:%#x returned %d",
+                       (unsigned)len, (unsigned)src, (int)rc);
+    }
+}
+#else
 static void rom_read(u32 src, void *dst, u32 len)
 {
     ssize_t n;
@@ -194,16 +248,23 @@ static void rom_read(u32 src, void *dst, u32 len)
         abort();
     }
 }
+#endif
 
 void CARDi_ReadRom(u32 dma, const void *src, void *dst, u32 len,
                    MIDmaCallback callback, void *arg, BOOL is_async)
 {
     (void)dma;
     (void)is_async;
+#if defined(__wasm__)
+    if (sRomSize == 0) {
+        pc_wasm_fatal("pc_card_rom: read before pc_rom_init");
+    }
+#else
     if (sRomFd < 0) {
         fprintf(stderr, "pc_card_rom: read before pc_rom_init\n");
         abort();
     }
+#endif
     rom_read((u32)src, dst, len);
     if (callback) {
         callback(arg);
@@ -263,11 +324,19 @@ BOOL CARD_TryWaitRomAsync(void)
  * mutating request; a save-file write is rare and small (<=512 KB), and
  * write-through means a crash never loses a completed save. PC_SAVE=none
  * disables persistence for scripted runs.
+ *
+ * The wasm guest has no files: the image is loaded from the runtime
+ * (np_host_save_load) when the chip is identified, published through
+ * pc_wasm_frame.save_image/save_size, flagged in pc_wasm_frame.save_dirty
+ * on every mutation, and stored with np_host_save_store at the same settle
+ * points the file is written at. No rotation, no temporaries; PC_SAVE=none
+ * still disables persistence, any other PC_SAVE value is ignored.
  */
 #include <nitro/card/backup.h>
 
 static u8 *sBackupImage;
 static u32 sBackupSize;
+#if !defined(__wasm__)
 static char sSavePath[PATH_MAX];
 
 /*
@@ -367,6 +436,11 @@ static int backup_write(const char *path)
     close(fd);
     return ok;
 }
+#else
+/* The runtime holds the save: set once the image was loaded from it, clear
+ * for PC_SAVE=none, which keeps the chip in memory only. */
+static int sSaveHost;
+#endif
 
 /*
  * Why the write is deferred, and what it cost to learn.
@@ -402,11 +476,44 @@ static void backup_touch(void)
 {
     extern unsigned long long pc_irq_frames(void);
 
+#if defined(__wasm__)
+    /* While the guest was parked the runtime may have stored the image and
+     * cleared save_dirty: what was pending is persisted, and this touch is
+     * the start of a new burst whose settle counts from now. */
+    if (sSaveHost && !pc_wasm_frame.save_dirty) {
+        sBackupDirty = 0;
+    }
+#endif
     if (!sBackupDirty) {
         sBackupDirty = 1;
         sBackupDirtyAt = pc_irq_frames();
     }
+#if defined(__wasm__)
+    if (sSaveHost) {
+        pc_wasm_frame.save_dirty = 1;
+    }
+#endif
 }
+
+#if defined(__wasm__)
+static void backup_write_now(void)
+{
+    int32_t rc;
+
+    if (!sSaveHost || !pc_wasm_frame.save_dirty) {
+        return;                 /* no persistence, or the runtime stored it */
+    }
+    rc = np_host_save_store(sBackupImage, sBackupSize);
+    if (rc != 0) {
+        /* save_dirty stays 1: the runtime may store it itself while the
+         * guest is parked, and the exit sync tries again. */
+        fprintf(stderr, "pc_card_rom: save store to the runtime failed (%d)\n",
+                (int)rc);
+        return;
+    }
+    pc_wasm_frame.save_dirty = 0;
+}
+#else
 
 static void backup_write_now(void)
 {
@@ -429,6 +536,7 @@ static void backup_write_now(void)
         fprintf(stderr, "pc_card_rom: save write to %s failed\n", sSavePath);
     }
 }
+#endif
 
 /*
  * Write the image out now if anything is waiting. Public because more than the
@@ -438,11 +546,18 @@ static void backup_write_now(void)
  */
 void pc_card_backup_sync(void)
 {
+#if defined(__wasm__)
+    /* save_dirty is the authority, not sBackupDirty: a store that failed
+     * left it set with sBackupDirty already cleared. */
+    sBackupDirty = 0;
+    backup_write_now();
+#else
     if (!sBackupDirty) {
         return;
     }
     sBackupDirty = 0;
     backup_write_now();
+#endif
 }
 
 /* One guest frame. OS_Halt calls this, so both hosts get it from the same
@@ -455,6 +570,12 @@ void pc_card_step(void)
     if (!sBackupDirty) {
         return;
     }
+#if defined(__wasm__)
+    if (sSaveHost && !pc_wasm_frame.save_dirty) {
+        sBackupDirty = 0;       /* the runtime stored it while we were parked */
+        return;
+    }
+#endif
     waited = pc_irq_frames() - sBackupDirtyAt;
     if (waited >= CARD_SETTLE_FRAMES || waited >= CARD_DIRTY_MAX) {
         pc_card_backup_sync();
@@ -476,6 +597,33 @@ static int backup_ready(CARDiCommandArg *cmd)
     }
     memset(sBackupImage, 0xFF, sBackupSize);
 
+#if defined(__wasm__)
+    {
+        const char *env = getenv("PC_SAVE");
+        int32_t rc;
+
+        if (env && strcmp(env, "none") == 0) {
+            fprintf(stderr, "pc_card_rom: save: none (PC_SAVE=none)\n");
+            return 1;
+        }
+        rc = np_host_save_load(sBackupImage, sBackupSize);
+        if (rc < 0) {
+            pc_wasm_fatalf("pc_card_rom: the runtime failed to load the "
+                           "%u-byte save", (unsigned)sBackupSize);
+        }
+        /* rc == 0: no save yet, the erased fill above is the chip. */
+        sSaveHost = 1;
+        pc_wasm_frame.save_dirty = 0;
+        pc_wasm_frame.save_size = sBackupSize;
+        pc_wasm_frame.save_image = (uint32_t)(uintptr_t)sBackupImage;
+        /* Same reason as the file hosts' atexit below. */
+        atexit(pc_card_backup_sync);
+        fprintf(stderr, "pc_card_rom: save: %s (%u bytes)\n",
+                rc > 0 ? "loaded from the runtime" : "new, erased chip",
+                (unsigned)sBackupSize);
+    }
+    return 1;
+#else
 #if defined(__3DS__)
     /*
      * No environment to read on this console, and the rule the other hosts
@@ -540,6 +688,7 @@ static int backup_ready(CARDiCommandArg *cmd)
         }
     }
     return 1;
+#endif
 }
 
 BOOL CARDi_Request(CARDiCommon *p, int req_type, int retry_count)

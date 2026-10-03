@@ -13,7 +13,9 @@
  * draw different randomness and unbisectable frames. The reported time is
  * a fixed epoch advanced by the port's own frame counter (one VBlank =
  * 1/60 s), one clock in the port, the RTC a view of it. PC_RTC=
- * "YYYY-MM-DD HH:MM:SS" overrides the epoch; nothing reads the host time.
+ * "YYYY-MM-DD HH:MM:SS" overrides the epoch; nothing reads the host time,
+ * except the wasm guest, which asks the runtime (np_host_rtc_now) and keeps
+ * this clock whenever the runtime declines; see host_secs().
  *
  * Why it advances instead of being frozen: frozen is also deterministic
  * and wrong twice, the day/night cycle and berry timers would wait
@@ -33,6 +35,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#if defined(__wasm__)
+#include <pc_wasm.h>
+#endif
 
 extern u32 pc_os_vblank_count;
 extern void pc_pxi_set_responder(int tag, void (*fn)(u32 data));
@@ -68,11 +74,95 @@ static int weekday(int y, int m, int d)
 static u32 hex2bcd(int v) { return (u32)((v / 10) * 16 + (v % 10)); }
 static int bcd2hex(u32 v) { return (int)((v >> 4) * 10 + (v & 0xF)); }
 
+#if defined(__wasm__)
+/*
+ * The wasm guest's clock: the runtime's local wall time when it offers one
+ * (np_host_rtc_now() >= 0), the deterministic frame clock otherwise. A
+ * player of the wasm build expects the DS behaviour, berries and day/night
+ * following the real clock even across sessions, and the runtime is the one
+ * place that knows whether it wants that or a reproducible run (it returns
+ * -1 for the latter). PC_RTC still wins: an explicit epoch is a request for
+ * the deterministic clock.
+ *
+ * A game write (adopt_raw) is kept as an offset from the host clock, so a
+ * clock the player sets in the game keeps running from where they set it.
+ */
+static int sRtcEnvOverride;
+static long long sHostOffset;   /* seconds added to np_host_rtc_now() */
+
+/* 2000-01-01 00:00:00 + 100 years: the chip's BCD year has two digits. */
+#define RTC_HOST_LIMIT 3155760000LL
+
+static long long fields_to_secs(int y, int mo, int d, int h, int mi, int s)
+{
+    long long days = 0;
+    int i;
+
+    for (i = 0; i < y; i++) {
+        days += (i % 4) == 0 ? 366 : 365;
+    }
+    for (i = 1; i < mo; i++) {
+        days += days_in_month(y, i);
+    }
+    days += d - 1;
+    return ((days * 24 + h) * 60 + mi) * 60 + s;
+}
+
+static void secs_to_fields(long long t, int *y, int *mo, int *d,
+                           int *h, int *mi, int *s)
+{
+    long long days = t / 86400;
+    int rem = (int)(t % 86400);
+
+    *h = rem / 3600;
+    *mi = (rem / 60) % 60;
+    *s = rem % 60;
+    *y = 0;
+    for (;;) {
+        int ylen = (*y % 4) == 0 ? 366 : 365;
+
+        if (days < ylen) break;
+        days -= ylen;
+        (*y)++;
+    }
+    *mo = 1;
+    while (days >= days_in_month(*y, *mo)) {
+        days -= days_in_month(*y, *mo);
+        (*mo)++;
+    }
+    *d = (int)days + 1;
+}
+
+/* The host's time in seconds since 2000, game offset applied; -1 when the
+ * deterministic clock is to be used. */
+static long long host_secs(void)
+{
+    long long t;
+
+    if (sRtcEnvOverride) return -1;
+    t = (long long)np_host_rtc_now();
+    if (t < 0) return -1;
+    t += sHostOffset;
+    if (t < 0 || t >= RTC_HOST_LIMIT) return -1;
+    return t;
+}
+#endif
+
 /* The current time: epoch fields plus elapsed whole seconds. */
 static void now(int *y, int *mo, int *d, int *h, int *mi, int *s)
 {
     u32 elapsed = (pc_os_vblank_count - ep_base_frames) / 60u;
 
+#if defined(__wasm__)
+    {
+        long long t = host_secs();
+
+        if (t >= 0) {
+            secs_to_fields(t, y, mo, d, h, mi, s);
+            return;
+        }
+    }
+#endif
     *y = ep_year; *mo = ep_month; *d = ep_day;
     *h = ep_hour; *mi = ep_min;
     *s = ep_sec + (int)(elapsed % 60u);
@@ -148,6 +238,15 @@ static void adopt_raw(int date_half, int time_half)
     ep_year = y; ep_month = mo; ep_day = d;
     ep_hour = h; ep_min = mi; ep_sec = s;
     ep_base_frames = pc_os_vblank_count;
+#if defined(__wasm__)
+    if (!sRtcEnvOverride) {
+        long long t = (long long)np_host_rtc_now();
+
+        if (t >= 0) {
+            sHostOffset = fields_to_secs(y, mo, d, h, mi, s) - t;
+        }
+    }
+#endif
 }
 
 static void rtc_respond(u32 data)
@@ -217,6 +316,9 @@ int pc_rtc_init(void)
         }
         ep_year = y - 2000; ep_month = mo; ep_day = d;
         ep_hour = h; ep_min = mi; ep_sec = s;
+#if defined(__wasm__)
+        sRtcEnvOverride = 1;
+#endif
     }
     ep_base_frames = 0;
     pc_pxi_set_responder(PXI_FIFO_TAG_RTC, rtc_respond);
