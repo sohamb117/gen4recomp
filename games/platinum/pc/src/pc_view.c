@@ -29,6 +29,9 @@
 #include <time.h>
 #if defined(_WIN32)
 #include "pc_win_ipc.h"
+#elif defined(__wasm__)
+#include <np_core.h>    /* NP_KEY_*, the runtime's key bits */
+#include <pc_wasm.h>
 #else
 #include <fcntl.h>
 #include <signal.h>
@@ -52,7 +55,7 @@ static void view_sleep(const struct timespec *t)
 {
     pc_sleep_ns((long long)t->tv_sec * 1000000000LL + t->tv_nsec);
 }
-#else
+#elif !defined(__wasm__)
 static void view_sleep(const struct timespec *t)
 {
     nanosleep(t, NULL);
@@ -63,6 +66,184 @@ extern void pc_input_live(unsigned keys, int touch_on,
                           unsigned x, unsigned y);
 extern unsigned pc_audio_read(int16_t *dst, unsigned frames);
 extern void pc_audio_set_sink(void (*sink)(void));
+
+#if defined(__wasm__)
+/*
+ * wasm32 (pc/Makefile.wasm): the runtime is the window.
+ *
+ * There is no second process here: core/include/np_guest_abi.h's frame
+ * descriptor (pc_wasm_frame, pc/wasm/include/pc_wasm.h) replaces the shared
+ * page, and np_host_vblank() replaces both the seqlock and the pacer. The
+ * guest is parked inside that call while the runtime reads the frame, so the
+ * descriptor needs no lock and the pixels need no copy; and the runtime
+ * decides when the next frame starts, so this side never sleeps.
+ *
+ * What crosses, and how it maps onto what the shm channel carries:
+ *
+ *   screen   The 2D engine's own surfaces (pc_video.h: 0x00RRGGBB words,
+ *            row-major, 256x192), which is the descriptor's format already,
+ *            so they are handed over by address, top screen first by
+ *            POWCNT1's DSEL the way pc_video.c orders a frame dump.
+ *   audio    The ring the viewer is fed, PC_VIEW_AUDIO_FRAMES (2^15) u32
+ *            stereo frames with left in the low half, filled from the same
+ *            pc_audio sink the moment the mixer produces, at
+ *            PC_VIEW_AUDIO_RATE. Here it is a static rather than part of a
+ *            page; the descriptor's audio_head is the page's.
+ *   input    NP_KEY_* are PAD_Read's bits, which is what pc_input_live()
+ *            takes. Applied only when the runtime's input CHANGES: the
+ *            page's in_seq rule ("live input wins over the script only
+ *            once a viewer has actually spoken"), so a runtime that never
+ *            touches the pad leaves a PC_INPUT script in charge.
+ *   quit     in_quit ends the run where a closed viewer window does, here
+ *            at the frame boundary, with exit(0): the atexit handlers
+ *            (pc_card_backup_sync stores the save, the dumps close) run.
+ *
+ * Not carried: wide and HD frames (PC_ASPECT / PC_HD3D are refused to
+ * native, below), turbo (the runtime's to decide), the viewer pid (there is
+ * no viewer process), and the lid (see view_wasm_input).
+ */
+_Static_assert(NP_KEY_A == PC_VIEW_KEY_A && NP_KEY_B == PC_VIEW_KEY_B
+               && NP_KEY_SELECT == PC_VIEW_KEY_SELECT
+               && NP_KEY_START == PC_VIEW_KEY_START
+               && NP_KEY_RIGHT == PC_VIEW_KEY_RIGHT
+               && NP_KEY_LEFT == PC_VIEW_KEY_LEFT
+               && NP_KEY_UP == PC_VIEW_KEY_UP
+               && NP_KEY_DOWN == PC_VIEW_KEY_DOWN
+               && NP_KEY_R == PC_VIEW_KEY_R && NP_KEY_L == PC_VIEW_KEY_L
+               && NP_KEY_X == PC_VIEW_KEY_X && NP_KEY_Y == PC_VIEW_KEY_Y,
+               "NP_KEY_* must be PAD_Read's bits, which pc_input_live takes");
+#define VIEW_WASM_KEYS 0x0FFFu      /* A..Y; DEBUG is not a player's key */
+
+_Static_assert((PC_VIEW_AUDIO_FRAMES & (PC_VIEW_AUDIO_FRAMES - 1)) == 0,
+               "the descriptor's audio ring must be a power of two");
+
+static uint32_t view_audio[PC_VIEW_AUDIO_FRAMES];
+static uint32_t view_audio_head;    /* stereo frames ever written */
+
+/* The sink: view_publish_audio's loop below, aimed at the static ring. */
+static void view_publish_audio(void)
+{
+    int16_t buf[256 * 2];
+    unsigned got;
+
+    while ((got = pc_audio_read(buf, sizeof buf / (2 * sizeof buf[0]))) != 0) {
+        unsigned i;
+
+        for (i = 0; i < got; i++) {
+            view_audio[(view_audio_head + i) % PC_VIEW_AUDIO_FRAMES] =
+                (uint32_t)(uint16_t)buf[i * 2 + 0] |
+                ((uint32_t)(uint16_t)buf[i * 2 + 1] << 16);
+        }
+        view_audio_head += got;
+    }
+}
+
+int pc_view_init(void)
+{
+    const char *name = getenv("PC_VIEW");
+
+    if (name != NULL && name[0] != '\0') {
+        fprintf(stderr, "pc-view: PC_VIEW=%s ignored: on wasm every frame"
+                        " goes to the runtime\n", name);
+    }
+    pc_audio_set_sink(view_publish_audio);
+    return 0;
+}
+
+/* Native only: the surfaces handed over are the 256x192 ones. Refused to
+ * native rather than half-applied, because widening the frustum without
+ * publishing the margins would be a picture that disagrees with itself. */
+void pc_view_set_hd(int scale)
+{
+    if (scale > 1) {
+        fprintf(stderr, "pc-view: PC_HD3D=%d is not supported on wasm;"
+                        " rendering at native resolution\n", scale);
+    }
+    pc_gpu3d_set_hd(1);
+    pc_gpu3d_soft_set_scale(1);
+    pc_gpu2d_set_hd(1);
+}
+
+void pc_view_set_aspect(int width)
+{
+    if (width == PC_VIEW_ASPECT_AUTO || width > PC_VIEW_W) {
+        fprintf(stderr, "pc-view: PC_ASPECT is not supported on wasm;"
+                        " rendering at native width\n");
+    }
+    pc_gpu3d_set_wide(0);
+    pc_gpu3d_soft_set_width(PC_VIEW_W);
+}
+
+/*
+ * The runtime's half, read once the guest is resumed. The lid is read and
+ * not applied: closing it would set the hinge bit pc_input.c keeps open on
+ * every host, and the game answers that with PM_GoSleepMode (src/main.c),
+ * which masks every IRQ but FIFO/timer and then spins on the VBlank count
+ * (NitroSDK libraries/spi/src/pm.c, PM_GoSleepMode); the port delivers
+ * VBlank only from OS_Halt, so that spin would never end and neither would
+ * the frame the runtime is waiting for.
+ */
+static void view_wasm_input(const np_frame_desc *d)
+{
+    static uint32_t last_keys, last_touch, last_x, last_y;
+    static int said_lid;
+    uint32_t keys = d->in_keys & VIEW_WASM_KEYS;
+    uint32_t touch = d->in_touch != 0;
+    uint32_t x = 0, y = 0;
+
+    if (touch) {
+        x = d->in_touch_x < PC_VIEW_W ? d->in_touch_x : PC_VIEW_W - 1;
+        y = d->in_touch_y < PC_VIEW_H ? d->in_touch_y : PC_VIEW_H - 1;
+    }
+    /* Zero is "never spoken", the page's in_seq == 0. */
+    if (keys != last_keys || touch != last_touch
+        || x != last_x || y != last_y) {
+        last_keys = keys;
+        last_touch = touch;
+        last_x = x;
+        last_y = y;
+        pc_input_live(keys, (int)touch, x, y);
+    }
+
+    if (d->in_lid != 0 && !said_lid) {
+        said_lid = 1;
+        fprintf(stderr, "pc-view: lid close ignored, sleep mode is not"
+                        " emulated\n");
+    }
+
+    if (d->in_quit != 0) {
+        fprintf(stderr, "pc-view: the runtime asked to quit, ending the"
+                        " run.\n");
+        exit(0);
+    }
+}
+
+void pc_view_publish(uint64_t frame)
+{
+    np_frame_desc *d = &pc_wasm_frame;
+    const int upper = pc_video_upper_engine();
+
+    d->screen[0] = (uint32_t)(uintptr_t)pc_video_surface(upper);
+    d->screen[1] = (uint32_t)(uintptr_t)pc_video_surface(
+        upper == PC_VIDEO_MAIN ? PC_VIDEO_SUB : PC_VIDEO_MAIN);
+    d->width = PC_VIEW_W;
+    d->height = PC_VIEW_H;
+    d->stride = PC_VIEW_W;
+    d->frame_lo = (uint32_t)frame;
+    d->frame_hi = (uint32_t)(frame >> 32);
+
+    d->audio_ring = (uint32_t)(uintptr_t)view_audio;
+    d->audio_ring_frames = PC_VIEW_AUDIO_FRAMES;
+    d->audio_head = view_audio_head;
+    d->audio_rate = PC_VIEW_AUDIO_RATE;
+
+    np_host_vblank(d);
+
+    view_wasm_input(d);
+}
+
+#else /* !__wasm__: the shared page */
+
 
 static struct pc_view_shm *view_map;
 
@@ -1410,3 +1591,5 @@ void pc_view_publish(uint64_t frame)
         }
     }
 }
+
+#endif /* !__wasm__ */
