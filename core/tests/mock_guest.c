@@ -1,0 +1,333 @@
+/*
+ * Mock guest for the core runtime tests, compiled to wasm32 with wasi-sdk.
+ *
+ * It does what a real game core does through the same contract
+ * (np_guest_abi.h), in miniature, so test_core.c can drive it through
+ * np_core.h alone:
+ *   - a scheduler on the boot fiber and three worker fibers with their own
+ *     malloc'd shadow stacks, switched round-robin several times a frame;
+ *     every worker keeps address-taken locals on its shadow stack and checks
+ *     them, and its own fiber handle, after every switch;
+ *   - a deterministic pattern in two 256x192 screens (the bottom one in DS
+ *     VRAM at 0x06000000, the descriptor in DS main RAM at 0x02000000);
+ *   - a 440 Hz sine into the audio ring;
+ *   - ROM reads checked against the pattern test_core.c serves;
+ *   - a 256-byte backup chip: loaded at boot, stored by the guest at frame 3,
+ *     published in the descriptor and dirtied at frame 5 for the host's
+ *     np_core_save_flush to store;
+ *   - input echoed into pixels; special key combos trigger np_host_trap, a
+ *     wasm `unreachable` on a worker fiber, and exit(3).
+ *
+ * Status pixels (bottom screen row 0) and the pattern formulas are mirrored
+ * in test_core.c; keep the two in sync.
+ */
+#define _DEFAULT_SOURCE /* clock_gettime, getentropy under -std=c11 */
+#include <math.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+
+#include "np_guest_abi.h"
+
+#define W 256
+#define H 192
+#define SLICES 4
+#define NWORKERS 3
+#define SHADOW_STACK (64 * 1024)
+#define AUDIO_RATE 32768
+#define AUDIO_RING 4096
+#define CHIP_SIZE 256
+
+#define KEY_A (1u << 0)
+#define KEY_B (1u << 1)
+#define KEY_SELECT (1u << 2)
+#define KEY_START (1u << 3)
+#define KEY_R (1u << 8)
+#define KEY_L (1u << 9)
+#define KEY_X (1u << 10)
+#define KEY_Y (1u << 11)
+
+enum {
+    ST_ROM_OK = 1u << 0,
+    ST_ENV_OK = 1u << 1,
+    ST_CLOCK_OK = 1u << 2,
+    ST_LAYOUT_OK = 1u << 3,
+    ST_SAVE_LOADED = 1u << 4,
+    ST_STORE_FAILED = 1u << 5,
+    ST_HOST_FLUSHED = 1u << 6,
+    ST_FIBERS_OK = 1u << 7,
+};
+
+#define DESC ((np_frame_desc *)0x02000000u)
+#define BOTTOM ((uint32_t *)0x06000000u)
+
+static uint32_t top[W * H];
+static uint32_t *audio_ring;
+static uint8_t chip[CHIP_SIZE];
+
+static uint32_t frame;
+static uint32_t seed;
+static uint32_t status;
+static uint32_t random_word;
+static uint32_t save_counter;
+static int crash_on_worker; /* set by X+Y: worker 2 executes unreachable */
+
+static uint32_t sched_handle;
+static uint32_t switches_this_frame;
+static uint32_t expected_turn; /* index of the worker that must run next */
+
+typedef struct worker {
+    uint32_t id;
+    uint32_t handle;
+    uint8_t *shadow;
+} worker;
+static worker workers[NWORKERS];
+
+static void fail(const char *msg) {
+    np_host_trap(msg, (uint32_t)strlen(msg));
+}
+
+static uint8_t rom_byte(uint32_t i) {
+    return (uint8_t)(i * 7u + (i >> 8) + 3u);
+}
+
+static uint32_t top_pixel(uint32_t x, uint32_t y) {
+    return ((x + frame) & 0xFFu) << 16 | ((y + seed) & 0xFFu) << 8 | ((x ^ y) & 0xFFu);
+}
+
+static uint32_t bottom_pixel(uint32_t x, uint32_t y) {
+    return ((x * y + frame) & 0xFFu) << 16 | (x & 0xFFu) << 8 | ((y + frame * 2u) & 0xFFu);
+}
+
+static void yield_to_scheduler(void) {
+    switches_this_frame++;
+    np_host_fiber_switch(sched_handle);
+}
+
+/* Keeps `p` opaque to the optimiser so the array really lives in the
+ * shadow stack in linear memory. */
+__attribute__((noinline)) static void touch(volatile uint32_t *p) {
+    (void)p;
+}
+
+static void draw_rows(uint32_t *dst, uint32_t (*pixel)(uint32_t, uint32_t), uint32_t y0, uint32_t y1) {
+    for (uint32_t y = y0; y < y1; y++)
+        for (uint32_t x = 0; x < W; x++) dst[y * W + x] = pixel(x, y);
+}
+
+static void make_audio(uint32_t slice) {
+    uint32_t n = (uint32_t)(((uint64_t)AUDIO_RATE * (frame + 1)) / 60 - ((uint64_t)AUDIO_RATE * frame) / 60);
+    uint32_t a = n * slice / SLICES, b = n * (slice + 1) / SLICES;
+    for (uint32_t i = a; i < b; i++) {
+        uint32_t k = DESC->audio_head;
+        float phase = (float)(k % AUDIO_RATE) * (440.0f * 2.0f * 3.14159265f / (float)AUDIO_RATE);
+        int16_t l = (int16_t)lrintf(sinf(phase) * 12000.0f);
+        int16_t r = (int16_t)-l;
+        audio_ring[k & (AUDIO_RING - 1)] = (uint16_t)l | (uint32_t)(uint16_t)r << 16;
+        DESC->audio_head = k + 1;
+    }
+}
+
+static void worker_main(worker *w) {
+    volatile uint32_t canary[8];
+    for (uint32_t i = 0; i < 8; i++) canary[i] = w->id * 0x01010101u + i;
+    touch(canary);
+    for (;;) {
+        for (uint32_t slice = 0; slice < SLICES; slice++) {
+            if (expected_turn != w->id) fail("mock: workers ran out of order");
+            if (np_host_fiber_self() != w->handle) fail("mock: fiber_self mismatch");
+            uint32_t y0 = H * slice / SLICES, y1 = H * (slice + 1) / SLICES;
+            switch (w->id) {
+            case 0: draw_rows(top, top_pixel, y0, y1); break;
+            case 1: draw_rows(BOTTOM, bottom_pixel, y0, y1); break;
+            default:
+                if (crash_on_worker) __builtin_trap();
+                make_audio(slice);
+                break;
+            }
+            expected_turn = (w->id + 1) % NWORKERS;
+            yield_to_scheduler();
+            for (uint32_t i = 0; i < 8; i++)
+                if (canary[i] != w->id * 0x01010101u + i) fail("mock: shadow stack corrupted across a switch");
+        }
+    }
+}
+
+NP_EXPORT(np_fiber_entry) void np_fiber_entry(uint32_t arg) {
+    if (arg == 0xFFFFFFFFu) {
+        /* The short-lived fiber of frame 2: ping-pong with the scheduler. */
+        for (;;) {
+            switches_this_frame++;
+            np_host_fiber_switch(sched_handle);
+        }
+    }
+    worker_main(&workers[arg]);
+}
+
+static void check_rom(void) {
+    uint32_t size = np_host_rom_size();
+    uint8_t buf[256];
+    if (size < 0x2000) return;
+    if (np_host_rom_read(0x1000, buf, sizeof buf) != 0) return;
+    for (uint32_t i = 0; i < sizeof buf; i++)
+        if (buf[i] != rom_byte(0x1000 + i)) return;
+    if (np_host_rom_read(size - 16, buf, 16) != 0) return;
+    for (uint32_t i = 0; i < 16; i++)
+        if (buf[i] != rom_byte(size - 16 + i)) return;
+    if (np_host_rom_read(size - 4, buf, 16) == 0) return; /* must refuse a read past the end */
+    status |= ST_ROM_OK;
+}
+
+static uint32_t chip_checksum(void) {
+    uint32_t sum = save_counter;
+    for (uint32_t i = 16; i < CHIP_SIZE; i++) sum += chip[i];
+    return sum;
+}
+
+static void chip_header(void) {
+    memcpy(chip, "NPSV", 4);
+    memcpy(chip + 4, &save_counter, 4);
+    memcpy(chip + 8, &seed, 4);
+    uint32_t sum = chip_checksum();
+    memcpy(chip + 12, &sum, 4);
+}
+
+static void load_save(void) {
+    int32_t r = np_host_save_load(chip, CHIP_SIZE);
+    if (r == 1 && memcmp(chip, "NPSV", 4) == 0) {
+        uint32_t sum;
+        memcpy(&save_counter, chip + 4, 4);
+        memcpy(&sum, chip + 12, 4);
+        if (sum == chip_checksum()) {
+            status |= ST_SAVE_LOADED;
+            return;
+        }
+    }
+    save_counter = 0;
+    memset(chip, 0xFF, CHIP_SIZE);
+}
+
+static void run_workers(void) {
+    switches_this_frame = 0;
+    expected_turn = 0;
+    for (uint32_t slice = 0; slice < SLICES; slice++)
+        for (uint32_t i = 0; i < NWORKERS; i++) {
+            np_host_fiber_switch(workers[i].handle);
+            if (np_host_fiber_self() != sched_handle) fail("mock: scheduler resumed on the wrong fiber");
+        }
+    if (switches_this_frame != SLICES * NWORKERS || expected_turn != 0) fail("mock: scheduler lost a switch");
+}
+
+static void short_lived_fiber(void) {
+    uint8_t *stack = malloc(SHADOW_STACK);
+    uint32_t h = np_host_fiber_create((uint32_t)(uintptr_t)(stack + SHADOW_STACK), 0xFFFFFFFFu);
+    uint32_t before = switches_this_frame;
+    for (int i = 0; i < 3; i++) np_host_fiber_switch(h);
+    if (switches_this_frame != before + 3) fail("mock: short-lived fiber did not ping-pong");
+    np_host_fiber_destroy(h);
+    free(stack);
+}
+
+int main(int argc, char **argv) {
+    volatile uint32_t local = 0;
+    touch(&local);
+
+    const char *s = getenv("NP_MOCK_SEED");
+    if (s) {
+        seed = (uint32_t)atoi(s);
+        status |= ST_ENV_OK;
+    }
+    printf("mock: boot argv0=%s argc=%d seed=%u\n", argc > 0 ? argv[0] : "?", argc, (unsigned)seed);
+    static const char direct[] = "mock: direct log\nmock: second line";
+    np_host_log(direct, (uint32_t)(sizeof direct - 1));
+
+    struct timespec t0, t1;
+    clock_gettime(CLOCK_MONOTONIC, &t0);
+    clock_gettime(CLOCK_MONOTONIC, &t1);
+    if ((t1.tv_sec > t0.tv_sec || (t1.tv_sec == t0.tv_sec && t1.tv_nsec >= t0.tv_nsec)) && time(NULL) > 1600000000)
+        status |= ST_CLOCK_OK;
+    if (getentropy(&random_word, sizeof random_word) != 0) fail("mock: getentropy failed");
+
+    audio_ring = calloc(AUDIO_RING, 4);
+    if ((uintptr_t)&local >= NP_GUEST_C_BASE && (uintptr_t)top >= NP_GUEST_C_BASE &&
+        (uintptr_t)audio_ring >= NP_GUEST_C_BASE)
+        status |= ST_LAYOUT_OK;
+
+    check_rom();
+    load_save();
+
+    sched_handle = np_host_fiber_self();
+    if (sched_handle != 1) fail("mock: boot fiber is not handle 1");
+    for (uint32_t i = 0; i < NWORKERS; i++) {
+        workers[i].id = i;
+        workers[i].shadow = malloc(SHADOW_STACK);
+        workers[i].handle = np_host_fiber_create((uint32_t)(uintptr_t)(workers[i].shadow + SHADOW_STACK), i);
+    }
+
+    memset(DESC, 0, sizeof *DESC);
+    DESC->magic = NP_FRAME_MAGIC;
+    DESC->version = NP_GUEST_ABI_VERSION;
+    DESC->screen[0] = (uint32_t)(uintptr_t)top;
+    DESC->screen[1] = (uint32_t)(uintptr_t)BOTTOM;
+    DESC->width = W;
+    DESC->height = H;
+    DESC->stride = W;
+    DESC->audio_ring = (uint32_t)(uintptr_t)audio_ring;
+    DESC->audio_ring_frames = AUDIO_RING;
+    DESC->audio_rate = AUDIO_RATE;
+
+    for (frame = 0;; frame++) {
+        const uint32_t keys = DESC->in_keys;
+        if (keys == (KEY_START | KEY_SELECT)) {
+            for (uint32_t i = 0; i < NWORKERS; i++) np_host_fiber_destroy(workers[i].handle);
+            printf("mock: exiting at frame %u\n", (unsigned)frame);
+            exit(3);
+        }
+        if (keys == (KEY_L | KEY_R)) {
+            char msg[64];
+            snprintf(msg, sizeof msg, "mock: trap requested at frame %u", (unsigned)frame);
+            np_host_trap(msg, (uint32_t)strlen(msg));
+        }
+        crash_on_worker = keys == (KEY_X | KEY_Y);
+        if (keys == (KEY_A | KEY_B)) {
+            /* Out of bounds of linear memory: only exercised by the test in
+             * NP_BOUNDS_CHECK builds, where it must become a wasm trap. */
+            status |= *(volatile uint32_t *)(uintptr_t)0xFFFFFFF0u;
+        }
+
+        run_workers();
+        status |= ST_FIBERS_OK;
+        if (frame == 2) short_lived_fiber();
+
+        if (frame == 3) {
+            save_counter++;
+            chip_header();
+            if (np_host_save_store(chip, CHIP_SIZE) != 0) status |= ST_STORE_FAILED;
+        }
+        if (frame == 5) {
+            for (uint32_t i = 16; i < CHIP_SIZE; i++) chip[i] = (uint8_t)(i + frame);
+            chip_header();
+            DESC->save_image = (uint32_t)(uintptr_t)chip;
+            DESC->save_size = CHIP_SIZE;
+            DESC->save_dirty = 1;
+        }
+        if (frame > 5 && DESC->save_dirty == 0) status |= ST_HOST_FLUSHED;
+
+        /* Input echo and status, over the pattern. */
+        top[0] = keys;
+        top[1] = DESC->in_touch << 16 | (DESC->in_touch_x & 0xFFu) << 8 | (DESC->in_touch_y & 0xFFu);
+        top[2] = DESC->in_lid;
+        BOTTOM[0] = status;
+        BOTTOM[1] = save_counter;
+        BOTTOM[2] = seed;
+        BOTTOM[3] = random_word & 0xFFFFFFu;
+        BOTTOM[4] = switches_this_frame;
+
+        DESC->frame_lo = frame;
+        DESC->frame_hi = 0;
+        np_host_vblank(DESC);
+    }
+}
