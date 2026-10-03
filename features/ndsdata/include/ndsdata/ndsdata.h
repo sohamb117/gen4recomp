@@ -1,0 +1,188 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/*
+ * ndsdata: read game data out of a user-supplied Nintendo DS ROM.
+ *
+ *  - NDS ROM: header, FNT/FAT, files by path or FAT id, over a read callback
+ *  - NARC archives (BTAF/BTNF/GMIF)
+ *  - LZ77 type 0x10 / 0x11 decompression
+ *  - Gen 4 message banks (pret/pokeplatinum src/message.c scheme) -> UTF-8
+ *  - Gen 4 character set (generated from the decomp's charmap.txt)
+ *  - Game-aware name tables (species, moves, items, abilities, natures,
+ *    locations) for Diamond, Pearl and Platinum
+ *
+ * No dependencies beyond libc. All returned heap memory is owned by the
+ * caller unless noted and is released with free() or the matching *_free().
+ */
+#ifndef NDSDATA_NDSDATA_H
+#define NDSDATA_NDSDATA_H
+
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef enum nd_status {
+    ND_OK = 0,
+    ND_ERR_IO,        /* read callback failed / short read */
+    ND_ERR_FORMAT,    /* malformed ROM, NARC, LZ stream or message bank */
+    ND_ERR_NOT_FOUND, /* path or member does not exist */
+    ND_ERR_NOMEM,
+    ND_ERR_RANGE,     /* index or size out of range / buffer too small */
+    ND_ERR_UNSUPPORTED
+} nd_status;
+
+const char *nd_status_str(nd_status st);
+
+/* ------------------------------------------------------------------ ROM */
+
+/* Read exactly `len` bytes at `offset` into `dst`. Return 0 on success. */
+typedef int (*nd_read_fn)(void *user, uint64_t offset, void *dst, size_t len);
+
+/* Ready-made callback for a stdio FILE* passed as `user`. */
+int nd_read_stdio(void *user, uint64_t offset, void *dst, size_t len);
+
+typedef enum nd_game {
+    ND_GAME_UNKNOWN = 0,
+    ND_GAME_DIAMOND,
+    ND_GAME_PEARL,
+    ND_GAME_PLATINUM
+} nd_game;
+
+const char *nd_game_name(nd_game g);
+
+typedef struct nd_rom {
+    nd_read_fn read;
+    void *user;
+    uint64_t size;           /* total ROM size in bytes (as supplied) */
+    char title[13];          /* header 0x000, NUL-terminated */
+    char gamecode[5];        /* header 0x00C, e.g. "CPUE" */
+    uint8_t rom_version;     /* header 0x01E */
+    nd_game game;            /* derived from gamecode[0..2] */
+    uint32_t fnt_offset, fnt_size; /* header 0x040 / 0x044 */
+    uint32_t fat_offset, fat_size; /* header 0x048 / 0x04C */
+    uint32_t file_count;     /* fat_size / 8 */
+    uint8_t *fnt;            /* cached file name table */
+    uint8_t *fat;            /* cached file allocation table */
+} nd_rom;
+
+nd_status nd_rom_open(nd_rom *rom, nd_read_fn read, void *user, uint64_t size);
+void nd_rom_close(nd_rom *rom);
+
+/* Raw read through the callback with bounds checking. */
+nd_status nd_rom_read(const nd_rom *rom, uint64_t offset, void *dst, size_t len);
+
+/* Byte extent of a FAT entry. */
+nd_status nd_rom_file_extent(const nd_rom *rom, uint32_t file_id, uint32_t *offset, uint32_t *length);
+
+/* Resolve "dir/sub/file.ext" (leading '/' optional) to a FAT id via the FNT. */
+nd_status nd_rom_find(const nd_rom *rom, const char *path, uint32_t *file_id);
+
+/* Read a whole file into a malloc'd buffer. */
+nd_status nd_rom_load_file(const nd_rom *rom, uint32_t file_id, uint8_t **out, size_t *out_len);
+nd_status nd_rom_load_path(const nd_rom *rom, const char *path, uint8_t **out, size_t *out_len);
+
+/* Read one NARC member straight from the ROM without loading the archive
+ * (reads the NARC header + BTAF, then just the member). */
+nd_status nd_rom_load_narc_member(const nd_rom *rom, uint32_t narc_file_id, uint32_t member,
+                                  uint8_t **out, size_t *out_len);
+
+/* ----------------------------------------------------------------- NARC */
+
+typedef struct nd_narc {
+    const uint8_t *data;   /* whole archive (borrowed) */
+    size_t size;
+    uint32_t count;        /* BTAF file count */
+    const uint8_t *btaf;   /* first BTAF entry (start,end pairs) */
+    const uint8_t *btnf;   /* BTNF section payload (unused by lookups) */
+    uint32_t btnf_size;
+    const uint8_t *gmif;   /* GMIF image start */
+    uint32_t gmif_size;
+} nd_narc;
+
+nd_status nd_narc_parse(nd_narc *narc, const uint8_t *data, size_t size);
+nd_status nd_narc_member(const nd_narc *narc, uint32_t index, const uint8_t **ptr, size_t *len);
+
+/* ----------------------------------------------------------------- LZ77 */
+
+/* Decompressed size from the header of an LZ 0x10 / 0x11 stream. */
+nd_status nd_lz_size(const uint8_t *src, size_t src_len, size_t *out_size);
+/* Decompress into dst (must hold nd_lz_size() bytes). */
+nd_status nd_lz_decompress(const uint8_t *src, size_t src_len, uint8_t *dst, size_t dst_len);
+/* Convenience: allocate and decompress. */
+nd_status nd_lz_decompress_alloc(const uint8_t *src, size_t src_len, uint8_t **out, size_t *out_len);
+
+/* ------------------------------------------------------------ Gen 4 text */
+
+/* Decode in-game charcodes to UTF-8. Stops at 0xFFFF (EOS) or after `n`
+ * codes. Control sequences (0xFFFE ...) render as "{CMD args}" like the
+ * decomp's msgenc; unknown codes render as "\\x%04X". Always NUL-terminates
+ * when cap > 0. Returns the full length needed (excluding NUL), snprintf-like. */
+size_t g4_text_decode(const uint16_t *codes, size_t n, char *out, size_t cap);
+/* Same, returning a malloc'd string (NULL on OOM). */
+char *g4_text_decode_alloc(const uint16_t *codes, size_t n);
+
+/* Encode UTF-8 into charcodes (greedy longest match against the charmap),
+ * appending 0xFFFF. `cap` counts u16 slots including the terminator.
+ * ND_ERR_RANGE if it does not fit, ND_ERR_FORMAT on an unmappable char. */
+nd_status g4_text_encode(const char *utf8, uint16_t *out, size_t cap, size_t *out_len);
+
+/* -------------------------------------------------------- message banks */
+
+typedef struct nd_msgbank {
+    const uint8_t *data;  /* borrowed */
+    size_t size;
+    uint16_t count;
+    uint16_t seed;
+} nd_msgbank;
+
+nd_status nd_msgbank_parse(nd_msgbank *bank, const uint8_t *data, size_t size);
+/* Decrypted charcodes of entry `index`. *len receives the code count; if
+ * `dst` is NULL or too small, only the length is reported (ND_ERR_RANGE). */
+nd_status nd_msgbank_get_codes(const nd_msgbank *bank, uint32_t index, uint16_t *dst, size_t cap, size_t *len);
+/* malloc'd UTF-8 string for entry `index`. */
+nd_status nd_msgbank_get_utf8(const nd_msgbank *bank, uint32_t index, char **out);
+
+/* ------------------------------------------------------------ name lists */
+
+typedef enum nd_text_kind {
+    ND_TEXT_SPECIES = 0,
+    ND_TEXT_MOVES,
+    ND_TEXT_ITEMS,
+    ND_TEXT_ABILITIES,
+    ND_TEXT_NATURES,
+    ND_TEXT_LOCATIONS,         /* met locations 0..1999 */
+    ND_TEXT_SPECIAL_LOCATIONS, /* met locations 2000..2999 */
+    ND_TEXT_EVENT_LOCATIONS,   /* met locations 3000.. */
+    ND_TEXT_KIND_COUNT
+} nd_text_kind;
+
+/* Archive path of the main message NARC for a game ("msgdata/pl_msg.narc"). */
+const char *nd_msg_narc_path(nd_game game);
+/* Bank (NARC member) index of a name list for a game, or -1. */
+int nd_text_bank(nd_game game, nd_text_kind kind);
+
+typedef struct nd_names {
+    nd_game game;
+    char **list[ND_TEXT_KIND_COUNT];
+    uint32_t count[ND_TEXT_KIND_COUNT];
+} nd_names;
+
+/* Load every name list for the ROM's game. */
+nd_status nd_names_load(nd_names *names, const nd_rom *rom);
+void nd_names_free(nd_names *names);
+/* Borrowed string or NULL if out of range / not loaded. */
+const char *nd_name(const nd_names *names, nd_text_kind kind, uint32_t id);
+/* Met/egg location id -> name (routes 2000/3000 ranges like
+ * StringTemplate_SetMetLocationName in pokeplatinum). */
+const char *nd_location_name(const nd_names *names, uint32_t location);
+/* Nature name for a PID (nature = pid % 25). */
+const char *nd_nature_name(const nd_names *names, uint32_t pid);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
