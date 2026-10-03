@@ -126,3 +126,24 @@ if(NP_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
+
+# Real game modules. Each NP_GUEST_WASM_<game> names a .wasm built by the
+# game's own build (e.g. games/platinum/build/pc-wasm/pokeplatinum.wasm);
+# when set, np_guest_<game> is defined here, which the shell picks up, and
+# np_headless is built to run it without SDL. Post-processing of the
+# wasm2c output comes from NP_GUEST_POSTPROCESS[_<game>] (default none).
+set(NP_GUEST_NUM_OUTPUTS 8 CACHE STRING "wasm2c --num-outputs for game modules (parallel compile)")
+set(_np_real_guests)
+foreach(_game diamond pearl platinum)
+  set(NP_GUEST_WASM_${_game} "" CACHE FILEPATH "wasm2c input for the ${_game} core (empty: not built)")
+  if(NP_GUEST_WASM_${_game})
+    get_filename_component(_wasm "${NP_GUEST_WASM_${_game}}" ABSOLUTE)
+    np_add_guest_module(${_game} "${_wasm}" NUM_OUTPUTS ${NP_GUEST_NUM_OUTPUTS})
+    list(APPEND _np_real_guests np_guest_${_game})
+  endif()
+endforeach()
+if(_np_real_guests AND PROJECT_IS_TOP_LEVEL)
+  add_executable(np_headless tools/np_headless.c)
+  set_target_properties(np_headless PROPERTIES C_STANDARD 11 C_STANDARD_REQUIRED ON)
+  np_link_guest_modules(np_headless ${_np_real_guests})
+endif()
