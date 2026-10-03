@@ -1,0 +1,157 @@
+# Link stubs for the PC build: symbols that are dead code for a
+# single-player PC boot. pc/gen_stubs.py turns each entry into a weak,
+# loud trap (func) or weak zeroed storage (data).
+#
+# This list is checked in and explicit on purpose. The generator never
+# reads unresolved.txt or link.log, if it did, the link gate would stop
+# meaning anything. A new genuinely-missing symbol must still break the
+# link; stubbing it is a deliberate act of adding a line here.
+#
+# Format: SYMBOL<TAB>func|data<TAB>one-line reason (goes into the trap message)
+CPSDnsIp	data	NitroWiFi CPS IP-config variable; prebuilt wifi stack excluded from this build
+CPSGatewayIp	data	NitroWiFi CPS IP-config variable; prebuilt wifi stack excluded from this build
+CPSMyIp	data	NitroWiFi CPS IP-config variable; prebuilt wifi stack excluded from this build
+CPSNetMask	data	NitroWiFi CPS IP-config variable; prebuilt wifi stack excluded from this build
+CPS_CalmDown	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_Cleanup	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_GetSslHandshakePriority	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_Resolve	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SetScavengerCallback	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SetSsl	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SetSslHandshakePriority	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SetThreadPriority	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SetUdpCallback	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocBind	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocConsume	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocDatagramMode	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocDup	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocGetEport	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocRead	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocRegister	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocRelease	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocUnRegister	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocUse	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocWho	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_SocWrite	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_Startup	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_TcpClose	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_TcpConnect	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_TcpListen	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPS_TcpShutdown	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+CPSi_RecvCallbackFunc	func	NitroWiFi CPS TCP/IP stack; prebuilt wifi library excluded from this build
+DWC_AC_CheckWiFiStation	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_CleanupGetWDSInfo	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_Create	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_Destroy	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_GetApSpotInfo	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_GetApType	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_GetStatus	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_Process	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_ProcessGetWDSInfo	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_SetSpecifyApEx	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_AC_StartupGetWDSInfo	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_Abort	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_Base64Decode	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_Base64Encode	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_CheckWiFiIDNeedCreate	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_Create	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_Destroy	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_GetError	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_GetId	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_GetResult	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Auth_SetCustomNas	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_BM_Init	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Netcheck_SetAllow302	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_SimpleNetcheckAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_SimpleNetcheckProcess	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_StartUtility	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Svl_Abort	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Svl_Cleanup	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Svl_GetTokenAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Svl_Init	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWC_Svl_Process	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCauthhttpparam	data	NitroDWC wifi state variable; prebuilt wifi library excluded from this build
+DWCauthingamesncheckresult	data	NitroDWC wifi state variable; prebuilt wifi library excluded from this build
+DWCi_AUTH_MakeWiFiID	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_BACKUPlInit	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_BACKUPlRead	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_BACKUPlWritePage	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_NdCancelAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_NdCleanupAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_NdGetFileAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_NdGetFileListAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_NdGetFileListNumAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_NdGetProgress	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_NdSetAttr	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_NdStartup	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_RankingSessionCancel	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_RankingSessionGetAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_RankingSessionGetResponse	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_RankingSessionInitialize	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_RankingSessionProcess	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_RankingSessionPutAsync	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_RankingSessionShutdown	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCi_RankingValidateKey	func	NitroDWC wifi service surface; prebuilt wifi library excluded from this build
+DWCnastimediff	data	NitroDWC wifi state variable; prebuilt wifi library excluded from this build
+DWCnastimediffbase	data	NitroDWC wifi state variable; prebuilt wifi library excluded from this build
+DWCnastimediffvalid	data	NitroDWC wifi state variable; prebuilt wifi library excluded from this build
+MicWaitBusy	func	ARM7-side microphone busy-wait; no ARM7 on PC
+PPW_LobbyGetChannelDataAsync	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyGetLastError	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyGetMyUserId	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyGetSchedule	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyGetSubChannelState	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyGetTimeInfo	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyInitializeAsync	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyJoinSubChannelAsync	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyLeaveSubChannel	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyProcess	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbySendChannelBinaryMessage	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbySendPlayerBinaryMessage	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbySetChannelData	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyShutdownAsync	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyStartRecruit	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyStopRecruit	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbySubmitQuestionnaire	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyToErrorCode	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyUpdateMyProfile	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+PPW_LobbyUpdateRecruitInfo	func	Wi-Fi Plaza lobby; lib/ppwlobby is C++ and excluded from this build
+RtcWaitBusy	func	ARM7-side RTC busy-wait; no ARM7 on PC
+SetSockBroadcast	func	GameSpy wifi networking; prebuilt library surface excluded from this build
+UCS2ToAsciiString	func	GameSpy wifi networking; prebuilt library surface excluded from this build
+UCS2ToUTF8StringAlloc	func	GameSpy wifi networking; prebuilt library surface excluded from this build
+VCT_AddConferenceClient	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_Cleanup	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_CreateSession	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_DeleteSession	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_EnableEchoCancel	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_EnableVAD	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_GetVADInfo	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_HandleData	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_Init	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_Main	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_ReceiveAudio	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_Request	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_Response	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_SendAudio	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_SetCodec	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_StartStreaming	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+VCT_StopStreaming	func	libvct voice chat; ships only prebuilt archives, excluded from this build
+ghiSetProxy	func	GameSpy wifi networking; prebuilt library surface excluded from this build
+ghiSetRequestProxy	func	GameSpy wifi networking; prebuilt library surface excluded from this build
+ghiThrottleSettings	func	GameSpy wifi networking; prebuilt library surface excluded from this build
+gsiGetBroadcastIP	func	GameSpy wifi networking; prebuilt library surface excluded from this build
+qr2_create_socket	func	GameSpy wifi networking; prebuilt library surface excluded from this build
+ov66_02237134	func	prebuilt dwcppwlobby helper reached only from the wifi lobby overlay
+_binary_digit_chrData_bin	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_digit_chrData_bin_end	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_logo_forChina_chrData_bin	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_logo_forChina_chrData_bin_end	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_logo_forChina_palData_bin	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_logo_forChina_palData_bin_end	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_logo_forChina_scrData_bin	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_logo_forChina_scrData_bin_end	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_notes_forChina_chrData_bin	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_notes_forChina_chrData_bin_end	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_notes_forChina_scrData_bin	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code
+_binary_notes_forChina_scrData_bin_end	data	os_china.c ISBN-screen blob; the SDK data files are not shipped and the screen is China-region dead code

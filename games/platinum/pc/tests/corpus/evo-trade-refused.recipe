@@ -1,0 +1,14 @@
+# The negative: a Kadabra that only evolves by trade, handed a rare candy.
+#
+# It levels and it stays a Kadabra, because EVO_TRADE is the only entry it has
+# and nothing a solo player can do reaches it. The run prints the species it
+# WOULD become if it were traded, so the pin says "the evolution exists and the
+# game refuses it" rather than the weaker "nothing happened".
+
+name TRADER
+gender GENDER_MALE
+trainer-id 20303
+money 3000
+party SPECIES_KADABRA 20 ITEM_NONE
+item ITEM_RARE_CANDY 1
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

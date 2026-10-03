@@ -1,0 +1,16 @@
+# After CONTINUE: tap 22 March 2009 on the calendar.
+#
+# 1 March 2009 is a Sunday, so day 22 sits at grid (col 0, row 3).
+# Cell pixels from DAY_HITBOX in calendar/main.c, TILE=8.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 touch 40 120
+3040 release

@@ -1,0 +1,189 @@
+{
+    "base_stats": {
+        "hp": 35,
+        "attack": 35,
+        "defense": 40,
+        "speed": 50,
+        "special_attack": 35,
+        "special_defense": 55
+    },
+    "types": [ "TYPE_GRASS", "TYPE_FLYING" ],
+    "catch_rate": 255,
+    "base_exp_reward": 74,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 1
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_FAIRY", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_CHLOROPHYLL", "ABILITY_LEAF_GUARD" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PINK",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_SPLASH" ],
+            [ 4, "MOVE_SYNTHESIS" ],
+            [ 7, "MOVE_TAIL_WHIP" ],
+            [ 10, "MOVE_TACKLE" ],
+            [ 12, "MOVE_POISON_POWDER" ],
+            [ 14, "MOVE_STUN_SPORE" ],
+            [ 16, "MOVE_SLEEP_POWDER" ],
+            [ 19, "MOVE_BULLET_SEED" ],
+            [ 22, "MOVE_LEECH_SEED" ],
+            [ 25, "MOVE_MEGA_DRAIN" ],
+            [ 28, "MOVE_COTTON_SPORE" ],
+            [ 31, "MOVE_U_TURN" ],
+            [ 34, "MOVE_WORRY_SEED" ],
+            [ 37, "MOVE_GIGA_DRAIN" ],
+            [ 40, "MOVE_BOUNCE" ],
+            [ 43, "MOVE_MEMENTO" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM32",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM53",
+            "TM58",
+            "TM62",
+            "TM70",
+            "TM75",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM89",
+            "TM90"
+        ],
+        "by_tutor": [
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_SYNTHESIS",
+            "MOVE_SEED_BOMB",
+            "MOVE_BOUNCE"
+        ],
+        "egg_moves": [
+            "MOVE_CONFUSION",
+            "MOVE_ENCORE",
+            "MOVE_DOUBLE_EDGE",
+            "MOVE_REFLECT",
+            "MOVE_AMNESIA",
+            "MOVE_HELPING_HAND",
+            "MOVE_PSYCH_UP",
+            "MOVE_AROMATHERAPY",
+            "MOVE_WORRY_SEED"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            18,
+            "SPECIES_SKIPLOOM"
+        ]
+    ],
+    "offspring": "SPECIES_HOPPIP",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 16,
+        "weight_pounds": 1.1,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 438,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 438,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65530,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65530,
+        "en": {
+            "name": "HOPPIP",
+            "category": "Cottonweed Pokémon",
+            "entry_text": [
+                "It drifts on winds. It is said that\n",
+                "when HOPPIP gather in fields and\n",
+                "mountains, spring is on the way."
+            ]
+        },
+        "fr": {
+            "name": "GRANIVOL",
+            "category": "Pokémon Pissenlit",
+            "entry_text": [
+                "Il dérive avec le vent. Sa présence\n",
+                "en nombre dans les champs et les\n",
+                "montagnes annonce le printemps."
+            ]
+        },
+        "de": {
+            "name": "HOPPSPROSS",
+            "category": "Löwenzahn",
+            "entry_text": [
+                "Es reitet auf dem Wind. Man sagt,\n",
+                "wenn sich HOPPSPROSS ver-\n",
+                "sammeln, kommt der Frühling bald."
+            ]
+        },
+        "it": {
+            "name": "HOPPIP",
+            "category": "Pokémon Gramigna",
+            "entry_text": [
+                "Giunge sospinto dai venti. Si dice\n",
+                "che quando HOPPIP appare su campi\n",
+                "e monti, la primavera sia in arrivo."
+            ]
+        },
+        "es": {
+            "name": "HOPPIP",
+            "category": "Pokémon Algadón",
+            "entry_text": [
+                "Flotan en el aire. Se dice que\n",
+                "cuando los HOPPIP se reúnen, es\n",
+                "que la primavera está al caer."
+            ]
+        },
+        "jp": {
+            "name": "ハネッコ",
+            "category": "わたくさポケモン",
+            "entry_text": [
+                "かぜに　ながされて　ただよう。\n",
+                "のやまに　ハネッコが　あつまりだすと\n",
+                "はるが　おとずれると　いわれている。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 4353
+    }
+}

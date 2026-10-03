@@ -1,0 +1,89 @@
+{
+    "name": "Mikayla",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SEVIPER",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": [
+                "MOVE_NIGHT_SLASH",
+                "MOVE_POISON_FANG",
+                "MOVE_WRING_OUT",
+                "MOVE_GLARE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PERSIAN",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": [
+                "MOVE_NIGHT_SLASH",
+                "MOVE_POWER_GEM",
+                "MOVE_FAINT_ATTACK",
+                "MOVE_FAKE_OUT"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ABSOL",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": [
+                "MOVE_NIGHT_SLASH",
+                "MOVE_PSYCHO_CUT",
+                "MOVE_SLASH",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "The world is huge, and there are\n",
+                "so many different Pokémon!\r",
+                "What kinds of Pokémon are with you?\n",
+                "Please, I want to have a look!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Wow, there are Pokémon that\n",
+                "wonderful!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "There is always something to like\n",
+                "about any Pokémon.\r",
+                "It’s so hard to decide which ones\n",
+                "I should raise.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "If I’m having trouble deciding,\n",
+                "I go with my favorites!\r"
+            ]
+        }
+    ]
+}

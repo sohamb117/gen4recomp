@@ -1,0 +1,169 @@
+{
+    "base_stats": {
+        "hp": 90,
+        "attack": 110,
+        "defense": 80,
+        "speed": 95,
+        "special_attack": 100,
+        "special_defense": 80
+    },
+    "types": [ "TYPE_FIRE", "TYPE_FIRE" ],
+    "catch_rate": 75,
+    "base_exp_reward": 213,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 2,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_RAWST_BERRY",
+        "rare": "ITEM_RAWST_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_25",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_INTIMIDATE", "ABILITY_FLASH_FIRE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_THUNDER_FANG" ],
+            [ 1, "MOVE_BITE" ],
+            [ 1, "MOVE_ROAR" ],
+            [ 1, "MOVE_FIRE_FANG" ],
+            [ 1, "MOVE_ODOR_SLEUTH" ],
+            [ 39, "MOVE_EXTREME_SPEED" ]
+        ],
+        "by_tm": [
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM21",
+            "TM22",
+            "TM23",
+            "TM27",
+            "TM28",
+            "TM32",
+            "TM35",
+            "TM38",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM50",
+            "TM58",
+            "TM59",
+            "TM61",
+            "TM68",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06",
+            "HM08"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_IRON_HEAD",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_GROWLITHE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 75,
+        "weight_pounds": 341.7,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 342,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 325,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 16,
+        "pokemon_pos_f": 6,
+        "trainer_pos_m": 16,
+        "pokemon_pos_m": 6,
+        "en": {
+            "name": "ARCANINE",
+            "category": "Legendary Pokémon",
+            "entry_text": [
+                "Its proud and regal appearance\n",
+                "has captured the hearts of\n",
+                "people since long ago."
+            ]
+        },
+        "fr": {
+            "name": "ARCANIN",
+            "category": "Pokémon Légendaire",
+            "entry_text": [
+                "Son port altier et son attitude \n",
+                "fière ont depuis longtemps conquis\n",
+                "le cœur des hommes."
+            ]
+        },
+        "de": {
+            "name": "ARKANI",
+            "category": "Legendär",
+            "entry_text": [
+                "Mit seiner stolzen und königlichen\n",
+                "Erscheinung gewinnt es die\n",
+                "Herzen der Menschen."
+            ]
+        },
+        "it": {
+            "name": "ARCANINE",
+            "category": "Pokémon Leggenda",
+            "entry_text": [
+                "Con il suo aspetto fiero ed\n",
+                "elegante, è riuscito da tempo\n",
+                "a conquistare i cuori della gente."
+            ]
+        },
+        "es": {
+            "name": "ARCANINE",
+            "category": "Pokémon Legendario",
+            "entry_text": [
+                "Su aspecto regio y orgulloso se\n",
+                "ha ganado el corazón de la\n",
+                "gente hace tiempo."
+            ]
+        },
+        "jp": {
+            "name": "ウインディ",
+            "category": "でんせつポケモン",
+            "entry_text": [
+                "いふうどうどうとした　すがたは\n",
+                "ふるくから　ひとびとの　こころを\n",
+                "とりこにしてきた。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 514
+    }
+}

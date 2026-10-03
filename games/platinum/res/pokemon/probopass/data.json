@@ -1,0 +1,190 @@
+{
+    "base_stats": {
+        "hp": 60,
+        "attack": 55,
+        "defense": 145,
+        "speed": 40,
+        "special_attack": 75,
+        "special_defense": 150
+    },
+    "types": [ "TYPE_ROCK", "TYPE_STEEL" ],
+    "catch_rate": 60,
+    "base_exp_reward": 198,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 2
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_HARD_STONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_MINERAL", "EGG_GROUP_MINERAL" ],
+    "abilities": [ "ABILITY_STURDY", "ABILITY_MAGNET_PULL" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GRAY",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_MAGNET_RISE" ],
+            [ 1, "MOVE_GRAVITY" ],
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_IRON_DEFENSE" ],
+            [ 1, "MOVE_MAGNET_BOMB" ],
+            [ 1, "MOVE_BLOCK" ],
+            [ 7, "MOVE_IRON_DEFENSE" ],
+            [ 13, "MOVE_MAGNET_BOMB" ],
+            [ 19, "MOVE_BLOCK" ],
+            [ 25, "MOVE_THUNDER_WAVE" ],
+            [ 31, "MOVE_ROCK_SLIDE" ],
+            [ 37, "MOVE_SANDSTORM" ],
+            [ 43, "MOVE_REST" ],
+            [ 49, "MOVE_POWER_GEM" ],
+            [ 55, "MOVE_DISCHARGE" ],
+            [ 61, "MOVE_STONE_EDGE" ],
+            [ 67, "MOVE_ZAP_CANNON" ],
+            [ 73, "MOVE_LOCK_ON" ],
+            [ 79, "MOVE_EARTH_POWER" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM15",
+            "TM17",
+            "TM21",
+            "TM24",
+            "TM25",
+            "TM26",
+            "TM27",
+            "TM32",
+            "TM34",
+            "TM37",
+            "TM39",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM64",
+            "TM68",
+            "TM69",
+            "TM71",
+            "TM73",
+            "TM76",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "TM91",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ROLLOUT",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_ICE_PUNCH",
+            "MOVE_IRON_HEAD",
+            "MOVE_SNORE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_EARTH_POWER",
+            "MOVE_IRON_DEFENSE",
+            "MOVE_MAGNET_RISE"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_NOSEPASS",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SILENT"
+    },
+    "pokedex_data": {
+        "height_inches": 55,
+        "weight_pounds": 749.6,
+        "body_shape": "SHAPE_MULTI_BODY",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 243,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 243,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 4,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 4,
+        "en": {
+            "name": "PROBOPASS",
+            "category": "Compass Pokémon",
+            "entry_text": [
+                "It freely controls three small\n",
+                "units called Mini-Noses using\n",
+                "magnetic force."
+            ]
+        },
+        "fr": {
+            "name": "TARINORME",
+            "category": "Pokémon Boussole",
+            "entry_text": [
+                "Son corps libère une puissante\n",
+                "force magnétique. Il dirige trois\n",
+                "petites unités appelées Mini-nez."
+            ]
+        },
+        "de": {
+            "name": "VOLUMINAS",
+            "category": "Kompass",
+            "entry_text": [
+                "Es gibt starken Magnetismus ab. Es\n",
+                "steuert drei kleine Einheiten, die\n",
+                "sich Mininasen nennen."
+            ]
+        },
+        "it": {
+            "name": "PROBOPASS",
+            "category": "Pokémon Bussola",
+            "entry_text": [
+                "Emana un forte magnetismo da\n",
+                "tutto il corpo. Controlla tre\n",
+                "piccole unità, dette Mininasi."
+            ]
+        },
+        "es": {
+            "name": "PROBOPASS",
+            "category": "Pokémon Brújula",
+            "entry_text": [
+                "Emana un fuerte magnetismo.\n",
+                "Controla tres pequeñas unidades\n",
+                "llamadas Mini-Narices."
+            ]
+        },
+        "jp": {
+            "name": "ダイノ－ズ",
+            "category": "コンパスポケモン",
+            "entry_text": [
+                "ぜんしんから　つよい　じりょくを\n",
+                "だしている。３この　チビノ－ズと\n",
+                "よばれる　ユニットを　あやつる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 2827
+    }
+}

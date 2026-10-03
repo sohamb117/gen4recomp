@@ -1,0 +1,19 @@
+# The clock-driven systems, staged: a slathered honey tree, a freshly planted
+# berry, a Shaymin in its Sky form and one daily flag set.
+#
+# Four stations share this recipe and differ only in the `rtc` their spec boots
+# them on, so what separates them is how much time the save has been shut for.
+# Nothing here is reachable by pressing anything: the field runs sub_020559DC
+# on map load, works out the difference between now and the save's own clock,
+# and hands it to each system.
+
+name CLOCKER
+gender GENDER_MALE
+trainer-id 10000
+money 3000
+party SPECIES_SHAYMIN 30 ITEM_NONE
+shaymin-form 0 SHAYMIN_FORM_SKY
+berry 0 ITEM_CHERI_BERRY
+honey 0 1440
+flag FLAG_DAILY_WON_AGAINST_VALLEY_WINDWORKS_OUTSIDE_DRIFLOON
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_DOWN

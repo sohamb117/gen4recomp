@@ -1,0 +1,187 @@
+{
+    "base_stats": {
+        "hp": 64,
+        "attack": 51,
+        "defense": 23,
+        "speed": 28,
+        "special_attack": 51,
+        "special_defense": 23
+    },
+    "types": [ "TYPE_NORMAL", "TYPE_NORMAL" ],
+    "catch_rate": 190,
+    "base_exp_reward": 68,
+    "ev_yields": {
+        "hp": 1,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_CHESTO_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_SOUNDPROOF", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PINK",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_POUND" ],
+            [ 5, "MOVE_UPROAR" ],
+            [ 11, "MOVE_ASTONISH" ],
+            [ 15, "MOVE_HOWL" ],
+            [ 21, "MOVE_SUPERSONIC" ],
+            [ 25, "MOVE_STOMP" ],
+            [ 31, "MOVE_SCREECH" ],
+            [ 35, "MOVE_ROAR" ],
+            [ 41, "MOVE_REST" ],
+            [ 41, "MOVE_SLEEP_TALK" ],
+            [ 45, "MOVE_HYPER_VOICE" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM13",
+            "TM14",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM30",
+            "TM32",
+            "TM34",
+            "TM35",
+            "TM38",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM56",
+            "TM58",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_ROLLOUT",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_ICE_PUNCH",
+            "MOVE_SNORE",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_UPROAR"
+        ],
+        "egg_moves": [
+            "MOVE_TAKE_DOWN",
+            "MOVE_SNORE",
+            "MOVE_SWAGGER",
+            "MOVE_EXTRASENSORY",
+            "MOVE_SMELLING_SALT",
+            "MOVE_SMOKE_SCREEN",
+            "MOVE_ENDEAVOR"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            20,
+            "SPECIES_LOUDRED"
+        ]
+    ],
+    "offspring": "SPECIES_WHISMUR",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SLOW"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 35.9,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 326,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 326,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 23,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 23,
+        "en": {
+            "name": "WHISMUR",
+            "category": "Whisper Pokémon",
+            "entry_text": [
+                "Usually, its cries are like quiet\n",
+                "murmurs. If frightened, it shrieks\n",
+                "at the same volume as a jet plane."
+            ]
+        },
+        "fr": {
+            "name": "CHUCHMUR",
+            "category": "Pokémon Chuchoteur",
+            "entry_text": [
+                "En temps normal, son cri est pareil\n",
+                "à un murmure. Effrayé, il atteint le\n",
+                "volume d’un avion à réaction."
+            ]
+        },
+        "de": {
+            "name": "FLURMEL",
+            "category": "Flüster",
+            "entry_text": [
+                "Normalerweise klingen seine Rufe\n",
+                "wie Gemurmel. Hat es aber Angst,\n",
+                "ist es so laut wie ein Flugzeug."
+            ]
+        },
+        "it": {
+            "name": "WHISMUR",
+            "category": "Pokémon Sussurro",
+            "entry_text": [
+                "Di solito ha una voce molto tenue,\n",
+                "ma se si spaventa, emette un suono\n",
+                "assordante quanto un jet."
+            ]
+        },
+        "es": {
+            "name": "WHISMUR",
+            "category": "Pokémon Susurro",
+            "entry_text": [
+                "Suele murmurar a un volumen casi\n",
+                "inaudible, pero cuando se asusta\n",
+                "grita con el volumen de un reactor."
+            ]
+        },
+        "jp": {
+            "name": "ゴニョニョ",
+            "category": "ささやきポケモン",
+            "entry_text": [
+                "ふだんは　ささやくような　なきごえ。\n",
+                "ふあんになると　ジェットきと　おなじ\n",
+                "おんりょうで　なきつづける。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1285
+    }
+}

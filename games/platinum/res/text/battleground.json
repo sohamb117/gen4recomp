@@ -1,0 +1,1189 @@
+{
+  "key": 21510,
+  "messages": [
+    {
+      "id": "Battleground_Text_WelcomeToBattleground",
+      "en_US": [
+        "Oh? So, you are?!\n",
+        "You’re Buck’s friend, yes!\r",
+        "I’ve heard about you from both Buck\n",
+        "and Wake.\r",
+        "Well, my young friend, you’re always\n",
+        "welcome here from now on!\r",
+        "This is a private club for only Sinnoh’s\n",
+        "Gym Leaders, or those vouched for by\f",
+        "those selfsame Gym Leaders.\r",
+        "It’s a place where the best seek to\n",
+        "better themselves.\r",
+        "Welcome to the Battleground!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_TalkAboutStarkMountain",
+      "en_US": [
+        "What should we talk about today?\n",
+        "...Ah, I know.\r",
+        "Let me tell you about the volcano named\n",
+        "Stark Mountain.\r",
+        "That volcano dates to when Sinnoh was\n",
+        "made by the melding of time and space.\r",
+        "Fiery lava spilled out and pooled, and\n",
+        "then it became a Pokémon.\r",
+        "It’s said the Magma Stone was used\n",
+        "to keep the Pokémon pinned down.\r",
+        "It kept the Pokémon from rampaging\n",
+        "and the volcano from erupting."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MakeYourselfAtHome",
+      "en_US": [
+        "Welcome to the Battleground!\n",
+        "Make yourself at home like always."
+      ]
+    },
+    {
+      "id": "Battleground_Text_Dummy3",
+      "garbage": 108
+    },
+    {
+      "id": "Battleground_Text_Dummy4",
+      "garbage": 98
+    },
+    {
+      "id": "Battleground_Text_OpenToToughestTrainers",
+      "en_US": [
+        "Buck: My place is open only to the\n",
+        "toughest Trainers--I’m serious.\r",
+        "You’re supposed to be introduced by\n",
+        "a Gym Leader, but you’re special.\r",
+        "Well, I’m off to the Battle Frontier.\r",
+        "I feel like seeing how far I can go up\n",
+        "the Tower.\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_Dummy6",
+      "garbage": 127
+    },
+    {
+      "id": "Battleground_Text_Dummy7",
+      "garbage": 14
+    },
+    {
+      "id": "Battleground_Text_Dummy8",
+      "garbage": 14
+    },
+    {
+      "id": "Battleground_Text_Dummy9",
+      "garbage": 14
+    },
+    {
+      "id": "Battleground_Text_Dummy10",
+      "garbage": 14
+    },
+    {
+      "id": "Battleground_Text_Dummy11",
+      "garbage": 14
+    },
+    {
+      "id": "Battleground_Text_RoarkAskBattle",
+      "en_US": [
+        "Roark: I went down to the Underground\n",
+        "every day.\r",
+        "I toughened up my Pokémon by digging\n",
+        "up Fossils nonstop.\r",
+        "Could I show you how tough I made them\n",
+        "in a battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkIntro",
+      "en_US": [
+        "Roark: Here goes! These are my rocking\n",
+        "Pokémon, my pride and joy!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkDeclinedBattle",
+      "en_US": [
+        "Roark: This is another topic, but you\n",
+        "know those Spheres you can dig up?\r",
+        "Yes, those Spheres.\n",
+        "The ones in the Underground.\r",
+        "Why do you suppose Spheres grow if\n",
+        "you leave them buried?\r",
+        "It’s not a huge issue or anything, but\n",
+        "doesn’t it strike you as odd?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkAskBattleAgain",
+      "en_US": [
+        "Roark: Look, can I have some time?\r",
+        "I feel lucky to have run into you here,\n",
+        "so can I challenge you to a battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkDefeat",
+      "en_US": [
+        "Roark: ...We lost control there.\r",
+        "Next time, I’d like to challenge you to\n",
+        "a Fossil-digging race underground."
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkAskBattle2",
+      "en_US": [
+        "Roark: Would you like to battle?\r",
+        "You’ll get to see a different me than\n",
+        "you saw at my Gym."
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkIntro2",
+      "en_US": [
+        "Roark: I’ve got a TYRANITAR I’m going\n",
+        "to send out.\r",
+        "It’s tougher than even my dad’s\n",
+        "AGGRON!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkDeclinedBattle2",
+      "en_US": [
+        "Roark: Hmm...\n",
+        "That’s a heartbreaking answer."
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkAskBattleAgain2",
+      "en_US": "Roark: Oh, you do want to battle?"
+    },
+    {
+      "id": "Battleground_Text_RoarkDefeat2",
+      "en_US": [
+        "Roark: Pokémon from ancient\n",
+        "times...\r",
+        "Fossils that are yet to be\n",
+        "discovered...\r",
+        "I wonder if I can find new Fossils if\n",
+        "I dig all over Sinnoh?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RoarkDefeatByronPresent",
+      "en_US": [
+        "Roark: When I became a Gym Leader,\n",
+        "I finally realized how great my dad is.\r",
+        "Not that I’d ever admit that to him,\n",
+        "of course."
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaAskBattle",
+      "en_US": [
+        "Gardenia: Hi, have you been keeping\n",
+        "well?\r",
+        "Let’s cut to the good stuff!\n",
+        "Let’s get down to battle!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaIntro",
+      "en_US": [
+        "Gardenia: Yes, that’s right!\r",
+        "A battle will tell you if someone you\n",
+        "haven’t seen’s been keeping well!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaDeclinedBattle",
+      "en_US": [
+        "Gardenia: You won’t battle?\n",
+        "You’re not in the mood, huh?\r",
+        "Well, why not polish your Badges, then?\n",
+        "That might put a shine on your day, too."
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaAskBattleAgain",
+      "en_US": [
+        "Gardenia: Oh?\n",
+        "You do want a battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaDefeat",
+      "en_US": [
+        "Gardenia: Out of the Gym, a Gym Leader\n",
+        "is just another Trainer.\r",
+        "But wherever I go, I still try to be as\n",
+        "tough as I can.\r",
+        "It’s not fair to my Pokémon if we were\n",
+        "to lose because of me."
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaAskBattle2",
+      "en_US": [
+        "Gardenia: My Grass-type Pokémon are\n",
+        "growing good and strong.\r",
+        "I’m kind of interested in what Pokémon\n",
+        "you have, too.\r",
+        "Want to battle?\n",
+        "A real quick one?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaIntro2",
+      "en_US": [
+        "Gardenia: I can’t deny that Grass-type\n",
+        "Pokémon have many weak points.\r",
+        "But I’ll show you that’s not the only\n",
+        "factor in deciding who wins!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaDeclinedBattle2",
+      "en_US": [
+        "Gardenia: Aww, really?\r",
+        "My grass Pokémon are growing good\n",
+        "and strong, too..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaAskBattleAgain2",
+      "en_US": [
+        "Gardenia: My Grass-type Pokémon are\n",
+        "growing good and strong.\r",
+        "Come on, let’s battle!\n",
+        "A real quick one, OK?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_GardeniaDefeat2",
+      "en_US": [
+        "Gardenia: By the way...\n",
+        "Have you been to the Old Chateau?\r",
+        "Me? Uh, well, you know, I have my Gym\n",
+        "Leader job and all, so...\r",
+        "Well, actually, I’m here training...\n",
+        "...I’m here just for fun...\r",
+        "Ahahaha!\n",
+        "Don’t mind me!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaAskBattle",
+      "en_US": [
+        "Fantina: Finally, you have arrived!\r",
+        "So, you shall challenge me.\n",
+        "And I shall win.\r",
+        "You will be startled by how much\n",
+        "stronger I have become!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaIntro",
+      "en_US": "{SIZE 200}Ohohoho!!{SIZE 100}\r"
+    },
+    {
+      "id": "Battleground_Text_FantinaDeclinedBattle",
+      "en_US": [
+        "Fantina: You... You disappoint me.\n",
+        "It is very sad.\r",
+        "But, realize, you have not beaten me\n",
+        "if you refuse."
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaAskBattleAgain",
+      "en_US": [
+        "Fantina: This time, you shall challenge\n",
+        "me, yes?\r",
+        "But I shall win.\r",
+        "You will be startled by how much\n",
+        "stronger I have become!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaDefeat",
+      "en_US": [
+        "Fantina: You are an amazing person!\n",
+        "Très fantastique!\r",
+        "I am delighted--for now I have a\n",
+        "purpose!\r",
+        "My purpose, it is to defeat you!\n",
+        "It is a gift from you to me!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaAskBattle2",
+      "en_US": [
+        "Fantina: Oh? It is you?\n",
+        "Are you not taking part in Contests?\r",
+        "Since you are involving yourself in\n",
+        "Contests, you should challenge me."
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaIntro2",
+      "en_US": [
+        "Fantina: Pokémon battles, they are fun,\n",
+        "always without fail.\r",
+        "Why, you ask? Because, in those\n",
+        "moments, we are at our most serious.\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaDeclinedBattle2",
+      "en_US": [
+        "Fantina: No?\n",
+        "Well, that is OK, also.\r",
+        "Just seeing your face, it has made me\n",
+        "happy."
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaAskBattleAgain2",
+      "en_US": [
+        "Fantina: Yes, what is it?\n",
+        "I accept your challenge if you give it!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_FantinaDefeat2",
+      "en_US": [
+        "Fantina: I wish to battle as if I were\n",
+        "dancing."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneAskBattle",
+      "en_US": [
+        "Maylene: I think it’s OK if I were to\n",
+        "keep losing to the same Trainer.\r",
+        "Battling that person tells me how much\n",
+        "my Pokémon and I have changed.\r",
+        "That’s why I would like to challenge\n",
+        "you for a rematch now, {STRVAR_1 3, 0, 0}."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneIntro",
+      "en_US": [
+        "Maylene: OK! Rei!\n",
+        "Oh, that’s my bow before a match.\r",
+        "{STRVAR_1 3, 0, 0}, I’m throwing everything\n",
+        "I have at you!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneDeclinedBattle",
+      "en_US": [
+        "Maylene: Sigh...\r",
+        "I braced myself for a battle.\n",
+        "This is a little deflating..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneAskBattleAgain",
+      "en_US": [
+        "Maylene: Yes, what is it, {STRVAR_1 3, 0, 0}?\n",
+        "Would you maybe like a battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneDefeat",
+      "en_US": [
+        "Maylene: I love visiting here.\r",
+        "Buck’s grandpa cooks for us, and it’s\n",
+        "all delicious.\r",
+        "That’s not all! We can eat all we want.\n",
+        "Isn’t that amazing, {STRVAR_1 3, 0, 0}?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneAskBattle2",
+      "en_US": [
+        "Maylene: Being together with Pokémon\n",
+        "gave me the strength to keep going.\r",
+        "Please, {STRVAR_1 3, 0, 0}, accept my\n",
+        "challenge!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneIntro2",
+      "en_US": [
+        "Maylene: OK, here we come,\n",
+        "{STRVAR_1 3, 0, 0}!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneDeclinedBattle2",
+      "en_US": [
+        "Maylene: OK! Got it!\r",
+        "We’ll train much harder so we can\n",
+        "battle with you, {STRVAR_1 3, 0, 0}."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneAskBattleAgain2",
+      "en_US": [
+        "Maylene: {STRVAR_1 3, 0, 0}!\n",
+        "I know I’m being a pest, but please,\f",
+        "accept our challenge!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MayleneDefeat2",
+      "en_US": [
+        "Maylene: Hello, {STRVAR_1 3, 0, 0}!\r",
+        "I’ve heard that it’s more healthy to\n",
+        "go barefoot.\r",
+        "Come to think of it, the Pokémon are\n",
+        "all barefooted."
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeAskBattle",
+      "en_US": [
+        "Wake: What’s there to do for Trainers\n",
+        "here?\r",
+        "Seems to me there’s nothing to do but\n",
+        "battle!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeIntro",
+      "en_US": [
+        "Wake: My Pokémon have new Water-type\n",
+        "moves under their belts!\r",
+        "Let’s see how you bear up under them!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeDeclinedBattle",
+      "en_US": [
+        "Wake: Then, you get my song instead!\n",
+        "Er-hem!\r",
+        "The ring is my roiling sea. ♫\n",
+        "The towering waves shaped me.\r",
+        "Crash! Crash! Crasher Wake!\n",
+        "Crash! Crash! Crasher Wake!\r",
+        "I’m the tidal wave of power to wash\n",
+        "you away!\r",
+        "Put out the fire, Crasher Wake!\n",
+        "Run from electricity, Crasher Wake!\r",
+        "Ah, ah, aaaah!\n",
+        "The ring is my sea. ♫"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeAskBattleAgain",
+      "en_US": [
+        "Wake: Words aren’t needed.\r",
+        "We understand each other through\n",
+        "battle!\r",
+        "That’s what makes us Trainers!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeDefeat",
+      "en_US": [
+        "Wake: Battles that end with both sides\n",
+        "enjoying the experience without caring\f",
+        "about the winner or loser...\r",
+        "That’s what I strive for.\r",
+        "One of these days, I hope to battle\n",
+        "everyone in the world...\r",
+        "Isn’t that right, {STRVAR_1 3, 0, 0}?!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeAskBattle2",
+      "en_US": [
+        "Wake: All right!\n",
+        "How’s it going?\r",
+        "My Pokémon were toughened up by\n",
+        "stormy white waters!\r",
+        "They’ll take everything you can throw\n",
+        "at them and then pull you under!\r",
+        "Victory will be ours!\n",
+        "Come on, let’s get it done!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeIntro2",
+      "en_US": [
+        "Wake: That’s the spirit!\n",
+        "Bring it on!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeDeclinedBattle2",
+      "en_US": [
+        "Wake: Whoops!\r",
+        "You’re giving me the slip?\n",
+        "You’re a slick one, {STRVAR_1 3, 0, 0}!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeAskBattleAgain2",
+      "en_US": [
+        "Wake: So, what’s the story?\n",
+        "Are we gonna battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_WakeDefeat2",
+      "en_US": [
+        "Wake: For all the training I do, there\n",
+        "are still plenty tougher than me.\r",
+        "The stronger I get, the farther away\n",
+        "the goal seems to be.\r",
+        "The road is harsh and long.\n",
+        "There’s no end to it.\r",
+        "But beside me always are my Pokémon.\n",
+        "Every inch of the way!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronAskBattle",
+      "en_US": [
+        "Byron: I’ve faced many a challenger at\n",
+        "my Gym.\r",
+        "I trained on Iron Island while\n",
+        "contemplating my worth for days...\r",
+        "I have the confidence now to batter\n",
+        "down your defenses.\r",
+        "Could I ask you for a rematch?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronIntro",
+      "en_US": [
+        "Byron: We are tempered and honed by\n",
+        "battling the strong.\r",
+        "Here’s to our showdown!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronDeclinedBattle",
+      "en_US": [
+        "Byron: When you came to the Gym, you\n",
+        "had a glint that’s dulled now."
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronAskBattleAgain",
+      "en_US": [
+        "Byron: I have the confidence now to\n",
+        "batter down your defenses.\r",
+        "Could I ask you for a rematch?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronDefeat",
+      "en_US": [
+        "Byron: I trained by pummeling steel\n",
+        "continuously on Iron Island alongside\f",
+        "Pokémon...\r",
+        "Gwahahahaha!\n",
+        "I could still use more toughening up!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronAskBattle2",
+      "en_US": [
+        "Byron: Since we last lost to you, we’ve\n",
+        "been in training.\r",
+        "I think we’ve addressed our\n",
+        "shortcomings.\r",
+        "Could I ask you for another rematch?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronIntro2",
+      "en_US": [
+        "Byron: Thank you!\r",
+        "Like me, my Pokémon were longing for\n",
+        "another chance to battle with you!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronDeclinedBattle2",
+      "en_US": [
+        "Byron: Gwahahaha!\n",
+        "That’s disappointing, but all right!\r",
+        "There’s a lot to be learned by battling\n",
+        "you. We had our hopes up."
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronAskBattleAgain2",
+      "en_US": [
+        "Byron: Could I ask you for another\n",
+        "rematch?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronDefeat2",
+      "en_US": [
+        "Byron: Argh...\n",
+        "Came up short again...\r",
+        "Do I talk to my son Roark to train\n",
+        "together...?\r",
+        "No, that’s too embarrassing...\n",
+        "Hmm... This is a dilemma..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_ByronDefeatRoarkPresent",
+      "en_US": [
+        "Byron: ...That Roark thinks he can show\n",
+        "up his old man?\r",
+        "My act needs polishing still, I fear...\r",
+        "Ah, it’s you!\n",
+        "Don’t mind me. Make yourself at home."
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceAskBattle",
+      "en_US": [
+        "Candice: Hiya!\n",
+        "What’s up?\r",
+        "I bet you can’t tell what I’m thinking!\r",
+        "I’ll give the answer away.\n",
+        "I want to battle with you!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceIntro",
+      "en_US": [
+        "Candice: This time, Candice is going to\n",
+        "push through on willpower!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceDeclinedBattle",
+      "en_US": [
+        "Candice: Oh...\n",
+        "Did my willpower intimidate you?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceAskBattleAgain",
+      "en_US": [
+        "Candice: Listen, listen.\n",
+        "You’ll battle Candice, won’t you?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceDefeat",
+      "en_US": [
+        "Candice: Oh, wow, your scarf is totally\n",
+        "in fashion.\r",
+        "I wish I had one like that."
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceAskBattle2",
+      "en_US": [
+        "Candice: Candice is on fire!\r",
+        "I’m blazing hot!\r",
+        "Hot enough to melt Ice-type Pokémon!\r",
+        "I need a battle to cool me down!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceIntro2",
+      "en_US": [
+        "Candice: OK! I’ll show you how good\n",
+        "Candice...\r",
+        "I mean, how good my Pokémon can be!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceDeclinedBattle2",
+      "en_US": "Candice: Awww!"
+    },
+    {
+      "id": "Battleground_Text_CandiceAskBattleAgain2",
+      "en_US": [
+        "Candice: You really want to battle\n",
+        "with me, don’t you?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CandiceDefeat2",
+      "en_US": [
+        "Candice: Awww!\n",
+        "That’s it!\r",
+        "I’m going to train so I can throw a\n",
+        "Focus Punch myself!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerAskBattle",
+      "en_US": [
+        "Volkner: Your Pokémon...\n",
+        "I can feel their power!\r",
+        "Of course, you can sense the power of\n",
+        "my Pokémon, can’t you?\r",
+        "Let us battle with you!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerIntro",
+      "en_US": [
+        "Volkner: Yeah! It’s electric, this\n",
+        "feeling of anticipation!\r",
+        "Let’s do it!\n",
+        "We’re going to make some sparks fly!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerDeclinedBattle",
+      "en_US": [
+        "Volkner: Aww, come on now.\n",
+        "Don’t disappoint me..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerAskBattleAgain",
+      "en_US": [
+        "Volkner: Hm? What’s up?\n",
+        "You do want to battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerDefeat",
+      "en_US": [
+        "Volkner: Winning makes me happy, and\n",
+        "losing leaves me angry...\r",
+        "That’s no great revelation, but it’s\n",
+        "what makes me stronger."
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerAskBattle2",
+      "en_US": [
+        "Volkner: My ELECTIVIRE demands tough\n",
+        "opponents.\r",
+        "I’m willing to beg.\n",
+        "Let’s battle!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerIntro2",
+      "en_US": [
+        "Volkner: You! And me!\n",
+        "Let’s make some sparks fly!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerDeclinedBattle2",
+      "en_US": [
+        "Volkner: Well, yeah, an ELECTIVIRE is\n",
+        "intimidating. I hear you..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerAskBattleAgain2",
+      "en_US": [
+        "Volkner: Hm? What’s up?\n",
+        "You’re willing to face my ELECTIVIRE?\f",
+        "And help toughen up my Pokémon?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_VolknerDefeat2",
+      "en_US": [
+        "Volkner: Some Trainers have Pokémon\n",
+        "they just have to have in their party.\r",
+        "For me, ELECTIVIRE is that Pokémon..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylAskBattle",
+      "en_US": [
+        "Cheryl: Oh, hello, {STRVAR_1 3, 0, 0}.\n",
+        "You’re my opponent of the day?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylIntro",
+      "en_US": [
+        "Cheryl: My Pokémon have been itching\n",
+        "for a battle.\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylDeclinedBattle",
+      "en_US": [
+        "Cheryl: Oh, but my Pokémon were itching\n",
+        "for a battle..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylAskBattleAgain",
+      "en_US": [
+        "Cheryl: {STRVAR_1 3, 0, 0}, may I ask you for\n",
+        "a battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylDefeat",
+      "en_US": [
+        "Cheryl: Thank you, {STRVAR_1 3, 0, 0}!\r",
+        "Thanks to you, my adorable Pokémon\n",
+        "became a little tougher."
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylAskBattle2",
+      "en_US": [
+        "Cheryl: It’s been a long time...\n",
+        "Hasn’t it?\r",
+        "Would you care to have a battle with\n",
+        "me?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylIntro2",
+      "en_US": [
+        "Cheryl: I should warn you, my Pokémon\n",
+        "can be quite rambunctious.\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylDeclinedBattle2",
+      "en_US": [
+        "Cheryl: Giggle...\r",
+        "Pokémon would get worn out if we\n",
+        "battled all the time, wouldn’t they?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylAskBattleAgain2",
+      "en_US": [
+        "Cheryl: ...Yes?\n",
+        "Would you like to battle after all?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_CherylDefeat2",
+      "en_US": [
+        "Cheryl: Being a Trainer isn’t easy.\r",
+        "The more you battle, the more you\n",
+        "discover.\r",
+        "But, you know?\n",
+        "I love Pokémon for that, too!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraAskBattle",
+      "en_US": [
+        "Mira: {STRVAR_1 3, 0, 0}!\n",
+        "Please teach Mira about Pokémon!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraIntro",
+      "en_US": [
+        "Mira: {STRVAR_1 3, 0, 0}!\r",
+        "Mira will show you that Mira doesn’t get\n",
+        "lost anymore, {STRVAR_1 3, 0, 0}!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraDeclinedBattle",
+      "en_US": [
+        "Mira: Mira is a little sad...\n",
+        "Mira’s Pokémon are stronger now."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraAskBattleAgain",
+      "en_US": [
+        "Mira: {STRVAR_1 3, 0, 0}, please?\n",
+        "Please teach Mira about Pokémon!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraDefeat",
+      "en_US": [
+        "Mira: {STRVAR_1 3, 0, 0}, please teach Mira\n",
+        "about Pokémon again!\r",
+        "Mira wants to get a lot, lot stronger,\n",
+        "like {STRVAR_1 3, 0, 0}!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraAskBattle2",
+      "en_US": [
+        "Mira: {STRVAR_1 3, 0, 0}!\n",
+        "Mira is stronger now!\f",
+        "Please! Battle with Mira!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraIntro2",
+      "en_US": [
+        "Mira: {STRVAR_1 3, 0, 0} will be shocked by\n",
+        "Mira!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraDeclinedBattle2",
+      "en_US": [
+        "Mira: Mira really did get stronger.\n",
+        "Mira wanted {STRVAR_1 3, 0, 0} to see."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MiraAskBattleAgain2",
+      "en_US": "Mira: You will battle Mira?"
+    },
+    {
+      "id": "Battleground_Text_MiraDefeat2",
+      "en_US": [
+        "Mira: {STRVAR_1 3, 0, 0}, you are always with\n",
+        "your Pokémon.\r",
+        "That’s how you got to be so strong.\n",
+        "Mira is beginning to understand!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyAskBattle",
+      "en_US": [
+        "Riley: You and I, we’re both Trainers.\r",
+        "Let’s forego the small talk and proceed\n",
+        "right to battle.\r",
+        "That’s my style!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyIntro",
+      "en_US": "Riley: Battling is our way of greeting!\r"
+    },
+    {
+      "id": "Battleground_Text_RileyDeclinedBattle",
+      "en_US": [
+        "Riley: All right, then.\n",
+        "So, what’ve you got to tell me?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyAskBattleAgain",
+      "en_US": [
+        "Riley: See? It just doesn’t feel right\n",
+        "if we don’t battle, does it?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyDefeat",
+      "en_US": [
+        "Riley: Know your enemy.\r",
+        "If you know your opponent’s Pokémon\n",
+        "and what moves they use...\r",
+        "If you have intelligence like that, your\n",
+        "chances of winning are much improved."
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyAskBattle2",
+      "en_US": [
+        "Riley: Hi. Long time, no see.\r",
+        "If it’s all right with you, I’d like to\n",
+        "challenge you to a battle right now."
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyIntro2",
+      "en_US": [
+        "Riley: We’re pulling out all the stops\n",
+        "to put your Pokémon down.\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyDeclinedBattle2",
+      "en_US": [
+        "Riley: Oh, all right.\n",
+        "Then we’ll wait till you’re ready."
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyAskBattleAgain2",
+      "en_US": [
+        "Riley: That look you have...\n",
+        "I take it you’re ready for our battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_RileyDefeat2",
+      "en_US": [
+        "Riley: If I weren’t on Iron Island\n",
+        "then...\r",
+        "If you hadn’t arrived on Iron Island\n",
+        "then...\r",
+        "Perhaps we would have never met.\n",
+        "Or, would we have met elsewhere?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyAskBattle",
+      "en_US": [
+        "Marley: I...\n",
+        "Is it OK to battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyIntro",
+      "en_US": [
+        "Marley: ...OK.\n",
+        "I’ll do my best.\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyDeclinedBattle",
+      "en_US": [
+        "Marley: ...Oh?\n",
+        "...You can be that mean?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyAskBattleAgain",
+      "en_US": [
+        "Marley: ...So?\n",
+        "Are we battling?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyDefeat",
+      "en_US": [
+        "Marley: ...You’re so strong.\n",
+        "It makes me feel happy.\r",
+        "...I don’t know why.\n",
+        "This is a strange feeling..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyAskBattle2",
+      "en_US": [
+        "Marley: ...Oh?\n",
+        "A battle? With me?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyIntro2",
+      "en_US": [
+        "Marley: ...OK.\n",
+        "I...won’t lose...!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyDeclinedBattle2",
+      "en_US": [
+        "Marley: ...Oh, you.\n",
+        "I’m getting to dislike you a little."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyAskBattleAgain2",
+      "en_US": [
+        "Marley: ...If you won’t battle, I might\n",
+        "not come back..."
+      ]
+    },
+    {
+      "id": "Battleground_Text_MarleyDefeat2",
+      "en_US": [
+        "Marley: ...I might like battling with\n",
+        "you.\r",
+        "...Just a little.\n",
+        "Only a little tiny bit."
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckAskBattle",
+      "en_US": [
+        "Buck: Ehehehe! You’re here at last!\n",
+        "Let’s not waste time! Let’s do this!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckIntro",
+      "en_US": [
+        "Buck: ...I’m telling you right now.\n",
+        "I’m seriously tough. Act surprised!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckDeclinedBattle",
+      "en_US": [
+        "Buck: Huh, what?\n",
+        "That takes the wind out of my sails.\r",
+        "Well, since you’re here, kick back,\n",
+        "make yourself at home, and all that."
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckAskBattleAgain",
+      "en_US": [
+        "Buck: What? What?!\n",
+        "So we are going to battle?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckDefeat",
+      "en_US": [
+        "Buck: Fweh! Too much!\r",
+        "I guess I’ll better my team\n",
+        "at the Battle Tower."
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckAskBattle2",
+      "en_US": [
+        "Buck: One, there’s no shortcuts in\n",
+        "the way of Pokémon!\r",
+        "Two...\n",
+        "Never mind that, let’s do this!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckIntro2",
+      "en_US": [
+        "Buck: I can feel my Pokémon shivering\n",
+        "inside their Poké Balls!\r",
+        "It’s out of anticipation, not fear!\r"
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckDeclinedBattle2",
+      "en_US": [
+        "Buck: Hey! This place! It’s named\n",
+        "the Battleground for a reason!"
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckAskBattleAgain2",
+      "en_US": [
+        "Buck: So?\n",
+        "Do you feel like battling now?"
+      ]
+    },
+    {
+      "id": "Battleground_Text_BuckDefeat2",
+      "en_US": [
+        "Buck: Fweh! Too much!\r",
+        "I guess I’ll better my team on\n",
+        "Stark Mountain!"
+      ]
+    }
+  ]
+}

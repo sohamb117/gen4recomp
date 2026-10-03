@@ -1,0 +1,119 @@
+{
+  "key": 1051,
+  "messages": [
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_IAmTheChairman",
+      "en_US": [
+        "Hello, hello!\n",
+        "How, I say, do you do?\r",
+        "I am the Pokémon Fan Club Chairman!\n",
+        "Indeed, yes I am!\r",
+        "When you wish to treat your Pokémon\n",
+        "to a treat, what, I say, do you do?\r",
+        "If I may say so, and I will, I feed\n",
+        "Poffins to my Pokémon!\r",
+        "And why, I say, would I do that?\r",
+        "Because the giving of Poffins is\n",
+        "a way of expressing your love!\r",
+        "For example! If I were to give a\n",
+        "Sweet Poffin, the Pokémon eating it\f",
+        "would become more cute!\r",
+        "For example! A Spicy Poffin will add\n",
+        "to the coolness of a Pokémon!\r",
+        "In such ways I say that Poffins have\n",
+        "nothing but goodness for Pokémon!\r",
+        "Therefore!\r",
+        "I declare this Poffin Case to be\n",
+        "a gift from me to you!\r"
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_FillItWithPoffins",
+      "en_US": [
+        "I urge you to fill it with Poffins\n",
+        "and be generous in dispensing them\f",
+        "to your Pokémon!"
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_WeAreNumberOneFanClub",
+      "en_US": [
+        "Nationwide, there are other fan\n",
+        "clubs, but we are number one!\r",
+        "And why are we number one?\n",
+        "Because I brag more than anyone!\r",
+        "But now I can’t brag as much...\r",
+        "People started complaining, so\n",
+        "I’ve had to curtail my bragging..."
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_OhYourPokemon",
+      "en_US": [
+        "Welcome to the Pokémon Fan Club!\n",
+        "Oh, your {STRVAR_1 0, 0, 0}...\r"
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_ItSimplyAdoresYou",
+      "en_US": [
+        "It simply adores you!\n",
+        "Why, I feel like I’m intruding!"
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_ItsVeryFriendlyTowardYou",
+      "en_US": [
+        "It’s very friendly toward you.\n",
+        "I can tell you treat it kindly."
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_ItsQuiteFriendlyToYou",
+      "en_US": [
+        "It’s quite friendly to you.\n",
+        "It must be happy being with you."
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_ItsWarmingUpToYou",
+      "en_US": [
+        "It’s warming up to you.\n",
+        "That’s my impression."
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_ItsFeelingNeutralTowardYou",
+      "en_US": [
+        "It’s feeling neutral toward you.\n",
+        "It’s up to you to change that."
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_ItSeemsToDislikeYouALittle",
+      "en_US": [
+        "Hmm...\n",
+        "It seems to dislike you a little."
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_HasntTakenTooKindlyToYou",
+      "en_US": [
+        "Oh, my... I think this one really\n",
+        "hasn’t taken too kindly to you."
+      ]
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_PsyduckCryGuaGwah",
+      "en_US": "PSYDUCK: Gua gwah?!"
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_BunearyCryKukuuh",
+      "en_US": "BUNEARY: Kukuuh."
+    },
+    {
+      "id": "HearthomeCityPokemonFanClub_Text_ClefairyCryPipPiiih",
+      "en_US": "CLEFAIRY: Pip piiih!"
+    }
+  ]
+}

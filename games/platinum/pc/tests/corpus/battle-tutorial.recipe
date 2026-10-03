@@ -1,0 +1,15 @@
+# The catching tutorial, which is a scripted demonstration rather than a
+# fight: it reports no result and the station asserts on the save instead.
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20004
+money 3000
+party SPECIES_TURTWIG 5 ITEM_NONE
+item ITEM_POKE_BALL 5
+# The lead's first move is set explicitly. A battle station is driven
+# with A alone, which picks move slot 0 every turn, so a lead whose
+# natural slot 0 is a status move never ends its fight, measured on a
+# level 22 Monferno, which drew a level 5 Starly out past 40,000 frames.
+party-move 0 0 MOVE_RAZOR_LEAF
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_DOWN

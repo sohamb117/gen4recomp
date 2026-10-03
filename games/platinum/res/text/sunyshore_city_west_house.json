@@ -1,0 +1,68 @@
+{
+  "key": 21522,
+  "messages": [
+    {
+      "id": "SunyshoreCityWestHouse_Text_GoneUndergroundLately",
+      "en_US": [
+        "Have you gone underground lately?\r",
+        "Depending on where you go down, you\n",
+        "end up in different places.\r",
+        "That’s why I use my Explorer Kit in as\n",
+        "many places as I can."
+      ]
+    },
+    {
+      "id": "SunyshoreCityWestHouse_Text_SpheresUndergroundLikeGems",
+      "en_US": [
+        "The Spheres found in the underground\n",
+        "tunnels are like gems.\r",
+        "You can obtain goodies by trading\n",
+        "the Spheres away."
+      ]
+    },
+    {
+      "id": "SunyshoreCityWestHouse_Text_BuriedSpheresGrow",
+      "en_US": [
+        "If you bury Spheres, they grow\n",
+        "a little every day.\r",
+        "They’re really weird that way.\r",
+        "Oh, right! I’d better dig mine up!\n",
+        "I forgot I had some buried!"
+      ]
+    },
+    {
+      "id": "SunyshoreCityWestHouse_Text_GetFlagsFromFriends",
+      "en_US": [
+        "Get Flags from your friends to make\n",
+        "your Secret Base better.\r",
+        "Try to hide your Secret Base, and\n",
+        "get good at discovering your\f",
+        "friends’ bases."
+      ]
+    },
+    {
+      "id": "SunyshoreCityWestHouse_Text_GoUndergroundHaveFun",
+      "en_US": [
+        "Go underground and have fun down\n",
+        "there. Make it an adventure!"
+      ]
+    },
+    {
+      "id": "SunyshoreCityWestHouse_Text_DefusedByTouch",
+      "en_US": [
+        "Some underground Traps need to be\n",
+        "defused by touch or by using the\f",
+        "microphone!"
+      ]
+    },
+    {
+      "id": "SunyshoreCityWestHouse_Text_UndergroundManByronRelated",
+      "en_US": [
+        "The Underground Man in Eterna and\n",
+        "Byron of Canalave are related.\r",
+        "Add Byron’s son Roark, and you have\n",
+        "a trio of dedicated diggers."
+      ]
+    }
+  ]
+}

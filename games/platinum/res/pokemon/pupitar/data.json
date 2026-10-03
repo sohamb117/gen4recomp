@@ -1,0 +1,187 @@
+{
+    "base_stats": {
+        "hp": 70,
+        "attack": 84,
+        "defense": 70,
+        "speed": 51,
+        "special_attack": 65,
+        "special_defense": 70
+    },
+    "types": [ "TYPE_ROCK", "TYPE_GROUND" ],
+    "catch_rate": 45,
+    "base_exp_reward": 144,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 2,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 40,
+    "base_friendship": 35,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_MONSTER" ],
+    "abilities": [ "ABILITY_SHED_SKIN", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GRAY",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_BITE" ],
+            [ 1, "MOVE_LEER" ],
+            [ 1, "MOVE_SANDSTORM" ],
+            [ 1, "MOVE_SCREECH" ],
+            [ 5, "MOVE_SANDSTORM" ],
+            [ 10, "MOVE_SCREECH" ],
+            [ 14, "MOVE_ROCK_SLIDE" ],
+            [ 19, "MOVE_SCARY_FACE" ],
+            [ 23, "MOVE_THRASH" ],
+            [ 28, "MOVE_DARK_PULSE" ],
+            [ 34, "MOVE_PAYBACK" ],
+            [ 41, "MOVE_CRUNCH" ],
+            [ 47, "MOVE_EARTHQUAKE" ],
+            [ 54, "MOVE_STONE_EDGE" ],
+            [ 60, "MOVE_HYPER_BEAM" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM31",
+            "TM32",
+            "TM37",
+            "TM39",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM66",
+            "TM69",
+            "TM71",
+            "TM76",
+            "TM78",
+            "TM79",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_SUPERPOWER",
+            "MOVE_IRON_HEAD",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_EARTH_POWER",
+            "MOVE_IRON_DEFENSE",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            55,
+            "SPECIES_TYRANITAR"
+        ]
+    ],
+    "offspring": "SPECIES_LARVITAR",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SILENT"
+    },
+    "pokedex_data": {
+        "height_inches": 47,
+        "weight_pounds": 335.1,
+        "body_shape": "SHAPE_SERPENTINE",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 223,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 223,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 10,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 10,
+        "en": {
+            "name": "PUPITAR",
+            "category": "Hard Shell Pokémon",
+            "entry_text": [
+                "Its body is as hard as bedrock.\n",
+                "By venting pressurized gas, it can\n",
+                "launch itself like a rocket."
+            ]
+        },
+        "fr": {
+            "name": "YMPHECT",
+            "category": "Pokémon Carapadure",
+            "entry_text": [
+                "Son corps est dur comme la pierre\n",
+                "souterraine. Il file comme une\n",
+                "fusée en expulsant des gaz."
+            ]
+        },
+        "de": {
+            "name": "PUPITAR",
+            "category": "Hartschale",
+            "entry_text": [
+                "Sein Körper ist hart wie Fels. Es\n",
+                "lässt mit Hochdruck Gas ab, um wie\n",
+                "eine Rakete nach oben zu schießen."
+            ]
+        },
+        "it": {
+            "name": "PUPITAR",
+            "category": "Pokémon Guscioduro",
+            "entry_text": [
+                "Il suo corpo è duro come la roccia.\n",
+                "Riesce a muoversi come un razzo\n",
+                "espellendo gas con tutta forza."
+            ]
+        },
+        "es": {
+            "name": "PUPITAR",
+            "category": "Pokémon Caparazón",
+            "entry_text": [
+                "Su cuerpo es duro como la roca.\n",
+                "Se autopropulsa como un cohete\n",
+                "soltando los gases de su interior."
+            ]
+        },
+        "jp": {
+            "name": "サナギラス",
+            "category": "だんがんポケモン",
+            "entry_text": [
+                "がんばんのような　かたい　からだ。\n",
+                "あっしゅくした　ガスを　ふんしゃして\n",
+                "まるで　ロケットのように　とびだす。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 2059
+    }
+}

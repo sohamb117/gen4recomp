@@ -1,0 +1,21 @@
+# After CONTINUE: 1 + 1 = on the calculator.
+#
+# Button centres from the hit table in calculator/main.c.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 touch 48 128
+3020 release
+3080 touch 144 96
+3100 release
+3160 touch 48 128
+3180 release
+3240 touch 160 160
+3260 release

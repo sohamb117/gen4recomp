@@ -1,0 +1,100 @@
+# Boots a save and then confirms whatever the run puts on screen, with A.
+#
+# For a station whose event the port starts rather than the player. The
+# evolution app ends on a message that waits for a button, so something has to
+# answer it or the run spends its remaining frames on that message.
+#
+# It has to be a and not b, which cost a measurement to learn. Evolution_Begin
+# is given flag 0x1 on the level-up and item paths; the same flag the start
+# menu passes, and that flag means "B during the animation cancels the
+# evolution". A run driven by B therefore plays the whole animation, prints
+# nothing, and leaves the species exactly as it was: a station that looks alive
+# and proves nothing. A confirms and never cancels.
+#
+# The first lines are lab-continue.txt's, unchanged.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3400 keys A
+3424 keys none
+3550 keys A
+3574 keys none
+3700 keys A
+3724 keys none
+3850 keys A
+3874 keys none
+4000 keys A
+4024 keys none
+4150 keys A
+4174 keys none
+4300 keys A
+4324 keys none
+4450 keys A
+4474 keys none
+4600 keys A
+4624 keys none
+4750 keys A
+4774 keys none
+4900 keys A
+4924 keys none
+5050 keys A
+5074 keys none
+5200 keys A
+5224 keys none
+5350 keys A
+5374 keys none
+5500 keys A
+5524 keys none
+5650 keys A
+5674 keys none
+5800 keys A
+5824 keys none
+5950 keys A
+5974 keys none
+6100 keys A
+6124 keys none
+6250 keys A
+6274 keys none
+6400 keys A
+6424 keys none
+6550 keys A
+6574 keys none
+6700 keys A
+6724 keys none
+6850 keys A
+6874 keys none
+7000 keys A
+7024 keys none
+7150 keys A
+7174 keys none
+7300 keys A
+7324 keys none
+7450 keys A
+7474 keys none
+7600 keys A
+7624 keys none
+7750 keys A
+7774 keys none
+7900 keys A
+7924 keys none
+8050 keys A
+8074 keys none
+8200 keys A
+8224 keys none
+8350 keys A
+8374 keys none
+8500 keys A
+8524 keys none
+8650 keys A
+8674 keys none
+8800 keys A
+8824 keys none
+8950 keys A
+8974 keys none

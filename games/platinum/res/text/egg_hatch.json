@@ -1,0 +1,24 @@
+{
+  "key": 48102,
+  "messages": [
+    {
+      "id": "EggHatch_Text_MonHatched",
+      "en_US": "{STRVAR_1 0, 0, 0} hatched from the Egg!"
+    },
+    {
+      "id": "EggHatch_Text_WantToNickname",
+      "en_US": [
+        "Would you like to nickname the newly\n",
+        "hatched {STRVAR_1 0, 0, 0}?"
+      ]
+    },
+    {
+      "id": "EggHatch_Text_Yes",
+      "en_US": "Yes"
+    },
+    {
+      "id": "EggHatch_Text_No",
+      "en_US": "No"
+    }
+  ]
+}

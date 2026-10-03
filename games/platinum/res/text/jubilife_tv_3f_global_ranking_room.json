@@ -1,0 +1,39 @@
+{
+  "key": 17415,
+  "messages": [
+    {
+      "id": "JubilifeTV3FGlobalRankingRoom_Text_SomeoneBrokeMyCatchingRecord",
+      "en_US": [
+        "Someone broke my Pokémon-catching\n",
+        "record!\r",
+        "I’ll reclaim my record and regain\n",
+        "my place in the standings!"
+      ]
+    },
+    {
+      "id": "JubilifeTV3FGlobalRankingRoom_Text_NumberOneWouldFeelGreat",
+      "en_US": [
+        "I bet it’d feel great if I could be\n",
+        "number one here!\r",
+        "Maybe I’ll enter some Contests with\n",
+        "my partner."
+      ]
+    },
+    {
+      "id": "JubilifeTV3FGlobalRankingRoom_Text_ImTryingForRecordAtFishing",
+      "en_US": [
+        "I really don’t win many battles...\n",
+        "But it doesn’t get me down.\r",
+        "I’m trying for the world record\n",
+        "at Pokémon fishing!"
+      ]
+    },
+    {
+      "id": "JubilifeTV3FGlobalRankingRoom_Text_ImStillFineTuningThisThingy",
+      "en_US": [
+        "Sorry, I’m still fine-tuning this\n",
+        "thingy here."
+      ]
+    }
+  ]
+}

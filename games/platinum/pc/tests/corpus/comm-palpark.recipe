@@ -1,0 +1,17 @@
+# Pal Park gate, empty GBA slot, no migrated stock.
+#
+# The worker is at (7, 11). VAR_PAL_PARK_LOBBY_STATE skips Oak's first-
+# visit scene so the conversation is the gate, not the gift. The talked
+# flag skips the first-time manual and goes straight to Enter / Info /
+# Exit; Enter then hits GoToIfNotEnoughMonForCatchingShow. An empty
+# slot-2 cannot have stocked six mons, so the console refuses.
+
+name PARKER
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+var VAR_PAL_PARK_LOBBY_STATE 1
+flag FLAG_TALKED_TO_PAL_PARK_LOBBY_RECEPTIONIST
+party SPECIES_TURTWIG 15 ITEM_NONE
+map MAP_HEADER_PAL_PARK_LOBBY 7 12 FACE_UP

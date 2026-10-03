@@ -1,0 +1,16 @@
+# Three party members, so the party menu has a cursor with somewhere to go and
+# the summary has a mon with a held item to show.
+#
+# VAR_PLAYER_STARTER is what puts POKeMON in the start menu at all --
+# StartMenu_GetNormalHiddenOptions hides the entry while it reads SPECIES_NONE,
+# and a new save has never chosen a starter.
+
+name PARTIER
+gender GENDER_MALE
+trainer-id 30115
+money 5000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 14 ITEM_NONE
+party SPECIES_STARAVIA 16 ITEM_ORAN_BERRY
+party SPECIES_BIDOOF 9 ITEM_NONE
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

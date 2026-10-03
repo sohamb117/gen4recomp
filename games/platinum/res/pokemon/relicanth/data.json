@@ -1,0 +1,193 @@
+{
+    "base_stats": {
+        "hp": 100,
+        "attack": 90,
+        "defense": 130,
+        "speed": 55,
+        "special_attack": 45,
+        "special_defense": 65
+    },
+    "types": [ "TYPE_WATER", "TYPE_ROCK" ],
+    "catch_rate": 25,
+    "base_exp_reward": 198,
+    "ev_yields": {
+        "hp": 1,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_DEEPSEASCALE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 40,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_WATER_1", "EGG_GROUP_WATER_2" ],
+    "abilities": [ "ABILITY_SWIFT_SWIM", "ABILITY_ROCK_HEAD" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GRAY",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_HARDEN" ],
+            [ 8, "MOVE_WATER_GUN" ],
+            [ 15, "MOVE_ROCK_TOMB" ],
+            [ 22, "MOVE_YAWN" ],
+            [ 29, "MOVE_TAKE_DOWN" ],
+            [ 36, "MOVE_MUD_SPORT" ],
+            [ 43, "MOVE_ANCIENT_POWER" ],
+            [ 50, "MOVE_DOUBLE_EDGE" ],
+            [ 57, "MOVE_DIVE" ],
+            [ 64, "MOVE_REST" ],
+            [ 71, "MOVE_HYDRO_PUMP" ],
+            [ 78, "MOVE_HEAD_SMASH" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM04",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM20",
+            "TM21",
+            "TM26",
+            "TM27",
+            "TM32",
+            "TM37",
+            "TM39",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM55",
+            "TM58",
+            "TM68",
+            "TM69",
+            "TM71",
+            "TM76",
+            "TM77",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM03",
+            "HM06",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_AQUA_TAIL",
+            "MOVE_SNORE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_EARTH_POWER",
+            "MOVE_BOUNCE"
+        ],
+        "egg_moves": [
+            "MOVE_MAGNITUDE",
+            "MOVE_SKULL_BASH",
+            "MOVE_WATER_SPORT",
+            "MOVE_AMNESIA",
+            "MOVE_SLEEP_TALK",
+            "MOVE_ROCK_SLIDE",
+            "MOVE_AQUA_TAIL",
+            "MOVE_SNORE",
+            "MOVE_MUD_SLAP"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_RELICANTH",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SLOW"
+    },
+    "pokedex_data": {
+        "height_inches": 39,
+        "weight_pounds": 51.6,
+        "body_shape": "SHAPE_FINS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 276,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 276,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65529,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65529,
+        "en": {
+            "name": "RELICANTH",
+            "category": "Longevity Pokémon",
+            "entry_text": [
+                "A rare Pokémon discovered during\n",
+                "a deep-sea exploration. It has not\n",
+                "changed in over 100 million years."
+            ]
+        },
+        "fr": {
+            "name": "RELICANTH",
+            "category": "Pokémon Longévité",
+            "entry_text": [
+                "Un Pokémon rare aperçu lors d’une\n",
+                "exploration sous-marine. Il n’a pas\n",
+                "évolué depuis 100 millions d’années."
+            ]
+        },
+        "de": {
+            "name": "RELICANTH",
+            "category": "Bestand",
+            "entry_text": [
+                "Tiefseeforscher fanden dieses\n",
+                "seltene PKMN, das sich in 100 Mio.\n",
+                "Jahren nicht verändert hat."
+            ]
+        },
+        "it": {
+            "name": "RELICANTH",
+            "category": "Pokémon Longevità",
+            "entry_text": [
+                "Un Pokémon raro scoperto durante\n",
+                "un’esplorazione del mare profondo.\n",
+                "È immutato da 100 milioni di anni."
+            ]
+        },
+        "es": {
+            "name": "RELICANTH",
+            "category": "Pokémon Longevo",
+            "entry_text": [
+                "Un Pokémon raro descubierto en una\n",
+                "exploración marina. No ha cambiado\n",
+                "en más de 100 millones de años."
+            ]
+        },
+        "jp": {
+            "name": "ジ－ランス",
+            "category": "ちょうじゅポケモン",
+            "entry_text": [
+                "しんかいちょうさで　はっけんされた\n",
+                "めずらしい　ポケモン。１おくねんの\n",
+                "あいだ　すがたが　かわっていない。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 2819
+    }
+}

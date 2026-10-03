@@ -1,0 +1,23 @@
+--- a/src/overlay083/ov83_0223C958.c
++++ b/src/overlay083/ov83_0223C958.c
+@@ -257,6 +257,20 @@
+     Bg_FreeTilemapBuffer(*param0, 2);
+     Bg_FreeTilemapBuffer(*param0, 1);
+     Heap_Free(*param0);
++    /* pc port: the vblank callback tests this pointer (ov83_0223CBFC) and
++     * nothing ever cleared it, so the frame between this teardown and the
++     * app's SetVBlankCallback(NULL) runs Bg_RunScheduledUpdates over the
++     * freed BgConfig. Two calls further down the same teardown,
++     * RenderOam_Free's Utility_Clear2DMainOAM takes the block back out of
++     * heap 56 and fills it with 0x02C0, so bufferTransferScheduled reads
++     * 0x02C0 and the sub-screen layers are handed a wild source, offset and
++     * size. On a cartridge the DMA mirrors the source into main RAM and
++     * truncates the count to 21 bits, corrupting something nobody looks at
++     * on a screen that is already faded out; on x86 it is a 46 MB memmove
++     * and a SIGSEGV. Nothing was scheduled when the config was freed, so
++     * clearing the pointer the callback already tests skips a transfer the
++     * console only makes because the block was recycled underneath it. */
++    *param0 = NULL;
+ }
+ 
+ static void ov83_0223CCF8(UnkStruct_ov83_0223B784 *param0)

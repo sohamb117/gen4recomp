@@ -1,0 +1,17 @@
+# Wi-Fi Plaza door: CONTINUE's last A starts the B1F attendant.
+#
+# The Go to Wi-Fi Plaza / Info / Exit menu is the door. Confirming
+# walks through it into the WFC overlay; the plaza lobby itself is
+# a permanent trap. This script stops at the menu.
+#
+# The first lines are lab-continue.txt's, unchanged.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none

@@ -1,0 +1,37 @@
+{
+    "name": "Samantha",
+    "class": "TRAINER_CLASS_LASS",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_BUDEW",
+            "form": 0,
+            "level": 24,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Oh, thank you for that last battle.\r",
+                "May I please trouble you for\n",
+                "another one?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh...\n",
+                "You’re so strong...\n"
+            ]
+        }
+    ]
+}

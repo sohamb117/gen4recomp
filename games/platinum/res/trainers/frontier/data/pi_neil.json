@@ -1,0 +1,47 @@
+{
+    "name": "Neil",
+    "class": "TRAINER_CLASS_PI",
+    "availableSets": [
+        "dugtrio_3",
+        "whiscash_3",
+        "dewgong_3",
+        "gastrodon_3",
+        "froslass_3",
+        "weezing_3",
+        "bastiodon_3",
+        "mismagius_3",
+        "drifblim_3",
+        "rapidash_3",
+        "gliscor_3",
+        "exeggutor_3",
+        "hippowdon_3",
+        "probopass_3",
+        "walrein_3",
+        "mamoswine_3",
+        "rhyperior_3",
+        "none_1"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Perseverance pays off.\n",
+                "A case can turn on that."
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "It makes for more excitement when you\n",
+                "come from behind to take the win.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That was more thrilling than any\n",
+                "stakeout! Thanks for that!\r"
+            ]
+        }
+    ]
+}

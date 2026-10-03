@@ -1,0 +1,97 @@
+# Boots a save, then walks; which is what the growth systems count.
+#
+# The day care's step callback runs once per completed step, and everything in
+# the growth loop is gated on it: a deposited pair's egg appears when the second
+# parent's own counter wraps, and a party egg loses a cycle when the shared
+# counter reaches 255. A station sets those counters near their thresholds in
+# its recipe, so what is left to walk is a handful of steps, but they have to
+# be REAL steps, taken by the player on a real map, or the callback never runs.
+#
+# Left and right alternately, because one held direction walks into the edge of
+# the town and stops stepping.
+#
+# Every button after the walk is b, and that is the whole trick. Hatching runs
+# a script that waits on a button and then a cutscene that ends by asking
+# whether to nickname the hatchling, with the cursor sitting on YES, so an A
+# there opens the naming screen and the run spends the rest of its frames on a
+# keyboard. B answers both: it clears a waiting message like A does, it says no
+# to the prompt, and on an idle overworld it does nothing at all.
+#
+# The first lines are lab-continue.txt's, unchanged.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3200 keys LEFT
+3248 keys RIGHT
+3296 keys LEFT
+3344 keys RIGHT
+3392 keys LEFT
+3440 keys RIGHT
+3488 keys LEFT
+3536 keys RIGHT
+3584 keys LEFT
+3632 keys RIGHT
+3680 keys none
+3800 keys B
+3824 keys none
+3950 keys B
+3974 keys none
+4100 keys B
+4124 keys none
+4250 keys B
+4274 keys none
+4400 keys B
+4424 keys none
+4550 keys B
+4574 keys none
+4700 keys B
+4724 keys none
+4850 keys B
+4874 keys none
+5000 keys B
+5024 keys none
+5150 keys B
+5174 keys none
+5300 keys B
+5324 keys none
+5450 keys B
+5474 keys none
+5600 keys B
+5624 keys none
+5750 keys B
+5774 keys none
+5900 keys B
+5924 keys none
+6050 keys B
+6074 keys none
+6200 keys B
+6224 keys none
+6350 keys B
+6374 keys none
+6500 keys B
+6524 keys none
+6650 keys B
+6674 keys none
+6800 keys B
+6824 keys none
+6950 keys B
+6974 keys none
+7100 keys B
+7124 keys none
+7250 keys B
+7274 keys none
+7400 keys B
+7424 keys none
+7550 keys B
+7574 keys none
+7700 keys B
+7724 keys none
+7850 keys B
+7874 keys none

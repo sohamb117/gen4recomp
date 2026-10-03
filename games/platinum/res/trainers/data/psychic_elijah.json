@@ -1,0 +1,46 @@
+{
+    "name": "Elijah",
+    "class": "TRAINER_CLASS_PSYCHIC_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ABRA",
+            "form": 0,
+            "level": 17,
+            "item": null,
+            "moves": [
+                "MOVE_HIDDEN_POWER"
+            ],
+            "iv_scale": 20,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "When a Trainer and a Pokémon bond\n",
+                "as one, a wondrous power is born...\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Urmmm...\n",
+                "Urrrrmmmmm...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "There still remain many mysteries yet\n",
+                "to be solved in this strange world...\n"
+            ]
+        }
+    ]
+}

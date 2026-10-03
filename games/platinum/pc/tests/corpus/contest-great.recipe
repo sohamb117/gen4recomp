@@ -1,0 +1,24 @@
+# A Beauty contest at Great rank.
+#
+# Same maxed entry as contest-win, scarf and moves swapped for Beauty.
+# The visual-round buckets at Great need 230 for eight hearts; 255 in
+# every condition plus sheen is 637, so the rank is what is under test,
+# not whether the entry can see the top bucket.
+
+name GREAT
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_ROSELIA 30 ITEM_BLUE_SCARF
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_ICE_BEAM
+party-move 0 2 MOVE_FLAMETHROWER
+party-move 0 3 MOVE_HYDRO_PUMP
+condition 0 MON_DATA_COOL 255
+condition 0 MON_DATA_BEAUTY 255
+condition 0 MON_DATA_CUTE 255
+condition 0 MON_DATA_SMART 255
+condition 0 MON_DATA_TOUGH 255
+condition 0 MON_DATA_SHEEN 255
+map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

@@ -1,0 +1,35 @@
+{
+    "name": "Melissa",
+    "class": "TRAINER_CLASS_LADY",
+    "items": [
+        "ITEM_FULL_RESTORE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CHERRIM",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Oh, I’m delighted to see you again.\n",
+                "Are you prepared?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Oh, how very impressive of you.\n"
+        }
+    ]
+}

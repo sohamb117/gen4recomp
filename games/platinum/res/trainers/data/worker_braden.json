@@ -1,0 +1,43 @@
+{
+    "name": "Braden",
+    "class": "TRAINER_CLASS_WORKER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_STEELIX",
+            "form": 0,
+            "level": 37,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "While I’m making sure the lifts are\n",
+                "safe, I’ll focus on a battle with you!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "A-OK! Looks safe to me!\n",
+                "Not a problem in sight!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I routinely check the lifts here.\n",
+                "You can be sure of their safety!\n"
+            ]
+        }
+    ]
+}

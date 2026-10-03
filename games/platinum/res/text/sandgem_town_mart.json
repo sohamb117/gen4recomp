@@ -1,0 +1,22 @@
+{
+  "key": 53008,
+  "messages": [
+    {
+      "id": "SandgemTownMart_Text_BuyLotsOfPotions",
+      "en_US": [
+        "If a Pokémon loses all its HP,\n",
+        "it can’t battle anymore.\r",
+        "I’m buying lots of Potions to avoid\n",
+        "having that happen!"
+      ]
+    },
+    {
+      "id": "SandgemTownMart_Text_TossAPokeBall",
+      "en_US": [
+        "If you come across a Pokémon you’ve\n",
+        "just gotta have, toss a Poké Ball!\r",
+        "Never leave home without one!"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+# Two wild battles in one process, so the field overlay reloads between them.
+#
+# Same lead as battle-wild: A picks Flamethrower every turn. The second
+# foe is another one-shot so the station ends inside its frames.
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20001
+money 3000
+badge BADGE_ID_COAL
+party SPECIES_MONFERNO 18 ITEM_NONE
+item ITEM_POKE_BALL 10
+party-move 0 0 MOVE_FLAMETHROWER
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_DOWN

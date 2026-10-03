@@ -1,0 +1,68 @@
+{
+  "key": 39564,
+  "messages": [
+    {
+      "id": "Route215_Text_Dummy0",
+      "garbage": 46
+    },
+    {
+      "id": "Route215_Text_YupItsPayback",
+      "en_US": [
+        "Do unto others as they do unto\n",
+        "you... Yup, it’s Payback!\r",
+        "It’s good for Pokémon battles,\n",
+        "but if you do that in real life...\r",
+        "There’ll be no end to the fighting,\n",
+        "that’s for sure.\r"
+      ]
+    },
+    {
+      "id": "Route215_Text_PaybackIsHarsh",
+      "en_US": [
+        "As I said, Payback is harsh.\r",
+        "Use it after the foe, and its power\n",
+        "gets doubled!"
+      ]
+    },
+    {
+      "id": "Route215_Text_DontOverdoIt",
+      "en_US": [
+        "Jogging is good for you, but you have\n",
+        "to make sure you’re not overdoing it!"
+      ]
+    },
+    {
+      "id": "Route215_Text_ImOnlyHuman",
+      "en_US": [
+        "I slow down and stop at times, sure.\n",
+        "I’m only human, after all."
+      ]
+    },
+    {
+      "id": "Route215_Text_SignCelesticTownSolaceonTown",
+      "en_US": [
+        "Celestic Town\n",
+        "Solaceon Town"
+      ]
+    },
+    {
+      "id": "Route215_Text_SignVeilstoneCity",
+      "en_US": [
+        "Rt. 215\n",
+        "Veilstone City"
+      ]
+    },
+    {
+      "id": "Route215_Text_TrainerTipsPhysicalSpecial",
+      "en_US": [
+        "Trainer Tips\r",
+        "Pokémon attacks are classified as\n",
+        "being either physical or special.\r",
+        "A physical attack is based on the\n",
+        "Attack stat of the Pokémon.\r",
+        "Likewise, a special attack is based\n",
+        "on the Special Attack stat."
+      ]
+    }
+  ]
+}

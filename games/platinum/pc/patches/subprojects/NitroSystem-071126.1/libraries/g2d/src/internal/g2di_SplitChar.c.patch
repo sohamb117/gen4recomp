@@ -1,0 +1,14 @@
+mwcc lvalue-cast extension: ((const wchar_t *)*ppChar)++ is not an lvalue in
+ISO C; advance the pointer through an assignment instead. Authored against the
+strip_asm output (identical here to the pristine source at these lines).
+--- a/subprojects/NitroSystem-071126.1/libraries/g2d/src/internal/g2di_SplitChar.c
++++ b/subprojects/NitroSystem-071126.1/libraries/g2d/src/internal/g2di_SplitChar.c
+@@ -35,7 +35,7 @@
+     NNS_G2D_ALIGN_ASSERT(*ppChar, 2);
+
+     c = *(const wchar_t *)*ppChar;
+-    ((const wchar_t *)*ppChar)++;
++    *ppChar = (const wchar_t *)*ppChar + 1;
+
+     return c;
+ }

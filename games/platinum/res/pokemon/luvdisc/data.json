@@ -1,0 +1,176 @@
+{
+    "base_stats": {
+        "hp": 43,
+        "attack": 30,
+        "defense": 55,
+        "speed": 97,
+        "special_attack": 40,
+        "special_defense": 65
+    },
+    "types": [ "TYPE_WATER", "TYPE_WATER" ],
+    "catch_rate": 225,
+    "base_exp_reward": 110,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 1,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_HEART_SCALE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_75",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_FAST",
+    "egg_groups": [ "EGG_GROUP_WATER_2", "EGG_GROUP_WATER_2" ],
+    "abilities": [ "ABILITY_SWIFT_SWIM", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PINK",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 4, "MOVE_CHARM" ],
+            [ 7, "MOVE_WATER_GUN" ],
+            [ 9, "MOVE_AGILITY" ],
+            [ 14, "MOVE_TAKE_DOWN" ],
+            [ 17, "MOVE_LUCKY_CHANT" ],
+            [ 22, "MOVE_ATTRACT" ],
+            [ 27, "MOVE_SWEET_KISS" ],
+            [ 31, "MOVE_WATER_PULSE" ],
+            [ 37, "MOVE_AQUA_RING" ],
+            [ 40, "MOVE_CAPTIVATE" ],
+            [ 46, "MOVE_FLAIL" ],
+            [ 51, "MOVE_SAFEGUARD" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM17",
+            "TM18",
+            "TM20",
+            "TM21",
+            "TM27",
+            "TM32",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM55",
+            "TM58",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM03",
+            "HM07"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_ICY_WIND",
+            "MOVE_SNORE",
+            "MOVE_BOUNCE",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_SPLASH",
+            "MOVE_SUPERSONIC",
+            "MOVE_WATER_SPORT",
+            "MOVE_MUD_SPORT",
+            "MOVE_CAPTIVATE",
+            "MOVE_AQUA_RING"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_LUVDISC",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 19.2,
+        "body_shape": "SHAPE_FINS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 329,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 329,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65527,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65527,
+        "en": {
+            "name": "LUVDISC",
+            "category": "Rendezvous Pokémon",
+            "entry_text": [
+                "It lives in warm seas. It is said\n",
+                "that a couple finding this Pokémon\n",
+                "will be blessed with eternal love."
+            ]
+        },
+        "fr": {
+            "name": "LOVDISC",
+            "category": "Pokémon Rendezvous",
+            "entry_text": [
+                "Un habitant des mers chaudes. On\n",
+                "dit que le couple qui tombe sur ce\n",
+                "Pokémon connaîtra l’amour éternel."
+            ]
+        },
+        "de": {
+            "name": "LIEBISKUS",
+            "category": "Rendezvous",
+            "entry_text": [
+                "Es lebt in warmen Meeren. Man sagt,\n",
+                "dass Verliebte, die es sehen, mit\n",
+                "ewiger Liebe gesegnet sind."
+            ]
+        },
+        "it": {
+            "name": "LUVDISC",
+            "category": "Pokémon Rendezvous",
+            "entry_text": [
+                "Vive nei mari caldi. Si dice che le\n",
+                "coppie che trovano questo Pokémon\n",
+                "riceveranno in dono l’eterno amore."
+            ]
+        },
+        "es": {
+            "name": "LUVDISC",
+            "category": "Pokémon Cita",
+            "entry_text": [
+                "Vive en mares cálidos. Se dice\n",
+                "que, si una pareja lo encuentra,\n",
+                "será bendecida con amor eterno."
+            ]
+        },
+        "jp": {
+            "name": "ラブカス",
+            "category": "ランデブ－ポケモン",
+            "entry_text": [
+                "あたたかい　うみに　せいそくする。\n",
+                "ラブカスを　みつけた　カップルは\n",
+                "えいえんの　あいが　つづくという。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 771
+    }
+}

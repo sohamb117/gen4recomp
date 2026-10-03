@@ -1,0 +1,70 @@
+{
+    "name": "Zachariah",
+    "class": "TRAINER_CLASS_SAILOR",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_PELIPPER",
+            "form": 0,
+            "level": 40,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GASTRODON",
+            "form": 0,
+            "level": 44,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I came out here because I wanted to\n",
+                "see the Pokémon League for myself.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I’m shocked...\n",
+                "No, really, I am.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "The way I battle now, well, I can\n",
+                "only look at the Pokémon League!\r",
+                "You, go on! You go to the Pokémon\n",
+                "League for me, too!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’ve been training here in hopes of\n",
+                "going to the Pokémon League.\r"
+            ]
+        }
+    ]
+}

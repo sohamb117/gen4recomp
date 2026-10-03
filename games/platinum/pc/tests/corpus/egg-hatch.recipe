@@ -1,0 +1,28 @@
+# An egg in the party, one step short of hatching.
+#
+# The egg is the day care's own: the same two Bibarel egg-generate breeds, the
+# same offspring personality its walk rolled, and take-egg is the call the
+# day-care man's script makes when the egg is accepted, so the species, the
+# inherited IVs and the moveset are all decided by the game.
+#
+# Then two counters. An egg loses a cycle when the day care's SHARED step
+# counter reaches 255, and it hatches on the step where it has none left, so
+# the recipe sets the cycles to zero and the counter to one short. take-egg
+# resets that counter itself, which is why daycare-counter comes after it.
+
+name HATCHER
+gender GENDER_MALE
+trainer-id 10412
+money 9000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+party SPECIES_BIBAREL 25 ITEM_NONE
+party SPECIES_BIBAREL 26 ITEM_NONE
+party SPECIES_BIBAREL 27 ITEM_NONE
+daycare 0
+daycare 1
+daycare-egg 0x59239384
+take-egg
+egg-cycles 1 0
+daycare-counter 254
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

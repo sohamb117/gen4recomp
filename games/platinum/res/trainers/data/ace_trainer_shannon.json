@@ -1,0 +1,79 @@
+{
+    "name": "Shannon",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CHERRIM",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": [
+                "MOVE_PETAL_DANCE",
+                "MOVE_MAGICAL_LEAF",
+                "MOVE_LEECH_SEED"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_AZUMARILL",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": [
+                "MOVE_DOUBLE_EDGE",
+                "MOVE_BUBBLE_BEAM",
+                "MOVE_AQUA_RING"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LOPUNNY",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": [
+                "MOVE_JUMP_KICK",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_CHARM"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Really? So you think you can beat me?\n",
+                "I’m an Ace Trainer, you do realize?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "I admit defeat...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Beaten in battle, but not in spirit.\n",
+                "That’s the mark of a real Ace Trainer.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Ace Trainers always work to improve\n",
+                "their natural-born talents.\r"
+            ]
+        }
+    ]
+}

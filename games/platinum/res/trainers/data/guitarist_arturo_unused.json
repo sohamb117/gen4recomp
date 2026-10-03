@@ -1,0 +1,44 @@
+{
+    "name": "Arturo",
+    "class": "TRAINER_CLASS_GUITARIST",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_KRICKETOT",
+            "form": 0,
+            "level": 7,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Your spirit’s vibes, man... I can feel\n",
+                "that you’ve got rock in your soul!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "You beat me, man, but...\n",
+                "I feel totally amped to jam harder!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Rock is about your spirit!\n",
+                "Battling is about spirit, too!\f",
+                "That’s why battles rock! Rawk!\n"
+            ]
+        }
+    ]
+}

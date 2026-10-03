@@ -1,0 +1,69 @@
+#include "macros/scrcmd.inc"
+#include "constants/sunyshore_gym_buttons.h"
+#include "res/text/bank/sunyshore_city_gym_room_1.h"
+
+
+    ScriptEntry SunyshoreGymRoom1_Init
+    ScriptEntry SunyshoreGymRoom1_Button
+    ScriptEntry SunyshoreGymRoom1_GymGuide
+    ScriptEntry SunyshoreGymRoom1_GymStatue
+    ScriptEntryEnd
+
+SunyshoreGymRoom1_Init:
+    SetVar VAR_MAP_LOCAL_0x00, 0
+    InitPersistedMapFeaturesForSunyshoreGym 0
+    End
+
+SunyshoreGymRoom1_Button:
+    PressSunyshoreGymButton SUNYSHORE_GYM_BUTTON_NORMAL
+    End
+
+SunyshoreGymRoom1_GymGuide:
+    PlaySE SE_CONFIRM_sseq_3
+    LockAll
+    FacePlayer
+    GoToIfBadgeAcquired BADGE_ID_BEACON, SunyshoreGymRoom1_GymGuideAfterbadge
+    Message SunyshoreGymRoom1_Text_GymGuideBeforeBadge
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+SunyshoreGymRoom1_GymGuideAfterbadge:
+    BufferPlayerName 0
+    Message SunyshoreGymRoom1_Text_GymGuideAfterBadge
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+SunyshoreGymRoom1_GymStatue:
+    PlaySE SE_CONFIRM_sseq_3
+    LockAll
+    GoToIfBadgeAcquired BADGE_ID_BEACON, SunyshoreGymRoom1_GymStatue_AfterBadge
+    Message SunyshoreGymRoom1_Text_GymStatue_BeforeBadge
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+SunyshoreGymRoom1_GymStatue_AfterBadge:
+    GoToIfGe VAR_RIVAL_BEAT_SUNYSHORE_GYM, TRUE, SunyshoreGymRoom1_GymStatue_AfterRivalBadge
+    BufferPlayerName 0
+    BufferRivalName 1
+    Message SunyshoreGymRoom1_Text_GymStatue_AfterBadge
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+SunyshoreGymRoom1_GymStatue_AfterRivalBadge:
+    BufferPlayerName 0
+    BufferRivalName 1
+    Message SunyshoreGymRoom1_Text_GymStatue_AfterRivalBadge
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+    .balign 4, 0

@@ -1,0 +1,15 @@
+--- a/subprojects/NitroSystem-071126.1/libraries/snd/src/heap.c
++++ b/subprojects/NitroSystem-071126.1/libraries/snd/src/heap.c
+@@ -123,6 +123,12 @@
+     block->callback = callback;
+     block->data1 = data1;
+     block->data2 = data2;
++    /* Dispose callback is a host function living in the sound heap,
++     * which itself lives in the port window. */
++    if (callback != NULL) {
++        extern void pc_state_mark_host_field(const void *);
++        pc_state_mark_host_field(&block->callback);
++    }
+     NNS_FndAppendListObject(&section->blockList, block);
+ 
+     NNS_ASSERTMSG(((u32)(block->buffer) & 0x1f) == 0, "NNS_SndHeapAlloc: Internal Error");

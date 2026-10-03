@@ -1,0 +1,133 @@
+{
+    "base_stats": {
+        "hp": 40,
+        "attack": 55,
+        "defense": 80,
+        "speed": 30,
+        "special_attack": 35,
+        "special_defense": 60
+    },
+    "types": [ "TYPE_STEEL", "TYPE_PSYCHIC" ],
+    "catch_rate": 3,
+    "base_exp_reward": 103,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_METAL_COAT"
+    },
+    "gender_ratio": "GENDER_RATIO_NO_GENDER",
+    "hatch_cycles": 40,
+    "base_friendship": 35,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_MINERAL", "EGG_GROUP_MINERAL" ],
+    "abilities": [ "ABILITY_CLEAR_BODY", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TAKE_DOWN" ]
+        ],
+        "by_tm": [  ],
+        "by_tutor": [
+            "MOVE_IRON_HEAD",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_IRON_DEFENSE"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            20,
+            "SPECIES_METANG"
+        ]
+    ],
+    "offspring": "SPECIES_BELDUM",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_SILENT"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 209.9,
+        "body_shape": "SHAPE_HEAD_BASE",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 378,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 378,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65529,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65529,
+        "en": {
+            "name": "BELDUM",
+            "category": "Iron Ball Pokémon",
+            "entry_text": [
+                "It converses with others by using\n",
+                "magnetic pulses. In a swarm, they\n",
+                "move in perfect unison."
+            ]
+        },
+        "fr": {
+            "name": "TERHAL",
+            "category": "Pokémon Boulefer",
+            "entry_text": [
+                "Il dialogue avec les siens par \n",
+                "impulsions magnétiques. En bande,\n",
+                "ils se déplacent à l’unisson."
+            ]
+        },
+        "de": {
+            "name": "TANHEL",
+            "category": "Eisenkugel",
+            "entry_text": [
+                "Es kommuniziert mit anderen durch\n",
+                "magnetische Impulse. Im Schwarm\n",
+                "bilden sie eine perfekte Einheit."
+            ]
+        },
+        "it": {
+            "name": "BELDUM",
+            "category": "Pokémon Ferrosfera",
+            "entry_text": [
+                "Comunica con i suoi simili mediante\n",
+                "onde magnetiche. I gruppi di BELDUM\n",
+                "si muovono in perfetta sintonia."
+            ]
+        },
+        "es": {
+            "name": "BELDUM",
+            "category": "Pokémon Bola Hierro",
+            "entry_text": [
+                "Se comunican mediante pulsos\n",
+                "magnéticos. Cuando van en\n",
+                "grupos, se mueven al unísono."
+            ]
+        },
+        "jp": {
+            "name": "ダンバル",
+            "category": "てっきゅうポケモン",
+            "entry_text": [
+                "じりょくの　はちょうで　なかまと\n",
+                "かいわする。むれになった　ダンバルは\n",
+                "いっしみだれぬ　うごきを　する。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 2574
+    }
+}

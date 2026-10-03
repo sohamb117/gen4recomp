@@ -1,0 +1,57 @@
+{
+    "name": "Alexa",
+    "class": "TRAINER_CLASS_PARASOL_LADY",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLDEEN",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BIBAREL",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "There are Pokémon that grow stronger\n",
+                "when it’s raining.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Like rain, my tears flow from losing...\n",
+                "They call me the Rain Woman...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I want to show off my pretty parasol,\n",
+                "but it will get dirty in the rain.\r",
+                "Oh, such a big dilemma!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": "On rainy days, I get more energetic!\r"
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+# Waterfall, climbed on Route 210 North after surfing out to the foot of it.
+#
+# The tile came out of the compiled map data, not out of a scan. A land-data
+# member is four sizes and then 32x32 terrain attributes, one u16 a tile whose
+# low byte is the behaviour, and the map matrices say which member sits at
+# which 32x32 cell of the world. Reading those two together says where every
+# waterfall in the game is: eight of the 666 members carry behaviour 0x13 at
+# all, 55 tiles between them, which is why scanning the window around two
+# dozen warps found none of them.
+#
+# The player starts on the bank facing the river, so the run has to surf out
+# first: two field moves in one station, and the second is the one no other
+# station reaches.
+
+name FALLS
+gender GENDER_MALE
+trainer-id 30010
+money 3000
+badge BADGE_ID_FEN
+badge BADGE_ID_BEACON
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_WATERFALL
+map MAP_HEADER_ROUTE_210_NORTH 504 527 FACE_RIGHT

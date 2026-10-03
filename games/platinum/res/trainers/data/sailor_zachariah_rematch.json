@@ -1,0 +1,54 @@
+{
+    "name": "Zachariah",
+    "class": "TRAINER_CLASS_SAILOR",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_PELIPPER",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHAMP",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GASTRODON",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’ve been training here in hopes of\n",
+                "going to the Pokémon League.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I’m shocked...\n",
+                "No, really.\n"
+            ]
+        }
+    ]
+}

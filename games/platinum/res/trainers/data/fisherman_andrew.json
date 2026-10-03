@@ -1,0 +1,93 @@
+{
+    "name": "Andrew",
+    "class": "TRAINER_CLASS_FISHERMAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MAGIKARP",
+            "form": 0,
+            "level": 8,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MAGIKARP",
+            "form": 0,
+            "level": 10,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MAGIKARP",
+            "form": 0,
+            "level": 12,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MAGIKARP",
+            "form": 0,
+            "level": 12,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MAGIKARP",
+            "form": 0,
+            "level": 14,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MAGIKARP",
+            "form": 0,
+            "level": 16,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Nothing’s biting...\n",
+                "I could use a break, I suppose.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Well, that didn’t do anything for me...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "!\r",
+                "Yank your fishing rod when that\n",
+                "appears. That’s how you fish.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "All right! I caught some tough\n",
+                "Pokémon. I’m ready for battle!\r"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,53 @@
+{
+    "name": "Trey",
+    "class": "TRAINER_CLASS_RICH_BOY",
+    "items": [
+        "ITEM_FULL_RESTORE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_LUXRAY",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 4
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I need to escape these doldrums...\n",
+                "You can keep me company.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That did liberate me from the doldrums,\n",
+                "but at what price...\n",
+                "\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’m going back to the hotel to rest!\n",
+                "I find you exceedingly tiresome!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’m afraid I’m in the doldrums again.\n",
+                "You shall keep me company again!\r"
+            ]
+        }
+    ]
+}

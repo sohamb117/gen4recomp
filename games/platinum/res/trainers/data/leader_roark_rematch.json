@@ -1,0 +1,102 @@
+{
+    "name": "Roark",
+    "class": "TRAINER_CLASS_LEADER_ROARK",
+    "items": [
+        "ITEM_FULL_RESTORE",
+        "ITEM_FULL_RESTORE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_AERODACTYL",
+            "form": 0,
+            "level": 62,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_STONE_EDGE",
+                "MOVE_AERIAL_ACE",
+                "MOVE_EARTHQUAKE",
+                "MOVE_DRAGON_CLAW"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PROBOPASS",
+            "form": 0,
+            "level": 61,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_EARTH_POWER",
+                "MOVE_STEALTH_ROCK",
+                "MOVE_DISCHARGE",
+                "MOVE_STONE_EDGE"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLEM",
+            "form": 0,
+            "level": 61,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_STONE_EDGE",
+                "MOVE_EARTHQUAKE",
+                "MOVE_BRICK_BREAK",
+                "MOVE_FLAMETHROWER"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_RAMPARDOS",
+            "form": 0,
+            "level": 63,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_HEAD_SMASH",
+                "MOVE_ZEN_HEADBUTT",
+                "MOVE_AVALANCHE",
+                "MOVE_EARTHQUAKE"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_TYRANITAR",
+            "form": 0,
+            "level": 65,
+            "item": "ITEM_SITRUS_BERRY",
+            "moves": [
+                "MOVE_STONE_EDGE",
+                "MOVE_CRUNCH",
+                "MOVE_AERIAL_ACE",
+                "MOVE_FIRE_FANG"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_LAST_BATTLER_HALF_HP",
+            "en_US": [
+                "No way! Not yet!\n",
+                "Not giving up!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "W-what? That can’t be!\n",
+                "My buffed-up Pokémon!\n"
+            ]
+        }
+    ]
+}

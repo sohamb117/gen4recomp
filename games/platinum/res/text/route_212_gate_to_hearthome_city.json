@@ -1,0 +1,45 @@
+{
+  "key": 1075,
+  "messages": [
+    {
+      "id": "Route212GateToHearthomeCity_Text_ContestsAreInteresting",
+      "en_US": [
+        "The Contests are interesting, but the\n",
+        "ruins of Solaceon Town are as well..."
+      ]
+    },
+    {
+      "id": "Route212GateToHearthomeCity_Text_GatesClosed",
+      "en_US": [
+        "Sorry, the gate’s closed for a while.\n",
+        "We’re on location for a TV shoot."
+      ]
+    },
+    {
+      "id": "Route212GateToHearthomeCity_Text_TraveledLongWay",
+      "en_US": [
+        "I traveled a long way to take part\n",
+        "in these Contests."
+      ]
+    },
+    {
+      "id": "Route212GateToHearthomeCity_Text_Dummy3",
+      "garbage": 96
+    },
+    {
+      "id": "Route212GateToHearthomeCity_Text_GivenPokemonPoffins",
+      "en_US": [
+        "I’ve given my Pokémon lots of Poffins.\r",
+        "I’m confident that we’ll win our share\n",
+        "of Contests."
+      ]
+    },
+    {
+      "id": "Route212GateToHearthomeCity_Text_DayCareInSolaceon",
+      "en_US": [
+        "There’s a Day Care in Solaceon Town\n",
+        "that raises Pokémon for you."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+--- a/src/battle/battle_script.c
++++ b/src/battle/battle_script.c
+@@ -1709,6 +1709,21 @@
+         battleCtx->totalDamage[battler] += (battleCtx->hitDamage * -1);
+     }
+ 
++    /* pc port: PC_TRACE_BATTLE=1 prints one line per HP change. This command
++     * is the single funnel every damage, drain, recoil and residual goes
++     * through, so the stream it produces is the whole battle's arithmetic --
++     * which is what lets a test state what a move SHOULD deal and compare,
++     * instead of running the port twice and calling agreement proof. */
++    {
++        extern void pc_battle_trace(int battler, int move, int delta, int hp,
++                                    int maxHP, int species, int level);
++        pc_battle_trace(battler, battleCtx->moveCur, battleCtx->hpCalcTemp,
++                        battleCtx->battleMons[battler].curHP,
++                        battleCtx->battleMons[battler].maxHP,
++                        battleCtx->battleMons[battler].species,
++                        battleCtx->battleMons[battler].level);
++    }
++
+     // Cap the battler's new HP value to their max HP (in case the temp value is positive).
+     battleCtx->battleMons[battler].curHP += battleCtx->hpCalcTemp;
+     if (battleCtx->battleMons[battler].curHP < 0) {

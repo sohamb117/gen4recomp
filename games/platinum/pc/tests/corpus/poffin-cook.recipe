@@ -1,0 +1,17 @@
+# The Poffin House in Hearthome, cooking alone.
+#
+# The player stands one tile south of the cook (5,10) facing her, so the
+# script's first spare A press starts the conversation. Berries are what
+# CheckCanCookPoffin looks for, an empty Berries pocket sends the script
+# straight to "you have no Berry to cook with" and the run never opens the
+# application.
+
+name COOKIE
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_ROSELIA 20 ITEM_NONE
+item ITEM_POFFIN_CASE 1
+item ITEM_CHERI_BERRY 10
+map MAP_HEADER_POFFIN_HOUSE 5 11 FACE_UP

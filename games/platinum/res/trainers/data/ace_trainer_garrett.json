@@ -1,0 +1,87 @@
+{
+    "name": "Garrett",
+    "class": "TRAINER_CLASS_ACE_TRAINER_SNOW_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MR_MIME",
+            "form": 0,
+            "level": 37,
+            "item": null,
+            "moves": [
+                "MOVE_PSYBEAM",
+                "MOVE_MIMIC",
+                "MOVE_REFLECT",
+                "MOVE_LIGHT_SCREEN"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_DUSCLOPS",
+            "form": 0,
+            "level": 39,
+            "item": null,
+            "moves": [
+                "MOVE_WILL_O_WISP",
+                "MOVE_SHADOW_PUNCH",
+                "MOVE_PURSUIT",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SCYTHER",
+            "form": 0,
+            "level": 39,
+            "item": null,
+            "moves": [
+                "MOVE_SLASH",
+                "MOVE_X_SCISSOR",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_FURY_CUTTER"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I always play for keeps!\n",
+                "This isn’t practice!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Good job!\n",
+                "That was an excellent battle.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "If you don’t play for keeps, you’ll\n",
+                "lose battles you should be dominating.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "When I lost to you last time, I was\n",
+                "battling for keeps.\r",
+                "But this time, I really mean it.\n",
+                "This is seriously for keeps!\r"
+            ]
+        }
+    ]
+}

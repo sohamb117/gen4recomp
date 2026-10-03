@@ -1,0 +1,187 @@
+{
+    "base_stats": {
+        "hp": 85,
+        "attack": 80,
+        "defense": 70,
+        "speed": 90,
+        "special_attack": 135,
+        "special_defense": 75
+    },
+    "types": [ "TYPE_NORMAL", "TYPE_NORMAL" ],
+    "catch_rate": 30,
+    "base_exp_reward": 185,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 3,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_NO_GENDER",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_MINERAL", "EGG_GROUP_MINERAL" ],
+    "abilities": [ "ABILITY_ADAPTABILITY", "ABILITY_DOWNLOAD" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_RED",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TRICK_ROOM" ],
+            [ 1, "MOVE_CONVERSION_2" ],
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_CONVERSION" ],
+            [ 1, "MOVE_NASTY_PLOT" ],
+            [ 7, "MOVE_PSYBEAM" ],
+            [ 12, "MOVE_AGILITY" ],
+            [ 18, "MOVE_RECOVER" ],
+            [ 23, "MOVE_MAGNET_RISE" ],
+            [ 29, "MOVE_SIGNAL_BEAM" ],
+            [ 34, "MOVE_EMBARGO" ],
+            [ 40, "MOVE_DISCHARGE" ],
+            [ 45, "MOVE_LOCK_ON" ],
+            [ 51, "MOVE_TRI_ATTACK" ],
+            [ 56, "MOVE_MAGIC_COAT" ],
+            [ 62, "MOVE_ZAP_CANNON" ],
+            [ 67, "MOVE_HYPER_BEAM" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM22",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM34",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM46",
+            "TM57",
+            "TM58",
+            "TM63",
+            "TM67",
+            "TM68",
+            "TM70",
+            "TM73",
+            "TM77",
+            "TM79",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM87",
+            "TM90",
+            "TM92"
+        ],
+        "by_tutor": [
+            "MOVE_ICY_WIND",
+            "MOVE_SNORE",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_LAST_RESORT",
+            "MOVE_TRICK",
+            "MOVE_SWIFT",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_PORYGON",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_SILENT"
+    },
+    "pokedex_data": {
+        "height_inches": 35,
+        "weight_pounds": 75.0,
+        "body_shape": "SHAPE_HEAD_ARMS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 325,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 325,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65531,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65531,
+        "en": {
+            "name": "PORYGON-Z",
+            "category": "Virtual Pokémon",
+            "entry_text": [
+                "Its programming was modified to\n",
+                "enable work in alien dimensions.\n",
+                "It did not work as planned."
+            ]
+        },
+        "fr": {
+            "name": "PORYGON-Z",
+            "category": "Pokémon Virtuel",
+            "entry_text": [
+                "Un logiciel supplémentaire fut \n",
+                "installé pour l’améliorer. Mais\n",
+                "depuis, il se comporte bizarrement."
+            ]
+        },
+        "de": {
+            "name": "PORYGON-Z",
+            "category": "Virtuell",
+            "entry_text": [
+                "Zusätzliche Software wurde instal-\n",
+                "liert, um das PKMN zu verbessern.\n",
+                "Seitdem benimmt es sich seltsam."
+            ]
+        },
+        "it": {
+            "name": "PORYGON-Z",
+            "category": "Pokémon Virtuale",
+            "entry_text": [
+                "È stato aggiunto un software per\n",
+                "migliorare le prestazioni di questo\n",
+                "Pokémon. Agisce in modo strano."
+            ]
+        },
+        "es": {
+            "name": "PORYGON-Z",
+            "category": "Pokémon Virtual",
+            "entry_text": [
+                "Se le instaló un software para\n",
+                "mejorarlo. Sin embargo, comenzó\n",
+                "a comportarse de manera extraña."
+            ]
+        },
+        "jp": {
+            "name": "ポリゴンＺ",
+            "category": "バ－チャルポケモン",
+            "entry_text": [
+                "より　すぐれた　ポケモンに　するため\n",
+                "プログラムを　ついかしたが　なぜか\n",
+                "おかしな　こうどうを　はじめた。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 1285
+    }
+}

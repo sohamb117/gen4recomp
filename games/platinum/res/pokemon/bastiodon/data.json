@@ -1,0 +1,189 @@
+{
+    "base_stats": {
+        "hp": 60,
+        "attack": 52,
+        "defense": 168,
+        "speed": 30,
+        "special_attack": 47,
+        "special_defense": 138
+    },
+    "types": [ "TYPE_ROCK", "TYPE_STEEL" ],
+    "catch_rate": 45,
+    "base_exp_reward": 199,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 2,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 30,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_ERRATIC",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_MONSTER" ],
+    "abilities": [ "ABILITY_STURDY", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GRAY",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_PROTECT" ],
+            [ 1, "MOVE_TAUNT" ],
+            [ 1, "MOVE_METAL_SOUND" ],
+            [ 6, "MOVE_TAUNT" ],
+            [ 10, "MOVE_METAL_SOUND" ],
+            [ 15, "MOVE_TAKE_DOWN" ],
+            [ 19, "MOVE_IRON_DEFENSE" ],
+            [ 24, "MOVE_SWAGGER" ],
+            [ 28, "MOVE_ANCIENT_POWER" ],
+            [ 30, "MOVE_BLOCK" ],
+            [ 36, "MOVE_ENDURE" ],
+            [ 43, "MOVE_METAL_BURST" ],
+            [ 52, "MOVE_IRON_HEAD" ]
+        ],
+        "by_tm": [
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM32",
+            "TM34",
+            "TM35",
+            "TM37",
+            "TM38",
+            "TM39",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM68",
+            "TM69",
+            "TM71",
+            "TM72",
+            "TM76",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "TM91",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_IRON_HEAD",
+            "MOVE_SNORE",
+            "MOVE_OUTRAGE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_EARTH_POWER",
+            "MOVE_IRON_DEFENSE",
+            "MOVE_MAGNET_RISE"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_SHIELDON",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 51,
+        "weight_pounds": 329.6,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 243,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 243,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 9,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 9,
+        "en": {
+            "name": "BASTIODON",
+            "category": "Shield Pokémon",
+            "entry_text": [
+                "When they lined up side by side, no\n",
+                "foe could break through. They\n",
+                "shielded their young in that way."
+            ]
+        },
+        "fr": {
+            "name": "BASTIODON",
+            "category": "Pokémon Bouclier",
+            "entry_text": [
+                "Il résiste à toute attaque\n",
+                "frontale. C’est un Pokémon docile\n",
+                "qui se nourrit d’herbe et de Baies."
+            ]
+        },
+        "de": {
+            "name": "BOLLTERUS",
+            "category": "Schutzschild",
+            "entry_text": [
+                "Jeder Frontalangriff wird abge-\n",
+                "schmettert. Dieses friedliche PKMN\n",
+                "ernährt sich von Gras und Beeren."
+            ]
+        },
+        "it": {
+            "name": "BASTIODON",
+            "category": "Pokémon Schermo",
+            "entry_text": [
+                "Respinge qualsiasi attacco\n",
+                "frontale. È un Pokémon docile\n",
+                "che si nutre di erba e di bacche."
+            ]
+        },
+        "es": {
+            "name": "BASTIODON",
+            "category": "Pokémon Escudo",
+            "entry_text": [
+                "Repele cualquier ataque frontal.\n",
+                "Es muy dócil y se alimenta de\n",
+                "hierba y bayas."
+            ]
+        },
+        "jp": {
+            "name": "トリデプス",
+            "category": "シ－ルドポケモン",
+            "entry_text": [
+                "しょうめんからの　こうげきは\n",
+                "すべて　はねかえす。くさや　きのみを\n",
+                "たべる　おとなしい　せいかく。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 2827
+    }
+}

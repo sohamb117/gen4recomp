@@ -1,0 +1,32 @@
+{
+  "key": 17423,
+  "messages": [
+    {
+      "id": "JubilifeTV4F_Text_YourExploitsAreFantastic",
+      "en_US": [
+        "Your exploits are fantastic!\r",
+        "With our TV station, we can tell\n",
+        "the whole world about you!\r",
+        "It’s merely one of many possibilities!\n",
+        "Harrumph!"
+      ]
+    },
+    {
+      "id": "JubilifeTV4F_Text_TVNetworksMotto",
+      "en_US": [
+        "“Participation for all” is our TV\n",
+        "network’s motto."
+      ]
+    },
+    {
+      "id": "JubilifeTV4F_Text_ThemeSmilesAreDreamy",
+      "en_US": [
+        "We’re promoting the theme “Smiles are\n",
+        "dreamy.”\r",
+        "In keeping with that theme, we added\n",
+        "variety programs to our scheduling.\r",
+        "Please do tune in!"
+      ]
+    }
+  ]
+}

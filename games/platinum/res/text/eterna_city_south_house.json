@@ -1,0 +1,73 @@
+{
+  "key": 37946,
+  "messages": [
+    {
+      "id": "EternaCitySouthHouse_Text_HowIsYourPokedex",
+      "en_US": [
+        "Oak: Ah, it’s you! Good to see you!\n",
+        "How is your Pokédex coming along?\r",
+        "Capturing every kind of Pokémon is\n",
+        "no easy feat, I’ll grant you that.\r",
+        "But I’m sure you can accomplish it!\r"
+      ]
+    },
+    {
+      "id": "EternaCitySouthHouse_Text_AcquaintanceSentSomething",
+      "en_US": [
+        "Oak: Ah, yes!\r",
+        "An acquaintance from Kanto has sent\n",
+        "me something quite interesting.\r",
+        "I think you’d make better use of it\n",
+        "than I ever could.\r"
+      ]
+    },
+    {
+      "id": "EternaCitySouthHouse_Text_PokemonThatEvolvesTradingWithUpgrade",
+      "en_US": [
+        "I understand there is a Pokémon that\n",
+        "evolves when it is traded while holding\f",
+        "that Up-Grade.\r"
+      ]
+    },
+    {
+      "id": "EternaCitySouthHouse_Text_SightingsOfLegendaryBirds",
+      "en_US": [
+        "Incidentally, and this is an entirely\n",
+        "different topic...\r",
+        "I’ve heard that there have been\n",
+        "sightings of very rare Pokémon.\r",
+        "The legendary bird Pokémon: ARTICUNO,\n",
+        "ZAPDOS, and MOLTRES!\r",
+        "They’ve been spotted at various\n",
+        "locations here in Sinnoh, no less!\r",
+        "Why, you may be lucky enough to see\n",
+        "them yourself in your journeys!"
+      ]
+    },
+    {
+      "id": "EternaCitySouthHouse_Text_LegendaryBirdsExtremelyRare",
+      "en_US": [
+        "Oak: ARTICUNO, ZAPDOS, and MOLTRES\n",
+        "are extremely rare even in Kanto.\r",
+        "There have been precious few sightings\n",
+        "as it is.\r",
+        "So why would they be spotted here in\n",
+        "Sinnoh of all places?\r",
+        "There are still many, many mysteries\n",
+        "surrounding Pokémon, it seems!"
+      ]
+    },
+    {
+      "id": "EternaCitySouthHouse_Text_YouveCaughtLegendaryBirds",
+      "en_US": [
+        "Oak: Ah, it’s you!\n",
+        "How goes it?\r",
+        "What’s that? You’ve caught ARTICUNO,\n",
+        "ZAPDOS, and MOLTRES?!\r",
+        "Now that is incredible!\r",
+        "Well, then, allow me to examine your\n",
+        "Pokédex.\r"
+      ]
+    }
+  ]
+}

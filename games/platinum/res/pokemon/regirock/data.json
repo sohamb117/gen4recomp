@@ -1,0 +1,188 @@
+{
+    "base_stats": {
+        "hp": 80,
+        "attack": 100,
+        "defense": 200,
+        "speed": 50,
+        "special_attack": 50,
+        "special_defense": 100
+    },
+    "types": [ "TYPE_ROCK", "TYPE_ROCK" ],
+    "catch_rate": 3,
+    "base_exp_reward": 217,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 3,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_NO_GENDER",
+    "hatch_cycles": 80,
+    "base_friendship": 35,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_UNDISCOVERED", "EGG_GROUP_UNDISCOVERED" ],
+    "abilities": [ "ABILITY_CLEAR_BODY", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_EXPLOSION" ],
+            [ 1, "MOVE_STOMP" ],
+            [ 9, "MOVE_ROCK_THROW" ],
+            [ 17, "MOVE_CURSE" ],
+            [ 25, "MOVE_SUPERPOWER" ],
+            [ 33, "MOVE_ANCIENT_POWER" ],
+            [ 41, "MOVE_IRON_DEFENSE" ],
+            [ 49, "MOVE_CHARGE_BEAM" ],
+            [ 57, "MOVE_LOCK_ON" ],
+            [ 65, "MOVE_ZAP_CANNON" ],
+            [ 73, "MOVE_STONE_EDGE" ],
+            [ 81, "MOVE_HAMMER_ARM" ],
+            [ 89, "MOVE_HYPER_BEAM" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM20",
+            "TM21",
+            "TM24",
+            "TM25",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM31",
+            "TM32",
+            "TM34",
+            "TM37",
+            "TM39",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM52",
+            "TM56",
+            "TM57",
+            "TM58",
+            "TM60",
+            "TM64",
+            "TM68",
+            "TM69",
+            "TM71",
+            "TM73",
+            "TM76",
+            "TM77",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06",
+            "HM08"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ROLLOUT",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_SUPERPOWER",
+            "MOVE_ICE_PUNCH",
+            "MOVE_IRON_HEAD",
+            "MOVE_SNORE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_EARTH_POWER"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_REGIROCK",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SILENT"
+    },
+    "pokedex_data": {
+        "height_inches": 67,
+        "weight_pounds": 507.1,
+        "body_shape": "SHAPE_BIPEDAL_TAILLESS",
+        "trainer_scale_f": 296,
+        "pokemon_scale_f": 226,
+        "trainer_scale_m": 290,
+        "pokemon_scale_m": 226,
+        "trainer_pos_f": 11,
+        "pokemon_pos_f": 1,
+        "trainer_pos_m": 12,
+        "pokemon_pos_m": 1,
+        "en": {
+            "name": "REGIROCK",
+            "category": "Rock Peak Pokémon",
+            "entry_text": [
+                "Its entire body is made of rock.\n",
+                "If any part chips off in battle, it\n",
+                "attaches rocks to repair itself."
+            ]
+        },
+        "fr": {
+            "name": "REGIROCK",
+            "category": "Pokémon Pic Rocheux",
+            "entry_text": [
+                "Tout son corps est fait de roche.\n",
+                "S’il s’ébrèche au combat, il utilise\n",
+                "des pierres pour le réparer."
+            ]
+        },
+        "de": {
+            "name": "REGIROCK",
+            "category": "Steingipfel",
+            "entry_text": [
+                "Sein Körper besteht aus Stein.\n",
+                "Bricht im Kampf etwas heraus, wird\n",
+                "es durch Stein wieder ersetzt."
+            ]
+        },
+        "it": {
+            "name": "REGIROCK",
+            "category": "Pokémon Picco",
+            "entry_text": [
+                "È formato interamente da rocce.\n",
+                "Se si staccano nella lotta, ne cerca\n",
+                "altre per sostituirle."
+            ]
+        },
+        "es": {
+            "name": "REGIROCK",
+            "category": "Pokémon Pico Roca",
+            "entry_text": [
+                "Su cuerpo está hecho de roca.\n",
+                "Si se astilla durante el combate,\n",
+                "emplea piedras para repararlo."
+            ]
+        },
+        "jp": {
+            "name": "レジロック",
+            "category": "いわやまポケモン",
+            "entry_text": [
+                "ぜんしんが　いわで　できている。\n",
+                "たたかいで　からだが　かけても\n",
+                "いわを　くっつけて　なおしてしまう。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 2827
+    }
+}

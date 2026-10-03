@@ -1,0 +1,44 @@
+{
+    "name": "Tyler",
+    "class": "TRAINER_CLASS_BATTLE_GIRL",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MEDICHAM",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Beating you would be my 100th\n",
+                "straight win! Here’s to a fun battle!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "How could I lose now?!\n",
+                "This is beyond aggravating!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I wish I could beat Maylene in\n",
+                "Veilstone City one day...\n"
+            ]
+        }
+    ]
+}

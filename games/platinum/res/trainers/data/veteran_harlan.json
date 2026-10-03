@@ -1,0 +1,79 @@
+{
+    "name": "Harlan",
+    "class": "TRAINER_CLASS_VETERAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_RATICATE",
+            "form": 0,
+            "level": 57,
+            "item": null,
+            "moves": [
+                "MOVE_ENDEAVOR",
+                "MOVE_SUPER_FANG",
+                "MOVE_CRUNCH",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_DRIFBLIM",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": [
+                "MOVE_EXPLOSION",
+                "MOVE_SHADOW_BALL",
+                "MOVE_TOXIC",
+                "MOVE_FLY"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SHIFTRY",
+            "form": 0,
+            "level": 59,
+            "item": null,
+            "moves": [
+                "MOVE_LEAF_STORM",
+                "MOVE_FAINT_ATTACK",
+                "MOVE_EXTRASENSORY",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "What do you expect to achieve here?\n",
+                "I’ll be the one to make that call!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "You’ve earned the right to be here.\n",
+                "Both you and your Pokémon.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "You may find it odd, but the stink\n",
+                "of sulfur from the volcanic gas\f",
+                "is what draws me here.\n"
+            ]
+        }
+    ]
+}

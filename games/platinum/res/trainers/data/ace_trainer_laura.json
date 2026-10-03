@@ -1,0 +1,54 @@
+{
+    "name": "Laura",
+    "class": "TRAINER_CLASS_ACE_TRAINER_SNOW_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_TROPIUS",
+            "form": 0,
+            "level": 42,
+            "item": null,
+            "moves": [
+                "MOVE_AIR_SLASH",
+                "MOVE_BODY_SLAM",
+                "MOVE_MAGICAL_LEAF",
+                "MOVE_SWEET_SCENT"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m fully kitted up and equipped!\n",
+                "Anytime will be fine!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Hunh?!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Perhaps I should maybe change into\n",
+                "a more comfy outfit...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’m fully equipped again today!\n",
+                "Anytime you’re ready will be fine!\r"
+            ]
+        }
+    ]
+}

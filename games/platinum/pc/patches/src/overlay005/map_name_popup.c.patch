@@ -1,0 +1,22 @@
+--- a/src/overlay005/map_name_popup.c
++++ b/src/overlay005/map_name_popup.c
+@@ -204,6 +204,19 @@
+ 
+ void MapNamePopUp_Destroy(MapNamePopUp *mapPopUp)
+ {
++    /* pc port: stop the slide task before the object under it goes away.
++     * Without this the SysTask keeps running on freed memory and eventually
++     * reaches MapNamePopUp_Hide, which calls Window_ClearAndCopyToVRAM on a
++     * window Window_Remove has already emptied, window->bgConfig is NULL and
++     * bgLayer is 0xFF. On hardware that reads the BIOS mirror at address 0 and
++     * does something quietly wrong; here it is a segfault, and it fires on a
++     * map change into some cities and not others depending on which state the
++     * popup was in when the field was torn down. */
++    if (mapPopUp->task != NULL) {
++        SysTask_Done(mapPopUp->task);
++        mapPopUp->task = NULL;
++    }
++
+     MessageLoader_Free(mapPopUp->msgLoader);
+     Window_Remove(&mapPopUp->window);
+     String_Free(mapPopUp->string);

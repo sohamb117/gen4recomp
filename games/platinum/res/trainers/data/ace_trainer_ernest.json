@@ -1,0 +1,85 @@
+{
+    "name": "Ernest",
+    "class": "TRAINER_CLASS_ACE_TRAINER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SCYTHER",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": [
+                "MOVE_SLASH",
+                "MOVE_WING_ATTACK",
+                "MOVE_PURSUIT",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PROBOPASS",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": [
+                "MOVE_THUNDER_WAVE",
+                "MOVE_ROCK_SLIDE",
+                "MOVE_MAGNET_BOMB",
+                "MOVE_IRON_DEFENSE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_LUXIO",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": [
+                "MOVE_THUNDERBOLT",
+                "MOVE_CRUNCH",
+                "MOVE_SWAGGER",
+                "MOVE_DOUBLE_TEAM"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "You seem to have a lot of confidence.\n",
+                "Let’s see if it’s justified!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Haha!\n",
+                "A total loss for me!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "You seem to have an abundance of\n",
+                "talent. It’s pretty amazing.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "When I lost to you last time, I was\n",
+                "just unlucky.\r"
+            ]
+        }
+    ]
+}

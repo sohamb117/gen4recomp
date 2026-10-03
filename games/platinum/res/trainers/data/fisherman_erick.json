@@ -1,0 +1,74 @@
+{
+    "name": "Erick",
+    "class": "TRAINER_CLASS_FISHERMAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLDEEN",
+            "form": 0,
+            "level": 28,
+            "item": null,
+            "moves": [
+                "MOVE_WATER_PULSE",
+                "MOVE_PECK",
+                "MOVE_FLAIL",
+                "MOVE_SUPERSONIC"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SEAKING",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": [
+                "MOVE_WATER_PULSE",
+                "MOVE_FURY_ATTACK",
+                "MOVE_FLAIL",
+                "MOVE_SUPERSONIC"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GYARADOS",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": [
+                "MOVE_THRASH",
+                "MOVE_BITE"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’ve landed the most fish Pokémon\n",
+                "in the world. I’m next!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Being number one in the world doesn’t\n",
+                "mean a thing...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I figure I got too wrapped up in\n",
+                "fishing and neglected training.\n"
+            ]
+        }
+    ]
+}

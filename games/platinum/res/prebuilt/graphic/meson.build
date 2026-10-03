@@ -1,0 +1,41 @@
+prebuilt_files = [
+    'bag_gra.narc',
+    'box.narc',
+    'bucket.narc',
+    'demo_trade.narc',
+    'dendou_demo.narc',
+    'dendou_pc.narc',
+    'ending.narc',
+    'ev_pokeselect.narc',
+    'f_note_gra.narc',
+    'font.narc',
+    'fontoam.narc',
+    'footprint_board.narc',
+    'hiden_effect.narc',
+    'imageclip.narc',
+    'library_tv.narc',
+    'lobby_news.narc',
+    'nutmixer.narc',
+    'oekaki.narc',
+    'opening.narc',
+    'pl_wifinote.narc',
+    'plist_gra.narc',
+    'pmsi.narc',
+    'poruact.narc',
+    'pst_gra.narc',
+    'ranking.narc',
+    'record.narc',
+    'unionobj2d_onlyfront.narc',
+    'unionroom.narc',
+    'wifi_lobby_other.narc',
+    'wifi_lobby.narc',
+    'wifi_unionobj.narc',
+    'wifi2dchar.narc',
+    'winframe.narc',
+    'worldtimer.narc',
+    'worldtrade.narc'
+]
+
+foreach f : prebuilt_files
+    nitrofs_files += fs.copyfile(f)
+endforeach

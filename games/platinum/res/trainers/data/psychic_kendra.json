@@ -1,0 +1,77 @@
+{
+    "name": "Kendra",
+    "class": "TRAINER_CLASS_PSYCHIC_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CHIMECHO",
+            "form": 0,
+            "level": 52,
+            "item": null,
+            "moves": [
+                "MOVE_EXTRASENSORY",
+                "MOVE_SHADOW_BALL",
+                "MOVE_ENERGY_BALL",
+                "MOVE_CHARGE_BEAM"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_HAUNTER",
+            "form": 0,
+            "level": 52,
+            "item": null,
+            "moves": [
+                "MOVE_SHADOW_PUNCH",
+                "MOVE_DARK_PULSE",
+                "MOVE_CONFUSE_RAY",
+                "MOVE_TOXIC"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GENGAR",
+            "form": 0,
+            "level": 55,
+            "item": null,
+            "moves": [
+                "MOVE_SHADOW_BALL",
+                "MOVE_DARK_PULSE",
+                "MOVE_FRUSTRATION",
+                "MOVE_SLUDGE_BOMB"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I see it!\n",
+                "I see a victory for me!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "The future...is different!\n",
+                "Why?!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Your efforts have altered the very\n",
+                "path of the future!\n"
+            ]
+        }
+    ]
+}

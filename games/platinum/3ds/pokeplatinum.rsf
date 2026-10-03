@@ -1,0 +1,199 @@
+# 3ds/pokeplatinum.rsf; what the CIA says about itself.
+#
+# makerom reads this to build the CXI the Home Menu installs. The 3DSX needs
+# none of it: hbmenu launches a 3DSX inside the process it is already in, so
+# the app inherits that process's memory and permissions. An installed title
+# is its own process and has to ask for both.
+#
+# The title id is derived, not picked. UniqueId 0xFF582 is 0xFF000 (the start
+# of the range consoles leave to homebrew) with the low twelve bits of
+# crc32("wize-logic/pokeplatinum"), so the full id is 0x000400000FF58200. Any
+# other project deriving an id the same way collides only on a crc collision,
+# and the derivation is here so the id can be recomputed rather than trusted.
+#
+# $(BUILD_ROMFS) is substituted by 3ds/Makefile with -D.
+
+BasicInfo:
+  Title                   : "Pokemon Platinum"
+  ProductCode             : "CTR-P-CPUE"
+  Logo                    : Homebrew
+
+TitleInfo:
+  Category                : Application
+  UniqueId                : 0xFF582
+
+Option:
+  UseOnSD                 : true
+  FreeProductCode         : true
+  MediaFootPadding        : false
+  EnableCrypt             : false
+  EnableCompress          : true
+
+AccessControlInfo:
+  CoreVersion                   : 2
+  DescVersion                   : 2
+
+  ReleaseKernelMajor            : "02"
+  ReleaseKernelMinor            : "33"
+
+  # The port's whole persistent life is on the SD card under
+  # sdmc:/3ds/pokeplatinum/, the cartridge image, the save, the input
+  # script and every report. DirectSdmc is what lets an installed title
+  # reach it; nothing here uses title save data, so none is asked for.
+  UseExtSaveData                : false
+  FileSystemAccess:
+   - DirectSdmc
+
+  # 64MB is the measured requirement: 25.2 MB of heap given and 9.6 used in
+  # the overworld, against an Old 3DS application region of 64. SystemMode
+  # decides that region, and the default (Prod, 64MB) is the one to keep.
+  MemoryType                    : Application
+  SystemMode                    : 64MB
+  IdealProcessor                : 0
+  AffinityMask                  : 1
+  Priority                      : 16
+  MaxCpu                        : 0
+  HandleTableSize               : 0x200
+  DisableDebug                  : false
+  EnableForceDebug              : false
+  CanWriteSharedPage            : true
+  CanUsePrivilegedPriority      : false
+  CanUseNonAlphabetAndNumber    : true
+  PermitMainFunctionArgument    : true
+  CanShareDeviceMemory          : true
+  RunnableOnSleep               : false
+  SpecialMemoryArrange          : true
+
+  # A New 3DS runs this as a legacy Old 3DS title: the port is one thread on
+  # core 0 and has no use for the extra memory or the faster clock, and
+  # asking for them would make the New 3DS a second configuration to test.
+  SystemModeExt                 : Legacy
+  CpuSpeed                      : 268MHz
+  EnableL2Cache                 : false
+  CanAccessCore2                : false
+
+  IORegisterMapping:
+   - 1ff00000-1ff7ffff
+  MemoryMapping:
+   - 1f000000-1f5fffff:r
+
+  SystemCallAccess:
+    ArbitrateAddress: 34
+    Break: 60
+    CancelTimer: 28
+    ClearEvent: 25
+    ClearTimer: 29
+    CloseHandle: 35
+    ConnectToPort: 45
+    ControlMemory: 1
+    CreateAddressArbiter: 33
+    CreateEvent: 23
+    CreateMemoryBlock: 30
+    CreateMutex: 19
+    CreateSemaphore: 21
+    CreateThread: 8
+    CreateTimer: 26
+    DuplicateHandle: 39
+    ExitProcess: 3
+    ExitThread: 9
+    GetCurrentProcessorNumber: 17
+    GetHandleInfo: 41
+    GetProcessId: 53
+    GetProcessIdOfThread: 54
+    GetProcessIdealProcessor: 6
+    GetProcessInfo: 43
+    GetResourceLimit: 56
+    GetResourceLimitCurrentValues: 58
+    GetResourceLimitLimitValues: 57
+    GetSystemInfo: 42
+    GetSystemTick: 40
+    GetThreadContext: 59
+    GetThreadId: 55
+    GetThreadIdealProcessor: 15
+    GetThreadInfo: 44
+    GetThreadPriority: 11
+    MapMemoryBlock: 31
+    OutputDebugString: 61
+    QueryMemory: 2
+    ReleaseMutex: 20
+    ReleaseSemaphore: 22
+    SendSyncRequest1: 46
+    SendSyncRequest2: 47
+    SendSyncRequest3: 48
+    SendSyncRequest4: 49
+    SendSyncRequest: 50
+    SetThreadPriority: 12
+    SetTimer: 27
+    SignalEvent: 24
+    SleepThread: 10
+    UnmapMemoryBlock: 32
+    WaitSynchronization1: 36
+    WaitSynchronizationN: 37
+
+  ServiceAccessControl:
+   - APT:U
+   - ac:u
+   - boss:U
+   - cam:u
+   - cecd:u
+   - cfg:u
+   - dsp::DSP
+   - frd:u
+   - fs:USER
+   - gsp::Gpu
+   - hid:USER
+   - http:C
+   - ir:USER
+   - ir:u
+   - ir:rst
+   - mic:u
+   - ndm:u
+   - news:u
+   - nwm::UDS
+   - ptm:u
+   - pxi:dev
+   - soc:U
+   - ssl:C
+   - y2r:u
+
+SystemControlInfo:
+  SaveDataSize: 0KB
+  RemasterVersion: 0
+  StackSize: 0x40000
+
+  # These are the modules whose services the list above names. makerom writes
+  # them into the exheader; a missing one is a service the process cannot
+  # open at run time.
+  Dependency:
+    ac: 0x0004013000002402
+    am: 0x0004013000001502
+    boss: 0x0004013000003402
+    camera: 0x0004013000001602
+    cecd: 0x0004013000002602
+    cfg: 0x0004013000001702
+    codec: 0x0004013000001802
+    csnd: 0x0004013000002702
+    dlp: 0x0004013000002802
+    dsp: 0x0004013000001a02
+    friends: 0x0004013000003202
+    gpio: 0x0004013000001b02
+    gsp: 0x0004013000001c02
+    hid: 0x0004013000001d02
+    http: 0x0004013000002902
+    i2c: 0x0004013000001e02
+    ir: 0x0004013000003302
+    mcu: 0x0004013000001f02
+    mic: 0x0004013000002002
+    ndm: 0x0004013000002b02
+    news: 0x0004013000003502
+    nfc: 0x0004013000004002
+    nim: 0x0004013000002c02
+    nwm: 0x0004013000002d02
+    pdn: 0x0004013000002102
+    ps: 0x0004013000003102
+    ptm: 0x0004013000002202
+    qtm: 0x0004013020004202
+    ro: 0x0004013000003702
+    socket: 0x0004013000002e02
+    spi: 0x0004013000002302
+    ssl: 0x0004013000002f02

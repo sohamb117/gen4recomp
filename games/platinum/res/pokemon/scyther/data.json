@@ -1,0 +1,198 @@
+{
+    "base_stats": {
+        "hp": 70,
+        "attack": 110,
+        "defense": 80,
+        "speed": 105,
+        "special_attack": 55,
+        "special_defense": 80
+    },
+    "types": [ "TYPE_BUG", "TYPE_FLYING" ],
+    "catch_rate": 45,
+    "base_exp_reward": 187,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 25,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_SWARM", "ABILITY_TECHNICIAN" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GREEN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_VACUUM_WAVE" ],
+            [ 1, "MOVE_QUICK_ATTACK" ],
+            [ 1, "MOVE_LEER" ],
+            [ 5, "MOVE_FOCUS_ENERGY" ],
+            [ 9, "MOVE_PURSUIT" ],
+            [ 13, "MOVE_FALSE_SWIPE" ],
+            [ 17, "MOVE_AGILITY" ],
+            [ 21, "MOVE_WING_ATTACK" ],
+            [ 25, "MOVE_FURY_CUTTER" ],
+            [ 29, "MOVE_SLASH" ],
+            [ 33, "MOVE_RAZOR_WIND" ],
+            [ 37, "MOVE_DOUBLE_TEAM" ],
+            [ 41, "MOVE_X_SCISSOR" ],
+            [ 45, "MOVE_NIGHT_SLASH" ],
+            [ 49, "MOVE_DOUBLE_HIT" ],
+            [ 53, "MOVE_AIR_SLASH" ],
+            [ 57, "MOVE_SWORDS_DANCE" ],
+            [ 61, "MOVE_FEINT" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM27",
+            "TM31",
+            "TM32",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM47",
+            "TM51",
+            "TM54",
+            "TM58",
+            "TM62",
+            "TM68",
+            "TM75",
+            "TM78",
+            "TM81",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM89",
+            "TM90",
+            "HM01",
+            "HM05",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_FURY_CUTTER",
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_COUNTER",
+            "MOVE_SAFEGUARD",
+            "MOVE_BATON_PASS",
+            "MOVE_RAZOR_WIND",
+            "MOVE_REVERSAL",
+            "MOVE_LIGHT_SCREEN",
+            "MOVE_ENDURE",
+            "MOVE_SILVER_WIND",
+            "MOVE_BUG_BUZZ",
+            "MOVE_NIGHT_SLASH"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_TRADE_WITH_HELD_ITEM",
+            "ITEM_METAL_COAT",
+            "SPECIES_SCIZOR"
+        ]
+    ],
+    "offspring": "SPECIES_SCYTHER",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 59,
+        "weight_pounds": 123.5,
+        "body_shape": "SHAPE_MULTI_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 223,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 223,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 7,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 7,
+        "en": {
+            "name": "SCYTHER",
+            "category": "Mantis Pokémon",
+            "entry_text": [
+                "The sharp scythes on its forearms\n",
+                "become increasingly sharp by\n",
+                "cutting through hard objects."
+            ]
+        },
+        "fr": {
+            "name": "INSECATEUR",
+            "category": "Pokémon Mante",
+            "entry_text": [
+                "Ses coups de faux sont \n",
+                "pratiquement imparables. Il se \n",
+                "déplace comme un ninja."
+            ]
+        },
+        "de": {
+            "name": "SICHLOR",
+            "category": "Mantis",
+            "entry_text": [
+                "Es ist fast unmöglich, seinen\n",
+                "Sensen auszuweichen, da es mit der\n",
+                "Schnelligkeit eines Ninja zuschlägt."
+            ]
+        },
+        "it": {
+            "name": "SCYTHER",
+            "category": "Pokémon Mantide",
+            "entry_text": [
+                "È quasi impossibile parare gli\n",
+                "attacchi sferrati dalle sue falci.\n",
+                "Si muove come un ninja."
+            ]
+        },
+        "es": {
+            "name": "SCYTHER",
+            "category": "Pokémon Mantis",
+            "entry_text": [
+                "Es casi imposible evitar el ataque\n",
+                "de sus guadañas. Se mueve como\n",
+                "un ninja."
+            ]
+        },
+        "jp": {
+            "name": "ストライク",
+            "category": "かまきりポケモン",
+            "entry_text": [
+                "りょううでの　カマによる　こうげきを\n",
+                "ふせぐことは　ふかのうに　ちかい。\n",
+                "その　うごきは　まるで　ニンジャだ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 4356
+    }
+}

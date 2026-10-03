@@ -1,0 +1,34 @@
+{
+    "name": "Kayla",
+    "class": "TRAINER_CLASS_CYCLIST_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_PIKACHU",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I had to get my revenge on you.\r",
+                "I trained my Pokémon while lost and\f",
+                "wandering in the Wayward Cave!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Kerrrash!"
+        }
+    ]
+}

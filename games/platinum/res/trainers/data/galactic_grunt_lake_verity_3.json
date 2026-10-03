@@ -1,0 +1,48 @@
+{
+    "name": "Grunt",
+    "class": "TRAINER_CLASS_GALACTIC_GRUNT_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_STUNKY",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_HOUNDOUR",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": "I’ll knock your Pokémon into orbit!\r"
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "My mind is going orbital!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "The Pokémon here has already been\n",
+                "taken to our HQ in Veilstone.\r",
+                "So, you see?\n",
+                "A child like you can’t touch us!\n"
+            ]
+        }
+    ]
+}

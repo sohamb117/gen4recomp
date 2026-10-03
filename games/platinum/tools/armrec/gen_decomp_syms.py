@@ -1,0 +1,201 @@
+#!/usr/bin/env python3
+"""
+Give every decompiled function whose name encodes a guest address one.
+
+Decompiling a function deletes its .s, and with it the only thing that told
+armrec where the function lived. Reaching it by name is fine and the linker
+does it, but nothing reaching
+it through a stored guest address works, and the game stores plenty: static
+initialiser tables, callback tables, function pointers it computes.
+
+The disassembler that produced this tree names a function after its address
+(`sub_0202FE2C`, `ov21_02254840`) and the decomp keeps that name when it writes
+the C. So the link's own symbol table already knows where each of these lived;
+this reads it back out with `nm` and emits one table of registrations.
+
+WHY nm and not the sources. A generator that scanned .c files would need to
+know which definitions the compiler actually kept, which storage class each
+has, and what the preprocessor did to the name, and the last one matters,
+because 32 of the 33 overlay static initialisers are spelled
+`#define NitroStaticInit ov21_02254840` and the name only exists after cpp has
+run. The object file is the one place all three questions are already answered.
+
+What is deliberately not here. Nothing decides ARM or Thumb. Registration does
+not need it, armrec_rt.c's lookup_code() retries with bit 0 cleared, so a
+stored Thumb pointer lands on its function either way, and the one thing that
+*does* need it (a `.word` naming a decompiled function) has no
+oracle that covers it. See 2.9 in the plan for the measurement.
+
+The address is checked against armrec_mem_init()'s own regions at startup
+rather than here, so there is one list of what is mapped rather than two.
+"""
+
+import argparse
+import os
+import re
+import subprocess
+import sys
+
+
+# A name the disassembler derived from an address. Two spellings, and the
+# overlay one carries its own overlay number, which is checked against the
+# directory the object came from below rather than trusted.
+# The optional leading underscore is i386 PE's decoration (the Windows cross
+# build); ELF never produces it on these names, so one regex serves both.
+NAME_RE = re.compile(r"^_?(?:ov(\d+)_|sub_)([0-9A-Fa-f]{8})$")
+
+# Which overlay a game object belongs to. arm9/overlays/NN/src/*.c is the only
+# shape in this tree; anything else is always-resident code. test_overlays
+# proves the grouping this rests on, every address a file under
+# arm9/overlays/NN/ places is inside overlay NN's own window.
+OVL_DIR_RE = re.compile(r"[/\\]overlays[/\\](\d+)[/\\]")
+
+
+def collect(objs, nm="nm"):
+    """
+    Every global function in `objs` whose name encodes a guest address.
+
+    Returns [(name, addr, overlay-or-None, object path)], sorted.
+
+    Global only. A file-local symbol cannot be named from the generated C at
+    all, so pc/Makefile globalises the name-encoded ones as it builds each
+    object; see GLOBALIZE_NAMED there. Anything still local here was dropped
+    by that rule and must not be emitted, because the reference would not link.
+    """
+    present = [o for o in objs if os.path.exists(o)]
+    if not present:
+        return []
+    out = subprocess.run([nm, "--defined-only", "--print-file-name"] + present,
+                         capture_output=True, text=True).stdout
+    found = []
+    for line in out.splitlines():
+        obj, _, rest = line.partition(":")
+        fields = rest.split()
+        if len(fields) != 3:
+            continue
+        _addr, kind, name = fields
+        if kind not in ("T", "W"):      # global text only; see above
+            continue
+        m = NAME_RE.match(name)
+        if m and name.startswith("_"):
+            name = name[1:]     # PE decoration off; the emitted C re-adds it
+        if m is None:
+            continue
+        found.append((name, int(m.group(2), 16),
+                      int(m.group(1)) if m.group(1) else None, obj))
+    return sorted(set(found))
+
+
+def check(found):
+    """
+    Refuse to emit anything the tree does not agree with itself about.
+
+    Two claims, both cheap and both load-bearing for's model:
+    the overlay number in a name must be the directory the object came from,
+    and a name with no overlay number must not come from an overlay directory.
+    Registering an overlay function through the always-resident path gives the
+    dispatch table a claimant with no owner, which test_overlays gates at 0.
+    """
+    bad = []
+    for name, addr, ovl, obj in found:
+        m = OVL_DIR_RE.search(obj)
+        here = int(m.group(1)) if m else None
+        if here != ovl:
+            bad.append("%s in %s: name says %s, directory says %s"
+                       % (name, obj,
+                          "overlay %d" % ovl if ovl is not None
+                          else "always-resident",
+                          "overlay %d" % here if here is not None
+                          else "always-resident"))
+    return bad
+
+
+HEADER = """\
+/*
+ * Generated by tools/armrec/gen_decomp_syms.py, do not edit.
+ *
+ * Guest addresses for decompiled functions whose names encode one.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "armrec_rt.h"
+
+struct decomp_sym {
+    uint32_t addr;
+    armrec_fn fn;
+    const char *name;
+    int ovl;            /* -1 for always-resident code */
+};
+
+"""
+
+BODY = """
+const int armrec_decomp_sym_count = (int)(sizeof table / sizeof table[0]);
+
+/*
+ * Called from pc_main.c after armrec_init_all().
+ *
+ * The region check is here rather than in the generator so that
+ * armrec_mem_init()'s regions[] stays the one answer to "what is mapped". A
+ * name that encodes an address nothing maps is a disassembly whose name and
+ * whose contents disagree, which has happened once, with an address comment
+ * a character short, so it aborts rather than
+ * registering a function at an address no guest pointer can reach.
+ */
+void armrec_register_decompiled(void) {
+    int i;
+    for (i = 0; i < armrec_decomp_sym_count; i++) {
+        const struct decomp_sym *s = &table[i];
+        if (!armrec_is_guest_addr(s->addr)) {
+            fprintf(stderr,
+                    "armrec: %s encodes guest address 0x%08X, which no mapped "
+                    "region covers.\\n"
+                    "  The name is the only thing that says where this "
+                    "function lived, so it cannot be registered.\\n",
+                    s->name, s->addr);
+            abort();
+        }
+        if (s->ovl < 0)
+            armrec_register(s->addr, s->fn, s->name);
+        else
+            armrec_register_overlay(s->addr, s->fn, s->name, s->ovl);
+    }
+}
+"""
+
+
+def emit(found, path):
+    with open(path, "w") as fh:
+        fh.write(HEADER)
+        for name, _addr, _ovl, _obj in found:
+            fh.write("uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t);\n"
+                     % name)
+        fh.write("\nstatic const struct decomp_sym table[] = {\n")
+        for name, addr, ovl, _obj in found:
+            fh.write('    { 0x%08Xu, (armrec_fn)%s, "%s", %d },\n'
+                     % (addr, name, name, -1 if ovl is None else ovl))
+        fh.write("};\n")
+        fh.write(BODY)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("objects", nargs="+")
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--nm", default=os.environ.get("NM", "nm"))
+    args = ap.parse_args()
+
+    found = collect(args.objects, args.nm)
+    bad = check(found)
+    if bad:
+        sys.stderr.write("gen_decomp_syms: a name disagrees with its "
+                         "directory:\n  " + "\n  ".join(bad) + "\n")
+        return 1
+    emit(found, args.out)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

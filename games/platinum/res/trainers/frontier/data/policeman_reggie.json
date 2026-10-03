@@ -1,0 +1,67 @@
+{
+    "name": "Reggie",
+    "class": "TRAINER_CLASS_POLICEMAN",
+    "availableSets": [
+        "blaziken_3",
+        "infernape_3",
+        "empoleon_3",
+        "medicham_3",
+        "granbull_3",
+        "breloom_3",
+        "forretress_3",
+        "skarmory_3",
+        "hariyama_3",
+        "staraptor_3",
+        "exploud_3",
+        "lopunny_3",
+        "ambipom_3",
+        "kangaskhan_3",
+        "tauros_3",
+        "miltank_3",
+        "toxicroak_3",
+        "bastiodon_3",
+        "poliwrath_3",
+        "scizor_3",
+        "heracross_3",
+        "ursaring_3",
+        "bronzong_3",
+        "machamp_3",
+        "steelix_3",
+        "porygon2_3",
+        "lickilicky_3",
+        "gallade_3",
+        "lucario_3",
+        "probopass_3",
+        "aggron_3",
+        "magnezone_3",
+        "porygon_z_3",
+        "snorlax_3",
+        "blissey_3",
+        "togekiss_3",
+        "metagross_3",
+        "slaking_3"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m not really with the police.\n",
+                "I’m a collector of uniforms."
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "Battling as a Policeman made for a very\n",
+                "fun battle, it did.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That’s it for me.\n",
+                "I bid you a fond farewell.\r"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+# Boots a save, gets on the registered Bicycle, and rides west.
+#
+# The first lines are lab-continue.txt's, unchanged. Y uses the item the recipe
+# registered, which is how a player rides: the bike is a key item on the Y
+# button, not a menu. Then one direction is held for a fixed 72 frames and the
+# station asserts where that put the player, distance covered in a fixed time
+# IS the speed, which is the only thing about a bicycle worth pinning.
+
+# The B press changes gear. It is a single tap on purpose: the gear toggles on
+# any frame B is held as a move starts, so a held B would flip it every step
+# and the ride would average the two speeds.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3600 keys Y
+3624 keys none
+3800 keys B
+3812 keys none
+4000 keys LEFT
+4072 keys none

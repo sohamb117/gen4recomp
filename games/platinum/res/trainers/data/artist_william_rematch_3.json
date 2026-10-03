@@ -1,0 +1,71 @@
+{
+    "name": "William",
+    "class": "TRAINER_CLASS_ARTIST",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SMEARGLE",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": [
+                "MOVE_OMINOUS_WIND",
+                "MOVE_ANCIENT_POWER",
+                "MOVE_SILVER_WIND",
+                "MOVE_BATON_PASS"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MR_MIME",
+            "form": 0,
+            "level": 57,
+            "item": null,
+            "moves": [
+                "MOVE_PSYCHIC",
+                "MOVE_LIGHT_SCREEN",
+                "MOVE_REFLECT",
+                "MOVE_MIMIC"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SUDOWOODO",
+            "form": 0,
+            "level": 57,
+            "item": null,
+            "moves": [
+                "MOVE_ROCK_THROW",
+                "MOVE_FLAIL",
+                "MOVE_SUCKER_PUNCH",
+                "MOVE_MIMIC"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "The key to becoming a good painter\n",
+                "is to be observant.\r",
+                "That is the same for battling.\n",
+                "One must be observant!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Magnificent!\n",
+                "I am aglow with inspiration!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+# The journal is a key item, not a start-menu entry: using it from the bag is
+# the only way in, which is why this station is the bag station's navigation
+# with one more press on the end.
+
+name DIARIST
+gender GENDER_FEMALE
+trainer-id 30122
+money 1500
+var VAR_PLAYER_STARTER SPECIES_PIPLUP
+party SPECIES_PIPLUP 11 ITEM_NONE
+item ITEM_JOURNAL 1
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

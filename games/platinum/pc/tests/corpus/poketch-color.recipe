@@ -1,0 +1,8 @@
+# Colour changer. Drag onto yellow.
+name WATCHER
+gender GENDER_MALE
+trainer-id 10000
+money 3000
+party SPECIES_MONFERNO 18 ITEM_NONE
+poketch POKETCH_APPID_COLORCHANGER
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_DOWN

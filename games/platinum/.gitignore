@@ -1,0 +1,145 @@
+# Build directory
+/build/
+
+# Metroskrew artifacts
+/metroskrew-*.tar.xz
+/metroskrew-*.7z
+
+# Subproject folders
+/subprojects/libvct-*/
+/subprojects/NitroDWC-*/
+/subprojects/NitroSDK-*/
+/subprojects/NitroSystem-*/
+/subprojects/NitroWiFi-*/
+/subprojects/nitrogfx/
+/subprojects/libpng-*/
+/subprojects/zlib-*/
+/subprojects/packagecache
+/subprojects/metang/
+/subprojects/rapidjson-*/
+/subprojects/meson-*/
+/subprojects/nitrorom/
+/subprojects/metroskrew/
+/subprojects/yyjson-*/
+/subprojects/.wraplock
+
+# Metroskrew
+/tools/metroskrew/
+
+# Legacy mwrap compiler
+/tools/cw/mwrap
+
+# CLion folders
+.idea/
+cmake-build-debug/
+
+# Generated files
+*.4bpp
+*.lz
+*.gbapal
+
+# For asmdiff
+*/baserom.*
+*.dump
+
+# For decomp.me
+ctx.c
+
+# Working files
+overlays/*/module_*.s
+overlays/*/module_*.sbin
+overlays/*/module_*.cfg
+
+*.bnr
+*.nbfp
+*.nbfc
+
+# Dism scripts
+dism.sh
+asmdiff.sh
+
+# Symbols CSV
+symbols.csv
+
+# Object Files
+*.o
+
+# SDAT Files
+res/sound/*.sdat
+res/sound/*/Files/BANK/*.sbnk
+res/sound/*/Files/SEQ/*.sseq
+res/sound/*/Files/WAVARC/*.swar
+
+# Utilities
+ntruncompbw
+*.elf
+cmake-build-*
+*.sbin_LZ
+*.diff
+
+*.dSYM
+
+# MacOS garbage
+.DS_Store
+
+# Depfiles
+*.d
+
+diff.txt
+
+.vs/
+.vscode/*
+!.vscode/launch.json
+
+temp_asm/
+asm_old/
+
+!platinum.us/banner.bnr
+
+uncrustify.cfg
+compare.sh
+diff/
+# ...but pc/diff is the differential runner's source, not a scratch dir.
+!pc/diff/
+
+sdk/
+
+!tools/asmdiff/asmdiff.sh
+
+__pycache__
+.cache
+.venv/
+.python-version
+
+compile_commands.json
+
+# Save files
+*.dsv
+*.sav
+
+# Savestate files
+*.ds[0-9]
+*.dst
+*.ml[0-9]
+*.mln
+
+# Cheat files
+*.dct
+*.mch
+
+# Scratch state written between runs, and screenshots kept when the picture
+# changes. None of it is source.
+pc/.upstream-last-sync
+pc/.upstream-sync-report
+pc/.upstream-sync-baseline
+pc/shots/
+3ds/shots/
+
+# Importing pc/tests/run_tests.py to drive a single test leaves this behind.
+__pycache__/
+
+# Cook output under a runtime package. Recook from content/.
+pc/mods/**/.cooked/
+
+# The cartridge save the port writes beside the ROM
+*.sav

@@ -1,0 +1,20 @@
+--- a/src/nintendo_wfc/main.c
++++ b/src/nintendo_wfc/main.c
+@@ -671,7 +671,7 @@
+         return;
+     }
+ 
+-    void *buffer = NintendoWFCAlloc(NULL, size - 4, 4);
++    void *buffer = NintendoWFCAlloc((DWCAllocType)0, size - 4, 4);
+     if (buffer == NULL) {
+         return;
+     }
+@@ -688,7 +688,7 @@
+         }
+     }
+ 
+-    NintendoWFCFree(NULL, buffer, size - 4);
++    NintendoWFCFree((DWCAllocType)0, buffer, size - 4);
+ }
+ 
+ static void ConnectionClosedCallback(DWCError error, BOOL selfClosed, BOOL hostClosed, u8 aid, int closingFriendIdx, void *userParam)

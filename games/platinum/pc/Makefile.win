@@ -1,0 +1,296 @@
+# Windows cross build for the pokeplatinum PC port.
+#
+#   make -f pc/Makefile.win -j$(nproc) status    # build/pc-win32/pokeplatinum.exe
+#   make -f pc/Makefile.win viewer               # build/pc-win32/pcview.exe (+ SDL2.dll)
+#   make -f pc/Makefile.win launcher             # build/pc-win32/pclaunch.exe
+#
+# This is pc/Makefile retargeted at i686-w64-mingw32: one pipeline, two
+# toolchains. The ELF makefile is parameterised (BUILD, TARGET, ABI, LDFLAGS,
+# SYMPFX and LINK_PREP are ?=) and this file only sets what genuinely differs.
+# It exists because WSLg's compositor can degrade to copy mode, where
+# GPU-presented Linux windows show black. A Windows exe draws through Windows
+# and never meets WSLg at all.
+#
+# What the PE object format changes, each measured before this file was
+# written:
+#
+#   * objcopy --weaken works on COFF and GNU ld resolves every weakened
+#     symbol, with strong overrides winning cross-object, so the SDK weaken
+#     pass carries over unchanged. But a reference from inside the defining
+#     object binds to the local weak definition, not the strong override; on
+#     ELF, preemption redirects those too. Nine symbols in five SDK units are
+#     overridden by pc/src and called from their own unit, so those units
+#     compile through -S and a sed renames the definition constructs to
+#     _pc_demoted_<name>, leaving the call sites as undefined references the
+#     strong override satisfies.
+#
+#   * attribute-weak (gas .weak) is a COFF weak external. Overridden, every
+#     reference including same-unit ones binds to the strong definition; not
+#     overridden, the symbol does not resolve at all. So before the link,
+#     tools/armrec/pe_weak_promote.py promotes every weak companion whose name
+#     has no strong definition anywhere. See LINK_PREP below.
+#
+#   * i386 PE prefixes every C symbol with _, so the arm7snd namespace map must
+#     be written in that spelling (SYMPFX).
+#
+#   * -mno-ms-bitfields -mno-align-double are load-bearing, not tuning:
+#     without them mingw gives bitfield, long-long and double structs a private
+#     layout and every guest struct offset silently diverges from the DS's.
+#     Saves written without these flags are unreadable anywhere else.
+#
+#   * image base 0x10000000 with --disable-dynamicbase holds host text where
+#     the ELF link puts it, clear of the identity-mapped guest regions. -static
+#     so the exe carries libgcc and winpthread and runs on a machine with
+#     nothing installed.
+#
+# armrec_rt.c needs nothing: its _WIN32 half, VirtualAlloc identity mapping and
+# the VRAM copy model, was built and validated in the sibling diamond port.
+#
+# Requires i686-w64-mingw32-gcc. Run the exe from WSL interop; PC_* settings
+# travel as KEY=VALUE argv because WSL does not forward arbitrary environment
+# variables to Windows processes.
+
+WROOT := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))/..)
+
+# The compiler is not whichever one is first on $path, and both halves of
+# That are about which windows the exe runs on.
+#
+#   * The C library. A mingw-w64 configured for the UCRT links the C library
+#     out of api-ms-win-crt-*.dll, which ships with Windows 10. On Windows 7
+#     it needs a redistributable the machine may not have and on Windows XP
+#     it does not exist at all, the loader refuses the exe before main().
+#     Linking against plain msvcrt.dll instead costs nothing here (this port
+#     uses no C11 or C99-printf feature msvcrt lacks that mingw does not
+#     already fill in from libmingwex) and every Windows since 98 has it.
+#
+#   * The thread model. The posix model links libwinpthread, whose
+#     clock_gettime is written on GetTickCount64, a Vista symbol, and the
+#     same "entry point could not be located" refusal on XP. The port needs
+#     no pthread, so the win32 model is chosen and pc/src/pc_win_clock.c
+#     supplies the two POSIX clock functions the port does use.
+#
+# Override MINGW_TOOLS/MINGW_CC to build with a different toolchain; the
+# check below fails loudly rather than producing an exe that will not start.
+# pc/win_abi_check.py then reads the finished import table, which is the only
+# statement about this that cannot go stale.
+MINGW       ?= i686-w64-mingw32
+MINGW_TOOLS ?= /usr/bin/$(MINGW)
+MINGW_CC    ?= $(MINGW_TOOLS)-gcc-win32
+CC      := $(MINGW_CC)
+NM      := $(MINGW_TOOLS)-nm
+OBJCOPY := $(MINGW_TOOLS)-objcopy
+WINDRES := $(MINGW_TOOLS)-windres
+
+ifeq ($(shell command -v $(MINGW_CC) 2>/dev/null),)
+$(error no $(MINGW_CC); install mingw-w64 (Debian/Ubuntu: gcc-mingw-w64-i686) \
+ or set MINGW_CC to a msvcrt-linking cross compiler)
+endif
+
+# Read each finished exe, the game here, the viewer and the launcher at
+# their own rules below: all three must import the C library from msvcrt.dll
+# and nothing that arrived after Windows XP. All three are shipped and the
+# player double-clicks the launcher, so one of them being unable to start is
+# the same as none of them being able to.
+POST_LINK = $(PYTHON) $(WROOT)/pc/win_abi_check.py --objdump $(MINGW_TOOLS)-objdump $(TARGET)
+
+BUILD   := $(WROOT)/build/pc-win32
+# Recursively expanded on purpose: pc/Makefile moves BUILD to a directory of
+# its own when MODS is set, and a := here would freeze the exe outside it.
+TARGET  = $(BUILD)/pokeplatinum.exe
+
+# 32-bit is the toolchain's only shape, so no -m32; PIE/PIC is not the PE
+# model, so no -fno-pie. The two -mno- flags are the ABI (see the header).
+# -fpermissive: the Linux build compiles under gcc 13, where implicit
+# declarations and int/pointer conversions in 2008-era SDK C are warnings
+# (silenced by -w); mingw is gcc 15, which hard-errors them by default.
+# The C is identical, only the default changed.
+ABI     := -mno-ms-bitfields -mno-align-double -fpermissive
+
+# --subsystem,windows is what stops a console box appearing when a player
+# double-clicks the game, and -e _mainCRTStartup is what keeps main() while
+# doing it: the GUI subsystem's default entry point is WinMainCRTStartup, and
+# this port has no WinMain and wants none. MEASURED before it was chosen, a
+# GUI-subsystem exe run over WSL interop still delivers stdout, stderr and its
+# exit code, because the parent's redirected handles are inherited either way.
+# The case with nothing to inherit is what --console covers (pc_win_fiber.c).
+LDFLAGS := -static -Wl,--image-base=0x10000000 -Wl,--disable-dynamicbase \
+           -Wl,--stack,8388608 \
+           -Wl,--subsystem,windows -Wl,-e,_mainCRTStartup
+LDLIBS  := -lm
+
+# The icon and the VERSIONINFO block, compiled into every exe. -c 65001
+# because gen_icon.py writes the .rc as UTF-8 and the title has an accent in
+# it; without it windres reads the bytes as CP1252 and Task Manager says
+# "PokÃ©mon".
+ICON_EXES := pokeplatinum.exe pcview.exe pclaunch.exe
+EXTRA_OBJS += $(BUILD)/icon/pokeplatinum.res.o
+
+SYMPFX  := _
+
+# Attribute-weak symbols with no strong definition anywhere do not resolve
+# on PE; promote their companions to ordinary strong definitions first.
+# Idempotent, and skips anything a strong definition covers.
+LINK_PREP = $(PYTHON) $(WROOT)/tools/armrec/pe_weak_promote.py \
+             --nm $(NM) --objcopy $(OBJCOPY) \
+             $$(find $(BUILD)/obj -name '*.o' | sort)
+
+include $(WROOT)/pc/Makefile
+
+# The DS trees do their own platform detection, GameSpy/DWC pick winsock
+# under mingw, and game TUs include those headers too, so _WIN32 is hidden
+# from ALL game and SDK translation units (pc_prelude.h preloads the mingw
+# system headers first, then drops the macro). The port's own code compiles
+# with PCSRC_CFLAGS and keeps the real _WIN32.
+GAME_CFLAGS += -DPC_HIDE_WIN32
+SDK_CFLAGS  += -DPC_HIDE_WIN32
+
+# ------------------------------------------------------- the demoted nine
+#
+# SDK TUs whose own code calls a function pc/src overrides. On PE those
+# internal calls bind to the local definition however it is weakened, so
+# the definition itself is renamed at the assembly level and the calls
+# become undefined references the override satisfies. The set was measured
+# from the ELF objects' relocations (the only place internal callers are
+# visible); re-run that scan when
+# a new pc/src override lands.
+DEMOTE_card    := CARDi_Request
+DEMOTE_midma   := MI_WaitDma
+DEMOTE_capture := NNSi_SndCaptureStart
+DEMOTE_pm      := PMi_ReadRegister PMi_ReadRegisterAsync \
+                  PMi_WriteRegister PMi_WriteRegisterAsync
+DEMOTE_tp      := TP_GetCalibratedResult TP_WaitBusy
+
+# Mirrors COMPILE_RULE's strip_asm half (none of the five carries a
+# pc/patches diff; a patch appearing for one fails this rule loudly), then
+# -S, the demote sed, as, and the usual weaken.
+define DEMOTE_RULE
+	@mkdir -p $(dir $@)
+	@test ! -f "$(PATCHES)/$(patsubst $(ROOT)/%,%,$<).patch" || \
+	  { echo "DEMOTE_RULE: $< grew a patch; teach this rule to apply it"; exit 1; }
+	@if $(PYTHON) $(ROOT)/tools/armrec/strip_asm.py $< $@.stripped.c 2>/dev/null; \
+	 then src=$@.stripped.c; else src=$<; fi; \
+	 if ! $(CC) $(SDK_CFLAGS) $(SRCDIRS) -S -o $@.s $$src 2>$@.err; then \
+	   $(PYTHON) $(ROOT)/tools/armrec/unstatic.py --cc "$(CC) $(SDK_CFLAGS) $(SRCDIRS)" \
+	       $$src $@.unstatic.c 2>/dev/null && src=$@.unstatic.c; \
+	 fi; \
+	 $(CC) $(SDK_CFLAGS) $(SRCDIRS) -S -o $@.s $$src && rm -f $@.err && \
+	 for sym in $(1); do \
+	   sed -i -E "s/^([[:space:]]*\.globl[[:space:]]+)_$${sym}\$$/\1_pc_demoted_$${sym}/; \
+	              s/^([[:space:]]*\.def[[:space:]]+)_$${sym}(;)/\1_pc_demoted_$${sym}\2/; \
+	              s/^_$${sym}:/_pc_demoted_$${sym}:/" $@.s; \
+	 done && \
+	 $(CC) $(ABI) -c -o $@ $@.s && $(OBJCOPY) --weaken $@
+endef
+
+$(OBJ)/game/subprojects/NitroSDK-4.2.30001/libraries/card/src/card_request.o: \
+    $(ROOT)/subprojects/NitroSDK-4.2.30001/libraries/card/src/card_request.c \
+    $(CFLAGSTAMP) $(HDRSTAMP) $(SHADOWSTAMP)
+	$(call DEMOTE_RULE,$(DEMOTE_card))
+
+$(OBJ)/game/subprojects/NitroSDK-4.2.30001/libraries/mi/src/mi_dma.o: \
+    $(ROOT)/subprojects/NitroSDK-4.2.30001/libraries/mi/src/mi_dma.c \
+    $(CFLAGSTAMP) $(HDRSTAMP) $(SHADOWSTAMP)
+	$(call DEMOTE_RULE,$(DEMOTE_midma))
+
+$(OBJ)/game/subprojects/NitroSDK-4.2.30001/libraries/spi/src/pm.o: \
+    $(ROOT)/subprojects/NitroSDK-4.2.30001/libraries/spi/src/pm.c \
+    $(CFLAGSTAMP) $(HDRSTAMP) $(SHADOWSTAMP)
+	$(call DEMOTE_RULE,$(DEMOTE_pm))
+
+$(OBJ)/game/subprojects/NitroSDK-4.2.30001/libraries/spi/src/tp.o: \
+    $(ROOT)/subprojects/NitroSDK-4.2.30001/libraries/spi/src/tp.c \
+    $(CFLAGSTAMP) $(HDRSTAMP) $(SHADOWSTAMP)
+	$(call DEMOTE_RULE,$(DEMOTE_tp))
+
+$(OBJ)/game/subprojects/NitroSystem-071126.1/libraries/snd/src/capture.o: \
+    $(ROOT)/subprojects/NitroSystem-071126.1/libraries/snd/src/capture.c \
+    $(CFLAGSTAMP) $(HDRSTAMP) $(SHADOWSTAMP)
+	$(call DEMOTE_RULE,$(DEMOTE_capture))
+
+# -------------------------------------------------------------- resources
+
+# One .rc per exe, because OriginalFilename in the version block names the
+# file it sits in. The .ico all three share is one file.
+$(ICONDIR)/%.res.o: $(ICONDIR)/%.rc
+	$(WINDRES) -c 65001 -I $(ICONDIR) -i $< -o $@
+
+# ---------------------------------------------------------------- viewer
+#
+# pcview.exe against mingw SDL2. pokediamond's build already fetched the
+# SDL2-mingw development tree; reuse it rather than downloading again, and
+# ship SDL2.dll beside the exe, the one DLL the -static exe cannot absorb.
+SDL2_MINGW ?= $(WROOT)/../../build/sdl2-mingw/SDL2-2.32.10/i686-w64-mingw32
+PCVIEW_EXE := $(BUILD)/pcview.exe
+
+# -mwindows alone, where this used to say `-mwindows -mconsole` and the last
+# flag won: these two are the windows a player looks at, so a console box
+# beside them is the friction the task existed to remove. SDL2main supplies
+# the WinMain the GUI subsystem entry point wants, so unlike the port there is
+# no entry-point override to make here.
+.PHONY: viewer
+viewer: $(PCVIEW_EXE)
+$(PCVIEW_EXE): $(WROOT)/pc/sdl/pcview.c $(WROOT)/pc/include/pc_view.h \
+               $(WROOT)/pc/sdl/pc_window_icon.h $(ICON_H) \
+               $(ICONDIR)/pcview.res.o
+	@mkdir -p $(BUILD)
+	@test -d $(SDL2_MINGW) || { echo "SDL2-mingw not found at $(SDL2_MINGW); set SDL2_MINGW"; exit 1; }
+	$(MINGW_CC) -O2 -Wall -I$(ICONDIR) -I$(SDL2_MINGW)/include/SDL2 \
+	  -Dmain=SDL_main -o $@ $< $(ICONDIR)/pcview.res.o \
+	  -L$(SDL2_MINGW)/lib -lmingw32 -lSDL2main -lSDL2 -mwindows
+	@cp -f $(SDL2_MINGW)/bin/SDL2.dll $(BUILD)/
+	@$(PYTHON) $(WROOT)/pc/win_abi_check.py --objdump $(MINGW_TOOLS)-objdump $@
+	@echo "  VIEWER  $(PCVIEW_EXE) (+ SDL2.dll)"
+
+PCLAUNCH_EXE := $(BUILD)/pclaunch.exe
+
+.PHONY: launcher
+launcher: $(PCLAUNCH_EXE)
+$(PCLAUNCH_EXE): $(WROOT)/pc/sdl/pclaunch.c $(WROOT)/pc/sdl/pclaunch_font.h \
+                 $(WROOT)/pc/sdl/pc_window_icon.h $(ICON_H) \
+                 $(ICONDIR)/pclaunch.res.o
+	@mkdir -p $(BUILD)
+	@test -d $(SDL2_MINGW) || { echo "SDL2-mingw not found at $(SDL2_MINGW); set SDL2_MINGW"; exit 1; }
+	$(MINGW_CC) -O2 -Wall -I$(ICONDIR) -I$(SDL2_MINGW)/include/SDL2 \
+	  -Dmain=SDL_main -o $@ $< $(ICONDIR)/pclaunch.res.o \
+	  -L$(SDL2_MINGW)/lib -lmingw32 -lSDL2main -lSDL2 -lcomdlg32 -mwindows
+	@cp -f $(SDL2_MINGW)/bin/SDL2.dll $(BUILD)/
+	@$(PYTHON) $(WROOT)/pc/win_abi_check.py --objdump $(MINGW_TOOLS)-objdump $@
+	@echo "  LAUNCH  $(PCLAUNCH_EXE) (+ SDL2.dll)"
+
+# ------------------------------------------------------------------ dist
+#
+# The Windows zip: the same three programs plus the one DLL the -static exes
+# cannot absorb. Overrides the ELF rule rather than extending it, because the
+# file set genuinely differs.
+DIST_ZIP := $(BUILD)/dist/$(DIST_ROOT)-windows.zip
+
+.PHONY: dist
+dist: $(TARGET) $(PCVIEW_EXE) $(PCLAUNCH_EXE)
+	@$(PYTHON) $(MKDIST) --out $(DIST_ZIP) --root $(DIST_ROOT) \
+	  --exec $(PCLAUNCH_EXE) --exec $(TARGET) --exec $(PCVIEW_EXE) \
+	  --exec $(BUILD)/SDL2.dll \
+	  --file $(WROOT)/pc/LICENSE:LICENSE.txt
+
+# ------------------------------------------------- PE stubs vs real code
+#
+# The generated trap stubs are STRONG on PE (gen_stubs.py's header holds
+# the measurement: mingw's ld.bfd cannot resolve a call against a weak
+# PE definition, so weak stubs left the first cold Windows link undefined
+# on all of them at once). Strong stubs then collide with any name the
+# link genuinely implements, the fused build's DWC auth is real code,
+# so this rule regenerates stubs.c AFTER every other object exists, minus
+# whatever those objects define. Derived with nm from the link's own
+# inputs, the way the demoted-nine list was derived from relocations:
+# stubs.list stays the single checked-in source and the exclusion is a
+# measurement that cannot go stale.
+$(STUBS_C): $(filter-out $(OBJ)/pc/stubs.o,$(OBJS)) $(EXTRA_OBJS)
+$(STUBS_C): $(ROOT)/pc/stubs.list $(ROOT)/pc/gen_stubs.py $(MAKEFILE)
+	@mkdir -p $(BUILD)
+	@find $(OBJ) -name '*.o' ! -name 'stubs.o' 2>/dev/null > $@.objs; \
+	 for x in $(EXTRA_OBJS); do case $$x in *.a|*.o) echo $$x >> $@.objs;; esac; done; \
+	 xargs -a $@.objs $(NM) --defined-only 2>/dev/null \
+	   | awk '$$2 ~ /^[TDBRC]$$/ { sub(/^_/, "", $$3); print $$3 }' \
+	   | sort -u > $@.defined
+	@$(PYTHON) $(ROOT)/pc/gen_stubs.py --exclude-from $@.defined \
+	    $(ROOT)/pc/stubs.list $@
+	@echo "  STUBS   $$(grep -c '^PC_STUB_WEAK ' $@) trap stubs (PE: minus the link's own definitions)"

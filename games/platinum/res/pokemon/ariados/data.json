@@ -1,0 +1,171 @@
+{
+    "base_stats": {
+        "hp": 70,
+        "attack": 90,
+        "defense": 70,
+        "speed": 40,
+        "special_attack": 60,
+        "special_defense": 60
+    },
+    "types": [ "TYPE_BUG", "TYPE_POISON" ],
+    "catch_rate": 90,
+    "base_exp_reward": 134,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 2,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_FAST",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_SWARM", "ABILITY_INSOMNIA" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_RED",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_BUG_BITE" ],
+            [ 1, "MOVE_POISON_STING" ],
+            [ 1, "MOVE_STRING_SHOT" ],
+            [ 1, "MOVE_SCARY_FACE" ],
+            [ 1, "MOVE_CONSTRICT" ],
+            [ 5, "MOVE_SCARY_FACE" ],
+            [ 8, "MOVE_CONSTRICT" ],
+            [ 12, "MOVE_LEECH_LIFE" ],
+            [ 15, "MOVE_NIGHT_SHADE" ],
+            [ 19, "MOVE_SHADOW_SNEAK" ],
+            [ 23, "MOVE_FURY_SWIPES" ],
+            [ 28, "MOVE_SUCKER_PUNCH" ],
+            [ 32, "MOVE_SPIDER_WEB" ],
+            [ 37, "MOVE_AGILITY" ],
+            [ 41, "MOVE_PIN_MISSILE" ],
+            [ 46, "MOVE_PSYCHIC" ],
+            [ 50, "MOVE_POISON_JAB" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM28",
+            "TM29",
+            "TM32",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM58",
+            "TM68",
+            "TM70",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM87",
+            "TM90"
+        ],
+        "by_tutor": [
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_BOUNCE",
+            "MOVE_SUCKER_PUNCH"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_SPINARAK",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_SCARY"
+    },
+    "pokedex_data": {
+        "height_inches": 43,
+        "weight_pounds": 73.9,
+        "body_shape": "SHAPE_INSECTOID",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 227,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 227,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 12,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 12,
+        "en": {
+            "name": "ARIADOS",
+            "category": "Long Leg Pokémon",
+            "entry_text": [
+                "It attaches silk to its prey and\n",
+                "sets it free. Later, it tracks the\n",
+                "silk to the prey and its friends."
+            ]
+        },
+        "fr": {
+            "name": "MIGALOS",
+            "category": "Pokémon Long-Patte",
+            "entry_text": [
+                "Il attache un fil à sa proie avant\n",
+                "de la libérer. Il s’en servira pour\n",
+                "la retrouver, elle et ses amis."
+            ]
+        },
+        "de": {
+            "name": "ARIADOS",
+            "category": "Langbein",
+            "entry_text": [
+                "Es befestigt Seide an der Beute und\n",
+                "lässt sie frei. Es folgt dem Seiden-\n",
+                "faden zur Beute u. ihren Freunden."
+            ]
+        },
+        "it": {
+            "name": "ARIADOS",
+            "category": "Pokémon Lungazampa",
+            "entry_text": [
+                "Aggancia la preda con un filo di se-\n",
+                "ta e la lascia andare. Poi segue il\n",
+                "filo e la trova quando è in gruppo."
+            ]
+        },
+        "es": {
+            "name": "ARIADOS",
+            "category": "Pokémon Pata Larga",
+            "entry_text": [
+                "Pega hilos de seda a sus presas y\n",
+                "las libera para seguirlas más tarde\n",
+                "y localizar también a sus amigos."
+            ]
+        },
+        "jp": {
+            "name": "アリアドス",
+            "category": "あしながポケモン",
+            "entry_text": [
+                "えものの　からだに　いとを　つけて\n",
+                "わざと　にがす。いとを　たどれば\n",
+                "なかまごと　つかまえられるからだ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1540
+    }
+}

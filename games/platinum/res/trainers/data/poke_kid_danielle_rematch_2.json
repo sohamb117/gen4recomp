@@ -1,0 +1,34 @@
+{
+    "name": "Danielle",
+    "class": "TRAINER_CLASS_POKE_KID",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_PIKACHU",
+            "form": 0,
+            "level": 44,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Hi, hi!\n",
+                "I’m a Pokémon!\r",
+                "...You knew that, didn’t you?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "I’m so angry...\n"
+        }
+    ]
+}

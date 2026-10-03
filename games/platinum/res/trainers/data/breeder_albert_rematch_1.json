@@ -1,0 +1,63 @@
+{
+    "name": "Albert",
+    "class": "TRAINER_CLASS_BREEDER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ROSELIA",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BONSLY",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PIKACHU",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_EEVEE",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’ve raised my Pokémon since we met.\n",
+                "How much have you raised yours?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Good stuff! Your Pokémon are in\n",
+                "impeccable condition.\n"
+            ]
+        }
+    ]
+}

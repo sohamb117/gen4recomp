@@ -1,0 +1,73 @@
+{
+    "name": "Brian",
+    "class": "TRAINER_CLASS_VETERAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_FLOATZEL",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": [
+                "MOVE_WATERFALL",
+                "MOVE_ICE_FANG",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_CRUNCH"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_RAPIDASH",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": [
+                "MOVE_QUICK_ATTACK",
+                "MOVE_STOMP",
+                "MOVE_FLARE_BLITZ",
+                "MOVE_BOUNCE"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_TANGROWTH",
+            "form": 0,
+            "level": 60,
+            "item": null,
+            "moves": [
+                "MOVE_INGRAIN",
+                "MOVE_SLEEP_POWDER",
+                "MOVE_ANCIENT_POWER",
+                "MOVE_POWER_WHIP"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Your young power against my veteran\n",
+                "technique...\r",
+                "Let us battle again to see who wins\n",
+                "this time!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "The power of youth...\n",
+                "It’s startling.\n"
+            ]
+        }
+    ]
+}

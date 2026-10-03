@@ -1,0 +1,106 @@
+{
+    "name": "Bertha",
+    "class": "TRAINER_CLASS_ELITE_FOUR_BERTHA",
+    "items": [
+        "ITEM_FULL_RESTORE",
+        "ITEM_FULL_RESTORE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_WHISCASH",
+            "form": 0,
+            "level": 66,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_EARTH_POWER",
+                "MOVE_AQUA_TAIL",
+                "MOVE_ZEN_HEADBUTT",
+                "MOVE_SANDSTORM"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GLISCOR",
+            "form": 0,
+            "level": 69,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_EARTHQUAKE",
+                "MOVE_ICE_FANG",
+                "MOVE_FIRE_FANG",
+                "MOVE_THUNDER_FANG"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_HIPPOWDON",
+            "form": 0,
+            "level": 68,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_EARTHQUAKE",
+                "MOVE_STONE_EDGE",
+                "MOVE_CRUNCH",
+                "MOVE_YAWN"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLEM",
+            "form": 0,
+            "level": 68,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_EARTHQUAKE",
+                "MOVE_FIRE_PUNCH",
+                "MOVE_THUNDER_PUNCH",
+                "MOVE_SANDSTORM"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_RHYPERIOR",
+            "form": 0,
+            "level": 71,
+            "item": "ITEM_SITRUS_BERRY",
+            "moves": [
+                "MOVE_EARTHQUAKE",
+                "MOVE_ROCK_WRECKER",
+                "MOVE_MEGAHORN",
+                "MOVE_AVALANCHE"
+            ],
+            "iv_scale": 250,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_LAST_BATTLER_HALF_HP",
+            "en_US": [
+                "Dear child, don’t assume for an\n",
+                "instant that you’ve won.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Well! Dear child, I must say, that\n",
+                "was most impressive.\r",
+                "Your Pokémon believed in you and did\n",
+                "their best to earn you the win.\r",
+                "Even though I’ve lost, I find myself\n",
+                "with this silly grin!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,48 @@
+{
+    "name": "Axel",
+    "class": "TRAINER_CLASS_CYCLIST_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_PIKACHU",
+            "form": 0,
+            "level": 21,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Yo! Cycling and Pokémon!\n",
+                "Which do you prefer?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Hey, not bad, you!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "This Cycling Road is one fine place--\n",
+                "great bikes, superb Pokémon,\f",
+                "and awesome Trainers all around!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’m sure I’ve seen your face before.\n",
+                "Did we maybe battle?\r"
+            ]
+        }
+    ]
+}

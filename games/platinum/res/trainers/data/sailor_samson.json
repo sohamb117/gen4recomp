@@ -1,0 +1,74 @@
+{
+    "name": "Samson",
+    "class": "TRAINER_CLASS_SAILOR",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_WINGULL",
+            "form": 0,
+            "level": 29,
+            "item": null,
+            "moves": [
+                "MOVE_WATER_PULSE",
+                "MOVE_WING_ATTACK",
+                "MOVE_SUPERSONIC"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SHELLOS",
+            "form": 0,
+            "level": 30,
+            "item": null,
+            "moves": [
+                "MOVE_WATER_PULSE",
+                "MOVE_MUD_BOMB",
+                "MOVE_RAIN_DANCE"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLDUCK",
+            "form": 0,
+            "level": 31,
+            "item": null,
+            "moves": [
+                "MOVE_FURY_SWIPES",
+                "MOVE_CONFUSION",
+                "MOVE_WATER_PULSE"
+            ],
+            "iv_scale": 10,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Like the raging sea, I crash down\n",
+                "and wash away everything before me!\r",
+                "That’s just how I roll!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That wave didn’t even wash\n",
+                "my hands...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’m now becalmed like a waveless\n",
+                "sea...\n"
+            ]
+        }
+    ]
+}

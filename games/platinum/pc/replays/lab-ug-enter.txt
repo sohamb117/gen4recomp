@@ -1,0 +1,53 @@
+# Boots a save, uses the registered Explorer Kit, answers the comms
+# confirm and the save, and stops.
+#
+# The first lines are lab-continue.txt's. Y at 3600 is the kit, the same
+# frame the rod and bicycle stations use. The A's after that walk the
+# "DS Wireless Communication" box, the Yes/No, the overwrite confirm and
+# the save. Measured: the hole animation is on screen at frame 4900.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3600 keys Y
+3624 keys none
+3800 keys A
+3824 keys none
+4000 keys A
+4024 keys none
+4200 keys A
+4224 keys none
+4400 keys A
+4424 keys none
+4600 keys A
+4624 keys none
+4800 keys A
+4824 keys none
+5000 keys A
+5024 keys none
+5200 keys A
+5224 keys none
+5400 keys A
+5424 keys none
+5600 keys A
+5624 keys none
+5800 keys A
+5824 keys none
+6000 keys A
+6024 keys none
+6200 keys A
+6224 keys none
+6400 keys A
+6424 keys none
+6600 keys A
+6624 keys none
+6800 keys A
+6824 keys none
+7000 keys A
+7024 keys none

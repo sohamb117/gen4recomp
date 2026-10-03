@@ -1,0 +1,77 @@
+{
+    "name": "Roark",
+    "class": "TRAINER_CLASS_LEADER_ROARK",
+    "items": [
+        "ITEM_POTION",
+        "ITEM_POTION"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GEODUDE",
+            "form": 0,
+            "level": 12,
+            "item": null,
+            "moves": [
+                "MOVE_STEALTH_ROCK",
+                "MOVE_ROCK_THROW"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ONIX",
+            "form": 0,
+            "level": 12,
+            "item": null,
+            "moves": [
+                "MOVE_STEALTH_ROCK",
+                "MOVE_ROCK_THROW",
+                "MOVE_SCREECH"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_CRANIDOS",
+            "form": 0,
+            "level": 14,
+            "item": null,
+            "moves": [
+                "MOVE_HEADBUTT",
+                "MOVE_PURSUIT",
+                "MOVE_LEER"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_LAST_BATTLER",
+            "en_US": [
+                "Think you can take down the \n",
+                "next Pokémon like you did earlier?\n"
+            ]
+        },
+        {
+            "type": "TRMSG_LAST_BATTLER_HALF_HP",
+            "en_US": [
+                "No way! Not yet!\n",
+                "Not giving up!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "W-what? That can’t be!\n",
+                "My buffed-up Pokémon!\n"
+            ]
+        }
+    ]
+}

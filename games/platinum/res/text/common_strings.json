@@ -1,0 +1,878 @@
+{
+  "key": 55507,
+  "messages": [
+    {
+      "id": "CommonStrings_Text_PokecenterGreeting_Day",
+      "en_US": [
+        "Hello, and welcome to\n",
+        "the Pokémon Center.\r",
+        "We restore your tired Pokémon\n",
+        "to full health.\r",
+        "Would you like to rest your Pokémon?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterTakeYourPokemon",
+      "en_US": [
+        "OK, I’ll take your Pokémon for a few\n",
+        "seconds."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterRestoredYourPokemon",
+      "en_US": [
+        "Thank you for waiting.\r",
+        "We’ve restored your Pokémon to full\n",
+        "health.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterHopeToSeeYouAgain1",
+      "en_US": "We hope to see you again!"
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterGreeting_Interrupted",
+      "en_US": [
+        "Hello, and welcome to\n",
+        "the Pokémon Center.\r",
+        "We restore your tired Pokémon\n",
+        "to full health.\r",
+        "Would you like to...\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterThatTrainerCard",
+      "en_US": [
+        "Th-that Trainer Card!\r",
+        "That sparkling color!\n",
+        "And all those stars!\r",
+        "I’ve seen several Trainers with Silver\n",
+        "Trainer Cards up to now...\r",
+        "But you’re the first to top them\n",
+        "with that Trainer Card.\r",
+        "Please, {STRVAR_1 3, 0, 0}, may I have\n",
+        "the honor of healing your Pokémon?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterGreatToSeeYou",
+      "en_US": [
+        "It’s great to see you, {STRVAR_1 3, 0, 0}!\n",
+        "You want the usual, am I right?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterTakeYourPokemon_GoldCard",
+      "en_US": [
+        "I will be pleased to take your\n",
+        "Pokémon for a few seconds."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterThankYouForWaiting",
+      "en_US": "Thank you for waiting."
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterHopeToSeeYouAgain2",
+      "en_US": "We hope to see you again!"
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterPokemonMayBeInfected",
+      "en_US": [
+        "Your Pokémon may be infected with\n",
+        "the Pokérus.\r",
+        "Little is known about the Pokérus\n",
+        "except that they are microscopic\f",
+        "life-forms that attach to Pokémon.\r",
+        "While infected, Pokémon are said to\n",
+        "grow exceptionally well."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_OutOfPokemonVisionDimmed",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} is out of battle-ready\n",
+        "Pokémon!\r",
+        "{STRVAR_1 3, 0, 0}’s vision dimmed!"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Dummy12",
+      "garbage": 13
+    },
+    {
+      "id": "CommonStrings_Text_WouldYouLikeToSave",
+      "en_US": "Would you like to save the game?"
+    },
+    {
+      "id": "CommonStrings_Text_OKToOverwriteSavedFile",
+      "en_US": [
+        "There is already a saved file.\n",
+        "Is it OK to overwrite it?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_SavingDontTurnOffThePower",
+      "en_US": [
+        "Saving...\n",
+        "Don’t turn off the power."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PlayerSavedTheGame",
+      "en_US": "{STRVAR_1 3, 0, 0} saved the game."
+    },
+    {
+      "id": "CommonStrings_Text_00017",
+      "en_US": [
+        "Warning!\n",
+        "There is already a saved game file.\r",
+        "If you save now, the other file’s\n",
+        "adventure, including items and\f",
+        "Pokémon, will be entirely lost.\r",
+        "Are you sure you want to save now\n",
+        "and overwrite the other save file?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_SaveError",
+      "en_US": "Save error."
+    },
+    {
+      "id": "CommonStrings_Text_00019",
+      "en_US": [
+        "Saving...\n",
+        "Don’t turn off the power."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ImpossibleToSave",
+      "en_US": [
+        "There is already a saved game file.\n",
+        "It is impossible to save.\r",
+        "Please refer to the Instruction\n",
+        "Booklet for details.\r",
+        "Press Up + SELECT + B Button on\n",
+        "the title screen if you want to erase\f",
+        "the current saved game file."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_SavingALotOfData",
+      "en_US": [
+        "Saving a lot of data...\n",
+        "Don’t turn off the power."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_00022",
+      "en_US": [
+        "Want to give a nickname to the\n",
+        "{STRVAR_1 0, 0, 0}?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Dummy23",
+      "garbage": 19
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchApp",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} obtained the Pokétch\n",
+        "app {STRVAR_1 24, 1, 0}."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedItem",
+      "en_US": "Obtained the {STRVAR_1 8, 0, 0}!"
+    },
+    {
+      "id": "CommonStrings_Text_InstalledPoketchApp",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} installed the app on\n",
+        "the Pokétch.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_BagIsFull",
+      "en_US": [
+        "Too bad!\n",
+        "The Bag is full..."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedKeyItem",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} obtained\n",
+        "the {COLOR 2}{STRVAR_1 8, 1, 0}{COLOR 0}!"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_00029",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} obtained\n",
+        "the {COLOR 1}{STRVAR_1 8, 1, 0}{COLOR 0}!"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PutItemInPocket",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} put the {STRVAR_1 8, 1, 0}\n",
+        "in the {COLOR 2}{STRVAR_1 31, 2, 0}{COLOR 0} Pocket."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PutItemInFashionCase",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} put away the\n",
+        "{STRVAR_1 31, 1, 0} in the Fashion Case."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_BootedUpThePC",
+      "en_US": "{STRVAR_1 3, 0, 0} booted up the PC.\r"
+    },
+    {
+      "id": "CommonStrings_Text_AccessWhichPC",
+      "en_US": "Which PC should be accessed?"
+    },
+    {
+      "id": "CommonStrings_Text_AccessedPokemonStorage",
+      "en_US": [
+        "The Pokémon Storage System\n",
+        "was accessed.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_AccessedPlayersPC",
+      "en_US": "Accessed {STRVAR_1 3, 0, 0}’s PC.\r"
+    },
+    {
+      "id": "CommonStrings_Text_CantDoThatRightNow",
+      "en_US": [
+        "Rowan’s words echoed...\n",
+        "{STRVAR_1 3, 0, 0}! There’s a time and\f",
+        "place for everything! But not now."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_VendorGreetingGeneric",
+      "en_US": [
+        "Welcome!\n",
+        "What do you need?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Dummy38",
+      "garbage": 21
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterAllHappyAndHealthy",
+      "en_US": [
+        "There! All happy and healthy!\n",
+        "Good luck and take care!"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_YouHadQuiteTheExperienceOutThere",
+      "en_US": [
+        "Mom: {STRVAR_1 3, 0, 0}!\n",
+        "Welcome home.\r",
+        "It sounds like you had quite the\n",
+        "experience out there.\r",
+        "Maybe you should take a quick\n",
+        "rest so you can relax.\r",
+        "...\n",
+        "..."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokemonLookingGreatBeforePokedex",
+      "en_US": [
+        "Mom: Oh, good! You and your\n",
+        "Pokémon are looking great.\r",
+        "Oh, yes, I heard from Professor\n",
+        "Rowan.\r",
+        "He said that a Pokémon’s energy is\n",
+        "measured in HP (Hit Points).\r",
+        "If your Pokémon lose their HP,\n",
+        "you can restore it at any\f",
+        "Pokémon Center.\r",
+        "If you’re going to travel far away,\n",
+        "the smart Trainer stocks up on\f",
+        "Potions at the Pokémon Mart.\r",
+        "Make me proud, honey!\n",
+        "Take care!"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokemonLookingGreatAfterPokedex",
+      "en_US": [
+        "Mom: Oh, good! You and your\n",
+        "Pokémon are looking great.\r",
+        "Oh yes, {STRVAR_1 3, 0, 0}, your Pokémon\n",
+        "will faint if it runs out of HP.\r",
+        "If your Pokémon loses its HP, come\n",
+        "home before it faints.\r",
+        "It will be healed to full health by\n",
+        "taking a rest.\r",
+        "Well, honey, make me proud!\n",
+        "Take care!"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterFirstRestorePokemon",
+      "en_US": [
+        "First, let’s restore your Pokémon\n",
+        "to full health."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterHealedToPerfectHealth",
+      "en_US": [
+        "Your Pokémon have been healed\n",
+        "to perfect health."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterGoodLuckTrainer",
+      "en_US": [
+        "Please visit a Pokémon Center when\n",
+        "your Pokémon’s HP goes down.\r",
+        "If you’re planning to travel any\n",
+        "distance, you should stock up on\f",
+        "Potions at a Pokémon Mart.\r",
+        "Good luck, Trainer!"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_HoneyTreeSweetScentNoHoney",
+      "en_US": "There is a sweet scent in the air..."
+    },
+    {
+      "id": "CommonStrings_Text_HoneyTreeSweetScent",
+      "en_US": "There is a sweet scent in the air...\r"
+    },
+    {
+      "id": "CommonStrings_Text_HoneyTreeSlatheredNoHoney",
+      "en_US": "The bark is slathered with Honey..."
+    },
+    {
+      "id": "CommonStrings_Text_HoneyTreeSlathered",
+      "en_US": "The bark is slathered with Honey...\r"
+    },
+    {
+      "id": "CommonStrings_Text_SlatherBarkWithHoney",
+      "en_US": "Slather the bark with Honey?"
+    },
+    {
+      "id": "CommonStrings_Text_BarkWasSlathered",
+      "en_US": "The bark was slathered with Honey."
+    },
+    {
+      "id": "CommonStrings_Text_NoMailInMailbox",
+      "en_US": "There’s no Mail in the Mailbox.\r"
+    },
+    {
+      "id": "CommonStrings_Text_00053",
+      "en_US": [
+        "The Mail’s content will be lost.\n",
+        "Take it back anyway?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_NotEvenANibble",
+      "en_US": "Not even a nibble..."
+    },
+    {
+      "id": "CommonStrings_Text_ThePokemonGotAway",
+      "en_US": "The Pokémon got away..."
+    },
+    {
+      "id": "CommonStrings_Text_ReeledItInTooQuickly",
+      "en_US": "Reeled it in too quickly..."
+    },
+    {
+      "id": "CommonStrings_Text_LandedAPokemon",
+      "en_US": "Landed a Pokémon!"
+    },
+    {
+      "id": "CommonStrings_Text_Dummy58",
+      "garbage": 39
+    },
+    {
+      "id": "CommonStrings_Text_Dummy59",
+      "garbage": 18
+    },
+    {
+      "id": "CommonStrings_Text_Dummy60",
+      "garbage": 17
+    },
+    {
+      "id": "CommonStrings_Text_Dummy61",
+      "garbage": 11
+    },
+    {
+      "id": "CommonStrings_Text_Dummy62",
+      "garbage": 76
+    },
+    {
+      "id": "CommonStrings_Text_Dummy63",
+      "garbage": 76
+    },
+    {
+      "id": "CommonStrings_Text_Dummy64",
+      "garbage": 92
+    },
+    {
+      "id": "CommonStrings_Text_Dummy65",
+      "garbage": 85
+    },
+    {
+      "id": "CommonStrings_Text_PokemonSurvivedThePoisoning",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} survived the poisoning.\n",
+        "The poison faded away!\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_VentThatExchangesAir",
+      "en_US": [
+        "It’s an air vent that exchanges\n",
+        "the underground tunnels’ air."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_GenderSymbolMale",
+      "en_US": "♂"
+    },
+    {
+      "id": "CommonStrings_Text_GenderSymbolFemale",
+      "en_US": "♀"
+    },
+    {
+      "id": "CommonStrings_Text_SweetScentNothingHere",
+      "en_US": "There appears to be nothing here..."
+    },
+    {
+      "id": "CommonStrings_Text_SweetScentFaded",
+      "en_US": [
+        "The sweet scent faded for some\n",
+        "reason..."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Dummy72",
+      "garbage": 34
+    },
+    {
+      "id": "CommonStrings_Text_RideYourBike",
+      "en_US": "Ride your Bike?"
+    },
+    {
+      "id": "CommonStrings_Text_GetOffYourBike",
+      "en_US": "Get off your Bike?"
+    },
+    {
+      "id": "CommonStrings_Text_Dummy75",
+      "garbage": 20
+    },
+    {
+      "id": "CommonStrings_Text_Oh",
+      "en_US": "Oh?"
+    },
+    {
+      "id": "CommonStrings_Text_00077",
+      "en_US": "{STRVAR_1 0, 0, 0} hatched from the Egg!"
+    },
+    {
+      "id": "CommonStrings_Text_00078",
+      "en_US": [
+        "Would you like to nickname the newly\n",
+        "hatched {STRVAR_1 0, 0, 0}?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_RepelsEffectWoreOff",
+      "en_US": "Repel’s effect wore off..."
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedTheUndergroundTrap",
+      "en_US": "Obtained the {STRVAR_1 8, 0, 0}!"
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedTheUndergroundSphere",
+      "en_US": "Obtained the {STRVAR_1 8, 0, 0} {STRVAR_1 51, 1, 0}!"
+    },
+    {
+      "id": "CommonStrings_Text_UndergroundOffLimits",
+      "en_US": [
+        "I’m very sorry.\r",
+        "We are working underground right now.\n",
+        "It’s off-limits to the public.\r",
+        "Please try later on."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchDigitalWatch",
+      "en_US": [
+        "The {COLOR 2}Digital Watch{COLOR 0} app displays\n",
+        "the current time.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchCalculator",
+      "en_US": [
+        "The {COLOR 2}Calculator{COLOR 0} app can handle\n",
+        "calculations up to ten digits.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchMemoPad",
+      "en_US": [
+        "The {COLOR 2}Memo Pad{COLOR 0} app can be used for\n",
+        "jotting down quick notes.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchPedometer",
+      "en_US": [
+        "The {COLOR 2}Pedometer{COLOR 0} app counts the number\n",
+        "of steps you’ve walked.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchPokemonList",
+      "en_US": [
+        "The {COLOR 2}Pokémon List{COLOR 0} app lets you\n",
+        "check on the status of your team.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchFriendshipChecker",
+      "en_US": [
+        "The {COLOR 2}Friendship Checker{COLOR 0} app identifies\n",
+        "the Pokémon that like you."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchDowsingMachine",
+      "en_US": [
+        "The {COLOR 2}Dowsing Machine{COLOR 0} app locates\n",
+        "unseeable items.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchBerrySearcher",
+      "en_US": [
+        "The {COLOR 2}Berry Searcher{COLOR 0} app indicates\n",
+        "the locations of ripe Berries."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchDayCareChecker",
+      "en_US": [
+        "The {COLOR 2}Day-Care Checker{COLOR 0} app shows\n",
+        "the Pokémon left with the Day Care."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchPokemonHistory",
+      "en_US": [
+        "The {COLOR 2}Pokémon History{COLOR 0} app shows\n",
+        "the most recently obtained Pokémon."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchCounter",
+      "en_US": [
+        "The {COLOR 2}Counter{COLOR 0} app can be used\n",
+        "to count up to 9,999."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchAnalogWatch",
+      "en_US": [
+        "The {COLOR 2}Analog Watch{COLOR 0} app displays\n",
+        "the current time."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchMarkingMap",
+      "en_US": [
+        "The {COLOR 2}Marking Map{COLOR 0} app allows the\n",
+        "placement of markers.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchLinkSearcher",
+      "en_US": [
+        "The {COLOR 2}Link Searcher{COLOR 0} app determines\n",
+        "the availability of wireless hot spots.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchCoinToss",
+      "en_US": [
+        "The {COLOR 2}Coin Toss{COLOR 0} app can be used\n",
+        "to make fair decisions."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchMoveTester",
+      "en_US": [
+        "The {COLOR 2}Move Tester{COLOR 0} app is used to check\n",
+        "how moves match up.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchCalendar",
+      "en_US": [
+        "The {COLOR 2}Calendar{COLOR 0} app is a monthly\n",
+        "calendar with date reminders."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchDotArtist",
+      "en_US": [
+        "The {COLOR 2}Dot Artist{COLOR 0} app gives players\n",
+        "free reign to their creativity."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchRoulette",
+      "en_US": [
+        "The {COLOR 2}Roulette{COLOR 0} app can be customized\n",
+        "to make an original roulette."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchTrainerCounter",
+      "en_US": [
+        "The {COLOR 2}Trainer Counter{COLOR 0} app tracks\n",
+        "the Pokémon Radar’s rankings.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchKitchenTimer",
+      "en_US": [
+        "The {COLOR 2}Kitchen Timer{COLOR 0} app is a 99-minute\n",
+        "timer."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchColorChanger",
+      "en_US": [
+        "The {COLOR 2}Color Changer{COLOR 0} app can change\n",
+        "the Pokétch display color."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchMatchupChecker",
+      "en_US": [
+        "The {COLOR 2}Matchup Checker{COLOR 0} app shows the\n",
+        "affinity of Pokémon to each other.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchStopwatch",
+      "en_US": [
+        "The {COLOR 2}Stopwatch{COLOR 0} app keeps precise\n",
+        "time.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedPoketchAlarmClock",
+      "en_US": [
+        "The {COLOR 2}Alarm Clock{COLOR 0} app operates\n",
+        "on a 24-hour system.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ObtainedUndergroundItem",
+      "en_US": "Obtained {STRVAR_1 25, 0, 0}."
+    },
+    {
+      "id": "CommonStrings_Text_ItemWasSentToUndergroundPC",
+      "en_US": [
+        "The {STRVAR_1 25, 0, 0} was sent to\n",
+        "the underground PC."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Engraving1PlateObtained",
+      "en_US": [
+        "There is text engraved in the back\n",
+        "of the obtained Plate...\r",
+        "“When the universe was created,\n",
+        "its shards became this Plate.”\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Engraving2PlatesObtained",
+      "en_US": [
+        "There is text engraved in the back\n",
+        "of the obtained Plate...\r",
+        "“The power of defeated giants\n",
+        "infuses this Plate.”\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Engraving3PlatesObtained",
+      "en_US": [
+        "There is text engraved in the back\n",
+        "of the obtained Plate...\r",
+        "“Two beings of time and space set\n",
+        "free from the Original One.”\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Engraving4PlatesObtained",
+      "en_US": [
+        "There is text engraved in the back\n",
+        "of the obtained Plate...\r",
+        "“Three beings were born to bind\n",
+        "time and space.”\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Engraving5PlatesObtained",
+      "en_US": [
+        "There is text engraved in the back\n",
+        "of the obtained Plate...\r",
+        "“Two make matter, and three make\n",
+        "spirit, shaping the world.”\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Engraving6PlatesObtained",
+      "en_US": [
+        "There is text engraved in the back\n",
+        "of the obtained Plate...\r",
+        "“The Original One breathed alone\n",
+        "before the universe came.”\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Engraving7PlatesObtained",
+      "en_US": [
+        "There is text engraved in the back\n",
+        "of the obtained Plate...\r",
+        "“The powers of Plates are shared\n",
+        "among Pokémon.”\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_Engraving8PlatesObtained",
+      "en_US": [
+        "There is text engraved in the back\n",
+        "of the obtained Plate...\r",
+        "“The rightful bearer of a Plate\n",
+        "draws from the Plate it holds.”\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_NoSeals",
+      "en_US": [
+        "Ball Capsules can’t be used because\n",
+        "you don’t have any Seals.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_00119",
+      "en_US": [
+        "Saving the game again...\n",
+        "Don’t turn off the power."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterGreeting_Morning",
+      "en_US": [
+        "Good morning!\n",
+        "Welcome to the Pokémon Center.\r",
+        "We restore your tired Pokémon\n",
+        "to full health.\r",
+        "Would you like to rest your Pokémon?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PokecenterGreeting_Night",
+      "en_US": [
+        "Hello, and welcome to\n",
+        "the Pokémon Center.\r",
+        "We restore your tired Pokémon\n",
+        "to full health.\r",
+        "Would you like to rest your Pokémon?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_AskBlowIntoAzureFlute",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0}’s Azure Flute is making\n",
+        "a sound!\r",
+        "Would you like to blow into the\n",
+        "Azure Flute?"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PlayerBlewAzureFlute",
+      "en_US": "{STRVAR_1 3, 0, 0} blew the Azure Flute.\r"
+    },
+    {
+      "id": "CommonStrings_Text_GlowingStairwayAppeared",
+      "en_US": "A glowing stairway appeared!"
+    },
+    {
+      "id": "CommonStrings_Text_MeaninglessUsingAzureFlute",
+      "en_US": [
+        "The Azure Flute echoed hollowly...\r",
+        "It appears to be meaningless using\n",
+        "the Azure Flute here..."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PutItemInPocket_ArrowPrompt",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} put the {STRVAR_1 8, 1, 0}\n",
+        "in the {COLOR 2}{STRVAR_1 27, 2, 0}{COLOR 0} Pocket.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_PutItemInFashionCase_ArrowPrompt",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} put away the\n",
+        "{STRVAR_1 31, 1, 0} in the Fashion Case.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_ItemWasSentToUndergroundPC_ArrowPrompt",
+      "en_US": [
+        "The {STRVAR_1 25, 0, 0} was sent to\n",
+        "the underground PC.\r"
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_CheckShardsNeededForMove",
+      "en_US": [
+        "Check the move you want taught to\n",
+        "see what Shards are needed."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_GriseousOrbCouldNotBeRemoved",
+      "en_US": [
+        "Your Bag is full.\r",
+        "The Griseous Orb could not be removed,\n",
+        "so you cannot enter."
+      ]
+    },
+    {
+      "id": "CommonStrings_Text_HallOfFameDataCorrupted",
+      "en_US": [
+        "Your Hall of Fame data is corrupted.\r",
+        "It will be fixed if you enter the\n",
+        "Hall of Fame again.\r"
+      ]
+    }
+  ]
+}

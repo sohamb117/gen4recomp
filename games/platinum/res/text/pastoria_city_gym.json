@@ -1,0 +1,114 @@
+{
+  "key": 63855,
+  "messages": [
+    {
+      "id": "PastoriaGym_Text_WakeIntro",
+      "en_US": [
+        "Welcome!\n",
+        "I don’t get challenged very often!\r",
+        "The glory you are now beholding is\n",
+        "the Pastoria Gym Leader!\r",
+        "That’s right, I’m Crasher Wake!\r",
+        "My Pokémon were toughened up by\n",
+        "stormy white waters!\r",
+        "They’ll take everything you can throw\n",
+        "at them and then pull you under!\r",
+        "Victory will be ours!\n",
+        "Come on, let’s get it done!\r"
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_BeatWake",
+      "en_US": [
+        "It seems the undertow pulled me\n",
+        "under...\r",
+        "But I had a great time battling\n",
+        "with you!\r",
+        "You’ve earned this!\r"
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_WakeReveiveFenBadge",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} received\n",
+        "the Fen Badge from Wake!"
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_WakeExplainFenBadge",
+      "en_US": [
+        "You need that Fen Badge to use the\n",
+        "hidden move Surf outside of battle.\r",
+        "This is a special reward from me in\n",
+        "recognition of your team’s power.\r"
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_WakeExplainTM55",
+      "en_US": [
+        "That {STRVAR_1 8, 0, 0} contains the\n",
+        "move {STRVAR_1 6, 1, 0}.\r",
+        "It inflicts double the damage on\n",
+        "targets with less than half their\f",
+        "HP left.\r",
+        "Use it to end battles decisively!"
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_WakeAfterbadge",
+      "en_US": [
+        "The styles of battling and winning\n",
+        "are as widely varied as Trainers are.\r",
+        "Do you want to know how I battle?\n",
+        "I battle so I can say I had fun at\f",
+        "the end, whether I win or lose!"
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_GymGuideBeforebadge",
+      "en_US": [
+        "The Gym Leader Wake... Uh, I mean\n",
+        "Crasher Wake, is a master of\f",
+        "Water-type Pokémon.\r",
+        "I’d say you’ve got guts if you try\n",
+        "to face down Water types with Fire-\f",
+        "or Ground-type Pokémon!\r",
+        "But that part I’ll leave up to you!\n",
+        "Go and have some good battles!"
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_GymGuideAfterbadge",
+      "en_US": [
+        "Oh! {STRVAR_1 3, 0, 0}!\n",
+        "You’ve beaten the Gym Leader!\r",
+        "So, how was it?\r",
+        "Did you enjoy your battle against\n",
+        "Wake... I mean Crasher Wake?\r",
+        "Sure, winning is important, but\n",
+        "don’t forget to have fun, too!\r",
+        "I think Wake... I mean Crasher Wake,\n",
+        "showed you what I mean by fun."
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_GymStatueBeforeBadge",
+      "en_US": [
+        "Pastoria City Pokémon Gym\n",
+        "Leader: Crasher Wake\r",
+        "Certified Trainers:\n",
+        "{STRVAR_1 3, 0, 0}"
+      ]
+    },
+    {
+      "id": "PastoriaGym_Text_GymStatueAfterBadge",
+      "en_US": [
+        "Pastoria City Pokémon Gym\n",
+        "Leader: Crasher Wake\r",
+        "Certified Trainers:\n",
+        "{STRVAR_1 3, 0, 0}\f",
+        "{STRVAR_1 3, 1, 0}"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+    "base_stats": {
+        "hp": 45,
+        "attack": 63,
+        "defense": 37,
+        "speed": 95,
+        "special_attack": 65,
+        "special_defense": 55
+    },
+    "types": [ "TYPE_ELECTRIC", "TYPE_ELECTRIC" ],
+    "catch_rate": 45,
+    "base_exp_reward": 106,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 1,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_ELECTIRIZER"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_25",
+    "hatch_cycles": 25,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_UNDISCOVERED", "EGG_GROUP_UNDISCOVERED" ],
+    "abilities": [ "ABILITY_STATIC", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": true,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_QUICK_ATTACK" ],
+            [ 1, "MOVE_LEER" ],
+            [ 7, "MOVE_THUNDER_SHOCK" ],
+            [ 10, "MOVE_LOW_KICK" ],
+            [ 16, "MOVE_SWIFT" ],
+            [ 19, "MOVE_SHOCK_WAVE" ],
+            [ 25, "MOVE_LIGHT_SCREEN" ],
+            [ 28, "MOVE_THUNDER_PUNCH" ],
+            [ 34, "MOVE_DISCHARGE" ],
+            [ 37, "MOVE_THUNDERBOLT" ],
+            [ 43, "MOVE_SCREECH" ],
+            [ 46, "MOVE_THUNDER" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM06",
+            "TM10",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM24",
+            "TM25",
+            "TM27",
+            "TM29",
+            "TM31",
+            "TM32",
+            "TM34",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM56",
+            "TM57",
+            "TM58",
+            "TM70",
+            "TM73",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_ICE_PUNCH",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_MAGNET_RISE",
+            "MOVE_SWIFT",
+            "MOVE_UPROAR"
+        ],
+        "egg_moves": [
+            "MOVE_KARATE_CHOP",
+            "MOVE_BARRIER",
+            "MOVE_ROLLING_KICK",
+            "MOVE_MEDITATE",
+            "MOVE_CROSS_CHOP",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_ICE_PUNCH",
+            "MOVE_DYNAMIC_PUNCH"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            30,
+            "SPECIES_ELECTABUZZ"
+        ]
+    ],
+    "offspring": "SPECIES_ELEKID",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 51.8,
+        "body_shape": "SHAPE_BIPEDAL_TAILLESS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 352,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 352,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 23,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 23,
+        "en": {
+            "name": "ELEKID",
+            "category": "Electric Pokémon",
+            "entry_text": [
+                "A weak electric current flows\n",
+                "between its horns. Sticking a hand\n",
+                "there shocks the unwary."
+            ]
+        },
+        "fr": {
+            "name": "ELEKID",
+            "category": "Pokémon Electrique",
+            "entry_text": [
+                "Il génère de l’électricité en\n",
+                "battant des bras, mais il n’a aucun\n",
+                "moyen de stocker cette énergie."
+            ]
+        },
+        "de": {
+            "name": "ELEKID",
+            "category": "Elektro",
+            "entry_text": [
+                "Es bewegt seine Arme und generiert\n",
+                "damit Elektrizität. Diese kann es\n",
+                "aber nicht speichern."
+            ]
+        },
+        "it": {
+            "name": "ELEKID",
+            "category": "Pokémon Elettrico",
+            "entry_text": [
+                "Genera elettricità roteando le\n",
+                "braccia. Tuttavia, non riesce ad\n",
+                "immagazzinare l’energia creata."
+            ]
+        },
+        "es": {
+            "name": "ELEKID",
+            "category": "Pokémon Eléctrico",
+            "entry_text": [
+                "Genera electricidad girando los\n",
+                "brazos. No obstante, es incapaz\n",
+                "de almacenar la energía creada."
+            ]
+        },
+        "jp": {
+            "name": "エレキッド",
+            "category": "でんきポケモン",
+            "entry_text": [
+                "りょううでを　ぐるぐる　ふりまわして\n",
+                "でんきを　はっせいさせる。しかし\n",
+                "つくった　でんきは　ためておけない。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 1799
+    }
+}

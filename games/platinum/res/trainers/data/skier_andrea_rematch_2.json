@@ -1,0 +1,33 @@
+{
+    "name": "Andrea",
+    "class": "TRAINER_CLASS_SKIER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ABOMASNOW",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Why would you wander around here?\n",
+                "You must really like it here.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "The winds of victory shifted...\n"
+        }
+    ]
+}

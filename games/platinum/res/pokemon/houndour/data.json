@@ -1,0 +1,200 @@
+{
+    "base_stats": {
+        "hp": 45,
+        "attack": 60,
+        "defense": 30,
+        "speed": 65,
+        "special_attack": 80,
+        "special_defense": 50
+    },
+    "types": [ "TYPE_DARK", "TYPE_FIRE" ],
+    "catch_rate": 120,
+    "base_exp_reward": 114,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 1,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 35,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_EARLY_BIRD", "ABILITY_FLASH_FIRE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLACK",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_LEER" ],
+            [ 1, "MOVE_EMBER" ],
+            [ 4, "MOVE_HOWL" ],
+            [ 9, "MOVE_SMOG" ],
+            [ 14, "MOVE_ROAR" ],
+            [ 17, "MOVE_BITE" ],
+            [ 22, "MOVE_ODOR_SLEUTH" ],
+            [ 27, "MOVE_BEAT_UP" ],
+            [ 30, "MOVE_FIRE_FANG" ],
+            [ 35, "MOVE_FAINT_ATTACK" ],
+            [ 40, "MOVE_EMBARGO" ],
+            [ 43, "MOVE_FLAMETHROWER" ],
+            [ 48, "MOVE_CRUNCH" ],
+            [ 53, "MOVE_NASTY_PLOT" ]
+        ],
+        "by_tm": [
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM17",
+            "TM21",
+            "TM22",
+            "TM23",
+            "TM27",
+            "TM30",
+            "TM32",
+            "TM35",
+            "TM36",
+            "TM38",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM49",
+            "TM50",
+            "TM58",
+            "TM61",
+            "TM63",
+            "TM66",
+            "TM78",
+            "TM79",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM87",
+            "TM90",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_SWIFT",
+            "MOVE_UPROAR"
+        ],
+        "egg_moves": [
+            "MOVE_FIRE_SPIN",
+            "MOVE_RAGE",
+            "MOVE_PURSUIT",
+            "MOVE_COUNTER",
+            "MOVE_SPITE",
+            "MOVE_REVERSAL",
+            "MOVE_BEAT_UP",
+            "MOVE_WILL_O_WISP",
+            "MOVE_FIRE_FANG",
+            "MOVE_THUNDER_FANG",
+            "MOVE_NASTY_PLOT",
+            "MOVE_PUNISHMENT"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            24,
+            "SPECIES_HOUNDOOM"
+        ]
+    ],
+    "offspring": "SPECIES_HOUNDOUR",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SCARY"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 23.8,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 337,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 337,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 23,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 23,
+        "en": {
+            "name": "HOUNDOUR",
+            "category": "Dark Pokémon",
+            "entry_text": [
+                "It is smart enough to hunt in\n",
+                "packs. It uses a variety of cries\n",
+                "for communicating with others."
+            ]
+        },
+        "fr": {
+            "name": "MALOSSE",
+            "category": "Pokémon Sombre",
+            "entry_text": [
+                "Il exprime ses émotions en modulant\n",
+                "son cri. Ce Pokémon rusé chasse\n",
+                "en meute pour abattre ses proies."
+            ]
+        },
+        "de": {
+            "name": "HUNDUSTER",
+            "category": "Hades",
+            "entry_text": [
+                "Durch unterschiedliche Schreie\n",
+                "drückt es seine Gefühle aus. Diese\n",
+                "PKMN jagen im Verbund nach Beute."
+            ]
+        },
+        "it": {
+            "name": "HOUNDOUR",
+            "category": "Pokémon Buio",
+            "entry_text": [
+                "Trasmette i suoi stati d’animo con\n",
+                "vari versi. Lavora in gruppo per\n",
+                "catturare le prede con l’astuzia."
+            ]
+        },
+        "es": {
+            "name": "HOUNDOUR",
+            "category": "Pokémon Siniestro",
+            "entry_text": [
+                "Se comunica mediante gritos y\n",
+                "colabora en manada para atacar\n",
+                "a sus presas."
+            ]
+        },
+        "jp": {
+            "name": "デルビル",
+            "category": "ダ－クポケモン",
+            "entry_text": [
+                "なきごえを　つかいわけて　きもちを\n",
+                "つたえる。みごとな　れんけいプレ－で\n",
+                "えものを　おいこみ　しとめる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 528
+    }
+}

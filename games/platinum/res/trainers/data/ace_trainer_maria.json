@@ -1,0 +1,87 @@
+{
+    "name": "Maria",
+    "class": "TRAINER_CLASS_ACE_TRAINER_SNOW_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLDUCK",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": [
+                "MOVE_WATER_PULSE",
+                "MOVE_CONFUSION",
+                "MOVE_DISABLE",
+                "MOVE_SCREECH"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_RAPIDASH",
+            "form": 0,
+            "level": 39,
+            "item": null,
+            "moves": [
+                "MOVE_FIRE_BLAST",
+                "MOVE_TAKE_DOWN",
+                "MOVE_FURY_ATTACK",
+                "MOVE_WILL_O_WISP"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SUDOWOODO",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": [
+                "MOVE_ROCK_SLIDE",
+                "MOVE_LOW_KICK",
+                "MOVE_FLAIL",
+                "MOVE_ENDURE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "To be ready to answer any call!\n",
+                "To be ready to accept any challenge!\r",
+                "That is the way of a Trainer!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh, yeah?\n",
+                "Eat snowball, punk!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "You can make all the preparations in\n",
+                "the world, but if it doesn’t work, it\f",
+                "doesn’t work.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I got everything ready so we could\n",
+                "have a rematch whenever you come.\r"
+            ]
+        }
+    ]
+}

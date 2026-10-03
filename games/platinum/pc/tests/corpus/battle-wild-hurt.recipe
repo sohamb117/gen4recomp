@@ -1,0 +1,21 @@
+# A wild fight the lead wins with damage taken, so the post-battle HP in the
+# save is a number the battle produced rather than the one it started with.
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20010
+money 28000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+party SPECIES_LUXRAY 30 ITEM_NONE
+# The lead's first move is set explicitly. A battle station is driven
+# with A alone, which picks move slot 0 every turn, so a lead whose
+# natural slot 0 is a status move never ends its fight, measured on a
+# level 22 Monferno, which drew a level 5 Starly out past 40,000 frames.
+party-move 0 0 MOVE_THUNDERBOLT
+map MAP_HEADER_SUNYSHORE_CITY 0x35C 0x311 FACE_DOWN

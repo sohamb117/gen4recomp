@@ -1,0 +1,48 @@
+{
+    "name": "Lorenzo",
+    "class": "TRAINER_CLASS_HIKER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ONIX",
+            "form": 0,
+            "level": 22,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Wandering around, I got hungry, so\n",
+                "I ate some wild mushrooms...\r",
+                "They gave me gas, and now I can’t\n",
+                "stop burping! Bluurrf!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Bleff! Hurk!\n",
+                "I think...I’m getting better...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I hear there’s a Pokémon that has\n",
+                "mushrooms growing on its back.\r",
+                "Not around here, somewhere far away.\n",
+                "I wonder if they taste any good?"
+            ]
+        }
+    ]
+}

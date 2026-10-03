@@ -1,0 +1,25 @@
+{
+  "key": 2430,
+  "messages": [
+    {
+      "id": "Route204South_Text_BouldersBlockingInsideCavern",
+      "en_US": [
+        "There are boulders blocking the way\n",
+        "inside the cavern...\r",
+        "I think a Pokémon’s hidden move will be\n",
+        "able to smash those boulders, though."
+      ]
+    },
+    {
+      "id": "Route204South_Text_SignJubilifeCity",
+      "en_US": [
+        "Rt. 204\n",
+        "Jubilife City"
+      ]
+    },
+    {
+      "id": "Route204South_Text_SignRavagedPath",
+      "en_US": "Ravaged Path"
+    }
+  ]
+}

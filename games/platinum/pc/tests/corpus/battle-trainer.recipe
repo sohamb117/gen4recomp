@@ -1,0 +1,14 @@
+# A trainer battle: Youngster Tristan, the game's own first trainer.
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20002
+money 3000
+badge BADGE_ID_COAL
+party SPECIES_MONFERNO 22 ITEM_NONE
+# The lead's first move is set explicitly. A battle station is driven
+# with A alone, which picks move slot 0 every turn, so a lead whose
+# natural slot 0 is a status move never ends its fight, measured on a
+# level 22 Monferno, which drew a level 5 Starly out past 40,000 frames.
+party-move 0 0 MOVE_FLAMETHROWER
+map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN

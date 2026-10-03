@@ -1,0 +1,54 @@
+{
+    "name": "Jared",
+    "class": "TRAINER_CLASS_TUBER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GASTRODON",
+            "form": 1,
+            "level": 51,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GASTRODON",
+            "form": 1,
+            "level": 51,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GASTRODON",
+            "form": 0,
+            "level": 51,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 8
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "You can come back all you like, but\n",
+                "you can’t have my inflatable tube!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I couldn’t move very well because\n",
+                "my inflatable tube got in the way!\n"
+            ]
+        }
+    ]
+}

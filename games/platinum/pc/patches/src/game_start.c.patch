@@ -1,0 +1,17 @@
+--- a/src/game_start.c
++++ b/src/game_start.c
+@@ -185,3 +185,14 @@
+     TrainerInfo_SetMoney(SaveData_GetTrainerInfo(saveData), 3000);
+     SystemFlag_SetBagAcquired(SaveData_GetVarsFlags(saveData));
+ }
++
++/* pc port: the save lab mints a station save through the game's own new-game
++ * path rather than by writing save bytes from outside. StartNewSave is static
++ * and its only caller is the Rowan intro application, which is tens of
++ * thousands of frames of cutscene and naming; this wrapper is the whole of
++ * what the lab needs from this file, and it deliberately calls the real thing
++ * instead of restating what it does. */
++void pc_lab_start_new_save(SaveData *saveData)
++{
++    StartNewSave(0, saveData);
++}

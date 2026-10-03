@@ -1,0 +1,49 @@
+{
+    "name": "Autumn",
+    "class": "TRAINER_CLASS_BIRD_KEEPER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MURKROW",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_XATU",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "The sharp vision of my bird Pokémon\n",
+                "will see through your weaknesses!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Don’t you have an Achilles’ heel?"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I want to become stronger, but only\n",
+                "with my favorite Pokémon.\n"
+            ]
+        }
+    ]
+}

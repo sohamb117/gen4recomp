@@ -1,0 +1,26 @@
+--- a/src/overlay005/ov5_021ECC20.c
++++ b/src/overlay005/ov5_021ECC20.c
+@@ -11,9 +11,12 @@
+ #include "overlay005/struct_ov5_021ECD10.h"
+ #include "overlay005/struct_ov5_021ED0A4.h"
+ 
++#include "generated/object_events_gfx.h"
++
+ #include "heap.h"
+ #include "map_object.h"
+ #include "narc.h"
++#include "pc_modfs.h"
+ 
+ static void ov5_021ECCA4(MapObjectManager *param0);
+ static void ov5_021ECCBC(MapObjectManager *param0);
+@@ -96,6 +99,10 @@
+         v0++;
+     } while (v0->unk_00 != 0xffff);
+ 
++    if (pc_modfs_billboard_nsbtx(param0) >= 0) {
++        return ov5_021ECD10(OBJ_EVENT_GFX_YOUNGSTER);
++    }
++
+     GF_ASSERT(FALSE);
+     return NULL;
+ }

@@ -1,0 +1,197 @@
+{
+    "base_stats": {
+        "hp": 60,
+        "attack": 40,
+        "defense": 80,
+        "speed": 40,
+        "special_attack": 60,
+        "special_defense": 45
+    },
+    "types": [ "TYPE_GRASS", "TYPE_PSYCHIC" ],
+    "catch_rate": 90,
+    "base_exp_reward": 98,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_GRASS", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_CHLOROPHYLL", "ABILITY_NONE" ],
+    "safari_flee_rate": 120,
+    "body_color": "MON_COLOR_PINK",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_BARRAGE" ],
+            [ 1, "MOVE_UPROAR" ],
+            [ 1, "MOVE_HYPNOSIS" ],
+            [ 7, "MOVE_REFLECT" ],
+            [ 11, "MOVE_LEECH_SEED" ],
+            [ 17, "MOVE_BULLET_SEED" ],
+            [ 19, "MOVE_STUN_SPORE" ],
+            [ 21, "MOVE_POISON_POWDER" ],
+            [ 23, "MOVE_SLEEP_POWDER" ],
+            [ 27, "MOVE_CONFUSION" ],
+            [ 33, "MOVE_WORRY_SEED" ],
+            [ 37, "MOVE_NATURAL_GIFT" ],
+            [ 43, "MOVE_SOLAR_BEAM" ],
+            [ 47, "MOVE_PSYCHIC" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM16",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM29",
+            "TM32",
+            "TM33",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM48",
+            "TM53",
+            "TM58",
+            "TM64",
+            "TM70",
+            "TM75",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM86",
+            "TM87",
+            "TM90",
+            "TM92",
+            "HM04"
+        ],
+        "by_tutor": [
+            "MOVE_ROLLOUT",
+            "MOVE_SNORE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_SYNTHESIS",
+            "MOVE_SEED_BOMB",
+            "MOVE_UPROAR"
+        ],
+        "egg_moves": [
+            "MOVE_SYNTHESIS",
+            "MOVE_MOONLIGHT",
+            "MOVE_REFLECT",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_PSYCH_UP",
+            "MOVE_INGRAIN",
+            "MOVE_CURSE",
+            "MOVE_NATURE_POWER",
+            "MOVE_LUCKY_CHANT",
+            "MOVE_LEAF_STORM"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_USE_ITEM",
+            "ITEM_LEAF_STONE",
+            "SPECIES_EXEGGUTOR"
+        ]
+    ],
+    "offspring": "SPECIES_EXEGGCUTE",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 16,
+        "weight_pounds": 5.5,
+        "body_shape": "SHAPE_MULTI_BODY",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 377,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 377,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 28,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 28,
+        "en": {
+            "name": "EXEGGCUTE",
+            "category": "Egg Pokémon",
+            "entry_text": [
+                "Its six eggs converse using\n",
+                "telepathy. They can quickly gather\n",
+                "if they become separated."
+            ]
+        },
+        "fr": {
+            "name": "NOEUNOEUF",
+            "category": "Pokémon Oeuf",
+            "entry_text": [
+                "Ces six œufs communiquent par\n",
+                "télépathie. Ils peuvent se réunir\n",
+                "rapidement si on les sépare."
+            ]
+        },
+        "de": {
+            "name": "OWEI",
+            "category": "Ei",
+            "entry_text": [
+                "Die sechs Eier kommunizieren\n",
+                "telepathisch. Werden sie getrennt,\n",
+                "finden sie sich schnell wieder."
+            ]
+        },
+        "it": {
+            "name": "EXEGGCUTE",
+            "category": "Pokémon Uovo",
+            "entry_text": [
+                "Queste sei uova comunicano per\n",
+                "telepatia. Si riuniscono subito\n",
+                "anche se vengono divise."
+            ]
+        },
+        "es": {
+            "name": "EXEGGCUTE",
+            "category": "Pokémon Huevo",
+            "entry_text": [
+                "Estos seis huevos se comunican por\n",
+                "telepatía. Si se separan se pueden\n",
+                "reunir rápidamente."
+            ]
+        },
+        "jp": {
+            "name": "タマタマ",
+            "category": "たまごポケモン",
+            "entry_text": [
+                "テレパシ－で　かいわをしているため\n",
+                "タマタマを　ひきはなそうとしても\n",
+                "すぐに　あつまって　６ぴきになる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 2561
+    }
+}

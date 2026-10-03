@@ -1,0 +1,58 @@
+{
+    "name": "Rafael",
+    "class": "TRAINER_CLASS_BLACK_BELT",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CROAGUNK",
+            "form": 0,
+            "level": 26,
+            "item": null,
+            "moves": [
+                "MOVE_SWAGGER",
+                "MOVE_REVENGE",
+                "MOVE_FAINT_ATTACK"
+            ],
+            "iv_scale": 40,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 26,
+            "item": null,
+            "moves": [
+                "MOVE_KARATE_CHOP",
+                "MOVE_FORESIGHT"
+            ],
+            "iv_scale": 40,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "We’re the Karate Quads!\r",
+                "I will strike a blow for hope with my\n",
+                "fist! Hiyah, hoooooooooooooope!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "We came up short, but not by much.\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’ll have to redo my training, though.\n",
+                "Maylene’s gonna trample me again...\n"
+            ]
+        }
+    ]
+}

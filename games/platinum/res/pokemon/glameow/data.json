@@ -1,0 +1,194 @@
+{
+    "base_stats": {
+        "hp": 49,
+        "attack": 55,
+        "defense": 42,
+        "speed": 85,
+        "special_attack": 42,
+        "special_defense": 37
+    },
+    "types": [ "TYPE_NORMAL", "TYPE_NORMAL" ],
+    "catch_rate": 190,
+    "base_exp_reward": 71,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 1,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_CHERI_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_75",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_FAST",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_LIMBER", "ABILITY_OWN_TEMPO" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GRAY",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_FAKE_OUT" ],
+            [ 5, "MOVE_SCRATCH" ],
+            [ 8, "MOVE_GROWL" ],
+            [ 13, "MOVE_HYPNOSIS" ],
+            [ 17, "MOVE_FAINT_ATTACK" ],
+            [ 20, "MOVE_FURY_SWIPES" ],
+            [ 25, "MOVE_CHARM" ],
+            [ 29, "MOVE_ASSIST" ],
+            [ 32, "MOVE_CAPTIVATE" ],
+            [ 37, "MOVE_SLASH" ],
+            [ 41, "MOVE_SUCKER_PUNCH" ],
+            [ 45, "MOVE_ATTRACT" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM27",
+            "TM28",
+            "TM30",
+            "TM32",
+            "TM34",
+            "TM40",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM49",
+            "TM58",
+            "TM65",
+            "TM66",
+            "TM70",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM87",
+            "TM89",
+            "TM90",
+            "HM01"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_SNORE",
+            "MOVE_LAST_RESORT",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_BITE",
+            "MOVE_TAIL_WHIP",
+            "MOVE_QUICK_ATTACK",
+            "MOVE_SAND_ATTACK",
+            "MOVE_FAKE_TEARS",
+            "MOVE_ASSURANCE"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            38,
+            "SPECIES_PURUGLY"
+        ]
+    ],
+    "offspring": "SPECIES_GLAMEOW",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 20,
+        "weight_pounds": 8.6,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 512,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 512,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 24,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 24,
+        "en": {
+            "name": "GLAMEOW",
+            "category": "Catty Pokémon",
+            "entry_text": [
+                "It hides its spiteful tendency of\n",
+                "hooking its claws into the nose of\n",
+                "its Trainer if it isn’t fed."
+            ]
+        },
+        "fr": {
+            "name": "CHAGLAM",
+            "category": "Pokémon Chafouin",
+            "entry_text": [
+                "Il griffe quand il est en colère et\n",
+                "ronronne quand il est heureux. \n",
+                "Certains aiment ce côté lunatique."
+            ]
+        },
+        "de": {
+            "name": "CHARMIAN",
+            "category": "Fies",
+            "entry_text": [
+                "Es schlägt mit Krallen zu oder\n",
+                "schnurrt, je nachdem, ob es gerade\n",
+                "wütend oder zutraulich ist."
+            ]
+        },
+        "it": {
+            "name": "GLAMEOW",
+            "category": "Pokémon Felide",
+            "entry_text": [
+                "Se disturbato, tira fuori gli arti-\n",
+                "gli; se soddisfatto, fa le fusa. La\n",
+                "sua incostanza piace a molti."
+            ]
+        },
+        "es": {
+            "name": "GLAMEOW",
+            "category": "Pokémon Gastuto",
+            "entry_text": [
+                "Araña cuando está enfadado y\n",
+                "ronronea cuando está cariñoso.\n",
+                "Su imprevisibilidad es famosa."
+            ]
+        },
+        "jp": {
+            "name": "ニャルマ－",
+            "category": "ねこかぶりポケモン",
+            "entry_text": [
+                "きにいらないと　ツメを　たてるが\n",
+                "たまに　のどを　ならして　あまえる\n",
+                "せいかくが　いちぶに　だいにんきだ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 4102
+    }
+}

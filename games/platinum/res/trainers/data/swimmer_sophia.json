@@ -1,0 +1,54 @@
+{
+    "name": "Sophia",
+    "class": "TRAINER_CLASS_SWIMMER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_DELIBIRD",
+            "form": 0,
+            "level": 53,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MANTINE",
+            "form": 0,
+            "level": 53,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": "Are your Pokémon growing properly?\r"
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Maybe too grown up!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’ve grown with my Pokémon, too.\n",
+                "My swimsuit’s getting a little tight...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Did your Pokémon grow any more?\r",
+                "My Pokémon?\n",
+                "Mine are doing awesome!\r"
+            ]
+        }
+    ]
+}

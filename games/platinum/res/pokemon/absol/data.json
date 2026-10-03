@@ -1,0 +1,223 @@
+{
+    "base_stats": {
+        "hp": 65,
+        "attack": 130,
+        "defense": 60,
+        "speed": 75,
+        "special_attack": 75,
+        "special_defense": 60
+    },
+    "types": [ "TYPE_DARK", "TYPE_DARK" ],
+    "catch_rate": 30,
+    "base_exp_reward": 174,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 2,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 25,
+    "base_friendship": 35,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_PRESSURE", "ABILITY_SUPER_LUCK" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_WHITE",
+    "flip_sprite": true,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_SCRATCH" ],
+            [ 1, "MOVE_FEINT" ],
+            [ 4, "MOVE_LEER" ],
+            [ 9, "MOVE_TAUNT" ],
+            [ 12, "MOVE_QUICK_ATTACK" ],
+            [ 17, "MOVE_RAZOR_WIND" ],
+            [ 20, "MOVE_PURSUIT" ],
+            [ 25, "MOVE_SWORDS_DANCE" ],
+            [ 28, "MOVE_BITE" ],
+            [ 33, "MOVE_DOUBLE_TEAM" ],
+            [ 36, "MOVE_SLASH" ],
+            [ 41, "MOVE_FUTURE_SIGHT" ],
+            [ 44, "MOVE_SUCKER_PUNCH" ],
+            [ 49, "MOVE_DETECT" ],
+            [ 52, "MOVE_NIGHT_SLASH" ],
+            [ 57, "MOVE_ME_FIRST" ],
+            [ 60, "MOVE_PSYCHO_CUT" ],
+            [ 65, "MOVE_PERISH_SONG" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM04",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM27",
+            "TM30",
+            "TM32",
+            "TM34",
+            "TM35",
+            "TM37",
+            "TM38",
+            "TM39",
+            "TM40",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM49",
+            "TM54",
+            "TM57",
+            "TM58",
+            "TM61",
+            "TM65",
+            "TM66",
+            "TM68",
+            "TM70",
+            "TM71",
+            "TM73",
+            "TM75",
+            "TM77",
+            "TM78",
+            "TM79",
+            "TM80",
+            "TM81",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_ICY_WIND",
+            "MOVE_SUPERPOWER",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_BOUNCE",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_BATON_PASS",
+            "MOVE_FAINT_ATTACK",
+            "MOVE_DOUBLE_EDGE",
+            "MOVE_MAGIC_COAT",
+            "MOVE_CURSE",
+            "MOVE_SUBSTITUTE",
+            "MOVE_MEAN_LOOK",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_PUNISHMENT",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_ASSURANCE",
+            "MOVE_ME_FIRST"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_ABSOL",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SCARY"
+    },
+    "pokedex_data": {
+        "height_inches": 47,
+        "weight_pounds": 103.6,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 300,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 300,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 14,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 14,
+        "en": {
+            "name": "ABSOL",
+            "category": "Disaster Pokémon",
+            "entry_text": [
+                "Rumored to sense disasters with its\n",
+                "horn, it became a target. It fled\n",
+                "deep into the mountains."
+            ]
+        },
+        "fr": {
+            "name": "ABSOL",
+            "category": "Pokémon Désastre",
+            "entry_text": [
+                "Il pressent les catastrophes et\n",
+                "n’apparaît aux gens que pour les\n",
+                "prévenir d’un danger imminent."
+            ]
+        },
+        "de": {
+            "name": "ABSOL",
+            "category": "Desaster",
+            "entry_text": [
+                "Es spürt drohende Katastrophen\n",
+                "und erscheint nur dann, wenn es\n",
+                "andere vor der Gefahr warnen will."
+            ]
+        },
+        "it": {
+            "name": "ABSOL",
+            "category": "Pokémon Catastrofe",
+            "entry_text": [
+                "Percepisce l’arrivo di disastri na-\n",
+                "turali e appare alla gente solo per\n",
+                "avvisarla del pericolo imminente."
+            ]
+        },
+        "es": {
+            "name": "ABSOL",
+            "category": "Pokémon Catástrofe",
+            "entry_text": [
+                "Presiente desastres inminentes\n",
+                "y se aparece a la gente para\n",
+                "advertir del peligro."
+            ]
+        },
+        "jp": {
+            "name": "アブソル",
+            "category": "わざわいポケモン",
+            "entry_text": [
+                "さいがいの　よかんを　かんじとる。\n",
+                "きけんを　しらせる　ときだけ\n",
+                "ひとまえに　あらわれるという。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 4112
+    }
+}

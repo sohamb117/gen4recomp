@@ -1,0 +1,41 @@
+{
+  "key": 24299,
+  "messages": [
+    {
+      "id": "Route213GateToPastoriaCity_Text_FootprintsInSand",
+      "en_US": [
+        "Footprints are left in the sand\n",
+        "when you walk on a beach.\r",
+        "Pokémon seem to enjoy leaving\n",
+        "footprints as much as people."
+      ]
+    },
+    {
+      "id": "Route213GateToPastoriaCity_Text_DoYouKnowBattleFrontier",
+      "en_US": [
+        "Listen, do you know about the Battle\n",
+        "Frontier?"
+      ]
+    },
+    {
+      "id": "Route213GateToPastoriaCity_Text_YouKnow",
+      "en_US": [
+        "I guess you’re someone who’s in the\n",
+        "know.\r",
+        "I hear it’s a fun place with facilities\n",
+        "for battling through under different\f",
+        "sets of rules."
+      ]
+    },
+    {
+      "id": "Route213GateToPastoriaCity_Text_YouDontKnow",
+      "en_US": [
+        "I guess you’re someone who’s kind of\n",
+        "out of the loop.\r",
+        "I hear it’s a fun place with facilities\n",
+        "for battling consecutively under\f",
+        "different sets of rules."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "key": 7819,
+  "messages": [
+    {
+      "id": "Route227House_Text_RestUp",
+      "en_US": [
+        "Oh, dear, are your Pokémon feeling\n",
+        "tired?\r",
+        "You should rest up.\n",
+        "Yes, good idea! Rest up here!"
+      ]
+    },
+    {
+      "id": "Route227House_Text_GetSomeRest",
+      "en_US": [
+        "Yes, yes, that’s right.\n",
+        "Get some well-earned rest.\r"
+      ]
+    },
+    {
+      "id": "Route227House_Text_RestUpAgain",
+      "en_US": [
+        "Oh, you’re still looking tired.\n",
+        "You’re still needing rest, are you?\r",
+        "You should rest up again.\n",
+        "Yes, good idea! Rest up here!"
+      ]
+    },
+    {
+      "id": "Route227House_Text_IsThatRight",
+      "en_US": [
+        "Is that right?\n",
+        "You’re sure now?\r",
+        "I’m only concerned for your sake. No\n",
+        "need to worry about putting me out!"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+    "base_stats": {
+        "hp": 55,
+        "attack": 70,
+        "defense": 45,
+        "speed": 60,
+        "special_attack": 70,
+        "special_defense": 50
+    },
+    "types": [ "TYPE_FIRE", "TYPE_FIRE" ],
+    "catch_rate": 190,
+    "base_exp_reward": 91,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_RAWST_BERRY",
+        "rare": "ITEM_RAWST_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_25",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_INTIMIDATE", "ABILITY_FLASH_FIRE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_BITE" ],
+            [ 1, "MOVE_ROAR" ],
+            [ 6, "MOVE_EMBER" ],
+            [ 9, "MOVE_LEER" ],
+            [ 14, "MOVE_ODOR_SLEUTH" ],
+            [ 17, "MOVE_HELPING_HAND" ],
+            [ 20, "MOVE_FLAME_WHEEL" ],
+            [ 25, "MOVE_REVERSAL" ],
+            [ 28, "MOVE_FIRE_FANG" ],
+            [ 31, "MOVE_TAKE_DOWN" ],
+            [ 34, "MOVE_FLAMETHROWER" ],
+            [ 39, "MOVE_AGILITY" ],
+            [ 42, "MOVE_CRUNCH" ],
+            [ 45, "MOVE_HEAT_WAVE" ],
+            [ 48, "MOVE_FLARE_BLITZ" ]
+        ],
+        "by_tm": [
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM21",
+            "TM23",
+            "TM27",
+            "TM28",
+            "TM32",
+            "TM35",
+            "TM38",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM50",
+            "TM58",
+            "TM61",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_BODY_SLAM",
+            "MOVE_SAFEGUARD",
+            "MOVE_CRUNCH",
+            "MOVE_THRASH",
+            "MOVE_FIRE_SPIN",
+            "MOVE_HOWL",
+            "MOVE_HEAT_WAVE",
+            "MOVE_DOUBLE_EDGE",
+            "MOVE_FLARE_BLITZ"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_USE_ITEM",
+            "ITEM_FIRE_STONE",
+            "SPECIES_ARCANINE"
+        ]
+    ],
+    "offspring": "SPECIES_GROWLITHE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 28,
+        "weight_pounds": 41.9,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 290,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 290,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 20,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 20,
+        "en": {
+            "name": "GROWLITHE",
+            "category": "Puppy Pokémon",
+            "entry_text": [
+                "A Pokémon with a loyal nature.\n",
+                "It will remain motionless until it is\n",
+                "given an order by its Trainer."
+            ]
+        },
+        "fr": {
+            "name": "CANINOS",
+            "category": "Pokémon Chiot",
+            "entry_text": [
+                "Un Pokémon très loyal. Il\n",
+                "restera immobile jusqu’à ce que\n",
+                "son Dresseur lui donne un ordre."
+            ]
+        },
+        "de": {
+            "name": "FUKANO",
+            "category": "Hund",
+            "entry_text": [
+                "Ein loyales Pokémon. Es wird erst\n",
+                "dann aktiv, wenn sein Trainer ihm\n",
+                "Anweisungen gegeben hat."
+            ]
+        },
+        "it": {
+            "name": "GROWLITHE",
+            "category": "Pokémon Cagnolino",
+            "entry_text": [
+                "Un Pokémon fedele per natura.\n",
+                "Rimane immobile finché non\n",
+                "riceve ordini dal suo Allenatore."
+            ]
+        },
+        "es": {
+            "name": "GROWLITHE",
+            "category": "Pokémon Perrito",
+            "entry_text": [
+                "Pokémon de naturaleza leal.\n",
+                "Permanece quieto en espera\n",
+                "de órdenes de su entrenador."
+            ]
+        },
+        "jp": {
+            "name": "ガ－ディ",
+            "category": "こいぬポケモン",
+            "entry_text": [
+                "ちゅうじつな　せいかくの　ポケモン。\n",
+                "トレ－ナ－の　めいれいが　あるまでは\n",
+                "いっぽも　うごかない。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 514
+    }
+}

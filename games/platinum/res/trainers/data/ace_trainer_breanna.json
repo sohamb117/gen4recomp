@@ -1,0 +1,75 @@
+{
+    "name": "Breanna",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_BRONZOR",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": [
+                "MOVE_GYRO_BALL",
+                "MOVE_EXTRASENSORY",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BRONZOR",
+            "form": 0,
+            "level": 36,
+            "item": null,
+            "moves": [
+                "MOVE_GYRO_BALL",
+                "MOVE_EXTRASENSORY",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BRONZOR",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": [
+                "MOVE_GYRO_BALL",
+                "MOVE_EXTRASENSORY",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "By focusing on only one type, you can\n",
+                "really see the strengths and\f",
+                "weaknesses of that Pokémon.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "My focus was too narrow minded..."
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Start by becoming friendly with your\n",
+                "Pokémon. I mean really friendly.\r",
+                "If you do that, you’ll learn naturally\n",
+                "how you should battle with it.\n"
+            ]
+        }
+    ]
+}

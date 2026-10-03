@@ -1,0 +1,34 @@
+{
+    "name": "Madison",
+    "class": "TRAINER_CLASS_SKIER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_FROSLASS",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "You really must like snow.\r",
+                "After all, if you didn’t, I doubt that\n",
+                "you’d come here so often!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "The conditions weren’t very good.\n"
+        }
+    ]
+}

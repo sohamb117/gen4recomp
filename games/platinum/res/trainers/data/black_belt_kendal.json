@@ -1,0 +1,45 @@
+{
+    "name": "Kendal",
+    "class": "TRAINER_CLASS_BLACK_BELT",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_TOXICROAK",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’ll pound the fear of my fists into\n",
+                "you all karate style, punk!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I’m so sorry...\n",
+                "I got a bit mouthy there, didn’t I?\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "So, I’m gonna try and shatter steel!\r",
+                "I wonder how many more years it\n",
+                "would take for me to do that?\n"
+            ]
+        }
+    ]
+}

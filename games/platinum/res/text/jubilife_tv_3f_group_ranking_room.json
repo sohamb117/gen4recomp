@@ -1,0 +1,29 @@
+{
+  "key": 17411,
+  "messages": [
+    {
+      "id": "JubilifeTV3FGroupRankingRoom_Text_SeeRankingsInGroupHere",
+      "en_US": [
+        "You can see the rankings of people\n",
+        "in your group here.\r",
+        "It makes me try even harder ’cause\n",
+        "I can’t stand losing to my friends!"
+      ]
+    },
+    {
+      "id": "JubilifeTV3FGroupRankingRoom_Text_TheseRankingsAreNifty",
+      "en_US": [
+        "These rankings are nifty!\r",
+        "I’m going to make a group and\n",
+        "compete with all my best friends!"
+      ]
+    },
+    {
+      "id": "JubilifeTV3FGroupRankingRoom_Text_ImStillFineTuningThisThingy",
+      "en_US": [
+        "Sorry, I’m still fine-tuning this\n",
+        "thingy here."
+      ]
+    }
+  ]
+}

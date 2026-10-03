@@ -1,0 +1,36 @@
+{
+  "key": 29268,
+  "messages": [
+    {
+      "id": "Route205House_Text_RestAWhile",
+      "en_US": [
+        "You seem to be tired...\n",
+        "Rest a while."
+      ]
+    },
+    {
+      "id": "Route205House_Text_PokemonLookRefreshed",
+      "en_US": [
+        "You and your Pokémon look\n",
+        "completely refreshed!"
+      ]
+    },
+    {
+      "id": "Route205House_Text_DontPushYourself",
+      "en_US": [
+        "Just because you’re young doesn’t\n",
+        "mean you should push yourself."
+      ]
+    },
+    {
+      "id": "Route205House_Text_RepelsAreUseful",
+      "en_US": [
+        "Repels are useful, don’t you think?\r",
+        "When you use a Repel, weak Pokémon\n",
+        "won’t come out.\r",
+        "...But that also means there won’t be\n",
+        "any Pokémon to capture."
+      ]
+    }
+  ]
+}

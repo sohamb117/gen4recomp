@@ -1,0 +1,1138 @@
+{
+  "key": 9338,
+  "messages": [
+    {
+      "id": "BattleTower_Text_WelcomeToSingleDoubleBattleRooms",
+      "en_US": [
+        "Welcome to the Battle Tower!\r",
+        "I am your guide to the Single\n",
+        "and Double Battle Rooms.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_AskTakeChallenge",
+      "en_US": [
+        "Would you like to take the\n",
+        "Battle Room challenge?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_HopeToSeeYouAgain",
+      "en_US": "We hope to see you again!"
+    },
+    {
+      "id": "BattleTower_Text_ExplainSingleDoubleChallenge",
+      "en_US": [
+        "The Battle Tower is a facility for Single\n",
+        "or Double Battle challenges.\r",
+        "Once entered, your challenge lasts\n",
+        "until you lose.\r",
+        "In Single Battle format, you enter with\n",
+        "three Pokémon.\r",
+        "In Double Battle format, you enter with\n",
+        "four Pokémon.\r",
+        "The battles are held in Battle Rooms,\n",
+        "of which there are many in the Tower.\r",
+        "In each of the Battle Rooms, seven\n",
+        "Trainers await your challenge.\r",
+        "If you manage to defeat all seven,\n",
+        "you will earn Battle Points (BP).\r",
+        "If you want to interrupt your\n",
+        "challenge, please save the game.\r",
+        "If you don’t save, you will be\n",
+        "disqualified from your challenge.\r",
+        "Please be aware of that!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_SingleOrDoubleBattleRoom",
+      "en_US": [
+        "Which Battle Room would you like?\n",
+        "Single or Double?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy5",
+      "garbage": 192
+    },
+    {
+      "id": "BattleTower_Text_Dummy6",
+      "garbage": 258
+    },
+    {
+      "id": "BattleTower_Text_Dummy7",
+      "garbage": 32
+    },
+    {
+      "id": "BattleTower_Text_SelectPokemonToEnter",
+      "en_US": [
+        "Please select the Pokémon you wish\n",
+        "to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_PokemonMustAllBeDifferent",
+      "en_US": "Your Pokémon must all be different.\r"
+    },
+    {
+      "id": "BattleTower_Text_ItemsMustAllBeDifferent",
+      "en_US": "Hold items must all be different.\r"
+    },
+    {
+      "id": "BattleTower_Text_ShowYouToBattleRoom",
+      "en_US": "I will now show you to the Battle Room."
+    },
+    {
+      "id": "BattleTower_Text_BeatenAllSevenTrainers",
+      "en_US": [
+        "Congratulations!\n",
+        "You’ve beaten all seven Trainers!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BeatenTycoonReceivedBP",
+      "en_US": [
+        "Congratulations!\n",
+        "You’ve beaten the Tower Tycoon!\r",
+        "We present you with these Battle\n",
+        "Points in recognition of your talent!\r",
+        "{STRVAR_1 3, 0, 0} received\n",
+        "{STRVAR_1 50, 1, 0} BP!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_SavingDontTurnOffPower",
+      "en_US": [
+        "Saving...\n",
+        "Don’t turn off the power."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_HopeToSeeYouAgain2",
+      "en_US": "We hope to see you again."
+    },
+    {
+      "id": "BattleTower_Text_SaveBeforeEntering",
+      "en_US": [
+        "We’ve been waiting for you!\r",
+        "Before entering a Battle Room, your\n",
+        "progress will be saved. Please wait."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy17",
+      "garbage": 22
+    },
+    {
+      "id": "BattleTower_Text_Dummy18",
+      "garbage": 9
+    },
+    {
+      "id": "BattleTower_Text_DidntSaveBeforeQuit",
+      "en_US": [
+        "Excuse me!\r",
+        "You didn’t save before you quit your\n",
+        "challenge last time.\r",
+        "Because of that, you have been\n",
+        "disqualified from your challenge!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_WelcomeToMultiBattleRooms",
+      "en_US": [
+        "Welcome to the Battle Tower!\r",
+        "I am your guide to the Multi\n",
+        "Battle Rooms.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_AskTakeMultiChallenge",
+      "en_US": [
+        "Would you like to take the Multi\n",
+        "Battle Room challenge?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy22",
+      "garbage": 26
+    },
+    {
+      "id": "BattleTower_Text_ExplainMultiBattleRoom",
+      "en_US": [
+        "The Battle Tower’s Multi Battle Rooms\n",
+        "are for Multi Battles with a partner.\r",
+        "To enter, join another Trainer and\n",
+        "compete with two Pokémon each.\r",
+        "Inside the tower is a room named the\n",
+        "Battle Salon where you can meet other\f",
+        "Trainers.\r",
+        "There, you can find a Trainer to act\n",
+        "as your partner in the Multi Battles.\r",
+        "You can also partner up with a friend\n",
+        "over wireless communications.\r",
+        "Once you have partnered up, you will\n",
+        "be shown to a Multi Battle Room.\r",
+        "In the Multi Battle Room, seven\n",
+        "tag teams await your challenge.\r",
+        "If you manage to defeat all seven\n",
+        "teams, you will earn Battle Points.\r",
+        "If you want to interrupt your\n",
+        "challenge, please save the game.\r",
+        "If you don’t save, you will be\n",
+        "disqualified from your challenge.\r",
+        "Also, if you are on a tag team with\n",
+        "a friend, you may not interrupt your\f",
+        "challenge.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy24",
+      "garbage": 259
+    },
+    {
+      "id": "BattleTower_Text_Dummy25",
+      "garbage": 32
+    },
+    {
+      "id": "BattleTower_Text_AskCommunicateWithFriend",
+      "en_US": [
+        "Would you like to communicate with\n",
+        "a friend and form a tag team?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BecomeLeaderOrJoinGroup",
+      "en_US": [
+        "One Trainer should select\n",
+        "“BECOME LEADER.”\r",
+        "The other Trainer must select\n",
+        "“JOIN GROUP.”"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy28",
+      "garbage": 26
+    },
+    {
+      "id": "BattleTower_Text_Dummy29",
+      "garbage": 15
+    },
+    {
+      "id": "BattleTower_Text_Dummy30",
+      "garbage": 17
+    },
+    {
+      "id": "BattleTower_Text_Dummy31",
+      "garbage": 21
+    },
+    {
+      "id": "BattleTower_Text_DirectToMultiBattleRoom",
+      "en_US": [
+        "I’ll direct you to your Multi Battle\n",
+        "Room now."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BothTrainersChoseThisPokemon",
+      "en_US": [
+        "Both Trainers have chosen the\n",
+        "Pokémon {STRVAR_1 0, 0, 0}.\r",
+        "Please confer with the other Trainer\n",
+        "and choose different Pokémon.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BothTrainersChoseThesePokemon",
+      "en_US": [
+        "Both Trainers have chosen the Pokémon\n",
+        "{STRVAR_1 0, 0, 0} and {STRVAR_1 0, 1, 0}.\r",
+        "Please confer with the other Trainer\n",
+        "and choose different Pokémon.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ShowYouToBattleSalon",
+      "en_US": "I will now show you to the Battle Salon.\r"
+    },
+    {
+      "id": "BattleTower_Text_WelcomeToWiFiBattleRooms",
+      "en_US": [
+        "Welcome to the Battle Tower!\r",
+        "I am your guide to the Wi-Fi Battle\n",
+        "Rooms.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_AskTakeWiFiChallenge",
+      "en_US": [
+        "Would you like to take the Wi-Fi\n",
+        "Battle Room challenge?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ExplainWiFiBattleRoom",
+      "en_US": [
+        "The Battle Tower’s Wi-Fi Battle Rooms\n",
+        "are places to conduct battles over\f",
+        "Nintendo Wi-Fi Connection.\r",
+        "As a result, you will be battling\n",
+        "Trainers from around the world.\r",
+        "Inside the Battle Tower, there are\n",
+        "many Battle Rooms.\r",
+        "In each of the Battle Rooms, seven\n",
+        "Trainers await your challenge.\r",
+        "If you manage to defeat all seven,\n",
+        "you will earn Battle Points.\r",
+        "Depending on how you do, you may\n",
+        "even become the room’s leader!\r",
+        "Also, the Wi-Fi Battle Rooms are\n",
+        "operated on a ranking system.\r",
+        "Trainers will go up in rank if they\n",
+        "keep winning Wi-Fi Battles.\r",
+        "Contrarily, their rankings could go\n",
+        "down if they lose consistently.\r",
+        "To raise your rank, keep winning,\n",
+        "especially against tougher Trainers.\r",
+        "If you want to interrupt your\n",
+        "challenge, please save the game.\r",
+        "If you don’t save, you will be\n",
+        "disqualified from your challenge.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_HopeToSeeYouAgain3",
+      "en_US": "We hope to see you again!"
+    },
+    {
+      "id": "BattleTower_Text_Dummy40",
+      "garbage": 32
+    },
+    {
+      "id": "BattleTower_Text_Dummy41",
+      "garbage": 262
+    },
+    {
+      "id": "BattleTower_Text_Dummy42",
+      "garbage": 26
+    },
+    {
+      "id": "BattleTower_Text_Dummy43",
+      "garbage": 15
+    },
+    {
+      "id": "BattleTower_Text_Dummy44",
+      "garbage": 17
+    },
+    {
+      "id": "BattleTower_Text_Dummy45",
+      "garbage": 55
+    },
+    {
+      "id": "BattleTower_Text_Dummy46",
+      "garbage": 29
+    },
+    {
+      "id": "BattleTower_Text_DirectYouToBattleRoom",
+      "en_US": [
+        "OK. I’ll direct you to your Battle Room\n",
+        "now.\r",
+        "Are you ready?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_SaveAndInterruptChallenge",
+      "en_US": [
+        "Would you like to save and interrupt\n",
+        "your challenge?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy49",
+      "garbage": 24
+    },
+    {
+      "id": "BattleTower_Text_Dummy50",
+      "garbage": 31
+    },
+    {
+      "id": "BattleTower_Text_Dummy51",
+      "garbage": 22
+    },
+    {
+      "id": "BattleTower_Text_ConfirmPastLeaderHistory",
+      "en_US": [
+        "I’ve downloaded the Rank {STRVAR_1 51, 0, 0} Battle\n",
+        "Room {STRVAR_1 52, 1, 0}’s past leader history.\r",
+        "Please confirm it on the Performance\n",
+        "Monitor next to me."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ThanksForPlaying",
+      "en_US": "Thank you for playing!\r"
+    },
+    {
+      "id": "BattleTower_Text_BeatenAllSevenTrainers2",
+      "en_US": [
+        "Congratulations!\n",
+        "You’ve beaten all seven Trainers!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_PromotedToRank",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0}, you have also been\n",
+        "promoted to Rank {STRVAR_1 51, 1, 0}!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_SavingDontTurnOffPower2",
+      "en_US": [
+        "Saving...\n",
+        "Don’t turn off the power."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_AskSendResults",
+      "en_US": [
+        "Would you like to send these results\n",
+        "using Nintendo WFC?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ReceivedBP7WinStreak",
+      "en_US": [
+        "For your 7-win streak, we present\n",
+        "you with the BP you have earned!\r",
+        "{STRVAR_1 3, 0, 0} received\n",
+        "{STRVAR_1 50, 1, 0} BP.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy59",
+      "garbage": 26
+    },
+    {
+      "id": "BattleTower_Text_ResultsWereSent",
+      "en_US": [
+        "Your results were sent out using\n",
+        "Nintendo WFC!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_AskSendPreviousResults",
+      "en_US": [
+        "It’s good to see you back.\r",
+        "Your previous results were not sent\n",
+        "out using Nintendo WFC.\r",
+        "Would you like to send them now?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy62",
+      "garbage": 42
+    },
+    {
+      "id": "BattleTower_Text_Dummy63",
+      "garbage": 26
+    },
+    {
+      "id": "BattleTower_Text_Dummy64",
+      "garbage": 11
+    },
+    {
+      "id": "BattleTower_Text_DemotedToRank",
+      "en_US": [
+        "Unfortunately, you have been\n",
+        "demoted to Rank {STRVAR_1 51, 0, 0}...\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy66",
+      "garbage": 33
+    },
+    {
+      "id": "BattleTower_Text_Dummy67",
+      "garbage": 26
+    },
+    {
+      "id": "BattleTower_Text_Dummy68",
+      "garbage": 27
+    },
+    {
+      "id": "BattleTower_Text_RecordWillBeSaved",
+      "en_US": [
+        "Your record will be saved.\n",
+        "Please wait."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_RibbonsForAchievingRank",
+      "en_US": [
+        "Congratulations on achieving Rank {STRVAR_1 51, 0, 0}.\r",
+        "Your winning Pokémon team has won\n",
+        "special Ribbons for this feat!"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_AwardForConsecutiveWins",
+      "en_US": [
+        "Congratulations on achieving {STRVAR_1 52, 0, 0}\n",
+        "consecutive wins!\r",
+        "Your winning Pokémon team has been\n",
+        "given a special award for this feat!"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_00072",
+      "en_US": "{STRVAR_1 3, 0, 0} obtained {STRVAR_1 8, 1, 0}!"
+    },
+    {
+      "id": "BattleTower_Text_WonRibbonsFor50WinStreak",
+      "en_US": [
+        "Congratulations on achieving your\n",
+        "50-win streak.\r",
+        "Your winning Pokémon team has won\n",
+        "special Ribbons for this feat!"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_UsedToLiveInHoenn",
+      "en_US": [
+        "Yeah, I used to live in a place\n",
+        "called Hoenn.\r",
+        "There was a place like this back\n",
+        "there, too."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_FullOfSurprises",
+      "en_US": [
+        "The Wi-Fi Battle Rooms are full of\n",
+        "surprises.\r",
+        "Can you imagine running into an old\n",
+        "rival who moved far away?\r",
+        "Who knows what cool encounters you’ll\n",
+        "have?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ProfileOnTV",
+      "en_US": [
+        "They profile you on TV if you set\n",
+        "a good record here.\r",
+        "This is my only chance to regain\n",
+        "my glory as an Idol!"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_TrainedLittleGuy",
+      "en_US": [
+        "I trained my little guy till we\n",
+        "couldn’t take any more.\r",
+        "He’s going to do a 100-win streak\n",
+        "for sure...\r",
+        "Right, PIKACHU?"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_PikachuDotDotDot",
+      "en_US": "PIKACHU: ..."
+    },
+    {
+      "id": "BattleTower_Text_YouLookPowerful",
+      "en_US": [
+        "Ooh-la-la!\n",
+        "You look tremendously powerful!\r",
+        "Verily, I shall look forward to\n",
+        "engaging you in a battle."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ManyToughTrainers",
+      "en_US": [
+        "There are so many tough Trainers\n",
+        "around...\r",
+        "It’s scary, but let’s do our best,\n",
+        "PIKACHU!"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_PikachuPichuu",
+      "en_US": "PIKACHU: Pichuu! Pichuu!"
+    },
+    {
+      "id": "BattleTower_Text_RibbonsFor50WinStreak",
+      "en_US": [
+        "Congratulations on achieving\n",
+        "a 50-win streak!\r",
+        "The Pokémon on your team will be\n",
+        "provided with commemorative Ribbons."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_RibbonsForAdvancingToRank",
+      "en_US": [
+        "Congratulations on advancing to\n",
+        "Rank {STRVAR_1 50, 0, 0}!\r",
+        "The Pokémon on your team will be\n",
+        "provided with commemorative Ribbons."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_RibbonsForDefeatingTycoon",
+      "en_US": [
+        "Congratulations on defeating\n",
+        "the Tower Tycoon!\r",
+        "The Pokémon on your team will be\n",
+        "provided with commemorative Ribbons."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_CommemorativePrint",
+      "en_US": [
+        "Congratulations!\r",
+        "In honor of your victory, we present\n",
+        "you this commemorative print!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_GoldPrintAdded",
+      "en_US": [
+        "The Gold Print was added to\n",
+        "{STRVAR_1 3, 0, 0}’s Vs. Recorder!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_SilverPrintAdded",
+      "en_US": [
+        "The Silver Print was added to\n",
+        "{STRVAR_1 3, 0, 0}’s Vs. Recorder!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_TrophyForWinStreak",
+      "en_US": [
+        "Congratulations on achieving your\n",
+        "{STRVAR_1 52, 0, 0}-win streak!\r",
+        "Please accept this trophy for your\n",
+        "fantastic achievement!\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_NoRoomForGoods",
+      "en_US": [
+        "...Uh-oh... You’ve run out of room\n",
+        "for decoration goods.\r",
+        "Please make room, and come back\n",
+        "for your prize."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Dummy90",
+      "garbage": 61
+    },
+    {
+      "id": "BattleTower_Text_Banlist",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist2",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs and {STRVAR_1 0, 1, 0} are not allowed\n",
+        "to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist3",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, and {STRVAR_1 0, 2, 0}\n",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist4",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "and {STRVAR_1 0, 3, 0} are not allowed.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist5",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, and {STRVAR_1 0, 4, 0}\f",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist6",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0}, and\f",
+        "{STRVAR_1 0, 5, 0} are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist7",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, and {STRVAR_1 0, 6, 0} \n",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist8",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0}, and\n",
+        "{STRVAR_1 0, 7, 0} are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist9",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, and {STRVAR_1 0, 8, 0}\f",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist10",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0}, and\f",
+        "{STRVAR_1 0, 9, 0} are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist11",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, and {STRVAR_1 0, 10, 0}\n",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist12",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0}, and\n",
+        "{STRVAR_1 0, 11, 0} are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist13",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\n",
+        "{STRVAR_1 0, 11, 0}, and {STRVAR_1 0, 12, 0}\f",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist14",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\n",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0}, and\f",
+        "{STRVAR_1 0, 13, 0} are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist15",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\n",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\r",
+        "{STRVAR_1 0, 13, 0}, and {STRVAR_1 0, 14, 0}\n",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist16",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\n",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\r",
+        "{STRVAR_1 0, 13, 0}, {STRVAR_1 0, 14, 0}, and\n",
+        "{STRVAR_1 0, 15, 0} are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist17",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\n",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\r",
+        "{STRVAR_1 0, 13, 0}, {STRVAR_1 0, 14, 0},\n",
+        "{STRVAR_1 0, 15, 0}, and {STRVAR_1 0, 16, 0}\f",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist18",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\n",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\r",
+        "{STRVAR_1 0, 13, 0}, {STRVAR_1 0, 14, 0},\n",
+        "{STRVAR_1 0, 15, 0}, {STRVAR_1 0, 16, 0}, and\f",
+        "{STRVAR_1 0, 17, 0} are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_Banlist19",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 0, 0} different Pokémon\n",
+        "to enter.\r",
+        "They also must be holding different\n",
+        "kinds of items.\r",
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\r",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\n",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\r",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\n",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\r",
+        "{STRVAR_1 0, 13, 0}, {STRVAR_1 0, 14, 0},\n",
+        "{STRVAR_1 0, 15, 0}, {STRVAR_1 0, 16, 0},\r",
+        "{STRVAR_1 0, 17, 0}, and {STRVAR_1 0, 18, 0}\n",
+        "are not allowed to enter.\r",
+        "Please come see me when you are ready."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ThankYouForParticipating",
+      "en_US": [
+        "Thank you so much for participating!\n",
+        "Please come again!"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_NoDataYet",
+      "en_US": [
+        "There doesn’t appear to be any\n",
+        "data yet..."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_LaunchWifiComm",
+      "en_US": [
+        "DS Wireless Communications will\n",
+        "be launched."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_LookForwardToNextVisit",
+      "en_US": "We look forward to your next visit.\r"
+    },
+    {
+      "id": "BattleTower_Text_JudgeExplanation",
+      "en_US": [
+        "You can call me the Judge.\r",
+        "Heheh, it’s actually not my real name,\n",
+        "but that’s what everyone calls me.\r",
+        "It’s because of this weird power I\n",
+        "have. It’s a gift, really.\r",
+        "I can discern, judge you can say, the\n",
+        "overall potential of individual Pokémon.\r",
+        "If you’d like, I could judge the\n",
+        "intriguing potential of your Pokémon.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ICouldJudgeYourPokemon",
+      "en_US": [
+        "If you’d like, I could judge the\n",
+        "intriguing potential of your Pokémon.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_YouDontNeedMe",
+      "en_US": [
+        "...Oh.\n",
+        "You don’t need me to judge. I get it."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_CantJudgeAnEgg",
+      "en_US": [
+        "Judge an Egg?!\n",
+        "That’s a tall order even for me.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_DecentPotential",
+      "en_US": [
+        "I see, I see...\r",
+        "This Pokémon’s potential is decent all\n",
+        "around.\r",
+        "That’s my judgment, and it’s final.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_AboveAveragePotential",
+      "en_US": [
+        "I see, I see...\r",
+        "This Pokémon’s potential is above\n",
+        "average overall.\r",
+        "That’s my judgment, and it’s final.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_RelativelySuperiorPotential",
+      "en_US": [
+        "I see, I see...\r",
+        "This Pokémon has relatively superior\n",
+        "potential overall.\r",
+        "That’s my judgment, and it’s final.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_OutstandingPotential",
+      "en_US": [
+        "I see, I see...\r",
+        "This Pokémon has outstanding potential\n",
+        "overall.\r",
+        "That’s my judgment, and it’s final.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BestPotentialInHP",
+      "en_US": [
+        "Incidentally, I would say the best\n",
+        "potential lies in its HP.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BestPotentialInAttack",
+      "en_US": [
+        "Incidentally, I would say the best\n",
+        "potential lies in its Attack stat.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BestPotentialInDefense",
+      "en_US": [
+        "Incidentally, I would say the best\n",
+        "potential lies in its Defense stat.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BestPotentialInSpAtk",
+      "en_US": [
+        "Incidentally, I would say the best\n",
+        "potential lies in its Sp. Atk stat.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BestPotentialInSpDef",
+      "en_US": [
+        "Incidentally, I would say the best\n",
+        "potential lies in its Sp. Def stat.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_BestPotentialInSpeed",
+      "en_US": [
+        "Incidentally, I would say the best\n",
+        "potential lies in its Speed stat.\r"
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ItsRatherDecent",
+      "en_US": [
+        "It’s rather decent in that regard.\n",
+        "That’s how I judged it."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ItsVeryGood",
+      "en_US": [
+        "It’s very good in that regard.\n",
+        "That’s how I judged it."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ItsFantastic",
+      "en_US": [
+        "It’s fantastic in that regard.\n",
+        "That’s how I judged it."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_ItCantBeBetter",
+      "en_US": [
+        "It can’t be better in that regard.\n",
+        "That’s how I judged it."
+      ]
+    },
+    {
+      "id": "BattleTower_Text_AwardRibbonToParticipatingPokemon",
+      "en_US": [
+        "A Ribbon will be awarded to the\n",
+        "participating Pokémon!"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+    "base_stats": {
+        "hp": 40,
+        "attack": 35,
+        "defense": 30,
+        "speed": 50,
+        "special_attack": 20,
+        "special_defense": 20
+    },
+    "types": [ "TYPE_BUG", "TYPE_POISON" ],
+    "catch_rate": 255,
+    "base_exp_reward": 52,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 1,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_SHIELD_DUST", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_POISON_STING" ],
+            [ 1, "MOVE_STRING_SHOT" ],
+            [ 15, "MOVE_BUG_BITE" ]
+        ],
+        "by_tm": [  ],
+        "by_tutor": [  ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            7,
+            "SPECIES_KAKUNA"
+        ]
+    ],
+    "offspring": "SPECIES_WEEDLE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 12,
+        "weight_pounds": 7.1,
+        "body_shape": "SHAPE_SERPENTINE",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 437,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 437,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 26,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 26,
+        "en": {
+            "name": "WEEDLE",
+            "category": "Hairy Bug Pokémon",
+            "entry_text": [
+                "It eats its weight in leaves every\n",
+                "day. It fends off attackers with\n",
+                "the needle on its head."
+            ]
+        },
+        "fr": {
+            "name": "ASPICOT",
+            "category": "Pokémon Insectopic",
+            "entry_text": [
+                "Il mange chaque jour son poids en\n",
+                "feuilles. Il utilise l’aiguillon sur sa\n",
+                "tête pour repousser l’ennemi."
+            ]
+        },
+        "de": {
+            "name": "HORNLIU",
+            "category": "Raupe",
+            "entry_text": [
+                "Es frisst täglich sein Gewicht in\n",
+                "Blättern. Die Nadel auf seinem Kopf\n",
+                "dient der Verteidigung."
+            ]
+        },
+        "it": {
+            "name": "WEEDLE",
+            "category": "Pokémon Millepiedi",
+            "entry_text": [
+                "Divora ogni giorno una quantità di\n",
+                "foglie pari al suo peso. Respinge i\n",
+                "nemici con l’aculeo sulla testa."
+            ]
+        },
+        "es": {
+            "name": "WEEDLE",
+            "category": "Pokémon Oruga",
+            "entry_text": [
+                "Come el equivalente a su peso en\n",
+                "hojas todos los días. Se defiende\n",
+                "con el aguijón de su cabeza."
+            ]
+        },
+        "jp": {
+            "name": "ビ－ドル",
+            "category": "けむしポケモン",
+            "entry_text": [
+                "まいにち　じぶんと　おなじ　おもさの\n",
+                "はっぱを　たべる。あたまの　ハリで\n",
+                "おそってきた　てきを　げきたい。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 30,
+        "rarity": 50,
+        "unused": 1540
+    }
+}

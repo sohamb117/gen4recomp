@@ -1,0 +1,25 @@
+--- a/src/battle/trainer_ai/trainer_ai.c
++++ b/src/battle/trainer_ai/trainer_ai.c
+@@ -498,7 +498,21 @@
+ 
+         case AI_EVAL_STEP_EVAL:
+             if (AI_CONTEXT.move != MOVE_NONE) {
+-                sAICommandTable[battleCtx->aiScriptTemp[battleCtx->aiScriptCursor]](battleSys, battleCtx);
++                /* pc port: a permanent bounds check on the AI's own dispatch.
++                 * The battle-start crash this port hit early on was an opcode
++                 * fetched out of a table that had never been populated, and
++                 * what made it expensive to find was that CALLING a zero entry
++                 * faults somewhere else entirely. One compare per evaluated
++                 * move names the opcode instead of hiding it. */
++                {
++                    u32 aiOp = battleCtx->aiScriptTemp[battleCtx->aiScriptCursor];
++                    extern void pc_ai_dispatch_check(unsigned op, unsigned max,
++                                                     int attacker, int species);
++                    pc_ai_dispatch_check(aiOp, (unsigned)NELEMS(sAICommandTable),
++                                         AI_CONTEXT.attacker,
++                                         battleCtx->battleMons[AI_CONTEXT.attacker].species);
++                    sAICommandTable[aiOp](battleSys, battleCtx);
++                }
+             } else {
+                 AI_CONTEXT.moveScore[AI_CONTEXT.moveSlot] = 0;
+                 AI_CONTEXT.stateFlags |= AI_STATUS_FLAG_DONE;

@@ -1,0 +1,1011 @@
+{
+  "key": 57678,
+  "messages": [
+    {
+      "id": "PartyMenu_Text_ConfirmButton",
+      "en_US": "CONFIRM"
+    },
+    {
+      "id": "PartyMenu_Text_CancelButton",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "pl_msg_00000453_00002",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00003",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00004",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00005",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00006",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00007",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MemberNickname0",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MemberNickname1",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MemberNickname2",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MemberNickname3",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MemberNickname4",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MemberNickname5",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00014",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00015",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00016",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00017",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00018",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00019",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00020",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00021",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00022",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00023",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00024",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00025",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000453_00026",
+      "en_US": "/"
+    },
+    {
+      "id": "PartyMenu_Text_MaleSymbol",
+      "en_US": "♂"
+    },
+    {
+      "id": "PartyMenu_Text_FemaleSymbol",
+      "en_US": "♀"
+    },
+    {
+      "id": "PartyMenu_Text_ChooseAPokemon",
+      "en_US": "Choose a Pokémon."
+    },
+    {
+      "id": "PartyMenu_MoveToWhere",
+      "en_US": "Move to where?"
+    },
+    {
+      "id": "PartyMenu_Text_GiveToWhichMon",
+      "en_US": "Give to which Pokémon?"
+    },
+    {
+      "id": "PartyMenu_Text_UseOnWhichMon",
+      "en_US": "Use on which Pokémon?"
+    },
+    {
+      "id": "PartyMenu_Text_TeachWhichMon",
+      "en_US": "Teach which Pokémon?"
+    },
+    {
+      "id": "PartyMenu_Text_ChooseMonAndConfirm",
+      "en_US": "Choose Pokémon and confirm."
+    },
+    {
+      "id": "pl_msg_00000453_00035",
+      "garbage": 13
+    },
+    {
+      "id": "PartyMenu_Text_UseOnWhichPokemon",
+      "en_US": "Use on which Pokémon?"
+    },
+    {
+      "id": "PartyMenu_Text_PromptPokemon",
+      "en_US": [
+        "Do what with\n",
+        "{STRVAR_1 1, 0, 0}?"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_DoWhatWithAnItem",
+      "en_US": [
+        "Do what with\n",
+        "an item?"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_DoWhatWithMail",
+      "en_US": [
+        "Do what with\n",
+        "the Mail?"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_RestoreWhichMove",
+      "en_US": [
+        "Restore\n",
+        "which move?"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_BoostPPOfWhichMove",
+      "en_US": [
+        "Boost the PP\n",
+        "of which move?"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_PromptCustomBall",
+      "en_US": [
+        "Set this\n",
+        "customized Ball?"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_SendMailToPC",
+      "en_US": [
+        "Send the removed Mail to\n",
+        "your PC?"
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00044",
+      "en_US": "Yes"
+    },
+    {
+      "id": "pl_msg_00000453_00045",
+      "en_US": "No"
+    },
+    {
+      "id": "PartyMenu_Text_MailWasSentToYourPC",
+      "en_US": "The Mail was sent to your PC."
+    },
+    {
+      "id": "PartyMenu_Text_IfMailIsRemovedMessageWillBeLostConfirm",
+      "en_US": [
+        "If the Mail is removed, its written\n",
+        "message will be lost. Is that OK?"
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00048",
+      "en_US": "Yes"
+    },
+    {
+      "id": "pl_msg_00000453_00049",
+      "en_US": "No"
+    },
+    {
+      "id": "PartyMenu_Text_MailboxIsFull",
+      "en_US": "Your PC’s Mailbox is full."
+    },
+    {
+      "id": "PartyMenu_Text_MailWasTakenFromMon",
+      "en_US": [
+        "Mail was taken from the\n",
+        "Pokémon."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonWantsToLearnMove",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} wants to learn the\n",
+        "move {STRVAR_1 6, 1, 0}.\r",
+        "However, {STRVAR_1 1, 0, 0} already\n",
+        "knows four moves.\r",
+        "Should a move be deleted and\n",
+        "replaced with {STRVAR_1 6, 1, 0}?"
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00053",
+      "en_US": "Yes"
+    },
+    {
+      "id": "pl_msg_00000453_00054",
+      "en_US": "No"
+    },
+    {
+      "id": "PartyMenu_Text_StopTryingToTeachMove",
+      "en_US": [
+        "Stop trying to teach\n",
+        "{STRVAR_1 6, 1, 0}?"
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00056",
+      "en_US": "Yes"
+    },
+    {
+      "id": "pl_msg_00000453_00057",
+      "en_US": "No"
+    },
+    {
+      "id": "PartyMenu_Text_MonDidNotLearnMove",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} did not learn the\n",
+        "move {STRVAR_1 6, 1, 0}."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_WhichMoveShouldBeForgotten",
+      "en_US": [
+        "Which move should be\n",
+        "forgotten?"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonForgotMove",
+      "en_US": [
+        "1, {PAUSE 20}2, and{PAUSE 20}... {PAUSE 20}... {PAUSE 20}... Poof!{WAIT 3}{WAIT 5}\r",
+        "{STRVAR_1 1, 0, 0} forgot how to\n",
+        "use {STRVAR_1 6, 1, 0}.\r",
+        "And..."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonLearnedMove",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} learned\n",
+        "{STRVAR_1 6, 1, 0}!{WAIT 4}{WAIT 2}"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonAndMoveAreNotCompatible",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} and {STRVAR_1 6, 1, 0}\n",
+        "are not compatible.\r",
+        "{STRVAR_1 6, 1, 0} can’t be learned."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonAlreadyKnowsMove",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} already knows\n",
+        "{STRVAR_1 6, 1, 0}."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonsHPWasRestored",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0}’s HP was restored\n",
+        "by {STRVAR_1 52, 1, 0} point(s)."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonWasCuredOfPoison",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} was cured of its\n",
+        "poisoning."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonWasCuredOfParalysis",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} was cured of\n",
+        "paralysis."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonsBurnWasHealed",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0}’s\n",
+        "burn was healed."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonWasThawedOut",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} was\n",
+        "thawed out."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_PPWasRestored",
+      "en_US": "PP was restored."
+    },
+    {
+      "id": "PartyMenu_Text_MonRegainedHealth",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0}\n",
+        "regained health."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonBecameHealthy",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0}\n",
+        "became healthy."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MovesPPIncreased",
+      "en_US": [
+        "{STRVAR_1 6, 0, 0}’s PP\n",
+        "increased."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonSnappedOutOfConfusion",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} snapped out of its\n",
+        "confusion."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonGotOverInfatuation",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} got over its\n",
+        "infatuation."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonBaseStatRose",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0}’s base {STRVAR_1 13, 1, 0}\n",
+        "rose!"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_CantBeUsedUntilBadgeIsObtained",
+      "en_US": [
+        "This can’t be used until a new\n",
+        "Badge is obtained."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MustRemoveMail",
+      "en_US": [
+        "Must remove Mail before the\n",
+        "Pokémon is allowed to hold an item."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonAlreadyHoldingItemsSwitchItems",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} is already holding\n",
+        "{STRVAR_1 8, 1, 0}.\r",
+        "Would you like to switch the\n",
+        "two items?"
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00079",
+      "en_US": "Yes"
+    },
+    {
+      "id": "pl_msg_00000453_00080",
+      "en_US": "No"
+    },
+    {
+      "id": "PartyMenu_Text_MonIsntHoldingAnything",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} isn’t holding\n",
+        "anything."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_ReceivedItemFromMon",
+      "en_US": [
+        "Received the {STRVAR_1 8, 1, 0}\n",
+        "from {STRVAR_1 1, 0, 0}."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_BagIsFull",
+      "en_US": "The Bag is full."
+    },
+    {
+      "id": "PartyMenu_Text_ItemWasTakenAndReplacedWithItem",
+      "en_US": [
+        "The {STRVAR_1 8, 1, 0} was taken and\n",
+        "replaced with the {STRVAR_1 8, 2, 0}."
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00085",
+      "garbage": 11
+    },
+    {
+      "id": "pl_msg_00000453_00086",
+      "garbage": 2
+    },
+    {
+      "id": "pl_msg_00000453_00087",
+      "garbage": 3
+    },
+    {
+      "id": "pl_msg_00000453_00088",
+      "garbage": 13
+    },
+    {
+      "id": "pl_msg_00000453_00089",
+      "garbage": 2
+    },
+    {
+      "id": "pl_msg_00000453_00090",
+      "garbage": 3
+    },
+    {
+      "id": "PartyMenu_Text_MonWokeUp",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0}\n",
+        "woke up."
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00092",
+      "garbage": 23
+    },
+    {
+      "id": "pl_msg_00000453_00093",
+      "garbage": 24
+    },
+    {
+      "id": "pl_msg_00000453_00094",
+      "garbage": 2
+    },
+    {
+      "id": "pl_msg_00000453_00095",
+      "garbage": 3
+    },
+    {
+      "id": "pl_msg_00000453_00096",
+      "garbage": 19
+    },
+    {
+      "id": "pl_msg_00000453_00097",
+      "garbage": 2
+    },
+    {
+      "id": "pl_msg_00000453_00098",
+      "garbage": 3
+    },
+    {
+      "id": "pl_msg_00000453_00099",
+      "garbage": 16
+    },
+    {
+      "id": "PartyMenu_Text_NoMoreThanTwoMon",
+      "en_US": [
+        "No more than two Pokémon\n",
+        "may enter."
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00101",
+      "garbage": 10
+    },
+    {
+      "id": "PartyMenu_Text_YoureAlreadySurfing",
+      "en_US": "You’re already surfing."
+    },
+    {
+      "id": "pl_msg_00000453_00103",
+      "garbage": 13
+    },
+    {
+      "id": "PartyMenu_Text_CantUseThatHere",
+      "en_US": "You can’t use that here."
+    },
+    {
+      "id": "PartyMenu_Text_ItWontHaveAnyEffect",
+      "en_US": "It won’t have any effect."
+    },
+    {
+      "id": "pl_msg_00000453_00106",
+      "garbage": 14
+    },
+    {
+      "id": "PartyMenu_Text_TwoMonAreNeeded",
+      "en_US": "Two Pokémon are needed."
+    },
+    {
+      "id": "pl_msg_00000453_00108",
+      "garbage": 14
+    },
+    {
+      "id": "pl_msg_00000453_00109",
+      "garbage": 15
+    },
+    {
+      "id": "PartyMenu_Text_MonBecameMoreFriendly",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} became more friendly.\r",
+        "However, its base {STRVAR_1 13, 1, 0} fell!"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonHasMaxFriendship",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} adores you!\r",
+        "Its base {STRVAR_1 13, 1, 0} fell!"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonEVsCannotGoLower",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} became more friendly.\r",
+        "Its base {STRVAR_1 13, 1, 0} can’t go lower."
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00113",
+      "en_US": "{STRVAR_1 1, 0, 0} is already in battle!"
+    },
+    {
+      "id": "pl_msg_00000453_00114",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} has no energy left\n",
+        "to battle!"
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00115",
+      "en_US": "{STRVAR_1 1, 0, 0} can’t be switched out!"
+    },
+    {
+      "id": "pl_msg_00000453_00116",
+      "en_US": "An Egg can’t battle!"
+    },
+    {
+      "id": "pl_msg_00000453_00117",
+      "en_US": [
+        "You can’t switch {STRVAR_1 3, 0, 0}’s\n",
+        "Pokémon with one of yours!"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonWasGivenItem",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} was given the\n",
+        "{STRVAR_1 8, 1, 0} to hold."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_ThreeMonAreNeeded",
+      "en_US": "Three Pokémon are needed."
+    },
+    {
+      "id": "PartyMenu_Text_FourMonAreNeeded",
+      "en_US": "Four Pokémon are needed."
+    },
+    {
+      "id": "PartyMenu_Text_FiveMonAreNeeded",
+      "en_US": "Five Pokémon are needed."
+    },
+    {
+      "id": "PartyMenu_Text_SixMonAreNeeded",
+      "en_US": "Six Pokémon are needed."
+    },
+    {
+      "id": "PartyMenu_Text_NoMoreThanOneMon",
+      "en_US": [
+        "No more than one Pokémon\n",
+        "may enter."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_NoMoreThanThreeMon",
+      "en_US": [
+        "No more than three Pokémon\n",
+        "may enter."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_NoMoreThanFourMon",
+      "en_US": [
+        "No more than four Pokémon\n",
+        "may enter."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_NoMoreThanFiveMon",
+      "en_US": [
+        "No more than five Pokémon\n",
+        "may enter."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MailWasTransferredFromMailbox",
+      "en_US": [
+        "Mail was transferred from\n",
+        "the Mailbox."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonHoldingItemCannotHoldMail",
+      "en_US": [
+        "This Pokémon is holding an item.\n",
+        "It cannot hold Mail."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_BallCapsuleWasSet",
+      "en_US": "The Ball Capsule was set."
+    },
+    {
+      "id": "PartyMenu_Text_TwoCapsulsesCantBeSet",
+      "en_US": "Two capsules can’t be set."
+    },
+    {
+      "id": "PartyMenu_Text_ThisCantBeUsedOnThatPokemon",
+      "en_US": [
+        "This can’t be used on\n",
+        "that Pokémon."
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00132",
+      "garbage": 23
+    },
+    {
+      "id": "pl_msg_00000453_00133",
+      "garbage": 2
+    },
+    {
+      "id": "pl_msg_00000453_00134",
+      "garbage": 3
+    },
+    {
+      "id": "pl_msg_00000453_00135",
+      "garbage": 21
+    },
+    {
+      "id": "pl_msg_00000453_00136",
+      "garbage": 2
+    },
+    {
+      "id": "pl_msg_00000453_00137",
+      "garbage": 3
+    },
+    {
+      "id": "PartyMenu_Text_NotEnoughHP",
+      "en_US": "Not enough HP..."
+    },
+    {
+      "id": "pl_msg_00000453_00139",
+      "garbage": 19
+    },
+    {
+      "id": "pl_msg_00000453_00140",
+      "garbage": 19
+    },
+    {
+      "id": "pl_msg_00000453_00141",
+      "garbage": 17
+    },
+    {
+      "id": "pl_msg_00000453_00142",
+      "garbage": 18
+    },
+    {
+      "id": "pl_msg_00000453_00143",
+      "garbage": 18
+    },
+    {
+      "id": "pl_msg_00000453_00144",
+      "garbage": 28
+    },
+    {
+      "id": "PartyMenu_Text_Switch",
+      "en_US": "SWITCH"
+    },
+    {
+      "id": "PartyMenu_Text_Summary",
+      "en_US": "SUMMARY"
+    },
+    {
+      "id": "PartyMenu_Text_Item",
+      "en_US": "ITEM"
+    },
+    {
+      "id": "PartyMenu_Text_Mail",
+      "en_US": "MAIL"
+    },
+    {
+      "id": "PartyMenu_Text_MailRead",
+      "en_US": "READ"
+    },
+    {
+      "id": "PartyMenu_Text_MailTake",
+      "en_US": "TAKE"
+    },
+    {
+      "id": "PartyMenu_Text_MailStore",
+      "en_US": "STORE"
+    },
+    {
+      "id": "PartyMenu_Text_ContextCancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "PartyMenu_Text_Separator",
+      "garbage": 5
+    },
+    {
+      "id": "PartyMenu_Text_Enter",
+      "en_US": "ENTER"
+    },
+    {
+      "id": "PartyMenu_Text_NoEntry",
+      "en_US": "NO ENTRY"
+    },
+    {
+      "id": "PartyMenu_Text_FieldMove0",
+      "en_US": "{COLOR 1}{STRVAR_1 6, 0, 0}{COLOR 0}"
+    },
+    {
+      "id": "PartyMenu_Text_FieldMove1",
+      "en_US": "{COLOR 1}{STRVAR_1 6, 0, 0}{COLOR 0}"
+    },
+    {
+      "id": "PartyMenu_Text_FieldMove2",
+      "en_US": "{COLOR 1}{STRVAR_1 6, 0, 0}{COLOR 0}"
+    },
+    {
+      "id": "PartyMenu_Text_FieldMove3",
+      "en_US": "{COLOR 1}{STRVAR_1 6, 0, 0}{COLOR 0}"
+    },
+    {
+      "id": "PartyMenu_Text_ItemGive",
+      "en_US": "GIVE"
+    },
+    {
+      "id": "PartyMenu_Text_ItemTake",
+      "en_US": "TAKE"
+    },
+    {
+      "id": "PartyMenu_Text_MoveSlot0",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MoveSlot1",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MoveSlot2",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_MoveSlot3",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_Set",
+      "en_US": "SET"
+    },
+    {
+      "id": "PartyMenu_Text_NotEntered",
+      "en_US": "NOT ENTERED"
+    },
+    {
+      "id": "PartyMenu_Text_Banned",
+      "en_US": "BANNED"
+    },
+    {
+      "id": "PartyMenu_Text_EnteredFirst",
+      "en_US": "FIRST"
+    },
+    {
+      "id": "PartyMenu_Text_EnteredSecond",
+      "en_US": "SECOND"
+    },
+    {
+      "id": "PartyMenu_Text_EnteredThird",
+      "en_US": "THIRD"
+    },
+    {
+      "id": "PartyMenu_Text_EnteredFourth",
+      "en_US": "FOURTH"
+    },
+    {
+      "id": "PartyMenu_Text_EnteredFifth",
+      "en_US": "FIFTH"
+    },
+    {
+      "id": "PartyMenu_Text_EnteredSixth",
+      "en_US": "SIXTH"
+    },
+    {
+      "id": "PartyMenu_Text_AbleToLearn",
+      "en_US": "ABLE!"
+    },
+    {
+      "id": "PartyMenu_Text_UnableToLearn",
+      "en_US": "UNABLE!"
+    },
+    {
+      "id": "PartyMenu_Text_AlreadyLearned",
+      "en_US": "LEARNED"
+    },
+    {
+      "id": "PartyMenu_Text_AbleToEvolve",
+      "en_US": "ABLE!"
+    },
+    {
+      "id": "PartyMenu_Text_UnableToEvolve",
+      "en_US": "UNABLE!"
+    },
+    {
+      "id": "PartyMenu_Text_EligibleForContest",
+      "en_US": "ABLE!"
+    },
+    {
+      "id": "PartyMenu_Text_IneligibleForContest",
+      "en_US": "UNABLE!"
+    },
+    {
+      "id": "PartyMenu_Text_IdenticalMonNotPermitted",
+      "en_US": "Identical Pokémon are not permitted."
+    },
+    {
+      "id": "PartyMenu_Text_SomeMonHoldingIdenticalItems",
+      "en_US": [
+        "Some Pokémon are holding identical\n",
+        "items."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_TotalPartyLevelOverLimit",
+      "en_US": [
+        "The total of all party members’\n",
+        "levels has gone over {STRVAR_1 52, 0, 0}."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_LevelUpMaxHP",
+      "en_US": "MAX HP"
+    },
+    {
+      "id": "PartyMenu_Text_LevelUpAttack",
+      "en_US": "ATTACK"
+    },
+    {
+      "id": "PartyMenu_Text_LevelUpDefense",
+      "en_US": "DEFENSE"
+    },
+    {
+      "id": "PartyMenu_Text_LevelUpSpAttack",
+      "en_US": "SP. ATK"
+    },
+    {
+      "id": "PartyMenu_Text_LevelUpSpDefense",
+      "en_US": "SP. DEF"
+    },
+    {
+      "id": "PartyMenu_Text_LevelUpSpeed",
+      "en_US": "SPEED"
+    },
+    {
+      "id": "PartyMenu_Text_LevelUpStatIncrease",
+      "en_US": "+ {STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_LevelUpNewStatValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "PartyMenu_Text_LevelUp",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} was elevated to\n",
+        "Lv. {STRVAR_1 52, 1, 0}.{WAIT 4}{WAIT 2}"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_MonLearnedMove2",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} learned\n",
+        "{STRVAR_1 6, 1, 0}!{WAIT 4}{WAIT 2}"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_BallCapsuleWillBeDetached",
+      "en_US": [
+        "The Ball Capsule will be detached.\n",
+        "Will that be OK?"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_CantUseWhenYouHaveSomeoneWithYou",
+      "en_US": [
+        "You can’t use that when you have\n",
+        "someone with you."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_SelectEgg",
+      "en_US": "Please select an Egg."
+    },
+    {
+      "id": "PartyMenu_Text_PromptEgg",
+      "en_US": [
+        "What will you do\n",
+        "with the Egg?"
+      ]
+    },
+    {
+      "id": "pl_msg_00000453_00199",
+      "garbage": 16
+    },
+    {
+      "id": "PartyMenu_Text_ContextConfirm",
+      "en_US": "CONFIRM"
+    },
+    {
+      "id": "PartyMenu_Text_MustUseSameKindOfMon",
+      "en_US": [
+        "You must use the same kind\n",
+        "of Pokémon."
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_ChangedForm",
+      "en_US": "{STRVAR_1 0, 0, 0} changed Forme!"
+    },
+    {
+      "id": "PartyMenu_Text_MonCannotHoldItem",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} cannot hold\n",
+        "{STRVAR_1 8, 1, 0}!"
+      ]
+    },
+    {
+      "id": "PartyMenu_Text_ItemCannotBeGivenHere",
+      "en_US": [
+        "The {STRVAR_1 8, 0, 0} cannot be\n",
+        "given here.\n"
+      ]
+    }
+  ]
+}

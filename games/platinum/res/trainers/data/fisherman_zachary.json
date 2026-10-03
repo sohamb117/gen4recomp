@@ -1,0 +1,68 @@
+{
+    "name": "Zachary",
+    "class": "TRAINER_CLASS_FISHERMAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MAGIKARP",
+            "form": 0,
+            "level": 14,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLDEEN",
+            "form": 0,
+            "level": 16,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MAGIKARP",
+            "form": 0,
+            "level": 14,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I fished up some tough Pokémon!\n",
+                "Let’s have ourselves a battle!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Losing to a kid has me gasping like\n",
+                "a MAGIKARP...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "My feet are tangled, too!\n",
+                "Ouch! Ouch!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’m going to win this time!\n",
+                "I said I’ll win, and I mean it!\r"
+            ]
+        }
+    ]
+}

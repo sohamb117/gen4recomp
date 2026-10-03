@@ -1,0 +1,54 @@
+{
+    "name": "Grunt",
+    "class": "TRAINER_CLASS_GALACTIC_GRUNT_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GLAMEOW",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MURKROW",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "...Would you like to join the MAGIKARP\n",
+                "and flop around in the mud?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "...Overwhelming!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I played you for a child, and paid\n",
+                "a stiff price for my arrogance...\r",
+                "However, you’re much too late.\r",
+                "Team Galactic has already found the\n",
+                "sunken island under the lake.\r",
+                "And the Pokémon that lay in it?\n",
+                "Well, what do you think?\n"
+            ]
+        }
+    ]
+}

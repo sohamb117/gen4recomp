@@ -1,0 +1,9 @@
+# Pokemon history. The party lead enqueued the way a catch is.
+name WATCHER
+gender GENDER_MALE
+trainer-id 10000
+money 3000
+party SPECIES_MONFERNO 18 ITEM_NONE
+poketch-history 0
+poketch POKETCH_APPID_POKEMONHISTORY
+map MAP_HEADER_JUBILIFE_CITY 0xB4 0x309 FACE_DOWN

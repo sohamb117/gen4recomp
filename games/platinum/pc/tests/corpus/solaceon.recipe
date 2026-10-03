@@ -1,0 +1,15 @@
+# Solaceon Town, the day-care and the ruins.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name SOLACEO
+gender GENDER_MALE
+trainer-id 10411
+money 9000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+party SPECIES_BIBAREL 25 ITEM_NONE
+party SPECIES_STARAVIA 24 ITEM_NONE
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

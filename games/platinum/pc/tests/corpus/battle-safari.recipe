@@ -1,0 +1,18 @@
+# The Great Marsh's own battle path. The safari branch is chosen by the SAVE
+# (Encounter_NewVsWild tests the safari flag), so the lab sets that flag the
+# way entering the zone does.
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20005
+money 11000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+party SPECIES_MONFERNO 30 ITEM_NONE
+# The lead's first move is set explicitly. A battle station is driven
+# with A alone, which picks move slot 0 every turn, so a lead whose
+# natural slot 0 is a status move never ends its fight, measured on a
+# level 22 Monferno, which drew a level 5 Starly out past 40,000 frames.
+party-move 0 0 MOVE_FLAMETHROWER
+map MAP_HEADER_PASTORIA_CITY 0x258 0x330 FACE_DOWN

@@ -1,0 +1,180 @@
+{
+    "base_stats": {
+        "hp": 20,
+        "attack": 10,
+        "defense": 230,
+        "speed": 5,
+        "special_attack": 10,
+        "special_defense": 230
+    },
+    "types": [ "TYPE_BUG", "TYPE_ROCK" ],
+    "catch_rate": 190,
+    "base_exp_reward": 80,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 1
+    },
+    "held_items": {
+        "common": "ITEM_ORAN_BERRY",
+        "rare": "ITEM_ORAN_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_STURDY", "ABILITY_GLUTTONY" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_WITHDRAW" ],
+            [ 1, "MOVE_CONSTRICT" ],
+            [ 1, "MOVE_BIDE" ],
+            [ 9, "MOVE_ENCORE" ],
+            [ 14, "MOVE_SAFEGUARD" ],
+            [ 22, "MOVE_WRAP" ],
+            [ 27, "MOVE_REST" ],
+            [ 35, "MOVE_GASTRO_ACID" ],
+            [ 40, "MOVE_BUG_BITE" ],
+            [ 48, "MOVE_POWER_TRICK" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM20",
+            "TM21",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM32",
+            "TM36",
+            "TM37",
+            "TM39",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM69",
+            "TM70",
+            "TM71",
+            "TM74",
+            "TM76",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ROLLOUT",
+            "MOVE_GASTRO_ACID",
+            "MOVE_SNORE",
+            "MOVE_HELPING_HAND",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_EARTH_POWER"
+        ],
+        "egg_moves": [
+            "MOVE_SWEET_SCENT",
+            "MOVE_KNOCK_OFF",
+            "MOVE_HELPING_HAND",
+            "MOVE_ACUPRESSURE",
+            "MOVE_SAND_TOMB",
+            "MOVE_MUD_SLAP"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_SHUCKLE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 45.2,
+        "body_shape": "SHAPE_INSECTOID",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 386,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 386,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 25,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 25,
+        "en": {
+            "name": "SHUCKLE",
+            "category": "Mold Pokémon",
+            "entry_text": [
+                "It stores berries in its shell.\n",
+                "The berries eventually ferment to\n",
+                "become delicious juices."
+            ]
+        },
+        "fr": {
+            "name": "CARATROC",
+            "category": "Pokémon Pourri",
+            "entry_text": [
+                "Il stocke des Baies sous sa\n",
+                "carapace. Elles fermentent et\n",
+                "produisent des jus délicieux."
+            ]
+        },
+        "de": {
+            "name": "POTTROTT",
+            "category": "Schimmel",
+            "entry_text": [
+                "In seiner Schale bewahrt es Beeren\n",
+                "auf. Diese fermentieren zu einem\n",
+                "leckeren Saft."
+            ]
+        },
+        "it": {
+            "name": "SHUCKLE",
+            "category": "Pokémon Muffa",
+            "entry_text": [
+                "Conserva nel guscio delle bacche\n",
+                "che, quando fermentano, si\n",
+                "trasformano in un succo delizioso."
+            ]
+        },
+        "es": {
+            "name": "SHUCKLE",
+            "category": "Pokémon Moho",
+            "entry_text": [
+                "Almacena bayas en su caparazón,\n",
+                "que más tarde fermentan para\n",
+                "producir deliciosos zumos."
+            ]
+        },
+        "jp": {
+            "name": "ツボツボ",
+            "category": "はっこうポケモン",
+            "entry_text": [
+                "こうらの　なかに　きのみを　ためる。\n",
+                "そのうち　きのみは　はっこうして\n",
+                "おいしい　ジュ－スに　なるのだ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 2820
+    }
+}

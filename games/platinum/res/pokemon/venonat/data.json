@@ -1,0 +1,182 @@
+{
+    "base_stats": {
+        "hp": 60,
+        "attack": 55,
+        "defense": 50,
+        "speed": 45,
+        "special_attack": 40,
+        "special_defense": 55
+    },
+    "types": [ "TYPE_BUG", "TYPE_POISON" ],
+    "catch_rate": 190,
+    "base_exp_reward": 75,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 1
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_COMPOUND_EYES", "ABILITY_TINTED_LENS" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PURPLE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_DISABLE" ],
+            [ 1, "MOVE_FORESIGHT" ],
+            [ 5, "MOVE_SUPERSONIC" ],
+            [ 11, "MOVE_CONFUSION" ],
+            [ 13, "MOVE_POISON_POWDER" ],
+            [ 17, "MOVE_LEECH_LIFE" ],
+            [ 23, "MOVE_STUN_SPORE" ],
+            [ 25, "MOVE_PSYBEAM" ],
+            [ 29, "MOVE_SLEEP_POWDER" ],
+            [ 35, "MOVE_SIGNAL_BEAM" ],
+            [ 37, "MOVE_ZEN_HEADBUTT" ],
+            [ 41, "MOVE_POISON_FANG" ],
+            [ 47, "MOVE_PSYCHIC" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM29",
+            "TM32",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM48",
+            "TM58",
+            "TM70",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90"
+        ],
+        "by_tutor": [
+            "MOVE_SNORE",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_BATON_PASS",
+            "MOVE_SCREECH",
+            "MOVE_GIGA_DRAIN",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_AGILITY",
+            "MOVE_MORNING_SUN",
+            "MOVE_TOXIC_SPIKES",
+            "MOVE_BUG_BITE"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            31,
+            "SPECIES_VENOMOTH"
+        ]
+    ],
+    "offspring": "SPECIES_VENONAT",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 39,
+        "weight_pounds": 66.1,
+        "body_shape": "SHAPE_BIPEDAL_TAILLESS",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 292,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 292,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 20,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 20,
+        "en": {
+            "name": "VENONAT",
+            "category": "Insect Pokémon",
+            "entry_text": [
+                "Its big eyes are actually clusters\n",
+                "of tiny eyes. At night, its kind is\n",
+                "drawn by light."
+            ]
+        },
+        "fr": {
+            "name": "MIMITOSS",
+            "category": "Pokémon Vermine",
+            "entry_text": [
+                "Ses grands yeux sont en fait\n",
+                "des amas d’yeux minuscules. La\n",
+                "nuit, il est attiré par la lumière."
+            ]
+        },
+        "de": {
+            "name": "BLUZUK",
+            "category": "Insekt",
+            "entry_text": [
+                "Seine großen Augen bestehen aus\n",
+                "vielen kleinen Augen. Nachts wird\n",
+                "es von Licht angezogen."
+            ]
+        },
+        "it": {
+            "name": "VENONAT",
+            "category": "Pokémon Insetto",
+            "entry_text": [
+                "I suoi grandi occhi sono in realtà\n",
+                "un insieme di tanti piccoli occhi.\n",
+                "Di notte, è attirato dalla luce."
+            ]
+        },
+        "es": {
+            "name": "VENONAT",
+            "category": "Pokémon Insecto",
+            "entry_text": [
+                "Sus grandes ojos son en realidad\n",
+                "grupos de ojos diminutos. Por la\n",
+                "noche se siente atraído por la luz."
+            ]
+        },
+        "jp": {
+            "name": "コンパン",
+            "category": "こんちゅうポケモン",
+            "entry_text": [
+                "ちいさな　めが　たくさん　あつまって\n",
+                "おおきな　めに　なっている。\n",
+                "よるになると　あかりに　あつまる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 30,
+        "rarity": 50,
+        "unused": 1540
+    }
+}

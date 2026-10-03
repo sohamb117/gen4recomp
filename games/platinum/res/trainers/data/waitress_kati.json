@@ -1,0 +1,44 @@
+{
+    "name": "Kati",
+    "class": "TRAINER_CLASS_WAITRESS",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CLEFAIRY",
+            "form": 0,
+            "level": 25,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Welcome!\n",
+                "This place is my pride and joy!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I take losses with an unusually big\n",
+                "smile! Do you find that odd at all?\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "After a match, you should have some\n",
+                "Moomoo Milk to quench your thirst!\r",
+                "Just chug it right down! Glug glug!\n"
+            ]
+        }
+    ]
+}

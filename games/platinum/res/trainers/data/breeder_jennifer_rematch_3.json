@@ -1,0 +1,65 @@
+{
+    "name": "Jennifer",
+    "class": "TRAINER_CLASS_BREEDER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ROSERADE",
+            "form": 0,
+            "level": 50,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MR_MIME",
+            "form": 0,
+            "level": 50,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_CLEFABLE",
+            "form": 0,
+            "level": 50,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ESPEON",
+            "form": 0,
+            "level": 50,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I don’t want to ever battle with\n",
+                "people who don’t treat Pokémon nice!\r",
+                "But I know you treat yours kindly.\n",
+                "I’ll battle you anytime!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Giggle...\n",
+                "They’re raised with a lot of care!\n"
+            ]
+        }
+    ]
+}

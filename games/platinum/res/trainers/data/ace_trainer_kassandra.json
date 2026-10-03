@@ -1,0 +1,77 @@
+{
+    "name": "Kassandra",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_JUMPLUFF",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": [
+                "MOVE_MEMENTO",
+                "MOVE_GIGA_DRAIN",
+                "MOVE_TOXIC",
+                "MOVE_BOUNCE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ONIX",
+            "form": 0,
+            "level": 58,
+            "item": null,
+            "moves": [
+                "MOVE_STONE_EDGE",
+                "MOVE_EARTHQUAKE",
+                "MOVE_IRON_TAIL",
+                "MOVE_DRAGON_BREATH"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_AMPHAROS",
+            "form": 0,
+            "level": 59,
+            "item": null,
+            "moves": [
+                "MOVE_THUNDER_PUNCH",
+                "MOVE_POWER_GEM",
+                "MOVE_SIGNAL_BEAM",
+                "MOVE_FIRE_PUNCH"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "You’ve come all this way for Pokémon?\n",
+                "You must be dedicated.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Your dedication won out.\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "The Pokémon here must battle each\n",
+                "other all the time.\r",
+                "That must be why they are so strong\n",
+                "in this area.\n"
+            ]
+        }
+    ]
+}

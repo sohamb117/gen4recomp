@@ -1,0 +1,80 @@
+{
+    "name": "Arthur",
+    "class": "TRAINER_CLASS_ACE_TRAINER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GASTRODON",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_MUDDY_WATER",
+                "MOVE_RECOVER",
+                "MOVE_TOXIC",
+                "MOVE_WATER_PULSE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BEEDRILL",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_POISON_JAB",
+                "MOVE_U_TURN",
+                "MOVE_AERIAL_ACE",
+                "MOVE_SWORDS_DANCE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ELECTRODE",
+            "form": 0,
+            "level": 55,
+            "item": null,
+            "moves": [
+                "MOVE_THUNDERBOLT",
+                "MOVE_HYPER_BEAM",
+                "MOVE_ENDURE",
+                "MOVE_EXPLOSION"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I want my Pokémon to get a taste of\n",
+                "the sweetness that is victory.\r",
+                "I can’t afford to lose this one!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "This defeat has the tang of my bitter\n",
+                "tears..."
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’m sorry, my Pokémon team...\r",
+                "I promise, I’ll get better at this so\n",
+                "you can get a taste of victory!\n"
+            ]
+        }
+    ]
+}

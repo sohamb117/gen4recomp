@@ -1,0 +1,16 @@
+# Hearthome City: the contest hall, the gym and Amity Square.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name HEARTHO
+gender GENDER_MALE
+trainer-id 10274
+money 8000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+item ITEM_POKE_BALL 20
+party SPECIES_LUXIO 28 ITEM_NONE
+party SPECIES_ROSELIA 26 ITEM_NONE
+map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

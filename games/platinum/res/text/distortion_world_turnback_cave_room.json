@@ -1,0 +1,18 @@
+{
+  "key": 28770,
+  "messages": [
+    {
+      "id": "DistortionWorldTurnbackCaveRoom_Text_LeapIntoPortal",
+      "en_US": [
+        "There is the portal leading back to\n",
+        "the Turnback Cave.\r",
+        "Leap into the portal and return to\n",
+        "the Turnback Cave?"
+      ]
+    },
+    {
+      "id": "DistortionWorldTurnbackCaveRoom_Text_PlayerLeaptIntoPortal",
+      "en_US": "{STRVAR_1 3, 0, 0} leapt into the portal.\r"
+    }
+  ]
+}

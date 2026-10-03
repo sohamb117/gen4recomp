@@ -1,0 +1,78 @@
+{
+    "name": "Brenden",
+    "class": "TRAINER_CLASS_VETERAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_FORRETRESS",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_FLASH_CANNON",
+                "MOVE_ROCK_SLIDE",
+                "MOVE_STEALTH_ROCK",
+                "MOVE_TOXIC_SPIKES"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GYARADOS",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_EARTHQUAKE",
+                "MOVE_AQUA_TAIL",
+                "MOVE_ICE_FANG",
+                "MOVE_DRAGON_PULSE"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_HIPPOWDON",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_DIG",
+                "MOVE_CRUNCH",
+                "MOVE_PROTECT",
+                "MOVE_REST"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’ll wheel out some wicked Pokémon\n",
+                "and even wickeder moves!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "All I can manage now is to wheeze\n",
+                "out a few meek sighs...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I don’t see what my age has to do\n",
+                "with playing with Pokémon, frankly.\n"
+            ]
+        }
+    ]
+}

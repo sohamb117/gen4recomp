@@ -1,0 +1,94 @@
+{
+  "key": 9235,
+  "messages": [
+    {
+      "id": "VeilstoneStore3F_Text_MayIHelpYou",
+      "en_US": [
+        "Hello.\n",
+        "May I help you with anything?"
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_PlayerMayIHelpYou",
+      "en_US": [
+        "Hello, {STRVAR_1 3, 0, 0}.\n",
+        "May I help you with anything?"
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_PleaseEnjoyYourself",
+      "en_US": "Please enjoy yourself."
+    },
+    {
+      "id": "VeilstoneStore3F_Text_FalseSwipeMakesCatchingEasier",
+      "en_US": [
+        "False Swipe makes wild Pokémon easier\n",
+        "to catch.\r",
+        "Many customers have confided that to\n",
+        "me recently."
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_FireBlastForFireTypes",
+      "en_US": [
+        "For Fire-type Pokémon, may I suggest\n",
+        "Fire Blast?"
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_ProtectForDodgingAttacks",
+      "en_US": [
+        "The move Protect is the perfect\n",
+        "solution for dodging attacks.\r",
+        "Please be aware that overuse can\n",
+        "result in failure."
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_ThunderIsPreciseInRain",
+      "en_US": [
+        "When it is raining, the accuracy\n",
+        "of Thunder becomes precise.\r",
+        "Please do be careful about\n",
+        "the weather."
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_FriendTradedMeMachoke",
+      "en_US": [
+        "A friend traded me a MACHOKE using\n",
+        "DS Wireless Communications.\r",
+        "But instead of a MACHOKE, I got\n",
+        "a different Pokémon!"
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_WroteSecretsInMyMail",
+      "en_US": [
+        "I wrote some secrets in my Mail\n",
+        "as a reminder...\r",
+        "If someone reads it...\n",
+        "I’m in deep trouble."
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_WantToBuyAllMerchandise",
+      "en_US": [
+        "I would love to buy up all the\n",
+        "merchandise here.\r",
+        "Even once would do!"
+      ]
+    },
+    {
+      "id": "VeilstoneStore3F_Text_Directory",
+      "en_US": [
+        "B1F: Food & Produce\r",
+        "1F: Trainers’ Zone\r",
+        "2F: Battle Collection\r",
+        "3F: TM Corner\r",
+        "4F: Poké Dolls & Goods\r",
+        "5F: Rooftop Plaza"
+      ]
+    }
+  ]
+}

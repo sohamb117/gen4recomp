@@ -1,0 +1,64 @@
+{
+    "name": "Saturn",
+    "class": "TRAINER_CLASS_COMMANDER_SATURN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GOLBAT",
+            "form": 0,
+            "level": 38,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_AIR_CUTTER",
+                "MOVE_BITE",
+                "MOVE_TOXIC",
+                "MOVE_SUPERSONIC"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BRONZOR",
+            "form": 0,
+            "level": 38,
+            "item": "ITEM_NONE",
+            "moves": [
+                "MOVE_GYRO_BALL",
+                "MOVE_SHADOW_BALL",
+                "MOVE_ROCK_TOMB",
+                "MOVE_IRON_DEFENSE"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_TOXICROAK",
+            "form": 0,
+            "level": 40,
+            "item": "ITEM_SITRUS_BERRY",
+            "moves": [
+                "MOVE_POISON_JAB",
+                "MOVE_REVENGE",
+                "MOVE_MUD_BOMB",
+                "MOVE_FAINT_ATTACK"
+            ],
+            "iv_scale": 200,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "...You, my friend, are tough!\n",
+                "I can see why you defy us so...\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+--- a/src/field_map_change.c
++++ b/src/field_map_change.c
+@@ -1567,3 +1567,16 @@
+     fieldSystem->mapLoadType = MAP_LOAD_TYPE_OVERWORLD;
+     FieldSystem_StartChangeMapTask(fieldSystem->task, location);
+ }
++
++/* pc port: the save lab starts a map change from outside any field task --
++ * the same one a script's warp performs. FieldTask_StartMapChangeFull takes a
++ * task to call from, and the lab has none; MapChangeSubData and
++ * FieldTask_ChangeMapFull are both private to this file. */
++void pc_lab_start_map_change(FieldSystem *fieldSystem, const Location *location)
++{
++    MapChangeSubData *mapChangeSub = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(MapChangeSubData));
++
++    mapChangeSub->state = 0;
++    mapChangeSub->nextLocation = *location;
++    FieldSystem_CreateTask(fieldSystem, FieldTask_ChangeMapFull, mapChangeSub);
++}

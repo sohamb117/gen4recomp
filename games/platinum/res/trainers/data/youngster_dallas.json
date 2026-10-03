@@ -1,0 +1,51 @@
+{
+    "name": "Dallas",
+    "class": "TRAINER_CLASS_YOUNGSTER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SHINX",
+            "form": 0,
+            "level": 8,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m never apart from my SHINX.\n",
+                "Our bond is strong!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "So sad...\n",
+                "And so crushed...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I don’t bear grudges over losing.\n",
+                "But I promise I’ll get tougher!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I’m always with my Pokémon.\r",
+                "Actually, you’re always with your\n",
+                "Pokémon too, aren’t you?\r"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,90 @@
+{
+    "name": "Brian",
+    "class": "TRAINER_CLASS_VETERAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_TANGELA",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": [
+                "MOVE_INGRAIN",
+                "MOVE_GIGA_DRAIN",
+                "MOVE_ANCIENT_POWER",
+                "MOVE_TOXIC"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_PONYTA",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": [
+                "MOVE_FIRE_SPIN",
+                "MOVE_STOMP",
+                "MOVE_TAKE_DOWN"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BUIZEL",
+            "form": 0,
+            "level": 32,
+            "item": null,
+            "moves": [
+                "MOVE_AQUA_JET",
+                "MOVE_WHIRLPOOL",
+                "MOVE_PURSUIT",
+                "MOVE_QUICK_ATTACK"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Very well. I’ve decided.\r",
+                "I’ll battle one last time, with you,\n",
+                "then I’m retiring as a Trainer.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I’ve lost, but...\n",
+                "What is this rush I feel?!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Yes! This is fun!\n",
+                "Pokémon are fun!\f",
+                "Retire? Perish that thought!\r",
+                "I’ll become a lot tougher.\n",
+                "Next time, victory is mine!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Your young power against my veteran\n",
+                "technique...\r",
+                "Let us battle again to see who wins\n",
+                "this time!\r"
+            ]
+        }
+    ]
+}

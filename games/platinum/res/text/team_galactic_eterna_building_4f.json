@@ -1,0 +1,73 @@
+{
+  "key": 5135,
+  "messages": [
+    {
+      "id": "TeamGalacticEternaBuilding4F_Text_IWillDealWithYou",
+      "en_US": [
+        "Eh? Did you want something?\r",
+        "How silly of me to even ask.\n",
+        "You want to free the Pokémon.\r",
+        "Fine!\n",
+        "I, Jupiter, will deal with you.\r"
+      ]
+    },
+    {
+      "id": "TeamGalacticEternaBuilding4F_Text_WellArentYouTough",
+      "en_US": [
+        "Well, aren’t you tough...?\r",
+        "It’s OK, though. Our official Pokémon-\n",
+        "statue investigation is finished.\r",
+        "Mars has collected energy from\n",
+        "the Valley Windworks.\r",
+        "We’re pretty much finished here.\n",
+        "I’ll let you in on one little thing.\r",
+        "Our boss is researching the myths\n",
+        "of ancient Pokémon.\r",
+        "With the power of mythical Pokémon,\n",
+        "he will become the ruler of Sinnoh...\r",
+        "I suggest you keep out of Team\n",
+        "Galactic’s affairs from now on.\r",
+        "This is your last warning!\r"
+      ]
+    },
+    {
+      "id": "TeamGalacticEternaBuilding4F_Text_ClefairyCry",
+      "en_US": "CLEFAIRY: Pi..."
+    },
+    {
+      "id": "TeamGalacticEternaBuilding4F_Text_WhatsWithTeamGalactic",
+      "en_US": [
+        "What is it with this Team Galactic?\r",
+        "Why did they take our Pokémon?\n",
+        "What are they trying to accomplish?"
+      ]
+    },
+    {
+      "id": "TeamGalacticEternaBuilding4F_Text_ThankYouCruiseByCycleShop",
+      "en_US": [
+        "I got my CLEFAIRY back, and it’s all\n",
+        "thanks to you!\r",
+        "But that Team Galactic...\r",
+        "They said, “CLEFAIRY came from space.\n",
+        "Hand it over!”\r",
+        "Their logic baffles me still.\n",
+        "It’s like they are from space!\r",
+        "Anyway, they’re gone now.\n",
+        "Thank you very much!\r",
+        "I can’t thank you enough right now,\n",
+        "but cruise by my Cycle Shop, OK?\r"
+      ]
+    },
+    {
+      "id": "TeamGalacticEternaBuilding4F_Text_BunearyCry",
+      "en_US": "BUNEARY: Myun..."
+    },
+    {
+      "id": "TeamGalacticEternaBuilding4F_Text_WorkingForWorldPeace",
+      "en_US": [
+        "Working for world peace.\n",
+        "              Team Galactic"
+      ]
+    }
+  ]
+}

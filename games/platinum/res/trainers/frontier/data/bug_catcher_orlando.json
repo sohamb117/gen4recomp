@@ -1,0 +1,53 @@
+{
+    "name": "Orlando",
+    "class": "TRAINER_CLASS_BUG_CATCHER",
+    "availableSets": [
+        "venusaur_2",
+        "meganium_2",
+        "sceptile_2",
+        "torterra_2",
+        "breloom_2",
+        "forretress_2",
+        "vespiquen_2",
+        "vileplume_2",
+        "victreebel_2",
+        "ludicolo_2",
+        "shiftry_2",
+        "abomasnow_2",
+        "cradily_2",
+        "armaldo_2",
+        "pinsir_2",
+        "scizor_2",
+        "heracross_2",
+        "shuckle_2",
+        "roserade_2",
+        "yanmega_2",
+        "exeggutor_2",
+        "leafeon_2",
+        "tangrowth_2",
+        "none_1"
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "People claim I’m like an adult. Whatever\n",
+                "could they mean, do you suppose?"
+            ]
+        },
+        {
+            "type": "TRMSG_WIN",
+            "en_US": [
+                "Ah, yes, quite enjoyable!\n",
+                "We must do this again, surely.\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh, yes! Smashing!\n",
+                "That chilled me to my toes, it did!\r"
+            ]
+        }
+    ]
+}

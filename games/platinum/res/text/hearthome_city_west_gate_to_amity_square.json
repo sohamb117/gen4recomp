@@ -1,0 +1,25 @@
+{
+  "key": 33810,
+  "messages": [
+    {
+      "id": "HearthomeCityWestGateToAmitySquare_Text_GoForAStrollWithCutePokemon",
+      "en_US": [
+        "In Amity Square, you may go for\n",
+        "a stroll with a cute Pokémon."
+      ]
+    },
+    {
+      "id": "HearthomeCityWestGateToAmitySquare_Text_MyPikachuSeemsDelighted",
+      "en_US": [
+        "My PIKACHU seems delighted to be out\n",
+        "of its Poké Ball for a walk outside.\r",
+        "See? You can tell because its cheeks\n",
+        "are twitching away!"
+      ]
+    },
+    {
+      "id": "HearthomeCityWestGateToAmitySquare_Text_PikachuCryPikappi",
+      "en_US": "PIKACHU: Pikappi!"
+    }
+  ]
+}

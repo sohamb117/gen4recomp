@@ -1,0 +1,30 @@
+{
+  "key": 54375,
+  "messages": [
+    {
+      "id": "GalacticHQLaboratory_Text_ExperimentWentTooFar",
+      "en_US": [
+        "I feel awful about what we did...\n",
+        "This experiment went too far...\r",
+        "I’m not sure if I can stomach what\n",
+        "Master Cyrus plans..."
+      ]
+    },
+    {
+      "id": "GalacticHQLaboratory_Text_IFeelTooSickened",
+      "en_US": [
+        "Urff...\n",
+        "I feel too sickened to say anything...\r",
+        "But that thing we made...\n",
+        "What is it going to be used for?"
+      ]
+    },
+    {
+      "id": "GalacticHQLaboratory_Text_SomethingInGreenFluid",
+      "en_US": [
+        "There is something suspended in\n",
+        "a green fluid..."
+      ]
+    }
+  ]
+}

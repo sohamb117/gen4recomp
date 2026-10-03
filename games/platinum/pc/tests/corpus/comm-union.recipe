@@ -1,0 +1,14 @@
+# Union-room door: Teala in the Pokemon Centre 2F, no other DS.
+#
+# Script 9003 is the union-room clerk, west desk at (7, 4). 9001 next
+# to her is the Colosseum. Local wireless starts only after the save
+# and the walk through the door (ScrCmd_153 -> CommManager_StartUnion).
+# That path needs the WM model; this station drives the door.
+
+name UNIONR
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+map MAP_HEADER_JUBILIFE_CITY_POKECENTER_2F 7 5 FACE_UP

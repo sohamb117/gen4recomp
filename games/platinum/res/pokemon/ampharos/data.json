@@ -1,0 +1,181 @@
+{
+    "base_stats": {
+        "hp": 90,
+        "attack": 75,
+        "defense": 75,
+        "speed": 55,
+        "special_attack": 115,
+        "special_defense": 90
+    },
+    "types": [ "TYPE_ELECTRIC", "TYPE_ELECTRIC" ],
+    "catch_rate": 45,
+    "base_exp_reward": 194,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 3,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_STATIC", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_FIRE_PUNCH" ],
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_GROWL" ],
+            [ 1, "MOVE_THUNDER_SHOCK" ],
+            [ 1, "MOVE_THUNDER_WAVE" ],
+            [ 5, "MOVE_GROWL" ],
+            [ 10, "MOVE_THUNDER_SHOCK" ],
+            [ 14, "MOVE_THUNDER_WAVE" ],
+            [ 20, "MOVE_COTTON_SPORE" ],
+            [ 25, "MOVE_CHARGE" ],
+            [ 30, "MOVE_THUNDER_PUNCH" ],
+            [ 34, "MOVE_DISCHARGE" ],
+            [ 42, "MOVE_SIGNAL_BEAM" ],
+            [ 51, "MOVE_LIGHT_SCREEN" ],
+            [ 59, "MOVE_POWER_GEM" ],
+            [ 68, "MOVE_THUNDER" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM06",
+            "TM10",
+            "TM15",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM27",
+            "TM31",
+            "TM32",
+            "TM34",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM52",
+            "TM56",
+            "TM57",
+            "TM58",
+            "TM68",
+            "TM70",
+            "TM73",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM04",
+            "HM06",
+            "HM08"
+        ],
+        "by_tutor": [
+            "MOVE_THUNDER_PUNCH",
+            "MOVE_FIRE_PUNCH",
+            "MOVE_SNORE",
+            "MOVE_OUTRAGE",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_MAGNET_RISE",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_MAREEP",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 55,
+        "weight_pounds": 135.6,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 243,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 243,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 8,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 8,
+        "en": {
+            "name": "AMPHAROS",
+            "category": "Light Pokémon",
+            "entry_text": [
+                "The tip of its tail shines brightly.\n",
+                "In the olden days, people sent\n",
+                "signals using the tail’s light."
+            ]
+        },
+        "fr": {
+            "name": "PHARAMP",
+            "category": "Pokémon Lumière",
+            "entry_text": [
+                "Le bout de sa queue brille avec\n",
+                "intensité. Jadis, on s’en servait\n",
+                "pour envoyer des signaux."
+            ]
+        },
+        "de": {
+            "name": "AMPHAROS",
+            "category": "Leuchte",
+            "entry_text": [
+                "Seine Schweifspitze leuchtet hell.\n",
+                "In alten Zeiten hat man mit seiner\n",
+                "Hilfe Lichtsignale gegeben."
+            ]
+        },
+        "it": {
+            "name": "AMPHAROS",
+            "category": "Pokémon Luce",
+            "entry_text": [
+                "La punta della sua coda brilla. In\n",
+                "passato, le persone si inviavano\n",
+                "segnali usando la luce della coda."
+            ]
+        },
+        "es": {
+            "name": "AMPHAROS",
+            "category": "Pokémon Luz",
+            "entry_text": [
+                "La punta de su cola brilla.\n",
+                "Antiguamente la gente enviaba\n",
+                "señales con ella."
+            ]
+        },
+        "jp": {
+            "name": "デンリュウ",
+            "category": "ライトポケモン",
+            "entry_text": [
+                "しっぽの　さきが　ひかりかがやく。\n",
+                "むかしの　ひとたちは　その　あかりを\n",
+                "つかって　あいずを　おくりあった。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 80,
+        "rarity": 10,
+        "unused": 1799
+    }
+}

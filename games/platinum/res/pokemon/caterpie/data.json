@@ -1,0 +1,131 @@
+{
+    "base_stats": {
+        "hp": 45,
+        "attack": 30,
+        "defense": 35,
+        "speed": 45,
+        "special_attack": 20,
+        "special_defense": 20
+    },
+    "types": [ "TYPE_BUG", "TYPE_BUG" ],
+    "catch_rate": 255,
+    "base_exp_reward": 53,
+    "ev_yields": {
+        "hp": 1,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_SHIELD_DUST", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GREEN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_STRING_SHOT" ],
+            [ 15, "MOVE_BUG_BITE" ]
+        ],
+        "by_tm": [  ],
+        "by_tutor": [ "MOVE_SNORE" ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            7,
+            "SPECIES_METAPOD"
+        ]
+    ],
+    "offspring": "SPECIES_CATERPIE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 12,
+        "weight_pounds": 6.4,
+        "body_shape": "SHAPE_SERPENTINE",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 502,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 502,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 28,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 28,
+        "en": {
+            "name": "CATERPIE",
+            "category": "Worm Pokémon",
+            "entry_text": [
+                "It releases a stench from its red\n",
+                "antenna to repel enemies. It\n",
+                "grows by molting repeatedly."
+            ]
+        },
+        "fr": {
+            "name": "CHENIPAN",
+            "category": "Pokémon Ver",
+            "entry_text": [
+                "Ses antennes rouges libèrent une\n",
+                "puanteur qui repousse l’ennemi. Il\n",
+                "grandit par mues régulières."
+            ]
+        },
+        "de": {
+            "name": "RAUPY",
+            "category": "Wurm",
+            "entry_text": [
+                "Seine roten Antennen sondern einen\n",
+                "Gestank ab, der Feinde verjagt. Es\n",
+                "wächst, indem es sich häutet."
+            ]
+        },
+        "it": {
+            "name": "CATERPIE",
+            "category": "Pokémon Baco",
+            "entry_text": [
+                "Dalle antenne rosse emana un puzzo\n",
+                "che respinge il nemico. Cresce\n",
+                "cambiando più volte la pelle."
+            ]
+        },
+        "es": {
+            "name": "CATERPIE",
+            "category": "Pokémon Gusano",
+            "entry_text": [
+                "Su antena roja desprende un gran\n",
+                "hedor para repeler a los enemigos.\n",
+                "Crece mudándose repetidamente."
+            ]
+        },
+        "jp": {
+            "name": "キャタピ－",
+            "category": "いもむしポケモン",
+            "entry_text": [
+                "あかい　しょっかくから　においを\n",
+                "だして　てきを　おいはらう。\n",
+                "だっぴを　くりかえし　おおきくなる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 30,
+        "rarity": 50,
+        "unused": 1028
+    }
+}

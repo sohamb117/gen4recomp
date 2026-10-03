@@ -1,0 +1,61 @@
+{
+  "key": 3819,
+  "messages": [
+    {
+      "id": "Route216House_Text_MakeYourselfAtHome",
+      "en_US": [
+        "Yahoo! This lodge’s seen better days,\n",
+        "but relax, make yourself at home!"
+      ]
+    },
+    {
+      "id": "Route216House_Text_YourPokemonAreHealthy",
+      "en_US": [
+        "OK! You and your Pokémon are healthy,\n",
+        "chipper, and good to go!"
+      ]
+    },
+    {
+      "id": "Route216House_Text_YouCanNapInBed",
+      "en_US": [
+        "As you can see, the lodge is beat up.\r",
+        "You can do as you like--leave right \n",
+        "away, or nap in the bed.\n"
+      ]
+    },
+    {
+      "id": "Route216House_Text_IDontHaveThickFat",
+      "en_US": [
+        "I don’t have Thick Fat like some\n",
+        "Pokémon.\r",
+        "That’s why I’m bundled up in layers of\n",
+        "thick clothes.\r",
+        "Incidentally, do you know what the\n",
+        "ability Thick Fat does?\r",
+        "It halves the damage taken from Ice-\n",
+        "and Fire-type moves."
+      ]
+    },
+    {
+      "id": "Route216House_Text_WantToRest",
+      "en_US": [
+        "It’s a bed...\n",
+        "Want to take a rest?"
+      ]
+    },
+    {
+      "id": "Route216House_Text_FellAsleepInBed",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} quickly fell asleep\n",
+        "in the bed...\r"
+      ]
+    },
+    {
+      "id": "Route216House_Text_BecameFullyHealed",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} and the Pokémon\n",
+        "became fully healed from the rest!"
+      ]
+    }
+  ]
+}

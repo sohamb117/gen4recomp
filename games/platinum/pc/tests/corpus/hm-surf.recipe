@@ -1,0 +1,14 @@
+# Surf, from the south bank of the river on Route 205.
+#
+# Water is a tile behavior rather than an object, so the tile was found by
+# scanning the loaded map for a surfable tile with walkable land beside it
+# rather than by reading anything out of res/.
+
+name SURFER
+gender GENDER_MALE
+trainer-id 30004
+money 3000
+badge BADGE_ID_FEN
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_SURF
+map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP

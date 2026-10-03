@@ -1,0 +1,19 @@
+# Canalave City: the docks, the library and the gym.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name CANALAV
+gender GENDER_MALE
+trainer-id 10822
+money 30000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+party SPECIES_TORTERRA 45 ITEM_NONE
+party SPECIES_STARAPTOR 43 ITEM_NONE
+map MAP_HEADER_CANALAVE_CITY 0x3A 0x2D3 FACE_DOWN

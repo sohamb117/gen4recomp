@@ -1,0 +1,36 @@
+{
+  "key": 50106,
+  "messages": [
+    {
+      "id": "FullmoonIsland_Text_ThatsTheLunarWing",
+      "en_US": [
+        "That Pokémon you met was the\n",
+        "Lunar Pokémon...\r",
+        "I’ve heard tales of it flying from\n",
+        "place to place throughout Sinnoh.\r",
+        "Oh! That sparkle...\n",
+        "So, that’s the Lunar Wing...\r",
+        "Thank you... That will wake my son\n",
+        "from the nightmare...\r"
+      ]
+    },
+    {
+      "id": "FullmoonIsland_Text_SailBackToCanalave",
+      "en_US": "Should we sail back to Canalave?"
+    },
+    {
+      "id": "FullmoonIsland_Text_AnchorsAweigh",
+      "en_US": [
+        "Aye, aye!\n",
+        "Anchors aweigh!\r"
+      ]
+    },
+    {
+      "id": "FullmoonIsland_Text_AllRightThen",
+      "en_US": [
+        "All right, then. Tell me if you’d like\n",
+        "to return to Canalave."
+      ]
+    }
+  ]
+}

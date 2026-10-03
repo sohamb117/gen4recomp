@@ -1,0 +1,12 @@
+slab-bytes 8478720
+slab-base 08053000
+app-region 67108864
+app-free-before 0
+app-free-after 0
+heap-size 25165824
+heap-used-at-boot 8552848
+linear-free-at-boot 28793472
+heap-used-now 9604704
+linear-free-now 28793472
+app-free-now 0
+frames 5400

@@ -1,0 +1,43 @@
+{
+  "key": 46175,
+  "messages": [
+    {
+      "id": "SnowpointTempleB5F_Text_GatherThreePokemon",
+      "en_US": [
+        "It’s a statue of a Pokémon.\n",
+        "It seems to exude power...\r",
+        "{STRVAR_1 3, 0, 0} read the engraved\n",
+        "writing...\r",
+        "A body of rock.\r",
+        "A body of ice.\r",
+        "A body of steel.\r",
+        "When gathers the three Pokémon,\n",
+        "the king shall appear."
+      ]
+    },
+    {
+      "id": "SnowpointTempleB5F_Text_KingShallAppear",
+      "en_US": [
+        "It’s a statue of a Pokémon.\n",
+        "It seems to exude power...\r",
+        "{STRVAR_1 3, 0, 0} read the engraved\n",
+        "writing...\r",
+        "A body of rock.\r",
+        "A body of ice.\r",
+        "A body of steel.\r",
+        "When gathers the three Pokémon,\n",
+        "the king shall appear.\r",
+        "...\n",
+        "...\r"
+      ]
+    },
+    {
+      "id": "SnowpointTempleB5F_Text_RegigigasCry",
+      "en_US": "...Zut zutt!\r"
+    },
+    {
+      "id": "SnowpointTempleB5F_Text_RegigigasDisappeared",
+      "en_US": "REGIGIGAS disappeared from view..."
+    }
+  ]
+}

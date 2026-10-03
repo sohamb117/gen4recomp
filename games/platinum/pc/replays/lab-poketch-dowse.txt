@@ -1,0 +1,20 @@
+# After CONTINUE: ping the dowsing machine, then A the hidden item the
+# player is facing. The tap is the app; the A is what the save can see.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 touch 112 96
+3040 release
+3200 keys A
+3220 keys none
+3400 keys A
+3420 keys none
+3600 keys A
+3620 keys none

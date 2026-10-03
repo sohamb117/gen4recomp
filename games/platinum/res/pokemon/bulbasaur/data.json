@@ -1,0 +1,192 @@
+{
+    "base_stats": {
+        "hp": 45,
+        "attack": 49,
+        "defense": 49,
+        "speed": 45,
+        "special_attack": 65,
+        "special_defense": 65
+    },
+    "types": [ "TYPE_GRASS", "TYPE_POISON" ],
+    "catch_rate": 45,
+    "base_exp_reward": 64,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 1,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_OVERGROW", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_GREEN",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 3, "MOVE_GROWL" ],
+            [ 7, "MOVE_LEECH_SEED" ],
+            [ 9, "MOVE_VINE_WHIP" ],
+            [ 13, "MOVE_POISON_POWDER" ],
+            [ 13, "MOVE_SLEEP_POWDER" ],
+            [ 15, "MOVE_TAKE_DOWN" ],
+            [ 19, "MOVE_RAZOR_LEAF" ],
+            [ 21, "MOVE_SWEET_SCENT" ],
+            [ 25, "MOVE_GROWTH" ],
+            [ 27, "MOVE_DOUBLE_EDGE" ],
+            [ 31, "MOVE_WORRY_SEED" ],
+            [ 33, "MOVE_SYNTHESIS" ],
+            [ 37, "MOVE_SEED_BOMB" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM09",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM19",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM32",
+            "TM36",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM53",
+            "TM58",
+            "TM70",
+            "TM75",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_SNORE",
+            "MOVE_SYNTHESIS",
+            "MOVE_SEED_BOMB",
+            "MOVE_KNOCK_OFF"
+        ],
+        "egg_moves": [
+            "MOVE_LIGHT_SCREEN",
+            "MOVE_SKULL_BASH",
+            "MOVE_SAFEGUARD",
+            "MOVE_CHARM",
+            "MOVE_PETAL_DANCE",
+            "MOVE_MAGICAL_LEAF",
+            "MOVE_GRASS_WHISTLE",
+            "MOVE_CURSE",
+            "MOVE_INGRAIN",
+            "MOVE_NATURE_POWER",
+            "MOVE_AMNESIA",
+            "MOVE_LEAF_STORM"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            16,
+            "SPECIES_IVYSAUR"
+        ]
+    ],
+    "offspring": "SPECIES_BULBASAUR",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 28,
+        "weight_pounds": 15.2,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 337,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 337,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 22,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 22,
+        "en": {
+            "name": "BULBASAUR",
+            "category": "Seed Pokémon",
+            "entry_text": [
+                "For some time after its birth, it\n",
+                "grows by gaining nourishment from\n",
+                "the seed on its back."
+            ]
+        },
+        "fr": {
+            "name": "BULBIZARRE",
+            "category": "Pokémon Graine",
+            "entry_text": [
+                "Au matin de sa vie, la graine sur\n",
+                "son dos lui fournit les éléments\n",
+                "dont il a besoin pour grandir."
+            ]
+        },
+        "de": {
+            "name": "BISASAM",
+            "category": "Samen",
+            "entry_text": [
+                "Nach der Geburt nimmt es für eine\n",
+                "Weile Nährstoffe über den Samen\n",
+                "auf seinem Rücken auf."
+            ]
+        },
+        "it": {
+            "name": "BULBASAUR",
+            "category": "Pokémon Seme",
+            "entry_text": [
+                "Dopo la nascita, cresce traendo\n",
+                "nutrimento dal seme piantato\n",
+                "sul suo dorso."
+            ]
+        },
+        "es": {
+            "name": "BULBASAUR",
+            "category": "Pokémon Semilla",
+            "entry_text": [
+                "Después de nacer, crece\n",
+                "alimentándose de las semillas\n",
+                "de su lomo."
+            ]
+        },
+        "jp": {
+            "name": "フシギダネ",
+            "category": "たねポケモン",
+            "entry_text": [
+                "うまれてから　しばらくの　あいだは\n",
+                "せなかの　タネから　えいようを\n",
+                "もらって　おおきく　そだつ。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1537
+    }
+}

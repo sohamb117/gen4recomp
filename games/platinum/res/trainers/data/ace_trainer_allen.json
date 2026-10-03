@@ -1,0 +1,80 @@
+{
+    "name": "Allen",
+    "class": "TRAINER_CLASS_ACE_TRAINER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GASTLY",
+            "form": 0,
+            "level": 21,
+            "item": null,
+            "moves": [
+                "MOVE_NIGHT_SHADE",
+                "MOVE_SUCKER_PUNCH",
+                "MOVE_CURSE",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GASTLY",
+            "form": 0,
+            "level": 22,
+            "item": null,
+            "moves": [
+                "MOVE_NIGHT_SHADE",
+                "MOVE_SUCKER_PUNCH",
+                "MOVE_HYPNOSIS",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_HAUNTER",
+            "form": 0,
+            "level": 24,
+            "item": null,
+            "moves": [
+                "MOVE_SHADOW_BALL",
+                "MOVE_CONFUSE_RAY",
+                "MOVE_CURSE",
+                "MOVE_MEAN_LOOK"
+            ],
+            "iv_scale": 60,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "What, were you just dawdling around\n",
+                "hoping I’d notice you for a battle?\r",
+                "You know you’re going to get whupped\n",
+                "here, don’t you?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "I kinda deserved that, didn’t I?\n",
+                "I gotta stop mouthing off like that...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’ll remember you and your shifty\n",
+                "Pokémon, too. I’m watching you...\n"
+            ]
+        }
+    ]
+}

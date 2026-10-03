@@ -1,0 +1,35 @@
+--- a/src/overlay005/area_data.c
++++ b/src/overlay005/area_data.c
+@@ -12,6 +12,7 @@
+ #include "easy3d.h"
+ #include "heap.h"
+ #include "narc.h"
++#include "pc_modfs.h"
+ 
+ static const GXRgb sIndoorsEdgeMarkings[8] = {
+     COLOR_BLACK,
+@@ -115,6 +116,24 @@
+         GF_ASSERT(textureBound);
+     }
+ 
++    /* Cooked prebuilt props: not in area_build. Load the NSBMD
++     * only. Binding the area texset here hung the field when the
++     * prop was later drawn; binding the file's own TEX0 crashed
++     * NNS_G3dBindMdlTex. InitRenderObj just needs GetMdlSet. */
++    for (int extra = 0;; extra++) {
++        int extraID = pc_modfs_extra_prop(extra);
++
++        if (extraID < 0) {
++            break;
++        }
++        GF_ASSERT(extraID < MAX_MAP_PROP_MODEL_FILES);
++        if (areaDataManager->mapPropModelFiles[extraID] != NULL) {
++            continue;
++        }
++        areaDataManager->mapPropModelFiles[extraID] = NARC_AllocAndReadWholeMember(narc, extraID, HEAP_ID_FIELD1);
++        GF_ASSERT(areaDataManager->mapPropModelFiles[extraID] != NULL);
++    }
++
+     // Make sure the dummy box ("dmybox00") model is always loaded
+     if (areaDataManager->mapPropModelFiles[0] == NULL) {
+         areaDataManager->mapPropModelFiles[0] = NARC_AllocAndReadWholeMember(narc, 0, HEAP_ID_FIELD1);

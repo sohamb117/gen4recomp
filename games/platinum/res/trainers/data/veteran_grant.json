@@ -1,0 +1,78 @@
+{
+    "name": "Grant",
+    "class": "TRAINER_CLASS_VETERAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_RIOLU",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": [
+                "MOVE_FORCE_PALM",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_COUNTER",
+                "MOVE_SCREECH"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_STARAPTOR",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": [
+                "MOVE_AERIAL_ACE",
+                "MOVE_TAKE_DOWN",
+                "MOVE_QUICK_ATTACK",
+                "MOVE_GROWL"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GRAVELER",
+            "form": 0,
+            "level": 34,
+            "item": null,
+            "moves": [
+                "MOVE_EARTHQUAKE",
+                "MOVE_ROCK_SLIDE",
+                "MOVE_ROCK_POLISH",
+                "MOVE_DEFENSE_CURL"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m a Veteran, yes, but don’t you\n",
+                "dare treat me like a senior citizen!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Grrr...\n",
+                "So young, and yet so talented!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I’ll always remain young at heart.\n",
+                "Never let them say you’re too old!\n"
+            ]
+        }
+    ]
+}

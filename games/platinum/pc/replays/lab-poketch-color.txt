@@ -1,0 +1,15 @@
+# After CONTINUE: drag the colour slider onto yellow (index 1).
+#
+# Slider is y 136..160, x 48..184, 16 px per colour.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 touch 72 148
+3040 release

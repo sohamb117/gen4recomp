@@ -1,0 +1,76 @@
+{
+    "name": "Omar",
+    "class": "TRAINER_CLASS_ACE_TRAINER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MAMOSWINE",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": [
+                "MOVE_BLIZZARD",
+                "MOVE_ICE_FANG",
+                "MOVE_ROCK_SLIDE",
+                "MOVE_GIGA_IMPACT"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MOTHIM",
+            "form": 0,
+            "level": 46,
+            "item": null,
+            "moves": [
+                "MOVE_SILVER_WIND",
+                "MOVE_AIR_SLASH",
+                "MOVE_PSYCHIC",
+                "MOVE_TOXIC"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_RAMPARDOS",
+            "form": 0,
+            "level": 48,
+            "item": null,
+            "moves": [
+                "MOVE_HEAD_SMASH",
+                "MOVE_ZEN_HEADBUTT",
+                "MOVE_ANCIENT_POWER",
+                "MOVE_SCREECH"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "You... One look at you tells me\n",
+                "you’re a real contender!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "You’re as tough as you look."
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "One day, people will run to the other\n",
+                "side of the road when I walk by ’em.\r",
+                "It’s a goal of mine I’m working on."
+            ]
+        }
+    ]
+}

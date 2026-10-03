@@ -1,0 +1,176 @@
+{
+    "base_stats": {
+        "hp": 55,
+        "attack": 75,
+        "defense": 50,
+        "speed": 80,
+        "special_attack": 40,
+        "special_defense": 40
+    },
+    "types": [ "TYPE_NORMAL", "TYPE_FLYING" ],
+    "catch_rate": 120,
+    "base_exp_reward": 113,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 2,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_YACHE_BERRY"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_SLOW",
+    "egg_groups": [ "EGG_GROUP_FLYING", "EGG_GROUP_FLYING" ],
+    "abilities": [ "ABILITY_INTIMIDATE", "ABILITY_NONE" ],
+    "safari_flee_rate": 60,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_GROWL" ],
+            [ 1, "MOVE_QUICK_ATTACK" ],
+            [ 5, "MOVE_QUICK_ATTACK" ],
+            [ 9, "MOVE_WING_ATTACK" ],
+            [ 13, "MOVE_DOUBLE_TEAM" ],
+            [ 18, "MOVE_ENDEAVOR" ],
+            [ 23, "MOVE_WHIRLWIND" ],
+            [ 28, "MOVE_AERIAL_ACE" ],
+            [ 33, "MOVE_TAKE_DOWN" ],
+            [ 38, "MOVE_AGILITY" ],
+            [ 43, "MOVE_BRAVE_BIRD" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM27",
+            "TM32",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM47",
+            "TM51",
+            "TM58",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM88",
+            "TM89",
+            "TM90",
+            "HM02",
+            "HM05"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_AIR_CUTTER",
+            "MOVE_ENDEAVOR",
+            "MOVE_TWISTER",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            34,
+            "SPECIES_STARAPTOR"
+        ]
+    ],
+    "offspring": "SPECIES_STARLY",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 34.2,
+        "body_shape": "SHAPE_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 423,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 423,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 24,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 24,
+        "en": {
+            "name": "STARAVIA",
+            "category": "Starling Pokémon",
+            "entry_text": [
+                "Recognizing their own weakness,\n",
+                "they always live in a group. When\n",
+                "alone, a STARAVIA cries noisily."
+            ]
+        },
+        "fr": {
+            "name": "ETOURVOL",
+            "category": "Pokémon Etourneau",
+            "entry_text": [
+                "Il survole les forêts et les champs\n",
+                "en quête de Pokémon Insecte.\n",
+                "Ils forment de grandes volées."
+            ]
+        },
+        "de": {
+            "name": "STARAVIA",
+            "category": "Star",
+            "entry_text": [
+                "Auf der Suche nach Käfer-PKMN\n",
+                "fliegt es über Wiesen und Wälder. Es\n",
+                "bleibt in einem großen Schwarm."
+            ]
+        },
+        "it": {
+            "name": "STARAVIA",
+            "category": "Pokémon Storno",
+            "entry_text": [
+                "Vola nelle foreste e nei campi\n",
+                "in cerca di Pokémon coleottero.\n",
+                "Si muove in grandi gruppi."
+            ]
+        },
+        "es": {
+            "name": "STARAVIA",
+            "category": "Pokémon Estornino",
+            "entry_text": [
+                "Vuela por bosques y campos en\n",
+                "busca de Pokémon de tipo Bicho.\n",
+                "Siempre va en bandadas."
+            ]
+        },
+        "jp": {
+            "name": "ムクバ－ド",
+            "category": "むくどりポケモン",
+            "entry_text": [
+                "むしポケモンを　ねらって\n",
+                "もりや　そうげんを　とびまわる。\n",
+                "おおきな　むれで　こうどうする。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 4357
+    }
+}

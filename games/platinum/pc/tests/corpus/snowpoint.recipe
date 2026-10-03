@@ -1,0 +1,18 @@
+# Snowpoint City. The map header sets its own weather, so this is the station that exercises the snow.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name SNOWPOI
+gender GENDER_MALE
+trainer-id 10959
+money 24000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+party SPECIES_LUCARIO 42 ITEM_NONE
+party SPECIES_RAPIDASH 40 ITEM_NONE
+map MAP_HEADER_SNOWPOINT_CITY 0x17B 0xEA FACE_DOWN

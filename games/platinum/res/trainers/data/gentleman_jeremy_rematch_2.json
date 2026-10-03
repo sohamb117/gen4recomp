@@ -1,0 +1,38 @@
+{
+    "name": "Jeremy",
+    "class": "TRAINER_CLASS_GENTLEMAN",
+    "items": [
+        "ITEM_FULL_RESTORE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_CHATOT",
+            "form": 0,
+            "level": 45,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 22
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "If it pleases, would you care for a\n",
+                "rematch with me?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Your handling of Pokémon is\n",
+                "impeccable.\n"
+            ]
+        }
+    ]
+}

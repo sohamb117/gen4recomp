@@ -1,0 +1,67 @@
+--- a/src/overlay005/fishing.c
++++ b/src/overlay005/fishing.c
+@@ -196,13 +196,63 @@
+     SysTask_Done(task);
+ }
+ 
++/* pc port: PC_TRACE_FISH=1 prints one line per fishing-task state change;
++ * pc/src/pc_probe2d.c owns the gate and drops the repeats.
++ *
++ * The bite window is the one input in this game a scripted run cannot aim at
++ * by reading the tree. FishingTask_SetFishWait draws the delay before the bite
++ * from the RNG, and an A press that arrives before the window opens is
++ * FishingTask_ReeledInEarly, so mashing A fails by construction. The frame
++ * printed beside `bite` is the frame a scripted run presses on.
++ *
++ * The mapping is written against the enum's NAMES rather than its values, so
++ * renumbering the action table cannot silently retarget the trace. */
++static const char *PCFishStateName(int action)
++{
++    switch (action) {
++    case FUNC_FishingTask_WaitForFish:
++        // Reached once the delay is drawn, so the line carries the drawn value.
++        return "wait";
++    case FUNC_FishingTask_WaitForNoFish:
++        return "none";
++    case FUNC_FishingTask_CheckForReelInFish:
++        // The window is open from this frame, for `window` frames.
++        return "bite";
++    case FUNC_FishingTask_CaughtFish:
++        return "caught";
++    case FUNC_FishingTask_ReeledInEarly:
++        return "early";
++    case FUNC_FishingTask_FishGotAway:
++        return "away";
++    }
++
++    return NULL;
++}
++
++static void PCFishTrace(const FishingTask *fishingTask)
++{
++    extern void pc_fish_trace(int action, const char *what, int rod, int delay, int window);
++
++    pc_fish_trace(fishingTask->fishingTask,
++        PCFishStateName(fishingTask->fishingTask),
++        fishingTask->rodType,
++        fishingTask->fishDelayCounter,
++        fishingTask->fishHookedCounter);
++}
++
+ static void GoFish(SysTask *task, void *fishingTaskParam)
+ {
+     FishingTask *fishingTask = fishingTaskParam;
+     PlayerAvatar *playerAvatar = fishingTask->fieldSystem->playerAvatar;
+     MapObject *playerMapObject = PlayerAvatar_GetMapObject(playerAvatar);
+ 
+-    while (sFishingActions[fishingTask->fishingTask](fishingTask, playerAvatar, playerMapObject)) {}
++    /* Once before the loop and once after every action that hands on to
++     * another; between them they see every state this task passes through. */
++    PCFishTrace(fishingTask);
++
++    while (sFishingActions[fishingTask->fishingTask](fishingTask, playerAvatar, playerMapObject)) {
++        PCFishTrace(fishingTask);
++    }
+ }
+ 
+ static BOOL FishingTask_Start(FishingTask *fishingTask, PlayerAvatar *playerAvatar, MapObject *playerMapObject)

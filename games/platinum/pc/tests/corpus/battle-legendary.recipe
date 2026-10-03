@@ -1,0 +1,23 @@
+# A legendary encounter, BATTLE_STATUS_LEGENDARY, which is its own cut-in
+# and its own music, and the flag no other station sets.
+#
+# Level 20 rather than the 50 the game uses. At 50 the fight outlives the
+# lead's first move and the run then sits on "There's no PP left for this
+# move!" forever, which is a property of driving a battle with A alone rather
+# than a defect. A station exists to end.
+
+name FIGHTER
+gender GENDER_MALE
+trainer-id 20006
+money 24000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+party SPECIES_INFERNAPE 45 ITEM_NONE
+# The lead's first move is set explicitly. A battle station is driven
+# with A alone, which picks move slot 0 every turn, so a lead whose
+# natural slot 0 is a status move never ends its fight, measured on a
+# level 22 Monferno, which drew a level 5 Starly out past 40,000 frames.
+party-move 0 0 MOVE_FLAMETHROWER
+map MAP_HEADER_SNOWPOINT_CITY 0x17B 0xEA FACE_DOWN

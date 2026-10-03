@@ -1,0 +1,17 @@
+# `pokedex` is what puts the entry in the start menu; the party is what puts
+# anything in the list, since Pokemon_GiveMonFromScript marks each species
+# caught on the way in.
+
+name DEXTER
+gender GENDER_FEMALE
+trainer-id 30118
+money 2000
+pokedex 1
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 12 ITEM_NONE
+party SPECIES_STARLY 8 ITEM_NONE
+party SPECIES_BIDOOF 7 ITEM_NONE
+party SPECIES_KRICKETOT 6 ITEM_NONE
+party SPECIES_SHINX 9 ITEM_NONE
+party SPECIES_ABRA 10 ITEM_NONE
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

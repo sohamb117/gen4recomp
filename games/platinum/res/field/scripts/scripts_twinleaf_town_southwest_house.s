@@ -1,0 +1,46 @@
+#include "macros/scrcmd.inc"
+#include "res/text/bank/twinleaf_town_southwest_house.h"
+
+
+    ScriptEntry TwinleafTownSouthwestHouse_ExpertF
+    ScriptEntry TwinleafTownSouthwestHouse_Twin
+    ScriptEntryEnd
+
+TwinleafTownSouthwestHouse_ExpertF:
+    PlaySE SE_CONFIRM_sseq_3
+    LockAll
+    FacePlayer
+    GoToIfSet FLAG_HAS_POKEDEX, TwinleafTownSouthwestHouse_ProfRowanGavePokedex
+    Message TwinleafTownSouthwestHouse_Text_PokemonProfessorReturned
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+TwinleafTownSouthwestHouse_ProfRowanGavePokedex:
+    Message TwinleafTownSouthwestHouse_Text_ProfRowanGavePokedex
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+TwinleafTownSouthwestHouse_Twin:
+    PlaySE SE_CONFIRM_sseq_3
+    LockAll
+    FacePlayer
+    BufferPlayerName 0
+    GoToIfSet FLAG_HAS_POKEDEX, TwinleafTownSouthwestHouse_CanIBeFriendsWithPokemon
+    Message TwinleafTownSouthwestHouse_Text_IWantACutePokemon
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+TwinleafTownSouthwestHouse_CanIBeFriendsWithPokemon:
+    Message TwinleafTownSouthwestHouse_Text_CanIBeFriendsWithPokemon
+    WaitButton
+    CloseMessage
+    ReleaseAll
+    End
+
+    .balign 4, 0

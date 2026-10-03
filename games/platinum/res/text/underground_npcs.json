@@ -1,0 +1,439 @@
+{
+  "key": 10232,
+  "messages": [
+    {
+      "id": "UndergroundNPCs_Text_IllTradeYouSomething",
+      "en_US": [
+        "You’ve got a Sphere or two?\n",
+        "If you do, I’ll trade you something."
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_PickSpherePrompt",
+      "en_US": [
+        "Which Sphere will you trade me for\n",
+        "my {STRVAR_1 25, 2, 0}?"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_LetsDoThisTrade",
+      "en_US": [
+        "All right!\n",
+        "Let’s do this trade!"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_YouDontHaveRoom",
+      "en_US": [
+        "Oh, now wait a second!\n",
+        "You don’t have any room for this!"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_WrongKindOfSphere",
+      "en_US": "That’s not the right kind of Sphere!"
+    },
+    {
+      "id": "UndergroundNPCs_Text_SphereTooSmall",
+      "en_US": [
+        "Hmm...\n",
+        "No, this Sphere’s not big enough."
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_ItemWasObtained",
+      "en_US": [
+        "The {STRVAR_1 25, 2, 0}\n",
+        "was obtained!"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_YouObtainedSphere",
+      "en_US": [
+        "You obtained a {STRVAR_1 25, 2, 0},\n",
+        "size {STRVAR_1 51, 6, 0}."
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_DoYouNeedAnythingElse",
+      "en_US": "Do you need anything else?"
+    },
+    {
+      "id": "UndergroundNPCs_Text_BeSeeingYouThen",
+      "en_US": "I’ll be seeing you, then!"
+    },
+    {
+      "id": "UndergroundNPCs_Text_ConfirmTradePrompt",
+      "en_US": [
+        "You’ll trade your {STRVAR_1 25, 2, 0}\n",
+        "for my {STRVAR_1 25, 4, 0}?"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_AllRightLetsTrade",
+      "en_US": [
+        "All right!\n",
+        "Let’s trade!"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_YouDontHaveRoomForSphere_Unused",
+      "en_US": [
+        "Oh, now wait a second! You don’t\n",
+        "have room for another Sphere!"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_GetTrap",
+      "en_US": "GET TRAP"
+    },
+    {
+      "id": "UndergroundNPCs_Text_GiveTrap",
+      "en_US": "GIVE TRAP"
+    },
+    {
+      "id": "UndergroundNPCs_Text_Exit_Trap",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "UndergroundNPCs_Text_GetGoods",
+      "en_US": "GET GOODS"
+    },
+    {
+      "id": "UndergroundNPCs_Text_GiveGoods",
+      "en_US": "GIVE GOODS"
+    },
+    {
+      "id": "UndergroundNPCs_Text_Exit_Goods",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "UndergroundNPCs_Text_SpheresOnHand",
+      "en_US": [
+        "Spheres\n",
+        " on hand"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_TrapsOnHand",
+      "en_US": [
+        "Traps on\n",
+        " hand"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_GoodsOnHand",
+      "en_US": [
+        "Goods on\n",
+        " hand"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "UndergroundNPCs_Text_RequiredSphere",
+      "en_US": "Required Sphere"
+    },
+    {
+      "id": "UndergroundNPCs_Text_OfferedSphere",
+      "en_US": "Offered Sphere"
+    },
+    {
+      "id": "UndergroundNPCs_Text_SphereTemplate",
+      "en_US": "{STRVAR_1 25, 2, 0} {STRVAR_1 51, 6, 0}"
+    },
+    {
+      "id": "UndergroundNPCs_Text_NotForSale",
+      "en_US": "NOT FOR SALE"
+    },
+    {
+      "id": "UndergroundNPCs_Text_IllTradeSpheresForTreasures",
+      "en_US": [
+        "You have any treasures? I’ll trade\n",
+        "you some Spheres for them."
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_GiveTreasures",
+      "en_US": "GIVE TREASURES"
+    },
+    {
+      "id": "UndergroundNPCs_Text_TreasuresOnHand",
+      "en_US": [
+        "Treasures\n",
+        " on hand"
+      ]
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00030",
+      "garbage": 34
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00031",
+      "garbage": 20
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00032",
+      "garbage": 35
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00033",
+      "garbage": 31
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00034",
+      "garbage": 26
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00035",
+      "garbage": 17
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00036",
+      "garbage": 64
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00037",
+      "garbage": 22
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00038",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00039",
+      "garbage": 3
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00040",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00041",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00042",
+      "garbage": 31
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00043",
+      "garbage": 22
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00044",
+      "garbage": 35
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00045",
+      "garbage": 31
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00046",
+      "garbage": 26
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00047",
+      "garbage": 17
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00048",
+      "garbage": 56
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00049",
+      "garbage": 22
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00050",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00051",
+      "garbage": 3
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00052",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00053",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00054",
+      "garbage": 37
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00055",
+      "garbage": 22
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00056",
+      "garbage": 35
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00057",
+      "garbage": 31
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00058",
+      "garbage": 26
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00059",
+      "garbage": 17
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00060",
+      "garbage": 63
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00061",
+      "garbage": 22
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00062",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00063",
+      "garbage": 3
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00064",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00065",
+      "garbage": 2
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00066",
+      "garbage": 31
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00067",
+      "garbage": 14
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00068",
+      "garbage": 20
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00069",
+      "garbage": 35
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00070",
+      "garbage": 31
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00071",
+      "garbage": 32
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00072",
+      "garbage": 31
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00073",
+      "garbage": 52
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00074",
+      "garbage": 11
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00075",
+      "garbage": 11
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00076",
+      "garbage": 21
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00077",
+      "garbage": 32
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00078",
+      "garbage": 32
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00079",
+      "garbage": 50
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00080",
+      "garbage": 14
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00081",
+      "garbage": 43
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00082",
+      "garbage": 17
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00083",
+      "garbage": 28
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00084",
+      "garbage": 33
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00085",
+      "garbage": 17
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00086",
+      "garbage": 27
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00087",
+      "garbage": 27
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00088",
+      "garbage": 36
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00089",
+      "garbage": 23
+    },
+    {
+      "id": "UndergroundNPCs_Text_Dummy_00090",
+      "garbage": 42
+    },
+    {
+      "id": "UndergroundNPCs_Text_RoarkIntro",
+      "en_US": [
+        "Roark: Hey! {STRVAR_1 3, 0, 0}!\n",
+        "Is this maybe your first time here?\r",
+        "Welcome to Sinnoh’s Underground!\r",
+        "Huh? Where is this, you ask?\n",
+        "Doesn’t the Radar make it obvious?\r",
+        "This is a giant underground network\n",
+        "of passages underneath Sinnoh.\r",
+        "Huh? What am I doing down in this\n",
+        "expanse of a place?\r",
+        "That’s kind of hard to answer.\r",
+        "I mean, you can do pretty much\n",
+        "anything you want down here.\r",
+        "For instance, you can dig up Treasure,\n",
+        "Spheres, and make a Secret Base.\r",
+        "You can play with your friends down\n",
+        "here, too.\r",
+        "You should talk to the Underground\n",
+        "Man in Eterna City.\r",
+        "I have to get going now.\n",
+        "I’ll see you around!"
+      ]
+    }
+  ]
+}

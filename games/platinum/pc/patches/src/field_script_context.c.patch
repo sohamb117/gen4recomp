@@ -1,0 +1,27 @@
+--- a/src/field_script_context.c
++++ b/src/field_script_context.c
+@@ -67,6 +67,10 @@
+         return FALSE;
+ 
+     case SCRIPT_STATE_WAITING:
++        {
++            extern void pc_script_stall(const void *fn);
++            pc_script_stall((const void *)ctx->shouldResume);
++        }
+         if (ctx->shouldResume != NULL) {
+             if (ctx->shouldResume(ctx) == TRUE) {
+                 ctx->state = SCRIPT_STATE_RUNNING;
+@@ -83,6 +87,13 @@
+                 return FALSE;
+             }
+             u16 cmdCode = ScriptContext_ReadHalfWord(ctx);
++            /* pc port: PC_TRACE_SCRIPT=1 prints every dispatched opcode --
++             * the instrument that settles "which bytecode actually ran"
++             * without a debugger in the loop (pc_probe2d.c owns the gate). */
++            {
++                extern void pc_script_trace(unsigned op, const void *at);
++                pc_script_trace(cmdCode, ctx->scriptPtr);
++            }
+             if (cmdCode >= ctx->cmdTableSize) {
+                 GF_ASSERT(FALSE);
+                 ctx->state = SCRIPT_STATE_STOPPED;

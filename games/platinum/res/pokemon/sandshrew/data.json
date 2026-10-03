@@ -1,0 +1,199 @@
+{
+    "base_stats": {
+        "hp": 50,
+        "attack": 75,
+        "defense": 85,
+        "speed": 40,
+        "special_attack": 20,
+        "special_defense": 30
+    },
+    "types": [ "TYPE_GROUND", "TYPE_GROUND" ],
+    "catch_rate": 255,
+    "base_exp_reward": 93,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 1,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_QUICK_CLAW"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_SAND_VEIL", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_SCRATCH" ],
+            [ 3, "MOVE_DEFENSE_CURL" ],
+            [ 7, "MOVE_SAND_ATTACK" ],
+            [ 9, "MOVE_POISON_STING" ],
+            [ 13, "MOVE_RAPID_SPIN" ],
+            [ 15, "MOVE_SWIFT" ],
+            [ 19, "MOVE_FURY_SWIPES" ],
+            [ 21, "MOVE_ROLLOUT" ],
+            [ 25, "MOVE_FURY_CUTTER" ],
+            [ 27, "MOVE_SAND_TOMB" ],
+            [ 31, "MOVE_SLASH" ],
+            [ 33, "MOVE_GYRO_BALL" ],
+            [ 37, "MOVE_SANDSTORM" ]
+        ],
+        "by_tm": [
+            "TM01",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM21",
+            "TM23",
+            "TM26",
+            "TM27",
+            "TM28",
+            "TM31",
+            "TM32",
+            "TM37",
+            "TM39",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM56",
+            "TM58",
+            "TM65",
+            "TM74",
+            "TM75",
+            "TM76",
+            "TM78",
+            "TM80",
+            "TM81",
+            "TM82",
+            "TM83",
+            "TM84",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM06",
+            "HM08"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_ROLLOUT",
+            "MOVE_SNORE",
+            "MOVE_EARTH_POWER",
+            "MOVE_KNOCK_OFF",
+            "MOVE_SWIFT"
+        ],
+        "egg_moves": [
+            "MOVE_FLAIL",
+            "MOVE_SAFEGUARD",
+            "MOVE_COUNTER",
+            "MOVE_RAPID_SPIN",
+            "MOVE_ROCK_SLIDE",
+            "MOVE_METAL_CLAW",
+            "MOVE_SWORDS_DANCE",
+            "MOVE_CRUSH_CLAW",
+            "MOVE_NIGHT_SLASH"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            22,
+            "SPECIES_SANDSLASH"
+        ]
+    ],
+    "offspring": "SPECIES_SANDSHREW",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 24,
+        "weight_pounds": 26.5,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 312,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 312,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 22,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 22,
+        "en": {
+            "name": "SANDSHREW",
+            "category": "Mouse Pokémon",
+            "entry_text": [
+                "To protect itself from attackers,\n",
+                "it curls up into a ball. It lives in\n",
+                "arid regions with minimal rainfall."
+            ]
+        },
+        "fr": {
+            "name": "SABELETTE",
+            "category": "Pokémon Souris",
+            "entry_text": [
+                "Il vit sur des terres arides\n",
+                "épargnées par la pluie. Il se roule\n",
+                "en boule pour se protéger."
+            ]
+        },
+        "de": {
+            "name": "SANDAN",
+            "category": "Maus",
+            "entry_text": [
+                "Es lebt in trockenen Regionen mit\n",
+                "wenig Regen. Es rollt sich ein, um\n",
+                "sich vor Gegnern zu schützen."
+            ]
+        },
+        "it": {
+            "name": "SANDSHREW",
+            "category": "Pokémon Topo",
+            "entry_text": [
+                "Vive in zone aride con precipitazioni\n",
+                "minime. Si arrotola come se fosse\n",
+                "una palla per difendersi dai nemici."
+            ]
+        },
+        "es": {
+            "name": "SANDSHREW",
+            "category": "Pokémon Ratón",
+            "entry_text": [
+                "Vive en zonas áridas donde casi\n",
+                "no llueve. Se enrosca formando\n",
+                "una bola para defenderse."
+            ]
+        },
+        "jp": {
+            "name": "サンド",
+            "category": "ねずみポケモン",
+            "entry_text": [
+                "あめが　ほとんど　ふらない\n",
+                "かんそうした　とちに　せいそく。\n",
+                "からだを　まるめて　みを　まもる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 2056
+    }
+}

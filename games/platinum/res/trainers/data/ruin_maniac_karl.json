@@ -1,0 +1,65 @@
+{
+    "name": "Karl",
+    "class": "TRAINER_CLASS_RUIN_MANIAC",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GEODUDE",
+            "form": 0,
+            "level": 19,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GEODUDE",
+            "form": 0,
+            "level": 21,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BRONZOR",
+            "form": 0,
+            "level": 23,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Ancient ruins rife with the UNOWN...\n",
+                "There has to be a meaning!\r",
+                "But its significance eludes me, and\n",
+                "that’s gotten me cranky!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "The search must continue!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "The significance of the ancient ruins...\r",
+                "Only Pokémon that look like the letters\n",
+                "of some strange language...\r",
+                "Can they be trying to convey a message\n",
+                "to us?\n"
+            ]
+        }
+    ]
+}

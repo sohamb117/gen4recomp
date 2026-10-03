@@ -1,0 +1,61 @@
+{
+    "name": "Daisy",
+    "class": "TRAINER_CLASS_PSYCHIC_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SLOWPOKE",
+            "form": 0,
+            "level": 52,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SLOWBRO",
+            "form": 0,
+            "level": 56,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Right after this, you will send out your\n",
+                "Pokémon to do battle!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "After this, I will reluctantly hand over\n",
+                "the prize money to you...\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "What will you do after this?\r",
+                "Why don’t you decide for yourself?\n",
+                "It would be much more fun that way!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Right after this, you will hurl a Poké\n",
+                "Ball in an astonishingly cool way!\r"
+            ]
+        }
+    ]
+}

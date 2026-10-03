@@ -1,0 +1,62 @@
+# Party menu and the summary screen, entered twice.
+#
+# The second entry is the point of the second half. A screen that is opened,
+# used and closed once never re-runs its own load, so it cannot show an
+# overlay whose statics survived the first teardown; every menu script here
+# therefore enters, exercises, leaves and enters again, and the pinned frame
+# is inside the second visit.
+#
+# Cursor geography, measured rather than assumed: the party menu's slots are
+# two columns, so RIGHT from slot 0 is slot 1 and DOWN from slot 1 is the
+# CANCEL button, a first version pressed DOWN there, took CANCEL and was
+# back at the start menu with the picture still looking plausible.
+#
+# The first lines are lab-continue.txt's, unchanged.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+2900 keys X
+2916 keys none
+3000 keys A
+3016 keys none
+3400 keys RIGHT
+3416 keys none
+3470 keys A
+3486 keys none
+3560 keys A
+3576 keys none
+4400 keys RIGHT
+4416 keys none
+4470 keys RIGHT
+4486 keys none
+4540 keys RIGHT
+4556 keys none
+4610 keys RIGHT
+4626 keys none
+4700 keys B
+4716 keys none
+4950 keys B
+4966 keys none
+5150 keys B
+5166 keys none
+5450 keys X
+5466 keys none
+5550 keys A
+5566 keys none
+5950 keys RIGHT
+5966 keys none
+6020 keys A
+6036 keys none
+6110 keys A
+6126 keys none
+6950 keys RIGHT
+6966 keys none
+7020 keys RIGHT
+7036 keys none

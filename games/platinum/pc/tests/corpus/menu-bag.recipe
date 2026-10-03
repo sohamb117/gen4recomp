@@ -1,0 +1,20 @@
+# One item in each of the bag's eight pockets, so every pocket the run cycles
+# through has something in it: an empty pocket draws the same "no items" page
+# whichever one it is, and a station that cycled past eight of those would pin
+# a picture that says nothing about which pocket it is on.
+
+name BAGGER
+gender GENDER_FEMALE
+trainer-id 30116
+money 12345
+var VAR_PLAYER_STARTER SPECIES_CHIMCHAR
+party SPECIES_MONFERNO 18 ITEM_NONE
+item ITEM_ESCAPE_ROPE 3
+item ITEM_POTION 7
+item ITEM_POKE_BALL 12
+item ITEM_TM24 1
+item ITEM_ORAN_BERRY 5
+item ITEM_GRASS_MAIL 2
+item ITEM_X_ATTACK 4
+item ITEM_BICYCLE 1
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

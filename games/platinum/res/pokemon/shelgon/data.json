@@ -1,0 +1,185 @@
+{
+    "base_stats": {
+        "hp": 65,
+        "attack": 95,
+        "defense": 100,
+        "speed": 50,
+        "special_attack": 60,
+        "special_defense": 50
+    },
+    "types": [ "TYPE_DRAGON", "TYPE_DRAGON" ],
+    "catch_rate": 45,
+    "base_exp_reward": 144,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 2,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_DRAGON_FANG"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 40,
+    "base_friendship": 35,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_DRAGON", "EGG_GROUP_DRAGON" ],
+    "abilities": [ "ABILITY_ROCK_HEAD", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_WHITE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_RAGE" ],
+            [ 1, "MOVE_BITE" ],
+            [ 1, "MOVE_LEER" ],
+            [ 1, "MOVE_HEADBUTT" ],
+            [ 5, "MOVE_BITE" ],
+            [ 10, "MOVE_LEER" ],
+            [ 16, "MOVE_HEADBUTT" ],
+            [ 20, "MOVE_FOCUS_ENERGY" ],
+            [ 25, "MOVE_EMBER" ],
+            [ 30, "MOVE_PROTECT" ],
+            [ 32, "MOVE_DRAGON_BREATH" ],
+            [ 37, "MOVE_ZEN_HEADBUTT" ],
+            [ 43, "MOVE_SCARY_FACE" ],
+            [ 50, "MOVE_CRUNCH" ],
+            [ 55, "MOVE_DRAGON_CLAW" ],
+            [ 61, "MOVE_DOUBLE_EDGE" ]
+        ],
+        "by_tm": [
+            "TM02",
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM27",
+            "TM31",
+            "TM32",
+            "TM35",
+            "TM38",
+            "TM39",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM58",
+            "TM59",
+            "TM65",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM01",
+            "HM04",
+            "HM06"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_FURY_CUTTER",
+            "MOVE_ROLLOUT",
+            "MOVE_SNORE",
+            "MOVE_OUTRAGE",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_TWISTER",
+            "MOVE_IRON_DEFENSE"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            50,
+            "SPECIES_SALAMENCE"
+        ]
+    ],
+    "offspring": "SPECIES_BAGON",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_SILENT"
+    },
+    "pokedex_data": {
+        "height_inches": 43,
+        "weight_pounds": 243.6,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 245,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 245,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 14,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 14,
+        "en": {
+            "name": "SHELGON",
+            "category": "Endurance Pokémon",
+            "entry_text": [
+                "Within its rugged shell, its cells\n",
+                "have begun changing. The shell\n",
+                "peels off the instant it evolves."
+            ]
+        },
+        "fr": {
+            "name": "DRACKHAUS",
+            "category": "Pokémon Endurant",
+            "entry_text": [
+                "Ses cellules ont commencé à\n",
+                "changer dans sa robuste coquille.\n",
+                "Il la perd en évoluant."
+            ]
+        },
+        "de": {
+            "name": "DRASCHEL",
+            "category": "Durchsteher",
+            "entry_text": [
+                "Die Zellen seines Panzers fingen an,\n",
+                "sich zu verändern. Er fällt ab,\n",
+                "sobald sich das PKMN entwickelt."
+            ]
+        },
+        "it": {
+            "name": "SHELGON",
+            "category": "Pokémon Resistenza",
+            "entry_text": [
+                "Nella sua dura corazza le cellule\n",
+                "hanno cominciato a cambiare.\n",
+                "Quando si evolve, la corazza cade."
+            ]
+        },
+        "es": {
+            "name": "SHELGON",
+            "category": "Pokémon Resistencia",
+            "entry_text": [
+                "Las células han empezado a cambiar\n",
+                "dentro de su dura concha, que se\n",
+                "separa cuando evoluciona."
+            ]
+        },
+        "jp": {
+            "name": "コモル－",
+            "category": "にんたいポケモン",
+            "entry_text": [
+                "かたい　カラの　なかでは　さいぼうが\n",
+                "へんかを　はじめている。しんかする\n",
+                "しゅんかんに　カラが　はがれおちる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 3855
+    }
+}

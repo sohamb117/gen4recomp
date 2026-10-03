@@ -1,0 +1,49 @@
+{
+  "key": 26381,
+  "messages": [
+    {
+      "id": "RecordChatotCry_Text_OKToForgetCurrentSaying",
+      "en_US": [
+        "It will forget the saying it now\n",
+        "knows. Is that OK?"
+      ]
+    },
+    {
+      "id": "RecordChatotCry_Text_PressAOrBThenSpeak",
+      "en_US": [
+        "Press the A or B Button, then speak\n",
+        "into the microphone.\r"
+      ]
+    },
+    {
+      "id": "RecordChatotCry_Text_ChatotLearnedSaying",
+      "en_US": "{STRVAR_1 1, 0, 0} learned a new saying!\r"
+    },
+    {
+      "id": "RecordChatotCry_Text_ChatotFailedToLearnSaying",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} failed to learn a new\n",
+        "saying.\r"
+      ]
+    },
+    {
+      "id": "RecordChatotCry_Text_WantToTryAgain",
+      "en_US": "Would you like to try again?"
+    },
+    {
+      "id": "RecordChatotCry_Text_UnableToConcentrate",
+      "en_US": [
+        "It seems to be distracted and\n",
+        "unable to concentrate..."
+      ]
+    },
+    {
+      "id": "RecordChatotCry_Text_Yes",
+      "en_US": "Yes"
+    },
+    {
+      "id": "RecordChatotCry_Text_No",
+      "en_US": "No"
+    }
+  ]
+}

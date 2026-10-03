@@ -1,0 +1,25 @@
+--- a/subprojects/NitroSystem-071126.1/libraries/snd/src/player.c
++++ b/subprojects/NitroSystem-071126.1/libraries/snd/src/player.c
+@@ -722,6 +722,10 @@
+ 
+     seqPlayer->handle = handle;
+     handle->player = seqPlayer;
++    /* sSeqPlayer[] is host .bss; the handle lives in SoundSystem, in
++     * the port window. */
++    { extern void pc_state_mark_host_field(const void *);
++      pc_state_mark_host_field(&handle->player); }
+ 
+     return seqPlayer;
+ }
+@@ -803,6 +807,11 @@
+ 
+     NNS_FndRemoveListObject(&player->heapList, heap);
+ 
++    /* The other direction of the same pair: an NNSSndPlayerHeap in the port
++     * window recording which host sSeqPlayer[] entry owns it. Marked for the
++     * reason the hunk above is; this one was missed. */
++    { extern void pc_state_mark_host_field(const void *);
++      pc_state_mark_host_field(&heap->player); }
+     heap->player = seqPlayer;
+     seqPlayer->heap = heap;
+ 

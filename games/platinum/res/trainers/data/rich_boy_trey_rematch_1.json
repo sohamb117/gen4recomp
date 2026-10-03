@@ -1,0 +1,35 @@
+{
+    "name": "Trey",
+    "class": "TRAINER_CLASS_RICH_BOY",
+    "items": [
+        "ITEM_FULL_RESTORE"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_LUXRAY",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 4
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Ah, it’s you. I’m bored yet again.\n",
+                "Care to break the monotony?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "The monotony was broken, but...\n"
+        }
+    ]
+}

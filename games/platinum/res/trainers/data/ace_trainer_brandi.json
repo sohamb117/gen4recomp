@@ -1,0 +1,66 @@
+{
+    "name": "Brandi",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MAROWAK",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_BONE_RUSH",
+                "MOVE_STONE_EDGE",
+                "MOVE_SWORDS_DANCE",
+                "MOVE_ENDEAVOR"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_KANGASKHAN",
+            "form": 0,
+            "level": 57,
+            "item": null,
+            "moves": [
+                "MOVE_DIZZY_PUNCH",
+                "MOVE_CRUNCH",
+                "MOVE_OUTRAGE",
+                "MOVE_EARTHQUAKE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I will win. I am sure of it.\n",
+                "Therefore, you will lose!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "But...\n",
+                "This isn’t possible!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "It’s not that you’ve won.\n",
+                "It’s just that I lost!\r",
+                "...It’s all the same.\n",
+                "Go, me.\n"
+            ]
+        }
+    ]
+}

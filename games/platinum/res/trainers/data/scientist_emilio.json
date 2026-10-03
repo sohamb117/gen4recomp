@@ -1,0 +1,32 @@
+{
+    "name": "Emilio",
+    "class": "TRAINER_CLASS_SCIENTIST",
+    "items": [
+        "ITEM_X_SPECIAL"
+    ],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_KADABRA",
+            "form": 0,
+            "level": 27,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Hmm... I failed to foresee this\n",
+                "outcome...\n"
+            ]
+        }
+    ]
+}

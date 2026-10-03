@@ -1,0 +1,183 @@
+{
+    "base_stats": {
+        "hp": 70,
+        "attack": 60,
+        "defense": 125,
+        "speed": 55,
+        "special_attack": 115,
+        "special_defense": 70
+    },
+    "types": [ "TYPE_ROCK", "TYPE_WATER" ],
+    "catch_rate": 45,
+    "base_exp_reward": 199,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 2,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_12_5",
+    "hatch_cycles": 30,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_WATER_1", "EGG_GROUP_WATER_3" ],
+    "abilities": [ "ABILITY_SWIFT_SWIM", "ABILITY_SHELL_ARMOR" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BLUE",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_CONSTRICT" ],
+            [ 1, "MOVE_WITHDRAW" ],
+            [ 1, "MOVE_BITE" ],
+            [ 7, "MOVE_BITE" ],
+            [ 10, "MOVE_WATER_GUN" ],
+            [ 16, "MOVE_ROLLOUT" ],
+            [ 19, "MOVE_LEER" ],
+            [ 25, "MOVE_MUD_SHOT" ],
+            [ 28, "MOVE_BRINE" ],
+            [ 34, "MOVE_PROTECT" ],
+            [ 37, "MOVE_ANCIENT_POWER" ],
+            [ 40, "MOVE_SPIKE_CANNON" ],
+            [ 48, "MOVE_TICKLE" ],
+            [ 56, "MOVE_ROCK_BLAST" ],
+            [ 67, "MOVE_HYDRO_PUMP" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM27",
+            "TM32",
+            "TM37",
+            "TM39",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM55",
+            "TM58",
+            "TM68",
+            "TM69",
+            "TM71",
+            "TM74",
+            "TM76",
+            "TM78",
+            "TM80",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM90",
+            "HM03",
+            "HM06",
+            "HM07",
+            "HM08"
+        ],
+        "by_tutor": [
+            "MOVE_DIVE",
+            "MOVE_ICY_WIND",
+            "MOVE_ROLLOUT",
+            "MOVE_SNORE",
+            "MOVE_ANCIENT_POWER",
+            "MOVE_EARTH_POWER",
+            "MOVE_IRON_DEFENSE",
+            "MOVE_KNOCK_OFF"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_OMANYTE",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 39,
+        "weight_pounds": 77.2,
+        "body_shape": "SHAPE_TENTACLES",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 14,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 14,
+        "en": {
+            "name": "OMASTAR",
+            "category": "Spiral Pokémon",
+            "entry_text": [
+                "It is thought that this Pokémon\n",
+                "became extinct because its spiral\n",
+                "shell grew too large."
+            ]
+        },
+        "fr": {
+            "name": "AMONISTAR",
+            "category": "Pokémon Spirale",
+            "entry_text": [
+                "On pense que ce Pokémon a\n",
+                "disparu parce que sa coquille en\n",
+                "spirale était devenue trop grosse."
+            ]
+        },
+        "de": {
+            "name": "AMOROSO",
+            "category": "Spirale",
+            "entry_text": [
+                "Man geht davon aus, dass das PKMN\n",
+                "ausgestorben ist, weil seine spiral-\n",
+                "förmige Schale zu groß wurde."
+            ]
+        },
+        "it": {
+            "name": "OMASTAR",
+            "category": "Pokémon Spirale",
+            "entry_text": [
+                "Si pensa che questo Pokémon si\n",
+                "sia estinto perché la sua conchiglia\n",
+                "a spirale è cresciuta troppo."
+            ]
+        },
+        "es": {
+            "name": "OMASTAR",
+            "category": "Pokémon Espiral",
+            "entry_text": [
+                "Se cree que este Pokémon se\n",
+                "extinguió porque su concha\n",
+                "espiral creció demasiado."
+            ]
+        },
+        "jp": {
+            "name": "オムスタ－",
+            "category": "うずまきポケモン",
+            "entry_text": [
+                "らせんじょうの　カラが　おおきく\n",
+                "なりすぎたことが　げんいんで\n",
+                "ぜつめつしたと　かんがえられている。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NONE",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_SOUTH_EAST",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 779
+    }
+}

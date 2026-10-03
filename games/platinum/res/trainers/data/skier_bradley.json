@@ -1,0 +1,65 @@
+{
+    "name": "Bradley",
+    "class": "TRAINER_CLASS_SKIER_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SNORUNT",
+            "form": 0,
+            "level": 36,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SWINUB",
+            "form": 0,
+            "level": 36,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_SNOVER",
+            "form": 0,
+            "level": 36,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I’m skiing right now, but OK.\n",
+                "As we Skiers say, “Spur thing!”\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "...I’ve hit an ice patch!\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I quite enjoyed that battle!\n",
+                "Let us meet again. Slalom!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "We might get snowbound, but why not?\n",
+                "It’s on the “spur” of the moment!\r"
+            ]
+        }
+    ]
+}

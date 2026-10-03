@@ -1,0 +1,43 @@
+{
+    "name": "Karina",
+    "class": "TRAINER_CLASS_PICNICKER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_EMPOLEON",
+            "form": 0,
+            "level": 54,
+            "item": null,
+            "moves": [
+                "MOVE_HYDRO_PUMP",
+                "MOVE_DRILL_PECK",
+                "MOVE_METAL_CLAW",
+                "MOVE_AQUA_JET"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Oh, I don’t know.\n",
+                "Should I play a little again?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh, boo!\n",
+                "How insulting!\n"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,199 @@
+{
+    "base_stats": {
+        "hp": 73,
+        "attack": 95,
+        "defense": 62,
+        "speed": 85,
+        "special_attack": 85,
+        "special_defense": 65
+    },
+    "types": [ "TYPE_NORMAL", "TYPE_NORMAL" ],
+    "catch_rate": 45,
+    "base_exp_reward": 165,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_FIELD", "EGG_GROUP_FIELD" ],
+    "abilities": [ "ABILITY_INTIMIDATE", "ABILITY_FRISK" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 3, "MOVE_LEER" ],
+            [ 7, "MOVE_ASTONISH" ],
+            [ 10, "MOVE_HYPNOSIS" ],
+            [ 13, "MOVE_STOMP" ],
+            [ 16, "MOVE_SAND_ATTACK" ],
+            [ 21, "MOVE_TAKE_DOWN" ],
+            [ 23, "MOVE_CONFUSE_RAY" ],
+            [ 27, "MOVE_CALM_MIND" ],
+            [ 33, "MOVE_ROLE_PLAY" ],
+            [ 38, "MOVE_ZEN_HEADBUTT" ],
+            [ 43, "MOVE_IMPRISON" ],
+            [ 49, "MOVE_CAPTIVATE" ],
+            [ 53, "MOVE_ME_FIRST" ]
+        ],
+        "by_tm": [
+            "TM04",
+            "TM05",
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM22",
+            "TM23",
+            "TM24",
+            "TM25",
+            "TM26",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM33",
+            "TM34",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM48",
+            "TM53",
+            "TM57",
+            "TM58",
+            "TM68",
+            "TM70",
+            "TM73",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM87",
+            "TM90",
+            "TM92"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_SNORE",
+            "MOVE_SPITE",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_LAST_RESORT",
+            "MOVE_BOUNCE",
+            "MOVE_SUCKER_PUNCH",
+            "MOVE_SWIFT",
+            "MOVE_UPROAR"
+        ],
+        "egg_moves": [
+            "MOVE_SPITE",
+            "MOVE_DISABLE",
+            "MOVE_BITE",
+            "MOVE_SWAGGER",
+            "MOVE_PSYCH_UP",
+            "MOVE_EXTRASENSORY",
+            "MOVE_THRASH",
+            "MOVE_DOUBLE_KICK",
+            "MOVE_ZEN_HEADBUTT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_STANTLER",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 55,
+        "weight_pounds": 157.0,
+        "body_shape": "SHAPE_QUADRUPED",
+        "trainer_scale_f": 256,
+        "pokemon_scale_f": 222,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 237,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 6,
+        "trainer_pos_m": 8,
+        "pokemon_pos_m": 7,
+        "en": {
+            "name": "STANTLER",
+            "category": "Big Horn Pokémon",
+            "entry_text": [
+                "Staring at its antlers creates\n",
+                "an odd sensation as if one were\n",
+                "being drawn into their centers."
+            ]
+        },
+        "fr": {
+            "name": "CERFROUSSE",
+            "category": "Pokémon Maxi Corne",
+            "entry_text": [
+                "Quiconque observe ses antennes\n",
+                "ressent une sensation étrange,\n",
+                "comme si leur centre l’attirait."
+            ]
+        },
+        "de": {
+            "name": "DAMHIRPLEX",
+            "category": "Vielender",
+            "entry_text": [
+                "Starrt man auf sein Geweih, bekommt\n",
+                "man das seltsame Gefühl, in dessen\n",
+                "Mitte gezogen zu werden."
+            ]
+        },
+        "it": {
+            "name": "STANTLER",
+            "category": "Pokémon Grancorno",
+            "entry_text": [
+                "Chi fissa le sue corna riceve una\n",
+                "strana sensazione, quasi come\n",
+                "se venisse risucchiato."
+            ]
+        },
+        "es": {
+            "name": "STANTLER",
+            "category": "Pokémon Grancuerno",
+            "entry_text": [
+                "Mirar a su cornamenta provoca\n",
+                "una extraña sensación de\n",
+                "pérdida de equilibrio."
+            ]
+        },
+        "jp": {
+            "name": "オドシシ",
+            "category": "おおツノポケモン",
+            "entry_text": [
+                "ツノを　みつめていると　わっかの\n",
+                "ちゅうしんに　すいこまれそうな\n",
+                "ふしぎな　きぶんに　なってしまう。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_SOUTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 1285
+    }
+}

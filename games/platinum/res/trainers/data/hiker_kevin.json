@@ -1,0 +1,79 @@
+{
+    "name": "Kevin",
+    "class": "TRAINER_CLASS_HIKER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_PRIORITIZE_EXTREMES"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_GEODUDE",
+            "form": 0,
+            "level": 17,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GEODUDE",
+            "form": 0,
+            "level": 17,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ONIX",
+            "form": 0,
+            "level": 19,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GEODUDE",
+            "form": 0,
+            "level": 19,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Wahaha!\n",
+                "Laughter brings good fortune!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Wahahaha! There’s nothing that\n",
+                "I can do but laugh!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Wahahahaha!\n",
+                "...Go ahead, laugh at me--the loser!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Wahaha!\r",
+                "Laughter brings good fortune!\n",
+                "Forgetting your gloves brings a cold!\r"
+            ]
+        }
+    ]
+}

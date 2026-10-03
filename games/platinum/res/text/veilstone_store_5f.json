@@ -1,0 +1,86 @@
+{
+  "key": 9227,
+  "messages": [
+    {
+      "id": "VeilstoneStore5F_Text_GrabADrinkAndUnwind",
+      "en_US": [
+        "I’ve had enough of shopping for\n",
+        "a while.\r",
+        "I’ll grab a drink and unwind a bit."
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_TheyConsiderMeARegular",
+      "en_US": [
+        "I’ve shopped here loyally for years.\n",
+        "Now they consider me a regular! Ha!"
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_GiftThisStickyBarb",
+      "en_US": [
+        "Ah, young Pokémon Trainer...\r",
+        "As your senior in life, let me make\n",
+        "a gift of this Sticky Barb!\r"
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_SticksToFoeInflictsDamage",
+      "en_US": [
+        "That Sticky Barb is a hold item.\n",
+        "If the Pokémon holding it is hit...\r",
+        "The Sticky Barb sticks to the foe\n",
+        "and inflicts damage!"
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_TwoBuffGuysSideBySide",
+      "en_US": [
+        "Two buff guys standing side by side.\n",
+        "That’s all. What? What’s the problem?"
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_Directory",
+      "en_US": [
+        "B1F: Food & Produce\r",
+        "1F: Trainers’ Zone\r",
+        "2F: Battle Collection\r",
+        "3F: TM Corner\r",
+        "4F: Poké Dolls & Goods\r",
+        "5F: Rooftop Plaza"
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_WhichDrinkWouldYouLike",
+      "en_US": [
+        "It’s a Vending Machine.\n",
+        "Which drink would you like?"
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_ACanDroppedDown",
+      "en_US": [
+        "Clang!\r",
+        "A can of {STRVAR_1 8, 0, 0} dropped\n",
+        "down.\r"
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_ABonusCanDroppedDown",
+      "en_US": [
+        "Clang!\r",
+        "Bonus! Another can of {STRVAR_1 8, 0, 0}\n",
+        "dropped down.\r"
+      ]
+    },
+    {
+      "id": "VeilstoneStore5F_Text_NotEnoughMoney",
+      "en_US": "Not enough money..."
+    },
+    {
+      "id": "VeilstoneStore5F_Text_DecidedNotToBuyADrink",
+      "en_US": "Decided not to buy a drink."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+# The Resort Area, the east end of the Battle Frontier's island. Post-game,
+# so the story-cleared and national-dex flags are part of the recipe.
+#
+# The Fight Area was the first choice and is a written refusal instead: its
+# map change starts and never settles, and pressing A at it walks the player
+# somewhere else rather than finishing whatever is waiting. The Survival Area
+# on the same island mints clean, so it is that map and not the island.
+#
+# Coordinates are the fly destination the game's own spawn table
+# carries for this town, so nothing here is a guessed tile.
+
+name RESORT
+gender GENDER_MALE
+trainer-id 11370
+money 60000
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+badge BADGE_ID_BEACON
+story-cleared 1
+national-dex 1
+party SPECIES_INFERNAPE 60 ITEM_NONE
+party SPECIES_GARCHOMP 60 ITEM_NONE
+map MAP_HEADER_RESORT_AREA 0x322 0x1D9 FACE_DOWN

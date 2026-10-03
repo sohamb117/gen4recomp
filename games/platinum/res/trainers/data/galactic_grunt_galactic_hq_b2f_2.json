@@ -1,0 +1,57 @@
+{
+    "name": "Grunt",
+    "class": "TRAINER_CLASS_GALACTIC_GRUNT_MALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_HOUNDOUR",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MURKROW",
+            "form": 0,
+            "level": 40,
+            "item": null,
+            "moves": null,
+            "iv_scale": 30,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "What with that creepy Charon and a kid\n",
+                "like you around, the HQ’s not the\f",
+                "same anymore.\r",
+                "Like, you characters changed the,\n",
+                "well, character of the place!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Oh, sure. Why don’t you just get\n",
+                "all cocky about it!\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Without our special card key, you’re\n",
+                "not going to get very far.\r",
+                "Well, non-Team Galactic member?\n",
+                "What’s your next move?\n"
+            ]
+        }
+    ]
+}

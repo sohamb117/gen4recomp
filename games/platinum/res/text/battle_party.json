@@ -1,0 +1,428 @@
+{
+  "key": 4003,
+  "messages": [
+    {
+      "id": "BattleParty_Text_PartyPokemon1Name",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PartyPokemon2Name",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PartyPokemon3Name",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PartyPokemon4Name",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PartyPokemon5Name",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PartyPokemon6Name",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_ChooseAPokemon",
+      "en_US": "Choose a Pokémon."
+    },
+    {
+      "id": "BattleParty_Text_UseOnWhichPokemon",
+      "en_US": "Use on which Pokémon?"
+    },
+    {
+      "id": "BattleParty_Text_PokemonAbilityName",
+      "en_US": "{STRVAR_1 5, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonHeldItemName",
+      "en_US": "{STRVAR_1 8, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00010",
+      "garbage": 5
+    },
+    {
+      "id": "pl_msg_00000003_00011",
+      "garbage": 5
+    },
+    {
+      "id": "pl_msg_00000003_00012",
+      "garbage": 5
+    },
+    {
+      "id": "pl_msg_00000003_00013",
+      "garbage": 5
+    },
+    {
+      "id": "BattleParty_Text_PokemonPPLabel",
+      "en_US": "PP"
+    },
+    {
+      "id": "BattleParty_Text_ShiftButton",
+      "en_US": "SHIFT"
+    },
+    {
+      "id": "BattleParty_Text_MaleIcon",
+      "en_US": "♂"
+    },
+    {
+      "id": "BattleParty_Text_FemaleIcon",
+      "en_US": "♀"
+    },
+    {
+      "id": "BattleParty_Text_SummaryButton",
+      "en_US": "SUMMARY"
+    },
+    {
+      "id": "BattleParty_Text_CheckMovesButton",
+      "en_US": "CHECK MOVES"
+    },
+    {
+      "id": "BattleParty_Text_PokemonNoItemHeld",
+      "en_US": "No item held"
+    },
+    {
+      "id": "pl_msg_00000003_00021",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00022",
+      "en_US": "{STRVAR_1 1, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonLevelLabel",
+      "en_US": "Lv."
+    },
+    {
+      "id": "BattleParty_Text_PokemonLevelValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonExpToNextLevelLabel",
+      "en_US": "NEXT LV"
+    },
+    {
+      "id": "BattleParty_Text_PokemonExpToNextLevelValue",
+      "en_US": "{STRVAR_1 55, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00027",
+      "en_US": "{STRVAR_1 5, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonHPStatLabel",
+      "en_US": "HP"
+    },
+    {
+      "id": "BattleParty_Text_PokemonHPStatValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonMaxHPStatValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonHPStatDivider",
+      "en_US": "/"
+    },
+    {
+      "id": "BattleParty_Text_PokemonAttackStatLabel",
+      "en_US": "ATTACK"
+    },
+    {
+      "id": "BattleParty_Text_PokemonAttackStatValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonDefenseStatLabel",
+      "en_US": "DEFENSE"
+    },
+    {
+      "id": "BattleParty_Text_PokemonDefenseStatValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonSpAtkStatLabel",
+      "en_US": "SP. ATK"
+    },
+    {
+      "id": "BattleParty_Text_PokemonSpAtkStatValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonSpDefStatLabel",
+      "en_US": "SP. DEF"
+    },
+    {
+      "id": "BattleParty_Text_PokemonSpDefStatValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_PokemonSpeedStatLabel",
+      "en_US": "SPEED"
+    },
+    {
+      "id": "BattleParty_Text_PokemonSpeedStatValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00042",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_MovePPLabel",
+      "en_US": "PP"
+    },
+    {
+      "id": "BattleParty_Text_MoveCurrentPP",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_MoveMaxPP",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_MovePPDivider",
+      "en_US": "/"
+    },
+    {
+      "id": "pl_msg_00000003_00047",
+      "garbage": 2
+    },
+    {
+      "id": "BattleParty_Text_MovePowerLabel",
+      "en_US": "POWER"
+    },
+    {
+      "id": "BattleParty_Text_MovePowerValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_MoveStatNoValue",
+      "en_US": "---"
+    },
+    {
+      "id": "BattleParty_Text_MoveAccuracyLabel",
+      "en_US": "ACCURACY"
+    },
+    {
+      "id": "BattleParty_Text_MoveAccuracyValue",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_MoveCategoryLabel",
+      "en_US": "CATEGORY"
+    },
+    {
+      "id": "BattleParty_Text_MoveCategoryPhysical",
+      "en_US": "PHYSICAL"
+    },
+    {
+      "id": "BattleParty_Text_MoveCategoryStatus",
+      "en_US": "STATUS"
+    },
+    {
+      "id": "BattleParty_Text_MoveCategorySpecial",
+      "en_US": "SPECIAL"
+    },
+    {
+      "id": "BattleParty_Text_AppealPtsLabel",
+      "en_US": "APPEAL PTS"
+    },
+    {
+      "id": "BattleParty_Text_ForgetMoveButton",
+      "en_US": "FORGET"
+    },
+    {
+      "id": "BattleParty_Text_CancelMoveButton",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "BattleParty_Text_HMMovesCantBeForgotten",
+      "en_US": [
+        "HM moves can’t be\n",
+        "forgotten now."
+      ]
+    },
+    {
+      "id": "BattleParty_Text_Move1Name",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00062",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00063",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_Move2Name",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00065",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00066",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_Move3Name",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00068",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00069",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_Move4Name",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00071",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00072",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_MoveToLearnName",
+      "en_US": "{STRVAR_1 6, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00074",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "pl_msg_00000003_00075",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "BattleParty_Text_CantSwitchWithPokemonAlreadyInBattle",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} is already\n",
+        "in battle!"
+      ]
+    },
+    {
+      "id": "BattleParty_Text_CantSwitchWithFaintedPokemon",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} has no energy\n",
+        "left to battle!"
+      ]
+    },
+    {
+      "id": "BattleParty_Text_CantSwitchPokemon",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} can’t be switched\n",
+        "out!"
+      ]
+    },
+    {
+      "id": "BattleParty_Text_CantSwitchWithEgg",
+      "en_US": "An Egg can’t battle!"
+    },
+    {
+      "id": "BattleParty_Text_CantSwitchWithPartnersPokemon",
+      "en_US": [
+        "You can’t switch {STRVAR_1 3, 0, 0}’s\n",
+        "Pokémon with one of yours!"
+      ]
+    },
+    {
+      "id": "BattleParty_Text_ItemWontHaveAnyEffect",
+      "en_US": "It won’t have any effect."
+    },
+    {
+      "id": "BattleParty_Text_ItemRestoredHealth",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0}’s HP was restored\n",
+        "by {STRVAR_1 52, 1, 0} point(s)."
+      ]
+    },
+    {
+      "id": "BattleParty_Text_ItemCuredPoisoning",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} was cured of its\n",
+        "poisoning."
+      ]
+    },
+    {
+      "id": "BattleParty_Text_ItemCuredParalysis",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} was cured of\n",
+        "paralysis."
+      ]
+    },
+    {
+      "id": "BattleParty_Text_ItemCuredBurn",
+      "en_US": "{STRVAR_1 1, 0, 0}’s burn was healed."
+    },
+    {
+      "id": "BattleParty_Text_ItemCuredFreeze",
+      "en_US": "{STRVAR_1 1, 0, 0} was thawed out."
+    },
+    {
+      "id": "BattleParty_Text_ItemRestoredPP",
+      "en_US": "PP was restored."
+    },
+    {
+      "id": "BattleParty_Text_ItemRevivedPokemon",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} recovered from\n",
+        "fainting!"
+      ]
+    },
+    {
+      "id": "BattleParty_Text_ItemCuredMultipleStatuses",
+      "en_US": "{STRVAR_1 1, 0, 0} became healthy."
+    },
+    {
+      "id": "BattleParty_Text_ItemCuredConfusion",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} snapped out of its\n",
+        "confusion."
+      ]
+    },
+    {
+      "id": "BattleParty_Text_ItemCuredInfatuation",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} got over its\n",
+        "infatuation."
+      ]
+    },
+    {
+      "id": "BattleParty_Text_ItemCuredSleep",
+      "en_US": "{STRVAR_1 1, 0, 0} woke up."
+    },
+    {
+      "id": "BattleParty_Text_CantSwitchWithAlreadySelectedPokemon",
+      "en_US": [
+        "{STRVAR_1 1, 0, 0} has already been\n",
+        "selected."
+      ]
+    },
+    {
+      "id": "BattleParty_Text_RestoreWhichMove",
+      "en_US": "Restore which move?"
+    },
+    {
+      "id": "BattleParty_Text_EmbargoPreventsItemUse",
+      "en_US": [
+        "{STRVAR_1 6, 1, 0}’s effect prevents\n",
+        "the item’s use on {STRVAR_1 1, 0, 0}!"
+      ]
+    }
+  ]
+}

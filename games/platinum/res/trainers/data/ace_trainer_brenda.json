@@ -1,0 +1,68 @@
+{
+    "name": "Brenda",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_LOPUNNY",
+            "form": 0,
+            "level": 38,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_KIRLIA",
+            "form": 0,
+            "level": 36,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_MEDICHAM",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Tough Pokémon...\n",
+                "Tough Trainers...\r",
+                "You tell me, where else can I find\n",
+                "a place as good as this to train?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "That was good.\n",
+                "You’ve bonded well with your Pokémon.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Tough Pokémon...\n",
+                "Tough Trainers...\r",
+                "Their strength comes from their bond.\n",
+                "And that’s something that can be\f",
+                "made stronger anywhere.\n"
+            ]
+        }
+    ]
+}

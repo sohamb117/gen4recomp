@@ -1,0 +1,3457 @@
+# include "macros/frscrcmd.inc"
+# include "res/graphics/frontier/particles/frontier_particles.naix"
+# include "res/text/bank/battle_arcade_scene.h"
+# include "constants/battle_frontier.h"
+# include "constants/battle_arcade_functions.h"
+# include "constants/battle_frontier_emitters.h"
+
+    .data
+
+    .long _0662 - 4
+    .short 0xFD13
+
+    .balign 4, 0
+_0008:
+    .short 0xEEEE
+    .byte 0x00
+    .short 0x800F
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0010:
+    .short 0xEEEE
+    .byte 0x00
+    .short 0xEEEF
+    .byte 0x00
+    .short 0x800F
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_001C:
+    .short 0x0000
+    .short 0xEEEE
+    .byte 0x00
+    .short 0x0078
+    .short 0x0080
+    .byte 0x00
+    .byte 0x00
+    .short 0x0014
+    .short 0x800F
+    .byte 0x00
+    .short 0x00B8
+    .short 0x00C0
+    .byte 0x01
+    .byte 0x01
+    .short 0x0004
+    .short 0x8007
+    .byte 0x00
+    .short 0x00B8
+    .short 0x00C0
+    .byte 0x00
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0040:
+    .short 0x0000
+    .short 0xEEEE
+    .byte 0x00
+    .short 0x0078
+    .short 0x0080
+    .byte 0x00
+    .byte 0x00
+    .short 0x0001
+    .short 0xEEEF
+    .byte 0x00
+    .short 0x00B8
+    .short 0x00C0
+    .byte 0x00
+    .byte 0x00
+    .byte 0x00
+    .short 0x0002
+    .short 0xEEEF
+    .byte 0x00
+    .short 0x00B8
+    .short 0x00C0
+    .byte 0x00
+    .byte 0x00
+    .byte 0x01
+    .short 0x0014
+    .short 0x800F
+    .byte 0x00
+    .short 0x00B8
+    .short 0x00C0
+    .byte 0x01
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0070:
+    .short 0x00A8
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0078:
+    .short 0xEEEE
+    .byte 0x00
+    .short 0xEEEF
+    .byte 0x00
+    .short 0x8007
+    .byte 0x01
+    .short 0x00A8
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0088:
+    .short 0x0009
+    .byte 0x01
+    .short 0x0013
+    .byte 0x01
+    .short 0x0014
+    .byte 0x01
+    .short 0x0023
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0098:
+    .short 0x800F
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_00A0:
+    .short 0x0000
+    .short 0xEEEE
+    .byte 0x00
+    .short 0x0078
+    .short 0x012C
+    .byte 0x00
+    .byte 0x00
+    .short 0x0004
+    .short 0x8007
+    .byte 0x00
+    .short 0x0080
+    .short 0x0130
+    .byte 0x01
+    .byte 0x01
+    .short 0x0003
+    .short 0x00A8
+    .byte 0x00
+    .short 0x0080
+    .short 0x0070
+    .byte 0x01
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_00C4:
+    .short 0x0000
+    .short 0xEEEE
+    .byte 0x00
+    .short 0x0078
+    .short 0x012C
+    .byte 0x00
+    .byte 0x00
+    .short 0x0001
+    .short 0xEEEF
+    .byte 0x00
+    .short 0x0080
+    .short 0x0130
+    .byte 0x01
+    .byte 0x00
+    .byte 0x00
+    .short 0x0002
+    .short 0xEEEF
+    .byte 0x00
+    .short 0x0090
+    .short 0x0130
+    .byte 0x01
+    .byte 0x00
+    .byte 0x01
+    .short 0x0003
+    .short 0x00A8
+    .byte 0x00
+    .short 0x0080
+    .short 0x0070
+    .byte 0x01
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_00F4:
+    .short 0x0014
+    .short 0x800F
+    .byte 0x03
+    .short 0x0070
+    .short 0x0130
+    .byte 0x01
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0104:
+    .short 0x0005
+    .short 0x0009
+    .byte 0x03
+    .short 0x0040
+    .short 0x00F0
+    .byte 0x01
+    .byte 0x01
+    .short 0x0006
+    .short 0x0013
+    .byte 0x02
+    .short 0x0050
+    .short 0x00F0
+    .byte 0x01
+    .byte 0x01
+    .short 0x0007
+    .short 0x0023
+    .byte 0x01
+    .short 0x00B0
+    .short 0x0100
+    .byte 0x01
+    .byte 0x01
+    .short 0x0008
+    .short 0x0014
+    .byte 0x00
+    .short 0x00C0
+    .short 0x0120
+    .byte 0x01
+    .byte 0x01
+    .short 0x0009
+    .short 0x0014
+    .byte 0x01
+    .short 0x0020
+    .short 0x0110
+    .byte 0x01
+    .byte 0x01
+    .short 0x000B
+    .short 0x0023
+    .byte 0x01
+    .short 0x00C0
+    .short 0x00F0
+    .byte 0x01
+    .byte 0x01
+    .short 0x000C
+    .short 0x0009
+    .byte 0x01
+    .short 0x00D0
+    .short 0x00F0
+    .byte 0x01
+    .byte 0x01
+    .short 0x000D
+    .short 0x0009
+    .byte 0x03
+    .short 0x0040
+    .short 0x0100
+    .byte 0x01
+    .byte 0x01
+    .short 0x000E
+    .short 0x0023
+    .byte 0x02
+    .short 0x0050
+    .short 0x0120
+    .byte 0x01
+    .byte 0x01
+    .short 0x000F
+    .short 0x0014
+    .byte 0x01
+    .short 0x00B0
+    .short 0x00F0
+    .byte 0x01
+    .byte 0x01
+    .short 0x0010
+    .short 0x0013
+    .byte 0x03
+    .short 0x00E0
+    .short 0x0120
+    .byte 0x01
+    .byte 0x01
+    .short 0x0011
+    .short 0x0009
+    .byte 0x03
+    .short 0x0090
+    .short 0x0110
+    .byte 0x01
+    .byte 0x01
+    .short 0x0012
+    .short 0x0009
+    .byte 0x00
+    .short 0x0060
+    .short 0x00F0
+    .byte 0x01
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0198:
+    .short 0x800B
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_01A0:
+    .short 0x800B
+    .byte 0x01
+    .short 0x800C
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_01A8:
+    .short 0x0062
+    .short 0x800B
+    .byte 0x01
+    .short 0x0080
+    .short 0x00D0
+    .byte 0x01
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_01B8:
+    .short 0x0062
+    .short 0x800B
+    .byte 0x01
+    .short 0x0080
+    .short 0x00D0
+    .byte 0x01
+    .byte 0x01
+    .short 0x0063
+    .short 0x800C
+    .byte 0x01
+    .short 0x0090
+    .short 0x00D0
+    .byte 0x01
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_01D0:
+    .short 0x800F
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_01D8:
+    .short 0x0061
+    .short 0x800F
+    .byte 0x00
+    .short 0x0030
+    .short 0x00E0
+    .byte 0x01
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_01E8:
+    .short 0x0002
+    .short 0xFD13
+
+    .balign 4, 0
+_01EC:
+    .short 0x0002
+    .short 0x0018
+    .short 0x0038
+    .short 0x0001
+    .byte 0x00
+    .byte 0x00
+    .short 0xFD13
+
+    .balign 4, 0
+_01F8:
+    .short 0x0002
+    .short 0x0101
+    .short 0x0038
+    .short 0x0001
+    .byte 0x00
+    .byte 0x01
+    .short 0xFD13
+
+    .balign 4, 0
+_0204:
+    .short 0x0003
+    .short 0xFD13
+
+    .balign 4, 0
+_0208:
+    .short 0x0003
+    .short 0x002C
+    .short 0x002A
+    .short 0x0001
+    .byte 0x00
+    .byte 0x04
+    .short 0x0003
+    .short 0x002C
+    .short 0x0052
+    .short 0x0001
+    .byte 0x00
+    .byte 0x05
+    .short 0xFD13
+
+    .balign 4, 0
+_0220:
+    .short 0x0003
+    .short 0x00D4
+    .short 0x002A
+    .short 0x0001
+    .byte 0x00
+    .byte 0x06
+    .short 0x0003
+    .short 0x00D4
+    .short 0x0052
+    .short 0x0001
+    .byte 0x00
+    .byte 0x07
+    .short 0xFD13
+
+    .balign 4, 0
+_0238:
+    Delay8
+    WarpIn
+    WalkNorth 4
+    WalkWest 7
+    WalkNorth 4
+    WarpOut
+    EndMovement
+
+    .balign 4, 0
+_0254:
+    Delay8
+    Delay8
+    WarpIn
+    WalkNorth 4
+    WalkWest 7
+    WalkNorth 4
+    WarpOut
+    EndMovement
+
+    .balign 4, 0
+_0274:
+    WalkNorth 4
+    WalkWest 7
+    WalkNorth 4
+    WarpOut
+    EndMovement
+
+    .balign 4, 0
+_0288:
+    WalkOnSpotWest
+    EndMovement
+
+    .balign 4, 0
+_0290:
+    WalkNorth 11
+    EndMovement
+
+    .balign 4, 0
+_0298:
+    WalkNorth 6
+    WalkWest 4
+    WalkNorth 4
+    WalkOnSpotEast
+    EndMovement
+
+    .balign 4, 0
+_02AC:
+    WalkWest
+    WalkNorth 6
+    WalkWest 4
+    WalkNorth 3
+    WalkOnSpotEast
+    EndMovement
+
+    .balign 4, 0
+_02C4:
+    Delay8
+    Delay8
+    WalkOnSpotNorth
+    EndMovement
+
+    .balign 4, 0
+_02D4:
+    WalkNorth
+    WalkEast 4
+    WalkNorth 3
+    WalkOnSpotWest
+    EndMovement
+
+    .balign 4, 0
+_02E8:
+    WalkNorth
+    WalkEast 4
+    WalkNorth 2
+    WalkOnSpotWest
+    EndMovement
+
+    .balign 4, 0
+_02FC:
+    WalkNorth
+    WalkEast 3
+    WalkNorth 3
+    WalkOnSpotWest
+    EndMovement
+
+    .balign 4, 0
+_0310:
+    WalkEast
+    EndMovement
+
+    .balign 4, 0
+_0318:
+    WalkWest
+    EndMovement
+
+    .balign 4, 0
+_0320:
+    WarpOut
+    WalkSouth 3
+    WarpIn
+    EndMovement
+
+    .balign 4, 0
+_0330:
+    WalkOnSpotFasterEast
+    WalkOnSpotFastNorth
+    WalkOnSpotFastWest
+    WalkOnSpotFastSouth
+    EndMovement
+
+    .balign 4, 0
+_0344:
+    WalkOnSpotFasterEast
+    WalkOnSpotFastNorth
+    WalkOnSpotFastWest
+    WalkOnSpotFastSouth
+    WalkOnSpotFastEast
+    WalkNorth 3
+    WalkOnSpotFasterWest
+    WalkOnSpotFastSouth
+    WalkOnSpotFastEast
+    WalkOnSpotFastNorth
+    WalkOnSpotFastWest
+    WalkOnSpotFastSouth
+    WalkOnSpotFastEast
+    WalkOnSpotFastNorth
+    WalkOnSpotFastWest
+    WalkOnSpotFastSouth
+    WalkEast 4
+    WalkOnSpotFasterNorth
+    WalkOnSpotFastWest
+    WalkOnSpotFastSouth
+    WalkOnSpotFastEast
+    WalkNorth 4
+    WalkOnSpotFasterWest
+    WalkOnSpotFastSouth
+    WalkOnSpotFastEast
+    WalkOnSpotFastNorth
+    WalkOnSpotFastWest
+    EndMovement
+
+    .balign 4, 0
+_03B4:
+    WalkSouth 7
+    EndMovement
+
+    .balign 4, 0
+_03BC:
+    Delay8
+    Delay8
+    Delay8
+    WalkNorth 7
+    EndMovement
+
+    .balign 4, 0
+_03D0:
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_03D8:
+    Delay32
+    Delay32
+    Delay32
+    Delay16
+    WalkOnSpotEast
+    EndMovement
+
+    .balign 4, 0
+_03F0:
+    WalkEast 2
+    WalkSouth 8
+    EndMovement
+
+    .balign 4, 0
+_03FC:
+    WalkEast 2
+    WalkSouth 8
+    EndMovement
+
+    .balign 4, 0
+_0408:
+    WalkEast
+    WalkSouth 8
+    EndMovement
+
+    .balign 4, 0
+_0414:
+    WalkWest
+    WalkOnSpotEast
+    EndMovement
+
+    .balign 4, 0
+_0420:
+    WalkOnSpotNorth
+    EndMovement
+
+    .balign 4, 0
+_0428:
+    WalkOnSpotEast
+    EndMovement
+
+    .balign 4, 0
+_0430:
+    WalkOnSpotWest
+    EndMovement
+
+    .balign 4, 0
+_0438:
+    FaceEast
+    EndMovement
+
+    .balign 4, 0
+_0440:
+    FaceEast
+    EndMovement
+
+    .balign 4, 0
+_0448:
+    FaceWest
+    EndMovement
+
+    .balign 4, 0
+_0450:
+    FaceWest
+    EndMovement
+
+    .balign 4, 0
+_0458:
+    FaceEast
+    EndMovement
+
+    .balign 4, 0
+_0460:
+    FaceEast
+    EndMovement
+
+    .balign 4, 0
+_0468:
+    FaceWest
+    EndMovement
+
+    .balign 4, 0
+_0470:
+    FaceWest
+    EndMovement
+
+    .balign 4, 0
+_0478:
+    FaceNorth
+    EndMovement
+
+    .balign 4, 0
+_0480:
+    WalkEast 2
+    EndMovement
+
+    .balign 4, 0
+_0488:
+    WalkEast 2
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_0494:
+    WalkWest 2
+    EndMovement
+
+    .balign 4, 0
+_049C:
+    WalkNorth
+    WalkWest 2
+    EndMovement
+
+    .balign 4, 0
+_04A8:
+    WalkEast 4
+    EndMovement
+
+    .balign 4, 0
+_04B0:
+    WalkEast
+    WalkNorth
+    WalkEast
+    EndMovement
+
+    .balign 4, 0
+_04C0:
+    WalkWest 2
+    EndMovement
+
+    .balign 4, 0
+_04C8:
+    WalkWest 2
+    EndMovement
+
+    .balign 4, 0
+_04D0:
+    WalkEast 2
+    WalkOnSpotNorth
+    EndMovement
+
+    .balign 4, 0
+_04DC:
+    WalkWest
+    WalkOnSpotNorth
+    EndMovement
+
+    .balign 4, 0
+_04E8:
+    WalkEast
+    WalkSouth
+    WalkOnSpotEast
+    EndMovement
+
+    .balign 4, 0
+_04F8:
+    Delay8
+    Delay8
+    WalkOnSpotNorth
+    EndMovement
+
+    .balign 4, 0
+_0508:
+    Delay8
+    Delay8
+    Delay4
+    WalkOnSpotNorth
+    EndMovement
+
+    .balign 4, 0
+_051C:
+    Delay8
+    Delay8
+    Delay8
+    WalkOnSpotNorth
+    EndMovement
+
+    .balign 4, 0
+_0530:
+    WalkSouth
+    WalkOnSpotWest
+    Delay8
+    Delay8
+    WalkNorth
+    WalkOnSpotWest
+    WalkSouth
+    Delay8
+    Delay8
+    WalkNorth
+    WalkOnSpotWest
+    EndMovement
+
+    .balign 4, 0
+_0560:
+    WalkOnSpotSlowSouth
+    WalkOnSpotSlowSouth
+    WalkOnSpotSlowNorth
+    WalkOnSpotSlowNorth
+    WalkOnSpotSlowSouth
+    WalkOnSpotSlowSouth
+    EndMovement
+
+    .balign 4, 0
+_057C:
+    WalkOnSpotWest
+    Delay8
+    Delay8
+    Delay8
+    WalkOnSpotEast
+    Delay8
+    WalkOnSpotWest
+    WalkOnSpotEast
+    Delay8
+    Delay8
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_05AC:
+    WalkSouth
+    EndMovement
+
+    .balign 4, 0
+_05B4:
+    WalkNorth
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_05C0:
+    WalkOnSpotFastSouth
+    WalkOnSpotFasterSouth
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_05D0:
+    WalkOnSpotEast
+    EndMovement
+
+    .balign 4, 0
+_05D8:
+    WalkOnSpotWest
+    EndMovement
+
+    .balign 4, 0
+_05E0:
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_05E8:
+    Delay8
+    FaceWest
+    FaceSouth
+    EndMovement
+
+    .balign 4, 0
+_05F8:
+    WalkSouth
+    WalkWest 3
+    EndMovement
+
+    .balign 4, 0
+_0604:
+    WalkSouth
+    WalkEast 3
+    EndMovement
+
+    .balign 4, 0
+_0610:
+    WalkEast 3
+    WalkNorth
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_0620:
+    WalkEast 3
+    WalkNorth
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_0630:
+    WalkWest 3
+    WalkNorth
+    WalkOnSpotSouth
+    EndMovement
+
+    .balign 4, 0
+_0640:
+    WalkFastNorth 5
+    WalkOnSpotEast
+    EndMovement
+
+    .balign 4, 0
+_064C:
+    WalkFastSouth 6
+    EndMovement
+
+    .balign 4, 0
+_0654:
+    WalkOnSpotWest
+    EndMovement
+
+    .balign 4, 0
+_065C:
+    WalkOnSpotEast
+    EndMovement
+
+_0662:
+    GetSystemVar VAR_BATTLE_ARCADE_CHALLENGE_TYPE, VAR_0x8001
+    GetSystemVar VAR_MAP_LOCAL_0x03, VAR_0x8003
+    GetSystemVar VAR_MAP_LOCAL_0x02, VAR_0x8004
+    GetSystemVar VAR_MAP_LOCAL_0x05, VAR_0x8005
+    GetSystemVar VAR_MAP_LOCAL_0x06, VAR_0x8006
+    InitNewBattleRecording
+    InitBattleArcade VAR_0x8003, VAR_0x8001, VAR_0x8004, VAR_0x8005, VAR_0x8006, VAR_0x8008
+    GetPlayerObjEventGfx VAR_0x8007
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _06BE
+    SetVar FR_VAR_0x800F, 231
+    Call _333A
+    GoTo _06DC
+    End
+
+_06BE:
+    Call _225F
+    IncrementTrainerScore TRAINER_SCORE_EVENT_UNK_43
+    SetVar FR_VAR_0x800F, 232
+    Call _335A
+    GoTo _06DC
+    End
+
+_06DC:
+    Call _32C0
+    FadeScreenIn
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _0742
+    ApplyMovement 20, _0274
+    ApplyMovement 4, _0238
+    WaitMovement
+    PlaySoundEffect SEQ_SE_DP_KAIDAN2_sseq
+    WaitSoundEffect SEQ_SE_DP_KAIDAN2_sseq
+    FadeScreenOut
+    FrontierScrCmd_25 0
+    FrontierScrCmd_25 20
+    FrontierScrCmd_25 4
+    FrontierScrCmd_23 FR_VAR_0x800F
+    GoTo _0788
+    End
+
+_0742:
+    ApplyMovement 20, _0274
+    ApplyMovement 1, _0238
+    ApplyMovement 2, _0254
+    WaitMovement
+    PlaySoundEffect SEQ_SE_DP_KAIDAN2_sseq
+    WaitSoundEffect SEQ_SE_DP_KAIDAN2_sseq
+    FadeScreenOut
+    FrontierScrCmd_25 1
+    FrontierScrCmd_25 2
+    FrontierScrCmd_25 20
+    FrontierScrCmd_23 FR_VAR_0x800F
+    GoTo _0788
+    End
+
+_0788:
+    FrontierScrCmd_03 FRONTIER_SCENE_ARCADE_BATTLE_ROOM
+    SetVar VAR_0x800D, 0
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _07BC
+    SetVar FR_VAR_0x800F, 231
+    Call _3383
+    GoTo _07D9
+    End
+
+_07BC:
+    CallBattleArcadeFunction BA_FUNC_LOAD_NORMAL_BACKGROUND, 0, 0, VAR_0x8008
+    SetVar FR_VAR_0x800F, 232
+    Call _33A3
+    GoTo _07D9
+    End
+
+_07D9:
+    WaitTime 1, VAR_0x8008
+    Call _33CC
+    Call _33E3
+    Call _3246
+    Call _32CB
+    FadeScreenIn
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _0821
+    GoTo _0883
+    End
+
+_0821:
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 203
+    ClearReceivedTempDataAllPlayers
+    Call _0860
+    GoTo _0883
+    End
+
+_0837:
+    SetVar VAR_0x8002, 0
+    BattleArcade_SendCommMessage VAR_0x8002, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _0837
+    BattleArcade_WaitForCommResponses VAR_0x8002
+    ClearReceivedTempDataAllPlayers
+    GoTo _0883
+    End
+
+_0860:
+    SetVar VAR_0x8002, 0
+    BattleArcade_SendCommMessage VAR_0x8002, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _0860
+    BattleArcade_WaitForCommResponses VAR_0x8002
+    ClearReceivedTempDataAllPlayers
+    Return
+
+_0883:
+    BattleArcade_LoadTrainersForRound VAR_0x8003
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _08A5
+    GoTo _091F
+    End
+
+_08A5:
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 204
+    ClearReceivedTempDataAllPlayers
+    GoTo _08B5
+    End
+
+_08B5:
+    SetVar VAR_0x8002, 1
+    BattleArcade_SendCommMessage VAR_0x8002, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _08B5
+    BattleArcade_WaitForCommResponses VAR_0x8002
+    ClearReceivedTempDataAllPlayers
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 158
+    ClearReceivedTempDataAllPlayers
+    FrontierScrCmd_C9 1
+    GoTo _08EA
+    End
+
+_08EA:
+    SetVar VAR_0x8002, 5
+    BattleArcade_SendCommMessage VAR_0x8002, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _08EA
+    BattleArcade_WaitForCommResponses VAR_0x8002
+    ClearReceivedTempDataAllPlayers
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 202
+    ClearReceivedTempDataAllPlayers
+    FrontierScrCmd_C9 0
+    GoTo _091F
+    End
+
+_091F:
+    SetVar VAR_0x8003, 0
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _0975
+    ApplyMovement 0, _0290
+    ApplyMovement 4, _0298
+    ApplyMovement 20, _02C4
+    ApplyMovement 6, _0530
+    ApplyMovement 9, _0560
+    ApplyMovement 11, _057C
+    WaitMovement
+    GoTo _09B7
+    End
+
+_0975:
+    ApplyMovement 0, _0290
+    ApplyMovement 1, _0298
+    ApplyMovement 2, _02AC
+    ApplyMovement 20, _02C4
+    ApplyMovement 6, _0530
+    ApplyMovement 9, _0560
+    ApplyMovement 11, _057C
+    WaitMovement
+    GoTo _09B7
+    End
+
+_09B7:
+    FrontierScrCmd_25 20
+    FrontierScrCmd_23 FR_VAR_0x800F
+    Call _3198
+    CallBattleArcadeFunction BA_FUNC_GET_CURRENT_BATTLE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _09F9
+    Call _0A07
+    ApplyMovement 3, _05E8
+    WaitMovement
+    SetVar VAR_0x8003, 1
+    GoTo _28B3
+    End
+
+_09F9:
+    Call _0A07
+    GoTo _0A8F
+    End
+
+_0A07:
+    WaitTime 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 1, _0A2D
+    BattleArcade_SetupFirstOpponent
+    Call _2EB2
+    Return
+
+_0A2D:
+    CallBattleArcadeFunction BA_FUNC_CLEAR_MSGS_RECEIVED, 0, 0, VAR_0x8008
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 205
+    ClearReceivedTempDataAllPlayers
+    GoTo _0A46
+    End
+
+_0A46:
+    SetVar VAR_0x8002, 2
+    BattleArcade_SendCommMessage VAR_0x8002, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _0A46
+    BattleArcade_WaitForCommResponses VAR_0x8002
+    ClearReceivedTempDataAllPlayers
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 206
+    ClearReceivedTempDataAllPlayers
+    CallBattleArcadeFunction BA_FUNC_CREATE_OPPONENT_MONS, 0, 0, VAR_0x8008
+    WaitTime 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SETUP_OPPONENTS_PARTY, 0, 0, VAR_0x8008
+    WaitTime 1, VAR_0x8008
+    Return
+
+_0A8F:
+    ApplyMovement 3, _05E8
+    WaitMovement
+    Message BattleArcadeScene_Text_Welcome
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    CallBattleArcadeFunction BA_FUNC_GET_CURRENT_BATTLE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 0, _0B1A
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _0AD5
+    GoTo _0B20
+    End
+
+_0AD5:
+    MessageNoSkip BattleArcadeScene_Text_PleaseWait
+    GoTo _0AE1
+    End
+
+_0AE1:
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 140
+    ClearReceivedTempDataAllPlayers
+    GoTo _0B20
+    End
+
+_0AF1:
+    InitParticleSystem 0, battle_arcade_1_spa
+    CallBattleArcadeFunction BA_FUNC_CREATE_EMITTER, VAR_0x8005, VAR_0x8006, VAR_0x8008
+    WaitTime 120, VAR_0x8008
+    FreeParticleSystem 0
+    WaitTime 60, VAR_0x8008
+    AddVar VAR_0x8005, 1
+    Return
+
+_0B1A:
+    Message BattleArcadeScene_Text_TakingItems
+    Return
+
+_0B20:
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _0B50
+    GoToIfEq VAR_0x8008, 1, _0B8A
+    End
+
+_0B50:
+    CallBattleArcadeFunction BA_FUNC_GET_CURRENT_BATTLE, 0, 0, VAR_0x8008
+    AddVar VAR_0x8008, 1
+    BufferNumber 0, VAR_0x8008
+    Message BattleArcadeScene_Text_GameStart
+    WaitABPress
+    CloseMessage
+    Call _2229
+    ApplyMovement 3, _05AC
+    WaitMovement
+    Message BattleArcadeScene_Text_ActivateBoard
+    WaitABPress
+    GoTo _0BD4
+    End
+
+_0B8A:
+    CallBattleArcadeFunction BA_FUNC_GET_CURRENT_BATTLE, 0, 0, VAR_0x8008
+    AddVar VAR_0x8008, 1
+    BufferNumber 0, VAR_0x8008
+    MessageNoSkip BattleArcadeScene_Text_GameStart
+    WaitTime 30, VAR_0x8008
+    CloseMessage
+    Call _2229
+    ApplyMovement 3, _05AC
+    WaitMovement
+    MessageNoSkip BattleArcadeScene_Text_ActivateBoard
+    WaitTime 30, VAR_0x8008
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 143
+    ClearReceivedTempDataAllPlayers
+    GoTo _0BD4
+    End
+
+_0BD4:
+    FadeScreenOut
+    CloseMessage
+    CallBattleArcadeFunction BA_FUNC_GET_NEXT_BATTLE_TYPE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 1, _0C9E
+    CallIfEq VAR_0x8008, 2, _0C9E
+    Call _32A0
+    Call _2F24
+    Call _2F4A
+    Call _3272
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 1, _0CA4
+    OpenBattleArcadeApp
+    FrontierScrCmd_2A _01E8
+    Call _3246
+    Call _2EEC
+    CallBattleArcadeFunction BA_FUNC_SET_EFFECT_BACKGROUND, 0, 0, VAR_0x8008
+    ApplyArcadeEffect
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 1, _227E
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 1, _0860
+    Call _32CB
+    Call _32EA
+    FadeScreenIn
+    GoTo _0CD6
+    End
+
+_0C9E:
+    FreeParticleSystem 3
+    Return
+
+_0CA4:
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 200
+    ClearReceivedTempDataAllPlayers
+    Return
+
+_0CAE:
+    FrontierScrCmd_2C _01EC
+    FrontierScrCmd_31 0, 0
+    Return
+
+_0CBC:
+    FrontierScrCmd_2C _01F8
+    FrontierScrCmd_31 1, 1
+    Return
+
+_0CCA:
+    FrontierScrCmd_2D 0
+    Return
+
+_0CD0:
+    FrontierScrCmd_2D 1
+    Return
+
+_0CD6:
+    InitParticleSystem 0, battle_arcade_1_spa
+    CallBattleArcadeFunction BA_FUNC_GET_ACTIVE_EFFECT, 0, 0, VAR_0x8008
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    SetVar FR_VAR_0x8010, VAR_0x8008
+    GoToIfEq FR_VAR_0x8010, 0, _0E93
+    GoToIfEq FR_VAR_0x8010, 1, _0F5F
+    GoToIfEq FR_VAR_0x8010, 2, _100C
+    GoToIfEq FR_VAR_0x8010, 3, _10C3
+    GoToIfEq FR_VAR_0x8010, 4, _1170
+    GoToIfEq FR_VAR_0x8010, 5, _1227
+    GoToIfEq FR_VAR_0x8010, 6, _12D4
+    GoToIfEq FR_VAR_0x8010, 7, _136D
+    GoToIfEq FR_VAR_0x8010, 8, _1406
+    GoToIfEq FR_VAR_0x8010, 9, _14C8
+    GoToIfEq FR_VAR_0x8010, 10, _158A
+    GoToIfEq FR_VAR_0x8010, 11, _1641
+    GoToIfEq FR_VAR_0x8010, 12, _16EE
+    GoToIfEq FR_VAR_0x8010, 13, _17A5
+    GoToIfEq FR_VAR_0x8010, 14, _1852
+    GoToIfEq FR_VAR_0x8010, 15, _1909
+    GoToIfEq FR_VAR_0x8010, 16, _19A2
+    GoToIfEq FR_VAR_0x8010, 17, _1A3B
+    GoToIfEq FR_VAR_0x8010, 18, _1B07
+    GoToIfEq FR_VAR_0x8010, 19, _1B37
+    GoToIfEq FR_VAR_0x8010, 20, _1B67
+    GoToIfEq FR_VAR_0x8010, 21, _1B91
+    GoToIfEq FR_VAR_0x8010, 22, _1BC1
+    GoToIfEq FR_VAR_0x8010, 23, _1BEB
+    GoToIfEq FR_VAR_0x8010, 24, _1E5C
+    GoToIfEq FR_VAR_0x8010, 25, _1E86
+    GoToIfEq FR_VAR_0x8010, 26, _1EB0
+    GoToIfEq FR_VAR_0x8010, 27, _1C15
+    GoToIfEq FR_VAR_0x8010, 28, _1EDA
+    GoToIfEq FR_VAR_0x8010, 29, _1FFC
+    GoToIfEq FR_VAR_0x8010, 30, _2086
+    GoToIfEq FR_VAR_0x8010, 31, _1F71
+    End
+
+_0E93:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3288
+    Call _20AA
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    GoToIfEq VAR_0x8006, 0, _0F1F
+    GoToIfEq VAR_0x8006, 1, _0F39
+    End
+
+_0EC8:
+    Call _32D6
+    Call _21C5
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    ApplyMovement 3, _05E0
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _0F53
+    CallIfEq VAR_0x8006, 1, _0F59
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_0F1F:
+    SetVar VAR_0x8005, 24
+    SetVar VAR_0x8006, 26
+    SetVar FR_VAR_0x800E, 25
+    GoTo _0EC8
+    End
+
+_0F39:
+    SetVar VAR_0x8005, 24
+    SetVar VAR_0x8006, 26
+    SetVar FR_VAR_0x800E, 27
+    GoTo _0EC8
+    End
+
+_0F53:
+    Message BattleArcadeScene_Text_SoloNonFullHP
+    Return
+
+_0F59:
+    Message BattleArcadeScene_Text_MultiNonFullHP
+    Return
+
+_0F5F:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3288
+    Call _20AA
+    Call _32D6
+    SetVar VAR_0x8005, 34
+    SetVar VAR_0x8006, 35
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _0FC8
+    CallIfEq VAR_0x8006, 1, _0FE4
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_0FC8:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _1000
+    Message BattleArcadeScene_Text_SoloPoisoned
+    Return
+
+_0FE4:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _1006
+    Message BattleArcadeScene_Text_MultiPoisoned
+    Return
+
+_1000:
+    Message BattleArcadeScene_Text_SoloImmuneToPoison
+    Return
+
+_1006:
+    Message BattleArcadeScene_Text_MultiImmuneToPoison
+    Return
+
+_100C:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3288
+    Call _20AA
+    Call _32D6
+    SetVar VAR_0x8005, 46
+    SetVar VAR_0x8006, 47
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    ApplyMovement 3, _05E0
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _107F
+    CallIfEq VAR_0x8006, 1, _109B
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_107F:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _10B7
+    Message BattleArcadeScene_Text_SoloParalyzed
+    Return
+
+_109B:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _10BD
+    Message BattleArcadeScene_Text_MultiParalyzed
+    Return
+
+_10B7:
+    Message BattleArcadeScene_Text_SoloImmuneToParalysis
+    Return
+
+_10BD:
+    Message BattleArcadeScene_Text_MultiImmuneToParalysis
+    Return
+
+_10C3:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3288
+    Call _20AA
+    Call _32D6
+    SetVar VAR_0x8005, 38
+    SetVar VAR_0x8006, 39
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _112C
+    CallIfEq VAR_0x8006, 1, _1148
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_112C:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _1164
+    Message BattleArcadeScene_Text_SoloBurned
+    Return
+
+_1148:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _116A
+    Message BattleArcadeScene_Text_MultiBurned
+    Return
+
+_1164:
+    Message BattleArcadeScene_Text_SoloImmuneToBurn
+    Return
+
+_116A:
+    Message BattleArcadeScene_Text_MultiImmuneToBurn
+    Return
+
+_1170:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3288
+    Call _20AA
+    Call _32D6
+    SetVar VAR_0x8005, 42
+    SetVar VAR_0x8006, 43
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    ApplyMovement 3, _05E0
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _11E3
+    CallIfEq VAR_0x8006, 1, _11FF
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_11E3:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _121B
+    Message BattleArcadeScene_Text_SoloAsleep
+    Return
+
+_11FF:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _1221
+    Message BattleArcadeScene_Text_MultiAsleep
+    Return
+
+_121B:
+    Message BattleArcadeScene_Text_SoloImmuneToSleep
+    Return
+
+_1221:
+    Message BattleArcadeScene_Text_MultiImmuneToSleep
+    Return
+
+_1227:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3288
+    Call _20AA
+    Call _32D6
+    SetVar VAR_0x8005, 30
+    SetVar VAR_0x8006, 31
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1290
+    CallIfEq VAR_0x8006, 1, _12AC
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1290:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _12C8
+    Message BattleArcadeScene_Text_SoloFrozen
+    Return
+
+_12AC:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _12CE
+    Message BattleArcadeScene_Text_MultiFrozen
+    Return
+
+_12C8:
+    Message BattleArcadeScene_Text_SoloImmuneToFreeze
+    Return
+
+_12CE:
+    Message BattleArcadeScene_Text_MultiImmuneToFreeze
+    Return
+
+_12D4:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20AA
+    CloseMessage
+    Call _2211
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_GET_HELD_ITEM, 1, 0, VAR_0x8008
+    BufferItemName 2, VAR_0x8008
+    SetItemDrawFlag 1, 0, 1
+    SetItemDrawFlag 1, 1, 1
+    SetItemDrawFlag 1, 2, 1
+    SetItemDrawFlag 1, 3, 1
+    Message BattleArcadeScene_Text_HereYouGo
+    CloseMessage
+    Call _221D
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1358
+    CallIfEq VAR_0x8006, 1, _135E
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1358:
+    Message BattleArcadeScene_Text_SoloLoanItem
+    Return
+
+_135E:
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    Message BattleArcadeScene_Text_MultiLoanItem
+    Return
+
+_136D:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20AA
+    CloseMessage
+    Call _2211
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_GET_HELD_ITEM, 1, 0, VAR_0x8008
+    BufferItemName 2, VAR_0x8008
+    SetItemDrawFlag 1, 0, 1
+    SetItemDrawFlag 1, 1, 1
+    SetItemDrawFlag 1, 2, 1
+    SetItemDrawFlag 1, 3, 1
+    Message BattleArcadeScene_Text_HereYouGo
+    CloseMessage
+    Call _221D
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _13F1
+    CallIfEq VAR_0x8006, 1, _13F7
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_13F1:
+    Message BattleArcadeScene_Text_SoloLoanItem
+    Return
+
+_13F7:
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    Message BattleArcadeScene_Text_MultiLoanItem
+    Return
+
+_1406:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3288
+    Call _20AA
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    GoToIfEq VAR_0x8006, 0, _1488
+    GoToIfEq VAR_0x8006, 1, _14A2
+    End
+
+_143B:
+    Call _32D6
+    Call _21C5
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _14BC
+    CallIfEq VAR_0x8006, 1, _14C2
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1488:
+    SetVar VAR_0x8005, 16
+    SetVar VAR_0x8006, 18
+    SetVar FR_VAR_0x800E, 17
+    GoTo _143B
+    End
+
+_14A2:
+    SetVar VAR_0x8005, 16
+    SetVar VAR_0x8006, 18
+    SetVar FR_VAR_0x800E, 19
+    GoTo _143B
+    End
+
+_14BC:
+    Message BattleArcadeScene_Text_SoloLeveledUp
+    Return
+
+_14C2:
+    Message BattleArcadeScene_Text_MultiLeveledUp
+    Return
+
+_14C8:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3294
+    Call _2092
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    GoToIfEq VAR_0x8006, 0, _154A
+    GoToIfEq VAR_0x8006, 1, _1564
+    End
+
+_14FD:
+    Call _32D6
+    Call _21C5
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _157E
+    CallIfEq VAR_0x8006, 1, _1584
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_154A:
+    SetVar VAR_0x8005, 20
+    SetVar VAR_0x8006, 22
+    SetVar FR_VAR_0x800E, 21
+    GoTo _14FD
+    End
+
+_1564:
+    SetVar VAR_0x8005, 20
+    SetVar VAR_0x8006, 22
+    SetVar FR_VAR_0x800E, 23
+    GoTo _14FD
+    End
+
+_157E:
+    Message BattleArcadeScene_Text_SoloNonFullHP
+    Return
+
+_1584:
+    Message BattleArcadeScene_Text_MultiNonFullHP
+    Return
+
+_158A:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3294
+    Call _2092
+    Call _32D6
+    SetVar VAR_0x8005, 32
+    SetVar VAR_0x8006, 33
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    ApplyMovement 3, _05E0
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _15FD
+    CallIfEq VAR_0x8006, 1, _1619
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_15FD:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _1635
+    Message BattleArcadeScene_Text_SoloPoisoned
+    Return
+
+_1619:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _163B
+    Message BattleArcadeScene_Text_MultiPoisoned
+    Return
+
+_1635:
+    Message BattleArcadeScene_Text_SoloImmuneToPoison
+    Return
+
+_163B:
+    Message BattleArcadeScene_Text_MultiImmuneToPoison
+    Return
+
+_1641:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3294
+    Call _2092
+    Call _32D6
+    SetVar VAR_0x8005, 44
+    SetVar VAR_0x8006, 45
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _16AA
+    CallIfEq VAR_0x8006, 1, _16C6
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_16AA:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _16E2
+    Message BattleArcadeScene_Text_SoloParalyzed
+    Return
+
+_16C6:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _16E8
+    Message BattleArcadeScene_Text_MultiParalyzed
+    Return
+
+_16E2:
+    Message BattleArcadeScene_Text_SoloImmuneToParalysis
+    Return
+
+_16E8:
+    Message BattleArcadeScene_Text_MultiImmuneToParalysis
+    Return
+
+_16EE:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3294
+    Call _2092
+    Call _32D6
+    SetVar VAR_0x8005, 36
+    SetVar VAR_0x8006, 37
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    ApplyMovement 3, _05E0
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1761
+    CallIfEq VAR_0x8006, 1, _177D
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1761:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _1799
+    Message BattleArcadeScene_Text_SoloBurned
+    Return
+
+_177D:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _179F
+    Message BattleArcadeScene_Text_MultiBurned
+    Return
+
+_1799:
+    Message BattleArcadeScene_Text_SoloImmuneToBurn
+    Return
+
+_179F:
+    Message BattleArcadeScene_Text_MultiImmuneToBurn
+    Return
+
+_17A5:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3294
+    Call _2092
+    Call _32D6
+    SetVar VAR_0x8005, 40
+    SetVar VAR_0x8006, 41
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _180E
+    CallIfEq VAR_0x8006, 1, _182A
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_180E:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _1846
+    Message BattleArcadeScene_Text_SoloAsleep
+    Return
+
+_182A:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _184C
+    Message BattleArcadeScene_Text_MultiAsleep
+    Return
+
+_1846:
+    Message BattleArcadeScene_Text_SoloImmuneToSleep
+    Return
+
+_184C:
+    Message BattleArcadeScene_Text_MultiImmuneToSleep
+    Return
+
+_1852:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3294
+    Call _2092
+    Call _32D6
+    SetVar VAR_0x8005, 28
+    SetVar VAR_0x8006, 29
+    Call _21A9
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    ApplyMovement 3, _05E0
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _18C5
+    CallIfEq VAR_0x8006, 1, _18E1
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_18C5:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _18FD
+    Message BattleArcadeScene_Text_SoloFrozen
+    Return
+
+_18E1:
+    CallBattleArcadeFunction BA_FUNC_CHECK_IMMUNE_TO_EFFECT, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _1903
+    Message BattleArcadeScene_Text_MultiFrozen
+    Return
+
+_18FD:
+    Message BattleArcadeScene_Text_SoloImmuneToFreeze
+    Return
+
+_1903:
+    Message BattleArcadeScene_Text_MultiImmuneToFreeze
+    Return
+
+_1909:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _2092
+    CloseMessage
+    Call _21ED
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_GET_HELD_ITEM, 0, 0, VAR_0x8008
+    BufferItemName 2, VAR_0x8008
+    SetItemDrawFlag 0, 0, 1
+    SetItemDrawFlag 0, 1, 1
+    SetItemDrawFlag 0, 2, 1
+    SetItemDrawFlag 0, 3, 1
+    Message BattleArcadeScene_Text_HereYouGo
+    CloseMessage
+    Call _21F9
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _198D
+    CallIfEq VAR_0x8006, 1, _1993
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_198D:
+    Message BattleArcadeScene_Text_SoloLoanItem
+    Return
+
+_1993:
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    Message BattleArcadeScene_Text_MultiLoanItem
+    Return
+
+_19A2:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _2092
+    CloseMessage
+    Call _21ED
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_GET_HELD_ITEM, 0, 0, VAR_0x8008
+    BufferItemName 2, VAR_0x8008
+    SetItemDrawFlag 0, 0, 1
+    SetItemDrawFlag 0, 1, 1
+    SetItemDrawFlag 0, 2, 1
+    SetItemDrawFlag 0, 3, 1
+    Message BattleArcadeScene_Text_HereYouGo
+    CloseMessage
+    Call _21F9
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1A26
+    CallIfEq VAR_0x8006, 1, _1A2C
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1A26:
+    Message BattleArcadeScene_Text_SoloLoanItem
+    Return
+
+_1A2C:
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    Message BattleArcadeScene_Text_MultiLoanItem
+    Return
+
+_1A3B:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _3294
+    Call _2092
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    GoToIfEq VAR_0x8006, 0, _1AC7
+    GoToIfEq VAR_0x8006, 1, _1AE1
+    End
+
+_1A70:
+    Call _32D6
+    Call _21C5
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    ApplyMovement 3, _05E0
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1AFB
+    CallIfEq VAR_0x8006, 1, _1B01
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1AC7:
+    SetVar VAR_0x8005, 12
+    SetVar VAR_0x8006, 14
+    SetVar FR_VAR_0x800E, 13
+    GoTo _1A70
+    End
+
+_1AE1:
+    SetVar VAR_0x8005, 12
+    SetVar VAR_0x8006, 14
+    SetVar FR_VAR_0x800E, 15
+    GoTo _1A70
+    End
+
+_1AFB:
+    Message BattleArcadeScene_Text_SoloLeveledUp
+    Return
+
+_1B01:
+    Message BattleArcadeScene_Text_MultiLeveledUp
+    Return
+
+_1B07:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20D4
+    Call _32D6
+    Call _211D
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_SunnyCondition
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1B37:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20D4
+    Call _32D6
+    Call _2101
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_RainCondition
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1B67:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20D4
+    Call _2155
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_SandyCondition
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1B91:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20D4
+    Call _32D6
+    Call _2139
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_HailCondition
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1BC1:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20D4
+    Call _2171
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_FoggyCondition
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1BEB:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20D4
+    Call _218D
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_TrickRoomCondition
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1C15:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20D4
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1DEC
+    CallIfEq VAR_0x8006, 1, _1E00
+    FrontierScrCmd_31 4, 2
+    FrontierScrCmd_31 5, 6
+    FrontierScrCmd_31 6, 3
+    FrontierScrCmd_31 7, 7
+    PlaySoundEffect SEQ_SE_DP_Z_SEARCH_sseq
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_PLAYER_MON, 0, 3, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_OPPONENT_MON, 0, 3, VAR_0x8008
+    SetItemDrawFlag 0, 3, 0
+    SetItemDrawFlag 1, 3, 0
+    WaitTime 14, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_PLAYER_MON, 0, 2, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_OPPONENT_MON, 0, 2, VAR_0x8008
+    SetItemDrawFlag 0, 2, 0
+    SetItemDrawFlag 1, 2, 0
+    WaitTime 14, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_PLAYER_MON, 0, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_OPPONENT_MON, 0, 1, VAR_0x8008
+    SetItemDrawFlag 0, 1, 0
+    SetItemDrawFlag 1, 1, 0
+    WaitTime 14, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_PLAYER_MON, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_OPPONENT_MON, 0, 0, VAR_0x8008
+    SetItemDrawFlag 0, 0, 0
+    SetItemDrawFlag 1, 0, 0
+    WaitTime 14, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SWAP_MON_SPRITES, 0, 0, VAR_0x8008
+    PlaySoundEffect SEQ_SE_DP_Z_SEARCH_sseq
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_PLAYER_MON, 1, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_OPPONENT_MON, 1, 0, VAR_0x8008
+    SetItemDrawFlag 0, 0, 1
+    SetItemDrawFlag 1, 0, 1
+    WaitTime 14, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_PLAYER_MON, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_OPPONENT_MON, 1, 1, VAR_0x8008
+    SetItemDrawFlag 0, 1, 1
+    SetItemDrawFlag 1, 1, 1
+    WaitTime 14, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_PLAYER_MON, 1, 2, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_OPPONENT_MON, 1, 2, VAR_0x8008
+    SetItemDrawFlag 0, 2, 1
+    SetItemDrawFlag 1, 2, 1
+    WaitTime 14, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_PLAYER_MON, 1, 3, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_DRAW_FLAG_OPPONENT_MON, 1, 3, VAR_0x8008
+    SetItemDrawFlag 0, 3, 1
+    SetItemDrawFlag 1, 3, 1
+    WaitTime 14, VAR_0x8008
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_PokemonSwap
+    StopSoundEffect SEQ_SE_DP_Z_SEARCH_sseq
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1E24
+    CallIfEq VAR_0x8006, 1, _1E38
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1DEC:
+    ApplyMovement 4, _0420
+    ApplyMovement 98, _0420
+    WaitMovement
+    Return
+
+_1E00:
+    ApplyMovement 1, _0420
+    ApplyMovement 2, _0420
+    ApplyMovement 98, _0420
+    ApplyMovement 99, _0420
+    WaitMovement
+    Return
+
+_1E24:
+    ApplyMovement 4, _0428
+    ApplyMovement 98, _0430
+    WaitMovement
+    Return
+
+_1E38:
+    ApplyMovement 1, _0428
+    ApplyMovement 2, _0428
+    ApplyMovement 98, _0430
+    ApplyMovement 99, _0430
+    WaitMovement
+    Return
+
+_1E5C:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _2092
+    Call _21E7
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_SpeedUpBoard
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1E86:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _2092
+    Call _21E7
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_SlowDownBoard
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1EB0:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _2092
+    Call _21E7
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_RandomizeBoard
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1EDA:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _2092
+    CloseMessage
+    Call _21ED
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_GET_FREE_BP, 0, 0, VAR_0x8008
+    AddToRecordValue RECORD_UNK_067, VAR_0x8008
+    GiveBattlePoints VAR_0x8008
+    BufferNumber 2, VAR_0x8008
+    StopSoundEffect SEQ_SE_DP_DENDOU_sseq
+    PlayFanfare SEQ_PL_DON2_sseq
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1F65
+    CallIfEq VAR_0x8006, 1, _1F6B
+    WaitFanfare
+    CloseMessage
+    Call _2205
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_AreYouReady2
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1F65:
+    Message BattleArcadeScene_Text_SoloFreeBP
+    Return
+
+_1F6B:
+    Message BattleArcadeScene_Text_MultiFreeBP
+    Return
+
+_1F71:
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _2092
+    CloseMessage
+    Call _21ED
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_SET_NAME_OF_AFFECTED_TRAINER, 1, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_GET_FREE_BP, 0, 0, VAR_0x8008
+    AddToRecordValue RECORD_UNK_067, VAR_0x8008
+    GiveBattlePoints VAR_0x8008
+    BufferNumber 2, VAR_0x8008
+    StopSoundEffect SEQ_SE_DP_DENDOU_sseq
+    PlayFanfare SEQ_PL_DON2_sseq
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8006
+    CallIfEq VAR_0x8006, 0, _1F65
+    CallIfEq VAR_0x8006, 1, _1F6B
+    WaitFanfare
+    CloseMessage
+    Call _2205
+    ApplyMovement 3, _05E0
+    WaitMovement
+    Message BattleArcadeScene_Text_AreYouReady2
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    GoTo _2357
+    End
+
+_1FFC:
+    SetVar VAR_0x800D, 1
+    Message BattleArcadeScene_Text_CurrentEvent
+    Call _20AA
+    CloseMessage
+    Call _2F72
+    Call _2668
+    Call _3288
+    Message BattleArcadeScene_Text_SkipBattle
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _2049
+    GoToIfEq VAR_0x8008, 1, _2053
+    End
+
+_2049:
+    WaitABPress
+    GoTo _2069
+    End
+
+_2053:
+    WaitTime 30, VAR_0x8008
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 147
+    ClearReceivedTempDataAllPlayers
+    GoTo _2069
+    End
+
+_2069:
+    CloseMessage
+    ApplyMovement 3, _05B4
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_DISABLE_BG2_LAYER, 0, 0, VAR_0x8008
+    GoTo _26BC
+    End
+
+_2086:
+    Message BattleArcadeScene_Text_NoEvent
+    GoTo _2357
+    End
+
+_2092:
+    Call _0CAE
+    PlaySoundEffect SEQ_SE_PL_FR05_sseq
+    WaitTime 45, VAR_0x8008
+    Call _0CCA
+    Return
+
+_20AA:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8005
+    Call _0CBC
+    PlaySoundEffect SEQ_SE_PL_FR05_sseq
+    WaitTime 45, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8005
+    Call _0CD0
+    Return
+
+_20D4:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8005
+    Call _0CAE
+    Call _0CBC
+    PlaySoundEffect SEQ_SE_PL_FR05_sseq
+    WaitTime 45, VAR_0x8008
+    Call _0CCA
+    Call _0CD0
+    Return
+
+_2101:
+    PlaySoundEffect SEQ_SE_PL_FR04_sseq
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_6
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_7
+    WaitTime 60, VAR_0x8008
+    WaitSoundEffect SEQ_SE_PL_FR04_sseq
+    Return
+
+_211D:
+    PlaySoundEffect SEQ_SE_PL_FR04_sseq
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_8
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_9
+    WaitTime 60, VAR_0x8008
+    WaitSoundEffect SEQ_SE_PL_FR04_sseq
+    Return
+
+_2139:
+    PlaySoundEffect SEQ_SE_PL_FR04_sseq
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_10
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_11
+    WaitTime 60, VAR_0x8008
+    WaitSoundEffect SEQ_SE_PL_FR04_sseq
+    Return
+
+_2155:
+    PlaySoundEffect SEQ_SE_PL_FR03_sseq
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_0
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_1
+    WaitTime 60, VAR_0x8008
+    WaitSoundEffect SEQ_SE_PL_FR03_sseq
+    Return
+
+_2171:
+    PlaySoundEffect SEQ_SE_PL_FR03_sseq
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_2
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_3
+    WaitTime 60, VAR_0x8008
+    WaitSoundEffect SEQ_SE_PL_FR03_sseq
+    Return
+
+_218D:
+    PlaySoundEffect SEQ_SE_PL_FR03_sseq
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_4
+    CreateParticleSystemEmitter 0, ARCADE_EMITTERS_UNK_5
+    WaitTime 60, VAR_0x8008
+    WaitSoundEffect SEQ_SE_PL_FR03_sseq
+    Return
+
+_21A9:
+    PlaySoundEffect SEQ_SE_PL_FR04_sseq
+    CreateParticleSystemEmitter 0, VAR_0x8005
+    CreateParticleSystemEmitter 0, VAR_0x8006
+    WaitTime 60, VAR_0x8008
+    WaitSoundEffect SEQ_SE_PL_FR04_sseq
+    Return
+
+_21C5:
+    PlaySoundEffect SEQ_SE_PL_FR04_sseq
+    CreateParticleSystemEmitter 0, VAR_0x8005
+    CreateParticleSystemEmitter 0, VAR_0x8006
+    CreateParticleSystemEmitter 0, FR_VAR_0x800E
+    WaitTime 60, VAR_0x8008
+    WaitSoundEffect SEQ_SE_PL_FR04_sseq
+    Return
+
+_21E7:
+    PlaySoundEffect SEQ_SE_PL_FR05_sseq
+    Return
+
+_21ED:
+    ApplyMovement 3, _05F8
+    WaitMovement
+    Return
+
+_21F9:
+    ApplyMovement 3, _0620
+    WaitMovement
+    Return
+
+_2205:
+    ApplyMovement 3, _0610
+    WaitMovement
+    Return
+
+_2211:
+    ApplyMovement 3, _0604
+    WaitMovement
+    Return
+
+_221D:
+    ApplyMovement 3, _0630
+    WaitMovement
+    Return
+
+_2229:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _224F
+    GoTo _2247
+    End
+
+_2247:
+    GoTo _22DB
+    End
+
+_224F:
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 146
+    ClearReceivedTempDataAllPlayers
+    GoTo _22DB
+    End
+
+_225F:
+    WaitTime 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_INIT_COMM_MANAGER, 0, 0, VAR_0x8008
+    WaitTime 1, VAR_0x8008
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 180
+    ClearReceivedTempDataAllPlayers
+    Return
+
+_227E:
+    WaitTime 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_INIT_COMM_MANAGER, 0, 0, VAR_0x8008
+    WaitTime 1, VAR_0x8008
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 181
+    ClearReceivedTempDataAllPlayers
+    Return
+
+_229D:
+    WaitTime 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_INIT_COMM_MANAGER, 0, 0, VAR_0x8008
+    WaitTime 1, VAR_0x8008
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 182
+    ClearReceivedTempDataAllPlayers
+    Return
+
+_22BC:
+    WaitTime 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_INIT_COMM_MANAGER, 0, 0, VAR_0x8008
+    WaitTime 1, VAR_0x8008
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 183
+    ClearReceivedTempDataAllPlayers
+    Return
+
+_22DB:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2337
+    CallBattleArcadeFunction BA_FUNC_GET_NEXT_BATTLE_TYPE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2FC0
+    GoToIfEq VAR_0x8008, 2, _2FD9
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    Call _2462
+    ApplyMovement 98, _02D4
+    WaitMovement
+    Call _2ED8
+    Return
+
+_2337:
+    Call _2479
+    ApplyMovement 98, _02E8
+    ApplyMovement 99, _02FC
+    WaitMovement
+    Call _2ED8
+    Return
+
+_2357:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _237C
+    GoToIfEq VAR_0x8008, 1, _23CC
+    End
+
+_237C:
+    WaitABPress
+    CloseMessage
+    ApplyMovement 3, _05B4
+    WaitMovement
+    Message BattleArcadeScene_Text_BattleStart
+    WaitABPress
+    CloseMessage
+    WaitTime 15, VAR_0x8008
+    ApplyMovement 98, _0288
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_LOAD_TRAINERS, 0, 0, VAR_0x8008
+    BattleArcade_PrintTrainerInfo 0
+    WaitABPress
+    CloseMessage
+    ApplyMovement 4, _0310
+    ApplyMovement 98, _0318
+    WaitMovement
+    GoTo _24AD
+    End
+
+_23CC:
+    WaitABPress
+    MessageNoSkip BattleArcadeScene_Text_PleaseWait
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 149
+    ClearReceivedTempDataAllPlayers
+    CloseMessage
+    ApplyMovement 3, _05B4
+    WaitMovement
+    MessageNoSkip BattleArcadeScene_Text_BattleStart
+    WaitTime 30, VAR_0x8008
+    CloseMessage
+    WaitTime 15, VAR_0x8008
+    ApplyMovement 98, _0288
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_LOAD_TRAINERS, 0, 0, VAR_0x8008
+    BattleArcade_PrintTrainerInfo 0
+    WaitTime 30, VAR_0x8008
+    CloseMessage
+    ApplyMovement 99, _0288
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_LOAD_TRAINERS, 0, 0, VAR_0x8008
+    BattleArcade_PrintTrainerInfo 1
+    WaitTime 30, VAR_0x8008
+    CloseMessage
+    ApplyMovement 1, _0310
+    ApplyMovement 2, _0310
+    ApplyMovement 98, _0318
+    ApplyMovement 99, _0318
+    WaitMovement
+    MessageNoSkip BattleArcadeScene_Text_PleaseWait
+    GoTo _24AD
+    End
+
+_2462:
+    CallBattleArcadeFunction BA_FUNC_GET_OPPONENT_OBJECT_ID, 0, 0, VAR_0x8008
+    SetVar VAR_0x800B, VAR_0x8008
+    Call _3466
+    Return
+
+_2479:
+    CallBattleArcadeFunction BA_FUNC_GET_OPPONENT_OBJECT_ID, 0, 0, VAR_0x8008
+    SetVar VAR_0x800B, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_GET_OPPONENT_OBJECT_ID, 1, 0, VAR_0x8008
+    SetVar VAR_0x800C, VAR_0x8008
+    Call _347D
+    Return
+
+_249F:
+    SetVar VAR_0x800B, 218
+    Call _3466
+    Return
+
+_24AD:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2506
+    CallBattleArcadeFunction BA_FUNC_GET_NEXT_BATTLE_TYPE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _24F2
+    GoToIfEq VAR_0x8008, 2, _24F2
+    FrontierScrCmd_3F 2
+    GoTo _251C
+    End
+
+_24F2:
+    FreeParticleSystem 0
+    IncrementRecordValue RECORD_UNK_059
+    FrontierScrCmd_47 6
+    GoTo _251C
+    End
+
+_2506:
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 141
+    ClearReceivedTempDataAllPlayers
+    CloseMessage
+    FrontierScrCmd_3F 2
+    GoTo _251C
+    End
+
+_251C:
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    Call _2F24
+    Call _2F4A
+    CallBattleArcadeFunction BA_FUNC_GET_NEXT_BATTLE_TYPE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2562
+    GoToIfEq VAR_0x8008, 2, _2562
+    FreeParticleSystem 0
+    GoTo _2562
+    End
+
+_2562:
+    Call _32A0
+    FrontierScrCmd_2B 2
+    Call _3272
+    BattleArcade_StartBattle
+    BattleArcade_CleanupBattle
+    Call _2EB2
+    CallBattleArcadeFunction BA_FUNC_LOAD_NORMAL_BACKGROUND, 0, 0, VAR_0x8008
+    Call _3246
+    Call _32CB
+    Call _32EA
+    FadeScreenIn
+    BattleArcade_CheckWonBattle VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _2D52
+    IncrementRecordValue RECORD_BATTLE_ARCADE_VICTORIES
+    CallBattleArcadeFunction BA_FUNC_GET_NEXT_BATTLE_TYPE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _31DE
+    GoToIfEq VAR_0x8008, 2, _3212
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    GoTo _25EE
+    End
+
+_25EE:
+    Call _25FC
+    GoTo _26BC
+    End
+
+_25FC:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _262E
+    ApplyMovement 98, _03F0
+    ApplyMovement 4, _0414
+    WaitMovement
+    FrontierScrCmd_25 98
+    FrontierScrCmd_23 VAR_0x800B
+    Return
+
+_262E:
+    Call _229D
+    ApplyMovement 98, _03F0
+    ApplyMovement 99, _03FC
+    ApplyMovement 1, _0414
+    ApplyMovement 2, _0414
+    WaitMovement
+    FrontierScrCmd_25 98
+    FrontierScrCmd_25 99
+    FrontierScrCmd_23 VAR_0x800B
+    FrontierScrCmd_23 VAR_0x800C
+    Return
+
+_2668:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2692
+    ApplyMovement 98, _0408
+    WaitMovement
+    FrontierScrCmd_25 98
+    FrontierScrCmd_23 VAR_0x800B
+    Return
+
+_2692:
+    Call _22BC
+    ApplyMovement 98, _0408
+    ApplyMovement 99, _0408
+    WaitMovement
+    FrontierScrCmd_25 98
+    FrontierScrCmd_25 99
+    FrontierScrCmd_23 VAR_0x800B
+    FrontierScrCmd_23 VAR_0x800C
+    Return
+
+_26BC:
+    GoTo _26CC
+    End
+
+_26C4:
+    GoTo _26CC
+    End
+
+_26CC:
+    Call _26E0
+    Call _26F4
+    GoTo _270C
+    End
+
+_26E0:
+    CallBattleArcadeFunction BA_FUNC_INCREMENT_CURRENT_BATTLE, 1, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_INCREMENT_CURRENT_STREAK 0, 0, VAR_0x8008
+    Return
+
+_26F4:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 1, _0860
+    Return
+
+_270C:
+    CallBattleArcadeFunction BA_FUNC_GET_CURRENT_BATTLE, 0, 0, VAR_0x8008
+    GoToIfNe VAR_0x8008, 7, _27DC
+    GoTo _272A
+    End
+
+_272A:
+    GoToIfGe VAR_0x800D, 1, _279A
+    FrontierScrCmd_71 VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _2780
+    FrontierScrCmd_70 VAR_0x8008
+    CallIfEq VAR_0x8008, 0, _2C4E
+    CallIfEq VAR_0x8008, 1, _2C54
+    ShowYesNoMenu VAR_0x8008, MENU_NO
+    GoToIfEq VAR_0x8008, 1, _279A
+    GoTo _278C
+    End
+
+_2780:
+    MessageNoSkip BattleArcadeScene_Text_PleaseWait
+    GoTo _279A
+    End
+
+_278C:
+    Call _2BD8
+    GoTo _279A
+    End
+
+_279A:
+    CallBattleArcadeFunction BA_FUNC_SAVE_ON_COMPLETING_ROUND, 0, 0, VAR_0x8008
+    SetSystemVar VAR_BATTLE_ARCADE_LOBBY_LOAD_ACTION, 1
+    Message BattleArcadeScene_Text_BPEarned
+    BufferPlayerName 0
+    CallBattleArcadeFunction BA_FUNC_GET_EARNED_BP, 0, 0, VAR_0x8008
+    BufferNumber 1, VAR_0x8008
+    GiveBattlePoints VAR_0x8008
+    Message BattleArcadeScene_Text_ReceiveBP
+    PlayFanfare SEQ_PL_POINTGET3_sseq
+    WaitFanfare
+    GoTo _27D4
+    End
+
+_27D4:
+    GoTo _2DD4
+    End
+
+_27DC:
+    GoToIfGe VAR_0x800D, 1, _28AB
+    Call _349D
+    ApplyMovement 97, _0640
+    WaitMovement
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2821
+    ApplyMovement 4, _0654
+    WaitMovement
+    GoTo _283B
+    End
+
+_2821:
+    ApplyMovement 1, _0654
+    ApplyMovement 2, _0654
+    WaitMovement
+    GoTo _283B
+    End
+
+_283B:
+    Message BattleArcadeScene_Text_HealingMons
+    PlayFanfare SEQ_ASA_sseq
+    WaitFanfare
+    CloseMessage
+    HealParty
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2879
+    ApplyMovement 97, _064C
+    ApplyMovement 4, _065C
+    WaitMovement
+    GoTo _289B
+    End
+
+_2879:
+    ApplyMovement 97, _064C
+    ApplyMovement 1, _065C
+    ApplyMovement 2, _065C
+    WaitMovement
+    GoTo _289B
+    End
+
+_289B:
+    FrontierScrCmd_25 97
+    FrontierScrCmd_23 FR_VAR_0x800F
+    GoTo _28B3
+    End
+
+_28AB:
+    GoTo _28B3
+    End
+
+_28B3:
+    CallBattleArcadeFunction BA_FUNC_GET_NEXT_BATTLE_TYPE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2F86
+    GoToIfEq VAR_0x8008, 2, _2F86
+    GoTo _28DE
+    End
+
+_28DE:
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    GoTo _28F1
+    End
+
+_28F1:
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_GET_CURRENT_BATTLE, 0, 0, VAR_0x8008
+    AddVar VAR_0x8008, 1
+    BufferNumber 0, VAR_0x8008
+    Message BattleArcadeScene_Text_AreYouReady
+    GoTo _291C
+    End
+
+_291C:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2954
+    GoToIfEq VAR_0x800D, 1, _29A3
+    GoToIfEq VAR_0x8003, 0, _29B1
+    GoTo _29A3
+    End
+
+_2954:
+    FrontierScrCmd_71 VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _2987
+    GoToIfEq VAR_0x800D, 1, _2987
+    GoToIfEq VAR_0x8003, 0, _2995
+    GoTo _2987
+    End
+
+_2987:
+    SetVar VAR_0x8008, 1
+    GoTo _29BF
+    End
+
+_2995:
+    SetVar VAR_0x8008, 2
+    GoTo _29BF
+    End
+
+_29A3:
+    SetVar VAR_0x8008, 3
+    GoTo _29BF
+    End
+
+_29B1:
+    SetVar VAR_0x8008, 4
+    GoTo _29BF
+    End
+
+_29BF:
+    GoToIfEq VAR_0x8008, 1, _29F5
+    GoToIfEq VAR_0x8008, 2, _2A10
+    GoToIfEq VAR_0x8008, 3, _2A33
+    GoToIfEq VAR_0x8008, 4, _2A56
+    End
+
+_29F5:
+    InitLocalTextListMenu 31, 13, 0, 0, VAR_0x800A
+    SetMenuXOriginSide 1
+    AddListMenuEntry BattleArcadeScene_Text_ContinueOption, 255, 0
+    GoTo _2A81
+    End
+
+_2A10:
+    InitLocalTextListMenu 31, 11, 0, 0, VAR_0x800A
+    SetMenuXOriginSide 1
+    AddListMenuEntry BattleArcadeScene_Text_ContinueOption, 255, 0
+    AddListMenuEntry BattleArcadeScene_Text_RecordOption, 255, 1
+    GoTo _2A81
+    End
+
+_2A33:
+    InitLocalTextListMenu 31, 11, 0, 0, VAR_0x800A
+    SetMenuXOriginSide 1
+    AddListMenuEntry BattleArcadeScene_Text_ContinueOption, 255, 0
+    AddListMenuEntry BattleArcadeScene_Text_RestOption, 255, 2
+    GoTo _2A81
+    End
+
+_2A56:
+    InitLocalTextListMenu 31, 9, 0, 0, VAR_0x800A
+    SetMenuXOriginSide 1
+    AddListMenuEntry BattleArcadeScene_Text_ContinueOption, 255, 0
+    AddListMenuEntry BattleArcadeScene_Text_RecordOption, 255, 1
+    AddListMenuEntry BattleArcadeScene_Text_RestOption, 255, 2
+    GoTo _2A81
+    End
+
+_2A81:
+    AddListMenuEntry BattleArcadeScene_Text_RetireOption, 255, 3
+    ShowListMenu
+    GoTo _2A93
+    End
+
+_2A93:
+    GoToIfEq VAR_0x800A, 0, _2ACF
+    GoToIfEq VAR_0x800A, 1, _2B8A
+    GoToIfEq VAR_0x800A, 2, _2C5A
+    GoToIfEq VAR_0x800A, 3, _2CB2
+    GoTo _2CB2
+    End
+
+_2ACF:
+    SetVar VAR_0x800D, 0
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2AF3
+    GoTo _2B5E
+    End
+
+_2AF3:
+    BufferPartnerName 0
+    Message BattleArcadeScene_Text_PartnerIsChoosing
+    GoTo _2B02
+    End
+
+_2B02:
+    SetVar VAR_0x8002, 3
+    BattleArcade_SendCommMessage VAR_0x8002, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _2B02
+    BattleArcade_WaitForCommResponses VAR_0x8002
+    ClearReceivedTempDataAllPlayers
+    CallBattleArcadeFunction BA_FUNC_UNK_24, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2B49
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 142
+    ClearReceivedTempDataAllPlayers
+    GoTo _2B5E
+    End
+
+_2B49:
+    BufferPartnerName 0
+    MessageNoSkip BattleArcadeScene_Text_PartnerRetired
+    WaitTime 30, VAR_0x8008
+    GoTo _2D19
+    End
+
+_2B5E:
+    SetVar VAR_0x8003, 0
+    BattleArcade_SetupNextOpponent
+    WaitTime 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 1, _0A2D
+    GoTo _0B20
+    End
+
+_2B8A:
+    FrontierScrCmd_70 VAR_0x8008
+    CallIfEq VAR_0x8008, 0, _2C4E
+    CallIfEq VAR_0x8008, 1, _2C54
+    ShowYesNoMenu VAR_0x8008, MENU_NO
+    GoToIfEq VAR_0x8008, 1, _2BD0
+    GoTo _2BC2
+    End
+
+_2BC2:
+    Call _2BD8
+    GoTo _28B3
+    End
+
+_2BD0:
+    GoTo _28B3
+    End
+
+_2BD8:
+    Call _2BFA
+    GoTo _2C05
+    End
+
+_2BE6:
+    Call _2BFA
+    AddVar VAR_0x8009, 1
+    GoTo _2C05
+    End
+
+_2BFA:
+    CallBattleArcadeFunction BA_FUNC_GET_CURRENT_STREAK, 0, 0, VAR_0x8009
+    Return
+
+_2C05:
+    GoTo _2C0D
+    End
+
+_2C0D:
+    SetVar VAR_0x8003, 1
+    MessageInstant BattleArcadeScene_Text_Saving
+    CallBattleArcadeFunction BA_FUNC_GET_CHALLENGE_TYPE, 0, 0, VAR_0x8008
+    ShowSavingIcon
+    FrontierScrCmd_6D 6, VAR_0x8008, VAR_0x8009, VAR_0x8009
+    HideSavingIcon
+    GoToIfEq VAR_0x8009, 1, _2C41
+    Message BattleArcadeScene_Text_VideoSaveFailed
+    Return
+
+_2C41:
+    PlaySoundEffect SEQ_SE_DP_SAVE_sseq
+    BufferPlayerName 0
+    Message BattleArcadeScene_Text_BattleSaved
+    Return
+
+_2C4E:
+    Message BattleArcadeScene_Text_SaveAsVideo
+    Return
+
+_2C54:
+    Message BattleArcadeScene_Text_OverwriteVideo
+    Return
+
+_2C5A:
+    Message BattleArcadeScene_Text_BreakQuestion
+    ShowYesNoMenu VAR_0x8008, MENU_YES
+    GoToIfEq VAR_0x8008, 1, _2CAA
+    GoTo _2C78
+    End
+
+_2C78:
+    SetSystemVar VAR_BATTLE_ARCADE_LOBBY_LOAD_ACTION, 2
+    CallBattleArcadeFunction BA_FUNC_QUICKSAVE, 0, 0, VAR_0x8008
+    FreeBattleRecording
+    FreeBattleArcade
+    Call _2E9C
+    FadeScreenOut
+    CloseMessage
+    CallBattleArcadeFunction BA_FUNC_RESET_SYSTEM, 0, 0, VAR_0x8008
+    End
+
+_2CAA:
+    GoTo _28B3
+    End
+
+_2CB2:
+    Message BattleArcadeScene_Text_RetireQuestion
+    ShowYesNoMenu VAR_0x8008, MENU_NO
+    GoToIfEq VAR_0x8008, 1, _2D4A
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2CEA
+    Message BattleArcadeScene_Text_ReturnItems
+    GoTo _2D31
+    End
+
+_2CEA:
+    MessageNoSkip BattleArcadeScene_Text_PleaseWait
+    GoTo _2CF6
+    End
+
+_2CF6:
+    SetVar VAR_0x8002, 3
+    BattleArcade_SendCommMessage VAR_0x8002, 1, VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _2CF6
+    GoTo _2D19
+    End
+
+_2D19:
+    Message BattleArcadeScene_Text_ReturnItems
+    MessageNoSkip BattleArcadeScene_Text_PleaseWait
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 144
+    ClearReceivedTempDataAllPlayers
+    GoTo _2D31
+    End
+
+_2D31:
+    CallBattleArcadeFunction BA_FUNC_SAVE_ON_LOSS, 0, 0, VAR_0x8008
+    SetSystemVar VAR_BATTLE_ARCADE_LOBBY_LOAD_ACTION, 3
+    GoTo _2E0A
+    End
+
+_2D48:
+    End
+
+_2D4A:
+    GoTo _28B3
+    End
+
+_2D52:
+    FrontierScrCmd_71 VAR_0x8008
+    GoToIfEq VAR_0x8008, 0, _2D9B
+    FrontierScrCmd_70 VAR_0x8008
+    CallIfEq VAR_0x8008, 0, _2C4E
+    CallIfEq VAR_0x8008, 1, _2C54
+    ShowYesNoMenu VAR_0x8008, MENU_NO
+    GoToIfEq VAR_0x8008, 1, _2DB5
+    GoTo _2DA7
+    End
+
+_2D9B:
+    MessageNoSkip BattleArcadeScene_Text_PleaseWait
+    GoTo _2DBD
+    End
+
+_2DA7:
+    Call _2BE6
+    GoTo _2DBD
+    End
+
+_2DB5:
+    GoTo _2DBD
+    End
+
+_2DBD:
+    CallBattleArcadeFunction BA_FUNC_SAVE_ON_LOSS, 0, 0, VAR_0x8008
+    SetSystemVar VAR_BATTLE_ARCADE_LOBBY_LOAD_ACTION, 3
+    GoTo _2DD4
+    End
+
+_2DD4:
+    Message BattleArcadeScene_Text_ReturnItems
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _2DF6
+    GoTo _2E0A
+    End
+
+_2DF6:
+    MessageNoSkip BattleArcadeScene_Text_PleaseWait
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 148
+    ClearReceivedTempDataAllPlayers
+    GoTo _2E0A
+    End
+
+_2E0A:
+    Call _2E9C
+    CloseMessage
+    GoTo _2E1A
+    End
+
+_2E1A:
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 1, _2E86
+    FadeScreenOut
+    Call _2F5E
+    Call _2F4A
+    Call _3272
+    CallBattleArcadeFunction BA_FUNC_GET_CHALLENGE_TYPE, 0, 0, VAR_0x8008
+    CallIfEq VAR_0x8008, 2, _2E80
+    CallBattleArcadeFunction BA_FUNC_GET_CHALLENGE_TYPE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 3, _2E90
+    FreeBattleRecording
+    FreeBattleArcade
+    FrontierScrCmd_02
+
+_2E80:
+    FrontierScrCmd_C8 6
+    Return
+
+_2E86:
+    ClearReceivedTempDataAllPlayers
+    SyncConnectedPlayers 150
+    ClearReceivedTempDataAllPlayers
+    Return
+
+_2E90:
+    FreeBattleRecording
+    FreeBattleArcade
+    FrontierScrCmd_04 FRONTIER_SCENE_14, 1
+    End
+
+_2E9C:
+    MessageInstant BattleArcadeScene_Text_Saving2
+    ShowSavingIcon
+    FrontierScrCmd_73 VAR_0x8008
+    HideSavingIcon
+    PlaySoundEffect SEQ_SE_DP_SAVE_sseq
+    WaitSoundEffect SEQ_SE_DP_SAVE_sseq
+    Return
+
+_2EB2:
+    CallBattleArcadeFunction BA_FUNC_LOAD_MON_SPRITE_DATA, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_LOAD_ITEM_SPRITE_DATA, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_CREATE_ITEM_SPRITES, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_CREATE_MON_SPRITES, 0, 0, VAR_0x8008
+    Return
+
+_2ED8:
+    CallBattleArcadeFunction BA_FUNC_CREATE_ITEM_SPRITES, 1, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_CREATE_MON_SPRITES, 1, 0, VAR_0x8008
+    Return
+
+_2EEC:
+    CallBattleArcadeFunction BA_FUNC_LOAD_MON_SPRITE_DATA, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_LOAD_ITEM_SPRITE_DATA, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_CREATE_ITEM_SPRITES, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_CREATE_ITEM_SPRITES, 1, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_CREATE_MON_SPRITES, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_CREATE_MON_SPRITES, 1, 0, VAR_0x8008
+    Return
+
+_2F24:
+    CallBattleArcadeFunction BA_FUNC_DELETE_ITEM_SPRITES, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_DELETE_ITEM_SPRITES, 1, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_DELETE_MON_SPRITES, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_DELETE_MON_SPRITES, 1, 0, VAR_0x8008
+    Return
+
+_2F4A:
+    CallBattleArcadeFunction BA_FUNC_UNLOAD_MON_SPRITE_DATA, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNLOAD_ITEM_SPRITE_DATA, 0, 0, VAR_0x8008
+    Return
+
+_2F5E:
+    CallBattleArcadeFunction BA_FUNC_DELETE_ITEM_SPRITES, 0, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_DELETE_MON_SPRITES, 0, 0, VAR_0x8008
+    Return
+
+_2F72:
+    CallBattleArcadeFunction BA_FUNC_DELETE_ITEM_SPRITES, 1, 0, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_DELETE_MON_SPRITES, 1, 0, VAR_0x8008
+    Return
+
+_2F86:
+    GoToIfEq VAR_0x8003, 1, _28DE
+    CallBattleArcadeFunction BA_FUNC_CHECK_SEEN_STAR_INTRO, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _28DE
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    Message BattleArcadeScene_Text_ArcadeStarApproaching
+    GoTo _28F1
+    End
+
+_2FC0:
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    Call _2FF2
+    Message BattleArcadeScene_Text_DahliaIntro
+    CloseMessage
+    Return
+
+_2FD9:
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    Call _2FF2
+    Message BattleArcadeScene_Text_DahliaIntroGold
+    CloseMessage
+    Return
+
+_2FF2:
+    Call _33E3
+    ApplyMovement 5, _0438
+    ApplyMovement 6, _0440
+    ApplyMovement 7, _0448
+    ApplyMovement 8, _0450
+    ApplyMovement 9, _0458
+    ApplyMovement 11, _0468
+    ApplyMovement 12, _0470
+    ApplyMovement 13, _0438
+    ApplyMovement 14, _0440
+    ApplyMovement 15, _0448
+    ApplyMovement 16, _0448
+    ApplyMovement 17, _0478
+    ApplyMovement 18, _0438
+    WaitMovement
+    Call _249F
+    ApplyMovement 98, _0320
+    WaitMovement
+    PlaySoundEffect SEQ_SE_PL_FR04_sseq
+    InitParticleSystem 3, battle_arcade_2_spa
+    CreateParticleSystemEmitter 3, ARCADE_2_EMITTER_UNK_0
+    CreateParticleSystemEmitter 3, ARCADE_2_EMITTER_UNK_1
+    ApplyMovement 4, _03D0
+    ApplyMovement 0, _03B4
+    WaitMovement
+    ApplyMovement 5, _0480
+    ApplyMovement 6, _0488
+    ApplyMovement 7, _0494
+    ApplyMovement 8, _049C
+    ApplyMovement 9, _04A8
+    ApplyMovement 11, _04C0
+    ApplyMovement 12, _04C8
+    ApplyMovement 13, _0480
+    ApplyMovement 14, _04D0
+    ApplyMovement 15, _0494
+    ApplyMovement 17, _04DC
+    ApplyMovement 18, _04E8
+    WaitMovement
+    PlaySoundEffect SEQ_SE_DP_DENDOU_sseq
+    ApplyMovement 98, _0330
+    WaitMovement
+    WaitSoundEffect SEQ_SE_DP_DENDOU_sseq
+    ApplyMovement 98, _0344
+    ApplyMovement 4, _03D8
+    ApplyMovement 0, _03BC
+    ApplyMovement 5, _04F8
+    ApplyMovement 6, _04F8
+    ApplyMovement 7, _0508
+    ApplyMovement 8, _051C
+    ApplyMovement 9, _0508
+    ApplyMovement 11, _0508
+    ApplyMovement 12, _04F8
+    ApplyMovement 13, _051C
+    ApplyMovement 14, _04F8
+    ApplyMovement 15, _04F8
+    ApplyMovement 17, _051C
+    ApplyMovement 18, _04F8
+    WaitMovement
+    Call _3198
+    Call _2ED8
+    Return
+
+_3198:
+    FrontierScrCmd_25 5
+    FrontierScrCmd_25 6
+    FrontierScrCmd_25 7
+    FrontierScrCmd_25 8
+    FrontierScrCmd_25 9
+    FrontierScrCmd_25 11
+    FrontierScrCmd_25 12
+    FrontierScrCmd_25 13
+    FrontierScrCmd_25 14
+    FrontierScrCmd_25 15
+    FrontierScrCmd_25 16
+    FrontierScrCmd_25 17
+    FrontierScrCmd_25 18
+    FrontierScrCmd_23 9
+    FrontierScrCmd_23 19
+    FrontierScrCmd_23 20
+    FrontierScrCmd_23 35
+    Return
+
+_31DE:
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    GetSystemVar VAR_BATTLE_ARCADE_PRINT_STATE, VAR_0x8008
+    CallIfEq VAR_0x8008, 0, _320A
+    Message BattleArcadeScene_Text_BeatDahlia
+    CloseMessage
+    GoTo _25EE
+    End
+
+_320A:
+    SetSystemVar VAR_BATTLE_ARCADE_PRINT_STATE, 1
+    Return
+
+_3212:
+    Call _32A0
+    BufferNumber 0, VAR_0x8008
+    GetSystemVar VAR_BATTLE_ARCADE_PRINT_STATE, VAR_0x8008
+    CallIfEq VAR_0x8008, 2, _323E
+    Message BattleArcadeScene_Text_BeatDahliaGold
+    CloseMessage
+    GoTo _25EE
+    End
+
+_323E:
+    SetSystemVar VAR_BATTLE_ARCADE_PRINT_STATE, 3
+    Return
+
+_3246:
+    FrontierScrCmd_2A _0204
+    FrontierScrCmd_2C _0208
+    FrontierScrCmd_31 4, 0
+    FrontierScrCmd_31 5, 4
+    FrontierScrCmd_2C _0220
+    FrontierScrCmd_31 6, 1
+    FrontierScrCmd_31 7, 5
+    Return
+
+_3272:
+    FrontierScrCmd_2D 4
+    FrontierScrCmd_2D 5
+    FrontierScrCmd_2D 6
+    FrontierScrCmd_2D 7
+    FrontierScrCmd_2B 3
+    Return
+
+_3288:
+    ApplyMovement 3, _05D0
+    WaitMovement
+    Return
+
+_3294:
+    ApplyMovement 3, _05D8
+    WaitMovement
+    Return
+
+_32A0:
+    CallBattleArcadeFunction BA_FUNC_GET_CURRENT_STREAK, 0, 0, VAR_0x8008
+    GoToIfGe VAR_0x8008, 9999, _32BE
+    AddVar VAR_0x8008, 1
+    Return
+
+_32BE:
+    Return
+
+_32C0:
+    CallBattleArcadeFunction BA_FUNC_SET_PALETTE, 8, 0, VAR_0x8008
+    Return
+
+_32CB:
+    CallBattleArcadeFunction BA_FUNC_SET_PALETTE, 8, 1, VAR_0x8008
+    Return
+
+_32D6:
+    CallBattleArcadeFunction BA_FUNC_SET_PALETTE, 0, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 0, 0, VAR_0x8008
+    Return
+
+_32EA:
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 3, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 98, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_IS_MULTIPLAYER_CHALLENGE, 0, 0, VAR_0x8008
+    GoToIfEq VAR_0x8008, 1, _331D
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 4, VAR_0x8008
+    Return
+
+_331D:
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 2, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 99, VAR_0x8008
+    Return
+
+_333A:
+    FrontierScrCmd_22 _0008
+    FrontierScrCmd_24 _001C
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 20, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 4, VAR_0x8008
+    Return
+
+_335A:
+    FrontierScrCmd_22 _0010
+    FrontierScrCmd_24 _0040
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 20, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 2, VAR_0x8008
+    Return
+
+_3383:
+    FrontierScrCmd_22 _0070
+    FrontierScrCmd_24 _00A0
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 4, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 3, VAR_0x8008
+    Return
+
+_33A3:
+    FrontierScrCmd_22 _0078
+    FrontierScrCmd_24 _00C4
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 3, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 1, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 2, VAR_0x8008
+    Return
+
+_33CC:
+    FrontierScrCmd_22 _0098
+    FrontierScrCmd_24 _00F4
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 20, VAR_0x8008
+    Return
+
+_33E3:
+    FrontierScrCmd_22 _0088
+    FrontierScrCmd_24 _0104
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 5, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 6, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 7, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 8, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 9, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 11, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 12, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 13, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 14, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 15, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 16, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 17, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 18, VAR_0x8008
+    Return
+
+_3466:
+    FrontierScrCmd_22 _0198
+    FrontierScrCmd_24 _01A8
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 98, VAR_0x8008
+    Return
+
+_347D:
+    FrontierScrCmd_22 _01A0
+    FrontierScrCmd_24 _01B8
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 98, VAR_0x8008
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 99, VAR_0x8008
+    Return
+
+_349D:
+    FrontierScrCmd_22 _01D0
+    FrontierScrCmd_24 _01D8
+    CallBattleArcadeFunction BA_FUNC_UNK_44, 8, 97, VAR_0x8008
+    Return
+
+    .balign 4, 0

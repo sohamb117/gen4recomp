@@ -1,0 +1,23 @@
+# After CONTINUE: walk a handful of real steps so the pedometer ticks.
+#
+# Left and right alternately, the same reason lab-walk.txt does: one held
+# direction walks into a wall and stops stepping.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3000 keys LEFT
+3048 keys RIGHT
+3096 keys LEFT
+3144 keys RIGHT
+3192 keys LEFT
+3240 keys RIGHT
+3288 keys LEFT
+3336 keys RIGHT
+3384 keys none

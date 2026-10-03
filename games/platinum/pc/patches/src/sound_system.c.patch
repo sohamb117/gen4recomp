@@ -1,0 +1,25 @@
+--- a/src/sound_system.c
++++ b/src/sound_system.c
+@@ -148,7 +148,21 @@
+ 
+ SoundSystem *SoundSystem_Get()
+ {
+-    return &sSoundSystem;
++    /* pc port: the SoundSystem carries the ~750 KB sound heap, and every
++     * wave the SPU plays lives inside it. SOUNDxSAD holds 27 bits, so the
++     * heap must sit at a guest address, not in host .bss. The pokediamond
++     * port hit the same wall, a host pointer reaching SOUNDxSAD where a
++     * wave should be, and it is solved the same way: the object
++     * moves into the port's guest-addressed window (pc_guest_window.c,
++     * 0x02A00000), where its addresses survive the SPU's mask. The static
++     * above stays as dead storage rather than perturbing the diff. */
++    extern void *pc_guest_window_alloc(unsigned int bytes, const char *what);
++    static SoundSystem *sMoved;
++
++    if (sMoved == NULL) {
++        sMoved = pc_guest_window_alloc(sizeof(SoundSystem), "SoundSystem");
++    }
++    return sMoved;
+ }
+ 
+ void *SoundSystem_GetParam(enum SoundSystemParam param)

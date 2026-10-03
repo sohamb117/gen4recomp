@@ -1,0 +1,11 @@
+--- a/subprojects/NitroSystem-071126.1/libraries/snd/src/sndarc_stream.c
++++ b/subprojects/NitroSystem-071126.1/libraries/snd/src/sndarc_stream.c
+@@ -1278,7 +1278,7 @@
+                     u32 end;
+ 
+                     if (blockOffsetSample == 0) {
+-                        *state = *((AdpcmState *)srcp)++;
++                        *state = *(AdpcmState *)srcp; srcp += sizeof(AdpcmState);
+                     }
+ 
+                     end = blockOffsetSample + samples;

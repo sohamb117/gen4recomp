@@ -1,0 +1,180 @@
+{
+    "base_stats": {
+        "hp": 70,
+        "attack": 94,
+        "defense": 50,
+        "speed": 66,
+        "special_attack": 94,
+        "special_defense": 50
+    },
+    "types": [ "TYPE_BUG", "TYPE_FLYING" ],
+    "catch_rate": 45,
+    "base_exp_reward": 159,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 1,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_SILVERPOWDER"
+    },
+    "gender_ratio": "GENDER_RATIO_MALE_ONLY",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_BUG", "EGG_GROUP_BUG" ],
+    "abilities": [ "ABILITY_SWARM", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_YELLOW",
+    "flip_sprite": false,
+    "icon_palette": 0,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 10, "MOVE_PROTECT" ],
+            [ 15, "MOVE_BUG_BITE" ],
+            [ 20, "MOVE_HIDDEN_POWER" ],
+            [ 23, "MOVE_CONFUSION" ],
+            [ 26, "MOVE_GUST" ],
+            [ 29, "MOVE_POISON_POWDER" ],
+            [ 32, "MOVE_PSYBEAM" ],
+            [ 35, "MOVE_CAMOUFLAGE" ],
+            [ 38, "MOVE_SILVER_WIND" ],
+            [ 41, "MOVE_AIR_SLASH" ],
+            [ 44, "MOVE_PSYCHIC" ],
+            [ 47, "MOVE_BUG_BUZZ" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM19",
+            "TM20",
+            "TM21",
+            "TM22",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM48",
+            "TM51",
+            "TM53",
+            "TM58",
+            "TM62",
+            "TM68",
+            "TM70",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM87",
+            "TM89",
+            "TM90",
+            "HM05"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_AIR_CUTTER",
+            "MOVE_SIGNAL_BEAM",
+            "MOVE_TWISTER",
+            "MOVE_SWIFT"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_BURMY",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_SMALL",
+        "type": "FOOTPRINT_TYPE_TOUGH"
+    },
+    "pokedex_data": {
+        "height_inches": 35,
+        "weight_pounds": 51.4,
+        "body_shape": "SHAPE_MULTI_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 346,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 346,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 65525,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 65525,
+        "en": {
+            "name": "MOTHIM",
+            "category": "Moth Pokémon",
+            "entry_text": [
+                "While it loves floral honey, it won’t\n",
+                "gather any itself. Instead, it\n",
+                "plots to steal some from COMBEE."
+            ]
+        },
+        "fr": {
+            "name": "PAPILORD",
+            "category": "Pokémon Phalène",
+            "entry_text": [
+                "Il aime le nectar des fleurs et\n",
+                "n’hésite pas à voler celui\n",
+                "que récupère APITRINI."
+            ]
+        },
+        "de": {
+            "name": "MOTERPEL",
+            "category": "Motte",
+            "entry_text": [
+                "Es liebt Honig und stiehlt den\n",
+                "Honig, der von WADRIBIE\n",
+                "gesammelt wurde."
+            ]
+        },
+        "it": {
+            "name": "MOTHIM",
+            "category": "Pokémon Falena",
+            "entry_text": [
+                "Ama il nettare dei fiori. Ruba e\n",
+                "mangia il nettare raccolto da \n",
+                "COMBEE."
+            ]
+        },
+        "es": {
+            "name": "MOTHIM",
+            "category": "Pokémon Polilla",
+            "entry_text": [
+                "Le encanta la miel de las\n",
+                "flores y roba la que recoge\n",
+                "COMBEE."
+            ]
+        },
+        "jp": {
+            "name": "ガ－メイル",
+            "category": "ミノガポケモン",
+            "entry_text": [
+                "はなの　ミツが　だいすき。\n",
+                "ミツハニ－の　あつめた　ミツを\n",
+                "よこどりして　たべてしまう。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 70,
+        "rarity": 20,
+        "unused": 4356
+    }
+}

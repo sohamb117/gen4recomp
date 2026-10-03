@@ -1,0 +1,51 @@
+--- a/src/scrcmd.c
++++ b/src/scrcmd.c
+@@ -1003,7 +1003,16 @@
+ 
+ static BOOL ScrCmd_GoTo(ScriptContext *ctx)
+ {
+-    ScriptContext_Jump(ctx, ctx->scriptPtr + ScriptContext_ReadWord(ctx));
++    /* pc port: `ctx->scriptPtr + ScriptContext_ReadWord(ctx)` is an
++     * unsequenced read of scriptPtr against a call that advances it.
++     * mwcc evaluated the call first (jump lands after the operand, which
++     * is what every ROM's offsets assume); gcc reads the pointer first
++     * and every unconditional GoTo lands four bytes short, measured on
++     * the save script, where the Call twin of this bug ended the script
++     * on a stray End before any command ran. Sequenced explicitly, the
++     * same shape GoToIf/CallIf already have. */
++    s32 offset = ScriptContext_ReadWord(ctx);
++    ScriptContext_Jump(ctx, ctx->scriptPtr + offset);
+     return FALSE;
+ }
+ 
+@@ -1052,7 +1061,9 @@
+ 
+ static BOOL ScrCmd_Call(ScriptContext *ctx)
+ {
+-    ScriptContext_Call(ctx, ctx->scriptPtr + ScriptContext_ReadWord(ctx));
++    /* pc port: same unsequenced-evaluation repair as ScrCmd_GoTo above. */
++    s32 offset = ScriptContext_ReadWord(ctx);
++    ScriptContext_Call(ctx, ctx->scriptPtr + offset);
+     return FALSE;
+ }
+ 
+@@ -5065,6 +5076,19 @@
+         return TRUE;
+     }
+ 
++    /* pc port: PC_TRACE_JOURNAL=1 prints one line here. Every field move --
++     * Cut, Surf, Strength, Rock Smash, Waterfall, Rock Climb, Defog, Flash --
++     * ends its script with this command, so this is the one place that says
++     * which move the game believes it performed. It sits ahead of
++     * JournalEntry_SaveData rather than inside the journal because a station
++     * booted from a minted save can have no journal entry to store the event
++     * in, and the move still ran. pc/src/pc_probe2d.c owns the gate. */
++    {
++        extern void pc_journal_trace(int eventType, int param, int hasEntry);
++        pc_journal_trace(eventType, eventParam,
++            ctx->fieldSystem->journalEntry != NULL);
++    }
++
+     JournalEntry_SaveData(ctx->fieldSystem->journalEntry, *data, dataType);
+     return TRUE;
+ }

@@ -1,0 +1,196 @@
+{
+    "base_stats": {
+        "hp": 60,
+        "attack": 30,
+        "defense": 30,
+        "speed": 50,
+        "special_attack": 36,
+        "special_defense": 56
+    },
+    "types": [ "TYPE_NORMAL", "TYPE_FLYING" ],
+    "catch_rate": 255,
+    "base_exp_reward": 58,
+    "ev_yields": {
+        "hp": 1,
+        "attack": 0,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FLYING", "EGG_GROUP_FLYING" ],
+    "abilities": [ "ABILITY_INSOMNIA", "ABILITY_KEEN_EYE" ],
+    "safari_flee_rate": 90,
+    "body_color": "MON_COLOR_BROWN",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_TACKLE" ],
+            [ 1, "MOVE_GROWL" ],
+            [ 1, "MOVE_FORESIGHT" ],
+            [ 5, "MOVE_HYPNOSIS" ],
+            [ 9, "MOVE_PECK" ],
+            [ 13, "MOVE_UPROAR" ],
+            [ 17, "MOVE_REFLECT" ],
+            [ 21, "MOVE_CONFUSION" ],
+            [ 25, "MOVE_TAKE_DOWN" ],
+            [ 29, "MOVE_AIR_SLASH" ],
+            [ 33, "MOVE_ZEN_HEADBUTT" ],
+            [ 37, "MOVE_EXTRASENSORY" ],
+            [ 41, "MOVE_PSYCHO_SHIFT" ],
+            [ 45, "MOVE_ROOST" ],
+            [ 49, "MOVE_DREAM_EATER" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM17",
+            "TM18",
+            "TM21",
+            "TM27",
+            "TM29",
+            "TM30",
+            "TM32",
+            "TM33",
+            "TM40",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM47",
+            "TM51",
+            "TM58",
+            "TM62",
+            "TM67",
+            "TM77",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM85",
+            "TM87",
+            "TM88",
+            "TM90",
+            "HM02",
+            "HM05"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_OMINOUS_WIND",
+            "MOVE_AIR_CUTTER",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_TWISTER",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT",
+            "MOVE_UPROAR"
+        ],
+        "egg_moves": [
+            "MOVE_MIRROR_MOVE",
+            "MOVE_SUPERSONIC",
+            "MOVE_FAINT_ATTACK",
+            "MOVE_WING_ATTACK",
+            "MOVE_WHIRLWIND",
+            "MOVE_SKY_ATTACK",
+            "MOVE_FEATHER_DANCE",
+            "MOVE_AGILITY",
+            "MOVE_NIGHT_SHADE"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            20,
+            "SPECIES_NOCTOWL"
+        ]
+    ],
+    "offspring": "SPECIES_HOOTHOOT",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 28,
+        "weight_pounds": 46.7,
+        "body_shape": "SHAPE_WINGED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 350,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 350,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 21,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 21,
+        "en": {
+            "name": "HOOTHOOT",
+            "category": "Owl Pokémon",
+            "entry_text": [
+                "It marks time precisely. Some\n",
+                "countries consider it to be a wise\n",
+                "friend, versed in the world’s ways."
+            ]
+        },
+        "fr": {
+            "name": "HOOTHOOT",
+            "category": "Pokémon Hibou",
+            "entry_text": [
+                "Il se tient toujours sur un pied. Il\n",
+                "ne prend jamais appui sur les\n",
+                "deux, même en cas d’attaque."
+            ]
+        },
+        "de": {
+            "name": "HOOTHOOT",
+            "category": "Eule",
+            "entry_text": [
+                "Es steht ständig auf einem Fuß.\n",
+                "Selbst wenn es angreift, stellt es\n",
+                "sich nicht auf beide Beine."
+            ]
+        },
+        "it": {
+            "name": "HOOTHOOT",
+            "category": "Pokémon Gufo",
+            "entry_text": [
+                "Sta sempre ritto su un piede solo\n",
+                "e non mette giù l’altro neppure\n",
+                "quando viene attaccato."
+            ]
+        },
+        "es": {
+            "name": "HOOTHOOT",
+            "category": "Pokémon Búho",
+            "entry_text": [
+                "Siempre se yergue sobre una pata.\n",
+                "Nunca apoya ambas, ni siquiera\n",
+                "al sufrir un ataque."
+            ]
+        },
+        "jp": {
+            "name": "ホ－ホ－",
+            "category": "ふくろうポケモン",
+            "entry_text": [
+                "いつも　いっぽんあしで　たっている。\n",
+                "こうげきを　うけても　２ほんあしで\n",
+                "ふんばるようなことは　しない。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_WEST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 30,
+        "rarity": 50,
+        "unused": 4357
+    }
+}

@@ -1,0 +1,56 @@
+{
+    "name": "Ethan",
+    "class": "TRAINER_CLASS_NINJA_BOY",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_SKORUPI",
+            "form": 0,
+            "level": 37,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_GOLBAT",
+            "form": 0,
+            "level": 37,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "There are several clans of ninjas.\n",
+                "Are you from the Iga clan? Or Kouga?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "I’m not much of a ninja either way...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I wonder why everyone stops being\n",
+                "a ninja when they grow up?\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "I forged my willpower in the snow!\n",
+                "Witness my snowy might!\r"
+            ]
+        }
+    ]
+}

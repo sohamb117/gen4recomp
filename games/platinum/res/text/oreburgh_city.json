@@ -1,0 +1,254 @@
+{
+  "key": 18331,
+  "messages": [
+    {
+      "id": "OreburghCity_Text_GymLeadersGoneOffToTheMine",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0}: Hunh?\r",
+        "Oh, it’s you, {STRVAR_1 3, 1, 0}!\n",
+        "You finally got here?\f",
+        "You’re slow like always.\r",
+        "But anyway, the Gym Leader’s tough!\n",
+        "Like, seriously serious!\r",
+        "If the Gym Leader’s this tough,\n",
+        "I wonder how he compares to my dad...\r",
+        "Huh?\n",
+        "I just drifted there.\r",
+        "Anyway, the Gym Leader’s gone off\n",
+        "to the coal mine.\r",
+        "If you want to take on the Gym Leader,\n",
+        "you’d better go off to the mine!"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_GymLeaderWentDownToTheMine",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0}: I told you, the Gym\n",
+        "Leader went down to the Oreburgh Mine.\r",
+        "If you want to take the Gym challenge,\n",
+        "you have to go down to the mine."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_BigThud",
+      "en_US": "{SIZE 200}Thud!!{SIZE 100}\r"
+    },
+    {
+      "id": "OreburghCity_Text_EternaCityNextPlaceWithAGym",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0}: Whoops! {STRVAR_1 3, 1, 0}!\n",
+        "You got the Gym Badge, huh?\r",
+        "Eterna City is the next place with\n",
+        "a Gym that gives away Badges, right?\r"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_CantGoToRoute207WithoutBicycle",
+      "en_US": [
+        "So, yeah, I went to Route 207, but\n",
+        "you can’t go there without a Bicycle.\r",
+        "I made my team battle and toughened\n",
+        "them up, so it wasn’t a waste.\r"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_NextStopTheEternaGymBadge",
+      "en_US": [
+        "So, I’m going back to Jubilife City.\n",
+        "Next stop, the Eterna Gym Badge!\r",
+        "Ten seconds before I dash!\r",
+        "Nine...\r",
+        "Bah! Who’s got time to count?!\r"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_IllTakeYouToTheGym",
+      "en_US": [
+        "Howdy, Trainer!\r",
+        "Huh? Uh-oh!\n",
+        "You don’t have a single Gym Badge?\r",
+        "You’d better do something about that!\n",
+        "I’ll take you to the Pokémon Gym.\r"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_HuhTheresSomeoneThere",
+      "en_US": [
+        "Huh?\n",
+        "There’s someone there."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_IsThatGuyYourFriend",
+      "en_US": [
+        "Is that guy in front of the Gym\n",
+        "your friend?\r",
+        "He’s sort of twitchy and impatient."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_TheGymLeadersWaitingForYou",
+      "en_US": [
+        "Oh, hi, you’re back!\n",
+        "The Gym Leader’s waiting for you."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_CanISeeYourTrainerCase",
+      "en_US": [
+        "Can I see your Trainer Case?\r",
+        "It’s got the Gym Badge you just\n",
+        "won, right?"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_GymLeaderWentOffToWork",
+      "en_US": [
+        "The Gym Leader went off to work in\n",
+        "the mine."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_GymLeaderIsSafetySupervisor",
+      "en_US": [
+        "The Gym Leader is young, but he’s\n",
+        "the mine’s safety supervisor.\r",
+        "He’s an expert in more than just one\n",
+        "field!"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_EveryonesProudOfTheMine",
+      "en_US": [
+        "Everyone’s proud of the mine.\r",
+        "They’re digging for coal under the\n",
+        "sea as we speak...\r",
+        "It’s amazing how they do it!"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_UpAheadTheresAHugeMountain",
+      "en_US": [
+        "Up ahead there’s a huge mountain\n",
+        "that towers above everything.\r",
+        "It divides Sinnoh into two distinct\n",
+        "halves."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_HaveYouSeenTheVents",
+      "en_US": [
+        "Have you seen the vents?\n",
+        "They release steam from down below."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_TheseVentsExchangeAirDownBelow",
+      "en_US": [
+        "These vents exchange the hot air\n",
+        "down below with the fresh air outside.\r",
+        "Looking down them gives me the urge\n",
+        "to start yelling into ’em! Hello!"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_HereTakeOneOfThese",
+      "en_US": [
+        "There’s no question. This is hard,\n",
+        "hard work.\r",
+        "But working alongside Pokémon...\n",
+        "It gives me a boost somehow.\r",
+        "Here, take one of these.\r"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_PutsASmileOnMyFace",
+      "en_US": [
+        "Feeling hale and hearty puts a smile\n",
+        "on my face. And that makes me happy."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_ThisPileIsCalledASlagHeap",
+      "en_US": [
+        "This pile of dirty sand is called\n",
+        "a slag heap.\r",
+        "It’s the waste from sorting coal."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_ChopChopAwayOnRocks",
+      "en_US": [
+        "Chop, chop, MACHOP!\n",
+        "Chop, chop away on rocks! ~♫"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_TMsSingleUseHMsOverAndOver",
+      "en_US": [
+        "TMs are single use only, but HMs\n",
+        "can be used over and over.\r",
+        "It’s tricky trying to decide which\n",
+        "Pokémon should learn what moves."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_ImTheCenterOfAttention",
+      "en_US": [
+        "When I run around with my Running\n",
+        "Shoes on, I’m the center of attention!\r",
+        "...At least that’s what it feels like.\n",
+        "There’s always someone looking at me."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_ThatsWhatFossilsAre",
+      "en_US": [
+        "Natural time capsules buried many,\n",
+        "many years ago...\r",
+        "That’s what Fossils are."
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_MachopCryMachoChopo",
+      "en_US": "MACHOP: Macho! Chopo!"
+    },
+    {
+      "id": "OreburghCity_Text_MachopCryPigyooh",
+      "en_US": "MACHOP: Pigyooh!"
+    },
+    {
+      "id": "OreburghCity_Text_MachopCryGwoohGogogooh",
+      "en_US": "MACHOP: Gwooh! Gogogooh!"
+    },
+    {
+      "id": "OreburghCity_Text_MapSign",
+      "en_US": [
+        "Oreburgh City\n",
+        "City of Energy"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_SignPokemonGym",
+      "en_US": [
+        "Oreburgh City Pokémon Gym\n",
+        "Leader: Roark\f",
+        "“Call me Roark the Rock!”"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_SignOreburghMiningMuseum",
+      "en_US": [
+        "Oreburgh Mining Museum\n",
+        "“Coal Mining and You!”"
+      ]
+    },
+    {
+      "id": "OreburghCity_Text_SignOreburghMine",
+      "en_US": [
+        "Oreburgh Mine\n",
+        "Beware of Busy Pokémon!"
+      ]
+    }
+  ]
+}

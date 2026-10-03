@@ -1,0 +1,516 @@
+{
+  "key": 705,
+  "messages": [
+    {
+      "id": "Bag_Text_Use",
+      "en_US": "USE"
+    },
+    {
+      "id": "Bag_Text_Trash",
+      "en_US": "TRASH"
+    },
+    {
+      "id": "Bag_Text_Register",
+      "en_US": "REGISTER"
+    },
+    {
+      "id": "Bag_Text_Give",
+      "en_US": "GIVE"
+    },
+    {
+      "id": "Bag_Text_CheckTag",
+      "en_US": "CHECK TAG"
+    },
+    {
+      "id": "Bag_Text_Confirm",
+      "en_US": "CONFIRM"
+    },
+    {
+      "id": "Bag_Text_Walk",
+      "en_US": "WALK"
+    },
+    {
+      "id": "Bag_Text_Dummy1",
+      "garbage": 3
+    },
+    {
+      "id": "Bag_Text_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "Bag_Text_Dummy2",
+      "garbage": 3
+    },
+    {
+      "id": "Bag_Text_Dummy3",
+      "garbage": 3
+    },
+    {
+      "id": "Bag_Text_Dummy4",
+      "garbage": 5
+    },
+    {
+      "id": "Bag_Text_Dummy5",
+      "garbage": 4
+    },
+    {
+      "id": "Bag_Text_Dummy6",
+      "garbage": 3
+    },
+    {
+      "id": "Bag_Text_Dummy7",
+      "garbage": 4
+    },
+    {
+      "id": "Bag_Text_Dummy8",
+      "garbage": 4
+    },
+    {
+      "id": "Bag_Text_Check",
+      "en_US": "CHECK"
+    },
+    {
+      "id": "Bag_Text_Dummy9",
+      "garbage": 2
+    },
+    {
+      "id": "Bag_Text_Deselect",
+      "en_US": "DESELECT"
+    },
+    {
+      "id": "Bag_Text_Dummy10",
+      "garbage": 3
+    },
+    {
+      "id": "Bag_Text_Dummy11",
+      "garbage": 5
+    },
+    {
+      "id": "Bag_Text_Dummy12",
+      "garbage": 1
+    },
+    {
+      "id": "Bag_Text_Dummy13",
+      "garbage": 1
+    },
+    {
+      "id": "Bag_Text_Dummy14",
+      "garbage": 2
+    },
+    {
+      "id": "Bag_Text_Not_Applicable",
+      "en_US": "---"
+    },
+    {
+      "id": "Bag_Text_Dummy15",
+      "garbage": 1
+    },
+    {
+      "id": "Bag_Text_Dummy16",
+      "garbage": 1
+    },
+    {
+      "id": "Bag_Text_Dummy17",
+      "garbage": 2
+    },
+    {
+      "id": "Bag_Text_Dummy18",
+      "garbage": 2
+    },
+    {
+      "id": "Bag_Text_Dummy19",
+      "garbage": 1
+    },
+    {
+      "id": "Bag_Text_Dummy20",
+      "garbage": 1
+    },
+    {
+      "id": "Bag_Text_Dummy21",
+      "garbage": 4
+    },
+    {
+      "id": "Bag_Text_Empty",
+      "garbage": 0
+    },
+    {
+      "id": "Bag_Text_Dummy22",
+      "garbage": 4
+    },
+    {
+      "id": "Bag_Text_Dummy23",
+      "garbage": 10
+    },
+    {
+      "id": "Bag_Text_Dummy24",
+      "garbage": 9
+    },
+    {
+      "id": "Bag_Text_Dummy25",
+      "garbage": 3
+    },
+    {
+      "id": "Bag_Text_ItemCountNum",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_ItemCountX",
+      "en_US": "x"
+    },
+    {
+      "id": "Bag_Text_Dummy26",
+      "garbage": 2
+    },
+    {
+      "id": "Bag_Text_Dummy27",
+      "garbage": 7
+    },
+    {
+      "id": "Bag_Text_CloseBag",
+      "en_US": "CLOSE BAG"
+    },
+    {
+      "id": "Bag_Text_ItemIsSelected",
+      "en_US": [
+        "{STRVAR_1 8, 0, 0} is\n",
+        "selected."
+      ]
+    },
+    {
+      "id": "Bag_Text_Dummy28",
+      "garbage": 21
+    },
+    {
+      "id": "Bag_Text_Dummy29",
+      "garbage": 12
+    },
+    {
+      "id": "Bag_Text_MoveItemWhere",
+      "en_US": "Move the {STRVAR_1 8, 0, 0} where?"
+    },
+    {
+      "id": "Bag_Text_ItemCantBeHeld",
+      "en_US": "The {STRVAR_1 8, 0, 0} can’t be held."
+    },
+    {
+      "id": "Bag_Text_Dummy30",
+      "garbage": 26
+    },
+    {
+      "id": "Bag_Text_Dummy31",
+      "garbage": 18
+    },
+    {
+      "id": "Bag_Text_Dummy32",
+      "garbage": 20
+    },
+    {
+      "id": "Bag_Text_Dummy33",
+      "garbage": 16
+    },
+    {
+      "id": "Bag_Text_Dummy34",
+      "garbage": 29
+    },
+    {
+      "id": "Bag_Text_ThrowAwayHowMany",
+      "en_US": [
+        "Throw away how many\n",
+        "{STRVAR_1 8, 0, 0}(s)?"
+      ]
+    },
+    {
+      "id": "Bag_Text_ThrewAwayItem",
+      "en_US": "Threw away {STRVAR_1 51, 1, 0} {STRVAR_1 8, 0, 0}."
+    },
+    {
+      "id": "Bag_Text_ThrowAwayOK",
+      "en_US": [
+        "Is it OK to throw away\n",
+        "{STRVAR_1 52, 1, 0} {STRVAR_1 8, 0, 0}?"
+      ]
+    },
+    {
+      "id": "Bag_Text_Dummy35",
+      "garbage": 41
+    },
+    {
+      "id": "Bag_Text_CannotDismount",
+      "en_US": "You can’t dismount your Bike here."
+    },
+    {
+      "id": "Bag_Text_CoinCaseMessage",
+      "en_US": "Your Coins: {STRVAR_1 54, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_BootedUpTM",
+      "en_US": "Booted up a TM.{WAIT 3}{WAIT 4}\n"
+    },
+    {
+      "id": "Bag_Text_BootedUpHM",
+      "en_US": "Booted up an HM.{WAIT 3}{WAIT 4}\n"
+    },
+    {
+      "id": "Bag_Text_TMHMContainedMove",
+      "en_US": [
+        "It contained\n",
+        "{STRVAR_1 6, 0, 0}.\r",
+        "Teach {STRVAR_1 6, 0, 0}\n",
+        "to a Pokémon?"
+      ]
+    },
+    {
+      "id": "Bag_Text_UsedRepel",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} used the\n",
+        "{STRVAR_1 8, 1, 0}."
+      ]
+    },
+    {
+      "id": "Bag_Text_RepelEffectsLinger",
+      "en_US": [
+        "Since a Repel’s effects still linger,\n",
+        "you can’t use this now."
+      ]
+    },
+    {
+      "id": "Bag_Text_UsedWhiteFlute",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} used the\n",
+        "{STRVAR_1 8, 1, 0}.\r",
+        "Wild Pokémon will be lured."
+      ]
+    },
+    {
+      "id": "Bag_Text_UsedBlackFlute",
+      "en_US": [
+        "{STRVAR_1 3, 0, 0} used the\n",
+        "{STRVAR_1 8, 1, 0}.\r",
+        "Wild Pokémon will be repelled."
+      ]
+    },
+    {
+      "id": "Bag_Text_BoxFull",
+      "en_US": "The Box is full."
+    },
+    {
+      "id": "Bag_Text_Dummy36",
+      "garbage": 13
+    },
+    {
+      "id": "Bag_Text_Unused1",
+      "en_US": "No.{STRVAR_1 51, 0, 0}{STRVAR_1 6, 1, 0}"
+    },
+    {
+      "id": "Bag_Text_Unused2",
+      "en_US": "No.{STRVAR_1 51, 0, 0}{STRVAR_1 6, 1, 0}"
+    },
+    {
+      "id": "Bag_Text_Unused3",
+      "en_US": "{STRVAR_1 51, 0, 0}{STRVAR_1 6, 1, 0}"
+    },
+    {
+      "id": "Bag_Text_Dummy37",
+      "garbage": 6
+    },
+    {
+      "id": "Bag_Text_Dummy38",
+      "garbage": 30
+    },
+    {
+      "id": "Bag_Text_Dummy39",
+      "garbage": 13
+    },
+    {
+      "id": "Bag_Text_Dummy40",
+      "garbage": 23
+    },
+    {
+      "id": "Bag_Text_CantSellItem",
+      "en_US": [
+        "{STRVAR_1 8, 0, 0}? Oh, no.\n",
+        "I can’t buy that."
+      ]
+    },
+    {
+      "id": "Bag_Text_SellHowMany",
+      "en_US": [
+        "{STRVAR_1 8, 0, 0}?\n",
+        "How many would you like to sell?"
+      ]
+    },
+    {
+      "id": "Bag_Text_ConfirmSellPrice",
+      "en_US": [
+        "I can pay ${STRVAR_1 55, 0, 0}.\n",
+        "Would that be OK?"
+      ]
+    },
+    {
+      "id": "Bag_Text_TurnedOverItems",
+      "en_US": [
+        "Turned over the {STRVAR_1 8, 0, 0}\n",
+        "and received ${STRVAR_1 55, 1, 0}."
+      ]
+    },
+    {
+      "id": "Bag_Text_MoneyLabel",
+      "en_US": "MONEY"
+    },
+    {
+      "id": "Bag_Text_MoneyNum",
+      "en_US": "${STRVAR_1 55, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_SellNum",
+      "en_US": "x{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_SellValue",
+      "en_US": "${STRVAR_1 55, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_Yes",
+      "en_US": "Yes"
+    },
+    {
+      "id": "Bag_Text_No",
+      "en_US": "No"
+    },
+    {
+      "id": "Bag_Text_ThrowAwayCount",
+      "en_US": "x{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_Dummy41",
+      "garbage": 4
+    },
+    {
+      "id": "Bag_Text_PP",
+      "en_US": "PP"
+    },
+    {
+      "id": "Bag_Text_Power",
+      "en_US": "POWER"
+    },
+    {
+      "id": "Bag_Text_Accuracy",
+      "en_US": "ACCURACY"
+    },
+    {
+      "id": "Bag_Text_Category",
+      "en_US": "CATEGORY"
+    },
+    {
+      "id": "Bag_Text_MaxPPNum",
+      "en_US": "{STRVAR_1 51, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_PowerAccuracyNum",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_SealCaseMessage",
+      "en_US": "Seals: {STRVAR_1 53, 0, 0}"
+    },
+    {
+      "id": "Bag_Text_FashionCaseMessage",
+      "en_US": [
+        "Accessories: {STRVAR_1 52, 0, 0}\n",
+        "Backdrops: {STRVAR_1 51, 1, 0}"
+      ]
+    },
+    {
+      "id": "Bag_Text_CloseBagDescription",
+      "en_US": "Close Bag"
+    },
+    {
+      "id": "Bag_Text_Plant",
+      "en_US": "PLANT"
+    },
+    {
+      "id": "Bag_Text_Open",
+      "en_US": "OPEN"
+    },
+    {
+      "id": "Bag_Text_PointCardMessage",
+      "en_US": [
+        "Saved Battle Points\n",
+        "{STRVAR_1 53, 0, 0} BP"
+      ]
+    },
+    {
+      "id": "Bag_Text_Type",
+      "en_US": "TYPE"
+    },
+    {
+      "id": "Bag_Text_KeyItemInfo",
+      "en_US": [
+        "A Key Item in the Bag can be assigned\n",
+        "to this button for instant use."
+      ]
+    },
+    {
+      "id": "Bag_Text_Dummy42",
+      "garbage": 18
+    },
+    {
+      "id": "Bag_Text_Dummy43",
+      "garbage": 14
+    },
+    {
+      "id": "Bag_Text_Dummy44",
+      "garbage": 20
+    },
+    {
+      "id": "Bag_Text_Dummy45",
+      "garbage": 10
+    },
+    {
+      "id": "Bag_Text_Dummy46",
+      "garbage": 15
+    },
+    {
+      "id": "Bag_Text_Dummy47",
+      "garbage": 29
+    },
+    {
+      "id": "Bag_Text_BatteryHasRunDry",
+      "en_US": [
+        "The battery has run dry!\n",
+        "For it to recharge, you need to walk\f",
+        "another {STRVAR_1 51, 0, 0} steps."
+      ]
+    },
+    {
+      "id": "Bag_Text_GrassyPatchRemainedQuiet",
+      "en_US": "The grassy patch remained quiet..."
+    },
+    {
+      "id": "Bag_Text_PoffinCountLabel",
+      "en_US": "No. of Poffins:"
+    },
+    {
+      "id": "Bag_Text_PoffinCountNum",
+      "en_US": "{STRVAR_1 52, 0, 0}/100"
+    },
+    {
+      "id": "Bag_Text_ChooseBerryToCook",
+      "en_US": [
+        "Please choose the Berry you want to\n",
+        "cook from your Bag."
+      ]
+    },
+    {
+      "id": "Bag_Text_CannotUseWithPartner",
+      "en_US": [
+        "You can’t use that when you have\n",
+        "someone with you."
+      ]
+    },
+    {
+      "id": "Bag_Text_CannotUseNoFishing",
+      "en_US": "There’s nothing to be caught here..."
+    }
+  ]
+}

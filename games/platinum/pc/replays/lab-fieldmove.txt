@@ -1,0 +1,44 @@
+# Boots a save, takes CONTINUE, uses whatever the player is facing, and walks
+# north through it.
+#
+# The first lines are lab-continue.txt's, unchanged. What follows is a whole
+# field move driven from the overworld: A talks to the tree, the rock, the
+# boulder or the water, and the yes/no menu opens on YES so the same A answers
+# it. The spare A presses are for Strength, the slowest of them; it prints a
+# second message after its cut-in and waits for a button on it, and its journal
+# event only lands once that is cleared.
+#
+# The b press is not spare. Strength is also the only one of these whose
+# obstacle is still there afterwards, so an A press that arrives with nothing
+# to answer starts the conversation again and leaves a message box open, and
+# a message box eats the walk that follows, which is the whole assert. B clears
+# a waiting message and does nothing at all on an idle overworld, so it settles
+# the run either way.
+#
+# The walk is north because that is the direction the recipes face; a station
+# whose geometry only works another way names one of the lab-fieldmove-<dir>
+# scripts instead.
+900 keys A
+920 keys none
+1200 keys A
+1220 keys none
+1800 keys A
+1820 keys none
+2100 keys A
+2120 keys none
+2400 keys A
+2420 keys none
+3600 keys A
+3624 keys none
+3800 keys A
+3824 keys none
+4000 keys A
+4024 keys none
+4200 keys A
+4224 keys none
+4400 keys A
+4424 keys none
+4600 keys B
+4624 keys none
+4800 keys UP
+4848 keys none

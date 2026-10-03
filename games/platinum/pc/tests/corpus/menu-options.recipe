@@ -1,0 +1,10 @@
+# Nothing but a player: the options screen reads the save and writes it back,
+# and every setting on it starts at the value Options_Init leaves.
+
+name OPTER
+gender GENDER_MALE
+trainer-id 30119
+money 300
+var VAR_PLAYER_STARTER SPECIES_CHIMCHAR
+party SPECIES_CHIMCHAR 5 ITEM_NONE
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

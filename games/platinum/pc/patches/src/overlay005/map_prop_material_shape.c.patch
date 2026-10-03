@@ -1,0 +1,49 @@
+--- a/src/overlay005/map_prop_material_shape.c
++++ b/src/overlay005/map_prop_material_shape.c
+@@ -6,6 +6,23 @@
+ #include "constants/heap.h"
+ 
+ #include "heap.h"
++#include "pc_modfs.h"
++
++static BOOL MapProp_IsCookedExtra(const int modelID)
++{
++    int i;
++
++    for (i = 0;; i++) {
++        int extra = pc_modfs_extra_prop(i);
++
++        if (extra < 0) {
++            return FALSE;
++        }
++        if (extra == modelID) {
++            return TRUE;
++        }
++    }
++}
+ 
+ MapPropMaterialShape *MapPropMaterialShape_Alloc(void)
+ {
+@@ -59,11 +76,22 @@
+ 
+ void MapProp_GetMaterialShapeIDsCount(const int modelID, const MapPropMaterialShape *propMatShp, u16 *idsCount)
+ {
++    /* Locators are one row per vanilla model (0..589). A cooked id
++     * past that is OOB and was hanging the field on Draw. */
++    if (MapProp_IsCookedExtra(modelID)) {
++        *idsCount = 0;
++        return;
++    }
+     *idsCount = propMatShp->idsLocators[modelID].idsCount;
+ }
+ 
+ void MapProp_GetMaterialShapeIDsLocator(const int modelID, const MapPropMaterialShape *propMatShp, u16 *idsCount, u16 *idsIndex)
+ {
++    if (MapProp_IsCookedExtra(modelID)) {
++        *idsCount = 0;
++        *idsIndex = 0;
++        return;
++    }
+     *idsCount = propMatShp->idsLocators[modelID].idsCount;
+     *idsIndex = propMatShp->idsLocators[modelID].idsIndex;
+ }

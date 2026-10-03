@@ -1,0 +1,19 @@
+{
+  "key": 21514,
+  "messages": [
+    {
+      "id": "GreatMarsh5_Text_IRecommendQuickTrams",
+      "en_US": [
+        "Quick, quick, out in the sticks.\n",
+        "To and fro we go, we’re quick~♫\r",
+        "If you’re thinking about going deep\n",
+        "into the marsh, I recommend you take\f",
+        "the Great Marsh Quick Trams."
+      ]
+    },
+    {
+      "id": "GreatMarsh5_Text_SignArea5",
+      "en_US": "Great Marsh Area 5"
+    }
+  ]
+}

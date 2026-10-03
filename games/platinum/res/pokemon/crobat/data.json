@@ -1,0 +1,184 @@
+{
+    "base_stats": {
+        "hp": 85,
+        "attack": 90,
+        "defense": 80,
+        "speed": 130,
+        "special_attack": 70,
+        "special_defense": 80
+    },
+    "types": [ "TYPE_POISON", "TYPE_FLYING" ],
+    "catch_rate": 90,
+    "base_exp_reward": 204,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "speed": 3,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NONE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 15,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_MEDIUM_FAST",
+    "egg_groups": [ "EGG_GROUP_FLYING", "EGG_GROUP_FLYING" ],
+    "abilities": [ "ABILITY_INNER_FOCUS", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_PURPLE",
+    "flip_sprite": false,
+    "icon_palette": 2,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_CROSS_POISON" ],
+            [ 1, "MOVE_SCREECH" ],
+            [ 1, "MOVE_LEECH_LIFE" ],
+            [ 1, "MOVE_SUPERSONIC" ],
+            [ 1, "MOVE_ASTONISH" ],
+            [ 5, "MOVE_SUPERSONIC" ],
+            [ 9, "MOVE_ASTONISH" ],
+            [ 13, "MOVE_BITE" ],
+            [ 17, "MOVE_WING_ATTACK" ],
+            [ 21, "MOVE_CONFUSE_RAY" ],
+            [ 27, "MOVE_AIR_CUTTER" ],
+            [ 33, "MOVE_MEAN_LOOK" ],
+            [ 39, "MOVE_POISON_FANG" ],
+            [ 45, "MOVE_HAZE" ],
+            [ 51, "MOVE_AIR_SLASH" ]
+        ],
+        "by_tm": [
+            "TM06",
+            "TM10",
+            "TM11",
+            "TM12",
+            "TM15",
+            "TM17",
+            "TM18",
+            "TM19",
+            "TM21",
+            "TM27",
+            "TM30",
+            "TM32",
+            "TM36",
+            "TM40",
+            "TM41",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM46",
+            "TM47",
+            "TM49",
+            "TM51",
+            "TM58",
+            "TM66",
+            "TM68",
+            "TM78",
+            "TM79",
+            "TM81",
+            "TM82",
+            "TM83",
+            "TM87",
+            "TM88",
+            "TM89",
+            "TM90",
+            "HM02",
+            "HM05"
+        ],
+        "by_tutor": [
+            "MOVE_OMINOUS_WIND",
+            "MOVE_SNORE",
+            "MOVE_AIR_CUTTER",
+            "MOVE_ZEN_HEADBUTT",
+            "MOVE_TWISTER",
+            "MOVE_HEAT_WAVE",
+            "MOVE_SWIFT",
+            "MOVE_UPROAR"
+        ]
+    },
+    "evolutions": [  ],
+    "offspring": "SPECIES_ZUBAT",
+    "footprint": {
+        "has": false,
+        "size": "FOOTPRINT_LARGE",
+        "type": "FOOTPRINT_TYPE_SCARY"
+    },
+    "pokedex_data": {
+        "height_inches": 71,
+        "weight_pounds": 165.3,
+        "body_shape": "SHAPE_MULTI_WINGED",
+        "trainer_scale_f": 315,
+        "pokemon_scale_f": 256,
+        "trainer_scale_m": 303,
+        "pokemon_scale_m": 256,
+        "trainer_pos_f": 13,
+        "pokemon_pos_f": 65533,
+        "trainer_pos_m": 13,
+        "pokemon_pos_m": 65533,
+        "en": {
+            "name": "CROBAT",
+            "category": "Bat Pokémon",
+            "entry_text": [
+                "The transformation of its legs into\n",
+                "wings made it better at flying, but\n",
+                "more clumsy at walking."
+            ]
+        },
+        "fr": {
+            "name": "NOSTENFER",
+            "category": "Pokémon Chovsouris",
+            "entry_text": [
+                "Il vole rapidement et sans faire\n",
+                "de bruit grâce à ses quatre ailes.\n",
+                "C’est un Pokémon nocturne."
+            ]
+        },
+        "de": {
+            "name": "IKSBAT",
+            "category": "Fledermaus",
+            "entry_text": [
+                "Seine vier Flügel erlauben es dem\n",
+                "PKMN, schneller und leiser zu\n",
+                "fliegen. Es ist nachtaktiv."
+            ]
+        },
+        "it": {
+            "name": "CROBAT",
+            "category": "Pokémon Pipistrello",
+            "entry_text": [
+                "Le sue quattro ali gli permettono\n",
+                "di volare più velocemente e più\n",
+                "silenziosamente. È attivo di notte."
+            ]
+        },
+        "es": {
+            "name": "CROBAT",
+            "category": "Pokémon Murciélago",
+            "entry_text": [
+                "Sus cuatro alas le permiten volar\n",
+                "más rápida y sigilosamente. Es\n",
+                "un Pokémon nocturno."
+            ]
+        },
+        "jp": {
+            "name": "クロバット",
+            "category": "こうもりポケモン",
+            "entry_text": [
+                "４まいの　はねで　より　しずかに\n",
+                "より　はやく　とべるように　なった。\n",
+                "よるになると　かつどうを　はじめる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 90,
+        "rarity": 3,
+        "unused": 4358
+    }
+}

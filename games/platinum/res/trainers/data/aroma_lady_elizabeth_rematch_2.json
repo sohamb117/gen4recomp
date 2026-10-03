@@ -1,0 +1,37 @@
+{
+    "name": "Elizabeth",
+    "class": "TRAINER_CLASS_AROMA_LADY",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_ROSELIA",
+            "form": 0,
+            "level": 35,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Sniff... Oh?\n",
+                "Your Pokémon smells nice!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "Did you understand what I meant?\n",
+                "Didn’t my Pokémon smell nice?\n"
+            ]
+        }
+    ]
+}

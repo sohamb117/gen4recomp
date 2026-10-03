@@ -1,0 +1,23 @@
+--- a/src/font_manager.c
++++ b/src/font_manager.c
+@@ -52,6 +52,10 @@
+     if (fontManager) {
+         FontManager_Init(fontManager, narcID, arcFileIdx, isMonospace, heapID);
+         FontManager_LoadGlyphs(fontManager, glyphAccessMode, heapID);
++        /* glyphBitmapFunc / glyphWidthFunc are host functions; narc->file.arc
++         * is marked when FS_OpenFileFast writes it. */
++        { extern void pc_state_scan_mark_host_words(const void *, unsigned);
++          pc_state_scan_mark_host_words(fontManager, sizeof *fontManager); }
+     }
+ 
+     return fontManager;
+@@ -68,6 +72,9 @@
+     if (fontManager->glyphAccessMode != glyphAccessMode) {
+         FontManager_FreeGlyphs(fontManager);
+         FontManager_LoadGlyphs(fontManager, glyphAccessMode, heapID);
++        /* glyphBitmapFunc is reassigned here. */
++        { extern void pc_state_scan_mark_host_words(const void *, unsigned);
++          pc_state_scan_mark_host_words(fontManager, sizeof *fontManager); }
+     }
+ }
+ 

@@ -1,0 +1,52 @@
+{
+    "name": "Logan",
+    "class": "TRAINER_CLASS_YOUNGSTER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_BURMY",
+            "form": 0,
+            "level": 5,
+            "item": null,
+            "moves": [
+                "MOVE_TACKLE"
+            ],
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Let’s have a Pokémon battle!\n",
+                "Humph! But I’m gonna win!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "You beat me?!\n",
+                "You’ve got talent!"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "It was fun battling!\n",
+                "Yup! I’m going to battle everyone!"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Let’s have another Pokémon battle!\n",
+                "This time, I’m gonna win!\r"
+            ]
+        }
+    ]
+}

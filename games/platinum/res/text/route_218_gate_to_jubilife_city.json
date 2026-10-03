@@ -1,0 +1,65 @@
+{
+  "key": 61163,
+  "messages": [
+    {
+      "id": "Route218GateToJubilifeCity_Text_GreatFishingHole",
+      "en_US": [
+        "Route 218 up ahead is a great fishing\n",
+        "hole that’s almost unknown to people."
+      ]
+    },
+    {
+      "id": "Route218GateToJubilifeCity_Text_OldRodGoodRight",
+      "en_US": [
+        "Yes, sir!\n",
+        "An Old Rod is a good thing!\r",
+        "You think so too, am I right?"
+      ]
+    },
+    {
+      "id": "Route218GateToJubilifeCity_Text_HereYouGo",
+      "en_US": [
+        "Yes! Good answer!\n",
+        "We can be friends!\r",
+        "Here you go.\n",
+        "That’s my {STRVAR_1 8, 0, 0}!\r"
+      ]
+    },
+    {
+      "id": "Route218GateToJubilifeCity_Text_DidYouNeedTips",
+      "en_US": [
+        "You should fish wherever there is\n",
+        "a body of water.\r",
+        "Oh, and by the way, did you need\n",
+        "any tips on using that fishing rod?"
+      ]
+    },
+    {
+      "id": "Route218GateToJubilifeCity_Text_YouDontLikeToFish",
+      "en_US": [
+        "Oh, really?\n",
+        "You don’t like to fish?"
+      ]
+    },
+    {
+      "id": "Route218GateToJubilifeCity_Text_ExplainFishing",
+      "en_US": [
+        "First, you face any body of water,\n",
+        "then you use your fishing rod.\r",
+        "Next, you focus!\n",
+        "If a Pokémon bites, “!” appears.\f",
+        "That’s your cue to reel it in!"
+      ]
+    },
+    {
+      "id": "Route218GateToJubilifeCity_Text_FishingTwiceTheFun",
+      "en_US": [
+        "When you’re fishing for Pokémon,\n",
+        "the first hurdle is getting a bite.\r",
+        "When you reel the Pokémon in, you’ve\n",
+        "got to battle it.\r",
+        "So, fishing gives you twice the fun!"
+      ]
+    }
+  ]
+}

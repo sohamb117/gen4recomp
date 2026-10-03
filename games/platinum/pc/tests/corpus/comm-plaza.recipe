@@ -1,0 +1,16 @@
+# Wi-Fi Plaza door, no Nintendo WFC login.
+#
+# The B1F plaza attendant is at (4, 4). VAR_VISITED_POKEMON_CENTER_B1F
+# skips the Pal Pad give so the first A is the door, not the tutorial.
+# The script walks through and warps to WIFI_PLAZA_ENTRANCE; ScrCmd_2F7
+# is a no-op without a DWC profile, which is why the lobby's PPW traps
+# never fire. The assertion is that door, not that the plaza works.
+
+name PLAZAR
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+var VAR_VISITED_POKEMON_CENTER_B1F 1
+party SPECIES_TURTWIG 15 ITEM_NONE
+map MAP_HEADER_JUBILIFE_CITY_POKECENTER_B1F 4 5 FACE_UP

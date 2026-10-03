@@ -1,0 +1,185 @@
+{
+  "key": 42882,
+  "messages": [
+    {
+      "id": "PoffinCommon_Text_HereYouMayCookPoffins",
+      "en_US": [
+        "Hello!\r",
+        "Here you may cook Berries and\n",
+        "turn them into Poffins.\r"
+      ]
+    },
+    {
+      "id": "PoffinCommon_Text_CookAloneOrWithOthers",
+      "en_US": [
+        "Would you like to cook alone or with\n",
+        "other people?"
+      ]
+    },
+    {
+      "id": "PoffinCommon_Text_CommunicationsWillBeLaunched",
+      "en_US": [
+        "DS Wireless Communications will\n",
+        "be launched."
+      ]
+    },
+    {
+      "id": "PoffinCommon_Text_Yes",
+      "en_US": "YES"
+    },
+    {
+      "id": "PoffinCommon_Text_No",
+      "en_US": "NO"
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy5",
+      "garbage": 15
+    },
+    {
+      "id": "PoffinCommon_Text_NoBerryToCook",
+      "en_US": "There isn’t a Berry to cook!\r"
+    },
+    {
+      "id": "PoffinCommon_Text_PoffinCaseIsFull",
+      "en_US": "The Poffin Case is full.\r"
+    },
+    {
+      "id": "PoffinCommon_Text_MustHavePoffinCase",
+      "en_US": [
+        "Sorry, you must have a Poffin Case\n",
+        "if you want to cook some Berries."
+      ]
+    },
+    {
+      "id": "PoffinCommon_Text_Alone",
+      "en_US": "ALONE"
+    },
+    {
+      "id": "PoffinCommon_Text_InAGroup",
+      "en_US": "IN A GROUP"
+    },
+    {
+      "id": "PoffinCommon_Text_Info",
+      "en_US": "INFO"
+    },
+    {
+      "id": "PoffinCommon_Text_Exit",
+      "en_US": "EXIT"
+    },
+    {
+      "id": "PoffinCommon_Text_BecomeLeaderOrJoinGroup",
+      "en_US": [
+        "One person in the group needs to\n",
+        "choose “BECOME LEADER.”\r",
+        "Everyone else must choose\n",
+        "“JOIN GROUP.”"
+      ]
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy14",
+      "garbage": 8
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy15",
+      "garbage": 7
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy16",
+      "garbage": 3
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy17",
+      "garbage": 29
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy18",
+      "garbage": 26
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy19",
+      "garbage": 2
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy20",
+      "garbage": 3
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy21",
+      "garbage": 17
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy22",
+      "garbage": 2
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy23",
+      "garbage": 3
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy24",
+      "garbage": 12
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy25",
+      "garbage": 2
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy26",
+      "garbage": 3
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy27",
+      "garbage": 23
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy28",
+      "garbage": 20
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy29",
+      "garbage": 16
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy30",
+      "garbage": 55
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy31",
+      "garbage": 38
+    },
+    {
+      "id": "PoffinCommon_Text_ExplainCooking",
+      "en_US": [
+        "Throw the Berry into the pot and\n",
+        "get stirring!\r",
+        "Watch for an arrow to show you which\n",
+        "direction to stir.\r",
+        "Be quick! If you stir too slowly,\n",
+        "you’ll burn the batter.\r",
+        "But not too quick! If you stir too fast,\n",
+        "the batter will overflow.\r",
+        "If you do well, you’ll cook up a\n",
+        "delicious Poffin!\r",
+        "You may cook alone or in a group\n",
+        "of up to four people.\r",
+        "With more cooks stirring, everyone will\n",
+        "get more Poffins!"
+      ]
+    },
+    {
+      "id": "PoffinCommon_Text_PleaseVisitAgain",
+      "en_US": [
+        "Please visit again whenever you get\n",
+        "the urge to cook!"
+      ]
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy34",
+      "garbage": 5
+    },
+    {
+      "id": "PoffinCommon_Text_Dummy35",
+      "garbage": 7
+    }
+  ]
+}

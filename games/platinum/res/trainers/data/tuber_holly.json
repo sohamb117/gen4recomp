@@ -1,0 +1,47 @@
+{
+    "name": "Holly",
+    "class": "TRAINER_CLASS_TUBER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_REMORAID",
+            "form": 0,
+            "level": 44,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Listen, listen! Can you tell me what\n",
+                "kind of Pokémon you have?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "You’re so tough. I’m stunned...\n"
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "I want to hang on to a BUIZEL and\n",
+                "just bob around.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Listen, listen! Did you find any new\n",
+                "kinds of Pokémon?\r"
+            ]
+        }
+    ]
+}

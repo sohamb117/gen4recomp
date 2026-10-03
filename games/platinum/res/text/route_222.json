@@ -1,0 +1,72 @@
+{
+  "key": 38544,
+  "messages": [
+    {
+      "id": "Route222_Text_IGiveTMFling",
+      "en_US": [
+        "The only items you ever throw are\n",
+        "Poké Balls!\r",
+        "But is that true?!\n",
+        "I want people to think about that.\r",
+        "That’s why I give away the Technical\n",
+        "Machine Fling.\r"
+      ]
+    },
+    {
+      "id": "Route222_Text_ExplainFling",
+      "en_US": [
+        "Using that move, the Pokémon hurls\n",
+        "whatever item it’s holding at the foe.\r",
+        "The move’s effect depends on what\n",
+        "item is hurled.\r",
+        "Remember, the move Fling fails if the\n",
+        "Pokémon isn’t holding anything."
+      ]
+    },
+    {
+      "id": "Route222_Text_CatchingMadeMeHappy",
+      "en_US": [
+        "When I first started fishing, catching\n",
+        "anything made me happy.\r",
+        "But those days are long gone now...\r",
+        "Now I get annoyed if I can’t beat my\n",
+        "record by even an inch..."
+      ]
+    },
+    {
+      "id": "Route222_Text_MoreAgitatedAtNight",
+      "en_US": [
+        "I can’t explain it.\n",
+        "I get more easily agitated at night."
+      ]
+    },
+    {
+      "id": "Route222_Text_SignHotelGrandLake",
+      "en_US": [
+        "Rt. 222\n",
+        "Hotel Grand Lake"
+      ]
+    },
+    {
+      "id": "Route222_Text_SignSunyshoreCity",
+      "en_US": [
+        "Rt. 222\n",
+        "Sunyshore City"
+      ]
+    },
+    {
+      "id": "Route222_Text_SignPikachuFanClub",
+      "en_US": [
+        "PIKACHU Fan Club\n",
+        "Pikapikapikah! Pikapika?"
+      ]
+    },
+    {
+      "id": "Route222_Text_SignPokemonSizeContest",
+      "en_US": [
+        "Pokémon Size Contest\n",
+        "Big Pokémon Wanted!"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+--- a/src/field_system.c
++++ b/src/field_system.c
+@@ -358,3 +358,13 @@
+ {
+     return ((FieldSystem *)fieldSystem)->saveData;
+ }
++
++/* pc port: the save lab writes a save from outside the field engine's own
++ * save flow, and needs the FieldSystem this file keeps to itself. Without it
++ * the lab cannot run FieldSystem_SaveObjects, and a save with no saved map
++ * objects has no player object to load; which is why an early version of
++ * the lab produced saves the CONTINUE path refused. */
++FieldSystem *pc_lab_field_system(void)
++{
++    return sFieldSystem;
++}

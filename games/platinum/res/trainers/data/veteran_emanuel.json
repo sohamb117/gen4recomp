@@ -1,0 +1,45 @@
+{
+    "name": "Emanuel",
+    "class": "TRAINER_CLASS_VETERAN",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_MACHOKE",
+            "form": 0,
+            "level": 28,
+            "item": null,
+            "moves": [
+                "MOVE_SEISMIC_TOSS",
+                "MOVE_LOW_KICK",
+                "MOVE_FORESIGHT"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_BRONZOR",
+            "form": 0,
+            "level": 28,
+            "item": null,
+            "moves": [
+                "MOVE_EXTRASENSORY",
+                "MOVE_TACKLE",
+                "MOVE_CONFUSE_RAY"
+            ],
+            "iv_scale": 100,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Tough, aren’t you...?\n"
+        }
+    ]
+}

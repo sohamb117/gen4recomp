@@ -1,0 +1,19 @@
+{
+  "key": 39560,
+  "messages": [
+    {
+      "id": "Route214_Text_SignVeilstoneCity",
+      "en_US": [
+        "Rt. 214\n",
+        "Veilstone City"
+      ]
+    },
+    {
+      "id": "Route214_Text_SignLakeValor",
+      "en_US": [
+        "Rt. 214\n",
+        "Lake Valor"
+      ]
+    }
+  ]
+}

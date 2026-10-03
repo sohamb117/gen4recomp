@@ -1,0 +1,59 @@
+{
+    "name": "Michael",
+    "class": "TRAINER_CLASS_YOUNGSTER",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_KRICKETOT",
+            "form": 0,
+            "level": 7,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        },
+        {
+            "species": "SPECIES_ZUBAT",
+            "form": 0,
+            "level": 6,
+            "item": null,
+            "moves": null,
+            "iv_scale": 0,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "I get my get-up-and-go from my\n",
+                "Pokémon!\r",
+                "Here we go!\n",
+                "KRICKETOT! ZUBAT!\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": "Ack! My Pokémon..."
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "Keep out of the grass or dodge the\n",
+                "eyes of Trainers...?\r",
+                "I always have a tough time choosing.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_REMATCH",
+            "en_US": [
+                "Hey, I remember your face, Trainer.\n",
+                "You’ll battle me again, won’t you?\r"
+            ]
+        }
+    ]
+}

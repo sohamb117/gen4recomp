@@ -1,0 +1,499 @@
+{
+  "key": 37979,
+  "messages": [
+    {
+      "id": "BattleArcade_Text_WelcomeToSingleDoubleChallenge",
+      "en_US": [
+        "Welcome to the Battle Arcade!\r",
+        "I am your guide to the Single and\n",
+        "Double Battle challenges.\r",
+        "Please be aware that these challenges\n",
+        "are designed for a single Trainer.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_TakeWhichChallenge",
+      "en_US": "Which challenge would you like to take?"
+    },
+    {
+      "id": "BattleArcade_Text_ExplainSingleDoubleChallenge",
+      "en_US": [
+        "At the Battle Arcade, you may take a\n",
+        "Single or Double Battle challenge.\r",
+        "Here, a game board is activated\n",
+        "before every match.\r",
+        "Depending on what comes up on the\n",
+        "game board, an event takes place.\r",
+        "Some events will be good for the\n",
+        "challenger, while others won’t be.\r",
+        "The objective is to keep a winning\n",
+        "streak alive as long as possible.\r",
+        "During your challenge, any items held by\n",
+        "your Pokémon will be kept in storage.\r",
+        "If you manage to win seven matches in\n",
+        "a row, you will earn Battle Points (BP).\r",
+        "If you want to interrupt your\n",
+        "challenge, please save the game.\r",
+        "If you don’t save, you will be\n",
+        "disqualified from your challenge.\r",
+        "Please be aware of that!\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_WelcomeToMultiChallenge",
+      "en_US": [
+        "Welcome to the Battle Arcade!\r",
+        "I am your guide to the Multi Battle\n",
+        "challenge.\r",
+        "Please be aware that this challenge\n",
+        "requires two Trainers.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_AskTakeMultiChallenge",
+      "en_US": [
+        "Would you like to take the Battle\n",
+        "Arcade Multi Battle challenge?"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_ExplainMultiChallenge",
+      "en_US": [
+        "You may team up with a friend for a\n",
+        "Multi Battle challenge.\r",
+        "Here, a game board is activated\n",
+        "before every match.\r",
+        "Depending on what comes up on the\n",
+        "game board, an event takes place.\r",
+        "The events may have great impact on\n",
+        "the match’s outcome, good or bad.\r",
+        "The objective is to keep a winning\n",
+        "streak alive as long as possible.\r",
+        "During your challenge, any items held by\n",
+        "your Pokémon will be kept in storage.\r",
+        "If you manage to win seven matches in\n",
+        "a row, you will earn Battle Points (BP).\r",
+        "Please note: a Battle Arcade Multi\n",
+        "Battle challenge can’t be interrupted.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_HopeToSeeYouAgain",
+      "en_US": "We hope to see you again!"
+    },
+    {
+      "id": "BattleArcade_Text_SelectPokemonToEnter",
+      "en_US": [
+        "Please select the Pokémon you wish\n",
+        "to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_NotEnoughEligiblePokemon",
+      "en_US": [
+        "Excuse me!\r",
+        "You don’t have {STRVAR_1 50, 0, 0} eligible Pokémon.\r",
+        "You must have {STRVAR_1 50, 1, 0} different Pokémon\n",
+        "to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist",
+      "en_US": "Also, Eggs are ineligible to enter.\r"
+    },
+    {
+      "id": "BattleArcade_Text_Banlist1",
+      "en_US": [
+        "Eggs and {STRVAR_1 0, 1, 0} are not allowed\n",
+        "to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist2",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, and {STRVAR_1 0, 2, 0}\n",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist3",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "and {STRVAR_1 0, 3, 0} are not allowed\f",
+        "to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist4",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, and {STRVAR_1 0, 4, 0}\f",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist5",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0}, and\f",
+        "{STRVAR_1 0, 5, 0} are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist6",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, and {STRVAR_1 0, 6, 0}\f",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist7",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0}, and\f",
+        "{STRVAR_1 0, 7, 0} are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist8",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, and {STRVAR_1 0, 8, 0}\f",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist9",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0}, and\f",
+        "{STRVAR_1 0, 9, 0} are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist10",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, and {STRVAR_1 0, 10, 0}\f",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist11",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0}, and\f",
+        "{STRVAR_1 0, 11, 0} are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist12",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\f",
+        "{STRVAR_1 0, 11, 0}, and {STRVAR_1 0, 12, 0}\f",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist13",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\f",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0}, and\f",
+        "{STRVAR_1 0, 13, 0} are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist14",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\f",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\f",
+        "{STRVAR_1 0, 13, 0}, and {STRVAR_1 0, 14, 0}\f",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist15",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\f",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\f",
+        "{STRVAR_1 0, 13, 0}, {STRVAR_1 0, 14, 0}, and\f",
+        "{STRVAR_1 0, 15, 0} are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist16",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\f",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\f",
+        "{STRVAR_1 0, 13, 0}, {STRVAR_1 0, 14, 0},\f",
+        "{STRVAR_1 0, 15, 0}, and {STRVAR_1 0, 16, 0}\f",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist17",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\f",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\f",
+        "{STRVAR_1 0, 13, 0}, {STRVAR_1 0, 14, 0},\f",
+        "{STRVAR_1 0, 15, 0}, {STRVAR_1 0, 16, 0}, and\f",
+        "{STRVAR_1 0, 17, 0} are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Banlist18",
+      "en_US": [
+        "Eggs, {STRVAR_1 0, 1, 0}, {STRVAR_1 0, 2, 0},\n",
+        "{STRVAR_1 0, 3, 0}, {STRVAR_1 0, 4, 0},\f",
+        "{STRVAR_1 0, 5, 0}, {STRVAR_1 0, 6, 0},\f",
+        "{STRVAR_1 0, 7, 0}, {STRVAR_1 0, 8, 0},\f",
+        "{STRVAR_1 0, 9, 0}, {STRVAR_1 0, 10, 0},\f",
+        "{STRVAR_1 0, 11, 0}, {STRVAR_1 0, 12, 0},\f",
+        "{STRVAR_1 0, 13, 0}, {STRVAR_1 0, 14, 0},\f",
+        "{STRVAR_1 0, 15, 0}, {STRVAR_1 0, 16, 0},\f",
+        "{STRVAR_1 0, 17, 0}, and {STRVAR_1 0, 18, 0}\f",
+        "are not allowed to enter.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_SeeMeWhenReady",
+      "en_US": "Please come see me when you are ready.\r"
+    },
+    {
+      "id": "BattleArcade_Text_BothTrainersChoseThisPokemon",
+      "en_US": [
+        "Both Trainers have chosen the\n",
+        "Pokémon {STRVAR_1 0, 0, 0}.\r",
+        "Please confer with the other Trainer\n",
+        "and choose different Pokémon.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_BothTrainersChoseThesePokemon",
+      "en_US": [
+        "Both Trainers have chosen the Pokémon\n",
+        "{STRVAR_1 0, 0, 0} and {STRVAR_1 0, 1, 0}.\r",
+        "Please confer with the other Trainer\n",
+        "and choose different Pokémon.\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_Dummy31",
+      "garbage": 32
+    },
+    {
+      "id": "BattleArcade_Text_ThisWayPlease",
+      "en_US": "Right this way, please!"
+    },
+    {
+      "id": "BattleArcade_Text_MustSaveBeforeResuming",
+      "en_US": [
+        "We’ve missed you!\r",
+        "You must save the game before you\n",
+        "resume your challenge. Please wait."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_DidntSaveBeforeQuit",
+      "en_US": [
+        "Excuse me!\r",
+        "You didn’t save before you quit your\n",
+        "challenge last time.\r",
+        "Because of that, you have been\n",
+        "disqualified from your challenge!\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_PrintForVictory",
+      "en_US": [
+        "Congratulations!\r",
+        "In honor of your victory, we present\n",
+        "you with this commemorative print!\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_GoldPrintAdded",
+      "en_US": [
+        "The Gold Print was added to\n",
+        "{STRVAR_1 3, 0, 0}’s Vs. Recorder!\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_SilverPrintAdded",
+      "en_US": [
+        "The Silver Print was added to\n",
+        "{STRVAR_1 3, 0, 0}’s Vs. Recorder!\r"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_SingleBattle",
+      "en_US": "SINGLE BATTLE"
+    },
+    {
+      "id": "BattleArcade_Text_DoubleBattle",
+      "en_US": "DOUBLE BATTLE"
+    },
+    {
+      "id": "BattleArcade_Text_TakeChallenge",
+      "en_US": "TAKE CHALLENGE"
+    },
+    {
+      "id": "BattleArcade_Text_Info",
+      "en_US": "INFO"
+    },
+    {
+      "id": "BattleArcade_Text_Cancel",
+      "en_US": "CANCEL"
+    },
+    {
+      "id": "BattleArcade_Text_BecomeLeaderOrJoinGroup",
+      "en_US": [
+        "One Trainer should select\n",
+        "“BECOME LEADER.”\r",
+        "The other Trainer must select\n",
+        "“JOIN GROUP.”"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_NeedToLaunchWiFiComm",
+      "en_US": [
+        "We need to launch DS Wireless\n",
+        "Communications."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_MustSaveFirst",
+      "en_US": [
+        "You must save the game before I\n",
+        "show you in. Please wait."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_RuleGameBoard",
+      "en_US": [
+        "Those who rule the game board reign\n",
+        "at the Battle Arcade!\r",
+        "It sounds sort of profound, but it’s\n",
+        "actually no-kidding obvious!"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_ComesDownToLuck",
+      "en_US": [
+        "It all comes down to luck here...\r",
+        "My cute Pokémon...\n",
+        "They were helplessly frozen."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_NothingToDoAboutLuck",
+      "en_US": [
+        "There’s nothing you can do about luck.\n",
+        "It’s just there or not."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_DontBeAwestruck",
+      "en_US": [
+        "Don’t be awestruck watching the\n",
+        "motion of the game board.\r",
+        "If you don’t stop it in 30 seconds, it\n",
+        "will stop by itself."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_PeculiarFashionSense",
+      "en_US": [
+        "The Brain has a peculiar fashion sense.\n",
+        "She flits around oddly, too.\r",
+        "Kind of like this.\n",
+        "A little bump, a wiggle...\r",
+        "...Please don’t look at me that way.\n",
+        "It’s not nice."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_StartBattlesWithTrickRoom",
+      "en_US": [
+        "Yikes, they can even start battles\n",
+        "with the move Trick Room in effect?\r",
+        "A strategy built around Speed could\n",
+        "backfire right in your face!"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_ThrilledByUnknownHand",
+      "en_US": [
+        "Be thrilled by the unknown hand of\n",
+        "luck!\r",
+        "Leap into battles ruled by fickle fate!\r",
+        "That’s how you enjoy the Battle\n",
+        "Arcade!"
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_BlamingGameBoardIsPitiful",
+      "en_US": [
+        "Blaming the game board for losing\n",
+        "is pitiful. It’s poor form.\r",
+        "The game board will show better choices\n",
+        "the greater the wins you achieve."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_FigureThisOneOut",
+      "en_US": [
+        "Did you figure this one out?\r",
+        "Poisoning or freezing events can be\n",
+        "made ineffective.\r",
+        "...If the Pokémon’s type or ability\n",
+        "protects it from such status problems."
+      ]
+    },
+    {
+      "id": "BattleArcade_Text_GroundTypesArentAffected",
+      "en_US": [
+        "If the game board triggers a\n",
+        "paralyzing event here, Ground types\f",
+        "aren’t affected."
+      ]
+    }
+  ]
+}

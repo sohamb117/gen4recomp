@@ -1,0 +1,190 @@
+{
+    "base_stats": {
+        "hp": 60,
+        "attack": 62,
+        "defense": 50,
+        "speed": 40,
+        "special_attack": 62,
+        "special_defense": 60
+    },
+    "types": [ "TYPE_GRASS", "TYPE_ICE" ],
+    "catch_rate": 120,
+    "base_exp_reward": 131,
+    "ev_yields": {
+        "hp": 0,
+        "attack": 1,
+        "defense": 0,
+        "speed": 0,
+        "special_attack": 0,
+        "special_defense": 0
+    },
+    "held_items": {
+        "common": "ITEM_NONE",
+        "rare": "ITEM_NEVERMELTICE"
+    },
+    "gender_ratio": "GENDER_RATIO_FEMALE_50",
+    "hatch_cycles": 20,
+    "base_friendship": 70,
+    "exp_rate": "EXP_RATE_SLOW",
+    "egg_groups": [ "EGG_GROUP_MONSTER", "EGG_GROUP_GRASS" ],
+    "abilities": [ "ABILITY_SNOW_WARNING", "ABILITY_NONE" ],
+    "safari_flee_rate": 0,
+    "body_color": "MON_COLOR_WHITE",
+    "flip_sprite": false,
+    "icon_palette": 1,
+    "learnset": {
+        "by_level": [
+            [ 1, "MOVE_POWDER_SNOW" ],
+            [ 1, "MOVE_LEER" ],
+            [ 5, "MOVE_RAZOR_LEAF" ],
+            [ 9, "MOVE_ICY_WIND" ],
+            [ 13, "MOVE_GRASS_WHISTLE" ],
+            [ 17, "MOVE_SWAGGER" ],
+            [ 21, "MOVE_MIST" ],
+            [ 26, "MOVE_ICE_SHARD" ],
+            [ 31, "MOVE_INGRAIN" ],
+            [ 36, "MOVE_WOOD_HAMMER" ],
+            [ 41, "MOVE_BLIZZARD" ],
+            [ 46, "MOVE_SHEER_COLD" ]
+        ],
+        "by_tm": [
+            "TM03",
+            "TM06",
+            "TM07",
+            "TM09",
+            "TM10",
+            "TM13",
+            "TM14",
+            "TM16",
+            "TM17",
+            "TM18",
+            "TM19",
+            "TM20",
+            "TM21",
+            "TM22",
+            "TM23",
+            "TM27",
+            "TM30",
+            "TM32",
+            "TM42",
+            "TM43",
+            "TM44",
+            "TM45",
+            "TM53",
+            "TM58",
+            "TM70",
+            "TM72",
+            "TM75",
+            "TM78",
+            "TM82",
+            "TM83",
+            "TM86",
+            "TM87",
+            "TM90"
+        ],
+        "by_tutor": [
+            "MOVE_MUD_SLAP",
+            "MOVE_ICY_WIND",
+            "MOVE_ICE_PUNCH",
+            "MOVE_SNORE",
+            "MOVE_SYNTHESIS",
+            "MOVE_SEED_BOMB"
+        ],
+        "egg_moves": [
+            "MOVE_LEECH_SEED",
+            "MOVE_MAGICAL_LEAF",
+            "MOVE_SEED_BOMB",
+            "MOVE_GROWTH",
+            "MOVE_DOUBLE_EDGE",
+            "MOVE_MIST",
+            "MOVE_STOMP"
+        ]
+    },
+    "evolutions": [
+        [
+            "EVO_LEVEL",
+            40,
+            "SPECIES_ABOMASNOW"
+        ]
+    ],
+    "offspring": "SPECIES_SNOVER",
+    "footprint": {
+        "has": true,
+        "size": "FOOTPRINT_MEDIUM",
+        "type": "FOOTPRINT_TYPE_CUTE"
+    },
+    "pokedex_data": {
+        "height_inches": 39,
+        "weight_pounds": 111.3,
+        "body_shape": "SHAPE_BIPEDAL_TAILED",
+        "trainer_scale_f": 272,
+        "pokemon_scale_f": 270,
+        "trainer_scale_m": 256,
+        "pokemon_scale_m": 270,
+        "trainer_pos_f": 8,
+        "pokemon_pos_f": 16,
+        "trainer_pos_m": 9,
+        "pokemon_pos_m": 16,
+        "en": {
+            "name": "SNOVER",
+            "category": "Frost Tree Pokémon",
+            "entry_text": [
+                "Seemingly curious about people,\n",
+                "they gather around footsteps they\n",
+                "find on snowy mountains."
+            ]
+        },
+        "fr": {
+            "name": "BLIZZI",
+            "category": "Pokémon Arbregelé",
+            "entry_text": [
+                "Il vit sur les monts enneigés.\n",
+                "Ignorant des coutumes humaines,\n",
+                "il lui arrive d’être très indiscret."
+            ]
+        },
+        "de": {
+            "name": "SHNEBEDECK",
+            "category": "Frostbaum",
+            "entry_text": [
+                "Es lebt im Schnee der Berge. Es\n",
+                "hatte bisher kaum Kontakt zu Men-\n",
+                "schen und ist daher sehr neugierig."
+            ]
+        },
+        "it": {
+            "name": "SNOVER",
+            "category": "Pokémon Albergelo",
+            "entry_text": [
+                "Vive sui monti innevati. Ha avuto\n",
+                "pochi contatti con gli umani, quindi\n",
+                "è molto curioso nei loro confronti."
+            ]
+        },
+        "es": {
+            "name": "SNOVER",
+            "category": "Pokémon Árbol Nieve",
+            "entry_text": [
+                "Vive en montañas nevadas.\n",
+                "Apenas tiene contacto con los\n",
+                "humanos y es muy curioso."
+            ]
+        },
+        "jp": {
+            "name": "ユキカブリ",
+            "category": "じゅひょうポケモン",
+            "entry_text": [
+                "ゆきやまで　くらしている。\n",
+                "めったに　であわない　にんげんを\n",
+                "めずらしがって　ちかよってくる。"
+            ]
+        }
+    },
+    "catching_show": {
+        "pal_park_land_area": "PAL_PARK_AREA_LAND_NORTH_EAST",
+        "pal_park_water_area": "PAL_PARK_AREA_WATER_NONE",
+        "catching_points": 50,
+        "rarity": 30,
+        "unused": 2063
+    }
+}

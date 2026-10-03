@@ -1,0 +1,14 @@
+# Rock Smash, on a breakable rock inside Mt Coronet's first floor.
+#
+# The rock is an object event with the rock-smash script; every tile around it
+# is cave floor, so the player can stand south of it and walk north through it
+# once it is gone.
+
+name SMASHER
+gender GENDER_MALE
+trainer-id 30002
+money 3000
+badge BADGE_ID_COAL
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_ROCK_SMASH
+map MAP_HEADER_MT_CORONET_1F_NORTH_ROOM_1 21 42 FACE_UP

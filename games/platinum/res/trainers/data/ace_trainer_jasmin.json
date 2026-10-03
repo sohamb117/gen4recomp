@@ -1,0 +1,50 @@
+{
+    "name": "Jasmin",
+    "class": "TRAINER_CLASS_ACE_TRAINER_FEMALE",
+    "items": [],
+    "ai_flags": [
+        "AI_FLAG_BASIC",
+        "AI_FLAG_EVAL_ATTACK",
+        "AI_FLAG_EXPERT"
+    ],
+    "double_battle": false,
+    "party": [
+        {
+            "species": "SPECIES_DRAPION",
+            "form": 0,
+            "level": 61,
+            "item": null,
+            "moves": [
+                "MOVE_CROSS_POISON",
+                "MOVE_CRUNCH",
+                "MOVE_X_SCISSOR",
+                "MOVE_AERIAL_ACE"
+            ],
+            "iv_scale": 50,
+            "ball_seal": 0
+        }
+    ],
+    "messages": [
+        {
+            "type": "TRMSG_PRE_BATTLE",
+            "en_US": [
+                "Can you answer this for me?\n",
+                "What is space?\r"
+            ]
+        },
+        {
+            "type": "TRMSG_DEFEAT",
+            "en_US": [
+                "And another...\n",
+                "A new memory was born.\n"
+            ]
+        },
+        {
+            "type": "TRMSG_POST_BATTLE",
+            "en_US": [
+                "For me, space is where memories are\n",
+                "made...\n"
+            ]
+        }
+    ]
+}

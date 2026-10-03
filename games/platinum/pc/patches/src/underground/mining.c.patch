@@ -1,0 +1,40 @@
+--- a/src/underground/mining.c
++++ b/src/underground/mining.c
+@@ -1737,6 +1737,19 @@
+     sMiningEnv->miningGameTask = SysTask_Start(Mining_GameTask, ctx, 100);
+ }
+ 
++/* pc port: the digging minigame is started from a comm callback
++ * (Mining_ProcessStartMiningConfirm). First-visit solo never searches, so
++ * that callback never fires; the lab starts the same SysTask the callback
++ * would, once MiningEnv_Init has run. */
++void Mining_StartGameForLab(void)
++{
++    if (sMiningEnv == NULL || sMiningEnv->miningGameTask != NULL) {
++        return;
++    }
++
++    Mining_StartGameTask(sMiningEnv->fieldSystem);
++}
++
+ static BOOL Mining_IsBuriedObjectSlotAvailable(void)
+ {
+     for (int i = 0; i < MAX_BURIED_OBJECTS; i++) {
+@@ -2097,7 +2110,7 @@
+ {
+     static const u8 dirtLayer4MapLength = 8;
+     static const u8 dirtLayer6MapLength = 5;
+-    static u8 dirtLayer4Map[dirtLayer4MapLength][dirtLayer4MapLength] = {
++    static u8 dirtLayer4Map[8][8] = {
+         { 0, 0, 4, 4, 4, 4, 0, 0 },
+         { 0, 4, 4, 4, 4, 4, 4, 0 },
+         { 4, 4, 4, 4, 4, 4, 0, 0 },
+@@ -2107,7 +2120,7 @@
+         { 0, 4, 4, 4, 4, 4, 4, 0 },
+         { 0, 0, 4, 4, 4, 4, 0, 0 }
+     };
+-    static u8 dirtLayer6Map[dirtLayer6MapLength][dirtLayer6MapLength] = {
++    static u8 dirtLayer6Map[5][5] = {
+         { 0, 6, 6, 6, 0 },
+         { 6, 6, 6, 6, 6 },
+         { 6, 6, 6, 6, 6 },
