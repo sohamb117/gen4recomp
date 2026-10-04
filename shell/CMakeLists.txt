@@ -46,6 +46,7 @@ add_library(np_shell_common STATIC
   src/font8x8.c
   src/layout.c
   src/launch.c
+  src/modpkg.c
   src/net.c
   src/png.c
   src/rewind.c
@@ -55,6 +56,7 @@ add_library(np_shell_common STATIC
   src/slots.c
   src/sync_plan.c
   src/undo.c
+  src/zip.c
 )
 target_include_directories(np_shell_common PUBLIC src "${NP_ROOT}/core/include")
 target_compile_options(np_shell_common PRIVATE ${NP_WARNINGS})
@@ -101,6 +103,7 @@ add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/fx.c
   src/input.c
   src/main.c
+  src/mods.c
   src/options.c
   src/session.c
   src/storage.c

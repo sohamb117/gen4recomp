@@ -38,6 +38,7 @@ typedef enum np_page {
     NP_PAGE_TEXT,      /* name entry (slots, trainer, nicknames) */
     NP_PAGE_EDITOR,    /* save editor (editor.c) */
     NP_PAGE_SYNC,      /* folder sync conflict chooser (sync.c) */
+    NP_PAGE_MODS,      /* mod manager (mods.c) */
 } np_page;
 
 /* Work handed from dialogs, drops and URLs to the main loop. */
@@ -50,6 +51,7 @@ typedef enum np_pending_kind {
     NP_PENDING_GIFT_IMPORT, /* a .pgt/.pcd for the open save editor */
     NP_PENDING_CARD_EXPORT, /* PNG of the open save; pending_card is the np_card_kind */
     NP_PENDING_SYNC_FOLDER, /* path is the folder picked for sync */
+    NP_PENDING_MOD_INSTALL, /* a package .zip for mods.c */
 } np_pending_kind;
 
 typedef enum np_text_purpose {
@@ -191,6 +193,7 @@ typedef struct np_app {
     struct np_net *net;       /* local wireless transport while enabled */
     char net_error[128];
     char sync_status[96]; /* last folder sync result */
+    char mods_root[1100]; /* np_host.content_root while a core runs */
     struct np_session *session; /* session.c, while a game runs */
     int rewind_hold;            /* the rewind action is held */
 
@@ -236,6 +239,7 @@ void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot);
 void np_app_open_gift_import_dialog(np_app *app);
 void np_app_open_card_export_dialog(np_app *app, int kind);
 void np_app_open_sync_folder_dialog(np_app *app);
+void np_app_open_mod_install_dialog(np_app *app);
 void np_app_apply_video_options(np_app *app);
 void np_app_open_page(np_app *app, np_page page);
 int np_app_speed(const np_app *app); /* effective multiplier, 0 = uncapped */
@@ -277,6 +281,18 @@ int np_sync_conflicts(const np_app *app);
 void np_sync_draw(np_app *app);
 void np_sync_command(np_app *app, np_menu_cmd cmd);
 void np_sync_hit(np_app *app, int id);
+
+/* mods.c: runtime content packages (Platinum) */
+/* The content root for `game`'s core into out; 0 if it exists, else -1. */
+int np_mods_content_root(const np_app *app, np_game game, char *out, size_t n);
+void np_mods_install(np_app *app, const char *zip_path);
+/* Opens the page; `banner` explains a boot error, or NULL. */
+void np_mods_open(np_app *app, const char *banner);
+/* After a core failed: opens the page if the error is a package's. */
+void np_mods_boot_failed(np_app *app, const char *error);
+void np_mods_draw(np_app *app);
+void np_mods_command(np_app *app, np_menu_cmd cmd);
+void np_mods_hit(np_app *app, int id);
 
 /* input.c */
 void np_input_gamepad_added(np_app *app, SDL_JoystickID id);

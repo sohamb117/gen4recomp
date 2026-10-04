@@ -214,6 +214,23 @@ the transport to a relay server (`server/relay`, `docs/RELAY.md`): players
 who enter the same relay and PIN meet as if in range, without port
 forwarding.
 
+## Mods
+
+*Options > Mods...* manages runtime content packages for Platinum (the
+format in `games/platinum/pc/mods/README.md`: `mod.toml`, `content/`,
+`records/` and the cooked `.cooked/`). Packages are plain folders in
+`<user data>/mods/`, which the core reads read-only as `/content`
+(`np_host.content_root`); the enabled ones and their load order are
+`mods/loadorder.txt`, the file the core itself reads, so the folder also
+works by hand. *Install package (.zip)...* (or dropping a .zip on the page)
+takes a zip holding one cooked package; member names must be plain relative
+paths and links are refused, so a package cannot reach outside the folder.
+It is extracted under a temporary name and renamed into place. Enter turns a
+package on or off, Left/Right move it in the load order, X twice deletes it.
+`requires` / `load_after` problems are shown before a boot. Changes apply
+when the game boots; if a package stops the boot ("modfs: ..."), the page
+opens with the message and that package selected.
+
 ## Folder sync
 
 *Options > Sync folder* picks a folder (for example inside iCloud Drive,
