@@ -19,8 +19,9 @@ npm run dev
 ```
 
 Open http://127.0.0.1:5173, import a matching cartridge, then start a journey.
-ROM identification matches the native shell's SHA-1 registry. Imported ROMs and saves
-are stored in IndexedDB and are never uploaded. The GCP release additionally
+ROM identification matches the native shell's SHA-1 registry. Imported ROMs stay
+in IndexedDB. Local saves need no account; the local development backend can sync one selected
+save per username/password account. Cloud deployment is deferred. The GCP release additionally
 offers encrypted Diamond and Platinum packages, downloaded, decrypted and
 verified on first play before caching in IndexedDB. This is download obfuscation;
 the client receives the key. Gameplay and subsequent launches use the existing
@@ -199,3 +200,42 @@ An installed native Binaryen 123 under `build/web-cores` is preferred when
 `NP_WASM_OPT` is unset; the npm-packaged optimizer remains the fallback. Existing optimized recipe
 choices survive a subsequent release build. Original source and WASM files
 remain read-only; only prepared copies are optimized.
+
+## Optional cloud saves
+
+Account controls appear only in Save manager. Play and local save import/export
+remain available without login. Create an account with a username and password;
+there is no email, verification flow, or password recovery service.
+
+Each account has one cloud save total, across all games. For an empty account,
+the next in-game save connects that local slot. Choose **Save to cloud** or
+**Replace cloud save** beside an existing local slot to connect it instead.
+Subsequent writes from that slot sync automatically after IndexedDB commits.
+**Load cloud save** creates a fresh local slot and connects it, preserving local
+slots. Close a running game before loading a cloud save. Other local slots keep
+working independently; replace the cloud save explicitly to switch slots.
+
+Uploads run outside the frame loop. Network failures leave the local save intact;
+reconnection retries pending writes, and reopening the site resumes a linked
+local save if the remote revision is unchanged. Cross-device conflicts require
+loading the remote save or explicitly replacing it. Cloud uploads never include
+cartridges, save backups, or browser preferences.
+
+`server/` is an isolated Node/Postgres API with parameterized queries, salted
+scrypt passwords, opaque hashed sessions in secure HttpOnly cookies, same-origin
+write checks, bounded request sizes, and database-backed sign-in throttling.
+A primary key on account ID enforces one save. Save images are exactly 512 KiB,
+nonblank, assigned a supported game, and SHA-256 checked on upload/download.
+This validates storage integrity, not every internal cartridge save checksum.
+
+For the complete local app and persistent Postgres, run:
+
+```sh
+bash web/scripts/local-up.sh  # from the repository root
+```
+
+Open http://127.0.0.1:8088. Account controls appear only inside Save manager.
+The database uses a persistent Docker volume; stopping containers preserves it.
+See [server/README.md](server/README.md) for development, tests, and lifecycle
+commands. The GCP site stays on its existing static release. Future hosted
+Postgres is configured with `DATABASE_URL`; CockroachDB is not yet qualified.

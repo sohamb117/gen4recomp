@@ -126,3 +126,19 @@ field quick save from a read-only local fixture. Post-deploy checks downloaded,
 decrypted and verified both hosted cartridges and ran 600 frames with each
 published core. The custom domain serves the new bundle over HTTPS with the
 requested title and description.
+
+## Local save backend — cloud provisioning cancelled
+
+The optional account/save API is implemented and tested against local Postgres.
+The user cancelled the paid Cloud SQL plan before any instance was created.
+No database, secret, IAM grant, or Cloud Run revision was provisioned for this
+feature. SQL Admin and Secret Manager APIs were enabled during preparation;
+these alone do not create database instances.
+
+The existing static deployment script remains unchanged. Cloud UI is enabled
+only for development or `VITE_CLOUD_SAVES=true` builds. `NP_WITH_SAVE_API=1`
+opts staging into the combined nginx/Node image for local testing. Do not deploy
+the API image until a database provider is configured and validated.
+See [local setup](../server/README.md). `DATABASE_URL` supplies a future Postgres
+connection without cloud-vendor-specific code. CockroachDB has not been qualified;
+its migrations and transaction retry behavior must be checked before switching.
