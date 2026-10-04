@@ -171,10 +171,10 @@ define GAME_COMPILE
 $(if $(filter lib/%,$*.c),$(GAME_SDK_COMPILE),$(call BRIDGE_COMPILE,$(call game_tu_flags,$*.c) $(GAME_DEPFLAGS)))
 endef
 
-$(GAME_DIRECT:%.c=$(OBJ)/game/%.o): $(OBJ)/game/%.o: $(A9)/%.c $(GAME_DEPS)
+$(GAME_DIRECT:%.c=$(OBJ)/game/%.o): $(OBJ)/game/%.o: $(A9)/%.c $(GAME_DEPS) $(BRIDGE_DEPS)
 	$(GAME_COMPILE)
 
-$(GAME_PREP:%.c=$(OBJ)/game/%.o): $(OBJ)/game/%.o: $(BUILD)/prep/%.c $(GAME_DEPS)
+$(GAME_PREP:%.c=$(OBJ)/game/%.o): $(OBJ)/game/%.o: $(BUILD)/prep/%.c $(GAME_DEPS) $(BRIDGE_DEPS)
 	$(GAME_COMPILE)
 
 -include $(wildcard $(GAME_OBJS:%=%.d))
