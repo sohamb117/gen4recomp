@@ -8,6 +8,10 @@ watchpoint on the list head). The call passes the task explicitly, which is
 the ROM's own r0. render_window.c and unk_020051F4.c already declare it
 (SysTask *).
 
+NP_OPT_TEXT_INSTANT (second hunk group): Platinum's instant-text rule
+(games/platinum/pc/patches/src/text.c.patch) on D's RunTextPrinter; see the
+comment at PcNp_RushPrinter.
+
 --- a/text.c
 +++ b/text.c
 @@ -22,7 +22,7 @@
@@ -28,3 +32,60 @@ the ROM's own r0. render_window.c and unk_020051F4.c already declare it
      if (printer) {
          sub_0201C238(printer);
          Heap_Free((void *)printer);
+@@ -196,6 +196,46 @@
+     }
+ }
+ 
++#include "pc_np_options.h"
++
++/*
++ * pc port: NP_OPT_TEXT_INSTANT (Platinum's pc/patches/src/text.c.patch,
++ * the same rule on D's printer). A printing task normally renders one
++ * character per frame (more with a lower delay). Here it keeps rendering
++ * within the frame for as long as RenderFont is only handing out characters
++ * (0) or counting down the per-character delay (3 in state 0), and stops at
++ * anything else: a wait for the button, a scroll, a pause, the end of the
++ * message (1), or a control code that has something for the callback
++ * (Unk2A). So a box fills at once, and every prompt, scroll and scripted
++ * pause still behaves as the game wrote it. Off (the default), this is
++ * never called.
++ */
++static u32 PcNp_RushPrinter(struct TextPrinter *printer, u32 result) {
++    BOOL printed = FALSE;
++    int i;
++
++    for (i = 0; i < 4096; i++) {
++        if (result == 0) {
++            printed = TRUE;
++        } else if (result != 3) {
++            break; /* finished */
++        }
++        if (printer->state != 0 || printer->Unk2A != 0) {
++            break; /* left the character state, or the callback is wanted */
++        }
++        printer->delayCounter = 0;
++        result = RenderFont(printer);
++    }
++    if (printed) {
++        if (result == 1) {
++            CopyWindowToVram(printer->printerTemplate.window);
++        } else {
++            result = 0; /* copy what was drawn, then the callback */
++        }
++    }
++    return result;
++}
++
+ void RunTextPrinter(SysTask *sysTask, struct TextPrinter *printer) {
+ #pragma unused(sysTask)
+     if (UNK_021C570C == 0) {
+@@ -203,6 +243,9 @@
+             printer->Unk2A = 0;
+             GenerateFontHalfRowLookupTable(printer->printerTemplate.fgColor, printer->printerTemplate.bgColor, printer->printerTemplate.shadowColor);
+             u32 temp = RenderFont(printer);
++            if (pc_np_opt.text_instant) {
++                temp = PcNp_RushPrinter(printer, temp);
++            }
+             switch (temp) {
+             case 0:
+                 CopyWindowToVram(printer->printerTemplate.window);

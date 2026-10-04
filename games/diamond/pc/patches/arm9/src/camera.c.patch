@@ -1,0 +1,15 @@
+--- a/arm9/src/camera.c
++++ b/arm9/src/camera.c
+@@ -19,6 +19,12 @@
+ GXBufferMode gG3dDepthBufferingMode = GX_BUFFERMODE_W;
+ static Camera *sCameraPtr;
+ 
++/* pc port: the field camera options (pc/game/pc_dp_field.c) override the
++ * view of whichever camera is active, which only this file knows. */
++Camera *pc_np_active_camera(void) {
++    return sCameraPtr;
++}
++
+ static void Camera_CalcLookAtPosFromTargetAndAngle(Camera *camera) {
+     u16 negx = -camera->angle.x;
+     camera->lookAt.camPos.x = FX_Mul(FX_Mul(FX_SinIdx(camera->angle.y), camera->distance), FX_CosIdx(camera->angle.x));

@@ -77,10 +77,3 @@ int pc_selftest_run(FILE *out)
                  "replacements and are not built for Diamond/Pearl\n");
     return 0;
 }
-
-/* pc_view.c: the frame-boundary options hook (pc/include/pc_np_options.h,
- * declared weak). Platinum's lives in pc_np_field.c and drives its
- * FieldSystem; D has no equivalent yet. Defined rather than left weak-
- * undefined because the bridge takes its address for the table
- * (bridge_adapters.c), which needs a definition. */
-void pc_np_frame(void) {}

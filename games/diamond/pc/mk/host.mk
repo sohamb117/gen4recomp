@@ -90,8 +90,8 @@ HOST_EXTRA :=
 #   pc_boot_glue.c                      _start_AutoloadDoneCallback: D's is
 #                                       crt0 asm, recompiled (overlay_13 takes
 #                                       its address)
-#   pc_np_field.c                       Platinum FieldSystem options (camera
-#                                       zoom/tilt); its hooks are weak
+#   pc_np_field.c                       Platinum FieldSystem options; D's
+#                                       field half is pc/game/pc_dp_field.c
 # Their calls from the shared files are answered by src/pc_dp_hooks.c.
 HOST_PC_EXCLUDE := pc_win_fiber.c pc_win_ipc.c pc_win_clock.c pc_os_context.c \
                    pc_lab.c pc_sprite_lab.c pc_text_lab.c pc_audio_lab.c \

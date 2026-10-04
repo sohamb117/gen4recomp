@@ -1,0 +1,20 @@
+--- a/arm9/overlays/05/asm/ov05_021D74E0.s
++++ b/arm9/overlays/05/asm/ov05_021D74E0.s
+@@ -815,7 +815,7 @@
+ 	sub sp, #0x80
+ 	add r4, r0, #0
+ 	bl sub_020222AC
+-	bl Camera_PushLookAtToNNSGlb
++	bl PcDp_FieldPushLookAt
+ 	add r0, r4, #0
+ 	bl sub_0205E0A8
+ 	ldr r0, [r4, #0x24]
+@@ -888,7 +888,7 @@
+ 	ldr r1, _021D7CA0 ; =gG3dDepthBufferingMode
+ 	mov r0, #0
+ 	ldr r1, [r1]
+-	bl sub_020222B4
++	bl PcDp_FieldSwapBuffers
+ 	add sp, #0x80
+ 	pop {r3, r4, r5, pc}
+ 	nop
