@@ -35,6 +35,7 @@ typedef int np_sock;
 #define NET_MAX_PEERS 32
 #define NET_HELLO_MS 1000
 #define NET_PEER_TIMEOUT_MS 10000
+#define NET_QUEUE 64 /* datagrams np_net_poll drained before the guest asked */
 
 enum { NET_DATA = 0, NET_HELLO = 1, NET_HELLO_ACK = 2 };
 
@@ -55,6 +56,12 @@ struct np_net {
     uint64_t next_hello;
     net_peer peer[NET_MAX_PEERS];
     int npeers;
+    struct {
+        uint32_t from;
+        uint16_t len;
+        uint8_t data[NET_MAX_PAYLOAD];
+    } q[NET_QUEUE];
+    int qhead, qcount;
     void (*log)(void *user, const char *line);
     void *log_user;
 };
@@ -344,11 +351,15 @@ int np_net_peer_count(const np_net *n)
     return c;
 }
 
+static void net_drain(np_net *n);
+
 void np_net_poll(np_net *n)
 {
-    uint64_t now = net_now_ms();
+    uint64_t now;
     int i;
 
+    net_drain(n);
+    now = net_now_ms();
     if (now < n->next_hello) {
         return;
     }
@@ -421,9 +432,12 @@ int np_net_send(np_net *n, uint32_t peer, const void *buf, uint32_t len)
     return rc;
 }
 
-int np_net_recv(np_net *n, uint32_t *peer, void *buf, uint32_t cap)
+/* Reads the socket until a data datagram arrives (control packets are
+ * handled on the way); returns its length with the payload at *payload, 0
+ * when the socket is empty, -1 on error. */
+static int net_read(np_net *n, uint32_t *peer, const uint8_t **payload)
 {
-    uint8_t p[NET_HEADER + NET_MAX_PAYLOAD + 64];
+    static uint8_t p[NET_HEADER + NET_MAX_PAYLOAD + 64];
 
     for (;;) {
         struct sockaddr_in from;
@@ -449,14 +463,66 @@ int np_net_recv(np_net *n, uint32_t *peer, void *buf, uint32_t cap)
         case NET_HELLO_ACK:
             continue;
         case NET_DATA:
-            if ((uint32_t)(got - NET_HEADER) > cap) {
-                return -1;
+            if (got - NET_HEADER > NET_MAX_PAYLOAD) {
+                continue;
             }
-            memcpy(buf, p + NET_HEADER, (size_t)(got - NET_HEADER));
+            *payload = p + NET_HEADER;
             *peer = id;
             return got - NET_HEADER;
         default:
             continue;
         }
+    }
+}
+
+int np_net_recv(np_net *n, uint32_t *peer, void *buf, uint32_t cap)
+{
+    const uint8_t *payload;
+    int len;
+
+    if (n->qcount > 0) {
+        int i = n->qhead;
+
+        n->qhead = (n->qhead + 1) % NET_QUEUE;
+        n->qcount--;
+        if (n->q[i].len > cap) {
+            return -1;
+        }
+        memcpy(buf, n->q[i].data, n->q[i].len);
+        *peer = n->q[i].from;
+        return n->q[i].len;
+    }
+    len = net_read(n, peer, &payload);
+    if (len <= 0) {
+        return len;
+    }
+    if ((uint32_t)len > cap) {
+        return -1;
+    }
+    memcpy(buf, payload, (size_t)len);
+    return len;
+}
+
+/* Keeps discovery answering while the guest is not reading (its radio is
+ * off): data that arrives meanwhile waits in a small queue, oldest dropped,
+ * as a radio that is not listening loses it anyway. */
+static void net_drain(np_net *n)
+{
+    for (;;) {
+        const uint8_t *payload;
+        uint32_t from;
+        int len = net_read(n, &from, &payload), i;
+
+        if (len <= 0) {
+            return;
+        }
+        if (n->qcount == NET_QUEUE) {
+            n->qhead = (n->qhead + 1) % NET_QUEUE;
+            n->qcount--;
+        }
+        i = (n->qhead + n->qcount++) % NET_QUEUE;
+        n->q[i].from = from;
+        n->q[i].len = (uint16_t)len;
+        memcpy(n->q[i].data, payload, (size_t)len);
     }
 }

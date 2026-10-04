@@ -31,6 +31,14 @@
  *                        round continues from there. Reports sizes and times.
  *     --state-span M     frames per round (default 120)
  *     --state-rounds R   rounds (default 4)
+ *     --net PORT         local wireless over UDP (shell/src/net.c), first port
+ *                        to try (2009 is the shell's default); LAN broadcast
+ *                        and same-machine discovery. While the guest reports
+ *                        NP_STAT_LINK_ACTIVE the run is paced to 60 Hz, the
+ *                        1x lock a linked console needs.
+ *     --net-peer H:P     also say hello to this address, repeatable
+ *     --net-id ID        24-bit station id (default random)
+ *     --net-drop PCT     drop this share of outgoing datagrams (loss testing)
  *
  * Status changes (enum np_status) are printed as they happen.
  *
@@ -44,7 +52,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#if defined(_WIN32)
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
+#include "net.h"
 #include "np_core.h"
 #include "np_guest_abi.h"
 
@@ -276,11 +290,46 @@ static int parse_opt(const char *v, opt_set *s) {
     return *end ? -1 : 0;
 }
 
+/* --net: the np_host transport callbacks over shell/src/net.c. */
+static np_net *g_net;
+
+static uint32_t net_self_cb(void *user) {
+    (void)user;
+    return np_net_self(g_net);
+}
+
+static int net_send_cb(void *user, uint32_t peer, const void *buf, uint32_t len) {
+    (void)user;
+    return np_net_send(g_net, peer, buf, len);
+}
+
+static int net_recv_cb(void *user, uint32_t *peer, void *buf, uint32_t cap) {
+    (void)user;
+    return np_net_recv(g_net, peer, buf, cap);
+}
+
+static void net_log_cb(void *user, const char *line) {
+    (void)user;
+    fprintf(stderr, "[net] %s\n", line);
+}
+
+/* Sleeps until `deadline` (now_ms() clock), for the 60 Hz link pacing. */
+static void sleep_until(double deadline) {
+    double wait = deadline - now_ms();
+    if (wait <= 0) return;
+#if defined(_WIN32)
+    Sleep((DWORD)wait);
+#else
+    usleep((useconds_t)(wait * 1000.0));
+#endif
+}
+
 static int usage(void) {
     fprintf(stderr, "usage: np_headless <diamond|pearl|platinum> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
                     "                   [--dump-every N] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--schedule FILE]\n"
-                    "                   [--state-test N [--state-span M] [--state-rounds R]]\n");
+                    "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
+                    "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]]\n");
     return 2;
 }
 
@@ -435,6 +484,10 @@ int main(int argc, char **argv) {
     int state_rounds = 4, do_state = 0;
     const char *dump_dir = NULL;
     int have_rtc = 0;
+    int net_on = 0, net_drop = 0, npeers = 0;
+    uint16_t net_port = 0;
+    uint32_t net_id = 0;
+    const char *net_peers[8];
 
     for (int i = 3; i < argc; i++) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
@@ -461,6 +514,15 @@ int main(int argc, char **argv) {
                 return usage();
             }
             nsets++;
+        } else if (strcmp(a, "--net") == 0) {
+            net_on = 1;
+            net_port = (uint16_t)strtoul(v, NULL, 0);
+        } else if (strcmp(a, "--net-peer") == 0 && npeers < 8) {
+            net_peers[npeers++] = v;
+        } else if (strcmp(a, "--net-id") == 0) {
+            net_id = (uint32_t)strtoul(v, NULL, 0);
+        } else if (strcmp(a, "--net-drop") == 0) {
+            net_drop = atoi(v);
         } else if (strcmp(a, "--press") == 0 && npresses < MAX_PRESSES) {
             char *colon;
             presses[npresses].frame = strtoull(v, &colon, 0);
@@ -482,6 +544,28 @@ int main(int argc, char **argv) {
     host.save_store = save_store;
     host.rtc_now = have_rtc ? rtc_now : NULL;
     host.log = log_line;
+    if (net_on) {
+        char err[160];
+        np_net_config nc = {0};
+        nc.port = net_port;
+        nc.station_id = net_id;
+        nc.lan_discovery = 1;
+        nc.drop_percent = net_drop;
+        nc.log = net_log_cb;
+        g_net = np_net_open(&nc, err, sizeof err);
+        if (!g_net) {
+            fprintf(stderr, "np_headless: --net: %s\n", err);
+            return 2;
+        }
+        for (int p = 0; p < npeers; p++)
+            if (np_net_add_peer(g_net, net_peers[p], err, sizeof err) != 0) {
+                fprintf(stderr, "np_headless: --net-peer: %s\n", err);
+                return 2;
+            }
+        host.net_self = net_self_cb;
+        host.net_send = net_send_cb;
+        host.net_recv = net_recv_cb;
+    }
 
     if (!np_core_available((np_game)game)) {
         fprintf(stderr, "np_headless: %s is not built into this binary\n", names[game]);
@@ -512,7 +596,19 @@ int main(int argc, char **argv) {
     }
     double t0 = now_ms();
     uint64_t timed_from = ran;
+    double next_frame = t0;
     for (; rc == 0 && state_rc >= 0 && ran < frames; ran++) {
+        if (g_net) {
+            np_net_poll(g_net);
+            /* Linked: real time, as a console runs, or the partner's MP
+             * lifetime runs out while this side races ahead. */
+            if (np_core_status(core, NP_STAT_LINK_ACTIVE)) {
+                next_frame += 1000.0 / 60.0;
+                sleep_until(next_frame);
+            } else {
+                next_frame = now_ms();
+            }
+        }
         rc = step(&s, ran, &f, &hash);
         if (rc != 0) break;
         int last = ran + 1 == frames;
@@ -543,6 +639,7 @@ int main(int argc, char **argv) {
         if (!strstr(np_core_last_error(core), "status 0")) status = 1;
     }
     np_core_destroy(core);
+    np_net_close(g_net);
     fclose(r.rom);
     return status;
 }

@@ -47,7 +47,8 @@ uint32_t np_net_self(const np_net *n);
 uint16_t np_net_port(const np_net *n);
 int np_net_peer_count(const np_net *n);
 
-/* Discovery and expiry; call once per frame. */
+/* Discovery, expiry and draining the socket (control packets answer even
+ * while the guest is not reading); call once per frame. */
 void np_net_poll(np_net *n);
 
 /* The np_host callbacks' semantics: send returns 0 or -1 (peer
