@@ -1,0 +1,14 @@
+#!/bin/sh
+# C compiler/linker driver for tools/cmake/windows-x64.cmake.
+# zig cc ignores GCC's -mwindows/-mconsole (CMake's WIN32_EXECUTABLE flag
+# for mingw), so pass the subsystem to the linker directly.
+. "$(dirname "$0")/_zig.sh"
+for arg do
+    shift
+    case "$arg" in
+        -mwindows) set -- "$@" -Wl,--subsystem,windows ;;
+        -mconsole) set -- "$@" -Wl,--subsystem,console ;;
+        *) set -- "$@" "$arg" ;;
+    esac
+done
+exec "$NP_ZIG" cc -target x86_64-windows-gnu "$@"

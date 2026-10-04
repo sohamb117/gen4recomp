@@ -136,10 +136,11 @@ uint32_t w2c_wasi__snapshot__preview1_environ_sizes_get(struct w2c_wasi__snapsho
     return WASI_ESUCCESS;
 }
 
-uint32_t w2c_wasi__snapshot__preview1_environ_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t environ,
+/* environ_ptrs, not environ: mingw's <stdlib.h> defines environ as a macro. */
+uint32_t w2c_wasi__snapshot__preview1_environ_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t environ_ptrs,
                                                   uint32_t environ_buf) {
     np_core *c = w->core;
-    uint8_t *pv = np_rt_guest(c, environ, c->env_count * 4), *pb = np_rt_guest(c, environ_buf, c->env_bytes);
+    uint8_t *pv = np_rt_guest(c, environ_ptrs, c->env_count * 4), *pb = np_rt_guest(c, environ_buf, c->env_bytes);
     if (!pv || !pb) return WASI_EFAULT;
     if (c->env_bytes) memcpy(pb, c->env_block, c->env_bytes);
     uint32_t off = 0;

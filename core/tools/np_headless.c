@@ -27,10 +27,14 @@
 
 #include "np_core.h"
 
+/* The CRT declares Windows' environment block (and mingw even defines
+ * environ itself as a macro); POSIX leaves the declaration to us. */
 #if defined(_WIN32)
-#define environ _environ
-#endif
+#define np_environ _environ
+#else
 extern char **environ;
+#define np_environ environ
+#endif
 
 #define MAX_OPTIONS 128
 #define MAX_PRESSES 64
@@ -153,7 +157,7 @@ int main(int argc, char **argv) {
             return usage();
         i++;
     }
-    for (char **e = environ; e && *e && noptions < MAX_OPTIONS; e++)
+    for (char **e = np_environ; e && *e && noptions < MAX_OPTIONS; e++)
         if (strncmp(*e, "PC_", 3) == 0) options[noptions++] = *e;
     options[noptions] = NULL;
 

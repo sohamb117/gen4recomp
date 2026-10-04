@@ -37,7 +37,7 @@ uint32_t w2c_wasi__snapshot__preview1_args_get(struct w2c_wasi__snapshot__previe
                                                uint32_t argv_buf);
 uint32_t w2c_wasi__snapshot__preview1_args_sizes_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t argc_out,
                                                      uint32_t buf_size_out);
-uint32_t w2c_wasi__snapshot__preview1_environ_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t environ,
+uint32_t w2c_wasi__snapshot__preview1_environ_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t environ_ptrs,
                                                   uint32_t environ_buf);
 uint32_t w2c_wasi__snapshot__preview1_environ_sizes_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t count_out,
                                                         uint32_t buf_size_out);

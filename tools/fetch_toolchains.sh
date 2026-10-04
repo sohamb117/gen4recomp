@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
-# Fetch the pinned host toolchains the guest core needs into .cache/toolchains.
+# Fetch the pinned host toolchains into .cache/toolchains.
+#
+#   tools/fetch_toolchains.sh            wasi-sdk + wabt (every build)
+#   tools/fetch_toolchains.sh windows    also zig + SDL3 mingw (Windows cross build)
 #
 #   wasi-sdk  clang + wasm-ld + wasi-libc: compiles the game for wasm32, which is
 #             what keeps guest pointers 32 bits wide on 64-bit hosts.
 #   wabt      wasm2c: turns that module back into portable C for each host.
+#   zig       `zig cc -target x86_64-windows-gnu` (clang + lld + mingw-w64
+#             headers/libs, ar, ranlib, rc) for tools/cmake/windows-x64.cmake.
+#   sdl3-mingw  SDL3's official mingw development package (headers, import
+#             library, SDL3.dll, CMake config) for the Windows app.
 #
 # Hashes are pinned; a mismatch aborts before anything is extracted.
 set -euo pipefail
@@ -12,11 +19,19 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST="${NP_TOOLCHAINS:-$ROOT/.cache/toolchains}"
 mkdir -p "$DEST"
 
+WANT_WINDOWS=0
+for arg in "$@"; do
+    case "$arg" in
+        windows) WANT_WINDOWS=1 ;;
+        *) echo "usage: $0 [windows]" >&2; exit 2 ;;
+    esac
+done
+
 case "$(uname -s)-$(uname -m)" in
-    Darwin-arm64) HOST_WASI=arm64-macos;  HOST_WABT=macos-arm64 ;;
-    Darwin-x86_64) HOST_WASI=x86_64-macos; HOST_WABT=macos-x64 ;;
-    Linux-x86_64) HOST_WASI=x86_64-linux; HOST_WABT=linux-x64 ;;
-    Linux-aarch64) HOST_WASI=arm64-linux; HOST_WABT=linux-arm64 ;;
+    Darwin-arm64) HOST_WASI=arm64-macos;  HOST_WABT=macos-arm64; HOST_ZIG=aarch64-macos ;;
+    Darwin-x86_64) HOST_WASI=x86_64-macos; HOST_WABT=macos-x64; HOST_ZIG=x86_64-macos ;;
+    Linux-x86_64) HOST_WASI=x86_64-linux; HOST_WABT=linux-x64; HOST_ZIG=x86_64-linux ;;
+    Linux-aarch64) HOST_WASI=arm64-linux; HOST_WABT=linux-arm64; HOST_ZIG=aarch64-linux ;;
     *) echo "fetch_toolchains: unsupported host $(uname -s)-$(uname -m)" >&2; exit 1 ;;
 esac
 
@@ -27,6 +42,15 @@ WASI_URL="https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${W
 WABT_VER=1.0.42
 WABT_NAME="wabt-${WABT_VER}"
 WABT_URL="https://github.com/WebAssembly/wabt/releases/download/${WABT_VER}/${WABT_NAME}-${HOST_WABT}.tar.gz"
+
+ZIG_VER=0.17.0
+ZIG_NAME="zig-${HOST_ZIG}-${ZIG_VER}"
+ZIG_URL="https://ziglang.org/download/${ZIG_VER}/${ZIG_NAME}.tar.xz"
+
+SDL3_MINGW_VER=3.4.18
+SDL3_MINGW_NAME="SDL3-${SDL3_MINGW_VER}"
+SDL3_MINGW_ARCHIVE="SDL3-devel-${SDL3_MINGW_VER}-mingw.tar.gz"
+SDL3_MINGW_URL="https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_MINGW_VER}/${SDL3_MINGW_ARCHIVE}"
 
 # sha256 per host archive. Unknown hosts fail closed.
 sha_for() {
@@ -41,6 +65,12 @@ sha_for() {
                 macos-arm64) echo "${NP_SHA_WABT_MACOS_ARM64:-}" ;;
                 *) echo "" ;;
             esac ;;
+        "${ZIG_NAME}.tar.xz")
+            case "$HOST_ZIG" in
+                aarch64-macos) echo "${NP_SHA_ZIG_AARCH64_MACOS:-}" ;;
+                *) echo "" ;;
+            esac ;;
+        "${SDL3_MINGW_ARCHIVE}") echo "${NP_SHA_SDL3_MINGW:-}" ;;
     esac
 }
 
@@ -65,7 +95,7 @@ fetch() { # url archive-name extract-marker
         rm -f "$tmp"
         exit 1
     fi
-    tar -xzf "$tmp" -C "$DEST"
+    tar -xf "$tmp" -C "$DEST"
     rm -f "$tmp"
     echo "installed $marker"
 }
@@ -78,4 +108,11 @@ fetch "$WABT_URL" "${WABT_NAME}-${HOST_WABT}.tar.gz" "$WABT_NAME"
 
 ln -sfn "$WASI_NAME" "$DEST/wasi-sdk"
 ln -sfn "$WABT_NAME" "$DEST/wabt"
+
+if [ "$WANT_WINDOWS" = 1 ]; then
+    fetch "$ZIG_URL" "${ZIG_NAME}.tar.xz" "$ZIG_NAME"
+    fetch "$SDL3_MINGW_URL" "$SDL3_MINGW_ARCHIVE" "$SDL3_MINGW_NAME"
+    ln -sfn "$ZIG_NAME" "$DEST/zig"
+    ln -sfn "$SDL3_MINGW_NAME" "$DEST/sdl3-mingw"
+fi
 echo "toolchains ready in $DEST"

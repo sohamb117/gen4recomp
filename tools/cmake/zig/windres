@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# windres-style front end for `zig rc`. CMake drives an RC compiler named
+# windres as `windres -O coff <defines> <includes> <flags> <src> <obj>` and
+# links the .obj it writes; zig rc writes the same COFF object given
+# /:output-format coff.
+set -euo pipefail
+. "$(dirname "$0")/_zig.sh"
+args=() pos=()
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -O|--output-format|-F|--target) shift ;;
+        -O*|--output-format=*|-F*|--target=*) ;;
+        -D|--define) args+=(/d "$2"); shift ;;
+        -D*) args+=(/d "${1#-D}") ;;
+        --define=*) args+=(/d "${1#--define=}") ;;
+        -U) args+=(/u "$2"); shift ;;
+        -U*) args+=(/u "${1#-U}") ;;
+        -I|--include-dir) args+=(/i "$2"); shift ;;
+        -I*) args+=(/i "${1#-I}") ;;
+        --include-dir=*) args+=(/i "${1#--include-dir=}") ;;
+        -i|--input) pos=("$2" "${pos[@]+"${pos[@]}"}"); shift ;;
+        -o|--output) out="$2"; shift ;;
+        -*) echo "windres (zig rc): unsupported option $1" >&2; exit 2 ;;
+        *) pos+=("$1") ;;
+    esac
+    shift
+done
+src="${pos[0]:?windres (zig rc): no input}"
+out="${out:-${pos[1]:?windres (zig rc): no output}}"
+exec "$NP_ZIG" rc /nologo /:output-format coff /:target x64 "${args[@]+"${args[@]}"}" /fo "$out" -- "$src"

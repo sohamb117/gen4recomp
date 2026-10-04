@@ -28,6 +28,11 @@ static const char *const k_game_names[NP_GAME_COUNT] = {"diamond", "pearl", "pla
 
 /* ---- fibers ---------------------------------------------------------- */
 
+/* Each fiber carries its own wasm exception unwind target, so a longjmp
+ * (only wasm_rt_throw can issue one: traps go to WASM_RT_TRAP_HANDLER) always
+ * lands on the stack it was thrown on and never crosses fibers. That keeps
+ * Windows safe too, where mingw's and MSVC's longjmp run an SEH unwind of the
+ * current stack: SwitchToFiber keeps the TEB stack bounds of that stack. */
 void np_rt_switch(np_core *c, np_rt_fiber *to) {
     np_rt_fiber *from = c->current;
     from->shadow_sp = *c->stack_pointer;
