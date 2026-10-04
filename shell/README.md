@@ -391,7 +391,19 @@ slot; `page=mods` captures the mod manager. `music_filter=N` (the output
 the autotest measures is filtered; it reports `audio_treble`, the RMS of
 sample-to-sample steps), `ui_scale=N` and `reduce_motion=1` set those
 options. With `boot=app` the process's own arguments apply, e.g.
-`--editor --save <file>`.
+`--editor --save <file>`, and `options.ini` is read, with the spec's option
+keys applied over it. `realtime=1` paces iterations at the logic clock,
+as the app's wall-clock loop does (two stations started together then keep
+pace like two players; otherwise iterations run as fast as they render). A
+run with a `script` takes live input like the app: hotkeys, the speed key
+(`1`) and fast-forward run that many guest frames per iteration (Uncapped:
+16), so `guest_frame` in the summary shows the speed. A `script` or spec
+longer than its buffer is refused, never cut short.
+
+`tests/mac/feature_matrix.py` drives the packaged app through every
+player-facing feature this way (one autotest per step, a real window) and
+leaves screenshots and logs in `build/evidence/`; `docs/evidence/README.md`
+lists them.
 
 A press schedule is steps separated by `;` or newlines (`#` comments in files):
 `F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N

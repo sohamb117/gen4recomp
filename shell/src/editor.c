@@ -1646,8 +1646,18 @@ static void draw_rows(np_app *app, np_editor *e, const np_page_frame *f, float y
     if (e->sel >= e->scroll + rows)
         e->scroll = e->sel - rows + 1;
     e->scroll = SDL_clamp(e->scroll, 0, SDL_max(0, e->nrows - rows));
+    /* The value column starts after the longest labelled row that has a
+     * value (at least at 45% of the panel, leaving values 20 columns);
+     * rows without a value (actions) use the whole width for the label. */
     float x = f->panel.x + 2 * f->cw, vx = f->panel.x + f->panel.w * 0.45f;
+    size_t longest = 0;
+    for (int i = 0; i < e->nrows; i++)
+        if (e->rows[i].value[0])
+            longest = SDL_max(longest, SDL_strlen(e->rows[i].label));
+    vx = SDL_max(vx, x + (float)(longest + 2) * f->cw);
+    vx = SDL_max(SDL_min(vx, f->panel.x + f->panel.w - 22 * f->cw), x + 6 * f->cw);
     int vcols = (int)((f->panel.x + f->panel.w - 2 * f->cw - vx) / f->cw);
+    int full_cols = (int)((f->panel.x + f->panel.w - 2 * f->cw - x) / f->cw);
     for (int i = 0; i < rows && e->scroll + i < e->nrows; i++) {
         int idx = e->scroll + i;
         const row *r = &e->rows[idx];
@@ -1657,7 +1667,7 @@ static void draw_rows(np_app *app, np_editor *e, const np_page_frame *f, float y
         if (on)
             np_ui_fill(app, rr, hilite);
         SDL_Color lc = r->kind == RK_INFO ? dim : on ? accent : white;
-        np_ui_text_clip(app, x, y, f->s, r->label, (int)((vx - x) / f->cw) - 1, lc);
+        np_ui_text_clip(app, x, y, f->s, r->label, r->value[0] ? (int)((vx - x) / f->cw) - 1 : full_cols, lc);
         if (r->value[0]) {
             char shown[96];
             SDL_snprintf(shown, sizeof shown, on && r->kind == RK_TOGGLE ? "< %s >" : "%s", r->value);

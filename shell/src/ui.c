@@ -858,7 +858,11 @@ static void draw_options(np_app *app)
         char v[64], shown[80];
         opt_value(app, item, v, sizeof v);
         if (*v) {
-            SDL_snprintf(shown, sizeof shown, selected ? "< %s >" : "  %s", v);
+            /* Arrows only where Left/Right change the value: not on the
+             * typed (Enter) and read-only rows. */
+            int arrows = selected && item != OPT_LAN_PEER && item != OPT_LAN_RELAY && item != OPT_LAN_PIN &&
+                         item != OPT_LAN_STATUS && item != OPT_SYNC_NOW && item != OPT_SYNC_STATUS;
+            SDL_snprintf(shown, sizeof shown, arrows ? "< %s >" : "  %s", v);
             np_ui_text_clip(app, vx, y, f.s, shown, vcols, selected ? accent : dim);
         }
         np_ui_hit(app, row, i);

@@ -1282,18 +1282,35 @@ static uint16_t autotest_pressed(const np_autotest *t, np_input *in)
  *   [,clock=real (device RTC; default fixed, so runs are deterministic)]
  *   [,slot=NAME (save slot for rom=/synthetic boots with storage=1)]
  *   [,script=F:kind:args;... (synthetic events, see autotest_script)]"
- * Returns -1 on a malformed value.
+ * Returns -1 on a malformed value. With `options_only`, applies just the
+ * keys that set options (layout=, fx1=, lan=, ...): boot=app runs call it
+ * again after loading options.ini, so the spec's options win over the file.
  */
-static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, int *win_h)
+static int is_option_key(const char *k)
+{
+    static const char *const keys[] = {"layout", "rotation", "swap", "scale", "filter", "fx1", "fx2", "curvature",
+                                       "perf", "lan", "peer", "station", "render_scale", "widescreen", "zoom",
+                                       "tilt", "instant_text", "fix_bugs", "rewind_seconds", "battle_layout",
+                                       "music_filter", "ui_scale", "reduce_motion", "skin", "controls", "clock"};
+    for (size_t i = 0; i < SDL_arraysize(keys); i++)
+        if (!SDL_strcmp(k, keys[i]))
+            return 1;
+    return 0;
+}
+
+static int parse_autotest(np_app *app, const char *spec, int options_only, int *game, int *win_w, int *win_h)
 {
     static const char *const layouts[NP_LAYOUT_COUNT] = {"vertical", "horizontal", "hybrid", "top", "bottom"};
-    static char buf[8192];
-    SDL_strlcpy(buf, spec, sizeof buf);
+    static char buf[16384];
+    if (SDL_strlcpy(buf, spec, sizeof buf) >= sizeof buf)
+        return -1;
     np_autotest *t = &app->autotest;
-    t->frames = 120;
     app->opt.real_clock = 0;
-    SDL_strlcpy(t->slot, "Autotest", sizeof t->slot);
-    *game = NP_GAME_PLATINUM;
+    if (!options_only) {
+        t->frames = 120;
+        SDL_strlcpy(t->slot, "Autotest", sizeof t->slot);
+        *game = NP_GAME_PLATINUM;
+    }
     char *save = NULL;
     for (char *kv = SDL_strtok_r(buf, ",", &save); kv; kv = SDL_strtok_r(NULL, ",", &save)) {
         char *v = SDL_strchr(kv, '=');
@@ -1302,6 +1319,8 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
         if (!v)
             return -1;
         *v++ = '\0';
+        if (options_only && !is_option_key(kv))
+            continue;
         if (!SDL_strcmp(kv, "frames"))
             t->frames = SDL_atoi(v);
         else if (!SDL_strcmp(kv, "png"))
@@ -1407,13 +1426,18 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.touch_controls = SDL_atoi(v) ? NP_TOUCH_ON : NP_TOUCH_OFF;
         else if (!SDL_strcmp(kv, "storage"))
             t->storage = SDL_atoi(v) != 0;
-        else if (!SDL_strcmp(kv, "script"))
-            SDL_strlcpy(t->script, v, sizeof t->script);
-        else if (!SDL_strcmp(kv, "press")) {
+        else if (!SDL_strcmp(kv, "script")) {
+            if (SDL_strlcpy(t->script, v, sizeof t->script) >= sizeof t->script) {
+                SDL_Log("autotest: script longer than %d bytes", (int)sizeof t->script - 1);
+                return -1;
+            }
+        } else if (!SDL_strcmp(kv, "press")) {
             if (autotest_parse_press(t, v))
                 return -1;
         } else if (!SDL_strcmp(kv, "shots"))
             t->shot_every = SDL_atoi(v);
+        else if (!SDL_strcmp(kv, "realtime"))
+            t->realtime = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "clock"))
             app->opt.real_clock = !SDL_strcmp(v, "real");
         else if (!SDL_strcmp(kv, "slot")) {
@@ -1629,16 +1653,22 @@ static void autotest_script(np_app *app)
     }
 }
 
-/* One guest frame per iteration, with the fixed, pressed and scripted input. */
+/* One guest frame per iteration, with the fixed, pressed and scripted input.
+ * A scripted (live input) run also follows the speed and fast-forward keys:
+ * an iteration then runs as many guest frames as one display frame would at
+ * that speed (Uncapped: 16), so speed changes show in guest_frame. */
 static int autotest_frame(np_app *app)
 {
     np_autotest *t = &app->autotest;
     np_input in = t->input;
     in.keys |= autotest_pressed(t, &in);
+    int frames = 1;
     if (t->script[0]) {
-        int ff;
         np_input live = {0};
-        in.keys |= np_input_poll_keys(app, &ff);
+        in.keys |= np_input_poll_keys(app, &app->ff_hold);
+        frames = np_app_speed(app);
+        if (!frames)
+            frames = 16;
         np_input_stylus(app, &live);
         if (live.touch) {
             in.touch = 1;
@@ -1651,6 +1681,7 @@ static int autotest_frame(np_app *app)
     else if (!t->script[0])
         app->rewind_hold = 0;
     if (app->rewind_hold) {
+        frames = 1;
         int r = np_session_rewind_step(app);
         if (r == 1)
             return 0; /* still showing the previous step */
@@ -1659,8 +1690,9 @@ static int autotest_frame(np_app *app)
         else
             app->rewind_hold = 0; /* history exhausted: play on */
     }
-    if (run_one(app, &in))
-        return -1;
+    for (int i = 0; i < frames; i++)
+        if (run_one(app, &in))
+            return -1;
     if (t->rewind_frames && (t->ran == t->rewind_from - 1 || t->ran == t->rewind_from + t->rewind_frames))
         SDL_Log("autotest: frame %d rewind depth %d, %zu KB of history", t->ran, np_session_rewind_depth(app),
                 np_session_rewind_bytes(app) / 1024);
@@ -1689,8 +1721,12 @@ static SDL_AppResult autotest_iterate(np_app *app)
     np_autotest *t = &app->autotest;
     autotest_script(app);
     process_pending(app);
-    if (app->core && app->page == NP_PAGE_NONE && autotest_frame(app) && t->boot != NP_AT_APP)
-        return SDL_APP_FAILURE;
+    if (app->core && app->page == NP_PAGE_NONE) {
+        if (autotest_frame(app) && t->boot != NP_AT_APP)
+            return SDL_APP_FAILURE;
+    } else if (app->net) {
+        np_net_poll(app->net); /* menus and the launcher keep answering discovery, as in SDL_AppIterate */
+    }
     t->ran++;
     draw(app);
     if (t->shot_every > 0 && t->ran % t->shot_every == 0 && t->ran < t->frames) {
@@ -1704,6 +1740,16 @@ static SDL_AppResult autotest_iterate(np_app *app)
     }
     if (t->ran < t->frames) {
         SDL_RenderPresent(app->renderer);
+        if (t->realtime) {
+            /* As the app's wall-clock accumulator: one iteration per frame
+             * period (two scripted stations then keep pace like players). */
+            uint64_t period = (uint64_t)(1e9 / (app->opt.logic_clock_60 ? 60.0 : DS_FRAME_HZ)), now = SDL_GetTicksNS();
+            if (!t->next_ns || now > t->next_ns + 4 * period)
+                t->next_ns = now;
+            t->next_ns += period;
+            if (t->next_ns > now)
+                SDL_DelayNS(t->next_ns - now);
+        }
         return SDL_APP_CONTINUE;
     }
     uint64_t guest_frame = app->have_frame ? app->frame.number : 0;
@@ -1802,7 +1848,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     np_autotest *t = &app->autotest;
     if (spec && *spec) {
         t->active = 1;
-        if (parse_autotest(app, spec, &test_game, &win_w, &win_h)) {
+        if (parse_autotest(app, spec, 0, &test_game, &win_w, &win_h)) {
             SDL_Log("NP_AUTOTEST: cannot parse \"%s\"", spec);
             return SDL_APP_FAILURE;
         }
@@ -1827,6 +1873,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
     if ((!t->active || t->boot == NP_AT_APP) && np_options_load(&app->opt, app->options_path))
         SDL_Log("could not read %s; using defaults", app->options_path);
+    if (t->active && t->boot == NP_AT_APP)
+        parse_autotest(app, spec, 1, &test_game, &win_w, &win_h); /* the spec's options over the file's */
     if (t->sync_folder[0])
         SDL_strlcpy(app->opt.sync_folder, t->sync_folder, sizeof app->opt.sync_folder);
     if (t->gba_rom[0])

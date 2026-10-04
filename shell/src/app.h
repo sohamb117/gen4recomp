@@ -142,7 +142,7 @@ typedef struct np_autotest {
     int page; /* captured view: 0 game, -1 launcher, or an np_page over the game */
     int storage; /* use the real (portable) user-data root */
     char imports[4096]; /* '\n'-separated ROMs to run through the importer first */
-    char script[2048];  /* "frame:kind:args;..." synthetic events */
+    char script[6144];  /* "frame:kind:args;..." synthetic events */
     np_press presses[NP_AUTOTEST_MAX_PRESS]; /* press= schedule */
     int npress;
     int shot_every; /* shots=N: also write <png>-<iteration>.png every N iterations */
@@ -151,6 +151,8 @@ typedef struct np_autotest {
     int rewind_from, rewind_frames;  /* rewind=F+N: hold rewind for N iterations from F */
     char sync_folder[1024];          /* sync=<folder>: folder sync target */
     char gba_rom[1024], gba_save[1024]; /* gba=, gbasave=: the GBA slot */
+    int realtime;      /* realtime=1: pace iterations at the logic clock, like the app */
+    uint64_t next_ns;  /* realtime: when the next iteration is due */
 } np_autotest;
 
 typedef struct np_app {
