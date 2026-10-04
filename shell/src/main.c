@@ -23,6 +23,7 @@
 #include <math.h>
 
 #include "app.h"
+#include "card.h"
 #include "fx.h"
 #include "net.h"
 #include "png.h"
@@ -541,6 +542,17 @@ void np_app_open_gift_import_dialog(np_app *app)
         SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
 }
 
+void np_app_open_card_export_dialog(np_app *app, int kind)
+{
+    static const SDL_DialogFileFilter filters[] = {{"PNG image (*.png)", "png"}};
+    app->dialog_kind = NP_PENDING_CARD_EXPORT;
+    app->pending_card = kind;
+    char name[64];
+    SDL_snprintf(name, sizeof name, "%s.png", kind == NP_CARD_DIPLOMA ? "Pokedex Diploma" : "Trainer Card");
+    if (!autotest_dialog(app, "card export"))
+        SDL_ShowSaveFileDialog(dialog_done, app, app->window, filters, 1, name);
+}
+
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot)
 {
     static const SDL_DialogFileFilter filters[] = {{"Raw save (*.sav)", "sav"}};
@@ -619,6 +631,10 @@ static void process_pending(np_app *app)
         else
             np_app_toast(app, "Exported \"%s\" to %s", app->pending_slot, base_name(path));
         SDL_Log("save export %s: %s", path, app->toast);
+        break;
+    case NP_PENDING_CARD_EXPORT:
+        if (app->editor)
+            np_editor_export_card(app, app->pending_card, path);
         break;
     case NP_PENDING_GIFT_IMPORT:
         if (app->editor)

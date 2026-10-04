@@ -28,7 +28,9 @@
 
 #include <math.h>
 
+#include "card.h"
 #include "ndsdata/ndsdata.h"
+#include "png.h"
 #include "romdb.h"
 #include "save4/save4.h"
 #include "undo.h"
@@ -55,6 +57,7 @@ typedef enum field {
     F_TR_HOURS,
     F_TR_MINUTES,
     F_TR_SECONDS,
+    F_TR_EXPORT, /* arg: np_card_kind */
     F_PARTY_MON,
     F_MON_SPECIES,
     F_MON_NICK,
@@ -534,6 +537,8 @@ static void build_trainer(np_editor *e)
     SDL_snprintf(add_row(e, F_TR_HOURS, 0, RK_NUMBER, "Play time: hours")->value, 72, "%u", t.play_hours);
     SDL_snprintf(add_row(e, F_TR_MINUTES, 0, RK_NUMBER, "Play time: minutes")->value, 72, "%u", t.play_minutes);
     SDL_snprintf(add_row(e, F_TR_SECONDS, 0, RK_NUMBER, "Play time: seconds")->value, 72, "%u", t.play_seconds);
+    add_row(e, F_TR_EXPORT, NP_CARD_TRAINER, RK_ACTION, "Export Trainer Card PNG...");
+    add_row(e, F_TR_EXPORT, NP_CARD_DIPLOMA, RK_ACTION, "Export Pokedex diploma PNG...");
 }
 
 static void mon_summary(const np_editor *e, const pkm4 *p, char *buf, size_t n)
@@ -741,6 +746,84 @@ void np_editor_import_gift(np_app *app, const char *path)
         np_app_toast(app, "Not a gift file: %s", why);
     SDL_Log("gift import %s: %s", path, app->toast);
     SDL_free(data);
+}
+
+static int write_sink(void *user, const void *data, size_t len)
+{
+    return SDL_WriteIO((SDL_IOStream *)user, data, len) == len ? 0 : -1;
+}
+
+/* Fills the card from the editor's current (possibly unsaved) data. */
+static void card_info(const np_editor *e, np_card_info *ci)
+{
+    SDL_zerop(ci);
+    ci->game = np_game_title(e->game);
+    save4_trainer t;
+    if (save4_get_trainer(&e->s, &t) == SAVE4_OK) {
+        SDL_strlcpy(ci->name, t.name, sizeof ci->name);
+        ci->tid = t.tid;
+        ci->female = t.gender == 1;
+        ci->money = t.money;
+        ci->badges = t.badges;
+        ci->play_hours = t.play_hours;
+        ci->play_minutes = t.play_minutes;
+        ci->national_dex = t.has_national_dex;
+    }
+    for (uint16_t sp = 1; sp <= 493; sp++) {
+        bool seen = false, caught = false;
+        if (save4_dex_get(&e->s, sp, &seen, &caught) == SAVE4_OK) {
+            ci->dex_seen += seen;
+            ci->dex_caught += caught;
+        }
+    }
+    int n = save4_party_count(&e->s);
+    for (int i = 0; i < n && ci->party_count < NP_CARD_PARTY_MAX; i++) {
+        pkm4 p;
+        if (save4_get_party(&e->s, i, &p) != SAVE4_OK)
+            continue;
+        pkm4_info in;
+        pkm4_info_get(&p, &in);
+        int k = ci->party_count++;
+        if (in.is_egg) {
+            SDL_strlcpy(ci->party[k], "Egg", sizeof ci->party[k]);
+            continue;
+        }
+        if (in.has_nickname)
+            SDL_strlcpy(ci->party[k], in.nickname, sizeof ci->party[k]);
+        else
+            name_of(e, ND_TEXT_SPECIES, in.species, ci->party[k], sizeof ci->party[k]);
+        ci->party_level[k] = in.level;
+    }
+    SDL_Time now;
+    SDL_DateTime dt;
+    if (SDL_GetCurrentTime(&now) && SDL_TimeToDateTime(now, &dt, true)) {
+        ci->year = dt.year;
+        ci->month = dt.month;
+        ci->day = dt.day;
+    }
+}
+
+void np_editor_export_card(np_app *app, int kind, const char *path)
+{
+    np_editor *e = app->editor;
+    if (!e)
+        return;
+    np_card_info ci;
+    card_info(e, &ci);
+    uint32_t *px = SDL_malloc(sizeof *px * NP_CARD_W * NP_CARD_H);
+    SDL_IOStream *io = px ? SDL_IOFromFile(path, "wb") : NULL;
+    int ok = 0;
+    if (io) {
+        np_card_render((np_card_kind)kind, &ci, px);
+        ok = np_png_encode(write_sink, io, px, NP_CARD_W, NP_CARD_H, NP_CARD_W) == 0;
+        ok &= SDL_CloseIO(io);
+    }
+    SDL_free(px);
+    if (ok)
+        np_app_toast(app, "Saved %s", path);
+    else
+        np_app_toast(app, "Could not write %s", path);
+    SDL_Log("card export %s: %s", path, app->toast);
 }
 
 static void build_rows(np_editor *e)
@@ -1007,6 +1090,7 @@ static void activate_row(np_app *app, np_editor *e, int dir)
     case F_TR_HOURS: open_number(e, r->f, 0, t.play_hours, 0, 999); break;
     case F_TR_MINUTES: open_number(e, r->f, 0, t.play_minutes, 0, 59); break;
     case F_TR_SECONDS: open_number(e, r->f, 0, t.play_seconds, 0, 59); break;
+    case F_TR_EXPORT: np_app_open_card_export_dialog(app, r->arg); break;
     case F_PARTY_MON: {
         static const char *const labels[2] = {"Edit...", "Cancel"};
         static const int ids[2] = {MA_EDIT, MA_CANCEL};

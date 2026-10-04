@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "card.h"
 #include "launch.h"
 #include "layout.h"
 #include "png.h"
@@ -493,6 +494,40 @@ static void test_scale2x(void)
     CHECK(all, "scale2x flat");
 }
 
+/* Both pages fill the whole image with their own colours, differ, and
+ * change when the data shown on them changes. */
+static void test_card(void)
+{
+    static uint32_t a[NP_CARD_W * NP_CARD_H], b[NP_CARD_W * NP_CARD_H];
+    np_card_info in = {.game = "Platinum", .name = "NATIVE", .tid = 3452, .money = 3000, .badges = 0x05,
+                       .play_hours = 12, .play_minutes = 34, .dex_seen = 40, .dex_caught = 25, .party_count = 2,
+                       .party = {"Turtwig", "Pok\xc3\xa9mon"}, .party_level = {14, 5}, .year = 2026, .month = 10,
+                       .day = 4};
+    for (int kind = NP_CARD_TRAINER; kind <= NP_CARD_DIPLOMA; kind++) {
+        memset(a, 0xAB, sizeof a);
+        np_card_render((np_card_kind)kind, &in, a);
+        int untouched = 0, colors = 0;
+        uint32_t seen[64];
+        for (size_t i = 0; i < NP_CARD_W * NP_CARD_H; i++) {
+            untouched += (a[i] & 0xFF000000u) != 0;
+            int known = 0;
+            for (int k = 0; k < colors; k++)
+                known |= seen[k] == a[i];
+            if (!known && colors < 64)
+                seen[colors++] = a[i];
+        }
+        CHECK(!untouched, "card %d: %d pixels not drawn", kind, untouched);
+        CHECK(colors >= 6, "card %d: only %d colours", kind, colors);
+        np_card_info more = in;
+        more.dex_caught = 26;
+        np_card_render((np_card_kind)kind, &more, b);
+        CHECK(memcmp(a, b, sizeof a) != 0, "card %d ignores the caught count", kind);
+    }
+    np_card_render(NP_CARD_DIPLOMA, &in, b);
+    np_card_render(NP_CARD_TRAINER, &in, a);
+    CHECK(memcmp(a, b, sizeof a) != 0, "trainer card and diploma differ");
+}
+
 int main(void)
 {
     test_sha1();
@@ -505,6 +540,7 @@ int main(void)
     test_launch();
     test_undo();
     test_scale2x();
+    test_card();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

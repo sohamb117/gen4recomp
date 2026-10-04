@@ -107,6 +107,12 @@ ourselves for the Member Card (Darkrai), Oak's Letter (Shaymin), Azure Flute
 hands over the item. *Import .pgt / .pcd...* (or dropping such a file on the
 editor) adds any gift file you own. No event files ship with nativeplat.
 
+*Export Trainer Card PNG...* and *Export Pokedex diploma PNG...* at the end
+of the Trainer tab write a 768x576 image of the open save (name, ID, money,
+Pokedex counts, play time, badges, party; the diploma shows the caught count
+out of 493 and today's date). Both layouts are nativeplat's own, drawn with
+the shell's bitmap font (`src/card.c`, no game graphics).
+
 ## Display effects and performance
 
 *Options > Effect 1 / Effect 2* chain two effects, each with an intensity:

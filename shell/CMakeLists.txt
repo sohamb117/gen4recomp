@@ -42,6 +42,7 @@ endif()
 
 # SDL-free pieces, shared with the unit tests and the stub core.
 add_library(np_shell_common STATIC
+  src/card.c
   src/font8x8.c
   src/layout.c
   src/launch.c
