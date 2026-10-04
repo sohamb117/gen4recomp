@@ -1,0 +1,65 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/ctrdg/src/ctrdg_flash_MX29L010.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/ctrdg/src/ctrdg_flash_MX29L010.c
+@@ -1,5 +1,9 @@
+ #include <nitro.h>
+ 
++/* pc: the AGB backup bus is a device model, not memory (pc/src/pc_agb_slot.c). */
++void pc_agb_bus_write8(volatile void *adr, u8 v);
++#define AGB_W8(adr, v) pc_agb_bus_write8((volatile void *)(adr), (u8)(v))
++
+ extern u16 CTRDGi_PollingSR1MCOMMON(u16 phase, u8 *adr, u16 lastData);
+ 
+ u16 CTRDGi_EraseFlashChipMX(void);
+@@ -77,12 +81,12 @@
+ 
+ 	ctrdgi_backup_irq = OS_DisableIrq();
+ 
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xaa;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR2 = 0x55;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0x80;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xaa;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR2 = 0x55;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0x10;
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xaa);
++	AGB_W8(CTRDG_BACKUP_COM_ADR2, 0x55);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0x80);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xaa);
++	AGB_W8(CTRDG_BACKUP_COM_ADR2, 0x55);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0x10);
+ 
+ 	(void)OS_RestoreIrq(ctrdgi_backup_irq);
+ 
+@@ -120,12 +124,12 @@
+ 	adr = (u8 *)(CTRDG_AGB_FLASH_ADR + (secNo << AgbFlash->sector.shift));
+ 	ctrdgi_backup_irq = OS_DisableIrq();
+ 
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xaa;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR2 = 0x55;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0x80;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xaa;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR2 = 0x55;
+-	*(vu8 *)adr = 0x30;
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xaa);
++	AGB_W8(CTRDG_BACKUP_COM_ADR2, 0x55);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0x80);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xaa);
++	AGB_W8(CTRDG_BACKUP_COM_ADR2, 0x55);
++	AGB_W8(adr, 0x30);
+ 
+ 	(void)OS_RestoreIrq(ctrdgi_backup_irq);
+ 
+@@ -146,10 +150,10 @@
+ {
+ 	u16 result;
+ 
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xaa;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR2 = 0x55;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xa0;
+-	*dst = *src;
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xaa);
++	AGB_W8(CTRDG_BACKUP_COM_ADR2, 0x55);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xa0);
++	AGB_W8(dst, *src);
+ 
+ 	result = CTRDGi_PollingSR(CTRDG_BACKUP_PHASE_PROGRAM, dst, *src);
+ 

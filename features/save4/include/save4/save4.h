@@ -351,6 +351,11 @@ save4_status save4_mg_get_unlocked(const save4 *s, bool *unlocked);
 save4_status save4_mg_set_unlocked(save4 *s, bool unlocked);
 save4_status save4_dex_get_obtained(const save4 *s, bool *obtained);
 save4_status save4_dex_set_obtained(save4 *s, bool obtained);
+/* The National Pokédex (Pokedex.nationalDexObtained; the setter also sets
+ * TrainerInfo.hasNationalDex as the game's award does). The main menu offers
+ * Pal Park migration from a GBA cartridge only once it is set. */
+save4_status save4_dex_get_national(const save4 *s, bool *obtained);
+save4_status save4_dex_set_national(save4 *s, bool obtained);
 
 #ifdef __cplusplus
 }

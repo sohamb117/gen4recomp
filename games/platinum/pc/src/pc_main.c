@@ -69,8 +69,9 @@ extern void NitroMain(void);
  * armrec_mem_init() does not map it (no DS region does on that side of
  * 0x08000000), but CTRDG_Init probes it unconditionally at boot. Zero-filled
  * backing is the faithful no-cartridge model: the header, logo and module-ID
- * compares all fail over zeros, so CTRDG reports nothing inserted, which on
- * this machine is the truth. */
+ * compares all fail over zeros, so CTRDG reports nothing inserted. When the
+ * runtime names a cartridge, pc_agb_slot_insert() puts it in the window
+ * (pc_agb_slot.c: the ROM, its backup chip, the ARM7's detection). */
 static int map_agb_slot(void)
 {
     void *want = (void *)0x08000000u;
@@ -93,6 +94,10 @@ static int map_agb_slot(void)
     if (got != want) {
         fprintf(stderr, "pokeplatinum-pc: cannot map the GBA slot window\n");
         return -1;
+    }
+    {
+        extern void pc_agb_slot_insert(void);
+        pc_agb_slot_insert();
     }
     return 0;
 }

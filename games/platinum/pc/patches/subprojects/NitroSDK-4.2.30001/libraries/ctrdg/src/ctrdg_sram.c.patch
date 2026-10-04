@@ -1,0 +1,39 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/ctrdg/src/ctrdg_sram.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/ctrdg/src/ctrdg_sram.c
+@@ -1,5 +1,9 @@
+ #include <nitro.h>
+ 
++/* pc: the AGB backup bus is a device model, not memory (pc/src/pc_agb_slot.c). */
++u8 pc_agb_bus_read8(const volatile void *adr);
++void pc_agb_bus_write8(volatile void *adr, u8 v);
++
+ u32 CTRDGi_ReadAgbSramCore(CTRDGTaskInfo *arg);
+ u32 CTRDGi_WriteAgbSramCore(CTRDGTaskInfo *arg);
+ u32 CTRDGi_VerifyAgbSramCore(CTRDGTaskInfo *arg);
+@@ -28,7 +32,7 @@
+ 	dst_pt = (u8 *)dst;
+ 
+ 	while (size--) {
+-		*dst_pt++ = *src_pt++;
++		*dst_pt++ = pc_agb_bus_read8(src_pt++);
+ 	}
+ 
+ 	MI_SetCartridgeRamCycle(ram_cycle);
+@@ -55,7 +59,7 @@
+ 	dst_pt = (u8 *)dst;
+ 
+ 	while (size--) {
+-		*dst_pt++ = *src_pt++;
++		pc_agb_bus_write8(dst_pt++, *src_pt++);
+ 	}
+ 
+ 	MI_SetCartridgeRamCycle(ram_cycle);
+@@ -84,7 +88,7 @@
+ 	src_pt = (u8 *)src;
+ 
+ 	while (size--) {
+-		if (*tgt_pt++ != *src_pt++) {
++		if (pc_agb_bus_read8(tgt_pt++) != *src_pt++) {
+ 			result = (u32)tgt_pt - 1;
+ 			break;
+ 		}

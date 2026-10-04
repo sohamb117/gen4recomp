@@ -13,6 +13,7 @@
  *   np_save4 set-flag <save> <id|FLAG_NAME> <0|1>
  *   np_save4 set-var <save> <id|VAR_NAME> <value>
  *   np_save4 set-dex <save> <species> none|seen|caught
+ *   np_save4 set-national-dex <save> <0|1>   (Platinum)
  *   np_save4 set-box-name <save> <box 1-18> <name>
  *
  * Edits write back in place after copying the original to <save>.bak, or to
@@ -51,10 +52,11 @@ static int usage(void)
             "  %s set-flag <save> <id|FLAG_NAME> <0|1>\n"
             "  %s set-var <save> <id|VAR_NAME> <value>\n"
             "  %s set-dex <save> <species> none|seen|caught\n"
+            "  %s set-national-dex <save> <0|1>\n"
             "  %s set-box-name <save> <box 1-18> <name>\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
-            prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog);
+            prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog);
     return EXIT_USAGE;
 }
 
@@ -500,6 +502,10 @@ static int cmd_edit(int argc, char **argv)
             else
                 bad = 1;
         }
+    } else if (!strcmp(cmd, "set-national-dex") && na == 1) {
+        bad = parse_ul(a[0], 1, &v1);
+        if (!bad)
+            st = save4_dex_set_national(&s, v1 != 0);
     } else if (!strcmp(cmd, "set-box-name") && na == 2) {
         bad = parse_ul(a[0], SAVE4_BOX_COUNT, &v1) || v1 == 0;
         if (!bad)

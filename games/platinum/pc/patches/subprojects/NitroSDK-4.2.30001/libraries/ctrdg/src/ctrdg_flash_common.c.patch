@@ -1,0 +1,125 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/ctrdg/src/ctrdg_flash_common.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/ctrdg/src/ctrdg_flash_common.c
+@@ -1,5 +1,12 @@
+ #include <nitro.h>
+ 
++/* pc: the AGB backup bus is a device model, not memory, and its commands
++ * complete at the write that issues them (pc/src/pc_agb_slot.c). */
++u8 pc_agb_bus_read8(const volatile void *adr);
++void pc_agb_bus_write8(volatile void *adr, u8 v);
++BOOL pc_agb_bus_wait_elapsed(void);
++#define AGB_W8(adr, v) pc_agb_bus_write8((volatile void *)(adr), (u8)(v))
++
+ u32 CTRDGi_ReadAgbFlashCore(CTRDGTaskInfo *arg);
+ u32 CTRDGi_VerifyAgbFlashCore(CTRDGTaskInfo *arg);
+ u32 CTRDGi_WriteAndVerifyAgbFlashSectorCore(CTRDGTaskInfo *arg);
+@@ -27,10 +34,10 @@
+ 
+ void CTRDGi_SetFlashBankMx (u16 bank)
+ {
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xaa;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR2 = 0x55;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xb0;
+-	*(vu8 *)CTRDG_AGB_FLASH_ADR = (u8)bank;
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xaa);
++	AGB_W8(CTRDG_BACKUP_COM_ADR2, 0x55);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xb0);
++	AGB_W8(CTRDG_AGB_FLASH_ADR, bank);
+ }
+ 
+ u16 CTRDGi_ReadFlashID (void)
+@@ -39,9 +46,9 @@
+ 
+ 	ctrdgi_backup_irq = OS_DisableIrq();
+ 
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xaa;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR2 = 0x55;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0x90;
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xaa);
++	AGB_W8(CTRDG_BACKUP_COM_ADR2, 0x55);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0x90);
+ 
+ 	(void)OS_RestoreIrq(ctrdgi_backup_irq);
+ 
+@@ -55,11 +62,11 @@
+ 
+ 	ctrdgi_backup_irq = OS_DisableIrq();
+ 
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xaa;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR2 = 0x55;
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xf0;
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xaa);
++	AGB_W8(CTRDG_BACKUP_COM_ADR2, 0x55);
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xf0);
+ 
+-	*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xf0;
++	AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xf0);
+ 
+ 	(void)OS_RestoreIrq(ctrdgi_backup_irq);
+ 
+@@ -83,6 +90,11 @@
+ {
+ 	OSTick current_tick, process_tick, process_time;
+ 
++	if (pc_agb_bus_wait_elapsed()) {
++		ctrdgi_timeoutFlag = TRUE;
++		return;
++	}
++
+ 	current_tick = OS_GetTick();
+ 	process_tick = current_tick - start_tick;
+ 	process_time = OS_TicksToMilliSeconds(process_tick);
+@@ -93,7 +105,7 @@
+ 
+ u8 CTRDGi_ReadSrFunc (u8 *adr)
+ {
+-	return *adr;
++	return pc_agb_bus_read8(adr);
+ }
+ 
+ u16 CTRDGi_PollingSR512kCOMMON (u16 phase, u8 *adr, u16 lastData)
+@@ -114,7 +126,7 @@
+ 				break;
+ 			} else {
+ 				if (AgbFlash->makerID == 0xc2) {
+-					*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xf0;
++					AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xf0);
+ 				}
+ 				result = (u16)(CTRDG_BACKUP_RESULT_ERROR | CTRDG_BACKUP_RESULT_TIMEOUT | phase);
+ 				break;
+@@ -145,7 +157,7 @@
+ 				if (CTRDGi_ReadSrFunc(adr) == lastData) {
+ 					break;
+ 				} else {
+-					*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xf0;
++					AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xf0);
+ 					result =
+ 						(u16)(CTRDG_BACKUP_RESULT_ERROR | CTRDG_BACKUP_RESULT_Q5TIMEOUT | phase);
+ 					break;
+@@ -156,7 +168,7 @@
+ 			if (CTRDGi_ReadSrFunc(adr) == lastData) {
+ 				break;
+ 			} else {
+-				*(vu8 *)CTRDG_BACKUP_COM_ADR1 = 0xf0;
++				AGB_W8(CTRDG_BACKUP_COM_ADR1, 0xf0);
+ 				result = (u16)(CTRDG_BACKUP_RESULT_ERROR | CTRDG_BACKUP_RESULT_TIMEOUT | phase);
+ 				break;
+ 			}
+@@ -191,7 +203,7 @@
+ 	src = (u8 *)(CTRDG_AGB_FLASH_ADR + (sec_num << AgbFlash->sector.shift) + offset);
+ 
+ 	while (size--)
+-		*dst++ = *src++;
++		*dst++ = pc_agb_bus_read8(src++);
+ 
+ 	MI_SetCartridgeRamCycle(ram_cycle);
+ 	(void)OS_UnlockCartridge(ctrdgi_flash_lock_id);
+@@ -202,7 +214,7 @@
+ static u32 CTRDGi_VerifyFlashSectorCore (u8 *src, u8 *tgt, u32 size)
+ {
+ 	while (size--) {
+-		if (*tgt++ != *src++)
++		if (pc_agb_bus_read8(tgt++) != *src++)
+ 			return (u32)tgt - 1;
+ 	}
+ 

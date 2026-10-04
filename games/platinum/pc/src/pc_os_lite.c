@@ -637,10 +637,13 @@ void OS_Halt(void)
 
     /* The save chip, which writes its image out once a save's burst of card
      * commands has settled rather than on every one of them. Here because it
-     * is the port's one guest-frame boundary and both hosts reach it. */
+     * is the port's one guest-frame boundary and both hosts reach it. The
+     * GBA slot's backup (pc_agb_slot.c) settles the same way. */
     {
         extern void pc_card_step(void);
+        extern void pc_agb_slot_step(void);
         pc_card_step();
+        pc_agb_slot_step();
     }
 
 #if !defined(PC_GAME_DP)

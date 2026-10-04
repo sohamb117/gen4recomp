@@ -83,7 +83,7 @@ started · `n/a` no DS equivalent (reason given).
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
 | Gen 1/2/3 save import/export | DS `.sav` import/export (emulator-compatible raw image) | planned |
-| Cross-generation transfer | Pal Park: a Gen 3 `.sav` + ROM header presented in the emulated GBA slot | planned |
+| Cross-generation transfer | Pal Park: a Gen 3 `.sav` + ROM header presented in the emulated GBA slot | wip (core done for Platinum: `np_host.gba_rom_*`/`gba_save_*`, the ROM in the slot window, a 128 KiB flash (MX29L010 ID) / 32 KiB SRAM chip model behind the SDK's CTRDG bus accesses (`pc/src/pc_agb_slot.c`, `pc/patches/.../ctrdg/src`), save stored once writes settle; verified with pret/pokeemerald and a generated Emerald save (`tools/gba/gen3_save.py`): MIGRATE FROM EMERALD on the main menu, six Pokémon migrated, both saves written back and valid; UI: shell; D/P: needs the same CTRDG patches on its SDK) |
 
 ## Link and online
 

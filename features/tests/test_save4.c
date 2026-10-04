@@ -316,11 +316,31 @@ static void test_mystery(void)
     CHECK(save4_dex_set_obtained(&s, true) == SAVE4_OK);
     CHECK(save4_dex_get_obtained(&s, &on) == SAVE4_OK && on);
     CHECK(save4_revalidate(&s) == SAVE4_OK);
+
+    /* National Dex: Pokedex.nationalDexObtained (dex + 0x31B) and
+     * TrainerInfo.hasNationalDex (story flags bit 1), as the game awards it. */
+    const uint8_t *gen = im + save4_block_base(&s, SAVE4_BLOCK_GENERAL);
+    CHECK(save4_dex_set_national(&s, false) == SAVE4_OK);
+    CHECK(save4_dex_get_national(&s, &on) == SAVE4_OK && !on);
+    CHECK_EQ_INT((gen[0x64 + 0x21] >> 1) & 1, 0);
+    CHECK(save4_dex_set_national(&s, true) == SAVE4_OK);
+    CHECK(save4_dex_get_national(&s, &on) == SAVE4_OK && on);
+    CHECK_EQ_INT(gen[0x1328 + 0x31B], 1);
+    CHECK_EQ_INT(gen[0x1328 + 0x31A], 1); /* pokedexObtained untouched */
+    CHECK_EQ_INT((gen[0x64 + 0x21] >> 1) & 1, 1);
+    save4_trainer tr;
+    CHECK(save4_get_trainer(&s, &tr) == SAVE4_OK && tr.has_national_dex);
+    CHECK(save4_revalidate(&s) == SAVE4_OK);
+    CHECK(save4_dex_set_national(&s, false) == SAVE4_OK);
+    CHECK_EQ_INT(gen[0x1328 + 0x31B], 0);
+    CHECK_EQ_INT((gen[0x64 + 0x21] >> 1) & 1, 0);
+    CHECK(save4_revalidate(&s) == SAVE4_OK);
     save4_free(&s);
 
     synth_save_build(img, SAVE4_GAME_DP);
     CHECK(save4_load(&s, img, SAVE4_IMAGE_SIZE) == SAVE4_OK);
     CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_ERR_LAYOUT);
+    CHECK(save4_dex_set_national(&s, true) == SAVE4_ERR_LAYOUT);
     save4_free(&s);
     free(img);
 }

@@ -1,0 +1,22 @@
+--- a/subprojects/NitroSDK-4.2.30001/libraries/ctrdg/src/ctrdg_proc.c
++++ b/subprojects/NitroSDK-4.2.30001/libraries/ctrdg/src/ctrdg_proc.c
+@@ -4,6 +4,10 @@
+ extern void CTRDGi_InitCommon(void);
+ extern void CTRDGi_SendtoPxi(u32 data);
+ 
++/* pc: the BIOS (0xFFFF0020) is not in the address space; the logo it holds
++ * comes from pc/src/pc_agb_slot.c. */
++const void *pc_agb_sysrom9_logo(void);
++
+ static void CTRDGi_CallbackForInitModuleInfo(PXIFifoTag tag, u32 data, BOOL err);
+ static void CTRDGi_PulledOutCallback(PXIFifoTag tag, u32 data, BOOL err);
+ static void CTRDGi_CallbackForSetPhi(PXIFifoTag tag, u32 data, BOOL err);
+@@ -120,7 +124,7 @@
+ 		(*(u8 *)HW_SET_CTRDG_MODULE_INFO_ONCE) = TRUE;
+ 	}
+ 
+-	MI_CpuCopy32((void *)CTRDG_SYSROM9_NINLOGO_ADR, &headerBuf.nintendoLogo, sizeof(headerBuf.nintendoLogo));
++	MI_CpuCopy32(pc_agb_sysrom9_logo(), &headerBuf.nintendoLogo, sizeof(headerBuf.nintendoLogo));
+ 	DC_FlushAll();
+ 
+ 	CTRDGi_SendtoPxi(CTRDG_PXI_COMMAND_INIT_MODULE_INFO | (((u32) & headerBuf - HW_MAIN_MEM) >> 5) << CTRDG_PXI_COMMAND_PARAM_SHIFT);

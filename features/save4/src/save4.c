@@ -47,12 +47,13 @@ struct save4_layout {
      * SAVE4_ERR_LAYOUT instead of guessing. */
     uint32_t mg_unlocked;  /* SystemData.isMysteryGiftUnlocked */
     uint32_t dex_obtained; /* Pokedex.pokedexObtained, relative to dex */
+    uint32_t dex_national; /* Pokedex.nationalDexObtained, relative to dex */
     uint32_t mystery;      /* MysteryGift save table entry */
 };
 
 static const save4_layout kLayouts[] = {
-    {SAVE4_GAME_PT, 0xCF2C, 0x121E4, 0x64, 0x98, 0x630, 0xDAC, 0xFEC, 0x1328, 0x48, 0x31A, 0xB4C0},
-    {SAVE4_GAME_DP, 0xC100, 0x121E0, 0x60, 0x90, 0x624, 0xD9C, 0xFDC, 0x12DC, 0, 0, 0},
+    {SAVE4_GAME_PT, 0xCF2C, 0x121E4, 0x64, 0x98, 0x630, 0xDAC, 0xFEC, 0x1328, 0x48, 0x31A, 0x31B, 0xB4C0},
+    {SAVE4_GAME_DP, 0xC100, 0x121E0, 0x60, 0x90, 0x624, 0xD9C, 0xFDC, 0x12DC, 0, 0, 0, 0},
 };
 
 /* PlayerSave (include/save_player.h) = Options(2) + pad(2) + TrainerInfo
@@ -941,6 +942,35 @@ save4_status save4_dex_set_obtained(save4 *s, bool obtained)
     if (g32(d) != DEX_MAGIC)
         return SAVE4_ERR_LAYOUT;
     d[s->layout->dex_obtained] = obtained ? 1 : 0;
+    save4_commit_block(s, SAVE4_BLOCK_GENERAL);
+    return SAVE4_OK;
+}
+
+save4_status save4_dex_get_national(const save4 *s, bool *obtained)
+{
+    REQUIRE_LOADED(s);
+    if (!s->layout->dex_national)
+        return SAVE4_ERR_LAYOUT;
+    const uint8_t *d = gen_c(s) + s->layout->dex;
+    if (g32(d) != DEX_MAGIC)
+        return SAVE4_ERR_LAYOUT;
+    *obtained = d[s->layout->dex_national] != 0;
+    return SAVE4_OK;
+}
+
+/* Both halves the game's own award writes (scrcmd.c, the National Dex
+ * script command: Pokedex_ObtainNationalDex + TrainerInfo_GiveNationalDex). */
+save4_status save4_dex_set_national(save4 *s, bool obtained)
+{
+    REQUIRE_LOADED(s);
+    if (!s->layout->dex_national)
+        return SAVE4_ERR_LAYOUT;
+    uint8_t *d = gen_m(s) + s->layout->dex;
+    if (g32(d) != DEX_MAGIC)
+        return SAVE4_ERR_LAYOUT;
+    d[s->layout->dex_national] = obtained ? 1 : 0;
+    uint8_t *flags = player_m(s) + PL_STORYFLAGS;
+    *flags = (uint8_t)(obtained ? (*flags | 0x2) : (*flags & ~0x2));
     save4_commit_block(s, SAVE4_BLOCK_GENERAL);
     return SAVE4_OK;
 }
