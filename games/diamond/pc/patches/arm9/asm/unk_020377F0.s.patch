@@ -1,0 +1,11 @@
+--- a/arm9/asm/unk_020377F0.s
++++ b/arm9/asm/unk_020377F0.s
+@@ -173,7 +173,7 @@
+ 	.balign 4
+ 	.global UNK_020F2D94
+ UNK_020F2D94: ; 0x020F2D94
+-	.word sub_020377F0, sub_020377F4, sub_02037808, SDK_OVERLAY_OVERLAY_11_ID
++	.word PcDp_BattleAppInit, sub_020377F4, PcDp_BattleAppExit, SDK_OVERLAY_OVERLAY_11_ID
+ 
+ 	.balign 4
+ 	.global UNK_020F2DA4

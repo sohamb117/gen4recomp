@@ -1,0 +1,43 @@
+--- a/arm9/src/encounter.c
++++ b/arm9/src/encounter.c
+@@ -20,6 +20,8 @@
+ #include "unk_0205FA2C.h"
+ #include "use_item_on_mon.h"
+ 
++#include "pc_np_options.h"
++
+ extern void sub_0203780C(FieldSystem *fieldSystem, BattleSetup *battleSetup);
+ extern void BattleSetup_Delete(BattleSetup *setup);
+ extern BOOL IsBattleResultWin(u32 winFlag);
+@@ -109,6 +111,7 @@
+ 
+ static Encounter *Encounter_New(BattleSetup *setup, s32 effect, s32 bgm, u32 *winFlag) {
+     Encounter *encounter = Heap_AllocAtEnd(HEAP_ID_FIELD, sizeof(Encounter));
++    pc_np_stat.in_encounter = 1; /* pc port: NP_STAT_IN_BATTLE, until Encounter_Delete */
+     encounter->winFlag = winFlag;
+     if (winFlag != NULL) {
+         *winFlag = BATTLE_OUTCOME_NONE;
+@@ -120,6 +123,7 @@
+ }
+ 
+ static void Encounter_Delete(Encounter *encounter) {
++    pc_np_stat.in_encounter = 0;
+     BattleSetup_Delete(encounter->setup);
+     Heap_Free(encounter);
+ }
+@@ -315,6 +319,7 @@
+ 
+ static WildEncounter *WildEncounter_New(BattleSetup *setup, s32 effect, s32 bgm, u32 *winFlag) {
+     WildEncounter *encounter = Heap_AllocAtEnd(HEAP_ID_FIELD, sizeof(WildEncounter));
++    pc_np_stat.in_encounter = 1; /* pc port: NP_STAT_IN_BATTLE, until WildEncounter_Delete */
+     encounter->winFlag = winFlag;
+     if (winFlag != NULL) {
+         *winFlag = BATTLE_OUTCOME_NONE;
+@@ -327,6 +332,7 @@
+ }
+ 
+ static void WildEncounter_Delete(WildEncounter *encounter) {
++    pc_np_stat.in_encounter = 0;
+     BattleSetup_Delete(encounter->setup);
+     Heap_Free(encounter);
+ }

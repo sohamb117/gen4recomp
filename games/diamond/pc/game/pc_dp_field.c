@@ -248,3 +248,28 @@ void PcDp_FieldSwapBuffers(u32 sortMode, u32 bufferMode) {
     sub_020222B4(sortMode, bufferMode);
     pc_np_camera_end(fs != NULL ? fs->camera : NULL);
 }
+
+/*
+ * NP_STAT_IN_BATTLE (pc_np_stat.in_encounter / in_battle_app; Platinum's
+ * src/encounter.c.patch and src/unk_0203D1B8.c.patch). in_encounter is set
+ * by pc/patches/arm9/src/encounter.c.patch from Encounter_New /
+ * WildEncounter_New to their _Delete, which every field battle (wild,
+ * trainer, link, safari, Pal Park) goes through. in_battle_app covers the
+ * battle application itself (all a Battle Tower battle has): its template
+ * UNK_020F2D94 (arm9/asm/unk_020377F0.s) names sub_020377F0 / sub_02037808,
+ * two `return TRUE` bodies, as init and exit; pc/patches/arm9/asm/
+ * unk_020377F0.s.patch points those two words here instead.
+ */
+BOOL PcDp_BattleAppInit(void *overlayManager, u32 *status) {
+    (void)overlayManager;
+    (void)status;
+    pc_np_stat.in_battle_app = 1;
+    return TRUE;
+}
+
+BOOL PcDp_BattleAppExit(void *overlayManager, u32 *status) {
+    (void)overlayManager;
+    (void)status;
+    pc_np_stat.in_battle_app = 0;
+    return TRUE;
+}
