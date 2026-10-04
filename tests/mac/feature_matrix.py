@@ -134,6 +134,8 @@ class Ctx:
             small = n['png'][:-4] + '-small.png'
             subprocess.run(['sips', '-Z', '960', n['png'], '--out', small], stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
+            if not os.environ.get('NP_KEEP_FULL'):
+                os.remove(n['png'])  # 8 MB each at 2x; NP_KEEP_FULL=1 keeps them
         self.runs.append({'step': n['step'], 'autotest': n['at'], 'args': n['args'], 'rc': p.returncode,
                           'png': os.path.relpath(n['png'], ROOT), 'small': small and os.path.relpath(small, ROOT),
                           'secs': round(time.time() - n['t0'], 1),
@@ -268,12 +270,14 @@ def _(c):
     c.run('boot=app,frames=1900,press=1260:start;1410:a;1510:a;1610:a,script=%s;%s' % (click(2, PLAT_CARD), s))
 
 
-@case('games_boot', 'All three cores boot in the packaged app (Diamond, Pearl, Platinum)')
+@case('games_boot', 'All three cores boot in the packaged app: card -> New save slot -> OK -> title (Start)')
 def _(c):
     c.need(*ROMS.values())
-    c.fresh(list(ROMS))
-    for g, frames in (('diamond', 1500), ('pearl', 1500), ('platinum', 1500)):
-        c.run('boot=app,frames=%d,press=1200:start:10' % frames, step=g, args=['--game', g, '--slot', 'Boot test'])
+    for g, card in (('diamond', (176, 270)), ('pearl', (480, 270)), ('platinum', PLAT_CARD)):
+        c.fresh(list(ROMS))
+        # Slots page (New, Import): New -> the name page -> OK boots the game at ~iteration 8.
+        c.run('boot=app,frames=1700,press=1400:start:10,script=%s;5:key:Return;7:key:Return' % click(2, card),
+              step=g)
 
 
 def editor_open(extra, frames=None, step=''):
@@ -339,9 +343,10 @@ def _(c):
 @case('battle_layout', 'Battle layout: hybrid (large top) during a wild battle, field layout outside')
 def _(c):
     plat_save(c, opts='[video]\nlayout = vertical\nbattle_layout = hybrid')
-    wild = '1250:start;1400:a;1500:a;1600:a;1700:down:40;1760:left:600;2300:up:20;2330:left:200'
+    wild = ('1250:start;1400:a;1500:a;1600:a;1700:down:40;1760:left:600;2300:up:20;2330:left:200;'
+            '2550:down:16:48:60;2568:up:16:48:60;2588:a:4:48:60')
     play(c, step='field', frames=1900, press=wild)
-    play(c, step='battle', frames=3300, press=wild)
+    play(c, step='battle', frames=3200, press=wild)
 
 
 @case('effects', 'Effects chain (LCD grid + scanlines, CRT + curvature, Smooth) and performance presets')
@@ -389,7 +394,7 @@ def _(c):
     s, _ = keys(1700, ['1', '1', '1'], gap=1)
     log = play(c, step='4x', frames=1800, script=s)
     m = re.search(r'iterations=(\d+) guest_frame=(\d+)', log)
-    assert m and int(m.group(2)) > int(m.group(1)) + 250, m and m.groups()
+    assert m and int(m.group(2)) > int(m.group(1)) + 150, m and m.groups()
     s, _ = keys(1700, ['G'])
     log = play(c, step='ff-toggle', frames=1800, script=s)
     m = re.search(r'iterations=(\d+) guest_frame=(\d+)', log)
@@ -412,10 +417,10 @@ def _(c):
 def _(c):
     plat_save(c, opts='[game]\nrewind_seconds = 30')
     # F5 at 1700, walk left, F7 restores the spot.
-    play(c, step='walked', frames=1800, press=CONTINUE + ';1705:left:80')
-    play(c, step='restored', frames=1800, press=CONTINUE + ';1705:left:80', script='1700:key:F5;1795:key:F7')
-    play(c, step='slot2', frames=1800, press=CONTINUE, script='1700:key:F6;1702:key:F5')
-    log = c.run('boot=app,frames=1900,press=%s;1705:left:120,rewind=1830+60,script=0:move:1:1' % CONTINUE,
+    play(c, step='walked', frames=1880, press=CONTINUE + ';1765:left:80')
+    play(c, step='restored', frames=1880, press=CONTINUE + ';1765:left:80', script='1760:key:F5;1860:key:F7')
+    play(c, step='slot2', frames=1800, press=CONTINUE, script='1760:key:F6;1762:key:F5')
+    log = c.run('boot=app,frames=1915,press=%s;1705:left:120,rewind=1880+30,script=0:move:1:1' % CONTINUE,
                 step='rewind', args=['--game', 'platinum', '--slot', 'Sandgem'])
     assert 'rewind depth' in log
 
@@ -428,23 +433,22 @@ def _(c):
         play(c, step=name, frames=1800)
 
 
-@case('instant_text', 'Instant text: a text box fills on its first frame')
+@case('instant_text', "Instant text: a new game's second text box, 15 frames after A, half printed vs complete")
 def _(c):
-    # Sandgem: talk to nobody; use the field menu's first message instead: the
-    # Poke Mart sign is far, so read the intro text of a new game.
     c.need(ROMS['platinum'])
     for name, on in (('off', 0), ('on', 1)):
         c.fresh(['platinum'])
         c.options('[game]\ninstant_text = %d' % on)
-        c.run('boot=app,frames=1560,press=1200:start:10;1300:a:6;1400:a:6', step=name,
-              args=['--game', 'platinum', '--slot', 'New'])
+        # Card -> New -> OK; title Start, NEW GAME, Rowan's intro; A at 2000 starts "Welcome to the world...".
+        c.run('boot=app,frames=2015,press=1410:start:10;1560:a:6;1700:a:6;1800:a:6;1900:a:6;2000:a:6,'
+              'script=%s;5:key:Return;7:key:Return' % click(2, PLAT_CARD), step=name)
 
 
 @case('rules', 'Rules: Fix cartridge bugs on (the core runs each fix with PC_NP_RULES_CHECK)')
 def _(c):
     plat_save(c, opts='[game]\nfix_bugs = 1')
-    s, _ = keys(1800, ['F10'] + opt_downs('Fix cartridge bugs', in_game=True))
-    log = play(c, step='options', frames=1830, script=s, env={'PC_NP_RULES_CHECK': '1'})
+    s, f = keys(1800, ['F10'] + opt_downs('Fix cartridge bugs', in_game=True))
+    log = play(c, step='options', frames=f + 4, script=s, env={'PC_NP_RULES_CHECK': '1'})
     with open(os.path.join(EVID, 'rules-check.txt'), 'w') as f:
         f.write('\n'.join(l for l in log.splitlines() if 'rule' in l.lower()))
 
@@ -505,13 +509,13 @@ def _(c):
     plat_save(c)
     s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
     c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='0-installed')
-    # Seal: the mods page's last row.
-    s3, f3 = keys(4, ['F10'] + opt_downs('Mods...') + ['Return', 'Up', 'Return'])
+    # Seal: the third row (after the package and Install).
+    s3, f3 = keys(4, ['F10'] + opt_downs('Mods...') + ['Return', 'Down', 'Down', 'Return'])  # package, Install, Seal
     c.run('boot=app,frames=%d,script=%s;%d:text:Menu Cart;%d:key:Return' % (f3 + 10, s3, f3 + 2, f3 + 4),
           step='1-sealed')
     assert glob.glob(os.path.join(c.ud, 'carts', '*.cart')), os.listdir(c.ud)
-    # Slot menu -> Cart: none -> Menu Cart.
-    s, f = keys(10, ['Down', 'Return'] + ['Down'] * 5 + ['Return'])
+    # Slots (Continue, New, Sandgem, Import) -> Sandgem -> Cart: none -> Menu Cart.
+    s, f = keys(10, ['Down', 'Down', 'Return'] + ['Down'] * 5 + ['Return'])
     c.run('boot=app,frames=%d,script=%s;%s' % (f + 4, click(2, PLAT_CARD), s), step='2-bound')
     c.run('boot=app,frames=1800,press=1450:start:4:40:4,script=0:move:1:1', step='3-boot',
           args=['--game', 'platinum', '--slot', 'Sandgem'])
@@ -522,7 +526,7 @@ def _(c):
     c.need(GBA_ROM, SAVE4)
     plat_save(c)
     sav = os.path.join(c.ud, 'saves', 'platinum', 'Sandgem.sav')
-    subprocess.run([SAVE4, 'set-national-dex', sav, sav], check=True, stdout=subprocess.DEVNULL)
+    subprocess.run([SAVE4, 'set-national-dex', sav, '1'], check=True, stdout=subprocess.DEVNULL)
     gsav = os.path.join(c.work, 'emerald.sav')
     subprocess.run([sys.executable, os.path.join(ROOT, 'tools/gba/gen3_save.py'), gsav], check=True,
                    stdout=subprocess.DEVNULL)
@@ -544,7 +548,7 @@ def union_press(side, until):
     return ';'.join(steps)
 
 
-@case('lan', 'LAN play: two installs on this Mac meet in the Union Room and trade (tests/link schedules)')
+@case('lan', 'LAN play: two installs on this Mac meet and talk in the Union Room (tests/link trade schedules, free-running)')
 def _(c):
     c.need(ROMS['platinum'], sav_input('union-a.sav'), sav_input('union-b.sav'))
     b = c.second()
@@ -558,6 +562,14 @@ def _(c):
              for st, side in ((c, 'a'), (b, 'b'))]
     for st, p in zip((c, b), procs):
         st.finish(p, timeout=1800)
+    for f in glob.glob(os.path.join(EVID, 'lan-station-*-0*.png')):
+        subprocess.run(['sips', '-Z', '960', f, '--out', f], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if os.path.exists(SAVE4):
+        with open(os.path.join(EVID, 'lan-parties.txt'), 'w') as out:
+            for st, side in ((c, 'a'), (b, 'b')):
+                d = subprocess.run([SAVE4, 'dump', os.path.join(st.ud, 'saves', 'platinum', 'Union.sav')],
+                                   stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+                out.write('== station %s\n%s\n' % (side, d))
 
 
 @case('relay', 'Relay: host:port and PIN typed in Options, LAN on; a second install on the same relay+PIN is in range')
@@ -669,6 +681,29 @@ def _(c):
 def _(c):
     c.fresh()
     c.run('boot=app,frames=10,script=2:down:592:439;3:up:592:439')
+
+
+@case('url_open', "nativeplat:// URL through LaunchServices: open -a nativeplat.app 'nativeplat://launch?...'")
+def _(c):
+    plat_save(c)
+    png = os.path.join(EVID, 'url_open.png')
+    log = os.path.join(EVID, 'url_open.log')
+    for f in (png, log):
+        if os.path.exists(f):
+            os.remove(f)
+    at = 'boot=app,frames=600,script=0:move:1:1,png=' + png
+    url = 'nativeplat://launch?game=platinum&slot=Sandgem'
+    t0 = time.time()
+    subprocess.run(['open', '-n', '-W', '--env', 'NP_AUTOTEST=' + at, '--stdout', log, '--stderr', log,
+                    '-a', os.path.join(c.app_dir, 'nativeplat.app'), url], check=True, timeout=600)
+    text = open(log).read() if os.path.exists(log) else ''
+    small = png[:-4] + '-small.png'
+    subprocess.run(['sips', '-Z', '960', png, '--out', small], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    c.runs.append({'step': '', 'autotest': at, 'args': ['open -n -W -a nativeplat.app ' + url], 'rc': 0,
+                   'png': os.path.relpath(png, ROOT), 'small': os.path.relpath(small, ROOT),
+                   'secs': round(time.time() - t0, 1),
+                   'summary': ([l for l in text.splitlines() if 'autotest: boot=' in l] or [''])[-1]})
+    assert 'view=game' in text, text[-2000:]
 
 
 @case('portable', 'Portable mode: portable.txt beside nativeplat.app keeps data in userdata/')

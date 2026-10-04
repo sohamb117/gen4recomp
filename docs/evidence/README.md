@@ -1,49 +1,78 @@
 # macOS app evidence
 
-Produced by `tests/mac/feature_matrix.py`: one `NP_AUTOTEST` run per step in
-a real window (Metal renderer), each on its own copy of portable user data.
-Screenshots and logs are in `build/evidence/` (not committed: they are large
-and some contain game imagery). `build/evidence/matrix.json` holds every run's
-exact autotest line and summary.
+Every row was run on the packaged app (`tools/package_macos.sh --test` →
+`build/dist/nativeplat-macos-arm64.zip`, all three cores, main 904498583),
+unzipped into a temporary folder with `portable.txt` beside the bundle, by
+`tests/mac/feature_matrix.py`: one `NP_AUTOTEST` run per step in a real window
+(Metal renderer), each on its own portable user data. The screenshots were
+inspected one by one (2026-10-04).
 
 ```sh
-tests/mac/feature_matrix.py --list                 # the cases
-tests/mac/feature_matrix.py                         # the packaged zip (build/dist)
-tests/mac/feature_matrix.py --app path/nativeplat.app CASE...
+tests/mac/feature_matrix.py --list          # cases
+tests/mac/feature_matrix.py [CASE...]       # on build/dist/nativeplat-macos-arm64.zip
+NP_KEEP_FULL=1 tests/mac/feature_matrix.py  # also keep the 2x window captures
 ```
 
-## Status of this pack (2026-10-04)
+Screenshots (`<case>-<step>-small.png`, 960 wide) and logs (`<case>-<step>.log`,
+first line = the exact `NP_AUTOTEST` and arguments) are in `build/evidence/`,
+outside git: they show game imagery. `build/evidence/matrix.json` holds every
+run's autotest line and summary. Inputs (saves minted from pc_lab recipes:
+`tests/gameplay/recipes/sandgem.recipe`, `tests/link/recipes/union-*.recipe`)
+are in `build/evidence/inputs/`. "Sandgem" below is that save; `CONTINUE` is
+`press=1250:start;1400:a;1500:a;1600:a` (title → CONTINUE → field at ~1700),
+and in-game runs start as `nativeplat --game platinum --slot Sandgem`.
 
-**Launcher/UI rows were run against a stub-core build of the shell
-(`-DNP_CORE=stub`, `build/shell-stub`), not yet against the packaged
-three-core app.** The three-core package (`tools/package_macos.sh`) was not
-built in this pass: the wasm rebuilds waited on the machine-wide heavy-build
-slots. The UI paths (pages, dialogs, files written) are the same code in
-both builds; the in-game rows need the real cores and are listed as not run.
+| Feature | How (autotest, abridged) | Screenshots | What they show |
+|---|---|---|---|
+| Launcher: import 3 ROMs | `boot=app`, `drop:` Diamond and Pearl, click Import ROM, `dialog:` Platinum | launcher_import | Three cards "Ready" |
+| All three games run | card click → New save slot → OK; `press=1400:start` | games_boot-diamond/pearl/platinum | Diamond, Pearl and Platinum title screens |
+| Save slots | Import .sav (dialog), Duplicate, Rename (typed), Export (dialog), Delete (confirm, Yes), New | slots-1 … slots-7 | Toasts per action; exported file byte-identical; new slot boots Platinum |
+| Continue | card → "Continue: Sandgem" → `CONTINUE` | continue | Sandgem Town field, Pokétch |
+| Save editor | Edit save… → PageDown through tabs; Money +3, `C` undo, `V` redo; Events "Add Member Card"; Esc → Save | editor-1 … editor-12 | Six tabs; $3003/$3000/$3003; Wonder Card 1 = Member Card, 1/8 gifts; "Saved"; `.bak` written |
+| Trainer Card, diploma | Trainer tab → Export… → `dialog:` path | trainer_card-card/diploma(-export) | The two PNGs (GQ, ID 27182, party, 2/493) |
+| Standalone editor | `nativeplat --editor --save backup.sav` | standalone_editor | Editor on the file, no slot |
+| Layouts | `[video] layout =` vertical / horizontal / hybrid / top / bottom, swap, rotation 90, integer+linear | layouts-* | Each arrangement in the Sandgem field |
+| Battle layout | `battle_layout = hybrid`, `tests/gameplay/schedules/wild.press` head | battle_layout-field/battle | Vertical in the field; large top + side touch screen in the wild battle |
+| Effects, presets | `effect1/2`, `crt_curvature`, `performance = low/high/balanced` | effects-* | LCD grid + scanlines, curved CRT, smooth; Low drops effects, High keeps CRT; Options shows "Balanced", VSync "(preset decides)" |
+| Render scale, widescreen | `render_scale = 1/4`, `widescreen = 1`, top screen only | render_scale-* (+ sheets/render-crop.png) | 4x has smooth 3D edges vs 1x; widescreen shows more of Sandgem |
+| Camera hotkeys | `script=` `-`×6, `=`×4, `4`×6, `0` | camera-* | Toasts "zoom 175%", "125%", "tilt +30 deg", back to 100% |
+| Speed, fast-forward | `1`×3 at 1700; `G` at 1700 | speed-4x, speed-ff-toggle | "Speed 4x": 1800 iterations ran 2028 frames; "Fast-forward on": 6642 frames |
+| F1 / F2 | walk, `F1`; `F2 F2` | quicksave-f1/f2 | "Saved" (core: "quick save 1: saved (map 418)", slot file changed); "Reloaded the last save" at the copyright screen |
+| Snapshots, rewind | `F5` 1760, walk, `F7` 1860; `F6 F5`; `rewind=1880+30` | snapshots-* | Walked away / "Snapshot 1 loaded" at the door / "Snapshot 2 taken" / rewound (depth 283 → 268, frame 1792 at iteration 1915) |
+| BGM/SE volume, low-pass | `bgm_volume = 0`, `se_volume = 0`, `music_filter = 3`; output measured | audio-* logs | Peak/treble: default 29152/834, BGM 0 14880/501, SE 0 29152/666, filter 3X 27149/476 |
+| Instant text | new game, A presses at 1700…2000, capture at 2015 | instant_text-off/on | Off: "Welcome" half printed; on: the same presses are already past it (Rowan on screen) |
+| Rules | `fix_bugs = 1`, env `PC_NP_RULES_CHECK=1`, Options | rules-options, rules-check.txt | "Fix cartridge bugs < On >"; core log "rules check: PASS" |
+| Controls | Options → Controls… → A → `K` | controls-page/rebound | A bound to K; `a = K` in options.ini |
+| Touch controls, editor | `touch_controls = on`; Edit touch controls…, Tab/arrows/`=`/`[` | touch_editor-* | Pad over the game; editor overlay; B resized/faded |
+| Delta skin | `drop:` hand-made `Test.deltaskin` (tests/mac/fixtures.py), 1280x592 and 390x844 | skin-landscape/portrait | Skin art with the DS screens in its frames, both orientations |
+| Mods | Options → Mods… → `drop:` example zip; boot | mods-installed/menu | "[on] Example: main menu labels ready"; main menu "RESUME ADVENTURE", "START FRESH (MODDED)" |
+| Custom carts | Seal enabled packages as a cart… "Menu Cart"; slot Cart: → Menu Cart; boot | carts-* | "Sealed cart Menu Cart (1 package, 0a33980d)"; "Sandgem now plays cart Menu Cart"; modded menu |
+| GBA cart, Pal Park | Options → GBA cartridge `dialog:` pokeemerald.gba, GBA save `dialog:` generated Emerald save; National Dex save | palpark-options/menu | "GBA: pokeemerald.gba, save emerald.sav"; main menu "MIGRATE FROM EMERALD" |
+| LAN, two installs | Two copies of the app, `[wireless] enabled, port, peer`, `realtime=1`, tests/link `trade-a/b.sched` | lan-station-a/b-008000/010000/011000 | Both in the Union Room, chat log "UNIONA/UNIONB: I've entered the Union Room"; A talks to B (GREET/DRAW/BATTLE/TRADE menu), B "Awaiting a response from UNIONA" |
+| Relay | Relay host:port and PIN typed in Options, LAN on; 2nd install with the same relay+PIN (local `server/relay`) | relay-options, relay-station-b | Both "1 in range" |
+| Folder sync | sync folder; both copies changed; chooser; "Use the other copy" | sync-1/2/3 | Chooser shows this device (GQ) vs other copy (UNIONA); "Kept one copy" |
+| Updater | `[updates] api =` local release server (fixtures.ReleaseServer); Check, Download and verify; bad digest | updater-* | "v9.9.9 is available", "Verified (SHA-256 …)", wrong digest refused and deleted |
+| Launch flags | `--game platinum --slot Sandgem`, `--launcher`, unknown slot | launch-* | Game starts; launcher; "Platinum has no save slot Nope" |
+| URL | `open -n -a nativeplat.app 'nativeplat://launch?game=platinum&slot=Sandgem'` (LaunchServices) | url_open | Log "link: nativeplat://…", Platinum running in slot Sandgem |
+| Portable mode | `portable.txt` beside the bundle (every case) | portable | Launcher footer "Portable data: …/userdata/" |
+| UI scale, reduced motion | `ui_scale = 2/6`; `reduce_motion = 1` on the name page | ui_scale-* | 2x small text; "6x (5x fits)"; steady caret |
+| About | About button | about | License and credits |
 
-| Case | Feature | Result (stub core) | Screenshots (build/evidence/) | Inspected |
-| --- | --- | --- | --- | --- |
-| launcher_import | Import all 3 ROMs (2 dropped, 1 via Import ROM + dialog) | ok | launcher_import.png | 3 cards Ready |
-| slots | Import .sav, duplicate, rename, export, delete (confirm), new slot | ok, 7 steps | slots-1-import … slots-7-new.png | each toast/page; export byte-identical |
-| editor | Six tabs, money edit, undo (X), redo (Y), Member Card gift, close prompt, save + .bak | ok, 12 steps | editor-1-trainer … editor-12-saved.png | all |
-| trainer_card | Trainer Card + diploma PNG export | ok | trainer_card-card-export.png, trainer_card-diploma-export.png | both images |
-| standalone_editor | `--editor --save <file>` | ok | standalone_editor.png | editor opens on file |
-| controls | Rebind A to K, saved to options.ini | ok | controls-page.png, controls-rebound.png | `a = K` |
-| touch_editor | Touch pad, layout editor, select/resize | ok | touch_editor-*.png | pad + editor overlay |
-| skin | Hand-made .deltaskin dropped (landscape), portrait | ok | skin-landscape.png, skin-portrait.png | art + screens placed |
-| mods | Example package .zip install (enabled) | ok (boot step: not run on real core) | mods-installed.png | `[on] ... ready` |
-| relay | Relay host/PIN typed, LAN on; 2nd install on same relay+PIN | ok | relay-options.png, relay-station-b.png | both "1 in range" |
-| sync | Mirror, conflict chooser (other device's UNIONA copy), resolve | ok | sync-1 … sync-3.png | chooser shows both copies |
-| updater | Local release server: check, download+verify; wrong digest deleted | ok | updater-checked/downloaded/bad-digest.png | verified / refused |
-| launch | `--game --slot`, `--launcher`, unknown slot message, nativeplat:// URL (drop event) | ok | launch-*.png | each |
-| ui_scale | UI scale 2x, 6x ("5x fits"), reduce motion steady caret | ok | ui_scale-*.png | each |
-| about | About / credits | ok | about.png | |
-| portable | portable.txt → userdata/ | ok | portable.png | footer path |
+## Defects and gaps
 
-Not run yet (need the three-core package): continue, games_boot, layouts,
-battle_layout, effects, render_scale, camera, speed, quicksave, snapshots,
-audio, instant_text, rules, carts, palpark, lan (two installs in the Union
-Room), and `open nativeplat://` through LaunchServices. The cases exist in
-`tests/mac/feature_matrix.py`; their key timings (title CONTINUE at 1250,
-field at ~1700, wild battle by ~2600) come from tests/gameplay schedules and
-still need tuning against real screenshots.
+- **LAN trade not completed in the app.** The stations met and talked, but
+  tests/link's trade schedule is timed for frame lockstep; two free-running
+  apps drift, and B's accept presses fell on "You declined the offer". The
+  trade itself is covered headless by `tests/link/run_link_tests.py`.
+- **Snapshots/rewind are refused for ~a second after CONTINUE**: the main
+  menu's wireless check keeps `NP_STAT_LINK_ACTIVE` set until the field;
+  F5 at frame 1700 was refused as "during a wireless session". By design,
+  not a shell bug; the case takes snapshots from 1760.
+- Diamond and Pearl were shown booting to their title screens only: their
+  field START menu and field 3D defects (DPCore) keep in-game rows from
+  being run on them. See docs/FEATURE_PARITY.md.
+- Shell defects fixed for this pass: editor labels were cut off; options rows
+  that Left/Right cannot change showed `< >`; autotest discarded option keys
+  under `boot=app`, ignored speed, did not poll the network in menus, and
+  silently truncated long scripts; `package_macos.sh` left Diamond and Pearl
+  out unless given their paths, and only tested Platinum.

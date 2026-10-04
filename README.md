@@ -77,9 +77,9 @@ melonDS or DeSmuME on that page).
 
 ### Features
 
-Everything below is in *Options* (F10) unless noted. Screenshot evidence,
-and which rows are still to be run on the packaged app, is in
-[docs/evidence/README.md](docs/evidence/README.md).
+Everything below is in *Options* (F10) unless noted; each was run in the
+packaged app with a screenshot, listed in
+[docs/evidence/README.md](docs/evidence/README.md) (shown with Platinum).
 
 - **Display:** screen layout (vertical, side by side, hybrid, one screen),
   swap, rotation, integer scaling, filters, a separate layout for battles;
