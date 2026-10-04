@@ -112,4 +112,32 @@ void np_fiber_destroy(np_fiber *fiber) {
     if (fiber && fiber->map_base) munmap(fiber->map_base, fiber->map_size);
 }
 
+/* The usable stack runs from just above the guard page up to the record. */
+static uint8_t *stack_low(const np_fiber *f) {
+    return (uint8_t *)f->map_base + page_size();
+}
+
+size_t np_fiber_stack_size(const np_fiber *fiber) {
+    return (size_t)((const uint8_t *)fiber - stack_low(fiber));
+}
+
+int np_fiber_reset(np_fiber *fiber, np_fiber_fn fn, void *arg) {
+    if (!fiber->map_base) return -1;
+    fiber->sp = initial_frame((uint8_t *)fiber, fn, arg);
+    return 0;
+}
+
+int np_fiber_live_stack(const np_fiber *fiber, uint8_t **lo, uint8_t **hi) {
+    if (!fiber->map_base) return -1;
+    *lo = fiber->sp;
+    *hi = (uint8_t *)fiber;
+    return 0;
+}
+
+int np_fiber_set_live_stack(np_fiber *fiber, uint8_t *lo) {
+    if (!fiber->map_base || lo < stack_low(fiber) || lo >= (uint8_t *)fiber || ((uintptr_t)lo & 7) != 0) return -1;
+    fiber->sp = lo;
+    return 0;
+}
+
 #endif /* !_WIN32 */

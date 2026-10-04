@@ -102,6 +102,18 @@ struct np_core {
     uint32_t desc_addr; /* np_frame_desc, known from the first vblank */
     uint32_t audio_tail;
 
+    /* contract v2: written into the descriptor before every frame / copied
+     * out of it after every frame */
+    uint32_t opts[NP_OPT_COUNT];
+    uint32_t status[NP_STAT_COUNT];
+
+    /* Snapshots (np_snapshot.c): this core's identity, so a state from
+     * another core is refused, and a scratch map of touched pages. */
+    uint64_t snapshot_token;
+    uint8_t *page_map;
+    size_t page_map_len;
+    int trace_fibers; /* NP_TRACE_FIBERS in the host's environment */
+
     /* "KEY=VALUE\0" strings back to back, as WASI environ_get wants them. */
     char *env_block;
     uint32_t env_count, env_bytes;
@@ -144,8 +156,10 @@ void np_wasi_flush(np_core *c);
 void np_wasi_init(np_core *c);
 
 /* Guest fiber slots. new returns NULL when out of slots or stack memory;
- * lookup returns NULL for a stale or invalid handle; release frees the
- * native stack of a fiber that is not running and retires its handle. */
+ * lookup returns NULL for a stale or invalid handle; release retires the
+ * handle of a fiber that is not running. Native stacks are pooled per slot
+ * and only freed by np_core_destroy, so a snapshot's stack bytes always go
+ * back to the addresses they came from. */
 np_rt_fiber *np_rt_fiber_new(np_core *c, size_t stack_size, uint32_t arg, uint32_t shadow_sp);
 np_rt_fiber *np_rt_fiber_lookup(np_core *c, uint32_t handle);
 void np_rt_fiber_release(np_rt_fiber *f);

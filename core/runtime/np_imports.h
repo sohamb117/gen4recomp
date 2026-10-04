@@ -29,6 +29,9 @@ uint32_t w2c_np__host_rom_read(struct w2c_np__host *h, uint32_t offset, uint32_t
 uint32_t w2c_np__host_save_load(struct w2c_np__host *h, uint32_t dst, uint32_t len);
 uint32_t w2c_np__host_save_store(struct w2c_np__host *h, uint32_t src, uint32_t len);
 uint64_t w2c_np__host_rtc_now(struct w2c_np__host *h);
+uint32_t w2c_np__host_net_self(struct w2c_np__host *h);
+uint32_t w2c_np__host_net_send(struct w2c_np__host *h, uint32_t peer, uint32_t buf, uint32_t len);
+uint32_t w2c_np__host_net_recv(struct w2c_np__host *h, uint32_t peer_out, uint32_t buf, uint32_t cap);
 void w2c_np__host_log(struct w2c_np__host *h, uint32_t text, uint32_t len);
 void w2c_np__host_trap(struct w2c_np__host *h, uint32_t text, uint32_t len);
 

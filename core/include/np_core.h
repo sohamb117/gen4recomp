@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-#define NP_CORE_API_VERSION 1
+#define NP_CORE_API_VERSION 2
 
 typedef enum np_game {
     NP_GAME_DIAMOND = 0,
@@ -71,6 +71,14 @@ typedef struct np_host {
 
     /* One line of diagnostic text, without a trailing newline. May be NULL. */
     void (*log)(void *user, const char *line);
+
+    /* Local wireless transport (NP_NET_BROADCAST and the datagram semantics
+     * are in np_guest_abi.h). All three NULL = no partner in range. net_self
+     * returns this station's nonzero id; net_recv returns the length, 0 when
+     * nothing waits, -1 on error. Called on the run_frame thread. */
+    uint32_t (*net_self)(void *user);
+    int (*net_send)(void *user, uint32_t peer, const void *buf, uint32_t len);
+    int (*net_recv)(void *user, uint32_t *peer, void *buf, uint32_t cap);
 } np_host;
 
 typedef struct np_input {
@@ -81,6 +89,9 @@ typedef struct np_input {
     uint16_t touch_y;   /* bottom-screen pixel, 0..191 */
 } np_input;
 
+/* width/height are 256x192 by default and change with NP_OPT_RENDER_SCALE
+ * and NP_OPT_WIDESCREEN; the shell must accept a new size on any frame.
+ * Touch coordinates stay in DS pixels (0..255, 0..191) at every size. */
 typedef struct np_frame {
     /* [0] is the top screen, [1] the bottom. Pixels are 0x00RRGGBB, row
      * major, `stride` pixels apart. Valid until the next np_core_run_frame. */
@@ -118,6 +129,36 @@ size_t np_core_audio_read(np_core *core, int16_t *stereo, size_t max_frames);
 
 /* Persist the backup chip now if it changed (app backgrounding, quit). */
 int np_core_save_flush(np_core *core);
+
+/*
+ * Settings and state shared with the guest; ids are enum np_opt / enum
+ * np_status from np_guest_abi.h. Options take effect from the next
+ * np_core_run_frame. Defaults: volumes 256, render scale 1, camera zoom 256,
+ * everything else 0. Status reads the value the guest reported with its
+ * last frame (0 before the first).
+ */
+void np_core_set_option(np_core *core, uint32_t opt, uint32_t value);
+uint32_t np_core_get_option(const np_core *core, uint32_t opt);
+uint32_t np_core_status(const np_core *core, uint32_t status);
+
+/*
+ * In-session snapshots (checkpoints, quick states, rewind). A snapshot is
+ * the whole machine between two frames: guest memory, runtime state and the
+ * native stacks of parked guest threads. It is only valid for the same
+ * np_core in the same process (native stacks hold code addresses), so it is
+ * never written to disk; the cartridge save is the persistent state.
+ * state_size is an upper bound for a state_save made before the next
+ * np_core_run_frame (it grows as the guest touches more memory), or 0 when
+ * no snapshot can be taken (Windows builds; a failed or exited core). Both
+ * return 0 on success. A refused state_load (not this core's snapshot,
+ * truncated) returns -1 and leaves the core as it was; one that fails
+ * halfway leaves the core failed (np_core_last_error). Loading also
+ * revives a failed or exited core, and reverts the guest's backup chip
+ * image with the rest of memory (the host's stored save is untouched).
+ */
+size_t np_core_state_size(const np_core *core);
+int np_core_state_save(np_core *core, void *dst, size_t cap, size_t *written);
+int np_core_state_load(np_core *core, const void *src, size_t len);
 
 /* A host pointer to `len` bytes of guest memory at `guest_addr`, or NULL if
  * the range is not guest memory. For the save editor, mods and diagnostics;

@@ -43,6 +43,7 @@
 #include <windows.h>
 #else
 #include <sys/mman.h>
+#include <unistd.h>
 #if !defined(MAP_ANONYMOUS) && defined(MAP_ANON)
 #define MAP_ANONYMOUS MAP_ANON
 #endif
@@ -137,4 +138,74 @@ void wasm_rt_free_memory(wasm_rt_memory_t *memory) {
     memory->data_end = NULL;
     memory->pages = 0;
     memory->size = 0;
+}
+
+/* ---- snapshot support ------------------------------------------------ */
+
+size_t np_memory_os_page(void) {
+#ifdef _WIN32
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
+    return si.dwPageSize;
+#else
+    long p = sysconf(_SC_PAGESIZE);
+    return p > 0 ? (size_t)p : 4096;
+#endif
+}
+
+/*
+ * Which pages the guest ever touched. On Apple systems mincore() reports a
+ * disposition for every page of an anonymous mapping that has a backing
+ * page: resident (MINCORE_INCORE), or compressed / swapped
+ * (MINCORE_PAGED_OUT), so a zero disposition is a page that was never
+ * touched (or was discarded) and reads as zeros. Linux's mincore only
+ * reports residency, which would miss swapped pages, and Windows has no
+ * equivalent, so elsewhere every page is a candidate and the caller's zero
+ * check does the work.
+ */
+int np_memory_touched(const wasm_rt_memory_t *memory, uint8_t *map) {
+#if defined(__APPLE__)
+    const size_t page = np_memory_os_page();
+    const size_t n = (size_t)((memory->size + page - 1) / page);
+    if (n == 0) return 0;
+    if (mincore(memory->data, (size_t)memory->size, (char *)map) != 0) return -1;
+    const unsigned char backed = MINCORE_INCORE | MINCORE_PAGED_OUT | MINCORE_MODIFIED | MINCORE_REFERENCED;
+    for (size_t i = 0; i < n; i++) map[i] = (map[i] & backed) != 0;
+    return 0;
+#else
+    (void)memory;
+    (void)map;
+    return -1;
+#endif
+}
+
+int np_memory_discard(wasm_rt_memory_t *memory, uint64_t offset, uint64_t len) {
+    if (len == 0) return 0;
+    if (offset + len > memory->size) return -1;
+    uint8_t *p = memory->data + offset;
+#ifdef _WIN32
+    if (!VirtualFree(p, (SIZE_T)len, MEM_DECOMMIT)) return -1;
+    return os_commit(p, len);
+#else
+    /* A fresh anonymous mapping over the range: zero, and untouched again
+     * as far as np_memory_touched is concerned. Same address, same
+     * protection, still inside the reservation. */
+    void *r = mmap(p, (size_t)len, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED, -1, 0);
+    return r == (void *)p ? 0 : -1;
+#endif
+}
+
+int np_memory_set_pages(wasm_rt_memory_t *memory, uint64_t pages) {
+    if (pages > memory->max_pages) return -1;
+    if (pages > memory->pages) return wasm_rt_grow_memory(memory, pages - memory->pages) == (uint64_t)-1 ? -1 : 0;
+    if (pages < memory->pages) {
+        const uint64_t keep = pages * memory->page_size;
+        /* Zero what is given up: a later memory.grow must see zeros. The
+         * pages stay accessible, which is harmless (the guest bounds its
+         * own accesses by memory.size). */
+        if (np_memory_discard(memory, keep, memory->size - keep) != 0) return -1;
+        memory->pages = pages;
+        memory->size = keep;
+    }
+    return 0;
 }

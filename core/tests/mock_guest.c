@@ -16,7 +16,10 @@
  *     published in the descriptor and dirtied at frame 5 for the host's
  *     np_core_save_flush to store;
  *   - input echoed into pixels; special key combos trigger np_host_trap, a
- *     wasm `unreachable` on a worker fiber, and exit(3).
+ *     wasm `unreachable` on a worker fiber, and exit(3);
+ *   - contract v2: options echoed into status (see publish_status), a
+ *     512x384 frame while NP_OPT_RENDER_SCALE is 2, and a datagram to
+ *     NP_NET_BROADCAST every frame that a loopback host hands back.
  *
  * Status pixels (bottom screen row 0) and the pattern formulas are mirrored
  * in test_core.c; keep the two in sync.
@@ -77,6 +80,8 @@ static uint32_t status;
 static uint32_t random_word;
 static uint32_t save_counter;
 static int crash_on_worker; /* set by X+Y: worker 2 executes unreachable */
+static uint32_t *big[2];    /* the 512x384 screens of render scale 2 */
+static uint32_t net_ok;     /* datagrams received intact */
 
 static uint32_t sched_handle;
 static uint32_t switches_this_frame;
@@ -234,6 +239,44 @@ static void short_lived_fiber(void) {
     free(stack);
 }
 
+/* Loopback check: every frame, one datagram to everyone; with a transport
+ * whatever comes back must be one of ours, intact. Without one (net_self
+ * 0) sending fails and nothing ever arrives. */
+static void exchange_datagrams(void) {
+    const uint32_t self = np_host_net_self();
+    char msg[48], buf[64];
+    int n = snprintf(msg, sizeof msg, "ping %u from %u", (unsigned)frame, (unsigned)self);
+    int32_t sent = np_host_net_send(NP_NET_BROADCAST, msg, (uint32_t)n);
+    uint32_t peer = 0;
+    int32_t r;
+    if (!self) {
+        if (sent != -1) fail("mock: net_send without a transport succeeded");
+        if (np_host_net_recv(&peer, buf, sizeof buf) != 0) fail("mock: net_recv without a transport");
+        return;
+    }
+    if (sent != 0) fail("mock: net_send failed");
+    while ((r = np_host_net_recv(&peer, buf, sizeof buf)) > 0) {
+        if (r != n || memcmp(buf, msg, (size_t)n) != 0 || peer != self) fail("mock: datagram corrupted");
+        net_ok++;
+    }
+    if (r < 0) fail("mock: net_recv failed");
+}
+
+/* What the host asked for, reported back: the real slots get recognisable
+ * values and slots 8..15 echo opt[0..7] verbatim. Slots 5 and 6 carry the
+ * loopback count and this station's id. */
+static void publish_status(void) {
+    const uint32_t *opt = DESC->opt;
+    DESC->status[NP_STAT_LINK_ACTIVE] = np_host_net_self() != 0;
+    DESC->status[NP_STAT_FIELD_READY] = 1;
+    DESC->status[NP_STAT_QUICKSAVE_SEQ] = opt[NP_OPT_QUICKSAVE_SEQ];
+    DESC->status[NP_STAT_QUICKSAVE_RESULT] = opt[NP_OPT_QUICKSAVE_SEQ] ? NP_QS_SAVED : NP_QS_NONE;
+    DESC->status[NP_STAT_MAP_ID] = 400 + frame;
+    DESC->status[5] = net_ok;
+    DESC->status[6] = np_host_net_self();
+    for (uint32_t i = 0; i < 8; i++) DESC->status[8 + i] = opt[i];
+}
+
 int main(int argc, char **argv) {
     volatile uint32_t local = 0;
     touch(&local);
@@ -279,6 +322,9 @@ int main(int argc, char **argv) {
         workers[i].shadow = malloc(SHADOW_STACK);
         workers[i].handle = np_host_fiber_create((uint32_t)(uintptr_t)(workers[i].shadow + SHADOW_STACK), i);
     }
+    big[0] = malloc(4u * W * H * 4);
+    big[1] = malloc(4u * W * H * 4);
+    if (!big[0] || !big[1]) fail("mock: out of memory");
 
     memset(DESC, 0, sizeof *DESC);
     DESC->magic = NP_FRAME_MAGIC;
@@ -313,6 +359,7 @@ int main(int argc, char **argv) {
 
         run_workers();
         status |= ST_FIBERS_OK;
+        exchange_datagrams();
         if (frame == 2) short_lived_fiber();
 
         if (frame == 3) {
@@ -338,6 +385,25 @@ int main(int argc, char **argv) {
         BOTTOM[2] = seed;
         BOTTOM[3] = random_word & 0xFFFFFFu;
         BOTTOM[4] = switches_this_frame;
+
+        publish_status();
+        if (DESC->opt[NP_OPT_RENDER_SCALE] == 2) {
+            /* A frame at twice the size: each screen a constant derived
+             * from the frame number, which test_core.c checks. */
+            for (uint32_t i = 0; i < 4u * W * H; i++) {
+                big[0][i] = 0x00100000u | frame;
+                big[1][i] = 0x00200000u | frame;
+            }
+            DESC->screen[0] = (uint32_t)(uintptr_t)big[0];
+            DESC->screen[1] = (uint32_t)(uintptr_t)big[1];
+            DESC->width = DESC->stride = 2 * W;
+            DESC->height = 2 * H;
+        } else {
+            DESC->screen[0] = (uint32_t)(uintptr_t)top;
+            DESC->screen[1] = (uint32_t)(uintptr_t)BOTTOM;
+            DESC->width = DESC->stride = W;
+            DESC->height = H;
+        }
 
         DESC->frame_lo = frame;
         DESC->frame_hi = 0;

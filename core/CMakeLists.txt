@@ -89,6 +89,7 @@ add_library(np_runtime STATIC
   runtime/np_imports.c
   runtime/np_wasi.c
   runtime/np_memory.c
+  runtime/np_snapshot.c
   ${_np_fiber_sources}
   "${_wabt_rt}/wasm-rt-impl.c"
   "${_wabt_rt}/wasm-rt-exceptions-impl.c")
@@ -146,4 +147,7 @@ if(_np_real_guests AND PROJECT_IS_TOP_LEVEL)
   add_executable(np_headless tools/np_headless.c)
   set_target_properties(np_headless PROPERTIES C_STANDARD 11 C_STANDARD_REQUIRED ON)
   np_link_guest_modules(np_headless ${_np_real_guests})
+  if(NOT MSVC)
+    target_link_libraries(np_headless PRIVATE m)
+  endif()
 endif()

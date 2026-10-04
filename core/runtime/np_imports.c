@@ -34,6 +34,11 @@ uint32_t w2c_np__host_fiber_create(struct w2c_np__host *h, uint32_t shadow_stack
         np_rt_fail(c, "fiber_create: bad shadow stack top 0x%08x", shadow_stack_top);
     np_rt_fiber *f = np_rt_fiber_new(c, NP_FIBER_DEFAULT_STACK, arg, shadow_stack_top);
     if (!f) np_rt_fail(c, "fiber_create: out of fibers (%d) or stack memory", NP_MAX_FIBERS);
+    if (c->trace_fibers) {
+        char line[96];
+        snprintf(line, sizeof line, "[fiber] create %#x (arg %#x)", f->handle, arg);
+        np_rt_log(c, line);
+    }
     return f->handle;
 }
 
@@ -49,6 +54,11 @@ void w2c_np__host_fiber_destroy(struct w2c_np__host *h, uint32_t fiber) {
     np_rt_fiber *f = np_rt_fiber_lookup(c, fiber);
     if (!f) np_rt_fail(c, "fiber_destroy: no fiber %u", fiber);
     if (f == c->current) np_rt_fail(c, "fiber_destroy: fiber %u is running", fiber);
+    if (c->trace_fibers) {
+        char line[64];
+        snprintf(line, sizeof line, "[fiber] destroy %#x", fiber);
+        np_rt_log(c, line);
+    }
     np_rt_fiber_release(f);
 }
 
@@ -68,7 +78,10 @@ void w2c_np__host_vblank(struct w2c_np__host *h, uint32_t desc) {
     if (d->magic != NP_FRAME_MAGIC || d->version != NP_GUEST_ABI_VERSION)
         np_rt_fail(c, "vblank: descriptor magic/version 0x%08x/%u, want 0x%08x/%u", d->magic, d->version,
                    NP_FRAME_MAGIC, NP_GUEST_ABI_VERSION);
-    if (d->width != NP_SCREEN_W || d->height != NP_SCREEN_H || d->stride < d->width || d->stride > 4096)
+    /* Any size from the DS's own up to 8x it (render scale 4 of a 342-wide
+     * picture is 1368x768); both screens share the geometry. */
+    if (d->width < NP_SCREEN_W || d->width > NP_SCREEN_W * 8 || d->height < NP_SCREEN_H ||
+        d->height > NP_SCREEN_H * 8 || d->stride < d->width || d->stride > NP_SCREEN_W * 8)
         np_rt_fail(c, "vblank: bad screen geometry %ux%u stride %u", d->width, d->height, d->stride);
     check_pixels(c, d, 0);
     check_pixels(c, d, 1);
@@ -132,6 +145,33 @@ uint32_t w2c_np__host_save_store(struct w2c_np__host *h, uint32_t src, uint32_t 
 uint64_t w2c_np__host_rtc_now(struct w2c_np__host *h) {
     np_core *c = h->core;
     return c->host.rtc_now ? (uint64_t)c->host.rtc_now(c->host.user) : (uint64_t)(int64_t)-1;
+}
+
+/* ---- local wireless -------------------------------------------------- */
+
+uint32_t w2c_np__host_net_self(struct w2c_np__host *h) {
+    np_core *c = h->core;
+    return c->host.net_self ? c->host.net_self(c->host.user) : 0;
+}
+
+uint32_t w2c_np__host_net_send(struct w2c_np__host *h, uint32_t peer, uint32_t buf, uint32_t len) {
+    np_core *c = h->core;
+    const uint8_t *p = guest_range(c, buf, len, "net_send");
+    if (!c->host.net_send) return (uint32_t)-1;
+    return c->host.net_send(c->host.user, peer, p, len) == 0 ? 0 : (uint32_t)-1;
+}
+
+uint32_t w2c_np__host_net_recv(struct w2c_np__host *h, uint32_t peer_out, uint32_t buf, uint32_t cap) {
+    np_core *c = h->core;
+    uint8_t *pp = guest_range(c, peer_out, 4, "net_recv");
+    uint8_t *p = guest_range(c, buf, cap, "net_recv");
+    if (!c->host.net_recv) return 0;
+    uint32_t peer = 0;
+    int n = c->host.net_recv(c->host.user, &peer, p, cap);
+    if (n < 0) return (uint32_t)-1;
+    if ((uint32_t)n > cap) np_rt_fail(c, "net_recv: the host returned %d bytes into a %u-byte buffer", n, cap);
+    memcpy(pp, &peer, 4);
+    return (uint32_t)n;
 }
 
 /* ---- diagnostics ----------------------------------------------------- */

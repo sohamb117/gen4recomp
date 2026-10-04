@@ -276,6 +276,14 @@ $(OBJ)/pcwasm/pc_wasm_lcf.o: $(LCF_VARS) $(ABS_H)
 
 $(TARGET): $(WASM_OBJS)
 
+# The contract header is not under pc/, so no stamp covers it: every host
+# object that includes it (directly or through pc_wasm.h) depends on it, so
+# a contract change (a new descriptor field) rebuilds exactly those.
+NP_ABI_USERS := $(shell grep -l -e 'pc_wasm\.h' -e 'np_guest_abi\.h' $(WROOT)/pc/src/*.c $(WROOT)/pc/hw/*.c 2>/dev/null)
+$(patsubst $(WROOT)/pc/src/%.c,$(OBJ)/pc/%.o,$(filter $(WROOT)/pc/src/%,$(NP_ABI_USERS))) \
+$(patsubst $(WROOT)/pc/hw/%.c,$(OBJ)/pchw/%.o,$(filter $(WROOT)/pc/hw/%,$(NP_ABI_USERS))) \
+$(WASM_OBJS): $(NP_ABI_H)
+
 # ------------------------------------------------------------ wasm2c check
 #
 # The acceptance gate for the module as a module: wasm-validate, wasm2c

@@ -147,8 +147,14 @@ uint32_t np_core_status(const np_core *core, uint32_t status);
  * native stacks of parked guest threads. It is only valid for the same
  * np_core in the same process (native stacks hold code addresses), so it is
  * never written to disk; the cartridge save is the persistent state.
- * state_size is an upper bound for the next state_save. Both return 0 on
- * success. A failed state_load leaves the core failed (np_core_last_error).
+ * state_size is an upper bound for a state_save made before the next
+ * np_core_run_frame (it grows as the guest touches more memory), or 0 when
+ * no snapshot can be taken (Windows builds; a failed or exited core). Both
+ * return 0 on success. A refused state_load (not this core's snapshot,
+ * truncated) returns -1 and leaves the core as it was; one that fails
+ * halfway leaves the core failed (np_core_last_error). Loading also
+ * revives a failed or exited core, and reverts the guest's backup chip
+ * image with the rest of memory (the host's stored save is untouched).
  */
 size_t np_core_state_size(const np_core *core);
 int np_core_state_save(np_core *core, void *dst, size_t cap, size_t *written);

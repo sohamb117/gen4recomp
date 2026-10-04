@@ -112,8 +112,17 @@ np_rt_fiber *np_rt_fiber_new(np_core *c, size_t stack_size, uint32_t arg, uint32
     for (uint32_t i = 0; i < NP_MAX_FIBERS; i++) {
         np_rt_fiber *f = &c->fibers[i];
         if (f->handle) continue;
-        f->native = np_fiber_create(stack_size, fiber_body, f);
-        if (!f->native) return NULL;
+        if (f->native) {
+            /* A pooled stack: only the boot fiber asks for more than the
+             * default and it is created first, so this never skips in
+             * practice; a stack is never swapped for a bigger one because a
+             * snapshot may still name its addresses. */
+            if (np_fiber_stack_size(f->native) < stack_size) continue;
+            if (np_fiber_reset(f->native, fiber_body, f) != 0) return NULL;
+        } else {
+            f->native = np_fiber_create(stack_size, fiber_body, f);
+            if (!f->native) return NULL;
+        }
         f->core = c;
         f->arg = arg;
         f->shadow_sp = shadow_sp;
@@ -131,8 +140,6 @@ np_rt_fiber *np_rt_fiber_lookup(np_core *c, uint32_t handle) {
 }
 
 void np_rt_fiber_release(np_rt_fiber *f) {
-    np_fiber_destroy(f->native);
-    f->native = NULL;
     f->handle = 0;
     f->generation = (f->generation + 1) & 0xFFFFFFu;
 }
@@ -199,6 +206,15 @@ np_core *np_core_create(np_game game, const np_host *host, const char *const *op
     c->memory = (wasm_rt_memory_t *)((uint8_t *)c->instance + mod->memory_offset);
     c->stack_pointer = (uint32_t *)((uint8_t *)c->instance + mod->stack_pointer_offset);
     np_wasi_init(c);
+    c->trace_fibers = getenv("NP_TRACE_FIBERS") != NULL;
+    c->opts[NP_OPT_BGM_VOLUME] = 256;
+    c->opts[NP_OPT_SE_VOLUME] = 256;
+    c->opts[NP_OPT_RENDER_SCALE] = 1;
+    c->opts[NP_OPT_CAMERA_ZOOM] = 256;
+    {
+        static uint64_t serial;
+        c->snapshot_token = ((uint64_t)(uintptr_t)c << 16) ^ ++serial ^ 0x9E3779B97F4A7C15ull;
+    }
 
     wasm_rt_init();
     c->driver.core = c;
@@ -229,14 +245,16 @@ int np_core_run_frame(np_core *c, const np_input *in, np_frame *out) {
         d->in_touch_x = in->touch_x;
         d->in_touch_y = in->touch_y;
         d->in_lid = in->lid_closed ? 1u : 0u;
+        memcpy(d->opt, c->opts, sizeof d->opt);
     }
 
     np_rt_switch(c, c->parked);
 
     if (c->state == NP_RT_FAILED) return -1;
     if (c->state == NP_RT_EXITED) return 1;
+    const np_frame_desc *d = (const np_frame_desc *)np_rt_guest(c, c->desc_addr, sizeof *d);
+    memcpy(c->status, d->status, sizeof c->status);
     if (out) {
-        const np_frame_desc *d = (const np_frame_desc *)np_rt_guest(c, c->desc_addr, sizeof *d);
         out->screen[0] = (const uint32_t *)np_rt_guest(c, d->screen[0], 0);
         out->screen[1] = (const uint32_t *)np_rt_guest(c, d->screen[1], 0);
         out->width = d->width;
@@ -245,6 +263,18 @@ int np_core_run_frame(np_core *c, const np_input *in, np_frame *out) {
         out->number = (uint64_t)d->frame_hi << 32 | d->frame_lo;
     }
     return 0;
+}
+
+void np_core_set_option(np_core *c, uint32_t opt, uint32_t value) {
+    if (opt < NP_OPT_COUNT) c->opts[opt] = value;
+}
+
+uint32_t np_core_get_option(const np_core *c, uint32_t opt) {
+    return opt < NP_OPT_COUNT ? c->opts[opt] : 0;
+}
+
+uint32_t np_core_status(const np_core *c, uint32_t status) {
+    return status < NP_STAT_COUNT ? c->status[status] : 0;
 }
 
 uint32_t np_core_audio_rate(const np_core *c) {
@@ -318,7 +348,7 @@ void np_core_destroy(np_core *c) {
     if (!c) return;
     if (c->driver.native) np_wasi_flush(c);
     for (uint32_t i = 0; i < NP_MAX_FIBERS; i++)
-        if (c->fibers[i].native) np_rt_fiber_release(&c->fibers[i]);
+        if (c->fibers[i].native) np_fiber_destroy(c->fibers[i].native);
     /* A trap during instantiation can leave memory allocated before
      * `instantiated` is set; the module's free tolerates the zeroed rest. */
     if (c->instance && (c->instantiated || c->memory->data)) c->mod->free(c->instance);
@@ -330,5 +360,6 @@ void np_core_destroy(np_core *c) {
     free(c->instance);
     free(c->env_block);
     free(c->pending_save);
+    free(c->page_map);
     free(c);
 }

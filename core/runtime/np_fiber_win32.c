@@ -23,6 +23,7 @@ struct np_fiber {
     LPVOID handle;
     np_fiber_fn fn;
     void *arg;
+    size_t stack_size;
     BOOL converted; /* enter_thread converted the thread; leave undoes it */
 };
 
@@ -62,6 +63,7 @@ np_fiber *np_fiber_create(size_t stack_size, np_fiber_fn fn, void *arg) {
     if (stack_size == 0) stack_size = NP_FIBER_DEFAULT_STACK;
     f->fn = fn;
     f->arg = arg;
+    f->stack_size = stack_size;
     f->handle = CreateFiberEx(0, stack_size, FIBER_FLAG_FLOAT_SWITCH, fiber_main, f);
     if (!f->handle) {
         free(f);
@@ -79,6 +81,35 @@ void np_fiber_destroy(np_fiber *fiber) {
     if (!fiber) return;
     DeleteFiber(fiber->handle);
     free(fiber);
+}
+
+size_t np_fiber_stack_size(const np_fiber *fiber) {
+    return fiber->stack_size;
+}
+
+/* A Win32 fiber cannot be rewound in place; a fresh one replaces it. */
+int np_fiber_reset(np_fiber *fiber, np_fiber_fn fn, void *arg) {
+    LPVOID h = CreateFiberEx(0, fiber->stack_size, FIBER_FLAG_FLOAT_SWITCH, fiber_main, fiber);
+    if (!h) return -1;
+    DeleteFiber(fiber->handle);
+    fiber->handle = h;
+    fiber->fn = fn;
+    fiber->arg = arg;
+    return 0;
+}
+
+/* The saved context of a Win32 fiber is opaque, so its stack cannot be
+ * captured and put back. */
+int np_fiber_live_stack(const np_fiber *fiber, uint8_t **lo, uint8_t **hi) {
+    (void)fiber;
+    *lo = *hi = NULL;
+    return -1;
+}
+
+int np_fiber_set_live_stack(np_fiber *fiber, uint8_t *lo) {
+    (void)fiber;
+    (void)lo;
+    return -1;
 }
 
 #endif /* _WIN32 */
