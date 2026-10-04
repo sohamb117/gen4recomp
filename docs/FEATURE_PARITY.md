@@ -136,7 +136,7 @@ Pokédex flags and add-mon (b27d9a954).
 | Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
 |---|---|---|---|---|---|
 | macOS build | Self-contained ad-hoc signed app zip, all three cores | done | done (boots) | done (boots) | games_boot; `tools/package_macos.sh --test` |
-| Windows build | exe zip | builds (not re-checked here) | | | docs/BUILDING.md |
+| Windows build | exe zip, all three cores (zig cross-build) | done (title under wine) | done (title under wine) | done (title under wine) | windows (`tools/package_windows.sh --test`) |
 | iOS IPA | | no (needs Xcode) | | | |
 | URL launch | `nativeplat://launch?game=&slot=` through LaunchServices | done | shell | shell | url_open, launch |
 | Launch flags | `--game`, `--slot`, `--launcher`, `--editor` | done | done | done | launch, games_boot |

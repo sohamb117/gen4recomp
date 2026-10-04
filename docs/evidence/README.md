@@ -54,6 +54,7 @@ and in-game runs start as `nativeplat --game platinum --slot Sandgem`.
 | Updater | `[updates] api =` local release server (fixtures.ReleaseServer); Check, Download and verify; bad digest | updater-* | "v9.9.9 is available", "Verified (SHA-256 …)", wrong digest refused and deleted |
 | Launch flags | `--game platinum --slot Sandgem`, `--launcher`, unknown slot | launch-* | Game starts; launcher; "Platinum has no save slot Nope" |
 | URL | `open -n -a nativeplat.app 'nativeplat://launch?game=platinum&slot=Sandgem'` (LaunchServices) | url_open | Log "link: nativeplat://…", Platinum running in slot Sandgem |
+| Windows package | `tools/package_windows.sh --test`: zig cross-build with all three cores, the exe run under wine (OrbStack amd64), `game=<g>,rom=…,press=1200:start:10` | windows/wine-diamond/pearl/platinum-small.png | Diamond, Pearl and Platinum title screens from nativeplat.exe (wine, dummy video: no real window) |
 | Portable mode | `portable.txt` beside the bundle (every case) | portable | Launcher footer "Portable data: …/userdata/" |
 | UI scale, reduced motion | `ui_scale = 2/6`; `reduce_motion = 1` on the name page | ui_scale-* | 2x small text; "6x (5x fits)"; steady caret |
 | About | About button | about | License and credits |
