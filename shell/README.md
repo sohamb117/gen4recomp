@@ -209,7 +209,31 @@ beyond broadcast range. *Wireless status* shows stations in range or the
 error. Each install keeps a station id in `options.ini` (`[wireless]
 station_id`), generated once: the game derives the console's MAC address
 from it and stores that in saves, so a changing id would trigger the game's
-"different DS" clock penalty.
+"different DS" clock penalty. *Internet relay host:port* and *Room PIN* switch
+the transport to a relay server (`server/relay`, `docs/RELAY.md`): players
+who enter the same relay and PIN meet as if in range, without port
+forwarding.
+
+## Folder sync
+
+*Options > Sync folder* picks a folder (for example inside iCloud Drive,
+Dropbox or a network share) that mirrors every save slot as
+`<folder>/<game>/<slot>.sav`; cartridges are never copied. Slots sync when the
+app starts (before a game can boot), when it quits, after every in-game or
+editor save, and on *Sync now*; renaming or deleting a slot removes its
+synced copy unless another device changed it since. *Sync status* shows the
+last result. Left on *Sync folder* turns sync off.
+
+Each slot is compared three ways (`src/sync_plan.c`): this device's file, the
+folder's file, and the content both had after the last sync, remembered in
+`sync-state.txt` with both files' size and modification time so unchanged
+files are not re-read. The side that changed wins. A fresh, never-saved slot
+never overwrites a save, and a missing file is never taken as a deletion.
+When both sides changed, this device's copy stays the slot, the folder's copy
+becomes a new slot `<slot> (conflict <date>)` (synced too, so neither version
+is lost anywhere), and a chooser shows both (trainer, play time, badges,
+save time) with *Keep this device's*, *Use the other copy*, *Keep both* or
+*Decide later*.
 
 ## Autotest
 
@@ -242,7 +266,8 @@ and `script=F:kind:args;...` to push synthetic `key`, `text`, mouse
 `station=<hex>` sets the station id (autotests otherwise use a fixed id).
 `rewind=F+N` holds rewind for N iterations from iteration F; `render_scale`,
 `widescreen`, `zoom`, `tilt`, `instant_text`, `fix_bugs` and
-`rewind_seconds` set the game options.
+`rewind_seconds` set the game options. `sync=<folder>` sets the sync folder
+(only with portable storage).
 
 A press schedule is steps separated by `;` or newlines (`#` comments in files):
 `F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N

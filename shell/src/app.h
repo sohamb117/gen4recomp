@@ -37,6 +37,7 @@ typedef enum np_page {
     NP_PAGE_CONFIRM,   /* delete confirmation */
     NP_PAGE_TEXT,      /* name entry (slots, trainer, nicknames) */
     NP_PAGE_EDITOR,    /* save editor (editor.c) */
+    NP_PAGE_SYNC,      /* folder sync conflict chooser (sync.c) */
 } np_page;
 
 /* Work handed from dialogs, drops and URLs to the main loop. */
@@ -48,6 +49,7 @@ typedef enum np_pending_kind {
     NP_PENDING_MESSAGE,    /* a dialog failed; path holds the message */
     NP_PENDING_GIFT_IMPORT, /* a .pgt/.pcd for the open save editor */
     NP_PENDING_CARD_EXPORT, /* PNG of the open save; pending_card is the np_card_kind */
+    NP_PENDING_SYNC_FOLDER, /* path is the folder picked for sync */
 } np_pending_kind;
 
 typedef enum np_text_purpose {
@@ -56,6 +58,8 @@ typedef enum np_text_purpose {
     NP_TEXT_TRAINER_NAME, /* the editor's; commit goes to np_editor_text_done */
     NP_TEXT_NICKNAME,
     NP_TEXT_LAN_PEER, /* Options: "host:port" to join */
+    NP_TEXT_LAN_RELAY, /* Options: internet relay "host:port" */
+    NP_TEXT_LAN_PIN,   /* Options: relay room PIN */
 } np_text_purpose;
 
 typedef enum np_menu_cmd {
@@ -134,6 +138,7 @@ typedef struct np_autotest {
     char drop[1024];    /* storage for a scripted drop event's text */
     char slot[NP_SLOT_NAME_MAX + 1]; /* save slot for rom=/synthetic boots */
     int rewind_from, rewind_frames;  /* rewind=F+N: hold rewind for N iterations from F */
+    char sync_folder[1024];          /* sync=<folder>: folder sync target */
 } np_autotest;
 
 typedef struct np_app {
@@ -176,7 +181,7 @@ typedef struct np_app {
     np_slot_list slots;
     int slot_sel; /* index into slots.slot of the slot the actions apply to */
     np_text_purpose text_purpose;
-    char text[NP_SLOT_NAME_MAX + 1];
+    char text[96]; /* at most text_max characters */
     char text_error[128];
     int osk_sel; /* on-screen keyboard key */
     int text_max; /* characters allowed on the text page */
@@ -185,6 +190,7 @@ typedef struct np_app {
     struct np_fx_state *fx;   /* display effects (fx.c) */
     struct np_net *net;       /* local wireless transport while enabled */
     char net_error[128];
+    char sync_status[96]; /* last folder sync result */
     struct np_session *session; /* session.c, while a game runs */
     int rewind_hold;            /* the rewind action is held */
 
@@ -221,6 +227,28 @@ int np_app_start_game(np_app *app, np_game game, const char *slot);
 int np_app_continue(np_app *app, np_game game);
 /* Reboots the running game from its slot's last save. */
 int np_app_reload_game(np_app *app);
+void np_app_stop_game(np_app *app);
+/* Queues work for the main loop; safe from any thread. */
+void np_app_request(np_app *app, np_pending_kind kind, const char *path);
+void np_app_open_rom_dialog(np_app *app);
+void np_app_open_sav_import_dialog(np_app *app, np_game game);
+void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot);
+void np_app_open_gift_import_dialog(np_app *app);
+void np_app_open_card_export_dialog(np_app *app, int kind);
+void np_app_open_sync_folder_dialog(np_app *app);
+void np_app_apply_video_options(np_app *app);
+void np_app_open_page(np_app *app, np_page page);
+int np_app_speed(const np_app *app); /* effective multiplier, 0 = uncapped */
+/* Rereads app->slots for app->slots_game; keeps slot_sel on `select` if given. */
+void np_app_refresh_slots(np_app *app, const char *select);
+/* Opens the save-slot page for `game`. */
+void np_app_open_slots(np_app *app, np_game game);
+/* Acts on a launch request (command line or URL). */
+void np_app_launch(np_app *app, const np_launch *req);
+/* (Re)opens or closes local wireless to match the options. */
+void np_app_net_apply(np_app *app);
+/* Stations in range, or -1 with wireless off. */
+int np_app_net_peers(const np_app *app);
 
 /* session.c: contract v2 features of the running game */
 typedef struct np_session np_session;
@@ -237,27 +265,18 @@ int np_session_rewind_depth(const np_app *app);
 size_t np_session_rewind_bytes(const np_app *app);
 /* F1/F2 quick save/load, F5/F6/F7 snapshots, camera keys; 1 if handled. */
 int np_session_hotkey(np_app *app, int scancode);
-void np_app_stop_game(np_app *app);
-/* Queues work for the main loop; safe from any thread. */
-void np_app_request(np_app *app, np_pending_kind kind, const char *path);
-void np_app_open_rom_dialog(np_app *app);
-void np_app_open_sav_import_dialog(np_app *app, np_game game);
-void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot);
-void np_app_open_gift_import_dialog(np_app *app);
-void np_app_open_card_export_dialog(np_app *app, int kind);
-void np_app_apply_video_options(np_app *app);
-void np_app_open_page(np_app *app, np_page page);
-int np_app_speed(const np_app *app); /* effective multiplier, 0 = uncapped */
-/* Rereads app->slots for app->slots_game; keeps slot_sel on `select` if given. */
-void np_app_refresh_slots(np_app *app, const char *select);
-/* Opens the save-slot page for `game`. */
-void np_app_open_slots(np_app *app, np_game game);
-/* Acts on a launch request (command line or URL). */
-void np_app_launch(np_app *app, const np_launch *req);
-/* (Re)opens or closes local wireless to match the options. */
-void np_app_net_apply(np_app *app);
-/* Stations in range, or -1 with wireless off. */
-int np_app_net_peers(const np_app *app);
+
+/* sync.c: folder sync of save slots (no-ops while no folder is set) */
+/* Every slot of every game, e.g. at launch and quit; quiet: toast only news. */
+void np_sync_all(np_app *app, int quiet);
+/* One slot, after it was written. */
+void np_sync_slot(np_app *app, np_game game, const char *slot);
+/* A slot deleted or renamed here: drops its synced copy if nobody changed it. */
+void np_sync_forget(np_app *app, np_game game, const char *slot);
+int np_sync_conflicts(const np_app *app);
+void np_sync_draw(np_app *app);
+void np_sync_command(np_app *app, np_menu_cmd cmd);
+void np_sync_hit(np_app *app, int id);
 
 /* input.c */
 void np_input_gamepad_added(np_app *app, SDL_JoystickID id);

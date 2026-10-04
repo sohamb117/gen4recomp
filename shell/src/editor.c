@@ -342,6 +342,7 @@ static void save_now(np_app *app, np_editor *e)
     e->dirty = 0;
     np_app_toast(app, "Saved \"%s\"", e->slot);
     SDL_Log("editor: saved %s", e->path);
+    np_sync_slot(app, e->game, e->slot);
 }
 
 static save4_status get_mon(const np_editor *e, int box, int slot, pkm4 *p)

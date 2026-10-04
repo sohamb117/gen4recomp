@@ -58,6 +58,8 @@ static int host_save_store(void *user, const void *src, uint32_t len)
     int r = np_storage_save_store(app->game, app->slot, src, len);
     if (r)
         np_app_toast(app, "Saving failed: %s", SDL_GetError());
+    else
+        np_sync_slot(app, app->game, app->slot);
     return r;
 }
 
@@ -121,9 +123,12 @@ void np_app_net_apply(np_app *app)
     app->net_error[0] = '\0';
     if (!app->opt.lan_enabled)
         return;
+    /* A relay replaces LAN discovery with a room on an internet server. */
     np_net_config cfg = {.port = (uint16_t)app->opt.lan_port,
                          .station_id = app->opt.station_id,
-                         .lan_discovery = 1,
+                         .lan_discovery = !app->opt.lan_relay[0],
+                         .relay = app->opt.lan_relay[0] ? app->opt.lan_relay : NULL,
+                         .pin = app->opt.lan_pin,
                          .log = net_log};
     app->net = np_net_open(&cfg, app->net_error, sizeof app->net_error);
     if (!app->net) {
@@ -178,6 +183,7 @@ static int test_save_store(void *user, const void *src, uint32_t len)
         if (!r) {
             t->saves++;
             t->save_len = len;
+            np_sync_slot(app, app->game, app->slot);
         }
         return r;
     }
@@ -578,6 +584,14 @@ void np_app_open_card_export_dialog(np_app *app, int kind)
         SDL_ShowSaveFileDialog(dialog_done, app, app->window, filters, 1, name);
 }
 
+void np_app_open_sync_folder_dialog(np_app *app)
+{
+    app->dialog_kind = NP_PENDING_SYNC_FOLDER;
+    if (!autotest_dialog(app, "sync folder"))
+        SDL_ShowOpenFolderDialog(dialog_done, app, app->window, app->opt.sync_folder[0] ? app->opt.sync_folder : NULL,
+                                 false);
+}
+
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot)
 {
     static const SDL_DialogFileFilter filters[] = {{"Raw save (*.sav)", "sav"}};
@@ -660,6 +674,13 @@ static void process_pending(np_app *app)
     case NP_PENDING_CARD_EXPORT:
         if (app->editor)
             np_editor_export_card(app, app->pending_card, path);
+        break;
+    case NP_PENDING_SYNC_FOLDER:
+        SDL_strlcpy(app->opt.sync_folder, path, sizeof app->opt.sync_folder);
+        app->options_dirty = 1;
+        save_options(app);
+        SDL_Log("sync folder: %s", path);
+        np_sync_all(app, 0);
         break;
     case NP_PENDING_GIFT_IMPORT:
         if (app->editor)
@@ -1144,6 +1165,8 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.fix_bugs = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "rewind_seconds"))
             app->opt.rewind_seconds = SDL_clamp(SDL_atoi(v), 0, 120);
+        else if (!SDL_strcmp(kv, "sync"))
+            SDL_strlcpy(t->sync_folder, v, sizeof t->sync_folder);
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
             if (SDL_sscanf(v, "%dx%d", &x, &y) != 2 || x < 0 || x > 255 || y < 0 || y > 191)
@@ -1503,6 +1526,18 @@ static void startup_launch(np_app *app, int argc, char *argv[])
         np_app_continue(app, (np_game)g);
 }
 
+/* Unresolved folder sync conflicts are put in front of the player once per
+ * launch: the chooser on the launcher, a hint in a game. */
+static void show_sync_conflicts(np_app *app)
+{
+    if (!np_sync_conflicts(app))
+        return;
+    if (app->view == NP_VIEW_GAME)
+        np_app_toast(app, "Sync conflict: choose in Options > Sync status");
+    else if (app->page == NP_PAGE_NONE)
+        np_app_open_page(app, NP_PAGE_SYNC);
+}
+
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     SDL_SetAppMetadata("nativeplat", "0.1.0", "org.nativeplat.nativeplat");
@@ -1545,6 +1580,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
     if ((!t->active || t->boot == NP_AT_APP) && np_options_load(&app->opt, app->options_path))
         SDL_Log("could not read %s; using defaults", app->options_path);
+    if (t->sync_folder[0])
+        SDL_strlcpy(app->opt.sync_folder, t->sync_folder, sizeof app->opt.sync_folder);
     if (!app->opt.station_id && t->active) {
         app->opt.station_id = 0x4E5001; /* fixed so scripted runs replay exactly */
     } else if (!app->opt.station_id) {
@@ -1589,16 +1626,20 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     if (t->active) {
         if (t->storage && autotest_storage(app))
             return SDL_APP_FAILURE;
+        np_sync_all(app, 1);
         if (t->boot == NP_AT_APP)
             startup_launch(app, argc, argv);
         else if (autotest_boot(app, (np_game)test_game))
             return SDL_APP_FAILURE;
+        show_sync_conflicts(app);
         return SDL_APP_CONTINUE;
     }
     if (np_audio_open(app))
         SDL_Log("audio unavailable: %s", SDL_GetError());
     np_audio_set_paused(app, 1);
+    np_sync_all(app, 1); /* before a game can start: pulls land first */
     startup_launch(app, argc, argv);
+    show_sync_conflicts(app);
     return SDL_APP_CONTINUE;
 }
 
@@ -1769,6 +1810,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
     if (!app)
         return;
     close_core(app);
+    np_sync_all(app, 1);
     save_options(app);
     np_audio_close(app);
     np_input_close_gamepads(app);

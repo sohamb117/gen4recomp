@@ -22,6 +22,7 @@
 #include "scale2x.h"
 #include "sha1.h"
 #include "slots.h"
+#include "sync_plan.h"
 #include "undo.h"
 
 static int failures, checks;
@@ -591,6 +592,75 @@ static void test_rewind(void)
     }
 }
 
+static np_sync_side side(np_sync_kind kind, uint8_t fill)
+{
+    np_sync_side s = {kind, {0}};
+    memset(s.hash, fill, sizeof s.hash);
+    return s;
+}
+
+/* The three-way rules, conflict names and state lines. */
+static void test_sync_plan(void)
+{
+    np_sync_side absent = side(NP_SYNC_ABSENT, 0), empty = side(NP_SYNC_EMPTY, 0);
+    np_sync_side a = side(NP_SYNC_DATA, 0xA), b = side(NP_SYNC_DATA, 0xB), c = side(NP_SYNC_DATA, 0xC);
+    uint8_t base_a[20], base_c[20];
+    memset(base_a, 0xA, 20);
+    memset(base_c, 0xC, 20);
+    const struct {
+        const np_sync_side *l, *r;
+        const uint8_t *base;
+        np_sync_action want;
+        const char *what;
+    } cases[] = {
+        {&absent, &absent, NULL, NP_SYNC_SAME, "nothing anywhere"},
+        {&a, &absent, NULL, NP_SYNC_PUSH, "new here"},
+        {&absent, &a, NULL, NP_SYNC_PULL, "new there"},
+        {&empty, &a, NULL, NP_SYNC_PULL, "fresh slot here never wins"},
+        {&a, &empty, base_a, NP_SYNC_PUSH, "fresh slot there never wins"},
+        {&empty, &empty, NULL, NP_SYNC_SAME, "both fresh"},
+        {&a, &a, NULL, NP_SYNC_SAME, "same content"},
+        {&a, &b, base_a, NP_SYNC_PULL, "only there changed"},
+        {&b, &a, base_a, NP_SYNC_PUSH, "only here changed"},
+        {&a, &b, base_c, NP_SYNC_CONFLICT, "both changed"},
+        {&a, &b, NULL, NP_SYNC_CONFLICT, "never synced and different"},
+        {&c, &absent, base_c, NP_SYNC_PUSH, "missing there is not a deletion"},
+    };
+    for (size_t i = 0; i < sizeof cases / sizeof cases[0]; i++)
+        CHECK(np_sync_decide(cases[i].l, cases[i].r, cases[i].base) == cases[i].want, "sync: %s", cases[i].what);
+
+    char out[NP_SLOT_NAME_MAX + 1];
+    CHECK(!np_sync_conflict_name("Slot 1", 2026, 10, 4, NULL, 0, out) && !strcmp(out, "Slot 1 (conflict 2026-10-04)"),
+          "conflict name: %s", out);
+    const char *taken[] = {"Slot 1 (conflict 2026-10-04)"};
+    CHECK(!np_sync_conflict_name("Slot 1", 2026, 10, 4, taken, 1, out) && strcmp(out, taken[0]) &&
+              !np_slot_name_problem(out),
+          "unique conflict name: %s", out);
+    CHECK(!np_sync_conflict_name("Nuzlocke run with a long nam", 2026, 1, 2, NULL, 0, out) &&
+              strlen(out) <= NP_SLOT_NAME_MAX && strstr(out, "(conflict 2026-01-02)") && !np_slot_name_problem(out),
+          "long conflict name: %s", out);
+
+    static const char *const games[] = {"diamond", "pearl", "platinum"};
+    np_sync_record r = {2, "Slot 1", {0}, 524288, 1759500000123456789LL, 524288, -5, "Slot 1 (conflict 2026-10-04)"};
+    for (int i = 0; i < 20; i++)
+        r.base[i] = (uint8_t)(i * 13);
+    char line[256];
+    int n = np_sync_record_format(&r, games, line, sizeof line);
+    np_sync_record back;
+    CHECK(n > 0 && line[n - 1] == '\n' && !np_sync_record_parse(line, games, 3, &back) &&
+              !memcmp(&back, &r, sizeof r),
+          "record round trip: %s", line);
+    r.conflict[0] = '\0';
+    np_sync_record_format(&r, games, line, sizeof line);
+    CHECK(!np_sync_record_parse(line, games, 3, &back) && !back.conflict[0], "record without conflict");
+    CHECK(np_sync_record_parse("platinum\tSlot 1\tzz\t1\t2\t3\t4\t\n", games, 3, &back), "bad hash refused");
+    CHECK(np_sync_record_parse("emerald\tSlot 1\t0000000000000000000000000000000000000000\t1\t2\t3\t4\t\n", games, 3,
+                               &back),
+          "unknown game refused");
+    CHECK(np_sync_record_parse("platinum\tSlot/1\t0000000000000000000000000000000000000000\t1\t2\t3\t4\t\n", games, 3,
+                               &back),
+          "bad slot name refused");
+}
 int main(void)
 {
     test_sha1();
@@ -605,6 +675,7 @@ int main(void)
     test_scale2x();
     test_card();
     test_rewind();
+    test_sync_plan();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

@@ -87,11 +87,14 @@ typedef struct np_options {
     int text_instant;
     int fix_bugs;       /* NP_RULE_FIX_BUGS */
     int rewind_seconds; /* history kept for hold-to-rewind, 0 = off */
+    char sync_folder[1024]; /* folder sync target (sync.c), "" = off */
     /* Local wireless (net.c). station_id is generated once and kept: the
      * game derives the console's MAC from it and stores that in saves. */
     int lan_enabled;
     int lan_port;
     char lan_peer[64]; /* "host:port" to join beyond LAN discovery, or "" */
+    char lan_relay[96]; /* "host:port" of an internet relay (net.c), "" = LAN */
+    char lan_pin[33];   /* relay room PIN */
     uint32_t station_id;
     np_bindings bind;
 } np_options;

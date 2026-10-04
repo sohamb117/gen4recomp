@@ -267,6 +267,9 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->fix_bugs = iv != 0;
         else if (!strcmp(key, "rewind_seconds"))
             o->rewind_seconds = clampi(iv, 0, 120);
+    } else if (!strcmp(section, "sync")) {
+        if (!strcmp(key, "folder"))
+            SDL_strlcpy(o->sync_folder, val, sizeof o->sync_folder);
     } else if (!strcmp(section, "wireless")) {
         if (!strcmp(key, "enabled"))
             o->lan_enabled = iv != 0;
@@ -274,6 +277,10 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->lan_port = clampi(iv, 1024, 65531);
         else if (!strcmp(key, "peer"))
             SDL_strlcpy(o->lan_peer, val, sizeof o->lan_peer);
+        else if (!strcmp(key, "relay"))
+            SDL_strlcpy(o->lan_relay, val, sizeof o->lan_relay);
+        else if (!strcmp(key, "pin"))
+            SDL_strlcpy(o->lan_pin, val, sizeof o->lan_pin);
         else if (!strcmp(key, "station_id"))
             o->station_id = (uint32_t)SDL_strtoul(val, NULL, 16) & 0xFFFFFFu;
     } else if (!strcmp(section, "input")) {
@@ -377,8 +384,9 @@ int np_options_save(const np_options *o, const char *path)
     for (int g = 0; g < NP_GAME_COUNT; g++)
         if (o->last_slot[g][0])
             put(b, "last_slot_%s = %s\n", np_game_ids[g], o->last_slot[g]);
-    put(b, "\n[wireless]\nenabled = %d\nport = %d\npeer = %s\nstation_id = %06X\n", o->lan_enabled, o->lan_port,
-        o->lan_peer, (unsigned)o->station_id);
+    put(b, "\n[sync]\nfolder = %s\n", o->sync_folder);
+    put(b, "\n[wireless]\nenabled = %d\nport = %d\npeer = %s\nrelay = %s\npin = %s\nstation_id = %06X\n",
+        o->lan_enabled, o->lan_port, o->lan_peer, o->lan_relay, o->lan_pin, (unsigned)o->station_id);
     put(b, "\n[input]\ntouch_controls = %s\n\n[keys]\n", touch_ids[o->touch_controls]);
     for (int a = 0; a < NP_ACT_COUNT; a++) {
         put(b, "%s =", action_ids[a]);

@@ -208,7 +208,12 @@ enum opt_item {
     OPT_LAN,
     OPT_LAN_PORT,
     OPT_LAN_PEER,
+    OPT_LAN_RELAY,
+    OPT_LAN_PIN,
     OPT_LAN_STATUS,
+    OPT_SYNC_FOLDER,
+    OPT_SYNC_NOW,
+    OPT_SYNC_STATUS,
     OPT_CONTROLS,
     OPT_ABOUT,
     OPT_QUIT_GAME,
@@ -222,7 +227,8 @@ static const char *const opt_labels[OPT_COUNT] = {
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
     "Music volume", "Sound effects volume", "3D render scale", "Widescreen 3D", "Camera zoom", "Camera tilt",
     "Instant text", "Fix cartridge bugs", "Rewind history",
-    "Touch controls", "Local wireless (LAN)", "LAN port", "Join by IP:port", "Wireless status",
+    "Touch controls", "Local wireless (LAN)", "LAN port", "Join by IP:port", "Internet relay host:port", "Room PIN",
+    "Wireless status", "Sync folder", "Sync now", "Sync status",
     "Controls...", "About...", "Quit to launcher", "Close",
 };
 
@@ -231,6 +237,8 @@ static int options_items(const np_app *app, int *items)
     int n = 0;
     for (int i = 0; i < OPT_COUNT; i++) {
         if (i == OPT_QUIT_GAME && app->view != NP_VIEW_GAME)
+            continue;
+        if ((i == OPT_SYNC_NOW || i == OPT_SYNC_STATUS) && !app->opt.sync_folder[0])
             continue;
         items[n++] = i;
     }
@@ -310,6 +318,8 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
     case OPT_LAN: SDL_strlcpy(buf, o->lan_enabled ? "On" : "Off", n); break;
     case OPT_LAN_PORT: SDL_snprintf(buf, n, "%d", o->lan_port); break;
     case OPT_LAN_PEER: SDL_strlcpy(buf, o->lan_peer[0] ? o->lan_peer : "(LAN discovery only)", n); break;
+    case OPT_LAN_RELAY: SDL_strlcpy(buf, o->lan_relay[0] ? o->lan_relay : "(none: LAN)", n); break;
+    case OPT_LAN_PIN: SDL_strlcpy(buf, o->lan_pin[0] ? o->lan_pin : "(none)", n); break;
     case OPT_LAN_STATUS: {
         int peers = np_app_net_peers(app);
         if (app->net_error[0])
@@ -318,6 +328,26 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
             SDL_strlcpy(buf, "Off", n);
         else
             SDL_snprintf(buf, n, "%d in range, id %06X", peers, (unsigned)o->station_id);
+        break;
+    }
+    case OPT_SYNC_FOLDER: {
+        /* The folder's tail: the start of a long path says little. */
+        size_t len = SDL_strlen(o->sync_folder);
+        if (!len)
+            SDL_strlcpy(buf, "Off (Enter: choose)", n);
+        else if (len < n)
+            SDL_strlcpy(buf, o->sync_folder, n);
+        else
+            SDL_snprintf(buf, n, "...%s", o->sync_folder + len - (n - 4));
+        break;
+    }
+    case OPT_SYNC_NOW: SDL_strlcpy(buf, "Enter", n); break;
+    case OPT_SYNC_STATUS: {
+        int c = np_sync_conflicts(app);
+        if (c)
+            SDL_snprintf(buf, n, "%d conflict%s: Enter to choose", c, c == 1 ? "" : "s");
+        else
+            SDL_strlcpy(buf, app->sync_status[0] ? app->sync_status : "Not synced yet", n);
         break;
     }
     default: buf[0] = '\0'; break;
@@ -383,6 +413,19 @@ static void opt_adjust(np_app *app, int item, int dir)
             np_app_net_apply(app);
         break;
     case OPT_LAN_STATUS: return;
+    case OPT_SYNC_FOLDER:
+        if (dir < 0) { /* Left turns sync off */
+            o->sync_folder[0] = '\0';
+            app->sync_status[0] = '\0';
+            break;
+        }
+        np_app_open_sync_folder_dialog(app);
+        return;
+    case OPT_SYNC_NOW: np_sync_all(app, 0); return;
+    case OPT_SYNC_STATUS:
+        if (np_sync_conflicts(app))
+            np_app_open_page(app, NP_PAGE_SYNC);
+        return;
     default: return;
     }
     app->options_dirty = 1;
@@ -395,6 +438,8 @@ static void opt_activate(np_app *app, int item, int dir)
 {
     switch (item) {
     case OPT_LAN_PEER: np_ui_open_text(app, NP_TEXT_LAN_PEER, app->opt.lan_peer, 32); break;
+    case OPT_LAN_RELAY: np_ui_open_text(app, NP_TEXT_LAN_RELAY, app->opt.lan_relay, 64); break;
+    case OPT_LAN_PIN: np_ui_open_text(app, NP_TEXT_LAN_PIN, app->opt.lan_pin, 32); break;
     case OPT_CONTROLS: np_app_open_page(app, NP_PAGE_CONTROLS); break;
     case OPT_ABOUT: np_app_open_page(app, NP_PAGE_ABOUT); break;
     case OPT_QUIT_GAME:
@@ -879,6 +924,17 @@ static int text_for_editor(const np_app *app)
     return app->text_purpose == NP_TEXT_TRAINER_NAME || app->text_purpose == NP_TEXT_NICKNAME;
 }
 
+/* Wireless settings typed on the text page; they go back to Options. */
+static char *text_option_target(np_app *app, size_t *cap)
+{
+    switch (app->text_purpose) {
+    case NP_TEXT_LAN_PEER: *cap = sizeof app->opt.lan_peer; return app->opt.lan_peer;
+    case NP_TEXT_LAN_RELAY: *cap = sizeof app->opt.lan_relay; return app->opt.lan_relay;
+    case NP_TEXT_LAN_PIN: *cap = sizeof app->opt.lan_pin; return app->opt.lan_pin;
+    default: return NULL;
+    }
+}
+
 static void slots_activate(np_app *app, int row)
 {
     slot_row rows[NP_MAX_SLOTS + 3];
@@ -1043,6 +1099,7 @@ static void confirm_activate(np_app *app, int yes)
         np_app_open_page(app, NP_PAGE_SLOT_MENU);
         return;
     }
+    np_sync_forget(app, app->slots_game, name);
     if (np_slot_name_eq(app->opt.last_slot[app->slots_game], name)) {
         app->opt.last_slot[app->slots_game][0] = '\0';
         app->options_dirty = 1;
@@ -1125,7 +1182,8 @@ static void osk_move(np_app *app, int dr, int dc)
 
 static void text_cancel(np_app *app)
 {
-    if (app->text_purpose == NP_TEXT_LAN_PEER) {
+    size_t cap;
+    if (text_option_target(app, &cap)) {
         np_app_open_page(app, NP_PAGE_OPTIONS);
     } else if (text_for_editor(app)) {
         np_editor_text_cancel(app);
@@ -1139,8 +1197,10 @@ static void text_cancel(np_app *app)
 
 static void text_commit(np_app *app)
 {
-    if (app->text_purpose == NP_TEXT_LAN_PEER) {
-        SDL_strlcpy(app->opt.lan_peer, app->text, sizeof app->opt.lan_peer);
+    size_t cap;
+    char *target = text_option_target(app, &cap);
+    if (target) {
+        SDL_strlcpy(target, app->text, cap);
         app->options_dirty = 1;
         np_app_net_apply(app);
         np_app_open_page(app, NP_PAGE_OPTIONS);
@@ -1194,6 +1254,8 @@ static void text_commit(np_app *app)
             app->options_dirty = 1;
         }
         SDL_Log("renamed save slot \"%s\" to \"%s\"", old, name);
+        np_sync_forget(app, g, old);
+        np_sync_slot(app, g, name);
     }
     np_app_refresh_slots(app, name);
     np_app_open_page(app, NP_PAGE_SLOT_MENU);
@@ -1215,8 +1277,9 @@ static void text_type(np_app *app, int code)
             code = ' ';
         /* Slot names are file names; game names are checked by the game's
          * charset when committed. */
-        int ok = text_for_editor(app) || app->text_purpose == NP_TEXT_LAN_PEER ? code >= 0x20 && code < 0x7F
-                                                                               : np_slot_char_ok((unsigned char)code);
+        size_t cap;
+        int ok = text_for_editor(app) || text_option_target(app, &cap) ? code >= 0x20 && code < 0x7F
+                                                                       : np_slot_char_ok((unsigned char)code);
         if ((int)len < app->text_max && ok) {
             app->text[len] = (char)code;
             app->text[len + 1] = '\0';
@@ -1228,15 +1291,15 @@ static void text_type(np_app *app, int code)
 static void draw_text_page(np_app *app)
 {
     np_page_frame f;
-    static const char *const titles[] = {"New save slot", "Rename save slot", "Trainer name", "Nickname",
-                                         "Join by IP:port"};
+    static const char *const titles[] = {"New save slot",   "Rename save slot",         "Trainer name", "Nickname",
+                                         "Join by IP:port", "Internet relay host:port", "Room PIN"};
     np_ui_begin_page(app, &f, titles[app->text_purpose]);
     float x = f.panel.x + 2 * f.cw, y = f.list_y;
     SDL_FRect box = {x, y - 4 * f.s, (float)(app->text_max + 2) * f.cw, f.lh + 4 * f.s};
     box.w = SDL_min(box.w, f.panel.w - 4 * f.cw);
     np_ui_fill(app, box, (SDL_Color){0, 0, 0, 160});
     np_ui_frame(app, box, f.s, accent);
-    char shown[NP_SLOT_NAME_MAX + 2];
+    char shown[sizeof app->text + 1];
     int blink = (SDL_GetTicks() / 500) % 2 == 0;
     SDL_snprintf(shown, sizeof shown, "%s%s", app->text, blink ? "_" : "");
     np_ui_text_clip(app, x + f.cw * 0.5f, y, f.s, shown, (int)(box.w / f.cw) - 1, white);
@@ -1388,6 +1451,10 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
         page_back(app);
         return;
     }
+    if (app->page == NP_PAGE_SYNC) {
+        np_sync_command(app, cmd);
+        return;
+    }
     if (app->page >= NP_PAGE_SLOTS) {
         slot_pages_command(app, cmd);
         return;
@@ -1461,6 +1528,10 @@ static void activate_hit(np_app *app, int id, int dir)
     }
     if (id == HIT_BACK) {
         page_back(app);
+        return;
+    }
+    if (app->page == NP_PAGE_SYNC) {
+        np_sync_hit(app, id);
         return;
     }
     if (id == HIT_SCROLL_UP || id == HIT_SCROLL_DOWN) {
@@ -1546,6 +1617,7 @@ void np_ui_draw(np_app *app)
     case NP_PAGE_CONFIRM: draw_confirm(app); break;
     case NP_PAGE_TEXT: draw_text_page(app); break;
     case NP_PAGE_EDITOR: np_editor_draw(app); break;
+    case NP_PAGE_SYNC: np_sync_draw(app); break;
     default: break;
     }
     if (app->toast[0] && SDL_GetTicksNS() < app->toast_until) {

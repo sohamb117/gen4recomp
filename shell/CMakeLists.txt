@@ -53,6 +53,7 @@ add_library(np_shell_common STATIC
   src/scale2x.c
   src/sha1.c
   src/slots.c
+  src/sync_plan.c
   src/undo.c
 )
 target_include_directories(np_shell_common PUBLIC src "${NP_ROOT}/core/include")
@@ -103,6 +104,7 @@ add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/options.c
   src/session.c
   src/storage.c
+  src/sync.c
   src/touchpad.c
   src/ui.c
 )
