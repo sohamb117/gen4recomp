@@ -22,13 +22,14 @@
 #include <stdint.h>
 #include <stdio.h>
 
-/* pc_video.c's per-frame lab hooks. */
-/* pc_lab_frame is also D's per-frame diagnostic point: PC_DP_HEAPCHECK=1
- * validates the game's heaps every frame, =2 on every Heap_Alloc/Heap_Free
- * as well (pc/patches/arm9/src/heap.c.patch). */
+/* pc_video.c's per-frame lab hooks. pc_lab_frame runs D's save lab
+ * (pc/game/pc_dp_lab.c, PC_LAB) and is also D's per-frame diagnostic
+ * point: PC_DP_HEAPCHECK=1 validates the game's heaps every frame, =2 on
+ * every Heap_Alloc/Heap_Free as well (pc/patches/arm9/src/heap.c.patch). */
 extern void pc_dp_heap_check(const char *where);
 extern int pc_dp_heapcheck_level;
 extern unsigned long long pc_dp_heapcheck_frame;
+extern void pc_dp_lab_frame(unsigned long long frame);
 void pc_lab_frame(unsigned long long frame)
 {
     static int init;
@@ -39,6 +40,7 @@ void pc_lab_frame(unsigned long long frame)
     }
     pc_dp_heapcheck_frame = frame;
     if (pc_dp_heapcheck_level >= 1) pc_dp_heap_check("frame");
+    pc_dp_lab_frame(frame);
 }
 void pc_lab_battle_frame(unsigned long long frame) { (void)frame; }
 void pc_lab_save_frame(unsigned long long frame) { (void)frame; }

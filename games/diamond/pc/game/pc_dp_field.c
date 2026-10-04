@@ -72,7 +72,9 @@ static FieldSystem *field_system(void) {
     return UNK_021C5A08;
 }
 
-static int field_ready(FieldSystem *fs) {
+/* Also the save lab's gate (pc_dp_lab.c): the recipe is applied, and the
+ * minted save written, only when the player is free in the field. */
+int pc_dp_field_ready(FieldSystem *fs) {
     u32 *proc;
     u32 move;
 
@@ -143,7 +145,7 @@ static void warp_frame(FieldSystem *fs, int ready) {
 
 static void np_frame(void) {
     FieldSystem *fs = field_system();
-    const int ready = field_ready(fs);
+    const int ready = pc_dp_field_ready(fs);
 
     pc_np_stat.field_ready = (unsigned)ready;
     pc_np_stat.map_id = fs != NULL && fs->location != NULL ? (unsigned)fs->location->mapId : 0;
@@ -172,20 +174,26 @@ static void np_frame(void) {
  * it and the next OS_Halt faulted on a wild pointer. The work gets a guest
  * stack of its own, as pc_agb_slot.c's selftest does; a nested frame
  * boundary (the save waiting on another thread) skips rather than share it.
+ * The save lab (pc_dp_lab.c) runs its recipe and save through the same.
  */
-void pc_np_frame(void) {
+int pc_dp_on_guest_stack(void (*fn)(void)) {
     extern u32 armrec_sp;
     static u32 stack[0x2000] __attribute__((aligned(8))); /* 32 KiB */
     static int busy;
     u32 saved;
 
-    if (busy) return;
+    if (busy) return 0;
     busy = 1;
     saved = armrec_sp;
     armrec_sp = (u32)(uintptr_t)(stack + 0x2000);
-    np_frame();
+    fn();
     armrec_sp = saved;
     busy = 0;
+    return 1;
+}
+
+void pc_np_frame(void) {
+    pc_dp_on_guest_stack(np_frame);
 }
 
 /*

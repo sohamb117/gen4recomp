@@ -1,0 +1,13 @@
+# Diamond/Pearl: boot on a save, CONTINUE (the screen shows PLAYER/TIME/
+# BADGES), the field is free from ~frame 1655; then X, down down to SAVE, A,
+# and A through the save prompts; the save is stored by ~frame 2900.
+# frames: 3400
+1250:start
+1400:a
+1500:a
+1600:a
+1800:x
+1860:down
+1890:down
+1920:a
+2040:a:4:100:8

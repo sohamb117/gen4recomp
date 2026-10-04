@@ -332,10 +332,12 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     fputs("  \"blocks\": [", o);
     for (int b = 0; b < SAVE4_BLOCK_COUNT; b++) {
         const save4_block_state *st = &s.blocks[b];
-        fprintf(o, "%s{\"name\": \"%s\", \"active\": \"%s\", \"valid\": [%s, %s], \"save_counter\": [%u, %u]}",
+        fprintf(o,
+                "%s{\"name\": \"%s\", \"active\": \"%s\", \"valid\": [%s, %s], \"save_counter\": [%u, %u], "
+                "\"block_counter\": [%u, %u]}",
                 b ? ", " : "", b ? "storage" : "general", st->active ? "backup" : "primary",
                 st->valid[0] ? "true" : "false", st->valid[1] ? "true" : "false", st->save_counter[0],
-                st->save_counter[1]);
+                st->save_counter[1], st->block_counter[0], st->block_counter[1]);
     }
     fputs("],\n  \"trainer\": {\"name\": ", o);
     jstr(o, t.name);

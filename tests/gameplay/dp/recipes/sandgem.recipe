@@ -1,0 +1,26 @@
+# Sandgem Town, standing at the Pokemon Center door (177,843), early-game
+# party, Poke Balls and a Poketch with three apps (Platinum's sandgem.recipe
+# on D). Drives scenarios 2 (Route 201 grass: a wild battle and a catch) and
+# 3 (Center heal, Mart buy, PC box).
+#
+# The vars are the coordinate triggers' own (zone events 327/328/396, the
+# values their scripts leave behind, scr_seq 0392/0393/0985): Route 201's
+# Rowan/rival scenes (0x4086 -> 3), Route 202's catching tutorial (0x4087 ->
+# 1), Sandgem's lab escort (0x4071 -> 2), so walking west into the grass meets
+# wild Pokemon instead of a cutscene. Base: the new-game save (bedroom).
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 27182
+money 3000
+var 0x4086 3
+var 0x4087 1
+var 0x4071 2
+party SPECIES_TURTWIG 9 ITEM_NONE
+party-move 0 0 MOVE_TACKLE
+party SPECIES_STARLY 6 ITEM_NONE
+item ITEM_POKE_BALL 10
+item ITEM_POTION 2
+poketch POKETCH_CALCULATOR
+poketch POKETCH_MEMO_PAD
+poketch POKETCH_DIGITAL_WATCH
+map MAP_SANDGEM 177 843 FACE_DOWN

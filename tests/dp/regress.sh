@@ -166,10 +166,13 @@ done <"$expected"
 
 if [ $update = 1 ] && [ ${#new_lines[@]} -gt 0 ]; then
     tmp=$(mktemp)
-    awk -v changes="$(printf '%s\n' "${new_lines[@]}")" '
-        BEGIN { n = split(changes, c, "\n"); for (i = 1; i <= n; i++) { split(c[i], f, " "); nh[f[1]] = f[3] } }
+    changes=$(mktemp)
+    # The changes go through a file: macOS awk refuses a newline in -v.
+    printf '%s\n' "${new_lines[@]}" >"$changes"
+    awk 'NR == FNR { nh[$1] = $3; next }
         /^[^#[:space:]]/ && ($1 in nh) { sub($4, nh[$1]) }
-        { print }' "$expected" >"$tmp"
+        { print }' "$changes" "$expected" >"$tmp"
+    rm -f "$changes"
     for l in "${new_lines[@]}"; do
         set -- $l
         echo "# $(date +%Y-%m-%d) $1: $2 -> $3: $reason" >>"$tmp"

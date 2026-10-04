@@ -1,9 +1,14 @@
 #!/bin/sh
-# Platinum gameplay scenarios on the real core, headless.
+# Gameplay scenarios on the real core, headless.
 #
-#   tests/gameplay/run.sh [-o OUT] [scenario ...]    scripted scenarios (default: all)
-#   tests/gameplay/run.sh [-o OUT] --soak [FRAMES]   seeded random input from field saves
-#   tests/gameplay/run.sh [-o OUT] --perf            frames/second, render_scale 1 and 2
+#   tests/gameplay/run.sh [--game G] [-o OUT] [scenario ...]    scripted scenarios (default: all)
+#   tests/gameplay/run.sh [--game G] [-o OUT] --soak [FRAMES]   seeded random input from field saves
+#   tests/gameplay/run.sh [--game G] [-o OUT] --perf            frames/second, render_scale 1 and 2
+#
+# G is platinum (default; scenarios/, recipes/, schedules/ here), diamond or
+# pearl (both from dp/scenarios, dp/recipes, dp/schedules). Diamond/Pearl
+# recipes are applied to the game's new-game save (D's lab continues a save,
+# see mint.sh), made once per OUT with tests/dp/<game>_first_save.sched.
 #
 # OUT (default build/gameplay/out) gets one directory per scenario (the save,
 # the run's log, the PPM shots and <name>.png, the contact sheet of those
@@ -25,41 +30,76 @@
 # Any DEFECT line from np_gp (trap, hang, VBlank stall, audio stall) fails it.
 #
 # Needs build/core-plat (cmake -S core -B build/core-plat with
-# NP_GUEST_WASM_platinum, see core/CMakeLists.txt) and the ROM; builds np_gp
-# and np_save4 itself. The ROM is never written to OUT.
+# NP_GUEST_WASM_platinum, see core/CMakeLists.txt), or build/core-dp with
+# NP_GUEST_WASM_diamond/_pearl for those (NP_CORE_BUILD overrides), and the
+# ROM; builds np_gp and np_save4 itself. The ROM is never written to OUT.
 set -u
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../.." && pwd)
-rom=${NP_ROM:-$root/games/platinum/build/rom/pokeplatinum.us.nds}
-core=${NP_CORE_BUILD:-$root/build/core-plat}
-out=$root/build/gameplay/out
+game=platinum
+out=
 mode=scenarios
 soak_frames=100000
 
 while [ $# -gt 0 ]; do
     case "$1" in
+    --game) game=$2; shift 2 ;;
     -o) out=$2; shift 2 ;;
     --soak) mode=soak; shift; case "${1:-}" in [0-9]*) soak_frames=$1; shift ;; esac ;;
     --perf) mode=perf; shift ;;
-    -h|--help) sed -n '2,32p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,40p' "$0"; exit 0 ;;
     *) break ;;
     esac
 done
 
-[ -f "$rom" ] || { echo "run.sh: no ROM at $rom (set NP_ROM)" >&2; exit 2; }
-[ -f "$core/libnp_guest_platinum.a" ] || { echo "run.sh: no Platinum core build in $core" >&2; exit 2; }
+case $game in
+platinum)
+    rom=${NP_ROM:-$root/games/platinum/build/rom/pokeplatinum.us.nds}
+    core=${NP_CORE_BUILD:-$root/build/core-plat}
+    data=$here
+    ;;
+diamond | pearl)
+    rom=${NP_ROM:-$root/games/diamond/build/$game.us/poke$game.us.nds}
+    core=${NP_CORE_BUILD:-$root/build/core-dp}
+    data=$here/dp
+    ;;
+*) echo "run.sh: --game is platinum, diamond or pearl" >&2; exit 2 ;;
+esac
+if [ -z "$out" ]; then
+    out=$root/build/gameplay/out
+    [ "$game" = platinum ] || out=$out-$game
+fi
 
-gp=$root/build/gameplay/np_gp
+[ -f "$rom" ] || { echo "run.sh: no ROM at $rom (set NP_ROM)" >&2; exit 2; }
+[ -f "$core/libnp_guest_$game.a" ] || { echo "run.sh: no $game core build in $core" >&2; exit 2; }
+
+# One np_gp per core build: every guest library the core has, as its
+# registry (np_headless_np_registry.c) lists them.
+gp=$root/build/gameplay/np_gp-$(basename "$core")
 mkdir -p "$root/build/gameplay" "$out"
 cc -O2 -std=c11 -Wall -I"$root/core/include" -I"$root/core/runtime" "$here/np_gp.c" \
-    "$core/np_headless_np_registry.c" "$core/libnp_guest_platinum.a" "$core/libnp_runtime.a" \
+    "$core/np_headless_np_registry.c" "$core"/libnp_guest_*.a "$core/libnp_runtime.a" \
     -lm -lpthread -o "$gp" || exit 2
 if [ ! -x "$root/build/features/np_save4" ]; then
     { cmake -S "$root/features" -B "$root/build/features" -G Ninja &&
       cmake --build "$root/build/features" --target np_save4; } >/dev/null || exit 2
 fi
 save4=$root/build/features/np_save4
-export NP_ROM="$rom" NP_GP="$gp"
+export NP_ROM="$rom" NP_GP="$gp" NP_GAME="$game"
+
+# Diamond/Pearl: the new-game save every recipe is applied to (mint.sh).
+if [ "$game" != platinum ]; then
+    base=$out/base.sav
+    if [ ! -f "$base" ]; then
+        sched=$root/tests/dp/${game}_first_save.sched
+        frames=$(sed -n 's/^# frames: *\([0-9][0-9]*\).*/\1/p' "$sched")
+        "$gp" "$rom" --game "$game" --frames "$frames" --save "$base.tmp" --schedule "$sched" \
+            >"$out/base.out" 2>"$out/base.log"
+        grep -q 'stored 524288-byte save' "$out/base.log" && mv "$base.tmp" "$base" ||
+            { echo "run.sh: the new-game save failed ($out/base.log)" >&2; exit 2; }
+    fi
+    export NP_BASE_SAVE="$base"
+fi
 
 # sheet DIR NAME: the PPM shots in DIR, in frame order, as DIR/NAME.png.
 sheet() {
@@ -76,18 +116,18 @@ run_scenario() {
     name=$1
     RECIPE='' FROM='' SCHEDULE='' FRAMES='' SHOTS='' EXPECT_MAP='' EXPECT_LOG='' EXPECT_SAVE=''
     # shellcheck disable=SC1090
-    . "$here/scenarios/$name.scn"
+    . "$data/scenarios/$name.scn"
     d=$out/$name
     rm -rf "$d" && mkdir -p "$d"
     why=''
     if [ -n "$RECIPE" ]; then
-        "$here/mint.sh" "$here/$RECIPE" "$d/start.sav" 2>"$d/mint.err" || why="mint failed"
+        "$here/mint.sh" "$data/$RECIPE" "$d/start.sav" 2>"$d/mint.err" || why="mint failed"
     elif [ -n "$FROM" ]; then
         cp "$out/$FROM/end.sav" "$d/start.sav" 2>/dev/null || why="no save from $FROM (run it first)"
     fi
     [ -f "$d/start.sav" ] && cp "$d/start.sav" "$d/end.sav"
     if [ -z "$why" ]; then
-        "$gp" "$rom" --frames "$FRAMES" --save "$d/end.sav" --schedule "$here/$SCHEDULE" \
+        "$gp" "$rom" --game "$game" --frames "$FRAMES" --save "$d/end.sav" --schedule "$data/$SCHEDULE" \
             --dump "$d" --dump-at "$SHOTS" >"$d/run.out" 2>"$d/run.log"
         grep DEFECT "$d/run.out" >"$d/defects.txt"
         if [ -s "$d/defects.txt" ]; then why=$(head -1 "$d/defects.txt")
@@ -132,11 +172,11 @@ run_soak() {
     for recipe in sandgem roark gate; do
         d=$out/soak-$recipe
         rm -rf "$d" && mkdir -p "$d"
-        "$here/mint.sh" "$here/recipes/$recipe.recipe" "$d/start.sav" 2>"$d/mint.err" || { echo "soak: mint $recipe failed"; rc=1; continue; }
+        "$here/mint.sh" "$data/recipes/$recipe.recipe" "$d/start.sav" 2>"$d/mint.err" || { echo "soak: mint $recipe failed"; rc=1; continue; }
         for seed in ${SOAK_SEEDS:-1}; do
             cp "$d/start.sav" "$d/seed$seed.sav"
             # 1250-1600: title, CONTINUE; random from 1800.
-            "$gp" "$rom" --frames "$soak_frames" --save "$d/seed$seed.sav" --schedule "$here/schedules/continue.press" \
+            "$gp" "$rom" --game "$game" --frames "$soak_frames" --save "$d/seed$seed.sav" --schedule "$data/schedules/continue.press" \
                 --random "$seed" --random-from 1800 --dump "$d" --dump-every $((soak_frames / 8)) --dump-from 1800 \
                 >"$d/seed$seed.out" 2>"$d/seed$seed.log"
             r=$(grep -c DEFECT "$d/seed$seed.out")
@@ -165,10 +205,10 @@ run_perf() {
         esac
         d=$out/perf-$scene
         rm -rf "$d" && mkdir -p "$d"
-        "$here/mint.sh" "$here/recipes/$recipe.recipe" "$d/start.sav" 2>"$d/mint.err" || { echo "perf: mint $recipe failed"; rc=1; continue; }
+        "$here/mint.sh" "$data/recipes/$recipe.recipe" "$d/start.sav" 2>"$d/mint.err" || { echo "perf: mint $recipe failed"; rc=1; continue; }
         for scale in 1 2; do
             cp "$d/start.sav" "$d/s$scale.sav"
-            "$gp" "$rom" --frames "$frames" --save "$d/s$scale.sav" --schedule "$here/schedules/$sched" \
+            "$gp" "$rom" --game "$game" --frames "$frames" --save "$d/s$scale.sav" --schedule "$data/schedules/$sched" \
                 -o "render_scale=$scale" --time-from "$from" >"$d/s$scale.out" 2>"$d/s$scale.log"
             grep -q DEFECT "$d/s$scale.out" && rc=1
             printf '%-10s %-6s %8s %10s\n' "$scene" "$scale" \
@@ -185,7 +225,7 @@ soak) run_soak; exit $? ;;
 perf) run_perf; exit $? ;;
 esac
 
-[ $# -gt 0 ] || set -- $(cd "$here/scenarios" && ls *.scn | sed 's/\.scn$//')
+[ $# -gt 0 ] || set -- $(cd "$data/scenarios" && ls *.scn | sed 's/\.scn$//')
 row scenario result frames fps "contact sheet / reason"
 fail=0
 for s in "$@"; do run_scenario "$s" || fail=1; done
