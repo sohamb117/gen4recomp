@@ -535,6 +535,15 @@ static void test_snapshots(test_host *th) {
     CHECKF(np_core_state_load(c, s1, len1) == 0, "revive: %s", np_core_last_error(c));
     CHECK(run_hashed(c, 1, 6) == a);
 
+    /* Options survive a load, but a pending quick save request does not. */
+    np_core_set_option(c, NP_OPT_QUICKSAVE_SEQ, 9);
+    np_core_set_option(c, NP_OPT_BGM_VOLUME, 77);
+    in = input_for(7);
+    CHECK(np_core_run_frame(c, &in, &f) == 0 && np_core_status(c, NP_STAT_QUICKSAVE_SEQ) == 9);
+    CHECK(np_core_state_load(c, s1, len1) == 0);
+    CHECK(np_core_get_option(c, NP_OPT_QUICKSAVE_SEQ) == 0 && np_core_status(c, NP_STAT_QUICKSAVE_SEQ) == 0);
+    CHECK(np_core_get_option(c, NP_OPT_BGM_VOLUME) == 77);
+
     printf("snapshot: %zu bytes after frame 0, %zu after frame 6 (bound %zu)\n", len1, len2, np_core_state_size(c));
     np_core_destroy(c);
 

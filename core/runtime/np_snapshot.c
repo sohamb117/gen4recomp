@@ -354,6 +354,10 @@ int np_core_state_load(np_core *c, const void *src, size_t len) {
     c->audio_tail = h.audio_tail;
     c->rng_state = h.rng_state;
     memcpy(c->status, h.status, sizeof c->status);
+    /* The one option that is an edge rather than a setting: a quick save
+     * request the restored guest never saw would fire on the next frame, so
+     * the request counter goes back to what that guest last handled. */
+    c->opts[NP_OPT_QUICKSAVE_SEQ] = c->status[NP_STAT_QUICKSAVE_SEQ];
     memcpy(c->std_open, h.std_open, sizeof c->std_open);
     c->error[0] = 0;
     return 0;

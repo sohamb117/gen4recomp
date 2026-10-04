@@ -155,6 +155,9 @@ uint32_t np_core_status(const np_core *core, uint32_t status);
  * halfway leaves the core failed (np_core_last_error). Loading also
  * revives a failed or exited core, and reverts the guest's backup chip
  * image with the rest of memory (the host's stored save is untouched).
+ * Options are the host's and survive a load, except NP_OPT_QUICKSAVE_SEQ,
+ * a request counter, which is set to the restored NP_STAT_QUICKSAVE_SEQ so
+ * a load never fires a quick save.
  */
 size_t np_core_state_size(const np_core *core);
 int np_core_state_save(np_core *core, void *dst, size_t cap, size_t *written);
