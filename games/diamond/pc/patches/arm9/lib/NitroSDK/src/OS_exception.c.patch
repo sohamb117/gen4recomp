@@ -1,0 +1,124 @@
+OS_exception.c, for armrec (pc/mk/game.mk EXTRACTED_ASM):
+
+* OSi_DisplayExContext is C with a statement-level mwcc asm block (a CPU
+  mode switch), which neither clang nor extract_asm can take. It becomes an
+  asm function holding the ROM's own code for it (OS_exception.o,
+  disassembled; literal pool: OSi_UserExceptionHandler, 0x9f,
+  OSi_UserExceptionHandlerArg, OSi_ExContext), so it is recompiled with
+  the other three asm functions of this file instead of being lost.
+* The asm bodies address OSiExContext members as `#OSiExContext.debug[1]`,
+  which mwcc resolved and armrec cannot. They become the offsets the ROM
+  encodes (OSi_SetExContext: str r2,[r1,#116]; r0 #108; r12 #112;
+  cp15 #100; spsr #124), which clang's wasm32 layout of the struct also
+  gives.
+* The four file-statics the asm bodies load by name lose `static`: the
+  recompiled bodies live in another object. The names are unique.
+
+This patch is authored against the pristine source (D's order is
+patch -> strip_asm, see pc/mk/game.mk).
+
+--- a/arm9/lib/NitroSDK/src/OS_exception.c
++++ b/arm9/lib/NitroSDK/src/OS_exception.c
+@@ -6,18 +6,18 @@
+ 
+ #include "code32.h"
+ 
+-static OSiExContext OSi_ExContext;
++OSiExContext OSi_ExContext;
+ 
+-static OSExceptionHandler OSi_UserExceptionHandler;
+-static void *OSi_UserExceptionHandlerArg;
++OSExceptionHandler OSi_UserExceptionHandler;
++void *OSi_UserExceptionHandlerArg;
+ 
+-static void *OSi_DebuggerHandler = NULL;
++void *OSi_DebuggerHandler = NULL;
+ 
+ #define HW_EXCEP_VECTOR_BUF_FOR_DEBUGGER 0x027ffd9c
+ 
+ static void OSi_GetAndDisplayContext(void);
+ static void OSi_SetExContext(void);
+ static void OSi_DisplayExContext(void);
+ 
+ void OS_InitException(void)
+ {
+@@ -101,9 +101,9 @@
+     ldr r1, =OSi_ExContext;
+ 
+     mrs r2, cpsr
+-    str r2, [r1, #OSiExContext.debug[1]]
++    str r2, [r1, #116] // OSiExContext.debug[1]
+ 
+-    str r0, [r1, #OSiExContext.exinfo]
++    str r0, [r1, #108] // OSiExContext.exinfo
+ 
+     ldr r0, [r12, #0]
+     str r0, [r1, #4]
+@@ -119,10 +119,10 @@
+     add r0, r1, #20
+     stmia r0, {r4-r11}
+ 
+-    str r12, [r1, #OSiExContext.debug[0]]
++    str r12, [r1, #112] // OSiExContext.debug[0]
+ 
+     ldr r0, [r2, #0]
+-    str r0, [r1, #OSiExContext.cp15]
++    str r0, [r1, #100] // OSiExContext.cp15
+     ldr r3, [r2, #4]
+     str r3, [r1, #0]
+     ldr r0, [r2, #8]
+@@ -139,28 +139,39 @@
+     str lr, [r1, #60]
+     mrs r2, spsr
+ 
+-    str r2, [r1, #OSiExContext.debug[3]]
++    str r2, [r1, #124] // OSiExContext.debug[3]
+ 
+     msr cpsr_cxsf, r0
+     bx lr
+ }
+ 
+-static void OSi_DisplayExContext(void)
++static asm void OSi_DisplayExContext(void)
+ {
+-    if (OSi_UserExceptionHandler)
+-    {
+-        asm
+-        {
+-            mov r0, sp
+-            ldr r1, =0x9f
+-            msr CPSR_cxsf, r1
+-            mov sp, r0
+-        }
++    stmdb sp!, {lr}
++    sub sp, sp, #4
++    ldr r0, =OSi_UserExceptionHandler
++    ldr r0, [r0]
++    cmp r0, #0
++    addeq sp, sp, #4
++    ldmeqia sp!, {lr}
++    bxeq lr
+ 
+-        OS_EnableProtectionUnit();
++    mov r0, sp
++    ldr r1, =0x9f
++    msr CPSR_cxsf, r1
++    mov sp, r0
+ 
+-        ((void (*)(u32, void *))OSi_UserExceptionHandler)((u32)&OSi_ExContext, OSi_UserExceptionHandlerArg);
++    bl OS_EnableProtectionUnit
++
++    ldr r1, =OSi_UserExceptionHandlerArg
++    ldr r0, =OSi_UserExceptionHandler
++    ldr r1, [r1]
++    ldr r2, [r0]
++    ldr r0, =OSi_ExContext
++    blx r2
+ 
+-        OS_DisableProtectionUnit();
+-    }
++    bl OS_DisableProtectionUnit
++    add sp, sp, #4
++    ldmia sp!, {lr}
++    bx lr
+ }

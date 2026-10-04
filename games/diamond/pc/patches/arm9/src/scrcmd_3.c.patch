@@ -1,0 +1,47 @@
+sub_0203FEF4 / sub_020401F0: BOOL native-script callbacks that fall off the
+end (no return statement). On the ROM the value returned is r0 as the last
+call left it (scrcmd_3.o: `bl sub_02082158; pop {r4, pc}`), i.e. the callee's
+own BOOL (sub_02082158 / sub_02081EB8 -> sub_02081EC0 both return 0/1,
+arm9/asm/unk_02080C38.s), and the script engine keeps waiting while it is
+FALSE. In wasm a missing return is an undefined value, so the callbacks
+return the callee's result explicitly, and the two prototypes say BOOL,
+which is what the assembly returns.
+
+--- a/arm9/src/scrcmd_3.c
++++ b/arm9/src/scrcmd_3.c
+@@ -13,7 +13,7 @@
+ extern SaveFashionData *Save_FashionData_Get(SaveData *save);
+ 
+ extern void sub_02082140(void *param1, u8 param2);
+-extern void sub_02082158(void *param1, u8 param2);
++extern BOOL sub_02082158(void *param1, u8 param2);
+ extern BOOL sub_0205ED0C(SaveVarsFlags *state);
+ extern void *sub_02081214(void *param1);
+ extern void sub_02082630(void *param1, SaveData *save, u32 mapSec, u32 *param4);
+@@ -22,7 +22,7 @@
+ extern void sub_02082034(void *param1, u16 param2, MessageFormat *msgFormat, u16 param4);
+ extern void sub_0208206C(void *param1, u16 param2, MessageFormat *msgFormat, u16 param4);
+ extern void sub_02081DC4(void *param1);
+-extern void sub_02081EB8(void *param1);
++extern BOOL sub_02081EB8(void *param1);
+ extern void sub_02080E0C(TaskManager *taskManager, void *param2);
+ extern void sub_02082090(void *param1, MessageFormat *msgFormat, u16 param3);
+ extern void sub_020820B8(void *param1, MessageFormat *msgFormat, u16 param3);
+@@ -76,7 +76,7 @@
+ static BOOL sub_0203FEF4(ScriptContext *ctx) {
+     void **miscDataPtr = FieldSysGetAttrAddr(ctx->fieldSystem, SCRIPTENV_MISC_DATA_PTR);
+ 
+-    sub_02082158(*miscDataPtr, ctx->data[0]);
++    return sub_02082158(*miscDataPtr, ctx->data[0]);
+ }
+ 
+ BOOL ScrCmd_Unk00FA(ScriptContext *ctx) {
+@@ -185,7 +185,7 @@
+ static BOOL sub_020401F0(ScriptContext *ctx) {
+     void **miscDataPtr = FieldSysGetAttrAddr(ctx->fieldSystem, SCRIPTENV_MISC_DATA_PTR);
+ 
+-    sub_02081EB8(*miscDataPtr);
++    return sub_02081EB8(*miscDataPtr);
+ }
+ 
+ BOOL ScrCmd_Unk0101(ScriptContext *ctx) {

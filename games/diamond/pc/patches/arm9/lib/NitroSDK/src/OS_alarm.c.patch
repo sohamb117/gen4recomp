@@ -1,0 +1,26 @@
+OSi_ArrangeTimer: file-static in C, but called by name (`bl OSi_ArrangeTimer`)
+from OSi_AlarmHandler, an mwcc asm body that armrec recompiles into a
+separate object (pc/mk/game.mk EXTRACTED_ASM). A static symbol cannot be
+reached from another object, so it is given external linkage. The name is
+unique in the tree.
+
+--- a/arm9/lib/NitroSDK/src/OS_alarm.c
++++ b/arm9/lib/NitroSDK/src/OS_alarm.c
+@@ -12,7 +12,7 @@
+ 
+ static void OSi_SetTimer(OSAlarm *alarm);
+ static void OSi_InsertAlarm(OSAlarm *alarm, OSTick fire);
+-static void OSi_ArrangeTimer(void);
++void OSi_ArrangeTimer(void);
+ 
+ static void OSi_SetTimer(OSAlarm *alarm)
+ {
+@@ -194,7 +194,7 @@
+     bx lr
+ }
+ 
+-static void OSi_ArrangeTimer(void)
++void OSi_ArrangeTimer(void)
+ {
+     OS_SetTimerControl(OS_TIMER_1, 0);
+ 

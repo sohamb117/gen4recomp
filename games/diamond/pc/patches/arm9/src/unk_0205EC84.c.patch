@@ -1,0 +1,17 @@
+sub_0205EE60: falls off the end for a1 > 4 ("UB: No return value"). The ROM
+(unk_0205EC84.o: `cmp r1, #4; bhi <pop {r3, pc}>`) returns r0 unchanged,
+i.e. the state pointer, which every caller reads as TRUE. wasm would return
+an undefined value, so the ROM's value is returned explicitly.
+
+--- a/arm9/src/unk_0205EC84.c
++++ b/arm9/src/unk_0205EC84.c
+@@ -149,7 +149,8 @@
+     case 4:
+         return _flag_check(state, 0x96C);
+     }
+-    // UB: No return value
++    // UB: No return value. The ROM returns r0 untouched: the state pointer.
++    return (BOOL)(u32)state;
+ }
+ 
+ BOOL sub_0205EEB8(struct SaveVarsFlags *state, u32 a1) {
