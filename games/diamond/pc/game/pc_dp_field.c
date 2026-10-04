@@ -114,7 +114,34 @@ static void quicksave_done(unsigned result) {
     sQsWait = 0;
 }
 
-void pc_np_frame(void) {
+/*
+ * PC_WARP=MAP:X:Z[:DIR] (test harness; tests/link): at the first moment
+ * the player is free in the field, a map change to MAP at tile X,Z facing
+ * DIR (0 up, 1 down, 2 left, 3 right), through the same field task
+ * (sub_02049274: FieldSystem_CreateTask of the map-change task
+ * sub_02049304 with a Location) the game's own warps run, so the new map's
+ * people are loaded from its events as on any arrival. Platinum's
+ * equivalent is pc_lab's `map` line.
+ */
+extern void sub_02049274(FieldSystem *fieldSystem, u32 mapId, s32 warpId, u32 x, u32 y, u32 dir);
+
+static void warp_frame(FieldSystem *fs, int ready) {
+    extern char *getenv(const char *);
+    static int sState; /* 0 unread, 1 pending, 2 done */
+    static unsigned sMap, sX, sZ, sDir;
+
+    if (sState == 0) {
+        const char *v = getenv("PC_WARP");
+        sState = 2;
+        if (v != NULL && sscanf(v, "%u:%u:%u:%u", &sMap, &sX, &sZ, &sDir) >= 3 && sDir < 4) sState = 1;
+    }
+    if (sState != 1 || !ready) return;
+    fprintf(stderr, "pc-np: PC_WARP to map %u (%u,%u) dir %u\n", sMap, sX, sZ, sDir);
+    sub_02049274(fs, sMap, -1, sX, sZ, sDir);
+    sState = 2;
+}
+
+static void np_frame(void) {
     FieldSystem *fs = field_system();
     const int ready = field_ready(fs);
 
@@ -122,6 +149,7 @@ void pc_np_frame(void) {
     pc_np_stat.map_id = fs != NULL && fs->location != NULL ? (unsigned)fs->location->mapId : 0;
 
     pc_dp_rules_frame();
+    warp_frame(fs, ready);
 
     if (pc_np_opt.quicksave_seq == pc_np_stat.quicksave_seq) return;
     if (ready) {
@@ -133,6 +161,31 @@ void pc_np_frame(void) {
     } else if (++sQsWait > QUICKSAVE_PATIENCE) {
         quicksave_done(PC_NP_QS_REFUSED);
     }
+}
+
+/*
+ * The frame boundary is OS_Halt, which normally runs on the SDK's idle
+ * thread, and the recompiled code called from here (Field_SaveGame, the
+ * rules check's battle code) pushes its frames on the running thread's
+ * guest stack, armrec_sp: for the idle thread that is OSi_IdleThreadStack,
+ * 200 bytes, with the thread structures below it. A quick save overflowed
+ * it and the next OS_Halt faulted on a wild pointer. The work gets a guest
+ * stack of its own, as pc_agb_slot.c's selftest does; a nested frame
+ * boundary (the save waiting on another thread) skips rather than share it.
+ */
+void pc_np_frame(void) {
+    extern u32 armrec_sp;
+    static u32 stack[0x2000] __attribute__((aligned(8))); /* 32 KiB */
+    static int busy;
+    u32 saved;
+
+    if (busy) return;
+    busy = 1;
+    saved = armrec_sp;
+    armrec_sp = (u32)(uintptr_t)(stack + 0x2000);
+    np_frame();
+    armrec_sp = saved;
+    busy = 0;
 }
 
 /*
