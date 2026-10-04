@@ -361,9 +361,29 @@ void FS_StartOverlay(FSOverlayInfo *p_ovi)
     }
     id = p_ovi->header.id;
 
+#if defined(PC_GAME_DP)
+    /* Diamond/Pearl run most of an overlay as recompiled code: it becomes
+       resident (and its assembly data is written) before anything below
+       can call into it. games/diamond/pc/src/pc_dp_overlay.c. */
+    {
+        extern void pc_dp_overlay_start(FSOverlayInfo *p_ovi);
+        pc_dp_overlay_start(p_ovi);
+    }
+#endif
+
     /* Hardware copies the ROM image first. Do that for host statics
        before the sinit walk, so NitroStaticInit sees a fresh overlay. */
     ov_reload(id);
+
+#if defined(PC_GAME_DP)
+    /* D/P's static initialisers: the table is the ROM's, the needles below
+       are Platinum's. */
+    {
+        extern void pc_dp_overlay_sinit(FSOverlayInfo *p_ovi);
+        pc_dp_overlay_sinit(p_ovi);
+    }
+    return;
+#endif
 
     /* Only the Poketch app overlays are wired. A new overlay whose
        NitroStaticInit starts mattering adds a needle, it does not get a

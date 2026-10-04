@@ -1,0 +1,112 @@
+# Functions the host layer defines in C that Diamond/Pearl implement in
+# assembly: arm9/asm/*.s, or mwcc `asm` bodies inside NitroSDK C files.
+#
+# Consumed by pc/mk/armrec.mk (armrec --host-override: the name is not
+# emitted, every recompiled call to it is a boundary call to the host
+# definition, and its guest address dispatches there) and by pc/mk/game.mk
+# (the asm-in-C body is not extracted). Written by the host slice
+# (pc/mk/host.mk) from the definitions its objects export; every name below
+# was checked against arm9/build/<ver>.us/arm9.elf.xMAP (address, object)
+# and its D source. SDK functions D has in plain C need no entry: game.mk
+# compiles D's SDK weak, and the host's strong definition wins.
+#
+# One name per line, `#` comments.
+
+# games/platinum/pc/src/pc_mi.c  (OS_cache.c, MI_memory.c, MI_swap.c,
+# MI_uncompress.c and crt0.c asm bodies)
+DC_FlushAll
+DC_FlushRange
+DC_InvalidateRange
+DC_StoreRange
+DC_WaitWriteBufferEmpty
+IC_InvalidateAll
+IC_InvalidateRange
+MI_Copy32B
+MI_Copy36B
+MI_Copy48B
+MI_Copy64B
+MI_CpuCopy8
+MI_CpuFill8
+MI_SwapWord
+MI_UncompressLZ8
+MI_Zero36B
+MIi_CpuClear16
+MIi_CpuClear32
+MIi_CpuClearFast
+MIi_CpuCopy16
+MIi_CpuCopy32
+MIi_CpuCopyFast
+MIi_CpuSend32
+MIi_UncompressBackward
+
+# games/platinum/pc/src/pc_gx.c  (GX_asm.c, GX_g3x.c asm bodies)
+GX_SendFifo48B
+GXi_NopClearFifo128_
+
+# games/platinum/pc/src/pc_mtx.c  (FX_mtx22/33/43/44.c asm bodies)
+MTX_Copy43To44_
+MTX_Copy44To43_
+MTX_Identity22_
+MTX_Identity33_
+MTX_Identity43_
+MTX_Identity44_
+MTX_Rot22_
+MTX_RotX33_
+MTX_RotX43_
+MTX_RotX44_
+MTX_RotY33_
+MTX_RotY43_
+MTX_RotY44_
+MTX_RotZ33_
+MTX_RotZ44_
+MTX_Scale43_
+
+# games/platinum/pc/src/pc_os_lite.c  (OS_system.c, OS_tcm.c, OS_spinLock.c,
+# OS_terminate_proc.c, OS_irqHandler.c, OS_alarm.c, OS_exception.c,
+# OS_protectionRegion.c, OS_vramExclusive.c asm bodies;
+# MSL_Common_assert.s)
+OS_EnableInterrupts
+OS_DisableInterrupts
+OS_RestoreInterrupts
+OS_DisableInterrupts_IrqAndFiq
+OS_RestoreInterrupts_IrqAndFiq
+OS_GetCpsrIrq
+OS_GetProcMode
+OS_SpinWait
+OS_GetDTCMAddress
+OS_GetLockID
+OS_ReleaseLockID
+OS_UnLockCartridge
+OS_Halt
+OS_IrqHandler
+OSi_AlarmHandler
+OSi_ExceptionHandler
+OS_SetProtectionRegion1
+OS_SetProtectionRegion2
+OS_SetDPermissionsForProtectionRegion
+OsCountZeroBits
+__msl_assertion_failed
+
+# games/platinum/pc/wasm/src/pc_os_context_wasm.c  (OS_context.c asm bodies)
+OS_InitContext
+OS_SaveContext
+OS_LoadContext
+
+# games/platinum/pc/src/pc_tp.c  (arm9/asm/SPI_tp.s)
+TP_CheckError
+TP_GetLatestRawPointInAuto
+TP_Init
+TP_RequestAutoSamplingStartAsync
+TP_RequestAutoSamplingStopAsync
+TP_RequestSamplingAsync
+TP_WaitBusy
+TP_WaitRawResult
+
+# games/platinum/pc/src/pc_pm.c  (arm9/asm/SPI_pm.s)
+PMi_ReadRegister
+PMi_ReadRegisterAsync
+PMi_WriteRegister
+PMi_WriteRegisterAsync
+
+# games/platinum/pc/src/pc_snd.c  (arm9/asm/NNS_SND_capture.s)
+NNSi_SndCaptureStart

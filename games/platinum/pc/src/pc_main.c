@@ -429,6 +429,16 @@ int main(int argc, char **argv)
     if (map_agb_slot() != 0) {
         return 1;
     }
+#if defined(PC_GAME_DP)
+    /* Diamond/Pearl: the recompiled half of the game (its assembly data,
+     * function table and stack) is set up in guest memory before the ROM
+     * header lands there and before any guest code runs.
+     * games/diamond/pc/src/pc_dp_boot.c. */
+    {
+        extern void pc_dp_boot(void);
+        pc_dp_boot();
+    }
+#endif
     {
         extern int pc_rom_init(void);
         if (pc_rom_init() != 0) {

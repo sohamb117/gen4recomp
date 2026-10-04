@@ -43,6 +43,18 @@
  * and load checks all of them (the 3DS port's scheme, 3ds_os_context.c).
  *
  * PC_CTX_TRACE=1 logs every init, save, load, create and destroy.
+ *
+ * Diamond/Pearl (PC_GAME_DP) also run recompiled ARM code, whose r13 is one
+ * global, armrec_sp (tools/armrec/armrec_rt.h), pointing into the running
+ * thread's own guest stack. It is per thread exactly as r13 is, and it lives
+ * where the hardware's OS_SaveContext puts r13, OSContext.sp: saved there by
+ * OS_SaveContext, put back by every fiber the moment it regains control
+ * (OS_LoadContext returning, or np_fiber_entry for a fresh context).
+ * OS_InitContext then has to compute .sp as D's asm body does
+ * (arm9/lib/NitroSDK/src/OS_context.c): the thread's system-mode stack sits
+ * HW_SVC_STACK_SIZE below the top it was given, 8-byte aligned, and the top
+ * itself is the SVC stack (sp_svc). Platinum runs no recompiled code and
+ * none of this is compiled for it.
  */
 #include <nitro/os.h>
 
@@ -52,6 +64,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if defined(PC_GAME_DP)
+#include "armrec_rt.h"
+
+/* arm9/lib/NitroSDK/include/mmap.h: HW_SVC_STACK_SIZE, the SVC-mode stack
+ * OS_InitContext carves off the top of every thread's stack. */
+#define PC_DP_SVC_STACK_SIZE 0x40u
+#define PC_CTX_SP_SAVE(ctx) ((ctx)->sp = armrec_sp)
+#define PC_CTX_SP_LOAD(ctx) (armrec_sp = (ctx)->sp)
+#else
+#define PC_CTX_SP_SAVE(ctx) ((void)0)
+#define PC_CTX_SP_LOAD(ctx) ((void)0)
+#endif
 
 /* pc_os_context.c's limit: a 65th live context is a finding about the game. */
 #define PC_CTX_MAX 64
@@ -244,7 +269,27 @@ void OS_InitContext(OSContext *context, u32 newpc, u32 newsp)
     /* The struct's own fields are documentation here (the scheduler never
      * reads pc/sp back), but keep them true. */
     context->pc_plus4 = newpc + 4;
+#if defined(PC_GAME_DP)
+    /* D's asm body, field for field: on D the fields are not documentation,
+     * .sp is the recompiled code's r13 when this context first runs. */
+    {
+        u32 sp = newsp - PC_DP_SVC_STACK_SIZE;
+        int i;
+
+        if (sp & 4u) {
+            sp -= 4u;
+        }
+        context->sp = sp;
+        context->sp_svc = newsp;
+        context->cpsr = (newpc & 1u) ? 0x3Fu : 0x1Fu;   /* SYS, Thumb bit */
+        for (i = 0; i < 13; i++) {
+            context->r[i] = 0;
+        }
+        context->lr = 0;
+    }
+#else
     context->sp = newsp;
+#endif
     /* pc_plus4 is the thread entry, a host function. Marked so the digest
      * skips it when the OSThread itself lives in guest memory. */
     {
@@ -284,6 +329,7 @@ BOOL OS_SaveContext(OSContext *context)
                        (unsigned)e->fiber);
     }
     e->saved = 1;
+    PC_CTX_SP_SAVE(context);
     ctx_say("save", e, self);
     return FALSE;
 }
@@ -365,6 +411,7 @@ void OS_LoadContext(OSContext *context)
                        (unsigned)self);
     }
     fiber_reap();
+    PC_CTX_SP_LOAD(me->key);
 }
 
 /* First dispatch of a fresh context, on its own fiber: call the entry with
@@ -385,6 +432,7 @@ NP_EXPORT(np_fiber_entry) void np_fiber_entry(uint32_t arg)
                        (void *)context, (unsigned)e->fiber);
     }
     entry = (void (*)(u32))(uintptr_t)e->entryPc;
+    PC_CTX_SP_LOAD(context);
     entry(context->r[0]);
     if (context->lr != 0) {
         ((void (*)(void))(uintptr_t)context->lr)();

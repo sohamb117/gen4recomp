@@ -30,8 +30,14 @@
 #include <nitro/card/rom.h>
 /* The card library's private state (CARDiCommon, cardi_common), reached
  * through the public include root on purpose, so this file states exactly
- * which internal it shares with the SDK's own card_common.c. */
+ * which internal it shares with the SDK's own card_common.c. Diamond/Pearl's
+ * SDK is 3.2-era and lays the command block's chip spec out differently;
+ * games/diamond/pc/include/host/pc_dp_card_common.h is its layout. */
+#if defined(PC_GAME_DP)
+#include <pc_dp_card_common.h>
+#else
 #include <../libraries/card/include/card_common.h>
+#endif
 
 #include <fcntl.h>
 
@@ -742,6 +748,9 @@ BOOL CARDi_Request(CARDiCommon *p, int req_type, int retry_count)
         memset(sBackupImage + cmd->dst, 0xFF, cmd->spec.sect_size);
         backup_touch();
         break;
+#if !defined(PC_GAME_DP)
+    /* SDK 4.2's subsector erase; 3.2's chip spec has no subsector size and
+     * its SDK never issues the request. */
     case CARD_REQ_ERASE_SUBSECTOR_BACKUP:
         if (!backup_ready(cmd)) {
             cmd->result = CARD_RESULT_FAILURE;
@@ -750,6 +759,7 @@ BOOL CARDi_Request(CARDiCommon *p, int req_type, int retry_count)
         memset(sBackupImage + cmd->dst, 0xFF, cmd->spec.subsect_size);
         backup_touch();
         break;
+#endif
     case CARD_REQ_ERASE_CHIP_BACKUP:
         if (!backup_ready(cmd)) {
             cmd->result = CARD_RESULT_FAILURE;

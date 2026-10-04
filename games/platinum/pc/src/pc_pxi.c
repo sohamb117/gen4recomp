@@ -49,6 +49,20 @@ void PXI_Init(void)
 void PXI_InitFifo(void)
 {
     int i;
+#if defined(PC_GAME_DP)
+    /* Once, as the SDK's own body is (D's arm9/lib/NitroSDK/src/PXI_fifo.c:
+     * `if (!FifoCtrlInit)`). Diamond/Pearl call PXI_Init again from every
+     * component's init after others have registered: OS_Init's PM_Init,
+     * CTRDG_Init, and the game's RTC_Init (src/gf_rtc.c) after OS_Init, so
+     * a clearing re-init drops PM's and CTRDG's callbacks and every reply on
+     * those tags lands nowhere. */
+    static int sFifoInit;
+
+    if (sFifoInit) {
+        return;
+    }
+    sFifoInit = 1;
+#endif
     for (i = 0; i < PXI_MAX_FIFO_TAG; i++) {
         sRecvCallback[i] = NULL;
     }
