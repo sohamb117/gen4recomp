@@ -26,3 +26,10 @@ feed it, which the sibling ports still use.
 Each file's own header carries the reasoning. `armrec_rt.h` is the one to read
 first: it is where the memory model, the calling convention and the four places
 guest memory is not memory are written down.
+
+Diamond/Pearl's wasm32 build (`games/diamond/pc/mk/armrec.mk`) runs `armrec.py`
+with `--wasm` (calls into C go to the bridge's `c2u$NAME` adapters; the bridge
+writes the externs), `--xmap` (the ROM link map places every function, data
+label and section, which Pearl needs because the `; 0x...` comments are
+Diamond's), `--classes` (the F/D/B/X file the bridge rewrites C against),
+`--host-override`, `--guest-libc` and `--undef DIAMOND --define PEARL`.

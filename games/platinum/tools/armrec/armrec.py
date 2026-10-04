@@ -292,6 +292,12 @@ def eval_asm_expr(tok, symtab=None):
             # how the Thumb branch tables express their offsets.
             a = addr_from_name(name)
             if a is not None:
+                if (WASM_ASM_NAMES is not None and name not in WASM_ASM_NAMES
+                        and not ADDR_IN_NAME.match(name)):
+                    # sub_/FUN_/ovNN_ that no .s defines is decompiled C. On
+                    # wasm C does not live at its guest address, so it is
+                    # an extern like any other C symbol (see C2U_PREFIX).
+                    raise Unsupported("C symbol %r" % name)
                 return a
             raise Unsupported("unresolved symbol %r" % name)
         raise Unsupported("unsupported expression %r" % tok)
@@ -421,6 +427,7 @@ def split_mnemonic(word, thumb):
             "mrc", "mcr", "neg", "qadd", "qsub", "smulbb", "smulbt",
             "smultb", "smultt", "smlabb", "smlabt", "smlatb", "smlatt",
             "smulwb", "smulwt", "smlawb", "smlawt", "smlalbb", "bkpt", "adr",
+            "swp", "swpb",
         ],
         key=len,
         reverse=True,
@@ -586,24 +593,41 @@ def preprocess(path, defines, incdirs):
     ignores; expand_includes() runs first and hands cpp the spliced text on
     stdin. Reading stdin costs an extra -I, because cpp resolves a quoted
     #include relative to the current file and stdin has no directory.
+
+    Every option is spelled joined (`-Idir`, `-DX=X`): macOS's /usr/bin/cpp
+    is a wrapper that mis-parses the separated forms (`-I dir` fails with
+    "no such file or directory: 'c'"), and a failed cpp silently leaves the
+    file unpreprocessed, which is what left GAME_VERSION and every
+    constants/*.h name unresolved in Diamond's assembly.
     """
     cmd = ["cpp", "-P"]
     text = None
     lines = expand_includes(path, incdirs)
+    if lines is None:
+        try:
+            with open(path, "r", errors="replace") as fh:
+                raw = fh.readlines()
+        except OSError:
+            raw = []
+        if any(INDENTED_DIRECTIVE.match(l) for l in raw):
+            lines = raw
     if lines is not None:
-        text = "".join(lines)
-        cmd += ["-I", os.path.dirname(path) or "."]
+        # macOS's cpp is a traditional-mode preprocessor, and it ignores an
+        # indented `#include` on the first line of its input; mwasm does
+        # not care. Moving every directive to column one costs nothing.
+        text = "".join(INDENTED_DIRECTIVE.sub(r"#", l) for l in lines)
+        cmd.append("-I" + (os.path.dirname(path) or "."))
     for d in incdirs:
-        cmd += ["-I", d]
+        cmd.append("-I" + d)
     cfg = os.path.join(incdirs[0], "config.h") if incdirs else None
     if cfg and os.path.exists(cfg):
         cmd += ["-include", cfg]
-    for d in defines:
+    for d in sorted(defines):
         # "-D DIAMOND" makes cpp substitute DIAMOND -> 1 everywhere, including
         # inside the assembler's own ".ifdef DIAMOND", which then reads
         # ".ifdef 1" and takes the else branch. Defining the macro as itself
         # keeps #ifdef working and leaves the token intact.
-        cmd += ["-D", "%s=%s" % (d, d)]
+        cmd.append("-D%s=%s" % (d, d))
     cmd.append("-" if text is not None else path)
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, input=text)
@@ -612,6 +636,10 @@ def preprocess(path, defines, incdirs):
     except (OSError, subprocess.SubprocessError):
         pass
     return None
+
+
+INDENTED_DIRECTIVE = re.compile(
+    r"^[ \t]+#(?=\s*(?:include|if|ifdef|ifndef|elif|else|endif|define|undef)\b)")
 
 
 def place_functions(funcs):
@@ -789,6 +817,16 @@ def parse_file(path, defines, incdirs=(), lines=None):
     # label) apart from a `.word` the disassembler emitted in place of an
     # instruction it could not spell.
     prev_was_insn = False
+    # --xmap: where the ROM link put each of this object's sections. Without
+    # it a section's origin is its first address-bearing label, and those
+    # are Diamond's addresses, which Pearl's `.ifdef`s make wrong for every
+    # label after the first size difference. Not for an extracted asm-in-C
+    # body, whose object's sections also hold the C around it.
+    origins = {}
+    if "extracted" not in os.path.normpath(path).split(os.sep):
+        origins = XMAP_ORIGINS.get(os.path.basename(path)[:-2] + ".o", {})
+    if ".text" in origins:
+        loc, anchored = origins[".text"], True
 
     if lines is None:
         lines = preprocess(path, defines, list(incdirs))
@@ -812,7 +850,10 @@ def parse_file(path, defines, incdirs=(), lines=None):
         nonlocal section, loc, off, pend, anchored
         sec_state[section] = (loc, off, pend, anchored)
         section = name
-        loc, off, pend, anchored = sec_state.get(name, (None, 0, [], False))
+        if name not in sec_state and name in origins:
+            loc, off, pend, anchored = origins[name], 0, [], True
+        else:
+            loc, off, pend, anchored = sec_state.get(name, (None, 0, [], False))
 
     def advance(n):
         """Move the counter over n bytes, or lose track of it if n is None."""
@@ -1200,10 +1241,14 @@ class Ctx(object):
         `asm_funcs` holds the names this run defines under a flat C symbol, so
         a file-local function is not in it and neither is a renamed MSL name.
         Both are still recompiled code, reachable only from a file whose own
-        rename map names them, which is the test below.
+        rename map names them, which is the test below. A --guest-libc name
+        is renamed too, but its guest_ body is compiled C, so it crosses.
         """
-        return (self.asm_funcs is not None and target not in self.asm_funcs
-                and target not in self.rename)
+        if self.asm_funcs is None:
+            return False
+        if target in GUEST_LIBC_EXT:
+            return True
+        return target not in self.asm_funcs and target not in self.rename
 
     def newtmp(self):
         self.tmp += 1
@@ -1236,8 +1281,14 @@ class Ctx(object):
         if s is not None:
             return "0x%08Xu" % s
         # external symbol: the loader assigns it a synthetic address
+        name = ext_name(name)
         self.used_ext.add(name)
         return "armrec_ext_%s" % sanitize(name)
+
+
+def ext_name(name):
+    """The C symbol an address-taken extern binds to (see --guest-libc)."""
+    return (GUEST_PREFIX + name) if name in GUEST_LIBC_EXT else name
 
 
 def sanitize(name):
@@ -1259,6 +1310,29 @@ def sanitize(name):
 # below is the C standard library's and need not be complete: test_libc_split
 # derives the real collision set from the host's libc.
 GUEST_PREFIX = "guest_"
+
+# MSL names whose guest body is compiled C rather than assembly (--guest-libc).
+# The C is built under the guest_ name, so a recompiled `bl rand` must reach
+# guest_rand across the C boundary, not the host's rand. Set by main().
+GUEST_LIBC_EXT = frozenset()
+
+# --wasm: wasm calls are typed, so recompiled code cannot call a C function
+# with its own uniform signature (wasm-ld would bind a trapping signature
+# mismatch thunk), and ARMREC_CALL_EXT's twenty-word cast is the same defect.
+# Every call that leaves recompiled code goes to a generated adapter
+# `c2u$NAME` instead, which has the uniform signature, reads arguments five
+# and up off the emulated stack itself and calls NAME with its real
+# prototype. The adapters are the bridge's (games/diamond/pc/mk/bridge.mk).
+# Set by main().
+TARGET_WASM = False
+C2U_PREFIX = "c2u$"
+# --wasm: every name the assembly defines, set once the parse is done. An
+# address-encoding name outside it (sub_02058ED4, ov06_...) is decompiled C,
+# and eval_asm_expr() then refuses to read the address off the name.
+WASM_ASM_NAMES = None
+# --xmap: {object: {section: origin}} from the ROM's link map; parse_file()
+# starts each section's location counter there. Set by main().
+XMAP_ORIGINS = {}
 
 _C_STDLIB = """
     isalnum isalpha isblank iscntrl isdigit isgraph islower isprint ispunct
@@ -1988,8 +2062,16 @@ def emit_branch(ctx, ins, out, func, is_call):
             if not is_call:
                 out.append("ARM_RETURN();")
             return
-        ctx.ext_calls[target] += 1
-        call, tail = "ARMREC_CALL_EXT", "ARM_TAILCALL_EXT"
+        if TARGET_WASM:
+            # The adapter takes the uniform signature and reads the stack
+            # words itself; see C2U_PREFIX. The boundary is keyed by the C
+            # name the adapter wraps, which is what the bridge needs.
+            ctx.ext_calls[sym] += 1
+            sym = C2U_PREFIX + sym
+            call, tail = "ARMREC_CALL", "ARM_TAILCALL"
+        else:
+            ctx.ext_calls[target] += 1
+            call, tail = "ARMREC_CALL_EXT", "ARM_TAILCALL_EXT"
     else:
         call, tail = "ARMREC_CALL", "ARM_TAILCALL"
     if is_call:
@@ -2046,6 +2128,23 @@ def emit_insn(ctx, ins, func, out):
         t = ctx.newtmp()
         out.append("{ uint64_t %s = armrec_dispatch(%s, r0, r1, r2, r3);" % (t, ctx.regc(r)))
         out.append("  r0 = (uint32_t)%s; r1 = (uint32_t)(%s >> 32); }" % (t, t))
+        return
+    if m in ("swp", "swpb"):
+        # Atomic swap: one CPU here, so a load then a store. The old value is
+        # read before the store, so `swp r0, r0, [r1]` is right.
+        toks = split_operands(ins.ops)
+        if len(toks) != 3:
+            raise Unsupported("bad %s operands %r" % (m, ins.ops))
+        rd, rm = reg_num(toks[0]), reg_num(toks[1])
+        mb = re.match(r"^\[\s*(\w+)\s*\]$", toks[2].strip())
+        rn = reg_num(mb.group(1)) if mb else None
+        if rd is None or rm is None or rn is None or 15 in (rd, rm, rn):
+            raise Unsupported("bad %s operands %r" % (m, ins.ops))
+        sz = "8" if m == "swpb" else "32"
+        a, v = ctx.newtmp(), ctx.newtmp()
+        out.append("%s = %s; %s = ARM_LD%s(%s); ARM_ST%s(%s, %s); %s = %s;"
+                   % (a, ctx.regc(rn), v, sz, a, sz, a, ctx.regc(rm),
+                      ctx.regc(rd), v))
         return
     if m in ("swi", "svc"):
         v = ins.ops.strip()
@@ -2873,6 +2972,7 @@ def build_data_blobs(data_items, symtab, ext, thumb_funcs=(), problems=None,
                         problems["unresolved .word expression %r" % tok] += 1
                         v = 0
                     else:
+                        base = ext_name(base)
                         relocs.append((len(cur), base, addend))
                         ext.add(base)
                         v = 0
@@ -3201,7 +3301,10 @@ def output_stems(paths):
     return stems
 
 
-OVERLAY_PATH = re.compile(r"(?:^|/)arm9/overlays/(\d+)/asm/")
+# A .s under arm9/overlays/NN/asm/, or an asm-in-C body extracted from
+# arm9/overlays/NN/src/ into extracted/overlays/NN/src/ (the D wasm build).
+OVERLAY_PATH = re.compile(
+    r"(?:^|/)(?:arm9/overlays/(\d+)/asm|extracted/overlays/(\d+)/src)/")
 
 
 def overlay_of(path):
@@ -3214,13 +3317,22 @@ def overlay_of(path):
     ROM's overlay table describes it.
     """
     m = OVERLAY_PATH.search(os.path.normpath(path).replace(os.sep, "/"))
-    return int(m.group(1)) if m else None
+    return int(m.group(1) or m.group(2)) if m else None
 
 
 def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
             local_addr=None, rename=None, lines=None, foreign=None,
             asm_funcs=None, abi_trap=None, thumb_funcs=None, overlay=None,
-            asm_names=None, decomp_state=None, incdirs=()):
+            asm_names=None, decomp_state=None, incdirs=(), host_regs=()):
+    """
+    Translate one file. Returns (functions, clean functions, extern names,
+    boundary call counts, extern names the emitted C actually references).
+
+    `host_regs` is [(addr, name)] for this file's functions that --host-override
+    dropped: their guest address is registered to the host's definition (its
+    c2u$ adapter under --wasm) so a dispatch through a stored pointer still
+    lands somewhere.
+    """
     literals_raw = collect_literals(path, lines)
     merge_multi_entry(funcs, path)
     for k, v in absorb_foreign_entries(funcs, path, foreign).items():
@@ -3283,15 +3395,25 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
                        "data in a section with no address is not placed"))
 
     if not emit:
-        return total_funcs, ok_funcs, ext, ext_calls
+        return total_funcs, ok_funcs, ext, ext_calls, set()
 
     rel = stem
     outpath = os.path.join(outdir, rel + ".c")
     called = set()
+    ext_refs = set()
+    by_sanitized = dict((sanitize(n), n) for n in ext)
     for f, body, ctx in bodies:
         for line in body:
-            for m in re.finditer(r"ARM(?:REC_CALL|_TAILCALL)(?:_EXT)?\((\w+)", line):
+            for m in re.finditer(r"ARM(?:REC_CALL|_TAILCALL)(?:_EXT)?\(([\w$]+)", line):
                 called.add(m.group(1))
+            for m in re.finditer(r"\barmrec_ext_(\w+)", line):
+                ext_refs.add(by_sanitized.get(m.group(1), m.group(1)))
+    for _addr, _payload, relocs in blobs:
+        for _off, sym, _addend in relocs:
+            ext_refs.add(sym)
+    host_cname = lambda n: (C2U_PREFIX + n) if TARGET_WASM else n
+    for _addr, name in host_regs:
+        called.add(host_cname(name))
     defined = set(rename.get(f.name, f.name) for f in funcs)
 
     with open(outpath, "w") as out:
@@ -3354,6 +3476,14 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
                                   ' %d);\n'
                                   % (indent, f.addr, rename.get(f.name, f.name),
                                      f.name, overlay))
+            for addr, name in host_regs:
+                if overlay is None:
+                    out.write('%sarmrec_register(0x%08Xu, %s, "%s");\n'
+                              % (indent, addr, host_cname(name), name))
+                else:
+                    out.write('%sarmrec_register_overlay(0x%08Xu, %s, "%s",'
+                              ' %d);\n'
+                              % (indent, addr, host_cname(name), name, overlay))
 
         out.write("void armrec_init_%s(void);\n" % sanitize(rel))
         out.write("void armrec_init_%s(void) {\n" % sanitize(rel))
@@ -3367,7 +3497,7 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
             emit_data()
             out.write("}\n")
 
-    return total_funcs, ok_funcs, ext, ext_calls
+    return total_funcs, ok_funcs, ext, ext_calls, ext_refs
 
 
 # A name GAS will accept verbatim in `.set`. Assembly here spells some labels
@@ -3424,12 +3554,155 @@ def emit_data_syms(outpath, data_syms):
                     % (cname, cname, data_syms[name]))
 
 
+XMAP_SYM_RE = re.compile(
+    r"^\s+([0-9A-Fa-f]{8}) [0-9A-Fa-f]{8} (\.\w+)\s+(\S+)\t\(([^)]+)\)\s*$")
+XMAP_LINK_RE = re.compile(
+    r"^#>([0-9A-Fa-f]{8})\s+([A-Za-z_]\w*) \(linker command file\)\s*$")
+
+
+def load_xmap(path):
+    """
+    ({(name, object): addr}, {name: set(addr)}, {name: value},
+    {object: {section: origin}}) from an mwld xMAP.
+
+    The object is part of the key because a static name can be defined by
+    more than one object; mapping symbols ($a, $t, $d) are dropped. The third
+    map is the symbols the linker command file defines
+    (SDK_AUTOLOAD_DTCM_START, SDK_IRQ_STACKSIZE, SDK_OVERLAY_OVERLAY_04_ID):
+    no source defines them, and their value is the map's to give. The fourth
+    is where each object's sections start; see parse_file().
+    """
+    by_obj = {}
+    by_name = {}
+    link = {}
+    origins = {}
+    with open(path, "r", errors="replace") as fh:
+        for line in fh:
+            m = XMAP_LINK_RE.match(line)
+            if m:
+                link[m.group(2)] = int(m.group(1), 16)
+                continue
+            m = XMAP_SYM_RE.match(line)
+            if not m:
+                continue
+            sec, name, obj = m.group(2), m.group(3), m.group(4)
+            addr = int(m.group(1), 16)
+            if name == sec:
+                # A section's own line: where this object's piece of it is.
+                origins.setdefault(obj, {}).setdefault(sec, set()).add(addr)
+                continue
+            if name.startswith("$") or name.startswith("."):
+                continue
+            by_obj[(name, obj)] = addr
+            by_name.setdefault(name, set()).add(addr)
+    # Only an object with one piece of a section has an origin to give.
+    for obj in origins:
+        origins[obj] = dict((s, next(iter(a))) for s, a in origins[obj].items()
+                            if len(a) == 1)
+    return by_obj, by_name, link, origins
+
+
+def place_from_xmap(paths, parsed, xmap, symtab, local_addr, rename, stats):
+    """
+    Give an address to every function the source leaves unplaced, from the
+    ROM's own link map, and count those whose placed address it contradicts.
+
+    A handful of SDK files (the MSL buffer I/O, the RVCT float helpers, some
+    of SOC) open a function with no `; 0x...` comment and no label naming an
+    address, so armrec could not register them for dispatch and nothing
+    outside the file could find them. The xMAP is where the ROM put them.
+    The object is the source's basename, which is how the ROM build names it.
+
+    The linker-command-file symbols go into the symbol table too, so a
+    `.word SDK_AUTOLOAD_DTCM_START` is the value the ROM link gave it.
+    """
+    by_obj, by_name, link, _origins = xmap
+    for name, value in link.items():
+        if name not in symtab:
+            symtab[name] = value
+            stats["xmap: linker symbol"] += 1
+    for p in paths:
+        obj = os.path.basename(p)[:-2] + ".o"
+        prename = rename.get(p, {})
+        for f in parsed[p][0]:
+            want = by_obj.get((f.name, obj))
+            # By name alone only for a function no other file may also name:
+            # a file-local one absent under its own object is not the
+            # namesake some other object exports.
+            if (want is None and not f.file_local
+                    and len(by_name.get(f.name, ())) == 1):
+                want = next(iter(by_name[f.name]))
+            if want is None:
+                stats["xmap: function not in the map: " + f.name] += 1
+                continue
+            if f.addr == want:
+                continue
+            if f.addr is None:
+                stats["xmap: function placed from the map"] += 1
+            else:
+                # The link map is the ROM. The disagreements are extracted
+                # asm-in-C bodies, whose file has gaps where the C functions
+                # were, so the location counter runs short across them.
+                stats["xmap: %s moved from 0x%08X to the map's 0x%08X"
+                      % (f.name, f.addr, want)] += 1
+            f.addr = want
+            for it in f.items:
+                if isinstance(it, Label) and it.name == f.name:
+                    it.addr = want
+            assign_addresses(f)
+            # The same split collect_symbols() makes: a file-qualified
+            # function resolves inside its own file only.
+            if (f.name in local_addr.get(p, {})
+                    or (f.file_local and f.name in prename)):
+                local_addr.setdefault(p, {})[f.name] = want
+            else:
+                symtab[f.name] = want
+        place_data_from_xmap(p, parsed[p][1], obj, by_obj, by_name, symtab,
+                             local_addr, stats)
+
+
+def place_data_from_xmap(p, data, obj, by_obj, by_name, symtab, local_addr,
+                         stats):
+    """
+    Re-anchor a file's data at every label the link map places.
+
+    The `; 0x...` comments and address-named labels are Diamond's, and
+    Pearl's `.ifdef`s change sizes, so where armrec's location counter lost
+    track (an unsizable directive) Pearl's data was placed at Diamond's
+    address: NNS_G3dAnmObjInitFuncArray 8 bytes short, hundreds of labels in
+    all. A label the map knows moves to the map's address, and the items
+    after it move with it until the next label the map knows.
+    """
+    delta = 0
+    for i, (addr, label, kind, payload) in enumerate(data):
+        if kind == "label" and label:
+            # Object-qualified only: a file-local label is absent from the map,
+            # and a namesake another object exports is somewhere else
+            # (calcTexMtx_ is local in three NNS_G3D files, global in one).
+            want = by_obj.get((label, obj))
+            if want is not None and addr is not None:
+                delta = want - addr
+        if addr is None or delta == 0:
+            continue
+        data[i] = (addr + delta, label, kind, payload)
+        if kind == "label" and label:
+            stats["xmap: data label moved"] += 1
+            if label in local_addr.get(p, {}):
+                local_addr[p][label] = addr + delta
+            elif symtab.get(label) == addr:
+                symtab[label] = addr + delta
+
+
 def main():
     ap = argparse.ArgumentParser(description="ARM/Thumb -> C static recompiler")
     ap.add_argument("files", nargs="+")
     ap.add_argument("--out", help="output directory for generated C")
     ap.add_argument("--scan", action="store_true", help="report coverage only")
     ap.add_argument("--define", action="append", default=["DIAMOND", "ENGLISH"])
+    ap.add_argument("--undef", action="append", default=[],
+                    help="drop a define, default or given: Pearl is "
+                         "--undef DIAMOND --define PEARL, since config.h and "
+                         "`.ifdef DIAMOND` take Diamond whenever DIAMOND is set")
     ap.add_argument("--include", action="append", default=["include"],
                     help="preprocessor include directory")
     ap.add_argument("--report", help="write a detailed failure report here")
@@ -3451,8 +3724,45 @@ def main():
                          "that assembly still names in a `.word`; see "
                          "tools/armrec/gen_decomp_thumb.py. Pass an empty file "
                          "to translate without it.")
+    ap.add_argument("--wasm", action="store_true",
+                    help="emit for wasm32: calls that leave recompiled code go "
+                         "to the bridge's c2u$NAME adapter (see C2U_PREFIX); "
+                         "armrec_externs.c and armrec_data_syms.c are not "
+                         "written, the bridge owns both jobs")
+    ap.add_argument("--guest-libc", action="append", default=[],
+                    help="NAME[,NAME...]: an MSL function compiled from C as "
+                         "guest_NAME; recompiled calls to NAME go there")
+    ap.add_argument("--host-override",
+                    help="file of function names (one per line, # comments) "
+                         "the host layer defines: not emitted, every call "
+                         "to one crosses the C boundary, and its guest "
+                         "address is registered to the host definition")
+    ap.add_argument("--classes",
+                    help="write the name classification here: `F name 0xaddr` "
+                         "(bit 0 = Thumb), `D name 0xaddr`, `B name` (a call "
+                         "target defined in C), `X name` (an address taken of "
+                         "something no .s defines), sorted")
+    ap.add_argument("--xmap",
+                    help="the ROM link's arm9.elf.xMAP: gives an address to a "
+                         "function whose source carries none, and counts "
+                         "every function whose address disagrees with it")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
+
+    global TARGET_WASM, GUEST_LIBC_EXT, WASM_ASM_NAMES, XMAP_ORIGINS
+    TARGET_WASM = args.wasm
+    GUEST_LIBC_EXT = frozenset(n for spec in args.guest_libc
+                               for n in spec.split(",") if n)
+    overrides = set()
+    if args.host_override:
+        with open(args.host_override) as fh:
+            for line in fh:
+                line = line.split("#", 1)[0].strip()
+                if line:
+                    overrides.add(line)
+    xmap = load_xmap(args.xmap) if args.xmap else None
+    if xmap is not None:
+        XMAP_ORIGINS = xmap[3]
 
     abi_trap = {}
     for spec in args.abi_trap:
@@ -3466,17 +3776,44 @@ def main():
     if args.out:
         os.makedirs(args.out, exist_ok=True)
 
-    defines = set(args.define)
+    defines = set(args.define) - set(args.undef)
     stems = output_stems(args.files)
     symtab, parsed, local_addr, rename, data_syms, plines = collect_symbols(
         args.files, defines, args.include, stems,
         local_rename=not args.no_local_rename)
+    for name in GUEST_LIBC_EXT:
+        for p in args.files:
+            rename.setdefault(p, {}).setdefault(name, GUEST_PREFIX + name)
+    xmap_stats = Counter()
+    if xmap is not None:
+        place_from_xmap(args.files, parsed, xmap, symtab, local_addr,
+                        rename, xmap_stats)
+        for name in data_syms:
+            if name in symtab:
+                data_syms[name] = symtab[name]
 
-    stats = Counter()
+    # --host-override: the host layer's definition replaces the recompiled
+    # one. The function stays in the symbol table, so a `.word` naming it
+    # keeps the ROM's guest address, and that address is registered to the
+    # host body so a dispatch through it arrives.
+    host_regs = {}
+    for p in args.files:
+        funcs = parsed[p][0]
+        keep = []
+        for f in funcs:
+            if f.name in overrides and f.name not in rename.get(p, {}):
+                if f.addr is not None:
+                    host_regs.setdefault(p, []).append((f.addr, f.name))
+                continue
+            keep.append(f)
+        funcs[:] = keep
+
+    stats = Counter(xmap_stats)
     report = []
     total = ok = 0
     files_clean = 0
     all_ext = set()
+    all_refs = set()
     per_file = []
 
     # Built before the loop, so every body it hands out is the file as written:
@@ -3522,6 +3859,7 @@ def main():
     # the parse rather than symtab, which holds neither local labels nor a
     # name that is only declared.
     asm_names = set(symtab)
+    declared = set()
     for p in args.files:
         pfuncs, pdata, pglobals = parsed[p][0], parsed[p][1], parsed[p][2]
         for f in pfuncs:
@@ -3531,7 +3869,11 @@ def main():
         for _addr, label, kind, _payload in pdata:
             if kind == "label" and label:
                 asm_names.add(label)
-        asm_names |= set(pglobals)
+        declared |= set(pglobals)
+    if args.wasm:
+        # Defined, not merely declared: a `.global` alone can name C.
+        WASM_ASM_NAMES = frozenset(asm_names)
+    asm_names |= declared
 
     for p in args.files:
         funcs, data, globals_, externs, problems = parsed[p]
@@ -3558,15 +3900,17 @@ def main():
                 report.append((p, "<bl>", 0, k[len(BL_UNPLACEABLE):],
                                BL_UNPLACEABLE.rstrip(": ")))
         foreign = {n: e for n, e in foreign_all.items() if e["path"] != p}
-        t, o, ext, ec = process(p, stems[p], funcs, data, symtab, args.out,
-                                stats, report, emit=not args.scan,
-                                local_addr=local_addr.get(p),
-                                rename=rename.get(p), lines=plines.get(p),
-                                foreign=foreign, asm_funcs=asm_funcs,
-                                abi_trap=abi_trap, thumb_funcs=thumb_funcs,
-                                overlay=overlay_of(p), asm_names=asm_names,
-                                decomp_state=decomp_state,
-                                incdirs=args.include)
+        t, o, ext, ec, refs = process(p, stems[p], funcs, data, symtab, args.out,
+                                      stats, report, emit=not args.scan,
+                                      local_addr=local_addr.get(p),
+                                      rename=rename.get(p), lines=plines.get(p),
+                                      foreign=foreign, asm_funcs=asm_funcs,
+                                      abi_trap=abi_trap, thumb_funcs=thumb_funcs,
+                                      overlay=overlay_of(p), asm_names=asm_names,
+                                      decomp_state=decomp_state,
+                                      incdirs=args.include,
+                                      host_regs=host_regs.get(p, ()))
+        all_refs |= refs
         all_ext |= ext
         ext_calls += ec
         total += t
@@ -3626,6 +3970,7 @@ def main():
             f.write("    if (id >= 0 && id < %d && armrec_ovl_data[id])\n" % top)
             f.write("        armrec_ovl_data[id]();\n")
             f.write("}\n")
+    if args.out and not args.scan and not args.wasm:
         with open(os.path.join(args.out, "armrec_externs.c"), "w") as f:
             f.write('#include "armrec_rt.h"\n\n')
             for name in sorted(all_ext):
@@ -3639,6 +3984,59 @@ def main():
                         % (sanitize(name), name, name))
             f.write("}\n")
         emit_data_syms(os.path.join(args.out, "armrec_data_syms.c"), data_syms)
+
+    # The classification the wasm bridge rewrites decompiled C against
+    # (games/diamond/pc/mk/bridge.mk). Everything is the C symbol armrec
+    # emits or reaches, so a file-local function, which C cannot name, is
+    # left out, and an MSL name appears guest_-prefixed.
+    if args.classes:
+        recs = {}
+        def put(kind, name, addr=None):
+            key = (kind, name)
+            val = "%s %s" % (kind, name) + ("" if addr is None else " 0x%08X" % addr)
+            if recs.get(key, val) != val:
+                sys.stderr.write("armrec: classes: %s %s has two addresses\n"
+                                 % (kind, name))
+            recs[key] = val
+        fnames = set()
+        for p in args.files:
+            prename = rename.get(p, {})
+            for f in parsed[p][0]:
+                if f.file_local and f.name in prename:
+                    continue
+                if f.addr is None:
+                    stats["classes: function with no address"] += 1
+                    continue
+                cname = prename.get(f.name, f.name)
+                fnames.add(cname)
+                put("F", cname, f.addr | (1 if f.thumb else 0))
+        # Linker-command-file symbols: decompiled C declares them extern and
+        # only the link map defines them, so they are data at a fixed value.
+        for name, value in (xmap[2].items() if xmap is not None else ()):
+            if name not in fnames:
+                put("D", name, value)
+        for name, addr in data_syms.items():
+            if not ASM_SYM_RE.match(name):
+                continue
+            cname = (GUEST_PREFIX + name) if name in HOST_LIBC_NAMES else name
+            if cname not in fnames:
+                put("D", cname, addr)
+        for name in ext_calls:
+            put("B", name)
+        for p in host_regs:
+            for _addr, name in host_regs[p]:
+                put("B", name)
+        for name in all_refs:
+            if not ASM_SYM_RE.match(name):
+                stats["classes: extern name C cannot spell: " + name] += 1
+                continue
+            if name in asm_funcs:
+                stats["classes: extern is a recompiled function with no "
+                      "address: " + name] += 1
+            put("X", name)
+        with open(args.classes, "w") as f:
+            for line in sorted(recs.values()):
+                f.write(line + "\n")
 
     if args.report:
         with open(args.report, "w") as f:
