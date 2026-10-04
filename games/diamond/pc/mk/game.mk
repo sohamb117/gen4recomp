@@ -46,8 +46,10 @@ GAME_OBJS := $(GAME_REL:%.c=$(OBJ)/game/%.o)
 # u8 and mwcc loads it with ldrb, not ldrsb. It is the one D TU whose code
 # depends on it (clang IR of all 297 TUs compared under both settings).
 #
-# u64/s64 alignment, the one struct-layout difference between mwcc and
-# wasm32 clang: pc/include/nitro/types.h through the prelude.
+# The struct-layout differences between mwcc and wasm32 clang: u64/s64
+# alignment (pc/include/nitro/types.h through the prelude) and adjacent
+# bitfields of different sizes, of which D has one struct
+# (pc/include/list_menu.h).
 GAME_INCLUDES := -I$(PCDIR)/include -I$(ROOT)/include \
                  $(addprefix -I,$(sort $(wildcard $(A9)/overlays/*/include))) \
                  -I$(ROOT)/files -I$(ROOT)/include-mw \

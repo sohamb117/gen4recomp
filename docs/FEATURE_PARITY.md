@@ -113,7 +113,7 @@ Pokédex flags and add-mon (b27d9a954).
 | Relay lobby, PINs | UDP relay rooms keyed by PIN | done (two installs, both "1 in range") | shell | shell | relay |
 | Spectators, tournaments | | no | no | no | |
 | Fast-forward locked to 1x in link play | `NP_STAT_LINK_ACTIVE` | done (snapshots/rewind/quick load refused while active) | core | core | |
-| Mystery Gift | Wonder Cards written by the editor (Member Card, Oak's Letter, Azure Flute, Secret Key) | done (card added, editor) | no | no | editor |
+| Mystery Gift | Wonder Cards written by the editor (Member Card, Oak's Letter, Azure Flute, Secret Key) | done (card added, editor) | core (headless: the app's menus, CHECK CARD shows the card) | core (menus) | editor |
 
 ## Rulesets and options
 
@@ -121,7 +121,7 @@ Pokédex flags and add-mon (b27d9a954).
 |---|---|---|---|---|---|
 | Faithful / modern rulesets | *Fix cartridge bugs* (`NP_RULE_FIX_BUGS`) | done (app log: rules check PASS) | core (Fire Fang + Rage) | core | rules |
 | Text speed | Instant text | done | core | core | instant_text |
-| Event tickets | Event items via Mystery Gift | done | no | no | editor |
+| Event tickets | Event items via Mystery Gift | done | core (headless: the Jubilife Poké Mart deliveryman hands over the Member Card) | core | editor |
 
 ## Mods
 
