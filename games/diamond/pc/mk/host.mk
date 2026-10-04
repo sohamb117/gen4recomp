@@ -20,12 +20,14 @@
 # lr 60, pc_plus4 64, sp_svc 68), OSThread (192), OSThreadInfo.current (4),
 # OSThreadQueue (8), TPData (8), FSOverlayInfoHeader (ids 0..20) and
 # FSOverlayInfo (44), OSSystemWork.real_time_clock (0x1E8), the PXI tags
-# (RTC 5, TP 6, SOUND 7, PM 8, FS 11, WVR 15; 32 tags), the RTC PXI word
-# (command in bits 8-14, result bit 15, result in 0-7; D's
+# (RTC 5, TP 6, SOUND 7, PM 8, WM 10, FS 11, WVR 15; 32 tags), the RTC PXI
+# word (command in bits 8-14, result bit 15, result in 0-7; D's
 # arm9/asm/RTC_external.s RtcCommonCallback decodes the same), the card
-# request codes 0..12, HW_ROM_HEADER_BUF and HW_BUTTON_XY_BUF. The one
-# disagreement is the card command block's chip spec, which
-# include/host/pc_dp_card_common.h lays out the 3.2 way for pc_card_rom.c.
+# request codes 0..12, HW_ROM_HEADER_BUF and HW_BUTTON_XY_BUF. The
+# disagreements are the card command block's chip spec, which
+# include/host/pc_dp_card_common.h lays out the 3.2 way for pc_card_rom.c,
+# and three points of the WM protocol, which pc_wm.c handles under
+# PC_GAME_DP (its header has the field-by-field comparison).
 # pc/include/host is searched first and holds only host-side shadows; D's
 # game-side shadows (pc/include) are not on this path.
 #
@@ -90,16 +92,12 @@ HOST_EXTRA :=
 #                                       its address)
 #   pc_np_field.c                       Platinum FieldSystem options (camera
 #                                       zoom/tilt); its hooks are weak
-#   pc_wm*.c                            the Platinum ARM7 WM model; D's SDK 3.2
-#                                       WM PXI protocol is unverified, and the
-#                                       shared hooks into it are !PC_GAME_DP
 # Their calls from the shared files are answered by src/pc_dp_hooks.c.
 HOST_PC_EXCLUDE := pc_win_fiber.c pc_win_ipc.c pc_win_clock.c pc_os_context.c \
                    pc_lab.c pc_sprite_lab.c pc_text_lab.c pc_audio_lab.c \
                    pc_bgm_mute.c pc_modfs.c pc_probe2d.c pc_dwc_auth.c \
                    pc_dgt.c pc_crypto_rc4.c pc_selftest.c pc_div0.c \
-                   pc_boot_glue.c pc_np_field.c \
-                   $(notdir $(wildcard $(PLAT)/pc/src/pc_wm*.c))
+                   pc_boot_glue.c pc_np_field.c
 
 HOST_PC_SRCS   := $(filter-out $(addprefix $(PLAT)/pc/src/,$(HOST_PC_EXCLUDE)), \
                     $(sort $(wildcard $(PLAT)/pc/src/*.c)))

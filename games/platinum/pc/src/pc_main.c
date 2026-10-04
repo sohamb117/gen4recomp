@@ -494,7 +494,6 @@ int main(int argc, char **argv)
         }
     }
 
-#if !defined(PC_GAME_DP)
     /* The ARM7 wireless manager behind PXI tag 10 (pc_wm.c): local
      * wireless over the host's np_host_net_* datagrams, or a radio with
      * nobody in range when the host has networking off. */
@@ -504,7 +503,6 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-#endif
 
     /* The silent sound driver behind PXI tag 7: consumes and acknowledges
      * every command list (the title screen hangs in SND_WaitForCommandProc
