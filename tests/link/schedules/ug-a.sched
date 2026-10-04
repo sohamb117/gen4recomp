@@ -1,0 +1,9 @@
+# Underground, station A (UGA, recipes/ug-a.recipe): continue the save,
+# use the registered Explorer Kit (Y) in Oreburgh, YES/save/enter with A.
+900:a:20
+1200:a:20
+1800:a:20
+2100:a:20
+2400:a:20
+3600:y:24
+3800:a:24:200:6

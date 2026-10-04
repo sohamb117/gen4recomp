@@ -1,0 +1,37 @@
+# Union Room trade, station A (UNIONA, recipes/union-a.recipe).
+# Walk in, talk to B, pick TRADE (3 downs), then on the trade screen pick
+# TURTWIG > TRADE, confirm YES, and after the trade quit (B, A, YES).
+900:a:20
+1200:a:20
+1800:a:20
+2100:a:20
+2400:a:20
+2800:a:24
+3100:a:10
+3300:a:10
+3500:a:10
+3700:a:10
+3900:a:10
+5250:a:10
+5450:a:10
+8560:up:16
+8620:left:64
+8720:left:4
+8780:left:3
+8820:a:6
+8900:a:6
+9000:a:6
+9100:a:6
+9300:a:6
+9500:a:6
+9900:down:4
+9940:down:4
+9980:down:4
+10020:a:4
+11420:a:6
+11620:down:4
+11660:a:6
+11760:a:6
+15020:b:6
+15100:a:6
+15200:a:6

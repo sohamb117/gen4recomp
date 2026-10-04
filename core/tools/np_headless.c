@@ -47,7 +47,12 @@
  *     --lockstep MY:PEER test only (POSIX): two instances on 127.0.0.1 ports MY
  *                        and PEER run in frame lockstep and exchange the game's
  *                        datagrams at frame boundaries, so runs repeat exactly
- *                        (needs --net-id; no --net)
+ *                        (needs --net-id; no --net, except that with --net
+ *                        PORT --net-relay the clocks stay in lockstep while
+ *                        the game's datagrams take the relay and --net-drop)
+ *     --fork-at F:CTL    with --lockstep: at frame F fork one child per line
+ *                        of CTL (schedule, frames, dumps, save, log), so a
+ *                        link test resumes from a checkpoint (see below)
  *     --net-relay H:P    internet play through a relay (server/relay) instead
  *     --net-pin PIN      of LAN discovery; PIN names the relay room
  *
@@ -362,6 +367,8 @@ static struct {
     } q[LS_QUEUE]; /* delivered this frame */
     int qhead, qcount;
     uint32_t peer_id;
+    uint8_t epoch; /* --fork-at: which child pair a record belongs to */
+    uint64_t start; /* the frame the handshake runs before (0, or a fork's) */
 } g_ls;
 
 static int lockstep_open(const char *spec, uint32_t id) {
@@ -382,39 +389,45 @@ static int lockstep_open(const char *spec, uint32_t id) {
     return 0;
 }
 
-/* Record: u8 kind (0 DATA, 1 END), u32 sender id, u32 frame, payload. */
+/* Record: u8 kind (bit 0: 0 DATA, 1 END; bits 1-7 the epoch), u32 sender
+ * id, u32 frame, payload. A record from another epoch (a finished fork
+ * child's leftovers) is dropped. */
 static void lockstep_send(uint8_t kind, uint32_t frame, const void *buf, uint32_t len) {
     uint8_t p[9 + 1500];
     if (len > 1500) return;
-    p[0] = kind;
+    p[0] = (uint8_t)(kind | g_ls.epoch << 1);
     memcpy(p + 1, &g_ls.id, 4);
     memcpy(p + 5, &frame, 4);
     memcpy(p + 9, buf, len);
     sendto(g_ls.sock, p, 9 + len, 0, (struct sockaddr *)&g_ls.peer, sizeof g_ls.peer);
 }
 
-/* The barrier before frame `frame` (> 0): collects the peer's records up to
- * END(frame - 1) into this frame's delivery queue. Frame 0 needs the peer
- * to exist, so it waits for any record. */
+/* The barrier before frame `frame`: collects the peer's records up to
+ * END(frame - 1) into this frame's delivery queue. The start frame (0, or
+ * a fork child's first) needs the peer to exist, so it trades hellos
+ * first; a fork child keeps the queue its parent's barrier collected. */
 static void lockstep_barrier(uint64_t frame) {
     uint8_t p[9 + 1500];
     double last_hello = 0;
-    g_ls.qhead = 0;
-    g_ls.qcount = 0;
+    const int start = frame == g_ls.start;
+    if (!start || frame == 0) {
+        g_ls.qhead = 0;
+        g_ls.qcount = 0;
+    }
     for (;;) {
-        if (frame == 0 && now_ms() - last_hello > 100) {
+        if (start && now_ms() - last_hello > 100) {
             lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* hello: END of frame -1 */
             last_hello = now_ms();
         }
         struct pollfd pf = {g_ls.sock, POLLIN, 0};
         if (poll(&pf, 1, 100) <= 0) continue;
         ssize_t n = recv(g_ls.sock, p, sizeof p, 0);
-        if (n < 9) continue;
+        if (n < 9 || p[0] >> 1 != (g_ls.epoch & 0x7f)) continue;
         uint32_t f;
         memcpy(&g_ls.peer_id, p + 1, 4);
         memcpy(&f, p + 5, 4);
-        if (p[0] == 1) {
-            if (frame == 0 ? f == 0xFFFFFFFFu : f == (uint32_t)(frame - 1)) break;
+        if (p[0] & 1) {
+            if (start ? f == 0xFFFFFFFFu : f == (uint32_t)(frame - 1)) break;
             continue; /* a stale hello */
         }
         if (g_ls.qcount < LS_QUEUE) {
@@ -423,11 +436,67 @@ static void lockstep_barrier(uint64_t frame) {
             g_ls.qcount++;
         }
     }
-    if (frame == 0) lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* answer a late starter */
+    if (start) lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* answer a late starter */
 }
 
 static void lockstep_end_frame(uint64_t frame) {
     lockstep_send(1, (uint32_t)frame, NULL, 0);
+}
+
+/* --fork-at FRAME:CTL (with --lockstep): a checkpoint for link tests. Both
+ * instances run to FRAME's barrier, then each serves its control file (a
+ * FIFO or a plain file): per line
+ *   SCHEDULE FRAMES DUMPDIR DUMPEVERY SAVE LOG   ("-" = none)
+ * it forks a child that replaces the schedule, the frame count, the dumps
+ * (from FRAME) and the save path, sends its output to LOG and runs on from
+ * FRAME, then waits for it. The two sides must be fed the same number of
+ * lines; child pair N trades records in epoch N, so a finished pair's
+ * leftovers on the shared socket are dropped. The parent exits at the
+ * control file's end. A whole scenario then costs its tail, not its
+ * 10000-frame walk to the Union Room. */
+typedef struct fork_job {
+    char sched[512], dump[512], save[512], log[512];
+    unsigned long long frames, every;
+} fork_job;
+
+#include <sys/wait.h>
+
+static void lockstep_fork_server(const char *ctl_path, uint64_t frame, fork_job *job) {
+    FILE *ctl = fopen(ctl_path, "r");
+    if (!ctl) {
+        fprintf(stderr, "np_headless: --fork-at: cannot open %s\n", ctl_path);
+        exit(2);
+    }
+    char line[2600];
+    while (fgets(line, sizeof line, ctl)) {
+        memset(job, 0, sizeof *job);
+        if (sscanf(line, "%511s %llu %511s %llu %511s %511s", job->sched, &job->frames, job->dump, &job->every,
+                   job->save, job->log) != 6) {
+            if (strspn(line, " \t\r\n") != strlen(line)) fprintf(stderr, "np_headless: --fork-at: bad line %s", line);
+            continue;
+        }
+        g_ls.epoch++;
+        fflush(NULL);
+        pid_t pid = fork();
+        if (pid < 0) {
+            perror("np_headless: fork");
+            exit(2);
+        }
+        if (pid == 0) {
+            fclose(ctl);
+            g_ls.start = frame;
+            if (strcmp(job->log, "-") != 0 &&
+                (!freopen(job->log, "w", stdout) || dup2(fileno(stdout), 2) < 0)) {
+                exit(2);
+            }
+            return;
+        }
+        int st = 0;
+        waitpid(pid, &st, 0);
+        fprintf(stderr, "[fork] epoch %u: %s exited %d\n", g_ls.epoch, job->log,
+                WIFEXITED(st) ? WEXITSTATUS(st) : -1);
+    }
+    exit(0);
 }
 #else
 static struct { int on; uint32_t id, peer_id; int qhead, qcount; } g_ls;
@@ -444,9 +513,12 @@ static uint32_t net_self_cb(void *user) {
     return g_ls.on ? g_ls.id : np_net_self(g_net);
 }
 
+/* With --lockstep and --net-relay the frames still advance in lockstep, but
+ * the game's datagrams take the relay (and --net-drop): the frame clocks
+ * stay together, as two consoles' would, while delivery is the real path's. */
 static int net_send_cb(void *user, uint32_t peer, const void *buf, uint32_t len) {
     (void)user;
-    if (g_ls.on) {
+    if (g_ls.on && !g_net) {
         lockstep_send(0, 0, buf, len);
         return 0;
     }
@@ -456,7 +528,7 @@ static int net_send_cb(void *user, uint32_t peer, const void *buf, uint32_t len)
 static int net_recv_cb(void *user, uint32_t *peer, void *buf, uint32_t cap) {
     (void)user;
 #if !defined(_WIN32)
-    if (g_ls.on) {
+    if (g_ls.on && !g_net) {
         if (g_ls.qhead == g_ls.qcount) return 0;
         int i = g_ls.qhead++;
         if (g_ls.q[i].len > cap) return -1;
@@ -492,7 +564,7 @@ static int usage(void) {
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
                     "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]\n"
                     "                    [--net-relay HOST:PORT --net-pin PIN]]\n"
-                    "                   [--lockstep MYPORT:PEERPORT --net-id ID]\n");
+                    "                   [--lockstep MYPORT:PEERPORT --net-id ID [--fork-at FRAME:CTLFILE]]\n");
     return 2;
 }
 
@@ -651,7 +723,8 @@ int main(int argc, char **argv) {
     uint16_t net_port = 0;
     uint32_t net_id = 0;
     const char *net_peers[8];
-    const char *net_relay = NULL, *net_pin = NULL, *lockstep = NULL;
+    const char *net_relay = NULL, *net_pin = NULL, *lockstep = NULL, *fork_ctl = NULL;
+    uint64_t fork_at = 0;
 
     for (int i = 3; i < argc; i++) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
@@ -701,6 +774,11 @@ int main(int argc, char **argv) {
             net_drop = atoi(v);
         } else if (strcmp(a, "--lockstep") == 0) {
             lockstep = v;
+        } else if (strcmp(a, "--fork-at") == 0) {
+            char *colon;
+            fork_at = strtoull(v, &colon, 0);
+            if (*colon != ':' || !colon[1]) return usage();
+            fork_ctl = colon + 1;
         } else if (strcmp(a, "--net-relay") == 0) {
             net_relay = v;
         } else if (strcmp(a, "--net-pin") == 0) {
@@ -734,8 +812,9 @@ int main(int argc, char **argv) {
     host.rtc_now = have_rtc ? rtc_now : NULL;
     host.log = log_line;
     if (lockstep) {
-        if (net_on || net_id == 0 || lockstep_open(lockstep, net_id & 0xffffffu) != 0) {
-            fprintf(stderr, "np_headless: --lockstep needs MYPORT:PEERPORT, --net-id and no --net (POSIX only)\n");
+        if ((net_on && !net_relay) || net_id == 0 || lockstep_open(lockstep, net_id & 0xffffffu) != 0) {
+            fprintf(stderr, "np_headless: --lockstep needs MYPORT:PEERPORT, --net-id and no --net unless with "
+                            "--net-relay (POSIX only)\n");
             return 2;
         }
         host.net_self = net_self_cb;
@@ -799,6 +878,25 @@ int main(int argc, char **argv) {
     double next_frame = t0;
     for (; rc == 0 && state_rc >= 0 && ran < frames; ran++) {
         if (g_ls.on) lockstep_barrier(ran);
+#if !defined(_WIN32)
+        if (fork_ctl && g_ls.on && ran == fork_at) {
+            static fork_job job;
+            const char *ctl = fork_ctl;
+            fork_ctl = NULL;
+            lockstep_fork_server(ctl, ran, &job); /* returns in a child */
+            g_nsched = 0;
+            if (strcmp(job.sched, "-") != 0 && load_schedule(job.sched) != 0) {
+                fprintf(stderr, "np_headless: cannot read schedule %s\n", job.sched);
+                return 2;
+            }
+            frames = job.frames;
+            dump_dir = strcmp(job.dump, "-") != 0 ? job.dump : NULL;
+            dump_every = job.every;
+            dump_from = ran;
+            r.save_path = strcmp(job.save, "-") != 0 ? job.save : NULL;
+            lockstep_barrier(ran); /* the new pair's hello */
+        }
+#endif
         if (g_net) {
             np_net_poll(g_net);
             /* Linked: real time, as a console runs, or the partner's MP
