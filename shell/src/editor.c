@@ -35,7 +35,7 @@
 
 #define MAX_ROWS 520
 
-enum { TAB_TRAINER, TAB_PARTY, TAB_BOXES, TAB_BAG, TAB_DEX, TAB_COUNT };
+enum { TAB_TRAINER, TAB_PARTY, TAB_BOXES, TAB_BAG, TAB_DEX, TAB_EVENTS, TAB_COUNT };
 enum { OV_NONE, OV_NUMBER, OV_CHOOSER, OV_MENU, OV_DISCARD };
 enum { FOCUS_TABS, FOCUS_LIST, FOCUS_FOOTER };
 enum { FOOT_UNDO, FOOT_REDO, FOOT_SAVE, FOOT_CLOSE, FOOT_COUNT };
@@ -73,6 +73,11 @@ typedef enum field {
     F_DEX_ALL,
     F_DEX_NONE,
     F_DEX_SPECIES,
+    F_EV_UNLOCK,
+    F_EV_DEX,
+    F_EV_CARD,
+    F_EV_ADD,
+    F_EV_IMPORT,
 } field;
 
 typedef enum row_kind { RK_NUMBER, RK_CHOOSE, RK_TEXT, RK_TOGGLE, RK_ACTION, RK_INFO } row_kind;
@@ -129,6 +134,7 @@ typedef struct np_editor {
         const char *labels[6];
         int ids[6];
     } menu;
+    int menu_arg; /* the Wonder Card slot a card menu acts on */
     int discard_sel;
     field text_field;
 
@@ -142,7 +148,29 @@ static const SDL_Color accent = {255, 205, 80, 255};
 static const SDL_Color warn = {255, 140, 120, 255};
 static const SDL_Color hilite = {255, 205, 80, 40};
 
-static const char *const tab_names[TAB_COUNT] = {"Trainer", "Party", "Boxes", "Bag", "Pokedex"};
+static const char *const tab_names[TAB_COUNT] = {"Trainer", "Party", "Boxes", "Bag", "Pokedex", "Events"};
+
+/*
+ * The event gifts, as Wonder Cards we write ourselves (no Nintendo
+ * distribution data): each is a card plus the gift the Poke Mart
+ * deliveryman hands over, which starts the matching event.
+ */
+typedef struct event_gift {
+    const char *label;
+    uint16_t type, id, sprite;
+    const char *title, *description;
+} event_gift;
+
+static const event_gift event_gifts[] = {
+    {"Member Card (Darkrai, Newmoon Island)", SAVE4_MG_MEMBER_CARD, 1900, 491, "Member Card",
+     "A Member Card for the inn\nin Canalave City.\nVisit any Poke Mart: the\ndeliveryman in green has\nit for you.\n- nativeplat"},
+    {"Oak's Letter (Shaymin, Flower Paradise)", SAVE4_MG_OAKS_LETTER, 1901, 492, "Oak's Letter",
+     "A letter from Prof. Oak\nabout Route 224.\nVisit any Poke Mart: the\ndeliveryman in green has\nit for you.\n- nativeplat"},
+    {"Azure Flute (Arceus, Hall of Origin)", SAVE4_MG_AZURE_FLUTE, 1902, 493, "Azure Flute",
+     "A flute said to reach the\nHall of Origin above\nSpear Pillar.\nThe Poke Mart deliveryman\nhas it for you.\n- nativeplat"},
+    {"Secret Key (Rotom's forms)", SAVE4_MG_SECRET_KEY, 1903, 479, "Secret Key",
+     "The key to a room in the\nGalactic Warehouse.\nVisit any Poke Mart: the\ndeliveryman in green has\nit for you.\n- nativeplat"},
+};
 static const char *const stat_names[6] = {"HP", "Attack", "Defense", "Speed", "Sp. Atk", "Sp. Def"};
 static const char *const badge_names[8] = {"Coal", "Forest", "Cobble", "Fen", "Relic", "Mine", "Icicle", "Beacon"};
 
@@ -627,6 +655,94 @@ static void build_dex(np_editor *e)
     }
 }
 
+/* Today's local date as RTC_ConvertDateToDay counts it (days since
+ * 2000-01-01), so the card shows the date the player sees. */
+static int64_t days_since_2000(void)
+{
+    SDL_Time now;
+    SDL_DateTime dt;
+    if (!SDL_GetCurrentTime(&now) || !SDL_TimeToDateTime(now, &dt, true))
+        return 0;
+    int y = dt.year, m = dt.month, d = dt.day;
+    /* Days since 1970-01-01 (H. Hinnant's days_from_civil), then 2000. */
+    y -= m <= 2;
+    int era = y / 400, yoe = y - era * 400;
+    int doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
+    int doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return (int64_t)era * 146097 + doe - 719468 - 10957;
+}
+
+static void card_title(const uint8_t *card, char *buf, size_t n)
+{
+    uint16_t codes[SAVE4_WC_TITLE_LEN];
+    for (int i = 0; i < SAVE4_WC_TITLE_LEN; i++)
+        codes[i] = (uint16_t)(card[0x104 + 2 * i] | card[0x105 + 2 * i] << 8);
+    g4_text_decode(codes, SAVE4_WC_TITLE_LEN, buf, n);
+}
+
+static void build_events(np_editor *e)
+{
+    bool v = false;
+    if (save4_mg_get_unlocked(&e->s, &v) != SAVE4_OK) {
+        add_row(e, F_INFO, 0, RK_INFO, "Mystery Gift editing supports Platinum saves.");
+        return;
+    }
+    SDL_strlcpy(add_row(e, F_EV_UNLOCK, 0, RK_TOGGLE, "MYSTERY GIFT on main menu")->value, v ? "On" : "Off", 72);
+    v = false;
+    save4_dex_get_obtained(&e->s, &v);
+    SDL_strlcpy(add_row(e, F_EV_DEX, 0, RK_TOGGLE, "Pokedex obtained")->value, v ? "Yes" : "No", 72);
+    for (int i = 0; i < SAVE4_WONDERCARD_SLOTS; i++) {
+        uint8_t card[SAVE4_WONDERCARD_SIZE];
+        bool used = false;
+        char label[24];
+        SDL_snprintf(label, sizeof label, "Wonder Card %d", i + 1);
+        row *r = add_row(e, F_EV_CARD, i, RK_ACTION, label);
+        if (save4_mg_get_card(&e->s, i, card, &used) == SAVE4_OK && used)
+            card_title(card, r->value, sizeof r->value);
+        else
+            SDL_strlcpy(r->value, "(empty)", sizeof r->value);
+    }
+    int pgts = 0;
+    save4_mg_pgt_count(&e->s, &pgts);
+    SDL_snprintf(add_row(e, F_INFO, 0, RK_INFO, "Gifts waiting at Poke Marts")->value, 72, "%d / %d", pgts,
+                 SAVE4_PGT_SLOTS);
+    for (size_t i = 0; i < SDL_arraysize(event_gifts); i++) {
+        char label[48];
+        SDL_snprintf(label, sizeof label, "Add %s", event_gifts[i].label);
+        add_row(e, F_EV_ADD, (int)i, RK_ACTION, label);
+    }
+    add_row(e, F_EV_IMPORT, 0, RK_ACTION, "Import .pgt / .pcd...");
+}
+
+static void add_gift(np_app *app, np_editor *e, const uint8_t *data, size_t len)
+{
+    begin_edit(e);
+    save4_status st = save4_mg_add(&e->s, data, len);
+    if (st == SAVE4_ERR_NOSPACE) {
+        end_edit(app, e, SAVE4_OK); /* nothing changed */
+        np_app_toast(app, "No free Mystery Gift slot: remove a Wonder Card first");
+        return;
+    }
+    if (!end_edit(app, e, st))
+        np_app_toast(app, "Added. The Poke Mart deliveryman will hand it over.");
+}
+
+void np_editor_import_gift(np_app *app, const char *path)
+{
+    np_editor *e = app->editor;
+    if (!e)
+        return;
+    size_t len = 0;
+    uint8_t *data = SDL_LoadFile(path, &len);
+    const char *why = "cannot read the file";
+    if (data && save4_mg_validate(data, len, &why) == SAVE4_OK)
+        add_gift(app, e, data, len);
+    else
+        np_app_toast(app, "Not a gift file: %s", why);
+    SDL_Log("gift import %s: %s", path, app->toast);
+    SDL_free(data);
+}
+
 static void build_rows(np_editor *e)
 {
     e->nrows = 0;
@@ -639,6 +755,7 @@ static void build_rows(np_editor *e)
     case TAB_PARTY: build_party(e); break;
     case TAB_BAG: build_bag(e); break;
     case TAB_DEX: build_dex(e); break;
+    case TAB_EVENTS: build_events(e); break;
     default: break;
     }
 }
@@ -766,7 +883,7 @@ static void open_menu(np_editor *e, int count, const char *const *labels, const 
 
 /* ---- activation --------------------------------------------------------------- */
 
-enum { MA_EDIT, MA_MOVE, MA_DELETE, MA_ITEM, MA_QTY, MA_REMOVE, MA_CANCEL, MA_PLACE };
+enum { MA_EDIT, MA_MOVE, MA_DELETE, MA_ITEM, MA_QTY, MA_REMOVE, MA_REMOVE_CARD, MA_CANCEL, MA_PLACE };
 
 static void open_mon(np_editor *e, int box, int slot)
 {
@@ -824,6 +941,10 @@ static void menu_pick(np_app *app, np_editor *e)
         open_number(e, F_BAG_SLOT, slot, qty, 1, 999);
         break;
     }
+    case MA_REMOVE_CARD:
+        begin_edit(e);
+        end_edit(app, e, save4_mg_remove_card(&e->s, e->menu_arg));
+        break;
     case MA_REMOVE:
         begin_edit(e);
         end_edit(app, e, bag_remove(e, e->pocket, e->rows[e->sel].arg));
@@ -933,6 +1054,44 @@ static void activate_row(np_app *app, np_editor *e, int dir)
         end_edit(app, e, save4_dex_set(&e->s, (uint16_t)r->arg, state >= 1, state == 2));
         break;
     }
+    case F_EV_UNLOCK: {
+        bool v = false;
+        save4_mg_get_unlocked(&e->s, &v);
+        begin_edit(e);
+        end_edit(app, e, save4_mg_set_unlocked(&e->s, !v));
+        break;
+    }
+    case F_EV_DEX: {
+        bool v = false;
+        save4_dex_get_obtained(&e->s, &v);
+        begin_edit(e);
+        end_edit(app, e, save4_dex_set_obtained(&e->s, !v));
+        break;
+    }
+    case F_EV_CARD: {
+        uint8_t card[SAVE4_WONDERCARD_SIZE];
+        bool used = false;
+        if (save4_mg_get_card(&e->s, r->arg, card, &used) != SAVE4_OK || !used)
+            break;
+        static const char *const labels[2] = {"Remove card and gift", "Cancel"};
+        static const int ids[2] = {MA_REMOVE_CARD, MA_CANCEL};
+        e->menu_arg = r->arg;
+        open_menu(e, 2, labels, ids);
+        break;
+    }
+    case F_EV_ADD: {
+        const event_gift *g = &event_gifts[r->arg];
+        save4_card_spec spec = {g->type, g->id, 0, {g->sprite, 0, 0}, (int32_t)days_since_2000(), g->title,
+                                g->description};
+        uint8_t card[SAVE4_WONDERCARD_SIZE];
+        save4_status st = save4_mg_build_card(&spec, card);
+        if (st != SAVE4_OK)
+            np_app_toast(app, "Cannot build the card: %s", save4_status_str(st));
+        else
+            add_gift(app, e, card, sizeof card);
+        break;
+    }
+    case F_EV_IMPORT: np_app_open_gift_import_dialog(app); break;
     default: break;
     }
 }

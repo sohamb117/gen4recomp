@@ -45,6 +45,7 @@ typedef enum np_pending_kind {
     NP_PENDING_SAV_IMPORT, /* add a .sav as a slot of pending_game */
     NP_PENDING_SAV_EXPORT, /* write slot pending_slot of pending_game to path */
     NP_PENDING_MESSAGE,    /* a dialog failed; path holds the message */
+    NP_PENDING_GIFT_IMPORT, /* a .pgt/.pcd for the open save editor */
 } np_pending_kind;
 
 typedef enum np_text_purpose {
@@ -215,6 +216,7 @@ void np_app_request(np_app *app, np_pending_kind kind, const char *path);
 void np_app_open_rom_dialog(np_app *app);
 void np_app_open_sav_import_dialog(np_app *app, np_game game);
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot);
+void np_app_open_gift_import_dialog(np_app *app);
 void np_app_apply_video_options(np_app *app);
 void np_app_open_page(np_app *app, np_page page);
 int np_app_speed(const np_app *app); /* effective multiplier, 0 = uncapped */
@@ -299,6 +301,8 @@ int np_editor_event(np_app *app, const SDL_Event *e);
  * returns NULL on success or an error to show on the text page. */
 const char *np_editor_text_done(np_app *app, const char *text);
 void np_editor_text_cancel(np_app *app);
+/* Adds a .pgt/.pcd file to the open save as a Mystery Gift. */
+void np_editor_import_gift(np_app *app, const char *path);
 
 /* audio.c */
 int np_audio_open(np_app *app);

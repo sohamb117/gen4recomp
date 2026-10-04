@@ -477,6 +477,14 @@ void np_app_open_sav_import_dialog(np_app *app, np_game game)
         SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
 }
 
+void np_app_open_gift_import_dialog(np_app *app)
+{
+    static const SDL_DialogFileFilter filters[] = {{"Mystery Gift (*.pgt, *.pcd)", "pgt;pcd"}};
+    app->dialog_kind = NP_PENDING_GIFT_IMPORT;
+    if (!autotest_dialog(app, "gift import"))
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+}
+
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot)
 {
     static const SDL_DialogFileFilter filters[] = {{"Raw save (*.sav)", "sav"}};
@@ -556,6 +564,10 @@ static void process_pending(np_app *app)
             np_app_toast(app, "Exported \"%s\" to %s", app->pending_slot, base_name(path));
         SDL_Log("save export %s: %s", path, app->toast);
         break;
+    case NP_PENDING_GIFT_IMPORT:
+        if (app->editor)
+            np_editor_import_gift(app, path);
+        break;
     case NP_PENDING_MESSAGE:
         SDL_strlcpy(app->status, path, sizeof app->status);
         np_app_toast(app, "%s", path);
@@ -586,6 +598,14 @@ static void handle_drop(np_app *app, const char *data)
             launch_fail(app, "Cannot open link: %s", err);
         else
             np_app_launch(app, &req);
+        return;
+    }
+    if (has_extension(data, "pgt") || has_extension(data, "pcd")) {
+        if (app->page != NP_PAGE_EDITOR) {
+            np_app_toast(app, "Open a save in the editor, then drop the gift there");
+            return;
+        }
+        np_app_request(app, NP_PENDING_GIFT_IMPORT, data);
         return;
     }
     if (has_extension(data, "sav") || has_extension(data, "dsv")) {
