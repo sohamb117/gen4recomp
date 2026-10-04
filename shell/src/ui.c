@@ -182,6 +182,7 @@ void np_ui_button(np_app *app, SDL_FRect r, const char *label, int selected, int
 enum opt_item {
     OPT_LAYOUT,
     OPT_SWAP,
+    OPT_BATTLE_LAYOUT,
     OPT_ROTATION,
     OPT_SCALE,
     OPT_FILTER,
@@ -238,7 +239,8 @@ enum opt_item {
 };
 
 static const char *const opt_labels[OPT_COUNT] = {
-    "Screen layout", "Swap screens", "Rotation", "Scaling", "Filter", "Fullscreen", "UI scale", "Reduce motion",
+    "Screen layout", "Swap screens", "Battle layout", "Rotation", "Scaling", "Filter", "Fullscreen", "UI scale",
+    "Reduce motion",
     "Effect 1", "Effect 1 intensity",
     "Effect 2", "Effect 2 intensity", "CRT curvature", "Performance", "VSync", "Display FPS cap",
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
@@ -286,12 +288,22 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
     switch (item) {
     case OPT_LAYOUT: SDL_strlcpy(buf, layouts[o->layout], n); break;
     case OPT_SWAP: SDL_strlcpy(buf, o->swap ? "On" : "Off", n); break;
+    case OPT_BATTLE_LAYOUT:
+        if (!o->battle_layout)
+            SDL_strlcpy(buf, "Same as screen layout", n);
+        else if (o->battle_layout - 1 == NP_LAYOUT_HYBRID)
+            SDL_strlcpy(buf, "Hybrid (large top)", n);
+        else
+            SDL_strlcpy(buf, layouts[o->battle_layout - 1], n);
+        break;
     case OPT_ROTATION: SDL_strlcpy(buf, rotations[o->rotation], n); break;
     case OPT_SCALE: SDL_strlcpy(buf, o->scale == NP_SCALE_INTEGER ? "Integer" : "Fit", n); break;
     case OPT_FILTER: SDL_strlcpy(buf, o->linear_filter ? "Linear" : "Nearest", n); break;
     case OPT_FULLSCREEN: SDL_strlcpy(buf, o->fullscreen ? "On" : "Off", n); break;
     case OPT_UI_SCALE:
-        if (o->ui_scale)
+        if (o->ui_scale && (int)np_ui_scale(app) < o->ui_scale) /* the window is too small */
+            SDL_snprintf(buf, n, "%dx (%dx fits)", o->ui_scale, (int)np_ui_scale(app));
+        else if (o->ui_scale)
             SDL_snprintf(buf, n, "%dx", o->ui_scale);
         else
             SDL_snprintf(buf, n, "Auto (%dx)", (int)np_ui_scale(app));
@@ -416,6 +428,7 @@ static void opt_adjust(np_app *app, int item, int dir)
     switch (item) {
     case OPT_LAYOUT: o->layout = (np_layout_mode)wrapi((int)o->layout + dir, NP_LAYOUT_COUNT); break;
     case OPT_SWAP: o->swap = !o->swap; break;
+    case OPT_BATTLE_LAYOUT: o->battle_layout = wrapi(o->battle_layout + dir, NP_LAYOUT_COUNT + 1); break;
     case OPT_ROTATION: o->rotation = wrapi(o->rotation + dir, 4); break;
     case OPT_SCALE: o->scale = o->scale == NP_SCALE_FIT ? NP_SCALE_INTEGER : NP_SCALE_FIT; break;
     case OPT_FILTER: o->linear_filter = !o->linear_filter; break;

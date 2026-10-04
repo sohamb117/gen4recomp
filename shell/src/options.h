@@ -58,6 +58,10 @@ extern const char *const np_perf_ids[NP_PERF_COUNT];
 typedef struct np_options {
     np_layout_mode layout;
     int swap;
+    /* Layout while the core reports a battle (NP_STAT_IN_BATTLE): 0 keeps
+     * `layout`, else np_layout_mode + 1, shown unswapped (so "hybrid" makes
+     * the top screen the large one). */
+    int battle_layout;
     int rotation; /* quarter turns clockwise */
     np_scale_mode scale;
     int linear_filter;

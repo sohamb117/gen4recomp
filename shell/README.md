@@ -125,6 +125,12 @@ the shell's bitmap font (`src/card.c`, no game graphics).
 
 ## Display effects and performance
 
+*Battle layout* switches to another screen layout for the length of each
+battle (the core's `NP_STAT_IN_BATTLE`: from the intro effect to the fade
+back to the field) and back afterwards. It is shown unswapped, so *Hybrid
+(large top)* gives the battle scene the large screen with the touch menu
+beside it. *Same as screen layout* turns it off.
+
 *Options > Effect 1 / Effect 2* chain two effects, each with an intensity:
 **LCD grid** (gaps between DS pixels), **Scanlines**, **CRT** (scanlines,
 aperture-grille mask, vignette and, with *CRT curvature*, a barrel-bent
@@ -360,7 +366,8 @@ SDL_VIDEO_DRIVER=dummy NP_AUTOTEST="frames=120,png=/tmp/shot.png" \
 ```
 
 Keys (comma separated): `frames`, `png`, `game`, `layout`
-(`vertical|horizontal|hybrid|top|bottom`), `rotation` (0-3), `swap`, `scale`
+(`vertical|horizontal|hybrid|top|bottom`), `battle_layout` (same values or
+`off`), `rotation` (0-3), `swap`, `scale`
 (`integer`), `filter` (`linear`), `touch=XxY`, `keys=a+up`, `controls=1`,
 `size=WxH`, `page=launcher|options|controls|about`, `storage=1` (saves and an
 options round-trip file in the user-data root; refused unless portable mode is

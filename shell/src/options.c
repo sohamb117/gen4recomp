@@ -193,6 +193,10 @@ static void apply(np_options *o, const char *section, const char *key, char *val
                 o->layout = (np_layout_mode)m;
         } else if (!strcmp(key, "swap"))
             o->swap = iv != 0;
+        else if (!strcmp(key, "battle_layout")) {
+            int m = lookup(layout_ids, NP_LAYOUT_COUNT, val);
+            o->battle_layout = m >= 0 ? m + 1 : 0; /* "off" or unknown: keep the layout */
+        }
         else if (!strcmp(key, "rotation"))
             o->rotation = clampi(iv / 90, 0, 3);
         else if (!strcmp(key, "scale"))
@@ -385,6 +389,7 @@ int np_options_save(const np_options *o, const char *path)
     b->len = 0;
     put(b, "# nativeplat options. Edit while the app is closed.\n\n[video]\n");
     put(b, "layout = %s\nswap = %d\nrotation = %d\n", layout_ids[o->layout], o->swap, o->rotation * 90);
+    put(b, "battle_layout = %s\n", o->battle_layout ? layout_ids[o->battle_layout - 1] : "off");
     put(b, "scale = %s\nfilter = %s\n", o->scale == NP_SCALE_INTEGER ? "integer" : "fit",
         o->linear_filter ? "linear" : "nearest");
     put(b, "fullscreen = %d\nvsync = %d\nfps_cap = %d\n", o->fullscreen, o->vsync, np_fps_caps[o->fps_cap_index]);

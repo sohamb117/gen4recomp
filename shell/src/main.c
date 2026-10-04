@@ -1097,7 +1097,14 @@ static void draw_screens(np_app *app)
     uint32_t s = app->have_frame && app->frame.height >= 192 ? app->frame.height / 192 : 1;
     int screen_w = app->have_frame ? (int)(app->frame.width / s) : 256;
     float frames[8];
-    np_layout_params lp = {app->opt.layout, app->opt.swap, app->opt.rotation, app->opt.scale, screen_w,
+    /* During a battle the battle layout, if one is chosen, replaces the
+     * player's layout (unswapped, so a hybrid layout enlarges the top). */
+    int battle = app->opt.battle_layout && app->core && np_core_status(app->core, NP_STAT_IN_BATTLE);
+    np_layout_params lp = {battle ? (np_layout_mode)(app->opt.battle_layout - 1) : app->opt.layout,
+                           battle ? 0 : app->opt.swap,
+                           app->opt.rotation,
+                           app->opt.scale,
+                           screen_w,
                            np_skin_frames(app, frames) ? frames : NULL};
     np_layout_compute(&app->layout, &lp, app->out_w, app->out_h);
     for (int i = 0; i < 2; i++)
@@ -1368,7 +1375,12 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.fix_bugs = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "rewind_seconds"))
             app->opt.rewind_seconds = SDL_clamp(SDL_atoi(v), 0, 120);
-        else if (!SDL_strcmp(kv, "music_filter"))
+        else if (!SDL_strcmp(kv, "battle_layout")) {
+            app->opt.battle_layout = 0; /* "off" */
+            for (int i = 0; i < NP_LAYOUT_COUNT; i++)
+                if (!SDL_strcmp(v, layouts[i]))
+                    app->opt.battle_layout = i + 1;
+        } else if (!SDL_strcmp(kv, "music_filter"))
             app->opt.music_filter = SDL_clamp(SDL_atoi(v), 0, 3);
         else if (!SDL_strcmp(kv, "ui_scale"))
             app->opt.ui_scale = SDL_clamp(SDL_atoi(v), 0, 6);
