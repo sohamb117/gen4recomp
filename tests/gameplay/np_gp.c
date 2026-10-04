@@ -316,7 +316,7 @@ static int dump_ppm(const char *dir, int64_t number, const np_frame *f) {
 static const char *const k_opt_names[] = {"bgm_volume", "se_volume",     "render_scale", "widescreen",  "camera_zoom",
                                           "camera_tilt", "quicksave_seq", "rules",        "text_instant"};
 static const char *const k_stat_names[] = {"link_active", "field_ready", "quicksave_seq", "quicksave_result",
-                                           "map_id"};
+                                           "map_id",      "in_battle"};
 
 typedef struct opt_set {
     int64_t frame;
