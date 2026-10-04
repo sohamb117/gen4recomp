@@ -39,6 +39,7 @@ typedef enum np_page {
     NP_PAGE_EDITOR,    /* save editor (editor.c) */
     NP_PAGE_SYNC,      /* folder sync conflict chooser (sync.c) */
     NP_PAGE_MODS,      /* mod manager (mods.c) */
+    NP_PAGE_UPDATES,   /* updater (update.c) */
 } np_page;
 
 /* Work handed from dialogs, drops and URLs to the main loop. */
@@ -301,6 +302,15 @@ void np_mods_boot_failed(np_app *app, const char *error);
 void np_mods_draw(np_app *app);
 void np_mods_command(np_app *app, np_menu_cmd cmd);
 void np_mods_hit(np_app *app, int id);
+
+/* update.c: consent-based updater (hidden without a repository or HTTP) */
+int np_update_enabled(const np_app *app);
+void np_update_open(np_app *app);
+void np_update_draw(np_app *app);
+void np_update_command(np_app *app, np_menu_cmd cmd);
+void np_update_hit(np_app *app, int id);
+/* Cancels a transfer and joins the worker (at quit). */
+void np_update_shutdown(void);
 
 /* input.c */
 void np_input_gamepad_added(np_app *app, SDL_JoystickID id);

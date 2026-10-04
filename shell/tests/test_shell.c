@@ -18,10 +18,12 @@
 #include "layout.h"
 #include "modpkg.h"
 #include "png.h"
+#include "release.h"
 #include "rewind.h"
 #include "romdb.h"
 #include "scale2x.h"
 #include "sha1.h"
+#include "sha256.h"
 #include "slots.h"
 #include "sync_plan.h"
 #include "undo.h"
@@ -780,6 +782,86 @@ static void test_modpkg(void)
     CHECK(np_mod_check_order(wrong, 3, msg, sizeof msg) == 1 && strstr(msg, "after"), "load_after order: %s", msg);
 }
 
+/* FIPS 180-4 SHA-256 vectors, hashed whole and in odd chunks. */
+static void test_sha256(void)
+{
+    static const struct {
+        const char *msg;
+        const char *hex;
+    } v[] = {
+        {"", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+        {"abc", "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"},
+        {"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
+         "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"},
+    };
+    for (size_t i = 0; i < sizeof v / sizeof v[0]; i++)
+        for (size_t chunk = 1; chunk <= 64; chunk += 63) {
+            np_sha256 s;
+            np_sha256_init(&s);
+            size_t n = strlen(v[i].msg);
+            for (size_t k = 0; k < n; k += chunk)
+                np_sha256_update(&s, v[i].msg + k, n - k < chunk ? n - k : chunk);
+            uint8_t d[32];
+            char hex[65];
+            np_sha256_final(&s, d);
+            np_sha256_hex(d, hex);
+            CHECK(!strcmp(hex, v[i].hex), "sha256 vector %zu chunk %zu: %s", i, chunk, hex);
+        }
+    static uint8_t mil[1000000];
+    memset(mil, 'a', sizeof mil);
+    np_sha256 s;
+    np_sha256_init(&s);
+    np_sha256_update(&s, mil, sizeof mil);
+    uint8_t d[32];
+    char hex[65];
+    np_sha256_final(&s, d);
+    np_sha256_hex(d, hex);
+    CHECK(!strcmp(hex, "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0"), "sha256 million a");
+}
+
+/* A trimmed GitHub "latest release" response and the updater's rules. */
+static void test_release(void)
+{
+    static const char json[] =
+        "{\"url\":\"https://api.github.com/repos/o/n/releases/1\",\"html_url\":\"https://github.com/o/n/releases/tag/"
+        "v0.2.0\",\"id\":1,\"author\":{\"login\":\"o\",\"id\":2,\"site_admin\":false},\"tag_name\":\"v0.2.0\","
+        "\"name\":\"nativeplat 0.2 \\u00e9\\ud83d\\ude00\",\"draft\":false,\"prerelease\":false,\"body\":\"line\\nnext "
+        "\\\"quoted\\\"\",\"assets\":[{\"name\":\"nativeplat-0.2.0-windows-x64.zip\",\"size\":123,"
+        "\"browser_download_url\":\"https://e/w.zip\",\"uploader\":null,\"label\":null},{\"name\":\"nativeplat-0.2.0-"
+        "macOS.zip\",\"size\":9876543210,\"browser_download_url\":\"https://e/m.zip\",\"x\":[1,2.5e3,-4,[true]]},"
+        "{\"name\":\"sha256sums.txt\",\"size\":300,\"browser_download_url\":\"https://e/s.txt\"}]}";
+    np_release r;
+    CHECK(!np_release_parse(json, sizeof json - 1, &r) && !strcmp(r.tag, "v0.2.0") && r.nassets == 3 &&
+              !strcmp(r.name, "nativeplat 0.2 \xc3\xa9\xf0\x9f\x98\x80") && !r.draft &&
+              !strcmp(r.html_url, "https://github.com/o/n/releases/tag/v0.2.0") && r.asset[1].size == 9876543210ull,
+          "release parsed");
+    CHECK(np_release_pick_asset(&r, "macos") == 1 && np_release_pick_asset(&r, "windows") == 0 &&
+              np_release_pick_asset(&r, "linux") == -1,
+          "asset per platform");
+    CHECK(np_release_find_asset(&r, "sha256sums.txt") == 2, "sums asset");
+    CHECK(np_release_parse(json, sizeof json - 2, &r), "truncated JSON refused");
+    CHECK(np_release_parse("{\"name\":\"x\"}", 12, &r), "release without tag refused");
+    char deep[300];
+    memset(deep, '[', sizeof deep);
+    memcpy(deep, "{\"a\":", 5);
+    CHECK(np_release_parse(deep, sizeof deep, &r), "deep nesting refused");
+
+    CHECK(np_version_compare("v0.2.0", "0.1.0") > 0 && np_version_compare("0.1.0", "v0.1.0") == 0 &&
+              np_version_compare("0.10.0", "0.9.9") > 0 && np_version_compare("1.0.0-rc1", "1.0.0") < 0 &&
+              np_version_compare("1.0.0-rc2", "1.0.0-rc1") > 0 && np_version_compare("1.0", "1.0.1") < 0,
+          "version order");
+
+    static const char sums[] = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  other.zip\r\n"
+                               "BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD *nativeplat-0.2.0-"
+                               "macOS.zip\n";
+    char hex[65];
+    CHECK(!np_sha256sums_lookup(sums, sizeof sums - 1, "nativeplat-0.2.0-macOS.zip", hex) &&
+              !strcmp(hex, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"),
+          "sha256sums lookup");
+    CHECK(!np_sha256sums_lookup(sums, sizeof sums - 1, "other.zip", hex), "sha256sums CRLF line");
+    CHECK(np_sha256sums_lookup(sums, sizeof sums - 1, "macOS.zip", hex), "sha256sums exact names only");
+}
+
 int main(void)
 {
     test_sha1();
@@ -797,6 +879,8 @@ int main(void)
     test_sync_plan();
     test_zip();
     test_modpkg();
+    test_sha256();
+    test_release();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

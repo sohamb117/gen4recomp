@@ -92,6 +92,10 @@ typedef struct np_options {
      * the player picked; "" = empty slot / "<rom>.sav". */
     char gba_rom[1024];
     char gba_save[1024];
+    /* Updater overrides (update.c): GitHub "owner/name" and API base;
+     * "" = the build's NP_UPDATE_REPO and https://api.github.com. */
+    char update_repo[128];
+    char update_api[256];
     /* Local wireless (net.c). station_id is generated once and kept: the
      * game derives the console's MAC from it and stores that in saves. */
     int lan_enabled;

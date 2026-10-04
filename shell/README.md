@@ -264,6 +264,29 @@ is lost anywhere), and a chooser shows both (trainer, play time, badges,
 save time) with *Keep this device's*, *Use the other copy*, *Keep both* or
 *Decide later*.
 
+## Updates
+
+*Options > Updates...* appears when the build names a GitHub repository
+(`-DNP_UPDATE_REPO=owner/name`, or `[updates] repo = owner/name` in
+`options.ini`; `api =` overrides `https://api.github.com`, for testing
+against a local server). Nothing is sent until the player presses *Check
+for updates*: the app then reads the repository's latest release, compares
+its tag with its own version (dotted numbers; a `-rc` pre-release sorts
+before its release), and offers *Download and verify* only if the release
+carries this platform's zip (an asset name containing `macos` or `windows`,
+ending `.zip`) and a `sha256sums.txt` in `sha256sum` format. The zip is
+written to the Downloads folder as `<name>.part`, hashed while it arrives,
+and renamed only if its SHA-256 matches the listed one (otherwise deleted).
+*Show in Finder* / *Show in Explorer* reveals it; the app never replaces
+itself.
+
+Networking lives behind one function, `np_http_get` (`src/http.h`): a GET
+that follows redirects and streams the body to a callback, with a cancel
+flag, on a worker thread. The backends use what the OS ships, so no TLS
+library is bundled: `src/http_curl.c` links the macOS SDK's libcurl (system
+trust store), `src/http_winhttp.c` uses WinHTTP. iOS builds have no backend
+and no updater (`NP_HAVE_HTTP` undefined): updates come from the App Store.
+
 ## Autotest
 
 `NP_AUTOTEST` skips the launcher, boots a core for a synthetic cartridge

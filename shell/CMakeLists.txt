@@ -49,10 +49,12 @@ add_library(np_shell_common STATIC
   src/modpkg.c
   src/net.c
   src/png.c
+  src/release.c
   src/rewind.c
   src/romdb.c
   src/scale2x.c
   src/sha1.c
+  src/sha256.c
   src/slots.c
   src/sync_plan.c
   src/undo.c
@@ -110,11 +112,28 @@ add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/sync.c
   src/touchpad.c
   src/ui.c
+  src/update.c
 )
 target_link_libraries(nativeplat PRIVATE ${NP_CORE_LIBS} np_shell_common save4 ndsdata SDL3::SDL3)
 target_compile_options(nativeplat PRIVATE ${NP_WARNINGS})
 if(NP_CORE STREQUAL "real")
   np_link_guest_modules(nativeplat ${NP_GUESTS})
+endif()
+
+# Updater (src/update.c): the GitHub repository whose releases it offers,
+# "owner/name"; empty hides the feature. The HTTP backend is the OS's own:
+# libcurl from the macOS SDK, WinHTTP on Windows; iOS gets none (App Store).
+set(NP_UPDATE_REPO "" CACHE STRING "GitHub owner/name the updater checks; empty = no updater")
+target_compile_definitions(nativeplat PRIVATE "NP_UPDATE_REPO=\"${NP_UPDATE_REPO}\""
+  "NP_VERSION_STRING=\"${PROJECT_VERSION}\"")
+if(APPLE AND NOT IOS)
+  target_sources(nativeplat PRIVATE src/http_curl.c)
+  target_link_libraries(nativeplat PRIVATE curl)
+  target_compile_definitions(nativeplat PRIVATE NP_HAVE_HTTP)
+elseif(WIN32)
+  target_sources(nativeplat PRIVATE src/http_winhttp.c)
+  target_link_libraries(nativeplat PRIVATE winhttp)
+  target_compile_definitions(nativeplat PRIVATE NP_HAVE_HTTP)
 endif()
 
 if(WIN32)

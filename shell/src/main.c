@@ -255,7 +255,9 @@ void np_app_open_page(np_app *app, np_page page)
         SDL_StartTextInput(app->window); /* also raises the iOS keyboard */
     else if (page != NP_PAGE_TEXT && app->page == NP_PAGE_TEXT)
         SDL_StopTextInput(app->window);
-    app->page_parent = (page == NP_PAGE_CONTROLS || page == NP_PAGE_ABOUT) ? app->page : NP_PAGE_NONE;
+    /* Sub-pages of Options return there (page_back). */
+    int sub = page == NP_PAGE_CONTROLS || page == NP_PAGE_ABOUT || page == NP_PAGE_MODS || page == NP_PAGE_UPDATES;
+    app->page_parent = sub ? app->page : NP_PAGE_NONE;
     app->page = page;
     app->sel = app->col = app->scroll = 0;
     app->capture = 0;
@@ -1981,6 +1983,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
     np_app *app = appstate;
     if (!app)
         return;
+    np_update_shutdown();
     close_core(app);
     np_sync_all(app, 1);
     save_options(app);

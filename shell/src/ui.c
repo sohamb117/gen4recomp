@@ -218,6 +218,7 @@ enum opt_item {
     OPT_SYNC_STATUS,
     OPT_CONTROLS,
     OPT_MODS,
+    OPT_UPDATES,
     OPT_ABOUT,
     OPT_QUIT_GAME,
     OPT_RESUME,
@@ -232,7 +233,7 @@ static const char *const opt_labels[OPT_COUNT] = {
     "Instant text", "Fix cartridge bugs", "Rewind history", "GBA cartridge (Pal Park)", "GBA save",
     "Touch controls", "Local wireless (LAN)", "LAN port", "Join by IP:port", "Internet relay host:port", "Room PIN",
     "Wireless status", "Sync folder", "Sync now", "Sync status",
-    "Controls...", "Mods...", "About...", "Quit to launcher", "Close",
+    "Controls...", "Mods...", "Updates...", "About...", "Quit to launcher", "Close",
 };
 
 static int options_items(const np_app *app, int *items)
@@ -242,6 +243,8 @@ static int options_items(const np_app *app, int *items)
         if (i == OPT_QUIT_GAME && app->view != NP_VIEW_GAME)
             continue;
         if ((i == OPT_SYNC_NOW || i == OPT_SYNC_STATUS) && !app->opt.sync_folder[0])
+            continue;
+        if (i == OPT_UPDATES && !np_update_enabled(app))
             continue;
         items[n++] = i;
     }
@@ -474,6 +477,7 @@ static void opt_activate(np_app *app, int item, int dir)
     case OPT_LAN_PIN: np_ui_open_text(app, NP_TEXT_LAN_PIN, app->opt.lan_pin, 32); break;
     case OPT_CONTROLS: np_app_open_page(app, NP_PAGE_CONTROLS); break;
     case OPT_MODS: np_mods_open(app, NULL); break;
+    case OPT_UPDATES: np_update_open(app); break;
     case OPT_ABOUT: np_app_open_page(app, NP_PAGE_ABOUT); break;
     case OPT_QUIT_GAME:
         np_app_open_page(app, NP_PAGE_NONE);
@@ -1409,9 +1413,13 @@ static void page_back(np_app *app)
     np_page to = from == NP_PAGE_OPTIONS ? NP_PAGE_NONE : app->page_parent;
     np_app_open_page(app, to);
     if (to == NP_PAGE_OPTIONS) {
+        int back_to = from == NP_PAGE_CONTROLS ? OPT_CONTROLS
+                      : from == NP_PAGE_MODS  ? OPT_MODS
+                      : from == NP_PAGE_UPDATES ? OPT_UPDATES
+                                                : OPT_ABOUT;
         int items[OPT_COUNT], n = options_items(app, items);
         for (int i = 0; i < n; i++)
-            if (items[i] == (from == NP_PAGE_CONTROLS ? OPT_CONTROLS : OPT_ABOUT))
+            if (items[i] == back_to)
                 app->sel = i;
     }
 }
@@ -1486,6 +1494,10 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
     }
     if (cmd == NP_CMD_BACK) {
         page_back(app);
+        return;
+    }
+    if (app->page == NP_PAGE_UPDATES) {
+        np_update_command(app, cmd);
         return;
     }
     if (app->page == NP_PAGE_MODS) {
@@ -1569,6 +1581,10 @@ static void activate_hit(np_app *app, int id, int dir)
     }
     if (id == HIT_BACK) {
         page_back(app);
+        return;
+    }
+    if (app->page == NP_PAGE_UPDATES) {
+        np_update_hit(app, id);
         return;
     }
     if (app->page == NP_PAGE_MODS) {
@@ -1664,6 +1680,7 @@ void np_ui_draw(np_app *app)
     case NP_PAGE_EDITOR: np_editor_draw(app); break;
     case NP_PAGE_SYNC: np_sync_draw(app); break;
     case NP_PAGE_MODS: np_mods_draw(app); break;
+    case NP_PAGE_UPDATES: np_update_draw(app); break;
     default: break;
     }
     if (app->toast[0] && SDL_GetTicksNS() < app->toast_until) {
