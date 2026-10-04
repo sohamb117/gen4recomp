@@ -206,6 +206,16 @@ asm_call_u8: ; 0x0200019C
 	ldmia sp!, {pc}
 	arm_func_end asm_call_u8
 
+; int asm_ldm_self(const int *p) = p[0] + p[1], loaded through r0 into r0 and
+; r1: a Thumb LDMIA whose base is in its list keeps the loaded value (no
+; writeback), which mwcc relies on to pass a two-word struct on.
+	thumb_func_start asm_ldm_self
+asm_ldm_self: ; 0x020001B4
+	ldmia r0!, {r0, r1}
+	add r0, r0, r1
+	bx lr
+	thumb_func_end asm_ldm_self
+
 	.data
 
 	.global asm_table
