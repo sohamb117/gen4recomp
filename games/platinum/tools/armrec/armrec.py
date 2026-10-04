@@ -3639,16 +3639,33 @@ def place_from_xmap(paths, parsed, xmap, symtab, local_addr, rename, stats):
                 continue
             if f.addr is None:
                 stats["xmap: function placed from the map"] += 1
+                for it in f.items:
+                    if isinstance(it, Label) and it.name == f.name:
+                        it.addr = want
             else:
                 # The link map is the ROM. The disagreements are extracted
                 # asm-in-C bodies, whose file has gaps where the C functions
-                # were, so the location counter runs short across them.
+                # were, so the location counter runs short across them. The
+                # whole body ran short by the same amount, so every label in
+                # it moves with the function: left at the counter, the walk
+                # below re-anchors at the first local label, and a PC-relative
+                # `add r0, pc` reads its jump table from somewhere else
+                # (ov59_MunchlaxJumpAnimation, 708 bytes short).
                 stats["xmap: %s moved from 0x%08X to the map's 0x%08X"
                       % (f.name, f.addr, want)] += 1
+                delta = want - f.addr
+                floc = local_addr.get(p, {})
+                for it in f.items:
+                    if not isinstance(it, Label) or it.addr is None:
+                        continue
+                    old, it.addr = it.addr, it.addr + delta
+                    if it.name == f.name:
+                        continue
+                    if floc.get(it.name) == old:
+                        floc[it.name] = it.addr
+                    elif symtab.get(it.name) == old:
+                        symtab[it.name] = it.addr
             f.addr = want
-            for it in f.items:
-                if isinstance(it, Label) and it.name == f.name:
-                    it.addr = want
             assign_addresses(f)
             # The same split collect_symbols() makes: a file-qualified
             # function resolves inside its own file only.
