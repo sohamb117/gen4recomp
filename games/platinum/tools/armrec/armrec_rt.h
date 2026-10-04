@@ -971,6 +971,10 @@ void armrec_icall_tail(void);
 /* Resolve a guest address to a name, for diagnostics. Never NULL. */
 const char *armrec_name_of(uint32_t addr);
 
+/* Whether resident code owns a code address: what armrec_dispatch would call
+ * rather than abort on. armrec_name_of also names non-resident claimants. */
+int armrec_code_live(uint32_t addr);
+
 /* Called when recompiled code reaches something we cannot execute. */
 void armrec_trap(const char *fn, const char *what) __attribute__((noreturn));
 
