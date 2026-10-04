@@ -81,16 +81,20 @@ on every host (checked: macOS arm64 and Windows x64 under wine agree).
 Gameplay scenarios on the same build (`tests/gameplay/run.sh`, header lists
 the scenario format): new game through the rival battle, wild battle and
 catch, Mart/Center/PC, Oreburgh Gym with badge persistence, Oreburgh Gate,
-bike and Poketch. `--soak [FRAMES]` drives seeded random input from three
-field saves and reports traps, hangs and stalls by seed and frame; `--perf`
-prints frames/second at render_scale 1 and 2. Results and contact sheets go
-to `build/gameplay/out`.
+bike and Poketch. Diamond and Pearl run the same six from `tests/gameplay/dp`
+with `--game diamond|pearl` (on `build/core-dp`; D/P's first battle is the
+wild Starly at Lake Verity, there is no rival battle). `--soak [FRAMES]`
+drives seeded random input from three field saves and reports traps, hangs
+and stalls by seed and frame; `--perf` prints frames/second at render_scale 1
+and 2. Results and contact sheets go to `build/gameplay/out` (`out-diamond`,
+`out-pearl`).
 
 ```sh
 tests/gameplay/run.sh                 # all scenarios; summary.txt + <scenario>.png
 tests/gameplay/run.sh 4-roark 5-reboot
 tests/gameplay/run.sh --soak 102000
 tests/gameplay/run.sh --perf
+tests/gameplay/run.sh --game pearl --soak 50000
 ```
 
 ## 4. macOS app
