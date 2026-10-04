@@ -209,6 +209,7 @@ enum opt_item {
     OPT_TOUCH,
     OPT_TOUCH_EDIT,
     OPT_RUMBLE,
+    OPT_SKIN,
     OPT_LAN,
     OPT_LAN_PORT,
     OPT_LAN_PEER,
@@ -233,8 +234,8 @@ static const char *const opt_labels[OPT_COUNT] = {
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
     "Music volume", "Sound effects volume", "3D render scale", "Widescreen 3D", "Camera zoom", "Camera tilt",
     "Instant text", "Fix cartridge bugs", "Rewind history", "GBA cartridge (Pal Park)", "GBA save",
-    "Touch controls", "Edit touch controls...", "Rumble on press (gamepad)", "Local wireless (LAN)", "LAN port",
-    "Join by IP:port", "Internet relay host:port", "Room PIN",
+    "Touch controls", "Edit touch controls...", "Rumble on press (gamepad)", "Controller skin",
+    "Local wireless (LAN)", "LAN port", "Join by IP:port", "Internet relay host:port", "Room PIN",
     "Wireless status", "Sync folder", "Sync now", "Sync status",
     "Controls...", "Mods...", "Updates...", "About...", "Quit to launcher", "Close",
 };
@@ -339,6 +340,11 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
     }
     case OPT_TOUCH: SDL_strlcpy(buf, touch[o->touch_controls], n); break;
     case OPT_RUMBLE: SDL_strlcpy(buf, o->rumble ? "On" : "Off", n); break;
+    case OPT_SKIN: {
+        const char *name = np_skin_name();
+        SDL_snprintf(buf, n, "%s", name ? name : "None (Enter: import .deltaskin)");
+        break;
+    }
     case OPT_LAN: SDL_strlcpy(buf, o->lan_enabled ? "On" : "Off", n); break;
     case OPT_LAN_PORT: SDL_snprintf(buf, n, "%d", o->lan_port); break;
     case OPT_LAN_PEER: SDL_strlcpy(buf, o->lan_peer[0] ? o->lan_peer : "(LAN discovery only)", n); break;
@@ -427,6 +433,7 @@ static void opt_adjust(np_app *app, int item, int dir)
         break;
     }
     case OPT_TOUCH: o->touch_controls = wrapi(o->touch_controls + dir, NP_TOUCH_MODE_COUNT); break;
+    case OPT_SKIN: np_skin_cycle(app, dir); break;
     case OPT_RUMBLE:
         o->rumble = !o->rumble;
         np_input_rumble(app); /* feel it */
@@ -487,6 +494,7 @@ static void opt_activate(np_app *app, int item, int dir)
     case OPT_MODS: np_mods_open(app, NULL); break;
     case OPT_UPDATES: np_update_open(app); break;
     case OPT_TOUCH_EDIT: np_touchedit_open(app); break;
+    case OPT_SKIN: np_app_open_skin_dialog(app); break; /* Left/Right cycle installed skins */
     case OPT_ABOUT: np_app_open_page(app, NP_PAGE_ABOUT); break;
     case OPT_QUIT_GAME:
         np_app_open_page(app, NP_PAGE_NONE);

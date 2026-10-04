@@ -300,6 +300,8 @@ static void apply(np_options *o, const char *section, const char *key, char *val
                 o->touch_controls = m;
         } else if (!strcmp(key, "rumble"))
             o->rumble = iv != 0;
+        else if (!strcmp(key, "skin") && !np_slot_name_problem(val))
+            SDL_strlcpy(o->skin, val, sizeof o->skin);
     } else if (!strcmp(section, "keys")) {
         int a = lookup(action_ids, NP_ACT_COUNT, key);
         if (a < 0)
@@ -401,7 +403,8 @@ int np_options_save(const np_options *o, const char *path)
         put(b, "\n[updates]\nrepo = %s\napi = %s\n", o->update_repo, o->update_api);
     put(b, "\n[wireless]\nenabled = %d\nport = %d\npeer = %s\nrelay = %s\npin = %s\nstation_id = %06X\n",
         o->lan_enabled, o->lan_port, o->lan_peer, o->lan_relay, o->lan_pin, (unsigned)o->station_id);
-    put(b, "\n[input]\ntouch_controls = %s\nrumble = %d\n\n[keys]\n", touch_ids[o->touch_controls], o->rumble);
+    put(b, "\n[input]\ntouch_controls = %s\nrumble = %d\nskin = %s\n\n[keys]\n", touch_ids[o->touch_controls],
+        o->rumble, o->skin);
     for (int a = 0; a < NP_ACT_COUNT; a++) {
         put(b, "%s =", action_ids[a]);
         int last = -1;

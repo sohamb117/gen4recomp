@@ -25,6 +25,7 @@
 #include "scale2x.h"
 #include "sha1.h"
 #include "sha256.h"
+#include "skinfmt.h"
 #include "slots.h"
 #include "sync_plan.h"
 #include "touchlayout.h"
@@ -215,7 +216,7 @@ static void test_layout_exhaustive(void)
                 for (int scale = 0; scale < NP_SCALE_COUNT; scale++)
                     for (size_t si = 0; si < sizeof sizes / sizeof sizes[0]; si++) {
                         float W = sizes[si][0], H = sizes[si][1];
-                        np_layout_params p = {(np_layout_mode)mode, swap, rot, (np_scale_mode)scale, 256};
+                        np_layout_params p = {(np_layout_mode)mode, swap, rot, (np_scale_mode)scale, 256, NULL};
                         np_layout l;
                         np_layout_compute(&l, &p, W, H);
                         const char *ctx = "";
@@ -274,34 +275,34 @@ static void test_layout_fixed(void)
     np_layout l;
     int tx, ty;
     /* 1:1 vertical stack: bottom screen starts 192 px down. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 0, NP_SCALE_FIT, 256}, 256, 384);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 0, NP_SCALE_FIT, 256, NULL}, 256, 384);
     CHECK(np_layout_touch(&l, 10.5f, 200.5f, 0, &tx, &ty) && tx == 10 && ty == 8, "vertical 1x: (10,8) got (%d,%d)", tx,
           ty);
     CHECK(!np_layout_touch(&l, 10.5f, 100.5f, 0, &tx, &ty), "vertical 1x: top screen not touchable");
     /* Swapped: the bottom screen is on top. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 1, 0, NP_SCALE_FIT, 256}, 256, 384);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 1, 0, NP_SCALE_FIT, 256, NULL}, 256, 384);
     CHECK(np_layout_touch(&l, 10.5f, 8.5f, 0, &tx, &ty) && tx == 10 && ty == 8, "vertical swapped: got (%d,%d)", tx,
           ty);
     /* Rotated 90 degrees clockwise into a 384x256 window: the bottom
      * screen is the left half, its top-left corner at the window's top
      * edge, x = 191. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 1, NP_SCALE_FIT, 256}, 384, 256);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 1, NP_SCALE_FIT, 256, NULL}, 384, 256);
     CHECK(np_layout_touch(&l, 191.5f, 0.5f, 0, &tx, &ty) && tx == 0 && ty == 0, "rot90: (0,0) got (%d,%d)", tx, ty);
     CHECK(np_layout_touch(&l, 0.5f, 255.5f, 0, &tx, &ty) && tx == 255 && ty == 191, "rot90: (255,191) got (%d,%d)", tx,
           ty);
     /* Integer scale 2 side by side in a 1100x400 window: 1024x384 centred. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_HORIZONTAL, 0, 0, NP_SCALE_INTEGER, 256}, 1100, 400);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_HORIZONTAL, 0, 0, NP_SCALE_INTEGER, 256, NULL}, 1100, 400);
     CHECK(l.scale == 2.0f && l.origin_x == 38.0f && l.origin_y == 8.0f, "integer 2x origin (%f,%f) scale %f",
           l.origin_x, l.origin_y, l.scale);
     CHECK(np_layout_touch(&l, 38.0f + 512.0f + 3.0f, 8.0f + 5.0f, 0, &tx, &ty) && tx == 1 && ty == 2,
           "integer 2x: got (%d,%d)", tx, ty);
     /* Hybrid, swapped: the bottom screen is the large one at 2x. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_HYBRID, 1, 0, NP_SCALE_FIT, 256}, 768, 384);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_HYBRID, 1, 0, NP_SCALE_FIT, 256, NULL}, 768, 384);
     CHECK(np_layout_touch(&l, 100.5f, 50.5f, 0, &tx, &ty) && tx == 50 && ty == 25, "hybrid swapped: got (%d,%d)", tx,
           ty);
     /* Widescreen: 342-column screens with the DS picture 43 columns in;
      * the side bars are not touchable but a held stylus clamps to them. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 0, NP_SCALE_FIT, 342}, 342, 384);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 0, NP_SCALE_FIT, 342, NULL}, 342, 384);
     CHECK(l.screen[1].w == 342.0f && l.screen[1].h == 192.0f, "wide screen size %fx%f", l.screen[1].w, l.screen[1].h);
     CHECK(np_layout_touch(&l, 43.5f, 192.5f, 0, &tx, &ty) && tx == 0 && ty == 0, "wide: (0,0) got (%d,%d)", tx, ty);
     CHECK(np_layout_touch(&l, 298.5f, 383.5f, 0, &tx, &ty) && tx == 255 && ty == 191, "wide: (255,191) got (%d,%d)",
@@ -942,6 +943,66 @@ static void test_touchlayout(void)
     CHECK(it.cx == 1 && it.cy == 0 && it.w == 0.05f && it.h == 1 && it.opacity == 0.1f, "touch item clamp");
 }
 
+/* A Delta DS skin's info.json: representation choice, items, screens and
+ * extended edges; and screens placed at a skin's frames map the stylus. */
+static void test_skin(void)
+{
+    static const char json[] =
+        "{\"name\":\"Test \\u00e9\",\"identifier\":\"x.test\",\"gameTypeIdentifier\":\"com.rileytestut.delta.game.ds\","
+        "\"representations\":{\"ipad\":{\"standard\":{\"landscape\":{\"assets\":{\"large\":\"ipad.png\"},"
+        "\"mappingSize\":{\"width\":10,\"height\":10},\"screens\":[{\"outputFrame\":{\"x\":0,\"y\":0,\"width\":1,"
+        "\"height\":1}}]}}},\"iphone\":{\"edgeToEdge\":{\"portrait\":{\"assets\":{\"resizable\":\"p.pdf\"},"
+        "\"mappingSize\":{\"width\":375,\"height\":812},\"extendedEdges\":{\"top\":5,\"bottom\":5,\"left\":5,\"right\":5},"
+        "\"translucent\":true,\"items\":[{\"inputs\":{\"up\":\"up\",\"down\":\"down\",\"left\":\"left\",\"right\":"
+        "\"right\"},\"frame\":{\"x\":20,\"y\":600,\"width\":120,\"height\":120}},{\"inputs\":[\"a\"],\"frame\":{\"x\":300,"
+        "\"y\":620,\"width\":50,\"height\":50},\"extendedEdges\":{\"right\":20}},{\"inputs\":[\"menu\"],\"frame\":{"
+        "\"x\":170,\"y\":760,\"width\":30,\"height\":30}},{\"inputs\":{\"x\":\"touchScreenX\",\"y\":\"touchScreenY\"},"
+        "\"frame\":{\"x\":0,\"y\":290,\"width\":375,\"height\":281}},{\"inputs\":[\"thumbstick\"],\"frame\":{\"x\":0,"
+        "\"y\":0,\"width\":1,\"height\":1}}],\"screens\":[{\"inputFrame\":{\"x\":0,\"y\":0,\"width\":256,\"height\":192},"
+        "\"outputFrame\":{\"x\":0,\"y\":0,\"width\":375,\"height\":281}},{\"inputFrame\":{\"x\":0,\"y\":192,\"width\":256,"
+        "\"height\":192},\"outputFrame\":{\"x\":0,\"y\":290,\"width\":375,\"height\":281}}]}}}}}";
+    static np_skin_def d;
+    const char *why = "";
+    CHECK(!np_skin_parse(json, sizeof json - 1, &d, &why), "skin parsed (%s)", why);
+    const np_skin_rep *p = &d.rep[1], *l = &d.rep[0];
+    CHECK(!strcmp(d.name, "Test \xc3\xa9") && p->present && p->asset_is_pdf && !strcmp(p->asset, "p.pdf") &&
+              p->translucent && p->nitems == 4 && p->nscreens == 2,
+          "portrait from iphone/edgeToEdge (%d items)", p->nitems);
+    CHECK(l->present && !l->asset_is_pdf && !strcmp(l->asset, "ipad.png"), "landscape falls back to ipad");
+    CHECK(p->item[0].action == NP_SKIN_DPAD && p->item[1].keys == NP_KEY_A && p->item[2].action == NP_SKIN_MENU &&
+              p->item[3].action == NP_SKIN_TOUCH_SCREEN,
+          "skin item kinds");
+    /* An item's extendedEdges override the skin's per edge. */
+    CHECK(p->item[0].hit.x == 15 && p->item[0].hit.w == 130 && p->item[1].hit.w == 75 && p->item[1].hit.x == 295,
+          "extended edges (default and per item)");
+    CHECK(np_skin_item_at(p, 345, 640) == 1 && np_skin_item_at(p, 80, 660) == 0 && np_skin_item_at(p, 1, 1) == -1,
+          "skin item lookup");
+    CHECK(np_skin_dpad_keys(&p->item[0], 30, 660) == NP_KEY_LEFT && np_skin_dpad_keys(&p->item[0], 80, 660) == 0,
+          "skin d-pad");
+    CHECK(p->screen[1].input.y == 192 && p->screen[1].output.y == 290, "skin screens");
+    static const char *const bad[] = {
+        "{\"gameTypeIdentifier\":\"com.rileytestut.delta.game.gba\",\"representations\":{}}",
+        "{\"gameTypeIdentifier\":\"com.rileytestut.delta.game.ds\",\"representations\":{}}",
+        "{\"gameTypeIdentifier\":\"com.rileytestut.delta.game.ds\",\"representations\":{\"iphone\":{\"standard\":{"
+        "\"portrait\":{\"assets\":{\"small\":\"../x.png\"},\"mappingSize\":{\"width\":1,\"height\":1},\"screens\":[{"
+        "\"outputFrame\":{\"x\":0,\"y\":0,\"width\":1,\"height\":1}}]}}}}}",
+        "not json"};
+    for (size_t i = 0; i < sizeof bad / sizeof bad[0]; i++)
+        CHECK(np_skin_parse(bad[i], strlen(bad[i]), &d, &why), "skin %zu refused", i);
+
+    /* Bottom screen at (100, 400) 512x384 in a 800x900 window. */
+    float frames[8] = {100, 0, 512, 384, 100, 400, 512, 384};
+    np_layout lay;
+    np_layout_compute(&lay, &(np_layout_params){NP_LAYOUT_HORIZONTAL, 1, 1, NP_SCALE_FIT, 256, frames}, 800, 900);
+    int tx, ty;
+    CHECK(np_layout_touch(&lay, 100.5f + 2 * 10, 400.5f + 2 * 20, 0, &tx, &ty) && tx == 10 && ty == 20,
+          "stylus through a skin frame (%d,%d)", tx, ty);
+    CHECK(!np_layout_touch(&lay, 300, 200, 0, &tx, &ty), "top screen at its skin frame is not the stylus");
+    float hidden[8] = {0, 0, 0, 0, 0, 0, 400, 300};
+    np_layout_compute(&lay, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 0, NP_SCALE_FIT, 256, hidden}, 800, 900);
+    CHECK(!lay.screen[0].visible && lay.screen[1].visible && lay.screen[1].w == 400, "skin hides a screen");
+}
+
 int main(void)
 {
     test_sha1();
@@ -963,6 +1024,7 @@ int main(void)
     test_release();
     test_json();
     test_touchlayout();
+    test_skin();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

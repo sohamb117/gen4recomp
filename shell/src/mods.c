@@ -171,33 +171,7 @@ static int save_order(np_app *app)
     return 0;
 }
 
-/* ---- removing and installing --------------------------------------------------- */
-
-static int remove_tree(const char *path);
-
-static SDL_EnumerationResult SDLCALL remove_child(void *user, const char *dirname, const char *fname)
-{
-    char path[1200];
-    SDL_snprintf(path, sizeof path, "%s%s", dirname, fname);
-    if (remove_tree(path))
-        *(int *)user = -1;
-    return SDL_ENUM_CONTINUE;
-}
-
-/* Removes a file, a link (never what it points to) or a directory tree. */
-static int remove_tree(const char *path)
-{
-    if (SDL_RemovePath(path))
-        return 0; /* a file, a link or an empty directory */
-    SDL_PathInfo info;
-    if (!SDL_GetPathInfo(path, &info))
-        return 0; /* already gone */
-    if (info.type != SDL_PATHTYPE_DIRECTORY)
-        return -1;
-    int err = 0;
-    SDL_EnumerateDirectory(path, remove_child, &err);
-    return SDL_RemovePath(path) ? err : -1;
-}
+/* ---- installing ---------------------------------------------------------------- */
 
 /* The package inside a zip: the prefix its members share ("" or "dir/")
  * and the directory name it gets. Returns 0 or -1 with *why. */
@@ -327,18 +301,18 @@ void np_mods_install(np_app *app, const char *zip_path)
         goto fail;
     SDL_snprintf(tmp, sizeof tmp, "%s/.installing-%s", root, name);
     SDL_snprintf(dest, sizeof dest, "%s/%s", root, name);
-    remove_tree(tmp);
+    np_storage_remove_tree(tmp);
     if (!SDL_CreateDirectory(tmp)) {
         why = SDL_GetError();
         goto fail;
     }
     if (extract_all(&z, prefix, tmp, &why)) {
-        remove_tree(tmp);
+        np_storage_remove_tree(tmp);
         goto fail;
     }
-    if (remove_tree(dest) || !SDL_RenamePath(tmp, dest)) {
+    if (np_storage_remove_tree(dest) || !SDL_RenamePath(tmp, dest)) {
         why = SDL_GetError();
-        remove_tree(tmp);
+        np_storage_remove_tree(tmp);
         goto fail;
     }
     SDL_free(data);
@@ -446,7 +420,7 @@ static void remove_pkg(np_app *app, int i)
     ms.remove_armed = 0;
     char path[1200];
     pkg_path(ms.pkg[i].dir, "", path, sizeof path);
-    if (remove_tree(path)) {
+    if (np_storage_remove_tree(path)) {
         np_app_toast(app, "Cannot delete it: %s", SDL_GetError());
         return;
     }

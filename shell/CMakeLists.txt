@@ -56,6 +56,7 @@ add_library(np_shell_common STATIC
   src/scale2x.c
   src/sha1.c
   src/sha256.c
+  src/skinfmt.c
   src/slots.c
   src/sync_plan.c
   src/touchlayout.c
@@ -110,6 +111,7 @@ add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/mods.c
   src/options.c
   src/session.c
+  src/skin.c
   src/storage.c
   src/sync.c
   src/touchpad.c
@@ -136,6 +138,14 @@ elseif(WIN32)
   target_sources(nativeplat PRIVATE src/http_winhttp.c)
   target_link_libraries(nativeplat PRIVATE winhttp)
   target_compile_definitions(nativeplat PRIVATE NP_HAVE_HTTP)
+endif()
+
+# Delta skins with PDF art: CoreGraphics rasterizes them on Apple platforms
+# (src/pdfraster_apple.c); elsewhere only PNG art is accepted.
+if(APPLE)
+  target_sources(nativeplat PRIVATE src/pdfraster_apple.c)
+  target_link_libraries(nativeplat PRIVATE "-framework CoreGraphics")
+  target_compile_definitions(nativeplat PRIVATE NP_HAVE_PDF)
 endif()
 
 if(WIN32)

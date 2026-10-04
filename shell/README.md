@@ -167,6 +167,23 @@ so they follow resizing); unedited ones keep the built-in arrangement.
 *Rumble on press* gives a short gamepad rumble for every touch-control or
 gamepad press, the desktop stand-in for a phone's haptic tick.
 
+*Controller skin* uses Delta's DS skins (`.deltaskin`: a zip with
+`info.json` whose `gameTypeIdentifier` is `com.rileytestut.delta.game.ds`):
+Enter imports one (or drop it on the window), Left/Right switch between
+installed skins and *None*. Import keeps `info.json` and the art it names in
+`skins/<name>/`. For each orientation the first representation of
+iphone/edgeToEdge, iphone/standard, ipad/standard, ipad/splitView is used:
+its art is fitted to the window, the DS screens go to its `screens`
+(`inputFrame` picks top or bottom, `outputFrame` is where; older skins'
+`gameScreenFrame` is split in two), and touches on its `items` press
+buttons, the d-pad (8-way from its centre), `menu`, `fastForward`,
+`toggleFastForward`, `quickSave` (F1) and `quickLoad` (F2), with
+`extendedEdges` growing the touch areas. The touch screen stays the
+stylus. PNG art loads anywhere; PDF art (`resizable`) is rasterized with
+CoreGraphics on macOS and iOS for the window's size, and refused on Windows.
+A skin replaces the built-in touch controls whenever it covers the
+orientation.
+
 ## Saving, snapshots and rewind
 
 | Key | Action |

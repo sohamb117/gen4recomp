@@ -56,6 +56,7 @@ typedef enum np_pending_kind {
     NP_PENDING_MOD_INSTALL, /* a package .zip for mods.c */
     NP_PENDING_GBA_ROM,     /* a .gba for the GBA slot */
     NP_PENDING_GBA_SAVE,    /* the .sav that goes with it */
+    NP_PENDING_SKIN,        /* a .deltaskin to install */
 } np_pending_kind;
 
 typedef enum np_text_purpose {
@@ -220,6 +221,7 @@ typedef struct np_app {
     np_finger fingers[NP_MAX_FINGERS];
     int touch_seen;
     uint16_t control_keys; /* from the on-screen controls */
+    int control_ff_hold;   /* a skin's fast-forward (hold) item is held */
     uint8_t trigger_down[NP_MAX_PADS][2];
 
     SDL_AudioStream *audio;
@@ -248,6 +250,7 @@ void np_app_open_sync_folder_dialog(np_app *app);
 void np_app_open_mod_install_dialog(np_app *app);
 /* Options > GBA cartridge: pick a .gba, or (save) its .sav file. */
 void np_app_open_gba_dialog(np_app *app, int save);
+void np_app_open_skin_dialog(np_app *app);
 /* Whether the running core booted with a cartridge in the GBA slot. */
 int np_app_gba_inserted(const np_app *app);
 void np_app_apply_video_options(np_app *app);
@@ -336,8 +339,13 @@ void np_input_rumble(np_app *app);
 
 /* touchpad.c */
 int np_touchpad_visible(const np_app *app);
-/* Hit-tests the on-screen controls: returns DS key bits, sets *ff / *menu. */
-uint16_t np_touchpad_hit(const np_app *app, float x, float y, int *ff, int *menu, int *any);
+/* What a touch at one point presses: keys, plus one-shot actions. */
+typedef struct np_touch_hit {
+    uint16_t keys;
+    int any; /* on a control at all (else the stylus may have it) */
+    int ff_toggle, ff_hold, menu, quick_save, quick_load;
+} np_touch_hit;
+void np_touchpad_hit(const np_app *app, float x, float y, np_touch_hit *h);
 void np_touchpad_draw(np_app *app);
 /* Reads touch-controls.ini (after the storage root is known). */
 void np_touchpad_load(np_app *app);
@@ -348,6 +356,21 @@ void np_touchedit_draw(np_app *app);
 void np_touchedit_pointer(np_app *app, float x, float y, int pressed, int released);
 int np_touchedit_key(np_app *app, const SDL_KeyboardEvent *k);
 void np_touchedit_command(np_app *app, np_menu_cmd cmd);
+
+/* skin.c: Delta controller skins */
+void np_skin_apply(np_app *app);    /* loads opt.skin (none if "") */
+void np_skin_install(np_app *app, const char *path);
+void np_skin_cycle(np_app *app, int dir); /* next/previous installed, or none */
+const char *np_skin_name(void);          /* the loaded skin, or NULL */
+/* Whether the skin covers the window's current orientation. */
+int np_skin_active(const np_app *app);
+/* Screen rectangles for np_layout_params.frames; 0 without a skin. */
+int np_skin_frames(const np_app *app, float frames[8]);
+void np_skin_draw_art(np_app *app);
+void np_skin_draw_pressed(np_app *app, uint16_t keys);
+/* Adds what a touch presses on the skin to h; 0 without a skin. */
+int np_skin_hit(const np_app *app, float x, float y, np_touch_hit *h);
+void np_skin_shutdown(void);
 
 /* ui.c */
 int np_ui_init(np_app *app);

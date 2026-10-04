@@ -132,6 +132,31 @@ int np_storage_write_atomic(const char *path, const void *data, size_t len, int 
     return 0;
 }
 
+/* ---- removing trees ---------------------------------------------------------- */
+
+static SDL_EnumerationResult SDLCALL remove_child(void *user, const char *dirname, const char *fname)
+{
+    char path[1200];
+    SDL_snprintf(path, sizeof path, "%s%s", dirname, fname);
+    if (np_storage_remove_tree(path))
+        *(int *)user = -1;
+    return SDL_ENUM_CONTINUE;
+}
+
+int np_storage_remove_tree(const char *path)
+{
+    if (SDL_RemovePath(path))
+        return 0; /* a file, a link or an empty directory */
+    SDL_PathInfo info;
+    if (!SDL_GetPathInfo(path, &info))
+        return 0; /* already gone */
+    if (info.type != SDL_PATHTYPE_DIRECTORY)
+        return -1;
+    int err = 0;
+    SDL_EnumerateDirectory(path, remove_child, &err);
+    return SDL_RemovePath(path) ? err : -1;
+}
+
 void np_storage_rom_path(np_game game, char *out, size_t n)
 {
     char rel[64];

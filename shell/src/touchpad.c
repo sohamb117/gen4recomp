@@ -105,19 +105,24 @@ static const np_tc_layout *current(const np_app *app, np_tc_layout *scratch)
     return scratch;
 }
 
+/* A skin is a deliberate choice, so it shows whenever a game does; the
+ * built-in controls follow Options > Touch controls. */
 int np_touchpad_visible(const np_app *app)
 {
     if (app->view != NP_VIEW_GAME || app->page != NP_PAGE_NONE)
         return 0;
+    if (np_skin_active(app))
+        return 1;
     return app->opt.touch_controls == NP_TOUCH_ON || (app->opt.touch_controls == NP_TOUCH_AUTO && app->touch_seen);
 }
 
-uint16_t np_touchpad_hit(const np_app *app, float x, float y, int *ff, int *menu, int *any)
+void np_touchpad_hit(const np_app *app, float x, float y, np_touch_hit *h)
 {
+    SDL_zerop(h);
+    if (np_skin_hit(app, x, y, h))
+        return;
     np_tc_layout scratch;
-    uint16_t keys;
-    *any = np_tc_hit(current(app, &scratch), app->out_w, app->out_h, x, y, &keys, ff, menu);
-    return keys;
+    h->any = np_tc_hit(current(app, &scratch), app->out_w, app->out_h, x, y, &h->keys, &h->ff_toggle, &h->menu);
 }
 
 /* ---- drawing ------------------------------------------------------------------ */
@@ -200,6 +205,10 @@ void np_touchpad_draw(np_app *app)
 {
     if (!np_touchpad_visible(app))
         return;
+    if (np_skin_active(app)) {
+        np_skin_draw_pressed(app, app->control_keys); /* the art itself is drawn under the screens */
+        return;
+    }
     np_tc_layout scratch;
     const np_tc_layout *l = current(app, &scratch);
     for (int i = 0; i < NP_TC_COUNT; i++)

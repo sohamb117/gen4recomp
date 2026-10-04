@@ -36,6 +36,11 @@ typedef struct np_layout_params {
     /* Width of each screen in DS pixel units: 256, or more when the core
      * renders widescreen with the DS picture centred (0 = 256). */
     int screen_w;
+    /* With a controller skin: window rectangles {x, y, w, h} for the top
+     * ([0..3]) and bottom ([4..7]) screen, each fitted inside its own
+     * rectangle at the screens' aspect; a width of 0 hides that screen.
+     * mode, swap, rotation and scale are then ignored. NULL otherwise. */
+    const float *frames;
 } np_layout_params;
 
 typedef struct np_screen_place {

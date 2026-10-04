@@ -722,6 +722,14 @@ void np_app_open_gba_dialog(np_app *app, int save)
         SDL_ShowOpenFileDialog(dialog_done, app, app->window, save ? sav : rom, 1, NULL, false);
 }
 
+void np_app_open_skin_dialog(np_app *app)
+{
+    static const SDL_DialogFileFilter filters[] = {{"Delta skin (*.deltaskin)", "deltaskin;zip"}};
+    app->dialog_kind = NP_PENDING_SKIN;
+    if (!autotest_dialog(app, "skin"))
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+}
+
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot)
 {
     static const SDL_DialogFileFilter filters[] = {{"Raw save (*.sav)", "sav"}};
@@ -839,6 +847,10 @@ static void process_pending(np_app *app)
         SDL_strlcpy(app->opt.gba_save, path, sizeof app->opt.gba_save);
         gba_changed(app);
         break;
+    case NP_PENDING_SKIN:
+        np_skin_install(app, path);
+        save_options(app);
+        break;
     case NP_PENDING_GIFT_IMPORT:
         if (app->editor)
             np_editor_import_gift(app, path);
@@ -873,6 +885,10 @@ static void handle_drop(np_app *app, const char *data)
             launch_fail(app, "Cannot open link: %s", err);
         else
             np_app_launch(app, &req);
+        return;
+    }
+    if (has_extension(data, "deltaskin")) {
+        np_app_request(app, NP_PENDING_SKIN, data);
         return;
     }
     if (has_extension(data, "zip") && app->page == NP_PAGE_MODS) {
@@ -1061,7 +1077,9 @@ static void draw_screens(np_app *app)
      * are wider than 256 blocks with the DS picture centred. */
     uint32_t s = app->have_frame && app->frame.height >= 192 ? app->frame.height / 192 : 1;
     int screen_w = app->have_frame ? (int)(app->frame.width / s) : 256;
-    np_layout_params lp = {app->opt.layout, app->opt.swap, app->opt.rotation, app->opt.scale, screen_w};
+    float frames[8];
+    np_layout_params lp = {app->opt.layout, app->opt.swap, app->opt.rotation, app->opt.scale, screen_w,
+                           np_skin_frames(app, frames) ? frames : NULL};
     np_layout_compute(&app->layout, &lp, app->out_w, app->out_h);
     for (int i = 0; i < 2; i++)
         np_fx_draw_screen(app, i);
@@ -1072,6 +1090,7 @@ static void draw(np_app *app)
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
     if (app->view == NP_VIEW_GAME) {
+        np_skin_draw_art(app); /* a skin's art lies under the screens */
         draw_screens(app);
         np_touchpad_draw(app);
     }
@@ -1336,6 +1355,8 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             SDL_strlcpy(t->gba_rom, v, sizeof t->gba_rom);
         else if (!SDL_strcmp(kv, "gbasave"))
             SDL_strlcpy(t->gba_save, v, sizeof t->gba_save);
+        else if (!SDL_strcmp(kv, "skin"))
+            SDL_strlcpy(app->opt.skin, v, sizeof app->opt.skin);
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
             if (SDL_sscanf(v, "%dx%d", &x, &y) != 2 || x < 0 || x > 255 || y < 0 || y > 191)
@@ -1796,6 +1817,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         SDL_Log("display effects: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+    np_skin_apply(app);
 #if defined(SDL_PLATFORM_IOS)
     app->touch_seen = 1;
 #endif
@@ -1996,6 +2018,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
     save_options(app);
     np_audio_close(app);
     np_input_close_gamepads(app);
+    np_skin_shutdown();
     np_ui_destroy(app);
     np_fx_destroy(app);
     if (app->net)

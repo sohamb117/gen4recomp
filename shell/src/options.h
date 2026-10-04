@@ -97,6 +97,7 @@ typedef struct np_options {
      * "" = the build's NP_UPDATE_REPO and https://api.github.com. */
     char update_repo[128];
     char update_api[256];
+    char skin[33]; /* installed controller skin (skins/<name>), "" = built-in controls */
     /* Local wireless (net.c). station_id is generated once and kept: the
      * game derives the console's MAC from it and stores that in saves. */
     int lan_enabled;

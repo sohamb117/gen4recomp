@@ -49,6 +49,10 @@ int np_storage_exists(const char *path);
  * `path.bak`. Returns 0 on success. */
 int np_storage_write_atomic(const char *path, const void *data, size_t len, int keep_backup);
 
+/* Removes a file, a link (never what it points to) or a directory tree;
+ * 0 when nothing is left (or nothing was there). */
+int np_storage_remove_tree(const char *path);
+
 /* Whether roms/<game>.nds has been imported. */
 int np_storage_rom_present(np_game game);
 void np_storage_rom_path(np_game game, char *out, size_t n);
