@@ -1,0 +1,43 @@
+--- a/src/encounter.c
++++ b/src/encounter.c
+@@ -50,6 +50,8 @@
+ #include "unk_020528D0.h"
+ #include "vars_flags.h"
+ 
++#include "pc_np_options.h"
++
+ typedef struct Encounter {
+     int *resultMaskPtr;
+     int introEffectID;
+@@ -121,6 +123,7 @@
+ static Encounter *NewEncounter(FieldBattleDTO *dto, int introEffectID, int battleBGM, int *resultMaskPtr)
+ {
+     Encounter *encounter = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(Encounter));
++    pc_np_stat.in_encounter = 1; /* pc port: NP_STAT_IN_BATTLE, until FreeEncounter */
+     encounter->resultMaskPtr = resultMaskPtr;
+     if (resultMaskPtr != NULL) {
+         *resultMaskPtr = BATTLE_IN_PROGRESS;
+@@ -135,6 +138,7 @@
+ 
+ static void FreeEncounter(Encounter *encounter)
+ {
++    pc_np_stat.in_encounter = 0;
+     FieldBattleDTO_Free(encounter->dto);
+     Heap_Free(encounter);
+ }
+@@ -319,6 +323,7 @@
+ static WildEncounter *NewWildEncounter(FieldBattleDTO *dto, int introEffectID, int battleBGM, int *resultMaskPtr)
+ {
+     WildEncounter *encounter = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(WildEncounter));
++    pc_np_stat.in_encounter = 1; /* pc port: NP_STAT_IN_BATTLE, until FreeWildEncounter */
+     encounter->resultMaskPtr = resultMaskPtr;
+ 
+     if (resultMaskPtr != NULL) {
+@@ -335,6 +340,7 @@
+ 
+ static void FreeWildEncounter(WildEncounter *encounter)
+ {
++    pc_np_stat.in_encounter = 0;
+     FieldBattleDTO_Free(encounter->dto);
+     Heap_Free(encounter);
+ }

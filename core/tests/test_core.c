@@ -452,7 +452,7 @@ static void test_v2_options(test_host *th) {
     CHECK(np_core_status(c, 8 + NP_OPT_BGM_VOLUME) == 100 && np_core_status(c, 8 + NP_OPT_SE_VOLUME) == 256);
     CHECK(np_core_status(c, 8 + NP_OPT_CAMERA_TILT) == (uint32_t)-32);
     CHECK(np_core_status(c, 8 + NP_OPT_CAMERA_ZOOM) == 256 && np_core_status(c, 8 + NP_OPT_RENDER_SCALE) == 1);
-    CHECK(np_core_status(c, NP_STAT_LINK_ACTIVE) == 0 && np_core_status(c, 6) == 0);
+    CHECK(np_core_status(c, NP_STAT_LINK_ACTIVE) == 0 && np_core_status(c, 7) == 0);
 
     /* Frame size follows the guest from one frame to the next. */
     np_core_set_option(c, NP_OPT_RENDER_SCALE, 2);
@@ -483,10 +483,10 @@ static void test_v2_net(test_host *th) {
         np_input in = input_for(k);
         CHECK(np_core_run_frame(c, &in, &f) == 0);
         check_frame(&f, k, &in, k > 0);
-        CHECKF(np_core_status(c, 5) == k + 1, "frame %u: %u datagrams back", k, np_core_status(c, 5));
+        CHECKF(np_core_status(c, 6) == k + 1, "frame %u: %u datagrams back", k, np_core_status(c, 6));
     }
     CHECK(th->net_sent == 6 && th->net_count == 0);
-    CHECK(np_core_status(c, NP_STAT_LINK_ACTIVE) == 1 && np_core_status(c, 6) == NET_SELF);
+    CHECK(np_core_status(c, NP_STAT_LINK_ACTIVE) == 1 && np_core_status(c, 7) == NET_SELF);
     np_core_destroy(c);
 }
 

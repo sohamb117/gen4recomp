@@ -63,6 +63,8 @@ enum np_status {
     NP_STAT_QUICKSAVE_SEQ = 2,   /* last NP_OPT_QUICKSAVE_SEQ the guest handled */
     NP_STAT_QUICKSAVE_RESULT = 3, /* NP_QS_* for that request */
     NP_STAT_MAP_ID = 4,          /* current field map header id, for diagnostics and mods */
+    NP_STAT_IN_BATTLE = 5,       /* 1 from a battle's intro until the fade back to the field
+                                    (wild, trainer, link, facility), 0 otherwise */
     NP_STAT_COUNT = 16
 };
 

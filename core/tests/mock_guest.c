@@ -274,7 +274,7 @@ static void exchange_datagrams(void) {
 }
 
 /* What the host asked for, reported back: the real slots get recognisable
- * values and slots 8..15 echo opt[0..7] verbatim. Slots 5 and 6 carry the
+ * values and slots 8..15 echo opt[0..7] verbatim. Slots 6 and 7 carry the
  * loopback count and this station's id. */
 static void publish_status(void) {
     const uint32_t *opt = DESC->opt;
@@ -283,8 +283,9 @@ static void publish_status(void) {
     DESC->status[NP_STAT_QUICKSAVE_SEQ] = opt[NP_OPT_QUICKSAVE_SEQ];
     DESC->status[NP_STAT_QUICKSAVE_RESULT] = opt[NP_OPT_QUICKSAVE_SEQ] ? NP_QS_SAVED : NP_QS_NONE;
     DESC->status[NP_STAT_MAP_ID] = 400 + frame;
-    DESC->status[5] = net_ok;
-    DESC->status[6] = np_host_net_self();
+    DESC->status[NP_STAT_IN_BATTLE] = 0;
+    DESC->status[6] = net_ok;
+    DESC->status[7] = np_host_net_self();
     for (uint32_t i = 0; i < 8; i++) DESC->status[8 + i] = opt[i];
 }
 
