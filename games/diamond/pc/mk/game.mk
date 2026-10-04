@@ -73,6 +73,17 @@ GAME_MSL_RENAME := -Dabs=guest_abs -Drand=guest_rand -Dsrand=guest_srand
 # dropping it changes nothing else.
 GAME_TU_EXTRA_src/filesystem.c := -Dregister=
 
+# The VRAMCNT writers (the C ones; the assembly ones armrec hooks per store,
+# ARMREC_VRAM_HOOK): -finstrument-functions, so armrec_rt.c's
+# __cyg_profile_func_exit applies a bank remap before the caller copies
+# through the new window; Platinum's pc/Makefile VRAMCNT_SRCS has the
+# reasoning. irbridge.py nulls the return-address argument the wasm backend
+# cannot produce; GAME_SDK_COMPILE's pass 1 (a plain compile, only for the
+# symbol list) leaves the flag out for the same reason.
+GAME_VRAMCNT_TUS := lib/NitroSDK/src/GX_vramcnt.c lib/NitroSDK/src/GX_state.c \
+                    lib/NitroSDK/src/MI_wram.c
+$(foreach t,$(GAME_VRAMCNT_TUS),$(eval GAME_TU_EXTRA_$(t) := -finstrument-functions))
+
 # Overlay TUs know their overlay number (pc/include/sinit.h): the NN of
 # arm9/overlays/NN/src, which is the ROM's overlay id (arm9.lsf OVERLAY_NN),
 # leading zero dropped so 08/09 are not octal.
@@ -161,7 +172,7 @@ $(BUILD)/extracted/%.s: $(BUILD)/patched/%.c $(EXTRACT_ASM) $(ARMREC)/extract_as
 # overlays/) is strong.
 define GAME_SDK_COMPILE
 @mkdir -p $(dir $@)
-@$(CC) $(call game_tu_flags,$*.c) -c -o $@.pass1.o $<
+@$(CC) $(filter-out -finstrument-functions,$(call game_tu_flags,$*.c)) -c -o $@.pass1.o $<
  @$(NM) --defined-only -g $@.pass1.o 2>/dev/null | awk 'NF == 3 { print "#pragma weak " $$3 }' > $@.weak.h
 @rm -f $@.pass1.o
 $(call BRIDGE_COMPILE,$(call game_tu_flags,$*.c) $(GAME_DEPFLAGS) -include $@.weak.h)

@@ -15,4 +15,8 @@
  * rather than found on the search path. */
 #include "nitro/types.h"
 
+/* The I/O registers that are not memory (coprocessor, geometry engine)
+ * routed through the armrec runtime; see the header. */
+#include "pc_dp_registers.h"
+
 #endif /* PC_PRELUDE_H */

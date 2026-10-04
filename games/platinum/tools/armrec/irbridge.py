@@ -839,6 +839,10 @@ def rewrite(lines, asm_funcs, asm_data, tu_id, where):
     return out, recs
 
 
+RETADDR_RE = re.compile(
+    r"(?:tail |musttail |notail )?call ptr @llvm\.returnaddress(?:\.p0)?\(i32 0\)")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     ap.add_argument("--classes", required=True)
@@ -853,7 +857,14 @@ def main():
     tu_id = args.tu_id or hashlib.sha1(
         os.path.abspath(args.out).encode()).hexdigest()[:10]
     with open(args.inp) as f:
-        lines = f.read().split("\n")
+        text = f.read()
+    # -finstrument-functions (the VRAMCNT writers, see D/pc/mk/game.mk) passes
+    # __cyg_profile_func_*(fn, llvm.returnaddress(0)), and the wasm backend
+    # refuses that intrinsic outside Emscripten. armrec_rt.c's hooks ignore
+    # the argument, so it becomes null (games/platinum/pc/wasm/
+    # cc_instrument.sh does the same for Platinum's plain compile).
+    text = RETADDR_RE.sub("getelementptr i8, ptr null, i32 0", text)
+    lines = text.split("\n")
     try:
         out, recs = rewrite(lines, asm_funcs, asm_data, tu_id, args.inp)
     except IRError as e:
