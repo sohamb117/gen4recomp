@@ -302,6 +302,9 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     app->game = game;
     SDL_strlcpy(app->slot, slot, sizeof app->slot);
     app->host = *host;
+    /* Runtime content packages, read by the core at boot (mods.c). */
+    app->host.content_root =
+        np_mods_content_root(app, game, app->mods_root, sizeof app->mods_root) ? NULL : app->mods_root;
     /* PC_* variables configure the port layer (debug switches such as
      * PC_TP_DEBUG); pass the process's own through, as np_headless does. */
     char **env = SDL_GetEnvironmentVariables(SDL_GetEnvironment());
@@ -592,6 +595,14 @@ void np_app_open_sync_folder_dialog(np_app *app)
                                  false);
 }
 
+void np_app_open_mod_install_dialog(np_app *app)
+{
+    static const SDL_DialogFileFilter filters[] = {{"Mod package (*.zip)", "zip"}};
+    app->dialog_kind = NP_PENDING_MOD_INSTALL;
+    if (!autotest_dialog(app, "mod install"))
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+}
+
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot)
 {
     static const SDL_DialogFileFilter filters[] = {{"Raw save (*.sav)", "sav"}};
@@ -682,6 +693,9 @@ static void process_pending(np_app *app)
         SDL_Log("sync folder: %s", path);
         np_sync_all(app, 0);
         break;
+    case NP_PENDING_MOD_INSTALL:
+        np_mods_install(app, path);
+        break;
     case NP_PENDING_GIFT_IMPORT:
         if (app->editor)
             np_editor_import_gift(app, path);
@@ -716,6 +730,10 @@ static void handle_drop(np_app *app, const char *data)
             launch_fail(app, "Cannot open link: %s", err);
         else
             np_app_launch(app, &req);
+        return;
+    }
+    if (has_extension(data, "zip") && app->page == NP_PAGE_MODS) {
+        np_app_request(app, NP_PENDING_MOD_INSTALL, data);
         return;
     }
     if (has_extension(data, "pgt") || has_extension(data, "pcd")) {
@@ -820,12 +838,16 @@ static int run_one(np_app *app, const np_input *in)
             np_session_frame_done(app);
         return 0;
     }
-    if (r > 0)
+    char error[256] = "";
+    if (r > 0) {
         SDL_strlcpy(app->status, "The game has exited.", sizeof app->status);
-    else
-        SDL_snprintf(app->status, sizeof app->status, "The game stopped: %s", np_core_last_error(app->core));
+    } else {
+        SDL_strlcpy(error, np_core_last_error(app->core), sizeof error);
+        SDL_snprintf(app->status, sizeof app->status, "The game stopped: %s", error);
+    }
     SDL_Log("%s", app->status);
     np_app_stop_game(app);
+    np_mods_boot_failed(app, error); /* a broken package: offer to turn it off */
     return -1;
 }
 
@@ -1215,6 +1237,8 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
                 t->page = NP_PAGE_CONTROLS;
             else if (!SDL_strcmp(v, "about"))
                 t->page = NP_PAGE_ABOUT;
+            else if (!SDL_strcmp(v, "mods"))
+                t->page = NP_PAGE_MODS;
             else
                 return -1;
         } else if (!SDL_strcmp(kv, "size")) {
@@ -1473,6 +1497,8 @@ static SDL_AppResult autotest_iterate(np_app *app)
         /* Show a UI page over (or instead of) the game for the capture. */
         if (t->page < 0 && app->core)
             np_app_stop_game(app);
+        else if (t->page == NP_PAGE_MODS)
+            np_mods_open(app, NULL);
         else if (t->page > 0)
             np_app_open_page(app, (np_page)t->page);
         draw(app);

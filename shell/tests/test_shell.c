@@ -16,6 +16,7 @@
 #include "card.h"
 #include "launch.h"
 #include "layout.h"
+#include "modpkg.h"
 #include "png.h"
 #include "rewind.h"
 #include "romdb.h"
@@ -24,6 +25,7 @@
 #include "slots.h"
 #include "sync_plan.h"
 #include "undo.h"
+#include "zip.h"
 
 static int failures, checks;
 
@@ -661,6 +663,123 @@ static void test_sync_plan(void)
                                &back),
           "bad slot name refused");
 }
+
+static const uint8_t zip_data[] = {
+80,75,3,4,20,0,0,0,0,0,0,0,33,0,0,0,0,0,0,0,0,0,0,0,
+0,0,4,0,0,0,112,107,103,47,80,75,3,4,20,0,0,0,8,0,0,0,33,0,
+251,112,250,60,54,1,0,0,65,8,0,0,12,0,0,0,112,107,103,47,109,111,100,46,
+116,111,109,108,149,213,187,110,131,64,16,133,225,158,167,24,81,167,96,102,150,91,164,148,
+121,14,11,240,34,163,0,142,20,44,57,111,159,88,123,232,207,74,116,203,95,157,111,181,
+203,85,62,164,140,207,97,251,94,227,101,139,251,227,114,196,231,81,22,251,176,197,215,209,
+103,58,122,151,109,88,118,121,253,32,235,48,198,245,167,44,214,101,143,82,201,125,150,227,
+22,229,250,251,159,44,147,220,30,243,188,13,187,140,235,125,250,122,147,97,156,210,39,85,
+10,148,14,218,20,24,29,104,72,133,211,133,105,42,2,95,116,169,168,233,194,235,84,52,
+116,17,44,21,45,95,244,169,232,232,162,110,82,209,211,69,227,24,144,159,188,61,55,207,
+24,29,171,43,63,123,135,217,149,223,189,199,238,202,15,223,99,120,229,151,215,10,211,43,
+191,189,42,198,87,126,125,85,204,175,252,254,106,0,160,188,0,117,16,48,158,128,6,24,
+48,222,128,134,243,234,103,220,253,26,10,140,87,160,13,24,24,207,64,27,56,176,12,7,
+45,28,88,134,131,14,14,44,195,65,7,7,150,225,160,135,3,227,29,88,5,7,206,59,
+48,133,3,231,29,152,194,129,243,14,204,206,71,32,227,21,112,56,240,140,119,192,225,192,
+121,7,22,224,192,121,7,86,195,129,243,14,172,134,3,231,29,88,3,7,158,225,160,245,
+226,15,80,75,3,4,20,0,0,0,8,0,0,0,33,0,59,124,138,223,11,0,0,0,
+18,0,0,0,13,0,0,0,112,107,103,47,115,109,97,108,108,46,116,120,116,203,72,205,
+201,201,87,200,64,144,92,0,80,75,3,4,20,0,0,0,0,0,0,0,33,0,51,240,
+196,104,16,0,0,0,16,0,0,0,18,0,0,0,112,107,103,47,46,99,111,111,107,101,
+100,47,100,105,103,101,115,116,48,49,50,51,52,53,54,55,56,57,97,98,99,100,101,102,
+80,75,3,4,20,0,0,0,0,0,0,0,33,0,30,187,193,19,9,0,0,0,9,0,
+0,0,8,0,0,0,112,107,103,47,108,105,110,107,46,46,47,46,46,47,101,116,99,80,
+75,1,2,20,3,20,0,0,0,0,0,0,0,33,0,0,0,0,0,0,0,0,0,0,
+0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,128,1,0,0,0,0,112,107,103,
+47,80,75,1,2,20,3,20,0,0,0,8,0,0,0,33,0,251,112,250,60,54,1,0,
+0,65,8,0,0,12,0,0,0,0,0,0,0,0,0,0,0,128,1,34,0,0,0,112,
+107,103,47,109,111,100,46,116,111,109,108,80,75,1,2,20,3,20,0,0,0,8,0,0,
+0,33,0,59,124,138,223,11,0,0,0,18,0,0,0,13,0,0,0,0,0,0,0,0,
+0,0,0,128,1,130,1,0,0,112,107,103,47,115,109,97,108,108,46,116,120,116,80,75,
+1,2,20,3,20,0,0,0,0,0,0,0,33,0,51,240,196,104,16,0,0,0,16,0,
+0,0,18,0,0,0,0,0,0,0,0,0,0,0,128,1,184,1,0,0,112,107,103,47,
+46,99,111,111,107,101,100,47,100,105,103,101,115,116,80,75,1,2,20,3,20,0,0,0,
+0,0,0,0,33,0,30,187,193,19,9,0,0,0,9,0,0,0,8,0,0,0,0,0,
+0,0,0,0,0,0,255,161,248,1,0,0,112,107,103,47,108,105,110,107,80,75,5,6,
+0,0,0,0,5,0,5,0,29,1,0,0,39,2,0,0,0,0
+};
+
+/* A zip written by Python's zipfile: a directory, a dynamic-Huffman and a
+ * fixed-Huffman deflated member, a stored one and a symlink. */
+static void test_zip(void)
+{
+    char big[2200];
+    size_t n = (size_t)snprintf(big, sizeof big, "id = \"example_menu_text\"\nname = \"Example: main menu labels\"\n");
+    for (int i = 0; i < 40; i++)
+        n += (size_t)snprintf(big + n, sizeof big - n, "line %d of the dynamic huffman block, abcabcabc %d\n", i, i * 7);
+    np_zip z;
+    np_zip_entry e;
+    CHECK(!np_zip_open(&z, zip_data, sizeof zip_data) && z.count == 5, "zip open (%u members)", z.count);
+    CHECK(!np_zip_entry_at(&z, 0, &e) && e.is_dir && !strcmp(e.name, "pkg/"), "zip dir entry");
+    static uint8_t out[4096];
+    CHECK(np_zip_find(&z, "pkg/mod.toml", &e) == 1 && e.method == 8 && e.size == n && !np_zip_extract(&z, &e, out) &&
+              memcmp(out, big, n) == 0,
+          "zip dynamic-Huffman member");
+    CHECK(np_zip_find(&z, "pkg/small.txt", &e) >= 0 && e.size == 18 && !np_zip_extract(&z, &e, out) &&
+              memcmp(out, "hello hello hello\n", 18) == 0,
+          "zip fixed-Huffman member");
+    CHECK(np_zip_find(&z, "pkg/.cooked/digest", &e) >= 0 && e.method == 0 && !np_zip_extract(&z, &e, out) &&
+              memcmp(out, "0123456789abcdef", 16) == 0,
+          "zip stored member");
+    CHECK(np_zip_find(&z, "pkg/link", &e) >= 0 && e.is_symlink, "zip symlink flagged");
+    CHECK(np_zip_find(&z, "pkg/none", &e) == -1, "zip missing member");
+    static uint8_t bad[sizeof zip_data];
+    memcpy(bad, zip_data, sizeof bad);
+    np_zip_find(&z, "pkg/mod.toml", &e);
+    bad[e.local + 30 + 12 + 40] ^= 0x55; /* inside the deflate stream */
+    np_zip zb;
+    CHECK(!np_zip_open(&zb, bad, sizeof bad) && np_zip_find(&zb, "pkg/mod.toml", &e) >= 0 && np_zip_extract(&zb, &e, out),
+          "zip corruption detected");
+    CHECK(np_zip_open(&zb, bad, 100), "zip truncated refused");
+    static const struct {
+        const char *name;
+        int safe;
+    } names[] = {{"pkg/mod.toml", 1}, {"dir/", 1},  {"../x", 0}, {"a/../b", 0}, {"/abs", 0}, {"a/./b", 0},
+                 {"a\\b", 0},         {"C:x", 0},   {"a//b", 0}, {"", 0},       {".", 0},    {"..", 0}};
+    for (size_t i = 0; i < sizeof names / sizeof names[0]; i++)
+        CHECK(np_zip_name_safe(names[i].name) == names[i].safe, "zip name \"%s\"", names[i].name);
+}
+
+/* mod.toml as the example package writes it, plus dependency rules. */
+static void test_modpkg(void)
+{
+    static const char toml[] = "# comment\n"
+                               "id = \"example_menu_text\"\n"
+                               "name = \"Example: main \\\"menu\\\" labels\"\n"
+                               "version = \"1.0.0\"\n"
+                               "authors = [\"nativeplat\", \"someone\"]\n"
+                               "requires = [\"base_text\"]\n"
+                               "load_after = []\n";
+    np_mod_info a;
+    const char *why = "";
+    CHECK(!np_mod_parse(toml, sizeof toml - 1, &a, &why) && !strcmp(a.id, "example_menu_text") &&
+              !strcmp(a.name, "Example: main \"menu\" labels") && !strcmp(a.version, "1.0.0") &&
+              !strcmp(a.authors, "nativeplat, someone") && a.nrequires == 1 && !strcmp(a.requires[0], "base_text") &&
+              a.nafter == 0,
+          "mod.toml parsed (%s)", why);
+    np_mod_info bad;
+    static const char *const refused[] = {"id = \"Bad-Id\"\nname = \"x\"\nversion = \"1\"\n",
+                                          "id = \"ok\"\nversion = \"1\"\n",
+                                          "id = \"ok\nname = \"x\"\nversion = \"1\"\n"};
+    for (size_t i = 0; i < sizeof refused / sizeof refused[0]; i++)
+        CHECK(np_mod_parse(refused[i], strlen(refused[i]), &bad, &why), "mod.toml %zu refused", i);
+
+    np_mod_info base = {.id = "base_text", .name = "b", .version = "1"};
+    np_mod_info late = {.id = "late", .name = "l", .version = "1", .nafter = 1, .load_after = {"example_menu_text"}};
+    char msg[96];
+    const np_mod_info *ok[] = {&base, &a, &late};
+    CHECK(np_mod_check_order(ok, 3, msg, sizeof msg) == -1, "valid order");
+    const np_mod_info *missing[] = {&a};
+    CHECK(np_mod_check_order(missing, 1, msg, sizeof msg) == 0 && strstr(msg, "base_text"), "missing requirement: %s",
+          msg);
+    const np_mod_info *wrong[] = {&base, &late, &a};
+    CHECK(np_mod_check_order(wrong, 3, msg, sizeof msg) == 1 && strstr(msg, "after"), "load_after order: %s", msg);
+}
+
 int main(void)
 {
     test_sha1();
@@ -676,6 +795,8 @@ int main(void)
     test_card();
     test_rewind();
     test_sync_plan();
+    test_zip();
+    test_modpkg();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

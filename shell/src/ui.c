@@ -215,6 +215,7 @@ enum opt_item {
     OPT_SYNC_NOW,
     OPT_SYNC_STATUS,
     OPT_CONTROLS,
+    OPT_MODS,
     OPT_ABOUT,
     OPT_QUIT_GAME,
     OPT_RESUME,
@@ -229,7 +230,7 @@ static const char *const opt_labels[OPT_COUNT] = {
     "Instant text", "Fix cartridge bugs", "Rewind history",
     "Touch controls", "Local wireless (LAN)", "LAN port", "Join by IP:port", "Internet relay host:port", "Room PIN",
     "Wireless status", "Sync folder", "Sync now", "Sync status",
-    "Controls...", "About...", "Quit to launcher", "Close",
+    "Controls...", "Mods...", "About...", "Quit to launcher", "Close",
 };
 
 static int options_items(const np_app *app, int *items)
@@ -441,6 +442,7 @@ static void opt_activate(np_app *app, int item, int dir)
     case OPT_LAN_RELAY: np_ui_open_text(app, NP_TEXT_LAN_RELAY, app->opt.lan_relay, 64); break;
     case OPT_LAN_PIN: np_ui_open_text(app, NP_TEXT_LAN_PIN, app->opt.lan_pin, 32); break;
     case OPT_CONTROLS: np_app_open_page(app, NP_PAGE_CONTROLS); break;
+    case OPT_MODS: np_mods_open(app, NULL); break;
     case OPT_ABOUT: np_app_open_page(app, NP_PAGE_ABOUT); break;
     case OPT_QUIT_GAME:
         np_app_open_page(app, NP_PAGE_NONE);
@@ -1432,6 +1434,10 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
         np_editor_command(app, cmd);
         return;
     }
+    if (app->page == NP_PAGE_MODS && cmd >= NP_CMD_TAB_PREV) {
+        np_mods_command(app, cmd); /* X deletes a package */
+        return;
+    }
     if (cmd >= NP_CMD_TAB_PREV)
         return; /* only the editor has tabs and secondary actions */
     if (app->page == NP_PAGE_NONE) {
@@ -1449,6 +1455,10 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
     }
     if (cmd == NP_CMD_BACK) {
         page_back(app);
+        return;
+    }
+    if (app->page == NP_PAGE_MODS) {
+        np_mods_command(app, cmd);
         return;
     }
     if (app->page == NP_PAGE_SYNC) {
@@ -1528,6 +1538,10 @@ static void activate_hit(np_app *app, int id, int dir)
     }
     if (id == HIT_BACK) {
         page_back(app);
+        return;
+    }
+    if (app->page == NP_PAGE_MODS) {
+        np_mods_hit(app, id);
         return;
     }
     if (app->page == NP_PAGE_SYNC) {
@@ -1618,6 +1632,7 @@ void np_ui_draw(np_app *app)
     case NP_PAGE_TEXT: draw_text_page(app); break;
     case NP_PAGE_EDITOR: np_editor_draw(app); break;
     case NP_PAGE_SYNC: np_sync_draw(app); break;
+    case NP_PAGE_MODS: np_mods_draw(app); break;
     default: break;
     }
     if (app->toast[0] && SDL_GetTicksNS() < app->toast_until) {
