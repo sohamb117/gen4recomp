@@ -95,8 +95,9 @@ typedef struct row {
 
 typedef struct np_editor {
     np_game game;
-    char slot[NP_SLOT_NAME_MAX + 1];
+    char slot[NP_SLOT_NAME_MAX + 1]; /* the slot, or (standalone) the file's name */
     char path[1100];
+    int standalone; /* --editor on a file: no slot, quit on close */
     save4 s;
     uint8_t *scratch; /* image before the edit in progress */
     np_undo undo;
@@ -233,7 +234,8 @@ static void load_rom_data(np_editor *e)
 
 /* ---- open / close ------------------------------------------------------------ */
 
-void np_editor_open(np_app *app, np_game game, const char *slot)
+/* Opens `path` as game `game`; `label` names it in messages. */
+static void open_path(np_app *app, np_game game, const char *label, const char *path, int standalone)
 {
     np_editor_close(app);
     np_editor *e = SDL_calloc(1, sizeof *e);
@@ -242,22 +244,25 @@ void np_editor_open(np_app *app, np_game game, const char *slot)
         return;
     }
     e->game = game;
-    SDL_strlcpy(e->slot, slot, sizeof e->slot);
-    np_storage_slot_path(game, slot, e->path, sizeof e->path);
+    e->standalone = standalone;
+    SDL_strlcpy(e->slot, label, sizeof e->slot);
+    SDL_strlcpy(e->path, path, sizeof e->path);
     size_t len = 0;
     uint8_t *data = SDL_LoadFile(e->path, &len);
     save4_status st = data ? save4_load(&e->s, data, len) : SAVE4_ERR_ARG;
     SDL_free(data);
     if (st != SAVE4_OK) {
         if (data)
-            SDL_snprintf(app->status, sizeof app->status, "Cannot edit \"%s\": %s.", slot, save4_status_str(st));
+            SDL_snprintf(app->status, sizeof app->status, "Cannot edit \"%s\": %s.", label, save4_status_str(st));
         else
-            SDL_snprintf(app->status, sizeof app->status, "Cannot read \"%s\": %s", slot, SDL_GetError());
+            SDL_snprintf(app->status, sizeof app->status, "Cannot read \"%s\": %s", label, SDL_GetError());
         np_app_toast(app, "%s", app->status);
         SDL_Log("editor: %s", app->status);
         SDL_free(e);
         return;
     }
+    if (standalone && e->s.game == SAVE4_GAME_PT)
+        e->game = game = NP_GAME_PLATINUM; /* the save decides; D and P share a format */
     e->scratch = SDL_malloc(e->s.len);
     if (!e->scratch) {
         save4_free(&e->s);
@@ -273,7 +278,30 @@ void np_editor_open(np_app *app, np_game game, const char *slot)
     np_app_open_page(app, NP_PAGE_EDITOR);
     if (e->s.load_result == SAVE4_LOAD_RECOVERED)
         np_app_toast(app, "One copy of this save was damaged; editing the intact copy");
-    SDL_Log("editor: opened %s slot \"%s\" (%s)", np_game_id(game), slot, save4_game_name(e->s.game));
+    else if (standalone && !e->have_names)
+        np_app_toast(app, "Import the %s ROM to see names (ids are shown)", np_game_title(game));
+    SDL_Log("editor: opened %s %s \"%s\" (%s)", np_game_id(game), standalone ? "file" : "slot", path,
+            save4_game_name(e->s.game));
+}
+
+void np_editor_open(np_app *app, np_game game, const char *slot)
+{
+    char path[1100];
+    np_storage_slot_path(game, slot, path, sizeof path);
+    open_path(app, game, slot, path, 0);
+}
+
+void np_editor_open_file(np_app *app, int game, const char *path)
+{
+    /* Without --game, D/P saves edit as whichever of the two is imported
+     * (names come from its ROM); Platinum saves identify themselves. */
+    if (game < 0)
+        game = np_storage_rom_present(NP_GAME_DIAMOND) || !np_storage_rom_present(NP_GAME_PEARL) ? NP_GAME_DIAMOND
+                                                                                                  : NP_GAME_PEARL;
+    const char *base = SDL_strrchr(path, '/');
+    char label[NP_SLOT_NAME_MAX + 1];
+    SDL_strlcpy(label, base ? base + 1 : path, sizeof label);
+    open_path(app, (np_game)game, label, path, 1);
 }
 
 void np_editor_close(np_app *app)
@@ -340,9 +368,10 @@ static void save_now(np_app *app, np_editor *e)
         return;
     }
     e->dirty = 0;
-    np_app_toast(app, "Saved \"%s\"", e->slot);
+    np_app_toast(app, "Saved \"%s\"%s", e->slot, e->standalone ? " (previous copy kept as .bak)" : "");
     SDL_Log("editor: saved %s", e->path);
-    np_sync_slot(app, e->game, e->slot);
+    if (!e->standalone)
+        np_sync_slot(app, e->game, e->slot);
 }
 
 static save4_status get_mon(const np_editor *e, int box, int slot, pkm4 *p)
@@ -1225,6 +1254,12 @@ void np_editor_text_cancel(np_app *app) { np_app_open_page(app, NP_PAGE_EDITOR);
 
 static void leave_editor(np_app *app)
 {
+    if (app->editor->standalone) {
+        np_editor_close(app);
+        SDL_Event quit = {.type = SDL_EVENT_QUIT};
+        SDL_PushEvent(&quit); /* the standalone editor is the whole session */
+        return;
+    }
     np_game g = app->editor->game;
     char slot[NP_SLOT_NAME_MAX + 1];
     SDL_strlcpy(slot, app->editor->slot, sizeof slot);

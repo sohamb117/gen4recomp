@@ -371,6 +371,41 @@ int np_storage_slot_create(np_game game, const char *name)
     return np_storage_write_atomic(path, "", 0, 0);
 }
 
+/* saves/<game>/<slot>.cart */
+static void cart_sidecar(np_game game, const char *slot, char *out, size_t n)
+{
+    np_storage_slot_path(game, slot, out, n);
+    char *dot = SDL_strrchr(out, '.');
+    if (dot)
+        *dot = '\0';
+    SDL_strlcat(out, ".cart", n);
+}
+
+int np_storage_slot_cart(np_game game, const char *slot, char *out, size_t n)
+{
+    char path[1100];
+    cart_sidecar(game, slot, path, sizeof path);
+    size_t len;
+    char *text = SDL_LoadFile(path, &len);
+    if (!text)
+        return -1;
+    text[strcspn(text, "\r\n")] = '\0';
+    SDL_strlcpy(out, text, n);
+    SDL_free(text);
+    return out[0] && !np_slot_name_problem(out) ? 0 : -1;
+}
+
+int np_storage_set_slot_cart(np_game game, const char *slot, const char *cart)
+{
+    char path[1100];
+    cart_sidecar(game, slot, path, sizeof path);
+    if (!cart[0])
+        return SDL_RemovePath(path) || !np_storage_exists(path) ? 0 : -1;
+    char line[NP_SLOT_NAME_MAX + 2];
+    size_t len = (size_t)SDL_snprintf(line, sizeof line, "%s\n", cart);
+    return np_storage_write_atomic(path, line, len, 0);
+}
+
 int np_storage_slot_rename(np_game game, const char *from, const char *to)
 {
     char a[1100], b[1100], abak[1110], bbak[1110];
@@ -385,6 +420,11 @@ int np_storage_slot_rename(np_game game, const char *from, const char *to)
         return -1;
     if (np_storage_exists(abak) && !SDL_RenamePath(abak, bbak))
         SDL_Log("could not move %s: %s", abak, SDL_GetError());
+    char ca[1100], cb[1100];
+    cart_sidecar(game, from, ca, sizeof ca);
+    cart_sidecar(game, to, cb, sizeof cb);
+    if (np_storage_exists(ca) && !SDL_RenamePath(ca, cb))
+        SDL_Log("could not move %s: %s", ca, SDL_GetError());
     return 0;
 }
 
@@ -401,6 +441,9 @@ int np_storage_slot_duplicate(np_game game, const char *from, const char *to)
         return -1;
     int r = np_storage_write_atomic(b, data, size, 0);
     SDL_free(data);
+    char cart[NP_SLOT_NAME_MAX + 1];
+    if (!r && !np_storage_slot_cart(game, from, cart, sizeof cart))
+        np_storage_set_slot_cart(game, to, cart); /* the copy plays the same cart */
     return r;
 }
 
@@ -416,6 +459,7 @@ int np_storage_slot_delete(np_game game, const char *name)
         if (np_storage_exists(extra))
             SDL_RemovePath(extra);
     }
+    np_storage_set_slot_cart(game, name, "");
     return 0;
 }
 

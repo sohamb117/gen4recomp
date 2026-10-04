@@ -12,6 +12,8 @@
  * produced is drained, but it is only queued while the device queue is
  * below the target; the rest is discarded. The player hears short
  * normal-pitch snippets instead of chipmunk audio, and latency stays bounded.
+ *
+ * The optional music filter (lowpass.c) runs on what is queued.
  */
 #include "app.h"
 
@@ -82,6 +84,8 @@ void np_audio_pump(np_app *app, int speed)
         uint32_t queued = (uint32_t)SDL_GetAudioStreamQueued(app->audio) / 4u;
         if (speed != 1 && queued >= TARGET_FRAMES)
             continue; /* fast-forward: drop */
+        np_lowpass_config(&app->lowpass, app->opt.music_filter, rate ? rate : 32728u);
+        np_lowpass_run(&app->lowpass, buf, got);
         SDL_PutAudioStreamData(app->audio, buf, (int)(got * 4));
     }
     if (!app->audio)

@@ -341,14 +341,49 @@ fail:
 
 /* ---- page ---------------------------------------------------------------------- */
 
-enum { ROW_INSTALL = 0, ROW_FOLDER, ROW_FIXED };
+/* Rows: packages, then sealed carts, then these. */
+enum { ROW_INSTALL = 0, ROW_SEAL, ROW_FOLDER, ROW_FIXED };
+
+static char carts[32][NP_SLOT_NAME_MAX + 1];
+static char cart_desc[32][48]; /* "N packages, <hash>", read once per scan */
+static int ncarts;
+
+static void scan_all(void)
+{
+    scan();
+    ncarts = np_carts_list(carts, 32);
+    for (int i = 0; i < ncarts; i++)
+        if (np_cart_describe(carts[i], cart_desc[i], sizeof cart_desc[i]))
+            SDL_strlcpy(cart_desc[i], "unreadable", sizeof cart_desc[i]);
+}
+
+int np_mods_enabled(char (*names)[NP_MOD_ID_MAX], int max)
+{
+    scan();
+    int n = 0;
+    for (int i = 0; i < ms.count && ms.pkg[i].enabled; i++) {
+        if (ms.pkg[i].problem[0])
+            return -1;
+        if (n < max)
+            SDL_strlcpy(names[n++], ms.pkg[i].dir, NP_MOD_ID_MAX);
+    }
+    return n;
+}
+
+void np_mods_seal(np_app *app, const char *name)
+{
+    np_cart_seal(app, name);
+    scan_all();
+    np_app_open_page(app, NP_PAGE_MODS);
+    app->sel = ms.count + ncarts + ROW_SEAL;
+}
 
 void np_mods_open(np_app *app, const char *banner)
 {
     char root[1100];
     mods_dir(root, sizeof root);
     SDL_CreateDirectory(root);
-    scan();
+    scan_all();
     SDL_strlcpy(ms.banner, banner ? banner : "", sizeof ms.banner);
     np_app_open_page(app, NP_PAGE_MODS);
     app->sel = 0;
@@ -436,8 +471,14 @@ static void activate(np_app *app, int row)
         toggle(app, row);
         return;
     }
-    switch (row - ms.count) {
+    if (row < ms.count + ncarts) {
+        np_app_toast(app, "Cart \"%s\": %s. Bind it to a slot in the slot's menu.", carts[row - ms.count],
+                     cart_desc[row - ms.count]);
+        return;
+    }
+    switch (row - ms.count - ncarts) {
     case ROW_INSTALL: np_app_open_mod_install_dialog(app); break;
+    case ROW_SEAL: np_ui_open_text(app, NP_TEXT_CART_NAME, "", NP_SLOT_NAME_MAX); break;
     case ROW_FOLDER: {
         char root[1100], url[1200];
         mods_dir(root, sizeof root);
@@ -450,9 +491,25 @@ static void activate(np_app *app, int row)
     }
 }
 
+static void delete_cart(np_app *app, int i)
+{
+    uint64_t now = SDL_GetTicksNS();
+    if (now >= ms.remove_armed) {
+        ms.remove_armed = now + 3 * SDL_NS_PER_SECOND;
+        np_app_toast(app, "Press X again to delete cart \"%s\" (its packages stay)", carts[i]);
+        return;
+    }
+    ms.remove_armed = 0;
+    if (np_cart_delete(carts[i]))
+        np_app_toast(app, "Cannot delete it: %s", SDL_GetError());
+    else
+        np_app_toast(app, "Deleted cart \"%s\"", carts[i]);
+    scan_all();
+}
+
 void np_mods_command(np_app *app, np_menu_cmd cmd)
 {
-    int rows = ms.count + ROW_FIXED;
+    int rows = ms.count + ncarts + ROW_FIXED;
     switch (cmd) {
     case NP_CMD_UP: app->sel = (app->sel + rows - 1) % rows; break;
     case NP_CMD_DOWN: app->sel = (app->sel + 1) % rows; break;
@@ -462,6 +519,8 @@ void np_mods_command(np_app *app, np_menu_cmd cmd)
     case NP_CMD_X:
         if (app->sel < ms.count)
             remove_pkg(app, app->sel);
+        else if (app->sel < ms.count + ncarts)
+            delete_cart(app, app->sel - ms.count);
         break;
     default: break;
     }
@@ -488,7 +547,7 @@ void np_mods_draw(np_app *app)
                         f.cols - 4, dim);
         y += f.lh;
     }
-    int rows = ms.count + ROW_FIXED;
+    int rows = ms.count + ncarts + ROW_FIXED;
     app->sel = SDL_clamp(app->sel, 0, rows - 1);
     int visible = (int)((f.list_y + (float)f.rows * f.lh - y) / f.lh);
     if (visible < 1)
@@ -513,9 +572,15 @@ void np_mods_draw(np_app *app)
                 np_ui_text_clip(app, x + (float)(f.cols / 2 + 1) * f.cw, ry, f.s, p->problem, f.cols / 2 - 4, warn);
             else if (p->enabled)
                 np_ui_text_clip(app, x + (float)(f.cols / 2 + 1) * f.cw, ry, f.s, "ready", f.cols / 2 - 4, good);
+        } else if (i < ms.count + ncarts) {
+            SDL_snprintf(text, sizeof text, "[cart] %s", carts[i - ms.count]);
+            np_ui_text_clip(app, x, ry, f.s, text, f.cols / 2, sel ? accent : white);
+            np_ui_text_clip(app, x + (float)(f.cols / 2 + 1) * f.cw, ry, f.s, cart_desc[i - ms.count], f.cols / 2 - 4,
+                            dim);
         } else {
-            static const char *const fixed[ROW_FIXED] = {"Install package (.zip)...", "Open mods folder"};
-            np_ui_text_clip(app, x, ry, f.s, fixed[i - ms.count], f.cols - 4, sel ? accent : white);
+            static const char *const fixed[ROW_FIXED] = {"Install package (.zip)...",
+                                                         "Seal enabled packages as a cart...", "Open mods folder"};
+            np_ui_text_clip(app, x, ry, f.s, fixed[i - ms.count - ncarts], f.cols - 4, sel ? accent : white);
         }
         np_ui_hit(app, row, i);
     }

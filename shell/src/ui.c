@@ -54,9 +54,15 @@ void np_ui_destroy(np_app *app)
     app->font_tex = NULL;
 }
 
+/* Text and page scale: from the window size, or the player's fixed choice
+ * (Options > UI scale), capped so a page still fits the window. */
 float np_ui_scale(const np_app *app)
 {
     float s = floorf(SDL_min(app->out_w / 480.0f, app->out_h / 300.0f));
+    if (app->opt.ui_scale > 0) {
+        float cap = floorf(SDL_min(app->out_w / 330.0f, app->out_h / 210.0f));
+        s = SDL_min((float)app->opt.ui_scale, cap);
+    }
     return s < 1.0f ? 1.0f : s;
 }
 
@@ -180,6 +186,8 @@ enum opt_item {
     OPT_SCALE,
     OPT_FILTER,
     OPT_FULLSCREEN,
+    OPT_UI_SCALE,
+    OPT_REDUCE_MOTION,
     OPT_FX1,
     OPT_FX1_INT,
     OPT_FX2,
@@ -195,6 +203,7 @@ enum opt_item {
     OPT_FF_SPEED,
     OPT_VOLUME,
     OPT_MUTE,
+    OPT_MUSIC_FILTER,
     OPT_BGM,
     OPT_SE,
     OPT_RENDER_SCALE,
@@ -229,9 +238,11 @@ enum opt_item {
 };
 
 static const char *const opt_labels[OPT_COUNT] = {
-    "Screen layout", "Swap screens", "Rotation", "Scaling", "Filter", "Fullscreen", "Effect 1", "Effect 1 intensity",
+    "Screen layout", "Swap screens", "Rotation", "Scaling", "Filter", "Fullscreen", "UI scale", "Reduce motion",
+    "Effect 1", "Effect 1 intensity",
     "Effect 2", "Effect 2 intensity", "CRT curvature", "Performance", "VSync", "Display FPS cap",
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
+    "Music filter",
     "Music volume", "Sound effects volume", "3D render scale", "Widescreen 3D", "Camera zoom", "Camera tilt",
     "Instant text", "Fix cartridge bugs", "Rewind history", "GBA cartridge (Pal Park)", "GBA save",
     "Touch controls", "Edit touch controls...", "Rumble on press (gamepad)", "Controller skin",
@@ -279,6 +290,13 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
     case OPT_SCALE: SDL_strlcpy(buf, o->scale == NP_SCALE_INTEGER ? "Integer" : "Fit", n); break;
     case OPT_FILTER: SDL_strlcpy(buf, o->linear_filter ? "Linear" : "Nearest", n); break;
     case OPT_FULLSCREEN: SDL_strlcpy(buf, o->fullscreen ? "On" : "Off", n); break;
+    case OPT_UI_SCALE:
+        if (o->ui_scale)
+            SDL_snprintf(buf, n, "%dx", o->ui_scale);
+        else
+            SDL_snprintf(buf, n, "Auto (%dx)", (int)np_ui_scale(app));
+        break;
+    case OPT_REDUCE_MOTION: SDL_strlcpy(buf, o->reduce_motion ? "On" : "Off", n); break;
     case OPT_FX1:
     case OPT_FX2: SDL_strlcpy(buf, fx_names[o->fx[item == OPT_FX2]], n); break;
     case OPT_FX1_INT:
@@ -307,6 +325,12 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
     case OPT_FF_SPEED: SDL_strlcpy(buf, speed_name(o->ff_speed_index), n); break;
     case OPT_VOLUME: SDL_snprintf(buf, n, "%d%%", o->volume); break;
     case OPT_MUTE: SDL_strlcpy(buf, o->mute_unfocused ? "On" : "Off", n); break;
+    case OPT_MUSIC_FILTER:
+        if (o->music_filter)
+            SDL_snprintf(buf, n, "%dX (low-pass)", o->music_filter);
+        else
+            SDL_strlcpy(buf, "Off", n);
+        break;
     case OPT_BGM: SDL_snprintf(buf, n, "%d%%", o->bgm_volume); break;
     case OPT_SE: SDL_snprintf(buf, n, "%d%%", o->se_volume); break;
     case OPT_RENDER_SCALE: SDL_snprintf(buf, n, "%dx (%dx%d)", o->render_scale, 256 * o->render_scale,
@@ -396,6 +420,8 @@ static void opt_adjust(np_app *app, int item, int dir)
     case OPT_SCALE: o->scale = o->scale == NP_SCALE_FIT ? NP_SCALE_INTEGER : NP_SCALE_FIT; break;
     case OPT_FILTER: o->linear_filter = !o->linear_filter; break;
     case OPT_FULLSCREEN: o->fullscreen = !o->fullscreen; break;
+    case OPT_UI_SCALE: o->ui_scale = wrapi(o->ui_scale + dir, 7); break;
+    case OPT_REDUCE_MOTION: o->reduce_motion = !o->reduce_motion; break;
     case OPT_FX1:
     case OPT_FX2: o->fx[item == OPT_FX2] = wrapi(o->fx[item == OPT_FX2] + dir, NP_FX_COUNT); break;
     case OPT_FX1_INT:
@@ -415,6 +441,7 @@ static void opt_adjust(np_app *app, int item, int dir)
     case OPT_FF_SPEED: o->ff_speed_index = wrapi(o->ff_speed_index + dir, NP_SPEED_COUNT); break;
     case OPT_VOLUME: o->volume = SDL_clamp(o->volume + dir * 10, 0, 100); break;
     case OPT_MUTE: o->mute_unfocused = !o->mute_unfocused; break;
+    case OPT_MUSIC_FILTER: o->music_filter = wrapi(o->music_filter + dir, 4); break;
     case OPT_BGM: o->bgm_volume = SDL_clamp(o->bgm_volume + dir * 10, 0, 100); break;
     case OPT_SE: o->se_volume = SDL_clamp(o->se_volume + dir * 10, 0, 100); break;
     case OPT_RENDER_SCALE: o->render_scale = wrapi(o->render_scale - 1 + dir, 4) + 1; break;
@@ -1064,7 +1091,53 @@ static void draw_slots(np_app *app)
     np_ui_end_page(app, &f, "Enter/A: open  Esc/B: back  Drop .sav: import", n);
 }
 
-enum { SM_PLAY, SM_EDIT, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_DELETE, SM_COUNT };
+enum { SM_PLAY, SM_EDIT, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_CART, SM_DELETE, SM_COUNT };
+
+/* The slot menu's cart line, reread only when another slot is shown or the
+ * binding changes (not every frame). */
+static struct {
+    int game;
+    char slot[NP_SLOT_NAME_MAX + 1];
+    char cart[NP_SLOT_NAME_MAX + 1]; /* "" = none */
+} slot_cart = {-1, "", ""};
+
+static const char *bound_cart(np_game g, const char *slot)
+{
+    if (slot_cart.game != (int)g || SDL_strcmp(slot_cart.slot, slot)) {
+        slot_cart.game = (int)g;
+        SDL_strlcpy(slot_cart.slot, slot, sizeof slot_cart.slot);
+        if (np_storage_slot_cart(g, slot, slot_cart.cart, sizeof slot_cart.cart))
+            slot_cart.cart[0] = '\0';
+    }
+    return slot_cart.cart;
+}
+
+/* Binds the next sealed cart (after the last, none). */
+static void cycle_cart(np_app *app, np_game g, const char *slot)
+{
+    if (g != NP_GAME_PLATINUM) {
+        np_app_toast(app, "Mods and carts are Platinum-only for now");
+        return;
+    }
+    char names[32][NP_SLOT_NAME_MAX + 1];
+    int n = np_carts_list(names, 32), at = -1;
+    const char *cur = bound_cart(g, slot);
+    for (int i = 0; i < n; i++)
+        if (!SDL_strcmp(names[i], cur))
+            at = i;
+    if (!n) {
+        np_app_toast(app, "No carts yet: seal one in Options > Mods");
+        return;
+    }
+    const char *next = at + 1 < n ? names[at + 1] : "";
+    if (np_storage_set_slot_cart(g, slot, next)) {
+        np_app_toast(app, "Cannot bind the cart: %s", SDL_GetError());
+        return;
+    }
+    slot_cart.game = -1; /* reread */
+    np_app_toast(app, next[0] ? "\"%s\" now plays cart \"%s\"" : "\"%s\" plays without a cart%s", slot,
+                 next[0] ? next : "");
+}
 
 static void slot_menu_activate(np_app *app, int item)
 {
@@ -1105,6 +1178,7 @@ static void slot_menu_activate(np_app *app, int item)
         else
             np_app_open_sav_export_dialog(app, g, name);
         break;
+    case SM_CART: cycle_cart(app, g, name); break;
     case SM_DELETE: np_app_open_page(app, NP_PAGE_CONFIRM); break;
     default: break;
     }
@@ -1119,8 +1193,11 @@ static void draw_slot_menu(np_app *app)
     }
     np_page_frame f;
     np_ui_begin_page(app, &f, s->name);
-    static const char *const labels[SM_COUNT] = {"Play",      "Edit save...",   "Rename...",
-                                                 "Duplicate", "Export .sav...", "Delete..."};
+    static const char *const labels[SM_COUNT] = {"Play",           "Edit save...", "Rename...", "Duplicate",
+                                                 "Export .sav...", "",             "Delete..."};
+    char cart_label[64];
+    const char *cart = bound_cart(app->slots_game, s->name);
+    SDL_snprintf(cart_label, sizeof cart_label, "Cart: %s", cart[0] ? cart : "none");
     char info[96], when[32];
     format_time(s->mtime, when, sizeof when);
     if (s->size)
@@ -1134,7 +1211,8 @@ static void draw_slot_menu(np_app *app)
         SDL_FRect row = {f.panel.x + f.cw, y - 2 * f.s, f.panel.w - 2 * f.cw, f.lh};
         if (i == app->sel)
             np_ui_fill(app, row, (SDL_Color){255, 205, 80, 40});
-        np_ui_text(app, f.panel.x + 2 * f.cw, y, f.s, labels[i], i == app->sel ? (i == SM_DELETE ? warn : accent) : white);
+        np_ui_text(app, f.panel.x + 2 * f.cw, y, f.s, i == SM_CART ? cart_label : labels[i],
+                   i == app->sel ? (i == SM_DELETE ? warn : accent) : white);
         np_ui_hit(app, row, i);
     }
     np_ui_end_page(app, &f, "Enter/A: select  Esc/B: back", 0);
@@ -1246,6 +1324,8 @@ static void text_cancel(np_app *app)
     } else if (app->text_purpose == NP_TEXT_RENAME_SLOT) {
         np_app_open_page(app, NP_PAGE_SLOT_MENU);
         app->sel = SM_RENAME;
+    } else if (app->text_purpose == NP_TEXT_CART_NAME) {
+        np_mods_open(app, NULL);
     } else {
         open_slots_at(app, -1);
     }
@@ -1271,6 +1351,10 @@ static void text_commit(np_app *app)
     const char *problem = np_slot_name_problem(app->text);
     if (problem) {
         SDL_strlcpy(app->text_error, problem, sizeof app->text_error);
+        return;
+    }
+    if (app->text_purpose == NP_TEXT_CART_NAME) {
+        np_mods_seal(app, app->text);
         return;
     }
     np_game g = app->slots_game;
@@ -1348,7 +1432,7 @@ static void draw_text_page(np_app *app)
 {
     np_page_frame f;
     static const char *const titles[] = {"New save slot",   "Rename save slot",         "Trainer name", "Nickname",
-                                         "Join by IP:port", "Internet relay host:port", "Room PIN"};
+                                         "Join by IP:port", "Internet relay host:port", "Room PIN", "Cart name"};
     np_ui_begin_page(app, &f, titles[app->text_purpose]);
     float x = f.panel.x + 2 * f.cw, y = f.list_y;
     SDL_FRect box = {x, y - 4 * f.s, (float)(app->text_max + 2) * f.cw, f.lh + 4 * f.s};
@@ -1356,7 +1440,7 @@ static void draw_text_page(np_app *app)
     np_ui_fill(app, box, (SDL_Color){0, 0, 0, 160});
     np_ui_frame(app, box, f.s, accent);
     char shown[sizeof app->text + 1];
-    int blink = (SDL_GetTicks() / 500) % 2 == 0;
+    int blink = app->opt.reduce_motion || (SDL_GetTicks() / 500) % 2 == 0; /* a steady caret with reduced motion */
     SDL_snprintf(shown, sizeof shown, "%s%s", app->text, blink ? "_" : "");
     np_ui_text_clip(app, x + f.cw * 0.5f, y, f.s, shown, (int)(box.w / f.cw) - 1, white);
     y += 1.5f * f.lh;

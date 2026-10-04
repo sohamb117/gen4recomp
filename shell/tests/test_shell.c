@@ -17,6 +17,7 @@
 #include "json.h"
 #include "launch.h"
 #include "layout.h"
+#include "lowpass.h"
 #include "modpkg.h"
 #include "png.h"
 #include "release.h"
@@ -415,6 +416,14 @@ static void test_launch(void)
     CHECK(np_launch_parse_args(2, b3, &l, err, sizeof err) == -1, "args: missing value");
     char *b4[] = {"nativeplat", "--fullscreen"};
     CHECK(np_launch_parse_args(2, b4, &l, err, sizeof err) == -1, "args: unknown option");
+    char *e1[] = {"nativeplat", "--editor", "--save", "/tmp/My Save.sav", "--game=pearl"};
+    CHECK(np_launch_parse_args(5, e1, &l, err, sizeof err) == 0 && l.editor && !strcmp(l.save, "/tmp/My Save.sav") &&
+              l.game == NP_GAME_PEARL,
+          "args: --editor --save (%s)", err);
+    char *e2[] = {"nativeplat", "--editor"};
+    CHECK(np_launch_parse_args(2, e2, &l, err, sizeof err) == -1, "args: --editor needs --save");
+    char *e3[] = {"nativeplat", "--editor", "--save", "x.sav", "--slot", "1", "--game", "platinum"};
+    CHECK(np_launch_parse_args(8, e3, &l, err, sizeof err) == -1, "args: --editor with a slot");
 
     CHECK(np_launch_is_url("nativeplat://launch") && np_launch_is_url("NativePlat:launch") &&
               !np_launch_is_url("/Users/x/nativeplat.nds") && !np_launch_is_url("nativeplat"),
@@ -1003,6 +1012,38 @@ static void test_skin(void)
     CHECK(!lay.screen[0].visible && lay.screen[1].visible && lay.screen[1].w == 400, "skin hides a screen");
 }
 
+/* RMS of a filtered stereo sine after the filter settles. */
+static double lowpass_rms(int stages, double hz)
+{
+    enum { RATE = 32728, N = 8192 };
+    static int16_t buf[N * 2];
+    for (int i = 0; i < N; i++)
+        buf[2 * i] = buf[2 * i + 1] = (int16_t)(16000.0 * sin(2 * 3.14159265358979 * hz * i / RATE));
+    np_lowpass f = {0};
+    np_lowpass_config(&f, stages, RATE);
+    np_lowpass_run(&f, buf, N);
+    double sum = 0;
+    for (int i = N / 2; i < N; i++)
+        sum += (double)buf[2 * i] * buf[2 * i];
+    return sqrt(sum / (N / 2));
+}
+
+/* Off passes through; each stage cuts treble more and leaves the bass. */
+static void test_lowpass(void)
+{
+    double ref = 16000.0 / sqrt(2.0);
+    CHECK(fabs(lowpass_rms(0, 12000) - ref) < 20, "low-pass off is transparent");
+    double hi1 = lowpass_rms(1, 12000), hi2 = lowpass_rms(2, 12000), hi3 = lowpass_rms(3, 12000);
+    CHECK(hi1 < ref * 0.6 && hi2 < hi1 * 0.7 && hi3 < hi2 * 0.7, "treble falls per stage (%.0f %.0f %.0f)", hi1, hi2,
+          hi3);
+    CHECK(lowpass_rms(3, 200) > ref * 0.97, "bass passes 3X (%.0f)", lowpass_rms(3, 200));
+    np_lowpass f = {0};
+    int16_t loud[4] = {32767, -32768, 32767, -32768};
+    np_lowpass_config(&f, 3, 32728);
+    np_lowpass_run(&f, loud, 2);
+    CHECK(loud[0] <= 32767 && loud[1] >= -32768, "low-pass stays in range");
+}
+
 int main(void)
 {
     test_sha1();
@@ -1025,6 +1066,7 @@ int main(void)
     test_json();
     test_touchlayout();
     test_skin();
+    test_lowpass();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

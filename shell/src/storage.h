@@ -53,6 +53,11 @@ int np_storage_write_atomic(const char *path, const void *data, size_t len, int 
  * 0 when nothing is left (or nothing was there). */
 int np_storage_remove_tree(const char *path);
 
+/* The cart bound to a slot (saves/<game>/<slot>.cart): 0 and its name, or -1
+ * for none. Setting "" unbinds. Rename, duplicate and delete carry it. */
+int np_storage_slot_cart(np_game game, const char *slot, char *out, size_t n);
+int np_storage_set_slot_cart(np_game game, const char *slot, const char *cart);
+
 /* Whether roms/<game>.nds has been imported. */
 int np_storage_rom_present(np_game game);
 void np_storage_rom_path(np_game game, char *out, size_t n);

@@ -73,6 +73,9 @@ typedef struct np_options {
     int ff_speed_index; /* speed while fast-forward is held or toggled */
     int volume;         /* 0..100 */
     int mute_unfocused;
+    int music_filter;   /* 0 off, 1..3 low-pass stages (lowpass.c) */
+    int ui_scale;       /* 0 = from the window size, 1..6 = fixed */
+    int reduce_motion;  /* no blinking, no sliding or flashing UI */
     int touch_controls; /* NP_TOUCH_* */
     int rumble;         /* brief gamepad rumble on each press (haptics stand-in) */
     int real_clock;     /* 1: RTC from the device's local time; 0: the port's deterministic clock */

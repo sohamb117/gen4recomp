@@ -56,6 +56,7 @@ struct np_net {
     int relay_mode;
     struct sockaddr_in relay;
     char pin[NET_MAX_PIN + 1];
+    uint32_t magic; /* NET_MAGIC, or mixed with the realm on a LAN */
     uint32_t rng;
     uint64_t next_hello;
     net_peer peer[NET_MAX_PEERS];
@@ -138,7 +139,7 @@ static uint32_t get32(const uint8_t *p)
 
 static void net_header(np_net *n, uint8_t *p, int type)
 {
-    put32(p, NET_MAGIC);
+    put32(p, n->magic);
     p[4] = (uint8_t)type;
     p[5] = 1; /* version */
     p[6] = (uint8_t)n->port;
@@ -278,6 +279,9 @@ np_net *np_net_open(const np_net_config *cfg, char *err, size_t errlen)
     }
     n->base_port = cfg->port ? cfg->port : NP_NET_DEFAULT_PORT;
     n->lan = cfg->lan_discovery;
+    /* On a LAN the realm changes the magic, so stations of other realms
+     * (other mod sets) never see each other. */
+    n->magic = NET_MAGIC ^ cfg->realm;
     n->drop = cfg->drop_percent < 0 ? 0 : cfg->drop_percent > 100 ? 100 : cfg->drop_percent;
     n->rng = net_mix(n->self ^ 0x9e3779b9u);
     n->log = cfg->log;
@@ -294,7 +298,14 @@ np_net *np_net_open(const np_net_config *cfg, char *err, size_t errlen)
             free(n);
             return NULL;
         }
-        memcpy(n->pin, cfg->pin, pl + 1);
+        if (cfg->realm) {
+            /* The relay checks the plain magic and matches rooms by PIN
+             * only: a realm gets its own room, "<first 23 of PIN>~<realm>". */
+            snprintf(n->pin, sizeof n->pin, "%.23s~%08x", cfg->pin, (unsigned)cfg->realm);
+        } else {
+            memcpy(n->pin, cfg->pin, pl + 1);
+        }
+        n->magic = NET_MAGIC;
         n->relay_mode = 1;
         n->lan = 0;
     }
@@ -548,7 +559,9 @@ static int net_read(np_net *n, uint32_t *peer, const uint8_t **payload)
         if (got < 0) {
             return np_would_block() ? 0 : -1;
         }
-        if (got < NET_HEADER || get32(p) != NET_MAGIC || p[5] != 1) {
+        /* The relay's own packets (rosters) always carry the plain magic. */
+        uint32_t want = p[4] == NET_ROSTER && n->relay_mode ? NET_MAGIC : n->magic;
+        if (got < NET_HEADER || get32(p) != want || p[5] != 1) {
             continue;
         }
         if (p[4] == NET_ROSTER && n->relay_mode && same_addr(&from, &n->relay)) {

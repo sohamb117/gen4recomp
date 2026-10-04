@@ -75,6 +75,16 @@ registered (that needs an installer writing the registry), so use the flags.
 Unknown games, missing slots, games whose core is not in the build, or games
 not yet imported all land on the launcher with a message.
 
+```sh
+nativeplat --editor --save ~/Downloads/backup.sav [--game pearl]
+```
+
+opens the save editor on any save file, without a slot or a game core, and
+quits when the editor closes. Platinum saves identify themselves; Diamond and
+Pearl share a format, so `--game` (or whichever of the two is imported)
+decides whose ROM supplies the names. Saving keeps the previous file as
+`<file>.bak` next to it.
+
 *Options > Real-time clock* feeds the device's local time to the game's RTC
 (default), or the port's fixed clock (2009-03-22 10:00, advancing with frames);
 it applies from the next boot.
@@ -129,6 +139,10 @@ and effect options as set; **High** = effects, VSync, no cap; **Balanced** =
 no curvature, VSync, 60 FPS cap; **Low** = no effects, VSync off, 30 FPS cap;
 **Auto** = High, dropping to Low while producing a frame takes over 12 ms
 (averaged over 120 frames) and returning under 5 ms.
+
+*UI scale* fixes the menus' text scale (1x-6x; *Auto* follows the window,
+capped so a page always fits) and *Reduce motion* stops the UI's only
+animation, the blinking text cursor.
 
 ## Default controls
 
@@ -229,6 +243,11 @@ wireless session (`NP_STAT_LINK_ACTIVE`) the speed is locked to 1x and the
 game keeps running when minimized or in the background, because the partner
 drops a station that is silent for 4 s.
 
+*Music filter* (Off / 1X / 2X / 3X, as in Gen1Recomp) runs the output
+through 1-3 cascaded one-pole low-passes at 6 kHz (`src/lowpass.c`): -6, -12
+or -18 dB per octave above the corner, nothing below it. The core mixes music
+and effects into one stream, so both are filtered.
+
 ## Local wireless
 
 *Options > Local wireless (LAN)* opens a UDP transport (`src/net.c`) on *LAN
@@ -259,6 +278,18 @@ package on or off, Left/Right move it in the load order, X twice deletes it.
 `requires` / `load_after` problems are shown before a boot. Changes apply
 when the game boots; if a package stops the boot ("modfs: ..."), the page
 opens with the message and that package selected.
+
+*Seal enabled packages as a cart...* saves the enabled packages, in order,
+as a named custom cart (`carts/<name>.cart`) with a SHA-256 over each
+package's name, `mod.toml` and cooked digest. A slot's menu binds it to a
+cart (*Cart:* cycles through them; stored as `saves/<game>/<slot>.cart` and
+carried by rename/duplicate/delete); that slot then always boots exactly the
+cart's packages (`PC_MODS`, overriding `loadorder.txt`) and refuses to start
+if one changed since sealing. Link play is pinned to the active set: each
+boot derives a realm from it (the cart's or the loose set's hash; none for
+vanilla), and local wireless only meets stations of the same realm (on a LAN
+the realm changes the packet magic; through a relay it makes its own room,
+`<PIN>~<realm>`), so modded and vanilla games never trade or battle.
 
 ## GBA cartridge (Pal Park)
 
@@ -349,7 +380,11 @@ and `script=F:kind:args;...` to push synthetic `key`, `text`, mouse
 `widescreen`, `zoom`, `tilt`, `instant_text`, `fix_bugs` and
 `rewind_seconds` set the game options. `sync=<folder>` sets the sync folder
 (only with portable storage). `gba=<rom>` and `gbasave=<sav>` fill the GBA
-slot; `page=mods` captures the mod manager.
+slot; `page=mods` captures the mod manager. `music_filter=N` (the output
+the autotest measures is filtered; it reports `audio_treble`, the RMS of
+sample-to-sample steps), `ui_scale=N` and `reduce_motion=1` set those
+options. With `boot=app` the process's own arguments apply, e.g.
+`--editor --save <file>`.
 
 A press schedule is steps separated by `;` or newlines (`#` comments in files):
 `F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N

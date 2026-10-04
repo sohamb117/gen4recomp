@@ -237,6 +237,13 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->volume = clampi(iv, 0, 100);
         else if (!strcmp(key, "mute_unfocused"))
             o->mute_unfocused = iv != 0;
+        else if (!strcmp(key, "music_filter"))
+            o->music_filter = clampi(iv, 0, 3);
+    } else if (!strcmp(section, "interface")) {
+        if (!strcmp(key, "ui_scale"))
+            o->ui_scale = clampi(iv, 0, 6);
+        else if (!strcmp(key, "reduce_motion"))
+            o->reduce_motion = iv != 0;
     } else if (!strcmp(section, "session")) {
         const char *const *games = np_game_ids;
         if (!strcmp(key, "startup"))
@@ -386,7 +393,9 @@ int np_options_save(const np_options *o, const char *path)
     put(b, "performance = %s\n\n", np_perf_ids[o->perf]);
     put(b, "[emulation]\nlogic_clock = %s\nspeed = %d\nff_speed = %d\nreal_clock = %d\n\n",
         o->logic_clock_60 ? "60" : "ds", np_speeds[o->speed_index], np_speeds[o->ff_speed_index], o->real_clock);
-    put(b, "[audio]\nvolume = %d\nmute_unfocused = %d\n\n", o->volume, o->mute_unfocused);
+    put(b, "[audio]\nvolume = %d\nmute_unfocused = %d\nmusic_filter = %d\n\n", o->volume, o->mute_unfocused,
+        o->music_filter);
+    put(b, "[interface]\nui_scale = %d\nreduce_motion = %d\n\n", o->ui_scale, o->reduce_motion);
     put(b, "[game]\nbgm_volume = %d\nse_volume = %d\nrender_scale = %d\nwidescreen = %d\n", o->bgm_volume,
         o->se_volume, o->render_scale, o->widescreen);
     put(b, "camera_zoom = %d\ncamera_tilt = %d\ninstant_text = %d\nfix_bugs = %d\nrewind_seconds = %d\n\n",

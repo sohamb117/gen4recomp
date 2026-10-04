@@ -129,6 +129,7 @@ void np_app_net_apply(np_app *app)
                          .lan_discovery = !app->opt.lan_relay[0],
                          .relay = app->opt.lan_relay[0] ? app->opt.lan_relay : NULL,
                          .pin = app->opt.lan_pin,
+                         .realm = app->net_realm,
                          .log = net_log};
     app->net = np_net_open(&cfg, app->net_error, sizeof app->net_error);
     if (!app->net) {
@@ -409,6 +410,18 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     app->game = game;
     SDL_strlcpy(app->slot, slot, sizeof app->slot);
     app->host = *host;
+    /* A slot bound to a cart boots exactly its packages; any active set
+     * also pins local wireless to stations running the same set. */
+    char pc_mods[NP_CART_MAX_PKGS * (NP_MOD_ID_MAX + 1) + 16];
+    uint32_t realm;
+    if (np_carts_for_boot(app, game, slot, pc_mods, sizeof pc_mods, &realm)) {
+        SDL_Log("%s", app->status);
+        return -1;
+    }
+    if (realm != app->net_realm) {
+        app->net_realm = realm;
+        np_app_net_apply(app);
+    }
     /* Runtime content packages, read by the core at boot (mods.c). */
     app->host.content_root =
         np_mods_content_root(app, game, app->mods_root, sizeof app->mods_root) ? NULL : app->mods_root;
@@ -418,9 +431,11 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     char **env = SDL_GetEnvironmentVariables(SDL_GetEnvironment());
     const char *options[33];
     int nopt = 0;
-    for (char **e = env; e && *e && nopt < 32; e++)
-        if (!SDL_strncmp(*e, "PC_", 3))
+    for (char **e = env; e && *e && nopt < 31; e++)
+        if (!SDL_strncmp(*e, "PC_", 3) && !(pc_mods[0] && !SDL_strncmp(*e, "PC_MODS=", 8)))
             options[nopt++] = *e;
+    if (pc_mods[0])
+        options[nopt++] = pc_mods; /* the cart's set, over loadorder.txt */
     options[nopt] = NULL;
     app->core = np_core_create(game, &app->host, options);
     SDL_free(env);
@@ -456,6 +471,10 @@ static void close_core(np_app *app)
         SDL_CloseIO(app->rom_io);
     app->rom_io = NULL;
     eject_gba(app);
+    if (app->net_realm) { /* back to vanilla for the launcher */
+        app->net_realm = 0;
+        np_app_net_apply(app);
+    }
 }
 
 /* Opens a cartridge file as the host's ROM. */
@@ -1349,6 +1368,12 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.fix_bugs = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "rewind_seconds"))
             app->opt.rewind_seconds = SDL_clamp(SDL_atoi(v), 0, 120);
+        else if (!SDL_strcmp(kv, "music_filter"))
+            app->opt.music_filter = SDL_clamp(SDL_atoi(v), 0, 3);
+        else if (!SDL_strcmp(kv, "ui_scale"))
+            app->opt.ui_scale = SDL_clamp(SDL_atoi(v), 0, 6);
+        else if (!SDL_strcmp(kv, "reduce_motion"))
+            app->opt.reduce_motion = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "sync"))
             SDL_strlcpy(t->sync_folder, v, sizeof t->sync_folder);
         else if (!SDL_strcmp(kv, "gba"))
@@ -1631,9 +1656,18 @@ static int autotest_frame(np_app *app)
     int16_t buf[2048 * 2];
     size_t got;
     while ((got = np_core_audio_read(app->core, buf, 2048)) > 0) {
+        /* What the player would hear: the music filter applies here too. */
+        np_lowpass_config(&app->lowpass, app->opt.music_filter, np_core_audio_rate(app->core));
+        np_lowpass_run(&app->lowpass, buf, got);
         t->audio_frames += got;
-        for (size_t i = 0; i < got * 2; i++)
+        for (size_t i = 0; i < got * 2; i++) {
             t->audio_peak = SDL_max(t->audio_peak, SDL_abs(buf[i]));
+            /* Treble energy: squared sample-to-sample steps (left channel). */
+            if (i >= 2 && !(i & 1)) {
+                double d = (double)buf[i] - buf[i - 2];
+                t->audio_treble += d * d;
+            }
+        }
     }
     return 0;
 }
@@ -1679,10 +1713,11 @@ static SDL_AppResult autotest_iterate(np_app *app)
     if (app->core)
         np_core_save_flush(app->core);
     SDL_Log("autotest: boot=%s game=%s slot=\"%s\" iterations=%d guest_frame=%llu audio_frames=%llu audio_peak=%d "
-            "save_stores=%d save_loads=%d save_bytes=%u view=%s page=%d png=%s",
+            "audio_treble=%.0f save_stores=%d save_loads=%d save_bytes=%u view=%s page=%d png=%s",
             t->boot == NP_AT_ROM ? "rom" : t->boot == NP_AT_APP ? "app" : "synthetic", np_game_id(app->game),
             app->slot, t->ran, (unsigned long long)guest_frame, (unsigned long long)t->audio_frames, t->audio_peak,
-            t->saves, t->loads, t->save_len, app->core ? "game" : "launcher", (int)app->page, t->png);
+            t->audio_frames ? SDL_sqrt(t->audio_treble / (double)t->audio_frames) : 0.0, t->saves, t->loads,
+            t->save_len, app->core ? "game" : "launcher", (int)app->page, t->png);
     if (app->status[0])
         SDL_Log("autotest: status: %s", app->status);
     if (t->boot == NP_AT_SYNTHETIC) {
@@ -1708,6 +1743,12 @@ static void startup_launch(np_app *app, int argc, char *argv[])
     char err[160];
     if (np_launch_parse_args(argc, argv, &req, err, sizeof err)) {
         launch_fail(app, "Ignoring the command line: %s", err);
+        return;
+    }
+    if (req.editor) {
+        np_editor_open_file(app, req.game, req.save);
+        if (!app->editor)
+            launch_fail(app, "%s", app->status); /* stays in the app to show why */
         return;
     }
     if (req.game >= 0 || req.force_launcher) {

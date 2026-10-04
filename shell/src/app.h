@@ -16,9 +16,11 @@
 
 #include "launch.h"
 #include "layout.h"
+#include "lowpass.h"
+#include "modpkg.h"
 #include "np_core.h"
-#include "options.h"
 #include "np_guest_abi.h"
+#include "options.h"
 #include "storage.h"
 
 #define NP_MAX_PADS 8
@@ -67,6 +69,7 @@ typedef enum np_text_purpose {
     NP_TEXT_LAN_PEER, /* Options: "host:port" to join */
     NP_TEXT_LAN_RELAY, /* Options: internet relay "host:port" */
     NP_TEXT_LAN_PIN,   /* Options: relay room PIN */
+    NP_TEXT_CART_NAME, /* Mods: name for a new sealed cart */
 } np_text_purpose;
 
 typedef enum np_menu_cmd {
@@ -135,6 +138,7 @@ typedef struct np_autotest {
     int saves, loads; /* successful save_store / save_load calls */
     uint64_t audio_frames;
     int audio_peak;
+    double audio_treble; /* sum of squared steps, for the music filter check */
     int page; /* captured view: 0 game, -1 launcher, or an np_page over the game */
     int storage; /* use the real (portable) user-data root */
     char imports[4096]; /* '\n'-separated ROMs to run through the importer first */
@@ -198,6 +202,7 @@ typedef struct np_app {
     struct np_fx_state *fx;   /* display effects (fx.c) */
     struct np_net *net;       /* local wireless transport while enabled */
     char net_error[128];
+    uint32_t net_realm; /* the running game's mod-set realm (carts.c); 0 = vanilla */
     char sync_status[96]; /* last folder sync result */
     char mods_root[1100]; /* np_host.content_root while a core runs */
     struct np_session *session; /* session.c, while a game runs */
@@ -226,6 +231,7 @@ typedef struct np_app {
 
     SDL_AudioStream *audio;
     int audio_running;
+    np_lowpass lowpass; /* Options > Music filter */
 
     np_autotest autotest;
 } np_app;
@@ -306,6 +312,22 @@ void np_mods_boot_failed(np_app *app, const char *error);
 void np_mods_draw(np_app *app);
 void np_mods_command(np_app *app, np_menu_cmd cmd);
 void np_mods_hit(np_app *app, int id);
+/* The enabled packages in load order (directory names); -1 if one has a
+ * problem. */
+int np_mods_enabled(char (*names)[NP_MOD_ID_MAX], int max);
+/* Seals the enabled packages as cart `name` and returns to the Mods page. */
+void np_mods_seal(np_app *app, const char *name);
+
+/* carts.c: sealed mod sets */
+#define NP_CART_MAX_PKGS 32
+int np_carts_list(char (*names)[NP_SLOT_NAME_MAX + 1], int max);
+int np_cart_seal(np_app *app, const char *name);
+int np_cart_delete(const char *name);
+int np_cart_describe(const char *name, char *out, size_t n); /* "N packages, <hash>" */
+/* For booting `slot`: "PC_MODS=..." for a bound cart ("" otherwise) and the
+ * link realm of the active set. -1 (with app->status) if the slot's cart is
+ * missing or changed since sealing. */
+int np_carts_for_boot(np_app *app, np_game game, const char *slot, char *pc_mods, size_t n, uint32_t *realm);
 
 /* update.c: consent-based updater (hidden without a repository or HTTP) */
 int np_update_enabled(const np_app *app);
@@ -411,6 +433,8 @@ int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad); /* rebinding,
 /* editor.c: the save editor page (NP_PAGE_EDITOR). */
 /* Opens slot `slot` of `game`; on failure leaves the page and explains. */
 void np_editor_open(np_app *app, np_game game, const char *slot);
+/* Standalone: edits any save file (game -1: from the save, D/P by ROM). */
+void np_editor_open_file(np_app *app, int game, const char *path);
 void np_editor_close(np_app *app);
 void np_editor_draw(np_app *app);
 void np_editor_command(np_app *app, np_menu_cmd cmd);

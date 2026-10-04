@@ -47,6 +47,7 @@ add_library(np_shell_common STATIC
   src/json.c
   src/layout.c
   src/launch.c
+  src/lowpass.c
   src/modpkg.c
   src/net.c
   src/png.c
@@ -104,6 +105,7 @@ message(STATUS "nativeplat core: ${NP_CORE} ${NP_CORE_LIBS} ${NP_GUESTS}")
 
 add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/audio.c
+  src/carts.c
   src/editor.c
   src/fx.c
   src/input.c
