@@ -30,7 +30,6 @@
 #define DS_FRAME_HZ (33513982.0 / (6.0 * 355.0 * 263.0))
 #define MAX_DT_NS (100 * SDL_NS_PER_MS)
 #define UNCAPPED_SLICE_NS (12 * SDL_NS_PER_MS)
-#define AUTOTEST_SLOT "Autotest"
 
 /* ---- host callbacks for the core --------------------------------------- */
 
@@ -240,7 +239,17 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     app->game = game;
     SDL_strlcpy(app->slot, slot, sizeof app->slot);
     app->host = *host;
-    app->core = np_core_create(game, &app->host, NULL);
+    /* PC_* variables configure the port layer (debug switches such as
+     * PC_TP_DEBUG); pass the process's own through, as np_headless does. */
+    char **env = SDL_GetEnvironmentVariables(SDL_GetEnvironment());
+    const char *options[33];
+    int nopt = 0;
+    for (char **e = env; e && *e && nopt < 32; e++)
+        if (!SDL_strncmp(*e, "PC_", 3))
+            options[nopt++] = *e;
+    options[nopt] = NULL;
+    app->core = np_core_create(game, &app->host, options);
+    SDL_free(env);
     if (!app->core) {
         SDL_snprintf(app->status, sizeof app->status, "Could not start %s: %s", np_game_title(game),
                      np_core_create_error());
@@ -765,18 +774,120 @@ static uint16_t parse_keys(const char *v)
     return keys;
 }
 
-/* press=F:keys[:N];... holds keys for N frames (default 6) from frame F. */
-static uint16_t autotest_pressed(const np_autotest *t)
+/*
+ * press= schedule, parsed once. Steps are separated by ';' or newlines (in a
+ * file given as press=@path, where '#' starts a comment):
+ *   F:keys[:N[:R:C]]   hold keys (a+up, start, ...) for N frames (default 6)
+ *                      from frame F; with R and C, repeat every R frames,
+ *                      C times in all
+ *   F:tap:X:Y[:N[:R:C]] touch the bottom screen at X,Y, held and repeated
+ *                      like keys
+ *   F:none             no input; only a time marker for "+D" steps
+ * F may be "+D": D frames after the previous step's first frame, which keeps
+ * long input scripts editable.
+ */
+static int autotest_parse_press(np_autotest *t, const char *spec)
 {
-    char buf[sizeof t->press];
-    SDL_strlcpy(buf, t->press, sizeof buf);
-    uint16_t keys = 0;
+    char *text = NULL;
+    if (spec[0] == '@') {
+        size_t len;
+        text = SDL_LoadFile(spec + 1, &len);
+        if (!text) {
+            SDL_Log("autotest: cannot read %s: %s", spec + 1, SDL_GetError());
+            return -1;
+        }
+    } else {
+        text = SDL_strdup(spec);
+    }
+    int prev = 0, line = 0;
     char *save = NULL;
-    for (char *step = SDL_strtok_r(buf, ";", &save); step; step = SDL_strtok_r(NULL, ";", &save)) {
-        int frame, n = 6;
-        char k[64];
-        if (SDL_sscanf(step, "%d:%63[a-zA-Z+]:%d", &frame, k, &n) >= 2 && t->ran >= frame && t->ran < frame + n)
-            keys |= parse_keys(k);
+    for (char *l = SDL_strtok_r(text, "\n", &save); l; l = SDL_strtok_r(NULL, "\n", &save)) {
+        line++;
+        char *hash = SDL_strchr(l, '#');
+        if (hash)
+            *hash = '\0';
+        char *save2 = NULL;
+        for (char *step = SDL_strtok_r(l, ";", &save2); step; step = SDL_strtok_r(NULL, ";", &save2)) {
+            while (*step == ' ' || *step == '\t' || *step == '\r')
+                step++;
+            if (!*step)
+                continue;
+            if (t->npress == NP_AUTOTEST_MAX_PRESS) {
+                SDL_Log("autotest: press schedule too long");
+                SDL_free(text);
+                return -1;
+            }
+            np_press *p = &t->presses[t->npress];
+            *p = (np_press){.n = 6, .count = 1};
+            int rel = *step == '+', frame = 0;
+            char k[64];
+            int v[5] = {0};
+            int got = SDL_sscanf(step + rel, "%d:%63[a-zA-Z+]:%d:%d:%d:%d:%d", &frame, k, &v[0], &v[1], &v[2],
+                                 &v[3], &v[4]) - 2;
+            if (got < 0) {
+                SDL_Log("autotest: bad press step \"%s\" (line %d)", step, line);
+                SDL_free(text);
+                return -1;
+            }
+            p->frame = rel ? prev + frame : frame;
+            prev = p->frame;
+            /* Fields after the keys: N R C, or for a tap X Y N R C. */
+            int *rest = v;
+            if (!SDL_strcasecmp(k, "tap")) {
+                if (got < 2 || v[0] < 0 || v[0] > 255 || v[1] < 0 || v[1] > 191) {
+                    SDL_Log("autotest: bad tap \"%s\" (line %d)", step, line);
+                    SDL_free(text);
+                    return -1;
+                }
+                p->tap = 1;
+                p->x = (uint16_t)v[0];
+                p->y = (uint16_t)v[1];
+                rest += 2;
+                got -= 2;
+            } else {
+                p->keys = parse_keys(k);
+                if (!p->keys && SDL_strcasecmp(k, "none")) {
+                    SDL_Log("autotest: unknown keys \"%s\" (line %d)", k, line);
+                    SDL_free(text);
+                    return -1;
+                }
+            }
+            if (got >= 1 && rest[0] >= 1)
+                p->n = rest[0];
+            if (got >= 3) {
+                p->every = rest[1];
+                p->count = rest[2];
+            }
+            t->npress++;
+        }
+    }
+    SDL_free(text);
+    return 0;
+}
+
+/* Keys (and the stylus) the schedule holds at the current frame. */
+static uint16_t autotest_pressed(const np_autotest *t, np_input *in)
+{
+    uint16_t keys = 0;
+    for (int i = 0; i < t->npress; i++) {
+        const np_press *p = &t->presses[i];
+        int off = t->ran - p->frame;
+        if (off < 0)
+            continue;
+        if (p->every > 0) {
+            if (off / p->every >= p->count)
+                continue;
+            off %= p->every;
+        }
+        if (off >= p->n)
+            continue;
+        if (p->tap) {
+            in->touch = 1;
+            in->touch_x = p->x;
+            in->touch_y = p->y;
+        } else {
+            keys |= p->keys;
+        }
     }
     return keys;
 }
@@ -791,7 +902,10 @@ static uint16_t autotest_pressed(const np_autotest *t)
  *   [,storage=1 (saves and options in the user-data root; portable mode
  *    only, so a test never touches a player's saves; boot=app implies it)]
  *   [,import=/path/to/rom.nds (run the importer first, repeatable)]
- *   [,press=F:keys[:N];... (hold DS keys for N frames from frame F)]
+ *   [,press=SCHEDULE or press=@file (DS keys and taps, see autotest_parse_press)]
+ *   [,shots=N (also write <png minus .png>-<iteration>.png every N iterations)]
+ *   [,clock=real (device RTC; default fixed, so runs are deterministic)]
+ *   [,slot=NAME (save slot for rom=/synthetic boots with storage=1)]
  *   [,script=F:kind:args;... (synthetic events, see autotest_script)]"
  * Returns -1 on a malformed value.
  */
@@ -802,6 +916,8 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
     SDL_strlcpy(buf, spec, sizeof buf);
     np_autotest *t = &app->autotest;
     t->frames = 120;
+    app->opt.real_clock = 0;
+    SDL_strlcpy(t->slot, "Autotest", sizeof t->slot);
     *game = NP_GAME_PLATINUM;
     char *save = NULL;
     for (char *kv = SDL_strtok_r(buf, ",", &save); kv; kv = SDL_strtok_r(NULL, ",", &save)) {
@@ -849,9 +965,18 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             t->storage = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "script"))
             SDL_strlcpy(t->script, v, sizeof t->script);
-        else if (!SDL_strcmp(kv, "press"))
-            SDL_strlcpy(t->press, v, sizeof t->press);
-        else if (!SDL_strcmp(kv, "rom")) {
+        else if (!SDL_strcmp(kv, "press")) {
+            if (autotest_parse_press(t, v))
+                return -1;
+        } else if (!SDL_strcmp(kv, "shots"))
+            t->shot_every = SDL_atoi(v);
+        else if (!SDL_strcmp(kv, "clock"))
+            app->opt.real_clock = !SDL_strcmp(v, "real");
+        else if (!SDL_strcmp(kv, "slot")) {
+            if (np_slot_name_problem(v))
+                return -1;
+            SDL_strlcpy(t->slot, v, sizeof t->slot);
+        } else if (!SDL_strcmp(kv, "rom")) {
             SDL_strlcpy(t->rom, v, sizeof t->rom);
             t->boot = NP_AT_ROM;
         } else if (!SDL_strcmp(kv, "boot")) {
@@ -941,7 +1066,7 @@ static int autotest_slot(np_app *app, np_game game)
     np_slot_list *l = &app->slots;
     if (np_storage_list_slots(game, l))
         return -1;
-    return np_slot_list_find(l, AUTOTEST_SLOT) >= 0 ? 0 : np_storage_slot_create(game, AUTOTEST_SLOT);
+    return np_slot_list_find(l, app->autotest.slot) >= 0 ? 0 : np_storage_slot_create(game, app->autotest.slot);
 }
 
 /* Synthetic: boot, run a frame, flush and destroy, then boot again so the
@@ -958,16 +1083,16 @@ static int autotest_boot(np_app *app, np_game game)
             return -1;
         host.save_load = test_save_load;
         host.save_store = test_save_store;
-        return open_core(app, game, AUTOTEST_SLOT, &host);
+        return open_core(app, game, t->slot, &host);
     }
     fill_test_header(t, game);
     host = (np_host){app, sizeof t->header, test_rom_read, test_save_load, test_save_store, NULL, host_log};
     np_input none = {0};
-    if (open_core(app, game, AUTOTEST_SLOT, &host) || run_one(app, &none))
+    if (open_core(app, game, t->slot, &host) || run_one(app, &none))
         return -1;
     np_core_save_flush(app->core);
     close_core(app);
-    return open_core(app, game, AUTOTEST_SLOT, &host);
+    return open_core(app, game, t->slot, &host);
 }
 
 /*
@@ -1058,7 +1183,7 @@ static int autotest_frame(np_app *app)
 {
     np_autotest *t = &app->autotest;
     np_input in = t->input;
-    in.keys |= autotest_pressed(t);
+    in.keys |= autotest_pressed(t, &in);
     if (t->script[0]) {
         int ff;
         np_input live = {0};
@@ -1092,6 +1217,15 @@ static SDL_AppResult autotest_iterate(np_app *app)
         return SDL_APP_FAILURE;
     t->ran++;
     draw(app);
+    if (t->shot_every > 0 && t->ran % t->shot_every == 0 && t->ran < t->frames) {
+        char path[1100];
+        size_t len = SDL_strlen(t->png);
+        if (len > 4 && !SDL_strcasecmp(t->png + len - 4, ".png"))
+            len -= 4;
+        SDL_snprintf(path, sizeof path, "%.*s-%06d.png", (int)len, t->png, t->ran);
+        if (capture_window(app, path))
+            SDL_Log("autotest: writing %s failed: %s", path, SDL_GetError());
+    }
     if (t->ran < t->frames) {
         SDL_RenderPresent(app->renderer);
         return SDL_APP_CONTINUE;

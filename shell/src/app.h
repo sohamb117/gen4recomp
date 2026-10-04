@@ -85,6 +85,17 @@ typedef struct np_finger {
  * of the window and exit. */
 typedef enum np_autotest_boot { NP_AT_SYNTHETIC, NP_AT_ROM, NP_AT_APP } np_autotest_boot;
 
+#define NP_AUTOTEST_MAX_PRESS 1024
+
+/* One step of the press= schedule (see main.c). */
+typedef struct np_press {
+    int frame, n;      /* first frame, frames held */
+    int every, count;  /* repeat period (0: once) and repetitions */
+    uint16_t keys;
+    uint8_t tap;       /* touch instead of keys */
+    uint16_t x, y;
+} np_press;
+
 typedef struct np_autotest {
     int active;
     np_autotest_boot boot;
@@ -103,8 +114,11 @@ typedef struct np_autotest {
     int storage; /* use the real (portable) user-data root */
     char imports[4096]; /* '\n'-separated ROMs to run through the importer first */
     char script[2048];  /* "frame:kind:args;..." synthetic events */
-    char press[1024];   /* "frame:keys[:frames];..." held DS keys */
+    np_press presses[NP_AUTOTEST_MAX_PRESS]; /* press= schedule */
+    int npress;
+    int shot_every; /* shots=N: also write <png>-<iteration>.png every N iterations */
     char drop[1024];    /* storage for a scripted drop event's text */
+    char slot[NP_SLOT_NAME_MAX + 1]; /* save slot for rom=/synthetic boots */
 } np_autotest;
 
 typedef struct np_app {

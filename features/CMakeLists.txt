@@ -75,6 +75,17 @@ target_link_libraries(np_save4 PRIVATE save4 ndsdata)
 target_compile_options(np_save4 PRIVATE ${NP_WARN})
 
 # ------------------------------------------------------------------ tests
+# The shell embeds this project for save editing (add_subdirectory); its
+# tests run when this is the top-level project or on request.
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(_np_features_tests_default ON)
+else()
+    set(_np_features_tests_default OFF)
+endif()
+option(NP_FEATURES_TESTS "Build and register the features tests" ${_np_features_tests_default})
+if(NOT NP_FEATURES_TESTS)
+    return()
+endif()
 enable_testing()
 
 add_library(np_testsupport STATIC tests/synth_save.c)

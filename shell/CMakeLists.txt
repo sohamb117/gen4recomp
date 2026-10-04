@@ -56,6 +56,12 @@ if(NOT WIN32)
   target_link_libraries(np_shell_common PUBLIC m)
 endif()
 
+# Save editor backends: save4 (D/P/Pt save data) and ndsdata (names read from
+# the player's own ROM at runtime). Built from features/ with its tests off.
+if(NOT TARGET save4)
+  add_subdirectory("${NP_ROOT}/features" "${CMAKE_BINARY_DIR}/features")
+endif()
+
 if(NP_CORE STREQUAL "stub")
   # The stub draws with the shell's embedded font; np_font8x8 resolves from
   # np_shell_common, which the app links after the core.
@@ -143,4 +149,20 @@ if(BUILD_TESTING)
     set_tests_properties(shell_autotest PROPERTIES ENVIRONMENT
       "SDL_VIDEO_DRIVER=dummy;NP_AUTOTEST=frames=60,png=${CMAKE_CURRENT_BINARY_DIR}/autotest.png,layout=hybrid,touch=100x80,keys=a+up")
   endif()
+endif()
+
+if(BUILD_TESTING AND NP_CORE STREQUAL "real" AND TARGET np_guest_platinum)
+  # Progression safety: new game to the first in-game save with the real
+  # core, reboot to CONTINUE, parse the save. Skips without the ROM.
+  set(NP_PLATINUM_ROM "${NP_ROOT}/games/platinum/build/rom/pokeplatinum.us.nds" CACHE FILEPATH
+      "Platinum (US, Rev 1) ROM for the real-core shell tests (skipped when absent)")
+  add_test(NAME shell_platinum_first_save
+    COMMAND ${CMAKE_COMMAND}
+      -DAPP=$<TARGET_FILE:nativeplat>
+      -DROM=${NP_PLATINUM_ROM}
+      -DPRESS=${CMAKE_CURRENT_SOURCE_DIR}/tests/platinum_first_save.press
+      -DSAVE4=$<TARGET_FILE:np_save4>
+      -DOUT=${CMAKE_CURRENT_BINARY_DIR}/first_save
+      -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/first_save.cmake)
+  set_tests_properties(shell_platinum_first_save PROPERTIES SKIP_RETURN_CODE 77 TIMEOUT 900)
 endif()

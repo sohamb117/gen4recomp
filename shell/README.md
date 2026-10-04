@@ -139,11 +139,24 @@ options round-trip file in the user-data root; refused unless portable mode is
 on, so tests never touch a player's data), `import=<path>` (run the
 importer; repeatable), `rom=<path>` (boot a real cartridge, save in memory),
 `boot=app` (start like the real app: options, command-line launch options,
-launcher; implies `storage=1`), `press=F:keys[:N];...` (hold DS keys such as
-`start` or `a+up` for N frames, default 6, from frame F), and
-`script=F:kind:args;...` to push synthetic `key`, `text`, mouse
+launcher; implies `storage=1`), `press=<schedule>` or `press=@<file>` (DS keys
+and stylus taps per frame, below), `shots=N` (also write `<png>-<iteration>.png`
+every N iterations), `clock=real` (device RTC; the default is the port's fixed
+clock so runs repeat exactly), `slot=<name>` (save slot used with `storage=1`),
+and `script=F:kind:args;...` to push synthetic `key`, `text`, mouse
 (`down/move/up`), finger (`fdown/fmove/fup`), `drop:<path or URL>` and
 `dialog:<path>` (answer the open file dialog) events before frame F.
 
+A press schedule is steps separated by `;` or newlines (`#` comments in files):
+`F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N
+frames (default 6) from frame F, repeated every R frames C times;
+`F:tap:X:Y[:N[:R:C]]` touches the bottom screen. `+D` instead of F means D
+frames after the previous step.
+
 Real Platinum title screen:
-`NP_AUTOTEST="frames=1500,png=/tmp/t.png,rom=/path/pokeplatinum.us.nds,press=1200:start:10"`.
+`NP_AUTOTEST="frames=1500,png=/tmp/t.png,rom=/path/pokeplatinum.us.nds"`.
+
+`tests/platinum_first_save.press` plays a new game to the first in-game save
+(player NATIVE, rival BARRY). CTest `shell_platinum_first_save` (real-core
+builds) runs it on portable storage, checks the slot file, reboots to the
+CONTINUE menu and parses the save with `np_save4`; it skips without the ROM.
