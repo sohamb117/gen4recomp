@@ -39,6 +39,13 @@ do, and this wrapper adds them:
     in the `name: ; 0x<addr>` form armrec reads, under the section the ROM
     placed it in (OS_IrqHandler and OSi_DoBoot run from ITCM, 0x01FF8000).
     A function missing from the map is an error, not a synthetic address.
+    The authors named local labels after ROM addresses (`_020CE1CC:`), and
+    armrec reads such a name as the label's address; MI_memory.c reuses
+    MIi_CpuClear16's `_020CE1CC` inside MIi_CpuCopy16, which mwcc allowed
+    (asm labels are function-local) and which here would be one label
+    defined twice at the wrong address. A label whose number lies outside
+    its own function's [address, address + size) is renamed
+    `_<function>_L<n>`, which states no address.
 
 Functions the host layer replaces (pc/host_overrides.txt, one name per line,
 `#` comments) are not emitted: armrec must not define a name the host
@@ -66,7 +73,8 @@ import extract_asm  # noqa: E402
 MARKER = re.compile(r'^#\s*(\d+)\s+"((?:[^"\\]|\\.)*)"')
 PRAGMA_THUMB = re.compile(r"^\s*#\s*pragma\s+thumb\s+(on|off)\b")
 XMAP_CODE = re.compile(
-    r"^\s+([0-9A-Fa-f]{8})\s+[0-9A-Fa-f]{8}\s+\.(text|itcm)\s+(\S+)\s+\((\S+)\)")
+    r"^\s+([0-9A-Fa-f]{8})\s+([0-9A-Fa-f]{8})\s+\.(text|itcm)\s+(\S+)\s+\((\S+)\)")
+ADDR_LABEL = re.compile(r"\b_([0-9A-Fa-f]{8})\b")
 
 # Casts and integer suffixes the SDK's register/constant macros carry.
 CAST = re.compile(
@@ -217,15 +225,26 @@ class Folder(object):
 
 
 def load_xmap(path, obj):
-    """{name: [(addr, section)]} for the code of one object."""
+    """{name: [(addr, size, section)]} for the code of one object."""
     addrs = {}
     with open(path, errors="replace") as fh:
         for line in fh:
             m = XMAP_CODE.match(line)
-            if m and m.group(4) == obj:
-                addrs.setdefault(m.group(3), []).append(
-                    (int(m.group(1), 16), m.group(2)))
+            if m and m.group(5) == obj:
+                addrs.setdefault(m.group(4), []).append(
+                    (int(m.group(1), 16), int(m.group(2), 16), m.group(3)))
     return addrs
+
+
+def rename_foreign_labels(name, addr, size, body):
+    """Rename address-named labels that do not lie in this function."""
+    defined = set(m.group(1) for m in
+                  (re.match(r"^\s*_([0-9A-Fa-f]{8}):", l) for l in body) if m)
+    foreign = sorted(d for d in defined if not addr <= int(d, 16) < addr + size)
+    if not foreign:
+        return body
+    new = dict((d, "_%s_L%d" % (name, i)) for i, d in enumerate(foreign))
+    return [ADDR_LABEL.sub(lambda m: new.get(m.group(1), m.group(0)), l) for l in body]
 
 
 def main():
@@ -279,11 +298,12 @@ def main():
             raise SystemExit("%s: %s: %s in %s's xMAP code entries"
                              % (args.input, name,
                                 "missing" if not a else "ambiguous", args.object))
-        addr, sect = a[0]
+        addr, size, sect = a[0]
         if sect != section:
             out.append("\t.section .%s\n\n" % sect)
             section = sect
         thumb = modes.get(header_line[name], False)
+        body = rename_foreign_labels(name, addr, size, body)
         body, pool = extract_asm.pool_literals(name, extract_asm.jump_tables(body))
         body = [folder.line(l) for l in body]
         pool = [folder.line(l) for l in pool]
