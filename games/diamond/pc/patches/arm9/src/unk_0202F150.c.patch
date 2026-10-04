@@ -21,9 +21,24 @@ boot with a save the main menu's comm poll read a wild pointer from F4+4
 (SIGBUS in sub_02030674 at ~frame 1560). They are now one object laid out
 as the ROM has them (pc/tools/dp_adjacency_lint.py finds this class).
 
+sub_02031354 is void here but returns sub_0202D830's BOOL (arm9/asm/
+unk_0202D4C4.s: whether the comm id is in the list) on the ROM: mwcc's void
+body leaves that call's r0, and sub_0202DDE8 / ov18_02245528 branch on it.
+The wasm bridge returns 0 from a void C function; it now returns the BOOL
+(pc/tools/dp_voidret_lint.py finds this class).
+
 --- a/unk_0202F150.c
 +++ b/unk_0202F150.c
-@@ -7,8 +7,18 @@
+@@ -1,4 +1,8 @@
++/* wasm: sub_02031354 returns sub_0202D830's BOOL (see the patch); the
++ * header's void prototype is renamed out of the way. */
++#define sub_02031354 sub_02031354_header_void
+ #include "unk_0202F150.h"
++#undef sub_02031354
+ 
+ #include "global.h"
+ 
+@@ -7,8 +11,18 @@
  #include "unk_02031480.h"
  #include "unk_02031734.h"
  
@@ -44,7 +59,7 @@ as the ROM has them (pc/tools/dp_adjacency_lint.py finds this class).
  
  vu8 UNK_02105D59 = 4;
  vu8 UNK_02105D58 = 4;
-@@ -36,7 +46,7 @@
+@@ -36,13 +50,13 @@
  extern void sub_0202D934(u32 param0, u32 param1, u32 param2, void *param3);
  extern int sub_0202D478(struct UnkStruct0202F150_sub1 *param0);
  extern u32 sub_0202D41C(struct UnkStruct0202F150_sub1 *param0);
@@ -53,7 +68,14 @@ as the ROM has them (pc/tools/dp_adjacency_lint.py finds this class).
  extern u32 sub_0202DA04(u32 param0);
  extern void *sub_0202DA40(u32 param0, u32 param1, u16 param2);
  extern u32 ov04_021D8018();
-@@ -487,7 +497,7 @@
+ extern u16 sub_0202D19C();
+ extern void GF_RTC_CopyDateTime(RTCDate *, RTCTime *);
+-extern void sub_0202D830(u8 *param0, u32 param1);
++extern BOOL sub_0202D830(u8 *param0, u32 param1);
+ extern u32 ov04_021D8624();
+ 
+ u32 sub_0202F150(u32 param0, u32 param1) {
+@@ -487,7 +501,7 @@
          sub_0202ED70(0);
      }
  
@@ -62,3 +84,14 @@ as the ROM has them (pc/tools/dp_adjacency_lint.py finds this class).
      sub_020315A4();
  
      return TRUE;
+@@ -1988,8 +2002,8 @@
+ }
+ #endif
+ 
+-void sub_02031354(u32 param0) {
+-    sub_0202D830(UNK_021C59F8->unk56C, param0);
++BOOL sub_02031354(u32 param0) {
++    return sub_0202D830(UNK_021C59F8->unk56C, param0);
+ }
+ 
+ u32 sub_02031370() {

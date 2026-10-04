@@ -1,0 +1,29 @@
+sub_02064E4C (a map section's name into a String) is void here but returns
+sub_02002E14's width of it on the ROM: mwcc's void body leaves that call's
+r0, and ov05_021E3124 / ov05_021E3270 (the map name banner) read it after
+the call. The wasm bridge returns 0 from a void C function. It now returns
+the width (pc/tools/dp_voidret_lint.py finds this class).
+
+--- a/unk_02064E4C.c
++++ b/unk_02064E4C.c
+@@ -1,4 +1,8 @@
++/* wasm: sub_02064E4C returns the name's width (see the patch); the
++ * header's void prototype is renamed out of the way. */
++#define sub_02064E4C sub_02064E4C_header_void
+ #include "unk_02064E4C.h"
++#undef sub_02064E4C
+ 
+ #include "global.h"
+ 
+@@ -8,9 +12,9 @@
+ #include "map_header.h"
+ #include "msgdata.h"
+ 
+-void sub_02064E4C(struct MsgData *msgData, u16 map_sec, struct String *dest) {
++u32 sub_02064E4C(struct MsgData *msgData, u16 map_sec, struct String *dest) {
+     ReadMsgDataIntoString(msgData, map_sec, dest);
+-    sub_02002E14(0, dest, 0);
++    return sub_02002E14(0, dest, 0);
+ }
+ 
+ void sub_02064E60(u32 map_no, enum HeapID heapID, struct String *dest) {

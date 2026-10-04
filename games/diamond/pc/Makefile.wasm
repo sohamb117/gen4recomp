@@ -106,10 +106,16 @@ LINT_ASM = $(ROOT)/arm9/asm $(wildcard $(ROOT)/arm9/overlays/*/asm) \
 # dp_adjacency_lint: assembly reaching past a C-defined object, relying on
 # the ROM's .bss neighbour that clang does not place there (the Continue
 # crash, pc/patches/arm9/src/unk_0202F150.c.patch).
+# dp_voidret_lint: assembly reading r0 after calling C the decomp declared
+# void, where mwcc's void body left the value the assembly wanted (the
+# first battle's stall on "Go! TURTWIG!",
+# pc/patches/arm9/src/unk_0200BB14.c.patch); see the script.
 POST_LINK ?= $(PYTHON) $(PCDIR)/tools/dp_arity_lint.py --allow $(PCDIR)/arity_allow.txt \
                $(OBJ) $(LINT_ASM) && \
              $(PYTHON) $(PCDIR)/tools/dp_retwidth_lint.py --allow $(PCDIR)/retwidth_allow.txt \
                $(OBJ) $(ROMBUILD) $(LINT_ASM) && \
+             $(PYTHON) $(PCDIR)/tools/dp_voidret_lint.py --allow $(PCDIR)/voidret_allow.txt \
+               $(OBJ) $(LINT_ASM) && \
              $(PYTHON) $(PCDIR)/tools/dp_adjacency_lint.py $(WASM_MAP) $(ROOT)/arm9/asm \
                $(wildcard $(ROOT)/arm9/overlays/*/asm) $(BUILD)/extracted && \
              $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HOST_OVSTATICS_C) && \
