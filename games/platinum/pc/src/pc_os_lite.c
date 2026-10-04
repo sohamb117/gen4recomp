@@ -643,6 +643,15 @@ void OS_Halt(void)
         pc_card_step();
     }
 
+#if !defined(PC_GAME_DP)
+    /* The ARM7 wireless manager's pump (pc_wm.c): queued WM requests, the
+     * network and their callbacks, where a FIFO interrupt would land. */
+    {
+        extern void pc_wm_step(void);
+        pc_wm_step();
+    }
+#endif
+
     if (!(reg_OS_IME & 1) || !(reg_OS_IE & OS_IE_V_BLANK)) {
         pc_trap("OS_Halt",
                 "halted with VBlank delivery disabled (IME/IE); no modeled "

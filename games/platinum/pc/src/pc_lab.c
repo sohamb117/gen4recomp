@@ -33,6 +33,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "pc_text_open.h"
+
 /* Game headers below this line need what the ROM build force-includes into
  * every game translation unit (ALIGN_4, nelems, <nitro.h>); pc/src is not on
  * that force-include, so it asks for the header by name. */
@@ -364,7 +366,7 @@ static const struct lab_verb_row LAB_VERBS[] = {
 
 static void lab_parse(const char *path)
 {
-    FILE *f = fopen(path, "r");
+    FILE *f = pc_text_open(path); /* a path, or inline:<lines> (pc_text_open.h) */
     char line[256];
     int lineno = 0;
 

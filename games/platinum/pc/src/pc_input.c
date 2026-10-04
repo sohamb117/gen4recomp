@@ -40,6 +40,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "pc_text_open.h"
+
 extern void pc_tp_set(u16 x, u16 y, int touching);
 
 #define PC_REG_KEYINPUT (*(volatile u16 *)0x04000130u)
@@ -140,7 +142,7 @@ static void set_touch(int on, unsigned x, unsigned y)
 
 static int parse_script(const char *path)
 {
-    FILE *f = fopen(path, "r");
+    FILE *f = pc_text_open(path); /* a path, or inline:<lines> (pc_text_open.h) */
     char line[256];
     int cap = 0, lineno = 0;
 

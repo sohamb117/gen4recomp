@@ -49,6 +49,12 @@ void MI_CpuCopy8(const void *src, void *dest, u32 size)
     const u8 *s = src;
     u8 *d = dest;
 
+    /* src == dest is the one overlap every path agrees on: each unit is
+     * loaded and stored back unchanged. The union room's comm setup does
+     * exactly that (a 32-byte self-copy right after a child joins). */
+    if (d == s) {
+        return;
+    }
     if (size != 0 && d < s + size && s < d + size) {
         pc_mi_trap("MI_CpuCopy8", "overlapping copy; asm result depends on alignment path");
     }
