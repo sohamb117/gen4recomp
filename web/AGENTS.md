@@ -6,7 +6,10 @@
 - Keep game execution in `src/runtime/`; UI components do not read WASM memory.
 - The source of truth for the guest layout is `../core/include/np_guest_abi.h`.
   Update ABI tests together with adapter changes.
-- Saves and imported ROMs stay client-side. The user authorized public GCP hosting
+- Imported ROMs stay client-side. Local saves work without login; the user
+  authorized username/password accounts and one Postgres cloud save per account.
+  Keep account controls inside Save manager and network work off the frame loop.
+  The user authorized public GCP hosting
   of Diamond and Platinum; only `scripts/stage-gcp.mjs` includes those allowlisted
   cartridges as encrypted `.npc` packages; never ship raw `.nds` files. Decrypt
   only on first download, cache the result, and keep crypto out of the gameplay

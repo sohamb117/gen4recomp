@@ -899,3 +899,34 @@ dialog.modal::backdrop {
   color: var(--green);
   white-space: nowrap;
 }
+
+.cloud-save {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.cloud-form,
+.cloud-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+.cloud-form input {
+  min-width: 8rem;
+  flex: 1;
+  width: 10rem;
+}
+.cloud-row {
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+.cloud-status {
+  font-size: 0.8rem;
+  margin: 0.65rem 0 0;
+  overflow-wrap: anywhere;
+}
+.cloud-save .muted {
+  font-size: 0.75rem;
+  margin: 0.5rem 0;
+}

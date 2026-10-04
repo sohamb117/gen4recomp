@@ -2,11 +2,13 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type CSSProperties,
   type PointerEvent,
 } from "react";
 import {
   Upload,
+  CloudUpload,
   Play,
   Pause,
   Download,
@@ -42,6 +44,10 @@ import {
 } from "./runtime/settings";
 import { mapTouch } from "./runtime/touch";
 import { RecompOptions } from "./components/RecompOptions";
+import { cloud } from "./cloud/client";
+import { CloudSave } from "./components/CloudSave";
+const cloudEnabled =
+  import.meta.env.DEV || import.meta.env.VITE_CLOUD_SAVES === "true";
 type Popup = "saves" | "settings" | "controls" | "performance" | null;
 function readSettings(): Settings {
   try {
@@ -53,6 +59,7 @@ function readSettings(): Settings {
   }
 }
 export function App() {
+  const cloudState = useSyncExternalStore(cloud.subscribe, cloud.snapshot);
   const [hosted, setHosted] = useState<HostedCartridges>({});
   const [popup, setPopup] = useState<Popup>(null),
     [selected, setSelected] = useState<GameId>("platinum");
@@ -73,11 +80,21 @@ export function App() {
   };
   const session = useSession(
     settings,
-    () => void refresh().catch((e) => setNotice(String(e))),
+    (slot) => {
+      if (cloudEnabled && slot) cloud.saved(slot);
+      void refresh().catch((e) => setNotice(String(e)));
+    },
     setNotice,
   );
   const game = games.find((g) => g.id === selected)!,
     gameSlots = slots.filter((s) => s.game === selected);
+  useEffect(() => {
+    if (!cloudEnabled) return;
+    void cloud.initialize();
+    const online = () => void cloud.retry();
+    window.addEventListener("online", online);
+    return () => window.removeEventListener("online", online);
+  }, []);
   useEffect(() => {
     void refresh().catch((e) => setNotice(`Browser storage unavailable: ${e}`));
     void loadCartridges(import.meta.env.BASE_URL)
@@ -507,6 +524,16 @@ export function App() {
         />
         {popup === "saves" && (
           <Modal title="Save manager" onClose={() => setPopup(null)}>
+            {cloudEnabled && (
+              <CloudSave
+                state={cloudState}
+                running={running}
+                onLoad={(slot) => {
+                  setSelected(slot.game);
+                  void refresh().catch((e) => setNotice(String(e)));
+                }}
+              />
+            )}
             <div className="archive-head">
               <div className="game-tabs">
                 {games.map((g) => (
@@ -570,6 +597,22 @@ export function App() {
                     >
                       <Download size={15} />
                     </button>
+                    {cloudState.user && (
+                      <button
+                        disabled={!s.data || cloudState.busy}
+                        title={
+                          cloudState.save
+                            ? `Replace cloud save with ${s.name}`
+                            : `Save ${s.name} to cloud`
+                        }
+                        onClick={() => void cloud.upload(s)}
+                      >
+                        <CloudUpload size={15} />{" "}
+                        {cloudState.save
+                          ? "Replace cloud save"
+                          : "Save to cloud"}
+                      </button>
+                    )}
                     {s.backup && (
                       <button
                         onClick={() =>

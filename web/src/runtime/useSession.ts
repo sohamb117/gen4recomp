@@ -7,7 +7,7 @@ import { GameAudio } from "./audio";
 import { FrameProfiler } from "./performance";
 export function useSession(
   settings: Settings,
-  onSaved: () => void,
+  onSaved: (slot?: SaveSlot) => void,
   onError: (message: string) => void,
 ) {
   const [state, setState] = useState<
@@ -248,7 +248,11 @@ export function useSession(
           .then(() => storage.save(slot.id, data.data))
           .then(() => {
             setSaveStatus("Saved to this browser");
-            callbacks.current.onSaved();
+            callbacks.current.onSaved({
+              ...slot,
+              data: data.data,
+              updated: Date.now(),
+            });
           })
           .catch((e) => {
             saveFailed.current = true;
