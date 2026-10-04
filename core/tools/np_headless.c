@@ -40,6 +40,8 @@
  *     --net-peer H:P     also say hello to this address, repeatable
  *     --net-id ID        24-bit station id (default random)
  *     --net-drop PCT     drop this share of outgoing datagrams (loss testing)
+ *     --net-relay H:P    internet play through a relay (server/relay) instead
+ *     --net-pin PIN      of LAN discovery; PIN names the relay room
  *
  * Status changes (enum np_status) are printed as they happen.
  *
@@ -330,7 +332,8 @@ static int usage(void) {
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--schedule FILE]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
-                    "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]]\n");
+                    "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]\n"
+                    "                    [--net-relay HOST:PORT --net-pin PIN]]\n");
     return 2;
 }
 
@@ -489,6 +492,7 @@ int main(int argc, char **argv) {
     uint16_t net_port = 0;
     uint32_t net_id = 0;
     const char *net_peers[8];
+    const char *net_relay = NULL, *net_pin = NULL;
 
     for (int i = 3; i < argc; i++) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
@@ -525,6 +529,10 @@ int main(int argc, char **argv) {
             net_id = (uint32_t)strtoul(v, NULL, 0);
         } else if (strcmp(a, "--net-drop") == 0) {
             net_drop = atoi(v);
+        } else if (strcmp(a, "--net-relay") == 0) {
+            net_relay = v;
+        } else if (strcmp(a, "--net-pin") == 0) {
+            net_pin = v;
         } else if (strcmp(a, "--press") == 0 && npresses < MAX_PRESSES) {
             char *colon;
             presses[npresses].frame = strtoull(v, &colon, 0);
@@ -553,6 +561,8 @@ int main(int argc, char **argv) {
         nc.station_id = net_id;
         nc.lan_discovery = 1;
         nc.drop_percent = net_drop;
+        nc.relay = net_relay;
+        nc.pin = net_pin;
         nc.log = net_log_cb;
         g_net = np_net_open(&nc, err, sizeof err);
         if (!g_net) {
