@@ -177,28 +177,36 @@ def _(c):
 # Title screen -> CONTINUE -> the field, as tests/gameplay/schedules/continue.press.
 CONTINUE = '1250:start;1400:a;1500:a;1600:a'
 PLAT_CARD = (784, 270)
+CARDS = {'diamond': (176, 270), 'pearl': (480, 270), 'platinum': PLAT_CARD}
+# The game in-game cases run (--game); evidence names get a <game>- prefix
+# for Diamond and Pearl.
+GAME = 'platinum'
+MOD_PKG = {'platinum': 'games/platinum/pc/mods/example_menu_text', 'diamond': 'games/diamond/pc/mods/example_text',
+           'pearl': 'games/diamond/pc/mods/example_text'}
+SANDGEM = {'platinum': 'plat-sandgem.sav', 'diamond': 'diamond-sandgem.sav', 'pearl': 'pearl-sandgem.sav'}
 
 
 def click(f, xy):
     return '%d:down:%d:%d;%d:up:%d:%d' % (f, xy[0], xy[1], f + 1, xy[0], xy[1])
 
 
-def plat_save(c, slot='Sandgem', save='plat-sandgem.sav', opts=''):
-    """User data with the Platinum ROM and a save slot in Sandgem Town."""
-    c.need(ROMS['platinum'], sav_input(save))
-    c.fresh(['platinum'])
-    c.put_save('platinum', slot, sav_input(save))
-    c.options('[session]\nlast_game = platinum\nlast_slot_platinum = %s\n%s' % (slot, opts))
+def plat_save(c, slot='Sandgem', save=None, opts=''):
+    """User data with GAME's ROM and a save slot in Sandgem Town."""
+    save = save or SANDGEM[GAME]
+    c.need(ROMS[GAME], sav_input(save))
+    c.fresh([GAME])
+    c.put_save(GAME, slot, sav_input(save))
+    c.options('[session]\nlast_game = %s\nlast_slot_%s = %s\n%s' % (GAME, GAME, slot, opts))
 
 
 def play(c, step='', frames=1800, script='', press=CONTINUE, opts='', slot='Sandgem', **kw):
-    """The app started as `nativeplat --game platinum --slot <slot>`."""
+    """The app started as `nativeplat --game <GAME> --slot <slot>`."""
     at = 'boot=app,frames=%d' % frames
     if press:
         at += ',press=' + press
     # A script turns on live input (hotkeys, speed); a no-op step keeps it on.
     at += ',script=' + (script or '0:move:1:1')
-    return c.run(at, step=step, args=['--game', 'platinum', '--slot', slot], **kw)
+    return c.run(at, step=step, args=['--game', GAME, '--slot', slot], **kw)
 
 
 OPT_LABELS = ['Screen layout', 'Swap screens', 'Battle layout', 'Rotation', 'Scaling', 'Filter', 'Fullscreen',
@@ -224,41 +232,41 @@ def opt_downs(label, in_game=False, sync=False, updates=False):
 
 @case('slots', 'Save slots: import .sav, new, duplicate, rename, export .sav, delete')
 def _(c):
-    c.need(ROMS['platinum'], sav_input('plat-sandgem.sav'))
-    c.fresh(['platinum'])
+    c.need(ROMS[GAME], sav_input(SANDGEM[GAME]))
+    c.fresh([GAME])
     src = os.path.join(c.work, 'Sandgem.sav')
-    shutil.copyfile(sav_input('plat-sandgem.sav'), src)
-    sdir = os.path.join(c.ud, 'saves', 'platinum')
+    shutil.copyfile(sav_input(SANDGEM[GAME]), src)
+    sdir = os.path.join(c.ud, 'saves', GAME)
     # Import: slots page (New, Import) -> Import .sav... -> file dialog.
     s, _ = keys(10, ['Down', 'Return'])
-    c.run('boot=app,frames=30,script=%s;%s;14:dialog:%s' % (click(2, PLAT_CARD), s, src), step='1-import')
+    c.run('boot=app,frames=30,script=%s;%s;14:dialog:%s' % (click(2, CARDS[GAME]), s, src), step='1-import')
     assert os.path.getsize(os.path.join(sdir, 'Sandgem.sav')) == 524288
     # Duplicate: rows New, Sandgem, Import -> Sandgem -> slot menu -> Duplicate.
     s, _ = keys(10, ['Down', 'Return', 'Down', 'Down', 'Down', 'Return'])
-    c.run('boot=app,frames=30,script=%s;%s' % (click(2, PLAT_CARD), s), step='2-duplicate')
+    c.run('boot=app,frames=30,script=%s;%s' % (click(2, CARDS[GAME]), s), step='2-duplicate')
     dups = sorted(os.listdir(sdir))
     assert len([f for f in dups if f.endswith('.sav')]) == 2, dups
     # Rename the copy (rows New, Sandgem, <copy>, Import).
     s, f = keys(10, ['Down', 'Down', 'Return', 'Down', 'Down', 'Return'] + ['Backspace'] * 32)
     s2, _ = keys(f + 2, ['Return'])
-    c.run('boot=app,frames=%d,script=%s;%s;%d:text:Route 201 run;%s' % (f + 12, click(2, PLAT_CARD), s, f, s2),
+    c.run('boot=app,frames=%d,script=%s;%s;%d:text:Route 201 run;%s' % (f + 12, click(2, CARDS[GAME]), s, f, s2),
           step='3-rename')
     assert os.path.exists(os.path.join(sdir, 'Route 201 run.sav')), os.listdir(sdir)
     # Export it (sorted: New, Route 201 run, Sandgem, Import).
     out = os.path.join(c.work, 'exported.sav')
     s, f = keys(10, ['Down', 'Return', 'Down', 'Down', 'Down', 'Down', 'Return'])
-    c.run('boot=app,frames=%d,script=%s;%s;%d:dialog:%s' % (f + 10, click(2, PLAT_CARD), s, f + 2, out),
+    c.run('boot=app,frames=%d,script=%s;%s;%d:dialog:%s' % (f + 10, click(2, CARDS[GAME]), s, f + 2, out),
           step='4-export')
-    assert open(out, 'rb').read() == open(sav_input('plat-sandgem.sav'), 'rb').read()
+    assert open(out, 'rb').read() == open(sav_input(SANDGEM[GAME]), 'rb').read()
     # Delete it: the confirmation, then Yes.
     s, f = keys(10, ['Down', 'Return', 'Up', 'Return'])
-    c.run('boot=app,frames=%d,script=%s;%s' % (f + 4, click(2, PLAT_CARD), s), step='5-confirm')
+    c.run('boot=app,frames=%d,script=%s;%s' % (f + 4, click(2, CARDS[GAME]), s), step='5-confirm')
     s, f = keys(10, ['Down', 'Return', 'Up', 'Return', 'Right', 'Return'])
-    c.run('boot=app,frames=%d,script=%s;%s' % (f + 6, click(2, PLAT_CARD), s), step='6-deleted')
+    c.run('boot=app,frames=%d,script=%s;%s' % (f + 6, click(2, CARDS[GAME]), s), step='6-deleted')
     assert not os.path.exists(os.path.join(sdir, 'Route 201 run.sav')), os.listdir(sdir)
     # New save slot: the default name, OK -> the game boots in it.
     s, f = keys(10, ['Return', 'Return'])
-    c.run('boot=app,frames=400,script=%s;%s' % (click(2, PLAT_CARD), s), step='7-new')
+    c.run('boot=app,frames=400,script=%s;%s' % (click(2, CARDS[GAME]), s), step='7-new')
     return None
 
 
@@ -267,7 +275,7 @@ def _(c):
     plat_save(c)
     # Slots page: Continue: Sandgem is the first row.
     s, _ = keys(6, ['Return'])
-    c.run('boot=app,frames=1900,press=1260:start;1410:a;1510:a;1610:a,script=%s;%s' % (click(2, PLAT_CARD), s))
+    c.run('boot=app,frames=1900,press=1260:start;1410:a;1510:a;1610:a,script=%s;%s' % (click(2, CARDS[GAME]), s))
 
 
 @case('games_boot', 'All three cores boot in the packaged app: card -> New save slot -> OK -> title (Start)')
@@ -284,7 +292,7 @@ def editor_open(extra, frames=None, step=''):
     """Launcher -> Platinum -> (Continue, New,) Sandgem -> Edit save..., then `extra` keys."""
     s, f = keys(10, ['Down', 'Down', 'Return', 'Down', 'Return'])
     e, f = keys(f + 6, extra, gap=3)
-    return 'boot=app,frames=%d,script=%s;%s%s' % (frames or f + 6, click(2, PLAT_CARD), s, ';' + e if e else '')
+    return 'boot=app,frames=%d,script=%s;%s%s' % (frames or f + 6, click(2, CARDS[GAME]), s, ';' + e if e else '')
 
 
 @case('editor', 'Save editor: every tab, an edit with undo/redo, Events (Wonder Card added), save')
@@ -303,10 +311,10 @@ def _(c):
     c.run(editor_open(ev), step='10-gift')
     c.run(editor_open(ev + ['Escape']), step='11-close-prompt')
     c.run(editor_open(ev + ['Escape', 'Return']), step='12-saved')
-    bak = os.path.join(c.ud, 'saves', 'platinum', 'Sandgem.sav.bak')
+    bak = os.path.join(c.ud, 'saves', GAME, 'Sandgem.sav.bak')
     assert os.path.exists(bak), 'no .bak after saving'
     if os.path.exists(SAVE4):
-        out = subprocess.run([SAVE4, 'dump', os.path.join(c.ud, 'saves', 'platinum', 'Sandgem.sav')],
+        out = subprocess.run([SAVE4, 'dump', os.path.join(c.ud, 'saves', GAME, 'Sandgem.sav')],
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         with open(os.path.join(EVID, 'editor-save4.txt'), 'w') as f:
             f.write(out)
@@ -343,8 +351,11 @@ def _(c):
 @case('battle_layout', 'Battle layout: hybrid (large top) during a wild battle, field layout outside')
 def _(c):
     plat_save(c, opts='[video]\nlayout = vertical\nbattle_layout = hybrid')
-    wild = ('1250:start;1400:a;1500:a;1600:a;1700:down:40;1760:left:600;2300:up:20;2330:left:200;'
-            '2550:down:16:48:60;2568:up:16:48:60;2588:a:4:48:60')
+    wild = '1250:start;1400:a;1500:a;1600:a;1700:down:40;1760:left:600;2300:up:20;2330:left:200;'
+    if GAME == 'platinum':
+        wild += '2550:down:16:48:60;2568:up:16:48:60;2588:a:4:48:60'
+    else:  # tests/gameplay/dp/schedules/wild.press: a wild Bidoof from ~2445
+        wild += '3000:a:4'
     play(c, step='field', frames=1900, press=wild)
     play(c, step='battle', frames=3200, press=wild)
 
@@ -404,7 +415,7 @@ def _(c):
 @case('quicksave', 'F1 quick save in the field, F2 F2 quick load (reboot from that save)')
 def _(c):
     plat_save(c)
-    sav = os.path.join(c.ud, 'saves', 'platinum', 'Sandgem.sav')
+    sav = os.path.join(c.ud, 'saves', GAME, 'Sandgem.sav')
     before = open(sav, 'rb').read()
     # Walk left a little, F1; the toast shows the result.
     log = play(c, step='f1', frames=1900, press=CONTINUE + ';1700:left:30', script='1760:key:F1')
@@ -421,7 +432,7 @@ def _(c):
     play(c, step='restored', frames=1880, press=CONTINUE + ';1765:left:80', script='1760:key:F5;1860:key:F7')
     play(c, step='slot2', frames=1800, press=CONTINUE, script='1760:key:F6;1762:key:F5')
     log = c.run('boot=app,frames=1915,press=%s;1705:left:120,rewind=1880+30,script=0:move:1:1' % CONTINUE,
-                step='rewind', args=['--game', 'platinum', '--slot', 'Sandgem'])
+                step='rewind', args=['--game', GAME, '--slot', 'Sandgem'])
     assert 'rewind depth' in log
 
 
@@ -435,13 +446,17 @@ def _(c):
 
 @case('instant_text', "Instant text: a new game's second text box, 15 frames after A, half printed vs complete")
 def _(c):
-    c.need(ROMS['platinum'])
+    c.need(ROMS[GAME])
     for name, on in (('off', 0), ('on', 1)):
-        c.fresh(['platinum'])
+        c.fresh([GAME])
         c.options('[game]\ninstant_text = %d' % on)
         # Card -> New -> OK; title Start, NEW GAME, Rowan's intro; A at 2000 starts "Welcome to the world...".
-        c.run('boot=app,frames=2015,press=1410:start:10;1560:a:6;1700:a:6;1800:a:6;1900:a:6;2000:a:6,'
-              'script=%s;5:key:Return;7:key:Return' % click(2, PLAT_CARD), step=name)
+        if GAME == 'platinum':
+            press, frames = '1410:start:10;1560:a:6;1700:a:6;1800:a:6;1900:a:6;2000:a:6', 2015
+        else:  # tests/dp/diamond_first_save.sched's intro presses, shifted by the 8 launcher iterations
+            press, frames = '1258:start;1358:a:4:40:20', 2133
+        c.run('boot=app,frames=%d,press=%s,script=%s;5:key:Return;7:key:Return' % (frames, press, click(2, CARDS[GAME])),
+              step=name)
 
 
 @case('rules', 'Rules: Fix cartridge bugs on (the core runs each fix with PC_NP_RULES_CHECK)')
@@ -480,31 +495,31 @@ def _(c):
     skin = fixtures.deltaskin(os.path.join(c.work, 'Test.deltaskin'))
     plat_save(c)
     c.run('boot=app,frames=1800,size=1280x592,press=%s,script=1700:drop:%s' % (CONTINUE, skin),
-          step='landscape', args=['--game', 'platinum', '--slot', 'Sandgem'])
+          step='landscape', args=['--game', GAME, '--slot', 'Sandgem'])
     assert os.path.isdir(os.path.join(c.ud, 'skins'))
     c.run('boot=app,frames=1800,size=390x844,press=%s,script=0:move:1:1' % CONTINUE, step='portrait',
-          args=['--game', 'platinum', '--slot', 'Sandgem'])
+          args=['--game', GAME, '--slot', 'Sandgem'])
 
 
 @case('mods', 'Mod manager: install the example package (.zip drop; installed packages start enabled), boot with it')
 def _(c):
-    c.need(ROMS['platinum'])
-    z = fixtures.mod_zip(os.path.join(ROOT, 'games/platinum/pc/mods/example_menu_text'),
+    c.need(ROMS[GAME])
+    z = fixtures.mod_zip(os.path.join(ROOT, MOD_PKG[GAME]),
                          os.path.join(c.work, 'example_menu_text.zip'))
     plat_save(c)
     s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
     c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='installed')
-    order = open(os.path.join(c.ud, 'mods', 'loadorder.txt')).read()
-    assert 'example_menu_text' in order, order
+    order = open(os.path.join(c.ud, 'mods', GAME, 'loadorder.txt')).read()
+    assert os.path.basename(MOD_PKG[GAME]) in order, order
     # Boot to the main menu: its text comes from the package.
     c.run('boot=app,frames=1500,press=1250:start:4:40:4', step='menu',
-          args=['--game', 'platinum', '--slot', 'Sandgem'])
+          args=['--game', GAME, '--slot', 'Sandgem'])
 
 
 @case('carts', 'Custom carts: seal the enabled package as a cart, bind it to a slot, boot it')
 def _(c):
-    c.need(ROMS['platinum'])
-    z = fixtures.mod_zip(os.path.join(ROOT, 'games/platinum/pc/mods/example_menu_text'),
+    c.need(ROMS[GAME])
+    z = fixtures.mod_zip(os.path.join(ROOT, MOD_PKG[GAME]),
                          os.path.join(c.work, 'example_menu_text.zip'))
     plat_save(c)
     s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
@@ -513,19 +528,19 @@ def _(c):
     s3, f3 = keys(4, ['F10'] + opt_downs('Mods...') + ['Return', 'Down', 'Down', 'Return'])  # package, Install, Seal
     c.run('boot=app,frames=%d,script=%s;%d:text:Menu Cart;%d:key:Return' % (f3 + 10, s3, f3 + 2, f3 + 4),
           step='1-sealed')
-    assert glob.glob(os.path.join(c.ud, 'carts', '*.cart')), os.listdir(c.ud)
+    assert glob.glob(os.path.join(c.ud, 'carts', GAME, '*.cart')), os.listdir(c.ud)
     # Slots (Continue, New, Sandgem, Import) -> Sandgem -> Cart: none -> Menu Cart.
     s, f = keys(10, ['Down', 'Down', 'Return'] + ['Down'] * 5 + ['Return'])
-    c.run('boot=app,frames=%d,script=%s;%s' % (f + 4, click(2, PLAT_CARD), s), step='2-bound')
+    c.run('boot=app,frames=%d,script=%s;%s' % (f + 4, click(2, CARDS[GAME]), s), step='2-bound')
     c.run('boot=app,frames=1800,press=1450:start:4:40:4,script=0:move:1:1', step='3-boot',
-          args=['--game', 'platinum', '--slot', 'Sandgem'])
+          args=['--game', GAME, '--slot', 'Sandgem'])
 
 
 @case('palpark', 'GBA cartridge (Emerald) in the slot: MIGRATE FROM EMERALD on the main menu')
 def _(c):
     c.need(GBA_ROM, SAVE4)
     plat_save(c)
-    sav = os.path.join(c.ud, 'saves', 'platinum', 'Sandgem.sav')
+    sav = os.path.join(c.ud, 'saves', GAME, 'Sandgem.sav')
     subprocess.run([SAVE4, 'set-national-dex', sav, '1'], check=True, stdout=subprocess.DEVNULL)
     gsav = os.path.join(c.work, 'emerald.sav')
     subprocess.run([sys.executable, os.path.join(ROOT, 'tools/gba/gen3_save.py'), gsav], check=True,
@@ -535,13 +550,13 @@ def _(c):
     c.run('boot=app,frames=%d,script=%s;%d:dialog:%s;%d:key:Down;%d:key:Return;%d:dialog:%s' %
           (f + 12, s, f + 2, GBA_ROM, f + 4, f + 6, f + 8, gsav), step='options')
     c.run('boot=app,frames=1600,press=1250:start:4:40:4,script=0:move:1:1', step='menu',
-          args=['--game', 'platinum', '--slot', 'Sandgem'])
+          args=['--game', GAME, '--slot', 'Sandgem'])
 
 
-def union_press(side, until):
-    """tests/link's Union Room schedule for one station, up to frame `until`."""
+def union_press(sched, until):
+    """A tests/link Union Room schedule (schedules/<sched>.sched) up to frame `until`."""
     steps = []
-    for line in open(os.path.join(ROOT, 'tests/link/schedules/trade-%s.sched' % side)):
+    for line in open(os.path.join(ROOT, 'tests/link/schedules/%s.sched' % sched)):
         line = line.split('#')[0].strip()
         if line and int(line.split(':')[0]) < until:
             steps.append(line)
@@ -550,24 +565,29 @@ def union_press(side, until):
 
 @case('lan', 'LAN play: two installs on this Mac meet and talk in the Union Room (tests/link trade schedules, free-running)')
 def _(c):
-    c.need(ROMS['platinum'], sav_input('union-a.sav'), sav_input('union-b.sav'))
+    # Platinum: two Platinum stations. Diamond/Pearl: this game's station A
+    # (dp-union-a.recipe) meets a Platinum station B (tests/link dp_platinum_trade).
+    games = {'a': GAME, 'b': 'platinum'}
+    saves = {'a': 'union-a.sav' if GAME == 'platinum' else '%s-union-a.sav' % GAME, 'b': 'union-b.sav'}
+    scheds = {s: 'trade-%s' % s if GAME == 'platinum' else 'dp-pt-trade-%s' % s for s in 'ab'}
+    c.need(ROMS[GAME], ROMS['platinum'], sav_input(saves['a']), sav_input(saves['b']))
     b = c.second()
     for st, side, port, peer, sid in ((c, 'a', 41001, 41002, '00AAAA'), (b, 'b', 41002, 41001, '00BBBB')):
-        st.fresh(['platinum'])
-        st.put_save('platinum', 'Union', sav_input('union-%s.sav' % side))
+        st.fresh([games[side]])
+        st.put_save(games[side], 'Union', sav_input(saves[side]))
         st.options('[wireless]\nenabled = 1\nport = %d\npeer = 127.0.0.1:%d\nstation_id = %s' % (port, peer, sid))
-    frames = 16000
-    procs = [st.start('boot=app,realtime=1,frames=%d,shots=1000,press=%s' % (frames, union_press(side, frames)),
-                      step='station-' + side, args=['--game', 'platinum', '--slot', 'Union'])
+    frames = 16000 if GAME == 'platinum' else 13000
+    procs = [st.start('boot=app,realtime=1,frames=%d,shots=1000,press=%s' % (frames, union_press(scheds[side], frames)),
+                      step='station-' + side, args=['--game', games[side], '--slot', 'Union'])
              for st, side in ((c, 'a'), (b, 'b'))]
     for st, p in zip((c, b), procs):
         st.finish(p, timeout=1800)
-    for f in glob.glob(os.path.join(EVID, 'lan-station-*-0*.png')):
+    for f in glob.glob(os.path.join(EVID, '%s-station-*-0*.png' % c.name)):
         subprocess.run(['sips', '-Z', '960', f, '--out', f], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     if os.path.exists(SAVE4):
-        with open(os.path.join(EVID, 'lan-parties.txt'), 'w') as out:
+        with open(os.path.join(EVID, '%s-parties.txt' % c.name), 'w') as out:
             for st, side in ((c, 'a'), (b, 'b')):
-                d = subprocess.run([SAVE4, 'dump', os.path.join(st.ud, 'saves', 'platinum', 'Union.sav')],
+                d = subprocess.run([SAVE4, 'dump', os.path.join(st.ud, 'saves', games[side], 'Union.sav')],
                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
                 out.write('== station %s\n%s\n' % (side, d))
 
@@ -609,14 +629,14 @@ def _(c):
     os.makedirs(folder)
     c.options('[sync]\nfolder = ' + folder)
     c.run('boot=app,frames=10', step='1-synced')
-    mirrored = os.path.join(folder, 'platinum', 'Sandgem.sav')
+    mirrored = os.path.join(folder, GAME, 'Sandgem.sav')
     assert os.path.exists(mirrored), os.listdir(folder)
     # Both sides change: this device and "another device" via the folder.
     other = bytearray(open(sav_input('union-a.sav'), 'rb').read())
     with open(mirrored, 'wb') as f:
         f.write(other)
     time.sleep(1.1)
-    local = os.path.join(c.ud, 'saves', 'platinum', 'Sandgem.sav')
+    local = os.path.join(c.ud, 'saves', GAME, 'Sandgem.sav')
     data = bytearray(open(local, 'rb').read())
     data[-1] ^= 0xFF
     with open(local, 'wb') as f:
@@ -646,10 +666,10 @@ def _(c):
 
 @case('standalone_editor', 'Standalone editor: nativeplat --editor --save <file>')
 def _(c):
-    c.need(ROMS['platinum'])
-    c.fresh(['platinum'])
+    c.need(ROMS[GAME])
+    c.fresh([GAME])
     f = os.path.join(c.work, 'backup.sav')
-    shutil.copyfile(sav_input('plat-sandgem.sav'), f)
+    shutil.copyfile(sav_input(SANDGEM[GAME]), f)
     c.run('boot=app,frames=20', args=['--editor', '--save', f])
 
 
@@ -657,10 +677,10 @@ def _(c):
 def _(c):
     plat_save(c, opts='[session]\nstartup = continue')
     c.options('[session]\nstartup = continue')
-    c.run('boot=app,frames=300', step='flags', args=['--game', 'platinum', '--slot', 'Sandgem'])
+    c.run('boot=app,frames=300', step='flags', args=['--game', GAME, '--slot', 'Sandgem'])
     c.run('boot=app,frames=20', step='launcher-flag', args=['--launcher'])
-    c.run('boot=app,frames=20', step='bad-slot', args=['--game', 'platinum', '--slot', 'Nope'])
-    c.run('boot=app,frames=300,script=4:drop:nativeplat://launch?game=platinum&slot=Sandgem', step='url',
+    c.run('boot=app,frames=20', step='bad-slot', args=['--game', GAME, '--slot', 'Nope'])
+    c.run('boot=app,frames=300,script=4:drop:nativeplat://launch?game=' + GAME + '&slot=Sandgem', step='url',
           args=['--launcher'])
 
 
@@ -671,10 +691,10 @@ def _(c):
         c.options('[interface]\n' + opts)
         s, f = keys(4, ['F10'])
         c.run('boot=app,frames=%d,script=%s' % (f + 4, s), step=name)
-    c.fresh(['platinum'])
+    c.fresh([GAME])
     c.options('[interface]\nreduce_motion = 1')
     s, f = keys(10, ['Return'])
-    c.run('boot=app,frames=%d,script=%s;%s' % (f + 40, click(2, PLAT_CARD), s), step='reduce-motion')
+    c.run('boot=app,frames=%d,script=%s;%s' % (f + 40, click(2, CARDS[GAME]), s), step='reduce-motion')
 
 
 @case('about', 'About / credits page')
@@ -692,7 +712,7 @@ def _(c):
         if os.path.exists(f):
             os.remove(f)
     at = 'boot=app,frames=600,script=0:move:1:1,png=' + png
-    url = 'nativeplat://launch?game=platinum&slot=Sandgem'
+    url = 'nativeplat://launch?game=' + GAME + '&slot=Sandgem'
     t0 = time.time()
     subprocess.run(['open', '-n', '-W', '--env', 'NP_AUTOTEST=' + at, '--stdout', log, '--stderr', log,
                     '-a', os.path.join(c.app_dir, 'nativeplat.app'), url], check=True, timeout=600)
@@ -708,7 +728,7 @@ def _(c):
 
 @case('portable', 'Portable mode: portable.txt beside nativeplat.app keeps data in userdata/')
 def _(c):
-    c.fresh(['platinum'])
+    c.fresh([GAME])
     log = c.run('boot=app,frames=10')
     assert 'userdata/ (portable)' in log
 
@@ -718,8 +738,12 @@ def main():
     ap.add_argument('--zip', default=os.path.join(ROOT, 'build/dist/nativeplat-macos-arm64.zip'))
     ap.add_argument('--app', help='use this nativeplat.app instead of unzipping --zip')
     ap.add_argument('--list', action='store_true')
+    ap.add_argument('--game', default='platinum', choices=sorted(ROMS),
+                    help='the game in-game cases run; evidence names get a <game>- prefix unless platinum')
     ap.add_argument('cases', nargs='*')
     a = ap.parse_args()
+    global GAME
+    GAME = a.game
     if a.list:
         for n, f, _ in CASES:
             print('%-24s %s' % (n, f))
@@ -742,6 +766,8 @@ def main():
     for name, feature, fn in CASES:
         if a.cases and name not in a.cases:
             continue
+        if GAME != 'platinum':
+            name = GAME + '-' + name
         c = Ctx(tmp, name)
         row = {'feature': feature}
         try:

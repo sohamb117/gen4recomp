@@ -59,21 +59,54 @@ and in-game runs start as `nativeplat --game platinum --slot Sandgem`.
 | UI scale, reduced motion | `ui_scale = 2/6`; `reduce_motion = 1` on the name page | ui_scale-* | 2x small text; "6x (5x fits)"; steady caret |
 | About | About button | about | License and credits |
 
+## Diamond and Pearl
+
+The same in-game cases, run as `tests/mac/feature_matrix.py --game diamond`
+and `--game pearl` on the package built from main 33e316444 (evidence names
+`diamond-<case>` / `pearl-<case>`). Saves: `tests/gameplay/dp/recipes/sandgem.recipe`
+and `tests/link/recipes/dp-union-a.recipe` minted with `tests/gameplay/mint.sh`
+(`NP_GAME=diamond|pearl`, base = the new-game save from
+`tests/dp/<game>_first_save.sched`). Contact sheets: `build/evidence/sheets/`
+`d-continue-editor.jpg`, `d-display.jpg`, `d-session.jpg`, `d-misc.jpg`,
+`d-lan.jpg`, `pearl.jpg`.
+
+| Feature | Diamond / Pearl evidence | What they show |
+|---|---|---|
+| Continue | diamond-continue, pearl-continue | Sandgem Town field (full-size 3D), Pokétch |
+| Save editor, Mystery Gift | diamond-editor-*, pearl-editor-* | "Edit Diamond save" / Pearl, all six tabs, undo/redo; Events lists Member Card, Oak's Letter, Azure Flute (no Secret Key on D/P); Member Card added (1/8 gifts); saved with `.bak`; save4 reads it as DP |
+| Layouts, swap, rotation | *-layouts-* | All eight arrangements |
+| Battle layout | *-battle_layout-field/battle | Vertical in the field; wild BIDOOF battle in hybrid (large top) |
+| Effects, presets | *-effects-* | LCD+scanlines, curved CRT, smooth, Low/High, Options "Balanced" |
+| Render scale, widescreen | *-render_scale-* | 1x, 4x, 4x widescreen (wider Sandgem) |
+| Camera | *-camera-* | Toasts zoom 175% / 125% / tilt +30 / reset 100%, the field following |
+| Speed | *-speed-* | "Speed 4x" (2025 frames in 1800 iterations), "Fast-forward on" (6648) |
+| F1 / F2 | *-quicksave-* | "Saved" (core: "quick save 1: saved (map 418)"); "Reloaded the last save" |
+| Snapshots, rewind | *-snapshots-* | "Snapshot 1 loaded", "Snapshot 2 taken", rewind depth 286 → 271 |
+| Audio | *-audio-* logs | peak/treble default 25968/661, BGM 0 9644/196, SE 0 25968/631, low-pass 3X 24677/400 (both games) |
+| Instant text | *-instant_text-off/on | Off: Rowan's "Howev…" half printed; on: the same presses already reach the adventure-rules page |
+| Rules | *-rules-options, log | "Fix cartridge bugs < On >"; core: Fire Fang/Wonder Guard, Shadow Force, Rage checks, "rules check: PASS" |
+| Mods | *-mods-installed/menu | "Mods (Diamond)" / Pearl, `example_text` (cooked with `pc/modcook.py`) installed from a zip, enabled; main menu "CONTINUE FROM THE PACKAGE", "NEW GAME (CONTENT PACKAGE)" |
+| Custom carts | *-carts-* | Sealed "Menu Cart" (1 package), bound to Sandgem, boots the modded menu |
+| Pal Park | *-palpark-options/menu | Emerald cart and save inserted; main menu "MIGRATE FROM EMERALD" |
+| LAN, Diamond ↔ Platinum | diamond-lan-station-a/b (`-008000/-009000/-012000.png`), diamond-lan-parties.txt | A Diamond app and a Platinum app on this Mac meet in the Union Room, open the trade screen (TURTWIG ↔ CHIMCHAR), the trade animation runs on both, Diamond: "Take good care of CHIMCHAR!"; afterwards the Diamond save holds CHIMCHAR and the Platinum save TURTWIG (tests/link `dp-pt-trade` schedules, `realtime=1`) |
+
 ## Defects and gaps
 
-- **LAN trade not completed in the app.** The stations met and talked, but
-  tests/link's trade schedule is timed for frame lockstep; two free-running
-  apps drift, and B's accept presses fell on "You declined the offer". The
-  trade itself is covered headless by `tests/link/run_link_tests.py`.
+- **Platinum ↔ Platinum LAN trade not completed in the app.** The stations
+  met and talked, but tests/link's Platinum trade schedule is timed for frame
+  lockstep; two free-running apps drift, and B's accept presses fell on "You
+  declined the offer". The Diamond ↔ Platinum run above completed its trade;
+  the Platinum trade is covered headless by `tests/link/run_link_tests.py`.
 - **Snapshots/rewind are refused for ~a second after CONTINUE**: the main
   menu's wireless check keeps `NP_STAT_LINK_ACTIVE` set until the field;
   F5 at frame 1700 was refused as "during a wireless session". By design,
   not a shell bug; the case takes snapshots from 1760.
-- Diamond and Pearl were shown booting to their title screens only: their
-  field START menu and field 3D defects (DPCore) keep in-game rows from
-  being run on them. See docs/FEATURE_PARITY.md.
 - Shell defects fixed for this pass: editor labels were cut off; options rows
   that Left/Right cannot change showed `< >`; autotest discarded option keys
   under `boot=app`, ignored speed, did not poll the network in menus, and
   silently truncated long scripts; `package_macos.sh` left Diamond and Pearl
-  out unless given their paths, and only tested Platinum.
+  out unless given their paths, and only tested Platinum. For Diamond and
+  Pearl: the mod manager and custom carts were Platinum-only (now per game:
+  `mods/<game>/`, `carts/<game>/`, L/R switch the page's game), and the GBA
+  slot was only inserted for Platinum (now every game, for Pal Park).
+  `package_windows.sh` gained the same D/P defaults and per-game wine test.

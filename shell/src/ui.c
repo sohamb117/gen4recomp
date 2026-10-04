@@ -1132,18 +1132,14 @@ static const char *bound_cart(np_game g, const char *slot)
 /* Binds the next sealed cart (after the last, none). */
 static void cycle_cart(np_app *app, np_game g, const char *slot)
 {
-    if (g != NP_GAME_PLATINUM) {
-        np_app_toast(app, "Mods and carts are Platinum-only for now");
-        return;
-    }
     char names[32][NP_SLOT_NAME_MAX + 1];
-    int n = np_carts_list(names, 32), at = -1;
+    int n = np_carts_list(g, names, 32), at = -1;
     const char *cur = bound_cart(g, slot);
     for (int i = 0; i < n; i++)
         if (!SDL_strcmp(names[i], cur))
             at = i;
     if (!n) {
-        np_app_toast(app, "No carts yet: seal one in Options > Mods");
+        np_app_toast(app, "No %s carts yet: seal one in Options > Mods", np_game_title(g));
         return;
     }
     const char *next = at + 1 < n ? names[at + 1] : "";

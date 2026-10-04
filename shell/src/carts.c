@@ -2,7 +2,7 @@
  * Custom carts: a sealed, named set of mod packages (Gen1Recomp's custom
  * carts). Sealing records the enabled packages in load order and a SHA-256
  * over each package's name, mod.toml and cooked digest, in
- * <user data>/carts/<name>.cart. A save slot can be bound to a cart
+ * <user data>/carts/<game>/<name>.cart (a cart holds one game's packages). A save slot can be bound to a cart
  * (saves/<game>/<slot>.cart); booting it loads exactly that set, and refuses
  * to start if any package changed since sealing, so a playthrough never
  * silently runs on different content.
@@ -14,25 +14,34 @@
  */
 #include "app.h"
 
+#include "romdb.h"
 #include "sha256.h"
 
-static void carts_dir(char *out, size_t n) { np_storage_path(out, n, "carts"); }
+static void carts_dir(np_game game, char *out, size_t n)
+{
+    char rel[32];
+    SDL_snprintf(rel, sizeof rel, "carts/%s", np_game_id(game));
+    np_storage_path(out, n, rel);
+}
 
-static void cart_path(const char *name, char *out, size_t n)
+static void cart_path(np_game game, const char *name, char *out, size_t n)
 {
     char dir[1100];
-    carts_dir(dir, sizeof dir);
+    carts_dir(game, dir, sizeof dir);
     SDL_snprintf(out, n, "%s/%s.cart", dir, name);
 }
 
 /* Hash of packages `dirs` (in order): each name, mod.toml and .cooked/digest
  * with separators. Returns 0, or -1 naming the package that is missing. */
-static int set_hash(char (*dirs)[NP_MOD_ID_MAX], int n, uint8_t out[32], char *why, size_t whyn)
+static int set_hash(np_game game, char (*dirs)[NP_MOD_ID_MAX], int n, uint8_t out[32], char *why, size_t whyn)
 {
     np_sha256 h;
     np_sha256_init(&h);
     char root[1100];
-    np_storage_path(root, sizeof root, "mods");
+    if (np_mods_content_root(NULL, game, root, sizeof root)) {
+        SDL_snprintf(why, whyn, "no %s mods folder", np_game_title(game));
+        return -1;
+    }
     for (int i = 0; i < n; i++) {
         static const char *const files[2] = {"mod.toml", ".cooked/digest"};
         np_sha256_update(&h, dirs[i], SDL_strlen(dirs[i]) + 1);
@@ -61,10 +70,10 @@ typedef struct cart {
     char hex[65];
 } cart;
 
-static int load_cart(const char *name, cart *c)
+static int load_cart(np_game game, const char *name, cart *c)
 {
     char path[1200];
-    cart_path(name, path, sizeof path);
+    cart_path(game, name, path, sizeof path);
     char *text = SDL_LoadFile(path, NULL);
     if (!text)
         return -1;
@@ -106,28 +115,28 @@ static SDL_EnumerationResult SDLCALL collect(void *user, const char *dirname, co
 
 static int cmp(const void *a, const void *b) { return SDL_strcasecmp(a, b); }
 
-int np_carts_list(char (*names)[NP_SLOT_NAME_MAX + 1], int max)
+int np_carts_list(np_game game, char (*names)[NP_SLOT_NAME_MAX + 1], int max)
 {
     cart_list l = {names, 0, max};
     char dir[1100];
-    carts_dir(dir, sizeof dir);
+    carts_dir(game, dir, sizeof dir);
     SDL_EnumerateDirectory(dir, collect, &l);
     SDL_qsort(names, (size_t)l.count, sizeof names[0], cmp);
     return l.count;
 }
 
-int np_cart_seal(np_app *app, const char *name)
+int np_cart_seal(np_app *app, np_game game, const char *name)
 {
     cart c;
     SDL_zero(c);
-    c.npkg = np_mods_enabled(c.pkg, NP_CART_MAX_PKGS);
+    c.npkg = np_mods_enabled(game, c.pkg, NP_CART_MAX_PKGS);
     if (c.npkg <= 0) {
         np_app_toast(app, c.npkg < 0 ? "Fix the packages marked in red first" : "Enable the packages to seal first");
         return -1;
     }
     uint8_t digest[32];
     char why[128];
-    if (set_hash(c.pkg, c.npkg, digest, why, sizeof why)) {
+    if (set_hash(game, c.pkg, c.npkg, digest, why, sizeof why)) {
         np_app_toast(app, "Cannot seal: %s", why);
         return -1;
     }
@@ -139,9 +148,11 @@ int np_cart_seal(np_app *app, const char *name)
         len += (size_t)SDL_snprintf(text + len, sizeof text - len, "package = %s\n", c.pkg[i]);
     len += (size_t)SDL_snprintf(text + len, sizeof text - len, "sha256 = %s\n", c.hex);
     char dir[1100], path[1200];
-    carts_dir(dir, sizeof dir);
+    np_storage_path(dir, sizeof dir, "carts");
     SDL_CreateDirectory(dir);
-    cart_path(name, path, sizeof path);
+    carts_dir(game, dir, sizeof dir);
+    SDL_CreateDirectory(dir);
+    cart_path(game, name, path, sizeof path);
     if (np_storage_write_atomic(path, text, len, 0)) {
         np_app_toast(app, "Cannot save the cart: %s", SDL_GetError());
         return -1;
@@ -151,17 +162,17 @@ int np_cart_seal(np_app *app, const char *name)
     return 0;
 }
 
-int np_cart_delete(const char *name)
+int np_cart_delete(np_game game, const char *name)
 {
     char path[1200];
-    cart_path(name, path, sizeof path);
+    cart_path(game, name, path, sizeof path);
     return SDL_RemovePath(path) ? 0 : -1;
 }
 
-int np_cart_describe(const char *name, char *out, size_t n)
+int np_cart_describe(np_game game, const char *name, char *out, size_t n)
 {
     cart c;
-    if (load_cart(name, &c))
+    if (load_cart(game, name, &c))
         return -1;
     SDL_snprintf(out, n, "%d package%s, %.8s", c.npkg, c.npkg == 1 ? "" : "s", c.hex);
     return 0;
@@ -171,18 +182,16 @@ int np_carts_for_boot(np_app *app, np_game game, const char *slot, char *pc_mods
 {
     pc_mods[0] = '\0';
     *realm = 0;
-    if (game != NP_GAME_PLATINUM)
-        return 0; /* only the Platinum core loads runtime packages */
     char bound[NP_SLOT_NAME_MAX + 1];
     uint8_t digest[32];
     char why[128];
     if (np_storage_slot_cart(game, slot, bound, sizeof bound) == 0) {
         cart c;
-        if (load_cart(bound, &c)) {
+        if (load_cart(game, bound, &c)) {
             SDL_snprintf(app->status, sizeof app->status, "This slot uses cart \"%s\", which is missing.", bound);
             return -1;
         }
-        if (set_hash(c.pkg, c.npkg, digest, why, sizeof why)) {
+        if (set_hash(game, c.pkg, c.npkg, digest, why, sizeof why)) {
             SDL_snprintf(app->status, sizeof app->status, "Cart \"%s\": %s.", bound, why);
             return -1;
         }
@@ -202,8 +211,8 @@ int np_carts_for_boot(np_app *app, np_game game, const char *slot, char *pc_mods
     } else {
         /* No cart: the loose set the core reads from loadorder.txt. */
         char pkg[NP_CART_MAX_PKGS][NP_MOD_ID_MAX];
-        int npkg = np_mods_enabled(pkg, NP_CART_MAX_PKGS);
-        if (npkg <= 0 || set_hash(pkg, npkg, digest, why, sizeof why))
+        int npkg = np_mods_enabled(game, pkg, NP_CART_MAX_PKGS);
+        if (npkg <= 0 || set_hash(game, pkg, npkg, digest, why, sizeof why))
             return 0; /* vanilla (or broken: the core explains at boot) */
     }
     *realm = (uint32_t)digest[0] << 24 | (uint32_t)digest[1] << 16 | (uint32_t)digest[2] << 8 | digest[3];

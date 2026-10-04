@@ -14,9 +14,9 @@ over LAN or a relay, mods, folder sync and more.
 
 ## Playing on macOS
 
-Status: Platinum is fully playable. Diamond and Pearl boot and run their
-intro into the player's bedroom, but are not yet playable to a save (see
-[docs/FEATURE_PARITY.md](docs/FEATURE_PARITY.md)).
+Status: Diamond, Pearl and Platinum are all playable, with the same app
+features (see [docs/FEATURE_PARITY.md](docs/FEATURE_PARITY.md) for each game,
+with evidence).
 
 ### Install
 
@@ -78,8 +78,8 @@ melonDS or DeSmuME on that page).
 ### Features
 
 Everything below is in *Options* (F10) unless noted; each was run in the
-packaged app with a screenshot, listed in
-[docs/evidence/README.md](docs/evidence/README.md) (shown with Platinum).
+packaged app on Diamond, Pearl and Platinum with a screenshot, listed in
+[docs/evidence/README.md](docs/evidence/README.md).
 
 - **Display:** screen layout (vertical, side by side, hybrid, one screen),
   swap, rotation, integer scaling, filters, a separate layout for battles;
@@ -97,13 +97,14 @@ packaged app with a screenshot, listed in
   `.deltaskin` controller skins (drop one on the window).
 - **Local wireless:** turn on *Local wireless (LAN)* on two Macs (or two
   copies on one Mac with different LAN ports and *Join by IP:port*) and meet
-  in the Union Room (trades, battles) or the Underground; *Internet relay host:port* and
+  in the Union Room (trades, battles; Diamond, Pearl and Platinum meet each
+  other) or the Underground; *Internet relay host:port* and
   *Room PIN* do the same over a relay server ([docs/RELAY.md](docs/RELAY.md)).
 - **Pal Park:** *GBA cartridge* takes a GBA ROM and save you own (e.g.
   Emerald); with a National Dex the main menu offers MIGRATE FROM ....
-- **Mods and custom carts:** *Mods...* installs content packages (`.zip`),
-  orders and enables them, and seals the enabled set as a cart a slot can be
-  bound to.
+- **Mods and custom carts:** *Mods...* installs content packages (`.zip`)
+  for each game (L/R switch games), orders and enables them, and seals the
+  enabled set as a cart a slot can be bound to.
 - **Folder sync:** *Sync folder* mirrors every slot to a folder (iCloud
   Drive, Dropbox, a share) and asks when both sides changed.
 - **Updates:** *Updates...* checks the project's latest release only when you

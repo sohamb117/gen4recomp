@@ -303,7 +303,7 @@ void np_sync_draw(np_app *app);
 void np_sync_command(np_app *app, np_menu_cmd cmd);
 void np_sync_hit(np_app *app, int id);
 
-/* mods.c: runtime content packages (Platinum) */
+/* mods.c: runtime content packages, per game (mods/<game>/) */
 /* The content root for `game`'s core into out; 0 if it exists, else -1. */
 int np_mods_content_root(const np_app *app, np_game game, char *out, size_t n);
 void np_mods_install(np_app *app, const char *zip_path);
@@ -316,16 +316,16 @@ void np_mods_command(np_app *app, np_menu_cmd cmd);
 void np_mods_hit(np_app *app, int id);
 /* The enabled packages in load order (directory names); -1 if one has a
  * problem. */
-int np_mods_enabled(char (*names)[NP_MOD_ID_MAX], int max);
+int np_mods_enabled(np_game game, char (*names)[NP_MOD_ID_MAX], int max);
 /* Seals the enabled packages as cart `name` and returns to the Mods page. */
 void np_mods_seal(np_app *app, const char *name);
 
 /* carts.c: sealed mod sets */
 #define NP_CART_MAX_PKGS 32
-int np_carts_list(char (*names)[NP_SLOT_NAME_MAX + 1], int max);
-int np_cart_seal(np_app *app, const char *name);
-int np_cart_delete(const char *name);
-int np_cart_describe(const char *name, char *out, size_t n); /* "N packages, <hash>" */
+int np_carts_list(np_game game, char (*names)[NP_SLOT_NAME_MAX + 1], int max);
+int np_cart_seal(np_app *app, np_game game, const char *name);
+int np_cart_delete(np_game game, const char *name);
+int np_cart_describe(np_game game, const char *name, char *out, size_t n); /* "N packages, <hash>" */
 /* For booting `slot`: "PC_MODS=..." for a bound cart ("" otherwise) and the
  * link realm of the active set. -1 (with app->status) if the slot's cart is
  * missing or changed since sealing. */

@@ -719,7 +719,7 @@ static void build_events(np_editor *e)
 {
     bool v = false;
     if (save4_mg_get_unlocked(&e->s, &v) != SAVE4_OK) {
-        add_row(e, F_INFO, 0, RK_INFO, "Mystery Gift editing supports Platinum saves.");
+        add_row(e, F_INFO, 0, RK_INFO, "This save has no Mystery Gift data the editor knows.");
         return;
     }
     SDL_strlcpy(add_row(e, F_EV_UNLOCK, 0, RK_TOGGLE, "MYSTERY GIFT on main menu")->value, v ? "On" : "Off", 72);

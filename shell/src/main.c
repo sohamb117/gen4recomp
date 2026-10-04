@@ -368,13 +368,13 @@ static void eject_gba(np_app *app)
     app->host.gba_save_store = NULL;
 }
 
-/* Puts the chosen cartridge in the slot for the core about to boot (only
- * Platinum's core has the GBA slot). A file that is not a GBA ROM leaves the
- * slot empty. */
-static void insert_gba(np_app *app, np_game game)
+/* Puts the chosen cartridge in the slot for the core about to boot (every
+ * core has the GBA slot: Pal Park in Diamond, Pearl and Platinum). A file
+ * that is not a GBA ROM leaves the slot empty. */
+static void insert_gba(np_app *app)
 {
     eject_gba(app);
-    if (game != NP_GAME_PLATINUM || !app->opt.gba_rom[0])
+    if (!app->opt.gba_rom[0])
         return;
     app->gba_io = SDL_IOFromFile(app->opt.gba_rom, "rb");
     Sint64 size = app->gba_io ? SDL_GetIOSize(app->gba_io) : -1;
@@ -425,7 +425,7 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     /* Runtime content packages, read by the core at boot (mods.c). */
     app->host.content_root =
         np_mods_content_root(app, game, app->mods_root, sizeof app->mods_root) ? NULL : app->mods_root;
-    insert_gba(app, game);
+    insert_gba(app);
     /* PC_* variables configure the port layer (debug switches such as
      * PC_TP_DEBUG); pass the process's own through, as np_headless does. */
     char **env = SDL_GetEnvironmentVariables(SDL_GetEnvironment());

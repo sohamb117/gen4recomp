@@ -1,10 +1,11 @@
 /*
- * Mod manager (Options > Mods...): runtime content packages for the
- * Platinum core. Packages live as plain directories in <user data>/mods/,
- * which the core sees read-only as /content (np_host.content_root). The
- * enabled packages and their load order are mods/loadorder.txt, the file
- * the core reads when PC_MODS is not set, so the folder stays meaningful
- * without the app.
+ * Mod manager (Options > Mods...): runtime content packages, per game. A
+ * game's packages live as plain directories in <user data>/mods/<game>/
+ * (diamond, pearl, platinum: their files differ, so no package is shared),
+ * which that game's core sees read-only as /content (np_host.content_root).
+ * The enabled packages and their load order are mods/<game>/loadorder.txt,
+ * the file the core reads when PC_MODS is not set, so the folder stays
+ * meaningful without the app. L/R (Page Up/Down) switch the page's game.
  *
  * Installing takes a .zip holding one package (mod.toml at its root or in a
  * single top directory) with its cooked .cooked/digest. Every member name
@@ -20,6 +21,7 @@
 #include "app.h"
 
 #include "modpkg.h"
+#include "romdb.h"
 #include "zip.h"
 
 #define MAX_PKGS 64
@@ -43,8 +45,26 @@ typedef struct mods_state {
 } mods_state;
 
 static mods_state ms;
+static np_game mods_game = NP_GAME_PLATINUM; /* whose packages ms holds */
 
-static void mods_dir(char *out, size_t n) { np_storage_path(out, n, "mods"); }
+static void game_mods_dir(np_game game, char *out, size_t n)
+{
+    char rel[32];
+    SDL_snprintf(rel, sizeof rel, "mods/%s", np_game_id(game));
+    np_storage_path(out, n, rel);
+}
+
+static void mods_dir(char *out, size_t n) { game_mods_dir(mods_game, out, n); }
+
+/* Creates <user data>/mods/<game>/ (and mods/). */
+static void make_mods_dir(void)
+{
+    char root[1100];
+    np_storage_path(root, sizeof root, "mods");
+    SDL_CreateDirectory(root);
+    mods_dir(root, sizeof root);
+    SDL_CreateDirectory(root);
+}
 
 static void pkg_path(const char *dir, const char *rel, char *out, size_t n)
 {
@@ -56,9 +76,7 @@ static void pkg_path(const char *dir, const char *rel, char *out, size_t n)
 int np_mods_content_root(const np_app *app, np_game game, char *out, size_t n)
 {
     (void)app;
-    if (game != NP_GAME_PLATINUM)
-        return -1; /* the D/P cores have no runtime content yet */
-    mods_dir(out, n);
+    game_mods_dir(game, out, n);
     SDL_PathInfo info;
     return SDL_GetPathInfo(out, &info) && info.type == SDL_PATHTYPE_DIRECTORY ? 0 : -1;
 }
@@ -351,14 +369,15 @@ static int ncarts;
 static void scan_all(void)
 {
     scan();
-    ncarts = np_carts_list(carts, 32);
+    ncarts = np_carts_list(mods_game, carts, 32);
     for (int i = 0; i < ncarts; i++)
-        if (np_cart_describe(carts[i], cart_desc[i], sizeof cart_desc[i]))
+        if (np_cart_describe(mods_game, carts[i], cart_desc[i], sizeof cart_desc[i]))
             SDL_strlcpy(cart_desc[i], "unreadable", sizeof cart_desc[i]);
 }
 
-int np_mods_enabled(char (*names)[NP_MOD_ID_MAX], int max)
+int np_mods_enabled(np_game game, char (*names)[NP_MOD_ID_MAX], int max)
 {
+    mods_game = game;
     scan();
     int n = 0;
     for (int i = 0; i < ms.count && ms.pkg[i].enabled; i++) {
@@ -372,7 +391,7 @@ int np_mods_enabled(char (*names)[NP_MOD_ID_MAX], int max)
 
 void np_mods_seal(np_app *app, const char *name)
 {
-    np_cart_seal(app, name);
+    np_cart_seal(app, mods_game, name);
     scan_all();
     np_app_open_page(app, NP_PAGE_MODS);
     app->sel = ms.count + ncarts + ROW_SEAL;
@@ -380,9 +399,12 @@ void np_mods_seal(np_app *app, const char *name)
 
 void np_mods_open(np_app *app, const char *banner)
 {
-    char root[1100];
-    mods_dir(root, sizeof root);
-    SDL_CreateDirectory(root);
+    /* The running game's packages, else the last game played. */
+    if (app->core)
+        mods_game = app->game;
+    else if (app->opt.last_game >= 0 && app->opt.last_game < NP_GAME_COUNT)
+        mods_game = (np_game)app->opt.last_game;
+    make_mods_dir();
     scan_all();
     SDL_strlcpy(ms.banner, banner ? banner : "", sizeof ms.banner);
     np_app_open_page(app, NP_PAGE_MODS);
@@ -500,7 +522,7 @@ static void delete_cart(np_app *app, int i)
         return;
     }
     ms.remove_armed = 0;
-    if (np_cart_delete(carts[i]))
+    if (np_cart_delete(mods_game, carts[i]))
         np_app_toast(app, "Cannot delete it: %s", SDL_GetError());
     else
         np_app_toast(app, "Deleted cart \"%s\"", carts[i]);
@@ -516,6 +538,15 @@ void np_mods_command(np_app *app, np_menu_cmd cmd)
     case NP_CMD_LEFT: move(app, app->sel, -1); break;
     case NP_CMD_RIGHT: move(app, app->sel, 1); break;
     case NP_CMD_CONFIRM: activate(app, app->sel); break;
+    case NP_CMD_TAB_PREV:
+    case NP_CMD_TAB_NEXT:
+        mods_game = (np_game)((mods_game + (cmd == NP_CMD_TAB_NEXT ? 1 : NP_GAME_COUNT - 1)) % NP_GAME_COUNT);
+        make_mods_dir();
+        scan_all();
+        ms.banner[0] = '\0';
+        ms.changed = 0;
+        app->sel = app->scroll = 0;
+        break;
     case NP_CMD_X:
         if (app->sel < ms.count)
             remove_pkg(app, app->sel);
@@ -533,7 +564,9 @@ void np_mods_draw(np_app *app)
     static const SDL_Color white = {235, 235, 235, 255}, dim = {150, 150, 160, 255}, accent = {255, 205, 80, 255},
                            warn = {255, 120, 100, 255}, good = {140, 220, 140, 255};
     np_page_frame f;
-    np_ui_begin_page(app, &f, "Mods (Platinum)");
+    char title[48];
+    SDL_snprintf(title, sizeof title, "Mods (%s)", np_game_title(mods_game));
+    np_ui_begin_page(app, &f, title);
     float x = f.panel.x + 2 * f.cw, y = f.list_y;
     if (ms.banner[0]) {
         y += (float)np_ui_text_wrap(app, x, y, f.s, f.lh, f.cols - 4, ms.banner, warn, 1) * f.lh;
@@ -584,5 +617,5 @@ void np_mods_draw(np_app *app)
         }
         np_ui_hit(app, row, i);
     }
-    np_ui_end_page(app, &f, "Enter: on/off  Left/Right: order  X: delete", 0);
+    np_ui_end_page(app, &f, "Enter: on/off  Left/Right: order  X: delete  L/R: game", 0);
 }

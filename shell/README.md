@@ -270,13 +270,17 @@ forwarding.
 
 ## Mods
 
-*Options > Mods...* manages runtime content packages for Platinum (the
-format in `games/platinum/pc/mods/README.md`: `mod.toml`, `content/`,
-`records/` and the cooked `.cooked/`). Packages are plain folders in
-`<user data>/mods/`, which the core reads read-only as `/content`
-(`np_host.content_root`); the enabled ones and their load order are
-`mods/loadorder.txt`, the file the core itself reads, so the folder also
-works by hand. *Install package (.zip)...* (or dropping a .zip on the page)
+*Options > Mods...* manages runtime content packages for each game (the
+format in `games/platinum/pc/mods/README.md` and
+`games/diamond/pc/mods/README.md`: `mod.toml`, `content/`, `records/` and the
+cooked `.cooked/`). The page shows one game's packages, the running game's
+or the last one played; L/R (Page Up/Down) switch games. A game's packages
+are plain folders in `<user data>/mods/<game>/` (`diamond`, `pearl`,
+`platinum`: their files differ, so none is shared), which that game's core
+reads read-only as `/content` (`np_host.content_root`); the enabled ones and
+their load order are `mods/<game>/loadorder.txt`, the file the core itself
+reads, so the folder also works by hand. *Install package (.zip)...* (or
+dropping a .zip on the page) installs into the page's game and
 takes a zip holding one cooked package; member names must be plain relative
 paths and links are refused, so a package cannot reach outside the folder.
 It is extracted under a temporary name and renamed into place. Enter turns a
@@ -286,7 +290,7 @@ when the game boots; if a package stops the boot ("modfs: ..."), the page
 opens with the message and that package selected.
 
 *Seal enabled packages as a cart...* saves the enabled packages, in order,
-as a named custom cart (`carts/<name>.cart`) with a SHA-256 over each
+as a named custom cart of that game (`carts/<game>/<name>.cart`) with a SHA-256 over each
 package's name, `mod.toml` and cooked digest. A slot's menu binds it to a
 cart (*Cart:* cycles through them; stored as `saves/<game>/<slot>.cart` and
 carried by rename/duplicate/delete); that slot then always boots exactly the
@@ -300,7 +304,7 @@ the realm changes the packet magic; through a relay it makes its own room,
 ## GBA cartridge (Pal Park)
 
 *Options > GBA cartridge (Pal Park)* inserts a Game Boy Advance cartridge
-image you own into Platinum's GBA slot; *GBA save* picks its save file
+image you own into the GBA slot (all three games have Pal Park); *GBA save* picks its save file
 (default: the cartridge's name with `.sav`, as mGBA writes it). Left ejects.
 The slot is read when the game boots, so a change applies from the next boot
 (F2 twice reloads). The core reads the ROM through `np_host.gba_rom_read`;
