@@ -229,6 +229,10 @@ void pkm4_set_origin_game(pkm4 *p, uint8_t game);
 void pkm4_set_met(pkm4 *p, uint16_t location, uint8_t level, uint8_t ball, uint8_t ot_gender);
 /* Party tail. */
 void pkm4_set_party_stats(pkm4 *p, uint8_t level, uint16_t hp, const uint16_t stats[6], uint32_t status);
+/* Party stats (MaxHP Atk Def Spe SpA SpD) from species base stats (same
+ * order), IVs, EVs, level and nature, as the game computes them. */
+void pkm4_calc_stats(const uint8_t base[6], const uint8_t ivs[6], const uint8_t evs[6], uint8_t level,
+                     uint8_t nature, bool shedinja, uint16_t out[6]);
 
 uint8_t save4_party_count(const save4 *s);
 save4_status save4_get_party(const save4 *s, int slot, pkm4 *out);

@@ -124,5 +124,25 @@ int main(void)
     CHECK(info.has_nickname);
 
     CHECK(pkm4_decrypt(enc, 100, &back) == SAVE4_ERR_ARG);
+    /* Stat formula: Bulbapedia's worked example, a level 78 Adamant Garchomp
+     * (base 108/130/95/102/80/85 as HP Atk Def Spe SpA SpD, IVs 24/12/30/5/16/23,
+     * EVs 74/190/91/23/48/84) has 289/278/193/171/135/171. */
+    {
+        const uint8_t base[6] = {108, 130, 95, 102, 80, 85};
+        const uint8_t ivs[6] = {24, 12, 30, 5, 16, 23};
+        const uint8_t evs[6] = {74, 190, 91, 23, 48, 84};
+        uint16_t st[6];
+        pkm4_calc_stats(base, ivs, evs, 78, 3 /* Adamant */, false, st);
+        CHECK_EQ_INT(st[0], 289);
+        CHECK_EQ_INT(st[1], 278);
+        CHECK_EQ_INT(st[2], 193);
+        CHECK_EQ_INT(st[3], 171);
+        CHECK_EQ_INT(st[4], 135);
+        CHECK_EQ_INT(st[5], 171);
+        pkm4_calc_stats(base, ivs, evs, 78, 0 /* Hardy: neutral */, true, st);
+        CHECK_EQ_INT(st[0], 1); /* Shedinja */
+        CHECK_EQ_INT(st[1], 253);
+        CHECK_EQ_INT(st[4], 151);
+    }
     return TEST_RESULT();
 }

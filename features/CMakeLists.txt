@@ -54,6 +54,7 @@ add_library(ndsdata STATIC
     ndsdata/src/lz77.c
     ndsdata/src/gen4_text.c
     ndsdata/src/gen4_names.c
+    ndsdata/src/gen4_data.c
     "${NP_GEN_DIR}/gen4_charmap.c")
 target_include_directories(ndsdata
     PUBLIC ndsdata/include
@@ -93,7 +94,7 @@ target_include_directories(np_testsupport PUBLIC tests)
 target_link_libraries(np_testsupport PUBLIC save4 ndsdata)
 target_compile_options(np_testsupport PRIVATE ${NP_WARN})
 
-foreach(t test_lz77 test_text test_rom_text test_pkm4 test_save4)
+foreach(t test_lz77 test_text test_rom_text test_pkm4 test_save4 test_gamedata)
     add_executable(${t} tests/${t}.c)
     target_link_libraries(${t} PRIVATE np_testsupport save4 ndsdata)
     target_compile_options(${t} PRIVATE ${NP_WARN})
@@ -107,7 +108,8 @@ add_test(NAME text COMMAND test_text)
 add_test(NAME rom_text COMMAND test_rom_text "${NP_PLATINUM_ROM}")
 add_test(NAME pkm4 COMMAND test_pkm4)
 add_test(NAME save4 COMMAND test_save4)
-set_tests_properties(rom_text PROPERTIES SKIP_RETURN_CODE 77)
+add_test(NAME gamedata COMMAND test_gamedata "${NP_PLATINUM_ROM}")
+set_tests_properties(rom_text gamedata PROPERTIES SKIP_RETURN_CODE 77)
 
 # Decode every message bank in the ROM and compare with the decomp's JSON.
 add_executable(dump_bank tests/dump_bank.c)

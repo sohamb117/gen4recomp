@@ -181,6 +181,41 @@ const char *nd_location_name(const nd_names *names, uint32_t location);
 /* Nature name for a PID (nature = pid % 25). */
 const char *nd_nature_name(const nd_names *names, uint32_t pid);
 
+/* ------------------------------------------------------------ game data */
+
+#define ND_EXP_RATES 8
+
+/* The species fields a save editor needs (pokeplatinum SpeciesData). */
+typedef struct nd_species {
+    uint8_t valid;
+    uint8_t base[6];        /* HP Atk Def Spe SpA SpD */
+    uint8_t types[2];
+    uint8_t gender_ratio;   /* 0 male only .. 254 female only, 255 genderless */
+    uint8_t base_friendship;
+    uint8_t exp_rate;       /* index into exp[] */
+    uint8_t abilities[2];   /* ability ids; [1] is 0 when there is one */
+} nd_species;
+
+typedef struct nd_gamedata {
+    nd_game game;
+    uint32_t species_count; /* personal NARC members (forms after 493) */
+    nd_species *species;
+    uint32_t exp[ND_EXP_RATES][101]; /* total exp for levels 0..100 */
+    uint32_t move_count;
+    uint8_t *move_pp;       /* base PP per move id */
+} nd_gamedata;
+
+/* Species, experience and move tables for the ROM's game. */
+nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom);
+void nd_gamedata_free(nd_gamedata *gd);
+/* NULL when out of range. */
+const nd_species *nd_species_get(const nd_gamedata *gd, uint32_t species);
+/* Total experience a species needs for `level` (0 if unknown species). */
+uint32_t nd_exp_for_level(const nd_gamedata *gd, uint32_t species, uint32_t level);
+/* The level `exp` reaches, 1..100, as Pokemon_GetLevel computes it. */
+uint32_t nd_level_for_exp(const nd_gamedata *gd, uint32_t species, uint32_t exp);
+uint8_t nd_move_base_pp(const nd_gamedata *gd, uint32_t move);
+
 #ifdef __cplusplus
 }
 #endif

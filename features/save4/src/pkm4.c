@@ -331,3 +331,26 @@ void pkm4_set_party_stats(pkm4 *p, uint8_t level, uint16_t hp, const uint16_t st
     for (int i = 0; i < 6; i++)
         s16(p->data + OFS_STATS + i * 2, stats[i]);
 }
+
+/* Gen 4 stat formula (pokeplatinum src/pokemon.c Pokemon_CalcStats) with
+ * the nature modifier of Pokemon_GetNatureStatValue: +10% on stat
+ * nature/5 and -10% on nature%5, over Atk Def Spe SpA SpD. */
+void pkm4_calc_stats(const uint8_t base[6], const uint8_t ivs[6], const uint8_t evs[6], uint8_t level,
+                     uint8_t nature, bool shedinja, uint16_t out[6])
+{
+    if (shedinja)
+        out[0] = 1;
+    else
+        out[0] = (uint16_t)((2 * base[0] + ivs[0] + evs[0] / 4) * level / 100 + level + 10);
+    int up = nature % 25 / 5, down = nature % 25 % 5;
+    for (int i = 1; i < 6; i++) {
+        int v = (2 * base[i] + ivs[i] + evs[i] / 4) * level / 100 + 5;
+        if (up != down) {
+            if (i - 1 == up)
+                v = v * 110 / 100;
+            else if (i - 1 == down)
+                v = v * 90 / 100;
+        }
+        out[i] = (uint16_t)v;
+    }
+}
