@@ -89,8 +89,8 @@ started · `n/a` no DS equivalent (reason given).
 
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
-| LAN link battles/trades | DS local wireless (Union Room, Underground, battles, trades) over LAN | wip (Platinum: ARM7 WM model `pc/src/pc_wm.c` behind PXI tag 10 over UDP `shell/src/net.c`; two instances meet and talk in the Union Room; battles/trades/Underground not yet verified end to end; D/P not wired) |
-| Relay online lobby, battles, trades, spectators, tournaments, PINs | Same over a self-hostable relay | wip (UDP room relay keyed by PIN, `server/relay`, docs/RELAY.md; two instances meet in the Union Room through it; no lobby/spectators/tournaments yet) |
+| LAN link battles/trades | DS local wireless (Union Room, Underground, battles, trades) over LAN | wip (Platinum: ARM7 WM model `pc/src/pc_wm.c` behind PXI tag 10 over UDP `shell/src/net.c`; verified end to end between two headless stations by `tests/link/run_link_tests.py`: Union Room trade (both saves swapped), Union Room single battle to the WIN/LOSE screen, Underground meeting; Colosseum not yet tested; D/P not wired) |
+| Relay online lobby, battles, trades, spectators, tournaments, PINs | Same over a self-hostable relay | wip (UDP room relay keyed by PIN, `server/relay`, docs/RELAY.md; a Union Room trade completes through it with 10% loss on each side (`tests/link` relay_trade); no lobby/spectators/tournaments yet) |
 | Fast-forward locked to 1x in link play | Same | wip (core: `NP_STAT_LINK_ACTIVE` from the WM model; shell forces 1x, np_headless paces to 60 Hz) |
 | Mystery Gift | Wonder Card (PGT/PCD) injection through the in-game Mystery Gift menu | planned |
 

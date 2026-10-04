@@ -18,12 +18,16 @@ into the Union Room.
   linkpair.py party SAV
       species of the save's party (np_save4 dump)
 
-Scenario files (tests/link/*.link) are run by run_link_tests.py.
+  linkpair.py mint RECIPE OUT.sav
+      mint a save from a pc_lab recipe (tests/link/recipes) with this core
+
+The regression scenarios themselves are in run_link_tests.py. Environment:
+NP_HEADLESS, NP_SAVE4, NP_PLAT_ROM override the default build paths;
+--relay/--pin/--drop on serve put the game's datagrams through server/relay.
 """
 import json
 import os
 import random
-import signal
 import subprocess
 import sys
 import time
