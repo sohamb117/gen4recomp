@@ -18,3 +18,11 @@ unk_0204FBA8.s ov18_02247808
 #
 # sub_0206F1F0 loads ov13 through sub_02088878 right before the call.
 unk_0206F1F0.s ov13_02211E60
+#
+# Script commands, decompiled C: ScrCmd_Unk019F's ov18_0224CA58(u16) opens
+# the underground's message (msg bank 0x241; ov06's function there takes a
+# task's data in r2), closed by 01A0's ov18_0224CA94. ScrCmd_Unk025E's
+# ov06_0224E764 reads fieldSystem->saveData at +0xC (ov18's takes three
+# arguments and asserts on the second), an overworld command.
+scrcmd.c ov18_0224CA58
+scrcmd.c ov06_0224E764

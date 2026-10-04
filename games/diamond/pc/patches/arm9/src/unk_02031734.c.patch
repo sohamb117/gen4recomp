@@ -7,8 +7,24 @@ sub_02031A24 is a tail call (`ldr r3, =sub_0202D298; bx r3`), so
 sub_0202D298 gets the caller's r0 untouched; the forwarder now takes and
 passes it.
 
+sub_0203341C calls ov05_021D74E0 (the field's per-frame BG/OAM update, one
+argument), found by pc/tools/dp_ovlabel_lint.py's C pass. The file's comm
+code runs on ov04 (its other ov04_ calls; sub_0203341C calls ov04_021D83A8
+next), whose ov04_021D74E0 takes (save, heap id) and allocates its 0x1FAC
+state on that heap: the 0x31 heap the line before creates. The call names
+the function the address holds.
+
 --- a/unk_02031734.c
 +++ b/unk_02031734.c
+@@ -54,7 +54,7 @@
+ extern u32 ov04_021DD718(u32 *param0, u32 *param1);
+ extern void ov04_021DD6F0();
+ extern s32 ov04_021D76AC();
+-extern ov05_021D74E0(struct SaveData *save, u32 param1);
++extern ov04_021D74E0(struct SaveData *save, u32 param1);
+ extern void ov04_021D83A8(void (*param0)(s32));
+ extern void sub_0200541C();
+ 
 @@ -213,8 +213,8 @@
      }
  }
@@ -20,3 +36,12 @@ passes it.
  }
  
  BOOL sub_02031A2C() {
+@@ -1601,7 +1601,7 @@
+     if (sub_0202E4C8()) {
+         Heap_CreateAtEnd(HEAP_ID_MAIN, HEAP_ID_49, 0x31000);
+         if (sub_0202F918(1, 1, 0x200, 1) != 0) {
+-            ov05_021D74E0(UNK_021C5A00->unk28, 0x31);
++            ov04_021D74E0(UNK_021C5A00->unk28, 0x31);
+             ov04_021D83A8(sub_020335D0);
+             sub_0202FA10();
+             sub_02031D20(sub_020333F0, 0);

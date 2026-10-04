@@ -8,8 +8,24 @@ and Heap_Free(NULL) faulted at the end of the start menu's SAVE (the save
 script runs 0258/0259 around the write). The prototype now says u32, the
 width the variable and the assembly use.
 
+ScrCmd_Unk01A0 calls ov11_0224CA94, a battle overlay label (found by
+pc/tools/dp_ovlabel_lint.py's C pass). It closes what ScrCmd_Unk019F's
+ov18_0224CA58 opened (the underground's message window, msg bank 0x241);
+on hardware 0x0224CA94 is ov18_0224CA94 there (ov18_0223D658 then
+ov18_0224DD94), and on wasm ov11's battle code ran instead. The call names
+the function the address holds.
+
 --- a/arm9/src/scrcmd.c
 +++ b/arm9/src/scrcmd.c
+@@ -253,7 +253,7 @@
+ extern void *ov18_0224CA54(u16 param0, FieldSystem *fieldSystem, u32 mapObjectId);
+ extern u16 ov18_0224CA2C(void *param0);
+ extern u8 ov18_0224CA58(u16 param0);
+-extern void ov11_0224CA94(void);
++extern void ov18_0224CA94(void);
+ extern void ov18_0224CAA0(u8 param0, u16 param1);
+ extern void ov18_0224CAB4(u8 param0, u16 param1);
+ extern void ov06_02242BE0(TaskManager *taskManager, u32 param1, u32 param2, u32 param3, u32 param4, u32 param5);
 @@ -311,7 +311,7 @@
  extern void ov06_0224C678(FieldSystem *fieldSystem, u8 param1);
  extern void ov06_0224C6E8(FieldSystem *fieldSystem, u8 param1);
@@ -19,3 +35,12 @@ width the variable and the assembly use.
  extern void ov05_021E71E8(u32 playerState);
  extern void ov06_0224E554(FieldSystem *fieldSystem, u8 param0);
  extern void sub_0206486C(FieldSystem *fieldSystem);
+@@ -3412,7 +3412,7 @@
+ }
+ 
+ BOOL ScrCmd_Unk01A0(ScriptContext *ctx) { // 01A0
+-    ov11_0224CA94();
++    ov18_0224CA94();
+     return FALSE;
+ }
+ 
