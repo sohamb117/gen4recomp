@@ -2,6 +2,32 @@
 
 Site: https://nativeplat-1066182835702.us-east1.run.app/
 
+## Custom domain
+
+The Cloud Run mapping for `pokeweb.morisoba.moe` points to `nativeplat` in
+`us-east1`. Cloudflare manages DNS for `morisoba.moe`. Its required record is:
+
+| Type | Name | Target | Proxy |
+| --- | --- | --- | --- |
+| CNAME | `pokeweb` | `ghs.googlehosted.com` | DNS only |
+
+Google provisions and renews the HTTPS certificate after that record resolves.
+Check readiness before using the custom address:
+
+```sh
+gcloud beta run domain-mappings describe --domain=pokeweb.morisoba.moe \
+  --project=nativeplat-20261004 --region=us-east1
+curl --fail --head https://pokeweb.morisoba.moe/
+cd web
+node --import tsx scripts/verify-deployment.ts https://pokeweb.morisoba.moe/
+```
+
+The existing `run.app` address remains available. Browser saves are scoped to
+the origin: export a `.sav` there and import it at the custom domain to continue
+an existing save. The domain mapping does not alter the game binaries or pacing.
+
+## Service
+
 - Project: `nativeplat-20261004`; region: `us-east1`; service: `nativeplat`.
 - Cloud Run serves an nginx container from Artifact Registry `nativeplat/web`.
 - Runtime identity: `nativeplat-web@nativeplat-20261004.iam.gserviceaccount.com`,
