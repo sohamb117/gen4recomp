@@ -18,6 +18,7 @@
 #include "layout.h"
 #include "np_core.h"
 #include "options.h"
+#include "np_guest_abi.h"
 #include "storage.h"
 
 #define NP_MAX_PADS 8
@@ -53,6 +54,7 @@ typedef enum np_text_purpose {
     NP_TEXT_RENAME_SLOT,
     NP_TEXT_TRAINER_NAME, /* the editor's; commit goes to np_editor_text_done */
     NP_TEXT_NICKNAME,
+    NP_TEXT_LAN_PEER, /* Options: "host:port" to join */
 } np_text_purpose;
 
 typedef enum np_menu_cmd {
@@ -178,6 +180,8 @@ typedef struct np_app {
 
     struct np_editor *editor; /* open save editor, or NULL */
     struct np_fx_state *fx;   /* display effects (fx.c) */
+    struct np_net *net;       /* local wireless transport while enabled */
+    char net_error[128];
 
     np_core *core;
     np_game game;
@@ -226,6 +230,10 @@ void np_app_refresh_slots(np_app *app, const char *select);
 void np_app_open_slots(np_app *app, np_game game);
 /* Acts on a launch request (command line or URL). */
 void np_app_launch(np_app *app, const np_launch *req);
+/* (Re)opens or closes local wireless to match the options. */
+void np_app_net_apply(np_app *app);
+/* Stations in range, or -1 with wireless off. */
+int np_app_net_peers(const np_app *app);
 
 /* input.c */
 void np_input_gamepad_added(np_app *app, SDL_JoystickID id);

@@ -77,6 +77,12 @@ typedef struct np_options {
     int startup_continue; /* 1: boot straight into the last game and slot */
     int last_game;      /* np_game last played, or -1 */
     char last_slot[NP_GAME_COUNT][NP_SLOT_NAME_MAX + 1]; /* "" when none */
+    /* Local wireless (net.c). station_id is generated once and kept: the
+     * game derives the console's MAC from it and stores that in saves. */
+    int lan_enabled;
+    int lan_port;
+    char lan_peer[64]; /* "host:port" to join beyond LAN discovery, or "" */
+    uint32_t station_id;
     np_bindings bind;
 } np_options;
 

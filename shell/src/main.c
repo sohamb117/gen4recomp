@@ -24,6 +24,7 @@
 
 #include "app.h"
 #include "fx.h"
+#include "net.h"
 #include "png.h"
 #include "romdb.h"
 #include "storage.h"
@@ -87,6 +88,56 @@ static void host_log(void *user, const char *line)
     (void)user;
     SDL_Log("core: %s", line);
 }
+
+/* Local wireless. The station id is offered even with wireless off: the
+ * guest derives the console's MAC address from it and the game stores that
+ * in the save, so it must not change between sessions. */
+static uint32_t host_net_self(void *user) { return ((np_app *)user)->opt.station_id; }
+
+static int host_net_send(void *user, uint32_t peer, const void *buf, uint32_t len)
+{
+    np_app *app = user;
+    return app->net ? np_net_send(app->net, peer, buf, len) : 0;
+}
+
+static int host_net_recv(void *user, uint32_t *peer, void *buf, uint32_t cap)
+{
+    np_app *app = user;
+    return app->net ? np_net_recv(app->net, peer, buf, cap) : 0;
+}
+
+static void net_log(void *user, const char *line)
+{
+    (void)user;
+    SDL_Log("net: %s", line);
+}
+
+void np_app_net_apply(np_app *app)
+{
+    if (app->net)
+        np_net_close(app->net);
+    app->net = NULL;
+    app->net_error[0] = '\0';
+    if (!app->opt.lan_enabled)
+        return;
+    np_net_config cfg = {.port = (uint16_t)app->opt.lan_port,
+                         .station_id = app->opt.station_id,
+                         .lan_discovery = 1,
+                         .log = net_log};
+    app->net = np_net_open(&cfg, app->net_error, sizeof app->net_error);
+    if (!app->net) {
+        SDL_Log("local wireless: %s", app->net_error);
+        return;
+    }
+    if (app->opt.lan_peer[0] && np_net_add_peer(app->net, app->opt.lan_peer, app->net_error, sizeof app->net_error))
+        SDL_Log("local wireless peer %s: %s", app->opt.lan_peer, app->net_error);
+    SDL_Log("local wireless on, port %u, station %06X", np_net_port(app->net), (unsigned)app->opt.station_id);
+}
+
+int np_app_net_peers(const np_app *app) { return app->net ? np_net_peer_count(app->net) : -1; }
+
+/* While a wireless session runs the partner expects real time. */
+static int link_active(const np_app *app) { return app->core && np_core_status(app->core, NP_STAT_LINK_ACTIVE); }
 
 /* Autotest variants: a synthetic cartridge header, and a backup chip in
  * memory unless the test runs on (portable) storage. */
@@ -152,6 +203,8 @@ void np_app_toast(np_app *app, const char *fmt, ...)
 
 int np_app_speed(const np_app *app)
 {
+    if (link_active(app))
+        return 1;
     int ff = app->ff_hold || app->ff_toggle;
     return np_speeds[ff ? app->opt.ff_speed_index : app->opt.speed_index];
 }
@@ -301,7 +354,10 @@ static int open_rom(np_app *app, const char *path, np_host *host)
                       .save_load = host_save_load,
                       .save_store = host_save_store,
                       .rtc_now = app->opt.real_clock ? host_rtc_now : NULL,
-                      .log = host_log};
+                      .log = host_log,
+                      .net_self = app->opt.station_id ? host_net_self : NULL,
+                      .net_send = app->opt.station_id ? host_net_send : NULL,
+                      .net_recv = app->opt.station_id ? host_net_recv : NULL};
     return 0;
 }
 
@@ -693,6 +749,8 @@ static void upload_frame(np_app *app) { np_fx_upload(app); }
 
 static int run_one(np_app *app, const np_input *in)
 {
+    if (app->net)
+        np_net_poll(app->net);
     int r = np_core_run_frame(app->core, in, &app->frame);
     if (r == 0) {
         app->have_frame = 1;
@@ -714,8 +772,13 @@ static void run_game(np_app *app)
     app->last_ns = now;
     if (dt > MAX_DT_NS)
         dt = MAX_DT_NS; /* after a stall, resume instead of fast-forwarding */
-    if (app->page != NP_PAGE_NONE || app->backgrounded || app->minimized)
+    /* Menus pause the game; minimizing or backgrounding does too, except
+     * during a wireless session, which the partner drops after 4 s. */
+    if (app->page != NP_PAGE_NONE || ((app->backgrounded || app->minimized) && !link_active(app))) {
+        if (app->net)
+            np_net_poll(app->net); /* keep answering discovery while paused */
         return;
+    }
 
     np_input in = {0};
     in.keys = np_input_poll_keys(app, &app->ff_hold);
@@ -992,6 +1055,15 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             if (m < 0)
                 return -1;
             app->opt.perf = m;
+        } else if (!SDL_strcmp(kv, "lan")) {
+            app->opt.lan_enabled = 1;
+            app->opt.lan_port = SDL_clamp(SDL_atoi(v), 1024, 65531);
+        } else if (!SDL_strcmp(kv, "peer"))
+            SDL_strlcpy(app->opt.lan_peer, v, sizeof app->opt.lan_peer);
+        else if (!SDL_strcmp(kv, "station")) {
+            app->opt.station_id = (uint32_t)SDL_strtoul(v, NULL, 16) & 0xFFFFFFu;
+            if (!app->opt.station_id)
+                return -1;
         }
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
@@ -1378,6 +1450,16 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
     if ((!t->active || t->boot == NP_AT_APP) && np_options_load(&app->opt, app->options_path))
         SDL_Log("could not read %s; using defaults", app->options_path);
+    if (!app->opt.station_id && t->active) {
+        app->opt.station_id = 0x4E5001; /* fixed so scripted runs replay exactly */
+    } else if (!app->opt.station_id) {
+        app->opt.station_id = np_net_random_id() & 0xFFFFFFu;
+        if (!app->opt.station_id)
+            app->opt.station_id = 1;
+        app->options_dirty = 1;
+        save_options(app);
+    }
+    np_app_net_apply(app);
 
     SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     if (!SDL_CreateWindowAndRenderer("nativeplat", win_w, win_h, flags, &app->window, &app->renderer)) {
@@ -1573,6 +1655,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     process_pending(app);
     if (app->view == NP_VIEW_GAME)
         run_game(app);
+    else if (app->net)
+        np_net_poll(app->net); /* launcher: discovery and the station count */
     update_audio_state(app);
     draw(app);
     /* Work done before the present (which may wait for VSync). */
@@ -1595,6 +1679,8 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
     np_input_close_gamepads(app);
     np_ui_destroy(app);
     np_fx_destroy(app);
+    if (app->net)
+        np_net_close(app->net);
     for (int i = 0; i < 2; i++)
         if (app->screen_tex[i])
             SDL_DestroyTexture(app->screen_tex[i]);

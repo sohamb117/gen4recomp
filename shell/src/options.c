@@ -85,6 +85,7 @@ void np_options_defaults(np_options *o)
     o->touch_controls = NP_TOUCH_AUTO;
     o->real_clock = 1;
     o->last_game = -1;
+    o->lan_port = 2009; /* NP_NET_DEFAULT_PORT */
     np_bindings_defaults(&o->bind);
 }
 
@@ -241,6 +242,15 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             if (g >= 0 && !np_slot_name_problem(val))
                 SDL_strlcpy(o->last_slot[g], val, sizeof o->last_slot[g]);
         }
+    } else if (!strcmp(section, "wireless")) {
+        if (!strcmp(key, "enabled"))
+            o->lan_enabled = iv != 0;
+        else if (!strcmp(key, "port"))
+            o->lan_port = clampi(iv, 1024, 65531);
+        else if (!strcmp(key, "peer"))
+            SDL_strlcpy(o->lan_peer, val, sizeof o->lan_peer);
+        else if (!strcmp(key, "station_id"))
+            o->station_id = (uint32_t)SDL_strtoul(val, NULL, 16) & 0xFFFFFFu;
     } else if (!strcmp(section, "input")) {
         if (!strcmp(key, "touch_controls")) {
             int m = lookup(touch_ids, NP_TOUCH_MODE_COUNT, val);
@@ -338,6 +348,8 @@ int np_options_save(const np_options *o, const char *path)
     for (int g = 0; g < NP_GAME_COUNT; g++)
         if (o->last_slot[g][0])
             put(b, "last_slot_%s = %s\n", np_game_ids[g], o->last_slot[g]);
+    put(b, "\n[wireless]\nenabled = %d\nport = %d\npeer = %s\nstation_id = %06X\n", o->lan_enabled, o->lan_port,
+        o->lan_peer, (unsigned)o->station_id);
     put(b, "\n[input]\ntouch_controls = %s\n\n[keys]\n", touch_ids[o->touch_controls]);
     for (int a = 0; a < NP_ACT_COUNT; a++) {
         put(b, "%s =", action_ids[a]);

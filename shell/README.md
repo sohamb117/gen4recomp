@@ -99,6 +99,14 @@ lists filter as you type. Limitations: no party/box transfers, item pockets
 are not checked against item data, alternate forms use the base species'
 stats.
 
+**Events** (Platinum saves) turns on the MYSTERY GIFT main-menu option and
+the Pokedex-obtained flag it also needs, lists the three Wonder Cards
+(remove one together with its pending gift) and adds Wonder Cards we write
+ourselves for the Member Card (Darkrai), Oak's Letter (Shaymin), Azure Flute
+(Arceus) and Secret Key (Rotom) events: the deliveryman in any Poke Mart then
+hands over the item. *Import .pgt / .pcd...* (or dropping such a file on the
+editor) adds any gift file you own. No event files ship with nativeplat.
+
 ## Display effects and performance
 
 *Options > Effect 1 / Effect 2* chain two effects, each with an intensity:
@@ -154,7 +162,21 @@ near 60 ms. While fast-forwarding, audio is time-stretched by dropping: each
 chunk is queued only while the device queue is short, the rest is discarded,
 so you hear normal-pitch snippets rather than sped-up audio. The game pauses
 (and audio stops) while a menu is open, when minimized, and in the
-background; going to the background also flushes the save.
+background; going to the background also flushes the save. During a local
+wireless session (`NP_STAT_LINK_ACTIVE`) the speed is locked to 1x and the
+game keeps running when minimized or in the background, because the partner
+drops a station that is silent for 4 s.
+
+## Local wireless
+
+*Options > Local wireless (LAN)* opens a UDP transport (`src/net.c`) on *LAN
+port* (default 2009; the next three ports are tried if it is taken) that
+finds other nativeplat instances on the LAN; *Join by IP:port* adds a station
+beyond broadcast range. *Wireless status* shows stations in range or the
+error. Each install keeps a station id in `options.ini` (`[wireless]
+station_id`), generated once: the game derives the console's MAC address
+from it and stores that in saves, so a changing id would trigger the game's
+"different DS" clock penalty.
 
 ## Autotest
 
@@ -183,6 +205,8 @@ clock so runs repeat exactly), `slot=<name>` (save slot used with `storage=1`),
 and `script=F:kind:args;...` to push synthetic `key`, `text`, mouse
 (`down/move/up`), finger (`fdown/fmove/fup`), `drop:<path or URL>` and
 `dialog:<path>` (answer the open file dialog) events before frame F.
+`lan=<port>` turns local wireless on, `peer=<host:port>` joins a station and
+`station=<hex>` sets the station id (autotests otherwise use a fixed id).
 
 A press schedule is steps separated by `;` or newlines (`#` comments in files):
 `F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N

@@ -45,6 +45,7 @@ add_library(np_shell_common STATIC
   src/font8x8.c
   src/layout.c
   src/launch.c
+  src/net.c
   src/png.c
   src/romdb.c
   src/scale2x.c
@@ -54,7 +55,9 @@ add_library(np_shell_common STATIC
 )
 target_include_directories(np_shell_common PUBLIC src "${NP_ROOT}/core/include")
 target_compile_options(np_shell_common PRIVATE ${NP_WARNINGS})
-if(NOT WIN32)
+if(WIN32)
+  target_link_libraries(np_shell_common PUBLIC ws2_32) # net.c: UDP sockets
+else()
   target_link_libraries(np_shell_common PUBLIC m)
 endif()
 

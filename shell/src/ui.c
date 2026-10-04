@@ -196,6 +196,10 @@ enum opt_item {
     OPT_VOLUME,
     OPT_MUTE,
     OPT_TOUCH,
+    OPT_LAN,
+    OPT_LAN_PORT,
+    OPT_LAN_PEER,
+    OPT_LAN_STATUS,
     OPT_CONTROLS,
     OPT_ABOUT,
     OPT_QUIT_GAME,
@@ -207,7 +211,7 @@ static const char *const opt_labels[OPT_COUNT] = {
     "Screen layout", "Swap screens", "Rotation", "Scaling", "Filter", "Fullscreen", "Effect 1", "Effect 1 intensity",
     "Effect 2", "Effect 2 intensity", "CRT curvature", "Performance", "VSync", "Display FPS cap",
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
-    "Touch controls",
+    "Touch controls", "Local wireless (LAN)", "LAN port", "Join by IP:port", "Wireless status",
     "Controls...", "About...", "Quit to launcher", "Close",
 };
 
@@ -275,6 +279,19 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
     case OPT_VOLUME: SDL_snprintf(buf, n, "%d%%", o->volume); break;
     case OPT_MUTE: SDL_strlcpy(buf, o->mute_unfocused ? "On" : "Off", n); break;
     case OPT_TOUCH: SDL_strlcpy(buf, touch[o->touch_controls], n); break;
+    case OPT_LAN: SDL_strlcpy(buf, o->lan_enabled ? "On" : "Off", n); break;
+    case OPT_LAN_PORT: SDL_snprintf(buf, n, "%d", o->lan_port); break;
+    case OPT_LAN_PEER: SDL_strlcpy(buf, o->lan_peer[0] ? o->lan_peer : "(LAN discovery only)", n); break;
+    case OPT_LAN_STATUS: {
+        int peers = np_app_net_peers(app);
+        if (app->net_error[0])
+            SDL_strlcpy(buf, app->net_error, n);
+        else if (peers < 0)
+            SDL_strlcpy(buf, "Off", n);
+        else
+            SDL_snprintf(buf, n, "%d in range, id %06X", peers, (unsigned)o->station_id);
+        break;
+    }
     default: buf[0] = '\0'; break;
     }
 }
@@ -311,6 +328,16 @@ static void opt_adjust(np_app *app, int item, int dir)
     case OPT_VOLUME: o->volume = SDL_clamp(o->volume + dir * 10, 0, 100); break;
     case OPT_MUTE: o->mute_unfocused = !o->mute_unfocused; break;
     case OPT_TOUCH: o->touch_controls = wrapi(o->touch_controls + dir, NP_TOUCH_MODE_COUNT); break;
+    case OPT_LAN:
+        o->lan_enabled = !o->lan_enabled;
+        np_app_net_apply(app);
+        break;
+    case OPT_LAN_PORT:
+        o->lan_port = SDL_clamp(o->lan_port + dir, 1024, 65531);
+        if (o->lan_enabled)
+            np_app_net_apply(app);
+        break;
+    case OPT_LAN_STATUS: return;
     default: return;
     }
     app->options_dirty = 1;
@@ -321,6 +348,7 @@ static void opt_adjust(np_app *app, int item, int dir)
 static void opt_activate(np_app *app, int item, int dir)
 {
     switch (item) {
+    case OPT_LAN_PEER: np_ui_open_text(app, NP_TEXT_LAN_PEER, app->opt.lan_peer, 32); break;
     case OPT_CONTROLS: np_app_open_page(app, NP_PAGE_CONTROLS); break;
     case OPT_ABOUT: np_app_open_page(app, NP_PAGE_ABOUT); break;
     case OPT_QUIT_GAME:
@@ -1049,7 +1077,9 @@ static void osk_move(np_app *app, int dr, int dc)
 
 static void text_cancel(np_app *app)
 {
-    if (text_for_editor(app)) {
+    if (app->text_purpose == NP_TEXT_LAN_PEER) {
+        np_app_open_page(app, NP_PAGE_OPTIONS);
+    } else if (text_for_editor(app)) {
         np_editor_text_cancel(app);
     } else if (app->text_purpose == NP_TEXT_RENAME_SLOT) {
         np_app_open_page(app, NP_PAGE_SLOT_MENU);
@@ -1061,6 +1091,13 @@ static void text_cancel(np_app *app)
 
 static void text_commit(np_app *app)
 {
+    if (app->text_purpose == NP_TEXT_LAN_PEER) {
+        SDL_strlcpy(app->opt.lan_peer, app->text, sizeof app->opt.lan_peer);
+        app->options_dirty = 1;
+        np_app_net_apply(app);
+        np_app_open_page(app, NP_PAGE_OPTIONS);
+        return;
+    }
     if (text_for_editor(app)) {
         const char *err = np_editor_text_done(app, app->text);
         if (err)
@@ -1130,7 +1167,8 @@ static void text_type(np_app *app, int code)
             code = ' ';
         /* Slot names are file names; game names are checked by the game's
          * charset when committed. */
-        int ok = text_for_editor(app) ? code >= 0x20 && code < 0x7F : np_slot_char_ok((unsigned char)code);
+        int ok = text_for_editor(app) || app->text_purpose == NP_TEXT_LAN_PEER ? code >= 0x20 && code < 0x7F
+                                                                               : np_slot_char_ok((unsigned char)code);
         if ((int)len < app->text_max && ok) {
             app->text[len] = (char)code;
             app->text[len + 1] = '\0';
@@ -1142,7 +1180,8 @@ static void text_type(np_app *app, int code)
 static void draw_text_page(np_app *app)
 {
     np_page_frame f;
-    static const char *const titles[] = {"New save slot", "Rename save slot", "Trainer name", "Nickname"};
+    static const char *const titles[] = {"New save slot", "Rename save slot", "Trainer name", "Nickname",
+                                         "Join by IP:port"};
     np_ui_begin_page(app, &f, titles[app->text_purpose]);
     float x = f.panel.x + 2 * f.cw, y = f.list_y;
     SDL_FRect box = {x, y - 4 * f.s, (float)(app->text_max + 2) * f.cw, f.lh + 4 * f.s};
