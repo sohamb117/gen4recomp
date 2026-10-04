@@ -1,0 +1,11 @@
+# Scenario 6 (Diamond/Pearl): Oreburgh Gate (a cave, wild and trainer
+# battles inside), the cave -> Oreburgh City transition and its cutscene,
+# the Bicycle, Poketch app switching (D/P's single red app button).
+# Shots: the cave, the hiker's HM06, Camper Curtis (FIGHT menu, Surf), the
+# wild Geodude, Picnicker Diana, Oreburgh City and its cutscene, the player
+# on the Bicycle, the calculator, the watch again.
+RECIPE=recipes/gate.recipe
+SCHEDULE=schedules/gate.press
+FRAMES=21700
+SHOTS=1700,2500,4900,5300,7300,7700,8900,9700,10500,12100,13300,13750,14300,15250,15850,21100,21250,21350,21600
+EXPECT_MAP=45

@@ -1,0 +1,9 @@
+# Scenario 5 (Diamond/Pearl): reboot on scenario 4's save: the CONTINUE screen
+# shows BADGES 1 and the game resumes in Oreburgh Gym (map 47); the save
+# still holds the Coal Badge.
+FROM=4-roark
+SCHEDULE=schedules/continue.press
+FRAMES=2400
+SHOTS=1300,1598,2399
+EXPECT_MAP=47
+EXPECT_SAVE='s["trainer"]["badges"] == 1 and s["trainer"]["badge_mask"] & 1'
