@@ -7,6 +7,8 @@
 #define NP_OPTIONS_H
 
 #include "layout.h"
+#include "np_core.h"
+#include "slots.h"
 
 /* Bindable actions: the twelve DS keys, then shell actions. */
 typedef enum np_action {
@@ -60,6 +62,10 @@ typedef struct np_options {
     int volume;         /* 0..100 */
     int mute_unfocused;
     int touch_controls; /* NP_TOUCH_* */
+    int real_clock;     /* 1: RTC from the device's local time; 0: the port's deterministic clock */
+    int startup_continue; /* 1: boot straight into the last game and slot */
+    int last_game;      /* np_game last played, or -1 */
+    char last_slot[NP_GAME_COUNT][NP_SLOT_NAME_MAX + 1]; /* "" when none */
     np_bindings bind;
 } np_options;
 

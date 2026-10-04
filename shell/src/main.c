@@ -11,6 +11,11 @@
  * "logic clock" option runs the guest at exactly 60 Hz instead so a 60 Hz
  * display shows every frame exactly once. Uncapped speed runs frames for a
  * fixed slice of each iterate.
+ *
+ * Launching: `--game/--slot/--launcher` on the command line and
+ * nativeplat://launch?game=..&slot=.. links (which SDL delivers as
+ * SDL_EVENT_DROP_FILE on macOS and iOS) become an np_launch request; see
+ * np_app_launch. Anything invalid lands on the launcher with a message.
  */
 #define SDL_MAIN_USE_CALLBACKS 1
 #include <SDL3/SDL_main.h>
@@ -25,6 +30,7 @@
 #define DS_FRAME_HZ (33513982.0 / (6.0 * 355.0 * 263.0))
 #define MAX_DT_NS (100 * SDL_NS_PER_MS)
 #define UNCAPPED_SLICE_NS (12 * SDL_NS_PER_MS)
+#define AUTOTEST_SLOT "Autotest"
 
 /* ---- host callbacks for the core --------------------------------------- */
 
@@ -41,13 +47,13 @@ static int host_rom_read(void *user, uint32_t offset, void *dst, uint32_t len)
 static int host_save_load(void *user, void *dst, uint32_t len)
 {
     np_app *app = user;
-    return np_storage_save_load(app->game, dst, len);
+    return np_storage_save_load(app->game, app->slot, dst, len);
 }
 
 static int host_save_store(void *user, const void *src, uint32_t len)
 {
     np_app *app = user;
-    int r = np_storage_save_store(app->game, src, len);
+    int r = np_storage_save_store(app->game, app->slot, src, len);
     if (r)
         np_app_toast(app, "Saving failed: %s", SDL_GetError());
     return r;
@@ -64,6 +70,7 @@ static int64_t days_from_civil(int64_t y, unsigned m, unsigned d)
     return era * 146097 + (int64_t)doe - 719468;
 }
 
+/* The device's local wall clock, as seconds since 2000-01-01 00:00:00. */
 static int64_t host_rtc_now(void *user)
 {
     (void)user;
@@ -81,13 +88,14 @@ static void host_log(void *user, const char *line)
     SDL_Log("core: %s", line);
 }
 
-/* Autotest variants: cartridge header and backup chip live in memory. */
+/* Autotest variants: a synthetic cartridge header, and a backup chip in
+ * memory unless the test runs on (portable) storage. */
 static int test_rom_read(void *user, uint32_t offset, void *dst, uint32_t len)
 {
     np_app *app = user;
-    if ((uint64_t)offset + len > sizeof app->autotest.rom)
+    if ((uint64_t)offset + len > sizeof app->autotest.header)
         return -1;
-    SDL_memcpy(dst, app->autotest.rom + offset, len);
+    SDL_memcpy(dst, app->autotest.header + offset, len);
     return 0;
 }
 
@@ -96,7 +104,7 @@ static int test_save_load(void *user, void *dst, uint32_t len)
     np_app *app = user;
     np_autotest *t = &app->autotest;
     if (t->storage) {
-        int r = np_storage_save_load(app->game, dst, len);
+        int r = np_storage_save_load(app->game, app->slot, dst, len);
         t->loads += r == 1;
         return r;
     }
@@ -114,7 +122,7 @@ static int test_save_store(void *user, const void *src, uint32_t len)
     np_app *app = user;
     np_autotest *t = &app->autotest;
     if (t->storage) {
-        int r = np_storage_save_store(app->game, src, len);
+        int r = np_storage_save_store(app->game, app->slot, src, len);
         if (!r) {
             t->saves++;
             t->save_len = len;
@@ -139,7 +147,7 @@ void np_app_toast(np_app *app, const char *fmt, ...)
     va_start(ap, fmt);
     SDL_vsnprintf(app->toast, sizeof app->toast, fmt, ap);
     va_end(ap);
-    app->toast_until = SDL_GetTicksNS() + 2 * SDL_NS_PER_SECOND;
+    app->toast_until = SDL_GetTicksNS() + 3 * SDL_NS_PER_SECOND;
 }
 
 int np_app_speed(const np_app *app)
@@ -150,7 +158,8 @@ int np_app_speed(const np_app *app)
 
 static void save_options(np_app *app)
 {
-    if (!app->options_dirty || app->autotest.active)
+    /* Autotests only persist settings on their own (portable) storage. */
+    if (!app->options_dirty || (app->autotest.active && !app->autotest.storage))
         return;
     if (np_options_save(&app->opt, app->options_path))
         SDL_Log("could not write %s: %s", app->options_path, SDL_GetError());
@@ -167,7 +176,7 @@ void np_app_apply_video_options(np_app *app)
     /* Without VSync or a cap, menus would spin a core at 100%: idle at 60. */
     if (!cap && !o->vsync && app->view != NP_VIEW_GAME)
         cap = 60;
-    SDL_snprintf(rate, sizeof rate, "%d", cap);
+    SDL_snprintf(rate, sizeof rate, "%d", app->autotest.active ? 0 : cap);
     SDL_SetHint(SDL_HINT_MAIN_CALLBACK_RATE, rate);
     int is_full = (SDL_GetWindowFlags(app->window) & SDL_WINDOW_FULLSCREEN) != 0;
     if (is_full != o->fullscreen)
@@ -180,6 +189,10 @@ void np_app_open_page(np_app *app, np_page page)
 {
     if (page == NP_PAGE_NONE)
         save_options(app);
+    if (page == NP_PAGE_TEXT && app->page != NP_PAGE_TEXT)
+        SDL_StartTextInput(app->window); /* also raises the iOS keyboard */
+    else if (page != NP_PAGE_TEXT && app->page == NP_PAGE_TEXT)
+        SDL_StopTextInput(app->window);
     app->page_parent = (page == NP_PAGE_CONTROLS || page == NP_PAGE_ABOUT) ? app->page : NP_PAGE_NONE;
     app->page = page;
     app->sel = app->col = app->scroll = 0;
@@ -190,50 +203,58 @@ void np_app_open_page(np_app *app, np_page page)
     app->last_ns = SDL_GetTicksNS();
 }
 
-static int open_core(np_app *app, np_game game, const np_host *host)
+/* ---- save slots ---------------------------------------------------------- */
+
+void np_app_refresh_slots(np_app *app, const char *select)
+{
+    char keep[NP_SLOT_NAME_MAX + 1] = "";
+    if (select)
+        SDL_strlcpy(keep, select, sizeof keep);
+    if (np_storage_list_slots(app->slots_game, &app->slots)) {
+        np_app_toast(app, "Cannot list save slots: %s", SDL_GetError());
+        app->slots.count = 0;
+    }
+    if (keep[0]) {
+        int i = np_slot_list_find(&app->slots, keep);
+        if (i >= 0)
+            app->slot_sel = i;
+    }
+    if (app->slot_sel >= app->slots.count)
+        app->slot_sel = app->slots.count - 1;
+    if (app->slot_sel < 0)
+        app->slot_sel = 0;
+}
+
+void np_app_open_slots(np_app *app, np_game game)
+{
+    app->slots_game = game;
+    app->slot_sel = 0;
+    np_app_refresh_slots(app, app->opt.last_slot[game]);
+    np_app_open_page(app, NP_PAGE_SLOTS);
+}
+
+/* ---- game sessions ----------------------------------------------------- */
+
+static int open_core(np_app *app, np_game game, const char *slot, const np_host *host)
 {
     app->game = game;
+    SDL_strlcpy(app->slot, slot, sizeof app->slot);
     app->host = *host;
     app->core = np_core_create(game, &app->host, NULL);
     if (!app->core) {
         SDL_snprintf(app->status, sizeof app->status, "Could not start %s: %s", np_game_title(game),
                      np_core_create_error());
+        SDL_Log("%s", app->status);
         return -1;
     }
     app->view = NP_VIEW_GAME;
-    app->page = NP_PAGE_NONE;
+    np_app_open_page(app, NP_PAGE_NONE);
     app->have_frame = 0;
-    app->accum_ns = 0;
-    app->last_ns = SDL_GetTicksNS();
     app->ff_toggle = app->ff_hold = 0;
-    np_input_release_all(app);
-    char title[64];
-    SDL_snprintf(title, sizeof title, "nativeplat - Pokemon %s", np_game_title(game));
+    char title[96];
+    SDL_snprintf(title, sizeof title, "nativeplat - Pokemon %s - %s", np_game_title(game), slot);
     SDL_SetWindowTitle(app->window, title);
     np_app_apply_video_options(app);
-    return 0;
-}
-
-int np_app_start_game(np_app *app, np_game game)
-{
-    char path[1100];
-    np_storage_rom_path(game, path, sizeof path);
-    app->rom_io = SDL_IOFromFile(path, "rb");
-    Sint64 size = app->rom_io ? SDL_GetIOSize(app->rom_io) : -1;
-    if (size <= 0 || size > (Sint64)UINT32_MAX) {
-        SDL_snprintf(app->status, sizeof app->status, "Cannot read %s: %s", path, SDL_GetError());
-        if (app->rom_io)
-            SDL_CloseIO(app->rom_io);
-        app->rom_io = NULL;
-        return -1;
-    }
-    np_host host = {app, (uint32_t)size, host_rom_read, host_save_load, host_save_store, host_rtc_now, host_log};
-    if (open_core(app, game, &host)) {
-        SDL_CloseIO(app->rom_io);
-        app->rom_io = NULL;
-        return -1;
-    }
-    app->status[0] = '\0';
     return 0;
 }
 
@@ -250,6 +271,76 @@ static void close_core(np_app *app)
     app->rom_io = NULL;
 }
 
+/* Opens a cartridge file as the host's ROM. */
+static int open_rom(np_app *app, const char *path, np_host *host)
+{
+    app->rom_io = SDL_IOFromFile(path, "rb");
+    Sint64 size = app->rom_io ? SDL_GetIOSize(app->rom_io) : -1;
+    if (size <= 0 || size > (Sint64)UINT32_MAX) {
+        SDL_snprintf(app->status, sizeof app->status, "Cannot read %s: %s", path, SDL_GetError());
+        if (app->rom_io)
+            SDL_CloseIO(app->rom_io);
+        app->rom_io = NULL;
+        return -1;
+    }
+    *host = (np_host){app, (uint32_t)size, host_rom_read, host_save_load, host_save_store,
+                      app->opt.real_clock ? host_rtc_now : NULL, host_log};
+    return 0;
+}
+
+int np_app_start_game(np_app *app, np_game game, const char *slot)
+{
+    close_core(app);
+    if (!np_core_available(game)) {
+        SDL_snprintf(app->status, sizeof app->status, "The %s core is not included in this build.",
+                     np_game_title(game));
+        return -1;
+    }
+    char path[1100];
+    np_storage_rom_path(game, path, sizeof path);
+    np_host host;
+    if (open_rom(app, path, &host))
+        return -1;
+    if (open_core(app, game, slot, &host)) {
+        SDL_CloseIO(app->rom_io);
+        app->rom_io = NULL;
+        return -1;
+    }
+    SDL_Log("started %s, save slot \"%s\"", np_game_id(game), slot);
+    app->status[0] = '\0';
+    app->opt.last_game = game;
+    SDL_strlcpy(app->opt.last_slot[game], slot, sizeof app->opt.last_slot[game]);
+    app->options_dirty = 1;
+    save_options(app);
+    return 0;
+}
+
+int np_app_continue(np_app *app, np_game game)
+{
+    app->slots_game = game;
+    np_app_refresh_slots(app, NULL);
+    const np_slot_list *l = &app->slots;
+    /* The last used slot, else the most recently written one. */
+    int pick = np_slot_list_find(l, app->opt.last_slot[game]);
+    if (pick < 0 && l->count) {
+        pick = 0;
+        for (int i = 1; i < l->count; i++)
+            if (l->slot[i].mtime > l->slot[pick].mtime)
+                pick = i;
+    }
+    char name[NP_SLOT_NAME_MAX + 1];
+    if (pick >= 0) {
+        SDL_strlcpy(name, l->slot[pick].name, sizeof name);
+    } else {
+        np_slot_default_name(NULL, 0, name);
+        if (np_storage_slot_create(game, name)) {
+            SDL_snprintf(app->status, sizeof app->status, "Cannot create a save slot: %s", SDL_GetError());
+            return -1;
+        }
+    }
+    return np_app_start_game(app, game, name);
+}
+
 void np_app_stop_game(np_app *app)
 {
     close_core(app);
@@ -261,74 +352,235 @@ void np_app_stop_game(np_app *app)
     np_app_apply_video_options(app);
 }
 
-/* ---- ROM import ---------------------------------------------------------- */
-
-void np_app_request_import(np_app *app, const char *path)
+/* Lands on the launcher showing `fmt`. */
+static void launch_fail(np_app *app, const char *fmt, ...)
 {
-    SDL_LockMutex(app->import_lock);
-    SDL_strlcpy(app->import_path, path, sizeof app->import_path);
-    app->import_stage = 1;
-    SDL_UnlockMutex(app->import_lock);
+    va_list ap;
+    va_start(ap, fmt);
+    SDL_vsnprintf(app->status, sizeof app->status, fmt, ap);
+    va_end(ap);
+    SDL_Log("launch: %s", app->status);
+    if (app->view == NP_VIEW_GAME)
+        np_app_stop_game(app);
+    np_app_open_page(app, NP_PAGE_NONE);
 }
 
-/* May run on another thread: only hands the path over. */
+void np_app_launch(np_app *app, const np_launch *req)
+{
+    if (req->force_launcher || req->game < 0) {
+        if (req->force_launcher && app->view == NP_VIEW_GAME)
+            np_app_stop_game(app);
+        if (app->view == NP_VIEW_LAUNCHER)
+            np_app_open_page(app, NP_PAGE_NONE);
+        return;
+    }
+    np_game game = (np_game)req->game;
+    app->launcher_sel = game;
+    if (!np_core_available(game)) {
+        launch_fail(app, "The %s core is not included in this build.", np_game_title(game));
+        return;
+    }
+    if (!np_storage_rom_present(game)) {
+        launch_fail(app, "Import your %s cartridge first.", np_game_title(game));
+        return;
+    }
+    if (!req->slot[0]) {
+        if (app->view == NP_VIEW_GAME)
+            np_app_stop_game(app);
+        if (np_app_continue(app, game))
+            launch_fail(app, "%s", app->status);
+        return;
+    }
+    app->slots_game = game;
+    np_app_refresh_slots(app, NULL);
+    int idx = np_slot_list_find(&app->slots, req->slot);
+    int number = np_launch_slot_number(req->slot);
+    if (idx < 0 && number >= 1 && number <= app->slots.count)
+        idx = number - 1; /* the slot list is sorted by name, as shown */
+    if (idx < 0) {
+        launch_fail(app, "%s has no save slot \"%s\".", np_game_title(game), req->slot);
+        return;
+    }
+    char name[NP_SLOT_NAME_MAX + 1];
+    SDL_strlcpy(name, app->slots.slot[idx].name, sizeof name);
+    if (np_app_start_game(app, game, name))
+        launch_fail(app, "%s", app->status);
+}
+
+/* ---- dialogs, drops and other deferred work ------------------------------- */
+
+void np_app_request(np_app *app, np_pending_kind kind, const char *path)
+{
+    SDL_LockMutex(app->pending_lock);
+    app->pending = kind;
+    app->pending_shown = 0;
+    SDL_strlcpy(app->pending_path, path, sizeof app->pending_path);
+    SDL_UnlockMutex(app->pending_lock);
+}
+
+/* May run on another thread: only hands the result over. */
 static void SDLCALL dialog_done(void *user, const char *const *files, int filter)
 {
     (void)filter;
     np_app *app = user;
     if (!files) {
-        SDL_Log("file dialog failed: %s", SDL_GetError());
-        SDL_LockMutex(app->import_lock);
-        SDL_snprintf(app->import_path, sizeof app->import_path, "The file picker is unavailable: %s",
-                     SDL_GetError());
-        app->import_stage = 3;
-        SDL_UnlockMutex(app->import_lock);
+        char msg[256];
+        SDL_snprintf(msg, sizeof msg, "The file picker is unavailable: %s", SDL_GetError());
+        np_app_request(app, NP_PENDING_MESSAGE, msg);
         return;
     }
     if (files[0])
-        np_app_request_import(app, files[0]);
+        np_app_request(app, app->dialog_kind, files[0]);
 }
 
-void np_app_open_import_dialog(np_app *app)
+/* Autotests never show native dialogs (they would block on a person); the
+ * script's "dialog:" step answers instead. */
+static int autotest_dialog(np_app *app, const char *what)
+{
+    if (!app->autotest.active)
+        return 0;
+    SDL_Log("autotest: %s dialog opened", what);
+    return 1;
+}
+
+void np_app_open_rom_dialog(np_app *app)
 {
     static const SDL_DialogFileFilter filters[] = {{"Nintendo DS ROM (*.nds)", "nds"}};
-    SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+    app->dialog_kind = NP_PENDING_ROM;
+    if (!autotest_dialog(app, "ROM import"))
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
 }
 
-/* Two-step so "Verifying" is on screen while a 128 MiB file is hashed. */
-static void process_import(np_app *app)
+void np_app_open_sav_import_dialog(np_app *app, np_game game)
 {
-    char path[1024];
-    SDL_LockMutex(app->import_lock);
-    int stage = app->import_stage;
-    if (stage == 1) {
-        if (app->view == NP_VIEW_GAME) {
-            np_app_toast(app, "Quit to the launcher to import a ROM");
-            app->import_stage = 0;
-        } else {
-            const char *base = SDL_strrchr(app->import_path, '/');
-            const char *base2 = SDL_strrchr(app->import_path, '\\');
-            if (base2 > base)
-                base = base2;
-            SDL_snprintf(app->status, sizeof app->status, "Verifying %s ...", base ? base + 1 : app->import_path);
-            app->import_stage = 2;
-        }
-    } else if (stage == 2) {
-        SDL_strlcpy(path, app->import_path, sizeof path);
-        app->import_stage = 0;
-    } else if (stage == 3) {
-        SDL_strlcpy(app->status, app->import_path, sizeof app->status);
-        app->import_stage = 0;
-    }
-    SDL_UnlockMutex(app->import_lock);
-    if (stage != 2)
-        return;
+    static const SDL_DialogFileFilter filters[] = {{"Save file (*.sav, *.dsv)", "sav;dsv"}};
+    app->dialog_kind = NP_PENDING_SAV_IMPORT;
+    app->pending_game = game;
+    if (!autotest_dialog(app, "save import"))
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+}
+
+void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot)
+{
+    static const SDL_DialogFileFilter filters[] = {{"Raw save (*.sav)", "sav"}};
+    app->dialog_kind = NP_PENDING_SAV_EXPORT;
+    app->pending_game = game;
+    SDL_strlcpy(app->pending_slot, slot, sizeof app->pending_slot);
+    char name[96];
+    SDL_snprintf(name, sizeof name, "%s - %s.sav", np_game_title(game), slot);
+    if (!autotest_dialog(app, "save export"))
+        SDL_ShowSaveFileDialog(dialog_done, app, app->window, filters, 1, name);
+}
+
+static const char *base_name(const char *path)
+{
+    const char *base = path;
+    for (const char *p = path; *p; p++)
+        if (*p == '/' || *p == '\\')
+            base = p + 1;
+    return base;
+}
+
+static void import_rom(np_app *app, const char *path)
+{
     np_import_result r;
     np_storage_import_rom(path, &r);
-    SDL_strlcpy(app->status, r.message, sizeof app->status);
-    SDL_Log("import %s: %s", path, r.message);
+    if (r.ok && !np_core_available(r.game))
+        SDL_snprintf(app->status, sizeof app->status, "%s The %s core is not included in this build yet.", r.message,
+                     np_game_title(r.game));
+    else
+        SDL_strlcpy(app->status, r.message, sizeof app->status);
+    SDL_Log("import %s: %s", path, app->status);
     if (r.ok)
         app->launcher_sel = r.game;
+}
+
+/* Two-step for ROMs so "Verifying" is on screen while 128 MiB is hashed. */
+static void process_pending(np_app *app)
+{
+    char path[1024];
+    SDL_LockMutex(app->pending_lock);
+    np_pending_kind kind = app->pending;
+    if (kind == NP_PENDING_ROM && !app->pending_shown && app->view == NP_VIEW_LAUNCHER) {
+        SDL_snprintf(app->status, sizeof app->status, "Verifying %s ...", base_name(app->pending_path));
+        app->pending_shown = 1;
+        kind = NP_PENDING_NONE;
+    } else {
+        app->pending = NP_PENDING_NONE;
+    }
+    SDL_strlcpy(path, app->pending_path, sizeof path);
+    SDL_UnlockMutex(app->pending_lock);
+
+    char err[320];
+    switch (kind) {
+    case NP_PENDING_ROM:
+        if (app->view == NP_VIEW_GAME)
+            np_app_toast(app, "Quit to the launcher to import a ROM");
+        else
+            import_rom(app, path);
+        break;
+    case NP_PENDING_SAV_IMPORT: {
+        char name[NP_SLOT_NAME_MAX + 1];
+        if (np_storage_slot_import(app->pending_game, path, name, err, sizeof err)) {
+            np_app_toast(app, "%s", err);
+            SDL_strlcpy(app->status, err, sizeof app->status);
+        } else {
+            np_app_toast(app, "Imported %s as slot \"%s\"", base_name(path), name);
+            if (app->slots_game == app->pending_game)
+                np_app_refresh_slots(app, name);
+        }
+        SDL_Log("save import %s: %s", path, app->toast);
+        break;
+    }
+    case NP_PENDING_SAV_EXPORT:
+        if (np_storage_slot_export(app->pending_game, app->pending_slot, path, err, sizeof err))
+            np_app_toast(app, "%s", err);
+        else
+            np_app_toast(app, "Exported \"%s\" to %s", app->pending_slot, base_name(path));
+        SDL_Log("save export %s: %s", path, app->toast);
+        break;
+    case NP_PENDING_MESSAGE:
+        SDL_strlcpy(app->status, path, sizeof app->status);
+        np_app_toast(app, "%s", path);
+        break;
+    default: break;
+    }
+}
+
+static int has_extension(const char *path, const char *ext)
+{
+    const char *dot = SDL_strrchr(path, '.');
+    return dot && !SDL_strcasecmp(dot + 1, ext);
+}
+
+static int slot_pages_open(const np_app *app)
+{
+    return app->page == NP_PAGE_SLOTS || app->page == NP_PAGE_SLOT_MENU;
+}
+
+/* A file dropped on the window or the Dock icon, or an opened link. */
+static void handle_drop(np_app *app, const char *data)
+{
+    if (np_launch_is_url(data)) {
+        np_launch req;
+        char err[160];
+        SDL_Log("link: %s", data);
+        if (np_launch_parse_url(data, &req, err, sizeof err))
+            launch_fail(app, "Cannot open link: %s", err);
+        else
+            np_app_launch(app, &req);
+        return;
+    }
+    if (has_extension(data, "sav") || has_extension(data, "dsv")) {
+        if (!slot_pages_open(app)) {
+            np_app_toast(app, "Open a game's save slots, then drop the save there");
+            return;
+        }
+        app->pending_game = app->slots_game;
+        np_app_request(app, NP_PENDING_SAV_IMPORT, data);
+        return;
+    }
+    np_app_request(app, NP_PENDING_ROM, data);
 }
 
 /* ---- screenshots ----------------------------------------------------------- */
@@ -498,24 +750,34 @@ static void update_audio_state(np_app *app)
 
 /* ---- autotest ---------------------------------------------------------------- */
 
-static int parse_game(const char *v)
-{
-    for (int g = 0; g < NP_GAME_COUNT; g++)
-        if (!SDL_strcasecmp(v, np_game_id((np_game)g)))
-            return g;
-    return -1;
-}
-
-static uint16_t parse_keys(char *v)
+static uint16_t parse_keys(const char *v)
 {
     static const char *const names[12] = {"a", "b", "select", "start", "right", "left",
                                           "up", "down", "r", "l", "x", "y"};
+    char buf[128];
+    SDL_strlcpy(buf, v, sizeof buf);
     uint16_t keys = 0;
     char *save = NULL;
-    for (char *t = SDL_strtok_r(v, "+", &save); t; t = SDL_strtok_r(NULL, "+", &save))
+    for (char *t = SDL_strtok_r(buf, "+", &save); t; t = SDL_strtok_r(NULL, "+", &save))
         for (int i = 0; i < 12; i++)
             if (!SDL_strcasecmp(t, names[i]))
                 keys |= (uint16_t)(1u << i);
+    return keys;
+}
+
+/* press=F:keys[:N];... holds keys for N frames (default 6) from frame F. */
+static uint16_t autotest_pressed(const np_autotest *t)
+{
+    char buf[sizeof t->press];
+    SDL_strlcpy(buf, t->press, sizeof buf);
+    uint16_t keys = 0;
+    char *save = NULL;
+    for (char *step = SDL_strtok_r(buf, ";", &save); step; step = SDL_strtok_r(NULL, ";", &save)) {
+        int frame, n = 6;
+        char k[64];
+        if (SDL_sscanf(step, "%d:%63[a-zA-Z+]:%d", &frame, k, &n) >= 2 && t->ran >= frame && t->ran < frame + n)
+            keys |= parse_keys(k);
+    }
     return keys;
 }
 
@@ -524,16 +786,19 @@ static uint16_t parse_keys(char *v)
  *   horizontal|hybrid|top|bottom][,rotation=0..3][,swap=1][,scale=integer]
  *   [,filter=linear][,touch=XxY][,keys=a+up][,controls=1][,size=WxH]
  *   [,page=launcher|options|controls|about]
- *   [,storage=1 (saves and an options round-trip file in the user-data
- *    root; portable mode only, so a test never touches a player's saves)]
- *   [,import=/path/to/rom.nds (run the importer first; implies storage=1)]
- *   [,script=F:kind:args;... (synthetic input, see autotest_script)]"
+ *   [,rom=/path/cart.nds (boot this cartridge instead of a synthetic header)]
+ *   [,boot=app (start like the real app: launch options, launcher)]
+ *   [,storage=1 (saves and options in the user-data root; portable mode
+ *    only, so a test never touches a player's saves; boot=app implies it)]
+ *   [,import=/path/to/rom.nds (run the importer first, repeatable)]
+ *   [,press=F:keys[:N];... (hold DS keys for N frames from frame F)]
+ *   [,script=F:kind:args;... (synthetic events, see autotest_script)]"
  * Returns -1 on a malformed value.
  */
 static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, int *win_h)
 {
     static const char *const layouts[NP_LAYOUT_COUNT] = {"vertical", "horizontal", "hybrid", "top", "bottom"};
-    char buf[2048];
+    static char buf[8192];
     SDL_strlcpy(buf, spec, sizeof buf);
     np_autotest *t = &app->autotest;
     t->frames = 120;
@@ -551,7 +816,7 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
         else if (!SDL_strcmp(kv, "png"))
             SDL_strlcpy(t->png, v, sizeof t->png);
         else if (!SDL_strcmp(kv, "game")) {
-            if ((*game = parse_game(v)) < 0)
+            if ((*game = np_launch_game_from_name(v)) < 0)
                 return -1;
         } else if (!SDL_strcmp(kv, "layout")) {
             int m = -1;
@@ -584,8 +849,20 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             t->storage = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "script"))
             SDL_strlcpy(t->script, v, sizeof t->script);
-        else if (!SDL_strcmp(kv, "import")) {
-            SDL_strlcpy(t->import, v, sizeof t->import);
+        else if (!SDL_strcmp(kv, "press"))
+            SDL_strlcpy(t->press, v, sizeof t->press);
+        else if (!SDL_strcmp(kv, "rom")) {
+            SDL_strlcpy(t->rom, v, sizeof t->rom);
+            t->boot = NP_AT_ROM;
+        } else if (!SDL_strcmp(kv, "boot")) {
+            if (SDL_strcmp(v, "app"))
+                return -1;
+            t->boot = NP_AT_APP;
+            t->storage = 1;
+        } else if (!SDL_strcmp(kv, "import")) {
+            if (t->imports[0])
+                SDL_strlcat(t->imports, "\n", sizeof t->imports);
+            SDL_strlcat(t->imports, v, sizeof t->imports);
             t->storage = 1;
         } else if (!SDL_strcmp(kv, "page")) {
             if (!SDL_strcmp(v, "launcher"))
@@ -611,39 +888,23 @@ static void fill_test_header(np_autotest *t, np_game game)
 {
     static const char *const titles[NP_GAME_COUNT] = {"POKEMON D", "POKEMON P", "POKEMON PL"};
     static const char *const codes[NP_GAME_COUNT] = {"ADAE", "APAE", "CPUE"};
-    SDL_memset(t->rom, 0, sizeof t->rom);
-    SDL_memcpy(t->rom, titles[game], SDL_strlen(titles[game]));
-    SDL_memcpy(t->rom + 0x0C, codes[game], 4);
-    SDL_memcpy(t->rom + 0x10, "01", 2);
+    SDL_memset(t->header, 0, sizeof t->header);
+    SDL_memcpy(t->header, titles[game], SDL_strlen(titles[game]));
+    SDL_memcpy(t->header + 0x0C, codes[game], 4);
+    SDL_memcpy(t->header + 0x10, "01", 2);
 }
 
-/* Boot, run a frame, flush and destroy, then boot again so the second
- * session must load what the first one stored. */
-static int autotest_boot(np_app *app, np_game game)
-{
-    fill_test_header(&app->autotest, game);
-    np_host host = {app, sizeof app->autotest.rom, test_rom_read, test_save_load, test_save_store, NULL, host_log};
-    np_input none = {0};
-    if (open_core(app, game, &host) || run_one(app, &none))
-        return -1;
-    np_core_save_flush(app->core);
-    close_core(app);
-    if (open_core(app, game, &host))
-        return -1;
-    return 0;
-}
-
-/* storage=1: run the importer on `import=`, and round-trip an options file
- * (written beside options.ini, never over it) through save and load. */
+/* storage=1: run the importer on each `import=`, and round-trip an options
+ * file (written beside options.ini, never over it) through save and load. */
 static int autotest_storage(np_app *app)
 {
     np_autotest *t = &app->autotest;
     SDL_Log("autotest: user data root %s%s", np_storage_root(), np_storage_is_portable() ? " (portable)" : "");
-    if (t->import[0]) {
-        np_import_result r;
-        np_storage_import_rom(t->import, &r);
-        SDL_Log("autotest: import %s: ok=%d %s", t->import, r.ok, r.message);
-    }
+    char list[sizeof t->imports];
+    SDL_strlcpy(list, t->imports, sizeof list);
+    char *save = NULL;
+    for (char *p = SDL_strtok_r(list, "\n", &save); p; p = SDL_strtok_r(NULL, "\n", &save))
+        import_rom(app, p);
     char path[1100];
     np_storage_path(path, sizeof path, "options-autotest.ini");
     np_options saved = app->opt, loaded;
@@ -654,6 +915,10 @@ static int autotest_storage(np_app *app)
     saved.fps_cap_index = 3;
     saved.speed_index = NP_SPEED_COUNT - 1;
     saved.touch_controls = NP_TOUCH_OFF;
+    saved.real_clock = 0;
+    saved.startup_continue = 1;
+    saved.last_game = NP_GAME_PEARL;
+    SDL_strlcpy(saved.last_slot[NP_GAME_PEARL], "My (2nd) run", sizeof saved.last_slot[0]);
     np_bind_key(&saved.bind, NP_ACT_L, 1, SDL_SCANCODE_LSHIFT); /* a name with a space */
     np_bind_pad(&saved.bind, NP_ACT_FF_HOLD, SDL_GAMEPAD_BUTTON_LEFT_STICK);
     if (np_options_save(&saved, path) || np_options_load(&loaded, path)) {
@@ -668,12 +933,52 @@ static int autotest_storage(np_app *app)
     return 0;
 }
 
+/* The slot an autotest core saves to on storage (created when missing). */
+static int autotest_slot(np_app *app, np_game game)
+{
+    if (!app->autotest.storage)
+        return 0;
+    np_slot_list *l = &app->slots;
+    if (np_storage_list_slots(game, l))
+        return -1;
+    return np_slot_list_find(l, AUTOTEST_SLOT) >= 0 ? 0 : np_storage_slot_create(game, AUTOTEST_SLOT);
+}
+
+/* Synthetic: boot, run a frame, flush and destroy, then boot again so the
+ * second session must load what the first one stored. Real cartridge: one
+ * boot. */
+static int autotest_boot(np_app *app, np_game game)
+{
+    np_autotest *t = &app->autotest;
+    if (autotest_slot(app, game))
+        return -1;
+    np_host host;
+    if (t->boot == NP_AT_ROM) {
+        if (open_rom(app, t->rom, &host))
+            return -1;
+        host.save_load = test_save_load;
+        host.save_store = test_save_store;
+        return open_core(app, game, AUTOTEST_SLOT, &host);
+    }
+    fill_test_header(t, game);
+    host = (np_host){app, sizeof t->header, test_rom_read, test_save_load, test_save_store, NULL, host_log};
+    np_input none = {0};
+    if (open_core(app, game, AUTOTEST_SLOT, &host) || run_one(app, &none))
+        return -1;
+    np_core_save_flush(app->core);
+    close_core(app);
+    return open_core(app, game, AUTOTEST_SLOT, &host);
+}
+
 /*
  * script=F:kind:args;... pushes synthetic events through SDL_AppEvent before
  * frame F (window coordinates in points):
  *   F:key:<SDL scancode name>        press and release a key
  *   F:down:X:Y  F:move:X:Y  F:up:X:Y left mouse button
  *   F:fdown:X:Y F:fmove:X:Y F:fup:X:Y one finger
+ *   F:text:<chars>                   typed text (SDL_EVENT_TEXT_INPUT)
+ *   F:drop:<path or link>            a file dropped / a nativeplat: link opened
+ *   F:dialog:<path>                  the player picks <path> in the open file dialog
  */
 static void autotest_script(np_app *app)
 {
@@ -686,9 +991,9 @@ static void autotest_script(np_app *app)
     char *save = NULL;
     for (char *step = SDL_strtok_r(buf, ";", &save); step; step = SDL_strtok_r(NULL, ";", &save)) {
         int frame;
-        char kind[16], arg[64] = "";
+        char kind[16], arg[1024] = "";
         float x = 0, y = 0;
-        if (SDL_sscanf(step, "%d:%15[a-z]:%63[^;]", &frame, kind, arg) < 2 || frame != t->ran)
+        if (SDL_sscanf(step, "%d:%15[a-z]:%1023[^;]", &frame, kind, arg) < 2 || frame != t->ran)
             continue;
         SDL_sscanf(arg, "%f:%f", &x, &y);
         SDL_Event e;
@@ -725,6 +1030,22 @@ static void autotest_script(np_app *app)
             e.tfinger.x = x / (float)ww;
             e.tfinger.y = y / (float)wh;
             e.tfinger.pressure = 1.0f;
+        } else if (!SDL_strcmp(kind, "text") || !SDL_strcmp(kind, "drop")) {
+            /* The event points at text that must outlive this function. */
+            SDL_strlcpy(t->drop, arg, sizeof t->drop);
+            if (kind[0] == 't') {
+                e.type = SDL_EVENT_TEXT_INPUT;
+                e.text.windowID = win;
+                e.text.text = t->drop;
+            } else {
+                e.type = SDL_EVENT_DROP_FILE;
+                e.drop.windowID = win;
+                e.drop.data = t->drop;
+            }
+        } else if (!SDL_strcmp(kind, "dialog")) {
+            const char *files[2] = {arg, NULL};
+            dialog_done(app, files, 0);
+            continue;
         } else {
             continue;
         }
@@ -732,16 +1053,13 @@ static void autotest_script(np_app *app)
     }
 }
 
-static SDL_AppResult autotest_iterate(np_app *app)
+/* One guest frame per iteration, with the fixed, pressed and scripted input. */
+static int autotest_frame(np_app *app)
 {
     np_autotest *t = &app->autotest;
-    if (!app->core)
-        return SDL_APP_FAILURE;
     np_input in = t->input;
+    in.keys |= autotest_pressed(t);
     if (t->script[0]) {
-        autotest_script(app);
-        if (!app->core)
-            return SDL_APP_FAILURE; /* the script quit the game */
         int ff;
         np_input live = {0};
         in.keys |= np_input_poll_keys(app, &ff);
@@ -753,8 +1071,7 @@ static SDL_AppResult autotest_iterate(np_app *app)
         }
     }
     if (run_one(app, &in))
-        return SDL_APP_FAILURE;
-    t->ran++;
+        return -1;
     upload_frame(app);
     int16_t buf[2048 * 2];
     size_t got;
@@ -763,17 +1080,28 @@ static SDL_AppResult autotest_iterate(np_app *app)
         for (size_t i = 0; i < got * 2; i++)
             t->audio_peak = SDL_max(t->audio_peak, SDL_abs(buf[i]));
     }
+    return 0;
+}
+
+static SDL_AppResult autotest_iterate(np_app *app)
+{
+    np_autotest *t = &app->autotest;
+    autotest_script(app);
+    process_pending(app);
+    if (app->core && app->page == NP_PAGE_NONE && autotest_frame(app) && t->boot != NP_AT_APP)
+        return SDL_APP_FAILURE;
+    t->ran++;
     draw(app);
     if (t->ran < t->frames) {
         SDL_RenderPresent(app->renderer);
         return SDL_APP_CONTINUE;
     }
-    uint64_t guest_frame = app->frame.number;
+    uint64_t guest_frame = app->have_frame ? app->frame.number : 0;
     if (t->page) {
         /* Show a UI page over (or instead of) the game for the capture. */
-        if (t->page < 0)
+        if (t->page < 0 && app->core)
             np_app_stop_game(app);
-        else
+        else if (t->page > 0)
             np_app_open_page(app, (np_page)t->page);
         draw(app);
     }
@@ -784,13 +1112,21 @@ static SDL_AppResult autotest_iterate(np_app *app)
     SDL_RenderPresent(app->renderer);
     if (app->core)
         np_core_save_flush(app->core);
-    int save_ok = t->saves >= 1 && t->loads >= 1;
-    SDL_Log("autotest: game=%s frames=%d guest_frame=%llu audio_frames=%llu audio_peak=%d save_stores=%d "
-            "save_loads=%d save_bytes=%u png=%s",
-            np_game_id(app->game), t->ran, (unsigned long long)guest_frame,
-            (unsigned long long)t->audio_frames, t->audio_peak, t->saves, t->loads, t->save_len, t->png);
-    if (!save_ok || !t->audio_frames) {
-        SDL_Log("autotest: FAILED (%s)", save_ok ? "no audio" : "save did not round-trip");
+    SDL_Log("autotest: boot=%s game=%s slot=\"%s\" iterations=%d guest_frame=%llu audio_frames=%llu audio_peak=%d "
+            "save_stores=%d save_loads=%d save_bytes=%u view=%s page=%d png=%s",
+            t->boot == NP_AT_ROM ? "rom" : t->boot == NP_AT_APP ? "app" : "synthetic", np_game_id(app->game),
+            app->slot, t->ran, (unsigned long long)guest_frame, (unsigned long long)t->audio_frames, t->audio_peak,
+            t->saves, t->loads, t->save_len, app->core ? "game" : "launcher", (int)app->page, t->png);
+    if (app->status[0])
+        SDL_Log("autotest: status: %s", app->status);
+    if (t->boot == NP_AT_SYNTHETIC) {
+        int save_ok = t->saves >= 1 && t->loads >= 1;
+        if (!save_ok || !t->audio_frames) {
+            SDL_Log("autotest: FAILED (%s)", save_ok ? "no audio" : "save did not round-trip");
+            return SDL_APP_FAILURE;
+        }
+    } else if (t->boot == NP_AT_ROM && !app->core && t->page >= 0) {
+        SDL_Log("autotest: FAILED (the core stopped)");
         return SDL_APP_FAILURE;
     }
     SDL_Log("autotest: OK");
@@ -799,10 +1135,27 @@ static SDL_AppResult autotest_iterate(np_app *app)
 
 /* ---- SDL callbacks ------------------------------------------------------------ */
 
+/* Command line, then the "continue last game" option. */
+static void startup_launch(np_app *app, int argc, char *argv[])
+{
+    np_launch req;
+    char err[160];
+    if (np_launch_parse_args(argc, argv, &req, err, sizeof err)) {
+        launch_fail(app, "Ignoring the command line: %s", err);
+        return;
+    }
+    if (req.game >= 0 || req.force_launcher) {
+        np_app_launch(app, &req);
+        return;
+    }
+    int g = app->opt.last_game;
+    if (app->opt.startup_continue && g >= 0 && g < NP_GAME_COUNT && np_core_available((np_game)g) &&
+        np_storage_rom_present((np_game)g))
+        np_app_continue(app, (np_game)g);
+}
+
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-    (void)argc;
-    (void)argv;
     SDL_SetAppMetadata("nativeplat", "0.1.0", "org.nativeplat.nativeplat");
     SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight Portrait PortraitUpsideDown");
     np_app *app = SDL_calloc(1, sizeof *app);
@@ -815,8 +1168,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     int win_w = 960, win_h = 720, test_game = NP_GAME_PLATINUM;
     const char *spec = SDL_getenv("NP_AUTOTEST");
+    np_autotest *t = &app->autotest;
     if (spec && *spec) {
-        app->autotest.active = 1;
+        t->active = 1;
         if (parse_autotest(app, spec, &test_game, &win_w, &win_h)) {
             SDL_Log("NP_AUTOTEST: cannot parse \"%s\"", spec);
             return SDL_APP_FAILURE;
@@ -827,12 +1181,12 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         SDL_Log("SDL_Init: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
-    app->import_lock = SDL_CreateMutex();
-    if (!app->autotest.active || app->autotest.storage) {
+    app->pending_lock = SDL_CreateMutex();
+    if (!t->active || t->storage) {
         char err[512];
         /* Autotests may only write to a portable root, never a player's. */
-        if (np_storage_init(app->autotest.active, err, sizeof err)) {
-            if (app->autotest.active)
+        if (np_storage_init(t->active, err, sizeof err)) {
+            if (t->active)
                 SDL_Log("autotest: %s", err);
             else
                 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "nativeplat", err, NULL);
@@ -840,7 +1194,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         }
         np_storage_path(app->options_path, sizeof app->options_path, "options.ini");
     }
-    if (!app->autotest.active && np_options_load(&app->opt, app->options_path))
+    if ((!t->active || t->boot == NP_AT_APP) && np_options_load(&app->opt, app->options_path))
         SDL_Log("could not read %s; using defaults", app->options_path);
 
     SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
@@ -867,20 +1221,21 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     app->touch_seen = 1;
 #endif
     np_app_apply_video_options(app);
-    SDL_Log("renderer: %s%s", SDL_GetRendererName(app->renderer),
-            app->autotest.active ? " (autotest)" : "");
+    SDL_Log("renderer: %s%s", SDL_GetRendererName(app->renderer), t->active ? " (autotest)" : "");
 
-    if (app->autotest.active) {
-        SDL_SetHint(SDL_HINT_MAIN_CALLBACK_RATE, "0");
-        if (app->autotest.storage && autotest_storage(app))
+    if (t->active) {
+        if (t->storage && autotest_storage(app))
             return SDL_APP_FAILURE;
-        if (autotest_boot(app, (np_game)test_game))
+        if (t->boot == NP_AT_APP)
+            startup_launch(app, argc, argv);
+        else if (autotest_boot(app, (np_game)test_game))
             return SDL_APP_FAILURE;
         return SDL_APP_CONTINUE;
     }
     if (np_audio_open(app))
         SDL_Log("audio unavailable: %s", SDL_GetError());
     np_audio_set_paused(app, 1);
+    startup_launch(app, argc, argv);
     return SDL_APP_CONTINUE;
 }
 
@@ -986,7 +1341,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *e)
     }
     case SDL_EVENT_DROP_FILE:
         if (e->drop.data)
-            np_app_request_import(app, e->drop.data);
+            handle_drop(app, e->drop.data);
         return SDL_APP_CONTINUE;
     case SDL_EVENT_GAMEPAD_ADDED: np_input_gamepad_added(app, e->gdevice.which); return SDL_APP_CONTINUE;
     case SDL_EVENT_GAMEPAD_REMOVED: np_input_gamepad_removed(app, e->gdevice.which); return SDL_APP_CONTINUE;
@@ -1028,7 +1383,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     if (app->autotest.active)
         return autotest_iterate(app);
 
-    process_import(app);
+    process_pending(app);
     if (app->view == NP_VIEW_GAME)
         run_game(app);
     update_audio_state(app);
@@ -1055,8 +1410,8 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
         SDL_DestroyRenderer(app->renderer);
     if (app->window)
         SDL_DestroyWindow(app->window);
-    if (app->import_lock)
-        SDL_DestroyMutex(app->import_lock);
+    if (app->pending_lock)
+        SDL_DestroyMutex(app->pending_lock);
     SDL_free(app->autotest.save);
     SDL_free(app);
 }

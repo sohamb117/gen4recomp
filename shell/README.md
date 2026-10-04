@@ -43,10 +43,41 @@ or, in portable mode, `userdata/` beside the executable when a
 
 ```
 roms/<game>.nds          imported cartridge
-saves/<game>.sav[.bak]   backup chip; written atomically, previous image kept as .bak
+saves/<game>/<slot>.sav[.bak]  save slots; written atomically, previous image kept as .bak
 screenshots/             F12 captures (PNG, both screens at native size)
 options.ini              settings and bindings
 ```
+
+## Save slots
+
+Each game has any number of named save slots (raw 512 KiB flash images, the
+format melonDS and DeSmuME's "raw .sav" use). Picking a game on the launcher
+opens its slots: *Continue* (last used), *New save slot*, each slot (Play,
+Rename, Duplicate, Export .sav, Delete with confirmation) and *Import .sav*
+(also by dropping a `.sav`/`.dsv` on that page). Imports must be exactly
+512 KiB, or a DeSmuME `.dsv` (512 KiB + its 122-byte footer, which is
+stripped). Names: up to 32 letters, digits, spaces and `- _ ( ) . ! ' #`,
+compared case-insensitively; Windows device names are refused. Names are typed
+or picked on an on-screen keyboard (gamepad/mouse/touch).
+
+## Launching
+
+```sh
+nativeplat --game platinum --slot "My run"   # or --slot 2 (2nd slot as listed)
+nativeplat --launcher                         # ignore "On startup: Continue"
+open 'nativeplat://launch?game=platinum&slot=My%20run'
+```
+
+`--game` alone continues that game's last slot. The `nativeplat:` URL scheme is
+registered in both Info.plists; SDL delivers opened URLs as
+`SDL_EVENT_DROP_FILE` on macOS and iOS. On Windows the scheme is not
+registered (that needs an installer writing the registry), so use the flags.
+Unknown games, missing slots, games whose core is not in the build, or games
+not yet imported all land on the launcher with a message.
+
+*Options > Real-time clock* feeds the device's local time to the game's RTC
+(default), or the port's fixed clock (2009-03-22 10:00, advancing with frames);
+it applies from the next boot.
 
 ## Default controls
 
@@ -106,5 +137,13 @@ Keys (comma separated): `frames`, `png`, `game`, `layout`
 `size=WxH`, `page=launcher|options|controls|about`, `storage=1` (saves and an
 options round-trip file in the user-data root; refused unless portable mode is
 on, so tests never touch a player's data), `import=<path>` (run the
-importer), and `script=F:kind:args;...` to push synthetic `key`, mouse
-(`down/move/up`) and finger (`fdown/fmove/fup`) events before frame F.
+importer; repeatable), `rom=<path>` (boot a real cartridge, save in memory),
+`boot=app` (start like the real app: options, command-line launch options,
+launcher; implies `storage=1`), `press=F:keys[:N];...` (hold DS keys such as
+`start` or `a+up` for N frames, default 6, from frame F), and
+`script=F:kind:args;...` to push synthetic `key`, `text`, mouse
+(`down/move/up`), finger (`fdown/fmove/fup`), `drop:<path or URL>` and
+`dialog:<path>` (answer the open file dialog) events before frame F.
+
+Real Platinum title screen:
+`NP_AUTOTEST="frames=1500,png=/tmp/t.png,rom=/path/pokeplatinum.us.nds,press=1200:start:10"`.

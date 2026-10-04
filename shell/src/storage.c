@@ -240,6 +240,8 @@ void np_storage_import_rom(const char *src, np_import_result *r)
     SDL_free(buf);
 }
 
+/* 1 with `len` bytes, 0 if the file is missing or empty (a fresh slot), -1
+ * on a read error. */
 static int read_into(const char *path, void *dst, uint32_t len)
 {
     SDL_IOStream *io = SDL_IOFromFile(path, "rb");
@@ -250,35 +252,250 @@ static int read_into(const char *path, void *dst, uint32_t len)
     SDL_CloseIO(io);
     if (failed)
         return -1;
-    /* A shorter file (e.g. from an older build with a smaller chip) keeps
-     * its contents; the rest reads as erased flash. */
+    if (got == 0)
+        return 0;
+    /* A shorter file keeps its contents; the rest reads as erased flash. */
     if (got < len)
         memset((uint8_t *)dst + got, 0xFF, len - got);
     return 1;
 }
 
-int np_storage_save_load(np_game game, void *dst, uint32_t len)
+static void slot_dir(np_game game, char *out, size_t n)
 {
-    char rel[64], path[1100], bak[1110];
-    SDL_snprintf(rel, sizeof rel, "saves/%s.sav", np_game_id(game));
-    np_storage_path(path, sizeof path, rel);
-    SDL_snprintf(bak, sizeof bak, "%s.bak", path);
-    if (np_storage_exists(path)) {
-        int r = read_into(path, dst, len);
-        if (r == 1)
-            return 1;
+    char rel[64];
+    SDL_snprintf(rel, sizeof rel, "saves/%s", np_game_id(game));
+    np_storage_path(out, n, rel);
+}
+
+void np_storage_slot_path(np_game game, const char *slot, char *out, size_t n)
+{
+    char rel[128];
+    SDL_snprintf(rel, sizeof rel, "saves/%s/%s.sav", np_game_id(game), slot);
+    np_storage_path(out, n, rel);
+}
+
+static int file_size(const char *path, Sint64 *size)
+{
+    SDL_PathInfo info;
+    if (!SDL_GetPathInfo(path, &info) || info.type != SDL_PATHTYPE_FILE)
+        return -1;
+    *size = (Sint64)info.size;
+    return 0;
+}
+
+static int slot_cmp(const void *a, const void *b)
+{
+    return SDL_strcasecmp(((const np_slot_info *)a)->name, ((const np_slot_info *)b)->name);
+}
+
+int np_storage_list_slots(np_game game, np_slot_list *list)
+{
+    char dir[1100];
+    slot_dir(game, dir, sizeof dir);
+    list->count = 0;
+    list->truncated = 0;
+    if (!SDL_CreateDirectory(dir))
+        return -1;
+    int n = 0;
+    char **files = SDL_GlobDirectory(dir, "*.sav", SDL_GLOB_CASEINSENSITIVE, &n);
+    if (!files)
+        return -1;
+    for (int i = 0; i < n; i++) {
+        size_t len = SDL_strlen(files[i]);
+        if (len <= 4 || len - 4 > NP_SLOT_NAME_MAX)
+            continue;
+        char name[NP_SLOT_NAME_MAX + 1];
+        SDL_memcpy(name, files[i], len - 4);
+        name[len - 4] = '\0';
+        /* Files dropped in by hand with names we would not create are
+         * skipped rather than half-supported. */
+        if (np_slot_name_problem(name))
+            continue;
+        if (list->count == NP_MAX_SLOTS) {
+            list->truncated = 1;
+            break;
+        }
+        np_slot_info *s = &list->slot[list->count++];
+        SDL_strlcpy(s->name, name, sizeof s->name);
+        char path[1300];
+        SDL_snprintf(path, sizeof path, "%s/%s", dir, files[i]);
+        SDL_PathInfo info;
+        int ok = SDL_GetPathInfo(path, &info);
+        s->mtime = ok ? info.modify_time : 0;
+        s->size = ok ? info.size : 0;
     }
+    SDL_free(files);
+    SDL_qsort(list->slot, (size_t)list->count, sizeof list->slot[0], slot_cmp);
+    return 0;
+}
+
+int np_slot_list_find(const np_slot_list *list, const char *name)
+{
+    for (int i = 0; i < list->count; i++)
+        if (np_slot_name_eq(list->slot[i].name, name))
+            return i;
+    return -1;
+}
+
+int np_storage_slot_create(np_game game, const char *name)
+{
+    char path[1100];
+    np_storage_slot_path(game, name, path, sizeof path);
+    if (np_slot_name_problem(name) || np_storage_exists(path))
+        return SDL_SetError("slot \"%s\" already exists or is invalid", name), -1;
+    return np_storage_write_atomic(path, "", 0, 0);
+}
+
+int np_storage_slot_rename(np_game game, const char *from, const char *to)
+{
+    char a[1100], b[1100], abak[1110], bbak[1110];
+    np_storage_slot_path(game, from, a, sizeof a);
+    np_storage_slot_path(game, to, b, sizeof b);
+    SDL_snprintf(abak, sizeof abak, "%s.bak", a);
+    SDL_snprintf(bbak, sizeof bbak, "%s.bak", b);
+    /* A case-only change names the same file on case-insensitive volumes. */
+    if (np_slot_name_problem(to) || (!np_slot_name_eq(from, to) && np_storage_exists(b)))
+        return SDL_SetError("slot \"%s\" already exists or is invalid", to), -1;
+    if (!SDL_RenamePath(a, b))
+        return -1;
+    if (np_storage_exists(abak) && !SDL_RenamePath(abak, bbak))
+        SDL_Log("could not move %s: %s", abak, SDL_GetError());
+    return 0;
+}
+
+int np_storage_slot_duplicate(np_game game, const char *from, const char *to)
+{
+    char a[1100], b[1100];
+    np_storage_slot_path(game, from, a, sizeof a);
+    np_storage_slot_path(game, to, b, sizeof b);
+    if (np_slot_name_problem(to) || np_storage_exists(b))
+        return SDL_SetError("slot \"%s\" already exists or is invalid", to), -1;
+    size_t size;
+    void *data = SDL_LoadFile(a, &size);
+    if (!data)
+        return -1;
+    int r = np_storage_write_atomic(b, data, size, 0);
+    SDL_free(data);
+    return r;
+}
+
+int np_storage_slot_delete(np_game game, const char *name)
+{
+    char path[1100], extra[1110];
+    np_storage_slot_path(game, name, path, sizeof path);
+    if (!SDL_RemovePath(path))
+        return -1;
+    static const char *const suffixes[] = {".bak", ".tmp"};
+    for (size_t i = 0; i < SDL_arraysize(suffixes); i++) {
+        SDL_snprintf(extra, sizeof extra, "%s%s", path, suffixes[i]);
+        if (np_storage_exists(extra))
+            SDL_RemovePath(extra);
+    }
+    return 0;
+}
+
+int np_storage_slot_export(np_game game, const char *name, const char *dest, char *err, size_t errn)
+{
+    char path[1100];
+    np_storage_slot_path(game, name, path, sizeof path);
+    size_t size;
+    void *data = SDL_LoadFile(path, &size);
+    if (!data) {
+        SDL_snprintf(err, errn, "Cannot read slot \"%s\": %s", name, SDL_GetError());
+        return -1;
+    }
+    int r = -1;
+    if (size == 0)
+        SDL_snprintf(err, errn, "Slot \"%s\" has no save yet.", name);
+    else if (write_whole(dest, data, size))
+        SDL_snprintf(err, errn, "Cannot write %s: %s", dest, SDL_GetError());
+    else
+        r = 0;
+    SDL_free(data);
+    return r;
+}
+
+int np_storage_slot_import(np_game game, const char *src, char name_out[NP_SLOT_NAME_MAX + 1], char *err,
+                           size_t errn)
+{
+    Sint64 size;
+    if (file_size(src, &size)) {
+        SDL_snprintf(err, errn, "Cannot open %s.", src);
+        return -1;
+    }
+    if (size > 4 * (Sint64)NP_SAVE_BYTES) {
+        SDL_snprintf(err, errn, "Not a Diamond/Pearl/Platinum save: the file is too large.");
+        return -1;
+    }
+    size_t len;
+    uint8_t *data = SDL_LoadFile(src, &len);
+    if (!data) {
+        SDL_snprintf(err, errn, "Cannot read %s: %s", src, SDL_GetError());
+        return -1;
+    }
+    size_t raw;
+    const char *why = NULL;
+    int r = -1;
+    if (np_sav_normalize(data, len, &raw, &why)) {
+        SDL_snprintf(err, errn, "%s", why);
+    } else {
+        /* Name the slot after the file: "Platinum (USA).sav" -> "Platinum (USA)". */
+        const char *base = src;
+        for (const char *p = src; *p; p++)
+            if (*p == '/' || *p == '\\')
+                base = p + 1;
+        char stem[256];
+        SDL_strlcpy(stem, base, sizeof stem);
+        char *dot = SDL_strrchr(stem, '.');
+        if (dot && dot != stem)
+            *dot = '\0';
+        char clean[NP_SLOT_NAME_MAX + 1];
+        np_slot_sanitize(stem, "Imported", clean);
+        np_slot_list *list = SDL_malloc(sizeof *list);
+        const char *taken[NP_MAX_SLOTS];
+        if (!list || np_storage_list_slots(game, list)) {
+            SDL_snprintf(err, errn, "Cannot list save slots: %s", SDL_GetError());
+        } else {
+            for (int i = 0; i < list->count; i++)
+                taken[i] = list->slot[i].name;
+            char path[1100];
+            if (list->truncated || np_slot_unique(clean, taken, list->count, name_out)) {
+                SDL_snprintf(err, errn, "Too many save slots.");
+            } else {
+                np_storage_slot_path(game, name_out, path, sizeof path);
+                if (np_storage_write_atomic(path, data, raw, 0))
+                    SDL_snprintf(err, errn, "Cannot write %s: %s", path, SDL_GetError());
+                else
+                    r = 0;
+            }
+        }
+        SDL_free(list);
+    }
+    SDL_free(data);
+    return r;
+}
+
+int np_storage_save_load(np_game game, const char *slot, void *dst, uint32_t len)
+{
+    char path[1100], bak[1110];
+    np_storage_slot_path(game, slot, path, sizeof path);
+    SDL_snprintf(bak, sizeof bak, "%s.bak", path);
+    int r = read_into(path, dst, len);
+    if (r == 1 || (r == 0 && np_storage_exists(path)))
+        return r; /* a save, or a fresh empty slot */
     /* Missing or unreadable main file: an interrupted store leaves the
      * previous image in .bak. */
     if (np_storage_exists(bak))
         return read_into(bak, dst, len) == 1 ? 1 : -1;
-    return np_storage_exists(path) ? -1 : 0;
+    return r;
 }
 
-int np_storage_save_store(np_game game, const void *src, uint32_t len)
+int np_storage_save_store(np_game game, const char *slot, const void *src, uint32_t len)
 {
-    char rel[64], path[1100];
-    SDL_snprintf(rel, sizeof rel, "saves/%s.sav", np_game_id(game));
-    np_storage_path(path, sizeof path, rel);
-    return np_storage_write_atomic(path, src, len, 1);
+    char path[1100];
+    np_storage_slot_path(game, slot, path, sizeof path);
+    Sint64 old = 0;
+    /* An empty file is a fresh slot: nothing worth keeping as .bak. */
+    int keep = file_size(path, &old) == 0 && old > 0;
+    return np_storage_write_atomic(path, src, len, keep);
 }

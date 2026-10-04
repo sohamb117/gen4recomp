@@ -3,19 +3,22 @@
  *   main.c     SDL main callbacks, game session, frame pacing, autotest
  *   input.c    keyboard/gamepad bindings, fingers, stylus, menu commands
  *   touchpad.c on-screen touch controls
- *   ui.c       bitmap-font drawing, launcher, options/controls/about pages
+ *   ui.c       bitmap-font drawing, launcher, options/controls/about pages,
+ *              save-slot pages (slot list, slot actions, confirm, name entry)
  *   audio.c    SDL audio stream fed from the core
- * Everything runs on the main thread except the file dialog callback, which
- * only hands a path over through `import_lock`.
+ * Everything runs on the main thread except file dialog callbacks, which
+ * only hand a path over through `pending_lock`.
  */
 #ifndef NP_APP_H
 #define NP_APP_H
 
 #include <SDL3/SDL.h>
 
+#include "launch.h"
 #include "layout.h"
 #include "np_core.h"
 #include "options.h"
+#include "storage.h"
 
 #define NP_MAX_PADS 8
 #define NP_MAX_FINGERS 10
@@ -23,7 +26,27 @@
 #define NP_MOUSE_FINGER ((SDL_FingerID)-2) /* the mouse acts as one more finger */
 
 typedef enum np_view { NP_VIEW_LAUNCHER, NP_VIEW_GAME } np_view;
-typedef enum np_page { NP_PAGE_NONE, NP_PAGE_OPTIONS, NP_PAGE_CONTROLS, NP_PAGE_ABOUT } np_page;
+typedef enum np_page {
+    NP_PAGE_NONE,
+    NP_PAGE_OPTIONS,
+    NP_PAGE_CONTROLS,
+    NP_PAGE_ABOUT,
+    NP_PAGE_SLOTS,     /* one game's save slots */
+    NP_PAGE_SLOT_MENU, /* actions on the selected slot */
+    NP_PAGE_CONFIRM,   /* delete confirmation */
+    NP_PAGE_TEXT,      /* slot name entry */
+} np_page;
+
+/* Work handed from dialogs, drops and URLs to the main loop. */
+typedef enum np_pending_kind {
+    NP_PENDING_NONE,
+    NP_PENDING_ROM,        /* import a cartridge */
+    NP_PENDING_SAV_IMPORT, /* add a .sav as a slot of pending_game */
+    NP_PENDING_SAV_EXPORT, /* write slot pending_slot of pending_game to path */
+    NP_PENDING_MESSAGE,    /* a dialog failed; path holds the message */
+} np_pending_kind;
+
+typedef enum np_text_purpose { NP_TEXT_NEW_SLOT, NP_TEXT_RENAME_SLOT } np_text_purpose;
 
 typedef enum np_menu_cmd {
     NP_CMD_NONE,
@@ -56,25 +79,32 @@ typedef struct np_finger {
     float x, y;
 } np_finger;
 
-/* NP_AUTOTEST: boot a core on a synthetic cartridge header with an
- * in-memory save, run N frames through the real render path, write a PNG of
- * the window and exit (see main.c). */
+/* NP_AUTOTEST (see main.c): boot a core on a synthetic cartridge header, a
+ * real cartridge (rom=), or start the app normally (boot=app); run N
+ * iterations through the real render path with scripted input, write a PNG
+ * of the window and exit. */
+typedef enum np_autotest_boot { NP_AT_SYNTHETIC, NP_AT_ROM, NP_AT_APP } np_autotest_boot;
+
 typedef struct np_autotest {
     int active;
-    int frames; /* frames to run after the save round-trip reboot */
+    np_autotest_boot boot;
+    int frames; /* iterations to run before the capture */
     int ran;
     char png[1024];
+    char rom[1024];     /* NP_AT_ROM: cartridge path */
     np_input input;     /* fixed input fed to every frame */
-    uint8_t rom[0x200]; /* synthetic cartridge header */
-    uint8_t *save;      /* in-memory backup chip */
+    uint8_t header[0x200]; /* NP_AT_SYNTHETIC: cartridge header */
+    uint8_t *save;      /* in-memory backup chip (unless storage) */
     uint32_t save_len;
     int saves, loads; /* successful save_store / save_load calls */
     uint64_t audio_frames;
     int audio_peak;
     int page; /* captured view: 0 game, -1 launcher, or an np_page over the game */
-    int storage; /* use the real user-data root for saves instead of memory */
-    char import[1024]; /* ROM to run through the importer first (needs storage) */
-    char script[1024]; /* "frame:kind:args;..." synthetic events, see main.c */
+    int storage; /* use the real (portable) user-data root */
+    char imports[4096]; /* '\n'-separated ROMs to run through the importer first */
+    char script[2048];  /* "frame:kind:args;..." synthetic events */
+    char press[1024];   /* "frame:keys[:frames];..." held DS keys */
+    char drop[1024];    /* storage for a scripted drop event's text */
 } np_autotest;
 
 typedef struct np_app {
@@ -103,13 +133,26 @@ typedef struct np_app {
     char toast[160];
     uint64_t toast_until;
 
-    SDL_Mutex *import_lock;
-    char import_path[1024]; /* path from the dialog/drop, or stage 3's message */
-    int import_stage;       /* 1: path waiting, 2: "Verifying" drawn, import now,
-                               3: the dialog failed, message in import_path */
+    SDL_Mutex *pending_lock;
+    np_pending_kind pending;
+    int pending_shown; /* the "working" message has been drawn */
+    char pending_path[1024];
+    np_game pending_game;
+    char pending_slot[NP_SLOT_NAME_MAX + 1];
+    np_pending_kind dialog_kind; /* what the open file dialog is for */
+
+    /* Save-slot pages */
+    np_game slots_game;
+    np_slot_list slots;
+    int slot_sel; /* index into slots.slot of the slot the actions apply to */
+    np_text_purpose text_purpose;
+    char text[NP_SLOT_NAME_MAX + 1];
+    char text_error[128];
+    int osk_sel; /* on-screen keyboard key */
 
     np_core *core;
     np_game game;
+    char slot[NP_SLOT_NAME_MAX + 1]; /* save slot of the running game */
     SDL_IOStream *rom_io;
     np_host host;
     np_frame frame;
@@ -134,13 +177,25 @@ typedef struct np_app {
 
 /* main.c */
 void np_app_toast(np_app *app, const char *fmt, ...);
-int np_app_start_game(np_app *app, np_game game);
+/* Boots `game` with save slot `slot` (must exist). */
+int np_app_start_game(np_app *app, np_game game, const char *slot);
+/* Boots the last used slot, or a new "Slot 1" when the game has none. */
+int np_app_continue(np_app *app, np_game game);
 void np_app_stop_game(np_app *app);
-void np_app_request_import(np_app *app, const char *path);
-void np_app_open_import_dialog(np_app *app);
+/* Queues work for the main loop; safe from any thread. */
+void np_app_request(np_app *app, np_pending_kind kind, const char *path);
+void np_app_open_rom_dialog(np_app *app);
+void np_app_open_sav_import_dialog(np_app *app, np_game game);
+void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot);
 void np_app_apply_video_options(np_app *app);
 void np_app_open_page(np_app *app, np_page page);
 int np_app_speed(const np_app *app); /* effective multiplier, 0 = uncapped */
+/* Rereads app->slots for app->slots_game; keeps slot_sel on `select` if given. */
+void np_app_refresh_slots(np_app *app, const char *select);
+/* Opens the save-slot page for `game`. */
+void np_app_open_slots(np_app *app, np_game game);
+/* Acts on a launch request (command line or URL). */
+void np_app_launch(np_app *app, const np_launch *req);
 
 /* input.c */
 void np_input_gamepad_added(np_app *app, SDL_JoystickID id);
@@ -178,7 +233,7 @@ void np_ui_draw(np_app *app); /* launcher or the open page, plus toast */
 void np_ui_command(np_app *app, np_menu_cmd cmd);
 /* Pointer press/move/release at render coordinates; button 3 = secondary. */
 void np_ui_pointer(np_app *app, float x, float y, int pressed, int released, int button);
-int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad); /* controls rebinding */
+int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad); /* rebinding, name entry */
 
 /* audio.c */
 int np_audio_open(np_app *app);

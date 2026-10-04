@@ -44,9 +44,11 @@ endif()
 add_library(np_shell_common STATIC
   src/font8x8.c
   src/layout.c
+  src/launch.c
   src/png.c
   src/romdb.c
   src/sha1.c
+  src/slots.c
 )
 target_include_directories(np_shell_common PUBLIC src "${NP_ROOT}/core/include")
 target_compile_options(np_shell_common PRIVATE ${NP_WARNINGS})

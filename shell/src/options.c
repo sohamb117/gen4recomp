@@ -13,6 +13,7 @@
 #include "storage.h"
 
 const int np_speeds[NP_SPEED_COUNT] = {1, 2, 3, 4, 8, 0};
+static const char *const np_game_ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum"};
 const int np_fps_caps[NP_FPS_CAP_COUNT] = {0, 30, 60, 120, 144, 240};
 
 static const char *const action_ids[NP_ACT_COUNT] = {
@@ -78,6 +79,8 @@ void np_options_defaults(np_options *o)
     o->volume = 80;
     o->mute_unfocused = 1;
     o->touch_controls = NP_TOUCH_AUTO;
+    o->real_clock = 1;
+    o->last_game = -1;
     np_bindings_defaults(&o->bind);
 }
 
@@ -195,7 +198,9 @@ static void apply(np_options *o, const char *section, const char *key, char *val
                     o->fps_cap_index = i;
         }
     } else if (!strcmp(section, "emulation")) {
-        if (!strcmp(key, "logic_clock"))
+        if (!strcmp(key, "real_clock"))
+            o->real_clock = iv != 0;
+        else if (!strcmp(key, "logic_clock"))
             o->logic_clock_60 = !strcmp(val, "60");
         else if (!strcmp(key, "speed") || !strcmp(key, "ff_speed")) {
             int *dst = key[0] == 's' ? &o->speed_index : &o->ff_speed_index;
@@ -208,6 +213,17 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->volume = clampi(iv, 0, 100);
         else if (!strcmp(key, "mute_unfocused"))
             o->mute_unfocused = iv != 0;
+    } else if (!strcmp(section, "session")) {
+        const char *const *games = np_game_ids;
+        if (!strcmp(key, "startup"))
+            o->startup_continue = !SDL_strcasecmp(val, "continue");
+        else if (!strcmp(key, "last_game"))
+            o->last_game = lookup(games, NP_GAME_COUNT, val);
+        else if (!strncmp(key, "last_slot_", 10)) {
+            int g = lookup(games, NP_GAME_COUNT, key + 10);
+            if (g >= 0 && !np_slot_name_problem(val))
+                SDL_strlcpy(o->last_slot[g], val, sizeof o->last_slot[g]);
+        }
     } else if (!strcmp(section, "input")) {
         if (!strcmp(key, "touch_controls")) {
             int m = lookup(touch_ids, NP_TOUCH_MODE_COUNT, val);
@@ -294,10 +310,16 @@ int np_options_save(const np_options *o, const char *path)
         o->linear_filter ? "linear" : "nearest");
     put(b, "fullscreen = %d\nvsync = %d\nfps_cap = %d\n\n", o->fullscreen, o->vsync,
         np_fps_caps[o->fps_cap_index]);
-    put(b, "[emulation]\nlogic_clock = %s\nspeed = %d\nff_speed = %d\n\n", o->logic_clock_60 ? "60" : "ds",
-        np_speeds[o->speed_index], np_speeds[o->ff_speed_index]);
+    put(b, "[emulation]\nlogic_clock = %s\nspeed = %d\nff_speed = %d\nreal_clock = %d\n\n",
+        o->logic_clock_60 ? "60" : "ds", np_speeds[o->speed_index], np_speeds[o->ff_speed_index], o->real_clock);
     put(b, "[audio]\nvolume = %d\nmute_unfocused = %d\n\n", o->volume, o->mute_unfocused);
-    put(b, "[input]\ntouch_controls = %s\n\n[keys]\n", touch_ids[o->touch_controls]);
+    put(b, "[session]\nstartup = %s\n", o->startup_continue ? "continue" : "launcher");
+    if (o->last_game >= 0 && o->last_game < NP_GAME_COUNT)
+        put(b, "last_game = %s\n", np_game_ids[o->last_game]);
+    for (int g = 0; g < NP_GAME_COUNT; g++)
+        if (o->last_slot[g][0])
+            put(b, "last_slot_%s = %s\n", np_game_ids[g], o->last_slot[g]);
+    put(b, "\n[input]\ntouch_controls = %s\n\n[keys]\n", touch_ids[o->touch_controls]);
     for (int a = 0; a < NP_ACT_COUNT; a++) {
         put(b, "%s =", action_ids[a]);
         int last = -1;

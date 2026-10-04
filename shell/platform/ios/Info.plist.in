@@ -50,6 +50,19 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- nativeplat://launch?game=platinum&slot=Slot%201 arrives as
+	     SDL_EVENT_DROP_FILE carrying the URL (SDL's openURL handler). -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>org.nativeplat.nativeplat.launch</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>nativeplat</string>
+			</array>
+		</dict>
+	</array>
 	<!-- "Open in nativeplat" from Files hands the ROM to the importer, which
 	     copies it into the app container after verifying its SHA-1. -->
 	<key>CFBundleDocumentTypes</key>

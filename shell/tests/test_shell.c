@@ -13,10 +13,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "launch.h"
 #include "layout.h"
 #include "png.h"
 #include "romdb.h"
 #include "sha1.h"
+#include "slots.h"
 
 static int failures, checks;
 
@@ -288,6 +290,140 @@ static void test_layout_fixed(void)
           ty);
 }
 
+static void test_slot_names(void)
+{
+    static const char *const ok[] = {"Slot 1", "Nuzlocke (2nd)", "a", "Run #3!", "it's.mine", "CONSOLE", "COM10",
+                                     "x2345678901234567890123456789012"};
+    for (size_t i = 0; i < sizeof ok / sizeof ok[0]; i++)
+        CHECK(!np_slot_name_problem(ok[i]), "\"%s\" should be valid", ok[i]);
+    static const char *const bad[] = {"",      " lead", "trail ", "dot.",  ".hidden", "a/b", "a\\b", "a:b",
+                                      "q?",    "CON",   "nul",    "Com1", "lpt9.x",  "aux ", "tab\t",
+                                      "x23456789012345678901234567890123"};
+    for (size_t i = 0; i < sizeof bad / sizeof bad[0]; i++)
+        CHECK(np_slot_name_problem(bad[i]) != NULL, "\"%s\" should be invalid", bad[i]);
+
+    CHECK(np_slot_name_eq("Slot 1", "sLOT 1") && !np_slot_name_eq("Slot 1", "Slot 10"), "case-insensitive equality");
+
+    char out[NP_SLOT_NAME_MAX + 1];
+    np_slot_sanitize("Pokemon Platinum (USA)", "Imported", out);
+    CHECK(!strcmp(out, "Pokemon Platinum (USA)"), "sanitize keeps a good name: %s", out);
+    np_slot_sanitize("  my:save*file  .", "Imported", out);
+    CHECK(!strcmp(out, "my_save_file"), "sanitize replaces and trims: \"%s\"", out);
+    np_slot_sanitize("...", "Imported", out);
+    CHECK(!strcmp(out, "Imported"), "sanitize falls back: \"%s\"", out);
+    np_slot_sanitize("NUL", "Imported", out);
+    CHECK(!strcmp(out, "Imported"), "sanitize avoids device names: \"%s\"", out);
+    np_slot_sanitize("A very long save file name that goes on and on", "Imported", out);
+    CHECK(!strcmp(out, "A very long save file name that") && !np_slot_name_problem(out),
+          "sanitize caps length, then trims the cut: \"%s\"", out);
+    np_slot_sanitize("ends with spaces after the cut x                ", "Imported", out);
+    CHECK(!np_slot_name_problem(out), "sanitize result valid: \"%s\"", out);
+
+    const char *taken[] = {"Slot 1", "slot 2", "Run", "Run (2)", "x2345678901234567890123456789012"};
+    np_slot_unique("Fresh", taken, 5, out);
+    CHECK(!strcmp(out, "Fresh"), "unique keeps a free name: %s", out);
+    np_slot_unique("run", taken, 5, out);
+    CHECK(!strcmp(out, "run (3)"), "unique skips taken suffixes case-insensitively: %s", out);
+    np_slot_unique("x2345678901234567890123456789012", taken, 5, out);
+    CHECK(!strcmp(out, "x234567890123456789012345678 (2)") && !np_slot_name_problem(out),
+          "unique shortens to fit: %s", out);
+    np_slot_unique("abcdefghijklmnopqrstuvwxyz 12345", (const char *const[]){"abcdefghijklmnopqrstuvwxyz 12345"}, 1,
+                   out);
+    CHECK(!np_slot_name_problem(out), "unique never ends a cut name with a space: \"%s\"", out);
+    np_slot_default_name(taken, 5, out);
+    CHECK(!strcmp(out, "Slot 3"), "default name skips Slot 1/2: %s", out);
+    np_slot_default_name(NULL, 0, out);
+    CHECK(!strcmp(out, "Slot 1"), "default name: %s", out);
+}
+
+static void test_sav_footer(void)
+{
+    static const char snip[] = "|<--Snip above here to create a raw sav by excluding this DeSmuME savedata footer:";
+    static const char cookie[] = "|-DESMUME SAVE-|";
+    size_t footer = NP_DESMUME_FOOTER_BYTES;
+    uint8_t *buf = calloc(1, NP_SAVE_BYTES + footer + 64);
+    size_t raw = 0;
+    const char *why = NULL;
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES, &raw, &why) == 0 && raw == NP_SAVE_BYTES, "raw 512 KiB accepted");
+    /* DeSmuME .dsv: raw image, then text marker, six u32 fields, cookie. */
+    memcpy(buf + NP_SAVE_BYTES, snip, sizeof snip - 1);
+    memcpy(buf + NP_SAVE_BYTES + footer - 16, cookie, 16);
+    CHECK(sizeof snip - 1 + 24 + 16 == footer, "footer layout is %zu bytes", sizeof snip - 1 + 24 + 16);
+    raw = 0;
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + footer, &raw, &why) == 0 && raw == NP_SAVE_BYTES,
+          "DeSmuME footer stripped");
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES - 1, &raw, &why) == -1 && why, "short file rejected");
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + 1, &raw, &why) == -1, "odd size rejected");
+    CHECK(np_sav_normalize(buf, 8192, &raw, &why) == -1, "8 KiB EEPROM save rejected");
+    /* A .dsv for a 256 KiB chip: footer right after 256 KiB. */
+    memset(buf, 0, NP_SAVE_BYTES + footer);
+    memcpy(buf + NP_SAVE_BYTES / 2, snip, sizeof snip - 1);
+    memcpy(buf + NP_SAVE_BYTES / 2 + footer - 16, cookie, 16);
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES / 2 + footer, &raw, &why) == -1, "256 KiB DeSmuME save rejected");
+    /* Marker in the right place but a mangled cookie. */
+    memset(buf, 0, NP_SAVE_BYTES + footer);
+    memcpy(buf + NP_SAVE_BYTES, snip, sizeof snip - 1);
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + footer, &raw, &why) == -1, "footer without cookie rejected");
+    free(buf);
+}
+
+static void test_launch(void)
+{
+    np_launch l;
+    char err[160];
+    char *a1[] = {"nativeplat", "--game", "Platinum", "--slot", "My Run"};
+    CHECK(np_launch_parse_args(5, a1, &l, err, sizeof err) == 0 && l.game == NP_GAME_PLATINUM &&
+              !strcmp(l.slot, "My Run") && !l.force_launcher,
+          "args: --game/--slot (%s)", err);
+    char *a2[] = {"nativeplat", "--game=pearl", "--slot=2", "-psn_0_12345", "-NSDocumentRevisionsDebugMode", "YES"};
+    CHECK(np_launch_parse_args(6, a2, &l, err, sizeof err) == 0 && l.game == NP_GAME_PEARL &&
+              np_launch_slot_number(l.slot) == 2,
+          "args: = form, macOS extras ignored (%s)", err);
+    char *a3[] = {"nativeplat", "--launcher", "--game", "diamond"};
+    CHECK(np_launch_parse_args(4, a3, &l, err, sizeof err) == 0 && l.force_launcher && l.game == NP_GAME_DIAMOND,
+          "args: --launcher");
+    char *a4[] = {"nativeplat"};
+    CHECK(np_launch_parse_args(1, a4, &l, err, sizeof err) == 0 && l.game < 0 && !l.slot[0], "args: none");
+    char *b1[] = {"nativeplat", "--game", "emerald"};
+    CHECK(np_launch_parse_args(3, b1, &l, err, sizeof err) == -1 && strstr(err, "emerald"), "args: bad game (%s)",
+          err);
+    char *b2[] = {"nativeplat", "--slot", "1"};
+    CHECK(np_launch_parse_args(3, b2, &l, err, sizeof err) == -1, "args: slot without game");
+    char *b3[] = {"nativeplat", "--game"};
+    CHECK(np_launch_parse_args(2, b3, &l, err, sizeof err) == -1, "args: missing value");
+    char *b4[] = {"nativeplat", "--fullscreen"};
+    CHECK(np_launch_parse_args(2, b4, &l, err, sizeof err) == -1, "args: unknown option");
+
+    CHECK(np_launch_is_url("nativeplat://launch") && np_launch_is_url("NativePlat:launch") &&
+              !np_launch_is_url("/Users/x/nativeplat.nds") && !np_launch_is_url("nativeplat"),
+          "url detection");
+    CHECK(np_launch_parse_url("nativeplat://launch?game=platinum&slot=Slot%201", &l, err, sizeof err) == 0 &&
+              l.game == NP_GAME_PLATINUM && !strcmp(l.slot, "Slot 1"),
+          "url: game+slot (%s)", err);
+    CHECK(np_launch_parse_url("nativeplat://launch/?slot=My+%28best%29+run&game=DIAMOND", &l, err, sizeof err) == 0 &&
+              l.game == NP_GAME_DIAMOND && !strcmp(l.slot, "My (best) run"),
+          "url: + and escapes, any order (%s)", err);
+    CHECK(np_launch_parse_url("nativeplat://launch?game=pearl#frag", &l, err, sizeof err) == 0 &&
+              l.game == NP_GAME_PEARL && !l.slot[0],
+          "url: fragment ignored (%s)", err);
+    CHECK(np_launch_parse_url("nativeplat://launch?launcher=1", &l, err, sizeof err) == 0 && l.force_launcher,
+          "url: launcher");
+    CHECK(np_launch_parse_url("nativeplat://", &l, err, sizeof err) == 0 && l.game < 0, "url: bare scheme");
+    CHECK(np_launch_parse_url("nativeplat://launch?game=platinum&slot=a%2", &l, err, sizeof err) == -1,
+          "url: truncated escape");
+    CHECK(np_launch_parse_url("nativeplat://launch?game=platinum&slot=a%00b", &l, err, sizeof err) == -1,
+          "url: NUL escape");
+    CHECK(np_launch_parse_url("nativeplat://launch?game=red", &l, err, sizeof err) == -1, "url: bad game");
+    CHECK(np_launch_parse_url("nativeplat://delete?game=pearl", &l, err, sizeof err) == -1, "url: unknown action");
+    CHECK(np_launch_parse_url("nativeplat://launch?game", &l, err, sizeof err) == -1, "url: key without value");
+    CHECK(np_launch_parse_url("nativeplat://launch?slot=3", &l, err, sizeof err) == -1, "url: slot without game");
+    CHECK(np_launch_parse_url("nativeplat://launch?game=platinum&color=red", &l, err, sizeof err) == -1,
+          "url: unknown parameter");
+    CHECK(np_launch_slot_number("12") == 12 && np_launch_slot_number("1a") == 0 && np_launch_slot_number("") == 0 &&
+              np_launch_slot_number("Slot 1") == 0,
+          "slot numbers");
+}
+
 int main(void)
 {
     test_sha1();
@@ -295,6 +431,9 @@ int main(void)
     test_png();
     test_layout_fixed();
     test_layout_exhaustive();
+    test_slot_names();
+    test_sav_footer();
+    test_launch();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

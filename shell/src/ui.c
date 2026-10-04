@@ -183,6 +183,8 @@ enum opt_item {
     OPT_VSYNC,
     OPT_FPS_CAP,
     OPT_LOGIC_CLOCK,
+    OPT_REAL_CLOCK,
+    OPT_STARTUP,
     OPT_SPEED,
     OPT_FF_SPEED,
     OPT_VOLUME,
@@ -197,7 +199,8 @@ enum opt_item {
 
 static const char *const opt_labels[OPT_COUNT] = {
     "Screen layout", "Swap screens", "Rotation", "Scaling", "Filter", "Fullscreen", "VSync", "Display FPS cap",
-    "Logic clock", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused", "Touch controls",
+    "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
+    "Touch controls",
     "Controls...", "About...", "Quit to launcher", "Close",
 };
 
@@ -242,6 +245,12 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
             SDL_strlcpy(buf, "Off", n);
         break;
     case OPT_LOGIC_CLOCK: SDL_strlcpy(buf, o->logic_clock_60 ? "Exact 60 Hz" : "DS 59.83 Hz", n); break;
+    case OPT_REAL_CLOCK:
+        SDL_strlcpy(buf, o->real_clock ? "Device time" : "Fixed (2009-03-22)", n);
+        if (app->view == NP_VIEW_GAME && (app->host.rtc_now != NULL) != o->real_clock)
+            SDL_strlcat(buf, ", next boot", n);
+        break;
+    case OPT_STARTUP: SDL_strlcpy(buf, o->startup_continue ? "Continue last game" : "Launcher", n); break;
     case OPT_SPEED: SDL_strlcpy(buf, speed_name(o->speed_index), n); break;
     case OPT_FF_SPEED: SDL_strlcpy(buf, speed_name(o->ff_speed_index), n); break;
     case OPT_VOLUME: SDL_snprintf(buf, n, "%d%%", o->volume); break;
@@ -266,6 +275,8 @@ static void opt_adjust(np_app *app, int item, int dir)
     case OPT_VSYNC: o->vsync = !o->vsync; break;
     case OPT_FPS_CAP: o->fps_cap_index = wrapi(o->fps_cap_index + dir, NP_FPS_CAP_COUNT); break;
     case OPT_LOGIC_CLOCK: o->logic_clock_60 = !o->logic_clock_60; break;
+    case OPT_REAL_CLOCK: o->real_clock = !o->real_clock; break;
+    case OPT_STARTUP: o->startup_continue = !o->startup_continue; break;
     case OPT_SPEED: o->speed_index = wrapi(o->speed_index + dir, NP_SPEED_COUNT); break;
     case OPT_FF_SPEED: o->ff_speed_index = wrapi(o->ff_speed_index + dir, NP_SPEED_COUNT); break;
     case OPT_VOLUME: o->volume = SDL_clamp(o->volume + dir * 10, 0, 100); break;
@@ -319,8 +330,12 @@ static void controls_activate(np_app *app, int row)
     }
 }
 
+static int text_capture_event(np_app *app, const SDL_Event *e);
+
 int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad)
 {
+    if (app->page == NP_PAGE_TEXT)
+        return text_capture_event(app, e);
     if (!app->capture || app->page != NP_PAGE_CONTROLS)
         return 0;
     int act = app->sel, col = app->col;
@@ -409,16 +424,16 @@ static void launcher_activate(np_app *app, int id)
     if (id >= 0 && id < NP_GAME_COUNT) {
         np_game g = (np_game)id;
         if (!np_core_available(g))
-            SDL_snprintf(app->status, sizeof app->status, "This build does not include the %s core.",
+            SDL_snprintf(app->status, sizeof app->status, "The %s core is not included in this build.",
                          np_game_title(g));
         else if (np_storage_rom_present(g))
-            np_app_start_game(app, g);
+            np_app_open_slots(app, g);
         else
-            np_app_open_import_dialog(app);
+            np_app_open_rom_dialog(app);
         return;
     }
     switch (id) {
-    case LB_IMPORT: np_app_open_import_dialog(app); break;
+    case LB_IMPORT: np_app_open_rom_dialog(app); break;
     case LB_OPTIONS: np_app_open_page(app, NP_PAGE_OPTIONS); break;
     case LB_ABOUT: np_app_open_page(app, NP_PAGE_ABOUT); break;
     case LB_QUIT: {
@@ -475,24 +490,37 @@ static void draw_launcher(np_app *app)
         int cols = (int)((r.w - 2 * cw) / cw);
         float ts = (float)SDL_strlen(np_game_title((np_game)g)) * 16 * s <= r.w - 2 * cw ? 2 * s : s;
         np_ui_text(app, r.x + cw, r.y + (2.2f * lh - 8 * ts) * 0.5f, ts, np_game_title((np_game)g), white);
+        np_game game = (np_game)g;
+        int avail = np_core_available(game), present = np_storage_rom_present(game);
         const char *state;
-        SDL_Color sc;
-        if (!np_core_available((np_game)g)) {
-            state = "Core not in this build";
-            sc = warn;
-        } else if (np_storage_rom_present((np_game)g)) {
+        SDL_Color sc = dim;
+        if (avail && present) {
             state = "Ready";
             sc = (SDL_Color){140, 230, 140, 255};
-        } else {
+        } else if (present) {
+            state = "Imported; core not included in this build";
+            sc = warn;
+        } else if (avail) {
             state = "Not imported";
-            sc = dim;
+        } else {
+            state = "Core not included in this build";
+            sc = warn;
         }
-        text_clip(app, r.x + cw, r.y + 2.8f * lh, s, state, cols, sc);
-        const np_rom_entry *e = np_romdb_accepted((np_game)g);
-        if (wide && e)
+        int state_lines = 1;
+        if (wide)
+            state_lines = text_wrap(app, r.x + cw, r.y + 2.8f * lh, s, lh, cols, state, sc, 1);
+        else
+            text_clip(app, r.x + cw, r.y + 2.8f * lh, s, state, cols, sc);
+        const np_rom_entry *e = np_romdb_accepted(game);
+        if (wide && e && state_lines == 1)
             text_wrap(app, r.x + cw, r.y + 4.2f * lh, s, lh, cols, e->label, dim, 1);
-        const char *hint = np_storage_rom_present((np_game)g) ? "Play" : "Import...";
-        text_clip(app, r.x + cw, r.y + r.h - 1.5f * lh, s, hint, cols, selected ? accent : dim);
+        char hint[64];
+        if (avail && present && app->opt.last_slot[g][0])
+            SDL_snprintf(hint, sizeof hint, "Continue: %s", app->opt.last_slot[g]);
+        else
+            SDL_strlcpy(hint, avail && present ? "Choose a save slot" : avail ? "Import..." : "", sizeof hint);
+        if (hint[0])
+            text_clip(app, r.x + cw, r.y + r.h - 1.5f * lh, s, hint, cols, selected ? accent : dim);
         hit_add(app, r, g);
     }
     y += wide ? card_h + 1.5f * lh : 3 * (card_h + gap) + 0.5f * lh;
@@ -679,11 +707,468 @@ static void draw_about(np_app *app)
     end_page(app, &f, "Up/Down scroll, Esc/B back.", total);
 }
 
+/* ---- save slots ---------------------------------------------------------- */
+
+#define HIT_OSK 2000
+
+enum { SROW_CONTINUE, SROW_NEW, SROW_SLOT, SROW_IMPORT };
+typedef struct slot_row {
+    int kind, slot;
+} slot_row;
+
+static int slots_rows(const np_app *app, slot_row *rows)
+{
+    int n = 0;
+    if (np_slot_list_find(&app->slots, app->opt.last_slot[app->slots_game]) >= 0)
+        rows[n++] = (slot_row){SROW_CONTINUE, -1};
+    rows[n++] = (slot_row){SROW_NEW, -1};
+    for (int i = 0; i < app->slots.count; i++)
+        rows[n++] = (slot_row){SROW_SLOT, i};
+    rows[n++] = (slot_row){SROW_IMPORT, -1};
+    return n;
+}
+
+static int slots_row_of(const np_app *app, int slot)
+{
+    slot_row rows[NP_MAX_SLOTS + 3];
+    int n = slots_rows(app, rows);
+    for (int i = 0; i < n; i++)
+        if (rows[i].kind == SROW_SLOT && rows[i].slot == slot)
+            return i;
+    return 0;
+}
+
+static void format_time(int64_t t, char *buf, size_t n)
+{
+    SDL_DateTime dt;
+    if (t && SDL_TimeToDateTime(t, &dt, true))
+        SDL_snprintf(buf, n, "%04d-%02d-%02d %02d:%02d", dt.year, dt.month, dt.day, dt.hour, dt.minute);
+    else
+        SDL_strlcpy(buf, "?", n);
+}
+
+static const np_slot_info *cur_slot(const np_app *app)
+{
+    return app->slot_sel >= 0 && app->slot_sel < app->slots.count ? &app->slots.slot[app->slot_sel] : NULL;
+}
+
+static void open_slots_at(np_app *app, int slot)
+{
+    np_app_open_page(app, NP_PAGE_SLOTS);
+    if (slot >= 0)
+        app->sel = slots_row_of(app, slot);
+}
+
+static void open_text(np_app *app, np_text_purpose purpose, const char *initial)
+{
+    app->text_purpose = purpose;
+    SDL_strlcpy(app->text, initial, sizeof app->text);
+    app->text_error[0] = '\0';
+    np_app_open_page(app, NP_PAGE_TEXT);
+    app->osk_sel = 0;
+}
+
+static void slots_activate(np_app *app, int row)
+{
+    slot_row rows[NP_MAX_SLOTS + 3];
+    int n = slots_rows(app, rows);
+    if (row < 0 || row >= n)
+        return;
+    switch (rows[row].kind) {
+    case SROW_CONTINUE: np_app_start_game(app, app->slots_game, app->opt.last_slot[app->slots_game]); break;
+    case SROW_NEW: {
+        if (app->slots.count >= NP_MAX_SLOTS || app->slots.truncated) {
+            np_app_toast(app, "Too many save slots: delete one first");
+            break;
+        }
+        const char *taken[NP_MAX_SLOTS];
+        for (int i = 0; i < app->slots.count; i++)
+            taken[i] = app->slots.slot[i].name;
+        char name[NP_SLOT_NAME_MAX + 1];
+        np_slot_default_name(taken, app->slots.count, name);
+        open_text(app, NP_TEXT_NEW_SLOT, name);
+        break;
+    }
+    case SROW_SLOT:
+        app->slot_sel = rows[row].slot;
+        np_app_open_page(app, NP_PAGE_SLOT_MENU);
+        break;
+    case SROW_IMPORT: np_app_open_sav_import_dialog(app, app->slots_game); break;
+    default: break;
+    }
+}
+
+static void draw_slots(np_app *app)
+{
+    page_frame f;
+    char title[64];
+    SDL_snprintf(title, sizeof title, "%s saves", np_game_title(app->slots_game));
+    begin_page(app, &f, title);
+    slot_row rows[NP_MAX_SLOTS + 3];
+    int n = slots_rows(app, rows);
+    app->sel = SDL_clamp(app->sel, 0, n - 1);
+    keep_visible(app, app->sel, f.rows, n);
+    float x = f.panel.x + 2 * f.cw, vx = f.panel.x + f.panel.w - 2 * f.cw - 18 * f.cw;
+    for (int r = 0; r < f.rows && app->scroll + r < n; r++) {
+        int i = app->scroll + r, selected = i == app->sel;
+        float y = f.list_y + (float)r * f.lh;
+        SDL_FRect row = {f.panel.x + f.cw, y - 2 * f.s, f.panel.w - 2 * f.cw, f.lh};
+        if (selected)
+            np_ui_fill(app, row, (SDL_Color){255, 205, 80, 40});
+        SDL_Color c = selected ? accent : white;
+        char label[96], when[32] = "";
+        switch (rows[i].kind) {
+        case SROW_CONTINUE:
+            SDL_snprintf(label, sizeof label, "Continue: %s", app->opt.last_slot[app->slots_game]);
+            break;
+        case SROW_NEW: SDL_strlcpy(label, "New save slot...", sizeof label); break;
+        case SROW_IMPORT: SDL_strlcpy(label, "Import .sav...", sizeof label); break;
+        default: {
+            const np_slot_info *s = &app->slots.slot[rows[i].slot];
+            SDL_snprintf(label, sizeof label, "  %s", s->name);
+            if (s->size)
+                format_time(s->mtime, when, sizeof when);
+            else
+                SDL_strlcpy(when, "not saved yet", sizeof when);
+            break;
+        }
+        }
+        text_clip(app, x, y, f.s, label, (int)((vx - x) / f.cw) - 1, c);
+        if (when[0])
+            text_clip(app, vx, y, f.s, when, 18, selected ? accent : dim);
+        hit_add(app, row, i);
+    }
+    end_page(app, &f, "Enter/A: open  Esc/B: back  Drop .sav: import", n);
+}
+
+enum { SM_PLAY, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_DELETE, SM_COUNT };
+
+static void slot_menu_activate(np_app *app, int item)
+{
+    const np_slot_info *s = cur_slot(app);
+    if (!s)
+        return;
+    char name[NP_SLOT_NAME_MAX + 1];
+    SDL_strlcpy(name, s->name, sizeof name);
+    np_game g = app->slots_game;
+    switch (item) {
+    case SM_PLAY: np_app_start_game(app, g, name); break;
+    case SM_RENAME: open_text(app, NP_TEXT_RENAME_SLOT, name); break;
+    case SM_DUPLICATE: {
+        const char *taken[NP_MAX_SLOTS];
+        for (int i = 0; i < app->slots.count; i++)
+            taken[i] = app->slots.slot[i].name;
+        char copy[NP_SLOT_NAME_MAX + 1];
+        if (app->slots.count >= NP_MAX_SLOTS || np_slot_unique(name, taken, app->slots.count, copy)) {
+            np_app_toast(app, "Too many save slots: delete one first");
+        } else if (np_storage_slot_duplicate(g, name, copy)) {
+            np_app_toast(app, "Duplicate failed: %s", SDL_GetError());
+        } else {
+            np_app_refresh_slots(app, copy);
+            np_app_toast(app, "Copied \"%s\" to \"%s\"", name, copy);
+            open_slots_at(app, app->slot_sel);
+        }
+        break;
+    }
+    case SM_EXPORT:
+        if (!s->size)
+            np_app_toast(app, "\"%s\" has no save yet", name);
+        else
+            np_app_open_sav_export_dialog(app, g, name);
+        break;
+    case SM_DELETE: np_app_open_page(app, NP_PAGE_CONFIRM); break;
+    default: break;
+    }
+}
+
+static void draw_slot_menu(np_app *app)
+{
+    const np_slot_info *s = cur_slot(app);
+    if (!s) {
+        open_slots_at(app, -1);
+        return;
+    }
+    page_frame f;
+    begin_page(app, &f, s->name);
+    static const char *const labels[SM_COUNT] = {"Play", "Rename...", "Duplicate", "Export .sav...", "Delete..."};
+    char info[96], when[32];
+    format_time(s->mtime, when, sizeof when);
+    if (s->size)
+        SDL_snprintf(info, sizeof info, "%s, last saved %s", np_game_title(app->slots_game), when);
+    else
+        SDL_snprintf(info, sizeof info, "%s, not saved yet", np_game_title(app->slots_game));
+    text_clip(app, f.panel.x + 2 * f.cw, f.list_y, f.s, info, f.cols, dim);
+    app->sel = SDL_clamp(app->sel, 0, SM_COUNT - 1);
+    for (int i = 0; i < SM_COUNT; i++) {
+        float y = f.list_y + (float)(i + 2) * f.lh;
+        SDL_FRect row = {f.panel.x + f.cw, y - 2 * f.s, f.panel.w - 2 * f.cw, f.lh};
+        if (i == app->sel)
+            np_ui_fill(app, row, (SDL_Color){255, 205, 80, 40});
+        np_ui_text(app, f.panel.x + 2 * f.cw, y, f.s, labels[i], i == app->sel ? (i == SM_DELETE ? warn : accent) : white);
+        hit_add(app, row, i);
+    }
+    end_page(app, &f, "Enter/A: select  Esc/B: back", 0);
+}
+
+static void confirm_activate(np_app *app, int yes)
+{
+    const np_slot_info *s = cur_slot(app);
+    if (!yes || !s) {
+        np_app_open_page(app, NP_PAGE_SLOT_MENU);
+        app->sel = SM_DELETE;
+        return;
+    }
+    char name[NP_SLOT_NAME_MAX + 1];
+    SDL_strlcpy(name, s->name, sizeof name);
+    if (np_storage_slot_delete(app->slots_game, name)) {
+        np_app_toast(app, "Delete failed: %s", SDL_GetError());
+        np_app_open_page(app, NP_PAGE_SLOT_MENU);
+        return;
+    }
+    if (np_slot_name_eq(app->opt.last_slot[app->slots_game], name)) {
+        app->opt.last_slot[app->slots_game][0] = '\0';
+        app->options_dirty = 1;
+    }
+    np_app_refresh_slots(app, NULL);
+    np_app_toast(app, "Deleted \"%s\"", name);
+    open_slots_at(app, app->slots.count ? app->slot_sel : -1);
+}
+
+static void draw_confirm(np_app *app)
+{
+    const np_slot_info *s = cur_slot(app);
+    page_frame f;
+    begin_page(app, &f, "Delete save slot");
+    char q[160];
+    SDL_snprintf(q, sizeof q, "Delete \"%s\" from %s? Its save is erased and cannot be recovered.", s ? s->name : "?",
+                 np_game_title(app->slots_game));
+    int lines = text_wrap(app, f.panel.x + 2 * f.cw, f.list_y, f.s, f.lh, f.cols, q, white, 1);
+    static const char *const labels[2] = {"No, keep it", "Yes, delete it"};
+    app->sel = SDL_clamp(app->sel, 0, 1);
+    float bw = 18 * f.cw, bh = 2 * f.lh, y = f.list_y + (float)(lines + 1) * f.lh;
+    for (int i = 0; i < 2; i++)
+        button(app, (SDL_FRect){f.panel.x + 2 * f.cw + (float)i * (bw + 2 * f.cw), y, bw, bh}, labels[i], app->sel == i,
+               i, f.s);
+    end_page(app, &f, "Left/Right: choose  Enter/A: confirm  Esc/B: back", 0);
+}
+
+/* On-screen keyboard for name entry without a physical keyboard (gamepad,
+ * mouse; iOS also raises its own keyboard). 13 cells per row; the last row
+ * holds punctuation and the wide Space/Del/OK/Cancel keys. */
+enum { OSK_COLS = 13, OSK_ROWS = 6, OSK_SPACE = 256, OSK_DEL, OSK_OK, OSK_CANCEL };
+typedef struct osk_key {
+    int row, col, span, code;
+} osk_key;
+
+static int osk_keys(osk_key *k)
+{
+    static const char *const rows[5] = {"ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "nopqrstuvwxyz",
+                                        "0123456789-_."};
+    int n = 0;
+    for (int r = 0; r < 5; r++)
+        for (int c = 0; c < OSK_COLS; c++)
+            k[n++] = (osk_key){r, c, 1, (unsigned char)rows[r][c]};
+    static const char punct[] = "()!'#";
+    for (int c = 0; c < 5; c++)
+        k[n++] = (osk_key){5, c, 1, (unsigned char)punct[c]};
+    k[n++] = (osk_key){5, 5, 2, OSK_SPACE};
+    k[n++] = (osk_key){5, 7, 2, OSK_DEL};
+    k[n++] = (osk_key){5, 9, 2, OSK_OK};
+    k[n++] = (osk_key){5, 11, 2, OSK_CANCEL};
+    return n;
+}
+
+static void osk_move(np_app *app, int dr, int dc)
+{
+    osk_key k[80];
+    int n = osk_keys(k);
+    osk_key cur = k[SDL_clamp(app->osk_sel, 0, n - 1)];
+    int row = cur.row, col = cur.col;
+    if (dc) {
+        int idx = app->osk_sel;
+        do
+            idx = wrapi(idx + dc, n);
+        while (k[idx].row != row);
+        app->osk_sel = idx;
+        return;
+    }
+    row = wrapi(row + dr, OSK_ROWS);
+    for (int i = 0; i < n; i++)
+        if (k[i].row == row && col >= k[i].col && col < k[i].col + k[i].span) {
+            app->osk_sel = i;
+            return;
+        }
+    for (int i = n - 1; i >= 0; i--) /* past the row's last key */
+        if (k[i].row == row) {
+            app->osk_sel = i;
+            return;
+        }
+}
+
+static void text_cancel(np_app *app)
+{
+    if (app->text_purpose == NP_TEXT_RENAME_SLOT) {
+        np_app_open_page(app, NP_PAGE_SLOT_MENU);
+        app->sel = SM_RENAME;
+    } else {
+        open_slots_at(app, -1);
+    }
+}
+
+static void text_commit(np_app *app)
+{
+    const char *problem = np_slot_name_problem(app->text);
+    if (problem) {
+        SDL_strlcpy(app->text_error, problem, sizeof app->text_error);
+        return;
+    }
+    np_game g = app->slots_game;
+    int existing = np_slot_list_find(&app->slots, app->text);
+    char name[NP_SLOT_NAME_MAX + 1];
+    SDL_strlcpy(name, app->text, sizeof name);
+    if (app->text_purpose == NP_TEXT_NEW_SLOT) {
+        if (existing >= 0) {
+            SDL_strlcpy(app->text_error, "A slot with that name already exists.", sizeof app->text_error);
+            return;
+        }
+        if (np_storage_slot_create(g, name)) {
+            SDL_snprintf(app->text_error, sizeof app->text_error, "Cannot create it: %s", SDL_GetError());
+            return;
+        }
+        SDL_Log("created save slot \"%s\" for %s", name, np_game_id(g));
+        np_app_refresh_slots(app, name);
+        np_app_start_game(app, g, name);
+        return;
+    }
+    const np_slot_info *s = cur_slot(app);
+    if (!s)
+        return;
+    char old[NP_SLOT_NAME_MAX + 1];
+    SDL_strlcpy(old, s->name, sizeof old);
+    if (existing >= 0 && existing != app->slot_sel) {
+        SDL_strlcpy(app->text_error, "A slot with that name already exists.", sizeof app->text_error);
+        return;
+    }
+    if (SDL_strcmp(old, name)) {
+        if (np_storage_slot_rename(g, old, name)) {
+            SDL_snprintf(app->text_error, sizeof app->text_error, "Cannot rename it: %s", SDL_GetError());
+            return;
+        }
+        if (np_slot_name_eq(app->opt.last_slot[g], old)) {
+            SDL_strlcpy(app->opt.last_slot[g], name, sizeof app->opt.last_slot[g]);
+            app->options_dirty = 1;
+        }
+        SDL_Log("renamed save slot \"%s\" to \"%s\"", old, name);
+    }
+    np_app_refresh_slots(app, name);
+    np_app_open_page(app, NP_PAGE_SLOT_MENU);
+}
+
+static void text_type(np_app *app, int code)
+{
+    size_t len = SDL_strlen(app->text);
+    app->text_error[0] = '\0';
+    switch (code) {
+    case OSK_DEL:
+        if (len)
+            app->text[len - 1] = '\0';
+        break;
+    case OSK_OK: text_commit(app); break;
+    case OSK_CANCEL: text_cancel(app); break;
+    default:
+        if (code == OSK_SPACE)
+            code = ' ';
+        if (len < NP_SLOT_NAME_MAX && np_slot_char_ok((unsigned char)code)) {
+            app->text[len] = (char)code;
+            app->text[len + 1] = '\0';
+        }
+        break;
+    }
+}
+
+static void draw_text_page(np_app *app)
+{
+    page_frame f;
+    begin_page(app, &f, app->text_purpose == NP_TEXT_NEW_SLOT ? "New save slot" : "Rename save slot");
+    float x = f.panel.x + 2 * f.cw, y = f.list_y;
+    SDL_FRect box = {x, y - 4 * f.s, (NP_SLOT_NAME_MAX + 2) * f.cw, f.lh + 4 * f.s};
+    box.w = SDL_min(box.w, f.panel.w - 4 * f.cw);
+    np_ui_fill(app, box, (SDL_Color){0, 0, 0, 160});
+    np_ui_frame(app, box, f.s, accent);
+    char shown[NP_SLOT_NAME_MAX + 2];
+    int blink = (SDL_GetTicks() / 500) % 2 == 0;
+    SDL_snprintf(shown, sizeof shown, "%s%s", app->text, blink ? "_" : "");
+    text_clip(app, x + f.cw * 0.5f, y, f.s, shown, (int)(box.w / f.cw) - 1, white);
+    y += 1.5f * f.lh;
+    if (app->text_error[0])
+        text_clip(app, x, y, f.s, app->text_error, f.cols, warn);
+    y += 1.5f * f.lh;
+
+    osk_key k[80];
+    int n = osk_keys(k);
+    app->osk_sel = SDL_clamp(app->osk_sel, 0, n - 1);
+    float avail_h = f.panel.y + f.panel.h - 4 * f.lh - y;
+    float cell = SDL_min((f.panel.w - 4 * f.cw) / OSK_COLS, avail_h / OSK_ROWS);
+    float ts = SDL_max(1.0f, floorf(cell / 16.0f));
+    for (int i = 0; i < n; i++) {
+        SDL_FRect r = {x + (float)k[i].col * cell, y + (float)k[i].row * cell, (float)k[i].span * cell - 2 * f.s,
+                       cell - 2 * f.s};
+        char label[8];
+        switch (k[i].code) {
+        case OSK_SPACE: SDL_strlcpy(label, "Spc", sizeof label); break;
+        case OSK_DEL: SDL_strlcpy(label, "Del", sizeof label); break;
+        case OSK_OK: SDL_strlcpy(label, "OK", sizeof label); break;
+        case OSK_CANCEL: SDL_strlcpy(label, "Esc", sizeof label); break;
+        default: label[0] = (char)k[i].code, label[1] = '\0'; break;
+        }
+        float tw = (float)SDL_strlen(label) * 8 * ts;
+        int sel = i == app->osk_sel;
+        np_ui_fill(app, r, sel ? (SDL_Color){255, 205, 80, 70} : (SDL_Color){255, 255, 255, 18});
+        if (sel)
+            np_ui_frame(app, r, f.s, accent);
+        np_ui_text(app, r.x + (r.w - tw) * 0.5f, r.y + (r.h - 8 * ts) * 0.5f, ts, label, sel ? accent : white);
+        hit_add(app, r, HIT_OSK + i);
+    }
+    end_page(app, &f, "Type or pick keys. Enter: OK  Esc: cancel", 0);
+}
+
+/* Keyboard while naming a slot: typed text arrives as SDL_EVENT_TEXT_INPUT;
+ * every key press is consumed so bindings and hotkeys stay out of the way. */
+static int text_capture_event(np_app *app, const SDL_Event *e)
+{
+    if (e->type == SDL_EVENT_TEXT_INPUT) {
+        for (const char *p = e->text.text; *p; p++)
+            text_type(app, (unsigned char)*p);
+        return 1;
+    }
+    if (e->type != SDL_EVENT_KEY_DOWN)
+        return e->type == SDL_EVENT_KEY_UP;
+    switch (e->key.scancode) {
+    case SDL_SCANCODE_RETURN:
+    case SDL_SCANCODE_KP_ENTER: text_commit(app); break;
+    case SDL_SCANCODE_ESCAPE: text_cancel(app); break;
+    case SDL_SCANCODE_BACKSPACE: text_type(app, OSK_DEL); break;
+    case SDL_SCANCODE_UP: osk_move(app, -1, 0); break;
+    case SDL_SCANCODE_DOWN: osk_move(app, 1, 0); break;
+    case SDL_SCANCODE_LEFT: osk_move(app, 0, -1); break;
+    case SDL_SCANCODE_RIGHT: osk_move(app, 0, 1); break;
+    default: break;
+    }
+    return 1;
+}
+
 /* ---- dispatch ---------------------------------------------------------- */
 
 static void page_back(np_app *app)
 {
     np_page from = app->page;
+    switch (from) {
+    case NP_PAGE_SLOTS: np_app_open_page(app, NP_PAGE_NONE); return;
+    case NP_PAGE_SLOT_MENU: open_slots_at(app, app->slot_sel); return;
+    case NP_PAGE_CONFIRM: confirm_activate(app, 0); return;
+    case NP_PAGE_TEXT: text_cancel(app); return;
+    default: break;
+    }
     np_page to = from == NP_PAGE_OPTIONS ? NP_PAGE_NONE : app->page_parent;
     np_app_open_page(app, to);
     if (to == NP_PAGE_OPTIONS) {
@@ -691,6 +1176,47 @@ static void page_back(np_app *app)
         for (int i = 0; i < n; i++)
             if (items[i] == (from == NP_PAGE_CONTROLS ? OPT_CONTROLS : OPT_ABOUT))
                 app->sel = i;
+    }
+}
+
+static void slot_pages_command(np_app *app, np_menu_cmd cmd)
+{
+    slot_row rows[NP_MAX_SLOTS + 3];
+    switch (app->page) {
+    case NP_PAGE_SLOTS: {
+        int n = slots_rows(app, rows);
+        if (cmd == NP_CMD_UP || cmd == NP_CMD_DOWN)
+            app->sel = wrapi(app->sel + (cmd == NP_CMD_UP ? -1 : 1), n);
+        else if (cmd == NP_CMD_CONFIRM)
+            slots_activate(app, app->sel);
+        break;
+    }
+    case NP_PAGE_SLOT_MENU:
+        if (cmd == NP_CMD_UP || cmd == NP_CMD_DOWN)
+            app->sel = wrapi(app->sel + (cmd == NP_CMD_UP ? -1 : 1), SM_COUNT);
+        else if (cmd == NP_CMD_CONFIRM)
+            slot_menu_activate(app, app->sel);
+        break;
+    case NP_PAGE_CONFIRM:
+        if (cmd == NP_CMD_LEFT || cmd == NP_CMD_RIGHT || cmd == NP_CMD_UP || cmd == NP_CMD_DOWN)
+            app->sel = !app->sel;
+        else if (cmd == NP_CMD_CONFIRM)
+            confirm_activate(app, app->sel == 1);
+        break;
+    case NP_PAGE_TEXT: {
+        osk_key k[80];
+        int n = osk_keys(k);
+        switch (cmd) {
+        case NP_CMD_UP: osk_move(app, -1, 0); break;
+        case NP_CMD_DOWN: osk_move(app, 1, 0); break;
+        case NP_CMD_LEFT: osk_move(app, 0, -1); break;
+        case NP_CMD_RIGHT: osk_move(app, 0, 1); break;
+        case NP_CMD_CONFIRM: text_type(app, k[SDL_clamp(app->osk_sel, 0, n - 1)].code); break;
+        default: break;
+        }
+        break;
+    }
+    default: break;
     }
 }
 
@@ -703,12 +1229,20 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
             launcher_command(app, cmd);
         return;
     }
+    if (cmd == NP_CMD_CLOSE && app->page == NP_PAGE_TEXT) {
+        text_commit(app); /* Start on a gamepad: done typing */
+        return;
+    }
     if (cmd == NP_CMD_CLOSE) {
         np_app_open_page(app, NP_PAGE_NONE);
         return;
     }
     if (cmd == NP_CMD_BACK) {
         page_back(app);
+        return;
+    }
+    if (app->page >= NP_PAGE_SLOTS) {
+        slot_pages_command(app, cmd);
         return;
     }
     if (app->page == NP_PAGE_OPTIONS) {
@@ -751,11 +1285,15 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
 
 static void select_hit(np_app *app, int id)
 {
+    if (id >= HIT_OSK) {
+        app->osk_sel = id - HIT_OSK;
+        return;
+    }
     if (id >= HIT_SCROLL_UP)
         return;
     if (app->page == NP_PAGE_NONE)
         app->launcher_sel = id;
-    else if (app->page == NP_PAGE_OPTIONS)
+    else if (app->page == NP_PAGE_OPTIONS || app->page >= NP_PAGE_SLOTS)
         app->sel = id;
     else if (app->page == NP_PAGE_CONTROLS) {
         app->sel = id / 4;
@@ -786,8 +1324,19 @@ static void activate_hit(np_app *app, int id, int dir)
         return;
     }
     select_hit(app, id);
-    if (app->page == NP_PAGE_NONE) {
+    if (id >= HIT_OSK) {
+        osk_key k[80];
+        int n = osk_keys(k);
+        if (id - HIT_OSK < n)
+            text_type(app, k[id - HIT_OSK].code);
+    } else if (app->page == NP_PAGE_NONE) {
         launcher_activate(app, id);
+    } else if (app->page == NP_PAGE_SLOTS) {
+        slots_activate(app, id);
+    } else if (app->page == NP_PAGE_SLOT_MENU) {
+        slot_menu_activate(app, id);
+    } else if (app->page == NP_PAGE_CONFIRM) {
+        confirm_activate(app, id == 1);
     } else if (app->page == NP_PAGE_OPTIONS) {
         int items[OPT_COUNT], n = options_items(app, items);
         if (id < n)
@@ -837,13 +1386,18 @@ void np_ui_draw(np_app *app)
     case NP_PAGE_OPTIONS: draw_options(app); break;
     case NP_PAGE_CONTROLS: draw_controls(app); break;
     case NP_PAGE_ABOUT: draw_about(app); break;
+    case NP_PAGE_SLOTS: draw_slots(app); break;
+    case NP_PAGE_SLOT_MENU: draw_slot_menu(app); break;
+    case NP_PAGE_CONFIRM: draw_confirm(app); break;
+    case NP_PAGE_TEXT: draw_text_page(app); break;
     default: break;
     }
     if (app->toast[0] && SDL_GetTicksNS() < app->toast_until) {
         float s = np_ui_scale(app);
-        float w = (float)SDL_strlen(app->toast) * 8 * s + 16 * s;
+        int cols = (int)((app->out_w - 32 * s) / (8 * s));
+        float w = (float)SDL_min((int)SDL_strlen(app->toast), cols) * 8 * s + 16 * s;
         SDL_FRect r = {floorf((app->out_w - w) * 0.5f), 8 * s, w, 16 * s};
         np_ui_fill(app, r, (SDL_Color){0, 0, 0, 190});
-        np_ui_text(app, r.x + 8 * s, r.y + 4 * s, s, app->toast, white);
+        text_clip(app, r.x + 8 * s, r.y + 4 * s, s, app->toast, cols, white);
     }
 }
