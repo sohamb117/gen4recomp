@@ -22,7 +22,9 @@ async function ensureSchema() {
     migrationTimer = setTimeout(() => void ensureSchema(), 15000).unref();
   }
 }
-void ensureSchema();
+// Production deployments migrate once using Neon's direct connection.
+// Local development keeps the automatic startup migration.
+if (process.env.MIGRATE_ON_START !== "false") void ensureSchema();
 const server = createApp({
   pool,
   origins: (process.env.APP_ORIGINS || "http://127.0.0.1:5175").split(","),

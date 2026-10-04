@@ -135,10 +135,14 @@ No database, secret, IAM grant, or Cloud Run revision was provisioned for this
 feature. SQL Admin and Secret Manager APIs were enabled during preparation;
 these alone do not create database instances.
 
-The existing static deployment script remains unchanged. Cloud UI is enabled
-only for development or `VITE_CLOUD_SAVES=true` builds. `NP_WITH_SAVE_API=1`
-opts staging into the combined nginx/Node image for local testing. Do not deploy
-the API image until a database provider is configured and validated.
-See [local setup](../server/README.md). `DATABASE_URL` supplies a future Postgres
-connection without cloud-vendor-specific code. CockroachDB has not been qualified;
+Cloud UI is enabled only for development or `VITE_CLOUD_SAVES=true` builds.
+`NP_WITH_SAVE_API=1` opts into the combined nginx/Node image. The deployment
+script now also accepts `NP_DATABASE_SECRET` and `NP_APP_ORIGINS`, migrates through
+the direct Neon connection, and configures the existing service with pooled runtime
+access. See [local and production setup](../server/README.md). Deployment requires
+the database credential in Secret Manager and a secret-scoped accessor grant for
+the runtime identity. Neon project `bold-sound-30444568`, branch `production`, is
+linked locally; the original paid Cloud SQL plan remains cancelled.
+`DATABASE_URL` supplies a Postgres connection without cloud-vendor-specific code.
+CockroachDB has not been qualified;
 its migrations and transaction retry behavior must be checked before switching.

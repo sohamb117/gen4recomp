@@ -1,6 +1,7 @@
-# Local account/save backend
+# Account/save backend
 
-No cloud database is provisioned. The existing public site is unchanged.
+The production deployment targets the linked Neon project and existing Cloud Run service.
+Local development retains a separate Postgres container.
 
 From the repository root, using Node 22+ and OrbStack/Docker:
 
@@ -54,7 +55,31 @@ For Vite, start the API with `DATABASE_URL`, `COOKIE_SECURE=false`, and
 `APP_ORIGINS=http://127.0.0.1:5175`, then run Vite on port 5175. It proxies `/api`
 to 127.0.0.1:8081. Cloud UI is on for development; production builds require
 `VITE_CLOUD_SAVES=true`. `NP_WITH_SAVE_API=1` opts the staging script into the
-combined image. The default GCP staging/deployment remains static.
+combined image. The default GCP staging/deployment remains static unless opted in.
+
+## Production deployment
+
+The root `.env.local` is populated by `neon link` / `neon env pull` and must stay
+untracked. Store its pooled `DATABASE_URL` in GCP Secret Manager and grant
+`roles/secretmanager.secretAccessor` on that secret only to the Cloud Run service
+account. Never include credentials in the frontend build or Docker context.
+
+```sh
+NP_WITH_SAVE_API=1 \
+NP_DATABASE_SECRET=pokeweb-neon-database-url:1 \
+NP_APP_ORIGINS=https://pokeweb.morisoba.moe,https://nativeplat-hd77ubjexa-ue.a.run.app \
+bash web/scripts/deploy-gcp.sh
+node --env-file=.env.local web/server/verify-deployment.mjs https://pokeweb.morisoba.moe
+```
+
+Run `npm --prefix web ci` and `npm --prefix web/server ci` first if dependencies
+were cleaned. The deployment script runs the frontend tests/build, packages the
+API, uploads the image, and applies the checked-in schema through the direct Neon
+connection before changing Cloud Run. Runtime traffic uses the pooled connection;
+startup migrations are disabled in production. Local startup migrations remain on.
+The verification script creates temporary accounts, checks save readback against
+Neon, and deletes only its own fixtures. It does not run the destructive integration
+suite against production.
 
 ## Future database deployment
 
