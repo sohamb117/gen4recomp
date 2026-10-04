@@ -1,0 +1,29 @@
+--- a/src/overlay005/fieldmap.c
++++ b/src/overlay005/fieldmap.c
+@@ -672,6 +672,8 @@
+     PlttTransfer_Free();
+ }
+ 
++#include "pc_np_options.h"
++
+ static void ov5_021D15F4(FieldSystem *fieldSystem)
+ {
+     MtxFx44 v0, v1;
+@@ -686,6 +688,9 @@
+         Camera_ComputeViewMatrixWithRoll();
+     } else {
+         Camera_ComputeViewMatrix();
++        /* pc port: survey zoom / tilt (pc/src/pc_np_field.c); nothing at
++         * the defaults. */
++        pc_np_camera_begin(fieldSystem->camera);
+     }
+ 
+     PokeRadar_ClearIfAllOutOfView(fieldSystem);
+@@ -723,6 +728,7 @@
+ 
+     ov5_021D1B18(fieldSystem->unk_04->unk_04);
+     G3_RequestSwapBuffers(GX_SORTMODE_AUTO, gBufferMode);
++    pc_np_camera_end(fieldSystem->camera);
+ }
+ 
+ void ov5_021D16F4(FieldSystem *fieldSystem, BOOL param1)

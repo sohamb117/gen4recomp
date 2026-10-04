@@ -1,0 +1,30 @@
+--- a/src/battle/battle_lib.c
++++ b/src/battle/battle_lib.c
+@@ -7585,6 +7585,8 @@
+  * @param move
+  * @return TRUE if the move is on its damaging turn, FALSE otherwise
+  */
++#include "pc_np_options.h"
++
+ static BOOL MoveIsOnDamagingTurn(BattleContext *battleCtx, int move)
+ {
+     switch (MOVE_DATA(move).effect) {
+@@ -7597,8 +7599,18 @@
+     case BATTLE_EFFECT_DIVE:
+     case BATTLE_EFFECT_DIG:
+     case BATTLE_EFFECT_BOUNCE:
++        return battleCtx->battleStatusMask & SYSCTL_LAST_OF_MULTI_TURN;
+     case BATTLE_EFFECT_FLINCH_BURN_HIT: // BUG: Fire Fang Always Bypasses Wonder Guard (see docs/bugs_and_glitches.md)
++        /* pc port: NP_RULE_FIX_BUGS applies the documented fix, Shadow
++         * Force in the list and Fire Fang out of it. */
++        if (pc_np_opt.rules & PC_NP_RULE_FIX_BUGS) {
++            return TRUE;
++        }
+         return battleCtx->battleStatusMask & SYSCTL_LAST_OF_MULTI_TURN;
++    case BATTLE_EFFECT_SHADOW_FORCE:
++        if (pc_np_opt.rules & PC_NP_RULE_FIX_BUGS) {
++            return battleCtx->battleStatusMask & SYSCTL_LAST_OF_MULTI_TURN;
++        }
+         break;
+     }
+ 

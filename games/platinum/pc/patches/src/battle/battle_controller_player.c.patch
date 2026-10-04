@@ -1,0 +1,25 @@
+--- a/src/battle/battle_controller_player.c
++++ b/src/battle/battle_controller_player.c
+@@ -43,6 +43,8 @@
+ #include "sound_playback.h"
+ #include "trainer_info.h"
+ 
++#include "pc_np_options.h"
++
+ #include "res/battle/scripts/sub_seq.naix"
+ 
+ enum BattleControllerState {
+@@ -843,7 +845,12 @@
+                 if (battleCtx->battleMons[battler].statusVolatile & VOLATILE_CONDITION_RAGE
+                     && Battler_SelectedMove(battleCtx, battler) != MOVE_RAGE) {
+                     // bug: clears every volatile status except rage
+-                    battleCtx->battleMons[battler].statusVolatile &= VOLATILE_CONDITION_RAGE;
++                    // (pc port: NP_RULE_FIX_BUGS clears only rage, the documented fix)
++                    if (pc_np_opt.rules & PC_NP_RULE_FIX_BUGS) {
++                        battleCtx->battleMons[battler].statusVolatile &= ~VOLATILE_CONDITION_RAGE;
++                    } else {
++                        battleCtx->battleMons[battler].statusVolatile &= VOLATILE_CONDITION_RAGE;
++                    }
+                 }
+             }
+ 

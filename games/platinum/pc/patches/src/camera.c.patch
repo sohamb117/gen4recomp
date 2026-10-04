@@ -1,0 +1,16 @@
+--- a/src/camera.c
++++ b/src/camera.c
+@@ -14,6 +14,13 @@
+ 
+ static Camera *sActiveCamera = NULL;
+ 
++/* pc port: the field camera options (pc/src/pc_np_field.c) override the
++ * view of whichever camera is active, which only this file knows. */
++Camera *pc_np_active_camera(void)
++{
++    return sActiveCamera;
++}
++
+ static void Camera_AdjustPositionAroundTarget(Camera *camera)
+ {
+     u16 angleX = -camera->angle.x;

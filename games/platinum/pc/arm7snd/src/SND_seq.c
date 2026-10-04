@@ -15,6 +15,16 @@
 #define SND_TRACK_MUTE_MODE_MUTE_RELEASE 2
 #define SND_TRACK_MUTE_MODE_MUTE_STOP 3
 
+/*
+ * Port addition: extra attenuation per sequence player, in the same tenths
+ * of a decibel as SNDi_DecibelSquareTable, added in TrackUpdateChannel. The
+ * host's music/effects volume (pc/src/pc_np_options.c, which sees this as
+ * arm7_SND_HostPlayerDecay) writes it; all zero, the default, is the
+ * driver's own mix bit for bit. Kept apart from player->volume because
+ * sequence command C2 rewrites that.
+ */
+s16 SND_HostPlayerDecay[SND_PLAYER_COUNT];
+
 enum SNDSeqProc
 {
     SND_PROC_SKIP_NOTES = 0,
@@ -683,7 +693,7 @@ static void TrackUpdateChannel(struct SNDTrack *track, struct SNDPlayer *player,
     int pitch;
 
     vol = SNDi_DecibelSquareTable[track->volume] + SNDi_DecibelSquareTable[track->expression] +
-          SNDi_DecibelSquareTable[player->volume];
+          SNDi_DecibelSquareTable[player->volume] + SND_HostPlayerDecay[player->playerId & (SND_PLAYER_COUNT - 1)];
 
     fader = track->extFader + player->extFader;
 

@@ -1,0 +1,52 @@
+--- a/src/trainer_data.c
++++ b/src/trainer_data.c
+@@ -20,6 +20,17 @@
+ #include "savedata_misc.h"
+ #include "string_gf.h"
+ 
++#include "pc_np_options.h"
++
++/* pc port: NP_RULE_FIX_BUGS recomputes stats once the form is set (the
++ * documented fix for trainers' Wormadam, Rotom, ... using base-form stats). */
++#define PC_NP_FIX_FORM_STATS(mon)                    \
++    do {                                             \
++        if (pc_np_opt.rules & PC_NP_RULE_FIX_BUGS) { \
++            Pokemon_CalcStats(mon);                  \
++        }                                            \
++    } while (0)
++
+ static void TrainerData_BuildParty(FieldBattleDTO *dto, int battler, enum HeapID heapID);
+ 
+ void Trainer_Encounter(FieldBattleDTO *dto, const SaveData *saveData, enum HeapID heapID)
+@@ -216,6 +227,7 @@
+             Pokemon_InitWith(mon, species, trmon[i].level, ivs, TRUE, rnd, OTID_NOT_SHINY, 0);
+             Pokemon_SetBallSeal(trmon[i].cbSeal, mon, heapID);
+             Pokemon_SetValue(mon, MON_DATA_FORM, &form);
++            PC_NP_FIX_FORM_STATS(mon);
+             Party_AddPokemon(dto->parties[battler], mon);
+         }
+ 
+@@ -246,6 +258,7 @@
+ 
+             Pokemon_SetBallSeal(trmon[i].cbSeal, mon, heapID);
+             Pokemon_SetValue(mon, MON_DATA_FORM, &form);
++            PC_NP_FIX_FORM_STATS(mon);
+             Party_AddPokemon(dto->parties[battler], mon);
+         }
+ 
+@@ -272,6 +285,7 @@
+             Pokemon_SetValue(mon, MON_DATA_HELD_ITEM, &trmon[i].item);
+             Pokemon_SetBallSeal(trmon[i].cbSeal, mon, heapID);
+             Pokemon_SetValue(mon, MON_DATA_FORM, &form);
++            PC_NP_FIX_FORM_STATS(mon);
+             Party_AddPokemon(dto->parties[battler], mon);
+         }
+ 
+@@ -303,6 +317,7 @@
+ 
+             Pokemon_SetBallSeal(trmon[i].cbSeal, mon, heapID);
+             Pokemon_SetValue(mon, MON_DATA_FORM, &form);
++            PC_NP_FIX_FORM_STATS(mon);
+             Party_AddPokemon(dto->parties[battler], mon);
+         }
+ 

@@ -32,6 +32,7 @@
 #elif defined(__wasm__)
 #include <np_core.h>    /* NP_KEY_*, the runtime's key bits */
 #include <pc_wasm.h>
+#include "pc_np_options.h"
 #else
 #include <fcntl.h>
 #include <signal.h>
@@ -67,369 +68,7 @@ extern void pc_input_live(unsigned keys, int touch_on,
 extern unsigned pc_audio_read(int16_t *dst, unsigned frames);
 extern void pc_audio_set_sink(void (*sink)(void));
 
-#if defined(__wasm__)
-/*
- * wasm32 (pc/Makefile.wasm): the runtime is the window.
- *
- * There is no second process here: core/include/np_guest_abi.h's frame
- * descriptor (pc_wasm_frame, pc/wasm/include/pc_wasm.h) replaces the shared
- * page, and np_host_vblank() replaces both the seqlock and the pacer. The
- * guest is parked inside that call while the runtime reads the frame, so the
- * descriptor needs no lock and the pixels need no copy; and the runtime
- * decides when the next frame starts, so this side never sleeps.
- *
- * What crosses, and how it maps onto what the shm channel carries:
- *
- *   screen   The 2D engine's own surfaces (pc_video.h: 0x00RRGGBB words,
- *            row-major, 256x192), which is the descriptor's format already,
- *            so they are handed over by address, top screen first by
- *            POWCNT1's DSEL the way pc_video.c orders a frame dump.
- *   audio    The ring the viewer is fed, PC_VIEW_AUDIO_FRAMES (2^15) u32
- *            stereo frames with left in the low half, filled from the same
- *            pc_audio sink the moment the mixer produces, at
- *            PC_VIEW_AUDIO_RATE. Here it is a static rather than part of a
- *            page; the descriptor's audio_head is the page's.
- *   input    NP_KEY_* are PAD_Read's bits, which is what pc_input_live()
- *            takes. Applied only when the runtime's input CHANGES: the
- *            page's in_seq rule ("live input wins over the script only
- *            once a viewer has actually spoken"), so a runtime that never
- *            touches the pad leaves a PC_INPUT script in charge.
- *   quit     in_quit ends the run where a closed viewer window does, here
- *            at the frame boundary, with exit(0): the atexit handlers
- *            (pc_card_backup_sync stores the save, the dumps close) run.
- *
- * Not carried: wide and HD frames (PC_ASPECT / PC_HD3D are refused to
- * native, below), turbo (the runtime's to decide), the viewer pid (there is
- * no viewer process), and the lid (see view_wasm_input).
- */
-_Static_assert(NP_KEY_A == PC_VIEW_KEY_A && NP_KEY_B == PC_VIEW_KEY_B
-               && NP_KEY_SELECT == PC_VIEW_KEY_SELECT
-               && NP_KEY_START == PC_VIEW_KEY_START
-               && NP_KEY_RIGHT == PC_VIEW_KEY_RIGHT
-               && NP_KEY_LEFT == PC_VIEW_KEY_LEFT
-               && NP_KEY_UP == PC_VIEW_KEY_UP
-               && NP_KEY_DOWN == PC_VIEW_KEY_DOWN
-               && NP_KEY_R == PC_VIEW_KEY_R && NP_KEY_L == PC_VIEW_KEY_L
-               && NP_KEY_X == PC_VIEW_KEY_X && NP_KEY_Y == PC_VIEW_KEY_Y,
-               "NP_KEY_* must be PAD_Read's bits, which pc_input_live takes");
-#define VIEW_WASM_KEYS 0x0FFFu      /* A..Y; DEBUG is not a player's key */
-
-_Static_assert((PC_VIEW_AUDIO_FRAMES & (PC_VIEW_AUDIO_FRAMES - 1)) == 0,
-               "the descriptor's audio ring must be a power of two");
-
-static uint32_t view_audio[PC_VIEW_AUDIO_FRAMES];
-static uint32_t view_audio_head;    /* stereo frames ever written */
-
-/* The sink: view_publish_audio's loop below, aimed at the static ring. */
-static void view_publish_audio(void)
-{
-    int16_t buf[256 * 2];
-    unsigned got;
-
-    while ((got = pc_audio_read(buf, sizeof buf / (2 * sizeof buf[0]))) != 0) {
-        unsigned i;
-
-        for (i = 0; i < got; i++) {
-            view_audio[(view_audio_head + i) % PC_VIEW_AUDIO_FRAMES] =
-                (uint32_t)(uint16_t)buf[i * 2 + 0] |
-                ((uint32_t)(uint16_t)buf[i * 2 + 1] << 16);
-        }
-        view_audio_head += got;
-    }
-}
-
-int pc_view_init(void)
-{
-    const char *name = getenv("PC_VIEW");
-
-    if (name != NULL && name[0] != '\0') {
-        fprintf(stderr, "pc-view: PC_VIEW=%s ignored: on wasm every frame"
-                        " goes to the runtime\n", name);
-    }
-    pc_audio_set_sink(view_publish_audio);
-    return 0;
-}
-
-/* Native only: the surfaces handed over are the 256x192 ones. Refused to
- * native rather than half-applied, because widening the frustum without
- * publishing the margins would be a picture that disagrees with itself. */
-void pc_view_set_hd(int scale)
-{
-    if (scale > 1) {
-        fprintf(stderr, "pc-view: PC_HD3D=%d is not supported on wasm;"
-                        " rendering at native resolution\n", scale);
-    }
-    pc_gpu3d_set_hd(1);
-    pc_gpu3d_soft_set_scale(1);
-    pc_gpu2d_set_hd(1);
-}
-
-void pc_view_set_aspect(int width)
-{
-    if (width == PC_VIEW_ASPECT_AUTO || width > PC_VIEW_W) {
-        fprintf(stderr, "pc-view: PC_ASPECT is not supported on wasm;"
-                        " rendering at native width\n");
-    }
-    pc_gpu3d_set_wide(0);
-    pc_gpu3d_soft_set_width(PC_VIEW_W);
-}
-
-/*
- * The runtime's half, read once the guest is resumed. The lid is read and
- * not applied: closing it would set the hinge bit pc_input.c keeps open on
- * every host, and the game answers that with PM_GoSleepMode (src/main.c),
- * which masks every IRQ but FIFO/timer and then spins on the VBlank count
- * (NitroSDK libraries/spi/src/pm.c, PM_GoSleepMode); the port delivers
- * VBlank only from OS_Halt, so that spin would never end and neither would
- * the frame the runtime is waiting for.
- */
-static void view_wasm_input(const np_frame_desc *d)
-{
-    static uint32_t last_keys, last_touch, last_x, last_y;
-    static int said_lid;
-    uint32_t keys = d->in_keys & VIEW_WASM_KEYS;
-    uint32_t touch = d->in_touch != 0;
-    uint32_t x = 0, y = 0;
-
-    if (touch) {
-        x = d->in_touch_x < PC_VIEW_W ? d->in_touch_x : PC_VIEW_W - 1;
-        y = d->in_touch_y < PC_VIEW_H ? d->in_touch_y : PC_VIEW_H - 1;
-    }
-    /* Zero is "never spoken", the page's in_seq == 0. */
-    if (keys != last_keys || touch != last_touch
-        || x != last_x || y != last_y) {
-        last_keys = keys;
-        last_touch = touch;
-        last_x = x;
-        last_y = y;
-        pc_input_live(keys, (int)touch, x, y);
-    }
-
-    if (d->in_lid != 0 && !said_lid) {
-        said_lid = 1;
-        fprintf(stderr, "pc-view: lid close ignored, sleep mode is not"
-                        " emulated\n");
-    }
-
-    if (d->in_quit != 0) {
-        fprintf(stderr, "pc-view: the runtime asked to quit, ending the"
-                        " run.\n");
-        exit(0);
-    }
-}
-
-void pc_view_publish(uint64_t frame)
-{
-    np_frame_desc *d = &pc_wasm_frame;
-    const int upper = pc_video_upper_engine();
-
-    d->screen[0] = (uint32_t)(uintptr_t)pc_video_surface(upper);
-    d->screen[1] = (uint32_t)(uintptr_t)pc_video_surface(
-        upper == PC_VIDEO_MAIN ? PC_VIDEO_SUB : PC_VIDEO_MAIN);
-    d->width = PC_VIEW_W;
-    d->height = PC_VIEW_H;
-    d->stride = PC_VIEW_W;
-    d->frame_lo = (uint32_t)frame;
-    d->frame_hi = (uint32_t)(frame >> 32);
-
-    d->audio_ring = (uint32_t)(uintptr_t)view_audio;
-    d->audio_ring_frames = PC_VIEW_AUDIO_FRAMES;
-    d->audio_head = view_audio_head;
-    d->audio_rate = PC_VIEW_AUDIO_RATE;
-
-    np_host_vblank(d);
-
-    view_wasm_input(d);
-}
-
-#else /* !__wasm__: the shared page */
-
-
-static struct pc_view_shm *view_map;
-
-/* Is that process still running? The two spellings of one question. */
-static int pc_view_pid_alive(unsigned pid)
-{
-#if defined(_WIN32)
-    return pcw_pid_alive(pid);
-#else
-    /* Signal 0 checks for existence without delivering anything; EPERM means
-     * a process that exists and is not ours, which is still alive. */
-    if (pid == 0) return 0;
-    if (kill((pid_t)pid, 0) == 0) return 1;
-    return errno == EPERM;
-#endif
-}
-
-/*
- * Widescreen, and what it is not. The port owns the projection, so a wider
- * picture is a wider field of view rather than stretched pixels: the clip
- * matrix's X column is scaled by 256/W and the viewport is scaled the other
- * way, which leaves the centre 256 columns exactly the native picture and
- * gives the margins world that was always there and never had pixels. All
- * of that lives in pc/hw; this file is where the extra columns reach the
- * window.
- *
- * The margins are the rasterizer's, not the 2D ENGINE'S. Only the 3D layer
- * can draw outside 256 columns; a background is a tile map that ends, and
- * a sprite's X is nine bits of hardware. So the margins carry 3D where the
- * screen is showing 3D and black everywhere else, which is what the
- * letterbox would have been.
- *
- * What it costs, stated plainly: the box test culls against the frustum
- * actually being drawn, so a game that asks "is this cube visible" gets the
- * wider answer and may keep an object a native run would have dropped. That
- * is the point of the feature and it is also the one way it can change a
- * run, which is why the instruments that compare runs refuse to start
- * beside it and why frame dumps stay native whatever this is set to.
- */
-#define VIEW_ASPECT_DEADBAND 4      /* columns; a drag should not flicker */
-
-static int view_aspect_mode;        /* 0 native, a width, or _AUTO       */
 static int view_wide_debug;         /* PC_WIDE_DEBUG: report the gate     */
-static int view_wide_w;             /* the width in force: 0 = native    */
-static int view_hd_s = 1;           /* internal resolution: 1..HD_MAX    */
-
-static void view_apply_width(int w)
-{
-    if (w <= PC_VIEW_W) {
-        w = PC_VIEW_W;
-    } else if (w > (int)PC_VIEW_WIDE_MAX) {
-        w = (int)PC_VIEW_WIDE_MAX;
-    }
-    w &= ~1;    /* even, so the two margins are the same size */
-    /* Both halves, always together: the geometry engine widens the frustum
-     * and the rasterizer widens the surface it draws into. One without the
-     * other is a picture that disagrees with itself. */
-    pc_gpu3d_set_wide(w > PC_VIEW_W ? w : 0);
-    pc_gpu3d_soft_set_width(w);
-    view_wide_w = w > PC_VIEW_W ? w : 0;
-}
-
-/*
- * Internal resolution. Set once, before any guest code runs: the rasterizer's
- * buffers are sized from it and the published frame's shape follows, so this
- * is not something a run changes halfway through.
- */
-void pc_view_set_hd(int scale)
-{
-    view_hd_s = (scale >= 2 && scale <= (int)PC_VIEW_HD_MAX) ? scale : 1;
-    pc_gpu3d_set_hd(view_hd_s);
-    pc_gpu3d_soft_set_scale(view_hd_s);
-    /* The 2D engine records what the compose below needs, which native
-     * pixels the 3D layer is showing at, and what it is over, and only
-     * while this is on. */
-    pc_gpu2d_set_hd(view_hd_s);
-}
-
-void pc_view_set_aspect(int width)
-{
-    view_aspect_mode = width;
-    {
-        const char *d = getenv("PC_WIDE_DEBUG");
-
-        /* 1 reports every two seconds, which is enough to see what a scene
-         * is doing; "all" reports every frame, which is what a flicker
-         * needs, a gate that opens and closes is invisible at any
-         * cadence coarser than the thing it is gating. */
-        view_wide_debug = d == NULL ? 0 : (strcmp(d, "all") == 0 ? 2 : 1);
-    }
-    if (width == PC_VIEW_ASPECT_AUTO) {
-        /* Native until a viewer says otherwise, so a run started adaptive
-         * with no window is a native run rather than a guess. */
-        view_apply_width(PC_VIEW_W);
-    } else {
-        view_apply_width(width);
-    }
-}
-
-/*
- * The adaptive half: the viewer publishes the shape of the area one screen
- * is drawn into, and this turns it into the width the next frame renders
- * at. Sampled at the frame boundary, after the frame that was rendered at
- * the old width has been published, so `width` in the page always describes
- * the pixels beside it.
- */
-static void view_retune_aspect(void)
-{
-    int want, cur;
-
-    if (view_aspect_mode != PC_VIEW_ASPECT_AUTO || view_map == NULL) {
-        return;
-    }
-    want = pc_view_aspect_width(view_map->in_aspect_n, view_map->in_aspect_d);
-    cur = view_wide_w != 0 ? view_wide_w : PC_VIEW_W;
-    if (want == cur) {
-        return;
-    }
-    /* A window being dragged crosses a width every few pixels; re-rendering
-     * at each one is free, but a picture whose field of view breathes while
-     * the frame stands still is not. Move on a real change or not at all. */
-    if (want > cur - VIEW_ASPECT_DEADBAND && want < cur + VIEW_ASPECT_DEADBAND
-        && want != PC_VIEW_W && want != (int)PC_VIEW_WIDE_MAX) {
-        return;
-    }
-    view_apply_width(want);
-}
-
-/*
- * The window is the session. The port has no window of its own, the viewer
- * holds it, so closing that window is a person ending the run, and a port
- * that kept going would be a process nobody can see, still holding its
- * channel, still writing its save. They pile up: the next run finds the name
- * taken and refuses, which is how this was noticed at all.
- *
- * Two ways a window goes away and both are handled. The viewer says so on
- * its way out, which is the ordinary case; and if it dies without saying
- * anything (killed, crashed, machine shutting down) the pid it published
- * stops being a live process, which is checked about once a second because
- * asking more often costs a syscall a frame to learn nothing.
- *
- * Ending the run means exit(0) and not a kill: the atexit handlers close the
- * frame dump and the WAV header, and the state report runs. The save is
- * already durable, pc_card_rom.c pwrites it when the game saves, not at
- * exit, so nothing is lost either way, but a run that ends tidily is one
- * whose instruments still say what happened.
- *
- * PC_KEEP_ALIVE=1 turns this off, for attaching a viewer to a long headless
- * run and detaching again without ending it.
- */
-static void view_check_viewer_gone(void)
-{
-    static int keep_alive = -1;
-    static unsigned watched_pid;
-    static uint64_t n;
-    const char *why = NULL;
-
-    if (keep_alive < 0) {
-        const char *env = getenv("PC_KEEP_ALIVE");
-
-        keep_alive = env != NULL && env[0] != '\0' && env[0] != '0';
-    }
-    if (keep_alive || view_map == NULL) {
-        return;
-    }
-
-    if (view_map->in_quit != 0) {
-        why = "the window closed";
-    } else {
-        /* A pid is only worth watching once one has been published, and only
-         * worth re-checking now and then. */
-        if (view_map->in_viewer_pid != 0) {
-            watched_pid = view_map->in_viewer_pid;
-        }
-        if (watched_pid != 0 && (n++ % 60) == 0
-            && !pc_view_pid_alive(watched_pid)) {
-            why = "the viewer is gone";
-        }
-    }
-
-    if (why != NULL) {
-        fprintf(stderr, "pc-view: %s, ending the run.\n", why);
-        exit(0);
-    }
-}
-
 /*
  * One wide frame: each screen's rows packed at `pw` columns with the native
  * surface in the centre and the rasterizer's own wide line in the margins,
@@ -676,6 +315,456 @@ static void view_compose_hd(uint32_t pw, uint32_t s)
     hd_cursor = 0;
     if (view_hd_serial()) hd_band(&J, 0, 1);
     else                  pc_workers_run(hd_band, &J);
+}
+
+#if defined(__wasm__)
+/*
+ * wasm32 (pc/Makefile.wasm): the runtime is the window.
+ *
+ * There is no second process here: core/include/np_guest_abi.h's frame
+ * descriptor (pc_wasm_frame, pc/wasm/include/pc_wasm.h) replaces the shared
+ * page, and np_host_vblank() replaces both the seqlock and the pacer. The
+ * guest is parked inside that call while the runtime reads the frame, so the
+ * descriptor needs no lock and the pixels need no copy; and the runtime
+ * decides when the next frame starts, so this side never sleeps.
+ *
+ * What crosses, and how it maps onto what the shm channel carries:
+ *
+ *   screen   The 2D engine's own surfaces (pc_video.h: 0x00RRGGBB words,
+ *            row-major, 256x192), which is the descriptor's format already,
+ *            so they are handed over by address, top screen first by
+ *            POWCNT1's DSEL the way pc_video.c orders a frame dump. With
+ *            NP_OPT_RENDER_SCALE above 1 or NP_OPT_WIDESCREEN on, the
+ *            native compose above (view_compose_wide / view_compose_hd)
+ *            runs and its buffers go instead, at (256 or PC_VIEW_WIDE_MAX)
+ *            x scale by 192 x scale.
+ *   audio    The ring the viewer is fed, PC_VIEW_AUDIO_FRAMES (2^15) u32
+ *            stereo frames with left in the low half, filled from the same
+ *            pc_audio sink the moment the mixer produces, at
+ *            PC_VIEW_AUDIO_RATE. Here it is a static rather than part of a
+ *            page; the descriptor's audio_head is the page's.
+ *   input    NP_KEY_* are PAD_Read's bits, which is what pc_input_live()
+ *            takes. Applied only when the runtime's input CHANGES: the
+ *            page's in_seq rule ("live input wins over the script only
+ *            once a viewer has actually spoken"), so a runtime that never
+ *            touches the pad leaves a PC_INPUT script in charge.
+ *   quit     in_quit ends the run where a closed viewer window does, here
+ *            at the frame boundary, with exit(0): the atexit handlers
+ *            (pc_card_backup_sync stores the save, the dumps close) run.
+ *   options  opt[] (pc/include/pc_np_options.h) is read once vblank
+ *            returns, status[] written before the next one; the game-side
+ *            work for both (field state, quick save) is pc_np_frame.
+ *
+ * Not carried: PC_ASPECT / PC_HD3D (the runtime's options decide the
+ * picture's shape here, below), turbo (the runtime's to decide), the viewer
+ * pid (there is no viewer process), and the lid (see view_wasm_input).
+ */
+_Static_assert(NP_KEY_A == PC_VIEW_KEY_A && NP_KEY_B == PC_VIEW_KEY_B
+               && NP_KEY_SELECT == PC_VIEW_KEY_SELECT
+               && NP_KEY_START == PC_VIEW_KEY_START
+               && NP_KEY_RIGHT == PC_VIEW_KEY_RIGHT
+               && NP_KEY_LEFT == PC_VIEW_KEY_LEFT
+               && NP_KEY_UP == PC_VIEW_KEY_UP
+               && NP_KEY_DOWN == PC_VIEW_KEY_DOWN
+               && NP_KEY_R == PC_VIEW_KEY_R && NP_KEY_L == PC_VIEW_KEY_L
+               && NP_KEY_X == PC_VIEW_KEY_X && NP_KEY_Y == PC_VIEW_KEY_Y,
+               "NP_KEY_* must be PAD_Read's bits, which pc_input_live takes");
+#define VIEW_WASM_KEYS 0x0FFFu      /* A..Y; DEBUG is not a player's key */
+
+_Static_assert((PC_VIEW_AUDIO_FRAMES & (PC_VIEW_AUDIO_FRAMES - 1)) == 0,
+               "the descriptor's audio ring must be a power of two");
+
+static uint32_t view_audio[PC_VIEW_AUDIO_FRAMES];
+static uint32_t view_audio_head;    /* stereo frames ever written */
+
+/* The sink: view_publish_audio's loop below, aimed at the static ring. */
+static void view_publish_audio(void)
+{
+    int16_t buf[256 * 2];
+    unsigned got;
+
+    while ((got = pc_audio_read(buf, sizeof buf / (2 * sizeof buf[0]))) != 0) {
+        unsigned i;
+
+        for (i = 0; i < got; i++) {
+            view_audio[(view_audio_head + i) % PC_VIEW_AUDIO_FRAMES] =
+                (uint32_t)(uint16_t)buf[i * 2 + 0] |
+                ((uint32_t)(uint16_t)buf[i * 2 + 1] << 16);
+        }
+        view_audio_head += got;
+    }
+}
+
+int pc_view_init(void)
+{
+    const char *name = getenv("PC_VIEW");
+
+    if (name != NULL && name[0] != '\0') {
+        fprintf(stderr, "pc-view: PC_VIEW=%s ignored: on wasm every frame"
+                        " goes to the runtime\n", name);
+    }
+    pc_audio_set_sink(view_publish_audio);
+    return 0;
+}
+
+/* The environment's PC_HD3D / PC_ASPECT are refused: on wasm the shape of
+ * the picture is the runtime's NP_OPT_RENDER_SCALE and NP_OPT_WIDESCREEN,
+ * which can change on any frame (view_wasm_geometry). Both start native. */
+void pc_view_set_hd(int scale)
+{
+    if (scale > 1) {
+        fprintf(stderr, "pc-view: PC_HD3D=%d ignored on wasm; the runtime's"
+                        " render scale option sets it\n", scale);
+    }
+    pc_gpu3d_set_hd(1);
+    pc_gpu3d_soft_set_scale(1);
+    pc_gpu2d_set_hd(1);
+}
+
+void pc_view_set_aspect(int width)
+{
+    if (width == PC_VIEW_ASPECT_AUTO || width > PC_VIEW_W) {
+        fprintf(stderr, "pc-view: PC_ASPECT ignored on wasm; the runtime's"
+                        " widescreen option sets it\n");
+    }
+    pc_gpu3d_set_wide(0);
+    pc_gpu3d_soft_set_width(PC_VIEW_W);
+}
+
+/* The picture's shape in force: the frame being drawn now was set up with
+ * these, so this frame publishes at them. */
+static uint32_t view_wasm_pw = PC_VIEW_W;   /* 256 or PC_VIEW_WIDE_MAX */
+static uint32_t view_wasm_s = 1;            /* 1..PC_VIEW_HD_MAX      */
+
+/*
+ * Re-aim the renderer at the options for the NEXT frame: called right
+ * after vblank, before any of that frame's geometry is submitted, so the
+ * geometry engine's viewport and the rasterizer's buffers change together
+ * (the same two halves view_apply_width and pc_view_set_hd keep together
+ * on the native side). Widening the frustum is the one setting that can
+ * change a run (the box test culls against it); at the defaults nothing
+ * here is called.
+ */
+static void view_wasm_geometry(void)
+{
+    const uint32_t s = pc_np_opt.render_scale;
+    const uint32_t pw = pc_np_opt.widescreen ? PC_VIEW_WIDE_MAX : PC_VIEW_W;
+
+    if (pw != view_wasm_pw) {
+        pc_gpu3d_set_wide(pw > PC_VIEW_W ? (int)pw : 0);
+        pc_gpu3d_soft_set_width((int)pw);
+        view_wasm_pw = pw;
+    }
+    if (s != view_wasm_s) {
+        pc_gpu3d_set_hd((int)s);
+        pc_gpu3d_soft_set_scale((int)s);
+        pc_gpu2d_set_hd((int)s);
+        view_wasm_s = s;
+    }
+}
+
+static void view_wasm_options(const np_frame_desc *d)
+{
+    pc_np_options o;
+
+    o.bgm_volume = d->opt[NP_OPT_BGM_VOLUME];
+    o.se_volume = d->opt[NP_OPT_SE_VOLUME];
+    o.render_scale = d->opt[NP_OPT_RENDER_SCALE];
+    o.widescreen = d->opt[NP_OPT_WIDESCREEN];
+    o.camera_zoom = d->opt[NP_OPT_CAMERA_ZOOM];
+    o.camera_tilt = (int)d->opt[NP_OPT_CAMERA_TILT];
+    o.quicksave_seq = d->opt[NP_OPT_QUICKSAVE_SEQ];
+    o.rules = d->opt[NP_OPT_RULES];
+    o.text_instant = d->opt[NP_OPT_TEXT_INSTANT];
+    pc_np_options_set(&o);
+    view_wasm_geometry();
+}
+
+static void view_wasm_status(np_frame_desc *d)
+{
+    if (pc_np_frame != NULL) pc_np_frame();
+    d->status[NP_STAT_LINK_ACTIVE] = pc_np_stat.link_active;
+    d->status[NP_STAT_FIELD_READY] = pc_np_stat.field_ready;
+    d->status[NP_STAT_QUICKSAVE_SEQ] = pc_np_stat.quicksave_seq;
+    d->status[NP_STAT_QUICKSAVE_RESULT] = pc_np_stat.quicksave_result;
+    d->status[NP_STAT_MAP_ID] = pc_np_stat.map_id;
+}
+
+/*
+ * The runtime's half, read once the guest is resumed. The lid is read and
+ * not applied: closing it would set the hinge bit pc_input.c keeps open on
+ * every host, and the game answers that with PM_GoSleepMode (src/main.c),
+ * which masks every IRQ but FIFO/timer and then spins on the VBlank count
+ * (NitroSDK libraries/spi/src/pm.c, PM_GoSleepMode); the port delivers
+ * VBlank only from OS_Halt, so that spin would never end and neither would
+ * the frame the runtime is waiting for.
+ */
+static void view_wasm_input(const np_frame_desc *d)
+{
+    static uint32_t last_keys, last_touch, last_x, last_y;
+    static int said_lid;
+    uint32_t keys = d->in_keys & VIEW_WASM_KEYS;
+    uint32_t touch = d->in_touch != 0;
+    uint32_t x = 0, y = 0;
+
+    if (touch) {
+        x = d->in_touch_x < PC_VIEW_W ? d->in_touch_x : PC_VIEW_W - 1;
+        y = d->in_touch_y < PC_VIEW_H ? d->in_touch_y : PC_VIEW_H - 1;
+    }
+    /* Zero is "never spoken", the page's in_seq == 0. */
+    if (keys != last_keys || touch != last_touch
+        || x != last_x || y != last_y) {
+        last_keys = keys;
+        last_touch = touch;
+        last_x = x;
+        last_y = y;
+        pc_input_live(keys, (int)touch, x, y);
+    }
+
+    if (d->in_lid != 0 && !said_lid) {
+        said_lid = 1;
+        fprintf(stderr, "pc-view: lid close ignored, sleep mode is not"
+                        " emulated\n");
+    }
+
+    if (d->in_quit != 0) {
+        fprintf(stderr, "pc-view: the runtime asked to quit, ending the"
+                        " run.\n");
+        exit(0);
+    }
+}
+
+void pc_view_publish(uint64_t frame)
+{
+    np_frame_desc *d = &pc_wasm_frame;
+    const int upper = pc_video_upper_engine();
+    const uint32_t pw = view_wasm_pw, s = view_wasm_s;
+
+    view_wasm_status(d);
+
+    if (pw == PC_VIEW_W && s == 1) {
+        d->screen[0] = (uint32_t)(uintptr_t)pc_video_surface(upper);
+        d->screen[1] = (uint32_t)(uintptr_t)pc_video_surface(
+            upper == PC_VIDEO_MAIN ? PC_VIDEO_SUB : PC_VIDEO_MAIN);
+    } else {
+        /* The compose reads engine A/B as [0]/[1]; the descriptor wants
+         * the upper screen first. */
+        const uint32_t *buf0, *buf1;
+
+        view_compose_wide(pw);
+        if (s > 1) {
+            view_compose_hd(pw, s);
+            buf0 = view_hd_buf[0];
+            buf1 = view_hd_buf[1];
+        } else {
+            buf0 = view_wide_buf[0];
+            buf1 = view_wide_buf[1];
+        }
+        d->screen[0] = (uint32_t)(uintptr_t)(upper == PC_VIDEO_MAIN ? buf0 : buf1);
+        d->screen[1] = (uint32_t)(uintptr_t)(upper == PC_VIDEO_MAIN ? buf1 : buf0);
+    }
+    d->width = pw * s;
+    d->height = PC_VIEW_H * s;
+    d->stride = pw * s;
+    d->frame_lo = (uint32_t)frame;
+    d->frame_hi = (uint32_t)(frame >> 32);
+
+    d->audio_ring = (uint32_t)(uintptr_t)view_audio;
+    d->audio_ring_frames = PC_VIEW_AUDIO_FRAMES;
+    d->audio_head = view_audio_head;
+    d->audio_rate = PC_VIEW_AUDIO_RATE;
+
+    np_host_vblank(d);
+
+    view_wasm_input(d);
+    view_wasm_options(d);
+}
+
+#else /* !__wasm__: the shared page */
+
+
+static struct pc_view_shm *view_map;
+
+/* Is that process still running? The two spellings of one question. */
+static int pc_view_pid_alive(unsigned pid)
+{
+#if defined(_WIN32)
+    return pcw_pid_alive(pid);
+#else
+    /* Signal 0 checks for existence without delivering anything; EPERM means
+     * a process that exists and is not ours, which is still alive. */
+    if (pid == 0) return 0;
+    if (kill((pid_t)pid, 0) == 0) return 1;
+    return errno == EPERM;
+#endif
+}
+
+/*
+ * Widescreen, and what it is not. The port owns the projection, so a wider
+ * picture is a wider field of view rather than stretched pixels: the clip
+ * matrix's X column is scaled by 256/W and the viewport is scaled the other
+ * way, which leaves the centre 256 columns exactly the native picture and
+ * gives the margins world that was always there and never had pixels. All
+ * of that lives in pc/hw; this file is where the extra columns reach the
+ * window.
+ *
+ * The margins are the rasterizer's, not the 2D ENGINE'S. Only the 3D layer
+ * can draw outside 256 columns; a background is a tile map that ends, and
+ * a sprite's X is nine bits of hardware. So the margins carry 3D where the
+ * screen is showing 3D and black everywhere else, which is what the
+ * letterbox would have been.
+ *
+ * What it costs, stated plainly: the box test culls against the frustum
+ * actually being drawn, so a game that asks "is this cube visible" gets the
+ * wider answer and may keep an object a native run would have dropped. That
+ * is the point of the feature and it is also the one way it can change a
+ * run, which is why the instruments that compare runs refuse to start
+ * beside it and why frame dumps stay native whatever this is set to.
+ */
+#define VIEW_ASPECT_DEADBAND 4      /* columns; a drag should not flicker */
+
+static int view_aspect_mode;        /* 0 native, a width, or _AUTO       */
+static int view_wide_w;             /* the width in force: 0 = native    */
+static int view_hd_s = 1;           /* internal resolution: 1..HD_MAX    */
+
+static void view_apply_width(int w)
+{
+    if (w <= PC_VIEW_W) {
+        w = PC_VIEW_W;
+    } else if (w > (int)PC_VIEW_WIDE_MAX) {
+        w = (int)PC_VIEW_WIDE_MAX;
+    }
+    w &= ~1;    /* even, so the two margins are the same size */
+    /* Both halves, always together: the geometry engine widens the frustum
+     * and the rasterizer widens the surface it draws into. One without the
+     * other is a picture that disagrees with itself. */
+    pc_gpu3d_set_wide(w > PC_VIEW_W ? w : 0);
+    pc_gpu3d_soft_set_width(w);
+    view_wide_w = w > PC_VIEW_W ? w : 0;
+}
+
+/*
+ * Internal resolution. Set once, before any guest code runs: the rasterizer's
+ * buffers are sized from it and the published frame's shape follows, so this
+ * is not something a run changes halfway through.
+ */
+void pc_view_set_hd(int scale)
+{
+    view_hd_s = (scale >= 2 && scale <= (int)PC_VIEW_HD_MAX) ? scale : 1;
+    pc_gpu3d_set_hd(view_hd_s);
+    pc_gpu3d_soft_set_scale(view_hd_s);
+    /* The 2D engine records what the compose below needs, which native
+     * pixels the 3D layer is showing at, and what it is over, and only
+     * while this is on. */
+    pc_gpu2d_set_hd(view_hd_s);
+}
+
+void pc_view_set_aspect(int width)
+{
+    view_aspect_mode = width;
+    {
+        const char *d = getenv("PC_WIDE_DEBUG");
+
+        /* 1 reports every two seconds, which is enough to see what a scene
+         * is doing; "all" reports every frame, which is what a flicker
+         * needs, a gate that opens and closes is invisible at any
+         * cadence coarser than the thing it is gating. */
+        view_wide_debug = d == NULL ? 0 : (strcmp(d, "all") == 0 ? 2 : 1);
+    }
+    if (width == PC_VIEW_ASPECT_AUTO) {
+        /* Native until a viewer says otherwise, so a run started adaptive
+         * with no window is a native run rather than a guess. */
+        view_apply_width(PC_VIEW_W);
+    } else {
+        view_apply_width(width);
+    }
+}
+
+/*
+ * The adaptive half: the viewer publishes the shape of the area one screen
+ * is drawn into, and this turns it into the width the next frame renders
+ * at. Sampled at the frame boundary, after the frame that was rendered at
+ * the old width has been published, so `width` in the page always describes
+ * the pixels beside it.
+ */
+static void view_retune_aspect(void)
+{
+    int want, cur;
+
+    if (view_aspect_mode != PC_VIEW_ASPECT_AUTO || view_map == NULL) {
+        return;
+    }
+    want = pc_view_aspect_width(view_map->in_aspect_n, view_map->in_aspect_d);
+    cur = view_wide_w != 0 ? view_wide_w : PC_VIEW_W;
+    if (want == cur) {
+        return;
+    }
+    /* A window being dragged crosses a width every few pixels; re-rendering
+     * at each one is free, but a picture whose field of view breathes while
+     * the frame stands still is not. Move on a real change or not at all. */
+    if (want > cur - VIEW_ASPECT_DEADBAND && want < cur + VIEW_ASPECT_DEADBAND
+        && want != PC_VIEW_W && want != (int)PC_VIEW_WIDE_MAX) {
+        return;
+    }
+    view_apply_width(want);
+}
+
+/*
+ * The window is the session. The port has no window of its own, the viewer
+ * holds it, so closing that window is a person ending the run, and a port
+ * that kept going would be a process nobody can see, still holding its
+ * channel, still writing its save. They pile up: the next run finds the name
+ * taken and refuses, which is how this was noticed at all.
+ *
+ * Two ways a window goes away and both are handled. The viewer says so on
+ * its way out, which is the ordinary case; and if it dies without saying
+ * anything (killed, crashed, machine shutting down) the pid it published
+ * stops being a live process, which is checked about once a second because
+ * asking more often costs a syscall a frame to learn nothing.
+ *
+ * Ending the run means exit(0) and not a kill: the atexit handlers close the
+ * frame dump and the WAV header, and the state report runs. The save is
+ * already durable, pc_card_rom.c pwrites it when the game saves, not at
+ * exit, so nothing is lost either way, but a run that ends tidily is one
+ * whose instruments still say what happened.
+ *
+ * PC_KEEP_ALIVE=1 turns this off, for attaching a viewer to a long headless
+ * run and detaching again without ending it.
+ */
+static void view_check_viewer_gone(void)
+{
+    static int keep_alive = -1;
+    static unsigned watched_pid;
+    static uint64_t n;
+    const char *why = NULL;
+
+    if (keep_alive < 0) {
+        const char *env = getenv("PC_KEEP_ALIVE");
+
+        keep_alive = env != NULL && env[0] != '\0' && env[0] != '0';
+    }
+    if (keep_alive || view_map == NULL) {
+        return;
+    }
+
+    if (view_map->in_quit != 0) {
+        why = "the window closed";
+    } else {
+        /* A pid is only worth watching once one has been published, and only
+         * worth re-checking now and then. */
+        if (view_map->in_viewer_pid != 0) {
+            watched_pid = view_map->in_viewer_pid;
+        }
+        if (watched_pid != 0 && (n++ % 60) == 0
+            && !pc_view_pid_alive(watched_pid)) {
+            why = "the viewer is gone";
+        }
+    }
+
+    if (why != NULL) {
+        fprintf(stderr, "pc-view: %s, ending the run.\n", why);
+        exit(0);
+    }
 }
 
 /*

@@ -26,8 +26,8 @@ started · `n/a` no DS equivalent (reason given).
 |---|---|---|
 | Screen layout / position | Stacked, side-by-side, single, hybrid, swap, rotation | wip (shell) |
 | Integer / fit scaling, filters | Same | wip (shell) |
-| Survey zoom + void fill | Field camera zoom-out through the game's camera API; letterbox fill | planned |
-| Perspective tilt | Field camera pitch control (the overworld is already 3D) | planned |
+| Survey zoom + void fill | Field camera zoom-out through the game's camera API; letterbox fill | wip (core: `NP_OPT_CAMERA_ZOOM` 64..1024, Platinum; UI: shell) |
+| Perspective tilt | Field camera pitch control (the overworld is already 3D) | wip (core: `NP_OPT_CAMERA_TILT` ±45°, Platinum; UI: shell) |
 | Colour modes | n/a (Game Boy palettes); replaced by display filters | n/a |
 | GBC screen effects / Shader FX | Two-slot post-process chain (LCD grid, CRT, scanlines, presets) | planned |
 | Performance presets | Presets for 3D resolution, shaders, frame cap | planned |
@@ -36,14 +36,14 @@ started · `n/a` no DS equivalent (reason given).
 | Widescreen battle layout | Dual-screen battle layout presets | planned |
 | Screenshots | F12 PNG of both screens | wip (shell) |
 | Pokédex diploma / printer export | Export the in-game diploma and Trainer Card as images | planned |
-| Upscaled 3D | Internal 3D resolution multiplier | planned |
+| Upscaled 3D | Internal 3D resolution multiplier | wip (core: `NP_OPT_RENDER_SCALE` 1..4 and `NP_OPT_WIDESCREEN`, live, Platinum; UI: shell) |
 
 ## Audio
 
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
 | ROM-derived music/SFX | Native SDAT playback through the port's ARM7 sound driver + SPU model | wip (core) |
-| Music / SFX volume | Master + BGM/SE volumes | planned (master: shell) |
+| Music / SFX volume | Master + BGM/SE volumes | wip (core: `NP_OPT_BGM_VOLUME` / `NP_OPT_SE_VOLUME` per sequence player, Platinum; master + UI: shell) |
 | Music low-pass filter | Optional output filter | planned |
 | Fast-forward audio | Natural pitch at 1x, muted or dropped above | wip (shell) |
 | Lifecycle pause on mobile | Same | wip (shell) |
@@ -59,14 +59,14 @@ started · `n/a` no DS equivalent (reason given).
 | Touch layout editor, haptics | Same | planned |
 | Touch skins (Delta / RetroArch import) | Delta DS skins (`com.rileytestut.delta.game.ds`) | planned |
 | Speed hotkeys, up to very high speeds | 1x-8x and uncapped | wip (shell) |
-| F1 quick save / F2 quick load | Trigger the in-game save from the field; reload last save | planned |
+| F1 quick save / F2 quick load | Trigger the in-game save from the field; reload last save | wip (core: `NP_OPT_QUICKSAVE_SEQ` runs the start menu's save without UI, `NP_STAT_QUICKSAVE_RESULT`; UI: shell) |
 
 ## Saves
 
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
 | Normal save, atomic writes, backups | Backup chip image, atomic write + `.bak` | wip (shell/core) |
-| Semantic checkpoints | Whole-machine snapshots at frame boundaries (in-session) | planned |
+| Semantic checkpoints | Whole-machine snapshots at frame boundaries (in-session) | wip (core: `np_core_state_*`, ~6.9 MB, ~5 ms on macOS; not on Windows yet; UI: shell) |
 | Cloud / device sync | Self-hostable sync server + client | planned |
 | Portable mode (`portable.txt`) | Same | wip (shell) |
 
@@ -98,8 +98,8 @@ started · `n/a` no DS equivalent (reason given).
 
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
-| Faithful / modern rulesets | Faithful vs. documented bug fixes (decomp `docs/bugs_and_glitches.md`) | planned |
-| Text speed, battle animations, battle style | Native game options (already in DPPt) | done (in game) |
+| Faithful / modern rulesets | Faithful vs. documented bug fixes (decomp `docs/bugs_and_glitches.md`) | wip (core: `NP_RULE_FIX_BUGS` fixes Fire Fang/Wonder Guard, Rage, trainer form stats in Platinum) |
+| Text speed, battle animations, battle style | Native game options (already in DPPt), plus instant text (`NP_OPT_TEXT_INSTANT`) | done (in game); instant text wip (core) |
 | Event tickets (Emerald) | Event items for DPPt events (e.g. Member Card, Oak's Letter, Azure Flute) via Mystery Gift | planned |
 
 ## Mods

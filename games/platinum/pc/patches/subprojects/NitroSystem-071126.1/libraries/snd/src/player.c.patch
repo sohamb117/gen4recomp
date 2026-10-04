@@ -23,3 +23,18 @@
      heap->player = seqPlayer;
      seqPlayer->heap = heap;
  
+@@ -955,3 +964,14 @@
+ 
+     InsertPrioList(seqPlayer);
+ }
++
++/* pc port: which sound-archive player (the SDAT's PLAYER_*) drives driver
++ * player `i` right now, or -1; the runtime's music / effects volume
++ * (pc/src/pc_np_options.c) attenuates each driver player by it. */
++int pc_np_seq_player_group(int i)
++{
++    if (i < 0 || i >= SND_PLAYER_NUM || sSeqPlayer[i].player == NULL) {
++        return -1;
++    }
++    return (int)(sSeqPlayer[i].player - sPlayer);
++}
