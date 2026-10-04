@@ -29,7 +29,7 @@ an existing save. The domain mapping does not alter the game binaries or pacing.
 ## Service
 
 - Project: `nativeplat-20261004`; region: `us-east1`; service: `nativeplat`.
-- Cloud Run serves an nginx container from Artifact Registry `nativeplat/web`.
+- Cloud Run serves nginx and the Node save API from Artifact Registry `nativeplat/web`.
 - Runtime identity: `nativeplat-web@nativeplat-20261004.iam.gserviceaccount.com`,
   with no project-level roles. The site has public invocation access.
 - One CPU, 512 MiB RAM, concurrency 80, zero minimum / three maximum instances.
@@ -59,10 +59,10 @@ This is distribution obfuscation, not DRM or access control: the public manifest
 deliberately supplies the decryption key and IV. A player can recover the bytes
 from the browser. Existing downloaded copies cannot be revoked.
 
-Saves stay in that browser, with import/export available. Localhost
-saves do not migrate automatically to the production origin; export/import a
-`.sav`. Use the primary site URL consistently because browser storage is scoped
-to the origin.
+Local saves stay in that browser, with import/export available. Optional accounts
+can sync one save per account to Neon through Save manager. Localhost saves do not
+migrate automatically to the production origin; export/import a `.sav`. Browser
+storage remains scoped to the origin.
 
 Gzip sidecars and immutable hashed asset filenames reduce repeat downloads.
 Encrypted packages are already compressed before encryption and do not get
@@ -113,7 +113,7 @@ measurements; browser/hardware timings will vary. Results are generated under
 
 ## Platinum recomp update — 2026-10-04
 
-Live revision: `nativeplat-00004-x52` (100% traffic).
+Historical revision: `nativeplat-00004-x52`.
 Image: `us-east1-docker.pkg.dev/nativeplat-20261004/nativeplat/web@sha256:17ca3e7ec4ba5c7aa507c00cb89f7fcadf2f414da3988cc3c4aad3fc380eadac`.
 
 Adds Preferences → Recomp options and Platinum quick save/F1. Diamond retains
@@ -131,8 +131,8 @@ requested title and description.
 
 The optional account/save API is implemented and tested against local Postgres.
 The user cancelled the paid Cloud SQL plan before any instance was created.
-No database, secret, IAM grant, or Cloud Run revision was provisioned for this
-feature. SQL Admin and Secret Manager APIs were enabled during preparation;
+At that stage, no database, secret, IAM grant, or Cloud Run revision was provisioned
+for this feature. SQL Admin and Secret Manager APIs were enabled during preparation;
 these alone do not create database instances.
 
 Cloud UI is enabled only for development or `VITE_CLOUD_SAVES=true` builds.
@@ -146,3 +146,26 @@ linked locally; the original paid Cloud SQL plan remains cancelled.
 `DATABASE_URL` supplies a Postgres connection without cloud-vendor-specific code.
 CockroachDB has not been qualified;
 its migrations and transaction retry behavior must be checked before switching.
+
+## Neon cloud saves live — 2026-10-04
+
+Revision `nativeplat-00005-sx4` serves 100% of traffic on
+https://pokeweb.morisoba.moe and the existing Google service URLs.
+Image: `us-east1-docker.pkg.dev/nativeplat-20261004/nativeplat/web@sha256:907e2f47779d988b5b648d96075dd3a4ab787d93a38080823d97c043dd285bd1`.
+
+The pooled Neon connection is injected from Secret Manager
+`pokeweb-neon-database-url:1`, with certificate verification enabled. Only the
+existing runtime identity was granted secret accessor on that secret; it gained
+no project-level role. The schema was applied through the direct Neon connection
+before deploying; startup migrations are disabled on Cloud Run.
+
+Playing remains public. Save manager offers username/password accounts without
+email verification. Sign in, then use **Save to cloud** on a local slot to connect
+it. Subsequent in-game saves sync in the background. There is one cloud save total
+per account; loading it creates a local slot and conflicts preserve local data.
+
+Live validation passed: secure session cookies, registration, login/logout,
+account isolation, invalid-upload rejection, stale-revision protection, replacing
+a save while retaining one database row, and byte-for-byte Neon storage/readback.
+Only temporary verification accounts were used and all were removed. Both hosted
+cartridges and cores passed integrity checks and 600 runtime frames each.
