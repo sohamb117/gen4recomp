@@ -295,6 +295,108 @@ void np_app_open_slots(np_app *app, np_game game)
     np_app_open_page(app, NP_PAGE_SLOTS);
 }
 
+/* ---- GBA slot (Pal Park) ---------------------------------------------------- */
+
+/* The save file of the inserted cartridge: the one picked, else the ROM's
+ * name with .sav (what mGBA and most emulators use). */
+static void gba_save_path(const np_app *app, char *out, size_t n)
+{
+    if (app->opt.gba_save[0]) {
+        SDL_strlcpy(out, app->opt.gba_save, n);
+        return;
+    }
+    SDL_strlcpy(out, app->opt.gba_rom, n);
+    char *dot = SDL_strrchr(out, '.'), *slash = SDL_strrchr(out, '/');
+    if (dot && (!slash || dot > slash))
+        *dot = '\0';
+    SDL_strlcat(out, ".sav", n);
+}
+
+static int host_gba_rom_read(void *user, uint32_t offset, void *dst, uint32_t len)
+{
+    np_app *app = user;
+    if (SDL_SeekIO(app->gba_io, offset, SDL_IO_SEEK_SET) < 0)
+        return -1;
+    return SDL_ReadIO(app->gba_io, dst, len) == len ? 0 : -1;
+}
+
+/* Fills the chip image; a missing file is an erased chip, a short one is
+ * padded with 0xFF (an erased flash reads 0xFF). */
+static int host_gba_save_load(void *user, void *dst, uint32_t len)
+{
+    np_app *app = user;
+    char path[1100];
+    gba_save_path(app, path, sizeof path);
+    size_t size;
+    void *data = SDL_LoadFile(path, &size);
+    if (!data)
+        return np_storage_exists(path) ? -1 : 0;
+    SDL_memset(dst, 0xFF, len);
+    SDL_memcpy(dst, data, size < len ? size : len);
+    SDL_free(data);
+    return 1;
+}
+
+/* The player's own GBA save: replaced atomically, previous kept as .bak. */
+static int host_gba_save_store(void *user, const void *src, uint32_t len)
+{
+    np_app *app = user;
+    char path[1100];
+    gba_save_path(app, path, sizeof path);
+    int r = np_storage_write_atomic(path, src, len, 1);
+    if (r)
+        np_app_toast(app, "Saving the GBA cartridge failed: %s", SDL_GetError());
+    else
+        SDL_Log("GBA save written: %s", path);
+    return r;
+}
+
+static void eject_gba(np_app *app)
+{
+    if (app->gba_io)
+        SDL_CloseIO(app->gba_io);
+    app->gba_io = NULL;
+    app->host.gba_rom_size = 0;
+    app->host.gba_rom_read = NULL;
+    app->host.gba_save_load = NULL;
+    app->host.gba_save_store = NULL;
+}
+
+/* Puts the chosen cartridge in the slot for the core about to boot (only
+ * Platinum's core has the GBA slot). A file that is not a GBA ROM leaves the
+ * slot empty. */
+static void insert_gba(np_app *app, np_game game)
+{
+    eject_gba(app);
+    if (game != NP_GAME_PLATINUM || !app->opt.gba_rom[0])
+        return;
+    app->gba_io = SDL_IOFromFile(app->opt.gba_rom, "rb");
+    Sint64 size = app->gba_io ? SDL_GetIOSize(app->gba_io) : -1;
+    uint8_t header[0xC0];
+    const char *why = NULL;
+    if (size < (Sint64)sizeof header)
+        why = "cannot read it";
+    else if (size > (Sint64)NP_GBA_ROM_MAX)
+        why = "larger than 32 MB";
+    else if (SDL_ReadIO(app->gba_io, header, sizeof header) != sizeof header || header[0xB2] != 0x96)
+        why = "not a GBA cartridge image";
+    if (why) {
+        np_app_toast(app, "GBA cartridge %s: %s", app->opt.gba_rom, why);
+        SDL_Log("GBA slot left empty: %s: %s", app->opt.gba_rom, why);
+        eject_gba(app);
+        return;
+    }
+    app->host.gba_rom_size = (uint32_t)size;
+    app->host.gba_rom_read = host_gba_rom_read;
+    app->host.gba_save_load = host_gba_save_load;
+    app->host.gba_save_store = host_gba_save_store;
+    char game_title[13] = {0};
+    SDL_memcpy(game_title, header + 0xA0, 12);
+    SDL_Log("GBA slot: %s (%s, %lld bytes)", app->opt.gba_rom, game_title, (long long)size);
+}
+
+int np_app_gba_inserted(const np_app *app) { return app->gba_io != NULL; }
+
 /* ---- game sessions ----------------------------------------------------- */
 
 static int open_core(np_app *app, np_game game, const char *slot, const np_host *host)
@@ -305,6 +407,7 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     /* Runtime content packages, read by the core at boot (mods.c). */
     app->host.content_root =
         np_mods_content_root(app, game, app->mods_root, sizeof app->mods_root) ? NULL : app->mods_root;
+    insert_gba(app, game);
     /* PC_* variables configure the port layer (debug switches such as
      * PC_TP_DEBUG); pass the process's own through, as np_headless does. */
     char **env = SDL_GetEnvironmentVariables(SDL_GetEnvironment());
@@ -320,6 +423,7 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
         SDL_snprintf(app->status, sizeof app->status, "Could not start %s: %s", np_game_title(game),
                      np_core_create_error());
         SDL_Log("%s", app->status);
+        eject_gba(app);
         return -1;
     }
     app->view = NP_VIEW_GAME;
@@ -346,6 +450,7 @@ static void close_core(np_app *app)
     if (app->rom_io)
         SDL_CloseIO(app->rom_io);
     app->rom_io = NULL;
+    eject_gba(app);
 }
 
 /* Opens a cartridge file as the host's ROM. */
@@ -603,6 +708,15 @@ void np_app_open_mod_install_dialog(np_app *app)
         SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
 }
 
+void np_app_open_gba_dialog(np_app *app, int save)
+{
+    static const SDL_DialogFileFilter rom[] = {{"GBA cartridge (*.gba)", "gba"}};
+    static const SDL_DialogFileFilter sav[] = {{"GBA save (*.sav)", "sav"}};
+    app->dialog_kind = save ? NP_PENDING_GBA_SAVE : NP_PENDING_GBA_ROM;
+    if (!autotest_dialog(app, save ? "GBA save" : "GBA cartridge"))
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, save ? sav : rom, 1, NULL, false);
+}
+
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot)
 {
     static const SDL_DialogFileFilter filters[] = {{"Raw save (*.sav)", "sav"}};
@@ -636,6 +750,21 @@ static void import_rom(np_app *app, const char *path)
     SDL_Log("import %s: %s", path, app->status);
     if (r.ok)
         app->launcher_sel = r.game;
+}
+
+/* A new cartridge or save takes effect when the core next boots: the
+ * console is off whenever cartridges are swapped. */
+static void gba_changed(np_app *app)
+{
+    app->options_dirty = 1;
+    save_options(app);
+    char save[1100];
+    gba_save_path(app, save, sizeof save);
+    if (!app->opt.gba_rom[0])
+        np_app_toast(app, "GBA slot empty%s", app->core ? " from the next boot" : "");
+    else
+        np_app_toast(app, "GBA: %s, save %s%s", base_name(app->opt.gba_rom), base_name(save),
+                     app->core ? " (from the next boot: F2 twice)" : "");
 }
 
 /* Two-step for ROMs so "Verifying" is on screen while 128 MiB is hashed. */
@@ -695,6 +824,15 @@ static void process_pending(np_app *app)
         break;
     case NP_PENDING_MOD_INSTALL:
         np_mods_install(app, path);
+        break;
+    case NP_PENDING_GBA_ROM:
+        SDL_strlcpy(app->opt.gba_rom, path, sizeof app->opt.gba_rom);
+        app->opt.gba_save[0] = '\0'; /* its own <name>.sav until another is picked */
+        gba_changed(app);
+        break;
+    case NP_PENDING_GBA_SAVE:
+        SDL_strlcpy(app->opt.gba_save, path, sizeof app->opt.gba_save);
+        gba_changed(app);
         break;
     case NP_PENDING_GIFT_IMPORT:
         if (app->editor)
@@ -1189,6 +1327,10 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.rewind_seconds = SDL_clamp(SDL_atoi(v), 0, 120);
         else if (!SDL_strcmp(kv, "sync"))
             SDL_strlcpy(t->sync_folder, v, sizeof t->sync_folder);
+        else if (!SDL_strcmp(kv, "gba"))
+            SDL_strlcpy(t->gba_rom, v, sizeof t->gba_rom);
+        else if (!SDL_strcmp(kv, "gbasave"))
+            SDL_strlcpy(t->gba_save, v, sizeof t->gba_save);
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
             if (SDL_sscanf(v, "%dx%d", &x, &y) != 2 || x < 0 || x > 255 || y < 0 || y > 191)
@@ -1608,6 +1750,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         SDL_Log("could not read %s; using defaults", app->options_path);
     if (t->sync_folder[0])
         SDL_strlcpy(app->opt.sync_folder, t->sync_folder, sizeof app->opt.sync_folder);
+    if (t->gba_rom[0])
+        SDL_strlcpy(app->opt.gba_rom, t->gba_rom, sizeof app->opt.gba_rom);
+    if (t->gba_save[0])
+        SDL_strlcpy(app->opt.gba_save, t->gba_save, sizeof app->opt.gba_save);
     if (!app->opt.station_id && t->active) {
         app->opt.station_id = 0x4E5001; /* fixed so scripted runs replay exactly */
     } else if (!app->opt.station_id) {

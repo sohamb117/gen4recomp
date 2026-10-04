@@ -204,6 +204,8 @@ enum opt_item {
     OPT_TEXT_INSTANT,
     OPT_FIX_BUGS,
     OPT_REWIND,
+    OPT_GBA_ROM,
+    OPT_GBA_SAVE,
     OPT_TOUCH,
     OPT_LAN,
     OPT_LAN_PORT,
@@ -227,7 +229,7 @@ static const char *const opt_labels[OPT_COUNT] = {
     "Effect 2", "Effect 2 intensity", "CRT curvature", "Performance", "VSync", "Display FPS cap",
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
     "Music volume", "Sound effects volume", "3D render scale", "Widescreen 3D", "Camera zoom", "Camera tilt",
-    "Instant text", "Fix cartridge bugs", "Rewind history",
+    "Instant text", "Fix cartridge bugs", "Rewind history", "GBA cartridge (Pal Park)", "GBA save",
     "Touch controls", "Local wireless (LAN)", "LAN port", "Join by IP:port", "Internet relay host:port", "Room PIN",
     "Wireless status", "Sync folder", "Sync now", "Sync status",
     "Controls...", "Mods...", "About...", "Quit to launcher", "Close",
@@ -315,6 +317,20 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
         else
             SDL_strlcpy(buf, "Off", n);
         break;
+    case OPT_GBA_ROM: {
+        const char *slash = SDL_strrchr(o->gba_rom, '/');
+        if (!o->gba_rom[0])
+            SDL_strlcpy(buf, "Empty (Enter: insert)", n);
+        else
+            SDL_snprintf(buf, n, "%s%s", slash ? slash + 1 : o->gba_rom,
+                         app->core && !np_app_gba_inserted(app) ? " (next boot)" : "");
+        break;
+    }
+    case OPT_GBA_SAVE: {
+        const char *slash = SDL_strrchr(o->gba_save, '/');
+        SDL_strlcpy(buf, o->gba_save[0] ? (slash ? slash + 1 : o->gba_save) : "<cartridge name>.sav", n);
+        break;
+    }
     case OPT_TOUCH: SDL_strlcpy(buf, touch[o->touch_controls], n); break;
     case OPT_LAN: SDL_strlcpy(buf, o->lan_enabled ? "On" : "Off", n); break;
     case OPT_LAN_PORT: SDL_snprintf(buf, n, "%d", o->lan_port); break;
@@ -423,6 +439,21 @@ static void opt_adjust(np_app *app, int item, int dir)
         np_app_open_sync_folder_dialog(app);
         return;
     case OPT_SYNC_NOW: np_sync_all(app, 0); return;
+    case OPT_GBA_ROM:
+        if (dir < 0) { /* Left ejects */
+            o->gba_rom[0] = o->gba_save[0] = '\0';
+            np_app_toast(app, "GBA slot empty%s", app->core ? " from the next boot" : "");
+            break;
+        }
+        np_app_open_gba_dialog(app, 0);
+        return;
+    case OPT_GBA_SAVE:
+        if (dir < 0) {
+            o->gba_save[0] = '\0';
+            break;
+        }
+        np_app_open_gba_dialog(app, 1);
+        return;
     case OPT_SYNC_STATUS:
         if (np_sync_conflicts(app))
             np_app_open_page(app, NP_PAGE_SYNC);

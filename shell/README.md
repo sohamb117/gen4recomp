@@ -231,6 +231,18 @@ package on or off, Left/Right move it in the load order, X twice deletes it.
 when the game boots; if a package stops the boot ("modfs: ..."), the page
 opens with the message and that package selected.
 
+## GBA cartridge (Pal Park)
+
+*Options > GBA cartridge (Pal Park)* inserts a Game Boy Advance cartridge
+image you own into Platinum's GBA slot; *GBA save* picks its save file
+(default: the cartridge's name with `.sav`, as mGBA writes it). Left ejects.
+The slot is read when the game boots, so a change applies from the next boot
+(F2 twice reloads). The core reads the ROM through `np_host.gba_rom_read`;
+the save is loaded padded with 0xFF (an erased chip) and written back
+atomically, keeping the previous file as `.sav.bak`, after the game writes
+it (Pal Park migration rewrites one Gen 3 save slot). With a National Dex
+save the main menu offers *MIGRATE FROM <game>*.
+
 ## Folder sync
 
 *Options > Sync folder* picks a folder (for example inside iCloud Drive,
@@ -284,7 +296,8 @@ and `script=F:kind:args;...` to push synthetic `key`, `text`, mouse
 `rewind=F+N` holds rewind for N iterations from iteration F; `render_scale`,
 `widescreen`, `zoom`, `tilt`, `instant_text`, `fix_bugs` and
 `rewind_seconds` set the game options. `sync=<folder>` sets the sync folder
-(only with portable storage).
+(only with portable storage). `gba=<rom>` and `gbasave=<sav>` fill the GBA
+slot; `page=mods` captures the mod manager.
 
 A press schedule is steps separated by `;` or newlines (`#` comments in files):
 `F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N

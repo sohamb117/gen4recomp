@@ -52,6 +52,8 @@ typedef enum np_pending_kind {
     NP_PENDING_CARD_EXPORT, /* PNG of the open save; pending_card is the np_card_kind */
     NP_PENDING_SYNC_FOLDER, /* path is the folder picked for sync */
     NP_PENDING_MOD_INSTALL, /* a package .zip for mods.c */
+    NP_PENDING_GBA_ROM,     /* a .gba for the GBA slot */
+    NP_PENDING_GBA_SAVE,    /* the .sav that goes with it */
 } np_pending_kind;
 
 typedef enum np_text_purpose {
@@ -141,6 +143,7 @@ typedef struct np_autotest {
     char slot[NP_SLOT_NAME_MAX + 1]; /* save slot for rom=/synthetic boots */
     int rewind_from, rewind_frames;  /* rewind=F+N: hold rewind for N iterations from F */
     char sync_folder[1024];          /* sync=<folder>: folder sync target */
+    char gba_rom[1024], gba_save[1024]; /* gba=, gbasave=: the GBA slot */
 } np_autotest;
 
 typedef struct np_app {
@@ -201,6 +204,7 @@ typedef struct np_app {
     np_game game;
     char slot[NP_SLOT_NAME_MAX + 1]; /* save slot of the running game */
     SDL_IOStream *rom_io;
+    SDL_IOStream *gba_io; /* the cartridge in the GBA slot while a core runs */
     np_host host;
     np_frame frame;
     int have_frame;
@@ -240,6 +244,10 @@ void np_app_open_gift_import_dialog(np_app *app);
 void np_app_open_card_export_dialog(np_app *app, int kind);
 void np_app_open_sync_folder_dialog(np_app *app);
 void np_app_open_mod_install_dialog(np_app *app);
+/* Options > GBA cartridge: pick a .gba, or (save) its .sav file. */
+void np_app_open_gba_dialog(np_app *app, int save);
+/* Whether the running core booted with a cartridge in the GBA slot. */
+int np_app_gba_inserted(const np_app *app);
 void np_app_apply_video_options(np_app *app);
 void np_app_open_page(np_app *app, np_page page);
 int np_app_speed(const np_app *app); /* effective multiplier, 0 = uncapped */
