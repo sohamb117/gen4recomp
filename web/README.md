@@ -7,7 +7,8 @@ inputs. Native UI work is the sibling `shell-wired/` copy.
 ## Develop
 
 Node 22.12+ (or Node 24), npm; the repo's pinned wasi-sdk + WABT for preparing
-cores/tests. The original game builds must already exist.
+cores/tests. The original game builds must already exist. `npm run build:pearl` rebuilds
+Pearl in a disposable copy for future diagnosis; this work is currently paused.
 
 ```sh
 cd web
@@ -67,6 +68,7 @@ messages and capabilities, rather than putting runtime logic in components.
 ```sh
 npm test                  # compiles original mock guest as read-only input
 npm run verify:cores      # 12,000 frames for optimized cores; 600 for legacy cores
+npm run verify:options    # real-core resolution, widescreen and save-refusal checks
 npm run smoke -- platinum 1500
 npm run build             # TypeScript and production bundle
 ```
@@ -76,13 +78,12 @@ input, render-size changes, RGB conversion, audio, save-store + dirty flush,
 save reload, ARM division edge cases, rejected ROMs, and transactional backup
 preservation. The mock guest and original game code are never edited.
 
-Current checked artifacts: Diamond passes 600 frames. The optimized Platinum
-artifact passes 12,000 measured frames plus 1,200 warm-up frames, and a
-separate 12,000-frame verification run. Both preparation recipes pass the
-fiber/input/pixel/audio/save ABI fixture. The existing Pearl artifact stalls before frame 1;
-`verify:cores` records it as blocked, and the UI disables launch while still
-allowing cartridge/save organization. This is a boot smoke gate, not a claim
-of full-game correctness. Safari has been checked with Platinum directly.
+Current release keeps the existing hosted Diamond artifact. Platinum passes a
+12,000-frame browser-runtime check and real-core resolution/quick-save checks.
+Pearl work is paused: an isolated rebuild passed early boot but a longer intro
+input test exposed a shared Diamond/Pearl heap hang. Experimental artifacts are
+excluded from the hosted release. See [DECOMP_CHANGES.md](DECOMP_CHANGES.md).
+Boot checks do not imply full-game correctness.
 
 ## Static deployment
 
@@ -118,6 +119,35 @@ The copied native shell retains its full existing features. This web frontend
 currently offers cartridges, slots, save import/export, stacked screens, handheld controls, LCD
 texture, speed, audio volume, instant text, bug-fix opt-in, keyboard/gamepad/
 touch input, fullscreen, local RTC, automatic pause, and local persistence.
+
+**Preferences → Recomp options** now exposes the current guest controls. Diamond
+and Platinum offer live 1×–4× 3D resolution and widescreen; Platinum additionally
+offers music/effects volume, field camera distance (25%–400%) and tilt (±45°),
+instant text and documented cartridge bug fixes. Platinum quick save is in the
+toolbar and on F1, using the game's own field/save rules, with success reported
+only after browser persistence. Requests outside the field are reported as refused.
+Camera and audio have original-value defaults; HD is opt-in. Controls follow the
+running game even if another cartridge is selected. Unsupported D/P hooks are
+not exposed as functional controls. Preferences from older web versions migrate
+with original gameplay defaults for the new settings.
+
+Screen aspect ratio follows actual guest frames, and stylus input maps to the
+centred 256×192 DS area at every resolution, excluding widescreen side gutters.
+New controls do not add per-frame React updates or cryptography.
+
+For subsequent Platinum translation builds, `npm run sync:cores` prepares the
+latest Platinum WASM artifact and runs its boot and options checks, without
+editing or building inside the original translation trees. Diamond stays on its
+existing release artifact. The original trees must be built by their own
+workstream before syncing. With a local field-save fixture,
+`NP_TEST_SAVE=/absolute/path/to/save.sav npm run verify:options` also exercises
+field settings and successful quick save without writing to the source save.
+Results go to `../build/web-cores/options-verification.json`.
+
+Pearl's experimental `build:pearl` copies the source trees and remaps dependency
+paths before building under `build/`. It is excluded from `sync:cores` and public
+staging while its intro hang remains unresolved. Do not publish its diagnostic
+core. `verify-journey.ts` is a manual diagnostic for resuming that investigation.
 
 Browser save editing, event gifts, mod/content mounting, GBA migration,
 rewind/snapshots, LAN/relay, folder sync, and the native renderer's advanced
@@ -165,6 +195,7 @@ NP_WASM_OPT=/path/to/wasm-opt npm run prepare:cores -- platinum --optimize
 npm run verify:cores -- platinum
 ```
 
-The npm-packaged optimizer remains the fallback. Existing optimized recipe
+An installed native Binaryen 123 under `build/web-cores` is preferred when
+`NP_WASM_OPT` is unset; the npm-packaged optimizer remains the fallback. Existing optimized recipe
 choices survive a subsequent release build. Original source and WASM files
 remain read-only; only prepared copies are optimized.

@@ -14,7 +14,10 @@
     "verify:cores": "node scripts/verify-cores.mjs",
     "release": "npm run prepare:cores && npm run verify:cores && npm test && npm run build && node scripts/package.mjs",
     "format": "prettier --write src scripts tests *.json *.ts *.html",
-    "benchmark": "node --import tsx scripts/benchmark.ts"
+    "benchmark": "node --import tsx scripts/benchmark.ts",
+    "verify:options": "node --import tsx scripts/verify-options.ts",
+    "sync:cores": "npm run prepare:cores -- platinum && npm run verify:cores -- platinum && npm run verify:options",
+    "build:pearl": "python3 scripts/build-pearl-copy.py"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

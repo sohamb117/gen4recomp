@@ -15,6 +15,10 @@ const wabt =
   process.env.WABT_BIN || resolve(root, ".cache/toolchains/wabt/bin");
 const output = resolve(web, "public/cores");
 const temp = resolve(root, "build/web-cores");
+const cachedOptimizer = resolve(temp, "binaryen-version_123/bin/wasm-opt");
+const nativeOptimizer =
+  process.env.NP_WASM_OPT ||
+  (existsSync(cachedOptimizer) ? cachedOptimizer : undefined);
 mkdirSync(output, { recursive: true });
 mkdirSync(temp, { recursive: true });
 const games = {
@@ -23,7 +27,10 @@ const games = {
   platinum: "games/platinum/build/pc-wasm/pokeplatinum.wasm",
 };
 const forceOptimize = process.argv.includes("--optimize");
-const selected = process.argv.slice(2).filter((arg) => arg !== "--optimize");
+const noOptimize = process.argv.includes("--no-optimize");
+const selected = process.argv
+  .slice(2)
+  .filter((arg) => !["--optimize", "--no-optimize"].includes(arg));
 const manifestPath = resolve(output, "manifest.json");
 const previous = existsSync(manifestPath)
   ? JSON.parse(readFileSync(manifestPath, "utf8"))
@@ -37,9 +44,10 @@ function run(cmd, args) {
 }
 for (const [game, path] of Object.entries(games)) {
   const optimize =
-    forceOptimize ||
-    game === "platinum" ||
-    previous?.games[game]?.recipe === "asyncify-o3-v2";
+    !noOptimize &&
+    (forceOptimize ||
+      game === "platinum" ||
+      previous?.games[game]?.recipe === "asyncify-o3-v2");
   const source = resolve(
     process.env[`NP_GUEST_WASM_${game}`] || resolve(root, path),
   );
@@ -70,7 +78,7 @@ for (const [game, path] of Object.entries(games)) {
       "-o",
       `${dest}.tmp`,
     ];
-    if (process.env.NP_WASM_OPT) run(resolve(process.env.NP_WASM_OPT), args);
+    if (nativeOptimizer) run(resolve(nativeOptimizer), args);
     else
       run(process.execPath, [
         resolve(web, "node_modules/binaryen/bin/wasm-opt"),
@@ -80,6 +88,7 @@ for (const [game, path] of Object.entries(games)) {
     renameSync(`${dest}.tmp`, dest);
   }
   const bytes = readFileSync(dest);
+  const prior = previous?.games[game];
   manifest.games[game] = {
     file: filename,
     bytes: bytes.length,
@@ -87,6 +96,10 @@ for (const [game, path] of Object.entries(games)) {
     recipe: optimize ? "asyncify-o3-v2" : "asyncify-v1",
     sha256: createHash("sha256").update(bytes).digest("hex"),
   };
+  if (prior?.sha256 === manifest.games[game].sha256 && prior.verification) {
+    manifest.games[game].verification = prior.verification;
+    manifest.games[game].note = prior.note;
+  }
 }
 writeFileSync(
   resolve(output, "manifest.json.tmp"),
