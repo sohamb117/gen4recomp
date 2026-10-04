@@ -36,6 +36,8 @@
  *     --schedule FILE    shell autotest press schedule (F:keys[:N[:R:C]],
  *                        F:tap:X:Y[:N[:R:C]], +D; shell/README.md), on top
  *                        of --press
+ *     --watch A:N[@F]    print the N (<= 256) guest bytes at address A to
+ *                        stderr whenever they change, from frame F
  *     --state-test N     snapshot round trips: run N frames, then per round
  *                        save, run M frames hashing them, load, run the same
  *                        M frames again and require the same hash; the next
@@ -748,6 +750,9 @@ int main(int argc, char **argv) {
     uint64_t progress = 0;
     int state_rounds = 4, do_state = 0;
     const char *dump_dir = NULL, *host_content = NULL, *wav_path = NULL;
+    uint32_t watch_addr = 0, watch_len = 0;
+    uint64_t watch_from = 0;
+    static uint8_t watch_prev[256];
     int have_rtc = 0;
     int net_on = 0, net_drop = 0, npeers = 0;
     uint16_t net_port = 0;
@@ -820,6 +825,13 @@ int main(int argc, char **argv) {
             presses[npresses].frame = strtoull(v, &colon, 0);
             if (*colon != ':') return usage();
             presses[npresses++].keys = (uint16_t)strtoul(colon + 1, NULL, 16);
+        } else if (strcmp(a, "--watch") == 0) {
+            /* ADDR:LEN[@FROM]: print LEN guest bytes whenever they change. */
+            char *end;
+            watch_addr = (uint32_t)strtoul(v, &end, 0);
+            watch_len = *end == ':' ? (uint32_t)strtoul(end + 1, &end, 0) : 0;
+            if (*end == '@') watch_from = strtoull(end + 1, NULL, 0);
+            if (watch_len == 0 || watch_len > sizeof watch_prev) return usage();
         } else
             return usage();
         i++;
@@ -955,6 +967,15 @@ int main(int argc, char **argv) {
             fprintf(stderr, "[progress] frame %llu hash %016llx\n", (unsigned long long)(ran + 1),
                     (unsigned long long)hash);
             fflush(stderr);
+        }
+        if (watch_len && ran >= watch_from) {
+            const uint8_t *w = np_core_guest_ptr(core, watch_addr, watch_len);
+            if (w && memcmp(w, watch_prev, watch_len) != 0) {
+                memcpy(watch_prev, w, watch_len);
+                fprintf(stderr, "[watch] frame %llu %08x:", (unsigned long long)ran, watch_addr);
+                for (uint32_t b = 0; b < watch_len; b++) fprintf(stderr, "%s%02x", b % 4 ? "" : " ", w[b]);
+                fputc('\n', stderr);
+            }
         }
         int last = ran + 1 == frames;
         if (dump_dir && (last || (dump_every && ran >= dump_from && (ran - dump_from) % dump_every == 0)) &&

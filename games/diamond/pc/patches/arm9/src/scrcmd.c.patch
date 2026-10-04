@@ -1,0 +1,21 @@
+ov05_021E7184 returns the SysTask* SysTask_CreateOnMainQueue gave it
+(arm9/overlays/05/asm/ov05_021E5FD8.s), which ScrCmd_Unk0258 keeps in
+SCRIPTENV_UNKNOWN_22 for ScrCmd_Unk0259 to hand back to ov05_021E71E8. The
+prototype says u16: mwcc trusts the callee to have narrowed and stores all
+of r0, so the ROM keeps the whole pointer; the typed wasm bridge narrows at
+the call, ov05_021E71E8 then read the task's data through a 16-bit pointer
+and Heap_Free(NULL) faulted at the end of the start menu's SAVE (the save
+script runs 0258/0259 around the write). The prototype now says u32, the
+width the variable and the assembly use.
+
+--- a/arm9/src/scrcmd.c
++++ b/arm9/src/scrcmd.c
+@@ -311,7 +311,7 @@
+ extern void ov06_0224C678(FieldSystem *fieldSystem, u8 param1);
+ extern void ov06_0224C6E8(FieldSystem *fieldSystem, u8 param1);
+ extern void ov06_0224C6F4(FieldSystem *fieldSystem, u8 param1);
+-extern u16 ov05_021E7184(FieldSystem *fieldSystem);
++extern u32 ov05_021E7184(FieldSystem *fieldSystem);
+ extern void ov05_021E71E8(u32 playerState);
+ extern void ov06_0224E554(FieldSystem *fieldSystem, u8 param0);
+ extern void sub_0206486C(FieldSystem *fieldSystem);
