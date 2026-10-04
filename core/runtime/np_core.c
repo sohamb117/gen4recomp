@@ -206,6 +206,11 @@ np_core *np_core_create(np_game game, const np_host *host, const char *const *op
     c->memory = (wasm_rt_memory_t *)((uint8_t *)c->instance + mod->memory_offset);
     c->stack_pointer = (uint32_t *)((uint8_t *)c->instance + mod->stack_pointer_offset);
     np_wasi_init(c);
+    if (host->content_root && np_wasi_open_content(c, host->content_root) != 0) return create_failed(c, "%s", c->error);
+    c->host.content_root = c->content_root; /* the host's string need not outlive this call */
+    if (host->gba_rom_read && host->gba_rom_size > NP_GBA_ROM_MAX)
+        return create_failed(c, "the GBA ROM is %u bytes; the slot holds at most %u", host->gba_rom_size,
+                             NP_GBA_ROM_MAX);
     c->trace_fibers = getenv("NP_TRACE_FIBERS") != NULL;
     c->opts[NP_OPT_BGM_VOLUME] = 256;
     c->opts[NP_OPT_SE_VOLUME] = 256;
@@ -357,6 +362,7 @@ void np_core_destroy(np_core *c) {
         np_fiber_leave_thread(c->driver.native);
     }
     if (g_core == c) g_core = NULL;
+    np_wasi_close_files(c);
     free(c->instance);
     free(c->env_block);
     free(c->pending_save);

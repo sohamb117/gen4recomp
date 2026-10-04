@@ -15,6 +15,10 @@
  *     --press F:KEYS     from frame F hold KEYS (hex NP_KEY_* mask), repeatable
  *     --rtc SECONDS      RTC value (seconds since 2000-01-01) instead of the
  *                        port's deterministic clock
+ *     --content DIR      runtime content directory (np_host.content_root),
+ *                        seen read-only by the guest as /content
+ *     --gba-rom FILE     a GBA cartridge in slot 2 (Pal Park)
+ *     --gba-save FILE    its backup: loaded if present, written on store
  *     -e KEY=VALUE       guest environment entry, repeatable; PC_* variables
  *                        of this process's environment are passed through too
  *     -o [F:]NAME=VALUE  np_core option (enum np_opt), set before frame F
@@ -82,6 +86,9 @@ typedef struct runner {
     FILE *rom;
     const char *save_path;
     int64_t rtc;
+    FILE *gba_rom;
+    uint32_t gba_rom_size;
+    const char *gba_save_path;
 } runner;
 
 typedef struct press {
@@ -233,6 +240,37 @@ static int save_store(void *user, const void *src, uint32_t len) {
     return ok ? 0 : -1;
 }
 
+static int gba_rom_read(void *user, uint32_t offset, void *dst, uint32_t len) {
+    runner *r = user;
+    if (fseek(r->gba_rom, (long)offset, SEEK_SET) != 0) return -1;
+    return fread(dst, 1, len, r->gba_rom) == len ? 0 : -1;
+}
+
+/* A missing file is an erased chip; a shorter one (an emulator's trimmed
+ * save) is padded with 0xFF. */
+static int gba_save_load(void *user, void *dst, uint32_t len) {
+    runner *r = user;
+    FILE *f = r->gba_save_path ? fopen(r->gba_save_path, "rb") : NULL;
+    if (!f) return 0;
+    size_t n = fread(dst, 1, len, f);
+    fclose(f);
+    if (n == 0) return 0;
+    memset((uint8_t *)dst + n, 0xFF, len - n);
+    fprintf(stderr, "[headless] loaded %zu-byte GBA save from %s\n", n, r->gba_save_path);
+    return 1;
+}
+
+static int gba_save_store(void *user, const void *src, uint32_t len) {
+    runner *r = user;
+    if (!r->gba_save_path) return -1;
+    FILE *f = fopen(r->gba_save_path, "wb");
+    if (!f) return -1;
+    int ok = fwrite(src, 1, len, f) == len;
+    ok &= fclose(f) == 0;
+    fprintf(stderr, "[headless] stored %u-byte GBA save to %s\n", len, r->gba_save_path);
+    return ok ? 0 : -1;
+}
+
 static int64_t rtc_now(void *user) {
     return ((runner *)user)->rtc;
 }
@@ -329,6 +367,7 @@ static void sleep_until(double deadline) {
 
 static int usage(void) {
     fprintf(stderr, "usage: np_headless <diamond|pearl|platinum> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
+                    "                   [--content DIR] [--gba-rom FILE [--gba-save FILE]]\n"
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--schedule FILE]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
@@ -486,7 +525,7 @@ int main(int argc, char **argv) {
     int nsets = 0;
     uint64_t frames = 600, dump_every = 0, dump_from = 0, rms_from = 0, state_first = 0, state_span = 120;
     int state_rounds = 4, do_state = 0;
-    const char *dump_dir = NULL;
+    const char *dump_dir = NULL, *host_content = NULL;
     int have_rtc = 0;
     int net_on = 0, net_drop = 0, npeers = 0;
     uint16_t net_port = 0;
@@ -499,6 +538,17 @@ int main(int argc, char **argv) {
         if (!v) return usage();
         if (strcmp(a, "--frames") == 0) frames = strtoull(v, NULL, 0);
         else if (strcmp(a, "--save") == 0) r.save_path = v;
+        else if (strcmp(a, "--content") == 0) host_content = v;
+        else if (strcmp(a, "--gba-save") == 0) r.gba_save_path = v;
+        else if (strcmp(a, "--gba-rom") == 0) {
+            r.gba_rom = fopen(v, "rb");
+            if (!r.gba_rom) {
+                fprintf(stderr, "np_headless: cannot open %s\n", v);
+                return 2;
+            }
+            fseek(r.gba_rom, 0, SEEK_END);
+            r.gba_rom_size = (uint32_t)ftell(r.gba_rom);
+        }
         else if (strcmp(a, "--dump") == 0) dump_dir = v;
         else if (strcmp(a, "--dump-every") == 0) dump_every = strtoull(v, NULL, 0);
         else if (strcmp(a, "--dump-from") == 0) dump_from = strtoull(v, NULL, 0);
@@ -550,6 +600,13 @@ int main(int argc, char **argv) {
     host.user = &r;
     host.rom_size = (uint32_t)rom_size;
     host.rom_read = rom_read;
+    host.content_root = host_content;
+    if (r.gba_rom) {
+        host.gba_rom_size = r.gba_rom_size;
+        host.gba_rom_read = gba_rom_read;
+        host.gba_save_load = gba_save_load;
+        host.gba_save_store = gba_save_store;
+    }
     host.save_load = save_load;
     host.save_store = save_store;
     host.rtc_now = have_rtc ? rtc_now : NULL;
@@ -654,5 +711,6 @@ int main(int argc, char **argv) {
     np_core_destroy(core);
     np_net_close(g_net);
     fclose(r.rom);
+    if (r.gba_rom) fclose(r.gba_rom);
     return status;
 }

@@ -79,6 +79,28 @@ typedef struct np_host {
     uint32_t (*net_self)(void *user);
     int (*net_send)(void *user, uint32_t peer, const void *buf, uint32_t len);
     int (*net_recv)(void *user, uint32_t *peer, void *buf, uint32_t cap);
+
+    /* Runtime content (mod packages): a host directory the guest may read
+     * but never write, seen as the WASI preopen NP_CONTENT_DIR ("/content",
+     * np_guest_abi.h). Lookups are confined to it: '..' components and
+     * absolute paths are refused, and a symlink is followed only when it
+     * resolves inside the directory. np_core_create copies the string and
+     * fails if it is not a readable directory. NULL = no content (the guest
+     * sees no preopens). */
+    const char *content_root;
+
+    /* The GBA slot (Pal Park). gba_rom_size 0 or gba_rom_read NULL = an
+     * empty slot, exactly as without these fields. The guest copies the ROM
+     * (at most 32 MiB) into the slot at boot, so changing cartridges needs a
+     * new core. The cartridge's backup works like the DS one: gba_save_load
+     * fills `len` bytes (the size the guest identifies from the cartridge)
+     * and returns 1, returns 0 when there is no save yet (an erased chip,
+     * 0xFF), or -1 on error; gba_save_store persists the whole image
+     * atomically and returns 0. Both may be NULL (no save, writes lost). */
+    uint32_t gba_rom_size;
+    int (*gba_rom_read)(void *user, uint32_t offset, void *dst, uint32_t len);
+    int (*gba_save_load)(void *user, void *dst, uint32_t len);
+    int (*gba_save_store)(void *user, const void *src, uint32_t len);
 } np_host;
 
 typedef struct np_input {

@@ -142,6 +142,38 @@ uint32_t w2c_np__host_save_store(struct w2c_np__host *h, uint32_t src, uint32_t 
     return (uint32_t)-1;
 }
 
+/* ---- GBA slot -------------------------------------------------------- */
+
+/* An empty slot unless the host gave both a size and a reader; a ROM larger
+ * than the slot window is refused at np_core_create. */
+uint32_t w2c_np__host_gba_rom_size(struct w2c_np__host *h) {
+    np_core *c = h->core;
+    return c->host.gba_rom_read ? c->host.gba_rom_size : 0;
+}
+
+uint32_t w2c_np__host_gba_rom_read(struct w2c_np__host *h, uint32_t offset, uint32_t dst, uint32_t len) {
+    np_core *c = h->core;
+    uint8_t *p = guest_range(c, dst, len, "gba_rom_read");
+    if (!c->host.gba_rom_read || (uint64_t)offset + len > c->host.gba_rom_size) return (uint32_t)-1;
+    if (len == 0) return 0;
+    return c->host.gba_rom_read(c->host.user, offset, p, len) == 0 ? 0 : (uint32_t)-1;
+}
+
+uint32_t w2c_np__host_gba_save_load(struct w2c_np__host *h, uint32_t dst, uint32_t len) {
+    np_core *c = h->core;
+    uint8_t *p = guest_range(c, dst, len, "gba_save_load");
+    if (!c->host.gba_save_load) return 0;
+    int r = c->host.gba_save_load(c->host.user, p, len);
+    return r > 0 ? 1u : r == 0 ? 0u : (uint32_t)-1;
+}
+
+uint32_t w2c_np__host_gba_save_store(struct w2c_np__host *h, uint32_t src, uint32_t len) {
+    np_core *c = h->core;
+    const uint8_t *p = guest_range(c, src, len, "gba_save_store");
+    if (!c->host.gba_save_store) return (uint32_t)-1;
+    return c->host.gba_save_store(c->host.user, p, len) == 0 ? 0 : (uint32_t)-1;
+}
+
 uint64_t w2c_np__host_rtc_now(struct w2c_np__host *h) {
     np_core *c = h->core;
     return c->host.rtc_now ? (uint64_t)c->host.rtc_now(c->host.user) : (uint64_t)(int64_t)-1;

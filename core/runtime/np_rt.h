@@ -81,6 +81,25 @@ typedef struct np_line_buf {
     uint32_t len;
 } np_line_buf;
 
+/* Content files (np_wasi.c): guest fd NP_WASI_FIRST_FD + i is files[i];
+ * files[0] is the NP_CONTENT_DIR preopen when the host gave a content root. */
+#define NP_WASI_FIRST_FD 3u
+#define NP_WASI_MAX_FILES 64u
+
+enum { NP_WASI_FREE = 0, NP_WASI_REGULAR, NP_WASI_DIRECTORY };
+
+typedef struct np_wasi_file {
+    int kind;     /* NP_WASI_* */
+    int preopen;  /* the content root itself */
+    uint64_t pos; /* fd_read / fd_seek offset of a regular file */
+    char *path;   /* resolved host path, inside the content root */
+#ifdef _WIN32
+    void *handle; /* HANDLE */
+#else
+    int fd;
+#endif
+} np_wasi_file;
+
 struct np_core {
     np_game game;
     const np_guest_module *mod;
@@ -123,6 +142,8 @@ struct np_core {
     np_line_buf out_line[2]; /* fd 1 and fd 2, flushed to host.log per line */
     uint64_t rng_state;
     uint64_t clock_origin_ns;
+    char *content_root;                       /* resolved, or NULL */
+    np_wasi_file files[NP_WASI_MAX_FILES];
     int exit_code;
 
     /* A save the host failed to store, retried by np_core_save_flush. */
@@ -154,6 +175,10 @@ NP_NORETURN void np_rt_exit(np_core *c, int code);
 void np_wasi_flush(np_core *c);
 /* Resets WASI state (std fds, line buffers, RNG seed, clock origin). */
 void np_wasi_init(np_core *c);
+/* Opens `root` as the NP_CONTENT_DIR preopen; 0, or -1 with c->error set. */
+int np_wasi_open_content(np_core *c, const char *root);
+/* Closes every content fd and the preopen (np_core_destroy). */
+void np_wasi_close_files(np_core *c);
 
 /* Guest fiber slots. new returns NULL when out of slots or stack memory;
  * lookup returns NULL for a stale or invalid handle; release retires the

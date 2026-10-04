@@ -7,8 +7,9 @@
  * paths (guest-initiated store with a host failure and retry, and the
  * host-initiated flush of the published chip image), audio contents and
  * ring overflow, WASI stdout and env routing, determinism across two runs,
- * a save round trip, and that guest traps, wasm traps and exit leave the
- * core in a clean terminal state.
+ * a save round trip, that guest traps, wasm traps and exit leave the core
+ * in a clean terminal state, the read-only content preopen (escapes and
+ * writes refused) and the GBA slot's ROM and save.
  */
 #include <math.h>
 #include <stdarg.h>
@@ -17,6 +18,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(_WIN32)
+#include <direct.h>
+#include <windows.h>
+#define np_mkdir(p) _mkdir(p)
+#define np_rmdir(p) _rmdir(p)
+#else
+#include <sys/stat.h>
+#include <unistd.h>
+#define np_mkdir(p) mkdir(p, 0755)
+#define np_rmdir(p) rmdir(p)
+#endif
+
 #include "np_core.h"
 #include "np_guest_abi.h"
 
@@ -24,6 +37,8 @@
 #define CHIP_SIZE 256u
 #define AUDIO_RATE 32768u
 #define AUDIO_RING 4096u
+#define GBA_ROM_SIZE 0x3000u
+#define GBA_SAVE_SIZE 512u
 
 /* Mirrors mock_guest.c. */
 enum {
@@ -35,6 +50,9 @@ enum {
     ST_STORE_FAILED = 1u << 5,
     ST_HOST_FLUSHED = 1u << 6,
     ST_FIBERS_OK = 1u << 7,
+    ST_CONTENT_OK = 1u << 8,
+    ST_GBA_ROM_OK = 1u << 9,
+    ST_GBA_SAVE_LOADED = 1u << 10,
 };
 #define ST_ALWAYS (ST_ROM_OK | ST_ENV_OK | ST_CLOCK_OK | ST_LAYOUT_OK | ST_FIBERS_OK)
 #define SEED 7u
@@ -74,6 +92,11 @@ typedef struct test_host {
     uint32_t net_len[8];
     uint32_t net_peer[8];
     int net_count, net_sent;
+    /* GBA slot */
+    uint8_t gba_rom[GBA_ROM_SIZE];
+    uint8_t gba_save[GBA_SAVE_SIZE];
+    uint32_t gba_save_len;
+    int gba_stores;
 } test_host;
 
 #define NET_SELF 7u
@@ -137,6 +160,34 @@ static int host_save_store(void *user, const void *src, uint32_t len) {
     memcpy(h->save, src, len);
     h->save_len = len;
     h->stores++;
+    return 0;
+}
+
+static uint8_t gba_byte(uint32_t i) {
+    return (uint8_t)(i * 5u + 1u + (i >> 9));
+}
+
+static int host_gba_rom_read(void *user, uint32_t offset, void *dst, uint32_t len) {
+    test_host *h = user;
+    if ((uint64_t)offset + len > GBA_ROM_SIZE) return -1;
+    memcpy(dst, h->gba_rom + offset, len);
+    return 0;
+}
+
+static int host_gba_save_load(void *user, void *dst, uint32_t len) {
+    test_host *h = user;
+    if (h->gba_save_len == 0) return 0;
+    if (len != h->gba_save_len) return -1;
+    memcpy(dst, h->gba_save, len);
+    return 1;
+}
+
+static int host_gba_save_store(void *user, const void *src, uint32_t len) {
+    test_host *h = user;
+    if (len > sizeof h->gba_save) return -1;
+    memcpy(h->gba_save, src, len);
+    h->gba_save_len = len;
+    h->gba_stores++;
     return 0;
 }
 
@@ -562,6 +613,193 @@ static void test_snapshots(test_host *th) {
     free(s2);
 }
 
+/* ---- runtime content ------------------------------------------------- */
+
+#define CONTENT_MANY 300 /* mirrors mock_guest.c */
+
+static void write_file(const char *path, const void *data, size_t len) {
+    FILE *f = fopen(path, "wb");
+    CHECKF(f != NULL, "cannot create %s", path);
+    if (!f) return;
+    if (len) fwrite(data, 1, len, f);
+    fclose(f);
+}
+
+/* The tree mock_guest.c's check_content() expects, as <base>/root next to
+ * <base>/outside. *links says whether the symlinks could be made (not on
+ * Windows, where they need a privilege). */
+static int make_content_tree(char *base, size_t cap, int *links) {
+    char p[1024];
+#if defined(_WIN32)
+    char tmp[MAX_PATH];
+    GetTempPathA(sizeof tmp, tmp);
+    snprintf(base, cap, "%snp_content_%lu", tmp, (unsigned long)GetCurrentProcessId());
+    if (np_mkdir(base) != 0) return -1;
+#else
+    snprintf(base, cap, "/tmp/np_content_XXXXXX");
+    if (!mkdtemp(base)) return -1;
+#endif
+    snprintf(p, sizeof p, "%s/root", base);
+    np_mkdir(p);
+    snprintf(p, sizeof p, "%s/outside", base);
+    np_mkdir(p);
+    snprintf(p, sizeof p, "%s/outside/secret.txt", base);
+    write_file(p, "secret\n", 7);
+    snprintf(p, sizeof p, "%s/root/hello.txt", base);
+    write_file(p, "hello, content\n", 15);
+    snprintf(p, sizeof p, "%s/root/sub", base);
+    np_mkdir(p);
+    uint8_t data[1000];
+    for (uint32_t i = 0; i < sizeof data; i++) data[i] = (uint8_t)(i * 13u + 5u);
+    snprintf(p, sizeof p, "%s/root/sub/data.bin", base);
+    write_file(p, data, sizeof data);
+    snprintf(p, sizeof p, "%s/root/sub/many", base);
+    np_mkdir(p);
+    for (int i = 0; i < CONTENT_MANY; i++) {
+        snprintf(p, sizeof p, "%s/root/sub/many/f%03d", base, i);
+        write_file(p, NULL, 0);
+    }
+    *links = 0;
+#if !defined(_WIN32)
+    int ok = 1;
+    snprintf(p, sizeof p, "%s/root/sub/inner.txt", base);
+    ok &= symlink("../hello.txt", p) == 0;
+    snprintf(p, sizeof p, "%s/root/escape_file", base);
+    ok &= symlink("../outside/secret.txt", p) == 0;
+    snprintf(p, sizeof p, "%s/root/escape_dir", base);
+    ok &= symlink("../outside", p) == 0;
+    *links = ok;
+#endif
+    return 0;
+}
+
+static void remove_content_tree(const char *base) {
+    static const char *const files[] = {"outside/secret.txt", "root/hello.txt", "root/sub/data.bin",
+                                        "root/sub/inner.txt", "root/escape_file", "root/escape_dir"};
+    static const char *const dirs[] = {"root/sub/many", "root/sub", "root", "outside"};
+    char p[1024];
+    for (int i = 0; i < CONTENT_MANY; i++) {
+        snprintf(p, sizeof p, "%s/root/sub/many/f%03d", base, i);
+        remove(p);
+    }
+    for (size_t i = 0; i < sizeof files / sizeof *files; i++) {
+        snprintf(p, sizeof p, "%s/%s", base, files[i]);
+        remove(p);
+    }
+    for (size_t i = 0; i < sizeof dirs / sizeof *dirs; i++) {
+        snprintf(p, sizeof p, "%s/%s", base, dirs[i]);
+        np_rmdir(p);
+    }
+    np_rmdir(base);
+}
+
+/* The NP_CONTENT_DIR preopen: reads, seeks, stats and listings work, and
+ * every escape and write is refused (the mock traps naming the case that
+ * did not hold). */
+static void test_content(test_host *th) {
+    char base[512], root[600], arg[600];
+    int links = 0;
+    np_frame f;
+    if (make_content_tree(base, sizeof base, &links) != 0) {
+        CHECKF(0, "cannot make a scratch content tree");
+        return;
+    }
+    snprintf(root, sizeof root, "%s/root", base);
+    memset(th, 0, sizeof *th);
+    np_host host = make_host(th);
+
+    /* A root that is missing or not a directory fails create, saying so. */
+    snprintf(arg, sizeof arg, "%s/missing", base);
+    host.content_root = arg;
+    CHECK(np_core_create(NP_GAME_DIAMOND, &host, k_options) == NULL);
+    CHECKF(strstr(np_core_create_error(), "content_root") != NULL, "%s", np_core_create_error());
+    snprintf(arg, sizeof arg, "%s/hello.txt", root);
+    CHECK(np_core_create(NP_GAME_DIAMOND, &host, k_options) == NULL);
+    CHECKF(strstr(np_core_create_error(), "not a readable directory") != NULL, "%s", np_core_create_error());
+
+    /* The real one, through a string the host clobbers after create. */
+    snprintf(arg, sizeof arg, "%s", root);
+    const char *opts[] = {"NP_MOCK_SEED=7", "NP_MOCK_CONTENT=1", links ? "NP_MOCK_CONTENT_LINKS=1" : NULL, NULL};
+    np_core *c = np_core_create(NP_GAME_DIAMOND, &host, opts);
+    CHECKF(c != NULL, "create: %s", np_core_create_error());
+    memset(arg, 'x', sizeof arg - 1);
+    for (uint32_t k = 0; c && k < 3; k++) {
+        np_input in = input_for(k);
+        int rc = np_core_run_frame(c, &in, &f);
+        CHECKF(rc == 0, "content frame %u: %s", k, np_core_last_error(c));
+        if (rc != 0) break;
+        CHECK(f.screen[1][0] & ST_CONTENT_OK);
+    }
+    CHECK(logged(th, "mock: content ok"));
+    np_core_destroy(c);
+
+    /* Without a root there is no /content at all. */
+    memset(th, 0, sizeof *th);
+    host = make_host(th);
+    c = np_core_create(NP_GAME_DIAMOND, &host, opts);
+    CHECK(c != NULL);
+    if (c) {
+        CHECK(np_core_run_frame(c, NULL, &f) == -1);
+        CHECKF(strstr(np_core_last_error(c), "mock: content: fopen hello.txt"), "%s", np_core_last_error(c));
+    }
+    np_core_destroy(c);
+    remove_content_tree(base);
+    printf("content preopen checks ran%s\n", links ? " with symlink escapes" : " (no symlinks on this host)");
+}
+
+/* ---- GBA slot -------------------------------------------------------- */
+
+static uint32_t gba_session(test_host *th, np_host *host, uint32_t frames) {
+    np_frame f;
+    uint32_t status = 0;
+    np_core *c = np_core_create(NP_GAME_PLATINUM, host, k_options);
+    CHECKF(c != NULL, "create: %s", np_core_create_error());
+    for (uint32_t k = 0; c && k < frames; k++) {
+        np_input in = input_for(k);
+        int rc = np_core_run_frame(c, &in, &f);
+        CHECKF(rc == 0, "gba frame %u: %s", k, np_core_last_error(c));
+        if (rc != 0) break;
+        status = f.screen[1][0];
+    }
+    np_core_destroy(c);
+    (void)th;
+    return status;
+}
+
+static void test_gba(test_host *th) {
+    memset(th, 0, sizeof *th);
+    np_host host = make_host(th);
+    /* No slot fields: an empty slot. */
+    uint32_t st = gba_session(th, &host, 6);
+    CHECKF(!(st & (ST_GBA_ROM_OK | ST_GBA_SAVE_LOADED)), "status %#x", st);
+    CHECK(th->gba_stores == 0);
+    /* A size without a reader is still empty. */
+    host.gba_rom_size = GBA_ROM_SIZE;
+    st = gba_session(th, &host, 6);
+    CHECKF(!(st & ST_GBA_ROM_OK), "status %#x", st);
+
+    /* A cartridge with no save: an erased chip, which the mock stamps at
+     * frame 4 (0xFF + 1 wraps to 0). */
+    for (uint32_t i = 0; i < GBA_ROM_SIZE; i++) th->gba_rom[i] = gba_byte(i);
+    host.gba_rom_read = host_gba_rom_read;
+    host.gba_save_load = host_gba_save_load;
+    host.gba_save_store = host_gba_save_store;
+    st = gba_session(th, &host, 6);
+    CHECKF((st & ST_GBA_ROM_OK) && !(st & ST_GBA_SAVE_LOADED), "status %#x", st);
+    CHECK(th->gba_stores == 1 && th->gba_save_len == GBA_SAVE_SIZE);
+    CHECK(th->gba_save[0] == 0x00 && memcmp(th->gba_save + 1, "GBA", 3) == 0 && th->gba_save[4] == 0xFF);
+
+    /* The stored image comes back on the next boot. */
+    st = gba_session(th, &host, 6);
+    CHECKF((st & ST_GBA_ROM_OK) && (st & ST_GBA_SAVE_LOADED), "status %#x", st);
+    CHECK(th->gba_stores == 2 && th->gba_save[0] == 0x01);
+
+    /* Larger than the slot: refused at create. */
+    host.gba_rom_size = NP_GBA_ROM_MAX + 1;
+    CHECK(np_core_create(NP_GAME_PLATINUM, &host, k_options) == NULL);
+    CHECKF(strstr(np_core_create_error(), "GBA ROM") != NULL, "%s", np_core_create_error());
+}
+
 int main(void) {
     static test_host th, th2;
     np_host host;
@@ -651,6 +889,8 @@ int main(void) {
     test_v2_options(&th);
     test_v2_net(&th);
     test_snapshots(&th);
+    test_content(&th);
+    test_gba(&th);
 
     if (failures) {
         fprintf(stderr, "%d check(s) failed\n", failures);

@@ -26,6 +26,12 @@
 /* Linear memory the guest is linked with (pages are committed lazily). */
 #define NP_GUEST_MEMORY_BYTES 0x10000000u
 
+/* Where the host's runtime content directory (np_host.content_root), if
+ * any, appears: a read-only WASI preopen (fd 3) under this name. */
+#define NP_CONTENT_DIR "/content"
+/* The largest GBA ROM the slot holds (0x08000000-0x09FFFFFF). */
+#define NP_GBA_ROM_MAX 0x02000000u
+
 #define NP_FRAME_MAGIC 0x4E504652u /* 'NPFR' */
 
 /*
@@ -154,6 +160,16 @@ NP_IMPORT(trap) __attribute__((noreturn)) void np_host_trap(const char *text, ui
 NP_IMPORT(net_self) uint32_t np_host_net_self(void);
 NP_IMPORT(net_send) int32_t np_host_net_send(uint32_t peer, const void *buf, uint32_t len);
 NP_IMPORT(net_recv) int32_t np_host_net_recv(uint32_t *peer, void *buf, uint32_t cap);
+
+/*
+ * The GBA slot. gba_rom_size is 0 for an empty slot; otherwise the guest
+ * reads the ROM (0 on success) into the slot window. The backup image:
+ * load returns 1 loaded, 0 no save (erased), -1 error; store returns 0.
+ */
+NP_IMPORT(gba_rom_size) uint32_t np_host_gba_rom_size(void);
+NP_IMPORT(gba_rom_read) int32_t np_host_gba_rom_read(uint32_t offset, void *dst, uint32_t len);
+NP_IMPORT(gba_save_load) int32_t np_host_gba_save_load(void *dst, uint32_t len);
+NP_IMPORT(gba_save_store) int32_t np_host_gba_save_store(const void *src, uint32_t len);
 
 /* Guest export the runtime calls on a fresh fiber. */
 void np_fiber_entry(uint32_t arg);

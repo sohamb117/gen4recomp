@@ -19,12 +19,17 @@
  *     wasm `unreachable` on a worker fiber, and exit(3);
  *   - contract v2: options echoed into status (see publish_status), a
  *     512x384 frame while NP_OPT_RENDER_SCALE is 2, and a datagram to
- *     NP_NET_BROADCAST every frame that a loopback host hands back.
+ *     NP_NET_BROADCAST every frame that a loopback host hands back;
+ *   - with NP_MOCK_CONTENT, reads, seeks, stats and listings under the
+ *     NP_CONTENT_DIR preopen, and every escape and write refused
+ *     (check_content); a GBA slot ROM checked and its save stamped and
+ *     stored at frame 4 (check_gba).
  *
  * Status pixels (bottom screen row 0) and the pattern formulas are mirrored
  * in test_core.c; keep the two in sync.
  */
 #define _DEFAULT_SOURCE /* clock_gettime, getentropy under -std=c11 */
+#include <errno.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -35,6 +40,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <wasi/api.h>
 
 #include "np_guest_abi.h"
 
@@ -46,6 +52,7 @@
 #define AUDIO_RATE 32768
 #define AUDIO_RING 4096
 #define CHIP_SIZE 256
+#define GBA_SAVE_SIZE 512
 
 #define KEY_A (1u << 0)
 #define KEY_B (1u << 1)
@@ -65,6 +72,9 @@ enum {
     ST_STORE_FAILED = 1u << 5,
     ST_HOST_FLUSHED = 1u << 6,
     ST_FIBERS_OK = 1u << 7,
+    ST_CONTENT_OK = 1u << 8,      /* NP_MOCK_CONTENT: every check_content() case held */
+    ST_GBA_ROM_OK = 1u << 9,      /* the GBA slot's ROM read back as test_core serves it */
+    ST_GBA_SAVE_LOADED = 1u << 10,
 };
 
 #define DESC ((np_frame_desc *)0x02000000u)
@@ -73,6 +83,7 @@ enum {
 static uint32_t top[W * H];
 static uint32_t *audio_ring;
 static uint8_t chip[CHIP_SIZE];
+static uint8_t gba_save[GBA_SAVE_SIZE];
 
 static uint32_t frame;
 static uint32_t seed;
@@ -277,6 +288,147 @@ static void publish_status(void) {
     for (uint32_t i = 0; i < 8; i++) DESC->status[8 + i] = opt[i];
 }
 
+/* ---- runtime content (NP_MOCK_CONTENT) ------------------------------ */
+
+/* The tree test_core.c builds under the content root:
+ *   hello.txt            "hello, content\n"
+ *   sub/data.bin         1000 bytes of content_byte()
+ *   sub/many/fNNN        CONTENT_MANY empty files (listings past one buffer)
+ * and with NP_MOCK_CONTENT_LINKS also
+ *   sub/inner.txt        -> ../hello.txt (stays inside)
+ *   escape_file          -> ../outside/secret.txt
+ *   escape_dir           -> ../outside
+ * next to ../outside/secret.txt. */
+#define CONTENT_MANY 300
+
+static uint8_t content_byte(uint32_t i) {
+    return (uint8_t)(i * 13u + 5u);
+}
+
+static void content_fail(const char *what) {
+    char msg[160];
+    snprintf(msg, sizeof msg, "mock: content: %s (errno %d)", what, errno);
+    fail(msg);
+}
+
+/* `call` must fail with `want`. */
+#define CONTENT_REFUSED(call, want, what)                \
+    do {                                                 \
+        errno = 0;                                       \
+        if ((call) || errno != (want)) content_fail(what); \
+    } while (0)
+
+static void check_content(void) {
+    const int links = getenv("NP_MOCK_CONTENT_LINKS") != NULL;
+    char buf[64];
+    struct stat st;
+
+    FILE *f = fopen(NP_CONTENT_DIR "/hello.txt", "r");
+    if (!f) content_fail("fopen hello.txt");
+    if (fread(buf, 1, sizeof buf, f) != 15 || memcmp(buf, "hello, content\n", 15) != 0)
+        content_fail("hello.txt contents");
+    if (fseek(f, 7, SEEK_SET) != 0 || ftell(f) != 7 || fgetc(f) != 'c') content_fail("fseek/ftell");
+    fclose(f);
+
+    int fd = open(NP_CONTENT_DIR "/sub/data.bin", O_RDONLY);
+    if (fd < 0) content_fail("open data.bin");
+    uint8_t b[64];
+    if (pread(fd, b, sizeof b, 500) != (ssize_t)sizeof b) content_fail("pread");
+    for (uint32_t i = 0; i < sizeof b; i++)
+        if (b[i] != content_byte(500 + i)) content_fail("pread contents");
+    if (lseek(fd, 0, SEEK_CUR) != 0) content_fail("pread moved the offset");
+    if (lseek(fd, 0, SEEK_END) != 1000 || lseek(fd, -10, SEEK_CUR) != 990) content_fail("lseek");
+    if (read(fd, b, sizeof b) != 10 || b[9] != content_byte(999) || read(fd, b, sizeof b) != 0)
+        content_fail("read to the end");
+    if (lseek(fd, -1, SEEK_SET) != -1) content_fail("lseek before the start");
+    if (fstat(fd, &st) != 0 || st.st_size != 1000 || !S_ISREG(st.st_mode)) content_fail("fstat");
+    if (write(fd, b, 1) != -1) content_fail("write to a content file");
+    close(fd);
+
+    if (stat(NP_CONTENT_DIR "/sub", &st) != 0 || !S_ISDIR(st.st_mode)) content_fail("stat sub");
+    if (stat(NP_CONTENT_DIR "/./sub//data.bin", &st) != 0 || st.st_size != 1000) content_fail("stat . and //");
+    CONTENT_REFUSED(stat(NP_CONTENT_DIR "/missing", &st) == 0, ENOENT, "stat missing");
+    CONTENT_REFUSED(opendir(NP_CONTENT_DIR "/hello.txt") != NULL, ENOTDIR, "opendir on a file");
+
+    /* The root lists hello.txt and sub, never a link that escapes. */
+    DIR *d = opendir(NP_CONTENT_DIR);
+    if (!d) content_fail("opendir root");
+    int hello = 0, sub = 0, other = 0;
+    for (struct dirent *e; (e = readdir(d)) != NULL;) {
+        if (strcmp(e->d_name, "hello.txt") == 0) hello += e->d_type == DT_REG;
+        else if (strcmp(e->d_name, "sub") == 0) sub += e->d_type == DT_DIR;
+        else other++;
+    }
+    closedir(d);
+    if (hello != 1 || sub != 1 || other != 0) content_fail("root listing");
+
+    /* Past one fd_readdir buffer: every name once. */
+    static uint8_t seen[CONTENT_MANY];
+    int count = 0;
+    d = opendir(NP_CONTENT_DIR "/sub/many");
+    if (!d) content_fail("opendir many");
+    for (struct dirent *e; (e = readdir(d)) != NULL;) {
+        int n = atoi(e->d_name + 1);
+        if (e->d_name[0] != 'f' || n < 0 || n >= CONTENT_MANY || seen[n]++) content_fail("many listing");
+        count++;
+    }
+    closedir(d);
+    if (count != CONTENT_MANY) content_fail("many count");
+
+    /* Escapes. libc hands ".." through to path_open, which refuses it. */
+    CONTENT_REFUSED(open(NP_CONTENT_DIR "/../outside/secret.txt", O_RDONLY) >= 0, ENOTCAPABLE, "open ../");
+    CONTENT_REFUSED(open(NP_CONTENT_DIR "/sub/../../outside/secret.txt", O_RDONLY) >= 0, ENOTCAPABLE, "open sub/../../");
+    CONTENT_REFUSED(stat(NP_CONTENT_DIR "/sub/..", &st) == 0, ENOTCAPABLE, "stat sub/..");
+    {
+        __wasi_fd_t nfd;
+        if (__wasi_path_open(3, 0, "/etc/hosts", 0, __WASI_RIGHTS_FD_READ, 0, 0, &nfd) != __WASI_ERRNO_NOTCAPABLE)
+            content_fail("absolute path_open");
+        if (__wasi_path_open(3, 0, "sub\\data.bin", 0, __WASI_RIGHTS_FD_READ, 0, 0, &nfd) != __WASI_ERRNO_NOTCAPABLE)
+            content_fail("backslash path_open");
+        if (__wasi_path_open(3, 0, "hello.txt:x", 0, __WASI_RIGHTS_FD_READ, 0, 0, &nfd) != __WASI_ERRNO_NOTCAPABLE)
+            content_fail("colon path_open");
+    }
+    if (links) {
+        CONTENT_REFUSED(open(NP_CONTENT_DIR "/escape_file", O_RDONLY) >= 0, ENOTCAPABLE, "open escape_file");
+        CONTENT_REFUSED(stat(NP_CONTENT_DIR "/escape_dir/secret.txt", &st) == 0, ENOTCAPABLE, "stat escape_dir/");
+        CONTENT_REFUSED(opendir(NP_CONTENT_DIR "/escape_dir") != NULL, ENOTCAPABLE, "opendir escape_dir");
+        f = fopen(NP_CONTENT_DIR "/sub/inner.txt", "r");
+        if (!f || fread(buf, 1, sizeof buf, f) != 15 || memcmp(buf, "hello, content\n", 15) != 0)
+            content_fail("a link inside the root");
+        fclose(f);
+    }
+
+    /* Read-only. */
+    CONTENT_REFUSED(fopen(NP_CONTENT_DIR "/new.txt", "w") != NULL, EROFS, "fopen w");
+    CONTENT_REFUSED(open(NP_CONTENT_DIR "/hello.txt", O_WRONLY) >= 0, EROFS, "open O_WRONLY");
+    CONTENT_REFUSED(open(NP_CONTENT_DIR "/hello.txt", O_RDWR) >= 0, EROFS, "open O_RDWR");
+    CONTENT_REFUSED(mkdir(NP_CONTENT_DIR "/newdir", 0777) == 0, EROFS, "mkdir");
+
+    status |= ST_CONTENT_OK;
+    printf("mock: content ok\n");
+}
+
+/* ---- GBA slot ------------------------------------------------------- */
+
+static uint8_t gba_byte(uint32_t i) {
+    return (uint8_t)(i * 5u + 1u + (i >> 9));
+}
+
+static void check_gba(void) {
+    const uint32_t size = np_host_gba_rom_size();
+    uint8_t buf[256];
+    if (size == 0) return;
+    if (np_host_gba_rom_read(0, buf, sizeof buf) != 0) return;
+    for (uint32_t i = 0; i < sizeof buf; i++)
+        if (buf[i] != gba_byte(i)) return;
+    if (np_host_gba_rom_read(size - 16, buf, 16) != 0 || buf[15] != gba_byte(size - 1)) return;
+    if (np_host_gba_rom_read(size - 4, buf, 16) == 0) return; /* past the end */
+    status |= ST_GBA_ROM_OK;
+    const int32_t r = np_host_gba_save_load(gba_save, GBA_SAVE_SIZE);
+    if (r == 1) status |= ST_GBA_SAVE_LOADED;
+    else memset(gba_save, 0xFF, GBA_SAVE_SIZE);
+}
+
 int main(int argc, char **argv) {
     volatile uint32_t local = 0;
     touch(&local);
@@ -297,15 +449,17 @@ int main(int argc, char **argv) {
         status |= ST_CLOCK_OK;
     if (getentropy(&random_word, sizeof random_word) != 0) fail("mock: getentropy failed");
 
-    /* No filesystem: the directory calls the port's debug paths make must
-     * fail cleanly, and the streams accept no flags. This also links in the
-     * same WASI imports the real games declare. */
+    /* No filesystem outside NP_CONTENT_DIR: the directory calls the port's
+     * debug paths make must fail cleanly, and the streams accept no flags.
+     * This also links in the same WASI imports the real games declare. */
     struct stat st;
     DIR *dir = opendir(".");
     if (dir && readdir(dir)) fail("mock: readdir found a filesystem");
     if (mkdir("np_mock", 0777) == 0 || stat("np_mock", &st) == 0 || dir)
         fail("mock: filesystem calls unexpectedly succeeded");
     if (fcntl(1, F_SETFL, O_NONBLOCK) != -1 || fcntl(1, F_SETFL, 0) != 0) fail("mock: fd_fdstat_set_flags");
+    if (getenv("NP_MOCK_CONTENT")) check_content();
+    check_gba();
 
     audio_ring = calloc(AUDIO_RING, 4);
     if ((uintptr_t)&local >= NP_GUEST_C_BASE && (uintptr_t)top >= NP_GUEST_C_BASE &&
@@ -366,6 +520,11 @@ int main(int argc, char **argv) {
             save_counter++;
             chip_header();
             if (np_host_save_store(chip, CHIP_SIZE) != 0) status |= ST_STORE_FAILED;
+        }
+        if (frame == 4 && (status & ST_GBA_ROM_OK)) {
+            gba_save[0]++;
+            memcpy(gba_save + 1, "GBA", 3);
+            if (np_host_gba_save_store(gba_save, GBA_SAVE_SIZE) != 0) fail("mock: gba_save_store failed");
         }
         if (frame == 5) {
             for (uint32_t i = 16; i < CHIP_SIZE; i++) chip[i] = (uint8_t)(i + frame);

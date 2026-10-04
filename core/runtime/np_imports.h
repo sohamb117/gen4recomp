@@ -32,6 +32,10 @@ uint64_t w2c_np__host_rtc_now(struct w2c_np__host *h);
 uint32_t w2c_np__host_net_self(struct w2c_np__host *h);
 uint32_t w2c_np__host_net_send(struct w2c_np__host *h, uint32_t peer, uint32_t buf, uint32_t len);
 uint32_t w2c_np__host_net_recv(struct w2c_np__host *h, uint32_t peer_out, uint32_t buf, uint32_t cap);
+uint32_t w2c_np__host_gba_rom_size(struct w2c_np__host *h);
+uint32_t w2c_np__host_gba_rom_read(struct w2c_np__host *h, uint32_t offset, uint32_t dst, uint32_t len);
+uint32_t w2c_np__host_gba_save_load(struct w2c_np__host *h, uint32_t dst, uint32_t len);
+uint32_t w2c_np__host_gba_save_store(struct w2c_np__host *h, uint32_t src, uint32_t len);
 void w2c_np__host_log(struct w2c_np__host *h, uint32_t text, uint32_t len);
 void w2c_np__host_trap(struct w2c_np__host *h, uint32_t text, uint32_t len);
 
@@ -53,6 +57,11 @@ uint32_t w2c_wasi__snapshot__preview1_fd_fdstat_get(struct w2c_wasi__snapshot__p
                                                     uint32_t out);
 uint32_t w2c_wasi__snapshot__preview1_fd_fdstat_set_flags(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd,
                                                           uint32_t flags);
+uint32_t w2c_wasi__snapshot__preview1_fd_filestat_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd,
+                                                      uint32_t out);
+uint32_t w2c_wasi__snapshot__preview1_fd_pread(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd, uint32_t iovs,
+                                               uint32_t iovs_len, uint64_t offset, uint32_t nread_out);
+uint32_t w2c_wasi__snapshot__preview1_fd_tell(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd, uint32_t offset_out);
 uint32_t w2c_wasi__snapshot__preview1_fd_readdir(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd, uint32_t buf,
                                                  uint32_t buf_len, uint64_t cookie, uint32_t bufused_out);
 uint32_t w2c_wasi__snapshot__preview1_path_create_directory(struct w2c_wasi__snapshot__preview1 *w, uint32_t dirfd,
