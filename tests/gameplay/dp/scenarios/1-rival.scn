@@ -1,0 +1,11 @@
+# Scenario 1 (Diamond/Pearl): the real new-game route from a blank chip:
+# intro and naming, the bedroom, Mom, Twinleaf, Barry's house and room,
+# Route 201, Verity Lakefront, Lake Verity (Rowan and Dawn, the briefcase),
+# TURTWIG against the wild STARLY (D/P's first battle; there is no Barry
+# battle here) to its end, the lakeside scene, Route 201's Rowan scene, and
+# home (414): Mom and the Running Shoes, then free in the house.
+SCHEDULE=schedules/rival.press
+FRAMES=41400
+SHOTS=10300,12000,13100,15900,17500,19901,23401,25401,26400,26800,28000,29600,31600,33940,34460,36480,37200,39000,41399
+EXPECT_MAP=414
+EXPECT_LOG='in_battle 1 -> 0'
