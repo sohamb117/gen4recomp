@@ -1,0 +1,11 @@
+--- a/arm9/asm/CTRDG_proc.s
++++ b/arm9/asm/CTRDG_proc.s
+@@ -216,7 +216,7 @@
+ 	mov r1, #0x1
+ 	strb r1, [r0, #0x0]
+ _020DBBDC:
+-	ldr r0, _020DBC78 ; =0xFFFF0020
++	bl pc_agb_sysrom9_logo ; pc: the BIOS logo (0xFFFF0020) is outside guest memory; the DS header's verified copy (pc/src/pc_agb_slot.c)
+ 	ldr r1, _020DBC7C ; =UNK_021D6964
+ 	mov r2, #0x9c
+ 	bl MIi_CpuCopy32

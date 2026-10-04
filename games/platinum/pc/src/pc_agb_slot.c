@@ -30,6 +30,13 @@
  * task thread, the game's sector code in ov97_02235D18.c) is the real SDK and
  * game code unchanged.
  *
+ * Diamond/Pearl reach the same chip from their recompiled SDK (SDK 3.2:
+ * arm9/asm/CTRDG_flash_{common,MX29L010,MX29L512,LE39FW512}.s): armrec gives
+ * every file naming the bus ARMREC_AGB_HOOK, so each ldrb/strb it makes into
+ * 0x0A000000-0x0A00FFFF comes here through armrec_agb_load8/store8, and their
+ * one timed wait (CheckFlashTimer) is answered by
+ * games/diamond/pc/src/pc_dp_agb.c with pc_agb_bus_wait_elapsed below.
+ *
  * Which chip: the one the cartridge has. A GBA game links Nintendo's backup
  * library, whose version string names the backup type, and that is how the
  * type is found here (the same thing every GBA emulator does):
@@ -292,6 +299,18 @@ void pc_agb_bus_write8(volatile void *adr, u8 v)
     }
 }
 
+/* The recompiled SDK's byte accesses to the bus (armrec_rt.h ARMREC_AGB_HOOK,
+ * Diamond/Pearl's CTRDG_flash_*.s): the same access points. */
+uint32_t armrec_agb_load8(uint32_t a)
+{
+    return pc_agb_bus_read8((const volatile void *)(uintptr_t)a);
+}
+
+void armrec_agb_store8(uint32_t a, uint32_t v)
+{
+    pc_agb_bus_write8((volatile void *)(uintptr_t)a, (u8)v);
+}
+
 /*
  * The SDK times its flash waits (ID mode entry, program/erase status polls)
  * with OS_GetTick, and the port has no hardware timer to advance it. The chip
@@ -337,22 +356,152 @@ static BOOL logo_is_agb(const u16 *logop)
 
 /*
  * The INIT_MODULE_INFO word carries the ARM9's header buffer as a 32-byte
- * granule offset into main RAM (19 bits). In the port that buffer is the SDK's
+ * granule offset into main RAM (19 bits). In Platinum that buffer is the SDK's
  * static, which lives with the rest of the guest's C data above the DS's
  * memory map, so the offset cannot reach it; the logo the ARM9 copied into it
- * is pc_agb_sysrom9_logo()'s, and that is what is compared.
+ * is pc_agb_sysrom9_logo()'s, and that is what is compared. In Diamond/Pearl
+ * the buffer is the recompiled SDK's bss (CTRDG_proc.s UNK_021D6960, main
+ * RAM), so the word reaches it as on hardware, and the logo compared is the
+ * one the ARM9 copied there (arm7/asm/CTRDG_sp.s CTRDGi_InitModuleInfo: the
+ * buffer + 4, which is CTRDGHeader.nintendoLogo).
  */
 static void ctrdg_arm7(u32 data)
 {
     if ((data & CTRDG_PXI_COMMAND_MASK) == CTRDG_PXI_COMMAND_INIT_MODULE_INFO) {
         CTRDGModuleInfo *cip = (CTRDGModuleInfo *)HW_CTRDG_MODULE_INFO_BUF;
+#if defined(PC_GAME_DP)
+        const CTRDGHeader *buf = (const CTRDGHeader *)(HW_MAIN_MEM +
+            (((data & CTRDG_PXI_COMMAND_PARAM_MASK) >> CTRDG_PXI_COMMAND_PARAM_SHIFT) << 5));
+        const u16 *logop = (const u16 *)buf->nintendoLogo;
+#else
+        const u16 *logop = (const u16 *)pc_agb_sysrom9_logo();
+#endif
 
-        cip->isAgbCartridge = logo_is_agb((const u16 *)pc_agb_sysrom9_logo()) ? 1 : 0;
+        cip->isAgbCartridge = logo_is_agb(logop) ? 1 : 0;
         pc_pxi_reply(PXI_FIFO_TAG_CTRDG, CTRDG_PXI_COMMAND_INIT_MODULE_INFO);
     }
     /* TERMINATE (the ARM9 shutting down for a pulled cartridge) needs no
      * answer; a cartridge here is never pulled. */
 }
+
+/* ------------------------------------------------------------ self-test */
+
+#if defined(__wasm__)
+/*
+ * PC_AGB_SELFTEST=1 with a flash cartridge inserted: at the first frame
+ * boundary (CTRDG_Init has run inside OS_Init by then) drive the game's own
+ * CTRDG code through the chip and print one line per check, then PASS/FAIL.
+ * The same calls exist in both SDKs (Platinum's patched 4.2 C, Diamond/
+ * Pearl's recompiled 3.2 asm), so this tests whichever game is built:
+ *   detection   CTRDG_IsAgbCartridge (the ARM7 logo handshake) and
+ *               CTRDG_GetAgbGameCode (the header copied at init);
+ *   identify    CTRDGi_ReadFlashID answers MX29L010 (0x09C2) and
+ *               CTRDG_IdentifyAgbBackup(FLASH_1M) selects it;
+ *   read        every sector through CTRDG_ReadAgbFlash against the save
+ *               file as the runtime hands it over (np_host_gba_save_load),
+ *               bank 1 included;
+ *   write       the last sector (bank 1) rewritten with a pattern by
+ *               CTRDG_WriteAgbFlashSector (erase + program), checked with
+ *               CTRDG_VerifyAgbFlash, a read-back and the chip image itself,
+ *               then rewritten with its original bytes, so the image (and
+ *               the file it is stored to) ends as it started.
+ *
+ * The frame boundary is OS_Halt, which runs on the SDK's idle thread, and in
+ * Diamond/Pearl the recompiled SDK pushes its frames on that thread's guest
+ * stack (armrec_sp): OSi_IdleThreadStack, 200 bytes, which the write path
+ * overflows into the thread structures below it. The game itself calls
+ * CTRDG from its own threads; the test gets a guest stack of its own for the
+ * duration, as a caller with a real stack would have.
+ */
+static int sSelftest;
+
+static int st_check(const char *what, int ok)
+{
+    fprintf(stderr, "pc_agb_slot: selftest %-44s %s\n", what, ok ? "ok" : "FAIL");
+    return ok;
+}
+
+static void agb_selftest_run(void)
+{
+    enum { SEC = 0x1000, LAST = AGB_FLASH1M_SIZE / SEC - 1 };
+    static u8 ref[AGB_FLASH1M_SIZE], buf[SEC], orig[SEC], pat[SEC];
+    int ok = 1;
+    u32 code, i;
+    u16 id, sec;
+    int32_t rc;
+
+    if (sBackup != AGB_BACKUP_FLASH1M) {
+        fprintf(stderr, "pc_agb_slot: selftest needs a flash cartridge\n");
+        return;
+    }
+    code = CTRDG_GetAgbGameCode();
+    ok &= st_check("CTRDG_IsAgbCartridge", CTRDG_IsAgbCartridge() != FALSE);
+    ok &= st_check("CTRDG_GetAgbGameCode == header",
+                   code == ((const CTRDGHeader *)HW_CTRDG_ROM)->gameCode);
+    id = CTRDGi_ReadFlashID();
+    fprintf(stderr, "pc_agb_slot: selftest flash ID 0x%04x\n", (unsigned)id);
+    ok &= st_check("CTRDGi_ReadFlashID == 0x09C2 (MX29L010)",
+                   id == (AGB_FLASH_DEVICE << 8 | AGB_FLASH_MAKER));
+    ok &= st_check("CTRDG_IdentifyAgbBackup(FLASH_1M) == 0",
+                   CTRDG_IdentifyAgbBackup(CTRDG_BACKUP_TYPE_FLASH_1M) == 0);
+    ok &= st_check("AgbFlash: 128 KiB, maker C2, device 09",
+                   AgbFlash != NULL && AgbFlash->romSize == AGB_FLASH1M_SIZE &&
+                       AgbFlash->makerID == AGB_FLASH_MAKER &&
+                       AgbFlash->deviceID == AGB_FLASH_DEVICE);
+    if (!ok) {
+        fprintf(stderr, "pc_agb_slot: selftest FAIL\n");
+        return;
+    }
+
+    memset(ref, 0xFF, sizeof ref);
+    rc = np_host_gba_save_load(ref, sizeof ref);
+    if (rc < 0) {
+        memset(ref, 0xFF, sizeof ref);
+    }
+    for (sec = 0; sec <= LAST; sec++) {
+        CTRDG_ReadAgbFlash(sec, 0, buf, SEC);
+        if (memcmp(buf, ref + sec * SEC, SEC) != 0) {
+            fprintf(stderr, "pc_agb_slot: selftest sector %u differs\n", (unsigned)sec);
+            ok = 0;
+        }
+    }
+    ok &= st_check(rc > 0 ? "read 32 sectors == save file"
+                          : "read 32 sectors == erased (no save file)", ok);
+
+    CTRDG_ReadAgbFlash(LAST, 0, orig, SEC);
+    for (i = 0; i < SEC; i++) {
+        pat[i] = (u8)(i * 7 + 0x5A);
+    }
+    ok &= st_check("CTRDG_WriteAgbFlashSector(31, pattern) == 0",
+                   CTRDG_WriteAgbFlashSector(LAST, pat) == 0);
+    ok &= st_check("CTRDG_VerifyAgbFlash(31, pattern) == 0",
+                   CTRDG_VerifyAgbFlash(LAST, pat, SEC) == 0);
+    CTRDG_ReadAgbFlash(LAST, 0, buf, SEC);
+    ok &= st_check("read-back sector 31 == pattern", memcmp(buf, pat, SEC) == 0);
+    ok &= st_check("chip image bank 1 0xF000 == pattern",
+                   memcmp(sImage + LAST * SEC, pat, SEC) == 0);
+    ok &= st_check("CTRDG_WriteAgbFlashSector(31, original) == 0",
+                   CTRDG_WriteAgbFlashSector(LAST, orig) == 0);
+    ok &= st_check("chip image == save file again",
+                   memcmp(sImage, ref, AGB_FLASH1M_SIZE) == 0);
+    fprintf(stderr, "pc_agb_slot: selftest %s\n", ok ? "PASS" : "FAIL");
+}
+
+static void agb_selftest(void)
+{
+#if defined(PC_GAME_DP)
+    extern uint32_t armrec_sp;
+    static u32 stack[0x1000]; /* 16 KiB, 8-byte aligned top */
+    uint32_t saved = armrec_sp;
+
+    armrec_sp = (uint32_t)(uintptr_t)(stack + 0x1000);
+    agb_selftest_run();
+    armrec_sp = saved;
+#else
+    agb_selftest_run();
+#endif
+}
+#endif
 
 /* ------------------------------------------------------------- lifecycle */
 
@@ -402,6 +551,7 @@ void pc_agb_slot_insert(void)
     sPresent = 1;
     reg_OS_PAUSE |= REG_OS_PAUSE_CHK_MASK;
     pc_pxi_set_responder(PXI_FIFO_TAG_CTRDG, ctrdg_arm7);
+    sSelftest = getenv("PC_AGB_SELFTEST") != NULL;
 
     {
         const CTRDGHeader *h = (const CTRDGHeader *)HW_CTRDG_ROM;
@@ -423,6 +573,12 @@ void pc_agb_slot_insert(void)
 void pc_agb_slot_step(void)
 {
     unsigned long long now;
+#if defined(__wasm__)
+    if (sSelftest) {
+        sSelftest = 0;
+        agb_selftest();
+    }
+#endif
     if (!sDirty) {
         return;
     }

@@ -3139,6 +3139,29 @@ def file_touches_spi(path):
         return False
 
 
+# The GBA slot's backup bus, 0x0A000000 to 0x0A00FFFF: on hardware the
+# cartridge's 8-bit SRAM/flash bus, and with a flash chip there a store is a
+# command (AA@5555, 55@2AAA, then 90 ID mode, 80/10 or 80/30 erase, A0
+# program, B0 bank) and a load in ID mode is the chip's ID, not a cell. A file
+# naming the window gets ARMREC_AGB_HOOK, which routes ldrb/strb through
+# pc/src/pc_agb_slot.c's chip model (the bus is 8 bits wide and the SDK only
+# reaches it with byte accesses).
+#
+# Named either as a literal (.word 0x0A005555) or as the immediate #0xa000000
+# that sector addresses are built on. Today four files, all Diamond/Pearl's
+# recompiled SDK: arm9/asm/CTRDG_flash_{common,MX29L010,MX29L512,LE39FW512}.s.
+# Platinum's CTRDG is C and goes through the same model by its pc/patches.
+AGB_ADDR_RE = re.compile(r"0x0*a00[0-9a-f]{4}\b|#167772160\b", re.I)
+
+
+def file_touches_agb(path):
+    try:
+        with open(path, "r", errors="replace") as fh:
+            return AGB_ADDR_RE.search(fh.read()) is not None
+    except OSError:
+        return False
+
+
 def collect_symbols(paths, defines, incdirs, stems, local_rename=True):
     """
     Pass 1: every function and data symbol, with its guest address.
@@ -3436,7 +3459,9 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
                               ("#define ARMREC_IPC_HOOK 1\n"
                                if file_touches_ipc(path) else "") +
                               ("#define ARMREC_SPI_HOOK 1\n"
-                               if file_touches_spi(path) else "")))
+                               if file_touches_spi(path) else "") +
+                              ("#define ARMREC_AGB_HOOK 1\n"
+                               if file_touches_agb(path) else "")))
         for name in sorted(called - defined):
             out.write("extern uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t);\n" % name)
         for name in sorted(ext):
