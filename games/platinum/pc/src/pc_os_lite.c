@@ -653,6 +653,12 @@ void OS_Halt(void)
         pc_wm_step();
     }
 
+    /* The hardware timers advance one VBlank's worth (pc_timers.c). */
+    {
+        extern void pc_timers_step(void);
+        pc_timers_step();
+    }
+
     if (!(reg_OS_IME & 1) || !(reg_OS_IE & OS_IE_V_BLANK)) {
         pc_trap("OS_Halt",
                 "halted with VBlank delivery disabled (IME/IE); no modeled "
