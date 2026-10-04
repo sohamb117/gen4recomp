@@ -1,18 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import type { CoreManifest, GameId } from "../catalog";
 import { storage, type SaveSlot } from "../storage";
-import { defaultOptions, KEY, type Frame, type Input } from "./abi";
+import { KEY, type Frame, type Input } from "./abi";
+import { gameOptions, type Settings } from "./settings";
 import { GameAudio } from "./audio";
 import { FrameProfiler } from "./performance";
-export type Settings = {
-  layout: "stacked" | "side-by-side";
-  effect: boolean;
-  volume: number;
-  muted: boolean;
-  speed: number;
-  instantText: boolean;
-  fixBugs: boolean;
-};
 export function useSession(
   settings: Settings,
   onSaved: () => void,
@@ -43,7 +35,12 @@ export function useSession(
   const callbacks = useRef({ onSaved, onError });
   callbacks.current = { onSaved, onError };
   const saves = useRef(Promise.resolve());
+  const saveFailed = useRef(false);
   const latestSave = useRef<ArrayBuffer | undefined>(undefined);
+  const activeGame = useRef<GameId>("platinum");
+  const quickSaveSequence = useRef(0);
+  const quickSavePending = useRef(false);
+  const [saving, setSaving] = useState(false);
   const stopResolve = useRef<(() => void) | null>(null);
   const draw = (
     canvas: HTMLCanvasElement | null,
@@ -51,6 +48,18 @@ export function useSession(
     pixels: Uint8ClampedArray,
   ) => {
     if (!canvas) return;
+    if (canvas.width !== frame.width || canvas.height !== frame.height) {
+      canvas.parentElement?.style.setProperty(
+        "aspect-ratio",
+        `${frame.width} / ${frame.height}`,
+      );
+      canvas
+        .closest<HTMLElement>(".display")
+        ?.style.setProperty(
+          "--screen-ratio",
+          String(frame.width / frame.height),
+        );
+    }
     if (canvas.width !== frame.width) canvas.width = frame.width;
     if (canvas.height !== frame.height) canvas.height = frame.height;
     canvas
@@ -89,15 +98,15 @@ export function useSession(
       if (pad.axes[1] > 0.4) mask |= 128;
       if (pad.axes[1] < -0.4) mask |= 64;
     }
-    const opt = defaultOptions(),
-      s = currentSettings.current;
-    opt[8] = +s.instantText;
-    opt[7] = +s.fixBugs;
+    const s = currentSettings.current;
+    const opt = gameOptions(s, activeGame.current, quickSaveSequence.current);
     clearTimeout(watchdog.current);
     watchdog.current = window.setTimeout(() => {
       paused.current = true;
       inFlight.current = false;
       setState("error");
+      quickSavePending.current = false;
+      setSaving(false);
       audio.current?.pause();
       callbacks.current.onError(
         "The game stopped responding. Close it and try another core.",
@@ -133,7 +142,12 @@ export function useSession(
     void sound.resume();
     sound.volume(settings.muted ? 0 : settings.volume);
     setActive({ game, slot });
+    activeGame.current = game;
+    quickSaveSequence.current = 0;
+    quickSavePending.current = false;
+    setSaving(false);
     setState("loading");
+    saveFailed.current = false;
     latestSave.current = slot.data;
     setSaveStatus(slot.data ? "Loaded from browser storage" : "New save slot");
     paused.current = false;
@@ -147,6 +161,8 @@ export function useSession(
       clearTimeout(timer.current);
       clearTimeout(watchdog.current);
       setState("error");
+      quickSavePending.current = false;
+      setSaving(false);
       sound.pause();
       callbacks.current.onError(message);
       stopResolve.current?.();
@@ -172,6 +188,32 @@ export function useSession(
         clearTimeout(watchdog.current);
         const received = performance.now();
         const frame = data.frame as Frame;
+        if (
+          quickSavePending.current &&
+          frame.status.quickSaveSequence === quickSaveSequence.current
+        ) {
+          quickSavePending.current = false;
+          const result = frame.status.quickSaveResult;
+          // Save messages precede this frame. Wait for IndexedDB before
+          // reporting success, and never mistake a refused request for a save.
+          void saves.current.then(() => {
+            setSaving(false);
+            if (result === 1 && !saveFailed.current)
+              callbacks.current.onError("Quick save completed.");
+            else if (result === 1)
+              callbacks.current.onError(
+                "Save could not be stored. Export a backup from the save manager.",
+              );
+            else if (result === 2)
+              callbacks.current.onError(
+                "Can't save here yet. Return to the field and finish any dialogue.",
+              );
+            else
+              callbacks.current.onError(
+                "Quick save failed. Try saving from the game menu.",
+              );
+          });
+        }
         draw(top.current, frame, frame.top);
         draw(bottom.current, frame, frame.bottom);
         profiler.current.rendered(
@@ -209,6 +251,7 @@ export function useSession(
             callbacks.current.onSaved();
           })
           .catch((e) => {
+            saveFailed.current = true;
             setSaveStatus("Save failed — export a backup");
             callbacks.current.onError(String(e));
             paused.current = true;
@@ -261,6 +304,19 @@ export function useSession(
     nextFrameAt.current = 0;
     profiler.current.startStress(performance.now());
   }
+  function quickSave() {
+    if (
+      !worker.current ||
+      paused.current ||
+      activeGame.current !== "platinum" ||
+      quickSavePending.current
+    )
+      return;
+    quickSaveSequence.current = (quickSaveSequence.current + 1) >>> 0 || 1;
+    saveFailed.current = false;
+    quickSavePending.current = true;
+    setSaving(true);
+  }
   async function stop() {
     const w = worker.current;
     if (!w) return;
@@ -285,6 +341,8 @@ export function useSession(
     nextFrameAt.current = 0;
     setState("idle");
     setActive(null);
+    quickSavePending.current = false;
+    setSaving(false);
     callbacks.current.onSaved();
   }
   useEffect(() => {
@@ -317,6 +375,10 @@ export function useSession(
       if (KEY[e.code]) {
         e.preventDefault();
         keys.current.add(e.code);
+      }
+      if (e.code === "F1") {
+        e.preventDefault();
+        if (!e.repeat) quickSave();
       }
     }
     function up(e: KeyboardEvent) {
@@ -361,6 +423,8 @@ export function useSession(
     state,
     active,
     saveStatus,
+    saving,
+    quickSave,
     profiler: profiler.current,
     top,
     bottom,

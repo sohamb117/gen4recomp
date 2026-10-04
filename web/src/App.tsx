@@ -12,6 +12,7 @@ import {
   Download,
   Maximize2,
   Settings2,
+  Save,
   Volume2,
   VolumeX,
   FastForward,
@@ -27,36 +28,28 @@ import { Modal } from "./components/Modal";
 import { PerformanceStats } from "./components/PerformanceStats";
 import { TouchControls } from "./components/TouchControls";
 import { games, identifyRom, type CoreManifest, type GameId } from "./catalog";
-import { fetchCartridge, loadCartridges, type HostedCartridges } from "./cartridges";
+import {
+  fetchCartridge,
+  loadCartridges,
+  type HostedCartridges,
+} from "./cartridges";
 import { download, saveData, storage, type SaveSlot } from "./storage";
-import { useSession, type Settings } from "./runtime/useSession";
+import { useSession } from "./runtime/useSession";
+import {
+  initialSettings,
+  normalizeSettings,
+  type Settings,
+} from "./runtime/settings";
+import { mapTouch } from "./runtime/touch";
+import { RecompOptions } from "./components/RecompOptions";
 type Popup = "saves" | "settings" | "controls" | "performance" | null;
-const initial: Settings = {
-  layout: "stacked",
-  effect: false,
-  volume: 0.65,
-  muted: false,
-  speed: 1,
-  instantText: false,
-  fixBugs: false,
-};
 function readSettings(): Settings {
   try {
-    const s = JSON.parse(localStorage.getItem("nativeplat-settings") || "{}");
-    return {
-      layout: "stacked",
-      effect: s.effect === true,
-      muted: s.muted === true,
-      volume:
-        typeof s.volume === "number"
-          ? Math.max(0, Math.min(1, s.volume))
-          : 0.65,
-      speed: s.speed === 2 ? 2 : 1,
-      instantText: s.instantText === true,
-      fixBugs: s.fixBugs === true,
-    };
+    return normalizeSettings(
+      JSON.parse(localStorage.getItem("nativeplat-settings") || "{}"),
+    );
   } catch {
-    return initial;
+    return initialSettings;
   }
 }
 export function App() {
@@ -87,7 +80,9 @@ export function App() {
     gameSlots = slots.filter((s) => s.game === selected);
   useEffect(() => {
     void refresh().catch((e) => setNotice(`Browser storage unavailable: ${e}`));
-    void loadCartridges(import.meta.env.BASE_URL).then(setHosted).catch((e) => setNotice(String(e)));
+    void loadCartridges(import.meta.env.BASE_URL)
+      .then(setHosted)
+      .catch((e) => setNotice(String(e)));
     fetch(`${import.meta.env.BASE_URL}cores/manifest.json`)
       .then(async (r) => {
         if (!r.ok) throw Error();
@@ -158,14 +153,28 @@ export function App() {
         const entry = hosted[selected];
         if (!entry) throw Error("Import a cartridge to play this game.");
         let percent = -1;
-        const data = await fetchCartridge(import.meta.env.BASE_URL, selected, entry, (fraction) => {
-          const next = Math.floor(fraction * 100);
-          if (next !== percent) {
-            percent = next;
-            setNotice(percent === 100 ? `Preparing ${game.name}…` : `Downloading ${game.name}… ${percent}%`);
-          }
+        const data = await fetchCartridge(
+          import.meta.env.BASE_URL,
+          selected,
+          entry,
+          (fraction) => {
+            const next = Math.floor(fraction * 100);
+            if (next !== percent) {
+              percent = next;
+              setNotice(
+                percent === 100
+                  ? `Preparing ${game.name}…`
+                  : `Downloading ${game.name}… ${percent}%`,
+              );
+            }
+          },
+        );
+        await storage.importRom({
+          game: selected,
+          name: entry.file,
+          data,
+          imported: Date.now(),
         });
-        await storage.importRom({ game: selected, name: entry.file, data, imported: Date.now() });
         await refresh();
         setNotice("");
       }
@@ -176,17 +185,20 @@ export function App() {
   }
   function stylus(e: PointerEvent<HTMLCanvasElement>) {
     const r = e.currentTarget.getBoundingClientRect();
+    const point = mapTouch(
+      e.clientX - r.left,
+      e.clientY - r.top,
+      r.width,
+      r.height,
+      e.currentTarget.width,
+      e.currentTarget.height,
+    );
     session.touch.current = {
       ...session.touch.current,
-      touch: e.type !== "pointerup" && e.type !== "pointercancel",
-      x: Math.max(
-        0,
-        Math.min(255, Math.floor(((e.clientX - r.left) / r.width) * 256)),
-      ),
-      y: Math.max(
-        0,
-        Math.min(191, Math.floor(((e.clientY - r.top) / r.height) * 192)),
-      ),
+      touch:
+        point.inside && e.type !== "pointerup" && e.type !== "pointercancel",
+      x: point.x,
+      y: point.y,
     };
     if (e.type === "pointerdown")
       e.currentTarget.setPointerCapture(e.pointerId);
@@ -255,10 +267,16 @@ export function App() {
                       <span>{g.code}</span>
                     </div>
                     <div className="cart-status">
-                      <i className={roms.includes(g.id) || hosted[g.id] ? "present" : ""} />
+                      <i
+                        className={
+                          roms.includes(g.id) || hosted[g.id] ? "present" : ""
+                        }
+                      />
                       {roms.includes(g.id)
                         ? "CARTRIDGE CONNECTED"
-                        : hosted[g.id] ? "AVAILABLE ONLINE" : "AWAITING CARTRIDGE"}
+                        : hosted[g.id]
+                          ? "AVAILABLE ONLINE"
+                          : "AWAITING CARTRIDGE"}
                       <ChevronRight size={13} />
                     </div>
                   </button>
@@ -406,6 +424,16 @@ export function App() {
                   >
                     <FastForward size={16} /> 2×
                   </button>
+                  {session.active?.game === "platinum" && (
+                    <button
+                      title="Quick save (F1)"
+                      onClick={session.quickSave}
+                      disabled={session.state !== "running" || session.saving}
+                    >
+                      <Save size={16} />{" "}
+                      {session.saving ? "Saving…" : "Quick save"}
+                    </button>
+                  )}
                   <button
                     title="Save manager"
                     aria-label="Save manager"
@@ -617,34 +645,11 @@ export function App() {
                   <option value="2">2×</option>
                 </select>
               </label>
-              <label>
-                <span>
-                  Instant text<small>Show dialogue without the wait.</small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={settings.instantText}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      instantText: e.target.checked,
-                    })
-                  }
-                />
-              </label>
-              <label>
-                <span>
-                  Cartridge bug fixes
-                  <small>Opt in to fixes supported by the core.</small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={settings.fixBugs}
-                  onChange={(e) =>
-                    setSettings({ ...settings, fixBugs: e.target.checked })
-                  }
-                />
-              </label>
+              <RecompOptions
+                game={session.active?.game ?? selected}
+                settings={settings}
+                onChange={setSettings}
+              />
               <button onClick={() => setPopup("performance")}>
                 Performance / FPS
               </button>
@@ -671,6 +676,7 @@ export function App() {
                 ["L / R", "Q / E"],
                 ["Start / Select", "Esc / Tab"],
                 ["Touch screen", "Click or touch the lower screen"],
+                ["Quick save / Platinum", "F1"],
               ].map(([a, b]) => (
                 <div key={a}>
                   <span>{a}</span>

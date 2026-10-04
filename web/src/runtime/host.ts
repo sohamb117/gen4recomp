@@ -333,6 +333,13 @@ export class GuestHost {
       audio,
       rate,
       number: get(28),
+      status: {
+        linkActive: get(ABI.status) !== 0,
+        fieldReady: get(ABI.status + 4) !== 0,
+        quickSaveSequence: get(ABI.status + 8),
+        quickSaveResult: get(ABI.status + 12),
+        mapId: get(ABI.status + 16),
+      },
     };
   }
 }

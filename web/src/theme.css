@@ -457,7 +457,7 @@ kbd {
   align-items: center;
 }
 .display:fullscreen .screen {
-  width: min(100%, calc((100dvh - 53px) * 2 / 3));
+  width: min(100%, calc((100dvh - 53px) * var(--screen-ratio, 1.333333) / 2));
   flex: 0 0 auto;
 }
 .player-toolbar {
@@ -618,6 +618,17 @@ kbd {
 }
 .settings-list select {
   font-size: 10px;
+}
+.settings-heading {
+  margin: 28px 0 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.settings-note {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.7;
 }
 .modal {
   width: min(100%, 620px);
