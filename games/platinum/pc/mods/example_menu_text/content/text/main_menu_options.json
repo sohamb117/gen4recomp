@@ -1,0 +1,89 @@
+{
+  "key": 38756,
+  "messages": [
+    {
+      "id": "MainMenuOptions_Text_Continue",
+      "en_US": "RESUME ADVENTURE"
+    },
+    {
+      "id": "MainMenuOptions_Text_NewGame",
+      "en_US": "START FRESH (MODDED)"
+    },
+    {
+      "id": "MainMenuOptions_Text_MysteryGift",
+      "en_US": "WONDER DELIVERY"
+    },
+    {
+      "id": "MainMenuOptions_Text_LinkWithPokemonRanger",
+      "en_US": "RANGER LINK"
+    },
+    {
+      "id": "MainMenuOptions_Text_MigrateFromRuby",
+      "en_US": "TRANSFER: RUBY"
+    },
+    {
+      "id": "MainMenuOptions_Text_MigrateFromSapphire",
+      "en_US": "TRANSFER: SAPPHIRE"
+    },
+    {
+      "id": "MainMenuOptions_Text_MigrateFromLeafgreen",
+      "en_US": "TRANSFER: LEAFGREEN"
+    },
+    {
+      "id": "MainMenuOptions_Text_MigrateFromFirered",
+      "en_US": "TRANSFER: FIRERED"
+    },
+    {
+      "id": "MainMenuOptions_Text_MigrateFromEmerald",
+      "en_US": "TRANSFER: EMERALD"
+    },
+    {
+      "id": "MainMenuOptions_Text_Pedometer",
+      "en_US": "STEP COUNTER"
+    },
+    {
+      "id": "MainMenuOptions_Text_ConnectToWii",
+      "en_US": "Wii LINK"
+    },
+    {
+      "id": "MainMenuOptions_Text_NintendoWfcSettings",
+      "en_US": "WFC SETUP"
+    },
+    {
+      "id": "MainMenuOptions_Text_Player",
+      "en_US": "TRAINER"
+    },
+    {
+      "id": "MainMenuOptions_Text_Time",
+      "en_US": "PLAYED"
+    },
+    {
+      "id": "MainMenuOptions_Text_Pokedex",
+      "en_US": "DEX"
+    },
+    {
+      "id": "MainMenuOptions_Text_Badges",
+      "en_US": "MEDALS"
+    },
+    {
+      "id": "MainMenuOptions_Text_PlayerName",
+      "en_US": "{STRVAR_1 3, 0, 0}"
+    },
+    {
+      "id": "MainMenuOptions_Text_PlayTime",
+      "en_US": "{STRVAR_1 52, 0, 0}:{STRVAR_1 51, 1, 0}"
+    },
+    {
+      "id": "MainMenuOptions_Text_SeenSpeciesCount",
+      "en_US": "{STRVAR_1 52, 0, 0}"
+    },
+    {
+      "id": "MainMenuOptions_Text_BadgeCount",
+      "en_US": "{STRVAR_1 50, 0, 0}"
+    },
+    {
+      "id": "MainMenuOptions_Text_WiiMessageSettings",
+      "en_US": "Wii MAIL"
+    }
+  ]
+}

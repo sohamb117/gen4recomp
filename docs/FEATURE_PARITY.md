@@ -106,7 +106,7 @@ started · `n/a` no DS equivalent (reason given).
 
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
-| Mod platform, manager, profiles, dependencies | Port's mod system (`pc/mods`, cook/port) behind an in-app manager | planned |
+| Mod platform, manager, profiles, dependencies | Port's mod system (`pc/mods`, cook/port) behind an in-app manager | wip (core done for Platinum: runtime packages load from `np_host.content_root`, a read-only WASI preopen, ordered by `PC_MODS`/`loadorder.txt`, errors as `np_core_last_error`; example `pc/mods/example_menu_text`; manager UI: shell; D/P: no runtime packages yet) |
 | Mod catalog, update-all | Same | planned |
 | Online arena restrictions | Vanilla or sealed packages only | planned |
 | Tiled map editing | n/a for now (DS maps are 3D models + BDHC); revisit | planned |

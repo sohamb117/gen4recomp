@@ -15,6 +15,13 @@
  * tree without a digest file, or whose digest does not match the FNV-1a
  * of content/ + records/ (same number pc/modcook.py writes), is a boot
  * error that names `make -f pc/Makefile cook`.
+ *
+ * On wasm the packages come from the host's content directory
+ * (np_host.content_root), which the runtime serves read-only as the WASI
+ * preopen NP_CONTENT_DIR ("/content"); that is the default PC_MODS_DIR
+ * there, so a core created without one sees no packages. A boot error
+ * becomes a guest trap carrying the message, which the host reads back
+ * as np_core_last_error.
  */
 #include "pc_modfs.h"
 
@@ -25,6 +32,9 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <sys/stat.h>
+#if defined(__wasm__)
+#include "np_guest_abi.h"
+#endif
 
 #include <nitro/fs.h>
 #include <../libraries/fs/include/command.h>
@@ -123,13 +133,19 @@ static void *slurp_host(const char *host, u32 *out_size);
 static void die(const char *fmt, ...)
 {
     va_list ap;
+    char msg[512];
+    int n;
 
-    fputs("modfs: ", stderr);
     va_start(ap, fmt);
-    vfprintf(stderr, fmt, ap);
+    n = snprintf(msg, sizeof msg, "modfs: ");
+    vsnprintf(msg + n, sizeof msg - (size_t)n, fmt, ap);
     va_end(ap);
-    fputc('\n', stderr);
+    fprintf(stderr, "%s\n", msg);
+#if defined(__wasm__)
+    np_host_trap(msg, (uint32_t)strlen(msg));
+#else
     exit(2);
+#endif
 }
 
 static int is_dir(const char *path)
@@ -1189,7 +1205,11 @@ void pc_modfs_boot(void)
 
     mods_dir = getenv("PC_MODS_DIR");
     if (mods_dir == NULL || mods_dir[0] == '\0') {
+#if defined(__wasm__)
+        mods_dir = NP_CONTENT_DIR;
+#else
         mods_dir = "pc/mods";
+#endif
     }
     mods = getenv("PC_MODS");
     modfs = getenv("PC_MODFS");

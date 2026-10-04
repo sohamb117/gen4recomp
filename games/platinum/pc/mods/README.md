@@ -51,3 +51,32 @@ package name per line.
 
 The port refuses a stale `.cooked/` rather than serving it, and a compile-time
 plugin named in `PC_MODS` is an error that tells you to use `MODS` instead.
+
+### In the nativeplat cores
+
+The wasm core reads packages through the runtime, never the host filesystem:
+the host names one directory as `np_host.content_root` and the guest sees it,
+read-only, as `/content` (the default `PC_MODS_DIR` there). Lookups cannot
+leave it: `..`, absolute paths and links that resolve outside are refused.
+Which packages load, and in what order, is `PC_MODS` among the core's options
+(`np_core_create`), or `loadorder.txt` in the content directory when it is
+unset; `PC_MODS=""` loads none. A package error stops the boot with the
+`modfs:` message as `np_core_last_error`.
+
+    <content_root>/loadorder.txt          optional
+    <content_root>/<pkg>/mod.toml         id, name, version[, authors, requires, load_after]
+    <content_root>/<pkg>/content/...      authored
+    <content_root>/<pkg>/.cooked/digest   + cooked members, from the cook step
+
+`example_menu_text/` is a small example: authored labels for the main menu
+(`content/text/main_menu_options.json`, every message of that bank). Cook it
+with the ROM build's tools in the romtools container, then run it:
+
+```sh
+R=$(git rev-parse --show-toplevel)
+docker --context orbstack run --rm --platform linux/amd64 -v "$R:$R" \
+  -w "$R/games/platinum" -u "$(id -u):$(id -g)" nativeplat-romtools:1 \
+  python3 pc/modcook.py --mods-dir pc/mods --mods example_menu_text --rom-build build/rom
+build/core-plat/np_headless platinum games/platinum/build/rom/pokeplatinum.us.nds \
+  --content games/platinum/pc/mods -e PC_MODS=example_menu_text --frames 700 --dump /tmp/mod
+```
