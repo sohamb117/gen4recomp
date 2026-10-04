@@ -96,6 +96,13 @@ if(NP_CORE STREQUAL "real")
   np_link_guest_modules(nativeplat ${NP_GUESTS})
 endif()
 
+if(WIN32)
+  # VERSIONINFO for Explorer (tools/cmake/windows-x64.cmake's RC compiler or rc.exe).
+  target_sources(nativeplat PRIVATE platform/windows/nativeplat.rc)
+  set_source_files_properties(platform/windows/nativeplat.rc PROPERTIES COMPILE_DEFINITIONS
+    "NP_VERSION_MAJOR=${PROJECT_VERSION_MAJOR};NP_VERSION_MINOR=${PROJECT_VERSION_MINOR};NP_VERSION_PATCH=${PROJECT_VERSION_PATCH};NP_VERSION_STRING=${PROJECT_VERSION}")
+endif()
+
 if(APPLE)
   set_target_properties(nativeplat PROPERTIES
     MACOSX_BUNDLE_BUNDLE_NAME "nativeplat"

@@ -1,0 +1,14 @@
+Third-party software in this package
+====================================
+
+- Game code: the pret decompilations of Pokemon Platinum (pokeplatinum) and
+  Diamond/Pearl (pokediamond) with nativeplat's port layer, GPL-3.0; see
+  LICENSE.txt. Pokemon is a trademark of Nintendo / Creatures Inc. /
+  GAME FREAK inc.; no game data is included, you supply your own cartridge.
+- wasm2c runtime (wasm-rt) from WABT, the WebAssembly Binary Toolkit,
+  Copyright 2018 WebAssembly Community Group participants, licensed under the
+  Apache License 2.0: https://www.apache.org/licenses/LICENSE-2.0
+- SDL3, Simple DirectMedia Layer, zlib license (full text below).
+- Windows only: the mingw-w64 C runtime startup code, statically linked,
+  Zope Public License 2.1 (full text below).
+

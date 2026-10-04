@@ -3,6 +3,8 @@
 #
 #   tools/fetch_toolchains.sh            wasi-sdk + wabt (every build)
 #   tools/fetch_toolchains.sh windows    also zig + SDL3 mingw (Windows cross build)
+#   tools/fetch_toolchains.sh macos      also SDL3's official Apple release
+#                                        (tools/package_macos.sh)
 #
 #   wasi-sdk  clang + wasm-ld + wasi-libc: compiles the game for wasm32, which is
 #             what keeps guest pointers 32 bits wide on 64-bit hosts.
@@ -11,6 +13,11 @@
 #             headers/libs, ar, ranlib, rc) for tools/cmake/windows-x64.cmake.
 #   sdl3-mingw  SDL3's official mingw development package (headers, import
 #             library, SDL3.dll, CMake config) for the Windows app.
+#   sdl3-apple  SDL3's official SDL3.xcframework (universal macOS framework,
+#             deployment target 11.0, plus iOS slices) and its CMake config,
+#             extracted from the release .dmg without the dSYMs. Homebrew's
+#             SDL3 is built for the running macOS only, so it is not
+#             redistributable in an app bundle.
 #
 # Hashes are pinned; a mismatch aborts before anything is extracted.
 set -euo pipefail
@@ -19,11 +26,12 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST="${NP_TOOLCHAINS:-$ROOT/.cache/toolchains}"
 mkdir -p "$DEST"
 
-WANT_WINDOWS=0
+WANT_WINDOWS=0 WANT_MACOS=0
 for arg in "$@"; do
     case "$arg" in
         windows) WANT_WINDOWS=1 ;;
-        *) echo "usage: $0 [windows]" >&2; exit 2 ;;
+        macos) WANT_MACOS=1 ;;
+        *) echo "usage: $0 [windows] [macos]" >&2; exit 2 ;;
     esac
 done
 
@@ -47,10 +55,15 @@ ZIG_VER=0.17.0
 ZIG_NAME="zig-${HOST_ZIG}-${ZIG_VER}"
 ZIG_URL="https://ziglang.org/download/${ZIG_VER}/${ZIG_NAME}.tar.xz"
 
-SDL3_MINGW_VER=3.4.18
-SDL3_MINGW_NAME="SDL3-${SDL3_MINGW_VER}"
-SDL3_MINGW_ARCHIVE="SDL3-devel-${SDL3_MINGW_VER}-mingw.tar.gz"
-SDL3_MINGW_URL="https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_MINGW_VER}/${SDL3_MINGW_ARCHIVE}"
+SDL3_VER=3.4.18
+SDL3_RELEASE="https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VER}"
+SDL3_MINGW_NAME="SDL3-${SDL3_VER}"
+SDL3_MINGW_ARCHIVE="SDL3-devel-${SDL3_VER}-mingw.tar.gz"
+SDL3_MINGW_URL="${SDL3_RELEASE}/${SDL3_MINGW_ARCHIVE}"
+
+SDL3_APPLE_NAME="SDL3-${SDL3_VER}-apple"
+SDL3_APPLE_ARCHIVE="SDL3-${SDL3_VER}.dmg"
+SDL3_APPLE_URL="${SDL3_RELEASE}/${SDL3_APPLE_ARCHIVE}"
 
 # sha256 per host archive. Unknown hosts fail closed.
 sha_for() {
@@ -71,6 +84,7 @@ sha_for() {
                 *) echo "" ;;
             esac ;;
         "${SDL3_MINGW_ARCHIVE}") echo "${NP_SHA_SDL3_MINGW:-}" ;;
+        "${SDL3_APPLE_ARCHIVE}") echo "${NP_SHA_SDL3_APPLE:-}" ;;
     esac
 }
 
@@ -95,7 +109,18 @@ fetch() { # url archive-name extract-marker
         rm -f "$tmp"
         exit 1
     fi
-    tar -xf "$tmp" -C "$DEST"
+    case "$name" in
+        *.dmg)
+            local mnt
+            mnt="$(mktemp -d)"
+            hdiutil attach -nobrowse -readonly -mountpoint "$mnt" "$tmp" >/dev/null
+            mkdir -p "$DEST/$marker"
+            rsync -a --exclude dSYMs --exclude .DS_Store --exclude .logo "$mnt/" "$DEST/$marker/" ||
+                { hdiutil detach "$mnt" >/dev/null; exit 1; }
+            hdiutil detach "$mnt" >/dev/null
+            rmdir "$mnt" ;;
+        *) tar -xf "$tmp" -C "$DEST" ;;
+    esac
     rm -f "$tmp"
     echo "installed $marker"
 }
@@ -114,5 +139,9 @@ if [ "$WANT_WINDOWS" = 1 ]; then
     fetch "$SDL3_MINGW_URL" "$SDL3_MINGW_ARCHIVE" "$SDL3_MINGW_NAME"
     ln -sfn "$ZIG_NAME" "$DEST/zig"
     ln -sfn "$SDL3_MINGW_NAME" "$DEST/sdl3-mingw"
+fi
+if [ "$WANT_MACOS" = 1 ]; then
+    fetch "$SDL3_APPLE_URL" "$SDL3_APPLE_ARCHIVE" "$SDL3_APPLE_NAME"
+    ln -sfn "$SDL3_APPLE_NAME" "$DEST/sdl3-apple"
 fi
 echo "toolchains ready in $DEST"
