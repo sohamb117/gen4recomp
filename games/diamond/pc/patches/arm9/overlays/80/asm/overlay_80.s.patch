@@ -1,0 +1,280 @@
+--- a/arm9/overlays/80/asm/overlay_80.s
++++ b/arm9/overlays/80/asm/overlay_80.s
+@@ -74,7 +74,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222D8D4 ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D648:
+ 	ldr r0, _0222D8D4 ; =0x02237CE0
+@@ -156,7 +156,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D6CA:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D6D0:
+ 	bl ov79_022123A8
+@@ -173,7 +173,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222D8D4 ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D6F6:
+ 	ldr r0, _0222D8D4 ; =0x02237CE0
+@@ -230,7 +230,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D750:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D756:
+ 	bl ov79_022123A8
+@@ -247,7 +247,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222D8D4 ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D77C:
+ 	ldr r0, _0222D8D4 ; =0x02237CE0
+@@ -297,7 +297,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D7D0:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D7D6:
+ 	bl ov79_022123A8
+@@ -314,7 +314,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222D8D4 ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D7FC:
+ 	ldr r0, _0222D8D4 ; =0x02237CE0
+@@ -376,7 +376,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D864:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D86A:
+ 	bl ov79_022123A8
+@@ -393,7 +393,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222D8D4 ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D890:
+ 	ldr r1, _0222D8D4 ; =0x02237CE0
+@@ -443,7 +443,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D8E4:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D8EA:
+ 	bl ov79_022123A8
+@@ -460,7 +460,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222DB8C ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D910:
+ 	ldr r0, _0222DB8C ; =0x02237CE0
+@@ -517,7 +517,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D96A:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D970:
+ 	bl ov79_022123A8
+@@ -534,7 +534,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222DB8C ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D996:
+ 	ldr r0, _0222DB8C ; =0x02237CE0
+@@ -576,7 +576,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D9E2:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D9E8:
+ 	bl ov79_022123A8
+@@ -593,7 +593,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222DB8C ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222DA0E:
+ 	ldr r0, _0222DB8C ; =0x02237CE0
+@@ -690,7 +690,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222DAB4:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222DABA:
+ 	bl ov79_022123A8
+@@ -707,7 +707,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222DB8C ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222DAE0:
+ 	ldr r1, _0222DB8C ; =0x02237CE0
+@@ -734,7 +734,7 @@
+ 	sub r2, #0x1b
+ 	str r2, [r1, #4]
+ _0222DB08:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222DB0E:
+ 	bl ov79_022123A8
+@@ -751,7 +751,7 @@
+ 	bl ov80_0222DF38
+ 	ldr r1, _0222DB8C ; =0x02237CE0
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222DB34:
+ 	ldr r1, _0222DB8C ; =0x02237CE0
+@@ -795,14 +795,14 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222DB78:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222DB7E:
+ 	mov r0, #0x16
+ 	str r0, [r1]
+ 	sub r0, #0x22
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ _0222DB8A:
+ 	pop {r3, pc}
+ 	.align 2, 0
+@@ -872,7 +872,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ 	.align 2, 0
+ _0222DC04: .word ov80_02237CF4
+@@ -910,7 +910,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ 	nop
+ _0222DC54: .word ov80_02237CEC
+@@ -949,7 +949,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	add sp, #4
+ 	pop {r3, r4, pc}
+ 	.align 2, 0
+@@ -988,7 +988,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	add sp, #4
+ 	pop {r3, r4, pc}
+ 	.align 2, 0
+@@ -1021,7 +1021,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ 	nop
+ _0222DD3C: .word ov80_022377B0
+@@ -1053,7 +1053,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ 	nop
+ _0222DD80: .word ov80_022377FC
+@@ -1108,7 +1108,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	add sp, #4
+ 	pop {r3, r4, r5, r6, pc}
+ 	nop
+@@ -1156,7 +1156,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	add sp, #4
+ 	pop {r3, r4, r5, r6, pc}
+ 	.align 2, 0
+@@ -1195,7 +1195,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ 	nop
+ _0222DEA8: .word ov80_02237CEC
+@@ -1228,7 +1228,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0x23
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ 	nop
+ _0222DEF0: .word ov80_02237938

@@ -1,0 +1,29 @@
+--- a/arm9/overlays/11/asm/ov11_0224D550.s
++++ b/arm9/overlays/11/asm/ov11_0224D550.s
+@@ -8172,7 +8172,7 @@
+ 	str r1, [r0, #0x1c]
+ 	ldr r0, [r4, #8]
+ 	ldr r0, [r0, #4]
+-	bl ov07_02211E60
++	bl ov09_02211E60
+ 	ldrb r0, [r4, #0xe]
+ 	add sp, #0x1fc
+ 	add sp, #0x14
+@@ -9681,7 +9681,7 @@
+ 	strb r1, [r0, #0x15]
+ _022523A2:
+ 	ldr r0, [r4, #4]
+-	bl ov07_02211E60
++	bl ov09_02211E60
+ 	ldrb r0, [r4, #0xa]
+ 	add sp, #0x24
+ 	add r0, r0, #1
+@@ -11777,7 +11777,7 @@
+ 	add r1, #0x32
+ 	strb r0, [r1]
+ 	ldr r0, [r4, #4]
+-	bl ov07_02211E60
++	bl ov09_02211E60
+ 	ldrb r0, [r4, #0xa]
+ 	add sp, #0xc
+ 	add r0, r0, #1

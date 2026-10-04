@@ -1,0 +1,20 @@
+--- a/arm9/overlays/11/asm/ov11_02232264.s
++++ b/arm9/overlays/11/asm/ov11_02232264.s
+@@ -19157,7 +19157,7 @@
+ 	bl sub_02003210
+ 	ldr r0, [r4, #0x50]
+ 	mov r1, #0
+-	bl ov05_021EEF9C
++	bl ov16_021EEF9C
+ 	add sp, #0x158
+ 	pop {r3, r4, r5, r6, r7, pc}
+ _0223B9E4:
+@@ -19182,7 +19182,7 @@
+ 	pop {r3, r4, r5, r6, r7, pc}
+ _0223BA12:
+ 	ldr r0, [r4, #0x50]
+-	bl ov05_021EEF68
++	bl ov16_021EEF68
+ 	ldr r0, [r4, #0x54]
+ 	bl sub_0201D674
+ 	ldr r0, [r4]
