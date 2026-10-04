@@ -46,6 +46,12 @@ extern void pc_pxi_reply(int tag, u32 data);
 
 static u8 sFlash[NV_SIZE];
 static u16 sPacket[16];
+/* Status register bit 1, the write-enable latch: WREN sets it, WRDI and the
+ * end of every program/erase clear it. DWC_backup.s NVRAMm_ExecuteCommand
+ * reads it back after WREN and gives up on the write if it is clear; bit 0
+ * (write in progress) always reads 0 because every operation here is done
+ * by the time the reply goes out. */
+static int sWel;
 
 static int in_main(u32 a, u32 n)
 {
@@ -83,24 +89,34 @@ static void execute(void)
             u8 *p = &sFlash[(addr + i) % NV_SIZE];
             *p = command == NV_PP ? (u8)(*p & v) : v; /* program clears bits */
         }
+        sWel = 0;
         break;
     case NV_PE:
         memset(&sFlash[addr & (NV_SIZE - 1) & ~0xffu], 0xff, 0x100);
+        sWel = 0;
         break;
     case NV_SE:
         memset(&sFlash[addr & (NV_SIZE - 1) & ~0xffffu], 0xff, 0x10000);
+        sWel = 0;
         break;
     case NV_CE:
         memset(sFlash, 0xff, sizeof sFlash);
+        sWel = 0;
         break;
     case NV_RDSR:
     case NV_RSI:
         buf = ((u32)(sPacket[0] & 0xffu) << 24) | ((u32)sPacket[1] << 8) |
               ((u32)(sPacket[2] & 0xff00u) >> 8);
         if (!in_main(buf, 1)) { reply(command, 2); return; }
-        *(u8 *)(uintptr_t)buf = 0; /* status: not busy, not write-enabled */
+        *(u8 *)(uintptr_t)buf = (u8)(sWel << 1);
         break;
-    case NV_WREN: case NV_WRDI: case NV_DP: case NV_RDP: case NV_SR:
+    case NV_WREN:
+        sWel = 1;
+        break;
+    case NV_WRDI:
+        sWel = 0;
+        break;
+    case NV_DP: case NV_RDP: case NV_SR:
         break;
     default:
         reply(command, 1); /* SPI_PXI_RESULT_INVALID_COMMAND */

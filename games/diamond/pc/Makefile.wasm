@@ -91,13 +91,15 @@ include $(PCDIR)/mk/host.mk
 
 all: $(TARGET)
 
+# Overlay statics' addresses into the finished module (host.mk generates the
+# table at its final size), then the contract check, as Platinum does.
+POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HOST_OVSTATICS_C) && \
+             $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
+               $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
 $(TARGET): $(OBJS) $(LINK_EXTRA_DEPS)
 	@mkdir -p $(dir $@)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LINK_EXTRA_OBJS) $(LDLIBS)
 	@$(POST_LINK)
-
-POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
-               $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
 
 W2C_DIR := $(BUILD)/wasm2c
 wasm2c-check: $(TARGET)

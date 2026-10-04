@@ -486,8 +486,14 @@ def main():
     for sym, (s, n) in sorted(taken.items()):
         if sym in F or n in F:
             continue
+        # An address-taken name nothing defines is an extern_weak hook
+        # (`if (hook) hook();`, e.g. pc_np_frame): it resolves to null and
+        # needs no table entry, and naming it here would turn the weak
+        # reference strong and fail the link. B/X names never reach this.
+        if sym == n and n not in defs:
+            continue
         # A definition's signature beats the taker's declaration.
-        if sym == n and n in defs:
+        if sym == n:
             s = defs[n][0]
         adapters.setdefault(sym, (s, n))
 
