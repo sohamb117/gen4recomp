@@ -23,3 +23,17 @@
                  }
              }
  
+@@ -870,6 +877,13 @@
+     }
+ }
+ 
++/* pc port: the NP_RULE_FIX_BUGS check (pc/src/pc_np_rules_check.c) runs
++ * the pre-move pass above on a battle it builds. */
++void PcNp_CheckPreMoveActions(BattleSystem *battleSys, BattleContext *battleCtx)
++{
++    BattleControllerPlayer_CheckPreMoveActions(battleSys, battleCtx);
++}
++
+ static void BattleControllerPlayer_BranchActions(BattleSystem *battleSys, BattleContext *battleCtx)
+ {
+     int maxBattlers = BattleSystem_GetMaxBattlers(battleSys);

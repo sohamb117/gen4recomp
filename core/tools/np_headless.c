@@ -11,6 +11,7 @@
  *     --save FILE        backup chip file: loaded if present, written on store
  *     --dump DIR         write DIR/frame_NNNNNN.ppm (both screens stacked)
  *     --dump-every N     dump every N frames (default: only the last frame)
+ *     --dump-from F      with --dump-every, start dumping at frame F
  *     --press F:KEYS     from frame F hold KEYS (hex NP_KEY_* mask), repeatable
  *     --rtc SECONDS      RTC value (seconds since 2000-01-01) instead of the
  *                        port's deterministic clock
@@ -326,7 +327,7 @@ static void sleep_until(double deadline) {
 
 static int usage(void) {
     fprintf(stderr, "usage: np_headless <diamond|pearl|platinum> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
-                    "                   [--dump-every N] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
+                    "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--schedule FILE]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
                     "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]]\n");
@@ -480,7 +481,7 @@ int main(int argc, char **argv) {
     int npresses = 0;
     opt_set sets[MAX_SETS];
     int nsets = 0;
-    uint64_t frames = 600, dump_every = 0, rms_from = 0, state_first = 0, state_span = 120;
+    uint64_t frames = 600, dump_every = 0, dump_from = 0, rms_from = 0, state_first = 0, state_span = 120;
     int state_rounds = 4, do_state = 0;
     const char *dump_dir = NULL;
     int have_rtc = 0;
@@ -496,6 +497,7 @@ int main(int argc, char **argv) {
         else if (strcmp(a, "--save") == 0) r.save_path = v;
         else if (strcmp(a, "--dump") == 0) dump_dir = v;
         else if (strcmp(a, "--dump-every") == 0) dump_every = strtoull(v, NULL, 0);
+        else if (strcmp(a, "--dump-from") == 0) dump_from = strtoull(v, NULL, 0);
         else if (strcmp(a, "--rtc") == 0) r.rtc = strtoll(v, NULL, 0), have_rtc = 1;
         else if (strcmp(a, "--rms-from") == 0) rms_from = strtoull(v, NULL, 0);
         else if (strcmp(a, "--schedule") == 0) {
@@ -612,7 +614,8 @@ int main(int argc, char **argv) {
         rc = step(&s, ran, &f, &hash);
         if (rc != 0) break;
         int last = ran + 1 == frames;
-        if (dump_dir && (last || (dump_every && ran % dump_every == 0)) && dump_ppm(dump_dir, f.number, &f) != 0)
+        if (dump_dir && (last || (dump_every && ran >= dump_from && (ran - dump_from) % dump_every == 0)) &&
+            dump_ppm(dump_dir, f.number, &f) != 0)
             fprintf(stderr, "np_headless: cannot write a frame dump into %s\n", dump_dir);
     }
     double elapsed = now_ms() - t0;

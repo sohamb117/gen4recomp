@@ -43,7 +43,7 @@ started · `n/a` no DS equivalent (reason given).
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
 | ROM-derived music/SFX | Native SDAT playback through the port's ARM7 sound driver + SPU model | wip (core) |
-| Music / SFX volume | Master + BGM/SE volumes | wip (core: `NP_OPT_BGM_VOLUME` / `NP_OPT_SE_VOLUME` per sequence player, Platinum; master + UI: shell) |
+| Music / SFX volume | Master + BGM/SE volumes | wip (core: `NP_OPT_BGM_VOLUME` / `NP_OPT_SE_VOLUME` per sequence player, Platinum; measured in Twinleaf with the X menu's sounds and BGM muted: RMS 3282 at `se_volume` 256, 0.0 at 0; master + UI: shell) |
 | Music low-pass filter | Optional output filter | planned |
 | Fast-forward audio | Natural pitch at 1x, muted or dropped above | wip (shell) |
 | Lifecycle pause on mobile | Same | wip (shell) |
@@ -98,8 +98,8 @@ started · `n/a` no DS equivalent (reason given).
 
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
-| Faithful / modern rulesets | Faithful vs. documented bug fixes (decomp `docs/bugs_and_glitches.md`) | wip (core: `NP_RULE_FIX_BUGS` fixes Fire Fang/Wonder Guard, Rage, trainer form stats in Platinum) |
-| Text speed, battle animations, battle style | Native game options (already in DPPt), plus instant text (`NP_OPT_TEXT_INSTANT`) | done (in game); instant text wip (core) |
+| Faithful / modern rulesets | Faithful vs. documented bug fixes (decomp `docs/bugs_and_glitches.md`) | wip (core: `NP_RULE_FIX_BUGS` fixes Fire Fang/Wonder Guard, Rage, trainer form stats in Platinum; `PC_NP_RULES_CHECK=1` runs each fix through the game's code with the bit off and on and logs PASS) |
+| Text speed, battle animations, battle style | Native game options (already in DPPt), plus instant text (`NP_OPT_TEXT_INSTANT`) | done (in game); instant text done in Platinum core (a box fills on its first frame; prompts and scrolls unchanged), UI: shell |
 | Event tickets (Emerald) | Event items for DPPt events (e.g. Member Card, Oak's Letter, Azure Flute) via Mystery Gift | planned |
 
 ## Mods
