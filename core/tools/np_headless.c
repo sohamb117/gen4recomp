@@ -27,6 +27,8 @@
  *                        camera_tilt, quicksave_seq, rules, text_instant or
  *                        an index; VALUE is a C integer (negative allowed).
  *     --rms-from F       measure the audio's RMS from frame F (default 0)
+ *     --wav FILE         write the audio from the --rms-from frame on as a
+ *                        16-bit stereo WAV at the core's rate
  *     --schedule FILE    shell autotest press schedule (F:keys[:N[:R:C]],
  *                        F:tap:X:Y[:N[:R:C]], +D; shell/README.md), on top
  *                        of --press
@@ -556,11 +558,32 @@ static void sleep_until(double deadline) {
 #endif
 }
 
+/* A canonical 44-byte PCM WAV header: 16-bit stereo at `rate`, `bytes` of data. */
+static void wav_header(FILE *fp, uint32_t rate, uint32_t bytes) {
+    uint8_t h[44];
+    uint32_t v[] = {36 + bytes, 16, rate, rate * 4, bytes};
+    memcpy(h, "RIFF", 4);
+    memcpy(h + 8, "WAVEfmt ", 8);
+    memcpy(h + 36, "data", 4);
+    for (int i = 0; i < 4; i++) {
+        h[4 + i] = (uint8_t)(v[0] >> (8 * i));
+        h[16 + i] = (uint8_t)(v[1] >> (8 * i));
+        h[24 + i] = (uint8_t)(v[2] >> (8 * i));
+        h[28 + i] = (uint8_t)(v[3] >> (8 * i));
+        h[40 + i] = (uint8_t)(v[4] >> (8 * i));
+    }
+    h[20] = 1, h[21] = 0;  /* PCM */
+    h[22] = 2, h[23] = 0;  /* stereo */
+    h[32] = 4, h[33] = 0;  /* block align */
+    h[34] = 16, h[35] = 0; /* bits per sample */
+    fwrite(h, 1, sizeof h, fp);
+}
+
 static int usage(void) {
     fprintf(stderr, "usage: np_headless <diamond|pearl|platinum> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
                     "                   [--content DIR] [--gba-rom FILE [--gba-save FILE]]\n"
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
-                    "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--schedule FILE]\n"
+                    "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--wav FILE] [--schedule FILE]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
                     "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]\n"
                     "                    [--net-relay HOST:PORT --net-pin PIN]]\n"
@@ -577,6 +600,7 @@ typedef struct session {
     uint64_t rms_from;
     double sumsq[2];
     uint64_t rms_frames, audio_frames;
+    FILE *wav;       /* --wav: samples from rms_from on, header patched at exit */
     uint32_t status[NP_STAT_COUNT];
     int quiet;       /* state-test replays: no status prints */
     int hash_status; /* state test: the status is part of the hash */
@@ -609,6 +633,7 @@ static int step(session *s, uint64_t k, np_frame *f, uint64_t *hash) {
                 s->sumsq[1] += (double)audio[2 * i + 1] * audio[2 * i + 1];
             }
             s->rms_frames += n;
+            if (s->wav && !s->quiet) fwrite(audio, 4, n, s->wav);
         }
     }
     for (uint32_t i = 0; i < NP_STAT_COUNT; i++) {
@@ -717,7 +742,7 @@ int main(int argc, char **argv) {
     int nsets = 0;
     uint64_t frames = 600, dump_every = 0, dump_from = 0, rms_from = 0, state_first = 0, state_span = 120;
     int state_rounds = 4, do_state = 0;
-    const char *dump_dir = NULL, *host_content = NULL;
+    const char *dump_dir = NULL, *host_content = NULL, *wav_path = NULL;
     int have_rtc = 0;
     int net_on = 0, net_drop = 0, npeers = 0;
     uint16_t net_port = 0;
@@ -747,6 +772,7 @@ int main(int argc, char **argv) {
         else if (strcmp(a, "--dump-from") == 0) dump_from = strtoull(v, NULL, 0);
         else if (strcmp(a, "--rtc") == 0) r.rtc = strtoll(v, NULL, 0), have_rtc = 1;
         else if (strcmp(a, "--rms-from") == 0) rms_from = strtoull(v, NULL, 0);
+        else if (strcmp(a, "--wav") == 0) wav_path = v;
         else if (strcmp(a, "--schedule") == 0) {
             if (load_schedule(v) != 0) {
                 fprintf(stderr, "np_headless: cannot read schedule %s\n", v);
@@ -863,6 +889,14 @@ int main(int argc, char **argv) {
     s.sets = sets;
     s.nsets = nsets;
     s.rms_from = rms_from;
+    if (wav_path) {
+        s.wav = fopen(wav_path, "wb");
+        if (!s.wav) {
+            fprintf(stderr, "np_headless: cannot write %s\n", wav_path);
+            return 2;
+        }
+        wav_header(s.wav, np_core_audio_rate(core), 0);
+    }
 
     uint64_t hash = 0xCBF29CE484222325ull;
     np_frame f;
@@ -938,6 +972,12 @@ int main(int argc, char **argv) {
     } else if (rc > 0) {
         printf("exited at frame %llu: %s\n", (unsigned long long)ran, np_core_last_error(core));
         if (!strstr(np_core_last_error(core), "status 0")) status = 1;
+    }
+    if (s.wav) {
+        /* The data size is known now; rewrite the header over the placeholder. */
+        fseek(s.wav, 0, SEEK_SET);
+        wav_header(s.wav, np_core_audio_rate(core), (uint32_t)(s.rms_frames * 4));
+        fclose(s.wav);
     }
     np_core_destroy(core);
     np_net_close(g_net);

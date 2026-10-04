@@ -1,0 +1,42 @@
+GetSoundDataPointer: the SoundData (sound heap included, 0xBCD60 bytes) moves
+into the port window. Every wave the ARM7 driver programs into SOUNDxSAD is an
+address inside the sound heap, and SOUNDxSAD keeps 27 bits; as a wasm C static
+the heap sat above NP_GUEST_C_BASE (0x0B1xxxxx), the SPU's mask turned it into
+0x031xxxxx, and every channel played whatever lay there (silence or full-scale
+noise). Platinum does the same with its SoundSystem
+(games/platinum/pc/patches/src/sound_system.c.patch).
+
+--- a/arm9/src/sound.c
++++ b/arm9/src/sound.c
+@@ -8,7 +8,9 @@
+ #include "unk_020040F4.h"
+ #include "unk_020051F4.h"
+ 
+-static struct SoundData sSoundDataBuffer;
++/* pc port: moved into the guest-addressed port window, see
++ * GetSoundDataPointer(). */
++static struct SoundData *sSoundDataBuffer;
+ static u32 UNK_02107070;
+ static u32 UNK_02107074;
+ 
+@@ -94,7 +96,19 @@
+ }
+ 
+ struct SoundData *GetSoundDataPointer(void) {
+-    return &sSoundDataBuffer;
++    /* pc port: the SoundData carries the ~770 KB sound heap, and every wave
++     * the SPU plays lives inside it. SOUNDxSAD holds 27 bits, so the heap
++     * must sit at a guest address: a C static of the wasm module is above
++     * NP_GUEST_C_BASE (0x0B000000) and its addresses lose their top bit in
++     * the mask, so every channel read 0x03xxxxxx instead of its wave. It
++     * moves into the port window (pc_guest_window.c, 0x02A00000), as
++     * Platinum's SoundSystem does (pc/patches/src/sound_system.c.patch). */
++    extern void *pc_guest_window_alloc(unsigned int bytes, const char *what);
++
++    if (sSoundDataBuffer == NULL) {
++        sSoundDataBuffer = pc_guest_window_alloc(sizeof(struct SoundData), "SoundData");
++    }
++    return sSoundDataBuffer;
+ }
+ 
+ void *sub_02003D38(u32 a0) {

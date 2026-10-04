@@ -42,8 +42,8 @@ started · `n/a` no DS equivalent (reason given).
 
 | Gen1Recomp | DPPt equivalent | Status |
 |---|---|---|
-| ROM-derived music/SFX | Native SDAT playback through the port's ARM7 sound driver + SPU model | wip (core) |
-| Music / SFX volume | Master + BGM/SE volumes | wip (core: `NP_OPT_BGM_VOLUME` / `NP_OPT_SE_VOLUME` per sequence player, Platinum; measured in Twinleaf with the X menu's sounds and BGM muted: RMS 3282 at `se_volume` 256, 0.0 at 0; master + UI: shell) |
+| ROM-derived music/SFX | Native SDAT playback through the port's ARM7 sound driver + SPU model | wip (core; Platinum. Diamond/Pearl: the sound heap moved into the port window (`games/diamond/pc/patches/arm9/src/sound.c.patch`) so SOUNDxSAD's 27 bits reach the waves. Title theme measured against Platinum's: rms 7354/6014 vs 7239/6001, spectral flatness 0.003 vs 0.002 (white noise 0.56), pitch-class profile correlation 0.999, same beat lags. Title Start SE and text-advance SE audible; cries not yet heard, because the Rowan intro stops before his Pokémon) |
+| Music / SFX volume | Master + BGM/SE volumes | wip (core: `NP_OPT_BGM_VOLUME` / `NP_OPT_SE_VOLUME` per sequence player, Platinum; measured in Twinleaf with the X menu's sounds and BGM muted: RMS 3282 at `se_volume` 256, 0.0 at 0. Diamond/Pearl: `games/diamond/pc/src/pc_dp_snd.c` maps driver players to SDAT players from NitroSystem's sSeqPlayer/sPlayer. With `bgm_volume` 0 the title theme and Rowan's theme read 0.0 while the text-advance SE bursts keep their full-volume level (rms 2646/1128/122/13 per 10 frames in both runs); master + UI: shell) |
 | Music low-pass filter | Optional output filter | planned |
 | Fast-forward audio | Natural pitch at 1x, muted or dropped above | wip (shell) |
 | Lifecycle pause on mobile | Same | wip (shell) |
