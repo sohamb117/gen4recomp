@@ -1,0 +1,16 @@
+sub_020335F4 is defined with an empty parameter list (unk_02031734.c:1718) and
+called here with one argument through the unprototyped header declaration.
+wasm types calls, so wasm-ld would replace the call with a trap; the ROM
+passes r0=0, which the callee never reads, so dropping it is the same call.
+
+--- a/unk_0202F150.c
++++ b/unk_0202F150.c
+@@ -487,7 +487,7 @@
+         sub_0202ED70(0);
+     }
+ 
+-    sub_020335F4(0);
++    sub_020335F4(); /* wasm: the definition takes no parameters (unk_02031734.c:1718); the ROM passes r0=0, which it ignores */
+     sub_020315A4();
+ 
+     return TRUE;
