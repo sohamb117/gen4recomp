@@ -88,12 +88,18 @@ HOST_EXTRA :=
 #   pc_boot_glue.c                      _start_AutoloadDoneCallback: D's is
 #                                       crt0 asm, recompiled (overlay_13 takes
 #                                       its address)
+#   pc_np_field.c                       Platinum FieldSystem options (camera
+#                                       zoom/tilt); its hooks are weak
+#   pc_wm*.c                            the Platinum ARM7 WM model; D's SDK 3.2
+#                                       WM PXI protocol is unverified, and the
+#                                       shared hooks into it are !PC_GAME_DP
 # Their calls from the shared files are answered by src/pc_dp_hooks.c.
 HOST_PC_EXCLUDE := pc_win_fiber.c pc_win_ipc.c pc_win_clock.c pc_os_context.c \
                    pc_lab.c pc_sprite_lab.c pc_text_lab.c pc_audio_lab.c \
                    pc_bgm_mute.c pc_modfs.c pc_probe2d.c pc_dwc_auth.c \
                    pc_dgt.c pc_crypto_rc4.c pc_selftest.c pc_div0.c \
-                   pc_boot_glue.c
+                   pc_boot_glue.c pc_np_field.c \
+                   $(notdir $(wildcard $(PLAT)/pc/src/pc_wm*.c))
 
 HOST_PC_SRCS   := $(filter-out $(addprefix $(PLAT)/pc/src/,$(HOST_PC_EXCLUDE)), \
                     $(sort $(wildcard $(PLAT)/pc/src/*.c)))

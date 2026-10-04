@@ -27,6 +27,7 @@ extern void armrec_bind_externs(void);
 extern void armrec_init_all(void);
 
 extern void pc_dp_pm_init(void);
+extern void pc_dp_nvram_init(void);
 
 /*
  * The launcher thread's stack, where crt0 leaves the system-mode sp before
@@ -69,8 +70,9 @@ void pc_dp_boot(void)
     armrec_sp = launcher_sp();
 
     /* The ARM7 services D's assembly reaches over PXI that the shared layer
-     * does not answer (pc/src/pc_dp_pm.c). */
+     * does not answer (pc/src/pc_dp_pm.c, pc/src/pc_dp_nvram.c). */
     pc_dp_pm_init();
+    pc_dp_nvram_init();
 }
 
 /* ------------------------------------------------------------------ */
