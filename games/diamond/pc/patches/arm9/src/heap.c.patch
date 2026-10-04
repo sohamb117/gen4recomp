@@ -1,0 +1,90 @@
+A heap validator for the port (PC_DP_HEAPCHECK, pc/src/pc_dp_hooks.c): walks
+every expanded heap's free and used lists with bounds and cycle checks and
+names the first broken link. Diagnostic only; a no-op unless the variable is
+set. sHeapInfo is file-static, so the walker has to live in this file.
+
+--- a/heap.c
++++ b/heap.c
+@@ -26,6 +26,8 @@
+ } MemoryBlock;
+ 
+ static HeapInfo sHeapInfo;
++void pc_dp_heap_check(const char *where);
++extern int pc_dp_heapcheck_level;
+ 
+ static BOOL CreateHeapInternal(enum HeapID parent, enum HeapID child, u32 size, s32 alignment);
+ 
+@@ -204,6 +206,7 @@
+ 
+ void *Heap_Alloc(enum HeapID heapID, u32 size) {
+     void *ptr = NULL;
++    if (pc_dp_heapcheck_level >= 2) pc_dp_heap_check("Heap_Alloc");
+ 
+     if ((u32)heapID < sHeapInfo.totalNumHeaps) {
+         u8 index = sHeapInfo.heapIdxs[heapID];
+@@ -237,6 +240,7 @@
+ }
+ 
+ void Heap_Free(void *ptr) {
++    if (pc_dp_heapcheck_level >= 2) pc_dp_heap_check("Heap_Free");
+     ptr -= sizeof(MemoryBlock);
+     enum HeapID heapID = (enum HeapID)(((MemoryBlock *)ptr)->heapID);
+ 
+@@ -324,3 +328,57 @@
+ #pragma unused(heapID)
+     return TRUE;
+ }
++
++/* wasm port (pc/patches): an env-gated heap validator, PC_DP_HEAPCHECK=1
++ * (pc/src/pc_dp_hooks.c calls it once per frame; =2 also on every
++ * Heap_Alloc/Heap_Free). Walks every live expanded heap's free and used
++ * lists with bounds and cycle checks and names the first broken link, so a
++ * corrupting write can be pinned to a frame and then to a call. Costs
++ * nothing unless asked for. */
++#include <stdio.h>
++#include <stdlib.h>
++int pc_dp_heapcheck_level;
++unsigned long long pc_dp_heapcheck_frame;
++static int pc_dp_walk(const char *where, int heap, NNSiFndHeapHead *hh, NNSiFndExpMBlockList *list, const char *which)
++{
++    u32 lo = (u32)hh->heapStart, hi = (u32)hh->heapEnd;
++    NNSiFndExpHeapMBlockHead *b = list->head, *prev = NULL;
++    int n = 0;
++    while (b != NULL) {
++        if ((u32)b < lo || (u32)b + 16 > hi || (b->signature != 0x4652 && b->signature != 0x5544)
++            || b->pMBHeadPrev != prev || (u32)b + 16 + b->blockSize > hi || ++n > 100000) {
++            fprintf(stderr, "pc_dp_heapcheck: frame %llu at %s: heap %d %s list broken at block %#x "
++                    "(n=%d sig=%#x size=%#x prev=%#x want prev=%#x next=%#x; heap %#x-%#x)\n",
++                    pc_dp_heapcheck_frame, where, heap, which, (u32)b, n,
++                    ((u32)b >= lo && (u32)b + 16 <= hi) ? b->signature : 0,
++                    ((u32)b >= lo && (u32)b + 16 <= hi) ? b->blockSize : 0,
++                    ((u32)b >= lo && (u32)b + 16 <= hi) ? (u32)b->pMBHeadPrev : 0, (u32)prev,
++                    ((u32)b >= lo && (u32)b + 16 <= hi) ? (u32)b->pMBHeadNext : 0, lo, hi);
++            return 1;
++        }
++        prev = b;
++        b = b->pMBHeadNext;
++    }
++    if (list->tail != prev) {
++        fprintf(stderr, "pc_dp_heapcheck: frame %llu at %s: heap %d %s tail %#x, walk ended at %#x\n",
++                pc_dp_heapcheck_frame, where, heap, which, (u32)list->tail, (u32)prev);
++        return 1;
++    }
++    return 0;
++}
++void pc_dp_heap_check(const char *where)
++{
++    static int dead;
++    u32 i;
++    if (dead || sHeapInfo.heapHandles == NULL) return;
++    for (i = 0; i < sHeapInfo.maxHeaps; i++) {
++        NNSiFndHeapHead *hh = (NNSiFndHeapHead *)sHeapInfo.heapHandles[i];
++        if (hh == NULL || hh->signature != 0x45585048) continue; /* 'EXPH' */
++        NNSiFndExpHeapHead *eh = (NNSiFndExpHeapHead *)(hh + 1);
++        if (pc_dp_walk(where, (int)i, hh, &eh->mbFreeList, "free")
++            || pc_dp_walk(where, (int)i, hh, &eh->mbUsedList, "used")) {
++            dead = 1;
++            abort();
++        }
++    }
++}

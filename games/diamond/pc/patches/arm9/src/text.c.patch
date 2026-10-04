@@ -1,0 +1,30 @@
+sub_0201B6C8 (unk_0201B4E8.s) is SysTask_GetData: `ldr r0, [r0, #0x10]`.
+text.c declares it `(void)` and calls it with no argument; the ROM's mwcc code
+works because r0 still holds UNK_021C5714[textPrinterNumber] from the NULL
+check above it. Under the typed wasm bridge a zero-argument call passes r0 = 0,
+the printer pointer read from [0x10] was garbage, and Heap_Free of it broke
+heap 0's free list (the hang at ov59's first list menu, found with a hardware
+watchpoint on the list head). The call passes the task explicitly, which is
+the ROM's own r0. render_window.c and unk_020051F4.c already declare it
+(SysTask *).
+
+--- a/text.c
++++ b/text.c
+@@ -22,7 +22,7 @@
+ u16 UNK_021C5712;
+ u8 UNK_021C570C;
+ 
+-extern struct TextPrinter *sub_0201B6C8(void);
++extern struct TextPrinter *sub_0201B6C8(SysTask *);
+ 
+ extern void sub_0201C1A8(struct TextPrinter *printer);
+ 
+@@ -56,7 +56,7 @@
+     if (UNK_021C5714[textPrinterNumber] == NULL) {
+         return;
+     }
+-    struct TextPrinter *printer = sub_0201B6C8();
++    struct TextPrinter *printer = sub_0201B6C8(UNK_021C5714[textPrinterNumber]);
+     if (printer) {
+         sub_0201C238(printer);
+         Heap_Free((void *)printer);

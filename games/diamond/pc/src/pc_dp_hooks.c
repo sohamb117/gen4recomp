@@ -1,3 +1,4 @@
+#include <stdlib.h>
 /*
  * The calls the shared host layer makes into Platinum-only host files,
  * answered by a Diamond/Pearl build that does not compile those files.
@@ -23,7 +24,23 @@
 #include <stdio.h>
 
 /* pc_video.c's per-frame lab hooks. */
-void pc_lab_frame(unsigned long long frame) { (void)frame; }
+/* pc_lab_frame is also D's per-frame diagnostic point: PC_DP_HEAPCHECK=1
+ * validates the game's heaps every frame, =2 on every Heap_Alloc/Heap_Free
+ * as well (pc/patches/arm9/src/heap.c.patch). */
+extern void pc_dp_heap_check(const char *where);
+extern int pc_dp_heapcheck_level;
+extern unsigned long long pc_dp_heapcheck_frame;
+void pc_lab_frame(unsigned long long frame)
+{
+    static int init;
+    if (!init) {
+        const char *e = getenv("PC_DP_HEAPCHECK");
+        pc_dp_heapcheck_level = e ? atoi(e) : 0;
+        init = 1;
+    }
+    pc_dp_heapcheck_frame = frame;
+    if (pc_dp_heapcheck_level >= 1) pc_dp_heap_check("frame");
+}
 void pc_lab_battle_frame(unsigned long long frame) { (void)frame; }
 void pc_lab_save_frame(unsigned long long frame) { (void)frame; }
 void pc_lab_grow_frame(unsigned long long frame) { (void)frame; }

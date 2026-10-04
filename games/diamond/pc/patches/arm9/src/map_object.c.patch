@@ -1,0 +1,28 @@
+Found by pc/tools/dp_arity_lint.py: a C call into assembly that passes fewer
+argument words than the callee reads on entry. mwcc's code works because the
+register still holds the value named below; the typed wasm bridge passes 0
+for every word the call site omits. The call passes the ROM's own value
+(read off the ROM object's disassembly, arm9/build/<ver>.us/src/map_object.o).
+sub_0205C334 is `cmp r0, #0x64`; r0 is MapObject_GetSpriteID's result
+(`bl MapObject_GetSpriteID; adds r4, r0, #0; bl sub_0205C334`).
+
+--- a/map_object.c
++++ b/map_object.c
+@@ -141,7 +141,7 @@
+ extern void ov05_021F2E0C(LocalMapObject *object, BOOL set);
+ extern void sub_02058EF8(LocalMapObject *object);
+ extern void ov05_021F1D8C(LocalMapObject *object);
+-extern BOOL sub_0205C334(void);
++extern BOOL sub_0205C334(u32 spriteId);
+ extern u32 sub_0205C340(LocalMapObject *object);
+ extern void sub_02059C60(LocalMapObject *object);
+ 
+@@ -1031,7 +1031,7 @@
+ 
+ u32 sub_0205845C(LocalMapObject *object) {
+     u32 spriteId = MapObject_GetSpriteID(object);
+-    if (sub_0205C334() == TRUE) {
++    if (sub_0205C334(spriteId) == TRUE) {
+         return sub_0205C340(object);
+     }
+     return spriteId;

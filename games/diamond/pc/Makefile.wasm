@@ -93,7 +93,14 @@ all: $(TARGET)
 
 # Overlay statics' addresses into the finished module (host.mk generates the
 # table at its final size), then the contract check, as Platinum does.
-POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HOST_OVSTATICS_C) && \
+#
+# dp_arity_lint: a C call into assembly that passes fewer argument words than
+# the callee reads worked on the ROM through a leftover register and reads 0
+# here (the first list-menu heap corruption); see the script.
+POST_LINK ?= $(PYTHON) $(PCDIR)/tools/dp_arity_lint.py --allow $(PCDIR)/arity_allow.txt \
+               $(OBJ) $(ROOT)/arm9/asm $(wildcard $(ROOT)/arm9/overlays/*/asm) \
+               $(wildcard $(BUILD)/extracted/*) && \
+             $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HOST_OVSTATICS_C) && \
              $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
                $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
 $(TARGET): $(OBJS) $(LINK_EXTRA_DEPS)

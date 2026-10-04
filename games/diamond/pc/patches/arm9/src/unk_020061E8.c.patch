@@ -1,0 +1,23 @@
+The same zero-argument call of sub_0201B6C8 (SysTask_GetData) as text.c's:
+the ROM passes r0 = sysTask, this function's own first argument, unchanged.
+
+--- a/unk_020061E8.c
++++ b/unk_020061E8.c
+@@ -5,7 +5,7 @@
+ #include "heap.h"
+ #include "unk_0200CA44.h"
+ 
+-extern struct TextPrinter *sub_0201B6C8(void);
++extern struct TextPrinter *sub_0201B6C8(SysTask *);
+ 
+ SysTask *sub_020061E8(SysTaskFunc func, u32 r1, u32 r2, enum HeapID heapID) {
+     void *r4;
+@@ -22,7 +22,7 @@
+ }
+ 
+ void sub_0200621C(SysTask *sysTask) {
+-    struct TextPrinter *textPrinter = sub_0201B6C8();
++    struct TextPrinter *textPrinter = sub_0201B6C8(sysTask);
+     if (textPrinter != NULL) {
+         Heap_Free(textPrinter);
+     }

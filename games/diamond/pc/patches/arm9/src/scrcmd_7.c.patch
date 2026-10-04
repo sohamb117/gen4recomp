@@ -1,0 +1,29 @@
+Found by pc/tools/dp_arity_lint.py: a C call into assembly that passes fewer
+argument words than the callee reads on entry. mwcc's code works because the
+register still holds the value named below; the typed wasm bridge passes 0
+for every word the call site omits. The call passes the ROM's own value
+(read off the ROM object's disassembly, arm9/build/<ver>.us/src/scrcmd_7.o).
+sub_0205CA64 asserts r0 != NULL then uses it; r0 is *trainer18, loaded
+for the NULL test just above (`ldr r0, [r5]; cmp r0, #0; bne; bl
+sub_0205CA64`).
+
+--- a/scrcmd_7.c
++++ b/scrcmd_7.c
+@@ -12,7 +12,7 @@
+ extern u8 TrainerFieldSystem_FlagCheck(FieldSystem *fieldSystem, u16 flag);
+ 
+ extern void *sub_0205CA4C(void *event, PlayerAvatar *playerAvatar, void *param3, void *param4, int param5, void *encounterType, u16 param7);
+-extern int sub_0205CA64(void);
++extern int sub_0205CA64(void *);
+ extern void sub_0205CA78(void *param1);
+ extern u16 sub_020395F4(u16 scriptNumber);
+ extern int sub_0205F368(SaveVarsFlags *saveVarFlags);
+@@ -71,7 +71,7 @@
+         *var2 = 1;
+ 
+         return TRUE;
+-    } else if (sub_0205CA64() == 1) {
++    } else if (sub_0205CA64(*trainer18) == 1) {
+         sub_0205CA78(*trainer18);
+         *trainer18 = NULL;
+         *var2 = 1;

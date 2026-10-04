@@ -1,0 +1,29 @@
+Found by pc/tools/dp_arity_lint.py: a C call into assembly that passes fewer
+argument words than the callee reads on entry. mwcc's code works because the
+register still holds the value named below; the typed wasm bridge passes 0
+for every word the call site omits. The call passes the ROM's own value
+(read off the ROM object's disassembly, arm9/build/<ver>.us/overlays/63/src/ov63_021DB450.o).
+sub_0201343C is `ldr r0, [r0, #0x20]`; r0 is sub_02012CDC's result, just
+stored to arg0->field_18 (`str r0, [r5, #24]; bl sub_0201343C`). The title
+screen's camera came back from address 0x20.
+
+--- a/ov63_021DB450.c
++++ b/ov63_021DB450.c
+@@ -20,7 +20,7 @@
+ 
+ extern void sub_02068C00(struct UnkStruct_02006D98_4 *, u16, u32, u32, u32, u32, u32);
+ extern void sub_02012CC8(void);
+-extern struct Camera *sub_0201343C(void);
++extern struct Camera *sub_0201343C(void *);
+ extern void sub_02013194(void *, u32, u32, u32);
+ extern u32 sub_0201318C(u32, u32, enum HeapID);
+ 
+@@ -78,7 +78,7 @@
+     sub_02012CC8();
+     arg0->field_14 = Heap_Alloc(HEAP_ID_76, 0x4800);
+     arg0->field_18 = sub_02012CDC(ov63_021DB450, ov63_021DB474, arg0->field_14, 0x4800, 1, HEAP_ID_76);
+-    Camera_SetPerspectiveClippingPlane(0x1000, 0x384000, sub_0201343C());
++    Camera_SetPerspectiveClippingPlane(0x1000, 0x384000, sub_0201343C(arg0->field_18));
+     sub_02013194(arg0->field_18, sub_0201318C(0x3D, 4, HEAP_ID_76), 10, 1);
+ }
+ 
