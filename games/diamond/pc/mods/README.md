@@ -41,19 +41,21 @@ which the script builds with the host C++ compiler on first use. No ROM, no
 container. Run from `games/diamond`:
 
 ```sh
-python3 pc/modcook.py --mods example_rowan_text
+python3 pc/modcook.py --mods example_text
 ```
 
 ## Example
 
-`example_rowan_text/` replaces Professor Rowan's introduction
+`example_text/` replaces Professor Rowan's introduction
 (`msgdata/msg.narc` member 341, every message of the bank, written for this
-package). The bank is the same index on Diamond and Pearl.
+package) and the main menu's first three entries (member 494: CONTINUE,
+NEW GAME and MYSTERY GIFT get new labels; the rest of the bank is the
+ROM's). Both banks are the same index on Diamond and Pearl.
 
 ```sh
-cd games/diamond && python3 pc/modcook.py --mods example_rowan_text && cd ../..
+cd games/diamond && python3 pc/modcook.py --mods example_text && cd ../..
 build/<core>/np_headless diamond games/diamond/build/diamond.us/pokediamond.us.nds \
-  --content games/diamond/pc/mods -e PC_MODS=example_rowan_text \
+  --content games/diamond/pc/mods -e PC_MODS=example_text \
   -e PC_MODFS_PROBE_NARC=msgdata/msg.narc/341
 ```
 

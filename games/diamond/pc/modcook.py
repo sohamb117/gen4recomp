@@ -22,7 +22,7 @@ in <pkg>/replace/<nitro path> (whole files) or <pkg>/narc/<narc path>/<index>
 
 Run from games/diamond:
 
-  python3 pc/modcook.py --mods example_rowan_text
+  python3 pc/modcook.py --mods example_text
 
 The cook needs only this repository: msgenc is built from tools/msgenc with
 the host C++ compiler into build/pc-wasm/tools/ on first use.
