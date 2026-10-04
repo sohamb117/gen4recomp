@@ -57,7 +57,8 @@ typedef enum save4_status {
     SAVE4_ERR_NOMEM,
     SAVE4_ERR_ENCODE,       /* text not representable in the game charset */
     SAVE4_ERR_PKM_CHECKSUM, /* Pokémon data checksum mismatch */
-    SAVE4_ERR_LAYOUT        /* structure magic mismatch (e.g. Pokédex) */
+    SAVE4_ERR_LAYOUT,       /* structure magic mismatch, or not supported for this game */
+    SAVE4_ERR_NOSPACE       /* no free slot */
 } save4_status;
 
 const char *save4_status_str(save4_status st);
@@ -294,6 +295,62 @@ extern const size_t save4_pt_var_names_count;
 /* Returns 0 and fills *id if found. */
 int save4_pt_lookup_name(const char *name, uint16_t *id);
 const char *save4_pt_flag_name(uint16_t id);
+
+/* ------------------------------------------------------ Mystery Gift */
+/* Platinum only for now (D/P offsets are not verified: SAVE4_ERR_LAYOUT). */
+
+#define SAVE4_PGT_SIZE 0x104        /* sizeof(PGT): a .pgt file */
+#define SAVE4_WONDERCARD_SIZE 0x358 /* sizeof(WonderCard): a .pcd file */
+#define SAVE4_PGT_SLOTS 8
+#define SAVE4_WONDERCARD_SLOTS 3
+#define SAVE4_MG_ID_MAX 2047        /* id 2047 is the "unlocked" flag */
+#define SAVE4_WC_TITLE_LEN 36
+#define SAVE4_WC_DESC_LEN 250
+
+/* enum MysteryGiftType, pokeplatinum include/mystery_gift.h */
+enum {
+    SAVE4_MG_POKEMON = 1,
+    SAVE4_MG_EGG,
+    SAVE4_MG_ITEM,
+    SAVE4_MG_BATTLE_REG,
+    SAVE4_MG_DECORATION,
+    SAVE4_MG_COSMETICS,
+    SAVE4_MG_MANAPHY_EGG,
+    SAVE4_MG_MEMBER_CARD, /* Darkrai event */
+    SAVE4_MG_OAKS_LETTER, /* Shaymin event */
+    SAVE4_MG_AZURE_FLUTE, /* Arceus event */
+    SAVE4_MG_POKETCH_APP,
+    SAVE4_MG_SECRET_KEY,  /* Rotom event */
+    SAVE4_MG_UNKNOWN,
+    SAVE4_MG_TYPE_MAX
+};
+
+typedef struct save4_card_spec {
+    uint16_t type;
+    uint16_t id;             /* event id, < SAVE4_MG_ID_MAX */
+    uint16_t item;           /* SAVE4_MG_ITEM */
+    uint16_t sprites[3];     /* species shown on the card, 0 = none */
+    int32_t received_day;    /* days since 2000-01-01 */
+    const char *title;       /* UTF-8, up to 35 characters */
+    const char *description; /* UTF-8, up to 249 characters; "\n" breaks lines */
+} save4_card_spec;
+
+/* Builds a Wonder Card (with its gift, delivered by the Poke Mart
+ * deliveryman) the way the game builds its own. */
+save4_status save4_mg_build_card(const save4_card_spec *spec, uint8_t card[SAVE4_WONDERCARD_SIZE]);
+/* Checks a .pgt (SAVE4_PGT_SIZE) or .pcd (SAVE4_WONDERCARD_SIZE) image. */
+save4_status save4_mg_validate(const uint8_t *data, size_t len, const char **why);
+/* Stores a .pcd (card + gift) or .pgt (gift only) as the game does on
+ * reception. SAVE4_ERR_NOSPACE when the slots are full. */
+save4_status save4_mg_add(save4 *s, const uint8_t *data, size_t len);
+save4_status save4_mg_get_card(const save4 *s, int slot, uint8_t card[SAVE4_WONDERCARD_SIZE], bool *used);
+save4_status save4_mg_remove_card(save4 *s, int slot);
+save4_status save4_mg_pgt_count(const save4 *s, int *count);
+/* The MYSTERY GIFT main menu option (shown once the Pokédex is obtained). */
+save4_status save4_mg_get_unlocked(const save4 *s, bool *unlocked);
+save4_status save4_mg_set_unlocked(save4 *s, bool unlocked);
+save4_status save4_dex_get_obtained(const save4 *s, bool *obtained);
+save4_status save4_dex_set_obtained(save4 *s, bool obtained);
 
 #ifdef __cplusplus
 }

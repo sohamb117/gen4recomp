@@ -43,11 +43,16 @@ struct save4_layout {
     uint32_t vars;
     uint32_t flags;
     uint32_t dex;
+    /* 0 where not yet verified for the game (D/P): those features report
+     * SAVE4_ERR_LAYOUT instead of guessing. */
+    uint32_t mg_unlocked;  /* SystemData.isMysteryGiftUnlocked */
+    uint32_t dex_obtained; /* Pokedex.pokedexObtained, relative to dex */
+    uint32_t mystery;      /* MysteryGift save table entry */
 };
 
 static const save4_layout kLayouts[] = {
-    {SAVE4_GAME_PT, 0xCF2C, 0x121E4, 0x64, 0x98, 0x630, 0xDAC, 0xFEC, 0x1328},
-    {SAVE4_GAME_DP, 0xC100, 0x121E0, 0x60, 0x90, 0x624, 0xD9C, 0xFDC, 0x12DC},
+    {SAVE4_GAME_PT, 0xCF2C, 0x121E4, 0x64, 0x98, 0x630, 0xDAC, 0xFEC, 0x1328, 0x48, 0x31A, 0xB4C0},
+    {SAVE4_GAME_DP, 0xC100, 0x121E0, 0x60, 0x90, 0x624, 0xD9C, 0xFDC, 0x12DC, 0, 0, 0},
 };
 
 /* PlayerSave (include/save_player.h) = Options(2) + pad(2) + TrainerInfo
@@ -114,6 +119,7 @@ const char *save4_status_str(save4_status st)
     case SAVE4_ERR_ENCODE: return "text contains characters the game cannot display";
     case SAVE4_ERR_PKM_CHECKSUM: return "Pokemon data checksum mismatch";
     case SAVE4_ERR_LAYOUT: return "unexpected save structure";
+    case SAVE4_ERR_NOSPACE: return "no free slot";
     }
     return "unknown error";
 }
@@ -732,4 +738,251 @@ const char *save4_pt_flag_name(uint16_t id)
             hi = mid;
     }
     return lo < save4_pt_flag_names_count && save4_pt_flag_names[lo].id == id ? save4_pt_flag_names[lo].name : NULL;
+}
+
+/* ------------------------------------------------------- Mystery Gift */
+/*
+ * MysteryGift (pokeplatinum include/mystery_gift.h): u8 received[256]
+ * (bit per Wonder Card id; bit 2047 = Mystery Gift unlocked on the main
+ * menu), PGT pgts[8] (0x104 each: the deliveryman hands these out),
+ * WonderCard wonderCards[3] (0x358 each). The entry ends in a CRC-16 over
+ * the body that SaveData_Checksum verifies (src/savedata.c) when the game
+ * opens it, so it is refreshed after every edit, like SaveData_SetChecksum.
+ */
+#define MG_RECEIVED 0
+#define MG_PGTS 0x100
+#define MG_CARDS (MG_PGTS + SAVE4_PGT_SLOTS * SAVE4_PGT_SIZE)
+#define MG_SIZE (MG_CARDS + SAVE4_WONDERCARD_SLOTS * SAVE4_WONDERCARD_SIZE) /* sizeof(MysteryGift) */
+#define MG_BODY (MG_SIZE + 4 - MG_SIZE % 4)                               /* checksum offset */
+#define WC_HEADER 0x104
+#define WC_FLAGS (WC_HEADER + 0x4E)
+
+static uint8_t *mg_m(save4 *s) { return gen_m(s) + s->layout->mystery; }
+static const uint8_t *mg_c(const save4 *s) { return gen_c(s) + s->layout->mystery; }
+
+static void mg_commit(save4 *s)
+{
+    uint8_t *mg = mg_m(s);
+    s16(mg + MG_BODY, save4_crc16(mg, MG_BODY));
+    save4_commit_block(s, SAVE4_BLOCK_GENERAL);
+}
+
+static bool mg_type_ok(uint16_t type) { return type > 0 && type < SAVE4_MG_TYPE_MAX; }
+
+#define REQUIRE_MG(s)                       \
+    do {                                    \
+        REQUIRE_LOADED(s);                  \
+        if (!(s)->layout->mystery)          \
+            return SAVE4_ERR_LAYOUT;        \
+    } while (0)
+
+save4_status save4_mg_get_card(const save4 *s, int slot, uint8_t card[SAVE4_WONDERCARD_SIZE], bool *used)
+{
+    REQUIRE_MG(s);
+    if (slot < 0 || slot >= SAVE4_WONDERCARD_SLOTS)
+        return SAVE4_ERR_RANGE;
+    const uint8_t *c = mg_c(s) + MG_CARDS + slot * SAVE4_WONDERCARD_SIZE;
+    memcpy(card, c, SAVE4_WONDERCARD_SIZE);
+    *used = mg_type_ok(g16(c));
+    return SAVE4_OK;
+}
+
+save4_status save4_mg_pgt_count(const save4 *s, int *count)
+{
+    REQUIRE_MG(s);
+    *count = 0;
+    for (int i = 0; i < SAVE4_PGT_SLOTS; i++)
+        *count += mg_type_ok(g16(mg_c(s) + MG_PGTS + i * SAVE4_PGT_SIZE));
+    return SAVE4_OK;
+}
+
+static int mg_free_pgt(const save4 *s)
+{
+    for (int i = 0; i < SAVE4_PGT_SLOTS; i++)
+        if (!mg_type_ok(g16(mg_c(s) + MG_PGTS + i * SAVE4_PGT_SIZE)))
+            return i;
+    return -1;
+}
+
+static void mg_set_received(save4 *s, uint16_t id, bool on)
+{
+    uint8_t *b = mg_m(s) + MG_RECEIVED + (id & 0x7FF) / 8, m = (uint8_t)(1u << (id & 7));
+    *b = (uint8_t)(on ? (*b | m) : (*b & ~m));
+}
+
+save4_status save4_mg_validate(const uint8_t *data, size_t len, const char **why)
+{
+    if (len != SAVE4_PGT_SIZE && len != SAVE4_WONDERCARD_SIZE) {
+        *why = "not a .pgt (260 bytes) or .pcd (856 bytes) file";
+        return SAVE4_ERR_SIZE;
+    }
+    if (!mg_type_ok(g16(data))) {
+        *why = "unknown gift type";
+        return SAVE4_ERR_ARG;
+    }
+    if (len == SAVE4_WONDERCARD_SIZE) {
+        bool ended = false;
+        for (int i = 0; i < SAVE4_WC_TITLE_LEN && !ended; i++)
+            ended = g16(data + WC_HEADER + i * 2) == 0xFFFF;
+        if (!ended) {
+            *why = "the card title is not terminated";
+            return SAVE4_ERR_ARG;
+        }
+        if (g16(data + WC_HEADER + 0x4C) >= SAVE4_MG_ID_MAX) {
+            *why = "the card id is out of range";
+            return SAVE4_ERR_RANGE;
+        }
+    }
+    *why = NULL;
+    return SAVE4_OK;
+}
+
+/* MysteryGift_TrySaveWondercard + the reception bookkeeping of
+ * mystery_gift_app.c (received flag; a PGT-only gift links to slot 3). */
+save4_status save4_mg_add(save4 *s, const uint8_t *data, size_t len)
+{
+    REQUIRE_MG(s);
+    const char *why;
+    save4_status st = save4_mg_validate(data, len, &why);
+    if (st != SAVE4_OK)
+        return st;
+    uint8_t *mg = mg_m(s);
+    if (len == SAVE4_PGT_SIZE) {
+        int p = mg_free_pgt(s);
+        if (p < 0)
+            return SAVE4_ERR_NOSPACE;
+        uint8_t *dst = mg + MG_PGTS + p * SAVE4_PGT_SIZE;
+        memcpy(dst, data, SAVE4_PGT_SIZE);
+        s16(dst + 2, (uint16_t)((g16(dst + 2) & ~3u) | 3u));
+        mg_commit(s);
+        return SAVE4_OK;
+    }
+    bool save_pgt = (data[WC_FLAGS] >> 3) & 1;
+    int slot = -1;
+    for (int i = 0; i < SAVE4_WONDERCARD_SLOTS && slot < 0; i++)
+        if (!mg_type_ok(g16(mg + MG_CARDS + i * SAVE4_WONDERCARD_SIZE)))
+            slot = i;
+    int p = save_pgt ? mg_free_pgt(s) : 0;
+    if (slot < 0 || p < 0)
+        return SAVE4_ERR_NOSPACE;
+    memcpy(mg + MG_CARDS + slot * SAVE4_WONDERCARD_SIZE, data, SAVE4_WONDERCARD_SIZE);
+    if (save_pgt) {
+        uint8_t *dst = mg + MG_PGTS + p * SAVE4_PGT_SIZE;
+        memcpy(dst, data, SAVE4_PGT_SIZE);
+        s16(dst + 2, (uint16_t)((g16(dst + 2) & ~3u) | (unsigned)slot));
+    }
+    mg_set_received(s, g16(data + WC_HEADER + 0x4C), true);
+    mg_commit(s);
+    return SAVE4_OK;
+}
+
+/* MysteryGift_FreeWcErasePgt. */
+save4_status save4_mg_remove_card(save4 *s, int slot)
+{
+    REQUIRE_MG(s);
+    if (slot < 0 || slot >= SAVE4_WONDERCARD_SLOTS)
+        return SAVE4_ERR_RANGE;
+    uint8_t *mg = mg_m(s), *card = mg + MG_CARDS + slot * SAVE4_WONDERCARD_SIZE;
+    if (!mg_type_ok(g16(card)))
+        return SAVE4_OK;
+    s16(card, 0);
+    mg_set_received(s, g16(card + WC_HEADER + 0x4C), false);
+    for (int i = 0; i < SAVE4_PGT_SLOTS; i++) {
+        uint8_t *p = mg + MG_PGTS + i * SAVE4_PGT_SIZE;
+        if (mg_type_ok(g16(p)) && (g16(p + 2) & 3u) == (unsigned)slot) {
+            s16(p, 0);
+            s16(p + 2, (uint16_t)(g16(p + 2) & ~3u));
+            break;
+        }
+    }
+    mg_commit(s);
+    return SAVE4_OK;
+}
+
+save4_status save4_mg_get_unlocked(const save4 *s, bool *unlocked)
+{
+    REQUIRE_MG(s);
+    if (!s->layout->mg_unlocked)
+        return SAVE4_ERR_LAYOUT;
+    *unlocked = gen_c(s)[s->layout->mg_unlocked] || ((mg_c(s)[MG_RECEIVED + 2047 / 8] >> (2047 & 7)) & 1);
+    return SAVE4_OK;
+}
+
+/* Both switches the main menu reads (RenderMysteryGiftOption). */
+save4_status save4_mg_set_unlocked(save4 *s, bool unlocked)
+{
+    REQUIRE_MG(s);
+    if (!s->layout->mg_unlocked)
+        return SAVE4_ERR_LAYOUT;
+    gen_m(s)[s->layout->mg_unlocked] = unlocked ? 1 : 0;
+    mg_set_received(s, 2047, unlocked);
+    mg_commit(s);
+    return SAVE4_OK;
+}
+
+save4_status save4_dex_get_obtained(const save4 *s, bool *obtained)
+{
+    REQUIRE_LOADED(s);
+    if (!s->layout->dex_obtained)
+        return SAVE4_ERR_LAYOUT;
+    const uint8_t *d = gen_c(s) + s->layout->dex;
+    if (g32(d) != DEX_MAGIC)
+        return SAVE4_ERR_LAYOUT;
+    *obtained = d[s->layout->dex_obtained] != 0;
+    return SAVE4_OK;
+}
+
+save4_status save4_dex_set_obtained(save4 *s, bool obtained)
+{
+    REQUIRE_LOADED(s);
+    if (!s->layout->dex_obtained)
+        return SAVE4_ERR_LAYOUT;
+    uint8_t *d = gen_m(s) + s->layout->dex;
+    if (g32(d) != DEX_MAGIC)
+        return SAVE4_ERR_LAYOUT;
+    d[s->layout->dex_obtained] = obtained ? 1 : 0;
+    save4_commit_block(s, SAVE4_BLOCK_GENERAL);
+    return SAVE4_OK;
+}
+
+static save4_status put_text(uint8_t *dst, int slots, const char *utf8)
+{
+    uint16_t buf[SAVE4_WC_DESC_LEN];
+    size_t n;
+    nd_status st = g4_text_encode(utf8, buf, (size_t)slots, &n);
+    if (st == ND_ERR_RANGE)
+        return SAVE4_ERR_RANGE;
+    if (st != ND_OK)
+        return SAVE4_ERR_ENCODE;
+    for (int i = 0; i < slots; i++)
+        s16(dst + i * 2, (size_t)i < n ? buf[i] : 0xFFFF);
+    return SAVE4_OK;
+}
+
+/* A Wonder Card like the ones the game builds itself (ranger_link.c): the
+ * card is shown under MYSTERY GIFT > CHECK CARD and its PGT waits for the
+ * Poke Mart deliveryman. */
+save4_status save4_mg_build_card(const save4_card_spec *spec, uint8_t card[SAVE4_WONDERCARD_SIZE])
+{
+    memset(card, 0, SAVE4_WONDERCARD_SIZE);
+    if (!mg_type_ok(spec->type) || spec->id >= SAVE4_MG_ID_MAX)
+        return SAVE4_ERR_ARG;
+    s16(card, spec->type);
+    if (spec->type == SAVE4_MG_ITEM) {
+        s32(card + 4, spec->item); /* MysteryGiftItemData.item */
+        s32(card + 8, 1);          /* shouldPlayAnimation */
+    }
+    save4_status st = put_text(card + WC_HEADER, SAVE4_WC_TITLE_LEN, spec->title);
+    if (st != SAVE4_OK)
+        return st;
+    s32(card + WC_HEADER + 0x48, 0x7); /* validGames: Diamond, Pearl, Platinum */
+    s16(card + WC_HEADER + 0x4C, spec->id);
+    card[WC_FLAGS] = (1u << 2) | (1u << 3); /* hasWonderCard, savePgt */
+    st = put_text(card + 0x154, SAVE4_WC_DESC_LEN, spec->description);
+    if (st != SAVE4_OK)
+        return st;
+    for (int i = 0; i < 3; i++)
+        s16(card + 0x34A + i * 2, spec->sprites[i]);
+    s32(card + 0x354, (uint32_t)spec->received_day);
+    return SAVE4_OK;
 }

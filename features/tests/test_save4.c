@@ -247,10 +247,89 @@ static void test_game(save4_game game)
     free(img);
 }
 
+/* Mystery Gift on the synthetic Platinum save: the entry checksum the game
+ * verifies (CRC-16 over the body, stored after it), card + gift placement,
+ * the received bit, removal, the unlock switches and the D/P refusal. */
+static void test_mystery(void)
+{
+    uint8_t *img = malloc(SAVE4_IMAGE_SIZE);
+    synth_save_build(img, SAVE4_GAME_PT);
+    save4 s;
+    CHECK(save4_load(&s, img, SAVE4_IMAGE_SIZE) == SAVE4_OK);
+
+    save4_card_spec spec = {SAVE4_MG_MEMBER_CARD, 42, 0, {491, 0, 0}, 3500, "Member Card", "Line one\nLine two"};
+    uint8_t card[SAVE4_WONDERCARD_SIZE];
+    CHECK(save4_mg_build_card(&spec, card) == SAVE4_OK);
+    const char *why = NULL;
+    CHECK(save4_mg_validate(card, sizeof card, &why) == SAVE4_OK);
+    CHECK(save4_mg_validate(card, 100, &why) == SAVE4_ERR_SIZE && why);
+    uint8_t bad[SAVE4_PGT_SIZE] = {0};
+    CHECK(save4_mg_validate(bad, sizeof bad, &why) == SAVE4_ERR_ARG);
+    /* Title encoding: the game's charset, terminated. */
+    CHECK(card[0] == SAVE4_MG_MEMBER_CARD && card[0x104 + 22] == 0xFF && card[0x104 + 23] == 0xFF);
+    CHECK_EQ_INT(card[0x104 + 0x4E], 0x0C); /* hasWonderCard | savePgt */
+
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    uint8_t back[SAVE4_WONDERCARD_SIZE];
+    bool used = false;
+    CHECK(save4_mg_get_card(&s, 0, back, &used) == SAVE4_OK && used);
+    CHECK(!memcmp(back, card, sizeof card));
+    int pgts = 0;
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 1);
+
+    size_t len;
+    const uint8_t *im = save4_image(&s, &len);
+    const uint8_t *mg = im + save4_block_base(&s, SAVE4_BLOCK_GENERAL) + 0xB4C0;
+    CHECK_EQ_INT(mg[42 / 8] >> (42 % 8) & 1, 1);                  /* received bit */
+    CHECK_EQ_INT(mg[0x100] | mg[0x101] << 8, SAVE4_MG_MEMBER_CARD); /* PGT 0 */
+    CHECK_EQ_INT((mg[0x102] | mg[0x103] << 8) & 3, 0);             /* linked to card 0 */
+    CHECK_EQ_INT(save4_crc16(mg, 0x132C), mg[0x132C] | mg[0x132D] << 8);
+    CHECK(save4_revalidate(&s) == SAVE4_OK);
+
+    /* A gift-only .pgt goes to a PGT slot linked to "no card" (3). */
+    CHECK(save4_mg_add(&s, card, SAVE4_PGT_SIZE) == SAVE4_OK);
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 2);
+    CHECK_EQ_INT((mg[0x206] | mg[0x207] << 8) & 3, 3);
+
+    /* Cards fill three slots, then refuse. */
+    spec.id = 43;
+    save4_mg_build_card(&spec, card);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    spec.id = 44;
+    save4_mg_build_card(&spec, card);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_ERR_NOSPACE);
+
+    CHECK(save4_mg_remove_card(&s, 0) == SAVE4_OK);
+    CHECK(save4_mg_get_card(&s, 0, back, &used) == SAVE4_OK && !used);
+    CHECK_EQ_INT(mg[42 / 8] >> (42 % 8) & 1, 0);
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 3); /* its PGT went with it */
+    CHECK_EQ_INT(save4_crc16(mg, 0x132C), mg[0x132C] | mg[0x132D] << 8);
+
+    bool on = true;
+    CHECK(save4_mg_set_unlocked(&s, false) == SAVE4_OK);
+    CHECK(save4_mg_get_unlocked(&s, &on) == SAVE4_OK && !on);
+    CHECK(save4_mg_set_unlocked(&s, true) == SAVE4_OK);
+    CHECK(save4_mg_get_unlocked(&s, &on) == SAVE4_OK && on);
+    CHECK_EQ_INT(mg[255] >> 7, 1);
+    CHECK_EQ_INT(im[save4_block_base(&s, SAVE4_BLOCK_GENERAL) + 0x48], 1);
+    CHECK(save4_dex_set_obtained(&s, true) == SAVE4_OK);
+    CHECK(save4_dex_get_obtained(&s, &on) == SAVE4_OK && on);
+    CHECK(save4_revalidate(&s) == SAVE4_OK);
+    save4_free(&s);
+
+    synth_save_build(img, SAVE4_GAME_DP);
+    CHECK(save4_load(&s, img, SAVE4_IMAGE_SIZE) == SAVE4_OK);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_ERR_LAYOUT);
+    save4_free(&s);
+    free(img);
+}
+
 int main(void)
 {
     test_game(SAVE4_GAME_PT);
     test_game(SAVE4_GAME_DP);
+    test_mystery();
 
     /* Flag/var names generated from the decomp. */
     uint16_t id = 0;
