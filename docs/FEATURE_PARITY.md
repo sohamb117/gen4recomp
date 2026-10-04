@@ -27,6 +27,11 @@ Shell features that do not depend on the game (launcher, slots, options UI,
 sync, updater, skins) work the same for every game; they were exercised with
 Platinum data.
 
+Landed on main after the evidence package was built (not yet shown in the
+app): D/P quick save no longer overflows the idle thread's stack
+(d12b3fa7e), and save4 plus the shell editor handle D/P Mystery Gift, unlock,
+Pokédex flags and add-mon (b27d9a954).
+
 ## Launcher and import
 
 | Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
