@@ -1,0 +1,184 @@
+Runtime content packages (games/platinum/pc/src/pc_modfs.c, compiled for
+D; pc/mods/README.md): a package's narc/<nitro path>/<index> file replaces
+that NARC member. Every member read of D goes through this file's readers
+(the by-id-pair helpers and the NARC_* object API, which msgdata.c, the
+graphics loaders and the recompiled asm call by name), so they ask the
+claim table first, as Platinum's src/narc.c patch does: a claimed member
+is read from the package with its own length (sizes, allocations and
+NARC_GetMemberSize see the new length), NARC_New grows num_files by
+planted appends, and NARC_ReadFile continues a claimed member
+sequentially. Unclaimed reads are the ROM's, byte for byte. NARC_FindID
+maps a path to its NarcId for the PC_MODFS_PROBE_NARC probe
+(pc/game/pc_dp_modfs.c).
+
+--- a/src/filesystem.c
++++ b/src/filesystem.c
+@@ -4,6 +4,7 @@
+ 
+ #include "FS_file.h"
+ #include "heap.h"
++#include "pc_modfs.h"
+ 
+ static char *sNarcFileList[] = {
+     "battle/skill/waza_seq.narc",
+@@ -158,6 +159,21 @@
+     "poketool/shinzukan.narc",
+ };
+ 
++int NARC_FindID(const char *path) {
++    int i;
++    int n = (int)(sizeof sNarcFileList / sizeof sNarcFileList[0]);
++
++    if (path == NULL || path[0] == '\0') {
++        return -1;
++    }
++    for (i = 0; i < n; i++) {
++        if (sNarcFileList[i] != NULL && strcmp(sNarcFileList[i], path) == 0) {
++            return i;
++        }
++    }
++    return -1;
++}
++
+ void ReadFromNarcMemberByPathAndId(void *dest, const char *path, s32 file_idx, u32 offset, u32 size) {
+     FSFile file;
+     register u32 chunk_starts[3];
+@@ -167,6 +183,12 @@
+     u32 file_end = 0;
+     u16 num_files = 0;
+ 
++    // A host file at narc/<path>/<idx> of a content package is this member;
++    // checked before opening so a hit adds no FSFile.
++    if (pc_modfs_member_read(path, (unsigned)file_idx, dest, offset, size)) {
++        return;
++    }
++
+     FS_InitFile(&file);
+     FS_OpenFile(&file, path);
+ 
+@@ -205,6 +227,20 @@
+     u32 file_end = 0;
+     u16 num_files = 0;
+     void *dest = NULL;
++    unsigned mod_size;
++
++    if (pc_modfs_member_stat(path, (unsigned)file_idx, &mod_size)) {
++        chunk_size = (size != 0) ? size : mod_size;
++        if (r4 == 0) {
++            dest = Heap_Alloc(heapID, chunk_size);
++        } else {
++            dest = Heap_AllocAtEnd(heapID, chunk_size);
++        }
++        if (dest != NULL && chunk_size != 0) {
++            (void)pc_modfs_member_read(path, (unsigned)file_idx, dest, offset, chunk_size);
++        }
++        return dest;
++    }
+ 
+     FS_InitFile(&file);
+     FS_OpenFile(&file, path);
+@@ -276,6 +312,11 @@
+     u32 file_start = 0;
+     u32 file_end = 0;
+     u16 num_files = 0;
++    unsigned mod_size;
++
++    if (pc_modfs_member_stat(sNarcFileList[narc_id], (unsigned)file_idx, &mod_size)) {
++        return mod_size;
++    }
+ 
+     FS_InitFile(&file);
+     FS_OpenFile(&file, sNarcFileList[narc_id]);
+@@ -310,11 +351,13 @@
+         narc->btaf_start = 0;
+         FS_InitFile(&narc->file);
+         FS_OpenFile(&narc->file, sNarcFileList[narc_id]);
++        pc_modfs_bind_narc(narc, sNarcFileList[narc_id]);
+         FS_SeekFile(&narc->file, 12, FS_SEEK_SET);
+         FS_ReadFile(&narc->file, &narc->btaf_start, 2);
+         FS_SeekFile(&narc->file, (s32)(narc->btaf_start + 4), FS_SEEK_SET);
+         FS_ReadFile(&narc->file, &chunk_size, 4);
+         FS_ReadFile(&narc->file, &narc->num_files, 2);
++        narc->num_files = (u16)pc_modfs_narc_file_count(sNarcFileList[narc_id], narc->num_files);
+         btnf_start = narc->btaf_start + chunk_size;
+         FS_SeekFile(&narc->file, (s32)(btnf_start + 4), FS_SEEK_SET);
+         FS_ReadFile(&narc->file, &chunk_size, 4);
+@@ -324,6 +367,7 @@
+ }
+ 
+ void NARC_Delete(NARC *narc) {
++    pc_modfs_unbind_narc(narc);
+     FS_CloseFile(&narc->file);
+     Heap_Free(narc); // free to heap
+ }
+@@ -332,6 +376,16 @@
+     u32 file_start;
+     u32 file_end;
+     void *dest;
++    const char *path = pc_modfs_narc_path(narc);
++    unsigned mod_size;
++
++    if (path != NULL && pc_modfs_member_stat(path, file_id, &mod_size)) {
++        dest = Heap_Alloc(heapID, mod_size);
++        if (dest != NULL && mod_size != 0) {
++            (void)pc_modfs_member_read(path, file_id, dest, 0, mod_size);
++        }
++        return dest;
++    }
+     GF_ASSERT(narc->num_files > file_id);
+     FS_SeekFile(&narc->file, (s32)(narc->btaf_start + 12 + 8 * file_id), FS_SEEK_SET);
+     FS_ReadFile(&narc->file, &file_start, 4);
+@@ -347,6 +401,16 @@
+ void NARC_ReadWholeMember(NARC *narc, u32 file_id, void *dest) {
+     u32 file_start;
+     u32 file_end;
++    const char *path = pc_modfs_narc_path(narc);
++
++    if (path != NULL && pc_modfs_member_read(path, file_id, dest, 0, 0)) {
++        unsigned mod_size = 0;
++
++        (void)pc_modfs_member_stat(path, file_id, &mod_size);
++        pc_modfs_narc_seq_note(narc, file_id, 0, mod_size);
++        return;
++    }
++    pc_modfs_narc_seq_clear(narc);
+     GF_ASSERT(narc->num_files > file_id);
+     FS_SeekFile(&narc->file, (s32)(narc->btaf_start + 12 + 8 * file_id), FS_SEEK_SET);
+     FS_ReadFile(&narc->file, &file_start, 4);
+@@ -358,6 +422,12 @@
+ u32 NARC_GetMemberSize(NARC *narc, u32 file_id) {
+     u32 file_start;
+     u32 file_end;
++    const char *path = pc_modfs_narc_path(narc);
++    unsigned mod_size;
++
++    if (path != NULL && pc_modfs_member_stat(path, file_id, &mod_size)) {
++        return mod_size;
++    }
+     GF_ASSERT(narc->num_files > file_id);
+     FS_SeekFile(&narc->file, (s32)(narc->btaf_start + 12 + 8 * file_id), FS_SEEK_SET);
+     FS_ReadFile(&narc->file, &file_start, 4);
+@@ -367,6 +437,13 @@
+ 
+ void NARC_ReadFromMember(NARC *narc, u32 file_id, u32 pos, u32 size, void *dest) {
+     u32 file_start;
++    const char *path = pc_modfs_narc_path(narc);
++
++    if (path != NULL && pc_modfs_member_read(path, file_id, dest, pos, size)) {
++        pc_modfs_narc_seq_note(narc, file_id, pos, size);
++        return;
++    }
++    pc_modfs_narc_seq_clear(narc);
+     GF_ASSERT(narc->num_files > file_id);
+     FS_SeekFile(&narc->file, (s32)(narc->btaf_start + 12 + 8 * file_id), FS_SEEK_SET);
+     FS_ReadFile(&narc->file, &file_start, 4);
+@@ -375,6 +452,9 @@
+ }
+ 
+ void NARC_ReadFile(NARC *narc, u32 size, void *dest) {
++    if (pc_modfs_narc_seq_read(narc, dest, size)) {
++        return;
++    }
+     FS_ReadFile(&narc->file, dest, (s32)size);
+ }
+ 

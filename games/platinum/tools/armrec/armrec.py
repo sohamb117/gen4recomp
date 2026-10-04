@@ -1376,8 +1376,17 @@ _C_MATH = """
     remainder remquo copysign fdim fmax fmin fma
 """
 
+# Not standard C but the host libc's own: wasi-libc's strrchr calls its
+# internal __memrchr(s, c, n), and MSL_C (Diamond/Pearl's recompiled
+# MSL_Common_mem.s) defines a __memrchr of another shape, which won the link
+# and made strrchr trap (wasm-ld: function signature mismatch).
+_C_LIBC_INTERNAL = """
+    __memrchr
+"""
+
 HOST_LIBC_NAMES = frozenset(
     _C_STDLIB.split()
+    + _C_LIBC_INTERNAL.split()
     + [n + s for n in _C_MATH.split() for s in ("", "f", "l")])
 
 

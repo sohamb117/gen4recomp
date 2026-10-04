@@ -59,3 +59,9 @@ files/**/*.c
 
 #decomp.me helper files
 ctx.c
+
+# Runtime packages name directories after the NARC they replace members of
+# (content/msgdata/msg.narc/341.gmm); those are sources, not build output.
+!pc/mods/**/*.narc
+# Cook output under a runtime package (pc/modcook.py). Recook from content/.
+pc/mods/**/.cooked/

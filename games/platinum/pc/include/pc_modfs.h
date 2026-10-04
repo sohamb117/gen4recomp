@@ -53,6 +53,7 @@ int pc_modfs_narc_seq_seek(const void *narc, unsigned delta);
  */
 unsigned pc_modfs_narc_file_count(const char *nitro_path, unsigned rom_count);
 
+#if !defined(PC_GAME_DP)
 /*
  * Cooked billboard person: gfx id -> mmodel.narc NSBTX member, or -1.
  * overlay005's four tables are sentinel-scanned and GF_ASSERT on a miss;
@@ -101,5 +102,33 @@ struct pc_modfs_map_header {
 };
 
 int pc_modfs_map_header(int id, struct pc_modfs_map_header *out);
+
+#else /* PC_GAME_DP */
+
+/*
+ * Diamond/Pearl: the calls games/diamond/pc/game/pc_dp_modfs.c (D's FS and
+ * the probes, built with D's headers) makes into the generic half. The
+ * billboard, prop and map-header claims above are Platinum content.
+ */
+
+/* Whole claimed file in a fresh buffer (writes size), or NULL if the
+ * cartridge wins. A claimed file that cannot be read is a boot error. */
+void *pc_modfs_file_load(const char *nitro_path, unsigned *out_size);
+void pc_modfs_file_free(void *buf);
+void *pc_modfs_alloc(unsigned size);
+
+/* A modfs: error: printed, then the guest traps with it. */
+void pc_modfs_fatal(const char *msg);
+
+/* PC_MODFS_PROBE's path, once, or NULL. */
+const char *pc_modfs_probe_file(void);
+/* PC_MODFS_PROBE_NARC=<nitro-path>/<idx>, once: 1 and the parts, or 0. */
+int pc_modfs_probe_member(char *path, unsigned cap, unsigned *out_idx);
+/* "modfs: <kind> <path>[/<index>] <n> <hex bytes>" on stderr (index < 0:
+ * none), then exit(0): Platinum's probe lines. */
+void pc_modfs_probe_report(const char *kind, const char *path, int index,
+                           const void *buf, unsigned n);
+
+#endif /* PC_GAME_DP */
 
 #endif /* PC_MODFS_H */

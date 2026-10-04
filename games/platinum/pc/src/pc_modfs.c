@@ -22,6 +22,15 @@
  * there, so a core created without one sees no packages. A boot error
  * becomes a guest trap carrying the message, which the host reads back
  * as np_core_last_error.
+ *
+ * Diamond/Pearl (PC_GAME_DP) compile this file for the generic half:
+ * packages, load order, cooked digests, whole-file and NARC-member claims.
+ * D's FS and NARC readers have D's own layouts (NitroSDK 3.2 FSFile,
+ * src/filesystem.c), so the FS_* overrides, the NARC probes and the
+ * Platinum-only content (billboard people, extra props, cooked map headers)
+ * are left out here; games/diamond/pc/game/pc_dp_modfs.c and
+ * pc/patches/arm9/src/filesystem.c.patch are D's half, through the
+ * pc_modfs_file_load / pc_modfs_probe_* calls at the end of this file.
  */
 #include "pc_modfs.h"
 
@@ -37,10 +46,12 @@
 #endif
 
 #include <nitro/fs.h>
+#if !defined(PC_GAME_DP)
 #include <../libraries/fs/include/command.h>
 
 #include "map_header.h"
 #include "narc.h"
+#endif
 
 #ifndef S_ISDIR
 #define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
@@ -91,6 +102,7 @@ static struct mclaim *sMembers;
 static int sNMembers;
 static int sCapMembers;
 
+#if !defined(PC_GAME_DP)
 #define PC_MODFS_MAX_GFX 64
 #define PC_MODFS_MAX_PROPS 64
 #define PC_MODFS_MAX_MAPS 16
@@ -113,6 +125,7 @@ struct map_claim {
 
 static struct map_claim sMaps[PC_MODFS_MAX_MAPS];
 static int sNMaps;
+#endif
 
 struct narc_bind {
     const void *narc;
@@ -125,9 +138,11 @@ static struct narc_bind *sBinds;
 static int sNBinds;
 static int sCapBinds;
 
+#if !defined(PC_GAME_DP)
 extern int NARC_FindID(const char *path);
 static void maybe_probe_narc(void);
 static void maybe_probe_map(void);
+#endif
 static void *slurp_host(const char *host, u32 *out_size);
 
 static void die(const char *fmt, ...)
@@ -822,6 +837,7 @@ static void scan_pkg_files(const struct pkg *pk)
     walk_narc_tree(p, "", pk->dir);
 }
 
+#if !defined(PC_GAME_DP)
 static void load_billboard_gfx(const struct pkg *pk)
 {
     char path[PC_MODFS_PATH];
@@ -973,6 +989,7 @@ static void load_cooked_maps(const struct pkg *pk)
     }
     fclose(f);
 }
+#endif
 
 static void scan_modfs_root(const char *root)
 {
@@ -1170,7 +1187,12 @@ static void check_cooked(const struct pkg *pk)
     }
     join_path(digest, sizeof digest, p, "digest");
     if (!is_file(digest) || !digest_matches(digest, hash_cook_inputs(pk))) {
+#if defined(PC_GAME_DP)
+        die("stale .cooked/ in '%s'; run python3 pc/modcook.py --mods %s"
+            " in games/diamond", pk->dir, pk->dir);
+#else
         die("stale .cooked/ in '%s'; run make -f pc/Makefile cook", pk->dir);
+#endif
     }
 }
 
@@ -1201,7 +1223,9 @@ void pc_modfs_boot(void)
     sNPkgs = 0;
     sNFiles = 0;
     sNMembers = 0;
+#if !defined(PC_GAME_DP)
     sNGfx = 0;
+#endif
 
     mods_dir = getenv("PC_MODS_DIR");
     if (mods_dir == NULL || mods_dir[0] == '\0') {
@@ -1229,7 +1253,9 @@ void pc_modfs_boot(void)
     }
 
     if (n == 0 && nroots == 0) {
+#if !defined(PC_GAME_DP)
         maybe_probe_narc();
+#endif
         return;
     }
 
@@ -1299,9 +1325,11 @@ void pc_modfs_boot(void)
 
     for (i = 0; i < sNPkgs; i++) {
         scan_pkg_files(&sPkgs[i]);
+#if !defined(PC_GAME_DP)
         load_billboard_gfx(&sPkgs[i]);
         load_extra_props(&sPkgs[i]);
         load_cooked_maps(&sPkgs[i]);
+#endif
     }
     for (i = 0; i < nroots; i++) {
         scan_modfs_root(roots[i]);
@@ -1315,8 +1343,10 @@ void pc_modfs_boot(void)
         fputs(sPkgs[i].dir, stderr);
     }
     fputs("]\n", stderr);
+#if !defined(PC_GAME_DP)
     maybe_probe_map();
     maybe_probe_narc();
+#endif
 }
 
 const char *pc_modfs_host_file(const char *nitro_path)
@@ -1597,6 +1627,7 @@ unsigned pc_modfs_narc_file_count(const char *nitro_path, unsigned rom_count)
     return highest + 1u;
 }
 
+#if !defined(PC_GAME_DP)
 int pc_modfs_billboard_nsbtx(int gfx_id)
 {
     int i;
@@ -1734,6 +1765,7 @@ static void maybe_probe_narc(void)
     free(obuf);
     exit(0);
 }
+#endif
 
 /*
  * Measured on the weakened fs_file.o (2026-08-16):
@@ -1783,6 +1815,7 @@ static void *slurp_host(const char *host, u32 *out_size)
     return buf;
 }
 
+#if !defined(PC_GAME_DP)
 static BOOL open_host_file(FSFile *p_file, const char *host, const char *nitro)
 {
     u32 size = 0;
@@ -2022,3 +2055,107 @@ BOOL FS_CloseFile(FSFile *p_file)
     p_file->stat &= ~(FS_FILE_STATUS_IS_FILE | FS_FILE_STATUS_IS_DIR);
     return TRUE;
 }
+
+#else /* PC_GAME_DP */
+
+/*
+ * Diamond/Pearl's half lives with the game's headers
+ * (games/diamond/pc/game/pc_dp_modfs.c): it opens a claimed file as a
+ * memory-backed FSFile of D's own layout and runs the probes once D's FS is
+ * up. These are the calls it makes into the generic half.
+ */
+
+void *pc_modfs_file_load(const char *nitro_path, unsigned *out_size)
+{
+    const char *host = pc_modfs_host_file(nitro_path);
+    u32 size = 0;
+    void *buf;
+
+    if (host == NULL) {
+        return NULL;
+    }
+    buf = slurp_host(host, &size);
+    if (buf == NULL) {
+        die("claimed file missing: %s", nitro_path);
+    }
+    *out_size = (unsigned)size;
+    return buf;
+}
+
+void pc_modfs_file_free(void *buf)
+{
+    free(buf);
+}
+
+void *pc_modfs_alloc(unsigned size)
+{
+    void *p = malloc(size ? size : 1);
+
+    if (p == NULL) {
+        die("out of memory");
+    }
+    return p;
+}
+
+void pc_modfs_fatal(const char *msg)
+{
+    die("%s", msg);
+}
+
+const char *pc_modfs_probe_file(void)
+{
+    static int sProbed;
+    const char *probe;
+
+    if (sProbed) {
+        return NULL;
+    }
+    sProbed = 1;
+    probe = getenv("PC_MODFS_PROBE");
+    return (probe != NULL && probe[0] != '\0') ? probe : NULL;
+}
+
+int pc_modfs_probe_member(char *path, unsigned cap, unsigned *out_idx)
+{
+    static int sProbed;
+    const char *spec;
+    const char *slash;
+
+    if (sProbed) {
+        return 0;
+    }
+    sProbed = 1;
+    spec = getenv("PC_MODFS_PROBE_NARC");
+    if (spec == NULL || spec[0] == '\0') {
+        return 0;
+    }
+    slash = strrchr(spec, '/');
+    if (slash == NULL || slash == spec || !parse_idx(slash + 1, out_idx)
+        || (size_t)(slash - spec) >= cap) {
+        die("PC_MODFS_PROBE_NARC wants <nitro-path>/<idx>, got '%s'", spec);
+    }
+    memcpy(path, spec, (size_t)(slash - spec));
+    path[slash - spec] = '\0';
+    norm_nitro(path, cap, path);
+    return 1;
+}
+
+void pc_modfs_probe_report(const char *kind, const char *path, int index,
+                           const void *buf, unsigned n)
+{
+    const u8 *p = (const u8 *)buf;
+    unsigned i;
+
+    if (index >= 0) {
+        fprintf(stderr, "modfs: %s %s/%d %u ", kind, path, index, n);
+    } else {
+        fprintf(stderr, "modfs: %s %s %u ", kind, path, n);
+    }
+    for (i = 0; i < n; i++) {
+        fprintf(stderr, "%02x", p[i]);
+    }
+    fputc('\n', stderr);
+    exit(0);
+}
+
+#endif /* PC_GAME_DP */

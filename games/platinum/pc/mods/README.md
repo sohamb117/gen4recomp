@@ -80,3 +80,7 @@ docker --context orbstack run --rm --platform linux/amd64 -v "$R:$R" \
 build/core-plat/np_headless platinum games/platinum/build/rom/pokeplatinum.us.nds \
   --content games/platinum/pc/mods -e PC_MODS=example_menu_text --frames 700 --dump /tmp/mod
 ```
+
+Diamond and Pearl load the same packages through this same code; their
+layout, cook step (`games/diamond/pc/modcook.py`, no container) and example
+are in `games/diamond/pc/mods/README.md`.
