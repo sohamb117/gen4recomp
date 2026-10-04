@@ -14,7 +14,10 @@
  *     PROT_NONE guard page below each one); the register switch lives in
  *     np_fiber_arm64.S / np_fiber_x86_64.S and saves exactly the callee-saved
  *     state of the platform ABI.
- *   - Windows: np_fiber_win32.c on top of Win32 Fibers, which already save
+ *   - Windows x64 with a GNU-syntax toolchain (mingw, zig cc, clang):
+ *     np_fiber_win64.c owns stacks the same way (VirtualAlloc, guard page)
+ *     and np_fiber_win64.S also switches the TEB stack bounds.
+ *   - Windows with MSVC: np_fiber_win32.c on top of Win32 Fibers, which save
  *     the full x64 / arm64 nonvolatile set, TEB stack bounds and SEH chain.
  *
  * All calls for one set of fibers must come from one thread.
@@ -72,7 +75,7 @@ int np_fiber_reset(np_fiber *fiber, np_fiber_fn fn, void *arg);
 
 /* The live part of a suspended fiber's stack, [*lo, *hi): every byte a
  * resume can read. Returns -1 where the platform's fibers are opaque
- * (Windows), which makes snapshots unavailable there. */
+ * (Win32 Fibers, MSVC builds), which makes snapshots unavailable there. */
 int np_fiber_live_stack(const np_fiber *fiber, uint8_t **lo, uint8_t **hi);
 
 /* Makes a suspended fiber resume from `lo`, a value np_fiber_live_stack

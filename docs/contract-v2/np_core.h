@@ -171,7 +171,7 @@ uint32_t np_core_status(const np_core *core, uint32_t status);
  * never written to disk; the cartridge save is the persistent state.
  * state_size is an upper bound for a state_save made before the next
  * np_core_run_frame (it grows as the guest touches more memory), or 0 when
- * no snapshot can be taken (Windows builds; a failed or exited core). Both
+ * no snapshot can be taken (MSVC-built Windows cores; a failed or exited core). Both
  * return 0 on success. A refused state_load (not this core's snapshot,
  * truncated) returns -1 and leaves the core as it was; one that fails
  * halfway leaves the core failed (np_core_last_error). Loading also

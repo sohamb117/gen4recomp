@@ -1,5 +1,7 @@
 /*
- * Windows fibers on top of Win32 Fibers.
+ * Windows fibers on top of Win32 Fibers, for MSVC builds (no GNU assembler
+ * for np_fiber_win64.S). Snapshots are unavailable here: a suspended Win32
+ * fiber keeps its registers outside its stack.
  *
  * Win32 fibers already do everything a hand-written switch would have to:
  * they save the x64 (or arm64) nonvolatile registers including xmm6-xmm15,
