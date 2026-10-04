@@ -33,6 +33,9 @@ typedef struct np_layout_params {
     int swap;     /* exchange the screens' places (ignored by single-screen modes) */
     int rotation; /* quarter turns clockwise, 0..3 */
     np_scale_mode scale;
+    /* Width of each screen in DS pixel units: 256, or more when the core
+     * renders widescreen with the DS picture centred (0 = 256). */
+    int screen_w;
 } np_layout_params;
 
 typedef struct np_screen_place {
@@ -50,16 +53,18 @@ typedef struct np_layout {
     float scale;               /* window pixels per content unit */
     float origin_x, origin_y;  /* top-left of the rotated content box */
     float content_w, content_h;
+    float screen_w;            /* per screen, DS pixel units */
 } np_layout;
 
 void np_layout_compute(np_layout *l, const np_layout_params *p, float win_w, float win_h);
 
 /*
  * Maps window point (wx, wy) to a bottom-screen pixel. Returns 1 and writes
- * (tx, ty) in 0..255 x 0..191 when the point is on the bottom screen. With
- * `clamp` set, points off the screen are clamped to its nearest edge pixel
- * (a stylus dragged past the edge stays down), and 1 is returned whenever
- * the bottom screen is visible. Returns 0 otherwise.
+ * (tx, ty) in 0..255 x 0..191 when the point is on the DS picture of the
+ * bottom screen (wide screens' side bars are not). With `clamp` set, points
+ * off it are clamped to its nearest edge pixel (a stylus dragged past the
+ * edge stays down), and 1 is returned whenever the bottom screen is
+ * visible. Returns 0 otherwise.
  */
 int np_layout_touch(const np_layout *l, float wx, float wy, int clamp, int *tx, int *ty);
 

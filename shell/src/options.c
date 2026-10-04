@@ -19,12 +19,12 @@ const char *const np_fx_ids[NP_FX_COUNT] = {"off", "lcd", "scanlines", "crt", "s
 const char *const np_perf_ids[NP_PERF_COUNT] = {"custom", "high", "balanced", "low", "auto"};
 
 static const char *const action_ids[NP_ACT_COUNT] = {
-    "a", "b", "x", "y", "l", "r", "start", "select", "up", "down", "left", "right", "ff_hold", "ff_toggle",
+    "a", "b", "x", "y", "l", "r", "start", "select", "up", "down", "left", "right", "ff_hold", "ff_toggle", "rewind",
 };
 
 static const char *const action_names[NP_ACT_COUNT] = {
     "A",  "B",    "X",    "Y",     "L",    "R", "Start", "Select", "Up", "Down", "Left", "Right",
-    "Fast-forward (hold)", "Fast-forward (toggle)",
+    "Fast-forward (hold)", "Fast-forward (toggle)", "Rewind (hold)",
 };
 
 static const char *const layout_ids[NP_LAYOUT_COUNT] = {"vertical", "horizontal", "hybrid", "top", "bottom"};
@@ -49,6 +49,7 @@ void np_bindings_defaults(np_bindings *b)
         [NP_ACT_RIGHT] = {SDL_SCANCODE_RIGHT, SDL_SCANCODE_D},
         [NP_ACT_FF_HOLD] = {SDL_SCANCODE_F},
         [NP_ACT_FF_TOGGLE] = {SDL_SCANCODE_G},
+        [NP_ACT_REWIND] = {SDL_SCANCODE_R},
     };
     /* Positional, Nintendo style: DS A is the right face button. */
     static const int pads[NP_ACT_COUNT] = {
@@ -66,6 +67,7 @@ void np_bindings_defaults(np_bindings *b)
         [NP_ACT_RIGHT] = SDL_GAMEPAD_BUTTON_DPAD_RIGHT,
         [NP_ACT_FF_HOLD] = NP_PAD_RIGHT_TRIGGER,
         [NP_ACT_FF_TOGGLE] = NP_PAD_LEFT_TRIGGER,
+        [NP_ACT_REWIND] = SDL_GAMEPAD_BUTTON_LEFT_STICK,
     };
     memcpy(b->key, keys, sizeof keys);
     memcpy(b->pad, pads, sizeof pads);
@@ -86,6 +88,10 @@ void np_options_defaults(np_options *o)
     o->real_clock = 1;
     o->last_game = -1;
     o->lan_port = 2009; /* NP_NET_DEFAULT_PORT */
+    o->bgm_volume = o->se_volume = 100;
+    o->render_scale = 1;
+    o->camera_zoom = 256;
+    o->rewind_seconds = 30;
     np_bindings_defaults(&o->bind);
 }
 
@@ -242,6 +248,25 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             if (g >= 0 && !np_slot_name_problem(val))
                 SDL_strlcpy(o->last_slot[g], val, sizeof o->last_slot[g]);
         }
+    } else if (!strcmp(section, "game")) {
+        if (!strcmp(key, "bgm_volume"))
+            o->bgm_volume = clampi(iv, 0, 100);
+        else if (!strcmp(key, "se_volume"))
+            o->se_volume = clampi(iv, 0, 100);
+        else if (!strcmp(key, "render_scale"))
+            o->render_scale = clampi(iv, 1, 4);
+        else if (!strcmp(key, "widescreen"))
+            o->widescreen = iv != 0;
+        else if (!strcmp(key, "camera_zoom"))
+            o->camera_zoom = clampi(iv, 64, 1024);
+        else if (!strcmp(key, "camera_tilt"))
+            o->camera_tilt = clampi(iv, -720, 720);
+        else if (!strcmp(key, "instant_text"))
+            o->text_instant = iv != 0;
+        else if (!strcmp(key, "fix_bugs"))
+            o->fix_bugs = iv != 0;
+        else if (!strcmp(key, "rewind_seconds"))
+            o->rewind_seconds = clampi(iv, 0, 120);
     } else if (!strcmp(section, "wireless")) {
         if (!strcmp(key, "enabled"))
             o->lan_enabled = iv != 0;
@@ -342,6 +367,10 @@ int np_options_save(const np_options *o, const char *path)
     put(b, "[emulation]\nlogic_clock = %s\nspeed = %d\nff_speed = %d\nreal_clock = %d\n\n",
         o->logic_clock_60 ? "60" : "ds", np_speeds[o->speed_index], np_speeds[o->ff_speed_index], o->real_clock);
     put(b, "[audio]\nvolume = %d\nmute_unfocused = %d\n\n", o->volume, o->mute_unfocused);
+    put(b, "[game]\nbgm_volume = %d\nse_volume = %d\nrender_scale = %d\nwidescreen = %d\n", o->bgm_volume,
+        o->se_volume, o->render_scale, o->widescreen);
+    put(b, "camera_zoom = %d\ncamera_tilt = %d\ninstant_text = %d\nfix_bugs = %d\nrewind_seconds = %d\n\n",
+        o->camera_zoom, o->camera_tilt, o->text_instant, o->fix_bugs, o->rewind_seconds);
     put(b, "[session]\nstartup = %s\n", o->startup_continue ? "continue" : "launcher");
     if (o->last_game >= 0 && o->last_game < NP_GAME_COUNT)
         put(b, "last_game = %s\n", np_game_ids[o->last_game]);

@@ -12,6 +12,11 @@
  * VPNs and the internet). A HELLO or its ACK teaches the receiver the
  * sender's station id and address. Peers silent for 10 s are forgotten.
  *
+ * Relay mode (internet play without port forwarding): with relay set, no LAN
+ * discovery happens; every second a JOIN carrying the room PIN goes to the
+ * relay (server/relay), which answers with the room's station ids and
+ * forwards datagrams between the stations of one room.
+ *
  * Datagram loss is the guest's problem by contract (its protocol resends);
  * drop_percent injects loss on purpose for tests.
  */
@@ -31,6 +36,8 @@ typedef struct np_net_config {
     uint32_t station_id;    /* 24-bit station id, persistent per install; 0 = random */
     int lan_discovery;      /* broadcast HELLOs on the LAN */
     int drop_percent;       /* 0..100: drop this share of outgoing datagrams (testing) */
+    const char *relay;      /* "host:port" of a relay (server/relay), NULL = LAN mode */
+    const char *pin;        /* relay room PIN, 1..32 bytes */
     void (*log)(void *user, const char *line);
     void *log_user;
 } np_net_config;

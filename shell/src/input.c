@@ -100,6 +100,7 @@ uint16_t np_input_poll_keys(np_app *app, int *ff_hold)
             keys |= NP_KEY_DOWN;
     }
     *ff_hold = held[NP_ACT_FF_HOLD];
+    app->rewind_hold = held[NP_ACT_REWIND];
     return keys;
 }
 

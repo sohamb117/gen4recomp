@@ -133,6 +133,7 @@ typedef struct np_autotest {
     int shot_every; /* shots=N: also write <png>-<iteration>.png every N iterations */
     char drop[1024];    /* storage for a scripted drop event's text */
     char slot[NP_SLOT_NAME_MAX + 1]; /* save slot for rom=/synthetic boots */
+    int rewind_from, rewind_frames;  /* rewind=F+N: hold rewind for N iterations from F */
 } np_autotest;
 
 typedef struct np_app {
@@ -184,6 +185,8 @@ typedef struct np_app {
     struct np_fx_state *fx;   /* display effects (fx.c) */
     struct np_net *net;       /* local wireless transport while enabled */
     char net_error[128];
+    struct np_session *session; /* session.c, while a game runs */
+    int rewind_hold;            /* the rewind action is held */
 
     np_core *core;
     np_game game;
@@ -216,6 +219,24 @@ void np_app_toast(np_app *app, const char *fmt, ...);
 int np_app_start_game(np_app *app, np_game game, const char *slot);
 /* Boots the last used slot, or a new "Slot 1" when the game has none. */
 int np_app_continue(np_app *app, np_game game);
+/* Reboots the running game from its slot's last save. */
+int np_app_reload_game(np_app *app);
+
+/* session.c: contract v2 features of the running game */
+typedef struct np_session np_session;
+void np_session_begin(np_app *app);
+void np_session_end(np_app *app);
+/* Pushes the game options to the core (after any change). */
+void np_session_apply_options(np_app *app);
+/* After each guest frame played forward. */
+void np_session_frame_done(np_app *app);
+/* Hold-to-rewind, once per presented frame: 0 loaded an older snapshot (run
+ * one frame to show it), 1 keep showing the current one, -1 nothing older. */
+int np_session_rewind_step(np_app *app);
+int np_session_rewind_depth(const np_app *app);
+size_t np_session_rewind_bytes(const np_app *app);
+/* F1/F2 quick save/load, F5/F6/F7 snapshots, camera keys; 1 if handled. */
+int np_session_hotkey(np_app *app, int scancode);
 void np_app_stop_game(np_app *app);
 /* Queues work for the main loop; safe from any thread. */
 void np_app_request(np_app *app, np_pending_kind kind, const char *path);

@@ -17,6 +17,7 @@
 #include "launch.h"
 #include "layout.h"
 #include "png.h"
+#include "rewind.h"
 #include "romdb.h"
 #include "scale2x.h"
 #include "sha1.h"
@@ -207,7 +208,7 @@ static void test_layout_exhaustive(void)
                 for (int scale = 0; scale < NP_SCALE_COUNT; scale++)
                     for (size_t si = 0; si < sizeof sizes / sizeof sizes[0]; si++) {
                         float W = sizes[si][0], H = sizes[si][1];
-                        np_layout_params p = {(np_layout_mode)mode, swap, rot, (np_scale_mode)scale};
+                        np_layout_params p = {(np_layout_mode)mode, swap, rot, (np_scale_mode)scale, 256};
                         np_layout l;
                         np_layout_compute(&l, &p, W, H);
                         const char *ctx = "";
@@ -266,31 +267,41 @@ static void test_layout_fixed(void)
     np_layout l;
     int tx, ty;
     /* 1:1 vertical stack: bottom screen starts 192 px down. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 0, NP_SCALE_FIT}, 256, 384);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 0, NP_SCALE_FIT, 256}, 256, 384);
     CHECK(np_layout_touch(&l, 10.5f, 200.5f, 0, &tx, &ty) && tx == 10 && ty == 8, "vertical 1x: (10,8) got (%d,%d)", tx,
           ty);
     CHECK(!np_layout_touch(&l, 10.5f, 100.5f, 0, &tx, &ty), "vertical 1x: top screen not touchable");
     /* Swapped: the bottom screen is on top. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 1, 0, NP_SCALE_FIT}, 256, 384);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 1, 0, NP_SCALE_FIT, 256}, 256, 384);
     CHECK(np_layout_touch(&l, 10.5f, 8.5f, 0, &tx, &ty) && tx == 10 && ty == 8, "vertical swapped: got (%d,%d)", tx,
           ty);
     /* Rotated 90 degrees clockwise into a 384x256 window: the bottom
      * screen is the left half, its top-left corner at the window's top
      * edge, x = 191. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 1, NP_SCALE_FIT}, 384, 256);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 1, NP_SCALE_FIT, 256}, 384, 256);
     CHECK(np_layout_touch(&l, 191.5f, 0.5f, 0, &tx, &ty) && tx == 0 && ty == 0, "rot90: (0,0) got (%d,%d)", tx, ty);
     CHECK(np_layout_touch(&l, 0.5f, 255.5f, 0, &tx, &ty) && tx == 255 && ty == 191, "rot90: (255,191) got (%d,%d)", tx,
           ty);
     /* Integer scale 2 side by side in a 1100x400 window: 1024x384 centred. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_HORIZONTAL, 0, 0, NP_SCALE_INTEGER}, 1100, 400);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_HORIZONTAL, 0, 0, NP_SCALE_INTEGER, 256}, 1100, 400);
     CHECK(l.scale == 2.0f && l.origin_x == 38.0f && l.origin_y == 8.0f, "integer 2x origin (%f,%f) scale %f",
           l.origin_x, l.origin_y, l.scale);
     CHECK(np_layout_touch(&l, 38.0f + 512.0f + 3.0f, 8.0f + 5.0f, 0, &tx, &ty) && tx == 1 && ty == 2,
           "integer 2x: got (%d,%d)", tx, ty);
     /* Hybrid, swapped: the bottom screen is the large one at 2x. */
-    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_HYBRID, 1, 0, NP_SCALE_FIT}, 768, 384);
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_HYBRID, 1, 0, NP_SCALE_FIT, 256}, 768, 384);
     CHECK(np_layout_touch(&l, 100.5f, 50.5f, 0, &tx, &ty) && tx == 50 && ty == 25, "hybrid swapped: got (%d,%d)", tx,
           ty);
+    /* Widescreen: 342-column screens with the DS picture 43 columns in;
+     * the side bars are not touchable but a held stylus clamps to them. */
+    np_layout_compute(&l, &(np_layout_params){NP_LAYOUT_VERTICAL, 0, 0, NP_SCALE_FIT, 342}, 342, 384);
+    CHECK(l.screen[1].w == 342.0f && l.screen[1].h == 192.0f, "wide screen size %fx%f", l.screen[1].w, l.screen[1].h);
+    CHECK(np_layout_touch(&l, 43.5f, 192.5f, 0, &tx, &ty) && tx == 0 && ty == 0, "wide: (0,0) got (%d,%d)", tx, ty);
+    CHECK(np_layout_touch(&l, 298.5f, 383.5f, 0, &tx, &ty) && tx == 255 && ty == 191, "wide: (255,191) got (%d,%d)",
+          tx, ty);
+    CHECK(!np_layout_touch(&l, 42.5f, 200.5f, 0, &tx, &ty), "wide: left bar not touchable");
+    CHECK(!np_layout_touch(&l, 299.5f, 200.5f, 0, &tx, &ty), "wide: right bar not touchable");
+    CHECK(np_layout_touch(&l, 10.5f, 200.5f, 1, &tx, &ty) && tx == 0 && ty == 8, "wide: clamped (%d,%d)", tx, ty);
 }
 
 static void test_slot_names(void)
@@ -528,6 +539,58 @@ static void test_card(void)
     CHECK(memcmp(a, b, sizeof a) != 0, "trainer card and diploma differ");
 }
 
+/* Snapshots of changing length with sparse and dense changes come back
+ * byte-exact, newest first; a small budget keeps only the newest ones. */
+static void test_rewind(void)
+{
+    enum { N = 40, MAXLEN = 70000 };
+    static uint8_t hist[N][MAXLEN];
+    static size_t lens[N];
+    uint32_t seed = 12345;
+    for (int i = 0; i < N; i++) {
+        lens[i] = 60000 + (size_t)(i % 7) * 1500;
+        if (i)
+            memcpy(hist[i], hist[i - 1], MAXLEN);
+        else
+            for (size_t k = 0; k < MAXLEN; k++)
+                hist[0][k] = (uint8_t)(k * 7);
+        int changes = i % 5 == 4 ? 20000 : 50; /* every fifth: a dense change */
+        for (int c = 0; c < changes; c++) {
+            seed = seed * 1103515245u + 12345u;
+            hist[i][(seed >> 8) % MAXLEN] ^= (uint8_t)(seed >> 24 | 1);
+        }
+        memset(hist[i] + lens[i], 0, MAXLEN - lens[i]); /* bytes past a snapshot are not part of it */
+    }
+    for (int pass = 0; pass < 2; pass++) {
+        size_t budget = pass ? 120000 : 16u << 20;
+        np_rewind *r = np_rewind_create(budget, 1000);
+        CHECK(r != NULL, "rewind create");
+        if (!r)
+            return;
+        for (int i = 0; i < N; i++)
+            CHECK(np_rewind_push(r, hist[i], lens[i]) == 0, "push %d", i);
+        int depth = np_rewind_depth(r);
+        CHECK(pass ? depth > 0 && depth < N - 1 : depth == N - 1, "pass %d depth %d", pass, depth);
+        CHECK(np_rewind_used(r) <= budget, "within budget");
+        int ok = 1;
+        for (int i = N - 2; i >= N - 1 - depth; i--) {
+            const uint8_t *s;
+            size_t len;
+            ok &= np_rewind_step_back(r, &s, &len) == 0 && len == lens[i] && !memcmp(s, hist[i], len);
+        }
+        CHECK(ok, "pass %d: every step back is exact", pass);
+        const uint8_t *s;
+        size_t len;
+        CHECK(np_rewind_step_back(r, &s, &len) == -1, "nothing older");
+        /* Recording resumes from the restored point. */
+        CHECK(np_rewind_push(r, hist[N - 1], lens[N - 1]) == 0 && np_rewind_depth(r) == 1, "push after rewind");
+        CHECK(np_rewind_step_back(r, &s, &len) == 0 && len == lens[N - 1 - depth] &&
+                  !memcmp(s, hist[N - 1 - depth], len),
+              "step back after re-push");
+        np_rewind_destroy(r);
+    }
+}
+
 int main(void)
 {
     test_sha1();
@@ -541,6 +604,7 @@ int main(void)
     test_undo();
     test_scale2x();
     test_card();
+    test_rewind();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

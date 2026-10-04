@@ -195,6 +195,15 @@ enum opt_item {
     OPT_FF_SPEED,
     OPT_VOLUME,
     OPT_MUTE,
+    OPT_BGM,
+    OPT_SE,
+    OPT_RENDER_SCALE,
+    OPT_WIDESCREEN,
+    OPT_CAMERA_ZOOM,
+    OPT_CAMERA_TILT,
+    OPT_TEXT_INSTANT,
+    OPT_FIX_BUGS,
+    OPT_REWIND,
     OPT_TOUCH,
     OPT_LAN,
     OPT_LAN_PORT,
@@ -211,6 +220,8 @@ static const char *const opt_labels[OPT_COUNT] = {
     "Screen layout", "Swap screens", "Rotation", "Scaling", "Filter", "Fullscreen", "Effect 1", "Effect 1 intensity",
     "Effect 2", "Effect 2 intensity", "CRT curvature", "Performance", "VSync", "Display FPS cap",
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
+    "Music volume", "Sound effects volume", "3D render scale", "Widescreen 3D", "Camera zoom", "Camera tilt",
+    "Instant text", "Fix cartridge bugs", "Rewind history",
     "Touch controls", "Local wireless (LAN)", "LAN port", "Join by IP:port", "Wireless status",
     "Controls...", "About...", "Quit to launcher", "Close",
 };
@@ -278,6 +289,23 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
     case OPT_FF_SPEED: SDL_strlcpy(buf, speed_name(o->ff_speed_index), n); break;
     case OPT_VOLUME: SDL_snprintf(buf, n, "%d%%", o->volume); break;
     case OPT_MUTE: SDL_strlcpy(buf, o->mute_unfocused ? "On" : "Off", n); break;
+    case OPT_BGM: SDL_snprintf(buf, n, "%d%%", o->bgm_volume); break;
+    case OPT_SE: SDL_snprintf(buf, n, "%d%%", o->se_volume); break;
+    case OPT_RENDER_SCALE: SDL_snprintf(buf, n, "%dx (%dx%d)", o->render_scale, 256 * o->render_scale,
+                                        192 * o->render_scale); break;
+    case OPT_WIDESCREEN: SDL_strlcpy(buf, o->widescreen ? "On" : "Off", n); break;
+    case OPT_CAMERA_ZOOM:
+        SDL_snprintf(buf, n, "%d%%%s (- / =)", o->camera_zoom * 100 / 256, o->camera_zoom == 256 ? " original" : "");
+        break;
+    case OPT_CAMERA_TILT: SDL_snprintf(buf, n, "%+d deg (3 / 4)", o->camera_tilt / 16); break;
+    case OPT_TEXT_INSTANT: SDL_strlcpy(buf, o->text_instant ? "On" : "Off", n); break;
+    case OPT_FIX_BUGS: SDL_strlcpy(buf, o->fix_bugs ? "On" : "Off (as the cartridge)", n); break;
+    case OPT_REWIND:
+        if (o->rewind_seconds)
+            SDL_snprintf(buf, n, "%d s (hold R / L3)", o->rewind_seconds);
+        else
+            SDL_strlcpy(buf, "Off", n);
+        break;
     case OPT_TOUCH: SDL_strlcpy(buf, touch[o->touch_controls], n); break;
     case OPT_LAN: SDL_strlcpy(buf, o->lan_enabled ? "On" : "Off", n); break;
     case OPT_LAN_PORT: SDL_snprintf(buf, n, "%d", o->lan_port); break;
@@ -327,6 +355,23 @@ static void opt_adjust(np_app *app, int item, int dir)
     case OPT_FF_SPEED: o->ff_speed_index = wrapi(o->ff_speed_index + dir, NP_SPEED_COUNT); break;
     case OPT_VOLUME: o->volume = SDL_clamp(o->volume + dir * 10, 0, 100); break;
     case OPT_MUTE: o->mute_unfocused = !o->mute_unfocused; break;
+    case OPT_BGM: o->bgm_volume = SDL_clamp(o->bgm_volume + dir * 10, 0, 100); break;
+    case OPT_SE: o->se_volume = SDL_clamp(o->se_volume + dir * 10, 0, 100); break;
+    case OPT_RENDER_SCALE: o->render_scale = wrapi(o->render_scale - 1 + dir, 4) + 1; break;
+    case OPT_WIDESCREEN: o->widescreen = !o->widescreen; break;
+    case OPT_CAMERA_ZOOM: o->camera_zoom = SDL_clamp(o->camera_zoom + dir * 32, 64, 1024); break;
+    case OPT_CAMERA_TILT: o->camera_tilt = SDL_clamp(o->camera_tilt + dir * 80, -720, 720); break;
+    case OPT_TEXT_INSTANT: o->text_instant = !o->text_instant; break;
+    case OPT_FIX_BUGS: o->fix_bugs = !o->fix_bugs; break;
+    case OPT_REWIND: {
+        static const int secs[] = {0, 10, 30, 60};
+        int k = 0;
+        for (int i = 0; i < 4; i++)
+            if (secs[i] == o->rewind_seconds)
+                k = i;
+        o->rewind_seconds = secs[wrapi(k + dir, 4)];
+        break;
+    }
     case OPT_TOUCH: o->touch_controls = wrapi(o->touch_controls + dir, NP_TOUCH_MODE_COUNT); break;
     case OPT_LAN:
         o->lan_enabled = !o->lan_enabled;
@@ -343,6 +388,7 @@ static void opt_adjust(np_app *app, int item, int dir)
     app->options_dirty = 1;
     np_app_apply_video_options(app);
     np_audio_update_gain(app);
+    np_session_apply_options(app);
 }
 
 static void opt_activate(np_app *app, int item, int dir)
@@ -710,6 +756,8 @@ static void draw_controls(np_app *app)
             name = "FF hold";
         else if (row == NP_ACT_FF_TOGGLE)
             name = "FF toggle";
+        else if (row == NP_ACT_REWIND)
+            name = "Rewind";
         np_ui_text(app, x, y, f.s, name, row_sel ? accent : white);
         for (int c = 0; c < 4; c++) {
             SDL_FRect cell = {x + name_w + (float)c * slot_w, y - 2 * f.s, slot_w - f.cw * 0.5f, f.lh};

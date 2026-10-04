@@ -37,7 +37,8 @@ typedef int np_sock;
 #define NET_PEER_TIMEOUT_MS 10000
 #define NET_QUEUE 64 /* datagrams np_net_poll drained before the guest asked */
 
-enum { NET_DATA = 0, NET_HELLO = 1, NET_HELLO_ACK = 2 };
+enum { NET_DATA = 0, NET_HELLO = 1, NET_HELLO_ACK = 2, NET_JOIN = 3, NET_ROSTER = 4, NET_RELAY = 5 };
+#define NET_MAX_PIN 32
 
 typedef struct {
     uint32_t id; /* 0 = a manual address whose station has not answered yet */
@@ -52,6 +53,9 @@ struct np_net {
     uint16_t port, base_port;
     int lan;
     int drop;
+    int relay_mode;
+    struct sockaddr_in relay;
+    char pin[NET_MAX_PIN + 1];
     uint32_t rng;
     uint64_t next_hello;
     net_peer peer[NET_MAX_PEERS];
@@ -207,6 +211,47 @@ static void net_learn(np_net *n, uint32_t id, const struct sockaddr_in *from)
     p->last_rx = net_now_ms();
 }
 
+/* "host:port" or "host" (default_port) -> IPv4 address. */
+static int net_resolve(const char *hostport, unsigned default_port, struct sockaddr_in *out, char *err, size_t errlen)
+{
+    char host[256];
+    const char *colon = strrchr(hostport, ':');
+    unsigned port = default_port;
+    struct addrinfo hints, *res = NULL;
+    size_t len;
+
+    if (colon != NULL) {
+        char *end;
+        unsigned long v = strtoul(colon + 1, &end, 10);
+
+        if (*end != '\0' || v == 0 || v > 65535) {
+            snprintf(err, errlen, "bad port in %s", hostport);
+            return -1;
+        }
+        port = (unsigned)v;
+        len = (size_t)(colon - hostport);
+    } else {
+        len = strlen(hostport);
+    }
+    if (len == 0 || len >= sizeof host) {
+        snprintf(err, errlen, "bad address %s", hostport);
+        return -1;
+    }
+    memcpy(host, hostport, len);
+    host[len] = '\0';
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_DGRAM;
+    if (getaddrinfo(host, NULL, &hints, &res) != 0 || res == NULL) {
+        snprintf(err, errlen, "cannot resolve %s", host);
+        return -1;
+    }
+    memcpy(out, res->ai_addr, sizeof *out);
+    out->sin_port = htons((uint16_t)port);
+    freeaddrinfo(res);
+    return 0;
+}
+
 np_net *np_net_open(const np_net_config *cfg, char *err, size_t errlen)
 {
     np_net *n;
@@ -237,6 +282,22 @@ np_net *np_net_open(const np_net_config *cfg, char *err, size_t errlen)
     n->rng = net_mix(n->self ^ 0x9e3779b9u);
     n->log = cfg->log;
     n->log_user = cfg->log_user;
+    if (cfg->relay != NULL && cfg->relay[0] != '\0') {
+        size_t pl = cfg->pin ? strlen(cfg->pin) : 0;
+
+        if (pl == 0 || pl > NET_MAX_PIN) {
+            snprintf(err, errlen, "a relay room needs a PIN of 1-%d characters", NET_MAX_PIN);
+            free(n);
+            return NULL;
+        }
+        if (net_resolve(cfg->relay, 2020, &n->relay, err, errlen) != 0) {
+            free(n);
+            return NULL;
+        }
+        memcpy(n->pin, cfg->pin, pl + 1);
+        n->relay_mode = 1;
+        n->lan = 0;
+    }
 
     n->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (n->sock == NP_BAD_SOCK) {
@@ -272,7 +333,15 @@ np_net *np_net_open(const np_net_config *cfg, char *err, size_t errlen)
         free(n);
         return NULL;
     }
-    net_log(n, "local wireless on UDP port %u, station %06x", (unsigned)n->port, (unsigned)n->self);
+    if (n->relay_mode) {
+        char addr[32];
+
+        inet_ntop(AF_INET, &n->relay.sin_addr, addr, sizeof addr);
+        net_log(n, "local wireless via relay %s:%u room \"%s\", UDP port %u, station %06x", addr,
+                (unsigned)ntohs(n->relay.sin_port), n->pin, (unsigned)n->port, (unsigned)n->self);
+    } else {
+        net_log(n, "local wireless on UDP port %u, station %06x", (unsigned)n->port, (unsigned)n->self);
+    }
     return n;
 }
 
@@ -290,50 +359,20 @@ void np_net_close(np_net *n)
 
 int np_net_add_peer(np_net *n, const char *hostport, char *err, size_t errlen)
 {
-    char host[256];
-    const char *colon = strrchr(hostport, ':');
-    unsigned port = n->base_port;
-    struct addrinfo hints, *res = NULL;
     net_peer *p;
-    size_t len;
+    struct sockaddr_in a;
 
-    if (colon != NULL) {
-        char *end;
-        unsigned long v = strtoul(colon + 1, &end, 10);
-
-        if (*end != '\0' || v == 0 || v > 65535) {
-            snprintf(err, errlen, "bad port in %s", hostport);
-            return -1;
-        }
-        port = (unsigned)v;
-        len = (size_t)(colon - hostport);
-    } else {
-        len = strlen(hostport);
-    }
-    if (len == 0 || len >= sizeof host) {
-        snprintf(err, errlen, "bad address %s", hostport);
-        return -1;
-    }
-    memcpy(host, hostport, len);
-    host[len] = '\0';
-    memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_DGRAM;
-    if (getaddrinfo(host, NULL, &hints, &res) != 0 || res == NULL) {
-        snprintf(err, errlen, "cannot resolve %s", host);
+    if (net_resolve(hostport, n->base_port, &a, err, errlen) != 0) {
         return -1;
     }
     if (n->npeers == NET_MAX_PEERS) {
-        freeaddrinfo(res);
         snprintf(err, errlen, "too many peers");
         return -1;
     }
     p = &n->peer[n->npeers++];
     memset(p, 0, sizeof *p);
-    memcpy(&p->addr, res->ai_addr, sizeof p->addr);
-    p->addr.sin_port = htons((uint16_t)port);
+    p->addr = a;
     p->manual = 1;
-    freeaddrinfo(res);
     n->next_hello = 0; /* say hello at the next poll */
     return 0;
 }
@@ -364,6 +403,23 @@ void np_net_poll(np_net *n)
         return;
     }
     n->next_hello = now + NET_HELLO_MS;
+    if (n->relay_mode) {
+        uint8_t p[NET_HEADER + 1 + NET_MAX_PIN];
+        size_t pl = strlen(n->pin);
+
+        net_header(n, p, NET_JOIN);
+        p[NET_HEADER] = (uint8_t)pl;
+        memcpy(p + NET_HEADER + 1, n->pin, pl);
+        (void)net_sendto(n, &n->relay, p, NET_HEADER + 1 + pl);
+        for (i = 0; i < n->npeers; i++) {
+            if (now - n->peer[i].last_rx > NET_PEER_TIMEOUT_MS) {
+                net_log(n, "station %06x left the room", (unsigned)n->peer[i].id);
+                n->peer[i] = n->peer[--n->npeers];
+                i--;
+            }
+        }
+        return;
+    }
     for (i = 0; i < NP_NET_PORT_RANGE; i++) {
         struct sockaddr_in a;
         uint16_t port = (uint16_t)(n->base_port + i);
@@ -414,6 +470,17 @@ int np_net_send(np_net *n, uint32_t peer, const void *buf, uint32_t len)
     if (len > NET_MAX_PAYLOAD) {
         return -1;
     }
+    if (n->relay_mode) {
+        uint8_t r[NET_HEADER + 4 + NET_MAX_PAYLOAD];
+
+        if (net_drop(n)) {
+            return 0;
+        }
+        net_header(n, r, NET_RELAY);
+        put32(r + NET_HEADER, peer);
+        memcpy(r + NET_HEADER + 4, buf, len);
+        return net_sendto(n, &n->relay, r, NET_HEADER + 4 + len);
+    }
     net_header(n, p, NET_DATA);
     memcpy(p + NET_HEADER, buf, len);
     for (i = 0; i < n->npeers; i++) {
@@ -430,6 +497,39 @@ int np_net_send(np_net *n, uint32_t peer, const void *buf, uint32_t len)
         }
     }
     return rc;
+}
+
+/* The relay's list of the other stations in the room: they become peers
+ * reached through the relay; stations no longer listed are forgotten. */
+static void net_roster(np_net *n, const uint8_t *p, int len)
+{
+    uint64_t now = net_now_ms();
+    int count, i, j;
+
+    if (len < 1) {
+        return;
+    }
+    count = p[0];
+    if (1 + 4 * count > len) {
+        return;
+    }
+    for (i = 0; i < count; i++) {
+        net_learn(n, get32(p + 1 + 4 * i) & 0xffffffu, &n->relay);
+    }
+    for (j = 0; j < n->npeers; j++) {
+        int listed = 0;
+
+        for (i = 0; i < count; i++) {
+            listed |= (get32(p + 1 + 4 * i) & 0xffffffu) == n->peer[j].id;
+        }
+        if (listed) {
+            n->peer[j].last_rx = now;
+        } else {
+            net_log(n, "station %06x left the room", (unsigned)n->peer[j].id);
+            n->peer[j] = n->peer[--n->npeers];
+            j--;
+        }
+    }
 }
 
 /* Reads the socket until a data datagram arrives (control packets are
@@ -449,6 +549,10 @@ static int net_read(np_net *n, uint32_t *peer, const uint8_t **payload)
             return np_would_block() ? 0 : -1;
         }
         if (got < NET_HEADER || get32(p) != NET_MAGIC || p[5] != 1) {
+            continue;
+        }
+        if (p[4] == NET_ROSTER && n->relay_mode && same_addr(&from, &n->relay)) {
+            net_roster(n, p + NET_HEADER, got - NET_HEADER);
             continue;
         }
         id = get32(p + 8) & 0xffffffu;

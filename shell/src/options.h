@@ -26,6 +26,7 @@ typedef enum np_action {
     NP_ACT_RIGHT,
     NP_ACT_FF_HOLD,
     NP_ACT_FF_TOGGLE,
+    NP_ACT_REWIND, /* hold to rewind */
     NP_ACT_COUNT
 } np_action;
 
@@ -77,6 +78,15 @@ typedef struct np_options {
     int startup_continue; /* 1: boot straight into the last game and slot */
     int last_game;      /* np_game last played, or -1 */
     char last_slot[NP_GAME_COUNT][NP_SLOT_NAME_MAX + 1]; /* "" when none */
+    /* Game options the core applies live (np_guest_abi.h NP_OPT_*). */
+    int bgm_volume, se_volume; /* 0..100 % of the cartridge's mix */
+    int render_scale;          /* 1..4, internal 3D resolution */
+    int widescreen;
+    int camera_zoom;  /* NP_OPT_CAMERA_ZOOM: 256 = the game's camera */
+    int camera_tilt;  /* NP_OPT_CAMERA_TILT: 1/16 degree, + toward the horizon */
+    int text_instant;
+    int fix_bugs;       /* NP_RULE_FIX_BUGS */
+    int rewind_seconds; /* history kept for hold-to-rewind, 0 = off */
     /* Local wireless (net.c). station_id is generated once and kept: the
      * game derives the console's MAC from it and stores that in saves. */
     int lan_enabled;

@@ -48,6 +48,7 @@ add_library(np_shell_common STATIC
   src/launch.c
   src/net.c
   src/png.c
+  src/rewind.c
   src/romdb.c
   src/scale2x.c
   src/sha1.c
@@ -100,6 +101,7 @@ add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/input.c
   src/main.c
   src/options.c
+  src/session.c
   src/storage.c
   src/touchpad.c
   src/ui.c

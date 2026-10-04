@@ -321,6 +321,7 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     SDL_snprintf(title, sizeof title, "nativeplat - Pokemon %s - %s", np_game_title(game), slot);
     SDL_SetWindowTitle(app->window, title);
     np_app_apply_video_options(app);
+    np_session_begin(app);
     return 0;
 }
 
@@ -328,6 +329,7 @@ static void close_core(np_app *app)
 {
     if (!app->core)
         return;
+    np_session_end(app);
     if (np_core_save_flush(app->core))
         SDL_Log("save flush failed: %s", np_core_last_error(app->core));
     np_core_destroy(app->core);
@@ -424,6 +426,29 @@ void np_app_stop_game(np_app *app)
     SDL_SetWindowTitle(app->window, "nativeplat");
     np_input_release_all(app);
     np_app_apply_video_options(app);
+}
+
+int np_app_reload_game(np_app *app)
+{
+    if (!app->core)
+        return -1;
+    /* Keep the ROM stream and host (autotests' in-memory chip included);
+     * only the machine restarts, from the save the host holds. */
+    if (np_core_save_flush(app->core))
+        SDL_Log("save flush failed: %s", np_core_last_error(app->core));
+    np_session_end(app);
+    np_core_destroy(app->core);
+    app->core = NULL;
+    np_host host = app->host;
+    char slot[NP_SLOT_NAME_MAX + 1];
+    SDL_strlcpy(slot, app->slot, sizeof slot);
+    if (open_core(app, app->game, slot, &host)) {
+        np_app_stop_game(app);
+        return -1;
+    }
+    SDL_Log("reloaded %s, save slot \"%s\"", np_game_id(app->game), slot);
+    np_app_toast(app, "Reloaded the last save");
+    return 0;
 }
 
 /* Lands on the launcher showing `fmt`. */
@@ -770,6 +795,8 @@ static int run_one(np_app *app, const np_input *in)
     int r = np_core_run_frame(app->core, in, &app->frame);
     if (r == 0) {
         app->have_frame = 1;
+        if (!app->rewind_hold)
+            np_session_frame_done(app);
         return 0;
     }
     if (r > 0)
@@ -799,6 +826,22 @@ static void run_game(np_app *app)
     np_input in = {0};
     in.keys = np_input_poll_keys(app, &app->ff_hold);
     np_input_stylus(app, &in);
+    if (app->rewind_hold) {
+        /* Steps back through the history (session.c paces it), each
+         * restored point shown by running one frame from it with no input;
+         * that frame's audio is dropped. */
+        app->accum_ns = 0;
+        if (np_session_rewind_step(app))
+            return;
+        np_input none = {0};
+        if (run_one(app, &none))
+            return;
+        upload_frame(app);
+        int16_t drop[1024 * 2];
+        while (np_core_audio_read(app->core, drop, 1024) > 0) {
+        }
+        return;
+    }
     int speed = np_app_speed(app);
     int ran = 0;
     if (speed == 0) {
@@ -828,7 +871,11 @@ static void run_game(np_app *app)
 
 static void draw_screens(np_app *app)
 {
-    np_layout_params lp = {app->opt.layout, app->opt.swap, app->opt.rotation, app->opt.scale};
+    /* Each DS pixel is an s x s block, s = height / 192; widescreen frames
+     * are wider than 256 blocks with the DS picture centred. */
+    uint32_t s = app->have_frame && app->frame.height >= 192 ? app->frame.height / 192 : 1;
+    int screen_w = app->have_frame ? (int)(app->frame.width / s) : 256;
+    np_layout_params lp = {app->opt.layout, app->opt.swap, app->opt.rotation, app->opt.scale, screen_w};
     np_layout_compute(&app->layout, &lp, app->out_w, app->out_h);
     for (int i = 0; i < 2; i++)
         np_fx_draw_screen(app, i);
@@ -1076,11 +1123,27 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.lan_port = SDL_clamp(SDL_atoi(v), 1024, 65531);
         } else if (!SDL_strcmp(kv, "peer"))
             SDL_strlcpy(app->opt.lan_peer, v, sizeof app->opt.lan_peer);
-        else if (!SDL_strcmp(kv, "station")) {
+        else if (!SDL_strcmp(kv, "rewind")) {
+            if (SDL_sscanf(v, "%d+%d", &t->rewind_from, &t->rewind_frames) != 2)
+                return -1;
+        } else if (!SDL_strcmp(kv, "station")) {
             app->opt.station_id = (uint32_t)SDL_strtoul(v, NULL, 16) & 0xFFFFFFu;
             if (!app->opt.station_id)
                 return -1;
-        }
+        } else if (!SDL_strcmp(kv, "render_scale"))
+            app->opt.render_scale = SDL_clamp(SDL_atoi(v), 1, 4);
+        else if (!SDL_strcmp(kv, "widescreen"))
+            app->opt.widescreen = SDL_atoi(v) != 0;
+        else if (!SDL_strcmp(kv, "zoom"))
+            app->opt.camera_zoom = SDL_clamp(SDL_atoi(v), 64, 1024);
+        else if (!SDL_strcmp(kv, "tilt"))
+            app->opt.camera_tilt = SDL_clamp(SDL_atoi(v), -720, 720);
+        else if (!SDL_strcmp(kv, "instant_text"))
+            app->opt.text_instant = SDL_atoi(v) != 0;
+        else if (!SDL_strcmp(kv, "fix_bugs"))
+            app->opt.fix_bugs = SDL_atoi(v) != 0;
+        else if (!SDL_strcmp(kv, "rewind_seconds"))
+            app->opt.rewind_seconds = SDL_clamp(SDL_atoi(v), 0, 120);
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
             if (SDL_sscanf(v, "%dx%d", &x, &y) != 2 || x < 0 || x > 255 || y < 0 || y > 191)
@@ -1331,8 +1394,24 @@ static int autotest_frame(np_app *app)
             in.touch_y = live.touch_y;
         }
     }
+    if (t->rewind_frames && t->ran >= t->rewind_from && t->ran < t->rewind_from + t->rewind_frames)
+        app->rewind_hold = 1;
+    else if (!t->script[0])
+        app->rewind_hold = 0;
+    if (app->rewind_hold) {
+        int r = np_session_rewind_step(app);
+        if (r == 1)
+            return 0; /* still showing the previous step */
+        if (r == 0)
+            in = (np_input){0}; /* the frame that shows the restored point */
+        else
+            app->rewind_hold = 0; /* history exhausted: play on */
+    }
     if (run_one(app, &in))
         return -1;
+    if (t->rewind_frames && (t->ran == t->rewind_from - 1 || t->ran == t->rewind_from + t->rewind_frames))
+        SDL_Log("autotest: frame %d rewind depth %d, %zu KB of history", t->ran, np_session_rewind_depth(app),
+                np_session_rewind_bytes(app) / 1024);
     upload_frame(app);
     int16_t buf[2048 * 2];
     size_t got;
@@ -1570,7 +1649,7 @@ static int hotkey(np_app *app, const SDL_KeyboardEvent *k)
         else
             np_app_toast(app, "Speed uncapped");
         return 1;
-    default: return 0;
+    default: return !alt && !gui && np_session_hotkey(app, k->scancode);
     }
 }
 

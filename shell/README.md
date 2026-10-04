@@ -144,6 +144,7 @@ no curvature, VSync, 60 FPS cap; **Low** = no effects, VSync off, 30 FPS cap;
 | Select | Tab, Left/Right Shift | Back |
 | Fast-forward (hold) | F | RT |
 | Fast-forward (toggle) | G | LT |
+| Rewind (hold) | R | L3 |
 
 Everything above is rebindable in *Options > Controls* (three keys and one
 gamepad button per action; a key or button bound to a new action is removed
@@ -153,6 +154,32 @@ Gamepad Guide or R3 opens the options. The mouse is the stylus on the bottom
 screen in every layout and rotation; on touch screens fingers are, and an
 on-screen pad (d-pad, A/B/X/Y, L/R, Start/Select, FF, Menu) appears after the
 first touch (*Touch controls: Auto/On/Off*).
+
+## Saving, snapshots and rewind
+
+| Key | Action |
+| --- | --- |
+| F1 | Quick save: the game's own save, made without opening its menu (the core waits up to a second for the player to be free; "Can't save right now" otherwise) |
+| F2, F2 | Quick load: press twice within 3 s to reboot the slot from its last save |
+| F5 / F7 | Take / restore an in-memory snapshot in the current slot |
+| F6 | Next snapshot slot (4) |
+| R (hold) | Rewind |
+| `-` / `=` | Camera farther / closer |
+| `3` / `4` | Camera tilt down / toward the horizon (5 degrees) |
+| `0` | Original camera |
+
+Snapshots and rewind use the core's in-session states (`np_core_state_*`):
+the whole machine, held in memory only and dropped when the game closes; the
+cartridge save remains the persistent state. Rewind records every sixth
+frame and, while held, steps back at 3x through *Rewind history* (Off / 10 /
+30 / 60 s, 8 MB per second of budget, the newest snapshot in full and older
+ones as run-length-coded XOR deltas, `src/rewind.c`). Quick load, snapshots
+and rewind are refused during a wireless session.
+
+The *Options* game rows are applied live by the core: music and sound-effect
+volume, 3D render scale (1x-4x), widescreen 3D (both screens widen; the DS
+picture stays centred and the stylus maps to it), camera zoom and tilt,
+instant text, and *Fix cartridge bugs* (opt-in fixes of documented bugs).
 
 ## Timing, speed and audio
 
@@ -213,6 +240,9 @@ and `script=F:kind:args;...` to push synthetic `key`, `text`, mouse
 `dialog:<path>` (answer the open file dialog) events before frame F.
 `lan=<port>` turns local wireless on, `peer=<host:port>` joins a station and
 `station=<hex>` sets the station id (autotests otherwise use a fixed id).
+`rewind=F+N` holds rewind for N iterations from iteration F; `render_scale`,
+`widescreen`, `zoom`, `tilt`, `instant_text`, `fix_bugs` and
+`rewind_seconds` set the game options.
 
 A press schedule is steps separated by `;` or newlines (`#` comments in files):
 `F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N

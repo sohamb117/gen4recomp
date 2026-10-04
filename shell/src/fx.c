@@ -254,14 +254,16 @@ void np_fx_draw_screen(np_app *app, int which)
         src = s->smooth[which];
     draw_mesh(app->renderer, &m, src, 1, 1, 1);
 
-    /* Patterns finer than ~2 window pixels per DS pixel only alias. */
-    float cell = sp->w / NP_SCREEN_W;
+    /* Patterns finer than ~2 window pixels per DS pixel only alias. Wide
+     * screens hold more than 256 DS pixel columns. */
+    float cols = app->layout.screen_w;
+    float cell = sp->w / cols;
     for (int k = 0; k < 2; k++) {
         float a = (float)p.intensity[k] / 100.0f;
         switch (p.fx[k]) {
         case NP_FX_LCD:
             if (cell >= 2.0f)
-                overlay(app->renderer, &m, s->lcd, NP_SCREEN_W, NP_SCREEN_H, 0.6f * a, 1);
+                overlay(app->renderer, &m, s->lcd, cols, NP_SCREEN_H, 0.6f * a, 1);
             break;
         case NP_FX_SCANLINES:
             if (cell >= 2.0f)
@@ -270,7 +272,7 @@ void np_fx_draw_screen(np_app *app, int which)
         case NP_FX_CRT:
             if (cell >= 2.0f) {
                 overlay(app->renderer, &m, s->scan, 1, NP_SCREEN_H, 0.55f * a, 1);
-                overlay(app->renderer, &m, s->mask, NP_SCREEN_W, 1, 0.8f * a, 1);
+                overlay(app->renderer, &m, s->mask, cols, 1, 0.8f * a, 1);
             }
             overlay(app->renderer, &m, s->vign, 1, 1, a, 0);
             break;
