@@ -742,6 +742,8 @@ static void build_events(np_editor *e)
     SDL_snprintf(add_row(e, F_INFO, 0, RK_INFO, "Gifts waiting at Poke Marts")->value, 72, "%d / %d", pgts,
                  SAVE4_PGT_SLOTS);
     for (size_t i = 0; i < SDL_arraysize(event_gifts); i++) {
+        if (!save4_mg_type_supported(e->s.game, event_gifts[i].type))
+            continue; /* e.g. the Secret Key exists only in Platinum */
         char label[48];
         SDL_snprintf(label, sizeof label, "Add %s", event_gifts[i].label);
         add_row(e, F_EV_ADD, (int)i, RK_ACTION, label);

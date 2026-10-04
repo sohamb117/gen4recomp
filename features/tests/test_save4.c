@@ -249,7 +249,7 @@ static void test_game(save4_game game)
 
 /* Mystery Gift on the synthetic Platinum save: the entry checksum the game
  * verifies (CRC-16 over the body, stored after it), card + gift placement,
- * the received bit, removal, the unlock switches and the D/P refusal. */
+ * the received bit, removal and the unlock switches. */
 static void test_mystery(void)
 {
     uint8_t *img = malloc(SAVE4_IMAGE_SIZE);
@@ -336,12 +336,132 @@ static void test_mystery(void)
     CHECK_EQ_INT((gen[0x64 + 0x21] >> 1) & 1, 0);
     CHECK(save4_revalidate(&s) == SAVE4_OK);
     save4_free(&s);
+    free(img);
+}
 
+/* Mystery Gift / Pokédex on the synthetic D/P save: the D/P MysteryGift
+ * shape (slot-used markers, PGT link = card slot + 1, no entry CRC) at
+ * 0xA6D0, SaveSysInfo 0x48, Pokedex 0x12DC + 0x138 / 0x139, and the gift
+ * types D/P cannot deliver. */
+static void test_mystery_dp(void)
+{
+    CHECK(save4_mg_type_supported(SAVE4_GAME_DP, SAVE4_MG_POKEMON));
+    CHECK(save4_mg_type_supported(SAVE4_GAME_DP, SAVE4_MG_POKETCH_APP));
+    CHECK(!save4_mg_type_supported(SAVE4_GAME_DP, SAVE4_MG_SECRET_KEY));
+    CHECK(!save4_mg_type_supported(SAVE4_GAME_DP, SAVE4_MG_UNKNOWN));
+    CHECK(save4_mg_type_supported(SAVE4_GAME_PT, SAVE4_MG_SECRET_KEY));
+    CHECK(save4_mg_type_supported(SAVE4_GAME_PT, SAVE4_MG_UNKNOWN));
+    CHECK(!save4_mg_type_supported(SAVE4_GAME_PT, 0));
+    CHECK(!save4_mg_type_supported(SAVE4_GAME_PT, SAVE4_MG_TYPE_MAX));
+    CHECK(!save4_mg_type_supported(SAVE4_GAME_UNKNOWN, SAVE4_MG_ITEM));
+
+    uint8_t *img = malloc(SAVE4_IMAGE_SIZE);
     synth_save_build(img, SAVE4_GAME_DP);
+    save4 s;
     CHECK(save4_load(&s, img, SAVE4_IMAGE_SIZE) == SAVE4_OK);
-    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_ERR_LAYOUT);
-    CHECK(save4_dex_set_national(&s, true) == SAVE4_ERR_LAYOUT);
+    CHECK(s.game == SAVE4_GAME_DP);
+    size_t len;
+    const uint8_t *im = save4_image(&s, &len);
+    const uint8_t *gen = im + save4_block_base(&s, SAVE4_BLOCK_GENERAL);
+    const uint8_t *mg = gen + 0xA6D0;
+    const uint32_t mg_end = 0xA6D0 + 0x1358; /* entry 32 starts here */
+    uint8_t *ref = malloc(SAVE4_IMAGE_SIZE);
+    memcpy(ref, im, SAVE4_IMAGE_SIZE);
+    size_t gbase = save4_block_base(&s, SAVE4_BLOCK_GENERAL);
+
+    /* Main menu switches and the Pokédex flags. */
+    bool on = true;
+    CHECK(save4_mg_get_unlocked(&s, &on) == SAVE4_OK && !on);
+    CHECK(save4_mg_set_unlocked(&s, true) == SAVE4_OK);
+    CHECK(save4_mg_get_unlocked(&s, &on) == SAVE4_OK && on);
+    CHECK_EQ_INT(gen[0x48], 1);    /* SaveSysInfo.mysteryGiftActive */
+    CHECK_EQ_INT(mg[255] >> 7, 1); /* received bit 2047 */
+    CHECK(save4_dex_set_obtained(&s, true) == SAVE4_OK);
+    CHECK(save4_dex_get_obtained(&s, &on) == SAVE4_OK && on);
+    CHECK_EQ_INT(gen[0x12DC + 0x138], 1);
+    CHECK(save4_dex_set_national(&s, true) == SAVE4_OK);
+    CHECK(save4_dex_get_national(&s, &on) == SAVE4_OK && on);
+    CHECK_EQ_INT(gen[0x12DC + 0x139], 1);          /* Pokedex.unlockedNationalDex */
+    CHECK_EQ_INT((gen[0x60 + 0x21] >> 1) & 1, 1); /* PlayerProfile.nationalDex */
+    save4_trainer tr;
+    CHECK(save4_get_trainer(&s, &tr) == SAVE4_OK && tr.has_national_dex);
+
+    /* A card with its PGT. */
+    save4_card_spec spec = {SAVE4_MG_MEMBER_CARD, 42, 0, {491, 0, 0}, 3500, "Member Card", "Darkrai"};
+    uint8_t card[SAVE4_WONDERCARD_SIZE], back[SAVE4_WONDERCARD_SIZE];
+    CHECK(save4_mg_build_card(&spec, card) == SAVE4_OK);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    bool used = false;
+    CHECK(save4_mg_get_card(&s, 0, back, &used) == SAVE4_OK && used);
+    CHECK(!memcmp(back, card, sizeof card));
+    CHECK(!memcmp(mg + 0x94C, card, sizeof card));         /* wonderCards[0] */
+    CHECK_EQ_INT(r32(mg + 0x120), 0xEDB88320u);           /* cardUsed[0] */
+    CHECK_EQ_INT(r32(mg + 0x100), 0xEDB88320u);           /* pgtUsed[0] */
+    CHECK_EQ_INT(mg[0x12C] | mg[0x12D] << 8, SAVE4_MG_MEMBER_CARD); /* pgts[0].type */
+    CHECK_EQ_INT(mg[0x12E] & 3, 1);                        /* linked to card slot 0 + 1 */
+    CHECK_EQ_INT(mg[42 / 8] >> (42 % 8) & 1, 1);
+    int pgts = 0;
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 1);
+
+    /* A gift-only .pgt: PGT slot 1, linked to no card (0). */
+    CHECK(save4_mg_add(&s, card, SAVE4_PGT_SIZE) == SAVE4_OK);
+    CHECK_EQ_INT(r32(mg + 0x104), 0xEDB88320u);
+    CHECK_EQ_INT(mg[0x12C + 0x104 + 2] & 3, 0);
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 2);
+
+    /* Gift types D/P cannot deliver are refused and change nothing. */
+    uint8_t *snap = malloc(SAVE4_IMAGE_SIZE);
+    memcpy(snap, im, SAVE4_IMAGE_SIZE);
+    save4_card_spec rotom = {SAVE4_MG_SECRET_KEY, 50, 0, {479, 0, 0}, 3500, "Secret Key", "Rotom"};
+    CHECK(save4_mg_build_card(&rotom, card) == SAVE4_OK);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_ERR_UNSUPPORTED);
+    CHECK(save4_mg_add(&s, card, SAVE4_PGT_SIZE) == SAVE4_ERR_UNSUPPORTED);
+    CHECK(!memcmp(snap, im, SAVE4_IMAGE_SIZE));
+    free(snap);
+
+    /* Cards fill three slots, then refuse. */
+    spec.id = 43;
+    save4_mg_build_card(&spec, card);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    spec.id = 44;
+    save4_mg_build_card(&spec, card);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_ERR_NOSPACE);
+    CHECK_EQ_INT(mg[0x12C + 2 * 0x104 + 2] & 3, 2); /* card 1's PGT */
+    CHECK_EQ_INT(mg[0x12C + 3 * 0x104 + 2] & 3, 3); /* card 2's PGT */
+
+    /* sub_0202ADC8: the slot marker and the linked PGT go; the received
+     * flag and the stored bytes stay. */
+    CHECK(save4_mg_remove_card(&s, 0) == SAVE4_OK);
+    CHECK(save4_mg_get_card(&s, 0, back, &used) == SAVE4_OK && !used);
+    CHECK_EQ_INT(r32(mg + 0x120), 0);
+    CHECK_EQ_INT(r32(mg + 0x100), 0);
+    CHECK_EQ_INT(mg[0x12E] & 3, 0);
+    CHECK_EQ_INT(mg[42 / 8] >> (42 % 8) & 1, 1);
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 3);
+
+    /* Only the MysteryGift entry, SaveSysInfo, PlayerData's story flags and
+     * the Pokédex flags changed in the general block (no CRC after the entry). */
+    CHECK_EQ_INT(count_diff(ref, im, gbase + mg_end, gbase + 0xC100 - 0x14), 0);
+    CHECK_EQ_INT(count_diff(ref, im, gbase + 0x49, gbase + 0x60 + 0x21), 0);
+    CHECK_EQ_INT(count_diff(ref, im, gbase + 0x60 + 0x22, gbase + 0x12DC + 0x138), 0);
+    CHECK_EQ_INT(count_diff(ref, im, gbase + 0x12DC + 0x13A, gbase + 0xA6D0), 0);
+    CHECK(save4_revalidate(&s) == SAVE4_OK);
+
+    /* The edited image loads back with the same state. */
+    save4 s2;
+    CHECK(save4_load(&s2, im, len) == SAVE4_OK && s2.load_result == SAVE4_LOAD_OK);
+    CHECK(save4_mg_get_card(&s2, 1, back, &used) == SAVE4_OK && used);
+    CHECK_EQ_INT(back[0x104 + 0x4C], 43);
+    CHECK(save4_mg_get_unlocked(&s2, &on) == SAVE4_OK && on);
+    CHECK(save4_dex_get_national(&s2, &on) == SAVE4_OK && on);
+    save4_free(&s2);
+
+    CHECK(save4_dex_set_national(&s, false) == SAVE4_OK);
+    CHECK_EQ_INT(gen[0x12DC + 0x139], 0);
+    CHECK_EQ_INT((gen[0x60 + 0x21] >> 1) & 1, 0);
     save4_free(&s);
+    free(ref);
     free(img);
 }
 
@@ -350,6 +470,7 @@ int main(void)
     test_game(SAVE4_GAME_PT);
     test_game(SAVE4_GAME_DP);
     test_mystery();
+    test_mystery_dp();
 
     /* Flag/var names generated from the decomp. */
     uint16_t id = 0;

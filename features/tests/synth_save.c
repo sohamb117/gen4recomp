@@ -16,10 +16,11 @@
 
 struct synth_layout {
     uint32_t general, storage, player, party, bag, vars, dex;
+    uint32_t mystery, mystery_body, mystery_crc; /* MysteryGift entry; CRC offset, 0 = none */
 };
 
-static const struct synth_layout kPt = {0xCF2C, 0x121E4, 0x64, 0x98, 0x630, 0xDAC, 0x1328};
-static const struct synth_layout kDp = {0xC100, 0x121E0, 0x60, 0x90, 0x624, 0xD9C, 0x12DC};
+static const struct synth_layout kPt = {0xCF2C, 0x121E4, 0x64, 0x98, 0x630, 0xDAC, 0x1328, 0xB4C0, 0x1330, 0x132C};
+static const struct synth_layout kDp = {0xC100, 0x121E0, 0x60, 0x90, 0x624, 0xD9C, 0x12DC, 0xA6D0, 0x1358, 0};
 
 static const struct synth_layout *lay(save4_game g) { return g == SAVE4_GAME_DP ? &kDp : &kPt; }
 
@@ -154,6 +155,12 @@ static void build_copy(uint8_t *copy, save4_game game, uint32_t counter, uint32_
     dex[0x44 + b / 8] |= (uint8_t)(1 << (b % 8));
     b = 1 - 1;
     dex[0x44 + b / 8] |= (uint8_t)(1 << (b % 8));
+
+    /* MysteryGift: empty, as a new game leaves it (Pt keeps its CRC). */
+    uint8_t *mg = gen + L->mystery;
+    memset(mg, 0, L->mystery_body);
+    if (L->mystery_crc)
+        w16(mg + L->mystery_crc, save4_crc16(mg, L->mystery_crc));
 
     /* PCBoxes */
     memset(sto, 0, 0x121C8);
