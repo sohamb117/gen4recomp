@@ -79,6 +79,26 @@ not yet imported all land on the launcher with a message.
 (default), or the port's fixed clock (2009-03-22 10:00, advancing with frames);
 it applies from the next boot.
 
+## Save editor
+
+*Edit save...* on a slot opens an editor for that slot's backup image
+(features/save4), with names and game tables read from the imported ROM
+(features/ndsdata). Tabs: **Trainer** (name, gender, IDs, money, coins,
+badges, play time), **Party** (species, nickname, level/EXP, ability, held
+item, moves, IVs, EVs, friendship; nature, shininess, PID and OT shown
+read-only), **Boxes** (18 x 30 grid: edit, move/swap, release), **Bag**
+(change item, quantity, remove, add) and **Pokedex** (seen/caught per species,
+mark all, clear). Level and EXP move together, party stats are recomputed
+with the game's formula, a new move gets full PP and EVs are capped at 510.
+
+Every edit can be undone (16 steps; X / Ctrl+Z, redo Y / Ctrl+Shift+Z).
+*Save* (Ctrl+S) writes the slot atomically and keeps the previous image as
+`.bak`. A slot whose blocks fail their checksums is refused with the reason.
+L/R or Page Up/Down switch tabs; numbers take typed digits or per-digit +/-;
+lists filter as you type. Limitations: no party/box transfers, item pockets
+are not checked against item data, alternate forms use the base species'
+stats.
+
 ## Default controls
 
 | DS | Keyboard | Gamepad (by position) |

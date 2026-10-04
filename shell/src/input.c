@@ -152,6 +152,10 @@ static np_menu_cmd action_cmd(int act)
     case NP_ACT_A: return NP_CMD_CONFIRM;
     case NP_ACT_B: return NP_CMD_BACK;
     case NP_ACT_START: return NP_CMD_CLOSE;
+    case NP_ACT_L: return NP_CMD_TAB_PREV;
+    case NP_ACT_R: return NP_CMD_TAB_NEXT;
+    case NP_ACT_X: return NP_CMD_X;
+    case NP_ACT_Y: return NP_CMD_Y;
     default: return NP_CMD_NONE;
     }
 }
@@ -168,6 +172,8 @@ np_menu_cmd np_input_menu_cmd(const np_app *app, const SDL_Event *e, int pad)
         case SDL_SCANCODE_RETURN:
         case SDL_SCANCODE_KP_ENTER: return NP_CMD_CONFIRM;
         case SDL_SCANCODE_ESCAPE: return NP_CMD_BACK;
+        case SDL_SCANCODE_PAGEUP: return NP_CMD_TAB_PREV;
+        case SDL_SCANCODE_PAGEDOWN: return NP_CMD_TAB_NEXT;
         default: break;
         }
         if (e->key.repeat) {

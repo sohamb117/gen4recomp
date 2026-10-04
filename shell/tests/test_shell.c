@@ -19,6 +19,7 @@
 #include "romdb.h"
 #include "sha1.h"
 #include "slots.h"
+#include "undo.h"
 
 static int failures, checks;
 
@@ -424,6 +425,44 @@ static void test_launch(void)
           "slot numbers");
 }
 
+static void test_undo(void)
+{
+    np_undo u;
+    np_undo_init(&u, 4);
+    uint8_t cur[4] = {0};
+    CHECK(np_undo_undo(&u, cur) == -1 && np_undo_redo(&u, cur) == -1, "empty stacks refuse");
+    /* Edits 0 -> 1 -> 2 -> 3, each pushing the state before it. */
+    for (uint8_t v = 0; v < 3; v++) {
+        np_undo_push(&u, cur);
+        memset(cur, v + 1, 4);
+    }
+    CHECK(np_undo_undo(&u, cur) == 0 && cur[0] == 2, "undo to 2 (%d)", cur[0]);
+    CHECK(np_undo_undo(&u, cur) == 0 && cur[0] == 1, "undo to 1 (%d)", cur[0]);
+    CHECK(np_undo_redo(&u, cur) == 0 && cur[0] == 2, "redo to 2 (%d)", cur[0]);
+    np_undo_push(&u, cur); /* a new edit drops the redo history */
+    memset(cur, 9, 4);
+    CHECK(np_undo_redo(&u, cur) == -1 && cur[0] == 9, "redo cleared by an edit");
+    CHECK(np_undo_undo(&u, cur) == 0 && cur[0] == 2, "undo the new edit (%d)", cur[0]);
+    np_undo_free(&u);
+
+    /* Depth is bounded: the oldest snapshots fall off. */
+    np_undo_init(&u, 4);
+    memset(cur, 0, 4);
+    for (int v = 0; v < NP_UNDO_DEPTH + 5; v++) {
+        np_undo_push(&u, cur);
+        memset(cur, v + 1, 4);
+    }
+    int steps = 0;
+    while (np_undo_undo(&u, cur) == 0)
+        steps++;
+    CHECK(steps == NP_UNDO_DEPTH && cur[0] == 5, "%d undo steps, oldest state %d", steps, cur[0]);
+    steps = 0;
+    while (np_undo_redo(&u, cur) == 0)
+        steps++;
+    CHECK(steps == NP_UNDO_DEPTH && cur[0] == NP_UNDO_DEPTH + 5, "%d redo steps back to %d", steps, cur[0]);
+    np_undo_free(&u);
+}
+
 int main(void)
 {
     test_sha1();
@@ -434,6 +473,7 @@ int main(void)
     test_slot_names();
     test_sav_footer();
     test_launch();
+    test_undo();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

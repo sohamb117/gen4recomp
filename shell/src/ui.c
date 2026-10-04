@@ -94,7 +94,7 @@ void np_ui_frame(np_app *app, SDL_FRect r, float t, SDL_Color c)
 }
 
 /* Text clipped to `max_cols` characters. */
-static void text_clip(np_app *app, float x, float y, float s, const char *str, int max_cols, SDL_Color c)
+void np_ui_text_clip(np_app *app, float x, float y, float s, const char *str, int max_cols, SDL_Color c)
 {
     char buf[256];
     int n = (int)SDL_strlen(str);
@@ -111,7 +111,7 @@ static void text_clip(np_app *app, float x, float y, float s, const char *str, i
 }
 
 /* Word-wrapped text; returns the number of lines used. */
-static int text_wrap(np_app *app, float x, float y, float s, float line_h, int cols, const char *str, SDL_Color c,
+int np_ui_text_wrap(np_app *app, float x, float y, float s, float line_h, int cols, const char *str, SDL_Color c,
                      int draw)
 {
     int lines = 0;
@@ -146,7 +146,7 @@ static int text_wrap(np_app *app, float x, float y, float s, float line_h, int c
     return lines;
 }
 
-static void hit_add(np_app *app, SDL_FRect r, int id)
+void np_ui_hit(np_app *app, SDL_FRect r, int id)
 {
     if (app->nhits < NP_MAX_HITS)
         app->hits[app->nhits++] = (np_hit){r, id};
@@ -162,13 +162,13 @@ static int hit_at(const np_app *app, float x, float y)
     return -1;
 }
 
-static void button(np_app *app, SDL_FRect r, const char *label, int selected, int id, float s)
+void np_ui_button(np_app *app, SDL_FRect r, const char *label, int selected, int id, float s)
 {
     np_ui_fill(app, r, selected ? (SDL_Color){255, 205, 80, 60} : (SDL_Color){255, 255, 255, 18});
     np_ui_frame(app, r, s, selected ? accent : (SDL_Color){255, 255, 255, 70});
     float tw = (float)SDL_strlen(label) * 8.0f * s;
     np_ui_text(app, r.x + (r.w - tw) * 0.5f, r.y + (r.h - 8.0f * s) * 0.5f, s, label, selected ? accent : white);
-    hit_add(app, r, id);
+    np_ui_hit(app, r, id);
 }
 
 /* ---- options page ------------------------------------------------------ */
@@ -334,6 +334,8 @@ static int text_capture_event(np_app *app, const SDL_Event *e);
 
 int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad)
 {
+    if (app->page == NP_PAGE_EDITOR)
+        return np_editor_event(app, e);
     if (app->page == NP_PAGE_TEXT)
         return text_capture_event(app, e);
     if (!app->capture || app->page != NP_PAGE_CONTROLS)
@@ -471,7 +473,7 @@ static void draw_launcher(np_app *app)
     float y = m;
     np_ui_text(app, m, y, 3 * s, "nativeplat", white);
     y += 3 * 8 * s + lh * 0.5f;
-    y += lh * (float)text_wrap(app, m, y, s, lh, (int)((W - 2 * m) / cw),
+    y += lh * (float)np_ui_text_wrap(app, m, y, s, lh, (int)((W - 2 * m) / cw),
                                "Pokemon Diamond, Pearl and Platinum. Bring your own cartridge.", dim, 1);
     y += lh;
 
@@ -508,20 +510,20 @@ static void draw_launcher(np_app *app)
         }
         int state_lines = 1;
         if (wide)
-            state_lines = text_wrap(app, r.x + cw, r.y + 2.8f * lh, s, lh, cols, state, sc, 1);
+            state_lines = np_ui_text_wrap(app, r.x + cw, r.y + 2.8f * lh, s, lh, cols, state, sc, 1);
         else
-            text_clip(app, r.x + cw, r.y + 2.8f * lh, s, state, cols, sc);
+            np_ui_text_clip(app, r.x + cw, r.y + 2.8f * lh, s, state, cols, sc);
         const np_rom_entry *e = np_romdb_accepted(game);
         if (wide && e && state_lines == 1)
-            text_wrap(app, r.x + cw, r.y + 4.2f * lh, s, lh, cols, e->label, dim, 1);
+            np_ui_text_wrap(app, r.x + cw, r.y + 4.2f * lh, s, lh, cols, e->label, dim, 1);
         char hint[64];
         if (avail && present && app->opt.last_slot[g][0])
             SDL_snprintf(hint, sizeof hint, "Continue: %s", app->opt.last_slot[g]);
         else
             SDL_strlcpy(hint, avail && present ? "Choose a save slot" : avail ? "Import..." : "", sizeof hint);
         if (hint[0])
-            text_clip(app, r.x + cw, r.y + r.h - 1.5f * lh, s, hint, cols, selected ? accent : dim);
-        hit_add(app, r, g);
+            np_ui_text_clip(app, r.x + cw, r.y + r.h - 1.5f * lh, s, hint, cols, selected ? accent : dim);
+        np_ui_hit(app, r, g);
     }
     y += wide ? card_h + 1.5f * lh : 3 * (card_h + gap) + 0.5f * lh;
 
@@ -529,33 +531,25 @@ static void draw_launcher(np_app *app)
     int nb = launcher_buttons();
     float bw = SDL_min(14 * cw, (W - 2 * m - (float)(nb - 1) * gap) / (float)nb), bh = 2 * lh;
     for (int i = 0; i < nb; i++)
-        button(app, (SDL_FRect){m + (float)i * (bw + gap), y, bw, bh}, labels[i], app->launcher_sel == LB_IMPORT + i,
+        np_ui_button(app, (SDL_FRect){m + (float)i * (bw + gap), y, bw, bh}, labels[i], app->launcher_sel == LB_IMPORT + i,
                LB_IMPORT + i, s);
     y += bh + lh;
 
     int cols = (int)((W - 2 * m) / cw);
     if (app->status[0])
-        y += lh * (float)text_wrap(app, m, y, s, lh, cols, app->status, accent, 1) + 0.5f * lh;
+        y += lh * (float)np_ui_text_wrap(app, m, y, s, lh, cols, app->status, accent, 1) + 0.5f * lh;
     if (y < H - 3 * lh) {
-        text_clip(app, m, H - m - 2 * lh, s, "Drop a .nds file on this window to import it.", cols, dim);
+        np_ui_text_clip(app, m, H - m - 2 * lh, s, "Drop a .nds file on this window to import it.", cols, dim);
         char where[1200];
         SDL_snprintf(where, sizeof where, "%s data: %s", np_storage_is_portable() ? "Portable" : "User",
                      np_storage_root());
-        text_clip(app, m, H - m - lh, s, where, cols, dim);
+        np_ui_text_clip(app, m, H - m - lh, s, where, cols, dim);
     }
 }
 
 /* ---- pages ------------------------------------------------------------- */
 
-typedef struct page_frame {
-    float s, cw, lh;
-    SDL_FRect panel;
-    float list_y; /* first row */
-    int rows;     /* visible rows */
-    int cols;     /* text columns inside the panel */
-} page_frame;
-
-static void begin_page(np_app *app, page_frame *f, const char *title)
+void np_ui_begin_page(np_app *app, np_page_frame *f, const char *title)
 {
     float s = np_ui_scale(app), cw = 8 * s, lh = 12 * s;
     float W = app->out_w, H = app->out_h;
@@ -577,21 +571,21 @@ static void begin_page(np_app *app, page_frame *f, const char *title)
 }
 
 /* Footer with a hint, Back, and scroll arrows when the list overflows. */
-static void end_page(np_app *app, const page_frame *f, const char *hint, int total)
+void np_ui_end_page(np_app *app, const np_page_frame *f, const char *hint, int total)
 {
     float s = f->s, cw = f->cw, lh = f->lh;
     SDL_FRect p = f->panel;
     float y = p.y + p.h - 3 * lh;
-    text_clip(app, p.x + 2 * cw, y - 0.5f * lh, s, hint, f->cols, dim);
+    np_ui_text_clip(app, p.x + 2 * cw, y - 0.5f * lh, s, hint, f->cols, dim);
     float bh = 1.8f * lh, by = p.y + p.h - bh - 0.6f * lh;
-    button(app, (SDL_FRect){p.x + 2 * cw, by, 8 * cw, bh}, "Back", 0, HIT_BACK, s);
+    np_ui_button(app, (SDL_FRect){p.x + 2 * cw, by, 8 * cw, bh}, "Back", 0, HIT_BACK, s);
     if (total > f->rows) {
-        button(app, (SDL_FRect){p.x + p.w - 2 * cw - 14 * cw, by, 6 * cw, bh}, "Up", 0, HIT_SCROLL_UP, s);
-        button(app, (SDL_FRect){p.x + p.w - 2 * cw - 7 * cw, by, 6 * cw, bh}, "Down", 0, HIT_SCROLL_DOWN, s);
+        np_ui_button(app, (SDL_FRect){p.x + p.w - 2 * cw - 14 * cw, by, 6 * cw, bh}, "Up", 0, HIT_SCROLL_UP, s);
+        np_ui_button(app, (SDL_FRect){p.x + p.w - 2 * cw - 7 * cw, by, 6 * cw, bh}, "Down", 0, HIT_SCROLL_DOWN, s);
     }
 }
 
-static void keep_visible(np_app *app, int sel, int rows, int total)
+void np_ui_keep_visible(np_app *app, int sel, int rows, int total)
 {
     if (sel < app->scroll)
         app->scroll = sel;
@@ -602,12 +596,12 @@ static void keep_visible(np_app *app, int sel, int rows, int total)
 
 static void draw_options(np_app *app)
 {
-    page_frame f;
-    begin_page(app, &f, "Options");
+    np_page_frame f;
+    np_ui_begin_page(app, &f, "Options");
     int items[OPT_COUNT];
     int n = options_items(app, items);
     app->sel = SDL_clamp(app->sel, 0, n - 1);
-    keep_visible(app, app->sel, f.rows, n);
+    np_ui_keep_visible(app, app->sel, f.rows, n);
     float x = f.panel.x + 2 * f.cw, vx = f.panel.x + f.panel.w * 0.5f;
     int vcols = (int)((f.panel.x + f.panel.w - 2 * f.cw - vx) / f.cw);
     for (int r = 0; r < f.rows && app->scroll + r < n; r++) {
@@ -616,24 +610,24 @@ static void draw_options(np_app *app)
         SDL_FRect row = {f.panel.x + f.cw, y - 2 * f.s, f.panel.w - 2 * f.cw, f.lh};
         if (selected)
             np_ui_fill(app, row, (SDL_Color){255, 205, 80, 40});
-        text_clip(app, x, y, f.s, opt_labels[item], (int)((vx - x) / f.cw) - 1, selected ? accent : white);
+        np_ui_text_clip(app, x, y, f.s, opt_labels[item], (int)((vx - x) / f.cw) - 1, selected ? accent : white);
         char v[64], shown[80];
         opt_value(app, item, v, sizeof v);
         if (*v) {
             SDL_snprintf(shown, sizeof shown, selected ? "< %s >" : "  %s", v);
-            text_clip(app, vx, y, f.s, shown, vcols, selected ? accent : dim);
+            np_ui_text_clip(app, vx, y, f.s, shown, vcols, selected ? accent : dim);
         }
-        hit_add(app, row, i);
+        np_ui_hit(app, row, i);
     }
-    end_page(app, &f, "Left/Right: change  Enter/A: select  Esc/B: back", n);
+    np_ui_end_page(app, &f, "Left/Right: change  Enter/A: select  Esc/B: back", n);
 }
 
 static void draw_controls(np_app *app)
 {
-    page_frame f;
-    begin_page(app, &f, "Controls");
+    np_page_frame f;
+    np_ui_begin_page(app, &f, "Controls");
     app->sel = SDL_clamp(app->sel, 0, CTRL_ROWS - 1);
-    keep_visible(app, app->sel, f.rows, CTRL_ROWS);
+    np_ui_keep_visible(app, app->sel, f.rows, CTRL_ROWS);
     if (app->capture && SDL_GetTicksNS() > app->capture_deadline)
         app->capture = 0;
     float x = f.panel.x + 2 * f.cw;
@@ -650,7 +644,7 @@ static void draw_controls(np_app *app)
                 np_ui_fill(app, rr, (SDL_Color){255, 205, 80, 40});
             np_ui_text(app, x, y, f.s, row == CTRL_RESET ? "Reset to defaults" : "Back",
                        row_sel ? accent : white);
-            hit_add(app, rr, row * 4);
+            np_ui_hit(app, rr, row * 4);
             continue;
         }
         const char *name = np_action_name((np_action)row);
@@ -672,12 +666,12 @@ static void draw_controls(np_app *app)
                 SDL_strlcpy(label, np_pad_binding_name(app->opt.bind.pad[row]), sizeof label);
             if (cell_sel)
                 np_ui_fill(app, cell, app->capture ? (SDL_Color){255, 120, 80, 90} : (SDL_Color){255, 205, 80, 50});
-            text_clip(app, cell.x + f.cw * 0.5f, y, f.s, label, slot_cols,
+            np_ui_text_clip(app, cell.x + f.cw * 0.5f, y, f.s, label, slot_cols,
                       cell_sel ? accent : (c == NP_KEY_SLOTS ? (SDL_Color){150, 200, 255, 255} : white));
-            hit_add(app, cell, row * 4 + c);
+            np_ui_hit(app, cell, row * 4 + c);
         }
     }
-    end_page(app, &f,
+    np_ui_end_page(app, &f,
              app->capture ? "Press a key/button. Esc: cancel  Delete: clear"
                           : "Enter/A: rebind  Right-click: clear  Esc/B: back",
              CTRL_ROWS);
@@ -685,26 +679,26 @@ static void draw_controls(np_app *app)
 
 static void draw_about(np_app *app)
 {
-    page_frame f;
-    begin_page(app, &f, "About");
+    np_page_frame f;
+    np_ui_begin_page(app, &f, "About");
     /* Lay the text out once per frame into wrapped lines, then window it. */
     int total = 0;
     for (size_t i = 0; i < SDL_arraysize(about_text); i++)
-        total += *about_text[i] ? text_wrap(app, 0, 0, f.s, f.lh, f.cols, about_text[i], white, 0) : 1;
+        total += *about_text[i] ? np_ui_text_wrap(app, 0, 0, f.s, f.lh, f.cols, about_text[i], white, 0) : 1;
     app->scroll = SDL_clamp(app->scroll, 0, SDL_max(0, total - f.rows));
     int line = 0;
     float x = f.panel.x + 2 * f.cw;
     for (size_t i = 0; i < SDL_arraysize(about_text); i++) {
         const char *t = about_text[i];
         int is_heading = i == 0 || !SDL_strcmp(t, "LICENSE") || !SDL_strcmp(t, "CREDITS");
-        int n = *t ? text_wrap(app, 0, 0, f.s, f.lh, f.cols, t, white, 0) : 1;
+        int n = *t ? np_ui_text_wrap(app, 0, 0, f.s, f.lh, f.cols, t, white, 0) : 1;
         /* Draw only paragraphs fully inside the window. */
         if (*t && line >= app->scroll && line + n <= app->scroll + f.rows)
-            text_wrap(app, x, f.list_y + (float)(line - app->scroll) * f.lh, f.s, f.lh, f.cols, t,
+            np_ui_text_wrap(app, x, f.list_y + (float)(line - app->scroll) * f.lh, f.s, f.lh, f.cols, t,
                       is_heading ? accent : white, 1);
         line += n;
     }
-    end_page(app, &f, "Up/Down scroll, Esc/B back.", total);
+    np_ui_end_page(app, &f, "Up/Down scroll, Esc/B back.", total);
 }
 
 /* ---- save slots ---------------------------------------------------------- */
@@ -759,13 +753,25 @@ static void open_slots_at(np_app *app, int slot)
         app->sel = slots_row_of(app, slot);
 }
 
-static void open_text(np_app *app, np_text_purpose purpose, const char *initial)
+void np_ui_open_text(np_app *app, np_text_purpose purpose, const char *initial, int max)
 {
     app->text_purpose = purpose;
+    app->text_max = SDL_clamp(max, 1, NP_SLOT_NAME_MAX);
     SDL_strlcpy(app->text, initial, sizeof app->text);
+    app->text[app->text_max] = '\0';
     app->text_error[0] = '\0';
     np_app_open_page(app, NP_PAGE_TEXT);
     app->osk_sel = 0;
+}
+
+static void open_text(np_app *app, np_text_purpose purpose, const char *initial)
+{
+    np_ui_open_text(app, purpose, initial, NP_SLOT_NAME_MAX);
+}
+
+static int text_for_editor(const np_app *app)
+{
+    return app->text_purpose == NP_TEXT_TRAINER_NAME || app->text_purpose == NP_TEXT_NICKNAME;
 }
 
 static void slots_activate(np_app *app, int row)
@@ -800,14 +806,14 @@ static void slots_activate(np_app *app, int row)
 
 static void draw_slots(np_app *app)
 {
-    page_frame f;
+    np_page_frame f;
     char title[64];
     SDL_snprintf(title, sizeof title, "%s saves", np_game_title(app->slots_game));
-    begin_page(app, &f, title);
+    np_ui_begin_page(app, &f, title);
     slot_row rows[NP_MAX_SLOTS + 3];
     int n = slots_rows(app, rows);
     app->sel = SDL_clamp(app->sel, 0, n - 1);
-    keep_visible(app, app->sel, f.rows, n);
+    np_ui_keep_visible(app, app->sel, f.rows, n);
     float x = f.panel.x + 2 * f.cw, vx = f.panel.x + f.panel.w - 2 * f.cw - 18 * f.cw;
     for (int r = 0; r < f.rows && app->scroll + r < n; r++) {
         int i = app->scroll + r, selected = i == app->sel;
@@ -833,15 +839,15 @@ static void draw_slots(np_app *app)
             break;
         }
         }
-        text_clip(app, x, y, f.s, label, (int)((vx - x) / f.cw) - 1, c);
+        np_ui_text_clip(app, x, y, f.s, label, (int)((vx - x) / f.cw) - 1, c);
         if (when[0])
-            text_clip(app, vx, y, f.s, when, 18, selected ? accent : dim);
-        hit_add(app, row, i);
+            np_ui_text_clip(app, vx, y, f.s, when, 18, selected ? accent : dim);
+        np_ui_hit(app, row, i);
     }
-    end_page(app, &f, "Enter/A: open  Esc/B: back  Drop .sav: import", n);
+    np_ui_end_page(app, &f, "Enter/A: open  Esc/B: back  Drop .sav: import", n);
 }
 
-enum { SM_PLAY, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_DELETE, SM_COUNT };
+enum { SM_PLAY, SM_EDIT, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_DELETE, SM_COUNT };
 
 static void slot_menu_activate(np_app *app, int item)
 {
@@ -853,6 +859,12 @@ static void slot_menu_activate(np_app *app, int item)
     np_game g = app->slots_game;
     switch (item) {
     case SM_PLAY: np_app_start_game(app, g, name); break;
+    case SM_EDIT:
+        if (!s->size)
+            np_app_toast(app, "\"%s\" has no save yet", name);
+        else
+            np_editor_open(app, g, name);
+        break;
     case SM_RENAME: open_text(app, NP_TEXT_RENAME_SLOT, name); break;
     case SM_DUPLICATE: {
         const char *taken[NP_MAX_SLOTS];
@@ -888,16 +900,17 @@ static void draw_slot_menu(np_app *app)
         open_slots_at(app, -1);
         return;
     }
-    page_frame f;
-    begin_page(app, &f, s->name);
-    static const char *const labels[SM_COUNT] = {"Play", "Rename...", "Duplicate", "Export .sav...", "Delete..."};
+    np_page_frame f;
+    np_ui_begin_page(app, &f, s->name);
+    static const char *const labels[SM_COUNT] = {"Play",      "Edit save...",   "Rename...",
+                                                 "Duplicate", "Export .sav...", "Delete..."};
     char info[96], when[32];
     format_time(s->mtime, when, sizeof when);
     if (s->size)
         SDL_snprintf(info, sizeof info, "%s, last saved %s", np_game_title(app->slots_game), when);
     else
         SDL_snprintf(info, sizeof info, "%s, not saved yet", np_game_title(app->slots_game));
-    text_clip(app, f.panel.x + 2 * f.cw, f.list_y, f.s, info, f.cols, dim);
+    np_ui_text_clip(app, f.panel.x + 2 * f.cw, f.list_y, f.s, info, f.cols, dim);
     app->sel = SDL_clamp(app->sel, 0, SM_COUNT - 1);
     for (int i = 0; i < SM_COUNT; i++) {
         float y = f.list_y + (float)(i + 2) * f.lh;
@@ -905,9 +918,9 @@ static void draw_slot_menu(np_app *app)
         if (i == app->sel)
             np_ui_fill(app, row, (SDL_Color){255, 205, 80, 40});
         np_ui_text(app, f.panel.x + 2 * f.cw, y, f.s, labels[i], i == app->sel ? (i == SM_DELETE ? warn : accent) : white);
-        hit_add(app, row, i);
+        np_ui_hit(app, row, i);
     }
-    end_page(app, &f, "Enter/A: select  Esc/B: back", 0);
+    np_ui_end_page(app, &f, "Enter/A: select  Esc/B: back", 0);
 }
 
 static void confirm_activate(np_app *app, int yes)
@@ -937,19 +950,19 @@ static void confirm_activate(np_app *app, int yes)
 static void draw_confirm(np_app *app)
 {
     const np_slot_info *s = cur_slot(app);
-    page_frame f;
-    begin_page(app, &f, "Delete save slot");
+    np_page_frame f;
+    np_ui_begin_page(app, &f, "Delete save slot");
     char q[160];
     SDL_snprintf(q, sizeof q, "Delete \"%s\" from %s? Its save is erased and cannot be recovered.", s ? s->name : "?",
                  np_game_title(app->slots_game));
-    int lines = text_wrap(app, f.panel.x + 2 * f.cw, f.list_y, f.s, f.lh, f.cols, q, white, 1);
+    int lines = np_ui_text_wrap(app, f.panel.x + 2 * f.cw, f.list_y, f.s, f.lh, f.cols, q, white, 1);
     static const char *const labels[2] = {"No, keep it", "Yes, delete it"};
     app->sel = SDL_clamp(app->sel, 0, 1);
     float bw = 18 * f.cw, bh = 2 * f.lh, y = f.list_y + (float)(lines + 1) * f.lh;
     for (int i = 0; i < 2; i++)
-        button(app, (SDL_FRect){f.panel.x + 2 * f.cw + (float)i * (bw + 2 * f.cw), y, bw, bh}, labels[i], app->sel == i,
+        np_ui_button(app, (SDL_FRect){f.panel.x + 2 * f.cw + (float)i * (bw + 2 * f.cw), y, bw, bh}, labels[i], app->sel == i,
                i, f.s);
-    end_page(app, &f, "Left/Right: choose  Enter/A: confirm  Esc/B: back", 0);
+    np_ui_end_page(app, &f, "Left/Right: choose  Enter/A: confirm  Esc/B: back", 0);
 }
 
 /* On-screen keyboard for name entry without a physical keyboard (gamepad,
@@ -1007,7 +1020,9 @@ static void osk_move(np_app *app, int dr, int dc)
 
 static void text_cancel(np_app *app)
 {
-    if (app->text_purpose == NP_TEXT_RENAME_SLOT) {
+    if (text_for_editor(app)) {
+        np_editor_text_cancel(app);
+    } else if (app->text_purpose == NP_TEXT_RENAME_SLOT) {
         np_app_open_page(app, NP_PAGE_SLOT_MENU);
         app->sel = SM_RENAME;
     } else {
@@ -1017,6 +1032,12 @@ static void text_cancel(np_app *app)
 
 static void text_commit(np_app *app)
 {
+    if (text_for_editor(app)) {
+        const char *err = np_editor_text_done(app, app->text);
+        if (err)
+            SDL_strlcpy(app->text_error, err, sizeof app->text_error);
+        return;
+    }
     const char *problem = np_slot_name_problem(app->text);
     if (problem) {
         SDL_strlcpy(app->text_error, problem, sizeof app->text_error);
@@ -1078,7 +1099,10 @@ static void text_type(np_app *app, int code)
     default:
         if (code == OSK_SPACE)
             code = ' ';
-        if (len < NP_SLOT_NAME_MAX && np_slot_char_ok((unsigned char)code)) {
+        /* Slot names are file names; game names are checked by the game's
+         * charset when committed. */
+        int ok = text_for_editor(app) ? code >= 0x20 && code < 0x7F : np_slot_char_ok((unsigned char)code);
+        if ((int)len < app->text_max && ok) {
             app->text[len] = (char)code;
             app->text[len + 1] = '\0';
         }
@@ -1088,20 +1112,21 @@ static void text_type(np_app *app, int code)
 
 static void draw_text_page(np_app *app)
 {
-    page_frame f;
-    begin_page(app, &f, app->text_purpose == NP_TEXT_NEW_SLOT ? "New save slot" : "Rename save slot");
+    np_page_frame f;
+    static const char *const titles[] = {"New save slot", "Rename save slot", "Trainer name", "Nickname"};
+    np_ui_begin_page(app, &f, titles[app->text_purpose]);
     float x = f.panel.x + 2 * f.cw, y = f.list_y;
-    SDL_FRect box = {x, y - 4 * f.s, (NP_SLOT_NAME_MAX + 2) * f.cw, f.lh + 4 * f.s};
+    SDL_FRect box = {x, y - 4 * f.s, (float)(app->text_max + 2) * f.cw, f.lh + 4 * f.s};
     box.w = SDL_min(box.w, f.panel.w - 4 * f.cw);
     np_ui_fill(app, box, (SDL_Color){0, 0, 0, 160});
     np_ui_frame(app, box, f.s, accent);
     char shown[NP_SLOT_NAME_MAX + 2];
     int blink = (SDL_GetTicks() / 500) % 2 == 0;
     SDL_snprintf(shown, sizeof shown, "%s%s", app->text, blink ? "_" : "");
-    text_clip(app, x + f.cw * 0.5f, y, f.s, shown, (int)(box.w / f.cw) - 1, white);
+    np_ui_text_clip(app, x + f.cw * 0.5f, y, f.s, shown, (int)(box.w / f.cw) - 1, white);
     y += 1.5f * f.lh;
     if (app->text_error[0])
-        text_clip(app, x, y, f.s, app->text_error, f.cols, warn);
+        np_ui_text_clip(app, x, y, f.s, app->text_error, f.cols, warn);
     y += 1.5f * f.lh;
 
     osk_key k[80];
@@ -1127,9 +1152,9 @@ static void draw_text_page(np_app *app)
         if (sel)
             np_ui_frame(app, r, f.s, accent);
         np_ui_text(app, r.x + (r.w - tw) * 0.5f, r.y + (r.h - 8 * ts) * 0.5f, ts, label, sel ? accent : white);
-        hit_add(app, r, HIT_OSK + i);
+        np_ui_hit(app, r, HIT_OSK + i);
     }
-    end_page(app, &f, "Type or pick keys. Enter: OK  Esc: cancel", 0);
+    np_ui_end_page(app, &f, "Type or pick keys. Enter: OK  Esc: cancel", 0);
 }
 
 /* Keyboard while naming a slot: typed text arrives as SDL_EVENT_TEXT_INPUT;
@@ -1224,6 +1249,12 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
 {
     if (cmd == NP_CMD_NONE)
         return;
+    if (app->page == NP_PAGE_EDITOR) {
+        np_editor_command(app, cmd);
+        return;
+    }
+    if (cmd >= NP_CMD_TAB_PREV)
+        return; /* only the editor has tabs and secondary actions */
     if (app->page == NP_PAGE_NONE) {
         if (app->view == NP_VIEW_LAUNCHER)
             launcher_command(app, cmd);
@@ -1285,6 +1316,10 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
 
 static void select_hit(np_app *app, int id)
 {
+    if (id >= NP_EDITOR_HIT_BASE) {
+        np_editor_hit(app, id, 0, 0);
+        return;
+    }
     if (id >= HIT_OSK) {
         app->osk_sel = id - HIT_OSK;
         return;
@@ -1304,6 +1339,10 @@ static void select_hit(np_app *app, int id)
 
 static void activate_hit(np_app *app, int id, int dir)
 {
+    if (id >= NP_EDITOR_HIT_BASE) {
+        np_editor_hit(app, id, 1, dir);
+        return;
+    }
     if (id == HIT_BACK) {
         page_back(app);
         return;
@@ -1390,6 +1429,7 @@ void np_ui_draw(np_app *app)
     case NP_PAGE_SLOT_MENU: draw_slot_menu(app); break;
     case NP_PAGE_CONFIRM: draw_confirm(app); break;
     case NP_PAGE_TEXT: draw_text_page(app); break;
+    case NP_PAGE_EDITOR: np_editor_draw(app); break;
     default: break;
     }
     if (app->toast[0] && SDL_GetTicksNS() < app->toast_until) {
@@ -1398,6 +1438,6 @@ void np_ui_draw(np_app *app)
         float w = (float)SDL_min((int)SDL_strlen(app->toast), cols) * 8 * s + 16 * s;
         SDL_FRect r = {floorf((app->out_w - w) * 0.5f), 8 * s, w, 16 * s};
         np_ui_fill(app, r, (SDL_Color){0, 0, 0, 190});
-        text_clip(app, r.x + 8 * s, r.y + 4 * s, s, app->toast, cols, white);
+        np_ui_text_clip(app, r.x + 8 * s, r.y + 4 * s, s, app->toast, cols, white);
     }
 }

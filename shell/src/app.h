@@ -34,7 +34,8 @@ typedef enum np_page {
     NP_PAGE_SLOTS,     /* one game's save slots */
     NP_PAGE_SLOT_MENU, /* actions on the selected slot */
     NP_PAGE_CONFIRM,   /* delete confirmation */
-    NP_PAGE_TEXT,      /* slot name entry */
+    NP_PAGE_TEXT,      /* name entry (slots, trainer, nicknames) */
+    NP_PAGE_EDITOR,    /* save editor (editor.c) */
 } np_page;
 
 /* Work handed from dialogs, drops and URLs to the main loop. */
@@ -46,7 +47,12 @@ typedef enum np_pending_kind {
     NP_PENDING_MESSAGE,    /* a dialog failed; path holds the message */
 } np_pending_kind;
 
-typedef enum np_text_purpose { NP_TEXT_NEW_SLOT, NP_TEXT_RENAME_SLOT } np_text_purpose;
+typedef enum np_text_purpose {
+    NP_TEXT_NEW_SLOT,
+    NP_TEXT_RENAME_SLOT,
+    NP_TEXT_TRAINER_NAME, /* the editor's; commit goes to np_editor_text_done */
+    NP_TEXT_NICKNAME,
+} np_text_purpose;
 
 typedef enum np_menu_cmd {
     NP_CMD_NONE,
@@ -57,6 +63,10 @@ typedef enum np_menu_cmd {
     NP_CMD_CONFIRM,
     NP_CMD_BACK,
     NP_CMD_CLOSE, /* leave the overlay entirely */
+    NP_CMD_TAB_PREV, /* L, Page Up */
+    NP_CMD_TAB_NEXT, /* R, Page Down */
+    NP_CMD_X,        /* X: the page's secondary action (editor: undo) */
+    NP_CMD_Y,        /* Y (editor: redo) */
 } np_menu_cmd;
 
 /* A clickable region drawn this frame; `id` meaning depends on the page. */
@@ -163,6 +173,9 @@ typedef struct np_app {
     char text[NP_SLOT_NAME_MAX + 1];
     char text_error[128];
     int osk_sel; /* on-screen keyboard key */
+    int text_max; /* characters allowed on the text page */
+
+    struct np_editor *editor; /* open save editor, or NULL */
 
     np_core *core;
     np_game game;
@@ -243,11 +256,48 @@ float np_ui_scale(const np_app *app);
 void np_ui_text(np_app *app, float x, float y, float scale, const char *s, SDL_Color c);
 void np_ui_fill(np_app *app, SDL_FRect r, SDL_Color c);
 void np_ui_frame(np_app *app, SDL_FRect r, float t, SDL_Color c);
+void np_ui_text_clip(np_app *app, float x, float y, float s, const char *str, int max_cols, SDL_Color c);
+/* Word-wrapped text (drawn only with `draw`); returns the lines used. */
+int np_ui_text_wrap(np_app *app, float x, float y, float s, float line_h, int cols, const char *str, SDL_Color c,
+                    int draw);
+/* Registers a clickable rectangle for this frame. */
+void np_ui_hit(np_app *app, SDL_FRect r, int id);
+void np_ui_button(np_app *app, SDL_FRect r, const char *label, int selected, int id, float s);
+
+/* A modal panel: title, list area, footer with a hint, Back and scroll. */
+typedef struct np_page_frame {
+    float s, cw, lh; /* text scale, character width, line height */
+    SDL_FRect panel;
+    float list_y; /* first row */
+    int rows;     /* visible rows */
+    int cols;     /* text columns inside the panel */
+} np_page_frame;
+void np_ui_begin_page(np_app *app, np_page_frame *f, const char *title);
+void np_ui_end_page(np_app *app, const np_page_frame *f, const char *hint, int total);
+void np_ui_keep_visible(np_app *app, int sel, int rows, int total);
+/* Opens the name entry page; `max` characters, prefilled with `initial`. */
+void np_ui_open_text(np_app *app, np_text_purpose purpose, const char *initial, int max);
 void np_ui_draw(np_app *app); /* launcher or the open page, plus toast */
 void np_ui_command(np_app *app, np_menu_cmd cmd);
 /* Pointer press/move/release at render coordinates; button 3 = secondary. */
 void np_ui_pointer(np_app *app, float x, float y, int pressed, int released, int button);
 int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad); /* rebinding, name entry */
+
+/* editor.c: the save editor page (NP_PAGE_EDITOR). */
+/* Opens slot `slot` of `game`; on failure leaves the page and explains. */
+void np_editor_open(np_app *app, np_game game, const char *slot);
+void np_editor_close(np_app *app);
+void np_editor_draw(np_app *app);
+void np_editor_command(np_app *app, np_menu_cmd cmd);
+/* Hit ids drawn by the editor are >= NP_EDITOR_HIT_BASE. */
+#define NP_EDITOR_HIT_BASE 10000
+void np_editor_hit(np_app *app, int id, int activate, int dir);
+/* Keys and typed text the editor handles itself (shortcuts, filters, digits). */
+int np_editor_event(np_app *app, const SDL_Event *e);
+/* Result of the text page opened for NP_TEXT_TRAINER_NAME / NP_TEXT_NICKNAME:
+ * returns NULL on success or an error to show on the text page. */
+const char *np_editor_text_done(np_app *app, const char *text);
+void np_editor_text_cancel(np_app *app);
 
 /* audio.c */
 int np_audio_open(np_app *app);

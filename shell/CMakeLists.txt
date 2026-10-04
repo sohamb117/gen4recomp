@@ -49,6 +49,7 @@ add_library(np_shell_common STATIC
   src/romdb.c
   src/sha1.c
   src/slots.c
+  src/undo.c
 )
 target_include_directories(np_shell_common PUBLIC src "${NP_ROOT}/core/include")
 target_compile_options(np_shell_common PRIVATE ${NP_WARNINGS})
@@ -89,6 +90,7 @@ message(STATUS "nativeplat core: ${NP_CORE} ${NP_CORE_LIBS} ${NP_GUESTS}")
 
 add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/audio.c
+  src/editor.c
   src/input.c
   src/main.c
   src/options.c
@@ -96,7 +98,7 @@ add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/touchpad.c
   src/ui.c
 )
-target_link_libraries(nativeplat PRIVATE ${NP_CORE_LIBS} np_shell_common SDL3::SDL3)
+target_link_libraries(nativeplat PRIVATE ${NP_CORE_LIBS} np_shell_common save4 ndsdata SDL3::SDL3)
 target_compile_options(nativeplat PRIVATE ${NP_WARNINGS})
 if(NP_CORE STREQUAL "real")
   np_link_guest_modules(nativeplat ${NP_GUESTS})
