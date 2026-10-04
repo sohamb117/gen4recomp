@@ -1,0 +1,9 @@
+node_modules/
+*.nds
+*.npc
+*.sav
+*.dsv
+dist/
+public/cores/*.wasm
+public/cores/manifest.json
+*.tsbuildinfo

@@ -1,0 +1,17 @@
+nativeplat / wired
+
+Game cores: pret's pokeplatinum and pokediamond decompilations and nativeplat's
+port layer. See the accompanying GPL-3.0 license and the repository sources.
+Pokemon is a trademark of Nintendo / Creatures Inc. / GAME FREAK inc.
+Cartridge images and save files are not included in the distribution.
+
+React and React DOM: Meta Platforms, Inc. and affiliates, MIT.
+Lucide icons: Lucide contributors, ISC.
+IBM Plex Mono: IBM, SIL Open Font License 1.1.
+Space Grotesk: Florian Karsten, SIL Open Font License 1.1.
+Fonts are currently requested from Google Fonts; system monospace/sans-serif
+fallbacks work if the font service is unavailable.
+
+Build tools (not required by players): Vite (MIT), TypeScript (Apache-2.0),
+Binaryen (Apache-2.0), WABT (Apache-2.0), wasi-sdk and wasi-libc.
+Exact JavaScript package versions are recorded in package-lock.json.
