@@ -1,0 +1,284 @@
+# nativeplat shell
+
+The player-facing SDL3 app: launcher, ROM import, game view, options and
+touch controls. It drives a game core through `core/include/np_core.h` and
+knows nothing about wasm.
+
+## Build
+
+```sh
+cmake -S shell -B build/shell -G Ninja -DNP_CORE=stub   # or -DNP_CORE=real
+cmake --build build/shell
+ctest --test-dir build/shell --output-on-failure
+```
+
+- `NP_CORE=stub` links `core/stub/np_core_stub.c`, a test-pattern core
+  (title from the cartridge header, frame counter, keypad and stylus state,
+  sine tone, save round-trip).
+- `NP_CORE=real` adds `core/` and links `np_runtime` plus every
+  `np_guest_<game>` it defines via `np_link_guest_modules()`.
+- macOS builds `nativeplat.app`; `-DCMAKE_SYSTEM_NAME=iOS` with the Xcode
+  generator uses `platform/ios/Info.plist.in` (needs an iOS build of SDL3).
+
+## Importing a cartridge
+
+Drop a `.nds` on the window (or the Dock icon), or use *Import ROM*. The file
+is identified by SHA-1:
+
+| Game | Accepted dump (SHA-1) |
+| --- | --- |
+| Diamond (USA) | `a46233d8b79a69ea87aa295a0efad5237d02841e` |
+| Pearl (USA) | `99083bf15ec7c6b81b4ba241ee10abd9e80999ac` |
+| Platinum (USA, Rev 1) | `0862ec35b24de5c7e2dcb88c9eea0873110d755c` |
+
+Platinum Rev 0 (`ce81046e…`) is recognised and refused with a pointer to
+Rev 1; anything else is refused with its computed hash. Accepted files are
+copied (temp file + rename) into the user data folder.
+
+## User data
+
+SDL's per-user pref folder (`SDL_GetPrefPath("nativeplat", "nativeplat")`),
+or, in portable mode, `userdata/` beside the executable when a
+`portable.txt` sits next to it (for a macOS bundle: next to `nativeplat.app`).
+
+```
+roms/<game>.nds          imported cartridge
+saves/<game>/<slot>.sav[.bak]  save slots; written atomically, previous image kept as .bak
+screenshots/             F12 captures (PNG, both screens at native size)
+options.ini              settings and bindings
+```
+
+## Save slots
+
+Each game has any number of named save slots (raw 512 KiB flash images, the
+format melonDS and DeSmuME's "raw .sav" use). Picking a game on the launcher
+opens its slots: *Continue* (last used), *New save slot*, each slot (Play,
+Rename, Duplicate, Export .sav, Delete with confirmation) and *Import .sav*
+(also by dropping a `.sav`/`.dsv` on that page). Imports must be exactly
+512 KiB, or a DeSmuME `.dsv` (512 KiB + its 122-byte footer, which is
+stripped). Names: up to 32 letters, digits, spaces and `- _ ( ) . ! ' #`,
+compared case-insensitively; Windows device names are refused. Names are typed
+or picked on an on-screen keyboard (gamepad/mouse/touch).
+
+## Launching
+
+```sh
+nativeplat --game platinum --slot "My run"   # or --slot 2 (2nd slot as listed)
+nativeplat --launcher                         # ignore "On startup: Continue"
+open 'nativeplat://launch?game=platinum&slot=My%20run'
+```
+
+`--game` alone continues that game's last slot. The `nativeplat:` URL scheme is
+registered in both Info.plists; SDL delivers opened URLs as
+`SDL_EVENT_DROP_FILE` on macOS and iOS. On Windows the scheme is not
+registered (that needs an installer writing the registry), so use the flags.
+Unknown games, missing slots, games whose core is not in the build, or games
+not yet imported all land on the launcher with a message.
+
+*Options > Real-time clock* feeds the device's local time to the game's RTC
+(default), or the port's fixed clock (2009-03-22 10:00, advancing with frames);
+it applies from the next boot.
+
+## Save editor
+
+*Edit save...* on a slot opens an editor for that slot's backup image
+(features/save4), with names and game tables read from the imported ROM
+(features/ndsdata). Tabs: **Trainer** (name, gender, IDs, money, coins,
+badges, play time), **Party** (species, nickname, level/EXP, ability, held
+item, moves, IVs, EVs, friendship; nature, shininess, PID and OT shown
+read-only), **Boxes** (18 x 30 grid: edit, move/swap, release), **Bag**
+(change item, quantity, remove, add) and **Pokedex** (seen/caught per species,
+mark all, clear). Level and EXP move together, party stats are recomputed
+with the game's formula, a new move gets full PP and EVs are capped at 510.
+
+Every edit can be undone (16 steps; X / Ctrl+Z, redo Y / Ctrl+Shift+Z).
+*Save* (Ctrl+S) writes the slot atomically and keeps the previous image as
+`.bak`. A slot whose blocks fail their checksums is refused with the reason.
+L/R or Page Up/Down switch tabs; numbers take typed digits or per-digit +/-;
+lists filter as you type. Limitations: no party/box transfers, item pockets
+are not checked against item data, alternate forms use the base species'
+stats.
+
+**Events** (Platinum saves) turns on the MYSTERY GIFT main-menu option and
+the Pokedex-obtained flag it also needs, lists the three Wonder Cards
+(remove one together with its pending gift) and adds Wonder Cards we write
+ourselves for the Member Card (Darkrai), Oak's Letter (Shaymin), Azure Flute
+(Arceus) and Secret Key (Rotom) events: the deliveryman in any Poke Mart then
+hands over the item. *Import .pgt / .pcd...* (or dropping such a file on the
+editor) adds any gift file you own. No event files ship with nativeplat.
+
+*Export Trainer Card PNG...* and *Export Pokedex diploma PNG...* at the end
+of the Trainer tab write a 768x576 image of the open save (name, ID, money,
+Pokedex counts, play time, badges, party; the diploma shows the caught count
+out of 493 and today's date). Both layouts are nativeplat's own, drawn with
+the shell's bitmap font (`src/card.c`, no game graphics).
+
+## Display effects and performance
+
+*Options > Effect 1 / Effect 2* chain two effects, each with an intensity:
+**LCD grid** (gaps between DS pixels), **Scanlines**, **CRT** (scanlines,
+aperture-grille mask, vignette and, with *CRT curvature*, a barrel-bent
+picture) and **Smooth** (Scale2x on the CPU, then linear sampling). They are
+drawn with plain SDL_Renderer geometry and tiny repeating pattern textures, no
+shaders, so they look the same on Metal (macOS/iOS), Direct3D/Vulkan
+(Windows) and the software renderer, and follow every layout, rotation and
+scale. Patterns are skipped below 2 window pixels per DS pixel.
+
+*Performance* only changes presentation: **Custom** uses the VSync, FPS cap
+and effect options as set; **High** = effects, VSync, no cap; **Balanced** =
+no curvature, VSync, 60 FPS cap; **Low** = no effects, VSync off, 30 FPS cap;
+**Auto** = High, dropping to Low while producing a frame takes over 12 ms
+(averaged over 120 frames) and returning under 5 ms.
+
+## Default controls
+
+| DS | Keyboard | Gamepad (by position) |
+| --- | --- | --- |
+| D-pad | Arrows, W A S D | D-pad, left stick |
+| A | Z, Enter, Space | East |
+| B | X, Backspace | South |
+| X | C | North |
+| Y | V | West |
+| L / R | Q / E | LB / RB |
+| Start | Escape | Start |
+| Select | Tab, Left/Right Shift | Back |
+| Fast-forward (hold) | F | RT |
+| Fast-forward (toggle) | G | LT |
+| Rewind (hold) | R | L3 |
+
+Everything above is rebindable in *Options > Controls* (three keys and one
+gamepad button per action; a key or button bound to a new action is removed
+from its old one). Fixed shell keys: `1` cycles speed, `F9` touch controls,
+`F10` (or Cmd+,) options, `F11` / Alt+Enter fullscreen, `F12` screenshot.
+Gamepad Guide or R3 opens the options. The mouse is the stylus on the bottom
+screen in every layout and rotation; on touch screens fingers are, and an
+on-screen pad (d-pad, A/B/X/Y, L/R, Start/Select, FF, Menu) appears after the
+first touch (*Touch controls: Auto/On/Off*).
+
+## Saving, snapshots and rewind
+
+| Key | Action |
+| --- | --- |
+| F1 | Quick save: the game's own save, made without opening its menu (the core waits up to a second for the player to be free; "Can't save right now" otherwise) |
+| F2, F2 | Quick load: press twice within 3 s to reboot the slot from its last save |
+| F5 / F7 | Take / restore an in-memory snapshot in the current slot |
+| F6 | Next snapshot slot (4) |
+| R (hold) | Rewind |
+| `-` / `=` | Camera farther / closer |
+| `3` / `4` | Camera tilt down / toward the horizon (5 degrees) |
+| `0` | Original camera |
+
+Snapshots and rewind use the core's in-session states (`np_core_state_*`):
+the whole machine, held in memory only and dropped when the game closes; the
+cartridge save remains the persistent state. Rewind records every sixth
+frame and, while held, steps back at 3x through *Rewind history* (Off / 10 /
+30 / 60 s, 8 MB per second of budget, the newest snapshot in full and older
+ones as run-length-coded XOR deltas, `src/rewind.c`). Quick load, snapshots
+and rewind are refused during a wireless session.
+
+The *Options* game rows are applied live by the core: music and sound-effect
+volume, 3D render scale (1x-4x), widescreen 3D (both screens widen; the DS
+picture stays centred and the stylus maps to it), camera zoom and tilt,
+instant text, and *Fix cartridge bugs* (opt-in fixes of documented bugs).
+
+## Timing, speed and audio
+
+The guest runs at the DS refresh rate, 59.8261 Hz, from a wall-clock
+accumulator independent of the display (VSync on/off, optional FPS cap). The
+*Logic clock: Exact 60 Hz* option runs it at 60 Hz instead, so a 60 Hz
+display shows every frame once. Speeds 2x, 3x, 4x, 8x run several guest
+frames per presented frame; *Uncapped* runs frames for 12 ms of each iterate.
+
+Audio (32728 Hz stereo from the core) goes through an SDL audio stream that
+resamples to the device; a +-0.5% feedback on the stream ratio keeps latency
+near 60 ms. While fast-forwarding, audio is time-stretched by dropping: each
+chunk is queued only while the device queue is short, the rest is discarded,
+so you hear normal-pitch snippets rather than sped-up audio. The game pauses
+(and audio stops) while a menu is open, when minimized, and in the
+background; going to the background also flushes the save. During a local
+wireless session (`NP_STAT_LINK_ACTIVE`) the speed is locked to 1x and the
+game keeps running when minimized or in the background, because the partner
+drops a station that is silent for 4 s.
+
+## Local wireless
+
+*Options > Local wireless (LAN)* opens a UDP transport (`src/net.c`) on *LAN
+port* (default 2009; the next three ports are tried if it is taken) that
+finds other nativeplat instances on the LAN; *Join by IP:port* adds a station
+beyond broadcast range. *Wireless status* shows stations in range or the
+error. Each install keeps a station id in `options.ini` (`[wireless]
+station_id`), generated once: the game derives the console's MAC address
+from it and stores that in saves, so a changing id would trigger the game's
+"different DS" clock penalty. *Internet relay host:port* and *Room PIN* switch
+the transport to a relay server (`server/relay`, `docs/RELAY.md`): players
+who enter the same relay and PIN meet as if in range, without port
+forwarding.
+
+## Folder sync
+
+*Options > Sync folder* picks a folder (for example inside iCloud Drive,
+Dropbox or a network share) that mirrors every save slot as
+`<folder>/<game>/<slot>.sav`; cartridges are never copied. Slots sync when the
+app starts (before a game can boot), when it quits, after every in-game or
+editor save, and on *Sync now*; renaming or deleting a slot removes its
+synced copy unless another device changed it since. *Sync status* shows the
+last result. Left on *Sync folder* turns sync off.
+
+Each slot is compared three ways (`src/sync_plan.c`): this device's file, the
+folder's file, and the content both had after the last sync, remembered in
+`sync-state.txt` with both files' size and modification time so unchanged
+files are not re-read. The side that changed wins. A fresh, never-saved slot
+never overwrites a save, and a missing file is never taken as a deletion.
+When both sides changed, this device's copy stays the slot, the folder's copy
+becomes a new slot `<slot> (conflict <date>)` (synced too, so neither version
+is lost anywhere), and a chooser shows both (trainer, play time, badges,
+save time) with *Keep this device's*, *Use the other copy*, *Keep both* or
+*Decide later*.
+
+## Autotest
+
+`NP_AUTOTEST` skips the launcher, boots a core for a synthetic cartridge
+header with an in-memory save (booting twice to prove the save round-trips),
+runs N frames through the real renderer, writes a PNG of the window and
+exits 0:
+
+```sh
+SDL_VIDEO_DRIVER=dummy NP_AUTOTEST="frames=120,png=/tmp/shot.png" \
+  build/shell/nativeplat.app/Contents/MacOS/nativeplat
+```
+
+Keys (comma separated): `frames`, `png`, `game`, `layout`
+(`vertical|horizontal|hybrid|top|bottom`), `rotation` (0-3), `swap`, `scale`
+(`integer`), `filter` (`linear`), `touch=XxY`, `keys=a+up`, `controls=1`,
+`size=WxH`, `page=launcher|options|controls|about`, `storage=1` (saves and an
+options round-trip file in the user-data root; refused unless portable mode is
+on, so tests never touch a player's data), `import=<path>` (run the
+importer; repeatable), `rom=<path>` (boot a real cartridge, save in memory),
+`boot=app` (start like the real app: options, command-line launch options,
+launcher; implies `storage=1`), `press=<schedule>` or `press=@<file>` (DS keys
+and stylus taps per frame, below), `shots=N` (also write `<png>-<iteration>.png`
+every N iterations), `clock=real` (device RTC; the default is the port's fixed
+clock so runs repeat exactly), `slot=<name>` (save slot used with `storage=1`),
+and `script=F:kind:args;...` to push synthetic `key`, `text`, mouse
+(`down/move/up`), finger (`fdown/fmove/fup`), `drop:<path or URL>` and
+`dialog:<path>` (answer the open file dialog) events before frame F.
+`lan=<port>` turns local wireless on, `peer=<host:port>` joins a station and
+`station=<hex>` sets the station id (autotests otherwise use a fixed id).
+`rewind=F+N` holds rewind for N iterations from iteration F; `render_scale`,
+`widescreen`, `zoom`, `tilt`, `instant_text`, `fix_bugs` and
+`rewind_seconds` set the game options. `sync=<folder>` sets the sync folder
+(only with portable storage).
+
+A press schedule is steps separated by `;` or newlines (`#` comments in files):
+`F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N
+frames (default 6) from frame F, repeated every R frames C times;
+`F:tap:X:Y[:N[:R:C]]` touches the bottom screen. `+D` instead of F means D
+frames after the previous step.
+
+Real Platinum title screen:
+`NP_AUTOTEST="frames=1500,png=/tmp/t.png,rom=/path/pokeplatinum.us.nds"`.
+
+`tests/platinum_first_save.press` plays a new game to the first in-game save
+(player NATIVE, rival BARRY). CTest `shell_platinum_first_save` (real-core
+builds) runs it on portable storage, checks the slot file, reboots to the
+CONTINUE menu and parses the save with `np_save4`; it skips without the ROM.

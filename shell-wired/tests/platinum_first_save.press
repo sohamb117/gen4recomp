@@ -1,0 +1,42 @@
+# Pokemon Platinum (US, Rev 1): new game to the first in-game save.
+#
+# An NP_AUTOTEST press= schedule (see autotest_parse_press in shell/src/main.c):
+#   FRAME:KEYS[:HELD[:EVERY:COUNT]]   or   FRAME:tap:X:Y[:HELD[:EVERY:COUNT]]
+# where "+D" means D frames after the previous step. Frame numbers assume the
+# autotest's fixed RTC (clock=fixed, the default) and one guest frame per
+# iteration from power-on. The player is named NATIVE, the rival BARRY; the
+# game is saved from the start menu in the bedroom at about frame 12350.
+# Used by shell/tests/first_save.cmake; contains no game data.
+1250:start            # title screen
+1350:a:4:40:56        # Rowan's opening speech and the controls explanation
+3820:tap:118:82:8:40:2  # "Do you understand everything so far?" -> YES (touch only)
+4110:a                # "Would you like to know more about anything else?"
+4170:down
+4190:down
+4210:a                # "No info needed"
+4280:a:4:40:12        # "This world is widely inhabited by creatures..."
+4820:tap:128:100:8:40:3 # "Touch the button on the middle of the Poke Ball"
+5000:a:4:40:45        # Pokemon talk, "Are you a boy? Or are you a girl?" -> boy (default)
+6920:a                # "Tell me, what is your name?" -> naming screen
+7100:tap:82:118:6     # N
++20:tap:34:100:6      # A
++20:tap:178:118:6     # T
++20:tap:162:100:6     # I
++20:tap:50:137:6      # V
++20:tap:98:100:6      # E
++30:tap:217:71:6      # OK
++60:a:4:40:22        # "Your name is NATIVE?" YES, Rowan, "What might his name be?"
+8220:tap:50:100:6     # B
++20:tap:34:100:6      # A
++20:tap:146:118:6     # R
++20:tap:146:118:6     # R
++20:tap:98:137:6      # Y
++30:tap:217:71:6      # OK
++60:a:4:40:70        # "BARRY, is it?" YES, Rowan farewell, TV scene
+11250:a:4:40:6        # "That concludes our special program"
+11660:a               # "See you next week, same time, same channel!"
+11780:x               # open the menu
+11840:down
+11860:down            # SAVE
+11880:a
+11980:a:4:40:6        # "Would you like to save the game?" -> YES, then "...saved the game."
