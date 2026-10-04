@@ -879,6 +879,13 @@ uint32_t armrec_extern_addr(const char *name, void *fn);
  * loaded out of data tables, etc.). Traps if the address is unknown. */
 uint64_t armrec_dispatch(uint32_t addr, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3);
 
+#if defined(__wasm__) && defined(PC_GAME_DP)
+/* Diamond/Pearl on wasm32: values below ARMREC_WASM_FNPTR_END are C function
+ * pointers (table indices), resolved through the bridge's adapter table;
+ * armrec_bridge.h. */
+#include "armrec_bridge.h"
+#endif
+
 /* True if `addr` falls inside one of the DS regions armrec_mem_init() maps. */
 int armrec_is_guest_addr(uint32_t addr);
 

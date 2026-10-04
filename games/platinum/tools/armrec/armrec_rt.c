@@ -2337,11 +2337,26 @@ const char *armrec_name_of(uint32_t addr) {
  * into, which is a second source of truth about something the callee's own
  * declaration already settles.
  */
+#if defined(__wasm__) && defined(PC_GAME_DP)
+/*
+ * Diamond/Pearl on wasm32 (IRBridge): every entry is a recompiled body or a
+ * c2u$ adapter, both armrec_fn, and both read arguments five and up from
+ * armrec_sp themselves. A call through any other type traps on wasm.
+ */
+#define ARMREC_FWD(fn, a0, a1, a2, a3) \
+    ((armrec_fn)(fn))((a0), (a1), (a2), (a3))
+#else
 #define ARMREC_FWD(fn, a0, a1, a2, a3) \
     ((armrec_extfn)(fn))((a0), (a1), (a2), (a3), ARMREC_STACK_ARGS)
+#endif
 
 uint64_t armrec_dispatch(uint32_t addr, uint32_t a0, uint32_t a1, uint32_t a2, uint32_t a3) {
-    struct entry *e = lookup_code(addr);
+    struct entry *e;
+#if defined(__wasm__) && defined(PC_GAME_DP)
+    /* A C function pointer is a wasm table index; armrec_bridge.h. */
+    if (addr < ARMREC_WASM_FNPTR_END) return armrec_bridge_call(addr, a0, a1, a2, a3);
+#endif
+    e = lookup_code(addr);
     if (e == NULL) {
         /*
          * Not a guest address at all, so it is a host one: a `blx rN` whose
@@ -2632,7 +2647,11 @@ int armrec_guest_span_ok(uint32_t addr, uint32_t len) {
 
 uint64_t armrec_call_code(uint32_t addr, uint32_t a0, uint32_t a1, uint32_t a2,
                           uint32_t a3) {
-    struct entry *e = lookup_code(addr);
+    struct entry *e;
+#if defined(__wasm__) && defined(PC_GAME_DP)
+    if (addr < ARMREC_WASM_FNPTR_END) return armrec_bridge_call(addr, a0, a1, a2, a3);
+#endif
+    e = lookup_code(addr);
 
     /*
      * No ARMREC_FWD here, and the asymmetry with armrec_dispatch() above is
@@ -2695,7 +2714,12 @@ uint64_t armrec_call_code(uint32_t addr, uint32_t a0, uint32_t a1, uint32_t a2,
  * `?? ()`.
  */
 void *armrec_resolve_code(uint32_t addr) {
-    struct entry *e = lookup_code(addr);
+    struct entry *e;
+#if defined(__wasm__) && defined(PC_GAME_DP)
+    /* A table index already is the native entry point. */
+    if (addr < ARMREC_WASM_FNPTR_END && addr != 0) return (void *)(uintptr_t)addr;
+#endif
+    e = lookup_code(addr);
 
     if (e != NULL) {
         if (armrec_trace)
@@ -2916,8 +2940,19 @@ uint32_t armrec_extern_addr(const char *name, void *sym) {
      * harmless by accident, which is the kind of thing worth removing rather
      * than relying on.
      */
+#if defined(__wasm__) && defined(PC_GAME_DP)
+    /*
+     * Diamond/Pearl on wasm32: a function is its table index, which the
+     * dispatcher resolves through the bridge's c2u$ adapter table, and data
+     * is its linear-memory address. Neither goes in the guest table: an
+     * index is not a guest address, and a C object above NP_GUEST_C_BASE is
+     * not code.
+     */
+    (void)name;
+#else
     if (a >= ARM_ITCM_BASE)
         armrec_register((uint32_t)a, (armrec_fn)sym, name);
+#endif
     return (uint32_t)a;
 }
 
