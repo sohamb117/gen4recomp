@@ -1,0 +1,67 @@
+# From the save scenario 'wild' leaves in Route 201's grass (Diamond/Pearl):
+# east through the grass (a wild Starly met at ~1803 is beaten by A spam),
+# into Sandgem to the Poke Mart: buy one Poke Ball (BUY, Poke Ball, x1, YES),
+# out; west to the Pokemon Center: the nurse heals the party; the PC east of
+# the counter: SOMEONE'S PC, DEPOSIT the third party member (the caught
+# Starly) into BOX 1, "Continue Box operations?" NO, WITHDRAW it again; then
+# SAVE from the field menu (X, down down, A, YES; stored ~frame 16002).
+1250:start
+1400:a
+1500:a
+1600:a
+1700:right:100
+2600:a:4:60:40
+5000:right:700
+5760:left:32
+5820:up:60
+6100:up:80
+6200:a
+6420:a
+6500:a
+6580:a
+6900:a
+7000:a
+7100:a
+7180:b
+7300:b
+7400:b
+7700:b
+7800:b:4:60:6
+8200:down:80
+8450:left:160
+8650:up:80
+8950:up:120
+9100:a
+9200:a:4:60:20
+10650:a
+10800:a
+10950:b
+11050:right:64
+11150:up:40
+11250:a
+11400:a
+11500:a
+11600:a
+11850:a
+12150:a
+12550:down
+12600:a
+12700:a
+12950:a
+13150:b
+13300:down
+13330:a
+13750:down
+13800:a
+14000:a
+14100:a
+14400:b
+14550:down
+14580:a
+14850:b
+14950:b:4:60:4
+15300:x
+15360:down
+15390:down
+15450:a
+15550:a:4:40:8

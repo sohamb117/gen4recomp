@@ -1,0 +1,28 @@
+# Route 201 grass from recipes/sandgem.recipe (Diamond/Pearl): out of Sandgem
+# west into the grass, a wild Bidoof (~2445) beaten by A spam (FIGHT, Tackle;
+# battle over ~5407), down/up steps meet a wild Starly (~5595), caught with
+# Poke Balls through the touch bag (BAG, POKE BALLS, Poke Ball, USE; the
+# second ball holds, ~9300), nickname declined (NO at 128,138), then SAVE
+# from the field menu (X, down down, A, YES; stored ~frame 11046).
+1250:start
+1400:a
+1500:a
+1600:a
+1700:down:40
+1760:left:600
+2300:up:20
+2330:left:200
+3000:a:4
+3400:a:4:60:35
+5500:down:16:48:4
+5524:up:16:48:4
+6550:tap:30:178:6:900:3
+6600:tap:192:55:6:900:3
+6650:tap:64:25:6:900:3
+6700:tap:100:174:6:900:3
+10100:tap:128:138:6
+10400:x
+10460:down
+10490:down
+10550:a
+10650:a:4:40:8
