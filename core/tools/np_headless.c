@@ -44,6 +44,10 @@
  *     --net-peer H:P     also say hello to this address, repeatable
  *     --net-id ID        24-bit station id (default random)
  *     --net-drop PCT     drop this share of outgoing datagrams (loss testing)
+ *     --lockstep MY:PEER test only (POSIX): two instances on 127.0.0.1 ports MY
+ *                        and PEER run in frame lockstep and exchange the game's
+ *                        datagrams at frame boundaries, so runs repeat exactly
+ *                        (needs --net-id; no --net)
  *     --net-relay H:P    internet play through a relay (server/relay) instead
  *     --net-pin PIN      of LAN discovery; PIN names the relay room
  *
@@ -334,18 +338,133 @@ static int parse_opt(const char *v, opt_set *s) {
 /* --net: the np_host transport callbacks over shell/src/net.c. */
 static np_net *g_net;
 
+/* --lockstep MY:PEER (test only, POSIX): two instances on loopback advance
+ * frame by frame together and the game's datagrams travel on the same
+ * socket, framed: DATA records during a frame, then END(frame). Before
+ * frame N+1 each side waits for the peer's END(N); everything the peer sent
+ * during its frame N is delivered during frame N+1. Arrival frames are then
+ * a function of the inputs alone, so frame-numbered schedules replay
+ * exactly, run after run. */
+#if !defined(_WIN32)
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <poll.h>
+#include <sys/socket.h>
+
+#define LS_QUEUE 256
+static struct {
+    int on, sock;
+    uint32_t id;
+    struct sockaddr_in peer;
+    struct {
+        uint16_t len;
+        uint8_t data[1500];
+    } q[LS_QUEUE]; /* delivered this frame */
+    int qhead, qcount;
+    uint32_t peer_id;
+} g_ls;
+
+static int lockstep_open(const char *spec, uint32_t id) {
+    unsigned mine, theirs;
+    if (sscanf(spec, "%u:%u", &mine, &theirs) != 2) return -1;
+    g_ls.sock = socket(AF_INET, SOCK_DGRAM, 0);
+    int big = 4 << 20;
+    setsockopt(g_ls.sock, SOL_SOCKET, SO_RCVBUF, &big, sizeof big);
+    struct sockaddr_in a = {0};
+    a.sin_family = AF_INET;
+    a.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    a.sin_port = htons((uint16_t)mine);
+    if (bind(g_ls.sock, (struct sockaddr *)&a, sizeof a) != 0) return -1;
+    g_ls.peer = a;
+    g_ls.peer.sin_port = htons((uint16_t)theirs);
+    g_ls.id = id;
+    g_ls.on = 1;
+    return 0;
+}
+
+/* Record: u8 kind (0 DATA, 1 END), u32 sender id, u32 frame, payload. */
+static void lockstep_send(uint8_t kind, uint32_t frame, const void *buf, uint32_t len) {
+    uint8_t p[9 + 1500];
+    if (len > 1500) return;
+    p[0] = kind;
+    memcpy(p + 1, &g_ls.id, 4);
+    memcpy(p + 5, &frame, 4);
+    memcpy(p + 9, buf, len);
+    sendto(g_ls.sock, p, 9 + len, 0, (struct sockaddr *)&g_ls.peer, sizeof g_ls.peer);
+}
+
+/* The barrier before frame `frame` (> 0): collects the peer's records up to
+ * END(frame - 1) into this frame's delivery queue. Frame 0 needs the peer
+ * to exist, so it waits for any record. */
+static void lockstep_barrier(uint64_t frame) {
+    uint8_t p[9 + 1500];
+    double last_hello = 0;
+    g_ls.qhead = 0;
+    g_ls.qcount = 0;
+    for (;;) {
+        if (frame == 0 && now_ms() - last_hello > 100) {
+            lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* hello: END of frame -1 */
+            last_hello = now_ms();
+        }
+        struct pollfd pf = {g_ls.sock, POLLIN, 0};
+        if (poll(&pf, 1, 100) <= 0) continue;
+        ssize_t n = recv(g_ls.sock, p, sizeof p, 0);
+        if (n < 9) continue;
+        uint32_t f;
+        memcpy(&g_ls.peer_id, p + 1, 4);
+        memcpy(&f, p + 5, 4);
+        if (p[0] == 1) {
+            if (frame == 0 ? f == 0xFFFFFFFFu : f == (uint32_t)(frame - 1)) break;
+            continue; /* a stale hello */
+        }
+        if (g_ls.qcount < LS_QUEUE) {
+            g_ls.q[g_ls.qcount].len = (uint16_t)(n - 9);
+            memcpy(g_ls.q[g_ls.qcount].data, p + 9, (size_t)(n - 9));
+            g_ls.qcount++;
+        }
+    }
+    if (frame == 0) lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* answer a late starter */
+}
+
+static void lockstep_end_frame(uint64_t frame) {
+    lockstep_send(1, (uint32_t)frame, NULL, 0);
+}
+#else
+static struct { int on; uint32_t id, peer_id; int qhead, qcount; } g_ls;
+static int lockstep_open(const char *spec, uint32_t id) { (void)spec; (void)id; return -1; }
+static void lockstep_barrier(uint64_t frame) { (void)frame; }
+static void lockstep_end_frame(uint64_t frame) { (void)frame; }
+static void lockstep_send(uint8_t kind, uint32_t frame, const void *buf, uint32_t len) {
+    (void)kind; (void)frame; (void)buf; (void)len;
+}
+#endif
+
 static uint32_t net_self_cb(void *user) {
     (void)user;
-    return np_net_self(g_net);
+    return g_ls.on ? g_ls.id : np_net_self(g_net);
 }
 
 static int net_send_cb(void *user, uint32_t peer, const void *buf, uint32_t len) {
     (void)user;
+    if (g_ls.on) {
+        lockstep_send(0, 0, buf, len);
+        return 0;
+    }
     return np_net_send(g_net, peer, buf, len);
 }
 
 static int net_recv_cb(void *user, uint32_t *peer, void *buf, uint32_t cap) {
     (void)user;
+#if !defined(_WIN32)
+    if (g_ls.on) {
+        if (g_ls.qhead == g_ls.qcount) return 0;
+        int i = g_ls.qhead++;
+        if (g_ls.q[i].len > cap) return -1;
+        memcpy(buf, g_ls.q[i].data, g_ls.q[i].len);
+        *peer = g_ls.peer_id;
+        return g_ls.q[i].len;
+    }
+#endif
     return np_net_recv(g_net, peer, buf, cap);
 }
 
@@ -372,7 +491,8 @@ static int usage(void) {
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--schedule FILE]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
                     "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]\n"
-                    "                    [--net-relay HOST:PORT --net-pin PIN]]\n");
+                    "                    [--net-relay HOST:PORT --net-pin PIN]]\n"
+                    "                   [--lockstep MYPORT:PEERPORT --net-id ID]\n");
     return 2;
 }
 
@@ -531,7 +651,7 @@ int main(int argc, char **argv) {
     uint16_t net_port = 0;
     uint32_t net_id = 0;
     const char *net_peers[8];
-    const char *net_relay = NULL, *net_pin = NULL;
+    const char *net_relay = NULL, *net_pin = NULL, *lockstep = NULL;
 
     for (int i = 3; i < argc; i++) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
@@ -579,6 +699,8 @@ int main(int argc, char **argv) {
             net_id = (uint32_t)strtoul(v, NULL, 0);
         } else if (strcmp(a, "--net-drop") == 0) {
             net_drop = atoi(v);
+        } else if (strcmp(a, "--lockstep") == 0) {
+            lockstep = v;
         } else if (strcmp(a, "--net-relay") == 0) {
             net_relay = v;
         } else if (strcmp(a, "--net-pin") == 0) {
@@ -611,6 +733,15 @@ int main(int argc, char **argv) {
     host.save_store = save_store;
     host.rtc_now = have_rtc ? rtc_now : NULL;
     host.log = log_line;
+    if (lockstep) {
+        if (net_on || net_id == 0 || lockstep_open(lockstep, net_id & 0xffffffu) != 0) {
+            fprintf(stderr, "np_headless: --lockstep needs MYPORT:PEERPORT, --net-id and no --net (POSIX only)\n");
+            return 2;
+        }
+        host.net_self = net_self_cb;
+        host.net_send = net_send_cb;
+        host.net_recv = net_recv_cb;
+    }
     if (net_on) {
         char err[160];
         np_net_config nc = {0};
@@ -667,6 +798,7 @@ int main(int argc, char **argv) {
     uint64_t timed_from = ran;
     double next_frame = t0;
     for (; rc == 0 && state_rc >= 0 && ran < frames; ran++) {
+        if (g_ls.on) lockstep_barrier(ran);
         if (g_net) {
             np_net_poll(g_net);
             /* Linked: real time, as a console runs, or the partner's MP
@@ -679,6 +811,7 @@ int main(int argc, char **argv) {
             }
         }
         rc = step(&s, ran, &f, &hash);
+        if (g_ls.on) lockstep_end_frame(ran);
         if (rc != 0) break;
         int last = ran + 1 == frames;
         if (dump_dir && (last || (dump_every && ran >= dump_from && (ran - dump_from) % dump_every == 0)) &&
