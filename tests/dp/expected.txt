@@ -1,12 +1,15 @@
 # tests/dp/regress.sh cases: NAME GAME FRAMES HASH [np_headless args...]
 # HASH is np_headless's final hash (frames + audio) after FRAMES frames.
 # Change a hash only through `regress.sh --update --reason TEXT`, which
-# appends a dated history line below saying why.
+# appends a dated history line below saying why. A case with --state-test
+# also fails when any snapshot round does not replay identically.
 d-boot    diamond   600   49e21389a9f73440
 d-intro   diamond   3000  74de04024a1ba0df  --schedule tests/dp/intro.sched
 p-boot    pearl     600   49e21389a9f73440
 p-intro   pearl     3000  c5b6c670776c7935  --schedule tests/dp/intro.sched
 plat-600  platinum  600   808adae3b9490905
+d-state-boot  diamond  400    ae26086a86be9952  --state-test 0 --state-span 100 --state-rounds 3
+d-state-save  diamond  12300  2dc2ff9408c62d1a  --schedule tests/dp/diamond_first_save.sched --state-test 11000 --state-span 300 --state-rounds 4
 #
 # History:
 # 2026-10-04 d-boot, d-intro, p-boot, p-intro: recorded (main 23e8f7b14: copyright, title, Rowan's intro; D/P identical until the title).
@@ -14,3 +17,4 @@ plat-600  platinum  600   808adae3b9490905
 # 2026-10-04 d-intro: 3726014db3b80e22 -> 74de04024a1ba0df: C->asm arity/return-width fixes (08c82c270, 2fe91aead, 5aff148cf), DPAudio's sound heap + SDAT player groups and the timers (D audio rms ~4500 like Platinum), CommSys UNK_021C59F4/F8 ROM layout; inspected: Diamond bedroom, start-menu save, CONTINUE on D and P
 # 2026-10-04 p-boot: 03365075dfcb90cd -> 49e21389a9f73440: C->asm arity/return-width fixes (08c82c270, 2fe91aead, 5aff148cf), DPAudio's sound heap + SDAT player groups and the timers (D audio rms ~4500 like Platinum), CommSys UNK_021C59F4/F8 ROM layout; inspected: Diamond bedroom, start-menu save, CONTINUE on D and P
 # 2026-10-04 p-intro: 1ee1d38b657efe90 -> c5b6c670776c7935: C->asm arity/return-width fixes (08c82c270, 2fe91aead, 5aff148cf), DPAudio's sound heap + SDAT player groups and the timers (D audio rms ~4500 like Platinum), CommSys UNK_021C59F4/F8 ROM layout; inspected: Diamond bedroom, start-menu save, CONTINUE on D and P
+# 2026-10-04 d-state-boot, d-state-save: recorded (snapshot round trips: the first round from frame 0 spans the creation of all three of D's threads, the idle, CTRDG and launcher contexts, which a played game never destroys; four rounds from 11000 span the first save's card writes, ~11400-11800).

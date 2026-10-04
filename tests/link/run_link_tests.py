@@ -45,11 +45,13 @@ SCENARIOS = [
          scheds={'a': 'schedules/trade-a.sched', 'b': 'schedules/trade-b.sched'},
          frames=16800, party=TRADED),
     # B (CHIMCHAR's Ember) beats A; the WIN/LOSE screen is the same picture on
-    # both stations, with WIN on the left for UNIONB.
+    # both stations, with WIN on the left for UNIONB. `win` is checked over
+    # every dump from dump_from to frames, the bound: at least two dumps must
+    # show the red WIN label at (x, y) on both stations and be the same
+    # picture, wherever the battle's length puts them.
     dict(name='union_battle', recipes=UNION,
          scheds={'a': 'schedules/battle-a.sched', 'b': 'schedules/battle-b.sched'},
-         frames=19700, dump_from=10200, dump_every=120,
-         same=[19441, 19561, 19681], red=(19561, 40, 71)),
+         frames=21500, dump_from=17000, dump_every=60, win=(40, 71)),
     # B enters 37 frames after A: the comm manager seeds its parent/child
     # alternation from the RTC and the VBlank counter, and two lockstep
     # stations with the port's fixed clock and the same frame would draw the
@@ -68,8 +70,7 @@ SCENARIOS = [
     # As union_battle: B wins, WIN (left) for UNIONB on both stations.
     dict(name='dp_battle', games=('diamond', 'diamond'), recipes=DP_UNION,
          scheds={'a': 'schedules/dp-battle-a.sched', 'b': 'schedules/dp-battle-b.sched'},
-         frames=16000, dump_from=15600, dump_every=100,
-         same=[15701, 15801, 15901], red=(15801, 47, 92)),
+         frames=17000, dump_from=13500, dump_every=60, win=(47, 92)),
     # Cross-version, as the cartridges allow: Diamond's A with Pearl's B, and
     # with Platinum's (a Platinum save and Platinum's own walk into the room).
     dict(name='dp_pearl_trade', games=('diamond', 'pearl'), recipes=DP_UNION, scheds=DP_TRADE,
@@ -113,6 +114,11 @@ def frame_px(path, x, y):
     return tuple(px[o:o + 3])
 
 
+def is_red(rgb):
+    r, g, b = rgb
+    return r > 180 and g < 120 and b < 120
+
+
 def run(sc, work):
     d = os.path.join(work, sc['name'])
     os.makedirs(d, exist_ok=True)
@@ -153,15 +159,19 @@ def run(sc, work):
         got = linkpair.party(saves[side])
         if got != want:
             fails.append('%s party %s, want %s' % (side, got, want))
-    for fr in sc.get('same', []):
-        pa, pb = (os.path.join(d, s, 'frame_%06d.ppm' % fr) for s in 'ab')
-        if not (os.path.exists(pa) and os.path.exists(pb)) or open(pa, 'rb').read() != open(pb, 'rb').read():
-            fails.append('frame %d differs between the stations' % fr)
-    if 'red' in sc:
-        fr, x, y = sc['red']
-        r, g, b = frame_px(os.path.join(d, 'a', 'frame_%06d.ppm' % fr), x, y)
-        if not (r > 180 and g < 120 and b < 120):
-            fails.append('frame %d (%d,%d) is %s, not the red WIN label' % (fr, x, y, (r, g, b)))
+    if 'win' in sc:
+        x, y = sc['win']
+        shown = 0
+        for name in sorted(os.listdir(os.path.join(d, 'a'))):
+            pa, pb = (os.path.join(d, s, name) for s in 'ab')
+            if not os.path.exists(pb) or not all(is_red(frame_px(p, x, y)) for p in (pa, pb)):
+                continue
+            if open(pa, 'rb').read() != open(pb, 'rb').read():
+                fails.append('%s shows WIN on both stations but differs between them' % name)
+            shown += 1
+        if shown < 2:
+            fails.append('%d dumps (from frame %d to %d) show the red WIN label at (%d,%d) on both stations, '
+                         'want 2 or more' % (shown, sc['dump_from'], sc['frames'], x, y))
     for side, needle in sc.get('logs', {}).items():
         if needle not in open(os.path.join(d, side + '.log')).read():
             fails.append('%s log lacks "%s"' % (side, needle))
