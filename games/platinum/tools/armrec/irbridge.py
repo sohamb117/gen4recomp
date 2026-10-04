@@ -64,7 +64,6 @@ FNPTR_LIMIT = 0x00100000
 # ---------------------------------------------------------------------------
 
 OPEN = {"(": ")", "[": "]", "{": "}", "<": ">"}
-NAME_CHARS = re.compile(r"[-A-Za-z0-9$._]")
 UNQUOTED_NAME = re.compile(r"[-A-Za-z$._][-A-Za-z0-9$._]*|[0-9]+")
 WORD = re.compile(r"[A-Za-z_][A-Za-z0-9_.]*")
 
@@ -203,8 +202,6 @@ def parse_type(s, i):
     c = s[i]
     if c in "{[<":
         j = match_close(s, i)
-        if c == "<" and j < len(s) and s[i + 1] == "{":
-            pass
         return s[i:j], j
     if c == "%":
         if s[i + 1] == '"':
@@ -386,7 +383,7 @@ class Sig(object):
         self.nfixed = nfixed          # None, or count of fixed params
 
 
-def int_token(bits, attrs, kinds):
+def int_token(attrs, kinds):
     if "zeroext" in attrs:
         return kinds[0]
     if "signext" in attrs:
@@ -404,9 +401,9 @@ def sig_token(t, attrs, layout, where):
     if t == "i1":
         return "b"
     if t == "i8":
-        return int_token(8, attrs, "hac")
+        return int_token(attrs, "hac")
     if t == "i16":
-        return int_token(16, attrs, "tsw")
+        return int_token(attrs, "tsw")
     if t == "i32":
         return "i"
     if t == "i64":
@@ -527,7 +524,7 @@ def parse_call(line):
         j = skip_ws(line, e)
     if line.startswith("addrspace(", j):
         j = skip_ws(line, match_close(line, j + len("addrspace")))
-    if line.startswith("asm", j) and not NAME_CHARS.match(line, j + 3 if j + 3 < len(line) else j):
+    if re.match(r"asm\b", line[j:]):
         return None
     k = j
     if line[j] == "@":
@@ -563,7 +560,7 @@ def parse_call(line):
     return c
 
 
-def call_sig(c, fixed_params=None):
+def call_sig(c):
     """The call site's signature. nfixed comes from an explicit variadic
     function type."""
     nfixed = None

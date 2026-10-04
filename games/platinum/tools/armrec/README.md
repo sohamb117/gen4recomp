@@ -20,6 +20,8 @@ feed it, which the sibling ports still use.
 | `strip_asm.py` `unstatic.py` | make SDK sources that mwcc accepted compile with gcc |
 | `recover_asm.py` | brings back assembly a decompilation deleted, out of git |
 | `pe_weak_promote.py` | the weak-symbol fix-up the PE object format needs |
+| `irbridge.py` `gen_bridge.py` | wasm32 Diamond/Pearl: the typed bridge between C prototypes and recompiled code (per-TU IR rewrite, then generated wrappers, `c2u$` adapters, extern bindings) |
+| `armrec_bridge.h` `armrec_bridge_wasm.c` | the bridge's runtime: C function pointer (wasm table index) to adapter; `tests/bridge/` runs it end to end |
 
 Each file's own header carries the reasoning. `armrec_rt.h` is the one to read
 first: it is where the memory model, the calling convention and the four places
