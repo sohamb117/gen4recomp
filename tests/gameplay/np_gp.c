@@ -23,6 +23,9 @@
  *     --hang-sec S        a frame that takes longer than S seconds is a hang
  *                         (default 30)
  *     --time-from F       frames/second measured from frame F (default first)
+ *     --peek F:ADDR:LEN   after frame F, print LEN bytes of guest memory at
+ *                         ADDR as "peek F ADDR: <u32 words>", repeatable
+ *                         (addresses: games/<game>/build/pc-wasm/<game>.map)
  *
  * Prints status changes ("[status] frame K: map_id A -> B"), then a summary:
  *   frames N  hash H  ms/frame M  fps X  audio A  stalls S  audio-stalls T
@@ -348,7 +351,7 @@ static int usage(void) {
                     "             [--schedule FILE]...\n"
                     "             [--dump DIR [--dump-at F,..]... [--dump-every N\n"
                     "             [--dump-from F]]] [-o [F:]NAME=V]... [-e K=V]... [--random SEED\n"
-                    "             [--random-from F]] [--hang-sec S] [--time-from F]\n");
+                    "             [--random-from F]] [--hang-sec S] [--time-from F] [--peek F:ADDR:LEN]...\n");
     return 2;
 }
 
@@ -375,6 +378,8 @@ int main(int argc, char **argv) {
     static int64_t dump_at[MAX_LIST];
     int ndump_at = 0;
     int64_t frames = 600, dump_every = 0, dump_from = 0, random_from = -1, time_from = -1;
+    struct { int64_t frame; uint32_t addr, len; } peeks[64];
+    int npeeks = 0;
     const char *dump_dir = NULL;
     int game = NP_GAME_PLATINUM;
 
@@ -418,6 +423,14 @@ int main(int argc, char **argv) {
         } else if (strcmp(a, "--random-from") == 0) random_from = strtoll(v, NULL, 0);
         else if (strcmp(a, "--hang-sec") == 0) g_hang_sec = atof(v);
         else if (strcmp(a, "--time-from") == 0) time_from = strtoll(v, NULL, 0);
+        else if (strcmp(a, "--peek") == 0 && npeeks < 64) {
+            long long pf;
+            unsigned pa, pl;
+            if (sscanf(v, "%lld:%i:%i", &pf, (int *)&pa, (int *)&pl) != 3 || pl == 0 || pl > 4096) return usage();
+            peeks[npeeks].frame = pf;
+            peeks[npeeks].addr = pa;
+            peeks[npeeks++].len = pl;
+        }
         else return usage();
     }
     qsort(dump_at, (size_t)ndump_at, sizeof *dump_at, cmp_i64);
@@ -535,6 +548,17 @@ int main(int argc, char **argv) {
             status[i] = v;
         }
 
+        for (int p = 0; p < npeeks; p++) {
+            if (peeks[p].frame != k) continue;
+            const uint8_t *m = np_core_guest_ptr(core, peeks[p].addr, peeks[p].len);
+            printf("peek %lld 0x%08x:", (long long)k, peeks[p].addr);
+            for (uint32_t o = 0; m && o + 4 <= peeks[p].len; o += 4) {
+                uint32_t w;
+                memcpy(&w, m + o, 4);
+                printf(" %08x", w);
+            }
+            printf(m ? "\n" : " (out of range)\n");
+        }
         if (dump_dir) {
             int want = k + 1 == frames || (dump_every && k >= dump_from && (k - dump_from) % dump_every == 0);
             while (ndump_i < ndump_at && dump_at[ndump_i] <= k) {

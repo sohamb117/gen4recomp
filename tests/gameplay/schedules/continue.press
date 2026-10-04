@@ -1,0 +1,5 @@
+# Title screen and CONTINUE from a save (fixed RTC; one guest frame per iteration).
+1250:start
+1400:a
+1500:a
+1600:a

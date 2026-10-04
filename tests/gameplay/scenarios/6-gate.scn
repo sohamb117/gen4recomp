@@ -1,0 +1,7 @@
+# Scenario 5: Oreburgh Gate (a cave, wild and trainer battles inside), the
+# cave -> Oreburgh City transition, the Bicycle, Poketch app switching.
+RECIPE=recipes/gate.recipe
+SCHEDULE=schedules/gate.press
+FRAMES=21700
+SHOTS=1700,2400,3000,4200,6000,9000,11000,13400,13600,13800,14200,21050,21180,21250,21400,21600
+EXPECT_MAP=45

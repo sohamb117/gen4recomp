@@ -1,0 +1,16 @@
+# Oreburgh Gym from recipes/roark.recipe: up+A cycles walk the player north,
+# Youngsters Jonathon and Darius spot him, Roark is talked to and beaten
+# (A alone: Surf in slot 0), Coal Badge + TM76; B clears the last text, then
+# SAVE from the field menu (stored ~frame 19916).
+1250:start
+1400:a
+1500:a
+1600:a
+1700:up:12:24:666
+1714:a:4:24:666
+17720:b:4:24:60
+19300:x
+19360:down
+19390:down
+19420:a
+19520:a:4:40:8

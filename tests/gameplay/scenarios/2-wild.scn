@@ -1,0 +1,9 @@
+# Scenario 2: Route 201 tall grass: a wild battle won with Tackle, one fled,
+# a wild Starly caught with Poke Balls through the touch bag, saved.
+RECIPE=recipes/sandgem.recipe
+SCHEDULE=schedules/wild.press
+FRAMES=11600
+SHOTS=1800,2600,3200,3600,4300,5000,5960,6020,6070,6120,6200,7400,9700,9900,10300,10500,10900,11400
+EXPECT_MAP=342
+EXPECT_LOG='stored 524288-byte save'
+EXPECT_SAVE='len(s["party"]) == 3 and s["party"][2]["species_name"] == "STARLY" and s["bag"]["balls"][0]["qty"] == 7 and s["trainer"]["play_time"] != "0:00:00"'

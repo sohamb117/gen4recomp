@@ -1,0 +1,7 @@
+# Scenario 1: the real new-game route from a blank chip: intro, naming,
+# Twinleaf, Route 201, Lake Verity's briefcase (Turtwig), the rival battle
+# against Barry's Chimchar to its end (Turtwig grows to Lv. 6), home again.
+SCHEDULE=schedules/rival.press
+FRAMES=27400
+SHOTS=1300,4300,7300,9600,13000,17400,19000,21600,22800,24000,24600,25200,25800,26400,27399
+EXPECT_MAP=414

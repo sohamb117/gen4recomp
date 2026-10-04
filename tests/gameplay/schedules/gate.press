@@ -1,0 +1,20 @@
+# Oreburgh Gate 1F from recipes/gate.recipe: right/up-tap/A cycles cross the
+# cave (the hiker's HM06, wild Psyduck/Bidoof, Camper Curtis, Picnicker
+# Diana; in battle right/up/A = FIGHT and a move), out into Oreburgh City
+# (map 45, ~frame 13500) and its welcome cutscene; then B, Y mounts the
+# registered Bicycle, a short ride, and two taps on the Poketch's upper
+# button switch apps (watch -> calculator -> watch).
+1250:start
+1400:a
+1500:a
+1600:a
+1700:right:10:24:760
+1712:up:2:24:760
+1716:a:4:24:760
+20000:b:4:30:30
+21000:y
+21060:down:40
+21120:right:60
+21200:left:60
+21300:tap:243:75:6
+21500:tap:243:75:6
