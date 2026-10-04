@@ -99,7 +99,7 @@ uint16_t np_input_poll_keys(np_app *app, int *ff_hold)
         if (y > STICK_THRESHOLD)
             keys |= NP_KEY_DOWN;
     }
-    *ff_hold = held[NP_ACT_FF_HOLD];
+    *ff_hold = held[NP_ACT_FF_HOLD] || app->control_ff_hold;
     app->rewind_hold = held[NP_ACT_REWIND];
     return keys;
 }
@@ -203,17 +203,34 @@ static np_finger *finger_find(np_app *app, SDL_FingerID id)
     return NULL;
 }
 
+/* A short, light pulse on every gamepad: the desktop stand-in for the
+ * haptic tick a phone gives when an on-screen button is pressed. */
+void np_input_rumble(np_app *app)
+{
+    if (!app->opt.rumble)
+        return;
+    for (int p = 0; p < NP_MAX_PADS; p++)
+        if (app->pads[p])
+            SDL_RumbleGamepad(app->pads[p], 0x3000, 0x6000, 30);
+}
+
 static void recompute_controls(np_app *app)
 {
     uint16_t keys = 0;
+    int ff_hold = 0;
     for (int i = 0; i < NP_MAX_FINGERS; i++) {
         const np_finger *f = &app->fingers[i];
         if (f->kind == NP_FINGER_CONTROL) {
-            int ff, menu, any;
-            keys |= np_touchpad_hit(app, f->x, f->y, &ff, &menu, &any);
+            np_touch_hit h;
+            np_touchpad_hit(app, f->x, f->y, &h);
+            keys |= h.keys;
+            ff_hold |= h.ff_hold;
         }
     }
+    if (keys & ~app->control_keys)
+        np_input_rumble(app); /* a button newly under a finger */
     app->control_keys = keys;
+    app->control_ff_hold = ff_hold;
 }
 
 static int ui_active(const np_app *app) { return app->view == NP_VIEW_LAUNCHER || app->page != NP_PAGE_NONE; }
@@ -239,16 +256,18 @@ static void pointer_down(np_app *app, SDL_FingerID id, float x, float y, int but
     }
     if (button != 1)
         return;
-    int ff = 0, menu = 0, any = 0;
+    np_touch_hit h = {0};
     if (np_touchpad_visible(app))
-        np_touchpad_hit(app, x, y, &ff, &menu, &any);
-    if (any) {
+        np_touchpad_hit(app, x, y, &h);
+    if (h.any) {
         f->kind = NP_FINGER_CONTROL;
-        if (ff) {
+        if (h.ff_toggle) {
             app->ff_toggle = !app->ff_toggle;
             np_app_toast(app, app->ff_toggle ? "Fast-forward on" : "Fast-forward off");
         }
-        if (menu) {
+        if (h.quick_save || h.quick_load) /* a skin's quickSave / quickLoad: F1 / F2 */
+            np_session_hotkey(app, h.quick_save ? SDL_SCANCODE_F1 : SDL_SCANCODE_F2);
+        if (h.menu) {
             np_app_open_page(app, NP_PAGE_OPTIONS);
             return; /* open_page released every finger */
         }
@@ -350,5 +369,6 @@ void np_input_release_all(np_app *app)
     for (int i = 0; i < NP_MAX_FINGERS; i++)
         app->fingers[i].kind = NP_FINGER_FREE;
     app->control_keys = 0;
+    app->control_ff_hold = 0;
     app->ui_press_hit = -1;
 }

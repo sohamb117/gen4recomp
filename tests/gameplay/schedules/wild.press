@@ -1,0 +1,35 @@
+# Route 201 grass from recipes/sandgem.recipe: a wild battle won with Tackle
+# (down/up/A cycles: in battle down/up move the cursor RUN->FIGHT and A
+# picks FIGHT then Tackle), a second fled, a third (Starly) caught with Poke
+# Balls through the touch bag (BAG, POKE BALLS, Poke Ball, USE), nickname
+# declined, then SAVE from the field menu (stored ~frame 11346).
+1250:start
+1400:a
+1500:a
+1600:a
+1700:down:40
+1760:left:600
+2300:up:20
+2330:left:200
+2550:down:16:48:60
+2568:up:16:48:60
+2588:a:4:48:60
+6000:tap:30:178:6
+6050:tap:192:55:6
+6100:tap:64:25:6
+6150:tap:100:174:6
+7380:tap:30:178:6
+7430:tap:192:55:6
+7480:tap:64:25:6
+7530:tap:100:174:6
+8820:tap:30:178:6:1260:2
+8870:tap:192:55:6:1260:2
+8920:tap:64:25:6:1260:2
+8970:tap:100:174:6:1260:2
+10400:tap:128:160:6
+10700:x
+10760:down
+10790:down
+10820:down
+10850:a
+10950:a:4:40:8

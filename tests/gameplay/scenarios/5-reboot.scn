@@ -1,0 +1,8 @@
+# Scenario 4b: reboot on scenario 4's save: the CONTINUE screen shows BADGES 1
+# and the game resumes in the gym; the save still holds the Coal Badge.
+FROM=4-roark
+SCHEDULE=schedules/continue.press
+FRAMES=2400
+SHOTS=1450,1550,2399
+EXPECT_MAP=47
+EXPECT_SAVE='s["trainer"]["badges"] == 1'

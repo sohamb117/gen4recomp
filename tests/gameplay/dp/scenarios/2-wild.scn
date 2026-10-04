@@ -1,0 +1,11 @@
+# Scenario 2 (Diamond/Pearl): Route 201 tall grass: a wild Bidoof beaten with
+# Tackle, a wild Starly caught with Poke Balls through the touch bag (two
+# balls), nickname declined, saved from the field menu. Both versions meet
+# the same Bidoof and Starly.
+RECIPE=recipes/sandgem.recipe
+SCHEDULE=schedules/wild.press
+FRAMES=11600
+SHOTS=1800,2200,2800,3400,3800,5000,5200,5900,6580,6630,6680,6800,7100,7400,8400,9300,9950,10300,10500,10700,11000,11500
+EXPECT_MAP=342
+EXPECT_LOG='stored 524288-byte save'
+EXPECT_SAVE='len(s["party"]) == 3 and s["party"][2]["species_name"] == "STARLY" and s["bag"]["balls"][0]["qty"] == 8 and s["trainer"]["play_time"] != "0:00:00"'

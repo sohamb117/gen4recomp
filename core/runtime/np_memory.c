@@ -23,10 +23,16 @@
  * TRADEOFF: generated code is built in wabt's guard-page mode with no signal
  * handler (WASM_RT_SKIP_SIGNAL_RECOVERY) and no explicit bounds checks, for
  * speed. An access between the current size and the end of the reservation
- * faults (the process crashes, it does not trap); an access past the end of
- * the reservation (a wild pointer > max memory) is NOT caught at all and may
- * touch unrelated host memory. The guest is trusted code we built ourselves,
- * so this is accepted. Configure with -DNP_BOUNDS_CHECK=ON to compile the
+ * faults (the process crashes, it does not trap). On 64-bit hosts other than
+ * iOS the reservation is extended with PROT_NONE / MEM_RESERVE address space
+ * to the full 8 GiB a u32 address plus a u32 offset can reach, so a wild
+ * guest pointer past the maximum faults too. Without that trailing guard it
+ * landed in whatever host mapping followed the reservation: sometimes a
+ * crash, sometimes a silent write into host memory, depending on the run's
+ * address-space layout (seen on Diamond: one run in five survived a wild
+ * expheap pointer). On iOS, where address space is capped, such an access
+ * is still NOT caught. The guest is trusted code we built ourselves, so
+ * crashing is accepted. Configure with -DNP_BOUNDS_CHECK=ON to compile the
  * generated code in wabt's bounds-check mode instead: every access is
  * checked against the current size and OOB becomes a clean wasm trap that
  * np_core reports as an error, at a substantial speed cost. Debug with that.
@@ -49,9 +55,27 @@
 #endif
 #endif
 
+#if defined(__APPLE__)
+#include <TargetConditionals.h>
+#endif
+
 #include "np_memory.h"
 
+/* Address space reserved per memory (see TRADEOFF above): base + u32 + u32
+ * stays inside it, so every out-of-range access faults. */
+#if UINTPTR_MAX > 0xFFFFFFFFu && !(defined(__APPLE__) && TARGET_OS_IPHONE)
+#define NP_MEMORY_GUARD_SPAN (8ull << 30)
+#else
+#define NP_MEMORY_GUARD_SPAN 0ull
+#endif
+
 const char *np_memory_failure;
+
+/* The address space wasm_rt_allocate_memory reserves for a memory of
+ * `reserve` bytes at most. */
+static uint64_t reserve_span(uint64_t reserve) {
+    return reserve && reserve < NP_MEMORY_GUARD_SPAN ? NP_MEMORY_GUARD_SPAN : reserve;
+}
 
 static void *os_reserve(uint64_t size) {
     if (size > (uint64_t)SIZE_MAX) return NULL;
@@ -109,10 +133,10 @@ void wasm_rt_allocate_memory(wasm_rt_memory_t *memory, uint64_t initial_pages, u
 
     const uint64_t reserve = max_pages * page_size;
     const uint64_t initial = initial_pages * page_size;
-    uint8_t *base = reserve ? os_reserve(reserve) : NULL;
+    uint8_t *base = reserve ? os_reserve(reserve_span(reserve)) : NULL;
     if (reserve && !base) fail("guest memory: could not reserve address space");
     if (os_commit(base, initial) != 0) {
-        os_release(base, reserve);
+        os_release(base, reserve_span(reserve));
         fail("guest memory: could not commit the initial pages");
     }
     memory->data = base;
@@ -133,7 +157,7 @@ uint64_t wasm_rt_grow_memory(wasm_rt_memory_t *memory, uint64_t delta) {
 }
 
 void wasm_rt_free_memory(wasm_rt_memory_t *memory) {
-    if (memory->data) os_release(memory->data, (uint64_t)(memory->data_end - memory->data));
+    if (memory->data) os_release(memory->data, reserve_span((uint64_t)(memory->data_end - memory->data)));
     memory->data = NULL;
     memory->data_end = NULL;
     memory->pages = 0;

@@ -1,0 +1,9 @@
+# Scenario 3: from scenario 2's save: walk to Sandgem, Poke Mart buy, Pokemon
+# Center heal, PC box deposit and withdraw, save.
+FROM=2-wild
+SCHEDULE=schedules/center.press
+FRAMES=15900
+SHOTS=1800,3900,5000,6399,6880,7350,7499,8550,9600,10200,11200,11760,12149,12499,12670,12750,12999,13899,14020,14100,15300
+EXPECT_MAP=420
+EXPECT_LOG='stored 524288-byte save'
+EXPECT_SAVE='s["trainer"]["money"] == 2800 and s["bag"]["balls"][0]["qty"] == 8 and len(s["party"]) == 3 and all(m["hp"] == m["stats"][0] for m in s["party"]) and s["boxes"][0]["count"] == 0'

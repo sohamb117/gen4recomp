@@ -110,3 +110,6 @@ PMi_WriteRegisterAsync
 
 # games/platinum/pc/src/pc_snd.c  (arm9/asm/NNS_SND_capture.s)
 NNSi_SndCaptureStart
+
+# games/diamond/pc/src/pc_dp_agb.c  (arm9/asm/CTRDG_flash_common.s)
+CheckFlashTimer

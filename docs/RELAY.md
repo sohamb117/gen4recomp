@@ -27,6 +27,10 @@ joined with that station id.
   players use the same PIN).
 - Headless: `np_headless platinum rom.nds --net 2009 --net-relay host:2020
   --net-pin 4242 ...`
+- Tests: adding `--lockstep MY:PEER --net-id ID` keeps two headless
+  instances' frame clocks together while the game's datagrams still take
+  the relay (and `--net-drop PCT`). `tests/link/run_link_tests.py
+  relay_trade` runs a full Union Room trade that way with 10% loss.
 
 ## Protocol
 

@@ -1,0 +1,4 @@
+id = "example_text"
+name = "Example: Professor Rowan's introduction and the main menu"
+version = "1.1.0"
+authors = ["nativeplat"]

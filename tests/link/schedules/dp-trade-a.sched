@@ -1,0 +1,34 @@
+# Diamond/Pearl Union Room trade, station A (UNIONA, recipes/dp-union-a.recipe),
+# against Diamond's B in dp_trade and Pearl's in dp_pearl_trade.
+# CONTINUE; A through the attendant (enter YES, save YES, overwrite YES) and
+# the game walks A in (~4030). Up 3 and left 3 to B's avatar, which ends up
+# next to A, talk (5220), TRADE (3 downs). On the trade screen TURTWIG >
+# TRADE, YES; the game saves the trade (~11200).
+1250:start
+1400:a
+1500:a
+1600:a
+1800:a:6
+2000:a:6
+2200:a:6
+2400:a:6
+2600:a:6
+2800:a:6
+3000:a:6
+3200:a:6
+3400:a:6
+3600:a:6
+3800:a:6
+4000:a:6
+4520:up:48
+4600:left:32
+4660:left:16
+5220:a:6
+6260:down:4
+6300:down:4
+6340:down:4
+6400:a:6
+7500:a:6
+7650:down:4
+7700:a:6
+7900:a:6

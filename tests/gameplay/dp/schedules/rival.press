@@ -1,0 +1,85 @@
+# Diamond/Pearl scenario 1 from a blank chip: power-on, intro and naming (as
+# tests/dp/diamond_first_save.sched), the bedroom (field free ~10291), right to
+# the stairs, Mom's "Barry came calling" downstairs, her tall-grass warning at
+# the door, Twinleaf (~12835), Barry's "Thud!!" in front of his house, his room
+# upstairs ("we're going to the lake"), back out and north to Route 201
+# (~17431), Barry's lake speech, west through Verity Lakefront (~19101) to Lake
+# Verity (~19777): Rowan and Dawn, the briefcase, TURTWIG (the default pick)
+# against the wild STARLY (in_battle ~25629-28349; D/P has no Barry battle
+# here), won with Tackle by the same A spam, which also carries Rowan's and
+# Dawn's lakeside scene and the walk out to Verity Lakefront (~31445) through
+# Barry's "You go ahead...". Then down and around the fenced grass, east into
+# Route 201 (~33901), where Rowan and Dawn stop the pair; A through that scene,
+# Barry's "We should go home, too..." takes the player home (414, ~36611):
+# Mom, the Running Shoes and her instructions (done ~41000); one step left,
+# free at home.
+1250:start
+1350:a:4:40:35
+2800:down
+2820:down
+2840:a
+2900:a:4:40:14
+3560:tap:128:100:8:40:3
+3700:a:4:40:49
+5850:tap:82:118:6
++20:tap:34:100:6
++20:tap:178:118:6
++20:tap:162:100:6
++20:tap:50:137:6
++20:tap:98:100:6
++30:tap:217:71:6
++60:a:4:40:14
+6600:b:4:40:6
+6950:down
+6980:a
+7040:a:4:40:40
+9300:a:4:40:26
+# bedroom: right to the stairs
+10400:right:70
+10500:up:30
+10600:right:20
+# 1F: Mom
+11000:a:4:30:20
+11700:down:100
+11820:left:62
+11900:down:20
+# Mom at the door
+12000:a:4:30:25
+12800:down:20
+# Twinleaf: to Barry's door (105,876)
+13000:left:40
+13052:up:152
+13216:left:120
+13408:a:4:30:45
+14800:up:40
+# Barry's house 1F: to the stairs
+15000:up:40
+15052:left:56
+15120:up:56
+15250:right:20
+# Barry's room
+15420:a:4:30:30
+16400:up:24
+16460:left:40
+# back down and out
+16700:down:72
+16784:right:56
+16852:down:40
+# Twinleaf north to Route 201: Barry's speech
+17150:right:72
+17234:up:312
+17600:a:4:30:39
+# west to Verity Lakefront and up into Lake Verity
+18800:up:56
+18868:left:456
+19336:up:168
+# Lake Verity scene, briefcase, TURTWIG, battle vs STARLY, lakeside scene
+19520:a:4:30:443
+# Verity Lakefront: down, around the fenced grass, east into Route 201
+32900:down:16
+32940:right:480
+33440:down:200
+33700:right:480
+# Route 201's Rowan/Dawn scene, home, Mom and the Running Shoes
+34150:a:4:30:229
+41100:left:24

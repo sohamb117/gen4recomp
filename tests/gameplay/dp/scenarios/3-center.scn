@@ -1,0 +1,10 @@
+# Scenario 3 (Diamond/Pearl): from scenario 2's save: a wild battle on the
+# way, walk to Sandgem, Poke Mart buy, Pokemon Center heal, PC box deposit
+# and withdraw (the BOX screens), save.
+FROM=2-wild
+SCHEDULE=schedules/center.press
+FRAMES=16400
+SHOTS=1700,2200,3600,4600,5300,6100,6260,6460,6760,7210,7510,8400,9000,9300,9660,10080,10380,11300,11550,11850,12300,12650,12750,13000,13650,13900,14050,14150,14450,14800,15340,15400,15700,15880,16120
+EXPECT_MAP=420
+EXPECT_LOG='stored 524288-byte save'
+EXPECT_SAVE='s["trainer"]["money"] == 2800 and s["bag"]["balls"][0]["qty"] == 9 and len(s["party"]) == 3 and s["party"][2]["species_name"] == "STARLY" and all(m["hp"] == m["stats"][0] for m in s["party"]) and s["boxes"][0]["count"] == 0'

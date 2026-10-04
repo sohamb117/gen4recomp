@@ -1,0 +1,12 @@
+# Scenario 4 (Diamond/Pearl): Oreburgh Gym (map 47) from a lab save placed at
+# its door with a strong party: Youngsters Jonathon and Darius spot the player
+# (Geodude; Geodude, Onix), Roark (Geodude, Onix, Cranidos) is beaten with A
+# alone, Coal Badge + TM76, then SAVE from the field menu over the existing
+# save. EXPECT_SAVE holds on both games (no version-exclusive species).
+RECIPE=recipes/roark.recipe
+SCHEDULE=schedules/roark.press
+FRAMES=21900
+SHOTS=1600,2050,2400,2800,3600,4400,4800,5200,6000,6800,8390,9600,10400,11600,14000,15600,17200,18400,19200,19800,21060,21180,21420,21660,21899
+EXPECT_MAP=47
+EXPECT_LOG='stored 524288-byte save'
+EXPECT_SAVE='s["trainer"]["badges"] == 1 and s["trainer"]["badge_mask"] & 1'

@@ -1,0 +1,20 @@
+--- a/arm9/asm/unk_0204CB20.s
++++ b/arm9/asm/unk_0204CB20.s
+@@ -5886,7 +5886,7 @@
+ 	pop {r3, pc}
+ _0204F832:
+ 	bl sub_02031190
+-	bl ov12_0223E734
++	bl ov18_0223E734
+ 	cmp r0, #0x0
+ 	beq _0204F84C
+ 	bl sub_0204F7FC
+@@ -5915,7 +5915,7 @@
+ 	cmp r0, #0x0
+ 	beq _0204F880
+ 	bl sub_02031190
+-	bl ov12_0223E734
++	bl ov18_0223E734
+ 	cmp r0, #0x0
+ 	bne _0204F880
+ 	mov r0, #0x0

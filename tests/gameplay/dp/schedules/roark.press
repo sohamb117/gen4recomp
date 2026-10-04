@@ -1,0 +1,18 @@
+# Diamond/Pearl Oreburgh Gym from recipes/roark.recipe: up+A cycles walk the
+# player north, Youngsters Jonathon and Darius spot him, Roark is talked to and
+# beaten (A alone: Surf in slot 0; battle ends ~frame 17950), Coal Badge +
+# TM76; B clears the last text (~frame 20850), then SAVE from the field menu
+# (BAG, GQ, SAVE, OPTIONS, EXIT: the recipe's save has no POKéMON entry),
+# YES and overwrite (stored ~frame 21616).
+1250:start
+1400:a
+1500:a
+1600:a
+1700:up:12:24:666
+1714:a:4:24:666
+17720:b:4:24:132
+21000:x
+21060:down
+21090:down
+21120:a
+21220:a:4:40:8

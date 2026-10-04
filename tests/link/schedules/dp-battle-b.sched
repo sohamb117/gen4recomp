@@ -1,0 +1,28 @@
+# Diamond/Pearl Union Room battle, station B (UNIONB, recipes/dp-union-b.recipe).
+# In as dp-trade-b.sched; A's challenge (A), accept YES; the same party picks
+# and taps as A. B's top-right move is Ember, so B wins.
+1250:start
+1400:a
+1500:a
+1600:a
+1837:a:6
+2037:a:6
+2237:a:6
+2437:a:6
+2637:a:6
+2837:a:6
+3037:a:6
+3237:a:6
+3437:a:6
+3637:a:6
+3837:a:6
+4037:a:6
+6700:a:6
+6900:a:6
+7400:a:6
+7600:a:6
+7800:right:4
+7860:a:6
+8060:a:6
+8260:a:6
+9600:tap:200:40:6:30:300

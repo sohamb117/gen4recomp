@@ -414,6 +414,24 @@ uint32_t armrec_ipc_load(uint32_t a, int size);
 void armrec_spi_store(uint32_t a, uint32_t v, int size);
 uint32_t armrec_spi_load(uint32_t a, int size);
 
+/*
+ * The fifth: the GBA slot's backup bus, 0x0A000000 to 0x0A00FFFF. With a
+ * flash chip in the slot a store there is a command, not a store, and a load
+ * in ID mode answers the chip's ID; pc/src/pc_agb_slot.c models the chip and
+ * with the slot empty does the plain access. The bus is 8 bits wide and the
+ * SDK reaches it only with ldrb/strb, so only the byte accesses are hooked.
+ * Per file for the coprocessor's reason: the four CTRDG_flash_*.s of
+ * Diamond/Pearl's recompiled SDK.
+ */
+#define ARM_AGB_BASE 0x0A000000u
+#define ARM_AGB_SIZE 0x00010000u
+
+#define ARM_AGB_HIT(a)                                                        \
+    (__builtin_expect((uint32_t)((a) - ARM_AGB_BASE) < ARM_AGB_SIZE, 0))
+
+void armrec_agb_store8(uint32_t a, uint32_t v);
+uint32_t armrec_agb_load8(uint32_t a);
+
 #ifdef ARMREC_CHECKED_MEM
 uint32_t armrec_ld32(uint32_t a);
 uint32_t armrec_ld16(uint32_t a);
@@ -436,7 +454,7 @@ void armrec_st8(uint32_t a, uint32_t v);
  * a macro would re-evaluate them.
  */
 #if defined(ARMREC_CP_HOOK) || defined(ARMREC_GX_HOOK) || defined(ARMREC_IPC_HOOK) \
-    || defined(ARMREC_SPI_HOOK)
+    || defined(ARMREC_SPI_HOOK) || defined(ARMREC_AGB_HOOK)
 static inline uint32_t ARM_LD32(uint32_t a) {
 #ifdef ARMREC_CP_HOOK
     if (ARM_CP_HIT(a)) return armrec_cp_read32(a);
@@ -480,6 +498,9 @@ static inline uint32_t ARM_LD8(uint32_t a) {
 #ifdef ARMREC_SPI_HOOK
     if (ARM_SPI_HIT(a)) return armrec_spi_load(a, 1);
 #endif
+#ifdef ARMREC_AGB_HOOK
+    if (ARM_AGB_HIT(a)) return armrec_agb_load8(a);
+#endif
     return *(uint8_t *)ARM_HOSTPTR(a);
 }
 #else
@@ -490,7 +511,7 @@ static inline uint32_t ARM_LD8(uint32_t a) {
 #endif
 
 #if defined(ARMREC_VRAM_HOOK) || defined(ARMREC_GX_HOOK) || defined(ARMREC_IPC_HOOK) \
-    || defined(ARMREC_SPI_HOOK)
+    || defined(ARMREC_SPI_HOOK) || defined(ARMREC_AGB_HOOK)
 /*
  * A store into 0x04000240 to 0x04000249 remaps VRAM, so it has to be seen.
  * The hook is per file for the same reason the CP one is, and it is on the
@@ -540,6 +561,9 @@ static inline void ARM_ST8(uint32_t a, uint32_t v) {
 #endif
 #ifdef ARMREC_SPI_HOOK
     if (ARM_SPI_HIT(a)) { armrec_spi_store(a, v, 1); return; }
+#endif
+#ifdef ARMREC_AGB_HOOK
+    if (ARM_AGB_HIT(a)) { armrec_agb_store8(a, v); return; }
 #endif
     *(uint8_t *)ARM_HOSTPTR(a) = (uint8_t)v;
 #ifdef ARMREC_VRAM_HOOK
@@ -946,6 +970,10 @@ void armrec_icall_tail(void);
 
 /* Resolve a guest address to a name, for diagnostics. Never NULL. */
 const char *armrec_name_of(uint32_t addr);
+
+/* Whether resident code owns a code address: what armrec_dispatch would call
+ * rather than abort on. armrec_name_of also names non-resident claimants. */
+int armrec_code_live(uint32_t addr);
 
 /* Called when recompiled code reaches something we cannot execute. */
 void armrec_trap(const char *fn, const char *what) __attribute__((noreturn));

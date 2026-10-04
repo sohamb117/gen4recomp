@@ -48,6 +48,8 @@ static void init(np_launch *out)
     out->game = -1;
     out->slot[0] = '\0';
     out->force_launcher = 0;
+    out->editor = 0;
+    out->save[0] = '\0';
 }
 
 static int set_game(np_launch *out, const char *v, char *err, size_t errn)
@@ -70,8 +72,26 @@ static int set_slot(np_launch *out, const char *v, char *err, size_t errn)
     return 0;
 }
 
+static int set_save(np_launch *out, const char *v, char *err, size_t errn)
+{
+    if (!*v || strlen(v) >= sizeof out->save) {
+        snprintf(err, errn, "Invalid save file \"%.40s\".", v);
+        return -1;
+    }
+    strcpy(out->save, v);
+    return 0;
+}
+
 static int finish(np_launch *out, char *err, size_t errn)
 {
+    if (out->editor != (out->save[0] != 0)) {
+        snprintf(err, errn, "--editor and --save <file> go together.");
+        return -1;
+    }
+    if (out->editor && (out->slot[0] || out->force_launcher)) {
+        snprintf(err, errn, "--editor takes a save file, not a slot or the launcher.");
+        return -1;
+    }
     if (out->slot[0] && out->game < 0) {
         snprintf(err, errn, "A save slot was given without a game.");
         return -1;
@@ -87,7 +107,8 @@ int np_launch_parse_args(int argc, char *const *argv, np_launch *out, char *err,
         const char *eq = strchr(a, '=');
         size_t name_len = eq ? (size_t)(eq - a) : strlen(a);
         const char *v = eq ? eq + 1 : (i + 1 < argc ? argv[i + 1] : NULL);
-        int takes_value = (name_len == 6 && !strncmp(a, "--game", 6)) || (name_len == 6 && !strncmp(a, "--slot", 6));
+        int takes_value = (name_len == 6 && !strncmp(a, "--game", 6)) || (name_len == 6 && !strncmp(a, "--slot", 6)) ||
+                          (name_len == 6 && !strncmp(a, "--save", 6));
         if (!strncmp(a, "-psn_", 5))
             continue; /* Finder launches on old macOS */
         if ((!strncmp(a, "-NS", 3) || !strncmp(a, "-Apple", 6)) && !eq) {
@@ -96,6 +117,10 @@ int np_launch_parse_args(int argc, char *const *argv, np_launch *out, char *err,
         }
         if (!strcmp(a, "--launcher")) {
             out->force_launcher = 1;
+            continue;
+        }
+        if (!strcmp(a, "--editor")) {
+            out->editor = 1;
             continue;
         }
         if (!takes_value) {
@@ -108,7 +133,9 @@ int np_launch_parse_args(int argc, char *const *argv, np_launch *out, char *err,
         }
         if (!eq)
             i++;
-        int r = a[2] == 'g' ? set_game(out, v, err, errn) : set_slot(out, v, err, errn);
+        int r = a[2] == 'g' ? set_game(out, v, err, errn)
+                : a[4] == 'v' ? set_save(out, v, err, errn)
+                              : set_slot(out, v, err, errn);
         if (r)
             return -1;
     }

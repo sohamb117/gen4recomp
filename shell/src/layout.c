@@ -121,6 +121,24 @@ void np_layout_compute(np_layout *l, const np_layout_params *p, float win_w, flo
     l->origin_x = floorf((win_w - rw * s) * 0.5f + 0.5f);
     l->origin_y = floorf((win_h - rh * s) * 0.5f + 0.5f);
 
+    if (p->frames) {
+        /* A skin places each screen itself, in window pixels. */
+        l->rotation = 0;
+        odd = 0;
+        s = l->scale = 1.0f;
+        l->origin_x = l->origin_y = 0.0f;
+        l->content_w = win_w;
+        l->content_h = win_h;
+        for (int i = 0; i < 2; i++) {
+            const float *f = p->frames + 4 * i;
+            l->screen[i].visible = 0;
+            if (!(f[2] > 0.0f) || !(f[3] > 0.0f))
+                continue;
+            float fs = fminf(f[2] / SW, f[3] / SH);
+            place(l, i, f[0] + (f[2] - SW * fs) * 0.5f, f[1] + (f[3] - SH * fs) * 0.5f, fs);
+        }
+    }
+
     for (int i = 0; i < 2; i++) {
         np_screen_place *sp = &l->screen[i];
         if (!sp->visible)

@@ -38,6 +38,9 @@ typedef struct np_net_config {
     int drop_percent;       /* 0..100: drop this share of outgoing datagrams (testing) */
     const char *relay;      /* "host:port" of a relay (server/relay), NULL = LAN mode */
     const char *pin;        /* relay room PIN, 1..32 bytes */
+    /* Nonzero: only stations with the same realm meet (the shell uses the
+     * active mod set's hash, so modded and vanilla games never link). */
+    uint32_t realm;
     void (*log)(void *user, const char *line);
     void *log_user;
 } np_net_config;

@@ -1,0 +1,12 @@
+# Oreburgh Gym, no badges, a party that wins without menus: two youngsters on
+# the way up (Jonathon at (4,18) looks east, Darius at (7,11) looks west), then
+# Roark at (5,3). The lead's slot-0 move is Surf, so A alone wins every turn.
+name GQ
+gender GENDER_MALE
+trainer-id 31415
+money 5000
+party SPECIES_EMPOLEON 40 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party SPECIES_STARAPTOR 35 ITEM_NONE
+item ITEM_POTION 5
+warp MAP_HEADER_OREBURGH_CITY_GYM 0

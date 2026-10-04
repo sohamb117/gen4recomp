@@ -970,9 +970,15 @@ def parse_file(path, defines, incdirs=(), lines=None):
                                 attested=name in ends_named)
                 funcs.append(cur_func)
             if cur_func is not None and section == ".text":
-                # The address of a function comes from the "; 0x…" comment on
-                # its own label, which follows the arm_func_start macro.
-                if cur_func.addr is None and addr is not None and name == cur_func.name:
+                # The address of a function is that of its own label: the
+                # "; 0x…" comment, checked against the location counter just
+                # above. It overrides the guess the start macro took from the
+                # name, which is Diamond's address in Pearl past the first
+                # `.ifdef` that changes a size; left at that guess, the xMAP
+                # placement below would see the function "moved" and shift
+                # every label in it, already at the counter, a second time
+                # (Pearl's ov06_0224A0F0 read its jump table 12 bytes late).
+                if addr is not None and name == cur_func.name:
                     cur_func.addr = addr
                 cur_func.items.append(lab)
                 cur_func.labels.add(name)
@@ -1376,8 +1382,17 @@ _C_MATH = """
     remainder remquo copysign fdim fmax fmin fma
 """
 
+# Not standard C but the host libc's own: wasi-libc's strrchr calls its
+# internal __memrchr(s, c, n), and MSL_C (Diamond/Pearl's recompiled
+# MSL_Common_mem.s) defines a __memrchr of another shape, which won the link
+# and made strrchr trap (wasm-ld: function signature mismatch).
+_C_LIBC_INTERNAL = """
+    __memrchr
+"""
+
 HOST_LIBC_NAMES = frozenset(
     _C_STDLIB.split()
+    + _C_LIBC_INTERNAL.split()
     + [n + s for n in _C_MATH.split() for s in ("", "f", "l")])
 
 
@@ -1975,6 +1990,15 @@ def emit_ldm_stm(ctx, ins, out, is_load, mode):
         # transfer is the ordinary one.
         rl = rl[:-1].strip()
     regs = parse_reglist(rl)
+    if is_load and wb and bn in regs and (ins.thumb or bn == regs[-1] != regs[0]):
+        # A load whose base is in its own list: the ARM946E-S (ARMv5) keeps
+        # the loaded value, never the written-back base, for every Thumb LDMIA
+        # and for an ARM LDM whose base is the last of several registers.
+        # mwcc relies on it: `ldmia r1!, {r0, r1}` loads a two-word struct
+        # through r1 and passes both words on (sub_020116CC hands
+        # sub_02011480 a mask and a screen this way). Writing back here would
+        # turn the screen into the struct address + 8.
+        wb = False
     emit_block_transfer(ctx, out, ctx.regc(bn), regs, mode, is_load, wb)
 
 
@@ -3130,6 +3154,29 @@ def file_touches_spi(path):
         return False
 
 
+# The GBA slot's backup bus, 0x0A000000 to 0x0A00FFFF: on hardware the
+# cartridge's 8-bit SRAM/flash bus, and with a flash chip there a store is a
+# command (AA@5555, 55@2AAA, then 90 ID mode, 80/10 or 80/30 erase, A0
+# program, B0 bank) and a load in ID mode is the chip's ID, not a cell. A file
+# naming the window gets ARMREC_AGB_HOOK, which routes ldrb/strb through
+# pc/src/pc_agb_slot.c's chip model (the bus is 8 bits wide and the SDK only
+# reaches it with byte accesses).
+#
+# Named either as a literal (.word 0x0A005555) or as the immediate #0xa000000
+# that sector addresses are built on. Today four files, all Diamond/Pearl's
+# recompiled SDK: arm9/asm/CTRDG_flash_{common,MX29L010,MX29L512,LE39FW512}.s.
+# Platinum's CTRDG is C and goes through the same model by its pc/patches.
+AGB_ADDR_RE = re.compile(r"0x0*a00[0-9a-f]{4}\b|#167772160\b", re.I)
+
+
+def file_touches_agb(path):
+    try:
+        with open(path, "r", errors="replace") as fh:
+            return AGB_ADDR_RE.search(fh.read()) is not None
+    except OSError:
+        return False
+
+
 def collect_symbols(paths, defines, incdirs, stems, local_rename=True):
     """
     Pass 1: every function and data symbol, with its guest address.
@@ -3427,7 +3474,9 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
                               ("#define ARMREC_IPC_HOOK 1\n"
                                if file_touches_ipc(path) else "") +
                               ("#define ARMREC_SPI_HOOK 1\n"
-                               if file_touches_spi(path) else "")))
+                               if file_touches_spi(path) else "") +
+                              ("#define ARMREC_AGB_HOOK 1\n"
+                               if file_touches_agb(path) else "")))
         for name in sorted(called - defined):
             out.write("extern uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t);\n" % name)
         for name in sorted(ext):
@@ -3602,6 +3651,30 @@ def load_xmap(path):
     return by_obj, by_name, link, origins
 
 
+def entry_label_mismatches(paths, parsed):
+    """
+    Functions whose own label sits somewhere other than the function.
+
+    The two must agree: the function's address is what dispatch registers and
+    the xMAP checks, the label's anchors every instruction address in the
+    body, so every PC-relative value (`add r0, pc` before a jump table, `adr`)
+    and every computed-branch case. When they part, the body reads its tables
+    from the wrong place and branches nowhere, as Pearl's ov06_0224A0F0 did
+    with its labels shifted twice. A build that would emit such a body stops.
+    """
+    out = []
+    for p in paths:
+        for f in parsed[p][0]:
+            for it in f.items:
+                if isinstance(it, Label) and it.name == f.name:
+                    if (it.addr is not None and f.addr is not None
+                            and it.addr != f.addr):
+                        out.append("%s: %s: entry label at 0x%08X, function "
+                                   "at 0x%08X" % (p, f.name, it.addr, f.addr))
+                    break
+    return out
+
+
 def place_from_xmap(paths, parsed, xmap, symtab, local_addr, rename, stats):
     """
     Give an address to every function the source leaves unplaced, from the
@@ -3639,16 +3712,33 @@ def place_from_xmap(paths, parsed, xmap, symtab, local_addr, rename, stats):
                 continue
             if f.addr is None:
                 stats["xmap: function placed from the map"] += 1
+                for it in f.items:
+                    if isinstance(it, Label) and it.name == f.name:
+                        it.addr = want
             else:
                 # The link map is the ROM. The disagreements are extracted
                 # asm-in-C bodies, whose file has gaps where the C functions
-                # were, so the location counter runs short across them.
+                # were, so the location counter runs short across them. The
+                # whole body ran short by the same amount, so every label in
+                # it moves with the function: left at the counter, the walk
+                # below re-anchors at the first local label, and a PC-relative
+                # `add r0, pc` reads its jump table from somewhere else
+                # (ov59_MunchlaxJumpAnimation, 708 bytes short).
                 stats["xmap: %s moved from 0x%08X to the map's 0x%08X"
                       % (f.name, f.addr, want)] += 1
+                delta = want - f.addr
+                floc = local_addr.get(p, {})
+                for it in f.items:
+                    if not isinstance(it, Label) or it.addr is None:
+                        continue
+                    old, it.addr = it.addr, it.addr + delta
+                    if it.name == f.name:
+                        continue
+                    if floc.get(it.name) == old:
+                        floc[it.name] = it.addr
+                    elif symtab.get(it.name) == old:
+                        symtab[it.name] = it.addr
             f.addr = want
-            for it in f.items:
-                if isinstance(it, Label) and it.name == f.name:
-                    it.addr = want
             assign_addresses(f)
             # The same split collect_symbols() makes: a file-qualified
             # function resolves inside its own file only.
@@ -3791,6 +3881,12 @@ def main():
         for name in data_syms:
             if name in symtab:
                 data_syms[name] = symtab[name]
+    bad = entry_label_mismatches(args.files, parsed)
+    if bad:
+        for line in bad:
+            print("armrec: " + line, file=sys.stderr)
+        sys.exit("armrec: %d function(s) disagree with their own entry label"
+                 % len(bad))
 
     # --host-override: the host layer's definition replaces the recompiled
     # one. The function stays in the symbol table, so a `.word` naming it

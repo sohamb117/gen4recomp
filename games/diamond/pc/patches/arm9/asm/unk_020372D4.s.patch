@@ -1,0 +1,11 @@
+--- a/arm9/asm/unk_020372D4.s
++++ b/arm9/asm/unk_020372D4.s
+@@ -442,7 +442,7 @@
+ 	beq _02037638
+ 	add r0, sp, #0x8
+ 	add r1, r4, #0x0
+-	bl ov04_021D865C
++	bl ov05_021D865C
+ 	cmp r0, #0x1
+ 	bne _0203763A
+ 	mov r5, #0x0

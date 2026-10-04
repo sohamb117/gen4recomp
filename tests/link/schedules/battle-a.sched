@@ -1,0 +1,37 @@
+# Union Room battle, station A: walk in, talk to B, pick BATTLE (2 downs).
+# Party: TURTWIG then STARLY, CONFIRM. In battle one tap at (200,40) every
+# 30 frames is FIGHT, then the top-right move (Withdraw / Growl), then the
+# party's top-right slot and SHIFT when a Pokemon faints.
+900:a:20
+1200:a:20
+1800:a:20
+2100:a:20
+2400:a:20
+2800:a:24
+3100:a:10
+3300:a:10
+3500:a:10
+3700:a:10
+3900:a:10
+5250:a:10
+5450:a:10
+8560:up:16
+8620:left:64
+8720:left:4
+8780:left:3
+8820:a:6
+8900:a:6
+9000:a:6
+9100:a:6
+9300:a:6
+9500:a:6
+9900:down:4
+9940:down:4
+9980:a:4
+12620:a:6
+12820:a:6
+13020:right:4
+13080:a:6
+13280:a:6
+13480:a:6
+15000:tap:200:40:6:30:300

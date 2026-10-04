@@ -1,11 +1,14 @@
 /*
  * Launch requests: what to start, from the command line
  *   nativeplat [--game diamond|pearl|platinum] [--slot <name|number>] [--launcher]
+ *   nativeplat --editor --save <file.sav> [--game diamond|pearl|platinum]
  * or from a URL
  *   nativeplat://launch?game=platinum&slot=My%20Run
  * (SDL delivers opened URLs as SDL_EVENT_DROP_FILE on macOS and iOS).
  * Only parsing lives here (SDL-free, unit-tested); main.c resolves the slot
  * against the slots on disk and falls back to the launcher with a message.
+ * --editor opens the save editor on any save file (no slot, no game core)
+ * and quits when the editor closes.
  */
 #ifndef NP_LAUNCH_H
 #define NP_LAUNCH_H
@@ -18,6 +21,8 @@ typedef struct np_launch {
     int game;          /* np_game, or -1 for none */
     char slot[NP_SLOT_NAME_MAX * 3 + 1]; /* as given (name or 1-based number); "" for none */
     int force_launcher;
+    int editor;      /* --editor: edit `save` standalone */
+    char save[1024]; /* --save */
 } np_launch;
 
 /* Returns 0, or -1 with a message in `err`. Ignores arguments macOS and

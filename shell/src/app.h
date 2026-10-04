@@ -16,9 +16,11 @@
 
 #include "launch.h"
 #include "layout.h"
+#include "lowpass.h"
+#include "modpkg.h"
 #include "np_core.h"
-#include "options.h"
 #include "np_guest_abi.h"
+#include "options.h"
 #include "storage.h"
 
 #define NP_MAX_PADS 8
@@ -39,6 +41,8 @@ typedef enum np_page {
     NP_PAGE_EDITOR,    /* save editor (editor.c) */
     NP_PAGE_SYNC,      /* folder sync conflict chooser (sync.c) */
     NP_PAGE_MODS,      /* mod manager (mods.c) */
+    NP_PAGE_UPDATES,   /* updater (update.c) */
+    NP_PAGE_TOUCH_EDIT, /* touch controls layout editor (touchpad.c) */
 } np_page;
 
 /* Work handed from dialogs, drops and URLs to the main loop. */
@@ -54,6 +58,7 @@ typedef enum np_pending_kind {
     NP_PENDING_MOD_INSTALL, /* a package .zip for mods.c */
     NP_PENDING_GBA_ROM,     /* a .gba for the GBA slot */
     NP_PENDING_GBA_SAVE,    /* the .sav that goes with it */
+    NP_PENDING_SKIN,        /* a .deltaskin to install */
 } np_pending_kind;
 
 typedef enum np_text_purpose {
@@ -64,6 +69,7 @@ typedef enum np_text_purpose {
     NP_TEXT_LAN_PEER, /* Options: "host:port" to join */
     NP_TEXT_LAN_RELAY, /* Options: internet relay "host:port" */
     NP_TEXT_LAN_PIN,   /* Options: relay room PIN */
+    NP_TEXT_CART_NAME, /* Mods: name for a new sealed cart */
 } np_text_purpose;
 
 typedef enum np_menu_cmd {
@@ -132,10 +138,11 @@ typedef struct np_autotest {
     int saves, loads; /* successful save_store / save_load calls */
     uint64_t audio_frames;
     int audio_peak;
+    double audio_treble; /* sum of squared steps, for the music filter check */
     int page; /* captured view: 0 game, -1 launcher, or an np_page over the game */
     int storage; /* use the real (portable) user-data root */
     char imports[4096]; /* '\n'-separated ROMs to run through the importer first */
-    char script[2048];  /* "frame:kind:args;..." synthetic events */
+    char script[6144];  /* "frame:kind:args;..." synthetic events */
     np_press presses[NP_AUTOTEST_MAX_PRESS]; /* press= schedule */
     int npress;
     int shot_every; /* shots=N: also write <png>-<iteration>.png every N iterations */
@@ -144,6 +151,8 @@ typedef struct np_autotest {
     int rewind_from, rewind_frames;  /* rewind=F+N: hold rewind for N iterations from F */
     char sync_folder[1024];          /* sync=<folder>: folder sync target */
     char gba_rom[1024], gba_save[1024]; /* gba=, gbasave=: the GBA slot */
+    int realtime;      /* realtime=1: pace iterations at the logic clock, like the app */
+    uint64_t next_ns;  /* realtime: when the next iteration is due */
 } np_autotest;
 
 typedef struct np_app {
@@ -195,6 +204,7 @@ typedef struct np_app {
     struct np_fx_state *fx;   /* display effects (fx.c) */
     struct np_net *net;       /* local wireless transport while enabled */
     char net_error[128];
+    uint32_t net_realm; /* the running game's mod-set realm (carts.c); 0 = vanilla */
     char sync_status[96]; /* last folder sync result */
     char mods_root[1100]; /* np_host.content_root while a core runs */
     struct np_session *session; /* session.c, while a game runs */
@@ -218,10 +228,12 @@ typedef struct np_app {
     np_finger fingers[NP_MAX_FINGERS];
     int touch_seen;
     uint16_t control_keys; /* from the on-screen controls */
+    int control_ff_hold;   /* a skin's fast-forward (hold) item is held */
     uint8_t trigger_down[NP_MAX_PADS][2];
 
     SDL_AudioStream *audio;
     int audio_running;
+    np_lowpass lowpass; /* Options > Music filter */
 
     np_autotest autotest;
 } np_app;
@@ -246,6 +258,7 @@ void np_app_open_sync_folder_dialog(np_app *app);
 void np_app_open_mod_install_dialog(np_app *app);
 /* Options > GBA cartridge: pick a .gba, or (save) its .sav file. */
 void np_app_open_gba_dialog(np_app *app, int save);
+void np_app_open_skin_dialog(np_app *app);
 /* Whether the running core booted with a cartridge in the GBA slot. */
 int np_app_gba_inserted(const np_app *app);
 void np_app_apply_video_options(np_app *app);
@@ -290,7 +303,7 @@ void np_sync_draw(np_app *app);
 void np_sync_command(np_app *app, np_menu_cmd cmd);
 void np_sync_hit(np_app *app, int id);
 
-/* mods.c: runtime content packages (Platinum) */
+/* mods.c: runtime content packages, per game (mods/<game>/) */
 /* The content root for `game`'s core into out; 0 if it exists, else -1. */
 int np_mods_content_root(const np_app *app, np_game game, char *out, size_t n);
 void np_mods_install(np_app *app, const char *zip_path);
@@ -301,6 +314,31 @@ void np_mods_boot_failed(np_app *app, const char *error);
 void np_mods_draw(np_app *app);
 void np_mods_command(np_app *app, np_menu_cmd cmd);
 void np_mods_hit(np_app *app, int id);
+/* The enabled packages in load order (directory names); -1 if one has a
+ * problem. */
+int np_mods_enabled(np_game game, char (*names)[NP_MOD_ID_MAX], int max);
+/* Seals the enabled packages as cart `name` and returns to the Mods page. */
+void np_mods_seal(np_app *app, const char *name);
+
+/* carts.c: sealed mod sets */
+#define NP_CART_MAX_PKGS 32
+int np_carts_list(np_game game, char (*names)[NP_SLOT_NAME_MAX + 1], int max);
+int np_cart_seal(np_app *app, np_game game, const char *name);
+int np_cart_delete(np_game game, const char *name);
+int np_cart_describe(np_game game, const char *name, char *out, size_t n); /* "N packages, <hash>" */
+/* For booting `slot`: "PC_MODS=..." for a bound cart ("" otherwise) and the
+ * link realm of the active set. -1 (with app->status) if the slot's cart is
+ * missing or changed since sealing. */
+int np_carts_for_boot(np_app *app, np_game game, const char *slot, char *pc_mods, size_t n, uint32_t *realm);
+
+/* update.c: consent-based updater (hidden without a repository or HTTP) */
+int np_update_enabled(const np_app *app);
+void np_update_open(np_app *app);
+void np_update_draw(np_app *app);
+void np_update_command(np_app *app, np_menu_cmd cmd);
+void np_update_hit(np_app *app, int id);
+/* Cancels a transfer and joins the worker (at quit). */
+void np_update_shutdown(void);
 
 /* input.c */
 void np_input_gamepad_added(np_app *app, SDL_JoystickID id);
@@ -320,12 +358,43 @@ int np_input_pointer_event(np_app *app, const SDL_Event *e);
 /* Stylus state for the next frame. */
 void np_input_stylus(const np_app *app, np_input *in);
 void np_input_release_all(np_app *app);
+/* A short gamepad rumble if Options > Rumble on press is on. */
+void np_input_rumble(np_app *app);
 
 /* touchpad.c */
 int np_touchpad_visible(const np_app *app);
-/* Hit-tests the on-screen controls: returns DS key bits, sets *ff / *menu. */
-uint16_t np_touchpad_hit(const np_app *app, float x, float y, int *ff, int *menu, int *any);
+/* What a touch at one point presses: keys, plus one-shot actions. */
+typedef struct np_touch_hit {
+    uint16_t keys;
+    int any; /* on a control at all (else the stylus may have it) */
+    int ff_toggle, ff_hold, menu, quick_save, quick_load;
+} np_touch_hit;
+void np_touchpad_hit(const np_app *app, float x, float y, np_touch_hit *h);
 void np_touchpad_draw(np_app *app);
+/* Reads touch-controls.ini (after the storage root is known). */
+void np_touchpad_load(np_app *app);
+/* The layout editor page. */
+void np_touchedit_open(np_app *app);
+void np_touchedit_close(np_app *app); /* saves edits; on leaving the page */
+void np_touchedit_draw(np_app *app);
+void np_touchedit_pointer(np_app *app, float x, float y, int pressed, int released);
+int np_touchedit_key(np_app *app, const SDL_KeyboardEvent *k);
+void np_touchedit_command(np_app *app, np_menu_cmd cmd);
+
+/* skin.c: Delta controller skins */
+void np_skin_apply(np_app *app);    /* loads opt.skin (none if "") */
+void np_skin_install(np_app *app, const char *path);
+void np_skin_cycle(np_app *app, int dir); /* next/previous installed, or none */
+const char *np_skin_name(void);          /* the loaded skin, or NULL */
+/* Whether the skin covers the window's current orientation. */
+int np_skin_active(const np_app *app);
+/* Screen rectangles for np_layout_params.frames; 0 without a skin. */
+int np_skin_frames(const np_app *app, float frames[8]);
+void np_skin_draw_art(np_app *app);
+void np_skin_draw_pressed(np_app *app, uint16_t keys);
+/* Adds what a touch presses on the skin to h; 0 without a skin. */
+int np_skin_hit(const np_app *app, float x, float y, np_touch_hit *h);
+void np_skin_shutdown(void);
 
 /* ui.c */
 int np_ui_init(np_app *app);
@@ -357,6 +426,8 @@ void np_ui_keep_visible(np_app *app, int sel, int rows, int total);
 void np_ui_open_text(np_app *app, np_text_purpose purpose, const char *initial, int max);
 void np_ui_draw(np_app *app); /* launcher or the open page, plus toast */
 void np_ui_command(np_app *app, np_menu_cmd cmd);
+/* Leaves the open page the way Back does. */
+void np_ui_back(np_app *app);
 /* Pointer press/move/release at render coordinates; button 3 = secondary. */
 void np_ui_pointer(np_app *app, float x, float y, int pressed, int released, int button);
 int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad); /* rebinding, name entry */
@@ -364,6 +435,8 @@ int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad); /* rebinding,
 /* editor.c: the save editor page (NP_PAGE_EDITOR). */
 /* Opens slot `slot` of `game`; on failure leaves the page and explains. */
 void np_editor_open(np_app *app, np_game game, const char *slot);
+/* Standalone: edits any save file (game -1: from the save, D/P by ROM). */
+void np_editor_open_file(np_app *app, int game, const char *path);
 void np_editor_close(np_app *app);
 void np_editor_draw(np_app *app);
 void np_editor_command(np_app *app, np_menu_cmd cmd);

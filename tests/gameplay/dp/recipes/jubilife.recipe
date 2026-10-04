@@ -1,0 +1,9 @@
+# Jubilife City in front of the Pokemon Center (map 3, (180,777); Platinum's
+# fly spawn), the densest 3D overworld early on: the perf table's 3D scene.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 14142
+money 3000
+badge BADGE_COAL
+party SPECIES_MONFERNO 18 ITEM_NONE
+map MAP_JUBLIFE 180 777 FACE_DOWN

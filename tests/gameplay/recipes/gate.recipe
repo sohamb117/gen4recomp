@@ -1,0 +1,16 @@
+# Oreburgh Gate 1F, arriving from Route 203 (warp 0, the west mouth at (4,22)).
+# A cave, the Route 203 <-> cave and cave <-> Oreburgh City transitions, a
+# trainer on the way through (Picnicker Diana at (24,21)), and the Bicycle
+# registered to Y for the city. The party wins with A alone (Surf in slot 0).
+name GQ
+gender GENDER_MALE
+trainer-id 16180
+money 4000
+badge BADGE_ID_COAL
+party SPECIES_EMPOLEON 40 ITEM_NONE
+party-move 0 0 MOVE_SURF
+item ITEM_BICYCLE 1
+register-item ITEM_BICYCLE
+poketch POKETCH_APPID_CALCULATOR
+poketch POKETCH_APPID_DIGITALWATCH
+warp MAP_HEADER_OREBURGH_GATE_1F 0

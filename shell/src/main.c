@@ -129,6 +129,7 @@ void np_app_net_apply(np_app *app)
                          .lan_discovery = !app->opt.lan_relay[0],
                          .relay = app->opt.lan_relay[0] ? app->opt.lan_relay : NULL,
                          .pin = app->opt.lan_pin,
+                         .realm = app->net_realm,
                          .log = net_log};
     app->net = np_net_open(&cfg, app->net_error, sizeof app->net_error);
     if (!app->net) {
@@ -255,7 +256,12 @@ void np_app_open_page(np_app *app, np_page page)
         SDL_StartTextInput(app->window); /* also raises the iOS keyboard */
     else if (page != NP_PAGE_TEXT && app->page == NP_PAGE_TEXT)
         SDL_StopTextInput(app->window);
-    app->page_parent = (page == NP_PAGE_CONTROLS || page == NP_PAGE_ABOUT) ? app->page : NP_PAGE_NONE;
+    if (app->page == NP_PAGE_TOUCH_EDIT && page != NP_PAGE_TOUCH_EDIT)
+        np_touchedit_close(app);
+    /* Sub-pages of Options return there (page_back). */
+    int sub = page == NP_PAGE_CONTROLS || page == NP_PAGE_ABOUT || page == NP_PAGE_MODS || page == NP_PAGE_UPDATES ||
+              page == NP_PAGE_TOUCH_EDIT;
+    app->page_parent = sub ? app->page : NP_PAGE_NONE;
     app->page = page;
     app->sel = app->col = app->scroll = 0;
     app->capture = 0;
@@ -362,13 +368,13 @@ static void eject_gba(np_app *app)
     app->host.gba_save_store = NULL;
 }
 
-/* Puts the chosen cartridge in the slot for the core about to boot (only
- * Platinum's core has the GBA slot). A file that is not a GBA ROM leaves the
- * slot empty. */
-static void insert_gba(np_app *app, np_game game)
+/* Puts the chosen cartridge in the slot for the core about to boot (every
+ * core has the GBA slot: Pal Park in Diamond, Pearl and Platinum). A file
+ * that is not a GBA ROM leaves the slot empty. */
+static void insert_gba(np_app *app)
 {
     eject_gba(app);
-    if (game != NP_GAME_PLATINUM || !app->opt.gba_rom[0])
+    if (!app->opt.gba_rom[0])
         return;
     app->gba_io = SDL_IOFromFile(app->opt.gba_rom, "rb");
     Sint64 size = app->gba_io ? SDL_GetIOSize(app->gba_io) : -1;
@@ -404,18 +410,32 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     app->game = game;
     SDL_strlcpy(app->slot, slot, sizeof app->slot);
     app->host = *host;
+    /* A slot bound to a cart boots exactly its packages; any active set
+     * also pins local wireless to stations running the same set. */
+    char pc_mods[NP_CART_MAX_PKGS * (NP_MOD_ID_MAX + 1) + 16];
+    uint32_t realm;
+    if (np_carts_for_boot(app, game, slot, pc_mods, sizeof pc_mods, &realm)) {
+        SDL_Log("%s", app->status);
+        return -1;
+    }
+    if (realm != app->net_realm) {
+        app->net_realm = realm;
+        np_app_net_apply(app);
+    }
     /* Runtime content packages, read by the core at boot (mods.c). */
     app->host.content_root =
         np_mods_content_root(app, game, app->mods_root, sizeof app->mods_root) ? NULL : app->mods_root;
-    insert_gba(app, game);
+    insert_gba(app);
     /* PC_* variables configure the port layer (debug switches such as
      * PC_TP_DEBUG); pass the process's own through, as np_headless does. */
     char **env = SDL_GetEnvironmentVariables(SDL_GetEnvironment());
     const char *options[33];
     int nopt = 0;
-    for (char **e = env; e && *e && nopt < 32; e++)
-        if (!SDL_strncmp(*e, "PC_", 3))
+    for (char **e = env; e && *e && nopt < 31; e++)
+        if (!SDL_strncmp(*e, "PC_", 3) && !(pc_mods[0] && !SDL_strncmp(*e, "PC_MODS=", 8)))
             options[nopt++] = *e;
+    if (pc_mods[0])
+        options[nopt++] = pc_mods; /* the cart's set, over loadorder.txt */
     options[nopt] = NULL;
     app->core = np_core_create(game, &app->host, options);
     SDL_free(env);
@@ -451,6 +471,10 @@ static void close_core(np_app *app)
         SDL_CloseIO(app->rom_io);
     app->rom_io = NULL;
     eject_gba(app);
+    if (app->net_realm) { /* back to vanilla for the launcher */
+        app->net_realm = 0;
+        np_app_net_apply(app);
+    }
 }
 
 /* Opens a cartridge file as the host's ROM. */
@@ -717,6 +741,14 @@ void np_app_open_gba_dialog(np_app *app, int save)
         SDL_ShowOpenFileDialog(dialog_done, app, app->window, save ? sav : rom, 1, NULL, false);
 }
 
+void np_app_open_skin_dialog(np_app *app)
+{
+    static const SDL_DialogFileFilter filters[] = {{"Delta skin (*.deltaskin)", "deltaskin;zip"}};
+    app->dialog_kind = NP_PENDING_SKIN;
+    if (!autotest_dialog(app, "skin"))
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+}
+
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot)
 {
     static const SDL_DialogFileFilter filters[] = {{"Raw save (*.sav)", "sav"}};
@@ -834,6 +866,10 @@ static void process_pending(np_app *app)
         SDL_strlcpy(app->opt.gba_save, path, sizeof app->opt.gba_save);
         gba_changed(app);
         break;
+    case NP_PENDING_SKIN:
+        np_skin_install(app, path);
+        save_options(app);
+        break;
     case NP_PENDING_GIFT_IMPORT:
         if (app->editor)
             np_editor_import_gift(app, path);
@@ -868,6 +904,10 @@ static void handle_drop(np_app *app, const char *data)
             launch_fail(app, "Cannot open link: %s", err);
         else
             np_app_launch(app, &req);
+        return;
+    }
+    if (has_extension(data, "deltaskin")) {
+        np_app_request(app, NP_PENDING_SKIN, data);
         return;
     }
     if (has_extension(data, "zip") && app->page == NP_PAGE_MODS) {
@@ -1056,7 +1096,16 @@ static void draw_screens(np_app *app)
      * are wider than 256 blocks with the DS picture centred. */
     uint32_t s = app->have_frame && app->frame.height >= 192 ? app->frame.height / 192 : 1;
     int screen_w = app->have_frame ? (int)(app->frame.width / s) : 256;
-    np_layout_params lp = {app->opt.layout, app->opt.swap, app->opt.rotation, app->opt.scale, screen_w};
+    float frames[8];
+    /* During a battle the battle layout, if one is chosen, replaces the
+     * player's layout (unswapped, so a hybrid layout enlarges the top). */
+    int battle = app->opt.battle_layout && app->core && np_core_status(app->core, NP_STAT_IN_BATTLE);
+    np_layout_params lp = {battle ? (np_layout_mode)(app->opt.battle_layout - 1) : app->opt.layout,
+                           battle ? 0 : app->opt.swap,
+                           app->opt.rotation,
+                           app->opt.scale,
+                           screen_w,
+                           np_skin_frames(app, frames) ? frames : NULL};
     np_layout_compute(&app->layout, &lp, app->out_w, app->out_h);
     for (int i = 0; i < 2; i++)
         np_fx_draw_screen(app, i);
@@ -1067,6 +1116,7 @@ static void draw(np_app *app)
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
     if (app->view == NP_VIEW_GAME) {
+        np_skin_draw_art(app); /* a skin's art lies under the screens */
         draw_screens(app);
         np_touchpad_draw(app);
     }
@@ -1232,18 +1282,35 @@ static uint16_t autotest_pressed(const np_autotest *t, np_input *in)
  *   [,clock=real (device RTC; default fixed, so runs are deterministic)]
  *   [,slot=NAME (save slot for rom=/synthetic boots with storage=1)]
  *   [,script=F:kind:args;... (synthetic events, see autotest_script)]"
- * Returns -1 on a malformed value.
+ * Returns -1 on a malformed value. With `options_only`, applies just the
+ * keys that set options (layout=, fx1=, lan=, ...): boot=app runs call it
+ * again after loading options.ini, so the spec's options win over the file.
  */
-static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, int *win_h)
+static int is_option_key(const char *k)
+{
+    static const char *const keys[] = {"layout", "rotation", "swap", "scale", "filter", "fx1", "fx2", "curvature",
+                                       "perf", "lan", "peer", "station", "render_scale", "widescreen", "zoom",
+                                       "tilt", "instant_text", "fix_bugs", "rewind_seconds", "battle_layout",
+                                       "music_filter", "ui_scale", "reduce_motion", "skin", "controls", "clock"};
+    for (size_t i = 0; i < SDL_arraysize(keys); i++)
+        if (!SDL_strcmp(k, keys[i]))
+            return 1;
+    return 0;
+}
+
+static int parse_autotest(np_app *app, const char *spec, int options_only, int *game, int *win_w, int *win_h)
 {
     static const char *const layouts[NP_LAYOUT_COUNT] = {"vertical", "horizontal", "hybrid", "top", "bottom"};
-    static char buf[8192];
-    SDL_strlcpy(buf, spec, sizeof buf);
+    static char buf[16384];
+    if (SDL_strlcpy(buf, spec, sizeof buf) >= sizeof buf)
+        return -1;
     np_autotest *t = &app->autotest;
-    t->frames = 120;
     app->opt.real_clock = 0;
-    SDL_strlcpy(t->slot, "Autotest", sizeof t->slot);
-    *game = NP_GAME_PLATINUM;
+    if (!options_only) {
+        t->frames = 120;
+        SDL_strlcpy(t->slot, "Autotest", sizeof t->slot);
+        *game = NP_GAME_PLATINUM;
+    }
     char *save = NULL;
     for (char *kv = SDL_strtok_r(buf, ",", &save); kv; kv = SDL_strtok_r(NULL, ",", &save)) {
         char *v = SDL_strchr(kv, '=');
@@ -1252,6 +1319,8 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
         if (!v)
             return -1;
         *v++ = '\0';
+        if (options_only && !is_option_key(kv))
+            continue;
         if (!SDL_strcmp(kv, "frames"))
             t->frames = SDL_atoi(v);
         else if (!SDL_strcmp(kv, "png"))
@@ -1325,12 +1394,25 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.fix_bugs = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "rewind_seconds"))
             app->opt.rewind_seconds = SDL_clamp(SDL_atoi(v), 0, 120);
+        else if (!SDL_strcmp(kv, "battle_layout")) {
+            app->opt.battle_layout = 0; /* "off" */
+            for (int i = 0; i < NP_LAYOUT_COUNT; i++)
+                if (!SDL_strcmp(v, layouts[i]))
+                    app->opt.battle_layout = i + 1;
+        } else if (!SDL_strcmp(kv, "music_filter"))
+            app->opt.music_filter = SDL_clamp(SDL_atoi(v), 0, 3);
+        else if (!SDL_strcmp(kv, "ui_scale"))
+            app->opt.ui_scale = SDL_clamp(SDL_atoi(v), 0, 6);
+        else if (!SDL_strcmp(kv, "reduce_motion"))
+            app->opt.reduce_motion = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "sync"))
             SDL_strlcpy(t->sync_folder, v, sizeof t->sync_folder);
         else if (!SDL_strcmp(kv, "gba"))
             SDL_strlcpy(t->gba_rom, v, sizeof t->gba_rom);
         else if (!SDL_strcmp(kv, "gbasave"))
             SDL_strlcpy(t->gba_save, v, sizeof t->gba_save);
+        else if (!SDL_strcmp(kv, "skin"))
+            SDL_strlcpy(app->opt.skin, v, sizeof app->opt.skin);
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
             if (SDL_sscanf(v, "%dx%d", &x, &y) != 2 || x < 0 || x > 255 || y < 0 || y > 191)
@@ -1344,13 +1426,18 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.touch_controls = SDL_atoi(v) ? NP_TOUCH_ON : NP_TOUCH_OFF;
         else if (!SDL_strcmp(kv, "storage"))
             t->storage = SDL_atoi(v) != 0;
-        else if (!SDL_strcmp(kv, "script"))
-            SDL_strlcpy(t->script, v, sizeof t->script);
-        else if (!SDL_strcmp(kv, "press")) {
+        else if (!SDL_strcmp(kv, "script")) {
+            if (SDL_strlcpy(t->script, v, sizeof t->script) >= sizeof t->script) {
+                SDL_Log("autotest: script longer than %d bytes", (int)sizeof t->script - 1);
+                return -1;
+            }
+        } else if (!SDL_strcmp(kv, "press")) {
             if (autotest_parse_press(t, v))
                 return -1;
         } else if (!SDL_strcmp(kv, "shots"))
             t->shot_every = SDL_atoi(v);
+        else if (!SDL_strcmp(kv, "realtime"))
+            t->realtime = SDL_atoi(v) != 0;
         else if (!SDL_strcmp(kv, "clock"))
             app->opt.real_clock = !SDL_strcmp(v, "real");
         else if (!SDL_strcmp(kv, "slot")) {
@@ -1566,16 +1653,22 @@ static void autotest_script(np_app *app)
     }
 }
 
-/* One guest frame per iteration, with the fixed, pressed and scripted input. */
+/* One guest frame per iteration, with the fixed, pressed and scripted input.
+ * A scripted (live input) run also follows the speed and fast-forward keys:
+ * an iteration then runs as many guest frames as one display frame would at
+ * that speed (Uncapped: 16), so speed changes show in guest_frame. */
 static int autotest_frame(np_app *app)
 {
     np_autotest *t = &app->autotest;
     np_input in = t->input;
     in.keys |= autotest_pressed(t, &in);
+    int frames = 1;
     if (t->script[0]) {
-        int ff;
         np_input live = {0};
-        in.keys |= np_input_poll_keys(app, &ff);
+        in.keys |= np_input_poll_keys(app, &app->ff_hold);
+        frames = np_app_speed(app);
+        if (!frames)
+            frames = 16;
         np_input_stylus(app, &live);
         if (live.touch) {
             in.touch = 1;
@@ -1588,6 +1681,7 @@ static int autotest_frame(np_app *app)
     else if (!t->script[0])
         app->rewind_hold = 0;
     if (app->rewind_hold) {
+        frames = 1;
         int r = np_session_rewind_step(app);
         if (r == 1)
             return 0; /* still showing the previous step */
@@ -1596,8 +1690,9 @@ static int autotest_frame(np_app *app)
         else
             app->rewind_hold = 0; /* history exhausted: play on */
     }
-    if (run_one(app, &in))
-        return -1;
+    for (int i = 0; i < frames; i++)
+        if (run_one(app, &in))
+            return -1;
     if (t->rewind_frames && (t->ran == t->rewind_from - 1 || t->ran == t->rewind_from + t->rewind_frames))
         SDL_Log("autotest: frame %d rewind depth %d, %zu KB of history", t->ran, np_session_rewind_depth(app),
                 np_session_rewind_bytes(app) / 1024);
@@ -1605,9 +1700,18 @@ static int autotest_frame(np_app *app)
     int16_t buf[2048 * 2];
     size_t got;
     while ((got = np_core_audio_read(app->core, buf, 2048)) > 0) {
+        /* What the player would hear: the music filter applies here too. */
+        np_lowpass_config(&app->lowpass, app->opt.music_filter, np_core_audio_rate(app->core));
+        np_lowpass_run(&app->lowpass, buf, got);
         t->audio_frames += got;
-        for (size_t i = 0; i < got * 2; i++)
+        for (size_t i = 0; i < got * 2; i++) {
             t->audio_peak = SDL_max(t->audio_peak, SDL_abs(buf[i]));
+            /* Treble energy: squared sample-to-sample steps (left channel). */
+            if (i >= 2 && !(i & 1)) {
+                double d = (double)buf[i] - buf[i - 2];
+                t->audio_treble += d * d;
+            }
+        }
     }
     return 0;
 }
@@ -1617,8 +1721,12 @@ static SDL_AppResult autotest_iterate(np_app *app)
     np_autotest *t = &app->autotest;
     autotest_script(app);
     process_pending(app);
-    if (app->core && app->page == NP_PAGE_NONE && autotest_frame(app) && t->boot != NP_AT_APP)
-        return SDL_APP_FAILURE;
+    if (app->core && app->page == NP_PAGE_NONE) {
+        if (autotest_frame(app) && t->boot != NP_AT_APP)
+            return SDL_APP_FAILURE;
+    } else if (app->net) {
+        np_net_poll(app->net); /* menus and the launcher keep answering discovery, as in SDL_AppIterate */
+    }
     t->ran++;
     draw(app);
     if (t->shot_every > 0 && t->ran % t->shot_every == 0 && t->ran < t->frames) {
@@ -1632,6 +1740,16 @@ static SDL_AppResult autotest_iterate(np_app *app)
     }
     if (t->ran < t->frames) {
         SDL_RenderPresent(app->renderer);
+        if (t->realtime) {
+            /* As the app's wall-clock accumulator: one iteration per frame
+             * period (two scripted stations then keep pace like players). */
+            uint64_t period = (uint64_t)(1e9 / (app->opt.logic_clock_60 ? 60.0 : DS_FRAME_HZ)), now = SDL_GetTicksNS();
+            if (!t->next_ns || now > t->next_ns + 4 * period)
+                t->next_ns = now;
+            t->next_ns += period;
+            if (t->next_ns > now)
+                SDL_DelayNS(t->next_ns - now);
+        }
         return SDL_APP_CONTINUE;
     }
     uint64_t guest_frame = app->have_frame ? app->frame.number : 0;
@@ -1653,10 +1771,11 @@ static SDL_AppResult autotest_iterate(np_app *app)
     if (app->core)
         np_core_save_flush(app->core);
     SDL_Log("autotest: boot=%s game=%s slot=\"%s\" iterations=%d guest_frame=%llu audio_frames=%llu audio_peak=%d "
-            "save_stores=%d save_loads=%d save_bytes=%u view=%s page=%d png=%s",
+            "audio_treble=%.0f save_stores=%d save_loads=%d save_bytes=%u view=%s page=%d png=%s",
             t->boot == NP_AT_ROM ? "rom" : t->boot == NP_AT_APP ? "app" : "synthetic", np_game_id(app->game),
             app->slot, t->ran, (unsigned long long)guest_frame, (unsigned long long)t->audio_frames, t->audio_peak,
-            t->saves, t->loads, t->save_len, app->core ? "game" : "launcher", (int)app->page, t->png);
+            t->audio_frames ? SDL_sqrt(t->audio_treble / (double)t->audio_frames) : 0.0, t->saves, t->loads,
+            t->save_len, app->core ? "game" : "launcher", (int)app->page, t->png);
     if (app->status[0])
         SDL_Log("autotest: status: %s", app->status);
     if (t->boot == NP_AT_SYNTHETIC) {
@@ -1682,6 +1801,12 @@ static void startup_launch(np_app *app, int argc, char *argv[])
     char err[160];
     if (np_launch_parse_args(argc, argv, &req, err, sizeof err)) {
         launch_fail(app, "Ignoring the command line: %s", err);
+        return;
+    }
+    if (req.editor) {
+        np_editor_open_file(app, req.game, req.save);
+        if (!app->editor)
+            launch_fail(app, "%s", app->status); /* stays in the app to show why */
         return;
     }
     if (req.game >= 0 || req.force_launcher) {
@@ -1723,7 +1848,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     np_autotest *t = &app->autotest;
     if (spec && *spec) {
         t->active = 1;
-        if (parse_autotest(app, spec, &test_game, &win_w, &win_h)) {
+        if (parse_autotest(app, spec, 0, &test_game, &win_w, &win_h)) {
             SDL_Log("NP_AUTOTEST: cannot parse \"%s\"", spec);
             return SDL_APP_FAILURE;
         }
@@ -1748,6 +1873,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
     if ((!t->active || t->boot == NP_AT_APP) && np_options_load(&app->opt, app->options_path))
         SDL_Log("could not read %s; using defaults", app->options_path);
+    if (t->active && t->boot == NP_AT_APP)
+        parse_autotest(app, spec, 1, &test_game, &win_w, &win_h); /* the spec's options over the file's */
     if (t->sync_folder[0])
         SDL_strlcpy(app->opt.sync_folder, t->sync_folder, sizeof app->opt.sync_folder);
     if (t->gba_rom[0])
@@ -1764,6 +1891,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         save_options(app);
     }
     np_app_net_apply(app);
+    if (!t->active || t->storage)
+        np_touchpad_load(app);
 
     SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     if (!SDL_CreateWindowAndRenderer("nativeplat", win_w, win_h, flags, &app->window, &app->renderer)) {
@@ -1789,6 +1918,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         SDL_Log("display effects: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+    np_skin_apply(app);
 #if defined(SDL_PLATFORM_IOS)
     app->touch_seen = 1;
 #endif
@@ -1941,6 +2071,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *e)
         np_ui_command(app, np_input_menu_cmd(app, e, pad));
         return SDL_APP_CONTINUE;
     }
+    if (pad != NP_PAD_NONE)
+        np_input_rumble(app); /* when Options > Rumble on press is on */
     int key = e->type == SDL_EVENT_KEY_DOWN && !e->key.repeat ? (int)e->key.scancode : 0;
     if ((key || pad != NP_PAD_NONE) && np_input_action_for(app, key, pad) == NP_ACT_FF_TOGGLE) {
         app->ff_toggle = !app->ff_toggle;
@@ -1981,11 +2113,13 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
     np_app *app = appstate;
     if (!app)
         return;
+    np_update_shutdown();
     close_core(app);
     np_sync_all(app, 1);
     save_options(app);
     np_audio_close(app);
     np_input_close_gamepads(app);
+    np_skin_shutdown();
     np_ui_destroy(app);
     np_fx_destroy(app);
     if (app->net)

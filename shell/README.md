@@ -75,6 +75,16 @@ registered (that needs an installer writing the registry), so use the flags.
 Unknown games, missing slots, games whose core is not in the build, or games
 not yet imported all land on the launcher with a message.
 
+```sh
+nativeplat --editor --save ~/Downloads/backup.sav [--game pearl]
+```
+
+opens the save editor on any save file, without a slot or a game core, and
+quits when the editor closes. Platinum saves identify themselves; Diamond and
+Pearl share a format, so `--game` (or whichever of the two is imported)
+decides whose ROM supplies the names. Saving keeps the previous file as
+`<file>.bak` next to it.
+
 *Options > Real-time clock* feeds the device's local time to the game's RTC
 (default), or the port's fixed clock (2009-03-22 10:00, advancing with frames);
 it applies from the next boot.
@@ -115,6 +125,12 @@ the shell's bitmap font (`src/card.c`, no game graphics).
 
 ## Display effects and performance
 
+*Battle layout* switches to another screen layout for the length of each
+battle (the core's `NP_STAT_IN_BATTLE`: from the intro effect to the fade
+back to the field) and back afterwards. It is shown unswapped, so *Hybrid
+(large top)* gives the battle scene the large screen with the touch menu
+beside it. *Same as screen layout* turns it off.
+
 *Options > Effect 1 / Effect 2* chain two effects, each with an intensity:
 **LCD grid** (gaps between DS pixels), **Scanlines**, **CRT** (scanlines,
 aperture-grille mask, vignette and, with *CRT curvature*, a barrel-bent
@@ -129,6 +145,10 @@ and effect options as set; **High** = effects, VSync, no cap; **Balanced** =
 no curvature, VSync, 60 FPS cap; **Low** = no effects, VSync off, 30 FPS cap;
 **Auto** = High, dropping to Low while producing a frame takes over 12 ms
 (averaged over 120 frames) and returning under 5 ms.
+
+*UI scale* fixes the menus' text scale (1x-6x; *Auto* follows the window,
+capped so a page always fits) and *Reduce motion* stops the UI's only
+animation, the blinking text cursor.
 
 ## Default controls
 
@@ -154,6 +174,35 @@ Gamepad Guide or R3 opens the options. The mouse is the stylus on the bottom
 screen in every layout and rotation; on touch screens fingers are, and an
 on-screen pad (d-pad, A/B/X/Y, L/R, Start/Select, FF, Menu) appears after the
 first touch (*Touch controls: Auto/On/Off*).
+
+*Edit touch controls...* rearranges them for the window's current
+orientation (landscape and portrait are separate): drag a control to move
+it, drag the square on its corner to resize it, and use the toolbar (or Tab
+/ Shift+Tab, arrows, `-` `=` for size, `[` `]` for opacity; on a gamepad
+L/R select, the d-pad moves, X/Y resize, A cycles opacity) to fade it or
+*Reset* the orientation to the built-in arrangement. The outlines show where
+the DS screens are. Edited layouts are saved to `touch-controls.ini`
+(centre as a fraction of the window, size as a fraction of its short side,
+so they follow resizing); unedited ones keep the built-in arrangement.
+*Rumble on press* gives a short gamepad rumble for every touch-control or
+gamepad press, the desktop stand-in for a phone's haptic tick.
+
+*Controller skin* uses Delta's DS skins (`.deltaskin`: a zip with
+`info.json` whose `gameTypeIdentifier` is `com.rileytestut.delta.game.ds`):
+Enter imports one (or drop it on the window), Left/Right switch between
+installed skins and *None*. Import keeps `info.json` and the art it names in
+`skins/<name>/`. For each orientation the first representation of
+iphone/edgeToEdge, iphone/standard, ipad/standard, ipad/splitView is used:
+its art is fitted to the window, the DS screens go to its `screens`
+(`inputFrame` picks top or bottom, `outputFrame` is where; older skins'
+`gameScreenFrame` is split in two), and touches on its `items` press
+buttons, the d-pad (8-way from its centre), `menu`, `fastForward`,
+`toggleFastForward`, `quickSave` (F1) and `quickLoad` (F2), with
+`extendedEdges` growing the touch areas. The touch screen stays the
+stylus. PNG art loads anywhere; PDF art (`resizable`) is rasterized with
+CoreGraphics on macOS and iOS for the window's size, and refused on Windows.
+A skin replaces the built-in touch controls whenever it covers the
+orientation.
 
 ## Saving, snapshots and rewind
 
@@ -200,6 +249,11 @@ wireless session (`NP_STAT_LINK_ACTIVE`) the speed is locked to 1x and the
 game keeps running when minimized or in the background, because the partner
 drops a station that is silent for 4 s.
 
+*Music filter* (Off / 1X / 2X / 3X, as in Gen1Recomp) runs the output
+through 1-3 cascaded one-pole low-passes at 6 kHz (`src/lowpass.c`): -6, -12
+or -18 dB per octave above the corner, nothing below it. The core mixes music
+and effects into one stream, so both are filtered.
+
 ## Local wireless
 
 *Options > Local wireless (LAN)* opens a UDP transport (`src/net.c`) on *LAN
@@ -216,13 +270,17 @@ forwarding.
 
 ## Mods
 
-*Options > Mods...* manages runtime content packages for Platinum (the
-format in `games/platinum/pc/mods/README.md`: `mod.toml`, `content/`,
-`records/` and the cooked `.cooked/`). Packages are plain folders in
-`<user data>/mods/`, which the core reads read-only as `/content`
-(`np_host.content_root`); the enabled ones and their load order are
-`mods/loadorder.txt`, the file the core itself reads, so the folder also
-works by hand. *Install package (.zip)...* (or dropping a .zip on the page)
+*Options > Mods...* manages runtime content packages for each game (the
+format in `games/platinum/pc/mods/README.md` and
+`games/diamond/pc/mods/README.md`: `mod.toml`, `content/`, `records/` and the
+cooked `.cooked/`). The page shows one game's packages, the running game's
+or the last one played; L/R (Page Up/Down) switch games. A game's packages
+are plain folders in `<user data>/mods/<game>/` (`diamond`, `pearl`,
+`platinum`: their files differ, so none is shared), which that game's core
+reads read-only as `/content` (`np_host.content_root`); the enabled ones and
+their load order are `mods/<game>/loadorder.txt`, the file the core itself
+reads, so the folder also works by hand. *Install package (.zip)...* (or
+dropping a .zip on the page) installs into the page's game and
 takes a zip holding one cooked package; member names must be plain relative
 paths and links are refused, so a package cannot reach outside the folder.
 It is extracted under a temporary name and renamed into place. Enter turns a
@@ -231,10 +289,22 @@ package on or off, Left/Right move it in the load order, X twice deletes it.
 when the game boots; if a package stops the boot ("modfs: ..."), the page
 opens with the message and that package selected.
 
+*Seal enabled packages as a cart...* saves the enabled packages, in order,
+as a named custom cart of that game (`carts/<game>/<name>.cart`) with a SHA-256 over each
+package's name, `mod.toml` and cooked digest. A slot's menu binds it to a
+cart (*Cart:* cycles through them; stored as `saves/<game>/<slot>.cart` and
+carried by rename/duplicate/delete); that slot then always boots exactly the
+cart's packages (`PC_MODS`, overriding `loadorder.txt`) and refuses to start
+if one changed since sealing. Link play is pinned to the active set: each
+boot derives a realm from it (the cart's or the loose set's hash; none for
+vanilla), and local wireless only meets stations of the same realm (on a LAN
+the realm changes the packet magic; through a relay it makes its own room,
+`<PIN>~<realm>`), so modded and vanilla games never trade or battle.
+
 ## GBA cartridge (Pal Park)
 
 *Options > GBA cartridge (Pal Park)* inserts a Game Boy Advance cartridge
-image you own into Platinum's GBA slot; *GBA save* picks its save file
+image you own into the GBA slot (all three games have Pal Park); *GBA save* picks its save file
 (default: the cartridge's name with `.sav`, as mGBA writes it). Left ejects.
 The slot is read when the game boots, so a change applies from the next boot
 (F2 twice reloads). The core reads the ROM through `np_host.gba_rom_read`;
@@ -264,6 +334,29 @@ is lost anywhere), and a chooser shows both (trainer, play time, badges,
 save time) with *Keep this device's*, *Use the other copy*, *Keep both* or
 *Decide later*.
 
+## Updates
+
+*Options > Updates...* appears when the build names a GitHub repository
+(`-DNP_UPDATE_REPO=owner/name`, or `[updates] repo = owner/name` in
+`options.ini`; `api =` overrides `https://api.github.com`, for testing
+against a local server). Nothing is sent until the player presses *Check
+for updates*: the app then reads the repository's latest release, compares
+its tag with its own version (dotted numbers; a `-rc` pre-release sorts
+before its release), and offers *Download and verify* only if the release
+carries this platform's zip (an asset name containing `macos` or `windows`,
+ending `.zip`) and a `sha256sums.txt` in `sha256sum` format. The zip is
+written to the Downloads folder as `<name>.part`, hashed while it arrives,
+and renamed only if its SHA-256 matches the listed one (otherwise deleted).
+*Show in Finder* / *Show in Explorer* reveals it; the app never replaces
+itself.
+
+Networking lives behind one function, `np_http_get` (`src/http.h`): a GET
+that follows redirects and streams the body to a callback, with a cancel
+flag, on a worker thread. The backends use what the OS ships, so no TLS
+library is bundled: `src/http_curl.c` links the macOS SDK's libcurl (system
+trust store), `src/http_winhttp.c` uses WinHTTP. iOS builds have no backend
+and no updater (`NP_HAVE_HTTP` undefined): updates come from the App Store.
+
 ## Autotest
 
 `NP_AUTOTEST` skips the launcher, boots a core for a synthetic cartridge
@@ -277,7 +370,8 @@ SDL_VIDEO_DRIVER=dummy NP_AUTOTEST="frames=120,png=/tmp/shot.png" \
 ```
 
 Keys (comma separated): `frames`, `png`, `game`, `layout`
-(`vertical|horizontal|hybrid|top|bottom`), `rotation` (0-3), `swap`, `scale`
+(`vertical|horizontal|hybrid|top|bottom`), `battle_layout` (same values or
+`off`), `rotation` (0-3), `swap`, `scale`
 (`integer`), `filter` (`linear`), `touch=XxY`, `keys=a+up`, `controls=1`,
 `size=WxH`, `page=launcher|options|controls|about`, `storage=1` (saves and an
 options round-trip file in the user-data root; refused unless portable mode is
@@ -297,7 +391,23 @@ and `script=F:kind:args;...` to push synthetic `key`, `text`, mouse
 `widescreen`, `zoom`, `tilt`, `instant_text`, `fix_bugs` and
 `rewind_seconds` set the game options. `sync=<folder>` sets the sync folder
 (only with portable storage). `gba=<rom>` and `gbasave=<sav>` fill the GBA
-slot; `page=mods` captures the mod manager.
+slot; `page=mods` captures the mod manager. `music_filter=N` (the output
+the autotest measures is filtered; it reports `audio_treble`, the RMS of
+sample-to-sample steps), `ui_scale=N` and `reduce_motion=1` set those
+options. With `boot=app` the process's own arguments apply, e.g.
+`--editor --save <file>`, and `options.ini` is read, with the spec's option
+keys applied over it. `realtime=1` paces iterations at the logic clock,
+as the app's wall-clock loop does (two stations started together then keep
+pace like two players; otherwise iterations run as fast as they render). A
+run with a `script` takes live input like the app: hotkeys, the speed key
+(`1`) and fast-forward run that many guest frames per iteration (Uncapped:
+16), so `guest_frame` in the summary shows the speed. A `script` or spec
+longer than its buffer is refused, never cut short.
+
+`tests/mac/feature_matrix.py` drives the packaged app through every
+player-facing feature this way (one autotest per step, a real window) and
+leaves screenshots and logs in `build/evidence/`; `docs/evidence/README.md`
+lists them.
 
 A press schedule is steps separated by `;` or newlines (`#` comments in files):
 `F:keys[:N[:R:C]]` holds keys (`a`, `start`, `a+up`, ..., or `none`) for N

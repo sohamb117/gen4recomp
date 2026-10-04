@@ -1,0 +1,11 @@
+# Uses of r0 after a call that only returns what a void C function left in
+# it (pc/tools/dp_voidret_lint.py), each reviewed by hand: `<callee>
+# <caller>` (`*` = every caller), and why the value cannot matter.
+#
+# ov20_02253888 (the Poketch task free: ..., Heap_Free, pop) is what the
+# digital watch's task callbacks ov21_02254B60/BF4/C14/C40 return through
+# ov21_02254B4C, declared BOOL. Those callbacks are SysTasks
+# (ov20_022537E0 hands them to SysTask_CreateOnMainQueue and calls the
+# first directly, dropping r0 at its own `pop {pc}`), and the SysTask
+# runner never reads a return, so the value goes nowhere.
+ov20_02253888 ov21_02254A6C

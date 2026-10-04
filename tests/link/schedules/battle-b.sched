@@ -1,0 +1,25 @@
+# Union Room battle, station B: walk in, accept the challenge (A x3),
+# same party picks and taps as A; B's top-right move is Ember, so B wins.
+900:a:20
+1200:a:20
+1800:a:20
+2100:a:20
+2400:a:20
+2800:a:24
+3100:a:10
+3300:a:10
+3500:a:10
+3700:a:10
+3900:a:10
+5250:a:10
+5450:a:10
+11420:a:6
+11500:a:6
+11580:a:6
+12620:a:6
+12820:a:6
+13020:right:4
+13080:a:6
+13280:a:6
+13480:a:6
+15000:tap:200:40:6:30:300

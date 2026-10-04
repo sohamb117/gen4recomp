@@ -1,0 +1,49 @@
+sub_0200C628 / sub_0200C630 (the sprite wrappers' "get animation frame")
+are void here but return sub_0202022C's frame on the ROM: mwcc compiles the
+void body to the same `bl sub_0202022C; pop {pc}` that leaves the frame in
+r0, and every assembly caller reads it (ov11_02250338, the trainer's ball
+throw, waits for frame 3 to release the Poke Ball; ov08_02226B2C,
+ov08_02228B08, ov75_021EC3B8). The wasm bridge returns 0 from a void C
+function, so the throw never let go of the ball and the first battle stalled
+on "Go! TURTWIG!" (pc/tools/dp_voidret_lint.py finds this class). Both now
+return the frame; render_window.c already declares sub_0202022C u32.
+
+--- a/unk_0200BB14.c
++++ b/unk_0200BB14.c
+@@ -1,4 +1,10 @@
++/* wasm: sub_0200C628/sub_0200C630 return the animation frame (see the
++ * patch); the header's void prototypes are renamed out of the way. */
++#define sub_0200C628 sub_0200C628_header_void
++#define sub_0200C630 sub_0200C630_header_void
+ #include "unk_0200BB14.h"
++#undef sub_0200C628
++#undef sub_0200C630
+ 
+ #include "global.h"
+ 
+@@ -34,7 +40,7 @@
+ extern void sub_020200D8(u32 param0, u32 param1);
+ extern u32 sub_02020388(u32 param0);
+ extern void sub_02020208(u32 param0);
+-extern void sub_0202022C(u32 param0);
++extern u32 sub_0202022C(u32 param0);
+ extern void sub_020200A0(u32 param0, u32 param1);
+ extern u8 sub_02020128(u32 param0);
+ extern void sub_020202A8(u32 param0, u32 param1);
+@@ -755,12 +761,12 @@
+     sub_0200C614(*param0);
+ }
+ 
+-void sub_0200C628(u32 param0) {
+-    sub_0202022C(param0);
++u32 sub_0200C628(u32 param0) {
++    return sub_0202022C(param0);
+ }
+ 
+-void sub_0200C630(u32 *param0) {
+-    sub_0200C628(*param0);
++u32 sub_0200C630(u32 *param0) {
++    return sub_0200C628(*param0);
+ }
+ 
+ void sub_0200C63C(u32 param0, u32 param1) {

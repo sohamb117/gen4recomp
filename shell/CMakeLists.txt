@@ -44,17 +44,23 @@ endif()
 add_library(np_shell_common STATIC
   src/card.c
   src/font8x8.c
+  src/json.c
   src/layout.c
   src/launch.c
+  src/lowpass.c
   src/modpkg.c
   src/net.c
   src/png.c
+  src/release.c
   src/rewind.c
   src/romdb.c
   src/scale2x.c
   src/sha1.c
+  src/sha256.c
+  src/skinfmt.c
   src/slots.c
   src/sync_plan.c
+  src/touchlayout.c
   src/undo.c
   src/zip.c
 )
@@ -99,6 +105,7 @@ message(STATUS "nativeplat core: ${NP_CORE} ${NP_CORE_LIBS} ${NP_GUESTS}")
 
 add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/audio.c
+  src/carts.c
   src/editor.c
   src/fx.c
   src/input.c
@@ -106,15 +113,41 @@ add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/mods.c
   src/options.c
   src/session.c
+  src/skin.c
   src/storage.c
   src/sync.c
   src/touchpad.c
   src/ui.c
+  src/update.c
 )
 target_link_libraries(nativeplat PRIVATE ${NP_CORE_LIBS} np_shell_common save4 ndsdata SDL3::SDL3)
 target_compile_options(nativeplat PRIVATE ${NP_WARNINGS})
 if(NP_CORE STREQUAL "real")
   np_link_guest_modules(nativeplat ${NP_GUESTS})
+endif()
+
+# Updater (src/update.c): the GitHub repository whose releases it offers,
+# "owner/name"; empty hides the feature. The HTTP backend is the OS's own:
+# libcurl from the macOS SDK, WinHTTP on Windows; iOS gets none (App Store).
+set(NP_UPDATE_REPO "" CACHE STRING "GitHub owner/name the updater checks; empty = no updater")
+target_compile_definitions(nativeplat PRIVATE "NP_UPDATE_REPO=\"${NP_UPDATE_REPO}\""
+  "NP_VERSION_STRING=\"${PROJECT_VERSION}\"")
+if(APPLE AND NOT IOS)
+  target_sources(nativeplat PRIVATE src/http_curl.c)
+  target_link_libraries(nativeplat PRIVATE curl)
+  target_compile_definitions(nativeplat PRIVATE NP_HAVE_HTTP)
+elseif(WIN32)
+  target_sources(nativeplat PRIVATE src/http_winhttp.c)
+  target_link_libraries(nativeplat PRIVATE winhttp)
+  target_compile_definitions(nativeplat PRIVATE NP_HAVE_HTTP)
+endif()
+
+# Delta skins with PDF art: CoreGraphics rasterizes them on Apple platforms
+# (src/pdfraster_apple.c); elsewhere only PNG art is accepted.
+if(APPLE)
+  target_sources(nativeplat PRIVATE src/pdfraster_apple.c)
+  target_link_libraries(nativeplat PRIVATE "-framework CoreGraphics")
+  target_compile_definitions(nativeplat PRIVATE NP_HAVE_PDF)
 endif()
 
 if(WIN32)

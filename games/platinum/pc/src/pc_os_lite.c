@@ -19,6 +19,7 @@
 
 #include <nitro.h>
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -623,6 +624,64 @@ u32 pc_os_vblank_count;
  * ask "is the program advancing"; named for its diamond counterpart. */
 unsigned long long pc_irq_frames(void) { return pc_os_vblank_count; }
 
+#if defined(PC_GAME_DP)
+/* Diamond/Pearl: the interrupt work runs as an interrupt does, in IRQ mode on
+ * a stack of its own.
+ *
+ * Most of D is recompiled assembly, which pushes its frames on armrec_sp, the
+ * running thread's guest stack. OS_Halt normally runs on the SDK's idle
+ * thread, whose stack is OSi_IdleThreadStack, 200 bytes with OSi_IdleThread
+ * right below it: enough on a console, where the idle thread only halts and
+ * the handlers run on the IRQ stack. Here the handlers ran on it. A Union
+ * Room's worth of WM callbacks (pc_wm_step: D's WmReceiveFifo and the game's
+ * comm callbacks) overflowed it into OSi_IdleThread, whose `next` became a
+ * saved register, and the main thread's next OS_WaitIrq walked the thread
+ * list into it (SIGBUS reading thread 0xFFFFFFF0's state).
+ *
+ * So the bracket is OS_IrqHandler's: mode IRQ with I set (F as it was), sp
+ * on an IRQ stack, and a thread switch the handlers ask for deferred, which
+ * D's OSi_RescheduleThread does by itself in IRQ mode (isNeedRescheduling),
+ * to be made after the bracket as OS_IrqHandler_ThreadSwitch makes it. The
+ * stack is a static one rather than the 1 KiB DTCM region the console uses,
+ * because the port's frame boundary does more in one bracket than one
+ * interrupt (every WM callback of the frame, the timers, VBlank), and a
+ * guard word at its bottom stops the run if that is ever not enough. A
+ * nested OS_Halt (a handler waiting) stays on the outer bracket's stack. */
+#define PC_DP_IRQ_STACK_WORDS 0x1000u /* 16 KiB */
+#define PC_DP_IRQ_GUARD 0x1A2B5EEDu
+
+extern u32 armrec_sp;
+
+static u32 sDpIrqStack[PC_DP_IRQ_STACK_WORDS] __attribute__((aligned(8)));
+static int sDpIrqDepth;
+static u32 sDpIrqSavedSp;
+static u32 sDpIrqSavedPsr;
+
+static void pc_dp_irq_enter(void)
+{
+    if (sDpIrqDepth++ > 0) {
+        return;
+    }
+    sDpIrqSavedSp = armrec_sp;
+    sDpIrqSavedPsr = pc_cpsr & PC_PSR_CONTROL_FIELD;
+    sDpIrqStack[0] = PC_DP_IRQ_GUARD;
+    armrec_sp = (u32)(uintptr_t)(sDpIrqStack + PC_DP_IRQ_STACK_WORDS);
+    pc_msr_control((sDpIrqSavedPsr & HW_PSR_FIQ_DISABLE) | HW_PSR_IRQ_DISABLE | HW_PSR_IRQ_MODE);
+}
+
+static void pc_dp_irq_leave(void)
+{
+    if (--sDpIrqDepth > 0) {
+        return;
+    }
+    if (sDpIrqStack[0] != PC_DP_IRQ_GUARD) {
+        pc_trap("OS_Halt", "the interrupt work overflowed its 16 KiB IRQ stack");
+    }
+    pc_msr_control(sDpIrqSavedPsr);
+    armrec_sp = sDpIrqSavedSp;
+}
+#endif
+
 void OS_Halt(void)
 {
     OSIrqFunction fn;
@@ -646,14 +705,22 @@ void OS_Halt(void)
         pc_agb_slot_step();
     }
 
-#if !defined(PC_GAME_DP)
+#if defined(PC_GAME_DP)
+    pc_dp_irq_enter();
+#endif
+
     /* The ARM7 wireless manager's pump (pc_wm.c): queued WM requests, the
      * network and their callbacks, where a FIFO interrupt would land. */
     {
         extern void pc_wm_step(void);
         pc_wm_step();
     }
-#endif
+
+    /* The hardware timers advance one VBlank's worth (pc_timers.c). */
+    {
+        extern void pc_timers_step(void);
+        pc_timers_step();
+    }
 
     if (!(reg_OS_IME & 1) || !(reg_OS_IE & OS_IE_V_BLANK)) {
         pc_trap("OS_Halt",
@@ -706,6 +773,9 @@ void OS_Halt(void)
         }
     }
     fn();
+#if defined(PC_GAME_DP)
+    pc_dp_irq_leave();
+#endif
 
     /* The half of the hardware dispatcher the handler cannot do for
      * itself: OS_IrqHandler's epilogue wakes OSi_IrqThreadQueue so
@@ -716,6 +786,14 @@ void OS_Halt(void)
         extern OSThreadQueue OSi_IrqThreadQueue;
         OS_WakeupThread(&OSi_IrqThreadQueue);
     }
+#if defined(PC_GAME_DP)
+    /* And the switch a handler asked for in IRQ mode (the epilogue's
+     * isNeedRescheduling test), unless this halt is itself inside one. */
+    if (sDpIrqDepth == 0 && OSi_ThreadInfo.isNeedRescheduling) {
+        OSi_ThreadInfo.isNeedRescheduling = FALSE;
+        OS_RescheduleThread();
+    }
+#endif
 
     /* The sound driver's 192 Hz cadence and the mixer, batched here,
      * before the render/dump so a run that ends at this frame boundary

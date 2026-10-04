@@ -33,6 +33,7 @@ int asm_read_cdata(void);
 int asm_call_var(void);
 int asm_call_structs(int *);
 int asm_call_u8(void);
+int asm_ldm_self(const int *);
 extern int asm_table[];
 extern uint32_t asm_cptrs[];
 
@@ -75,6 +76,7 @@ int main(void) {
     float f;
     uint32_t fbits;
     int out3[3] = { 0, 0, 0 };
+    static const int pair[2] = { 0x5, 0x30 };
 
     if (armrec_mem_init() != 0) {
         printf("FAIL armrec_mem_init: %s\n", armrec_mem_strerror());
@@ -97,6 +99,7 @@ int main(void) {
     CHECK("asm_make_small y", sm.y, 0x5678);
     CHECK("asm_struct_stack", asm_struct_stack(1, 2, s12), 0x54321);
     CHECK("asm_id_a int8_t", asm_id_a(0x1FF80), (uint64_t)(int64_t)-128);
+    CHECK("asm_ldm_self (ldmia r0!, {r0, r1})", asm_ldm_self(pair), 0x35);
     f = asm_id_b(0x40490FDBu);
     memcpy(&fbits, &f, 4);
     CHECK("asm_id_b float", fbits, 0x40490FDBu);

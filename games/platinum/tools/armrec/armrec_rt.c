@@ -2323,6 +2323,8 @@ const char *armrec_name_of(uint32_t addr) {
     return any ? any->name : "<unknown>";
 }
 
+int armrec_code_live(uint32_t addr) { return lookup_code(addr) != NULL; }
+
 /*
  * An indirect call needs the stack arguments too, for the same reason a direct
  * one does, armrec_extern_addr() registers decompiled C functions in this

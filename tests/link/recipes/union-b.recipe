@@ -1,0 +1,10 @@
+# Union Room station B: two Pokémon (a trade needs two), standing in
+# map header 7 where the union schedules start.
+name UNIONB
+gender GENDER_MALE
+trainer-id 30567
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_CHIMCHAR 15 ITEM_NONE
+party SPECIES_STARLY 12 ITEM_NONE
+map 7 7 5 0  # facing 0, as the schedules were recorded

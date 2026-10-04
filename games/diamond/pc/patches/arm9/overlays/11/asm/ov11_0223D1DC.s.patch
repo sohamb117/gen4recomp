@@ -1,0 +1,14 @@
+--- a/arm9/overlays/11/asm/ov11_0223D1DC.s
++++ b/arm9/overlays/11/asm/ov11_0223D1DC.s
+@@ -1609,9 +1609,8 @@
+ 	beq _0223DE16
+ 	ldr r0, _0223DE6C ; =0x00002DB0
+ 	ldr r1, [r5, r0]
+-	mov r0, #2
+-	lsl r0, r0, #0x16
+-	and r1, r0
++	bl PcDp_RageAfterOtherMove
++	nop
+ 	ldr r0, _0223DE6C ; =0x00002DB0
+ 	str r1, [r5, r0]
+ _0223DE16:

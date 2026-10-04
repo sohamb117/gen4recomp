@@ -1,0 +1,16 @@
+# Underground station A: Explorer Kit registered on Y, standing in
+# Oreburgh City. The Roark intro is marked seen (the var the scripts test and the
+# flag underground/comm_manager.c tests), so entering connects to other
+# stations instead of playing the solo first visit.
+name UGA
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+item ITEM_EXPLORER_KIT 1
+register-item ITEM_EXPLORER_KIT
+flag FLAG_RECEIVED_EXPLORER_KIT
+flag FLAG_HAS_SEEN_UNDERGROUND_ROARK_INTRO
+var VAR_HAS_SEEN_UNDERGROUND_ROARK_INTRO 1
+map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN

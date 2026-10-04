@@ -93,7 +93,40 @@ all: $(TARGET)
 
 # Overlay statics' addresses into the finished module (host.mk generates the
 # table at its final size), then the contract check, as Platinum does.
-POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HOST_OVSTATICS_C) && \
+#
+# dp_arity_lint: a C call into assembly that passes fewer argument words than
+# the callee reads worked on the ROM through a leftover register and reads 0
+# here (the first list-menu heap corruption); see the script.
+# dp_retwidth_lint: a C call into assembly through a prototype whose return
+# type is narrower than what the assembly returns, where mwcc's caller (the
+# ROM object in $(ROMBUILD)) keeps the upper bits the bridge drops (the
+# start-menu SAVE fault); see the script.
+LINT_ASM = $(ROOT)/arm9/asm $(wildcard $(ROOT)/arm9/overlays/*/asm) \
+            $(wildcard $(BUILD)/extracted/*)
+# dp_adjacency_lint: assembly reaching past a C-defined object, relying on
+# the ROM's .bss neighbour that clang does not place there (the Continue
+# crash, pc/patches/arm9/src/unk_0202F150.c.patch).
+# dp_voidret_lint: assembly reading r0 after calling C the decomp declared
+# void, where mwcc's void body left the value the assembly wanted (the
+# first battle's stall on "Go! TURTWIG!",
+# pc/patches/arm9/src/unk_0200BB14.c.patch); see the script.
+# dp_ovlabel_lint: assembly or C naming a call into another overlay by the
+# label of a different overlay at the same address, which armrec and the
+# wasm link bind by name (the nickname screen's garbage sprites: the catch
+# called the field's ov05_021EEF68 instead of the Pokedex entry's
+# ov16_021EEF68; the Poketch watch's ov11_02252DB4 for ov20's); it reads the
+# patched copies armrec translates and the C the build compiles.
+POST_LINK ?= $(PYTHON) $(PCDIR)/tools/dp_arity_lint.py --allow $(PCDIR)/arity_allow.txt \
+               $(OBJ) $(LINT_ASM) && \
+             $(PYTHON) $(PCDIR)/tools/dp_retwidth_lint.py --allow $(PCDIR)/retwidth_allow.txt \
+               $(OBJ) $(ROMBUILD) $(LINT_ASM) && \
+             $(PYTHON) $(PCDIR)/tools/dp_voidret_lint.py --allow $(PCDIR)/voidret_allow.txt \
+               $(OBJ) $(LINT_ASM) && \
+             $(PYTHON) $(PCDIR)/tools/dp_adjacency_lint.py $(WASM_MAP) $(ROOT)/arm9/asm \
+               $(wildcard $(ROOT)/arm9/overlays/*/asm) $(BUILD)/extracted && \
+             $(PYTHON) $(PCDIR)/tools/dp_ovlabel_lint.py --allow $(PCDIR)/ovlabel_allow.txt \
+               $(ARMREC_S) $(addprefix $(A9)/,$(GAME_DIRECT)) $(GAME_PREP:%=$(BUILD)/prep/%) && \
+             $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HOST_OVSTATICS_C) && \
              $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
                $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
 $(TARGET): $(OBJS) $(LINK_EXTRA_DEPS)

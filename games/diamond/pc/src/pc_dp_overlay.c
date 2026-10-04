@@ -29,7 +29,11 @@
  * hold a single zero. The non-zero entries are one of two kinds:
  *
  *   - a recompiled function (overlay_12.s's ov12_022312BC): armrec knows its
- *     guest address, and it is dispatched;
+ *     guest address, and it is dispatched. Only a *resident* claimant
+ *     counts: the Poketch apps (ov21..ov50) and ov51 all load at
+ *     0x02254840, where ov51's first function is recompiled and every app's
+ *     is its C sinit, so asking for any claimant's name made the Watch's
+ *     load dispatch into the evicted ov51 (Continue with a Poketch aborted);
  *   - a decompiled C function (overlay_01.c's NitroStaticInit, the
  *     overlay_NN_sinit.c ov22_02254840 family): its guest address means
  *     nothing here, so each such TU records its function at start-up through
@@ -109,7 +113,7 @@ void pc_dp_overlay_sinit(FSOverlayInfo *p_ovi)
             continue;
         }
         entries++;
-        if (strcmp(armrec_name_of(addr), "<unknown>") != 0) {
+        if (armrec_code_live(addr)) {
             (void)armrec_dispatch(addr, 0, 0, 0, 0);
             dispatched++;
         }

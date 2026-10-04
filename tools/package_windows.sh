@@ -8,13 +8,17 @@
 #   tools/package_windows.sh [--test]
 #
 # Every game whose wasm core exists is built in (NP_GUEST_WASM_<game>
-# overrides the default path; Platinum: games/platinum/build/pc-wasm/
-# pokeplatinum.wasm). NP_BUILD_DIR overrides build/win-app.
+# overrides the defaults games/platinum/build/pc-wasm/pokeplatinum.wasm and
+# games/diamond/build/pc-wasm/poke{diamond,pearl}.wasm). NP_BUILD_DIR
+# overrides build/win-app. The build honours CMAKE_BUILD_PARALLEL_LEVEL (run
+# it under tools/heavy.sh).
 #
 # --test runs the packaged exe from a temporary copy under wine (OrbStack
 # amd64 container, tools/docker/wine.Dockerfile) with SDL's dummy video and
-# audio drivers and NP_AUTOTEST booting the Platinum ROM
-# (NP_TEST_ROM, default games/platinum/build/rom/pokeplatinum.us.nds).
+# audio drivers and NP_AUTOTEST booting each built-in game whose ROM is in
+# the build tree (Platinum: NP_TEST_ROM, default
+# games/platinum/build/rom/pokeplatinum.us.nds) to its title screen;
+# NP_WIN_SHOTS=<dir> keeps the screenshots.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -32,13 +36,16 @@ done
 
 [ -x "$TC/zig/zig" ] && [ -d "$TC/sdl3-mingw" ] || "$ROOT/tools/fetch_toolchains.sh" windows
 
-guest_args=()
+guest_args=() built=()
 : "${NP_GUEST_WASM_platinum:=$ROOT/games/platinum/build/pc-wasm/pokeplatinum.wasm}"
+: "${NP_GUEST_WASM_diamond:=$ROOT/games/diamond/build/pc-wasm/pokediamond.wasm}"
+: "${NP_GUEST_WASM_pearl:=$ROOT/games/diamond/build/pc-wasm/pokepearl.wasm}"
 for game in diamond pearl platinum; do
     var="NP_GUEST_WASM_$game"
     wasm="${!var:-}"
     if [ -n "$wasm" ] && [ -f "$wasm" ]; then
         guest_args+=("-D$var=$wasm" "-DNP_GUEST_POSTPROCESS_$game=$ROOT/tools/wasm2c_postprocess.py")
+        built+=("$game")
         echo "package_windows: building in $game ($wasm)"
     fi
 done
@@ -81,17 +88,33 @@ if [ "$TEST" = 1 ]; then
     IMAGE=nativeplat-wine
     "${DOCKER[@]}" image inspect "$IMAGE" >/dev/null 2>&1 ||
         "${DOCKER[@]}" build --platform linux/amd64 -t "$IMAGE" -f "$ROOT/tools/docker/wine.Dockerfile" "$ROOT/tools/docker"
-    ROM="${NP_TEST_ROM:-$ROOT/games/platinum/build/rom/pokeplatinum.us.nds}"
     TMP="$(mktemp -d "${TMPDIR:-/tmp}/np-wintest.XXXXXX")"
     trap 'rm -rf "$TMP"' EXIT
     (cd "$TMP" && unzip -q "$DIST/$NAME.zip")
-    cp "$ROM" "$TMP/rom.nds"
-    # Z: is the container's root in wine's default prefix.
-    "${DOCKER[@]}" run --rm --platform linux/amd64 -v "$TMP:/t" -w /t/$NAME \
-        -e XDG_RUNTIME_DIR=/tmp -e WINEDEBUG=-all \
-        -e SDL_VIDEO_DRIVER=dummy -e SDL_AUDIO_DRIVER=dummy \
-        -e NP_AUTOTEST='frames=1500,png=Z:\t\shot.png,rom=Z:\t\rom.nds,press=1200:start:10' \
-        -e WINEPATH= "$IMAGE" sh -c 'wine64 nativeplat.exe; echo "exit status $?"' 2>&1 | tee "$TMP/log.txt"
-    grep -q '^exit status 0$' "$TMP/log.txt" && [ -s "$TMP/shot.png" ] || { echo "package_windows: autotest FAILED" >&2; exit 1; }
-    echo "package_windows: autotest passed under wine ($(wc -c <"$TMP/shot.png") byte screenshot)"
+    for game in "${built[@]}"; do
+        case "$game" in
+            platinum) ROM="${NP_TEST_ROM:-$ROOT/games/platinum/build/rom/pokeplatinum.us.nds}" ;;
+            diamond) ROM="$ROOT/games/diamond/build/diamond.us/pokediamond.us.nds" ;;
+            pearl) ROM="$ROOT/games/diamond/build/pearl.us/pokepearl.us.nds" ;;
+        esac
+        [ -f "$ROM" ] || { echo "package_windows: no $game ROM at $ROM; not tested"; continue; }
+        rm -f "$TMP/rom.nds" "$TMP/shot-$game.png"
+        cp "$ROM" "$TMP/rom.nds"
+        # Z: is the container's root in wine's default prefix. Wine under
+        # Rosetta (OrbStack) sometimes dies at start with "rosetta error:
+        # invalid gdt selector": such a run is retried, up to 3 attempts.
+        for attempt in 1 2 3; do
+            "${DOCKER[@]}" run --rm --platform linux/amd64 -v "$TMP:/t" -w /t/$NAME \
+                -e XDG_RUNTIME_DIR=/tmp -e WINEDEBUG=-all \
+                -e SDL_VIDEO_DRIVER=dummy -e SDL_AUDIO_DRIVER=dummy \
+                -e "NP_AUTOTEST=frames=1500,png=Z:\\t\\shot-$game.png,game=$game,rom=Z:\\t\\rom.nds,press=1200:start:10" \
+                -e WINEPATH= "$IMAGE" sh -c 'wine64 nativeplat.exe; s=$?; echo; echo "exit status $s"' 2>&1 | tee "$TMP/log-$game.txt"
+            grep -q 'rosetta error' "$TMP/log-$game.txt" || break
+            echo "package_windows: Rosetta crashed wine (attempt $attempt)"
+        done
+        grep -q '^exit status 0$' "$TMP/log-$game.txt" && [ -s "$TMP/shot-$game.png" ] ||
+            { echo "package_windows: $game autotest FAILED" >&2; exit 1; }
+        echo "package_windows: $game autotest passed under wine ($(wc -c <"$TMP/shot-$game.png") byte screenshot)"
+        [ -z "${NP_WIN_SHOTS:-}" ] || cp "$TMP/shot-$game.png" "$NP_WIN_SHOTS/"
+    done
 fi

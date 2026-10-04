@@ -1,0 +1,10 @@
+# Perf, 3D-heavy: CONTINUE in Jubilife City (recipes/jubilife.recipe) and walk
+# the streets between its buildings, timed from frame 1800.
+1250:start
+1400:a
+1500:a
+1600:a
+1800:left:90:360:10
+1900:up:60:360:10
+1970:right:90:360:10
+2070:down:60:360:10

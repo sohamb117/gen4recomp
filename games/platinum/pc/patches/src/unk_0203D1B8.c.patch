@@ -1,0 +1,24 @@
+--- a/src/unk_0203D1B8.c
++++ b/src/unk_0203D1B8.c
+@@ -213,8 +213,13 @@
+ static void sub_0203DF68(FieldTask *taskMan);
+ static u8 sub_0203E484(SaveData *saveData, u8 slotMachineID);
+ 
++#include "pc_np_options.h"
++
++/* pc port: NP_STAT_IN_BATTLE while the battle application runs (all a
++ * Battle Frontier battle has; a field battle is also inside its encounter). */
+ static BOOL ApplicationInit_Battle(ApplicationManager *appMan, int *state)
+ {
++    pc_np_stat.in_battle_app = 1;
+     return TRUE;
+ }
+ 
+@@ -229,6 +234,7 @@
+ 
+ static BOOL ApplicationExit_Battle(ApplicationManager *appMan, int *state)
+ {
++    pc_np_stat.in_battle_app = 0;
+     return TRUE;
+ }
+ 

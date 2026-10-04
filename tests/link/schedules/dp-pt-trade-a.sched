@@ -1,0 +1,33 @@
+# Diamond/Platinum Union Room trade, station A: Diamond (UNIONA,
+# recipes/dp-union-a.recipe), in the room as dp-trade-a.sched (~4030).
+# Platinum's B walks in at ~5480; up 3 and left 3 to its avatar, which ends up
+# next to A, talk (6600), TRADE (3 downs). TURTWIG > TRADE, YES; the game
+# saves the trade (~12400).
+1250:start
+1400:a
+1500:a
+1600:a
+1800:a:6
+2000:a:6
+2200:a:6
+2400:a:6
+2600:a:6
+2800:a:6
+3000:a:6
+3200:a:6
+3400:a:6
+3600:a:6
+3800:a:6
+4000:a:6
+6000:up:48
+6080:left:32
+6140:left:16
+6600:a:6
+7560:down:4
+7600:down:4
+7640:down:4
+7700:a:6
+8800:a:6
+8950:down:4
+9000:a:6
+9200:a:6

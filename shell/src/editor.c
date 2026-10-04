@@ -95,8 +95,9 @@ typedef struct row {
 
 typedef struct np_editor {
     np_game game;
-    char slot[NP_SLOT_NAME_MAX + 1];
+    char slot[NP_SLOT_NAME_MAX + 1]; /* the slot, or (standalone) the file's name */
     char path[1100];
+    int standalone; /* --editor on a file: no slot, quit on close */
     save4 s;
     uint8_t *scratch; /* image before the edit in progress */
     np_undo undo;
@@ -233,7 +234,8 @@ static void load_rom_data(np_editor *e)
 
 /* ---- open / close ------------------------------------------------------------ */
 
-void np_editor_open(np_app *app, np_game game, const char *slot)
+/* Opens `path` as game `game`; `label` names it in messages. */
+static void open_path(np_app *app, np_game game, const char *label, const char *path, int standalone)
 {
     np_editor_close(app);
     np_editor *e = SDL_calloc(1, sizeof *e);
@@ -242,22 +244,25 @@ void np_editor_open(np_app *app, np_game game, const char *slot)
         return;
     }
     e->game = game;
-    SDL_strlcpy(e->slot, slot, sizeof e->slot);
-    np_storage_slot_path(game, slot, e->path, sizeof e->path);
+    e->standalone = standalone;
+    SDL_strlcpy(e->slot, label, sizeof e->slot);
+    SDL_strlcpy(e->path, path, sizeof e->path);
     size_t len = 0;
     uint8_t *data = SDL_LoadFile(e->path, &len);
     save4_status st = data ? save4_load(&e->s, data, len) : SAVE4_ERR_ARG;
     SDL_free(data);
     if (st != SAVE4_OK) {
         if (data)
-            SDL_snprintf(app->status, sizeof app->status, "Cannot edit \"%s\": %s.", slot, save4_status_str(st));
+            SDL_snprintf(app->status, sizeof app->status, "Cannot edit \"%s\": %s.", label, save4_status_str(st));
         else
-            SDL_snprintf(app->status, sizeof app->status, "Cannot read \"%s\": %s", slot, SDL_GetError());
+            SDL_snprintf(app->status, sizeof app->status, "Cannot read \"%s\": %s", label, SDL_GetError());
         np_app_toast(app, "%s", app->status);
         SDL_Log("editor: %s", app->status);
         SDL_free(e);
         return;
     }
+    if (standalone && e->s.game == SAVE4_GAME_PT)
+        e->game = game = NP_GAME_PLATINUM; /* the save decides; D and P share a format */
     e->scratch = SDL_malloc(e->s.len);
     if (!e->scratch) {
         save4_free(&e->s);
@@ -273,7 +278,30 @@ void np_editor_open(np_app *app, np_game game, const char *slot)
     np_app_open_page(app, NP_PAGE_EDITOR);
     if (e->s.load_result == SAVE4_LOAD_RECOVERED)
         np_app_toast(app, "One copy of this save was damaged; editing the intact copy");
-    SDL_Log("editor: opened %s slot \"%s\" (%s)", np_game_id(game), slot, save4_game_name(e->s.game));
+    else if (standalone && !e->have_names)
+        np_app_toast(app, "Import the %s ROM to see names (ids are shown)", np_game_title(game));
+    SDL_Log("editor: opened %s %s \"%s\" (%s)", np_game_id(game), standalone ? "file" : "slot", path,
+            save4_game_name(e->s.game));
+}
+
+void np_editor_open(np_app *app, np_game game, const char *slot)
+{
+    char path[1100];
+    np_storage_slot_path(game, slot, path, sizeof path);
+    open_path(app, game, slot, path, 0);
+}
+
+void np_editor_open_file(np_app *app, int game, const char *path)
+{
+    /* Without --game, D/P saves edit as whichever of the two is imported
+     * (names come from its ROM); Platinum saves identify themselves. */
+    if (game < 0)
+        game = np_storage_rom_present(NP_GAME_DIAMOND) || !np_storage_rom_present(NP_GAME_PEARL) ? NP_GAME_DIAMOND
+                                                                                                  : NP_GAME_PEARL;
+    const char *base = SDL_strrchr(path, '/');
+    char label[NP_SLOT_NAME_MAX + 1];
+    SDL_strlcpy(label, base ? base + 1 : path, sizeof label);
+    open_path(app, (np_game)game, label, path, 1);
 }
 
 void np_editor_close(np_app *app)
@@ -340,9 +368,10 @@ static void save_now(np_app *app, np_editor *e)
         return;
     }
     e->dirty = 0;
-    np_app_toast(app, "Saved \"%s\"", e->slot);
+    np_app_toast(app, "Saved \"%s\"%s", e->slot, e->standalone ? " (previous copy kept as .bak)" : "");
     SDL_Log("editor: saved %s", e->path);
-    np_sync_slot(app, e->game, e->slot);
+    if (!e->standalone)
+        np_sync_slot(app, e->game, e->slot);
 }
 
 static save4_status get_mon(const np_editor *e, int box, int slot, pkm4 *p)
@@ -690,7 +719,7 @@ static void build_events(np_editor *e)
 {
     bool v = false;
     if (save4_mg_get_unlocked(&e->s, &v) != SAVE4_OK) {
-        add_row(e, F_INFO, 0, RK_INFO, "Mystery Gift editing supports Platinum saves.");
+        add_row(e, F_INFO, 0, RK_INFO, "This save has no Mystery Gift data the editor knows.");
         return;
     }
     SDL_strlcpy(add_row(e, F_EV_UNLOCK, 0, RK_TOGGLE, "MYSTERY GIFT on main menu")->value, v ? "On" : "Off", 72);
@@ -713,6 +742,8 @@ static void build_events(np_editor *e)
     SDL_snprintf(add_row(e, F_INFO, 0, RK_INFO, "Gifts waiting at Poke Marts")->value, 72, "%d / %d", pgts,
                  SAVE4_PGT_SLOTS);
     for (size_t i = 0; i < SDL_arraysize(event_gifts); i++) {
+        if (!save4_mg_type_supported(e->s.game, event_gifts[i].type))
+            continue; /* e.g. the Secret Key exists only in Platinum */
         char label[48];
         SDL_snprintf(label, sizeof label, "Add %s", event_gifts[i].label);
         add_row(e, F_EV_ADD, (int)i, RK_ACTION, label);
@@ -1225,6 +1256,12 @@ void np_editor_text_cancel(np_app *app) { np_app_open_page(app, NP_PAGE_EDITOR);
 
 static void leave_editor(np_app *app)
 {
+    if (app->editor->standalone) {
+        np_editor_close(app);
+        SDL_Event quit = {.type = SDL_EVENT_QUIT};
+        SDL_PushEvent(&quit); /* the standalone editor is the whole session */
+        return;
+    }
     np_game g = app->editor->game;
     char slot[NP_SLOT_NAME_MAX + 1];
     SDL_strlcpy(slot, app->editor->slot, sizeof slot);
@@ -1611,8 +1648,18 @@ static void draw_rows(np_app *app, np_editor *e, const np_page_frame *f, float y
     if (e->sel >= e->scroll + rows)
         e->scroll = e->sel - rows + 1;
     e->scroll = SDL_clamp(e->scroll, 0, SDL_max(0, e->nrows - rows));
+    /* The value column starts after the longest labelled row that has a
+     * value (at least at 45% of the panel, leaving values 20 columns);
+     * rows without a value (actions) use the whole width for the label. */
     float x = f->panel.x + 2 * f->cw, vx = f->panel.x + f->panel.w * 0.45f;
+    size_t longest = 0;
+    for (int i = 0; i < e->nrows; i++)
+        if (e->rows[i].value[0])
+            longest = SDL_max(longest, SDL_strlen(e->rows[i].label));
+    vx = SDL_max(vx, x + (float)(longest + 2) * f->cw);
+    vx = SDL_max(SDL_min(vx, f->panel.x + f->panel.w - 22 * f->cw), x + 6 * f->cw);
     int vcols = (int)((f->panel.x + f->panel.w - 2 * f->cw - vx) / f->cw);
+    int full_cols = (int)((f->panel.x + f->panel.w - 2 * f->cw - x) / f->cw);
     for (int i = 0; i < rows && e->scroll + i < e->nrows; i++) {
         int idx = e->scroll + i;
         const row *r = &e->rows[idx];
@@ -1622,7 +1669,7 @@ static void draw_rows(np_app *app, np_editor *e, const np_page_frame *f, float y
         if (on)
             np_ui_fill(app, rr, hilite);
         SDL_Color lc = r->kind == RK_INFO ? dim : on ? accent : white;
-        np_ui_text_clip(app, x, y, f->s, r->label, (int)((vx - x) / f->cw) - 1, lc);
+        np_ui_text_clip(app, x, y, f->s, r->label, r->value[0] ? (int)((vx - x) / f->cw) - 1 : full_cols, lc);
         if (r->value[0]) {
             char shown[96];
             SDL_snprintf(shown, sizeof shown, on && r->kind == RK_TOGGLE ? "< %s >" : "%s", r->value);

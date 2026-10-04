@@ -1,0 +1,11 @@
+# Underground, station B: the same 37 frames later (see run_link_tests.py),
+# then walks left and up so A sees the avatar move.
+900:a:20
+1200:a:20
+1800:a:20
+2100:a:20
+2400:a:20
+3637:y:24
+3837:a:24:200:6
+6237:left:48
+6637:up:32

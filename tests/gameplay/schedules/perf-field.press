@@ -1,0 +1,10 @@
+# Perf, field: CONTINUE, then walk around Sandgem Town (recipes/sandgem.recipe)
+# down, left and back, timed from frame 1800.
+1250:start
+1400:a
+1500:a
+1600:a
+1800:down:30:240:15
+1840:left:60:240:15
+1920:right:60:240:15
+2000:up:30:240:15

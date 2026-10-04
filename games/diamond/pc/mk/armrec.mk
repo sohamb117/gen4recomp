@@ -34,10 +34,32 @@ ARMREC_OBJDIR  := $(OBJ)/armrec
 ARMREC_CLASSES := $(ARMREC_OUT)/classes.txt
 ARMREC_STAMP   := $(ARMREC_OUT)/armrec.stamp
 
-ARMREC_S := $(sort $(wildcard $(ROOT)/arm9/asm/*.s)) \
-            $(sort $(wildcard $(ROOT)/arm9/data/*.s)) \
-            $(sort $(wildcard $(ROOT)/arm9/files/*.s)) \
-            $(sort $(wildcard $(ROOT)/arm9/overlays/*/asm/*.s))
+ARMREC_S_PRISTINE := $(sort $(wildcard $(ROOT)/arm9/asm/*.s)) \
+                     $(sort $(wildcard $(ROOT)/arm9/data/*.s)) \
+                     $(sort $(wildcard $(ROOT)/arm9/files/*.s)) \
+                     $(sort $(wildcard $(ROOT)/arm9/overlays/*/asm/*.s))
+
+# Assembly patches: pc/patches/arm9/<p>.s.patch is applied to arm9/<p>.s
+# (authored against the pristine file, like the .c patches game.mk applies)
+# and armrec reads the copy at $(ARMREC_PATCHED)/arm9/<p>.s instead. The
+# copy keeps an `arm9/overlays/NN/asm/` path component because that is how
+# armrec knows which overlay a file belongs to (armrec.py overlay_of), and
+# `.include` still resolves through --include arm9. A patch should stay
+# size-neutral (replace a `bl X` with a `bl` to a host hook of the same
+# shape): addresses are the ROM's, from the xMAP, and nothing in a patched
+# function may need to move.
+ARMREC_PATCHED  := $(ARMREC_OUT)/patched
+ARMREC_SPATCHES := $(sort $(shell find $(PCDIR)/patches/arm9 -name '*.s.patch' 2>/dev/null))
+ARMREC_SPATCHED_REL := $(patsubst $(PCDIR)/patches/arm9/%.patch,%,$(ARMREC_SPATCHES))
+ARMREC_S := $(foreach f,$(ARMREC_S_PRISTINE),$(if $(filter $(patsubst $(ROOT)/arm9/%,%,$(f)),$(ARMREC_SPATCHED_REL)),$(ARMREC_PATCHED)/arm9/$(patsubst $(ROOT)/arm9/%,%,$(f)),$(f)))
+
+$(ARMREC_PATCHED)/arm9/%.s: $(ROOT)/arm9/%.s $(PCDIR)/patches/arm9/%.s.patch
+	@mkdir -p $(dir $@)
+	@cp $< $@.tmp
+	@patch --silent --forward $@.tmp $(PCDIR)/patches/arm9/$*.s.patch || \
+	   { echo "pc/patches/arm9/$*.s.patch no longer applies" >&2; rm -f $@.tmp; exit 1; }
+	@mv $@.tmp $@
+
 # armrec is given paths relative to $(ROOT) (it finds `.include "asm/..."`
 # through the path's own arm9 component, as the ROM build's cwd does).
 ARMREC_IN := $(patsubst $(ROOT)/%,%,$(ARMREC_S)) $(EXTRACTED_ASM)
@@ -85,7 +107,7 @@ $(ARMREC_CLASSES): $(ARMREC_STAMP) ;
 # One armrec run writes every .c; a stamp stands for all of them (make 3.81
 # has no grouped targets). --report and the stdout summary are the census.
 $(ARMREC_STAMP): $(ARMREC_S) $(EXTRACTED_ASM) $(ARMREC)/armrec.py \
-                 $(ROM_XMAP) $(ARMREC_OVERRIDES) \
+                 $(ROM_XMAP) $(ARMREC_OVERRIDES) $(ARMREC_SPATCHES) \
                  $(PCDIR)/mk/armrec.mk
 	@rm -rf $(ARMREC_C) && mkdir -p $(ARMREC_C)
 	cd $(ROOT) && $(PYTHON) $(ARMREC)/armrec.py $(ARMREC_FLAGS) \

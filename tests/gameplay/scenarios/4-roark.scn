@@ -1,0 +1,9 @@
+# Scenario 4: Oreburgh Gym from a lab save placed at its door with a strong
+# party: two trainer battles, Roark beaten, Coal Badge, saved from the menu.
+RECIPE=recipes/roark.recipe
+SCHEDULE=schedules/roark.press
+FRAMES=20200
+SHOTS=1700,2400,3000,3600,4400,5600,7000,8800,10600,11300,12500,14000,15200,16400,17200,19400,19540,20199
+EXPECT_MAP=47
+EXPECT_LOG='stored 524288-byte save'
+EXPECT_SAVE='s["trainer"]["badges"] == 1 and s["trainer"]["badge_mask"] & 1'

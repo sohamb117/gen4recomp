@@ -57,8 +57,9 @@ typedef enum save4_status {
     SAVE4_ERR_NOMEM,
     SAVE4_ERR_ENCODE,       /* text not representable in the game charset */
     SAVE4_ERR_PKM_CHECKSUM, /* Pokémon data checksum mismatch */
-    SAVE4_ERR_LAYOUT,       /* structure magic mismatch, or not supported for this game */
-    SAVE4_ERR_NOSPACE       /* no free slot */
+    SAVE4_ERR_LAYOUT,       /* structure magic mismatch */
+    SAVE4_ERR_NOSPACE,      /* no free slot */
+    SAVE4_ERR_UNSUPPORTED   /* valid data this game cannot use (e.g. a gift type it cannot deliver) */
 } save4_status;
 
 const char *save4_status_str(save4_status st);
@@ -282,6 +283,20 @@ save4_status save4_flag_set(save4 *s, uint16_t id, bool value);
 save4_status save4_var_get(const save4 *s, uint16_t id, uint16_t *value);
 save4_status save4_var_set(save4 *s, uint16_t id, uint16_t value);
 
+/* ---------------------------------------------------------- location */
+
+/* Where the player was saved (FieldOverworldState / LocalFieldData current
+ * Location). Read-only: CONTINUE restores the player and the people around
+ * from the saved map objects, not from this, so moving the player is a map
+ * change in the game (Platinum's pc_lab `map`, Diamond/Pearl's PC_WARP). */
+typedef struct save4_location {
+    uint32_t map;  /* map header id */
+    int32_t warp;  /* -1: at x/z */
+    uint32_t x, z; /* tiles */
+    uint32_t dir;  /* 0 up, 1 down, 2 left, 3 right */
+} save4_location;
+save4_status save4_get_location(const save4 *s, save4_location *loc);
+
 /* Platinum flag/var names from pokeplatinum generated/vars_flags.txt
  * (generated at build time). */
 struct save4_named_id {
@@ -297,7 +312,8 @@ int save4_pt_lookup_name(const char *name, uint16_t *id);
 const char *save4_pt_flag_name(uint16_t id);
 
 /* ------------------------------------------------------ Mystery Gift */
-/* Platinum only for now (D/P offsets are not verified: SAVE4_ERR_LAYOUT). */
+/* Diamond/Pearl and Platinum (the MysteryGift entry's layout differs per game;
+ * save4 handles both). */
 
 #define SAVE4_PGT_SIZE 0x104        /* sizeof(PGT): a .pgt file */
 #define SAVE4_WONDERCARD_SIZE 0x358 /* sizeof(WonderCard): a .pcd file */
@@ -307,7 +323,9 @@ const char *save4_pt_flag_name(uint16_t id);
 #define SAVE4_WC_TITLE_LEN 36
 #define SAVE4_WC_DESC_LEN 250
 
-/* enum MysteryGiftType, pokeplatinum include/mystery_gift.h */
+/* enum MysteryGiftType, pokeplatinum include/mystery_gift.h. D/P deliver
+ * types 1-11 (pokediamond arm9/asm/scrcmd_12.s UNK_020F43E4 has 11 handler
+ * rows), Platinum 1-13. */
 enum {
     SAVE4_MG_POKEMON = 1,
     SAVE4_MG_EGG,
@@ -320,10 +338,13 @@ enum {
     SAVE4_MG_OAKS_LETTER, /* Shaymin event */
     SAVE4_MG_AZURE_FLUTE, /* Arceus event */
     SAVE4_MG_POKETCH_APP,
-    SAVE4_MG_SECRET_KEY,  /* Rotom event */
-    SAVE4_MG_UNKNOWN,
+    SAVE4_MG_SECRET_KEY,  /* Rotom event: Platinum only */
+    SAVE4_MG_UNKNOWN,     /* Platinum only (handled like SAVE4_MG_POKEMON) */
     SAVE4_MG_TYPE_MAX
 };
+
+/* Whether `game`'s Poke Mart deliveryman can hand out a gift of `type`. */
+bool save4_mg_type_supported(save4_game game, uint16_t type);
 
 typedef struct save4_card_spec {
     uint16_t type;
@@ -336,24 +357,32 @@ typedef struct save4_card_spec {
 } save4_card_spec;
 
 /* Builds a Wonder Card (with its gift, delivered by the Poke Mart
- * deliveryman) the way the game builds its own. */
+ * deliveryman) the way the game builds its own. Any game's type is accepted;
+ * check save4_mg_type_supported for the target save. */
 save4_status save4_mg_build_card(const save4_card_spec *spec, uint8_t card[SAVE4_WONDERCARD_SIZE]);
-/* Checks a .pgt (SAVE4_PGT_SIZE) or .pcd (SAVE4_WONDERCARD_SIZE) image. */
+/* Checks a .pgt (SAVE4_PGT_SIZE) or .pcd (SAVE4_WONDERCARD_SIZE) image
+ * (format only: any game's type). */
 save4_status save4_mg_validate(const uint8_t *data, size_t len, const char **why);
 /* Stores a .pcd (card + gift) or .pgt (gift only) as the game does on
- * reception. SAVE4_ERR_NOSPACE when the slots are full. */
+ * reception. SAVE4_ERR_UNSUPPORTED for a type the save's game cannot
+ * deliver, SAVE4_ERR_NOSPACE when the slots are full. */
 save4_status save4_mg_add(save4 *s, const uint8_t *data, size_t len);
 save4_status save4_mg_get_card(const save4 *s, int slot, uint8_t card[SAVE4_WONDERCARD_SIZE], bool *used);
 save4_status save4_mg_remove_card(save4 *s, int slot);
 save4_status save4_mg_pgt_count(const save4 *s, int *count);
-/* The MYSTERY GIFT main menu option (shown once the Pokédex is obtained). */
+/* The MYSTERY GIFT main menu option: SystemData/SaveSysInfo flag or received
+ * bit 2047, either one shows it (both games). */
 save4_status save4_mg_get_unlocked(const save4 *s, bool *unlocked);
 save4_status save4_mg_set_unlocked(save4 *s, bool unlocked);
+/* Pt Pokedex.pokedexObtained / D/P Pokedex.unlockedSinnohDex. */
 save4_status save4_dex_get_obtained(const save4 *s, bool *obtained);
 save4_status save4_dex_set_obtained(save4 *s, bool obtained);
-/* The National Pokédex (Pokedex.nationalDexObtained; the setter also sets
- * TrainerInfo.hasNationalDex as the game's award does). The main menu offers
- * Pal Park migration from a GBA cartridge only once it is set. */
+/* The National Pokédex (Pokedex.nationalDexObtained / unlockedNationalDex;
+ * the setter also sets TrainerInfo.hasNationalDex / PlayerProfile.nationalDex
+ * as the game's award does). The main menu offers Pal Park migration from a
+ * GBA cartridge only once the Pokédex flag is set (D/P ov83_0222D67C: a GBA
+ * Pokemon cartridge whose language matches the game's, and
+ * Pokedex_GetNatDexFlag != 0). */
 save4_status save4_dex_get_national(const save4 *s, bool *obtained);
 save4_status save4_dex_set_national(save4 *s, bool obtained);
 

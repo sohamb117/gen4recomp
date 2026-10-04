@@ -1,0 +1,118 @@
+--- a/arm9/overlays/82/asm/overlay_82.s
++++ b/arm9/overlays/82/asm/overlay_82.s
+@@ -62,7 +62,7 @@
+ 	bl ov82_0222D99C
+ 	ldr r1, _0222D7B8 ; =0x0222FB00
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D630:
+ 	ldr r0, _0222D7B8 ; =0x0222FB00
+@@ -81,7 +81,7 @@
+ 	mvn r1, r1
+ _0222D64C:
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D654:
+ 	bl ov79_022123A8
+@@ -98,7 +98,7 @@
+ 	bl ov82_0222D99C
+ 	ldr r1, _0222D7B8 ; =0x0222FB00
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D67A:
+ 	ldr r0, _0222D7B8 ; =0x0222FB00
+@@ -139,7 +139,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D6BE:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D6C4:
+ 	bl ov79_022123A8
+@@ -156,7 +156,7 @@
+ 	bl ov82_0222D99C
+ 	ldr r1, _0222D7B8 ; =0x0222FB00
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D6EA:
+ 	ldr r0, _0222D7B8 ; =0x0222FB00
+@@ -201,7 +201,7 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D730:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D736:
+ 	bl ov79_022123A8
+@@ -218,7 +218,7 @@
+ 	bl ov82_0222D99C
+ 	ldr r1, _0222D7B8 ; =0x0222FB00
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D75C:
+ 	ldr r0, _0222D7B8 ; =0x0222FB00
+@@ -263,14 +263,14 @@
+ 	mvn r1, r1
+ 	str r1, [r0, #4]
+ _0222D7A2:
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ _0222D7A8:
+ 	mov r0, #0xa
+ 	str r0, [r1]
+ 	sub r0, #0xe
+ 	str r0, [r1, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ _0222D7B4:
+ 	pop {r3, pc}
+ 	nop
+@@ -340,7 +340,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0xf
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	add sp, #4
+ 	pop {r3, r4, pc}
+ 	.align 2, 0
+@@ -385,7 +385,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0xf
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	add sp, #4
+ 	pop {r3, r4, r5, r6, pc}
+ 	.align 2, 0
+@@ -443,7 +443,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0xf
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, r4, r5, r6, r7, pc}
+ 	nop
+ _0222D904: .word ov82_0222FB14
+@@ -478,7 +478,7 @@
+ 	str r1, [r0]
+ 	sub r1, #0xf
+ 	str r1, [r0, #4]
+-	bl ov56_0221244C
++	bl ov79_0221244C
+ 	pop {r3, pc}
+ 	nop
+ _0222D954: .word ov82_0222F9C4

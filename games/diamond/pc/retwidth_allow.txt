@@ -1,0 +1,35 @@
+# C -> assembly calls whose prototype returns a narrower type than the
+# assembly might leave in r0 (pc/tools/dp_retwidth_lint.py), each reviewed by
+# hand: `<callee> <caller TU>` (`*` = every caller: the reason is the
+# callee's), and why the ROM's upper bits cannot differ from the bridge's.
+#
+# The callee only ever returns a C BOOL: both return what
+# Save_VarsFlags_CheckFlagInArray (save_vars_flags.c) returns, TRUE or FALSE
+# (arm9/asm/unk_02038C78.s), so u8 loses nothing.
+FieldSystem_FlagCheck *
+TrainerFieldSystem_FlagCheck *
+
+# A music id: the constants 0x47E/0x47F, ldrh (sub_0204AB34), u16
+# MapHeader_Get{Day,Night}MusicId, or sub_0205EF20 (unk_0205EC84.c), whose
+# every return is 0 or a SEQ_* constant below 0x10000 (arm9/asm/
+# unk_0204AB0C.s), so u16 loses nothing.
+FieldSystem_GetOverriddenMusicId *
+sub_0204ABA8 *
+
+# Loop counters bounded by their loops: FashionCase_CountWallpapers counts
+# up to 0x12 slots (unk_02026CD0.s), sub_0202C000 up to 6 party slots
+# (unk_0202BE98.s).
+FashionCase_CountWallpapers *
+sub_0202C000 *
+
+# sub_02029D14 counts a seal over 12 capsules x 8 slots (at most 96), plus
+# the case's own ldrb count, which sub_02029D84 caps at 99 (unk_02029CEC.s):
+# at most 195, so u8 loses nothing.
+SealCase_CountSealOccurrenceAnywhere *
+
+# Host code, not ROM C (no mwcc caller): the GBA-slot self-test compares the
+# SDK's u16 status with 0. The callee returns what the chip's sector writer
+# (`blx` through CTRDGi_WriteAgbFlashSector) returns, and every writer narrows
+# (`mov r0, r0, lsl #0x10; mov r0, r0, lsr #0x10` in CTRDG_flash_*.s; the
+# AT29LV512 ones are C returning u16).
+CTRDG_WriteAgbFlashSector pc_agb_slot

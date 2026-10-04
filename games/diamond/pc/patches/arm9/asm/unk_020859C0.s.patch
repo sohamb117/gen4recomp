@@ -1,0 +1,11 @@
+--- a/arm9/asm/unk_020859C0.s
++++ b/arm9/asm/unk_020859C0.s
+@@ -413,7 +413,7 @@
+ 	str r0, [r5, #0x0]
+ 	b _02085C02
+ _02085BD8:
+-	bl ov12_0222F990
++	bl ov62_0222F990
+ 	cmp r0, #0x0
+ 	bne _02085BE6
+ 	mov r0, #0x2

@@ -1,0 +1,28 @@
+# Cross-overlay calls whose label pc/tools/dp_ovlabel_lint.py cannot settle
+# from the file alone, each checked by hand: `<caller> <callee>` (an overlay
+# number or a static file's name), and why the named overlay is the resident
+# one.
+#
+# The battle's party screen: each call follows ov11_0222D7F8, which unloads
+# ov08 and loads ov09 (ov11_0222D88C swaps them back after), and the
+# argument block (heap 5 at +0xC, the slot at +0x11) is what ov09_02211E60
+# reads. pc/patches/arm9/overlays/11/asm/ov11_0224D550.s.patch renamed
+# pokediamond's ov07_02211E60.
+11 ov09_02211E60
+#
+# Underground glue: these run in the underground, where ov18 replaces ov06
+# (the file's other calls are ov18-only addresses), not on the overworld.
+unk_0204FBA8.s ov18_02245FA0
+unk_0204FBA8.s ov18_0223DFB4
+unk_0204FBA8.s ov18_02247808
+#
+# sub_0206F1F0 loads ov13 through sub_02088878 right before the call.
+unk_0206F1F0.s ov13_02211E60
+#
+# Script commands, decompiled C: ScrCmd_Unk019F's ov18_0224CA58(u16) opens
+# the underground's message (msg bank 0x241; ov06's function there takes a
+# task's data in r2), closed by 01A0's ov18_0224CA94. ScrCmd_Unk025E's
+# ov06_0224E764 reads fieldSystem->saveData at +0xC (ov18's takes three
+# arguments and asserts on the second), an overworld command.
+scrcmd.c ov18_0224CA58
+scrcmd.c ov06_0224E764

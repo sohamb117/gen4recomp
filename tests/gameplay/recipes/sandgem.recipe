@@ -1,0 +1,25 @@
+# Sandgem Town, standing at the Pokemon Center door (the game's own fly spawn),
+# early-game party, Poke Balls and a Poketch with three apps. Drives scenarios
+# 2 (Route 201 grass: a wild battle and a catch), 3 (Center heal, Mart buy, PC
+# box) and the Poketch half of 5.
+#
+# The story vars are moved past the three coordinate triggers on the way
+# (Sandgem x=164 lab escort, Route 202 catching tutorial, Route 201 rival), so
+# walking west into the grass meets wild Pokemon instead of a cutscene.
+name GQ
+gender GENDER_MALE
+trainer-id 27182
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+var VAR_SANDGEM_TOWN_STATE 3
+var VAR_ROUTE_202_STATE 2
+var VAR_FOLLOWER_RIVAL_STATE 4
+party SPECIES_TURTWIG 9 ITEM_NONE
+party-move 0 0 MOVE_TACKLE
+party SPECIES_STARLY 6 ITEM_NONE
+item ITEM_POKE_BALL 10
+item ITEM_POTION 2
+poketch POKETCH_APPID_CALCULATOR
+poketch POKETCH_APPID_MEMOPAD
+poketch POKETCH_APPID_DIGITALWATCH
+map MAP_HEADER_SANDGEM_TOWN 0xB1 0x34B FACE_DOWN

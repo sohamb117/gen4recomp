@@ -58,6 +58,10 @@ extern const char *const np_perf_ids[NP_PERF_COUNT];
 typedef struct np_options {
     np_layout_mode layout;
     int swap;
+    /* Layout while the core reports a battle (NP_STAT_IN_BATTLE): 0 keeps
+     * `layout`, else np_layout_mode + 1, shown unswapped (so "hybrid" makes
+     * the top screen the large one). */
+    int battle_layout;
     int rotation; /* quarter turns clockwise */
     np_scale_mode scale;
     int linear_filter;
@@ -73,7 +77,11 @@ typedef struct np_options {
     int ff_speed_index; /* speed while fast-forward is held or toggled */
     int volume;         /* 0..100 */
     int mute_unfocused;
+    int music_filter;   /* 0 off, 1..3 low-pass stages (lowpass.c) */
+    int ui_scale;       /* 0 = from the window size, 1..6 = fixed */
+    int reduce_motion;  /* no blinking, no sliding or flashing UI */
     int touch_controls; /* NP_TOUCH_* */
+    int rumble;         /* brief gamepad rumble on each press (haptics stand-in) */
     int real_clock;     /* 1: RTC from the device's local time; 0: the port's deterministic clock */
     int startup_continue; /* 1: boot straight into the last game and slot */
     int last_game;      /* np_game last played, or -1 */
@@ -92,6 +100,11 @@ typedef struct np_options {
      * the player picked; "" = empty slot / "<rom>.sav". */
     char gba_rom[1024];
     char gba_save[1024];
+    /* Updater overrides (update.c): GitHub "owner/name" and API base;
+     * "" = the build's NP_UPDATE_REPO and https://api.github.com. */
+    char update_repo[128];
+    char update_api[256];
+    char skin[33]; /* installed controller skin (skins/<name>), "" = built-in controls */
     /* Local wireless (net.c). station_id is generated once and kept: the
      * game derives the console's MAC from it and stores that in saves. */
     int lan_enabled;

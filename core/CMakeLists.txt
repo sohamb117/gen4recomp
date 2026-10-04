@@ -32,7 +32,9 @@ endif()
 
 project(nativeplat_core LANGUAGES C)
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
+# GNU-syntax fiber switches: every target but MSVC (which keeps Win32 Fibers
+# and has no snapshots).
+if(NOT MSVC)
   enable_language(ASM)
 endif()
 
@@ -60,8 +62,11 @@ endif()
 include(cmake/NpGuestModule.cmake)
 
 set(_np_fiber_sources)
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND MSVC)
   list(APPEND _np_fiber_sources runtime/np_fiber_win32.c)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  # Own stacks with an x64 switch, so snapshots can capture parked fibers.
+  list(APPEND _np_fiber_sources runtime/np_fiber_win64.c runtime/np_fiber_win64.S)
 else()
   # Each switch file assembles to nothing for other architectures, so
   # universal builds (CMAKE_OSX_ARCHITECTURES "arm64;x86_64") list both.

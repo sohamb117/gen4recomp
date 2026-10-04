@@ -14,11 +14,14 @@
 # notarized). Minimum macOS 11.0, like SDL's framework.
 #
 # Every game whose wasm core exists is built in (NP_GUEST_WASM_<game>
-# overrides the default; Platinum: games/platinum/build/pc-wasm/
-# pokeplatinum.wasm). NP_BUILD_DIR overrides build/mac-dist[-universal].
+# overrides the defaults games/platinum/build/pc-wasm/pokeplatinum.wasm and
+# games/diamond/build/pc-wasm/poke{diamond,pearl}.wasm). NP_BUILD_DIR
+# overrides build/mac-dist[-universal]. The build honours
+# CMAKE_BUILD_PARALLEL_LEVEL (run it under tools/heavy.sh).
 #
 # --test unzips into a temporary directory and runs the copied app's
-# autotest (SDL dummy video/audio) on the Platinum ROM (NP_TEST_ROM, default
+# autotest (SDL dummy video/audio) on each built-in game whose ROM is in the
+# build tree (Platinum: NP_TEST_ROM, default
 # games/platinum/build/rom/pokeplatinum.us.nds), after checking with otool
 # that no load command or rpath points outside the bundle and the system.
 set -euo pipefail
@@ -40,13 +43,16 @@ NAME="nativeplat-macos-$FLAVOR"
 [ -f "$TC/sdl3-apple/share/cmake/SDL3/SDL3Config.cmake" ] || "$ROOT/tools/fetch_toolchains.sh" macos
 SDL_FW="$TC/sdl3-apple/SDL3.xcframework/macos-arm64_x86_64/SDL3.framework"
 
-guest_args=()
+guest_args=() built=()
 : "${NP_GUEST_WASM_platinum:=$ROOT/games/platinum/build/pc-wasm/pokeplatinum.wasm}"
+: "${NP_GUEST_WASM_diamond:=$ROOT/games/diamond/build/pc-wasm/pokediamond.wasm}"
+: "${NP_GUEST_WASM_pearl:=$ROOT/games/diamond/build/pc-wasm/pokepearl.wasm}"
 for game in diamond pearl platinum; do
     var="NP_GUEST_WASM_$game"
     wasm="${!var:-}"
     if [ -n "$wasm" ] && [ -f "$wasm" ]; then
         guest_args+=("-D$var=$wasm" "-DNP_GUEST_POSTPROCESS_$game=$ROOT/tools/wasm2c_postprocess.py")
+        built+=("$game")
         echo "package_macos: building in $game ($wasm)"
     fi
 done
@@ -113,18 +119,25 @@ ls -l "$DIST/$NAME.zip"
 shasum -a 256 "$DIST/$NAME.zip"
 
 if [ "$TEST" = 1 ]; then
-    ROM="${NP_TEST_ROM:-$ROOT/games/platinum/build/rom/pokeplatinum.us.nds}"
     TMP="$(mktemp -d "${TMPDIR:-/tmp}/np-mactest.XXXXXX")"
     trap 'rm -rf "$TMP"' EXIT
     ditto -x -k "$DIST/$NAME.zip" "$TMP"
     codesign --verify --deep --strict "$TMP/$NAME/nativeplat.app"
-    for arch in $(lipo -archs "$TMP/$NAME/nativeplat.app/Contents/MacOS/nativeplat"); do
-        rm -f "$TMP/shot.png"
-        echo "package_macos: autotest ($arch) from $TMP"
-        SDL_VIDEO_DRIVER=dummy SDL_AUDIO_DRIVER=dummy \
-            NP_AUTOTEST="frames=1500,png=$TMP/shot.png,rom=$ROM,press=1200:start:10" \
-            arch "-$arch" "$TMP/$NAME/nativeplat.app/Contents/MacOS/nativeplat"
-        [ -s "$TMP/shot.png" ] || { echo "package_macos: autotest wrote no screenshot" >&2; exit 1; }
-        echo "package_macos: autotest passed ($arch, $(wc -c <"$TMP/shot.png") byte screenshot)"
+    for game in "${built[@]}"; do
+        case "$game" in
+            platinum) ROM="${NP_TEST_ROM:-$ROOT/games/platinum/build/rom/pokeplatinum.us.nds}" ;;
+            diamond) ROM="$ROOT/games/diamond/build/diamond.us/pokediamond.us.nds" ;;
+            pearl) ROM="$ROOT/games/diamond/build/pearl.us/pokepearl.us.nds" ;;
+        esac
+        [ -f "$ROM" ] || { echo "package_macos: no $game ROM at $ROM; not tested"; continue; }
+        for arch in $(lipo -archs "$TMP/$NAME/nativeplat.app/Contents/MacOS/nativeplat"); do
+            rm -f "$TMP/shot.png"
+            echo "package_macos: autotest $game ($arch) from $TMP"
+            SDL_VIDEO_DRIVER=dummy SDL_AUDIO_DRIVER=dummy \
+                NP_AUTOTEST="frames=1500,png=$TMP/shot.png,game=$game,rom=$ROM,press=1200:start:10" \
+                arch "-$arch" "$TMP/$NAME/nativeplat.app/Contents/MacOS/nativeplat"
+            [ -s "$TMP/shot.png" ] || { echo "package_macos: autotest wrote no screenshot" >&2; exit 1; }
+            echo "package_macos: autotest $game passed ($arch, $(wc -c <"$TMP/shot.png") byte screenshot)"
+        done
     done
 fi

@@ -1,0 +1,69 @@
+# From the save scenario 'wild' leaves on Route 201: right/up-tap/A cycles walk
+# east (a wild Starly on the way is beaten), through Sandgem past a chatty
+# NPC to the Poke Mart: buy one Poke Ball (BUY, Poke Ball, x1, YES), out;
+# into the Pokemon Center: the nurse heals the party; the PC east of the
+# counter: SOMEONE'S PC, DEPOSIT the third party member (Starly) into BOX 1,
+# WITHDRAW it again; then SAVE from the field menu (stored ~frame 15702).
+1250:start
+1400:a
+1500:a
+1600:a
+1700:down:16
+1730:right:10:24:170
+1742:up:2:24:170
+1746:a:4:24:170
+5850:left:32
+5900:up:24
+6100:up:80
+6200:a
+6420:a
+6500:a
+6580:a
+6900:a
+7000:a
+7100:a
+7180:b
+7300:b
+7400:b
+7500:b:4:60:6
+7860:b
+7900:b
+7960:down:120
+8160:left:192
+8380:up:80
+8600:up:120
+8760:a
+8860:a:4:60:20
+10650:b
+10700:b
+10950:right:64
+11030:up:40
+11100:a
+11420:a
+11500:a
+11600:a
+11700:a
+12000:a
+12200:a
+12550:down
+12600:a
+12680:a
+12760:a
+13050:b
+13320:down
+13350:a
+13550:down
+13580:a
+13950:a
+14030:a
+14200:b
+14300:down
+14330:a
+14500:b
+14600:b:4:60:5
+15000:x
+15060:down
+15090:down
+15120:down
+15150:a
+15250:a:4:40:8

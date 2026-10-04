@@ -1,0 +1,3 @@
+# Through the title and into Rowan's intro: A tapped (4 frames) every 40
+# frames from frame 600, 200 times. np_headless --schedule / shell press=@.
+600:a:4:40:200

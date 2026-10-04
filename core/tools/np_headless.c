@@ -27,9 +27,17 @@
  *                        camera_tilt, quicksave_seq, rules, text_instant or
  *                        an index; VALUE is a C integer (negative allowed).
  *     --rms-from F       measure the audio's RMS from frame F (default 0)
+ *     --wav FILE         write the audio from the --rms-from frame on as a
+ *                        16-bit stereo WAV at the core's rate
+ *     --progress N       print "[progress] frame K hash H" (the running hash)
+ *                        to stderr every N frames, flushed: tools/np_triage.sh
+ *                        watches it for hangs, and two runs' lines show the
+ *                        first frame where they diverge
  *     --schedule FILE    shell autotest press schedule (F:keys[:N[:R:C]],
  *                        F:tap:X:Y[:N[:R:C]], +D; shell/README.md), on top
  *                        of --press
+ *     --watch A:N[@F]    print the N (<= 256) guest bytes at address A to
+ *                        stderr whenever they change, from frame F
  *     --state-test N     snapshot round trips: run N frames, then per round
  *                        save, run M frames hashing them, load, run the same
  *                        M frames again and require the same hash; the next
@@ -47,7 +55,12 @@
  *     --lockstep MY:PEER test only (POSIX): two instances on 127.0.0.1 ports MY
  *                        and PEER run in frame lockstep and exchange the game's
  *                        datagrams at frame boundaries, so runs repeat exactly
- *                        (needs --net-id; no --net)
+ *                        (needs --net-id; no --net, except that with --net
+ *                        PORT --net-relay the clocks stay in lockstep while
+ *                        the game's datagrams take the relay and --net-drop)
+ *     --fork-at F:CTL    with --lockstep: at frame F fork one child per line
+ *                        of CTL (schedule, frames, dumps, save, log), so a
+ *                        link test resumes from a checkpoint (see below)
  *     --net-relay H:P    internet play through a relay (server/relay) instead
  *     --net-pin PIN      of LAN discovery; PIN names the relay room
  *
@@ -215,7 +228,7 @@ static void schedule_input(int64_t k, np_input *in) {
 static const char *const k_opt_names[] = {"bgm_volume", "se_volume",     "render_scale", "widescreen",  "camera_zoom",
                                           "camera_tilt", "quicksave_seq", "rules",        "text_instant"};
 static const char *const k_stat_names[] = {"link_active", "field_ready", "quicksave_seq", "quicksave_result",
-                                           "map_id"};
+                                           "map_id",      "in_battle"};
 
 static int rom_read(void *user, uint32_t offset, void *dst, uint32_t len) {
     runner *r = user;
@@ -362,6 +375,8 @@ static struct {
     } q[LS_QUEUE]; /* delivered this frame */
     int qhead, qcount;
     uint32_t peer_id;
+    uint8_t epoch; /* --fork-at: which child pair a record belongs to */
+    uint64_t start; /* the frame the handshake runs before (0, or a fork's) */
 } g_ls;
 
 static int lockstep_open(const char *spec, uint32_t id) {
@@ -382,39 +397,45 @@ static int lockstep_open(const char *spec, uint32_t id) {
     return 0;
 }
 
-/* Record: u8 kind (0 DATA, 1 END), u32 sender id, u32 frame, payload. */
+/* Record: u8 kind (bit 0: 0 DATA, 1 END; bits 1-7 the epoch), u32 sender
+ * id, u32 frame, payload. A record from another epoch (a finished fork
+ * child's leftovers) is dropped. */
 static void lockstep_send(uint8_t kind, uint32_t frame, const void *buf, uint32_t len) {
     uint8_t p[9 + 1500];
     if (len > 1500) return;
-    p[0] = kind;
+    p[0] = (uint8_t)(kind | g_ls.epoch << 1);
     memcpy(p + 1, &g_ls.id, 4);
     memcpy(p + 5, &frame, 4);
     memcpy(p + 9, buf, len);
     sendto(g_ls.sock, p, 9 + len, 0, (struct sockaddr *)&g_ls.peer, sizeof g_ls.peer);
 }
 
-/* The barrier before frame `frame` (> 0): collects the peer's records up to
- * END(frame - 1) into this frame's delivery queue. Frame 0 needs the peer
- * to exist, so it waits for any record. */
+/* The barrier before frame `frame`: collects the peer's records up to
+ * END(frame - 1) into this frame's delivery queue. The start frame (0, or
+ * a fork child's first) needs the peer to exist, so it trades hellos
+ * first; a fork child keeps the queue its parent's barrier collected. */
 static void lockstep_barrier(uint64_t frame) {
     uint8_t p[9 + 1500];
     double last_hello = 0;
-    g_ls.qhead = 0;
-    g_ls.qcount = 0;
+    const int start = frame == g_ls.start;
+    if (!start || frame == 0) {
+        g_ls.qhead = 0;
+        g_ls.qcount = 0;
+    }
     for (;;) {
-        if (frame == 0 && now_ms() - last_hello > 100) {
+        if (start && now_ms() - last_hello > 100) {
             lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* hello: END of frame -1 */
             last_hello = now_ms();
         }
         struct pollfd pf = {g_ls.sock, POLLIN, 0};
         if (poll(&pf, 1, 100) <= 0) continue;
         ssize_t n = recv(g_ls.sock, p, sizeof p, 0);
-        if (n < 9) continue;
+        if (n < 9 || p[0] >> 1 != (g_ls.epoch & 0x7f)) continue;
         uint32_t f;
         memcpy(&g_ls.peer_id, p + 1, 4);
         memcpy(&f, p + 5, 4);
-        if (p[0] == 1) {
-            if (frame == 0 ? f == 0xFFFFFFFFu : f == (uint32_t)(frame - 1)) break;
+        if (p[0] & 1) {
+            if (start ? f == 0xFFFFFFFFu : f == (uint32_t)(frame - 1)) break;
             continue; /* a stale hello */
         }
         if (g_ls.qcount < LS_QUEUE) {
@@ -423,11 +444,67 @@ static void lockstep_barrier(uint64_t frame) {
             g_ls.qcount++;
         }
     }
-    if (frame == 0) lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* answer a late starter */
+    if (start) lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* answer a late starter */
 }
 
 static void lockstep_end_frame(uint64_t frame) {
     lockstep_send(1, (uint32_t)frame, NULL, 0);
+}
+
+/* --fork-at FRAME:CTL (with --lockstep): a checkpoint for link tests. Both
+ * instances run to FRAME's barrier, then each serves its control file (a
+ * FIFO or a plain file): per line
+ *   SCHEDULE FRAMES DUMPDIR DUMPEVERY SAVE LOG   ("-" = none)
+ * it forks a child that replaces the schedule, the frame count, the dumps
+ * (from FRAME) and the save path, sends its output to LOG and runs on from
+ * FRAME, then waits for it. The two sides must be fed the same number of
+ * lines; child pair N trades records in epoch N, so a finished pair's
+ * leftovers on the shared socket are dropped. The parent exits at the
+ * control file's end. A whole scenario then costs its tail, not its
+ * 10000-frame walk to the Union Room. */
+typedef struct fork_job {
+    char sched[512], dump[512], save[512], log[512];
+    unsigned long long frames, every;
+} fork_job;
+
+#include <sys/wait.h>
+
+static void lockstep_fork_server(const char *ctl_path, uint64_t frame, fork_job *job) {
+    FILE *ctl = fopen(ctl_path, "r");
+    if (!ctl) {
+        fprintf(stderr, "np_headless: --fork-at: cannot open %s\n", ctl_path);
+        exit(2);
+    }
+    char line[2600];
+    while (fgets(line, sizeof line, ctl)) {
+        memset(job, 0, sizeof *job);
+        if (sscanf(line, "%511s %llu %511s %llu %511s %511s", job->sched, &job->frames, job->dump, &job->every,
+                   job->save, job->log) != 6) {
+            if (strspn(line, " \t\r\n") != strlen(line)) fprintf(stderr, "np_headless: --fork-at: bad line %s", line);
+            continue;
+        }
+        g_ls.epoch++;
+        fflush(NULL);
+        pid_t pid = fork();
+        if (pid < 0) {
+            perror("np_headless: fork");
+            exit(2);
+        }
+        if (pid == 0) {
+            fclose(ctl);
+            g_ls.start = frame;
+            if (strcmp(job->log, "-") != 0 &&
+                (!freopen(job->log, "w", stdout) || dup2(fileno(stdout), 2) < 0)) {
+                exit(2);
+            }
+            return;
+        }
+        int st = 0;
+        waitpid(pid, &st, 0);
+        fprintf(stderr, "[fork] epoch %u: %s exited %d\n", g_ls.epoch, job->log,
+                WIFEXITED(st) ? WEXITSTATUS(st) : -1);
+    }
+    exit(0);
 }
 #else
 static struct { int on; uint32_t id, peer_id; int qhead, qcount; } g_ls;
@@ -444,9 +521,12 @@ static uint32_t net_self_cb(void *user) {
     return g_ls.on ? g_ls.id : np_net_self(g_net);
 }
 
+/* With --lockstep and --net-relay the frames still advance in lockstep, but
+ * the game's datagrams take the relay (and --net-drop): the frame clocks
+ * stay together, as two consoles' would, while delivery is the real path's. */
 static int net_send_cb(void *user, uint32_t peer, const void *buf, uint32_t len) {
     (void)user;
-    if (g_ls.on) {
+    if (g_ls.on && !g_net) {
         lockstep_send(0, 0, buf, len);
         return 0;
     }
@@ -456,7 +536,7 @@ static int net_send_cb(void *user, uint32_t peer, const void *buf, uint32_t len)
 static int net_recv_cb(void *user, uint32_t *peer, void *buf, uint32_t cap) {
     (void)user;
 #if !defined(_WIN32)
-    if (g_ls.on) {
+    if (g_ls.on && !g_net) {
         if (g_ls.qhead == g_ls.qcount) return 0;
         int i = g_ls.qhead++;
         if (g_ls.q[i].len > cap) return -1;
@@ -484,15 +564,36 @@ static void sleep_until(double deadline) {
 #endif
 }
 
+/* A canonical 44-byte PCM WAV header: 16-bit stereo at `rate`, `bytes` of data. */
+static void wav_header(FILE *fp, uint32_t rate, uint32_t bytes) {
+    uint8_t h[44];
+    uint32_t v[] = {36 + bytes, 16, rate, rate * 4, bytes};
+    memcpy(h, "RIFF", 4);
+    memcpy(h + 8, "WAVEfmt ", 8);
+    memcpy(h + 36, "data", 4);
+    for (int i = 0; i < 4; i++) {
+        h[4 + i] = (uint8_t)(v[0] >> (8 * i));
+        h[16 + i] = (uint8_t)(v[1] >> (8 * i));
+        h[24 + i] = (uint8_t)(v[2] >> (8 * i));
+        h[28 + i] = (uint8_t)(v[3] >> (8 * i));
+        h[40 + i] = (uint8_t)(v[4] >> (8 * i));
+    }
+    h[20] = 1, h[21] = 0;  /* PCM */
+    h[22] = 2, h[23] = 0;  /* stereo */
+    h[32] = 4, h[33] = 0;  /* block align */
+    h[34] = 16, h[35] = 0; /* bits per sample */
+    fwrite(h, 1, sizeof h, fp);
+}
+
 static int usage(void) {
     fprintf(stderr, "usage: np_headless <diamond|pearl|platinum> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
                     "                   [--content DIR] [--gba-rom FILE [--gba-save FILE]]\n"
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
-                    "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--schedule FILE]\n"
+                    "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--wav FILE] [--schedule FILE] [--progress N]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
                     "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]\n"
                     "                    [--net-relay HOST:PORT --net-pin PIN]]\n"
-                    "                   [--lockstep MYPORT:PEERPORT --net-id ID]\n");
+                    "                   [--lockstep MYPORT:PEERPORT --net-id ID [--fork-at FRAME:CTLFILE]]\n");
     return 2;
 }
 
@@ -505,6 +606,7 @@ typedef struct session {
     uint64_t rms_from;
     double sumsq[2];
     uint64_t rms_frames, audio_frames;
+    FILE *wav;       /* --wav: samples from rms_from on, header patched at exit */
     uint32_t status[NP_STAT_COUNT];
     int quiet;       /* state-test replays: no status prints */
     int hash_status; /* state test: the status is part of the hash */
@@ -537,6 +639,7 @@ static int step(session *s, uint64_t k, np_frame *f, uint64_t *hash) {
                 s->sumsq[1] += (double)audio[2 * i + 1] * audio[2 * i + 1];
             }
             s->rms_frames += n;
+            if (s->wav && !s->quiet) fwrite(audio, 4, n, s->wav);
         }
     }
     for (uint32_t i = 0; i < NP_STAT_COUNT; i++) {
@@ -644,14 +747,19 @@ int main(int argc, char **argv) {
     opt_set sets[MAX_SETS];
     int nsets = 0;
     uint64_t frames = 600, dump_every = 0, dump_from = 0, rms_from = 0, state_first = 0, state_span = 120;
+    uint64_t progress = 0;
     int state_rounds = 4, do_state = 0;
-    const char *dump_dir = NULL, *host_content = NULL;
+    const char *dump_dir = NULL, *host_content = NULL, *wav_path = NULL;
+    uint32_t watch_addr = 0, watch_len = 0;
+    uint64_t watch_from = 0;
+    static uint8_t watch_prev[256];
     int have_rtc = 0;
     int net_on = 0, net_drop = 0, npeers = 0;
     uint16_t net_port = 0;
     uint32_t net_id = 0;
     const char *net_peers[8];
-    const char *net_relay = NULL, *net_pin = NULL, *lockstep = NULL;
+    const char *net_relay = NULL, *net_pin = NULL, *lockstep = NULL, *fork_ctl = NULL;
+    uint64_t fork_at = 0;
 
     for (int i = 3; i < argc; i++) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
@@ -674,6 +782,8 @@ int main(int argc, char **argv) {
         else if (strcmp(a, "--dump-from") == 0) dump_from = strtoull(v, NULL, 0);
         else if (strcmp(a, "--rtc") == 0) r.rtc = strtoll(v, NULL, 0), have_rtc = 1;
         else if (strcmp(a, "--rms-from") == 0) rms_from = strtoull(v, NULL, 0);
+        else if (strcmp(a, "--wav") == 0) wav_path = v;
+        else if (strcmp(a, "--progress") == 0) progress = strtoull(v, NULL, 0);
         else if (strcmp(a, "--schedule") == 0) {
             if (load_schedule(v) != 0) {
                 fprintf(stderr, "np_headless: cannot read schedule %s\n", v);
@@ -701,6 +811,11 @@ int main(int argc, char **argv) {
             net_drop = atoi(v);
         } else if (strcmp(a, "--lockstep") == 0) {
             lockstep = v;
+        } else if (strcmp(a, "--fork-at") == 0) {
+            char *colon;
+            fork_at = strtoull(v, &colon, 0);
+            if (*colon != ':' || !colon[1]) return usage();
+            fork_ctl = colon + 1;
         } else if (strcmp(a, "--net-relay") == 0) {
             net_relay = v;
         } else if (strcmp(a, "--net-pin") == 0) {
@@ -710,6 +825,13 @@ int main(int argc, char **argv) {
             presses[npresses].frame = strtoull(v, &colon, 0);
             if (*colon != ':') return usage();
             presses[npresses++].keys = (uint16_t)strtoul(colon + 1, NULL, 16);
+        } else if (strcmp(a, "--watch") == 0) {
+            /* ADDR:LEN[@FROM]: print LEN guest bytes whenever they change. */
+            char *end;
+            watch_addr = (uint32_t)strtoul(v, &end, 0);
+            watch_len = *end == ':' ? (uint32_t)strtoul(end + 1, &end, 0) : 0;
+            if (*end == '@') watch_from = strtoull(end + 1, NULL, 0);
+            if (watch_len == 0 || watch_len > sizeof watch_prev) return usage();
         } else
             return usage();
         i++;
@@ -734,8 +856,9 @@ int main(int argc, char **argv) {
     host.rtc_now = have_rtc ? rtc_now : NULL;
     host.log = log_line;
     if (lockstep) {
-        if (net_on || net_id == 0 || lockstep_open(lockstep, net_id & 0xffffffu) != 0) {
-            fprintf(stderr, "np_headless: --lockstep needs MYPORT:PEERPORT, --net-id and no --net (POSIX only)\n");
+        if ((net_on && !net_relay) || net_id == 0 || lockstep_open(lockstep, net_id & 0xffffffu) != 0) {
+            fprintf(stderr, "np_headless: --lockstep needs MYPORT:PEERPORT, --net-id and no --net unless with "
+                            "--net-relay (POSIX only)\n");
             return 2;
         }
         host.net_self = net_self_cb;
@@ -784,6 +907,14 @@ int main(int argc, char **argv) {
     s.sets = sets;
     s.nsets = nsets;
     s.rms_from = rms_from;
+    if (wav_path) {
+        s.wav = fopen(wav_path, "wb");
+        if (!s.wav) {
+            fprintf(stderr, "np_headless: cannot write %s\n", wav_path);
+            return 2;
+        }
+        wav_header(s.wav, np_core_audio_rate(core), 0);
+    }
 
     uint64_t hash = 0xCBF29CE484222325ull;
     np_frame f;
@@ -799,6 +930,25 @@ int main(int argc, char **argv) {
     double next_frame = t0;
     for (; rc == 0 && state_rc >= 0 && ran < frames; ran++) {
         if (g_ls.on) lockstep_barrier(ran);
+#if !defined(_WIN32)
+        if (fork_ctl && g_ls.on && ran == fork_at) {
+            static fork_job job;
+            const char *ctl = fork_ctl;
+            fork_ctl = NULL;
+            lockstep_fork_server(ctl, ran, &job); /* returns in a child */
+            g_nsched = 0;
+            if (strcmp(job.sched, "-") != 0 && load_schedule(job.sched) != 0) {
+                fprintf(stderr, "np_headless: cannot read schedule %s\n", job.sched);
+                return 2;
+            }
+            frames = job.frames;
+            dump_dir = strcmp(job.dump, "-") != 0 ? job.dump : NULL;
+            dump_every = job.every;
+            dump_from = ran;
+            r.save_path = strcmp(job.save, "-") != 0 ? job.save : NULL;
+            lockstep_barrier(ran); /* the new pair's hello */
+        }
+#endif
         if (g_net) {
             np_net_poll(g_net);
             /* Linked: real time, as a console runs, or the partner's MP
@@ -813,6 +963,20 @@ int main(int argc, char **argv) {
         rc = step(&s, ran, &f, &hash);
         if (g_ls.on) lockstep_end_frame(ran);
         if (rc != 0) break;
+        if (progress && (ran + 1) % progress == 0) {
+            fprintf(stderr, "[progress] frame %llu hash %016llx\n", (unsigned long long)(ran + 1),
+                    (unsigned long long)hash);
+            fflush(stderr);
+        }
+        if (watch_len && ran >= watch_from) {
+            const uint8_t *w = np_core_guest_ptr(core, watch_addr, watch_len);
+            if (w && memcmp(w, watch_prev, watch_len) != 0) {
+                memcpy(watch_prev, w, watch_len);
+                fprintf(stderr, "[watch] frame %llu %08x:", (unsigned long long)ran, watch_addr);
+                for (uint32_t b = 0; b < watch_len; b++) fprintf(stderr, "%s%02x", b % 4 ? "" : " ", w[b]);
+                fputc('\n', stderr);
+            }
+        }
         int last = ran + 1 == frames;
         if (dump_dir && (last || (dump_every && ran >= dump_from && (ran - dump_from) % dump_every == 0)) &&
             dump_ppm(dump_dir, f.number, &f) != 0)
@@ -840,6 +1004,12 @@ int main(int argc, char **argv) {
     } else if (rc > 0) {
         printf("exited at frame %llu: %s\n", (unsigned long long)ran, np_core_last_error(core));
         if (!strstr(np_core_last_error(core), "status 0")) status = 1;
+    }
+    if (s.wav) {
+        /* The data size is known now; rewrite the header over the placeholder. */
+        fseek(s.wav, 0, SEEK_SET);
+        wav_header(s.wav, np_core_audio_rate(core), (uint32_t)(s.rms_frames * 4));
+        fclose(s.wav);
     }
     np_core_destroy(core);
     np_net_close(g_net);

@@ -1,0 +1,36 @@
+# Diamond/Pearl from power-on to the first in-game save (tests/dp/first_save.sh,
+# and the base save tests/gameplay/run.sh --game diamond|pearl applies its
+# recipes to): copyright and title, Rowan's intro (a boy, named NATIVE on the
+# touch keyboard), the TV report, the bedroom (field free from
+# ~frame 10300); then X opens the start menu, down down to SAVE, A, YES, and
+# the save is stored by ~frame 11900.
+# frames: 12600
+1250:start
+1350:a:4:40:35
+2800:down
+2820:down
+2840:a
+2900:a:4:40:14
+3560:tap:128:100:8:40:3
+3700:a:4:40:49
+5850:tap:82:118:6
++20:tap:34:100:6
++20:tap:178:118:6
++20:tap:162:100:6
++20:tap:50:137:6
++20:tap:98:100:6
++30:tap:217:71:6
++60:a:4:40:14
+6600:b:4:40:6
+6950:down
+6980:a
+7040:a:4:40:40
+9300:a:4:40:40
+11000:x
+11060:down
+11090:down
+11120:a
+11240:a
+11400:a
+11500:a
+11600:a

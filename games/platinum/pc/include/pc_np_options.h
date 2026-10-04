@@ -40,6 +40,12 @@ typedef struct pc_np_status {
     unsigned quicksave_seq;    /* last quicksave_seq handled */
     unsigned quicksave_result; /* PC_NP_QS_* for it */
     unsigned map_id;           /* current field map header id */
+    /* NP_STAT_IN_BATTLE is either of these: a field encounter task from its
+     * intro effect to the fade back (src/encounter.c.patch), or the battle
+     * application itself, which is all a facility battle has
+     * (src/unk_0203D1B8.c.patch). */
+    unsigned in_encounter;
+    unsigned in_battle_app;
 } pc_np_status;
 
 enum { PC_NP_QS_NONE = 0, PC_NP_QS_SAVED = 1, PC_NP_QS_REFUSED = 2, PC_NP_QS_FAILED = 3 };

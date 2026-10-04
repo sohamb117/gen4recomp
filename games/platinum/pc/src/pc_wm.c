@@ -69,6 +69,92 @@
  * The protocol is this port's own (version byte below); libntr's
  * sim7/wmsp_request.c (MIT, cybervisi0n/libntr) was read as a second
  * opinion on the WMSP request mapping, no code was taken from it.
+ *
+ * Diamond/Pearl (PC_GAME_DP). The same model answers D/P's NitroSDK 3.2-era
+ * WM library (arm9/asm/WM_{system,standard,mp,sync,etc,ds,dcf}.s, recompiled
+ * by armrec) and stands where D's own ARM7 WMSP runs (arm7/asm/WM_sp.s and
+ * the WMSP_* functions in arm7/asm/ext.s, wram2.s). Measured field by field
+ * against those, with the 4.2 offsets from clang's record layout for wasm32:
+ *
+ *   Identical. PXI tag 10 and the FIFO word (the 26-bit address of the
+ *   command buffer one way, of fifo7to9 the other, error bit clear; D's
+ *   WMSP_ReturnResult2Wm9). wm_callback_control at 0x027FFF96 bit 0 and
+ *   wm_rssi_pool at 0x027FFF98. The firmware MAC at 0x027FFCF4 (D's
+ *   OS_GetMacAddress) and the allowed-channel word at 0x027FFCFA (D's
+ *   WM_GetAllowedChannel). Every API id the D ARM9 sends (0-16, 17-19 DCF,
+ *   20 WEPKEY, 24 SET_GAMEINFO, 25 SET_BEACON_IND, 29 SET_LIFETIME, 30
+ *   MEASURE_CHANNEL, 33 SET_ENTRY, 38 START_SCAN_EX, 39 WEPKEY_EX) and
+ *   0x80-0x82; WmReceiveFifo dispatches apiid < 44 (WM_NUM_OF_CALLBACK) as
+ *   4.2 does. The system buffer split (WMArm9Buf 0x200 at +0, WMArm7Buf
+ *   0x300 at +0x200, WMStatus 0x800 at +0x500, fifo9to7 +0xD00, fifo7to9
+ *   +0xE00) and WMArm9Buf itself (CallbackTable 0x18, indCallback 0xC8,
+ *   portCallbackTable 0xCC, portCallbackArgument 0x10C,
+ *   connectedAidBitmap 0x14C, myAid 0x150). WMArm7Buf: status 0, fifo7to9
+ *   8, connectPInfo 0x10 (D's WMSP_GetLinkLevel reads its platform byte at
+ *   0x53), requestBuf 0xD0, 32 entries of 16 bytes. WMStatus from 0 to
+ *   0x7C0, every offset either side uses: state 0, mp_flag 0xC, the size
+ *   words 0x30-0x3E, VCounts/intervals 0x40-0x46 and their ticks 0x48/0x50,
+ *   mp_minFreq/freq/maxFreq 0x58-0x5C, the MP flags 0x5E-0x6A, mp_recvBufSel
+ *   0x70, mp_recvBufSize 0x72, mp_recvBuf 0x74/0x78, mp_sendBuf 0x7C,
+ *   mp_sendBufSize 0x80, mp_readyBitmap 0x86, the mode words 0x92-0x9C,
+ *   mp_pingFlag/Counter 0x9E/0xA0, linkLevel 0xBC, minRssi 0xBE,
+ *   beaconIndicateFlag 0xC2, wepKeyId 0xC4, pwrMgtMode 0xC6, miscFlags 0xC8,
+ *   valarm_queuedFlag 0xCE, MacAddress 0xE0, mode 0xE6, pparam 0xE8
+ *   (maxEntry 0xF8), child_bitmap 0x182, aid 0x188, wepMode 0x196,
+ *   wep_flag 0x198, wepKey 0x19C, rate 0x1EC, preamble 0x1EE,
+ *   enableChannel 0x1F4, allowedChannel 0x1F6, portSeqNo 0x1F8 (0x100
+ *   bytes), sendQueueMutex 0x71C, sendQueueInUse 0x734, mp_lastRecvTick
+ *   0x738, mp_lifeTimeTick 0x7B8. WMParentParam (64 bytes; D's
+ *   WMSP_CopyParentParam and WmCheckParentParameter) and WMGameInfo.
+ *   WMBssDesc with otherElementCount (gameInfoLength 0x3C, gameInfo 0x40;
+ *   D's WM_GetOtherElements). WM_SIZE_MP_DATA_MAX 512 (WM_SetMPDataToPortEx
+ *   refuses > 0x200). WMMpRecvHeader with errBitmap (10-byte head) and
+ *   WMMpRecvData (12), WMMpRecvBuf (54): D's WM_GetMPReceiveBufferSize
+ *   computes ((maxRecv + 12) * maxEntry + 0x29) & ~31 and (maxRecv + 0x51)
+ *   & ~31, and WM_ReadMPData walks count 4 / length 6 / data 0xA. The
+ *   request blocks for START_SCAN (16 bytes), START_SCAN_EX (60, with
+ *   ssidMatchLength), START_CONNECT (40; powerSave 0x20, authMode 0x26),
+ *   MEASURE_CHANNEL (10), and the word lists of SET_P_PARAM, START_PARENT
+ *   (powerSave), DISCONNECT (aid bitmap), SET_MP_DATA (data, size, dest,
+ *   port, prio, callback, arg), SET_GAMEINFO, SET_LIFETIME, SET_ENTRY,
+ *   SET_BEACON_IND, SET_WEPKEY(_EX). The callback records as the ARM9 and
+ *   the game read them: WMCallback, WMStartParentCallback (state 8, mac 0xA,
+ *   aid 0x10, reason 0x12, ssid 0x14, sizes 0x2C/0x2E), WMStartConnect
+ *   (state 8, aid 0xA, reason 0xC, mac 0x10, sizes 0x16/0x18),
+ *   WMStartScanCallback (state 8, gameInfoLength 0x36, gameInfo 0x38),
+ *   WMStartMPCallback (state 4, recvBuf 8), WMPortSendCallback (callback
+ *   0x1C), WMPortRecvCallback (68 bytes: port 6, recvBuf 8, aid 0x12, mac
+ *   0x14, seqNo 0x1A, arg 0x1C, myAid 0x20, connectedAidBitmap 0x22, ssid
+ *   0x24, reason 0x3C, sizes 0x40/0x42; the ARM9 synthesizes the same
+ *   record for CONNECTED/DISCONNECTED), WMDisconnectCallback.
+ *
+ *   Different, and handled under PC_GAME_DP:
+ *    1. INITIALIZE/ENABLE carry three words (WM7, status, fifo7to9; D's
+ *       WM_Initialize/WM_Enable and WMSP_Initialize/WMSP_Enable). 4.2 adds
+ *       miscFlags as req[4]; on D that word is whatever an earlier command
+ *       left in the reused command buffer (a SET_GAMEINFO leaves its tgid
+ *       there), and an odd one would read as WM_MISC_FLAG_LISTEN_ONLY and
+ *       refuse StartParent/StartConnect. D has no misc flags: 0.
+ *    2. START_MP is 0x30 bytes: {apiid, rsv, recvBuf, recvBufSize/2,
+ *       sendBuf, sendBufSize, WMMPParam param} with no WMMPTmpParam at 0x30.
+ *       D's ARM9 fills `param` (mask 0x0003 from WM_StartMP with
+ *       minFrequency = frequency = mpFreq at 0x18/0x1A; 0x1E03 or 0x1E07
+ *       from WM_StartMPEx, defaultRetryCount at 0x2A and the three mode
+ *       bytes at 0x2C-0x2E), and D's WMSP_StartMP hands it to
+ *       WMSP_SetMPParameterCore: the values land in the persistent
+ *       mp_minFreq/mp_freq/... words, not in a per-MP copy.
+ *    3. WMStatus ends at 0x7C0 (WM_ReadStatus copies 0x7C0 bytes). 4.2
+ *       appends mp_current_{minFreq, freq, maxFreq, minPollBmpMode,
+ *       singlePacketMode, defaultRetryCount, ignoreFatalErrorMode} and two
+ *       reserved bytes at 0x7C0-0x7CF, inside the 0x800 status buffer, so
+ *       nothing reads them on D and the model does not write them.
+ *
+ *   Different, and unreachable from D (left as they are): 4.2's
+ *   WMSP_Set{Parent,Child}MaxSize clamp to 0x200 where D's do not, and
+ *   4.2's CopyParentParam caps a multiboot childMaxSize at 8; D's ARM9
+ *   refuses parent/child sizes over 0x200 (KS included) and the game never
+ *   multiboots. SET_MP_PARAMETER, SET_BEACON_PERIOD, SET_PS_MODE and the RX
+ *   test modes have no D ARM9 caller.
  */
 #include <nitro/os.h>
 #include <nitro/pxi.h>
@@ -442,6 +528,7 @@ static void wmi_common_init(u32 misc_flags)
     st->mp_singlePacketMode = FALSE;
     st->mp_ignoreFatalErrorMode = FALSE;
     st->mp_ignoreSizePrecheckMode = FALSE;
+#if !defined(PC_GAME_DP) /* past the end of D's 0x7C0-byte WMStatus (header note 3) */
     st->mp_current_minFreq = st->mp_minFreq;
     st->mp_current_freq = st->mp_freq;
     st->mp_current_maxFreq = st->mp_maxFreq;
@@ -449,6 +536,7 @@ static void wmi_common_init(u32 misc_flags)
     st->mp_current_minPollBmpMode = st->mp_minPollBmpMode;
     st->mp_current_singlePacketMode = st->mp_singlePacketMode;
     st->mp_current_ignoreFatalErrorMode = st->mp_ignoreFatalErrorMode;
+#endif
     st->wep_flag = FALSE;
     st->wepMode = 0;
     memset(st->wepKey, 0, sizeof st->wepKey);
@@ -847,7 +935,11 @@ static void wmi_req_initialize(const u32 *req, int full)
     W.wm7->fifo7to9 = W.fifo;
     memset(W.link, 0, sizeof W.link);
     W.pend_count = 0;
+#if defined(PC_GAME_DP)
+    wmi_common_init(0); /* three words, no miscFlags (header note 1) */
+#else
     wmi_common_init(req[4]);
+#endif
     if (full) {
         wmi_wl_idle();
         W.st->state = WM_STATE_IDLE;
@@ -1424,13 +1516,74 @@ static void wmi_req_disconnect(const u32 *req)
     wmi_cb_send();
 }
 
+#if defined(PC_GAME_DP)
+/* D's START_MP request (header note 2): WMStartMPReq up to `param`, which
+ * is the whole per-call parameter; there is no tmpParam. */
+typedef struct {
+    u16 apiid;
+    u16 rsv1;
+    u32 *recvBuf;
+    u32 recvBufSize;
+    u32 *sendBuf;
+    u32 sendBufSize;
+    WMMPParam param;
+} wmi_dp_start_mp_req;
+
+_Static_assert(sizeof(wmi_dp_start_mp_req) == 0x30, "D WMi_StartMP sends 0x30 bytes");
+_Static_assert(offsetof(wmi_dp_start_mp_req, sendBufSize) == offsetof(WMStartMPReq, sendBufSize)
+                   && offsetof(wmi_dp_start_mp_req, param) == offsetof(WMStartMPReq, param),
+               "the words before param are 4.2's");
+_Static_assert(offsetof(WMStatus, mp_lifeTimeTick) + sizeof(OSTick) == 0x7C0,
+               "D's WMStatus is 4.2's without the mp_current_* tail");
+
+/* What D's WMSP_SetMPParameterCore does with the bits D's ARM9 can put in
+ * a START_MP request: 0x0003 (WM_StartMP) and 0x1E03 | 0x0004
+ * (WM_StartMPEx). It runs before WMSP_StartMP's state check. */
+static void wmi_dp_start_mp_param(const WMMPParam *p)
+{
+    WMStatus *st = W.st;
+    u32 mask = p->mask;
+
+    if (mask & WM_MP_PARAM_MIN_FREQUENCY) {
+        st->mp_minFreq = p->minFrequency ? p->minFrequency : 16;
+    }
+    if (mask & WM_MP_PARAM_FREQUENCY) {
+        st->mp_freq = p->frequency ? p->frequency : 16;
+        if (st->mp_count > (s16)st->mp_freq) {
+            st->mp_count = (s16)st->mp_freq;
+        }
+    }
+    if (mask & WM_MP_PARAM_MAX_FREQUENCY) {
+        st->mp_maxFreq = p->maxFrequency ? p->maxFrequency : 16;
+        if (st->mp_count > (s16)st->mp_maxFreq) {
+            st->mp_count = (s16)st->mp_maxFreq;
+        }
+    }
+    if (mask & WM_MP_PARAM_DEFAULT_RETRY_COUNT) {
+        st->mp_defaultRetryCount = p->defaultRetryCount;
+    }
+    if (mask & WM_MP_PARAM_MIN_POLL_BMP_MODE) {
+        st->mp_minPollBmpMode = p->minPollBmpMode;
+    }
+    if (mask & WM_MP_PARAM_SINGLE_PACKET_MODE) {
+        st->mp_singlePacketMode = p->singlePacketMode;
+    }
+    if (mask & WM_MP_PARAM_IGNORE_FATAL_ERROR_MODE) {
+        st->mp_ignoreFatalErrorMode = p->ignoreFatalErrorMode;
+    }
+}
+#endif
+
 static void wmi_req_start_mp(const WMStartMPReq *req)
 {
     WMStatus *st = W.st;
     WMStartMPCallback *cb;
+#if defined(PC_GAME_DP)
+    wmi_dp_start_mp_param(&((const wmi_dp_start_mp_req *)req)->param);
+#else
     u32 mask = req->tmpParam.mask;
     u16 v1, v2, v3;
-
+#endif
     if (st->state != WM_STATE_CHILD && st->state != WM_STATE_PARENT) {
         cb = wmi_cb_begin();
         cb->apiid = WM_APIID_START_MP;
@@ -1439,6 +1592,7 @@ static void wmi_req_start_mp(const WMStartMPReq *req)
         wmi_cb_send();
         return;
     }
+#if !defined(PC_GAME_DP)
     /* HandleMask */
     v1 = (mask & WM_MP_TMP_PARAM_MAX_FREQUENCY) ? req->tmpParam.maxFrequency : st->mp_maxFreq;
     v1 = v1 ? v1 : 16;
@@ -1453,6 +1607,7 @@ static void wmi_req_start_mp(const WMStartMPReq *req)
     st->mp_current_minPollBmpMode = (mask & WM_MP_TMP_PARAM_MIN_POLL_BMP_MODE) ? req->tmpParam.minPollBmpMode : st->mp_minPollBmpMode;
     st->mp_current_singlePacketMode = (mask & WM_MP_TMP_PARAM_SINGLE_PACKET_MODE) ? req->tmpParam.singlePacketMode : st->mp_singlePacketMode;
     st->mp_current_ignoreFatalErrorMode = (mask & WM_MP_TMP_PARAM_IGNORE_FATAL_ERROR_MODE) ? req->tmpParam.ignoreFatalErrorMode : st->mp_ignoreFatalErrorMode;
+#endif
 
     st->mp_flag = FALSE;
     st->mp_waitAckFlag = FALSE;

@@ -1,0 +1,8 @@
+# C -> assembly calls that pass fewer argument words than the callee reads
+# (pc/tools/dp_arity_lint.py), each with the reason it cannot matter.
+#
+# scrcmd.c ScrCmd_Unk01A0 calls the battle overlay's ov11_0224CA94 with no
+# arguments; on the ROM r1/r2 are whatever the script engine left, so there
+# is no value to reproduce, and the command needs overlay 11 resident in the
+# field, which nothing arranges (a dead command). Left as is.
+ov11_0224CA94

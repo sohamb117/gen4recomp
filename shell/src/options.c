@@ -193,6 +193,10 @@ static void apply(np_options *o, const char *section, const char *key, char *val
                 o->layout = (np_layout_mode)m;
         } else if (!strcmp(key, "swap"))
             o->swap = iv != 0;
+        else if (!strcmp(key, "battle_layout")) {
+            int m = lookup(layout_ids, NP_LAYOUT_COUNT, val);
+            o->battle_layout = m >= 0 ? m + 1 : 0; /* "off" or unknown: keep the layout */
+        }
         else if (!strcmp(key, "rotation"))
             o->rotation = clampi(iv / 90, 0, 3);
         else if (!strcmp(key, "scale"))
@@ -237,6 +241,13 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->volume = clampi(iv, 0, 100);
         else if (!strcmp(key, "mute_unfocused"))
             o->mute_unfocused = iv != 0;
+        else if (!strcmp(key, "music_filter"))
+            o->music_filter = clampi(iv, 0, 3);
+    } else if (!strcmp(section, "interface")) {
+        if (!strcmp(key, "ui_scale"))
+            o->ui_scale = clampi(iv, 0, 6);
+        else if (!strcmp(key, "reduce_motion"))
+            o->reduce_motion = iv != 0;
     } else if (!strcmp(section, "session")) {
         const char *const *games = np_game_ids;
         if (!strcmp(key, "startup"))
@@ -267,6 +278,11 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->fix_bugs = iv != 0;
         else if (!strcmp(key, "rewind_seconds"))
             o->rewind_seconds = clampi(iv, 0, 120);
+    } else if (!strcmp(section, "updates")) {
+        if (!strcmp(key, "repo"))
+            SDL_strlcpy(o->update_repo, val, sizeof o->update_repo);
+        else if (!strcmp(key, "api"))
+            SDL_strlcpy(o->update_api, val, sizeof o->update_api);
     } else if (!strcmp(section, "gba")) {
         if (!strcmp(key, "rom"))
             SDL_strlcpy(o->gba_rom, val, sizeof o->gba_rom);
@@ -293,7 +309,10 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             int m = lookup(touch_ids, NP_TOUCH_MODE_COUNT, val);
             if (m >= 0)
                 o->touch_controls = m;
-        }
+        } else if (!strcmp(key, "rumble"))
+            o->rumble = iv != 0;
+        else if (!strcmp(key, "skin") && !np_slot_name_problem(val))
+            SDL_strlcpy(o->skin, val, sizeof o->skin);
     } else if (!strcmp(section, "keys")) {
         int a = lookup(action_ids, NP_ACT_COUNT, key);
         if (a < 0)
@@ -370,6 +389,7 @@ int np_options_save(const np_options *o, const char *path)
     b->len = 0;
     put(b, "# nativeplat options. Edit while the app is closed.\n\n[video]\n");
     put(b, "layout = %s\nswap = %d\nrotation = %d\n", layout_ids[o->layout], o->swap, o->rotation * 90);
+    put(b, "battle_layout = %s\n", o->battle_layout ? layout_ids[o->battle_layout - 1] : "off");
     put(b, "scale = %s\nfilter = %s\n", o->scale == NP_SCALE_INTEGER ? "integer" : "fit",
         o->linear_filter ? "linear" : "nearest");
     put(b, "fullscreen = %d\nvsync = %d\nfps_cap = %d\n", o->fullscreen, o->vsync, np_fps_caps[o->fps_cap_index]);
@@ -378,7 +398,9 @@ int np_options_save(const np_options *o, const char *path)
     put(b, "performance = %s\n\n", np_perf_ids[o->perf]);
     put(b, "[emulation]\nlogic_clock = %s\nspeed = %d\nff_speed = %d\nreal_clock = %d\n\n",
         o->logic_clock_60 ? "60" : "ds", np_speeds[o->speed_index], np_speeds[o->ff_speed_index], o->real_clock);
-    put(b, "[audio]\nvolume = %d\nmute_unfocused = %d\n\n", o->volume, o->mute_unfocused);
+    put(b, "[audio]\nvolume = %d\nmute_unfocused = %d\nmusic_filter = %d\n\n", o->volume, o->mute_unfocused,
+        o->music_filter);
+    put(b, "[interface]\nui_scale = %d\nreduce_motion = %d\n\n", o->ui_scale, o->reduce_motion);
     put(b, "[game]\nbgm_volume = %d\nse_volume = %d\nrender_scale = %d\nwidescreen = %d\n", o->bgm_volume,
         o->se_volume, o->render_scale, o->widescreen);
     put(b, "camera_zoom = %d\ncamera_tilt = %d\ninstant_text = %d\nfix_bugs = %d\nrewind_seconds = %d\n\n",
@@ -391,9 +413,12 @@ int np_options_save(const np_options *o, const char *path)
             put(b, "last_slot_%s = %s\n", np_game_ids[g], o->last_slot[g]);
     put(b, "\n[sync]\nfolder = %s\n", o->sync_folder);
     put(b, "\n[gba]\nrom = %s\nsave = %s\n", o->gba_rom, o->gba_save);
+    if (o->update_repo[0] || o->update_api[0])
+        put(b, "\n[updates]\nrepo = %s\napi = %s\n", o->update_repo, o->update_api);
     put(b, "\n[wireless]\nenabled = %d\nport = %d\npeer = %s\nrelay = %s\npin = %s\nstation_id = %06X\n",
         o->lan_enabled, o->lan_port, o->lan_peer, o->lan_relay, o->lan_pin, (unsigned)o->station_id);
-    put(b, "\n[input]\ntouch_controls = %s\n\n[keys]\n", touch_ids[o->touch_controls]);
+    put(b, "\n[input]\ntouch_controls = %s\nrumble = %d\nskin = %s\n\n[keys]\n", touch_ids[o->touch_controls],
+        o->rumble, o->skin);
     for (int a = 0; a < NP_ACT_COUNT; a++) {
         put(b, "%s =", action_ids[a]);
         int last = -1;

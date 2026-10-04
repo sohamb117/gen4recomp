@@ -13,8 +13,13 @@
  *   np_save4 set-flag <save> <id|FLAG_NAME> <0|1>
  *   np_save4 set-var <save> <id|VAR_NAME> <value>
  *   np_save4 set-dex <save> <species> none|seen|caught
- *   np_save4 set-national-dex <save> <0|1>   (Platinum)
+ *   np_save4 set-national-dex <save> <0|1>
+ *   np_save4 set-dex-obtained <save> <0|1>
+ *   np_save4 set-mystery-gift <save> <0|1>      MYSTERY GIFT main menu option
+ *   np_save4 add-gift <save> <gift.pcd|gift.pgt>
+ *   np_save4 remove-gift <save> <card slot 1-3>
  *   np_save4 set-box-name <save> <box 1-18> <name>
+ *   np_save4 add-mon <save> <rom.nds> <species> <level> [move...]   party Pokemon
  *
  * Edits write back in place after copying the original to <save>.bak, or to
  * the path given with a trailing `-o <out>`.
@@ -53,10 +58,16 @@ static int usage(void)
             "  %s set-var <save> <id|VAR_NAME> <value>\n"
             "  %s set-dex <save> <species> none|seen|caught\n"
             "  %s set-national-dex <save> <0|1>\n"
+            "  %s set-dex-obtained <save> <0|1>\n"
+            "  %s set-mystery-gift <save> <0|1>\n"
+            "  %s add-gift <save> <gift.pcd|gift.pgt>\n"
+            "  %s remove-gift <save> <card slot 1-3>\n"
             "  %s set-box-name <save> <box 1-18> <name>\n"
+            "  %s add-mon <save> <rom.nds> <species> <level> [move id...]\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
-            prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog);
+            prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
+            prog);
     return EXIT_USAGE;
 }
 
@@ -169,6 +180,37 @@ static const nd_names *g_names;
 static void jname(FILE *o, nd_text_kind kind, uint32_t id)
 {
     jstr(o, g_names ? nd_name(g_names, kind, id) : NULL);
+}
+
+/* enum MysteryGiftType order (save4.h SAVE4_MG_*). */
+static const char *const kGiftTypes[SAVE4_MG_TYPE_MAX] = {
+    NULL,          "pokemon",     "egg",         "item",        "battle_reg",  "decoration", "cosmetics",
+    "manaphy_egg", "member_card", "oaks_letter", "azure_flute", "poketch_app", "secret_key", "unknown"};
+
+static const char *gift_type_name(uint16_t type)
+{
+    return type > 0 && type < SAVE4_MG_TYPE_MAX ? kGiftTypes[type] : NULL;
+}
+
+static void dump_mystery(FILE *o, const save4 *s)
+{
+    bool unlocked = false;
+    int pgts = 0;
+    save4_mg_get_unlocked(s, &unlocked);
+    save4_mg_pgt_count(s, &pgts);
+    fprintf(o, "  \"mystery_gift\": {\"unlocked\": %s, \"pgts\": %d, \"cards\": [", unlocked ? "true" : "false", pgts);
+    int n = 0;
+    for (int slot = 0; slot < SAVE4_WONDERCARD_SLOTS; slot++) {
+        uint8_t card[SAVE4_WONDERCARD_SIZE];
+        bool used = false;
+        if (save4_mg_get_card(s, slot, card, &used) != SAVE4_OK || !used)
+            continue;
+        uint16_t type = (uint16_t)(card[0] | card[1] << 8);
+        fprintf(o, "%s{\"slot\": %d, \"type\": %u, \"type_name\": ", n++ ? ", " : "", slot + 1, type);
+        jstr(o, gift_type_name(type));
+        fprintf(o, ", \"id\": %u}", card[0x104 + 0x4C] | card[0x104 + 0x4D] << 8);
+    }
+    fputs("]}\n", o);
 }
 
 static void dump_mon(FILE *o, const pkm4 *p, save4_status dst, int full)
@@ -290,10 +332,12 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     fputs("  \"blocks\": [", o);
     for (int b = 0; b < SAVE4_BLOCK_COUNT; b++) {
         const save4_block_state *st = &s.blocks[b];
-        fprintf(o, "%s{\"name\": \"%s\", \"active\": \"%s\", \"valid\": [%s, %s], \"save_counter\": [%u, %u]}",
+        fprintf(o,
+                "%s{\"name\": \"%s\", \"active\": \"%s\", \"valid\": [%s, %s], \"save_counter\": [%u, %u], "
+                "\"block_counter\": [%u, %u]}",
                 b ? ", " : "", b ? "storage" : "general", st->active ? "backup" : "primary",
                 st->valid[0] ? "true" : "false", st->valid[1] ? "true" : "false", st->save_counter[0],
-                st->save_counter[1]);
+                st->save_counter[1], st->block_counter[0], st->block_counter[1]);
     }
     fputs("],\n  \"trainer\": {\"name\": ", o);
     jstr(o, t.name);
@@ -305,6 +349,9 @@ static int cmd_dump(const char *rom_path, const char *save_path)
             "\"badge_mask\": %u, \"play_time\": \"%u:%02u:%02u\", \"language\": %u, \"national_dex\": %s},\n",
             t.tid, t.sid, t.gender ? "female" : "male", t.money, t.coins, nbadges, t.badges, t.play_hours,
             t.play_minutes, t.play_seconds, t.language, t.has_national_dex ? "true" : "false");
+    save4_location loc;
+    save4_get_location(&s, &loc);
+    fprintf(o, "  \"location\": {\"map\": %u, \"x\": %u, \"z\": %u, \"dir\": %u},\n", loc.map, loc.x, loc.z, loc.dir);
 
     fputs("  \"party\": [", o);
     uint8_t count = save4_party_count(&s);
@@ -363,10 +410,17 @@ static int cmd_dump(const char *rom_path, const char *save_path)
         seen += sv;
         caught += cv;
     }
-    if (dex_ok)
-        fprintf(o, "\n  },\n  \"pokedex\": {\"seen\": %d, \"caught\": %d}\n}\n", seen, caught);
-    else
-        fputs("\n  },\n  \"pokedex\": null\n}\n", o);
+    if (dex_ok) {
+        bool obtained = false, national = false;
+        save4_dex_get_obtained(&s, &obtained);
+        save4_dex_get_national(&s, &national);
+        fprintf(o, "\n  },\n  \"pokedex\": {\"seen\": %d, \"caught\": %d, \"obtained\": %s, \"national\": %s},\n",
+                seen, caught, obtained ? "true" : "false", national ? "true" : "false");
+    } else {
+        fputs("\n  },\n  \"pokedex\": null,\n", o);
+    }
+    dump_mystery(o, &s);
+    fputs("}\n", o);
 
     if (g_names)
         nd_names_free(&names);
@@ -426,6 +480,79 @@ static int edit_status(save4_status st)
         return 0;
     fprintf(stderr, "%s: error: %s\n", prog, save4_status_str(st));
     return EXIT_VALUE;
+}
+
+/* add-mon: a party Pokemon as the game's own gift would make it (the
+ * species' base friendship and first ability, its growth rate's EXP for the
+ * level, stats from base stats, IVs 20 and no EVs, met here in a Poke Ball
+ * with the trainer as OT), appended to the party. Moves are given by id. */
+static save4_status add_mon(save4 *s, const char *rom_path, unsigned long species, unsigned long level,
+                            char **moves, int nmoves)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return SAVE4_ERR_ARG;
+    nd_gamedata gd;
+    nd_names names;
+    save4_status st = SAVE4_ERR_ARG;
+    int have_gd = nd_gamedata_load(&gd, &rom) == ND_OK;
+    int have_names = have_gd && nd_names_load(&names, &rom) == ND_OK;
+    const nd_species *sp = have_gd ? nd_species_get(&gd, (uint32_t)species) : NULL;
+    uint8_t count = save4_party_count(s);
+    save4_trainer t;
+    if (!sp || !sp->valid || !have_names || count >= SAVE4_PARTY_MAX || save4_get_trainer(s, &t) != SAVE4_OK) {
+        fprintf(stderr, "%s: cannot add species %lu (unknown species, unreadable ROM or full party)\n", prog,
+                species);
+        goto out;
+    }
+    pkm4 p;
+    memset(&p, 0, sizeof p);
+    p.party = true;
+    /* A fixed personality per species, level and trainer: runs repeat. */
+    uint32_t pid = (uint32_t)species * 2654435761u ^ (uint32_t)level * 40503u ^ ((uint32_t)t.sid << 16 | t.tid);
+    pkm4_set_pid(&p, pid);
+    pkm4_set_species(&p, (uint16_t)species);
+    pkm4_set_ot_ids(&p, t.tid, t.sid);
+    pkm4_set_exp(&p, nd_exp_for_level(&gd, (uint32_t)species, (uint32_t)level));
+    pkm4_set_friendship(&p, sp->base_friendship);
+    pkm4_set_ability(&p, sp->abilities[0]);
+    pkm4_set_language(&p, t.language);
+    for (int i = 0; i < nmoves && i < 4; i++) {
+        unsigned long mv;
+        if (parse_ul(moves[i], 0xFFFF, &mv) != 0)
+            goto out;
+        pkm4_set_move(&p, i, (uint16_t)mv, nd_move_base_pp(&gd, (uint32_t)mv), 0);
+    }
+    uint8_t ivs[6], evs[6] = {0};
+    for (int i = 0; i < 6; i++) {
+        ivs[i] = 20;
+        pkm4_set_iv(&p, i, 20);
+    }
+    uint8_t gender = sp->gender_ratio == 255 ? 2 : sp->gender_ratio == 254 ? 1 : sp->gender_ratio == 0 ? 0
+                     : (pid & 0xFF) < sp->gender_ratio ? 1 : 0;
+    pkm4_set_gender_form(&p, gender, 0);
+    const char *name = nd_name(&names, ND_TEXT_SPECIES, (uint32_t)species);
+    if (!name || pkm4_set_nickname(&p, name, false) != SAVE4_OK || pkm4_set_ot_name(&p, t.name) != SAVE4_OK) {
+        st = SAVE4_ERR_ENCODE;
+        goto out;
+    }
+    pkm4_set_origin_game(&p, rom.game == ND_GAME_DIAMOND ? 10 : rom.game == ND_GAME_PEARL ? 11 : 12);
+    pkm4_set_met(&p, 0, (uint8_t)level, 4 /* Poke Ball */, t.gender);
+    uint16_t stats[6];
+    pkm4_calc_stats(sp->base, ivs, evs, (uint8_t)level, (uint8_t)(pid % 25), species == 292, stats);
+    pkm4_set_party_stats(&p, (uint8_t)level, stats[0], stats, 0);
+    st = save4_set_party(s, count, &p);
+    if (st == SAVE4_OK)
+        st = save4_set_party_count(s, (uint8_t)(count + 1));
+out:
+    if (have_names)
+        nd_names_free(&names);
+    if (have_gd)
+        nd_gamedata_free(&gd);
+    nd_rom_close(&rom);
+    fclose(rf);
+    return st;
 }
 
 static int cmd_edit(int argc, char **argv)
@@ -506,10 +633,46 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[0], 1, &v1);
         if (!bad)
             st = save4_dex_set_national(&s, v1 != 0);
+    } else if (!strcmp(cmd, "set-dex-obtained") && na == 1) {
+        bad = parse_ul(a[0], 1, &v1);
+        if (!bad)
+            st = save4_dex_set_obtained(&s, v1 != 0);
+    } else if (!strcmp(cmd, "set-mystery-gift") && na == 1) {
+        bad = parse_ul(a[0], 1, &v1);
+        if (!bad)
+            st = save4_mg_set_unlocked(&s, v1 != 0);
+    } else if (!strcmp(cmd, "add-gift") && na == 1) {
+        uint8_t *gift;
+        size_t glen;
+        if (read_file(a[0], &gift, &glen) != 0) {
+            save4_free(&s);
+            return EXIT_USAGE;
+        }
+        const char *why;
+        uint16_t type = glen >= 2 ? (uint16_t)(gift[0] | gift[1] << 8) : 0;
+        if (save4_mg_validate(gift, glen, &why) != SAVE4_OK) {
+            fprintf(stderr, "%s: %s: %s\n", prog, a[0], why);
+            bad = 1;
+        } else if (!save4_mg_type_supported(s.game, type)) {
+            fprintf(stderr, "%s: %s: %s gifts (type %u) cannot be delivered in %s\n", prog, a[0],
+                    gift_type_name(type), type, save4_game_name(s.game));
+            bad = 1;
+        } else {
+            st = save4_mg_add(&s, gift, glen);
+        }
+        free(gift);
+    } else if (!strcmp(cmd, "remove-gift") && na == 1) {
+        bad = parse_ul(a[0], SAVE4_WONDERCARD_SLOTS, &v1) || v1 == 0;
+        if (!bad)
+            st = save4_mg_remove_card(&s, (int)v1 - 1);
     } else if (!strcmp(cmd, "set-box-name") && na == 2) {
         bad = parse_ul(a[0], SAVE4_BOX_COUNT, &v1) || v1 == 0;
         if (!bad)
             st = save4_set_box_name(&s, (int)v1 - 1, a[1]);
+    } else if (!strcmp(cmd, "add-mon") && na >= 3 && na <= 7) {
+        bad = parse_ul(a[1], 493, &v1) || v1 == 0 || parse_ul(a[2], 100, &v2) || v2 == 0;
+        if (!bad)
+            st = add_mon(&s, a[0], v1, v2, a + 3, na - 3);
     } else {
         save4_free(&s);
         return usage();
@@ -561,7 +724,8 @@ int main(int argc, char **argv)
     }
     if (!strcmp(cmd, "verify"))
         return argc == 3 ? cmd_verify(argv[2]) : usage();
-    if (!strncmp(cmd, "set-", 4))
+    if (!strncmp(cmd, "set-", 4) || !strcmp(cmd, "add-gift") || !strcmp(cmd, "remove-gift") ||
+        !strcmp(cmd, "add-mon"))
         return cmd_edit(argc, argv);
     return usage();
 }

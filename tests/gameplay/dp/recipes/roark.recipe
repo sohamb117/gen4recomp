@@ -1,0 +1,11 @@
+# Oreburgh Gym (map 47) at its door (warp 0), no badges, a party that wins
+# without menus: the lead's slot-0 move is Surf, so A alone wins every turn.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 5000
+party SPECIES_EMPOLEON 40 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party SPECIES_STARAPTOR 35 ITEM_NONE
+item ITEM_POTION 5
+warp MAP_OREBURGH_GYM 0
