@@ -44,6 +44,7 @@ endif()
 add_library(np_shell_common STATIC
   src/card.c
   src/font8x8.c
+  src/json.c
   src/layout.c
   src/launch.c
   src/modpkg.c

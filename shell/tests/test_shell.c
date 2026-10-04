@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "card.h"
+#include "json.h"
 #include "launch.h"
 #include "layout.h"
 #include "modpkg.h"
@@ -819,6 +820,39 @@ static void test_sha256(void)
     CHECK(!strcmp(hex, "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0"), "sha256 million a");
 }
 
+/* Token shapes, lookups and refusals of the JSON reader. */
+static void test_json(void)
+{
+    static const char doc[] = " {\"a\": [1, -2.5e3, {\"b\": \"x\\\"y\\u00e9\"}, [], true], \"c\": {}, \"d\": null,"
+                              " \"e\": \"\\ud83d\\ude00\"} ";
+    np_json_tok t[64];
+    int n = np_json_parse(doc, sizeof doc - 1, t, 64);
+    CHECK(n == 16 && t[0].type == NP_JSON_OBJECT && t[0].size == 4 && t[0].next == n, "json shape (%d tokens)", n);
+    int a = np_json_get(doc, t, 0, "a");
+    CHECK(a >= 0 && t[a].type == NP_JSON_ARRAY && t[a].size == 5, "json array");
+    CHECK(np_json_number(doc, t, np_json_at(t, a, 0), 0) == 1 && np_json_number(doc, t, np_json_at(t, a, 1), 0) == -2500,
+          "json numbers");
+    char s[32];
+    int b = np_json_get(doc, t, np_json_at(t, a, 2), "b");
+    CHECK(!np_json_string(doc, t, b, s, sizeof s) && !strcmp(s, "x\"y\xc3\xa9"), "json string escapes");
+    CHECK(t[np_json_at(t, a, 3)].size == 0 && np_json_bool(doc, t, np_json_at(t, a, 4), 0) == 1 &&
+              np_json_at(t, a, 5) == -1,
+          "json empty array, bool, bounds");
+    CHECK(t[np_json_get(doc, t, 0, "c")].type == NP_JSON_OBJECT && np_json_get(doc, t, 0, "zz") == -1 &&
+              np_json_bool(doc, t, np_json_get(doc, t, 0, "d"), 7) == 7,
+          "json object, missing key, null");
+    CHECK(!np_json_string(doc, t, np_json_get(doc, t, 0, "e"), s, sizeof s) && !strcmp(s, "\xf0\x9f\x98\x80"),
+          "json surrogate pair");
+    static const char *const bad[] = {"",         "{",         "{\"a\" 1}", "[1,]",     "[1 2]",   "{\"a\":01x}",
+                                      "\"a\\q\"", "[tru]",     "{} {}",     "{1:2}",    "\"\x01\"", "[-]"};
+    for (size_t i = 0; i < sizeof bad / sizeof bad[0]; i++)
+        CHECK(np_json_parse(bad[i], strlen(bad[i]), t, 64) < 0, "json refuses \"%s\"", bad[i]);
+    CHECK(np_json_parse("[1,2,3]", 7, t, 3) < 0, "json token limit");
+    char deep[200];
+    memset(deep, '[', sizeof deep);
+    CHECK(np_json_parse(deep, sizeof deep, t, 64) < 0, "json depth limit");
+}
+
 /* A trimmed GitHub "latest release" response and the updater's rules. */
 static void test_release(void)
 {
@@ -881,6 +915,7 @@ int main(void)
     test_modpkg();
     test_sha256();
     test_release();
+    test_json();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }
