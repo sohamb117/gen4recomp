@@ -9,3 +9,10 @@ build/
 *.sav
 __pycache__/
 *.pyc
+
+# Neon project tooling and local connection credentials
+/node_modules/
+.env
+.env.*
+!.env.example
+.neon

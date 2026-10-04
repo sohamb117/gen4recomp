@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@neon/config": "^1.8.3",
+    "@neon/env": "^1.5.0"
+  }
+}
