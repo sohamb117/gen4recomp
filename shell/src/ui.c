@@ -207,6 +207,8 @@ enum opt_item {
     OPT_GBA_ROM,
     OPT_GBA_SAVE,
     OPT_TOUCH,
+    OPT_TOUCH_EDIT,
+    OPT_RUMBLE,
     OPT_LAN,
     OPT_LAN_PORT,
     OPT_LAN_PEER,
@@ -231,7 +233,8 @@ static const char *const opt_labels[OPT_COUNT] = {
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
     "Music volume", "Sound effects volume", "3D render scale", "Widescreen 3D", "Camera zoom", "Camera tilt",
     "Instant text", "Fix cartridge bugs", "Rewind history", "GBA cartridge (Pal Park)", "GBA save",
-    "Touch controls", "Local wireless (LAN)", "LAN port", "Join by IP:port", "Internet relay host:port", "Room PIN",
+    "Touch controls", "Edit touch controls...", "Rumble on press (gamepad)", "Local wireless (LAN)", "LAN port",
+    "Join by IP:port", "Internet relay host:port", "Room PIN",
     "Wireless status", "Sync folder", "Sync now", "Sync status",
     "Controls...", "Mods...", "Updates...", "About...", "Quit to launcher", "Close",
 };
@@ -335,6 +338,7 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
         break;
     }
     case OPT_TOUCH: SDL_strlcpy(buf, touch[o->touch_controls], n); break;
+    case OPT_RUMBLE: SDL_strlcpy(buf, o->rumble ? "On" : "Off", n); break;
     case OPT_LAN: SDL_strlcpy(buf, o->lan_enabled ? "On" : "Off", n); break;
     case OPT_LAN_PORT: SDL_snprintf(buf, n, "%d", o->lan_port); break;
     case OPT_LAN_PEER: SDL_strlcpy(buf, o->lan_peer[0] ? o->lan_peer : "(LAN discovery only)", n); break;
@@ -423,6 +427,10 @@ static void opt_adjust(np_app *app, int item, int dir)
         break;
     }
     case OPT_TOUCH: o->touch_controls = wrapi(o->touch_controls + dir, NP_TOUCH_MODE_COUNT); break;
+    case OPT_RUMBLE:
+        o->rumble = !o->rumble;
+        np_input_rumble(app); /* feel it */
+        break;
     case OPT_LAN:
         o->lan_enabled = !o->lan_enabled;
         np_app_net_apply(app);
@@ -478,6 +486,7 @@ static void opt_activate(np_app *app, int item, int dir)
     case OPT_CONTROLS: np_app_open_page(app, NP_PAGE_CONTROLS); break;
     case OPT_MODS: np_mods_open(app, NULL); break;
     case OPT_UPDATES: np_update_open(app); break;
+    case OPT_TOUCH_EDIT: np_touchedit_open(app); break;
     case OPT_ABOUT: np_app_open_page(app, NP_PAGE_ABOUT); break;
     case OPT_QUIT_GAME:
         np_app_open_page(app, NP_PAGE_NONE);
@@ -521,6 +530,8 @@ int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad)
 {
     if (app->page == NP_PAGE_EDITOR)
         return np_editor_event(app, e);
+    if (app->page == NP_PAGE_TOUCH_EDIT)
+        return e->type == SDL_EVENT_KEY_DOWN && np_touchedit_key(app, &e->key);
     if (app->page == NP_PAGE_TEXT)
         return text_capture_event(app, e);
     if (!app->capture || app->page != NP_PAGE_CONTROLS)
@@ -1400,6 +1411,10 @@ static int text_capture_event(np_app *app, const SDL_Event *e)
 
 /* ---- dispatch ---------------------------------------------------------- */
 
+static void page_back(np_app *app);
+
+void np_ui_back(np_app *app) { page_back(app); }
+
 static void page_back(np_app *app)
 {
     np_page from = app->page;
@@ -1416,6 +1431,7 @@ static void page_back(np_app *app)
         int back_to = from == NP_PAGE_CONTROLS ? OPT_CONTROLS
                       : from == NP_PAGE_MODS  ? OPT_MODS
                       : from == NP_PAGE_UPDATES ? OPT_UPDATES
+                      : from == NP_PAGE_TOUCH_EDIT ? OPT_TOUCH_EDIT
                                                 : OPT_ABOUT;
         int items[OPT_COUNT], n = options_items(app, items);
         for (int i = 0; i < n; i++)
@@ -1469,6 +1485,10 @@ void np_ui_command(np_app *app, np_menu_cmd cmd)
 {
     if (cmd == NP_CMD_NONE)
         return;
+    if (app->page == NP_PAGE_TOUCH_EDIT && cmd != NP_CMD_BACK && cmd != NP_CMD_CLOSE) {
+        np_touchedit_command(app, cmd);
+        return;
+    }
     if (app->page == NP_PAGE_EDITOR) {
         np_editor_command(app, cmd);
         return;
@@ -1644,6 +1664,10 @@ static void activate_hit(np_app *app, int id, int dir)
 
 void np_ui_pointer(np_app *app, float x, float y, int pressed, int released, int button)
 {
+    if (app->page == NP_PAGE_TOUCH_EDIT) {
+        np_touchedit_pointer(app, x, y, pressed, released);
+        return;
+    }
     int id = hit_at(app, x, y);
     if (pressed) {
         app->ui_press_hit = id;
@@ -1681,6 +1705,7 @@ void np_ui_draw(np_app *app)
     case NP_PAGE_SYNC: np_sync_draw(app); break;
     case NP_PAGE_MODS: np_mods_draw(app); break;
     case NP_PAGE_UPDATES: np_update_draw(app); break;
+    case NP_PAGE_TOUCH_EDIT: np_touchedit_draw(app); break;
     default: break;
     }
     if (app->toast[0] && SDL_GetTicksNS() < app->toast_until) {

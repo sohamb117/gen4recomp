@@ -40,6 +40,7 @@ typedef enum np_page {
     NP_PAGE_SYNC,      /* folder sync conflict chooser (sync.c) */
     NP_PAGE_MODS,      /* mod manager (mods.c) */
     NP_PAGE_UPDATES,   /* updater (update.c) */
+    NP_PAGE_TOUCH_EDIT, /* touch controls layout editor (touchpad.c) */
 } np_page;
 
 /* Work handed from dialogs, drops and URLs to the main loop. */
@@ -330,12 +331,23 @@ int np_input_pointer_event(np_app *app, const SDL_Event *e);
 /* Stylus state for the next frame. */
 void np_input_stylus(const np_app *app, np_input *in);
 void np_input_release_all(np_app *app);
+/* A short gamepad rumble if Options > Rumble on press is on. */
+void np_input_rumble(np_app *app);
 
 /* touchpad.c */
 int np_touchpad_visible(const np_app *app);
 /* Hit-tests the on-screen controls: returns DS key bits, sets *ff / *menu. */
 uint16_t np_touchpad_hit(const np_app *app, float x, float y, int *ff, int *menu, int *any);
 void np_touchpad_draw(np_app *app);
+/* Reads touch-controls.ini (after the storage root is known). */
+void np_touchpad_load(np_app *app);
+/* The layout editor page. */
+void np_touchedit_open(np_app *app);
+void np_touchedit_close(np_app *app); /* saves edits; on leaving the page */
+void np_touchedit_draw(np_app *app);
+void np_touchedit_pointer(np_app *app, float x, float y, int pressed, int released);
+int np_touchedit_key(np_app *app, const SDL_KeyboardEvent *k);
+void np_touchedit_command(np_app *app, np_menu_cmd cmd);
 
 /* ui.c */
 int np_ui_init(np_app *app);
@@ -367,6 +379,8 @@ void np_ui_keep_visible(np_app *app, int sel, int rows, int total);
 void np_ui_open_text(np_app *app, np_text_purpose purpose, const char *initial, int max);
 void np_ui_draw(np_app *app); /* launcher or the open page, plus toast */
 void np_ui_command(np_app *app, np_menu_cmd cmd);
+/* Leaves the open page the way Back does. */
+void np_ui_back(np_app *app);
 /* Pointer press/move/release at render coordinates; button 3 = secondary. */
 void np_ui_pointer(np_app *app, float x, float y, int pressed, int released, int button);
 int np_ui_capture_event(np_app *app, const SDL_Event *e, int pad); /* rebinding, name entry */

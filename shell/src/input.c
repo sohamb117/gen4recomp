@@ -203,6 +203,17 @@ static np_finger *finger_find(np_app *app, SDL_FingerID id)
     return NULL;
 }
 
+/* A short, light pulse on every gamepad: the desktop stand-in for the
+ * haptic tick a phone gives when an on-screen button is pressed. */
+void np_input_rumble(np_app *app)
+{
+    if (!app->opt.rumble)
+        return;
+    for (int p = 0; p < NP_MAX_PADS; p++)
+        if (app->pads[p])
+            SDL_RumbleGamepad(app->pads[p], 0x3000, 0x6000, 30);
+}
+
 static void recompute_controls(np_app *app)
 {
     uint16_t keys = 0;
@@ -213,6 +224,8 @@ static void recompute_controls(np_app *app)
             keys |= np_touchpad_hit(app, f->x, f->y, &ff, &menu, &any);
         }
     }
+    if (keys & ~app->control_keys)
+        np_input_rumble(app); /* a button newly under a finger */
     app->control_keys = keys;
 }
 

@@ -27,6 +27,7 @@
 #include "sha256.h"
 #include "slots.h"
 #include "sync_plan.h"
+#include "touchlayout.h"
 #include "undo.h"
 #include "zip.h"
 
@@ -896,6 +897,51 @@ static void test_release(void)
     CHECK(np_sha256sums_lookup(sums, sizeof sums - 1, "macOS.zip", hex), "sha256sums exact names only");
 }
 
+/* The default arrangement hits where the original controls were, and the
+ * file format round-trips. */
+static void test_touchlayout(void)
+{
+    const float W = 1280, H = 720, u = 720.0f / 7.0f, m = 0.3f * u;
+    np_tc_layout l;
+    np_tc_default(&l, W, H);
+    uint16_t keys;
+    int ff, menu;
+    float dcx = m + 1.5f * u, dcy = H - m - 1.5f * u, fcx = W - m - 1.5f * u;
+    CHECK(np_tc_hit(&l, W, H, dcx - u, dcy, &keys, &ff, &menu) && keys == NP_KEY_LEFT, "d-pad left (%x)", keys);
+    CHECK(np_tc_hit(&l, W, H, dcx + u, dcy - u, &keys, &ff, &menu) && keys == (NP_KEY_RIGHT | NP_KEY_UP),
+          "d-pad diagonal (%x)", keys);
+    CHECK(np_tc_hit(&l, W, H, dcx, dcy, &keys, &ff, &menu) && keys == 0, "d-pad centre is neutral");
+    CHECK(np_tc_hit(&l, W, H, fcx + 0.95f * u, dcy, &keys, &ff, &menu) && keys == NP_KEY_A, "A east");
+    CHECK(np_tc_hit(&l, W, H, fcx, dcy - 0.95f * u, &keys, &ff, &menu) && keys == NP_KEY_X, "X north");
+    CHECK(np_tc_hit(&l, W, H, m + 0.5f * u, m + 0.3f * u, &keys, &ff, &menu) && keys == NP_KEY_L, "L corner");
+    CHECK(np_tc_hit(&l, W, H, W * 0.5f + 0.95f * u, m + 0.3f * u, &keys, &ff, &menu) && menu && !keys, "menu");
+    CHECK(!np_tc_hit(&l, W, H, W * 0.5f, H * 0.5f, &keys, &ff, &menu), "screen centre is no control");
+    CHECK(np_tc_pick(&l, W, H, fcx + 0.95f * u, dcy) == NP_TC_A, "pick A");
+
+    np_tc_layout moved = l, back;
+    moved.item[NP_TC_B].cx = 0.25f;
+    moved.item[NP_TC_B].opacity = 0.4f;
+    char text[1024];
+    int n = np_tc_format(&moved, text, sizeof text);
+    np_tc_default(&back, 100, 100);
+    int ok = n > 0;
+    for (char *line = text, *eol; ok && (eol = strchr(line, '\n')); line = eol + 1) {
+        *eol = '\0';
+        char *eq = strchr(line, '=');
+        eq[-1] = '\0';
+        ok = !np_tc_parse(&back, line, eq + 1);
+    }
+    CHECK(ok && fabsf(back.item[NP_TC_B].cx - 0.25f) < 1e-4f && fabsf(back.item[NP_TC_B].opacity - 0.4f) < 1e-3f &&
+              fabsf(back.item[NP_TC_DPAD].w - moved.item[NP_TC_DPAD].w) < 1e-4f,
+          "touch layout round trip");
+    CHECK(np_tc_parse(&back, "zz", "0 0 1 1 1") && np_tc_parse(&back, "a", "0.5 0.5 nan 1 1") &&
+              np_tc_parse(&back, "a", "0.5 0.5"),
+          "bad touch lines refused");
+    np_tc_item it = {2, -1, 0, 9, 0};
+    np_tc_clamp(&it);
+    CHECK(it.cx == 1 && it.cy == 0 && it.w == 0.05f && it.h == 1 && it.opacity == 0.1f, "touch item clamp");
+}
+
 int main(void)
 {
     test_sha1();
@@ -916,6 +962,7 @@ int main(void)
     test_sha256();
     test_release();
     test_json();
+    test_touchlayout();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

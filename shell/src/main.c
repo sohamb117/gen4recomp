@@ -255,8 +255,11 @@ void np_app_open_page(np_app *app, np_page page)
         SDL_StartTextInput(app->window); /* also raises the iOS keyboard */
     else if (page != NP_PAGE_TEXT && app->page == NP_PAGE_TEXT)
         SDL_StopTextInput(app->window);
+    if (app->page == NP_PAGE_TOUCH_EDIT && page != NP_PAGE_TOUCH_EDIT)
+        np_touchedit_close(app);
     /* Sub-pages of Options return there (page_back). */
-    int sub = page == NP_PAGE_CONTROLS || page == NP_PAGE_ABOUT || page == NP_PAGE_MODS || page == NP_PAGE_UPDATES;
+    int sub = page == NP_PAGE_CONTROLS || page == NP_PAGE_ABOUT || page == NP_PAGE_MODS || page == NP_PAGE_UPDATES ||
+              page == NP_PAGE_TOUCH_EDIT;
     app->page_parent = sub ? app->page : NP_PAGE_NONE;
     app->page = page;
     app->sel = app->col = app->scroll = 0;
@@ -1766,6 +1769,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         save_options(app);
     }
     np_app_net_apply(app);
+    if (!t->active || t->storage)
+        np_touchpad_load(app);
 
     SDL_WindowFlags flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     if (!SDL_CreateWindowAndRenderer("nativeplat", win_w, win_h, flags, &app->window, &app->renderer)) {
@@ -1943,6 +1948,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *e)
         np_ui_command(app, np_input_menu_cmd(app, e, pad));
         return SDL_APP_CONTINUE;
     }
+    if (pad != NP_PAD_NONE)
+        np_input_rumble(app); /* when Options > Rumble on press is on */
     int key = e->type == SDL_EVENT_KEY_DOWN && !e->key.repeat ? (int)e->key.scancode : 0;
     if ((key || pad != NP_PAD_NONE) && np_input_action_for(app, key, pad) == NP_ACT_FF_TOGGLE) {
         app->ff_toggle = !app->ff_toggle;

@@ -74,6 +74,7 @@ typedef struct np_options {
     int volume;         /* 0..100 */
     int mute_unfocused;
     int touch_controls; /* NP_TOUCH_* */
+    int rumble;         /* brief gamepad rumble on each press (haptics stand-in) */
     int real_clock;     /* 1: RTC from the device's local time; 0: the port's deterministic clock */
     int startup_continue; /* 1: boot straight into the last game and slot */
     int last_game;      /* np_game last played, or -1 */

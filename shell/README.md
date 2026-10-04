@@ -155,6 +155,18 @@ screen in every layout and rotation; on touch screens fingers are, and an
 on-screen pad (d-pad, A/B/X/Y, L/R, Start/Select, FF, Menu) appears after the
 first touch (*Touch controls: Auto/On/Off*).
 
+*Edit touch controls...* rearranges them for the window's current
+orientation (landscape and portrait are separate): drag a control to move
+it, drag the square on its corner to resize it, and use the toolbar (or Tab
+/ Shift+Tab, arrows, `-` `=` for size, `[` `]` for opacity; on a gamepad
+L/R select, the d-pad moves, X/Y resize, A cycles opacity) to fade it or
+*Reset* the orientation to the built-in arrangement. The outlines show where
+the DS screens are. Edited layouts are saved to `touch-controls.ini`
+(centre as a fraction of the window, size as a fraction of its short side,
+so they follow resizing); unedited ones keep the built-in arrangement.
+*Rumble on press* gives a short gamepad rumble for every touch-control or
+gamepad press, the desktop stand-in for a phone's haptic tick.
+
 ## Saving, snapshots and rewind
 
 | Key | Action |

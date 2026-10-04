@@ -58,6 +58,7 @@ add_library(np_shell_common STATIC
   src/sha256.c
   src/slots.c
   src/sync_plan.c
+  src/touchlayout.c
   src/undo.c
   src/zip.c
 )
