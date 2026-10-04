@@ -180,6 +180,12 @@ enum opt_item {
     OPT_SCALE,
     OPT_FILTER,
     OPT_FULLSCREEN,
+    OPT_FX1,
+    OPT_FX1_INT,
+    OPT_FX2,
+    OPT_FX2_INT,
+    OPT_CURVATURE,
+    OPT_PERF,
     OPT_VSYNC,
     OPT_FPS_CAP,
     OPT_LOGIC_CLOCK,
@@ -198,7 +204,8 @@ enum opt_item {
 };
 
 static const char *const opt_labels[OPT_COUNT] = {
-    "Screen layout", "Swap screens", "Rotation", "Scaling", "Filter", "Fullscreen", "VSync", "Display FPS cap",
+    "Screen layout", "Swap screens", "Rotation", "Scaling", "Filter", "Fullscreen", "Effect 1", "Effect 1 intensity",
+    "Effect 2", "Effect 2 intensity", "CRT curvature", "Performance", "VSync", "Display FPS cap",
     "Logic clock", "Real-time clock", "On startup", "Speed", "Fast-forward speed", "Volume", "Mute when unfocused",
     "Touch controls",
     "Controls...", "About...", "Quit to launcher", "Close",
@@ -229,6 +236,8 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
                                                          "Bottom only"};
     static const char *const rotations[4] = {"None", "90 (portrait)", "180", "270 (portrait)"};
     static const char *const touch[NP_TOUCH_MODE_COUNT] = {"Auto", "On", "Off"};
+    static const char *const fx_names[NP_FX_COUNT] = {"Off", "LCD grid", "Scanlines", "CRT", "Smooth"};
+    static const char *const perf_names[NP_PERF_COUNT] = {"Custom", "High", "Balanced", "Low", "Auto"};
     const np_options *o = &app->opt;
     switch (item) {
     case OPT_LAYOUT: SDL_strlcpy(buf, layouts[o->layout], n); break;
@@ -237,7 +246,17 @@ static void opt_value(const np_app *app, int item, char *buf, size_t n)
     case OPT_SCALE: SDL_strlcpy(buf, o->scale == NP_SCALE_INTEGER ? "Integer" : "Fit", n); break;
     case OPT_FILTER: SDL_strlcpy(buf, o->linear_filter ? "Linear" : "Nearest", n); break;
     case OPT_FULLSCREEN: SDL_strlcpy(buf, o->fullscreen ? "On" : "Off", n); break;
-    case OPT_VSYNC: SDL_strlcpy(buf, o->vsync ? "On" : "Off", n); break;
+    case OPT_FX1:
+    case OPT_FX2: SDL_strlcpy(buf, fx_names[o->fx[item == OPT_FX2]], n); break;
+    case OPT_FX1_INT:
+    case OPT_FX2_INT: SDL_snprintf(buf, n, "%d%%", o->fx_intensity[item == OPT_FX2_INT]); break;
+    case OPT_CURVATURE: SDL_strlcpy(buf, o->crt_curvature ? "On" : "Off", n); break;
+    case OPT_PERF: SDL_strlcpy(buf, perf_names[o->perf], n); break;
+    case OPT_VSYNC:
+        SDL_strlcpy(buf, o->vsync ? "On" : "Off", n);
+        if (o->perf != NP_PERF_CUSTOM)
+            SDL_strlcat(buf, " (preset decides)", n);
+        break;
     case OPT_FPS_CAP:
         if (np_fps_caps[o->fps_cap_index])
             SDL_snprintf(buf, n, "%d", np_fps_caps[o->fps_cap_index]);
@@ -272,6 +291,16 @@ static void opt_adjust(np_app *app, int item, int dir)
     case OPT_SCALE: o->scale = o->scale == NP_SCALE_FIT ? NP_SCALE_INTEGER : NP_SCALE_FIT; break;
     case OPT_FILTER: o->linear_filter = !o->linear_filter; break;
     case OPT_FULLSCREEN: o->fullscreen = !o->fullscreen; break;
+    case OPT_FX1:
+    case OPT_FX2: o->fx[item == OPT_FX2] = wrapi(o->fx[item == OPT_FX2] + dir, NP_FX_COUNT); break;
+    case OPT_FX1_INT:
+    case OPT_FX2_INT: {
+        int *v = &o->fx_intensity[item == OPT_FX2_INT];
+        *v = SDL_clamp(*v + dir * 10, 0, 100);
+        break;
+    }
+    case OPT_CURVATURE: o->crt_curvature = !o->crt_curvature; break;
+    case OPT_PERF: o->perf = wrapi(o->perf + dir, NP_PERF_COUNT); break;
     case OPT_VSYNC: o->vsync = !o->vsync; break;
     case OPT_FPS_CAP: o->fps_cap_index = wrapi(o->fps_cap_index + dir, NP_FPS_CAP_COUNT); break;
     case OPT_LOGIC_CLOCK: o->logic_clock_60 = !o->logic_clock_60; break;

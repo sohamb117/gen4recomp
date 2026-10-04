@@ -17,6 +17,7 @@
 #include "layout.h"
 #include "png.h"
 #include "romdb.h"
+#include "scale2x.h"
 #include "sha1.h"
 #include "slots.h"
 #include "undo.h"
@@ -463,6 +464,35 @@ static void test_undo(void)
     np_undo_free(&u);
 }
 
+static void test_scale2x(void)
+{
+    /* A diagonal edge: the staircase gets its corners filled in, flat
+     * areas and the image border just double. Row stride 4 > width 3. */
+    enum { A = 1, B = 2 };
+    const uint32_t src[3 * 4] = {A, A, B, 0, A, B, B, 0, B, B, B, 0};
+    uint32_t dst[6 * 6];
+    np_scale2x(src, 3, 3, 4, dst);
+    const uint32_t want[6 * 6] = {
+        A, A, A, A, B, B, /* */
+        A, A, A, B, B, B, /* */
+        A, A, A, B, B, B, /* */
+        A, B, B, B, B, B, /* */
+        B, B, B, B, B, B, /* */
+        B, B, B, B, B, B,
+    };
+    int same = 1;
+    for (int i = 0; i < 36; i++)
+        same &= dst[i] == want[i];
+    CHECK(same, "scale2x diagonal");
+    const uint32_t flat[4] = {7, 7, 7, 7};
+    uint32_t out[16];
+    np_scale2x(flat, 2, 2, 2, out);
+    int all = 1;
+    for (int i = 0; i < 16; i++)
+        all &= out[i] == 7;
+    CHECK(all, "scale2x flat");
+}
+
 int main(void)
 {
     test_sha1();
@@ -474,6 +504,7 @@ int main(void)
     test_sav_footer();
     test_launch();
     test_undo();
+    test_scale2x();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

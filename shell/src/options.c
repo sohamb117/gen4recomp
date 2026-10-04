@@ -15,6 +15,8 @@
 const int np_speeds[NP_SPEED_COUNT] = {1, 2, 3, 4, 8, 0};
 static const char *const np_game_ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum"};
 const int np_fps_caps[NP_FPS_CAP_COUNT] = {0, 30, 60, 120, 144, 240};
+const char *const np_fx_ids[NP_FX_COUNT] = {"off", "lcd", "scanlines", "crt", "smooth"};
+const char *const np_perf_ids[NP_PERF_COUNT] = {"custom", "high", "balanced", "low", "auto"};
 
 static const char *const action_ids[NP_ACT_COUNT] = {
     "a", "b", "x", "y", "l", "r", "start", "select", "up", "down", "left", "right", "ff_hold", "ff_toggle",
@@ -75,6 +77,8 @@ void np_options_defaults(np_options *o)
     o->layout = NP_LAYOUT_VERTICAL;
     o->scale = NP_SCALE_FIT;
     o->vsync = 1;
+    o->fx_intensity[0] = o->fx_intensity[1] = 60;
+    o->crt_curvature = 1;
     o->ff_speed_index = 3; /* 4x */
     o->volume = 80;
     o->mute_unfocused = 1;
@@ -192,6 +196,19 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->fullscreen = iv != 0;
         else if (!strcmp(key, "vsync"))
             o->vsync = iv != 0;
+        else if (!strcmp(key, "effect1") || !strcmp(key, "effect2")) {
+            int m = lookup(np_fx_ids, NP_FX_COUNT, val);
+            if (m >= 0)
+                o->fx[key[6] - '1'] = m;
+        } else if (!strcmp(key, "effect1_intensity") || !strcmp(key, "effect2_intensity"))
+            o->fx_intensity[key[6] - '1'] = clampi(iv, 0, 100);
+        else if (!strcmp(key, "crt_curvature"))
+            o->crt_curvature = iv != 0;
+        else if (!strcmp(key, "performance")) {
+            int m = lookup(np_perf_ids, NP_PERF_COUNT, val);
+            if (m >= 0)
+                o->perf = m;
+        }
         else if (!strcmp(key, "fps_cap")) {
             for (int i = 0; i < NP_FPS_CAP_COUNT; i++)
                 if (np_fps_caps[i] == iv)
@@ -308,8 +325,10 @@ int np_options_save(const np_options *o, const char *path)
     put(b, "layout = %s\nswap = %d\nrotation = %d\n", layout_ids[o->layout], o->swap, o->rotation * 90);
     put(b, "scale = %s\nfilter = %s\n", o->scale == NP_SCALE_INTEGER ? "integer" : "fit",
         o->linear_filter ? "linear" : "nearest");
-    put(b, "fullscreen = %d\nvsync = %d\nfps_cap = %d\n\n", o->fullscreen, o->vsync,
-        np_fps_caps[o->fps_cap_index]);
+    put(b, "fullscreen = %d\nvsync = %d\nfps_cap = %d\n", o->fullscreen, o->vsync, np_fps_caps[o->fps_cap_index]);
+    put(b, "effect1 = %s\neffect1_intensity = %d\neffect2 = %s\neffect2_intensity = %d\ncrt_curvature = %d\n",
+        np_fx_ids[o->fx[0]], o->fx_intensity[0], np_fx_ids[o->fx[1]], o->fx_intensity[1], o->crt_curvature);
+    put(b, "performance = %s\n\n", np_perf_ids[o->perf]);
     put(b, "[emulation]\nlogic_clock = %s\nspeed = %d\nff_speed = %d\nreal_clock = %d\n\n",
         o->logic_clock_60 ? "60" : "ds", np_speeds[o->speed_index], np_speeds[o->ff_speed_index], o->real_clock);
     put(b, "[audio]\nvolume = %d\nmute_unfocused = %d\n\n", o->volume, o->mute_unfocused);

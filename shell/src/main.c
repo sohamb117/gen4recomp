@@ -23,6 +23,7 @@
 #include <math.h>
 
 #include "app.h"
+#include "fx.h"
 #include "png.h"
 #include "romdb.h"
 #include "storage.h"
@@ -168,12 +169,14 @@ static void save_options(np_app *app)
 void np_app_apply_video_options(np_app *app)
 {
     const np_options *o = &app->opt;
+    np_present p;
+    np_fx_resolve(app, &p);
     if (!app->autotest.active)
-        SDL_SetRenderVSync(app->renderer, o->vsync ? 1 : SDL_RENDERER_VSYNC_DISABLED);
+        SDL_SetRenderVSync(app->renderer, p.vsync ? 1 : SDL_RENDERER_VSYNC_DISABLED);
     char rate[16];
-    int cap = np_fps_caps[o->fps_cap_index];
+    int cap = p.fps_cap;
     /* Without VSync or a cap, menus would spin a core at 100%: idle at 60. */
-    if (!cap && !o->vsync && app->view != NP_VIEW_GAME)
+    if (!cap && !p.vsync && app->view != NP_VIEW_GAME)
         cap = 60;
     SDL_snprintf(rate, sizeof rate, "%d", app->autotest.active ? 0 : cap);
     SDL_SetHint(SDL_HINT_MAIN_CALLBACK_RATE, rate);
@@ -292,8 +295,13 @@ static int open_rom(np_app *app, const char *path, np_host *host)
         app->rom_io = NULL;
         return -1;
     }
-    *host = (np_host){app, (uint32_t)size, host_rom_read, host_save_load, host_save_store,
-                      app->opt.real_clock ? host_rtc_now : NULL, host_log};
+    *host = (np_host){.user = app,
+                      .rom_size = (uint32_t)size,
+                      .rom_read = host_rom_read,
+                      .save_load = host_save_load,
+                      .save_store = host_save_store,
+                      .rtc_now = app->opt.real_clock ? host_rtc_now : NULL,
+                      .log = host_log};
     return 0;
 }
 
@@ -661,11 +669,7 @@ static int capture_window(np_app *app, const char *path)
 
 /* ---- running and drawing the game ----------------------------------------- */
 
-static void upload_frame(np_app *app)
-{
-    for (int i = 0; i < 2; i++)
-        SDL_UpdateTexture(app->screen_tex[i], NULL, app->frame.screen[i], (int)(app->frame.stride * 4));
-}
+static void upload_frame(np_app *app) { np_fx_upload(app); }
 
 static int run_one(np_app *app, const np_input *in)
 {
@@ -727,14 +731,8 @@ static void draw_screens(np_app *app)
 {
     np_layout_params lp = {app->opt.layout, app->opt.swap, app->opt.rotation, app->opt.scale};
     np_layout_compute(&app->layout, &lp, app->out_w, app->out_h);
-    for (int i = 0; i < 2; i++) {
-        const np_screen_place *sp = &app->layout.screen[i];
-        if (!sp->visible)
-            continue;
-        SDL_FRect dst = {sp->cx - sp->w * 0.5f, sp->cy - sp->h * 0.5f, sp->w, sp->h};
-        SDL_RenderTextureRotated(app->renderer, app->screen_tex[i], NULL, &dst, 90.0 * app->layout.rotation, NULL,
-                                 SDL_FLIP_NONE);
-    }
+    for (int i = 0; i < 2; i++)
+        np_fx_draw_screen(app, i);
 }
 
 static void draw(np_app *app)
@@ -950,6 +948,31 @@ static int parse_autotest(np_app *app, const char *spec, int *game, int *win_w, 
             app->opt.scale = !SDL_strcmp(v, "integer") ? NP_SCALE_INTEGER : NP_SCALE_FIT;
         else if (!SDL_strcmp(kv, "filter"))
             app->opt.linear_filter = !SDL_strcmp(v, "linear");
+        else if (!SDL_strcmp(kv, "fx1") || !SDL_strcmp(kv, "fx2")) {
+            /* fx1=crt or fx1=crt:80 (intensity) */
+            int slot = kv[2] - '1', m = -1;
+            char *colon = SDL_strchr(v, ':');
+            if (colon) {
+                *colon = '\0';
+                app->opt.fx_intensity[slot] = SDL_clamp(SDL_atoi(colon + 1), 0, 100);
+            }
+            for (int i = 0; i < NP_FX_COUNT; i++)
+                if (!SDL_strcasecmp(v, np_fx_ids[i]))
+                    m = i;
+            if (m < 0)
+                return -1;
+            app->opt.fx[slot] = m;
+        } else if (!SDL_strcmp(kv, "curvature"))
+            app->opt.crt_curvature = SDL_atoi(v) != 0;
+        else if (!SDL_strcmp(kv, "perf")) {
+            int m = -1;
+            for (int i = 0; i < NP_PERF_COUNT; i++)
+                if (!SDL_strcasecmp(v, np_perf_ids[i]))
+                    m = i;
+            if (m < 0)
+                return -1;
+            app->opt.perf = m;
+        }
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
             if (SDL_sscanf(v, "%dx%d", &x, &y) != 2 || x < 0 || x > 255 || y < 0 || y > 191)
@@ -1086,7 +1109,12 @@ static int autotest_boot(np_app *app, np_game game)
         return open_core(app, game, t->slot, &host);
     }
     fill_test_header(t, game);
-    host = (np_host){app, sizeof t->header, test_rom_read, test_save_load, test_save_store, NULL, host_log};
+    host = (np_host){.user = app,
+                     .rom_size = sizeof t->header,
+                     .rom_read = test_rom_read,
+                     .save_load = test_save_load,
+                     .save_store = test_save_store,
+                     .log = host_log};
     np_input none = {0};
     if (open_core(app, game, t->slot, &host) || run_one(app, &none))
         return -1;
@@ -1351,6 +1379,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         SDL_Log("font: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+    if (np_fx_init(app)) {
+        SDL_Log("display effects: %s", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
 #if defined(SDL_PLATFORM_IOS)
     app->touch_seen = 1;
 #endif
@@ -1517,11 +1549,16 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     if (app->autotest.active)
         return autotest_iterate(app);
 
+    uint64_t start = SDL_GetTicksNS();
     process_pending(app);
     if (app->view == NP_VIEW_GAME)
         run_game(app);
     update_audio_state(app);
     draw(app);
+    /* Work done before the present (which may wait for VSync). */
+    if (app->view == NP_VIEW_GAME && app->page == NP_PAGE_NONE &&
+        np_fx_auto_sample(app, (double)(SDL_GetTicksNS() - start) / 1e6))
+        np_app_apply_video_options(app);
     SDL_RenderPresent(app->renderer);
     return SDL_APP_CONTINUE;
 }
@@ -1537,6 +1574,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
     np_audio_close(app);
     np_input_close_gamepads(app);
     np_ui_destroy(app);
+    np_fx_destroy(app);
     for (int i = 0; i < 2; i++)
         if (app->screen_tex[i])
             SDL_DestroyTexture(app->screen_tex[i]);

@@ -176,6 +176,7 @@ typedef struct np_app {
     int text_max; /* characters allowed on the text page */
 
     struct np_editor *editor; /* open save editor, or NULL */
+    struct np_fx_state *fx;   /* display effects (fx.c) */
 
     np_core *core;
     np_game game;

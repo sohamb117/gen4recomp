@@ -99,6 +99,23 @@ lists filter as you type. Limitations: no party/box transfers, item pockets
 are not checked against item data, alternate forms use the base species'
 stats.
 
+## Display effects and performance
+
+*Options > Effect 1 / Effect 2* chain two effects, each with an intensity:
+**LCD grid** (gaps between DS pixels), **Scanlines**, **CRT** (scanlines,
+aperture-grille mask, vignette and, with *CRT curvature*, a barrel-bent
+picture) and **Smooth** (Scale2x on the CPU, then linear sampling). They are
+drawn with plain SDL_Renderer geometry and tiny repeating pattern textures, no
+shaders, so they look the same on Metal (macOS/iOS), Direct3D/Vulkan
+(Windows) and the software renderer, and follow every layout, rotation and
+scale. Patterns are skipped below 2 window pixels per DS pixel.
+
+*Performance* only changes presentation: **Custom** uses the VSync, FPS cap
+and effect options as set; **High** = effects, VSync, no cap; **Balanced** =
+no curvature, VSync, 60 FPS cap; **Low** = no effects, VSync off, 30 FPS cap;
+**Auto** = High, dropping to Low while producing a frame takes over 12 ms
+(averaged over 120 frames) and returning under 5 ms.
+
 ## Default controls
 
 | DS | Keyboard | Gamepad (by position) |

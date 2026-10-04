@@ -47,6 +47,13 @@ extern const int np_speeds[NP_SPEED_COUNT]; /* 1,2,3,4,8 and 0 = uncapped */
 #define NP_FPS_CAP_COUNT 6
 extern const int np_fps_caps[NP_FPS_CAP_COUNT]; /* 0 = off */
 
+/* Display effects, two chained slots (fx.c). */
+enum { NP_FX_OFF, NP_FX_LCD, NP_FX_SCANLINES, NP_FX_CRT, NP_FX_SMOOTH, NP_FX_COUNT };
+extern const char *const np_fx_ids[NP_FX_COUNT]; /* "off", "lcd", ... for options.ini */
+/* Presentation presets: Custom uses the VSync/FPS cap/effect options as set. */
+enum { NP_PERF_CUSTOM, NP_PERF_HIGH, NP_PERF_BALANCED, NP_PERF_LOW, NP_PERF_AUTO, NP_PERF_COUNT };
+extern const char *const np_perf_ids[NP_PERF_COUNT];
+
 typedef struct np_options {
     np_layout_mode layout;
     int swap;
@@ -55,6 +62,10 @@ typedef struct np_options {
     int linear_filter;
     int fullscreen;
     int vsync;
+    int fx[2];           /* NP_FX_* in chain order */
+    int fx_intensity[2]; /* 0..100 */
+    int crt_curvature;   /* CRT bends the picture */
+    int perf;            /* NP_PERF_* */
     int fps_cap_index;
     int logic_clock_60; /* 1: run the guest at exactly 60 Hz instead of 59.8261 */
     int speed_index;    /* base speed */
