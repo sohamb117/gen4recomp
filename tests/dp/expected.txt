@@ -1,0 +1,12 @@
+# tests/dp/regress.sh cases: NAME GAME FRAMES HASH [np_headless args...]
+# HASH is np_headless's final hash (frames + audio) after FRAMES frames.
+# Change a hash only through `regress.sh --update --reason TEXT`, which
+# appends a dated history line below saying why.
+d-boot    diamond   600   03365075dfcb90cd
+d-intro   diamond   3000  3726014db3b80e22  --schedule tests/dp/intro.sched
+p-boot    pearl     600   03365075dfcb90cd
+p-intro   pearl     3000  1ee1d38b657efe90  --schedule tests/dp/intro.sched
+plat-600  platinum  600   808adae3b9490905
+#
+# History:
+# 2026-10-04 d-boot, d-intro, p-boot, p-intro: recorded (main 23e8f7b14: copyright, title, Rowan's intro; D/P identical until the title).

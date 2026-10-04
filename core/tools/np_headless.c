@@ -29,6 +29,10 @@
  *     --rms-from F       measure the audio's RMS from frame F (default 0)
  *     --wav FILE         write the audio from the --rms-from frame on as a
  *                        16-bit stereo WAV at the core's rate
+ *     --progress N       print "[progress] frame K hash H" (the running hash)
+ *                        to stderr every N frames, flushed: tools/np_triage.sh
+ *                        watches it for hangs, and two runs' lines show the
+ *                        first frame where they diverge
  *     --schedule FILE    shell autotest press schedule (F:keys[:N[:R:C]],
  *                        F:tap:X:Y[:N[:R:C]], +D; shell/README.md), on top
  *                        of --press
@@ -583,7 +587,7 @@ static int usage(void) {
     fprintf(stderr, "usage: np_headless <diamond|pearl|platinum> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
                     "                   [--content DIR] [--gba-rom FILE [--gba-save FILE]]\n"
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
-                    "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--wav FILE] [--schedule FILE]\n"
+                    "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--wav FILE] [--schedule FILE] [--progress N]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
                     "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]\n"
                     "                    [--net-relay HOST:PORT --net-pin PIN]]\n"
@@ -741,6 +745,7 @@ int main(int argc, char **argv) {
     opt_set sets[MAX_SETS];
     int nsets = 0;
     uint64_t frames = 600, dump_every = 0, dump_from = 0, rms_from = 0, state_first = 0, state_span = 120;
+    uint64_t progress = 0;
     int state_rounds = 4, do_state = 0;
     const char *dump_dir = NULL, *host_content = NULL, *wav_path = NULL;
     int have_rtc = 0;
@@ -773,6 +778,7 @@ int main(int argc, char **argv) {
         else if (strcmp(a, "--rtc") == 0) r.rtc = strtoll(v, NULL, 0), have_rtc = 1;
         else if (strcmp(a, "--rms-from") == 0) rms_from = strtoull(v, NULL, 0);
         else if (strcmp(a, "--wav") == 0) wav_path = v;
+        else if (strcmp(a, "--progress") == 0) progress = strtoull(v, NULL, 0);
         else if (strcmp(a, "--schedule") == 0) {
             if (load_schedule(v) != 0) {
                 fprintf(stderr, "np_headless: cannot read schedule %s\n", v);
@@ -945,6 +951,11 @@ int main(int argc, char **argv) {
         rc = step(&s, ran, &f, &hash);
         if (g_ls.on) lockstep_end_frame(ran);
         if (rc != 0) break;
+        if (progress && (ran + 1) % progress == 0) {
+            fprintf(stderr, "[progress] frame %llu hash %016llx\n", (unsigned long long)(ran + 1),
+                    (unsigned long long)hash);
+            fflush(stderr);
+        }
         int last = ran + 1 == frames;
         if (dump_dir && (last || (dump_every && ran >= dump_from && (ran - dump_from) % dump_every == 0)) &&
             dump_ppm(dump_dir, f.number, &f) != 0)
