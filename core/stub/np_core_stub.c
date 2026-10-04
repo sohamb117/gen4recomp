@@ -21,6 +21,7 @@
 
 #include "font8x8.h"
 #include "np_core.h"
+#include "np_guest_abi.h"
 
 #define SAVE_SIZE 0x80000u
 #define AUDIO_RATE 32728u
@@ -49,6 +50,8 @@ struct np_core {
     double phase;
     uint8_t ram[RAM_SIZE];
     char error[160];
+    uint32_t opt[NP_OPT_COUNT];
+    uint32_t status[NP_STAT_COUNT];
 };
 
 static int core_live;
@@ -108,6 +111,10 @@ np_core *np_core_create(np_game game, const np_host *host, const char *const *op
         c->boots = le32(c->save + 8);
     }
     c->boots++;
+    c->opt[NP_OPT_BGM_VOLUME] = c->opt[NP_OPT_SE_VOLUME] = 256;
+    c->opt[NP_OPT_RENDER_SCALE] = 1;
+    c->opt[NP_OPT_CAMERA_ZOOM] = 256;
+    c->status[NP_STAT_FIELD_READY] = 1; /* the test pattern is always "in the field" */
     for (int i = 0; i < 4; i++)
         c->save[8 + i] = (uint8_t)(c->boots >> (8 * i));
     c->save_dirty = 1;
@@ -318,12 +325,74 @@ int np_core_run_frame(np_core *c, const np_input *in, np_frame *out)
         if (np_core_save_flush(c))
             return -1;
     }
+    if (c->opt[NP_OPT_QUICKSAVE_SEQ] != c->status[NP_STAT_QUICKSAVE_SEQ]) {
+        /* An in-game save request: bump the boot counter's neighbour so the
+         * image really changes, then store it. */
+        c->save[12]++;
+        c->save_dirty = 1;
+        c->status[NP_STAT_QUICKSAVE_RESULT] = np_core_save_flush(c) ? NP_QS_FAILED : NP_QS_SAVED;
+        c->status[NP_STAT_QUICKSAVE_SEQ] = c->opt[NP_OPT_QUICKSAVE_SEQ];
+    }
     out->screen[0] = c->fb[0];
     out->screen[1] = c->fb[1];
     out->width = SW;
     out->height = SH;
     out->stride = SW;
     out->number = c->frame;
+    return 0;
+}
+
+/* ---- contract v2: options, status, snapshots ---------------------------------
+ * Options are stored and echoed; NP_OPT_QUICKSAVE_SEQ is honoured at the
+ * next frame by flushing the save, like the real cores' save request. */
+
+void np_core_set_option(np_core *c, uint32_t opt, uint32_t value)
+{
+    if (opt < NP_OPT_COUNT)
+        c->opt[opt] = value;
+}
+
+uint32_t np_core_get_option(const np_core *c, uint32_t opt) { return opt < NP_OPT_COUNT ? c->opt[opt] : 0; }
+
+uint32_t np_core_status(const np_core *c, uint32_t status)
+{
+    return status < NP_STAT_COUNT ? c->status[status] : 0;
+}
+
+/* A snapshot is the whole core struct after a magic word; the host
+ * callbacks it contains are this process's, which the contract allows. */
+static const uint32_t state_magic = 0x5354554Eu;
+
+size_t np_core_state_size(const np_core *c)
+{
+    (void)c;
+    return sizeof state_magic + sizeof(np_core);
+}
+
+int np_core_state_save(np_core *c, void *dst, size_t cap, size_t *written)
+{
+    size_t need = np_core_state_size(c);
+    if (cap < need)
+        return -1;
+    memcpy(dst, &state_magic, sizeof state_magic);
+    memcpy((uint8_t *)dst + sizeof state_magic, c, sizeof *c);
+    if (written)
+        *written = need;
+    return 0;
+}
+
+int np_core_state_load(np_core *c, const void *src, size_t len)
+{
+    uint32_t magic;
+    if (len != np_core_state_size(c))
+        return -1;
+    memcpy(&magic, src, sizeof magic);
+    if (magic != state_magic)
+        return -1;
+    uint32_t opt[NP_OPT_COUNT];
+    memcpy(opt, c->opt, sizeof opt); /* a load does not change options */
+    memcpy(c, (const uint8_t *)src + sizeof magic, sizeof *c);
+    memcpy(c->opt, opt, sizeof opt);
     return 0;
 }
 
