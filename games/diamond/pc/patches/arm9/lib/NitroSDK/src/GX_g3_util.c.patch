@@ -1,0 +1,260 @@
+GX_g3_util.c stores the geometry engine's matrix commands through a cached
+pointer, `reg_ptr = &reg_G3_X; *reg_ptr = a; *reg_ptr = b; ...`, one FIFO push
+per store. Under the register shadow (pc/include/pc_dp_registers.h) the
+address is a staging word, so every store but the last was lost. The pointer
+becomes the port address and each store an armrec_gx_store() call.
+
+--- a/GX_g3_util.c
++++ b/GX_g3_util.c
+@@ -3,6 +3,15 @@
+ #include "gx.h"
+ #include "code32.h"
+ 
++/* wasm port (pc/patches): a geometry command port written repeatedly through
++ * a cached pointer is a FIFO push per store, which a plain store into the
++ * armrec staging word cannot express (each would overwrite the last; the
++ * model then saw 1 of MTX_LOAD_4x4's 16 parameters). The pointer is the real
++ * port address and every store goes through armrec_gx_store(), the entry
++ * point recompiled code uses for the same stores. */
++void armrec_gx_store(u32 a, u32 v, int size);
++#define PC_G3_PORT_STORE(p, v) armrec_gx_store((u32)(p), (u32)(v), 4)
++
+ void G3i_PerspectiveW_(fx32 fovsin, fx32 fovcos, fx32 ratio, fx32 near, fx32 far, fx32 scale, u32 load, struct Mtx44 *mtx){
+     fx32 fovcot, temp1, temp2;
+     fx64c temp0;
+@@ -16,7 +25,7 @@
+     if (load)
+     {
+         reg_G3_MTX_MODE =  0x0;
+-        reg_ptr = (vu32 *)&reg_G3_MTX_LOAD_4x4;
++        reg_ptr = (vu32 *)0x04000458u; /* reg_G3_MTX_LOAD_4x4 */
+     }
+     if (mtx)
+     {
+@@ -38,16 +47,16 @@
+     reg_CP_DIV_DENOM = (u32)(near - far);
+     if (load)
+     {
+-        *reg_ptr = (vu32)temp1;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = (vu32)fovcot;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp1);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)fovcot);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
+     }
+     if (mtx)
+     {
+@@ -61,12 +70,12 @@
+     temp2 = (fx32)((((fx32)(((fx64)(near << 1) * far + (1 << (FX32_INT_SHIFT - 1))) >> FX32_INT_SHIFT)) * temp0 + ((fx64)1 << (FX64C_INT_SHIFT - 1))) >> FX64C_INT_SHIFT);
+     if (load)
+     {
+-        *reg_ptr = (vu32)temp1;
+-        *reg_ptr = (vu32)(-scale);
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = (vu32)temp2;
+-        *reg_ptr = 0x0;
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp1);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)(-scale));
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp2);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
+     }
+     if (mtx)
+     {
+@@ -84,7 +93,7 @@
+     if (load)
+     {
+         reg_G3_MTX_MODE = 0x0;
+-        reg_ptr = (vu32 *)&reg_G3_MTX_LOAD_4x4;
++        reg_ptr = (vu32 *)0x04000458u; /* reg_G3_MTX_LOAD_4x4 */
+     }
+     if (mtx)
+     {
+@@ -107,11 +116,11 @@
+     temp0 = (fx32)((0x2000 * temp1 + ((fx64)1 << (FX64C_INT_SHIFT - 1))) >> FX64C_INT_SHIFT);
+     if (load)
+     {
+-        *reg_ptr = (vu32)temp0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
+     }
+     if (mtx)
+     {
+@@ -125,11 +134,11 @@
+     temp0 = (fx32)((0x2000 * temp2 + ((fx64)1 << (FX64C_INT_SHIFT - 1))) >> FX64C_INT_SHIFT);
+     if (load)
+     {
+-        *reg_ptr = (vu32)temp0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
+-        *reg_ptr = 0x0;
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
+     }
+     if (mtx)
+     {
+@@ -141,8 +150,8 @@
+     temp0 = (fx32)((0x2000 * temp3 + ((fx64)1 << (FX64C_INT_SHIFT - 1))) >> FX64C_INT_SHIFT);
+     if (load)
+     {
+-        *reg_ptr = (vu32)temp0;
+-        *reg_ptr = 0x0;
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp0);
++        PC_G3_PORT_STORE(reg_ptr, 0x0);
+     }
+     if (mtx)
+     {
+@@ -153,10 +162,10 @@
+     temp5 = (fx32)(((far + near) * temp3 + ((fx64)1 << (FX64C_INT_SHIFT - 1))) >> FX64C_INT_SHIFT);
+     if (load)
+     {
+-        *reg_ptr = (vu32)temp0;
+-        *reg_ptr = (vu32)temp4;
+-        *reg_ptr = (vu32)temp5;
+-        *reg_ptr = (vu32)scale;
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp0);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp4);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp5);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)scale);
+     }
+     if (mtx)
+     {
+@@ -180,25 +189,25 @@
+     if (load)
+     {
+         reg_G3_MTX_MODE = 0x2;
+-        reg_ptr = (vu32 *)&reg_G3_MTX_LOAD_4x3;
+-        *reg_ptr = (vu32)temp1.x;
+-        *reg_ptr = (vu32)temp2.x;
+-        *reg_ptr = (vu32)temp.x;
+-        *reg_ptr = (vu32)temp1.y;
+-        *reg_ptr = (vu32)temp2.y;
+-        *reg_ptr = (vu32)temp.y;
+-        *reg_ptr = (vu32)temp1.z;
+-        *reg_ptr = (vu32)temp2.z;
+-        *reg_ptr = (vu32)temp.z;
++        reg_ptr = (vu32 *)0x0400045cu; /* reg_G3_MTX_LOAD_4x3 */
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp1.x);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp2.x);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp.x);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp1.y);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp2.y);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp.y);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp1.z);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp2.z);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)temp.z);
+     }
+     c1 = -VEC_DotProduct(a, &temp1);
+     c2 = -VEC_DotProduct(a, &temp2);
+     c3 = -VEC_DotProduct(a, &temp);
+     if (load)
+     {
+-        *reg_ptr = (vu32)c1;
+-        *reg_ptr = (vu32)c2;
+-        *reg_ptr = (vu32)c3;
++        PC_G3_PORT_STORE(reg_ptr, (vu32)c1);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)c2);
++        PC_G3_PORT_STORE(reg_ptr, (vu32)c3);
+     }
+     if (mtx)
+     {
+@@ -219,42 +228,42 @@
+ 
+ void G3_RotX(fx32 sinphi, fx32 cosphi){
+     vu32 *reg_ptr;
+-    reg_ptr = (vu32 *)&reg_G3_MTX_MULT_3x3;
+-    *reg_ptr = 0x1000;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = (vu32)cosphi;
+-    *reg_ptr = (vu32)sinphi;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = (vu32)(-sinphi);
+-    *reg_ptr = (vu32)cosphi;
++    reg_ptr = (vu32 *)0x04000468u; /* reg_G3_MTX_MULT_3x3 */
++    PC_G3_PORT_STORE(reg_ptr, 0x1000);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, (vu32)cosphi);
++    PC_G3_PORT_STORE(reg_ptr, (vu32)sinphi);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, (vu32)(-sinphi));
++    PC_G3_PORT_STORE(reg_ptr, (vu32)cosphi);
+ }
+ 
+ void G3_RotY(fx32 sinphi, fx32 cosphi){
+     vu32 *reg_ptr;
+-    reg_ptr = (vu32 *)&reg_G3_MTX_MULT_3x3;
+-    *reg_ptr = (vu32)cosphi;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = (vu32)(-sinphi);
+-    *reg_ptr = 0x0;
+-    *reg_ptr = 0x1000;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = (vu32)sinphi;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = (vu32)cosphi;
++    reg_ptr = (vu32 *)0x04000468u; /* reg_G3_MTX_MULT_3x3 */
++    PC_G3_PORT_STORE(reg_ptr, (vu32)cosphi);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, (vu32)(-sinphi));
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, 0x1000);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, (vu32)sinphi);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, (vu32)cosphi);
+ }
+ 
+ void G3_RotZ(fx32 sinphi, fx32 cosphi){
+     vu32 *reg_ptr;
+-    reg_ptr = (vu32 *)&reg_G3_MTX_MULT_3x3;
+-    *reg_ptr = (vu32)cosphi;
+-    *reg_ptr = (vu32)sinphi;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = (vu32)(-sinphi);
+-    *reg_ptr = (vu32)cosphi;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = 0x0;
+-    *reg_ptr = 0x1000;
++    reg_ptr = (vu32 *)0x04000468u; /* reg_G3_MTX_MULT_3x3 */
++    PC_G3_PORT_STORE(reg_ptr, (vu32)cosphi);
++    PC_G3_PORT_STORE(reg_ptr, (vu32)sinphi);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, (vu32)(-sinphi));
++    PC_G3_PORT_STORE(reg_ptr, (vu32)cosphi);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, 0x0);
++    PC_G3_PORT_STORE(reg_ptr, 0x1000);
+ }
