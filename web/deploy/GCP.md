@@ -36,7 +36,7 @@ an existing save. The domain mapping does not alter the game binaries or pacing.
 - Billing uses the same account as the previously selected `monereko-20260809` project.
 - Encrypted-package image digest:
   `sha256:41f6c976b76a2fa3cc23df9c1938ae752e252e3461dbea6fc4de942b7d06ce6d`.
-- Encrypted-package revision: `nativeplat-00002-dl6` (100% traffic).
+- Initial encrypted-package revision: `nativeplat-00002-dl6` (historical).
 
 The user explicitly selected public hosting of Diamond and Platinum. The
 separate `scripts/stage-gcp.mjs` allowlists those exact local ROMs and verified
@@ -110,3 +110,19 @@ excluded). On this Mac with Node 22, medians were Diamond 344 ms → 349 ms and
 Platinum 611 ms → 631 ms. These are first-load measurements, not browser FPS
 measurements; browser/hardware timings will vary. Results are generated under
 `build/gcp-package-benchmark.json`.
+
+## Platinum recomp update — 2026-10-04
+
+Live revision: `nativeplat-00004-x52` (100% traffic).
+Image: `us-east1-docker.pkg.dev/nativeplat-20261004/nativeplat/web@sha256:17ca3e7ec4ba5c7aa507c00cb89f7fcadf2f414da3988cc3c4aad3fc380eadac`.
+
+Adds Preferences → Recomp options and Platinum quick save/F1. Diamond retains
+its existing hosted core; Pearl and its diagnostic core are excluded while that
+work is paused. No Platinum decomp patch was required.
+
+Validation: 21 tests, production build, 12,000 Platinum runtime frames, all eight
+resolution/aspect combinations, refused title-screen quick save, and successful
+field quick save from a read-only local fixture. Post-deploy checks downloaded,
+decrypted and verified both hosted cartridges and ran 600 frames with each
+published core. The custom domain serves the new bundle over HTTPS with the
+requested title and description.
