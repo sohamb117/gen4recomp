@@ -267,6 +267,11 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->fix_bugs = iv != 0;
         else if (!strcmp(key, "rewind_seconds"))
             o->rewind_seconds = clampi(iv, 0, 120);
+    } else if (!strcmp(section, "gba")) {
+        if (!strcmp(key, "rom"))
+            SDL_strlcpy(o->gba_rom, val, sizeof o->gba_rom);
+        else if (!strcmp(key, "save"))
+            SDL_strlcpy(o->gba_save, val, sizeof o->gba_save);
     } else if (!strcmp(section, "sync")) {
         if (!strcmp(key, "folder"))
             SDL_strlcpy(o->sync_folder, val, sizeof o->sync_folder);
@@ -385,6 +390,7 @@ int np_options_save(const np_options *o, const char *path)
         if (o->last_slot[g][0])
             put(b, "last_slot_%s = %s\n", np_game_ids[g], o->last_slot[g]);
     put(b, "\n[sync]\nfolder = %s\n", o->sync_folder);
+    put(b, "\n[gba]\nrom = %s\nsave = %s\n", o->gba_rom, o->gba_save);
     put(b, "\n[wireless]\nenabled = %d\nport = %d\npeer = %s\nrelay = %s\npin = %s\nstation_id = %06X\n",
         o->lan_enabled, o->lan_port, o->lan_peer, o->lan_relay, o->lan_pin, (unsigned)o->station_id);
     put(b, "\n[input]\ntouch_controls = %s\n\n[keys]\n", touch_ids[o->touch_controls]);

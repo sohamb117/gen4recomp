@@ -88,6 +88,10 @@ typedef struct np_options {
     int fix_bugs;       /* NP_RULE_FIX_BUGS */
     int rewind_seconds; /* history kept for hold-to-rewind, 0 = off */
     char sync_folder[1024]; /* folder sync target (sync.c), "" = off */
+    /* The GBA slot (Pal Park, Platinum): a cartridge image and its save file
+     * the player picked; "" = empty slot / "<rom>.sav". */
+    char gba_rom[1024];
+    char gba_save[1024];
     /* Local wireless (net.c). station_id is generated once and kept: the
      * game derives the console's MAC from it and stores that in saves. */
     int lan_enabled;
