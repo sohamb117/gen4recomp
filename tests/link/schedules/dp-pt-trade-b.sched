@@ -1,0 +1,22 @@
+# Diamond/Platinum Union Room trade, station B: Platinum (UNIONB,
+# recipes/union-b.recipe). Walk in as trade-b.sched does (~5480) and wait;
+# A's offer (A), accept YES; CHIMCHAR > TRADE, YES.
+900:a:20
+1200:a:20
+1800:a:20
+2100:a:20
+2400:a:20
+2800:a:24
+3100:a:10
+3300:a:10
+3500:a:10
+3700:a:10
+3900:a:10
+5250:a:10
+5450:a:10
+8000:a:6
+8200:a:6
+8800:a:6
+8950:down:4
+9000:a:6
+9200:a:6

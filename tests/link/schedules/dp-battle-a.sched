@@ -1,0 +1,35 @@
+# Diamond/Pearl Union Room battle, station A (UNIONA, recipes/dp-union-a.recipe).
+# In and to B's avatar as dp-trade-a.sched, then BATTLE (2 downs). Party:
+# TURTWIG > ENTER, STARLY > ENTER, CONFIRM. In battle one tap at (200,40)
+# every 30 frames is FIGHT, then the top-right move (Withdraw / Growl), then
+# the party's top-right slot and SHIFT when a Pokemon faints.
+1250:start
+1400:a
+1500:a
+1600:a
+1800:a:6
+2000:a:6
+2200:a:6
+2400:a:6
+2600:a:6
+2800:a:6
+3000:a:6
+3200:a:6
+3400:a:6
+3600:a:6
+3800:a:6
+4000:a:6
+4520:up:48
+4600:left:32
+4660:left:16
+5220:a:6
+6260:down:4
+6300:down:4
+6360:a:6
+7400:a:6
+7600:a:6
+7800:right:4
+7860:a:6
+8060:a:6
+8260:a:6
+9600:tap:200:40:6:30:300

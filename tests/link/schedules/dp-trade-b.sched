@@ -1,0 +1,25 @@
+# Diamond/Pearl Union Room trade, station B (UNIONB, recipes/dp-union-b.recipe).
+# The attendant 37 frames after A (see run_link_tests.py, underground_meet)
+# and wait in the room; A's offer (A), accept YES; CHIMCHAR > TRADE, YES.
+1250:start
+1400:a
+1500:a
+1600:a
+1837:a:6
+2037:a:6
+2237:a:6
+2437:a:6
+2637:a:6
+2837:a:6
+3037:a:6
+3237:a:6
+3437:a:6
+3637:a:6
+3837:a:6
+4037:a:6
+6700:a:6
+6900:a:6
+7500:a:6
+7650:down:4
+7700:a:6
+7900:a:6

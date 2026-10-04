@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Two-instance link runs of the real Platinum core (np_headless --lockstep).
+"""Two-instance link runs of the real cores (np_headless --lockstep).
 
 Two np_headless processes run in frame lockstep on loopback (station A id
 0x111111, B 0x222222), each with its own save and press schedule, so a run
@@ -8,6 +8,7 @@ pair per job, so a scenario's tail is replayed in seconds instead of its walk
 into the Union Room.
 
   linkpair.py serve DIR --frame F --a-sched S --b-sched S --a-save SAV --b-save SAV
+                        [--a-game G] [--b-game G]
       start the pair; at frame F it waits for jobs (Ctrl-C / `stop` ends it)
   linkpair.py job DIR NAME FRAMES EVERY A_SCHED B_SCHED
       run one child pair from the checkpoint to FRAMES, dumping both screens
@@ -18,37 +19,61 @@ into the Union Room.
   linkpair.py party SAV
       species of the save's party (np_save4 dump)
 
-  linkpair.py mint RECIPE OUT.sav
-      mint a save from a pc_lab recipe (tests/link/recipes) with this core
+  linkpair.py mint [--game G] RECIPE OUT.sav
+      mint a save from a lab recipe (tests/link/recipes) with this core
+
+G is platinum (the default), diamond or pearl, per station: a Diamond and a
+Platinum station are two different cores (build/core-dp, build/core-plat)
+on the same lockstep wire.
 
 The regression scenarios themselves are in run_link_tests.py. Environment:
-NP_HEADLESS, NP_SAVE4, NP_PLAT_ROM override the default build paths;
---relay/--pin/--drop on serve put the game's datagrams through server/relay.
+NP_HEADLESS (Platinum's core), NP_DP_HEADLESS (Diamond/Pearl's), NP_SAVE4,
+NP_PLAT_ROM, NP_DIAMOND_ROM, NP_PEARL_ROM override the default build paths;
+NP_DP_BASE_SAVE_<GAME> (DIAMOND, PEARL) names a ready new-game save for
+the D/P mint. --relay/--pin/--drop on serve put the game's datagrams
+through server/relay.
 """
 import json
 import os
 import random
+import re
 import subprocess
 import sys
 import time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-HEADLESS = os.environ.get('NP_HEADLESS', os.path.join(ROOT, 'build', 'core-plat', 'np_headless'))
 SAVE4 = os.environ.get('NP_SAVE4', os.path.join(ROOT, 'build', 'features', 'np_save4'))
-ROM = os.environ.get('NP_PLAT_ROM', os.path.join(ROOT, 'games', 'platinum', 'build', 'rom', 'pokeplatinum.us.nds'))
+GAMES = {
+    'platinum': (os.environ.get('NP_HEADLESS', os.path.join(ROOT, 'build', 'core-plat', 'np_headless')),
+                 os.environ.get('NP_PLAT_ROM', os.path.join(ROOT, 'games', 'platinum', 'build', 'rom',
+                                                            'pokeplatinum.us.nds'))),
+    'diamond': (os.environ.get('NP_DP_HEADLESS', os.path.join(ROOT, 'build', 'core-dp', 'np_headless')),
+                os.environ.get('NP_DIAMOND_ROM', os.path.join(ROOT, 'games', 'diamond', 'build', 'diamond.us',
+                                                              'pokediamond.us.nds'))),
+    'pearl': (os.environ.get('NP_DP_HEADLESS', os.path.join(ROOT, 'build', 'core-dp', 'np_headless')),
+              os.environ.get('NP_PEARL_ROM', os.path.join(ROOT, 'games', 'diamond', 'build', 'pearl.us',
+                                                          'pokepearl.us.nds'))),
+}
 IDS = {'a': '0x111111', 'b': '0x222222'}
 
 
-def start_pair(dirpath, frame, scheds, saves, ctls, relay=None, pin='4242', drop=0):
+def core(game):
+    """The np_headless command head for one station: binary, game, ROM."""
+    headless, rom = GAMES[game]
+    return [headless, game, rom]
+
+
+def start_pair(dirpath, frame, scheds, saves, ctls, relay=None, pin='4242', drop=0, games=None):
     """Starts both instances with --fork-at frame:ctl; returns the Popens.
     With relay (HOST:PORT) the game's datagrams take the relay and lose
     `drop` percent on the way out, the frame clocks still in lockstep."""
+    games = games or {'a': 'platinum', 'b': 'platinum'}
     os.makedirs(dirpath, exist_ok=True)
     port = random.randrange(20000, 40000)
     ports = {'a': (port, port + 1), 'b': (port + 1, port)}
     procs = {}
     for i, side in enumerate('ab'):
-        cmd = [HEADLESS, 'platinum', ROM, '--frames', str(frame + 1), '--save', saves[side],
+        cmd = core(games[side]) + ['--frames', str(frame + 1), '--save', saves[side],
                '--lockstep', '%d:%d' % ports[side], '--net-id', IDS[side],
                '--fork-at', '%d:%s' % (frame, ctls[side])]
         if relay:
@@ -77,6 +102,8 @@ def serve(argv):
     p.add_argument('--b-sched')
     p.add_argument('--a-save', required=True)
     p.add_argument('--b-save', required=True)
+    p.add_argument('--a-game', choices=sorted(GAMES), default='platinum')
+    p.add_argument('--b-game', choices=sorted(GAMES), default='platinum')
     p.add_argument('--relay', help='HOST:PORT of server/relay')
     p.add_argument('--pin', default='4242')
     p.add_argument('--drop', type=int, default=0)
@@ -97,7 +124,8 @@ def serve(argv):
     if os.path.exists(jobs):
         os.remove(jobs)
     os.mkfifo(jobs)
-    procs = start_pair(d, a.frame, {'a': a.a_sched, 'b': a.b_sched}, saves, ctls, a.relay, a.pin, a.drop)
+    procs = start_pair(d, a.frame, {'a': a.a_sched, 'b': a.b_sched}, saves, ctls, a.relay, a.pin, a.drop,
+                       {'a': a.a_game, 'b': a.b_game})
     w = {side: open(ctls[side], 'w') for side in 'ab'}  # blocks until each reaches the checkpoint
     print('checkpoint at frame %d ready' % a.frame, flush=True)
     try:
@@ -194,10 +222,38 @@ def party(sav):
     return [m['species'] for m in json.loads(out)['party']]
 
 
-def mint(recipe, out_sav):
-    """A save from a pc_lab recipe (names resolved by pc/tests/pc_lab.py),
-    minted by the same core np_headless runs: the lab applies it at frame
-    1800 under the lab-settle input and the run ends at 4000."""
+def dp_base_save(game, workdir):
+    """Diamond/Pearl's lab works on a save being continued: the game's own
+    new-game save, played by tests/dp/<game>_first_save.sched once per work
+    directory (or NP_DP_BASE_SAVE_<GAME>)."""
+    given = os.environ.get('NP_DP_BASE_SAVE_' + game.upper())
+    if given:
+        return given
+    out = os.path.join(workdir, '%s-new-game.sav' % game)
+    if os.path.exists(out):
+        return out
+    sched = os.path.join(ROOT, 'tests', 'dp', '%s_first_save.sched' % game)
+    frames = [l.split(':', 1)[1].strip() for l in open(sched) if l.startswith('# frames:')][0]
+    tmp = out + '.tmp'
+    if os.path.exists(tmp):
+        os.remove(tmp)
+    p = subprocess.run(core(game) + ['--frames', frames, '--save', tmp, '--schedule', sched],
+                       capture_output=True, text=True)
+    if p.returncode != 0 or not os.path.exists(tmp) or os.path.getsize(tmp) != 512 * 1024:
+        sys.exit('%s new-game save failed:\n%s%s' % (game, p.stdout, p.stderr))
+    os.rename(tmp, out)
+    return out
+
+
+def mint(recipe, out_sav, game='platinum', base_dir=None):
+    """A save from a lab recipe, minted by the same core np_headless runs.
+    Platinum: names resolved by pc/tests/pc_lab.py; the lab applies the
+    recipe at frame 1800 under the lab-settle input and the run ends at 4000.
+    Diamond/Pearl: names resolved by tests/gameplay/labc.py; the new-game
+    save is CONTINUEd and D's lab (games/diamond/pc/game/pc_dp_lab.c)
+    applies the recipe once the field is free from frame 1800, then saves."""
+    if game != 'platinum':
+        return mint_dp(recipe, out_sav, game, base_dir or os.path.dirname(os.path.abspath(out_sav)))
     plat = os.path.join(ROOT, 'games', 'platinum')
     sys.path.insert(0, os.path.join(plat, 'pc', 'tests'))
     import pc_lab
@@ -215,10 +271,25 @@ def mint(recipe, out_sav):
                PC_INPUT='inline:' + ';'.join(settle))
     if os.path.exists(out_sav):
         os.remove(out_sav)
-    p = subprocess.run([HEADLESS, 'platinum', ROM, '--frames', '4000', '--save', out_sav], env=env,
+    p = subprocess.run(core('platinum') + ['--frames', '4000', '--save', out_sav], env=env,
                        capture_output=True, text=True)
     if not os.path.exists(out_sav) or 'status 0' not in p.stdout + p.stderr:
         sys.exit('mint %s failed:\n%s%s' % (recipe, p.stdout, p.stderr))
+    return out_sav
+
+
+def mint_dp(recipe, out_sav, game, base_dir):
+    sys.path.insert(0, os.path.join(ROOT, 'tests', 'gameplay'))
+    import labc
+    base = dp_base_save(game, base_dir)
+    with open(base, 'rb') as s, open(out_sav, 'wb') as o:
+        o.write(s.read())
+    env = dict(os.environ, PC_LAB=labc.compile_inline(recipe, game), PC_LAB_AT='1800')
+    p = subprocess.run(core(game) + ['--frames', '9000', '--save', out_sav, '--schedule',
+                                     os.path.join(ROOT, 'tests', 'gameplay', 'dp', 'schedules', 'continue.press')],
+                       env=env, capture_output=True, text=True)
+    if not re.search(r'pc_lab: applied .* save ok', p.stdout + p.stderr):
+        sys.exit('mint %s (%s) failed:\n%s%s' % (recipe, game, p.stdout, p.stderr))
     return out_sav
 
 
@@ -236,7 +307,10 @@ def main():
     elif cmd == 'sheet':
         sheet(rest[0], rest[1], [int(x) for x in rest[2:]])
     elif cmd == 'mint':
-        print(mint(rest[0], rest[1]))
+        game = 'platinum'
+        if rest[:1] == ['--game']:
+            game, rest = rest[1], rest[2:]
+        print(mint(rest[0], rest[1], game))
     elif cmd == 'party':
         print(party(rest[0]))
     else:

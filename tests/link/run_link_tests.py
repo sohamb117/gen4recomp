@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Two-station link regression tests on the real Platinum core.
+"""Two-station link regression tests on the real cores.
 
-Each scenario mints both saves from recipes/ (pc_lab recipes, no committed
+Each scenario mints both saves from recipes/ (lab recipes, no committed
 saves), runs an np_headless pair from frame 0 with schedules/ and checks the
 outcome: the traded party in both saves (np_save4), the battle's result
 screen identical on both stations, the Underground join in the wireless
@@ -9,9 +9,15 @@ trace. The lockstep scenarios repeat exactly, so their frame numbers are
 fixed; the relay one runs the game's datagrams through server/relay with
 10% loss on each side, so it checks only the outcome.
 
-  tests/link/run_link_tests.py [--keep DIR] [NAME...]
+  tests/link/run_link_tests.py [--game A[:B]] [--keep DIR] [NAME...]
 
-Skips (exit 0, "SKIP") without the ROM, the np_headless build or np_save4;
+--game picks the stations' games (platinum, diamond, pearl; one name for
+both, A:B for a cross-version pair, `all` for every pair below); the
+default is platinum. Each scenario belongs to one pair, because the press
+schedules are timed against what both stations draw. Diamond and Pearl run
+on build/core-dp, Platinum on build/core-plat (linkpair.py has the paths).
+
+Skips (exit 0, "SKIP") without a ROM, an np_headless build or np_save4;
 the relay scenario also skips without `go`. About 35 s of lockstep frames
 per 10000 on an idle machine. Interactive work on a scenario's tail goes
 through linkpair.py serve/job (a forked checkpoint, seconds per try).
@@ -30,6 +36,8 @@ import linkpair  # noqa: E402
 
 UNION = {'a': 'recipes/union-a.recipe', 'b': 'recipes/union-b.recipe'}
 UG = {'a': 'recipes/ug-a.recipe', 'b': 'recipes/ug-b.recipe'}
+DP_UNION = {'a': 'recipes/dp-union-a.recipe', 'b': 'recipes/dp-union-b.recipe'}
+DP_TRADE = {'a': 'schedules/dp-trade-a.sched', 'b': 'schedules/dp-trade-b.sched'}
 TRADED = {'a': [390, 396], 'b': [387, 396]}  # CHIMCHAR to A, TURTWIG to B; STARLY stays
 
 SCENARIOS = [
@@ -53,11 +61,35 @@ SCENARIOS = [
     dict(name='relay_trade', recipes=UNION, relay=True, drop=10,
          scheds={'a': 'schedules/relay-trade-a.sched', 'b': 'schedules/relay-trade-b.sched'},
          frames=19000, party=TRADED),
+    # Diamond and Pearl. The trade is saved by the game once the animation
+    # ends, so the parties are checked without leaving the trade screen.
+    dict(name='dp_trade', games=('diamond', 'diamond'), recipes=DP_UNION, scheds=DP_TRADE,
+         frames=11500, party=TRADED),
+    # As union_battle: B wins, WIN (left) for UNIONB on both stations.
+    dict(name='dp_battle', games=('diamond', 'diamond'), recipes=DP_UNION,
+         scheds={'a': 'schedules/dp-battle-a.sched', 'b': 'schedules/dp-battle-b.sched'},
+         frames=16000, dump_from=15600, dump_every=100,
+         same=[15701, 15801, 15901], red=(15801, 47, 92)),
+    # Cross-version, as the cartridges allow: Diamond's A with Pearl's B, and
+    # with Platinum's (a Platinum save and Platinum's own walk into the room).
+    dict(name='dp_pearl_trade', games=('diamond', 'pearl'), recipes=DP_UNION, scheds=DP_TRADE,
+         frames=11500, party=TRADED),
+    dict(name='dp_platinum_trade', games=('diamond', 'platinum'),
+         recipes={'a': 'recipes/dp-union-a.recipe', 'b': 'recipes/union-b.recipe'},
+         scheds={'a': 'schedules/dp-pt-trade-a.sched', 'b': 'schedules/dp-pt-trade-b.sched'},
+         frames=13000, party=TRADED),
 ]
 
 
-def have_tools():
-    for path in (linkpair.HEADLESS, linkpair.SAVE4, linkpair.ROM):
+def games_of(sc):
+    return sc.get('games', ('platinum', 'platinum'))
+
+
+def have_tools(games):
+    paths = [linkpair.SAVE4]
+    for g in games:
+        paths += linkpair.GAMES[g]
+    for path in paths:
         if not os.path.exists(path):
             return path
     return None
@@ -84,9 +116,11 @@ def frame_px(path, x, y):
 def run(sc, work):
     d = os.path.join(work, sc['name'])
     os.makedirs(d, exist_ok=True)
+    games = dict(zip('ab', games_of(sc)))
     saves = {}
     for side in 'ab':
-        saves[side] = linkpair.mint(os.path.join(HERE, sc['recipes'][side]), os.path.join(d, side.upper() + '.sav'))
+        saves[side] = linkpair.mint(os.path.join(HERE, sc['recipes'][side]), os.path.join(d, side.upper() + '.sav'),
+                                    games[side], base_dir=work)
     relay_proc = None
     extra = {'a': [], 'b': []}
     if sc.get('relay'):
@@ -104,7 +138,7 @@ def run(sc, work):
     for side in 'ab':
         dump = os.path.join(d, side)
         os.makedirs(dump, exist_ok=True)
-        cmd = [linkpair.HEADLESS, 'platinum', linkpair.ROM, '--frames', str(sc['frames']), '--save', saves[side],
+        cmd = linkpair.core(games[side]) + ['--frames', str(sc['frames']), '--save', saves[side],
                '--schedule', os.path.join(HERE, sc['scheds'][side]), '--lockstep', '%d:%d' % ports[side],
                '--net-id', linkpair.IDS[side]] + extra[side]
         if 'dump_every' in sc:
@@ -134,23 +168,36 @@ def run(sc, work):
     return 'FAIL: ' + '; '.join(fails) if fails else 'ok'
 
 
+def pairs(spec):
+    """--game's value as the (A, B) pairs it selects."""
+    if spec == 'all':
+        return sorted({games_of(sc) for sc in SCENARIOS})
+    a, _, b = spec.partition(':')
+    b = b or a
+    for g in (a, b):
+        if g not in linkpair.GAMES:
+            sys.exit('run_link_tests: unknown game %s (platinum, diamond, pearl)' % g)
+    return [(a, b)]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('names', nargs='*')
+    ap.add_argument('--game', default='platinum', help='A[:B] station games, or all (default platinum)')
     ap.add_argument('--keep', help='work directory to keep (default: a temporary one, removed)')
     a = ap.parse_args()
-    missing = have_tools()
-    if missing:
-        print('SKIP: %s missing' % missing)
-        return 0
+    want = pairs(a.game)
+    chosen = [sc for sc in SCENARIOS if games_of(sc) in want and (not a.names or sc['name'] in a.names)]
+    if not chosen:
+        print('run_link_tests: no scenario for %s%s' % (a.game, ' named ' + ' '.join(a.names) if a.names else ''))
+        return 2
     work = a.keep or tempfile.mkdtemp(prefix='linktests-')
     os.makedirs(work, exist_ok=True)
     failed = 0
-    for sc in SCENARIOS:
-        if a.names and sc['name'] not in a.names:
-            continue
-        res = run(sc, work)
-        print('%-18s %s' % (sc['name'], res), flush=True)
+    for sc in chosen:
+        missing = have_tools(games_of(sc))
+        res = 'SKIP: %s missing' % missing if missing else run(sc, work)
+        print('%-24s %-18s %s' % (sc['name'], ':'.join(games_of(sc)), res), flush=True)
         failed += res.startswith('FAIL')
     if not a.keep:
         shutil.rmtree(work, ignore_errors=True)
