@@ -489,6 +489,7 @@ static void view_wasm_status(np_frame_desc *d)
     d->status[NP_STAT_QUICKSAVE_RESULT] = pc_np_stat.quicksave_result;
     d->status[NP_STAT_MAP_ID] = pc_np_stat.map_id;
     d->status[NP_STAT_IN_BATTLE] = pc_np_stat.in_encounter || pc_np_stat.in_battle_app;
+    d->status[NP_STAT_E2E] = pc_np_stat.e2e_block;
 }
 
 /*

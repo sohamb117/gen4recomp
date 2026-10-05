@@ -65,6 +65,8 @@ enum np_status {
     NP_STAT_MAP_ID = 4,          /* current field map header id, for diagnostics and mods */
     NP_STAT_IN_BATTLE = 5,       /* 1 from a battle's intro until the fade back to the field
                                     (wild, trainer, link, facility), 0 otherwise */
+    NP_STAT_E2E = 6,             /* guest address of the test probe block (np_e2e.h), 0 unless
+                                    the guest runs with PC_E2E=1 */
     NP_STAT_COUNT = 16
 };
 

@@ -51,6 +51,7 @@
 #include "field_system.h"
 #include "fx.h"
 #include "map_header.h"
+#include "map_object.h"
 #include "nitro/NNS_g3d.h"
 #include "player_avatar.h"
 #include "save.h"
@@ -143,6 +144,82 @@ static void warp_frame(FieldSystem *fs, int ready) {
     sState = 2;
 }
 
+/*
+ * The end-to-end probe's field half (Platinum's pc/src/pc_np_field.c
+ * e2e_frame; pc/src/pc_e2e.c, core/include/np_e2e.h): the player's tile
+ * and facing, the other map objects, and, while the player is free, the
+ * terrain around them through the queries D's movement code makes:
+ * GetMetatileBehavior (0xFF off the loaded blocks; arm9/src/field_move.c
+ * declares it the same way) and sub_0204A6B4, the collision bit of the
+ * same tile attributes (arm9/asm/unk_0204A498.s; Platinum's
+ * TerrainCollisionManager_CheckCollision), both through fs+0x58, the
+ * terrain provider, which exists once a map is loaded.
+ */
+extern u8 GetMetatileBehavior(FieldSystem *fieldSystem, s32 x, s32 z);
+extern BOOL sub_0204A6B4(FieldSystem *fieldSystem, s32 x, s32 z);
+
+static unsigned e2e_tile(void *ctx, int x, int z) {
+    FieldSystem *fs = ctx;
+    const u8 behavior = GetMetatileBehavior(fs, x, z);
+
+    if (behavior == 0xFF) return 0;
+    return PC_E2E_TILE_KNOWN | behavior | (sub_0204A6B4(fs, x, z) ? PC_E2E_TILE_COLLISION : 0);
+}
+
+static void e2e_frame(FieldSystem *fs, int ready) {
+    LocalMapObject *player, *obj = NULL;
+    s32 i = 0;
+
+    if (!pc_e2e_on()) return;
+    if (fs == NULL || fs->unk00 == NULL || fs->location == NULL || fs->playerAvatar == NULL
+        || fs->mapObjectManager == NULL || FS_WORD(fs, 0x64) == 0) {
+        pc_e2e_field(0, 0, 0, 0, 0, 0, 0);
+        pc_e2e_end_frame();
+        return;
+    }
+    player = fs->playerAvatar->mapObject;
+    pc_e2e_field(1, (unsigned)fs->location->mapId, (int)PlayerAvatar_GetXCoord(fs->playerAvatar),
+                 (int)PlayerAvatar_GetZCoord(fs->playerAvatar), player != NULL ? (int)MapObject_GetYCoord(player) : 0,
+                 PlayerAvatar_GetFacingDirection(fs->playerAvatar), PlayerAvatar_GetUnk14(fs->playerAvatar));
+    if (ready && FS_WORD(fs, 0x58) != 0) pc_e2e_grid(e2e_tile, fs);
+    while (MapObjectManager_GetNextObjectWithFlagFromIndex(fs->mapObjectManager, &obj, &i, MAPOBJECTFLAG_ACTIVE)) {
+        if (obj == player) continue;
+        pc_e2e_object((int)MapObject_GetXCoord(obj), (int)MapObject_GetZCoord(obj), MapObject_GetID(obj),
+                      MapObject_GetSpriteID(obj));
+    }
+    pc_e2e_end_frame();
+}
+
+/* The battle's menu input (overlay 11's ov11_02258E74, Platinum's
+ * BattleSystem_MenuInput) and the battle party screen's two input checks
+ * (overlay 9's ov09_0221347C, the six slots, and ov09_022134F4, the chosen
+ * Pokemon's SHIFT page; Platinum's CheckPartyPokemonScreenButtonPressed /
+ * CheckSelectPokemonScreenButtonsPressed, found by the same touch-rect
+ * tables) run once per frame while the game waits on them. Their callers
+ * reach them through these instead (pc/patches/arm9/overlays/11/asm/
+ * ov11_0224D550.s.patch, 09/asm/overlay_09.s.patch), which report to the
+ * probe and then run the original. The menu config index is the s8 at
+ * +0x69F of D's battle subscreen, the index ov11_02258E74 asserts and
+ * scales by the 0x30-byte config table ov11_0225FAAC. */
+extern int ov11_02258E74(void *subscreen);
+extern BOOL ov09_0221347C(void *battleParty);
+extern int ov09_022134F4(void *battleParty);
+
+int PcDp_E2eMenuInput(void *subscreen) {
+    if (pc_e2e_on()) pc_e2e_ui(PC_E2E_UI_BATTLE_MENU, (unsigned)*((s8 *)subscreen + 0x69F));
+    return ov11_02258E74(subscreen);
+}
+
+BOOL PcDp_E2ePartySlots(void *battleParty) {
+    if (pc_e2e_on()) pc_e2e_ui(PC_E2E_UI_BATTLE_PARTY, 0);
+    return ov09_0221347C(battleParty);
+}
+
+int PcDp_E2ePartyShift(void *battleParty) {
+    if (pc_e2e_on()) pc_e2e_ui(PC_E2E_UI_BATTLE_PARTY, 1);
+    return ov09_022134F4(battleParty);
+}
+
 static void np_frame(void) {
     FieldSystem *fs = field_system();
     const int ready = pc_dp_field_ready(fs);
@@ -150,6 +227,7 @@ static void np_frame(void) {
     pc_np_stat.field_ready = (unsigned)ready;
     pc_np_stat.map_id = fs != NULL && fs->location != NULL ? (unsigned)fs->location->mapId : 0;
 
+    e2e_frame(fs, ready);
     pc_dp_rules_frame();
     warp_frame(fs, ready);
 

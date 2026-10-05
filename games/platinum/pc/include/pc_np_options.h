@@ -46,6 +46,7 @@ typedef struct pc_np_status {
      * (src/unk_0203D1B8.c.patch). */
     unsigned in_encounter;
     unsigned in_battle_app;
+    unsigned e2e_block;        /* NP_STAT_E2E: the probe's address, 0 when off */
 } pc_np_status;
 
 enum { PC_NP_QS_NONE = 0, PC_NP_QS_SAVED = 1, PC_NP_QS_REFUSED = 2, PC_NP_QS_FAILED = 3 };
@@ -67,5 +68,25 @@ void pc_np_frame(void) __attribute__((weak));
 struct Camera;
 void pc_np_camera_begin(struct Camera *camera);
 void pc_np_camera_end(struct Camera *camera);
+
+/* The end-to-end test probe (core/include/np_e2e.h; pc/src/pc_e2e.c).
+ * pc_e2e_on() is 0 unless the guest runs with PC_E2E=1, and the field half
+ * then does nothing. Otherwise, once per frame boundary, the field half
+ * reports the field (pc_e2e_field; field 0 when there is none), then while
+ * the player is free the terrain (pc_e2e_grid: cell(x, z) answers one tile
+ * as PC_E2E_TILE_* bits, asked only after the player moved or the map
+ * changed) and each other map object (pc_e2e_object), and closes the frame
+ * with pc_e2e_end_frame. pc_e2e_ui is called by the game's patched input
+ * loops: a PC_E2E_UI_* kind and its argument. */
+int pc_e2e_on(void);
+void pc_e2e_field(int field, unsigned map, int x, int z, int y, unsigned facing, unsigned move_state);
+void pc_e2e_grid(unsigned (*cell)(void *ctx, int x, int z), void *ctx);
+void pc_e2e_object(int x, int z, unsigned local_id, unsigned gfx);
+void pc_e2e_end_frame(void);
+void pc_e2e_ui(unsigned kind, unsigned arg);
+#define PC_E2E_UI_BATTLE_MENU 1     /* NP_E2E_UI_BATTLE_MENU */
+#define PC_E2E_UI_BATTLE_PARTY 2    /* NP_E2E_UI_BATTLE_PARTY */
+#define PC_E2E_TILE_COLLISION 0x0100u /* NP_E2E_TILE_COLLISION */
+#define PC_E2E_TILE_KNOWN 0x8000u     /* NP_E2E_TILE_KNOWN */
 
 #endif /* PC_NP_OPTIONS_H */

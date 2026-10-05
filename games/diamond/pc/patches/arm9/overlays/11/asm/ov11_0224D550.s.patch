@@ -1,5 +1,32 @@
 --- a/arm9/overlays/11/asm/ov11_0224D550.s
 +++ b/arm9/overlays/11/asm/ov11_0224D550.s
+@@ -7005,7 +7005,7 @@
+ 	blt _02250DB6
+ _02250DD0:
+ 	add r0, r6, #0
+-	bl ov11_02258E74
++	bl PcDp_E2eMenuInput ; pc: tests/e2e probe, then ov11_02258E74 (pc/game/pc_dp_field.c)
+ 	mov r1, #0
+ 	mvn r1, r1
+ 	str r0, [r4, #0xc]
+@@ -7389,7 +7389,7 @@
+ 	pop {r4, r5, r6, r7, pc}
+ _02251114:
+ 	add r0, r7, #0
+-	bl ov11_02258E74
++	bl PcDp_E2eMenuInput ; pc: tests/e2e probe, then ov11_02258E74 (pc/game/pc_dp_field.c)
+ 	mov r1, #0
+ 	mvn r1, r1
+ 	str r0, [r4, #8]
+@@ -7672,7 +7672,7 @@
+ 	pop {r4, r5, r6, r7, pc}
+ _02251366:
+ 	add r0, r5, #0
+-	bl ov11_02258E74
++	bl PcDp_E2eMenuInput ; pc: tests/e2e probe, then ov11_02258E74 (pc/game/pc_dp_field.c)
+ 	mov r1, #0
+ 	mvn r1, r1
+ 	str r0, [r4, #8]
 @@ -8172,7 +8172,7 @@
  	str r1, [r0, #0x1c]
  	ldr r0, [r4, #8]
@@ -18,6 +45,15 @@
  	ldrb r0, [r4, #0xa]
  	add sp, #0x24
  	add r0, r0, #1
+@@ -10037,7 +10037,7 @@
+ 	pop {r4, r5, r6, r7, pc}
+ _0225267E:
+ 	add r0, r5, #0
+-	bl ov11_02258E74
++	bl PcDp_E2eMenuInput ; pc: tests/e2e probe, then ov11_02258E74 (pc/game/pc_dp_field.c)
+ 	mov r1, #0
+ 	mvn r1, r1
+ 	str r0, [r4, #8]
 @@ -11777,7 +11777,7 @@
  	add r1, #0x32
  	strb r0, [r1]

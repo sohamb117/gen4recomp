@@ -1,0 +1,19 @@
+--- a/src/battle/battle_subscreen.c
++++ b/src/battle/battle_subscreen.c
+@@ -52,6 +52,8 @@
+ 
+ #include "res/text/bank/battle_strings.h"
+ 
++#include "pc_np_options.h"
++
+ static void *BattleSubscreen_Alloc(void);
+ static void BattleSubscreen_OpenActionMenu(BattleSubscreen *btlSubscreen, int unused1, int unused2);
+ static void BattleSubscreen_DrawActionMenu(BattleSubscreen *btlSubscreen, int unused1, int unused2);
+@@ -1276,6 +1278,7 @@
+ {
+     int isKeyInput = 0;
+     GF_ASSERT(btlSubscreen->activeMenuConfigIndex != -1);
++    pc_e2e_ui(PC_E2E_UI_BATTLE_MENU, (unsigned)btlSubscreen->activeMenuConfigIndex); /* pc port: tests/e2e probe */
+ 
+     const BattleMenuConfig *battleMenuConfig = &sBattleMenuConfigs[btlSubscreen->activeMenuConfigIndex];
+ 

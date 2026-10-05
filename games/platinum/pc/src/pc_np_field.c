@@ -64,6 +64,9 @@
 
 #include "pc_np_options.h"
 
+#include "map_object.h"
+#include "terrain_collision_manager.h"
+
 extern FieldSystem *pc_lab_field_system(void); /* pc/patches/src/field_system.c.patch */
 extern Camera *pc_np_active_camera(void);      /* pc/patches/src/camera.c.patch */
 
@@ -236,6 +239,48 @@ static void pc_np_rules_check(FieldSystem *fs)
     fprintf(stderr, "pc-np: rules check: %s\n", pass ? "PASS (bugs with the bit off, fixed with it on)" : "FAIL");
 }
 
+/*
+ * The end-to-end probe's field half (pc/src/pc_e2e.c, core/include/
+ * np_e2e.h): the player's tile and facing, the other map objects, and,
+ * while the player is free, the terrain around them as the movement code
+ * sees it (TerrainCollisionManager, the queries PlayerAvatar_CheckCollision
+ * makes). Tiles off the loaded map blocks are left unknown.
+ */
+static unsigned e2e_tile(void *ctx, int x, int z)
+{
+    FieldSystem *fs = ctx;
+    const u8 behavior = TerrainCollisionManager_GetTileBehavior(fs, x, z);
+
+    /* 0xFF: terrain_collision_manager.c's INVALID_TILE_BEHAVIOR, off the loaded blocks */
+    if (behavior == 0xFF) return 0;
+    return PC_E2E_TILE_KNOWN | behavior | (TerrainCollisionManager_CheckCollision(fs, x, z) ? PC_E2E_TILE_COLLISION : 0);
+}
+
+static void e2e_frame(FieldSystem *fs, int ready)
+{
+    MapObject *player, *obj = NULL;
+    int i = 0;
+
+    if (!pc_e2e_on()) return;
+    if (fs == NULL || fs->location == NULL || fs->playerAvatar == NULL || fs->mapObjMan == NULL
+        || !FieldSystem_IsRunningFieldMap(fs)) {
+        pc_e2e_field(0, 0, 0, 0, 0, 0, 0);
+        pc_e2e_end_frame();
+        return;
+    }
+    player = PlayerAvatar_GetMapObject(fs->playerAvatar);
+    pc_e2e_field(1, (unsigned)fs->location->mapHeaderID, PlayerAvatar_GetXPos(fs->playerAvatar),
+                 PlayerAvatar_GetZPos(fs->playerAvatar), player != NULL ? MapObject_GetY(player) : 0,
+                 (unsigned)PlayerAvatar_GetFacingDir(fs->playerAvatar),
+                 (unsigned)PlayerAvatar_GetPlayerMoveState(fs->playerAvatar));
+    if (ready && fs->terrainCollisionMan != NULL) pc_e2e_grid(e2e_tile, fs);
+    while (MapObjectMan_FindObjectWithStatus(fs->mapObjMan, &obj, &i, MAP_OBJ_STATUS_0)) {
+        if (obj == player) continue;
+        pc_e2e_object(MapObject_GetX(obj), MapObject_GetZ(obj), MapObject_GetLocalID(obj), MapObject_GetGraphicsID(obj));
+    }
+    pc_e2e_end_frame();
+}
+
 void pc_np_frame(void)
 {
     FieldSystem *fs = pc_lab_field_system();
@@ -243,7 +288,7 @@ void pc_np_frame(void)
 
     pc_np_stat.field_ready = (unsigned)ready;
     pc_np_stat.map_id = fs != NULL && fs->location != NULL ? (unsigned)fs->location->mapHeaderID : 0;
-
+    e2e_frame(fs, ready);
     if (ready) pc_np_rules_check(fs);
     if (pc_np_opt.quicksave_seq == pc_np_stat.quicksave_seq) return;
     if (ready) {
