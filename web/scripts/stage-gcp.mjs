@@ -1,4 +1,5 @@
-// Explicit deployment bundle: only the three user-selected cartridges and cores.
+import { stageGen123 } from "./gen123-package.mjs";
+// Explicit deployment bundle: verified engines and three allowlisted DS cartridges.
 import { createHash } from "node:crypto";
 import {
   readFileSync,
@@ -40,6 +41,7 @@ const cartridges = { version: 2, games: {} };
 rmSync(stage, { recursive: true, force: true });
 mkdirSync(resolve(site, "cores"), { recursive: true });
 mkdirSync(resolve(site, "cartridges"));
+stageGen123(resolve(dist, "engines/gen123"), resolve(site, "engines/gen123"));
 // Allowlist site outputs, never the repository or user storage.
 for (const name of ["index.html", "icon.svg", "assets"])
   cpSync(resolve(dist, name), resolve(site, name), { recursive: true });
@@ -86,7 +88,7 @@ function walk(dir) {
       walk(file);
       continue;
     }
-    if (/\.(nds|sav|dsv)(\.|$)/i.test(name))
+    if (/\.(nds|gb|gbc|gba|sav|dsv|pws)(\.|$)/i.test(name))
       throw Error(`Raw cartridge/save in GCP bundle: ${name}`);
     const data = readFileSync(file);
     sums.push(`${hash(data)}  ${relative(site, file)}`);
@@ -105,6 +107,7 @@ cpSync(
   resolve(stage, "Dockerfile"),
 );
 if (withApi) {
+  cpSync(resolve(root, "web/shared"), resolve(stage, "shared"), { recursive: true });
   mkdirSync(resolve(stage, "server"));
   for (const file of [
     "package.json",
@@ -120,7 +123,7 @@ let nginx = readFileSync(resolve(root, "web/deploy/nginx.conf"), "utf8")
   .replace("wasm|js|css", "wasm|js|css|npc")
   .replace(
     "location / {",
-    "location ~* \\.(nds|sav|dsv)(\\.|$) { return 404; }\n    location / {",
+    "location ~* \\.(nds|gb|gbc|gba|sav|dsv|pws)(\\.|$) { return 404; }\n    location / {",
   )
   // Cloud Run must also use --use-http2 for cartridge responses over 32 MiB.
   .replace("listen 8080;", "listen 8080;\n    http2 on;");
@@ -128,7 +131,7 @@ if (withApi)
   nginx = nginx.replace(
     "location / {",
     `location /api/ {
-      client_max_body_size 710000;
+      client_max_body_size 6m;
       proxy_pass http://127.0.0.1:8081;
       proxy_set_header Host $host;
       proxy_set_header X-Pokeweb-Client-IP $np_client_ip;

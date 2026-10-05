@@ -1,3 +1,4 @@
+import { stageGen123 } from "./gen123-package.mjs";
 import { createHash } from "node:crypto";
 import {
   unlinkSync,
@@ -12,6 +13,7 @@ import { gzipSync, brotliCompressSync, constants } from "node:zlib";
 import { execFileSync } from "node:child_process";
 const root = resolve(import.meta.dirname, "../.."),
   dist = resolve(root, "web/dist");
+stageGen123(resolve(dist, "engines/gen123"), resolve(dist, "engines/gen123"));
 const manifest = JSON.parse(
   readFileSync(resolve(dist, "cores/manifest.json"), "utf8"),
 );
@@ -50,9 +52,9 @@ function walk(dir) {
       continue;
     }
     const rel = relative(dist, file);
-    if (/\.(nds|sav|dsv|pgt|pcd)$/i.test(name))
+    if (/\.(nds|gb|gbc|gba|sav|dsv|pws|pgt|pcd)$/i.test(name))
       throw Error(`Private cartridge/save in distribution: ${rel}`);
-    if (/\.(wasm|js|css|html|json|svg|txt)$/.test(name)) {
+    if (/\.(wasm|js|css|html|json|svg|txt|love)$/.test(name)) {
       const bytes = readFileSync(file);
       sums.push(`${createHash("sha256").update(bytes).digest("hex")}  ${rel}`);
       if (bytes.length > 1024) {

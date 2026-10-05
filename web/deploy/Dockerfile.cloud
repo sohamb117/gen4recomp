@@ -4,6 +4,7 @@ WORKDIR /app
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY server/ ./
+COPY shared/ /shared/
 COPY deploy/nginx.conf /etc/nginx/http.d/default.conf
 COPY dist/ /usr/share/nginx/html/
 ENV SERVE_STATIC=true

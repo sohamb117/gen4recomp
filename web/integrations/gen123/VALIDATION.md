@@ -14,7 +14,9 @@
   game/format validation. Five API tests pass against an ephemeral local
   Postgres instance, including DS/engine replacement, one row per account,
   checksum validation, cross-game rejection, and migration preserving a save.
-- TypeScript/Vite production build and manifest-based engine staging pass.
+- Normal browser audio activation (without an autoplay override), mute,
+  pause/resume, and close-game flushing passed in the UI.
+- TypeScript/Vite production build and the complete GCP staging bundle pass.
 
 These are smoke and save-plumbing checks, not full-game playthroughs. Upstream
 Gen 2 is still under construction and Gen 3 is beta; the selector says so.

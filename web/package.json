@@ -12,7 +12,7 @@
     "pretest": "node scripts/prepare-test.mjs",
     "smoke": "node --import tsx scripts/smoke.ts",
     "verify:cores": "node scripts/verify-cores.mjs",
-    "release": "npm run sync:cores && npm test && npm run build && node scripts/package.mjs",
+    "release": "npm run prepare:gen123 && npm run sync:cores && npm test && npm run build && node scripts/package.mjs",
     "format": "prettier --write src scripts tests *.json *.ts *.html",
     "benchmark": "node --import tsx scripts/benchmark.ts",
     "verify:options": "node --liftoff-only --import tsx scripts/verify-options.ts",
