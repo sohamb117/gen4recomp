@@ -1,4 +1,4 @@
-# nativeplat / wired — web
+# pokeweb — web
 
 React + TypeScript + Vite frontend, a dedicated Web Worker runtime, and a
 copy-only WASM packaging pipeline. All existing source trees are read-only

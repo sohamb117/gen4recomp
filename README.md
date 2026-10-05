@@ -1,4 +1,57 @@
-# nativeplat
+# pokeweb
+
+Pokémon Diamond, Pearl, and Platinum in the browser, with a React/TypeScript UI,
+WASM game cores running in a Web Worker, local saves, and optional Neon cloud saves.
+
+**Play:** https://pokeweb.morisoba.moe
+
+This is the standalone continuation of [`gen4recomp`'s `web-ready` branch](https://github.com/sohamb117/gen4recomp/tree/web-ready),
+starting at `5a0c45c1b`. Its commit history and the source trees needed to rebuild
+the game cores are preserved. Development happens on this repository's `main`.
+
+- [Web development and core builds](web/README.md)
+- [Current deployment and verification](web/deploy/GCP.md)
+- [Local and cloud-save backend](web/server/README.md)
+- [Web-specific decomp change log](web/DECOMP_CHANGES.md)
+
+## Develop pokeweb
+
+Use Node 22.12+ and the toolchains/cartridge build inputs described in
+[BUILDING.md](docs/BUILDING.md). Generated cores, cartridges, saves, and credentials
+are not in Git. Once those local prerequisites are available:
+
+```sh
+npm --prefix web ci
+npm --prefix web run sync:cores
+npm --prefix web test
+npm --prefix web run dev
+```
+
+The application lives in `web/`; `shell-wired/` is the separate native UI copy.
+Game, core, feature, and tool sources remain available for upstream updates and
+copy-only builds. Existing GCP/Neon deployment settings still refer to the live
+service; creating this repository does not create or replace cloud infrastructure.
+
+## Bring in upstream changes
+
+For a fresh clone, configure the upstream remote once:
+
+```sh
+git remote add upstream git@github.com:sohamb117/gen4recomp.git
+```
+
+Then merge upstream changes into pokeweb's own branch:
+
+```sh
+git fetch upstream main
+git switch main
+git merge upstream/main
+```
+
+Push development to `origin` (`sohamb117/pokeweb`). Upstream branches and the
+original gen4recomp checkouts are independent of this repository.
+
+## Native project documentation
 
 Native ports of Pokémon Diamond, Pearl and Platinum (US). The games are
 built from the pret decompilations, compiled to WebAssembly, turned back into
