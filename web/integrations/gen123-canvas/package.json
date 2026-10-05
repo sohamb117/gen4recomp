@@ -1,0 +1,6 @@
+{
+  "name": "pokeweb-canvas-shader-tools",
+  "private": true,
+  "type": "module",
+  "devDependencies": { "glsl-transpiler": "3.0.3" }
+}

@@ -103,3 +103,22 @@ original Gen 4 trees, and upstream branches are unchanged.
   inside LÖVE and mute/volume changes do not touch cartridge extraction.
 - Import time slicing resets its budget after resumption, excluding time spent
   yielding. Counting the wait caused one-item-per-frame imports on slow frames.
+
+## 2026-10-05 — experimental Canvas 2D backend (not deployed)
+
+`web/scripts/prepare-gen123-canvas.py` copies the already prepared ROM-free LÖVE
+archive into ignored `build/gen123-canvas`. In that copy only, `conf.lua` disables
+the native window and graphics modules; `main.lua` installs the new browser
+`love.graphics` adapter before the existing bootstrap and adds temporary state
+diagnostics. Original game logic and all source checkouts remain unchanged.
+
+`web/integrations/gen123-canvas` contains the separate rendering implementation.
+Its GBA CPU shader equivalents derive from the pinned GPL Gen1Recomp
+`src/core/game3/gba_ppu.lua`; the package retains upstream licenses/attribution.
+These changes do not alter the production engine, staging manifest, or ROM data.
+
+The reusable, game-free foundation is published separately as
+https://github.com/sohamb117/love-canvas (initial commit `7484544`). Game-specific
+CPU PPU/palette effects stay here. Optional GLSL effects are translated from
+copied, pinned shader sources at build time; translation is not visual parity
+validation. `GLSL-TRANSPILER-NOTICE.txt` accompanies generated shader helpers.
