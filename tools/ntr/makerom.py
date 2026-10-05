@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Open stand-in for NitroSDK 3.2 makerom.exe, as invoked by pokediamond.
+"""Open stand-in for NitroSDK makerom.exe, as invoked by pokediamond (SDK 3.2)
+and pokeheartgold (SDK 4.2).
 
     makerom.py [-DNAME=VALUE ...] SPEC.rsf OUT.nds
     makerom.py --header-template OUT.sbin
 
-Understands the subset of the ROM spec format that games/diamond/rom.rsf uses
+Understands the subset of the ROM spec format those rom.rsf files use
 (Arm9/Arm7 Static, OverlayDefs, OverlayTable; Property; RomSpec HostRoot/File)
 and lays the image out the way the SDK packer does (the same strategy
 lhearachel/nitrorom reproduces for Platinum): header, ARM9 static, ARM9
 overlay table, ARM9 overlays, ARM7 static, FNT, FAT, banner, then the
 filesystem members in spec order, every member aligned to 0x200 with 0xFF.
-The secure-area CRC and header CRC are finished by tools/fixrom afterwards.
+Compressed (compstatic `_LZ`) statics and overlays are placed as given.
+The secure-area CRC and header CRC are finished by fixrom afterwards.
 """
 import functools
 import os
