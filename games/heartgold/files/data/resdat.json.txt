@@ -1,0 +1,55 @@
+{{ doNotModifyHeader }}
+
+#include "global.h"
+#include "unk_02009D48.h"
+#include "filesystem_files_def.h"
+
+{% if isString(kind) %}
+{{ setVarArr("GfGfxResType", "char", "pltt", "cell", "anim", "multicell", "multianim") }}
+const struct GF_2DGfxResHeaderNarcList data = {
+    (GfGfxResType){{ getIndexInArr("GfGfxResType", kind) }},
+    {
+{% for res in graphics %}
+        {
+            {{ res.narc }},
+            {{ res.file }},
+            {% if res.compressed %}TRUE{% else %}FALSE{% endif %},
+            {{ res.id }},
+            { {{ res.extra.0 }}, {{ res.extra.1 }} }
+        },
+{% endfor %}
+        {
+            -2,
+            -2,
+            -2,
+            -2,
+            {-2, -2}
+        }
+    }
+};
+{% else %}
+const struct ResdatNarcEntry data[] = {
+{% for entry in entries %}
+    {
+        {{ entry.graphics }},
+        {{ entry.palette }},
+        {{ entry.cell }},
+        {{ entry.anim }},
+        {{ default(entry.multicell, -1) }},
+        {{ default(entry.multianim, -1) }},
+        {{ entry.transfer }},
+        {{ entry.priority }}
+    },
+{% endfor %}
+    {
+        -2,
+        -2,
+        -2,
+        -2,
+        -2,
+        -2,
+        -2,
+        -2,
+    }
+};
+{% endif %}

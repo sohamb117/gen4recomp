@@ -1,0 +1,5410 @@
+{
+  "commands": [
+    {
+      "name": "Nop",
+      "args": []
+    },
+    {
+      "name": "Dummy",
+      "args": []
+    },
+    {
+      "name": "End",
+      "args": [],
+      "is_return": true,
+      "is_abs_branch": true
+    },
+    {
+      "name": "Wait",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "LoadByte",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "LoadWord",
+      "args": [
+        1,
+        4
+      ]
+    },
+    {
+      "name": "LoadByteFromAddr",
+      "args": [
+        1,
+        4
+      ]
+    },
+    {
+      "name": "WriteByteToAddr",
+      "args": [
+        4,
+        1
+      ]
+    },
+    {
+      "name": "SetPtrByte",
+      "args": [
+        4,
+        1
+      ]
+    },
+    {
+      "name": "CopyLocal",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "CopyByte",
+      "args": [
+        4,
+        4
+      ]
+    },
+    {
+      "name": "CompareLocalToLocal",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "CompareLocalToValue",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "CompareLocalToAddr",
+      "args": [
+        1,
+        4
+      ]
+    },
+    {
+      "name": "CompareAddrToLocal",
+      "args": [
+        4,
+        1
+      ]
+    },
+    {
+      "name": "CompareAddrToValue",
+      "args": [
+        4,
+        1
+      ]
+    },
+    {
+      "name": "CompareAddrToAddr",
+      "args": [
+        4,
+        4
+      ]
+    },
+    {
+      "name": "CompareVarToValue",
+      "args": [
+        "var",
+        2
+      ]
+    },
+    {
+      "name": "CompareVarToVar",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "RunScript",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "CallStd",
+      "args": [
+        "stdscr"
+      ]
+    },
+    {
+      "name": "RestartCurrentScript",
+      "args": []
+    },
+    {
+      "name": "GoTo",
+      "args": [
+        "script"
+      ],
+      "is_abs_branch": true
+    },
+    {
+      "name": "ObjectGoTo",
+      "args": [
+        "object1",
+        "script"
+      ]
+    },
+    {
+      "name": "BGGoTo",
+      "args": [
+        1,
+        "script"
+      ]
+    },
+    {
+      "name": "DirectionGoTo",
+      "args": [
+        1,
+        "script"
+      ]
+    },
+    {
+      "name": "Call",
+      "args": [
+        "script"
+      ]
+    },
+    {
+      "name": "Return",
+      "args": [],
+      "is_return": true,
+      "is_abs_branch": true
+    },
+    {
+      "name": "GoToIf",
+      "args": [
+        "condition",
+        "script"
+      ]
+    },
+    {
+      "name": "CallIf",
+      "args": [
+        "condition",
+        "script"
+      ]
+    },
+    {
+      "name": "SetFlag",
+      "args": [
+        "flag"
+      ]
+    },
+    {
+      "name": "ClearFlag",
+      "args": [
+        "flag"
+      ]
+    },
+    {
+      "name": "CheckFlag",
+      "args": [
+        "flag"
+      ]
+    },
+    {
+      "name": "SetFlagVar",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ClearFlagVar",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CheckFlagVar",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "SetTrainerFlag",
+      "args": [
+        "trainer"
+      ]
+    },
+    {
+      "name": "ClearTrainerFlag",
+      "args": [
+        "trainer"
+      ]
+    },
+    {
+      "name": "CheckTrainerFlag",
+      "args": [
+        "trainer"
+      ]
+    },
+    {
+      "name": "AddVar",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "SubVar",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "SetVar",
+      "args": [
+        "var",
+        2
+      ]
+    },
+    {
+      "name": "CopyVar",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "SetOrCopyVar",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "NonNPCMsg",
+      "args": [
+        "message"
+      ]
+    },
+    {
+      "name": "NPCMsg",
+      "args": [
+        "message"
+      ]
+    },
+    {
+      "name": "NonNPCMsgVar",
+      "args": [
+        "message_var"
+      ]
+    },
+    {
+      "name": "NPCMsgVar",
+      "args": [
+        "message_var"
+      ]
+    },
+    {
+      "name": "ScrCmd_048",
+      "args": [
+        "message"
+      ]
+    },
+    {
+      "name": "WaitABPress",
+      "args": []
+    },
+    {
+      "name": "WaitButton",
+      "args": []
+    },
+    {
+      "name": "WaitButtonOrDpad",
+      "args": []
+    },
+    {
+      "name": "OpenMsg",
+      "args": []
+    },
+    {
+      "name": "CloseMsg",
+      "args": []
+    },
+    {
+      "name": "HoldMsg",
+      "args": []
+    },
+    {
+      "name": "DirectionSignpost",
+      "args": [
+        "message",
+        1,
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "SetSignpostMap",
+      "args": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "SetSignpostAction",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "WaitSignpostAction",
+      "args": []
+    },
+    {
+      "name": "TrainerTips",
+      "args": [
+        "message",
+        "var"
+      ]
+    },
+    {
+      "name": "WaitSignpost",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_061",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_062",
+      "args": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "YesNo",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_064",
+      "args": [
+        1,
+        1,
+        1,
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_065",
+      "args": [
+        1,
+        1,
+        1,
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_066",
+      "args": [
+        "message",
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_067",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_068",
+      "args": [
+        1,
+        1,
+        1,
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_069",
+      "args": [
+        1,
+        1,
+        1,
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_070",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_071",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_072",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "PlaySE",
+      "args": [
+        "sound"
+      ]
+    },
+    {
+      "name": "StopSE",
+      "args": [
+        "sound"
+      ]
+    },
+    {
+      "name": "WaitSE",
+      "args": [
+        "sound"
+      ]
+    },
+    {
+      "name": "PlayCry",
+      "args": [
+        "species",
+        2
+      ]
+    },
+    {
+      "name": "WaitCry",
+      "args": []
+    },
+    {
+      "name": "PlayFanfare",
+      "args": [
+        "sound"
+      ]
+    },
+    {
+      "name": "WaitFanfare",
+      "args": []
+    },
+    {
+      "name": "PlayBGM",
+      "args": [
+        "sound"
+      ]
+    },
+    {
+      "name": "StopBGM",
+      "args": [
+        "sound"
+      ]
+    },
+    {
+      "name": "ResetBGM",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_083",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "FadeOutBGM",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "FadeInBGM",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_086",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "TempBGM",
+      "args": [
+        "sound"
+      ]
+    },
+    {
+      "name": "ScrCmd_088",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ChatotHasCry",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ChatotStartRecording",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ChatotStopRecording",
+      "args": []
+    },
+    {
+      "name": "ChatotSaveRecording",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_093",
+      "args": []
+    },
+    {
+      "name": "ApplyMovement",
+      "args": [
+        "object2",
+        "movement"
+      ]
+    },
+    {
+      "name": "WaitMovement",
+      "args": []
+    },
+    {
+      "name": "LockAll",
+      "args": []
+    },
+    {
+      "name": "ReleaseAll",
+      "args": []
+    },
+    {
+      "name": "Lock",
+      "args": [
+        "object2"
+      ]
+    },
+    {
+      "name": "Release",
+      "args": [
+        "object2"
+      ]
+    },
+    {
+      "name": "ShowPerson",
+      "args": [
+        "object2"
+      ]
+    },
+    {
+      "name": "HidePerson",
+      "args": [
+        "object2"
+      ]
+    },
+    {
+      "name": "ScrCmd_102",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_103",
+      "args": []
+    },
+    {
+      "name": "FacePlayer",
+      "args": []
+    },
+    {
+      "name": "GetPlayerCoords",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetPersonCoords",
+      "args": [
+        2,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_107",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_108",
+      "args": [
+        2,
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_109",
+      "args": [
+        "var",
+        2
+      ]
+    },
+    {
+      "name": "AddMoney",
+      "args": [
+        4
+      ]
+    },
+    {
+      "name": "SubMoneyImmediate",
+      "args": [
+        4
+      ]
+    },
+    {
+      "name": "HasEnoughMoneyImmediate",
+      "args": [
+        "var",
+        4
+      ]
+    },
+    {
+      "name": "ShowMoneyBox",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "HideMoneyBox",
+      "args": []
+    },
+    {
+      "name": "UpdateMoneyBox",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_116",
+      "args": [
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_117",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_118",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "GetCoinAmount",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GiveCoins",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "TakeCoins",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GiveAthletePoints",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "TakeAthletePoints",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "CheckAthletePoints",
+      "args": [
+        "var",
+        2
+      ]
+    },
+    {
+      "name": "GiveItem",
+      "args": [
+        "item",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "TakeItem",
+      "args": [
+        "item",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "HasSpaceForItem",
+      "args": [
+        "item",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "HasItem",
+      "args": [
+        "item",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ItemIsTMOrHM",
+      "args": [
+        "item",
+        "var"
+      ]
+    },
+    {
+      "name": "GetItemPocket",
+      "args": [
+        "item",
+        "var"
+      ]
+    },
+    {
+      "name": "SetStarterChoice",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GenderMsgBox",
+      "args": [
+        "message",
+        "message"
+      ]
+    },
+    {
+      "name": "GetSealQuantity",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GiveOrTakeSeal",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GiveRandomSeal",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_136",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GiveMon",
+      "args": [
+        "species",
+        "var",
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GiveEgg",
+      "args": [
+        "species",
+        "var"
+      ]
+    },
+    {
+      "name": "SetMonMove",
+      "args": [
+        "var",
+        "var",
+        "move"
+      ]
+    },
+    {
+      "name": "MonHasMove",
+      "args": [
+        "var",
+        "move",
+        "var"
+      ]
+    },
+    {
+      "name": "GetPartySlotWithMove",
+      "args": [
+        "var",
+        "move"
+      ]
+    },
+    {
+      "name": "GetPhoneBookRematch",
+      "args": [
+        "phone_contact",
+        "var"
+      ]
+    },
+    {
+      "name": "NameRival",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetFriendSprite",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "RegisterPokegearCard",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "RegisterGearNumber",
+      "args": [
+        "phone_contact"
+      ]
+    },
+    {
+      "name": "CheckRegisteredPhoneNumber",
+      "args": [
+        "phone_contact",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_148",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "UnsetPhoneCallTrigger",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "RestoreOverworld",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_151",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_152",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_153",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_154",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_155",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_156",
+      "args": []
+    },
+    {
+      "name": "TownMap",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_158",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_159",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_160",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_161",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_162",
+      "args": []
+    },
+    {
+      "name": "HOFCredits",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_164",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_165",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_166",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ChooseStarter",
+      "args": []
+    },
+    {
+      "name": "GetTrainerPathToPlayer",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "TrainerStepTowardsPlayer",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "GetTrainerEyeType",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetEyeTrainerNum",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "NamePlayer",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "NicknameInput",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "FadeScreen",
+      "args": [
+        2,
+        2,
+        2,
+        "rgb"
+      ]
+    },
+    {
+      "name": "WaitFade",
+      "args": []
+    },
+    {
+      "name": "Warp",
+      "args": [
+        "maps",
+        2,
+        "var",
+        "var",
+        "direction"
+      ]
+    },
+    {
+      "name": "RockClimb",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "Surf",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "Waterfall",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_180",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "FlashEffect",
+      "args": []
+    },
+    {
+      "name": "Whirlpool",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_183",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "PlayerOnBikeCheck",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "PlayerOnBikeSet",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "SetBikeStateLock",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "GetPlayerState",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "SetAvatarBits",
+      "args": [
+        "player_transition"
+      ]
+    },
+    {
+      "name": "UpdateAvatarState",
+      "args": []
+    },
+    {
+      "name": "BufferPlayersName",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferRivalsName",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferFriendsName",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferMonSpeciesName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferItemName",
+      "args": [
+        1,
+        "item"
+      ]
+    },
+    {
+      "name": "BufferPocketName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferTMHMMoveName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferMoveName",
+      "args": [
+        1,
+        "move"
+      ]
+    },
+    {
+      "name": "BufferInt",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferPartyMonNick",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferTrainerClassName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferPlayerUnionAvatarClassName",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferSpeciesName",
+      "args": [
+        1,
+        "species",
+        2,
+        1
+      ]
+    },
+    {
+      "name": "BufferStarterSpeciesName",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferDPPtRivalStarterSpeciesName",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferDPPtFriendStarterSpeciesName",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "GetStarterChoice",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "BufferDecorationName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_208",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_209",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferMapSecName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_211",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GetTrainerNum",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "TrainerBattle",
+      "args": [
+        "trainer",
+        "var",
+        1,
+        1
+      ]
+    },
+    {
+      "name": "TrainerMessage",
+      "args": [
+        "trainer",
+        "var"
+      ]
+    },
+    {
+      "name": "GetTrainerMsgParams",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetRematchMsgParams",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "TrainerIsDoubleBattle",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "EncounterMusic",
+      "args": [
+        "trainer"
+      ]
+    },
+    {
+      "name": "WhiteOut",
+      "args": []
+    },
+    {
+      "name": "CheckBattleWon",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "StaticWildWonOrCaughtCheck",
+      "args": [
+        "var",
+        1
+      ]
+    },
+    {
+      "name": "PartyCheckForDouble",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_223",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_224",
+      "args": []
+    },
+    {
+      "name": "GoToIfTrainerDefeated",
+      "args": [
+        "script"
+      ]
+    },
+    {
+      "name": "ScrCmd_226",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_227",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_228",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_229",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_230",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_231",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_232",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_233",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_234",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_235",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_236",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_237",
+      "args": []
+    },
+    {
+      "name": "PartyHasPokerus",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "MonGetGender",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "SetDynamicWarp",
+      "args": [
+        "maps",
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GetDynamicWarpFloorNo",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ElevatorCurFloorBox",
+      "args": [
+        1,
+        1,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "CountJohtoDexSeen",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CountJohtoDexOwned",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CountNationalDexSeen",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CountNationalDexOwned",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_247",
+      "args": []
+    },
+    {
+      "name": "GetDexEvalResult",
+      "args": [
+        1,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "RocketTrapBattle",
+      "args": [
+        "species",
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_250",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "CatchingTutorial",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_252",
+      "args": []
+    },
+    {
+      "name": "GetSaveFileState",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "SaveGameNormal",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_255",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_256",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_257",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_258",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_259",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_260",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_261",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_262",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_263",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_264",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_265",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_266",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_267",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_268",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_269",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_270",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_271",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_272",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_273",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_274",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MartBuy",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "SpecialMartBuy",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "DecorationMart",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "SealMart",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "OverworldWhiteOut",
+      "args": []
+    },
+    {
+      "name": "SetSpawn",
+      "args": [
+        "spawn"
+      ]
+    },
+    {
+      "name": "GetPlayerGender",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "HealParty",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_283",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_284",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_285",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_286",
+      "args": []
+    },
+    {
+      "name": "BufferUnionRoomAvatarChoices",
+      "args": []
+    },
+    {
+      "name": "UnionRoomAvatarIdxToTrainerClass",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_289",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CheckPokedex",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "GivePokedex",
+      "args": []
+    },
+    {
+      "name": "CheckRunningShoes",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "GiveRunningShoes",
+      "args": []
+    },
+    {
+      "name": "CheckBadge",
+      "args": [
+        "badge",
+        "var"
+      ]
+    },
+    {
+      "name": "GiveBadge",
+      "args": [
+        "badge"
+      ]
+    },
+    {
+      "name": "CountBadges",
+      "args": [
+        "badge"
+      ]
+    },
+    {
+      "name": "ScrCmd_297",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_298",
+      "args": []
+    },
+    {
+      "name": "CheckEscortMode",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "SetEscortMode",
+      "args": []
+    },
+    {
+      "name": "ClearEscortMode",
+      "args": []
+    },
+    {
+      "name": "CheckStepTakenFlag",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "SetStepTakenFlag",
+      "args": []
+    },
+    {
+      "name": "GetStepTakenFlag",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_CheckGameClearFlag",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_SetGameClearFlag",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_307",
+      "args": [
+        2,
+        2,
+        "var",
+        "var",
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_308",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_309",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_310",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_311",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferDaycareMonNicks",
+      "args": []
+    },
+    {
+      "name": "GetDaycareState",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "EcruteakGymInit",
+      "args": []
+    },
+    {
+      "name": "BindEcruteakGymCandleToTrainerSprite",
+      "args": []
+    },
+    {
+      "name": "UnbindEcruteakGymCandleFromTrainerSprite",
+      "args": []
+    },
+    {
+      "name": "ExtinguishEcruteakGymCandle",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "CianwoodGymInit",
+      "args": []
+    },
+    {
+      "name": "CianwoodGymTurnWinch",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "VermilionGymInit",
+      "args": []
+    },
+    {
+      "name": "VermilionGymLockAction",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "VermilionGymCanCheck",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ResampleVermilionGymCans",
+      "args": []
+    },
+    {
+      "name": "VioletGymInit",
+      "args": []
+    },
+    {
+      "name": "VioletGymElevator",
+      "args": []
+    },
+    {
+      "name": "AzaleaGymInit",
+      "args": []
+    },
+    {
+      "name": "AzaleaGymSpinarak",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "AzaleaGymSwitch",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BlackthornGymInit",
+      "args": []
+    },
+    {
+      "name": "FuchsiaGymInit",
+      "args": []
+    },
+    {
+      "name": "ViridianGymInit",
+      "args": []
+    },
+    {
+      "name": "GetPartyCount",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_333",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_334",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_335",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "BufferBerryName",
+      "args": [
+        1,
+        "item",
+        "var"
+      ]
+    },
+    {
+      "name": "BufferNatureName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "MovePerson",
+      "args": [
+        "object2",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MovePersonFacing",
+      "args": [
+        "object2",
+        "var",
+        "var",
+        "var",
+        "direction"
+      ]
+    },
+    {
+      "name": "SetObjectMovementType",
+      "args": [
+        "object2",
+        "var"
+      ]
+    },
+    {
+      "name": "SetObjectFacing",
+      "args": [
+        "object2",
+        "direction"
+      ]
+    },
+    {
+      "name": "MoveWarp",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "MoveBGEvent",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_344",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "AddWaitingIcon",
+      "args": []
+    },
+    {
+      "name": "RemoveWaitingIcon",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_347",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "WaitButtonOrDelay",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "PartySelectUI",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_350",
+      "args": []
+    },
+    {
+      "name": "GetPartySelection",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "PokemonSummaryScreen",
+      "args": [
+        1,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetMoveSelection",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "GetPartyMonSpecies",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "PartyMonIsMine",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "PartyCountNotEgg",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CountAliveMons",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "CountAliveMonsAndPC",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "PartyCountEgg",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "SubMoneyVar",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "RetrieveDaycareMon",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GiveLoanMon",
+      "args": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "name": "CheckReturnLoanMon",
+      "args": [
+        1,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ReturnLoanMon",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ResetDaycareEgg",
+      "args": []
+    },
+    {
+      "name": "GiveDaycareEgg",
+      "args": []
+    },
+    {
+      "name": "BufferDaycareWithdrawCost",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "HasEnoughMoneyVar",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "EggHatchAnim",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_370",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferDaycareMonGrowth",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetTailDaycareMonSpeciesAndNick",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "PutMonInDaycare",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_374",
+      "args": [
+        "object2"
+      ]
+    },
+    {
+      "name": "MakeObjectVisible",
+      "args": [
+        "object2"
+      ]
+    },
+    {
+      "name": "ScrCmd_376",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_377",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ViewRankings",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_379",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "Random",
+      "args": [
+        "var",
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_381",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "MonGetFriendship",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MonAddFriendship",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "MonSubtractFriendship",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "BufferDaycareMonStats",
+      "args": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GetPlayerFacing",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetDaycareCompatibility",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CheckDaycareEgg",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "PlayerHasSpecies",
+      "args": [
+        "var",
+        "species"
+      ]
+    },
+    {
+      "name": "SizeRecordCompare",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "SizeRecordUpdate",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "BufferMonSize",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "BufferRecordSize",
+      "args": [
+        "var",
+        "var",
+        "species"
+      ]
+    },
+    {
+      "name": "ScrCmd_394",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_395",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CountMonMoves",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MonForgetMove",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MonGetMove",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "BufferPartyMonMoveName",
+      "args": [
+        1,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "StrengthFlagAction",
+      "args": [
+        1
+      ],
+      "cases": {
+        "0": [],
+        "1": [],
+        "2": [
+          "var"
+        ]
+      },
+      "switch_arg": 0
+    },
+    {
+      "name": "FlashAction",
+      "args": [
+        1
+      ],
+      "cases": {
+        "0": [],
+        "1": [],
+        "2": [
+          "var"
+        ]
+      },
+      "switch_arg": 0
+    },
+    {
+      "name": "DefogAction",
+      "args": [
+        1
+      ],
+      "cases": {
+        "0": [],
+        "1": [],
+        "2": [
+          "var"
+        ]
+      },
+      "switch_arg": 0
+    },
+    {
+      "name": "ScrCmd_403",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_404",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_405",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_406",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_407",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_408",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_409",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_410",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_411",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_412",
+      "args": [
+        2,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_413",
+      "args": [
+        "var",
+        2,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_414",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_415",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_416",
+      "args": [
+        2,
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_417",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_418",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_419",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_420",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_421",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_422",
+      "args": [
+        2,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "name": "CheckJohtoDexComplete",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CheckNationalDexComplete",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ShowCertificate",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "KenyaCheck",
+      "args": [
+        "var",
+        "var",
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_427",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "MonGiveMail",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CountFossils",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "SetPhoneCall",
+      "args": [
+        "phone_contact",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "RunPhoneCall",
+      "args": []
+    },
+    {
+      "name": "GetFossilPokemon",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetFossilMinimumAmount",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "PartyCountMonsAtOrBelowLevel",
+      "args": [
+        "var",
+        2
+      ]
+    },
+    {
+      "name": "SurvivePoisoning",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_436",
+      "args": []
+    },
+    {
+      "name": "DebugWatch",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetStdMsgNaix",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "NonNPCMsgExtern",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MsgBoxExtern",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_441",
+      "args": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_442",
+      "args": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_443",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_444",
+      "args": [
+        1,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_445",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_446",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "SafariZoneAction",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_448",
+      "args": [
+        "maps",
+        2,
+        "var",
+        "var",
+        "direction"
+      ]
+    },
+    {
+      "name": "ScrCmd_449",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_450",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_451",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_452",
+      "args": [
+        "species",
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_453",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_454",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_455",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_456",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "MonGetNature",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GetPartySlotWithNature",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_459",
+      "args": []
+    },
+    {
+      "name": "LoadPhoneDat",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetPhoneContactMsgIds",
+      "args": [
+        1,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_462",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "EnableMassOutbreaks",
+      "args": []
+    },
+    {
+      "name": "CreateRoamer",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_465",
+      "args": [
+        2
+      ],
+      "switch_arg": 0,
+      "cases": {
+        "0": [
+          "var",
+          "var"
+        ],
+        "1": [
+          "var",
+          "var"
+        ],
+        "2": [
+          "var",
+          "var"
+        ],
+        "3": [
+          "var",
+          "var"
+        ],
+        "4": [
+          "var"
+        ],
+        "5": [
+          "var"
+        ],
+        "6": [],
+        "7": [
+          "var"
+        ]
+      }
+    },
+    {
+      "name": "ScrCmd_466",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MoveRelearnerInit",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "MoveTutorInit",
+      "args": [
+        "var",
+        "move"
+      ]
+    },
+    {
+      "name": "MoveRelearnerGetResult",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "LoadNPCTrade",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "GetOfferedSpecies",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "NPCTradeGetReqSpecies",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "NPCTradeExec",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "NPCTradeEnd",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_475",
+      "args": []
+    },
+    {
+      "name": "EnablePokedexFormDetection",
+      "args": []
+    },
+    {
+      "name": "NatDexFlagAction",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "MonGetRibbonCount",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetPartyRibbonCount",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "MonHasRibbon",
+      "args": [
+        "var",
+        "var",
+        "ribbon"
+      ]
+    },
+    {
+      "name": "GiveRibbon",
+      "args": [
+        "var",
+        "ribbon"
+      ]
+    },
+    {
+      "name": "BufferRibbonName",
+      "args": [
+        1,
+        "ribbon"
+      ]
+    },
+    {
+      "name": "GetEVTotal",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetWeekday",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "StartBattleRegulationMenuTask",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "Dummy486",
+      "args": []
+    },
+    {
+      "name": "PokeCenAnim",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ElevatorAnim",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MysteryGift",
+      "args": [
+        2
+      ],
+      "cases": {
+        "0": [],
+        "1": [
+          "var"
+        ],
+        "2": [
+          "var"
+        ],
+        "3": [
+          "var"
+        ],
+        "4": [],
+        "5": [
+          "var",
+          "var"
+        ],
+        "6": [
+          "var",
+          "var"
+        ],
+        "7": [],
+        "8": []
+      },
+      "switch_arg": 0
+    },
+    {
+      "name": "NopVar490",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_491",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_492",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "PromptEasyChat",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_494",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "GetGameVersion",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetPartyLead",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "GetMonTypes",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "PrimoPasswordCheck1",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "PrimoPasswordCheck2",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_500",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_501",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_502",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "LotoIDGet",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "LotoIDSearch",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "LotoIDSet",
+      "args": []
+    },
+    {
+      "name": "BufferBoxMonNick",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "CountPCEmptySpace",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "PalParkAction",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_509",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_510",
+      "args": []
+    },
+    {
+      "name": "PalParkScoreGet",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "PlayerMovementSavingSet",
+      "args": []
+    },
+    {
+      "name": "PlayerMovementSavingClear",
+      "args": []
+    },
+    {
+      "name": "HallOfFameAnim",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "AddSpecialGameStat",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "BufferFashionName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_517",
+      "args": [
+        "species",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_518",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_519",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_520",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_521",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_522",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_523",
+      "args": [
+        "object2",
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_524",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_525",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_526",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_527",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_528",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetPartyLeadAlive",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_530",
+      "args": [
+        2,
+        1
+      ]
+    },
+    {
+      "name": "BufferBackgroundName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "CheckCoinsImmediate",
+      "args": [
+        "var",
+        4
+      ]
+    },
+    {
+      "name": "CheckGiveCoins",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_534",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "MonGetLevel",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_536",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_537",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_538",
+      "args": [
+        "var",
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_539",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_540",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "BufferIntEx",
+      "args": [
+        1,
+        "var",
+        1,
+        1
+      ]
+    },
+    {
+      "name": "MonGetContestValue",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_543",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_544",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_545",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_546",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_547",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_548",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_549",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_550",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_551",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_552",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_553",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_554",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_555",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_556",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CheckBattlePoints",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "UnionRoomAvatarIdxToSprite",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_559",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_560",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScreenShake",
+      "args": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "MultiBattle",
+      "args": [
+        "trainer",
+        "trainer",
+        "trainer",
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_563",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_564",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_565",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_566",
+      "args": []
+    },
+    {
+      "name": "GetDPPlPrizeItemIDAndCost",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_568",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_569",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "CheckCoinsVar",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_571",
+      "args": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GetUniqueSealsQuantity",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_573",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_574",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_575",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_576",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_577",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_578",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_579",
+      "args": []
+    },
+    {
+      "name": "BufferSealName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "LockLastTalked",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_582",
+      "args": [
+        "maps",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_583",
+      "args": [
+        2,
+        1
+      ]
+    },
+    {
+      "name": "PartyLegalCheck",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_585",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_586",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_587",
+      "args": []
+    },
+    {
+      "name": "LatiCaughtCheck",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "WildBattle",
+      "args": [
+        "species",
+        "var",
+        1
+      ]
+    },
+    {
+      "name": "GetTrcardStars",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_591",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_592",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ShowSaveStats",
+      "args": []
+    },
+    {
+      "name": "HideSaveStats",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_595",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_596",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_597",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_598",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_599",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_600",
+      "args": []
+    },
+    {
+      "name": "FollowMonFacePlayer",
+      "args": []
+    },
+    {
+      "name": "ToggleFollowingPokemonMovement",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "WaitFollowingPokemonMovement",
+      "args": []
+    },
+    {
+      "name": "FollowingPokemonMovement",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_605",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_606",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_607",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_608",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_609",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_610",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "Pokeathlon",
+      "args": [
+        1,
+        1,
+        "var",
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetNPCTradeUnusedFlag",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "GetPhoneContactRandomGiftBerry",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetPhoneContactGiftItem",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CameronPhoto",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "CountSavedPhotos",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "OpenPhotoAlbum",
+      "args": []
+    },
+    {
+      "name": "PhotoAlbumIsFull",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "RocketCostumeFlagCheck",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "RocketCostumeFlagAction",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "PlaceStarterBallsInElmsLab",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_622",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "AnimApricornTree",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ApricornTreeGetApricorn",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GiveApricornFromTree",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "BufferApricornName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_627",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_628",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_629",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_630",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_631",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "CountPartyMonsOfSpecies",
+      "args": [
+        "var",
+        "species"
+      ]
+    },
+    {
+      "name": "ScrCmd_633",
+      "args": [
+        2,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_634",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_635",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_636",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_637",
+      "args": [
+        2,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_638",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_639",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_640",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "SaveWipeExtraChunks",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_642",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_643",
+      "args": [
+        2,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_644",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_645",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_646",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetPartySlotWithSpecies",
+      "args": [
+        "var",
+        "species"
+      ]
+    },
+    {
+      "name": "ScrCmd_648",
+      "args": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScratchOffCard",
+      "args": []
+    },
+    {
+      "name": "ScratchOffCardEnd",
+      "args": []
+    },
+    {
+      "name": "GetScratchOffPrize",
+      "args": [
+        2,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_652",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MoveTutorChooseMove",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "TutorMoveTeachInSlot",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "TutorMoveGetPrice",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_656",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "StatJudge",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "BufferStatName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "SetMonForm",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "BufferTrainerName",
+      "args": [
+        1,
+        "trainer"
+      ]
+    },
+    {
+      "name": "ScrCmd_661",
+      "args": [
+        1,
+        4,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_662",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_663",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_664",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_665",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_666",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_667",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "BufferTypeName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "GetItemQuantity",
+      "args": [
+        "item",
+        "var"
+      ]
+    },
+    {
+      "name": "GetHiddenPowerType",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "SetFavoriteMon",
+      "args": []
+    },
+    {
+      "name": "GetFavoriteMon",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GetOwnedRotomForms",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "CountTranformedRotomsInParty",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "UpdateRotomForm",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "GetPartyMonForm",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_677",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_678",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_679",
+      "args": []
+    },
+    {
+      "name": "AddSpecialGameStat2",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_681",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_682",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "GetStaticEncounterOutcome",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_684",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "GetPlayerXYZ",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_686",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_687",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "GetPartySlotWithFatefulEncounter",
+      "args": [
+        "var",
+        2
+      ]
+    },
+    {
+      "name": "CommSanitizeParty",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "DaycareSanitizeMon",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_691",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "BufferBattleHallStreak",
+      "args": [
+        1,
+        1,
+        1,
+        1,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "BattleHallCountUsedSpecies",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "BattleHallGetTotalStreak",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_695",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_696",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_697",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "FollowerPokeIsEventTrigger",
+      "args": [
+        1,
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_699",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_700",
+      "args": []
+    },
+    {
+      "name": "MonHasItem",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "BattleTowerSetUpMultiBattle",
+      "args": []
+    },
+    {
+      "name": "SetPlayerVolume",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_704",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_705",
+      "args": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "ScrCmd_706",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CheckMonSeen",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_708",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_709",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_710",
+      "args": []
+    },
+    {
+      "name": "FollowMonInteract",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_712",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "AlphPuzzle",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "OpenAlphHiddenRoom",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "UpdateDaycareMonObjects",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_716",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_717",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_718",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_719",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_720",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_721",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_722",
+      "args": [
+        1,
+        1,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_723",
+      "args": [
+        1,
+        1,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_724",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_725",
+      "args": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "ProcessSoundplate",
+      "args": []
+    },
+    {
+      "name": "GetFollowPokePartyIndex",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_728",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_729",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_730",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_731",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_732",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_733",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_734",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_735",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ClearKurtApricorn",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_737",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetTotalApricornCount",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_739",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_740",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_741",
+      "args": [
+        "var",
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_742",
+      "args": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_743",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CreatePokeathlonFriendshipRoomStatues",
+      "args": []
+    },
+    {
+      "name": "BufferPokeathlonCourseName",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "TouchscreenMenuHide",
+      "args": []
+    },
+    {
+      "name": "TouchscreenMenuShow",
+      "args": []
+    },
+    {
+      "name": "GetMenuChoice",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "MenuInitStdGmm",
+      "args": [
+        1,
+        1,
+        1,
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "MenuInit",
+      "args": [
+        1,
+        1,
+        1,
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "MenuItemAdd",
+      "args": [
+        "var",
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "MenuExec",
+      "args": []
+    },
+    {
+      "name": "RockSmashItemCheck",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "TryHeadbuttEncounter",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "LegendCutsceneClearBellAnimBegin",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneClearBellAnimEnd",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneClearBellRiseFromBag",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneClearBellShimmer",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "LegendCutsceneLugiaEyeGlimmerEffect",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_760",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneMoveCameraTo",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "LegendCutscenePanCameraTo",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "LegendCutsceneWaitCameraPan",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneBirdFinalApproach",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneWavesOrLeavesEffectBegin",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneWavesOrLeavesEffectEnd",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneLugiaArrivesEffectBegin",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneLugiaArrivesEffectEnd",
+      "args": []
+    },
+    {
+      "name": "LegendCutsceneLugiaArrivesEffectCameraPan",
+      "args": []
+    },
+    {
+      "name": "CheckSeenAllLetterUnown",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_771",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_772",
+      "args": []
+    },
+    {
+      "name": "Cinematic",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ShowLegendaryWing",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_775",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GiveTogepiEgg",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_777",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "GiveSpikyEarPichu",
+      "args": []
+    },
+    {
+      "name": "RadioMusicIsPlaying",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "CasinoGame",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "KenyaCheckPartyOrMailbox",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "MartSell",
+      "args": []
+    },
+    {
+      "name": "SetFollowMonInhibitState",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScriptOverlayCmd",
+      "args": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "BugContestAction",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferBugContestWinner",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "JudgeBugContest",
+      "args": [
+        "var",
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "BufferBugContestMonNick",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BugContestGetTimeLeft",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "IsBugContestantRegistered",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "CheckSafariZoneChallengeCompleted",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "UpdateSafariZoneIGT",
+      "args": []
+    },
+    {
+      "name": "BankTransaction",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "CheckBankBalance",
+      "args": [
+        "var",
+        4
+      ]
+    },
+    {
+      "name": "ScrCmd_795",
+      "args": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_796",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_797",
+      "args": []
+    },
+    {
+      "name": "BufferRulesetName",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_799",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_800",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_801",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_802",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_803",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_804",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_805",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_806",
+      "args": []
+    },
+    {
+      "name": "SetTrainerHouseSprite",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_808",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ShowTrainerHouseIntroMessage",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_810",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_811",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_812",
+      "args": []
+    },
+    {
+      "name": "MomGiftCheck",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_814",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_815",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "UnownCircle",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_817",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "MystriStageGymmickInit",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_819",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_820",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "GetBuenasPassword",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_822",
+      "args": []
+    },
+    {
+      "name": "ScrCmd_823",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_824",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetShinyLeafCount",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "TryGiveShinyLeafCrown",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "GetPartyMonForm2",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "MonAddContestValue",
+      "args": [
+        "var",
+        1,
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_829",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_830",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_831",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_832",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_833",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_834",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_835",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "CheckKyogreGroudonInParty",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_837",
+      "args": [
+        "var"
+      ]
+    },
+    {
+      "name": "BankOrWalletIsFull",
+      "args": [
+        2,
+        "var"
+      ]
+    },
+    {
+      "name": "SysSetSleepFlag",
+      "args": [
+        2
+      ]
+    },
+    {
+      "name": "ScrCmd_840",
+      "args": [
+        "var",
+        "var"
+      ]
+    },
+    {
+      "name": "ScrCmd_841",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "ScrCmd_842",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferItemNameIndef",
+      "args": [
+        1,
+        "item"
+      ]
+    },
+    {
+      "name": "BufferItemNamePlural",
+      "args": [
+        1,
+        "item"
+      ]
+    },
+    {
+      "name": "BufferPartyMonSpeciesNameIndef",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferSpeciesNameIndef",
+      "args": [
+        1,
+        "species",
+        2,
+        1
+      ]
+    },
+    {
+      "name": "BufferDPPtFriendStarterSpeciesNameIndef",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferFashionNameIndef",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferTrainerClassNameIndef",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "BufferSealNamePlural",
+      "args": [
+        1,
+        "var"
+      ]
+    },
+    {
+      "name": "Capitalize",
+      "args": [
+        1
+      ]
+    },
+    {
+      "name": "BufferDeptStoreFloorNo",
+      "args": [
+        1,
+        1
+      ]
+    }
+  ],
+  "argtypes": {
+    "var": {
+      "header": "include/constants/vars.h",
+      "prefix": "VAR_"
+    },
+    "flag": {
+      "header": "include/constants/flags.h",
+      "prefix": "FLAG_"
+    },
+    "species": {
+      "header": "include/constants/species.h",
+      "prefix": "SPECIES_"
+    },
+    "item": {
+      "header": "include/constants/items.h",
+      "prefix": "ITEM_"
+    },
+    "move": {
+      "header": "include/constants/moves.h",
+      "prefix": "MOVE_"
+    },
+    "sound": {
+      "header": "include/constants/sndseq.h",
+      "prefix": "SEQ_"
+    },
+    "ribbon": {
+      "header": "include/constants/ribbon.h",
+      "prefix": "RIBBON_"
+    },
+    "stdscr": {
+      "header": "include/constants/std_script.h",
+      "prefix": "std_"
+    },
+    "trainer": {
+      "header": "include/constants/trainers.h",
+      "prefix": "TRAINER_"
+    },
+    "sprites": {
+      "header": "include/constants/sprites.h",
+      "prefix": "SPRITE_"
+    },
+    "maps": {
+      "header": "include/constants/maps.h",
+      "prefix": "MAP_"
+    },
+    "phone_contact": {
+      "header": "include/constants/phone_contacts.h",
+      "prefix": "PHONE_CONTACT_"
+    },
+    "spawn": {
+      "header": "include/constants/spawns.h",
+      "prefix": "SPAWN_"
+    },
+    "badge": {
+      "header": "include/constants/badge.h",
+      "prefix": "BADGE_"
+    },
+    "player_transition": {
+      "header": "include/constants/global_fieldmap.h",
+      "prefix": "PLAYER_TRANSITION_"
+    },
+    "direction": {
+      "header": "include/constants/global_fieldmap.h",
+      "prefix": "DIR_"
+    }
+  }
+}
