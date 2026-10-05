@@ -44,7 +44,7 @@ GAMES = {
 TOP_KEYS = {"title", "notes", "status", "priority", "estimate", "refs", "version", "start", "run", "step", "expect",
             "shots"}
 START_KEYS = {"from", "recipe", "lab", "blank", "boot"}
-RUN_KEYS = {"frames", "save", "options", "clock"}
+RUN_KEYS = {"frames", "save", "options", "clock", "env"}
 EXPECT_KEYS = {"map", "position", "badges", "badge", "flags", "flags_clear", "vars", "party", "party_size", "battles",
                "log", "save"}
 STEP_COMMON = {"do", "max", "shot", "note"}
@@ -457,6 +457,7 @@ def run_milestone(game, ms, prev, args, out):
     end = os.path.join(d, "end.sav")
     try:
         env, start = start_save(game, ms, prev, args, out, d, res)
+        env.update({str(k): str(v) for k, v in run.get("env", {}).items()})  # extra guest env (PC_LAB_BATTLE, ...)
         if "clock" in run:
             env["PC_RTC"] = run["clock"]
         if start:
