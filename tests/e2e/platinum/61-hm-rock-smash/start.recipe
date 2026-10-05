@@ -1,0 +1,11 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26061
+money 3000
+
+# Rock Smash needs BADGE_ID_COAL (src/field_move_tasks.c:545, scripts_field_moves.s:134).
+# Copy of pc/tests/corpus/hm-rock-smash.recipe.
+badge BADGE_ID_COAL
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_ROCK_SMASH
+map MAP_HEADER_MT_CORONET_1F_NORTH_ROOM_1 21 42 FACE_UP

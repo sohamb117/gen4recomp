@@ -1,0 +1,51 @@
+# Proves the Aaron room: enter-room frame script, single battle, exit door.
+# Start: Aaron room (8,11) -> end: same room, FLAG_DEFEATED_AARON. Lab-startable alone (nothing checks the previous member).
+
+title = "Elite Four: Aaron"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "scripts_pokemon_league_aaron_room.s:61-69",
+  "scripts_pokemon_league_aaron_room.s:10-30",
+  "elite_four_aaron.json:13",
+  "scripts_pokemon_league_aaron_room.s:66",
+  "scripts_pokemon_league_aaron_room.s:22",
+  "scripts_pokemon_league_aaron_room.s:24",
+  "scripts_pokemon_league_aaron_room.s:18-19",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "wait_field"
+note = "frame table walks the player 2 north and closes the entrance door (scripts_pokemon_league_aaron_room.s:61-69)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "Aaron at (8,5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "e4_aaron"
+note = "TRAINER_ELITE_FOUR_AARON (261): YANMEGA 49, SCIZOR 49, VESPIQUEN 50, HERACROSS 51, DRAPION 53"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM"
+flags = ["FLAG_DEFEATED_AARON"]
+battles = 1

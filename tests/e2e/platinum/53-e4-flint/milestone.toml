@@ -1,0 +1,49 @@
+# Proves the Flint room: enter-room frame script, single battle, exit door.
+# Start: Flint room (8,11) -> end: same room, FLAG_DEFEATED_FLINT. Lab-startable alone (nothing checks the previous member).
+
+title = "Elite Four: Flint"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "scripts_pokemon_league_flint_room.s:106",
+  "scripts_pokemon_league_flint_room.s:23",
+  "scripts_pokemon_league_flint_room.s:16-17",
+  "scripts_pokemon_league_flint_room.s:28-29",
+  "scripts_pokemon_league_flint_room.s:61-69",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "wait_field"
+note = "frame table walks the player 2 north and closes the entrance door (scripts_pokemon_league_flint_room.s:61-69)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "Flint at (8,5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "e4_flint"
+note = "TRAINER_ELITE_FOUR_FLINT (263): HOUNDOOM 52, FLAREON 55, RAPIDASH 53, INFERNAPE 55, MAGMORTAR 57"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM"
+flags = ["FLAG_DEFEATED_FLINT"]
+battles = 1

@@ -1,0 +1,84 @@
+# Proves Barry as follower on Route 201, the Verity Lakefront walk-in and the Lake Verity Cyrus scene.
+# Start: Twinleaf Town (116,886), the first respawn tile -> end: Verity Lakefront after leaving the lake.
+title = "Lake Verity with Barry: Cyrus at the lake"
+status = "planned"
+priority = "P0"
+estimate = 7000
+refs = [
+  "src/location.c:16-20",
+  "scripts_route_201.s:1236-1241",
+  "scripts_verity_lakefront.s:11-24",
+  "scripts_verity_lakefront.s:50",
+  "scripts_verity_lakefront.s:55",
+  "scripts_init_lake_verity_low_water.s:10",
+  "scripts_lake_verity_low_water.s:43",
+  "scripts_lake_verity_low_water.s:69",
+  "scripts_lake_verity_low_water.s:106",
+  "scripts_lake_verity_low_water.s:113-114",
+  "events_route_201 (coords (109..113,857), (110..113,858), (115,852..855))",
+  "events_verity_lakefront (coord (80..81,844))",
+  "events_lake_verity_low_water (warp 0 (46,54))",
+]
+notes = "Estimate: research ~6000 plus the walk out of the lake. [INFERENCE] the follower partner turns Route 201 wild battles into multi battles (SetHasPartner, scripts_route_201.s:1238); walk_to fights them."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 10500
+
+[[step]]
+do = "walk_to"
+x = 111
+z = 857
+note = "Route 201 coord (109..113,857) VAR_FOLLOWER_RIVAL_STATE==2: Barry follows -> 3 (scripts_route_201.s:1236); Twinleaf -> Route 201 is a seamless crossing"
+
+[[step]]
+do = "advance_text"
+shot = "barry-follows"
+
+[[step]]
+do = "walk_to"
+x = 80
+z = 844
+note = "Verity Lakefront coord (80..81,844) VAR_VERITY_LAKEFRONT_STATE==0; while following, coords (110..113,858)/(115,852..855) turn you back from south/east"
+
+[[step]]
+do = "advance_text"
+note = "scripted walk-in, Warp LAKE_VERITY_LOW_WATER 46 54 (scripts_verity_lakefront.s:50-55)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_LAKE_VERITY_LOW_WATER"
+
+[[step]]
+do = "advance_text"
+shot = "cyrus-at-lake"
+note = "OnFrame VAR_VISITED_LAKE_VERITY_WITH_RIVAL==0: camera to Cyrus (48,43), Cyrus and Barry leave (scripts_lake_verity_low_water.s:43-114)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 46
+z = 54
+note = "lake exit (events_lake_verity_low_water warp 0) -> Verity Lakefront, so 03's walk starts outdoors"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VERITY_LAKEFRONT"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_VERITY_LAKEFRONT"
+flags = ["FLAG_HIDE_ROUTE_201_RIVAL", "FLAG_HIDE_LAKE_VERITY_LOW_WATER_RIVAL", "FLAG_HIDE_LAKE_VERITY_LOW_WATER_CYRUS"]
+flags_clear = ["FLAG_DEFEATED_COMMANDER_SATURN_VALOR_CAVERN"]
+
+[expect.vars]
+VAR_FOLLOWER_RIVAL_STATE = 4
+VAR_VISITED_LAKE_VERITY_WITH_RIVAL = 1
+VAR_VERITY_LAKEFRONT_STATE = 1

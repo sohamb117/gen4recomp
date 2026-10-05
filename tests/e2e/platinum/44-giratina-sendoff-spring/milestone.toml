@@ -1,0 +1,59 @@
+# Proves the Giratina room (KO, catch or flee all continue) and the Sendoff Spring Cynthia scene.
+# Start: continues 43 (DW B7F after Cyrus) -> end: Sendoff Spring (267), VAR_EXITED_DISTORTION_WORLD_STATE 2.
+# The lab start has no safe placement inside DW: lab.recipe carries the state only (see its PHASE2).
+
+title = "Giratina Origin battle, out to Sendoff Spring"
+status = "planned"
+priority = "P0"
+estimate = 14000
+refs = [
+  "scripts_distortion_world_b7f.s:16-22",
+  "scripts_distortion_world_giratina_room.s:61-70",
+  "scripts_distortion_world_giratina_room.s:71-85",
+  "scripts_distortion_world_giratina_room.s:97-100",
+  "scripts_distortion_world_giratina_room.s:87-95",
+  "scripts_distortion_world_giratina_room.s:29-51",
+  "scripts_sendoff_spring.s:18-48",
+  "scripts_distortion_world_giratina_room.s:25",
+  "scripts_distortion_world_giratina_room.s:68",
+  "scripts_distortion_world_giratina_room.s:70",
+  "scripts_distortion_world_giratina_room.s:98",
+  "scripts_distortion_world_giratina_room.s:99",
+  "scripts_distortion_world_giratina_room.s:100",
+  "scripts_distortion_world_giratina_room.s:43",
+  "scripts_distortion_world_giratina_room.s:44",
+  "scripts_sendoff_spring.s:20",
+  "scripts_sendoff_spring.s:37",
+  "scripts_sendoff_spring.s:38",
+  "scripts_sendoff_spring.s:39",
+  "scripts_sendoff_spring.s:40",
+  "scripts_sendoff_spring.s:41",
+  "scripts_sendoff_spring.s:42",
+  "scripts_sendoff_spring.s:47",
+  "scripts_sendoff_spring.s:43",
+  "scripts_sendoff_spring.s:44",
+  "scripts_sendoff_spring.s:45",
+  "scripts_sendoff_spring.s:46",
+  "pc_lab.c:660-672",
+  "src/overlay009/ov9_02249960.c",
+  "include/constants/distortion_world.h:19",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 21000
+# PHASE2: follow Cynthia to the B7F warp coord -> Giratina Room (15,25) (scripts_distortion_world_b7f.s:16-22); the room's
+#   shadow/arrival events; talk to Giratina -> StartGiratinaOriginBattle SPECIES_GIRATINA 47
+#   (scripts_distortion_world_giratina_room.s:61-70) -> auto_battle (KO is fine, :71-85); portal, Yes -> Sendoff Spring (32,17)
+#   (:29-51) -> frame table VAR_EXITED_DISTORTION_WORLD_STATE==1 -> Cynthia (scripts_sendoff_spring.s:18-48): advance_text.
+#   Tiles of the B7F warp coord and of Giratina are in the ov9 tables (src/overlay009/ov9_02249960.c).
+
+[expect]
+map = "MAP_HEADER_SENDOFF_SPRING"
+vars = { VAR_EXITED_DISTORTION_WORLD_STATE = 2, VAR_SANDGEM_TOWN_LAB_STATE = 2 }
+flags = ["FLAG_GALACTIC_LEFT_LAKE_VALOR", "FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS"]
+flags_clear = ["FLAG_SPEAR_PILLAR_IS_DISTORTED"]
+battles = 1

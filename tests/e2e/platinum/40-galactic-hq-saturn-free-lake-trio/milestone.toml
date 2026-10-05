@@ -1,0 +1,83 @@
+# Proves the control-room Saturn battle and the release button.
+# Start: Galactic HQ laboratory (1,11) -> end: control room (494), FLAG_FREED_GALACTIC_HQ_POKEMON.
+
+title = "Galactic HQ: Saturn and the lake trio freed"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "scripts_galactic_hq_control_room.s:35-74",
+  "scripts_galactic_hq_control_room.s:50-70",
+  "events_galactic_hq_control_room.json:173-256",
+  "scripts_galactic_hq_control_room.s:307-316",
+  "scripts_galactic_hq_control_room.s:46",
+  "scripts_galactic_hq_control_room.s:47",
+  "scripts_galactic_hq_control_room.s:184",
+  "scripts_galactic_hq_control_room.s:189",
+  "scripts_galactic_hq_control_room.s:190",
+  "scripts_galactic_hq_control_room.s:216",
+  "scripts_galactic_hq_control_room.s:203-205",
+  "scripts_galactic_hq_control_room.s:249",
+  "scripts_galactic_hq_control_room.s:252",
+  "scripts_galactic_hq_control_room.s:253",
+  "scripts_galactic_hq_control_room.s:254",
+  "events_galactic_hq_laboratory.json",
+  "scripts_galactic_hq_control_room.s:173-256",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 36
+z = 2
+note = "events_galactic_hq_laboratory.json warp1 -> control room (8,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 7
+face = "up"
+interact = true
+note = "Saturn obj0 (8,6) (scripts_galactic_hq_control_room.s:35-74)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "saturn_hq"
+note = "TRAINER_COMMANDER_SATURN_GALACTIC_HQ (409)"
+
+[[step]]
+do = "advance_text"
+note = "Saturn steps aside (:50-70)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "button bg event (8,5), events_galactic_hq_control_room.json bg3"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "lake_trio_freed"
+note = "Yes (:173-256)"
+
+[expect]
+map = "MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM"
+vars = { VAR_MT_CORONET_2F_STATE = 1 }
+flags = ["FLAG_FREED_GALACTIC_HQ_POKEMON", "FLAG_DEFEATED_GALACTIC_HQ_CONTROL_ROOM_SATURN"]
+battles = 1

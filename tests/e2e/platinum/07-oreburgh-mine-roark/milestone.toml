@@ -1,0 +1,95 @@
+# Proves the Oreburgh Mine visit: Roark smashes the rock and returns to the gym, which hides Barry from the gym door.
+# Start: Oreburgh City warp 1 (Pokecenter door) -> end: inside Oreburgh Gym (08's start), Roark back.
+title = "Oreburgh Mine: Roark returns to the gym"
+status = "planned"
+priority = "P0"
+estimate = 8000
+refs = [
+  "scripts_oreburgh_mine_b1f.s:13-14",
+  "scripts_oreburgh_mine_b2f.s:13-59",
+  "scripts_oreburgh_mine_b2f.s:55-57",
+  "scripts_oreburgh_city.s:29-49",
+  "events_oreburgh_city (warps 11-15 (300..304,795) mine; warp 0 (282,756) gym)",
+  "events_oreburgh_mine_b1f (warps (11..13,1), (11..13,21))",
+  "events_oreburgh_mine_b2f (Roark (18,28) facing east; warp 0 (15,1))",
+  "TRAINER_WORKER_COLIN (195)",
+  "TRAINER_WORKER_MASON (196)",
+]
+notes = "Estimate: research ~6000 plus the walk back into the gym. The Workers have no sight (data []), so walking past is safe."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 12000
+
+[[step]]
+do = "walk_to"
+x = 302
+z = 795
+note = "mine mouth (events_oreburgh_city warps 11-15) -> B1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_MINE_B1F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 21
+note = "B1F stairs (11..13,21) -> B2F (15,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_MINE_B2F"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 28
+face = "right"
+interact = true
+note = "Roark (18,28) faces east at the rock (19,28) [INFERENCE: talk from the west tile]"
+
+[[step]]
+do = "advance_text"
+shot = "roark-smashes"
+note = "Roark smashes the rock and leaves; FLAG_ROARK_RETURNED_TO_OREBURGH_GYM, FLAG_HIDE_OREBURGH_CITY_RIVAL (scripts_oreburgh_mine_b2f.s:55-57)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 1
+note = "B2F exit (warp 0) -> B1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_MINE_B1F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 1
+note = "B1F exit (warp 1) -> Oreburgh"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_CITY"
+
+[[step]]
+do = "walk_to"
+x = 282
+z = 756
+note = "gym door (warp 0); Barry (282,757) is hidden now, so 08 starts inside"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_CITY_GYM"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_OREBURGH_CITY_GYM"
+flags = ["FLAG_ROARK_RETURNED_TO_OREBURGH_GYM", "FLAG_HIDE_OREBURGH_CITY_RIVAL", "FLAG_FIRST_ARRIVAL_OREBURGH_MINE", "FLAG_HIDE_OREBURGH_MINE_B2F_ROARK"]

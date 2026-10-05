@@ -1,0 +1,59 @@
+# Amity Square entry: step onto the west coord event with an allowed PIKACHU, answer YES, the
+# follower joins. Stage 2 (accessory pickup after 200 steps) is a PHASE2 save-edit run.
+# Start: AMITY_SQUARE (12,47). End: (12,46), follower active.
+title = "Amity Square: walk with Pikachu"
+status = "planned"
+priority = "P2"
+estimate = 4000
+refs = [
+  "res/field/events/events_amity_square.json",
+  "res/field/events/events_hearthome_city.json",
+  "res/field/scripts/scripts_amity_square.s:88-180",
+  "res/field/scripts/scripts_amity_square.s:115-121",
+  "res/field/scripts/scripts_amity_square.s:181-212",
+  "res/field/scripts/scripts_amity_square.s:202",
+  "res/field/scripts/scripts_amity_square.s:282-312",
+  "res/field/scripts/scripts_amity_square.s:349",
+  "res/field/scripts/scripts_amity_square.s:646-680",
+  "res/field/scripts/scripts_amity_square.s:726-745",
+  "res/field/scripts/scripts_amity_square.s:907-978",
+  "src/system_vars.c:194-213",
+  "src/start_menu.c:379-382",
+  "src/overlay005/field_control.c:763",
+  "features/tools/np_save4.c:14",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 6000
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+note = "onto the (12,46) coord event (VAR_FOLLOWER_MON_ACTIVE == 0)"
+
+[[step]]
+do = "advance_text"
+max = 900
+note = "[INFERENCE] stops at the YES/NO 'walk with PIKACHU?' prompt; if advance_text answers it, the next A is harmless text"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES: heal, set follower vars, ClearAmitySquareStepCount (scripts_amity_square.s:181-212)"
+shot = "follower-joins"
+
+[[step]]
+do = "advance_text"
+shot = "walking-together"
+
+[expect]
+map = 253
+party = ["SPECIES_PIKACHU"]
+vars = { VAR_FOLLOWER_MON_ACTIVE = 1, VAR_FOLLOWER_MON_SPECIES = 25 }
+# PHASE2 stage 2: `np_save4 set-var end.sav VAR_AMITY_SQUARE_STEP_COUNT 199` (np_save4.c:14), boot it,
+# walk 1 step, face the follower, A -> new berry (s["bag"]["berries"]) or accessory (screenshot), and
+# VAR_AMITY_SQUARE_STEP_COUNT back to 0 (:349). [INFERENCE] whether the follower reloads on CONTINUE in Amity.

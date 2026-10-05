@@ -1,0 +1,40 @@
+# Pal Park gate refusal: receptionist -> Enter -> GoToIfNotEnoughMonForCatchingShow refuses with
+# an empty GBA slot. Real migration needs a GBA cartridge (not headless). Pinned corpus/comm-palpark.
+# Start: PAL_PARK_LOBBY (7,12) below the receptionist (7,11). End: same.
+title = "Pal Park: gate refuses without a GBA cartridge"
+status = "planned"
+priority = "P2"
+estimate = 3700
+refs = [
+  "res/field/scripts/scripts_pal_park_lobby.s:347",
+  "res/field/scripts/scripts_pal_park_lobby.s:364-383",
+  "res/field/scripts/scripts_pal_park_lobby.s:382",
+  "pc/tests/corpus/comm-palpark.recipe",
+  "pc/tests/corpus/comm-palpark.spec",
+  "pc/replays/lab-comm-palpark.txt",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5600
+
+[[step]]
+do = "press"
+keys = "A"
+note = "receptionist (7,11): Enter / Info / Exit"
+
+[[step]]
+do = "advance_text"
+max = 2000
+note = "[INFERENCE] A picks Enter (first entry); the refusal text closes back to the field"
+shot = "refused"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = 393
+position = [7, 12]
+# PHASE2: corpus digest BCB13491F57535F3 (comm-palpark.spec) is a pc_corpus.py artefact, not an e2e expect.

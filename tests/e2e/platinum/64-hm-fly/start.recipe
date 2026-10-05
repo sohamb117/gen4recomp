@@ -1,0 +1,15 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26064
+money 3000
+
+# Fly needs BADGE_ID_COBBLE (src/field_move_tasks.c:373) and MOVE_FLY.
+badge BADGE_ID_COBBLE
+party SPECIES_STARAPTOR 40 ITEM_NONE
+party-move 0 0 MOVE_FLY
+# spawn rows carry their FIRST_ARRIVAL_* flag (src/spawn_locations.c:25-48); the town map
+# allows a landing only where it is set [INFERENCE] (vars_flags.txt:2492 for Solaceon)
+flag FLAG_FIRST_ARRIVAL_HEARTHOME_CITY
+flag FLAG_FIRST_ARRIVAL_SOLACEON_TOWN
+# Hearthome spawn tile (src/spawn_locations.c:38; pc/tests/corpus/hearthome.recipe)
+map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

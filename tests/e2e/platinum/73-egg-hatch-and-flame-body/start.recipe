@@ -1,0 +1,20 @@
+# Copy of pc/tests/corpus/egg-hatch.recipe (trainer id/money kept for the pinned roll order).
+name GQ
+gender GENDER_MALE
+trainer-id 10412
+money 9000
+
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+party SPECIES_BIBAREL 25 ITEM_NONE
+party SPECIES_BIBAREL 26 ITEM_NONE
+party SPECIES_BIBAREL 27 ITEM_NONE
+daycare 0
+daycare 1
+daycare-egg 0x59239384
+# Daycare_GiveEggFromDaycare; resets the shared counter (daycare.c:556-560,779)
+take-egg
+egg-cycles 1 0
+# after take-egg: 254 -> the next step ends a cycle
+daycare-counter 254
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

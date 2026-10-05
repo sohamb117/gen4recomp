@@ -1,0 +1,58 @@
+# Proves the Mt Coronet 2F Looker coord and the HM climb to the summit.
+# Start: Mt Coronet 2F (27,48) -> end: Spear Pillar (220) at (31,53).
+
+title = "Mt Coronet: Black Flute and the climb to Spear Pillar"
+status = "planned"
+priority = "P0"
+estimate = 30000
+refs = [
+  "scripts_mt_coronet_2f.s:20-56",
+  "scripts_mt_coronet_6f.s:8-63",
+  "scripts_mt_coronet_2f.s:23",
+  "scripts_mt_coronet_2f.s:27",
+  "scripts_mt_coronet_2f.s:42-45",
+  "scripts_mt_coronet_2f.s:52",
+  "scripts_spear_pillar.s:19",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 45000
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 25
+note = "coord (11,24..26), VAR_MT_CORONET_2F_STATE==1 -> Looker, Black Flute (scripts_mt_coronet_2f.s:20-56)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+note = "2F (11,4) -> 3F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_MT_CORONET_3F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 29
+note = "3F (3,29) -> Outside South (211); 3F grunts 515/523 may see the walk"
+# PHASE2: Outside South (Rock Climb (31,14..20), rocks, boulder (25,29)) -> (11,17)|(39,18) -> 4F Rooms 1&2 (Rock Climb (7,13..16),
+#   Rock Smash; Waterfall tiles (14..19,15) need BEACON, route around) -> (40,10) -> Outside North (Rock Climb (45,19..21),
+#   (40..44,22); boulder (35,17)) -> (13,19) -> 4F Room 3 -> (18,8) -> 5F -> (13,24) -> 6F -> (7,5) -> Spear Pillar
+#   (scripts_mt_coronet_6f.s:8-63 picks plain SPEAR_PILLAR). HM order / branch needs PC_LAB_MAPSCAN of maps 210-215.
+
+[expect]
+map = "MAP_HEADER_SPEAR_PILLAR"
+vars = { VAR_MT_CORONET_2F_STATE = 2 }
+flags = ["FLAG_RECEIVED_MT_CORONET_2F_BLACK_FLUTE", "FLAG_FIRST_ARRIVAL_SPEAR_PILLAR"]

@@ -1,0 +1,125 @@
+# Proves Jubilife's first arrival (Looker, VS Recorder), the Trainers' School Parcel hand-off (Town Map), and the
+# Poketch campaign (three clown coupons -> Poketch with 4 apps).
+# Start: Jubilife City (174,798) facing up -> end: Jubilife City with the Poketch.
+title = "Jubilife: Town Map and the Poketch"
+status = "planned"
+priority = "P0"
+estimate = 15000
+refs = [
+  "scripts_jubilife_city.s:89",
+  "scripts_jubilife_city.s:190-191",
+  "scripts_jubilife_city.s:259-261",
+  "scripts_trainers_school.s:32",
+  "scripts_trainers_school.s:36-38",
+  "scripts_trainers_school.s:72-77",
+  "scripts_jubilife_city.s:1326",
+  "scripts_jubilife_city.s:1503",
+  "scripts_jubilife_city.s:1512-1515",
+  "scripts_jubilife_city.s:1520-1526",
+  "scripts_jubilife_city.s:1542",
+  "scripts_jubilife_city.s:1551-1554",
+  "scripts_jubilife_city.s:1578",
+  "scripts_jubilife_city.s:1582",
+  "scripts_jubilife_city.s:1591-1595",
+  "scripts_jubilife_city.s:1427-1435",
+  "scripts_jubilife_city.s:1464-1468",
+  "scripts_trainers_school.s:156",
+  "scripts_trainers_school.s:249",
+  "pc/src/pc_lab.c:999-1002",
+  "events_jubilife_city (coords (173..176,796), (172..176,776), (188,757..760); warp 7 (168,776) school)",
+  "events_trainers_school (Barry (6,3) LOOK_NORTH; warp 0 (7,11))",
+]
+notes = "Optional talk-only trainers in the school: TRAINER_SCHOOL_KID_HARRISON (342), TRAINER_SCHOOL_KID_CHRISTINE (345). From now until the Poketch, Looker blocks Route 203 (coord (188,757..760) VAR_JUBILIFE_CITY_STATE==1)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 174
+z = 796
+max = 8000
+note = "coord (173..176,796) VAR_JUBILIFE_CITY_STATE==0; from 04's end a seamless walk north up Route 202"
+
+[[step]]
+do = "advance_text"
+shot = "looker"
+note = "counterpart + Looker (yes/no: either), VS Recorder, walked to the school -> state 1 (scripts_jubilife_city.s:89-261)"
+
+[[step]]
+do = "walk_to"
+x = 168
+z = 776
+note = "Trainers' School door (events_jubilife_city warp 7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_TRAINERS_SCHOOL"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 4
+face = "up"
+interact = true
+note = "Barry (6,3) [INFERENCE: talk from the tile south of him]"
+
+[[step]]
+do = "advance_text"
+shot = "town-map"
+note = "Parcel taken, Town Map, VAR_POKETCH_CAMPAIGN_STATE 1, president and clowns 1-2 unhidden (scripts_trainers_school.s:32-77)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 11
+note = "school exit (warp 0) -> Jubilife (168,776)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_JUBILIFE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 172
+z = 776
+note = "coord (172..176,776) VAR_POKETCH_CAMPAIGN_STATE==1: the president explains the campaign -> 2 (scripts_jubilife_city.s:1326)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 164
+z = 753
+face = "up"
+interact = true
+note = "clown 3 (164,752) quizzes once the campaign is >= 2 (:1578) [INFERENCE: it stands still; talk from the south]"
+
+[[step]]
+do = "advance_text"
+note = "A answers YES (:1582) -> ITEM_COUPON_3, president reset to (174,771) (:1591-1595)"
+
+# PHASE2: clowns 1 (183,769) and 2 (143,754) use MOVEMENT_TYPE_WANDER_AROUND, so their tiles are not fixed. Find them
+# by object id in the probe's object list, walk_to an adjacent tile facing them, interact, advance_text (A = YES,
+# scripts_jubilife_city.s:1503,1542; NO repeats, :1520-1526). Then walk_to (174,772) face up interact (president
+# (174,771)) and advance_text: coupons removed, Poketch with 4 apps, Looker hidden (:1427-1468).
+
+[expect]
+map = "MAP_HEADER_JUBILIFE_CITY"
+flags = ["FLAG_RECEIVED_POKETCH", "FLAG_RECEIVED_COUPON_1", "FLAG_RECEIVED_COUPON_2", "FLAG_RECEIVED_COUPON_3", "FLAG_HIDE_JUBILIFE_CITY_LOOKER", "FLAG_TALKED_TO_TRAINERS_SCHOOL_RIVAL", "FLAG_HIDE_JUBILIFE_CITY_POKETCH_CO_PRESIDENT"]
+flags_clear = ["FLAG_HIDE_POKETCH_CO_1F_POKETCH_CO_PRESIDENT"]
+save = [
+  's["poketch"]["given"] and {0, 1, 3, 4} <= set(s["poketch"]["apps"])',  # Poketch: DIGITALWATCH, CALCULATOR, PEDOMETER, PARTYSTATUS (generated/poketch_apps.txt)
+  'any(i["item"] == 442 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TOWN_MAP
+  'any(i["item"] == 465 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_VS_RECORDER
+  'not any(i["item"] == 459 for k, p in s["bag"].items() if k != "registered" for i in p)',  # no ITEM_PARCEL
+]
+
+[expect.vars]
+VAR_JUBILIFE_CITY_STATE = 2
+VAR_POKETCH_CAMPAIGN_STATE = 2

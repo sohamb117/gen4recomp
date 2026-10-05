@@ -1,0 +1,148 @@
+# Proves the Valley Windworks: the door grunt, the Works Key door, Commander Mars, the reunion, Looker outside,
+# and the Route 205 South grunts leaving.
+# Start: Floaroma Town warp 1 (Pokecenter door) -> end: Eterna Forest warp 0 (28,86) (12's start).
+title = "Valley Windworks: Commander Mars"
+status = "planned"
+priority = "P0"
+estimate = 15000
+refs = [
+  "scripts_valley_windworks_outside.s:20",
+  "scripts_valley_windworks_outside.s:38",
+  "scripts_valley_windworks_outside.s:61-86",
+  "scripts_valley_windworks_outside.s:104-126",
+  "scripts_valley_windworks_outside.s:194",
+  "scripts_valley_windworks_building.s:17",
+  "scripts_valley_windworks_building.s:39-40",
+  "scripts_valley_windworks_building.s:86",
+  "scripts_valley_windworks_building.s:104-112",
+  "scripts_valley_windworks_building.s:135-136",
+  "scripts_valley_windworks_building.s:146",
+  "scripts_valley_windworks_building.s:184-187",
+  "events_valley_windworks_outside (grunt (243,655) S; door warp (243,654))",
+  "events_valley_windworks_building (coord (19,6..7); Mars (20,7); warp 0 (12,16))",
+  "events_route_205_south (warp 0 (206,581) Eterna Forest)",
+  "TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_1 (843)",
+  "TRAINER_COMMANDER_MARS_VALLEY_WINDWORKS (295)",
+  "TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_2 (298)",
+  "TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_3 (299)",
+  "TRAINER_HIKER_DANIEL (18)",
+  "TRAINER_AROMA_LADY_ELIZABETH (21)",
+  "TRAINER_CAMPER_JACOB (16)",
+  "TRAINER_PICNICKER_SIENA (17)",
+  "TRAINER_CAMPER_ZACKARY (377)",
+  "TRAINER_HIKER_NICHOLAS (19)",
+  "TRAINER_PICNICKER_KARINA (456)",
+  "TRAINER_BATTLE_GIRL_KELSEY (20)",
+]
+notes = "Estimate: research ~10000 plus the walk to the forest. The Friday Drifloon (StartLegendaryBattle SPECIES_DRIFLOON 15, :146) is optional; the daily flag (:112) suppresses it the same day."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 243
+z = 656
+face = "up"
+interact = true
+max = 8000
+note = "door grunt (243,655) facing south; east along Route 205 South (seamless) [INFERENCE: talk from the tile south of him]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_1 (843): GLAMEOW 13 (scripts_valley_windworks_outside.s:67)"
+
+[[step]]
+do = "advance_text"
+note = "he goes inside (RemoveObject :83)"
+
+[[step]]
+do = "walk_to"
+x = 243
+z = 655
+face = "up"
+interact = true
+note = "door bg event: with FLAG_OBTAINED_FLOAROMA_MEADOW_WORKS_KEY, A = YES unlocks it (scripts_valley_windworks_outside.s:104-126)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 243
+z = 654
+note = "door warp -> building (12,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VALLEY_WINDWORKS_BUILDING"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_VALLEY_WINDWORKS_TEAM_GALACTIC_STATE==0: grunt leaves -> 1 (scripts_valley_windworks_building.s:39-40)"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 7
+note = "coord (19,6..7) ==1 -> Mars at (20,7); grunts (3,8) N/W sight 2 and (12,3) S sight 2 may engage"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "mars"
+note = "TRAINER_COMMANDER_MARS_VALLEY_WINDWORKS (295): ZUBAT 15, PURUGLY 17 (scripts_valley_windworks_building.s:86)"
+
+[[step]]
+do = "advance_text"
+shot = "reunion"
+note = "grunts leave, Route 205 S grunts hidden, VAR_VALLEY_WINDWORKS_STATE 2, reunion, Looker unhidden (:104-187)"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 16
+note = "building exit (warp 0) -> outside (243,654); OnTransition -> VAR_VALLEY_WINDWORKS_TEAM_GALACTIC_STATE 3 (scripts_valley_windworks_outside.s:20,38)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VALLEY_WINDWORKS_OUTSIDE"
+
+[[step]]
+do = "advance_text"
+shot = "looker-windworks"
+note = "OnFrame VAR_VALLEY_WINDWORKS_LOOKER_STATE==1: Looker -> 2 (scripts_valley_windworks_outside.s:194)"
+
+[[step]]
+do = "walk_to"
+x = 206
+z = 581
+max = 10000
+note = "north along Route 205 South (pushback coord (217,653) only fires at VAR_VALLEY_WINDWORKS_STATE 1) to the forest door (events_route_205_south warp 0) -> Eterna Forest (28,86); Daniel (210,637), Elizabeth (215,633), Jacob (215,646), Siena (215,619), Zackary (206,625), Nicholas (208,610), Karina (208,595), Kelsey (207,598) may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ETERNA_FOREST"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_ETERNA_FOREST"
+flags = ["FLAG_HIDE_ROUTE_205_SOUTH_GRUNTS", "FLAG_UNLOCKED_VALLEY_WINDWORKS_DOOR", "FLAG_FIRST_ARRIVAL_VALLEY_WINDWORKS", "FLAG_HIDE_ROUTE_205_SOUTH_LITTLE_GIRL", "FLAG_ALT_MUSIC_VALLEY_WINDWORKS_BUILDING"]
+flags_clear = ["FLAG_HIDE_ROUTE_205_SOUTH_YOUNGSTER", "FLAG_HIDE_VALLEY_WINDWORKS_BUILDING_LITTLE_GIRL"]
+battles = 2
+
+[expect.vars]
+VAR_VALLEY_WINDWORKS_STATE = 2
+VAR_VALLEY_WINDWORKS_TEAM_GALACTIC_STATE = 3
+VAR_VALLEY_WINDWORKS_LOOKER_STATE = 2

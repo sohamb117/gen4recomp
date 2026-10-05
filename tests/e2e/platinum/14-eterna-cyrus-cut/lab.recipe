@@ -1,0 +1,159 @@
+# Platinum story 14-eterna-cyrus-cut: standalone start (--lab, or no end save from 13).
+# Standard header + lab party + the cumulative state after 13 (pt_story_early.md table),
+# then the milestone's start. Names resolve through pc/tests/pc_lab.py; flag/var lines cite the script that sets them.
+name GQ
+gender GENDER_MALE
+trainer-id 31415
+money 20000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG  # rival teams use the *_TURTWIG variants (scripts_route_203.s:71-74, scripts_jubilife_city.s:907-914; src/system_vars.c:67-72)
+# Standard lab party (pt_story_early.md): Surf in slot 0 and slots 1-3 cleared, so an
+# empty Surf falls back to Struggle instead of stalling A-only battles. Staraptor
+# carries the field moves (Rock Smash, Cut) and fights only in true doubles.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# -- 01 new game, starter --
+var VAR_PLAYER_HOUSE_SPECIAL_PROGRAM_STATE 1  # scripts_twinleaf_town_player_house_2f.s:28
+var VAR_PLAYER_HOUSE_RIVAL_STATE 1  # scripts_twinleaf_town_player_house_2f.s:128
+flag FLAG_HIDE_TWINLEAF_TOWN_PLAYER_HOUSE_2F_RIVAL  # scripts_twinleaf_town_player_house_2f.s:127
+flag FLAG_TALKED_TO_MOM  # scripts_twinleaf_town_player_house_1f.s:39
+var VAR_TWINLEAF_TOWN_RIVAL_TRIGGER_STATE 1  # scripts_twinleaf_town.s:424
+flag FLAG_RIVAL_LEFT_HOME  # scripts_twinleaf_town_rival_house_2f.s:28
+var VAR_RIVAL_HOUSE_STATE 1  # scripts_twinleaf_town_rival_house_2f.s:29
+var VAR_TWINLEAF_TOWN_GUITARIST_TRIGGER_STATE 2  # scripts_twinleaf_town_rival_house_2f.s:30
+flag FLAG_HIDE_ROUTE_201_BRIEFCASE  # scripts_route_201.s:278
+flag FLAG_HIDE_ROUTE_201_PROF_ROWAN  # scripts_route_201.s:301
+flag FLAG_HIDE_ROUTE_201_COUNTERPART  # scripts_route_201.s:334
+# -- 02 Lake Verity --
+var VAR_FOLLOWER_RIVAL_STATE 4  # scripts_lake_verity_low_water.s:113
+flag FLAG_HIDE_ROUTE_201_RIVAL  # scripts_route_201.s:1241
+var VAR_VERITY_LAKEFRONT_STATE 1  # scripts_verity_lakefront.s:50
+flag FLAG_HIDE_LAKE_VERITY_LOW_WATER_CYRUS  # implicit, RemoveObject scripts_lake_verity_low_water.s:69
+flag FLAG_HIDE_LAKE_VERITY_LOW_WATER_RIVAL  # scripts_lake_verity_low_water.s:106
+var VAR_VISITED_LAKE_VERITY_WITH_RIVAL 1  # scripts_lake_verity_low_water.s:114
+# -- 03 Sandgem, Pokedex --
+flag FLAG_HIDE_SANDGEM_TOWN_RIVAL  # implicit, RemoveObject scripts_sandgem_town.s:188
+flag FLAG_ALT_MUSIC_ROWANS_LAB  # scripts_sandgem_town_pokemon_research_lab.s:230
+pokedex 1  # GivePokedex, scripts_sandgem_town_pokemon_research_lab.s:249
+flag FLAG_HAS_POKEDEX  # scripts_sandgem_town_pokemon_research_lab.s:250
+flag FLAG_HIDE_SANDGEM_TOWN_LAB_COUNTERPART  # implicit, RemoveObject scripts_sandgem_town_pokemon_research_lab.s:310
+flag FLAG_HIDE_SANDGEM_TOWN_COUNTERPART  # implicit, RemoveObject scripts_sandgem_town.s:573
+var VAR_SANDGEM_TOWN_LAB_STATE 1  # scripts_sandgem_town_pokemon_research_lab.s:312
+flag FLAG_HIDE_SANDGEM_TOWN_PROF_ROWAN  # implicit, RemoveObject scripts_sandgem_town.s:462
+var VAR_SANDGEM_TOWN_STATE 2  # scripts_sandgem_town.s:574
+item ITEM_TM27 1  # scripts_sandgem_town.s:452-454
+# -- 04 Parcel, catching tutorial --
+item ITEM_JOURNAL 1  # scripts_twinleaf_town_player_house_1f.s:261-263
+flag FLAG_RECEIVED_PARCEL  # scripts_twinleaf_town_player_house_1f.s:406
+flag FLAG_HIDE_TWINLEAF_TOWN_PLAYER_HOUSE_1F_RIVAL_MOM  # implicit, RemoveObject scripts_twinleaf_town_player_house_1f.s:448
+var VAR_PLAYER_HOUSE_STATE 7  # Twinleaf OnTransition, scripts_twinleaf_town.s:28
+flag FLAG_HIDE_ROUTE_202_COUNTERPART  # implicit, RemoveObject scripts_route_202.s:156
+var VAR_ROUTE_202_STATE 1  # scripts_route_202.s:157
+item ITEM_POKE_BALL 5  # scripts_route_202.s:135-137
+# -- 05 Jubilife, Poketch --
+flag FLAG_HIDE_TRAINERS_SCHOOL_RIVAL  # implicit, RemoveObject scripts_trainers_school.s:72
+flag FLAG_TALKED_TO_TRAINERS_SCHOOL_RIVAL  # scripts_trainers_school.s:75
+var VAR_POKETCH_CAMPAIGN_STATE 2  # scripts_jubilife_city.s:1326
+flag FLAG_RECEIVED_COUPON_1  # scripts_jubilife_city.s:1515
+flag FLAG_RECEIVED_COUPON_2  # scripts_jubilife_city.s:1554
+flag FLAG_RECEIVED_COUPON_3  # scripts_jubilife_city.s:1595
+flag FLAG_RECEIVED_POKETCH  # scripts_jubilife_city.s:1465
+flag FLAG_HIDE_JUBILIFE_CITY_POKETCH_CO_PRESIDENT  # implicit, RemoveObject scripts_jubilife_city.s:1464
+clear-flag FLAG_HIDE_POKETCH_CO_1F_POKETCH_CO_PRESIDENT  # scripts_jubilife_city.s:1466
+flag FLAG_HIDE_JUBILIFE_CITY_LOOKER  # scripts_jubilife_city.s:1468
+item ITEM_VS_RECORDER 1  # scripts_jubilife_city.s:259-261
+item ITEM_TOWN_MAP 1  # scripts_trainers_school.s:36-38
+poketch POKETCH_APPID_DIGITALWATCH  # scripts_jubilife_city.s:1432
+poketch POKETCH_APPID_CALCULATOR  # scripts_jubilife_city.s:1433
+poketch POKETCH_APPID_PEDOMETER  # scripts_jubilife_city.s:1434
+poketch POKETCH_APPID_PARTYSTATUS  # scripts_jubilife_city.s:1435
+# -- 06 Route 203, Oreburgh Gate, HM06 --
+flag FLAG_HIDE_ROUTE_203_RIVAL  # implicit, RemoveObject scripts_route_203.s:122
+var VAR_ROUTE_203_RIVAL_STATE 1  # scripts_route_203.s:123
+flag FLAG_FIRST_ARRIVAL_OREBURGH_GATE  # scripts_oreburgh_gate_1f.s:12
+flag FLAG_RECEIVED_HM06  # scripts_oreburgh_gate_1f.s:44
+var VAR_OREBURGH_GATE_1F_HIKER_STATE 2  # scripts_oreburgh_gate_1f.s:45
+item ITEM_HM06 1  # scripts_oreburgh_gate_1f.s:54-56
+# -- 07 Oreburgh Mine, Roark --
+flag FLAG_FIRST_ARRIVAL_OREBURGH_MINE  # scripts_oreburgh_mine_b1f.s:13
+flag FLAG_HIDE_OREBURGH_MINE_B1F_HIKER  # scripts_oreburgh_mine_b1f.s:14
+flag FLAG_HIDE_OREBURGH_MINE_B2F_ROARK  # implicit, RemoveObject scripts_oreburgh_mine_b2f.s:55
+flag FLAG_ROARK_RETURNED_TO_OREBURGH_GYM  # scripts_oreburgh_mine_b2f.s:56
+# -- 08 Roark, Coal Badge --
+badge BADGE_ID_COAL  # scripts_oreburgh_city_gym.s:28
+flag FLAG_DEFEATED_TRAINER_YOUNGSTER_JONATHON  # SetTrainerFlag, scripts_oreburgh_city_gym.s:26
+flag FLAG_DEFEATED_TRAINER_YOUNGSTER_DARIUS  # SetTrainerFlag, scripts_oreburgh_city_gym.s:27
+flag FLAG_HIDE_POKECENTER_BASEMENT_BLOCKADE  # scripts_oreburgh_city_gym.s:32
+var VAR_GTS_ACCESS_STATE 1  # scripts_oreburgh_city_gym.s:33
+flag FLAG_RECEIVED_ROARK_TM76  # scripts_oreburgh_city_gym.s:51
+item ITEM_TM76 1  # scripts_oreburgh_city_gym.s:47-50
+# -- 09 Jubilife Galactic tag battle --
+var VAR_OREBURGH_CITY_STATE 3  # scripts_jubilife_city.s:959 (also scripts_oreburgh_city.s:180)
+flag FLAG_HIDE_OREBURGH_CITY_RIVAL  # implicit, RemoveObject scripts_oreburgh_city.s:178
+flag FLAG_HIDE_JUBILIFE_GALACTIC_GRUNTS  # scripts_jubilife_city.s:888
+flag FLAG_HIDE_JUBILIFE_CITY_COUNTERPART  # implicit, RemoveObject scripts_jubilife_city.s:954
+flag FLAG_HIDE_JUBILIFE_ROWAN  # implicit, RemoveObject scripts_jubilife_city.s:955
+clear-flag FLAG_HIDE_SANDGEM_TOWN_LAB_PROF_ROWAN  # scripts_jubilife_city.s:956
+var VAR_JUBILIFE_CITY_STATE 4  # scripts_jubilife_city.s:957
+var VAR_JUBILIFE_LOOKER_PAL_PAD_STATE 2  # scripts_jubilife_city.s:958
+flag FLAG_HIDE_JUBILIFE_CITY_CLOWNS_1_AND_2  # implicit, RemoveObject scripts_jubilife_city.s:960-962
+flag FLAG_HIDE_JUBILIFE_CITY_CLOWN_3  # implicit, RemoveObject scripts_jubilife_city.s:960-962
+flag FLAG_HIDE_JUBILIFE_CITY_COLLECTOR  # implicit, RemoveObject scripts_jubilife_city.s:971
+flag FLAG_RECEIVED_FASHION_CASE  # scripts_jubilife_city.s:985
+item ITEM_FASHION_CASE 1  # scripts_jubilife_city.s:982-984
+# -- 10 Floaroma Meadow, Works Key --
+flag FLAG_FIRST_ARRIVAL_RAVAGED_PATH  # scripts_ravaged_path.s:8
+flag FLAG_HIDE_FLOAROMA_TOWN_GRUNTS  # scripts_route_205_south.s:129
+flag FLAG_TALKED_TO_ROUTE_205_SOUTH_LITTLE_GIRL  # scripts_route_205_south.s:130
+flag FLAG_FIRST_ARRIVAL_FLOAROMA_MEADOW  # scripts_floaroma_meadow.s:16
+flag FLAG_HIDE_FLOAROMA_MEADOW_GRUNT_M_WEST  # implicit, RemoveObject scripts_floaroma_meadow.s:107
+flag FLAG_HIDE_FLOAROMA_MEADOW_GRUNT_M_EAST  # implicit, RemoveObject scripts_floaroma_meadow.s:108
+var VAR_FLOAROMA_MEADOW_STATE 1  # scripts_floaroma_meadow.s:109
+flag FLAG_HIDE_FLOAROMA_MEADOW_WORKS_KEY  # implicit, RemoveObject scripts_floaroma_meadow.s:117
+flag FLAG_OBTAINED_FLOAROMA_MEADOW_WORKS_KEY  # scripts_floaroma_meadow.s:122
+flag FLAG_DEFEATED_FLOAROMA_MEADOW_GRUNTS  # scripts_floaroma_meadow.s:134
+flag FLAG_ALT_MUSIC_FLOAROMA_MEADOW  # scripts_floaroma_meadow.s:30
+item ITEM_WORKS_KEY 1  # scripts_floaroma_meadow.s:119-121
+item ITEM_HONEY 10  # scripts_floaroma_meadow.s:124-127
+# -- 11 Valley Windworks, Mars --
+flag FLAG_HIDE_VALLEY_WINDWORKS_OUTSIDE_GRUNT_M  # implicit, RemoveObject scripts_valley_windworks_outside.s:83
+flag FLAG_UNLOCKED_VALLEY_WINDWORKS_DOOR  # scripts_valley_windworks_outside.s:119
+flag FLAG_FIRST_ARRIVAL_VALLEY_WINDWORKS  # scripts_valley_windworks_building.s:17
+flag FLAG_HIDE_VALLEY_WINDWORKS_BUILDING_GALACTIC_GRUNT_1  # implicit, RemoveObject scripts_valley_windworks_building.s:39
+flag FLAG_HIDE_VALLEY_WINDWORKS_BUILDING_TEAM_GALACTIC  # implicit, RemoveObject scripts_valley_windworks_building.s:104-108
+flag FLAG_HIDE_ROUTE_205_SOUTH_GRUNTS  # scripts_valley_windworks_building.s:109
+clear-flag FLAG_HIDE_ROUTE_205_SOUTH_YOUNGSTER  # scripts_valley_windworks_building.s:110
+var VAR_VALLEY_WINDWORKS_STATE 2  # scripts_valley_windworks_building.s:111
+flag FLAG_HIDE_ROUTE_205_SOUTH_LITTLE_GIRL  # scripts_valley_windworks_building.s:135
+clear-flag FLAG_HIDE_VALLEY_WINDWORKS_BUILDING_LITTLE_GIRL  # scripts_valley_windworks_building.s:136
+var VAR_VALLEY_WINDWORKS_TEAM_GALACTIC_STATE 3  # Outside OnTransition, scripts_valley_windworks_outside.s:20,38
+var VAR_VALLEY_WINDWORKS_LOOKER_STATE 2  # scripts_valley_windworks_outside.s:194
+flag FLAG_HIDE_VALLEY_WINDWORKS_OUTSIDE_LOOKER  # implicit after the Looker scene (cleared at scripts_valley_windworks_building.s:185)
+flag FLAG_ALT_MUSIC_VALLEY_WINDWORKS_BUILDING  # scripts_valley_windworks_building.s:187
+# -- 12 Eterna Forest, Cheryl --
+flag FLAG_TALKED_TO_ETERNA_FOREST_CHERYL  # scripts_eterna_forest.s:52
+flag FLAG_HIDE_ETERNA_FOREST_CHERYL  # implicit, RemoveObject scripts_eterna_forest.s:210
+flag FLAG_TRAVELED_WITH_CHERYL  # scripts_eterna_forest.s:212
+var VAR_ETERNA_FOREST_FOLLOWER_CHERYL_STATE 2  # scripts_eterna_forest.s:213
+flag FLAG_FIRST_ARRIVAL_ETERNA_FOREST  # scripts_eterna_forest_outside.s:12
+item ITEM_SOOTHE_BELL 1  # scripts_eterna_forest.s:142-150
+# -- 13 Gardenia, Forest Badge --
+badge BADGE_ID_FOREST  # scripts_eterna_city_gym.s:76
+flag FLAG_HIDE_ETERNA_CITY_GARDENIA  # implicit, RemoveObject scripts_eterna_city.s:688
+var VAR_ETERNA_GYM_TRAINERS_BEATEN 3  # scripts_eterna_city_gym.s:156,184,212
+var VAR_ETERNA_GYM_FLOWER_CLOCK_STATE 4  # AdvanceEternaGymClock, src/overlay008/gym_features.c:2913
+flag FLAG_DEFEATED_TRAINER_AROMA_LADY_JENNA  # SetTrainerFlag, scripts_eterna_city_gym.s:78
+flag FLAG_DEFEATED_TRAINER_AROMA_LADY_ANGELA  # SetTrainerFlag, scripts_eterna_city_gym.s:79
+flag FLAG_DEFEATED_TRAINER_LASS_CAROLINE  # SetTrainerFlag, scripts_eterna_city_gym.s:80
+flag FLAG_DEFEATED_TRAINER_BEAUTY_LINDSAY  # SetTrainerFlag, scripts_eterna_city_gym.s:81
+clear-flag FLAG_HIDE_ETERNA_FOREST_GARDENIA  # scripts_eterna_city_gym.s:82
+flag FLAG_RECEIVED_GARDENIA_TM86  # scripts_eterna_city_gym.s:121
+item ITEM_TM86 1  # scripts_eterna_city_gym.s:117-120
+# -- start --
+warp MAP_HEADER_ETERNA_CITY 10  # gym door (312,562), events_eterna_city

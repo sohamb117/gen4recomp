@@ -1,0 +1,60 @@
+# Great Marsh entry: one step north in the observatory gate 1F triggers the paid entry (500),
+# 30 Safari Balls, StartSafariGame, warp into GREAT_MARSH_6.
+# Start: PASTORIA_CITY_OBSERVATORY_GATE_1F (5,7). End: GREAT_MARSH_6 (68,116), safari active.
+title = "Great Marsh: enter the Safari Game"
+status = "planned"
+priority = "P1"
+estimate = 10000
+refs = [
+  "res/field/events/events_pastoria_city.json",
+  "res/field/events/events_pastoria_city_observatory_gate_1f.json",
+  "res/field/scripts/scripts_pastoria_city_observatory_gate_1f.s:21-73",
+  "res/field/scripts/scripts_pastoria_city_observatory_gate_1f.s:155-167",
+  "res/field/scripts/scripts_pastoria_city_observatory_gate_2f.s:12-37",
+  "src/scrcmd.c:5285-5294",
+  "src/overlay005/field_control.c:930-942",
+  "src/field_move_tasks.c:151-158",
+  "src/field_move_tasks.c:385-387",
+  "res/field/encounters/encounters_great_marsh_6.json",
+  "res/field/encounters/encounters_great_marsh_lookout.json",
+  "pc/src/pc_lab.c:1385-1401",
+  "pc/tests/corpus/battle-safari.recipe",
+  "pc/tests/corpus/battle-safari.spec",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 15000
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+note = "onto the (4..6,6) coord event (VAR_PASTORIA_CITY_OBSERVATORY_GATE_1F_STATE == 0)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "[INFERENCE] A answers the YES/NO default (YES): pay 500, 30 Safari Balls, StartSafariGame"
+shot = "safari-entry"
+
+[[step]]
+do = "wait_map"
+map = 509
+
+[[step]]
+do = "wait_field"
+shot = "great-marsh"
+
+[expect]
+map = 509
+position = [68, 116]
+badges = 3
+vars = { VAR_SAFARI_GAME_STATE = 1 }
+flags = ["FLAG_SAFARI_GAME_ACTIVE"]
+save = ['s["trainer"]["money"] == 10500']
+# PHASE2: safari catch station: corpus/battle-safari.recipe (PASTORIA_CITY 0x258 0x330) with env
+# PC_LAB_BATTLE="safari 111 22 30" PC_LAB_BATTLE_AT=2600 (pc_lab.c:1385-1401); a catch = party
+# or box 0 count +1. A-only selects Ball, so catches are random.

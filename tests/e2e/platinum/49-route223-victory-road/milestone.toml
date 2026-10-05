@@ -1,0 +1,34 @@
+# Proves Surf + Waterfall on Route 223 and the Victory Road HM floors.
+# Start: Sunyshore Pokémon Center door (860,784) -> end: Pokémon League (172) north of Victory Road.
+
+title = "Route 223 and Victory Road to the League"
+status = "planned"
+priority = "P0"
+estimate = 30000
+refs = [
+  "events_route_223.json",
+  "field_move_tasks.c:590",
+  "events_victory_road_2f.json",
+  "scripts_victory_road_1f.s:10",
+  "scripts_pokemon_league_south_pokecenter_1f.s:15",
+  "src/field_move_tasks.c:590",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 45000
+
+[[step]]
+do = "wait_field"
+# PHASE2: Surf start tile north of Sunyshore (PC_LAB_MAPSCAN of map 150/468), Surf north along Route 223, Waterfall at
+#   (840..855,604) (BEACON, src/field_move_tasks.c:590) -> League south area -> Victory Road 1F entrance (850..852,597) ->
+#   VICTORY_ROAD_1F (244) (14..16,78). Inside: Rock Climb 1F (22,34..37),(22,49..50); 2F Strength boulders / Rock Smash
+#   (events_victory_road_2f.json); B1F Surf + Waterfall (12..14,10),(24..26,10); exit 1F (34,4..6) -> League (853,581..583).
+#   Floor order from the events json warp graph. Two double battles (Al & Kay, Jo & Pat) if on the path.
+
+[expect]
+map = "MAP_HEADER_POKEMON_LEAGUE"
+flags = ["FLAG_FIRST_ARRIVAL_VICTORY_ROAD"]

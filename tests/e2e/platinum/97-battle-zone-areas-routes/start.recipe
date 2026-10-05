@@ -1,0 +1,23 @@
+# From pc/tests/corpus/survival-area.recipe (pinned clean), plus FLAG_GAME_COMPLETED and the blockade flag.
+name GQ
+gender GENDER_MALE
+trainer-id 11507
+money 60000
+# post-game: story-cleared only sets the trainer-info bit (pc_lab.c:798-800); every script gate
+# checks FLAG_GAME_COMPLETED (src/clear_game.c:204-206, scrcmd_system_flags.c:151, system_flags.c:69-71)
+story-cleared 1
+flag FLAG_GAME_COMPLETED
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+badge BADGE_ID_BEACON
+national-dex 1
+# Route 225 blockade removed only with the national dex (scripts_fight_area.s:184-186)
+flag FLAG_HIDE_FIGHT_AREA_BLOCKADE
+party SPECIES_EMPOLEON 62 ITEM_NONE
+# Survival Area fly spawn (survival-area.recipe)
+map MAP_HEADER_SURVIVAL_AREA 0x293 0x153 FACE_DOWN

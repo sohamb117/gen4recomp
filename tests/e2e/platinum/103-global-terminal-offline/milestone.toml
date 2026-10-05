@@ -1,0 +1,46 @@
+# Global Terminal offline: the 2F Box Data machine saves (Common_SaveGame), then refuses without a
+# Wi-Fi login and returns to the field. GTS 1F refusal is the pinned corpus/comm-gts station.
+# Start: GLOBAL_TERMINAL_2F (15,4) below the machine (15,3). End: same, one extra in-game save.
+title = "Global Terminal: machines refuse offline"
+status = "planned"
+priority = "P2"
+estimate = 3500
+refs = [
+  "src/scrcmd.c:3368-3378",
+  "src/scrcmd.c:6850-6857",
+  "res/field/scripts/scripts_global_terminal_2f.s:68-101",
+  "res/field/scripts/scripts_common.s:79",
+  "res/field/scripts/scripts_common.s:1615-1634",
+  "res/field/scripts/scripts_jubilife_city.s:256-260",
+  "pc/tests/corpus/comm-gts.recipe",
+  "pc/tests/corpus/comm-gts.spec",
+  "pc/tests/pc_save.py:300-303",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5300
+save = "none"   # the proof is the game's own save; a quicksave would advance the counter too
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Box Data machine bg event (15,3): Use"
+shot = "machine"
+
+[[step]]
+do = "advance_text"
+max = 2000
+note = "[INFERENCE] A answers Use and the save YES/NO; ScrCmd_2F6 has no valid login -> NoValidLogin text -> field"
+shot = "refused"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = 567
+position = [15, 4]
+# PHASE2: compare the save counter (s["blocks"][0]["save_counter"]) with start.sav's: must be greater;
+# the save-expr context has only the end save.

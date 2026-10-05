@@ -1,0 +1,71 @@
+# Proves ClearGame: HoF screen, the game's own save (FLAG_GAME_COMPLETED, isMainStoryCleared), credits, reload.
+# Start: HoF hallway (5,23) after Cynthia -> end: post-credits field at the start location (src/clear_game.c:202-203).
+
+title = "Hall of Fame, save, credits"
+status = "planned"
+priority = "P0"
+estimate = 27000
+refs = [
+  "scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67",
+  "src/clear_game.c:202-203",
+  "scripts_pokemon_league_hall_of_fame.s:10-62",
+  "src/clear_game.c:92-160",
+  "scripts_pokemon_league_hallway_to_hall_of_fame.s:15",
+  "scripts_pokemon_league_hallway_to_hall_of_fame.s:24",
+  "scripts_pokemon_league_hall_of_fame.s:47",
+  "scripts_pokemon_league_hall_of_fame.s:48-49",
+  "scripts_pokemon_league_hall_of_fame.s:68-70",
+  "scripts_pokemon_league_hall_of_fame.s:65",
+  "scripts_pokemon_league_hall_of_fame.s:123-143",
+  "scripts_pokemon_league_hall_of_fame.s:124",
+  "scripts_pokemon_league_hall_of_fame.s:125",
+  "scripts_pokemon_league_hall_of_fame.s:150-155",
+  "scripts_pokemon_league_hall_of_fame.s:158-169",
+  "scripts_pokemon_league_hall_of_fame.s:173",
+  "scripts_pokemon_league_hall_of_fame.s:177",
+  "scripts_pokemon_league_hall_of_fame.s:181",
+  "scripts_pokemon_league_hall_of_fame.s:184-203",
+  "scripts_pokemon_league_hall_of_fame.s:147",
+  "scripts_pokemon_league_hall_of_fame.s:139",
+  "scripts_pokemon_league_hall_of_fame.s:207",
+  "scripts_pokemon_league_hall_of_fame.s:141",
+  "scripts_pokemon_league_hall_of_fame.s:142",
+  "scripts_pokemon_league_hall_of_fame.s:143",
+  "src/clear_game.c:195-210",
+  "src/system_flags.c:64-67",
+  "src/clear_game.c:110-114",
+  "scripts_pokemon_league_hall_of_fame.s:110-114",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 40500
+save = "none"  # ClearGame state 4 writes the save itself (src/clear_game.c:92-160)
+
+[[step]]
+do = "advance_text"
+max = 8000
+note = "hallway OnFrame, auto-warp to the HoF (8,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_HALL_OF_FAME"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "hall_of_fame"
+note = "HoF OnFrame (scripts_pokemon_league_hall_of_fame.s:10-62) -> PlayHallOfFameHealingAnimation -> ClearGame"
+# PHASE2: FieldTask_DoClearGameSequence (src/clear_game.c:92-160): HoF screen (state 0) input, save (state 4; a different-save
+#   prompt diverts to state 7, :110-114), credits (state 8, FieldSystem_StartEndCredits, ~12000 frames, wait only),
+#   then wait_field on the reloaded field. Also add a save expr for TrainerInfo.isMainStoryCleared and
+#   RECORD_TIMES_ENTERED_HALL_OF_FAME once np_save4 exposes them.
+
+[expect]
+flags = ["FLAG_GAME_COMPLETED", "FLAG_COMMUNICATION_CLUB_ACCESSIBLE", "FLAG_UNLOCKED_VS_SEEKER_LVL_4", "FLAG_DEFEATED_CYNTHIA"]
+flags_clear = ["FLAG_ALT_MUSIC_CHAMPION_ROOM", "FLAG_HIDE_DAY_CARE_GYM_GUIDE"]
+vars = { VAR_PLAYER_HOUSE_POSTGAME_STATE = 1 }
+badges = 8

@@ -1,0 +1,41 @@
+# Proves the rotating-gear gym and Volkner's win script.
+# Start: Sunyshore Gym room 1 (8,14) -> end: room 3 (156), BADGE_ID_BEACON, TM57.
+
+title = "Sunyshore Gym: Volkner and the Beacon Badge"
+status = "planned"
+priority = "P0"
+estimate = 26000
+refs = [
+  "gym_features.c:410",
+  "gym_features.c:215-220",
+  "scripts_sunyshore_city_gym_room_3.s:41",
+  "scripts_sunyshore_city_gym_room_3.s:43-50",
+  "scripts_sunyshore_city_gym_room_3.s:51",
+  "scripts_sunyshore_city_gym_room_3.s:58-61",
+  "scripts_sunyshore_city_gym_room_3.s:62",
+  "src/overlay008/gym_features.c:215-220",
+  "src/overlay008/gym_features.c:410",
+  "scripts_sunyshore_city_gym_room_3.s:41-62",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 39000
+
+[[step]]
+do = "wait_field"
+# PHASE2: button order per room (gear collision SunyshoreGymCollisionRegion, src/overlay008/gym_features.c:215-220;
+#   FieldTask_SunyshoreGym_RotateGears :410; InitPersistedMapFeaturesForSunyshoreGym 0|1|2). Buttons are coord events:
+#   room 1 (3,8),(13,8) -> exit (8,2); room 2 bottom (6,13), top (6,8),(11,8) -> exit (9,2); room 3 top (6,8),(16,13),
+#   bottom (6,18),(16,18) -> Volkner (11,3): talk facing up, auto_battle, advance_text (scripts_sunyshore_city_gym_room_3.s:41-62).
+
+[expect]
+map = "MAP_HEADER_SUNYSHORE_CITY_GYM_ROOM_3"
+badges = 8
+badge = ["BADGE_ID_BEACON"]
+flags = ["FLAG_RECEIVED_VOLKNER_TM57"]
+vars = { VAR_SUNYSHORE_CITY_STATE = 2 }
+battles = 1

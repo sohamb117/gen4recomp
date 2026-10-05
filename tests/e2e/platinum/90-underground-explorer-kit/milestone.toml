@@ -1,0 +1,79 @@
+# Underground Man gives the Explorer Kit and becomes mentor; walk out to Eterna and use the kit
+# to enter the Underground.
+# Start: ETERNA_CITY_UNDERGROUND_MAN_HOUSE door (warp 0). End: MAP_HEADER_UNDERGROUND (2).
+title = "Underground: Explorer Kit and first entry"
+status = "planned"
+priority = "P1"
+estimate = 6400
+refs = [
+  "res/field/events/events_eterna_city_underground_man_house.json",
+  "res/field/events/events_eterna_city.json",
+  "res/field/scripts/scripts_eterna_city_underground_man_house.s:17-35",
+  "res/field/scripts/scripts_eterna_city_underground_man_house.s:26-29",
+  "res/field/scripts/scripts_eterna_city_underground_man_house.s:34",
+  "res/field/scripts/scripts_eterna_city_underground_man_house.s:170-185",
+  "src/underground/manager.c:162",
+  "src/system_flags.c:119-121",
+  "pc/src/pc_lab.c:2023-2027",
+  "pc/src/pc_lab.c:2057-2059",
+  "pc/src/pc_lab.c:950-990",
+  "pc/src/pc_lab.c:1958-2062",
+  "pc/tests/pc_corpus.py:495-513",
+  "pc/tests/corpus/ug-enter.recipe",
+  "pc/tests/corpus/ug-enter.spec",
+  "pc/replays/lab-ug-enter.txt",
+  "src/item_use_functions.c:365-367",
+  "src/underground/comm_manager.c:82",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 9600
+# lab underground hook `enter` (pc_lab.c:1958-2062; corpus ug-enter.spec `underground: enter`)
+env = { PC_LAB_UNDERGROUND = "enter", PC_LAB_UNDERGROUND_AT = "4900" }
+clock = "2009-03-22 21:00:00"   # as ug-enter.spec
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "Underground Man at (6,5); stand (6,6)"
+
+[[step]]
+do = "advance_text"
+max = 2000
+note = "kit given (FLAG_RECEIVED_EXPLORER_KIT), then the mentor Yes/No; [INFERENCE] A takes the YES default"
+shot = "kit"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+note = "door warp 0 -> Eterna City (house door is Eterna warp 11 at (310,530))"
+
+[[step]]
+do = "wait_map"
+map = 65
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "press"
+keys = "X"
+note = "[INFERENCE] the kit is not registered by the gift; use it from BAG > Key Items"
+# PHASE2: bag cursor path to ITEM_EXPLORER_KIT in Key Items (lab-menu-bag.txt) is unrecorded;
+# (a recipe `register-item` cannot help: the kit is not in the bag at mint). Record the bag
+# path, then: A (USE), A x9 (comms confirm, forced save), wait_map 2 with the enter hook.
+
+[expect]
+map = 2
+flags = ["FLAG_RECEIVED_EXPLORER_KIT", "FLAG_ACCEPTED_UNDERGROUND_MAN_AS_MENTOR", "FLAG_ENTERED_UNDERGROUND"]
+save = ['any(i["item"] == 428 for p in s["bag"].values() for i in p)']   # ITEM_EXPLORER_KIT
+log = ['pc_lab: underground enter at frame \d+ map=2']
+# PHASE2: the comm-error screen covers the hole animation ~100 frames after the hook (pc_lab.c:2023-2027);
+# FLAG_ENTERED_UNDERGROUND needs an in-Underground save (quicksave there is [INFERENCE]).

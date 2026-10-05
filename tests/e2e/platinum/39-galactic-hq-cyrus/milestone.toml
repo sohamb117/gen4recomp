@@ -1,0 +1,67 @@
+# Proves the key doors, the warp panels and the 4F Cyrus coord battle (Master Ball).
+# Start: Galactic HQ B2F (3,16) -> end: Galactic HQ 4F (308), Cyrus beaten.
+
+title = "Galactic HQ: Galactic Key, Cyrus, Master Ball"
+status = "planned"
+priority = "P0"
+estimate = 30000
+refs = [
+  "scripts_galactic_hq_b2f.s:19-47",
+  "scripts_galactic_hq_1f.s:96-124",
+  "scripts_galactic_hq_3f.s:15-43",
+  "scripts_galactic_hq_4f.s:104-132",
+  "scripts_galactic_hq_hall.s:9-101",
+  "scripts_galactic_hq_4f.s:13-58",
+  "scripts_galactic_hq_b2f.s:47",
+  "scripts_galactic_hq_1f.s:124",
+  "scripts_galactic_hq_3f.s:43",
+  "scripts_galactic_hq_4f.s:132",
+  "scripts_galactic_hq_1f.s:17",
+  "scripts_galactic_hq_hall.s:25",
+  "scripts_galactic_hq_4f.s:48-99",
+  "scripts_galactic_hq_hall.s:100",
+  "scripts_galactic_hq_4f.s:43-46",
+  "scripts_galactic_hq_4f.s:55",
+  "scripts_galactic_hq_4f.s:56",
+  "events_galactic_hq_b2f.json",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 45000
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 6
+face = "up"
+interact = true
+note = "Galactic Key item ball obj5 (20,5); [INFERENCE] approach tile"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 9
+face = "up"
+interact = true
+note = "B2F key door (14..15,8) (scripts_galactic_hq_b2f.s:19-47); [INFERENCE] approach tile"
+
+[[step]]
+do = "advance_text"
+note = "Yes"
+# PHASE2: floor order through the warp panels (warp graph in events_galactic_hq_{b2f,1f,2f,3f,4f}.json: 1F warps 8-13, 2F 5-8 & 11-14,
+#   3F 3-8); key doors 1F (22..23,18) (scripts_galactic_hq_1f.s:96-124), 3F (27..28,19) (scripts_galactic_hq_3f.s:15-43),
+#   4F (8..9,14) (scripts_galactic_hq_4f.s:104-132); 4F coord0 (8..9,11) VAR_GALACTIC_HQ_4F_STATE==0 -> Cyrus battle (:13-58):
+#   advance_text, auto_battle, advance_text. Stay on the path: 12 optional grunts would exhaust Dragon Claw PP.
+
+[expect]
+map = "MAP_HEADER_GALACTIC_HQ_4F"
+vars = { VAR_GALACTIC_HQ_4F_STATE = 1 }
+flags = ["FLAG_OBTAINED_GALACTIC_HQ_B2F_GALACTIC_KEY", "FLAG_HIDE_GALACTIC_HQ_4F_CYRUS"]
+battles = 1

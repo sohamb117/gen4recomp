@@ -1,0 +1,8 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26117
+money 3000
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 0 0 MOVE_CRUNCH
+# TV bg events (11,3),(12,3); normally reached via Cut through Eterna Forest, bypassed by the map line
+map MAP_HEADER_OLD_CHATEAU_BACK_MIDDLE_WEST_ROOM 11 4 FACE_UP

@@ -1,0 +1,90 @@
+# Proves the Flint arrival OnFrame, the lighthouse elevator and Volkner's return to the gym.
+# Start: Sunyshore gate exit (832,790) -> end: Sunyshore City (150), Flint gone from the gym door.
+
+title = "Sunyshore: Flint, Volkner at Vista Lighthouse"
+status = "planned"
+priority = "P0"
+estimate = 9000
+refs = [
+  "scripts_init_sunyshore_city.s",
+  "scripts_sunyshore_city.s:449-487",
+  "scripts_vista_lighthouse.s:30-73",
+  "scripts_sunyshore_city.s:623-665",
+  "events_route_222.json",
+  "scripts_sunyshore_city.s:484",
+  "scripts_sunyshore_city.s:486",
+  "scripts_sunyshore_city.s:34",
+  "scripts_sunyshore_city.s:35",
+  "scripts_vista_lighthouse.s:71",
+  "scripts_vista_lighthouse.s:72",
+  "scripts_sunyshore_city.s:663",
+  "scripts_sunyshore_city.s:451-454",
+  "events_sunyshore_city.json",
+  "scripts_vista_lighthouse_elevator.s:7-26",
+  "events_vista_lighthouse.json",
+  "scripts_vista_lighthouse_elevator.s:28-35",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "SunyshoreCity_OnFrame_Flint (scripts_sunyshore_city.s:449-487); player z must be 790/791"
+
+[[step]]
+do = "walk_to"
+x = 886
+z = 790
+note = "Vista Lighthouse door, events_sunyshore_city.json warp10 -> elevator (516)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VISTA_LIGHTHOUSE"
+max = 3000
+note = "elevator OnFrame rides up and warps to (6,10) (scripts_vista_lighthouse_elevator.s:7-26)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 5
+face = "up"
+interact = true
+note = "Volkner obj2 (6,4) (scripts_vista_lighthouse.s:30-73)"
+
+[[step]]
+do = "advance_text"
+shot = "volkner_lighthouse"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 9
+note = "elevator warp, events_vista_lighthouse.json warp0; rides down to Sunyshore (886,791) (scripts_vista_lighthouse_elevator.s:28-35)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SUNYSHORE_CITY"
+max = 3000
+
+[[step]]
+do = "walk_to"
+x = 845
+z = 749
+face = "up"
+interact = true
+note = "Flint at (845,748) in front of the gym door (845,747); [INFERENCE] approach tile"
+
+[[step]]
+do = "advance_text"
+note = "Flint walks off (scripts_sunyshore_city.s:623-665)"
+
+[expect]
+map = "MAP_HEADER_SUNYSHORE_CITY"
+vars = { VAR_SUNYSHORE_CITY_STATE = 1 }
+flags = ["FLAG_VOLKNER_RETURNED_TO_GYM", "FLAG_HIDE_SUNYSHORE_CITY_FLINT"]

@@ -1,0 +1,78 @@
+# Proves the rival-outside-gym OnFrame, the Canalave sailor's ship menu and Riley's HM04.
+# Start: Canalave gym door (39,731), VAR_CANALAVE_CITY_STATE 2 -> end: Iron Island (288), HM04.
+
+title = "Iron Island: Riley gives HM04 Strength"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "scripts_init_canalave_city.s:9",
+  "scripts_canalave_city.s:219-231",
+  "scripts_canalave_city.s:494-530",
+  "scripts_canalave_city.s:528",
+  "scripts_iron_island.s:92-124",
+  "scripts_iron_island.s:101-114",
+  "scripts_iron_island.s:15-35",
+  "scripts_iron_island_b2f_left_room.s:38-60",
+  "scripts_iron_island_b2f_left_room.s:149-196",
+  "scripts_iron_island_b2f_left_room.s:232-270",
+  "scripts_canalave_city.s:229",
+  "scripts_canalave_city.s:230",
+  "scripts_canalave_city.s:228",
+  "scripts_iron_island.s:12",
+  "scripts_iron_island.s:98-100",
+  "scripts_iron_island.s:121",
+  "scripts_iron_island_b2f_left_room.s:51",
+  "scripts_canalave_city.s:52",
+  "scripts_iron_island_b2f_left_room.s:269",
+  "scripts_iron_island_b2f_left_room.s:56",
+  "scripts_iron_island_b2f_left_room.s:245",
+  "scripts_iron_island_b2f_left_room.s:246",
+  "scripts_iron_island_b2f_left_room.s:268",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "CanalaveCity_OnFrame_RivalOutsideGym (scripts_canalave_city.s:219-231)"
+
+[[step]]
+do = "walk_to"
+x = 45
+z = 751
+face = "up"
+interact = true
+note = "Sailor Eldritch obj16 (45,750); [INFERENCE] approach tile"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "menu entry 0 'Iron Island' is the default (scripts_canalave_city.s:494-530); TakeShipFromCanalave :528"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_IRON_ISLAND"
+
+[[step]]
+do = "walk_to"
+x = 117
+z = 491
+face = "up"
+interact = true
+note = "Riley (117,490) south of the 1F door (117,489) (scripts_iron_island.s:92-124)"
+
+[[step]]
+do = "advance_text"
+shot = "hm04_strength"
+
+[expect]
+map = "MAP_HEADER_IRON_ISLAND"
+vars = { VAR_CANALAVE_CITY_STATE = 3, VAR_CANALAVE_LIBRARY_STATE = 1 }
+flags = ["FLAG_HIDE_IRON_ISLAND_RILEY", "FLAG_FIRST_ARRIVAL_IRON_ISLAND_EXTERIOR"]

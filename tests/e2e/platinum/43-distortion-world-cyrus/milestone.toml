@@ -1,0 +1,45 @@
+# Proves the overlay-9 Distortion World floors, the B6F boulder puzzle and the Cyrus battle.
+# Chain start: 42's end (DW 1F). Lab start: Spear Pillar Distorted (31,53), talk to Cynthia (31,30), Yes
+# (scripts_spear_pillar_distorted.s:120-128). End: DW B7F (581), VAR_DISTORTION_WORLD_PROGRESS 10.
+
+title = "Distortion World: to B7F and Cyrus"
+status = "planned"
+priority = "P0"
+estimate = 40000
+refs = [
+  "scripts_spear_pillar_distorted.s:120-128",
+  "src/overlay009/ov9_02249960.c:10198-10248",
+  "src/overlay009/ov9_02249960.c:10738",
+  "src/overlay009/ov9_02249960.c:11068-12727",
+  "include/constants/distortion_world.h:4-20",
+  "scripts_distortion_world_1f.s:38-78",
+  "scripts_distortion_world_b2f.s:13-36",
+  "scripts_distortion_world_b3f.s:12-32",
+  "scripts_distortion_world_b6f.s:18-77",
+  "scripts_distortion_world_b7f.s:24-34",
+  "ov9_02249960.c:12577-12603",
+  "scripts_distortion_world_b7f.s:50-59",
+  "scripts_distortion_world_b7f.s:96-104",
+  "scripts_distortion_world_b6f.s:30",
+  "include/data/map_headers.h:12672-12692",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 60000
+# PHASE2: the two starts differ (chain: already in DW 1F; lab: walk to (31,31) facing up, A on Cynthia (31,30), Yes, wait_map
+#   MAP_HEADER_DISTORTION_WORLD_1F). Tile path through 1F..B7F is unknown: derive it from src/overlay009/ov9_02249960.c
+#   (sDistWorldMapConnectionList :10198-10248, sMovingPlatformMapTemplates*, sElevatorPlatformPaths :10738, sMapEvents1F..B7F
+#   :11068-12727) + mapscan. Progress beats: 1F (scripts_distortion_world_1f.s:38-78), B2F Cynthia (scripts_distortion_world_b2f.s:13-36),
+#   B3F Cyrus (scripts_distortion_world_b3f.s:12-32), B6F three Strength boulders into the pits then Cynthia
+#   (scripts_distortion_world_b6f.s:18-77), B7F (scripts_distortion_world_b7f.s:24-34), coord (0x54..0x56, y 0x41, z 0x4C)
+#   (ov9_02249960.c:12577-12603), talk to Cyrus -> auto_battle (TRAINER_GALACTIC_BOSS_CYRUS_DISTORTION_WORLD 404) (b7f :50-59).
+
+[expect]
+map = "MAP_HEADER_DISTORTION_WORLD_B7F"
+vars = { VAR_DISTORTION_WORLD_PROGRESS = 10 }
+flags = ["FLAG_DISTORTION_WORLD_STEPPING_STONES"]
+battles = 1

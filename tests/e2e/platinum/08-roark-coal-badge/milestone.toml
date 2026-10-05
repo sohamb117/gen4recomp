@@ -1,0 +1,76 @@
+# Proves the first gym: two sight youngsters, Roark, the Coal Badge and TM76; the win arms the Jubilife Galactic scene.
+# Start: Oreburgh Gym warp 0 (5,24) -> end: Oreburgh City at the gym door (09's start).
+title = "Oreburgh Gym: Roark and the Coal Badge"
+status = "planned"
+priority = "P0"
+estimate = 21000
+refs = [
+  "scripts_oreburgh_city_gym.s:26-28",
+  "scripts_oreburgh_city_gym.s:30-41",
+  "scripts_oreburgh_city_gym.s:47-51",
+  "tests/gameplay/recipes/roark.recipe",
+  "events_oreburgh_city_gym (warp 0 (5,24); Jonathon (4,18) E 3; Darius (7,11) W 4; Roark (5,3))",
+  "TRAINER_YOUNGSTER_JONATHON (244)",
+  "TRAINER_YOUNGSTER_DARIUS (245)",
+  "TRAINER_LEADER_ROARK (246)",
+]
+notes = "Estimate: research's measured ~20200 for the existing Roark test plus the exit. Surf is x2/x4 on every Roark mon."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 31500
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 4
+face = "up"
+interact = true
+max = 12000
+note = "straight north to Roark (5,3); Jonathon (4,18) E sight 3 and Darius (7,11) W sight 4 stop you on the way (fought by walk_to)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "roark-battle"
+note = "TRAINER_LEADER_ROARK (246): GEODUDE 12, ONIX 12, CRANIDOS 14"
+
+[[step]]
+do = "advance_text"
+shot = "coal-badge"
+note = "GiveBadge BADGE_ID_COAL, Jubilife scene armed, TM76 (scripts_oreburgh_city_gym.s:28-51)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 24
+note = "gym exit (warp 0) -> Oreburgh (282,756)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_CITY"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_OREBURGH_CITY"
+badges = 1
+badge = ["BADGE_ID_COAL"]
+flags = ["FLAG_RECEIVED_ROARK_TM76", "FLAG_DEFEATED_TRAINER_YOUNGSTER_JONATHON", "FLAG_DEFEATED_TRAINER_YOUNGSTER_DARIUS", "FLAG_HIDE_POKECENTER_BASEMENT_BLOCKADE", "FLAG_HIDE_SANDGEM_TOWN_LAB_PROF_ROWAN"]
+flags_clear = ["FLAG_HIDE_JUBILIFE_GALACTIC_GRUNTS", "FLAG_HIDE_JUBILIFE_ROWAN", "FLAG_HIDE_JUBILIFE_CITY_COUNTERPART"]
+battles = 1
+save = [
+  'any(i["item"] == 403 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM76
+]
+
+[expect.vars]
+VAR_OREBURGH_CITY_STATE = 2
+VAR_JUBILIFE_CITY_STATE = 3
+VAR_JUBILIFE_LOOKER_PAL_PAD_STATE = 1
+VAR_GTS_ACCESS_STATE = 1

@@ -1,0 +1,75 @@
+# Vs. Seeker rematch: charged seeker (battery 100), Y on Route 202 next to defeated Youngster
+# Tristan; he spins for a rematch, talk to him, beat TRISTAN_REMATCH_1 (STARAVIA 24).
+# Start: ROUTE_202 (166,816). End: (166,814) after the win.
+title = "Vs. Seeker: rematch Youngster Tristan"
+status = "planned"
+priority = "P1"
+estimate = 3500
+refs = [
+  "res/field/events/events_route_202.json",
+  "res/field/events/events_route_207.json",
+  "res/field/scripts/scripts_route_207.s:72-97",
+  "res/field/scripts/scripts_celestic_town.s:21",
+  "res/field/scripts/scripts_spear_pillar.s:390",
+  "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:47",
+  "res/field/scripts/scripts_stark_mountain_room_3.s:117",
+  "src/overlay005/vs_seeker.c:350",
+  "src/overlay005/vs_seeker.c:487-497",
+  "src/overlay005/vs_seeker.c:572-582",
+  "src/overlay005/vs_seeker.c:659-685",
+  "src/overlay005/vs_seeker.c:684",
+  "src/overlay005/vs_seeker.c:726-760",
+  "include/constants/vs_seeker.h:7",
+  "res/trainers/data/youngster_tristan_rematch_1.json",
+  "src/script_manager.c:522-525",
+  "generated/vars_flags.txt:1365",
+  "src/field_map_change.c:262",
+  "src/field_map_change.c:319",
+  "pc/tests/corpus/battle-legendary.recipe",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5300
+clock = "2009-03-22 21:00:00"   # the 50% LCRNG roll is deterministic per RTC/frame; shift if no trainer is picked
+
+[[step]]
+do = "press"
+keys = "Y"
+hold = 24
+note = "registered Vs. Seeker; battery 100 and Tristan visible (vs_seeker.c:487-497)"
+
+[[step]]
+do = "advance_text"
+max = 900
+note = "50% roll per visible defeated trainer (vs_seeker.c:659-685); Tristan spins"
+shot = "seeker"
+
+[[step]]
+do = "walk_to"
+x = 166
+z = 814
+face = "up"
+interact = true
+note = "Tristan at (166,813) LOOK_SOUTH sight 5; he may walk up on his own first [INFERENCE]"
+
+[[step]]
+do = "wait_battle"
+max = 1200
+
+[[step]]
+do = "auto_battle"
+note = "INFERNAPE 40 Flamethrower vs STARAVIA 24"
+shot = "rematch"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = 343
+battles = 1
+flags = ["FLAG_VS_SEEKER_USED", "FLAG_DEFEATED_TRAINER_YOUNGSTER_TRISTAN_REMATCH_1"]
+# [INFERENCE] battery resets on use
+vars = { VAR_VS_SEEKER_BATTERY_LEVEL = 0 }

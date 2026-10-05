@@ -1,0 +1,39 @@
+# Proves the post-Volkner rival + Jasmine coord scene.
+# Start: Sunyshore gym door (845,747), VAR_SUNYSHORE_CITY_STATE 2 -> end: Sunyshore, HM07.
+
+title = "Sunyshore: Jasmine gives HM07 Waterfall"
+status = "planned"
+priority = "P0"
+estimate = 6000
+refs = [
+  "scripts_sunyshore_city.s:44-131",
+  "scripts_sunyshore_city.s:415-447",
+  "scripts_sunyshore_city.s:48",
+  "scripts_sunyshore_city.s:113",
+  "scripts_sunyshore_city.s:442-444",
+  "scripts_sunyshore_city.s:445",
+  "scripts_sunyshore_city.s:129",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 9000
+
+[[step]]
+do = "walk_to"
+x = 855
+z = 743
+note = "coord0 (853..857,743), state 2 -> rival + Jasmine (scripts_sunyshore_city.s:44-131)"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "hm07_waterfall"
+
+[expect]
+map = "MAP_HEADER_SUNYSHORE_CITY"
+vars = { VAR_SUNYSHORE_CITY_STATE = 3 }
+flags = ["FLAG_RECEIVED_SUNYSHORE_CITY_HM07"]

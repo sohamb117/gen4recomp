@@ -1,0 +1,47 @@
+# Mesprit roamer activation: A on Mesprit in Verity Cavern -> preview, flicker,
+# ActivateRoamingPokemon ROAMING_SLOT_MESPRIT, Rowan scene.
+# Start: VERITY_CAVERN (12,14) below Mesprit (12,13). End: same map, Mesprit roaming.
+title = "Roamer: Mesprit starts roaming"
+status = "planned"
+priority = "P1"
+estimate = 3000
+refs = [
+  "res/field/scripts/scripts_init_new_game.s:16",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:112",
+  "res/field/scripts/scripts_verity_cavern.s:8-80",
+  "res/field/scripts/scripts_verity_cavern.s:42",
+  "src/roaming_pokemon.c:241-301",
+  "src/overlay006/wild_encounters.c:1425-1430",
+  "src/overlay006/roamer_after_battle.c:44",
+  "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:133",
+  "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:184-187",
+  "src/special_encounter.c:159-163",
+  "src/applications/poketch/marking_map/main.c:111",
+  "include/constants/roamer_states.h:4",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 4500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Mesprit object (12,13)"
+
+[[step]]
+do = "advance_text"
+max = 2500
+note = "preview, flicker, ActivateRoamingPokemon, Rowan scene"
+shot = "mesprit"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = 313
+flags = ["FLAG_HIDE_VERITY_CAVERN_MESPRIT"]
+# PHASE2: reader-ext SpecialEncounter.roamers[ROAMING_SLOT_MESPRIT].active == 1 (special_encounter.c:159-163);
+# VAR_ROAMING_MESPRIT_STATE stays 0 (= ROAMING, roamer_states.h:4) so the var cannot prove it.

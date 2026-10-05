@@ -1,0 +1,10 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26113
+money 3000
+# set at new game (scripts_init_new_game.s:17-18), cleared at Sandgem after the Distortion World (:113-114)
+clear-flag FLAG_HIDE_VALOR_CAVERN_AZELF
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 0 0 MOVE_CRUNCH
+# below Azelf (16,14) (scripts_valor_cavern.s:40-61)
+map MAP_HEADER_VALOR_CAVERN 16 15 FACE_UP

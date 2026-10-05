@@ -1,0 +1,53 @@
+# National Dex: with all 210 Sinnoh species seen, Rowan reacts to the Pokedex, Oak arrives,
+# SetNationalDexEnabled, Poke Radar given. Game completion is not required.
+# Start: SANDGEM_TOWN_POKEMON_RESEARCH_LAB (7,6) below Rowan. End: same map, natdex on.
+title = "National Dex upgrade from Rowan and Oak"
+status = "planned"
+priority = "P1"
+estimate = 5000
+refs = [
+  "res/field/scripts/scripts_sunyshore_city.s:35",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:23-35",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:52-58",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:486-560",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:538",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:542",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:572",
+  "include/pokedex.h:16-18",
+  "src/pokedex.c:801-810",
+  "src/scrcmd.c:5473-5477",
+  "res/pokemon/sinnoh_pokedex.json",
+  "pc/src/pc_lab.c:140",
+  "pc/src/pc_lab.c:680-687",
+  "pc/src/pc_lab.c:789-793",
+  "features/tools/np_save4.c:348-350",
+  "features/tools/np_save4.c:416-417",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 7500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "talk to Rowan (7,5): SandgemTownLab_ProfRowanReactToPokedex"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "[INFERENCE] A answers the Yes prompt; Oak cutscene is unskippable text; Poke Radar given"
+shot = "oak"
+
+[[step]]
+do = "wait_field"
+shot = "natdex"
+
+[expect]
+map = 422
+save = [
+  's["trainer"]["national_dex"] == True',
+  'any(i["item"] == 431 for p in s["bag"].values() for i in p)',   # ITEM_POKE_RADAR
+]

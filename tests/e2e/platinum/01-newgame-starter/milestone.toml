@@ -1,0 +1,99 @@
+# Proves the real new-game route from a blank chip: intro, Barry's visit, Mom, Route 201's Rowan scene, the
+# briefcase starter, the first rival battle, home, running shoes.
+# Start: power-on (no save) -> end: Twinleaf Town outside the player's house, VAR_PLAYER_HOUSE_STATE 5.
+title = "New game to the starter and the running shoes"
+status = "planned"
+priority = "P0"
+estimate = 29000
+refs = [
+  "src/location.c:8-14",
+  "scripts_init_new_game.s:7-126",
+  "scripts_init_new_game.s:24",
+  "pc/src/pc_lab.c:15-21",
+  "scripts_twinleaf_town_player_house_2f.s:28",
+  "scripts_twinleaf_town_player_house_2f.s:82",
+  "scripts_twinleaf_town_player_house_2f.s:127-128",
+  "scripts_twinleaf_town_player_house_1f.s:39",
+  "scripts_twinleaf_town_player_house_1f.s:47",
+  "scripts_twinleaf_town_player_house_1f.s:529",
+  "scripts_twinleaf_town_player_house_1f.s:749",
+  "scripts_twinleaf_town.s:394",
+  "scripts_twinleaf_town.s:421-424",
+  "scripts_twinleaf_town_rival_house_2f.s:28-30",
+  "scripts_route_201.s:122",
+  "scripts_route_201.s:208",
+  "scripts_route_201.s:224",
+  "scripts_route_201.s:240",
+  "scripts_route_201.s:270",
+  "scripts_route_201.s:278",
+  "scripts_route_201.s:280-286",
+  "scripts_route_201.s:301",
+  "scripts_route_201.s:334",
+  "scripts_route_201.s:360-363",
+  "scripts_route_201.s:371",
+  "scripts_route_201.s:388-396",
+  "scripts_route_201.s:401-407",
+  "scripts_twinleaf_town_player_house_1f.s:133",
+  "scripts_twinleaf_town_player_house_1f.s:141",
+  "scripts_twinleaf_town.s:19",
+  "scripts_twinleaf_town.s:32",
+  "src/system_vars.c:67-72",
+  "events_twinleaf_town_player_house_1f (warp 0 (6,10))",
+  "tests/gameplay/schedules/rival.press",
+  "tests/gameplay/scenarios/1-rival.scn",
+]
+notes = "Estimate = rival.press's recorded 27400 frames (1-rival.scn FRAMES) plus the running-shoes scene and the walk out. The research's ~9000 counts only the field part."
+
+[start]
+blank = true
+
+[run]
+frames = 43500
+
+# rival.press is the recorded blank-chip run (player NATIVE, Turtwig from the briefcase, Barry's Chimchar beaten, home
+# on map 414 by ~26700; tests/gameplay/scenarios/1-rival.scn). Frames are relative to this step, which is frame 0 of a
+# blank-chip run (boot = none).
+
+[[step]]
+do = "schedule"
+file = "../../../gameplay/schedules/rival.press"
+shot = "home-after-rival"
+note = "intro, 2F Barry coords, Mom, guitarist fix in the rival house, Route 201 Rowan (YES x3), briefcase, StartFirstBattle, Warp home (scripts_route_201.s:280-407)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_TWINLEAF_TOWN_PLAYER_HOUSE_1F"
+
+[[step]]
+do = "advance_text"
+shot = "running-shoes"
+note = "1F OnFrame VAR_PLAYER_HOUSE_STATE==3: Mom gives the running shoes -> 4 (scripts_twinleaf_town_player_house_1f.s:133,141); no-op if rival.press already advanced it"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 10
+note = "1F door (events_twinleaf_town_player_house_1f warp 0) -> Twinleaf (116,885)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_TWINLEAF_TOWN"
+
+[[step]]
+do = "wait_field"
+note = "Twinleaf OnTransition: VAR_PLAYER_HOUSE_STATE 4 -> 5 (scripts_twinleaf_town.s:32)"
+
+[expect]
+map = "MAP_HEADER_TWINLEAF_TOWN"
+flags = ["FLAG_TALKED_TO_MOM", "FLAG_RIVAL_LEFT_HOME", "FLAG_HIDE_ROUTE_201_BRIEFCASE", "FLAG_HIDE_ROUTE_201_PROF_ROWAN", "FLAG_HIDE_ROUTE_201_COUNTERPART"]
+party = ["SPECIES_TURTWIG"]
+party_size = 1
+battles = 1
+
+[expect.vars]
+VAR_PLAYER_HOUSE_STATE = 5
+VAR_FOLLOWER_RIVAL_STATE = 2
+VAR_PLAYER_STARTER = "SPECIES_TURTWIG"
+VAR_RIVAL_HOUSE_STATE = 1
+VAR_TWINLEAF_TOWN_GUITARIST_TRIGGER_STATE = 2
+VAR_PLAYER_HOUSE_RIVAL_STATE = 1

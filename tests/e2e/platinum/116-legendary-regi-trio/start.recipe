@@ -1,0 +1,12 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26116
+money 3000
+# post-game: story-cleared only sets the trainer-info bit (pc_lab.c:798-800); every script gate
+# checks FLAG_GAME_COMPLETED (src/clear_game.c:204-206, scrcmd_system_flags.c:151, system_flags.c:69-71)
+story-cleared 1
+flag FLAG_GAME_COMPLETED
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 0 0 MOVE_EARTHQUAKE
+# [INFERENCE] tile north of the door (7,12); the statue bg is at (6..8,1)
+map MAP_HEADER_ROCK_PEAK_RUINS 7 11 FACE_UP

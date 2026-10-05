@@ -1,0 +1,78 @@
+# Proves Eterna Forest with Cheryl as partner (multi battles), the Soothe Bell, and the exit to Route 205 North.
+# Start: Eterna Forest warp 0 (28,86), the Route 205 South entrance -> end: Route 205 North after Cheryl leaves.
+title = "Eterna Forest with Cheryl"
+status = "planned"
+priority = "P0"
+estimate = 15000
+refs = [
+  "scripts_eterna_forest.s:19-25",
+  "scripts_eterna_forest.s:29",
+  "scripts_eterna_forest.s:52-57",
+  "scripts_eterna_forest.s:88-115",
+  "scripts_eterna_forest.s:142-150",
+  "scripts_eterna_forest.s:209-213",
+  "scripts_eterna_forest_outside.s:12",
+  "events_eterna_forest (coords (28..29,85), (28..29,86), (82,34..39); warp 2 (86,36); cut trees (74..77,33))",
+  "TRAINER_CHERYL_ETERNA_FOREST (608)",
+  "TRAINER_BUG_CATCHER_JACK (201)",
+  "TRAINER_LASS_BRIANA (204)",
+  "TRAINER_PSYCHIC_LINDSEY (206)",
+  "TRAINER_PSYCHIC_ELIJAH (205)",
+  "TRAINER_PSYCHIC_KODY (395)",
+  "TRAINER_PSYCHIC_RACHAEL (398)",
+  "TRAINER_BUG_CATCHER_PHILLIP (202)",
+  "TRAINER_BUG_CATCHER_DONALD (203)",
+]
+notes = "Multi battles with Cheryl: one Surf can clear both foes and also hits Cheryl. PP: up to 13 forest mons plus ~11 on Route 205 South may empty Surf; the lead then Struggles (slots 1-3 are cleared). [INFERENCE] pairs Jack/Briana, Lindsey/Elijah, Kody/Rachael, Phillip/Donald from facing/positions."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 85
+note = "coord (28..29,85) VAR_ETERNA_FOREST_FOLLOWER_CHERYL_STATE==0 -> Cheryl joins (SetHasPartner), bike dismounted (scripts_eterna_forest.s:29-57); never step back onto (28..29,86) (drops her, :88-115)"
+
+[[step]]
+do = "advance_text"
+shot = "cheryl-joins"
+
+[[step]]
+do = "walk_to"
+x = 82
+z = 36
+max = 15000
+note = "coord (82,34..39) ==1; row z=67 pairs Jack (37,67)/Briana (40,67), Lindsey (50,67)/Elijah (55,67), Kody (74,67)/Rachael (77,67) and Phillip (65,87)/Donald (65,83) are fought by walk_to [INFERENCE: waypoints may be needed through the forest]"
+
+[[step]]
+do = "advance_text"
+shot = "soothe-bell"
+note = "Soothe Bell, ClearHasPartner, Cheryl leaves -> 2 (scripts_eterna_forest.s:142-213)"
+
+[[step]]
+do = "walk_to"
+x = 86
+z = 36
+note = "east exit (events_eterna_forest warp 2) -> Route 205 North (259,524)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_205_NORTH"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_ROUTE_205_NORTH"
+flags = ["FLAG_TRAVELED_WITH_CHERYL", "FLAG_TALKED_TO_ETERNA_FOREST_CHERYL", "FLAG_HIDE_ETERNA_FOREST_CHERYL"]
+save = [
+  'any(i["item"] == 218 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_SOOTHE_BELL
+]
+
+[expect.vars]
+VAR_ETERNA_FOREST_FOLLOWER_CHERYL_STATE = 2

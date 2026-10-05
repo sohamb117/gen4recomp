@@ -1,0 +1,68 @@
+# Honey tree encounter: a lab-honeyed tree 0 (ROUTE_205_SOUTH) in ENCOUNTER status gives
+# table 0 slot 0 = COMBEE when interacted with facing north.
+# Start: ROUTE_205_SOUTH (213,653) below the tree. End: same tile, tree bare (minutes 0).
+title = "Honey tree: Route 205 South Combee"
+status = "planned"
+priority = "P2"
+estimate = 5000
+refs = [
+  "src/overlay005/honey_tree.c:41-63",
+  "src/overlay005/honey_tree.c:97-116",
+  "src/overlay005/honey_tree.c:118-133",
+  "src/overlay005/honey_tree.c:135-172",
+  "src/overlay005/honey_tree.c:143",
+  "src/overlay005/honey_tree.c:375-382",
+  "src/overlay005/honey_tree.c:421-440",
+  "src/overlay005/honey_tree.c:452-463",
+  "src/overlay005/field_control.c:293",
+  "res/field/scripts/scripts_common.s:460-544",
+  "res/field/scripts/scripts_common.s:463-468",
+  "res/field/scripts/scripts_common.s:474",
+  "res/field/scripts/scripts_common.s:503-507",
+  "src/unk_020559DC.c:120",
+  "src/special_encounter.c:28-36",
+  "src/special_encounter.c:100-120",
+  "src/overlay006/wild_encounters.c:1196-1222",
+  "res/field/encounters/encounters_honey_tree.json",
+  "pc/src/pc_lab.c:818-832",
+  "pc/tests/pc_corpus.py:303",
+  "pc/tests/corpus/daily-6h.recipe",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 7500
+clock = "2009-03-22 21:00:00"   # mint and run on the same PC_RTC so the timer does not drift [INFERENCE]
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing the honey_tree_nsbmd prop north (honey_tree.c:97-116); ENCOUNTER status needs no honey item"
+shot = "tree"
+
+[[step]]
+do = "advance_text"
+max = 1200
+
+[[step]]
+do = "wait_battle"
+max = 1200
+
+[[step]]
+do = "auto_battle"
+note = "STARAPTOR Brave Bird KOs the lv5-15 COMBEE"
+shot = "combee"
+
+[[step]]
+do = "advance_text"
+note = "no honey in the bag, so no re-slather prompt (scripts_common.s:503-507)"
+
+[expect]
+map = 347
+position = [213, 653]
+battles = 1
+# COMBEE seen: STARAPTOR is the only prior dex entry
+save = ['s["pokedex"]["seen"] >= 2']
+# PHASE2: reader-ext honey tree 0 minutesRemaining == 0 (pc_save `honey: 0=0`, pc_corpus.py:303) and dex SPECIES_COMBEE seen (pc_save dex)

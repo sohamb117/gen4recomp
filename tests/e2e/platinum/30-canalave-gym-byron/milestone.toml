@@ -1,0 +1,51 @@
+# Proves the moving-platform gym and Byron's win script (library NPCs shown, Canalave state 2).
+# Start: Canalave Gym door (16,27) -> end: same map, BADGE_ID_MINE, TM91.
+
+title = "Canalave Gym: Byron and the Mine Badge"
+status = "planned"
+priority = "P0"
+estimate = 24000
+refs = [
+  "src/overlay008/gym_features.c:880-1017",
+  "src/overlay008/gym_features.c:1020-1220",
+  "src/overlay008/gym_features.c:1028-1035",
+  "src/overlay008/gym_features.c:1036-1067",
+  "src/overlay008/gym_features.c:1252-1303",
+  "src/overlay008/gym_features.c:412-421",
+  "scripts_canalave_city_gym.s:31",
+  "scripts_canalave_city_gym.s:33-39",
+  "scripts_canalave_city_gym.s:41",
+  "scripts_canalave_city_gym.s:42",
+  "scripts_canalave_city_gym.s:43",
+  "scripts_canalave_city_gym.s:44",
+  "scripts_canalave_city_gym.s:45",
+  "scripts_canalave_city_gym.s:46",
+  "scripts_canalave_city_gym.s:47",
+  "scripts_canalave_city_gym.s:52-55",
+  "scripts_canalave_city_gym.s:56",
+  "scripts_canalave_city_gym.s:31-56",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 36000
+
+[[step]]
+do = "wait_field"
+# PHASE2: Canalave gym route. BFS over the four floor grids sCanalaveGymCollisionMaps[4][32*32]
+#   (src/overlay008/gym_features.c:880-1017) plus platform toggles from sCanalavePlatformPaths (:1020-1220; red platform
+#   (16,9) floor 0->3 :1028-1035; y-platforms (11,13),(15,13),(19,13),(24,13) floor 0->1 :1036-1067; CanalaveGym_MovePlatform
+#   :1252-1303; state bits CanalaveGymPersistedFeature.platformStates :412-421). Floor 0 cannot reach (16,9) directly (row 11);
+#   go up a y-platform and back down. Then talk to Byron (16,3) on floor 3 facing up, auto_battle, advance_text
+#   (badge + TM91, scripts_canalave_city_gym.s:31-56).
+
+[expect]
+map = "MAP_HEADER_CANALAVE_CITY_GYM"
+badges = 6
+badge = ["BADGE_ID_MINE"]
+flags = ["FLAG_RECEIVED_BYRON_TM91"]
+vars = { VAR_CANALAVE_CITY_STATE = 2 }
+battles = 1

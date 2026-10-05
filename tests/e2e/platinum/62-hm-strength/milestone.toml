@@ -1,0 +1,67 @@
+# HM04 Strength: arm Strength with A/YES, then push the boulder one tile north.
+# Start: MT_CORONET_1F_NORTH_ROOM_1 (18,44) facing a boulder. End: (18,43), where the boulder stood.
+title = "HM04 Strength: push a Mt. Coronet boulder"
+status = "planned"
+priority = "P1"
+estimate = 5800
+refs = [
+  "res/field/scripts/scripts_iron_island.s:91-103",
+  "res/field/scripts/scripts_iron_island.s:111",
+  "src/field_move_tasks.c:463",
+  "res/field/scripts/scripts_field_moves.s:191",
+  "res/field/scripts/scripts_field_moves.s:207-220",
+  "res/field/scripts/scripts_field_moves.s:219",
+  "generated/vars_flags.txt:2409",
+  "pc/tests/corpus/hm-strength.recipe",
+  "pc/tests/corpus/hm-strength.spec",
+  "pc/replays/lab-fieldmove.txt",
+  "generated/journal_location_events.txt:23",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 8700
+# pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
+env = { PC_TRACE_JOURNAL = "1" }
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing the boulder: Strength prompt"
+
+[[step]]
+do = "wait_frames"
+n = 200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES: DoStrengthFunc SET_ACTIVE only arms the move (scripts_field_moves.s:207-220)"
+shot = "strength-prompt"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "B"
+note = "the extra message lab-fieldmove.txt closes with B"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 24
+note = "walk into the boulder: the push happens on this step"
+shot = "pushed"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = 218
+position = [18, 43]
+badge = ["BADGE_ID_MINE"]
+flags = ["FLAG_STRENGTH_ACTIVE"]
+log = ['pc-journal: f=\d+ event=22 ']   # LOCATION_EVENT_USED_STRENGTH; not proof alone (push can be refused): position is the assert

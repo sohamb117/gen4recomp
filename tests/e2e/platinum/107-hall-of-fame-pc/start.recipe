@@ -1,0 +1,19 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26107
+money 3000
+# post-game: story-cleared only sets the trainer-info bit (pc_lab.c:798-800); every script gate
+# checks FLAG_GAME_COMPLETED (src/clear_game.c:204-206, scrcmd_system_flags.c:151, system_flags.c:69-71)
+story-cleared 1
+flag FLAG_GAME_COMPLETED
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+badge BADGE_ID_BEACON
+party SPECIES_EMPOLEON 62 ITEM_NONE
+# PC tiles (12,2)/(12,3) of the shared Pokemon Center interior; the PC answers only facing north (menu-box.recipe)
+map MAP_HEADER_JUBILIFE_CITY_POKECENTER_1F 12 4 FACE_UP

@@ -1,0 +1,47 @@
+# Spiritomb at the Hallowed Tower: keystone already placed (state 1) and 32 Underground talks
+# (VAR_SPIRITOMB_COUNTER) -> A -> StartWildBattle SPIRITOMB 25; both vars reset after.
+# Start: ROUTE_209 (566,715) below the tower (566..567,713..714). End: same.
+title = "Spiritomb at the Hallowed Tower"
+status = "planned"
+priority = "P2"
+estimate = 8000
+refs = [
+  "res/field/scripts/scripts_route_208.s:28-40",
+  "res/field/scripts/scripts_route_209.s:40-80",
+  "res/field/scripts/scripts_route_209.s:79-80",
+  "src/system_vars.c:274-281",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: keystone variant: `item ITEM_ODD_KEYSTONE 1`, state 0 -> A, Yes -> VAR_HALLOWED_TOWER_STATE = 1.
+
+[run]
+frames = 12000
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Hallowed Tower bg (566..567,713..714)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "spiritomb"
+
+[[step]]
+do = "auto_battle"
+note = "Dragon Claw neutral vs Ghost/Dark, OHKO vs ~68 HP [INFERENCE: hand calc]"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[expect]
+map = 356
+battles = 1
+vars = { VAR_HALLOWED_TOWER_STATE = 0, VAR_SPIRITOMB_COUNTER = 0 }

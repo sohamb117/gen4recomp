@@ -1,0 +1,43 @@
+# Trophy Garden daily mon: Mr. Backlot (needs national dex), YES, YES -> AddTrophyGardenMon.
+# Start: POKEMON_MANSION_OFFICE (16,9) below Backlot. End: same, daily flag set.
+title = "Trophy Garden: Mr. Backlot's daily Pokemon"
+status = "planned"
+priority = "P2"
+estimate = 4000
+refs = [
+  "res/field/events/events_route_212_north.json",
+  "res/field/events/events_pokemon_mansion.json",
+  "res/field/events/events_pokemon_mansion_office.json",
+  "res/field/scripts/scripts_pokemon_mansion_office.s:31-95",
+  "src/overlay006/trophy_garden_daily_encounters.c:14-44",
+  "src/special_encounter.c:279",
+  "res/field/encounters/encounters_trophy_garden.json",
+  "src/overlay006/wild_encounters.c:209-227",
+  "src/overlay006/wild_encounters.c:336",
+  "pc/src/pc_lab.c:789-793",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 6000
+clock = "2009-03-22 21:00:00"   # daily flag FLAG_DAILY_ADDED_TROPHY_GARDEN_MON
+
+[[step]]
+do = "press"
+keys = "A"
+note = "talk to LOCALID_MR_BACKLOT (16,8), script 2"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "[INFERENCE] the two YES prompts default to YES under A; the old man leaves and Backlot names the species"
+shot = "backlot-species"
+
+[expect]
+map = 370
+flags = ["FLAG_DAILY_ADDED_TROPHY_GARDEN_MON"]
+save = ['s["trainer"]["national_dex"] == True']
+# species is RNG over the 16-entry daily list (encounters_trophy_garden.json); the screenshot shows it.
+# PHASE2: reader-ext trophy garden slots (not exposed by pc_save [INFERENCE]).

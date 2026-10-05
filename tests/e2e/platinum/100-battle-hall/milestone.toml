@@ -1,0 +1,47 @@
+# Battle Hall single set: one mon (GARCHOMP), pick a type panel each round.
+# Start: BATTLE_HALL (7,9) beside the single attendant (6,9) [INFERENCE: attendant facing]. End: Hall lobby.
+title = "Battle Hall: first single set"
+status = "planned"
+priority = "P2"
+estimate = 40000
+refs = [
+  "res/field/scripts/scripts_battle_frontier.s",
+  "src/scrcmd_battle_hall.c:510-514",
+  "res/field/events/events_battle_frontier.json",
+  "res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40",
+  "res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s",
+  "src/unk_02049D08.c:161-206",
+  "src/unk_02049D08.c:750-787",
+  "src/unk_020494DC.c:72-78",
+  "src/wifi_battle_tower_save.c:156-176",
+  "src/overlay104/frscrcmd.c:1567-1580",
+  "pc/src/pc_lab.c:798-800",
+  "src/clear_game.c:204-206",
+  "src/scrcmd_system_flags.c:151",
+  "src/system_flags.c:69-71",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "press"
+keys = "A"
+note = "single attendant (6,9) -> BattleHall_TryTakeSingleChallenge (BH_LOBBY_FUNC_CHECK_PARTY_ELIGIBLE 1)"
+shot = "attendant"
+
+[[step]]
+do = "wait_frames"
+n = 120
+# PHASE2: party pick (1 mon) and the type-board cursor screen are unrecorded; avoid Flying/Levitate panels
+# [INFERENCE] since Earthquake is the only move used.
+
+[expect]
+map = 563
+battles = 7
+# PHASE2: reader-ext Battle Points (WifiBattleTowerRecord_UpdateBattlePoints, wifi_battle_tower_save.c:156-176)
+# == 3 after the first solo set (unk_02049D08.c:750-787) or > 0; np_save4 has no BP field. Meanwhile
+# the in-run Common_SaveGame saves advance the save counter.

@@ -1,0 +1,68 @@
+# Underground bags: lab-stocked spheres/traps/goods, enter the Underground, bury one sphere
+# (sets FLAG_SPHERE_ACQUIRED, despite the name).
+# Start: Oreburgh with kit + stash. End: UNDERGROUND (2), one sphere buried.
+title = "Underground: spheres, traps and goods"
+status = "planned"
+priority = "P2"
+estimate = 5500
+refs = [
+  "src/underground/spheres.c:378-385",
+  "src/underground/vendors.c:232",
+  "generated/vars_flags.txt:4183",
+  "generated/sphere_types.txt",
+  "generated/traps.txt",
+  "generated/goods.txt",
+  "res/field/scripts/scripts_eterna_city_underground_man_house.s:213-215",
+  "pc/tests/corpus/ug-stash.recipe",
+  "pc/tests/corpus/ug-stash.spec",
+  "pc/src/pc_lab.c:950-990",
+  "pc/src/pc_lab.c:1958-2062",
+  "pc/tests/pc_corpus.py:495-513",
+  "pc/tests/corpus/ug-enter.recipe",
+  "pc/tests/corpus/ug-enter.spec",
+  "pc/replays/lab-ug-enter.txt",
+  "src/item_use_functions.c:365-367",
+  "src/underground/comm_manager.c:82",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 8300
+# lab underground hook `enter` (pc_lab.c:1958-2062; corpus ug-enter.spec `underground: enter`)
+env = { PC_LAB_UNDERGROUND = "enter", PC_LAB_UNDERGROUND_AT = "4900" }
+clock = "2009-03-22 21:00:00"
+
+[[step]]
+do = "press"
+keys = "Y"
+hold = 24
+note = "use the registered Explorer Kit"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 24
+gap = 176
+times = 9
+note = "comms confirm + the game's forced save (lab-ug-enter.txt: A every 200 frames from 3800)"
+
+[[step]]
+do = "wait_map"
+map = 2
+max = 3000
+note = "the hook sets FLAG_HAS_SEEN_UNDERGROUND_ROARK_INTRO after arrival (solo first-visit path, pc_lab.c:1958-1992)"
+
+[[step]]
+do = "wait_field"
+shot = "underground"
+# PHASE2: the UG menu is on the touch/lower screen; record open-menu -> Spheres -> pick SPHERE_RED ->
+# bury on open ground (UndergroundMenu_RemoveSelectedSphere, spheres.c:378-385). Trap set
+# (VAR_UNDERGROUND_TRAPS_SET) and vendor purchase (vendors.c:232) follow the same menu.
+
+[expect]
+map = 2
+flags = ["FLAG_SPHERE_ACQUIRED"]
+# PHASE2: reader-ext stash (pc_save): before bury `sphere: filled=2 0.type=SPHERE_PRISM 0.size=12`,
+# `trap: filled=2`, `good: filled=2` (ug-stash.spec); after bury `sphere: filled=1`.

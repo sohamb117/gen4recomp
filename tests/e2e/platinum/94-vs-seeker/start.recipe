@@ -1,0 +1,16 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26094
+money 3000
+# Route207_GiveVsSeeker (scripts_route_207.s:72-97); the rematch level flag (vs_seeker.c:726-760)
+flag FLAG_UNLOCKED_VS_SEEKER_LVL_1
+item ITEM_VS_SEEKER 1
+register-item ITEM_VS_SEEKER
+# usable only at 100 (vs_seeker.c:487-497,572-582)
+var VAR_VS_SEEKER_BATTERY_LEVEL 100
+# only defeated trainers roll for a rematch (vs_seeker.c:659-685)
+flag FLAG_DEFEATED_TRAINER_YOUNGSTER_TRISTAN
+party SPECIES_INFERNAPE 40 ITEM_NONE
+party-move 0 0 MOVE_FLAMETHROWER
+# three tiles south of TRAINER_YOUNGSTER_TRISTAN (166,813) (events_route_202.json)
+map MAP_HEADER_ROUTE_202 166 816 FACE_UP

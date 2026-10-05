@@ -1,0 +1,47 @@
+# Proves Route 218 (blockade hidden after Celestic), the gate's Pokédex upgrade and the Canalave bridge rival.
+# Start: Route 218 gate, Jubilife side (10,7) -> end: Canalave City (33), VAR_CANALAVE_CITY_STATE 1.
+
+title = "Route 218 to Canalave: form-detection upgrade, bridge rival"
+status = "planned"
+priority = "P0"
+estimate = 14000
+refs = [
+  "scripts_route_218_gate_to_canalave_city.s:10-40",
+  "scripts_canalave_city.s:118-189",
+  "events_route_218.json",
+  "scripts_canalave_city.s:36",
+  "scripts_route_218_gate_to_canalave_city.s:38",
+  "scripts_canalave_city.s:150",
+  "scripts_canalave_city.s:186",
+  "scripts_canalave_city.s:187",
+  "events_route_218_gate_to_jubilife_city.json",
+  "src/field_move_tasks.c:414",
+  "scripts_route_218_gate_to_canalave_city.s:36",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 21000
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "west gate exit (events_route_218_gate_to_jubilife_city.json warp0) -> Route 218"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_218"
+# PHASE2: Route 218 Surf crossing. Find the shore tile with a PC_LAB_MAPSCAN of map 388; face the water, A, Yes
+#   (Surf needs BADGE_ID_FEN, src/field_move_tasks.c:414); surf west to the gate (70,754) -> ROUTE_218_GATE_TO_CANALAVE_CITY (390):
+#   coord (7,5..9) fires the form-detection scene (scripts_route_218_gate_to_canalave_city.s:10-40) -> Canalave (63,754);
+#   walk west onto coord0 (47,723..726) -> rival battle (scripts_canalave_city.s:118-189): advance_text, auto_battle, advance_text.
+
+[expect]
+map = "MAP_HEADER_CANALAVE_CITY"
+vars = { VAR_CANALAVE_CITY_STATE = 1, VAR_ROUTE_218_GATE_TO_CANALAVE_CITY_STATE = 1 }
+flags = ["FLAG_HIDE_ROUTE_218_GATE_TO_CANALAVE_CITY_SCIENTIST_M"]
+battles = 1

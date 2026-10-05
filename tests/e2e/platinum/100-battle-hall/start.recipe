@@ -1,0 +1,35 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26100
+money 3000
+# post-game: story-cleared only sets the trainer-info bit (pc_lab.c:798-800); every script gate
+# checks FLAG_GAME_COMPLETED (src/clear_game.c:204-206, scrcmd_system_flags.c:151, system_flags.c:69-71)
+story-cleared 1
+flag FLAG_GAME_COMPLETED
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+badge BADGE_ID_FEN
+badge BADGE_ID_RELIC
+badge BADGE_ID_MINE
+badge BADGE_ID_ICICLE
+badge BADGE_ID_BEACON
+# -- 96 Fight Area reached (post-event mint, skips the tag battle; generated/vars_flags.txt:470-486) --
+# scripts_fight_area.s:77,180
+var VAR_FIGHT_AREA_STATE 2
+# scripts_snowpoint_city.s:239
+flag FLAG_SAILED_TO_BATTLE_ZONE
+flag FLAG_HIDE_FIGHT_AREA_BATTLERS_AND_SPECTATORS
+flag FLAG_HIDE_FIGHT_AREA_RIVAL
+flag FLAG_HIDE_FIGHT_AREA_BUCK
+# Vs. Recorder first-entry scene done (scripts_battle_frontier_gate_to_fight_area.s:20-40)
+var VAR_BATTLE_FRONTIER_GATE_TO_FIGHT_AREA_STATE 1
+# >=3 non-egg, non-banlisted, distinct species and held items (unk_02049D08.c:161-206)
+party SPECIES_GARCHOMP 100 ITEM_LEFTOVERS
+party-move 0 0 MOVE_EARTHQUAKE
+party SPECIES_METAGROSS 100 ITEM_CHOICE_BAND
+party-move 1 0 MOVE_METEOR_MASH
+party SPECIES_SALAMENCE 100 ITEM_LIFE_ORB
+party-move 2 0 MOVE_DRAGON_CLAW
+# research: `6 10 FACE_UP` or (7,9) FACE_LEFT [INFERENCE: check the attendant's facing]
+map MAP_HEADER_BATTLE_HALL 7 9 FACE_LEFT

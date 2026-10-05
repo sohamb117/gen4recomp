@@ -1,0 +1,78 @@
+# Proves the storage-key grunt, Looker's agreement and the warehouse HQ door coord.
+# Start: Veilstone Pokémon Center door (717,611) -> end: Galactic HQ B2F (310).
+
+title = "Veilstone: storage key, Looker, Galactic HQ entry"
+status = "planned"
+priority = "P0"
+estimate = 9000
+refs = [
+  "scripts_veilstone_city.s:1068-1149",
+  "scripts_veilstone_city_galactic_warehouse.s:138-171",
+  "scripts_veilstone_city.s:1078",
+  "scripts_veilstone_city.s:1082",
+  "scripts_veilstone_city.s:1131",
+  "scripts_veilstone_city.s:1143",
+  "scripts_veilstone_city.s:1144",
+  "scripts_veilstone_city_galactic_warehouse.s:143",
+  "scripts_veilstone_city_galactic_warehouse.s:154",
+  "scripts_veilstone_city_galactic_warehouse.s:160-161",
+  "scripts_veilstone_city_galactic_warehouse.s:168",
+  "scripts_veilstone_city_galactic_warehouse.s:169",
+  "scripts_veilstone_city_galactic_warehouse.s:170",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 721
+z = 594
+face = "up"
+interact = true
+note = "grunt obj23 (721,593); any facing works (scripts_veilstone_city.s:1068-1149); [INFERENCE] approach tile"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "Looker appears at (723,601), Yes"
+
+[[step]]
+do = "walk_to"
+x = 701
+z = 591
+note = "warehouse door warp4"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 8
+note = "coord0 (8..9,8), state 3 -> Looker opens the HQ door (scripts_veilstone_city_galactic_warehouse.s:138-171)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 3
+note = "warp1 (13,3) -> HQ B2F (3,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_B2F"
+shot = "hq_entry"
+
+[expect]
+map = "MAP_HEADER_GALACTIC_HQ_B2F"
+vars = { VAR_VEILSTONE_CITY_GALACTIC_WAREHOUSE_STATE = 4 }
+flags = ["FLAG_USED_STORAGE_KEY", "FLAG_AGREED_WITH_LOOKER_TO_ENTER_HIDEOUT"]

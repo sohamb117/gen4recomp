@@ -1,0 +1,59 @@
+# HM06 Rock Smash, A-press path on the pinned Mt. Coronet 1F station.
+# Start: MT_CORONET_1F_NORTH_ROOM_1 (21,42) facing a rock. End: (21,40).
+title = "HM06 Rock Smash: break a Mt. Coronet rock"
+status = "planned"
+priority = "P1"
+estimate = 5800
+refs = [
+  "res/field/scripts/scripts_oreburgh_gate_1f.s:15-60",
+  "res/field/scripts/scripts_oreburgh_gate_1f.s:44",
+  "res/field/events/events_oreburgh_gate_1f.json",
+  "src/field_move_tasks.c:545",
+  "res/field/scripts/scripts_field_moves.s:134",
+  "res/field/scripts/scripts_field_moves.s:150-164",
+  "res/field/scripts/scripts_field_moves.s:159",
+  "pc/tests/corpus/hm-rock-smash.recipe",
+  "pc/tests/corpus/hm-rock-smash.spec",
+  "pc/replays/lab-fieldmove.txt",
+  "generated/journal_location_events.txt:25",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 8700
+# pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
+env = { PC_TRACE_JOURNAL = "1" }
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing the rock: Rock Smash prompt (scripts_field_moves.s:134)"
+
+[[step]]
+do = "wait_frames"
+n = 200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES"
+shot = "smash-prompt"
+
+[[step]]
+do = "advance_text"
+shot = "smash-anim"
+note = "[INFERENCE] smashing can start a wild encounter here; not seen in the pinned run"
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 40
+shot = "past-rock"
+
+[expect]
+map = 218
+position = [21, 40]
+badge = ["BADGE_ID_COAL"]
+log = ['pc-journal: f=\d+ event=24 ']   # LOCATION_EVENT_USED_ROCK_SMASH

@@ -1,0 +1,58 @@
+# Poketch app grant: with the Poketch owned, the Grand Lake Route 213 NE house rich boy gives
+# COINTOSS on first talk (Common_GivePoketchApp -> RegisterPoketchApp). All 25 app *screens* are
+# already pinned as corpus/poketch-*.recipe stations (poketch verb).
+# Start: GRAND_LAKE_ROUTE_213_NORTHEAST_HOUSE warp 0. End: same map, appCount +1.
+title = "Poketch: receive the Coin Toss app"
+status = "planned"
+priority = "P1"
+estimate = 4000
+refs = [
+  "res/field/scripts/scripts_jubilife_city.s:1426-1435",
+  "res/field/scripts/scripts_common.s:545-582",
+  "src/scrcmd.c:4150-4155",
+  "src/poketch.c:79",
+  "res/field/scripts/scripts_grand_lake_route_213_northeast_house.s:9-21",
+  "res/field/scripts/scripts_poketch_co_1f.s:43-101",
+  "res/field/scripts/scripts_eterna_city_pokecenter_1f.s:43-66",
+  "res/field/scripts/scripts_route_208_house.s:47-66",
+  "res/field/scripts/scripts_pokemon_day_care.s:10-30",
+  "res/field/scripts/scripts_solaceon_town.s:66-80",
+  "res/field/scripts/scripts_celestic_town_southwest_house.s:9-21",
+  "res/field/scripts/scripts_veilstone_store_2f.s:91-105",
+  "res/field/scripts/scripts_pastoria_city_observatory_gate_1f.s:148-170",
+  "res/field/scripts/scripts_sunyshore_city_east_house.s:10-90",
+  "res/field/scripts/scripts_pal_park_lobby.s:364-383",
+  "res/field/scripts/scripts_pal_park_lobby.s:410-445",
+  "src/scrcmd_mystery_gift.c:711",
+  "pc/src/pc_lab.c:680-687",
+  "pc/src/pc_lab.c:992-1027",
+  "pc/tests/pc_save.py:757-770",
+  "pc/tests/corpus/poketch-cointoss.recipe",
+  "pc/tests/corpus/poketch-pedometer.spec",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 6000
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 5
+face = "up"
+interact = true
+note = "rich boy at (4,4); [INFERENCE] (4,5) walkable"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "Common_GivePoketchApp jingle + text"
+shot = "cointoss-given"
+
+[expect]
+map = 379
+# PHASE2: reader-ext poketch appCount = minted + 1 (pc_save `poketch: count=`, pc_save.py:763);
+# np_save4 does not dump the Poketch. The 25 app stations stay in the corpus
+# (pc/tests/corpus/poketch-*.{recipe,spec}); Stopwatch/Alarm are Mystery-Gift-only [INFERENCE].

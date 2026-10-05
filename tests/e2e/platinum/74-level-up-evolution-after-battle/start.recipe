@@ -1,0 +1,10 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26074
+money 3000
+
+# CATERPIE lv6 (216 exp, 343 for lv7; res/pokemon/caterpie/data.json) evolves at 7 into METAPOD.
+party SPECIES_CATERPIE 6 ITEM_NONE
+# fixed 40 damage, one-shots the lv4 CHANSEY (A-only runner uses slot 0)
+party-move 0 0 MOVE_DRAGON_RAGE
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

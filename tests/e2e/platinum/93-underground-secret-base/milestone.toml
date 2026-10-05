@@ -1,0 +1,68 @@
+# Secret base decorate: a lab-created base (secret-base verb) + a good in the PC; enter the
+# Underground, go into the base, PC -> Decorate -> place the chair -> leave decorate mode.
+# Start: Oreburgh with kit. End: UNDERGROUND (2) inside the base, decorated.
+title = "Underground: decorate a secret base"
+status = "planned"
+priority = "P2"
+estimate = 7000
+refs = [
+  "src/underground/secret_bases.c:2190-2201",
+  "src/underground/secret_bases.c:2240",
+  "src/underground/pc.c:640-648",
+  "src/underground.c:1323",
+  "src/underground/player.c:480",
+  "pc/src/pc_lab.c:986-990",
+  "pc/tests/pc_corpus.py:366-367",
+  "pc/tests/corpus/ug-stash.recipe",
+  "pc/tests/corpus/ug-stash.spec",
+  "pc/src/pc_lab.c:950-990",
+  "pc/src/pc_lab.c:1958-2062",
+  "pc/tests/pc_corpus.py:495-513",
+  "pc/tests/corpus/ug-enter.recipe",
+  "pc/tests/corpus/ug-enter.spec",
+  "pc/replays/lab-ug-enter.txt",
+  "src/item_use_functions.c:365-367",
+  "src/underground/comm_manager.c:82",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 10500
+# lab underground hook `enter` (pc_lab.c:1958-2062; corpus ug-enter.spec `underground: enter`)
+env = { PC_LAB_UNDERGROUND = "enter", PC_LAB_UNDERGROUND_AT = "4900" }
+clock = "2009-03-22 21:00:00"
+
+[[step]]
+do = "press"
+keys = "Y"
+hold = 24
+note = "use the registered Explorer Kit"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 24
+gap = 176
+times = 9
+note = "comms confirm + the game's forced save (lab-ug-enter.txt: A every 200 frames from 3800)"
+
+[[step]]
+do = "wait_map"
+map = 2
+max = 3000
+note = "the hook sets FLAG_HAS_SEEN_UNDERGROUND_ROARK_INTRO after arrival (solo first-visit path, pc_lab.c:1958-1992)"
+
+[[step]]
+do = "wait_field"
+shot = "underground"
+# PHASE2: walk from the arrival tile to the base entrance written by `secret-base 72 437 FACE_UP`
+# (entrance opposite the facing, secret_bases.c:2190-2201) [INFERENCE: arrival tile unknown],
+# enter, A on the base PC -> Decorate -> place UG_GOOD_WOODEN_CHAIR -> leave (pc.c:640-648).
+# Drill variant: + `trap TRAP_DIGGER_DRILL`, face a wall, use it -> FLAG_CREATED_SECRET_BASE (:2201).
+
+[expect]
+map = 2
+flags = ["FLAG_DECORATED_SECRET_BASE"]
+# PHASE2: reader-ext `secret-base: active=1 x=72 z=437` (pc_save, pc_corpus.py:366-367)

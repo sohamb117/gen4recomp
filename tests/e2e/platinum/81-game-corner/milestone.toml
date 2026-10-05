@@ -1,0 +1,48 @@
+# Game Corner slots: with a Coin Case and seeded coins, play machine 0 once.
+# Start: GAME_CORNER (11,6) facing machine 0 at (12,6). End: same tile, coins changed.
+title = "Game Corner: play the slots"
+status = "planned"
+priority = "P2"
+estimate = 5000
+refs = [
+  "res/field/events/events_veilstone_city.json",
+  "res/field/events/events_game_corner.json",
+  "res/field/scripts/scripts_veilstone_city_southeast_house.s:11-60",
+  "res/field/scripts/scripts_game_corner.s:80-99",
+  "res/field/scripts/scripts_game_corner.s:126-170",
+  "src/scrcmd.c:5824-5830",
+  "src/unk_0203D1B8.c:1535-1551",
+  "src/unk_0203D1B8.c:1569-1600",
+  "features/tools/np_save4.c:8",
+  "features/tools/np_save4.c:348",
+  "features/tools/np_save4.c:584-587",
+  "generated/journal_location_events.txt:17",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: coins have no lab verb: run `np_save4 set-coins start.sav 100` after the mint
+# (np_save4.c:8,584-587); the schema has no post-mint edit hook.
+
+[run]
+frames = 7500
+# pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
+env = { PC_TRACE_JOURNAL = "1" }
+
+[[step]]
+do = "press"
+keys = "A"
+note = "machine 0 bg event (12,6): Coin Case present -> ScrCmd_267 slot app"
+shot = "slots"
+
+[[step]]
+do = "wait_frames"
+n = 300
+# PHASE2: slot app controls (bet, stop the three reels with A, exit with B) are [INFERENCE];
+# record them once, then advance_text back to the field.
+
+[expect]
+map = 136
+position = [11, 6]
+save = ['s["trainer"]["coins"] != 100']
+log = ['pc-journal: f=\d+ event=16 ']   # LOCATION_EVENT_GAME_CORNER

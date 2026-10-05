@@ -1,0 +1,46 @@
+# Proves the Coronet B1F passage (grunts gone after Mars), Maylene on Route 217, HM08 and the Acuity rival.
+# Start: Mt Coronet 1F North Room 1 (29,35) -> end: Snowpoint City (165), HM08.
+
+title = "Mt Coronet B1F to Snowpoint via Routes 216/217, HM08"
+status = "planned"
+priority = "P0"
+estimate = 26000
+refs = [
+  "scripts_route_217.s:24-46",
+  "scripts_acuity_lakefront.s:43-61",
+  "scripts_route_217.s:26",
+  "scripts_route_217.s:43",
+  "scripts_route_217.s:44",
+  "scripts_route_217.s:45",
+  "scripts_acuity_lakefront.s:56",
+  "scripts_acuity_lakefront.s:60",
+  "events_mt_coronet_b1f.json",
+  "events_route_217.json",
+  "scripts_visible_items.s:1302",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 39000
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 10
+note = "B1F warp (11,10); grunts obj16/17 hidden by FLAG_HIDE_MT_CORONET_1F_NORTH_ROOM_1_GRUNTS_M"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_MT_CORONET_B1F"
+# PHASE2: B1F (8,60) -> (8,3) through Rock Smash rocks / Strength boulders (events_mt_coronet_b1f.json obj0-17): order needs
+#   collision (PC_LAB_MAPSCAN of map 219). Then 1F North Room 2 (217) -> (2,18) -> Route 216 (deep snow) -> Route 217: coord
+#   (302..303,376) Maylene (scripts_route_217.s:24-46); HM08 item ball obj10 (296,305) (events_route_217.json, scripts_visible_items.s:1302);
+#   Acuity Lakefront coord (310..311,244) rival (scripts_acuity_lakefront.s:43-61); continue north to Snowpoint (wait_map MAP_HEADER_SNOWPOINT_CITY).
+
+[expect]
+map = "MAP_HEADER_SNOWPOINT_CITY"
+vars = { VAR_ROUTE_217_STATE = 1, VAR_ACUITY_LAKEFRONT_STATE = 1 }
+flags = ["FLAG_OBTAINED_ROUTE_217_HM08", "FLAG_HIDE_ACUITY_LAKEFRONT_RIVAL"]

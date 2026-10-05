@@ -1,0 +1,11 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26063
+money 3000
+
+# Surf needs BADGE_ID_FEN (field_control.c:686-694; field_move_tasks.c:414), MOVE_SURF, no partner.
+# Copy of pc/tests/corpus/hm-surf.recipe.
+badge BADGE_ID_FEN
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_SURF
+map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP

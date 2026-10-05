@@ -1,0 +1,66 @@
+# Proves Rock Climb (ICICLE) into Lake Acuity and the Jupiter/rival OnFrame that unlocks the Veilstone storage-key grunt.
+# Start: Snowpoint Pokémon Center door (379,233) -> end: Lake Acuity (318), VAR_LAKE_ACUITY_STATE 2.
+
+title = "Lake Acuity: Jupiter leaves, injured rival"
+status = "planned"
+priority = "P0"
+estimate = 9000
+refs = [
+  "field_move_tasks.c:631",
+  "scripts_acuity_lakefront.s:27-31",
+  "scripts_lake_acuity.s:9-70",
+  "scripts_lake_acuity.s:35",
+  "scripts_lake_acuity.s:58",
+  "scripts_lake_acuity.s:60",
+  "scripts_lake_acuity.s:61",
+  "scripts_lake_acuity.s:62",
+  "scripts_lake_acuity.s:63",
+  "scripts_lake_acuity.s:64",
+  "scripts_lake_acuity.s:65",
+  "scripts_lake_acuity.s:66",
+  "scripts_lake_acuity.s:67",
+  "scripts_lake_acuity.s:68",
+  "scripts_acuity_lakefront.s:34-37",
+  "src/field_move_tasks.c:631",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 310
+z = 242
+face = "up"
+interact = true
+note = "foot of the Rock Climb wall (310,238..241) on Acuity Lakefront; [INFERENCE] tile"
+
+[[step]]
+do = "advance_text"
+note = "Rock Climb: Yes (src/field_move_tasks.c:631)"
+
+[[step]]
+do = "walk_to"
+x = 308
+z = 229
+note = "lake warp (308|309,229) -> LAKE_ACUITY (scripts_acuity_lakefront.s:27-31)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_LAKE_ACUITY"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "acuity_rival"
+note = "LakeAcuity_CoordEvent_JupiterRival (scripts_lake_acuity.s:9-70); x 14/15 branches"
+
+[expect]
+map = "MAP_HEADER_LAKE_ACUITY"
+vars = { VAR_LAKE_ACUITY_STATE = 2 }
+flags_clear = ["FLAG_HIDE_VEILSTONE_CITY_GRUNT_M_STORAGE_KEY"]
+flags = ["FLAG_HIDE_LAKE_ACUITY_JUPITER"]

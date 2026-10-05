@@ -1,0 +1,57 @@
+# Proves the Rowan briefing OnFrame and the Mars battle that hides the Mt Coronet grunts.
+# Start: Lake Verity (46,54) -> end: Lake Verity (312), Mars beaten, VAR_LAKE_ACUITY_STATE 1.
+
+title = "Lake Verity: Mars"
+status = "planned"
+priority = "P0"
+estimate = 14000
+refs = [
+  "scripts_verity_lakefront.s:11-28",
+  "scripts_lake_verity.s:157-183",
+  "events_lake_verity.json",
+  "scripts_lake_verity.s:179",
+  "scripts_lake_verity.s:209",
+  "scripts_lake_verity.s:215",
+  "scripts_lake_verity.s:222",
+  "scripts_lake_verity.s:223",
+  "scripts_lake_verity.s:224",
+  "scripts_lake_verity.s:225",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 21000
+
+[[step]]
+do = "advance_text"
+note = "frame script 5, Rowan briefing (scripts_lake_verity.s:157-183)"
+
+[[step]]
+do = "walk_to"
+x = 55
+z = 39
+face = "up"
+interact = true
+max = 9000
+note = "Mars obj7 (55,38); counterpart (54,38), Rowan (53,39); [INFERENCE] approach tile; z49/z43 grunt pairs likely see the walk"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "mars_verity"
+note = "TRAINER_COMMANDER_MARS_LAKE_VERITY (405)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+
+[expect]
+map = "MAP_HEADER_LAKE_VERITY"
+vars = { VAR_LAKE_ACUITY_STATE = 1, VAR_LAKE_VERITY_PROF_ROWAN_STATE = 1 }
+flags = ["FLAG_TEAM_GALACTIC_LEFT_LAKE_VERITY", "FLAG_HIDE_MT_CORONET_1F_NORTH_ROOM_1_GRUNTS_M"]
+battles = 1

@@ -1,0 +1,91 @@
+# Proves the library rival HM04 check, the 3F explosion OnFrame and the Canalave after-explosion OnFrame.
+# Start: Canalave Pokémon Center door (58,722) -> end: Canalave City, VAR_CANALAVE_CITY_STATE 5.
+
+title = "Canalave Library: Lake Valor explosion"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "scripts_canalave_city.s:681-711",
+  "scripts_init_canalave_library_3f.s",
+  "scripts_canalave_library_3f.s:35-190",
+  "scripts_canalave_city.s:247-300",
+  "scripts_canalave_city.s:710",
+  "scripts_canalave_library_3f.s:184",
+  "scripts_canalave_library_3f.s:185",
+  "scripts_canalave_library_3f.s:186",
+  "scripts_canalave_library_3f.s:187",
+  "scripts_canalave_library_3f.s:188",
+  "scripts_canalave_library_3f.s:189",
+  "scripts_canalave_library_3f.s:190",
+  "scripts_canalave_city.s:253",
+  "scripts_canalave_city.s:296",
+  "scripts_canalave_city.s:297",
+  "scripts_canalave_city.s:298",
+  "scripts_canalave_city.s:299",
+  "events_canalave_library_1f.json",
+  "events_canalave_library_2f.json",
+  "scripts_canalave_city.s:262",
+  "scripts_canalave_city.s:270",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 720
+face = "up"
+interact = true
+note = "rival obj18 (37,719) on the library doorstep; needs ITEM_HM04 or a Strength user (scripts_canalave_city.s:681-711)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 718
+note = "library door warp3"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CANALAVE_LIBRARY_1F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+note = "events_canalave_library_1f.json warp1 -> 2F (arrive (4,4))"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CANALAVE_LIBRARY_2F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+note = "events_canalave_library_2f.json warp1 -> 3F (4,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CANALAVE_LIBRARY_3F"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "library_explosion"
+note = "frame script 2 (scripts_init_canalave_library_3f.s; scripts_canalave_library_3f.s:35-190)"
+# PHASE2: walk back out 3F (4,3) -> 2F (4,4) -> 1F (11,11) -> Canalave (warp tiles per events_canalave_library_*.json; leaving the 3F
+#   the city OnFrame (VAR_CANALAVE_CITY_STATE==4 -> script 5, scripts_canalave_city.s:247-300) then runs: advance_text.
+
+[expect]
+map = "MAP_HEADER_CANALAVE_CITY"
+vars = { VAR_CANALAVE_CITY_STATE = 5, VAR_CANALAVE_LIBRARY_STATE = 2 }
+flags = ["FLAG_LAKE_VALOR_EXPLODED", "FLAG_HIDE_VALOR_LAKEFRONT_CAMERAMEN"]

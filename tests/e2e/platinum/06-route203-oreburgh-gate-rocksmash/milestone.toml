@@ -1,0 +1,109 @@
+# Proves the Route 203 rival battle, HM06 (Rock Smash) from the Oreburgh Gate hiker, and the Oreburgh gym tour.
+# Start: Jubilife City warp 2 (Pokecenter door) -> end: Oreburgh City after the youngster's tour (VAR_OREBURGH_CITY_STATE 1).
+title = "Route 203 rival, HM06, Oreburgh"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "scripts_route_203.s:71-74",
+  "scripts_route_203.s:81",
+  "scripts_route_203.s:122-123",
+  "scripts_oreburgh_gate_1f.s:12",
+  "scripts_oreburgh_gate_1f.s:44-45",
+  "scripts_oreburgh_gate_1f.s:54-57",
+  "scripts_init_new_game.s:53",
+  "scripts_oreburgh_city.s:29-49",
+  "scripts_oreburgh_city.s:38",
+  "scripts_oreburgh_city.s:388",
+  "src/field_move_tasks.c:545",
+  "events_route_203 (coord (196,757..760); warp 0 (246,749))",
+  "events_oreburgh_gate_1f (coord (7,22); warps (4,22), (27,22))",
+  "events_oreburgh_city (coord (266,748..751); Barry (282,757))",
+  "TRAINER_RIVAL_ROUTE_203_TURTWIG (248)",
+  "TRAINER_YOUNGSTER_MICHAEL (4)",
+  "TRAINER_YOUNGSTER_DALLAS (355)",
+  "TRAINER_YOUNGSTER_SEBASTIAN (356)",
+  "TRAINER_LASS_MADELINE (322)",
+  "TRAINER_LASS_KAITLIN (323)",
+  "TRAINER_PICNICKER_DIANA (329)",
+  "TRAINER_CAMPER_CURTIS (265)",
+]
+notes = "Needs VAR_JUBILIFE_CITY_STATE 2 (at 1 Looker blocks Route 203). Rock Smash is unusable in the field until BADGE_ID_COAL (src/field_move_tasks.c:545). Optional sight trainers on the way are fought by walk_to."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 196
+z = 758
+note = "Route 203 coord (196,757..760) VAR_ROUTE_203_RIVAL_STATE==0 -> Barry"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "rival-203"
+note = "TRAINER_RIVAL_ROUTE_203_TURTWIG (248): STARLY 7, CHIMCHAR 9 (scripts_route_203.s:81)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 246
+z = 749
+note = "Oreburgh Gate door (events_route_203 warp 0) -> gate 1F (4,22); Michael (204,750) W 2, Dallas (222,756) S 4, Sebastian (234,757) W 5, Madeline (240,748) S 5, Kaitlin (243,757) wander 1 may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_GATE_1F"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 22
+note = "coord (7,22) VAR_OREBURGH_GATE_1F_HIKER_STATE==1 (new-game init, scripts_init_new_game.s:53) -> hiker"
+
+[[step]]
+do = "advance_text"
+shot = "hm06"
+note = "ITEM_HM06, FLAG_RECEIVED_HM06, hiker state 2 (scripts_oreburgh_gate_1f.s:44-57)"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 22
+note = "east exit (warp 1) -> Oreburgh (258,749); Diana (24,21) S 3 and Curtis (17,25) N 3 may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_CITY"
+
+[[step]]
+do = "walk_to"
+x = 266
+z = 749
+note = "coord (266,748..751) VAR_OREBURGH_CITY_STATE==0 -> the youngster walks you to the gym -> 1 (scripts_oreburgh_city.s:388)"
+
+[[step]]
+do = "advance_text"
+shot = "oreburgh-gym-tour"
+
+[expect]
+map = "MAP_HEADER_OREBURGH_CITY"
+flags = ["FLAG_RECEIVED_HM06", "FLAG_FIRST_ARRIVAL_OREBURGH_GATE", "FLAG_HIDE_ROUTE_203_RIVAL"]
+battles = 1
+save = [
+  'any(i["item"] == 425 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM06
+]
+
+[expect.vars]
+VAR_ROUTE_203_RIVAL_STATE = 1
+VAR_OREBURGH_CITY_STATE = 1
+VAR_OREBURGH_GATE_1F_HIKER_STATE = 2

@@ -1,0 +1,47 @@
+# Proves the Bertha room: enter-room frame script, single battle, exit door.
+# Start: Bertha room (8,11) -> end: same room, FLAG_DEFEATED_BERTHA. Lab-startable alone (nothing checks the previous member).
+
+title = "Elite Four: Bertha"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "scripts_pokemon_league_bertha_room.s:61-69",
+  "scripts_pokemon_league_bertha_room.s:66",
+  "scripts_pokemon_league_bertha_room.s:22",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "wait_field"
+note = "frame table walks the player 2 north and closes the entrance door (scripts_pokemon_league_bertha_room.s:61-69)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "Bertha at (8,5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "e4_bertha"
+note = "TRAINER_ELITE_FOUR_BERTHA (262): WHISCASH 50, GLISCOR 53, HIPPOWDON 52, GOLEM 52, RHYPERIOR 55"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_HEADER_POKEMON_LEAGUE_BERTHA_ROOM"
+flags = ["FLAG_DEFEATED_BERTHA"]
+battles = 1

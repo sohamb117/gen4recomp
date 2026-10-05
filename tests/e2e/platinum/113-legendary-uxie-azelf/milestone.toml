@@ -1,0 +1,59 @@
+# Uxie in Acuity Cavern (Azelf in Valor Cavern with azelf.recipe): A -> StartLegendaryBattle 50.
+# Start: ACUITY_CAVERN (14,11) below Uxie (14,10). End: same.
+title = "Legendary: Uxie (and Azelf)"
+status = "planned"
+priority = "P2"
+estimate = 9000
+refs = [
+  "res/field/scripts/scripts_init_new_game.s:17-18",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:113-114",
+  "res/field/scripts/scripts_acuity_cavern.s:22-43",
+  "res/field/scripts/scripts_acuity_cavern.s:32",
+  "res/field/scripts/scripts_valor_cavern.s:40-61",
+  "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:130-131",
+  "pc/src/pc_lab.c:1337-1345",
+  "pc/src/pc_lab.c:1373-1375",
+  "pc/tests/corpus/battle-legendary.recipe",
+  "pc/tests/corpus/battle-legendary.spec",
+  "pc/replays/lab-battle.txt",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: Azelf run = this dir with azelf.recipe; map 316.
+
+# PHASE2: battle-lab variant: env PC_LAB_BATTLE="legendary 480 50 0" PC_LAB_BATTLE_AT=2600 (pc_lab.c:1337-1345,1373-1375; input pc/replays/lab-battle.txt) proves `resultMask=1` in the log (Azelf 482); a variant run, so it is not set in this dir's [run] env (it would start a battle mid-flow).
+[run]
+frames = 13500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Uxie (14,10)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "preview cry, then StartLegendaryBattle"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "legendary"
+
+[[step]]
+do = "auto_battle"
+note = "A-only never throws a ball: the result is 'defeated', never caught"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = 319
+battles = 1
+# no persistent flag on a defeat (ClearFlag FLAG_MAP_LOCAL_REMOVE_OBJECT, scripts_acuity_cavern.s:32)

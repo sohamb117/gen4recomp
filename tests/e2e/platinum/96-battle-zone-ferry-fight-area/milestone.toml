@@ -1,0 +1,79 @@
+# Battle Zone ferry: post-game, the Snowpoint SS Spiral sailor sails you to the Fight Area; on
+# arrival Barry drags you into the forced tag battle vs Volkner + Flint, then Palmer/Buck scenes.
+# Start: SNOWPOINT_CITY (356,248) below the sailor. End: FIGHT_AREA (188), VAR_FIGHT_AREA_STATE 2.
+title = "Battle Zone: ferry to the Fight Area and the tag battle"
+status = "planned"
+priority = "P1"
+estimate = 9000
+refs = [
+  "res/field/events/events_snowpoint_city.json",
+  "res/field/scripts/scripts_snowpoint_city.s:183",
+  "res/field/scripts/scripts_snowpoint_city.s:205",
+  "res/field/scripts/scripts_snowpoint_city.s:210",
+  "res/field/scripts/scripts_snowpoint_city.s:239",
+  "res/field/scripts/scripts_init_fight_area.s:9",
+  "res/field/scripts/scripts_fight_area.s:57-80",
+  "res/field/scripts/scripts_fight_area.s:174-186",
+  "res/field/scripts/scripts_fight_area.s:183-205",
+  "res/trainers/data/leader_volkner_fight_area.json",
+  "res/trainers/data/elite_four_flint_fight_area.json",
+  "res/field/scripts/scripts_init_new_game.s:123",
+  "generated/vars_flags.txt:470-486",
+  "pc/tests/corpus/resort-area.recipe",
+  "pc/src/pc_lab.c:798-800",
+  "src/clear_game.c:204-206",
+  "src/scrcmd_system_flags.c:151",
+  "src/system_flags.c:69-71",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "talk to the SS Spiral sailor (356,247); refuses without FLAG_GAME_COMPLETED (scripts_snowpoint_city.s:183)"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "[INFERENCE] A answers the sail Yes/No with YES; first-time Cynthia scene (FLAG_SAILED_TO_BATTLE_ZONE unset)"
+shot = "sailor"
+
+[[step]]
+do = "wait_map"
+map = 188
+max = 3000
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "FightArea_OnFrame_Rival: Barry walks you to the tag battle (VAR_FIGHT_AREA_STATE 0 -> 1)"
+shot = "fight-area"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+note = "double vs TRAINER_LEADER_VOLKNER_FIGHT_AREA + TRAINER_ELITE_FOUR_FLINT_FIGHT_AREA; Earthquake hits both [INFERENCE: check both trainer JSONs]"
+shot = "tag-battle"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "Palmer/Buck scenes, state -> 2"
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = 188
+battles = 1
+vars = { VAR_FIGHT_AREA_STATE = 2 }
+flags = ["FLAG_SAILED_TO_BATTLE_ZONE"]

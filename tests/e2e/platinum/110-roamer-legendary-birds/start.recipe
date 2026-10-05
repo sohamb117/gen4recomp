@@ -1,0 +1,10 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26110
+money 3000
+# national dex era (Pal Park opens with it, 105); same as SetNationalDexEnabled (pc_lab.c:789-793)
+national-dex 1
+party SPECIES_EMPOLEON 62 ITEM_NONE
+# set at new game (scripts_init_new_game.s:59), cleared by the Pal Park first visit (scripts_pal_park_lobby.s:347)
+clear-flag FLAG_HIDE_ETERNA_CITY_SOUTH_HOUSE_PROF_OAK
+map MAP_HEADER_ETERNA_CITY_SOUTH_HOUSE 4 6 FACE_UP

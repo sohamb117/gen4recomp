@@ -1,0 +1,75 @@
+# Poffin making alone: talk to the Poffin House cook, Cook alone, pick a Cheri Berry, stir (A only),
+# get one (Foul) poffin into the Poffin Case.
+# Start: POFFIN_HOUSE (5,11) below the cook. End: same tile, case filled=1.
+title = "Poffin making: cook one poffin alone"
+status = "planned"
+priority = "P2"
+estimate = 13000
+refs = [
+  "res/field/events/events_hearthome_city.json",
+  "res/field/scripts/scripts_poffin_common.s:10-31",
+  "res/field/scripts/scripts_poffin_common.s:62",
+  "res/field/scripts/scripts_poffin_common.s:69",
+  "res/field/scripts/scripts_poffin_common.s:74",
+  "res/field/scripts/scripts_poffin_common.s:79",
+  "res/field/scripts/scripts_poffin_common.s:82",
+  "res/field/scripts/scripts_hearthome_city_pokemon_fan_club.s:23-29",
+  "res/field/scripts/scripts_contest_hall_lobby.s:281-309",
+  "pc/src/pc_lab.c:801-817",
+  "pc/src/pc_lab.c:912-949",
+  "include/constants/flavor.h",
+  "pc/tests/corpus/poffin-cook.recipe",
+  "pc/tests/corpus/poffin-cook.spec",
+  "pc/tests/corpus/contest-cool.recipe",
+  "pc/replays/lab-poffin-cook.txt",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 19500
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 20
+gap = 280
+times = 5
+note = "talk to LOCALID_POKEFAN_F (5,10) -> Cook alone -> berry list -> Cheri Berry -> confirm (lab-poffin-cook.txt 2900-4200, A every 300 frames)"
+shot = "berry-pick"
+
+[[step]]
+do = "wait_frames"
+n = 6000
+note = "stirring runs on a timer; with no stir input the result is a Foul poffin (poffin-cook.spec)"
+shot = "stirring"
+
+[[step]]
+do = "tap"
+x = 218
+y = 121
+hold = 40
+note = "lab-poffin-cook.txt 10400 touch 218 121 (results screen button)"
+
+[[step]]
+do = "wait_frames"
+n = 960
+
+[[step]]
+do = "press"
+keys = "A"
+note = "lab-poffin-cook.txt 11400"
+
+[[step]]
+do = "advance_text"
+shot = "poffin-made"
+
+[expect]
+map = 116
+position = [5, 11]
+# Cheri Berry stock 10 -> 9 [INFERENCE: cooking alone consumes the one berry picked]
+save = ['any(i["qty"] == 9 for i in s["bag"]["berries"])']
+# PHASE2: reader-ext poffin case filled=1 (pc_save `poffin:` poffin-cook.spec: 0.type=POFFIN_TYPE_FOUL 0.level=2
+# 0.smoothness=24); np_save4 does not dump poffins. Feeding variant: contest-cool `poffin FLAVOR_SPICY 60 30`
+# + `feed-poffin 0 0` -> condition 0.cool=60 0.sheen=30.

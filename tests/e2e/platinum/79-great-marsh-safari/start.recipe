@@ -1,0 +1,12 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26079
+money 11000
+
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+badge BADGE_ID_COBBLE
+party SPECIES_MONFERNO 30 ITEM_NONE
+party-move 0 0 MOVE_FLAMETHROWER
+# one step south of the (4..6,6) entry coord event
+map MAP_HEADER_PASTORIA_CITY_OBSERVATORY_GATE_1F 5 7 FACE_UP

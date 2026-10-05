@@ -1,0 +1,13 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26071
+money 3000
+
+party SPECIES_STARAPTOR 40 ITEM_NONE
+party-move 0 0 MOVE_BRAVE_BIRD
+# tree 0 = ROUTE_205_SOUTH (honey_tree.c:41-63); 1000 <= 1080 -> ENCOUNTER status (honey_tree.c:118-133).
+# The verb writes only minutesRemaining/lastSlatheredTree (pc_lab.c:818-832); a new save's
+# group/table/slot are 0 (special_encounter.c:28-36) -> COMBEE.
+honey 0 1000
+# stand tile south of the tree at (213,652) [INFERENCE: prop->tile conversion]
+map MAP_HEADER_ROUTE_205_SOUTH 213 653 FACE_UP

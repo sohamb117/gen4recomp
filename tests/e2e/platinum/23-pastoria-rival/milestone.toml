@@ -1,0 +1,45 @@
+# Proves the Pastoria rival coord event gated by VAR_PASTORIA_CITY_STATE==1 (set in 22).
+# Start: Pastoria east gate (639,812) -> end: Pastoria, rival beaten, state 2.
+
+title = "Pastoria: rival battle on the way to the gym"
+status = "planned"
+priority = "P0"
+estimate = 9000
+refs = [
+  "scripts_route_214.s",
+  "scripts_route_213.s:16-38",
+  "scripts_pastoria_city.s:371-419",
+  "scripts_pastoria_city.s:373",
+  "scripts_pastoria_city.s:416",
+  "scripts_pastoria_city.s:417",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 589
+z = 828
+note = "coord1 (589,828), VAR_PASTORIA_CITY_STATE==1 -> PastoriaCity_CoordEvent_RivalBattle (scripts_pastoria_city.s:371-419)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "pastoria_rival"
+note = "TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (474)"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_HEADER_PASTORIA_CITY"
+vars = { VAR_PASTORIA_CITY_STATE = 2 }
+flags = ["FLAG_HIDE_PASTORIA_CITY_RIVAL"]
+battles = 1

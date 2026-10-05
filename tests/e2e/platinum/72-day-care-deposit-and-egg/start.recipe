@@ -1,0 +1,17 @@
+# Trainer id/money as pc/tests/corpus/egg-generate.recipe: its comment records that mint rolls 1 and 3 are male and female.
+name GQ
+gender GENDER_MALE
+trainer-id 10412
+money 9000
+
+badge BADGE_ID_COAL
+badge BADGE_ID_FOREST
+party SPECIES_BIBAREL 25 ITEM_NONE
+party SPECIES_BIBAREL 26 ITEM_NONE
+party SPECIES_BIBAREL 27 ITEM_NONE
+# lady's deposit (pc_lab.c:848-901): slot 0 (BIBAREL 25), then slot 1 (now BIBAREL 27)
+daycare 0
+daycare 1
+# parent slot 1 step counter; the egg check fires at low byte 0xFF (daycare.c:936-946)
+daycare-steps 1 250
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

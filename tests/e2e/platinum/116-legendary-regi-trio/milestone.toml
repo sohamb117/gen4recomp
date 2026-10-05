@@ -1,0 +1,51 @@
+# Regi trio (battle-lab only): the statues need a fateful-encounter (event) Regigigas, which no lab
+# verb can set, so in-situ is blocked; the lab battle hook starts REGIROCK 30 directly.
+# Start: ROCK_PEAK_RUINS. End: same, battle won.
+title = "Legendary: Regirock/Regice/Registeel (battle lab)"
+status = "planned"
+priority = "P2"
+estimate = 9000
+refs = [
+  "res/field/scripts/scripts_rock_peak_ruins.s:15-48",
+  "include/constants/regi_ruins.h:4-7",
+  "res/field/scripts/scripts_iceberg_ruins.s:47",
+  "res/field/scripts/scripts_iron_ruins.s:47",
+  "pc/src/pc_lab.c:685",
+  "pc/src/pc_lab.c:1337-1345",
+  "pc/src/pc_lab.c:1373-1375",
+  "pc/tests/corpus/battle-legendary.recipe",
+  "pc/tests/corpus/battle-legendary.spec",
+  "pc/replays/lab-battle.txt",
+  "pc/src/pc_lab.c:798-800",
+  "src/clear_game.c:204-206",
+  "src/scrcmd_system_flags.c:151",
+  "src/system_flags.c:69-71",
+]
+
+[start]
+recipe = "start.recipe"
+# Blocked in-situ: missing prerequisite = a lab verb that sets MON_DATA_FATEFUL_ENCOUNTER
+# (`party` is Pokemon_GiveMonFromScript, pc_lab.c:685). Regice 378 / Registeel 379 are the same run.
+
+[run]
+frames = 13500
+# lab battle hook: legendary REGIROCK (377) lv30 (pc_lab.c:1337-1345,1373-1375)
+env = { PC_LAB_BATTLE = "legendary 377 30 0", PC_LAB_BATTLE_AT = "2600" }
+
+[[step]]
+do = "wait_battle"
+max = 5000
+note = "lab battle hook starts REGIROCK 30"
+shot = "regirock"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[expect]
+map = 592
+battles = 1
+log = ['pc_lab: battle over at frame \d+, resultMask=1']

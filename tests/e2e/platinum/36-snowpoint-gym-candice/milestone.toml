@@ -1,0 +1,36 @@
+# Proves the ice-slide gym and Candice's win script.
+# Start: Snowpoint Gym door (11,28) -> end: same map, BADGE_ID_ICICLE, TM72.
+
+title = "Snowpoint Gym: Candice and the Icicle Badge"
+status = "planned"
+priority = "P0"
+estimate = 22000
+refs = [
+  "scripts_snowpoint_city_gym.s:35",
+  "scripts_snowpoint_city_gym.s:37-42",
+  "scripts_snowpoint_city_gym.s:44",
+  "scripts_snowpoint_city_gym.s:49-52",
+  "scripts_snowpoint_city_gym.s:53",
+  "scripts_snowpoint_city_gym.s:35-53",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 33000
+
+[[step]]
+do = "wait_field"
+# PHASE2: Snowpoint gym slide route. Grid (land data matrix 114) is in pt_story_late.md research 34 ('~' TILE_BEHAVIOR_ICE,
+#   '+' BLOCK_E_W/N_S edges, 'o' snowball objects (script 2037), trainers (17,3),(21,9),(3,6),(18,15),(5,16),(2,13) sight 1,
+#   Candice (11,3), guide (12,27)). Slide rules and snowball breaking live in the field ice code (not in scripts): confirm
+#   them, search the grid, then talk to Candice facing up, auto_battle, advance_text (scripts_snowpoint_city_gym.s:35-53).
+
+[expect]
+map = "MAP_HEADER_SNOWPOINT_CITY_GYM"
+badges = 7
+badge = ["BADGE_ID_ICICLE"]
+flags = ["FLAG_RECEIVED_CANDICE_TM72"]
+battles = 1

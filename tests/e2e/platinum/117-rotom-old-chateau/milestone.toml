@@ -1,0 +1,47 @@
+# Rotom in the Old Chateau TV (night only): A on the TV -> Yes -> StartWildBattle ROTOM 20;
+# the daily flag is set before the battle.
+# Start: OLD_CHATEAU_BACK_MIDDLE_WEST_ROOM (11,4) below the TV (11,3). End: same.
+title = "Rotom in the Old Chateau TV"
+status = "planned"
+priority = "P2"
+estimate = 8000
+refs = [
+  "res/field/scripts/scripts_old_chateau_back_middle_west_room.s:5-28",
+  "res/field/scripts/scripts_old_chateau_back_middle_west_room.s:20",
+  "pc/tests/corpus/ug-enter.spec",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 12000
+clock = "2009-03-22 21:00:00"   # night (>= TIMEOFDAY_NIGHT), as ug-enter.spec
+
+[[step]]
+do = "press"
+keys = "A"
+note = "TV bg event (11,3)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "[INFERENCE] A answers the Yes prompt; FLAG_DAILY_BATTLED_OLD_CHATEAU_ROTOM set before the battle (:20)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "rotom"
+
+[[step]]
+do = "auto_battle"
+note = "Crunch: Ghost is weak to Dark; Earthquake fails vs Levitate"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[expect]
+map = 300
+battles = 1
+flags = ["FLAG_DAILY_BATTLED_OLD_CHATEAU_ROTOM"]

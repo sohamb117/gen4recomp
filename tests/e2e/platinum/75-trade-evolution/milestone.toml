@@ -1,0 +1,75 @@
+# In-game NPC trade (Kazza's ABRA for MACHOP, Oreburgh north house). NPC trades never evolve the
+# received mon (npc_trade_task.c:47-87); trade evolution is link/GTS only (PHASE2 below).
+# Start: OREBURGH_CITY_NORTH_HOUSE_1F (11,8) facing the school kid. End: same, ABRA in slot 0.
+title = "Trades: NPC trade (and link trade evolution)"
+status = "planned"
+priority = "P1"
+estimate = 16800
+refs = [
+  "src/npc_trade_task.c:47-87",
+  "src/unk_0203D1B8.c:1026",
+  "src/gts_application/screens/trade.c:96",
+  "src/gts_application/screens/trade.c:115",
+  "res/npc_trades/kazza_abra.json",
+  "res/field/scripts/scripts_oreburgh_city_north_house_1f.s",
+  "res/field/scripts/scripts_snowpoint_city_west_house.s:36-57",
+  "res/field/scripts/scripts_eterna_city_condominiums_1f.s:95-114",
+  "res/field/scripts/scripts_route_226_house.s",
+  "pc/tests/corpus/evo-trade-refused.recipe",
+  "tests/link/run_link_tests.py:41",
+  "tests/link/recipes/union-b.recipe",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 25200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "talk to SCHOOL_KID_F (11,7), script 1"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 4
+gap = 40
+note = "[INFERENCE] page count of the trade offer text before YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "YES -> SelectPokemonToTrade (party menu)"
+shot = "party-menu"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "slot 0 MACHOP"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "[INFERENCE] confirm/select entry of the party-menu submenu"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "StartNPCTrade animation, then the thank-you text"
+shot = "traded"
+
+[expect]
+map = 54
+badge = ["BADGE_ID_COAL"]
+party = ["SPECIES_ABRA"]
+flags = ["FLAG_TRADED_FOR_KAZZA_ABRA"]
+save = ['s["party"][0]["species"] == 63']
+# PHASE2: link trade evolution: reuse tests/link/run_link_tests.py scenario union_trade (16800 frames)
+# with union-b.recipe slot 0 = SPECIES_KADABRA 30; station A then has party[0].species == 65 (ALAKAZAM)
+# and dex ALAKAZAM caught. The schedule must leave ~1000 frames for the evolution animation [INFERENCE]
+# and never press B in it. The e2e schema has no two-instance link run.

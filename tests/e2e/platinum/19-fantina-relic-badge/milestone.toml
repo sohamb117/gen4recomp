@@ -1,0 +1,78 @@
+# Proves the Hearthome Gym dark-room door puzzle (a randomly rolled correct door per room) and Fantina's Relic Badge,
+# which lifts the Route 209 blockade.
+# Start: Hearthome Gym entrance room warp 3 (4,8) -> end: Hearthome City at the gym door (20's start).
+title = "Hearthome Gym: Fantina and the Relic Badge"
+status = "planned"
+priority = "P0"
+estimate = 20000
+refs = [
+  "scripts_hearthome_city_gym_entrance_room.s:74",
+  "scripts_hearthome_city_gym_trainer_room_1.s:9",
+  "scripts_hearthome_city_gym_leader_room.s:19",
+  "scripts_hearthome_city_gym_leader_room.s:61-63",
+  "scripts_hearthome_city_gym_leader_room.s:62",
+  "scripts_hearthome_city_gym_leader_room.s:71",
+  "scripts_hearthome_city_gym_leader_room.s:73-84",
+  "scripts_hearthome_city_gym_leader_room.s:89-93",
+  "scripts_hearthome_city_gym_leader_room.s:165",
+  "src/overlay008/gym_features.c:142-149",
+  "src/overlay008/gym_features.c:3692-3861",
+  "src/overlay008/gym_features.c:3755-3769",
+  "src/overlay008/gym_features.c:3817-3857",
+  "src/persisted_map_features_init.c:122-128",
+  "events_hearthome_city_gym_entrance_room (warps (4,2), (11,7), (12,7), (11,3), (4,8))",
+  "events_hearthome_city_gym_trainer_room_1 (doors (4,2), (8,2), (12,2))",
+  "TRAINER_YOUNGSTER_DONNY (357)",
+  "TRAINER_LASS_MOLLY (325)",
+  "TRAINER_SCHOOL_KID_MACKENZIE (343)",
+  "TRAINER_ACE_TRAINER_CATHERINE (284)",
+  "TRAINER_ACE_TRAINER_ALLEN (280)",
+  "TRAINER_SCHOOL_KID_CHANCE (340)",
+  "TRAINER_LEADER_FANTINA (318)",
+]
+notes = "Not a math quiz in this decomp. Surf is neutral on Ghost; a Normal/Fighting lead would be immune, so keep the Surf lead. Lab leader-only test: warp MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM 3. [INFERENCE] entrance warps (11,7), (12,7), (11,3) are post-win shortcuts behind collision."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 30000
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE==FALSE (lab start): the guide's speech; a no-op when 18 already played it"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 2
+note = "entrance warp (4,2) -> Trainer Room 1 (8,10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_1"
+
+# PHASE2: each entry rolls correctDoorID = MTRNG % 3 and a clue tile (gym_features.c:3817-3842) and re-points every
+# wrong door to the entrance room (:3844-3856), so re-entry re-rolls and blind tries do not converge. Read the clue
+# symbol tile or peek HearthomeGymPersistedFeatures.correctDoorID (DOOR_ID circle 0 .. heart 7, :142-149) through the
+# probe, then walk_to that door: Room 1 circle (4,2) / square (8,2) / triangle (12,2); Room 2 (arrive (14,22)) sun
+# (4,2) / donut (9,2) / moon (14,2) / star (19,2) / heart (24,2) -> Leader Room (4,13). Wandering sight-2 trainers in
+# the dark rooms are fought by walk_to. Then walk_to (4,11) face up interact (Fantina (4,10)), advance_text,
+# auto_battle (DUSKULL 24, HAUNTER 24, MISMAGIUS 26), advance_text (badge, TM65; bollards (8,9)/(8,10) removed), and
+# leave to Hearthome so 20 starts at the gym door.
+
+[expect]
+map = "MAP_HEADER_HEARTHOME_CITY"
+badges = 3
+badge = ["BADGE_ID_COAL", "BADGE_ID_FOREST", "BADGE_ID_RELIC"]
+flags = ["FLAG_HIDE_HEARTHOME_CITY_ROUTE_209_BLOCKADE", "FLAG_RECEIVED_FANTINA_TM65", "FLAG_DEFEATED_TRAINER_YOUNGSTER_DONNY", "FLAG_DEFEATED_TRAINER_ACE_TRAINER_ALLEN"]
+flags_clear = ["FLAG_HIDE_HEARTHOME_CITY_ROUTE_209_GATE_RIVAL"]
+battles = 1
+save = [
+  'any(i["item"] == 392 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM65
+]
+
+[expect.vars]
+VAR_ROUTE_209_GATE_TO_HEARTHOME_CITY_STATE = 1
+VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE = 1

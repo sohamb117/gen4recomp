@@ -1,0 +1,69 @@
+# Underground mining: enter from Oreburgh with the kit, the lab hook starts the mining minigame
+# (same task the wall-sparkle confirm starts). Board RNG is seeded from PC_RTC + frame.
+# Start: Oreburgh (0x12F,0x2F5) with a registered kit. End: UNDERGROUND (2), dig done.
+title = "Underground: dig a wall"
+status = "planned"
+priority = "P1"
+estimate = 6500
+refs = [
+  "src/underground/mining.c:1727-1729",
+  "src/underground/mining.c:1735",
+  "src/underground.c:601",
+  "res/field/scripts/scripts_eterna_city_underground_man_house.s:192-194",
+  "pc/src/pc_lab.c:1972-1974",
+  "pc/src/pc_lab.c:2040-2055",
+  "pc/tests/pc_corpus.py:354-357",
+  "pc/tests/pc_corpus.py:497-504",
+  "pc/replays/lab-poketch-tap.txt",
+  "pc/src/pc_lab.c:950-990",
+  "pc/src/pc_lab.c:1958-2062",
+  "pc/tests/pc_corpus.py:495-513",
+  "pc/tests/corpus/ug-enter.recipe",
+  "pc/tests/corpus/ug-enter.spec",
+  "pc/replays/lab-ug-enter.txt",
+  "src/item_use_functions.c:365-367",
+  "src/underground/comm_manager.c:82",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 9800
+# lab underground hook `mine` (pc_lab.c:1958-2062; corpus ug-enter.spec `underground: mine`)
+env = { PC_LAB_UNDERGROUND = "mine", PC_LAB_UNDERGROUND_AT = "4900" }
+clock = "2009-03-22 21:00:00"
+
+[[step]]
+do = "press"
+keys = "Y"
+hold = 24
+note = "use the registered Explorer Kit"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 24
+gap = 176
+times = 9
+note = "comms confirm + the game's forced save (lab-ug-enter.txt: A every 200 frames from 3800)"
+
+[[step]]
+do = "wait_map"
+map = 2
+max = 3000
+note = "the hook sets FLAG_HAS_SEEN_UNDERGROUND_ROARK_INTRO after arrival (solo first-visit path, pc_lab.c:1958-1992)"
+
+[[step]]
+do = "wait_frames"
+n = 300
+note = "mining task started by the hook (Mining_StartGameForLab)"
+shot = "mining-board"
+# PHASE2: hammer/pick are touch input; a tap script that hits one cell repeatedly sets the flag but
+# may dig nothing (wall collapse ends early). Record taps (format as lab-poketch-tap.txt), then B/A out.
+
+[expect]
+map = 2
+flags = ["FLAG_DIGGING_FOR_FOSSILS"]
+log = ['pc_lab: mining started at frame \d+']
+# PHASE2: reader-ext sphere bag `sphere: filled=N` > 0 if a sphere was dug (pc_save, pc_corpus.py:354-357)

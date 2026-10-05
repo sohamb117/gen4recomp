@@ -1,0 +1,120 @@
+# Proves the Celestic grunt, the painting cutscene, the Cyrus battle and the elder's HM03.
+# Start: Celestic Pokémon Center door (472,538) -> end: Celestic Town, HM03, VAR_CELESTIC_TOWN_STATE 2.
+
+title = "Celestic Town: grunt, Cyrus at the ruins painting, HM03 Surf"
+status = "planned"
+priority = "P0"
+estimate = 16000
+refs = [
+  "events_route_210_north.json",
+  "scripts_celestic_town.s:24-46",
+  "scripts_celestic_town.s:83-107",
+  "scripts_celestic_town_cave.s:27-63",
+  "scripts_celestic_town_cave.s:415-429",
+  "scripts_celestic_town_cave.s:112-142",
+  "scripts_celestic_town.s:224-243",
+  "scripts_celestic_town.s:21",
+  "scripts_celestic_town.s:84",
+  "scripts_celestic_town.s:89",
+  "scripts_celestic_town.s:101",
+  "scripts_celestic_town.s:102",
+  "scripts_celestic_town_cave.s:31",
+  "scripts_celestic_town_cave.s:32",
+  "scripts_celestic_town_cave.s:48",
+  "scripts_celestic_town_cave.s:132",
+  "scripts_celestic_town_cave.s:49",
+  "scripts_celestic_town_cave.s:113",
+  "scripts_celestic_town_cave.s:114",
+  "scripts_celestic_town_cave.s:120",
+  "scripts_celestic_town_cave.s:129-131",
+  "scripts_celestic_town_cave.s:133",
+  "scripts_celestic_town_cave.s:134",
+  "scripts_celestic_town_cave.s:141",
+  "scripts_celestic_town.s:236",
+  "scripts_celestic_town.s:237",
+  "scripts_celestic_town.s:182-196",
+  "scripts_celestic_town.s:94-102",
+  "events_celestic_town_cave.json",
+  "scripts_celestic_town_cave.s:102-110",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 24000
+
+[[step]]
+do = "walk_to"
+x = 463
+z = 523
+face = "up"
+interact = true
+note = "grunt obj2 (463,522) blocks the cave door (463,521) (scripts_celestic_town.s:24-46)"
+
+[[step]]
+do = "advance_text"
+note = "Yes -> battle"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_GALACTIC_GRUNT_CELESTIC_TOWN (416)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "elder takes the Old Charm (:83-107)"
+
+[[step]]
+do = "walk_to"
+x = 463
+z = 521
+note = "cave door, warp4"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CELESTIC_TOWN_CAVE"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 3
+face = "up"
+interact = true
+note = "painting bg events (9,2)/(10,2), facing north (events_celestic_town_cave.json bg0/bg1)"
+
+[[step]]
+do = "advance_text"
+note = "elder + Cyrus, Yes -> battle (scripts_celestic_town_cave.s:27-63, :102-110)"
+
+[[step]]
+do = "auto_battle"
+shot = "celestic_cyrus"
+note = "TRAINER_GALACTIC_BOSS_CYRUS_CELESTIC_TOWN_RUINS (913)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "hm03_surf"
+note = "elder gives HM03 (:112-142)"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 20
+note = "cave exit, events_celestic_town_cave.json warp0 (10,20)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CELESTIC_TOWN"
+
+[[step]]
+do = "advance_text"
+note = "CelesticTown_OnFrame_Cynthia (scripts_celestic_town.s:224-243)"
+
+[expect]
+map = "MAP_HEADER_CELESTIC_TOWN"
+vars = { VAR_CELESTIC_TOWN_STATE = 2 }
+flags = ["FLAG_HIDE_ROUTE_218_BLOCKADE", "FLAG_DELIVERED_OLD_CHARM", "FLAG_EXAMINED_CELESTIC_TOWN_CAVE_PAINTING"]
+battles = 2

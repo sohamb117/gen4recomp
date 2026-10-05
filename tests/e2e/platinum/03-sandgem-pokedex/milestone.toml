@@ -1,0 +1,97 @@
+# Proves the Sandgem escort into Rowan's lab, the Pokedex, and the TM27 town tour, then the walk home.
+# Start: Sandgem Town (177,843) in front of the Pokecenter -> end: Twinleaf player house 1F (04's start).
+title = "Sandgem: Rowan's lab and the Pokedex"
+status = "planned"
+priority = "P0"
+estimate = 11000
+refs = [
+  "scripts_sandgem_town.s:169",
+  "scripts_sandgem_town.s:188",
+  "scripts_sandgem_town.s:214-218",
+  "scripts_init_sandgem_town_pokemon_research_lab.s:9",
+  "scripts_sandgem_town_pokemon_research_lab.s:230",
+  "scripts_sandgem_town_pokemon_research_lab.s:249-250",
+  "scripts_sandgem_town_pokemon_research_lab.s:310-312",
+  "scripts_init_sandgem_town.s:9",
+  "scripts_sandgem_town.s:441",
+  "scripts_sandgem_town.s:452-454",
+  "scripts_sandgem_town.s:462",
+  "scripts_sandgem_town.s:573-574",
+  "events_sandgem_town (coord (164,842..847); warp 2 (168,842) lab)",
+  "events_sandgem_town_pokemon_research_lab (warp 0 (7,15))",
+  "events_twinleaf_town (warp 1 (116,885) player house)",
+  "tests/gameplay/recipes/sandgem.recipe",
+]
+notes = "Estimate: research ~9000 plus the walk back to Twinleaf (so 04 starts inside the house). sandgem.recipe's VAR_SANDGEM_TOWN_STATE 3 is never written by a script (writers: scripts_sandgem_town.s:215,574)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 16500
+
+[[step]]
+do = "walk_to"
+x = 164
+z = 844
+note = "coord (164,842..847) VAR_SANDGEM_TOWN_STATE==0: counterpart, Barry leaves the lab, Warp into the lab (scripts_sandgem_town.s:169-218); from 02's end this is a seamless walk east along Route 201"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB"
+
+[[step]]
+do = "advance_text"
+shot = "pokedex"
+note = "lab OnFrame VAR_SANDGEM_TOWN_LAB_STATE==0: Rowan, Pokedex (A answers YES) (scripts_sandgem_town_pokemon_research_lab.s:230-312)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 15
+note = "lab exit (warp 0) -> Sandgem (168,842)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SANDGEM_TOWN"
+
+[[step]]
+do = "advance_text"
+shot = "sandgem-tour"
+note = "Sandgem OnFrame VAR_SANDGEM_TOWN_STATE==1: Rowan's TM27, Pokecenter and Mart tour, counterpart leaves -> 2 (scripts_sandgem_town.s:441-574)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 116
+z = 885
+max = 8000
+note = "Twinleaf player-house door (events_twinleaf_town warp 1), west along Route 201 (seamless; wild battles fought) so 04 starts in the house"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_TWINLEAF_TOWN_PLAYER_HOUSE_1F"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_TWINLEAF_TOWN_PLAYER_HOUSE_1F"
+flags = ["FLAG_HAS_POKEDEX", "FLAG_ALT_MUSIC_ROWANS_LAB", "FLAG_HIDE_SANDGEM_TOWN_COUNTERPART"]
+save = [
+  's["pokedex"] is not None and s["pokedex"]["obtained"]',  # Pokedex obtained (GivePokedex)
+  'any(i["item"] == 354 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM27
+]
+
+[expect.vars]
+VAR_SANDGEM_TOWN_STATE = 2
+VAR_SANDGEM_TOWN_LAB_STATE = 1

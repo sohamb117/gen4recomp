@@ -1,0 +1,13 @@
+# Copy of pc/tests/corpus/comm-palpark.recipe. National dex (105) is the story prerequisite; the gate script does not need it here.
+name GQ
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+# kept verbatim from comm-palpark.recipe
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+# skips Oak's first-visit scene (scripts_pal_park_lobby.s:364-383)
+var VAR_PAL_PARK_LOBBY_STATE 1
+# skips the first-time manual (comm-palpark.recipe comment)
+flag FLAG_TALKED_TO_PAL_PARK_LOBBY_RECEPTIONIST
+party SPECIES_TURTWIG 15 ITEM_NONE
+map MAP_HEADER_PAL_PARK_LOBBY 7 12 FACE_UP

@@ -1,0 +1,43 @@
+# Proves the Psyduck blockade script and Cynthia's Old Charm hand-off.
+# Start: Route 210 South Café Cabin door (566,591) -> end: same map, Old Charm.
+
+title = "Route 210 South: SecretPotion on the Psyduck, Old Charm"
+status = "planned"
+priority = "P0"
+estimate = 7000
+refs = [
+  "scripts_route_210_south.s:31-59",
+  "scripts_route_210_south.s:92-138",
+  "scripts_route_210_south.s:72-75",
+  "scripts_route_210_south.s:93",
+  "scripts_route_210_south.s:114-116",
+  "scripts_route_210_south.s:135",
+  "scripts_route_210_south.s:136",
+  "scripts_route_210_south.s:77-80",
+  "scripts_celestic_town.s:101",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 10500
+
+[[step]]
+do = "walk_to"
+x = 561
+z = 588
+face = "up"
+interact = true
+note = "Psyduck at (561,587); player must be at x 560/561 (scripts_route_210_south.s:31-59, :77-80)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "old_charm"
+note = "use SecretPotion: Yes; Cynthia: Yes (No loops back) -> Old Charm (:92-138)"
+
+[expect]
+map = "MAP_HEADER_ROUTE_210_SOUTH"
+flags = ["FLAG_USED_SECRETPOTION", "FLAG_HIDE_ROUTE_210_SOUTH_PSYDUCK"]

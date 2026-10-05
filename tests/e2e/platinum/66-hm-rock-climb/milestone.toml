@@ -1,0 +1,60 @@
+# HM08 Rock Climb, A-press path at the foot of a Victory Road 1F climb column.
+# Start: VICTORY_ROAD_1F (22,38). End: (22,30) at the top.
+title = "HM08 Rock Climb: Victory Road 1F wall"
+status = "planned"
+priority = "P1"
+estimate = 5800
+refs = [
+  "res/field/scripts/scripts_visible_items.s:1301-1305",
+  "res/field/scripts/scripts_route_217_west_house.s:13",
+  "src/field_move_tasks.c:631",
+  "res/field/scripts/scripts_field_moves.s:251",
+  "res/field/scripts/scripts_field_moves.s:253-254",
+  "res/field/scripts/scripts_field_moves.s:276-286",
+  "res/field/scripts/scripts_field_moves.s:284",
+  "src/overlay005/field_control.c:682-684",
+  "pc/tests/corpus/hm-rock-climb.recipe",
+  "pc/tests/corpus/hm-rock-climb.spec",
+  "pc/replays/lab-fieldmove.txt",
+  "generated/journal_location_events.txt:27",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 8700
+# pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
+env = { PC_TRACE_JOURNAL = "1" }
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing the ROCK_CLIMB_N_S column"
+
+[[step]]
+do = "wait_frames"
+n = 200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> UseRockClimb"
+shot = "climb-prompt"
+
+[[step]]
+do = "advance_text"
+shot = "climbing"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 30
+note = "[INFERENCE] the climb ends at or just below (22,30); lab-fieldmove.txt finishes with one UP"
+shot = "top"
+
+[expect]
+map = 244
+position = [22, 30]
+badge = ["BADGE_ID_ICICLE"]
+log = ['pc-journal: f=\d+ event=26 ']   # LOCATION_EVENT_USED_ROCK_CLIMB

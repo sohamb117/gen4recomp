@@ -1,0 +1,50 @@
+# Battle Tower single set: Challenge -> Single -> pick 3 -> save -> 7 battles, back in the lobby.
+# Start: BATTLE_TOWER (15,6) below the single attendant (15,5). End: Tower lobby after the 7th win.
+# Frontier level cap 50 is [INFERENCE: not located in source].
+title = "Battle Tower: first single set"
+status = "planned"
+priority = "P1"
+estimate = 40000
+refs = [
+  "res/field/events/events_battle_tower.json",
+  "res/field/scripts/scripts_battle_tower.s",
+  "res/field/scripts/scripts_init_new_game.s:82",
+  "res/field/events/events_battle_frontier.json",
+  "res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40",
+  "res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s",
+  "src/unk_02049D08.c:161-206",
+  "src/unk_02049D08.c:750-787",
+  "src/unk_020494DC.c:72-78",
+  "src/wifi_battle_tower_save.c:156-176",
+  "src/overlay104/frscrcmd.c:1567-1580",
+  "pc/src/pc_lab.c:798-800",
+  "src/clear_game.c:204-206",
+  "src/scrcmd_system_flags.c:151",
+  "src/system_flags.c:69-71",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "press"
+keys = "A"
+note = "single attendant (15,5)"
+shot = "attendant"
+
+[[step]]
+do = "wait_frames"
+n = 120
+# PHASE2: lobby menu (Challenge -> Single -> choose 3 in the party screen -> 'save before entering' YES,
+# BattleTower_SingleAttendant / HealAndSaveBeforeEnteringBattleRoom) is unrecorded. Then 7 x
+# (wait_battle, auto_battle, advance_text); a fainted lead is replaced by the game's prompt; a loss ends the run.
+
+[expect]
+map = 326
+battles = 7
+# PHASE2: reader-ext Battle Points (WifiBattleTowerRecord_UpdateBattlePoints, wifi_battle_tower_save.c:156-176)
+# == 3 after the first solo set (unk_02049D08.c:750-787) or > 0; np_save4 has no BP field. Meanwhile
+# the in-run Common_SaveGame saves advance the save counter.

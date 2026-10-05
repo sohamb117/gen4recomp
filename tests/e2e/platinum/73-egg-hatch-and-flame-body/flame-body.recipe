@@ -1,0 +1,19 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26073
+money 3000
+
+# Flame Body halving (pt_side_a.md 73): MAGBY's only ability is Flame Body (res/pokemon/magby/data.json),
+# so toSubtract = 2 (daycare.c:783-800). Walk 1 step: egg friendship 2 -> 0 (control without Magby: 2 -> 1).
+party SPECIES_MAGBY 20 ITEM_NONE
+party SPECIES_DITTO 20 ITEM_NONE
+party SPECIES_PIPLUP 20 ITEM_NONE
+# Ditto, then Piplup (shifted into slot 1); Magby stays
+daycare 1
+daycare 1
+daycare-egg 0x12345678
+# egg = PIPLUP in slot 1
+take-egg
+egg-cycles 1 2
+daycare-counter 254
+map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN

@@ -1,0 +1,97 @@
+# Proves the Veilstone Gym punching-bag puzzle (two kicks topple the stacks on the x=12 column) and Maylene's Cobble
+# Badge, the 4th badge and the end of this chain.
+# Start: Veilstone Gym warp 0 (12,30) -> end: Veilstone Gym with 4 badges.
+title = "Veilstone Gym: Maylene and the Cobble Badge"
+status = "planned"
+priority = "P0"
+estimate = 20000
+refs = [
+  "scripts_veilstone_city_gym.s:15",
+  "scripts_veilstone_city_gym.s:26",
+  "scripts_veilstone_city_gym.s:34-44",
+  "scripts_veilstone_city_gym.s:50-54",
+  "src/overlay008/gym_features.c:2951-3017",
+  "src/overlay008/gym_features.c:3136-3253",
+  "src/overlay008/gym_features.c:3148",
+  "src/overlay008/gym_features.c:3154",
+  "src/overlay008/gym_features.c:3241-3243",
+  "src/overlay008/gym_features.c:3545-3573",
+  "src/persisted_map_features_init.c:113-120",
+  "scripts_init_veilstone_city.s:9",
+  "scripts_veilstone_city.s:1357-1359",
+  "events_veilstone_city_gym (warp 0 (12,30))",
+  "TRAINER_BLACK_BELT_COLBY (309)",
+  "TRAINER_BLACK_BELT_RAFAEL (311)",
+  "TRAINER_BLACK_BELT_DARREN (310)",
+  "TRAINER_BLACK_BELT_JEFFERY (312)",
+  "TRAINER_LEADER_MAYLENE (317)",
+]
+notes = "Bag/stack tiles are the table values with z-2 (gym_features.c:3148,3154). The puzzle state persists (InitPersistedMapFeaturesForVeilstoneGym) and the lab cannot pre-topple stacks. Leaving after the badge starts the next chain (Veilstone OnFrame VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE==1, scripts_init_veilstone_city.s:9)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 30000
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 10
+face = "left"
+interact = true
+note = "kick bag (16,10) west: it stops at (13,10) and topples stack (12,10) (gym_features.c:2984-3017, 3545-3573) [INFERENCE: (17,10) walkable; route there not derived]; Colby (15,23) N/E 3 and Darren (16,14) look-around 2 may engage"
+
+[[step]]
+do = "wait_frames"
+n = 90
+note = "let the bag slide and the stack fall"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 7
+face = "right"
+interact = true
+note = "kick bag (8,7) east: stops at (11,7), topples stack (12,7) [INFERENCE: (7,7) walkable]; Jeffery (2,9) S/W 2 may engage"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 5
+face = "up"
+interact = true
+note = "north up the cleared x=12 column to Maylene (12,4); Rafael (11,13) S 4 may engage"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "maylene"
+note = "TRAINER_LEADER_MAYLENE (317): MEDITITE 28, MACHOKE 29, LUCARIO 32 (scripts_veilstone_city_gym.s:26)"
+
+[[step]]
+do = "advance_text"
+shot = "cobble-badge"
+note = "GiveBadge BADGE_ID_COBBLE, warehouse armed, TM60 (scripts_veilstone_city_gym.s:34-54)"
+
+[expect]
+map = "MAP_HEADER_VEILSTONE_CITY_GYM"
+badges = 4
+badge = ["BADGE_ID_COAL", "BADGE_ID_FOREST", "BADGE_ID_RELIC", "BADGE_ID_COBBLE"]
+flags = ["FLAG_RECEIVED_MAYLENE_TM60", "FLAG_HIDE_GAME_CORNER_LOOKER", "FLAG_DEFEATED_TRAINER_BLACK_BELT_COLBY", "FLAG_DEFEATED_TRAINER_BLACK_BELT_RAFAEL"]
+flags_clear = ["FLAG_HIDE_VEILSTONE_COUNTERPART"]
+battles = 1
+save = [
+  'any(i["item"] == 387 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM60
+]
+
+[expect.vars]
+VAR_VEILSTONE_WAREHOUSE_GUARDS_FIGHTABLE = 1
+VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE = 1

@@ -1,0 +1,67 @@
+# HM03 Surf, A-press path from the Route 205 South river bank, then swim north 4 tiles.
+# Start: ROUTE_205_SOUTH (162,604). End: (162,600); the header becomes
+# FUEGO_IRONWORKS_OUTSIDE (204) once the player moves (matrix cell owner).
+title = "HM03 Surf: cross the Route 205 river"
+status = "planned"
+priority = "P1"
+estimate = 5800
+refs = [
+  "res/field/scripts/scripts_celestic_town_cave.s:115-136",
+  "res/field/scripts/scripts_celestic_town_cave.s:129",
+  "src/field_move_tasks.c:414",
+  "src/overlay005/field_control.c:686-694",
+  "res/field/scripts/scripts_field_moves.s:299-327",
+  "res/field/scripts/scripts_field_moves.s:325",
+  "src/map_tile_behavior.c:23-32",
+  "res/field/maps/matrices/map_matrix_000.json",
+  "pc/tests/pc_maptiles.py",
+  "pc/tests/corpus/hm-surf.recipe",
+  "pc/tests/corpus/hm-surf.spec",
+  "pc/replays/lab-fieldmove.txt",
+  "generated/journal_location_events.txt:22",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 8700
+# pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
+env = { PC_TRACE_JOURNAL = "1" }
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing water: Surf prompt (field_control.c:686-694 checks FEN + MOVE_SURF)"
+
+[[step]]
+do = "wait_frames"
+n = 200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> UseSurf"
+shot = "surf-prompt"
+
+[[step]]
+do = "advance_text"
+shot = "surfing"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+gap = 8
+times = 4
+note = "[INFERENCE] the surf mount lands on (162,603); 3-4 steps north reach (162,600); walk_to does not path over water"
+
+[[step]]
+do = "wait_field"
+shot = "north-bank"
+
+[expect]
+map = 204
+position = [162, 600]
+badge = ["BADGE_ID_FEN"]
+log = ['pc-journal: f=\d+ event=21 ']   # LOCATION_EVENT_USED_SURF

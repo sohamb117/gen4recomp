@@ -1,0 +1,145 @@
+# Proves Cynthia's Togepi egg, the Bicycle (which blocks Eterna's exits) and the Explorer Kit (which reopens them).
+# Start: Eterna City warp 3 (Galactic building door (305,519)) -> end: Cycling Road north gate (17's start).
+title = "Eterna: Togepi egg, Bicycle, Explorer Kit"
+status = "planned"
+priority = "P0"
+estimate = 9000
+refs = [
+  "scripts_eterna_city.s:37-50",
+  "scripts_eterna_city.s:394-420",
+  "scripts_eterna_city.s:1061",
+  "scripts_eterna_city.s:1079",
+  "scripts_eterna_city.s:1089-1090",
+  "scripts_eterna_city.s:1127-1193",
+  "scripts_eterna_city.s:1196",
+  "scripts_eterna_city.s:1206",
+  "scripts_cycle_shop.s:18-23",
+  "scripts_eterna_city_underground_man_house.s:10-33",
+  "events_eterna_city (coords (308,541..545), (309,540..545), (303..307,565), (297,532..534); warps 2 (310,539), 11 (310,530), 8 (304,569))",
+  "events_cycle_shop (owner (3,5); warp 0 (7,11))",
+  "events_eterna_city_underground_man_house (Underground Man (6,5), script 1; warp 0 (4,8))",
+  "events_route_206_cycling_road_north_gate (warp 0 (7,2))",
+  "src/field_move_tasks.c:332",
+]
+notes = "Estimate: research ~8000 plus the walk to the gate. The Explorer Kit requirement is Platinum-specific: after the bike and without the kit both Eterna exits push you back. Party must be <= 5 for the egg (NO or a full party -> state 4, coord (309,540..545) blocks the shop)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 305
+z = 520
+face = "down"
+interact = true
+note = "the building-front cut trees (304..306,521) are back after the map reload (map-local obstacle flags); cut (305,521) again [INFERENCE: A on the tree offers Cut, A = YES]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 308
+z = 543
+note = "coord (308,541..545) VAR_ETERNA_CITY_STATE==3 -> Cynthia offers the Togepi egg"
+
+[[step]]
+do = "advance_text"
+shot = "togepi-egg"
+note = "A = YES with < 6 mons: GiveEgg SPECIES_TOGEPI -> state 5 (scripts_eterna_city.s:1061-1090)"
+
+[[step]]
+do = "walk_to"
+x = 310
+z = 539
+note = "cycle shop door (warp 2) -> shop (7,11)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CYCLE_SHOP"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 6
+face = "up"
+interact = true
+note = "cycle-shop owner (3,5), unhidden by Jupiter's defeat [INFERENCE: talk from the south]"
+
+[[step]]
+do = "advance_text"
+shot = "bicycle"
+note = "ITEM_BICYCLE, FLAG_RECEIVED_BICYCLE, VAR_ETERNA_CITY_BLOCK_EXITS_STATE 1 (scripts_cycle_shop.s:18-23)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 11
+note = "shop exit (warp 0) -> Eterna (310,539)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ETERNA_CITY"
+
+[[step]]
+do = "walk_to"
+x = 310
+z = 530
+note = "Underground Man's house door (warp 11) -> house (4,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ETERNA_CITY_UNDERGROUND_MAN_HOUSE"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "Underground Man (6,5) LOOK_SOUTH (object 2, script 1)"
+
+[[step]]
+do = "advance_text"
+shot = "explorer-kit"
+note = "ITEM_EXPLORER_KIT, mentor yes/no (A = YES sets FLAG_ACCEPTED_UNDERGROUND_MAN_AS_MENTOR) (scripts_eterna_city_underground_man_house.s:26-33)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+note = "house exit (warp 0) -> Eterna; OnTransition: Bicycle + Explorer Kit -> VAR_ETERNA_CITY_BLOCK_EXITS_STATE 0 (scripts_eterna_city.s:37-50)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ETERNA_CITY"
+
+[[step]]
+do = "walk_to"
+x = 304
+z = 569
+note = "Cycling Road north gate door (warp 8) -> gate (7,2), 17's start; the exit coords (303..307,565) push back only while the block state is 1"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_206_CYCLING_ROAD_NORTH_GATE"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_ROUTE_206_CYCLING_ROAD_NORTH_GATE"
+flags = ["FLAG_RECEIVED_BICYCLE", "FLAG_RECEIVED_EXPLORER_KIT"]
+save = [
+  'any(m.get("is_egg") for m in s["party"])',  # Togepi egg in the party (GiveEgg, scripts_eterna_city.s:1089)
+  'any(i["item"] == 450 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_BICYCLE
+  'any(i["item"] == 428 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_EXPLORER_KIT
+]
+
+[expect.vars]
+VAR_ETERNA_CITY_STATE = 5
+VAR_ETERNA_CITY_BLOCK_EXITS_STATE = 0

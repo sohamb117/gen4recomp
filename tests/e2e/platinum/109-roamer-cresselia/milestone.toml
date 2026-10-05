@@ -1,0 +1,39 @@
+# Cresselia roamer activation on Fullmoon Island: A -> preview, flicker,
+# ActivateRoamingPokemon ROAMING_SLOT_CRESSELIA, Lunar Wing appears.
+# Start: FULLMOON_ISLAND_FOREST (16,16) below Cresselia (16,15). End: same.
+title = "Roamer: Cresselia starts roaming"
+status = "planned"
+priority = "P2"
+estimate = 3000
+refs = [
+  "res/field/scripts/scripts_fullmoon_island_forest.s:9-36",
+  "res/field/scripts/scripts_fullmoon_island_forest.s:26-33",
+  "res/field/scripts/scripts_canalave_city.s:494-537",
+  "src/special_encounter.c:159-163",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 4500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Cresselia object (16,15)"
+
+[[step]]
+do = "advance_text"
+max = 2500
+shot = "cresselia"
+
+[[step]]
+do = "wait_field"
+shot = "lunar-wing"
+
+[expect]
+map = 261
+flags = ["FLAG_MET_CRESSELIA", "FLAG_HIDE_FULLMOON_ISLAND_FOREST_CRESSELIA"]
+flags_clear = ["FLAG_OBTAINED_FULLMOON_ISLAND_FOREST_LUNAR_WING"]
+# PHASE2: reader-ext roamer slot CRESSELIA active (special_encounter.c:159-163)

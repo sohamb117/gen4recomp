@@ -1,0 +1,60 @@
+# HM02 Fly from the party menu: Hearthome -> Solaceon on the town map.
+# Start: Hearthome City spawn tile (0x1D1,0x2BA). End: Solaceon Town fly tile (566,657).
+# No corpus station; the town-map cursor path is not recorded yet.
+title = "HM02 Fly: Hearthome to Solaceon"
+status = "planned"
+priority = "P1"
+estimate = 6000
+refs = [
+  "res/field/events/events_veilstone_city_galactic_warehouse.json",
+  "res/field/scripts/scripts_visible_items.s:1751-1755",
+  "src/field_move_tasks.c:373",
+  "src/field_move_tasks.c:377-389",
+  "src/field_move_tasks.c:392-406",
+  "src/field_move_tasks.c:194-222",
+  "src/spawn_locations.c:25-48",
+  "src/spawn_locations.c:32",
+  "src/spawn_locations.c:38",
+  "generated/vars_flags.txt:2492",
+  "src/start_menu.c:379-382",
+  "pc/tests/corpus/hearthome.recipe",
+  "pc/replays/lab-menu-party.txt",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 9000
+
+[[step]]
+do = "press"
+keys = "X"
+note = "start menu"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "POKEMON (first entry, as pc/replays/lab-menu-party.txt)"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "A"
+note = "slot 0 STARAPTOR -> field-move submenu"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+note = "[INFERENCE] FLY is the first submenu entry (the mon's only field move)"
+shot = "town-map"
+# PHASE2: town-map cursor path from Hearthome to Solaceon (north-east) is unrecorded;
+# record it once (TownMapContext_Init TOWN_MAP_MODE_FLY, field_move_tasks.c:392-406), then A, then wait_map.
+
+[expect]
+map = 433
+position = [566, 657]
+badge = ["BADGE_ID_COBBLE"]
+flags = ["FLAG_FIRST_ARRIVAL_SOLACEON_TOWN"]
+save = ['s["location"]["map"] == 433']

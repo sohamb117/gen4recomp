@@ -1,0 +1,11 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26118
+money 3000
+# keystone placed (scripts_route_209.s:40-80)
+var VAR_HALLOWED_TOWER_STATE 1
+# >= 32 Underground talks (src/system_vars.c:274-281)
+var VAR_SPIRITOMB_COUNTER 32
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 0 0 MOVE_DRAGON_CLAW
+map MAP_HEADER_ROUTE_209 566 715 FACE_UP

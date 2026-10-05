@@ -1,0 +1,41 @@
+# TV broadcast: A on a TV tile (behaviour 0x86) facing north runs TVBroadcast_Interact and counts
+# RECORD_WATCHED_TV. Fresh save -> commercial path.
+# Start: OREBURGH_CITY_MIDDLE_HOUSE (6,4) below the TV. End: same.
+title = "TV: watch a broadcast"
+status = "planned"
+priority = "P2"
+estimate = 3500
+refs = [
+  "pc/tests/pc_maptiles.py",
+  "include/data/map_headers.h",
+  "res/field/events/events_oreburgh_city_middle_house.json",
+  "src/overlay005/field_control.c:678-679",
+  "res/field/scripts/scripts_tv_broadcast.s:7-60",
+  "res/field/scripts/scripts_tv_broadcast.s:11",
+  "res/field/scripts/scripts_twinleaf_town_player_house_1f.s:784-800",
+  "res/field/scripts/scripts_twinleaf_town_player_house_2f.s:56-58",
+  "res/field/scripts/scripts_jubilife_tv_3f_global_ranking_room.s:14-17",
+  "generated/game_records.txt:49",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5300
+
+[[step]]
+do = "press"
+keys = "A"
+note = "TV tiles (6..7,2..3), no bg event over them: SCRIPT_ID(TV_BROADCAST,0)"
+
+[[step]]
+do = "advance_text"
+max = 2000
+shot = "broadcast"
+
+[expect]
+map = 58
+position = [6, 4]
+# PHASE2: reader-ext game record RECORD_WATCHED_TV == 1 (generated/game_records.txt:49); else a digest
+# of the message box. Jubilife TV (JUBILIFE_TV_1F door (9,18), 3F StartRankingsMachine) is NPC text/rankings.

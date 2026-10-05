@@ -1,0 +1,97 @@
+# Proves Barry's Oreburgh bump, Looker's Pal Pad check, and the Jubilife tag battle with Dawn against two grunts
+# (then the collector's Fashion Case).
+# Start: Oreburgh City warp 0 (gym door (282,756)) -> end: Jubilife City after the grunts flee.
+title = "Jubilife: tag battle against Team Galactic"
+status = "planned"
+priority = "P0"
+estimate = 8000
+refs = [
+  "scripts_oreburgh_city.s:79",
+  "scripts_oreburgh_city.s:178-180",
+  "scripts_jubilife_city.s:876",
+  "scripts_jubilife_city.s:888",
+  "scripts_jubilife_city.s:907-914",
+  "scripts_jubilife_city.s:954-962",
+  "scripts_jubilife_city.s:965",
+  "scripts_jubilife_city.s:971",
+  "scripts_jubilife_city.s:982-985",
+  "scripts_jubilife_city.s:1004-1021",
+  "scripts_jubilife_city.s:1630-1652",
+  "events_oreburgh_city (coord (262,748..751); warp 10 (258,749) gate)",
+  "events_oreburgh_gate_1f (warps (27,22), (4,22))",
+  "events_jubilife_city (coord (173..175,743); Rowan (175,740); grunts (174,739)/(174,740); coord (188,757..760))",
+  "TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_1 (414)",
+  "TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_2 (415)",
+  "TRAINER_DAWN_JUBILIFE_CITY_TURTWIG (618)",
+]
+notes = "A tag battle: one move for one battler. Surf is a spread move and also hits Dawn (partner fainting does not lose). Entering Jubilife from Route 203 before the tag battle runs Looker's Pal Pad coord (VAR_JUBILIFE_LOOKER_PAL_PAD_STATE==1 -> 2)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 12000
+
+[[step]]
+do = "walk_to"
+x = 262
+z = 750
+note = "coord (262,748..751) VAR_OREBURGH_CITY_STATE==2 -> Barry bumps you -> 3 (scripts_oreburgh_city.s:79-180)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 258
+z = 749
+note = "Oreburgh west exit (warp 10) -> Oreburgh Gate 1F (27,22)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_GATE_1F"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 22
+note = "gate west mouth (warp 0) -> Route 203 (246,749)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_203"
+
+[[step]]
+do = "walk_to"
+x = 174
+z = 743
+max = 10000
+note = "Jubilife north coord (173..175,743) VAR_JUBILIFE_CITY_STATE==3; Looker's Pal Pad coord (188,757..760) fires on the way in and is advanced by walk_to (scripts_jubilife_city.s:1630-1652)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "tag-battle"
+note = "StartTagBattle (scripts_jubilife_city.s:876): grunts STUNKY 11 + GLAMEOW 11; partner Dawn PIPLUP 13"
+
+[[step]]
+do = "advance_text"
+shot = "fashion-case"
+note = "grunts flee, Rowan/Dawn leave, collector gives the Fashion Case (scripts_jubilife_city.s:888-1021)"
+
+[expect]
+map = "MAP_HEADER_JUBILIFE_CITY"
+flags = ["FLAG_HIDE_JUBILIFE_GALACTIC_GRUNTS", "FLAG_RECEIVED_FASHION_CASE", "FLAG_HIDE_JUBILIFE_ROWAN", "FLAG_HIDE_JUBILIFE_CITY_COUNTERPART"]
+flags_clear = ["FLAG_HIDE_SANDGEM_TOWN_LAB_PROF_ROWAN"]
+battles = 1
+save = [
+  'any(i["item"] == 435 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_FASHION_CASE
+]
+
+[expect.vars]
+VAR_JUBILIFE_CITY_STATE = 4
+VAR_OREBURGH_CITY_STATE = 3
+VAR_JUBILIFE_LOOKER_PAL_PAD_STATE = 2

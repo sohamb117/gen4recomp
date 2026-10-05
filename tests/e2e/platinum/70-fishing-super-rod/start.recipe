@@ -1,0 +1,13 @@
+# Trainer id and money as pc/tests/corpus/rod-super.recipe: the bite frame is tied to the RNG of this exact mint.
+name GQ
+gender GENDER_MALE
+trainer-id 30009
+money 3000
+
+badge BADGE_ID_FEN
+party SPECIES_GARCHOMP 70 ITEM_NONE
+party-move 0 0 MOVE_DRAGON_CLAW
+item ITEM_SUPER_ROD 1
+register-item ITEM_SUPER_ROD
+# the surfable tile north of (162,604) (pc/tests/corpus/hm-surf.recipe); can_fish src/item_use_functions.c:819-851
+map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP

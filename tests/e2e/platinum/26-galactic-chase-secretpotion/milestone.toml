@@ -1,0 +1,125 @@
+# Proves the three-stage grunt chase (Pastoria -> Route 213 -> Valor Lakefront) and Cynthia's SecretPotion.
+# Start: Pastoria east gate (639,812), grunt at (637,812) -> end: Valor Lakefront (336), SecretPotion.
+
+title = "Pastoria to Valor Lakefront: grunt chase and the SecretPotion"
+status = "planned"
+priority = "P0"
+estimate = 14000
+refs = [
+  "scripts_pastoria_city.s:37-44",
+  "scripts_pastoria_city.s:133-190",
+  "scripts_route_213.s:16-38",
+  "scripts_route_213.s:40-86",
+  "scripts_route_213.s:88-145",
+  "scripts_valor_lakefront.s:45-81",
+  "scripts_valor_lakefront.s:83-91",
+  "scripts_valor_lakefront.s:180-366",
+  "events_route_213.json",
+  "scripts_pastoria_city.s:188",
+  "scripts_pastoria_city.s:187",
+  "scripts_route_213.s:31",
+  "scripts_route_213.s:83",
+  "scripts_route_213.s:78",
+  "scripts_route_213.s:118",
+  "scripts_route_213.s:119",
+  "scripts_route_213.s:142",
+  "scripts_route_213.s:143",
+  "scripts_route_213.s:138",
+  "scripts_valor_lakefront.s:79",
+  "scripts_valor_lakefront.s:117",
+  "scripts_valor_lakefront.s:118",
+  "scripts_valor_lakefront.s:185",
+  "scripts_valor_lakefront.s:197",
+  "scripts_valor_lakefront.s:344-346",
+  "scripts_valor_lakefront.s:360",
+  "scripts_valor_lakefront.s:361",
+  "scripts_valor_lakefront.s:362",
+  "scripts_valor_lakefront.s:363",
+  "scripts_valor_lakefront.s:364",
+  "scripts_pastoria_city.s:941-972",
+  "scripts_route_213.s:117",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 21000
+
+[[step]]
+do = "walk_to"
+x = 638
+z = 812
+face = "left"
+interact = true
+note = "grunt obj21 at (637,812) facing east (scripts_pastoria_city.s:37-44, talk :133-190)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 653
+z = 812
+face = "right"
+interact = true
+note = "Route 213: grunt appears at (654,812) (scripts_route_213.s:16-38); [INFERENCE] approach tile"
+
+[[step]]
+do = "advance_text"
+note = "he moves to (683,833) (:40-86)"
+
+[[step]]
+do = "walk_to"
+x = 682
+z = 833
+face = "right"
+interact = true
+note = "[INFERENCE] approach tile west of (683,833)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "he leaves; Looker scene (:88-145)"
+
+[[step]]
+do = "walk_to"
+x = 719
+z = 791
+face = "up"
+interact = true
+note = "Valor Lakefront grunt obj5 (719,790); [INFERENCE] approach tile"
+
+[[step]]
+do = "advance_text"
+note = "he moves to (723,769) (scripts_valor_lakefront.s:45-81)"
+
+[[step]]
+do = "walk_to"
+x = 723
+z = 770
+face = "up"
+interact = true
+note = "[INFERENCE] approach tile south of (723,769)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "valor_grunt"
+note = "TRAINER_GALACTIC_GRUNT_VALOR_LAKEFRONT (847) (:83-91)"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "secretpotion"
+note = "Cynthia + rival, Yes/No (either) -> SecretPotion (:180-366)"
+
+[expect]
+map = "MAP_HEADER_VALOR_LAKEFRONT"
+vars = { VAR_PASTORIA_CITY_STATE = 6 }
+flags = ["FLAG_TALKED_TO_PASTORIA_CITY_GRUNT_M", "FLAG_ROUTE_213_GRUNT_M_LEFT", "FLAG_TALKED_TO_VALOR_LAKEFRONT_GRUNT_M"]
+flags_clear = ["FLAG_BLOCK_PASTORIA_CITY_CROAGUNK_EVENT"]
+battles = 1

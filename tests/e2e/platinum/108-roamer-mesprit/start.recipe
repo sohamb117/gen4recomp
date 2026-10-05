@@ -1,0 +1,9 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26108
+money 3000
+party SPECIES_EMPOLEON 62 ITEM_NONE
+# set at new game (scripts_init_new_game.s:16), cleared at Sandgem after the Distortion World
+# (scripts_sandgem_town_pokemon_research_lab.s:112)
+clear-flag FLAG_HIDE_VERITY_CAVERN_MESPRIT
+map MAP_HEADER_VERITY_CAVERN 12 14 FACE_UP

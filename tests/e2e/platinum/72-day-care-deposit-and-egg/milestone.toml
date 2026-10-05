@@ -1,0 +1,92 @@
+# Day Care: two BIBAREL deposited (lab), walk until the egg check fires, then collect the egg
+# from the Day-Care Man. Start: Solaceon spawn (566,657). End: next to the man (555,648), egg in party.
+title = "Day Care: deposit two parents and collect an egg"
+status = "planned"
+priority = "P1"
+estimate = 5000
+refs = [
+  "res/field/events/events_solaceon_town.json",
+  "res/field/scripts/scripts_day_care_common.s:12-63",
+  "res/field/scripts/scripts_day_care_common.s:42-49",
+  "res/field/scripts/scripts_day_care_common.s:51-63",
+  "res/field/scripts/scripts_day_care_common.s:102",
+  "res/field/scripts/scripts_pokemon_day_care.s:17-28",
+  "src/overlay005/daycare.c:817-875",
+  "src/overlay005/daycare.c:840-846",
+  "src/overlay005/daycare.c:936-946",
+  "src/spawn_locations.c:32",
+  "pc/src/pc_lab.c:848-901",
+  "pc/tests/corpus/daycare-deposit.recipe",
+  "pc/tests/corpus/daycare-deposit.spec",
+  "pc/tests/corpus/egg-generate.recipe",
+  "pc/tests/corpus/egg-generate.spec",
+  "pc/replays/lab-walk.txt",
+  "pc/tests/pc_corpus.py:330",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 7500
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 48
+note = "step 1 of 10 (lab-walk.txt alternates LEFT/RIGHT every 48 frames); daycare-steps 250 wins the roll on the 5th step"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 48
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 48
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 48
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 48
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 48
+shot = "egg-waiting"
+
+[[step]]
+do = "walk_to"
+x = 555
+z = 649
+face = "up"
+interact = true
+note = "[INFERENCE] stand south of LOCALID_DAY_CARE_MAN (555,648), script 9500 DayCareCommon_Man"
+
+[[step]]
+do = "advance_text"
+max = 600
+note = "stops at the YES/NO 'take the egg?' prompt [INFERENCE]"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> GiveEggFromDaycare (scripts_day_care_common.s:51-63)"
+shot = "egg-received"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = 433
+badge = ["BADGE_ID_COAL", "BADGE_ID_FOREST"]
+party_size = 2
+save = ['any(m["is_egg"] for m in s["party"])']
+# PHASE2: reader-ext daycare state (pc_save `daycare:` DAYCARE_TWO_MONS / DAYCARE_EGG_WAITING, pc_corpus.py:330); np_save4 has no daycare field

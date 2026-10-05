@@ -1,0 +1,100 @@
+# Proves the two-mon double gate, the rival tag battle, subscene 63 and Cynthia's DW entry.
+# Start: Spear Pillar (31,53) -> end: Distortion World 1F (573) via Spear Pillar Distorted.
+
+title = "Spear Pillar: grunt double, Mars + Jupiter tag, Giratina's rift"
+status = "planned"
+priority = "P0"
+estimate = 26000
+refs = [
+  "scripts_spear_pillar.s:81-117",
+  "scripts_spear_pillar.s:162-199",
+  "scripts_spear_pillar.s:185",
+  "scripts_spear_pillar.s:360-397",
+  "scripts_spear_pillar_distorted.s:16-55",
+  "scripts_spear_pillar_distorted.s:57-75",
+  "scripts_spear_pillar.s:19",
+  "scripts_spear_pillar.s:58",
+  "scripts_spear_pillar.s:105",
+  "scripts_spear_pillar.s:204",
+  "scripts_spear_pillar.s:192",
+  "scripts_spear_pillar.s:193",
+  "scripts_spear_pillar.s:386",
+  "scripts_spear_pillar.s:387",
+  "scripts_spear_pillar.s:388",
+  "scripts_spear_pillar.s:389",
+  "scripts_spear_pillar.s:390",
+  "scripts_spear_pillar.s:391",
+  "scripts_spear_pillar.s:392",
+  "scripts_spear_pillar.s:393",
+  "scripts_spear_pillar.s:394-395",
+  "scripts_spear_pillar_distorted.s:18",
+  "scripts_spear_pillar_distorted.s:24",
+  "scripts_spear_pillar_distorted.s:31",
+  "scripts_spear_pillar_distorted.s:41",
+  "scripts_spear_pillar_distorted.s:53",
+  "scripts_spear_pillar_distorted.s:71",
+  "scripts_spear_pillar_distorted.s:120-128",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 39000
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 48
+note = "coord0 (31,48), VAR_SPEAR_PILLAR_STATE==0 -> grunt double; needs two conscious mons (scripts_spear_pillar.s:81-117)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "pillar_grunts_double"
+note = "Grunts 521 + 527, double"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 32
+note = "coord1 (30..32,32), state 1 -> Mars + Jupiter vs player + rival tag (:162-199)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "pillar_tag"
+note = "Mars 528 + Jupiter 407; partner rival 619"
+
+[[step]]
+do = "advance_text"
+max = 20000
+note = "HealParty :185; Cyrus/Dialga/Palkia subscene 63 (:360-397); warp to the distorted pillar"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SPEAR_PILLAR_DISTORTED"
+
+[[step]]
+do = "advance_text"
+max = 8000
+note = "frame script 1 (scripts_spear_pillar_distorted.s:16-55): Cynthia, Yes -> DoDWWarp (:57-75)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_DISTORTION_WORLD_1F"
+shot = "distortion_world"
+
+[expect]
+map = "MAP_HEADER_DISTORTION_WORLD_1F"
+vars = { VAR_SPEAR_PILLAR_STATE = 3, VAR_SPEAR_PILLAR_DISTORTED_STATE = 2 }
+flags = ["FLAG_SPEAR_PILLAR_IS_DISTORTED", "FLAG_UNLOCKED_VS_SEEKER_LVL_3"]
+battles = 2

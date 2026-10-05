@@ -1,0 +1,41 @@
+# Legendary birds: Prof. Oak in the Eterna south house (shown after the Pal Park first visit)
+# gives the Upgrade and activates MOLTRES/ZAPDOS/ARTICUNO roamers (lv60).
+# Start: ETERNA_CITY_SOUTH_HOUSE (4,6) below Oak (4,5). End: same.
+title = "Roamer: legendary birds from Prof. Oak"
+status = "planned"
+priority = "P2"
+estimate = 3500
+refs = [
+  "res/field/scripts/scripts_pal_park_lobby.s:347",
+  "res/field/scripts/scripts_init_new_game.s:59",
+  "res/field/scripts/scripts_eterna_city_south_house.s:7-40",
+  "res/field/scripts/scripts_eterna_city_south_house.s:61-64",
+  "src/roaming_pokemon.c:267-278",
+  "pc/src/pc_lab.c:789-793",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5300
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Prof. Oak (4,5)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "ITEM_UPGRADE (bag-full check), then the three roamers activate"
+shot = "oak-birds"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = 82
+flags = ["FLAG_ACTIVATED_ROAMING_LEGENDARY_BIRDS", "FLAG_RECEIVED_ETERNA_CITY_SOUTH_HOUSE_UPGRADE"]
+save = ['any(i["item"] == 252 for p in s["bag"].values() for i in p)']   # ITEM_UPGRADE
+# PHASE2: reader-ext 3 roamer slots active (special_encounter.c:159-163)

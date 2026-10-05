@@ -1,0 +1,60 @@
+# Proves the League north-centre OnTransition, the rival coord battle and the door guard.
+# Start: League north Pokémon Center 1F (11,11) -> end: same map, guard moved away.
+
+title = "Pokémon League: last rival battle, door guard"
+status = "planned"
+priority = "P0"
+estimate = 10000
+refs = [
+  "scripts_pokemon_league_north_pokecenter_1f.s:16-31",
+  "scripts_pokemon_league_north_pokecenter_1f.s:26-29",
+  "scripts_pokemon_league_north_pokecenter_1f.s:108-190",
+  "scripts_pokemon_league_north_pokecenter_1f.s:37-73",
+  "scripts_pokemon_league_north_pokecenter_1f.s:17",
+  "scripts_pokemon_league_north_pokecenter_1f.s:18-25",
+  "scripts_pokemon_league_north_pokecenter_1f.s:110",
+  "scripts_pokemon_league_north_pokecenter_1f.s:188",
+  "scripts_pokemon_league_north_pokecenter_1f.s:189",
+  "scripts_pokemon_league_north_pokecenter_1f.s:68",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 15000
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+note = "coord0 (10..12,4), VAR_RIVAL_BEAT_SUNYSHORE_GYM==0 -> rival (scripts_pokemon_league_north_pokecenter_1f.s:108-190)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "league_rival"
+note = "TRAINER_RIVAL_POKEMON_LEAGUE_TURTWIG (480)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+face = "up"
+interact = true
+note = "door guard (11,3) steps aside (:37-73)"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F"
+vars = { VAR_RIVAL_BEAT_SUNYSHORE_GYM = 1 }
+flags = ["FLAG_POKEMON_LEAGUE_DOOR_GUARD_MOVED_AWAY"]
+battles = 1

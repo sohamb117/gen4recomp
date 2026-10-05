@@ -1,0 +1,86 @@
+# Proves the Contest Hall first visit (Keira, Mom) and Fantina leaving, which removes the Gym Guide from the gym door.
+# Start: Hearthome City warp 5 (Pokecenter door (465,697)) -> end: Hearthome Gym entrance room after the guide's speech (19's start).
+title = "Contest Hall: Fantina frees the gym door"
+status = "planned"
+priority = "P0"
+estimate = 7000
+refs = [
+  "scripts_init_contest_hall_lobby.s:10",
+  "scripts_contest_hall_lobby.s:38-40",
+  "scripts_contest_hall_lobby.s:50-51",
+  "scripts_contest_hall_lobby.s:83",
+  "scripts_contest_hall_lobby.s:85",
+  "scripts_contest_hall_lobby.s:438-444",
+  "scripts_hearthome_city_gym_entrance_room.s:74",
+  "events_hearthome_city (Gym Guide (499,698); gym door warp 8 (499,697); Contest Hall warp 2 (479,691))",
+  "events_contest_hall_lobby (Fantina (22,9) object 10; warp 0 (16,13))",
+  "events_amity_square",
+]
+notes = "Estimate: research ~5000 plus the walk into the gym. Amity Square and Cynthia are not mandatory: VAR_AMITY_SQUARE_STATE only feeds Amity's own warp coords (events_amity_square). Entering the gym plays the guide's OnFrame speech, which sets VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE (19 re-runs it from the lab)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 10500
+
+[[step]]
+do = "walk_to"
+x = 479
+z = 691
+note = "Contest Hall door (events_hearthome_city warp 2) -> lobby (16,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CONTEST_HALL_LOBBY"
+
+[[step]]
+do = "advance_text"
+shot = "contest-lobby"
+note = "OnFrame VAR_CONTEST_HALL_LOBBY_STATE==0: Keira and Mom, Glitter Powder, contest outfit (scripts_contest_hall_lobby.s:38-85)"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 10
+face = "up"
+interact = true
+note = "Fantina (22,9) LOOK_SOUTH_AND_WEST [INFERENCE: talk from the south]"
+
+[[step]]
+do = "advance_text"
+shot = "fantina-spins"
+note = "Fantina spins out; SetFlag FLAG_HIDE_HEARTHOME_CITY_GYM_GUIDE (scripts_contest_hall_lobby.s:438-444)"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 13
+note = "lobby exit (warp 0) -> Hearthome (479,691)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_HEARTHOME_CITY"
+
+[[step]]
+do = "walk_to"
+x = 499
+z = 697
+note = "gym door (warp 8), the guide at (499,698) gone -> entrance room (4,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE==FALSE: the guide approaches -> TRUE (scripts_hearthome_city_gym_entrance_room.s:74)"
+
+[expect]
+map = "MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM"
+flags = ["FLAG_HIDE_HEARTHOME_CITY_GYM_GUIDE", "FLAG_CONTEST_HALL_VISITED", "FLAG_HIDE_CONTEST_HALL_LOBBY_FANTINA"]
+
+[expect.vars]
+VAR_CONTEST_HALL_LOBBY_STATE = 1
+VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE = 1

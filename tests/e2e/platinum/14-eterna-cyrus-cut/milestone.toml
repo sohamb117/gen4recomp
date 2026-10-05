@@ -1,0 +1,55 @@
+# Proves the Eterna statue scene (Barry, Cyrus) and Cynthia's HM01.
+# Start: Eterna City warp 10 (gym door (312,562)) -> end: Eterna City with HM01.
+title = "Eterna: Cyrus at the statue, Cynthia's HM01"
+status = "planned"
+priority = "P0"
+estimate = 5000
+refs = [
+  "scripts_eterna_city.s:170",
+  "scripts_eterna_city.s:181-183",
+  "scripts_eterna_city.s:266-267",
+  "scripts_eterna_city.s:710",
+  "scripts_eterna_city.s:808",
+  "scripts_eterna_city.s:819-820",
+  "src/field_move_tasks.c:332",
+  "events_eterna_city (coords (303,523..526), (304..306,522), (304,523..525))",
+]
+notes = "Nothing gates the statue scene on the badge; the order follows gym-first routing. Using Cut needs BADGE_ID_FOREST (src/field_move_tasks.c:332)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 7500
+
+[[step]]
+do = "walk_to"
+x = 303
+z = 524
+note = "coord (303,523..526) VAR_ETERNA_CITY_STATE==0 -> Barry, the statue, Cyrus -> 1 (scripts_eterna_city.s:710-820)"
+
+[[step]]
+do = "advance_text"
+shot = "cyrus-statue"
+
+[[step]]
+do = "walk_to"
+x = 305
+z = 522
+note = "coord (304..306,522) VAR_ETERNA_CITY_STATE==1 -> Cynthia [INFERENCE: the statue scene leaves the player off this tile, so the step fires the coord]"
+
+[[step]]
+do = "advance_text"
+shot = "hm01"
+note = "ITEM_HM01 -> state 2 (scripts_eterna_city.s:170-267)"
+
+[expect]
+map = "MAP_HEADER_ETERNA_CITY"
+flags = ["FLAG_HIDE_ETERNA_CITY_CYRUS", "FLAG_HIDE_ETERNA_CITY_CYNTHIA", "FLAG_HIDE_ETERNA_CITY_RIVAL"]
+save = [
+  'any(i["item"] == 420 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM01
+]
+
+[expect.vars]
+VAR_ETERNA_CITY_STATE = 2

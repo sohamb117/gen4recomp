@@ -1,0 +1,15 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26093
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+item ITEM_EXPLORER_KIT 1
+register-item ITEM_EXPLORER_KIT
+# scripts_eterna_city_underground_man_house.s:29
+flag FLAG_RECEIVED_EXPLORER_KIT
+# base at (72,437) facing up (x,z,dir: pc_lab.c:986-990; coordinates from ug-stash.recipe)
+secret-base 72 437 FACE_UP
+good-pc UG_GOOD_WOODEN_CHAIR
+# main-matrix map, not a bridge: CanUseExplorerKit allows it (item_use_functions.c:365-367)
+map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN

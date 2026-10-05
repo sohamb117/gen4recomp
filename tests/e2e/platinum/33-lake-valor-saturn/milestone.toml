@@ -1,0 +1,67 @@
+# Proves the drained-lake warp choice (FLAG_GALACTIC_LEFT_LAKE_VALOR unset) and the Saturn battle.
+# Start: Valor Lakefront east-house door (715,781) -> end: Valor Cavern (316), Saturn beaten.
+
+title = "Lake Valor (drained): Saturn in Valor Cavern"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "scripts_valor_lakefront.s:19-42",
+  "scripts_valor_cavern.s:13",
+  "scripts_valor_cavern.s:87",
+  "scripts_valor_cavern.s:88",
+  "scripts_valor_cavern.s:89",
+  "events_lake_valor_drained.json",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 717
+z = 761
+note = "lake warp (717,761) -> LAKE_VALOR_DRAINED (scripts_valor_lakefront.s:19-42)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_LAKE_VALOR_DRAINED"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 32
+max = 9000
+note = "cavern hole, events_lake_valor_drained.json warp1; sight trainers 417/418/425 fought on the way ([INFERENCE] which)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VALOR_CAVERN"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 20
+face = "up"
+interact = true
+note = "Saturn obj1 (14,19) (scripts_valor_cavern.s)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "saturn_valor"
+note = "TRAINER_COMMANDER_SATURN_VALOR_CAVERN (408)"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_HEADER_VALOR_CAVERN"
+flags = ["FLAG_DEFEATED_COMMANDER_SATURN_VALOR_CAVERN", "FLAG_HIDE_LAKE_VALOR_GALACTIC"]
+battles = 1

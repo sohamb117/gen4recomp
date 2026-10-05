@@ -1,0 +1,105 @@
+# Proves Gardenia stepping off the gym door, the flower-clock puzzle (three talk-only trainers), and the Forest Badge.
+# Start: Eterna City warp 0 (Pokecenter door (305,530)) -> end: Eterna City at the gym door (14's start).
+title = "Eterna Gym: Gardenia and the Forest Badge"
+status = "planned"
+priority = "P0"
+estimate = 25000
+refs = [
+  "scripts_eterna_city.s:674-693",
+  "scripts_eterna_city_gym.s:68",
+  "scripts_eterna_city_gym.s:76-82",
+  "scripts_eterna_city_gym.s:117-121",
+  "scripts_eterna_city_gym.s:151",
+  "scripts_eterna_city_gym.s:156",
+  "scripts_eterna_city_gym.s:159",
+  "scripts_eterna_city_gym.s:179",
+  "scripts_eterna_city_gym.s:184",
+  "scripts_eterna_city_gym.s:187",
+  "scripts_eterna_city_gym.s:207",
+  "scripts_eterna_city_gym.s:212",
+  "scripts_eterna_city_gym.s:215",
+  "src/overlay008/gym_features.c:71-80",
+  "src/overlay008/gym_features.c:2285-2301",
+  "src/overlay008/gym_features.c:2310-2324",
+  "src/overlay008/gym_features.c:2333-2408",
+  "src/overlay008/gym_features.c:2412-2418",
+  "src/overlay008/gym_features.c:2513",
+  "src/overlay008/gym_features.c:2913",
+  "events_eterna_city (Gardenia (312,563); gym door warp 10 (312,562))",
+  "events_eterna_city_gym (warp 0 (11,27))",
+  "TRAINER_LASS_CAROLINE (324)",
+  "TRAINER_AROMA_LADY_JENNA (259)",
+  "TRAINER_AROMA_LADY_ANGELA (260)",
+  "TRAINER_LEADER_GARDENIA (315)",
+]
+notes = "Gym trainers are talk-only (tt NONE). Lab-only shortcut past the puzzle (research): var VAR_ETERNA_GYM_FLOWER_CLOCK_STATE 3 + var VAR_ETERNA_GYM_TRAINERS_BEATEN 3 + flag FLAG_HIDE_ETERNA_CITY_GARDENIA + warp MAP_HEADER_ETERNA_CITY_GYM 0; the clock is rebuilt from the var on entry (gym_features.c:2513)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 37500
+
+[[step]]
+do = "walk_to"
+x = 312
+z = 564
+face = "up"
+interact = true
+max = 8000
+note = "Gardenia on the doormat (312,563), FLAG_HIDE_ETERNA_CITY_GARDENIA; from 12's end a seamless walk east along Route 205 North [INFERENCE: talk from the south]"
+
+[[step]]
+do = "advance_text"
+note = "she walks into the gym (RemoveObject scripts_eterna_city.s:688)"
+
+[[step]]
+do = "walk_to"
+x = 312
+z = 562
+note = "gym door (warp 10) -> gym (11,27)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ETERNA_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 22
+face = "right"
+interact = true
+note = "Lass Caroline (14,22) faces west, talk-only [INFERENCE: (13,22) is outside the clock (x 5..17, z 7..19) and walkable]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_LASS_CAROLINE (324): CHERUBI 17, ROSELIA 17 (scripts_eterna_city_gym.s:151)"
+
+[[step]]
+do = "advance_text"
+note = "VAR_ETERNA_GYM_TRAINERS_BEATEN 1, AdvanceEternaGymClock -> state 1: hour-hand jump tile (11,18) N-S (gym_features.c:2310-2314)"
+
+# PHASE2: the tile path across the clock hands was not derived (collision tables gym_features.c:2333-2408 + the map's
+# land data). Remaining: Aroma Lady Jenna (20,17) talk -> auto_battle -> advance_text (clock 2, jump tile (6,13) E-W,
+# right fountain off); Aroma Lady Angela (2,7) talk -> auto_battle -> advance_text (clock 3, jump tile (11,8) N-S,
+# left fountain off); walk_to (11,4) face up interact (Gardenia (11,3)) -> advance_text -> auto_battle -> advance_text
+# (badge, TM86 :76-121); walk_to (11,27) -> wait_map MAP_HEADER_ETERNA_CITY so 14 starts on the gym door.
+
+[expect]
+map = "MAP_HEADER_ETERNA_CITY"
+badges = 2
+badge = ["BADGE_ID_COAL", "BADGE_ID_FOREST"]
+flags = ["FLAG_RECEIVED_GARDENIA_TM86", "FLAG_HIDE_ETERNA_CITY_GARDENIA", "FLAG_DEFEATED_TRAINER_LASS_CAROLINE", "FLAG_DEFEATED_TRAINER_AROMA_LADY_JENNA", "FLAG_DEFEATED_TRAINER_AROMA_LADY_ANGELA"]
+flags_clear = ["FLAG_HIDE_ETERNA_FOREST_GARDENIA"]
+battles = 4
+save = [
+  'any(i["item"] == 413 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM86
+]
+
+[expect.vars]
+VAR_ETERNA_GYM_TRAINERS_BEATEN = 3
+VAR_ETERNA_GYM_FLOWER_CLOCK_STATE = 4

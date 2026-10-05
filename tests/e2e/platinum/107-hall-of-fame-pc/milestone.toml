@@ -1,0 +1,45 @@
+# Hall of Fame PC: with FLAG_GAME_COMPLETED the Pokemon Center PC menu shows HALL OF FAME, which
+# opens the PC HoF screen from the extra save written by the real league clear.
+# Start: JUBILIFE_CITY_POKECENTER_1F (12,4) facing the PC. End: same.
+title = "Hall of Fame on the Pokemon Center PC"
+status = "planned"
+priority = "P2"
+estimate = 3000
+refs = [
+  "res/field/scripts/scripts_common.s:925-966",
+  "res/field/scripts/scripts_common.s:1112-1121",
+  "src/scrcmd.c:3353-3366",
+  "src/clear_game.c:69-87",
+  "pc/tests/corpus/menu-box.recipe",
+  "pc/tests/corpus/menu-box.spec",
+  "pc/src/pc_lab.c:798-800",
+  "src/clear_game.c:204-206",
+  "src/scrcmd_system_flags.c:151",
+  "src/system_flags.c:69-71",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: the real proof chains from the story's Champion/HoF milestone end save (the lab cannot
+# write a HoF entry): use `from = "<champion dir>"` + this recipe's map line once chain.txt exists.
+# Lab-only, the menu row appears but the extra save is absent -> [INFERENCE] empty list or "corrupted".
+
+[run]
+frames = 4500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "PC tile (12,3) facing north (menu-box.recipe)"
+
+[[step]]
+do = "wait_frames"
+n = 300
+note = "'Access which PC?' menu, HALL OF FAME row only with FLAG_GAME_COMPLETED (scripts_common.s:925-966)"
+shot = "pc-menu"
+# PHASE2: cursor position of the HALL OF FAME row is unrecorded; then A -> OpenPCHallOfFameScreen
+# (shot), B out, B to the field.
+
+[expect]
+map = 6
+position = [12, 4]

@@ -1,0 +1,9 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26078
+money 3000
+
+# PIKACHU is on the pre-national-dex allowed list (scripts_amity_square.s:646-680)
+party SPECIES_PIKACHU 20 ITEM_NONE
+# one tile south of the (12,46) west coord event (events_amity_square.json)
+map MAP_HEADER_AMITY_SQUARE 12 47 FACE_UP

@@ -1,0 +1,171 @@
+# Proves the Route 209 gate rival battle, Solaceon's Barry chat, Routes 210 South and 215, and the Crasher Wake scene
+# outside the Veilstone Gym.
+# Start: Hearthome City warp 8 (gym door (499,697)) -> end: inside Veilstone Gym (21's start).
+title = "Route 209 to Veilstone: rival, Solaceon, Crasher Wake"
+status = "planned"
+priority = "P0"
+estimate = 31000
+refs = [
+  "scripts_route_209_gate_to_hearthome_city.s:41",
+  "scripts_route_209_gate_to_hearthome_city.s:64-66",
+  "scripts_solaceon_town.s:115",
+  "scripts_solaceon_town.s:134-136",
+  "scripts_veilstone_city.s:86",
+  "scripts_veilstone_city.s:112",
+  "scripts_veilstone_city.s:123-124",
+  "scripts_route_209.s:23-33",
+  "scripts_route_210_south.s:22-28",
+  "scripts_route_215.s:22-32",
+  "events_hearthome_city (warps 17/19 (505,726..727))",
+  "events_route_209_gate_to_hearthome_city (coord (5,5..9); warps (1,7), (10,7))",
+  "events_route_209 (Lost Tower (568,680); cut tree (573,690))",
+  "events_solaceon_town (coord (557..563,669))",
+  "events_route_210_south (Psyduck (560..561,585..587))",
+  "events_route_215 (cut trees (611,578), (621,594), (634,578), (657,588), (657,589); warp 0 (671,598))",
+  "events_route_215_gate_to_veilstone_city (warp 0 (10,7))",
+  "events_veilstone_city (coord (681..684,616); gym door warp 13 (684,611))",
+  "TRAINER_RIVAL_ROUTE_209_TURTWIG (471)",
+  "TRAINER_BREEDER_ALBERT (46)",
+  "TRAINER_BREEDER_JENNIFER (47)",
+  "TRAINER_COWGIRL_SHELLEY (48)",
+  "TRAINER_JOGGER_RICHARD (49)",
+  "TRAINER_JOGGER_RAUL (308)",
+  "TRAINER_POKE_KID_DANIELLE (53)",
+  "TRAINER_TWINS_EMMA_AND_LIL (294)",
+  "TRAINER_YOUNG_COUPLE_TY_AND_SUE (55)",
+  "TRAINER_TWINS_TERI_AND_TIA (65)",
+  "TRAINER_BREEDER_KAHLIL (56)",
+  "TRAINER_BREEDER_AMBER (57)",
+  "TRAINER_BELLE_AND_PA_AVA_AND_MATT (290)",
+  "TRAINER_RANCHER_MARCO (292)",
+  "TRAINER_JOGGER_WYATT (306)",
+  "TRAINER_NINJA_BOY_FABIAN (488)",
+  "TRAINER_NINJA_BOY_BRENNAN (489)",
+  "TRAINER_NINJA_BOY_BRUCE (490)",
+  "TRAINER_RUIN_MANIAC_CALVIN (304)",
+  "TRAINER_JOGGER_CRAIG (307)",
+  "TRAINER_BLACK_BELT_DEREK (128)",
+  "TRAINER_BLACK_BELT_GREGORY (127)",
+  "TRAINER_BLACK_BELT_NATHANIEL (129)",
+  "TRAINER_ACE_TRAINER_MAYA (287)",
+  "TRAINER_ACE_TRAINER_DENNIS (278)",
+  "TRAINER_JOGGER_SCOTT (130)",
+]
+notes = "Estimate: research ~30000 plus the gym entry. Joggers' visibility flags flip by day/time. [INFERENCE] Route 215 rain boosts Surf. True doubles (twins, couples, Belle & Pa) send out both party slots. The Wake coord is only on row z=616, so approach the gym from the south."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 46500
+
+[[step]]
+do = "walk_to"
+x = 505
+z = 726
+note = "east exit (warp 19), blockade hidden by Fantina's win -> Route 209 gate (1,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_209_GATE_TO_HEARTHOME_CITY"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 7
+note = "coord (5,5..9) VAR_ROUTE_209_GATE_TO_HEARTHOME_CITY_STATE==1 -> Barry"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "rival-209"
+note = "TRAINER_RIVAL_ROUTE_209_TURTWIG (471): STARAVIA 25, BUIZEL 23, ROSELIA 23, MONFERNO 27 (scripts_route_209_gate_to_hearthome_city.s:41)"
+
+[[step]]
+do = "advance_text"
+note = "Barry leaves -> 2 (:64-66)"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "gate east exit (warp 1) -> Route 209 (512,726)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_209"
+
+[[step]]
+do = "walk_to"
+x = 560
+z = 669
+max = 12000
+note = "east then north along Route 209 into Solaceon (seamless) -> coord (557..563,669) VAR_SOLACEON_TOWN_STATE==0; Lost Tower and the cut tree (573,690) are optional [INFERENCE]; Route 209 sight trainers may engage"
+
+[[step]]
+do = "advance_text"
+shot = "solaceon"
+note = "Barry chat -> 1 (scripts_solaceon_town.s:115-136)"
+
+# PHASE2-risk: [INFERENCE] Route 215 cut trees (611,578), (621,594), (634,578), (657,588), (657,589) may block the
+# gate column; if walk_to reports no path, walk_to the tile before the blocking tree facing it with interact = true
+# and advance_text (Cut, A = YES). The probe sees 64x64 tiles, so waypoints may be needed around the Psyduck
+# (560..561,585..587).
+
+[[step]]
+do = "walk_to"
+x = 671
+z = 598
+max = 15000
+note = "north on Route 210 South, east on Route 215 (turn before the Psyduck) to the Veilstone gate (events_route_215 warp 0); Route 210 S and 215 sight trainers may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_215_GATE_TO_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "gate east exit (warp 0) -> Veilstone (678,598)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 682
+z = 616
+note = "coord (681..684,616) VAR_VEILSTONE_CITY_CRASHER_WAKE_STATE==0 south of the gym"
+
+[[step]]
+do = "advance_text"
+shot = "crasher-wake"
+note = "Dawn, Crasher Wake leaves the gym -> 1 (scripts_veilstone_city.s:86-124)"
+
+[[step]]
+do = "walk_to"
+x = 684
+z = 611
+note = "gym door (events_veilstone_city warp 13) -> gym (12,30), 21's start"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY_GYM"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_VEILSTONE_CITY_GYM"
+flags = ["FLAG_HIDE_HEARTHOME_CITY_ROUTE_209_GATE_RIVAL", "FLAG_HIDE_SOLACEON_TOWN_RIVAL", "FLAG_HIDE_VEILSTONE_CRASHER_WAKE", "FLAG_HIDE_VEILSTONE_COUNTERPART"]
+battles = 1
+
+[expect.vars]
+VAR_ROUTE_209_GATE_TO_HEARTHOME_CITY_STATE = 2
+VAR_SOLACEON_TOWN_STATE = 1
+VAR_VEILSTONE_CITY_CRASHER_WAKE_STATE = 1

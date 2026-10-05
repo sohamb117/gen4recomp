@@ -1,0 +1,69 @@
+# Dialga at Spear Pillar (post-game rift): A on the rift -> Yes -> StartLegendaryBattle DIALGA 70,
+# defeat it. Palkia is identical with palkia.recipe (SPEAR_PILLAR_PALKIA, Dragon Claw lead).
+# Start: SPEAR_PILLAR_DIALGA (29,18) below the rift (29,16..17). End: same, VAR_SPEAR_PILLAR_DIALGA_STATE 1.
+title = "Legendary: Dialga (and Palkia) at Spear Pillar"
+status = "planned"
+priority = "P1"
+estimate = 9000
+refs = [
+  "res/field/scripts/scripts_celestic_town_north_house.s:39-50",
+  "res/field/scripts/scripts_mt_coronet_6f.s:22-60",
+  "res/field/scripts/scripts_visible_items.s:558",
+  "res/field/scripts/scripts_visible_items.s:570",
+  "res/field/scripts/scripts_spear_pillar_dialga.s:12-25",
+  "res/field/scripts/scripts_spear_pillar_dialga.s:28-55",
+  "res/field/scripts/scripts_spear_pillar_dialga.s:46",
+  "res/field/scripts/scripts_spear_pillar_dialga.s:48-53",
+  "res/field/scripts/scripts_spear_pillar_palkia.s:34-46",
+  "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:126-127",
+  "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:150-156",
+  "pc/src/pc_lab.c:1337-1345",
+  "pc/src/pc_lab.c:1373-1375",
+  "pc/tests/corpus/battle-legendary.recipe",
+  "pc/tests/corpus/battle-legendary.spec",
+  "pc/replays/lab-battle.txt",
+  "pc/src/pc_lab.c:798-800",
+  "src/clear_game.c:204-206",
+  "src/scrcmd_system_flags.c:151",
+  "src/system_flags.c:69-71",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: Palkia run = this dir with palkia.recipe; expect VAR_SPEAR_PILLAR_PALKIA_STATE = 1, map 585.
+
+# PHASE2: battle-lab variant: env PC_LAB_BATTLE="legendary 483 70 0" PC_LAB_BATTLE_AT=2600 (pc_lab.c:1337-1345,1373-1375; input pc/replays/lab-battle.txt) proves `resultMask=1` in the log (Palkia 484); a variant run, so it is not set in this dir's [run] env (it would start a battle mid-flow).
+[run]
+frames = 13500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "rift bg event (29,16..17)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "[INFERENCE] A answers the Yes prompt; preview cry, then StartLegendaryBattle"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "legendary"
+
+[[step]]
+do = "auto_battle"
+note = "A-only never throws a ball: the result is 'defeated', never caught"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = 584
+battles = 1
+vars = { VAR_SPEAR_PILLAR_DIALGA_STATE = 1 }

@@ -1,0 +1,96 @@
+# Optional branch off 31: Riley follows from the B2F-left coord, tag double vs two grunts, Riolu egg.
+# Start: 31's end (Iron Island exterior) -> end: Iron Island B2F left room (293), Riolu egg in the party.
+
+title = "Iron Island B2F: Riley tag battle and the Riolu egg (optional)"
+status = "planned"
+priority = "P1"
+estimate = 15000
+refs = [
+  "scripts_iron_island_b2f_left_room.s:38-60",
+  "scripts_iron_island_b2f_left_room.s:51",
+  "scripts_iron_island_b2f_left_room.s:52",
+  "scripts_iron_island_b2f_left_room.s:269",
+  "scripts_iron_island_b2f_left_room.s:56",
+  "scripts_iron_island_b2f_left_room.s:245",
+  "scripts_iron_island_b2f_left_room.s:246",
+  "scripts_iron_island_b2f_left_room.s:268",
+  "events_iron_island.json",
+  "events_iron_island_1f.json",
+  "events_iron_island_b1f_right_room.json",
+  "scripts_iron_island_b2f_left_room.s:149-196",
+  "scripts_iron_island_b2f_left_room.s:232-270",
+]
+
+[start]
+from = "31-iron-island-strength"
+lab = "lab.recipe"
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 117
+z = 489
+note = "1F door, events_iron_island.json warp1"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_IRON_ISLAND_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 3
+note = "events_iron_island_1f.json warp2 -> B1F right room"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_IRON_ISLAND_B1F_RIGHT_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 26
+note = "events_iron_island_b1f_right_room.json warp0 -> B2F left room (arrive (38,3)); coord0 (11,23) may play text"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_IRON_ISLAND_B2F_LEFT_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 35
+z = 3
+note = "coord0 (35,2..3), Riley starts following (scripts_iron_island_b2f_left_room.s:38-60)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 41
+max = 12000
+note = "coord3 (21,40..41) -> tag double (:149-196); optional B2F trainers on the way are fought; [INFERENCE] path"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "riley_tag"
+note = "Grunts 835 + 836, partner TRAINER_RILEY_IRON_ISLAND (609)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "riolu_egg"
+note = "GiveEgg RIOLU (:232-270), needs a free party slot"
+
+[expect]
+map = "MAP_HEADER_IRON_ISLAND_B2F_LEFT_ROOM"
+party_size = 3
+flags = ["FLAG_RECEIVED_RIOLU_EGG_FROM_RILEY", "FLAG_TALKED_TO_IRON_ISLAND_B2F_LEFT_ROOM_RILEY", "FLAG_HIDE_IRON_ISLAND_B2F_LEFT_ROOM_RILEY"]
+vars = { VAR_IRON_ISLAND_B2F_LEFT_ROOM_FOLLOWER_RILEY_STATE = 2 }
+battles = 1

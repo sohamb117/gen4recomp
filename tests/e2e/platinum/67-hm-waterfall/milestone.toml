@@ -1,0 +1,90 @@
+# HM07 Waterfall ascent: Surf onto Route 210 North's water, face the falls, climb them.
+# Start: ROUTE_210_NORTH bank (504,527) facing east. End: (505,524) above the falls.
+title = "HM07 Waterfall: climb the Route 210 North falls"
+status = "planned"
+priority = "P1"
+estimate = 6400
+refs = [
+  "res/field/scripts/scripts_sunyshore_city.s:44-122",
+  "res/field/scripts/scripts_sunyshore_city.s:440-446",
+  "src/field_move_tasks.c:590",
+  "res/field/scripts/scripts_field_moves.s:422",
+  "res/field/scripts/scripts_field_moves.s:446",
+  "res/field/scripts/scripts_field_moves.s:325",
+  "src/overlay005/ov5_021DFB54.c:1200-1210",
+  "src/overlay005/ov5_021DFB54.c:844-859",
+  "pc/tests/corpus/hm-waterfall.recipe",
+  "pc/tests/corpus/hm-waterfall.spec",
+  "pc/replays/lab-waterfall.txt",
+  "generated/journal_location_events.txt:22",
+  "generated/journal_location_events.txt:26",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 9600
+# pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
+env = { PC_TRACE_JOURNAL = "1" }
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing water east: Surf prompt"
+
+[[step]]
+do = "wait_frames"
+n = 200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES (Surf); mounts onto (505,527)"
+
+[[step]]
+do = "advance_text"
+shot = "surfing"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 60
+note = "to (505,526), facing north at the falls (lab-waterfall.txt 4100 UP); ascent only facing north (ov5_021DFB54.c:1200-1210)"
+
+[[step]]
+do = "wait_frames"
+n = 240
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Waterfall prompt"
+
+[[step]]
+do = "wait_frames"
+n = 200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES (Waterfall)"
+shot = "waterfall"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "B"
+note = "lab-waterfall.txt ends with B"
+
+[[step]]
+do = "wait_field"
+shot = "above-falls"
+
+[expect]
+map = 363
+position = [505, 524]
+badge = ["BADGE_ID_FEN", "BADGE_ID_BEACON"]
+log = ['pc-journal: f=\d+ event=21 ', 'pc-journal: f=\d+ event=25 ']   # USED_SURF, USED_WATERFALL

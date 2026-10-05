@@ -1870,8 +1870,9 @@ def parse_level_scripts_ok(fileno):
     return len(d) > 0 and end < len(d) and d[end] == 0 and all(e["type"] in LEVEL_SCRIPT_TYPES for e in ls)
 
 def cmd_version_diff(args):
-    """Diamond vs Pearl data that the field layer reads: wild encounter banks (ENCDATA, map_header.c:20)
-    and scripts that branch on GetGameVersion (0x246).  Scripts/events/trainers/text have no Pearl files."""
+    """Diamond vs Pearl: wild encounter banks (ENCDATA, map_header.c:20), scripts that branch on
+    GetGameVersion (0x246), and DIAMOND/PEARL conditionals in code (e.g. honey-tree tables).
+    Scripts/events/trainers/text have no Pearl files."""
     enc_maps = {}
     for mi, r in enumerate(map_table()):
         if r["wild_encounters"]:
@@ -1895,6 +1896,14 @@ def cmd_version_diff(args):
             if sc.insts[off].op == 0x246:
                 print(f"  scr_seq {fileno:04d} @0x{off:04X} GetGameVersion"
                       f" {', '.join(fmt_arg(k, v, sc.labels) for k, v in sc.insts[off].args)}   [{file_label(fileno)}]")
+    print("version conditionals in code (.ifdef/#ifdef DIAMOND|PEARL; build/ excluded):")
+    rx = re.compile(r"^\s*[.#]\s*ifn?def\s+(DIAMOND|PEARL)\b")
+    for path in sorted(root().glob("arm9/**/*")):
+        if path.suffix not in (".s", ".c", ".h", ".inc") or "build" in path.relative_to(root()).parts:
+            continue
+        for ln, line in enumerate(path.read_text(errors="replace").splitlines(), 1):
+            if rx.match(line):
+                print(f"  {path.relative_to(root())}:{ln}: {line.strip()}")
 
 
 def cmd_resolve(args):

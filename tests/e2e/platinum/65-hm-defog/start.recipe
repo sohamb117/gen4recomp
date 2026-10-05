@@ -1,0 +1,11 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26065
+money 3000
+
+# Defog needs BADGE_ID_RELIC (src/field_move_tasks.c:504) and FOG weather (:285-288).
+badge BADGE_ID_RELIC
+party SPECIES_STARAPTOR 40 ITEM_NONE
+party-move 0 0 MOVE_DEFOG
+# header weather OVERWORLD_WEATHER_FOG (include/data/map_headers.h ROUTE_210_NORTH); (516,540) walkable (map_data)
+map MAP_HEADER_ROUTE_210_NORTH 516 540 FACE_DOWN

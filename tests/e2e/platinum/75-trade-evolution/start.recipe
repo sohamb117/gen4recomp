@@ -1,0 +1,11 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26075
+money 3000
+
+badge BADGE_ID_COAL
+# kazza_abra wants MACHOP (res/npc_trades/kazza_abra.json)
+party SPECIES_MACHOP 15 ITEM_NONE
+party SPECIES_STARLY 12 ITEM_NONE
+# one tile south of SCHOOL_KID_F (11,7) (events_oreburgh_city_north_house_1f.json)
+map MAP_HEADER_OREBURGH_CITY_NORTH_HOUSE_1F 11 8 FACE_UP

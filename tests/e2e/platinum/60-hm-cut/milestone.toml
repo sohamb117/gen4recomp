@@ -1,0 +1,68 @@
+# HM01 Cut, A-press path: face the Cut tree outside the Eterna Pokemon Center,
+# answer YES, walk through where it stood.
+# Start: Eterna City (304,522) facing the tree at (304,521). End: (304,520).
+title = "HM01 Cut: clear the Eterna City tree"
+status = "planned"
+priority = "P1"
+estimate = 5800
+refs = [
+  "res/field/events/events_eterna_city.json:coord_events[3]",
+  "res/field/scripts/scripts_eterna_city.s:124-183",
+  "res/field/scripts/scripts_eterna_city.s:181",
+  "src/field_move_tasks.c:332",
+  "res/field/scripts/scripts_field_moves.s:27",
+  "res/field/scripts/scripts_field_moves.s:29",
+  "res/field/scripts/scripts_field_moves.s:41",
+  "res/field/scripts/scripts_field_moves.s:47-63",
+  "res/field/scripts/scripts_field_moves.s:58",
+  "res/field/scripts/scripts_field_moves.s:82-88",
+  "src/scrcmd.c:2359-2371",
+  "src/script_manager.c:475-481",
+  "src/field_map_change.c:254",
+  "pc/tests/corpus/hm-cut.recipe",
+  "pc/tests/corpus/hm-cut.spec",
+  "pc/replays/lab-fieldmove.txt",
+  "generated/journal_location_events.txt:20",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 8700
+# pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
+env = { PC_TRACE_JOURNAL = "1" }
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing LOCALID_CUT_TREE_1 (304,521): Cut prompt (scripts_field_moves.s:29)"
+
+[[step]]
+do = "wait_frames"
+n = 200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES (the menu opens on YES)"
+shot = "cut-prompt"
+
+[[step]]
+do = "advance_text"
+shot = "cut-anim"
+
+[[step]]
+do = "walk_to"
+x = 304
+z = 520
+note = "through the tile the tree occupied (hm-cut.spec pos 304,520)"
+shot = "past-tree"
+
+[expect]
+map = 65
+position = [304, 520]
+badge = ["BADGE_ID_FOREST"]
+# map-local hide flag of the removed tree; set because the quicksave happens on the same map
+flags = ["FLAG_MAP_LOCAL_HIDE_OBSTACLE_1"]
+log = ['pc-journal: f=\d+ event=19 ']   # LOCATION_EVENT_USED_CUT

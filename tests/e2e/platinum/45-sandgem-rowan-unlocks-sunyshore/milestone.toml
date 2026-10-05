@@ -1,0 +1,41 @@
+# Proves the lab OnFrame that lifts the Valor Lakefront Sunyshore block and frees the lake guardians.
+# Start: Sandgem lab (7,15), VAR_SANDGEM_TOWN_LAB_STATE 2 -> end: same map, lab state 3.
+
+title = "Sandgem lab: Rowan after the Distortion World"
+status = "planned"
+priority = "P0"
+estimate = 5000
+refs = [
+  "scripts_init_sandgem_town_pokemon_research_lab.s",
+  "scripts_sandgem_town_pokemon_research_lab.s:79-117",
+  "scripts_sandgem_town_pokemon_research_lab.s:23-37",
+  "scripts_sandgem_town_pokemon_research_lab.s:49",
+  "scripts_sandgem_town_pokemon_research_lab.s:81",
+  "scripts_sandgem_town_pokemon_research_lab.s:110",
+  "scripts_sandgem_town_pokemon_research_lab.s:111",
+  "scripts_sandgem_town_pokemon_research_lab.s:112",
+  "scripts_sandgem_town_pokemon_research_lab.s:113",
+  "scripts_sandgem_town_pokemon_research_lab.s:114",
+  "scripts_sandgem_town_pokemon_research_lab.s:115",
+  "scripts_valor_lakefront.s:516-533",
+  "scripts_sandgem_town_pokemon_research_lab.s:28",
+  "scripts_sandgem_town_pokemon_research_lab.s:32",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 7500
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "rowan_after_dw"
+note = "SandgemTownLab_OnFrame_ReturnedFromDistortionWorld (scripts_sandgem_town_pokemon_research_lab.s:79-117)"
+
+[expect]
+map = "MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB"
+vars = { VAR_VALOR_LAKEFRONT_BLOCK_SUNYSHORE_STATE = 1, VAR_SANDGEM_TOWN_LAB_STATE = 3, VAR_EXITED_DISTORTION_WORLD_STATE = 3 }
+flags = ["FLAG_HIDE_VALOR_LAKEFRONT_COLLECTOR"]

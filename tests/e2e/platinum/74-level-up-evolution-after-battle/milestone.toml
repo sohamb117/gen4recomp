@@ -1,0 +1,50 @@
+# Level-up evolution at the end of a battle: CATERPIE lv6 KOs a lab-started wild CHANSEY lv4
+# (145 exp >= 127 to lv7) and evolves into METAPOD inside the battle app.
+# Start: Solaceon spawn (566,657). End: same tile, slot 0 METAPOD lv7.
+title = "Level-up evolution after battle: Caterpie -> Metapod"
+status = "planned"
+priority = "P1"
+estimate = 8000
+refs = [
+  "src/battle/battle_system.c:824-853",
+  "src/battle/battle_main.c:274-297",
+  "src/battle/battle_script.c:2216-2236",
+  "res/pokemon/caterpie/data.json",
+  "res/pokemon/chansey/data.json",
+  "pc/src/pc_lab.c:1337-1345",
+  "pc/src/pc_lab.c:1369-1372",
+  "pc/src/pc_lab.c:1446",
+  "pc/src/pc_lab.c:1459-1479",
+  "pc/tests/corpus/evo-level.recipe",
+  "pc/tests/corpus/evo-stone.recipe",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 12000
+# lab battle hook: wild CHANSEY (113) lv4 via Encounter_NewVsSpeciesAtLevel (pc_lab.c:1369-1372)
+env = { PC_LAB_BATTLE = "wild 113 4", PC_LAB_BATTLE_AT = "2600" }
+
+[[step]]
+do = "wait_battle"
+max = 5000
+note = "the lab battle hook starts the wild CHANSEY lv4"
+
+[[step]]
+do = "auto_battle"
+note = "Dragon Rage (fixed 40) one-shots CHANSEY (35 max HP at lv4); evolution allowed, never B"
+shot = "battle"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "evolution screen runs in the battle app tail (battle_main.c:274-297); A alone does not cancel"
+shot = "evolved"
+
+[expect]
+map = 433
+battles = 1
+party = ["SPECIES_METAPOD"]
+save = ['s["party"][0]["species"] == 11', 's["party"][0]["level"] == 7']

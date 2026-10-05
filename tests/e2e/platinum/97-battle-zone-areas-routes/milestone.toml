@@ -1,0 +1,55 @@
+# Battle Zone areas: from the pinned Survival Area mint, walk into the Battleground (warp 0).
+# Route 225-230 / Stark Mountain / Resort Area are the same pattern (map change + map id).
+# Start: SURVIVAL_AREA (0x293,0x153). End: BATTLEGROUND (454).
+title = "Battle Zone: Survival Area to the Battleground"
+status = "planned"
+priority = "P2"
+estimate = 3200
+refs = [
+  "res/field/events/events_survival_area.json",
+  "res/field/events/events_fight_area.json",
+  "res/field/events/events_route_225_gate_to_fight_area.json",
+  "res/field/scripts/scripts_fight_area.s:184-186",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:538",
+  "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:572",
+  "res/field/scripts/scripts_init_stark_mountain_room_3.s:10",
+  "res/field/scripts/scripts_stark_mountain_room_3.s:220-236",
+  "res/field/scripts/scripts_stark_mountain_room_3.s:229-230",
+  "res/field/scripts/scripts_battleground.s:118",
+  "pc/tests/corpus/survival-area.recipe",
+  "pc/tests/corpus/survival-area.spec",
+  "pc/tests/corpus/resort-area.recipe",
+  "pc/tests/corpus/resort-area.spec",
+  "pc/src/pc_lab.c:798-800",
+  "src/clear_game.c:204-206",
+  "src/scrcmd_system_flags.c:151",
+  "src/system_flags.c:69-71",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 4800
+
+[[step]]
+do = "walk_to"
+x = 652
+z = 338
+note = "Survival Area warp 0 -> BATTLEGROUND (events_survival_area.json)"
+
+[[step]]
+do = "wait_map"
+map = 454
+
+[[step]]
+do = "wait_field"
+shot = "battleground"
+# PHASE2: Buck (11,8) in the Battleground -> FLAG_TALKED_TO_BATTLEGROUND_BUCK (scripts_battleground.s:118)
+# appears only after the Stark Mountain Room 3 Charon event (VAR_STARK_MOUNTAIN_ROOM_3_STATE 1,
+# scripts_stark_mountain_room_3.s:220-236); his hide flag is not in the research. Route 225 walk needs
+# FLAG_HIDE_FIGHT_AREA_BLOCKADE (set in this recipe).
+
+[expect]
+map = 454
+badges = 8

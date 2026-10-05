@@ -1,0 +1,11 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26066
+money 3000
+
+# Rock Climb needs BADGE_ID_ICICLE (src/field_move_tasks.c:631, scripts_field_moves.s:251).
+# Copy of pc/tests/corpus/hm-rock-climb.recipe.
+badge BADGE_ID_ICICLE
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_ROCK_CLIMB
+map MAP_HEADER_VICTORY_ROAD_1F 22 38 FACE_UP

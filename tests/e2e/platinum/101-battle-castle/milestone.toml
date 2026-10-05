@@ -1,0 +1,44 @@
+# Battle Castle single set: 3 mons, CP economy, menus between battles.
+# Start: BATTLE_CASTLE (6,9) beside the single attendant (5,9) [INFERENCE: attendant facing]. End: Castle lobby.
+title = "Battle Castle: first single set"
+status = "planned"
+priority = "P2"
+estimate = 45000
+refs = [
+  "res/field/events/events_battle_frontier.json",
+  "res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40",
+  "res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s",
+  "src/unk_02049D08.c:161-206",
+  "src/unk_02049D08.c:750-787",
+  "src/unk_020494DC.c:72-78",
+  "src/wifi_battle_tower_save.c:156-176",
+  "src/overlay104/frscrcmd.c:1567-1580",
+  "pc/src/pc_lab.c:798-800",
+  "src/clear_game.c:204-206",
+  "src/scrcmd_system_flags.c:151",
+  "src/system_flags.c:69-71",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 67500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "single attendant (5,9) -> BattleCastle_TryTakeSingleChallenge (BC_LOBBY_FUNC_CHECK_PARTY_ELIGIBLE, 3)"
+shot = "attendant"
+
+[[step]]
+do = "wait_frames"
+n = 120
+# PHASE2: party pick and the between-battle CP menus (heal/level/rent) are unrecorded; A-only takes the first entry.
+
+[expect]
+map = 564
+battles = 7
+# PHASE2: reader-ext Battle Points (WifiBattleTowerRecord_UpdateBattlePoints, wifi_battle_tower_save.c:156-176)
+# == 3 after the first solo set (unk_02049D08.c:750-787) or > 0; np_save4 has no BP field. Meanwhile
+# the in-run Common_SaveGame saves advance the save counter.

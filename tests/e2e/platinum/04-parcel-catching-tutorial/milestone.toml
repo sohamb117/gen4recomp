@@ -1,0 +1,84 @@
+# Proves Mom's Journal, Barry's mom's Parcel, and the Route 202 catching tutorial (5 Poke Balls).
+# Start: Twinleaf player house 1F, warp 0 (door (6,10)) -> end: Route 202 after the tutorial.
+title = "The Parcel and the catching tutorial"
+status = "planned"
+priority = "P0"
+estimate = 8000
+refs = [
+  "scripts_twinleaf_town_player_house_1f.s:172-174",
+  "scripts_twinleaf_town_player_house_1f.s:261-264",
+  "scripts_twinleaf_town_player_house_1f.s:290",
+  "scripts_twinleaf_town_player_house_1f.s:403-406",
+  "scripts_twinleaf_town_player_house_1f.s:448-449",
+  "scripts_twinleaf_town.s:28",
+  "scripts_route_202.s:91",
+  "scripts_route_202.s:116",
+  "scripts_route_202.s:135-137",
+  "scripts_route_202.s:156-157",
+  "scripts_route_202.s:161-241",
+  "events_twinleaf_town_player_house_1f (Mom (7,8); warp 0 (6,10))",
+  "events_route_202 (coord (180,825..829))",
+  "TRAINER_YOUNGSTER_TRISTAN (1)",
+  "TRAINER_LASS_NATALIE (3)",
+  "TRAINER_YOUNGSTER_LOGAN (2)",
+]
+notes = "The lab cannot set the journal system flag (src/scrcmd.c:5012-5016). Optional Route 202 sight trainers: Tristan (166,813) S 5, Natalie (181,818) S 4, Logan (185,804) S 5."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 12000
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 9
+face = "up"
+interact = true
+note = "Mom (7,8); FLAG_HAS_POKEDEX branch with VAR_PLAYER_HOUSE_STATE 5 (scripts_twinleaf_town_player_house_1f.s:172-174)"
+
+[[step]]
+do = "advance_text"
+shot = "parcel"
+note = "Journal, Barry's mom walks in with the Parcel -> state 6 (:261-449)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 10
+note = "1F door (warp 0) -> Twinleaf; OnTransition -> state 7 (scripts_twinleaf_town.s:28)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_TWINLEAF_TOWN"
+
+[[step]]
+do = "walk_to"
+x = 180
+z = 827
+max = 10000
+note = "Route 202 coord (180,825..829) VAR_ROUTE_202_STATE==0 (needs FLAG_RECEIVED_PARCEL, scripts_route_202.s:91); Twinleaf -> Route 201 -> Sandgem -> north, all seamless"
+
+[[step]]
+do = "advance_text"
+through_battle = true
+shot = "catching-tutorial"
+note = "StartCatchingTutorial is a scripted demo battle (scripts_route_202.s:116); A carries it; 5 Poke Balls (:135-137)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_ROUTE_202"
+flags = ["FLAG_RECEIVED_PARCEL", "FLAG_HIDE_TWINLEAF_TOWN_PLAYER_HOUSE_1F_RIVAL_MOM", "FLAG_HIDE_ROUTE_202_COUNTERPART"]
+save = [
+  'any(i["item"] == 459 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_PARCEL
+  'any(i["item"] == 433 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_JOURNAL
+  'any(i["item"] == 4 and i["qty"] >= 5 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_POKE_BALL x5
+]
+
+[expect.vars]
+VAR_PLAYER_HOUSE_STATE = 7
+VAR_ROUTE_202_STATE = 1
