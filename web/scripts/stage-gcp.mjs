@@ -1,4 +1,4 @@
-// Explicit deployment bundle: only the two user-selected cartridges and cores.
+// Explicit deployment bundle: only the three user-selected cartridges and cores.
 import { createHash } from "node:crypto";
 import {
   readFileSync,
@@ -21,6 +21,10 @@ const selected = {
   diamond: [
     "games/diamond/build/diamond.us/pokediamond.us.nds",
     "a46233d8b79a69ea87aa295a0efad5237d02841e",
+  ],
+  pearl: [
+    "games/diamond/build/pearl.us/pokepearl.us.nds",
+    "99083bf15ec7c6b81b4ba241ee10abd9e80999ac",
   ],
   platinum: [
     "games/platinum/build/rom/pokeplatinum.us.nds",

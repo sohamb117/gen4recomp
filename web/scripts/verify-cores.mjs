@@ -7,6 +7,13 @@ const web = resolve(import.meta.dirname, ".."),
   path = resolve(web, "public/cores/manifest.json");
 const manifest = JSON.parse(readFileSync(path, "utf8"));
 const selected = process.argv.slice(2);
+let failed = false;
+for (const game of selected) {
+  if (!manifest.games[game]) {
+    console.error(`${game}: missing prepared core`);
+    failed = true;
+  }
+}
 for (const [game, core] of Object.entries(manifest.games)) {
   if (selected.length && !selected.includes(game)) continue;
   const frames = core.recipe === "asyncify-o3-v2" ? 12000 : 600;
@@ -18,12 +25,15 @@ for (const [game, core] of Object.entries(manifest.games)) {
   );
   if (!existsSync(rom)) {
     core.verification = "unverified";
+    console.error(`${game}: missing local verification cartridge`);
+    failed = true;
     continue;
   }
   try {
     execFileSync(
       process.execPath,
       [
+        "--liftoff-only",
         "--import",
         "tsx",
         resolve(web, "scripts/smoke.ts"),
@@ -32,7 +42,7 @@ for (const [game, core] of Object.entries(manifest.games)) {
       ],
       {
         cwd: web,
-        timeout: frames > 600 ? 180000 : 30000,
+        timeout: frames > 600 ? 600000 : 60000,
         stdio: ["ignore", "pipe", "pipe"],
       },
     );
@@ -40,6 +50,7 @@ for (const [game, core] of Object.entries(manifest.games)) {
     core.note = `${frames.toLocaleString("en-US")}-frame browser-runtime smoke passed`;
     console.log(`${game}: passed`);
   } catch (e) {
+    failed = true;
     core.verification = "blocked";
     core.note =
       e.code === "ETIMEDOUT"
@@ -50,3 +61,5 @@ for (const [game, core] of Object.entries(manifest.games)) {
 }
 writeFileSync(path + ".tmp", JSON.stringify(manifest, null, 2) + "\n");
 renameSync(path + ".tmp", path);
+
+if (failed) process.exitCode = 1;

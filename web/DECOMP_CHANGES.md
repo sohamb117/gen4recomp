@@ -1,7 +1,7 @@
 # Web-only decomp changes
 
 Original `games/`, `core/`, `features/`, `shell/`, and `tools/` sources remain
-untouched. Rebuilds and experiments use the copy under `build/web-source/`.
+untouched. Rebuilds and experiments use disposable copies under `build/web-source-*/`.
 Permanent web-specific patches, if needed, must live under `web/` and be applied
 to an isolated copy by the web build pipeline.
 
@@ -46,3 +46,19 @@ The public release includes the clean Platinum core and the existing hosted
 Diamond core only. Neither the rebuilt Pearl core nor its diagnostic variant
 is included. The copied diagnostics remain under ignored `build/` for later
 investigation; there is no permanent decomp patch in this release.
+
+## 2026-10-04 — merged-main release rebuild
+
+- Builds use `web/scripts/build-cores-copy.py`, with fresh source copies under
+  `build/web-source-*/`; original translation trees are read-only inputs.
+- Platinum, Diamond, and Pearl are rebuilt from merge commit `6de15fc30` (main
+  `352d36b23`). Upstream translation, timer, field, save, and battle fixes are
+  inherited unchanged; no game/decomp logic patch is introduced by this release.
+- Copied compiler dependency paths are remapped into the snapshot, including
+  paths inherited from other worktrees. This changes only build bookkeeping.
+- Each raw WASM gets a source-commit/hash record under `build/web-guest/`;
+  browser preparation checks it and carries the commit into the core manifest.
+- The earlier diagnostic allocator guards are absent from these fresh copies.
+- Existing web recomp controls now send the shared option ABI to Diamond/Pearl,
+  whose field/text/rules implementations are present in merged main. The user
+  resumed Pearl qualification for this release; its old diagnostic core stays excluded.

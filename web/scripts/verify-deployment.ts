@@ -25,7 +25,7 @@ if (process.env.NP_WITH_SAVE_API === "1") {
   assert.match(anonymous.headers.get("cache-control") || "", /no-store/);
 }
 const catalog = await loadCartridges(base);
-assert.deepEqual(Object.keys(catalog).sort(), ["diamond", "platinum"]);
+assert.deepEqual(Object.keys(catalog).sort(), ["diamond", "pearl", "platinum"]);
 // Previously published plaintext URLs must no longer be served (including gzip).
 for (const file of [
   "diamond-e29bc6ebe431d7a6.nds",
@@ -45,8 +45,12 @@ for (const file of [
 const manifest = (await fetch(new URL("cores/manifest.json", base)).then((r) =>
   r.json(),
 )) as CoreManifest;
-assert.deepEqual(Object.keys(manifest.games).sort(), ["diamond", "platinum"]);
-for (const game of ["diamond", "platinum"] as GameId[]) {
+assert.deepEqual(Object.keys(manifest.games).sort(), [
+  "diamond",
+  "pearl",
+  "platinum",
+]);
+for (const game of ["diamond", "pearl", "platinum"] as GameId[]) {
   const data = await fetchCartridge(base, game, catalog[game]!, () => {});
   console.log(
     `${game}: downloaded encrypted package, decrypted and verified ${data.byteLength} cartridge bytes`,

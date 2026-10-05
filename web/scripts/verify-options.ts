@@ -21,7 +21,7 @@ for (const game of games) {
   let stored = 0;
   const host = new GuestHost(
     new Uint8Array(readFileSync(resolve(root, rom))),
-    game === "platinum" && process.env.NP_TEST_SAVE
+    process.env.NP_TEST_SAVE
       ? new Uint8Array(readFileSync(process.env.NP_TEST_SAVE))
       : undefined,
     (data) => {
@@ -56,7 +56,6 @@ for (const game of games) {
   host.options = gameOptions(initialSettings, game);
   assert.equal(host.runFrame().width, 256);
   report[game] = { geometry: sizes, restoredOriginal: true };
-  if (game !== "platinum") continue;
   host.options[OPT.quickSaveSequence] = 1;
   let frame = host.runFrame();
   for (let i = 0; i < 100 && frame.status.quickSaveSequence !== 1; i++)

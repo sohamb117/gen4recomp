@@ -48,13 +48,15 @@ try {
   const restored = await api("save", "GET", undefined, login.cookie);
   assert.equal(restored.status, 200);
   assert.deepEqual(Buffer.from(restored.body.data, "base64"), data);
-  const replacement = { ...payload, game: "diamond", revision: 1 };
-  assert.equal((await api("save", "PUT", replacement, login.cookie)).body.save.revision, 2);
+  for (const [i, game] of ["pearl", "diamond"].entries()) {
+    const replacement = { ...payload, game, revision: i + 1 };
+    assert.equal((await api("save", "PUT", replacement, login.cookie)).body.save.revision, i + 2);
+  }
   assert.equal((await api("save", "PUT", payload, login.cookie)).status, 409);
   const row = (await pool.query("SELECT game,revision,data FROM cloud_saves WHERE account_id=$1", [a.body.user.id])).rows;
   assert.equal(row.length, 1);
   assert.equal(row[0].game, "diamond");
-  assert.equal(row[0].revision, 2);
+  assert.equal(row[0].revision, 3);
   assert.deepEqual(row[0].data, data);
   console.log("Production API passed: secure sessions, login/logout, account isolation, validation, conflict protection, one save per account, and exact Neon byte readback.");
 } finally {

@@ -34,4 +34,4 @@ gcloud run deploy nativeplat --project="$np_project" --region="$np_region" \
   --cpu=1 --memory=512Mi --concurrency=80 --min=0 --max=3 --timeout=300 --quiet "${np_run_options[@]}"
 np_url="$(gcloud run services describe nativeplat --project="$np_project" --region="$np_region" --format='value(status.url)')"
 cd "$np_root/web"
-node --import tsx scripts/verify-deployment.ts "${np_url}/"
+node --liftoff-only --import tsx scripts/verify-deployment.ts "${np_url}/"

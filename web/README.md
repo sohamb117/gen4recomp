@@ -7,22 +7,21 @@ inputs. Native UI work is the sibling `shell-wired/` copy.
 ## Develop
 
 Node 22.12+ (or Node 24), npm; the repo's pinned wasi-sdk + WABT for preparing
-cores/tests. The original game builds must already exist. `npm run build:pearl` rebuilds
-Pearl in a disposable copy for future diagnosis; this work is currently paused.
+cores/tests. Seed the worktree with the repository's ignored ROM/SDK inputs first.
+`npm run sync:cores` rebuilds Platinum, Diamond, and Pearl in isolated copies, prepares
+optimized browser modules, and runs boot and option checks.
 
 ```sh
 cd web
 npm ci
-npm run prepare:cores
-npm run verify:cores
+npm run sync:cores
 npm run dev
 ```
 
 Open http://127.0.0.1:5173, import a matching cartridge, then start a journey.
 ROM identification matches the native shell's SHA-1 registry. Imported ROMs stay
-in IndexedDB. Local saves need no account; the local development backend can sync one selected
-save per username/password account. Cloud deployment is deferred. The GCP release additionally
-offers encrypted Diamond and Platinum packages, downloaded, decrypted and
+in IndexedDB. Local saves need no account; the Neon backend syncs one selected save per username/password account on the live site. The GCP release additionally
+offers encrypted Diamond, Pearl, and Platinum packages, downloaded, decrypted and
 verified on first play before caching in IndexedDB. This is download obfuscation;
 the client receives the key. Gameplay and subsequent launches use the existing
 decrypted cartridge cache. Existing desktop saves can
@@ -79,12 +78,18 @@ input, render-size changes, RGB conversion, audio, save-store + dirty flush,
 save reload, ARM division edge cases, rejected ROMs, and transactional backup
 preservation. The mock guest and original game code are never edited.
 
-Current release keeps the existing hosted Diamond artifact. Platinum passes a
-12,000-frame browser-runtime check and real-core resolution/quick-save checks.
-Pearl work is paused: an isolated rebuild passed early boot but a longer intro
-input test exposed a shared Diamond/Pearl heap hang. Experimental artifacts are
-excluded from the hosted release. See [DECOMP_CHANGES.md](DECOMP_CHANGES.md).
-Boot checks do not imply full-game correctness.
+The merged-main release rebuilds all three hosted cores from clean snapshots.
+`npm run verify:first-save -- diamond` replays upstream's new-game and Continue
+schedules through the browser host and validates the resulting save checksums.
+Set `NP_SAVE4_TOOL` to a built `np_save4` executable (the local default is
+`build/merge-features/np_save4`).
+Older diagnostic modules remain excluded from public hosting.
+See [DECOMP_CHANGES.md](DECOMP_CHANGES.md).
+Boot checks do not imply full-game correctness. The CLI verification commands
+use Node's `--liftoff-only` baseline compiler mode: Node 22 can spend minutes draining background
+TurboFan compilation after D/P checks finish, or when loading a second instance.
+This affects the test harness only; browser builds retain their full optimization
+and default engine behavior. These checks qualify behavior, not browser FPS.
 
 ## Static deployment
 
@@ -100,8 +105,8 @@ fine for development); `.wasm` must be served as `application/wasm`.
 The relative Vite base supports a subdirectory deployment without routing
 rewrites. Keep `index.html` and `cores/manifest.json` revalidated; cache hashed
 JS/CSS/WASM immutably. Serve compressed sidecars with the correct
-Content-Encoding, not as opaque downloads. Uncompressed D/P artifacts are
-about 62 MiB each, so check a static provider's individual-file size limit.
+Content-Encoding, not as opaque downloads. Check the generated manifest for artifact sizes and your static provider's
+individual-file size limit.
 
 An Nginx configuration and Dockerfile are under `deploy/`:
 
@@ -121,34 +126,32 @@ currently offers cartridges, slots, save import/export, stacked screens, handhel
 texture, speed, audio volume, instant text, bug-fix opt-in, keyboard/gamepad/
 touch input, fullscreen, local RTC, automatic pause, and local persistence.
 
-**Preferences → Recomp options** now exposes the current guest controls. Diamond
-and Platinum offer live 1×–4× 3D resolution and widescreen; Platinum additionally
-offers music/effects volume, field camera distance (25%–400%) and tilt (±45°),
-instant text and documented cartridge bug fixes. Platinum quick save is in the
+**Preferences → Recomp options** now exposes the current guest controls. Diamond, Pearl, and Platinum offer live 1×–4× 3D resolution, widescreen, and music/effects volume, field camera distance (25%–400%) and tilt (±45°),
+instant text and documented cartridge bug fixes. Quick save is in the
 toolbar and on F1, using the game's own field/save rules, with success reported
 only after browser persistence. Requests outside the field are reported as refused.
 Camera and audio have original-value defaults; HD is opt-in. Controls follow the
-running game even if another cartridge is selected. Unsupported D/P hooks are
-not exposed as functional controls. Preferences from older web versions migrate
+running game even if another cartridge is selected. The shared D/P option hooks now come from main's field, text, and rules implementations. Preferences from older web versions migrate
 with original gameplay defaults for the new settings.
 
 Screen aspect ratio follows actual guest frames, and stylus input maps to the
 centred 256×192 DS area at every resolution, excluding widescreen side gutters.
 New controls do not add per-frame React updates or cryptography.
 
-For subsequent Platinum translation builds, `npm run sync:cores` prepares the
-latest Platinum WASM artifact and runs its boot and options checks, without
-editing or building inside the original translation trees. Diamond stays on its
-existing release artifact. The original trees must be built by their own
-workstream before syncing. With a local field-save fixture,
-`NP_TEST_SAVE=/absolute/path/to/save.sav npm run verify:options` also exercises
-field settings and successful quick save without writing to the source save.
+For subsequent translation updates, `npm run sync:cores` builds Platinum and
+Diamond and Pearl under `build/web-source-*/`, then prepares and validates browser copies.
+It never builds inside the original translation trees. Raw modules and source
+commit/hash records live in `build/web-guest/`. Prepared manifests include that
+provenance. Set `NP_WASM_OPT` to a native Binaryen 123 binary for faster packaging.
+With a local field-save fixture, `NP_TEST_SAVE=/absolute/path/to/save.sav npm run
+verify:options -- platinum` (or `diamond` / `pearl`) exercises field settings and successful
+quick save without modifying the input save. Each fixture must match its game.
 Results go to `../build/web-cores/options-verification.json`.
 
-Pearl's experimental `build:pearl` copies the source trees and remaps dependency
-paths before building under `build/`. It is excluded from `sync:cores` and public
-staging while its intro hang remains unresolved. Do not publish its diagnostic
-core. `verify-journey.ts` is a manual diagnostic for resuming that investigation.
+Pearl release work has resumed on the merged-main source snapshot. It uses the
+same copy-only `build:cores` pipeline and must pass its own 12,000-frame check,
+first-save/Continue replay, and options checks. The older `build:pearl` and
+`verify-journey.ts` helpers are retained only for historical diagnostics.
 
 Browser save editing, event gifts, mod/content mounting, GBA migration,
 rewind/snapshots, LAN/relay, folder sync, and the native renderer's advanced
@@ -237,5 +240,5 @@ bash web/scripts/local-up.sh  # from the repository root
 Open http://127.0.0.1:8088. Account controls appear only inside Save manager.
 The database uses a persistent Docker volume; stopping containers preserves it.
 See [server/README.md](server/README.md) for development, tests, and lifecycle
-commands. The GCP site stays on its existing static release. Future hosted
-Postgres is configured with `DATABASE_URL`; CockroachDB is not yet qualified.
+commands. The live GCP service uses Neon through a Secret Manager-injected
+`DATABASE_URL`; CockroachDB is not yet qualified.

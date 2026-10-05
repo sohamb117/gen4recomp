@@ -96,6 +96,13 @@ for (const [game, path] of Object.entries(games)) {
     recipe: optimize ? "asyncify-o3-v2" : "asyncify-v1",
     sha256: createHash("sha256").update(bytes).digest("hex"),
   };
+  const provenancePath = resolve(dirname(source), `${game}-source.json`);
+  if (existsSync(provenancePath)) {
+    const provenance = JSON.parse(readFileSync(provenancePath, "utf8"));
+    if (provenance.sha256 !== sha256)
+      throw Error(`${game}: source provenance mismatch`);
+    manifest.games[game].sourceCommit = provenance.sourceCommit;
+  }
   if (prior?.sha256 === manifest.games[game].sha256 && prior.verification) {
     manifest.games[game].verification = prior.verification;
     manifest.games[game].note = prior.note;
