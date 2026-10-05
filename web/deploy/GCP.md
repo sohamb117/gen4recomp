@@ -1,6 +1,6 @@
 # Public nativeplat deployment
 
-Site: https://nativeplat-1066182835702.us-east1.run.app/
+Site: https://pokeweb.morisoba.moe/
 
 ## Custom domain
 
@@ -19,7 +19,7 @@ gcloud beta run domain-mappings describe --domain=pokeweb.morisoba.moe \
   --project=nativeplat-20261004 --region=us-east1
 curl --fail --head https://pokeweb.morisoba.moe/
 cd web
-node --import tsx scripts/verify-deployment.ts https://pokeweb.morisoba.moe/
+npm run verify:deployment -- https://pokeweb.morisoba.moe/
 ```
 
 The existing `run.app` address remains available. Browser saves are scoped to
@@ -38,13 +38,13 @@ an existing save. The domain mapping does not alter the game binaries or pacing.
   `sha256:41f6c976b76a2fa3cc23df9c1938ae752e252e3461dbea6fc4de942b7d06ce6d`.
 - Initial encrypted-package revision: `nativeplat-00002-dl6` (historical).
 
-The user explicitly selected public hosting of Diamond and Platinum. The
+The user explicitly selected public hosting of Diamond, Pearl, and Platinum. The
 separate `scripts/stage-gcp.mjs` allowlists those exact local ROMs and verified
 cores, checks their fingerprints, and writes only deployment assets into ignored
 `build/gcp-nativeplat/`. Cartridges are gzip-compressed then AES-256-GCM encrypted
 with fresh random keys and 96-bit IVs for each build, as hashed `.npc` files.
 Raw `.nds` files are rejected by the staging audit and return 404 from nginx.
-No saves, credentials, source checkout, Pearl ROM, or
+No saves, credentials, source checkout, diagnostic cores, or
 unlisted WASM files enter the image. The ordinary portable release still
 refuses ROM/save files. Nothing generated should be committed.
 
@@ -85,7 +85,7 @@ bash web/scripts/deploy-gcp.sh
 
 The script runs tests/build, stages the explicit assets, builds linux/amd64,
 pushes using a short-lived token in a temporary Docker config (removed on exit),
-deploys publicly with bounded scaling, then validates both downloaded games.
+deploys publicly with bounded scaling, then validates all three downloaded games.
 `NP_GCP_PROJECT`, `NP_GCP_REGION`, `NP_GCP_TAG` override the defaults; the selected
 project needs the matching Artifact Registry repository and runtime identity.
 It builds locally, so no Cloud Build service-account role is needed.
@@ -94,10 +94,10 @@ It builds locally, so no Cloud Build service-account role is needed.
 
 ```sh
 cd web
-node --import tsx scripts/verify-deployment.ts https://nativeplat-1066182835702.us-east1.run.app/
+npm run verify:deployment -- https://nativeplat-1066182835702.us-east1.run.app/
 ```
 
-This checks HTML/security headers, exactly the two selected games, complete ROM
+This checks HTML/security headers, exactly the three selected games, complete ROM
 fingerprints after decryption, old `.nds`/`.nds.gz` URLs returning 404, WASM
 MIME/cache/digests, and 600 runtime frames per downloaded core.
 It is a boot check, not full-game qualification. UI confirmation should also
@@ -149,7 +149,7 @@ its migrations and transaction retry behavior must be checked before switching.
 
 ## Neon cloud saves live — 2026-10-04
 
-Revision `nativeplat-00005-sx4` serves 100% of traffic on
+Historical revision `nativeplat-00005-sx4` introduced cloud saves on
 https://pokeweb.morisoba.moe and the existing Google service URLs.
 Image: `us-east1-docker.pkg.dev/nativeplat-20261004/nativeplat/web@sha256:907e2f47779d988b5b648d96075dd3a4ab787d93a38080823d97c043dd285bd1`.
 
@@ -169,3 +169,38 @@ account isolation, invalid-upload rejection, stale-revision protection, replacin
 a save while retaining one database row, and byte-for-byte Neon storage/readback.
 Only temporary verification accounts were used and all were removed. Both hosted
 cartridges and cores passed integrity checks and 600 runtime frames each.
+
+## Merged main and Pearl live — 2026-10-04
+
+Revision `nativeplat-00006-xbj` serves 100% of traffic at
+https://pokeweb.morisoba.moe and the existing Google service URLs.
+Cloud Run's resolved platform image:
+`us-east1-docker.pkg.dev/nativeplat-20261004/nativeplat/web@sha256:1edd0a56cdbe1fbc9db56c42f83e5854ff7bd7bf7767cea4a1d2a29629130afe`.
+Build tag: `20261004-main-a5fb536-three-games`.
+
+All three hosted cores were rebuilt from isolated copies of merge `6de15fc30`
+(main `352d36b23`) and optimized with the existing Asyncify/O3 recipe. The live
+core manifest records their source commit and hashes and exactly matches the
+qualified local manifest. No decomp/game logic patch was needed. Diamond and
+Pearl now expose the shared camera, audio, text, bug-fix and quick-save controls.
+
+Validation passed:
+
+- 24 web tests and the production TypeScript/Vite build.
+- 12,000 runtime frames per core; all eight resolution/aspect combinations and
+  field quick-save persistence for Diamond, Pearl, and Platinum.
+- Diamond and Pearl each replayed 12,600 new-game frames plus 3,400 Continue
+  frames, producing a valid first save and a newer valid re-save for NATIVE.
+- Both Google and custom-domain checks downloaded, decrypted and fingerprinted
+  all three hosted cartridges, verified each core digest, and ran 600 frames
+  per published core. Previously published plaintext URLs still return 404.
+- The custom-domain account/save API passed secure sessions, login/logout,
+  isolation, invalid-upload rejection, conflict protection and exact Neon byte
+  readback. Replacing Platinum with Pearl and then Diamond retained one save
+  row per account. Temporary verification accounts were removed.
+
+Functional CLI checks use Node's baseline-only WASM testing mode to avoid Node
+22 waiting on background TurboFan compilation after tests complete or during a
+second instance load. The shipped modules and browser compiler behavior are
+unchanged; these checks are not browser FPS measurements. The existing Neon
+secret, runtime identity, optional-login behavior and service limits remain in use.
