@@ -1,0 +1,706 @@
+#include "constants/scrcmd.h"
+#include "fielddata/script/scr_seq/event_T25SP0101.h"
+#include "msgdata/msg/msg_0603_T25SP0101.h"
+	.include "asm/macros/script.inc"
+
+	.rodata
+
+	ScrDef scr_seq_T25SP0101_000
+	ScrDef scr_seq_T25SP0101_001
+	ScrDef scr_seq_T25SP0101_002
+	ScrDef scr_seq_T25SP0101_003
+	ScrDef scr_seq_T25SP0101_004
+	ScrDefEnd
+
+scr_seq_T25SP0101_000:
+	PlaySE SEQ_SE_DP_SELECT
+	LockAll
+	FacePlayer
+	HasItem ITEM_COIN_CASE, 1, VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _006A
+	ApplyMovement obj_T25SP0101_suit, _0080
+	WaitMovement
+	NPCMsg msg_0603_T25SP0101_00040
+	CloseMsg
+	FadeScreen 6, 1, 0, RGB_BLACK
+	WaitFade
+	CasinoGame 0, 0
+	RestoreOverworld
+	FadeScreen 6, 1, 1, RGB_BLACK
+	WaitFade
+	SetVar VAR_TEMP_x4001, 2
+	ReleaseAll
+	End
+
+_006A:
+	NPCMsg msg_0603_T25SP0101_00038
+	ApplyMovement obj_T25SP0101_suit, _0080
+	WaitMovement
+	NPCMsg msg_0603_T25SP0101_00039
+	GoTo _00E8
+
+	.balign 4, 0
+_0080:
+	FaceSouth
+	EndMovement
+
+	.balign 4, 0
+_0088:
+	FaceWest
+	EndMovement
+
+	.balign 4, 0
+_0090:
+	FaceEast
+	EndMovement
+
+scr_seq_T25SP0101_001:
+	PlaySE SEQ_SE_DP_SELECT
+	LockAll
+	FacePlayer
+	GetPlayerFacing VAR_TEMP_x4002
+	Compare VAR_TEMP_x4002, 1
+	GoToIfNe _00BD
+	Call _00F0
+	GoTo _00C5
+
+_00BD:
+	ApplyMovement obj_T25SP0101_suit, _0080
+_00C5:
+	WaitMovement
+	HasItem ITEM_COIN_CASE, 1, VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _00E5
+	NPCMsg msg_0603_T25SP0101_00041
+	GoTo _00E8
+
+_00E5:
+	NPCMsg msg_0603_T25SP0101_00039
+_00E8:
+	WaitButton
+	CloseMsg
+	ReleaseAll
+	End
+
+_00F0:
+	GetPlayerCoords VAR_TEMP_x4002, VAR_TEMP_x4003
+	Compare VAR_TEMP_x4002, 6
+	GoToIfNe _0111
+	ApplyMovement obj_T25SP0101_suit, _0088
+	GoTo _0119
+
+_0111:
+	ApplyMovement obj_T25SP0101_suit, _0090
+_0119:
+	Return
+
+scr_seq_T25SP0101_002:
+	PlaySE SEQ_SE_DP_SELECT
+	LockAll
+	FacePlayer
+	HasItem ITEM_COIN_CASE, 1, VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _0175
+	Compare VAR_TEMP_x4001, 0
+	GoToIfNe _0154
+	NPCMsg msg_0603_T25SP0101_00034
+	SetVar VAR_TEMP_x4001, 1
+	GoTo _016D
+
+_0154:
+	Compare VAR_TEMP_x4001, 1
+	GoToIfNe _016A
+	NPCMsg msg_0603_T25SP0101_00035
+	GoTo _016D
+
+_016A:
+	NPCMsg msg_0603_T25SP0101_00036
+_016D:
+	WaitButton
+	CloseMsg
+	ReleaseAll
+	End
+
+_0175:
+	Compare VAR_TEMP_x4001, 0
+	GoToIfNe _018B
+	NPCMsg msg_0603_T25SP0101_00028
+	GoTo _018E
+
+_018B:
+	NPCMsg msg_0603_T25SP0101_00037
+_018E:
+	TouchscreenMenuHide
+	GetMenuChoice VAR_SPECIAL_RESULT
+	TouchscreenMenuShow
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _01C5
+	NPCMsg msg_0603_T25SP0101_00031
+	SetVar VAR_TEMP_x4001, 1
+	GiveItemNoCheck ITEM_COIN_CASE, 1
+	NPCMsg msg_0603_T25SP0101_00032
+	GoTo _00E8
+
+_01C5:
+	SetVar VAR_TEMP_x4001, 1
+	NPCMsg msg_0603_T25SP0101_00033
+	GoTo _00E8
+
+scr_seq_T25SP0101_003:
+	PlaySE SEQ_SE_DP_SELECT
+	LockAll
+	FacePlayer
+	ScriptOverlayCmd 3, 0
+	NPCMsg msg_0603_T25SP0101_00000
+	TouchscreenMenuHide
+	ScrCmd_116 0, 20, 2
+_01EC:
+	MenuInit 1, 1, 0, 1, VAR_TEMP_x4000
+	MenuItemAdd 12, 255, 0
+	MenuItemAdd 13, 255, 1
+	MenuItemAdd 11, 255, 2
+	MenuExec
+	Switch VAR_TEMP_x4000
+	Case 0, _0234
+	Case 1, _02D0
+	GoTo _0C17
+
+_0234:
+	MenuInit 1, 1, 0, 1, VAR_TEMP_x4000
+	MenuItemAdd 14, 255, 0
+	MenuItemAdd 15, 255, 1
+	MenuItemAdd 16, 255, 2
+	MenuItemAdd 17, 255, 3
+	MenuItemAdd 18, 255, 4
+	MenuItemAdd 19, 255, 5
+	MenuItemAdd 11, 255, 6
+	MenuExec
+	Switch VAR_TEMP_x4000
+	Case 0, _0342
+	Case 1, _03CD
+	Case 2, _0458
+	Case 3, _04E3
+	Case 4, _056E
+	Case 5, _05F9
+	GoTo _01EC
+
+_02D0:
+	MenuInit 1, 1, 0, 1, VAR_TEMP_x4000
+	MenuItemAdd 20, 255, 0
+	MenuItemAdd 21, 255, 1
+	MenuItemAdd 22, 255, 2
+	MenuItemAdd 23, 255, 3
+	MenuItemAdd 11, 255, 4
+	MenuExec
+	Switch VAR_TEMP_x4000
+	Case 0, _0684
+	Case 1, _070F
+	Case 2, _079A
+	Case 3, _0825
+	GoTo _01EC
+
+_0342:
+	GoToIfNoItemSpace ITEM_TM90, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _038B
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _0234
+_038B:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 2000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 2000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _0234
+	End
+
+_03CD:
+	GoToIfNoItemSpace ITEM_TM75, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _0416
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _0234
+_0416:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 4000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 4000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _0234
+	End
+
+_0458:
+	GoToIfNoItemSpace ITEM_TM44, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _04A1
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _0234
+_04A1:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 6000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 6000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _0234
+	End
+
+_04E3:
+	GoToIfNoItemSpace ITEM_TM35, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _052C
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _0234
+_052C:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 10000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 10000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _0234
+	End
+
+_056E:
+	GoToIfNoItemSpace ITEM_TM13, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _05B7
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _0234
+_05B7:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 10000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 10000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _0234
+	End
+
+_05F9:
+	GoToIfNoItemSpace ITEM_TM24, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _0642
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _0234
+_0642:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 10000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 10000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _0234
+	End
+
+_0684:
+	GoToIfNoItemSpace ITEM_SILK_SCARF, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _06CD
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _02D0
+_06CD:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 1000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 1000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _02D0
+	End
+
+_070F:
+	GoToIfNoItemSpace ITEM_WIDE_LENS, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _0758
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _02D0
+_0758:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 1000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 1000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _02D0
+	End
+
+_079A:
+	GoToIfNoItemSpace ITEM_ZOOM_LENS, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _07E3
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _02D0
+_07E3:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 1000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 1000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _02D0
+	End
+
+_0825:
+	GoToIfNoItemSpace ITEM_METRONOME, 1, _0B45
+	BufferItemName 0, VAR_SPECIAL_x8004
+	NPCMsg msg_0603_T25SP0101_00003
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _086E
+	CloseMsg
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _02D0
+_086E:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 1000
+	GoToIfLt _0BE6
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	TakeCoins 1000
+	ScrCmd_118 0
+	BufferItemName 0, VAR_SPECIAL_x8004
+	GetItemPocket VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	BufferPocketName 1, VAR_SPECIAL_RESULT
+	NPCMsg msg_0603_T25SP0101_00010
+	GiveItem VAR_SPECIAL_x8004, 1, VAR_SPECIAL_RESULT
+	GoTo _02D0
+	End
+
+scr_seq_T25SP0101_004:
+	PlaySE SEQ_SE_DP_SELECT
+	LockAll
+	FacePlayer
+	ScriptOverlayCmd 3, 0
+	NPCMsg msg_0603_T25SP0101_00009
+	TouchscreenMenuHide
+	ScrCmd_116 0, 20, 2
+	GetGameVersion VAR_TEMP_x4000
+	Compare VAR_TEMP_x4000, 7
+	GoToIfNe _08E5
+	GoTo _08EB
+
+_08DF:
+	GoTo _08EB
+
+_08E5:
+	GoTo _0948
+
+_08EB:
+	MenuInit 1, 1, 0, 1, VAR_TEMP_x4000
+	MenuItemAdd 24, 255, 0
+	MenuItemAdd 25, 255, 1
+	MenuItemAdd 26, 255, 2
+	MenuItemAdd 11, 255, 3
+	MenuExec
+	Switch VAR_TEMP_x4000
+	Case 0, _09A5
+	Case 1, _09B1
+	Case 2, _09BD
+	GoTo _0C17
+
+_0948:
+	MenuInit 1, 1, 0, 1, VAR_TEMP_x4000
+	MenuItemAdd 24, 255, 0
+	MenuItemAdd 27, 255, 1
+	MenuItemAdd 26, 255, 2
+	MenuItemAdd 11, 255, 3
+	MenuExec
+	Switch VAR_TEMP_x4000
+	Case 0, _09A5
+	Case 1, _09C9
+	Case 2, _09BD
+	GoTo _0C17
+
+_09A5:
+	SetOrCopyVar VAR_TEMP_x4002, 63
+	GoTo _09D5
+
+_09B1:
+	SetOrCopyVar VAR_TEMP_x4002, 23
+	GoTo _09D5
+
+_09BD:
+	SetOrCopyVar VAR_TEMP_x4002, 147
+	GoTo _09D5
+
+_09C9:
+	SetOrCopyVar VAR_TEMP_x4002, 27
+	GoTo _09D5
+
+_09D5:
+	GetPartyCount VAR_SPECIAL_x8005
+	Compare VAR_SPECIAL_x8005, 6
+	GoToIfNe _09F3
+	NPCMsg msg_0603_T25SP0101_00006
+	WaitButton
+	CloseMsg
+	GoTo _0C26
+
+_09F3:
+	BufferSpeciesName 1, VAR_TEMP_x4002, 0, 0
+	NPCMsg msg_0603_T25SP0101_00007
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _0A34
+	CloseMsg
+	GetGameVersion VAR_TEMP_x4000
+	Compare VAR_TEMP_x4000, 7
+	GoToIfNe _0A2E
+	GoTo _08EB
+
+_0A28:
+	GoTo _0A34
+
+_0A2E:
+	GoTo _0948
+
+_0A34:
+	Compare VAR_TEMP_x4002, 63
+	GoToIfNe _0A58
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 200
+	GoToIfLt _0BF1
+	GoTo _0AB1
+
+_0A58:
+	Compare VAR_TEMP_x4002, 23
+	GoToIfNe _0A7C
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 700
+	GoToIfLt _0BF1
+	GoTo _0AB1
+
+_0A7C:
+	Compare VAR_TEMP_x4002, 27
+	GoToIfNe _0AA0
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 700
+	GoToIfLt _0BF1
+	GoTo _0AB1
+
+_0AA0:
+	GetCoinAmount VAR_SPECIAL_x8006
+	Compare VAR_SPECIAL_x8006, 2100
+	GoToIfLt _0BF1
+_0AB1:
+	NPCMsg msg_0603_T25SP0101_00004
+	PlaySE SEQ_SE_DP_REGI
+	GiveMon VAR_TEMP_x4002, 15, 0, 0, 0, VAR_SPECIAL_RESULT
+	BufferPlayersName 0
+	BufferSpeciesName 1, VAR_TEMP_x4002, 0, 0
+	NPCMsg msg_0603_T25SP0101_00008
+	Compare VAR_TEMP_x4002, 63
+	GoToIfNe _0AEB
+	TakeCoins 200
+	GoTo _0B1D
+
+_0AEB:
+	Compare VAR_TEMP_x4002, 23
+	GoToIfNe _0B02
+	TakeCoins 700
+	GoTo _0B1D
+
+_0B02:
+	Compare VAR_TEMP_x4002, 27
+	GoToIfNe _0B19
+	TakeCoins 700
+	GoTo _0B1D
+
+_0B19:
+	TakeCoins 2100
+_0B1D:
+	ScrCmd_118 0
+	GetGameVersion VAR_TEMP_x4000
+	Compare VAR_TEMP_x4000, 7
+	GoToIfNe _0B3D
+	GoTo _08EB
+
+_0B37:
+	GoTo _0B43
+
+_0B3D:
+	GoTo _0948
+
+_0B43:
+	End
+
+_0B45:
+	NPCMsg msg_0603_T25SP0101_00005
+	CloseMsg
+_0B4A:
+	Compare VAR_SPECIAL_x8004, 417
+	GoToIfNe _0B63
+	GoTo _0234
+
+_0B5D:
+	GoTo _0BE6
+
+_0B63:
+	Compare VAR_SPECIAL_x8004, 402
+	GoToIfNe _0B7C
+	GoTo _0234
+
+_0B76:
+	GoTo _0BE6
+
+_0B7C:
+	Compare VAR_SPECIAL_x8004, 371
+	GoToIfNe _0B95
+	GoTo _0234
+
+_0B8F:
+	GoTo _0BE6
+
+_0B95:
+	Compare VAR_SPECIAL_x8004, 362
+	GoToIfNe _0BAE
+	GoTo _0234
+
+_0BA8:
+	GoTo _0BE6
+
+_0BAE:
+	Compare VAR_SPECIAL_x8004, 340
+	GoToIfNe _0BC7
+	GoTo _0234
+
+_0BC1:
+	GoTo _0BE6
+
+_0BC7:
+	Compare VAR_SPECIAL_x8004, 351
+	GoToIfNe _0BE0
+	GoTo _0234
+
+_0BDA:
+	GoTo _0BE6
+
+_0BE0:
+	GoTo _02D0
+
+_0BE6:
+	NPCMsg msg_0603_T25SP0101_00002
+	GoTo _0B4A
+	End
+
+_0BF1:
+	NPCMsg msg_0603_T25SP0101_00002
+	GetGameVersion VAR_TEMP_x4000
+	Compare VAR_TEMP_x4000, 7
+	GoToIfNe _0C11
+	GoTo _08EB
+
+_0C0B:
+	GoTo _0C17
+
+_0C11:
+	GoTo _0948
+
+_0C17:
+	NPCMsg msg_0603_T25SP0101_00001
+	WaitButton
+	CloseMsg
+	GoTo _0C26
+	End
+
+_0C26:
+	ScrCmd_117
+	TouchscreenMenuShow
+	ScriptOverlayCmd 3, 1
+	ReleaseAll
+	End
+	.balign 4, 0

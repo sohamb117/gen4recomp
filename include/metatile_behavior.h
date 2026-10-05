@@ -1,0 +1,81 @@
+#ifndef POKEHEARTGOLD_UNK_METATILE_BEHAVIOR_H
+#define POKEHEARTGOLD_UNK_METATILE_BEHAVIOR_H
+
+#include "global.h"
+
+BOOL MetatileBehavior_IsTallGrass(u8 tile);
+BOOL MetatileBehavior_IsVeryTallGrass(u8 tile);
+BOOL sub_0205B700(u8 tile);
+BOOL MetatileBehavior_IsDoor(u8 tile);
+BOOL MetatileBehavior_IsWarpEntranceEast(u8 tile);
+BOOL MetatileBehavior_IsWarpEntranceWest(u8 tile);
+BOOL MetatileBehavior_IsWarpEntranceNorth(u8 tile);
+BOOL MetatileBehavior_IsWarpEntranceSouth(u8 tile);
+BOOL MetatileBehavior_IsWarpEast(u8 tile);
+BOOL MetatileBehavior_IsWarpWest(u8 tile);
+BOOL MetatileBehavior_IsWarpNorth(u8 tile);
+BOOL MetatileBehavior_IsWarpSouth(u8 tile);
+BOOL MetatileBehavior_IsSurfableWater(u8 tile);
+BOOL sub_0205B78C(u8 tile);
+BOOL MetatileBehavior_IsSand(u8 tile);
+BOOL MetatileBehavior_IsShallowWater(u8 tile);
+BOOL MetatileBehavior_IsJumpNorth(u8 tile);
+BOOL MetatileBehavior_IsJumpSouth(u8 tile);
+BOOL MetatileBehavior_IsJumpWest(u8 tile);
+BOOL MetatileBehavior_IsJumpEast(u8 tile);
+BOOL MetatileBehavior_IsPC(u8 tile);
+BOOL MetatileBehavior_IsTownMap(u8 tile);
+BOOL MetatileBehavior_IsEscalatorFlipFace(u8 tile);
+BOOL MetatileBehavior_IsEscalator(u8 tile);
+BOOL MetatileBehavior_IsWarpStairsEast(u8 tile);
+BOOL MetatileBehavior_IsWarpStairsWest(u8 tile);
+BOOL MetatileBehavior_IsIce(u8 tile);
+BOOL MetatileBehavior_IsRockClimbNorthSouth(u8 tile);
+BOOL MetatileBehavior_IsRockClimbEastWest(u8 tile);
+BOOL MetatileBehavior_IsSmallBookshelf1(u8 tile);
+BOOL MetatileBehavior_IsSmallBookshelf2(u8 tile);
+BOOL TileBehavior_IsBookshelf1(u8 tile);
+BOOL TileBehavior_IsBookshelf2(u8 tile);
+BOOL MetatileBehavior_IsEmptyTrashCan(u8 tile);
+BOOL MetatileBehavior_IsMartShelf1(u8 tile);
+BOOL MetatileBehavior_IsMartShelf2(u8 tile);
+BOOL MetatileBehavior_IsMartShelf3(u8 tile);
+BOOL MetatileBehavior_IsMud(u8 tile);
+BOOL MetatileBehavior_IsSnow(u8 tile);
+BOOL sub_0205B8C4(u8 tile);
+BOOL MetatileBehavior_IsCaveFloor(u8 tile);
+BOOL MetatileBehavior_IsWaterfall(u8 tile);
+BOOL MetatileBehavior_IsWhirlpool(u8 tile);
+BOOL sub_0205B8F4(u8 tile);
+BOOL sub_0205B918(u8 tile);
+BOOL sub_0205B93C(u8 tile);
+BOOL sub_0205B960(u8 tile);
+BOOL MetatileBehavior_IsPuddle(u8 tile);
+BOOL MetatileBehavior_CanGenerateWalkingEncounters(u8 tile);
+BOOL MetatileBehavior_IsTV(u8 tile);
+BOOL MetatileBehavior_HasReflectiveSurface(u8 tile);
+BOOL MetatileBehavior_IsSlideEast(u8 tile);
+BOOL MetatileBehavior_IsSlideWest(u8 tile);
+BOOL MetatileBehavior_IsSlideNorth(u8 tile);
+BOOL MetatileBehavior_IsSlideSouth(u8 tile);
+BOOL MetatileBehavior_StopSliding(u8 tile);
+BOOL MetatileBehavior_IsWarpPanel(u8 tile);
+BOOL sub_0205BA24(u8 tile);
+BOOL sub_0205BA30(u8 tile);
+BOOL sub_0205BA44(u8 tile);
+BOOL sub_0205BA54(u8 tile);
+BOOL MetatileBehavior_IsNone(u8 tile);
+u8 GetMetatileBehavior_None(void);
+BOOL MetatileBehavior_IsReflective(u8 tile);
+BOOL sub_0205BA94(u8 tile);
+BOOL MetatileBehavior_IsLadderNorth(u8 tile);
+BOOL MetatileBehavior_IsLadderSouth(u8 tile);
+BOOL MetatileBehavior_IsLadderDown(u8 tile);
+BOOL MetatileBehavior_IsMagma(u8 tile);
+BOOL sub_0205BAD0(u8 tile);
+BOOL MetatileBehavior_IsSurfableWater_thunk(u8 tile);
+BOOL sub_0205BAEC(u8 tile);
+BOOL MetatileBehavior_IsHeadbutt(u8 tile);
+BOOL sub_0205BB04(u8 tile);
+
+#endif // POKEHEARTGOLD_UNK_0205B6E8_H
