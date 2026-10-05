@@ -930,3 +930,12 @@ dialog.modal::backdrop {
   font-size: 0.75rem;
   margin: 0.5rem 0;
 }
+
+.generation-select { width: 100%; margin-bottom: 12px; }
+.engine-credit { font-size: 10px; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; margin: 14px 0 0; }
+.engine-credit a { color: inherit; }
+.display.single { display: block; }
+.engine-screen { display: block; width: 100%; height: auto; border: 0; pointer-events: none; }
+.display.single .screen-message { position: absolute; inset: 0; }
+.display.single:fullscreen { display: flex; justify-content: center; }
+.display.single:fullscreen .engine-screen { max-width: 100%; max-height: 100dvh; }

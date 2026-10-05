@@ -62,3 +62,44 @@ investigation; there is no permanent decomp patch in this release.
 - Existing web recomp controls now send the shared option ABI to Diamond/Pearl,
   whose field/text/rules implementations are present in merged main. The user
   resumed Pearl qualification for this release; its old diagnostic core stays excluded.
+
+## 2026-10-04 — Gen1Recomp browser adapter
+
+Source: `bryanthaboi/gen1recomp` at `340e2567ec93d8ac74659d7091ebbec8925d7295`.
+All substitutions run while writing a disposable archive; the source checkout,
+original Gen 4 trees, and upstream branches are unchanged.
+
+- `web/integrations/gen123/main.lua` replaces the native launcher with a new
+  pokeweb bootstrap, input/pause/audio bridge, extraction, and save callbacks.
+  Each iframe owns one game filesystem; `GameVersion.cachePrefix` becomes empty
+  so generated assets resolve without native PhysFS/FFI mounts.
+- The browser's stock Lua 5.1 needs the LuaBitOp-compatible `bit` interface and
+  a string-aware `load` adapter. The former uses MIT-licensed lua-bit-numberlua;
+  saves still go through upstream's data-only `SaveSerializer`, never `load`.
+- Missing filesystem reads and image loads are checked before entering the C API, avoiding this
+  love.js build's unsafe exception unwinding across Lua coroutines.
+- `src/core/Music.lua`: do not call `setLooping` on synthesized queueable sources;
+  their chip synthesizer already handles looping. LÖVE disallows that operation.
+- Six GBA extraction files replace loop-tail `goto` with `repeat`/`break`:
+  `map_tree.lua`, `extract_scripts.lua`, `encounters_extract.lua`,
+  `extract_map_events.lua`, `door_anim_extract.lua`, `battle_anim_extract.lua`.
+  Existing terminating breaks remain outside the added repeat blocks.
+  The checked substitutions live in `integrations/gen123/patches.py`.
+- Extraction uses the upstream sequential fallback in the thread-free browser
+  build. All generations yield between work batches. During Gen 3 extraction only,
+  `yield.lua` supplies coroutine-aware protected calls so progress can yield
+  across the extraction tasks; native `pcall` is restored before gameplay.
+- The proprietary launcher files, labels, launcher assets, and original main
+  are excluded. The archive includes the corresponding modified Lua source,
+  original license, required visible credit, and dependency licenses.
+- love.js generated JavaScript exposes its virtual filesystem and disables its
+  automatic shared IDBFS mount. pokeweb's IndexedDB owns save-slot persistence;
+  engine state cannot silently leak between slots or games.
+- `src/core/game3/bg_affine.lua`: replace `ffi.new("float", x)` with a
+  LÖVE float32 pack/unpack round trip. This preserves single-precision rounding
+  rather than silently promoting the original calculations to double precision.
+- The generated love.js bridge exposes audio resume/state alongside FS access.
+  User controls can resume a browser-suspended AudioContext; audio work remains
+  inside LÖVE and mute/volume changes do not touch cartridge extraction.
+- Import time slicing resets its budget after resumption, excluding time spent
+  yielding. Counting the wait caused one-item-per-frame imports on slow frames.

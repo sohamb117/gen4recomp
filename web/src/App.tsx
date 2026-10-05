@@ -29,13 +29,21 @@ import { Panel } from "./components/Panel";
 import { Modal } from "./components/Modal";
 import { PerformanceStats } from "./components/PerformanceStats";
 import { TouchControls } from "./components/TouchControls";
-import { games, identifyRom, type CoreManifest, type GameId } from "./catalog";
+import {
+  games,
+  identifyRom,
+  generation,
+  isGen4,
+  type CoreManifest,
+  type GameId,
+} from "./catalog";
 import {
   fetchCartridge,
   loadCartridges,
   type HostedCartridges,
 } from "./cartridges";
 import { download, saveData, storage, type SaveSlot } from "./storage";
+import { useGen123Session } from "./runtime/useGen123Session";
 import { useSession } from "./runtime/useSession";
 import {
   initialSettings,
@@ -60,6 +68,7 @@ function readSettings(): Settings {
 }
 export function App() {
   const cloudState = useSyncExternalStore(cloud.subscribe, cloud.snapshot);
+  const [gen123Ready, setGen123Ready] = useState(false);
   const [hosted, setHosted] = useState<HostedCartridges>({});
   const [popup, setPopup] = useState<Popup>(null),
     [selected, setSelected] = useState<GameId>("platinum");
@@ -78,14 +87,14 @@ export function App() {
     setRoms(r);
     setSlots(s.sort((a, b) => b.updated - a.updated));
   };
-  const session = useSession(
-    settings,
-    (slot) => {
-      if (cloudEnabled && slot) cloud.saved(slot);
-      void refresh().catch((e) => setNotice(String(e)));
-    },
-    setNotice,
-  );
+  const saved = (slot?: SaveSlot) => {
+    if (cloudEnabled && slot) cloud.saved(slot);
+    void refresh().catch((e) => setNotice(String(e)));
+  };
+  const dsSession = useSession(settings, saved, setNotice);
+  const earlySession = useGen123Session(settings, saved, setNotice);
+  const early = !isGen4(selected);
+  const session = early ? earlySession : dsSession;
   const game = games.find((g) => g.id === selected)!,
     gameSlots = slots.filter((s) => s.game === selected);
   useEffect(() => {
@@ -100,6 +109,10 @@ export function App() {
     void loadCartridges(import.meta.env.BASE_URL)
       .then(setHosted)
       .catch((e) => setNotice(String(e)));
+    fetch(`${import.meta.env.BASE_URL}engines/gen123/manifest.json`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((m) => setGen123Ready(m?.version === 1))
+      .catch(() => setGen123Ready(false));
     fetch(`${import.meta.env.BASE_URL}cores/manifest.json`)
       .then(async (r) => {
         if (!r.ok) throw Error();
@@ -162,9 +175,9 @@ export function App() {
   async function launch(slot?: SaveSlot) {
     session.unlockAudio();
     await action(async () => {
-      if (!manifest)
+      if (!early && !manifest)
         throw Error("Browser cores are unavailable in this build.");
-      if (!manifest.games[selected])
+      if (!early && !manifest?.games[selected])
         throw Error(`${game.name} is not built for this release yet.`);
       if (!(await storage.cartridge(selected))) {
         const entry = hosted[selected];
@@ -196,7 +209,11 @@ export function App() {
         setNotice("");
       }
       const target = slot ?? gameSlots[0] ?? (await newSlot());
-      await session.start(selected, target, manifest);
+      if (early) {
+        if (!gen123Ready)
+          throw Error("Gen 1–3 engine is not prepared in this build.");
+        await earlySession.start(selected, target);
+      } else await dsSession.start(selected, target, manifest!);
       setPopup(null);
     });
   }
@@ -232,8 +249,10 @@ export function App() {
   const running = !!session.active,
     ready =
       (roms.includes(selected) || !!hosted[selected]) &&
-      !!manifest?.games[selected] &&
-      manifest.games[selected]?.verification !== "blocked";
+      (early
+        ? gen123Ready
+        : !!manifest?.games[selected] &&
+          manifest.games[selected]?.verification !== "blocked");
   return (
     <>
       <Circuit />
@@ -259,47 +278,76 @@ export function App() {
         <main className="main-grid">
           <aside className="library-column">
             <div className="cartridge-rail" aria-label="Cartridges">
+              <select
+                className="generation-select"
+                aria-label="Generation"
+                disabled={running || busy}
+                value={generation(selected)}
+                onChange={(e) =>
+                  setSelected(
+                    games.find(
+                      (g) => generation(g.id) === Number(e.target.value),
+                    )!.id,
+                  )
+                }
+              >
+                <option value="1">Gen 1 / Kanto</option>
+                <option value="2">Gen 2 / Johto</option>
+                <option value="3">Gen 3 / GBA</option>
+                <option value="4">Gen 4 / Sinnoh</option>
+              </select>
               <div className="cartridges">
-                {games.map((g, i) => (
-                  <button
-                    key={g.id}
-                    disabled={running || busy}
-                    className={`cartridge ${selected === g.id ? "selected" : ""}`}
-                    style={{ "--game-color": g.color } as CSSProperties}
-                    onClick={() => setSelected(g.id)}
-                    aria-pressed={selected === g.id}
-                  >
-                    <span className="cart-meta">
-                      0{i + 1}
-                      <span>{g.year}</span>
-                    </span>
-                    <div className={`gem gem-${g.id}`} aria-hidden="true">
-                      <span>{g.symbol}</span>
-                      <i />
-                      <b />
-                    </div>
-                    <div className="cart-label">
-                      <small>POKÉMON</small>
-                      <h2>{g.name}</h2>
-                      <span>{g.code}</span>
-                    </div>
-                    <div className="cart-status">
-                      <i
-                        className={
-                          roms.includes(g.id) || hosted[g.id] ? "present" : ""
-                        }
-                      />
-                      {roms.includes(g.id)
-                        ? "CARTRIDGE CONNECTED"
-                        : hosted[g.id]
-                          ? "AVAILABLE ONLINE"
-                          : "AWAITING CARTRIDGE"}
-                      <ChevronRight size={13} />
-                    </div>
-                  </button>
-                ))}
+                {games
+                  .filter((g) => generation(g.id) === generation(selected))
+                  .map((g, i) => (
+                    <button
+                      key={g.id}
+                      disabled={running || busy}
+                      className={`cartridge ${selected === g.id ? "selected" : ""}`}
+                      style={{ "--game-color": g.color } as CSSProperties}
+                      onClick={() => setSelected(g.id)}
+                      aria-pressed={selected === g.id}
+                    >
+                      <span className="cart-meta">
+                        0{i + 1}
+                        <span>{g.year}</span>
+                      </span>
+                      <div className={`gem gem-${g.id}`} aria-hidden="true">
+                        <span>{g.symbol}</span>
+                        <i />
+                        <b />
+                      </div>
+                      <div className="cart-label">
+                        <small>POKÉMON</small>
+                        <h2>{g.name}</h2>
+                        <span>{g.code}</span>
+                      </div>
+                      <div className="cart-status">
+                        <i
+                          className={
+                            roms.includes(g.id) || hosted[g.id] ? "present" : ""
+                          }
+                        />
+                        {roms.includes(g.id)
+                          ? "CARTRIDGE CONNECTED"
+                          : hosted[g.id]
+                            ? "AVAILABLE ONLINE"
+                            : "AWAITING CARTRIDGE"}
+                        <ChevronRight size={13} />
+                      </div>
+                    </button>
+                  ))}
               </div>
               <div className="library-actions">
+                {early && (
+                  <p className="core-note">
+                    {generation(selected) === 2
+                      ? "Gen 2 / upstream work in progress."
+                      : generation(selected) === 3
+                        ? "Gen 3 / upstream beta."
+                        : ""}
+                  </p>
+                )}
                 <button
                   className="primary-button"
                   disabled={!ready || busy || running}
@@ -319,6 +367,31 @@ export function App() {
                   <p className="core-note">{manifest.games[selected]?.note}</p>
                 )}
               </div>
+              {early && (
+                <p className="engine-credit">
+                  Based on the Pokemon Gen 1 Recompilation Project by BOIS CLUB
+                  GAMES, LLC (
+                  <a
+                    href="https://github.com/bryanthaboi/gen1recomp"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    https://github.com/bryanthaboi/gen1recomp
+                  </a>
+                  ).{" "}
+                  <a
+                    href={`${import.meta.env.BASE_URL}engines/gen123/game.love`}
+                  >
+                    Engine source
+                  </a>{" "}
+                  ·{" "}
+                  <a
+                    href={`${import.meta.env.BASE_URL}engines/gen123/GEN123-LICENSE.txt`}
+                  >
+                    License
+                  </a>
+                </p>
+              )}
             </div>
           </aside>
           <div className="game-column">
@@ -333,30 +406,50 @@ export function App() {
             >
               <div
                 ref={display}
-                className={`display stacked ${settings.effect ? "lcd" : ""}`}
+                className={`display ${early ? "single" : "stacked"} ${settings.effect ? "lcd" : ""}`}
               >
                 {running ? (
                   <>
-                    <div className="screen">
-                      <canvas ref={session.top} aria-label="Top game screen" />
-                    </div>
-                    <div className="screen touch-screen">
-                      <canvas
-                        ref={session.bottom}
-                        aria-label="Touch game screen"
-                        onPointerDown={stylus}
-                        onPointerMove={(e) => {
-                          if (e.buttons) stylus(e);
-                        }}
-                        onPointerUp={stylus}
-                        onPointerCancel={stylus}
+                    {early ? (
+                      <iframe
+                        key={earlySession.channel}
+                        ref={earlySession.iframe}
+                        className="engine-screen"
+                        style={{ aspectRatio: earlySession.aspect }}
+                        src={`${import.meta.env.BASE_URL}engines/gen123/player.html#${earlySession.channel}`}
+                        title={`${game.name} game screen`}
+                        allow="autoplay"
+                        tabIndex={-1}
                       />
-                    </div>
+                    ) : (
+                      <>
+                        <div className="screen">
+                          <canvas
+                            ref={session.top}
+                            aria-label="Top game screen"
+                          />
+                        </div>
+                        <div className="screen touch-screen">
+                          <canvas
+                            ref={session.bottom}
+                            aria-label="Touch game screen"
+                            onPointerDown={stylus}
+                            onPointerMove={(e) => {
+                              if (e.buttons) stylus(e);
+                            }}
+                            onPointerUp={stylus}
+                            onPointerCancel={stylus}
+                          />
+                        </div>
+                      </>
+                    )}
                     {session.state !== "running" && (
                       <div className="screen-message">
                         <span>
                           {session.state === "loading"
-                            ? "CONNECTING TO SINNOH…"
+                            ? early
+                              ? earlySession.progress
+                              : "CONNECTING TO SINNOH…"
                             : session.state === "error"
                               ? "SIGNAL INTERRUPTED"
                               : "PAUSED"}
@@ -377,10 +470,12 @@ export function App() {
                       <small>Select a cartridge to begin.</small>
                       <div className="signal-line" />
                     </div>
-                    <div className="standby-screen secondary-screen">
-                      <span className="standby-symbol">✧</span>
-                      <span>TOUCH / 02</span>
-                    </div>
+                    {!early && (
+                      <div className="standby-screen secondary-screen">
+                        <span className="standby-symbol">✧</span>
+                        <span>TOUCH / 02</span>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -410,7 +505,13 @@ export function App() {
                       </button>
                     </>
                   ) : (
-                    <span className="muted">256 × 192</span>
+                    <span className="muted">
+                      {early
+                        ? generation(selected) === 3
+                          ? "240 × 160"
+                          : "160 × 144"
+                        : "256 × 192"}
+                    </span>
                   )}
                 </div>
                 <div>
@@ -490,6 +591,7 @@ export function App() {
                 </div>
               </div>
               <TouchControls
+                generation={generation(selected)}
                 onKey={touchKey}
                 disabled={!running || session.state !== "running"}
               />
@@ -499,7 +601,7 @@ export function App() {
         <input
           ref={romInput}
           type="file"
-          accept=".nds"
+          accept=".gb,.gbc,.gba,.nds"
           hidden
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -510,14 +612,14 @@ export function App() {
         <input
           ref={saveInput}
           type="file"
-          accept=".sav,.dsv"
+          accept={early ? ".pws" : ".sav,.dsv"}
           hidden
           onChange={(e) => {
             const f = e.target.files?.[0];
             e.target.value = "";
             if (f)
               void action(async () => {
-                await newSlot(saveData(await f.arrayBuffer()));
+                await newSlot(saveData(await f.arrayBuffer(), selected));
                 setNotice("Save imported into a new slot.");
               });
           }}
@@ -535,18 +637,18 @@ export function App() {
               />
             )}
             <div className="archive-head">
-              <div className="game-tabs">
+              <select
+                aria-label="Save game"
+                disabled={running}
+                value={selected}
+                onChange={(e) => setSelected(e.target.value as GameId)}
+              >
                 {games.map((g) => (
-                  <button
-                    className={selected === g.id ? "active" : ""}
-                    disabled={running}
-                    onClick={() => setSelected(g.id)}
-                    key={g.id}
-                  >
+                  <option key={g.id} value={g.id}>
                     {g.name}
-                  </button>
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
             <div className="slot-create">
               <input
@@ -565,7 +667,7 @@ export function App() {
                 disabled={busy || running}
                 onClick={() => saveInput.current?.click()}
               >
-                <Upload size={14} /> Import .sav
+                <Upload size={14} /> Import {early ? ".pws" : ".sav"}
               </button>
             </div>
             <div className="slot-list">
@@ -583,7 +685,9 @@ export function App() {
                       <h3>{s.name}</h3>
                       <p>
                         {s.data
-                          ? "512 KiB · " + new Date(s.updated).toLocaleString()
+                          ? Math.ceil(s.data.byteLength / 1024) +
+                            " KiB · " +
+                            new Date(s.updated).toLocaleString()
                           : "New journey · no game save yet"}
                       </p>
                     </div>
@@ -592,7 +696,11 @@ export function App() {
                       title="Export save"
                       aria-label={`Export ${s.name}`}
                       onClick={() =>
-                        s.data && download(s.data, `${s.name}.sav`)
+                        s.data &&
+                        download(
+                          s.data,
+                          `${s.name}.${isGen4(s.game) ? "sav" : "pws"}`,
+                        )
                       }
                     >
                       <Download size={15} />
@@ -616,7 +724,10 @@ export function App() {
                     {s.backup && (
                       <button
                         onClick={() =>
-                          download(s.backup!, `${s.name}.previous.sav`)
+                          download(
+                            s.backup!,
+                            `${s.name}.previous.${isGen4(s.game) ? "sav" : "pws"}`,
+                          )
                         }
                       >
                         Previous
@@ -688,14 +799,18 @@ export function App() {
                   <option value="2">2×</option>
                 </select>
               </label>
-              <RecompOptions
-                game={session.active?.game ?? selected}
-                settings={settings}
-                onChange={setSettings}
-              />
-              <button onClick={() => setPopup("performance")}>
-                Performance / FPS
-              </button>
+              {!early && (
+                <RecompOptions
+                  game={session.active?.game ?? selected}
+                  settings={settings}
+                  onChange={setSettings}
+                />
+              )}
+              {!early && (
+                <button onClick={() => setPopup("performance")}>
+                  Performance / FPS
+                </button>
+              )}
             </div>
           </Modal>
         )}
@@ -715,11 +830,13 @@ export function App() {
               {[
                 ["Move", "↑ ↓ ← → / W A S D"],
                 ["A / B", "Z / X"],
-                ["X / Y", "C / V"],
-                ["L / R", "Q / E"],
+                ...(!early ? [["X / Y", "C / V"]] : []),
+                ...(generation(selected) >= 3 ? [["L / R", "Q / E"]] : []),
                 ["Start / Select", "Esc / Tab"],
-                ["Touch screen", "Click or touch the lower screen"],
-                ["Quick save / Platinum", "F1"],
+                ...(!early
+                  ? [["Touch screen", "Click or touch the lower screen"]]
+                  : []),
+                ["Quick save", "F1"],
               ].map(([a, b]) => (
                 <div key={a}>
                   <span>{a}</span>

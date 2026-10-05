@@ -165,3 +165,8 @@ packaged app on Diamond, Pearl and Platinum with a screenshot, listed in
   replaces itself.
 - **Launching:** `nativeplat --game platinum --slot "My run"`,
   `--launcher`, or `open 'nativeplat://launch?game=platinum&slot=My%20run'`.
+
+Gen 1–3 browser support uses a compartmentalized LÖVE runtime under
+[`web/integrations/gen123`](web/integrations/gen123/README.md).
+Based on the Pokemon Gen 1 Recompilation Project by BOIS CLUB GAMES, LLC
+(https://github.com/bryanthaboi/gen1recomp).

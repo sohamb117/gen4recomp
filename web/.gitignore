@@ -8,3 +8,9 @@ public/cores/*.wasm
 public/cores/*.wasm.tmp
 public/cores/manifest.json
 *.tsbuildinfo
+
+public/engines/gen123/
+*.gb
+*.gbc
+*.gba
+*.pws

@@ -1,9 +1,10 @@
 type Props = {
   onKey: (code: string, down: boolean) => void;
   disabled: boolean;
+  generation?: number;
 };
 
-export function TouchControls({ onKey, disabled }: Props) {
+export function TouchControls({ onKey, disabled, generation = 4 }: Props) {
   function control(
     label: string,
     code: string,
@@ -44,10 +45,12 @@ export function TouchControls({ onKey, disabled }: Props) {
 
   return (
     <div className="touch-controls" role="group" aria-label="Game controls">
-      <div className="shoulder-controls">
-        {control("L", "KeyQ", "shoulder", "Left shoulder")}
-        {control("R", "KeyE", "shoulder", "Right shoulder")}
-      </div>
+      {generation >= 3 && (
+        <div className="shoulder-controls">
+          {control("L", "KeyQ", "shoulder", "Left shoulder")}
+          {control("R", "KeyE", "shoulder", "Right shoulder")}
+        </div>
+      )}
       <div
         className="control-pad d-pad"
         role="group"
@@ -63,8 +66,8 @@ export function TouchControls({ onKey, disabled }: Props) {
         role="group"
         aria-label="Face buttons"
       >
-        {control("X", "KeyC", "north")}
-        {control("Y", "KeyV", "west")}
+        {generation === 4 && control("X", "KeyC", "north")}
+        {generation === 4 && control("Y", "KeyV", "west")}
         {control("A", "KeyZ", "east")}
         {control("B", "KeyX", "south")}
       </div>
