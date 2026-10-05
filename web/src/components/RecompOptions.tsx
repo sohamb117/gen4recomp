@@ -44,100 +44,97 @@ export function RecompOptions({
           onChange={(e) => set("widescreen", e.target.checked)}
         />
       </label>
-      {platinum ? (
-        <>
-          <label>
-            <span>
-              Music volume<small>{s.musicVolume}% · includes fanfares</small>
-            </span>
-            <input
-              aria-label="Music volume"
-              type="range"
-              min={0}
-              max={100}
-              step={5}
-              value={s.musicVolume}
-              onChange={(e) => set("musicVolume", Number(e.target.value))}
-            />
-          </label>
-          <label>
-            <span>
-              Sound effects<small>{s.effectsVolume}% · includes cries</small>
-            </span>
-            <input
-              aria-label="Sound effects"
-              type="range"
-              min={0}
-              max={100}
-              step={5}
-              value={s.effectsVolume}
-              onChange={(e) => set("effectsVolume", Number(e.target.value))}
-            />
-          </label>
-          <label>
-            <span>
-              Camera distance
-              <small>
-                {Math.round((s.cameraZoom * 100) / 256)}% · field scenes
-              </small>
-            </span>
-            <input
-              aria-label="Camera distance"
-              type="range"
-              min={64}
-              max={1024}
-              step={32}
-              value={s.cameraZoom}
-              onChange={(e) => set("cameraZoom", Number(e.target.value))}
-            />
-          </label>
-          <label>
-            <span>
-              Camera tilt<small>{s.cameraTilt / 16}° · field scenes</small>
-            </span>
-            <input
-              aria-label="Camera tilt"
-              type="range"
-              min={-720}
-              max={720}
-              step={80}
-              value={s.cameraTilt}
-              onChange={(e) => set("cameraTilt", Number(e.target.value))}
-            />
-          </label>
-          <button
-            onClick={() => onChange({ ...s, cameraZoom: 256, cameraTilt: 0 })}
-          >
-            Reset camera
-          </button>
-          <label>
-            <span>
-              Instant text<small>Show dialogue without the wait.</small>
-            </span>
-            <input
-              type="checkbox"
-              checked={s.instantText}
-              onChange={(e) => set("instantText", e.target.checked)}
-            />
-          </label>
-          <label>
-            <span>
-              Cartridge bug fixes
-              <small>Fix Wonder Guard, Rage, and trainer form stats.</small>
-            </span>
-            <input
-              type="checkbox"
-              checked={s.fixBugs}
-              onChange={(e) => set("fixBugs", e.target.checked)}
-            />
-          </label>
-        </>
-      ) : (
-        <p className="settings-note">
-          Camera, separate audio controls, instant text, bug fixes and quick
-          save are currently supported by Platinum.
-        </p>
-      )}
+      <>
+        <label>
+          <span>
+            Music volume<small>{s.musicVolume}% · includes fanfares</small>
+          </span>
+          <input
+            aria-label="Music volume"
+            type="range"
+            min={0}
+            max={100}
+            step={5}
+            value={s.musicVolume}
+            onChange={(e) => set("musicVolume", Number(e.target.value))}
+          />
+        </label>
+        <label>
+          <span>
+            Sound effects<small>{s.effectsVolume}% · includes cries</small>
+          </span>
+          <input
+            aria-label="Sound effects"
+            type="range"
+            min={0}
+            max={100}
+            step={5}
+            value={s.effectsVolume}
+            onChange={(e) => set("effectsVolume", Number(e.target.value))}
+          />
+        </label>
+        <label>
+          <span>
+            Camera distance
+            <small>
+              {Math.round((s.cameraZoom * 100) / 256)}% · field scenes
+            </small>
+          </span>
+          <input
+            aria-label="Camera distance"
+            type="range"
+            min={64}
+            max={1024}
+            step={32}
+            value={s.cameraZoom}
+            onChange={(e) => set("cameraZoom", Number(e.target.value))}
+          />
+        </label>
+        <label>
+          <span>
+            Camera tilt<small>{s.cameraTilt / 16}° · field scenes</small>
+          </span>
+          <input
+            aria-label="Camera tilt"
+            type="range"
+            min={-720}
+            max={720}
+            step={80}
+            value={s.cameraTilt}
+            onChange={(e) => set("cameraTilt", Number(e.target.value))}
+          />
+        </label>
+        <button
+          onClick={() => onChange({ ...s, cameraZoom: 256, cameraTilt: 0 })}
+        >
+          Reset camera
+        </button>
+        <label>
+          <span>
+            Instant text<small>Show dialogue without the wait.</small>
+          </span>
+          <input
+            type="checkbox"
+            checked={s.instantText}
+            onChange={(e) => set("instantText", e.target.checked)}
+          />
+        </label>
+        <label>
+          <span>
+            Cartridge bug fixes
+            <small>
+              {platinum
+                ? "Fix Wonder Guard, Rage, and trainer form stats."
+                : "Fix Wonder Guard and Rage."}
+            </small>
+          </span>
+          <input
+            type="checkbox"
+            checked={s.fixBugs}
+            onChange={(e) => set("fixBugs", e.target.checked)}
+          />
+        </label>
+      </>
       <button
         onClick={() =>
           onChange({

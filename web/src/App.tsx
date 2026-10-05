@@ -441,7 +441,7 @@ export function App() {
                   >
                     <FastForward size={16} /> 2×
                   </button>
-                  {session.active?.game === "platinum" && (
+                  {session.active && (
                     <button
                       title="Quick save (F1)"
                       onClick={session.quickSave}

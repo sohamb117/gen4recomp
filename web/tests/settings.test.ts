@@ -105,7 +105,7 @@ test("native guest receives live recomp settings and returns quick-save status",
   assert.equal(host.runFrame().width, 256);
 });
 
-test("Platinum-only preferences do not activate missing Diamond/Pearl hooks", () => {
+test("Diamond/Pearl receive their implemented recomp hooks", () => {
   const s = {
     ...initialSettings,
     renderScale: 2,
@@ -119,14 +119,11 @@ test("Platinum-only preferences do not activate missing Diamond/Pearl hooks", ()
     const o = gameOptions(s, game, 4);
     assert.equal(o[OPT.renderScale], 2);
     assert.equal(o[OPT.widescreen], 1);
-    for (const key of [
-      OPT.instantText,
-      OPT.rules,
-      OPT.quickSaveSequence,
-      OPT.cameraTilt,
-    ])
-      assert.equal(o[key], 0);
-    assert.equal(o[OPT.musicVolume], 256);
+    assert.equal(o[OPT.instantText], 1);
+    assert.equal(o[OPT.rules], 1);
+    assert.equal(o[OPT.quickSaveSequence], 4);
+    assert.equal(o[OPT.cameraTilt], 80);
+    assert.equal(o[OPT.musicVolume], 0);
   }
 });
 

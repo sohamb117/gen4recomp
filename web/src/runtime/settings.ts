@@ -60,20 +60,17 @@ export function normalizeSettings(value: unknown): Settings {
   };
 }
 
-/** Only send game-specific hooks to the core that implements them. D/P's
- * pc_dp_hooks.c deliberately stubs Platinum's field, text and rules hooks. */
-export function gameOptions(s: Settings, game: GameId, quickSaveSequence = 0) {
+/** All current guest cores implement these shared options. */
+export function gameOptions(s: Settings, _game: GameId, quickSaveSequence = 0) {
   const o = defaultOptions();
   o[OPT.renderScale] = s.renderScale;
   o[OPT.widescreen] = +s.widescreen;
-  if (game === "platinum") {
-    o[OPT.musicVolume] = Math.floor((s.musicVolume * 256) / 100);
-    o[OPT.effectsVolume] = Math.floor((s.effectsVolume * 256) / 100);
-    o[OPT.cameraZoom] = s.cameraZoom;
-    o[OPT.cameraTilt] = s.cameraTilt;
-    o[OPT.quickSaveSequence] = quickSaveSequence;
-    o[OPT.instantText] = +s.instantText;
-    o[OPT.rules] = +s.fixBugs;
-  }
+  o[OPT.musicVolume] = Math.floor((s.musicVolume * 256) / 100);
+  o[OPT.effectsVolume] = Math.floor((s.effectsVolume * 256) / 100);
+  o[OPT.cameraZoom] = s.cameraZoom;
+  o[OPT.cameraTilt] = s.cameraTilt;
+  o[OPT.quickSaveSequence] = quickSaveSequence;
+  o[OPT.instantText] = +s.instantText;
+  o[OPT.rules] = +s.fixBugs;
   return o;
 }

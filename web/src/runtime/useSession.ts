@@ -309,13 +309,7 @@ export function useSession(
     profiler.current.startStress(performance.now());
   }
   function quickSave() {
-    if (
-      !worker.current ||
-      paused.current ||
-      activeGame.current !== "platinum" ||
-      quickSavePending.current
-    )
-      return;
+    if (!worker.current || paused.current || quickSavePending.current) return;
     quickSaveSequence.current = (quickSaveSequence.current + 1) >>> 0 || 1;
     saveFailed.current = false;
     quickSavePending.current = true;
