@@ -1,4 +1,5 @@
-import type { GameId } from "./catalog";
+import { validateSave } from "../shared/save-format.mjs";
+import { isGen4, type GameId } from "./catalog";
 export type Cartridge = {
   game: GameId;
   name: string;
@@ -78,7 +79,11 @@ export const storage = {
     });
   },
 };
-export function saveData(data: ArrayBuffer) {
+export function saveData(data: ArrayBuffer, game: GameId = "platinum") {
+  if (!isGen4(game)) {
+    validateSave(new Uint8Array(data), game);
+    return data.slice(0);
+  }
   if (data.byteLength !== 512 * 1024 && data.byteLength !== 512 * 1024 + 122)
     throw Error(
       "Save must be a 512 KiB raw .sav or a DeSmuME .dsv with its 122-byte footer.",

@@ -24,3 +24,14 @@ CREATE TABLE IF NOT EXISTS auth_limits (
   count integer NOT NULL,
   expires_at timestamptz NOT NULL
 );
+
+-- Expand the existing deployment without deleting accounts or saves. Keep the
+-- DS invariant, and bound JSON engine envelopes for the nine earlier games.
+ALTER TABLE cloud_saves DROP CONSTRAINT IF EXISTS cloud_saves_game_check;
+ALTER TABLE cloud_saves DROP CONSTRAINT IF EXISTS cloud_saves_data_check;
+ALTER TABLE cloud_saves ADD CONSTRAINT cloud_saves_game_check CHECK
+  (game IN ('diamond','pearl','platinum','red','blue','yellow','gold','silver','crystal','firered','leafgreen','emerald'));
+ALTER TABLE cloud_saves ADD CONSTRAINT cloud_saves_data_check CHECK
+  ((game IN ('diamond','pearl','platinum') AND octet_length(data) = 524288)
+   OR (game IN ('red','blue','yellow','gold','silver','crystal','firered','leafgreen','emerald')
+       AND octet_length(data) BETWEEN 1 AND 4194304));

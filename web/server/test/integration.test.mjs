@@ -295,3 +295,20 @@ test("production cookies are secure and repeated login attempts are limited in P
     await new Promise((resolve) => limited.close(resolve));
   }
 });
+
+test('engine saves replace DS saves without adding a second row; cross-game envelopes are rejected', async () => {
+  const account = await register();
+  const id = account.body.user.id;
+  assert.equal((await request('save','PUT',save(id),account.cookie)).status,200);
+  const bytes = Buffer.from(JSON.stringify({format:'pokeweb-gen123-v1',game:'red',save:'return {version = "red", name = "RED",}'}));
+  const payload = save(id,1,'red',bytes);
+  assert.equal((await request('save','PUT',{...payload,game:'blue'},account.cookie)).status,400);
+  assert.equal((await request('save','PUT',payload,account.cookie)).status,200);
+  const loaded = await request('save','GET',undefined,account.cookie);
+  assert.equal(loaded.body.game,'red');
+  assert.equal(Buffer.from(loaded.body.data,'base64').toString(),bytes.toString());
+  assert.equal((await pool.query('SELECT count(*) FROM cloud_saves WHERE account_id=$1',[id])).rows[0].count,'1');
+  assert.equal((await request('save','PUT',save(id,2,'platinum'),account.cookie)).status,200);
+  await migrate(pool);
+  assert.equal((await request('save','GET',undefined,account.cookie)).body.game,'platinum');
+});

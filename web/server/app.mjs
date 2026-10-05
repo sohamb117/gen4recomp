@@ -1,3 +1,4 @@
+import { gen123Games, gen4Games, MAX_SAVE_BYTES, validateSave } from "../shared/save-format.mjs";
 import { createServer } from "node:http";
 import {
   randomBytes,
@@ -10,7 +11,6 @@ import { promisify } from "node:util";
 import { readFile } from "node:fs/promises";
 const derive = promisify(scrypt);
 const hash = (value) => createHash("sha256").update(value).digest("hex");
-const SIZE = 512 * 1024;
 const DAYS = 30 * 86400;
 class HttpError extends Error {
   constructor(status, message) {
@@ -248,10 +248,10 @@ export function createApp({
       };
     }
     if (req.method === "PUT" && path === "/api/save") {
-      const body = await jsonBody(req, 710000);
+      const body = await jsonBody(req, Math.ceil(MAX_SAVE_BYTES * 4 / 3) + 4096);
       if (body.accountId !== user.id)
         fail(403, "The signed-in account changed. Sign in again.");
-      if (!["diamond", "pearl", "platinum"].includes(body.game))
+      if (![...gen4Games, ...gen123Games].includes(body.game))
         fail(400, "Unknown game.");
       if (
         typeof body.name !== "string" ||
@@ -267,18 +267,20 @@ export function createApp({
         fail(400, "Invalid save revision.");
       if (
         typeof body.data !== "string" ||
-        body.data.length !== 699052 ||
-        !/^[A-Za-z0-9+/]+=$/.test(body.data)
+        body.data.length > Math.ceil(MAX_SAVE_BYTES / 3) * 4 ||
+        !/^[A-Za-z0-9+/]+={0,2}$/.test(body.data)
       )
-        fail(400, "Save must contain exactly 512 KiB.");
+        fail(400, "Invalid save encoding or size.");
+      if (gen4Games.includes(body.game) && body.data.length > 699052)
+        fail(413, "DS saves must be 512 KiB.");
       const data = Buffer.from(body.data, "base64");
       if (
-        data.length !== SIZE ||
         data.toString("base64") !== body.data ||
         data.every((x) => x === 0) ||
         data.every((x) => x === 255)
       )
         fail(400, "Invalid or empty save image.");
+      try { validateSave(data, body.game); } catch (error) { fail(400, error.message); }
       const digest = hash(data);
       if (body.sha256 !== digest) fail(400, "Save checksum does not match.");
       const db = await pool.connect();

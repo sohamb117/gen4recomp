@@ -195,7 +195,7 @@ export class CloudStore {
     if (!this.state.busy && !this.blocked) void this.drain();
   }
   private async send(slot: SaveSlot, revision: number, accountId: string) {
-    const data = saveData(slot.data!);
+    const data = saveData(slot.data!, slot.game);
     const sha256 = await digest(data);
     return api<{ save: CloudSave }>("save", "PUT", {
       accountId,
@@ -298,7 +298,7 @@ export class CloudStore {
       if (remote.accountId !== this.state.user.id)
         throw Error("Account changed. Sign out and sign in again.");
       const bytes = Uint8Array.from(atob(remote.data), (c) => c.charCodeAt(0));
-      const data = saveData(bytes.buffer);
+      const data = saveData(bytes.buffer, remote.game);
       if ((await digest(data)) !== remote.sha256)
         throw Error("Cloud save failed its integrity check.");
       const slot: SaveSlot = {
