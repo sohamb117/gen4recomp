@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { loadCartridges, fetchCartridge } from "../src/cartridges";
 import { GuestHost } from "../src/runtime/host";
-import type { GameId, CoreManifest } from "../src/catalog";
+import { games, isGen4, type CoreManifest } from "../src/catalog";
+import { readFileSync } from "node:fs";
 
 const base = new URL(process.argv[2] || "http://127.0.0.1:8088/").href;
 const index = await fetch(base);
@@ -25,11 +26,18 @@ if (process.env.NP_WITH_SAVE_API === "1") {
   assert.match(anonymous.headers.get("cache-control") || "", /no-store/);
 }
 const catalog = await loadCartridges(base);
-assert.deepEqual(Object.keys(catalog).sort(), ["diamond", "pearl", "platinum"]);
+assert.deepEqual(
+  Object.keys(catalog).sort(),
+  games.map((game) => game.id).sort(),
+);
 // Previously published plaintext URLs must no longer be served (including gzip).
 for (const file of [
   "diamond-e29bc6ebe431d7a6.nds",
   "platinum-fbce4c4def0c7797.nds",
+  "red.gb",
+  "yellow.gbc",
+  "emerald.gba",
+  "test.pws",
 ]) {
   for (const suffix of ["", ".gz"]) {
     const response = await fetch(new URL(`cartridges/${file}${suffix}`, base), {
@@ -50,11 +58,47 @@ assert.deepEqual(Object.keys(manifest.games).sort(), [
   "pearl",
   "platinum",
 ]);
-for (const game of ["diamond", "pearl", "platinum"] as GameId[]) {
+const engine = await fetch(new URL("engines/gen123/manifest.json", base)).then(
+  (r) => r.json(),
+);
+const expectedEngine = JSON.parse(
+  readFileSync(
+    new URL("../public/engines/gen123/manifest.json", import.meta.url),
+    "utf8",
+  ),
+);
+assert.deepEqual(
+  engine,
+  expectedEngine,
+  "Deployed engine must match the prepared release",
+);
+for (const [file, expected] of Object.entries(engine.files) as [
+  string,
+  { bytes: number; sha256: string },
+][]) {
+  const response = await fetch(new URL(`engines/gen123/${file}`, base));
+  assert.equal(response.status, 200);
+  assert.doesNotMatch(response.headers.get("cache-control") || "", /immutable/);
+  const bytes = await response.arrayBuffer();
+  assert.equal(bytes.byteLength, expected.bytes);
+  assert.equal(
+    Buffer.from(await crypto.subtle.digest("SHA-256", bytes)).toString("hex"),
+    expected.sha256,
+  );
+}
+console.log(
+  "Gen 1–3: all eight deployed engine/source/license files match the prepared release",
+);
+for (const { id: game, hash: sha1 } of games) {
   const data = await fetchCartridge(base, game, catalog[game]!, () => {});
   console.log(
     `${game}: downloaded encrypted package, decrypted and verified ${data.byteLength} cartridge bytes`,
   );
+  assert.equal(
+    Buffer.from(await crypto.subtle.digest("SHA-1", data)).toString("hex"),
+    sha1,
+  );
+  if (!isGen4(game)) continue;
   const core = manifest.games[game]!;
   const response = await fetch(new URL(`cores/${core.file}`, base));
   assert.equal(response.status, 200);

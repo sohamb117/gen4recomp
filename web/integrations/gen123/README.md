@@ -42,9 +42,10 @@ Dependencies:
   (MIT), with its original copyright notice inside the archive.
 
 Test inputs can be built locally from pret/pokered, pret/pokeyellow, pret/pokegold,
-pret/pokecrystal and pret/pokefirered. Never commit or include them in a web build.
-The GCP cartridge allowlist remains Diamond/Pearl/Platinum; Gen 1–3 currently use
-local cartridge import.
+pret/pokecrystal and pret/pokefirered. Never commit ROMs or include them in a portable release. The explicitly authorized
+GCP deployment includes all nine as encrypted `.npc` packages alongside
+Diamond/Pearl/Platinum. `scripts/stage-gcp.mjs` verifies canonical hashes before
+packaging; local cartridge import remains available.
 
 For reproducible browser smoke tests, start the web preview and run:
 

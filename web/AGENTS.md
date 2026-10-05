@@ -10,8 +10,9 @@
   authorized username/password accounts and one Postgres cloud save per account.
   Keep account controls inside Save manager and network work off the frame loop.
   The user authorized public GCP hosting
-  of Diamond, Pearl, and Platinum; only `scripts/stage-gcp.mjs` includes those allowlisted
-  cartridges as encrypted `.npc` packages; never ship raw `.nds` files. Decrypt
+  of Red, Blue, Yellow, Gold, Silver, Crystal, FireRed, LeafGreen, Emerald,
+  Diamond, Pearl, and Platinum; only `scripts/stage-gcp.mjs` includes those allowlisted
+  cartridges as encrypted `.npc` packages; never ship raw `.gb`, `.gbc`, `.gba`, or `.nds` files. Decrypt
   only on first download, cache the result, and keep crypto out of the gameplay
   path. The portable release remains ROM-free. Never add cartridge images,
   save images, or generated WASM to version control. Only manifest-listed
