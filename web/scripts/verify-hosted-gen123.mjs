@@ -18,6 +18,54 @@ const browser = await chromium.launch({
 });
 const results = [];
 try {
+  // Model LibreWolf's disabled WebGL without changing the user's browser.
+  const blocked = await browser.newContext();
+  const blockedPage = await blocked.newPage();
+  const dialogs = [],
+    heavyRequests = [];
+  blockedPage.on("dialog", (d) => {
+    dialogs.push(d.message());
+    void d.dismiss();
+  });
+  blockedPage.on("request", (r) => {
+    if (/\/(game\.love|love\.wasm)$/.test(r.url())) heavyRequests.push(r.url());
+  });
+  await blockedPage.addInitScript(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (type, ...args) {
+      if (
+        type === "webgl" ||
+        type === "experimental-webgl" ||
+        type === "webgl2"
+      )
+        return null;
+      return original.call(this, type, ...args);
+    };
+  });
+  await blockedPage.goto(base);
+  await blockedPage.getByLabel("Generation", { exact: true }).selectOption("1");
+  await blockedPage
+    .getByRole("button", { name: "Play Red", exact: true })
+    .click();
+  await blockedPage.waitForFunction(
+    () => document.querySelector(".live-label")?.textContent === "ERROR",
+  );
+  assert.match(
+    await blockedPage.getByRole("status").textContent(),
+    /WebGL is blocked or unavailable/,
+  );
+  assert.deepEqual(dialogs, []);
+  assert.deepEqual(heavyRequests, []);
+  await blockedPage
+    .getByRole("button", { name: "Close game", exact: true })
+    .click();
+  await blockedPage.waitForFunction(
+    () => document.querySelector(".live-label")?.textContent === "STANDBY",
+  );
+  await blocked.close();
+  console.log(
+    "Blocked WebGL: clear error, no native alert or engine download, close recovers UI",
+  );
   const context = await browser.newContext();
   const page = await context.newPage();
   const errors = [],
@@ -44,7 +92,11 @@ try {
     ["red", "Red", "1"],
     ["crystal", "Crystal", "2"],
     ["emerald", "Emerald", "3"],
-  ]) {
+  ].filter(
+    ([game]) =>
+      !process.env.GEN123_TEST_GAMES ||
+      process.env.GEN123_TEST_GAMES.split(",").includes(game),
+  )) {
     await page
       .getByLabel("Generation", { exact: true })
       .selectOption(generation);
@@ -95,7 +147,10 @@ try {
       if (run === 1)
         assert.equal(extracted, false, "Cached launch must skip extraction");
       assert.ok(packages.every((p) => p.status === 200));
-      await page.screenshot({ path: resolve(out, `${game}-${run}.png`) });
+      await page.screenshot({
+        path: resolve(out, `${game}-${run}.png`),
+        fullPage: true,
+      });
       await page.getByRole("button", { name: "Pause", exact: true }).click();
       assert.equal(await page.locator(".live-label").textContent(), "PAUSED");
       await page

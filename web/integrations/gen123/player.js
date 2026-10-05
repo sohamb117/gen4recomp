@@ -33,6 +33,15 @@ window.addEventListener("message", async ({ origin, source, data }) => {
   if (data.type !== "start" || started) return;
   started = true;
   try {
+    // LÖVE otherwise shows a native OpenGL alert and leaves the parent loading.
+    // Check once before extraction; do not change browser privacy preferences.
+    const probe = document.createElement("canvas");
+    const gl = probe.getContext("webgl", { antialias: false });
+    if (!gl)
+      throw Error(
+        "WebGL is blocked or unavailable. Allow WebGL for pokeweb in your browser, then reload. In LibreWolf, enable WebGL under Settings → LibreWolf.",
+      );
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
     const manifestResponse = await fetch("manifest.json");
     if (!manifestResponse.ok) throw Error("Engine manifest unavailable");
     const manifest = await manifestResponse.json();
