@@ -1,5 +1,5 @@
-# Proves the D/P road to Canalave after the Relic Badge (no Fly yet in D/P): Hearthome -> Route 208 -> Mt. Coronet 1F ->
-# Route 207 -> Oreburgh -> Oreburgh Gate -> Route 203 -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse,
+# Proves the D/P road to Canalave after the Relic Badge (a Fly bridge to Jubilife, the boost's Staraptor):
+# Hearthome -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse,
 # where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0.
 # Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
 title = "Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse"
@@ -36,6 +36,7 @@ notes = "Estimate: Pokémon Center heal after Fantina (~1500), ~430 walked tiles
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 45000
@@ -76,74 +77,10 @@ do = "wait_map"
 map = "MAP_HEARTHOME"
 
 [[step]]
-do = "walk_to"
-on_battle = "flee"
-x = 454
-z = 726
-max = 3000
-note = "Hearthome warp 14 -> Route 208 gatehouse; coord 1 (461,725..729) Keira scene only if 0x40F6==0 (scr_seq 0090 script_23), coord 2 (455,724..729) only if 0x407B==1"
-
-[[step]]
-do = "wait_map"
-map = "MAP_HEARTHOME_ROUTE_208_GATEHOUSE"
-
-[[step]]
-do = "walk_to"
-on_battle = "flee"
-x = 1
-z = 7
-note = "gatehouse warp 1 -> Route 208 (447,726)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_ROUTE_208"
-
-[[step]]
-do = "walk_to"
-on_battle = "flee"
-x = 392
-z = 724
-max = 4000
-note = "Route 208 warp 3 -> Mt. Coronet South 1F warp 1 (27,20); wild battles fought by walk_to; [INFERENCE] no HM needed westbound (earlier slices came this way eastbound)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_MOUNT_CORONET_SOUTH_1F"
-
-[[step]]
-do = "walk_to"
-on_battle = "flee"
-x = 4
-z = 8
-max = 3000
-note = "1F warp 0 -> Route 207 (341,712); [INFERENCE] the Rock Smash rocks (16..25,22..23) are off this path; coord (14,23) only if 0x4096==0"
-
-[[step]]
-do = "wait_map"
-map = "MAP_ROUTE_207"
-
-[[step]]
-do = "walk_to"
-on_battle = "flee"
-x = 258
-z = 749
-max = 5000
-note = "Route 207 west (downhill slope, [INFERENCE] passable on foot westbound) seamless into Oreburgh, to warp 10 -> Oreburgh Gate 1F (27,22); coord (262,748..751) idle once 0x4079 = 3 (scr_seq 0002 @0x088B)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_OREBURGH_GATE_1F"
-
-[[step]]
-do = "walk_to"
-on_battle = "flee"
-x = 4
-z = 22
-note = "Gate 1F warp 0 -> Route 203 (246,749)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_ROUTE_203"
+do = "fly"
+map = "MAP_JUBLIFE"
+shot = "fly-jubilife"
+note = "Fly bridge Hearthome -> Jubilife (arrival flag 0x9B1, 04) with the Staraptor of this milestone's boost: on foot the way is Route 208, Mt. Coronet and Route 207's mud slope, which the walk cannot go down (the planner stood at (306,705)), Oreburgh, Route 203"
 
 [[step]]
 do = "walk_to"
@@ -151,7 +88,7 @@ on_battle = "flee"
 x = 128
 z = 758
 max = 5000
-note = "Route 203 west, seamless into Jubilife, to warp 12 -> Route 218 Jubilife gatehouse (10,7); Route 203 trainers already beaten in the chain; coord (196,757..760) idle once 0x4088 = 1"
+note = "Jubilife west, warp 12 -> Route 218 Jubilife gatehouse (10,7)"
 
 [[step]]
 do = "wait_map"
@@ -159,7 +96,6 @@ map = "MAP_ROUTE_218_JUBLIFE_GATEHOUSE"
 
 [[step]]
 do = "walk_to"
-on_battle = "flee"
 x = 1
 z = 7
 note = "gatehouse warp 0 -> Route 218 (121,758)"
@@ -168,12 +104,44 @@ note = "gatehouse warp 0 -> Route 218 (121,758)"
 do = "wait_map"
 map = "MAP_ROUTE_218"
 shot = "route218"
-# PHASE2: Route 218 Surf crossing. Find the first shore tile west of (121,758) with a map scan of MAP_ROUTE_218 (388);
-#   face the water, A, Yes (Surf needs BADGE_RELIC, games/diamond/arm9/src/field_move.c:265; Empoleon slot 0 knows Surf);
-#   surf west past the fishermen (93,751)/(93,757) (sight 0: talk-only) and Sailor Skyler (76,746) E sight 3, land and walk to
-#   warp 0 (70,754) -> MAP_ROUTE_218_CANALAVE_GATEHOUSE arriving at (10,7). Walk west: coord 0 (7,6..8) fires scr_seq 0441
-#   script_2 (assistant's Pokédex upgrade, msg 461 #2/#4) -> advance_text (shot "dex-upgrade"); then walk_to (1,7)
-#   -> wait_map MAP_CANALAVE (arrive warp 7, 63,754) -> wait_field.
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+surf = true
+x = 70
+z = 754
+max = 8000
+note = "Surf west across Route 218 (BADGE_RELIC, games/diamond/arm9/src/field_move.c:265; the boost's Staraptor carries Surf) past the fishermen (93,751)/(93,757) (talk-only) and Sailor Skyler (76,746) E sight 3 (fought by walk_to), to warp 0 (70,754) -> MAP_ROUTE_218_CANALAVE_GATEHOUSE (10,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_218_CANALAVE_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+on_text = "stop"
+x = 1
+z = 7
+note = "west through the gatehouse: coord 0 (7,6..8) var 0x4105 == 0 runs scr_seq 0441 #2 (the assistant upgrades the Pokédex), which stops the walk"
+
+[[step]]
+do = "advance_text"
+shot = "dex-upgrade"
+note = "msg 461 #2/#4; SetVar 0x4105 1"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "gatehouse warp 0 -> MAP_CANALAVE warp 7 (63,754)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE"
+
+[[step]]
+do = "wait_field"
 
 [expect]
 map = "MAP_CANALAVE"

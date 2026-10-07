@@ -1,9 +1,10 @@
-# Boost on 38's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
-# Fly for the bridges of 39 (Canalave -> Veilstone), 40 (Lake Valor -> Twinleaf), 41 (Lake Verity -> Celestic) and 46+
+# Boost on 34's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Fly for the bridges of 35 (Hearthome -> Jubilife), 39 (Canalave -> Veilstone), 40 (Lake Valor -> Twinleaf), 41 (Lake Verity -> Celestic) and 46+
 # (the story's HM02 is 46's warehouse ball; the walks it would save cross the whole region). Staraptor learns Fly at level 1 by HM; the Cobble Badge
 # (22) allows it out of battle. Strength / Rock Smash ride along for Mt. Coronet (49), Strength for Mt. Coronet north (42).
+# Surf (HM03 since 32) for Route 218 (35) and Coronet South 1F (49): the chain's Torterra cannot learn it.
 party SPECIES_STARAPTOR 60 ITEM_NONE
 party-move 1 0 MOVE_FLY
 party-move 1 1 MOVE_STRENGTH
 party-move 1 2 MOVE_ROCK_SMASH
-party-move 1 3 MOVE_CLOSE_COMBAT
+party-move 1 3 MOVE_SURF

@@ -144,10 +144,36 @@ note = "[INFERENCE] south across Valor Lakefront into Route 213; stay off x=724 
 do = "wait_map"
 map = "MAP_ROUTE_213"
 
+# Route 213's hotel grounds (z <= 818) and the beach (z >= 819) meet only through the Grand Lake reception: its doors
+# (706,813) north and (706,818) south (zone_event 0358 warps 4/3 <-> zone_event 0361 warps 0/1). East of it is sea
+# (tests/e2e/tools/probe_map.py; the step layers count water as ground, the tile grid shows '~').
+
 [[step]]
 do = "walk_to"
 on_battle = "flee"
-via = [[723, 806], [722, 824], [702, 832], [683, 834]]
+x = 706
+z = 813
+max = 4000
+note = "Grand Lake reception north door, zone_event 0358 warp 4 -> MAP_ROUTE_213_GRAND_LAKE_RECEPTION warp 0 (8,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_213_GRAND_LAKE_RECEPTION"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 11
+note = "reception south door, zone_event 0361 warp 1 -> Route 213 warp 3 (706,818), the beach side"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_213"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+via = [[706, 821], [702, 832], [683, 834]]
 x = 646
 z = 812
 max = 14000

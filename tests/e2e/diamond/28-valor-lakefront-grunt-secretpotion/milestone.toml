@@ -103,13 +103,35 @@ note = "msg 444 #0/#1; grunt runs (RemoveEvent 30 @0x00B3 -> hidden 0x238), SetF
 
 [[step]]
 do = "walk_to"
-via = [[702, 832], [722, 824], [723, 806]]
+on_battle = "flee"
+via = [[702, 832], [706, 821]]
+x = 706
+z = 818
+max = 4000
+note = "Grand Lake reception south door (zone_event 0358 warp 3 -> zone_event 0361 warp 1 (8,11)): the hotel grounds and the beach meet only through it (25)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_213_GRAND_LAKE_RECEPTION"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 2
+note = "reception north door, zone_event 0361 warp 0 -> Route 213 warp 4 (706,813)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_213"
+
+[[step]]
+do = "walk_to"
 x = 719
 z = 791
 face = "up"
 interact = true
 max = 6000
-note = "[INFERENCE] tile south of the Valor grunt obj5 (719,790) facing north; crossing into Valor Lakefront (z 736-799); keep off x=724 z789-791 (coord 0, 0x4112==0). Via the beach east to x 702, the slope east to (722,824) and the path north (x 721..724, z 806..822; probe_map.py --map MAP_ROUTE_213 702 830): on its own the planner swung west and back at (676..677,835), the land past the window's top unknown"
+note = "[INFERENCE] tile south of the Valor grunt obj5 (719,790) facing north; crossing into Valor Lakefront (z 736-799); keep off x=724 z789-791 (coord 0, 0x4112==0). From the reception's north door north through the hotel grounds (25 came this way south): on its own the planner swung west and back at (676..677,835), the land past the window's top unknown"
 
 [[step]]
 do = "advance_text"

@@ -3,7 +3,7 @@
 # Badge since 53); Surf too. Ice Fang and Crunch for the Elite Four after (dp_script.py trainer: Aaron's bugs, Bertha's
 # grounds, Flint's fires, Lucian's psychics, Cynthia's Garchomp). Route 223 swimmers lv 37-44 (zone_event 0446).
 party SPECIES_GYARADOS 80 ITEM_NONE
-# Slot 2 behind the chain's Torterra (0) and Staraptor (1, 46's boost); on a lab start (its party already carries
+# Slot 2 behind the chain's Torterra (0) and Staraptor (1, 35's boost); on a lab start (its party already carries
 # Waterfall on Bibarel) slot 2 is Tyranitar, whose moves this only swaps.
 party-move 2 0 MOVE_WATERFALL
 party-move 2 1 MOVE_SURF

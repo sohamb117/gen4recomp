@@ -33,7 +33,6 @@ notes = "Estimate: Platinum's library milestone (~12000) plus the Fly bridge and
 [start]
 from = "prev"
 lab = "lab.recipe"
-boost = "boost.recipe"
 
 [run]
 frames = 30000
@@ -119,7 +118,7 @@ note = "ON_FRAME 0x4078==4 (scr_seq 0497 @0x0016) -> scr_seq 0034 script_5: sail
 do = "fly"
 map = "MAP_VEILSTONE"
 shot = "fly-veilstone"
-note = "Fly bridge Canalave -> Veilstone (the town-map cursor's arrival flag 0x9BD, 21): the chain's Staraptor from this milestone's boost. Not into a Canalave building first: that runs scr_seq 0034 @0x0150 (0x4078 -> 6)"
+note = "Fly bridge Canalave -> Veilstone (the town-map cursor's arrival flag 0x9BD, 21): the chain's Staraptor from 35's boost. Not into a Canalave building first: that runs scr_seq 0034 @0x0150 (0x4078 -> 6)"
 
 [[step]]
 do = "walk_to"

@@ -26,7 +26,7 @@ refs = [
   "zone_event 0131 warp 14",
   "zone_event 0292 warp 0",
 ]
-notes = "Fly: the chain party's Staraptor from 39's boost (in the story HM02 is the warehouse ball this milestone picks up; the walks Fly saves cross the region: Main's call). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35)."
+notes = "Fly: the chain party's Staraptor from 35's boost (in the story HM02 is the warehouse ball this milestone picks up; the walks Fly saves cross the region: Main's call). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35)."
 
 [start]
 from = "prev"

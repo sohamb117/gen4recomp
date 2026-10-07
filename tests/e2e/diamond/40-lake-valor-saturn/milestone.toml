@@ -94,8 +94,9 @@ shot = "lake-valor-after-saturn"
 [[step]]
 do = "fly"
 map = "MAP_TWINLEAF"
+start = [22, 23]
 shot = "fly-twinleaf"
-note = "Fly bridge Lake Valor -> Twinleaf (map_header.c:398: Lake Valor Galactic allows Fly; arrival flag 0x9B0, 01); the Staraptor of 39's boost"
+note = "Lake Valor is off the overworld matrix: its town-map block is Valor Lakefront's (717,760) -> (22,23). Fly bridge Lake Valor -> Twinleaf (map_header.c:398: Lake Valor Galactic allows Fly; arrival flag 0x9B0, 01); the Staraptor of 35's boost"
 
 [[step]]
 do = "walk_to"

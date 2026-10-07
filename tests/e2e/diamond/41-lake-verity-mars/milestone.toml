@@ -77,8 +77,9 @@ note = "msg 271 #14-#17; grunts/Mars removed, 0xBA set, Jupiter + Acuity guards 
 [[step]]
 do = "fly"
 map = "MAP_CELESTIC"
+start = [2, 26]
 shot = "fly-celestic"
-note = "Fly bridge Lake Verity -> Celestic (map_header.c:396: Lake Verity Galactic allows Fly; arrival flag 0x9B4, 30); the Staraptor of 39's boost"
+note = "Lake Verity is off the overworld matrix: its town-map block is Verity Lakefront's (80,843) -> (2,26). Fly bridge Lake Verity -> Celestic (map_header.c:396: Lake Verity Galactic allows Fly; arrival flag 0x9B4, 30); the Staraptor of 35's boost"
 
 [[step]]
 do = "walk_to"
