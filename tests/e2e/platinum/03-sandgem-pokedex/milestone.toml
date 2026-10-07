@@ -29,7 +29,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 16500
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -39,10 +39,18 @@ note = "coord (164,842..847) VAR_SANDGEM_TOWN_STATE==0: counterpart, Barry leave
 
 [[step]]
 do = "advance_text"
+map = "MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB"
+note = "Barry's bump and Dawn/Lucas walk you to the lab; stop at the warp so A does not answer the lab's nickname question"
 
 [[step]]
 do = "wait_map"
 map = "MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB"
+
+[[step]]
+do = "press"
+keys = "B"
+times = 60
+note = "lab OnFrame: B advances the text and answers NO to 'give it a nickname?' (ShowYesNoMenu, scripts_sandgem_town_pokemon_research_lab.s:165-167; B cancels a YES/NO menu as NO); an overshoot only re-asks the Pokedex question (:234-244)"
 
 [[step]]
 do = "advance_text"

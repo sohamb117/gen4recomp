@@ -43,7 +43,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 13500
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -80,10 +80,10 @@ map = "MAP_OREBURGH_MINE_B2F"
 [[step]]
 do = "walk_to"
 x = 18
-z = 27
-face = "down"
+z = 29
+face = "up"
 interact = true
-note = "Roark (18,28) faces east at the boulder (19,28) [INFERENCE: north tile reachable from the B2F entrance; else (18,29) face up]"
+note = "Roark (18,28) between the rocks (17,28) and (19,28); (18,27) is wall, so talk from the south (probe grid of B2F: the row z=29 is open, z=27 is wall at x=6..25)"
 
 [[step]]
 do = "advance_text"

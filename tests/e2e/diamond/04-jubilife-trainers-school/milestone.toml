@@ -35,12 +35,19 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 10500
+frames = 60000
+
+[[step]]
+do = "heal"
+x = 177
+z = 842
+note = "Sandgem Pokemon Center first: the catching tutorial and the wild battles leave the starter low, and Route 202's three trainers (their sight lines cross every way north) white it out otherwise (seen). zone_event 0396 warp 1; inside zone_event 0398: nurse object 3 (8,4), exit warp 0 (8,12)"
 
 [[step]]
 do = "walk_to"
 x = 174
 z = 796
+on_battle = "flee"
 max = 6000
 note = "Jubilife coord 0 (173..176,796) 0x4077==0 (zone_event 0002); from 03's end a seamless walk north up Route 202 (optional sight trainers fought)"
 

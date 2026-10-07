@@ -57,12 +57,14 @@ STEP_KEYS = {
     "wait_battle": set(),
     "schedule": {"file", "frames"},
     "save": set(),
-    "advance_text": {"through_battle"},
-    "auto_battle": {"move", "wait"},
+    "advance_text": {"through_battle", "map"},
+    "auto_battle": {"move", "wait", "flee"},
     "walk_to": {"x", "z", "map", "face", "interact", "run", "on_battle", "on_text"},
+    "talk_to": {"id", "on_battle", "on_text"},
+    "heal": {"x", "z", "on_battle"},
 }
 STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"},
-                 "walk_to": {"x", "z"}}
+                 "walk_to": {"x", "z"}, "talk_to": {"id"}, "heal": {"x", "z"}}
 NAME_KEYS = {"map"}  # step keys that take a game name
 # np_gp -o options every run gets first ([run] options come after and win): message boxes print at once, so
 # story scenes and battles cost their animations, not the text crawl. A recorded press schedule depends on the
@@ -463,7 +465,10 @@ def run_milestone(game, ms, prev, args, out):
     end = os.path.join(d, "end.sav")
     try:
         env, start = start_save(game, ms, prev, args, out, d, res)
-        env.update({str(k): str(v) for k, v in run.get("env", {}).items()})  # extra guest env (PC_LAB_BATTLE, ...)
+        extra = run.get("env", {})  # extra guest env: a table, or a list of "NAME=VALUE"
+        if isinstance(extra, list):
+            extra = dict(e.split("=", 1) for e in extra)
+        env.update({str(k): str(v) for k, v in extra.items()})
         if "clock" in run:
             env["PC_RTC"] = run["clock"]
         if start:

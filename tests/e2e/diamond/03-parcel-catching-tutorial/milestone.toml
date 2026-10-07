@@ -42,7 +42,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 18000
+frames = 60000
 
 [[step]]
 do = "walk_to"

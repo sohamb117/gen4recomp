@@ -21,6 +21,7 @@ TAP_NO = (128, 140)            # sYesNoMenuTouchRects[1]: y 0x70-0xA8
 # battle_party.c sPartyPokemonScreenTouchRects (slot i) and sSelectPokemonScreenTouchRects[SHIFT]
 TAP_PARTY = [(64, 24), (192, 32), (64, 72), (192, 80), (64, 120), (192, 128)]
 TAP_SHIFT = (128, 76)
+TAP_RUN = (128, 172)          # sActionMenuTouchRects[3]: y 0x98-0xC0, x 0x58-0xA8
 
 # The battle menu config indices (core/include/np_e2e.h) and what auto_battle answers.
 MENU_ACTION = range(1, 11)
@@ -30,6 +31,12 @@ MENU_ANSWER = {13: TAP_NO,   # YES/NO: give a nickname? / forfeit? -> NO
                15: TAP_YES,  # give up on learning the move? -> YES
                16: TAP_YES,  # use the next Pokemon? -> YES
                17: TAP_NO}   # switch Pokemon? (trainer about to send the next) -> NO
+
+# auto_battle flee: RUN taps per battle before it fights instead
+FLEE_TRIES = 2
+
+# walk_to's A* cost of a tall-grass tile (a plain tile costs 1)
+GRASS_COST = 6
 
 
 def _int(step, key, default):
@@ -132,13 +139,21 @@ TEXT_START, TEXT_SETTLE = 40, 30
 
 
 def bot_advance_text(s, step, ctx):
-    """A with spacing until the player is free (or a battle starts, which auto_battle takes over)."""
+    """A with spacing until the player is free (or a battle starts, which auto_battle takes over).
+
+    With `map`, it stops as soon as that map is loaded, before the next map's own scripts (an OnFrame that
+    asks something A must not answer) run on."""
     bound = _int(step, "max", 6000)
     limit = s.frame + bound
     through = bool(step.get("through_battle"))
     stop = ["field_ready=1"] + ([] if through else ["in_battle=1"])
+    want_map = ctx.resolve(step["map"]) if "map" in step else None
+    if want_map is not None:
+        stop.append("map_id=%d" % want_map)
     s.run(TEXT_START, until=["field_ready=0", "in_battle=1"])
     while True:
+        if want_map is not None and s.map_id == want_map:
+            break
         if s.in_battle and not through:
             break
         if s.field_ready and not s.in_battle:
@@ -153,8 +168,12 @@ def bot_advance_text(s, step, ctx):
 
 # ---------------------------------------------------------------- auto_battle
 def bot_auto_battle(s, step, ctx):
-    """FIGHT + one move each turn until the battle is over; prompts answered (MENU_ANSWER)."""
+    """FIGHT + one move each turn until the battle is over; prompts answered (MENU_ANSWER).
+
+    With flee = true it taps RUN at the first action menus (a wild battle ends; a trainer refuses, and so may a
+    wild Pokemon) and fights once FLEE_TRIES runs have not ended the battle."""
     move = _int(step, "move", 0)
+    flee = FLEE_TRIES if step.get("flee") else 0
     limit = s.frame + _int(step, "max", 30000)
     if not s.in_battle and not s.run(_int(step, "wait", 900), until="in_battle=1"):
         raise HarnessError("no battle started within %d frames" % _int(step, "wait", 900))
@@ -166,7 +185,10 @@ def bot_auto_battle(s, step, ctx):
         p = s.probe()
         if p is not None and p.ui == UI_BATTLE_MENU:
             idx = p.ui_arg
-            if idx in MENU_ACTION:
+            if idx in MENU_ACTION and flee:
+                flee -= 1
+                _tap(s, TAP_RUN)
+            elif idx in MENU_ACTION:
                 _tap(s, TAP_FIGHT)
                 turns += 1
                 party_try = 0
@@ -208,6 +230,9 @@ class Terrain:
                 self.block_into[b[name]] = dirs
         water = [v for k, v in b.items() if k.startswith("WATER") or k in ("WATERFALL", "DEEP_WATER")]
         self.water = set(water)
+        # Tall grass costs GRASS_COST steps: the planner goes round it where it can, as a player would, so a
+        # walk meets fewer wild battles and reaches the route's trainers with more HP.
+        self.grass = {b[k] for k in ("TALL_GRASS", "VERY_TALL_GRASS", "MUD_WITH_GRASS", "MUD_DEEP_WITH_GRASS") if k in b}
         self.blocked_edges = {}  # (x, z, d) -> attempts that failed
         self.cells = {}          # (x, z) -> cell, kept across probes of the same map
         self.objects = set()
@@ -265,7 +290,8 @@ class Terrain:
                         yield d, lx, lz, 2
                 continue
             if self.passable(nx, nz, d, goal):
-                yield d, nx, nz, 1
+                c = self.cells.get((nx, nz))
+                yield d, nx, nz, GRASS_COST if c is not None and (c & TILE_BEHAVIOR) in self.grass else 1
 
     def path(self, start, goal, limit=20000):
         """A* over tiles; returns the list of first-step directions, or None."""
@@ -298,17 +324,23 @@ class Terrain:
 
 
 def _field_or_handle(s, step, ctx, limit):
-    """Back to a free player: battles fought (auto_battle), text advanced, else wait."""
+    """Back to a free player: battles fought (auto_battle), text advanced, else wait.
+
+    Returns the frames spent in battles, which do not count against walk_to's bound (the milestone's
+    budget still does): how many wild battles a walk meets is the game's RNG, not the route."""
     on_battle = step.get("on_battle", "fight")
     on_text = step.get("on_text", "advance")
     waited = 0
+    in_battles = 0
     while not s.field_ready:
-        if s.frame >= limit:
+        if s.frame >= limit + in_battles:
             raise HarnessError("walk_to: the player was not free again before the step's bound")
         if s.in_battle:
-            if on_battle != "fight":
+            if on_battle not in ("fight", "flee"):
                 raise HarnessError("walk_to: a battle started (on_battle = %r)" % on_battle)
-            bot_auto_battle(s, {"max": limit - s.frame}, ctx)
+            f0 = s.frame
+            bot_auto_battle(s, {"flee": on_battle == "flee"}, ctx)
+            in_battles += s.frame - f0
             continue
         if s.run(20, until=["field_ready=1", "in_battle=1"]):
             continue
@@ -316,16 +348,19 @@ def _field_or_handle(s, step, ctx, limit):
         if waited >= 60:
             if on_text != "advance":
                 raise HarnessError("walk_to: the player is held (text or a cutscene; on_text = %r)" % on_text)
-            s.run(3, "a", until=["field_ready=1", "in_battle=1"])
+            s.run(2, "a", until=["field_ready=1", "in_battle=1"])
+            s.run(6, until=["field_ready=1", "in_battle=1"])
+    return in_battles
 
 
 def bot_walk_to(s, step, ctx):
     """Walk to tile (x, z): A* over the probe's terrain, replanning as it learns; warps by walking into them."""
     goal = (int(step["x"]), int(step["z"]))
-    limit = s.frame + _int(step, "max", 6000)
+    bound = _int(step, "max", 6000)
+    limit = s.frame + bound
     run_key = "b" if step.get("run", True) else None
     want_map = ctx.resolve(step["map"]) if "map" in step else None
-    _field_or_handle(s, step, ctx, limit)
+    limit += _field_or_handle(s, step, ctx, limit)
     p = s.probe()
     if p is None:
         raise HarnessError("walk_to: no probe (guest built without the e2e probe?)")
@@ -337,8 +372,8 @@ def bot_walk_to(s, step, ctx):
     warped = False
     while (p.x, p.z) != goal:
         if s.frame >= limit:
-            raise HarnessError("walk_to (%d,%d): still at (%d,%d) after %d frames" % (
-                goal + (p.x, p.z, _int(step, "max", 6000))))
+            raise HarnessError("walk_to (%d,%d): still at (%d,%d) after %d frames (battles excluded)" % (
+                goal + (p.x, p.z, bound)))
         terrain.update(p)
         dirs = terrain.path((p.x, p.z), goal)
         if not dirs and terrain.blocked_edges:
@@ -354,28 +389,27 @@ def bot_walk_to(s, step, ctx):
         # the probe's tile changes as a step starts. A bump into something solid never changes it.
         moved = s.run(24, keys, until=["x!=%d" % here[0], "z!=%d" % here[1], "map_id!=%d" % start_map,
                                        "in_battle=1"])
-        # let the step finish so the next probe sees a settled tile
+        # let the step finish so the next probe sees a settled tile; then whatever the step started (a warp's
+        # fade, a coord script, a trainer's sight, a wild battle) runs until the player is free again
         s.run(24, until="field_ready=1")
-        if s.map_id != start_map:
+        if not s.field_ready:
+            limit += _field_or_handle(s, step, ctx, limit)
+        p = s.probe()
+        if p.map_id != start_map:
             # Outdoors the matrix is one coordinate space: a step across a map border changes map_id
             # and moves one tile (two over a ledge). Anything else is a warp.
             nxt = (here[0] + DIR_DELTA[d][0], here[1] + DIR_DELTA[d][1])
-            _field_or_handle(s, step, ctx, limit)
-            p = s.probe()
             if abs(p.x - here[0]) + abs(p.z - here[1]) <= 2:
-                s.note("walk_to: crossed from map %d to %d at (%d,%d)" % (start_map, s.map_id, p.x, p.z))
-                start_map = s.map_id
+                s.note("walk_to: crossed from map %d to %d at (%d,%d)" % (start_map, p.map_id, p.x, p.z))
+                start_map = p.map_id
                 steps += 1
                 continue
-            s.note("walk_to: warped from map %d to %d stepping %s from (%d,%d)" % (start_map, s.map_id,
+            s.note("walk_to: warped from map %d to %d stepping %s from (%d,%d)" % (start_map, p.map_id,
                                                                                   DIR_KEYS[d], *here))
-            if nxt == goal or len(dirs) == 1:
+            if nxt == goal or here == goal or len(dirs) == 1:
                 warped = True
                 break
-            raise HarnessError("walk_to (%d,%d): an unexpected warp to map %d at (%d,%d)" % (goal + (s.map_id,) + here))
-        if not s.field_ready:
-            _field_or_handle(s, step, ctx, limit)
-        p = s.probe()
+            raise HarnessError("walk_to (%d,%d): an unexpected warp to map %d at (%d,%d)" % (goal + (p.map_id,) + here))
         if (p.x, p.z) == here:
             key = (here[0], here[1], d)
             terrain.blocked_edges[key] = terrain.blocked_edges.get(key, 0) + 1
@@ -394,6 +428,10 @@ def bot_walk_to(s, step, ctx):
             _field_or_handle(s, step, ctx, limit)
             warped = True
             s.note("walk_to: left map %d through the mat at (%d,%d) to map %d" % (start_map, goal[0], goal[1], s.map_id))
+    # the probe's tile is the step's target from the step's first frame and the field reads free between the
+    # frames of a step: let the last step's walk finish before facing, talking or the next bot (a script the
+    # goal tile starts is the next step's to handle)
+    s.run(16)
     p = s.probe()
     s.note("walk_to: at (%d,%d) on map %d after %d steps" % (p.x, p.z, s.map_id, steps))
     if "face" in step:
@@ -405,6 +443,78 @@ def bot_walk_to(s, step, ctx):
     if step.get("interact"):
         s.run(4, "a")
         s.run(12)
+
+
+# ---------------------------------------------------------------- heal
+# Every Pokemon Center 1F of the three games shares one layout: the nurse at (8,4) behind the counter, the
+# exit mat at (8,12) (e.g. Platinum events_sandgem_town_pokecenter_1f / events_jubilife_city_pokecenter_1f,
+# D/P zone_event 0398 / 0005).
+PC_COUNTER, PC_EXIT = (8, 6), (8, 12)
+
+
+def bot_heal(s, step, ctx):
+    """Heal the party at the Pokemon Center whose door is (x, z) on this map, and come back out of it."""
+    town = s.map_id
+    bot_walk_to(s, {"x": step["x"], "z": step["z"], "on_battle": step.get("on_battle", "flee"),
+                    "max": _int(step, "max", 6000)}, ctx)
+    if s.map_id == town:
+        raise HarnessError("heal: (%d,%d) is not a door on map %d" % (int(step["x"]), int(step["z"]), town))
+    center = s.map_id
+    bot_walk_to(s, {"x": PC_COUNTER[0], "z": PC_COUNTER[1], "face": "up", "interact": True}, ctx)
+    bot_advance_text(s, {}, ctx)  # A answers YES to resting the Pokemon
+    bot_walk_to(s, {"x": PC_EXIT[0], "z": PC_EXIT[1]}, ctx)
+    if s.map_id == center:
+        raise HarnessError("heal: did not leave the Pokemon Center (map %d)" % center)
+    s.note("heal: healed in map %d, back on map %d" % (center, s.map_id))
+
+
+# ---------------------------------------------------------------- talk_to
+def _toward(frm, to):
+    """The direction index from tile frm to the adjacent tile to."""
+    return DIR_DELTA.index((to[0] - frm[0], to[1] - frm[1]))
+
+
+def bot_talk_to(s, step, ctx):
+    """Talk to map object `id` (its local id in the probe's object list) wherever it stands now: walk to a free
+    tile next to it, face it, A until a script starts. Wandering people are chased (re-planned) as they move."""
+    oid = int(step["id"])
+    bound = _int(step, "max", 6000)
+    limit = s.frame + bound
+    while s.frame < limit:
+        limit += _field_or_handle(s, step, ctx, limit)
+        p = s.probe()
+        obj = next(((o[0], o[1]) for o in p.objects if o[2] == oid), None)
+        if obj is None:
+            raise HarnessError("talk_to: no object with local id %d on map %d" % (oid, p.map_id))
+        if abs(p.x - obj[0]) + abs(p.z - obj[1]) == 1:
+            d = _toward((p.x, p.z), obj)
+            if p.facing != d:
+                s.run(2, DIR_KEYS[d])
+                s.run(8)
+                continue  # it may have moved meanwhile
+            s.run(2, "a")
+            if s.run(30, until=["field_ready=0", "in_battle=1"]):
+                s.note("talk_to: talking to object %d at (%d,%d)" % (oid, obj[0], obj[1]))
+                return
+            continue
+        t = Terrain()
+        t.update(p)
+        cands = []
+        for dx, dz in DIR_DELTA:
+            c = (obj[0] + dx, obj[1] + dz)
+            cell = t.cells.get(c)  # None: beyond the probe's window, hoped passable like walk_to does
+            if (cell is not None and cell & TILE_COLLISION) or c in t.objects:
+                continue
+            cands.append((abs(c[0] - p.x) + abs(c[1] - p.z), c))
+        if not cands:
+            s.run(16)  # boxed in for now; it wanders
+            continue
+        c = min(cands)[1]
+        try:
+            bot_walk_to(s, {"x": c[0], "z": c[1], "max": min(900, max(limit - s.frame, 1))}, ctx)
+        except HarnessError as e:
+            s.note("talk_to: %s; re-planning" % e)
+    raise HarnessError("talk_to: object %d not reached in %d frames" % (oid, bound))
 
 
 BOTS = {
@@ -419,4 +529,6 @@ BOTS = {
     "advance_text": bot_advance_text,
     "auto_battle": bot_auto_battle,
     "walk_to": bot_walk_to,
+    "talk_to": bot_talk_to,
+    "heal": bot_heal,
 }

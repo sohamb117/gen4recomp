@@ -6,7 +6,7 @@ agent inspects. Phase 1 (this file, `AUTHORING.md`, the milestone skeletons) pla
 and flips its `status` from `planned`.
 
 Each milestone is a directory `tests/e2e/<game>/<nn>-<slug>/` holding `milestone.toml` (steps and expected end state,
-schema: the harness's `tests/e2e/README.md`, draft `SCHEMA.draft.md`) and a lab recipe that mints its start save.
+schema: the harness's `tests/e2e/README.md`) and a lab recipe that mints its start save.
 How to write and prove one: [AUTHORING.md](AUTHORING.md).
 
 ## How a milestone runs

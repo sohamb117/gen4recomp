@@ -42,7 +42,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 13500
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -66,11 +66,32 @@ note = "clown 3 (164,752) (zone_event 0002 object 28, movement 9 [INFERENCE: LOO
 do = "advance_text"
 note = "A = YES (@0x0FE1) -> president moved to (174,771) (@0x100A), flag 0xEF, ITEM_COUPON_3 (@0x1016-@0x1026)"
 
-# PHASE2: clowns 1 (183,769) and 2 (143,754) (zone_event 0002 objects 25/26) use movement 3 range (1,0)
-# [INFERENCE: WANDER_AROUND], so their tiles are not fixed. Find them by object id in the probe's object list, walk_to
-# an adjacent tile facing them, interact, advance_text (A = YES: flags 0xED/0xEE, ITEM_COUPON_1/2, scr_seq 0002
-# @0x0EE2-@0x0F1F, @0x0F59-@0x0F96). Then walk_to (174,772) face up interact (president (174,771), object 24) and
-# advance_text: coupons taken, GivePoketch, 0x4077 2, apps 0/1/3/4, president leaves, flag 0xF3 (@0x0DDA-@0x0E91).
+[[step]]
+do = "talk_to"
+id = 25
+note = "clown 1 (zone_event 0002 object 25, home (183,769), movement 3 range (1,0)): talk_to follows it"
+
+[[step]]
+do = "advance_text"
+note = "A = YES: flag 0xED, ITEM_COUPON_1 (scr_seq 0002 @0x0EE2-@0x0F1F)"
+
+[[step]]
+do = "talk_to"
+id = 26
+note = "clown 2 (zone_event 0002 object 26, home (143,754), movement 3 range (1,0))"
+
+[[step]]
+do = "advance_text"
+note = "A = YES: flag 0xEE, ITEM_COUPON_2 (@0x0F59-@0x0F96)"
+
+[[step]]
+do = "talk_to"
+id = 24
+note = "the president (zone_event 0002 object 24), at (174,771) after clown 3 (scr_seq 0002 @0x100A)"
+
+[[step]]
+do = "advance_text"
+note = "coupons taken, GivePoketch, 0x4077 2, apps 0/1/3/4, president leaves, flag 0xF3 (@0x0DDA-@0x0E91)"
 
 [expect]
 map = "MAP_JUBLIFE"

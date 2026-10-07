@@ -2,7 +2,7 @@
 
 For phase-2 agents turning a `planned` skeleton into a passing milestone, or writing a new one. The plan and the
 milestone list are in [PLAN.md](PLAN.md); the runner, bots and the authoritative schema are the harness's
-(`tests/e2e/run.py`, `bots.py`, `README.md`, draft `SCHEMA.draft.md`). Schema changes go through the harness owner;
+(`tests/e2e/run.py`, `bots.py`, [README.md](README.md)). Schema changes go through the harness owner;
 this guide follows the format every skeleton uses today.
 
 ## Layout
@@ -75,7 +75,8 @@ VAR_OREBURGH_CITY_STATE = 2
 | `do` | keys | what it does |
 |---|---|---|
 | `walk_to` | `x`, `z`, opt. `map`, `face`, `interact` | path to the tile on the current map, re-planning around NPCs; walking into a warp tile takes it; trainers who spot you on the way are fought |
-| `advance_text` | | press A with spacing until the field is free (cutscenes, dialogue, item jingles) |
+| `talk_to` | `id` | talk to the map object with that local id wherever it stands (wandering people are chased) |
+| `advance_text` | opt. `map` | press A with spacing until the field is free (cutscenes, dialogue, item jingles); with `map`, stop as soon as that map loads |
 | `auto_battle` | opt. `move` (slot, default 0) | FIGHT + the move every turn until the battle ends; declines move learning and nicknames, allows evolution |
 | `wait_map` | `map` | until the map id matches |
 | `wait_field` | | until the player is free in the field |
@@ -170,9 +171,9 @@ Facts the scripts do not prove are `[INFERENCE]`.
 
 1. Build the core (docs/BUILDING.md; heavy builds through `tools/heavy.sh`, `-j` 6 at most).
 2. Static check: `python3 tests/e2e/run.py --game <game> --check`.
-3. Run it standalone, then chained:
-   `python3 tests/e2e/run.py --game <game> --only <dir> --lab` and
-   `python3 tests/e2e/run.py --game <game> --from <dir>` (side systems: `--systems --only <dir>`).
+3. Run it standalone, then chained (`--planned` runs milestones still marked planned):
+   `python3 tests/e2e/run.py --game <game> --only <dir> --planned --lab` and
+   `python3 tests/e2e/run.py --game <game> --from <dir> --planned` (side systems: `--systems --only <dir>`).
 4. Look at every shot and the contact sheet in `build/e2e/<game>/<dir>/` (dumps are PPM:
    `sips -s format png a.ppm --out a.png`). A pass with a wrong picture is a fail.
 5. Fix steps/recipe until it passes from both starts; keep fixes cited.

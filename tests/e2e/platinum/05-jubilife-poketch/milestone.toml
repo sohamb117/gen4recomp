@@ -36,12 +36,19 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 22500
+frames = 60000
+
+[[step]]
+do = "heal"
+x = 177
+z = 842
+note = "Sandgem Pokemon Center first: the catching tutorial and the wild battles leave the starter low, and Route 202's three trainers (their sight lines cross every way north) white it out otherwise (seen). events_sandgem_town warp 1; inside events_sandgem_town_pokecenter_1f: LOCALID_SANDGEM_NURSE (8,4), exit warp 0 (8,12)"
 
 [[step]]
 do = "walk_to"
 x = 174
 z = 796
+on_battle = "flee"
 max = 8000
 note = "coord (173..176,796) VAR_JUBILIFE_CITY_STATE==0; from 04's end a seamless walk north up Route 202"
 
@@ -104,10 +111,32 @@ note = "clown 3 (164,752) quizzes once the campaign is >= 2 (:1578) [INFERENCE: 
 do = "advance_text"
 note = "A answers YES (:1582) -> ITEM_COUPON_3, president reset to (174,771) (:1591-1595)"
 
-# PHASE2: clowns 1 (183,769) and 2 (143,754) use MOVEMENT_TYPE_WANDER_AROUND, so their tiles are not fixed. Find them
-# by object id in the probe's object list, walk_to an adjacent tile facing them, interact, advance_text (A = YES,
-# scripts_jubilife_city.s:1503,1542; NO repeats, :1520-1526). Then walk_to (174,772) face up interact (president
-# (174,771)) and advance_text: coupons removed, Poketch with 4 apps, Looker hidden (:1427-1468).
+[[step]]
+do = "talk_to"
+id = 24
+note = "clown 1, LOCALID_CLOWN_1 (events_jubilife_city object 24, home (183,769), MOVEMENT_TYPE_WANDER_AROUND range x 1): talk_to follows it"
+
+[[step]]
+do = "advance_text"
+note = "A answers YES (scripts_jubilife_city.s:1503) -> ITEM_COUPON_1, FLAG_RECEIVED_COUPON_1"
+
+[[step]]
+do = "talk_to"
+id = 25
+note = "clown 2, LOCALID_CLOWN_2 (object 25, home (143,754), wanders x 1)"
+
+[[step]]
+do = "advance_text"
+note = "A answers YES (:1542) -> ITEM_COUPON_2, FLAG_RECEIVED_COUPON_2"
+
+[[step]]
+do = "talk_to"
+id = 23
+note = "the president, LOCALID_POKETCH_CO_PRESIDENT (object 23), back at (174,771) after clown 3 (:1591-1595)"
+
+[[step]]
+do = "advance_text"
+note = "three coupons: the Poketch with 4 apps, FLAG_RECEIVED_POKETCH, the president and Looker leave (:1427-1468)"
 
 [expect]
 map = "MAP_HEADER_JUBILIFE_CITY"

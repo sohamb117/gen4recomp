@@ -35,7 +35,13 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 18000
+frames = 60000
+
+[[step]]
+do = "heal"
+x = 180
+z = 776
+note = "Jubilife Pokemon Center before the rival's Route 203 battle (lost at 05's HP, seen: a whiteout to Sandgem). events_jubilife_city warp 2; inside events_jubilife_city_pokecenter_1f: LOCALID_JUBILIFE_NURSE (8,4), exit warp 0 (8,12)"
 
 [[step]]
 do = "walk_to"
