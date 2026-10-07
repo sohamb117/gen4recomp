@@ -1,5 +1,6 @@
 # Proves the Celestic grunt, the painting cutscene, the Cyrus battle and the elder's HM03.
-# Start: Celestic Pokémon Center door (472,538) -> end: Celestic Town, HM03, VAR_CELESTIC_TOWN_STATE 2.
+# Start: Route 210 South at the Psyduck's tile (561,588), where 27 ends -> end: Celestic Town, HM03,
+# VAR_CELESTIC_TOWN_STATE 2.
 
 title = "Celestic Town: grunt, Cyrus at the ruins painting, HM03 Surf"
 status = "planned"
@@ -41,9 +42,10 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 24000
+frames = 45000
 
 [[step]]
 do = "walk_to"
@@ -51,7 +53,12 @@ x = 463
 z = 523
 face = "up"
 interact = true
-note = "grunt obj2 (463,522) blocks the cave door (463,521) (scripts_celestic_town.s:24-46)"
+max = 4000
+on_battle = "flee"
+via = [[561, 563], [563, 563], [563, 540], [553, 540], [553, 535], [547, 535], [547, 532], [542, 532], [542, 527],
+       [538, 527], [538, 522], [533, 522], [524, 522], [521, 522], [521, 539], [521, 540], [516, 540], [516, 534],
+       [510, 534], [510, 531], [504, 531], [475, 531], [475, 539], [465, 539], [465, 523]]
+note = "north up Route 210 South past the Psyduck, through Route 210 North's fog and west into Celestic Town (route: tools/pt_route.py), to the grunt obj2 (463,522) blocking the cave door (463,521) (scripts_celestic_town.s:24-46); sight trainers on the way are fought, wild battles fled"
 
 [[step]]
 do = "advance_text"

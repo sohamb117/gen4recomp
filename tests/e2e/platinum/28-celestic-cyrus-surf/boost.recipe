@@ -1,0 +1,11 @@
+# Boost on 27's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# HP refilled (party-level) and PP refilled (the four moves set again, as 20's boost gave them; auto_battle picks
+# between them by type).
+# For the Route 210 North trainers, TRAINER_GALACTIC_GRUNT_CELESTIC_TOWN (HOUNDOUR 32: Earthquake 2x, GOLBAT 30: Rock
+# Slide 2x) and TRAINER_GALACTIC_BOSS_CYRUS_CELESTIC_TOWN_RUINS (SNEASEL 34: Rock Slide 2x, its Ice Punch is 4x on
+# the lead; GOLBAT 34: Rock Slide 2x; MURKROW 36: Rock Slide 2x) (res/trainers/data).
+party-level 0 62
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE

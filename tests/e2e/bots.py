@@ -375,6 +375,8 @@ def bot_auto_battle(s, step, ctx):
                     s.note("auto_battle: battler %d slot %d (move %d, %d PP) on species %d" % (
                         p.menu_battler, slot, me.moves[slot], me.pp[slot], foe.species if foe else 0))
                 _tap(s, TAP_MOVES[slot])
+                # the move menu stays reported for a few frames while it slides out: not a refusal
+                s.run(30, until=["ui_arg!=%d" % MENU_MOVES, "ui!=%d" % UI_BATTLE_MENU, "in_battle=0"])
             elif idx == MENU_TARGET:
                 if last == MENU_TARGET:
                     target = 1 - target  # the target menu again: that opponent is gone, take the other

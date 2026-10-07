@@ -86,9 +86,9 @@ P1 = a major system every player meets; P2 = minor or post-game. Rows name the m
 
 - Platinum's cumulative `lab.recipe`s grow toward the lab cap: 56 has 441 ops of `LAB_MAX_OPS 512`
   (`games/platinum/pc/src/pc_lab.c:140`); keep new state lines minimal.
-- D/P story recipes carry the cumulative state (`tests/e2e/tools/dp_prior.py`, at most ~410 ops of the D/P lab's
-  `LAB_MAX_OPS 512`). Diamond 44-50 (Candice, Lake Acuity, Galactic HQ, Mt. Coronet, Spear Pillar) have no
-  milestone dirs yet: the chain jumps from 43 (Snowpoint) to 51.
+- The Diamond/Pearl lab caps recipes at `LAB_MAX_OPS 64` (`games/diamond/pc/game/pc_dp_lab.c:75`); cumulative D/P
+  story recipes need it raised to Platinum's 512 (harness owner's change). Until then D/P story milestones past the
+  first few run only chained (`from = "prev"`).
 - Steps marked `# PHASE2:` in a `milestone.toml` stop where the plan could not state the input (random puzzles,
   touch minigames); `[expect]` is complete regardless.
 - `[INFERENCE]` notes mark tiles and timings not proven by the scripts.
@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~917587 frames estimated
+### Story chain: 56 milestones, ~912433 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -115,15 +115,15 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [06-route203-oreburgh-gate-rocksmash](platinum/06-route203-oreburgh-gate-rocksmash/milestone.toml) | Route 203 rival, HM06, Oreburgh | P0 | 18145 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY | passing |
 | [07-oreburgh-mine-roark](platinum/07-oreburgh-mine-roark/milestone.toml) | Oreburgh Mine: Roark returns to the gym | P0 | 13362 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY_GYM | passing |
 | [08-roark-coal-badge](platinum/08-roark-coal-badge/milestone.toml) | Oreburgh Gym: Roark and the Coal Badge | P0 | 12905 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY | passing |
-| [09-jubilife-galactic-tag-battle](platinum/09-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | 15643 | prev + `lab.recipe` | MAP_HEADER_JUBILIFE_CITY | passing |
-| [10-floaroma-meadow-works-key](platinum/10-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | 19685 | prev + `lab.recipe` | MAP_HEADER_FLOAROMA_TOWN | passing |
-| [11-valley-windworks-mars](platinum/11-valley-windworks-mars/milestone.toml) | Valley Windworks: Commander Mars | P0 | 20545 | prev + `lab.recipe` | MAP_HEADER_ETERNA_FOREST | passing |
-| [12-eterna-forest-cheryl](platinum/12-eterna-forest-cheryl/milestone.toml) | Eterna Forest with Cheryl | P0 | 23355 | prev + `lab.recipe` | MAP_HEADER_ROUTE_205_NORTH | passing |
+| [09-jubilife-galactic-tag-battle](platinum/09-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | 12753 | prev + `lab.recipe` | MAP_HEADER_JUBILIFE_CITY | passing |
+| [10-floaroma-meadow-works-key](platinum/10-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | 20095 | prev + `lab.recipe` | MAP_HEADER_FLOAROMA_TOWN | passing |
+| [11-valley-windworks-mars](platinum/11-valley-windworks-mars/milestone.toml) | Valley Windworks: Commander Mars | P0 | 20681 | prev + `lab.recipe` | MAP_HEADER_ETERNA_FOREST | passing |
+| [12-eterna-forest-cheryl](platinum/12-eterna-forest-cheryl/milestone.toml) | Eterna Forest with Cheryl | P0 | 21659 | prev + `lab.recipe` | MAP_HEADER_ROUTE_205_NORTH | passing |
 | [13-gardenia-forest-badge](platinum/13-gardenia-forest-badge/milestone.toml) | Eterna Gym: Gardenia and the Forest Badge | P0 | 21675 | prev + `lab.recipe` | MAP_HEADER_ETERNA_CITY | passing |
 | [14-eterna-cyrus-cut](platinum/14-eterna-cyrus-cut/milestone.toml) | Eterna: Cyrus at the statue, Cynthia's HM01 | P0 | 4571 | prev + `lab.recipe` | MAP_HEADER_ETERNA_CITY | passing |
-| [15-galactic-eterna-building-jupiter](platinum/15-galactic-eterna-building-jupiter/milestone.toml) | Team Galactic Eterna Building: Jupiter | P0 | 9707 | prev + `lab.recipe` | MAP_HEADER_ETERNA_CITY | passing |
+| [15-galactic-eterna-building-jupiter](platinum/15-galactic-eterna-building-jupiter/milestone.toml) | Team Galactic Eterna Building: Jupiter | P0 | 9163 | prev + `lab.recipe` | MAP_HEADER_ETERNA_CITY | passing |
 | [16-togepi-egg-bicycle-explorer-kit](platinum/16-togepi-egg-bicycle-explorer-kit/milestone.toml) | Eterna: Togepi egg, Bicycle, Explorer Kit | P0 | 4997 | prev + `lab.recipe` | MAP_HEADER_ROUTE_206_CYCLING_ROAD_NORTH_GATE | passing |
-| [17-cycling-road-to-hearthome](platinum/17-cycling-road-to-hearthome/milestone.toml) | Cycling Road, Mt. Coronet, Hearthome | P0 | 27181 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY | passing |
+| [17-cycling-road-to-hearthome](platinum/17-cycling-road-to-hearthome/milestone.toml) | Cycling Road, Mt. Coronet, Hearthome | P0 | 26611 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY | passing |
 | [18-contest-hall-fantina-unblocks-gym](platinum/18-contest-hall-fantina-unblocks-gym/milestone.toml) | Contest Hall: Fantina frees the gym door | P0 | 4841 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM | passing |
 | [19-fantina-relic-badge](platinum/19-fantina-relic-badge/milestone.toml) | Hearthome Gym: Fantina and the Relic Badge | P0 | 13283 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY | passing |
 | [20-route209-solaceon-to-veilstone](platinum/20-route209-solaceon-to-veilstone/milestone.toml) | Route 209 to Veilstone: rival, Solaceon, Crasher Wake | P0 | 31000 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GYM | planned |
@@ -250,7 +250,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_1 (414); TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_2 (415); TRAINER_DAWN_JUBILIFE_CITY_TURTWIG (618)
 - end state: map MAP_HEADER_JUBILIFE_CITY; >= 1 battles; flags set FLAG_HIDE_JUBILIFE_GALACTIC_GRUNTS, FLAG_RECEIVED_FASHION_CASE, FLAG_HIDE_JUBILIFE_ROWAN, FLAG_HIDE_JUBILIFE_CITY_COUNTERPART; flags clear FLAG_HIDE_SANDGEM_TOWN_LAB_PROF_ROWAN; vars VAR_JUBILIFE_CITY_STATE=4, VAR_OREBURGH_CITY_STATE=3, VAR_JUBILIFE_LOOKER_PAL_PAD_STATE=2; 1 save check(s)
-- frames: estimate 15643, budget 23500
+- frames: estimate 12753, budget 19200
 - refs: scripts_oreburgh_city.s:79; scripts_oreburgh_city.s:178-180; scripts_jubilife_city.s:876; scripts_jubilife_city.s:888; scripts_jubilife_city.s:907-914; scripts_jubilife_city.s:954-962; scripts_jubilife_city.s:965; scripts_jubilife_city.s:971; scripts_jubilife_city.s:982-985; scripts_jubilife_city.s:1004-1021; scripts_jubilife_city.s:1630-1652; events_oreburgh_city (coord (262,748..751); warp 10 (258,749) gate); events_oreburgh_gate_1f (warps (27,22), (4,22)); events_jubilife_city (coord (173..175,743); Rowan (175,740); grunts (174,739)/(174,740); coord (188,757..760)); TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_1 (414); TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_2 (415); TRAINER_DAWN_JUBILIFE_CITY_TURTWIG (618)
 - notes: A tag battle: one move for one battler. Surf is a spread move and also hits Dawn (partner fainting does not lose). Entering Jubilife from Route 203 before the tag battle runs Looker's Pal Pad coord (VAR_JUBILIFE_LOOKER_PAL_PAD_STATE==1 -> 2).
 
@@ -260,7 +260,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_1 (296); TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_2 (297); TRAINER_LASS_SARAH (12); TRAINER_YOUNGSTER_TYLER (10); TRAINER_LASS_SAMANTHA (11); TRAINER_AROMA_LADY_TAYLOR (14); TRAINER_BUG_CATCHER_BRANDON (13); TRAINER_TWINS_LIV_AND_LIZ (15)
 - end state: map MAP_HEADER_FLOAROMA_TOWN; >= 2 battles; flags set FLAG_OBTAINED_FLOAROMA_MEADOW_WORKS_KEY, FLAG_DEFEATED_FLOAROMA_MEADOW_GRUNTS, FLAG_HIDE_FLOAROMA_TOWN_GRUNTS, FLAG_FIRST_ARRIVAL_RAVAGED_PATH, FLAG_FIRST_ARRIVAL_FLOAROMA_MEADOW; vars VAR_FLOAROMA_MEADOW_STATE=1, VAR_VALLEY_WINDWORKS_STATE=1; 2 save check(s)
-- frames: estimate 19685, budget 29600
+- frames: estimate 20095, budget 30200
 - refs: scripts_ravaged_path.s:8; scripts_route_205_south.s:129-131; scripts_floaroma_meadow.s:16; scripts_floaroma_meadow.s:22; scripts_floaroma_meadow.s:26; scripts_floaroma_meadow.s:30; scripts_floaroma_meadow.s:107-109; scripts_floaroma_meadow.s:112; scripts_floaroma_meadow.s:117-127; scripts_floaroma_meadow.s:134; src/field_move_tasks.c:545; events_ravaged_path (27 Rock Smash rocks; warps (19,50), (28,44)); events_route_204_south (warp 0 (171,705)); events_route_205_south (coords (211,659..664), (217,653); grunts (216,653)/(218,653)); events_floaroma_town (warps 7-8 (162..163,641) meadow); events_floaroma_meadow (coord (12..13,48); warps (12..13,54)); TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_1 (296); TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_2 (297); TRAINER_LASS_SARAH (12); TRAINER_YOUNGSTER_TYLER (10); TRAINER_LASS_SAMANTHA (11); TRAINER_AROMA_LADY_TAYLOR (14); TRAINER_BUG_CATCHER_BRANDON (13); TRAINER_TWINS_LIV_AND_LIZ (15)
 - notes: Liv & Liz (Route 204 N) is a true double with a party of one. boost.recipe teaches Rock Smash (HM06, 06) and Bite.
 
@@ -270,7 +270,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_1 (843); TRAINER_COMMANDER_MARS_VALLEY_WINDWORKS (295); TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_2 (298); TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_3 (299); TRAINER_HIKER_DANIEL (18); TRAINER_AROMA_LADY_ELIZABETH (21); TRAINER_CAMPER_JACOB (16); TRAINER_PICNICKER_SIENA (17); TRAINER_CAMPER_ZACKARY (377); TRAINER_HIKER_NICHOLAS (19); TRAINER_PICNICKER_KARINA (456); TRAINER_BATTLE_GIRL_KELSEY (20)
 - end state: map MAP_HEADER_ETERNA_FOREST; >= 2 battles; flags set FLAG_HIDE_ROUTE_205_SOUTH_GRUNTS, FLAG_UNLOCKED_VALLEY_WINDWORKS_DOOR, FLAG_FIRST_ARRIVAL_VALLEY_WINDWORKS, FLAG_HIDE_ROUTE_205_SOUTH_LITTLE_GIRL, FLAG_ALT_MUSIC_VALLEY_WINDWORKS_BUILDING; flags clear FLAG_HIDE_ROUTE_205_SOUTH_YOUNGSTER, FLAG_HIDE_VALLEY_WINDWORKS_BUILDING_LITTLE_GIRL; vars VAR_VALLEY_WINDWORKS_STATE=2, VAR_VALLEY_WINDWORKS_TEAM_GALACTIC_STATE=3, VAR_VALLEY_WINDWORKS_LOOKER_STATE=2
-- frames: estimate 20545, budget 30900
+- frames: estimate 20681, budget 31100
 - refs: scripts_valley_windworks_outside.s:20; scripts_valley_windworks_outside.s:38; scripts_valley_windworks_outside.s:61-86; scripts_valley_windworks_outside.s:104-126; scripts_valley_windworks_outside.s:194; scripts_valley_windworks_building.s:17; scripts_valley_windworks_building.s:39-40; scripts_valley_windworks_building.s:86; scripts_valley_windworks_building.s:104-112; scripts_valley_windworks_building.s:135-136; scripts_valley_windworks_building.s:146; scripts_valley_windworks_building.s:184-187; events_valley_windworks_outside (grunt (243,655) S; door warp (243,654)); events_valley_windworks_building (coord (19,6..7); Mars (20,7); warp 0 (12,16)); events_route_205_south (warp 0 (206,581) Eterna Forest); TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_1 (843); TRAINER_COMMANDER_MARS_VALLEY_WINDWORKS (295); TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_2 (298); TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_3 (299); TRAINER_HIKER_DANIEL (18); TRAINER_AROMA_LADY_ELIZABETH (21); TRAINER_CAMPER_JACOB (16); TRAINER_PICNICKER_SIENA (17); TRAINER_CAMPER_ZACKARY (377); TRAINER_HIKER_NICHOLAS (19); TRAINER_PICNICKER_KARINA (456); TRAINER_BATTLE_GIRL_KELSEY (20)
 - notes: Estimate: research ~10000 plus the walk to the forest. The Friday Drifloon (StartLegendaryBattle SPECIES_DRIFLOON 15, :146) is optional; the daily flag (:112) suppresses it the same day.
 
@@ -280,7 +280,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_CHERYL_ETERNA_FOREST (608); TRAINER_BUG_CATCHER_JACK (201); TRAINER_LASS_BRIANA (204); TRAINER_PSYCHIC_LINDSEY (206); TRAINER_PSYCHIC_ELIJAH (205); TRAINER_PSYCHIC_KODY (395); TRAINER_PSYCHIC_RACHAEL (398); TRAINER_BUG_CATCHER_PHILLIP (202); TRAINER_BUG_CATCHER_DONALD (203)
 - end state: map MAP_HEADER_ROUTE_205_NORTH; flags set FLAG_TRAVELED_WITH_CHERYL, FLAG_TALKED_TO_ETERNA_FOREST_CHERYL, FLAG_HIDE_ETERNA_FOREST_CHERYL; vars VAR_ETERNA_FOREST_FOLLOWER_CHERYL_STATE=2; 1 save check(s)
-- frames: estimate 23355, budget 35100
+- frames: estimate 21659, budget 32500
 - refs: scripts_eterna_forest.s:19-25; scripts_eterna_forest.s:29; scripts_eterna_forest.s:52-57; scripts_eterna_forest.s:88-115; scripts_eterna_forest.s:142-150; scripts_eterna_forest.s:209-213; scripts_eterna_forest_outside.s:12; events_eterna_forest (coords (28..29,85), (28..29,86), (82,34..39); warp 2 (86,36); cut trees (74..77,33)); TRAINER_CHERYL_ETERNA_FOREST (608); TRAINER_BUG_CATCHER_JACK (201); TRAINER_LASS_BRIANA (204); TRAINER_PSYCHIC_LINDSEY (206); TRAINER_PSYCHIC_ELIJAH (205); TRAINER_PSYCHIC_KODY (395); TRAINER_PSYCHIC_RACHAEL (398); TRAINER_BUG_CATCHER_PHILLIP (202); TRAINER_BUG_CATCHER_DONALD (203)
 - notes: Multi battles with Cheryl: one Surf can clear both foes and also hits Cheryl. PP: up to 13 forest mons plus ~11 on Route 205 South may empty Surf; the lead then Struggles (slots 1-3 are cleared). [INFERENCE] pairs Jack/Briana, Lindsey/Elijah, Kody/Rachael, Phillip/Donald from facing/positions.
 
@@ -310,7 +310,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_COMMANDER_JUPITER_TEAM_GALACTIC_ETERNA_BUILDING (406); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_1F_1 (410); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_1F_2 (421); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_2F_1 (412); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_2F_2 (422); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_3F (423); TRAINER_SCIENTIST_TRAVON (831)
 - end state: map MAP_HEADER_ETERNA_CITY; >= 1 battles; flags set FLAG_TEAM_GALACTIC_LEFT_ETERNA_BUILDING, FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS, FLAG_HIDE_TEAM_GALACTIC_ETERNA_BUILDING_1F_LOOKER, FLAG_ALT_MUSIC_GALACTIC_ETERNA_BUILDING; flags clear FLAG_HIDE_CYCLE_SHOP_POKEFAN_M, FLAG_HIDE_CYCLE_SHOP_CLEFAIRY; vars VAR_ETERNA_CITY_STATE=3, VAR_TEAM_GALACTIC_ETERNA_BUILDING_1F_STATE=1
-- frames: estimate 9707, budget 14600
+- frames: estimate 9163, budget 13800
 - refs: scripts_team_galactic_eterna_building_1f.s:44; scripts_team_galactic_eterna_building_1f.s:50-51; scripts_team_galactic_eterna_building_1f.s:56; scripts_team_galactic_eterna_building_4f.s:30; scripts_team_galactic_eterna_building_4f.s:37; scripts_team_galactic_eterna_building_4f.s:71-81; scripts_team_galactic_eterna_building_4f.s:84; src/field_move_tasks.c:332; events_eterna_city (cut trees (304..306,521); door warp 3 (305,519)); events_team_galactic_eterna_building_1f (warps (11,15), (14,6), (20,6)); events_team_galactic_eterna_building_2f (warps (3,3), (20,3), (8,3), (14,3)); events_team_galactic_eterna_building_3f (warps (8,3), (20,3), (2,3), (14,3)); events_team_galactic_eterna_building_4f (Jupiter (14,6); warps (8,3), (3,3)); TRAINER_COMMANDER_JUPITER_TEAM_GALACTIC_ETERNA_BUILDING (406); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_1F_1 (410); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_1F_2 (421); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_2F_1 (412); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_2F_2 (422); TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_3F (423); TRAINER_SCIENTIST_TRAVON (831)
 - notes: Estimate: research ~20000 plus the walk down and out. Cut trees reset on map reload (FLAG_MAP_LOCAL_HIDE_OBSTACLE_* are map-local). PP: ~11 mons plus Jupiter fits Surf's 15.
 
@@ -330,7 +330,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_CYCLIST_AXEL (25); TRAINER_CYCLIST_MEGAN (29); TRAINER_CYCLIST_JAMES (26); TRAINER_CYCLIST_NICOLE (30); TRAINER_CYCLIST_JOHN (27); TRAINER_CYCLIST_RYAN (28); TRAINER_CYCLIST_RACHEL (32); TRAINER_CYCLIST_KAYLA (31); TRAINER_HIKER_THEODORE (451); TRAINER_CAMPER_ANTHONY (34); TRAINER_PICNICKER_LAUREN (35); TRAINER_YOUNGSTER_AUSTIN (33); TRAINER_HIKER_JUSTIN (37); TRAINER_HIKER_KEVIN (36); TRAINER_BATTLE_GIRL_HELEN (38); TRAINER_HIKER_ROBERT (39); TRAINER_HIKER_ALEXANDER (40); TRAINER_HIKER_JONATHAN (41); TRAINER_BLACK_BELT_KYLE (42); TRAINER_FISHERMAN_CODY (43); TRAINER_AROMA_LADY_HANNAH (44); TRAINER_ARTIST_WILLIAM (45)
 - end state: map MAP_HEADER_HEARTHOME_CITY; flags set FLAG_UNLOCKED_VS_SEEKER_LVL_1, FLAG_HIDE_ROUTE_207_COUNTERPART, FLAG_HIDE_MT_CORONET_1F_SOUTH_CYRUS, FLAG_FIRST_ARRIVAL_CYCLING_ROAD_UNUSED; vars VAR_ROUTE_207_COUNTERPART_TRIGGER_STATE=1, VAR_MT_CORONET_1F_SOUTH_STATE=1, VAR_HEARTHOME_CITY_STATE=1; 2 save check(s)
-- frames: estimate 27181, budget 40800
+- frames: estimate 26611, budget 40000
 - refs: scripts_route_206_cycling_road_north_gate.s:36-51; scripts_route_206.s:13; scripts_route_206.s:33-34; scripts_route_207.s:46; scripts_route_207.s:87-90; scripts_route_207.s:94-95; scripts_route_207.s:103-105; scripts_mt_coronet_1f_south.s:27-28; scripts_hearthome_city.s:486-487; scripts_hearthome_city.s:500-506; events_route_206_cycling_road_north_gate (coord (5..8,8); warps (6..8,12)); events_route_206 (warps (304..305,576), (302,681), (302,688)); events_route_206_cycling_road_south_gate (warp 2 (7,2), warp 4 (7,12)); events_route_207 (coord (340,712..714); warp 0 (341,712)); events_mt_coronet_1f_south (coord (14,23); warps (4,8), (27,20); rocks (16..25,22..23)); events_route_208 (warp 0 (447,726)); events_route_208_gate_to_hearthome_city (warp 0 (10,7)); events_hearthome_city (coord (461,725..729); warp 14 (454,726)); TRAINER_CYCLIST_AXEL (25); TRAINER_CYCLIST_MEGAN (29); TRAINER_CYCLIST_JAMES (26); TRAINER_CYCLIST_NICOLE (30); TRAINER_CYCLIST_JOHN (27); TRAINER_CYCLIST_RYAN (28); TRAINER_CYCLIST_RACHEL (32); TRAINER_CYCLIST_KAYLA (31); TRAINER_HIKER_THEODORE (451); TRAINER_CAMPER_ANTHONY (34); TRAINER_PICNICKER_LAUREN (35); TRAINER_YOUNGSTER_AUSTIN (33); TRAINER_HIKER_JUSTIN (37); TRAINER_HIKER_KEVIN (36); TRAINER_BATTLE_GIRL_HELEN (38); TRAINER_HIKER_ROBERT (39); TRAINER_HIKER_ALEXANDER (40); TRAINER_HIKER_JONATHAN (41); TRAINER_BLACK_BELT_KYLE (42); TRAINER_FISHERMAN_CODY (43); TRAINER_AROMA_LADY_HANNAH (44); TRAINER_ARTIST_WILLIAM (45)
 - notes: PP: a single path past the sight trainers is up to ~20 mons, so expect Struggle or a Pokecenter (Oreburgh is just off Route 207). Hiker Alexander (GRAVELER 38, PROBOPASS 40) and Fisherman Cody (talk-only, Lv33) still lose to Lv60 Surf. [INFERENCE] the cycling road auto-rolls the bike south.
 
@@ -431,12 +431,12 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: scripts_route_210_south.s:31-59; scripts_route_210_south.s:92-138; scripts_route_210_south.s:72-75; scripts_route_210_south.s:93; scripts_route_210_south.s:114-116; scripts_route_210_south.s:135; scripts_route_210_south.s:136; scripts_route_210_south.s:77-80; scripts_celestic_town.s:101
 
 #### platinum/28-celestic-cyrus-surf — Celestic Town: grunt, Cyrus at the ruins painting, HM03 Surf
-- proves: Proves the Celestic grunt, the painting cutscene, the Cyrus battle and the elder's HM03. Start: Celestic Pokémon Center door (472,538) -> end: Celestic Town, HM03, VAR_CELESTIC_TOWN_STATE 2.
-- start: prev + `lab.recipe`; warp MAP_HEADER_CELESTIC_TOWN 5; lab state lines: 5 badge, 20 clear-flag, 133 flag, 22 item, 1 pokedex, 5 poketch, 1 register-item, 59 var
+- proves: Proves the Celestic grunt, the painting cutscene, the Cyrus battle and the elder's HM03. Start: Route 210 South at the Psyduck's tile (561,588), where 27 ends -> end: Celestic Town, HM03, VAR_CELESTIC_TOWN_STATE 2.
+- start: prev + `lab.recipe`; map MAP_HEADER_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: 5 badge, 20 clear-flag, 133 flag, 22 item, 1 pokedex, 5 poketch, 1 register-item, 59 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_CELESTIC_TOWN; >= 2 battles; flags set FLAG_HIDE_ROUTE_218_BLOCKADE, FLAG_DELIVERED_OLD_CHARM, FLAG_EXAMINED_CELESTIC_TOWN_CAVE_PAINTING; vars VAR_CELESTIC_TOWN_STATE=2
-- frames: estimate 16000, budget 24000
+- frames: estimate 16000, budget 45000
 - refs: events_route_210_north.json; scripts_celestic_town.s:24-46; scripts_celestic_town.s:83-107; scripts_celestic_town_cave.s:27-63; scripts_celestic_town_cave.s:415-429; scripts_celestic_town_cave.s:112-142; scripts_celestic_town.s:224-243; scripts_celestic_town.s:21; scripts_celestic_town.s:84; scripts_celestic_town.s:89; scripts_celestic_town.s:101; scripts_celestic_town.s:102; scripts_celestic_town_cave.s:31; scripts_celestic_town_cave.s:32; scripts_celestic_town_cave.s:48; scripts_celestic_town_cave.s:132; scripts_celestic_town_cave.s:49; scripts_celestic_town_cave.s:113; scripts_celestic_town_cave.s:114; scripts_celestic_town_cave.s:120; scripts_celestic_town_cave.s:129-131; scripts_celestic_town_cave.s:133; scripts_celestic_town_cave.s:134; scripts_celestic_town_cave.s:141; scripts_celestic_town.s:236; scripts_celestic_town.s:237; scripts_celestic_town.s:182-196; scripts_celestic_town.s:94-102; events_celestic_town_cave.json; scripts_celestic_town_cave.s:102-110
 
 #### platinum/29-route218-canalave-rival — Route 218 to Canalave: form-detection upgrade, bridge rival

@@ -541,5 +541,5 @@ flag FLAG_HIDE_ROUTE_210_SOUTH_CYNTHIA
 # scripts_route_210_south.s:136
 flag FLAG_USED_SECRETPOTION
 
-# start: Pokémon Center door (472,538)
-warp MAP_HEADER_CELESTIC_TOWN 5
+# start: Route 210 South where 27 ends, south of the Psyduck's tile (561,587), facing it
+map MAP_HEADER_ROUTE_210_SOUTH 561 588 FACE_UP
