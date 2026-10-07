@@ -1,11 +1,16 @@
-# Underground mining: enter from Oreburgh with the kit, the lab hook starts the mining minigame
-# (same task the wall-sparkle confirm starts). Board RNG is seeded from PC_RTC + frame.
-# Start: Oreburgh (0x12F,0x2F5) with a registered kit. End: UNDERGROUND (2), dig done.
+# Underground mining, in situ: the Explorer Kit on Y, the nearest wall spot, the first dig (3 items, no rocks) dug
+# out completely by touch, GO UP. The mining spots come from the save's Underground seed (tools/pt_ugspots.py); the
+# board is generated from the mining RNG when the dig starts, so it is the same in every run with the same inputs:
+# tools/pt_mine.py reads it out of guest memory and plans the taps.
+# Start: Oreburgh (0x12F,0x2F5) with a registered kit. End: Oreburgh, three spheres in the Underground bag.
 title = "Underground: dig a wall"
-status = "planned"
 priority = "P1"
 estimate = 6500
 refs = [
+  "src/underground/mining.c:2257-2329",
+  "src/underground/mining.c:2567-2599",
+  "src/underground/mining.c:2711-2785",
+  "src/underground/mining.c:1904-1918",
   "src/underground/mining.c:1727-1729",
   "src/underground/mining.c:1735",
   "src/underground.c:601",
@@ -29,9 +34,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 9800
-# lab underground hook `mine` (pc_lab.c:1958-2062; corpus ug-enter.spec `underground: mine`)
-env = { PC_LAB_UNDERGROUND = "mine", PC_LAB_UNDERGROUND_AT = "4900" }
+frames = 12000
 clock = "2009-03-22 21:00:00"
 
 [[step]]
@@ -41,39 +44,159 @@ hold = 24
 note = "use the registered Explorer Kit"
 
 [[step]]
+do = "advance_text"
+max = 5000
+note = "'DS Wireless Communications', the save YES, overwrite YES, the hole, Roark's first-visit intro; the player is left free at (168,375)"
+shot = "underground"
+
+[[step]]
+do = "walk_to"
+x = 181
+z = 401
+face = "left"
+interact = true
+note = "the nearest mining spot (180,401) (tools/pt_ugspots.py): 'The wall is bulging slightly'"
+
+[[step]]
 do = "press"
 keys = "A"
-hold = 24
-gap = 176
-times = 9
-note = "comms confirm + the game's forced save (lab-ug-enter.txt: A every 200 frames from 3800)"
-
-[[step]]
-do = "wait_map"
-map = 2
-max = 3000
-note = "the hook sets FLAG_HAS_SEEN_UNDERGROUND_ROARK_INTRO after arrival (solo first-visit path, pc_lab.c:1958-1992)"
-
-[[step]]
-do = "wait_frames"
-n = 300
-note = "mining task started by the hook (Mining_StartGameForLab)"
+gap = 40
+times = 12
+note = "YES, 'Something pinged...', '3 confirmed', the first-dig tutorial to 'You can do it! Good luck, youngster!' (11 A; A does nothing on the board)"
 shot = "mining-board"
-# PHASE2: hammer/pick are touch input; a tap script that hits one cell repeatedly sets the flag but
-# may dig nothing (wall collapse ends early). Record taps (format as lab-poketch-tap.txt), then B/A out.
+
+[[step]]
+do = "tap"
+x = 40
+y = 152
+gap = 12
+times = 2
+note = "the board read with tools/pt_mine.py (the first dig: 3 items, no rocks): a small green sphere at cells (2,7)-(3,8), a large red sphere at (10,6)-(12,8), a small red sphere at (4,3)-(5,4); its plan clears them in 16 taps (2 with the hammer), the wall left at 124 of 196. Cell (c,r) is tapped at (16c+8, 16(r+2)+8)"
+
+[[step]]
+do = "tap"
+x = 56
+y = 168
+gap = 12
+times = 2
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 12
+
+[[step]]
+do = "tap"
+x = 232
+y = 80
+gap = 20
+note = "the hammer"
+
+[[step]]
+do = "tap"
+x = 184
+y = 152
+gap = 12
+times = 2
+
+[[step]]
+do = "tap"
+x = 232
+y = 144
+gap = 20
+note = "the pickaxe"
+
+[[step]]
+do = "tap"
+x = 200
+y = 152
+gap = 12
+
+[[step]]
+do = "tap"
+x = 184
+y = 168
+gap = 12
+
+[[step]]
+do = "tap"
+x = 168
+y = 136
+gap = 12
+
+[[step]]
+do = "tap"
+x = 200
+y = 136
+gap = 12
+
+[[step]]
+do = "tap"
+x = 200
+y = 152
+gap = 12
+
+[[step]]
+do = "tap"
+x = 168
+y = 168
+gap = 12
+
+[[step]]
+do = "tap"
+x = 184
+y = 168
+gap = 12
+
+[[step]]
+do = "tap"
+x = 72
+y = 88
+gap = 12
+
+[[step]]
+do = "tap"
+x = 88
+y = 104
+gap = 12
+
+[[step]]
+do = "advance_text"
+max = 2000
+note = "'Everything was dug up!', 'You obtained a Green Sphere, size 10!', 'a Red Sphere, size 20!', 'a Red Sphere, size 10!'"
+shot = "dug"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+note = "the Underground menu: TRAPS, SPHERES, GOODS, TREASURES, GQ, GO UP, CLOSE"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+times = 5
+gap = 10
+note = "GO UP"
+shot = "go-up"
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "advance_text"
+max = 2000
+map = 45
+note = "the return to Oreburgh"
+
+[[step]]
+do = "wait_field"
+shot = "oreburgh"
 
 [expect]
-map = 2
+map = 45
 flags = ["FLAG_DIGGING_FOR_FOSSILS"]
-log = ['pc_lab: mining started at frame \d+']
-# PHASE2: reader-ext sphere bag `sphere: filled=N` > 0 if a sphere was dug (pc_save, pc_corpus.py:354-357)
-# IN SITU (measured after the solo-Underground port fix, see tests/gameplay/scenarios/7-underground.scn): the lab
-# hook is no longer needed. Y, advance_text (comms, save YES, overwrite YES, the hole, Roark's intro) leaves the
-# player free at (168,375); field_ready now reads 1 in the Underground. tools/pt_ugspots.py lists the mining spots
-# (seeded from the save's Underground seed, so stable per recipe): for this recipe the nearest is the wall
-# (180,401), so walk_to x=181 z=401 face="left" interact=true, A = YES ('The wall is bulging slightly'), then A x7
-# through 'Something pinged... 3 confirmed', '...' and the first-dig tutorial. Taps: board cells x<208, y>=32
-# (16 px); the sidebar hammer (x 214-252, y 43-110) costs the wall 8, the pickaxe (y 114-174) 4
-# (mining.c Mining_MainGameLoop). A blind row sweep with the hammer collapses the wall by row 88 with a red sphere
-# half uncovered: next, tap only the cells around the items (the shine) with the pickaxe. Expect then
-# FLAG_DIGGING_FOR_FOSSILS and np_save4 `underground` spheres/treasures non-empty after GO UP (X, DOWN x5, A).
+# np_save4 underground: the three spheres (MINING_SMALL_GREEN_SPHERE, MINING_LARGE_RED_SPHERE, MINING_SMALL_RED_SPHERE)
+save = ['s["underground"]["has_mined"]', 'len(s["underground"]["spheres"]) >= 3']
