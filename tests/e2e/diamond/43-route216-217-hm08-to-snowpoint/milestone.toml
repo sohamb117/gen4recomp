@@ -29,10 +29,11 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 33000
+frames = 50000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 304
 z = 384
 max = 12000
@@ -64,6 +65,7 @@ note = "item ball: RemoveEvent (flag 0x47B) + GiveItem ITEM_HM08 (scr_seq 0370 @
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 311
 z = 256
 max = 9000
@@ -81,6 +83,7 @@ map = "MAP_ACUITY_LAKEFRONT"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 351
 z = 238
 max = 6000
@@ -98,6 +101,7 @@ map = "MAP_SNOWPOINT"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 367
 z = 223
 note = "below the gym door (367,222); BFS (352,238)->(354,238)->(354,240)->(359,240)->(359,239)->(367,239)->(367,223)"
@@ -109,7 +113,7 @@ shot = "snowpoint-gym-door"
 [expect]
 map = "MAP_SNOWPOINT"
 position = [367, 223]
-flags = ["0x47B"]
+flags = ["0x47B", "0x9BF"]
 save = [
   'any(i["item"] == 427 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM08 [INFERENCE: np_save4 D/P bag dump shaped like Platinum's]
 ]

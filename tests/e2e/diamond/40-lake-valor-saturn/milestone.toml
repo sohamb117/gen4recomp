@@ -38,6 +38,7 @@ frames = 27000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 717
 z = 761
 note = "lake mouth: warp 4 (717,761) -> MAP_LAKE_VALOR_GALACTIC warp 2 (52,11) while 0x15E is clear (scr_seq 0381 @0x0070)"
@@ -48,6 +49,7 @@ map = "MAP_LAKE_VALOR_GALACTIC"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 32
 z = 32
 max = 12000
@@ -79,6 +81,7 @@ note = "msg 275 #2, fade, RemoveEvent 1, SetFlag 0x13E/0x984 (scr_seq 0348 @0x01
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 14
 z = 29
 note = "cavern exit warp 0 -> MAP_LAKE_VALOR_GALACTIC (32,32) (scr_seq 0348 @0x002E keeps the Galactic exit while 0x15E is clear)"
@@ -87,9 +90,25 @@ note = "cavern exit warp 0 -> MAP_LAKE_VALOR_GALACTIC (32,32) (scr_seq 0348 @0x0
 do = "wait_map"
 map = "MAP_LAKE_VALOR_GALACTIC"
 shot = "lake-valor-after-saturn"
-# PHASE2: Fly bridge Lake Valor -> Verity Lakefront (41's start), same Fly sequence as 39's bridge with the cursor on Twinleaf
-#   (Lake Valor Galactic allows Fly: map_header.c:398 fly TRUE). From Twinleaf walk Route 201 west into Verity Lakefront
-#   (map_matrix 0 cells (3,27) -> (3..4,26) -> (1..2,25..26)), walk_to (80,845), wait_field.
+
+[[step]]
+do = "fly"
+map = "MAP_TWINLEAF"
+shot = "fly-twinleaf"
+note = "Fly bridge Lake Valor -> Twinleaf (map_header.c:398: Lake Valor Galactic allows Fly; arrival flag 0x9B0, 01); the Staraptor of 39's boost"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+via = [[105, 862], [96, 854], [81, 853]]
+x = 80
+z = 845
+max = 6000
+note = "north out of Twinleaf up the x 103..106 path, west along Route 201 (z 852..855), north up x 80..81 into Verity Lakefront (probe_map.py --map MAP_ROUTE_201 96 855); 41's start south of the lake mouth (zone_event 0319 warps 2/3 (80/81,843))"
+
+[[step]]
+do = "wait_field"
+shot = "verity-lakefront"
 
 [expect]
 map = "MAP_VERITY_LAKEFRONT"

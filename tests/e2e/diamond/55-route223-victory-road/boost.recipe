@@ -1,0 +1,11 @@
+# Boost on 54's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# A Waterfall carrier for Route 223 (845,604) and Victory Road B1F (24,10) (HM07 is in the bag since 54, the Beacon
+# Badge since 53); Surf too. Ice Fang and Crunch for the Elite Four after (dp_script.py trainer: Aaron's bugs, Bertha's
+# grounds, Flint's fires, Lucian's psychics, Cynthia's Garchomp). Route 223 swimmers lv 37-44 (zone_event 0446).
+party SPECIES_GYARADOS 80 ITEM_NONE
+# Slot 2 behind the chain's Torterra (0) and Staraptor (1, 46's boost); on a lab start (its party already carries
+# Waterfall on Bibarel) slot 2 is Tyranitar, whose moves this only swaps.
+party-move 2 0 MOVE_WATERFALL
+party-move 2 1 MOVE_SURF
+party-move 2 2 MOVE_ICE_FANG
+party-move 2 3 MOVE_CRUNCH

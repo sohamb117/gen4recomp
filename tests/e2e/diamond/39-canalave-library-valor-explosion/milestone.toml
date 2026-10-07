@@ -33,12 +33,14 @@ notes = "Estimate: Platinum's library milestone (~12000) plus the Fly bridge and
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 30000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 37
 z = 718
 note = "library door, zone_event 0032 warp 3; land_data BFS (39,732)->(37,732)->(37,733)->(35,733)->(35,726)->(37,726)->(37,718)"
@@ -49,6 +51,7 @@ map = "MAP_CANALAVE_LIBRARY_1F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 11
 z = 4
 note = "stairs, zone_event 0037 warp 1 -> MAP_CANALAVE_LIBRARY_2F (4,4)"
@@ -59,6 +62,7 @@ map = "MAP_CANALAVE_LIBRARY_2F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 11
 z = 4
 note = "stairs, zone_event 0038 warp 1 -> MAP_CANALAVE_LIBRARY_3F (4,3)"
@@ -75,6 +79,7 @@ note = "ON_FRAME 0x40B2==1 (scr_seq 0505 @0x000B) -> scr_seq 0042 script_2: Rowa
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 4
 z = 3
 note = "3F stairs, zone_event 0039 warp 0 -> 2F (11,4)"
@@ -85,6 +90,7 @@ map = "MAP_CANALAVE_LIBRARY_2F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 4
 z = 4
 note = "2F stairs, zone_event 0038 warp 0 -> 1F (11,4)"
@@ -95,6 +101,7 @@ map = "MAP_CANALAVE_LIBRARY_1F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 11
 z = 11
 note = "1F door, zone_event 0037 warp 0 -> Canalave (37,718)"
@@ -108,11 +115,53 @@ do = "advance_text"
 max = 9000
 shot = "valor-explosion-news"
 note = "ON_FRAME 0x4078==4 (scr_seq 0497 @0x0016) -> scr_seq 0034 script_5: sailor's explosion news (msg 47 #4), rival runs off, Rowan (msg 47 #6), 0x4078=5"
-# PHASE2: Fly bridge Canalave -> Valor Lakefront (40's start). The Fly menu sequence (start menu -> POKEMON -> Staraptor (party
-#   slot 2, MOVE_FLY) -> FLY -> town-map cursor onto Veilstone -> A) is not stated anywhere in the tree; find it once in a run and
-#   reuse it for the 40 and 41 bridges. Then from the Veilstone Pokemon Center walk the Route 214 gate (zone_event of
-#   MAP_ROUTE_214 warps 0/1 (718,645)/(719,645)) and Route 214 south (map_matrix 0 cells (22,20..22)) into Valor Lakefront,
-#   walk_to (719,761), wait_field. Do not enter a Canalave building first: that runs scr_seq 0034 @0x0150 (0x4078 -> 6).
+[[step]]
+do = "fly"
+map = "MAP_VEILSTONE"
+shot = "fly-veilstone"
+note = "Fly bridge Canalave -> Veilstone (the town-map cursor's arrival flag 0x9BD, 21): the chain's Staraptor from this milestone's boost. Not into a Canalave building first: that runs scr_seq 0034 @0x0150 (0x4078 -> 6)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 718
+z = 638
+note = "south exit, zone_event 0131 warp 11 -> MAP_ROUTE_214_VEILSTONE_GATEHOUSE warp 0 (5,2) (25's way)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_214_VEILSTONE_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 5
+z = 12
+note = "zone_event 0366 warp 1 -> MAP_ROUTE_214 warp 0 (718,645)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_214"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 729
+z = 741
+max = 15000
+note = "south through Route 214 (its sight trainers were beaten in 25) to the Valor Lakefront seam (25's waypoint, probe_map.py)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 719
+z = 761
+max = 6000
+note = "Valor Lakefront east of the lake mouth (zone_event 0321 warps 3/4 (717,760/761)), 40's start"
+
+[[step]]
+do = "wait_field"
+shot = "valor-lakefront"
 
 [expect]
 map = "MAP_VALOR_LAKEFRONT"

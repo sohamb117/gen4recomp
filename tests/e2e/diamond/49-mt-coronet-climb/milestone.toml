@@ -30,7 +30,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 80000
 
 [[step]]
 do = "fly"

@@ -28,6 +28,7 @@ frames = 45000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 367
 z = 222
 note = "gym door (zone_event 0164 warp 5) -> MAP_SNOWPOINT_GYM (11,28)"
@@ -67,6 +68,7 @@ note = "down the stair column: (11,5), (11,7), (11,10), (11,13), (11,17), (11,20
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 11
 z = 28
 note = "gym door (zone_event 0166 warp 0) -> MAP_SNOWPOINT warp 5"

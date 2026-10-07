@@ -949,11 +949,23 @@ def _walk_to(s, step, ctx):
         p = s.probe()
         d = terrain.mat_exit(p.cell(p.x, p.z))
         if d is not None:
-            if not s.run(150, DIR_KEYS[d], until="map_id!=%d" % start_map):
+            # a mat may warp within the map (D/P Mt. Coronet South 2F (7,23) -> (7,12)): a jump counts too
+            here, left = (p.x, p.z), False
+            for _ in range(19):
+                if s.run(8, DIR_KEYS[d], until="map_id!=%d" % start_map):
+                    left = True
+                    break
+                q = s.probe()
+                if abs(q.x - here[0]) + abs(q.z - here[1]) > 2:
+                    left = True
+                    break
+            if not left:
                 raise HarnessError("walk_to (%d,%d): the exit mat did not warp pushing %s" % (goal + (DIR_KEYS[d],)))
             _field_or_handle(s, step, ctx, limit)
             warped = True
-            s.note("walk_to: left map %d through the mat at (%d,%d) to map %d" % (start_map, goal[0], goal[1], s.map_id))
+            p = s.probe()
+            s.note("walk_to: left map %d through the mat at (%d,%d) to map %d (%d,%d)" % (
+                start_map, goal[0], goal[1], s.map_id, p.x, p.z))
     # the probe's tile is the step's target from the step's first frame and the field reads free between the
     # frames of a step: let the last step's walk finish before facing, talking or the next bot (a script the
     # goal tile starts is the next step's to handle)

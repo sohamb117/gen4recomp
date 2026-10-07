@@ -55,6 +55,7 @@ frames = 22500
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 825
 z = 790
 max = 9000
@@ -67,6 +68,7 @@ map = "MAP_ROUTE_222_SUNYSHORE_GATEOUSE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 10
 z = 7
 note = "gatehouse warp 1 (10,7) -> Sunyshore warp 3 (832,790) (zone_event 0383 warp 1)"
@@ -83,6 +85,7 @@ note = "ON_FRAME var 0x407E==0 (scr_seq 0613 @0x000B) -> Flint walks over (playe
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 886
 z = 790
 note = "Vista Lighthouse door, warp 10 (886,790) -> elevator 516 (zone_event 0149 warp 10)"
@@ -108,6 +111,7 @@ note = "msg 0165 #0-#2; Volkner leaves: RemoveEvent 2 @0x00F6 (0x29F), SetFlag 0
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 6
 z = 9
 note = "deck warp 0 (6,9) -> elevator (zone_event 0163 warp 0); floor 0 -> Warp 150,0,886,791 (scr_seq 0166 @0x0082)"
@@ -131,5 +135,5 @@ note = "0x162 set -> msg 0153 #3, Flint walks off: RemoveEvent 18 @0x055E (hidde
 
 [expect]
 map = "MAP_SUNYSHORE"
-flags = ["0x162", "0x29F", "0x257"]
+flags = ["0x162", "0x29F", "0x257", "0x9BE"]
 vars = { "0x407E" = 1 }

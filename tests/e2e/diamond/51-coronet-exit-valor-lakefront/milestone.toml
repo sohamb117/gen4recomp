@@ -36,10 +36,11 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 13500
+frames = 40000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 31
 z = 53
 note = "Spear Pillar warp 0 (31,53) -> MAP_MOUNT_CORONET_6F warp 1 (7,5) (zone_event 0217 warp 0)"
@@ -50,6 +51,7 @@ map = "MAP_MOUNT_CORONET_6F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 10
 z = 24
 note = "6F warp 0 (10,24) -> 5F warp 1 (13,24) (zone_event 0212 warp 0); grunt object 0 hidden by 0x2AD"
@@ -60,6 +62,7 @@ map = "MAP_MOUNT_CORONET_5F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 21
 z = 7
 note = "5F warp 0 (21,7) -> 4F room 3 warp 1 (18,8) (zone_event 0211 warp 0); grunts objects 0/1 hidden by 0x2AD"
@@ -70,6 +73,7 @@ map = "MAP_MOUNT_CORONET_4F_ROOM_3"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 2
 z = 3
 note = "4F room 3 warp 0 (2,3) -> North Mountainside warp 1 (13,19) (zone_event 0210 warp 0)"
@@ -80,11 +84,53 @@ map = "MAP_MOUNT_CORONET_NORTH_MOUNTAINSIDE"
 
 [[step]]
 do = "wait_field"
-# PHASE2: Fly menu sequence (START -> POKEMON -> Staraptor slot 4 -> FLY -> town map cursor) to a city that reaches Valor
-#   Lakefront on foot: [INFERENCE] Pastoria -> Route 213 east -> north, or Veilstone -> Route 214 south. Pick from the
-#   town-map fly list and the map matrix, then walk_to Valor Lakefront; its ON_TRANSITION (scr_seq 0831 @0x0005 ->
-#   scr_seq 0381 @0x0035/@0x0088) hides the guard (724,788) and disables coord 0 (724,789..791). End there, e.g. (722,790).
-#   Record any SetFlag/SetVar done by ON_TRANSITION scripts of the maps crossed (Route 213 scr_seq 0424, Route 214 scr_seq 0431).
+[[step]]
+do = "fly"
+map = "MAP_VEILSTONE"
+shot = "fly-veilstone"
+note = "Mt. Coronet North Mountainside allows Fly; Veilstone, whose Route 214 south reaches Valor Lakefront on foot (25's and 39's way)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 718
+z = 638
+note = "south exit, zone_event 0131 warp 11 -> MAP_ROUTE_214_VEILSTONE_GATEHOUSE warp 0 (5,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_214_VEILSTONE_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 5
+z = 12
+note = "zone_event 0366 warp 1 -> MAP_ROUTE_214 warp 0 (718,645); Route 214's ON_TRANSITION is scr_seq 0431"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_214"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 729
+z = 741
+max = 15000
+note = "south through Route 214 to the Valor Lakefront seam (25's waypoint)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 722
+z = 790
+max = 6000
+note = "Valor Lakefront: its ON_TRANSITION (scr_seq 0831 @0x0005 -> scr_seq 0381 @0x0035/@0x0088) hides the guard (724,788) and disables coord 0 (724,789..791); (722,790) is 52's start"
+
+[[step]]
+do = "wait_field"
+shot = "valor-lakefront"
 
 [expect]
 map = "MAP_VALOR_LAKEFRONT"

@@ -55,6 +55,7 @@ frames = 42000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 718
 z = 645
 max = 15000
@@ -66,6 +67,7 @@ map = "MAP_ROUTE_214_VEILSTONE_GATEHOUSE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 5
 z = 2
 note = "north door warp 0 (5,2) -> MAP_VEILSTONE warp 11 (718,638) (zone_event 0366)"
@@ -76,6 +78,7 @@ map = "MAP_VEILSTONE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 678
 z = 598
 note = "west exit warp 0 -> MAP_VEILSTONE_ROUTE_215_GATEHOUSE warp 0 (10,7) (zone_event 0131); Veilstone coords (697,596) 0x407D==0 / (681..684,616) 0x40F5==0 were spent before (scr_seq 0132 @0x0090, 0131 @0x0179)"
@@ -86,6 +89,7 @@ map = "MAP_VEILSTONE_ROUTE_215_GATEHOUSE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 1
 z = 7
 note = "west door warp 1 (1,7) -> MAP_ROUTE_215 warp 0 (671,598) (zone_event 0148); the hiker's line flips on 0x107 (scr_seq 0149 @0x0025)"

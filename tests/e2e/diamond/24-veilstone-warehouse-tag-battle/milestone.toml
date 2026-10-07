@@ -56,6 +56,7 @@ frames = 16500
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 12
 z = 24
 map = "MAP_VEILSTONE_GYM"
@@ -63,6 +64,7 @@ note = "from Maylene (12,5) (22's end) or the lab start on the door (12,25)"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 12
 z = 25
 note = "gym exit, zone_event 0132 warp 0 -> MAP_VEILSTONE warp 13 (684,611)"

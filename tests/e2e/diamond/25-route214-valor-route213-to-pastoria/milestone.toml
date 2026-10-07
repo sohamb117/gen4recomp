@@ -59,6 +59,7 @@ frames = 51000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 717
 z = 611
 note = "Veilstone Pokémon Center door, zone_event 0131 warp 10 -> MAP_VEILSTONE_POKECENTER_1F warp 0 (8,12)"
@@ -81,6 +82,7 @@ note = "heal YesNo: A = YES [INFERENCE default cursor]"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 8
 z = 12
 note = "zone_event 0133 warp 0 -> MAP_VEILSTONE warp 10"
@@ -91,6 +93,7 @@ map = "MAP_VEILSTONE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 718
 z = 638
 note = "south exit, zone_event 0131 warp 11 -> MAP_ROUTE_214_VEILSTONE_GATEHOUSE warp 0 (5,2)"
@@ -101,6 +104,7 @@ map = "MAP_ROUTE_214_VEILSTONE_GATEHOUSE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 5
 z = 12
 note = "zone_event 0366 warp 1 -> MAP_ROUTE_214 warp 0 (718,645)"
@@ -114,6 +118,7 @@ map = "MAP_ROUTE_214"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 729
 z = 741
 max = 15000
@@ -121,6 +126,7 @@ note = "south through Route 214 to the Valor Lakefront seam; sight trainers that
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 721
 z = 788
 max = 6000
@@ -128,6 +134,7 @@ note = "Route 214 south end (probe_map); the walk on crosses Valor Lakefront"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 705
 z = 800
 max = 6000
@@ -139,6 +146,8 @@ map = "MAP_ROUTE_213"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
+via = [[723, 806], [722, 824], [702, 832], [683, 834]]
 x = 646
 z = 812
 max = 14000
@@ -150,6 +159,7 @@ map = "MAP_ROUTE_213_PASTORIA_GATEHOUSE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 1
 z = 7
 note = "zone_event 0359 warp 1 -> MAP_PASTORIA warp 10 (639,812)"
@@ -160,6 +170,7 @@ map = "MAP_PASTORIA"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 600
 z = 815
 note = "Pastoria Pokémon Center, zone_event 0119 warp 9 -> MAP_PASTORIA_POKECENTER_1F warp 0 (8,12)"
@@ -181,6 +192,7 @@ do = "advance_text"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 8
 z = 12
 note = "zone_event 0122 warp 0 -> MAP_PASTORIA warp 9"
@@ -191,6 +203,7 @@ map = "MAP_PASTORIA"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 589
 z = 827
 shot = "pastoria"
@@ -206,5 +219,5 @@ do = "wait_field"
 [expect]
 map = "MAP_PASTORIA_GYM"
 badges = 3
-flags = ["0x101", "0x238", "0x239", "0x1C7"]
+flags = ["0x101", "0x238", "0x239", "0x1C7", "0x9BC"]
 flags_clear = ["0x102", "0x22A"]

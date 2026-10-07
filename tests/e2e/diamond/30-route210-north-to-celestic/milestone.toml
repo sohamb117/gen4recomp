@@ -48,11 +48,15 @@ frames = 30000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
+via = [[561, 563], [563, 563], [563, 540], [553, 540], [553, 535], [547, 535], [547, 532], [542, 532], [542, 527],
+       [538, 527], [538, 522], [533, 522], [524, 522], [521, 522], [521, 539], [521, 540], [516, 540], [516, 534],
+       [510, 534], [510, 531], [504, 531], [475, 531], [475, 539]]
 x = 467
 z = 538
 max = 20000
 shot = "route210-fog"
-note = "north through Route 210 South (Psyduck gone), into foggy Route 210 North, west into Celestic Town; [INFERENCE] (467,538) is two tiles east of coord 0 (463..465,538), south of the sign (466,537); sight trainers fought by walk_to (Zac & Jen #75 is a true double)"
+note = "north through Route 210 South (Psyduck gone), into foggy Route 210 North, west into Celestic Town; [INFERENCE] (467,538) is two tiles east of coord 0 (463..465,538), south of the sign (466,537); sight trainers fought by walk_to (Zac & Jen #75 is a true double), wild battles fled; via: Platinum 28's Route 210 route (tools/pt_route.py), the same fog maze (the planner alone circled at (531,522), its window short of the next block)"
 
 [[step]]
 do = "wait_map"
@@ -60,6 +64,7 @@ map = "MAP_CELESTIC"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 465
 z = 538
 note = "coord 0 (463..465,538) var 0x40F1==0 -> scr_seq 1012 #3 (elder (462,538), zone_event 0420 object 3)"
@@ -71,6 +76,6 @@ note = "msg 0527 #0 (the odd spaceman at the ruins); SetVar 0x40F1 1 @0x0242"
 
 [expect]
 map = "MAP_CELESTIC"
-flags = ["0x980", "0x107", "0x1CE"]
+flags = ["0x980", "0x107", "0x1CE", "0x9B4"]
 flags_clear = ["0xA6"]
 vars = { "0x40F1" = 1 }

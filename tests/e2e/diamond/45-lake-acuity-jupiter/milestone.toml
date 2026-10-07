@@ -29,6 +29,7 @@ frames = 9000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 354
 z = 238
 max = 3000
@@ -36,6 +37,7 @@ note = "west across Snowpoint to the Acuity Lakefront seam (x 352)"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 310
 z = 239
 max = 4000

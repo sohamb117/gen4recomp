@@ -37,6 +37,7 @@ frames = 27000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 80
 z = 843
 note = "lake mouth: zone_event 0319 warp 2 (80,843) -> MAP_LAKE_VERITY_GALACTIC warp 1 (46,54) since 0x13E is set"
@@ -72,9 +73,24 @@ do = "advance_text"
 max = 6000
 shot = "verity-after-mars"
 note = "msg 271 #14-#17; grunts/Mars removed, 0xBA set, Jupiter + Acuity guards shown, 0x40D3=1 (scr_seq 0343 @0x025E-@0x02D9)"
-# PHASE2: Fly bridge Lake Verity -> Route 211 East (42's start), same Fly sequence as 39's bridge with the cursor on Celestic
-#   (Lake Verity Galactic allows Fly: map_header.c:396 fly TRUE). From the Celestic Pokemon Center walk west out of Celestic
-#   (map_matrix 0 cell (14,16)) onto Route 211 East, walk_to (446,527), wait_field.
+
+[[step]]
+do = "fly"
+map = "MAP_CELESTIC"
+shot = "fly-celestic"
+note = "Fly bridge Lake Verity -> Celestic (map_header.c:396: Lake Verity Galactic allows Fly; arrival flag 0x9B4, 30); the Staraptor of 39's boost"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 446
+z = 527
+max = 6000
+note = "west out of Celestic (map_matrix 0 cell (14,16)) onto Route 211 East's east end (cell (13,16), x 416-447), 42's start"
+
+[[step]]
+do = "wait_field"
+shot = "route211-east"
 
 [expect]
 map = "MAP_ROUTE_211_EAST"

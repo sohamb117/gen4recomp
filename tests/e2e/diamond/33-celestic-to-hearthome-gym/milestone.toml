@@ -31,19 +31,24 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 39000
+frames = 45000
 
 # PHASE2-risk: the probe sees 64x64 tiles; the waypoints below split the walk at the old Psyduck tile and the gatehouse.
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
+via = [[475, 531], [504, 531], [510, 531], [510, 534], [516, 534], [516, 540], [521, 540], [521, 522], [533, 522],
+       [538, 522], [538, 527], [542, 527], [542, 532], [547, 532], [547, 535], [553, 535], [553, 540], [563, 540],
+       [563, 563], [561, 563]]
 x = 561
 z = 588
 max = 15000
-note = "east through Route 210 North, south into Route 210 South to the old Psyduck tile (Psyduck hidden 0x1CE); sight trainers fought by walk_to"
+note = "east through Route 210 North, south into Route 210 South to the old Psyduck tile (Psyduck hidden 0x1CE); sight trainers fought by walk_to; via: 30's Route 210 North route reversed (the planner alone circled at (531,522))"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 512
 z = 726
 max = 20000
@@ -55,6 +60,7 @@ map = "MAP_HEARTHOME_ROUTE_209_GATEHOUSE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 1
 z = 7
 note = "west door warp 0 (1,7) -> MAP_HEARTHOME warp 19 (505,726) (zone_event 0109)"
@@ -65,6 +71,7 @@ map = "MAP_HEARTHOME"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 499
 z = 697
 note = "gym door warp 8 (499,697) -> MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM warp 3 (9,22) (zone_event 0085)"

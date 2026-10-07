@@ -56,6 +56,7 @@ frames = 13500
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 463
 z = 521
 note = "ruins door, zone_event 0420 warp 4 -> MAP_CELESTIC_RUINS warp 0 (10,20)"
@@ -80,6 +81,7 @@ note = "msg 0533 #0, 0xA7, Cyrus/elder flags, elder (0427 object 0) walks up: ms
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 10
 z = 20
 note = "exit warp 0 (10,20) -> MAP_CELESTIC warp 4 (463,521)"

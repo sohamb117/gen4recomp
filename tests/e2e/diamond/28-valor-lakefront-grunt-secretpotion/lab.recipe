@@ -267,6 +267,7 @@ var 0x411A 2                 # scr_seq 0131 @0x0B6C [MAP_VEILSTONE]
 flag 0x238                   # scr_seq 0377 @0x00D0 [script ids 9600+]
 flag 0x239                   # scr_seq 0377 @0x0118 [script ids 9600+]
 flag 0x1C7                   # scr_seq 0118 @0x04C4 [MAP_PASTORIA]
+flag 0x9BC                   # [INFERENCE] set in play by 25-route214-valor-route213-to-pastoria (no script SetFlag; see its refs)
 clear-flag 0x102             # [INFERENCE] cleared in play by 25-route214-valor-route213-to-pastoria (see its refs)
 clear-flag 0x22A             # scr_seq 0118 @0x04C0 [MAP_PASTORIA]
 # -- 26 Pastoria Gym: Crasher Wake and the Fen Badge --

@@ -35,6 +35,7 @@ frames = 7500
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 855
 z = 743
 note = "coord 0 (853..857,743) var 0x407E==1 -> Jasmine walks over (scr_seq 0150 @0x0073); [INFERENCE] path from the gym door north-east"

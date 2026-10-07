@@ -67,6 +67,7 @@ frames = 33000
 # Room 1 (arrive (9,22))
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 13
 note = "elevator coord 0 (9,13) var 0x4000==0 -> scr_seq 0092 #3 MoveHearthomeGymElevator (up)"
@@ -89,6 +90,7 @@ note = "msg 0100 #0: 3 plus 5 plus 7 -> 15 = right"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 14
 z = 2
 note = "right door warp 2 -> MAP_HEARTHOME_GYM_SECOND_QUESTION_ROOM warp 3 (9,22) (zone_event 0087); [INFERENCE] upper-floor path"
@@ -100,6 +102,7 @@ map = "MAP_HEARTHOME_GYM_SECOND_QUESTION_ROOM"
 # Room 2
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 13
 note = "elevator coord (scr_seq 0093 #2)"
@@ -109,6 +112,7 @@ do = "wait_field"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 2
 note = "msg 0101 #0: 12 plus 28 -> 40 = middle; warp 0 -> MAP_HEARTHOME_GYM_THIRD_QUESTION_ROOM warp 3 (9,22) (zone_event 0090)"
@@ -120,6 +124,7 @@ map = "MAP_HEARTHOME_GYM_THIRD_QUESTION_ROOM"
 # Room 3
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 13
 note = "elevator coord (scr_seq 0094 #2)"
@@ -129,6 +134,7 @@ do = "wait_field"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 4
 z = 2
 note = "msg 0102 #0: 3 times 13 -> 39 = left; warp 1 -> MAP_HEARTHOME_GYM_FOURTH_QUESTION_ROOM warp 3 (9,22) (zone_event 0092)"
@@ -140,6 +146,7 @@ map = "MAP_HEARTHOME_GYM_FOURTH_QUESTION_ROOM"
 # Room 4
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 13
 note = "elevator coord (scr_seq 0095 #2)"
@@ -149,6 +156,7 @@ do = "wait_field"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 14
 z = 2
 note = "msg 0103 #0: the first room's answer -> 15 = right; warp 2 -> MAP_HEARTHOME_GYM_LEADER_ROOM warp 0 (9,12) (zone_event 0094)"
@@ -183,6 +191,7 @@ note = "GiveBadge BADGE_RELIC (@0x00E0), 8 gym trainer flags, 0x1C8 cleared, 0x4
 # Walk out: every question room's (9,22) warp leads back one room; arrivals are on the upper floor at the door
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 12
 note = "leader room warp 0 -> FOURTH_QUESTION_ROOM warp 2 (14,2)"
@@ -193,6 +202,7 @@ map = "MAP_HEARTHOME_GYM_FOURTH_QUESTION_ROOM"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 13
 note = "[INFERENCE] elevator lowers when the avatar is already up (overlay_06.s:16513-16529)"
@@ -202,6 +212,7 @@ do = "wait_field"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 22
 note = "warp 3 -> THIRD_QUESTION_ROOM warp 1 (4,2)"
@@ -212,6 +223,7 @@ map = "MAP_HEARTHOME_GYM_THIRD_QUESTION_ROOM"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 13
 
@@ -220,6 +232,7 @@ do = "wait_field"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 22
 note = "warp 3 -> SECOND_QUESTION_ROOM warp 0 (9,2)"
@@ -230,6 +243,7 @@ map = "MAP_HEARTHOME_GYM_SECOND_QUESTION_ROOM"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 13
 
@@ -238,6 +252,7 @@ do = "wait_field"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 22
 note = "warp 3 -> FIRST_QUESTION_ROOM warp 2 (14,2)"
@@ -248,6 +263,7 @@ map = "MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 13
 
@@ -256,6 +272,7 @@ do = "wait_field"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 22
 note = "warp 3 -> MAP_HEARTHOME warp 8 (499,697)"

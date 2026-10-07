@@ -26,15 +26,14 @@ refs = [
   "zone_event 0131 warp 14",
   "zone_event 0292 warp 0",
 ]
-notes = "Fly: the chain party gets a Staraptor with Fly by boost (in the story HM02 is the warehouse ball this milestone picks up, after the walk back from Snowpoint the player would otherwise make: Main's call, fly for 46+). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35)."
+notes = "Fly: the chain party's Staraptor from 39's boost (in the story HM02 is the warehouse ball this milestone picks up; the walks Fly saves cross the region: Main's call). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35)."
 
 [start]
 from = "prev"
 lab = "lab.recipe"
-boost = "boost.recipe"
 
 [run]
-frames = 18000
+frames = 36000
 
 [[step]]
 do = "walk_to"
@@ -123,17 +122,122 @@ note = "stairs (zone_event 0142 warp 1) -> MAP_VEILSTONE_GALACTIC_HEADQUARTERS_B
 do = "wait_map"
 map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_B2F"
 
+# The key's room (x 14..31, z 3..11 of B2F) is walled off from the warehouse stairs but for the locked doors (14..15,8)
+# (objects 6/7, the Galactic Key's: scr_seq 0338 script_3); its other way in is B2F warp 0 (50,3) from 1F warp 6 (11,3).
+# Route (tests/e2e/tools/dp_warps.py over B2F/B1F/1F/2F, step layers; probe_map.py and a walk in game for the wall
+# at x 53..56, z 3..5): B2F (81,3) -> B1F (3,7)..(11,3) -> 1F (46,3), panels (39,3)->(32,3), (36,8)->(1,8), stairs (4,3)
+# -> 2F (7,3), panel (1,3)->(17,5), stairs (24,3) -> 1F (27,3), walk to (11,3) -> B2F (50,3). HQ grunts (hidden 0x255
+# only after 48) on the way are fought.
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 81
+z = 3
+avoid = [[50, 3], [3, 16]]
+max = 8000
+note = "B2F east, zone_event 0297 warp 1 -> B1F warp 1 (3,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_B1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 11
+z = 3
+avoid = [[3, 7]]
+note = "zone_event 0296 warp 0 -> 1F warp 7 (46,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 39
+z = 3
+avoid = [[8, 22], [29, 22], [42, 22], [4, 3], [19, 14], [27, 3], [11, 3], [46, 3], [52, 21], [41, 3], [32, 3], [36, 8], [1, 8], [41, 14]]
+note = "warp panel 10 -> 1F (32,3)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 36
+z = 8
+avoid = [[8, 22], [29, 22], [42, 22], [4, 3], [19, 14], [27, 3], [11, 3], [46, 3], [52, 21], [41, 3], [39, 3], [32, 3], [1, 8], [41, 14]]
+note = "warp panel 12 -> 1F (1,8)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 4
+z = 3
+avoid = [[8, 22], [29, 22], [42, 22], [19, 14], [27, 3], [11, 3], [46, 3], [52, 21], [41, 3], [39, 3], [32, 3], [36, 8], [1, 8], [41, 14]]
+note = "stairs warp 3 -> 2F (7,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_2F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 1
+z = 3
+avoid = [[7, 3], [24, 3], [10, 11], [12, 3], [50, 3], [17, 5], [1, 14], [45, 12], [52, 6], [29, 13], [52, 12], [18, 20], [1, 22], [45, 22]]
+note = "warp panel 5 -> 2F (17,5)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 24
+z = 3
+avoid = [[7, 3], [10, 11], [12, 3], [50, 3], [1, 3], [17, 5], [1, 14], [45, 12], [52, 6], [29, 13], [52, 12], [18, 20], [1, 22], [45, 22]]
+note = "stairs warp 1 -> 1F (27,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 11
+z = 3
+avoid = [[8, 22], [29, 22], [42, 22], [4, 3], [19, 14], [27, 3], [46, 3], [52, 21], [41, 3], [39, 3], [32, 3], [36, 8], [1, 8], [41, 14]]
+note = "stairs warp 6 -> B2F warp 0 (50,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_B2F"
+
 [[step]]
 do = "walk_to"
 x = 20
 z = 6
+avoid = [[50, 3], [81, 3], [3, 16]]
 face = "up"
 interact = true
-note = "ball object 5 (20,5), std 7186 -> scr_seq 0370 @0x128A SetVar 0x8008 440 (ITEM_GALACTIC_KEY); route from the step layers (tests/e2e/tools/dp_warps.py)"
+note = "ball object 5 (20,5), std 7186 -> scr_seq 0370 @0x128A SetVar 0x8008 440 (ITEM_GALACTIC_KEY)"
 
 [[step]]
 do = "advance_text"
 shot = "galactic-key"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 9
+avoid = [[50, 3], [81, 3], [3, 16]]
+face = "up"
+interact = true
+note = "below the key doors (14..15,8): 'Use the Galactic Key?' (scr_seq 0338 @0x005C)"
+
+[[step]]
+do = "advance_text"
+note = "A = YES: the doors open, SetFlag 0x245, RemoveEvent 6/7 (@0x00A1-0x00A9)"
 
 [[step]]
 do = "walk_to"
@@ -171,7 +275,7 @@ do = "wait_field"
 
 [expect]
 map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F"
-flags = ["0x241", "0x4C8", "0x10E", "0x4C6", "0x4C7"]
+flags = ["0x241", "0x4C8", "0x10E", "0x4C6", "0x4C7", "0x245"]
 save = [
   'any(i["item"] == 440 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_GALACTIC_KEY
   'any(i["item"] == 421 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM02

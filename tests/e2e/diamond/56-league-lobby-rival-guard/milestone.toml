@@ -45,9 +45,12 @@ frames = 18000
 
 [[step]]
 do = "walk_to"
+surf = true
+via = [[847, 575]]
 x = 847
 z = 559
-note = "League lobby door, warp 1 (847,559) -> LOBBY_1F warp 1 (11,11) (zone_event 0171 warp 1)"
+max = 6000
+note = "League lobby door, warp 1 (847,559) -> LOBBY_1F warp 1 (11,11) (zone_event 0171 warp 1): from the Victory Road exit, Surf the moat and its Waterfall (847,569) up (Platinum 49's way; the same League map); 55's boost Gyarados carries both"
 
 [[step]]
 do = "wait_map"

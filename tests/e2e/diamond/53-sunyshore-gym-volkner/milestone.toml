@@ -51,6 +51,16 @@ lab = "lab.recipe"
 frames = 39000
 
 [[step]]
+do = "walk_to"
+x = 845
+z = 747
+note = "gym door (zone_event 0149 warp 12) -> MAP_SUNYSHORE_GYM_ROOM_1 warp 0 (8,14); 52 ends below it (845,749)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE_GYM_ROOM_1"
+
+[[step]]
 do = "steps"
 route = [[8, 8], [13, 8], [13, 11], [8, 11], [8, 8], [3, 8], [8, 8], [8, 2]]
 note = "room 1: buttons (13,8) -> state 1, (3,8) -> state 2; exit warp (8,2) -> room 2 (9,21)"
@@ -95,6 +105,7 @@ note = "back out: room 3 in state 1, no buttons, to the exit mat (11,25)"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 11
 z = 25
 note = "push off the exit mat -> room 2 (9,2), state 1"
@@ -110,6 +121,7 @@ note = "room 2 from above, state 1, no buttons, to the exit mat (9,21)"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 9
 z = 21
 note = "exit mat (9,21) -> room 1 (8,2), state 2"
@@ -125,6 +137,7 @@ note = "room 1 from above, state 2: (3,8) three times (3, 0, 1), to the exit mat
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 8
 z = 14
 note = "exit mat (zone_event 0153 warp 0) -> Sunyshore (845,748)"

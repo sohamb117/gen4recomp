@@ -46,6 +46,7 @@ frames = 33800
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 58
 z = 722
 max = 2000
@@ -69,6 +70,7 @@ note = "std 2002 heal; [INFERENCE] YES is the default answer"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 8
 z = 12
 note = "Pokémon Center warp 0 -> Canalave (58,722)"
@@ -79,6 +81,7 @@ map = "MAP_CANALAVE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 39
 z = 731
 max = 2000
@@ -91,17 +94,50 @@ map = "MAP_CANALAVE_GYM"
 [[step]]
 do = "wait_field"
 shot = "canalave-gym"
-# PHASE2: Canalave Gym route. The D/P platform logic is assembly: InitCanalaveGym (games/diamond/arm9/asm/unk_02064CA8.s:67-89)
-#   seeds 24 gym-state bytes from UNK_020F7E54 into the save's gym block (sub_02025490/sub_020254A0 type 3); find the
-#   platform-move code that reads that block (field overlay) or map-scan the gym (map 35, matrix 112) per floor height —
-#   objects sit at y_raw 655360/1310720/1966080 (zone_event 0034: Jackson (14,3) and Breanna (27,5) on one level, David (24,3)
-#   and Gerardo (8,3) on the next, Byron (16,3) on the top). Gym trainers on the way (fought by walk_to): Gary (22,16) S sight 4
-#   ONIX 31; Ricky (9,17) W sight 3 STEELIX 33; Cesar (27,25) S sight 2 SKORUPI 30, STEELIX 32; Jackson ONIX 28 x3;
-#   Breanna AZUMARILL 33; David ONIX 30, STEELIX 32; Gerardo ONIX 29 x2.
-#   Then: walk_to Byron's front tile (16,4) face up interact -> advance_text -> auto_battle (shot "byron-battle";
-#   BRONZOR 36, STEELIX 36, BASTIODON 39) -> advance_text (shot "mine-badge"; GiveBadge 5, TM91) -> walk_to (16,27)
-#   -> wait_map MAP_CANALAVE -> advance_text (rival frame script scr_seq 0034 script_4, shot "rival-library")
-#   -> wait_field.
+
+[[step]]
+do = "steps"
+route = [[8, 27], [8, 16], [18, 16], [18, 13], [19, 13], [19, 13], [19, 14], [20, 14], [20, 19], [24, 19], [24, 22], [25, 22], [25, 22], [24, 22], [24, 14], [24, 13], [24, 13], [24, 15], [29, 15], [29, 21], [29, 22], [29, 22], [28, 22], [28, 26], [21, 26], [21, 23], [21, 22], [21, 22], [19, 22], [18, 22], [11, 22], [8, 22], [8, 21], [2, 21], [2, 26], [4, 26], [5, 26], [5, 26], [2, 26], [2, 23], [2, 22], [2, 19], [2, 12], [4, 12], [4, 4], [9, 4], [10, 4], [14, 4], [18, 4], [19, 4], [22, 4], [24, 4], [24, 6], [26, 6], [26, 15], [26, 16], [26, 22], [26, 24], [29, 24], [29, 23], [29, 22], [29, 16], [29, 10], [29, 9], [29, 9], [28, 9], [28, 4], [23, 4], [23, 9], [24, 9], [25, 9], [25, 9], [17, 9], [16, 9], [16, 9], [16, 4]]
+face = "up"
+interact = true
+note = "Platinum 30's route (tools/pt_gym.py canalave in the Platinum worktree: 206 tiles, 15 platform rides from the entrance to (16,4) on the top floor). The D/P gym is the same map: zone_event 0034 objects and warp match events_canalave_city_gym.json tile for tile, and InitCanalaveGym (games/diamond/arm9/asm/unk_02064CA8.s:67-89) seeds the platforms as Platinum's CanalaveGym_Init. Trainers whose sight the route crosses are fought"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "byron-battle"
+note = "Byron: BRONZOR 36, STEELIX 36, BASTIODON 39 (trdata.json); Earthquake (22's boost) is 2x/2x/4x"
+
+[[step]]
+do = "advance_text"
+shot = "mine-badge"
+note = "GiveBadge 5 (Mine), TM91"
+
+[[step]]
+do = "steps"
+route = [[18, 4], [19, 4], [26, 4], [28, 4], [28, 5], [29, 5], [29, 6], [29, 7], [29, 23], [29, 25], [28, 25], [28, 26], [27, 26], [26, 26], [5, 26], [2, 26], [2, 24], [2, 23], [2, 12], [2, 9], [6, 9], [7, 9], [7, 9], [7, 26], [16, 26]]
+note = "Platinum 30's way back down to the entrance (16,26) over the platforms as the climb left them (pt_gym.py canalave --back)"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 27
+note = "gym warp 0 -> Canalave (39,731)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "rival-library"
+note = "the rival's frame script outside (scr_seq 0034 script_4): 0x4078 2 -> 3, he points to the library"
+
+[[step]]
+do = "wait_field"
 
 [expect]
 map = "MAP_CANALAVE"

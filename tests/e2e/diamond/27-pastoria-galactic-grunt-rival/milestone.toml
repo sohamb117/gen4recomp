@@ -57,6 +57,7 @@ frames = 15000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 600
 z = 815
 map = "MAP_PASTORIA"
@@ -79,6 +80,7 @@ do = "advance_text"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 8
 z = 12
 note = "zone_event 0122 warp 0 -> MAP_PASTORIA warp 9"

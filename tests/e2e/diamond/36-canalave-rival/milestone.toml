@@ -28,14 +28,16 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 9000
+frames = 20000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
+on_text = "stop"
 x = 47
 z = 724
 max = 2000
-note = "coord 0 tiles (47,723..726); [INFERENCE] the path from the gatehouse door reaches the bridge from the east"
+note = "coord 0 tiles (47,723..726); [INFERENCE] the path from the gatehouse door reaches the bridge from the east; the scene stops the walk (on_text) so its battle is the auto_battle step's"
 
 [[step]]
 do = "advance_text"

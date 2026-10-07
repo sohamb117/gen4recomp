@@ -38,10 +38,11 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 29300
+frames = 45000
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 465
 z = 697
 max = 2000
@@ -65,6 +66,7 @@ note = "[INFERENCE] std heal script, YES is the default answer"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 8
 z = 12
 note = "Pokémon Center warp 0 -> Hearthome (465,697)"
@@ -75,6 +77,7 @@ map = "MAP_HEARTHOME"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 454
 z = 726
 max = 3000
@@ -86,6 +89,7 @@ map = "MAP_HEARTHOME_ROUTE_208_GATEHOUSE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 1
 z = 7
 note = "gatehouse warp 1 -> Route 208 (447,726)"
@@ -96,6 +100,7 @@ map = "MAP_ROUTE_208"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 392
 z = 724
 max = 4000
@@ -107,6 +112,7 @@ map = "MAP_MOUNT_CORONET_SOUTH_1F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 4
 z = 8
 max = 3000
@@ -118,6 +124,7 @@ map = "MAP_ROUTE_207"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 258
 z = 749
 max = 5000
@@ -129,6 +136,7 @@ map = "MAP_OREBURGH_GATE_1F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 4
 z = 22
 note = "Gate 1F warp 0 -> Route 203 (246,749)"
@@ -139,6 +147,7 @@ map = "MAP_ROUTE_203"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 128
 z = 758
 max = 5000
@@ -150,6 +159,7 @@ map = "MAP_ROUTE_218_JUBLIFE_GATEHOUSE"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 1
 z = 7
 note = "gatehouse warp 0 -> Route 218 (121,758)"
@@ -167,7 +177,7 @@ shot = "route218"
 
 [expect]
 map = "MAP_CANALAVE"
-flags = ["0x23A"]
+flags = ["0x23A", "0x9B8"]
 
 [expect.vars]
 "0x4105" = 1

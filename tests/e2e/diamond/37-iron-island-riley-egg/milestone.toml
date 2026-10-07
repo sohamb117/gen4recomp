@@ -52,6 +52,7 @@ frames = 26300
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 58
 z = 722
 max = 2000
@@ -75,6 +76,7 @@ note = "std 2002 heal; [INFERENCE] YES is the default answer"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 8
 z = 12
 note = "Pokémon Center warp 0 -> Canalave (58,722)"
@@ -107,6 +109,7 @@ do = "wait_field"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 117
 z = 489
 note = "exterior warp 1 -> Iron Island 1F (6,8)"
@@ -117,6 +120,7 @@ map = "MAP_IRON_ISLAND_1F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 8
 z = 3
 note = "1F warp 2 -> B1F room 2 (2,3)"
@@ -127,6 +131,7 @@ map = "MAP_IRON_ISLAND_B1F_ROOM_2"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 6
 z = 26
 max = 4000
@@ -138,6 +143,7 @@ map = "MAP_IRON_ISLAND_B2F_ROOM_2"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 35
 z = 3
 note = "coord 0 (35,2..3) -> Riley joins as follower (script_3, msg 258 #0/#1/#2)"
@@ -148,6 +154,7 @@ shot = "riley-joins"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 21
 z = 40
 max = 12000
@@ -170,6 +177,7 @@ note = "grunts flee (RemoveEvent 5/6); 'Would you take it with you?' YesNoMenu, 
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 38
 z = 3
 max = 4000
@@ -181,6 +189,7 @@ map = "MAP_IRON_ISLAND_B1F_ROOM_2"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 2
 z = 3
 note = "B1F room 2 warp 2 -> 1F (8,3)"
@@ -191,6 +200,7 @@ map = "MAP_IRON_ISLAND_1F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 6
 z = 8
 note = "1F warp 0 -> exterior (117,489)"
