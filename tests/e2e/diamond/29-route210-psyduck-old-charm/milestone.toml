@@ -2,10 +2,9 @@
 # the SecretPotion clearing it and Cynthia's Old Charm hand-off (the errand that opens Celestic Town).
 # Start: Valor Lakefront (723,761) (28's end) -> end: Route 210 South (561,588), ITEM_OLD_CHARM, flag 0x107.
 title = "Route 210 South: SecretPotion on the Psyduck, Old Charm"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 28000
+estimate = 10803
 refs = [
   "zone_event 0321 object 0",
   "zone_event 0365 warp 0",

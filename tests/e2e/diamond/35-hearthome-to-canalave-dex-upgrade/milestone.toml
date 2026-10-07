@@ -3,10 +3,9 @@
 # where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0.
 # Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
 title = "Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 19500
+estimate = 7701
 refs = [
   "zone_event 0085 warp 8 (499,697) -> MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM; warp 14 (454,726) -> MAP_HEARTHOME_ROUTE_208_GATEHOUSE",
   "zone_event 0085 warp 5 (465,697) -> MAP_HEARTHOME_POKECENTER_1F warp 0 (8,12); zone_event 0100 object 0 SPRITE_PCWOMAN1 (8,4) -> scr_seq 0097 script_1 (std 2002, heal)",

@@ -2,10 +2,9 @@
 # The badge arms Pastoria's grunt (HasBadge 3, scr_seq 0118 @0x01DE) and the Route 213 chase (scr_seq 0424 @0x002F).
 # Start: Pastoria Gym door (13,42) -> end: back out in Pastoria at the gym door (27's start).
 title = "Pastoria Gym: Crasher Wake and the Fen Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 22000
+estimate = 24889
 refs = [
   "zone_event 0121 warp 0",
   "scr_seq 0583 @0x0000",
@@ -49,7 +48,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 33000
+frames = 37400
 
 [[step]]
 do = "wait_field"

@@ -1220,7 +1220,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Diamond
 
 <!-- plan.py:begin diamond -->
-### Story chain: 61 milestones, ~1193714 frames estimated
+### Story chain: 61 milestones, ~1155714 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -1245,20 +1245,20 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [19-hearthome-contest-hall-rival](diamond/19-hearthome-contest-hall-rival/milestone.toml) | Hearthome: Fantina, Contest Hall, rival | P0 | both | 10924 | prev + `lab.recipe` | MAP_HEARTHOME | passing |
 | [20-route209-to-solaceon](diamond/20-route209-to-solaceon/milestone.toml) | Route 209 to Solaceon Town | P0 | both | 12584 | prev + `lab.recipe` | MAP_SOLACEON | passing |
 | [21-route210-215-veilstone-dawn](diamond/21-route210-215-veilstone-dawn/milestone.toml) | Route 210 South and Route 215 to Veilstone: counterpart at the gym | P0 | both | 36615 | prev + `lab.recipe` | MAP_VEILSTONE_GYM | passing |
-| [22-maylene-cobble-badge](diamond/22-maylene-cobble-badge/milestone.toml) | Veilstone Gym: Maylene and the Cobble Badge | P0 | both | 20000 | prev + `lab.recipe` | MAP_VEILSTONE_GYM | planned |
-| [24-veilstone-warehouse-tag-battle](diamond/24-veilstone-warehouse-tag-battle/milestone.toml) | Veilstone: Dawn's stolen Pokédex, warehouse tag battle | P0 | both | 11000 | prev + `lab.recipe` | MAP_VEILSTONE | planned |
-| [25-route214-valor-route213-to-pastoria](diamond/25-route214-valor-route213-to-pastoria/milestone.toml) | Route 214, Valor Lakefront and Route 213 to Pastoria | P0 | both | 30000 | prev + `lab.recipe` | MAP_PASTORIA_GYM | planned |
-| [26-pastoria-gym-wake-fen-badge](diamond/26-pastoria-gym-wake-fen-badge/milestone.toml) | Pastoria Gym: Crasher Wake and the Fen Badge | P0 | both | 22000 | prev + `lab.recipe` | MAP_PASTORIA | planned |
-| [27-pastoria-galactic-grunt-rival](diamond/27-pastoria-galactic-grunt-rival/milestone.toml) | Pastoria: Galactic grunt flees, rival battle | P0 | both | 10000 | prev + `lab.recipe` | MAP_PASTORIA | planned |
-| [28-valor-lakefront-grunt-secretpotion](diamond/28-valor-lakefront-grunt-secretpotion/milestone.toml) | Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion | P0 | both | 12000 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | planned |
-| [29-route210-psyduck-old-charm](diamond/29-route210-psyduck-old-charm/milestone.toml) | Route 210 South: SecretPotion on the Psyduck, Old Charm | P0 | both | 28000 | prev + `lab.recipe` | MAP_ROUTE_210_SOUTH | planned |
-| [30-route210-north-to-celestic](diamond/30-route210-north-to-celestic/milestone.toml) | Route 210 North through the fog to Celestic Town | P0 | both | 20000 | prev + `lab.recipe` | MAP_CELESTIC | planned |
-| [31-celestic-grunt-old-charm](diamond/31-celestic-grunt-old-charm/milestone.toml) | Celestic Town: Galactic grunt at the ruins, Old Charm to the elder | P0 | both | 8000 | prev + `lab.recipe` | MAP_CELESTIC | planned |
-| [32-celestic-ruins-hm03-cyrus](diamond/32-celestic-ruins-hm03-cyrus/milestone.toml) | Celestic Ruins: the painting, HM03 Surf, Cyrus | P0 | both | 9000 | prev + `lab.recipe` | MAP_CELESTIC | planned |
-| [33-celestic-to-hearthome-gym](diamond/33-celestic-to-hearthome-gym/milestone.toml) | Celestic Town back to the Hearthome Gym | P0 | both | 26000 | prev + `lab.recipe` | MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM | planned |
-| [34-hearthome-gym-fantina-relic-badge](diamond/34-hearthome-gym-fantina-relic-badge/milestone.toml) | Hearthome Gym: Fantina and the Relic Badge | P0 | both | 22000 | prev + `lab.recipe` | MAP_HEARTHOME | planned |
-| [35-hearthome-to-canalave-dex-upgrade](diamond/35-hearthome-to-canalave-dex-upgrade/milestone.toml) | Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse | P0 | both | 19500 | prev + `lab.recipe` | MAP_CANALAVE | planned |
-| [36-canalave-rival](diamond/36-canalave-rival/milestone.toml) | Canalave City: rival battle on the bridge | P0 | both | 6000 | prev + `lab.recipe` | MAP_CANALAVE | planned |
+| [22-maylene-cobble-badge](diamond/22-maylene-cobble-badge/milestone.toml) | Veilstone Gym: Maylene and the Cobble Badge | P0 | both | 24989 | prev + `lab.recipe` | MAP_VEILSTONE_GYM | passing |
+| [24-veilstone-warehouse-tag-battle](diamond/24-veilstone-warehouse-tag-battle/milestone.toml) | Veilstone: Dawn's stolen Pokédex, warehouse tag battle | P0 | both | 10301 | prev + `lab.recipe` | MAP_VEILSTONE | passing |
+| [25-route214-valor-route213-to-pastoria](diamond/25-route214-valor-route213-to-pastoria/milestone.toml) | Route 214, Valor Lakefront and Route 213 to Pastoria | P0 | both | 32645 | prev + `lab.recipe` | MAP_PASTORIA_GYM | passing |
+| [26-pastoria-gym-wake-fen-badge](diamond/26-pastoria-gym-wake-fen-badge/milestone.toml) | Pastoria Gym: Crasher Wake and the Fen Badge | P0 | both | 24889 | prev + `lab.recipe` | MAP_PASTORIA | passing |
+| [27-pastoria-galactic-grunt-rival](diamond/27-pastoria-galactic-grunt-rival/milestone.toml) | Pastoria: Galactic grunt flees, rival battle | P0 | both | 9849 | prev + `lab.recipe` | MAP_PASTORIA | passing |
+| [28-valor-lakefront-grunt-secretpotion](diamond/28-valor-lakefront-grunt-secretpotion/milestone.toml) | Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion | P0 | both | 7079 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | passing |
+| [29-route210-psyduck-old-charm](diamond/29-route210-psyduck-old-charm/milestone.toml) | Route 210 South: SecretPotion on the Psyduck, Old Charm | P0 | both | 10803 | prev + `lab.recipe` | MAP_ROUTE_210_SOUTH | passing |
+| [30-route210-north-to-celestic](diamond/30-route210-north-to-celestic/milestone.toml) | Route 210 North through the fog to Celestic Town | P0 | both | 34697 | prev + `lab.recipe` | MAP_CELESTIC | passing |
+| [31-celestic-grunt-old-charm](diamond/31-celestic-grunt-old-charm/milestone.toml) | Celestic Town: Galactic grunt at the ruins, Old Charm to the elder | P0 | both | 6647 | prev + `lab.recipe` | MAP_CELESTIC | passing |
+| [32-celestic-ruins-hm03-cyrus](diamond/32-celestic-ruins-hm03-cyrus/milestone.toml) | Celestic Ruins: the painting, HM03 Surf, Cyrus | P0 | both | 3433 | prev + `lab.recipe` | MAP_CELESTIC | passing |
+| [33-celestic-to-hearthome-gym](diamond/33-celestic-to-hearthome-gym/milestone.toml) | Celestic Town back to the Hearthome Gym | P0 | both | 8825 | prev + `lab.recipe` | MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM | passing |
+| [34-hearthome-gym-fantina-relic-badge](diamond/34-hearthome-gym-fantina-relic-badge/milestone.toml) | Hearthome Gym: Fantina and the Relic Badge | P0 | both | 13283 | prev + `lab.recipe` | MAP_HEARTHOME | passing |
+| [35-hearthome-to-canalave-dex-upgrade](diamond/35-hearthome-to-canalave-dex-upgrade/milestone.toml) | Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse | P0 | both | 7701 | prev + `lab.recipe` | MAP_CANALAVE | passing |
+| [36-canalave-rival](diamond/36-canalave-rival/milestone.toml) | Canalave City: rival battle on the bridge | P0 | both | 10359 | prev + `lab.recipe` | MAP_CANALAVE | passing |
 | [37-iron-island-riley-egg](diamond/37-iron-island-riley-egg/milestone.toml) | Iron Island: Riley tag battle and the Riolu egg | P1 | both | 17500 | prev + `lab.recipe` | MAP_CANALAVE | planned |
 | [38-canalave-gym-byron-mine-badge](diamond/38-canalave-gym-byron-mine-badge/milestone.toml) | Canalave Gym: Byron and the Mine Badge, rival points to the library | P0 | both | 22500 | prev + `lab.recipe` | MAP_CANALAVE | planned |
 | [39-canalave-library-valor-explosion](diamond/39-canalave-library-valor-explosion/milestone.toml) | Canalave Library: lake legends and the Lake Valor explosion | P0 | both | 20000 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | planned |
@@ -1502,7 +1502,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE_GYM; 3 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE; >= 1 battles; flags set 0x9D, 0x685, 0x686, 0x687, 0x688; flags clear 0x1C6, 0x101; vars 0x407D=1, 0x411A=1, 0x40F5=1; 1 save check(s)
-- frames: estimate 20000, budget 45000
+- frames: estimate 24989, budget 45000
 - refs: maps.h:137; map_header.c:217; zone_event 0132 object 0; zone_event 0132 object 1; zone_event 0132 object 2; zone_event 0132 object 3; zone_event 0132 object 4; zone_event 0132 object 5; zone_event 0132 warp 0; scr_seq 0595 @0x0000; scr_seq 0132 @0x0012; scr_seq 0132 @0x001E; scr_seq 0132 @0x0042; scr_seq 0132 @0x0048; scr_seq 0132 @0x0068; scr_seq 0132 @0x0070; scr_seq 0132 @0x0074; scr_seq 0132 @0x0078; scr_seq 0132 @0x007C; scr_seq 0132 @0x008C; scr_seq 0132 @0x0090; scr_seq 0132 @0x0096; scr_seq 0132 @0x00A7; scr_seq 0132 @0x00C8; scr_seq 0132 @0x00CC; scr_seq 0594 @0x000B; scr_seq 0131 @0x0B24; msg 0136 #2; msg 0136 #3; games/diamond/arm9/src/scrcmd.c:3357; games/diamond/arm9/asm/unk_02064CA8.s:7-8; games/diamond/arm9/asm/unk_02064CA8.s:95-119; games/diamond/arm9/overlays/06/asm/overlay_06.s:17986-18253; games/diamond/arm9/overlays/06/asm/overlay_06.s:44861-44885; trdata.json #309; trdata.json #310; trdata.json #311; trdata.json #312; trdata.json #317
 - notes: Estimate: Platinum's Maylene milestone (~20000) — gym walk with up to four Black Belt battles plus Maylene's three. Pearl: no version branch in scr_seq 0132 and no encounters (version-diff), version = both. Maylene's own trainer flag 0x68D is never set by a script; her win sets the four gym trainers' flags (SetTrainerFlag 309-312). 0x407D = 1 disables the warehouse grunt push-back coord (zone_event 0131 coord 0) and 0x411A = 1 arms Veilstone's ON_FRAME_TABLE (scr_seq 0594 @0x000B -> scr_seq 0131 #30): counterpart asks for help, tag battle vs TRAINER_GALACTIC_GRUNT_37/38 -> SetFlag 0x101 — handed to S6 (E2EPlan2.DPStory06). HM02 Fly is NOT unlocked here in D/P: the warehouse entrance doors need ITEM_STORAGE_KEY (scr_seq 0143 @0x006B), whose grunt (zone_event 0131 object 24, hidden_flag 0x241) appears only after Lake Acuity (scr_seq 0351 @0x0110).
 
@@ -1512,7 +1512,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE; 3 badges; badge BADGE_COBBLE; >= 1 battles; flags set 0x101, 0x1C6, 0x1DD; vars 0x411A=2, 0x407D=1
-- frames: estimate 11000, budget 16500
+- frames: estimate 10301, budget 16500
 - refs: scr_seq 0132 @0x0096; scr_seq 0132 @0x008C; zone_event 0132 warp 0; zone_event 0131 warp 13; scr_seq 0594 @0x000B; scr_seq 0131 @0x00BD; scr_seq 0131 @0x0B24; scr_seq 0131 @0x0B5A; scr_seq 0131 @0x0B5E; scr_seq 0131 @0x00A7; scr_seq 0131 @0x0B64; scr_seq 0131 @0x0B6C; zone_event 0131 object 6; zone_event 0131 object 7; zone_event 0131 object 20; zone_event 0131 coord 0; scr_seq 0131 @0x0284; scr_seq 0131 @0x02AC; scr_seq 0131 @0x0310; scr_seq 0131 @0x04E2; scr_seq 0131 @0x047C; scr_seq 0131 @0x0341; scr_seq 0131 @0x03A8; scr_seq 0131 @0x03D1; scr_seq 0131 @0x05A2; scr_seq 0131 @0x05A6; games/diamond/arm9/src/map_object.c:295-299; trdata.json #624; trdata.json #848; trdata.json #849; msg 135 #0; msg 135 #12; msg 135 #16; msg 146 #2; maps.h:136; maps.h:137
 - notes: Male player => counterpart Dawn (0x4020 = 97, scr_seq 0131 @0x00BD) and partner TRAINER_PKMN_TRAINER_DAWN_DAWN_4 (624) for a Turtwig starter (scr_seq 0131 @0x047C-0x04A6). Coord 0 (697,596) is dead (0x407D = 1 since Maylene). [INFERENCE] Gen IV Surf is a spread move that also hits the partner's Prinplup (resisted), so the doubles need no target menu.
 
@@ -1521,134 +1521,134 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: prev + `lab.recipe`; map MAP_VEILSTONE 696 595 FACE_DOWN; lab state lines: 3 badge, 22 clear-flag, 125 flag, 14 item, 1 pokedex, 5 poketch, 51 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
-- end state: map MAP_PASTORIA_GYM; 3 badges; flags set 0x101, 0x238, 0x239, 0x1C7; flags clear 0x102, 0x22A
-- frames: estimate 30000, budget 51000
+- end state: map MAP_PASTORIA_GYM; 3 badges; flags set 0x101, 0x238, 0x239, 0x1C7, 0x9BC; flags clear 0x102, 0x22A
+- frames: estimate 32645, budget 51000
 - refs: zone_event 0131 warp 10; zone_event 0133 object 0; scr_seq 0133 @0x0014; zone_event 0133 warp 0; zone_event 0131 warp 11; zone_event 0366 warp 1; zone_event 0365 warp 0; scr_seq 0876 @0x0000; scr_seq 0431 @0x0075; zone_event 0365 object 3; zone_event 0365 object 4; zone_event 0365 object 5; zone_event 0365 object 8; trdata.json #113; trdata.json #114; trdata.json #382; trdata.json #120; scr_seq 0831 @0x0005; scr_seq 0381 @0x002A; zone_event 0321 coord 0; scr_seq 0381 @0x041E; zone_event 0321 object 5; scr_seq 0869 @0x0000; scr_seq 0424 @0x0022; zone_event 0358 object 30; zone_event 0358 warp 0; zone_event 0359 warp 1; zone_event 0119 warp 9; zone_event 0122 object 0; scr_seq 0121 @0x0014; zone_event 0122 warp 0; zone_event 0119 warp 0; zone_event 0119 object 21; scr_seq 0118 @0x01C8; games/diamond/files/fielddata/mapmatrix/map_matrix/narc_0000.bin; map_header.c:464; map_header.c:420; map_header.c:457; map_header.c:204
 - notes: Overworld matrix 0 (map_matrix narc_0000, 32-tile chunks): Veilstone x672-735 z576-639, Route 214 x704-735 z640-735, Valor Lakefront x672-735 z736-799, Route 213 x640-735 z800-863, Pastoria x576-639 z800-863. Wild encounter banks differ by version on Route 214 (d/p_enc 0163) and Valor Lakefront (d/p_enc 0138) only (dp_script.py version-diff); the steps do not depend on species, so version = both. Pastoria's grunt (614,810) only talks before the Fen Badge (scr_seq 0118 @0x01DE-0x0229). Two heals keep Surf PP up for the Route 214 trainers and the gym. D/P has no Great Marsh story scene (scr_seq 0124/0125: Safari Game and binoculars only).
 
 #### diamond/26-pastoria-gym-wake-fen-badge — Pastoria Gym: Crasher Wake and the Fen Badge
 - proves: Proves the water-level gym (InitPastoriaGym / CheckPastoriaGymButton), Wake's win script, the Fen Badge and TM55. The badge arms Pastoria's grunt (HasBadge 3, scr_seq 0118 @0x01DE) and the Route 213 chase (scr_seq 0424 @0x002F). Start: Pastoria Gym door (13,42) -> end: back out in Pastoria at the gym door (27's start).
-- start: prev + `lab.recipe`; warp MAP_PASTORIA_GYM 0; lab state lines: 3 badge, 24 clear-flag, 128 flag, 14 item, 1 pokedex, 5 poketch, 51 var
+- start: prev + `lab.recipe`; warp MAP_PASTORIA_GYM 0; lab state lines: 3 badge, 24 clear-flag, 129 flag, 14 item, 1 pokedex, 5 poketch, 51 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA; 4 badges; badge BADGE_FEN; >= 1 battles; flags set 0x9C, 0x675, 0x6A3, 0x6E1, 0x733, 0x741, 0x742; vars 0x407C=1; 1 save check(s)
-- frames: estimate 22000, budget 33000
+- frames: estimate 24889, budget 37400
 - refs: zone_event 0121 warp 0; scr_seq 0583 @0x0000; scr_seq 0120 @0x001E; scr_seq 0120 @0x0030; games/diamond/arm9/asm/unk_02064CA8.s:17-30; games/diamond/arm9/src/scrcmd.c:3332-3339; games/diamond/arm9/overlays/06/asm/overlay_06.s:15664-15800; scr_seq 0120 @0x0034; scr_seq 0120 @0x004A; scr_seq 0120 @0x0060; zone_event 0121 coord 0; zone_event 0121 coord 9; zone_event 0121 object 0; zone_event 0121 object 2; zone_event 0121 object 7; map_header.c:206; scr_seq 0120 @0x0076; scr_seq 0120 @0x00A2; scr_seq 0120 @0x00C8; scr_seq 0120 @0x00D0; scr_seq 0120 @0x00E4; scr_seq 0120 @0x00F4; scr_seq 0120 @0x0105; scr_seq 0120 @0x0126; scr_seq 0120 @0x012A; trdata.json #316; trdata.json #293; trdata.json #339; trdata.json #401; trdata.json #483; trdata.json #497; trdata.json #498; msg 125 #2; include/constants/badge.h:7
 - notes: Map header row: matrix 111 (map_header.c:206), the same land matrix id Platinum's Pastoria Gym uses; zone_event 0121's buttons, trainers and Wake (13,4) sit on the Platinum coordinates, so Platinum's solved layout is the starting hypothesis [INFERENCE]. Gym trainers have sight 2; Wake's win sets all six trainer flags anyway (scr_seq 0120 @0x00D0-0x00E4). Wake's own flag 0x68C is never set.
 
 #### diamond/27-pastoria-galactic-grunt-rival — Pastoria: Galactic grunt flees, rival battle
 - proves: Proves the post-Fen Pastoria scene: the Galactic grunt by the Great Marsh gate runs to the east gate (0x102), the second talk sends him off to the lake and Barry bumps into you for a rival battle (0x103 arms Route 213). Start: Pastoria at the gym door (589,827) -> end: Pastoria (636,812) by the east gate, rival gone.
-- start: prev + `lab.recipe`; warp MAP_PASTORIA 0; lab state lines: 4 badge, 24 clear-flag, 135 flag, 15 item, 1 pokedex, 5 poketch, 52 var
+- start: prev + `lab.recipe`; warp MAP_PASTORIA 0; lab state lines: 4 badge, 24 clear-flag, 136 flag, 15 item, 1 pokedex, 5 poketch, 52 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA; 4 badges; >= 1 battles; flags set 0x101, 0x102, 0x103, 0x22A, 0x1C7
-- frames: estimate 10000, budget 15000
+- frames: estimate 9849, budget 15000
 - refs: zone_event 0119 warp 0; zone_event 0119 warp 9; zone_event 0122 object 0; scr_seq 0121 @0x0014; zone_event 0122 warp 0; zone_event 0119 object 21; zone_event 0119 object 22; scr_seq 0118 @0x01B7; scr_seq 0118 @0x01DE; scr_seq 0118 @0x0205; scr_seq 0118 @0x024F; scr_seq 0118 @0x025B; scr_seq 0581 @0x0000; scr_seq 0118 @0x0042; scr_seq 0118 @0x004F; scr_seq 0118 @0x0263; scr_seq 0118 @0x02BD; scr_seq 0118 @0x0315; scr_seq 0118 @0x0319; scr_seq 0118 @0x0323; scr_seq 0118 @0x03A8; scr_seq 0118 @0x0378; scr_seq 0118 @0x03DA; scr_seq 0118 @0x03F6; scr_seq 0118 @0x0462; scr_seq 0118 @0x04B4; scr_seq 0118 @0x04B8; scr_seq 0118 @0x04C0; games/diamond/arm9/src/map_object.c:295-299; games/diamond/arm9/src/scrcmd.c:2654-2656; trdata.json #474; trdata.json #473; trdata.json #475; msg 123 #2; msg 123 #3; msg 123 #4; msg 123 #5; msg 123 #6
 - notes: GetStarter (scrcmd.c:2654) picks the rival team: Turtwig -> TRAINER_PKMN_TRAINER_BARRY_CEDRIC_8 (474); Chimchar -> 475, Piplup -> 473 (scr_seq 0118 @0x0378-0x0396). A loss clears 0x22A and sets 0x1C7 before the blackout (@0x04C0), so the grunt is back at (637,812) for a retry. [INFERENCE] the grunt's movement 14 with range (2,2) may turn/wander him; re-target the adjacent tile if he is not where the step expects.
 
 #### diamond/28-valor-lakefront-grunt-secretpotion — Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion
 - proves: Proves the Fen Badge's Galactic follow-up: the grunt chase over Route 213 (0x104) to Valor Lakefront (0x106), the grunt battle, and Cynthia's SecretPotion that sends the player north to the Route 210 Psyduck (0x4083 = 2, 0xB7). Start: Pastoria (636,812) by the east gate (27's end) -> end: Valor Lakefront below Cynthia's spot (723,761).
-- start: prev + `lab.recipe`; map MAP_PASTORIA 636 812 FACE_RIGHT; lab state lines: 4 badge, 24 clear-flag, 138 flag, 15 item, 1 pokedex, 5 poketch, 52 var
+- start: prev + `lab.recipe`; map MAP_PASTORIA 636 812 FACE_RIGHT; lab state lines: 4 badge, 24 clear-flag, 139 flag, 15 item, 1 pokedex, 5 poketch, 52 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; 4 badges; >= 1 battles; flags set 0x103, 0x104, 0x106, 0x238, 0x239, 0x1CB, 0xB7; vars 0x4083=2; 1 save check(s)
-- frames: estimate 12000, budget 18000
+- frames: estimate 7079, budget 18000
 - refs: zone_event 0119 warp 10; zone_event 0359 warp 0; scr_seq 0869 @0x0000; scr_seq 0424 @0x0022; scr_seq 0424 @0x002F; scr_seq 0424 @0x0044; scr_seq 0424 @0x0051; zone_event 0358 object 30; scr_seq 0424 @0x0057; scr_seq 0424 @0x0073; scr_seq 0424 @0x00A3; scr_seq 0424 @0x00B3; scr_seq 0424 @0x00B7; scr_seq 0424 @0x00BB; zone_event 0321 object 5; zone_event 0321 object 0; zone_event 0321 coord 0; scr_seq 0831 @0x0005; scr_seq 0381 @0x002A; scr_seq 0381 @0x005A; scr_seq 0381 @0x00B8; scr_seq 0381 @0x0119; scr_seq 0381 @0x0141; scr_seq 0381 @0x014D; scr_seq 0381 @0x0155; scr_seq 0381 @0x015C; scr_seq 0381 @0x01B4; scr_seq 0381 @0x01DC; scr_seq 0381 @0x01E0; scr_seq 0381 @0x01E4; scr_seq 0381 @0x025C; scr_seq 0381 @0x0267; scr_seq 0381 @0x029C; scr_seq 0381 @0x02A8; scr_seq 0381 @0x02E0; scr_seq 0381 @0x02F8; scr_seq 0381 @0x02FC; scr_seq 0381 @0x0302; scr_seq 0412 @0x0081; games/diamond/arm9/src/map_object.c:295-299; trdata.json #847; msg 444 #1; msg 354 #2; msg 354 #4; msg 354 #7; items.h:689
 - notes: Valor Lakefront's wild bank differs by version (d/p_enc 0138, dp_script.py version-diff); no script here branches on GetGameVersion, so version = both. The Route 213 grunt only leaves when talked to facing south or east (scr_seq 0424 @0x0073-0x0091); other facings End with him still there. The SecretPotion is used on the Route 210 South Psyduck (scr_seq 0412 @0x0081 HasItem 464) by the next slice.
 
 #### diamond/29-route210-psyduck-old-charm — Route 210 South: SecretPotion on the Psyduck, Old Charm
 - proves: Proves the walk back from Valor Lakefront (Route 214, Veilstone, Route 215) to the Route 210 South Psyduck block, the SecretPotion clearing it and Cynthia's Old Charm hand-off (the errand that opens Celestic Town). Start: Valor Lakefront (723,761) (28's end) -> end: Route 210 South (561,588), ITEM_OLD_CHARM, flag 0x107.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 723 761 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 142 flag, 16 item, 1 pokedex, 5 poketch, 53 var
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 723 761 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 143 flag, 16 item, 1 pokedex, 5 poketch, 53 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_ROUTE_210_SOUTH; at (561, 588); flags set 0x1CE, 0x1CF, 0x107; 2 save check(s)
-- frames: estimate 28000, budget 42000
+- frames: estimate 10803, budget 42000
 - refs: zone_event 0321 object 0; zone_event 0365 warp 0; zone_event 0366 warp 0; zone_event 0131 warp 0; zone_event 0148 warp 1; zone_event 0367 warp 0; zone_event 0367 object 10; zone_event 0367 object 11; zone_event 0367 object 12; zone_event 0367 object 13; zone_event 0367 object 14; zone_event 0347 object 19; zone_event 0347 object 26; zone_event 0347 object 27; zone_event 0347 object 28; zone_event 0347 object 20; scr_seq 0412 @0x0081; scr_seq 0412 @0x00A4; scr_seq 0412 @0x00CA; scr_seq 0412 @0x0123; scr_seq 0412 @0x0139; scr_seq 0412 @0x0183; scr_seq 0412 @0x01A6; scr_seq 0412 @0x01E9; scr_seq 0412 @0x0240; scr_seq 0412 @0x0244; scr_seq 0149 @0x0025; scr_seq 0413 @0x00C9; scr_seq 0377 @0x0120; scr_seq 0132 @0x0090; scr_seq 0131 @0x0179; msg 0432 #1; msg 0432 #3; games/diamond/arm9/src/map_object.c:295-298; maps.h:366; map_header.c:446
 - notes: Estimate: Platinum 20's ~31000 for a similar three-map walk, minus its rival battle. SecretPotion is only checked (HasItem @0x0081), never taken. Encounter banks differ by version (d/p_enc_data 0156/0163/0164 per version-diff) but no script does, so version = both. Route 210 South's ON_TRANSITION (scr_seq 0412 #7) only swaps the jogger pair 0x28E/0x28F by time of day.
 
 #### diamond/30-route210-north-to-celestic — Route 210 North through the fog to Celestic Town
 - proves: Proves the Psyduck block is gone, the foggy Route 210 North walk without Defog and the arrival in Celestic Town, where the elder's coord scene (0x40F1) tells of the spaceman at the ruins. Start: Route 210 South (561,588) (29's end) -> end: Celestic Town coord (465,538), 0x980 + 0x40F1 = 1.
-- start: prev + `lab.recipe`; map MAP_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 145 flag, 17 item, 1 pokedex, 5 poketch, 53 var
+- start: prev + `lab.recipe`; map MAP_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 146 flag, 17 item, 1 pokedex, 5 poketch, 53 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
-- end state: map MAP_CELESTIC; flags set 0x980, 0x107, 0x1CE; flags clear 0xA6; vars 0x40F1=1
-- frames: estimate 20000, budget 30000
+- end state: map MAP_CELESTIC; flags set 0x980, 0x107, 0x1CE, 0x9B4; flags clear 0xA6; vars 0x40F1=1
+- frames: estimate 34697, budget 52100
 - refs: zone_event 0347 object 19; zone_event 0348 object 0; zone_event 0348 object 5; zone_event 0348 object 7; zone_event 0348 object 8; zone_event 0348 object 13; zone_event 0348 object 14; zone_event 0348 object 22; zone_event 0348 object 11; zone_event 0420 coord 0; zone_event 0420 object 3; scr_seq 0414 @0x0016; scr_seq 0942 @0x0000; scr_seq 1012 @0x002E; scr_seq 1012 @0x0224; scr_seq 1012 @0x0242; msg 0527 #0; trdata.json #73; trdata.json #75; games/diamond/arm9/src/unk_0205EC84.c:163-164; maps.h:367; map_header.c:447; maps.h:446; map_header.c:526
 - notes: Estimate: ~110 tiles plus up to ten sight trainers. Route 210 North has weather 14 (fog) and a Defog hint NPC (scr_seq 0414 #1) but no script needs Defog. 0x980 is one of the 0x97F-0x983 system flags read by sub_0205EEB8 (unk_0205EC84.c:155-177) [INFERENCE: a per-town visit flag]. Encounter bank d/p_enc_data 0157 differs by version; no script does.
 
 #### diamond/31-celestic-grunt-old-charm — Celestic Town: Galactic grunt at the ruins, Old Charm to the elder
 - proves: Proves the Celestic Town grunt at the ruins door (Yes -> battle), the elder thanking the player and taking the Old Charm from Cynthia (flag 0xA6), which leaves the ruins open. Start: Celestic Town (465,538) (30's end) -> end: Celestic Town (463,523) below the ruins door, Old Charm handed over.
-- start: prev + `lab.recipe`; map MAP_CELESTIC 465 538 FACE_LEFT; lab state lines: 4 badge, 25 clear-flag, 146 flag, 17 item, 1 pokedex, 5 poketch, 54 var
+- start: prev + `lab.recipe`; map MAP_CELESTIC 465 538 FACE_LEFT; lab state lines: 4 badge, 25 clear-flag, 148 flag, 17 item, 1 pokedex, 5 poketch, 54 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; >= 1 battles; flags set 0x1CD, 0xA6; flags clear 0x1CA, 0xA7; 1 save check(s)
-- frames: estimate 8000, budget 12000
+- frames: estimate 6647, budget 18000
 - refs: zone_event 0420 object 2; zone_event 0420 object 3; zone_event 0420 warp 4; scr_seq 1012 @0x003C; scr_seq 1012 @0x003F; scr_seq 1012 @0x006F; scr_seq 1012 @0x0075; scr_seq 1012 @0x008B; scr_seq 1012 @0x0138; scr_seq 1012 @0x013C; scr_seq 1012 @0x0140; scr_seq 1012 @0x0154; scr_seq 1012 @0x0176; scr_seq 1012 @0x017E; scr_seq 1012 @0x018D; msg 0527 #1; msg 0527 #5; msg 0527 #7; trdata.json #416; games/diamond/arm9/src/map_object.c:295-298
 - notes: TrainerBattle 416 from a map script: no trainer flag is set (the script has no SetTrainerFlag; 0x6F0 stays clear). The elder is re-added at (466,531) by SetEventDefaultPosition (@0x0140) [INFERENCE: not saved; she is hidden for good in 32]. Loss -> Blackout (@0x018D).
 
 #### diamond/32-celestic-ruins-hm03-cyrus — Celestic Ruins: the painting, HM03 Surf, Cyrus
 - proves: Proves the Celestic Ruins painting, the elder's HM03 Surf (Cynthia's grandmother; also arms the Hearthome Gym via 0x98D) and Cyrus's speech outside the ruins (no battle in D/P), which brings Fantina back (0xA5). Start: Celestic Town (463,523) (31's end) -> end: Celestic Town at the ruins door, ITEM_HM03, var 0x4074 = 2.
-- start: prev + `lab.recipe`; map MAP_CELESTIC 463 523 FACE_UP; lab state lines: 4 badge, 27 clear-flag, 148 flag, 16 item, 1 pokedex, 5 poketch, 54 var
+- start: prev + `lab.recipe`; map MAP_CELESTIC 463 523 FACE_UP; lab state lines: 4 badge, 27 clear-flag, 150 flag, 16 item, 1 pokedex, 5 poketch, 54 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; flags set 0xA7, 0x98D, 0xA5, 0x1CA, 0x247, 0x1DB; flags clear 0x1E1; vars 0x4074=2; 1 save check(s)
-- frames: estimate 9000, budget 13500
+- frames: estimate 3433, budget 13500
 - refs: zone_event 0420 warp 4; zone_event 0427 warp 0; zone_event 0427 bg 0; zone_event 0427 bg 1; zone_event 0427 object 0; zone_event 0420 object 4; zone_event 0423 object 1; scr_seq 1021 @0x000C; scr_seq 1021 @0x002D; scr_seq 1021 @0x0031; scr_seq 1021 @0x0035; scr_seq 1021 @0x003B; scr_seq 1021 @0x0043; scr_seq 1021 @0x00DE; scr_seq 1021 @0x00EE; scr_seq 1021 @0x00F2; scr_seq 1021 @0x00F6; scr_seq 1021 @0x0101; scr_seq 0942 @0x000B; scr_seq 1012 @0x028C; scr_seq 1012 @0x02C4; scr_seq 1012 @0x02C8; scr_seq 1012 @0x02CC; scr_seq 0377 @0x005A; scr_seq 0377 @0x005E; scr_seq 0377 @0x0062; scr_seq 0092 @0x0022; scr_seq 0092 @0x0058; scr_seq 0097 @0x004C; msg 0533 #0; msg 0533 #2; msg 0533 #3; msg 0527 #10; games/diamond/arm9/src/unk_0205EC84.c:47-49; games/diamond/arm9/src/map_object.c:295-298; maps.h:453; map_header.c:533
 - notes: Unlike Platinum there is no Cyrus battle: scr_seq 1012 #5 is talk only. The only GetGameVersion near here is the grandparents' house bg (scr_seq 1017 @0x0063), off this path, so version = both. msg 0533 #3: Surf in the field needs the Hearthome badge (Relic, 34).
 
 #### diamond/33-celestic-to-hearthome-gym — Celestic Town back to the Hearthome Gym
 - proves: Proves the walk back from Celestic Town (Routes 210 North/South, Solaceon, Route 209) to Hearthome City and into the Hearthome Gym, now open: 0x98D keeps the first room's elevator coord armed (var 0x4000 = 0). Start: Celestic Town ruins door (463,521) (32's end) -> end: Hearthome Gym first question room (9,22) (34's start).
-- start: prev + `lab.recipe`; warp MAP_CELESTIC 4; lab state lines: 4 badge, 28 clear-flag, 154 flag, 17 item, 1 pokedex, 5 poketch, 55 var
+- start: prev + `lab.recipe`; warp MAP_CELESTIC 4; lab state lines: 4 badge, 28 clear-flag, 156 flag, 17 item, 1 pokedex, 5 poketch, 55 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM; at (9, 22); 4 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN; flags set 0x98D, 0xA5, 0x107
-- frames: estimate 26000, budget 39000
+- frames: estimate 8825, budget 45000
 - refs: zone_event 0347 object 19; zone_event 0341 warp 0; zone_event 0109 warp 0; zone_event 0085 warp 8; zone_event 0085 coord 0; zone_event 0087 warp 3; zone_event 0087 coord 0; scr_seq 0092 @0x001A; scr_seq 0092 @0x0020; scr_seq 0092 @0x0022; scr_seq 0114 @0x012B; scr_seq 0090 @0x013B; games/diamond/arm9/asm/unk_02064CA8.s:32-57; games/diamond/arm9/src/unk_0205EC84.c:47-49; maps.h:92; map_header.c:172
 - notes: Estimate: ~350 tiles (Platinum 20 walked most of it the other way in ~31000 with a rival battle). No story state changes on the way: Route 209/210 South ON_TRANSITIONs only swap time-of-day jogger flags (scr_seq 0406 #8, 0412 #7). Hearthome coord 0 (484..489,718) var 0x407B==1 is off the gate-to-gym path and was spent earlier (scr_seq 0090 @0x013B).
 
 #### diamond/34-hearthome-gym-fantina-relic-badge — Hearthome Gym: Fantina and the Relic Badge
 - proves: Proves the Hearthome Gym quiz rooms (elevator + one of three answer doors per room), Fantina, the Relic Badge and TM65, the walk back out, and Cynthia's Hearthome scene pointing to the Canalave library. Start: Hearthome Gym first question room warp 3 (9,22) (33's end) -> end: Hearthome City at the gym door, 5 badges.
-- start: prev + `lab.recipe`; warp MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM 3; lab state lines: 4 badge, 28 clear-flag, 154 flag, 17 item, 1 pokedex, 5 poketch, 55 var
+- start: prev + `lab.recipe`; warp MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM 3; lab state lines: 4 badge, 28 clear-flag, 156 flag, 17 item, 1 pokedex, 5 poketch, 55 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME; 5 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC; >= 1 battles; flags set 0x7D, 0x1C8, 0x65A, 0x668, 0x66C, 0x695, 0x69A, 0x6A4, 0x6A7, 0x6B5, 0x98D; vars 0x40D1=2; 1 save check(s)
-- frames: estimate 22000, budget 33000
+- frames: estimate 13283, budget 33000
 - refs: zone_event 0087 coord 0; zone_event 0087 bg 0; zone_event 0087 warp 2; zone_event 0087 warp 3; zone_event 0090 warp 0; zone_event 0090 warp 3; zone_event 0092 warp 1; zone_event 0092 warp 3; zone_event 0094 warp 2; zone_event 0094 warp 3; zone_event 0099 object 0; zone_event 0099 warp 0; zone_event 0085 warp 8; zone_event 0085 object 19; scr_seq 0092 @0x0022; scr_seq 0092 @0x0037; scr_seq 0093 @0x0016; scr_seq 0094 @0x0016; scr_seq 0095 @0x0016; msg 0100 #0; msg 0101 #0; msg 0102 #0; msg 0103 #0; scr_seq 0096 @0x0096; scr_seq 0096 @0x00BA; scr_seq 0096 @0x00E0; scr_seq 0096 @0x00E8; scr_seq 0096 @0x0114; scr_seq 0096 @0x0118; scr_seq 0096 @0x0127; scr_seq 0096 @0x014C; scr_seq 0096 @0x01D8; scr_seq 0553 @0x000B; scr_seq 0090 @0x0599; scr_seq 0090 @0x05DE; scr_seq 0090 @0x05E2; scr_seq 0377 @0x00C4; msg 0104 #2; msg 0104 #5; msg 0098 #10; trdata.json #318; games/diamond/arm9/src/scrcmd.c:3342-3350; games/diamond/arm9/asm/unk_02064CA8.s:32-57; games/diamond/arm9/overlays/06/asm/overlay_06.s:16489-16600; games/diamond/arm9/src/map_object.c:295-298; maps.h:92-104; map_header.c:172-184
 - notes: D/P's gym is a fixed math quiz (no random doors, unlike Platinum): room 1 3+5+7=15 right (14,2), room 2 12+28=40 middle (9,2), room 3 3x13=39 left (4,2), room 4 'first answer' 15 right (14,2) (msg 0100-0103 #0); each correct door's warp leads to the next question room (zone_event 0087/0090/0092/0094), wrong ones to a trainer room. The (9,13) coord runs MoveHearthomeGymElevator, which raises the avatar to height 0xA0000 or lowers it if already up (overlay_06.s:16489-16600). Fantina's own trainer flag 0x68E is never set by a script. Lab leader-only test: warp MAP_HEARTHOME_GYM_LEADER_ROOM 0.
 
 #### diamond/35-hearthome-to-canalave-dex-upgrade — Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse
-- proves: Proves the D/P road to Canalave after the Relic Badge (no Fly yet in D/P): Hearthome -> Route 208 -> Mt. Coronet 1F -> Route 207 -> Oreburgh -> Oreburgh Gate -> Route 203 -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse, where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0. Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
-- start: prev + `lab.recipe`; warp MAP_HEARTHOME 8; lab state lines: 5 badge, 28 clear-flag, 164 flag, 18 item, 1 pokedex, 5 poketch, 56 var
+- proves: Proves the D/P road to Canalave after the Relic Badge (a Fly bridge to Jubilife, the boost's Staraptor): Hearthome -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse, where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0. Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
+- start: prev + `lab.recipe`; warp MAP_HEARTHOME 8; lab state lines: 5 badge, 28 clear-flag, 166 flag, 18 item, 1 pokedex, 5 poketch, 56 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
-- end state: map MAP_CANALAVE; flags set 0x23A; vars 0x4105=1
-- frames: estimate 19500, budget 29300
+- end state: map MAP_CANALAVE; flags set 0x23A, 0x9B8; vars 0x4105=1
+- frames: estimate 7701, budget 45000
 - refs: zone_event 0085 warp 8 (499,697) -> MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM; warp 14 (454,726) -> MAP_HEARTHOME_ROUTE_208_GATEHOUSE; zone_event 0085 warp 5 (465,697) -> MAP_HEARTHOME_POKECENTER_1F warp 0 (8,12); zone_event 0100 object 0 SPRITE_PCWOMAN1 (8,4) -> scr_seq 0097 script_1 (std 2002, heal); zone_event 0085 coord 1 (461,725) 1x5 var 0x40F6==0 -> scr_seq 0090 script_23 (Keira/Buneary; SetVar 0x40F6,1 @0x0E56); zone_event 0085 coord 2 (455,724) 1x6 var 0x407B==1 -> scr_seq 0090 script_33; zone_event 0108 warp 0 (10,7) / warp 1 (1,7) -> MAP_ROUTE_208 warp 0; zone_event 0339 warp 3 (392,724) -> MAP_MOUNT_CORONET_SOUTH_1F warp 1; zone_event 0204 warp 1 (27,20); warp 0 (4,8) -> MAP_ROUTE_207 warp 0; coord 0 (14,23) var 0x4096==0; Rock Smash rocks (16..25,22..23); zone_event 0338 warp 0 (341,712); coord 0 (300,708) 8x1 var 0x408C==0 -> scr_seq 0403 script_2; zone_event 0044 warp 10 (258,749) -> MAP_OREBURGH_GATE_1F warp 1; coord 1 (262,748) 1x4 var 0x4079==2; zone_event 0250 warp 1 (27,22); warp 0 (4,22) -> MAP_ROUTE_203 warp 0 (246,749); zone_event 0329 coord 0 (196,757) 1x4 var 0x4088==0 -> scr_seq 0394 script_6; zone_event 0002 warp 12 (128,758) -> MAP_ROUTE_218_JUBLIFE_GATEHOUSE warp 1; zone_event 0374 warp 1 (10,7); warp 0 (1,7) -> MAP_ROUTE_218 warp 2 (121,758); zone_event 0373 warp 0 (70,754) -> MAP_ROUTE_218_CANALAVE_GATEHOUSE warp 1; trainers objects 0-3 (Tony 300, Skyler 338, Miguel 153, Luc 154); games/diamond/arm9/src/field_move.c:265 (Surf needs BADGE_RELIC); zone_event 0375 coord 0 (7,6) 1x3 var 0x4105==0 -> scr_seq 0441 script_2; object 1 SPRITE_ASSISTANTM (5,7) hidden_flag 0x23A; scr_seq 0441 @0x0046 UnlockGenderEntries (games/diamond/arm9/src/scrcmd.c:3867); scr_seq 0441 @0x004E SetFlag 0x23A; scr_seq 0441 @0x0052 RemoveEvent 1 (sets hidden_flag 0x23A, games/diamond/arm9/src/map_object.c:295-299); scr_seq 0441 @0x0056 SetVar 0x4105, 1; zone_event 0375 warp 0 (1,7) -> MAP_CANALAVE warp 7 (63,754); map_header.c:472 MAP_ROUTE_218 d_enc_data 0167 / p_enc_data 0167 (banks differ: version-diff)
 - notes: Estimate: Pokémon Center heal after Fantina (~1500), ~430 walked tiles across 9 maps (~7000), 12 warps (~1500), surf crossing (~1500), gatehouse text (~1500), ~6 wild battles (~5000). Pearl differs only in Route 218/207 wild encounters (version-diff d_enc 0148/0167), not in scripts. Prior-state assumptions (all in earlier deltas): 0x40F6/0x4096/0x408C/0x4088 = 1 and 0x4079 = 3, else those scenes play once (advance_text).
 
 #### diamond/36-canalave-rival — Canalave City: rival battle on the bridge
 - proves: Proves the Canalave bridge rival: coord 0 (47,723..726) adds Barry, who battles with the Turtwig-player team (Monferno). Start: MAP_CANALAVE at the gatehouse door (warp 7, 63,754) -> end: MAP_CANALAVE on the bridge (47,724), 0x4078 = 1.
-- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 165 flag, 18 item, 1 pokedex, 5 poketch, 57 var
+- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 168 flag, 18 item, 1 pokedex, 5 poketch, 57 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #477 TRAINER_PKMN_TRAINER_BARRY_CEDRIC_11
 - end state: map MAP_CANALAVE; >= 1 battles; flags set 0x1D0; vars 0x4078=1
-- frames: estimate 6000, budget 9000
+- frames: estimate 10359, budget 20000
 - refs: zone_event 0032 warp 7 (63,754); zone_event 0032 coord 0 (47,723) 1x4 var 0x4078==0 -> scr_seq 0034 script_2; zone_event 0032 object 11 SPRITE_RIVEL (37,723) hidden_flag 0x1D0; scr_seq 0034 @0x0288 ClearFlag 0x1D0; scr_seq 0034 @0x028C AddEvent 11; scr_seq 0034 @0x02A4 msg 47 #0; scr_seq 0034 @0x02A9 GetStarter (var 0x4030, games/diamond/arm9/asm/unk_0205F314.s:87-93); scr_seq 0034 @0x02D9 TrainerBattle 477 (starter 387 TURTWIG); scr_seq 0034 @0x0305 msg 47 #1; scr_seq 0034 @0x0314 RemoveEvent 11 (sets hidden_flag 0x1D0, games/diamond/arm9/src/map_object.c:295-299); scr_seq 0034 @0x0318 SetVar 0x4078, 1; scr_seq 0034 @0x0322 SetFlag 0x1D0 + @0x0326 Blackout (loss); trdata.json #477 TRAINER_PKMN_TRAINER_BARRY_CEDRIC_11; trdata.json #476 / #478 (Chimchar / Piplup player variants)
 - notes: Estimate: ~25 tiles (~500), rival text x2 (~1500), 5-mon battle (~3000), walk-in/out movements (~500). No GetGameVersion branch (version-diff lists only scr_seq 0069/0230/0977/1017).
 
 #### diamond/37-iron-island-riley-egg — Iron Island: Riley tag battle and the Riolu egg
 - proves: Proves the Canalave/Iron Island ferry, Riley joining as follower partner on B2F, the tag double vs two Galactic grunts and the Riolu egg. In D/P Iron Island has no story gate and gives no HM (Strength is the Lost Tower's, msg 0050 #1 / msg 0098 #12); it sits before Byron because Byron's win sends the player straight to the library (scr_seq 0034 script_4). Start: MAP_CANALAVE (36's end on the bridge; lab: gatehouse door warp 7) -> end: MAP_CANALAVE ship landing (44,750).
-- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 166 flag, 18 item, 1 pokedex, 5 poketch, 58 var
+- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 169 flag, 18 item, 1 pokedex, 5 poketch, 58 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #835 TRAINER_GALACTIC_GRUNT_33; trdata.json #836 TRAINER_GALACTIC_GRUNT_34; trdata.json #609 TRAINER_PKMN_TRAINER_RICH_BOY_RILEY
 - end state: map MAP_CANALAVE; at (44, 750); >= 1 battles; party size 3; flags set 0xE1, 0xE5, 0x203, 0x205, 0x9DA, 0x9DB; flags clear 0xE2, 0x961; vars 0x4092=2, 0x403F=609
-- frames: estimate 17500, budget 26300
+- frames: estimate 17500, budget 50000
 - refs: zone_event 0032 object 16 SPRITE_SEAMAN (45,750) -> scr_seq 0034 script_20; scr_seq 0034 @0x06B7 CompareVarToValue 0x4106, 2 (Lunar Wing branch, not taken); scr_seq 0034 @0x06CF menu entry 213 at index 0; @0x06EF VAR_RESULT 0 -> L_0737; scr_seq 0034 @0x074A 0x8004==3 (player west of the sailor, facing east) -> Move_0884; scr_seq 0034 @0x0764 ShipAnimation 3, 3, 288, 100, 502; scr_seq 0316 @0x000A SetFlag 0x9DA (Iron Island exterior ON_TRANSITION); zone_event 0276 warp 1 (117,489) -> MAP_IRON_ISLAND_1F warp 0 (6,8); object 0 SPRITE_SEAMAN (99,502) -> scr_seq 0316 script_2; scr_seq 0317 @0x0006 SetFlag 0x9DB (Iron Island 1F ON_TRANSITION); zone_event 0277 warp 2 (8,3) -> MAP_IRON_ISLAND_B1F_ROOM_2 warp 2 (2,3); warp 0 (6,8); zone_event 0279 warp 0 (6,26) -> MAP_IRON_ISLAND_B2F_ROOM_2 warp 0 (38,3); coord 0 (11,23) var 0x4000==0 -> scr_seq 0319 script_2 (Unk025C); zone_event 0281 object 4 SPRITE_SEVEN2 Riley (34,3) hidden_flag 0x203; objects 5/6 SPRITE_GINGAM (19,40)/(19,41) hidden_flag 0x205; zone_event 0281 coord 0 (35,2) 1x2 var 0x4092==0 -> script_3; coord 1 (36,2) 1x2 ==1 -> script_4; coord 3 (21,40) 1x2 ==1 -> script_9; scr_seq 0321 @0x0042 SetVar 0x4092, 0 (ON_TRANSITION); scr_seq 0321 @0x00AE SetFlag 0xE1; scr_seq 0321 @0x00B2 SetVar 0x4092, 1; scr_seq 0321 @0x00BF SetVar 0x403F, 609; scr_seq 0321 @0x00C5 Unk0161 -> flag 0x961 set (games/diamond/arm9/src/scrcmd_flags.c:148, unk_0205EC84.c:59-61); scr_seq 0321 @0x01AC Unk0162 -> flag 0x961 clear (scrcmd_flags.c:157, unk_0205EC84.c:63-65); scr_seq 0321 @0x020B TrainerBattle 835, 836 (two foes; [INFERENCE] Riley joins as the partner named by var 0x403F); scr_seq 0321 @0x024E/@0x0252 RemoveEvent 5/6 (hidden_flag 0x205, games/diamond/arm9/src/map_object.c:295-299); scr_seq 0321 @0x02FC YesNoMenu; @0x031C CountPartyMons == 6 -> L_034D (no egg); scr_seq 0321 @0x0330 GiveEgg 447, 10 (SPECIES_RIOLU); scr_seq 0321 @0x0336 SetFlag 0x203; scr_seq 0321 @0x033A ClearFlag 0xE2; scr_seq 0321 @0x036B SetFlag 0xE5; scr_seq 0321 @0x036F SetVar 0x4092, 2; scr_seq 0316 @0x005F ShipAnimation 0, 2, 33, 44, 750 (back to Canalave); trdata.json #835 TRAINER_GALACTIC_GRUNT_33; trdata.json #836 TRAINER_GALACTIC_GRUNT_34; trdata.json #609 TRAINER_PKMN_TRAINER_RICH_BOY_RILEY; zone_event 0281 objects 7-14 (optional B2F trainers: Damon 452, Maurice 453, Kendal 445, Tyler 372, Brendon 505, Quentin 506, Jonah 388, Brenda 392); zone_event 0032 warp 1 (58,722) -> MAP_CANALAVE_POKECENTER_1F warp 0 (8,12); zone_event 0035 object 1 SPRITE_PCWOMAN1 (8,4) -> scr_seq 0037 script_1 (std 2002, heal)
 - notes: P1: optional in D/P (no gate, no HM), kept in the chain between the rival and Byron so its state rides along. Estimate: Pokémon Center heal (~1500; the chain carries Surf PP/HP from 35-36), ~60 Canalave tiles + 2 ferry rides (~2500), ~170 island tiles + 8 warps (~4000), Riley/grunt/egg text (~2500), tag double 6 foe mons (~3000), ~3 optional trainer doubles on the way (~4000). Surf hits all adjacent mons in Gen 4, so A-spam needs no target prompt but also hits Riley's Lucario (the win does not depend on him).
 
 #### diamond/38-canalave-gym-byron-mine-badge — Canalave Gym: Byron and the Mine Badge, rival points to the library
 - proves: Proves the Canalave Gym (InitCanalaveGym platform state), Byron, the Mine Badge and TM91, and the rival's post-badge frame script outside (0x4078 2 -> 3) that sends the player to the library (DPStory09's start). Start: MAP_CANALAVE ferry landing (44,750) -> end: MAP_CANALAVE outside the gym door after scr_seq 0034 script_4.
-- start: prev + `lab.recipe`; map MAP_CANALAVE 44 750 DIR_EAST; lab state lines: 5 badge, 29 clear-flag, 172 flag, 18 item, 1 pokedex, 5 poketch, 60 var
+- start: prev + `lab.recipe`; map MAP_CANALAVE 44 750 DIR_EAST; lab state lines: 5 badge, 29 clear-flag, 175 flag, 18 item, 1 pokedex, 5 poketch, 60 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #250 TRAINER_LEADER_BYRON_BYRON
 - end state: map MAP_CANALAVE; 6 badges; badge BADGE_MINE; >= 1 battles; flags set 0x92, 0x1B6, 0x1D0, 0x638, 0x650, 0x651, 0x667, 0x66B, 0x68A, 0x6BF; flags clear 0x1D4, 0x1D5, 0x1D6; vars 0x4078=3, 0x40B2=1; 1 save check(s)
@@ -1658,7 +1658,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/39-canalave-library-valor-explosion — Canalave Library: lake legends and the Lake Valor explosion
 - proves: Proves the Canalave Library 3F lake-legends meeting (ON_FRAME 0x40B2==1), the tremor, and the Canalave explosion news (ON_FRAME 0x4078==4) that sends the player to Lake Valor. Start: Canalave below the gym door (39,732), right after 38's rival scene (0x4078=3, 0x40B2=1) -> end: Valor Lakefront (719,761) east of the lake mouth (40's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_CANALAVE 39 732 FACE_DOWN; lab state lines: 6 badge, 32 clear-flag, 181 flag, 19 item, 1 pokedex, 5 poketch, 62 var
+- start: prev + `lab.recipe`; map MAP_CANALAVE 39 732 FACE_DOWN; lab state lines: 6 badge, 32 clear-flag, 184 flag, 19 item, 1 pokedex, 5 poketch, 62 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0xA8, 0x1CC, 0x1D0, 0x1D2, 0x1D4, 0x1D5, 0x1D6; flags clear 0x1B2, 0x193, 0x2B1; vars 0x4078=5, 0x40B2=2
@@ -1668,7 +1668,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/40-lake-valor-saturn — Lake Valor (drained): Saturn in Valor Cavern
 - proves: Proves the drained Lake Valor (Galactic map chosen while flag 0x15E is clear), Valor Cavern and the Saturn battle, whose win sets 0x13E (switches Verity Lakefront to the Galactic lake). Start: Valor Lakefront (719,761) -> end: Verity Lakefront (80,845) south of the lake mouth (41's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 719 761 FACE_LEFT; lab state lines: 6 badge, 35 clear-flag, 187 flag, 19 item, 1 pokedex, 5 poketch, 64 var
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 719 761 FACE_LEFT; lab state lines: 6 badge, 35 clear-flag, 190 flag, 19 item, 1 pokedex, 5 poketch, 64 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0301 object 4 TRAINER_GALACTIC_GRUNT_12 (417) (17,32) N sight 4; object 5 TRAINER_GALACTIC_F_GRUNT_5 (425) (29,18) S sight 1; object 6 TRAINER_GALACTIC_GRUNT_13 (418) (25,35) N sight 3; scr_seq 0348 @0x00F5 TrainerBattle 408 (TRAINER_COMMANDER_SATURN_SATURN)
 - end state: map MAP_VERITY_LAKEFRONT; >= 1 battles; flags set 0x13E, 0x984, 0x1DA, 0x9E1; flags clear 0x15E
@@ -1678,7 +1678,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/41-lake-verity-mars — Lake Verity (Galactic): Mars
 - proves: Proves the Galactic Lake Verity (Verity Lakefront switches its lake warps on 0x13E), Rowan's briefing ON_FRAME and the Mars battle whose win arms Lake Acuity (Jupiter shown, Acuity Lakefront guards shown, 0x40D3=1). Start: Verity Lakefront (80,845) -> end: Route 211 East (446,527) at the Celestic edge (42's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_VERITY_LAKEFRONT 80 845 FACE_UP; lab state lines: 6 badge, 36 clear-flag, 191 flag, 19 item, 1 pokedex, 5 poketch, 64 var
+- start: prev + `lab.recipe`; map MAP_VERITY_LAKEFRONT 80 845 FACE_UP; lab state lines: 6 badge, 36 clear-flag, 194 flag, 19 item, 1 pokedex, 5 poketch, 64 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0299 object 0 TRAINER_GALACTIC_GRUNT_14 (419) (43,49) E6; object 1 TRAINER_GALACTIC_GRUNT_15 (420) (48,43) E4; object 2 TRAINER_GALACTIC_F_GRUNT_6 (426) (50,49) W6; object 3 TRAINER_GALACTIC_F_GRUNT_7 (427) (53,43) W4; scr_seq 0343 @0x0247 TrainerBattle 405 (TRAINER_COMMANDER_MARS_MARS_2)
 - end state: map MAP_ROUTE_211_EAST; >= 1 battles; flags set 0x1DE, 0x98E, 0xBA; flags clear 0x1D8, 0x252; vars 0x4097=1, 0x40D3=1
@@ -1688,7 +1688,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/42-route211-coronet-north-to-route216 — Route 211 East and Mt Coronet north (Strength) to Route 216
 - proves: Proves the D/P road north after Lake Verity: Route 211 East into Mt Coronet's north side, the Strength boulder in North 1F Room 1, B1F and Room 2 out onto snowy Route 216. No story flags change; the proof is the map chain. Start: Route 211 East (446,527) at the Celestic edge -> end: Route 216 at the cave mouth (375,403) (43's start).
-- start: prev + `lab.recipe`; map MAP_ROUTE_211_EAST 446 527 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 194 flag, 19 item, 1 pokedex, 5 poketch, 66 var
+- start: prev + `lab.recipe`; map MAP_ROUTE_211_EAST 446 527 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 197 flag, 19 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0351 object 0 TRAINER_BIRD_KEEPER_KATHERINE (81) (432,520) E2; object 19 TRAINER_RUIN_MANIAC_HARRY (442) (429,525) S2; object 1 TRAINER_NINJA_BOY_NICK (80) (425,520) S1
 - end state: map MAP_ROUTE_216; party SPECIES_STARAPTOR
@@ -1698,17 +1698,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/43-route216-217-hm08-to-snowpoint — Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint
 - proves: Proves the snow road: Route 216 west, Route 217 north with the HM08 (Rock Climb) item ball, Acuity Lakefront (lake still guarded until the Icicle Badge) and Snowpoint City. Start: Route 216 cave mouth (375,403) -> end: Snowpoint (367,223), below the gym door (44's start).
-- start: prev + `lab.recipe`; map MAP_ROUTE_216 375 403 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 194 flag, 19 item, 1 pokedex, 5 poketch, 66 var
+- start: prev + `lab.recipe`; map MAP_ROUTE_216 375 403 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 197 flag, 19 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37
-- end state: map MAP_SNOWPOINT; at (367, 223); flags set 0x47B; 1 save check(s)
-- frames: estimate 22000, budget 33000
+- end state: map MAP_SNOWPOINT; at (367, 223); flags set 0x47B, 0x9BF; 1 save check(s)
+- frames: estimate 22000, budget 50000
 - refs: maps.h:387 MAP_ROUTE_216 = 383; map_header.c:467 (scr_seq 0434, zone_event 0368, weather 26); zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; maps.h:389 MAP_ROUTE_217 = 385; map_header.c:469 (scr_seq 0436, zone_event 0370); no story scripts in scr_seq 0436; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37; zone_event 0370 object 10 item ball (296,305) hidden_flag 0x47B, script 7174 -> scr_seq 0370 @0x119A SetVar 0x8008,427 (ITEM_HM08); scr_seq 0370 @0x1834 RemoveEvent VAR_LAST_INTERACTED; @0x1838 GiveItem (item-ball common script_256); scr_seq 0437 @0x0019 HasItem ITEM_HM08 (Route 217 south-house hiker: Icicle Plate only after HM08 is found); maps.h:344 MAP_ACUITY_LAKEFRONT = 340; map_header.c:424 (scr_seq 0385, level scr_seq 0835, zone_event 0325); zone_event 0325 objects 1/2 guards (310,240)/(311,240) hidden_flag 0x252; scr_seq 0385 @0x0052-@0x008D (moved aside only with BADGE_ICICLE); msg 358 #0 ('make sure Snowpoint's Gym Leader doesn't disturb us'); maps.h:169 MAP_SNOWPOINT = 165; zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0; map_matrix 0 cells: MAP_ROUTE_216 (9..11,12) z384-415; MAP_ROUTE_217 (9,8..11) x288-319 z256-383; MAP_ACUITY_LAKEFRONT (9..10,6..7) x288-351 z192-255; MAP_SNOWPOINT (11,6..7) x352-383; files/fielddata/land_data/land_data_release.narc permission grids for the map_matrix 0 cells above (paths below are a BFS with objects solid)
 - notes: Estimate: ~360 tiles, much of it deep snow (slow), three sight trainers on the BFS path plus wild battles. In chain mode slot-0 PP runs low here: the Snowbound Lodge (zone_event 0368 warp 1 (303,398)) is beside the path [INFERENCE: heal there if Empoleon is on Struggle].
 
 #### diamond/44-snowpoint-gym-candice — Snowpoint Gym: the ice, Candice and the Icicle Badge
 - proves: Proves the Snowpoint Gym's ice: slides that build speed downhill and lose it uphill (Platinum's twin, player_move.c:544-601, :763-811), snowballs crushed only by a fast slide, and the stair column x=11 (BLOCK_EAST_AND_WEST tiles stop every slide) that leads to Candice once its six snowballs are gone; then Candice, the Icicle Badge, TM72. Start: Snowpoint (367,223) below the gym door (43's end) -> end: Snowpoint at the gym door, Icicle Badge.
-- start: prev + `lab.recipe`; map MAP_SNOWPOINT 367 223 FACE_UP; lab state lines: 6 badge, 38 clear-flag, 195 flag, 20 item, 1 pokedex, 5 poketch, 66 var
+- start: prev + `lab.recipe`; map MAP_SNOWPOINT 367 223 FACE_UP; lab state lines: 6 badge, 38 clear-flag, 199 flag, 20 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: trdata.json #319 TRAINER_LEADER_CANDICE_CANDICE: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 @SITRUS_BERRY
 - end state: map MAP_SNOWPOINT; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC, BADGE_MINE, BADGE_ICICLE; >= 1 battles; flags set 0x65C, 0x65D, 0x88B, 0x65E, 0x65F, 0x88C, 0x1DD, 0x9E; 1 save check(s)
@@ -1718,7 +1718,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/45-lake-acuity-jupiter — Lake Acuity: Jupiter takes Uxie, the hurt rival
 - proves: Proves Lake Acuity after the Icicle Badge: the Acuity Lakefront guards stand aside, the lake mouth leads into the Galactic version of the lake (flag 0xBA from Lake Verity), and its ON_FRAME scene (var 0x40D3 == 1) plays: Jupiter leaves with Uxie, the hurt rival, then 0x40D3 = 2 (which opens the Veilstone warehouse guard's 'Storage Key' talk). Start: Snowpoint at the gym door (367,222) (44's end) -> end: Lake Acuity (Galactic) after the scene.
-- start: prev + `lab.recipe`; warp MAP_SNOWPOINT 5; lab state lines: 7 badge, 38 clear-flag, 202 flag, 21 item, 1 pokedex, 5 poketch, 66 var
+- start: prev + `lab.recipe`; warp MAP_SNOWPOINT 5; lab state lines: 7 badge, 38 clear-flag, 206 flag, 21 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_LAKE_ACUITY_GALACTIC; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC, BADGE_MINE, BADGE_ICICLE; flags set 0x98F, 0x252, 0x1B2, 0x193, 0x2AB, 0x2AA, 0x1D8, 0x1D7; flags clear 0x241, 0x1B6, 0xA8; vars 0x40D3=2
@@ -1728,17 +1728,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/46-veilstone-storage-key-galactic-key — Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key
 - proves: Proves the way into Team Galactic HQ after Lake Acuity: Fly back to Veilstone, the guard in front of the HQ who drops the Storage Key once 0x241 is cleared (Lake Acuity, scr_seq 0351 @0x0110), the warehouse's rusty doors opened with it, HM02 Fly in the warehouse, the warehouse's back stairs into HQ B2F and the Galactic Key there; then out through the warehouse to the HQ front door. Start: Lake Acuity (Galactic) after Jupiter's scene (45's end) -> end: HQ 1F lobby at the front door (8,22) (47's start).
-- start: prev + `lab.recipe`; map MAP_LAKE_ACUITY_GALACTIC 16 45 FACE_DOWN; lab state lines: 7 badge, 41 clear-flag, 210 flag, 21 item, 1 pokedex, 5 poketch, 67 var
+- start: prev + `lab.recipe`; map MAP_LAKE_ACUITY_GALACTIC 16 45 FACE_DOWN; lab state lines: 7 badge, 41 clear-flag, 214 flag, 21 item, 1 pokedex, 5 poketch, 67 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
-- end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F; flags set 0x241, 0x4C8, 0x10E, 0x4C6, 0x4C7; 3 save check(s)
-- frames: estimate 12000, budget 18000
+- end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F; flags set 0x241, 0x4C8, 0x10E, 0x4C6, 0x4C7, 0x245; 3 save check(s)
+- frames: estimate 12000, budget 36000
 - refs: zone_event 0131 object 24; zone_event 0131 object 23; scr_seq 0131 @0x087A-0x0936; scr_seq 0370 @0x0D76; zone_event 0131 warp 4; zone_event 0142 object 3; zone_event 0142 object 4; zone_event 0142 object 2; zone_event 0142 warp 1; scr_seq 0143 @0x0063-0x00E8; scr_seq 0370 @0x0D9E; zone_event 0297 object 5; zone_event 0297 warp 2; scr_seq 0370 @0x128A; zone_event 0131 warp 14; zone_event 0292 warp 0
-- notes: Fly: the chain party gets a Staraptor with Fly by boost (in the story HM02 is the warehouse ball this milestone picks up, after the walk back from Snowpoint the player would otherwise make: Main's call, fly for 46+). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35).
+- notes: Fly: the chain party's Staraptor from 35's boost (in the story HM02 is the warehouse ball this milestone picks up; the walks Fly saves cross the region: Main's call). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35).
 
 #### diamond/47-galactic-hq-cyrus — Galactic HQ: the key doors, the warp panels and Cyrus
 - proves: Proves Team Galactic HQ up to Cyrus: the Galactic Key doors on 1F, the warp panels of 2F and 3F, the 4F key doors and Cyrus's coordinate trigger, his battle and the Master Ball. Start: HQ 1F at the front door (46's end) -> end: HQ 4F_1 after Cyrus leaves (var 0x40D6 = 1) (48's start).
-- start: prev + `lab.recipe`; map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F 8 21 FACE_UP; lab state lines: 7 badge, 41 clear-flag, 215 flag, 23 item, 1 pokedex, 5 poketch, 67 var
+- start: prev + `lab.recipe`; map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F 8 21 FACE_UP; lab state lines: 7 badge, 41 clear-flag, 220 flag, 23 item, 1 pokedex, 5 poketch, 67 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1; >= 1 battles; flags set 0x242, 0x244, 0x1DC; vars 0x40D6=1; 1 save check(s)
@@ -1748,7 +1748,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/48-galactic-hq-saturn-free-lake-trio — Galactic HQ: Saturn, the lake trio freed, out of the HQ
 - proves: Proves Saturn at the back of Galactic HQ, the machine's button that frees Uxie, Mesprit and Azelf, and the way out of the HQ: Saturn's fade-out sets 0x253, which opens Mt. Coronet's south 2F barrier for 49. Start: HQ 4F_1 on Cyrus's coord after he left (47's end) -> end: Veilstone outside the HQ east door (720,589) (49's start).
-- start: prev + `lab.recipe`; map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 8 11 FACE_UP; lab state lines: 7 badge, 41 clear-flag, 218 flag, 24 item, 1 pokedex, 5 poketch, 68 var
+- start: prev + `lab.recipe`; map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 8 11 FACE_UP; lab state lines: 7 badge, 41 clear-flag, 223 flag, 24 item, 1 pokedex, 5 poketch, 68 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE; >= 1 battles; flags set 0xAD, 0x97D, 0x253, 0x255; flags clear 0x2B3; vars 0x410D=0
@@ -1758,17 +1758,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/49-mt-coronet-climb — Mt. Coronet: Route 208 up to Spear Pillar
 - proves: Proves the climb to Spear Pillar once Saturn's fade has set 0x253 (the South 2F barrier, zone_event 0205 object 4, is hidden): Fly to Hearthome, Route 208 into Mt. Coronet, 1F, 2F through the opened way, 3F, the South Mountainside, 4F, the North Mountainside, 4F room 3, 5F and 6F (the grunts hidden by 0x2AD only after Spear Pillar), up to Spear Pillar. Start: Veilstone outside the HQ east door (48's end) -> end: Spear Pillar at the entrance (31,53) (50's start).
-- start: prev + `lab.recipe`; map MAP_VEILSTONE 720 590 FACE_DOWN; lab state lines: 7 badge, 42 clear-flag, 222 flag, 24 item, 1 pokedex, 5 poketch, 69 var
+- start: prev + `lab.recipe`; map MAP_VEILSTONE 720 590 FACE_DOWN; lab state lines: 7 badge, 42 clear-flag, 227 flag, 24 item, 1 pokedex, 5 poketch, 69 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR
-- frames: estimate 30000, budget 60000
+- frames: estimate 30000, budget 80000
 - refs: zone_event 0339 warp 3; zone_event 0204 warp 2; zone_event 0205 object 4; zone_event 0205 warp 2; zone_event 0205 warp 4; zone_event 0206 warp 2; zone_event 0208 warp 1; zone_event 0209 warp 4; zone_event 0207 warp 1; zone_event 0210 warp 1; zone_event 0211 warp 1; zone_event 0212 warp 1
 - notes: Warps (dp_script.py events): Hearthome warp 14 (454,726) -> the Route 208 gatehouse (10,7), its warp 1 (1,7) -> Route 208 (447,726); Route 208 warp 3 (392,724) -> South 1F (27,20); 1F (25,3) -> 2F (27,48); 2F (7,23) -> (7,12) (object 4 there, hidden 0x253); 2F (11,4) -> 3F (14,26); 3F (3,29) -> South Mountainside (12,35); (11,17) -> 4F room 1 (7,25); (40,10) -> North Mountainside (42,40); (13,19) -> 4F room 3 (2,3); (18,8) -> 5F (21,7); (13,24) -> 6F (10,24); (7,5) -> Spear Pillar (31,53). The mountainsides' Rock Smash rocks are smashed on the way (walk_to hm). 5F/6F grunts (sight 3-6, trdata.json #524/#519/#525) may engage.
 
 #### diamond/50-spear-pillar-dialga — Spear Pillar: Galactic, Cyrus and Dialga (Diamond)
 - proves: Proves Spear Pillar (Diamond): the grunts' double battle, the summoning scene (warps to Valley Windworks and Hearthome and back), the tag battle with Barry against Mars and Jupiter, the lake trio breaking the Red Chain, Cyrus, then Dialga at the altar (LegendaryBattle 0x8004 = 483, level 47) and Rowan's ending that warps the player to the entrance. Start: Spear Pillar at the entrance (49's end) -> end: Spear Pillar (31,52), var 0x4098 = 4 (51's start). Twin: ../../pearl/50-spear-pillar-palkia (Palkia, 484).
-- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_UP; lab state lines: 7 badge, 42 clear-flag, 222 flag, 24 item, 1 pokedex, 5 poketch, 69 var
+- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_UP; lab state lines: 7 badge, 42 clear-flag, 227 flag, 24 item, 1 pokedex, 5 poketch, 69 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR; at (31, 52); >= 4 battles; flags set 0x986, 0x15E, 0x2B3, 0x2AD, 0x981, 0x1EB; flags clear 0x8E; vars 0x4098=4
@@ -1778,27 +1778,27 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/51-coronet-exit-valor-lakefront — Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens
 - proves: Proves the way back from Spear Pillar: down Mt. Coronet 6F/5F/4F to the North Mountainside, Fly south, and the first Valor Lakefront entry after Spear Pillar (flag 0x15E) that removes the Route 222 blackout guard. Start: Spear Pillar (31,52) facing south (50's end, scr_seq 0230 @0x0FB0) -> end: Valor Lakefront, guard hidden.
-- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN; lab state lines: 7 badge, 42 clear-flag, 228 flag, 24 item, 1 pokedex, 5 poketch, 70 var
+- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN; lab state lines: 7 badge, 42 clear-flag, 233 flag, 24 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0x15E, 0x29B; vars 0x4112=1
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: scr_seq 0230 @0x0FB0; scr_seq 0230 @0x0FEC; scr_seq 0230 @0x0FF4; zone_event 0217 warp 0; zone_event 0212 warp 0; zone_event 0212 object 0; zone_event 0211 warp 0; zone_event 0211 object 0; zone_event 0211 object 1; zone_event 0210 warp 0; map_header.c:294; maps.h:340; map_header.c:420; scr_seq 0831 @0x0005; scr_seq 0381 @0x0035; scr_seq 0381 @0x0088; scr_seq 0381 @0x008C; zone_event 0321 object 9; zone_event 0321 coord 0; scr_seq 0381 @0x041E; msg 0354 #11
 - notes: Galactic grunts on 6F/5F are hidden by 0x2AD (scr_seq 0230 @0x0FF4). Spear Pillar..4F maps are fly FALSE; the North Mountainside is fly TRUE (map_header.c:294). Estimate: 4 floor walks ~3500 + Fly ~1500 + Valor walk ~4000.
 
 #### diamond/52-route222-sunyshore-flint-lighthouse — Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse
 - proves: Proves Route 222 to Sunyshore, Flint's arrival OnFrame, the Vista Lighthouse elevator, Volkner on the observation deck and Flint leaving the gym door. Start: Valor Lakefront west of the old guard tile -> end: Sunyshore, Flint gone.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 722 790 FACE_RIGHT; lab state lines: 7 badge, 42 clear-flag, 229 flag, 24 item, 1 pokedex, 5 poketch, 71 var
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 722 790 FACE_RIGHT; lab state lines: 7 badge, 42 clear-flag, 234 flag, 24 item, 1 pokedex, 5 poketch, 71 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
-- end state: map MAP_SUNYSHORE; flags set 0x162, 0x29F, 0x257; vars 0x407E=1
+- end state: map MAP_SUNYSHORE; flags set 0x162, 0x29F, 0x257, 0x9BE; vars 0x407E=1
 - frames: estimate 15000, budget 22500
 - refs: zone_event 0321 coord 0; maps.h:399; map_header.c:479; zone_event 0380 warp 0; zone_event 0380 object 4; zone_event 0380 object 5; zone_event 0380 object 6; zone_event 0380 object 7; zone_event 0380 object 9; zone_event 0380 object 10; scr_seq 0446 @0x0069; scr_seq 0446 @0x0073; zone_event 0383 warp 1; scr_seq 0613 @0x000B; scr_seq 0150 @0x004E; scr_seq 0150 @0x0201; scr_seq 0150 @0x0245; scr_seq 0150 @0x0297; scr_seq 0150 @0x029F; zone_event 0149 warp 10; zone_event 0149 object 18; scr_seq 0629 @0x0006; scr_seq 0166 @0x0012; scr_seq 0166 @0x0050; scr_seq 0166 @0x0082; zone_event 0163 object 2; zone_event 0163 warp 0; scr_seq 0165 @0x004C; scr_seq 0165 @0x00F6; scr_seq 0165 @0x00FA; scr_seq 0150 @0x04C0; scr_seq 0150 @0x04C8; scr_seq 0150 @0x055E; msg 0153 #0; msg 0153 #3; msg 0165 #1
 - notes: Version: Route 222 wild encounters differ (d_enc_data/p_enc_data 0170, dp_script.py version-diff); no script differs. Sight trainers near the road: Nicola (771,777) S 2, Trey (751,782) E 6, Holly (787,788) N 2, Marc (808,781) E 3, Conner (812,781) W 3, Luther (814,785) S 2 (zone_event 0380), all lv 37-43. Do NOT walk Sunyshore row z=743 x=853..857 (Jasmine coord 0 would spend var 0x407E without HM07, see 54).
 
 #### diamond/53-sunyshore-gym-volkner — Sunyshore Gym: Volkner and the Beacon Badge
 - proves: Proves the rotating-gear gym (InitSunyshoreGym / RotateSunyshoreGymGear coord buttons) and Volkner's win script. Start: Sunyshore Gym room 1 (8,14) -> end: back out at the Sunyshore gym door (845,748), BADGE_BEACON, TM57 (54's start).
-- start: prev + `lab.recipe`; warp MAP_SUNYSHORE_GYM_ROOM_1 0; lab state lines: 7 badge, 42 clear-flag, 232 flag, 24 item, 1 pokedex, 5 poketch, 72 var
+- start: prev + `lab.recipe`; warp MAP_SUNYSHORE_GYM_ROOM_1 0; lab state lines: 7 badge, 42 clear-flag, 238 flag, 24 item, 1 pokedex, 5 poketch, 72 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; 8 badges; badge BADGE_BEACON; >= 1 battles; flags set 0xB6, 0x669, 0x66D, 0x67D, 0x67E, 0x67F, 0x69B, 0x6A5, 0x6A8; 2 save check(s)
@@ -1808,7 +1808,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/54-sunyshore-jasmine-waterfall — Sunyshore: Jasmine gives HM07 Waterfall
 - proves: Proves Jasmine's coord scene north of the gym: with the Beacon Badge she hands over HM07 Waterfall. Start: Sunyshore gym door (845,747), var 0x407E 1 -> end: Sunyshore coord row (855,743), HM07, var 0x407E 2.
-- start: prev + `lab.recipe`; warp MAP_SUNYSHORE 12; lab state lines: 8 badge, 42 clear-flag, 241 flag, 25 item, 1 pokedex, 5 poketch, 72 var
+- start: prev + `lab.recipe`; warp MAP_SUNYSHORE 12; lab state lines: 8 badge, 42 clear-flag, 247 flag, 25 item, 1 pokedex, 5 poketch, 72 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0xB5, 0x9A; vars 0x407E=2; 1 save check(s)
@@ -1818,17 +1818,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/55-route223-victory-road — Route 223 and Victory Road to the Pokemon League
 - proves: Proves Surf + Waterfall up Route 223 and the Victory Road HM floors to the League's north side. Start: Sunyshore (855,743) after Jasmine -> end: Pokemon League outside, Victory Road exit (853,582).
-- start: prev + `lab.recipe`; map MAP_SUNYSHORE 855 743 FACE_UP; lab state lines: 8 badge, 42 clear-flag, 243 flag, 26 item, 1 pokedex, 5 poketch, 73 var
+- start: prev + `lab.recipe`; map MAP_SUNYSHORE 855 743 FACE_UP; lab state lines: 8 badge, 42 clear-flag, 249 flag, 26 item, 1 pokedex, 5 poketch, 73 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE; flags set 0x9CA
-- frames: estimate 35000, budget 52500
+- frames: estimate 35000, budget 100000
 - refs: maps.h:472; map_header.c:552; zone_event 0446 objects 0-11,14; maps.h:176; zone_event 0171 warp 0; zone_event 0171 warp 2; zone_event 0171 warp 3; maps.h:248; zone_event 0237 warp 7; zone_event 0237 warp 8; zone_event 0237 warps 0-6; zone_event 0238 warps 0-2; zone_event 0239 warps 0-2; scr_seq 0719 @0x0000; scr_seq 0259 @0x0026; scr_seq 0259 @0x002A; scr_seq 0177 @0x001A; zone_event 0238 object 7; zone_event 0239 object 1
-- notes: Route 223: 12 swimmers/sailor lv 37-44 (zone_event 0446). Victory Road trainers lv 43-49 incl. two doubles: Al & Kay #237 2F (57,19-20), Jo & Pat #236 B1F (33,43-44). The back area (1F_BACK_1..3, Route 224) is post-game. Encounter banks of Route 223 and Victory Road are the same in D and P (version-diff).
+- notes: Victory Road 1F/2F/B1F are tile for tile Platinum's (same warps, boulders, rocks: dp_script.py events), so the route is Platinum 49's (tools/pt_cave.py, each floor checked there). Route 223: 12 swimmers/sailor lv 37-44 (zone_event 0446). Victory Road trainers lv 43-49 incl. two doubles: Al & Kay #237 2F (57,19-20), Jo & Pat #236 B1F (33,43-44). The back area (1F_BACK_1..3, Route 224) is post-game. Encounter banks of Route 223 and Victory Road are the same in D and P (version-diff).
 
 #### diamond/56-league-lobby-rival-guard — Pokemon League lobby: last rival battle, badge check
 - proves: Proves the League lobby: ON_TRANSITION door/E4 reset, the rival coord battle (Turtwig -> Infernape team), the badge check by the door guard and entry to the first lift room. Start: League outside (853,582) -> end: MAP_POKEMON_LEAGUE_ENTRANCE.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE 3; lab state lines: 8 badge, 42 clear-flag, 244 flag, 26 item, 1 pokedex, 5 poketch, 73 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE 3; lab state lines: 8 badge, 42 clear-flag, 250 flag, 26 item, 1 pokedex, 5 poketch, 73 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_ENTRANCE; >= 1 battles; flags set 0x9F4, 0x2A0, 0x2A1, 0x2A2, 0x2A3, 0x23B, 0xAF; flags clear 0x2A4, 0x2A5, 0x2A6, 0x2A7, 0xB0, 0xB1, 0xB2, 0xB3; vars 0x40EF=1
@@ -1838,7 +1838,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/57-e4-aaron — Elite Four: Aaron
 - proves: Proves the Aaron room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_ENTRANCE (4,15) -> end: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_ENTRANCE 1; lab state lines: 8 badge, 50 clear-flag, 251 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_ENTRANCE 1; lab state lines: 8 badge, 50 clear-flag, 257 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK; >= 1 battles; flags set 0xB0, 0x2A4; flags clear 0x2A0
@@ -1848,7 +1848,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/57b-e4-bertha — Elite Four: Bertha
 - proves: Proves the Bertha room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK 1; lab state lines: 8 badge, 51 clear-flag, 253 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK 1; lab state lines: 8 badge, 51 clear-flag, 259 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK; >= 1 battles; flags set 0xB1, 0x2A5; flags clear 0x2A1
@@ -1858,7 +1858,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/58-e4-flint — Elite Four: Flint
 - proves: Proves the Flint room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK 1; lab state lines: 8 badge, 52 clear-flag, 255 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK 1; lab state lines: 8 badge, 52 clear-flag, 261 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK; >= 1 battles; flags set 0xB2, 0x2A6; flags clear 0x2A2
@@ -1868,7 +1868,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/58b-e4-lucian — Elite Four: Lucian
 - proves: Proves the Lucian room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK 1; lab state lines: 8 badge, 53 clear-flag, 257 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK 1; lab state lines: 8 badge, 53 clear-flag, 263 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK; >= 1 battles; flags set 0xB3, 0x2A7; flags clear 0x2A3
@@ -1878,17 +1878,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/59-champion-cynthia — Champion Cynthia
 - proves: Proves the Champion room frame script (walk 4 north, intro, battle with no interaction), the win and the walk-off to the Hall of Fame corridor. Start: Lucian-Cynthia lift room (4,23) -> end: HoF corridor (5,23).
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: 8 badge, 54 clear-flag, 259 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: 8 badge, 54 clear-flag, 265 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR; at (5, 23); >= 1 battles; flags set 0x98B, 0xB4, 0x258, 0x259
-- frames: estimate 16000, budget 24000
+- frames: estimate 16000, budget 50000
 - refs: maps.h:188; zone_event 0183 coord 0; zone_event 0183 warp 0; scr_seq 0652 @0x0000; maps.h:189; scr_seq 0653 @0x0000; scr_seq 0653 @0x000B; zone_event 0184 object 0; scr_seq 0190 @0x000E; scr_seq 0190 @0x001C; scr_seq 0190 @0x0034; scr_seq 0190 @0x0038; trdata.json #267; scr_seq 0190 @0x0052; scr_seq 0190 @0x0093; scr_seq 0190 @0x0097; scr_seq 0190 @0x00B5; scr_seq 0190 @0x00DB; msg 0180 #0; msg 0180 #1; msg 0180 #2
 - notes: TRAINER_CHAMPION_CYNTHIA (267): SPIRITOMB 61, ROSERADE 60, GASTRODON 60, LUCARIO 63, MILOTIC 63, GARCHOMP 66 (Sitrus); 4x Full Restore (trdata.json #267). Milotic Ice Beam is 4x on Garchomp (~40% at level 100). First clear: 0x964 clear -> msg 0180 #0 (@0x001C). Loss: ClearFlag 0x98B + Blackout (@0x00DB). Cynthia's trainer flag 0x65B is not set by the script.
 
 #### diamond/59b-hall-of-fame-credits — Hall of Fame, credits, continue
 - proves: Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966, Champ ribbon, the game's own save, credits, OS_ResetSystem) and the continue into the post-game start location. Start: HoF corridor (5,23) after Cynthia -> end: CONTINUE after the reset, field in the player's bedroom (map 415).
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: 8 badge, 54 clear-flag, 263 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: 8 badge, 54 clear-flag, 269 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_TWINLEAF_RIVAL_HOUSE_2F; at (4, 6); 8 badges; flags set 0x964, 0x966, 0x982, 0xB4; flags clear 0x98B, 0x1EF, 0x1E2, 0x1FE, 0x1FF, 0x195; vars 0x40F4=1, 0x410F=1, 0x4098=5
@@ -2135,7 +2135,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Pearl
 
 <!-- plan.py:begin pearl -->
-### Story chain: 61 milestones, ~1193714 frames estimated
+### Story chain: 61 milestones, ~1155714 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -2160,20 +2160,20 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [19-hearthome-contest-hall-rival](diamond/19-hearthome-contest-hall-rival/milestone.toml) | Hearthome: Fantina, Contest Hall, rival | P0 | both | 10924 | prev + `lab.recipe` | MAP_HEARTHOME | passing |
 | [20-route209-to-solaceon](diamond/20-route209-to-solaceon/milestone.toml) | Route 209 to Solaceon Town | P0 | both | 12584 | prev + `lab.recipe` | MAP_SOLACEON | passing |
 | [21-route210-215-veilstone-dawn](diamond/21-route210-215-veilstone-dawn/milestone.toml) | Route 210 South and Route 215 to Veilstone: counterpart at the gym | P0 | both | 36615 | prev + `lab.recipe` | MAP_VEILSTONE_GYM | passing |
-| [22-maylene-cobble-badge](diamond/22-maylene-cobble-badge/milestone.toml) | Veilstone Gym: Maylene and the Cobble Badge | P0 | both | 20000 | prev + `lab.recipe` | MAP_VEILSTONE_GYM | planned |
-| [24-veilstone-warehouse-tag-battle](diamond/24-veilstone-warehouse-tag-battle/milestone.toml) | Veilstone: Dawn's stolen Pokédex, warehouse tag battle | P0 | both | 11000 | prev + `lab.recipe` | MAP_VEILSTONE | planned |
-| [25-route214-valor-route213-to-pastoria](diamond/25-route214-valor-route213-to-pastoria/milestone.toml) | Route 214, Valor Lakefront and Route 213 to Pastoria | P0 | both | 30000 | prev + `lab.recipe` | MAP_PASTORIA_GYM | planned |
-| [26-pastoria-gym-wake-fen-badge](diamond/26-pastoria-gym-wake-fen-badge/milestone.toml) | Pastoria Gym: Crasher Wake and the Fen Badge | P0 | both | 22000 | prev + `lab.recipe` | MAP_PASTORIA | planned |
-| [27-pastoria-galactic-grunt-rival](diamond/27-pastoria-galactic-grunt-rival/milestone.toml) | Pastoria: Galactic grunt flees, rival battle | P0 | both | 10000 | prev + `lab.recipe` | MAP_PASTORIA | planned |
-| [28-valor-lakefront-grunt-secretpotion](diamond/28-valor-lakefront-grunt-secretpotion/milestone.toml) | Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion | P0 | both | 12000 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | planned |
-| [29-route210-psyduck-old-charm](diamond/29-route210-psyduck-old-charm/milestone.toml) | Route 210 South: SecretPotion on the Psyduck, Old Charm | P0 | both | 28000 | prev + `lab.recipe` | MAP_ROUTE_210_SOUTH | planned |
-| [30-route210-north-to-celestic](diamond/30-route210-north-to-celestic/milestone.toml) | Route 210 North through the fog to Celestic Town | P0 | both | 20000 | prev + `lab.recipe` | MAP_CELESTIC | planned |
-| [31-celestic-grunt-old-charm](diamond/31-celestic-grunt-old-charm/milestone.toml) | Celestic Town: Galactic grunt at the ruins, Old Charm to the elder | P0 | both | 8000 | prev + `lab.recipe` | MAP_CELESTIC | planned |
-| [32-celestic-ruins-hm03-cyrus](diamond/32-celestic-ruins-hm03-cyrus/milestone.toml) | Celestic Ruins: the painting, HM03 Surf, Cyrus | P0 | both | 9000 | prev + `lab.recipe` | MAP_CELESTIC | planned |
-| [33-celestic-to-hearthome-gym](diamond/33-celestic-to-hearthome-gym/milestone.toml) | Celestic Town back to the Hearthome Gym | P0 | both | 26000 | prev + `lab.recipe` | MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM | planned |
-| [34-hearthome-gym-fantina-relic-badge](diamond/34-hearthome-gym-fantina-relic-badge/milestone.toml) | Hearthome Gym: Fantina and the Relic Badge | P0 | both | 22000 | prev + `lab.recipe` | MAP_HEARTHOME | planned |
-| [35-hearthome-to-canalave-dex-upgrade](diamond/35-hearthome-to-canalave-dex-upgrade/milestone.toml) | Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse | P0 | both | 19500 | prev + `lab.recipe` | MAP_CANALAVE | planned |
-| [36-canalave-rival](diamond/36-canalave-rival/milestone.toml) | Canalave City: rival battle on the bridge | P0 | both | 6000 | prev + `lab.recipe` | MAP_CANALAVE | planned |
+| [22-maylene-cobble-badge](diamond/22-maylene-cobble-badge/milestone.toml) | Veilstone Gym: Maylene and the Cobble Badge | P0 | both | 24989 | prev + `lab.recipe` | MAP_VEILSTONE_GYM | passing |
+| [24-veilstone-warehouse-tag-battle](diamond/24-veilstone-warehouse-tag-battle/milestone.toml) | Veilstone: Dawn's stolen Pokédex, warehouse tag battle | P0 | both | 10301 | prev + `lab.recipe` | MAP_VEILSTONE | passing |
+| [25-route214-valor-route213-to-pastoria](diamond/25-route214-valor-route213-to-pastoria/milestone.toml) | Route 214, Valor Lakefront and Route 213 to Pastoria | P0 | both | 32645 | prev + `lab.recipe` | MAP_PASTORIA_GYM | passing |
+| [26-pastoria-gym-wake-fen-badge](diamond/26-pastoria-gym-wake-fen-badge/milestone.toml) | Pastoria Gym: Crasher Wake and the Fen Badge | P0 | both | 24889 | prev + `lab.recipe` | MAP_PASTORIA | passing |
+| [27-pastoria-galactic-grunt-rival](diamond/27-pastoria-galactic-grunt-rival/milestone.toml) | Pastoria: Galactic grunt flees, rival battle | P0 | both | 9849 | prev + `lab.recipe` | MAP_PASTORIA | passing |
+| [28-valor-lakefront-grunt-secretpotion](diamond/28-valor-lakefront-grunt-secretpotion/milestone.toml) | Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion | P0 | both | 7079 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | passing |
+| [29-route210-psyduck-old-charm](diamond/29-route210-psyduck-old-charm/milestone.toml) | Route 210 South: SecretPotion on the Psyduck, Old Charm | P0 | both | 10803 | prev + `lab.recipe` | MAP_ROUTE_210_SOUTH | passing |
+| [30-route210-north-to-celestic](diamond/30-route210-north-to-celestic/milestone.toml) | Route 210 North through the fog to Celestic Town | P0 | both | 34697 | prev + `lab.recipe` | MAP_CELESTIC | passing |
+| [31-celestic-grunt-old-charm](diamond/31-celestic-grunt-old-charm/milestone.toml) | Celestic Town: Galactic grunt at the ruins, Old Charm to the elder | P0 | both | 6647 | prev + `lab.recipe` | MAP_CELESTIC | passing |
+| [32-celestic-ruins-hm03-cyrus](diamond/32-celestic-ruins-hm03-cyrus/milestone.toml) | Celestic Ruins: the painting, HM03 Surf, Cyrus | P0 | both | 3433 | prev + `lab.recipe` | MAP_CELESTIC | passing |
+| [33-celestic-to-hearthome-gym](diamond/33-celestic-to-hearthome-gym/milestone.toml) | Celestic Town back to the Hearthome Gym | P0 | both | 8825 | prev + `lab.recipe` | MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM | passing |
+| [34-hearthome-gym-fantina-relic-badge](diamond/34-hearthome-gym-fantina-relic-badge/milestone.toml) | Hearthome Gym: Fantina and the Relic Badge | P0 | both | 13283 | prev + `lab.recipe` | MAP_HEARTHOME | passing |
+| [35-hearthome-to-canalave-dex-upgrade](diamond/35-hearthome-to-canalave-dex-upgrade/milestone.toml) | Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse | P0 | both | 7701 | prev + `lab.recipe` | MAP_CANALAVE | passing |
+| [36-canalave-rival](diamond/36-canalave-rival/milestone.toml) | Canalave City: rival battle on the bridge | P0 | both | 10359 | prev + `lab.recipe` | MAP_CANALAVE | passing |
 | [37-iron-island-riley-egg](diamond/37-iron-island-riley-egg/milestone.toml) | Iron Island: Riley tag battle and the Riolu egg | P1 | both | 17500 | prev + `lab.recipe` | MAP_CANALAVE | planned |
 | [38-canalave-gym-byron-mine-badge](diamond/38-canalave-gym-byron-mine-badge/milestone.toml) | Canalave Gym: Byron and the Mine Badge, rival points to the library | P0 | both | 22500 | prev + `lab.recipe` | MAP_CANALAVE | planned |
 | [39-canalave-library-valor-explosion](diamond/39-canalave-library-valor-explosion/milestone.toml) | Canalave Library: lake legends and the Lake Valor explosion | P0 | both | 20000 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | planned |
@@ -2417,7 +2417,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE_GYM; 3 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE; >= 1 battles; flags set 0x9D, 0x685, 0x686, 0x687, 0x688; flags clear 0x1C6, 0x101; vars 0x407D=1, 0x411A=1, 0x40F5=1; 1 save check(s)
-- frames: estimate 20000, budget 45000
+- frames: estimate 24989, budget 45000
 - refs: maps.h:137; map_header.c:217; zone_event 0132 object 0; zone_event 0132 object 1; zone_event 0132 object 2; zone_event 0132 object 3; zone_event 0132 object 4; zone_event 0132 object 5; zone_event 0132 warp 0; scr_seq 0595 @0x0000; scr_seq 0132 @0x0012; scr_seq 0132 @0x001E; scr_seq 0132 @0x0042; scr_seq 0132 @0x0048; scr_seq 0132 @0x0068; scr_seq 0132 @0x0070; scr_seq 0132 @0x0074; scr_seq 0132 @0x0078; scr_seq 0132 @0x007C; scr_seq 0132 @0x008C; scr_seq 0132 @0x0090; scr_seq 0132 @0x0096; scr_seq 0132 @0x00A7; scr_seq 0132 @0x00C8; scr_seq 0132 @0x00CC; scr_seq 0594 @0x000B; scr_seq 0131 @0x0B24; msg 0136 #2; msg 0136 #3; games/diamond/arm9/src/scrcmd.c:3357; games/diamond/arm9/asm/unk_02064CA8.s:7-8; games/diamond/arm9/asm/unk_02064CA8.s:95-119; games/diamond/arm9/overlays/06/asm/overlay_06.s:17986-18253; games/diamond/arm9/overlays/06/asm/overlay_06.s:44861-44885; trdata.json #309; trdata.json #310; trdata.json #311; trdata.json #312; trdata.json #317
 - notes: Estimate: Platinum's Maylene milestone (~20000) — gym walk with up to four Black Belt battles plus Maylene's three. Pearl: no version branch in scr_seq 0132 and no encounters (version-diff), version = both. Maylene's own trainer flag 0x68D is never set by a script; her win sets the four gym trainers' flags (SetTrainerFlag 309-312). 0x407D = 1 disables the warehouse grunt push-back coord (zone_event 0131 coord 0) and 0x411A = 1 arms Veilstone's ON_FRAME_TABLE (scr_seq 0594 @0x000B -> scr_seq 0131 #30): counterpart asks for help, tag battle vs TRAINER_GALACTIC_GRUNT_37/38 -> SetFlag 0x101 — handed to S6 (E2EPlan2.DPStory06). HM02 Fly is NOT unlocked here in D/P: the warehouse entrance doors need ITEM_STORAGE_KEY (scr_seq 0143 @0x006B), whose grunt (zone_event 0131 object 24, hidden_flag 0x241) appears only after Lake Acuity (scr_seq 0351 @0x0110).
 
@@ -2427,7 +2427,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE; 3 badges; badge BADGE_COBBLE; >= 1 battles; flags set 0x101, 0x1C6, 0x1DD; vars 0x411A=2, 0x407D=1
-- frames: estimate 11000, budget 16500
+- frames: estimate 10301, budget 16500
 - refs: scr_seq 0132 @0x0096; scr_seq 0132 @0x008C; zone_event 0132 warp 0; zone_event 0131 warp 13; scr_seq 0594 @0x000B; scr_seq 0131 @0x00BD; scr_seq 0131 @0x0B24; scr_seq 0131 @0x0B5A; scr_seq 0131 @0x0B5E; scr_seq 0131 @0x00A7; scr_seq 0131 @0x0B64; scr_seq 0131 @0x0B6C; zone_event 0131 object 6; zone_event 0131 object 7; zone_event 0131 object 20; zone_event 0131 coord 0; scr_seq 0131 @0x0284; scr_seq 0131 @0x02AC; scr_seq 0131 @0x0310; scr_seq 0131 @0x04E2; scr_seq 0131 @0x047C; scr_seq 0131 @0x0341; scr_seq 0131 @0x03A8; scr_seq 0131 @0x03D1; scr_seq 0131 @0x05A2; scr_seq 0131 @0x05A6; games/diamond/arm9/src/map_object.c:295-299; trdata.json #624; trdata.json #848; trdata.json #849; msg 135 #0; msg 135 #12; msg 135 #16; msg 146 #2; maps.h:136; maps.h:137
 - notes: Male player => counterpart Dawn (0x4020 = 97, scr_seq 0131 @0x00BD) and partner TRAINER_PKMN_TRAINER_DAWN_DAWN_4 (624) for a Turtwig starter (scr_seq 0131 @0x047C-0x04A6). Coord 0 (697,596) is dead (0x407D = 1 since Maylene). [INFERENCE] Gen IV Surf is a spread move that also hits the partner's Prinplup (resisted), so the doubles need no target menu.
 
@@ -2436,134 +2436,134 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: prev + `lab.recipe`; map MAP_VEILSTONE 696 595 FACE_DOWN; lab state lines: 3 badge, 22 clear-flag, 125 flag, 14 item, 1 pokedex, 5 poketch, 51 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
-- end state: map MAP_PASTORIA_GYM; 3 badges; flags set 0x101, 0x238, 0x239, 0x1C7; flags clear 0x102, 0x22A
-- frames: estimate 30000, budget 51000
+- end state: map MAP_PASTORIA_GYM; 3 badges; flags set 0x101, 0x238, 0x239, 0x1C7, 0x9BC; flags clear 0x102, 0x22A
+- frames: estimate 32645, budget 51000
 - refs: zone_event 0131 warp 10; zone_event 0133 object 0; scr_seq 0133 @0x0014; zone_event 0133 warp 0; zone_event 0131 warp 11; zone_event 0366 warp 1; zone_event 0365 warp 0; scr_seq 0876 @0x0000; scr_seq 0431 @0x0075; zone_event 0365 object 3; zone_event 0365 object 4; zone_event 0365 object 5; zone_event 0365 object 8; trdata.json #113; trdata.json #114; trdata.json #382; trdata.json #120; scr_seq 0831 @0x0005; scr_seq 0381 @0x002A; zone_event 0321 coord 0; scr_seq 0381 @0x041E; zone_event 0321 object 5; scr_seq 0869 @0x0000; scr_seq 0424 @0x0022; zone_event 0358 object 30; zone_event 0358 warp 0; zone_event 0359 warp 1; zone_event 0119 warp 9; zone_event 0122 object 0; scr_seq 0121 @0x0014; zone_event 0122 warp 0; zone_event 0119 warp 0; zone_event 0119 object 21; scr_seq 0118 @0x01C8; games/diamond/files/fielddata/mapmatrix/map_matrix/narc_0000.bin; map_header.c:464; map_header.c:420; map_header.c:457; map_header.c:204
 - notes: Overworld matrix 0 (map_matrix narc_0000, 32-tile chunks): Veilstone x672-735 z576-639, Route 214 x704-735 z640-735, Valor Lakefront x672-735 z736-799, Route 213 x640-735 z800-863, Pastoria x576-639 z800-863. Wild encounter banks differ by version on Route 214 (d/p_enc 0163) and Valor Lakefront (d/p_enc 0138) only (dp_script.py version-diff); the steps do not depend on species, so version = both. Pastoria's grunt (614,810) only talks before the Fen Badge (scr_seq 0118 @0x01DE-0x0229). Two heals keep Surf PP up for the Route 214 trainers and the gym. D/P has no Great Marsh story scene (scr_seq 0124/0125: Safari Game and binoculars only).
 
 #### pearl/26-pastoria-gym-wake-fen-badge — Pastoria Gym: Crasher Wake and the Fen Badge
 - proves: Proves the water-level gym (InitPastoriaGym / CheckPastoriaGymButton), Wake's win script, the Fen Badge and TM55. The badge arms Pastoria's grunt (HasBadge 3, scr_seq 0118 @0x01DE) and the Route 213 chase (scr_seq 0424 @0x002F). Start: Pastoria Gym door (13,42) -> end: back out in Pastoria at the gym door (27's start).
-- start: prev + `lab.recipe`; warp MAP_PASTORIA_GYM 0; lab state lines: 3 badge, 24 clear-flag, 128 flag, 14 item, 1 pokedex, 5 poketch, 51 var
+- start: prev + `lab.recipe`; warp MAP_PASTORIA_GYM 0; lab state lines: 3 badge, 24 clear-flag, 129 flag, 14 item, 1 pokedex, 5 poketch, 51 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA; 4 badges; badge BADGE_FEN; >= 1 battles; flags set 0x9C, 0x675, 0x6A3, 0x6E1, 0x733, 0x741, 0x742; vars 0x407C=1; 1 save check(s)
-- frames: estimate 22000, budget 33000
+- frames: estimate 24889, budget 37400
 - refs: zone_event 0121 warp 0; scr_seq 0583 @0x0000; scr_seq 0120 @0x001E; scr_seq 0120 @0x0030; games/diamond/arm9/asm/unk_02064CA8.s:17-30; games/diamond/arm9/src/scrcmd.c:3332-3339; games/diamond/arm9/overlays/06/asm/overlay_06.s:15664-15800; scr_seq 0120 @0x0034; scr_seq 0120 @0x004A; scr_seq 0120 @0x0060; zone_event 0121 coord 0; zone_event 0121 coord 9; zone_event 0121 object 0; zone_event 0121 object 2; zone_event 0121 object 7; map_header.c:206; scr_seq 0120 @0x0076; scr_seq 0120 @0x00A2; scr_seq 0120 @0x00C8; scr_seq 0120 @0x00D0; scr_seq 0120 @0x00E4; scr_seq 0120 @0x00F4; scr_seq 0120 @0x0105; scr_seq 0120 @0x0126; scr_seq 0120 @0x012A; trdata.json #316; trdata.json #293; trdata.json #339; trdata.json #401; trdata.json #483; trdata.json #497; trdata.json #498; msg 125 #2; include/constants/badge.h:7
 - notes: Map header row: matrix 111 (map_header.c:206), the same land matrix id Platinum's Pastoria Gym uses; zone_event 0121's buttons, trainers and Wake (13,4) sit on the Platinum coordinates, so Platinum's solved layout is the starting hypothesis [INFERENCE]. Gym trainers have sight 2; Wake's win sets all six trainer flags anyway (scr_seq 0120 @0x00D0-0x00E4). Wake's own flag 0x68C is never set.
 
 #### pearl/27-pastoria-galactic-grunt-rival — Pastoria: Galactic grunt flees, rival battle
 - proves: Proves the post-Fen Pastoria scene: the Galactic grunt by the Great Marsh gate runs to the east gate (0x102), the second talk sends him off to the lake and Barry bumps into you for a rival battle (0x103 arms Route 213). Start: Pastoria at the gym door (589,827) -> end: Pastoria (636,812) by the east gate, rival gone.
-- start: prev + `lab.recipe`; warp MAP_PASTORIA 0; lab state lines: 4 badge, 24 clear-flag, 135 flag, 15 item, 1 pokedex, 5 poketch, 52 var
+- start: prev + `lab.recipe`; warp MAP_PASTORIA 0; lab state lines: 4 badge, 24 clear-flag, 136 flag, 15 item, 1 pokedex, 5 poketch, 52 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA; 4 badges; >= 1 battles; flags set 0x101, 0x102, 0x103, 0x22A, 0x1C7
-- frames: estimate 10000, budget 15000
+- frames: estimate 9849, budget 15000
 - refs: zone_event 0119 warp 0; zone_event 0119 warp 9; zone_event 0122 object 0; scr_seq 0121 @0x0014; zone_event 0122 warp 0; zone_event 0119 object 21; zone_event 0119 object 22; scr_seq 0118 @0x01B7; scr_seq 0118 @0x01DE; scr_seq 0118 @0x0205; scr_seq 0118 @0x024F; scr_seq 0118 @0x025B; scr_seq 0581 @0x0000; scr_seq 0118 @0x0042; scr_seq 0118 @0x004F; scr_seq 0118 @0x0263; scr_seq 0118 @0x02BD; scr_seq 0118 @0x0315; scr_seq 0118 @0x0319; scr_seq 0118 @0x0323; scr_seq 0118 @0x03A8; scr_seq 0118 @0x0378; scr_seq 0118 @0x03DA; scr_seq 0118 @0x03F6; scr_seq 0118 @0x0462; scr_seq 0118 @0x04B4; scr_seq 0118 @0x04B8; scr_seq 0118 @0x04C0; games/diamond/arm9/src/map_object.c:295-299; games/diamond/arm9/src/scrcmd.c:2654-2656; trdata.json #474; trdata.json #473; trdata.json #475; msg 123 #2; msg 123 #3; msg 123 #4; msg 123 #5; msg 123 #6
 - notes: GetStarter (scrcmd.c:2654) picks the rival team: Turtwig -> TRAINER_PKMN_TRAINER_BARRY_CEDRIC_8 (474); Chimchar -> 475, Piplup -> 473 (scr_seq 0118 @0x0378-0x0396). A loss clears 0x22A and sets 0x1C7 before the blackout (@0x04C0), so the grunt is back at (637,812) for a retry. [INFERENCE] the grunt's movement 14 with range (2,2) may turn/wander him; re-target the adjacent tile if he is not where the step expects.
 
 #### pearl/28-valor-lakefront-grunt-secretpotion — Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion
 - proves: Proves the Fen Badge's Galactic follow-up: the grunt chase over Route 213 (0x104) to Valor Lakefront (0x106), the grunt battle, and Cynthia's SecretPotion that sends the player north to the Route 210 Psyduck (0x4083 = 2, 0xB7). Start: Pastoria (636,812) by the east gate (27's end) -> end: Valor Lakefront below Cynthia's spot (723,761).
-- start: prev + `lab.recipe`; map MAP_PASTORIA 636 812 FACE_RIGHT; lab state lines: 4 badge, 24 clear-flag, 138 flag, 15 item, 1 pokedex, 5 poketch, 52 var
+- start: prev + `lab.recipe`; map MAP_PASTORIA 636 812 FACE_RIGHT; lab state lines: 4 badge, 24 clear-flag, 139 flag, 15 item, 1 pokedex, 5 poketch, 52 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; 4 badges; >= 1 battles; flags set 0x103, 0x104, 0x106, 0x238, 0x239, 0x1CB, 0xB7; vars 0x4083=2; 1 save check(s)
-- frames: estimate 12000, budget 18000
+- frames: estimate 7079, budget 18000
 - refs: zone_event 0119 warp 10; zone_event 0359 warp 0; scr_seq 0869 @0x0000; scr_seq 0424 @0x0022; scr_seq 0424 @0x002F; scr_seq 0424 @0x0044; scr_seq 0424 @0x0051; zone_event 0358 object 30; scr_seq 0424 @0x0057; scr_seq 0424 @0x0073; scr_seq 0424 @0x00A3; scr_seq 0424 @0x00B3; scr_seq 0424 @0x00B7; scr_seq 0424 @0x00BB; zone_event 0321 object 5; zone_event 0321 object 0; zone_event 0321 coord 0; scr_seq 0831 @0x0005; scr_seq 0381 @0x002A; scr_seq 0381 @0x005A; scr_seq 0381 @0x00B8; scr_seq 0381 @0x0119; scr_seq 0381 @0x0141; scr_seq 0381 @0x014D; scr_seq 0381 @0x0155; scr_seq 0381 @0x015C; scr_seq 0381 @0x01B4; scr_seq 0381 @0x01DC; scr_seq 0381 @0x01E0; scr_seq 0381 @0x01E4; scr_seq 0381 @0x025C; scr_seq 0381 @0x0267; scr_seq 0381 @0x029C; scr_seq 0381 @0x02A8; scr_seq 0381 @0x02E0; scr_seq 0381 @0x02F8; scr_seq 0381 @0x02FC; scr_seq 0381 @0x0302; scr_seq 0412 @0x0081; games/diamond/arm9/src/map_object.c:295-299; trdata.json #847; msg 444 #1; msg 354 #2; msg 354 #4; msg 354 #7; items.h:689
 - notes: Valor Lakefront's wild bank differs by version (d/p_enc 0138, dp_script.py version-diff); no script here branches on GetGameVersion, so version = both. The Route 213 grunt only leaves when talked to facing south or east (scr_seq 0424 @0x0073-0x0091); other facings End with him still there. The SecretPotion is used on the Route 210 South Psyduck (scr_seq 0412 @0x0081 HasItem 464) by the next slice.
 
 #### pearl/29-route210-psyduck-old-charm — Route 210 South: SecretPotion on the Psyduck, Old Charm
 - proves: Proves the walk back from Valor Lakefront (Route 214, Veilstone, Route 215) to the Route 210 South Psyduck block, the SecretPotion clearing it and Cynthia's Old Charm hand-off (the errand that opens Celestic Town). Start: Valor Lakefront (723,761) (28's end) -> end: Route 210 South (561,588), ITEM_OLD_CHARM, flag 0x107.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 723 761 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 142 flag, 16 item, 1 pokedex, 5 poketch, 53 var
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 723 761 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 143 flag, 16 item, 1 pokedex, 5 poketch, 53 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_ROUTE_210_SOUTH; at (561, 588); flags set 0x1CE, 0x1CF, 0x107; 2 save check(s)
-- frames: estimate 28000, budget 42000
+- frames: estimate 10803, budget 42000
 - refs: zone_event 0321 object 0; zone_event 0365 warp 0; zone_event 0366 warp 0; zone_event 0131 warp 0; zone_event 0148 warp 1; zone_event 0367 warp 0; zone_event 0367 object 10; zone_event 0367 object 11; zone_event 0367 object 12; zone_event 0367 object 13; zone_event 0367 object 14; zone_event 0347 object 19; zone_event 0347 object 26; zone_event 0347 object 27; zone_event 0347 object 28; zone_event 0347 object 20; scr_seq 0412 @0x0081; scr_seq 0412 @0x00A4; scr_seq 0412 @0x00CA; scr_seq 0412 @0x0123; scr_seq 0412 @0x0139; scr_seq 0412 @0x0183; scr_seq 0412 @0x01A6; scr_seq 0412 @0x01E9; scr_seq 0412 @0x0240; scr_seq 0412 @0x0244; scr_seq 0149 @0x0025; scr_seq 0413 @0x00C9; scr_seq 0377 @0x0120; scr_seq 0132 @0x0090; scr_seq 0131 @0x0179; msg 0432 #1; msg 0432 #3; games/diamond/arm9/src/map_object.c:295-298; maps.h:366; map_header.c:446
 - notes: Estimate: Platinum 20's ~31000 for a similar three-map walk, minus its rival battle. SecretPotion is only checked (HasItem @0x0081), never taken. Encounter banks differ by version (d/p_enc_data 0156/0163/0164 per version-diff) but no script does, so version = both. Route 210 South's ON_TRANSITION (scr_seq 0412 #7) only swaps the jogger pair 0x28E/0x28F by time of day.
 
 #### pearl/30-route210-north-to-celestic — Route 210 North through the fog to Celestic Town
 - proves: Proves the Psyduck block is gone, the foggy Route 210 North walk without Defog and the arrival in Celestic Town, where the elder's coord scene (0x40F1) tells of the spaceman at the ruins. Start: Route 210 South (561,588) (29's end) -> end: Celestic Town coord (465,538), 0x980 + 0x40F1 = 1.
-- start: prev + `lab.recipe`; map MAP_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 145 flag, 17 item, 1 pokedex, 5 poketch, 53 var
+- start: prev + `lab.recipe`; map MAP_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 146 flag, 17 item, 1 pokedex, 5 poketch, 53 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
-- end state: map MAP_CELESTIC; flags set 0x980, 0x107, 0x1CE; flags clear 0xA6; vars 0x40F1=1
-- frames: estimate 20000, budget 30000
+- end state: map MAP_CELESTIC; flags set 0x980, 0x107, 0x1CE, 0x9B4; flags clear 0xA6; vars 0x40F1=1
+- frames: estimate 34697, budget 52100
 - refs: zone_event 0347 object 19; zone_event 0348 object 0; zone_event 0348 object 5; zone_event 0348 object 7; zone_event 0348 object 8; zone_event 0348 object 13; zone_event 0348 object 14; zone_event 0348 object 22; zone_event 0348 object 11; zone_event 0420 coord 0; zone_event 0420 object 3; scr_seq 0414 @0x0016; scr_seq 0942 @0x0000; scr_seq 1012 @0x002E; scr_seq 1012 @0x0224; scr_seq 1012 @0x0242; msg 0527 #0; trdata.json #73; trdata.json #75; games/diamond/arm9/src/unk_0205EC84.c:163-164; maps.h:367; map_header.c:447; maps.h:446; map_header.c:526
 - notes: Estimate: ~110 tiles plus up to ten sight trainers. Route 210 North has weather 14 (fog) and a Defog hint NPC (scr_seq 0414 #1) but no script needs Defog. 0x980 is one of the 0x97F-0x983 system flags read by sub_0205EEB8 (unk_0205EC84.c:155-177) [INFERENCE: a per-town visit flag]. Encounter bank d/p_enc_data 0157 differs by version; no script does.
 
 #### pearl/31-celestic-grunt-old-charm — Celestic Town: Galactic grunt at the ruins, Old Charm to the elder
 - proves: Proves the Celestic Town grunt at the ruins door (Yes -> battle), the elder thanking the player and taking the Old Charm from Cynthia (flag 0xA6), which leaves the ruins open. Start: Celestic Town (465,538) (30's end) -> end: Celestic Town (463,523) below the ruins door, Old Charm handed over.
-- start: prev + `lab.recipe`; map MAP_CELESTIC 465 538 FACE_LEFT; lab state lines: 4 badge, 25 clear-flag, 146 flag, 17 item, 1 pokedex, 5 poketch, 54 var
+- start: prev + `lab.recipe`; map MAP_CELESTIC 465 538 FACE_LEFT; lab state lines: 4 badge, 25 clear-flag, 148 flag, 17 item, 1 pokedex, 5 poketch, 54 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; >= 1 battles; flags set 0x1CD, 0xA6; flags clear 0x1CA, 0xA7; 1 save check(s)
-- frames: estimate 8000, budget 12000
+- frames: estimate 6647, budget 18000
 - refs: zone_event 0420 object 2; zone_event 0420 object 3; zone_event 0420 warp 4; scr_seq 1012 @0x003C; scr_seq 1012 @0x003F; scr_seq 1012 @0x006F; scr_seq 1012 @0x0075; scr_seq 1012 @0x008B; scr_seq 1012 @0x0138; scr_seq 1012 @0x013C; scr_seq 1012 @0x0140; scr_seq 1012 @0x0154; scr_seq 1012 @0x0176; scr_seq 1012 @0x017E; scr_seq 1012 @0x018D; msg 0527 #1; msg 0527 #5; msg 0527 #7; trdata.json #416; games/diamond/arm9/src/map_object.c:295-298
 - notes: TrainerBattle 416 from a map script: no trainer flag is set (the script has no SetTrainerFlag; 0x6F0 stays clear). The elder is re-added at (466,531) by SetEventDefaultPosition (@0x0140) [INFERENCE: not saved; she is hidden for good in 32]. Loss -> Blackout (@0x018D).
 
 #### pearl/32-celestic-ruins-hm03-cyrus — Celestic Ruins: the painting, HM03 Surf, Cyrus
 - proves: Proves the Celestic Ruins painting, the elder's HM03 Surf (Cynthia's grandmother; also arms the Hearthome Gym via 0x98D) and Cyrus's speech outside the ruins (no battle in D/P), which brings Fantina back (0xA5). Start: Celestic Town (463,523) (31's end) -> end: Celestic Town at the ruins door, ITEM_HM03, var 0x4074 = 2.
-- start: prev + `lab.recipe`; map MAP_CELESTIC 463 523 FACE_UP; lab state lines: 4 badge, 27 clear-flag, 148 flag, 16 item, 1 pokedex, 5 poketch, 54 var
+- start: prev + `lab.recipe`; map MAP_CELESTIC 463 523 FACE_UP; lab state lines: 4 badge, 27 clear-flag, 150 flag, 16 item, 1 pokedex, 5 poketch, 54 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; flags set 0xA7, 0x98D, 0xA5, 0x1CA, 0x247, 0x1DB; flags clear 0x1E1; vars 0x4074=2; 1 save check(s)
-- frames: estimate 9000, budget 13500
+- frames: estimate 3433, budget 13500
 - refs: zone_event 0420 warp 4; zone_event 0427 warp 0; zone_event 0427 bg 0; zone_event 0427 bg 1; zone_event 0427 object 0; zone_event 0420 object 4; zone_event 0423 object 1; scr_seq 1021 @0x000C; scr_seq 1021 @0x002D; scr_seq 1021 @0x0031; scr_seq 1021 @0x0035; scr_seq 1021 @0x003B; scr_seq 1021 @0x0043; scr_seq 1021 @0x00DE; scr_seq 1021 @0x00EE; scr_seq 1021 @0x00F2; scr_seq 1021 @0x00F6; scr_seq 1021 @0x0101; scr_seq 0942 @0x000B; scr_seq 1012 @0x028C; scr_seq 1012 @0x02C4; scr_seq 1012 @0x02C8; scr_seq 1012 @0x02CC; scr_seq 0377 @0x005A; scr_seq 0377 @0x005E; scr_seq 0377 @0x0062; scr_seq 0092 @0x0022; scr_seq 0092 @0x0058; scr_seq 0097 @0x004C; msg 0533 #0; msg 0533 #2; msg 0533 #3; msg 0527 #10; games/diamond/arm9/src/unk_0205EC84.c:47-49; games/diamond/arm9/src/map_object.c:295-298; maps.h:453; map_header.c:533
 - notes: Unlike Platinum there is no Cyrus battle: scr_seq 1012 #5 is talk only. The only GetGameVersion near here is the grandparents' house bg (scr_seq 1017 @0x0063), off this path, so version = both. msg 0533 #3: Surf in the field needs the Hearthome badge (Relic, 34).
 
 #### pearl/33-celestic-to-hearthome-gym — Celestic Town back to the Hearthome Gym
 - proves: Proves the walk back from Celestic Town (Routes 210 North/South, Solaceon, Route 209) to Hearthome City and into the Hearthome Gym, now open: 0x98D keeps the first room's elevator coord armed (var 0x4000 = 0). Start: Celestic Town ruins door (463,521) (32's end) -> end: Hearthome Gym first question room (9,22) (34's start).
-- start: prev + `lab.recipe`; warp MAP_CELESTIC 4; lab state lines: 4 badge, 28 clear-flag, 154 flag, 17 item, 1 pokedex, 5 poketch, 55 var
+- start: prev + `lab.recipe`; warp MAP_CELESTIC 4; lab state lines: 4 badge, 28 clear-flag, 156 flag, 17 item, 1 pokedex, 5 poketch, 55 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM; at (9, 22); 4 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN; flags set 0x98D, 0xA5, 0x107
-- frames: estimate 26000, budget 39000
+- frames: estimate 8825, budget 45000
 - refs: zone_event 0347 object 19; zone_event 0341 warp 0; zone_event 0109 warp 0; zone_event 0085 warp 8; zone_event 0085 coord 0; zone_event 0087 warp 3; zone_event 0087 coord 0; scr_seq 0092 @0x001A; scr_seq 0092 @0x0020; scr_seq 0092 @0x0022; scr_seq 0114 @0x012B; scr_seq 0090 @0x013B; games/diamond/arm9/asm/unk_02064CA8.s:32-57; games/diamond/arm9/src/unk_0205EC84.c:47-49; maps.h:92; map_header.c:172
 - notes: Estimate: ~350 tiles (Platinum 20 walked most of it the other way in ~31000 with a rival battle). No story state changes on the way: Route 209/210 South ON_TRANSITIONs only swap time-of-day jogger flags (scr_seq 0406 #8, 0412 #7). Hearthome coord 0 (484..489,718) var 0x407B==1 is off the gate-to-gym path and was spent earlier (scr_seq 0090 @0x013B).
 
 #### pearl/34-hearthome-gym-fantina-relic-badge — Hearthome Gym: Fantina and the Relic Badge
 - proves: Proves the Hearthome Gym quiz rooms (elevator + one of three answer doors per room), Fantina, the Relic Badge and TM65, the walk back out, and Cynthia's Hearthome scene pointing to the Canalave library. Start: Hearthome Gym first question room warp 3 (9,22) (33's end) -> end: Hearthome City at the gym door, 5 badges.
-- start: prev + `lab.recipe`; warp MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM 3; lab state lines: 4 badge, 28 clear-flag, 154 flag, 17 item, 1 pokedex, 5 poketch, 55 var
+- start: prev + `lab.recipe`; warp MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM 3; lab state lines: 4 badge, 28 clear-flag, 156 flag, 17 item, 1 pokedex, 5 poketch, 55 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME; 5 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC; >= 1 battles; flags set 0x7D, 0x1C8, 0x65A, 0x668, 0x66C, 0x695, 0x69A, 0x6A4, 0x6A7, 0x6B5, 0x98D; vars 0x40D1=2; 1 save check(s)
-- frames: estimate 22000, budget 33000
+- frames: estimate 13283, budget 33000
 - refs: zone_event 0087 coord 0; zone_event 0087 bg 0; zone_event 0087 warp 2; zone_event 0087 warp 3; zone_event 0090 warp 0; zone_event 0090 warp 3; zone_event 0092 warp 1; zone_event 0092 warp 3; zone_event 0094 warp 2; zone_event 0094 warp 3; zone_event 0099 object 0; zone_event 0099 warp 0; zone_event 0085 warp 8; zone_event 0085 object 19; scr_seq 0092 @0x0022; scr_seq 0092 @0x0037; scr_seq 0093 @0x0016; scr_seq 0094 @0x0016; scr_seq 0095 @0x0016; msg 0100 #0; msg 0101 #0; msg 0102 #0; msg 0103 #0; scr_seq 0096 @0x0096; scr_seq 0096 @0x00BA; scr_seq 0096 @0x00E0; scr_seq 0096 @0x00E8; scr_seq 0096 @0x0114; scr_seq 0096 @0x0118; scr_seq 0096 @0x0127; scr_seq 0096 @0x014C; scr_seq 0096 @0x01D8; scr_seq 0553 @0x000B; scr_seq 0090 @0x0599; scr_seq 0090 @0x05DE; scr_seq 0090 @0x05E2; scr_seq 0377 @0x00C4; msg 0104 #2; msg 0104 #5; msg 0098 #10; trdata.json #318; games/diamond/arm9/src/scrcmd.c:3342-3350; games/diamond/arm9/asm/unk_02064CA8.s:32-57; games/diamond/arm9/overlays/06/asm/overlay_06.s:16489-16600; games/diamond/arm9/src/map_object.c:295-298; maps.h:92-104; map_header.c:172-184
 - notes: D/P's gym is a fixed math quiz (no random doors, unlike Platinum): room 1 3+5+7=15 right (14,2), room 2 12+28=40 middle (9,2), room 3 3x13=39 left (4,2), room 4 'first answer' 15 right (14,2) (msg 0100-0103 #0); each correct door's warp leads to the next question room (zone_event 0087/0090/0092/0094), wrong ones to a trainer room. The (9,13) coord runs MoveHearthomeGymElevator, which raises the avatar to height 0xA0000 or lowers it if already up (overlay_06.s:16489-16600). Fantina's own trainer flag 0x68E is never set by a script. Lab leader-only test: warp MAP_HEARTHOME_GYM_LEADER_ROOM 0.
 
 #### pearl/35-hearthome-to-canalave-dex-upgrade — Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse
-- proves: Proves the D/P road to Canalave after the Relic Badge (no Fly yet in D/P): Hearthome -> Route 208 -> Mt. Coronet 1F -> Route 207 -> Oreburgh -> Oreburgh Gate -> Route 203 -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse, where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0. Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
-- start: prev + `lab.recipe`; warp MAP_HEARTHOME 8; lab state lines: 5 badge, 28 clear-flag, 164 flag, 18 item, 1 pokedex, 5 poketch, 56 var
+- proves: Proves the D/P road to Canalave after the Relic Badge (a Fly bridge to Jubilife, the boost's Staraptor): Hearthome -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse, where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0. Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
+- start: prev + `lab.recipe`; warp MAP_HEARTHOME 8; lab state lines: 5 badge, 28 clear-flag, 166 flag, 18 item, 1 pokedex, 5 poketch, 56 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
-- end state: map MAP_CANALAVE; flags set 0x23A; vars 0x4105=1
-- frames: estimate 19500, budget 29300
+- end state: map MAP_CANALAVE; flags set 0x23A, 0x9B8; vars 0x4105=1
+- frames: estimate 7701, budget 45000
 - refs: zone_event 0085 warp 8 (499,697) -> MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM; warp 14 (454,726) -> MAP_HEARTHOME_ROUTE_208_GATEHOUSE; zone_event 0085 warp 5 (465,697) -> MAP_HEARTHOME_POKECENTER_1F warp 0 (8,12); zone_event 0100 object 0 SPRITE_PCWOMAN1 (8,4) -> scr_seq 0097 script_1 (std 2002, heal); zone_event 0085 coord 1 (461,725) 1x5 var 0x40F6==0 -> scr_seq 0090 script_23 (Keira/Buneary; SetVar 0x40F6,1 @0x0E56); zone_event 0085 coord 2 (455,724) 1x6 var 0x407B==1 -> scr_seq 0090 script_33; zone_event 0108 warp 0 (10,7) / warp 1 (1,7) -> MAP_ROUTE_208 warp 0; zone_event 0339 warp 3 (392,724) -> MAP_MOUNT_CORONET_SOUTH_1F warp 1; zone_event 0204 warp 1 (27,20); warp 0 (4,8) -> MAP_ROUTE_207 warp 0; coord 0 (14,23) var 0x4096==0; Rock Smash rocks (16..25,22..23); zone_event 0338 warp 0 (341,712); coord 0 (300,708) 8x1 var 0x408C==0 -> scr_seq 0403 script_2; zone_event 0044 warp 10 (258,749) -> MAP_OREBURGH_GATE_1F warp 1; coord 1 (262,748) 1x4 var 0x4079==2; zone_event 0250 warp 1 (27,22); warp 0 (4,22) -> MAP_ROUTE_203 warp 0 (246,749); zone_event 0329 coord 0 (196,757) 1x4 var 0x4088==0 -> scr_seq 0394 script_6; zone_event 0002 warp 12 (128,758) -> MAP_ROUTE_218_JUBLIFE_GATEHOUSE warp 1; zone_event 0374 warp 1 (10,7); warp 0 (1,7) -> MAP_ROUTE_218 warp 2 (121,758); zone_event 0373 warp 0 (70,754) -> MAP_ROUTE_218_CANALAVE_GATEHOUSE warp 1; trainers objects 0-3 (Tony 300, Skyler 338, Miguel 153, Luc 154); games/diamond/arm9/src/field_move.c:265 (Surf needs BADGE_RELIC); zone_event 0375 coord 0 (7,6) 1x3 var 0x4105==0 -> scr_seq 0441 script_2; object 1 SPRITE_ASSISTANTM (5,7) hidden_flag 0x23A; scr_seq 0441 @0x0046 UnlockGenderEntries (games/diamond/arm9/src/scrcmd.c:3867); scr_seq 0441 @0x004E SetFlag 0x23A; scr_seq 0441 @0x0052 RemoveEvent 1 (sets hidden_flag 0x23A, games/diamond/arm9/src/map_object.c:295-299); scr_seq 0441 @0x0056 SetVar 0x4105, 1; zone_event 0375 warp 0 (1,7) -> MAP_CANALAVE warp 7 (63,754); map_header.c:472 MAP_ROUTE_218 d_enc_data 0167 / p_enc_data 0167 (banks differ: version-diff)
 - notes: Estimate: Pokémon Center heal after Fantina (~1500), ~430 walked tiles across 9 maps (~7000), 12 warps (~1500), surf crossing (~1500), gatehouse text (~1500), ~6 wild battles (~5000). Pearl differs only in Route 218/207 wild encounters (version-diff d_enc 0148/0167), not in scripts. Prior-state assumptions (all in earlier deltas): 0x40F6/0x4096/0x408C/0x4088 = 1 and 0x4079 = 3, else those scenes play once (advance_text).
 
 #### pearl/36-canalave-rival — Canalave City: rival battle on the bridge
 - proves: Proves the Canalave bridge rival: coord 0 (47,723..726) adds Barry, who battles with the Turtwig-player team (Monferno). Start: MAP_CANALAVE at the gatehouse door (warp 7, 63,754) -> end: MAP_CANALAVE on the bridge (47,724), 0x4078 = 1.
-- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 165 flag, 18 item, 1 pokedex, 5 poketch, 57 var
+- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 168 flag, 18 item, 1 pokedex, 5 poketch, 57 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #477 TRAINER_PKMN_TRAINER_BARRY_CEDRIC_11
 - end state: map MAP_CANALAVE; >= 1 battles; flags set 0x1D0; vars 0x4078=1
-- frames: estimate 6000, budget 9000
+- frames: estimate 10359, budget 20000
 - refs: zone_event 0032 warp 7 (63,754); zone_event 0032 coord 0 (47,723) 1x4 var 0x4078==0 -> scr_seq 0034 script_2; zone_event 0032 object 11 SPRITE_RIVEL (37,723) hidden_flag 0x1D0; scr_seq 0034 @0x0288 ClearFlag 0x1D0; scr_seq 0034 @0x028C AddEvent 11; scr_seq 0034 @0x02A4 msg 47 #0; scr_seq 0034 @0x02A9 GetStarter (var 0x4030, games/diamond/arm9/asm/unk_0205F314.s:87-93); scr_seq 0034 @0x02D9 TrainerBattle 477 (starter 387 TURTWIG); scr_seq 0034 @0x0305 msg 47 #1; scr_seq 0034 @0x0314 RemoveEvent 11 (sets hidden_flag 0x1D0, games/diamond/arm9/src/map_object.c:295-299); scr_seq 0034 @0x0318 SetVar 0x4078, 1; scr_seq 0034 @0x0322 SetFlag 0x1D0 + @0x0326 Blackout (loss); trdata.json #477 TRAINER_PKMN_TRAINER_BARRY_CEDRIC_11; trdata.json #476 / #478 (Chimchar / Piplup player variants)
 - notes: Estimate: ~25 tiles (~500), rival text x2 (~1500), 5-mon battle (~3000), walk-in/out movements (~500). No GetGameVersion branch (version-diff lists only scr_seq 0069/0230/0977/1017).
 
 #### pearl/37-iron-island-riley-egg — Iron Island: Riley tag battle and the Riolu egg
 - proves: Proves the Canalave/Iron Island ferry, Riley joining as follower partner on B2F, the tag double vs two Galactic grunts and the Riolu egg. In D/P Iron Island has no story gate and gives no HM (Strength is the Lost Tower's, msg 0050 #1 / msg 0098 #12); it sits before Byron because Byron's win sends the player straight to the library (scr_seq 0034 script_4). Start: MAP_CANALAVE (36's end on the bridge; lab: gatehouse door warp 7) -> end: MAP_CANALAVE ship landing (44,750).
-- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 166 flag, 18 item, 1 pokedex, 5 poketch, 58 var
+- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 169 flag, 18 item, 1 pokedex, 5 poketch, 58 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #835 TRAINER_GALACTIC_GRUNT_33; trdata.json #836 TRAINER_GALACTIC_GRUNT_34; trdata.json #609 TRAINER_PKMN_TRAINER_RICH_BOY_RILEY
 - end state: map MAP_CANALAVE; at (44, 750); >= 1 battles; party size 3; flags set 0xE1, 0xE5, 0x203, 0x205, 0x9DA, 0x9DB; flags clear 0xE2, 0x961; vars 0x4092=2, 0x403F=609
-- frames: estimate 17500, budget 26300
+- frames: estimate 17500, budget 50000
 - refs: zone_event 0032 object 16 SPRITE_SEAMAN (45,750) -> scr_seq 0034 script_20; scr_seq 0034 @0x06B7 CompareVarToValue 0x4106, 2 (Lunar Wing branch, not taken); scr_seq 0034 @0x06CF menu entry 213 at index 0; @0x06EF VAR_RESULT 0 -> L_0737; scr_seq 0034 @0x074A 0x8004==3 (player west of the sailor, facing east) -> Move_0884; scr_seq 0034 @0x0764 ShipAnimation 3, 3, 288, 100, 502; scr_seq 0316 @0x000A SetFlag 0x9DA (Iron Island exterior ON_TRANSITION); zone_event 0276 warp 1 (117,489) -> MAP_IRON_ISLAND_1F warp 0 (6,8); object 0 SPRITE_SEAMAN (99,502) -> scr_seq 0316 script_2; scr_seq 0317 @0x0006 SetFlag 0x9DB (Iron Island 1F ON_TRANSITION); zone_event 0277 warp 2 (8,3) -> MAP_IRON_ISLAND_B1F_ROOM_2 warp 2 (2,3); warp 0 (6,8); zone_event 0279 warp 0 (6,26) -> MAP_IRON_ISLAND_B2F_ROOM_2 warp 0 (38,3); coord 0 (11,23) var 0x4000==0 -> scr_seq 0319 script_2 (Unk025C); zone_event 0281 object 4 SPRITE_SEVEN2 Riley (34,3) hidden_flag 0x203; objects 5/6 SPRITE_GINGAM (19,40)/(19,41) hidden_flag 0x205; zone_event 0281 coord 0 (35,2) 1x2 var 0x4092==0 -> script_3; coord 1 (36,2) 1x2 ==1 -> script_4; coord 3 (21,40) 1x2 ==1 -> script_9; scr_seq 0321 @0x0042 SetVar 0x4092, 0 (ON_TRANSITION); scr_seq 0321 @0x00AE SetFlag 0xE1; scr_seq 0321 @0x00B2 SetVar 0x4092, 1; scr_seq 0321 @0x00BF SetVar 0x403F, 609; scr_seq 0321 @0x00C5 Unk0161 -> flag 0x961 set (games/diamond/arm9/src/scrcmd_flags.c:148, unk_0205EC84.c:59-61); scr_seq 0321 @0x01AC Unk0162 -> flag 0x961 clear (scrcmd_flags.c:157, unk_0205EC84.c:63-65); scr_seq 0321 @0x020B TrainerBattle 835, 836 (two foes; [INFERENCE] Riley joins as the partner named by var 0x403F); scr_seq 0321 @0x024E/@0x0252 RemoveEvent 5/6 (hidden_flag 0x205, games/diamond/arm9/src/map_object.c:295-299); scr_seq 0321 @0x02FC YesNoMenu; @0x031C CountPartyMons == 6 -> L_034D (no egg); scr_seq 0321 @0x0330 GiveEgg 447, 10 (SPECIES_RIOLU); scr_seq 0321 @0x0336 SetFlag 0x203; scr_seq 0321 @0x033A ClearFlag 0xE2; scr_seq 0321 @0x036B SetFlag 0xE5; scr_seq 0321 @0x036F SetVar 0x4092, 2; scr_seq 0316 @0x005F ShipAnimation 0, 2, 33, 44, 750 (back to Canalave); trdata.json #835 TRAINER_GALACTIC_GRUNT_33; trdata.json #836 TRAINER_GALACTIC_GRUNT_34; trdata.json #609 TRAINER_PKMN_TRAINER_RICH_BOY_RILEY; zone_event 0281 objects 7-14 (optional B2F trainers: Damon 452, Maurice 453, Kendal 445, Tyler 372, Brendon 505, Quentin 506, Jonah 388, Brenda 392); zone_event 0032 warp 1 (58,722) -> MAP_CANALAVE_POKECENTER_1F warp 0 (8,12); zone_event 0035 object 1 SPRITE_PCWOMAN1 (8,4) -> scr_seq 0037 script_1 (std 2002, heal)
 - notes: P1: optional in D/P (no gate, no HM), kept in the chain between the rival and Byron so its state rides along. Estimate: Pokémon Center heal (~1500; the chain carries Surf PP/HP from 35-36), ~60 Canalave tiles + 2 ferry rides (~2500), ~170 island tiles + 8 warps (~4000), Riley/grunt/egg text (~2500), tag double 6 foe mons (~3000), ~3 optional trainer doubles on the way (~4000). Surf hits all adjacent mons in Gen 4, so A-spam needs no target prompt but also hits Riley's Lucario (the win does not depend on him).
 
 #### pearl/38-canalave-gym-byron-mine-badge — Canalave Gym: Byron and the Mine Badge, rival points to the library
 - proves: Proves the Canalave Gym (InitCanalaveGym platform state), Byron, the Mine Badge and TM91, and the rival's post-badge frame script outside (0x4078 2 -> 3) that sends the player to the library (DPStory09's start). Start: MAP_CANALAVE ferry landing (44,750) -> end: MAP_CANALAVE outside the gym door after scr_seq 0034 script_4.
-- start: prev + `lab.recipe`; map MAP_CANALAVE 44 750 DIR_EAST; lab state lines: 5 badge, 29 clear-flag, 172 flag, 18 item, 1 pokedex, 5 poketch, 60 var
+- start: prev + `lab.recipe`; map MAP_CANALAVE 44 750 DIR_EAST; lab state lines: 5 badge, 29 clear-flag, 175 flag, 18 item, 1 pokedex, 5 poketch, 60 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #250 TRAINER_LEADER_BYRON_BYRON
 - end state: map MAP_CANALAVE; 6 badges; badge BADGE_MINE; >= 1 battles; flags set 0x92, 0x1B6, 0x1D0, 0x638, 0x650, 0x651, 0x667, 0x66B, 0x68A, 0x6BF; flags clear 0x1D4, 0x1D5, 0x1D6; vars 0x4078=3, 0x40B2=1; 1 save check(s)
@@ -2573,7 +2573,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/39-canalave-library-valor-explosion — Canalave Library: lake legends and the Lake Valor explosion
 - proves: Proves the Canalave Library 3F lake-legends meeting (ON_FRAME 0x40B2==1), the tremor, and the Canalave explosion news (ON_FRAME 0x4078==4) that sends the player to Lake Valor. Start: Canalave below the gym door (39,732), right after 38's rival scene (0x4078=3, 0x40B2=1) -> end: Valor Lakefront (719,761) east of the lake mouth (40's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_CANALAVE 39 732 FACE_DOWN; lab state lines: 6 badge, 32 clear-flag, 181 flag, 19 item, 1 pokedex, 5 poketch, 62 var
+- start: prev + `lab.recipe`; map MAP_CANALAVE 39 732 FACE_DOWN; lab state lines: 6 badge, 32 clear-flag, 184 flag, 19 item, 1 pokedex, 5 poketch, 62 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0xA8, 0x1CC, 0x1D0, 0x1D2, 0x1D4, 0x1D5, 0x1D6; flags clear 0x1B2, 0x193, 0x2B1; vars 0x4078=5, 0x40B2=2
@@ -2583,7 +2583,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/40-lake-valor-saturn — Lake Valor (drained): Saturn in Valor Cavern
 - proves: Proves the drained Lake Valor (Galactic map chosen while flag 0x15E is clear), Valor Cavern and the Saturn battle, whose win sets 0x13E (switches Verity Lakefront to the Galactic lake). Start: Valor Lakefront (719,761) -> end: Verity Lakefront (80,845) south of the lake mouth (41's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 719 761 FACE_LEFT; lab state lines: 6 badge, 35 clear-flag, 187 flag, 19 item, 1 pokedex, 5 poketch, 64 var
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 719 761 FACE_LEFT; lab state lines: 6 badge, 35 clear-flag, 190 flag, 19 item, 1 pokedex, 5 poketch, 64 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0301 object 4 TRAINER_GALACTIC_GRUNT_12 (417) (17,32) N sight 4; object 5 TRAINER_GALACTIC_F_GRUNT_5 (425) (29,18) S sight 1; object 6 TRAINER_GALACTIC_GRUNT_13 (418) (25,35) N sight 3; scr_seq 0348 @0x00F5 TrainerBattle 408 (TRAINER_COMMANDER_SATURN_SATURN)
 - end state: map MAP_VERITY_LAKEFRONT; >= 1 battles; flags set 0x13E, 0x984, 0x1DA, 0x9E1; flags clear 0x15E
@@ -2593,7 +2593,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/41-lake-verity-mars — Lake Verity (Galactic): Mars
 - proves: Proves the Galactic Lake Verity (Verity Lakefront switches its lake warps on 0x13E), Rowan's briefing ON_FRAME and the Mars battle whose win arms Lake Acuity (Jupiter shown, Acuity Lakefront guards shown, 0x40D3=1). Start: Verity Lakefront (80,845) -> end: Route 211 East (446,527) at the Celestic edge (42's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_VERITY_LAKEFRONT 80 845 FACE_UP; lab state lines: 6 badge, 36 clear-flag, 191 flag, 19 item, 1 pokedex, 5 poketch, 64 var
+- start: prev + `lab.recipe`; map MAP_VERITY_LAKEFRONT 80 845 FACE_UP; lab state lines: 6 badge, 36 clear-flag, 194 flag, 19 item, 1 pokedex, 5 poketch, 64 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0299 object 0 TRAINER_GALACTIC_GRUNT_14 (419) (43,49) E6; object 1 TRAINER_GALACTIC_GRUNT_15 (420) (48,43) E4; object 2 TRAINER_GALACTIC_F_GRUNT_6 (426) (50,49) W6; object 3 TRAINER_GALACTIC_F_GRUNT_7 (427) (53,43) W4; scr_seq 0343 @0x0247 TrainerBattle 405 (TRAINER_COMMANDER_MARS_MARS_2)
 - end state: map MAP_ROUTE_211_EAST; >= 1 battles; flags set 0x1DE, 0x98E, 0xBA; flags clear 0x1D8, 0x252; vars 0x4097=1, 0x40D3=1
@@ -2603,7 +2603,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/42-route211-coronet-north-to-route216 — Route 211 East and Mt Coronet north (Strength) to Route 216
 - proves: Proves the D/P road north after Lake Verity: Route 211 East into Mt Coronet's north side, the Strength boulder in North 1F Room 1, B1F and Room 2 out onto snowy Route 216. No story flags change; the proof is the map chain. Start: Route 211 East (446,527) at the Celestic edge -> end: Route 216 at the cave mouth (375,403) (43's start).
-- start: prev + `lab.recipe`; map MAP_ROUTE_211_EAST 446 527 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 194 flag, 19 item, 1 pokedex, 5 poketch, 66 var
+- start: prev + `lab.recipe`; map MAP_ROUTE_211_EAST 446 527 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 197 flag, 19 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0351 object 0 TRAINER_BIRD_KEEPER_KATHERINE (81) (432,520) E2; object 19 TRAINER_RUIN_MANIAC_HARRY (442) (429,525) S2; object 1 TRAINER_NINJA_BOY_NICK (80) (425,520) S1
 - end state: map MAP_ROUTE_216; party SPECIES_STARAPTOR
@@ -2613,17 +2613,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/43-route216-217-hm08-to-snowpoint — Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint
 - proves: Proves the snow road: Route 216 west, Route 217 north with the HM08 (Rock Climb) item ball, Acuity Lakefront (lake still guarded until the Icicle Badge) and Snowpoint City. Start: Route 216 cave mouth (375,403) -> end: Snowpoint (367,223), below the gym door (44's start).
-- start: prev + `lab.recipe`; map MAP_ROUTE_216 375 403 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 194 flag, 19 item, 1 pokedex, 5 poketch, 66 var
+- start: prev + `lab.recipe`; map MAP_ROUTE_216 375 403 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 197 flag, 19 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37
-- end state: map MAP_SNOWPOINT; at (367, 223); flags set 0x47B; 1 save check(s)
-- frames: estimate 22000, budget 33000
+- end state: map MAP_SNOWPOINT; at (367, 223); flags set 0x47B, 0x9BF; 1 save check(s)
+- frames: estimate 22000, budget 50000
 - refs: maps.h:387 MAP_ROUTE_216 = 383; map_header.c:467 (scr_seq 0434, zone_event 0368, weather 26); zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; maps.h:389 MAP_ROUTE_217 = 385; map_header.c:469 (scr_seq 0436, zone_event 0370); no story scripts in scr_seq 0436; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37; zone_event 0370 object 10 item ball (296,305) hidden_flag 0x47B, script 7174 -> scr_seq 0370 @0x119A SetVar 0x8008,427 (ITEM_HM08); scr_seq 0370 @0x1834 RemoveEvent VAR_LAST_INTERACTED; @0x1838 GiveItem (item-ball common script_256); scr_seq 0437 @0x0019 HasItem ITEM_HM08 (Route 217 south-house hiker: Icicle Plate only after HM08 is found); maps.h:344 MAP_ACUITY_LAKEFRONT = 340; map_header.c:424 (scr_seq 0385, level scr_seq 0835, zone_event 0325); zone_event 0325 objects 1/2 guards (310,240)/(311,240) hidden_flag 0x252; scr_seq 0385 @0x0052-@0x008D (moved aside only with BADGE_ICICLE); msg 358 #0 ('make sure Snowpoint's Gym Leader doesn't disturb us'); maps.h:169 MAP_SNOWPOINT = 165; zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0; map_matrix 0 cells: MAP_ROUTE_216 (9..11,12) z384-415; MAP_ROUTE_217 (9,8..11) x288-319 z256-383; MAP_ACUITY_LAKEFRONT (9..10,6..7) x288-351 z192-255; MAP_SNOWPOINT (11,6..7) x352-383; files/fielddata/land_data/land_data_release.narc permission grids for the map_matrix 0 cells above (paths below are a BFS with objects solid)
 - notes: Estimate: ~360 tiles, much of it deep snow (slow), three sight trainers on the BFS path plus wild battles. In chain mode slot-0 PP runs low here: the Snowbound Lodge (zone_event 0368 warp 1 (303,398)) is beside the path [INFERENCE: heal there if Empoleon is on Struggle].
 
 #### pearl/44-snowpoint-gym-candice — Snowpoint Gym: the ice, Candice and the Icicle Badge
 - proves: Proves the Snowpoint Gym's ice: slides that build speed downhill and lose it uphill (Platinum's twin, player_move.c:544-601, :763-811), snowballs crushed only by a fast slide, and the stair column x=11 (BLOCK_EAST_AND_WEST tiles stop every slide) that leads to Candice once its six snowballs are gone; then Candice, the Icicle Badge, TM72. Start: Snowpoint (367,223) below the gym door (43's end) -> end: Snowpoint at the gym door, Icicle Badge.
-- start: prev + `lab.recipe`; map MAP_SNOWPOINT 367 223 FACE_UP; lab state lines: 6 badge, 38 clear-flag, 195 flag, 20 item, 1 pokedex, 5 poketch, 66 var
+- start: prev + `lab.recipe`; map MAP_SNOWPOINT 367 223 FACE_UP; lab state lines: 6 badge, 38 clear-flag, 199 flag, 20 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: trdata.json #319 TRAINER_LEADER_CANDICE_CANDICE: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 @SITRUS_BERRY
 - end state: map MAP_SNOWPOINT; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC, BADGE_MINE, BADGE_ICICLE; >= 1 battles; flags set 0x65C, 0x65D, 0x88B, 0x65E, 0x65F, 0x88C, 0x1DD, 0x9E; 1 save check(s)
@@ -2633,7 +2633,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/45-lake-acuity-jupiter — Lake Acuity: Jupiter takes Uxie, the hurt rival
 - proves: Proves Lake Acuity after the Icicle Badge: the Acuity Lakefront guards stand aside, the lake mouth leads into the Galactic version of the lake (flag 0xBA from Lake Verity), and its ON_FRAME scene (var 0x40D3 == 1) plays: Jupiter leaves with Uxie, the hurt rival, then 0x40D3 = 2 (which opens the Veilstone warehouse guard's 'Storage Key' talk). Start: Snowpoint at the gym door (367,222) (44's end) -> end: Lake Acuity (Galactic) after the scene.
-- start: prev + `lab.recipe`; warp MAP_SNOWPOINT 5; lab state lines: 7 badge, 38 clear-flag, 202 flag, 21 item, 1 pokedex, 5 poketch, 66 var
+- start: prev + `lab.recipe`; warp MAP_SNOWPOINT 5; lab state lines: 7 badge, 38 clear-flag, 206 flag, 21 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_LAKE_ACUITY_GALACTIC; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC, BADGE_MINE, BADGE_ICICLE; flags set 0x98F, 0x252, 0x1B2, 0x193, 0x2AB, 0x2AA, 0x1D8, 0x1D7; flags clear 0x241, 0x1B6, 0xA8; vars 0x40D3=2
@@ -2643,17 +2643,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/46-veilstone-storage-key-galactic-key — Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key
 - proves: Proves the way into Team Galactic HQ after Lake Acuity: Fly back to Veilstone, the guard in front of the HQ who drops the Storage Key once 0x241 is cleared (Lake Acuity, scr_seq 0351 @0x0110), the warehouse's rusty doors opened with it, HM02 Fly in the warehouse, the warehouse's back stairs into HQ B2F and the Galactic Key there; then out through the warehouse to the HQ front door. Start: Lake Acuity (Galactic) after Jupiter's scene (45's end) -> end: HQ 1F lobby at the front door (8,22) (47's start).
-- start: prev + `lab.recipe`; map MAP_LAKE_ACUITY_GALACTIC 16 45 FACE_DOWN; lab state lines: 7 badge, 41 clear-flag, 210 flag, 21 item, 1 pokedex, 5 poketch, 67 var
+- start: prev + `lab.recipe`; map MAP_LAKE_ACUITY_GALACTIC 16 45 FACE_DOWN; lab state lines: 7 badge, 41 clear-flag, 214 flag, 21 item, 1 pokedex, 5 poketch, 67 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
-- end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F; flags set 0x241, 0x4C8, 0x10E, 0x4C6, 0x4C7; 3 save check(s)
-- frames: estimate 12000, budget 18000
+- end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F; flags set 0x241, 0x4C8, 0x10E, 0x4C6, 0x4C7, 0x245; 3 save check(s)
+- frames: estimate 12000, budget 36000
 - refs: zone_event 0131 object 24; zone_event 0131 object 23; scr_seq 0131 @0x087A-0x0936; scr_seq 0370 @0x0D76; zone_event 0131 warp 4; zone_event 0142 object 3; zone_event 0142 object 4; zone_event 0142 object 2; zone_event 0142 warp 1; scr_seq 0143 @0x0063-0x00E8; scr_seq 0370 @0x0D9E; zone_event 0297 object 5; zone_event 0297 warp 2; scr_seq 0370 @0x128A; zone_event 0131 warp 14; zone_event 0292 warp 0
-- notes: Fly: the chain party gets a Staraptor with Fly by boost (in the story HM02 is the warehouse ball this milestone picks up, after the walk back from Snowpoint the player would otherwise make: Main's call, fly for 46+). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35).
+- notes: Fly: the chain party's Staraptor from 35's boost (in the story HM02 is the warehouse ball this milestone picks up; the walks Fly saves cross the region: Main's call). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35).
 
 #### pearl/47-galactic-hq-cyrus — Galactic HQ: the key doors, the warp panels and Cyrus
 - proves: Proves Team Galactic HQ up to Cyrus: the Galactic Key doors on 1F, the warp panels of 2F and 3F, the 4F key doors and Cyrus's coordinate trigger, his battle and the Master Ball. Start: HQ 1F at the front door (46's end) -> end: HQ 4F_1 after Cyrus leaves (var 0x40D6 = 1) (48's start).
-- start: prev + `lab.recipe`; map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F 8 21 FACE_UP; lab state lines: 7 badge, 41 clear-flag, 215 flag, 23 item, 1 pokedex, 5 poketch, 67 var
+- start: prev + `lab.recipe`; map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F 8 21 FACE_UP; lab state lines: 7 badge, 41 clear-flag, 220 flag, 23 item, 1 pokedex, 5 poketch, 67 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1; >= 1 battles; flags set 0x242, 0x244, 0x1DC; vars 0x40D6=1; 1 save check(s)
@@ -2663,7 +2663,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/48-galactic-hq-saturn-free-lake-trio — Galactic HQ: Saturn, the lake trio freed, out of the HQ
 - proves: Proves Saturn at the back of Galactic HQ, the machine's button that frees Uxie, Mesprit and Azelf, and the way out of the HQ: Saturn's fade-out sets 0x253, which opens Mt. Coronet's south 2F barrier for 49. Start: HQ 4F_1 on Cyrus's coord after he left (47's end) -> end: Veilstone outside the HQ east door (720,589) (49's start).
-- start: prev + `lab.recipe`; map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 8 11 FACE_UP; lab state lines: 7 badge, 41 clear-flag, 218 flag, 24 item, 1 pokedex, 5 poketch, 68 var
+- start: prev + `lab.recipe`; map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 8 11 FACE_UP; lab state lines: 7 badge, 41 clear-flag, 223 flag, 24 item, 1 pokedex, 5 poketch, 68 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE; >= 1 battles; flags set 0xAD, 0x97D, 0x253, 0x255; flags clear 0x2B3; vars 0x410D=0
@@ -2673,17 +2673,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/49-mt-coronet-climb — Mt. Coronet: Route 208 up to Spear Pillar
 - proves: Proves the climb to Spear Pillar once Saturn's fade has set 0x253 (the South 2F barrier, zone_event 0205 object 4, is hidden): Fly to Hearthome, Route 208 into Mt. Coronet, 1F, 2F through the opened way, 3F, the South Mountainside, 4F, the North Mountainside, 4F room 3, 5F and 6F (the grunts hidden by 0x2AD only after Spear Pillar), up to Spear Pillar. Start: Veilstone outside the HQ east door (48's end) -> end: Spear Pillar at the entrance (31,53) (50's start).
-- start: prev + `lab.recipe`; map MAP_VEILSTONE 720 590 FACE_DOWN; lab state lines: 7 badge, 42 clear-flag, 222 flag, 24 item, 1 pokedex, 5 poketch, 69 var
+- start: prev + `lab.recipe`; map MAP_VEILSTONE 720 590 FACE_DOWN; lab state lines: 7 badge, 42 clear-flag, 227 flag, 24 item, 1 pokedex, 5 poketch, 69 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR
-- frames: estimate 30000, budget 60000
+- frames: estimate 30000, budget 80000
 - refs: zone_event 0339 warp 3; zone_event 0204 warp 2; zone_event 0205 object 4; zone_event 0205 warp 2; zone_event 0205 warp 4; zone_event 0206 warp 2; zone_event 0208 warp 1; zone_event 0209 warp 4; zone_event 0207 warp 1; zone_event 0210 warp 1; zone_event 0211 warp 1; zone_event 0212 warp 1
 - notes: Warps (dp_script.py events): Hearthome warp 14 (454,726) -> the Route 208 gatehouse (10,7), its warp 1 (1,7) -> Route 208 (447,726); Route 208 warp 3 (392,724) -> South 1F (27,20); 1F (25,3) -> 2F (27,48); 2F (7,23) -> (7,12) (object 4 there, hidden 0x253); 2F (11,4) -> 3F (14,26); 3F (3,29) -> South Mountainside (12,35); (11,17) -> 4F room 1 (7,25); (40,10) -> North Mountainside (42,40); (13,19) -> 4F room 3 (2,3); (18,8) -> 5F (21,7); (13,24) -> 6F (10,24); (7,5) -> Spear Pillar (31,53). The mountainsides' Rock Smash rocks are smashed on the way (walk_to hm). 5F/6F grunts (sight 3-6, trdata.json #524/#519/#525) may engage.
 
 #### pearl/50-spear-pillar-palkia — Spear Pillar: Galactic, Cyrus and Palkia (Pearl)
 - proves: Proves Spear Pillar (Pearl): the grunts' double battle, the summoning scene (warps to Valley Windworks and Hearthome and back), the tag battle with Barry against Mars and Jupiter, the lake trio breaking the Red Chain, Cyrus, then Palkia at the altar (LegendaryBattle 0x8004 = 484, level 47) and Rowan's ending that warps the player to the entrance. Start: Spear Pillar at the entrance (49's end) -> end: Spear Pillar (31,52), var 0x4098 = 4 (51's start). Twin: ../../diamond/50-spear-pillar-dialga (Dialga, 483).
-- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_UP; lab state lines: 7 badge, 42 clear-flag, 222 flag, 24 item, 1 pokedex, 5 poketch, 69 var
+- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_UP; lab state lines: 7 badge, 42 clear-flag, 227 flag, 24 item, 1 pokedex, 5 poketch, 69 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR; at (31, 52); >= 4 battles; flags set 0x986, 0x15E, 0x2B3, 0x2AD, 0x981, 0x1EB; flags clear 0x8E; vars 0x4098=4
@@ -2693,27 +2693,27 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/51-coronet-exit-valor-lakefront — Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens
 - proves: Proves the way back from Spear Pillar: down Mt. Coronet 6F/5F/4F to the North Mountainside, Fly south, and the first Valor Lakefront entry after Spear Pillar (flag 0x15E) that removes the Route 222 blackout guard. Start: Spear Pillar (31,52) facing south (50's end, scr_seq 0230 @0x0FB0) -> end: Valor Lakefront, guard hidden.
-- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN; lab state lines: 7 badge, 42 clear-flag, 228 flag, 24 item, 1 pokedex, 5 poketch, 70 var
+- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN; lab state lines: 7 badge, 42 clear-flag, 233 flag, 24 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0x15E, 0x29B; vars 0x4112=1
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: scr_seq 0230 @0x0FB0; scr_seq 0230 @0x0FEC; scr_seq 0230 @0x0FF4; zone_event 0217 warp 0; zone_event 0212 warp 0; zone_event 0212 object 0; zone_event 0211 warp 0; zone_event 0211 object 0; zone_event 0211 object 1; zone_event 0210 warp 0; map_header.c:294; maps.h:340; map_header.c:420; scr_seq 0831 @0x0005; scr_seq 0381 @0x0035; scr_seq 0381 @0x0088; scr_seq 0381 @0x008C; zone_event 0321 object 9; zone_event 0321 coord 0; scr_seq 0381 @0x041E; msg 0354 #11
 - notes: Galactic grunts on 6F/5F are hidden by 0x2AD (scr_seq 0230 @0x0FF4). Spear Pillar..4F maps are fly FALSE; the North Mountainside is fly TRUE (map_header.c:294). Estimate: 4 floor walks ~3500 + Fly ~1500 + Valor walk ~4000.
 
 #### pearl/52-route222-sunyshore-flint-lighthouse — Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse
 - proves: Proves Route 222 to Sunyshore, Flint's arrival OnFrame, the Vista Lighthouse elevator, Volkner on the observation deck and Flint leaving the gym door. Start: Valor Lakefront west of the old guard tile -> end: Sunyshore, Flint gone.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 722 790 FACE_RIGHT; lab state lines: 7 badge, 42 clear-flag, 229 flag, 24 item, 1 pokedex, 5 poketch, 71 var
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 722 790 FACE_RIGHT; lab state lines: 7 badge, 42 clear-flag, 234 flag, 24 item, 1 pokedex, 5 poketch, 71 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
-- end state: map MAP_SUNYSHORE; flags set 0x162, 0x29F, 0x257; vars 0x407E=1
+- end state: map MAP_SUNYSHORE; flags set 0x162, 0x29F, 0x257, 0x9BE; vars 0x407E=1
 - frames: estimate 15000, budget 22500
 - refs: zone_event 0321 coord 0; maps.h:399; map_header.c:479; zone_event 0380 warp 0; zone_event 0380 object 4; zone_event 0380 object 5; zone_event 0380 object 6; zone_event 0380 object 7; zone_event 0380 object 9; zone_event 0380 object 10; scr_seq 0446 @0x0069; scr_seq 0446 @0x0073; zone_event 0383 warp 1; scr_seq 0613 @0x000B; scr_seq 0150 @0x004E; scr_seq 0150 @0x0201; scr_seq 0150 @0x0245; scr_seq 0150 @0x0297; scr_seq 0150 @0x029F; zone_event 0149 warp 10; zone_event 0149 object 18; scr_seq 0629 @0x0006; scr_seq 0166 @0x0012; scr_seq 0166 @0x0050; scr_seq 0166 @0x0082; zone_event 0163 object 2; zone_event 0163 warp 0; scr_seq 0165 @0x004C; scr_seq 0165 @0x00F6; scr_seq 0165 @0x00FA; scr_seq 0150 @0x04C0; scr_seq 0150 @0x04C8; scr_seq 0150 @0x055E; msg 0153 #0; msg 0153 #3; msg 0165 #1
 - notes: Version: Route 222 wild encounters differ (d_enc_data/p_enc_data 0170, dp_script.py version-diff); no script differs. Sight trainers near the road: Nicola (771,777) S 2, Trey (751,782) E 6, Holly (787,788) N 2, Marc (808,781) E 3, Conner (812,781) W 3, Luther (814,785) S 2 (zone_event 0380), all lv 37-43. Do NOT walk Sunyshore row z=743 x=853..857 (Jasmine coord 0 would spend var 0x407E without HM07, see 54).
 
 #### pearl/53-sunyshore-gym-volkner — Sunyshore Gym: Volkner and the Beacon Badge
 - proves: Proves the rotating-gear gym (InitSunyshoreGym / RotateSunyshoreGymGear coord buttons) and Volkner's win script. Start: Sunyshore Gym room 1 (8,14) -> end: back out at the Sunyshore gym door (845,748), BADGE_BEACON, TM57 (54's start).
-- start: prev + `lab.recipe`; warp MAP_SUNYSHORE_GYM_ROOM_1 0; lab state lines: 7 badge, 42 clear-flag, 232 flag, 24 item, 1 pokedex, 5 poketch, 72 var
+- start: prev + `lab.recipe`; warp MAP_SUNYSHORE_GYM_ROOM_1 0; lab state lines: 7 badge, 42 clear-flag, 238 flag, 24 item, 1 pokedex, 5 poketch, 72 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; 8 badges; badge BADGE_BEACON; >= 1 battles; flags set 0xB6, 0x669, 0x66D, 0x67D, 0x67E, 0x67F, 0x69B, 0x6A5, 0x6A8; 2 save check(s)
@@ -2723,7 +2723,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/54-sunyshore-jasmine-waterfall — Sunyshore: Jasmine gives HM07 Waterfall
 - proves: Proves Jasmine's coord scene north of the gym: with the Beacon Badge she hands over HM07 Waterfall. Start: Sunyshore gym door (845,747), var 0x407E 1 -> end: Sunyshore coord row (855,743), HM07, var 0x407E 2.
-- start: prev + `lab.recipe`; warp MAP_SUNYSHORE 12; lab state lines: 8 badge, 42 clear-flag, 241 flag, 25 item, 1 pokedex, 5 poketch, 72 var
+- start: prev + `lab.recipe`; warp MAP_SUNYSHORE 12; lab state lines: 8 badge, 42 clear-flag, 247 flag, 25 item, 1 pokedex, 5 poketch, 72 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0xB5, 0x9A; vars 0x407E=2; 1 save check(s)
@@ -2733,17 +2733,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/55-route223-victory-road — Route 223 and Victory Road to the Pokemon League
 - proves: Proves Surf + Waterfall up Route 223 and the Victory Road HM floors to the League's north side. Start: Sunyshore (855,743) after Jasmine -> end: Pokemon League outside, Victory Road exit (853,582).
-- start: prev + `lab.recipe`; map MAP_SUNYSHORE 855 743 FACE_UP; lab state lines: 8 badge, 42 clear-flag, 243 flag, 26 item, 1 pokedex, 5 poketch, 73 var
+- start: prev + `lab.recipe`; map MAP_SUNYSHORE 855 743 FACE_UP; lab state lines: 8 badge, 42 clear-flag, 249 flag, 26 item, 1 pokedex, 5 poketch, 73 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE; flags set 0x9CA
-- frames: estimate 35000, budget 52500
+- frames: estimate 35000, budget 100000
 - refs: maps.h:472; map_header.c:552; zone_event 0446 objects 0-11,14; maps.h:176; zone_event 0171 warp 0; zone_event 0171 warp 2; zone_event 0171 warp 3; maps.h:248; zone_event 0237 warp 7; zone_event 0237 warp 8; zone_event 0237 warps 0-6; zone_event 0238 warps 0-2; zone_event 0239 warps 0-2; scr_seq 0719 @0x0000; scr_seq 0259 @0x0026; scr_seq 0259 @0x002A; scr_seq 0177 @0x001A; zone_event 0238 object 7; zone_event 0239 object 1
-- notes: Route 223: 12 swimmers/sailor lv 37-44 (zone_event 0446). Victory Road trainers lv 43-49 incl. two doubles: Al & Kay #237 2F (57,19-20), Jo & Pat #236 B1F (33,43-44). The back area (1F_BACK_1..3, Route 224) is post-game. Encounter banks of Route 223 and Victory Road are the same in D and P (version-diff).
+- notes: Victory Road 1F/2F/B1F are tile for tile Platinum's (same warps, boulders, rocks: dp_script.py events), so the route is Platinum 49's (tools/pt_cave.py, each floor checked there). Route 223: 12 swimmers/sailor lv 37-44 (zone_event 0446). Victory Road trainers lv 43-49 incl. two doubles: Al & Kay #237 2F (57,19-20), Jo & Pat #236 B1F (33,43-44). The back area (1F_BACK_1..3, Route 224) is post-game. Encounter banks of Route 223 and Victory Road are the same in D and P (version-diff).
 
 #### pearl/56-league-lobby-rival-guard — Pokemon League lobby: last rival battle, badge check
 - proves: Proves the League lobby: ON_TRANSITION door/E4 reset, the rival coord battle (Turtwig -> Infernape team), the badge check by the door guard and entry to the first lift room. Start: League outside (853,582) -> end: MAP_POKEMON_LEAGUE_ENTRANCE.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE 3; lab state lines: 8 badge, 42 clear-flag, 244 flag, 26 item, 1 pokedex, 5 poketch, 73 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE 3; lab state lines: 8 badge, 42 clear-flag, 250 flag, 26 item, 1 pokedex, 5 poketch, 73 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_ENTRANCE; >= 1 battles; flags set 0x9F4, 0x2A0, 0x2A1, 0x2A2, 0x2A3, 0x23B, 0xAF; flags clear 0x2A4, 0x2A5, 0x2A6, 0x2A7, 0xB0, 0xB1, 0xB2, 0xB3; vars 0x40EF=1
@@ -2753,7 +2753,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/57-e4-aaron — Elite Four: Aaron
 - proves: Proves the Aaron room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_ENTRANCE (4,15) -> end: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_ENTRANCE 1; lab state lines: 8 badge, 50 clear-flag, 251 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_ENTRANCE 1; lab state lines: 8 badge, 50 clear-flag, 257 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK; >= 1 battles; flags set 0xB0, 0x2A4; flags clear 0x2A0
@@ -2763,7 +2763,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/57b-e4-bertha — Elite Four: Bertha
 - proves: Proves the Bertha room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK 1; lab state lines: 8 badge, 51 clear-flag, 253 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK 1; lab state lines: 8 badge, 51 clear-flag, 259 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK; >= 1 battles; flags set 0xB1, 0x2A5; flags clear 0x2A1
@@ -2773,7 +2773,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/58-e4-flint — Elite Four: Flint
 - proves: Proves the Flint room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK 1; lab state lines: 8 badge, 52 clear-flag, 255 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK 1; lab state lines: 8 badge, 52 clear-flag, 261 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK; >= 1 battles; flags set 0xB2, 0x2A6; flags clear 0x2A2
@@ -2783,7 +2783,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/58b-e4-lucian — Elite Four: Lucian
 - proves: Proves the Lucian room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK 1; lab state lines: 8 badge, 53 clear-flag, 257 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK 1; lab state lines: 8 badge, 53 clear-flag, 263 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK; >= 1 battles; flags set 0xB3, 0x2A7; flags clear 0x2A3
@@ -2793,17 +2793,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/59-champion-cynthia — Champion Cynthia
 - proves: Proves the Champion room frame script (walk 4 north, intro, battle with no interaction), the win and the walk-off to the Hall of Fame corridor. Start: Lucian-Cynthia lift room (4,23) -> end: HoF corridor (5,23).
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: 8 badge, 54 clear-flag, 259 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: 8 badge, 54 clear-flag, 265 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR; at (5, 23); >= 1 battles; flags set 0x98B, 0xB4, 0x258, 0x259
-- frames: estimate 16000, budget 24000
+- frames: estimate 16000, budget 50000
 - refs: maps.h:188; zone_event 0183 coord 0; zone_event 0183 warp 0; scr_seq 0652 @0x0000; maps.h:189; scr_seq 0653 @0x0000; scr_seq 0653 @0x000B; zone_event 0184 object 0; scr_seq 0190 @0x000E; scr_seq 0190 @0x001C; scr_seq 0190 @0x0034; scr_seq 0190 @0x0038; trdata.json #267; scr_seq 0190 @0x0052; scr_seq 0190 @0x0093; scr_seq 0190 @0x0097; scr_seq 0190 @0x00B5; scr_seq 0190 @0x00DB; msg 0180 #0; msg 0180 #1; msg 0180 #2
 - notes: TRAINER_CHAMPION_CYNTHIA (267): SPIRITOMB 61, ROSERADE 60, GASTRODON 60, LUCARIO 63, MILOTIC 63, GARCHOMP 66 (Sitrus); 4x Full Restore (trdata.json #267). Milotic Ice Beam is 4x on Garchomp (~40% at level 100). First clear: 0x964 clear -> msg 0180 #0 (@0x001C). Loss: ClearFlag 0x98B + Blackout (@0x00DB). Cynthia's trainer flag 0x65B is not set by the script.
 
 #### pearl/59b-hall-of-fame-credits — Hall of Fame, credits, continue
 - proves: Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966, Champ ribbon, the game's own save, credits, OS_ResetSystem) and the continue into the post-game start location. Start: HoF corridor (5,23) after Cynthia -> end: CONTINUE after the reset, field in the player's bedroom (map 415).
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: 8 badge, 54 clear-flag, 263 flag, 26 item, 1 pokedex, 5 poketch, 74 var
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: 8 badge, 54 clear-flag, 269 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_TWINLEAF_RIVAL_HOUSE_2F; at (4, 6); 8 badges; flags set 0x964, 0x966, 0x982, 0xB4; flags clear 0x98B, 0x1EF, 0x1E2, 0x1FE, 0x1FF, 0x195; vars 0x40F4=1, 0x410F=1, 0x4098=5

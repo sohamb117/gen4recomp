@@ -2,10 +2,9 @@
 # grunt battle, and Cynthia's SecretPotion that sends the player north to the Route 210 Psyduck (0x4083 = 2, 0xB7).
 # Start: Pastoria (636,812) by the east gate (27's end) -> end: Valor Lakefront below Cynthia's spot (723,761).
 title = "Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 7079
 refs = [
   "zone_event 0119 warp 10",
   "zone_event 0359 warp 0",

@@ -3,10 +3,9 @@
 # Start: Veilstone Gym (22's end at Maylene, or the lab door warp 0 (12,25)) -> end: Veilstone in front of the
 # Galactic warehouse, 0x411A = 2, 0x101 set. HM02 Fly is NOT here in D/P (warehouse needs the Storage Key, msg 146 #2).
 title = "Veilstone: Dawn's stolen Pokédex, warehouse tag battle"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 11000
+estimate = 10301
 refs = [
   "scr_seq 0132 @0x0096",
   "scr_seq 0132 @0x008C",

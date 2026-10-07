@@ -3,10 +3,9 @@
 # Start: Veilstone Gym warp 0 (12,25) -> end: Veilstone Gym facing Maylene (12,5) with BADGE_COBBLE; do NOT leave the gym
 # here: the Veilstone ON_FRAME (0x411A == 1) fires on the next entry to MAP_VEILSTONE and belongs to the next milestone.
 title = "Veilstone Gym: Maylene and the Cobble Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 24989
 refs = [
   "maps.h:137",
   "map_header.c:217",

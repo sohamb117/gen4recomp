@@ -2,10 +2,9 @@
 # Old Charm from Cynthia (flag 0xA6), which leaves the ruins open.
 # Start: Celestic Town (465,538) (30's end) -> end: Celestic Town (463,523) below the ruins door, Old Charm handed over.
 title = "Celestic Town: Galactic grunt at the ruins, Old Charm to the elder"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 8000
+estimate = 6647
 refs = [
   "zone_event 0420 object 2",
   "zone_event 0420 object 3",

@@ -2,10 +2,9 @@
 # where the elder's coord scene (0x40F1) tells of the spaceman at the ruins.
 # Start: Route 210 South (561,588) (29's end) -> end: Celestic Town coord (465,538), 0x980 + 0x40F1 = 1.
 title = "Route 210 North through the fog to Celestic Town"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 34697
 refs = [
   "zone_event 0347 object 19",
   "zone_event 0348 object 0",
@@ -39,7 +38,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 50000
+frames = 52100
 
 # PHASE2-risk: [INFERENCE] the rocks (497,540)/(498,541) and the tree (559,531) on Route 210 North (zone_event 0348 objects
 # 13/22/14, map-temp hidden flags 0x21/0x22/0x20) sit off the main path; if walk_to reports no path, smash/cut them

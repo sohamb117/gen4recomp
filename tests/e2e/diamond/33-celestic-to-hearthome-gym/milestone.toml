@@ -2,10 +2,9 @@
 # Hearthome Gym, now open: 0x98D keeps the first room's elevator coord armed (var 0x4000 = 0).
 # Start: Celestic Town ruins door (463,521) (32's end) -> end: Hearthome Gym first question room (9,22) (34's start).
 title = "Celestic Town back to the Hearthome Gym"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 26000
+estimate = 8825
 refs = [
   "zone_event 0347 object 19",
   "zone_event 0341 warp 0",

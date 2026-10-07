@@ -2,10 +2,9 @@
 # TM65, the walk back out, and Cynthia's Hearthome scene pointing to the Canalave library.
 # Start: Hearthome Gym first question room warp 3 (9,22) (33's end) -> end: Hearthome City at the gym door, 5 badges.
 title = "Hearthome Gym: Fantina and the Relic Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 22000
+estimate = 13283
 refs = [
   "zone_event 0087 coord 0",
   "zone_event 0087 bg 0",

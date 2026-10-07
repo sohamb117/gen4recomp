@@ -1,10 +1,9 @@
 # Proves the Canalave bridge rival: coord 0 (47,723..726) adds Barry, who battles with the Turtwig-player team (Monferno).
 # Start: MAP_CANALAVE at the gatehouse door (warp 7, 63,754) -> end: MAP_CANALAVE on the bridge (47,724), 0x4078 = 1.
 title = "Canalave City: rival battle on the bridge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 6000
+estimate = 10359
 refs = [
   "zone_event 0032 warp 7 (63,754)",
   "zone_event 0032 coord 0 (47,723) 1x4 var 0x4078==0 -> scr_seq 0034 script_2",

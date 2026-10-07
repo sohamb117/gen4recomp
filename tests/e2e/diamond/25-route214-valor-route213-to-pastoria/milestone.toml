@@ -3,10 +3,9 @@
 # No story script fires on this leg (Route 214/Valor/213 level scripts only move warps or bail out).
 # Start: Veilstone in front of the warehouse (24's end) -> end: inside Pastoria Gym at its door (26's start).
 title = "Route 214, Valor Lakefront and Route 213 to Pastoria"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 32645
 refs = [
   "zone_event 0131 warp 10",
   "zone_event 0133 object 0",

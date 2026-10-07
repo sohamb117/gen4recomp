@@ -2,10 +2,9 @@
 # 0x98D) and Cyrus's speech outside the ruins (no battle in D/P), which brings Fantina back (0xA5).
 # Start: Celestic Town (463,523) (31's end) -> end: Celestic Town at the ruins door, ITEM_HM03, var 0x4074 = 2.
 title = "Celestic Ruins: the painting, HM03 Surf, Cyrus"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 9000
+estimate = 3433
 refs = [
   "zone_event 0420 warp 4",
   "zone_event 0427 warp 0",

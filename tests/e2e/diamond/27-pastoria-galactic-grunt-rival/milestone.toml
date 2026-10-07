@@ -2,10 +2,9 @@
 # second talk sends him off to the lake and Barry bumps into you for a rival battle (0x103 arms Route 213).
 # Start: Pastoria at the gym door (589,827) -> end: Pastoria (636,812) by the east gate, rival gone.
 title = "Pastoria: Galactic grunt flees, rival battle"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 10000
+estimate = 9849
 refs = [
   "zone_event 0119 warp 0",
   "zone_event 0119 warp 9",
