@@ -1,9 +1,11 @@
-# Day Care: two BIBAREL deposited (lab), walk until the egg check fires, then collect the egg
-# from the Day-Care Man. Start: Solaceon spawn (566,657). End: next to the man (555,648), egg in party.
-title = "Day Care: deposit two parents and collect an egg"
-status = "planned"
+# Day Care, played: the Day-Care Lady takes BIBAREL (M) and BIBAREL (F) through her own menus (YES, the party
+# menu, STORE, "raise another?" YES, the second pick), the player walks out and runs laps in Solaceon until the
+# second parent's step count rolls an egg (daycare.c Daycare_Update: every 256 steps, compatibility 50 for the
+# same species and OT), and the Day-Care Man hands the egg over.
+# Start: inside the Day Care (9,10). End: Solaceon Town (555,649) below the man, BIDOOF egg in the party.
+title = "Day Care: deposit two parents with the lady and collect an egg"
 priority = "P1"
-estimate = 5000
+estimate = 7273
 refs = [
   "res/field/events/events_solaceon_town.json",
   "res/field/scripts/scripts_day_care_common.s:12-63",
@@ -28,38 +30,112 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 7500
+frames = 11000
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 6
+face = "up"
+interact = true
+note = "across the counter from LOCALID_DAY_CARE_LADY (9,4): 'I'm the Day-Care Lady' (DayCareCommon_Lady, scripts_day_care_common.s:102-111)"
 
 [[step]]
 do = "press"
-keys = "LEFT"
-hold = 48
-note = "step 1 of 10 (lab-walk.txt alternates LEFT/RIGHT every 48 frames); daycare-steps 250 wins the roll on the 5th step"
+keys = "A"
+gap = 30
+note = "'Would you like us to raise your Pokemon?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "YES (the menu opens on YES) -> 'Which Pokemon should we raise for you?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "fade to OpenPartyMenuForDaycare (:133): BIBAREL M lv25 (slot 0) highlighted"
+shot = "party"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "'Do what with BIBAREL?' STORE / SUMMARY / CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "STORE -> StorePartyMonIntoDaycare (:153): 'Fine, we'll raise your BIBAREL for a while.'"
+shot = "stored-first"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "'We can raise two of your Pokemon. Would you like us to raise another?' YES/NO (:163)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "YES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "the party menu again: BIBAREL M lv26, BIBAREL F lv27, MAGBY"
 
 [[step]]
 do = "press"
 keys = "RIGHT"
-hold = 48
+gap = 10
+note = "slot 1: BIBAREL F lv27"
 
 [[step]]
 do = "press"
-keys = "LEFT"
-hold = 48
+keys = "A"
+gap = 30
+note = "STORE menu for BIBAREL F"
+shot = "second-pick"
 
 [[step]]
 do = "press"
-keys = "RIGHT"
-hold = 48
+keys = "A"
+gap = 90
+note = "STORE -> 'Fine, we'll raise your BIBAREL for a while.'"
 
 [[step]]
 do = "press"
-keys = "LEFT"
-hold = 48
+keys = "A"
+gap = 30
+note = "'Come back for it later.' (DayCareCommon_RaiseSecondPokemon)"
+shot = "stored-second"
 
 [[step]]
-do = "press"
-keys = "RIGHT"
-hold = 48
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 11
+note = "the door mat (events_pokemon_day_care.json warp 0) -> Solaceon Town"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SOLACEON_TOWN"
+
+[[step]]
+do = "pace"
+x = 557
+z = 649
+until = 's["daycare"]["egg_waiting"]'
+every = 64
+note = "running laps beside the Day-Care Man until the save shows the egg (np_save4 daycare.egg_waiting: offspringPersonality set)"
 shot = "egg-waiting"
 
 [[step]]
@@ -68,25 +144,25 @@ x = 555
 z = 649
 face = "up"
 interact = true
-note = "[INFERENCE] stand south of LOCALID_DAY_CARE_MAN (555,648), script 9500 DayCareCommon_Man"
+note = "LOCALID_DAY_CARE_MAN (555,648): 'your Pokemon was holding an Egg, do you want it?' (DayCareCommon_ManEggWaiting, :27-30)"
 
 [[step]]
 do = "advance_text"
-max = 600
-note = "stops at the YES/NO 'take the egg?' prompt [INFERENCE]"
-
-[[step]]
-do = "press"
-keys = "A"
-note = "YES -> GiveEggFromDaycare (scripts_day_care_common.s:51-63)"
+max = 900
+note = "YES (A), 'GQ received the Egg!' fanfare, 'Take good care of it.' -> GiveEggFromDaycare (:51-63)"
 shot = "egg-received"
 
-[[step]]
-do = "advance_text"
-
 [expect]
-map = 433
-badge = ["BADGE_ID_COAL", "BADGE_ID_FOREST"]
-party_size = 2
-save = ['any(m["is_egg"] for m in s["party"])']
-# PHASE2: reader-ext daycare state (pc_save `daycare:` DAYCARE_TWO_MONS / DAYCARE_EGG_WAITING, pc_corpus.py:330); np_save4 has no daycare field
+map = "MAP_HEADER_SOLACEON_TOWN"
+position = [555, 649]
+flags = ["FLAG_STORED_POKEMON_AT_DAY_CARE"]
+party_size = 3
+save = [
+  '[m["species"] for m in s["party"]] == [400, 240, 399]',   # BIBAREL M lv26, MAGBY, the egg
+  's["party"][2]["is_egg"]',
+  '[m["species"] for m in s["daycare"]["mons"]] == [400, 400]',
+  'not s["daycare"]["egg_waiting"]',
+]
+
+[[shots]]
+frames = [7050, 7120, 7200]   # the man's egg question, the received-egg fanfare, "Take good care of it."

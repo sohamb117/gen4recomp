@@ -40,6 +40,7 @@ shot = "regirock"
 
 [[step]]
 do = "auto_battle"
+snap = true
 
 [[step]]
 do = "advance_text"

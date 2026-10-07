@@ -1,9 +1,8 @@
 # HM06 Rock Smash, A-press path on the pinned Mt. Coronet 1F station.
 # Start: MT_CORONET_1F_NORTH_ROOM_1 (21,42) facing a rock. End: (21,40).
 title = "HM06 Rock Smash: break a Mt. Coronet rock"
-status = "planned"
 priority = "P1"
-estimate = 5800
+estimate = 2180
 refs = [
   "res/field/scripts/scripts_oreburgh_gate_1f.s:15-60",
   "res/field/scripts/scripts_oreburgh_gate_1f.s:44",
@@ -22,7 +21,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 8700
+frames = 3300
 # pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
 env = { PC_TRACE_JOURNAL = "1" }
 

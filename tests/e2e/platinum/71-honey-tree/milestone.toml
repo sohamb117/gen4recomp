@@ -1,10 +1,9 @@
 # Honey tree encounter: a lab-honeyed tree 0 (ROUTE_205_SOUTH) in ENCOUNTER status gives
 # table 0 slot 0 = COMBEE when interacted with facing north.
-# Start: ROUTE_205_SOUTH (213,653) below the tree. End: same tile, tree bare (minutes 0).
+# Start: ROUTE_205_SOUTH (213,653) below the tree. End: same tile, the tree slathered again with one HONEY.
 title = "Honey tree: Route 205 South Combee"
-status = "planned"
 priority = "P2"
-estimate = 5000
+estimate = 3237
 refs = [
   "src/overlay005/honey_tree.c:41-63",
   "src/overlay005/honey_tree.c:97-116",
@@ -33,36 +32,34 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 7500
+frames = 4900
 clock = "2009-03-22 21:00:00"   # mint and run on the same PC_RTC so the timer does not drift [INFERENCE]
 
 [[step]]
 do = "press"
 keys = "A"
-note = "facing the honey_tree_nsbmd prop north (honey_tree.c:97-116); ENCOUNTER status needs no honey item"
+note = "facing the honey_tree_nsbmd prop north"
+
+[[step]]
+do = "advance_text"
+max = 1200
+note = "the tree (honey_tree.c:97-116): ENCOUNTER status -> StartHoneyTreeBattle (scripts_common.s:526-532); stops at the battle"
 shot = "tree"
 
 [[step]]
-do = "advance_text"
-max = 1200
-
-[[step]]
-do = "wait_battle"
-max = 1200
-
-[[step]]
 do = "auto_battle"
+snap = true
 note = "STARAPTOR Brave Bird KOs the lv5-15 COMBEE"
-shot = "combee"
 
 [[step]]
 do = "advance_text"
-note = "no honey in the bag, so no re-slather prompt (scripts_common.s:503-507)"
+note = "CommonScript_HoneyTreePostBattle: HONEY in the bag -> 'Slather the bark with HONEY?' YES (the menu opens on YES) -> RemoveItem, SlatherHoneyTree (scripts_common.s:503-524)"
+shot = "slathered"
 
 [expect]
 map = 347
 position = [213, 653]
 battles = 1
-# COMBEE seen: STARAPTOR is the only prior dex entry
-save = ['s["pokedex"]["seen"] >= 2']
+# COMBEE (415) seen; one of the three HONEY (94) slathered on the tree again after the battle
+save = ['415 in s["pokedex"]["seen_list"]', '[i["qty"] for i in s["bag"]["items"] if i["item"] == 94] == [2]']
 # PHASE2: reader-ext honey tree 0 minutesRemaining == 0 (pc_save `honey: 0=0`, pc_corpus.py:303) and dex SPECIES_COMBEE seen (pc_save dex)

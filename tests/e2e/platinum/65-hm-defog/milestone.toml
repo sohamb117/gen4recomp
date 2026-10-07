@@ -1,9 +1,8 @@
 # HM05 Defog from the party menu on foggy Route 210 North.
 # Start: ROUTE_210_NORTH (516,540), weather FOG. End: same map, FLAG_DEFOG_ACTIVE set, fog gone.
 title = "HM05 Defog: clear Route 210 North fog"
-status = "planned"
 priority = "P1"
-estimate = 5000
+estimate = 2051
 refs = [
   "res/field/scripts/scripts_visible_items.s:923-927",
   "res/field/scripts/scripts_solaceon_ruins_room_2.s:15",
@@ -24,7 +23,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 7500
+frames = 3100
 # pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
 env = { PC_TRACE_JOURNAL = "1" }
 
@@ -33,29 +32,9 @@ do = "wait_field"
 shot = "fog-before"
 
 [[step]]
-do = "press"
-keys = "X"
-
-[[step]]
-do = "press"
-keys = "A"
-note = "POKEMON"
-gap = 60
-
-[[step]]
-do = "press"
-keys = "A"
-note = "slot 0 STARAPTOR -> submenu"
-gap = 30
-
-[[step]]
-do = "press"
-keys = "A"
-note = "[INFERENCE] DEFOG is the first submenu entry; FieldMoves_UseDefogFromMenu (scripts_field_moves.s:379-392)"
-
-[[step]]
-do = "advance_text"
-note = "Route 210 North has wild grass; an encounter during menus is possible (not on the standing tile)"
+do = "field_move"
+move = "MOVE_DEFOG"
+note = "X, POKEMON, STARAPTOR, DEFOG (FieldMoves_UseDefogFromMenu, scripts_field_moves.s:379-392), text advanced"
 shot = "fog-after"
 
 [expect]

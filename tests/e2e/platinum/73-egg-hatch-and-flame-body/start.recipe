@@ -1,4 +1,6 @@
-# Copy of pc/tests/corpus/egg-hatch.recipe (trainer id/money kept for the pinned roll order).
+# Lab start mirroring 72-day-care-deposit-and-egg's end: BIBAREL M lv25 and BIBAREL F lv27 in the Day Care
+# (trainer id/money of pc/tests/corpus/egg-generate.recipe: mint rolls 1 and 3 are male and female), their egg
+# taken (15 cycles), BIBAREL lv26 and MAGBY (Flame Body) kept.
 name GQ
 gender GENDER_MALE
 trainer-id 10412
@@ -9,12 +11,14 @@ badge BADGE_ID_FOREST
 party SPECIES_BIBAREL 25 ITEM_NONE
 party SPECIES_BIBAREL 26 ITEM_NONE
 party SPECIES_BIBAREL 27 ITEM_NONE
+party SPECIES_MAGBY 20 ITEM_NONE
+pokedex 1
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+flag FLAG_STORED_POKEMON_AT_DAY_CARE
+# lady's deposit (pc_lab.c:848-901): slot 0 (BIBAREL 25), then slot 1 (now BIBAREL 27)
 daycare 0
 daycare 1
 daycare-egg 0x59239384
 # Daycare_GiveEggFromDaycare; resets the shared counter (daycare.c:556-560,779)
 take-egg
-egg-cycles 1 0
-# after take-egg: 254 -> the next step ends a cycle
-daycare-counter 254
-map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN
+map MAP_HEADER_SOLACEON_TOWN 555 649 FACE_UP

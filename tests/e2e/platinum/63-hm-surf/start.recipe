@@ -8,4 +8,5 @@ money 3000
 badge BADGE_ID_FEN
 party SPECIES_BIBAREL 30 ITEM_NONE
 party-move 0 0 MOVE_SURF
-map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP
+# the river bank south of the water (180,604) facing it (tools/probe_map.py; (162,604) is inside the tree wall)
+map MAP_HEADER_ROUTE_205_SOUTH 180 604 FACE_UP

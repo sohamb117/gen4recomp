@@ -1,9 +1,8 @@
 # HM07 Waterfall ascent: Surf onto Route 210 North's water, face the falls, climb them.
 # Start: ROUTE_210_NORTH bank (504,527) facing east. End: (505,524) above the falls.
 title = "HM07 Waterfall: climb the Route 210 North falls"
-status = "planned"
 priority = "P1"
-estimate = 6400
+estimate = 2987
 refs = [
   "res/field/scripts/scripts_sunyshore_city.s:44-122",
   "res/field/scripts/scripts_sunyshore_city.s:440-446",
@@ -24,7 +23,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 9600
+frames = 4500
 # pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
 env = { PC_TRACE_JOURNAL = "1" }
 

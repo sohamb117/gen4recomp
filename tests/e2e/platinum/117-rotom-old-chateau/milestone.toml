@@ -35,6 +35,7 @@ shot = "rotom"
 
 [[step]]
 do = "auto_battle"
+snap = true
 note = "Crunch: Ghost is weak to Dark; Earthquake fails vs Levitate"
 
 [[step]]

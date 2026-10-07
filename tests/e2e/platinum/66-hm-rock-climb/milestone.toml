@@ -1,9 +1,8 @@
 # HM08 Rock Climb, A-press path at the foot of a Victory Road 1F climb column.
 # Start: VICTORY_ROAD_1F (22,38). End: (22,30) at the top.
 title = "HM08 Rock Climb: Victory Road 1F wall"
-status = "planned"
 priority = "P1"
-estimate = 5800
+estimate = 2166
 refs = [
   "res/field/scripts/scripts_visible_items.s:1301-1305",
   "res/field/scripts/scripts_route_217_west_house.s:13",
@@ -23,7 +22,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 8700
+frames = 3300
 # pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
 env = { PC_TRACE_JOURNAL = "1" }
 

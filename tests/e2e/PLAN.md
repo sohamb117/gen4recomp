@@ -691,26 +691,26 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~573900 frames estimated
+### Side systems: 52 milestones, ~537772 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
 | [31b-iron-island-riley-tag](platinum/31b-iron-island-riley-tag/milestone.toml) | Iron Island B2F: Riley tag battle and the Riolu egg (optional) | P1 | 15000 | prev + `lab.recipe` | MAP_HEADER_IRON_ISLAND_B2F_LEFT_ROOM | planned |
-| [60-hm-cut](platinum/60-hm-cut/milestone.toml) | HM01 Cut: clear the Eterna City tree | P1 | 5800 | `start.recipe` | 65 | planned |
-| [61-hm-rock-smash](platinum/61-hm-rock-smash/milestone.toml) | HM06 Rock Smash: break a Mt. Coronet rock | P1 | 5800 | `start.recipe` | 218 | planned |
-| [62-hm-strength](platinum/62-hm-strength/milestone.toml) | HM04 Strength: push a Mt. Coronet boulder | P1 | 5800 | `start.recipe` | 218 | planned |
-| [63-hm-surf](platinum/63-hm-surf/milestone.toml) | HM03 Surf: cross the Route 205 river | P1 | 5800 | `start.recipe` | 204 | planned |
-| [64-hm-fly](platinum/64-hm-fly/milestone.toml) | HM02 Fly: Hearthome to Solaceon | P1 | 6000 | `start.recipe` | 433 | planned |
-| [65-hm-defog](platinum/65-hm-defog/milestone.toml) | HM05 Defog: clear Route 210 North fog | P1 | 5000 | `start.recipe` | 363 | planned |
-| [66-hm-rock-climb](platinum/66-hm-rock-climb/milestone.toml) | HM08 Rock Climb: Victory Road 1F wall | P1 | 5800 | `start.recipe` | 244 | planned |
-| [67-hm-waterfall](platinum/67-hm-waterfall/milestone.toml) | HM07 Waterfall: climb the Route 210 North falls | P1 | 6400 | `start.recipe` | 363 | planned |
-| [68-fishing-old-rod](platinum/68-fishing-old-rod/milestone.toml) | Old Rod: fish a Magikarp | P2 | 8800 | `start.recipe` | 347 | planned |
-| [69-fishing-good-rod](platinum/69-fishing-good-rod/milestone.toml) | Good Rod: fish on Route 205 | P2 | 6800 | `start.recipe` | 347 | planned |
-| [70-fishing-super-rod](platinum/70-fishing-super-rod/milestone.toml) | Super Rod: fish on Route 205 | P2 | 6800 | `start.recipe` | 347 | planned |
-| [71-honey-tree](platinum/71-honey-tree/milestone.toml) | Honey tree: Route 205 South Combee | P2 | 5000 | `start.recipe` | 347 | planned |
-| [72-day-care-deposit-and-egg](platinum/72-day-care-deposit-and-egg/milestone.toml) | Day Care: deposit two parents and collect an egg | P1 | 5000 | `start.recipe` | 433 | planned |
-| [73-egg-hatch-and-flame-body](platinum/73-egg-hatch-and-flame-body/milestone.toml) | Egg hatch (and Flame Body cycle halving) | P1 | 9000 | `start.recipe` | 433 | planned |
-| [74-level-up-evolution-after-battle](platinum/74-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after battle: Caterpie -> Metapod | P1 | 8000 | `start.recipe` | 433 | planned |
+| [60-hm-cut](platinum/60-hm-cut/milestone.toml) | HM01 Cut: clear the Eterna City tree | P1 | 2182 | `start.recipe` | 65 | passing |
+| [61-hm-rock-smash](platinum/61-hm-rock-smash/milestone.toml) | HM06 Rock Smash: break a Mt. Coronet rock | P1 | 2180 | `start.recipe` | 218 | passing |
+| [62-hm-strength](platinum/62-hm-strength/milestone.toml) | HM04 Strength: push a Mt. Coronet boulder | P1 | 2143 | `start.recipe` | 218 | passing |
+| [63-hm-surf](platinum/63-hm-surf/milestone.toml) | HM03 Surf: cross the Route 205 river | P1 | 2131 | `start.recipe` | 204 | passing |
+| [64-hm-fly](platinum/64-hm-fly/milestone.toml) | HM02 Fly: Hearthome to Solaceon | P1 | 2561 | `start.recipe` | 433 | passing |
+| [65-hm-defog](platinum/65-hm-defog/milestone.toml) | HM05 Defog: clear Route 210 North fog | P1 | 2051 | `start.recipe` | 363 | passing |
+| [66-hm-rock-climb](platinum/66-hm-rock-climb/milestone.toml) | HM08 Rock Climb: Victory Road 1F wall | P1 | 2166 | `start.recipe` | 244 | passing |
+| [67-hm-waterfall](platinum/67-hm-waterfall/milestone.toml) | HM07 Waterfall: climb the Route 210 North falls | P1 | 2987 | `start.recipe` | 363 | passing |
+| [68-fishing-old-rod](platinum/68-fishing-old-rod/milestone.toml) | Old Rod: fish a Magikarp | P2 | 4151 | `start.recipe` | 347 | passing |
+| [69-fishing-good-rod](platinum/69-fishing-good-rod/milestone.toml) | Good Rod: fish on Route 205 | P2 | 3931 | `start.recipe` | 347 | passing |
+| [70-fishing-super-rod](platinum/70-fishing-super-rod/milestone.toml) | Super Rod: fish on Route 205 | P2 | 3271 | `start.recipe` | 347 | passing |
+| [71-honey-tree](platinum/71-honey-tree/milestone.toml) | Honey tree: Route 205 South Combee | P2 | 3237 | `start.recipe` | 347 | passing |
+| [72-day-care-deposit-and-egg](platinum/72-day-care-deposit-and-egg/milestone.toml) | Day Care: deposit two parents with the lady and collect an egg | P1 | 7273 | `start.recipe` | MAP_HEADER_SOLACEON_TOWN | passing |
+| [73-egg-hatch-and-flame-body](platinum/73-egg-hatch-and-flame-body/milestone.toml) | Egg hatch (and Flame Body cycle halving) | P1 | 9000 | prev + `start.recipe` | MAP_HEADER_SOLACEON_TOWN | planned |
+| [74-level-up-evolution-after-battle](platinum/74-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after battle: Caterpie -> Metapod | P1 | 10408 | `start.recipe` | MAP_HEADER_ROUTE_202 | passing |
 | [75-trade-evolution](platinum/75-trade-evolution/milestone.toml) | Trades: NPC trade (and link trade evolution) | P1 | 16800 | `start.recipe` | 54 | planned |
 | [76-contests](platinum/76-contests/milestone.toml) | Contests: Normal Cool, first place | P1 | 52000 | `start.recipe` | 86 | planned |
 | [77-poffin-making](platinum/77-poffin-making/milestone.toml) | Poffin making: cook one poffin alone | P2 | 13000 | `start.recipe` | 116 | planned |
@@ -763,7 +763,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_BIBAREL 30 (MOVE_CUT)
 - trainers: none
 - end state: map 65; at (304, 520); badge BADGE_ID_FOREST; flags set FLAG_MAP_LOCAL_HIDE_OBSTACLE_1; log /pc-journal: f=\d+ event=19 /
-- frames: estimate 5800, budget 8700
+- frames: estimate 2182, budget 3300
 - refs: res/field/events/events_eterna_city.json:coord_events[3]; res/field/scripts/scripts_eterna_city.s:124-183; res/field/scripts/scripts_eterna_city.s:181; src/field_move_tasks.c:332; res/field/scripts/scripts_field_moves.s:27; res/field/scripts/scripts_field_moves.s:29; res/field/scripts/scripts_field_moves.s:41; res/field/scripts/scripts_field_moves.s:47-63; res/field/scripts/scripts_field_moves.s:58; res/field/scripts/scripts_field_moves.s:82-88; src/scrcmd.c:2359-2371; src/script_manager.c:475-481; src/field_map_change.c:254; pc/tests/corpus/hm-cut.recipe; pc/tests/corpus/hm-cut.spec; pc/replays/lab-fieldmove.txt; generated/journal_location_events.txt:20
 
 #### platinum/61-hm-rock-smash — HM06 Rock Smash: break a Mt. Coronet rock
@@ -772,7 +772,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_BIBAREL 30 (MOVE_ROCK_SMASH)
 - trainers: none
 - end state: map 218; at (21, 40); badge BADGE_ID_COAL; log /pc-journal: f=\d+ event=24 /
-- frames: estimate 5800, budget 8700
+- frames: estimate 2180, budget 3300
 - refs: res/field/scripts/scripts_oreburgh_gate_1f.s:15-60; res/field/scripts/scripts_oreburgh_gate_1f.s:44; res/field/events/events_oreburgh_gate_1f.json; src/field_move_tasks.c:545; res/field/scripts/scripts_field_moves.s:134; res/field/scripts/scripts_field_moves.s:150-164; res/field/scripts/scripts_field_moves.s:159; pc/tests/corpus/hm-rock-smash.recipe; pc/tests/corpus/hm-rock-smash.spec; pc/replays/lab-fieldmove.txt; generated/journal_location_events.txt:25
 
 #### platinum/62-hm-strength — HM04 Strength: push a Mt. Coronet boulder
@@ -781,34 +781,34 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_BIBAREL 30 (MOVE_STRENGTH)
 - trainers: none
 - end state: map 218; at (18, 43); badge BADGE_ID_MINE; flags set FLAG_STRENGTH_ACTIVE; log /pc-journal: f=\d+ event=22 /
-- frames: estimate 5800, budget 8700
+- frames: estimate 2143, budget 3300
 - refs: res/field/scripts/scripts_iron_island.s:91-103; res/field/scripts/scripts_iron_island.s:111; src/field_move_tasks.c:463; res/field/scripts/scripts_field_moves.s:191; res/field/scripts/scripts_field_moves.s:207-220; res/field/scripts/scripts_field_moves.s:219; generated/vars_flags.txt:2409; pc/tests/corpus/hm-strength.recipe; pc/tests/corpus/hm-strength.spec; pc/replays/lab-fieldmove.txt; generated/journal_location_events.txt:23
 
 #### platinum/63-hm-surf — HM03 Surf: cross the Route 205 river
-- proves: HM03 Surf, A-press path from the Route 205 South river bank, then swim north 4 tiles. Start: ROUTE_205_SOUTH (162,604). End: (162,600); the header becomes FUEGO_IRONWORKS_OUTSIDE (204) once the player moves (matrix cell owner).
-- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP; lab state lines: 1 badge
+- proves: HM03 Surf, A-press path from the Route 205 South river bank, then swim north across the river. Start: ROUTE_205_SOUTH (180,604) facing the water. End: the north bank (180,599), header FUEGO_IRONWORKS_OUTSIDE (204).
+- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 badge
 - party: SPECIES_BIBAREL 30 (MOVE_SURF)
 - trainers: none
-- end state: map 204; at (162, 600); badge BADGE_ID_FEN; log /pc-journal: f=\d+ event=21 /
-- frames: estimate 5800, budget 8700
+- end state: map 204; at (180, 599); badge BADGE_ID_FEN; log /pc-journal: f=\d+ event=21 /
+- frames: estimate 2131, budget 3200
 - refs: res/field/scripts/scripts_celestic_town_cave.s:115-136; res/field/scripts/scripts_celestic_town_cave.s:129; src/field_move_tasks.c:414; src/overlay005/field_control.c:686-694; res/field/scripts/scripts_field_moves.s:299-327; res/field/scripts/scripts_field_moves.s:325; src/map_tile_behavior.c:23-32; res/field/maps/matrices/map_matrix_000.json; pc/tests/pc_maptiles.py; pc/tests/corpus/hm-surf.recipe; pc/tests/corpus/hm-surf.spec; pc/replays/lab-fieldmove.txt; generated/journal_location_events.txt:22
 
 #### platinum/64-hm-fly — HM02 Fly: Hearthome to Solaceon
 - proves: HM02 Fly from the party menu: Hearthome -> Solaceon on the town map. Start: Hearthome City spawn tile (0x1D1,0x2BA). End: Solaceon Town fly tile (566,657). No corpus station; the town-map cursor path is not recorded yet.
-- start: `start.recipe`; map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN; lab state lines: 1 badge, 2 flag
+- start: `start.recipe`; map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN; lab state lines: 1 badge, 2 flag, 1 pokedex, 1 var
 - party: SPECIES_STARAPTOR 40 (MOVE_FLY)
 - trainers: none
 - end state: map 433; at (566, 657); badge BADGE_ID_COBBLE; flags set FLAG_FIRST_ARRIVAL_SOLACEON_TOWN; 1 save check(s)
-- frames: estimate 6000, budget 9000
+- frames: estimate 2561, budget 3900
 - refs: res/field/events/events_veilstone_city_galactic_warehouse.json; res/field/scripts/scripts_visible_items.s:1751-1755; src/field_move_tasks.c:373; src/field_move_tasks.c:377-389; src/field_move_tasks.c:392-406; src/field_move_tasks.c:194-222; src/spawn_locations.c:25-48; src/spawn_locations.c:32; src/spawn_locations.c:38; generated/vars_flags.txt:2492; src/start_menu.c:379-382; pc/tests/corpus/hearthome.recipe; pc/replays/lab-menu-party.txt
 
 #### platinum/65-hm-defog — HM05 Defog: clear Route 210 North fog
 - proves: HM05 Defog from the party menu on foggy Route 210 North. Start: ROUTE_210_NORTH (516,540), weather FOG. End: same map, FLAG_DEFOG_ACTIVE set, fog gone.
-- start: `start.recipe`; map MAP_HEADER_ROUTE_210_NORTH 516 540 FACE_DOWN; lab state lines: 1 badge
+- start: `start.recipe`; map MAP_HEADER_ROUTE_210_NORTH 516 540 FACE_DOWN; lab state lines: 1 badge, 1 pokedex, 1 var
 - party: SPECIES_STARAPTOR 40 (MOVE_DEFOG)
 - trainers: none
 - end state: map 363; badge BADGE_ID_RELIC; flags set FLAG_DEFOG_ACTIVE; log /pc-journal: f=\d+ event=23 /
-- frames: estimate 5000, budget 7500
+- frames: estimate 2051, budget 3100
 - refs: res/field/scripts/scripts_visible_items.s:923-927; res/field/scripts/scripts_solaceon_ruins_room_2.s:15; src/field_move_tasks.c:504; src/field_move_tasks.c:285-288; src/field_map_change.c:273-279; include/data/map_headers.h:~8030; res/field/scripts/scripts_field_moves.s:342; res/field/scripts/scripts_field_moves.s:379-392; res/field/scripts/scripts_field_moves.s:389; src/system_flags.c:458-461; generated/vars_flags.txt:2434; pc/replays/lab-menu-party.txt; generated/journal_location_events.txt:24
 
 #### platinum/66-hm-rock-climb — HM08 Rock Climb: Victory Road 1F wall
@@ -817,7 +817,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_BIBAREL 30 (MOVE_ROCK_CLIMB)
 - trainers: none
 - end state: map 244; at (22, 30); badge BADGE_ID_ICICLE; log /pc-journal: f=\d+ event=26 /
-- frames: estimate 5800, budget 8700
+- frames: estimate 2166, budget 3300
 - refs: res/field/scripts/scripts_visible_items.s:1301-1305; res/field/scripts/scripts_route_217_west_house.s:13; src/field_move_tasks.c:631; res/field/scripts/scripts_field_moves.s:251; res/field/scripts/scripts_field_moves.s:253-254; res/field/scripts/scripts_field_moves.s:276-286; res/field/scripts/scripts_field_moves.s:284; src/overlay005/field_control.c:682-684; pc/tests/corpus/hm-rock-climb.recipe; pc/tests/corpus/hm-rock-climb.spec; pc/replays/lab-fieldmove.txt; generated/journal_location_events.txt:27
 
 #### platinum/67-hm-waterfall — HM07 Waterfall: climb the Route 210 North falls
@@ -826,71 +826,71 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_BIBAREL 30 (MOVE_SURF)
 - trainers: none
 - end state: map 363; at (505, 524); badge BADGE_ID_FEN, BADGE_ID_BEACON; log /pc-journal: f=\d+ event=21 /, /pc-journal: f=\d+ event=25 /
-- frames: estimate 6400, budget 9600
+- frames: estimate 2987, budget 4500
 - refs: res/field/scripts/scripts_sunyshore_city.s:44-122; res/field/scripts/scripts_sunyshore_city.s:440-446; src/field_move_tasks.c:590; res/field/scripts/scripts_field_moves.s:422; res/field/scripts/scripts_field_moves.s:446; res/field/scripts/scripts_field_moves.s:325; src/overlay005/ov5_021DFB54.c:1200-1210; src/overlay005/ov5_021DFB54.c:844-859; pc/tests/corpus/hm-waterfall.recipe; pc/tests/corpus/hm-waterfall.spec; pc/replays/lab-waterfall.txt; generated/journal_location_events.txt:22; generated/journal_location_events.txt:26
 
 #### platinum/68-fishing-old-rod — Old Rod: fish a Magikarp
-- proves: Old Rod: fish a Magikarp: cast the registered Old Rod at the Route 205 South river, hook the bite, win the battle. Start: ROUTE_205_SOUTH (162,604) facing water. End: same tile after the wild battle. The hook press is frame-exact for this save + clock (bite window measured with PC_TRACE_FISH).
-- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP; lab state lines: 1 badge, 1 item, 1 register-item
+- proves: Old Rod: fish a Magikarp: cast the registered Old Rod at the Route 205 South river, hook the bite, win the battle. Start: ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle. The hook press is frame-exact for this save + clock (bite window measured with PC_TRACE_FISH).
+- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 badge, 1 item, 1 register-item
 - party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map 347; at (162, 604); >= 1 battles; 1 save check(s); log /pc-fish: f=\d+ rod=\d+ bite/, /pc-fish: f=\d+ rod=\d+ caught/
-- frames: estimate 8800, budget 13200
+- end state: map 347; at (180, 604); >= 1 battles; 1 save check(s); log /pc-fish: f=\d+ rod=\d+ bite/, /pc-fish: f=\d+ rod=\d+ caught/
+- frames: estimate 4151, budget 6300
 - refs: res/field/scripts/scripts_route_218_gate_to_jubilife_city.s:12-25; res/field/scripts/scripts_route_218_gate_to_jubilife_city.s:60; src/item_use_functions.c:819-851; src/overlay006/wild_encounters.c:380-398; src/overlay006/wild_encounters.c:1332-1333; src/overlay005/fishing.c:252-256; src/overlay005/fishing.c:261-268; src/overlay005/fishing.c:574-578; res/field/encounters/encounters_route_205_south.json; res/field/encounters/encounters_fuego_ironworks_outside.json; pc/tests/corpus/rod-old.recipe; pc/tests/corpus/rod-old.spec; pc/replays/lab-fish-old.txt; pc/tests/pc_corpus.py:422-436
 
 #### platinum/69-fishing-good-rod — Good Rod: fish on Route 205
-- proves: Good Rod: fish on Route 205: cast the registered Good Rod at the Route 205 South river, hook the bite, win the battle. Start: ROUTE_205_SOUTH (162,604) facing water. End: same tile after the wild battle. The hook press is frame-exact for this save + clock (bite window measured with PC_TRACE_FISH).
-- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP; lab state lines: 1 badge, 1 item, 1 register-item
+- proves: Good Rod: fish on Route 205: cast the registered Good Rod at the Route 205 South river, hook the bite, win the battle. Start: ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle. The hook press is frame-exact for this save + clock (bite window measured with PC_TRACE_FISH).
+- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 badge, 1 item, 1 register-item
 - party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map 347; at (162, 604); >= 1 battles; 1 save check(s); log /pc-fish: f=\d+ rod=\d+ bite/, /pc-fish: f=\d+ rod=\d+ caught/
-- frames: estimate 6800, budget 10200
+- end state: map 347; at (180, 604); >= 1 battles; 1 save check(s); log /pc-fish: f=\d+ rod=\d+ bite/, /pc-fish: f=\d+ rod=\d+ caught/
+- frames: estimate 3931, budget 5900
 - refs: res/field/scripts/scripts_route_209.s:128-141; res/field/scripts/scripts_route_209.s:180; src/item_use_functions.c:819-851; src/overlay006/wild_encounters.c:380-398; src/overlay006/wild_encounters.c:1332-1333; src/overlay005/fishing.c:252-256; src/overlay005/fishing.c:261-268; src/overlay005/fishing.c:574-578; res/field/encounters/encounters_route_205_south.json; res/field/encounters/encounters_fuego_ironworks_outside.json; pc/tests/corpus/rod-good.recipe; pc/tests/corpus/rod-good.spec; pc/replays/lab-fish-good.txt; pc/tests/pc_corpus.py:422-436
 
 #### platinum/70-fishing-super-rod — Super Rod: fish on Route 205
-- proves: Super Rod: fish on Route 205: cast the registered Super Rod at the Route 205 South river, hook the bite, win the battle. Start: ROUTE_205_SOUTH (162,604) facing water. End: same tile after the wild battle. The hook press is frame-exact for this save + clock (bite window measured with PC_TRACE_FISH).
-- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP; lab state lines: 1 badge, 1 item, 1 register-item
+- proves: Super Rod: fish on Route 205: cast the registered Super Rod at the Route 205 South river, hook the bite, win the battle. Start: ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle. The hook press is frame-exact for this save + clock (bite window measured with PC_TRACE_FISH).
+- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 badge, 1 item, 1 register-item
 - party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map 347; at (162, 604); >= 1 battles; 1 save check(s); log /pc-fish: f=\d+ rod=\d+ bite/, /pc-fish: f=\d+ rod=\d+ caught/
-- frames: estimate 6800, budget 10200
+- end state: map 347; at (180, 604); >= 1 battles; 1 save check(s); log /pc-fish: f=\d+ rod=\d+ bite/, /pc-fish: f=\d+ rod=\d+ caught/
+- frames: estimate 3271, budget 5000
 - refs: res/field/scripts/scripts_fight_area.s:418-438; src/item_use_functions.c:819-851; src/overlay006/wild_encounters.c:380-398; src/overlay006/wild_encounters.c:1332-1333; src/overlay005/fishing.c:252-256; src/overlay005/fishing.c:261-268; src/overlay005/fishing.c:574-578; res/field/encounters/encounters_route_205_south.json; res/field/encounters/encounters_fuego_ironworks_outside.json; pc/tests/corpus/rod-super.recipe; pc/tests/corpus/rod-super.spec; pc/replays/lab-fish-super.txt; pc/tests/pc_corpus.py:422-436
 
 #### platinum/71-honey-tree — Honey tree: Route 205 South Combee
-- proves: Honey tree encounter: a lab-honeyed tree 0 (ROUTE_205_SOUTH) in ENCOUNTER status gives table 0 slot 0 = COMBEE when interacted with facing north. Start: ROUTE_205_SOUTH (213,653) below the tree. End: same tile, tree bare (minutes 0).
-- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 213 653 FACE_UP; lab state lines: none
+- proves: Honey tree encounter: a lab-honeyed tree 0 (ROUTE_205_SOUTH) in ENCOUNTER status gives table 0 slot 0 = COMBEE when interacted with facing north. Start: ROUTE_205_SOUTH (213,653) below the tree. End: same tile, the tree slathered again with one HONEY.
+- start: `start.recipe`; map MAP_HEADER_ROUTE_205_SOUTH 213 653 FACE_UP; lab state lines: 1 item
 - party: SPECIES_STARAPTOR 40 (MOVE_BRAVE_BIRD)
 - trainers: none
-- end state: map 347; at (213, 653); >= 1 battles; 1 save check(s)
-- frames: estimate 5000, budget 7500
+- end state: map 347; at (213, 653); >= 1 battles; 2 save check(s)
+- frames: estimate 3237, budget 4900
 - refs: src/overlay005/honey_tree.c:41-63; src/overlay005/honey_tree.c:97-116; src/overlay005/honey_tree.c:118-133; src/overlay005/honey_tree.c:135-172; src/overlay005/honey_tree.c:143; src/overlay005/honey_tree.c:375-382; src/overlay005/honey_tree.c:421-440; src/overlay005/honey_tree.c:452-463; src/overlay005/field_control.c:293; res/field/scripts/scripts_common.s:460-544; res/field/scripts/scripts_common.s:463-468; res/field/scripts/scripts_common.s:474; res/field/scripts/scripts_common.s:503-507; src/unk_020559DC.c:120; src/special_encounter.c:28-36; src/special_encounter.c:100-120; src/overlay006/wild_encounters.c:1196-1222; res/field/encounters/encounters_honey_tree.json; pc/src/pc_lab.c:818-832; pc/tests/pc_corpus.py:303; pc/tests/corpus/daily-6h.recipe
 
-#### platinum/72-day-care-deposit-and-egg — Day Care: deposit two parents and collect an egg
-- proves: Day Care: two BIBAREL deposited (lab), walk until the egg check fires, then collect the egg from the Day-Care Man. Start: Solaceon spawn (566,657). End: next to the man (555,648), egg in party.
-- start: `start.recipe`; map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN; lab state lines: 2 badge
-- party: SPECIES_BIBAREL 25; SPECIES_BIBAREL 26; SPECIES_BIBAREL 27
+#### platinum/72-day-care-deposit-and-egg — Day Care: deposit two parents with the lady and collect an egg
+- proves: Day Care, played: the Day-Care Lady takes BIBAREL (M) and BIBAREL (F) through her own menus (YES, the party menu, STORE, "raise another?" YES, the second pick), the player walks out and runs laps in Solaceon until the second parent's step count rolls an egg (daycare.c Daycare_Update: every 256 steps, compatibility 50 for the same species and OT), and the Day-Care Man hands the egg over. Start: inside the Day Care (9,10). End: Solaceon Town (555,649) below the man, BIDOOF egg in the party.
+- start: `start.recipe`; map MAP_HEADER_POKEMON_DAY_CARE 9 10 FACE_UP; lab state lines: 2 badge, 1 pokedex, 1 var
+- party: SPECIES_BIBAREL 25; SPECIES_BIBAREL 26; SPECIES_BIBAREL 27; SPECIES_MAGBY 20
 - trainers: none
-- end state: map 433; badge BADGE_ID_COAL, BADGE_ID_FOREST; party size 2; 1 save check(s)
-- frames: estimate 5000, budget 7500
+- end state: map MAP_HEADER_SOLACEON_TOWN; at (555, 649); party size 3; flags set FLAG_STORED_POKEMON_AT_DAY_CARE; 4 save check(s)
+- frames: estimate 7273, budget 11000
 - refs: res/field/events/events_solaceon_town.json; res/field/scripts/scripts_day_care_common.s:12-63; res/field/scripts/scripts_day_care_common.s:42-49; res/field/scripts/scripts_day_care_common.s:51-63; res/field/scripts/scripts_day_care_common.s:102; res/field/scripts/scripts_pokemon_day_care.s:17-28; src/overlay005/daycare.c:817-875; src/overlay005/daycare.c:840-846; src/overlay005/daycare.c:936-946; src/spawn_locations.c:32; pc/src/pc_lab.c:848-901; pc/tests/corpus/daycare-deposit.recipe; pc/tests/corpus/daycare-deposit.spec; pc/tests/corpus/egg-generate.recipe; pc/tests/corpus/egg-generate.spec; pc/replays/lab-walk.txt; pc/tests/pc_corpus.py:330
 
 #### platinum/73-egg-hatch-and-flame-body — Egg hatch (and Flame Body cycle halving)
-- proves: Egg hatch: an egg one step from hatching (egg cycles 0, shared counter 254) hatches into BIDOOF on the next step. Flame Body halving is the second recipe (flame-body.recipe, see PHASE2 below). Start: Solaceon spawn (566,657). End: (565,657) after one step, BIDOOF in slot 1.
-- start: `start.recipe`; map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN; lab state lines: 2 badge
-- party: SPECIES_BIBAREL 25; SPECIES_BIBAREL 26; SPECIES_BIBAREL 27
+- proves: Egg hatch, played, with Flame Body: 72's BIDOOF egg (15 egg cycles) hatches while the player runs laps in Solaceon with MAGBY (Flame Body) in the party, which takes two cycles off per 255 steps instead of one (daycare.c Party_GetEggCyclesToSubtract, Daycare_Update): about 2040 steps instead of about 3825. Start: 72's end, Solaceon (555,649), egg in slot 2. End: Solaceon, BIDOOF hatched in slot 2.
+- start: prev + `start.recipe`; map MAP_HEADER_SOLACEON_TOWN 555 649 FACE_UP; lab state lines: 2 badge, 1 flag, 1 pokedex, 1 var
+- party: SPECIES_BIBAREL 25; SPECIES_BIBAREL 26; SPECIES_BIBAREL 27; SPECIES_MAGBY 20
 - trainers: none
-- end state: map 433; at (565, 657); party SPECIES_BIDOOF; party size 2; 2 save check(s)
-- frames: estimate 9000, budget 13500
-- refs: src/overlay005/daycare.c:556-560; src/overlay005/daycare.c:672; src/overlay005/daycare.c:715; src/overlay005/daycare.c:779; src/overlay005/daycare.c:783-800; src/overlay005/daycare.c:885-916; src/overlay005/daycare.c:948-952; src/overlay005/daycare.c:953-975; src/overlay005/field_control.c:827-836; res/field/scripts/scripts_common.s:1429-1437; res/pokemon/magby/data.json; pc/src/pc_lab.c:848-901; pc/tests/corpus/egg-hatch.recipe; pc/tests/corpus/egg-hatch.spec; pc/replays/lab-walk.txt; pc/tests/pc_corpus.py:375
+- end state: map MAP_HEADER_SOLACEON_TOWN; party SPECIES_BIDOOF, SPECIES_MAGBY; party size 3; 3 save check(s); log /hatch: a scene of \d+ frames after (1[7-9]\d\d|2\d\d\d) steps; 0 egg\(s\) left/
+- frames: estimate 9000, budget 59100
+- refs: src/overlay005/daycare.c:556-560; src/overlay005/daycare.c:672; src/overlay005/daycare.c:715; src/overlay005/daycare.c:779; src/overlay005/daycare.c:783-800; src/overlay005/daycare.c:885-916; src/overlay005/daycare.c:948-952; src/overlay005/daycare.c:953-975; src/overlay005/field_control.c:827-836; res/field/scripts/scripts_common.s:1429-1437; res/pokemon/magby/data.json; res/pokemon/bidoof/data.json (hatch_cycles 15); pc/src/pc_lab.c:848-901; pc/tests/corpus/egg-hatch.recipe; pc/tests/corpus/egg-hatch.spec; pc/replays/lab-walk.txt; pc/tests/pc_corpus.py:375
 
 #### platinum/74-level-up-evolution-after-battle — Level-up evolution after battle: Caterpie -> Metapod
-- proves: Level-up evolution at the end of a battle: CATERPIE lv6 KOs a lab-started wild CHANSEY lv4 (145 exp >= 127 to lv7) and evolves into METAPOD inside the battle app. Start: Solaceon spawn (566,657). End: same tile, slot 0 METAPOD lv7.
-- start: `start.recipe`; map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN; lab state lines: none
+- proves: Level-up evolution at the end of a battle: CATERPIE lv6 fights wild Pokemon in Route 202's tall grass (Dragon Rage, 40 fixed, one-shots every lv2-4 there) until it reaches lv7, and evolves into METAPOD after the battle that levels it (battle_main.c:274-297; evolution allowed, never B). Start: Route 202 (188,812) beside the grass. End: Route 202, slot 0 METAPOD lv7.
+- start: `start.recipe`; map MAP_HEADER_ROUTE_202 188 812 FACE_DOWN; lab state lines: 1 pokedex
 - party: SPECIES_CATERPIE 6 (MOVE_DRAGON_RAGE)
 - trainers: none
-- end state: map 433; >= 1 battles; party SPECIES_METAPOD; 2 save check(s)
-- frames: estimate 8000, budget 12000
-- refs: src/battle/battle_system.c:824-853; src/battle/battle_main.c:274-297; src/battle/battle_script.c:2216-2236; res/pokemon/caterpie/data.json; res/pokemon/chansey/data.json; pc/src/pc_lab.c:1337-1345; pc/src/pc_lab.c:1369-1372; pc/src/pc_lab.c:1446; pc/src/pc_lab.c:1459-1479; pc/tests/corpus/evo-level.recipe; pc/tests/corpus/evo-stone.recipe
+- end state: map MAP_HEADER_ROUTE_202; >= 1 battles; party SPECIES_METAPOD; 3 save check(s)
+- frames: estimate 10408, budget 15700
+- refs: src/battle/battle_main.c:274-297; res/field/encounters/encounters_route_202.json; tests/e2e/tools/probe_map.py (Route 202 grass x 181..191, z 811..817)
 
 #### platinum/75-trade-evolution — Trades: NPC trade (and link trade evolution)
 - proves: In-game NPC trade (Kazza's ABRA for MACHOP, Oreburgh north house). NPC trades never evolve the received mon (npc_trade_task.c:47-87); trade evolution is link/GTS only (PHASE2 below). Start: OREBURGH_CITY_NORTH_HOUSE_1F (11,8) facing the school kid. End: same, ABRA in slot 0.

@@ -2,9 +2,8 @@
 # answer YES, walk through where it stood.
 # Start: Eterna City (304,522) facing the tree at (304,521). End: (304,520).
 title = "HM01 Cut: clear the Eterna City tree"
-status = "planned"
 priority = "P1"
-estimate = 5800
+estimate = 2182
 refs = [
   "res/field/events/events_eterna_city.json:coord_events[3]",
   "res/field/scripts/scripts_eterna_city.s:124-183",
@@ -29,7 +28,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 8700
+frames = 3300
 # pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
 env = { PC_TRACE_JOURNAL = "1" }
 

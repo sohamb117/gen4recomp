@@ -1,10 +1,9 @@
 # Good Rod: fish on Route 205: cast the registered Good Rod at the Route 205 South river, hook the bite, win the battle.
-# Start: ROUTE_205_SOUTH (162,604) facing water. End: same tile after the wild battle.
+# Start: ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle.
 # The hook press is frame-exact for this save + clock (bite window measured with PC_TRACE_FISH).
 title = "Good Rod: fish on Route 205"
-status = "planned"
 priority = "P2"
-estimate = 6800
+estimate = 3931
 refs = [
   "res/field/scripts/scripts_route_209.s:128-141",
   "res/field/scripts/scripts_route_209.s:180",
@@ -26,46 +25,28 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 10200
+frames = 5900
 # pc-fish trace for the log expect (pc/src/pc_probe2d.c:305)
 env = { PC_TRACE_FISH = "1" }
 clock = "2009-03-22 21:00:00"
 
 [[step]]
-do = "press"
-keys = "Y"
-hold = 24
-note = "the cast that bites"
-
-[[step]]
-do = "wait_frames"
-n = 26
-note = "replay lab-fish-good.txt bites on the first cast; A presses every 48 frames from 4284"
-# PHASE2: the A below must land inside the bite window; the replay presses it at an absolute
-# frame. Re-measure with PC_TRACE_FISH=1 relative to field_ready after the e2e boot and fix this wait.
-
-[[step]]
-do = "press"
-keys = "A"
-hold = 24
-note = "hook"
+do = "fish"
+note = "Y casts the registered Good Rod; A at the trace's bite line hooks (bots.py fish); no-nibble casts are closed with B and recast"
 shot = "hooked"
 
 [[step]]
-do = "wait_battle"
-max = 1200
-
-[[step]]
 do = "auto_battle"
-note = "GARCHOMP 70 Dragon Claw one-shots"
-shot = "battle"
+snap = true
+note = "GARCHOMP Dragon Claw one-shots the hooked Pokemon"
 
 [[step]]
 do = "advance_text"
+shot = "after"
 
 [expect]
 map = 347
-position = [162, 604]
+position = [180, 604]
 battles = 1
 # wild species MAGIKARP or FINNEON (good_rod_rate 50): dex seen grows by one (party GARCHOMP is the only prior entry)
 save = ['s["pokedex"]["seen"] >= 2']

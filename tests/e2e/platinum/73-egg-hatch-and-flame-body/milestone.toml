@@ -1,6 +1,7 @@
-# Egg hatch: an egg one step from hatching (egg cycles 0, shared counter 254) hatches into BIDOOF
-# on the next step. Flame Body halving is the second recipe (flame-body.recipe, see PHASE2 below).
-# Start: Solaceon spawn (566,657). End: (565,657) after one step, BIDOOF in slot 1.
+# Egg hatch, played, with Flame Body: 72's BIDOOF egg (15 egg cycles) hatches while the player runs laps in
+# Solaceon with MAGBY (Flame Body) in the party, which takes two cycles off per 255 steps instead of one
+# (daycare.c Party_GetEggCyclesToSubtract, Daycare_Update): about 2040 steps instead of about 3825.
+# Start: 72's end, Solaceon (555,649), egg in slot 2. End: Solaceon, BIDOOF hatched in slot 2.
 title = "Egg hatch (and Flame Body cycle halving)"
 status = "planned"
 priority = "P1"
@@ -17,6 +18,7 @@ refs = [
   "src/overlay005/field_control.c:827-836",
   "res/field/scripts/scripts_common.s:1429-1437",
   "res/pokemon/magby/data.json",
+  "res/pokemon/bidoof/data.json (hatch_cycles 15)",
   "pc/src/pc_lab.c:848-901",
   "pc/tests/corpus/egg-hatch.recipe",
   "pc/tests/corpus/egg-hatch.spec",
@@ -25,38 +27,32 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
+from = "72-day-care-deposit-and-egg"
+lab = "start.recipe"
 
 [run]
-frames = 13500
-clock = "2009-03-22 21:00:00"   # not one of the 12 special dates (cycle length 255, daycare.c:885-916)
+frames = 59100
 
 [[step]]
-do = "press"
-keys = "LEFT"
-hold = 48
-note = "one step: counter 254 -> 255 = cycle boundary; egg at 0 cycles hatches (daycare.c:953-975)"
-
-[[step]]
-do = "wait_frames"
-n = 300
-
-[[step]]
-do = "advance_text"
-max = 3000
-note = "CommonScript_HatchEgg cutscene needs A presses"
-shot = "hatch"
-
-[[step]]
-do = "wait_field"
+do = "hatch"
+x = 557
+z = 649
+note = "running laps until the egg hatches (bots.py hatch: the scene's text with B, the nickname question NO)"
+shot = "hatched"
 
 [expect]
-map = 433
-position = [565, 657]
-party = ["SPECIES_BIDOOF"]
-party_size = 2
-save = ['s["party"][1]["is_egg"] == False', 's["party"][1]["species"] == 399']
-# PHASE2: flame-body.recipe (Magby slot 0 + Piplup egg, egg-cycles 1 2, counter 254): one step
-# then reader-ext friendship of slot 1 == 0 (with Magby) vs 1 (control without Magby)
-# (pc_save `friendship: 1=0`, pc_corpus.py:375). np_save4 dumps party friendship, so
-# s["party"][1]["friendship"] == 0 also works; needs a second run of this dir with that recipe.
+map = "MAP_HEADER_SOLACEON_TOWN"
+party_size = 3
+party = ["SPECIES_BIDOOF", "SPECIES_MAGBY"]
+save = [
+  '[m["species"] for m in s["party"]] == [400, 240, 399]',
+  'not any(m["is_egg"] for m in s["party"])',
+  's["party"][2]["level"] == 1',
+]
+# Flame Body: the hatch scene came 1786..2040 steps after the laps began (7 or 8 cycles of 255 after a partial
+# one); without it 14..15 cycles, 3571..3825 steps. hatch counts lap attempts (a wandering NPC in the way costs
+# one without a step), so fewer than 3000 attempts proves the halving (measured: 2294)
+log = ['hatch: a scene of \d+ frames after (1[7-9]\d\d|2\d\d\d) steps; 0 egg\(s\) left']
+
+[[shots]]
+frames = [38500, 38800, 39100, 39300]   # the hatch scene (from frame 38405)

@@ -1,9 +1,8 @@
 # HM04 Strength: arm Strength with A/YES, then push the boulder one tile north.
 # Start: MT_CORONET_1F_NORTH_ROOM_1 (18,44) facing a boulder. End: (18,43), where the boulder stood.
 title = "HM04 Strength: push a Mt. Coronet boulder"
-status = "planned"
 priority = "P1"
-estimate = 5800
+estimate = 2143
 refs = [
   "res/field/scripts/scripts_iron_island.s:91-103",
   "res/field/scripts/scripts_iron_island.s:111",
@@ -22,7 +21,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 8700
+frames = 3300
 # pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
 env = { PC_TRACE_JOURNAL = "1" }
 
@@ -45,19 +44,10 @@ shot = "strength-prompt"
 do = "advance_text"
 
 [[step]]
-do = "press"
-keys = "B"
-note = "the extra message lab-fieldmove.txt closes with B"
-
-[[step]]
-do = "press"
-keys = "UP"
-hold = 24
-note = "walk into the boulder: the push happens on this step"
+do = "moves"
+dirs = [["P", "U"]]
+note = "push: UP held 40 frames; the boulder slides to (18,42) and the player follows it one tile"
 shot = "pushed"
-
-[[step]]
-do = "wait_field"
 
 [expect]
 map = 218

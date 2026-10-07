@@ -43,6 +43,7 @@ shot = "legendary"
 
 [[step]]
 do = "auto_battle"
+snap = true
 note = "A-only never throws a ball: the result is 'defeated', never caught"
 
 [[step]]

@@ -7,4 +7,6 @@ money 3000
 party SPECIES_CATERPIE 6 ITEM_NONE
 # fixed 40 damage, one-shots the lv4 CHANSEY (A-only runner uses slot 0)
 party-move 0 0 MOVE_DRAGON_RAGE
-map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN
+# Route 202, east of the trainers' path, one tile above the tall grass (tools/probe_map.py)
+pokedex 1
+map MAP_HEADER_ROUTE_202 188 812 FACE_DOWN

@@ -35,6 +35,7 @@ shot = "spiritomb"
 
 [[step]]
 do = "auto_battle"
+snap = true
 note = "Dragon Claw neutral vs Ghost/Dark, OHKO vs ~68 HP [INFERENCE: hand calc]"
 
 [[step]]

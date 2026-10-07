@@ -9,5 +9,5 @@ party SPECIES_GARCHOMP 70 ITEM_NONE
 party-move 0 0 MOVE_DRAGON_CLAW
 item ITEM_GOOD_ROD 1
 register-item ITEM_GOOD_ROD
-# the surfable tile north of (162,604) (pc/tests/corpus/hm-surf.recipe); can_fish src/item_use_functions.c:819-851
-map MAP_HEADER_ROUTE_205_SOUTH 162 604 FACE_UP
+# the river bank (180,604), surfable water north of it (tools/probe_map.py; (162,604) of hm-surf.recipe is inside the tree wall); can_fish src/item_use_functions.c:819-851
+map MAP_HEADER_ROUTE_205_SOUTH 180 604 FACE_UP

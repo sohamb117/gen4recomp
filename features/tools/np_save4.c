@@ -343,6 +343,37 @@ static void dump_hall_of_fame(FILE *o, const save4 *s)
     fputs("]}},\n", o);
 }
 
+/* Platinum's Daycare (struct_defs/daycare.h) in the general block: two DaycareMon (BoxPokemon, DaycareMail,
+ * u32 steps; 0xEC each), then u32 offspringPersonality (an egg waiting when non-zero) and u8 stepCounter (the
+ * egg-cycle counter). Offset found by scanning lab saves for valid BoxPokemon (save_table.c sums the page sizes). */
+#define PT_DAYCARE_OFF 0x1654
+#define DAYCARE_MON_SIZE 0xEC
+
+static void dump_daycare(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_DAYCARE_OFF + 2 * DAYCARE_MON_SIZE + 5 > len) {
+        fputs("  \"daycare\": null,\n", o);
+        return;
+    }
+    const uint8_t *d = img + base + PT_DAYCARE_OFF;
+    fputs("  \"daycare\": {\"mons\": [", o);
+    for (int i = 0, n = 0; i < 2; i++) {
+        const uint8_t *m = d + i * DAYCARE_MON_SIZE;
+        pkm4 p;
+        save4_status st = pkm4_decrypt(m, PKM4_BOX_SIZE, &p);
+        if (pkm4_is_empty(&p))
+            continue;
+        fputs(n++ ? ", {" : "{", o);
+        dump_mon(o, &p, st, 0);
+        fprintf(o, ", \"steps\": %u}", le32(m + DAYCARE_MON_SIZE - 4));
+    }
+    fprintf(o, "], \"egg_waiting\": %s, \"step_counter\": %u},\n",
+            le32(d + 2 * DAYCARE_MON_SIZE) ? "true" : "false", d[2 * DAYCARE_MON_SIZE + 4]);
+}
+
 static int cmd_dump(const char *rom_path, const char *save_path)
 {
     save4 s;
@@ -526,6 +557,7 @@ static int cmd_dump(const char *rom_path, const char *save_path)
             fprintf(o, "%s%d", n++ ? ", " : "", a);
     fputs("]},\n", o);
     dump_hall_of_fame(o, &s);
+    dump_daycare(o, &s);
     dump_mystery(o, &s);
     fputs("}\n", o);
 

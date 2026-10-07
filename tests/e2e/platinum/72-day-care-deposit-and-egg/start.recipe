@@ -9,9 +9,12 @@ badge BADGE_ID_FOREST
 party SPECIES_BIBAREL 25 ITEM_NONE
 party SPECIES_BIBAREL 26 ITEM_NONE
 party SPECIES_BIBAREL 27 ITEM_NONE
-# lady's deposit (pc_lab.c:848-901): slot 0 (BIBAREL 25), then slot 1 (now BIBAREL 27)
-daycare 0
-daycare 1
-# parent slot 1 step counter; the egg check fires at low byte 0xFF (daycare.c:936-946)
-daycare-steps 1 250
-map MAP_HEADER_SOLACEON_TOWN 0x236 0x291 FACE_DOWN
+# MAGBY (Flame Body) stays in the party: 73 hatches this run's egg with it (egg cycles halved, daycare.c
+# Party_GetEggCyclesToSubtract). Added last so the three BIBAREL keep their mint rolls (genders).
+party SPECIES_MAGBY 20 ITEM_NONE
+# the start menu needs the Pokedex and a starter (StartMenu_GetNormalHiddenOptions); the Day Care's party menu
+# is the game's own (OpenPartyMenuForDaycare)
+pokedex 1
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+# inside the Day Care, south of the counter; the lady (9,4) is spoken to across it from (9,6) (tools/probe_map.py)
+map MAP_HEADER_POKEMON_DAY_CARE 9 10 FACE_UP

@@ -63,7 +63,7 @@ STEP_KEYS = {
     "schedule": {"file", "frames"},
     "save": set(),
     "advance_text": {"through_battle", "map"},
-    "auto_battle": {"move", "wait", "flee", "send"},
+    "auto_battle": {"move", "wait", "flee", "send", "snap"},
     "walk_to": {"x", "z", "via", "map", "face", "interact", "run", "on_battle", "on_text", "move", "surf", "hm", "avoid",
                 "hold"},
     "walk_to_door": {"pattern", "doors", "wait", "map", "face", "interact", "run", "on_battle", "on_text", "move"},
@@ -74,11 +74,15 @@ STEP_KEYS = {
     "steps": {"route", "run", "on_battle", "on_text", "move", "face", "interact"},
     "moves": {"dirs", "on_battle", "on_text", "move", "face", "interact"},
     "hatch": {"x", "z"},
+    "field_move": {"move", "slot", "text"},
+    "fish": {"casts"},
+    "pace": {"x", "z", "until", "every"},
 }
 STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
                  "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},
                  "heal": {"x", "z"}, "grind": {"x", "z", "level"}, "fly": {"map"},
-                 "steps": {"route"}, "moves": {"dirs"}, "hatch": {"x", "z"}}
+                 "steps": {"route"}, "moves": {"dirs"}, "hatch": {"x", "z"}, "field_move": {"move"},
+                 "pace": {"x", "z", "until"}}
 NAME_KEYS = {"map"}  # step keys that take a game name
 # np_gp -o options every run gets first ([run] options come after and win): message boxes print at once, so
 # story scenes and battles cost their animations, not the text crawl. A recorded press schedule depends on the

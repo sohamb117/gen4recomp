@@ -8,4 +8,8 @@ badge BADGE_ID_RELIC
 party SPECIES_STARAPTOR 40 ITEM_NONE
 party-move 0 0 MOVE_DEFOG
 # header weather OVERWORLD_WEATHER_FOG (include/data/map_headers.h ROUTE_210_NORTH); (516,540) walkable (map_data)
+# the start menu: POKEDEX first (the fly/field_move bots count from it, bots.py START_MENU), and POKEMON only once a
+# starter was chosen (StartMenu_GetNormalHiddenOptions, start_menu.c:371-373)
+pokedex 1
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
 map MAP_HEADER_ROUTE_210_NORTH 516 540 FACE_DOWN

@@ -67,6 +67,13 @@ def _int(step, key, default):
     return int(v)
 
 
+def snap(s):
+    """Dump the screen now onto the milestone's contact sheet (run.py collects frame_NNNNNN.ppm, labelled by
+    frame): proof points inside a bot (a battle's first menu, a fish on the hook)."""
+    if getattr(s, "shot_dir", None):
+        s.dump(os.path.join(s.shot_dir, "frame_%06d.ppm" % s.frame))
+
+
 def _tap(s, xy, hold=4, gap=10):
     s.run(hold, touch=xy)
     s.run(gap)
@@ -351,11 +358,14 @@ def bot_auto_battle(s, step, ctx):
     refuses one), for scripted fights.
 
     With flee = true it taps RUN at the first action menus (a wild battle ends; a trainer refuses, and so may a
-    wild Pokemon) and fights once FLEE_TRIES runs have not ended the battle."""
+    wild Pokemon) and fights once FLEE_TRIES runs have not ended the battle.
+
+    With snap = true the screen at the first action menu (both battlers on the field) goes on the contact sheet."""
     fixed = "move" in step
     move = _int(step, "move", 0)
     send_best = step.get("send") == "best"  # a fainted lead's replacement: the best scorer, not the first able
     flee = FLEE_TRIES if step.get("flee") else 0
+    snap_menu = bool(step.get("snap"))
     limit = s.frame + _int(step, "max", 30000)
     if not s.in_battle and not s.run(_int(step, "wait", 900), until="in_battle=1"):
         raise HarnessError("no battle started within %d frames" % _int(step, "wait", 900))
@@ -405,6 +415,9 @@ def bot_auto_battle(s, step, ctx):
                             useless.add((mv, sp))
                             s.note("auto_battle: move %d did nothing to species %d (ability %s); not using it on it "
                                    "again" % (mv, sp, block))
+            if idx in MENU_ACTION and snap_menu:
+                snap_menu = False
+                snap(s)
             if idx in MENU_ACTION and flee:
                 flee -= 1
                 _tap(s, TAP_RUN)
@@ -1094,6 +1107,11 @@ def bot_heal(s, step, ctx):
 # ---------------------------------------------------------------- party / grind
 def party(s, ctx):
     """The party as the game has it now: an in-game save, then np_save4's dump of the save file np_gp wrote."""
+    return save_dump(s, ctx)["party"]
+
+
+def save_dump(s, ctx):
+    """np_save4's dump of an in-game save made now (the whole save, as [expect] save expressions see it)."""
     before = _stores(s)
     bot_save(s, {}, ctx)
     for _ in range(60):  # np_gp writes the chip file when the game's card write completes
@@ -1105,7 +1123,7 @@ def party(s, ctx):
     out = subprocess.run([ctx.save4, "dump", ctx.rom, s.save_path], capture_output=True, text=True)
     if out.returncode != 0:
         raise HarnessError("party: np_save4 cannot read %s" % s.save_path)
-    return json.loads(out.stdout)["party"]
+    return json.loads(out.stdout)
 
 
 def _stores(s):
@@ -1168,6 +1186,33 @@ def bot_hatch(s, step, ctx):
         if not left:
             return
     raise HarnessError("hatch: %d egg(s) still unhatched after %d frames" % (eggs, bound))
+
+
+def bot_pace(s, step, ctx):
+    """Run back and forth between (x, z) and (x+1, z) until `until` (a Python expression over the save dump `s`,
+    as [expect] save expressions) holds, checked by an in-game save every `every` steps (default 128): the steps
+    the Day Care's egg roll counts (daycare.c Daycare_Update: one roll each 256 steps of the second parent).
+    Battles on the way are fled, scenes advanced."""
+    bound = _int(step, "max", 60000)
+    limit = s.frame + bound
+    every = _int(step, "every", 128)
+    spot = (int(step["x"]), int(step["z"]))
+    bot_walk_to(s, {"x": spot[0], "z": spot[1]}, ctx)
+    k = 0
+    while True:
+        if eval(step["until"], {}, {"s": save_dump(s, ctx)}):
+            s.note("pace: %s after %d steps" % (step["until"], k))
+            return
+        for _ in range(every):
+            if s.frame >= limit:
+                raise HarnessError("pace: %s not true after %d steps (%d frames)" % (step["until"], k, bound))
+            k += 1
+            p = s.probe()
+            d = "right" if p.x == spot[0] else "left"
+            s.run(24, d + "+b", until=["x!=%d" % p.x, "in_battle=1"])
+            s.run(24, until="field_ready=1")
+            if not s.field_ready:
+                _field_or_handle(s, {"on_battle": "flee"}, ctx, limit)
 
 
 def bot_grind(s, step, ctx):
@@ -1335,6 +1380,62 @@ def _menu_key(s, key, n=1, gap=8):
         s.run(gap)
 
 
+def _field_move_entry(s, step, ctx, move, what):
+    """(party slot, context-menu entry) of a field move: `slot` names the slot, else the first party member that
+    knows `move` (an in-game save's dump). The context menu lists SUMMARY, then the field moves in move-slot order up
+    to the first empty slot, SWITCH, ITEM, CANCEL (party_menu/main.c:1791-1839)."""
+    mons = party(s, ctx)
+    if "slot" in step:
+        slot = _int(step, "slot", 0)
+    else:
+        slot = next((i for i, m in enumerate(mons) if any(mv["id"] == move for mv in m["moves"])), None)
+        if slot is None:
+            raise HarnessError("%s: no party member knows move %d" % (what, move))
+    known = []
+    for mv in (mv["id"] for mv in mons[slot]["moves"]):
+        if not mv:
+            break
+        if mv in FIELD_MOVES:
+            known.append(mv)
+    if move not in known:
+        raise HarnessError("%s: party slot %d does not know move %d" % (what, slot, move))
+    return slot, 1 + known.index(move)
+
+
+def _open_field_move(s, slot, entry):
+    """X, POKEMON (the start menu's remembered cursor tracked per run), the party slot, the context-menu entry, A."""
+    s.run(2, "x")
+    s.run(30)
+    cur = START_MENU.index(getattr(s, "start_menu_option", "pokedex"))
+    want = START_MENU.index("pokemon")
+    _menu_key(s, "down" if want > cur else "up", abs(want - cur))
+    s.run(2, "a")
+    s.start_menu_option = "pokemon"
+    s.run(90)
+    # the party grid: two columns, slot 0 at the top left (GridMenuCursorPosition moves)
+    _menu_key(s, "right", slot % 2)
+    _menu_key(s, "down", slot // 2)
+    s.run(2, "a")
+    s.run(20)
+    _menu_key(s, "down", entry)
+    s.run(2, "a")
+
+
+def bot_field_move(s, step, ctx):
+    """Use a field move from the party menu as a player does (Defog, Flash, Teleport, Dig, Sweet Scent, Softboiled):
+    X, POKEMON, the party member that knows `move` (a MOVE_* name or id; `slot` names the slot), the move in its
+    context menu, then the text it starts is advanced (advance_text) unless `text = false`. The start menu needs the
+    Pokedex (START_MENU's order)."""
+    move = ctx.resolve(step["move"])
+    bot_wait_field(s, step, ctx)
+    slot, entry = _field_move_entry(s, step, ctx, move, "field_move")
+    s.note("field_move: move %d, party slot %d, menu entry %d" % (move, slot, entry))
+    _open_field_move(s, slot, entry)
+    if step.get("text", True):
+        bot_advance_text(s, {"max": step["max"]} if "max" in step else {}, ctx)
+
+
+
 def bot_fly(s, step, ctx):
     """Fly to `map` (a town's header) the way a player does: X, POKEMON, the party member that knows Fly, FLY, the
     town map's cursor moved block by block to the destination, A. `slot` names the party slot (default: the first
@@ -1363,47 +1464,10 @@ def bot_fly(s, step, ctx):
         if not blocks:
             raise HarnessError("fly: %s is on no overworld block" % step["map"])
         goal = min(blocks, key=lambda b: abs(b[0] - here[0]) + abs(b[1] - here[1]))
-    if "slot" in step:
-        slot = _int(step, "slot", 0)
-        moves = None
-    else:
-        mons = party(s, ctx)
-        k = next((i for i, m in enumerate(mons) if any(mv["id"] == MOVE_FLY for mv in m["moves"])), None)
-        if k is None:
-            raise HarnessError("fly: no party member knows Fly")
-        slot, moves = k, [mv["id"] for mv in mons[k]["moves"]]
-    if moves is None:
-        mons = party(s, ctx)
-        moves = [mv["id"] for mv in mons[slot]["moves"]]
-    # the context menu: SUMMARY, the field moves in move-slot order (up to the first empty slot), SWITCH, ITEM,
-    # CANCEL (party_menu/main.c:1791-1839)
-    known = []
-    for mv in moves:
-        if not mv:
-            break
-        if mv in FIELD_MOVES:
-            known.append(mv)
-    if MOVE_FLY not in known:
-        raise HarnessError("fly: party slot %d does not know Fly" % slot)
-    entry = 1 + known.index(MOVE_FLY)
+    slot, entry = _field_move_entry(s, step, ctx, MOVE_FLY, "fly")
     s.note("fly: to %s (%d), block %s from %s, party slot %d, menu entry %d" % (step["map"], dest, goal, here, slot,
                                                                                 entry))
-    # start menu -> POKEMON
-    s.run(2, "x")
-    s.run(30)
-    cur = START_MENU.index(getattr(s, "start_menu_option", "pokedex"))
-    want = START_MENU.index("pokemon")
-    _menu_key(s, "down" if want > cur else "up", abs(want - cur))
-    s.run(2, "a")
-    s.start_menu_option = "pokemon"
-    s.run(90)
-    # the party grid: two columns, slot 0 at the top left (GridMenuCursorPosition moves)
-    _menu_key(s, "right", slot % 2)
-    _menu_key(s, "down", slot // 2)
-    s.run(2, "a")
-    s.run(20)
-    _menu_key(s, "down", entry)
-    s.run(2, "a")
+    _open_field_move(s, slot, entry)
     s.run(120)
     # the fly map opens with the cursor on the player's block (town_map/main.c:218-227)
     gx = min(max(goal[0], FLY_X[0]), FLY_X[1])
@@ -1428,6 +1492,62 @@ def bot_fly(s, step, ctx):
     s.note("fly: landed on map %d at (%d,%d)" % (s.map_id, p.x, p.z))
 
 
+FISH_ENDS = ("caught", "early", "away", "none")
+
+
+def _log_since(s, pos):
+    """The run log's text from byte `pos` on, and the new end."""
+    s._log.flush()
+    with open(s.log_path, "rb") as f:
+        f.seek(pos)
+        data = f.read()
+    return data.decode("utf-8", "replace"), pos + len(data)
+
+
+def bot_fish(s, step, ctx):
+    """Fish with the registered rod as a player does: Y casts; the guest's fishing trace (PC_TRACE_FISH=1 in [run]
+    env; pc_fish_trace, pc_probe2d.c: one line per state change) says when the bite window opens, and A hooks
+    then (a press before the bite reels in early, fishing.c). A cast that ends without a catch ("none": not even a
+    nibble, "away", "early") has its message closed with B and the rod is cast again, up to `casts` (default 12).
+    Done when the hooked Pokemon's battle starts; the screen at the bite goes on the contact sheet."""
+    casts = _int(step, "casts", 12)
+    limit = s.frame + _int(step, "max", 9000)
+    bot_wait_field(s, {}, ctx)
+    _, pos = _log_since(s, 0)
+    seen = False
+    for n in range(1, casts + 1):
+        s.run(2, "y")
+        outcome = None
+        while outcome is None:
+            if s.frame >= limit:
+                raise HarnessError("fish: cast %d did not end in %d frames%s" % (
+                    n, _int(step, "max", 9000), "" if seen else " (no pc-fish trace: set PC_TRACE_FISH=1)"))
+            s.run(2)
+            txt, pos = _log_since(s, pos)
+            for word in re.findall(r"pc-fish: f=\d+ rod=\d+ (\w+)", txt):
+                seen = True
+                if word == "bite":
+                    snap(s)
+                    s.run(2, "a")
+                elif word in FISH_ENDS:
+                    outcome = word
+        s.note("fish: cast %d: %s" % (n, outcome))
+        if outcome == "caught":
+            # "Landed a Pokemon!" waits for A, then the battle starts
+            for _ in range(40):
+                if s.run(20, until="in_battle=1"):
+                    return
+                s.run(2, "a")
+            raise HarnessError("fish: hooked, but no battle started")
+        for _ in range(30):
+            if s.run(20, until="field_ready=1"):
+                break
+            s.run(2, "b")
+        s.run(20)
+    raise HarnessError("fish: nothing hooked in %d casts" % casts)
+
+
+
 BOTS = {
     "press": bot_press,
     "tap": bot_tap,
@@ -1449,5 +1569,8 @@ BOTS = {
     "fly": bot_fly,
     "steps": bot_steps,
     "moves": bot_moves,
+    "field_move": bot_field_move,
+    "fish": bot_fish,
     "hatch": bot_hatch,
+    "pace": bot_pace,
 }

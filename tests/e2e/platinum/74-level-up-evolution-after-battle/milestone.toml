@@ -1,50 +1,38 @@
-# Level-up evolution at the end of a battle: CATERPIE lv6 KOs a lab-started wild CHANSEY lv4
-# (145 exp >= 127 to lv7) and evolves into METAPOD inside the battle app.
-# Start: Solaceon spawn (566,657). End: same tile, slot 0 METAPOD lv7.
+# Level-up evolution at the end of a battle: CATERPIE lv6 fights wild Pokemon in Route 202's tall grass
+# (Dragon Rage, 40 fixed, one-shots every lv2-4 there) until it reaches lv7, and evolves into METAPOD after
+# the battle that levels it (battle_main.c:274-297; evolution allowed, never B).
+# Start: Route 202 (188,812) beside the grass. End: Route 202, slot 0 METAPOD lv7.
 title = "Level-up evolution after battle: Caterpie -> Metapod"
-status = "planned"
 priority = "P1"
-estimate = 8000
+estimate = 10408
 refs = [
-  "src/battle/battle_system.c:824-853",
   "src/battle/battle_main.c:274-297",
-  "src/battle/battle_script.c:2216-2236",
-  "res/pokemon/caterpie/data.json",
-  "res/pokemon/chansey/data.json",
-  "pc/src/pc_lab.c:1337-1345",
-  "pc/src/pc_lab.c:1369-1372",
-  "pc/src/pc_lab.c:1446",
-  "pc/src/pc_lab.c:1459-1479",
-  "pc/tests/corpus/evo-level.recipe",
-  "pc/tests/corpus/evo-stone.recipe",
+  "res/field/encounters/encounters_route_202.json",
+  "tests/e2e/tools/probe_map.py (Route 202 grass x 181..191, z 811..817)",
 ]
 
 [start]
 recipe = "start.recipe"
 
 [run]
-frames = 12000
-# lab battle hook: wild CHANSEY (113) lv4 via Encounter_NewVsSpeciesAtLevel (pc_lab.c:1369-1372)
-env = { PC_LAB_BATTLE = "wild 113 4", PC_LAB_BATTLE_AT = "2600" }
+frames = 15700
 
 [[step]]
-do = "wait_battle"
-max = 5000
-note = "the lab battle hook starts the wild CHANSEY lv4"
+do = "grind"
+x = 188
+z = 813
+level = 7
+note = "wild battles in the grass (188,813)/(189,813) until the lead is lv7; the last one ends in the evolution scene"
 
 [[step]]
-do = "auto_battle"
-note = "Dragon Rage (fixed 40) one-shots CHANSEY (35 max HP at lv4); evolution allowed, never B"
-shot = "battle"
-
-[[step]]
-do = "advance_text"
-max = 3000
-note = "evolution screen runs in the battle app tail (battle_main.c:274-297); A alone does not cancel"
+do = "wait_field"
 shot = "evolved"
 
 [expect]
-map = 433
+map = "MAP_HEADER_ROUTE_202"
 battles = 1
 party = ["SPECIES_METAPOD"]
-save = ['s["party"][0]["species"] == 11', 's["party"][0]["level"] == 7']
+save = ['s["party"][0]["species"] == 11', 's["party"][0]["level"] >= 7', '10 in s["pokedex"]["caught_list"] or 11 in s["pokedex"]["seen_list"]']
+
+[[shots]]
+frames = [8140, 9000, 9500, 9900, 10300]

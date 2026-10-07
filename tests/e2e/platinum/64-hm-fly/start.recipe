@@ -12,4 +12,8 @@ party-move 0 0 MOVE_FLY
 flag FLAG_FIRST_ARRIVAL_HEARTHOME_CITY
 flag FLAG_FIRST_ARRIVAL_SOLACEON_TOWN
 # Hearthome spawn tile (src/spawn_locations.c:38; pc/tests/corpus/hearthome.recipe)
+# the start menu: POKEDEX first (the fly/field_move bots count from it, bots.py START_MENU), and POKEMON only once a
+# starter was chosen (StartMenu_GetNormalHiddenOptions, start_menu.c:371-373)
+pokedex 1
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
 map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN

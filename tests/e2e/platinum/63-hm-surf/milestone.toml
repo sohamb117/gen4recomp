@@ -1,10 +1,8 @@
-# HM03 Surf, A-press path from the Route 205 South river bank, then swim north 4 tiles.
-# Start: ROUTE_205_SOUTH (162,604). End: (162,600); the header becomes
-# FUEGO_IRONWORKS_OUTSIDE (204) once the player moves (matrix cell owner).
+# HM03 Surf, A-press path from the Route 205 South river bank, then swim north across the river.
+# Start: ROUTE_205_SOUTH (180,604) facing the water. End: the north bank (180,599), header FUEGO_IRONWORKS_OUTSIDE (204).
 title = "HM03 Surf: cross the Route 205 river"
-status = "planned"
 priority = "P1"
-estimate = 5800
+estimate = 2131
 refs = [
   "res/field/scripts/scripts_celestic_town_cave.s:115-136",
   "res/field/scripts/scripts_celestic_town_cave.s:129",
@@ -25,7 +23,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 8700
+frames = 3200
 # pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
 env = { PC_TRACE_JOURNAL = "1" }
 
@@ -49,19 +47,15 @@ do = "advance_text"
 shot = "surfing"
 
 [[step]]
-do = "press"
-keys = "UP"
-hold = 16
-gap = 8
-times = 4
-note = "[INFERENCE] the surf mount lands on (162,603); 3-4 steps north reach (162,600); walk_to does not path over water"
-
-[[step]]
-do = "wait_field"
+do = "walk_to"
+x = 180
+z = 599
+surf = true
+note = "across the river (rows 603..600 water, tools/probe_map.py) to the north bank; dismounts on land"
 shot = "north-bank"
 
 [expect]
-map = 204
-position = [162, 600]
+map = 204   # the north bank is FUEGO_IRONWORKS_OUTSIDE's matrix cell
+position = [180, 599]
 badge = ["BADGE_ID_FEN"]
 log = ['pc-journal: f=\d+ event=21 ']   # LOCATION_EVENT_USED_SURF
