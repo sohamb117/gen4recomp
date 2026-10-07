@@ -1,0 +1,9 @@
+# Boost on 10's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Bite (Turtwig's own level-21 move) in slot 0, the move auto_battle uses: neutral on every opponent here, where
+# Razor Leaf is resisted by Zubat/Wurmple/Silcoon: trdata.json #296 WURMPLE 9 + SILCOON 9, #297 ZUBAT 11, Route 204
+# #10-#15. Rock Smash (HM06, received in 06) for the Ravaged Path rocks (zone_event 0246 objects 0-26).
+party-level 0 24
+party-move 0 0 MOVE_BITE
+party-move 0 1 MOVE_ROCK_SMASH
+party-move 0 2 MOVE_RAZOR_LEAF
+party-move 0 3 MOVE_TACKLE

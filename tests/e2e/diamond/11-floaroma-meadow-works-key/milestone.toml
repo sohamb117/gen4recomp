@@ -38,6 +38,7 @@ notes = "Estimate: Pt 10 (19000) plus the Floaroma Cyrus scene. Liv & Liz (Route
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 30000
@@ -53,16 +54,12 @@ note = "Jubilife north (seamless) -> Route 204 South -> Ravaged Path door (zone_
 do = "wait_map"
 map = "MAP_RAVAGED_PATH"
 
-# PHASE2: the Ravaged Path has 27 Rock Smash rocks (zone_event 0246 objects 0-26; (23,44), (22,43), (22,42) sit between
-# the entrance (19,50) and the exit (28,44)); which of them block was not derived from the map's collision. walk_to treats
-# a rock as an object; if it reports no path, walk_to the tile before the blocking rock facing it with interact = true and
-# advance_text (Rock Smash from Staraptor slot 1, needs BADGE_COAL [INFERENCE]; A = YES).
-
 [[step]]
 do = "walk_to"
 x = 28
 z = 44
-note = "Ravaged Path exit (zone_event 0246 warp 1) -> Route 204 North (180,698)"
+hm = true
+note = "Ravaged Path exit (zone_event 0246 warp 1) -> Route 204 North (180,698); hm: the Rock Smash rocks in the way are smashed (Rock Smash from boost.recipe, BADGE_COAL)"
 
 [[step]]
 do = "wait_map"
