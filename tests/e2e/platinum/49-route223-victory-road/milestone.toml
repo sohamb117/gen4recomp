@@ -1,5 +1,5 @@
 # Proves Surf + Waterfall on Route 223 and the Victory Road HM floors.
-# Start: Sunyshore Pokémon Center door (860,784) -> end: Pokémon League (172) north of Victory Road.
+# Start: Sunyshore Pokémon Center door (860,784) -> end: the League's north Pokémon Center 1F (11,11), through Victory Road.
 
 title = "Route 223 and Victory Road to the League"
 status = "planned"
@@ -17,18 +17,183 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 45000
+frames = 120000
 
 [[step]]
-do = "wait_field"
-# PHASE2: Surf start tile north of Sunyshore (PC_LAB_MAPSCAN of map 150/468), Surf north along Route 223, Waterfall at
-#   (840..855,604) (BEACON, src/field_move_tasks.c:590) -> League south area -> Victory Road 1F entrance (850..852,597) ->
-#   VICTORY_ROAD_1F (244) (14..16,78). Inside: Rock Climb 1F (22,34..37),(22,49..50); 2F Strength boulders / Rock Smash
-#   (events_victory_road_2f.json); B1F Surf + Waterfall (12..14,10),(24..26,10); exit 1F (34,4..6) -> League (853,581..583).
-#   Floor order from the events json warp graph. Two double battles (Al & Kay, Jo & Pat) if on the path.
+do = "walk_to"
+on_battle = "flee"
+max = 12000
+surf = true
+via = [[855, 711], [848, 711], [848, 657], [841, 657], [841, 658], [837, 658], [837, 646], [843, 646], [843, 616], [846, 616],
+       [846, 606]]
+x = 845
+z = 606
+note = "Sunyshore north beach, Surf up Route 223 (its swimmers fought) to the waterfall's foot (tools/pt_route.py 855,743 845,606 ... --surf)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 4000
+surf = true
+x = 845
+z = 599
+note = "Waterfall (845,604) up (BEACON, src/field_move_tasks.c:590), onto the League's south shore"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 851
+z = 597
+note = "Victory Road entrance, events_pokemon_league warp 2 -> VICTORY_ROAD_1F (15,78)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VICTORY_ROAD_1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 8000
+hm = true
+via = [[15, 76], [15, 64], [15, 62], [18, 62], [31, 62], [34, 62], [34, 48], [36, 48], [36, 54], [25, 54], [25, 56], [12, 56],
+       [12, 43], [9, 43], [9, 37], [5, 37]]
+x = 4
+z = 37
+note = "1F: Rock Climb ledges, to the west stairs (4,37) -> 2F (20,16) (tools/pt_cave.py VICTORY_ROAD_1F 15,77 VICTORY_ROAD_2F ... --climb --smash)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VICTORY_ROAD_2F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 4000
+hm = true
+via = [[16, 16], [16, 21], [17, 21]]
+x = 17
+z = 27
+note = "2F: Rock Smash (16,19)/(17,19), down to the three boulders (16,28),(17,28),(16,29)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 6000
+dirs = [["F", "D"], ["D", "z28"], ["L", "x16"], ["D", "z29"], ["L", "x15"], ["D", "z31"]]
+note = "Strength (using it pushes (17,28) south to (17,29)); a move into a boulder pushes it and the player stays, so each leg is a coordinate target (the next try walks into the vacated tile): (16,28) west to (15,28), (16,29) south to (16,30); through to (15,31)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 3000
+x = 5
+z = 31
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 6000
+dirs = [["D", "z32"], ["L", "x3"], ["D", "z34"], ["R", "x4"], ["F", "R"], ["R", "x5"], ["U", "z33"]]
+note = "Ace Trainer Omar (5,27) sees (5,31) and walks up (fought, then the leg goes on); boulder (5,32) south to (5,33), round by (3,32)..(4,34), Rock Smash (5,34), push it back north to (5,32): row 33 opens east"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 4000
+hm = true
+via = [[9, 33], [9, 37], [14, 37], [14, 36], [21, 36], [21, 37]]
+x = 22
+z = 37
+note = "Rock Smash (9,36), the south passage (Ace Trainer Sydney (15,37) sees the walk)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 3000
+dirs = [["R", "x23"]]
+note = "boulder (23,37) east to (24,37), into its tile: the x 23 column north opens"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 4000
+via = [[23, 37], [23, 32], [22, 32], [22, 26]]
+x = 23
+z = 26
+note = "north up the column (Veteran Clayton (23,29) sees it) to the stairs (23,26) -> 1F (7,47)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VICTORY_ROAD_1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 6000
+hm = true
+via = [[7, 48], [8, 48], [22, 48]]
+x = 22
+z = 53
+note = "1F: along the bridge deck (rows 47-48), off its end (22,48) down the Rock Climb wall (22,49..52)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 8000
+dirs = [["L", "x17"], ["U", "z42"], ["R", "x42"], ["U", 1]]
+note = "west, north up the passage under the bridge, east (Black Belt Miles (30,41) sees row 42) to the B1F stairs (42,41) -> B1F (4,39): walk_to's A* plans these legs back up the wall (the probe's grid has no levels)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VICTORY_ROAD_B1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 10000
+surf = true
+hm = true
+via = [[16, 39], [16, 30], [19, 30], [19, 22], [24, 22], [24, 5], [4, 5], [4, 22]]
+x = 3
+z = 22
+note = "B1F: Surf north, Waterfall (24,10) up, west along the top pool, south down x 4 to the stairs (3,22) -> 1F (41,24) (pt_cave.py ... --surf --waterfall)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VICTORY_ROAD_1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 6000
+hm = true
+via = [[29, 24], [29, 37], [38, 37], [38, 32], [38, 18], [38, 6], [35, 6]]
+x = 34
+z = 6
+note = "1F: Rock Climb (38,33..36) up, the bridge north, the exit (34,6) -> Pokemon League (853,583)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 6000
+surf = true
+via = [[847, 575]]
+x = 847
+z = 559
+shot = "league_north"
+note = "Surf the moat and its Waterfall (847,569) up to the north Pokemon Center door, events_pokemon_league warp 1 -> NORTH_POKECENTER_1F (11,11)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F"
 
 [expect]
-map = "MAP_HEADER_POKEMON_LEAGUE"
+map = "MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F"
 flags = ["FLAG_FIRST_ARRIVAL_VICTORY_ROAD"]

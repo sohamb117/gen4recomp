@@ -1,5 +1,5 @@
 # Proves the champion room frame script, the single battle vs Cynthia and the auto-warp to the HoF hallway.
-# Start: Champion room (8,18) -> end: hallway to the Hall of Fame (186) at (5,23).
+# Start: Lucian room after the win (54's end) -> lift -> champion room (8,18) -> end: hallway to the Hall of Fame (186) at (5,23).
 
 title = "Champion Cynthia"
 status = "planned"
@@ -24,11 +24,41 @@ lab = "lab.recipe"
 frames = 24000
 
 [[step]]
+do = "walk_to"
+x = 8
+z = 2
+note = "exit to POKEMON_LEAGUE_ELEVATOR_TO_CHAMPION_ROOM (events_pokemon_league_lucian_room warp 0, the exit door removed after the win)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_ELEVATOR_TO_CHAMPION_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 19
+note = "the platform lift's coord (4,19) (scripts_pokemon_league_elevator_to_champion_room.s CoordEvent_PlatformLift: TriggerPlatformLift)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 2
+note = "lift top, warp 0 (4,2) -> POKEMON_LEAGUE_CHAMPION_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_CHAMPION_ROOM"
+
+[[step]]
 do = "advance_text"
 note = "frame table: walk 4 north, intro, battle (scripts_pokemon_league_champion_room.s:14-48)"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 shot = "champion_cynthia"
 note = "TRAINER_CHAMPION_CYNTHIA (267), single (champion_cynthia.json:15)"
 

@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~1109262 frames estimated
+### Story chain: 56 milestones, ~1122539 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -150,12 +150,12 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [41-mt-coronet-climb](platinum/41-mt-coronet-climb/milestone.toml) | Mt Coronet: Black Flute and the climb to Spear Pillar | P0 | 48985 | prev + `lab.recipe` | MAP_HEADER_SPEAR_PILLAR | passing |
 | [42-spear-pillar](platinum/42-spear-pillar/milestone.toml) | Spear Pillar: grunt double, Mars + Jupiter tag, Giratina's rift | P0 | 27565 | prev + `lab.recipe` | MAP_HEADER_DISTORTION_WORLD_1F | passing |
 | [43-distortion-world-cyrus](platinum/43-distortion-world-cyrus/milestone.toml) | Distortion World: to B7F and Cyrus | P0 | 45213 | prev + `lab.recipe` | MAP_HEADER_DISTORTION_WORLD_B7F | passing |
-| [44-giratina-sendoff-spring](platinum/44-giratina-sendoff-spring/milestone.toml) | Giratina Origin battle, out to Sendoff Spring | P0 | 14000 | prev + `lab.recipe` | MAP_HEADER_SENDOFF_SPRING | planned |
-| [45-sandgem-rowan-unlocks-sunyshore](platinum/45-sandgem-rowan-unlocks-sunyshore/milestone.toml) | Sandgem lab: Rowan after the Distortion World | P0 | 5000 | prev + `lab.recipe` | MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB | planned |
-| [46-sunyshore-flint-lighthouse](platinum/46-sunyshore-flint-lighthouse/milestone.toml) | Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | planned |
-| [47-sunyshore-gym-volkner](platinum/47-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | 26000 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | planned |
-| [48-sunyshore-jasmine-waterfall](platinum/48-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | 6000 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | planned |
-| [49-route223-victory-road](platinum/49-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the League | P0 | 30000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE | planned |
+| [44-giratina-sendoff-spring](platinum/44-giratina-sendoff-spring/milestone.toml) | Giratina Origin battle, out to Sendoff Spring | P0 | 7331 | prev + `lab.recipe` | MAP_HEADER_SENDOFF_SPRING | passing |
+| [45-sandgem-rowan-unlocks-sunyshore](platinum/45-sandgem-rowan-unlocks-sunyshore/milestone.toml) | Sandgem lab: Rowan after the Distortion World | P0 | 7837 | prev + `lab.recipe` | MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB | passing |
+| [46-sunyshore-flint-lighthouse](platinum/46-sunyshore-flint-lighthouse/milestone.toml) | Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | 18045 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | passing |
+| [47-sunyshore-gym-volkner](platinum/47-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | 36319 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | passing |
+| [48-sunyshore-jasmine-waterfall](platinum/48-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | 3745 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | passing |
+| [49-route223-victory-road](platinum/49-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the League | P0 | 30000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F | planned |
 | [50-league-north-rival-door](platinum/50-league-north-rival-door/milestone.toml) | Pokémon League: last rival battle, door guard | P0 | 10000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F | planned |
 | [51-e4-aaron](platinum/51-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM | planned |
 | [52-e4-bertha](platinum/52-e4-bertha/milestone.toml) | Elite Four: Bertha | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_BERTHA_ROOM | planned |
@@ -580,7 +580,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_SENDOFF_SPRING; >= 1 battles; flags set FLAG_GALACTIC_LEFT_LAKE_VALOR, FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS; flags clear FLAG_SPEAR_PILLAR_IS_DISTORTED; vars VAR_EXITED_DISTORTION_WORLD_STATE=2, VAR_SANDGEM_TOWN_LAB_STATE=2
-- frames: estimate 14000, budget 21000
+- frames: estimate 7331, budget 11000
 - refs: scripts_distortion_world_b7f.s:16-22; scripts_distortion_world_giratina_room.s:61-70; scripts_distortion_world_giratina_room.s:71-85; scripts_distortion_world_giratina_room.s:97-100; scripts_distortion_world_giratina_room.s:87-95; scripts_distortion_world_giratina_room.s:29-51; scripts_sendoff_spring.s:18-48; scripts_distortion_world_giratina_room.s:25; scripts_distortion_world_giratina_room.s:68; scripts_distortion_world_giratina_room.s:70; scripts_distortion_world_giratina_room.s:98; scripts_distortion_world_giratina_room.s:99; scripts_distortion_world_giratina_room.s:100; scripts_distortion_world_giratina_room.s:43; scripts_distortion_world_giratina_room.s:44; scripts_sendoff_spring.s:20; scripts_sendoff_spring.s:37; scripts_sendoff_spring.s:38; scripts_sendoff_spring.s:39; scripts_sendoff_spring.s:40; scripts_sendoff_spring.s:41; scripts_sendoff_spring.s:42; scripts_sendoff_spring.s:47; scripts_sendoff_spring.s:43; scripts_sendoff_spring.s:44; scripts_sendoff_spring.s:45; scripts_sendoff_spring.s:46; pc_lab.c:660-672; src/overlay009/ov9_02249960.c; include/constants/distortion_world.h:19
 
 #### platinum/45-sandgem-rowan-unlocks-sunyshore — Sandgem lab: Rowan after the Distortion World
@@ -589,7 +589,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB; flags set FLAG_HIDE_VALOR_LAKEFRONT_COLLECTOR; vars VAR_VALOR_LAKEFRONT_BLOCK_SUNYSHORE_STATE=1, VAR_SANDGEM_TOWN_LAB_STATE=3, VAR_EXITED_DISTORTION_WORLD_STATE=3
-- frames: estimate 5000, budget 12000
+- frames: estimate 7837, budget 11800
 - refs: scripts_init_sandgem_town_pokemon_research_lab.s; scripts_sandgem_town_pokemon_research_lab.s:79-117; scripts_sandgem_town_pokemon_research_lab.s:23-37; scripts_sandgem_town_pokemon_research_lab.s:49; scripts_sandgem_town_pokemon_research_lab.s:81; scripts_sandgem_town_pokemon_research_lab.s:110; scripts_sandgem_town_pokemon_research_lab.s:111; scripts_sandgem_town_pokemon_research_lab.s:112; scripts_sandgem_town_pokemon_research_lab.s:113; scripts_sandgem_town_pokemon_research_lab.s:114; scripts_sandgem_town_pokemon_research_lab.s:115; scripts_valor_lakefront.s:516-533; scripts_sandgem_town_pokemon_research_lab.s:28; scripts_sandgem_town_pokemon_research_lab.s:32
 
 #### platinum/46-sunyshore-flint-lighthouse — Sunyshore: Flint, Volkner at Vista Lighthouse
@@ -598,7 +598,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_SUNYSHORE_CITY; flags set FLAG_VOLKNER_RETURNED_TO_GYM, FLAG_HIDE_SUNYSHORE_CITY_FLINT; vars VAR_SUNYSHORE_CITY_STATE=1
-- frames: estimate 9000, budget 40000
+- frames: estimate 18045, budget 27100
 - refs: scripts_init_sunyshore_city.s; scripts_sunyshore_city.s:449-487; scripts_vista_lighthouse.s:30-73; scripts_sunyshore_city.s:623-665; events_route_222.json; scripts_sunyshore_city.s:484; scripts_sunyshore_city.s:486; scripts_sunyshore_city.s:34; scripts_sunyshore_city.s:35; scripts_vista_lighthouse.s:71; scripts_vista_lighthouse.s:72; scripts_sunyshore_city.s:663; scripts_sunyshore_city.s:451-454; events_sunyshore_city.json; scripts_vista_lighthouse_elevator.s:7-26; events_vista_lighthouse.json; scripts_vista_lighthouse_elevator.s:28-35
 
 #### platinum/47-sunyshore-gym-volkner — Sunyshore Gym: Volkner and the Beacon Badge
@@ -607,7 +607,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_SUNYSHORE_CITY; 8 badges; badge BADGE_ID_BEACON; >= 1 battles; flags set FLAG_RECEIVED_VOLKNER_TM57; vars VAR_SUNYSHORE_CITY_STATE=2
-- frames: estimate 26000, budget 50000
+- frames: estimate 36319, budget 54500
 - refs: gym_features.c:410; gym_features.c:215-220; scripts_sunyshore_city_gym_room_3.s:41; scripts_sunyshore_city_gym_room_3.s:43-50; scripts_sunyshore_city_gym_room_3.s:51; scripts_sunyshore_city_gym_room_3.s:58-61; scripts_sunyshore_city_gym_room_3.s:62; src/overlay008/gym_features.c:215-220; src/overlay008/gym_features.c:410; scripts_sunyshore_city_gym_room_3.s:41-62
 
 #### platinum/48-sunyshore-jasmine-waterfall — Sunyshore: Jasmine gives HM07 Waterfall
@@ -616,16 +616,16 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_SUNYSHORE_CITY; flags set FLAG_RECEIVED_SUNYSHORE_CITY_HM07; vars VAR_SUNYSHORE_CITY_STATE=3
-- frames: estimate 6000, budget 9000
+- frames: estimate 3745, budget 5700
 - refs: scripts_sunyshore_city.s:44-131; scripts_sunyshore_city.s:415-447; scripts_sunyshore_city.s:48; scripts_sunyshore_city.s:113; scripts_sunyshore_city.s:442-444; scripts_sunyshore_city.s:445; scripts_sunyshore_city.s:129
 
 #### platinum/49-route223-victory-road — Route 223 and Victory Road to the League
-- proves: Proves Surf + Waterfall on Route 223 and the Victory Road HM floors. Start: Sunyshore Pokémon Center door (860,784) -> end: Pokémon League (172) north of Victory Road.
+- proves: Proves Surf + Waterfall on Route 223 and the Victory Road HM floors. Start: Sunyshore Pokémon Center door (860,784) -> end: the League's north Pokémon Center 1F (11,11), through Victory Road.
 - start: prev + `lab.recipe`; warp MAP_HEADER_SUNYSHORE_CITY 11; lab state lines: 8 badge, 49 clear-flag, 220 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 90 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map MAP_HEADER_POKEMON_LEAGUE; flags set FLAG_FIRST_ARRIVAL_VICTORY_ROAD
-- frames: estimate 30000, budget 45000
+- end state: map MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F; flags set FLAG_FIRST_ARRIVAL_VICTORY_ROAD
+- frames: estimate 30000, budget 120000
 - refs: events_route_223.json; field_move_tasks.c:590; events_victory_road_2f.json; scripts_victory_road_1f.s:10; scripts_pokemon_league_south_pokecenter_1f.s:15; src/field_move_tasks.c:590
 
 #### platinum/50-league-north-rival-door — Pokémon League: last rival battle, door guard
@@ -638,8 +638,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: scripts_pokemon_league_north_pokecenter_1f.s:16-31; scripts_pokemon_league_north_pokecenter_1f.s:26-29; scripts_pokemon_league_north_pokecenter_1f.s:108-190; scripts_pokemon_league_north_pokecenter_1f.s:37-73; scripts_pokemon_league_north_pokecenter_1f.s:17; scripts_pokemon_league_north_pokecenter_1f.s:18-25; scripts_pokemon_league_north_pokecenter_1f.s:110; scripts_pokemon_league_north_pokecenter_1f.s:188; scripts_pokemon_league_north_pokecenter_1f.s:189; scripts_pokemon_league_north_pokecenter_1f.s:68
 
 #### platinum/51-e4-aaron — Elite Four: Aaron
-- proves: Proves the Aaron room: enter-room frame script, single battle, exit door. Start: Aaron room (8,11) -> end: same room, FLAG_DEFEATED_AARON. Lab-startable alone (nothing checks the previous member).
-- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM 1; lab state lines: 8 badge, 49 clear-flag, 224 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
+- proves: Proves the platform lift up to the Aaron room, its enter-room frame script, the single battle and the exit door. Start: League north Pokémon Center 1F, the door guard moved away (50's end) -> lift -> end: Aaron room after the win, FLAG_DEFEATED_AARON.
+- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F 1; lab state lines: 8 badge, 49 clear-flag, 224 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM; >= 1 battles; flags set FLAG_DEFEATED_AARON
@@ -647,8 +647,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: scripts_pokemon_league_aaron_room.s:61-69; scripts_pokemon_league_aaron_room.s:10-30; elite_four_aaron.json:13; scripts_pokemon_league_aaron_room.s:66; scripts_pokemon_league_aaron_room.s:22; scripts_pokemon_league_aaron_room.s:24; scripts_pokemon_league_aaron_room.s:18-19
 
 #### platinum/52-e4-bertha — Elite Four: Bertha
-- proves: Proves the Bertha room: enter-room frame script, single battle, exit door. Start: Bertha room (8,11) -> end: same room, FLAG_DEFEATED_BERTHA. Lab-startable alone (nothing checks the previous member).
-- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_BERTHA_ROOM 1; lab state lines: 8 badge, 50 clear-flag, 226 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
+- proves: Proves the platform lift up to the Bertha room, its enter-room frame script, the single battle and the exit door. Start: Aaron room after the win (51's end) -> lift -> end: Bertha room after the win, FLAG_DEFEATED_BERTHA.
+- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM 1; lab state lines: 8 badge, 50 clear-flag, 226 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_BERTHA_ROOM; >= 1 battles; flags set FLAG_DEFEATED_BERTHA
@@ -656,8 +656,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: scripts_pokemon_league_bertha_room.s:61-69; scripts_pokemon_league_bertha_room.s:66; scripts_pokemon_league_bertha_room.s:22
 
 #### platinum/53-e4-flint — Elite Four: Flint
-- proves: Proves the Flint room: enter-room frame script, single battle, exit door. Start: Flint room (8,11) -> end: same room, FLAG_DEFEATED_FLINT. Lab-startable alone (nothing checks the previous member).
-- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM 1; lab state lines: 8 badge, 51 clear-flag, 228 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
+- proves: Proves the platform lift up to the Flint room, its enter-room frame script, the single battle and the exit door. Start: Bertha room after the win (52's end) -> lift -> end: Flint room after the win, FLAG_DEFEATED_FLINT.
+- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_BERTHA_ROOM 1; lab state lines: 8 badge, 51 clear-flag, 228 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM; >= 1 battles; flags set FLAG_DEFEATED_FLINT
@@ -665,8 +665,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: scripts_pokemon_league_flint_room.s:106; scripts_pokemon_league_flint_room.s:23; scripts_pokemon_league_flint_room.s:16-17; scripts_pokemon_league_flint_room.s:28-29; scripts_pokemon_league_flint_room.s:61-69
 
 #### platinum/54-e4-lucian — Elite Four: Lucian
-- proves: Proves the Lucian room: enter-room frame script, single battle, exit door. Start: Lucian room (8,11) -> end: same room, FLAG_DEFEATED_LUCIAN. Lab-startable alone (nothing checks the previous member).
-- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM 1; lab state lines: 8 badge, 52 clear-flag, 230 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
+- proves: Proves the platform lift up to the Lucian room, its enter-room frame script, the single battle and the exit door. Start: Flint room after the win (53's end) -> lift -> end: Lucian room after the win, FLAG_DEFEATED_LUCIAN.
+- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM 1; lab state lines: 8 badge, 52 clear-flag, 230 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM; >= 1 battles; flags set FLAG_DEFEATED_LUCIAN
@@ -674,8 +674,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: scripts_pokemon_league_lucian_room.s:66; scripts_pokemon_league_lucian_room.s:22; scripts_pokemon_league_lucian_room.s:61-69
 
 #### platinum/55-champion-cynthia — Champion Cynthia
-- proves: Proves the champion room frame script, the single battle vs Cynthia and the auto-warp to the HoF hallway. Start: Champion room (8,18) -> end: hallway to the Hall of Fame (186) at (5,23).
-- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_CHAMPION_ROOM 1; lab state lines: 8 badge, 53 clear-flag, 232 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
+- proves: Proves the champion room frame script, the single battle vs Cynthia and the auto-warp to the HoF hallway. Start: Lucian room after the win (54's end) -> lift -> champion room (8,18) -> end: hallway to the Hall of Fame (186) at (5,23).
+- start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM 1; lab state lines: 8 badge, 53 clear-flag, 232 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME; at (5, 23); >= 1 battles; flags set FLAG_DEFEATED_CYNTHIA

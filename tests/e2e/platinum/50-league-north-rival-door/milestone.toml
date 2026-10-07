@@ -28,14 +28,20 @@ frames = 15000
 [[step]]
 do = "walk_to"
 x = 11
-z = 4
-note = "coord0 (10..12,4), VAR_RIVAL_BEAT_SUNYSHORE_GYM==0 -> rival (scripts_pokemon_league_north_pokecenter_1f.s:108-190)"
+z = 5
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+note = "one step onto coord0 (10..12,4), VAR_RIVAL_BEAT_SUNYSHORE_GYM==0 -> rival (scripts_pokemon_league_north_pokecenter_1f.s:108-190)"
 
 [[step]]
 do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 shot = "league_rival"
 note = "TRAINER_RIVAL_POKEMON_LEAGUE_TURTWIG (480)"
 

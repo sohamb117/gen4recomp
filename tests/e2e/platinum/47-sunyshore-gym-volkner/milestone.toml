@@ -6,9 +6,8 @@
 # (room 1)).
 
 title = "Sunyshore Gym: Volkner and the Beacon Badge"
-status = "planned"
 priority = "P0"
-estimate = 26000
+estimate = 36319
 refs = [
   "gym_features.c:410",
   "gym_features.c:215-220",
@@ -27,7 +26,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 50000
+frames = 54500
 
 [[step]]
 do = "walk_to"

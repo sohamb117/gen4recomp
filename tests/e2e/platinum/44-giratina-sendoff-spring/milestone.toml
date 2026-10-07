@@ -3,9 +3,8 @@
 # The lab start has no safe placement inside DW: lab.recipe carries the state only (see its PHASE2).
 
 title = "Giratina Origin battle, out to Sendoff Spring"
-status = "planned"
 priority = "P0"
-estimate = 14000
+estimate = 7331
 refs = [
   "scripts_distortion_world_b7f.s:16-22",
   "scripts_distortion_world_giratina_room.s:61-70",
@@ -44,12 +43,45 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 21000
-# PHASE2: follow Cynthia to the B7F warp coord -> Giratina Room (15,25) (scripts_distortion_world_b7f.s:16-22); the room's
-#   shadow/arrival events; talk to Giratina -> StartGiratinaOriginBattle SPECIES_GIRATINA 47
-#   (scripts_distortion_world_giratina_room.s:61-70) -> auto_battle (KO is fine, :71-85); portal, Yes -> Sendoff Spring (32,17)
-#   (:29-51) -> frame table VAR_EXITED_DISTORTION_WORLD_STATE==1 -> Cynthia (scripts_sendoff_spring.s:18-48): advance_text.
-#   Tiles of the B7F warp coord and of Giratina are in the ov9 tables (src/overlay009/ov9_02249960.c).
+frames = 11000
+# Tiles: B7F_TELEPORT (89,65,57) and the room's teleport (15,1,25) (src/overlay009/ov9_02249960.c:95-105; the tile
+# north of the B7F one collides, :1952-1969); Giratina and later the portal at (15,13) (ov9 object table :13745-13830).
+
+[[step]]
+do = "moves"
+max = 6000
+dirs = [["W", 200], ["R", "x89"], ["U", "z57"], ["U", 1], ["W", 120]]
+note = "B7F: after Cynthia's walk to the teleport (scripts_distortion_world_b7f.s:96-117), onto (89,57) and up -> Giratina room (15,25) (:16-22)"
+
+[[step]]
+do = "moves"
+max = 8000
+dirs = [["U", "z14"], ["A", "U"]]
+shot = "giratina"
+note = "Giratina room: shadow/arrival coords (15,1,24..14), talk to Giratina (15,13) -> StartGiratinaOriginBattle SPECIES_GIRATINA 47, fought (a KO continues, scripts_distortion_world_giratina_room.s:61-85), Cyrus and Cynthia after"
+
+[[step]]
+do = "moves"
+dirs = []
+face = "up"
+note = "the player faces south after Cyrus (DistortionWorldGiratinaRoom_Movement_PlayerNoticeCyrus); the portal stands at (15,13)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "portal (scripts_distortion_world_giratina_room.s:25-35)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+map = "MAP_HEADER_SENDOFF_SPRING"
+note = "YES (the menu's default) -> Sendoff Spring (32,17) (:37-51)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "sendoff_spring"
+note = "SendoffSpring_OnFrame_Cynthia (scripts_sendoff_spring.s:18-48)"
 
 [expect]
 map = "MAP_HEADER_SENDOFF_SPRING"

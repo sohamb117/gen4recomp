@@ -1,0 +1,21 @@
+# Boost on 48's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# A sixth member for Route 223 and Victory Road B1F: Waterfall (Route 223 (845,604), the League moat (847,569), B1F
+# (24,10); src/field_move_tasks.c:590) and Surf; Ice Fang and Crunch for the Elite Four after (Lucian's Psychics,
+# Flint's and Cynthia's Garchomp: res/trainers/elite_four_*.json, champion_cynthia.json).
+# Route 223's twelve swimmers, Victory Road's trainers and its wild Pokemon (levels 40-50) come before the next
+# Pokemon Center: the leads go to level 100 and their moves are set again (PP full: Torterra's Stone Edge has 5).
+party SPECIES_GYARADOS 100 ITEM_NONE
+party-move 5 0 MOVE_WATERFALL
+party-move 5 1 MOVE_SURF
+party-move 5 2 MOVE_ICE_FANG
+party-move 5 3 MOVE_CRUNCH
+party-level 0 100
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_STONE_EDGE
+party-level 4 100
+party-move 4 0 MOVE_FLAMETHROWER
+party-move 4 1 MOVE_CLOSE_COMBAT
+party-move 4 2 MOVE_ICE_PUNCH
+party-move 4 3 MOVE_THUNDER_PUNCH

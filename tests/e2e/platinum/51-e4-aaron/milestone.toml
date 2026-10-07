@@ -1,5 +1,5 @@
-# Proves the Aaron room: enter-room frame script, single battle, exit door.
-# Start: Aaron room (8,11) -> end: same room, FLAG_DEFEATED_AARON. Lab-startable alone (nothing checks the previous member).
+# Proves the platform lift up to the Aaron room, its enter-room frame script, the single battle and the exit door.
+# Start: League north Pokémon Center 1F, the door guard moved away (50's end) -> lift -> end: Aaron room after the win, FLAG_DEFEATED_AARON.
 
 title = "Elite Four: Aaron"
 status = "planned"
@@ -18,9 +18,39 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 2
+note = "exit to POKEMON_LEAGUE_ELEVATOR_TO_AARON_ROOM (events_pokemon_league_north_pokecenter_1f warp 0, the door guard gone)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_ELEVATOR_TO_AARON_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 11
+note = "the platform lift's coord (4,11) (scripts_pokemon_league_elevator_to_aaron_room.s CoordEvent_PlatformLift: TriggerPlatformLift)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 2
+note = "lift top, warp 0 (4,2) -> POKEMON_LEAGUE_AARON_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM"
 
 [[step]]
 do = "wait_field"
@@ -39,6 +69,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 shot = "e4_aaron"
 note = "TRAINER_ELITE_FOUR_AARON (261): YANMEGA 49, SCIZOR 49, VESPIQUEN 50, HERACROSS 51, DRAPION 53"
 

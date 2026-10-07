@@ -3,9 +3,8 @@
 # lifted by 45), Route 222 east, the gate -> Sunyshore (832,790) -> end: Sunyshore City (150), Flint gone from the gym door.
 
 title = "Sunyshore: Flint, Volkner at Vista Lighthouse"
-status = "planned"
 priority = "P0"
-estimate = 9000
+estimate = 18045
 refs = [
   "scripts_init_sunyshore_city.s",
   "scripts_sunyshore_city.s:449-487",
@@ -31,7 +30,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 40000
+frames = 27100
 
 [[step]]
 do = "walk_to"

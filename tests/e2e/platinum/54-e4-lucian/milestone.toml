@@ -1,5 +1,5 @@
-# Proves the Lucian room: enter-room frame script, single battle, exit door.
-# Start: Lucian room (8,11) -> end: same room, FLAG_DEFEATED_LUCIAN. Lab-startable alone (nothing checks the previous member).
+# Proves the platform lift up to the Lucian room, its enter-room frame script, the single battle and the exit door.
+# Start: Flint room after the win (53's end) -> lift -> end: Lucian room after the win, FLAG_DEFEATED_LUCIAN.
 
 title = "Elite Four: Lucian"
 status = "planned"
@@ -19,6 +19,35 @@ lab = "lab.recipe"
 frames = 18000
 
 [[step]]
+do = "walk_to"
+x = 8
+z = 2
+note = "exit to POKEMON_LEAGUE_ELEVATOR_TO_LUCIAN_ROOM (events_pokemon_league_flint_room warp 0, the exit door removed after the win)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_ELEVATOR_TO_LUCIAN_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 11
+note = "the platform lift's coord (4,11) (scripts_pokemon_league_elevator_to_lucian_room.s CoordEvent_PlatformLift: TriggerPlatformLift)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 2
+note = "lift top, warp 0 (4,2) -> POKEMON_LEAGUE_LUCIAN_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM"
+
+[[step]]
 do = "wait_field"
 note = "frame table walks the player 2 north and closes the entrance door (scripts_pokemon_league_lucian_room.s:61-69)"
 
@@ -35,6 +64,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 shot = "e4_lucian"
 note = "TRAINER_ELITE_FOUR_LUCIAN (264): MR_MIME 53, ESPEON 55, BRONZONG 54, ALAKAZAM 56, GALLADE 59"
 

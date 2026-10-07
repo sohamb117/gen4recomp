@@ -27,7 +27,7 @@ ROCK_CLIMB = {0x4B, 0x4C}  # ROCK_CLIMB_N_S / _E_W (bots.ROCK_CLIMB)
 
 
 class Map:
-    def __init__(self, name, opened, hm=False):
+    def __init__(self, name, opened, hm=False, trainers=False):
         h = pt_map.header_fields(name)
         m = json.load(open(os.path.join(pt_map.PT, "res", "field", "matrices", "%s.json" % h["mapMatrixID"])))
         maps, headers = m["maps"], m.get("headers")
@@ -47,6 +47,8 @@ class Map:
         for o in ev.get("object_events", []):
             if o.get("hidden_flag") in opened or "WANDER" in o.get("movement_type", "") \
                     or "WALK" in o.get("movement_type", ""):
+                continue
+            if trainers and o.get("trainer_type", "TRAINER_TYPE_NONE") != "TRAINER_TYPE_NONE":
                 continue
             if hm and o.get("graphics_id") in ("OBJ_EVENT_GFX_ROCK_SMASH", "OBJ_EVENT_GFX_CUT_TREE"):
                 continue
@@ -77,6 +79,8 @@ def main():
     ap.add_argument("--hm", action="store_true", help="Rock Climb walls and Rock Smash rocks / Cut trees pass "
                                                        "(walk_to hm = true); Strength boulders still block")
     ap.add_argument("--recipe", help="a lab.recipe: the flags it sets hide their objects too (the story so far)")
+    ap.add_argument("--trainers", action="store_true", help="trainers do not block (fought where they stand: a walk "
+                                                            "into one is a battle, then they stay beside the path)")
     a = ap.parse_args()
     if a.recipe:
         for line in open(a.recipe):
@@ -89,7 +93,7 @@ def main():
 
     def get(name):
         if name not in loaded:
-            loaded[name] = Map(name, set(a.open), a.hm)
+            loaded[name] = Map(name, set(a.open), a.hm, a.trainers)
         return loaded[name]
 
     start = (a.start_map, a.sx, a.sz)

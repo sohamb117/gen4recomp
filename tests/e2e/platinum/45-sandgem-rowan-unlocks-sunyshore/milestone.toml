@@ -3,9 +3,8 @@
 # Fly to Sandgem, into the lab: VAR_SANDGEM_TOWN_LAB_STATE 2 -> end: the lab, lab state 3.
 
 title = "Sandgem lab: Rowan after the Distortion World"
-status = "planned"
 priority = "P0"
-estimate = 5000
+estimate = 7837
 refs = [
   "scripts_init_sandgem_town_pokemon_research_lab.s",
   "scripts_sandgem_town_pokemon_research_lab.s:79-117",
@@ -28,15 +27,18 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 12000
+frames = 11800
 
 [[step]]
 do = "walk_to"
 x = 12
 z = 56
-max = 4000
+max = 6000
+hm = true
+via = [[33, 17], [33, 12], [42, 12], [42, 14], [44, 14], [44, 16], [45, 16], [45, 34], [43, 34], [43, 36], [41, 36], [41, 38],
+       [32, 38], [32, 49], [16, 49], [16, 51], [12, 51], [12, 55]]
 on_battle = "flee"
-note = "Sendoff Spring exit warp 0 (12,56) -> Spring Path (762,713), on the overworld matrix"
+note = "Sendoff Spring: round the spring, Rock Climb (32,41..45) down, exit warp 0 (12,56) -> Spring Path (762,713), on the overworld matrix (tools/pt_cave.py SENDOFF_SPRING 32,17 SENDOFF_SPRING 12,55 --climb)"
 
 [[step]]
 do = "wait_map"

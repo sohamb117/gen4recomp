@@ -2,9 +2,8 @@
 # Start: Sunyshore gym door (845,747), VAR_SUNYSHORE_CITY_STATE 2 -> end: Sunyshore, HM07.
 
 title = "Sunyshore: Jasmine gives HM07 Waterfall"
-status = "planned"
 priority = "P0"
-estimate = 6000
+estimate = 3745
 refs = [
   "scripts_sunyshore_city.s:44-131",
   "scripts_sunyshore_city.s:415-447",
@@ -20,13 +19,19 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 9000
+frames = 5700
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_SUNYSHORE_CITY"
+note = "the gym door (845,748) is on the walkways (bridge decks, rows 750-751), the street under them is reached from the south: Fly lands at the Pokemon Center (860,785) (src/spawn_locations.c:41)"
 
 [[step]]
 do = "walk_to"
-x = 855
+via = [[855, 785], [855, 769], [851, 769], [851, 763], [854, 763], [854, 744]]
+x = 854
 z = 743
-note = "coord0 (853..857,743), state 2 -> rival + Jasmine (scripts_sunyshore_city.s:44-131)"
+note = "north up the street under the walkways to coord0 (853..857,743), state 2 -> rival + Jasmine (scripts_sunyshore_city.s:44-131) (tools/pt_cave.py SUNYSHORE_CITY 860,785 SUNYSHORE_CITY 855,744)"
 
 [[step]]
 do = "advance_text"
