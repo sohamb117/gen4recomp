@@ -2,10 +2,9 @@
 # Route 205 South bridge grunts leaving, then the walk north to the Eterna Forest door.
 # Start: Floaroma at the meadow entrance (162,641) (11's end) -> end: Eterna Forest warp 0 (28,86) (13's start).
 title = "Valley Windworks: Commander Mars"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 25263
 refs = [
   "maps.h:204 (MAP_VALLEY_WINDWORKS_EXTERIOR = 200, map_header.c:284)",
   "maps.h:205 (MAP_VALLEY_WINDWORKS_INTERIOR = 201, map_header.c:285)",
@@ -35,9 +34,10 @@ notes = "Estimate: Pt 11 (15000; D/P has no Looker scene). The Friday Drifloon (
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 22500
+frames = 37900
 
 [[step]]
 do = "walk_to"

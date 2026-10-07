@@ -1,0 +1,6 @@
+# Boost on 14's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Cut (HM01, Cynthia in 14) in slot 2 for the tree at the building door (scr_seq 0375 @0x004A needs it in the
+# party); Rock Slide leaves. Opponents: the building's grunts (trdata.json #410, #412, #421-#423, #831) and Jupiter
+# #406 ZUBAT 18 + SKUNTANK 20: Crunch (slot 0, 14's boost) is neutral on all; level 50, HP full.
+party-level 0 50
+party-move 0 2 MOVE_CUT

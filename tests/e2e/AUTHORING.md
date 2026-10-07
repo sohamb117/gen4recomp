@@ -76,7 +76,7 @@ VAR_OREBURGH_CITY_STATE = 2
 
 | `do` | keys | what it does |
 |---|---|---|
-| `walk_to` | `x`, `z`, opt. `map`, `face`, `interact` | path to the tile on the current map, re-planning around NPCs; walking into a warp tile takes it; trainers who spot you on the way are fought |
+| `walk_to` | `x`, `z`, opt. `map`, `face`, `interact`, `surf`, `hm` | path to the tile on the current map, re-planning around NPCs; walking into a warp tile takes it; trainers who spot you on the way are fought; `surf`/`hm` let the path cross water / Cut trees, Rock Smash rocks, Rock Climb walls (the party must know the move: boost it) |
 | `talk_to` | `id` | talk to the map object with that local id wherever it stands (wandering people are chased) |
 | `advance_text` | opt. `map` | press A with spacing until the field is free (cutscenes, dialogue, item jingles); with `map`, stop as soon as that map loads |
 | `auto_battle` | opt. `move` (slot, default 0) | FIGHT + the move every turn until the battle ends; declines move learning and nicknames, allows evolution |
@@ -137,8 +137,15 @@ Milestone N's recipe = header + party + the groups of 01..N-1 + start. When you 
 K's group in every later `lab.recipe` (they are identical copies; `grep -l '^# -- K '`). Include the hide flags of
 NPCs a script removes with `RemoveObject` (the object's `hidden_flag`): a missing one puts a story NPC back on the
 map. Platinum recipes start from nothing (the lab runs the new-game init); D/P recipes are applied on top of the
-new-game base save in the bedroom (`tests/gameplay/mint.sh`). Caps: Platinum `LAB_MAX_OPS 512`; D/P see PLAN.md
-Known gaps.
+new-game base save in the bedroom (`tests/gameplay/mint.sh`). Caps: `LAB_MAX_OPS 512` in both labs.
+
+D/P recipes are not edited by hand between the `# -- prior: tests/e2e/tools/dp_prior.py --` and `# -- start --`
+lines: `tests/e2e/tools/dp_prior.py` writes every milestone's groups from the earlier milestones' `[expect]` (flags,
+cleared flags, vars, badges, the Pokedex, Poketch apps, bag items; an item a later milestone checks gone leaves the
+recipes after it), each line citing the SetFlag/ClearFlag/SetVar site (`dp_script.py grep-flag/grep-var`, preferring
+one in the milestone's refs). So what a D/P milestone sets is its `[expect]`: change it, rerun the tool (`--check`
+fails on a stale recipe). The Journal flag 0x963 is never minted (no lab verb writes the journal data; with the flag
+alone CONTINUE stops on a blank Journal page).
 
 ### The lab party
 

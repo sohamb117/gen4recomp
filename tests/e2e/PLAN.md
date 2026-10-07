@@ -1218,7 +1218,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Diamond
 
 <!-- plan.py:begin diamond -->
-### Story chain: 54 milestones, ~965372 frames estimated
+### Story chain: 54 milestones, ~995726 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -1230,13 +1230,13 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [06-route203-rival-oreburgh-gate-hm06](diamond/06-route203-rival-oreburgh-gate-hm06/milestone.toml) | Route 203 rival, Oreburgh Gate HM06, Oreburgh tour | P0 | both | 77453 | prev + `lab.recipe` | MAP_OREBURGH | passing |
 | [07-oreburgh-barry-mine-roark](diamond/07-oreburgh-barry-mine-roark/milestone.toml) | Oreburgh: Barry at the gym, Mine, Roark returns | P0 | both | 25488 | prev + `lab.recipe` | MAP_OREBURGH_GYM | passing |
 | [08-roark-coal-badge](diamond/08-roark-coal-badge/milestone.toml) | Oreburgh Gym: Roark and the Coal Badge | P0 | both | 16611 | prev + `lab.recipe` | MAP_OREBURGH | passing |
-| [09-oreburgh-rival-farewell](diamond/09-oreburgh-rival-farewell/milestone.toml) | Oreburgh: Barry's farewell at the west exit | P0 | both | 3000 | prev + `lab.recipe` | MAP_OREBURGH | planned |
-| [10-jubilife-galactic-tag-battle](diamond/10-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | both | 8000 | prev + `lab.recipe` | MAP_JUBLIFE | planned |
-| [11-floaroma-meadow-works-key](diamond/11-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | both | 20000 | prev + `lab.recipe` | MAP_FLOAROMA | planned |
-| [12-valley-windworks-mars](diamond/12-valley-windworks-mars/milestone.toml) | Valley Windworks: Commander Mars | P0 | both | 15000 | prev + `lab.recipe` | MAP_ETERNA_FOREST_INTERIOR | planned |
-| [13-eterna-forest-cheryl](diamond/13-eterna-forest-cheryl/milestone.toml) | Eterna Forest with Cheryl | P0 | both | 15000 | prev + `lab.recipe` | MAP_ROUTE_205_NORTH | planned |
-| [14-gardenia-forest-badge](diamond/14-gardenia-forest-badge/milestone.toml) | Eterna Gym: Gardenia and the Forest Badge | P0 | both | 28000 | prev + `lab.recipe` | MAP_ETERNA | planned |
-| [15-galactic-eterna-building-jupiter](diamond/15-galactic-eterna-building-jupiter/milestone.toml) | Team Galactic Eterna Building: Jupiter | P0 | both | 16000 | prev + `lab.recipe` | MAP_ETERNA | planned |
+| [09-oreburgh-rival-farewell](diamond/09-oreburgh-rival-farewell/milestone.toml) | Oreburgh: Barry's farewell at the west exit | P0 | both | 2400 | prev + `lab.recipe` | MAP_OREBURGH | passing |
+| [10-jubilife-galactic-tag-battle](diamond/10-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | both | 15489 | prev + `lab.recipe` | MAP_JUBLIFE | passing |
+| [11-floaroma-meadow-works-key](diamond/11-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | both | 20765 | prev + `lab.recipe` | MAP_FLOAROMA | passing |
+| [12-valley-windworks-mars](diamond/12-valley-windworks-mars/milestone.toml) | Valley Windworks: Commander Mars | P0 | both | 25263 | prev + `lab.recipe` | MAP_ETERNA_FOREST_INTERIOR | passing |
+| [13-eterna-forest-cheryl](diamond/13-eterna-forest-cheryl/milestone.toml) | Eterna Forest with Cheryl | P0 | both | 30297 | prev + `lab.recipe` | MAP_ROUTE_205_NORTH | passing |
+| [14-gardenia-forest-badge](diamond/14-gardenia-forest-badge/milestone.toml) | Eterna Gym: Gardenia and the Forest Badge | P0 | both | 20827 | prev + `lab.recipe` | MAP_ETERNA | passing |
+| [15-galactic-eterna-building-jupiter](diamond/15-galactic-eterna-building-jupiter/milestone.toml) | Team Galactic Eterna Building: Jupiter | P0 | both | 20313 | prev + `lab.recipe` | MAP_ETERNA | passing |
 | [16-bicycle-explorer-kit](diamond/16-bicycle-explorer-kit/milestone.toml) | Eterna: Bicycle and Explorer Kit | P0 | both | 9000 | prev + `lab.recipe` | MAP_ETERNA_ROUTE_206_GATEHOUSE | planned |
 | [17-cycling-road-route207-vs-seeker](diamond/17-cycling-road-route207-vs-seeker/milestone.toml) | Cycling Road, Route 207: VS Seeker | P0 | both | 14000 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SOUTH_1F | planned |
 | [18-coronet-route208-hearthome-keira](diamond/18-coronet-route208-hearthome-keira/milestone.toml) | Mt. Coronet, Route 208, Hearthome arrival | P0 | both | 10000 | prev + `lab.recipe` | MAP_HEARTHOME | planned |
@@ -1289,7 +1289,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/02-sandgem-pokedex — Sandgem: Rowan's lab and the Pokedex
 - proves: Proves the Sandgem escort into Rowan's lab (Barry bursts out), the starter becoming the player's (nickname declined), the Pokedex, and the friend's Pokemon Center / Poke Mart tour. Start: Twinleaf Town at the player's house door (116,885) -> end: Sandgem Town after the tour, var 0x4071 = 2.
-- start: prev + `lab.recipe`; warp MAP_TWINLEAF 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_TWINLEAF 1; lab state lines: 1 clear-flag, 13 flag, 9 var
 - party: SPECIES_TURTWIG 14 (MOVE_TACKLE)
 - trainers: none
 - end state: map MAP_SANDGEM; party SPECIES_TURTWIG; flags set 0x1B5, 0x993, 0x90, 0x1B7, 0x195; vars 0x40A6=1, 0x4071=2; 1 save check(s)
@@ -1299,7 +1299,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/03-parcel-catching-tutorial — The Journal, the Parcel and the catching tutorial
 - proves: Proves the walk home with the Pokedex: Mom's heal and Journal, Barry's mom's Parcel, then the Route 202 catching tutorial (5 Poke Balls). Start: Sandgem Town (177,843) in front of the Pokemon Center -> end: Route 202 after the tutorial, var 0x4087 = 1.
-- start: prev + `lab.recipe`; map MAP_SANDGEM 177 843 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_SANDGEM 177 843 FACE_DOWN; lab state lines: 1 clear-flag, 18 flag, 1 pokedex, 11 var
 - party: SPECIES_TURTWIG 14 (MOVE_TACKLE)
 - trainers: none
 - end state: map MAP_ROUTE_202; flags set 0x8F, 0x20F, 0x963, 0x1A6; vars 0x40A4=7, 0x4087=1; 3 save check(s)
@@ -1309,7 +1309,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/04-jubilife-trainers-school — Jubilife: the Trainers' School and the Town Map
 - proves: Proves the first arrival in Jubilife (the friend points to the Trainers' School) and the Parcel hand-off to Barry in the Trainers' School (Town Map), which opens the Poketch campaign (president and clowns 1-2 unhidden). Start: Route 202 (180,827) after the catching tutorial -> end: Jubilife City outside the Trainers' School.
-- start: prev + `lab.recipe`; map MAP_ROUTE_202 180 827 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_ROUTE_202 180 827 FACE_UP; lab state lines: 1 clear-flag, 21 flag, 3 item, 1 pokedex, 13 var
 - party: SPECIES_TURTWIG 14 (MOVE_TACKLE)
 - trainers: none
 - end state: map MAP_JUBLIFE; flags set 0x198, 0x212, 0xF1; flags clear 0x213, 0x214; vars 0x4077=1, 0x40E7=1; 2 save check(s)
@@ -1319,7 +1319,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/05-jubilife-poketch — Jubilife: the Poketch campaign
 - proves: Proves the Poketch campaign: the president's pitch, the three clowns' quiz coupons, and the Poketch with 4 apps. Start: Jubilife City at the Trainers' School door (168,776) -> end: Jubilife City with the Poketch, free in the field (var 0x4077 = 2: the Route 203 exit is open for the next slice).
-- start: prev + `lab.recipe`; warp MAP_JUBLIFE 7; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_JUBLIFE 7; lab state lines: 3 clear-flag, 24 flag, 3 item, 1 pokedex, 15 var
 - party: SPECIES_TURTWIG 14 (MOVE_TACKLE)
 - trainers: none
 - end state: map MAP_JUBLIFE; flags set 0xED, 0xEE, 0xEF, 0xF3, 0x214; flags clear 0x215; vars 0x40E7=2, 0x4077=2; 2 save check(s)
@@ -1329,7 +1329,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/06-route203-rival-oreburgh-gate-hm06 — Route 203 rival, Oreburgh Gate HM06, Oreburgh tour
 - proves: Proves the Route 203 rival battle, HM06 (Rock Smash) from the Oreburgh Gate hiker, and the Oreburgh youngster's gym tour. Start: Jubilife warp 2 (Pokecenter door (180,776)) -> end: Oreburgh City at the gym after the tour (0x4079 = 1).
-- start: prev + `lab.recipe`; warp MAP_JUBLIFE 2; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_JUBLIFE 2; lab state lines: 4 clear-flag, 29 flag, 3 item, 1 pokedex, 4 poketch, 17 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_OREBURGH; >= 1 battles; flags set 0x199, 0x9CF, 0x93; vars 0x4088=1, 0x4093=2, 0x4079=1; 1 save check(s)
@@ -1339,7 +1339,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/07-oreburgh-barry-mine-roark — Oreburgh: Barry at the gym, Mine, Roark returns
 - proves: Proves Barry's gym-door scene and the Oreburgh Mine visit: Roark smashes the rock and returns to the gym, which hides Barry. Start: Oreburgh warp 1 (Pokecenter door (303,756)) -> end: inside Oreburgh Gym at warp 0 (08's start), gym door free.
-- start: prev + `lab.recipe`; warp MAP_OREBURGH 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_OREBURGH 1; lab state lines: 4 clear-flag, 32 flag, 4 item, 1 pokedex, 4 poketch, 20 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_OREBURGH_GYM; flags set 0x8A, 0x9C2, 0x1A8, 0x7A, 0x19A
@@ -1349,7 +1349,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/08-roark-coal-badge — Oreburgh Gym: Roark and the Coal Badge
 - proves: Proves the first gym: two sight youngsters, Roark, the Coal Badge and TM76; the win arms Barry's farewell and the Jubilife Galactic scene. Start: Oreburgh Gym warp 0 (5,24) -> end: Oreburgh City at the gym door (282,756) (09's start).
-- start: prev + `lab.recipe`; warp MAP_OREBURGH_GYM 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_OREBURGH_GYM 0; lab state lines: 4 clear-flag, 37 flag, 4 item, 1 pokedex, 4 poketch, 20 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_OREBURGH; 1 badges; badge BADGE_COAL; >= 1 battles; flags set 0x644, 0x645, 0x25D, 0x1B6, 0x75; flags clear 0x198, 0x1BB, 0x1BA; vars 0x40F0=1, 0x4079=2, 0x4077=3; 1 save check(s)
@@ -1359,77 +1359,77 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/09-oreburgh-rival-farewell — Oreburgh: Barry's farewell at the west exit
 - proves: Proves the scene the Coal Badge arms: heading for Oreburgh's west exit, Barry runs into you, points to Eterna and leaves. Start: Oreburgh warp 0 (gym door (282,756)) -> end: Oreburgh at the west coord strip (262,749), free, 0x4079 = 3.
-- start: prev + `lab.recipe`; warp MAP_OREBURGH 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_OREBURGH 0; lab state lines: 1 badge, 7 clear-flag, 42 flag, 5 item, 1 pokedex, 4 poketch, 23 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_OREBURGH; badge BADGE_COAL; flags set 0x19A; vars 0x4079=3
-- frames: estimate 3000, budget 4500
+- frames: estimate 2400, budget 3600
 - refs: maps.h:49; zone_event 0044 warp 0; zone_event 0044 coord 1; zone_event 0044 object 3; scr_seq 0050 @0x0082; scr_seq 0048 @0x00CD; scr_seq 0048 @0x0112; scr_seq 0048 @0x01AA; scr_seq 0048 @0x01BD; scr_seq 0048 @0x027F; scr_seq 0048 @0x0287; scr_seq 0002 @0x088B
 - notes: Coord 1 (262,748..751) runs scr_seq 0048 #4 while 0x4079 == 2 (set by Roark, scr_seq 0050 @0x0082). Barry is re-added east of you at (271,748..751) [scr_seq 0048 @0x0112 SetEventDefaultPosition] and runs west into you ('Thud!!', msg 58 #2), names Eterna/Route 207, then leaves (RemoveEvent 3) and 0x4079 becomes 3. If skipped (e.g. Fly out), the Jubilife Galactic scene also sets 0x4079 = 3 (scr_seq 0002 @0x088B). The player is only turned in place (Move_0304..0328), so the end tile is wherever walk_to entered the strip.
 
 #### diamond/10-jubilife-galactic-tag-battle — Jubilife: tag battle against Team Galactic
 - proves: Proves the walk back from Oreburgh to Jubilife and the north-exit tag battle with Dawn against two grunts in front of Rowan (then Rowan/Dawn leave and the Jubilife TV man gives the Fashion Case). Start: Oreburgh at the west coord strip (262,749) after Barry's bump (09's end) -> end: Jubilife at the north coord (173..175,743).
-- start: prev + `lab.recipe`; map MAP_OREBURGH 262 749 FACE_LEFT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_OREBURGH 262 749 FACE_LEFT; lab state lines: 1 badge, 7 clear-flag, 42 flag, 5 item, 1 pokedex, 4 poketch, 24 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #414 (TRAINER_GALACTIC_GRUNT_9: ZUBAT 9); trdata.json #415 (TRAINER_GALACTIC_GRUNT_10: WURMPLE 9); trdata.json #618 (TRAINER_PKMN_TRAINER_DAWN_DAWN_3: PIPLUP 13, partner for a male Turtwig player)
 - end state: map MAP_JUBLIFE; 1 badges; badge BADGE_COAL; >= 1 battles; flags set 0x1BA, 0x198, 0x1BB, 0x213, 0x256, 0x1A9, 0xF2; flags clear 0x1B6; vars 0x4077=4, 0x4079=3; 1 save check(s)
-- frames: estimate 8000, budget 12000
+- frames: estimate 15489, budget 23300
 - refs: maps.h:49 (MAP_OREBURGH = 45, map_header.c:129); maps.h:7 (MAP_JUBLIFE = 3, map_header.c:87); zone_event 0044 warp 10 (258,749) -> MAP_OREBURGH_GATE_1F warp 1; zone_event 0250 warp 0 (4,22) -> MAP_ROUTE_203 warp 0; zone_event 0002 coord 1 (173,743) 3x1 var 0x4077 == 3 -> scr_seq 0002 #4; zone_event 0002 object 7 (counterpart, hidden_flag 0x198), object 16 (Rowan (175,740), 0x1BB), objects 17/18 (grunts (174,739)/(174,740), 0x1BA); zone_event 0002 objects 25/26 (clowns, 0x213), object 28 (clown, 0x256), object 31 (TV man, 0x1A9); scr_seq 0002 @0x006E-@0x00B1 (ON_TRANSITION: var 0x4077 >= 3 moves the counterpart to (176,739); 0x4020 = 97 for a male player); scr_seq 0002 @0x06AF-@0x0713 (msg 18 #46-#49); scr_seq 0002 @0x071F-@0x07FD (partner: GetStarter, male player -> 616/617/618); scr_seq 0002 @0x0725 (TrainerBattleWithPartner 0x8004, 414, 415); scr_seq 0002 @0x075F-@0x0767 (RemoveEvent 17/18, SetFlag 0x1BA); scr_seq 0002 @0x0879-@0x08AB (RemoveEvent 7/16, ClearFlag 0x1B6, SetVar 0x4077 4, 0x4079 3, RemoveEvent 25/26/28, ClearFlag 0x1A9); scr_seq 0002 @0x08C4-@0x08F7 (std 2044 ITEM_FASHION_CASE x1, SetFlag 0xF2, accessories Unk01D2 / backdrops Unk01D5); scr_seq 0002 @0x08DF (RemoveEvent 31); games/diamond/arm9/asm/unk_0205F314.s:86-89 (GetStarter reads var 0x4030); trdata.json #414 (TRAINER_GALACTIC_GRUNT_9: ZUBAT 9); trdata.json #415 (TRAINER_GALACTIC_GRUNT_10: WURMPLE 9); trdata.json #618 (TRAINER_PKMN_TRAINER_DAWN_DAWN_3: PIPLUP 13, partner for a male Turtwig player)
 - notes: Estimate: Pt 09 (8000) for the same walk + scene. A tag battle: one move for one battler; Surf is a spread move and also hits Dawn (partner fainting does not lose). Partner by GetStarter (var 0x4030) and gender: male player -> SPECIES_CHIMCHAR (390) starter 616 Dawn TURTWIG, SPECIES_PIPLUP (393) 617 Dawn CHIMCHAR, else (Turtwig) 618 Dawn PIPLUP; a female player gets Lucas 613-615 (scr_seq 0002 @0x07AD-@0x082F). Not representable by lab verbs: the random accessories/backdrops the TV man adds (Unk01D2/Unk01D5 @0x08FB-@0x0941). Version: no GetGameVersion branch on this path (version-diff).
 
 #### diamond/11-floaroma-meadow-works-key — Floaroma Meadow: the Works Key
 - proves: Proves Route 204 through the Ravaged Path (Rock Smash country), Cyrus at Floaroma's south entrance, the Route 205 little-girl scene that clears the meadow entrance, and the two Floaroma Meadow grunt battles for the Works Key. Start: Jubilife at the north coord (174,743) (10's end) -> end: Floaroma at the meadow entrance (162,641).
-- start: prev + `lab.recipe`; map MAP_JUBLIFE 174 743 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_JUBLIFE 174 743 FACE_UP; lab state lines: 1 badge, 8 clear-flag, 49 flag, 6 item, 1 pokedex, 4 poketch, 25 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #296 (TRAINER_GALACTIC_GRUNT: WURMPLE 9, SILCOON 9); trdata.json #297 (TRAINER_GALACTIC_GRUNT_2: ZUBAT 11); trdata.json #12 (TRAINER_LASS_SARAH), #11 (TRAINER_LASS_SAMANTHA), #10 (TRAINER_YOUNGSTER_TYLER) on Route 204 South (zone_event 0330 objects 0-2); trdata.json #13 (TRAINER_BUG_CATCHER_BRANDON), #14 (TRAINER_AROMA_LADY_TAYLOR), #15 (TRAINER_TWINS_LIV_LIZ) on Route 204 North (zone_event 0331 objects 0-3)
 - end state: map MAP_FLOAROMA; 1 badges; badge BADGE_COAL; >= 2 battles; flags set 0x9CD, 0x1C1, 0x1BF, 0x91, 0x9CE, 0x1BD, 0x1BE, 0x1BC, 0x9F, 0xA0, 0x989; vars 0x4072=1, 0x4089=1, 0x40E9=1; 2 save check(s)
-- frames: estimate 20000, budget 30000
+- frames: estimate 20765, budget 31200
 - refs: maps.h:349 (MAP_ROUTE_204_SOUTH = 345, map_header.c:429); maps.h:258 (MAP_RAVAGED_PATH = 254, map_header.c:338); maps.h:350 (MAP_ROUTE_204_NORTH = 346, map_header.c:430); maps.h:430 (MAP_FLOAROMA = 426, map_header.c:510); maps.h:351 (MAP_ROUTE_205_SOUTH = 347, map_header.c:431); maps.h:260 (MAP_FLOAROMA_MEADOW = 256, map_header.c:340); zone_event 0330 warp 0 (171,705) -> MAP_RAVAGED_PATH warp 0 (19,50); zone_event 0246 objects 0-26 (27 Rock Smash rocks, temp hidden_flags 0x20-0x3A); warp 1 (28,44) -> MAP_ROUTE_204_NORTH warp 0 (180,698); scr_seq 0395 @0x0016 (msg 418 #0: boulders block the way inside the cavern); scr_seq 0267 @0x0006 (Ravaged Path ON_TRANSITION SetFlag 0x9CD); zone_event 0404 coord 0 (170,669) 3x1 var 0x4072 == 0 -> scr_seq 0994 #2 (Cyrus, object 3 hidden_flag 0x1C1); scr_seq 0994 @0x0091-@0x00FC (Cyrus msg 513 #0-#1, RemoveEvent 3, SetVar 0x4072 1); zone_event 0404 objects 7/8 (grunts on the meadow warps (162,641)/(163,641), hidden_flag 0x1BF); warps 7/8 -> MAP_FLOAROMA_MEADOW warps 3/4; zone_event 0332 coord 0 (211,659) 1x6 var 0x4089 == 0 -> scr_seq 0397 #6; object 18 (little girl (211,661), 0x216); scr_seq 0397 @0x0177-@0x0228 (by player z: 659/660/661/662/663 run, 664 ends without setting anything); scr_seq 0397 @0x0165-@0x016D (SetFlag 0x1BF, 0x91, SetVar 0x4089 1); scr_seq 0269 @0x001E (meadow ON_TRANSITION SetFlag 0x9CE); zone_event 0248 coord 0 (12,48) 2x1 var 0x40E9 == 0 -> scr_seq 0269 #2; grunts (12,47)/(13,47) 0x1BD/0x1BE; Works Key object 3 0x1BC; warps 3/4 (12..13,54); scr_seq 0269 @0x002C (TrainerBattle 296), @0x0049 (TrainerBattle 297); scr_seq 0269 @0x0107-@0x0186 (RemoveEvent 0/1, SetVar 0x40E9 1, ClearFlag/RemoveEvent 0x1BC, ITEM_WORKS_KEY, SetFlag 0x9F, ITEM_HONEY x1, SetFlag 0xA0); scr_seq 0269 @0x0066 (SetFlag 0x989: meadow music, games/diamond/arm9/src/unk_0205EC84.c:253-260); trdata.json #296 (TRAINER_GALACTIC_GRUNT: WURMPLE 9, SILCOON 9); trdata.json #297 (TRAINER_GALACTIC_GRUNT_2: ZUBAT 11); trdata.json #12 (TRAINER_LASS_SARAH), #11 (TRAINER_LASS_SAMANTHA), #10 (TRAINER_YOUNGSTER_TYLER) on Route 204 South (zone_event 0330 objects 0-2); trdata.json #13 (TRAINER_BUG_CATCHER_BRANDON), #14 (TRAINER_AROMA_LADY_TAYLOR), #15 (TRAINER_TWINS_LIV_LIZ) on Route 204 North (zone_event 0331 objects 0-3)
 - notes: Estimate: Pt 10 (19000) plus the Floaroma Cyrus scene. Liv & Liz (Route 204 N (175..176,679)) is a true double: slots 0 and 1 battle; Staraptor's slot-0 Aerial Ace covers it. D/P's meadow gives Honey x1 (Pt x10). Version: no GetGameVersion branch, encounter banks d/p 0143/0053/0144/0145 identical (version-diff).
 
 #### diamond/12-valley-windworks-mars — Valley Windworks: Commander Mars
 - proves: Proves the Valley Windworks: the door grunt, the Works Key door, Commander Mars, the father/daughter reunion, and the Route 205 South bridge grunts leaving, then the walk north to the Eterna Forest door. Start: Floaroma at the meadow entrance (162,641) (11's end) -> end: Eterna Forest warp 0 (28,86) (13's start).
-- start: prev + `lab.recipe`; warp MAP_FLOAROMA 7; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_FLOAROMA 7; lab state lines: 1 badge, 8 clear-flag, 60 flag, 8 item, 1 pokedex, 4 poketch, 28 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #843 (TRAINER_GALACTIC_GRUNT_35: GLAMEOW 11); trdata.json #295 (TRAINER_COMMANDER_MARS_MARS: ZUBAT 14, PURUGLY 16 @ORAN_BERRY); trdata.json #298 (TRAINER_GALACTIC_GRUNT_3: CASCOON 11), #299 (TRAINER_GALACTIC_GRUNT_4: WURMPLE 10, GLAMEOW 10)
 - end state: map MAP_ETERNA_FOREST_INTERIOR; 1 badges; badge BADGE_COAL; >= 2 battles; flags set 0x1AC, 0x10F, 0x9C3, 0x1C2, 0x1C3, 0x1C4, 0x1C0, 0xAA8, 0x216, 0x988, 0x229; flags clear 0x217, 0xE3; vars 0x4089=2, 0x40CF=3, 0x40B1=0
-- frames: estimate 15000, budget 22500
+- frames: estimate 25263, budget 37900
 - refs: maps.h:204 (MAP_VALLEY_WINDWORKS_EXTERIOR = 200, map_header.c:284); maps.h:205 (MAP_VALLEY_WINDWORKS_INTERIOR = 201, map_header.c:285); maps.h:207 (MAP_ETERNA_FOREST_INTERIOR = 203, map_header.c:287); zone_event 0198 object 0 (grunt (243,655) DIR_SOUTH, hidden_flag 0x1AC); bg 1 (243,654) door; warp 0 (243,654) -> MAP_VALLEY_WINDWORKS_INTERIOR warp 0; scr_seq 0210 @0x002D-@0x00C9 (ON_TRANSITION/ON_LOAD: flag 0x10F clear -> SetWarpPosition 0 to (243,650); set -> SetBgEventPosition 1 to (243,650)); scr_seq 0210 @0x00D8 (TrainerBattle 843), @0x0125 (RemoveEvent 0); scr_seq 0210 @0x0152-@0x018B (door: CheckFlag 0x9F, YesNo, SetFlag 0x10F, SetWarpPosition 0 (243,654)); scr_seq 0210 @0x0020-@0x007E (ON_TRANSITION var 0x40CF == 2 -> 3); scr_seq 0210 @0x0043-@0x0078 (Drifloon object 4 (241,660) shown only on day 5 after var 0x4089 >= 2 without flag 0xAA8; else SetFlag 0x229); scr_seq 0211 @0x001A (interior ON_TRANSITION SetFlag 0x9C3); scr_seq 0671 @0x000B (interior ON_FRAME_TABLE var 0x40CF == 0 -> scr_seq 0211 #2: grunt runs, RemoveEvent 0 @0x0068, SetVar 0x40CF 1 @0x006C); zone_event 0199 coord 0 (19,6) 1x2 var 0x40CF == 1 -> scr_seq 0211 #4; Mars object 1 (20,7) DIR_WEST; grunts objects 3 (3,8) W sight 2, 4 (12,3) S sight 2, 6 (18,8) (all hidden_flag 0x1C3); warp 0 (12,16); scr_seq 0211 @0x00E0 (TrainerBattle 295); scr_seq 0211 @0x0108-@0x0126 (RemoveEvent 1/6/3/4, SetFlag 0x1C4, 0x1C0, SetVar 0x4089 2, SetFlag 0xAA8); scr_seq 0211 @0x0181-@0x0248 (SetFlag 0x216, ClearFlag 0x217, AddEvent 5, SetVar 0x40CF 2, SetFlag 0x988); games/diamond/arm9/src/unk_0205EC84.c:244-251 (flag 0x988: windworks interior music); zone_event 0332 objects 12/13 (bridge grunts (218,653)/(216,653), hidden_flag 0x1C0); warp 0 (206,581) -> MAP_ETERNA_FOREST_INTERIOR warp 0; scr_seq 0213 @0x0032-@0x003F (forest ON_TRANSITION: flag 0xE3 clear -> SetVar 0x40B1 0); trdata.json #843 (TRAINER_GALACTIC_GRUNT_35: GLAMEOW 11); trdata.json #295 (TRAINER_COMMANDER_MARS_MARS: ZUBAT 14, PURUGLY 16 @ORAN_BERRY); trdata.json #298 (TRAINER_GALACTIC_GRUNT_3: CASCOON 11), #299 (TRAINER_GALACTIC_GRUNT_4: WURMPLE 10, GLAMEOW 10); trdata.json #18 (HIKER_DANIEL), #21 (AROMA_LADY_ELIZABETH), #16 (CAMPER_JACOB), #17 (PICNICKER_SIENA), #377 (CAMPER_ZACKARY), #19 (HIKER_NICHOLAS), #456 (PICNICKER_KARINA), #20 (BATTLE_GIRL_KELSEY) (zone_event 0332)
 - notes: Estimate: Pt 11 (15000; D/P has no Looker scene). The Friday Drifloon (LegendaryBattle SPECIES_DRIFLOON 22, scr_seq 0210 @0x01D4) is optional and off the path; Mars's win sets 0xAA8 which hides it the same day. No GetGameVersion branch; encounter banks d/p 0007/0145 identical (version-diff).
 
 #### diamond/13-eterna-forest-cheryl — Eterna Forest with Cheryl
 - proves: Proves Eterna Forest with Cheryl as partner (she joins at the entrance, multi battles on the way), her farewell at the east exit, and the exit to Route 205 North. Start: Eterna Forest warp 0 (28,86), the Route 205 South entrance (12's end) -> end: Route 205 North (259,524).
-- start: prev + `lab.recipe`; warp MAP_ETERNA_FOREST_INTERIOR 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ETERNA_FOREST_INTERIOR 0; lab state lines: 1 badge, 10 clear-flag, 71 flag, 8 item, 1 pokedex, 4 poketch, 31 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #608 (TRAINER_PKMN_TRAINER_AROMA_LADY_CHERYL: CHANSEY 15)
 - end state: map MAP_ROUTE_205_NORTH; 1 badges; badge BADGE_COAL; flags set 0x8B, 0x1B9, 0xE3; flags clear 0x961; vars 0x40B1=2, 0x403F=608
-- frames: estimate 15000, budget 22500
+- frames: estimate 30297, budget 45500
 - refs: maps.h:207 (MAP_ETERNA_FOREST_INTERIOR = 203, map_header.c:287; encounters d_enc 0008 / p_enc 0008); maps.h:353 (MAP_ROUTE_205_NORTH = 349, map_header.c:433; encounters d_enc 0146 / p_enc 0146); zone_event 0201 object 0 (Cheryl (28,83) DIR_SOUTH, hidden_flag 0x1B9); zone_event 0201 coord 0 (28,85) 2x1 var 0x40B1 == 0 -> scr_seq 0213 #1; coord 1 (28,86) 2x1 == 1 -> #2; coord 2 (82,34) 1x6 == 1 -> #3; zone_event 0201 warp 2 (86,36) -> MAP_ROUTE_205_NORTH warp 1 (259,524); scr_seq 0213 @0x0049 (RideBike 0), @0x00B0-@0x00C7 (SetFlag 0x8B, SetVar 0x40B1 1, SetVar 0x403F 608, Unk0161); games/diamond/arm9/src/scrcmd_flags.c:148-164 (Unk0161/Unk0162 -> sub_0205ED1C/sub_0205ED2C), arm9/src/unk_0205EC84.c:58-64 (set/clear flag 0x961); scr_seq 0213 @0x0108-@0x0168 (stepping back onto (28..29,86) drops Cheryl: Unk0162, SetVar 0x40B1 0); scr_seq 0213 @0x0198-@0x02A5 (exit scene: Unk0162 @0x0297, RemoveEvent 0 @0x0299, SetFlag 0xE3 @0x02A1, SetVar 0x40B1 2); trdata.json #608 (TRAINER_PKMN_TRAINER_AROMA_LADY_CHERYL: CHANSEY 15); trdata.json #201 (BUG_CATCHER_JACK (37,67) E 2), #204 (LASS_BRIANA (40,67) W 2), #206 (PSYCHIC_F_LINDSEY (50,67) E 4), #205 (PSYCHIC_M_ELIJAH (55,67) W 4) (zone_event 0201); trdata.json #395 (PSYCHIC_M_KODY (74,67) E 2), #398 (PSYCHIC_F_RACHAEL (77,67) W 2), #202 (BUG_CATCHER_PHILLIP (65,87) N 3), #203 (BUG_CATCHER_DONALD (65,83) S 3) (zone_event 0201)
 - notes: D/P's Cheryl gives no item at the exit (Pt's Soothe Bell is not in scr_seq 0213). Multi battles with Cheryl: Surf hits both foes and Cheryl. [INFERENCE] the facing pairs Jack/Briana, Lindsey/Elijah, Kody/Rachael, Phillip/Donald engage together while she follows. Pearl differs only in the wild encounter banks d/p 0008 (forest) and 0146 (Route 205 N) (version-diff); no script branch, so version = both.
 
 #### diamond/14-gardenia-forest-badge — Eterna Gym: Gardenia and the Forest Badge
 - proves: Proves the arrival in Eterna (Cynthia's HM01 on the west strip), Gardenia at the gym entrance, the four hidden gym trainers that appear one after another, and the Forest Badge with TM86. Start: Route 205 North (259,524), the forest's east exit (13's end) -> end: Eterna at the gym door (312,562) (15's start).
-- start: prev + `lab.recipe`; warp MAP_ROUTE_205_NORTH 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ROUTE_205_NORTH 1; lab state lines: 1 badge, 11 clear-flag, 74 flag, 8 item, 1 pokedex, 4 poketch, 33 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #324 (TRAINER_LASS_CAROLINE: CHERUBI 15, ROSELIA 15); trdata.json #259 (TRAINER_AROMA_LADY_JENNA: BUDEW 14, BUDEW 13, BUDEW 15); trdata.json #260 (TRAINER_AROMA_LADY_ANGELA: TURTWIG 17); trdata.json #348 (TRAINER_BEAUTY_LINDSAY: ROSELIA 17); trdata.json #315 (TRAINER_LEADER_GARDENIA_GARDENIA: CHERUBI 19, TURTWIG 19, ROSERADE 22 @SITRUS_BERRY; 2x SUPER_POTION)
 - end state: map MAP_ETERNA; 2 badges; badge BADGE_COAL, BADGE_FOREST; >= 5 battles; flags set 0x19E, 0x23F, 0x653, 0x654, 0x694, 0x6AC, 0x74; flags clear 0x1A0, 0x1A2, 0x1A3, 0x1A4, 0x1A5, 0x8E; vars 0x407A=1, 0x40AE=4; 2 save check(s)
-- frames: estimate 28000, budget 42000
+- frames: estimate 20827, budget 31300
 - refs: maps.h:69 (MAP_ETERNA = 65, map_header.c:149); maps.h:71 (MAP_ETERNA_GYM_ENTRANCE = 67, map_header.c:151); maps.h:72 (MAP_ETERNA_GYM = 68, map_header.c:152); zone_event 0064 coord 0 (303,523) 1x4 var 0x407A == 0 -> scr_seq 0069 #1; object 12 (Cynthia, hidden_flag 0x19E); warp 10 (312,562) -> MAP_ETERNA_GYM_ENTRANCE warp 0; scr_seq 0069 @0x0198-@0x01F1 (branches for player z 523/524/525 only; z 526 ends without effect); scr_seq 0069 @0x01F9-@0x02B6 (ClearFlag 0x19E, AddEvent 12, msg 78 #0-#2, std 2044 ITEM_HM01 x1, RemoveEvent 12, SetVar 0x407A 1); scr_seq 0069 @0x005E-@0x0090 (Eterna ON_TRANSITION: no Bicycle and no Explorer Kit -> SetVar 0x4114 0); zone_event 0066 object 1 (Gardenia (8,3) DIR_SOUTH, hidden_flag 0x23F); warp 1 (8,2) -> MAP_ETERNA_GYM warp 0; warp 0 (8,11) -> MAP_ETERNA warp 10; scr_seq 0071 @0x0016-@0x002F (Gardenia msg 80 #0, RemoveEvent 1); zone_event 0067 objects 4 (Caroline (10,13), 0x1A1), 1 (Jenna (9,27), 0x1A2), 2 (Angela (22,18), 0x1A3), 3 (Lindsay (20,9), 0x1A4), 0 (Gardenia (15,3), 0x1A5); warp 0 (16,29); scr_seq 0072 @0x001E-@0x0082 (gym ON_TRANSITION by var 0x40AE: 0 -> SetFlag 0x1A2-0x1A5); scr_seq 0072 @0x0084-@0x0099 (gym ON_LOAD: flag 0x8E -> ClearFlag 0x1A5, AddEvent 0, ClearFlag 0x8E); scr_seq 0072 @0x01A2-@0x01C8 (TrainerBattle 324, SetVar 0x40AE 1, ClearFlag 0x1A2, AddEvent 1); scr_seq 0072 @0x0203-@0x0227 (TrainerBattle 259, ClearFlag 0x1A3, AddEvent 2, SetVar 0x40AE 2); scr_seq 0072 @0x0264-@0x0288 (TrainerBattle 260, ClearFlag 0x1A4, AddEvent 3, SetVar 0x40AE 3); scr_seq 0072 @0x02C5-@0x02E9 (SetFlag 0x8E, TrainerBattle 348, ClearFlag 0x8E, SetVar 0x40AE 4); scr_seq 0072 @0x0300-@0x0370 (hidden trainers turn to the player from any side); scr_seq 0072 @0x00CB (TrainerBattle 315), @0x00F1 (GiveBadge 1 = BADGE_FOREST), @0x00F9-@0x0105 (SetTrainerFlag 259/260/324/348), @0x0115 (ClearFlag 0x1A0), @0x0124-@0x0149 (ITEM_TM86, SetFlag 0x74); include/constants/badge.h:5 (BADGE_FOREST 1); trdata.json #324 (TRAINER_LASS_CAROLINE: CHERUBI 15, ROSELIA 15); trdata.json #259 (TRAINER_AROMA_LADY_JENNA: BUDEW 14, BUDEW 13, BUDEW 15); trdata.json #260 (TRAINER_AROMA_LADY_ANGELA: TURTWIG 17); trdata.json #348 (TRAINER_BEAUTY_LINDSAY: ROSELIA 17); trdata.json #315 (TRAINER_LEADER_GARDENIA_GARDENIA: CHERUBI 19, TURTWIG 19, ROSERADE 22 @SITRUS_BERRY; 2x SUPER_POTION)
 - notes: Gym trainers are talk-only (no trainer type) and appear one at a time: Caroline -> Jenna -> Angela -> Lindsay -> Gardenia (re-added by ON_LOAD after Lindsay's battle). Their trainer flags are set only by Gardenia's win. Version: the only Eterna GetGameVersion branch is the statue text (scr_seq 0069 @0x039A, bg 2 (327,525)), off this path; Route 205 North's wild bank differs (d/p 0146), so version = both.
 
 #### diamond/15-galactic-eterna-building-jupiter — Team Galactic Eterna Building: Jupiter
 - proves: Proves Cut (HM01 from 14, BADGE_FOREST) on the tree in front of the Team Galactic Eterna Building, the four floors, and Commander Jupiter; the win hides every Eterna grunt and unhides the Cycle Shop owner, his Clefairy and the Pokecenter Buneary. Start: Eterna warp 10 (gym door (312,562), 14's end) -> end: Eterna at the building door (305,519) (16's start).
-- start: prev + `lab.recipe`; warp MAP_ETERNA 10; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ETERNA 10; lab state lines: 2 badge, 16 clear-flag, 81 flag, 10 item, 1 pokedex, 4 poketch, 35 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_ETERNA; badge BADGE_COAL, BADGE_FOREST; >= 1 battles; flags set 0x21B, 0x81, 0x21D, 0x987; flags clear 0x1B0, 0x21E, 0x21C; vars 0x407A=1; 1 save check(s)
-- frames: estimate 16000, budget 24000
+- frames: estimate 20313, budget 30500
 - refs: maps.h:69; map_header.c:149; zone_event 0064 warp 3; zone_event 0064 warp 10; zone_event 0064 object 14; zone_event 0064 object 15; zone_event 0064 object 16; zone_event 0064 object 3; zone_event 0064 object 4; zone_event 0064 object 23; scr_seq 0375 @0x004A; scr_seq 0375 @0x005D; scr_seq 0375 @0x0073; scr_seq 0375 @0x00C3; maps.h:76; map_header.c:156; zone_event 0071 object 2; zone_event 0071 object 3; zone_event 0071 warp 0; zone_event 0071 warp 1; maps.h:77; zone_event 0072 object 2; zone_event 0072 object 3; zone_event 0072 warp 0; zone_event 0072 warp 1; maps.h:78; zone_event 0073 object 1; zone_event 0073 object 2; zone_event 0073 warp 0; zone_event 0073 warp 1; maps.h:79; map_header.c:159; zone_event 0074 object 0; zone_event 0074 object 1; zone_event 0074 object 2; zone_event 0074 object 3; zone_event 0074 warp 0; scr_seq 0080 @0x0029; scr_seq 0080 @0x002F; scr_seq 0080 @0x0051; scr_seq 0080 @0x0112; scr_seq 0080 @0x0116; scr_seq 0080 @0x011A; scr_seq 0080 @0x011E; scr_seq 0080 @0x0122; scr_seq 0080 @0x0126; scr_seq 0080 @0x013E; scr_seq 0080 @0x0146; msg 0088 #1; games/diamond/arm9/src/unk_0205EC84.c:232-242; trdata.json #406; trdata.json #410; trdata.json #421; trdata.json #422; trdata.json #412; trdata.json #423; trdata.json #831
 - notes: D/P has no Looker disguise scene and no building OnFrame (level scripts 0540-0543 are empty). Trainers: 1F TRAINER_GALACTIC_GRUNT_5 (410) (18,5) W sight 3 WURMPLE 13, CASCOON 13 and TRAINER_GALACTIC_F_GRUNT (421) (14,5) E sight 3 ZUBAT 14, GLAMEOW 14 flank the stairs (15,3); 2F grunts 422/412 have sight 0 (talk only); 3F TRAINER_GALACTIC_F_GRUNT_3 (423) (10,8) N sight 3 and TRAINER_SCIENTIST_TRAVON (831) (18,5) W sight 3 KADABRA 15 may engage. Their trainer flags (0x6EA, 0x6F5, 0x6F7, 0x88F) are set by the generic trainer script only if fought, so they are not in the delta. Jupiter (406): ZUBAT 18, SKUNTANK 20 @SITRUS_BERRY. A loss -> Blackout (scr_seq 0080 @0x0146).
 
 #### diamond/16-bicycle-explorer-kit — Eterna: Bicycle and Explorer Kit
 - proves: Proves the Cycle Shop Bicycle (Jupiter's thanks) and the Explorer Kit, which D/P requires: with the Bicycle but no kit, Eterna's ON_TRANSITION sets var 0x4114 = 0 and coord (303..307,565) turns the player back from the Cycling Road gate. Start: Eterna warp 3 (Galactic building door (305,519)) -> end: Eterna Route 206 gatehouse (5,2) after a Pokecenter heal (17's start).
-- start: prev + `lab.recipe`; warp MAP_ETERNA 3; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ETERNA 3; lab state lines: 2 badge, 19 clear-flag, 85 flag, 10 item, 1 pokedex, 4 poketch, 35 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_ETERNA_ROUTE_206_GATEHOUSE; badge BADGE_COAL, BADGE_FOREST; flags set 0x82, 0x79, 0x113, 0x111, 0x81; vars 0x411B=1, 0x4114=1, 0x40EC=1; 2 save check(s)
@@ -1439,7 +1439,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/17-cycling-road-route207-vs-seeker — Cycling Road, Route 207: VS Seeker
 - proves: Proves the Cycling Road (Route 206 mounts the Bicycle by script), the south gate, and Dawn's VS Seeker + Dowsing Machine scene on Route 207 (male player; a female player meets Lucas). Start: Eterna Route 206 gatehouse warp 0 (5,2) -> end: Mt. Coronet South 1F (4,8) (18's start).
-- start: prev + `lab.recipe`; warp MAP_ETERNA_ROUTE_206_GATEHOUSE 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ETERNA_ROUTE_206_GATEHOUSE 0; lab state lines: 2 badge, 19 clear-flag, 89 flag, 12 item, 1 pokedex, 4 poketch, 38 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SOUTH_1F; flags set 0x9E6, 0x97F, 0x1EA; vars 0x408C=1, 0x411B=2; 2 save check(s)
@@ -1449,7 +1449,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/18-coronet-route208-hearthome-keira — Mt. Coronet, Route 208, Hearthome arrival
 - proves: Proves Cyrus's Mt. Coronet monologue, the Route 208 crossing, and the Hearthome arrival scene (Keira's runaway Buneary). Start: Mt. Coronet South 1F warp 0 (4,8) -> end: Hearthome City on the arrival coord (461,726) after Keira leaves (19's start).
-- start: prev + `lab.recipe`; warp MAP_MOUNT_CORONET_SOUTH_1F 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_MOUNT_CORONET_SOUTH_1F 0; lab state lines: 2 badge, 19 clear-flag, 92 flag, 13 item, 1 pokedex, 5 poketch, 40 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME; flags set 0x1C9, 0x25A, 0x25B; flags clear 0x224; vars 0x4096=1, 0x40F6=1, 0x407B=0
@@ -1459,7 +1459,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/19-hearthome-contest-hall-rival — Hearthome: Fantina, Contest Hall, rival
 - proves: Proves Fantina's 'not yet' at the Contest Hall door, the Contest Hall first visit (Keira, Mom, Accessory, Tuxedo) that removes the Route 209 gate blockers, and the rival battle it arms; the Hearthome Gym stays closed (guide: 'she's not here'). Start: Hearthome City (461,726) after Keira (18's end) -> end: Hearthome City (486,718) after Barry leaves, heading to Route 209.
-- start: prev + `lab.recipe`; map MAP_HEARTHOME 465 698 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_HEARTHOME 465 698 FACE_UP; lab state lines: 2 badge, 20 clear-flag, 95 flag, 13 item, 1 pokedex, 5 poketch, 43 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME; at (486, 718); badge BADGE_COAL, BADGE_FOREST; >= 1 battles; flags set 0x25C, 0x227, 0x226, 0x224, 0x978, 0x225, 0x21F, 0x220, 0x221, 0x222, 0x223; vars 0x40F7=1, 0x40EB=1, 0x407B=2, 0x40F6=1
@@ -1469,7 +1469,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/20-route209-to-solaceon — Route 209 to Solaceon Town
 - proves: Proves the walk east out of Hearthome (the Route 209 gate blockade gone after 19's Contest Hall scene), Route 209 and the arrival in Solaceon Town (ON_TRANSITION sets 0x19C). No story battle; Lost Tower, Day Care and Solaceon Ruins are optional. Start: Hearthome (486,718) after Barry's battle -> end: Solaceon, in front of the Pokemon Center (566,657) (21's start).
-- start: prev + `lab.recipe`; map MAP_HEARTHOME 486 718 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_HEARTHOME 486 718 FACE_DOWN; lab state lines: 2 badge, 20 clear-flag, 106 flag, 13 item, 1 pokedex, 5 poketch, 46 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_SOLACEON; at (566, 657); 2 badges; badge BADGE_COAL, BADGE_FOREST; flags set 0x19C, 0x224; vars 0x407B=2
@@ -1479,7 +1479,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/21-route210-215-veilstone-dawn — Route 210 South and Route 215 to Veilstone: counterpart at the gym
 - proves: Proves Route 210 South (south of the Psyduck block), Route 215 in the rain, the Veilstone gatehouse and the Veilstone arrival scene: Dawn (Lucas for a female player) waits south of the gym (coord (681..684,616), 0x40F5 0 -> 1). Start: Solaceon Pokemon Center door (566,656) -> end: inside Veilstone Gym at warp 0 (12,25) (22's start).
-- start: prev + `lab.recipe`; warp MAP_SOLACEON 5; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_SOLACEON 5; lab state lines: 2 badge, 20 clear-flag, 107 flag, 13 item, 1 pokedex, 5 poketch, 46 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE_GYM; 2 badges; badge BADGE_COAL, BADGE_FOREST; flags set 0x1C6, 0x19C; vars 0x40F5=1, 0x407D=0
@@ -1489,7 +1489,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/22-maylene-cobble-badge — Veilstone Gym: Maylene and the Cobble Badge
 - proves: Proves the Veilstone Gym (12 two-state obstacles set up by InitVeilstoneGym, four Black Belts) and Maylene's Cobble Badge (3rd badge in D/P) with TM60; the win arms the Veilstone warehouse scene (0x411A = 1) that S6's first milestone plays. Start: Veilstone Gym warp 0 (12,25) -> end: Veilstone Gym facing Maylene (12,5) with BADGE_COBBLE; do NOT leave the gym here: the Veilstone ON_FRAME (0x411A == 1) fires on the next entry to MAP_VEILSTONE and belongs to the next milestone.
-- start: prev + `lab.recipe`; warp MAP_VEILSTONE_GYM 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_VEILSTONE_GYM 0; lab state lines: 2 badge, 20 clear-flag, 108 flag, 13 item, 1 pokedex, 5 poketch, 48 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE_GYM; 3 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE; >= 1 battles; party SPECIES_EMPOLEON; flags set 0x9D, 0x685, 0x686, 0x687, 0x688; flags clear 0x1C6, 0x101; vars 0x407D=1, 0x411A=1, 0x40F5=1; 1 save check(s)
@@ -1499,7 +1499,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/24-veilstone-warehouse-tag-battle — Veilstone: Dawn's stolen Pokédex, warehouse tag battle
 - proves: Proves the post-Cobble Veilstone chain: the counterpart's ON_FRAME plea (0x411A==1), the tag battle with Dawn against the two warehouse grunts, and the stolen Pokédex scene (flag 0x101 arms Pastoria's grunt). Start: Veilstone Gym (22's end at Maylene, or the lab door warp 0 (12,25)) -> end: Veilstone in front of the Galactic warehouse, 0x411A = 2, 0x101 set. HM02 Fly is NOT here in D/P (warehouse needs the Storage Key, msg 146 #2).
-- start: prev + `lab.recipe`; warp MAP_VEILSTONE_GYM 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_VEILSTONE_GYM 0; lab state lines: 3 badge, 22 clear-flag, 113 flag, 14 item, 1 pokedex, 5 poketch, 50 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE; 3 badges; badge BADGE_COBBLE; >= 1 battles; flags set 0x101, 0x1C6, 0x1DD; vars 0x411A=2, 0x407D=1
@@ -1509,7 +1509,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/25-route214-valor-route213-to-pastoria — Route 214, Valor Lakefront and Route 213 to Pastoria
 - proves: Proves the long overworld leg after Veilstone: Pokémon Center heal, Route 214 gate and route (sight trainers), Valor Lakefront, Route 213 and its Pastoria gatehouse, a second heal in Pastoria, and entry to the gym. No story script fires on this leg (Route 214/Valor/213 level scripts only move warps or bail out). Start: Veilstone in front of the warehouse (24's end) -> end: inside Pastoria Gym at its door (26's start).
-- start: prev + `lab.recipe`; map MAP_VEILSTONE 696 595 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VEILSTONE 696 595 FACE_DOWN; lab state lines: 3 badge, 22 clear-flag, 116 flag, 14 item, 1 pokedex, 5 poketch, 51 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA_GYM; 3 badges; flags set 0x101, 0x238, 0x239, 0x1C7; flags clear 0x102, 0x22A
@@ -1519,7 +1519,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/26-pastoria-gym-wake-fen-badge — Pastoria Gym: Crasher Wake and the Fen Badge
 - proves: Proves the water-level gym (InitPastoriaGym / CheckPastoriaGymButton), Wake's win script, the Fen Badge and TM55. The badge arms Pastoria's grunt (HasBadge 3, scr_seq 0118 @0x01DE) and the Route 213 chase (scr_seq 0424 @0x002F). Start: Pastoria Gym door (13,42) -> end: back out in Pastoria at the gym door (27's start).
-- start: prev + `lab.recipe`; warp MAP_PASTORIA_GYM 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_PASTORIA_GYM 0; lab state lines: 3 badge, 24 clear-flag, 119 flag, 14 item, 1 pokedex, 5 poketch, 51 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA; 4 badges; badge BADGE_FEN; >= 1 battles; flags set 0x9C, 0x675, 0x6A3, 0x6E1, 0x733, 0x741, 0x742; vars 0x407C=1; 1 save check(s)
@@ -1529,7 +1529,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/27-pastoria-galactic-grunt-rival — Pastoria: Galactic grunt flees, rival battle
 - proves: Proves the post-Fen Pastoria scene: the Galactic grunt by the Great Marsh gate runs to the east gate (0x102), the second talk sends him off to the lake and Barry bumps into you for a rival battle (0x103 arms Route 213). Start: Pastoria at the gym door (589,827) -> end: Pastoria (636,812) by the east gate, rival gone.
-- start: prev + `lab.recipe`; warp MAP_PASTORIA 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_PASTORIA 0; lab state lines: 4 badge, 24 clear-flag, 126 flag, 15 item, 1 pokedex, 5 poketch, 52 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA; 4 badges; >= 1 battles; flags set 0x101, 0x102, 0x103, 0x22A, 0x1C7
@@ -1539,7 +1539,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/28-valor-lakefront-grunt-secretpotion — Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion
 - proves: Proves the Fen Badge's Galactic follow-up: the grunt chase over Route 213 (0x104) to Valor Lakefront (0x106), the grunt battle, and Cynthia's SecretPotion that sends the player north to the Route 210 Psyduck (0x4083 = 2, 0xB7). Start: Pastoria (636,812) by the east gate (27's end) -> end: Valor Lakefront below Cynthia's spot (723,761).
-- start: prev + `lab.recipe`; map MAP_PASTORIA 636 812 FACE_RIGHT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_PASTORIA 636 812 FACE_RIGHT; lab state lines: 4 badge, 24 clear-flag, 129 flag, 15 item, 1 pokedex, 5 poketch, 52 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; 4 badges; >= 1 battles; flags set 0x103, 0x104, 0x106, 0x238, 0x239, 0x1CB, 0xB7; vars 0x4083=2; 1 save check(s)
@@ -1549,7 +1549,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/29-route210-psyduck-old-charm — Route 210 South: SecretPotion on the Psyduck, Old Charm
 - proves: Proves the walk back from Valor Lakefront (Route 214, Veilstone, Route 215) to the Route 210 South Psyduck block, the SecretPotion clearing it and Cynthia's Old Charm hand-off (the errand that opens Celestic Town). Start: Valor Lakefront (723,761) (28's end) -> end: Route 210 South (561,588), ITEM_OLD_CHARM, flag 0x107.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 723 761 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 723 761 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 133 flag, 16 item, 1 pokedex, 5 poketch, 53 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_ROUTE_210_SOUTH; at (561, 588); flags set 0x1CE, 0x1CF, 0x107; 2 save check(s)
@@ -1559,7 +1559,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/30-route210-north-to-celestic — Route 210 North through the fog to Celestic Town
 - proves: Proves the Psyduck block is gone, the foggy Route 210 North walk without Defog and the arrival in Celestic Town, where the elder's coord scene (0x40F1) tells of the spaceman at the ruins. Start: Route 210 South (561,588) (29's end) -> end: Celestic Town coord (465,538), 0x980 + 0x40F1 = 1.
-- start: prev + `lab.recipe`; map MAP_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 136 flag, 17 item, 1 pokedex, 5 poketch, 53 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; flags set 0x980, 0x107, 0x1CE; flags clear 0xA6; vars 0x40F1=1
@@ -1569,7 +1569,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/31-celestic-grunt-old-charm — Celestic Town: Galactic grunt at the ruins, Old Charm to the elder
 - proves: Proves the Celestic Town grunt at the ruins door (Yes -> battle), the elder thanking the player and taking the Old Charm from Cynthia (flag 0xA6), which leaves the ruins open. Start: Celestic Town (465,538) (30's end) -> end: Celestic Town (463,523) below the ruins door, Old Charm handed over.
-- start: prev + `lab.recipe`; map MAP_CELESTIC 465 538 FACE_LEFT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_CELESTIC 465 538 FACE_LEFT; lab state lines: 4 badge, 25 clear-flag, 137 flag, 17 item, 1 pokedex, 5 poketch, 54 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; >= 1 battles; flags set 0x1CD, 0xA6; flags clear 0x1CA, 0xA7; 1 save check(s)
@@ -1579,7 +1579,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/32-celestic-ruins-hm03-cyrus — Celestic Ruins: the painting, HM03 Surf, Cyrus
 - proves: Proves the Celestic Ruins painting, the elder's HM03 Surf (Cynthia's grandmother; also arms the Hearthome Gym via 0x98D) and Cyrus's speech outside the ruins (no battle in D/P), which brings Fantina back (0xA5). Start: Celestic Town (463,523) (31's end) -> end: Celestic Town at the ruins door, ITEM_HM03, var 0x4074 = 2.
-- start: prev + `lab.recipe`; map MAP_CELESTIC 463 523 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_CELESTIC 463 523 FACE_UP; lab state lines: 4 badge, 27 clear-flag, 139 flag, 16 item, 1 pokedex, 5 poketch, 54 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; flags set 0xA7, 0x98D, 0xA5, 0x1CA, 0x247, 0x1DB; flags clear 0x1E1; vars 0x4074=2; 1 save check(s)
@@ -1589,7 +1589,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/33-celestic-to-hearthome-gym — Celestic Town back to the Hearthome Gym
 - proves: Proves the walk back from Celestic Town (Routes 210 North/South, Solaceon, Route 209) to Hearthome City and into the Hearthome Gym, now open: 0x98D keeps the first room's elevator coord armed (var 0x4000 = 0). Start: Celestic Town ruins door (463,521) (32's end) -> end: Hearthome Gym first question room (9,22) (34's start).
-- start: prev + `lab.recipe`; warp MAP_CELESTIC 4; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_CELESTIC 4; lab state lines: 4 badge, 28 clear-flag, 145 flag, 17 item, 1 pokedex, 5 poketch, 55 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM; at (9, 22); 4 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN; flags set 0x98D, 0xA5, 0x107
@@ -1599,7 +1599,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/34-hearthome-gym-fantina-relic-badge — Hearthome Gym: Fantina and the Relic Badge
 - proves: Proves the Hearthome Gym quiz rooms (elevator + one of three answer doors per room), Fantina, the Relic Badge and TM65, the walk back out, and Cynthia's Hearthome scene pointing to the Canalave library. Start: Hearthome Gym first question room warp 3 (9,22) (33's end) -> end: Hearthome City at the gym door, 5 badges.
-- start: prev + `lab.recipe`; warp MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM 3; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM 3; lab state lines: 4 badge, 28 clear-flag, 145 flag, 17 item, 1 pokedex, 5 poketch, 55 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME; 5 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC; >= 1 battles; flags set 0x7D, 0x1C8, 0x65A, 0x668, 0x66C, 0x695, 0x69A, 0x6A4, 0x6A7, 0x6B5, 0x98D; vars 0x40D1=2; 1 save check(s)
@@ -1609,7 +1609,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/35-hearthome-to-canalave-dex-upgrade — Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse
 - proves: Proves the D/P road to Canalave after the Relic Badge (no Fly yet in D/P): Hearthome -> Route 208 -> Mt. Coronet 1F -> Route 207 -> Oreburgh -> Oreburgh Gate -> Route 203 -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse, where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0. Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
-- start: prev + `lab.recipe`; warp MAP_HEARTHOME 8; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_HEARTHOME 8; lab state lines: 5 badge, 28 clear-flag, 155 flag, 18 item, 1 pokedex, 5 poketch, 56 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CANALAVE; flags set 0x23A; vars 0x4105=1
@@ -1619,7 +1619,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/36-canalave-rival — Canalave City: rival battle on the bridge
 - proves: Proves the Canalave bridge rival: coord 0 (47,723..726) adds Barry, who battles with the Turtwig-player team (Monferno). Start: MAP_CANALAVE at the gatehouse door (warp 7, 63,754) -> end: MAP_CANALAVE on the bridge (47,724), 0x4078 = 1.
-- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 156 flag, 18 item, 1 pokedex, 5 poketch, 57 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #477 TRAINER_PKMN_TRAINER_BARRY_CEDRIC_11
 - end state: map MAP_CANALAVE; >= 1 battles; flags set 0x1D0; vars 0x4078=1
@@ -1629,7 +1629,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/37-iron-island-riley-egg — Iron Island: Riley tag battle and the Riolu egg
 - proves: Proves the Canalave/Iron Island ferry, Riley joining as follower partner on B2F, the tag double vs two Galactic grunts and the Riolu egg. In D/P Iron Island has no story gate and gives no HM (Strength is the Lost Tower's, msg 0050 #1 / msg 0098 #12); it sits before Byron because Byron's win sends the player straight to the library (scr_seq 0034 script_4). Start: MAP_CANALAVE (36's end on the bridge; lab: gatehouse door warp 7) -> end: MAP_CANALAVE ship landing (44,750).
-- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 157 flag, 18 item, 1 pokedex, 5 poketch, 58 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #835 TRAINER_GALACTIC_GRUNT_33; trdata.json #836 TRAINER_GALACTIC_GRUNT_34; trdata.json #609 TRAINER_PKMN_TRAINER_RICH_BOY_RILEY
 - end state: map MAP_CANALAVE; at (44, 750); >= 1 battles; party size 3; flags set 0xE1, 0xE5, 0x203, 0x205, 0x9DA, 0x9DB; flags clear 0xE2, 0x961; vars 0x4092=2, 0x403F=609
@@ -1639,7 +1639,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/38-canalave-gym-byron-mine-badge — Canalave Gym: Byron and the Mine Badge, rival points to the library
 - proves: Proves the Canalave Gym (InitCanalaveGym platform state), Byron, the Mine Badge and TM91, and the rival's post-badge frame script outside (0x4078 2 -> 3) that sends the player to the library (DPStory09's start). Start: MAP_CANALAVE ferry landing (44,750) -> end: MAP_CANALAVE outside the gym door after scr_seq 0034 script_4.
-- start: prev + `lab.recipe`; map MAP_CANALAVE 44 750 DIR_EAST; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_CANALAVE 44 750 DIR_EAST; lab state lines: 5 badge, 29 clear-flag, 163 flag, 18 item, 1 pokedex, 5 poketch, 60 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #250 TRAINER_LEADER_BYRON_BYRON
 - end state: map MAP_CANALAVE; 6 badges; badge BADGE_MINE; >= 1 battles; flags set 0x92, 0x1B6, 0x1D0, 0x638, 0x650, 0x651, 0x667, 0x66B, 0x68A, 0x6BF; flags clear 0x1D4, 0x1D5, 0x1D6; vars 0x4078=3, 0x40B2=1; 1 save check(s)
@@ -1649,7 +1649,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/39-canalave-library-valor-explosion — Canalave Library: lake legends and the Lake Valor explosion
 - proves: Proves the Canalave Library 3F lake-legends meeting (ON_FRAME 0x40B2==1), the tremor, and the Canalave explosion news (ON_FRAME 0x4078==4) that sends the player to Lake Valor. Start: Canalave below the gym door (39,732), right after 38's rival scene (0x4078=3, 0x40B2=1) -> end: Valor Lakefront (719,761) east of the lake mouth (40's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_CANALAVE 39 732 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_CANALAVE 39 732 FACE_DOWN; lab state lines: 6 badge, 32 clear-flag, 172 flag, 19 item, 1 pokedex, 5 poketch, 62 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0xA8, 0x1CC, 0x1D0, 0x1D2, 0x1D4, 0x1D5, 0x1D6; flags clear 0x1B2, 0x193, 0x2B1; vars 0x4078=5, 0x40B2=2
@@ -1659,7 +1659,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/40-lake-valor-saturn — Lake Valor (drained): Saturn in Valor Cavern
 - proves: Proves the drained Lake Valor (Galactic map chosen while flag 0x15E is clear), Valor Cavern and the Saturn battle, whose win sets 0x13E (switches Verity Lakefront to the Galactic lake). Start: Valor Lakefront (719,761) -> end: Verity Lakefront (80,845) south of the lake mouth (41's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 719 761 FACE_LEFT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 719 761 FACE_LEFT; lab state lines: 6 badge, 35 clear-flag, 178 flag, 19 item, 1 pokedex, 5 poketch, 64 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0301 object 4 TRAINER_GALACTIC_GRUNT_12 (417) (17,32) N sight 4; object 5 TRAINER_GALACTIC_F_GRUNT_5 (425) (29,18) S sight 1; object 6 TRAINER_GALACTIC_GRUNT_13 (418) (25,35) N sight 3; scr_seq 0348 @0x00F5 TrainerBattle 408 (TRAINER_COMMANDER_SATURN_SATURN)
 - end state: map MAP_VERITY_LAKEFRONT; >= 1 battles; flags set 0x13E, 0x984, 0x1DA, 0x9E1; flags clear 0x15E
@@ -1669,7 +1669,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/41-lake-verity-mars — Lake Verity (Galactic): Mars
 - proves: Proves the Galactic Lake Verity (Verity Lakefront switches its lake warps on 0x13E), Rowan's briefing ON_FRAME and the Mars battle whose win arms Lake Acuity (Jupiter shown, Acuity Lakefront guards shown, 0x40D3=1). Start: Verity Lakefront (80,845) -> end: Route 211 East (446,527) at the Celestic edge (42's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_VERITY_LAKEFRONT 80 845 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VERITY_LAKEFRONT 80 845 FACE_UP; lab state lines: 6 badge, 36 clear-flag, 182 flag, 19 item, 1 pokedex, 5 poketch, 64 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0299 object 0 TRAINER_GALACTIC_GRUNT_14 (419) (43,49) E6; object 1 TRAINER_GALACTIC_GRUNT_15 (420) (48,43) E4; object 2 TRAINER_GALACTIC_F_GRUNT_6 (426) (50,49) W6; object 3 TRAINER_GALACTIC_F_GRUNT_7 (427) (53,43) W4; scr_seq 0343 @0x0247 TrainerBattle 405 (TRAINER_COMMANDER_MARS_MARS_2)
 - end state: map MAP_ROUTE_211_EAST; >= 1 battles; flags set 0x1DE, 0x98E, 0xBA; flags clear 0x1D8, 0x252; vars 0x4097=1, 0x40D3=1
@@ -1679,7 +1679,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/42-route211-coronet-north-to-route216 — Route 211 East and Mt Coronet north (Strength) to Route 216
 - proves: Proves the D/P road north after Lake Verity: Route 211 East into Mt Coronet's north side, the Strength boulder in North 1F Room 1, B1F and Room 2 out onto snowy Route 216. No story flags change; the proof is the map chain. Start: Route 211 East (446,527) at the Celestic edge -> end: Route 216 at the cave mouth (375,403) (43's start).
-- start: prev + `lab.recipe`; map MAP_ROUTE_211_EAST 446 527 FACE_LEFT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_ROUTE_211_EAST 446 527 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 185 flag, 19 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0351 object 0 TRAINER_BIRD_KEEPER_KATHERINE (81) (432,520) E2; object 19 TRAINER_RUIN_MANIAC_HARRY (442) (429,525) S2; object 1 TRAINER_NINJA_BOY_NICK (80) (425,520) S1
 - end state: map MAP_ROUTE_216; party SPECIES_STARAPTOR
@@ -1689,8 +1689,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/43-route216-217-hm08-to-snowpoint — Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint
 - proves: Proves the snow road: Route 216 west, Route 217 north with the HM08 (Rock Climb) item ball, Acuity Lakefront (lake still guarded until the Icicle Badge) and Snowpoint City. Start: Route 216 cave mouth (375,403) -> end: Snowpoint (367,223), below the gym door (44's start).
-- start: prev + `lab.recipe`; -; lab state lines: none
-- party: the continued save
+- start: prev + `lab.recipe`; map MAP_ROUTE_216 375 403 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 185 flag, 19 item, 1 pokedex, 5 poketch, 66 var
+- party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37
 - end state: map MAP_SNOWPOINT; at (367, 223); flags set 0x47B; 1 save check(s)
 - frames: estimate 22000, budget 33000
@@ -1699,7 +1699,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/51-coronet-exit-valor-lakefront — Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens
 - proves: Proves the way back from Spear Pillar: down Mt. Coronet 6F/5F/4F to the North Mountainside, Fly south, and the first Valor Lakefront entry after Spear Pillar (flag 0x15E) that removes the Route 222 blackout guard. Start: Spear Pillar (31,52) facing south (50's end, scr_seq 0230 @0x0FB0) -> end: Valor Lakefront, guard hidden.
-- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN; lab state lines: 6 badge, 38 clear-flag, 186 flag, 20 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0x15E, 0x29B; vars 0x4112=1
@@ -1709,7 +1709,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/52-route222-sunyshore-flint-lighthouse — Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse
 - proves: Proves Route 222 to Sunyshore, Flint's arrival OnFrame, the Vista Lighthouse elevator, Volkner on the observation deck and Flint leaving the gym door. Start: Valor Lakefront west of the old guard tile -> end: Sunyshore, Flint gone.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 722 790 FACE_RIGHT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 722 790 FACE_RIGHT; lab state lines: 6 badge, 38 clear-flag, 188 flag, 20 item, 1 pokedex, 5 poketch, 67 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0x162, 0x29F, 0x257; vars 0x407E=1
@@ -1719,7 +1719,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/53-sunyshore-gym-volkner — Sunyshore Gym: Volkner and the Beacon Badge
 - proves: Proves the rotating-gear gym (InitSunyshoreGym / RotateSunyshoreGymGear coord buttons) and Volkner's win script. Start: Sunyshore Gym room 1 (8,14) -> end: room 3, BADGE_BEACON, TM57.
-- start: prev + `lab.recipe`; warp MAP_SUNYSHORE_GYM_ROOM_1 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_SUNYSHORE_GYM_ROOM_1 0; lab state lines: 6 badge, 38 clear-flag, 191 flag, 20 item, 1 pokedex, 5 poketch, 68 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE_GYM_ROOM_3; 8 badges; badge BADGE_BEACON; >= 1 battles; flags set 0xB6, 0x669, 0x66D, 0x67D, 0x67E, 0x67F, 0x69B, 0x6A5, 0x6A8; 2 save check(s)
@@ -1729,7 +1729,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/54-sunyshore-jasmine-waterfall — Sunyshore: Jasmine gives HM07 Waterfall
 - proves: Proves Jasmine's coord scene north of the gym: with the Beacon Badge she hands over HM07 Waterfall. Start: Sunyshore gym door (845,747), var 0x407E 1 -> end: Sunyshore coord row (855,743), HM07, var 0x407E 2.
-- start: prev + `lab.recipe`; warp MAP_SUNYSHORE 12; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_SUNYSHORE 12; lab state lines: 7 badge, 38 clear-flag, 200 flag, 21 item, 1 pokedex, 5 poketch, 68 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0xB5, 0x9A; vars 0x407E=2; 1 save check(s)
@@ -1739,7 +1739,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/55-route223-victory-road — Route 223 and Victory Road to the Pokemon League
 - proves: Proves Surf + Waterfall up Route 223 and the Victory Road HM floors to the League's north side. Start: Sunyshore (855,743) after Jasmine -> end: Pokemon League outside, Victory Road exit (853,582).
-- start: prev + `lab.recipe`; map MAP_SUNYSHORE 855 743 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_SUNYSHORE 855 743 FACE_UP; lab state lines: 7 badge, 38 clear-flag, 202 flag, 22 item, 1 pokedex, 5 poketch, 69 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE; flags set 0x9CA
@@ -1749,7 +1749,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/56-league-lobby-rival-guard — Pokemon League lobby: last rival battle, badge check
 - proves: Proves the League lobby: ON_TRANSITION door/E4 reset, the rival coord battle (Turtwig -> Infernape team), the badge check by the door guard and entry to the first lift room. Start: League outside (853,582) -> end: MAP_POKEMON_LEAGUE_ENTRANCE.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE 3; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE 3; lab state lines: 7 badge, 38 clear-flag, 203 flag, 22 item, 1 pokedex, 5 poketch, 69 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_ENTRANCE; >= 1 battles; flags set 0x9F4, 0x2A0, 0x2A1, 0x2A2, 0x2A3, 0x23B, 0xAF; flags clear 0x2A4, 0x2A5, 0x2A6, 0x2A7, 0xB0, 0xB1, 0xB2, 0xB3; vars 0x40EF=1
@@ -1759,7 +1759,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/57-e4-aaron — Elite Four: Aaron
 - proves: Proves the Aaron room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_ENTRANCE (4,15) -> end: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_ENTRANCE 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_ENTRANCE 1; lab state lines: 7 badge, 46 clear-flag, 210 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK; >= 1 battles; flags set 0xB0, 0x2A4; flags clear 0x2A0
@@ -1769,7 +1769,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/57b-e4-bertha — Elite Four: Bertha
 - proves: Proves the Bertha room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK 1; lab state lines: 7 badge, 47 clear-flag, 212 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK; >= 1 battles; flags set 0xB1, 0x2A5; flags clear 0x2A1
@@ -1779,7 +1779,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/58-e4-flint — Elite Four: Flint
 - proves: Proves the Flint room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK 1; lab state lines: 7 badge, 48 clear-flag, 214 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK; >= 1 battles; flags set 0xB2, 0x2A6; flags clear 0x2A2
@@ -1789,7 +1789,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/58b-e4-lucian — Elite Four: Lucian
 - proves: Proves the Lucian room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK 1; lab state lines: 7 badge, 49 clear-flag, 216 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK; >= 1 battles; flags set 0xB3, 0x2A7; flags clear 0x2A3
@@ -1799,7 +1799,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/59-champion-cynthia — Champion Cynthia
 - proves: Proves the Champion room frame script (walk 4 north, intro, battle with no interaction), the win and the walk-off to the Hall of Fame corridor. Start: Lucian-Cynthia lift room (4,23) -> end: HoF corridor (5,23).
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: 7 badge, 50 clear-flag, 218 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR; at (5, 23); >= 1 battles; flags set 0x98B, 0xB4, 0x258, 0x259
@@ -1809,7 +1809,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### diamond/59b-hall-of-fame-credits — Hall of Fame, credits, continue
 - proves: Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966, Champ ribbon, the game's own save, credits, OS_ResetSystem) and the continue into the post-game start location. Start: HoF corridor (5,23) after Cynthia -> end: CONTINUE after the reset, field in the player's bedroom (map 415).
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: 7 badge, 50 clear-flag, 222 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_TWINLEAF_RIVAL_HOUSE_2F; at (4, 6); 8 badges; flags set 0x964, 0x966, 0x982, 0xB4; flags clear 0x98B, 0x1EF, 0x1E2, 0x1FE, 0x1FF, 0x195; vars 0x40F4=1, 0x410F=1, 0x4098=5
@@ -2056,7 +2056,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Pearl
 
 <!-- plan.py:begin pearl -->
-### Story chain: 54 milestones, ~965372 frames estimated
+### Story chain: 54 milestones, ~995726 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -2068,13 +2068,13 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [06-route203-rival-oreburgh-gate-hm06](diamond/06-route203-rival-oreburgh-gate-hm06/milestone.toml) | Route 203 rival, Oreburgh Gate HM06, Oreburgh tour | P0 | both | 77453 | prev + `lab.recipe` | MAP_OREBURGH | passing |
 | [07-oreburgh-barry-mine-roark](diamond/07-oreburgh-barry-mine-roark/milestone.toml) | Oreburgh: Barry at the gym, Mine, Roark returns | P0 | both | 25488 | prev + `lab.recipe` | MAP_OREBURGH_GYM | passing |
 | [08-roark-coal-badge](diamond/08-roark-coal-badge/milestone.toml) | Oreburgh Gym: Roark and the Coal Badge | P0 | both | 16611 | prev + `lab.recipe` | MAP_OREBURGH | passing |
-| [09-oreburgh-rival-farewell](diamond/09-oreburgh-rival-farewell/milestone.toml) | Oreburgh: Barry's farewell at the west exit | P0 | both | 3000 | prev + `lab.recipe` | MAP_OREBURGH | planned |
-| [10-jubilife-galactic-tag-battle](diamond/10-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | both | 8000 | prev + `lab.recipe` | MAP_JUBLIFE | planned |
-| [11-floaroma-meadow-works-key](diamond/11-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | both | 20000 | prev + `lab.recipe` | MAP_FLOAROMA | planned |
-| [12-valley-windworks-mars](diamond/12-valley-windworks-mars/milestone.toml) | Valley Windworks: Commander Mars | P0 | both | 15000 | prev + `lab.recipe` | MAP_ETERNA_FOREST_INTERIOR | planned |
-| [13-eterna-forest-cheryl](diamond/13-eterna-forest-cheryl/milestone.toml) | Eterna Forest with Cheryl | P0 | both | 15000 | prev + `lab.recipe` | MAP_ROUTE_205_NORTH | planned |
-| [14-gardenia-forest-badge](diamond/14-gardenia-forest-badge/milestone.toml) | Eterna Gym: Gardenia and the Forest Badge | P0 | both | 28000 | prev + `lab.recipe` | MAP_ETERNA | planned |
-| [15-galactic-eterna-building-jupiter](diamond/15-galactic-eterna-building-jupiter/milestone.toml) | Team Galactic Eterna Building: Jupiter | P0 | both | 16000 | prev + `lab.recipe` | MAP_ETERNA | planned |
+| [09-oreburgh-rival-farewell](diamond/09-oreburgh-rival-farewell/milestone.toml) | Oreburgh: Barry's farewell at the west exit | P0 | both | 2400 | prev + `lab.recipe` | MAP_OREBURGH | passing |
+| [10-jubilife-galactic-tag-battle](diamond/10-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | both | 15489 | prev + `lab.recipe` | MAP_JUBLIFE | passing |
+| [11-floaroma-meadow-works-key](diamond/11-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | both | 20765 | prev + `lab.recipe` | MAP_FLOAROMA | passing |
+| [12-valley-windworks-mars](diamond/12-valley-windworks-mars/milestone.toml) | Valley Windworks: Commander Mars | P0 | both | 25263 | prev + `lab.recipe` | MAP_ETERNA_FOREST_INTERIOR | passing |
+| [13-eterna-forest-cheryl](diamond/13-eterna-forest-cheryl/milestone.toml) | Eterna Forest with Cheryl | P0 | both | 30297 | prev + `lab.recipe` | MAP_ROUTE_205_NORTH | passing |
+| [14-gardenia-forest-badge](diamond/14-gardenia-forest-badge/milestone.toml) | Eterna Gym: Gardenia and the Forest Badge | P0 | both | 20827 | prev + `lab.recipe` | MAP_ETERNA | passing |
+| [15-galactic-eterna-building-jupiter](diamond/15-galactic-eterna-building-jupiter/milestone.toml) | Team Galactic Eterna Building: Jupiter | P0 | both | 20313 | prev + `lab.recipe` | MAP_ETERNA | passing |
 | [16-bicycle-explorer-kit](diamond/16-bicycle-explorer-kit/milestone.toml) | Eterna: Bicycle and Explorer Kit | P0 | both | 9000 | prev + `lab.recipe` | MAP_ETERNA_ROUTE_206_GATEHOUSE | planned |
 | [17-cycling-road-route207-vs-seeker](diamond/17-cycling-road-route207-vs-seeker/milestone.toml) | Cycling Road, Route 207: VS Seeker | P0 | both | 14000 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SOUTH_1F | planned |
 | [18-coronet-route208-hearthome-keira](diamond/18-coronet-route208-hearthome-keira/milestone.toml) | Mt. Coronet, Route 208, Hearthome arrival | P0 | both | 10000 | prev + `lab.recipe` | MAP_HEARTHOME | planned |
@@ -2127,7 +2127,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/02-sandgem-pokedex — Sandgem: Rowan's lab and the Pokedex
 - proves: Proves the Sandgem escort into Rowan's lab (Barry bursts out), the starter becoming the player's (nickname declined), the Pokedex, and the friend's Pokemon Center / Poke Mart tour. Start: Twinleaf Town at the player's house door (116,885) -> end: Sandgem Town after the tour, var 0x4071 = 2.
-- start: prev + `lab.recipe`; warp MAP_TWINLEAF 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_TWINLEAF 1; lab state lines: 1 clear-flag, 13 flag, 9 var
 - party: SPECIES_TURTWIG 14 (MOVE_TACKLE)
 - trainers: none
 - end state: map MAP_SANDGEM; party SPECIES_TURTWIG; flags set 0x1B5, 0x993, 0x90, 0x1B7, 0x195; vars 0x40A6=1, 0x4071=2; 1 save check(s)
@@ -2137,7 +2137,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/03-parcel-catching-tutorial — The Journal, the Parcel and the catching tutorial
 - proves: Proves the walk home with the Pokedex: Mom's heal and Journal, Barry's mom's Parcel, then the Route 202 catching tutorial (5 Poke Balls). Start: Sandgem Town (177,843) in front of the Pokemon Center -> end: Route 202 after the tutorial, var 0x4087 = 1.
-- start: prev + `lab.recipe`; map MAP_SANDGEM 177 843 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_SANDGEM 177 843 FACE_DOWN; lab state lines: 1 clear-flag, 18 flag, 1 pokedex, 11 var
 - party: SPECIES_TURTWIG 14 (MOVE_TACKLE)
 - trainers: none
 - end state: map MAP_ROUTE_202; flags set 0x8F, 0x20F, 0x963, 0x1A6; vars 0x40A4=7, 0x4087=1; 3 save check(s)
@@ -2147,7 +2147,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/04-jubilife-trainers-school — Jubilife: the Trainers' School and the Town Map
 - proves: Proves the first arrival in Jubilife (the friend points to the Trainers' School) and the Parcel hand-off to Barry in the Trainers' School (Town Map), which opens the Poketch campaign (president and clowns 1-2 unhidden). Start: Route 202 (180,827) after the catching tutorial -> end: Jubilife City outside the Trainers' School.
-- start: prev + `lab.recipe`; map MAP_ROUTE_202 180 827 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_ROUTE_202 180 827 FACE_UP; lab state lines: 1 clear-flag, 21 flag, 3 item, 1 pokedex, 13 var
 - party: SPECIES_TURTWIG 14 (MOVE_TACKLE)
 - trainers: none
 - end state: map MAP_JUBLIFE; flags set 0x198, 0x212, 0xF1; flags clear 0x213, 0x214; vars 0x4077=1, 0x40E7=1; 2 save check(s)
@@ -2157,7 +2157,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/05-jubilife-poketch — Jubilife: the Poketch campaign
 - proves: Proves the Poketch campaign: the president's pitch, the three clowns' quiz coupons, and the Poketch with 4 apps. Start: Jubilife City at the Trainers' School door (168,776) -> end: Jubilife City with the Poketch, free in the field (var 0x4077 = 2: the Route 203 exit is open for the next slice).
-- start: prev + `lab.recipe`; warp MAP_JUBLIFE 7; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_JUBLIFE 7; lab state lines: 3 clear-flag, 24 flag, 3 item, 1 pokedex, 15 var
 - party: SPECIES_TURTWIG 14 (MOVE_TACKLE)
 - trainers: none
 - end state: map MAP_JUBLIFE; flags set 0xED, 0xEE, 0xEF, 0xF3, 0x214; flags clear 0x215; vars 0x40E7=2, 0x4077=2; 2 save check(s)
@@ -2167,7 +2167,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/06-route203-rival-oreburgh-gate-hm06 — Route 203 rival, Oreburgh Gate HM06, Oreburgh tour
 - proves: Proves the Route 203 rival battle, HM06 (Rock Smash) from the Oreburgh Gate hiker, and the Oreburgh youngster's gym tour. Start: Jubilife warp 2 (Pokecenter door (180,776)) -> end: Oreburgh City at the gym after the tour (0x4079 = 1).
-- start: prev + `lab.recipe`; warp MAP_JUBLIFE 2; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_JUBLIFE 2; lab state lines: 4 clear-flag, 29 flag, 3 item, 1 pokedex, 4 poketch, 17 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_OREBURGH; >= 1 battles; flags set 0x199, 0x9CF, 0x93; vars 0x4088=1, 0x4093=2, 0x4079=1; 1 save check(s)
@@ -2177,7 +2177,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/07-oreburgh-barry-mine-roark — Oreburgh: Barry at the gym, Mine, Roark returns
 - proves: Proves Barry's gym-door scene and the Oreburgh Mine visit: Roark smashes the rock and returns to the gym, which hides Barry. Start: Oreburgh warp 1 (Pokecenter door (303,756)) -> end: inside Oreburgh Gym at warp 0 (08's start), gym door free.
-- start: prev + `lab.recipe`; warp MAP_OREBURGH 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_OREBURGH 1; lab state lines: 4 clear-flag, 32 flag, 4 item, 1 pokedex, 4 poketch, 20 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_OREBURGH_GYM; flags set 0x8A, 0x9C2, 0x1A8, 0x7A, 0x19A
@@ -2187,7 +2187,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/08-roark-coal-badge — Oreburgh Gym: Roark and the Coal Badge
 - proves: Proves the first gym: two sight youngsters, Roark, the Coal Badge and TM76; the win arms Barry's farewell and the Jubilife Galactic scene. Start: Oreburgh Gym warp 0 (5,24) -> end: Oreburgh City at the gym door (282,756) (09's start).
-- start: prev + `lab.recipe`; warp MAP_OREBURGH_GYM 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_OREBURGH_GYM 0; lab state lines: 4 clear-flag, 37 flag, 4 item, 1 pokedex, 4 poketch, 20 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_OREBURGH; 1 badges; badge BADGE_COAL; >= 1 battles; flags set 0x644, 0x645, 0x25D, 0x1B6, 0x75; flags clear 0x198, 0x1BB, 0x1BA; vars 0x40F0=1, 0x4079=2, 0x4077=3; 1 save check(s)
@@ -2197,77 +2197,77 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/09-oreburgh-rival-farewell — Oreburgh: Barry's farewell at the west exit
 - proves: Proves the scene the Coal Badge arms: heading for Oreburgh's west exit, Barry runs into you, points to Eterna and leaves. Start: Oreburgh warp 0 (gym door (282,756)) -> end: Oreburgh at the west coord strip (262,749), free, 0x4079 = 3.
-- start: prev + `lab.recipe`; warp MAP_OREBURGH 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_OREBURGH 0; lab state lines: 1 badge, 7 clear-flag, 42 flag, 5 item, 1 pokedex, 4 poketch, 23 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_OREBURGH; badge BADGE_COAL; flags set 0x19A; vars 0x4079=3
-- frames: estimate 3000, budget 4500
+- frames: estimate 2400, budget 3600
 - refs: maps.h:49; zone_event 0044 warp 0; zone_event 0044 coord 1; zone_event 0044 object 3; scr_seq 0050 @0x0082; scr_seq 0048 @0x00CD; scr_seq 0048 @0x0112; scr_seq 0048 @0x01AA; scr_seq 0048 @0x01BD; scr_seq 0048 @0x027F; scr_seq 0048 @0x0287; scr_seq 0002 @0x088B
 - notes: Coord 1 (262,748..751) runs scr_seq 0048 #4 while 0x4079 == 2 (set by Roark, scr_seq 0050 @0x0082). Barry is re-added east of you at (271,748..751) [scr_seq 0048 @0x0112 SetEventDefaultPosition] and runs west into you ('Thud!!', msg 58 #2), names Eterna/Route 207, then leaves (RemoveEvent 3) and 0x4079 becomes 3. If skipped (e.g. Fly out), the Jubilife Galactic scene also sets 0x4079 = 3 (scr_seq 0002 @0x088B). The player is only turned in place (Move_0304..0328), so the end tile is wherever walk_to entered the strip.
 
 #### pearl/10-jubilife-galactic-tag-battle — Jubilife: tag battle against Team Galactic
 - proves: Proves the walk back from Oreburgh to Jubilife and the north-exit tag battle with Dawn against two grunts in front of Rowan (then Rowan/Dawn leave and the Jubilife TV man gives the Fashion Case). Start: Oreburgh at the west coord strip (262,749) after Barry's bump (09's end) -> end: Jubilife at the north coord (173..175,743).
-- start: prev + `lab.recipe`; map MAP_OREBURGH 262 749 FACE_LEFT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_OREBURGH 262 749 FACE_LEFT; lab state lines: 1 badge, 7 clear-flag, 42 flag, 5 item, 1 pokedex, 4 poketch, 24 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #414 (TRAINER_GALACTIC_GRUNT_9: ZUBAT 9); trdata.json #415 (TRAINER_GALACTIC_GRUNT_10: WURMPLE 9); trdata.json #618 (TRAINER_PKMN_TRAINER_DAWN_DAWN_3: PIPLUP 13, partner for a male Turtwig player)
 - end state: map MAP_JUBLIFE; 1 badges; badge BADGE_COAL; >= 1 battles; flags set 0x1BA, 0x198, 0x1BB, 0x213, 0x256, 0x1A9, 0xF2; flags clear 0x1B6; vars 0x4077=4, 0x4079=3; 1 save check(s)
-- frames: estimate 8000, budget 12000
+- frames: estimate 15489, budget 23300
 - refs: maps.h:49 (MAP_OREBURGH = 45, map_header.c:129); maps.h:7 (MAP_JUBLIFE = 3, map_header.c:87); zone_event 0044 warp 10 (258,749) -> MAP_OREBURGH_GATE_1F warp 1; zone_event 0250 warp 0 (4,22) -> MAP_ROUTE_203 warp 0; zone_event 0002 coord 1 (173,743) 3x1 var 0x4077 == 3 -> scr_seq 0002 #4; zone_event 0002 object 7 (counterpart, hidden_flag 0x198), object 16 (Rowan (175,740), 0x1BB), objects 17/18 (grunts (174,739)/(174,740), 0x1BA); zone_event 0002 objects 25/26 (clowns, 0x213), object 28 (clown, 0x256), object 31 (TV man, 0x1A9); scr_seq 0002 @0x006E-@0x00B1 (ON_TRANSITION: var 0x4077 >= 3 moves the counterpart to (176,739); 0x4020 = 97 for a male player); scr_seq 0002 @0x06AF-@0x0713 (msg 18 #46-#49); scr_seq 0002 @0x071F-@0x07FD (partner: GetStarter, male player -> 616/617/618); scr_seq 0002 @0x0725 (TrainerBattleWithPartner 0x8004, 414, 415); scr_seq 0002 @0x075F-@0x0767 (RemoveEvent 17/18, SetFlag 0x1BA); scr_seq 0002 @0x0879-@0x08AB (RemoveEvent 7/16, ClearFlag 0x1B6, SetVar 0x4077 4, 0x4079 3, RemoveEvent 25/26/28, ClearFlag 0x1A9); scr_seq 0002 @0x08C4-@0x08F7 (std 2044 ITEM_FASHION_CASE x1, SetFlag 0xF2, accessories Unk01D2 / backdrops Unk01D5); scr_seq 0002 @0x08DF (RemoveEvent 31); games/diamond/arm9/asm/unk_0205F314.s:86-89 (GetStarter reads var 0x4030); trdata.json #414 (TRAINER_GALACTIC_GRUNT_9: ZUBAT 9); trdata.json #415 (TRAINER_GALACTIC_GRUNT_10: WURMPLE 9); trdata.json #618 (TRAINER_PKMN_TRAINER_DAWN_DAWN_3: PIPLUP 13, partner for a male Turtwig player)
 - notes: Estimate: Pt 09 (8000) for the same walk + scene. A tag battle: one move for one battler; Surf is a spread move and also hits Dawn (partner fainting does not lose). Partner by GetStarter (var 0x4030) and gender: male player -> SPECIES_CHIMCHAR (390) starter 616 Dawn TURTWIG, SPECIES_PIPLUP (393) 617 Dawn CHIMCHAR, else (Turtwig) 618 Dawn PIPLUP; a female player gets Lucas 613-615 (scr_seq 0002 @0x07AD-@0x082F). Not representable by lab verbs: the random accessories/backdrops the TV man adds (Unk01D2/Unk01D5 @0x08FB-@0x0941). Version: no GetGameVersion branch on this path (version-diff).
 
 #### pearl/11-floaroma-meadow-works-key — Floaroma Meadow: the Works Key
 - proves: Proves Route 204 through the Ravaged Path (Rock Smash country), Cyrus at Floaroma's south entrance, the Route 205 little-girl scene that clears the meadow entrance, and the two Floaroma Meadow grunt battles for the Works Key. Start: Jubilife at the north coord (174,743) (10's end) -> end: Floaroma at the meadow entrance (162,641).
-- start: prev + `lab.recipe`; map MAP_JUBLIFE 174 743 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_JUBLIFE 174 743 FACE_UP; lab state lines: 1 badge, 8 clear-flag, 49 flag, 6 item, 1 pokedex, 4 poketch, 25 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #296 (TRAINER_GALACTIC_GRUNT: WURMPLE 9, SILCOON 9); trdata.json #297 (TRAINER_GALACTIC_GRUNT_2: ZUBAT 11); trdata.json #12 (TRAINER_LASS_SARAH), #11 (TRAINER_LASS_SAMANTHA), #10 (TRAINER_YOUNGSTER_TYLER) on Route 204 South (zone_event 0330 objects 0-2); trdata.json #13 (TRAINER_BUG_CATCHER_BRANDON), #14 (TRAINER_AROMA_LADY_TAYLOR), #15 (TRAINER_TWINS_LIV_LIZ) on Route 204 North (zone_event 0331 objects 0-3)
 - end state: map MAP_FLOAROMA; 1 badges; badge BADGE_COAL; >= 2 battles; flags set 0x9CD, 0x1C1, 0x1BF, 0x91, 0x9CE, 0x1BD, 0x1BE, 0x1BC, 0x9F, 0xA0, 0x989; vars 0x4072=1, 0x4089=1, 0x40E9=1; 2 save check(s)
-- frames: estimate 20000, budget 30000
+- frames: estimate 20765, budget 31200
 - refs: maps.h:349 (MAP_ROUTE_204_SOUTH = 345, map_header.c:429); maps.h:258 (MAP_RAVAGED_PATH = 254, map_header.c:338); maps.h:350 (MAP_ROUTE_204_NORTH = 346, map_header.c:430); maps.h:430 (MAP_FLOAROMA = 426, map_header.c:510); maps.h:351 (MAP_ROUTE_205_SOUTH = 347, map_header.c:431); maps.h:260 (MAP_FLOAROMA_MEADOW = 256, map_header.c:340); zone_event 0330 warp 0 (171,705) -> MAP_RAVAGED_PATH warp 0 (19,50); zone_event 0246 objects 0-26 (27 Rock Smash rocks, temp hidden_flags 0x20-0x3A); warp 1 (28,44) -> MAP_ROUTE_204_NORTH warp 0 (180,698); scr_seq 0395 @0x0016 (msg 418 #0: boulders block the way inside the cavern); scr_seq 0267 @0x0006 (Ravaged Path ON_TRANSITION SetFlag 0x9CD); zone_event 0404 coord 0 (170,669) 3x1 var 0x4072 == 0 -> scr_seq 0994 #2 (Cyrus, object 3 hidden_flag 0x1C1); scr_seq 0994 @0x0091-@0x00FC (Cyrus msg 513 #0-#1, RemoveEvent 3, SetVar 0x4072 1); zone_event 0404 objects 7/8 (grunts on the meadow warps (162,641)/(163,641), hidden_flag 0x1BF); warps 7/8 -> MAP_FLOAROMA_MEADOW warps 3/4; zone_event 0332 coord 0 (211,659) 1x6 var 0x4089 == 0 -> scr_seq 0397 #6; object 18 (little girl (211,661), 0x216); scr_seq 0397 @0x0177-@0x0228 (by player z: 659/660/661/662/663 run, 664 ends without setting anything); scr_seq 0397 @0x0165-@0x016D (SetFlag 0x1BF, 0x91, SetVar 0x4089 1); scr_seq 0269 @0x001E (meadow ON_TRANSITION SetFlag 0x9CE); zone_event 0248 coord 0 (12,48) 2x1 var 0x40E9 == 0 -> scr_seq 0269 #2; grunts (12,47)/(13,47) 0x1BD/0x1BE; Works Key object 3 0x1BC; warps 3/4 (12..13,54); scr_seq 0269 @0x002C (TrainerBattle 296), @0x0049 (TrainerBattle 297); scr_seq 0269 @0x0107-@0x0186 (RemoveEvent 0/1, SetVar 0x40E9 1, ClearFlag/RemoveEvent 0x1BC, ITEM_WORKS_KEY, SetFlag 0x9F, ITEM_HONEY x1, SetFlag 0xA0); scr_seq 0269 @0x0066 (SetFlag 0x989: meadow music, games/diamond/arm9/src/unk_0205EC84.c:253-260); trdata.json #296 (TRAINER_GALACTIC_GRUNT: WURMPLE 9, SILCOON 9); trdata.json #297 (TRAINER_GALACTIC_GRUNT_2: ZUBAT 11); trdata.json #12 (TRAINER_LASS_SARAH), #11 (TRAINER_LASS_SAMANTHA), #10 (TRAINER_YOUNGSTER_TYLER) on Route 204 South (zone_event 0330 objects 0-2); trdata.json #13 (TRAINER_BUG_CATCHER_BRANDON), #14 (TRAINER_AROMA_LADY_TAYLOR), #15 (TRAINER_TWINS_LIV_LIZ) on Route 204 North (zone_event 0331 objects 0-3)
 - notes: Estimate: Pt 10 (19000) plus the Floaroma Cyrus scene. Liv & Liz (Route 204 N (175..176,679)) is a true double: slots 0 and 1 battle; Staraptor's slot-0 Aerial Ace covers it. D/P's meadow gives Honey x1 (Pt x10). Version: no GetGameVersion branch, encounter banks d/p 0143/0053/0144/0145 identical (version-diff).
 
 #### pearl/12-valley-windworks-mars — Valley Windworks: Commander Mars
 - proves: Proves the Valley Windworks: the door grunt, the Works Key door, Commander Mars, the father/daughter reunion, and the Route 205 South bridge grunts leaving, then the walk north to the Eterna Forest door. Start: Floaroma at the meadow entrance (162,641) (11's end) -> end: Eterna Forest warp 0 (28,86) (13's start).
-- start: prev + `lab.recipe`; warp MAP_FLOAROMA 7; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_FLOAROMA 7; lab state lines: 1 badge, 8 clear-flag, 60 flag, 8 item, 1 pokedex, 4 poketch, 28 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #843 (TRAINER_GALACTIC_GRUNT_35: GLAMEOW 11); trdata.json #295 (TRAINER_COMMANDER_MARS_MARS: ZUBAT 14, PURUGLY 16 @ORAN_BERRY); trdata.json #298 (TRAINER_GALACTIC_GRUNT_3: CASCOON 11), #299 (TRAINER_GALACTIC_GRUNT_4: WURMPLE 10, GLAMEOW 10)
 - end state: map MAP_ETERNA_FOREST_INTERIOR; 1 badges; badge BADGE_COAL; >= 2 battles; flags set 0x1AC, 0x10F, 0x9C3, 0x1C2, 0x1C3, 0x1C4, 0x1C0, 0xAA8, 0x216, 0x988, 0x229; flags clear 0x217, 0xE3; vars 0x4089=2, 0x40CF=3, 0x40B1=0
-- frames: estimate 15000, budget 22500
+- frames: estimate 25263, budget 37900
 - refs: maps.h:204 (MAP_VALLEY_WINDWORKS_EXTERIOR = 200, map_header.c:284); maps.h:205 (MAP_VALLEY_WINDWORKS_INTERIOR = 201, map_header.c:285); maps.h:207 (MAP_ETERNA_FOREST_INTERIOR = 203, map_header.c:287); zone_event 0198 object 0 (grunt (243,655) DIR_SOUTH, hidden_flag 0x1AC); bg 1 (243,654) door; warp 0 (243,654) -> MAP_VALLEY_WINDWORKS_INTERIOR warp 0; scr_seq 0210 @0x002D-@0x00C9 (ON_TRANSITION/ON_LOAD: flag 0x10F clear -> SetWarpPosition 0 to (243,650); set -> SetBgEventPosition 1 to (243,650)); scr_seq 0210 @0x00D8 (TrainerBattle 843), @0x0125 (RemoveEvent 0); scr_seq 0210 @0x0152-@0x018B (door: CheckFlag 0x9F, YesNo, SetFlag 0x10F, SetWarpPosition 0 (243,654)); scr_seq 0210 @0x0020-@0x007E (ON_TRANSITION var 0x40CF == 2 -> 3); scr_seq 0210 @0x0043-@0x0078 (Drifloon object 4 (241,660) shown only on day 5 after var 0x4089 >= 2 without flag 0xAA8; else SetFlag 0x229); scr_seq 0211 @0x001A (interior ON_TRANSITION SetFlag 0x9C3); scr_seq 0671 @0x000B (interior ON_FRAME_TABLE var 0x40CF == 0 -> scr_seq 0211 #2: grunt runs, RemoveEvent 0 @0x0068, SetVar 0x40CF 1 @0x006C); zone_event 0199 coord 0 (19,6) 1x2 var 0x40CF == 1 -> scr_seq 0211 #4; Mars object 1 (20,7) DIR_WEST; grunts objects 3 (3,8) W sight 2, 4 (12,3) S sight 2, 6 (18,8) (all hidden_flag 0x1C3); warp 0 (12,16); scr_seq 0211 @0x00E0 (TrainerBattle 295); scr_seq 0211 @0x0108-@0x0126 (RemoveEvent 1/6/3/4, SetFlag 0x1C4, 0x1C0, SetVar 0x4089 2, SetFlag 0xAA8); scr_seq 0211 @0x0181-@0x0248 (SetFlag 0x216, ClearFlag 0x217, AddEvent 5, SetVar 0x40CF 2, SetFlag 0x988); games/diamond/arm9/src/unk_0205EC84.c:244-251 (flag 0x988: windworks interior music); zone_event 0332 objects 12/13 (bridge grunts (218,653)/(216,653), hidden_flag 0x1C0); warp 0 (206,581) -> MAP_ETERNA_FOREST_INTERIOR warp 0; scr_seq 0213 @0x0032-@0x003F (forest ON_TRANSITION: flag 0xE3 clear -> SetVar 0x40B1 0); trdata.json #843 (TRAINER_GALACTIC_GRUNT_35: GLAMEOW 11); trdata.json #295 (TRAINER_COMMANDER_MARS_MARS: ZUBAT 14, PURUGLY 16 @ORAN_BERRY); trdata.json #298 (TRAINER_GALACTIC_GRUNT_3: CASCOON 11), #299 (TRAINER_GALACTIC_GRUNT_4: WURMPLE 10, GLAMEOW 10); trdata.json #18 (HIKER_DANIEL), #21 (AROMA_LADY_ELIZABETH), #16 (CAMPER_JACOB), #17 (PICNICKER_SIENA), #377 (CAMPER_ZACKARY), #19 (HIKER_NICHOLAS), #456 (PICNICKER_KARINA), #20 (BATTLE_GIRL_KELSEY) (zone_event 0332)
 - notes: Estimate: Pt 11 (15000; D/P has no Looker scene). The Friday Drifloon (LegendaryBattle SPECIES_DRIFLOON 22, scr_seq 0210 @0x01D4) is optional and off the path; Mars's win sets 0xAA8 which hides it the same day. No GetGameVersion branch; encounter banks d/p 0007/0145 identical (version-diff).
 
 #### pearl/13-eterna-forest-cheryl — Eterna Forest with Cheryl
 - proves: Proves Eterna Forest with Cheryl as partner (she joins at the entrance, multi battles on the way), her farewell at the east exit, and the exit to Route 205 North. Start: Eterna Forest warp 0 (28,86), the Route 205 South entrance (12's end) -> end: Route 205 North (259,524).
-- start: prev + `lab.recipe`; warp MAP_ETERNA_FOREST_INTERIOR 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ETERNA_FOREST_INTERIOR 0; lab state lines: 1 badge, 10 clear-flag, 71 flag, 8 item, 1 pokedex, 4 poketch, 31 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #608 (TRAINER_PKMN_TRAINER_AROMA_LADY_CHERYL: CHANSEY 15)
 - end state: map MAP_ROUTE_205_NORTH; 1 badges; badge BADGE_COAL; flags set 0x8B, 0x1B9, 0xE3; flags clear 0x961; vars 0x40B1=2, 0x403F=608
-- frames: estimate 15000, budget 22500
+- frames: estimate 30297, budget 45500
 - refs: maps.h:207 (MAP_ETERNA_FOREST_INTERIOR = 203, map_header.c:287; encounters d_enc 0008 / p_enc 0008); maps.h:353 (MAP_ROUTE_205_NORTH = 349, map_header.c:433; encounters d_enc 0146 / p_enc 0146); zone_event 0201 object 0 (Cheryl (28,83) DIR_SOUTH, hidden_flag 0x1B9); zone_event 0201 coord 0 (28,85) 2x1 var 0x40B1 == 0 -> scr_seq 0213 #1; coord 1 (28,86) 2x1 == 1 -> #2; coord 2 (82,34) 1x6 == 1 -> #3; zone_event 0201 warp 2 (86,36) -> MAP_ROUTE_205_NORTH warp 1 (259,524); scr_seq 0213 @0x0049 (RideBike 0), @0x00B0-@0x00C7 (SetFlag 0x8B, SetVar 0x40B1 1, SetVar 0x403F 608, Unk0161); games/diamond/arm9/src/scrcmd_flags.c:148-164 (Unk0161/Unk0162 -> sub_0205ED1C/sub_0205ED2C), arm9/src/unk_0205EC84.c:58-64 (set/clear flag 0x961); scr_seq 0213 @0x0108-@0x0168 (stepping back onto (28..29,86) drops Cheryl: Unk0162, SetVar 0x40B1 0); scr_seq 0213 @0x0198-@0x02A5 (exit scene: Unk0162 @0x0297, RemoveEvent 0 @0x0299, SetFlag 0xE3 @0x02A1, SetVar 0x40B1 2); trdata.json #608 (TRAINER_PKMN_TRAINER_AROMA_LADY_CHERYL: CHANSEY 15); trdata.json #201 (BUG_CATCHER_JACK (37,67) E 2), #204 (LASS_BRIANA (40,67) W 2), #206 (PSYCHIC_F_LINDSEY (50,67) E 4), #205 (PSYCHIC_M_ELIJAH (55,67) W 4) (zone_event 0201); trdata.json #395 (PSYCHIC_M_KODY (74,67) E 2), #398 (PSYCHIC_F_RACHAEL (77,67) W 2), #202 (BUG_CATCHER_PHILLIP (65,87) N 3), #203 (BUG_CATCHER_DONALD (65,83) S 3) (zone_event 0201)
 - notes: D/P's Cheryl gives no item at the exit (Pt's Soothe Bell is not in scr_seq 0213). Multi battles with Cheryl: Surf hits both foes and Cheryl. [INFERENCE] the facing pairs Jack/Briana, Lindsey/Elijah, Kody/Rachael, Phillip/Donald engage together while she follows. Pearl differs only in the wild encounter banks d/p 0008 (forest) and 0146 (Route 205 N) (version-diff); no script branch, so version = both.
 
 #### pearl/14-gardenia-forest-badge — Eterna Gym: Gardenia and the Forest Badge
 - proves: Proves the arrival in Eterna (Cynthia's HM01 on the west strip), Gardenia at the gym entrance, the four hidden gym trainers that appear one after another, and the Forest Badge with TM86. Start: Route 205 North (259,524), the forest's east exit (13's end) -> end: Eterna at the gym door (312,562) (15's start).
-- start: prev + `lab.recipe`; warp MAP_ROUTE_205_NORTH 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ROUTE_205_NORTH 1; lab state lines: 1 badge, 11 clear-flag, 74 flag, 8 item, 1 pokedex, 4 poketch, 33 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #324 (TRAINER_LASS_CAROLINE: CHERUBI 15, ROSELIA 15); trdata.json #259 (TRAINER_AROMA_LADY_JENNA: BUDEW 14, BUDEW 13, BUDEW 15); trdata.json #260 (TRAINER_AROMA_LADY_ANGELA: TURTWIG 17); trdata.json #348 (TRAINER_BEAUTY_LINDSAY: ROSELIA 17); trdata.json #315 (TRAINER_LEADER_GARDENIA_GARDENIA: CHERUBI 19, TURTWIG 19, ROSERADE 22 @SITRUS_BERRY; 2x SUPER_POTION)
 - end state: map MAP_ETERNA; 2 badges; badge BADGE_COAL, BADGE_FOREST; >= 5 battles; flags set 0x19E, 0x23F, 0x653, 0x654, 0x694, 0x6AC, 0x74; flags clear 0x1A0, 0x1A2, 0x1A3, 0x1A4, 0x1A5, 0x8E; vars 0x407A=1, 0x40AE=4; 2 save check(s)
-- frames: estimate 28000, budget 42000
+- frames: estimate 20827, budget 31300
 - refs: maps.h:69 (MAP_ETERNA = 65, map_header.c:149); maps.h:71 (MAP_ETERNA_GYM_ENTRANCE = 67, map_header.c:151); maps.h:72 (MAP_ETERNA_GYM = 68, map_header.c:152); zone_event 0064 coord 0 (303,523) 1x4 var 0x407A == 0 -> scr_seq 0069 #1; object 12 (Cynthia, hidden_flag 0x19E); warp 10 (312,562) -> MAP_ETERNA_GYM_ENTRANCE warp 0; scr_seq 0069 @0x0198-@0x01F1 (branches for player z 523/524/525 only; z 526 ends without effect); scr_seq 0069 @0x01F9-@0x02B6 (ClearFlag 0x19E, AddEvent 12, msg 78 #0-#2, std 2044 ITEM_HM01 x1, RemoveEvent 12, SetVar 0x407A 1); scr_seq 0069 @0x005E-@0x0090 (Eterna ON_TRANSITION: no Bicycle and no Explorer Kit -> SetVar 0x4114 0); zone_event 0066 object 1 (Gardenia (8,3) DIR_SOUTH, hidden_flag 0x23F); warp 1 (8,2) -> MAP_ETERNA_GYM warp 0; warp 0 (8,11) -> MAP_ETERNA warp 10; scr_seq 0071 @0x0016-@0x002F (Gardenia msg 80 #0, RemoveEvent 1); zone_event 0067 objects 4 (Caroline (10,13), 0x1A1), 1 (Jenna (9,27), 0x1A2), 2 (Angela (22,18), 0x1A3), 3 (Lindsay (20,9), 0x1A4), 0 (Gardenia (15,3), 0x1A5); warp 0 (16,29); scr_seq 0072 @0x001E-@0x0082 (gym ON_TRANSITION by var 0x40AE: 0 -> SetFlag 0x1A2-0x1A5); scr_seq 0072 @0x0084-@0x0099 (gym ON_LOAD: flag 0x8E -> ClearFlag 0x1A5, AddEvent 0, ClearFlag 0x8E); scr_seq 0072 @0x01A2-@0x01C8 (TrainerBattle 324, SetVar 0x40AE 1, ClearFlag 0x1A2, AddEvent 1); scr_seq 0072 @0x0203-@0x0227 (TrainerBattle 259, ClearFlag 0x1A3, AddEvent 2, SetVar 0x40AE 2); scr_seq 0072 @0x0264-@0x0288 (TrainerBattle 260, ClearFlag 0x1A4, AddEvent 3, SetVar 0x40AE 3); scr_seq 0072 @0x02C5-@0x02E9 (SetFlag 0x8E, TrainerBattle 348, ClearFlag 0x8E, SetVar 0x40AE 4); scr_seq 0072 @0x0300-@0x0370 (hidden trainers turn to the player from any side); scr_seq 0072 @0x00CB (TrainerBattle 315), @0x00F1 (GiveBadge 1 = BADGE_FOREST), @0x00F9-@0x0105 (SetTrainerFlag 259/260/324/348), @0x0115 (ClearFlag 0x1A0), @0x0124-@0x0149 (ITEM_TM86, SetFlag 0x74); include/constants/badge.h:5 (BADGE_FOREST 1); trdata.json #324 (TRAINER_LASS_CAROLINE: CHERUBI 15, ROSELIA 15); trdata.json #259 (TRAINER_AROMA_LADY_JENNA: BUDEW 14, BUDEW 13, BUDEW 15); trdata.json #260 (TRAINER_AROMA_LADY_ANGELA: TURTWIG 17); trdata.json #348 (TRAINER_BEAUTY_LINDSAY: ROSELIA 17); trdata.json #315 (TRAINER_LEADER_GARDENIA_GARDENIA: CHERUBI 19, TURTWIG 19, ROSERADE 22 @SITRUS_BERRY; 2x SUPER_POTION)
 - notes: Gym trainers are talk-only (no trainer type) and appear one at a time: Caroline -> Jenna -> Angela -> Lindsay -> Gardenia (re-added by ON_LOAD after Lindsay's battle). Their trainer flags are set only by Gardenia's win. Version: the only Eterna GetGameVersion branch is the statue text (scr_seq 0069 @0x039A, bg 2 (327,525)), off this path; Route 205 North's wild bank differs (d/p 0146), so version = both.
 
 #### pearl/15-galactic-eterna-building-jupiter — Team Galactic Eterna Building: Jupiter
 - proves: Proves Cut (HM01 from 14, BADGE_FOREST) on the tree in front of the Team Galactic Eterna Building, the four floors, and Commander Jupiter; the win hides every Eterna grunt and unhides the Cycle Shop owner, his Clefairy and the Pokecenter Buneary. Start: Eterna warp 10 (gym door (312,562), 14's end) -> end: Eterna at the building door (305,519) (16's start).
-- start: prev + `lab.recipe`; warp MAP_ETERNA 10; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ETERNA 10; lab state lines: 2 badge, 16 clear-flag, 81 flag, 10 item, 1 pokedex, 4 poketch, 35 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_ETERNA; badge BADGE_COAL, BADGE_FOREST; >= 1 battles; flags set 0x21B, 0x81, 0x21D, 0x987; flags clear 0x1B0, 0x21E, 0x21C; vars 0x407A=1; 1 save check(s)
-- frames: estimate 16000, budget 24000
+- frames: estimate 20313, budget 30500
 - refs: maps.h:69; map_header.c:149; zone_event 0064 warp 3; zone_event 0064 warp 10; zone_event 0064 object 14; zone_event 0064 object 15; zone_event 0064 object 16; zone_event 0064 object 3; zone_event 0064 object 4; zone_event 0064 object 23; scr_seq 0375 @0x004A; scr_seq 0375 @0x005D; scr_seq 0375 @0x0073; scr_seq 0375 @0x00C3; maps.h:76; map_header.c:156; zone_event 0071 object 2; zone_event 0071 object 3; zone_event 0071 warp 0; zone_event 0071 warp 1; maps.h:77; zone_event 0072 object 2; zone_event 0072 object 3; zone_event 0072 warp 0; zone_event 0072 warp 1; maps.h:78; zone_event 0073 object 1; zone_event 0073 object 2; zone_event 0073 warp 0; zone_event 0073 warp 1; maps.h:79; map_header.c:159; zone_event 0074 object 0; zone_event 0074 object 1; zone_event 0074 object 2; zone_event 0074 object 3; zone_event 0074 warp 0; scr_seq 0080 @0x0029; scr_seq 0080 @0x002F; scr_seq 0080 @0x0051; scr_seq 0080 @0x0112; scr_seq 0080 @0x0116; scr_seq 0080 @0x011A; scr_seq 0080 @0x011E; scr_seq 0080 @0x0122; scr_seq 0080 @0x0126; scr_seq 0080 @0x013E; scr_seq 0080 @0x0146; msg 0088 #1; games/diamond/arm9/src/unk_0205EC84.c:232-242; trdata.json #406; trdata.json #410; trdata.json #421; trdata.json #422; trdata.json #412; trdata.json #423; trdata.json #831
 - notes: D/P has no Looker disguise scene and no building OnFrame (level scripts 0540-0543 are empty). Trainers: 1F TRAINER_GALACTIC_GRUNT_5 (410) (18,5) W sight 3 WURMPLE 13, CASCOON 13 and TRAINER_GALACTIC_F_GRUNT (421) (14,5) E sight 3 ZUBAT 14, GLAMEOW 14 flank the stairs (15,3); 2F grunts 422/412 have sight 0 (talk only); 3F TRAINER_GALACTIC_F_GRUNT_3 (423) (10,8) N sight 3 and TRAINER_SCIENTIST_TRAVON (831) (18,5) W sight 3 KADABRA 15 may engage. Their trainer flags (0x6EA, 0x6F5, 0x6F7, 0x88F) are set by the generic trainer script only if fought, so they are not in the delta. Jupiter (406): ZUBAT 18, SKUNTANK 20 @SITRUS_BERRY. A loss -> Blackout (scr_seq 0080 @0x0146).
 
 #### pearl/16-bicycle-explorer-kit — Eterna: Bicycle and Explorer Kit
 - proves: Proves the Cycle Shop Bicycle (Jupiter's thanks) and the Explorer Kit, which D/P requires: with the Bicycle but no kit, Eterna's ON_TRANSITION sets var 0x4114 = 0 and coord (303..307,565) turns the player back from the Cycling Road gate. Start: Eterna warp 3 (Galactic building door (305,519)) -> end: Eterna Route 206 gatehouse (5,2) after a Pokecenter heal (17's start).
-- start: prev + `lab.recipe`; warp MAP_ETERNA 3; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ETERNA 3; lab state lines: 2 badge, 19 clear-flag, 85 flag, 10 item, 1 pokedex, 4 poketch, 35 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_ETERNA_ROUTE_206_GATEHOUSE; badge BADGE_COAL, BADGE_FOREST; flags set 0x82, 0x79, 0x113, 0x111, 0x81; vars 0x411B=1, 0x4114=1, 0x40EC=1; 2 save check(s)
@@ -2277,7 +2277,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/17-cycling-road-route207-vs-seeker — Cycling Road, Route 207: VS Seeker
 - proves: Proves the Cycling Road (Route 206 mounts the Bicycle by script), the south gate, and Dawn's VS Seeker + Dowsing Machine scene on Route 207 (male player; a female player meets Lucas). Start: Eterna Route 206 gatehouse warp 0 (5,2) -> end: Mt. Coronet South 1F (4,8) (18's start).
-- start: prev + `lab.recipe`; warp MAP_ETERNA_ROUTE_206_GATEHOUSE 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_ETERNA_ROUTE_206_GATEHOUSE 0; lab state lines: 2 badge, 19 clear-flag, 89 flag, 12 item, 1 pokedex, 4 poketch, 38 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SOUTH_1F; flags set 0x9E6, 0x97F, 0x1EA; vars 0x408C=1, 0x411B=2; 2 save check(s)
@@ -2287,7 +2287,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/18-coronet-route208-hearthome-keira — Mt. Coronet, Route 208, Hearthome arrival
 - proves: Proves Cyrus's Mt. Coronet monologue, the Route 208 crossing, and the Hearthome arrival scene (Keira's runaway Buneary). Start: Mt. Coronet South 1F warp 0 (4,8) -> end: Hearthome City on the arrival coord (461,726) after Keira leaves (19's start).
-- start: prev + `lab.recipe`; warp MAP_MOUNT_CORONET_SOUTH_1F 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_MOUNT_CORONET_SOUTH_1F 0; lab state lines: 2 badge, 19 clear-flag, 92 flag, 13 item, 1 pokedex, 5 poketch, 40 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME; flags set 0x1C9, 0x25A, 0x25B; flags clear 0x224; vars 0x4096=1, 0x40F6=1, 0x407B=0
@@ -2297,7 +2297,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/19-hearthome-contest-hall-rival — Hearthome: Fantina, Contest Hall, rival
 - proves: Proves Fantina's 'not yet' at the Contest Hall door, the Contest Hall first visit (Keira, Mom, Accessory, Tuxedo) that removes the Route 209 gate blockers, and the rival battle it arms; the Hearthome Gym stays closed (guide: 'she's not here'). Start: Hearthome City (461,726) after Keira (18's end) -> end: Hearthome City (486,718) after Barry leaves, heading to Route 209.
-- start: prev + `lab.recipe`; map MAP_HEARTHOME 465 698 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_HEARTHOME 465 698 FACE_UP; lab state lines: 2 badge, 20 clear-flag, 95 flag, 13 item, 1 pokedex, 5 poketch, 43 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME; at (486, 718); badge BADGE_COAL, BADGE_FOREST; >= 1 battles; flags set 0x25C, 0x227, 0x226, 0x224, 0x978, 0x225, 0x21F, 0x220, 0x221, 0x222, 0x223; vars 0x40F7=1, 0x40EB=1, 0x407B=2, 0x40F6=1
@@ -2307,7 +2307,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/20-route209-to-solaceon — Route 209 to Solaceon Town
 - proves: Proves the walk east out of Hearthome (the Route 209 gate blockade gone after 19's Contest Hall scene), Route 209 and the arrival in Solaceon Town (ON_TRANSITION sets 0x19C). No story battle; Lost Tower, Day Care and Solaceon Ruins are optional. Start: Hearthome (486,718) after Barry's battle -> end: Solaceon, in front of the Pokemon Center (566,657) (21's start).
-- start: prev + `lab.recipe`; map MAP_HEARTHOME 486 718 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_HEARTHOME 486 718 FACE_DOWN; lab state lines: 2 badge, 20 clear-flag, 106 flag, 13 item, 1 pokedex, 5 poketch, 46 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_SOLACEON; at (566, 657); 2 badges; badge BADGE_COAL, BADGE_FOREST; flags set 0x19C, 0x224; vars 0x407B=2
@@ -2317,7 +2317,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/21-route210-215-veilstone-dawn — Route 210 South and Route 215 to Veilstone: counterpart at the gym
 - proves: Proves Route 210 South (south of the Psyduck block), Route 215 in the rain, the Veilstone gatehouse and the Veilstone arrival scene: Dawn (Lucas for a female player) waits south of the gym (coord (681..684,616), 0x40F5 0 -> 1). Start: Solaceon Pokemon Center door (566,656) -> end: inside Veilstone Gym at warp 0 (12,25) (22's start).
-- start: prev + `lab.recipe`; warp MAP_SOLACEON 5; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_SOLACEON 5; lab state lines: 2 badge, 20 clear-flag, 107 flag, 13 item, 1 pokedex, 5 poketch, 46 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE_GYM; 2 badges; badge BADGE_COAL, BADGE_FOREST; flags set 0x1C6, 0x19C; vars 0x40F5=1, 0x407D=0
@@ -2327,7 +2327,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/22-maylene-cobble-badge — Veilstone Gym: Maylene and the Cobble Badge
 - proves: Proves the Veilstone Gym (12 two-state obstacles set up by InitVeilstoneGym, four Black Belts) and Maylene's Cobble Badge (3rd badge in D/P) with TM60; the win arms the Veilstone warehouse scene (0x411A = 1) that S6's first milestone plays. Start: Veilstone Gym warp 0 (12,25) -> end: Veilstone Gym facing Maylene (12,5) with BADGE_COBBLE; do NOT leave the gym here: the Veilstone ON_FRAME (0x411A == 1) fires on the next entry to MAP_VEILSTONE and belongs to the next milestone.
-- start: prev + `lab.recipe`; warp MAP_VEILSTONE_GYM 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_VEILSTONE_GYM 0; lab state lines: 2 badge, 20 clear-flag, 108 flag, 13 item, 1 pokedex, 5 poketch, 48 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE_GYM; 3 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE; >= 1 battles; party SPECIES_EMPOLEON; flags set 0x9D, 0x685, 0x686, 0x687, 0x688; flags clear 0x1C6, 0x101; vars 0x407D=1, 0x411A=1, 0x40F5=1; 1 save check(s)
@@ -2337,7 +2337,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/24-veilstone-warehouse-tag-battle — Veilstone: Dawn's stolen Pokédex, warehouse tag battle
 - proves: Proves the post-Cobble Veilstone chain: the counterpart's ON_FRAME plea (0x411A==1), the tag battle with Dawn against the two warehouse grunts, and the stolen Pokédex scene (flag 0x101 arms Pastoria's grunt). Start: Veilstone Gym (22's end at Maylene, or the lab door warp 0 (12,25)) -> end: Veilstone in front of the Galactic warehouse, 0x411A = 2, 0x101 set. HM02 Fly is NOT here in D/P (warehouse needs the Storage Key, msg 146 #2).
-- start: prev + `lab.recipe`; warp MAP_VEILSTONE_GYM 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_VEILSTONE_GYM 0; lab state lines: 3 badge, 22 clear-flag, 113 flag, 14 item, 1 pokedex, 5 poketch, 50 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VEILSTONE; 3 badges; badge BADGE_COBBLE; >= 1 battles; flags set 0x101, 0x1C6, 0x1DD; vars 0x411A=2, 0x407D=1
@@ -2347,7 +2347,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/25-route214-valor-route213-to-pastoria — Route 214, Valor Lakefront and Route 213 to Pastoria
 - proves: Proves the long overworld leg after Veilstone: Pokémon Center heal, Route 214 gate and route (sight trainers), Valor Lakefront, Route 213 and its Pastoria gatehouse, a second heal in Pastoria, and entry to the gym. No story script fires on this leg (Route 214/Valor/213 level scripts only move warps or bail out). Start: Veilstone in front of the warehouse (24's end) -> end: inside Pastoria Gym at its door (26's start).
-- start: prev + `lab.recipe`; map MAP_VEILSTONE 696 595 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VEILSTONE 696 595 FACE_DOWN; lab state lines: 3 badge, 22 clear-flag, 116 flag, 14 item, 1 pokedex, 5 poketch, 51 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA_GYM; 3 badges; flags set 0x101, 0x238, 0x239, 0x1C7; flags clear 0x102, 0x22A
@@ -2357,7 +2357,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/26-pastoria-gym-wake-fen-badge — Pastoria Gym: Crasher Wake and the Fen Badge
 - proves: Proves the water-level gym (InitPastoriaGym / CheckPastoriaGymButton), Wake's win script, the Fen Badge and TM55. The badge arms Pastoria's grunt (HasBadge 3, scr_seq 0118 @0x01DE) and the Route 213 chase (scr_seq 0424 @0x002F). Start: Pastoria Gym door (13,42) -> end: back out in Pastoria at the gym door (27's start).
-- start: prev + `lab.recipe`; warp MAP_PASTORIA_GYM 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_PASTORIA_GYM 0; lab state lines: 3 badge, 24 clear-flag, 119 flag, 14 item, 1 pokedex, 5 poketch, 51 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA; 4 badges; badge BADGE_FEN; >= 1 battles; flags set 0x9C, 0x675, 0x6A3, 0x6E1, 0x733, 0x741, 0x742; vars 0x407C=1; 1 save check(s)
@@ -2367,7 +2367,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/27-pastoria-galactic-grunt-rival — Pastoria: Galactic grunt flees, rival battle
 - proves: Proves the post-Fen Pastoria scene: the Galactic grunt by the Great Marsh gate runs to the east gate (0x102), the second talk sends him off to the lake and Barry bumps into you for a rival battle (0x103 arms Route 213). Start: Pastoria at the gym door (589,827) -> end: Pastoria (636,812) by the east gate, rival gone.
-- start: prev + `lab.recipe`; warp MAP_PASTORIA 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_PASTORIA 0; lab state lines: 4 badge, 24 clear-flag, 126 flag, 15 item, 1 pokedex, 5 poketch, 52 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_PASTORIA; 4 badges; >= 1 battles; flags set 0x101, 0x102, 0x103, 0x22A, 0x1C7
@@ -2377,7 +2377,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/28-valor-lakefront-grunt-secretpotion — Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion
 - proves: Proves the Fen Badge's Galactic follow-up: the grunt chase over Route 213 (0x104) to Valor Lakefront (0x106), the grunt battle, and Cynthia's SecretPotion that sends the player north to the Route 210 Psyduck (0x4083 = 2, 0xB7). Start: Pastoria (636,812) by the east gate (27's end) -> end: Valor Lakefront below Cynthia's spot (723,761).
-- start: prev + `lab.recipe`; map MAP_PASTORIA 636 812 FACE_RIGHT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_PASTORIA 636 812 FACE_RIGHT; lab state lines: 4 badge, 24 clear-flag, 129 flag, 15 item, 1 pokedex, 5 poketch, 52 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; 4 badges; >= 1 battles; flags set 0x103, 0x104, 0x106, 0x238, 0x239, 0x1CB, 0xB7; vars 0x4083=2; 1 save check(s)
@@ -2387,7 +2387,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/29-route210-psyduck-old-charm — Route 210 South: SecretPotion on the Psyduck, Old Charm
 - proves: Proves the walk back from Valor Lakefront (Route 214, Veilstone, Route 215) to the Route 210 South Psyduck block, the SecretPotion clearing it and Cynthia's Old Charm hand-off (the errand that opens Celestic Town). Start: Valor Lakefront (723,761) (28's end) -> end: Route 210 South (561,588), ITEM_OLD_CHARM, flag 0x107.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 723 761 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 723 761 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 133 flag, 16 item, 1 pokedex, 5 poketch, 53 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_ROUTE_210_SOUTH; at (561, 588); flags set 0x1CE, 0x1CF, 0x107; 2 save check(s)
@@ -2397,7 +2397,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/30-route210-north-to-celestic — Route 210 North through the fog to Celestic Town
 - proves: Proves the Psyduck block is gone, the foggy Route 210 North walk without Defog and the arrival in Celestic Town, where the elder's coord scene (0x40F1) tells of the spaceman at the ruins. Start: Route 210 South (561,588) (29's end) -> end: Celestic Town coord (465,538), 0x980 + 0x40F1 = 1.
-- start: prev + `lab.recipe`; map MAP_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_ROUTE_210_SOUTH 561 588 FACE_UP; lab state lines: 4 badge, 24 clear-flag, 136 flag, 17 item, 1 pokedex, 5 poketch, 53 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; flags set 0x980, 0x107, 0x1CE; flags clear 0xA6; vars 0x40F1=1
@@ -2407,7 +2407,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/31-celestic-grunt-old-charm — Celestic Town: Galactic grunt at the ruins, Old Charm to the elder
 - proves: Proves the Celestic Town grunt at the ruins door (Yes -> battle), the elder thanking the player and taking the Old Charm from Cynthia (flag 0xA6), which leaves the ruins open. Start: Celestic Town (465,538) (30's end) -> end: Celestic Town (463,523) below the ruins door, Old Charm handed over.
-- start: prev + `lab.recipe`; map MAP_CELESTIC 465 538 FACE_LEFT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_CELESTIC 465 538 FACE_LEFT; lab state lines: 4 badge, 25 clear-flag, 137 flag, 17 item, 1 pokedex, 5 poketch, 54 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; >= 1 battles; flags set 0x1CD, 0xA6; flags clear 0x1CA, 0xA7; 1 save check(s)
@@ -2417,7 +2417,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/32-celestic-ruins-hm03-cyrus — Celestic Ruins: the painting, HM03 Surf, Cyrus
 - proves: Proves the Celestic Ruins painting, the elder's HM03 Surf (Cynthia's grandmother; also arms the Hearthome Gym via 0x98D) and Cyrus's speech outside the ruins (no battle in D/P), which brings Fantina back (0xA5). Start: Celestic Town (463,523) (31's end) -> end: Celestic Town at the ruins door, ITEM_HM03, var 0x4074 = 2.
-- start: prev + `lab.recipe`; map MAP_CELESTIC 463 523 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_CELESTIC 463 523 FACE_UP; lab state lines: 4 badge, 27 clear-flag, 139 flag, 16 item, 1 pokedex, 5 poketch, 54 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CELESTIC; flags set 0xA7, 0x98D, 0xA5, 0x1CA, 0x247, 0x1DB; flags clear 0x1E1; vars 0x4074=2; 1 save check(s)
@@ -2427,7 +2427,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/33-celestic-to-hearthome-gym — Celestic Town back to the Hearthome Gym
 - proves: Proves the walk back from Celestic Town (Routes 210 North/South, Solaceon, Route 209) to Hearthome City and into the Hearthome Gym, now open: 0x98D keeps the first room's elevator coord armed (var 0x4000 = 0). Start: Celestic Town ruins door (463,521) (32's end) -> end: Hearthome Gym first question room (9,22) (34's start).
-- start: prev + `lab.recipe`; warp MAP_CELESTIC 4; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_CELESTIC 4; lab state lines: 4 badge, 28 clear-flag, 145 flag, 17 item, 1 pokedex, 5 poketch, 55 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM; at (9, 22); 4 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN; flags set 0x98D, 0xA5, 0x107
@@ -2437,7 +2437,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/34-hearthome-gym-fantina-relic-badge — Hearthome Gym: Fantina and the Relic Badge
 - proves: Proves the Hearthome Gym quiz rooms (elevator + one of three answer doors per room), Fantina, the Relic Badge and TM65, the walk back out, and Cynthia's Hearthome scene pointing to the Canalave library. Start: Hearthome Gym first question room warp 3 (9,22) (33's end) -> end: Hearthome City at the gym door, 5 badges.
-- start: prev + `lab.recipe`; warp MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM 3; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM 3; lab state lines: 4 badge, 28 clear-flag, 145 flag, 17 item, 1 pokedex, 5 poketch, 55 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEARTHOME; 5 badges; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC; >= 1 battles; flags set 0x7D, 0x1C8, 0x65A, 0x668, 0x66C, 0x695, 0x69A, 0x6A4, 0x6A7, 0x6B5, 0x98D; vars 0x40D1=2; 1 save check(s)
@@ -2447,7 +2447,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/35-hearthome-to-canalave-dex-upgrade — Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse
 - proves: Proves the D/P road to Canalave after the Relic Badge (no Fly yet in D/P): Hearthome -> Route 208 -> Mt. Coronet 1F -> Route 207 -> Oreburgh -> Oreburgh Gate -> Route 203 -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse, where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0. Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
-- start: prev + `lab.recipe`; warp MAP_HEARTHOME 8; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_HEARTHOME 8; lab state lines: 5 badge, 28 clear-flag, 155 flag, 18 item, 1 pokedex, 5 poketch, 56 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_CANALAVE; flags set 0x23A; vars 0x4105=1
@@ -2457,7 +2457,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/36-canalave-rival — Canalave City: rival battle on the bridge
 - proves: Proves the Canalave bridge rival: coord 0 (47,723..726) adds Barry, who battles with the Turtwig-player team (Monferno). Start: MAP_CANALAVE at the gatehouse door (warp 7, 63,754) -> end: MAP_CANALAVE on the bridge (47,724), 0x4078 = 1.
-- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 156 flag, 18 item, 1 pokedex, 5 poketch, 57 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #477 TRAINER_PKMN_TRAINER_BARRY_CEDRIC_11
 - end state: map MAP_CANALAVE; >= 1 battles; flags set 0x1D0; vars 0x4078=1
@@ -2467,7 +2467,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/37-iron-island-riley-egg — Iron Island: Riley tag battle and the Riolu egg
 - proves: Proves the Canalave/Iron Island ferry, Riley joining as follower partner on B2F, the tag double vs two Galactic grunts and the Riolu egg. In D/P Iron Island has no story gate and gives no HM (Strength is the Lost Tower's, msg 0050 #1 / msg 0098 #12); it sits before Byron because Byron's win sends the player straight to the library (scr_seq 0034 script_4). Start: MAP_CANALAVE (36's end on the bridge; lab: gatehouse door warp 7) -> end: MAP_CANALAVE ship landing (44,750).
-- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_CANALAVE 7; lab state lines: 5 badge, 28 clear-flag, 157 flag, 18 item, 1 pokedex, 5 poketch, 58 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #835 TRAINER_GALACTIC_GRUNT_33; trdata.json #836 TRAINER_GALACTIC_GRUNT_34; trdata.json #609 TRAINER_PKMN_TRAINER_RICH_BOY_RILEY
 - end state: map MAP_CANALAVE; at (44, 750); >= 1 battles; party size 3; flags set 0xE1, 0xE5, 0x203, 0x205, 0x9DA, 0x9DB; flags clear 0xE2, 0x961; vars 0x4092=2, 0x403F=609
@@ -2477,7 +2477,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/38-canalave-gym-byron-mine-badge — Canalave Gym: Byron and the Mine Badge, rival points to the library
 - proves: Proves the Canalave Gym (InitCanalaveGym platform state), Byron, the Mine Badge and TM91, and the rival's post-badge frame script outside (0x4078 2 -> 3) that sends the player to the library (DPStory09's start). Start: MAP_CANALAVE ferry landing (44,750) -> end: MAP_CANALAVE outside the gym door after scr_seq 0034 script_4.
-- start: prev + `lab.recipe`; map MAP_CANALAVE 44 750 DIR_EAST; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_CANALAVE 44 750 DIR_EAST; lab state lines: 5 badge, 29 clear-flag, 163 flag, 18 item, 1 pokedex, 5 poketch, 60 var
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: trdata.json #250 TRAINER_LEADER_BYRON_BYRON
 - end state: map MAP_CANALAVE; 6 badges; badge BADGE_MINE; >= 1 battles; flags set 0x92, 0x1B6, 0x1D0, 0x638, 0x650, 0x651, 0x667, 0x66B, 0x68A, 0x6BF; flags clear 0x1D4, 0x1D5, 0x1D6; vars 0x4078=3, 0x40B2=1; 1 save check(s)
@@ -2487,7 +2487,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/39-canalave-library-valor-explosion — Canalave Library: lake legends and the Lake Valor explosion
 - proves: Proves the Canalave Library 3F lake-legends meeting (ON_FRAME 0x40B2==1), the tremor, and the Canalave explosion news (ON_FRAME 0x4078==4) that sends the player to Lake Valor. Start: Canalave below the gym door (39,732), right after 38's rival scene (0x4078=3, 0x40B2=1) -> end: Valor Lakefront (719,761) east of the lake mouth (40's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_CANALAVE 39 732 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_CANALAVE 39 732 FACE_DOWN; lab state lines: 6 badge, 32 clear-flag, 172 flag, 19 item, 1 pokedex, 5 poketch, 62 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0xA8, 0x1CC, 0x1D0, 0x1D2, 0x1D4, 0x1D5, 0x1D6; flags clear 0x1B2, 0x193, 0x2B1; vars 0x4078=5, 0x40B2=2
@@ -2497,7 +2497,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/40-lake-valor-saturn — Lake Valor (drained): Saturn in Valor Cavern
 - proves: Proves the drained Lake Valor (Galactic map chosen while flag 0x15E is clear), Valor Cavern and the Saturn battle, whose win sets 0x13E (switches Verity Lakefront to the Galactic lake). Start: Valor Lakefront (719,761) -> end: Verity Lakefront (80,845) south of the lake mouth (41's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 719 761 FACE_LEFT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 719 761 FACE_LEFT; lab state lines: 6 badge, 35 clear-flag, 178 flag, 19 item, 1 pokedex, 5 poketch, 64 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0301 object 4 TRAINER_GALACTIC_GRUNT_12 (417) (17,32) N sight 4; object 5 TRAINER_GALACTIC_F_GRUNT_5 (425) (29,18) S sight 1; object 6 TRAINER_GALACTIC_GRUNT_13 (418) (25,35) N sight 3; scr_seq 0348 @0x00F5 TrainerBattle 408 (TRAINER_COMMANDER_SATURN_SATURN)
 - end state: map MAP_VERITY_LAKEFRONT; >= 1 battles; flags set 0x13E, 0x984, 0x1DA, 0x9E1; flags clear 0x15E
@@ -2507,7 +2507,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/41-lake-verity-mars — Lake Verity (Galactic): Mars
 - proves: Proves the Galactic Lake Verity (Verity Lakefront switches its lake warps on 0x13E), Rowan's briefing ON_FRAME and the Mars battle whose win arms Lake Acuity (Jupiter shown, Acuity Lakefront guards shown, 0x40D3=1). Start: Verity Lakefront (80,845) -> end: Route 211 East (446,527) at the Celestic edge (42's start), via the Fly bridge.
-- start: prev + `lab.recipe`; map MAP_VERITY_LAKEFRONT 80 845 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VERITY_LAKEFRONT 80 845 FACE_UP; lab state lines: 6 badge, 36 clear-flag, 182 flag, 19 item, 1 pokedex, 5 poketch, 64 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0299 object 0 TRAINER_GALACTIC_GRUNT_14 (419) (43,49) E6; object 1 TRAINER_GALACTIC_GRUNT_15 (420) (48,43) E4; object 2 TRAINER_GALACTIC_F_GRUNT_6 (426) (50,49) W6; object 3 TRAINER_GALACTIC_F_GRUNT_7 (427) (53,43) W4; scr_seq 0343 @0x0247 TrainerBattle 405 (TRAINER_COMMANDER_MARS_MARS_2)
 - end state: map MAP_ROUTE_211_EAST; >= 1 battles; flags set 0x1DE, 0x98E, 0xBA; flags clear 0x1D8, 0x252; vars 0x4097=1, 0x40D3=1
@@ -2517,7 +2517,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/42-route211-coronet-north-to-route216 — Route 211 East and Mt Coronet north (Strength) to Route 216
 - proves: Proves the D/P road north after Lake Verity: Route 211 East into Mt Coronet's north side, the Strength boulder in North 1F Room 1, B1F and Room 2 out onto snowy Route 216. No story flags change; the proof is the map chain. Start: Route 211 East (446,527) at the Celestic edge -> end: Route 216 at the cave mouth (375,403) (43's start).
-- start: prev + `lab.recipe`; map MAP_ROUTE_211_EAST 446 527 FACE_LEFT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_ROUTE_211_EAST 446 527 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 185 flag, 19 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0351 object 0 TRAINER_BIRD_KEEPER_KATHERINE (81) (432,520) E2; object 19 TRAINER_RUIN_MANIAC_HARRY (442) (429,525) S2; object 1 TRAINER_NINJA_BOY_NICK (80) (425,520) S1
 - end state: map MAP_ROUTE_216; party SPECIES_STARAPTOR
@@ -2527,8 +2527,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/43-route216-217-hm08-to-snowpoint — Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint
 - proves: Proves the snow road: Route 216 west, Route 217 north with the HM08 (Rock Climb) item ball, Acuity Lakefront (lake still guarded until the Icicle Badge) and Snowpoint City. Start: Route 216 cave mouth (375,403) -> end: Snowpoint (367,223), below the gym door (44's start).
-- start: prev + `lab.recipe`; -; lab state lines: none
-- party: the continued save
+- start: prev + `lab.recipe`; map MAP_ROUTE_216 375 403 FACE_LEFT; lab state lines: 6 badge, 38 clear-flag, 185 flag, 19 item, 1 pokedex, 5 poketch, 66 var
+- party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37
 - end state: map MAP_SNOWPOINT; at (367, 223); flags set 0x47B; 1 save check(s)
 - frames: estimate 22000, budget 33000
@@ -2537,7 +2537,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/51-coronet-exit-valor-lakefront — Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens
 - proves: Proves the way back from Spear Pillar: down Mt. Coronet 6F/5F/4F to the North Mountainside, Fly south, and the first Valor Lakefront entry after Spear Pillar (flag 0x15E) that removes the Route 222 blackout guard. Start: Spear Pillar (31,52) facing south (50's end, scr_seq 0230 @0x0FB0) -> end: Valor Lakefront, guard hidden.
-- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN; lab state lines: 6 badge, 38 clear-flag, 186 flag, 20 item, 1 pokedex, 5 poketch, 66 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0x15E, 0x29B; vars 0x4112=1
@@ -2547,7 +2547,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/52-route222-sunyshore-flint-lighthouse — Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse
 - proves: Proves Route 222 to Sunyshore, Flint's arrival OnFrame, the Vista Lighthouse elevator, Volkner on the observation deck and Flint leaving the gym door. Start: Valor Lakefront west of the old guard tile -> end: Sunyshore, Flint gone.
-- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 722 790 FACE_RIGHT; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_VALOR_LAKEFRONT 722 790 FACE_RIGHT; lab state lines: 6 badge, 38 clear-flag, 188 flag, 20 item, 1 pokedex, 5 poketch, 67 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0x162, 0x29F, 0x257; vars 0x407E=1
@@ -2557,7 +2557,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/53-sunyshore-gym-volkner — Sunyshore Gym: Volkner and the Beacon Badge
 - proves: Proves the rotating-gear gym (InitSunyshoreGym / RotateSunyshoreGymGear coord buttons) and Volkner's win script. Start: Sunyshore Gym room 1 (8,14) -> end: room 3, BADGE_BEACON, TM57.
-- start: prev + `lab.recipe`; warp MAP_SUNYSHORE_GYM_ROOM_1 0; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_SUNYSHORE_GYM_ROOM_1 0; lab state lines: 6 badge, 38 clear-flag, 191 flag, 20 item, 1 pokedex, 5 poketch, 68 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE_GYM_ROOM_3; 8 badges; badge BADGE_BEACON; >= 1 battles; flags set 0xB6, 0x669, 0x66D, 0x67D, 0x67E, 0x67F, 0x69B, 0x6A5, 0x6A8; 2 save check(s)
@@ -2567,7 +2567,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/54-sunyshore-jasmine-waterfall — Sunyshore: Jasmine gives HM07 Waterfall
 - proves: Proves Jasmine's coord scene north of the gym: with the Beacon Badge she hands over HM07 Waterfall. Start: Sunyshore gym door (845,747), var 0x407E 1 -> end: Sunyshore coord row (855,743), HM07, var 0x407E 2.
-- start: prev + `lab.recipe`; warp MAP_SUNYSHORE 12; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_SUNYSHORE 12; lab state lines: 7 badge, 38 clear-flag, 200 flag, 21 item, 1 pokedex, 5 poketch, 68 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0xB5, 0x9A; vars 0x407E=2; 1 save check(s)
@@ -2577,7 +2577,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/55-route223-victory-road — Route 223 and Victory Road to the Pokemon League
 - proves: Proves Surf + Waterfall up Route 223 and the Victory Road HM floors to the League's north side. Start: Sunyshore (855,743) after Jasmine -> end: Pokemon League outside, Victory Road exit (853,582).
-- start: prev + `lab.recipe`; map MAP_SUNYSHORE 855 743 FACE_UP; lab state lines: none
+- start: prev + `lab.recipe`; map MAP_SUNYSHORE 855 743 FACE_UP; lab state lines: 7 badge, 38 clear-flag, 202 flag, 22 item, 1 pokedex, 5 poketch, 69 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE; flags set 0x9CA
@@ -2587,7 +2587,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/56-league-lobby-rival-guard — Pokemon League lobby: last rival battle, badge check
 - proves: Proves the League lobby: ON_TRANSITION door/E4 reset, the rival coord battle (Turtwig -> Infernape team), the badge check by the door guard and entry to the first lift room. Start: League outside (853,582) -> end: MAP_POKEMON_LEAGUE_ENTRANCE.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE 3; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE 3; lab state lines: 7 badge, 38 clear-flag, 203 flag, 22 item, 1 pokedex, 5 poketch, 69 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_ENTRANCE; >= 1 battles; flags set 0x9F4, 0x2A0, 0x2A1, 0x2A2, 0x2A3, 0x23B, 0xAF; flags clear 0x2A4, 0x2A5, 0x2A6, 0x2A7, 0xB0, 0xB1, 0xB2, 0xB3; vars 0x40EF=1
@@ -2597,7 +2597,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/57-e4-aaron — Elite Four: Aaron
 - proves: Proves the Aaron room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_ENTRANCE (4,15) -> end: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_ENTRANCE 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_ENTRANCE 1; lab state lines: 7 badge, 46 clear-flag, 210 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK; >= 1 battles; flags set 0xB0, 0x2A4; flags clear 0x2A0
@@ -2607,7 +2607,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/57b-e4-bertha — Elite Four: Bertha
 - proves: Proves the Bertha room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK 1; lab state lines: 7 badge, 47 clear-flag, 212 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK; >= 1 battles; flags set 0xB1, 0x2A5; flags clear 0x2A1
@@ -2617,7 +2617,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/58-e4-flint — Elite Four: Flint
 - proves: Proves the Flint room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK 1; lab state lines: 7 badge, 48 clear-flag, 214 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK; >= 1 battles; flags set 0xB2, 0x2A6; flags clear 0x2A2
@@ -2627,7 +2627,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/58b-e4-lucian — Elite Four: Lucian
 - proves: Proves the Lucian room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door. Start: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK (next lift room). Nothing checks the previous member's flag.
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK 1; lab state lines: 7 badge, 49 clear-flag, 216 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK; >= 1 battles; flags set 0xB3, 0x2A7; flags clear 0x2A3
@@ -2637,7 +2637,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/59-champion-cynthia — Champion Cynthia
 - proves: Proves the Champion room frame script (walk 4 north, intro, battle with no interaction), the win and the walk-off to the Hall of Fame corridor. Start: Lucian-Cynthia lift room (4,23) -> end: HoF corridor (5,23).
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: 7 badge, 50 clear-flag, 218 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR; at (5, 23); >= 1 battles; flags set 0x98B, 0xB4, 0x258, 0x259
@@ -2647,7 +2647,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### pearl/59b-hall-of-fame-credits — Hall of Fame, credits, continue
 - proves: Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966, Champ ribbon, the game's own save, credits, OS_ResetSystem) and the continue into the post-game start location. Start: HoF corridor (5,23) after Cynthia -> end: CONTINUE after the reset, field in the player's bedroom (map 415).
-- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: none
+- start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: 7 badge, 50 clear-flag, 222 flag, 22 item, 1 pokedex, 5 poketch, 70 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_TWINLEAF_RIVAL_HOUSE_2F; at (4, 6); 8 badges; flags set 0x964, 0x966, 0x982, 0xB4; flags clear 0x98B, 0x1EF, 0x1E2, 0x1FE, 0x1FF, 0x195; vars 0x40F4=1, 0x410F=1, 0x4098=5

@@ -2,10 +2,9 @@
 # the east exit, and the exit to Route 205 North.
 # Start: Eterna Forest warp 0 (28,86), the Route 205 South entrance (12's end) -> end: Route 205 North (259,524).
 title = "Eterna Forest with Cheryl"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 30297
 refs = [
   "maps.h:207 (MAP_ETERNA_FOREST_INTERIOR = 203, map_header.c:287; encounters d_enc 0008 / p_enc 0008)",
   "maps.h:353 (MAP_ROUTE_205_NORTH = 349, map_header.c:433; encounters d_enc 0146 / p_enc 0146)",
@@ -25,9 +24,10 @@ notes = "D/P's Cheryl gives no item at the exit (Pt's Soothe Bell is not in scr_
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 22500
+frames = 45500
 
 [[step]]
 do = "walk_to"

@@ -2,10 +2,9 @@
 # Rowan (then Rowan/Dawn leave and the Jubilife TV man gives the Fashion Case).
 # Start: Oreburgh at the west coord strip (262,749) after Barry's bump (09's end) -> end: Jubilife at the north coord (173..175,743).
 title = "Jubilife: tag battle against Team Galactic"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 8000
+estimate = 15489
 refs = [
   "maps.h:49 (MAP_OREBURGH = 45, map_header.c:129)",
   "maps.h:7 (MAP_JUBLIFE = 3, map_header.c:87)",
@@ -34,7 +33,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 20000
+frames = 23300
 
 [[step]]
 do = "walk_to"

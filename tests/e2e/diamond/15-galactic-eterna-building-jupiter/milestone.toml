@@ -2,10 +2,9 @@
 # and Commander Jupiter; the win hides every Eterna grunt and unhides the Cycle Shop owner, his Clefairy and the Pokecenter Buneary.
 # Start: Eterna warp 10 (gym door (312,562), 14's end) -> end: Eterna at the building door (305,519) (16's start).
 title = "Team Galactic Eterna Building: Jupiter"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 16000
+estimate = 20313
 refs = [
   "maps.h:69",
   "map_header.c:149",
@@ -70,9 +69,10 @@ notes = "D/P has no Looker disguise scene and no building OnFrame (level scripts
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 24000
+frames = 30500
 
 [[step]]
 do = "walk_to"

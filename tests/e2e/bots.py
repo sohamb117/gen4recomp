@@ -199,6 +199,8 @@ def bot_auto_battle(s, step, ctx):
     turns = 0
     last = None  # the menu answered last
     target = 0   # TAP_TARGETS index
+    again = 0    # move-menu returns in a row
+    menus = {}   # battle menu config index -> times answered (the run log's trace of the battle)
     while s.in_battle:
         if s.frame >= limit:
             raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
@@ -213,9 +215,11 @@ def bot_auto_battle(s, step, ctx):
                 turns += 1
                 party_try = 0
             elif idx == MENU_MOVES:
-                if last == MENU_MOVES:
-                    # the move menu again straight after a move: that move cannot be used (no PP left,
-                    # disabled); the next slot from now on
+                # the move menu again straight after a move: the tap may have fallen in the menu's slide-in, so
+                # the same move once more; a second time it cannot be used (no PP left, disabled): the next slot
+                again = again + 1 if last == MENU_MOVES else 0
+                if again >= 2:
+                    again = 0
                     move = (move + 1) % 4
                     s.note("auto_battle: move slot %d" % move)
                 _tap(s, TAP_MOVES[move])
@@ -229,6 +233,7 @@ def bot_auto_battle(s, step, ctx):
                 s.run(2, "b")
                 s.run(10)
             last = idx
+            menus[idx] = menus.get(idx, 0) + 1
             continue
         if p is not None and p.ui == UI_BATTLE_PARTY:
             if p.ui_arg == 0:
@@ -241,7 +246,8 @@ def bot_auto_battle(s, step, ctx):
         # text, animations, the evolution scene: A advances text (B would cancel an evolution)
         if not s.run(6, until=["ui!=0", "in_battle=0"]):
             s.run(2, "a", until=["ui!=0", "in_battle=0"])
-    s.note("auto_battle: battle over after %d turns" % turns)
+    s.note("auto_battle: battle over after %d turns (menus answered %s)" % (
+        turns, ", ".join("%d x%d" % kv for kv in sorted(menus.items()))))
 
 
 # ---------------------------------------------------------------- walk_to
@@ -444,6 +450,13 @@ def bot_walk_to(s, step, ctx):
         if not dirs and terrain.blocked_edges:
             # what bumping taught may have been a person in the way: forget it once
             terrain.blocked_edges.clear()
+            dirs = terrain.path((p.x, p.z), goal)
+        if not dirs:
+            # just after a warp the probe can still hold the last map's window: settle, re-read, plan again
+            s.run(30)
+            p = s.probe()
+            terrain.cells.clear()
+            terrain.update(p)
             dirs = terrain.path((p.x, p.z), goal)
         if not dirs:
             raise HarnessError("walk_to (%d,%d): no path from (%d,%d) on map %d" % (goal + (p.x, p.z, p.map_id)))

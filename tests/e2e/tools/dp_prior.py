@@ -35,6 +35,11 @@ START = "# -- start --"
 sys.path.insert(0, HERE)
 import dp_script  # noqa: E402
 
+# State a milestone sets in play that a recipe must not: the Journal's system flag (set by ScrCmd Unk01CC,
+# games/diamond/arm9/src/scrcmd.c:3534-3543, which also attaches the journal data no lab verb writes). With the flag
+# and no data, CONTINUE stops on a blank Journal page and never reaches the field (seen minting 13).
+NOT_MINTED = {0x963}
+
 _grep_cache = {}
 
 
@@ -89,7 +94,7 @@ def group(name, ms, state):
     out = []
     for f in ex.get("flags", []):
         v = int(f, 16)
-        if state["flags"].get(v) is True:
+        if state["flags"].get(v) is True or v in NOT_MINTED:
             continue
         state["flags"][v] = True
         lines = grep("grep-flag", v)

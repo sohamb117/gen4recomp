@@ -2,10 +2,9 @@
 # trainers that appear one after another, and the Forest Badge with TM86.
 # Start: Route 205 North (259,524), the forest's east exit (13's end) -> end: Eterna at the gym door (312,562) (15's start).
 title = "Eterna Gym: Gardenia and the Forest Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 28000
+estimate = 20827
 refs = [
   "maps.h:69 (MAP_ETERNA = 65, map_header.c:149)",
   "maps.h:71 (MAP_ETERNA_GYM_ENTRANCE = 67, map_header.c:151)",
@@ -37,9 +36,10 @@ notes = "Gym trainers are talk-only (no trainer type) and appear one at a time: 
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 42000
+frames = 31300
 
 [[step]]
 do = "walk_to"
@@ -87,12 +87,9 @@ do = "wait_map"
 map = "MAP_ETERNA_GYM"
 
 [[step]]
-do = "walk_to"
-x = 10
-z = 14
-face = "up"
-interact = true
-note = "Lass Caroline (10,13) DIR_SOUTH [INFERENCE: (10,14) walkable; she faces the player from any side]"
+do = "talk_to"
+id = 4
+note = "Lass Caroline (10,13) DIR_SOUTH (zone_event 0067 object 4; talk_to picks a free side: the tile south of some is a hedge)"
 
 [[step]]
 do = "advance_text"
@@ -106,12 +103,9 @@ do = "advance_text"
 note = "var 0x40AE 1, Jenna appears at (9,27) ('past the two boulders')"
 
 [[step]]
-do = "walk_to"
-x = 9
-z = 28
-face = "up"
-interact = true
-note = "Aroma Lady Jenna (9,27) [INFERENCE: (9,28) walkable; else another neighbour, scr_seq 0072 @0x0300 turns her to the player]"
+do = "talk_to"
+id = 1
+note = "Aroma Lady Jenna (9,27) (zone_event 0067 object 1; talk_to picks a free side: the tile south of some is a hedge)"
 
 [[step]]
 do = "advance_text"
@@ -125,12 +119,9 @@ do = "advance_text"
 note = "Angela appears at (22,18) ('in the middle of three trees'), var 0x40AE 2"
 
 [[step]]
-do = "walk_to"
-x = 22
-z = 19
-face = "up"
-interact = true
-note = "Aroma Lady Angela (22,18) [INFERENCE: (22,19) walkable; else another neighbour]"
+do = "talk_to"
+id = 2
+note = "Aroma Lady Angela (22,18) (zone_event 0067 object 2; talk_to picks a free side: the tile south of some is a hedge)"
 
 [[step]]
 do = "advance_text"
@@ -144,12 +135,9 @@ do = "advance_text"
 note = "Lindsay appears at (20,9) ('beside four flowers'), var 0x40AE 3"
 
 [[step]]
-do = "walk_to"
-x = 20
-z = 10
-face = "up"
-interact = true
-note = "Beauty Lindsay (20,9) [INFERENCE: (20,10) walkable; else another neighbour]"
+do = "talk_to"
+id = 3
+note = "Beauty Lindsay (20,9) (zone_event 0067 object 3; talk_to picks a free side: the tile south of some is a hedge)"
 
 [[step]]
 do = "advance_text"
@@ -163,12 +151,9 @@ do = "advance_text"
 note = "var 0x40AE 4"
 
 [[step]]
-do = "walk_to"
-x = 15
-z = 4
-face = "up"
-interact = true
-note = "Gardenia (15,3) DIR_SOUTH [INFERENCE: (15,4) walkable]"
+do = "talk_to"
+id = 0
+note = "Gardenia (15,3) DIR_SOUTH (zone_event 0067 object 0; talk_to picks a free side: the tile south of some is a hedge)"
 
 [[step]]
 do = "advance_text"

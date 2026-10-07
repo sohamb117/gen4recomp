@@ -1,10 +1,9 @@
 # Proves the scene the Coal Badge arms: heading for Oreburgh's west exit, Barry runs into you, points to Eterna and leaves.
 # Start: Oreburgh warp 0 (gym door (282,756)) -> end: Oreburgh at the west coord strip (262,749), free, 0x4079 = 3.
 title = "Oreburgh: Barry's farewell at the west exit"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 3000
+estimate = 2400
 refs = [
   "maps.h:49",
   "zone_event 0044 warp 0",
@@ -26,13 +25,19 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 4500
+frames = 3600
 
 [[step]]
 do = "walk_to"
 x = 262
 z = 749
 note = "west coord strip (262,748..751) 1x4, 0x4079 == 2 -> scr_seq 0048 #4 [INFERENCE: walk_to reaches x=262 from the east; any z in 748..751 triggers]"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "barry-thud"
+note = "the coord script holds the player while Barry runs in from the east and bumps into him ('Thud!!', msg 58 #2): the shot is mid-scene"
 
 [[step]]
 do = "advance_text"

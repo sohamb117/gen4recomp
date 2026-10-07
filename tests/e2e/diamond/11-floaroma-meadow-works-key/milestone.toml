@@ -2,10 +2,9 @@
 # little-girl scene that clears the meadow entrance, and the two Floaroma Meadow grunt battles for the Works Key.
 # Start: Jubilife at the north coord (174,743) (10's end) -> end: Floaroma at the meadow entrance (162,641).
 title = "Floaroma Meadow: the Works Key"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 20765
 refs = [
   "maps.h:349 (MAP_ROUTE_204_SOUTH = 345, map_header.c:429)",
   "maps.h:258 (MAP_RAVAGED_PATH = 254, map_header.c:338)",
@@ -41,7 +40,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 31200
 
 [[step]]
 do = "walk_to"

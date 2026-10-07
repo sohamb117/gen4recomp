@@ -54,7 +54,6 @@ pokedex 1                    # 02-sandgem-pokedex: GiveSinnohDex (see its refs)
 # -- 03 The Journal, the Parcel and the catching tutorial --
 flag 0x8F                    # scr_seq 0981 @0x0507 [MAP_TWINLEAF_RIVAL_HOUSE_1F]
 flag 0x20F                   # scr_seq 0981 @0x005E [MAP_TWINLEAF_RIVAL_HOUSE_1F]
-flag 0x963                   # [INFERENCE] set in play by 03-parcel-catching-tutorial (no script SetFlag; see its refs)
 flag 0x1A6                   # zone_event 0328 object 3 (GFX_FROM_VAR_0x4020) hidden flag, set by its Remove/AddEvent [MAP_ROUTE_202]
 var 0x40A4 7                 # scr_seq 0978 @0x0057 [MAP_TWINLEAF]
 var 0x4087 1                 # scr_seq 0393 @0x024B [MAP_ROUTE_202]

@@ -62,7 +62,7 @@ STEP_KEYS = {
     "save": set(),
     "advance_text": {"through_battle", "map"},
     "auto_battle": {"move", "wait", "flee"},
-    "walk_to": {"x", "z", "map", "face", "interact", "run", "on_battle", "on_text", "move"},
+    "walk_to": {"x", "z", "map", "face", "interact", "run", "on_battle", "on_text", "move", "surf", "hm"},
     "walk_to_door": {"pattern", "doors", "wait", "map", "face", "interact", "run", "on_battle", "on_text", "move"},
     "talk_to": {"id", "on_battle", "on_text", "move"},
     "heal": {"x", "z", "on_battle"},
