@@ -23,6 +23,8 @@ party-ev 0 2 0
 party-ev 0 3 100
 party-ev 0 4 40
 party-ev 0 5 255
+party-level 1 20
+party-item 1 ITEM_POTION
 dex-seen SPECIES_GARCHOMP
 dex-caught SPECIES_LUCARIO
 item ITEM_POTION 5

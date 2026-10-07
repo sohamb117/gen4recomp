@@ -2,7 +2,7 @@
 # Start: Jubilife City warp 2 (Pokecenter door) -> end: Oreburgh City after the youngster's tour (VAR_OREBURGH_CITY_STATE 1).
 title = "Route 203 rival, HM06, Oreburgh"
 priority = "P0"
-estimate = 75095
+estimate = 18145
 refs = [
   "scripts_route_203.s:71-74",
   "scripts_route_203.s:81",
@@ -27,32 +27,20 @@ refs = [
   "TRAINER_PICNICKER_DIANA (329)",
   "TRAINER_CAMPER_CURTIS (265)",
 ]
-notes = "Needs VAR_JUBILIFE_CITY_STATE 2 (at 1 Looker blocks Route 203). Rock Smash is unusable in the field until BADGE_ID_COAL (src/field_move_tasks.c:545). Optional sight trainers on the way are fought by walk_to."
+notes = "Needs VAR_JUBILIFE_CITY_STATE 2 (at 1 Looker blocks Route 203). Rock Smash is unusable in the field until BADGE_ID_COAL (src/field_move_tasks.c:545). Optional sight trainers on the way are fought by walk_to. boost.recipe replaces a Route 202 grind to 13 that cost ~57000 frames."
 
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 112700
-
-[[step]]
-do = "grind"
-x = 181
-z = 806
-level = 13
-heal = [180, 776]
-note = "train the starter before the rival: at 05's level it loses Barry's Route 203 battle even at full HP (seen: 16 turns, a whiteout). Route 202's north tall grass (181..182,806; probe grid), healing at the Jubilife Pokemon Center below half HP"
-
-[[step]]
-do = "heal"
-x = 180
-z = 776
-note = "Jubilife Pokemon Center before the rival's Route 203 battle (lost at 05's HP, seen: a whiteout to Sandgem). events_jubilife_city warp 2; inside events_jubilife_city_pokecenter_1f: LOCALID_JUBILIFE_NURSE (8,4), exit warp 0 (8,12)"
+frames = 27300
 
 [[step]]
 do = "walk_to"
 x = 196
+move = 3
 z = 758
 note = "Route 203 coord (196,757..760) VAR_ROUTE_203_RIVAL_STATE==0 -> Barry"
 
@@ -61,6 +49,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 shot = "rival-203"
 note = "TRAINER_RIVAL_ROUTE_203_TURTWIG (248): STARLY 7, CHIMCHAR 9 (scripts_route_203.s:81)"
 
@@ -70,6 +59,7 @@ do = "advance_text"
 [[step]]
 do = "walk_to"
 x = 246
+move = 3
 z = 749
 note = "Oreburgh Gate door (events_route_203 warp 0) -> gate 1F (4,22); Michael (204,750) W 2, Dallas (222,756) S 4, Sebastian (234,757) W 5, Madeline (240,748) S 5, Kaitlin (243,757) wander 1 may engage"
 
@@ -91,6 +81,7 @@ note = "ITEM_HM06, FLAG_RECEIVED_HM06, hiker state 2 (scripts_oreburgh_gate_1f.s
 [[step]]
 do = "walk_to"
 x = 27
+move = 3
 z = 22
 note = "east exit (warp 1) -> Oreburgh (258,749); Diana (24,21) S 3 and Curtis (17,25) N 3 may engage"
 
@@ -101,6 +92,7 @@ map = "MAP_HEADER_OREBURGH_CITY"
 [[step]]
 do = "walk_to"
 x = 266
+move = 3
 z = 749
 note = "coord (266,748..751) VAR_OREBURGH_CITY_STATE==0 -> the youngster walks you to the gym -> 1 (scripts_oreburgh_city.s:388)"
 

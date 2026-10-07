@@ -37,6 +37,8 @@ Everything else is still `status = "planned"` and skipped unless `--planned`.
    runs the save lab (Platinum: `games/platinum/pc/src/pc_lab.c` on a new game; D/P:
    `games/diamond/pc/game/pc_dp_lab.c` on the new-game base save) with the recipe compiled by
    `tests/gameplay/labc.py`; a recipe `clock` line becomes the run's `PC_RTC`, carried down the chain in `end.clock`.
+   A `boost` recipe (party level/moves/held items/bag items only; AUTHORING.md, Boosts) is then applied on top of
+   whichever start save was placed.
 2. **Boot**: a save boots through the title and CONTINUE until the player is free; a blank chip starts at frame 0.
 3. **Steps**: the `[[step]]` bots in order (below). Every frame counts against `[run] frames`; a step's `max` bounds
    that step.
@@ -75,6 +77,7 @@ notes = "..."
 
 [start]
 from = "prev"               # | recipe = "start.recipe" | blank = true ; lab = "lab.recipe" is the fallback
+# boost = "boost.recipe"    # party strength on top of the start (AUTHORING.md, Boosts)
 # boot = "continue"         # default with a save; "none" for a blank chip
 
 [run]

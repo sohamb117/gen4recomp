@@ -13,6 +13,7 @@ tests/e2e/<game>/systems.txt            side systems (standalone)
 tests/e2e/<game>/<nn>-<slug>/
     milestone.toml                      what to do and what must be true at the end
     lab.recipe                          story: FULL cumulative state + the start warp (standalone start)
+    boost.recipe                        story: party strength on top of the start (Boosts), optional
     start.recipe                        side system: the state it needs + the start warp
     *.recipe / *.press                  extra recipes (e.g. a version twin) or exact menu schedules
 ```
@@ -42,6 +43,7 @@ notes = "optional: why the estimate, risks"
 [start]                     # exactly one source
 from = "prev"               # story: the previous chain entry's end save ...
 lab = "lab.recipe"          # ... or this recipe with --lab / when that save is missing
+# boost = "boost.recipe"    # party strength applied on top of whichever start (Boosts)
 # recipe = "start.recipe"   # side systems: mint fresh
 # blank = true              # 01 only: blank chip, title screen -> new game by steps
 
@@ -144,6 +146,21 @@ Battles are A presses on slot 0, so choose species, level and slot-0 move from t
 `res/trainers/`, D/P `dp_script.py trainer TRAINER_X`), cite them in a step `note`, and give the lead a move that wins
 every battle of the milestone, including type-disadvantaged ones. Clear the lead's other move slots when a 0-PP
 fallback to Struggle is safer than a stalled menu. Field-move carriers sit behind the lead.
+
+### Boosts (`boost.recipe`)
+
+`auto_battle` knows no types or HP, so a chained party that played the story honestly is often too weak for the
+next boss, and grinding it costs tens of thousands of frames. A milestone fixes that with `[start] boost =
+"boost.recipe"`: after the start save is placed (the previous end save, or the minted lab start), the runner applies
+the boost recipe on top of it with the save lab (the derived-save mint `recipe` uses) and the run continues from
+there; the report says `... + boost boost.recipe`. The boosted party carries down the chain.
+
+A boost is party strength and items only: `--check` rejects any verb but `party`, `party-move`, `party-level`
+(slot, level: experience set to that level's base, stats recomputed, HP full; no evolution, no moves learned),
+`party-item` (slot, held item), `party-iv`, `party-ev` and `item`, and any `clock` line. Story state (flags, vars,
+badges, the map) is never boosted, so the chain still proves the story was played. Use a boost in place of a
+`grind`; keep `grind` only where a script itself needs a battle won or a level reached. Cite the opponents' teams in
+the recipe's comments, as for the lab party.
 
 ## Citations
 

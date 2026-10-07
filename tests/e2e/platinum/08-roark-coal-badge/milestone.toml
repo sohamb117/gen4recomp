@@ -2,7 +2,7 @@
 # Start: Oreburgh Gym warp 0 (5,24) -> end: Oreburgh City at the gym door (09's start).
 title = "Oreburgh Gym: Roark and the Coal Badge"
 priority = "P0"
-estimate = 12467
+estimate = 12905
 refs = [
   "scripts_oreburgh_city_gym.s:26-28",
   "scripts_oreburgh_city_gym.s:30-41",
@@ -20,7 +20,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 18800
+frames = 19400
 
 [[step]]
 do = "walk_to"

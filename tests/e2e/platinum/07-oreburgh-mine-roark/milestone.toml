@@ -2,7 +2,7 @@
 # Start: Oreburgh City warp 1 (Pokecenter door) -> end: inside Oreburgh Gym (08's start), Roark back.
 title = "Oreburgh Mine: Roark returns to the gym"
 priority = "P0"
-estimate = 11346
+estimate = 13362
 refs = [
   "scripts_oreburgh_mine_b1f.s:13-14",
   "scripts_oreburgh_mine_b2f.s:13-59",
@@ -14,14 +14,14 @@ refs = [
   "TRAINER_WORKER_COLIN (195)",
   "TRAINER_WORKER_MASON (196)",
 ]
-notes = "Estimate: research ~6000 plus the walk back into the gym. The Workers have no sight (data []), so walking past is safe."
+notes = "The Workers have no sight (data []), so every battle on the way is wild: the walks flee them (on_battle), which saves ~650 frames a battle."
 
 [start]
 from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 17100
+frames = 20100
 
 [[step]]
 do = "heal"
@@ -45,6 +45,7 @@ do = "walk_to"
 move = 3
 x = 12
 z = 21
+on_battle = "flee"
 note = "B1F stairs (11..13,21) -> B2F (15,1)"
 
 [[step]]
@@ -58,6 +59,7 @@ x = 18
 z = 29
 face = "up"
 interact = true
+on_battle = "flee"
 note = "Roark (18,28) between the rocks (17,28) and (19,28); (18,27) is wall, so talk from the south (probe grid of B2F: the row z=29 is open, z=27 is wall at x=6..25)"
 
 [[step]]
@@ -70,6 +72,7 @@ do = "walk_to"
 move = 3
 x = 15
 z = 1
+on_battle = "flee"
 note = "B2F exit (warp 0) -> B1F"
 
 [[step]]
@@ -81,6 +84,7 @@ do = "walk_to"
 move = 3
 x = 12
 z = 1
+on_battle = "flee"
 note = "B1F exit (warp 1) -> Oreburgh"
 
 [[step]]

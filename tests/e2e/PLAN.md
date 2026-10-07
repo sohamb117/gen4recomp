@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~975600 frames estimated
+### Story chain: 56 milestones, ~928747 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -112,10 +112,10 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [03-sandgem-pokedex](platinum/03-sandgem-pokedex/milestone.toml) | Sandgem: Rowan's lab and the Pokedex | P0 | 12321 | prev + `lab.recipe` | MAP_HEADER_TWINLEAF_TOWN_PLAYER_HOUSE_1F | passing |
 | [04-parcel-catching-tutorial](platinum/04-parcel-catching-tutorial/milestone.toml) | The Parcel and the catching tutorial | P0 | 11498 | prev + `lab.recipe` | MAP_HEADER_ROUTE_202 | passing |
 | [05-jubilife-poketch](platinum/05-jubilife-poketch/milestone.toml) | Jubilife: Town Map and the Poketch | P0 | 22749 | prev + `lab.recipe` | MAP_HEADER_JUBILIFE_CITY | passing |
-| [06-route203-oreburgh-gate-rocksmash](platinum/06-route203-oreburgh-gate-rocksmash/milestone.toml) | Route 203 rival, HM06, Oreburgh | P0 | 75095 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY | passing |
-| [07-oreburgh-mine-roark](platinum/07-oreburgh-mine-roark/milestone.toml) | Oreburgh Mine: Roark returns to the gym | P0 | 11346 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY_GYM | passing |
-| [08-roark-coal-badge](platinum/08-roark-coal-badge/milestone.toml) | Oreburgh Gym: Roark and the Coal Badge | P0 | 12467 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY | passing |
-| [09-jubilife-galactic-tag-battle](platinum/09-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | 8000 | prev + `lab.recipe` | MAP_HEADER_JUBILIFE_CITY | planned |
+| [06-route203-oreburgh-gate-rocksmash](platinum/06-route203-oreburgh-gate-rocksmash/milestone.toml) | Route 203 rival, HM06, Oreburgh | P0 | 18145 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY | passing |
+| [07-oreburgh-mine-roark](platinum/07-oreburgh-mine-roark/milestone.toml) | Oreburgh Mine: Roark returns to the gym | P0 | 13362 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY_GYM | passing |
+| [08-roark-coal-badge](platinum/08-roark-coal-badge/milestone.toml) | Oreburgh Gym: Roark and the Coal Badge | P0 | 12905 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY | passing |
+| [09-jubilife-galactic-tag-battle](platinum/09-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | 15643 | prev + `lab.recipe` | MAP_HEADER_JUBILIFE_CITY | passing |
 | [10-floaroma-meadow-works-key](platinum/10-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | 19000 | prev + `lab.recipe` | MAP_HEADER_FLOAROMA_TOWN | planned |
 | [11-valley-windworks-mars](platinum/11-valley-windworks-mars/milestone.toml) | Valley Windworks: Commander Mars | P0 | 15000 | prev + `lab.recipe` | MAP_HEADER_ETERNA_FOREST | planned |
 | [12-eterna-forest-cheryl](platinum/12-eterna-forest-cheryl/milestone.toml) | Eterna Forest with Cheryl | P0 | 15000 | prev + `lab.recipe` | MAP_HEADER_ROUTE_205_NORTH | planned |
@@ -220,9 +220,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_RIVAL_ROUTE_203_TURTWIG (248); TRAINER_YOUNGSTER_MICHAEL (4); TRAINER_YOUNGSTER_DALLAS (355); TRAINER_YOUNGSTER_SEBASTIAN (356); TRAINER_LASS_MADELINE (322); TRAINER_LASS_KAITLIN (323); TRAINER_PICNICKER_DIANA (329); TRAINER_CAMPER_CURTIS (265)
 - end state: map MAP_HEADER_OREBURGH_CITY; >= 1 battles; flags set FLAG_RECEIVED_HM06, FLAG_FIRST_ARRIVAL_OREBURGH_GATE, FLAG_HIDE_ROUTE_203_RIVAL; vars VAR_ROUTE_203_RIVAL_STATE=1, VAR_OREBURGH_CITY_STATE=1, VAR_OREBURGH_GATE_1F_HIKER_STATE=2; 1 save check(s)
-- frames: estimate 75095, budget 112700
+- frames: estimate 18145, budget 27300
 - refs: scripts_route_203.s:71-74; scripts_route_203.s:81; scripts_route_203.s:122-123; scripts_oreburgh_gate_1f.s:12; scripts_oreburgh_gate_1f.s:44-45; scripts_oreburgh_gate_1f.s:54-57; scripts_init_new_game.s:53; scripts_oreburgh_city.s:29-49; scripts_oreburgh_city.s:38; scripts_oreburgh_city.s:388; src/field_move_tasks.c:545; events_route_203 (coord (196,757..760); warp 0 (246,749)); events_oreburgh_gate_1f (coord (7,22); warps (4,22), (27,22)); events_oreburgh_city (coord (266,748..751); Barry (282,757)); TRAINER_RIVAL_ROUTE_203_TURTWIG (248); TRAINER_YOUNGSTER_MICHAEL (4); TRAINER_YOUNGSTER_DALLAS (355); TRAINER_YOUNGSTER_SEBASTIAN (356); TRAINER_LASS_MADELINE (322); TRAINER_LASS_KAITLIN (323); TRAINER_PICNICKER_DIANA (329); TRAINER_CAMPER_CURTIS (265)
-- notes: Needs VAR_JUBILIFE_CITY_STATE 2 (at 1 Looker blocks Route 203). Rock Smash is unusable in the field until BADGE_ID_COAL (src/field_move_tasks.c:545). Optional sight trainers on the way are fought by walk_to.
+- notes: Needs VAR_JUBILIFE_CITY_STATE 2 (at 1 Looker blocks Route 203). Rock Smash is unusable in the field until BADGE_ID_COAL (src/field_move_tasks.c:545). Optional sight trainers on the way are fought by walk_to. boost.recipe replaces a Route 202 grind to 13 that cost ~57000 frames.
 
 #### platinum/07-oreburgh-mine-roark — Oreburgh Mine: Roark returns to the gym
 - proves: Proves the Oreburgh Mine visit: Roark smashes the rock and returns to the gym, which hides Barry from the gym door. Start: Oreburgh City warp 1 (Pokecenter door) -> end: inside Oreburgh Gym (08's start), Roark back.
@@ -230,9 +230,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_WORKER_COLIN (195); TRAINER_WORKER_MASON (196)
 - end state: map MAP_HEADER_OREBURGH_CITY_GYM; flags set FLAG_ROARK_RETURNED_TO_OREBURGH_GYM, FLAG_HIDE_OREBURGH_CITY_RIVAL, FLAG_FIRST_ARRIVAL_OREBURGH_MINE, FLAG_HIDE_OREBURGH_MINE_B2F_ROARK
-- frames: estimate 11346, budget 17100
+- frames: estimate 13362, budget 20100
 - refs: scripts_oreburgh_mine_b1f.s:13-14; scripts_oreburgh_mine_b2f.s:13-59; scripts_oreburgh_mine_b2f.s:55-57; scripts_oreburgh_city.s:29-49; events_oreburgh_city (warps 11-15 (300..304,795) mine; warp 0 (282,756) gym); events_oreburgh_mine_b1f (warps (11..13,1), (11..13,21)); events_oreburgh_mine_b2f (Roark (18,28) facing east; warp 0 (15,1)); TRAINER_WORKER_COLIN (195); TRAINER_WORKER_MASON (196)
-- notes: Estimate: research ~6000 plus the walk back into the gym. The Workers have no sight (data []), so walking past is safe.
+- notes: The Workers have no sight (data []), so every battle on the way is wild: the walks flee them (on_battle), which saves ~650 frames a battle.
 
 #### platinum/08-roark-coal-badge — Oreburgh Gym: Roark and the Coal Badge
 - proves: Proves the first gym: two sight youngsters, Roark, the Coal Badge and TM76; the win arms the Jubilife Galactic scene. Start: Oreburgh Gym warp 0 (5,24) -> end: Oreburgh City at the gym door (09's start).
@@ -240,7 +240,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_YOUNGSTER_JONATHON (244); TRAINER_YOUNGSTER_DARIUS (245); TRAINER_LEADER_ROARK (246)
 - end state: map MAP_HEADER_OREBURGH_CITY; 1 badges; badge BADGE_ID_COAL; >= 1 battles; flags set FLAG_RECEIVED_ROARK_TM76, FLAG_DEFEATED_TRAINER_YOUNGSTER_JONATHON, FLAG_DEFEATED_TRAINER_YOUNGSTER_DARIUS, FLAG_HIDE_POKECENTER_BASEMENT_BLOCKADE, FLAG_HIDE_SANDGEM_TOWN_LAB_PROF_ROWAN; flags clear FLAG_HIDE_JUBILIFE_GALACTIC_GRUNTS, FLAG_HIDE_JUBILIFE_ROWAN, FLAG_HIDE_JUBILIFE_CITY_COUNTERPART; vars VAR_OREBURGH_CITY_STATE=2, VAR_JUBILIFE_CITY_STATE=3, VAR_JUBILIFE_LOOKER_PAL_PAD_STATE=1, VAR_GTS_ACCESS_STATE=1; 1 save check(s)
-- frames: estimate 12467, budget 18800
+- frames: estimate 12905, budget 19400
 - refs: scripts_oreburgh_city_gym.s:26-28; scripts_oreburgh_city_gym.s:30-41; scripts_oreburgh_city_gym.s:47-51; tests/gameplay/recipes/roark.recipe; events_oreburgh_city_gym (warp 0 (5,24); Jonathon (4,18) E 3; Darius (7,11) W 4; Roark (5,3)); TRAINER_YOUNGSTER_JONATHON (244); TRAINER_YOUNGSTER_DARIUS (245); TRAINER_LEADER_ROARK (246)
 - notes: Estimate: research's measured ~20200 for the existing Roark test plus the exit. Surf is x2/x4 on every Roark mon.
 
@@ -250,7 +250,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_1 (414); TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_2 (415); TRAINER_DAWN_JUBILIFE_CITY_TURTWIG (618)
 - end state: map MAP_HEADER_JUBILIFE_CITY; >= 1 battles; flags set FLAG_HIDE_JUBILIFE_GALACTIC_GRUNTS, FLAG_RECEIVED_FASHION_CASE, FLAG_HIDE_JUBILIFE_ROWAN, FLAG_HIDE_JUBILIFE_CITY_COUNTERPART; flags clear FLAG_HIDE_SANDGEM_TOWN_LAB_PROF_ROWAN; vars VAR_JUBILIFE_CITY_STATE=4, VAR_OREBURGH_CITY_STATE=3, VAR_JUBILIFE_LOOKER_PAL_PAD_STATE=2; 1 save check(s)
-- frames: estimate 8000, budget 12000
+- frames: estimate 15643, budget 23500
 - refs: scripts_oreburgh_city.s:79; scripts_oreburgh_city.s:178-180; scripts_jubilife_city.s:876; scripts_jubilife_city.s:888; scripts_jubilife_city.s:907-914; scripts_jubilife_city.s:954-962; scripts_jubilife_city.s:965; scripts_jubilife_city.s:971; scripts_jubilife_city.s:982-985; scripts_jubilife_city.s:1004-1021; scripts_jubilife_city.s:1630-1652; events_oreburgh_city (coord (262,748..751); warp 10 (258,749) gate); events_oreburgh_gate_1f (warps (27,22), (4,22)); events_jubilife_city (coord (173..175,743); Rowan (175,740); grunts (174,739)/(174,740); coord (188,757..760)); TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_1 (414); TRAINER_GALACTIC_GRUNT_JUBILIFE_CITY_2 (415); TRAINER_DAWN_JUBILIFE_CITY_TURTWIG (618)
 - notes: A tag battle: one move for one battler. Surf is a spread move and also hits Dawn (partner fainting does not lose). Entering Jubilife from Route 203 before the tag battle runs Looker's Pal Pad coord (VAR_JUBILIFE_LOOKER_PAL_PAD_STATE==1 -> 2).
 

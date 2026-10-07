@@ -51,6 +51,7 @@ GAMES = {
 # whose stats the recipes recompute; the same in all three games.
 BASE_STATS = {
     393: (53, 51, 53, 40, 61, 56),  # Piplup
+    399: (59, 45, 40, 31, 35, 40),  # Bidoof
 }
 
 
@@ -178,7 +179,7 @@ def check(ops, env, s):
     t, party, bag, dex = s["trainer"], s["party"], s["bag"], s["pokedex"] or {}
     flags, vars_ = set(s["flags"]), s["vars"]
     badge_mask, items, flag_state, var_state, party_n = 0, {}, {}, {}, 0
-    statted = set()
+    statted, party_want = set(), {}
     for verb, a in ops:
         if verb == "name":
             need(verb, t["name"] == a[0], "name %r, want %r" % (t["name"], a[0]))
@@ -194,14 +195,18 @@ def check(ops, env, s):
             badge_mask |= 1 << a[0]
             need(verb, t["badge_mask"] >> a[0] & 1, "badge %d not set (mask %d)" % (a[0], t["badge_mask"]))
         elif verb == "party":
-            k = party_n
+            party_want[party_n] = list(a)  # species, level, item; party-level / party-item lines amend it
             party_n += 1
-            if k >= len(party):
-                need(verb, False, "no party slot %d" % k)
+        elif verb in ("party-level", "party-item"):
+            if a[0] not in party_want:
+                need(verb, False, "slot %d has no party line before it" % a[0])
                 continue
-            m = party[k]
-            got = (m["species"], m.get("level"), m["held_item"]["id"])
-            need(verb, got == tuple(a), "slot %d species/level/item %s, want %s" % (k, got, tuple(a)))
+            party_want[a[0]][1 if verb == "party-level" else 2] = a[1]
+            m = party[a[0]] if a[0] < len(party) else {}
+            got = m.get("level") if verb == "party-level" else m.get("held_item", {}).get("id")
+            need(verb, got == a[1], "slot %d %s %s, want %d" % (a[0], verb[6:], got, a[1]))
+            if verb == "party-level":
+                statted.add(a[0])
         elif verb == "party-move":
             ids = [mv["id"] for mv in party[a[0]]["moves"]] if a[0] < len(party) else []
             need(verb, a[2] in ids, "slot %d moves %s lack %d" % (a[0], ids, a[2]))
@@ -242,6 +247,13 @@ def check(ops, env, s):
             need(verb, s["location"]["map"] == a[0], "map %d, want %d" % (s["location"]["map"], a[0]))
         else:
             need(verb, False, "lab_check has no assertion for this verb")
+    for k, want in party_want.items():
+        if k >= len(party):
+            need("party", False, "no party slot %d" % k)
+            continue
+        m = party[k]
+        got = (m["species"], m.get("level"), m["held_item"]["id"])
+        need("party", got == tuple(want), "slot %d species/level/item %s, want %s" % (k, got, tuple(want)))
     if badge_mask:
         need("badge", t["badge_mask"] == badge_mask, "mask %d, want exactly %d" % (t["badge_mask"], badge_mask))
     for item, qty in items.items():

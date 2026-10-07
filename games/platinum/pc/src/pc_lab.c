@@ -252,6 +252,15 @@ enum lab_verb {
      */
     LAB_PARTY_IV,     /* party slot, stat, 0..31 */
     LAB_PARTY_EV,     /* party slot, stat, 0..255 */
+    /*
+     * A party mon's level and held item, for an e2e milestone's boost on
+     * top of a played save (tests/e2e/AUTHORING.md, Boosts). The level
+     * sets the experience to the species' base for that level, then
+     * Pokemon_CalcStats and a full HP, the way party-iv does; no evolution
+     * and no moves are learned (party-move sets those).
+     */
+    LAB_PARTY_LEVEL,  /* party slot, 1..100 */
+    LAB_PARTY_ITEM,   /* party slot, held item */
     /* Pokedex entries through the game's own encounter/capture marking,
      * on a scratch mon of the species (ScrCmd's SetSeenMon does the same). */
     LAB_DEX_SEEN,     /* species */
@@ -386,6 +395,8 @@ static const struct lab_verb_row LAB_VERBS[] = {
     { "poketch-history", LAB_POKETCH_HISTORY, 1, 0 },
     { "party-iv",        LAB_PARTY_IV,        3, 0 },
     { "party-ev",        LAB_PARTY_EV,        3, 0 },
+    { "party-level",     LAB_PARTY_LEVEL,     2, 0 },
+    { "party-item",      LAB_PARTY_ITEM,      2, 0 },
     { "dex-seen",        LAB_DEX_SEEN,        1, 0 },
     { "dex-caught",      LAB_DEX_CAUGHT,      1, 0 },
 };
@@ -837,6 +848,37 @@ static void lab_apply(SaveData *saveData, int pass)
             Pokemon_CalcStats(mon);
             hp = (u16)Pokemon_GetValue(mon, MON_DATA_MAX_HP, NULL);
             Pokemon_SetValue(mon, MON_DATA_HP, &hp);
+            break;
+        }
+        case LAB_PARTY_LEVEL:
+        case LAB_PARTY_ITEM: {
+            const int lvl = op->verb == LAB_PARTY_LEVEL;
+            Pokemon *mon;
+
+            if (op->a < 0 || op->a >= Party_GetCurrentCount(party)) {
+                fprintf(stderr, "pc_lab: %s: no party slot %d\n", lvl ? "party-level" : "party-item", op->a);
+                exit(2);
+            }
+            mon = Party_GetPokemonBySlotIndex(party, op->a);
+            if (lvl) {
+                u32 exp;
+                u8 level = (u8)op->b;
+                u16 hp;
+
+                if (op->b < 1 || op->b > MAX_POKEMON_LEVEL) {
+                    fprintf(stderr, "pc_lab: party-level: level %d out of range\n", op->b);
+                    exit(2);
+                }
+                exp = Pokemon_GetSpeciesBaseExpAt(Pokemon_GetValue(mon, MON_DATA_SPECIES, NULL), op->b);
+                Pokemon_SetValue(mon, MON_DATA_EXPERIENCE, &exp);
+                Pokemon_SetValue(mon, MON_DATA_LEVEL, &level); /* CalcStats reads the stored level */
+                Pokemon_CalcStats(mon);
+                hp = (u16)Pokemon_GetValue(mon, MON_DATA_MAX_HP, NULL);
+                Pokemon_SetValue(mon, MON_DATA_HP, &hp);
+            } else {
+                u16 item = (u16)op->b;
+                Pokemon_SetValue(mon, MON_DATA_HELD_ITEM, &item);
+            }
             break;
         }
         case LAB_DEX_SEEN:

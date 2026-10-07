@@ -43,7 +43,10 @@ GAMES = {
 
 TOP_KEYS = {"title", "notes", "status", "priority", "estimate", "refs", "version", "start", "run", "step", "expect",
             "shots"}
-START_KEYS = {"from", "recipe", "lab", "blank", "boot"}
+START_KEYS = {"from", "recipe", "lab", "blank", "boot", "boost"}
+# [start] boost: lab verbs a boost recipe may use on the start save (AUTHORING.md, Boosts). Party strength and
+# items only: a boost never writes story state (flags, vars, badges, the map), so the chain's story stays played.
+BOOST_VERBS = {"party", "party-move", "party-level", "party-item", "party-iv", "party-ev", "item"}
 RUN_KEYS = {"frames", "save", "options", "clock", "env"}
 EXPECT_KEYS = {"map", "position", "badges", "badge", "flags", "flags_clear", "vars", "party", "party_size", "battles",
                "log", "save"}
@@ -168,6 +171,20 @@ class Milestone:
                     labc.compile_inline(os.path.join(self.dir, st[k]), game.name)
                 except SystemExit as e:
                     problems.append("[start] %s: %s" % (k, e))
+        if "boost" in st:
+            path = os.path.join(self.dir, st["boost"])
+            if not os.path.isfile(path):
+                problems.append("[start] boost file %s is missing" % st["boost"])
+            else:
+                try:
+                    inline, env = recipe_env(path, game)
+                except SystemExit as e:
+                    problems.append("[start] boost: %s" % e)
+                else:
+                    bad = sorted({op.split()[0] for op in inline[len("inline:"):].split(";") if op} - BOOST_VERBS)
+                    if bad or env:
+                        problems.append("[start] boost %s: only %s, not %s" % (
+                            st["boost"], " ".join(sorted(BOOST_VERBS)), " ".join(bad + sorted(env))))
         if "frames" not in d.get("run", {}) and d.get("status") != "planned":
             problems.append("[run] frames (the frame budget) is required")
         for i, s in enumerate(d.get("step", [])):
@@ -345,6 +362,19 @@ class Result:
 
 
 def start_save(game, ms, prev, args, out, d, res):
+    """Places start.sav (or nothing, for a blank chip), then applies the [start] boost to it; returns the clock
+    env carried in."""
+    env, start = place_start(game, ms, prev, args, out, d, res)
+    boost = ms.data.get("start", {}).get("boost")
+    if boost:
+        if not start:
+            raise HarnessError("[start] boost needs a start save")
+        mint(game, os.path.join(ms.dir, boost), start, start, out)
+        res.started += " + boost %s" % boost
+    return env, start
+
+
+def place_start(game, ms, prev, args, out, d, res):
     """Places start.sav (or nothing, for a blank chip); returns the clock env carried in."""
     st = ms.data.get("start", {})
     start = os.path.join(d, "start.sav")
