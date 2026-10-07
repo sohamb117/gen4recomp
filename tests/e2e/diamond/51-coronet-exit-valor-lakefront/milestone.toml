@@ -2,10 +2,9 @@
 # Valor Lakefront entry after Spear Pillar (flag 0x15E) that removes the Route 222 blackout guard.
 # Start: Spear Pillar (31,52) facing south (50's end, scr_seq 0230 @0x0FB0) -> end: Valor Lakefront, guard hidden.
 title = "Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 9000
+estimate = 8304
 refs = [
   "scr_seq 0230 @0x0FB0",
   "scr_seq 0230 @0x0FEC",
@@ -84,11 +83,13 @@ map = "MAP_MOUNT_CORONET_NORTH_MOUNTAINSIDE"
 
 [[step]]
 do = "wait_field"
+
 [[step]]
 do = "fly"
 map = "MAP_VEILSTONE"
+start = [12, 22]
 shot = "fly-veilstone"
-note = "Mt. Coronet North Mountainside allows Fly; Veilstone, whose Route 214 south reaches Valor Lakefront on foot (25's and 39's way)"
+note = "Mt. Coronet North Mountainside allows Fly but is off the overworld matrix: the town map opens on the exit location, Route 208's Coronet door (392,724) where 49 left the overworld -> block (12,22). Veilstone, whose Route 214 south reaches Valor Lakefront on foot (25's and 39's way)"
 
 [[step]]
 do = "walk_to"

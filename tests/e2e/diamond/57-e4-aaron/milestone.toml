@@ -34,6 +34,7 @@ notes = "TRAINER_ELITE_FOUR_AARON_AARON (261): DUSTOX 53, BEAUTIFLY 53, VESPIQUE
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 18000

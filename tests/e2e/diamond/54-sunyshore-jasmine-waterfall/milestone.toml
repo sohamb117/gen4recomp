@@ -2,10 +2,9 @@
 # Start: Sunyshore gym door (845,747), var 0x407E 1 -> end: Sunyshore coord row (855,743), HM07, var 0x407E 2.
 
 title = "Sunyshore: Jasmine gives HM07 Waterfall"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 5000
+estimate = 2707
 refs = [
   "zone_event 0149 warp 12",
   "zone_event 0149 coord 0",

@@ -1220,7 +1220,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Diamond
 
 <!-- plan.py:begin diamond -->
-### Story chain: 61 milestones, ~1257724 frames estimated
+### Story chain: 61 milestones, ~1268133 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -1273,10 +1273,10 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [48-galactic-hq-saturn-free-lake-trio](diamond/48-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn, the lake trio freed, out of the HQ | P0 | both | 9153 | prev + `lab.recipe` | MAP_VEILSTONE | passing |
 | [49-mt-coronet-climb](diamond/49-mt-coronet-climb/milestone.toml) | Mt. Coronet: Route 208 up to Spear Pillar | P0 | both | 59215 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
 | [50-spear-pillar-dialga](diamond/50-spear-pillar-dialga/milestone.toml) | Spear Pillar: Galactic, Cyrus and Dialga (Diamond) | P0 | diamond | 44087 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
-| [51-coronet-exit-valor-lakefront](diamond/51-coronet-exit-valor-lakefront/milestone.toml) | Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens | P0 | both | 9000 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | planned |
-| [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 15000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
-| [53-sunyshore-gym-volkner](diamond/53-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | both | 26000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
-| [54-sunyshore-jasmine-waterfall](diamond/54-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | both | 5000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
+| [51-coronet-exit-valor-lakefront](diamond/51-coronet-exit-valor-lakefront/milestone.toml) | Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens | P0 | both | 8304 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | passing |
+| [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 14675 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
+| [53-sunyshore-gym-volkner](diamond/53-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | both | 39723 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
+| [54-sunyshore-jasmine-waterfall](diamond/54-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | both | 2707 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
 | [55-route223-victory-road](diamond/55-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the Pokemon League | P0 | both | 35000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE | planned |
 | [56-league-lobby-rival-guard](diamond/56-league-lobby-rival-guard/milestone.toml) | Pokemon League lobby: last rival battle, badge check | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_ENTRANCE | planned |
 | [57-e4-aaron](diamond/57-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK | planned |
@@ -1782,7 +1782,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0x15E, 0x29B; vars 0x4112=1
-- frames: estimate 9000, budget 40000
+- frames: estimate 8304, budget 40000
 - refs: scr_seq 0230 @0x0FB0; scr_seq 0230 @0x0FEC; scr_seq 0230 @0x0FF4; zone_event 0217 warp 0; zone_event 0212 warp 0; zone_event 0212 object 0; zone_event 0211 warp 0; zone_event 0211 object 0; zone_event 0211 object 1; zone_event 0210 warp 0; map_header.c:294; maps.h:340; map_header.c:420; scr_seq 0831 @0x0005; scr_seq 0381 @0x0035; scr_seq 0381 @0x0088; scr_seq 0381 @0x008C; zone_event 0321 object 9; zone_event 0321 coord 0; scr_seq 0381 @0x041E; msg 0354 #11
 - notes: Galactic grunts on 6F/5F are hidden by 0x2AD (scr_seq 0230 @0x0FF4). Spear Pillar..4F maps are fly FALSE; the North Mountainside is fly TRUE (map_header.c:294). Estimate: 4 floor walks ~3500 + Fly ~1500 + Valor walk ~4000.
 
@@ -1792,7 +1792,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0x162, 0x29F, 0x257, 0x9BE; vars 0x407E=1
-- frames: estimate 15000, budget 22500
+- frames: estimate 14675, budget 22500
 - refs: zone_event 0321 coord 0; maps.h:399; map_header.c:479; zone_event 0380 warp 0; zone_event 0380 object 4; zone_event 0380 object 5; zone_event 0380 object 6; zone_event 0380 object 7; zone_event 0380 object 9; zone_event 0380 object 10; scr_seq 0446 @0x0069; scr_seq 0446 @0x0073; zone_event 0383 warp 1; scr_seq 0613 @0x000B; scr_seq 0150 @0x004E; scr_seq 0150 @0x0201; scr_seq 0150 @0x0245; scr_seq 0150 @0x0297; scr_seq 0150 @0x029F; zone_event 0149 warp 10; zone_event 0149 object 18; scr_seq 0629 @0x0006; scr_seq 0166 @0x0012; scr_seq 0166 @0x0050; scr_seq 0166 @0x0082; zone_event 0163 object 2; zone_event 0163 warp 0; scr_seq 0165 @0x004C; scr_seq 0165 @0x00F6; scr_seq 0165 @0x00FA; scr_seq 0150 @0x04C0; scr_seq 0150 @0x04C8; scr_seq 0150 @0x055E; msg 0153 #0; msg 0153 #3; msg 0165 #1
 - notes: Version: Route 222 wild encounters differ (d_enc_data/p_enc_data 0170, dp_script.py version-diff); no script differs. Sight trainers near the road: Nicola (771,777) S 2, Trey (751,782) E 6, Holly (787,788) N 2, Marc (808,781) E 3, Conner (812,781) W 3, Luther (814,785) S 2 (zone_event 0380), all lv 37-43. Do NOT walk Sunyshore row z=743 x=853..857 (Jasmine coord 0 would spend var 0x407E without HM07, see 54).
 
@@ -1802,7 +1802,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; 8 badges; badge BADGE_BEACON; >= 1 battles; flags set 0xB6, 0x669, 0x66D, 0x67D, 0x67E, 0x67F, 0x69B, 0x6A5, 0x6A8; 2 save check(s)
-- frames: estimate 26000, budget 39000
+- frames: estimate 39723, budget 70000
 - refs: maps.h:158; zone_event 0153 warp 0; zone_event 0153 warp 1; zone_event 0153 coord 0; zone_event 0153 coord 1; zone_event 0153 object 1; scr_seq 0152 @0x0018; scr_seq 0152 @0x001D; zone_event 0154 coord 0; zone_event 0154 coord 1; zone_event 0154 coord 2; zone_event 0154 warp 1; zone_event 0154 object 0; zone_event 0154 object 1; zone_event 0154 object 2; scr_seq 0153 @0x001D; scr_seq 0153 @0x0022; zone_event 0155 coord 0; zone_event 0155 coord 1; zone_event 0155 coord 2; zone_event 0155 coord 3; zone_event 0155 object 0; zone_event 0155 objects 1-4; scr_seq 0154 @0x0027; scr_seq 0154 @0x0053; trdata.json #320; scr_seq 0154 @0x0079; scr_seq 0154 @0x0081; scr_seq 0154 @0x009D; scr_seq 0154 @0x00B6; scr_seq 0154 @0x00D7; scr_seq 0154 @0x00DB; msg 0156 #2
 - notes: Route: Platinum 47's (tests/e2e/tools/pt_gym.py sunyshore), the same rooms, buttons (zone_event 0153-0155 coords) and gear script commands (InitSunyshoreGym / RotateSunyshoreGymGear) [INFERENCE: the same gear tables]. Volkner (trdata.json #320): RAICHU 46, AMBIPOM 47, OCTILLERY 47, LUXRAY 49 (Sitrus); Dragon Claw OHKOs. His trainer flag 0x690 is not set by the script. Gym trainers (all lv 41-44): Tiera #344 (6,4) E 4; Forrest #341 (4,5) N 3, Jerry #301 (14,11) S 2, Meghan #331 (12,4) S 1; Destiny #285 (4,23) E 3, Preston #302 (3,3) S 2, Lonnie #303 (16,23) S 2, Zachery #281 (21,10) W 1.
 
@@ -1812,7 +1812,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0xB5, 0x9A; vars 0x407E=2; 1 save check(s)
-- frames: estimate 5000, budget 7500
+- frames: estimate 2707, budget 7500
 - refs: zone_event 0149 warp 12; zone_event 0149 coord 0; zone_event 0149 object 9; scr_seq 0150 @0x0073; scr_seq 0150 @0x0075; scr_seq 0150 @0x011E; scr_seq 0150 @0x0125; scr_seq 0150 @0x0146; scr_seq 0150 @0x0155; scr_seq 0150 @0x0159; scr_seq 0150 @0x01B4; scr_seq 0150 @0x01BC; msg 0153 #4; msg 0153 #6; msg 0153 #7; items.h:651
 - notes: Coord 0 (853..857,743) fires once while var 0x407E==1 and sets it to 2 even without the badge (scr_seq 0150 @0x0075, msg 0153 #5); then HM07 is only given by talking to Jasmine object 9 (857,741), script #9 (@0x01B4: !0x9A and BADGE_BEACON -> L_0146). 52/53 must keep off that row.
 
@@ -2135,7 +2135,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Pearl
 
 <!-- plan.py:begin pearl -->
-### Story chain: 61 milestones, ~1243637 frames estimated
+### Story chain: 61 milestones, ~1254046 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -2188,10 +2188,10 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [48-galactic-hq-saturn-free-lake-trio](diamond/48-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn, the lake trio freed, out of the HQ | P0 | both | 9153 | prev + `lab.recipe` | MAP_VEILSTONE | passing |
 | [49-mt-coronet-climb](diamond/49-mt-coronet-climb/milestone.toml) | Mt. Coronet: Route 208 up to Spear Pillar | P0 | both | 59215 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
 | [50-spear-pillar-palkia](pearl/50-spear-pillar-palkia/milestone.toml) | Spear Pillar: Galactic, Cyrus and Palkia (Pearl) | P0 | pearl | 30000 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | planned |
-| [51-coronet-exit-valor-lakefront](diamond/51-coronet-exit-valor-lakefront/milestone.toml) | Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens | P0 | both | 9000 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | planned |
-| [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 15000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
-| [53-sunyshore-gym-volkner](diamond/53-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | both | 26000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
-| [54-sunyshore-jasmine-waterfall](diamond/54-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | both | 5000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
+| [51-coronet-exit-valor-lakefront](diamond/51-coronet-exit-valor-lakefront/milestone.toml) | Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens | P0 | both | 8304 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | passing |
+| [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 14675 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
+| [53-sunyshore-gym-volkner](diamond/53-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | both | 39723 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
+| [54-sunyshore-jasmine-waterfall](diamond/54-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | both | 2707 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
 | [55-route223-victory-road](diamond/55-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the Pokemon League | P0 | both | 35000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE | planned |
 | [56-league-lobby-rival-guard](diamond/56-league-lobby-rival-guard/milestone.toml) | Pokemon League lobby: last rival battle, badge check | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_ENTRANCE | planned |
 | [57-e4-aaron](diamond/57-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK | planned |
@@ -2697,7 +2697,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VALOR_LAKEFRONT; flags set 0x15E, 0x29B; vars 0x4112=1
-- frames: estimate 9000, budget 40000
+- frames: estimate 8304, budget 40000
 - refs: scr_seq 0230 @0x0FB0; scr_seq 0230 @0x0FEC; scr_seq 0230 @0x0FF4; zone_event 0217 warp 0; zone_event 0212 warp 0; zone_event 0212 object 0; zone_event 0211 warp 0; zone_event 0211 object 0; zone_event 0211 object 1; zone_event 0210 warp 0; map_header.c:294; maps.h:340; map_header.c:420; scr_seq 0831 @0x0005; scr_seq 0381 @0x0035; scr_seq 0381 @0x0088; scr_seq 0381 @0x008C; zone_event 0321 object 9; zone_event 0321 coord 0; scr_seq 0381 @0x041E; msg 0354 #11
 - notes: Galactic grunts on 6F/5F are hidden by 0x2AD (scr_seq 0230 @0x0FF4). Spear Pillar..4F maps are fly FALSE; the North Mountainside is fly TRUE (map_header.c:294). Estimate: 4 floor walks ~3500 + Fly ~1500 + Valor walk ~4000.
 
@@ -2707,7 +2707,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0x162, 0x29F, 0x257, 0x9BE; vars 0x407E=1
-- frames: estimate 15000, budget 22500
+- frames: estimate 14675, budget 22500
 - refs: zone_event 0321 coord 0; maps.h:399; map_header.c:479; zone_event 0380 warp 0; zone_event 0380 object 4; zone_event 0380 object 5; zone_event 0380 object 6; zone_event 0380 object 7; zone_event 0380 object 9; zone_event 0380 object 10; scr_seq 0446 @0x0069; scr_seq 0446 @0x0073; zone_event 0383 warp 1; scr_seq 0613 @0x000B; scr_seq 0150 @0x004E; scr_seq 0150 @0x0201; scr_seq 0150 @0x0245; scr_seq 0150 @0x0297; scr_seq 0150 @0x029F; zone_event 0149 warp 10; zone_event 0149 object 18; scr_seq 0629 @0x0006; scr_seq 0166 @0x0012; scr_seq 0166 @0x0050; scr_seq 0166 @0x0082; zone_event 0163 object 2; zone_event 0163 warp 0; scr_seq 0165 @0x004C; scr_seq 0165 @0x00F6; scr_seq 0165 @0x00FA; scr_seq 0150 @0x04C0; scr_seq 0150 @0x04C8; scr_seq 0150 @0x055E; msg 0153 #0; msg 0153 #3; msg 0165 #1
 - notes: Version: Route 222 wild encounters differ (d_enc_data/p_enc_data 0170, dp_script.py version-diff); no script differs. Sight trainers near the road: Nicola (771,777) S 2, Trey (751,782) E 6, Holly (787,788) N 2, Marc (808,781) E 3, Conner (812,781) W 3, Luther (814,785) S 2 (zone_event 0380), all lv 37-43. Do NOT walk Sunyshore row z=743 x=853..857 (Jasmine coord 0 would spend var 0x407E without HM07, see 54).
 
@@ -2717,7 +2717,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; 8 badges; badge BADGE_BEACON; >= 1 battles; flags set 0xB6, 0x669, 0x66D, 0x67D, 0x67E, 0x67F, 0x69B, 0x6A5, 0x6A8; 2 save check(s)
-- frames: estimate 26000, budget 39000
+- frames: estimate 39723, budget 70000
 - refs: maps.h:158; zone_event 0153 warp 0; zone_event 0153 warp 1; zone_event 0153 coord 0; zone_event 0153 coord 1; zone_event 0153 object 1; scr_seq 0152 @0x0018; scr_seq 0152 @0x001D; zone_event 0154 coord 0; zone_event 0154 coord 1; zone_event 0154 coord 2; zone_event 0154 warp 1; zone_event 0154 object 0; zone_event 0154 object 1; zone_event 0154 object 2; scr_seq 0153 @0x001D; scr_seq 0153 @0x0022; zone_event 0155 coord 0; zone_event 0155 coord 1; zone_event 0155 coord 2; zone_event 0155 coord 3; zone_event 0155 object 0; zone_event 0155 objects 1-4; scr_seq 0154 @0x0027; scr_seq 0154 @0x0053; trdata.json #320; scr_seq 0154 @0x0079; scr_seq 0154 @0x0081; scr_seq 0154 @0x009D; scr_seq 0154 @0x00B6; scr_seq 0154 @0x00D7; scr_seq 0154 @0x00DB; msg 0156 #2
 - notes: Route: Platinum 47's (tests/e2e/tools/pt_gym.py sunyshore), the same rooms, buttons (zone_event 0153-0155 coords) and gear script commands (InitSunyshoreGym / RotateSunyshoreGymGear) [INFERENCE: the same gear tables]. Volkner (trdata.json #320): RAICHU 46, AMBIPOM 47, OCTILLERY 47, LUXRAY 49 (Sitrus); Dragon Claw OHKOs. His trainer flag 0x690 is not set by the script. Gym trainers (all lv 41-44): Tiera #344 (6,4) E 4; Forrest #341 (4,5) N 3, Jerry #301 (14,11) S 2, Meghan #331 (12,4) S 1; Destiny #285 (4,23) E 3, Preston #302 (3,3) S 2, Lonnie #303 (16,23) S 2, Zachery #281 (21,10) W 1.
 
@@ -2727,7 +2727,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_SUNYSHORE; flags set 0xB5, 0x9A; vars 0x407E=2; 1 save check(s)
-- frames: estimate 5000, budget 7500
+- frames: estimate 2707, budget 7500
 - refs: zone_event 0149 warp 12; zone_event 0149 coord 0; zone_event 0149 object 9; scr_seq 0150 @0x0073; scr_seq 0150 @0x0075; scr_seq 0150 @0x011E; scr_seq 0150 @0x0125; scr_seq 0150 @0x0146; scr_seq 0150 @0x0155; scr_seq 0150 @0x0159; scr_seq 0150 @0x01B4; scr_seq 0150 @0x01BC; msg 0153 #4; msg 0153 #6; msg 0153 #7; items.h:651
 - notes: Coord 0 (853..857,743) fires once while var 0x407E==1 and sets it to 2 even without the badge (scr_seq 0150 @0x0075, msg 0153 #5); then HM07 is only given by talking to Jasmine object 9 (857,741), script #9 (@0x01B4: !0x9A and BADGE_BEACON -> L_0146). 52/53 must keep off that row.
 

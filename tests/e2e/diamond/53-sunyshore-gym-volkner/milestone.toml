@@ -2,10 +2,9 @@
 # Start: Sunyshore Gym room 1 (8,14) -> end: back out at the Sunyshore gym door (845,748), BADGE_BEACON, TM57 (54's start).
 
 title = "Sunyshore Gym: Volkner and the Beacon Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 26000
+estimate = 39723
 refs = [
   "maps.h:158",
   "zone_event 0153 warp 0",
@@ -46,9 +45,10 @@ notes = "Route: Platinum 47's (tests/e2e/tools/pt_gym.py sunyshore), the same ro
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 39000
+frames = 70000
 
 [[step]]
 do = "walk_to"

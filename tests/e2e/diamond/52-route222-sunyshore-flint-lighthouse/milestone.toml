@@ -2,10 +2,9 @@
 # and Flint leaving the gym door. Start: Valor Lakefront west of the old guard tile -> end: Sunyshore, Flint gone.
 
 title = "Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 14675
 refs = [
   "zone_event 0321 coord 0",
   "maps.h:399",
