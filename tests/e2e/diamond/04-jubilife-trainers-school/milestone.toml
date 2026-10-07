@@ -32,6 +32,7 @@ notes = "Optional talk-only school trainers: TRAINER_SCHOOL_KID_M_HARRISON (trda
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 31200

@@ -169,6 +169,50 @@ static unsigned e2e_tile(void *ctx, int x, int z) {
     return PC_E2E_TILE_KNOWN | behavior | (sub_0204A6B4(fs, x, z) ? PC_E2E_TILE_COLLISION : 0);
 }
 
+/*
+ * The step layers (pc_e2e_steps): one step answered by the terrain half of
+ * the player's own collision check. sub_02056C0C (arm9/asm/unk_020557F4.s,
+ * Platinum's PlayerAvatar collision flags) asks sub_0204A7C8 for the step
+ * from the avatar's position vector to the next tile: Platinum's
+ * TerrainCollisionManager_WillPlayerCollide, i.e. the height the tile gives
+ * an object at the current height (sub_0204A708, the terrain provider's
+ * getHeight at fs+0x58: the plate nearest that height, which is how a
+ * bridge deck and the path beneath it are told apart) differing by 20 units
+ * or more, the dynamic map features (sub_0205CE00: gym floors, water
+ * levels), else the tile's collision bit. Behaviors that turn a step away
+ * (water without Surf, one-way tiles) and other objects are left to the
+ * planner, which reads them from the grid. A ledge (JUMP_* 0x38..0x3B, its
+ * direction) is jumped: two tiles, onto a tile without collision.
+ */
+extern fx32 sub_0204A708(FieldSystem *fieldSystem, fx32 y, fx32 x, fx32 z, u8 *heightSource);
+extern BOOL sub_0204A7C8(FieldSystem *fieldSystem, VecFx32 *pos, s32 x, s32 z, s8 *verticalDirection);
+
+static int e2e_step(void *ctx, int x, int z, int y, int dir, int *ty) {
+    static const s8 dx[4] = {0, 0, -1, 1}, dz[4] = {-1, 1, 0, 0};
+    static const u8 jump[4] = {0x3A, 0x3B, 0x39, 0x38}; /* JUMP_NORTH, _SOUTH, _WEST, _EAST */
+    FieldSystem *fs = ctx;
+    const int nx = x + dx[dir], nz = z + dz[dir];
+    VecFx32 pos;
+    u8 source;
+    s8 vertical;
+    const u8 behavior = GetMetatileBehavior(fs, nx, nz);
+
+    if (behavior == 0xFF) return 0;
+    if (behavior == jump[dir]) {
+        const int lx = nx + dx[dir], lz = nz + dz[dir];
+
+        if (lx < 0 || lz < 0 || GetMetatileBehavior(fs, lx, lz) == 0xFF || sub_0204A6B4(fs, lx, lz)) return 0;
+        *ty = sub_0204A708(fs, y, lx * 16 * FX32_ONE + 8 * FX32_ONE, lz * 16 * FX32_ONE + 8 * FX32_ONE, &source);
+        return 2;
+    }
+    pos.x = x * 16 * FX32_ONE + 8 * FX32_ONE;
+    pos.y = y;
+    pos.z = z * 16 * FX32_ONE + 8 * FX32_ONE;
+    if (sub_0204A7C8(fs, &pos, nx, nz, &vertical)) return 0;
+    *ty = sub_0204A708(fs, y, nx * 16 * FX32_ONE + 8 * FX32_ONE, nz * 16 * FX32_ONE + 8 * FX32_ONE, &source);
+    return 1;
+}
+
 static void e2e_frame(FieldSystem *fs, int ready) {
     LocalMapObject *player, *obj = NULL;
     s32 i = 0;
@@ -184,7 +228,17 @@ static void e2e_frame(FieldSystem *fs, int ready) {
     pc_e2e_field(1, (unsigned)fs->location->mapId, (int)PlayerAvatar_GetXCoord(fs->playerAvatar),
                  (int)PlayerAvatar_GetZCoord(fs->playerAvatar), player != NULL ? (int)MapObject_GetYCoord(player) : 0,
                  PlayerAvatar_GetFacingDirection(fs->playerAvatar), PlayerAvatar_GetUnk14(fs->playerAvatar));
-    if (ready && FS_WORD(fs, 0x58) != 0) pc_e2e_grid(e2e_tile, fs);
+    if (ready && FS_WORD(fs, 0x58) != 0) {
+        if (player != NULL) {
+            const int px = (int)PlayerAvatar_GetXCoord(fs->playerAvatar), pz = (int)PlayerAvatar_GetZCoord(fs->playerAvatar);
+            u8 source;
+            const fx32 y = sub_0204A708(fs, MapObject_GetPositionVectorYCoord(player), px * 16 * FX32_ONE + 8 * FX32_ONE,
+                                        pz * 16 * FX32_ONE + 8 * FX32_ONE, &source);
+
+            pc_e2e_steps(e2e_step, fs, y);
+        }
+        pc_e2e_grid(e2e_tile, fs);
+    }
     while (MapObjectManager_GetNextObjectWithFlagFromIndex(fs->mapObjectManager, &obj, &i, MAPOBJECTFLAG_ACTIVE)) {
         if (obj == player) continue;
         pc_e2e_object((int)MapObject_GetXCoord(obj), (int)MapObject_GetZCoord(obj), MapObject_GetID(obj),

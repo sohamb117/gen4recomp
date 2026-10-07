@@ -19,7 +19,7 @@
 #include <stdint.h>
 
 #define NP_E2E_MAGIC 0x31453245u /* 'E2E1' */
-#define NP_E2E_VERSION 2
+#define NP_E2E_VERSION 3
 
 /* The terrain window: GRID x GRID tiles, the player at (GRID/2, GRID/2). */
 #define NP_E2E_GRID 64
@@ -46,6 +46,18 @@ enum np_e2e_ui {
 #define NP_E2E_TILE_BEHAVIOR 0x00FFu  /* the map's tile behavior byte */
 #define NP_E2E_TILE_COLLISION 0x0100u /* terrain collision bit set */
 #define NP_E2E_TILE_KNOWN 0x8000u     /* the tile is on a loaded map block */
+
+/* v3, np_e2e_block.steps[][]: the game's own step check over the window,
+ * by layer. A tile can hold more than one place to stand (a bridge deck over
+ * the path beneath it, a ledge of a gym's floor): each is a layer, at most
+ * NP_E2E_LAYERS per tile, lowest first, its height in heights[][] (fx32
+ * units, 16 per tile). Filled by a flood from the player over the moves the
+ * movement code allows, carrying the height the way a step does. */
+#define NP_E2E_LAYERS 2
+#define NP_E2E_STEP_LAYER 0x8000u   /* the layer exists */
+#define NP_E2E_STEP_DIRS 0x000Fu    /* bit d: a step in direction d (0 up, 1 down, 2 left, 3 right) is allowed */
+#define NP_E2E_STEP_TARGET 0x00F0u  /* bit 4+d: the step lands on layer 1 of its tile (else layer 0) */
+#define NP_E2E_STEP_JUMP 0x0F00u    /* bit 8+d: the step is a ledge jump, landing two tiles away */
 
 typedef struct np_e2e_object {
     int16_t x, z;      /* tile */
@@ -93,6 +105,12 @@ typedef struct np_e2e_block {
     uint32_t nparty;        /* party[] entries */
     np_e2e_mon battlers[NP_E2E_MAX_BATTLERS]; /* by battler: 0 and 2 the player's side, 1 and 3 the foe's */
     np_e2e_mon party[NP_E2E_MAX_PARTY]; /* menu_battler's party in the battle party screen's order */
+    /* v3: the step layers (NP_E2E_STEP_*), refilled with grid[] by games that
+     * report them (D/P); steps_seq 0: none, plan from grid[] alone. */
+    uint32_t steps_seq;
+    int32_t player_height; /* the player's layer: its height (as heights[][]) */
+    uint16_t steps[NP_E2E_LAYERS][NP_E2E_GRID * NP_E2E_GRID];
+    int16_t heights[NP_E2E_LAYERS][NP_E2E_GRID * NP_E2E_GRID];
 } np_e2e_block;
 
 #endif /* NP_E2E_H */

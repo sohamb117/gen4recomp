@@ -515,6 +515,11 @@ class Terrain:
         # flip as the window slides (unknown tiles are hoped passable) stop swinging between two tiles
         self.visits = {}
         self.cells = {}          # (x, z) -> cell, kept across probes of the same map
+        # The probe's step layers (D/P): (x, z) -> {height: {d: (tx, tz, height or None)}}, the steps the game's own
+        # movement check allows from each place to stand (a bridge deck and the path under it are two), and the
+        # player's height. Tiles without layers (Platinum, or not reached) are planned from the cells alone.
+        self.layers = {}
+        self.height = None
         self.objects = set()
         self.hm_objects = set()  # cut trees and Rock Smash rocks, when hm
         # exit mats and the direction that leaves through them (map_tile_behaviors.h)
@@ -538,6 +543,10 @@ class Terrain:
                 c = p.grid[row + gx]
                 if c & TILE_KNOWN:
                     self.cells[(p.grid_x0 + gx, p.grid_z0 + gz)] = c
+        lay = p.layers()
+        if lay:
+            self.layers.update(lay)
+        self.height = p.player_height if lay and p.player_height in lay.get((p.x, p.z), {}) else None
         self.objects = {(o[0], o[1]) for o in p.objects}
         self.hm_objects = {(o[0], o[1]) for o in p.objects if self.hm and o[3] in (GFX_ROCK_SMASH, GFX_CUT_TREE)}
 
@@ -558,8 +567,9 @@ class Terrain:
             return "climb"
         return None
 
-    def passable(self, x, z, d, goal):
-        """Can the player step into (x, z) moving in direction d? Unknown tiles are hoped passable."""
+    def passable(self, x, z, d, goal, terrain=False):
+        """Can the player step into (x, z) moving in direction d? Unknown tiles are hoped passable. With terrain the
+        game's own check already allowed the step (step layers), so the collision bit is not asked again."""
         if (x - DIR_DELTA[d][0], z - DIR_DELTA[d][1], d) in self.blocked_edges:
             return False
         if (x, z) == goal:
@@ -574,7 +584,7 @@ class Terrain:
         if c is None:
             return True
         beh = c & TILE_BEHAVIOR
-        if c & TILE_COLLISION or beh in self.water or beh == WATERFALL or beh in self.slopes:
+        if (c & TILE_COLLISION and not terrain) or beh in self.water or beh == WATERFALL or beh in self.slopes:
             return False
         if beh in self.block_into and d in self.block_into[beh]:
             return False
@@ -582,38 +592,64 @@ class Terrain:
             return False  # handled as a jump edge
         return True
 
-    def neighbours(self, x, z, goal):
+    def _layer(self, x, z):
+        """The height of (x, z)'s only layer; None for no layers or several (the planner can't say which)."""
+        lay = self.layers.get((x, z))
+        return next(iter(lay)) if lay and len(lay) == 1 else None
+
+    def _step_cost(self, nx, nz, d):
+        c = self.cells.get((nx, nz))
+        extra = self.visits.get((nx, nz), 0) * VISIT_COST
+        if self.field_move(nx, nz, d) in ("object", "climb"):
+            return FIELD_MOVE_COST + extra
+        return extra + (GRASS_COST if c is not None and (c & TILE_BEHAVIOR) in self.grass else 1)
+
+    def neighbours(self, x, z, h, goal):
+        """(d, x, z, height, cost) for each step from (x, z) standing at height h (None: unknown layer)."""
+        moves = self.layers.get((x, z), {}).get(h) if h is not None else None
         for d, (dx, dz) in enumerate(DIR_DELTA):
             nx, nz = x + dx, z + dz
             c = self.cells.get((nx, nz))
+            if moves is not None:
+                # the game's own verdict on the terrain (heights, bridges, collision); behaviors and objects here
+                if (x, z, d) in self.blocked_edges:
+                    continue
+                if d in moves:
+                    tx, tz, th = moves[d]
+                    if (tx, tz) != (nx, nz):  # a ledge
+                        if (nx, nz) != goal and (tx, tz) not in self.objects:
+                            yield d, tx, tz, th, 2 + self.visits.get((tx, tz), 0) * VISIT_COST
+                        continue
+                    if self.passable(nx, nz, d, goal, terrain=True):
+                        yield d, nx, nz, th, self._step_cost(nx, nz, d)
+                elif (nx, nz) == goal or self.field_move(nx, nz, d) in ("climb", "waterfall"):
+                    # into a goal the terrain refuses (a door in a wall warps), or up a climb / waterfall
+                    yield d, nx, nz, self._layer(nx, nz), self._step_cost(nx, nz, d)
+                continue
             if c is not None and (c & TILE_BEHAVIOR) in self.jump and (nx, nz) != goal:
                 if self.jump[c & TILE_BEHAVIOR] == d and (x, z, d) not in self.blocked_edges:
                     lx, lz = nx + dx, nz + dz  # a ledge: over it, landing one tile beyond
                     if (lx, lz) not in self.objects:
-                        yield d, lx, lz, 2 + self.visits.get((lx, lz), 0) * VISIT_COST
+                        yield d, lx, lz, self._layer(lx, lz), 2 + self.visits.get((lx, lz), 0) * VISIT_COST
                 continue
             if self.passable(nx, nz, d, goal):
-                c = self.cells.get((nx, nz))
-                fm = self.field_move(nx, nz, d)
-                extra = self.visits.get((nx, nz), 0) * VISIT_COST
-                if fm in ("object", "climb"):
-                    yield d, nx, nz, FIELD_MOVE_COST + extra
-                else:
-                    yield d, nx, nz, extra + (GRASS_COST if c is not None and (c & TILE_BEHAVIOR) in self.grass else 1)
+                yield d, nx, nz, self._layer(nx, nz), self._step_cost(nx, nz, d)
 
     def path(self, start, goal, limit=20000):
-        """A* over tiles; returns the list of first-step directions, or None."""
+        """A* over tiles (and their layers, where the probe has them) from start at the player's height;
+        returns the list of first-step directions, or None."""
         def h(x, z):
             return abs(x - goal[0]) + abs(z - goal[1])
 
-        openq = [(h(*start), 0, start, None)]
-        came = {start: None}
-        cost = {start: 0}
+        s0 = (start[0], start[1], self.height)
+        openq = [(h(*start), 0, s0)]
+        came = {s0: None}
+        cost = {s0: 0}
         n = 0
         while openq and n < limit:
-            _, g, cur, _ = heapq.heappop(openq)
+            _, g, cur = heapq.heappop(openq)
             n += 1
-            if cur == goal:
+            if cur[:2] == goal:
                 dirs = []
                 while came[cur] is not None:
                     prev, d = came[cur]
@@ -622,12 +658,13 @@ class Terrain:
                 return dirs[::-1]
             if g > cost.get(cur, 1 << 30):
                 continue
-            for d, nx, nz, step_cost in self.neighbours(cur[0], cur[1], goal):
+            for d, nx, nz, nh, step_cost in self.neighbours(cur[0], cur[1], cur[2], goal):
                 ng = g + step_cost
-                if ng < cost.get((nx, nz), 1 << 30):
-                    cost[(nx, nz)] = ng
-                    came[(nx, nz)] = (cur, d)
-                    heapq.heappush(openq, (ng + h(nx, nz), ng, (nx, nz), d))
+                nxt = (nx, nz, nh)
+                if ng < cost.get(nxt, 1 << 30):
+                    cost[nxt] = ng
+                    came[nxt] = (cur, d)
+                    heapq.heappush(openq, (ng + h(nx, nz), ng, nxt))
         return None
 
 
@@ -821,6 +858,7 @@ def bot_walk_to(s, step, ctx):
             s.run(30)
             p = s.probe()
             terrain.cells.clear()
+            terrain.layers.clear()
             terrain.update(p)
             dirs = terrain.path((p.x, p.z), goal)
         if not dirs:

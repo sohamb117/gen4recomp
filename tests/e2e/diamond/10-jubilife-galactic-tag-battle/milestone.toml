@@ -31,6 +31,7 @@ notes = "Estimate: Pt 09 (8000) for the same walk + scene. A tag battle: one mov
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 30100

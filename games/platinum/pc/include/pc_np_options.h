@@ -83,6 +83,12 @@ void pc_np_camera_end(struct Camera *camera);
 int pc_e2e_on(void);
 void pc_e2e_field(int field, unsigned map, int x, int z, int y, unsigned facing, unsigned move_state);
 void pc_e2e_grid(unsigned (*cell)(void *ctx, int x, int z), void *ctx);
+/* The step layers (np_e2e.h NP_E2E_STEP_*), refilled with the grid: a flood
+ * from the player's tile at height y (fx32) over step(ctx, x, z, y, dir,
+ * &ty), which answers the game's movement check for one step from (x, z) at
+ * height y in direction dir: 0 blocked, 1 a step to the next tile, 2 a ledge
+ * jump to the tile beyond; *ty is the height it lands at. */
+void pc_e2e_steps(int (*step)(void *ctx, int x, int z, int y, int dir, int *ty), void *ctx, int y);
 void pc_e2e_object(int x, int z, unsigned local_id, unsigned gfx);
 void pc_e2e_end_frame(void);
 void pc_e2e_ui(unsigned kind, unsigned arg);

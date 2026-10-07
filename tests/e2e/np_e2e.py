@@ -30,6 +30,8 @@ E2E_MAX_BATTLERS = 4
 E2E_MAX_PARTY = 6
 UI_NONE, UI_BATTLE_MENU, UI_BATTLE_PARTY = 0, 1, 2
 TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN = 0x00FF, 0x0100, 0x8000
+E2E_LAYERS = 2
+STEP_LAYER, STEP_DIRS, STEP_TARGET, STEP_JUMP = 0x8000, 0x000F, 0x00F0, 0x0F00
 _HEAD = struct.Struct("<5I3i5I2i2I")
 _OBJ = struct.Struct("<hhHH")
 _BATTLE = struct.Struct("<4I")
@@ -99,6 +101,47 @@ class Probe:
             self.battlers = [Mon(raw, off + i * _MON.size) for i in range(E2E_MAX_BATTLERS)]
             off += E2E_MAX_BATTLERS * _MON.size
             self.party = [Mon(raw, off + i * _MON.size) for i in range(min(nparty, E2E_MAX_PARTY))]
+            off += E2E_MAX_PARTY * _MON.size
+        # v3: the game's own step check by layer (np_e2e.h NP_E2E_STEP_*); steps_seq 0 (Platinum) or a v2
+        # guest: none
+        self.steps_seq, self.player_height, self.steps, self.heights = 0, 0, None, None
+        n = E2E_LAYERS * E2E_GRID * E2E_GRID
+        if self.version >= 3 and len(raw) >= off + 8 + n * 4:
+            self.steps_seq, self.player_height = struct.unpack_from("<Ii", raw, off)
+            off += 8
+            if self.steps_seq:
+                self.steps = struct.unpack_from("<%dH" % n, raw, off)
+                self.heights = struct.unpack_from("<%dh" % n, raw, off + n * 2)
+
+    def layers(self):
+        """{(x, z): {height: {d: (tx, tz, target height or None off the window)}}} from the step layers, or None.
+
+        Every layer the flood from the player reached, with the steps the game's movement check allows from it
+        (a ledge's lands two tiles away)."""
+        if not self.steps:
+            return None
+        g = E2E_GRID * E2E_GRID
+        out = {}
+        for l in range(E2E_LAYERS):
+            base = l * g
+            for cell in range(g):
+                st = self.steps[base + cell]
+                if not st & STEP_LAYER:
+                    continue
+                gx, gz = cell % E2E_GRID, cell // E2E_GRID
+                x, z = self.grid_x0 + gx, self.grid_z0 + gz
+                moves = {}
+                for d in range(4):
+                    if not st & (1 << d):
+                        continue
+                    r = 2 if st & (0x100 << d) else 1
+                    tgx, tgz = gx + DIR_DELTA[d][0] * r, gz + DIR_DELTA[d][1] * r
+                    th = None
+                    if 0 <= tgx < E2E_GRID and 0 <= tgz < E2E_GRID:
+                        th = self.heights[(1 if st & (0x10 << d) else 0) * g + tgz * E2E_GRID + tgx]
+                    moves[d] = (x + DIR_DELTA[d][0] * r, z + DIR_DELTA[d][1] * r, th)
+                out.setdefault((x, z), {})[self.heights[base + cell]] = moves
+        return out
 
     @property
     def battle_fresh(self):
