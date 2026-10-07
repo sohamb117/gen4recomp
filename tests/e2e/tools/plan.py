@@ -117,7 +117,7 @@ def section(game, dirs, kind):
             f"prev + `{recipe}`" if st.get("from") else f"`{recipe}`")
         rows.append(f"| [{d.name}]({rel}/milestone.toml) | {m['title']} | {m['priority']}"
                      + (f" | {version}" if game != "platinum" else "")
-                     + f" | {est} | {src} | {ex.get('map', '-')} | {m['status']} |")
+                     + f" | {est} | {src} | {ex.get('map', '-')} | {m.get('status', 'passing')} |")
         st_txt = ", ".join(f"{n} {v}" for v, n in sorted(state.items())) or "none"
         tr = trainers(m.get("refs", []))
         details.append("\n".join([
