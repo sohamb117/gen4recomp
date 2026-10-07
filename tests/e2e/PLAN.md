@@ -1896,7 +1896,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 25 milestones, ~141000 frames estimated
+### Side systems: 25 milestones, ~141273 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -1910,7 +1910,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [96-battle-park-battle-tower](diamond/96-battle-park-battle-tower/milestone.toml) | Battle Park: Battle Tower single rooms, first set | P1 | both | 40000 | `start.recipe` | MAP_BATTLE_TOWER_LOBBY | planned |
 | [97-gts-offline](diamond/97-gts-offline/milestone.toml) | GTS: offline trade attempt returns to the field | P2 | both | 3500 | `start.recipe` | MAP_JUBLIFE_GLOBAL_TRADE_STATION | passing |
 | [98-jubilife-tv](diamond/98-jubilife-tv/milestone.toml) | Jubilife TV: rankings board (and producer interview) | P2 | both | 3000 | `start.recipe` | MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS | passing |
-| [99-vs-seeker](diamond/99-vs-seeker/milestone.toml) | Vs. Seeker: Youngster Tristan rematch on Route 202 | P1 | both | 3500 | `start.recipe` | MAP_ROUTE_202 | planned |
+| [99-vs-seeker](diamond/99-vs-seeker/milestone.toml) | Vs. Seeker: Youngster Tristan rematch on Route 202 | P1 | both | 3773 | `start.recipe` | MAP_ROUTE_202 | passing |
 | [100-poketch-apps](diamond/100-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | both | 3000 | `start.recipe` | MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM | passing |
 | [101-roamer-mesprit](diamond/101-roamer-mesprit/milestone.toml) | Roamer: Mesprit leaves Verity Cavern | P1 | both | 2500 | `start.recipe` | MAP_VERITY_CAVERN | passing |
 | [102-roamer-cresselia](diamond/102-roamer-cresselia/milestone.toml) | Roamer: Cresselia leaves Fullmoon Island | P2 | both | 2000 | `start.recipe` | MAP_FULLMOON_ISLAND_INTERIOR | passing |
@@ -2021,8 +2021,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; map MAP_ROUTE_202 166 816 FACE_UP; lab state lines: 2 flag, 1 item, 1 register-item, 2 var
 - party: SPECIES_EMPOLEON 40 (MOVE_SURF)
 - trainers: none
-- end state: map MAP_ROUTE_202; >= 1 battles; flags set 0x84D
-- frames: estimate 3500, budget 5300
+- end state: map MAP_ROUTE_202; >= 1 battles; flags set 0x84D; log /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 396/
+- frames: estimate 3773, budget 5700
 - refs: maps.h:347; zone_event 0328 object 0; trdata.json #1; trdata.json #765; zone_event 0338 coord 0; scr_seq 0403 @0x0295-0x02A5; scr_seq 0403 @0x02AB-0x02B1; scr_seq 0403 @0x030F-0x0315; games/diamond/include/constants/items.h:668; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:215-222; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:386-412; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:418-431; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:581-586; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:744; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:1167; games/diamond/arm9/asm/unk_0205F314.s:158-183; games/diamond/arm9/src/unk_0205EC84.c:83-89; games/diamond/arm9/src/unk_0205EC84.c:155-176; scr_seq 1040 @0x0E00
 
 #### diamond/100-poketch-apps — Poketch: receive the Coin Toss app
@@ -2831,7 +2831,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 25 milestones, ~141000 frames estimated
+### Side systems: 25 milestones, ~141273 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -2845,7 +2845,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [96-battle-park-battle-tower](diamond/96-battle-park-battle-tower/milestone.toml) | Battle Park: Battle Tower single rooms, first set | P1 | both | 40000 | `start.recipe` | MAP_BATTLE_TOWER_LOBBY | planned |
 | [97-gts-offline](diamond/97-gts-offline/milestone.toml) | GTS: offline trade attempt returns to the field | P2 | both | 3500 | `start.recipe` | MAP_JUBLIFE_GLOBAL_TRADE_STATION | passing |
 | [98-jubilife-tv](diamond/98-jubilife-tv/milestone.toml) | Jubilife TV: rankings board (and producer interview) | P2 | both | 3000 | `start.recipe` | MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS | passing |
-| [99-vs-seeker](diamond/99-vs-seeker/milestone.toml) | Vs. Seeker: Youngster Tristan rematch on Route 202 | P1 | both | 3500 | `start.recipe` | MAP_ROUTE_202 | planned |
+| [99-vs-seeker](diamond/99-vs-seeker/milestone.toml) | Vs. Seeker: Youngster Tristan rematch on Route 202 | P1 | both | 3773 | `start.recipe` | MAP_ROUTE_202 | passing |
 | [100-poketch-apps](diamond/100-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | both | 3000 | `start.recipe` | MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM | passing |
 | [101-roamer-mesprit](diamond/101-roamer-mesprit/milestone.toml) | Roamer: Mesprit leaves Verity Cavern | P1 | both | 2500 | `start.recipe` | MAP_VERITY_CAVERN | passing |
 | [102-roamer-cresselia](diamond/102-roamer-cresselia/milestone.toml) | Roamer: Cresselia leaves Fullmoon Island | P2 | both | 2000 | `start.recipe` | MAP_FULLMOON_ISLAND_INTERIOR | passing |
@@ -2956,8 +2956,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; map MAP_ROUTE_202 166 816 FACE_UP; lab state lines: 2 flag, 1 item, 1 register-item, 2 var
 - party: SPECIES_EMPOLEON 40 (MOVE_SURF)
 - trainers: none
-- end state: map MAP_ROUTE_202; >= 1 battles; flags set 0x84D
-- frames: estimate 3500, budget 5300
+- end state: map MAP_ROUTE_202; >= 1 battles; flags set 0x84D; log /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 396/
+- frames: estimate 3773, budget 5700
 - refs: maps.h:347; zone_event 0328 object 0; trdata.json #1; trdata.json #765; zone_event 0338 coord 0; scr_seq 0403 @0x0295-0x02A5; scr_seq 0403 @0x02AB-0x02B1; scr_seq 0403 @0x030F-0x0315; games/diamond/include/constants/items.h:668; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:215-222; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:386-412; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:418-431; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:581-586; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:744; games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:1167; games/diamond/arm9/asm/unk_0205F314.s:158-183; games/diamond/arm9/src/unk_0205EC84.c:83-89; games/diamond/arm9/src/unk_0205EC84.c:155-176; scr_seq 1040 @0x0E00
 
 #### pearl/100-poketch-apps — Poketch: receive the Coin Toss app

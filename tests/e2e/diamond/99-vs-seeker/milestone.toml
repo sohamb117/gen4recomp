@@ -2,10 +2,9 @@
 # beaten Youngster Tristan ready (50% roll); talk to him and win his level-1 rematch party.
 # Start: MAP_ROUTE_202 (166,816), Tristan at (166,813) facing S, already beaten. End: same map, rematch won.
 title = "Vs. Seeker: Youngster Tristan rematch on Route 202"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 3500
+estimate = 3773
 refs = [
   "maps.h:347",
   "zone_event 0328 object 0",
@@ -32,7 +31,17 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 5300
+frames = 5700
+# The roll is the first LCRandom() the game makes after CONTINUE: the title screen re-runs InitializeMainRNG
+# (ov52_021D757C; main.c:239-249: seed = RTC date/time + vblank count), the intro overlay 63 restores its own
+# draws' seed before that (ov63_021D8890.s:610-613, :738), and idling or walking on Route 202 draws nothing.
+# The harness boots on fixed frames, so the outcome is a function of PC_RTC alone: the port's default clock
+# gives LCRandom 0x08E9 (81: not ready, msg 486 #2, every time); this clock gives 0x6798 (20 < 50: ready).
+# Traced with tools/dp_lcrng_trace.py (lldb at ov05_021E17A0's LCRandom return, a watchpoint on the state).
+clock = "2009-03-22 21:00:00"
+
+[[shots]]
+frames = [1700, 1730, 2800]
 
 [[step]]
 do = "press"
@@ -43,8 +52,7 @@ note = "registered ITEM_VS__SEEKER (443): usable only at charge 100 (ov05_021E15
 do = "wait_frames"
 n = 240
 shot = "seeker"
-# PHASE2: the 50% roll is LCRNG-driven; if Tristan shows no '!' at this pinned start, shift the run's start
-# frame (or re-mint) until he does.
+# 240 frames on the field is free again (seeker done, no msg 486); Tristan's movement is 0x31 (ready).
 
 [[step]]
 do = "walk_to"
@@ -53,6 +61,11 @@ z = 814
 face = "up"
 interact = true
 note = "rematch id = next id of his row {1, 765, 766, 767} whose level flag is set: level 1 <-> flag 0x97F (sub_0205EEB8 unk_0205EC84.c:155-176, row ov05_021E1374.s:1167) -> TRAINER_YOUNGSTER_TRISTAN_2 (765), STARLY lv19"
+
+[[step]]
+do = "advance_text"
+max = 600
+note = "his rematch intro text ('Did you get better since we met?') runs before the battle; advance_text stops when it starts"
 
 [[step]]
 do = "wait_battle"
@@ -74,3 +87,5 @@ map = "MAP_ROUTE_202"
 battles = 1
 # the generic trainer script sets the fought id's flag: 0x550 + 765 (scr_seq 1040 @0x0E00 SetTrainerFlag 0x8004)
 flags = ["0x84D"]
+# the rematch party is TRISTAN_2 (trdata.json #765): STARLY lv19
+log = ["auto_battle: battler \\d slot \\d \\(move \\d+, \\d+ PP\\) on species 396"]
