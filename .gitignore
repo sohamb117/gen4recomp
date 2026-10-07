@@ -9,3 +9,6 @@ build/
 *.sav
 __pycache__/
 *.pyc
+
+# Player-supplied cartridge dumps (Black/White pipeline input); never commit
+/roms/
