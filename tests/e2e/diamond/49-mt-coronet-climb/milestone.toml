@@ -71,11 +71,13 @@ map = "MAP_MOUNT_CORONET_SOUTH_1F"
 
 [[step]]
 do = "walk_to"
+hm = true
+surf = true
 x = 25
 z = 3
 avoid = [[4, 8], [27, 20]]
 on_battle = "flee"
-note = "zone_event 0204 warp 2 -> South 2F (27,48)"
+note = "zone_event 0204 warp 2 -> South 2F (27,48): from the Route 208 door, west past the Rock Smash rocks (16..24,23) and (25,22), north up x 4..6, Surf over the lake (7..16, 4..6), down x 22 to z 10, up x 25 (probe of map 207: the ledges (22..27,11) face south)"
 
 [[step]]
 do = "wait_map"
@@ -83,6 +85,8 @@ map = "MAP_MOUNT_CORONET_SOUTH_2F"
 
 [[step]]
 do = "walk_to"
+hm = true
+surf = true
 x = 7
 z = 23
 avoid = [[27, 48], [2, 59], [7, 12], [11, 4], [21, 4]]
@@ -92,6 +96,8 @@ note = "zone_event 0205 warp 2 (the barrier object 4 is hidden by 0x253) -> 2F (
 
 [[step]]
 do = "walk_to"
+hm = true
+surf = true
 x = 11
 z = 4
 avoid = [[27, 48], [2, 59], [7, 23], [7, 12], [21, 4]]
@@ -104,6 +110,8 @@ map = "MAP_MOUNT_CORONET_SOUTH_3F"
 
 [[step]]
 do = "walk_to"
+hm = true
+surf = true
 x = 3
 z = 29
 avoid = [[14, 26], [18, 26]]
@@ -116,6 +124,7 @@ map = "MAP_MOUNT_CORONET_SOUTH_MOUNTAINSIDE"
 
 [[step]]
 do = "walk_to"
+surf = true
 x = 11
 z = 17
 hm = true
@@ -130,6 +139,7 @@ map = "MAP_MOUNT_CORONET_4F_ROOM_1"
 
 [[step]]
 do = "walk_to"
+surf = true
 x = 40
 z = 10
 hm = true
@@ -143,6 +153,7 @@ map = "MAP_MOUNT_CORONET_NORTH_MOUNTAINSIDE"
 
 [[step]]
 do = "walk_to"
+surf = true
 x = 13
 z = 19
 hm = true
@@ -156,6 +167,8 @@ map = "MAP_MOUNT_CORONET_4F_ROOM_3"
 
 [[step]]
 do = "walk_to"
+hm = true
+surf = true
 x = 18
 z = 8
 avoid = [[2, 3]]
@@ -168,6 +181,8 @@ map = "MAP_MOUNT_CORONET_5F"
 
 [[step]]
 do = "walk_to"
+hm = true
+surf = true
 x = 13
 z = 24
 avoid = [[21, 7]]
@@ -179,6 +194,8 @@ map = "MAP_MOUNT_CORONET_6F"
 
 [[step]]
 do = "walk_to"
+hm = true
+surf = true
 x = 7
 z = 5
 avoid = [[10, 24]]

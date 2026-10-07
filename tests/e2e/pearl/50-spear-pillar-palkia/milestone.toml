@@ -36,7 +36,6 @@ notes = "Coordinate triggers by var 0x4098 (zone_event 0217): coord 0 (31,48) ==
 [start]
 from = "prev"
 lab = "lab.recipe"
-boost = "boost.recipe"
 
 [run]
 frames = 60000

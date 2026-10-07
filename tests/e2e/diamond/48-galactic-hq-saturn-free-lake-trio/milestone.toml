@@ -28,7 +28,6 @@ notes = "Route from the step layers (tests/e2e/tools/dp_warps.py): 4F_1 (22,3) -
 [start]
 from = "prev"
 lab = "lab.recipe"
-boost = "boost.recipe"
 
 [run]
 frames = 30000

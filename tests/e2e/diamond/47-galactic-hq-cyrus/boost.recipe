@@ -1,9 +1,0 @@
-# Boost on 46's end save (AUTHORING.md, Boosts): party strength only, the story stays played. As 46's (a lab start gets it too).
-# Fly for the trip back from Lake Acuity (Main's call for 46+: the story's HM02 is the warehouse ball picked up here,
-# after a walk back from Snowpoint the chain does not repeat). Staraptor learns Fly at level 1 by HM; the Cobble Badge
-# (22) allows it out of battle. Strength / Rock Smash ride along for Mt. Coronet (49).
-party SPECIES_STARAPTOR 60 ITEM_NONE
-party-move 1 0 MOVE_FLY
-party-move 1 1 MOVE_STRENGTH
-party-move 1 2 MOVE_ROCK_SMASH
-party-move 1 3 MOVE_CLOSE_COMBAT
