@@ -36,7 +36,7 @@ int np_launch_is_url(const char *s);
  * decoded. Returns 0, or -1 with a message in `err`. */
 int np_launch_parse_url(const char *url, np_launch *out, char *err, size_t errn);
 
-/* "diamond"/"pearl"/"platinum" (any case) -> np_game, else -1. */
+/* "diamond"/"pearl"/"platinum"/"black"/"white" (any case) -> np_game, else -1. */
 int np_launch_game_from_name(const char *name);
 
 /* If `slot` is all digits, its value (1-based index), else 0. */

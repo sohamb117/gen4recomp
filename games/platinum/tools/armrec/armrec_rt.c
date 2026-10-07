@@ -2881,6 +2881,18 @@ void armrec_load_data(uint32_t addr, const void *src, uint32_t len) {
      * catches is the ARM7's `Autoload EXT` at 0x06000000, which is VRAM the
      * ARM9 cannot be given. See ARM7_DROP in pc/Makefile.
      */
+#ifdef ARMREC_TWL
+    /*
+     * TWL-SDK's crt0 autoloads every entry of the NTR list, and one of them
+     * is a 32-byte NTR-mode stand-in at 0x02400000 (the start of the TWL's
+     * extended main RAM). On a DS that address is the main-RAM mirror, so
+     * the loader's write lands at 0x02000000, which is where it goes here.
+     * The shared region (DTCM, shared page) above the mirror is storage of
+     * its own (ARM_SHARED_BASE).
+     */
+    if (addr >= ARM_MAIN_RAM_BASE + ARM_MAIN_RAM_SIZE && addr < ARM_SHARED_BASE)
+        addr = ARM_MAIN_RAM_BASE + ((addr - ARM_MAIN_RAM_BASE) & (ARM_MAIN_RAM_SIZE - 1));
+#endif
     if (armrec_guest_span_ok(addr, len)) {
         memcpy((void *)(uintptr_t)addr, src, len);
         return;

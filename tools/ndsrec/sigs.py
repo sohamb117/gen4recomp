@@ -72,6 +72,11 @@ def is_ram(v):
     return 0x01FF8000 <= v < 0x03000000
 
 
+def sdk_obj(obj):
+    """An SDK library object of the learning ROM's link map, not game code."""
+    return not obj.startswith(("unk_", "ov", "overlay", "main")) and "_" in obj
+
+
 def load_primitives(path):
     out = []
     for line in open(path):
@@ -273,9 +278,6 @@ def learn(a):
 
     db = {"rom": rom.sha1, "funcs": {}, "data": {}, "shapes": {}}
 
-    def sdk_obj(obj):
-        return not obj.startswith(("unk_", "ov", "overlay", "main")) and "_" in obj
-
     def keep(addr):
         f = info[addr]
         if f["name"] not in db["shapes"]:
@@ -474,9 +476,18 @@ def match(a):
         functions look alike (Black's game code has two 0.86-0.88 matches
         for 9- and 10-instruction CTRDG functions it does not contain). A
         candidate that does not call every placed callee the primitive
-        calls is not it."""
+        calls is not it. Then the same for the SDK callers (helpers) of
+        the primitives still unplaced, which rule 3 then follows to the
+        primitive (TWL-SDK's FSi_ReadRomCallback -> CARDi_ReadRom, its
+        GX_LoadBG*Char -> MI_DmaCopy32): a helper is never output itself,
+        and its call count must still equal the learned one for rule 3."""
         taken = set(placed.values())
-        for n in db["funcs"]:
+        helpers = sorted(set(
+            h["func"] for n, info in db["funcs"].items() if n not in placed
+            for h in info["helpers"]
+            if h["func"] in shapes and h["func"] not in db["funcs"]
+            and sdk_obj(shapes[h["func"]]["obj"])))
+        for n in list(db["funcs"]) + helpers:
             if n in placed or n not in shapes or len(shapes[n]["seq"]) < 12:
                 continue
             s = shapes[n]

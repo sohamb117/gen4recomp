@@ -24,7 +24,22 @@ extern "C" {
 /* DS ARM9 memory map regions we reserve. */
 #define ARM_MAIN_RAM_BASE 0x02000000u
 #define ARM_MAIN_RAM_SIZE 0x00400000u /* 4 MB */
+/*
+ * The DTCM and the system shared page, one region. NitroSDK puts the DTCM at
+ * 0x027E0000 and the shared page at 0x027FF000; the TWL-SDK (Black/White, in
+ * NTR mode too) links both 8 MB higher, DTCM at 0x02FE0000 and the shared
+ * page at 0x02FFF000. On hardware the whole of 0x02400000-0x02FFFFFF mirrors
+ * main RAM, so both are the same memory as the top of the 4 MB; this port
+ * keeps the region separate storage, as it always has. ARMREC_TWL is set by
+ * the build when crt0's DTCM is above 0x02800000 (games/ndsrec/pc/
+ * Makefile.wasm), which is also when the host compiles against the TWL
+ * shared-area header.
+ */
+#ifdef ARMREC_TWL
+#define ARM_SHARED_BASE   0x02FE0000u
+#else
 #define ARM_SHARED_BASE   0x027E0000u
+#endif
 #define ARM_SHARED_SIZE   0x00020000u
 #define ARM_WRAM_BASE     0x03000000u
 #define ARM_WRAM_SIZE     0x00010000u
@@ -432,6 +447,30 @@ uint32_t armrec_spi_load(uint32_t a, int size);
 void armrec_agb_store8(uint32_t a, uint32_t v);
 uint32_t armrec_agb_load8(uint32_t a);
 
+/*
+ * The sixth: the game card's ROM bus. ROMCTRL (0x040001A4) starts a card
+ * command when bit 31 is written and reads back busy (bit 31) and
+ * data-ready (bit 23) while the reply is being clocked in; the command is
+ * the eight bytes at 0x040001A8, and each load of 0x04100010 is the next
+ * word of the reply. pc/src/pc_card_rom.c answers the commands from the ROM
+ * image (0xB7 data read, the chip ID). Diamond/Pearl/Platinum never reach
+ * it: their hosts replace the SDK's whole card layer, while TWL-SDK
+ * (Black/White) reads the ROM ID and small blocks with the CPU through
+ * these registers. Stores also land in the I/O page, as plain registers.
+ * Per file for the coprocessor's reason: the files naming one of the
+ * registers.
+ */
+#define ARM_CARD_BASE 0x040001A0u
+#define ARM_CARD_SIZE 0x20u              /* AUXSPICNT .. the seed registers */
+#define ARM_CARD_DATA 0x04100010u
+
+#define ARM_CARD_HIT(a)                                                       \
+    (__builtin_expect((uint32_t)((a) - ARM_CARD_BASE) < ARM_CARD_SIZE         \
+                      || (uint32_t)((a) - ARM_CARD_DATA) < 4u, 0))
+
+void armrec_card_store(uint32_t a, uint32_t v, int size);
+uint32_t armrec_card_load(uint32_t a, int size);
+
 #ifdef ARMREC_CHECKED_MEM
 uint32_t armrec_ld32(uint32_t a);
 uint32_t armrec_ld16(uint32_t a);
@@ -454,7 +493,7 @@ void armrec_st8(uint32_t a, uint32_t v);
  * a macro would re-evaluate them.
  */
 #if defined(ARMREC_CP_HOOK) || defined(ARMREC_GX_HOOK) || defined(ARMREC_IPC_HOOK) \
-    || defined(ARMREC_SPI_HOOK) || defined(ARMREC_AGB_HOOK)
+    || defined(ARMREC_SPI_HOOK) || defined(ARMREC_AGB_HOOK) || defined(ARMREC_CARD_HOOK)
 static inline uint32_t ARM_LD32(uint32_t a) {
 #ifdef ARMREC_CP_HOOK
     if (ARM_CP_HIT(a)) return armrec_cp_read32(a);
@@ -467,6 +506,9 @@ static inline uint32_t ARM_LD32(uint32_t a) {
 #endif
 #ifdef ARMREC_SPI_HOOK
     if (ARM_SPI_HIT(a)) return armrec_spi_load(a, 4);
+#endif
+#ifdef ARMREC_CARD_HOOK
+    if (ARM_CARD_HIT(a)) return armrec_card_load(a, 4);
 #endif
     return *(uint32_t *)ARM_HOSTPTR(a);
 }
@@ -483,6 +525,9 @@ static inline uint32_t ARM_LD16(uint32_t a) {
 #ifdef ARMREC_SPI_HOOK
     if (ARM_SPI_HIT(a)) return armrec_spi_load(a, 2);
 #endif
+#ifdef ARMREC_CARD_HOOK
+    if (ARM_CARD_HIT(a)) return armrec_card_load(a, 2);
+#endif
     return *(uint16_t *)ARM_HOSTPTR(a);
 }
 static inline uint32_t ARM_LD8(uint32_t a) {
@@ -498,6 +543,9 @@ static inline uint32_t ARM_LD8(uint32_t a) {
 #ifdef ARMREC_SPI_HOOK
     if (ARM_SPI_HIT(a)) return armrec_spi_load(a, 1);
 #endif
+#ifdef ARMREC_CARD_HOOK
+    if (ARM_CARD_HIT(a)) return armrec_card_load(a, 1);
+#endif
 #ifdef ARMREC_AGB_HOOK
     if (ARM_AGB_HIT(a)) return armrec_agb_load8(a);
 #endif
@@ -511,7 +559,7 @@ static inline uint32_t ARM_LD8(uint32_t a) {
 #endif
 
 #if defined(ARMREC_VRAM_HOOK) || defined(ARMREC_GX_HOOK) || defined(ARMREC_IPC_HOOK) \
-    || defined(ARMREC_SPI_HOOK) || defined(ARMREC_AGB_HOOK)
+    || defined(ARMREC_SPI_HOOK) || defined(ARMREC_AGB_HOOK) || defined(ARMREC_CARD_HOOK)
 /*
  * A store into 0x04000240 to 0x04000249 remaps VRAM, so it has to be seen.
  * The hook is per file for the same reason the CP one is, and it is on the
@@ -532,6 +580,9 @@ static inline void ARM_ST32(uint32_t a, uint32_t v) {
 #ifdef ARMREC_SPI_HOOK
     if (ARM_SPI_HIT(a)) { armrec_spi_store(a, v, 4); return; }
 #endif
+#ifdef ARMREC_CARD_HOOK
+    if (ARM_CARD_HIT(a)) { armrec_card_store(a, v, 4); return; }
+#endif
     *(uint32_t *)ARM_HOSTPTR(a) = v;
 #ifdef ARMREC_VRAM_HOOK
     if (ARM_VRAM_CNT_HIT(a) || ARM_VRAM_CNT_HIT(a + 3)) armrec_vram_touch();
@@ -547,6 +598,9 @@ static inline void ARM_ST16(uint32_t a, uint32_t v) {
 #ifdef ARMREC_SPI_HOOK
     if (ARM_SPI_HIT(a)) { armrec_spi_store(a, v, 2); return; }
 #endif
+#ifdef ARMREC_CARD_HOOK
+    if (ARM_CARD_HIT(a)) { armrec_card_store(a, v, 2); return; }
+#endif
     *(uint16_t *)ARM_HOSTPTR(a) = (uint16_t)v;
 #ifdef ARMREC_VRAM_HOOK
     if (ARM_VRAM_CNT_HIT(a) || ARM_VRAM_CNT_HIT(a + 1)) armrec_vram_touch();
@@ -561,6 +615,9 @@ static inline void ARM_ST8(uint32_t a, uint32_t v) {
 #endif
 #ifdef ARMREC_SPI_HOOK
     if (ARM_SPI_HIT(a)) { armrec_spi_store(a, v, 1); return; }
+#endif
+#ifdef ARMREC_CARD_HOOK
+    if (ARM_CARD_HIT(a)) { armrec_card_store(a, v, 1); return; }
 #endif
 #ifdef ARMREC_AGB_HOOK
     if (ARM_AGB_HIT(a)) { armrec_agb_store8(a, v); return; }
@@ -869,8 +926,10 @@ extern const int armrec_decomp_sym_count;
  * overlay whose live range intersects the incoming one, which is the game's
  * own CanOverlayBeLoaded() test. It is an interval relation, not a set of
  * windows: 116 pairs at different load addresses intersect.
+ *
+ * 256: Black/White have 237 overlays (Platinum 128 at most, Diamond 87).
  */
-#define ARMREC_MAX_OVERLAYS 128
+#define ARMREC_MAX_OVERLAYS 256
 
 void armrec_register_overlay(uint32_t addr, armrec_fn fn, const char *name,
                              int ovl);

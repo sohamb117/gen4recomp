@@ -3195,6 +3195,24 @@ def file_touches_agb(path):
         return False
 
 
+# The game card's ROM bus: ROMCTRL (0x040001A4), which starts a command and
+# reports busy/data-ready, the command bytes (0x040001A8) and the data port
+# (0x04100010), which is a pop. A file naming one gets ARMREC_CARD_HOOK and
+# goes through pc/src/pc_card_rom.c's card model. Diamond/Pearl/Platinum's
+# hosts replace the card layer that names them; TWL-SDK's (Black/White)
+# reads the ROM ID and small blocks through them with the CPU, named as
+# literals (.word 0x040001A4).
+CARD_ADDR_RE = re.compile(r"0x0*40001[ab][0-9a-f]\b|0x0*4100010\b", re.I)
+
+
+def file_touches_card(path):
+    try:
+        with open(path, "r", errors="replace") as fh:
+            return CARD_ADDR_RE.search(fh.read()) is not None
+    except OSError:
+        return False
+
+
 def collect_symbols(paths, defines, incdirs, stems, local_rename=True):
     """
     Pass 1: every function and data symbol, with its guest address.
@@ -3494,7 +3512,9 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
                               ("#define ARMREC_SPI_HOOK 1\n"
                                if file_touches_spi(path) else "") +
                               ("#define ARMREC_AGB_HOOK 1\n"
-                               if file_touches_agb(path) else "")))
+                               if file_touches_agb(path) else "") +
+                              ("#define ARMREC_CARD_HOOK 1\n"
+                               if file_touches_card(path) else "")))
         for name in sorted(called - defined):
             out.write("extern uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t);\n" % name)
         for name in sorted(ext):

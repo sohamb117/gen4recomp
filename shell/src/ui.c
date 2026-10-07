@@ -23,7 +23,8 @@ static const SDL_Color white = {235, 238, 245, 255};
 static const SDL_Color dim = {150, 158, 175, 255};
 static const SDL_Color accent = {255, 205, 80, 255};
 static const SDL_Color warn = {255, 140, 120, 255};
-static const SDL_Color game_colors[NP_GAME_COUNT] = {{64, 110, 210, 255}, {200, 104, 150, 255}, {150, 140, 120, 255}};
+static const SDL_Color game_colors[NP_GAME_COUNT] = {
+    {64, 110, 210, 255}, {200, 104, 150, 255}, {150, 140, 120, 255}, {70, 70, 80, 255}, {200, 200, 205, 255}};
 
 /* ---- drawing primitives ---------------------------------------------- */
 
@@ -723,7 +724,7 @@ static void draw_launcher(np_app *app)
 
     int wide = W >= H;
     float gap = cw;
-    float card_w = wide ? (W - 2 * m - 2 * gap) / 3 : W - 2 * m;
+    float card_w = wide ? (W - 2 * m - (float)(NP_GAME_COUNT - 1) * gap) / NP_GAME_COUNT : W - 2 * m;
     float card_h = wide ? 9 * lh : 5 * lh;
     for (int g = 0; g < NP_GAME_COUNT; g++) {
         SDL_FRect r = wide ? (SDL_FRect){m + (float)g * (card_w + gap), y, card_w, card_h}
@@ -769,7 +770,7 @@ static void draw_launcher(np_app *app)
             np_ui_text_clip(app, r.x + cw, r.y + r.h - 1.5f * lh, s, hint, cols, selected ? accent : dim);
         np_ui_hit(app, r, g);
     }
-    y += wide ? card_h + 1.5f * lh : 3 * (card_h + gap) + 0.5f * lh;
+    y += wide ? card_h + 1.5f * lh : (float)NP_GAME_COUNT * (card_h + gap) + 0.5f * lh;
 
     static const char *const labels[4] = {"Import ROM", "Options", "About", "Quit"};
     int nb = launcher_buttons();

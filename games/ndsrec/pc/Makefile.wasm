@@ -94,6 +94,26 @@ $(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
 OBJS += $(MY_OBJS)
 
+# The TWL-SDK memory map (Black/White). TWL-SDK links the DTCM and the
+# system shared page 8 MB above NitroSDK's (DTCM 0x02FE0000, shared page
+# 0x02FFF000, both main-RAM mirror addresses on a DS), so when crt0's DTCM
+# is above 0x02800000 armrec's shared region moves there (ARMREC_TWL,
+# tools/armrec/armrec_rt.h) and the host compiles against a copy of the 4.2
+# SDK's nitro/hw/common/mmap_shared.h with every shared-page address 8 MB up.
+# HOST_GEN/include is searched before the SDK's include directory.
+# crt0 is read in stage 1 (lcf.xmap), so this decides in the link stage.
+TWL_DTCM := $(call host_xmap_value,SDK_AUTOLOAD_DTCM_START)
+TWL := $(if $(TWL_DTCM),$(shell [ $$(($(TWL_DTCM))) -ge $$((0x02800000)) ] && echo 1))
+ifeq ($(TWL),1)
+TWL_SHARED_H := $(HOST_GEN)/include/nitro/hw/common/mmap_shared.h
+$(TWL_SHARED_H): $(HOST_NSDK)/include/nitro/hw/common/mmap_shared.h $(SELF)
+	@mkdir -p $(dir $@)
+	sed -e 's/HW_MAIN_MEM + 0x007ff/HW_MAIN_MEM + 0x00fff/' \
+	    -e 's/0x027ff\([0-9a-fA-F]\{3\}\)$$/0x02fff\1/' $< > $@.tmp && mv $@.tmp $@
+HOST_CFLAGS += -DARMREC_TWL
+$(HOST_OBJS) $(MY_OBJS) $(OBJ)/ndsrec/pc_ndsrec_noagb.o: $(TWL_SHARED_H)
+endif
+
 # The GBA slot. Diamond's host models it with a flash chip and D's flash
 # timer (pc_agb_slot.c, pc_dp_agb.c), which call CTRDG functions and read
 # CTRDG statics by name. A ROM whose primitive map places no CTRDG library

@@ -25,6 +25,8 @@ typedef enum np_game {
     NP_GAME_DIAMOND = 0,
     NP_GAME_PEARL = 1,
     NP_GAME_PLATINUM = 2,
+    NP_GAME_BLACK = 3,
+    NP_GAME_WHITE = 4,
     NP_GAME_COUNT
 } np_game;
 

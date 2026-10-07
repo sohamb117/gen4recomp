@@ -1481,8 +1481,9 @@ static int parse_autotest(np_app *app, const char *spec, int options_only, int *
 
 static void fill_test_header(np_autotest *t, np_game game)
 {
-    static const char *const titles[NP_GAME_COUNT] = {"POKEMON D", "POKEMON P", "POKEMON PL"};
-    static const char *const codes[NP_GAME_COUNT] = {"ADAE", "APAE", "CPUE"};
+    static const char *const titles[NP_GAME_COUNT] = {"POKEMON D", "POKEMON P", "POKEMON PL", "POKEMON B",
+                                                      "POKEMON W"};
+    static const char *const codes[NP_GAME_COUNT] = {"ADAE", "APAE", "CPUE", "IRBO", "IRAO"};
     SDL_memset(t->header, 0, sizeof t->header);
     SDL_memcpy(t->header, titles[game], SDL_strlen(titles[game]));
     SDL_memcpy(t->header + 0x0C, codes[game], 4);

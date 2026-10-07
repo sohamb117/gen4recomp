@@ -32,8 +32,13 @@
  * through the public include root on purpose, so this file states exactly
  * which internal it shares with the SDK's own card_common.c. Diamond/Pearl's
  * SDK is 3.2-era and lays the command block's chip spec out differently;
- * games/diamond/pc/include/host/pc_dp_card_common.h is its layout. */
-#if defined(PC_GAME_DP)
+ * games/diamond/pc/include/host/pc_dp_card_common.h is its layout. TWL-SDK 5
+ * (Black/White, ARMREC_TWL) has 4.2's command block: its
+ * CARDi_IdentifyBackupCore (Black 0x020766D8) clears the 0x48-byte spec at
+ * +0x18 and writes total_size +0x18, sect_size +0x1C, page_size +0x24,
+ * addr_width +0x28, initial_status +0x54 and caps +0x58, and its stream
+ * requests set src +0x0C, dst +0x10, len +0x14 after result and type. */
+#if defined(PC_GAME_DP) && !defined(ARMREC_TWL)
 #include <pc_dp_card_common.h>
 #else
 #include <../libraries/card/include/card_common.h>
@@ -158,6 +163,12 @@ static const char *rom_path(char *buf, size_t bufsize)
 }
 #endif
 
+#if defined(ARMREC_TWL)
+static void card_firmware_words(void);
+static void card_fs_responder(u32 data);
+extern void pc_pxi_set_responder(int tag, void (*fn)(u32 data));
+#endif
+
 #if defined(__wasm__)
 int pc_rom_init(void)
 {
@@ -174,6 +185,10 @@ int pc_rom_init(void)
     /* HW_CARD_ROM_HEADER_SIZE, not sizeof header: see the comment in the
      * file-backed pc_rom_init below. */
     memcpy((void *)HW_ROM_HEADER_BUF, header, HW_CARD_ROM_HEADER_SIZE);
+#if defined(ARMREC_TWL)
+    card_firmware_words();
+    pc_pxi_set_responder(PXI_FIFO_TAG_FS, card_fs_responder);
+#endif
     sRomSize = size;
     fprintf(stderr, "pokeplatinum-wasm: rom: %u bytes from the runtime\n",
             (unsigned)size);
@@ -306,6 +321,167 @@ BOOL CARD_TryWaitRomAsync(void)
 {
     return TRUE;
 }
+
+/* ------------------------------------------------------------------ */
+/* The card bus                                                        */
+/* ------------------------------------------------------------------ */
+
+/*
+ * The ROM half of the card's register interface, for an SDK whose card layer
+ * runs as recompiled code rather than being replaced above (TWL-SDK 5:
+ * Black/White read the ROM ID after every read and their download-play
+ * signature block at start-up with the CPU, CARDi_ReadRomWithCPU). The
+ * recompiled code reaches it through armrec_card_load/armrec_card_store
+ * (tools/armrec/armrec_rt.h, ARMREC_CARD_HOOK).
+ *
+ * A store to ROMCTRL (0x040001A4) with bit 31 set sends the command in the
+ * eight bytes at 0x040001A8 and clocks in a reply of the size bits 24-26
+ * name (none, 0x100 << n, or 4 bytes for 7). ROMCTRL then reads busy
+ * (bit 31) with a word ready (bit 23) until the last word has been loaded
+ * from 0x04100010; a reply of no words completes at once. The reply is
+ * built whole when the command is sent: the bus has no timing here, as the
+ * ROM reads above have none.
+ *
+ * Commands, by what the SDK sends in normal (post-boot) mode: 0xB7 the data
+ * read (big-endian ROM address in bytes 1-4), 0xB8 the chip ID; 0x00 and
+ * 0x90 are the same two in raw (header) mode. The bus scrambling the
+ * hardware applies in normal mode is not part of what the CPU sees, so
+ * there is nothing to model: the reply is the ROM's bytes. Any other
+ * command answers an undriven bus, 0xFF.
+ *
+ * The chip ID is the one the firmware leaves at HW_BOOT_CHECK_INFO_BUF and
+ * HW_RED_RESERVED (pc_rom_init); the SDK compares a fresh read with it to
+ * tell a pulled-out card. A Macronix-style ID for a 256 MiB mask ROM
+ * (maker 0xC2, size byte 0xFF); bit 29, which makes TWL-SDK poll a status
+ * command, is clear, as on a NTR-protocol card.
+ */
+#include "armrec_rt.h"
+
+#define PC_CARD_CHIP_ID   0x0000FFC2u
+#define PC_CARD_ROMCTRL   (ARM_CARD_BASE + 0x04u)
+#define PC_CARD_CMD       (ARM_CARD_BASE + 0x08u)
+#define PC_CARD_BUSY      0x80000000u
+#define PC_CARD_READY     0x00800000u
+#define PC_CARD_REPLY_MAX 0x4000u /* 0x100 << 6, the largest block */
+
+static u8 sCardReply[PC_CARD_REPLY_MAX];
+static u32 sCardReplyLen;
+static u32 sCardReplyPos;
+
+/* ROM bytes for the bus: past the end of the image the bus is undriven. */
+static void card_rom_fetch(u32 addr, u8 *dst, u32 len)
+{
+#if defined(__wasm__)
+    u32 have = addr < sRomSize ? sRomSize - addr : 0;
+#else
+    off_t end = lseek(sRomFd, 0, SEEK_END);
+    u32 have = end > (off_t)addr ? (u32)(end - (off_t)addr) : 0;
+#endif
+    if (have > len) {
+        have = len;
+    }
+    if (have) {
+        rom_read(addr, dst, have);
+    }
+    memset(dst + have, 0xFF, len - have);
+}
+
+static void card_send_command(u32 ctrl)
+{
+    const u8 *cmd = (const u8 *)(uintptr_t)PC_CARD_CMD;
+    u32 bs = (ctrl >> 24) & 7u;
+    u32 len = bs == 0 ? 0 : bs == 7 ? 4 : 0x100u << bs;
+    u32 addr = ((u32)cmd[1] << 24) | ((u32)cmd[2] << 16) | ((u32)cmd[3] << 8) | cmd[4];
+    u32 i;
+
+    switch (cmd[0]) {
+    case 0xB7:
+        card_rom_fetch(addr, sCardReply, len);
+        break;
+    case 0x00:
+        for (i = 0; i < len; i += 0x200u) {
+            card_rom_fetch(0, sCardReply + i, len - i < 0x200u ? len - i : 0x200u);
+        }
+        break;
+    case 0xB8:
+    case 0x90:
+        for (i = 0; i < len; i += 4) {
+            u32 id = PC_CARD_CHIP_ID;
+            memcpy(sCardReply + i, &id, 4);
+        }
+        break;
+    default:
+        memset(sCardReply, 0xFF, len);
+        break;
+    }
+    sCardReplyLen = len;
+    sCardReplyPos = 0;
+}
+
+static u32 card_romctrl(void)
+{
+    u32 ctrl = *(volatile u32 *)(uintptr_t)PC_CARD_ROMCTRL & ~(PC_CARD_BUSY | PC_CARD_READY);
+    if (sCardReplyPos < sCardReplyLen) {
+        ctrl |= PC_CARD_BUSY | PC_CARD_READY;
+    }
+    return ctrl;
+}
+
+void armrec_card_store(uint32_t a, uint32_t v, int size)
+{
+    switch (size) {
+    case 4: *(volatile u32 *)(uintptr_t)a = v; break;
+    case 2: *(volatile u16 *)(uintptr_t)a = (u16)v; break;
+    default: *(volatile u8 *)(uintptr_t)a = (u8)v; break;
+    }
+    /* The start bit is ROMCTRL's top byte. */
+    if (a <= PC_CARD_ROMCTRL + 3u && a + (u32)size > PC_CARD_ROMCTRL + 3u) {
+        u32 ctrl = *(volatile u32 *)(uintptr_t)PC_CARD_ROMCTRL;
+        if (ctrl & PC_CARD_BUSY) {
+            card_send_command(ctrl);
+        }
+        *(volatile u32 *)(uintptr_t)PC_CARD_ROMCTRL = card_romctrl();
+    }
+}
+
+uint32_t armrec_card_load(uint32_t a, int size)
+{
+    u32 v;
+
+    if (a - ARM_CARD_DATA < 4u) {
+        v = 0xFFFFFFFFu;
+        if (sCardReplyPos < sCardReplyLen) {
+            memcpy(&v, sCardReply + sCardReplyPos, 4);
+            sCardReplyPos += 4;
+            *(volatile u32 *)(uintptr_t)PC_CARD_ROMCTRL = card_romctrl();
+        }
+        v >>= 8 * (a & 3u);
+    } else {
+        if (a - PC_CARD_ROMCTRL < 4u) {
+            *(volatile u32 *)(uintptr_t)PC_CARD_ROMCTRL = card_romctrl();
+        }
+        v = *(volatile u32 *)(uintptr_t)(a & ~3u) >> (8 * (a & 3u));
+    }
+    return size == 4 ? v : size == 2 ? (v & 0xFFFFu) : (v & 0xFFu);
+}
+
+#if defined(ARMREC_TWL)
+/*
+ * What a console leaves in the shared page besides the header, for a
+ * TWL-SDK game whose card layer is its own recompiled code: the card's chip
+ * ID at HW_RED_RESERVED and HW_BOOT_CHECK_INFO_BUF (the pulled-out check
+ * compares a fresh 0xB8 read with the latter), and the boot type at
+ * HW_WM_BOOT_BUF, 1 for a card boot, which TWL-SDK's crt0 also stores when
+ * it finds 0 (the host does not run crt0). CARD_Init enables the card and
+ * copies the header to HW_CARD_ROM_HEADER only on a card boot.
+ */
+static void card_firmware_words(void)
+{
+    *(volatile u32 *)HW_RED_RESERVED = PC_CARD_CHIP_ID;
+    *(volatile u32 *)HW_BOOT_CHECK_INFO_BUF = PC_CARD_CHIP_ID;
+    *(volatile u16 *)HW_WM_BOOT_BUF = 1;
+}
+#endif
 
 /* ------------------------------------------------------------------ */
 /* The save chip                                                       */
@@ -697,11 +873,10 @@ static int backup_ready(CARDiCommandArg *cmd)
 #endif
 }
 
-BOOL CARDi_Request(CARDiCommon *p, int req_type, int retry_count)
+/* One backup request against the image, as the ARM7 runs it on the command
+ * block: cmd->result says how it went. */
+static BOOL card_backup_request(CARDiCommandArg *cmd, int req_type)
 {
-    CARDiCommandArg *cmd = p->cmd;
-    (void)retry_count;
-
     switch (req_type) {
     case CARD_REQ_INIT:
     case CARD_REQ_ACK:
@@ -748,7 +923,7 @@ BOOL CARDi_Request(CARDiCommon *p, int req_type, int retry_count)
         memset(sBackupImage + cmd->dst, 0xFF, cmd->spec.sect_size);
         backup_touch();
         break;
-#if !defined(PC_GAME_DP)
+#if !defined(PC_GAME_DP) || defined(ARMREC_TWL)
     /* SDK 4.2's subsector erase; 3.2's chip spec has no subsector size and
      * its SDK never issues the request. */
     case CARD_REQ_ERASE_SUBSECTOR_BACKUP:
@@ -783,6 +958,48 @@ BOOL CARDi_Request(CARDiCommon *p, int req_type, int retry_count)
     cmd->result = CARD_RESULT_SUCCESS;
     return TRUE;
 }
+
+BOOL CARDi_Request(CARDiCommon *p, int req_type, int retry_count)
+{
+    (void)retry_count;
+    return card_backup_request(p->cmd, req_type);
+}
+
+#if defined(ARMREC_TWL)
+/*
+ * TWL-SDK's backup requests, which this port does not replace: the ARM9's
+ * CARDi_Request (Black 0x020763F0) flushes the 0x60-byte command block,
+ * sets CARD_STAT_REQ, sends the request number on the FS tag (and, for
+ * CARD_REQ_INIT, the block's address as a second word), then sleeps until
+ * its FS receiver (Black 0x020763BC), which acts only on a word with the
+ * error bit set as the ARM7's CARDi_SendPxi sends it, clears the flag.
+ * The ARM7's side, here: INIT records the block, every other request runs
+ * against the image (card_backup_request) and is answered at once, so the
+ * flag is clear before the ARM9 looks.
+ */
+static CARDiCommandArg *sCardCmd;
+static int sCardAwaitBlock;
+
+extern void pc_pxi_reply_err(int tag, u32 data, BOOL err);
+
+static void card_fs_responder(u32 data)
+{
+    if (sCardAwaitBlock) {
+        sCardAwaitBlock = 0;
+        sCardCmd = (CARDiCommandArg *)(uintptr_t)data;
+        sCardCmd->result = CARD_RESULT_SUCCESS;
+    } else if (data == CARD_REQ_INIT) {
+        sCardAwaitBlock = 1;
+        return;
+    } else if (sCardCmd == NULL) {
+        pc_wasm_fatalf("pc_card_rom: card request %u before CARD_REQ_INIT",
+                       (unsigned)data);
+    } else {
+        (void)card_backup_request(sCardCmd, (int)data);
+    }
+    pc_pxi_reply_err(PXI_FIFO_TAG_FS, CARD_REQ_ACK, TRUE);
+}
+#endif
 
 /* The async task queue: tasks ran on a dedicated card thread on hardware
  * because requests slept on the ARM7. Every request above completes

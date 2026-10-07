@@ -41,6 +41,16 @@ void pc_pxi_reply(int tag, u32 data)
     }
 }
 
+/* The same with the FIFO word's error bit as the sender set it: the ARM7's
+ * card library sends every reply on the FS tag with it set
+ * (CARDi_SendPxi), and TWL-SDK's ARM9 receiver acts only on such words. */
+void pc_pxi_reply_err(int tag, u32 data, BOOL err)
+{
+    if (sRecvCallback[tag] != NULL) {
+        sRecvCallback[tag]((PXIFifoTag)tag, data, err);
+    }
+}
+
 void PXI_Init(void)
 {
     PXI_InitFifo();

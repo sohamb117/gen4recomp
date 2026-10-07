@@ -6,7 +6,7 @@
  * reports the guest's log, a running hash of the frames and audio, and
  * optional PPM screenshots. Nothing here is mock-specific.
  *
- *   np_headless <diamond|pearl|platinum> <rom.nds> [options]
+ *   np_headless <diamond|pearl|platinum|black|white> <rom.nds> [options]
  *     --frames N         frames to run (default 600)
  *     --save FILE        backup chip file: loaded if present, written on store
  *     --dump DIR         write DIR/frame_NNNNNN.ppm (both screens stacked)
@@ -586,7 +586,7 @@ static void wav_header(FILE *fp, uint32_t rate, uint32_t bytes) {
 }
 
 static int usage(void) {
-    fprintf(stderr, "usage: np_headless <diamond|pearl|platinum> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
+    fprintf(stderr, "usage: np_headless <diamond|pearl|platinum|black|white> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
                     "                   [--content DIR] [--gba-rom FILE [--gba-save FILE]]\n"
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--wav FILE] [--schedule FILE] [--progress N]\n"
@@ -725,7 +725,7 @@ static int state_test(session *s, uint64_t first, uint64_t span, int rounds, uin
 
 int main(int argc, char **argv) {
     if (argc < 3) return usage();
-    static const char *const names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum"};
+    static const char *const names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
     int game = -1;
     for (int g = 0; g < NP_GAME_COUNT; g++)
         if (strcmp(argv[1], names[g]) == 0) game = g;

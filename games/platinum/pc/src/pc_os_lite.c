@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "armrec_rt.h"
+
 static void pc_trap(const char *name, const char *why) __attribute__((noreturn));
 static void pc_trap(const char *name, const char *why)
 {
@@ -208,8 +210,9 @@ s32 OS_UnLockCartridge(u16 lockID)
  *     Autoload DTCM { Address 0x027E0000 ... }
  *
  * so the identity-mapped guest keeps DTCM at that address and this returns
- * the constant the register would hold. */
-#define PC_DTCM_BASE 0x027E0000u
+ * the constant the register would hold. The DTCM is the start of armrec's
+ * shared region (0x02FE0000 for a TWL-SDK game, armrec_rt.h). */
+#define PC_DTCM_BASE ARM_SHARED_BASE
 
 u32 OS_GetDTCMAddress(void)
 {
@@ -229,12 +232,69 @@ void OS_SpinWait(u32 cycle)
     (void)cycle;
 }
 
+#if defined(ARMREC_TWL)
+/*
+ * TWL-SDK's OS_InitLock (Black 0x02084B90) synchronises with the ARM7
+ * through the four bytes at HW_INIT_LOCK_BUF before it touches a lock
+ * (OSi_SyncWithOtherProc, Black 0x02084AB0), twice: first as the side that
+ * leads (writes 0x80 | n to byte 0 until byte 1 echoes it or byte 2 is set,
+ * then sets byte 3), then as the side that follows (copies byte 0 to byte 1,
+ * summing, until the sum reaches 0x300; then clears byte 3, sets byte 2 and
+ * waits for byte 3). The ARM7 runs the complement, follow then lead. It is
+ * modelled here, one step each time the ARM9 pauses in SVC_WaitByLoop,
+ * which both of the ARM9's wait loops do.
+ */
+static void arm7_init_sync_step(void)
+{
+    static int state;
+    static u32 sum, n;
+    volatile u8 *b = (volatile u8 *)HW_INIT_LOCK_BUF;
+
+    switch (state) {
+    case 0: /* following the ARM9's lead */
+        if (b[1] != b[0]) {
+            b[1] = b[0];
+            sum += b[1];
+        }
+        if (sum >= 0x300u) {
+            b[3] = 0;
+            b[2] = 1;
+            state = 1;
+        }
+        break;
+    case 1: /* the ARM9 acknowledged; lead */
+        if (b[3] != 0) {
+            b[2] = 0;
+            n = 0;
+            b[0] = 0x80;
+            state = 2;
+        }
+        break;
+    case 2:
+        if (b[2] != 0) {
+            b[3] = 1;
+            state = 3;
+        } else if (b[1] == b[0]) {
+            n++;
+            b[0] = (u8)(0x80u | (n & 0xFu));
+        }
+        break;
+    default:
+        break;
+    }
+}
+#endif
+
 /* The BIOS routine is the same shape (`subs r0, #4` until exhausted), used by
  * the SDK's spinlocks as a polite pause between polls of a lock word the
- * ARM7 might hold. There is no ARM7, so there is nothing to wait for. */
+ * ARM7 might hold. There is no ARM7, so there is nothing to wait for, except
+ * TWL-SDK's start-up handshake above. */
 void SVC_WaitByLoop(s32 count)
 {
     (void)count;
+#if defined(ARMREC_TWL)
+    arm7_init_sync_step();
+#endif
 }
 
 /* ------------------------------------------------------------------ */
