@@ -2,9 +2,8 @@
 # outside the Veilstone Gym.
 # Start: Hearthome City warp 8 (gym door (499,697)) -> end: inside Veilstone Gym (21's start).
 title = "Route 209 to Veilstone: rival, Solaceon, Crasher Wake"
-status = "planned"
 priority = "P0"
-estimate = 31000
+estimate = 65257
 refs = [
   "scripts_route_209_gate_to_hearthome_city.s:41",
   "scripts_route_209_gate_to_hearthome_city.s:64-66",
@@ -59,7 +58,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 90000
+frames = 97900
 
 [[step]]
 do = "walk_to"
