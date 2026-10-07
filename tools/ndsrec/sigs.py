@@ -39,7 +39,10 @@ rounds until nothing changes:
      put at the learned load (the same source rebuilt by another SDK);
   4. call structure: the one function between the placed neighbours whose
      ordered callees agree with every placed callee;
-  5. a similar instruction stream between placed neighbours;
+  5. a similar instruction stream between placed neighbours; 5b. the
+     function at the same position of the gap between the two placed
+     functions of its object around it, when the gap holds as many
+     functions as the learned one (in either address direction);
   6. once the rounds stall: the one function anywhere in the module whose
      instruction stream is a primitive's (TWL-SDK's rewritten OS, PXI, TP,
      PM functions, whose neighbours moved too), then the rounds again.
@@ -351,6 +354,15 @@ def learn(a):
                     break
             db["data"][name] = {"role": role, "helpers": helpers,
                                 "section": "bss" if name in bss else "data"}
+    # Every function of each SDK object a shape belongs to, in address
+    # order: rule 5b maps a gap between two placed functions of the object
+    # position by position.
+    objs = collections.defaultdict(list)
+    for addr, name, thumb, obj in code:
+        if name_at.get(addr) == name and sdk_obj(obj):
+            objs[obj].append(name)
+    db["objs"] = {o: objs[o] for o in sorted(set(s["obj"] for s in db["shapes"].values()))
+                  if o in objs}
     with open(a.out, "w") as fh:
         json.dump(db, fh)
     print("learn: %d functions, %d objects, %d shapes -> %s" % (
@@ -417,7 +429,10 @@ def match(a):
     def order_pick(n, hits, same_obj=False):
         """The one hit between the placed neighbours of n (by the learning
         ROM's address order); with same_obj, neighbours from n's own object
-        only, which bound it tightly."""
+        only, which bound it tightly. The two neighbours may come out in
+        either order: an object's functions stay contiguous, but TWL-SDK
+        lays some objects out in the reverse order (Black's MI_dma.o runs
+        MI_DmaFill32 .. MI_StopDma upwards, Diamond's downwards)."""
         obj = shapes[n]["obj"]
         anchors = sorted((shapes[m]["addr"], placed[m]) for m in placed
                          if m in shapes and (not same_obj or shapes[m]["obj"] == obj))
@@ -426,6 +441,8 @@ def match(a):
         i = bisect.bisect_left(src, la)
         lo = anchors[i - 1][1] if i > 0 else -1
         hi = anchors[i][1] if i < len(anchors) else 1 << 32
+        if 0 <= hi < lo < 1 << 32:
+            lo, hi = hi, lo
         inside = [x for x in hits if lo < x < hi]
         return inside[0] if len(inside) == 1 else None, (lo, hi)
 
@@ -648,6 +665,42 @@ def match(a):
             if scores and scores[0][0] >= 0.75 and (len(scores) == 1 or
                                                     scores[0][0] - scores[1][0] >= 0.15):
                 placed[n], how[n] = scores[0][1], "similar %.2f" % scores[0][0]
+        # 5b. the gap between the two placed functions of the object around
+        # a primitive, position by position, when it holds as many functions
+        # as the learned object has there (either direction: TWL-SDK's
+        # MI_dma.o is laid out in the reverse order, and its MI_DmaCopy32/16
+        # and MI_DmaFill32Async, rewritten, are 0.6 alike to the learned
+        # ones and to each other)
+        for n in db["funcs"]:
+            if n in placed or n not in shapes:
+                continue
+            names = db["objs"].get(shapes[n]["obj"], [])
+            if n not in names:
+                continue
+            k = names.index(n)
+            below = next((m for m in reversed(names[:k]) if m in placed), None)
+            above = next((m for m in names[k + 1:] if m in placed), None)
+            if below is None or above is None:
+                continue
+            gap = names[names.index(below) + 1:names.index(above)]
+            lo_a, hi_a = placed[below], placed[above]
+            i = bisect.bisect_right(starts, min(lo_a, hi_a))
+            tgap = []
+            while i < len(starts) and starts[i] < max(lo_a, hi_a):
+                tgap.append(starts[i])
+                i += 1
+            if len(tgap) != len(gap):
+                continue
+            if lo_a > hi_a:
+                tgap.reverse()
+            t = tgap[gap.index(n)]
+            if mod.funcs[t].thumb != shapes[n]["thumb"] or t in placed.values():
+                continue
+            r = difflib.SequenceMatcher(None, mnem(shapes[n]["seq"]), mnem(tshape[t][0]),
+                                        autojunk=False).ratio()
+            if r >= 0.5:
+                placed[n], how[n] = t, "gap %d/%d of %s %.2f" % (
+                    gap.index(n) + 1, len(gap), shapes[n]["obj"], r)
         if len(placed) == before:
             if anywhere_done:
                 break

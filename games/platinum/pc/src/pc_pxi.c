@@ -29,6 +29,49 @@ static u32 sWarnedDrop[(PXI_MAX_FIFO_TAG + 31) / 32];
  * same synchronous-completion shape the DMA and card models use. */
 static void (*sResponder[PXI_MAX_FIFO_TAG])(u32 data);
 
+/* A receive callback runs as the PXI receive interrupt's handler, which the
+ * hardware does not re-enter: a reply to a word the callback itself sends
+ * is taken only after the callback returns. Replies raised while a callback
+ * runs therefore wait here and are delivered, in order, when the outermost
+ * one returns. TWL-SDK's NVRAM state machine (Black/White's DWC user-ID
+ * write at boot) sends the next command from the callback and only then
+ * advances its state; delivered inline, the reply found the old state, sent
+ * the same command again and recursed until the host stack overflowed. */
+#define PC_PXI_PENDING 64
+static struct { int tag; u32 data; BOOL err; } sPending[PC_PXI_PENDING];
+static int sPendHead, sPendCount, sInCallback;
+
+static void deliver(int tag, u32 data, BOOL err)
+{
+    if (sRecvCallback[tag] == NULL) {
+        return;
+    }
+    if (sInCallback) {
+        if (sPendCount == PC_PXI_PENDING) {
+            fprintf(stderr, "pc_pxi: %d replies pending inside a receive "
+                    "callback (tag %d)\n", PC_PXI_PENDING, tag);
+            __builtin_trap();
+        }
+        int i = (sPendHead + sPendCount++) % PC_PXI_PENDING;
+        sPending[i].tag = tag;
+        sPending[i].data = data;
+        sPending[i].err = err;
+        return;
+    }
+    sInCallback = 1;
+    sRecvCallback[tag]((PXIFifoTag)tag, data, err);
+    while (sPendCount > 0) {
+        int i = sPendHead;
+        sPendHead = (sPendHead + 1) % PC_PXI_PENDING;
+        sPendCount--;
+        if (sRecvCallback[sPending[i].tag] != NULL) {
+            sRecvCallback[sPending[i].tag]((PXIFifoTag)sPending[i].tag,
+                                           sPending[i].data, sPending[i].err);
+        }
+    }
+    sInCallback = 0;
+}
+
 void pc_pxi_set_responder(int tag, void (*fn)(u32 data))
 {
     sResponder[tag] = fn;
@@ -36,9 +79,7 @@ void pc_pxi_set_responder(int tag, void (*fn)(u32 data))
 
 void pc_pxi_reply(int tag, u32 data)
 {
-    if (sRecvCallback[tag] != NULL) {
-        sRecvCallback[tag]((PXIFifoTag)tag, data, FALSE);
-    }
+    deliver(tag, data, FALSE);
 }
 
 /* The same with the FIFO word's error bit as the sender set it: the ARM7's
@@ -46,9 +87,7 @@ void pc_pxi_reply(int tag, u32 data)
  * (CARDi_SendPxi), and TWL-SDK's ARM9 receiver acts only on such words. */
 void pc_pxi_reply_err(int tag, u32 data, BOOL err)
 {
-    if (sRecvCallback[tag] != NULL) {
-        sRecvCallback[tag]((PXIFifoTag)tag, data, err);
-    }
+    deliver(tag, data, err);
 }
 
 void PXI_Init(void)

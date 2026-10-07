@@ -100,7 +100,10 @@ func override OS_SetProtectionRegion1
 func override OS_SetProtectionRegion2
 func override OS_SpinWait
 func override OS_UnLockCartridge
-func override OSi_AlarmHandler
+# OSi_AlarmHandler is left recompiled although the host defines it (as a
+# trap: no D/P/Pt path fires an OS alarm). Black's TWL-SDK NVRAM driver
+# waits out a flash write with OS_SetAlarm, and the timer model
+# (pc_timers.c) delivers the timer-1 interrupt that runs the SDK's handler.
 func override OSi_ExceptionHandler
 func override OsCountZeroBits
 func override PMi_ReadRegister
