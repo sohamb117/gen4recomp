@@ -1,9 +1,8 @@
 # Proves Gardenia stepping off the gym door, the flower-clock puzzle (three talk-only trainers), and the Forest Badge.
 # Start: Eterna City warp 0 (Pokecenter door (305,530)) -> end: Eterna City at the gym door (14's start).
 title = "Eterna Gym: Gardenia and the Forest Badge"
-status = "planned"
 priority = "P0"
-estimate = 25000
+estimate = 21675
 refs = [
   "scripts_eterna_city.s:674-693",
   "scripts_eterna_city_gym.s:68",
@@ -37,12 +36,14 @@ notes = "Gym trainers are talk-only (tt NONE). Lab-only shortcut past the puzzle
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 37500
+frames = 32600
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 312
 z = 564
 face = "up"
@@ -56,6 +57,7 @@ note = "she walks into the gym (RemoveObject scripts_eterna_city.s:688)"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 312
 z = 562
 note = "gym door (warp 10) -> gym (11,27)"
@@ -66,6 +68,7 @@ map = "MAP_HEADER_ETERNA_CITY_GYM"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 13
 z = 22
 face = "right"
@@ -77,17 +80,161 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 note = "TRAINER_LASS_CAROLINE (324): CHERUBI 17, ROSELIA 17 (scripts_eterna_city_gym.s:151)"
 
 [[step]]
 do = "advance_text"
 note = "VAR_ETERNA_GYM_TRAINERS_BEATEN 1, AdvanceEternaGymClock -> state 1: hour-hand jump tile (11,18) N-S (gym_features.c:2310-2314)"
 
-# PHASE2: the tile path across the clock hands was not derived (collision tables gym_features.c:2333-2408 + the map's
-# land data). Remaining: Aroma Lady Jenna (20,17) talk -> auto_battle -> advance_text (clock 2, jump tile (6,13) E-W,
-# right fountain off); Aroma Lady Angela (2,7) talk -> auto_battle -> advance_text (clock 3, jump tile (11,8) N-S,
-# left fountain off); walk_to (11,4) face up interact (Gardenia (11,3)) -> advance_text -> auto_battle -> advance_text
-# (badge, TM86 :76-121); walk_to (11,27) -> wait_map MAP_HEADER_ETERNA_CITY so 14 starts on the gym door.
+[[step]]
+do = "walk_to"
+move = 3
+x = 11
+z = 19
+note = "bottom rim; state 1 (6:15): the hour hand is the path (11,12..19), jump tile (11,18) N-S (gym_features.c:2310-2314). the clock (x 5..17, z 7..19) is walkable only along its hands: sEternaGymClockCollision (src/overlay008/gym_features.c:2333-2408, 0 = walkable)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 11
+z = 13
+note = "up the hour hand to the centre"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 18
+z = 13
+note = "east along the minute hand (10..17,13) to the right ring"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 20
+z = 16
+face = "down"
+interact = true
+note = "Aroma Lady Jenna (20,17); the right ring is cut at z=19 by the fountain until state 2 (sEternaGymFountainCollision)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+move = 3
+note = "TRAINER_AROMA_LADY_JENNA: BUDEW 15, 16, 17"
+
+[[step]]
+do = "advance_text"
+note = "VAR_ETERNA_GYM_TRAINERS_BEATEN 2, clock state 2 (9:15): row z=13 across, jump tile (6,13) E-W; right fountain off"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 18
+z = 13
+note = "back to the clock's east end"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 4
+z = 13
+note = "west across the clock along z=13 (both hands), over the jump tile (6,13)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 2
+z = 8
+face = "up"
+interact = true
+note = "up the left ring to Aroma Lady Angela (2,7)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+move = 3
+note = "TRAINER_AROMA_LADY_ANGELA: ROSELIA 19"
+
+[[step]]
+do = "advance_text"
+note = "VAR_ETERNA_GYM_TRAINERS_BEATEN 3, clock state 3 (0:45): minute hand (5..12,13), hour hand (11,8..12), top rim; jump tile (11,8) N-S; left fountain off"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 4
+z = 13
+note = "back down the left ring"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 11
+z = 13
+note = "east along the minute hand to the centre"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 11
+z = 7
+note = "north up the hour hand to the top rim"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 11
+z = 4
+face = "up"
+interact = true
+note = "Gardenia (11,3) in the alcove above the clock"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+move = 3
+shot = "gardenia"
+note = "TRAINER_LEADER_GARDENIA: TURTWIG 20, CHERRIM 20, ROSERADE 22"
+
+[[step]]
+do = "advance_text"
+shot = "forest-badge"
+note = "GiveBadge BADGE_ID_FOREST, TM86 (scripts_eterna_city_gym.s:76-121); clock state 4 (0:30): the hour hand runs (11,8..18)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 11
+z = 7
+note = "back to the top rim"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 11
+z = 19
+note = "down the hour hand"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 11
+z = 27
+note = "gym exit (warp 0) -> Eterna City (312,562), 14's start"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ETERNA_CITY"
+
+[[step]]
+do = "wait_field"
 
 [expect]
 map = "MAP_HEADER_ETERNA_CITY"

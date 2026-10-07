@@ -2,9 +2,8 @@
 # and the Route 205 South grunts leaving.
 # Start: Floaroma Town warp 1 (Pokecenter door) -> end: Eterna Forest warp 0 (28,86) (12's start).
 title = "Valley Windworks: Commander Mars"
-status = "planned"
 priority = "P0"
-estimate = 15000
+estimate = 20545
 refs = [
   "scripts_valley_windworks_outside.s:20",
   "scripts_valley_windworks_outside.s:38",
@@ -39,12 +38,14 @@ notes = "Estimate: research ~10000 plus the walk to the forest. The Friday Drifl
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 22500
+frames = 30900
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 243
 z = 656
 face = "up"
@@ -57,6 +58,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 note = "TRAINER_GALACTIC_GRUNT_VALLEY_WINDWORKS_1 (843): GLAMEOW 13 (scripts_valley_windworks_outside.s:67)"
 
 [[step]]
@@ -65,6 +67,7 @@ note = "he goes inside (RemoveObject :83)"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 243
 z = 655
 face = "up"
@@ -76,6 +79,7 @@ do = "advance_text"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 243
 z = 654
 note = "door warp -> building (12,16)"
@@ -90,6 +94,7 @@ note = "OnFrame VAR_VALLEY_WINDWORKS_TEAM_GALACTIC_STATE==0: grunt leaves -> 1 (
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 19
 z = 7
 note = "coord (19,6..7) ==1 -> Mars at (20,7); grunts (3,8) N/W sight 2 and (12,3) S sight 2 may engage"
@@ -99,6 +104,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 shot = "mars"
 note = "TRAINER_COMMANDER_MARS_VALLEY_WINDWORKS (295): ZUBAT 15, PURUGLY 17 (scripts_valley_windworks_building.s:86)"
 
@@ -109,6 +115,7 @@ note = "grunts leave, Route 205 S grunts hidden, VAR_VALLEY_WINDWORKS_STATE 2, r
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 12
 z = 16
 note = "building exit (warp 0) -> outside (243,654); OnTransition -> VAR_VALLEY_WINDWORKS_TEAM_GALACTIC_STATE 3 (scripts_valley_windworks_outside.s:20,38)"
@@ -124,6 +131,7 @@ note = "OnFrame VAR_VALLEY_WINDWORKS_LOOKER_STATE==1: Looker -> 2 (scripts_valle
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 206
 z = 581
 max = 10000
@@ -146,3 +154,4 @@ battles = 2
 VAR_VALLEY_WINDWORKS_STATE = 2
 VAR_VALLEY_WINDWORKS_TEAM_GALACTIC_STATE = 3
 VAR_VALLEY_WINDWORKS_LOOKER_STATE = 2
+

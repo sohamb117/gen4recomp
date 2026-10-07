@@ -1,9 +1,8 @@
 # Proves Eterna Forest with Cheryl as partner (multi battles), the Soothe Bell, and the exit to Route 205 North.
 # Start: Eterna Forest warp 0 (28,86), the Route 205 South entrance -> end: Route 205 North after Cheryl leaves.
 title = "Eterna Forest with Cheryl"
-status = "planned"
 priority = "P0"
-estimate = 15000
+estimate = 23355
 refs = [
   "scripts_eterna_forest.s:19-25",
   "scripts_eterna_forest.s:29",
@@ -28,12 +27,14 @@ notes = "Multi battles with Cheryl: one Surf can clear both foes and also hits C
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 22500
+frames = 35100
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 28
 z = 85
 note = "coord (28..29,85) VAR_ETERNA_FOREST_FOLLOWER_CHERYL_STATE==0 -> Cheryl joins (SetHasPartner), bike dismounted (scripts_eterna_forest.s:29-57); never step back onto (28..29,86) (drops her, :88-115)"
@@ -44,6 +45,63 @@ shot = "cheryl-joins"
 
 [[step]]
 do = "walk_to"
+move = 3
+x = 36
+z = 70
+note = "waypoint (tests/e2e/tools/pt_map.py MAP_HEADER_ETERNA_FOREST: the forest is 96x96, wider than the probe window)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 42
+z = 60
+note = "waypoint (tests/e2e/tools/pt_map.py MAP_HEADER_ETERNA_FOREST: the forest is 96x96, wider than the probe window)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 53
+z = 66
+note = "waypoint (tests/e2e/tools/pt_map.py MAP_HEADER_ETERNA_FOREST: the forest is 96x96, wider than the probe window)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 58
+z = 78
+note = "waypoint (tests/e2e/tools/pt_map.py MAP_HEADER_ETERNA_FOREST: the forest is 96x96, wider than the probe window)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 64
+z = 72
+note = "waypoint (tests/e2e/tools/pt_map.py MAP_HEADER_ETERNA_FOREST: the forest is 96x96, wider than the probe window)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 70
+z = 62
+note = "waypoint (tests/e2e/tools/pt_map.py MAP_HEADER_ETERNA_FOREST: the forest is 96x96, wider than the probe window)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 85
+z = 55
+note = "waypoint (tests/e2e/tools/pt_map.py MAP_HEADER_ETERNA_FOREST: the forest is 96x96, wider than the probe window)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 76
+z = 44
+note = "waypoint (tests/e2e/tools/pt_map.py MAP_HEADER_ETERNA_FOREST: the forest is 96x96, wider than the probe window)"
+
+[[step]]
+do = "walk_to"
+move = 3
 x = 82
 z = 36
 max = 15000
@@ -56,6 +114,7 @@ note = "Soothe Bell, ClearHasPartner, Cheryl leaves -> 2 (scripts_eterna_forest.
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 86
 z = 36
 note = "east exit (events_eterna_forest warp 2) -> Route 205 North (259,524)"

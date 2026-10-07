@@ -17,7 +17,9 @@ from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, TILE_BEHAVIOR, TILE_COLLISION,
 # tables are byte-identical), as tap points: the centre of each button.
 TAP_FIGHT = (128, 80)          # sActionMenuTouchRects[0]: y 0x18-0x90, full width
 TAP_MOVES = [(64, 52), (192, 52), (64, 116), (192, 116)]  # sMoveSelectMenuTouchRects[1..4]
-TAP_TARGET = (196, 44)         # sTargetSelectMenuTouchRects[1]: the opponent on the right
+# sTargetSelectMenuTouchRects[1] and [0]: the opponent on the right, then the one on the left (the right one may
+# have fainted in a double battle: its button does nothing, and the target menu stays up)
+TAP_TARGETS = [(196, 44), (60, 44)]
 TAP_YES = (128, 68)            # sYesNoMenuTouchRects[0]: y 0x28-0x60
 TAP_NO = (128, 140)            # sYesNoMenuTouchRects[1]: y 0x70-0xA8
 # battle_party.c sPartyPokemonScreenTouchRects (slot i) and sSelectPokemonScreenTouchRects[SHIFT]
@@ -182,6 +184,7 @@ def bot_auto_battle(s, step, ctx):
     party_try = 0
     turns = 0
     last = None  # the menu answered last
+    target = 0   # TAP_TARGETS index
     while s.in_battle:
         if s.frame >= limit:
             raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
@@ -203,7 +206,9 @@ def bot_auto_battle(s, step, ctx):
                     s.note("auto_battle: move slot %d" % move)
                 _tap(s, TAP_MOVES[move])
             elif idx == MENU_TARGET:
-                _tap(s, TAP_TARGET)
+                if last == MENU_TARGET:
+                    target = 1 - target  # the target menu again: that opponent is gone, take the other
+                _tap(s, TAP_TARGETS[target])
             elif idx in MENU_ANSWER:
                 _tap(s, MENU_ANSWER[idx])
             else:

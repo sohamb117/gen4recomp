@@ -2,9 +2,8 @@
 # the win unhides the cycle-shop owner.
 # Start: Eterna City warp 0 (Pokecenter door) -> end: Eterna City at the building door (16's start).
 title = "Team Galactic Eterna Building: Jupiter"
-status = "planned"
 priority = "P0"
-estimate = 21000
+estimate = 9707
 refs = [
   "scripts_team_galactic_eterna_building_1f.s:44",
   "scripts_team_galactic_eterna_building_1f.s:50-51",
@@ -32,12 +31,14 @@ notes = "Estimate: research ~20000 plus the walk down and out. Cut trees reset o
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 31500
+frames = 14600
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 305
 z = 522
 face = "up"
@@ -49,6 +50,7 @@ do = "advance_text"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 305
 z = 519
 note = "building door (events_eterna_city warp 3) -> 1F (11,15)"
@@ -64,9 +66,10 @@ note = "OnFrame VAR_TEAM_GALACTIC_ETERNA_BUILDING_1F_STATE==0: Looker disguise s
 
 [[step]]
 do = "walk_to"
-x = 14
+move = 3
+x = 20
 z = 6
-note = "1F stairs (14,6) -> 2F (3,3); grunts (16,8) W 3 and (12,8) E 3 may engage"
+note = "1F stairs (20,6) (warp 2) -> 2F (8,3); the (14,6) stairs lead to a closed 2F room (tests/e2e/tools/pt_map.py); grunts (16,8) W 3 and (12,8) E 3 may engage"
 
 [[step]]
 do = "wait_map"
@@ -74,9 +77,10 @@ map = "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_2F"
 
 [[step]]
 do = "walk_to"
-x = 20
+move = 3
+x = 14
 z = 3
-note = "2F stairs (20,3) -> 3F (8,3); 2F grunts (3,6), (13,8) are talk-only"
+note = "2F stairs (14,3) (warp 3) -> 3F (2,3); 3F (8,3) is a closed room; 2F grunts (3,6), (13,8) are talk-only"
 
 [[step]]
 do = "wait_map"
@@ -84,9 +88,10 @@ map = "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_3F"
 
 [[step]]
 do = "walk_to"
-x = 20
+move = 3
+x = 14
 z = 3
-note = "3F stairs (20,3) -> 4F (8,3); grunt (8,7) N 3 and Scientist Travon (18,5) E 3 may engage"
+note = "3F stairs (14,3) (warp 3) -> 4F (3,3); 4F (8,3) is a closed room; Scientist Travon (18,5) E 3 may engage"
 
 [[step]]
 do = "wait_map"
@@ -94,6 +99,7 @@ map = "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_4F"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 14
 z = 7
 face = "up"
@@ -105,6 +111,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 shot = "jupiter"
 note = "TRAINER_COMMANDER_JUPITER_TEAM_GALACTIC_ETERNA_BUILDING (406): ZUBAT 21, SKUNTANK 23 (scripts_team_galactic_eterna_building_4f.s:30)"
 
@@ -115,9 +122,10 @@ note = "Team Galactic leaves; cycle-shop owner, Clefairy, Pokecenter Buneary unh
 
 [[step]]
 do = "walk_to"
-x = 8
+move = 3
+x = 3
 z = 3
-note = "4F warp 0 -> 3F (20,3)"
+note = "4F warp 1 -> 3F (14,3)"
 
 [[step]]
 do = "wait_map"
@@ -125,9 +133,10 @@ map = "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_3F"
 
 [[step]]
 do = "walk_to"
-x = 8
+move = 3
+x = 2
 z = 3
-note = "3F warp 0 -> 2F (20,3)"
+note = "3F warp 2 -> 2F (14,3)"
 
 [[step]]
 do = "wait_map"
@@ -135,9 +144,10 @@ map = "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_2F"
 
 [[step]]
 do = "walk_to"
-x = 3
+move = 3
+x = 8
 z = 3
-note = "2F warp 0 -> 1F (14,6)"
+note = "2F warp 2 -> 1F (20,6)"
 
 [[step]]
 do = "wait_map"
@@ -145,6 +155,7 @@ map = "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_1F"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 11
 z = 15
 note = "1F exit (warp 0) -> Eterna (305,519), 16's start"

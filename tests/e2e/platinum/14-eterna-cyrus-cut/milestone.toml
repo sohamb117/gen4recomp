@@ -1,9 +1,8 @@
 # Proves the Eterna statue scene (Barry, Cyrus) and Cynthia's HM01.
 # Start: Eterna City warp 10 (gym door (312,562)) -> end: Eterna City with HM01.
 title = "Eterna: Cyrus at the statue, Cynthia's HM01"
-status = "planned"
 priority = "P0"
-estimate = 5000
+estimate = 4571
 refs = [
   "scripts_eterna_city.s:170",
   "scripts_eterna_city.s:181-183",
@@ -21,10 +20,11 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 7500
+frames = 6900
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 303
 z = 524
 note = "coord (303,523..526) VAR_ETERNA_CITY_STATE==0 -> Barry, the statue, Cyrus -> 1 (scripts_eterna_city.s:710-820)"
@@ -35,6 +35,7 @@ shot = "cyrus-statue"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 305
 z = 522
 note = "coord (304..306,522) VAR_ETERNA_CITY_STATE==1 -> Cynthia [INFERENCE: the statue scene leaves the player off this tile, so the step fires the coord]"
