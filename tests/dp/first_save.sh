@@ -12,8 +12,10 @@
 #   tests/dp/first_save.sh [diamond] [pearl]       (default: both)
 #
 # Environment: NP_HEADLESS (default build/core-dp/np_headless), NP_SAVE4
-# (default build/features/np_save4), OUT (default build/tests/dp-first-save;
-# the last frame of every run is kept there as PPM for inspection).
+# (default: build/features/np_save4, configured and rebuilt from this
+# checkout's features/ on every run, so its JSON matches the counter_of
+# reader below), OUT (default build/tests/dp-first-save; the last frame of
+# every run is kept there as PPM for inspection).
 # A game whose ROM (games/diamond/build/<game>.us/poke<game>.us.nds) or core
 # is missing is skipped; exit 77 when every requested game was skipped.
 # Each .sched names its frame count in a "# frames: N" line.
@@ -22,7 +24,15 @@ set -u
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 HERE="$ROOT/tests/dp"
 HEADLESS=${NP_HEADLESS:-$ROOT/build/core-dp/np_headless}
-SAVE4=${NP_SAVE4:-$ROOT/build/features/np_save4}
+if [ -n "${NP_SAVE4:-}" ]; then
+    SAVE4=$NP_SAVE4
+else
+    SAVE4=$ROOT/build/features/np_save4
+    { [ -f "$ROOT/build/features/build.ninja" ] ||
+        cmake -S "$ROOT/features" -B "$ROOT/build/features" -G Ninja; } >/dev/null &&
+        cmake --build "$ROOT/build/features" --target np_save4 >/dev/null ||
+        { echo "FAIL: cannot build np_save4 from $ROOT/features"; exit 1; }
+fi
 OUT=${OUT:-$ROOT/build/tests/dp-first-save}
 NAME=NATIVE
 

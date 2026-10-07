@@ -105,14 +105,24 @@ then the native core). Against the decompilation-built core:
   give exactly the hashes in `tests/dp/expected.txt` (49e21389a9f73440,
   74de04024a1ba0df): copyright, title and Rowan's intro are identical,
   audio included.
-- The new game plays to the first save (`tests/dp/first_save.sh`): the
-  stored save holds the trainer NATIVE, CONTINUE loads it and saves again.
-  No run-time dispatch miss in the 12,600 + 3,400 frames (a miss aborts and
-  names the address). Audio is identical to the decompilation core's through
-  frame 12,300, and so are the frames up to 9,001.
-- One divergence: from the bedroom on (frame 10,001), the player's avatar
-  (a 16x23 px billboard at the screen centre, 314 pixels) is not drawn;
-  everything else on both screens is identical. Not yet diagnosed.
+- The new game plays to the first save (`tests/dp/first_save.sh`, with
+  `NP_HEADLESS=build/core-ndsrec/np_headless`; the script builds np_save4
+  from the checkout it runs in): the stored save holds the trainer NATIVE,
+  CONTINUE loads it and saves again. No run-time dispatch miss (a miss
+  aborts and names the address).
+- Every Diamond case of `tests/dp/expected.txt` matches
+  (`NP_DP_CORE=build/core-ndsrec tests/dp/regress.sh --no-build --only
+  d-boot --only d-intro --only d-state-boot --only d-state-save`),
+  d-state-save (12,300 frames, the bedroom and the first save) included.
+  The player's avatar was missing from the bedroom on until the host's
+  fixed-size MI copies modelled the geometry engine: NNS G3d's billboard
+  handler reads the clip matrix through the recompiled `G3X_GetClipMtx`,
+  which passes the register address 0x04000640 itself to `MI_Copy64B`
+  (decompiled C passes a block `armrec_gx_reg()` has just refreshed), so
+  the host copied a stale matrix and the billboard was clipped away.
+  `MI_Copy16B`..`64B` (games/platinum/pc/src/pc_mi.c) now refresh a source
+  in the result block and push each word stored into the command window
+  (`G3_MultMtx33`'s `MI_Copy36B` to GXFIFO).
 
 ## What is different from Diamond
 

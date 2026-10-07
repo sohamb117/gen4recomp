@@ -23,6 +23,8 @@
 #include <nitro/mi/uncompress.h>
 #include <nitro/os/ARM9/cache.h>
 
+#include "pc_gpu3d.h"
+
 static void __attribute__((noreturn)) pc_mi_trap(const char *name, const char *reason)
 {
     fprintf(stderr, "pc: %s: not implemented (%s)\n", name, reason);
@@ -166,12 +168,41 @@ void MIi_CpuCopyFast(const void *srcp, void *destp, u32 size)
     }
 }
 
-/* Fixed-size ldmia/stmia sequences: plain forward copies of N bytes. */
-void MI_Copy16B(register const void *pSrc, register void *pDest) { memcpy(pDest, pSrc, 16); }
-void MI_Copy32B(register const void *pSrc, register void *pDest) { memcpy(pDest, pSrc, 32); }
-void MI_Copy36B(register const void *pSrc, register void *pDest) { memcpy(pDest, pSrc, 36); }
-void MI_Copy48B(register const void *pSrc, register void *pDest) { memcpy(pDest, pSrc, 48); }
-void MI_Copy64B(register const void *pSrc, register void *pDest) { memcpy(pDest, pSrc, 64); }
+/*
+ * Fixed-size ldmia/stmia sequences: plain forward copies of N bytes, except
+ * where the SDK points them at the geometry engine. G3_MultMtx33 stores the
+ * MTX_MULT_3x3 command word to GXFIFO and copies the nine parameters after it
+ * with MI_Copy36B(m, &reg_G3X_GXFIFO); G3X_GetClipMtx and G3X_GetVectorMtx
+ * read the clip and direction matrices out of the result block with
+ * MI_Copy64B and MI_Copy36B. Decompiled C hands these the staging word and a
+ * block armrec_gx_reg() has just refreshed; recompiled SDK code (a ROM-only
+ * core's GX_g3imm/GX_g3x, which NNS G3d's billboard handlers call) hands them
+ * the register addresses themselves. So the copy does what the bus does: a
+ * source in the status and result block is computed first, and each word
+ * stored into the command window is its own store (consecutive addresses,
+ * the stmia's, all FIFO pushes inside the GXFIFO mirror).
+ */
+static void mi_copy_fixed(const void *pSrc, void *pDest, u32 size)
+{
+    uintptr_t s = (uintptr_t)pSrc, d = (uintptr_t)pDest;
+    u32 words[16], i;
+
+    if (s < PC_GX_IO_END && s + size > 0x04000600u)
+        pc_gpu3d_refresh_regs();
+    if (d < PC_GX_CMD_END && d + size > PC_GX_FIFO_BASE) {
+        memcpy(words, pSrc, size);
+        for (i = 0; i < size / 4; i++)
+            pc_gx_store((volatile uint32_t *)(d + i * 4), words[i]);
+        return;
+    }
+    memcpy(pDest, pSrc, size);
+}
+
+void MI_Copy16B(register const void *pSrc, register void *pDest) { mi_copy_fixed(pSrc, pDest, 16); }
+void MI_Copy32B(register const void *pSrc, register void *pDest) { mi_copy_fixed(pSrc, pDest, 32); }
+void MI_Copy36B(register const void *pSrc, register void *pDest) { mi_copy_fixed(pSrc, pDest, 36); }
+void MI_Copy48B(register const void *pSrc, register void *pDest) { mi_copy_fixed(pSrc, pDest, 48); }
+void MI_Copy64B(register const void *pSrc, register void *pDest) { mi_copy_fixed(pSrc, pDest, 64); }
 
 void MI_Zero36B(register void *pDest) { memset(pDest, 0, 36); }
 
