@@ -1342,6 +1342,24 @@ WASM_ASM_NAMES = None
 # --xmap: {object: {section: origin}} from the ROM's link map; parse_file()
 # starts each section's location counter there. Set by main().
 XMAP_ORIGINS = {}
+# Functions that hand their result back in the condition flags: they write
+# them with `msr cpsr_f` (any MSR to the CPSR's flags field) before
+# returning, and their callers branch on the flags right after the call.
+# The EABI soft-float comparisons are the case (TWL-SDK's runtime,
+# __aeabi_cfcmple and kin: `bl cmp; bcs`, Black's angle normalisation
+# loops). A function's flags are its own C locals, so after a call to one of
+# these the caller reloads them from the CPSR the MSR wrote. Set by main().
+FLAG_RESULT_FUNCS = frozenset()
+
+
+def writes_cpsr_flags(func):
+    """Does the body contain an MSR to the CPSR's flags field?"""
+    for it in func.items:
+        if isinstance(it, Insn) and it.mnem == "msr":
+            dest = split_operands(it.ops)[0].strip().lower()
+            if dest.startswith("cpsr") and ("_" not in dest or "f" in dest.split("_")[1]):
+                return True
+    return False
 
 _C_STDLIB = """
     isalnum isalpha isblank iscntrl isdigit isgraph islower isprint ispunct
@@ -2120,6 +2138,8 @@ def emit_branch(ctx, ins, out, func, is_call):
         t = ctx.newtmp()
         out.append("{ uint64_t %s = %s(%s, r0, r1, r2, r3);" % (t, call, sym))
         out.append("  r0 = (uint32_t)%s; r1 = (uint32_t)(%s >> 32); }" % (t, t))
+        if target in FLAG_RESULT_FUNCS:
+            out.append("ARM_FLAGS_FROM_PSR(armrec_mrs(0));")
     else:
         out.append("%s(%s, r0, r1, r2, r3);" % (tail, sym))
 
@@ -2212,7 +2232,14 @@ def emit_insn(ctx, ins, func, out):
     if m == "mrs":
         toks = split_operands(ins.ops)
         spsr = 1 if "spsr" in toks[1].lower() else 0
-        out.append("%s = armrec_mrs(%d);" % (ctx.regc(reg_num(toks[0])), spsr))
+        if spsr:
+            out.append("%s = armrec_mrs(1);" % ctx.regc(reg_num(toks[0])))
+        else:
+            # The flags live in this function's locals, not in the word
+            # armrec_mrs keeps: NZCV come from the locals, the rest from it.
+            out.append("%s = (armrec_mrs(0) & 0x0FFFFFFFu) | ((uint32_t)nf << 31) | "
+                       "((uint32_t)zf << 30) | ((uint32_t)cf << 29) | ((uint32_t)vf << 28);"
+                       % ctx.regc(reg_num(toks[0])))
         return
     if m == "msr":
         toks = split_operands(ins.ops)
@@ -2233,6 +2260,8 @@ def emit_insn(ctx, ins, func, out):
                 raise Unsupported("bad MSR source %r" % src)
             val = ctx.regc(rn)
         out.append("armrec_msr(%d, 0x%08Xu, %s);" % (spsr, mask, val))
+        if not spsr and mask & 0xFF000000:
+            out.append("ARM_FLAGS_FROM_PSR(%s);" % val)
         return
     if m in ("mrc", "mcr"):
         toks = [t.strip() for t in split_operands(ins.ops)]
@@ -3213,6 +3242,21 @@ def file_touches_card(path):
         return False
 
 
+# The timers' counters, TM0CNT_L .. TM3CNT_L (0x04000100 to 0x0400010F),
+# named as literals (.word 0x04000100: the SDK's OS_GetTick, OS timer code).
+# A file naming one gets ARMREC_TIMER_HOOK: its loads there go through
+# pc/src/pc_timers.c, which lets time pass for a loop polling a counter.
+TIMER_ADDR_RE = re.compile(r"0x0*400010[0-9a-f]\b", re.I)
+
+
+def file_touches_timer(path):
+    try:
+        with open(path, "r", errors="replace") as fh:
+            return TIMER_ADDR_RE.search(fh.read()) is not None
+    except OSError:
+        return False
+
+
 def collect_symbols(paths, defines, incdirs, stems, local_rename=True):
     """
     Pass 1: every function and data symbol, with its guest address.
@@ -3514,7 +3558,9 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
                               ("#define ARMREC_AGB_HOOK 1\n"
                                if file_touches_agb(path) else "") +
                               ("#define ARMREC_CARD_HOOK 1\n"
-                               if file_touches_card(path) else "")))
+                               if file_touches_card(path) else "") +
+                              ("#define ARMREC_TIMER_HOOK 1\n"
+                               if file_touches_timer(path) else "")))
         for name in sorted(called - defined):
             out.write("extern uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t);\n" % name)
         for name in sorted(ext):
@@ -3877,7 +3923,7 @@ def main():
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
 
-    global TARGET_WASM, GUEST_LIBC_EXT, WASM_ASM_NAMES, XMAP_ORIGINS
+    global TARGET_WASM, GUEST_LIBC_EXT, WASM_ASM_NAMES, XMAP_ORIGINS, FLAG_RESULT_FUNCS
     TARGET_WASM = args.wasm
     GUEST_LIBC_EXT = frozenset(n for spec in args.guest_libc
                                for n in spec.split(",") if n)
@@ -3994,16 +4040,20 @@ def main():
     # name that is only declared.
     asm_names = set(symtab)
     declared = set()
+    flag_result = set()
     for p in args.files:
         pfuncs, pdata, pglobals = parsed[p][0], parsed[p][1], parsed[p][2]
         for f in pfuncs:
             asm_names.add(f.name)
             asm_names |= set(f.entries)
             asm_names |= set(f.labels)
+            if writes_cpsr_flags(f):
+                flag_result |= set(f.entries)
         for _addr, label, kind, _payload in pdata:
             if kind == "label" and label:
                 asm_names.add(label)
         declared |= set(pglobals)
+    FLAG_RESULT_FUNCS = frozenset(flag_result)
     if args.wasm:
         # Defined, not merely declared: a `.global` alone can name C.
         WASM_ASM_NAMES = frozenset(asm_names)

@@ -278,10 +278,41 @@ the card layer from FS) and recorded as anchors in sigs.py.
   until the callback returns, as the hardware's non-reentrant FIFO
   interrupt does. The write then waits out an OS alarm, which the SDK's
   OSi_AlarmHandler handles from the timer model's timer-1 interrupt.
-- Boot now runs: the Pokémon Company / Nintendo logo (frame 100), the
-  copyright (300), the Game Freak logo and the opening movie (500-2000),
-  sound audible (rms ~5000/3700 over 2000 frames). PXI tag 13 (CTRDG) is
-  dropped without harm; tag 0x17 is TWL's SCFG clock tag (its callback
-  writes 0x04004004) and is never sent to.
-- ov230: nothing on this path calls into it (a call would stop the run at
-  run-time dispatch, naming the address).
+- Boot runs: the Pokémon Company / Nintendo logo (frame 100), the
+  copyright (300), the Game Freak logo and the opening movie (500-4500),
+  the title with the 3D Reshiram (4750 on), sound audible (rms ~6000).
+  PXI tag 13 (CTRDG) is dropped without harm; tag 0x17 is TWL's SCFG clock
+  tag (its callback writes 0x04004004) and is never sent to.
+- Two machine-model gaps the movie and the title menu hit, both general:
+  - flags returned from a call: TWL-SDK's EABI soft-float comparisons
+    (sub_0209BC74 and kin) return their result in the flags with
+    `msr cpsr_f`, and the caller branches on them after `bl` (ov88's angle
+    normalisation looped forever). armrec now merges a function's local
+    flags into `mrs`, loads them back on `msr` to the flags field, and
+    after a call to any function writing the CPSR flags
+    (FLAG_RESULT_FUNCS) reloads them from the CPSR;
+  - busy waits on the tick: Black's IR-chip probe (ov231, loaded when
+    Start is pressed at the title; it drives AUXSPI and reads 0x08 back,
+    not the chip's 0xAA, so the game takes it as absent) spins on
+    OS_GetTick for 50-60 us. Files naming a timer counter get
+    ARMREC_TIMER_HOOK; after 256 counter reads within one frame each read
+    advances the timers by 256 cycles (pc_timers.c), overflow interrupts
+    pending until the VBlank.
+- New game: the professor's intro runs (her lines, the boy/girl choice, the
+  name, "Let's go meet the world of Pokémon!", frames 5300-10000 with A
+  held every 40 frames from 5300). Her sprite is not drawn in most of those
+  frames (top screen white with the text box): not investigated.
+- **Blocker: ov230.** At frame 10044, right after the intro, the static
+  module's sub_02011D9C (Thumb, reached through a function pointer from the
+  state runner sub_020315F0 <- sub_020313EC <- sub_020055F8 <- NitroMain)
+  loads overlay 230 through sub_02034AC4 -> sub_02079264 -> FS_StartOverlay
+  and then calls into it (0x021882A0 and 0x02188354, run-time dispatch,
+  comparing the first result with the complement of a literal). ov230 is the
+  self-modifying overlay left opaque; its five static initialisers are not
+  recompiled, so the run stops in pc_dp_overlay_sinit by name. That is the
+  end of the road for this approach on the new-game path: the overlay is
+  neither decoded nor stubbed. `PC_TRACE_OVERLAYS=1` (np_headless
+  `-e PC_TRACE_OVERLAYS=1`) prints every overlay made resident.
+- White: the same core build reaches its title (Zekrom) by frame 4500 with
+  the same overlays (10, 11, 9, 13, 228, 88, 179, 15); its new game is
+  expected to reach the same ov230 load.

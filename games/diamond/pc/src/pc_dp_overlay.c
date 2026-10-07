@@ -88,6 +88,23 @@ void pc_dp_overlay_start(FSOverlayInfo *p_ovi)
     if (h->flag & 1u) {
         MIi_UncompressBackward((u8 *)h->ram_address + h->compressed);
     }
+    /* PC_TRACE_OVERLAYS=1: one line per overlay made resident, so a run
+     * shows which overlays its path loads (Black: whether the opaque,
+     * self-modifying ov230 is among them). */
+    {
+        extern char *getenv(const char *);
+        extern unsigned long long pc_irq_frames(void);
+        static int sTrace = -1;
+
+        if (sTrace < 0) {
+            const char *e = getenv("PC_TRACE_OVERLAYS");
+            sTrace = e != NULL && e[0] != '\0' && e[0] != '0';
+        }
+        if (sTrace) {
+            fprintf(stderr, "pc_dp_overlay: frame %llu: overlay %u at 0x%08X\n",
+                    pc_irq_frames(), (unsigned)h->id, (unsigned)(uintptr_t)h->ram_address);
+        }
+    }
     armrec_load_overlay((int)h->id, (uint32_t)(uintptr_t)h->ram_address,
                         h->ram_size + h->bss_size);
 }

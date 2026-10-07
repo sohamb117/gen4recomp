@@ -471,6 +471,22 @@ uint32_t armrec_agb_load8(uint32_t a);
 void armrec_card_store(uint32_t a, uint32_t v, int size);
 uint32_t armrec_card_load(uint32_t a, int size);
 
+/*
+ * The seventh: the four timers' counters (TM0CNT_L .. TM3CNT_L, 0x04000100
+ * to 0x0400010F). pc/src/pc_timers.c advances them a VBlank at a time; a
+ * load here also counts as a poll, and a loop that keeps reading a counter
+ * within one frame (a busy wait on OS_GetTick, Black's IR probe in ov231)
+ * sees time pass. Loads only: stores are plain registers, as before. Per
+ * file: the files naming a timer register.
+ */
+#define ARM_TIMER_BASE 0x04000100u
+#define ARM_TIMER_SIZE 0x10u
+
+#define ARM_TIMER_HIT(a)                                                      \
+    (__builtin_expect((uint32_t)((a) - ARM_TIMER_BASE) < ARM_TIMER_SIZE, 0))
+
+uint32_t armrec_timer_load(uint32_t a, int size);
+
 #ifdef ARMREC_CHECKED_MEM
 uint32_t armrec_ld32(uint32_t a);
 uint32_t armrec_ld16(uint32_t a);
@@ -493,7 +509,8 @@ void armrec_st8(uint32_t a, uint32_t v);
  * a macro would re-evaluate them.
  */
 #if defined(ARMREC_CP_HOOK) || defined(ARMREC_GX_HOOK) || defined(ARMREC_IPC_HOOK) \
-    || defined(ARMREC_SPI_HOOK) || defined(ARMREC_AGB_HOOK) || defined(ARMREC_CARD_HOOK)
+    || defined(ARMREC_SPI_HOOK) || defined(ARMREC_AGB_HOOK) || defined(ARMREC_CARD_HOOK) \
+    || defined(ARMREC_TIMER_HOOK)
 static inline uint32_t ARM_LD32(uint32_t a) {
 #ifdef ARMREC_CP_HOOK
     if (ARM_CP_HIT(a)) return armrec_cp_read32(a);
@@ -509,6 +526,9 @@ static inline uint32_t ARM_LD32(uint32_t a) {
 #endif
 #ifdef ARMREC_CARD_HOOK
     if (ARM_CARD_HIT(a)) return armrec_card_load(a, 4);
+#endif
+#ifdef ARMREC_TIMER_HOOK
+    if (ARM_TIMER_HIT(a)) return armrec_timer_load(a, 4);
 #endif
     return *(uint32_t *)ARM_HOSTPTR(a);
 }
@@ -528,6 +548,9 @@ static inline uint32_t ARM_LD16(uint32_t a) {
 #ifdef ARMREC_CARD_HOOK
     if (ARM_CARD_HIT(a)) return armrec_card_load(a, 2);
 #endif
+#ifdef ARMREC_TIMER_HOOK
+    if (ARM_TIMER_HIT(a)) return armrec_timer_load(a, 2);
+#endif
     return *(uint16_t *)ARM_HOSTPTR(a);
 }
 static inline uint32_t ARM_LD8(uint32_t a) {
@@ -545,6 +568,9 @@ static inline uint32_t ARM_LD8(uint32_t a) {
 #endif
 #ifdef ARMREC_CARD_HOOK
     if (ARM_CARD_HIT(a)) return armrec_card_load(a, 1);
+#endif
+#ifdef ARMREC_TIMER_HOOK
+    if (ARM_TIMER_HIT(a)) return armrec_timer_load(a, 1);
 #endif
 #ifdef ARMREC_AGB_HOOK
     if (ARM_AGB_HIT(a)) return armrec_agb_load8(a);
@@ -658,6 +684,17 @@ extern uint32_t armrec_sp;
         uint32_t _t = (uint32_t)(x); \
         (nf) = _t >> 31;           \
         (zf) = (_t == 0);          \
+    } while (0)
+
+/* NZCV from a PSR word: an MSR to the flags field, and the flags a
+ * flag-returning callee (armrec.py FLAG_RESULT_FUNCS) left in the CPSR. */
+#define ARM_FLAGS_FROM_PSR(psr)        \
+    do {                               \
+        uint32_t _p = (uint32_t)(psr); \
+        nf = _p >> 31;                 \
+        zf = (_p >> 30) & 1u;          \
+        cf = (_p >> 29) & 1u;          \
+        vf = (_p >> 28) & 1u;          \
     } while (0)
 
 /* Carry out of an unsigned add; overflow out of a signed add. */
