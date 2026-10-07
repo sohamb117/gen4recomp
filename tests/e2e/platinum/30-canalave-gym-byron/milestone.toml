@@ -3,9 +3,8 @@
 # front of the entrance (16,26) after Byron on the top floor, BADGE_ID_MINE, TM91.
 
 title = "Canalave Gym: Byron and the Mine Badge"
-status = "planned"
 priority = "P0"
-estimate = 24000
+estimate = 26749
 refs = [
   "src/overlay008/gym_features.c:880-1017",
   "src/overlay008/gym_features.c:1020-1220",
@@ -40,7 +39,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 36000
+frames = 40200
 
 [[step]]
 do = "walk_to"

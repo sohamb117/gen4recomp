@@ -5,9 +5,8 @@
 # coord (47,724), VAR_CANALAVE_CITY_STATE 1.
 
 title = "Route 218 to Canalave: form-detection upgrade, bridge rival"
-status = "planned"
 priority = "P0"
-estimate = 14000
+estimate = 16221
 refs = [
   "scripts_route_218_gate_to_canalave_city.s:10-40",
   "scripts_canalave_city.s:118-189",
@@ -37,7 +36,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 21000
+frames = 24400
 
 [[step]]
 do = "fly"

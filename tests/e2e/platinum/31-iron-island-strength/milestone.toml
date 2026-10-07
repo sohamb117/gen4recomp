@@ -2,9 +2,8 @@
 # Start: Canalave Gym entrance (16,26) (30's end; the lab on the gym's warp (16,27)), VAR_CANALAVE_CITY_STATE 2 -> end: Iron Island (288), HM04.
 
 title = "Iron Island: Riley gives HM04 Strength"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 4427
 refs = [
   "scripts_init_canalave_city.s:9",
   "scripts_canalave_city.s:219-231",
@@ -37,7 +36,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 18000
+frames = 6700
 
 [[step]]
 do = "walk_to"

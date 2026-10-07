@@ -3,9 +3,8 @@
 # Start: Canalave City (32's end; the lab at the Pokemon Center door (58,722)) -> end: Valor Cavern (316), Saturn beaten.
 
 title = "Lake Valor (drained): Saturn in Valor Cavern"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 21863
 refs = [
   "scripts_valor_lakefront.s:19-42",
   "scripts_valor_cavern.s:13",
@@ -21,7 +20,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 36000
+frames = 32800
 
 [[step]]
 do = "fly"

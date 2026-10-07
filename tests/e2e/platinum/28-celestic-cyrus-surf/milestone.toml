@@ -3,9 +3,8 @@
 # VAR_CELESTIC_TOWN_STATE 2.
 
 title = "Celestic Town: grunt, Cyrus at the ruins painting, HM03 Surf"
-status = "planned"
 priority = "P0"
-estimate = 16000
+estimate = 55221
 refs = [
   "events_route_210_north.json",
   "scripts_celestic_town.s:24-46",
@@ -45,7 +44,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 70000
+frames = 82900
 
 [[step]]
 do = "walk_to"

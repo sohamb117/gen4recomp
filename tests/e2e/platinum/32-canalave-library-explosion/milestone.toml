@@ -4,9 +4,8 @@
 # VAR_CANALAVE_CITY_STATE 5.
 
 title = "Canalave Library: Lake Valor explosion"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 7557
 refs = [
   "scripts_canalave_city.s:681-711",
   "scripts_init_canalave_library_3f.s",
@@ -37,7 +36,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 18000
+frames = 11400
 
 [[step]]
 do = "fly"

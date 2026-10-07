@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~999933 frames estimated
+### Story chain: 56 milestones, ~1041971 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -134,12 +134,12 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [25-pastoria-explosion](platinum/25-pastoria-explosion/milestone.toml) | Pastoria: Wake and rival scene, Great Marsh explosion | P0 | 2795 | prev + `lab.recipe` | MAP_HEADER_PASTORIA_CITY | passing |
 | [26-galactic-chase-secretpotion](platinum/26-galactic-chase-secretpotion/milestone.toml) | Pastoria to Valor Lakefront: grunt chase and the SecretPotion | P0 | 15145 | prev + `lab.recipe` | MAP_HEADER_VALOR_LAKEFRONT | passing |
 | [27-route210-psyduck-oldcharm](platinum/27-route210-psyduck-oldcharm/milestone.toml) | Route 210 South: SecretPotion on the Psyduck, Old Charm | P0 | 46525 | prev + `lab.recipe` | MAP_HEADER_ROUTE_210_SOUTH | passing |
-| [28-celestic-cyrus-surf](platinum/28-celestic-cyrus-surf/milestone.toml) | Celestic Town: grunt, Cyrus at the ruins painting, HM03 Surf | P0 | 16000 | prev + `lab.recipe` | MAP_HEADER_CELESTIC_TOWN | planned |
-| [29-route218-canalave-rival](platinum/29-route218-canalave-rival/milestone.toml) | Route 218 to Canalave: form-detection upgrade, bridge rival | P0 | 14000 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY | planned |
-| [30-canalave-gym-byron](platinum/30-canalave-gym-byron/milestone.toml) | Canalave Gym: Byron and the Mine Badge | P0 | 24000 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY_GYM | planned |
-| [31-iron-island-strength](platinum/31-iron-island-strength/milestone.toml) | Iron Island: Riley gives HM04 Strength | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_IRON_ISLAND | planned |
-| [32-canalave-library-explosion](platinum/32-canalave-library-explosion/milestone.toml) | Canalave Library: Lake Valor explosion | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY | planned |
-| [33-lake-valor-saturn](platinum/33-lake-valor-saturn/milestone.toml) | Lake Valor (drained): Saturn in Valor Cavern | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_VALOR_CAVERN | planned |
+| [28-celestic-cyrus-surf](platinum/28-celestic-cyrus-surf/milestone.toml) | Celestic Town: grunt, Cyrus at the ruins painting, HM03 Surf | P0 | 55221 | prev + `lab.recipe` | MAP_HEADER_CELESTIC_TOWN | passing |
+| [29-route218-canalave-rival](platinum/29-route218-canalave-rival/milestone.toml) | Route 218 to Canalave: form-detection upgrade, bridge rival | P0 | 16221 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY | passing |
+| [30-canalave-gym-byron](platinum/30-canalave-gym-byron/milestone.toml) | Canalave Gym: Byron and the Mine Badge | P0 | 26749 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY_GYM | passing |
+| [31-iron-island-strength](platinum/31-iron-island-strength/milestone.toml) | Iron Island: Riley gives HM04 Strength | P0 | 4427 | prev + `lab.recipe` | MAP_HEADER_IRON_ISLAND | passing |
+| [32-canalave-library-explosion](platinum/32-canalave-library-explosion/milestone.toml) | Canalave Library: Lake Valor explosion | P0 | 7557 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY | passing |
+| [33-lake-valor-saturn](platinum/33-lake-valor-saturn/milestone.toml) | Lake Valor (drained): Saturn in Valor Cavern | P0 | 21863 | prev + `lab.recipe` | MAP_HEADER_VALOR_CAVERN | passing |
 | [34-lake-verity-mars](platinum/34-lake-verity-mars/milestone.toml) | Lake Verity: Mars | P0 | 14000 | prev + `lab.recipe` | MAP_HEADER_LAKE_VERITY | planned |
 | [35-coronet-to-snowpoint](platinum/35-coronet-to-snowpoint/milestone.toml) | Mt Coronet B1F to Snowpoint via Routes 216/217, HM08 | P0 | 26000 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY | planned |
 | [36-snowpoint-gym-candice](platinum/36-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: Candice and the Icicle Badge | P0 | 22000 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY_GYM | planned |
@@ -436,7 +436,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_CELESTIC_TOWN; >= 2 battles; flags set FLAG_HIDE_ROUTE_218_BLOCKADE, FLAG_DELIVERED_OLD_CHARM, FLAG_EXAMINED_CELESTIC_TOWN_CAVE_PAINTING; vars VAR_CELESTIC_TOWN_STATE=2
-- frames: estimate 16000, budget 70000
+- frames: estimate 55221, budget 82900
 - refs: events_route_210_north.json; scripts_celestic_town.s:24-46; scripts_celestic_town.s:83-107; scripts_celestic_town_cave.s:27-63; scripts_celestic_town_cave.s:415-429; scripts_celestic_town_cave.s:112-142; scripts_celestic_town.s:224-243; scripts_celestic_town.s:21; scripts_celestic_town.s:84; scripts_celestic_town.s:89; scripts_celestic_town.s:101; scripts_celestic_town.s:102; scripts_celestic_town_cave.s:31; scripts_celestic_town_cave.s:32; scripts_celestic_town_cave.s:48; scripts_celestic_town_cave.s:132; scripts_celestic_town_cave.s:49; scripts_celestic_town_cave.s:113; scripts_celestic_town_cave.s:114; scripts_celestic_town_cave.s:120; scripts_celestic_town_cave.s:129-131; scripts_celestic_town_cave.s:133; scripts_celestic_town_cave.s:134; scripts_celestic_town_cave.s:141; scripts_celestic_town.s:236; scripts_celestic_town.s:237; scripts_celestic_town.s:182-196; scripts_celestic_town.s:94-102; events_celestic_town_cave.json; scripts_celestic_town_cave.s:102-110
 
 #### platinum/29-route218-canalave-rival — Route 218 to Canalave: form-detection upgrade, bridge rival
@@ -445,7 +445,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 62 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT)
 - trainers: events_route_218 (warp 0 (70,754); TRAINER_GUITARIST_TONY (80,753) sight 4, TRAINER_SAILOR_SKYLER (76,746) sight 3); TRAINER_RIVAL_CANALAVE_CITY_TURTWIG
 - end state: map MAP_HEADER_CANALAVE_CITY; >= 1 battles; flags set FLAG_HIDE_ROUTE_218_GATE_TO_CANALAVE_CITY_SCIENTIST_M; vars VAR_CANALAVE_CITY_STATE=1, VAR_ROUTE_218_GATE_TO_CANALAVE_CITY_STATE=1
-- frames: estimate 14000, budget 21000
+- frames: estimate 16221, budget 24400
 - refs: scripts_route_218_gate_to_canalave_city.s:10-40; scripts_canalave_city.s:118-189; events_route_218.json; scripts_canalave_city.s:36; scripts_route_218_gate_to_canalave_city.s:38; scripts_canalave_city.s:150; scripts_canalave_city.s:186; scripts_canalave_city.s:187; events_route_218_gate_to_jubilife_city.json; src/field_move_tasks.c:414; scripts_route_218_gate_to_canalave_city.s:36; src/start_menu.c:593-601; src/applications/party_menu/main.c:1791-1839; src/applications/town_map/graphics.c:223-247; src/applications/town_map/graphics.c:1125-1140; src/spawn_locations.c:34; events_jubilife_city (warp 12 (128,758)); events_route_218 (warp 0 (70,754); TRAINER_GUITARIST_TONY (80,753) sight 4, TRAINER_SAILOR_SKYLER (76,746) sight 3); events_canalave_city (coord (47,723..726)); TRAINER_RIVAL_CANALAVE_CITY_TURTWIG
 
 #### platinum/30-canalave-gym-byron — Canalave Gym: Byron and the Mine Badge
@@ -454,7 +454,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: TRAINER_LEADER_BYRON
 - end state: map MAP_HEADER_CANALAVE_CITY_GYM; at (16, 26); 6 badges; badge BADGE_ID_MINE; >= 1 battles; flags set FLAG_RECEIVED_BYRON_TM91; vars VAR_CANALAVE_CITY_STATE=2
-- frames: estimate 24000, budget 36000
+- frames: estimate 26749, budget 40200
 - refs: src/overlay008/gym_features.c:880-1017; src/overlay008/gym_features.c:1020-1220; src/overlay008/gym_features.c:1028-1035; src/overlay008/gym_features.c:1036-1067; src/overlay008/gym_features.c:1252-1303; src/overlay008/gym_features.c:412-421; scripts_canalave_city_gym.s:31; scripts_canalave_city_gym.s:33-39; scripts_canalave_city_gym.s:41; scripts_canalave_city_gym.s:42; scripts_canalave_city_gym.s:43; scripts_canalave_city_gym.s:44; scripts_canalave_city_gym.s:45; scripts_canalave_city_gym.s:46; scripts_canalave_city_gym.s:47; scripts_canalave_city_gym.s:52-55; scripts_canalave_city_gym.s:56; scripts_canalave_city_gym.s:31-56; src/persisted_map_features_init.c:22-47; src/overlay008/gym_features.c:1232-1250; src/overlay008/gym_features.c:1608-1650; src/overlay005/field_control.c:700-704; events_canalave_city (warp 0 (39,731)); events_canalave_city_gym (Byron (16,3) y 30); TRAINER_LEADER_BYRON
 
 #### platinum/31-iron-island-strength — Iron Island: Riley gives HM04 Strength
@@ -463,7 +463,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_IRON_ISLAND; flags set FLAG_HIDE_IRON_ISLAND_RILEY, FLAG_FIRST_ARRIVAL_IRON_ISLAND_EXTERIOR; vars VAR_CANALAVE_CITY_STATE=3, VAR_CANALAVE_LIBRARY_STATE=1
-- frames: estimate 12000, budget 18000
+- frames: estimate 4427, budget 6700
 - refs: scripts_init_canalave_city.s:9; scripts_canalave_city.s:219-231; scripts_canalave_city.s:494-530; scripts_canalave_city.s:528; scripts_iron_island.s:92-124; scripts_iron_island.s:101-114; scripts_iron_island.s:15-35; scripts_iron_island_b2f_left_room.s:38-60; scripts_iron_island_b2f_left_room.s:149-196; scripts_iron_island_b2f_left_room.s:232-270; scripts_canalave_city.s:229; scripts_canalave_city.s:230; scripts_canalave_city.s:228; scripts_iron_island.s:12; scripts_iron_island.s:98-100; scripts_iron_island.s:121; scripts_iron_island_b2f_left_room.s:51; scripts_canalave_city.s:52; scripts_iron_island_b2f_left_room.s:269; scripts_iron_island_b2f_left_room.s:56; scripts_iron_island_b2f_left_room.s:245; scripts_iron_island_b2f_left_room.s:246; scripts_iron_island_b2f_left_room.s:268
 
 #### platinum/32-canalave-library-explosion — Canalave Library: Lake Valor explosion
@@ -472,7 +472,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_CANALAVE_CITY; flags set FLAG_LAKE_VALOR_EXPLODED, FLAG_HIDE_VALOR_LAKEFRONT_CAMERAMEN; vars VAR_CANALAVE_CITY_STATE=5, VAR_CANALAVE_LIBRARY_STATE=2
-- frames: estimate 12000, budget 18000
+- frames: estimate 7557, budget 11400
 - refs: scripts_canalave_city.s:681-711; scripts_init_canalave_library_3f.s; scripts_canalave_library_3f.s:35-190; scripts_canalave_city.s:247-300; scripts_canalave_city.s:710; scripts_canalave_library_3f.s:184; scripts_canalave_library_3f.s:185; scripts_canalave_library_3f.s:186; scripts_canalave_library_3f.s:187; scripts_canalave_library_3f.s:188; scripts_canalave_library_3f.s:189; scripts_canalave_library_3f.s:190; scripts_canalave_city.s:253; scripts_canalave_city.s:296; scripts_canalave_city.s:297; scripts_canalave_city.s:298; scripts_canalave_city.s:299; events_canalave_library_1f.json; events_canalave_library_2f.json; scripts_canalave_city.s:262; scripts_canalave_city.s:270
 
 #### platinum/33-lake-valor-saturn — Lake Valor (drained): Saturn in Valor Cavern
@@ -481,7 +481,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_VALOR_CAVERN; >= 1 battles; flags set FLAG_DEFEATED_COMMANDER_SATURN_VALOR_CAVERN, FLAG_HIDE_LAKE_VALOR_GALACTIC
-- frames: estimate 12000, budget 36000
+- frames: estimate 21863, budget 32800
 - refs: scripts_valor_lakefront.s:19-42; scripts_valor_cavern.s:13; scripts_valor_cavern.s:87; scripts_valor_cavern.s:88; scripts_valor_cavern.s:89; events_lake_valor_drained.json
 
 #### platinum/34-lake-verity-mars — Lake Verity: Mars
