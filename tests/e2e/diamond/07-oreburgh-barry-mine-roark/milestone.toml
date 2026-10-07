@@ -64,6 +64,7 @@ shot = "barry-gym-door"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 302
 z = 795
 note = "mine mouth (zone_event 0044 warps 11-15 (300..304,795)); warp 13 -> B1F warp 1 (12,1)"
@@ -74,6 +75,7 @@ map = "MAP_OREBURGH_MINE_B1F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 12
 z = 21
 note = "B1F stairs (zone_event 0196 warps 3-5 (11..13,21)) -> B2F warp 0 (15,1); B1F ON_TRANSITION SetFlag 0x9C2 (scr_seq 0208 @0x000E)"
@@ -84,6 +86,7 @@ map = "MAP_OREBURGH_MINE_B2F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 18
 z = 29
 face = "up"
@@ -97,6 +100,7 @@ note = "Roark smashes boulder object 1 (scr_seq 0209 @0x0055), walks east 10 and
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 15
 z = 1
 note = "B2F exit (zone_event 0197 warp 0) -> B1F warp 3 (12,21)"
@@ -107,6 +111,7 @@ map = "MAP_OREBURGH_MINE_B1F"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 12
 z = 1
 note = "B1F exit (zone_event 0196 warp 1) -> Oreburgh warp 13 (302,795)"

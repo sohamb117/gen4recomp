@@ -350,7 +350,6 @@ badges = 3
 badge = ["BADGE_COAL", "BADGE_FOREST", "BADGE_COBBLE"]
 flags = ["0x9D", "0x685", "0x686", "0x687", "0x688"]
 flags_clear = ["0x1C6", "0x101"]
-party = ["SPECIES_EMPOLEON"]
 battles = 1
 save = [
   'any(i["item"] == 387 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM60

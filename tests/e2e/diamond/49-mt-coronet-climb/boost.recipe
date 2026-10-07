@@ -3,3 +3,6 @@
 # and the lake (x 7..16, z 4..6) by Surf (probe of map 207; the ledges (22..27,11) face south). The chain's Staraptor
 # (46's boost, slot 1) carries Surf in place of Close Combat; HM03 is in the bag since 32.
 party-move 1 3 MOVE_SURF
+# The stairs' corridor x 25 (z 2..7) is reached only by Rock Climb at (27,8..9) from z 10 (HM08, 43); the lead takes it
+# in slot 2 (Rock Slide's; Stone Edge stays in slot 0).
+party-move 0 2 MOVE_ROCK_CLIMB

@@ -1,0 +1,7 @@
+# Boost on 07's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# 07 flees the Oreburgh Mine's wild battles (a 14-turn Geodude fight whited Pearl's chain out in B2F), so the starter
+# arrives near 12. Roark (trdata.json #246: GEODUDE 12, ONIX 12, CRANIDOS 14) and the gym's Jonathon #244 (GEODUDE 10)
+# and Darius #245 (GEODUDE 8, ONIX 8): level 16 with Razor Leaf (Turtwig's level-13 move; x4 on Geodude/Onix, x2 on
+# Cranidos) in slot 3, as Platinum 06's boost.
+party-level 0 16
+party-move 0 3 MOVE_RAZOR_LEAF

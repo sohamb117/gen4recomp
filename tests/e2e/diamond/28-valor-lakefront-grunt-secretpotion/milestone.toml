@@ -101,12 +101,13 @@ note = "msg 444 #0/#1; grunt runs (RemoveEvent 30 @0x00B3 -> hidden 0x238), SetF
 
 [[step]]
 do = "walk_to"
+via = [[702, 832], [702, 806]]
 x = 719
 z = 791
 face = "up"
 interact = true
 max = 6000
-note = "[INFERENCE] tile south of the Valor grunt obj5 (719,790) facing north; crossing into Valor Lakefront (z 736-799); keep off x=724 z789-791 (coord 0, 0x4112==0)"
+note = "[INFERENCE] tile south of the Valor grunt obj5 (719,790) facing north; crossing into Valor Lakefront (z 736-799); keep off x=724 z789-791 (coord 0, 0x4112==0). Via the beach east to x 702 and the path north (x 700..703, z 806..831): on its own the planner swung west and back at (676..677,835), the land past the window's top unknown"
 
 [[step]]
 do = "advance_text"

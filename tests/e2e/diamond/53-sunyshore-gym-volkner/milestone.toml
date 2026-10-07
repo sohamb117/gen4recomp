@@ -1,5 +1,5 @@
 # Proves the rotating-gear gym (InitSunyshoreGym / RotateSunyshoreGymGear coord buttons) and Volkner's win script.
-# Start: Sunyshore Gym room 1 (8,14) -> end: room 3, BADGE_BEACON, TM57.
+# Start: Sunyshore Gym room 1 (8,14) -> end: back out at the Sunyshore gym door (845,748), BADGE_BEACON, TM57 (54's start).
 
 title = "Sunyshore Gym: Volkner and the Beacon Badge"
 status = "planned"
@@ -41,7 +41,7 @@ refs = [
   "scr_seq 0154 @0x00DB",
   "msg 0156 #2",
 ]
-notes = "Volkner (trdata.json #320): RAICHU 46, AMBIPOM 47, OCTILLERY 47, LUXRAY 49 (Sitrus); Dragon Claw OHKOs. His trainer flag 0x690 is not set by the script. Gym trainers (all lv 41-44): Tiera #344 (6,4) E 4; Forrest #341 (4,5) N 3, Jerry #301 (14,11) S 2, Meghan #331 (12,4) S 1; Destiny #285 (4,23) E 3, Preston #302 (3,3) S 2, Lonnie #303 (16,23) S 2, Zachery #281 (21,10) W 1."
+notes = "Route: Platinum 47's (tests/e2e/tools/pt_gym.py sunyshore), the same rooms, buttons (zone_event 0153-0155 coords) and gear script commands (InitSunyshoreGym / RotateSunyshoreGymGear) [INFERENCE: the same gear tables]. Volkner (trdata.json #320): RAICHU 46, AMBIPOM 47, OCTILLERY 47, LUXRAY 49 (Sitrus); Dragon Claw OHKOs. His trainer flag 0x690 is not set by the script. Gym trainers (all lv 41-44): Tiera #344 (6,4) E 4; Forrest #341 (4,5) N 3, Jerry #301 (14,11) S 2, Meghan #331 (12,4) S 1; Destiny #285 (4,23) E 3, Preston #302 (3,3) S 2, Lonnie #303 (16,23) S 2, Zachery #281 (21,10) W 1."
 
 [start]
 from = "prev"
@@ -51,15 +51,91 @@ lab = "lab.recipe"
 frames = 39000
 
 [[step]]
-do = "wait_field"
-# PHASE2: gear/button order per room (InitSunyshoreGym 0/1/2 scr_seq 0152/0153/0154 @0x0018; RotateSunyshoreGymGear N on the
-#   coord buttons, var 0x4000==0). Room 1 (154): buttons (3,8),(13,8) gear 0 -> exit warp 1 (8,2). Room 2 (155): (6,13) gear 0,
-#   (6,8),(11,8) gear 1 -> exit warp 1 (9,2). Room 3 (156): (6,8),(16,13) gear 0, (6,18),(16,18) gear 2 -> Volkner (11,3):
-#   walk_to (11,4) face up interact, advance_text, auto_battle (shot "volkner-battle"), advance_text (shot "beacon-badge").
-#   Find the button sequence from the gear collision code behind ScrCmd 0x175/0x176 (opcodes table) or by PC_LAB_MAPSCAN.
+do = "steps"
+route = [[8, 8], [13, 8], [13, 11], [8, 11], [8, 8], [3, 8], [8, 8], [8, 2]]
+note = "room 1: buttons (13,8) -> state 1, (3,8) -> state 2; exit warp (8,2) -> room 2 (9,21)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE_GYM_ROOM_2"
+
+[[step]]
+do = "steps"
+route = [[6, 21], [6, 13], [5, 13], [6, 13], [6, 12], [6, 13], [11, 13], [11, 16], [4, 16], [4, 20], [2, 20], [2, 4], [5, 4], [5, 5], [6, 5], [6, 8], [11, 8], [11, 13], [14, 13], [14, 14], [15, 14], [15, 5], [9, 5], [9, 2]]
+note = "room 2: bottom button (6,13) three times (NORMAL: 1, 2, 3), up the stairs and the arm bridge x 2, top buttons (6,8), (11,8) (REVERSE: 2, 1); exit warp (9,2) -> room 3 (11,25)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE_GYM_ROOM_3"
+
+[[step]]
+do = "steps"
+route = [[11, 18], [16, 18], [16, 21], [11, 21], [11, 18], [6, 18], [6, 21], [5, 21], [5, 24], [2, 24], [2, 5], [6, 5], [6, 8], [5, 8], [6, 8], [6, 13], [11, 13], [11, 8], [16, 8], [16, 13], [16, 5], [19, 5], [19, 10], [20, 10], [20, 21], [19, 21], [19, 24], [17, 24], [17, 21], [16, 21], [16, 18], [16, 21], [17, 21], [17, 24], [19, 24], [19, 21], [20, 21], [20, 10], [19, 10], [19, 5], [16, 5], [16, 8], [11, 8], [11, 4]]
+face = "up"
+interact = true
+note = "room 3: (16,18) DOUBLE -> 2, (6,18) DOUBLE -> 0, (6,8) NORMAL twice -> 2, (16,13) NORMAL -> 3, (16,18) DOUBLE -> 1; Volkner (11,3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+send = "best"
+shot = "volkner"
+note = "TRAINER_LEADER_VOLKNER (trdata.json #320)"
+
+[[step]]
+do = "advance_text"
+note = "GiveBadge BADGE_BEACON, TM57 (scr_seq 0154)"
+
+[[step]]
+do = "steps"
+route = [[11, 8], [16, 8], [16, 5], [19, 5], [19, 10], [20, 10], [20, 21], [19, 21], [19, 24], [11, 24], [11, 25]]
+note = "back out: room 3 in state 1, no buttons, to the exit mat (11,25)"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 25
+note = "push off the exit mat -> room 2 (9,2), state 1"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE_GYM_ROOM_2"
+
+[[step]]
+do = "steps"
+route = [[9, 5], [15, 5], [15, 14], [14, 14], [14, 13], [11, 13], [11, 16], [9, 16], [9, 21]]
+note = "room 2 from above, state 1, no buttons, to the exit mat (9,21)"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 21
+note = "exit mat (9,21) -> room 1 (8,2), state 2"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE_GYM_ROOM_1"
+
+[[step]]
+do = "steps"
+route = [[8, 8], [3, 8], [2, 8], [3, 8], [2, 8], [3, 8], [8, 8], [8, 14]]
+note = "room 1 from above, state 2: (3,8) three times (3, 0, 1), to the exit mat (8,14)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 14
+note = "exit mat (zone_event 0153 warp 0) -> Sunyshore (845,748)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE"
+shot = "beacon-badge"
 
 [expect]
-map = "MAP_SUNYSHORE_GYM_ROOM_3"
+map = "MAP_SUNYSHORE"
 badges = 8
 badge = ["BADGE_BEACON"]
 flags = ["0xB6", "0x669", "0x66D", "0x67D", "0x67E", "0x67F", "0x69B", "0x6A5", "0x6A8"]

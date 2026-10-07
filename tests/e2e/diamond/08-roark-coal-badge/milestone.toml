@@ -48,6 +48,7 @@ notes = "Estimate: Platinum's measured ~20200 for the same gym plus the exit. Su
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 25000

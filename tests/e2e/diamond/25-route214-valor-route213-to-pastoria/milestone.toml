@@ -55,7 +55,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 45000
+frames = 51000
 
 [[step]]
 do = "walk_to"
@@ -141,7 +141,7 @@ map = "MAP_ROUTE_213"
 do = "walk_to"
 x = 646
 z = 812
-max = 8000
+max = 14000
 note = "west along Route 213 to the Pastoria gatehouse, zone_event 0358 warp 0 -> MAP_ROUTE_213_PASTORIA_GATEHOUSE warp 0 (10,7); the Route 213 grunt stays hidden (no Fen Badge, scr_seq 0424 @0x002F-0x0042)"
 
 [[step]]
