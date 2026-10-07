@@ -11,6 +11,7 @@
 #define PC_DECLSPEC_noreturn __attribute__((noreturn))
 #define PC_DECLSPEC_force_export
 #define PC_DECLSPEC_weak __attribute__((weak))
+#define PC_DECLSPEC_noinline __attribute__((noinline))
 
 /* nitro/math/math.h's MATH_CountLeadingZerosInline is an mwcc `asm`
  * intrinsic; Platinum's prelude gives it the same spelling. */

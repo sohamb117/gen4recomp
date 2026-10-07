@@ -113,6 +113,21 @@ if [ "$GAME" = heartgold ]; then
     touch "$DEST/tools/mwasmarm_patcher/mwasmarm_patcher"
 fi
 
+# The ARM7 template's sub-processor private arena is Diamond's (3.2):
+# MAIN's bss end plus the size of the autoload pokediamond calls EXT. HG/SS
+# name that autoload EXT_WRAM, and pokeheartgold's common.mk appends its
+# size after `} > check.WORKRAM` itself (SDK 4.2's template starts from
+# MAIN's bss end alone), so the HG/SS copy keeps only the MAIN term; with
+# Diamond's line the link fails on SDK_AUTOLOAD.EXT.* not found.
 for f in $SPECFILES; do
-    cp -p "$SPEC/${f%%:*}" "$DEST/${f#*:}${f%%:*}"
+    src="$SPEC/${f%%:*}" dst="$DEST/${f#*:}${f%%:*}"
+    if [ "$GAME" = heartgold ] && [ "${f%%:*}" = ARM7-TS.lcf.template ]; then
+        sed 's/^\([[:space:]]*SDK_SUBPRIV_ARENA_LO = SDK_AUTOLOAD\.MAIN\.BSS_END\) + SDK_AUTOLOAD\.EXT\.BSS_END - SDK_AUTOLOAD\.EXT\.START;/\1;/' \
+            "$src" > "$dst.tmp"
+        grep -q 'SDK_SUBPRIV_ARENA_LO = SDK_AUTOLOAD.MAIN.BSS_END;' "$dst.tmp" ||
+            { echo "setup: ARM7 template's SDK_SUBPRIV_ARENA_LO line not found" >&2; exit 1; }
+        install_if_changed "$dst.tmp" "$dst"
+    else
+        cp -p "$src" "$dst"
+    fi
 done
