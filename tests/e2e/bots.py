@@ -125,16 +125,30 @@ def bot_save(s, step, ctx):
 
 
 # ---------------------------------------------------------------- advance_text
+# A coord or OnFrame script starts a few frames after the step that triggers it, and a field can be free for
+# a frame or two between a script's parts (a camera pan, a walk-in): the field counts as free again only
+# after SETTLE frames without a script.
+TEXT_START, TEXT_SETTLE = 40, 30
+
+
 def bot_advance_text(s, step, ctx):
     """A with spacing until the player is free (or a battle starts, which auto_battle takes over)."""
-    limit = s.frame + _int(step, "max", 3000)
-    stop = ["field_ready=1"] + ([] if step.get("through_battle") else ["in_battle=1"])
-    while not s.field_ready and (step.get("through_battle") or not s.in_battle):
-        if s.frame >= limit:
-            raise HarnessError("text did not end in %d frames" % _int(step, "max", 3000))
-        if s.run(3, "a", until=stop) or s.run(17, until=stop):
+    bound = _int(step, "max", 6000)
+    limit = s.frame + bound
+    through = bool(step.get("through_battle"))
+    stop = ["field_ready=1"] + ([] if through else ["in_battle=1"])
+    s.run(TEXT_START, until=["field_ready=0", "in_battle=1"])
+    while True:
+        if s.in_battle and not through:
             break
-    s.run(2)
+        if s.field_ready and not s.in_battle:
+            if not s.run(TEXT_SETTLE, until=["field_ready=0", "in_battle=1"]):
+                break
+            continue
+        if s.frame >= limit:
+            raise HarnessError("text did not end in %d frames" % bound)
+        if not s.run(2, "a", until=stop):
+            s.run(6, until=stop)
 
 
 # ---------------------------------------------------------------- auto_battle
@@ -175,8 +189,8 @@ def bot_auto_battle(s, step, ctx):
                 _tap(s, TAP_SHIFT)
             continue
         # text, animations, the evolution scene: A advances text (B would cancel an evolution)
-        if not s.run(16, until=["ui!=0", "in_battle=0"]):
-            s.run(2, "a", until="in_battle=0")
+        if not s.run(6, until=["ui!=0", "in_battle=0"]):
+            s.run(2, "a", until=["ui!=0", "in_battle=0"])
     s.note("auto_battle: battle over after %d turns" % turns)
 
 
@@ -197,6 +211,19 @@ class Terrain:
         self.blocked_edges = {}  # (x, z, d) -> attempts that failed
         self.cells = {}          # (x, z) -> cell, kept across probes of the same map
         self.objects = set()
+        # exit mats and the direction that leaves through them (map_tile_behaviors.h)
+        self.mats = {}
+        for name, d in (("WARP_ENTRANCE_NORTH", 0), ("WARP_ENTRANCE_SOUTH", 1), ("WARP_ENTRANCE_WEST", 2),
+                        ("WARP_ENTRANCE_EAST", 3), ("WARP_NORTH", 0), ("WARP_SOUTH", 1), ("WARP_WEST", 2),
+                        ("WARP_EAST", 3), ("WARP_STAIRS_WEST", 2), ("WARP_STAIRS_EAST", 3)):
+            if name in b:
+                self.mats[b[name]] = d
+
+    def mat_exit(self, cell):
+        """The direction that leaves through the exit mat `cell`, or None."""
+        if cell is None or not cell & TILE_KNOWN:
+            return None
+        return self.mats.get(cell & TILE_BEHAVIOR)
 
     def update(self, p):
         for gz in range(64):
@@ -307,6 +334,7 @@ def bot_walk_to(s, step, ctx):
     terrain = Terrain()
     start_map = p.map_id
     steps = 0
+    warped = False
     while (p.x, p.z) != goal:
         if s.frame >= limit:
             raise HarnessError("walk_to (%d,%d): still at (%d,%d) after %d frames" % (
@@ -322,7 +350,10 @@ def bot_walk_to(s, step, ctx):
         d = dirs[0]
         here = (p.x, p.z)
         keys = DIR_KEYS[d] + ("+" + run_key if run_key else "")
-        moved = s.run(24, keys, until=["x!=%d" % here[0], "z!=%d" % here[1], "field_ready=0"])
+        # Hold the direction through the turn-in-place (a short press only turns) until the step begins:
+        # the probe's tile changes as a step starts. A bump into something solid never changes it.
+        moved = s.run(24, keys, until=["x!=%d" % here[0], "z!=%d" % here[1], "map_id!=%d" % start_map,
+                                       "in_battle=1"])
         # let the step finish so the next probe sees a settled tile
         s.run(24, until="field_ready=1")
         if s.map_id != start_map:
@@ -339,6 +370,7 @@ def bot_walk_to(s, step, ctx):
             s.note("walk_to: warped from map %d to %d stepping %s from (%d,%d)" % (start_map, s.map_id,
                                                                                   DIR_KEYS[d], *here))
             if nxt == goal or len(dirs) == 1:
+                warped = True
                 break
             raise HarnessError("walk_to (%d,%d): an unexpected warp to map %d at (%d,%d)" % (goal + (s.map_id,) + here))
         if not s.field_ready:
@@ -348,10 +380,22 @@ def bot_walk_to(s, step, ctx):
             key = (here[0], here[1], d)
             terrain.blocked_edges[key] = terrain.blocked_edges.get(key, 0) + 1
             if not moved:
-                s.run(8)
+                s.run(4)
         else:
             steps += 1
-    s.note("walk_to: at (%d,%d) on map %d after %d steps" % (s.probe().x, s.probe().z, s.map_id, steps))
+    if not warped:
+        # An exit mat (WARP_ENTRANCE_*, stairs, WARP_<dir>) warps when the player pushes off it in its
+        # direction; a goal on one means "leave through it".
+        p = s.probe()
+        d = terrain.mat_exit(p.cell(p.x, p.z))
+        if d is not None:
+            if not s.run(150, DIR_KEYS[d], until="map_id!=%d" % start_map):
+                raise HarnessError("walk_to (%d,%d): the exit mat did not warp pushing %s" % (goal + (DIR_KEYS[d],)))
+            _field_or_handle(s, step, ctx, limit)
+            warped = True
+            s.note("walk_to: left map %d through the mat at (%d,%d) to map %d" % (start_map, goal[0], goal[1], s.map_id))
+    p = s.probe()
+    s.note("walk_to: at (%d,%d) on map %d after %d steps" % (p.x, p.z, s.map_id, steps))
     if "face" in step:
         d = FACINGS[step["face"]]
         p = s.probe()

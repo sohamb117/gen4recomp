@@ -85,6 +85,7 @@ blank = true
 
 [run]
 frames = 63000
+options = ["text_instant=0"]  # rival.press was recorded at the real text speed
 
 # rival.press is the recorded blank-chip run (intro and naming, Turtwig = the briefcase's default pick, the Starly
 # battle won with Tackle by A spam, Route 201's Rowan scene Warps home (scr_seq 0392 @0x0508), Mom's Running Shoes;

@@ -1,0 +1,24 @@
+# Diamond side systems (standalone, start.recipe).
+90-underground-explorer-kit
+91-underground-dig-spheres-traps
+92-underground-secret-base
+93-battle-zone-ferry-fight-area
+94-battle-zone-route-225-north-gate
+95-stark-mountain-buck-magma-stone
+96-battle-park-battle-tower
+97-gts-offline
+98-jubilife-tv
+99-vs-seeker
+100-poketch-apps
+101-roamer-mesprit
+102-roamer-cresselia
+103-legendary-dialga-palkia
+104-legendary-giratina-turnback
+105-legendary-uxie-azelf
+106-legendary-heatran
+107-legendary-regigigas
+108-rotom-old-chateau
+109-spiritomb-hallowed-tower
+110-national-dex-upgrade
+111-pal-park
+112-hall-of-fame-pc-and-game-complete

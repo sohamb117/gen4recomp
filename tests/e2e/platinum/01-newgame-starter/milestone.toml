@@ -49,6 +49,7 @@ blank = true
 
 [run]
 frames = 43500
+options = ["text_instant=0"]  # rival.press was recorded at the real text speed
 
 # rival.press is the recorded blank-chip run (player NATIVE, Turtwig from the briefcase, Barry's Chimchar beaten, home
 # on map 414 by ~26700; tests/gameplay/scenarios/1-rival.scn). Frames are relative to this step, which is frame 0 of a

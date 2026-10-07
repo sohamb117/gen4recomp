@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Milestone chains on the real core, headless (tests/e2e/README.md).
 
-    tests/e2e/run.py --game G [--from M] [--only M ...] [--systems] [--lab] [--out DIR] [--check]
+    tests/e2e/run.py --game G [--from M] [--only M ...] [--systems] [--lab] [--planned] [--out DIR] [--check]
 
 G is platinum, diamond or pearl. The chain is tests/e2e/<G>/chain.txt (side
 systems: systems.txt with --systems); each entry is a milestone directory
@@ -64,6 +64,10 @@ STEP_KEYS = {
 STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"},
                  "walk_to": {"x", "z"}}
 NAME_KEYS = {"map"}  # step keys that take a game name
+# np_gp -o options every run gets first ([run] options come after and win): message boxes print at once, so
+# story scenes and battles cost their animations, not the text crawl. A recorded press schedule depends on the
+# real text timing and sets "text_instant=0".
+DEFAULT_OPTIONS = ["text_instant=1"]
 
 
 def die(msg):
@@ -378,14 +382,15 @@ def start_save(game, ms, prev, args, out, d, res):
     return env, None
 
 
-def judge(game, ms, s, d, end_save, res):
-    """[expect] against the run's end state. Returns the first unmet expectation, or ''."""
+def judge(game, ms, end_state, log_path, d, end_save):
+    """[expect] against the run's end state: (map id, probe) taken before np_gp quit, its log, the end save
+    np_gp wrote on exit. Returns the first unmet expectation, or ''."""
     ex = ms.data.get("expect", {})
-    log = open(s.log_path, errors="replace").read()
-    if "map" in ex and s.map_id != game.resolve(ex["map"]):
-        return "ended on map %d, expected %s (%d)" % (s.map_id, ex["map"], game.resolve(ex["map"]))
+    log = open(log_path, errors="replace").read()
+    map_id, p = end_state
+    if "map" in ex and map_id != game.resolve(ex["map"]):
+        return "ended on map %d, expected %s (%d)" % (map_id, ex["map"], game.resolve(ex["map"]))
     if "position" in ex:
-        p = s.probe()
         if p is None or [p.x, p.z] != list(ex["position"]):
             return "ended at %s, expected %s" % ((p.x, p.z) if p else "?", tuple(ex["position"]))
     if "battles" in ex:
@@ -446,9 +451,10 @@ def run_milestone(game, ms, prev, args, out):
     shutil.rmtree(d, ignore_errors=True)
     os.makedirs(d)
     version = ms.data.get("version", "both")
-    if ms.data.get("status") == "planned" or version not in ("both", game.name):
+    planned = ms.data.get("status") == "planned" and not args.planned
+    if planned or version not in ("both", game.name):
         res.status = "SKIP"
-        res.reason = "planned" if ms.data.get("status") == "planned" else "%s only" % version
+        res.reason = "planned" if planned else "%s only" % version
         return res
     t0 = time.time()
     run = ms.data.get("run", {})
@@ -463,7 +469,7 @@ def run_milestone(game, ms, prev, args, out):
         if start:
             shutil.copyfile(start, end)
         s = Session(game.gp, game.rom, game.name, end, os.path.join(d, "run.log"), int(run["frames"]),
-                    options=run.get("options", []), env=env)
+                    options=DEFAULT_OPTIONS + run.get("options", []), env=env)
         s.shot_dir = d
         for tbl in ms.data.get("shots", []):
             s.shot_frames += [int(f) for f in tbl.get("frames", [])]
@@ -472,9 +478,10 @@ def run_milestone(game, ms, prev, args, out):
         boot = ms.data.get("start", {}).get("boot", "continue" if start else "none")
         if boot == "continue":
             boot_continue(s)
-        shot = os.path.join(d, "s00-start.ppm")
-        s.dump(shot)
-        shots.append(("start f%d" % s.frame, shot))
+        if s.frame > 0:  # a blank chip has no frame yet
+            shot = os.path.join(d, "s00-start.ppm")
+            s.dump(shot)
+            shots.append(("start f%d" % s.frame, shot))
         ctx = Ctx(game, ms)
         for i, step in enumerate(ms.data.get("step", []), 1):
             f0 = s.frame
@@ -500,11 +507,12 @@ def run_milestone(game, ms, prev, args, out):
         s.dump(shot)
         shots.append(("end f%d" % s.frame, shot))
         res.frames = s.frame
-        why = judge(game, ms, s, d, end, res)
+        end_state = (s.map_id, s.probe())
         if env.get("PC_RTC"):
             with open(os.path.join(d, "end.clock"), "w") as f:
                 f.write(env["PC_RTC"] + "\n")
-        s.quit()
+        s.quit()  # np_gp exits: the end save is on disk
+        why = judge(game, ms, end_state, s.log_path, d, end)
         if s.defects:
             why = why or s.defects[0]
         if why:
@@ -517,6 +525,9 @@ def run_milestone(game, ms, prev, args, out):
     finally:
         if s is not None:
             s.kill()
+    if res.status != "PASS" and os.path.isfile(end):
+        # the next milestone must not continue a failed run: it falls back to its lab recipe
+        os.replace(end, os.path.join(d, "failed.sav"))
     res.seconds = time.time() - t0
     for path in sorted(glob.glob(os.path.join(d, "frame_*.ppm"))):
         shots.append((os.path.basename(path)[6:-4].lstrip("0") or "0", path))
@@ -574,6 +585,7 @@ def main():
     ap.add_argument("--game", required=True, choices=sorted(GAMES))
     ap.add_argument("--from", dest="from_", metavar="M", help="start the chain at milestone M")
     ap.add_argument("--only", nargs="+", metavar="M", help="run only these milestones (any directory name)")
+    ap.add_argument("--planned", action="store_true", help="also run milestones still marked status = \"planned\"")
     ap.add_argument("--systems", action="store_true", help="run systems.txt instead of chain.txt")
     ap.add_argument("--lab", action="store_true", help="start each milestone from its [start] lab recipe")
     ap.add_argument("--out", help="output directory (default build/e2e/<game>)")

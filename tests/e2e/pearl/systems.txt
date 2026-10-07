@@ -1,0 +1,24 @@
+# Pearl side systems: Diamond's dirs, Pearl-local where the version differs.
+../diamond/90-underground-explorer-kit
+../diamond/91-underground-dig-spheres-traps
+../diamond/92-underground-secret-base
+../diamond/93-battle-zone-ferry-fight-area
+../diamond/94-battle-zone-route-225-north-gate
+../diamond/95-stark-mountain-buck-magma-stone
+../diamond/96-battle-park-battle-tower
+../diamond/97-gts-offline
+../diamond/98-jubilife-tv
+../diamond/99-vs-seeker
+../diamond/100-poketch-apps
+../diamond/101-roamer-mesprit
+../diamond/102-roamer-cresselia
+103-legendary-dialga-palkia
+../diamond/104-legendary-giratina-turnback
+../diamond/105-legendary-uxie-azelf
+../diamond/106-legendary-heatran
+../diamond/107-legendary-regigigas
+../diamond/108-rotom-old-chateau
+../diamond/109-spiritomb-hallowed-tower
+../diamond/110-national-dex-upgrade
+../diamond/111-pal-park
+../diamond/112-hall-of-fame-pc-and-game-complete
