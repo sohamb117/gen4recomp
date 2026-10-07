@@ -142,6 +142,9 @@ class Func(object):
         # copies a sibling entry point's code in, and it is what tells a BL to
         # a real function apart from a BL used as a long branch.
         self.entries = set([name])
+        # Its start macro opens with `.balign 4`: every one but
+        # non_word_aligned_thumb_func_start.
+        self.word_aligned = not thumb
 
 
 # --------------------------------------------------------------------------
@@ -602,8 +605,15 @@ def preprocess(path, defines, incdirs):
     "no such file or directory: 'c'"), and a failed cpp silently leaves the
     file unpreprocessed, which is what left GAME_VERSION and every
     constants/*.h name unresolved in Diamond's assembly.
+
+    The preprocessor is the compiler's assembler-with-cpp mode, the one a
+    `.S` file gets, not macOS's /usr/bin/cpp: that one is traditional, so it
+    pastes nothing (HG/SS's FS_OVERLAY_ID(OVY_45) stays
+    SDK_OVERLAY_##OVY_45##_ID) and keeps a define's `//` comment in its
+    expansion (`MAP_NEW_BARK 60 // MAP_T20` ends the line it lands in).
+    Diamond's and Pearl's assembly preprocess identically under both.
     """
-    cmd = ["cpp", "-P"]
+    cmd = ["cc", "-E", "-P", "-x", "assembler-with-cpp"]
     text = None
     lines = expand_includes(path, incdirs)
     if lines is None:
@@ -615,9 +625,8 @@ def preprocess(path, defines, incdirs):
         if any(INDENTED_DIRECTIVE.match(l) for l in raw):
             lines = raw
     if lines is not None:
-        # macOS's cpp is a traditional-mode preprocessor, and it ignores an
-        # indented `#include` on the first line of its input; mwasm does
-        # not care. Moving every directive to column one costs nothing.
+        # mwasm takes an indented `#include`; cpp wants the `#` in column
+        # one. Moving every directive there costs nothing.
         text = "".join(INDENTED_DIRECTIVE.sub(r"#", l) for l in lines)
         cmd.append("-I" + (os.path.dirname(path) or "."))
     for d in incdirs:
@@ -635,7 +644,7 @@ def preprocess(path, defines, incdirs):
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, input=text)
         if r.returncode == 0 and r.stdout:
-            return r.stdout.splitlines(True)
+            return expand_local_macros(path, r.stdout.splitlines(True))
     except (OSError, subprocess.SubprocessError):
         pass
     return None
@@ -643,6 +652,61 @@ def preprocess(path, defines, incdirs):
 
 INDENTED_DIRECTIVE = re.compile(
     r"^[ \t]+#(?=\s*(?:include|if|ifdef|ifndef|elif|else|endif|define|undef)\b)")
+
+
+MACRO_DEF = re.compile(r"^\s*\.macro\s+([A-Za-z_][\w.]*)[\s,]*(.*)$", re.I)
+
+
+def expand_local_macros(path, lines):
+    """
+    Expand the invocations of a macro the .s file defines itself.
+
+    armrec matches the shared macros (asm/macros.inc, cw.inc) by name, but a
+    file's own macro is content: HG/SS's unk_0203BA5C.s builds its spawn table
+    from a `spawn` macro of `.short`s. Its arguments substitute for `\\param`
+    textually, as the assembler does. Definitions stay in place; parse_file
+    skips them.
+    """
+    try:
+        with open(path, "r", errors="replace") as fh:
+            local = {m.group(1) for m in map(MACRO_DEF.match, fh) if m}
+    except OSError:
+        return lines
+    if not local:
+        return lines
+    macros = {}
+    out = []
+    cur = None
+    for line in lines:
+        code = split_comment(line.rstrip("\n"))[0].strip()
+        if cur is not None:
+            if code.lower().startswith(".endm"):
+                cur = None
+            else:
+                macros[cur][1].append(line)
+            out.append(line)
+            continue
+        m = MACRO_DEF.match(code)
+        if m and m.group(1) in local:
+            cur = m.group(1)
+            params = [p.split("=")[0].strip()
+                      for p in re.split(r"[,\s]+", m.group(2).strip()) if p]
+            macros[cur] = (params, [])
+            out.append(line)
+            continue
+        word = code.split(None, 1)
+        if word and word[0] in macros:
+            params, body = macros[word[0]]
+            args = [a.strip() for a in word[1].split(",")] if len(word) > 1 else []
+            # Longest name first, so `\flag` cannot eat the head of `\flagIdx`.
+            subst = sorted(zip(params, args), key=lambda pa: -len(pa[0]))
+            for b in body:
+                for p, a in subst:
+                    b = b.replace("\\" + p, a)
+                out.append(b)
+            continue
+        out.append(line)
+    return out
 
 
 def place_functions(funcs):
@@ -663,7 +727,7 @@ def place_functions(funcs):
         # `arm_func_end NAME` with no start marker is still the source calling
         # it a function.
         if nxt.addr is None and (not nxt.markerless or nxt.attested):
-            align = 2 if nxt.thumb else 4
+            align = 4 if nxt.word_aligned else 2
             nxt.addr = (end + align - 1) & ~(align - 1)
 
 
@@ -806,6 +870,9 @@ def parse_file(path, defines, incdirs=(), lines=None):
     # is known, so a directive armrec cannot size costs the rest of one
     # label's run rather than the rest of the file.
     loc = None
+    # Where this file's labels are, for a size that measures from one
+    # (`.space 0x40-(.-ov00_022186AC)`, HG/SS's padded overlay tables).
+    here = {}
     # A section's origin appears in no .s file, so the first label carrying an
     # address fixes it and everything before that label is placed by
     # subtracting. `off` counts bytes from the section start while the origin
@@ -960,6 +1027,8 @@ def parse_file(path, defines, incdirs=(), lines=None):
                 problems[addr_contradiction(name, addr, loc)] += 1
                 addr = loc
             lab = Label(name, addr, lineno)
+            if addr is not None or loc is not None:
+                here[name] = addr if addr is not None else loc
             prev_was_insn = False
             # A file predating the arm_func_start convention marks its entry
             # points with a bare ".global NAME" / "NAME:", as both files in
@@ -1009,10 +1078,16 @@ def parse_file(path, defines, incdirs=(), lines=None):
             addr = addr_from_name(name)
             cur_func = Func(name, thumb, addr, hl != "local_arm_func_start",
                             file_local=hl == "local_arm_func_start")
+            cur_func.word_aligned = hl != "non_word_aligned_thumb_func_start"
             thumb_mode = thumb
             funcs.append(cur_func)
             if section != ".text":
                 enter_section(".text")
+            # The macro opens with `.balign 4, 0`, bar the non-word-aligned
+            # form. HG/SS's Thumb functions often carry no address comment,
+            # so the counter is all that places them.
+            if hl != "non_word_aligned_thumb_func_start" and loc is not None:
+                loc = align_up(loc, 4)
             prev_was_insn = False
             continue
         if hl in ("arm_func_end", "thumb_func_end"):
@@ -1133,6 +1208,8 @@ def parse_file(path, defines, incdirs=(), lines=None):
                     off = None
                 if loc is None and off is not None:
                     pend.append((len(data_items), off))
+                if d in ("space", "skip", "fill") and loc is not None:
+                    rest = location_expr(rest, loc, here)
                 data_items.append((loc, None, d, rest))
                 if cur_func is not None and section == ".text":
                     cur_func.items.append(Directive(d, rest, lineno))
@@ -2396,6 +2473,23 @@ def insn_size(mnem, ops, thumb):
     if mnem in ("bl", "blx") and reg_num((ops or "").strip()) is None:
         return 4
     return 2
+
+
+HERE_DOT = re.compile(r"(?<![\w.$?])\.(?![\w.$?])")
+
+
+def location_expr(rest, loc, labels):
+    """
+    A size spelled from the location counter (`.`) and this file's labels,
+    with both as numbers: `.space 0x40-(.-ov00_022186AC)` pads a table to
+    0x40 bytes, which only the counter can say.
+    """
+    if not HERE_DOT.search(rest):
+        return rest
+    out = HERE_DOT.sub("0x%X" % loc, rest)
+    return re.sub(r"[A-Za-z_$?][\w.$?]*",
+                  lambda m: ("0x%X" % labels[m.group(0)]
+                             if m.group(0) in labels else m.group(0)), out)
 
 
 def directive_size(name, args):
