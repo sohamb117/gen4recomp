@@ -145,6 +145,11 @@ class Func(object):
         # Its start macro opens with `.balign 4`: every one but
         # non_word_aligned_thumb_func_start.
         self.word_aligned = not thumb
+        # A second name for the function that follows it at the same
+        # address, with no body of its own: HG/SS's msl.s opens _fadd and
+        # _f_add back to back. Emitted as a C alias, so dispatch sees one
+        # function under both names.
+        self.alias_of = None
 
 
 # --------------------------------------------------------------------------
@@ -763,6 +768,21 @@ def bl_is_call(ins, target_addr, thumb):
     return THUMB_B_REACH[0] <= d <= THUMB_B_REACH[1]
 
 
+def is_bodiless(f):
+    """Nothing but labels yet: a function start that another one follows."""
+    return all(isinstance(it, Label) for it in f.items)
+
+
+def alias_target(f, funcs):
+    """The function an alias (chain) names, or None."""
+    by_name = dict((g.name, g) for g in funcs)
+    seen = set()
+    while f is not None and f.alias_of is not None and f.name not in seen:
+        seen.add(f.name)
+        f = by_name.get(f.alias_of)
+    return f.name if f is not None and f.alias_of is None else None
+
+
 def split_call_targets(funcs, globals_, problems):
     """
     Promote a `bl` target that the source spells only as a label to a function.
@@ -1038,17 +1058,18 @@ def parse_file(path, defines, incdirs=(), lines=None):
             # arm9/lib/syscall do. The same shape also spells data, so the
             # promotion is undone below for any of these that no instruction
             # ever followed.
-            # Two names on one entry point (HG/SS's msl.s: `_dadd:` then
-            # `_d_add:`) are one function: the second is a label of the
-            # first, which nothing but labels has followed yet.
-            alias = (cur_func is not None and cur_func.markerless
-                     and all(isinstance(it, Label) for it in cur_func.items))
-            if ((cur_func is None or cur_func.markerless) and not alias
+            if ((cur_func is None or cur_func.markerless)
                     and section == ".text"
                     and (name in globals_ or name in ends_named)):
+                prev = cur_func
                 cur_func = Func(name, thumb_mode, addr, True, markerless=True,
                                 attested=name in ends_named)
                 funcs.append(cur_func)
+                # Two names on one entry point (HG/SS's msl.s: `_dadd:` then
+                # `_d_add:`): the first, which nothing but labels has
+                # followed, is the second's alias.
+                if prev is not None and is_bodiless(prev):
+                    prev.alias_of = name
             if cur_func is not None and section == ".text":
                 # The address of a function is that of its own label: the
                 # "; 0x…" comment, checked against the location counter just
@@ -1084,11 +1105,16 @@ def parse_file(path, defines, incdirs=(), lines=None):
             thumb = hl.startswith("thumb") or hl.startswith("non_word")
             name = rest.strip()
             addr = addr_from_name(name)
+            prev = cur_func if section == ".text" else None
             cur_func = Func(name, thumb, addr, hl != "local_arm_func_start",
                             file_local=hl == "local_arm_func_start")
             cur_func.word_aligned = hl != "non_word_aligned_thumb_func_start"
             thumb_mode = thumb
             funcs.append(cur_func)
+            # Two start macros back to back (msl.s's `_fadd` and `_f_add`):
+            # one function, two names.
+            if prev is not None and is_bodiless(prev):
+                prev.alias_of = name
             if section != ".text":
                 enter_section(".text")
             # The macro opens with `.balign 4, 0`, bar the non-word-aligned
@@ -1258,9 +1284,12 @@ def parse_file(path, defines, incdirs=(), lines=None):
         cur_func.items.append(ins)
         prev_was_insn = True
 
-    # A markerless label that turned out to head data, not code, is data.
+    # A markerless label that turned out to head data, not code, is data. An
+    # alias stays exactly when the function it names does.
+    bodied = set(f.name for f in funcs if f.alias_of is None and (
+        not f.markerless or any(isinstance(it, Insn) for it in f.items)))
     funcs = [f for f in funcs
-             if not f.markerless or any(isinstance(it, Insn) for it in f.items)]
+             if (alias_target(f, funcs) if f.alias_of else f.name) in bodied]
 
     # Twice, either side of the split, and neither is redundant. The first
     # pass gives split_call_targets() an address for every `bl` to compare
@@ -3598,7 +3627,16 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
     ok_funcs = 0
     total_funcs = len(funcs)
     ext_calls = Counter()
+    aliases = []
     for f in funcs:
+        if f.alias_of:
+            target = alias_target(f, funcs)
+            tf = next(g for g in funcs if g.name == target)
+            f.addr = tf.addr
+            f.thumb = tf.thumb
+            aliases.append((f, tf))
+            ok_funcs += 1
+            continue
         body, ctx, ok, failures = emit_func(f, symtab, literals, stats, rename,
                                             asm_funcs, abi_trap)
         ext |= ctx.used_ext
@@ -3688,6 +3726,10 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
             for line in render_func(f, body, ctx):
                 out.write(line + "\n")
             out.write("\n")
+        for f, tf in aliases:
+            out.write('uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t) '
+                      '__attribute__((alias("%s")));\n\n'
+                      % (rename.get(f.name, f.name), rename.get(tf.name, tf.name)))
 
         # Always-resident code does both jobs at startup. An overlay does not:
         # Its slots are reserved at startup so a dispatch to a non-resident

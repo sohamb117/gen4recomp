@@ -5,6 +5,27 @@ rebased onto main 843e58045 (the pokeheartgold subtree merge re-made with
 `git merge -s ours` + `read-tree --prefix`, since a plain rebase flattens
 it). Not integrated into `main`.
 
+## Current state (supersedes "Where it stopped" below)
+
+- SoulSilver ROM matches `f8dc38ea20c17541a43b58c5e6d18c1732c7e582`.
+- HG wasm guest builds and links (`check_module: ok`; armrec 24341/24341
+  functions clean), native core `build/core-hgss` builds, and
+  `np_headless heartgold ... --frames 1200` runs without a trap: frame 121
+  is the copyright/ESRB screen and frames 601-1200 the Game Freak intro
+  (sunset over the lake). Audio RMS is 0 so far (not looked into).
+- Not yet done: drive to title (press START past the intro), new game,
+  New Bark Town; SoulSilver wasm (`GAME_VERSION=SOULSILVER`) and boot;
+  the integration gate (`tests/dp/regress.sh`, 7 cases on fresh D/P/Pt
+  cores, plus the ROM-only Diamond core vs tests/dp/expected.txt), which
+  is required because armrec.py, dp_extract_asm.py, extract_asm.py,
+  pc_card_rom.c and pc_ndsrec_noagb.c changed. Then integrate.
+- armrec changes this round: the `cc -E -x assembler-with-cpp`
+  preprocessor (checked: Diamond's and Pearl's 575 inputs each preprocess
+  token-identically to the old cpp), file-local `.macro` expansion,
+  `.balign 4` at func-start macros, `.space` from `.`, counter addresses
+  for local data labels, bodiless function starts emitted as C aliases
+  (`__attribute__((alias))`; msl.s `_fadd`/`_f_add`, `_dadd`/`_d_add`).
+
 ## Done
 
 - **tools/ntr reproduces Diamond and Pearl** bit-exactly from fresh objects
