@@ -140,7 +140,7 @@ endif()
 # wasm2c output comes from NP_GUEST_POSTPROCESS[_<game>] (default none).
 set(NP_GUEST_NUM_OUTPUTS 8 CACHE STRING "wasm2c --num-outputs for game modules (parallel compile)")
 set(_np_real_guests)
-foreach(_game diamond pearl platinum black white)
+foreach(_game diamond pearl platinum black white ruby sapphire emerald)
   set(NP_GUEST_WASM_${_game} "" CACHE FILEPATH "wasm2c input for the ${_game} core (empty: not built)")
   if(NP_GUEST_WASM_${_game})
     get_filename_component(_wasm "${NP_GUEST_WASM_${_game}}" ABSOLUTE)

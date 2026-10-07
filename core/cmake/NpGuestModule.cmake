@@ -30,7 +30,7 @@ include_guard(GLOBAL)
 # where directory-scope variables of core/ are not visible, so anything they
 # need is defined inside them or cached (NP_CORE_DIR, NP_WASM2C).
 macro(_np_games OUT)
-  set(${OUT} diamond pearl platinum black white)
+  set(${OUT} diamond pearl platinum black white ruby sapphire emerald)
 endmacro()
 
 function(np_guest_link_flags OUT)
@@ -163,6 +163,9 @@ const np_guest_module *const np_guest_registry[NP_GAME_COUNT] = {
     ${entry_platinum}, /* NP_GAME_PLATINUM */
     ${entry_black}, /* NP_GAME_BLACK */
     ${entry_white}, /* NP_GAME_WHITE */
+    [NP_GAME_RUBY] = ${entry_ruby},
+    [NP_GAME_SAPPHIRE] = ${entry_sapphire},
+    [NP_GAME_EMERALD] = ${entry_emerald},
 };
 " @ONLY)
   target_sources(${EXE} PRIVATE "${out}")

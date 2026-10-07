@@ -91,7 +91,8 @@ typedef struct np_frame_desc {
     uint32_t version; /* NP_GUEST_ABI_VERSION */
 
     /* guest -> host */
-    uint32_t screen[2]; /* guest addresses of 0x00RRGGBB pixels; [0] top */
+    uint32_t screen[2]; /* guest addresses of 0x00RRGGBB pixels; [0] top;
+                           [1] = 0 for a single-screen (GBA) guest */
     uint32_t width, height, stride;
     uint32_t frame_lo, frame_hi;  /* VBlanks since boot */
     uint32_t audio_ring;          /* guest address of u32 stereo frames, L in low half */

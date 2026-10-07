@@ -12,3 +12,4 @@ __pycache__/
 
 # Player-supplied cartridge dumps (Black/White pipeline input); never commit
 /roms/
+*.gba

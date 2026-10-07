@@ -1,7 +1,8 @@
 /*
  * np_core: what the shell sees of a game core.
  *
- * A core is one game (Diamond, Pearl or Platinum) compiled to wasm32 and
+ * A core is one game (Diamond, Pearl, Platinum, Black, White, or the GBA's
+ * Ruby, Sapphire and Emerald) compiled to wasm32 and
  * turned back into C by wasm2c, plus the native runtime that hosts it. The
  * shell never sees wasm, fibers or guest addresses; it drives frames, feeds
  * input, drains audio and supplies the cartridge and backup storage.
@@ -27,10 +28,15 @@ typedef enum np_game {
     NP_GAME_PLATINUM = 2,
     NP_GAME_BLACK = 3,
     NP_GAME_WHITE = 4,
+    /* 5 and 6 are HeartGold and SoulSilver's. */
+    NP_GAME_RUBY = 7,
+    NP_GAME_SAPPHIRE = 8,
+    NP_GAME_EMERALD = 9,
     NP_GAME_COUNT
 } np_game;
 
-/* DS keypad bits, in the SDK's PAD_* order. */
+/* DS keypad bits, in the SDK's PAD_* order. Bits 0..9 are also the GBA's
+ * KEYINPUT bits; a GBA core ignores X and Y. */
 enum {
     NP_KEY_A = 1u << 0,
     NP_KEY_B = 1u << 1,
@@ -48,6 +54,8 @@ enum {
 
 #define NP_SCREEN_W 256
 #define NP_SCREEN_H 192
+#define NP_GBA_SCREEN_W 240
+#define NP_GBA_SCREEN_H 160
 
 typedef struct np_host {
     void *user;
@@ -115,7 +123,9 @@ typedef struct np_input {
 
 /* width/height are 256x192 by default and change with NP_OPT_RENDER_SCALE
  * and NP_OPT_WIDESCREEN; the shell must accept a new size on any frame.
- * Touch coordinates stay in DS pixels (0..255, 0..191) at every size. */
+ * Touch coordinates stay in DS pixels (0..255, 0..191) at every size.
+ * A GBA core has one screen: screen[1] is NULL and the frame is
+ * NP_GBA_SCREEN_W x NP_GBA_SCREEN_H (times the render scale). */
 typedef struct np_frame {
     /* [0] is the top screen, [1] the bottom. Pixels are 0x00RRGGBB, row
      * major, `stride` pixels apart. Valid until the next np_core_run_frame. */

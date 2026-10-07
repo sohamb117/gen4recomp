@@ -79,12 +79,15 @@ void w2c_np__host_vblank(struct w2c_np__host *h, uint32_t desc) {
         np_rt_fail(c, "vblank: descriptor magic/version 0x%08x/%u, want 0x%08x/%u", d->magic, d->version,
                    NP_FRAME_MAGIC, NP_GUEST_ABI_VERSION);
     /* Any size from the DS's own up to 8x it (render scale 4 of a 342-wide
-     * picture is 1368x768); both screens share the geometry. */
-    if (d->width < NP_SCREEN_W || d->width > NP_SCREEN_W * 8 || d->height < NP_SCREEN_H ||
+     * picture is 1368x768); both screens share the geometry. A single
+     * screen (screen[1] == 0) is the GBA's 240x160, up to 8x. */
+    uint32_t min_w = d->screen[1] ? NP_SCREEN_W : NP_GBA_SCREEN_W;
+    uint32_t min_h = d->screen[1] ? NP_SCREEN_H : NP_GBA_SCREEN_H;
+    if (d->width < min_w || d->width > NP_SCREEN_W * 8 || d->height < min_h ||
         d->height > NP_SCREEN_H * 8 || d->stride < d->width || d->stride > NP_SCREEN_W * 8)
         np_rt_fail(c, "vblank: bad screen geometry %ux%u stride %u", d->width, d->height, d->stride);
     check_pixels(c, d, 0);
-    check_pixels(c, d, 1);
+    if (d->screen[1]) check_pixels(c, d, 1);
     if (d->audio_ring_frames) {
         if ((d->audio_ring_frames & (d->audio_ring_frames - 1)) != 0 || d->audio_ring_frames > (1u << 24) ||
             (d->audio_ring & 3) != 0 || !np_rt_guest(c, d->audio_ring, d->audio_ring_frames * 4))

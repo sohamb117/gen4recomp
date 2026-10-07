@@ -6,7 +6,7 @@
  * reports the guest's log, a running hash of the frames and audio, and
  * optional PPM screenshots. Nothing here is mock-specific.
  *
- *   np_headless <diamond|pearl|platinum|black|white> <rom.nds> [options]
+ *   np_headless <diamond|pearl|platinum|black|white|ruby|sapphire|emerald> <rom> [options]
  *     --frames N         frames to run (default 600)
  *     --save FILE        backup chip file: loaded if present, written on store
  *     --dump DIR         write DIR/frame_NNNNNN.ppm (both screens stacked)
@@ -314,8 +314,9 @@ static int dump_ppm(const char *dir, uint64_t number, const np_frame *f) {
     snprintf(path, sizeof path, "%s/frame_%06llu.ppm", dir, (unsigned long long)number);
     FILE *out = fopen(path, "wb");
     if (!out) return -1;
-    fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * 2);
-    for (int s = 0; s < 2; s++)
+    int screens = f->screen[1] ? 2 : 1; /* a GBA core has one */
+    fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * screens);
+    for (int s = 0; s < screens; s++)
         for (uint32_t y = 0; y < f->height; y++)
             for (uint32_t x = 0; x < f->width; x++) {
                 uint32_t p = f->screen[s][y * f->stride + x];
@@ -627,7 +628,7 @@ static int step(session *s, uint64_t k, np_frame *f, uint64_t *hash) {
     /* The same formula as ever (screens at stride x height, then audio),
      * so a hash recorded before stays comparable. */
     *hash = fnv(*hash, f->screen[0], (size_t)f->stride * f->height * 4);
-    *hash = fnv(*hash, f->screen[1], (size_t)f->stride * f->height * 4);
+    if (f->screen[1]) *hash = fnv(*hash, f->screen[1], (size_t)f->stride * f->height * 4);
     static int16_t audio[2 * 8192];
     size_t n;
     while ((n = np_core_audio_read(s->core, audio, 8192)) > 0) {
@@ -725,10 +726,13 @@ static int state_test(session *s, uint64_t first, uint64_t span, int rounds, uin
 
 int main(int argc, char **argv) {
     if (argc < 3) return usage();
-    static const char *const names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
+    static const char *const names[NP_GAME_COUNT] = {
+        [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
+        [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white", [NP_GAME_RUBY] = "ruby",
+        [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
     int game = -1;
     for (int g = 0; g < NP_GAME_COUNT; g++)
-        if (strcmp(argv[1], names[g]) == 0) game = g;
+        if (names[g] && strcmp(argv[1], names[g]) == 0) game = g;
     if (game < 0) return usage();
 
     runner r = {0};

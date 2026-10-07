@@ -24,7 +24,10 @@
 static np_core *g_core;
 static char g_create_error[256];
 
-static const char *const k_game_names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
+static const char *const k_game_names[NP_GAME_COUNT] = {
+    [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
+    [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white", [NP_GAME_RUBY] = "ruby",
+    [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
 
 /* ---- fibers ---------------------------------------------------------- */
 
@@ -190,7 +193,9 @@ np_core *np_core_create(np_game game, const np_host *host, const char *const *op
     if (game < 0 || game >= NP_GAME_COUNT) return create_failed(NULL, "unknown game %d", (int)game);
     if (g_core) return create_failed(NULL, "another np_core is still alive; destroy it first");
     const np_guest_module *mod = np_guest_registry[game];
-    if (!mod) return create_failed(NULL, "%s is not built into this binary", k_game_names[game]);
+    if (!mod)
+        return k_game_names[game] ? create_failed(NULL, "%s is not built into this binary", k_game_names[game])
+                                  : create_failed(NULL, "unknown game %d", (int)game);
     if (!host || !host->rom_read) return create_failed(NULL, "the host must provide rom_read");
 
     np_core *c = calloc(1, sizeof *c);
@@ -261,7 +266,7 @@ int np_core_run_frame(np_core *c, const np_input *in, np_frame *out) {
     memcpy(c->status, d->status, sizeof c->status);
     if (out) {
         out->screen[0] = (const uint32_t *)np_rt_guest(c, d->screen[0], 0);
-        out->screen[1] = (const uint32_t *)np_rt_guest(c, d->screen[1], 0);
+        out->screen[1] = d->screen[1] ? (const uint32_t *)np_rt_guest(c, d->screen[1], 0) : NULL;
         out->width = d->width;
         out->height = d->height;
         out->stride = d->stride;
