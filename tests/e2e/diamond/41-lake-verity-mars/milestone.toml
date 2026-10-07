@@ -2,10 +2,9 @@
 # battle whose win arms Lake Acuity (Jupiter shown, Acuity Lakefront guards shown, 0x40D3=1). Start: Verity Lakefront (80,845)
 # -> end: Route 211 East (446,527) at the Celestic edge (42's start), via the Fly bridge.
 title = "Lake Verity (Galactic): Mars"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 18000
+estimate = 20762
 refs = [
   "maps.h:338 MAP_VERITY_LAKEFRONT = 334; map_header.c:418 (scr_seq 0379, level scr_seq 0829, zone_event 0319)",
   "zone_event 0319 warps 0/1 (81,843)/(80,843) -> MAP_LAKE_VERITY, warps 2/3 (80,843)/(81,843) -> MAP_LAKE_VERITY_GALACTIC",
@@ -33,7 +32,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 27000
+frames = 31200
 
 [[step]]
 do = "walk_to"

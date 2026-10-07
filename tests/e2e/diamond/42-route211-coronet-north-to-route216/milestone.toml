@@ -2,10 +2,9 @@
 # North 1F Room 1, B1F and Room 2 out onto snowy Route 216. No story flags change; the proof is the map chain.
 # Start: Route 211 East (446,527) at the Celestic edge -> end: Route 216 at the cave mouth (375,403) (43's start).
 title = "Route 211 East and Mt Coronet north (Strength) to Route 216"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 12937
 refs = [
   "maps.h:370 MAP_ROUTE_211_EAST = 366; zone_event 0351 warp 0 (419,527) -> MAP_MOUNT_CORONET_NORTH_1F_ROOM_1 warp 3",
   "zone_event 0351 object 0 TRAINER_BIRD_KEEPER_KATHERINE (81) (432,520) E2; object 19 TRAINER_RUIN_MANIAC_HARRY (442) (429,525) S2; object 1 TRAINER_NINJA_BOY_NICK (80) (425,520) S1",
@@ -26,7 +25,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 18000
+frames = 19500
 
 [[step]]
 do = "walk_to"
@@ -74,6 +73,7 @@ map = "MAP_MOUNT_CORONET_B1F"
 [[step]]
 do = "walk_to"
 on_battle = "flee"
+via = [[4, 59], [3, 59], [3, 40], [3, 30], [3, 14], [4, 14], [4, 4], [8, 4]]
 x = 8
 z = 3
 max = 6000

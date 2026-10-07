@@ -2,10 +2,9 @@
 # win sets 0x13E (switches Verity Lakefront to the Galactic lake). Start: Valor Lakefront (719,761) -> end: Verity Lakefront
 # (80,845) south of the lake mouth (41's start), via the Fly bridge.
 title = "Lake Valor (drained): Saturn in Valor Cavern"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 18000
+estimate = 18272
 refs = [
   "maps.h:340 MAP_VALOR_LAKEFRONT = 336; map_header.c:420 (scr_seq 0381, level scr_seq 0831, zone_event 0321)",
   "zone_event 0321 warps 3/4 (717,760/761) -> MAP_LAKE_VALOR_GALACTIC warps 0/2; warps 5/6 -> MAP_LAKE_VALOR",
@@ -34,7 +33,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 27000
+frames = 27500
 
 [[step]]
 do = "walk_to"

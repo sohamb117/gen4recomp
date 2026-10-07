@@ -2,10 +2,9 @@
 # post-badge frame script outside (0x4078 2 -> 3) that sends the player to the library (DPStory09's start).
 # Start: MAP_CANALAVE ferry landing (44,750) -> end: MAP_CANALAVE outside the gym door after scr_seq 0034 script_4.
 title = "Canalave Gym: Byron and the Mine Badge, rival points to the library"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 22500
+estimate = 29077
 refs = [
   "zone_event 0032 warp 0 (39,731) -> MAP_CANALAVE_GYM warp 0 (16,27)",
   "scr_seq 0036 @0x0012 InitCanalaveGym (games/diamond/arm9/src/scrcmd.c:3352; games/diamond/arm9/asm/unk_02064CA8.s:67-89, 24 bytes UNK_020F7E54)",
@@ -42,7 +41,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 33800
+frames = 43700
 
 [[step]]
 do = "walk_to"

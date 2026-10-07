@@ -2,10 +2,9 @@
 # (ON_FRAME 0x4078==4) that sends the player to Lake Valor. Start: Canalave below the gym door (39,732), right after
 # 38's rival scene (0x4078=3, 0x40B2=1) -> end: Valor Lakefront (719,761) east of the lake mouth (40's start), via the Fly bridge.
 title = "Canalave Library: lake legends and the Lake Valor explosion"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 9106
 refs = [
   "maps.h:37 MAP_CANALAVE = 33; map_header.c:117 (scr_seq 0034, level scr_seq 0497, msg 47, zone_event 0032)",
   "zone_event 0032 warp 3 (37,718) -> MAP_CANALAVE_LIBRARY_1F warp 0",

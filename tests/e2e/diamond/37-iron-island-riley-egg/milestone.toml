@@ -3,10 +3,9 @@
 # it sits before Byron because Byron's win sends the player straight to the library (scr_seq 0034 script_4).
 # Start: MAP_CANALAVE (36's end on the bridge; lab: gatehouse door warp 7) -> end: MAP_CANALAVE ship landing (44,750).
 title = "Iron Island: Riley tag battle and the Riolu egg"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 17500
+estimate = 43913
 refs = [
   "zone_event 0032 object 16 SPRITE_SEAMAN (45,750) -> scr_seq 0034 script_20",
   "scr_seq 0034 @0x06B7 CompareVarToValue 0x4106, 2 (Lunar Wing branch, not taken)",
@@ -48,7 +47,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 50000
+frames = 65900
 
 [[step]]
 do = "walk_to"

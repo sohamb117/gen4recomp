@@ -30,7 +30,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 50000
+frames = 90000
 
 [[step]]
 do = "walk_to"
