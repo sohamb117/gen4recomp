@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~1051466 frames estimated
+### Story chain: 56 milestones, ~1104049 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -141,14 +141,14 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [32-canalave-library-explosion](platinum/32-canalave-library-explosion/milestone.toml) | Canalave Library: Lake Valor explosion | P0 | 7557 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY | passing |
 | [33-lake-valor-saturn](platinum/33-lake-valor-saturn/milestone.toml) | Lake Valor (drained): Saturn in Valor Cavern | P0 | 21863 | prev + `lab.recipe` | MAP_HEADER_VALOR_CAVERN | passing |
 | [34-lake-verity-mars](platinum/34-lake-verity-mars/milestone.toml) | Lake Verity: Mars | P0 | 23495 | prev + `lab.recipe` | MAP_HEADER_LAKE_VERITY | passing |
-| [35-coronet-to-snowpoint](platinum/35-coronet-to-snowpoint/milestone.toml) | Mt Coronet B1F to Snowpoint via Routes 216/217, HM08 | P0 | 26000 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY | planned |
-| [36-snowpoint-gym-candice](platinum/36-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: Candice and the Icicle Badge | P0 | 22000 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY | planned |
-| [37-lake-acuity-jupiter](platinum/37-lake-acuity-jupiter/milestone.toml) | Lake Acuity: Jupiter leaves, injured rival | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_LAKE_ACUITY | planned |
-| [38-veilstone-storage-key-hq-entry](platinum/38-veilstone-storage-key-hq-entry/milestone.toml) | Veilstone: storage key, Looker, Galactic HQ entry | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_GALACTIC_HQ_B2F | planned |
-| [39-galactic-hq-cyrus](platinum/39-galactic-hq-cyrus/milestone.toml) | Galactic HQ: Galactic Key, Cyrus, Master Ball | P0 | 30000 | prev + `lab.recipe` | MAP_HEADER_GALACTIC_HQ_4F | planned |
-| [40-galactic-hq-saturn-free-lake-trio](platinum/40-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn and the lake trio freed | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM | planned |
-| [41-mt-coronet-climb](platinum/41-mt-coronet-climb/milestone.toml) | Mt Coronet: Black Flute and the climb to Spear Pillar | P0 | 30000 | prev + `lab.recipe` | MAP_HEADER_SPEAR_PILLAR | planned |
-| [42-spear-pillar](platinum/42-spear-pillar/milestone.toml) | Spear Pillar: grunt double, Mars + Jupiter tag, Giratina's rift | P0 | 26000 | prev + `lab.recipe` | MAP_HEADER_DISTORTION_WORLD_1F | planned |
+| [35-coronet-to-snowpoint](platinum/35-coronet-to-snowpoint/milestone.toml) | Mt Coronet B1F to Snowpoint via Routes 216/217, HM08 | P0 | 60248 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY | passing |
+| [36-snowpoint-gym-candice](platinum/36-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: Candice and the Icicle Badge | P0 | 12609 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY | passing |
+| [37-lake-acuity-jupiter](platinum/37-lake-acuity-jupiter/milestone.toml) | Lake Acuity: Jupiter leaves, injured rival | P0 | 11005 | prev + `lab.recipe` | MAP_HEADER_LAKE_ACUITY | passing |
+| [38-veilstone-storage-key-hq-entry](platinum/38-veilstone-storage-key-hq-entry/milestone.toml) | Veilstone: storage key, Looker, Galactic HQ entry | P0 | 5409 | prev + `lab.recipe` | MAP_HEADER_GALACTIC_HQ_B2F | passing |
+| [39-galactic-hq-cyrus](platinum/39-galactic-hq-cyrus/milestone.toml) | Galactic HQ: Galactic Key, Cyrus, Master Ball | P0 | 41275 | prev + `lab.recipe` | MAP_HEADER_GALACTIC_HQ_4F | passing |
+| [40-galactic-hq-saturn-free-lake-trio](platinum/40-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn and the lake trio freed | P0 | 9487 | prev + `lab.recipe` | MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM | passing |
+| [41-mt-coronet-climb](platinum/41-mt-coronet-climb/milestone.toml) | Mt Coronet: Black Flute and the climb to Spear Pillar | P0 | 48985 | prev + `lab.recipe` | MAP_HEADER_SPEAR_PILLAR | passing |
+| [42-spear-pillar](platinum/42-spear-pillar/milestone.toml) | Spear Pillar: grunt double, Mars + Jupiter tag, Giratina's rift | P0 | 27565 | prev + `lab.recipe` | MAP_HEADER_DISTORTION_WORLD_1F | passing |
 | [43-distortion-world-cyrus](platinum/43-distortion-world-cyrus/milestone.toml) | Distortion World: to B7F and Cyrus | P0 | 40000 | prev + `lab.recipe` | MAP_HEADER_DISTORTION_WORLD_B7F | planned |
 | [44-giratina-sendoff-spring](platinum/44-giratina-sendoff-spring/milestone.toml) | Giratina Origin battle, out to Sendoff Spring | P0 | 14000 | prev + `lab.recipe` | MAP_HEADER_SENDOFF_SPRING | planned |
 | [45-sandgem-rowan-unlocks-sunyshore](platinum/45-sandgem-rowan-unlocks-sunyshore/milestone.toml) | Sandgem lab: Rowan after the Distortion World | P0 | 5000 | prev + `lab.recipe` | MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB | planned |
@@ -499,7 +499,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_SNOWPOINT_CITY; flags set FLAG_OBTAINED_ROUTE_217_HM08, FLAG_HIDE_ACUITY_LAKEFRONT_RIVAL; vars VAR_ROUTE_217_STATE=1, VAR_ACUITY_LAKEFRONT_STATE=1
-- frames: estimate 26000, budget 80000
+- frames: estimate 60248, budget 90400
 - refs: scripts_route_217.s:24-46; scripts_acuity_lakefront.s:43-61; scripts_route_217.s:26; scripts_route_217.s:43; scripts_route_217.s:44; scripts_route_217.s:45; scripts_acuity_lakefront.s:56; scripts_acuity_lakefront.s:60; events_mt_coronet_b1f.json; events_route_217.json; scripts_visible_items.s:1302
 
 #### platinum/36-snowpoint-gym-candice — Snowpoint Gym: Candice and the Icicle Badge
@@ -508,7 +508,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_SNOWPOINT_CITY; 7 badges; badge BADGE_ID_ICICLE; >= 1 battles; flags set FLAG_RECEIVED_CANDICE_TM72
-- frames: estimate 22000, budget 33000
+- frames: estimate 12609, budget 19000
 - refs: scripts_snowpoint_city_gym.s:35; scripts_snowpoint_city_gym.s:37-42; scripts_snowpoint_city_gym.s:44; scripts_snowpoint_city_gym.s:49-52; scripts_snowpoint_city_gym.s:53; scripts_snowpoint_city_gym.s:35-53
 
 #### platinum/37-lake-acuity-jupiter — Lake Acuity: Jupiter leaves, injured rival
@@ -517,7 +517,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_LAKE_ACUITY; flags set FLAG_HIDE_LAKE_ACUITY_JUPITER; flags clear FLAG_HIDE_VEILSTONE_CITY_GRUNT_M_STORAGE_KEY; vars VAR_LAKE_ACUITY_STATE=2
-- frames: estimate 9000, budget 13500
+- frames: estimate 11005, budget 16600
 - refs: field_move_tasks.c:631; scripts_acuity_lakefront.s:27-31; scripts_lake_acuity.s:9-70; scripts_lake_acuity.s:35; scripts_lake_acuity.s:58; scripts_lake_acuity.s:60; scripts_lake_acuity.s:61; scripts_lake_acuity.s:62; scripts_lake_acuity.s:63; scripts_lake_acuity.s:64; scripts_lake_acuity.s:65; scripts_lake_acuity.s:66; scripts_lake_acuity.s:67; scripts_lake_acuity.s:68; scripts_acuity_lakefront.s:34-37; src/field_move_tasks.c:631
 
 #### platinum/38-veilstone-storage-key-hq-entry — Veilstone: storage key, Looker, Galactic HQ entry
@@ -526,7 +526,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_GALACTIC_HQ_B2F; flags set FLAG_USED_STORAGE_KEY, FLAG_AGREED_WITH_LOOKER_TO_ENTER_HIDEOUT; vars VAR_VEILSTONE_CITY_GALACTIC_WAREHOUSE_STATE=4
-- frames: estimate 9000, budget 13500
+- frames: estimate 5409, budget 8200
 - refs: scripts_veilstone_city.s:1068-1149; scripts_veilstone_city_galactic_warehouse.s:138-171; scripts_veilstone_city.s:1078; scripts_veilstone_city.s:1082; scripts_veilstone_city.s:1131; scripts_veilstone_city.s:1143; scripts_veilstone_city.s:1144; scripts_veilstone_city_galactic_warehouse.s:143; scripts_veilstone_city_galactic_warehouse.s:154; scripts_veilstone_city_galactic_warehouse.s:160-161; scripts_veilstone_city_galactic_warehouse.s:168; scripts_veilstone_city_galactic_warehouse.s:169; scripts_veilstone_city_galactic_warehouse.s:170
 
 #### platinum/39-galactic-hq-cyrus — Galactic HQ: Galactic Key, Cyrus, Master Ball
@@ -535,7 +535,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_GALACTIC_HQ_4F; >= 1 battles; flags set FLAG_OBTAINED_GALACTIC_HQ_B2F_GALACTIC_KEY, FLAG_HIDE_GALACTIC_HQ_4F_CYRUS; vars VAR_GALACTIC_HQ_4F_STATE=1
-- frames: estimate 30000, budget 90000
+- frames: estimate 41275, budget 62000
 - refs: scripts_galactic_hq_b2f.s:19-47; scripts_galactic_hq_1f.s:96-124; scripts_galactic_hq_3f.s:15-43; scripts_galactic_hq_4f.s:104-132; scripts_galactic_hq_hall.s:9-101; scripts_galactic_hq_4f.s:13-58; scripts_galactic_hq_b2f.s:47; scripts_galactic_hq_1f.s:124; scripts_galactic_hq_3f.s:43; scripts_galactic_hq_4f.s:132; scripts_galactic_hq_1f.s:17; scripts_galactic_hq_hall.s:25; scripts_galactic_hq_4f.s:48-99; scripts_galactic_hq_hall.s:100; scripts_galactic_hq_4f.s:43-46; scripts_galactic_hq_4f.s:55; scripts_galactic_hq_4f.s:56; events_galactic_hq_b2f.json
 
 #### platinum/40-galactic-hq-saturn-free-lake-trio — Galactic HQ: Saturn and the lake trio freed
@@ -544,7 +544,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM; >= 1 battles; flags set FLAG_FREED_GALACTIC_HQ_POKEMON, FLAG_DEFEATED_GALACTIC_HQ_CONTROL_ROOM_SATURN; vars VAR_MT_CORONET_2F_STATE=1
-- frames: estimate 12000, budget 18000
+- frames: estimate 9487, budget 14300
 - refs: scripts_galactic_hq_control_room.s:35-74; scripts_galactic_hq_control_room.s:50-70; events_galactic_hq_control_room.json:173-256; scripts_galactic_hq_control_room.s:307-316; scripts_galactic_hq_control_room.s:46; scripts_galactic_hq_control_room.s:47; scripts_galactic_hq_control_room.s:184; scripts_galactic_hq_control_room.s:189; scripts_galactic_hq_control_room.s:190; scripts_galactic_hq_control_room.s:216; scripts_galactic_hq_control_room.s:203-205; scripts_galactic_hq_control_room.s:249; scripts_galactic_hq_control_room.s:252; scripts_galactic_hq_control_room.s:253; scripts_galactic_hq_control_room.s:254; events_galactic_hq_laboratory.json; scripts_galactic_hq_control_room.s:173-256
 
 #### platinum/41-mt-coronet-climb — Mt Coronet: Black Flute and the climb to Spear Pillar
@@ -553,7 +553,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_SPEAR_PILLAR; flags set FLAG_RECEIVED_MT_CORONET_2F_BLACK_FLUTE, FLAG_FIRST_ARRIVAL_SPEAR_PILLAR; vars VAR_MT_CORONET_2F_STATE=2
-- frames: estimate 30000, budget 120000
+- frames: estimate 48985, budget 73500
 - refs: scripts_mt_coronet_2f.s:20-56; scripts_mt_coronet_6f.s:8-63; scripts_mt_coronet_2f.s:23; scripts_mt_coronet_2f.s:27; scripts_mt_coronet_2f.s:42-45; scripts_mt_coronet_2f.s:52; scripts_spear_pillar.s:19
 
 #### platinum/42-spear-pillar — Spear Pillar: grunt double, Mars + Jupiter tag, Giratina's rift
@@ -562,7 +562,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_DISTORTION_WORLD_1F; >= 2 battles; flags set FLAG_SPEAR_PILLAR_IS_DISTORTED, FLAG_UNLOCKED_VS_SEEKER_LVL_3; vars VAR_SPEAR_PILLAR_STATE=3, VAR_SPEAR_PILLAR_DISTORTED_STATE=2
-- frames: estimate 26000, budget 39000
+- frames: estimate 27565, budget 41400
 - refs: scripts_spear_pillar.s:81-117; scripts_spear_pillar.s:162-199; scripts_spear_pillar.s:185; scripts_spear_pillar.s:360-397; scripts_spear_pillar_distorted.s:16-55; scripts_spear_pillar_distorted.s:57-75; scripts_spear_pillar.s:19; scripts_spear_pillar.s:58; scripts_spear_pillar.s:105; scripts_spear_pillar.s:204; scripts_spear_pillar.s:192; scripts_spear_pillar.s:193; scripts_spear_pillar.s:386; scripts_spear_pillar.s:387; scripts_spear_pillar.s:388; scripts_spear_pillar.s:389; scripts_spear_pillar.s:390; scripts_spear_pillar.s:391; scripts_spear_pillar.s:392; scripts_spear_pillar.s:393; scripts_spear_pillar.s:394-395; scripts_spear_pillar_distorted.s:18; scripts_spear_pillar_distorted.s:24; scripts_spear_pillar_distorted.s:31; scripts_spear_pillar_distorted.s:41; scripts_spear_pillar_distorted.s:53; scripts_spear_pillar_distorted.s:71; scripts_spear_pillar_distorted.s:120-128
 
 #### platinum/43-distortion-world-cyrus — Distortion World: to B7F and Cyrus
@@ -571,7 +571,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_DISTORTION_WORLD_B7F; >= 1 battles; flags set FLAG_DISTORTION_WORLD_STEPPING_STONES; vars VAR_DISTORTION_WORLD_PROGRESS=10
-- frames: estimate 40000, budget 60000
+- frames: estimate 40000, budget 120000
 - refs: scripts_spear_pillar_distorted.s:120-128; src/overlay009/ov9_02249960.c:10198-10248; src/overlay009/ov9_02249960.c:10738; src/overlay009/ov9_02249960.c:11068-12727; include/constants/distortion_world.h:4-20; scripts_distortion_world_1f.s:38-78; scripts_distortion_world_b2f.s:13-36; scripts_distortion_world_b3f.s:12-32; scripts_distortion_world_b6f.s:18-77; scripts_distortion_world_b7f.s:24-34; ov9_02249960.c:12577-12603; scripts_distortion_world_b7f.s:50-59; scripts_distortion_world_b7f.s:96-104; scripts_distortion_world_b6f.s:30; include/data/map_headers.h:12672-12692
 
 #### platinum/44-giratina-sendoff-spring — Giratina Origin battle, out to Sendoff Spring

@@ -5,9 +5,8 @@
 # Start: Galactic HQ control room (40's end) -> end: Spear Pillar (220) at (31,53).
 
 title = "Mt Coronet: Black Flute and the climb to Spear Pillar"
-status = "planned"
 priority = "P0"
-estimate = 30000
+estimate = 48985
 refs = [
   "scripts_mt_coronet_2f.s:20-56",
   "scripts_mt_coronet_6f.s:8-63",
@@ -24,7 +23,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 120000
+frames = 73500
 
 [[step]]
 do = "walk_to"

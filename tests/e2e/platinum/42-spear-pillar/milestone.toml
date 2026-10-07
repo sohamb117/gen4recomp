@@ -2,9 +2,8 @@
 # Start: Spear Pillar (31,53) -> end: Distortion World 1F (573) via Spear Pillar Distorted.
 
 title = "Spear Pillar: grunt double, Mars + Jupiter tag, Giratina's rift"
-status = "planned"
 priority = "P0"
-estimate = 26000
+estimate = 27565
 refs = [
   "scripts_spear_pillar.s:81-117",
   "scripts_spear_pillar.s:162-199",
@@ -41,7 +40,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 39000
+frames = 41400
 
 [[step]]
 do = "walk_to"

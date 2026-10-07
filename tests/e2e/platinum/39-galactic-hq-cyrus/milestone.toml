@@ -5,9 +5,8 @@
 # Start: Galactic HQ B2F (3,16) (38's end) -> end: Galactic HQ 4F, Cyrus beaten.
 
 title = "Galactic HQ: Galactic Key, Cyrus, Master Ball"
-status = "planned"
 priority = "P0"
-estimate = 30000
+estimate = 41275
 refs = [
   "scripts_galactic_hq_b2f.s:19-47",
   "scripts_galactic_hq_1f.s:96-124",
@@ -35,7 +34,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 90000
+frames = 62000
 
 [[step]]
 do = "walk_to"

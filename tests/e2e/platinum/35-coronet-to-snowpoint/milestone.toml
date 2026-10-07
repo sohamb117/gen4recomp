@@ -4,9 +4,8 @@
 # Start: Lake Verity (34's end) -> end: Snowpoint City, HM08.
 
 title = "Mt Coronet B1F to Snowpoint via Routes 216/217, HM08"
-status = "planned"
 priority = "P0"
-estimate = 26000
+estimate = 60248
 refs = [
   "scripts_route_217.s:24-46",
   "scripts_acuity_lakefront.s:43-61",
@@ -27,7 +26,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 80000
+frames = 90400
 
 [[step]]
 do = "walk_to"
@@ -159,8 +158,9 @@ x = 379
 z = 234
 max = 12000
 run = false
+hold = 48
 on_battle = "flee"
-note = "east into Snowpoint City, to the Pokemon Center door (tools/pt_route.py 310,244 379,234 ACUITY_LAKEFRONT SNOWPOINT_CITY)"
+note = "east into Snowpoint City, to the Pokemon Center door (tools/pt_route.py 310,244 379,234 ACUITY_LAKEFRONT SNOWPOINT_CITY); hold = 48: in the deep snow (321..325,241) the 24-frame hold gave up before the next slow step began, learned the edge blocked and detoured into the deepest snow (322..323,246..247)"
 
 [expect]
 map = "MAP_HEADER_SNOWPOINT_CITY"

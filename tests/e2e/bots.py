@@ -768,32 +768,80 @@ def bot_steps(s, step, ctx):
 
 
 def bot_moves(s, step, ctx):
-    """Replay a direction route: `dirs` = [["U"|"D"|"L"|"R", count], ...] (tools/pt_explore.py prints one), each move
-    held until the probe's (map, x, y, z) changes, then the player is free again (text a move starts is advanced).
+    """Replay a direction route: `dirs` = [[KEY, N], ...] (tools/pt_explore.py prints one). KEY "U"|"D"|"L"|"R": N
+    moves, each held until the probe's (map, x, y, z) changes, then the player is free again (text a move starts is
+    advanced); N may instead be a target "x12", "z40" or "y233" (the overlay's tile y, the probe's y halved): moves
+    in that direction until the coordinate is reached, so jump tiles (two tiles a move) and a platform ride (an
+    event that carries the player once a step ends) need no counting. KEY "A": talk, N the direction to face first
+    ("R": a bump into the person, which on a Distortion World wall is what turns the player toward them), A until a
+    script starts, three tries. KEY "F": a field move, N the direction to bump first (water: Surf; a boulder:
+    Strength), A answering YES. KEY "P": push a Strength boulder N ("R"): the direction held 40 frames (the player
+    stays), then until free (a boulder falling through a Distortion World hole plays a scene). KEY "W": wait N
+    frames, then until the player is free (an elevator ride).
     For maps whose walkable surface the probe's land grid does not show (Platinum's Distortion World: floating
     platforms, walls walked on, elevators). A move that changes nothing is tried again, three times at most."""
     bound = _int(step, "max", 9000)
     limit = s.frame + bound
-    total = sum(int(n) for _, n in step["dirs"])
     done = 0
-    for name, n in step["dirs"]:
-        d = "UDLR".index(name)
-        for _ in range(int(n)):
+
+    def one(name, d):
+        nonlocal limit
+        p = s.probe()
+        here = (p.map_id, p.x, p.y, p.z)
+        for attempt in range(4):
+            if s.frame >= limit:
+                raise HarnessError("moves: %d done, out of %d frames at %s going %s" % (done, bound, here, name))
+            # held without a gap: on a Distortion World wall a released key turns the player again
+            s.run(48, DIR_KEYS[d], until=["x!=%d" % here[1], "z!=%d" % here[3], "y!=%d" % here[2],
+                                         "map_id!=%d" % here[0], "in_battle=1"])
+            s.run(20, until="field_ready=1")
+            limit += _field_or_handle(s, step, ctx, limit)
             p = s.probe()
-            here = (p.map_id, p.x, p.y, p.z)
-            for attempt in range(4):
-                if s.frame >= limit:
-                    raise HarnessError("moves: %d of %d done, out of %d frames at %s" % (done, total, bound, here))
-                # held without a gap: on a Distortion World wall a released key turns the player again
-                s.run(48, DIR_KEYS[d], until=["x!=%d" % here[1], "z!=%d" % here[3], "y!=%d" % here[2],
-                                             "map_id!=%d" % here[0], "in_battle=1"])
-                s.run(20, until="field_ready=1")
-                limit += _field_or_handle(s, step, ctx, limit)
-                p = s.probe()
-                if (p.map_id, p.x, p.y, p.z) != here:
+            if (p.map_id, p.x, p.y, p.z) != here:
+                return p
+        raise HarnessError("moves: stuck at %s going %s (move %d)" % (here, name, done + 1))
+
+    for name, n in step["dirs"]:
+        if name == "W":
+            s.run(int(n))
+            limit += _field_or_handle(s, step, ctx, limit)
+            continue
+        if name == "F":
+            s.run(16, DIR_KEYS["UDLR".index(n)])
+            s.run(40, until="field_ready=1")
+            limit += _use_field_move(s, step, ctx, "a field move %s" % n, limit)
+            continue
+        if name == "P":
+            s.run(40, DIR_KEYS["UDLR".index(n)])
+            s.run(20, until="field_ready=1")
+            limit += _field_or_handle(s, step, ctx, limit)
+            continue
+        if name == "A":
+            for _ in range(3):
+                s.run(16, DIR_KEYS["UDLR".index(n)])
+                s.run(40, until="field_ready=1")
+                s.run(4, "a")
+                if s.run(40, until="field_ready=0"):
                     break
-                if attempt == 3:
-                    raise HarnessError("moves: stuck at %s going %s (move %d of %d)" % (here, name, done + 1, total))
+            else:
+                p = s.probe()
+                raise HarnessError("moves: A facing %s started nothing at (%d,%d) y %d" % (n, p.x, p.z, p.y))
+            limit += _field_or_handle(s, step, ctx, limit)
+            continue
+        d = "UDLR".index(name)
+        if isinstance(n, str):
+            axis, want = n[0], int(n[1:])
+            for _ in range(80):
+                p = s.probe()
+                if {"x": p.x, "z": p.z, "y": p.y // 2}[axis] == want:
+                    break
+                one(name, d)
+                done += 1
+            else:
+                raise HarnessError("moves: %s never reached %s" % (name, n))
+            continue
+        for _ in range(int(n)):
+            one(name, d)
             done += 1
     s.run(16)
     p = s.probe()
@@ -893,9 +941,10 @@ def _walk_to(s, step, ctx):
         terrain.visits[here] = terrain.visits.get(here, 0) + 1
         keys = DIR_KEYS[d] + ("+" + run_key if run_key else "")
         # Hold the direction through the turn-in-place (a short press only turns) until the step begins:
-        # the probe's tile changes as a step starts. A bump into something solid never changes it.
-        moved = s.run(24, keys, until=["x!=%d" % here[0], "z!=%d" % here[1], "map_id!=%d" % start_map,
-                                       "in_battle=1"])
+        # the probe's tile changes as a step starts. A bump into something solid never changes it. `hold`: deep
+        # snow's slow steps need longer before the next one starts (Platinum 35, Acuity Lakefront)
+        moved = s.run(_int(step, "hold", 24), keys, until=["x!=%d" % here[0], "z!=%d" % here[1],
+                                                         "map_id!=%d" % start_map, "in_battle=1"])
         # let the step finish so the next probe sees a settled tile; then whatever the step started (a warp's
         # fade, a coord script, a trainer's sight, a wild battle) runs until the player is free again
         s.run(24, until="field_ready=1")

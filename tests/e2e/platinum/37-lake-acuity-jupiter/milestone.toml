@@ -2,9 +2,8 @@
 # Start: Snowpoint City at the gym door (367,223) (36's end) -> end: Lake Acuity, VAR_LAKE_ACUITY_STATE 2.
 
 title = "Lake Acuity: Jupiter leaves, injured rival"
-status = "planned"
 priority = "P0"
-estimate = 9000
+estimate = 11005
 refs = [
   "field_move_tasks.c:631",
   "scripts_acuity_lakefront.s:27-31",
@@ -30,7 +29,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 13500
+frames = 16600
 
 [[step]]
 do = "walk_to"

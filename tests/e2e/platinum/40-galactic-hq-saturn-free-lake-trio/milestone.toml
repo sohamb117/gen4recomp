@@ -2,9 +2,8 @@
 # Start: Galactic HQ 4F at the Cyrus coord (8,11) (39's end) -> end: control room (494), FLAG_FREED_GALACTIC_HQ_POKEMON.
 
 title = "Galactic HQ: Saturn and the lake trio freed"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 9487
 refs = [
   "scripts_galactic_hq_control_room.s:35-74",
   "scripts_galactic_hq_control_room.s:50-70",
@@ -31,7 +30,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 18000
+frames = 14300
 
 [[step]]
 do = "walk_to"

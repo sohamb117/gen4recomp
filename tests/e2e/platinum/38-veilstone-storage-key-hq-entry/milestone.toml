@@ -3,9 +3,8 @@
 # Start: Lake Acuity (37's end) -> end: Galactic HQ B2F (310).
 
 title = "Veilstone: storage key, Looker, Galactic HQ entry"
-status = "planned"
 priority = "P0"
-estimate = 9000
+estimate = 5409
 refs = [
   "scripts_veilstone_city.s:1068-1149",
   "scripts_veilstone_city_galactic_warehouse.s:138-171",
@@ -27,7 +26,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 13500
+frames = 8200
 
 [[step]]
 do = "walk_to"

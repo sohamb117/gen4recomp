@@ -148,6 +148,8 @@ def main():
     ap.add_argument("--frames", type=int, default=60000)
     ap.add_argument("--save-to")
     ap.add_argument("--shot")
+    ap.add_argument("--try", dest="try_", help="moves to play and print one by one instead of exploring, e.g. "
+                    "'U7 L2 R': each held as `move` holds it; a move that changes nothing is printed as blocked")
     a = ap.parse_args()
     game = run.Game("platinum")
     game.tools()
@@ -163,6 +165,24 @@ def main():
         run.boot_continue(s)
         for step in json.loads(a.steps or "[]"):
             bots.BOTS[step["do"]](s, step, ctx)
+        if a.try_:
+            for tok in a.try_.split():
+                if tok == "A":  # talk: A, then the text it starts advanced
+                    s.run(4, "a")
+                    s.run(40)
+                    settle(s)
+                    print("  A -> %s" % (state(s),))
+                    continue
+                if tok[0] == "W":  # Wn: wait n frames (an elevator ride), then settle
+                    s.run(int(tok[1:]))
+                    settle(s)
+                    print("  %s -> %s" % (tok, state(s)))
+                    continue
+                d = NAMES.index(tok[0])
+                for _ in range(int(tok[1:] or 1)):
+                    before = state(s)
+                    after = move(s, d)
+                    print("  %s %s -> %s%s" % (tok[0], before, after, "  BLOCKED" if after == before else ""))
         goals = [tuple(int(v) for v in g.split(",")) for g in a.goal_tile.split(";")] if a.goal_tile else []
         avoid = [tuple(int(v) for v in g.split(",")) for g in a.avoid.split(";")] if a.avoid else []
         if goal_map is not None:

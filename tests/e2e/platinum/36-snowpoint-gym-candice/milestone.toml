@@ -4,9 +4,8 @@
 # BADGE_ID_ICICLE, TM72.
 
 title = "Snowpoint Gym: Candice and the Icicle Badge"
-status = "planned"
 priority = "P0"
-estimate = 22000
+estimate = 12609
 refs = [
   "scripts_snowpoint_city_gym.s:35",
   "scripts_snowpoint_city_gym.s:37-42",
@@ -22,7 +21,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 33000
+frames = 19000
 
 [[step]]
 do = "walk_to"

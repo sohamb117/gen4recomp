@@ -29,14 +29,117 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
-# PHASE2: the two starts differ (chain: already in DW 1F; lab: walk to (31,31) facing up, A on Cynthia (31,30), Yes, wait_map
-#   MAP_HEADER_DISTORTION_WORLD_1F). Tile path through 1F..B7F is unknown: derive it from src/overlay009/ov9_02249960.c
-#   (sDistWorldMapConnectionList :10198-10248, sMovingPlatformMapTemplates*, sElevatorPlatformPaths :10738, sMapEvents1F..B7F
-#   :11068-12727) + mapscan. Progress beats: 1F (scripts_distortion_world_1f.s:38-78), B2F Cynthia (scripts_distortion_world_b2f.s:13-36),
-#   B3F Cyrus (scripts_distortion_world_b3f.s:12-32), B6F three Strength boulders into the pits then Cynthia
-#   (scripts_distortion_world_b6f.s:18-77), B7F (scripts_distortion_world_b7f.s:24-34), coord (0x54..0x56, y 0x41, z 0x4C)
-#   (ov9_02249960.c:12577-12603), talk to Cyrus -> auto_battle (TRAINER_GALACTIC_BOSS_CYRUS_DISTORTION_WORLD 404) (b7f :50-59).
+frames = 120000
+# Routes: ground legs from tools/pt_dw.py MAP --route X,Z X,Z (land data + JUMP_*_TWICE pairs + ledges); walls,
+# ceilings, platform rides and elevators from pt_dw.py MAP (floating platforms, jump points, events) and checked in
+# game with tools/pt_explore.py --try. Each leg is a `moves` target ("x40": until the probe's x is 40), so jump pairs
+# and rides need no counting. Chain start only (42 ends in DW 1F at (54,40)).
+
+[[step]]
+do = "moves"
+max = 6000
+dirs = [["D", "z42"], ["L", "x52"], ["D", "z45"], ["L", "x51"], ["D", "z46"], ["L", "x40"], ["D", "z54"], ["W", 600]]
+note = "1F: to the elevator (40,289,54) down (sMovingPlatformMapTemplate1F_1)"
+
+[[step]]
+do = "moves"
+max = 12000
+dirs = [["L", "x32"], ["D", "z57"], ["L", "x16"], ["D", "z58"], ["L", "x15"], ["L", "x11"], ["R", "z48"], ["D", "x12"],
+        ["R", "x15"], ["U", "z47"], ["R", "x33"], ["U", "z45"], ["W", 600]]
+note = "B1F: Mesprit event (15,257,58), the west wall x 11 back (jump points (12,257,58)/(11,258,48)), elevator (33,45) down"
+
+[[step]]
+do = "moves"
+max = 16000
+dirs = [["U", "z25"], ["U", "z24"], ["L", "x31"], ["U", "z23"], ["L", "x30"], ["U", "y233"], ["R", "z21"], ["A", "R"],
+        ["R", "z15"], ["D", "x31"], ["R", "x47"], ["R", "x63"], ["D", "z17"], ["R", "x65"], ["D", "z45"], ["L", "x49"],
+        ["U", "z36"], ["U", "z31"], ["R", "x51"], ["R", "x65"], ["W", 600]]
+note = "B2F: platform ride P2N, the west wall x 30 up to y 233 (Cynthia on it: a bump then A, she steps aside, scripts_distortion_world_b2f.s:13-36), upper platforms P10E/P11E/P12S/P13W, P18N down, P7E, elevator (65,225,31) down"
+
+[[step]]
+do = "moves"
+max = 16000
+dirs = [["D", "z41"], ["D", "z49"], ["R", "x72"], ["U", "z33"], ["R", "x82"], ["D", "z42"], ["R", "x87"], ["D", "z44"],
+        ["R", "x93"], ["D", "z45"], ["R", "x96"], ["U", "z43"], ["W", 600]]
+note = "B3F: Cyrus coord (65,193,41) (scripts_distortion_world_b3f.s:12-32), elevator (96,43) two floors down to B5F"
+
+[[step]]
+do = "moves"
+max = 16000
+dirs = [["D", "z45"], ["L", "x94"], ["U", "z41"], ["L", "x84"], ["D", "z50"], ["R", "x86"], ["D", "z55"], ["F", "D"],
+        ["P", "D"], ["R", "x87"], ["D", "z56"], ["R", "x89"], ["D", "z61"], ["L", "x87"], ["D", "z66"], ["L", "x84"],
+        ["D", "z67"], ["L", "x80"], ["U", "z65"], ["L", "x76"], ["D", "z66"], ["L", "x75"], ["D", "z67"], ["L", "x74"],
+        ["D", "z68"], ["P", "R"], ["U", "z67"], ["R", "x75"], ["U", "z65"], ["R", "x80"], ["D", "z70"], ["L", "x78"],
+        ["D", "z75"], ["R", "x79"], ["D", "z77"], ["L", "x78"], ["W", 600]]
+note = "B5F: Uxie tutorial + ledge, Uxie boulder (86,56) south into the hole, Mesprit tutorial, Mesprit boulder (75,68) east (sBoulderFallLocations), elevator (78,77) up"
+
+[[step]]
+do = "moves"
+max = 20000
+dirs = [["D", "z79"], ["L", "x75"], ["U", "z77"], ["L", "x67"], ["U", "z73"], ["R", "x68"], ["U", "z70"], ["R", "x70"],
+        ["U", "z65"], ["L", "x69"], ["U", "z64"], ["L", "x67"], ["U", "z60"], ["L", "x65"], ["U", "z44"], ["R", "x73"],
+        ["U", "z43"], ["R", "x83"], ["D", "z48"], ["L", "x82"], ["D", "z57"], ["L", "x81"], ["D", "z61"], ["L", "x79"],
+        ["D", "z62"], ["W", 600], ["U", "z61"], ["L", "x77"], ["D", "z62"], ["L", "x71"], ["D", "z72"], ["R", "x85"],
+        ["U", "z68"], ["R", "x93"], ["D", "z69"], ["R", "x95"], ["D", "z70"], ["W", 600]]
+note = "B4F (78,77) -> elevator (79,62) up; B3F (79,62) -> elevator (95,70) down"
+
+[[step]]
+do = "moves"
+max = 20000
+dirs = [["U", "z68"], ["L", "x88"], ["U", "z62"], ["R", "x90"], ["U", "z60"], ["F", "U"], ["U", "z57"], ["R", "x105"],
+        ["R", "x106"], ["U", "y163"], ["R", "z58"], ["U", "y166"], ["R", "z61"], ["U", "y169"], ["U", "y170"], ["L", "x102"],
+        ["U", "z70"], ["F", "U"], ["U", "z76"], ["R", "x104"], ["R", 1], ["W", 600]]
+note = "B4F: Surf, the east wall x 106 up, the ceiling y 170, Surf on it, the waterfall (104,170,76) cascade down to B5F (WATERFALL_B4F)"
+
+[[step]]
+do = "moves"
+max = 20000
+dirs = [["U", "z67"], ["L", "x99"], ["F", "L"], ["P", "L"], ["R", "x101"], ["F", "R"], ["R", "x102"], ["D", "z77"],
+        ["R", "x104"], ["R", 1], ["W", 600]]
+note = "B5F: Azelf tutorial, Azelf boulder (98,67) west into the hole, Surf, the waterfall (104,128,77) cascade up to the B4F ceiling"
+
+[[step]]
+do = "moves"
+max = 20000
+dirs = [["D", "z66"], ["R", "x106"], ["D", "z63"], ["R", "y169"], ["D", "y166"], ["L", "z58"], ["D", "y163"], ["L", "z56"],
+        ["D", "y161"], ["D", "x105"], ["L", "x95"], ["F", "L"], ["L", "x90"], ["D", "z60"], ["D", "z62"], ["L", "x88"],
+        ["D", "z68"], ["R", "x95"], ["D", "z70"], ["W", 600]]
+note = "B4F: ceiling, east wall and ground back to the elevator (95,70) up"
+
+[[step]]
+do = "moves"
+max = 20000
+dirs = [["U", "z68"], ["L", "x85"], ["D", "z72"], ["L", "x71"], ["U", "z60"], ["L", "x57"], ["L", "x55"], ["R", "z49"],
+        ["D", "x57"], ["R", "x72"], ["U", "z33"], ["R", "x82"], ["D", "z42"], ["R", "x87"], ["D", "z44"], ["R", "x93"],
+        ["D", "z45"], ["R", "x96"], ["U", "z43"], ["W", 600], ["D", "z45"], ["L", "x94"], ["U", "z41"], ["L", "x84"],
+        ["D", "z50"], ["R", "x86"], ["D", "z55"], ["R", "x87"], ["D", "z56"], ["R", "x89"], ["D", "z61"], ["L", "x87"],
+        ["D", "z67"], ["W", 600]]
+note = "B3F: the ledge (61,60) west, the west wall x 55, elevator (96,43) to B5F; B5F to the elevator (87,67) down to B6F"
+
+[[step]]
+do = "moves"
+max = 30000
+dirs = [["D", "z69"], ["L", "x79"], ["U", "z68"], ["L", "x76"], ["F", "L"], ["P", "L"], ["L", "x75"], ["P", "L"], ["L", "x74"],
+        ["P", "L"], ["L", "x73"], ["P", "L"], ["L", "x72"], ["P", "L"], ["L", "x71"], ["P", "L"], ["L", "x70"], ["P", "L"],
+        ["D", "z69"], ["L", "x68"], ["P", "U"], ["R", "x81"], ["U", "z65"], ["R", "x84"], ["U", "z62"], ["R", "x89"],
+        ["D", "z66"], ["R", "x99"], ["D", "z67"], ["P", "L"], ["L", "x98"], ["P", "L"], ["U", "z66"], ["L", "x96"], ["P", "D"],
+        ["L", "x92"], ["U", "z65"], ["L", "x87"], ["U", "z55"], ["L", "x86"], ["P", "D"], ["D", "z56"], ["P", "D"], ["D", "z57"],
+        ["P", "D"], ["D", "z58"], ["P", "D"], ["R", "x87"], ["D", "z60"], ["P", "L"]]
+note = "B6F boulder puzzle: Mesprit boulder to the pit (68,67), Azelf to (96,68), Uxie to (85,60) (sBoulderFallLocations; scripts_distortion_world_b6f.s CoordEvent_*BoulderInPit)"
+
+[[step]]
+do = "moves"
+max = 20000
+dirs = [["D", "z66"], ["L", "x84"], ["D", "z73"], ["R", "x85"], ["D", "z79"], ["A", "D"], ["D", "z86"], ["W", 600]]
+shot = "b6f_done"
+note = "B6F: Cynthia (85,80) sets FLAG_DISTORTION_WORLD_STEPPING_STONES (scripts_distortion_world_b6f.s:18-31), elevator (85,86) down (the up elevator (87,67) avoided)"
+
+[[step]]
+do = "moves"
+max = 30000
+dirs = [["W", 200], ["U", "z76"], ["U", "z75"], ["A", "U"], ["W", 200]]
+shot = "cyrus_won"
+note = "B7F: coord (84..86,65,76) Cynthia/Cyrus, talk to Cyrus -> TRAINER_GALACTIC_BOSS_CYRUS_DISTORTION_WORLD (scripts_distortion_world_b7f.s:24-59)"
 
 [expect]
 map = "MAP_HEADER_DISTORTION_WORLD_B7F"
