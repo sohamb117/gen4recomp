@@ -1,10 +1,9 @@
-# Super Contest, Normal rank Cool, via the lab contest hook (skips the lobby menus, which never
-# finish their map change headless). ROSELIA with every condition at 255 takes first place.
-# Start: Hearthome City (0x1D1,0x2BA). End: Hearthome after the contest, Super Cool ribbon on slot 0.
+# Super Contest, Normal rank Cool, entered at the Contest Hall's official receptionist and played through
+# (dress-up, dance and acting rounds). ROSELIA with every condition at 255 takes first place.
+# Start: Contest Hall lobby (16,5) below the receptionist. End: after the contest, Super Cool ribbon on slot 0.
 title = "Contests: Normal Cool, first place"
-status = "planned"
 priority = "P1"
-estimate = 52000
+estimate = 42777
 refs = [
   "res/field/events/events_hearthome_city.json",
   "res/field/scripts/scripts_contests.s:178-470",
@@ -33,22 +32,29 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 78000
-# lab contest hook: NORMAL rank, COOL, slot 0; skips the lobby menus (pc_lab.c:1829-1956)
-env = { PC_LAB_CONTEST = "0 0 0", PC_LAB_CONTEST_AT = "2600" }
+frames = 64200
 clock = "2009-03-22 21:00:00"
 
 [[step]]
-do = "wait_frames"
-n = 2400
-note = "the contest hook fires at PC_LAB_CONTEST_AT; dress-up and dance rounds run on timers"
-shot = "contest-start"
-# PHASE2: port pc/replays/lab-contest.txt frames 5000-44690 to contest.press (schedule step): each
-# acting turn is a direction key walking the 2x2 move grid (RIGHT, DOWN, LEFT, UP) then A (move)
-# then A (judge); A alone picks EXIT on the judge screen and loops forever (replay header).
-# The replay's frames are absolute from boot; rebase them on this step's start.
+do = "press"
+keys = "A"
+times = 12
+gap = 60
+note = "the official contest's receptionist: Welcome, ENTER, NORMAL RANK, COOL CONTEST, ROSELIA, ENTER, accepted, this way"
+shot = "to-the-stage"
+
+[[step]]
+do = "schedule"
+file = "contest.sched"
+note = "the tuxedo, the MC, dress-up, dance and acting rounds, the results"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the ribbon, back to the lobby"
 
 [expect]
-map = 86
-log = ['pc_lab: contest over at frame \d+, placement=0']
-# PHASE2: reader-ext ribbon 0.MON_DATA_SUPER_COOL_RIBBON=1 (pc_save `ribbon`, pc_corpus.py:346); np_save4 does not dump ribbons
+save = ['s["party"][0]["super_contest_ribbons"] & 1 == 1']   # MON_DATA_SUPER_COOL_RIBBON: Normal rank Cool, first place
+
+[[shots]]
+frames = [3000, 5600, 9000, 12000, 16000, 22000, 28000, 34000, 39000, 42000]   # the MC, dress-up, the dance, acting turns, the results, the ribbon

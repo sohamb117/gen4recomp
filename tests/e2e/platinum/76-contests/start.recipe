@@ -18,5 +18,7 @@ condition 0 MON_DATA_CUTE 255
 condition 0 MON_DATA_SMART 255
 condition 0 MON_DATA_TOUGH 255
 condition 0 MON_DATA_SHEEN 255
-# not the lobby: its map change never finishes headless (contest-cool.recipe comment)
-map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN
+# the Contest Hall lobby after its first visit (Keira and Mom, story 18), below the official contest's
+# receptionist (16,4)
+var VAR_CONTEST_HALL_LOBBY_STATE 1
+map MAP_HEADER_CONTEST_HALL_LOBBY 16 5 FACE_UP

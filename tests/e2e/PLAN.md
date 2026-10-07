@@ -691,7 +691,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~523861 frames estimated
+### Side systems: 52 milestones, ~495922 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -711,12 +711,12 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [72-day-care-deposit-and-egg](platinum/72-day-care-deposit-and-egg/milestone.toml) | Day Care: deposit two parents with the lady and collect an egg | P1 | 7273 | `start.recipe` | MAP_HEADER_SOLACEON_TOWN | passing |
 | [73-egg-hatch-and-flame-body](platinum/73-egg-hatch-and-flame-body/milestone.toml) | Egg hatch (and Flame Body cycle halving) | P1 | 39347 | prev + `start.recipe` | MAP_HEADER_SOLACEON_TOWN | passing |
 | [74-level-up-evolution-after-battle](platinum/74-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after battle: Caterpie -> Metapod | P1 | 10408 | `start.recipe` | MAP_HEADER_ROUTE_202 | passing |
-| [75-trade-evolution](platinum/75-trade-evolution/milestone.toml) | Trades: NPC trade (and link trade evolution) | P1 | 16800 | `start.recipe` | 54 | planned |
-| [76-contests](platinum/76-contests/milestone.toml) | Contests: Normal Cool, first place | P1 | 52000 | `start.recipe` | 86 | planned |
-| [77-poffin-making](platinum/77-poffin-making/milestone.toml) | Poffin making: cook one poffin alone | P2 | 13000 | `start.recipe` | 116 | planned |
-| [78-amity-square](platinum/78-amity-square/milestone.toml) | Amity Square: walk with Pikachu | P2 | 4000 | `start.recipe` | 253 | planned |
+| [75-trade-evolution](platinum/75-trade-evolution/milestone.toml) | Trades: NPC trade (and link trade evolution) | P1 | 4781 | `start.recipe` | 54 | passing |
+| [76-contests](platinum/76-contests/milestone.toml) | Contests: Normal Cool, first place | P1 | 42777 | `start.recipe` | - | passing |
+| [77-poffin-making](platinum/77-poffin-making/milestone.toml) | Poffin making: cook one poffin alone | P2 | 10259 | `start.recipe` | 116 | passing |
+| [78-amity-square](platinum/78-amity-square/milestone.toml) | Amity Square: walk with Pikachu | P2 | 1899 | `start.recipe` | 253 | passing |
 | [79-great-marsh-safari](platinum/79-great-marsh-safari/milestone.toml) | Great Marsh: enter the Safari Game | P1 | 10000 | `start.recipe` | 509 | planned |
-| [80-trophy-garden](platinum/80-trophy-garden/milestone.toml) | Trophy Garden: Mr. Backlot's daily Pokemon | P2 | 4000 | `start.recipe` | 370 | planned |
+| [80-trophy-garden](platinum/80-trophy-garden/milestone.toml) | Trophy Garden: Mr. Backlot's daily Pokemon | P2 | 2145 | `start.recipe` | 370 | passing |
 | [81-game-corner](platinum/81-game-corner/milestone.toml) | Game Corner: play the slots | P2 | 3183 | `start.recipe` | 136 | passing |
 | [90-underground-explorer-kit](platinum/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | 6400 | `start.recipe` | 2 | planned |
 | [91-underground-mining](platinum/91-underground-mining/milestone.toml) | Underground: dig a wall | P1 | 6500 | `start.recipe` | 2 | planned |
@@ -893,30 +893,30 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: src/battle/battle_main.c:274-297; res/field/encounters/encounters_route_202.json; tests/e2e/tools/probe_map.py (Route 202 grass x 181..191, z 811..817)
 
 #### platinum/75-trade-evolution — Trades: NPC trade (and link trade evolution)
-- proves: In-game NPC trade (Kazza's ABRA for MACHOP, Oreburgh north house). NPC trades never evolve the received mon (npc_trade_task.c:47-87); trade evolution is link/GTS only (PHASE2 below). Start: OREBURGH_CITY_NORTH_HOUSE_1F (11,8) facing the school kid. End: same, ABRA in slot 0.
+- proves: In-game NPC trade (Kazza's ABRA for MACHOP, Oreburgh north house). NPC trades never evolve the received mon (npc_trade_task.c:47-87): Platinum evolves a traded mon only after a link trade (unk_0203D1B8.c:1026). That half is the two-station link scenario union_trade_evolve (tests/link/run_link_tests.py): B's KADABRA arrives on A's station, "KADABRA is evolving!", and A's save keeps ALAKAZAM (65). Start: OREBURGH_CITY_NORTH_HOUSE_1F (11,8) facing the school kid. End: same, ABRA in slot 0.
 - start: `start.recipe`; map MAP_HEADER_OREBURGH_CITY_NORTH_HOUSE_1F 11 8 FACE_UP; lab state lines: 1 badge
 - party: SPECIES_MACHOP 15; SPECIES_STARLY 12
 - trainers: none
 - end state: map 54; badge BADGE_ID_COAL; party SPECIES_ABRA; flags set FLAG_TRADED_FOR_KAZZA_ABRA; 1 save check(s)
-- frames: estimate 16800, budget 25200
-- refs: src/npc_trade_task.c:47-87; src/unk_0203D1B8.c:1026; src/gts_application/screens/trade.c:96; src/gts_application/screens/trade.c:115; res/npc_trades/kazza_abra.json; res/field/scripts/scripts_oreburgh_city_north_house_1f.s; res/field/scripts/scripts_snowpoint_city_west_house.s:36-57; res/field/scripts/scripts_eterna_city_condominiums_1f.s:95-114; res/field/scripts/scripts_route_226_house.s; pc/tests/corpus/evo-trade-refused.recipe; tests/link/run_link_tests.py:41; tests/link/recipes/union-b.recipe
+- frames: estimate 4781, budget 7200
+- refs: src/npc_trade_task.c:47-87; src/unk_0203D1B8.c:1026; src/gts_application/screens/trade.c:96; src/gts_application/screens/trade.c:115; res/npc_trades/kazza_abra.json; res/field/scripts/scripts_oreburgh_city_north_house_1f.s; res/field/scripts/scripts_snowpoint_city_west_house.s:36-57; res/field/scripts/scripts_eterna_city_condominiums_1f.s:95-114; res/field/scripts/scripts_route_226_house.s; pc/tests/corpus/evo-trade-refused.recipe; tests/link/run_link_tests.py:46-52; tests/link/recipes/union-b-kadabra.recipe; tests/link/schedules/trade-evolve-a.sched
 
 #### platinum/76-contests — Contests: Normal Cool, first place
-- proves: Super Contest, Normal rank Cool, via the lab contest hook (skips the lobby menus, which never finish their map change headless). ROSELIA with every condition at 255 takes first place. Start: Hearthome City (0x1D1,0x2BA). End: Hearthome after the contest, Super Cool ribbon on slot 0.
-- start: `start.recipe`; map MAP_HEADER_HEARTHOME_CITY 0x1D1 0x2BA FACE_DOWN; lab state lines: 1 var
+- proves: Super Contest, Normal rank Cool, entered at the Contest Hall's official receptionist and played through (dress-up, dance and acting rounds). ROSELIA with every condition at 255 takes first place. Start: Contest Hall lobby (16,5) below the receptionist. End: after the contest, Super Cool ribbon on slot 0.
+- start: `start.recipe`; map MAP_HEADER_CONTEST_HALL_LOBBY 16 5 FACE_UP; lab state lines: 2 var
 - party: SPECIES_ROSELIA 30 (MOVE_THUNDERBOLT)
 - trainers: none
-- end state: map 86; log /pc_lab: contest over at frame \d+, placement=0/
-- frames: estimate 52000, budget 78000
+- end state: 1 save check(s)
+- frames: estimate 42777, budget 64200
 - refs: res/field/events/events_hearthome_city.json; res/field/scripts/scripts_contests.s:178-470; res/field/scripts/scripts_contest_hall_lobby.s:38; res/field/scripts/scripts_contest_hall_lobby.s:85; generated/pokemon_contest_ranks.txt; generated/pokemon_contest_types.txt; src/applications/party_menu/main.c:1128-1153; src/contest.c:90-121; src/contest.c:214-253; src/contest.c:1536-1582; generated/vars_flags.txt:2415-2419; pc/src/pc_lab.c:902-911; pc/src/pc_lab.c:1829-1956; pc/src/pc_lab.c:1855-1913; pc/src/pc_lab.c:1908; pc/tests/corpus/contest-win.recipe; pc/tests/corpus/contest-win.spec; pc/tests/corpus/contest-cool.recipe; pc/tests/corpus/contest-master.recipe; pc/replays/lab-contest.txt; pc/tests/pc_corpus.py:346
 
 #### platinum/77-poffin-making — Poffin making: cook one poffin alone
-- proves: Poffin making alone: talk to the Poffin House cook, Cook alone, pick a Cheri Berry, stir (A only), get one (Foul) poffin into the Poffin Case. Start: POFFIN_HOUSE (5,11) below the cook. End: same tile, case filled=1.
+- proves: Poffin making alone: talk to the Poffin House cook, Cook alone, pick a Cheri Berry, no stirring, get one (Foul) poffin into the Poffin Case. Start: POFFIN_HOUSE (5,11) below the cook. End: same tile, case filled=1.
 - start: `start.recipe`; map MAP_HEADER_POFFIN_HOUSE 5 11 FACE_UP; lab state lines: 2 item, 1 var
 - party: SPECIES_ROSELIA 20
 - trainers: none
-- end state: map 116; at (5, 11); 1 save check(s)
-- frames: estimate 13000, budget 19500
+- end state: map 116; at (5, 11); 2 save check(s)
+- frames: estimate 10259, budget 15400
 - refs: res/field/events/events_hearthome_city.json; res/field/scripts/scripts_poffin_common.s:10-31; res/field/scripts/scripts_poffin_common.s:62; res/field/scripts/scripts_poffin_common.s:69; res/field/scripts/scripts_poffin_common.s:74; res/field/scripts/scripts_poffin_common.s:79; res/field/scripts/scripts_poffin_common.s:82; res/field/scripts/scripts_hearthome_city_pokemon_fan_club.s:23-29; res/field/scripts/scripts_contest_hall_lobby.s:281-309; pc/src/pc_lab.c:801-817; pc/src/pc_lab.c:912-949; include/constants/flavor.h; pc/tests/corpus/poffin-cook.recipe; pc/tests/corpus/poffin-cook.spec; pc/tests/corpus/contest-cool.recipe; pc/replays/lab-poffin-cook.txt
 
 #### platinum/78-amity-square — Amity Square: walk with Pikachu
@@ -925,7 +925,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_PIKACHU 20
 - trainers: none
 - end state: map 253; party SPECIES_PIKACHU; vars VAR_FOLLOWER_MON_ACTIVE=1, VAR_FOLLOWER_MON_SPECIES=25
-- frames: estimate 4000, budget 6000
+- frames: estimate 1899, budget 2900
 - refs: res/field/events/events_amity_square.json; res/field/events/events_hearthome_city.json; res/field/scripts/scripts_amity_square.s:88-180; res/field/scripts/scripts_amity_square.s:115-121; res/field/scripts/scripts_amity_square.s:181-212; res/field/scripts/scripts_amity_square.s:202; res/field/scripts/scripts_amity_square.s:282-312; res/field/scripts/scripts_amity_square.s:349; res/field/scripts/scripts_amity_square.s:646-680; res/field/scripts/scripts_amity_square.s:726-745; res/field/scripts/scripts_amity_square.s:907-978; src/system_vars.c:194-213; src/start_menu.c:379-382; src/overlay005/field_control.c:763; features/tools/np_save4.c:14
 
 #### platinum/79-great-marsh-safari — Great Marsh: enter the Safari Game
@@ -942,8 +942,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; map MAP_HEADER_POKEMON_MANSION_OFFICE 16 9 FACE_UP; lab state lines: 1 national-dex, 1 pokedex
 - party: SPECIES_INFERNAPE 50 (MOVE_FLAMETHROWER)
 - trainers: none
-- end state: map 370; flags set FLAG_DAILY_ADDED_TROPHY_GARDEN_MON; 1 save check(s)
-- frames: estimate 4000, budget 6000
+- end state: map 370; flags set FLAG_DAILY_ADDED_TROPHY_GARDEN_MON; 2 save check(s)
+- frames: estimate 2145, budget 3300
 - refs: res/field/events/events_route_212_north.json; res/field/events/events_pokemon_mansion.json; res/field/events/events_pokemon_mansion_office.json; res/field/scripts/scripts_pokemon_mansion_office.s:31-95; src/overlay006/trophy_garden_daily_encounters.c:14-44; src/special_encounter.c:279; res/field/encounters/encounters_trophy_garden.json; src/overlay006/wild_encounters.c:209-227; src/overlay006/wild_encounters.c:336; pc/src/pc_lab.c:789-793
 
 #### platinum/81-game-corner — Game Corner: play the slots

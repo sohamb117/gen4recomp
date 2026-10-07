@@ -44,6 +44,12 @@ SCENARIOS = [
     dict(name='union_trade', recipes=UNION,
          scheds={'a': 'schedules/trade-a.sched', 'b': 'schedules/trade-b.sched'},
          frames=16800, party=TRADED),
+    # B trades KADABRA: it evolves into ALAKAZAM on A's station after the trade
+    # animation (a link trade evolves, an in-game NPC trade never does:
+    # unk_0203D1B8.c:1026), and A's save keeps the ALAKAZAM.
+    dict(name='union_trade_evolve', recipes={'a': UNION['a'], 'b': 'recipes/union-b-kadabra.recipe'},
+         scheds={'a': 'schedules/trade-evolve-a.sched', 'b': 'schedules/trade-evolve-b.sched'},
+         frames=18500, party={'a': [65, 396], 'b': [387, 396]}),
     # B (CHIMCHAR's Ember) beats A; the WIN/LOSE screen is the same picture on
     # both stations, with WIN on the left for UNIONB. `win` is checked over
     # every dump from dump_from to frames, the bound: at least two dumps must

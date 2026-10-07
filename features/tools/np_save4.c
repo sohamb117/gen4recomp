@@ -256,6 +256,12 @@ static void dump_mon(FILE *o, const pkm4 *p, save4_status dst, int full)
     fprintf(o, "}, \"met_level\": %u, \"ball\": {\"id\": %u, \"name\": ", i.met_level, i.ball);
     jname(o, ND_TEXT_ITEMS, i.ball); /* ball ids equal their item ids in Gen 4 */
     fputc('}', o);
+    /* block C's u64 ribbonsDS2 (Platinum struct_defs/pokemon.h), canonical offset 0x08 + 2 * 0x20 + 0x18: the Super
+     * Contest ribbons, bit 0 = MON_DATA_SUPER_COOL_RIBBON (Normal rank) on (pokemon.c GetRibbon) */
+    uint64_t ds2 = 0;
+    for (int b = 7; b >= 0; b--)
+        ds2 = ds2 << 8 | p->data[0x60 + b];
+    fprintf(o, ", \"super_contest_ribbons\": %llu", (unsigned long long)ds2);
     if (i.has_party_data)
         fprintf(o, ", \"hp\": %u, \"stats\": [%u, %u, %u, %u, %u, %u], \"status\": %u", i.hp, i.stats[0], i.stats[1],
                 i.stats[2], i.stats[3], i.stats[4], i.stats[5], i.status);
@@ -404,6 +410,56 @@ static void dump_roamers(FILE *o, const save4 *s)
                 m[18] ? "true" : "false");
     }
     fputs("]},\n", o);
+}
+
+/* Platinum's SpecialEncounter.trophyGarden (struct_defs/special_encounter.h: BOOL unused, u16 slot1, slot2), 8
+ * bytes after the block's start (int marshDaily, swarmDaily): Mr. Backlot's daily Pokemon as indices into the
+ * garden's 16-entry list (encounters_trophy_garden.json), 0xFFFF empty. Offset found by diffing a save before and
+ * after Backlot's daily mon (80); the roamers above sit 0xD0 further on. */
+#define PT_TROPHY_GARDEN_OFF 0x7F30
+
+static void dump_trophy_garden(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_TROPHY_GARDEN_OFF + 4 > len) {
+        fputs("  \"trophy_garden\": null,\n", o);
+        return;
+    }
+    const uint8_t *g = img + base + PT_TROPHY_GARDEN_OFF;
+    fputs("  \"trophy_garden\": [", o);
+    for (int i = 0, n = 0; i < 2; i++)
+        if (le16(g + 2 * i) != 0xFFFF)
+            fprintf(o, "%s%u", n++ ? ", " : "", le16(g + 2 * i));
+    fputs("],\n", o);
+}
+
+/* Platinum's PoffinCase (poffin.h) in the general block: 100 Poffin of 8 bytes (type, spiciness, dryness,
+ * sweetness, bitterness, sourness, smoothness, dummy); a slot whose type is past POFFIN_TYPE_MILD (28) is empty.
+ * Offset found by diffing a save before and after cooking one poffin (77). */
+#define PT_POFFINS_OFF 0x52E8
+#define POFFIN_SLOTS 100
+
+static void dump_poffins(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_POFFINS_OFF + POFFIN_SLOTS * 8 > len) {
+        fputs("  \"poffins\": null,\n", o);
+        return;
+    }
+    const uint8_t *c = img + base + PT_POFFINS_OFF;
+    fputs("  \"poffins\": [", o);
+    for (int i = 0, n = 0; i < POFFIN_SLOTS; i++) {
+        const uint8_t *q = c + i * 8;
+        if (q[0] > 28)
+            continue;
+        fprintf(o, "%s{\"slot\": %d, \"type\": %u, \"flavors\": [%u, %u, %u, %u, %u], \"smoothness\": %u}",
+                n++ ? ", " : "", i, q[0], q[1], q[2], q[3], q[4], q[5], q[6]);
+    }
+    fputs("],\n", o);
 }
 
 static int cmd_dump(const char *rom_path, const char *save_path)
@@ -591,6 +647,8 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     dump_hall_of_fame(o, &s);
     dump_daycare(o, &s);
     dump_roamers(o, &s);
+    dump_poffins(o, &s);
+    dump_trophy_garden(o, &s);
     dump_mystery(o, &s);
     fputs("}\n", o);
 

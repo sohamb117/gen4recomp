@@ -1,0 +1,18 @@
+# A Super Contest from the stage intro to the results (games/platinum/pc/replays/lab-contest.txt's cycle,
+# frames from this step's start): every 40 frames a press, a 480-frame cycle of
+#   RIGHT A A  DOWN A A  LEFT A A  UP A A
+# A advances the MC's text; the dress-up and dance rounds run on their timers whatever is pressed; each
+# acting turn takes the direction (a fresh move in the 2x2 move grid: a performed move is greyed and
+# refused), A (the move) and A (the judge: A alone would land on EXIT and loop). 84 cycles, 40320 frames.
+0:right:6:480:84
+40:a:6:480:84
+80:a:6:480:84
+120:down:6:480:84
+160:a:6:480:84
+200:a:6:480:84
+240:left:6:480:84
+280:a:6:480:84
+320:a:6:480:84
+360:up:6:480:84
+400:a:6:480:84
+440:a:6:480:84

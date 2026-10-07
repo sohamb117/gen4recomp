@@ -1,10 +1,9 @@
-# Poffin making alone: talk to the Poffin House cook, Cook alone, pick a Cheri Berry, stir (A only),
+# Poffin making alone: talk to the Poffin House cook, Cook alone, pick a Cheri Berry, no stirring,
 # get one (Foul) poffin into the Poffin Case.
 # Start: POFFIN_HOUSE (5,11) below the cook. End: same tile, case filled=1.
 title = "Poffin making: cook one poffin alone"
-status = "planned"
 priority = "P2"
-estimate = 13000
+estimate = 10259
 refs = [
   "res/field/events/events_hearthome_city.json",
   "res/field/scripts/scripts_poffin_common.s:10-31",
@@ -28,7 +27,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 19500
+frames = 15400
 
 [[step]]
 do = "press"
@@ -42,8 +41,8 @@ shot = "berry-pick"
 [[step]]
 do = "wait_frames"
 n = 6000
-note = "stirring runs on a timer; with no stir input the result is a Foul poffin (poffin-cook.spec)"
-shot = "stirring"
+note = "the cooking runs on its 60 s timer; unstirred, the batter burns (19 times) and the result is a Foul poffin"
+shot = "cooked"
 
 [[step]]
 do = "tap"
@@ -68,8 +67,10 @@ shot = "poffin-made"
 [expect]
 map = 116
 position = [5, 11]
-# Cheri Berry stock 10 -> 9 [INFERENCE: cooking alone consumes the one berry picked]
-save = ['any(i["qty"] == 9 for i in s["bag"]["berries"])']
-# PHASE2: reader-ext poffin case filled=1 (pc_save `poffin:` poffin-cook.spec: 0.type=POFFIN_TYPE_FOUL 0.level=2
-# 0.smoothness=24); np_save4 does not dump poffins. Feeding variant: contest-cool `poffin FLAVOR_SPICY 60 30`
-# + `feed-poffin 0 0` -> condition 0.cool=60 0.sheen=30.
+# the one Cheri Berry picked is used up (10 -> 9), and the case holds the poffin: with no stirring a Foul one
+# (POFFIN_TYPE_FOUL 27, level 2, smoothness 24: pc/tests/corpus/poffin-cook.spec)
+save = ['any(i["qty"] == 9 for i in s["bag"]["berries"])',
+        '[(p["type"], max(p["flavors"]), p["smoothness"]) for p in s["poffins"]] == [(27, 2, 24)]']
+
+[[shots]]
+frames = [3600, 5600, 7600, 9900]   # "It'll burn! Stir it!", the burnt batter, the results (Foul Poffin Lv. 02), back in the house

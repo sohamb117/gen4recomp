@@ -2,9 +2,8 @@
 # follower joins. Stage 2 (accessory pickup after 200 steps) is a PHASE2 save-edit run.
 # Start: AMITY_SQUARE (12,47). End: (12,46), follower active.
 title = "Amity Square: walk with Pikachu"
-status = "planned"
 priority = "P2"
-estimate = 4000
+estimate = 1899
 refs = [
   "res/field/events/events_amity_square.json",
   "res/field/events/events_hearthome_city.json",
@@ -27,7 +26,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 6000
+frames = 2900
 
 [[step]]
 do = "press"
