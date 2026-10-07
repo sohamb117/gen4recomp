@@ -2,9 +2,8 @@
 # Start: Sunyshore Pokémon Center door (860,784) -> end: the League's north Pokémon Center 1F (11,11), through Victory Road.
 
 title = "Route 223 and Victory Road to the League"
-status = "planned"
 priority = "P0"
-estimate = 30000
+estimate = 94313
 refs = [
   "events_route_223.json",
   "field_move_tasks.c:590",
@@ -20,7 +19,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 120000
+frames = 141500
 
 [[step]]
 do = "walk_to"
@@ -35,6 +34,7 @@ note = "Sunyshore north beach, Surf up Route 223 (its swimmers fought) to the wa
 
 [[step]]
 do = "walk_to"
+shot = "route223_waterfall"
 on_battle = "flee"
 max = 4000
 surf = true
@@ -80,6 +80,7 @@ note = "2F: Rock Smash (16,19)/(17,19), down to the three boulders (16,28),(17,2
 
 [[step]]
 do = "moves"
+shot = "vr2f_strength"
 on_battle = "flee"
 max = 6000
 dirs = [["F", "D"], ["D", "z28"], ["L", "x16"], ["D", "z29"], ["L", "x15"], ["D", "z31"]]
@@ -141,10 +142,11 @@ note = "1F: along the bridge deck (rows 47-48), off its end (22,48) down the Roc
 
 [[step]]
 do = "moves"
+shot = "vr_b1f"
 on_battle = "flee"
 max = 8000
-dirs = [["L", "x17"], ["U", "z42"], ["R", "x42"], ["U", 1]]
-note = "west, north up the passage under the bridge, east (Black Belt Miles (30,41) sees row 42) to the B1F stairs (42,41) -> B1F (4,39): walk_to's A* plans these legs back up the wall (the probe's grid has no levels)"
+dirs = [["L", "x17"], ["U", "z42"], ["R", "x42"], ["U", 1], ["R", 1]]
+note = "west, north up the passage under the bridge, east (Black Belt Miles (30,41) sees row 42) to the B1F stairs (42,41), entered going east -> B1F (4,39): walk_to's A* plans these legs back up the wall (the probe's grid has no levels)"
 
 [[step]]
 do = "wait_map"
@@ -152,6 +154,7 @@ map = "MAP_HEADER_VICTORY_ROAD_B1F"
 
 [[step]]
 do = "walk_to"
+shot = "vr_1f_after_b1f"
 on_battle = "flee"
 max = 10000
 surf = true
@@ -167,6 +170,7 @@ map = "MAP_HEADER_VICTORY_ROAD_1F"
 
 [[step]]
 do = "walk_to"
+shot = "league_outside"
 on_battle = "flee"
 max = 6000
 hm = true

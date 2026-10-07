@@ -2,9 +2,8 @@
 # Start: League north Pokémon Center 1F (11,11) -> end: same map, guard moved away.
 
 title = "Pokémon League: last rival battle, door guard"
-status = "planned"
 priority = "P0"
-estimate = 10000
+estimate = 12401
 refs = [
   "scripts_pokemon_league_north_pokecenter_1f.s:16-31",
   "scripts_pokemon_league_north_pokecenter_1f.s:26-29",
@@ -23,7 +22,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 15000
+frames = 18700
 
 [[step]]
 do = "walk_to"
@@ -38,6 +37,7 @@ note = "one step onto coord0 (10..12,4), VAR_RIVAL_BEAT_SUNYSHORE_GYM==0 -> riva
 
 [[step]]
 do = "advance_text"
+shot = "league_rival_battle"
 
 [[step]]
 do = "auto_battle"

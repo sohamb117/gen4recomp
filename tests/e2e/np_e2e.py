@@ -188,6 +188,7 @@ class Session:
         self.shot_frames = []
         self.shot_dir = None
         self.summary = None
+        self.ended = None  # why the guest stopped on purpose (bots.bot_wait_reset): the run has no live core after it
         self.log_path = log
         self._log = open(log, "w")
         cmd = [gp, rom, "--game", game, "--serve", "1", "-e", "PC_E2E=1", "--save", save]
@@ -306,21 +307,26 @@ class Session:
         self._cmd("sched %s" % path)
 
     def quit(self):
-        """Ends the run (the save is flushed); returns np_gp's summary line."""
+        """Ends the run (the save is flushed); returns np_gp's summary line. Once the core stopped np_gp ends by
+        itself; its last lines (the DEFECT the stop is, the summary) are read either way."""
         if self.proc.poll() is None:
             try:
                 self.proc.stdin.write("quit\n")
                 self.proc.stdin.flush()
-                rest = self.proc.stdout.read()
             except (BrokenPipeError, OSError):
-                rest = ""
-            self.proc.wait()
-            for line in rest.splitlines():
-                if line.startswith("DEFECT"):
-                    self.defects.append(line)
-                elif line.startswith("frames "):
-                    self.summary = line
-        self._log.close()
+                pass
+        try:
+            rest = self.proc.stdout.read()
+        except (OSError, ValueError):
+            rest = ""
+        self.proc.wait()
+        for line in rest.splitlines():
+            if line.startswith("DEFECT"):
+                self.defects.append(line)
+            elif line.startswith("frames "):
+                self.summary = line
+        if not self._log.closed:
+            self._log.close()
         return self.summary
 
     def kill(self):

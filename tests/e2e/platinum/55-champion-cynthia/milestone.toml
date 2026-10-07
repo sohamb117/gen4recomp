@@ -2,9 +2,8 @@
 # Start: Lucian room after the win (54's end) -> lift -> champion room (8,18) -> end: hallway to the Hall of Fame (186) at (5,23).
 
 title = "Champion Cynthia"
-status = "planned"
 priority = "P0"
-estimate = 16000
+estimate = 10977
 refs = [
   "scripts_pokemon_league_champion_room.s:14-48",
   "scripts_pokemon_league_champion_room.s:48",
@@ -21,7 +20,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 24000
+frames = 16500
 
 [[step]]
 do = "walk_to"
@@ -54,6 +53,7 @@ map = "MAP_HEADER_POKEMON_LEAGUE_CHAMPION_ROOM"
 
 [[step]]
 do = "advance_text"
+shot = "champion_cynthia_battle"
 note = "frame table: walk 4 north, intro, battle (scripts_pokemon_league_champion_room.s:14-48)"
 
 [[step]]
@@ -65,13 +65,12 @@ note = "TRAINER_CHAMPION_CYNTHIA (267), single (champion_cynthia.json:15)"
 [[step]]
 do = "advance_text"
 max = 8000
-
-[[step]]
-do = "wait_map"
 map = "MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME"
+note = "Cynthia's words after the battle and the walk out; stops as the hallway loads: its OnFrame (Cynthia, Rowan, the walk into the Hall of Fame) is 56's. The end quick save lands in the field's two free frames before that OnFrame locks it (pc_np_field.c pc_np_frame), so 56 continues into it"
 
 [expect]
 map = "MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME"
-position = [5, 23]
+# the save is made at (5,23); the live probe after it has the OnFrame's walk-in under way, so the save is checked
+save = ["(s['location']['x'], s['location']['z']) == (5, 23)"]
 flags = ["FLAG_DEFEATED_CYNTHIA"]
 battles = 1

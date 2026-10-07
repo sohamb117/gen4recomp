@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~1122539 frames estimated
+### Story chain: 56 milestones, ~1174951 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -155,14 +155,14 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [46-sunyshore-flint-lighthouse](platinum/46-sunyshore-flint-lighthouse/milestone.toml) | Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | 18045 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | passing |
 | [47-sunyshore-gym-volkner](platinum/47-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | 36319 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | passing |
 | [48-sunyshore-jasmine-waterfall](platinum/48-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | 3745 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | passing |
-| [49-route223-victory-road](platinum/49-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the League | P0 | 30000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F | planned |
-| [50-league-north-rival-door](platinum/50-league-north-rival-door/milestone.toml) | Pokémon League: last rival battle, door guard | P0 | 10000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F | planned |
-| [51-e4-aaron](platinum/51-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM | planned |
-| [52-e4-bertha](platinum/52-e4-bertha/milestone.toml) | Elite Four: Bertha | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_BERTHA_ROOM | planned |
-| [53-e4-flint](platinum/53-e4-flint/milestone.toml) | Elite Four: Flint | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM | planned |
-| [54-e4-lucian](platinum/54-e4-lucian/milestone.toml) | Elite Four: Lucian | P0 | 12000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM | planned |
-| [55-champion-cynthia](platinum/55-champion-cynthia/milestone.toml) | Champion Cynthia | P0 | 16000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME | planned |
-| [56-hall-of-fame-credits](platinum/56-hall-of-fame-credits/milestone.toml) | Hall of Fame, save, credits | P0 | 27000 | prev + `lab.recipe` | - | planned |
+| [49-route223-victory-road](platinum/49-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the League | P0 | 94313 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F | passing |
+| [50-league-north-rival-door](platinum/50-league-north-rival-door/milestone.toml) | Pokémon League: last rival battle, door guard | P0 | 12401 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F | passing |
+| [51-e4-aaron](platinum/51-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | 9275 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM | passing |
+| [52-e4-bertha](platinum/52-e4-bertha/milestone.toml) | Elite Four: Bertha | P0 | 9799 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_BERTHA_ROOM | passing |
+| [53-e4-flint](platinum/53-e4-flint/milestone.toml) | Elite Four: Flint | P0 | 9429 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM | passing |
+| [54-e4-lucian](platinum/54-e4-lucian/milestone.toml) | Elite Four: Lucian | P0 | 9211 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM | passing |
+| [55-champion-cynthia](platinum/55-champion-cynthia/milestone.toml) | Champion Cynthia | P0 | 10977 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME | passing |
+| [56-hall-of-fame-credits](platinum/56-hall-of-fame-credits/milestone.toml) | Hall of Fame, save, credits | P0 | 28007 | prev + `lab.recipe` | - | passing |
 
 #### platinum/01-newgame-starter — New game to the starter and the running shoes
 - proves: Proves the real new-game route from a blank chip: intro, Barry's visit, Mom, Route 201's Rowan scene, the briefcase starter, the first rival battle, home, running shoes. Start: power-on (no save) -> end: Twinleaf Town outside the player's house, VAR_PLAYER_HOUSE_STATE 5.
@@ -625,7 +625,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F; flags set FLAG_FIRST_ARRIVAL_VICTORY_ROAD
-- frames: estimate 30000, budget 120000
+- frames: estimate 94313, budget 141500
 - refs: events_route_223.json; field_move_tasks.c:590; events_victory_road_2f.json; scripts_victory_road_1f.s:10; scripts_pokemon_league_south_pokecenter_1f.s:15; src/field_move_tasks.c:590
 
 #### platinum/50-league-north-rival-door — Pokémon League: last rival battle, door guard
@@ -634,7 +634,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F; >= 1 battles; flags set FLAG_POKEMON_LEAGUE_DOOR_GUARD_MOVED_AWAY; vars VAR_RIVAL_BEAT_SUNYSHORE_GYM=1
-- frames: estimate 10000, budget 15000
+- frames: estimate 12401, budget 18700
 - refs: scripts_pokemon_league_north_pokecenter_1f.s:16-31; scripts_pokemon_league_north_pokecenter_1f.s:26-29; scripts_pokemon_league_north_pokecenter_1f.s:108-190; scripts_pokemon_league_north_pokecenter_1f.s:37-73; scripts_pokemon_league_north_pokecenter_1f.s:17; scripts_pokemon_league_north_pokecenter_1f.s:18-25; scripts_pokemon_league_north_pokecenter_1f.s:110; scripts_pokemon_league_north_pokecenter_1f.s:188; scripts_pokemon_league_north_pokecenter_1f.s:189; scripts_pokemon_league_north_pokecenter_1f.s:68
 
 #### platinum/51-e4-aaron — Elite Four: Aaron
@@ -643,7 +643,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_AARON_ROOM; >= 1 battles; flags set FLAG_DEFEATED_AARON
-- frames: estimate 12000, budget 18000
+- frames: estimate 9275, budget 14000
 - refs: scripts_pokemon_league_aaron_room.s:61-69; scripts_pokemon_league_aaron_room.s:10-30; elite_four_aaron.json:13; scripts_pokemon_league_aaron_room.s:66; scripts_pokemon_league_aaron_room.s:22; scripts_pokemon_league_aaron_room.s:24; scripts_pokemon_league_aaron_room.s:18-19
 
 #### platinum/52-e4-bertha — Elite Four: Bertha
@@ -652,7 +652,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_BERTHA_ROOM; >= 1 battles; flags set FLAG_DEFEATED_BERTHA
-- frames: estimate 12000, budget 18000
+- frames: estimate 9799, budget 14700
 - refs: scripts_pokemon_league_bertha_room.s:61-69; scripts_pokemon_league_bertha_room.s:66; scripts_pokemon_league_bertha_room.s:22
 
 #### platinum/53-e4-flint — Elite Four: Flint
@@ -661,7 +661,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM; >= 1 battles; flags set FLAG_DEFEATED_FLINT
-- frames: estimate 12000, budget 18000
+- frames: estimate 9429, budget 14200
 - refs: scripts_pokemon_league_flint_room.s:106; scripts_pokemon_league_flint_room.s:23; scripts_pokemon_league_flint_room.s:16-17; scripts_pokemon_league_flint_room.s:28-29; scripts_pokemon_league_flint_room.s:61-69
 
 #### platinum/54-e4-lucian — Elite Four: Lucian
@@ -670,7 +670,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM; >= 1 battles; flags set FLAG_DEFEATED_LUCIAN
-- frames: estimate 12000, budget 18000
+- frames: estimate 9211, budget 13900
 - refs: scripts_pokemon_league_lucian_room.s:66; scripts_pokemon_league_lucian_room.s:22; scripts_pokemon_league_lucian_room.s:61-69
 
 #### platinum/55-champion-cynthia — Champion Cynthia
@@ -678,17 +678,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM 1; lab state lines: 8 badge, 53 clear-flag, 232 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME; at (5, 23); >= 1 battles; flags set FLAG_DEFEATED_CYNTHIA
-- frames: estimate 16000, budget 24000
+- end state: map MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME; >= 1 battles; flags set FLAG_DEFEATED_CYNTHIA; 1 save check(s)
+- frames: estimate 10977, budget 16500
 - refs: scripts_pokemon_league_champion_room.s:14-48; scripts_pokemon_league_champion_room.s:48; champion_cynthia.json:15; scripts_pokemon_league_champion_room.s:21; scripts_pokemon_league_champion_room.s:27; scripts_pokemon_league_champion_room.s:41; scripts_pokemon_league_champion_room.s:42; scripts_pokemon_league_champion_room.s:78-79
 
 #### platinum/56-hall-of-fame-credits — Hall of Fame, save, credits
-- proves: Proves ClearGame: HoF screen, the game's own save (FLAG_GAME_COMPLETED, isMainStoryCleared), credits, reload. Start: HoF hallway (5,23) after Cynthia -> end: post-credits field at the start location (src/clear_game.c:202-203).
+- proves: Proves ClearGame: HoF screen, the game's own save (FLAG_GAME_COMPLETED, isMainStoryCleared, the Hall of Fame entry), the credits, and the reset that ends them (src/clear_game.c:163 OS_ResetSystem: the port traps it, the run ends there). Start: HoF hallway (5,23) after Cynthia -> end: OS_ResetSystem after the credits; [expect] reads the game's own save.
 - start: prev + `lab.recipe`; warp MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME 1; lab state lines: 8 badge, 53 clear-flag, 236 flag, 31 item, 1 pokedex, 5 poketch, 1 register-item, 91 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: 8 badges; flags set FLAG_GAME_COMPLETED, FLAG_COMMUNICATION_CLUB_ACCESSIBLE, FLAG_UNLOCKED_VS_SEEKER_LVL_4, FLAG_DEFEATED_CYNTHIA; flags clear FLAG_ALT_MUSIC_CHAMPION_ROOM, FLAG_HIDE_DAY_CARE_GYM_GUIDE; vars VAR_PLAYER_HOUSE_POSTGAME_STATE=1
-- frames: estimate 27000, budget 40500
+- end state: 8 badges; flags set FLAG_GAME_COMPLETED, FLAG_COMMUNICATION_CLUB_ACCESSIBLE, FLAG_UNLOCKED_VS_SEEKER_LVL_4, FLAG_DEFEATED_CYNTHIA; flags clear FLAG_ALT_MUSIC_CHAMPION_ROOM, FLAG_HIDE_DAY_CARE_GYM_GUIDE; vars VAR_PLAYER_HOUSE_POSTGAME_STATE=1; 2 save check(s)
+- frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
 ### Side systems: 52 milestones, ~573900 frames estimated

@@ -2,9 +2,8 @@
 # Start: Flint room after the win (53's end) -> lift -> end: Lucian room after the win, FLAG_DEFEATED_LUCIAN.
 
 title = "Elite Four: Lucian"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 9211
 refs = [
   "scripts_pokemon_league_lucian_room.s:66",
   "scripts_pokemon_league_lucian_room.s:22",
@@ -16,7 +15,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 18000
+frames = 13900
 
 [[step]]
 do = "walk_to"
@@ -61,6 +60,7 @@ note = "Lucian at (8,5)"
 
 [[step]]
 do = "advance_text"
+shot = "e4_lucian_battle"
 
 [[step]]
 do = "auto_battle"

@@ -44,7 +44,9 @@ Everything else is still `status = "planned"` and skipped unless `--planned`.
 2. **Boot**: a save boots through the title and CONTINUE until the player is free; a blank chip starts at frame 0.
 3. **Steps**: the `[[step]]` bots in order (below). Every frame counts against `[run] frames`; a step's `max` bounds
    that step.
-4. **End**: an in-game save (the host's quick-save request), then `np_gp` exits and writes `end.sav`.
+4. **End**: an in-game save (the host's quick-save request), then `np_gp` exits and writes `end.sav`. A milestone
+   that plays the game to its end (`[run] save = "none"`, last step `wait_reset`) ends in the game's own
+   `OS_ResetSystem` after the credits: the port traps it, and `end.sav` is the save the game wrote before.
 5. **Judge**: `[expect]` against the final map/tile and the end save as `features/tools/np_save4 dump` reads it.
 
 The run is deterministic: the same start save and steps replay the same frames, battles and RNG.
@@ -146,6 +148,7 @@ Names resolve per game as the lab recipes do (Platinum `MAP_HEADER_*`, `FLAG_*`,
 | `wait_map` | `map` | until that map id |
 | `wait_field` | | until the player is free |
 | `wait_battle` | | until a battle starts |
+| `wait_reset` | opt. `max` | until the game resets itself (Platinum's ClearGame after the credits: `OS_ResetSystem`, trapped by the port); the run ends there, with no end save, shot or probe |
 | `press` | `keys` (`A`, `UP+B`), opt. `hold`, `gap`, `times` | raw buttons (B answers a field YES/NO as NO) |
 | `tap` | `x`, `y`, opt. `hold`, `gap`, `times` | bottom-screen touch |
 | `wait_frames` | `n` | idle |

@@ -2,9 +2,8 @@
 # Start: Aaron room after the win (51's end) -> lift -> end: Bertha room after the win, FLAG_DEFEATED_BERTHA.
 
 title = "Elite Four: Bertha"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 9799
 refs = [
   "scripts_pokemon_league_bertha_room.s:61-69",
   "scripts_pokemon_league_bertha_room.s:66",
@@ -16,7 +15,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 18000
+frames = 14700
 
 [[step]]
 do = "walk_to"
@@ -61,6 +60,7 @@ note = "Bertha at (8,5)"
 
 [[step]]
 do = "advance_text"
+shot = "e4_bertha_battle"
 
 [[step]]
 do = "auto_battle"

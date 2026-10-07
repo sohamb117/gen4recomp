@@ -88,6 +88,7 @@ VAR_OREBURGH_CITY_STATE = 2
 | `wait_map` | `map` | until the map id matches |
 | `wait_field` | | until the player is free in the field |
 | `wait_battle` | | until a battle starts (after walking into a trainer's sight) |
+| `wait_reset` | opt. `max` | the last step of a run that ends the game: until the game's own `OS_ResetSystem` after the credits (the port traps it); needs `[run] save = "none"`; `[expect]` reads the save the game wrote |
 | `press` | `keys` (`A`, `UP+B`, ...), opt. `hold`, `gap`, `times` | raw buttons, for menus |
 | `tap` | `x`, `y`, opt. `hold`, `gap`, `times` | bottom-screen touch (Pokétch, touch menus) |
 | `wait_frames` | `n` | idle |
@@ -107,7 +108,8 @@ Rules that keep runs deterministic:
 `map`, `position = [x, z]`, `badges` (count), `badge` (names set), `flags` / `flags_clear`, `[expect.vars]`, `party`
 (species present), `party_size`, `battles` (at least this many battle starts), `log` (regexes over the run log),
 `save` (Python expressions over the end save's `np_save4` dump `s`: `s["trainer"]`, `s["party"]`, `s["bag"]`,
-`s["pokedex"]`, `s["location"]`). Cover everything the milestone's scripts set that a later milestone depends on.
+`s["pokedex"]`, `s["location"]`, Platinum's `s["hall_of_fame"]`: `total` and the `latest` entry's `date`, `party`).
+Cover everything the milestone's scripts set that a later milestone depends on.
 
 ## Recipes
 

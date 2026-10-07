@@ -2,9 +2,8 @@
 # Start: Bertha room after the win (52's end) -> lift -> end: Flint room after the win, FLAG_DEFEATED_FLINT.
 
 title = "Elite Four: Flint"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 9429
 refs = [
   "scripts_pokemon_league_flint_room.s:106",
   "scripts_pokemon_league_flint_room.s:23",
@@ -18,7 +17,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 18000
+frames = 14200
 
 [[step]]
 do = "walk_to"
@@ -63,6 +62,7 @@ note = "Flint at (8,5)"
 
 [[step]]
 do = "advance_text"
+shot = "e4_flint_battle"
 
 [[step]]
 do = "auto_battle"

@@ -283,6 +283,64 @@ static int open_rom(const char *path, FILE **fp, nd_rom *rom)
     return 0;
 }
 
+/* Platinum's Hall of Fame: the extra save block written by ClearGame (src/clear_game.c ClearGame_AddHallOfFameEntry,
+ * SaveDataExtra_Save in src/savedata.c). It sits at sector SAVE_PAGE_MAX (32) of each copy: 0x20000 primary,
+ * 0x60000 backup, each a HallOfFame (30 entries of six 0x3C-byte HallOfFamePokemon + a u16 year, u8 month, u8 day,
+ * then u32 nextEntryIndex, u32 totalEntriesCount; include/hall_of_fame_entries.h) and a SaveCheckFooter (u32
+ * signature 0x20060623, u32 saveCounter, u32 size, u16 id 0, u16 CRC16 of everything before it). The valid copy with
+ * the higher counter is dumped: the entry count and the latest entry (date, species and levels). null: no valid
+ * copy (no Hall of Fame entered yet) or a D/P save. */
+#define HOF_MON_SIZE 0x3C
+#define HOF_ENTRY_SIZE (6 * HOF_MON_SIZE + 4)
+#define HOF_ENTRIES 30
+#define HOF_SIZE (HOF_ENTRIES * HOF_ENTRY_SIZE + 8)
+
+static uint32_t le32(const uint8_t *p) { return p[0] | p[1] << 8 | p[2] << 16 | (uint32_t)p[3] << 24; }
+static uint16_t le16(const uint8_t *p) { return (uint16_t)(p[0] | p[1] << 8); }
+
+static void dump_hall_of_fame(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    const uint8_t *best = NULL;
+    uint32_t best_counter = 0;
+    static const size_t copies[2] = {0x20000, 0x60000};
+    for (int c = 0; s->game == SAVE4_GAME_PT && c < 2; c++) {
+        if (copies[c] + HOF_SIZE + 16 > len)
+            continue;
+        const uint8_t *body = img + copies[c], *ft = body + HOF_SIZE;
+        if (le32(ft) != 0x20060623 || le32(ft + 8) != HOF_SIZE || le16(ft + 12) != 0 ||
+            le16(ft + 14) != save4_crc16(body, HOF_SIZE + 14))
+            continue;
+        if (!best || le32(ft + 4) > best_counter) {
+            best = body;
+            best_counter = le32(ft + 4);
+        }
+    }
+    if (!best) {
+        fputs("  \"hall_of_fame\": null,\n", o);
+        return;
+    }
+    uint32_t next = le32(best + HOF_ENTRIES * HOF_ENTRY_SIZE), total = le32(best + HOF_ENTRIES * HOF_ENTRY_SIZE + 4);
+    fprintf(o, "  \"hall_of_fame\": {\"total\": %u, \"latest\": ", total);
+    if (!total || next >= HOF_ENTRIES) {
+        fputs("null},\n", o);
+        return;
+    }
+    const uint8_t *e = best + ((next + HOF_ENTRIES - 1) % HOF_ENTRIES) * HOF_ENTRY_SIZE;
+    const uint8_t *date = e + 6 * HOF_MON_SIZE;
+    fprintf(o, "{\"date\": \"%04u-%02u-%02u\", \"party\": [", 2000u + le16(date), date[2], date[3]); /* RTCDate year 0-99 */
+    for (int i = 0, n = 0; i < 6; i++) {
+        const uint8_t *m = e + i * HOF_MON_SIZE;
+        if (!le16(m))
+            continue;
+        fprintf(o, "%s{\"species\": %u, \"species_name\": ", n++ ? ", " : "", le16(m));
+        jname(o, ND_TEXT_SPECIES, le16(m));
+        fprintf(o, ", \"level\": %u}", m[2]);
+    }
+    fputs("]}},\n", o);
+}
+
 static int cmd_dump(const char *rom_path, const char *save_path)
 {
     save4 s;
@@ -465,6 +523,7 @@ static int cmd_dump(const char *rom_path, const char *save_path)
         if (ptch.apps[a])
             fprintf(o, "%s%d", n++ ? ", " : "", a);
     fputs("]},\n", o);
+    dump_hall_of_fame(o, &s);
     dump_mystery(o, &s);
     fputs("}\n", o);
 

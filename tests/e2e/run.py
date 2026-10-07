@@ -59,6 +59,7 @@ STEP_KEYS = {
     "wait_field": set(),
     "slide": {"dirs", "on_battle", "on_text", "move"},
     "wait_battle": set(),
+    "wait_reset": {"keys"},
     "schedule": {"file", "frames"},
     "save": set(),
     "advance_text": {"through_battle", "map"},
@@ -530,6 +531,8 @@ def run_milestone(game, ms, prev, args, out):
             shots.append(("start f%d" % s.frame, shot))
         ctx = Ctx(game, ms)
         for i, step in enumerate(ms.data.get("step", []), 1):
+            if s.ended:
+                raise HarnessError("step %d (%s): the game already ended (%s)" % (i, step["do"], s.ended))
             f0 = s.frame
             s.note("step %d: %s %s" % (i, step["do"], {k: v for k, v in step.items() if k != "do"}))
             try:
@@ -541,19 +544,21 @@ def run_milestone(game, ms, prev, args, out):
                 shots.append(("step %d FAIL f%d" % (i, s.frame), fail))
                 raise HarnessError("step %d (%s): %s" % (i, step["do"], e))
             res.steps.append((i, step["do"], s.frame - f0, "ok"))
-            if step.get("shot"):
+            if step.get("shot") and not s.ended:
                 path = os.path.join(d, "s%02d-%s.ppm" % (i, re.sub(r"[^\w.-]", "_", str(step["shot"]))))
                 s.dump(path)
                 shots.append(("%d %s f%d" % (i, step["shot"], s.frame), path))
-        if run.get("save", "quick") == "quick":
+        # a step list that ends the game (bots.bot_wait_reset) leaves no core: the save is the one the game wrote
+        if run.get("save", "quick") == "quick" and not s.ended:
             f0 = s.frame
             BOTS["save"](s, {}, ctx)
             res.steps.append((len(res.steps) + 1, "save (end)", s.frame - f0, "ok"))
-        shot = os.path.join(d, "s99-end.ppm")
-        s.dump(shot)
-        shots.append(("end f%d" % s.frame, shot))
+        if not s.ended:
+            shot = os.path.join(d, "s99-end.ppm")
+            s.dump(shot)
+            shots.append(("end f%d" % s.frame, shot))
         res.frames = s.frame
-        end_state = (s.map_id, s.probe())
+        end_state = (s.map_id, None if s.ended else s.probe())
         if env.get("PC_RTC"):
             with open(os.path.join(d, "end.clock"), "w") as f:
                 f.write(env["PC_RTC"] + "\n")
