@@ -114,10 +114,11 @@ class Probe:
                 self.heights = struct.unpack_from("<%dh" % n, raw, off + n * 2)
 
     def layers(self):
-        """{(x, z): {height: {d: (tx, tz, target height or None off the window)}}} from the step layers, or None.
+        """{(x, z): {height: {d: (tx, tz, target height or None if unknown)}}} from the step layers, or None.
 
         Every layer the flood from the player reached, with the steps the game's movement check allows from it
-        (a ledge's lands two tiles away)."""
+        (a ledge's lands two tiles away). A step off the window, or onto a tile of a map block the game has not
+        loaded (the check refuses those: no tile behavior), is unknown, not refused: its target height is None."""
         if not self.steps:
             return None
         g = E2E_GRID * E2E_GRID
@@ -133,6 +134,11 @@ class Probe:
                 moves = {}
                 for d in range(4):
                     if not st & (1 << d):
+                        ngx, ngz = gx + DIR_DELTA[d][0], gz + DIR_DELTA[d][1]
+                        nx, nz = x + DIR_DELTA[d][0], z + DIR_DELTA[d][1]
+                        inside = 0 <= ngx < E2E_GRID and 0 <= ngz < E2E_GRID
+                        if nx >= 0 and nz >= 0 and (not inside or not self.grid[ngz * E2E_GRID + ngx] & TILE_KNOWN):
+                            moves[d] = (nx, nz, None)
                         continue
                     r = 2 if st & (0x100 << d) else 1
                     tgx, tgz = gx + DIR_DELTA[d][0] * r, gz + DIR_DELTA[d][1] * r

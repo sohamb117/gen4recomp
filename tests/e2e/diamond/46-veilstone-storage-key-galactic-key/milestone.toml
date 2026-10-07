@@ -1,0 +1,179 @@
+# Proves the way into Team Galactic HQ after Lake Acuity: Fly back to Veilstone, the guard in front of the HQ who
+# drops the Storage Key once 0x241 is cleared (Lake Acuity, scr_seq 0351 @0x0110), the warehouse's rusty doors opened
+# with it, HM02 Fly in the warehouse, the warehouse's back stairs into HQ B2F and the Galactic Key there; then out
+# through the warehouse to the HQ front door.
+# Start: Lake Acuity (Galactic) after Jupiter's scene (45's end) -> end: HQ 1F lobby at the front door (8,22) (47's start).
+title = "Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "zone_event 0131 object 24",
+  "zone_event 0131 object 23",
+  "scr_seq 0131 @0x087A-0x0936",
+  "scr_seq 0370 @0x0D76",
+  "zone_event 0131 warp 4",
+  "zone_event 0142 object 3",
+  "zone_event 0142 object 4",
+  "zone_event 0142 object 2",
+  "zone_event 0142 warp 1",
+  "scr_seq 0143 @0x0063-0x00E8",
+  "scr_seq 0370 @0x0D9E",
+  "zone_event 0297 object 5",
+  "zone_event 0297 warp 2",
+  "scr_seq 0370 @0x128A",
+  "zone_event 0131 warp 14",
+  "zone_event 0292 warp 0",
+]
+notes = "Fly: the chain party gets a Staraptor with Fly by boost (in the story HM02 is the warehouse ball this milestone picks up, after the walk back from Snowpoint the player would otherwise make: Main's call, fly for 46+). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+boost = "boost.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 50
+note = "out of the lake (zone_event 0305 warp 3) -> MAP_ACUITY_LAKEFRONT warp 2 (310,239): Lake Acuity is off the overworld matrix, the Lakefront is on it (map_matrix 0 cells (9..10,6..7)), so the fly map opens on the player's block"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ACUITY_LAKEFRONT"
+
+[[step]]
+do = "fly"
+map = "MAP_VEILSTONE"
+shot = "fly-veilstone"
+note = "Veilstone is map_matrix 0 cells (21..22,18..19)"
+
+[[step]]
+do = "walk_to"
+x = 720
+z = 594
+face = "right"
+interact = true
+on_battle = "flee"
+note = "the guard in front of the HQ (zone_event 0131 object 24 (721,594), hidden 0x241, cleared by Lake Acuity)"
+
+[[step]]
+do = "advance_text"
+shot = "storage-key-guard"
+note = "msg 135 #22-#23: he recognises the player, ClearFlag 0x4C8 + AddEvent 23 (the ball), runs off, RemoveEvent 24 (scr_seq 0131 @0x087A-0x0936)"
+
+[[step]]
+do = "walk_to"
+x = 720
+z = 594
+face = "right"
+interact = true
+note = "ball object 23 (721,594), std 7121 -> scr_seq 0370 @0x0D76 SetVar 0x8008 463 (ITEM_STORAGE_KEY)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 701
+z = 591
+on_battle = "flee"
+note = "warehouse door (zone_event 0131 warp 4) -> MAP_VEILSTONE_GALACTIC_WAREHOUSE_ENTRANCE warp 0 (8,11)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_WAREHOUSE_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 9
+face = "up"
+interact = true
+note = "ball object 2 (13,8), std 7123 -> scr_seq 0370 @0x0D9E SetVar 0x8008 421 (ITEM_HM02)"
+
+[[step]]
+do = "advance_text"
+shot = "hm02"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 8
+face = "up"
+interact = true
+note = "the rusty doors (objects 3/4 (8..9,7), hidden 0x246): 'Use the Storage Key?' (scr_seq 0143 @0x008B)"
+
+[[step]]
+do = "advance_text"
+shot = "rusty-door"
+note = "A answers YES: SetFlag 0x10E, TakeItem 463, the doors slide away, RemoveEvent 3/4 (@0x00AE-0x00E8)"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 3
+note = "stairs (zone_event 0142 warp 1) -> MAP_VEILSTONE_GALACTIC_HEADQUARTERS_B2F warp 2 (3,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_B2F"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 6
+face = "up"
+interact = true
+note = "ball object 5 (20,5), std 7186 -> scr_seq 0370 @0x128A SetVar 0x8008 440 (ITEM_GALACTIC_KEY); route from the step layers (tests/e2e/tools/dp_warps.py)"
+
+[[step]]
+do = "advance_text"
+shot = "galactic-key"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 16
+note = "back up the stairs (zone_event 0297 warp 2) -> the warehouse (13,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_WAREHOUSE_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 11
+note = "warehouse exit (zone_event 0142 warp 0) -> Veilstone (701,591)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE"
+
+[[step]]
+do = "walk_to"
+x = 714
+z = 589
+on_battle = "flee"
+note = "HQ front door (zone_event 0131 warp 14) -> MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F warp 0 (8,22)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F"
+flags = ["0x241", "0x4C8", "0x10E", "0x4C6", "0x4C7"]
+save = [
+  'any(i["item"] == 440 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_GALACTIC_KEY
+  'any(i["item"] == 421 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM02
+  'not any(i["item"] == 463 for k, p in s["bag"].items() if k != "registered" for i in p)',  # the Storage Key snapped off
+]

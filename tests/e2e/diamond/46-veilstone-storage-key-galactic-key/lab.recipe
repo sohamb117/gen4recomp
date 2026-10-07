@@ -1,42 +1,25 @@
-# Diamond story 54-sunyshore-jasmine-waterfall: standalone start (--lab, or no end save from 53-sunyshore-gym-volkner).
-# Standard header + lab party + the cumulative state after 53-sunyshore-gym-volkner, then the milestone's start.
-# Opponents here: none.
+# Diamond story 46-veilstone-storage-key-galactic-key: standalone start (--lab, or no end save from 45-lake-acuity-jupiter).
+# Standard header + lab party + the cumulative state after 45, then the milestone's start.
+# Lab party (as 45's): EMPOLEON 100 leads (HQ B2F grunts: trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35); STARAPTOR flies.
 name GQ
 gender PLAYER_GENDER_MALE
 trainer-id 31415
 money 20000
-# Lab party for S11 (Spear Pillar -> credits). Level 100: no EXP/learn-move/evolution prompts; GiveMon makes the player the
-# OT, so no obedience check. The three battle mons carry ONE move each, so an empty slot 0 falls back to Struggle instead
-# of stalling A-only battles: the E4 + Champion run has no heal between rooms (26 opponents + up to 12 Full Restores,
-# trdata.json #261 #262 #263 #264 #267). Dragon Claw is neutral or better against every required opponent except Steelix
-# (trdata.json #263) and Bronzong (#264), which it still 3HKOs at level 100; Crunch backs up. 5 mons: one slot stays free.
-party SPECIES_GARCHOMP 100 ITEM_NONE
-party-move 0 0 MOVE_DRAGON_CLAW
+party SPECIES_EMPOLEON 100 ITEM_NONE
+party-move 0 0 MOVE_SURF
 party-move 0 1 MOVE_NONE
 party-move 0 2 MOVE_NONE
 party-move 0 3 MOVE_NONE
-party SPECIES_SALAMENCE 100 ITEM_NONE
+party SPECIES_GARCHOMP 100 ITEM_NONE
 party-move 1 0 MOVE_DRAGON_CLAW
 party-move 1 1 MOVE_NONE
 party-move 1 2 MOVE_NONE
 party-move 1 3 MOVE_NONE
-party SPECIES_TYRANITAR 100 ITEM_NONE
-party-move 2 0 MOVE_CRUNCH
-party-move 2 1 MOVE_NONE
-party-move 2 2 MOVE_NONE
-party-move 2 3 MOVE_NONE
-# field-move carriers, never in front: Surf/Waterfall (Route 223, Victory Road), Strength/Rock Climb (Victory Road),
-# Fly (leaving Mt. Coronet), Rock Smash (Victory Road 2F breakrocks, zone_event 0238 objects 14,26-31)
-party SPECIES_BIBAREL 100 ITEM_NONE
-party-move 3 0 MOVE_SURF
-party-move 3 1 MOVE_WATERFALL
-party-move 3 2 MOVE_STRENGTH
-party-move 3 3 MOVE_ROCK_CLIMB
 party SPECIES_STARAPTOR 100 ITEM_NONE
-party-move 4 0 MOVE_FLY
-party-move 4 1 MOVE_ROCK_SMASH
-party-move 4 2 MOVE_NONE
-party-move 4 3 MOVE_NONE
+party-move 2 0 MOVE_FLY
+party-move 2 1 MOVE_STRENGTH
+party-move 2 2 MOVE_ROCK_SMASH
+party-move 2 3 MOVE_DEFOG
 # -- prior: tests/e2e/tools/dp_prior.py --
 # -- 01 New game to the Lake Verity starter and the running shoes --
 flag 0x87                    # scr_seq 0981 @0x0078 [MAP_TWINLEAF_RIVAL_HOUSE_1F]
@@ -425,34 +408,5 @@ clear-flag 0x241             # scr_seq 0351 @0x0110 [MAP_LAKE_ACUITY_GALACTIC]
 clear-flag 0x1B6             # scr_seq 0351 @0x011E [MAP_LAKE_ACUITY_GALACTIC]
 clear-flag 0xA8              # scr_seq 0351 @0x0132 [MAP_LAKE_ACUITY_GALACTIC]
 var 0x40D3 2                 # scr_seq 0351 @0x0118 [MAP_LAKE_ACUITY_GALACTIC]
-# -- 46 Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key --
-flag 0x241                   # scr_seq 0377 @0x00D8 [script ids 9600+]
-flag 0x4C8                   # scr_seq 0377 @0x00DC [script ids 9600+]
-flag 0x10E                   # scr_seq 0143 @0x00AE [MAP_VEILSTONE_GALACTIC_WAREHOUSE_ENTRANCE]
-flag 0x4C6                   # zone_event 0142 object 2 (SPRITE_MONSTARBALL) hidden flag, set by its Remove/AddEvent [MAP_VEILSTONE_GALACTIC_WAREHOUSE_ENTRANCE]
-flag 0x4C7                   # zone_event 0297 object 5 (SPRITE_MONSTARBALL) hidden flag, set by its Remove/AddEvent [MAP_VEILSTONE_GALACTIC_HEADQUARTERS_B2F]
-item ITEM_GALACTIC_KEY 1     # 46-veilstone-storage-key-galactic-key: given in play (see its refs)
-item ITEM_HM02 1             # 46-veilstone-storage-key-galactic-key: given in play (see its refs)
-# -- 51 Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens --
-flag 0x15E                   # scr_seq 0230 @0x0FEC [MAP_MOUNT_CORONET_SPEAR_PILLAR]
-flag 0x29B                   # scr_seq 0381 @0x0088 [MAP_VALOR_LAKEFRONT]
-var 0x4112 1                 # scr_seq 0381 @0x008C [MAP_VALOR_LAKEFRONT]
-# -- 52 Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse --
-flag 0x162                   # scr_seq 0165 @0x00FA [MAP_SUNYSHORE_VISTA_LIGHTHOUSE_OBSERVATION_DECK]
-flag 0x29F                   # zone_event 0163 object 2 (SPRITE_LEADER8) hidden flag, set by its Remove/AddEvent [MAP_SUNYSHORE_VISTA_LIGHTHOUSE_OBSERVATION_DECK]
-flag 0x257                   # zone_event 0149 object 18 (SPRITE_BIGFOUR3) hidden flag, set by its Remove/AddEvent [MAP_SUNYSHORE]
-var 0x407E 1                 # scr_seq 0150 @0x029F [MAP_SUNYSHORE]
-# -- 53 Sunyshore Gym: Volkner and the Beacon Badge --
-flag 0xB6                    # scr_seq 0154 @0x00DB [MAP_SUNYSHORE_GYM_ROOM_3]
-flag 0x669                   # scr_seq 0154 @0x0081 [MAP_SUNYSHORE_GYM_ROOM_3]
-flag 0x66D                   # scr_seq 0154 @0x0085 [MAP_SUNYSHORE_GYM_ROOM_3]
-flag 0x67D                   # scr_seq 0154 @0x0089 [MAP_SUNYSHORE_GYM_ROOM_3]
-flag 0x67E                   # scr_seq 0154 @0x008D [MAP_SUNYSHORE_GYM_ROOM_3]
-flag 0x67F                   # scr_seq 0154 @0x0091 [MAP_SUNYSHORE_GYM_ROOM_3]
-flag 0x69B                   # scr_seq 0154 @0x0095 [MAP_SUNYSHORE_GYM_ROOM_3]
-flag 0x6A5                   # scr_seq 0154 @0x0099 [MAP_SUNYSHORE_GYM_ROOM_3]
-flag 0x6A8                   # scr_seq 0154 @0x009D [MAP_SUNYSHORE_GYM_ROOM_3]
-badge BADGE_BEACON           # 53-sunyshore-gym-volkner's leader script (see its refs)
-item ITEM_TM57 1             # 53-sunyshore-gym-volkner: given in play (see its refs)
 # -- start --
-warp MAP_SUNYSHORE 12  # gym door (845,747), zone_event 0149 warp 12
+map MAP_LAKE_ACUITY_GALACTIC 16 45 FACE_DOWN  # 45's end: after Jupiter's scene (scr_seq 0351), where the player stood

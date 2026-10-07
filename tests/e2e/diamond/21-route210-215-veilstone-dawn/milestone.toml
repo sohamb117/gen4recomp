@@ -2,10 +2,9 @@
 # arrival scene: Dawn (Lucas for a female player) waits south of the gym (coord (681..684,616), 0x40F5 0 -> 1).
 # Start: Solaceon Pokemon Center door (566,656) -> end: inside Veilstone Gym at warp 0 (12,25) (22's start).
 title = "Route 210 South and Route 215 to Veilstone: counterpart at the gym"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 22000
+estimate = 36615
 refs = [
   "maps.h:136",
   "maps.h:137",
@@ -88,7 +87,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 33000
+frames = 55000
 
 [[step]]
 do = "heal"
@@ -117,6 +116,7 @@ map = "MAP_ROUTE_210_SOUTH"
 do = "walk_to"
 x = 580
 z = 597
+on_battle = "flee"
 face = "up"
 interact = true
 max = 9000
@@ -140,38 +140,44 @@ do = "walk_to"
 x = 590
 z = 598
 max = 3000
-note = "first hop east along z 598"
+on_battle = "flee"
+note = "first hop east along z 598; Route 215 wild battles (rain, d_enc_data 0164) are fled on every walk here: fighting them spent the budget (seen)"
 
 [[step]]
 do = "walk_to"
 x = 606
 z = 599
+on_battle = "flee"
 max = 12000
 avoid = [[574,596],[574,597],[574,598],[574,599],[574,600],[574,601],[575,596],[575,597],[575,598],[575,599],[575,600],[575,601],[576,596],[576,597],[576,598],[576,599],[576,600],[576,601],[577,596],[577,597],[577,598],[577,599],[577,600],[577,601],[578,596],[578,597],[578,598],[578,599],[578,600],[578,601],[579,596],[579,597],[579,598],[579,599],[579,600],[579,601],[580,596],[580,597],[580,598],[580,599],[580,600],[580,601],[581,596],[581,597],[581,598],[581,599],[581,600],[581,601],[582,596],[582,597],[582,598],[582,599],[582,600],[582,601],[583,596],[583,597],[583,598],[583,599],[583,600],[583,601]]
-note = "Route 215's bridges are a second level the probe grid cannot tell from the ground under them, so the walk learns the legal crossings by bumping; the junction to Route 210 (x 574-583, z 596-601) is avoided so the plan cannot escape south through unknown tiles (it went back to Solaceon three times)"
+note = "Route 215's bridges are a second level over the path: the probe's step layers (np_e2e.h v3) tell the deck from the ground, so the plan crosses them where the game allows; the junction to Route 210 (x 574-583, z 596-601) is avoided so the plan cannot escape south through unknown tiles (it went back to Solaceon three times)"
 
 [[step]]
 do = "walk_to"
 x = 625
 z = 586
+on_battle = "flee"
 max = 6000
 
 [[step]]
 do = "walk_to"
 x = 639
 z = 583
+on_battle = "flee"
 max = 6000
 
 [[step]]
 do = "walk_to"
 x = 650
 z = 597
+on_battle = "flee"
 max = 6000
 
 [[step]]
 do = "walk_to"
 x = 671
 z = 598
+on_battle = "flee"
 max = 15000
 note = "east along Route 215 to the Veilstone gatehouse (zone_event 0367 warp 0 -> gatehouse warp 1 (1,7)); sight trainers may engage: Calvin (589,590) S 3, Craig (603,593) N 3 (jogger, time-dependent), Derek (607,584) W 3, Gregory (621,578) W 3, Nathaniel (643,582) W 2, Maya (648,596) S 2 and Dennis (648,599) N 2 face each other across z 597-598, Scott (654,589) S 3 (jogger)"
 

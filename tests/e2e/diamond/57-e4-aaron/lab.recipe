@@ -425,6 +425,14 @@ clear-flag 0x241             # scr_seq 0351 @0x0110 [MAP_LAKE_ACUITY_GALACTIC]
 clear-flag 0x1B6             # scr_seq 0351 @0x011E [MAP_LAKE_ACUITY_GALACTIC]
 clear-flag 0xA8              # scr_seq 0351 @0x0132 [MAP_LAKE_ACUITY_GALACTIC]
 var 0x40D3 2                 # scr_seq 0351 @0x0118 [MAP_LAKE_ACUITY_GALACTIC]
+# -- 46 Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key --
+flag 0x241                   # scr_seq 0377 @0x00D8 [script ids 9600+]
+flag 0x4C8                   # scr_seq 0377 @0x00DC [script ids 9600+]
+flag 0x10E                   # scr_seq 0143 @0x00AE [MAP_VEILSTONE_GALACTIC_WAREHOUSE_ENTRANCE]
+flag 0x4C6                   # zone_event 0142 object 2 (SPRITE_MONSTARBALL) hidden flag, set by its Remove/AddEvent [MAP_VEILSTONE_GALACTIC_WAREHOUSE_ENTRANCE]
+flag 0x4C7                   # zone_event 0297 object 5 (SPRITE_MONSTARBALL) hidden flag, set by its Remove/AddEvent [MAP_VEILSTONE_GALACTIC_HEADQUARTERS_B2F]
+item ITEM_GALACTIC_KEY 1     # 46-veilstone-storage-key-galactic-key: given in play (see its refs)
+item ITEM_HM02 1             # 46-veilstone-storage-key-galactic-key: given in play (see its refs)
 # -- 51 Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens --
 flag 0x15E                   # scr_seq 0230 @0x0FEC [MAP_MOUNT_CORONET_SPEAR_PILLAR]
 flag 0x29B                   # scr_seq 0381 @0x0088 [MAP_VALOR_LAKEFRONT]

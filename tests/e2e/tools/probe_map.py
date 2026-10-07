@@ -10,7 +10,9 @@ outdoors). Legend: '@' player, '#' collision, '.' floor, 'g' tall grass, '~' sur
 'r' rock-climb wall, 'v' ledge, 'M' exit mat, 'o' map object (local id listed), '?' not loaded, other behaviours
 as two hex digits are listed under the map. --steps runs milestone steps first (a JSON list of step tables, e.g.
 '[{"do": "walk_to", "x": 40, "z": 54}]'), --shot writes the screen after them, --save-to quick-saves and writes the save
-to OUT: the next exploration boots from there (maps the probe cannot plan alone, e.g. the Distortion World).
+to OUT: the next exploration boots from there (maps the probe cannot plan alone, e.g. the Distortion World). A D/P
+guest also publishes its step layers (np_e2e.h v3), printed as a second map: where the game's own movement check
+lets the player stand, reached from where it stands.
 """
 import json
 import types
@@ -75,6 +77,23 @@ def render(p):
     names = {v: k for k, v in b.items()}
     for beh, tiles in sorted(other.items()):
         lines.append("'=' 0x%02X %s: %d tiles, e.g. %s" % (beh, names.get(beh, "?"), len(tiles), tiles[:4]))
+    lay = p.layers()
+    if lay:
+        # the step layers (np_e2e.h v3): where the game's own movement check lets the player stand, from here
+        lines.append("step layers (player height %d): '.' one place to stand, '2' two (a bridge deck over a path), "
+                     "' ' not reached from the player" % p.player_height)
+        lines.append("      " + "".join(str((p.grid_x0 + i) % 10) for i in range(64)))
+        for gz in range(64):
+            z = p.grid_z0 + gz
+            row = []
+            for gx in range(64):
+                x = p.grid_x0 + gx
+                n = len(lay.get((x, z), ()))
+                row.append("@" if (x, z) == (p.x, p.z) else " .2"[min(n, 2)])
+            lines.append("%5d %s" % (z, "".join(row)))
+        two = sorted((xz, sorted(h)) for xz, h in lay.items() if len(h) > 1)
+        if two:
+            lines.append("two layers (heights): %s" % ", ".join("(%d,%d) %s" % (xz + (h,)) for xz, h in two[:12]))
     return "\n".join(lines)
 
 

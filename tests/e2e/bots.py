@@ -9,7 +9,9 @@ import heapq
 import json
 import os
 import re
+import struct
 import subprocess
+import sys
 
 from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, ROOT, TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN, UI_BATTLE_MENU,
                     UI_BATTLE_PARTY, HarnessError, behaviors)
@@ -642,12 +644,13 @@ class Terrain:
             return abs(x - goal[0]) + abs(z - goal[1])
 
         s0 = (start[0], start[1], self.height)
-        openq = [(h(*start), 0, s0)]
+        # heap entries order by (f, g, x, z, height) with an unknown height first: states mix None and int heights
+        openq = [(h(*start), 0, start[0], start[1], -(1 << 30) if self.height is None else self.height, s0)]
         came = {s0: None}
         cost = {s0: 0}
         n = 0
         while openq and n < limit:
-            _, g, cur = heapq.heappop(openq)
+            _, g, _, _, _, cur = heapq.heappop(openq)
             n += 1
             if cur[:2] == goal:
                 dirs = []
@@ -664,7 +667,7 @@ class Terrain:
                 if ng < cost.get(nxt, 1 << 30):
                     cost[nxt] = ng
                     came[nxt] = (cur, d)
-                    heapq.heappush(openq, (ng + h(nx, nz), ng, nxt))
+                    heapq.heappush(openq, (ng + h(nx, nz), ng, nx, nz, -(1 << 30) if nh is None else nh, nxt))
         return None
 
 
@@ -1194,12 +1197,27 @@ MOVE_FLY = 19
 FLY_X, FLY_Z = (1, 28), (6, 28)
 
 
-def fly_blocks(name):
-    """The town-map blocks of a fly destination: the cells of the overworld matrix (map_matrix_000, which
-    MainMapMatrixData_Load reads, src/map_matrix.c:149-161) whose header is `name` (CanFlyToHoveredLocation: the
-    hovered cell's header must be the fly location's, town_map/graphics.c:1125-1140, fly_locations.c:291-304)."""
-    path = os.path.join(ROOT, "games", "platinum", "res", "field", "matrices", "map_matrix_000.json")
-    headers = json.load(open(path))["headers"]
+def overworld_headers(game):
+    """The overworld matrix's header names by [z][x] block: Platinum's map_matrix_000 (MainMapMatrixData_Load,
+    src/map_matrix.c:149-161), D/P's fielddata/mapmatrix narc 0 (arm9/src/map_matrix.c: u8 width, height, has
+    headers, has altitudes, name length, the name, then width*height u16 header ids)."""
+    if game == "platinum":
+        path = os.path.join(ROOT, "games", "platinum", "res", "field", "matrices", "map_matrix_000.json")
+        return json.load(open(path))["headers"]
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools"))
+    import dp_script
+    d = open(os.path.join(ROOT, "games", "diamond", "files", "fielddata", "mapmatrix", "map_matrix",
+                          "narc_0000.bin"), "rb").read()
+    w, h, p = d[0], d[1], 5 + d[4]
+    ids = struct.unpack_from("<%dH" % (w * h), d, p)
+    return [[dp_script.map_name(i) if i != 0xFFFF else "MAP_NONE" for i in ids[z * w:(z + 1) * w]] for z in range(h)]
+
+
+def fly_blocks(name, game="platinum"):
+    """The town-map blocks of a fly destination: the cells of the overworld matrix whose header is `name`
+    (CanFlyToHoveredLocation: the hovered cell's header must be the fly location's, town_map/graphics.c:1125-1140,
+    fly_locations.c:291-304)."""
+    headers = overworld_headers(game)
     return [(x, z) for z, row in enumerate(headers) for x, h in enumerate(row) if h == name]
 
 
@@ -1214,9 +1232,7 @@ def bot_fly(s, step, ctx):
     town map's cursor moved block by block to the destination, A. `slot` names the party slot (default: the first
     that knows Fly, from an in-game save's dump); `block = [x, z]` the town-map block (default: the destination's
     block on the overworld matrix nearest the player's). Platinum menus (start_menu.c, party_menu/main.c,
-    town_map/graphics.c)."""
-    if ctx.game != "platinum" and "block" not in step:
-        raise HarnessError("fly: only Platinum's town map is known; give block = [x, z]")
+    town_map/graphics.c); D/P's start menu, party menu and fly map are laid out the same way."""
     dest = ctx.resolve(step["map"])
     bot_wait_field(s, step, ctx)
     p = s.probe()
@@ -1225,9 +1241,8 @@ def bot_fly(s, step, ctx):
         # off the overworld matrix (caves, lakes, buildings) the town map opens on the exit location, the overworld
         # tile the player last left it from (town_map/context.c:108-116), which the save dump does not show
         here = tuple(int(v) for v in step["start"])
-    elif ctx.game == "platinum":
-        path = os.path.join(ROOT, "games", "platinum", "res", "field", "matrices", "map_matrix_000.json")
-        headers = json.load(open(path))["headers"]
+    else:
+        headers = overworld_headers(ctx.game)
         on = here[1] < len(headers) and here[0] < len(headers[here[1]]) and headers[here[1]][here[0]] != "MAP_NONE" \
             and ctx.resolve(headers[here[1]][here[0]]) == s.map_id
         if not on:
@@ -1236,7 +1251,7 @@ def bot_fly(s, step, ctx):
     if "block" in step:
         goal = tuple(int(v) for v in step["block"])
     else:
-        blocks = fly_blocks(step["map"])
+        blocks = fly_blocks(step["map"], ctx.game)
         if not blocks:
             raise HarnessError("fly: %s is on no overworld block" % step["map"])
         goal = min(blocks, key=lambda b: abs(b[0] - here[0]) + abs(b[1] - here[1]))

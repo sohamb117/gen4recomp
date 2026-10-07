@@ -63,6 +63,12 @@ battle menu waits, the block also carries a battle report: every battler (specie
 moves, PP, the Disabled move) and the menu battler's party in its party screen's order. Without `PC_E2E` nothing
 runs and hashes are unchanged (`tests/dp/regress.sh`). Platinum's half is `games/platinum/pc/src/pc_np_field.c` +
 `pc_e2e.c` and the battle patches; D/P's is `games/diamond/pc/game/pc_dp_field.c` and the overlay 9/11 patches.
+Version 3 adds step layers (D/P only; Platinum leaves `steps_seq` 0): whenever the window is refilled, the guest
+floods out from the player over the game's own movement check (`sub_0204A7C8`, Platinum's
+`TerrainCollisionManager_WillPlayerCollide`: plate height, dynamic map features, collision bit), carrying the height
+a step lands at, so each tile lists up to two places to stand (a bridge deck and the path under it) with the steps
+allowed from each. `walk_to` plans over (tile, height) states where layers exist and over the grid elsewhere;
+`tools/probe_map.py` prints the layers, `tools/dp_warps.py` routes through doors and warp panels with them.
 
 `auto_battle` scores moves with the ROM's own tables, `np_save4 gamedata ROM` (`features/ndsdata` nd_gamedata:
 species types and abilities, each move's class/power/type/accuracy/range, the type chart read out of the battle
