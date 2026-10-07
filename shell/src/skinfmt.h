@@ -1,12 +1,13 @@
 /*
- * Delta emulator controller skins for the DS (".deltaskin": a zip with
- * info.json and the art). The format, as Delta documents it: per device
- * ("iphone", "ipad") and display type ("edgeToEdge", "standard",
+ * Delta emulator controller skins (".deltaskin": a zip with info.json and
+ * the art) for the DS and the GBA. The format, as Delta documents it: per
+ * device ("iphone", "ipad") and display type ("edgeToEdge", "standard",
  * "splitView") there are "portrait" and "landscape" representations, each
  * with art (`assets`: a "resizable" PDF or "small"/"medium"/"large" PNGs),
  * `items` (an input or d-pad over a frame, optionally with extendedEdges),
- * `screens` (which part of the DS output, `inputFrame` in 256x384 space,
- * goes where, `outputFrame`), all in `mappingSize` points.
+ * `screens` (which part of the game's output, `inputFrame` in 256x384 DS
+ * or 240x160 GBA space, goes where, `outputFrame`), all in `mappingSize`
+ * points.
  *
  * A desktop window has no device class, so the first representation found
  * in the order iphone/edgeToEdge, iphone/standard, ipad/standard, ipad/
@@ -20,6 +21,7 @@
 #include <stdint.h>
 
 #define NP_SKIN_GAME_TYPE "com.rileytestut.delta.game.ds"
+#define NP_SKIN_GAME_TYPE_GBA "com.rileytestut.delta.game.gba"
 #define NP_SKIN_MAX_ITEMS 40
 
 typedef enum np_skin_action {
@@ -45,7 +47,7 @@ typedef struct np_skin_item {
 } np_skin_item;
 
 typedef struct np_skin_screen {
-    np_skin_rect input;  /* part of the 256x384 DS output (top above bottom) */
+    np_skin_rect input;  /* part of the output: 256x384 DS (top above bottom) or 240x160 GBA */
     np_skin_rect output; /* where it goes */
 } np_skin_screen;
 
@@ -63,6 +65,7 @@ typedef struct np_skin_rep {
 typedef struct np_skin_def {
     char name[96];
     char identifier[128];
+    int gba;            /* a GBA skin (NP_SKIN_GAME_TYPE_GBA), else a DS one */
     np_skin_rep rep[2]; /* [0] landscape, [1] portrait */
 } np_skin_def;
 

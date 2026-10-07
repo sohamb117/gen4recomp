@@ -492,8 +492,10 @@ int np_storage_slot_import(np_game game, const char *src, char name_out[NP_SLOT_
         SDL_snprintf(err, errn, "Cannot open %s.", src);
         return -1;
     }
+    int gba = np_game_is_gba(game);
     if (size > 4 * (Sint64)NP_SAVE_BYTES) {
-        SDL_snprintf(err, errn, "Not a Diamond/Pearl/Platinum save: the file is too large.");
+        SDL_snprintf(err, errn, "Not a %s save: the file is too large.",
+                     gba ? "Ruby/Sapphire/Emerald" : "Diamond/Pearl/Platinum");
         return -1;
     }
     size_t len;
@@ -505,7 +507,7 @@ int np_storage_slot_import(np_game game, const char *src, char name_out[NP_SLOT_
     size_t raw;
     const char *why = NULL;
     int r = -1;
-    if (np_sav_normalize(data, len, &raw, &why)) {
+    if (np_sav_normalize(data, len, gba, &raw, &why)) {
         SDL_snprintf(err, errn, "%s", why);
     } else {
         /* Name the slot after the file: "Platinum (USA).sav" -> "Platinum (USA)". */

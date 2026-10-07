@@ -1,0 +1,15 @@
+# Ruby/Sapphire from Littleroot (11,9): CONTINUE, north past the twin into
+# Route 101, Birch chased by Poochyena, his bag at (7,14), Torchic (the
+# middle ball, YES), then SCRATCH until Poochyena faints; Birch takes the
+# player to his lab (map 260).
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1100:up:128
+1300:a:5:40:7
+1560:up:48
+1650:a:5:40:14
+2200:up:16
+2230:left:48
+2290:a:5:40:80

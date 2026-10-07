@@ -1,0 +1,24 @@
+# Emerald from the quick save made in the house 1F (littleroot.sched, quick
+# save at frame 10000): as rs-1-home.sched with Emerald's clock timing.
+# tests/rse/first_battle.sh quick saves at 5050, outside at (5,9).
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1100:up:80
+1300:down:16
+1330:left:32
+1370:up:4
+1390:a:5
+1720:a:5
+1760:a:5
+1850:a:5
+1920:a:5
+1950:up:5
+1975:a:5
+2030:a:5:40:26
+3060:right:32
+3100:up:16
+3250:a:5:40:38
+4800:right:64
+4870:down:64

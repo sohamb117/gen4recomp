@@ -128,8 +128,16 @@ void np_slot_default_name(const char *const *taken, int ntaken, char out[NP_SLOT
     }
 }
 
-int np_sav_normalize(const uint8_t *data, size_t size, size_t *raw_len, const char **why)
+int np_sav_normalize(const uint8_t *data, size_t size, int gba, size_t *raw_len, const char **why)
 {
+    if (gba) {
+        if (size == NP_GBA_SAVE_BYTES || size == NP_GBA_SAVE_BYTES + NP_MGBA_RTC_BYTES) {
+            *raw_len = NP_GBA_SAVE_BYTES;
+            return 0;
+        }
+        *why = "Not a Ruby/Sapphire/Emerald save: expected a 128 KiB (1 Mbit flash) .sav.";
+        return -1;
+    }
     if (size == NP_SAVE_BYTES) {
         *raw_len = NP_SAVE_BYTES;
         return 0;

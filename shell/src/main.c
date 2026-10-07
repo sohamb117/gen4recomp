@@ -408,6 +408,7 @@ int np_app_gba_inserted(const np_app *app) { return app->gba_io != NULL; }
 static int open_core(np_app *app, np_game game, const char *slot, const np_host *host)
 {
     app->game = game;
+    np_skin_apply(app); /* each console has its own skin */
     SDL_strlcpy(app->slot, slot, sizeof app->slot);
     app->host = *host;
     /* A slot bound to a cart boots exactly its packages; any active set
@@ -1116,7 +1117,6 @@ static void draw_screens(np_app *app)
     if (gba) {
         lp.mode = NP_LAYOUT_TOP_ONLY;
         lp.swap = 0;
-        lp.frames = NULL; /* DS skins have no GBA screen */
     }
     np_layout_compute(&app->layout, &lp, app->out_w, app->out_h);
     for (int i = 0; i < 2; i++)
@@ -1303,7 +1303,8 @@ static int is_option_key(const char *k)
     static const char *const keys[] = {"layout", "rotation", "swap", "scale", "filter", "fx1", "fx2", "curvature",
                                        "perf", "lan", "peer", "station", "render_scale", "widescreen", "zoom",
                                        "tilt", "instant_text", "fix_bugs", "rewind_seconds", "battle_layout",
-                                       "music_filter", "ui_scale", "reduce_motion", "skin", "controls", "clock"};
+                                       "music_filter", "ui_scale", "reduce_motion", "skin", "skin_gba", "controls",
+                                       "clock"};
     for (size_t i = 0; i < SDL_arraysize(keys); i++)
         if (!SDL_strcmp(k, keys[i]))
             return 1;
@@ -1425,6 +1426,8 @@ static int parse_autotest(np_app *app, const char *spec, int options_only, int *
             SDL_strlcpy(t->gba_save, v, sizeof t->gba_save);
         else if (!SDL_strcmp(kv, "skin"))
             SDL_strlcpy(app->opt.skin, v, sizeof app->opt.skin);
+        else if (!SDL_strcmp(kv, "skin_gba"))
+            SDL_strlcpy(app->opt.skin_gba, v, sizeof app->opt.skin_gba);
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
             if (SDL_sscanf(v, "%dx%d", &x, &y) != 2 || x < 0 || x > 255 || y < 0 || y > 191)

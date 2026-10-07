@@ -11,8 +11,19 @@ gate (`tests/dp/regress.sh` 11/11, `tests/gameplay/run.sh --game platinum`).
   (`tests/rse/littleroot.sched`). ~0.9 ms/frame. Evidence sheets (outside
   git): `build/evidence/rse/` (`emerald-*.png`, `ruby-00-boot-to-house.png`,
   `sapphire-00-boot-to-house.png`).
-- Emerald also: quick save through the game's own save, CONTINUE,
-  `--state-test` round trips, audio (m4a + PSG). Not yet repeated on R/S.
+- All three: quick save through the game's own save, CONTINUE,
+  `--state-test` round trips and the first battle (Route 101, Torchic;
+  Poochyena in R/S, Zigzagoon in Emerald, won) headless:
+  `NP_RSE_CORE=build/rse/native tests/rse/first_battle.sh` (18 checks; legs
+  chained through the game's own saves, schedules `tests/rse/{rs,e}-*.sched`).
+  Shell autotest (`NP_AUTOTEST rom=`) OK on all three.
+- Audio: the m4a mixer plays DPCM-compressed and reversed voices
+  (pokeruby's cries are DPCM); BGM/SE volume apply per channel owner.
+- Instant text (`NP_OPT_TEXT_INSTANT`): `games/{emerald,ruby}/pc/patches/text.c.patch`
+  (patched TUs see `core/include`).
+- Shell: GBA `.sav` import (128 KiB, mGBA RTC record dropped); Delta GBA
+  skins with their own option (`skin_gba`). Feature matrix:
+  `docs/FEATURE_PARITY.md`, "Ruby / Sapphire / Emerald".
 - Regression: `tests/dp/regress.sh` cases `e-title` (Emerald title at frame
   650), `e-littleroot`, `r-littleroot`, `s-littleroot` (11000 frames); they
   are SKIPped without the decomp ROMs in `.cache/gba`.
@@ -40,10 +51,23 @@ gate (`tests/dp/regress.sh` 11/11, `tests/gameplay/run.sh --game platinum`).
 
 ## Next steps
 
-1. R/S: quick save, CONTINUE, `--state-test`, a first battle (Birch's
-   Poochyena) and the shell autotest, as done for Emerald.
-2. Not done: compressed/reverse DirectSound samples are skipped (logged
-   once); OBJ mosaic approximate; no link cable.
+1. Packaged app: build the macOS zip and the Windows zig cross-build with
+   the three GBA cores (`tools/package_macos.sh --test`,
+   `tools/package_windows.sh --test`) and run `tests/mac/feature_matrix.py`
+   rows on a GBA game (slots, import/export, quick save/load, snapshots,
+   rewind, speed, volume, instant text, a GBA `.deltaskin`).
+2. Touch pad: hide X/Y for GBA games in `touchpad.c`/`touchlayout.c`
+   (draw, hit test, editor selection).
+3. Mods for GBA: the guest reads no `/content`; a GBA package would patch
+   ROM data (only data: the code is compiled), e.g. an IPS in the package
+   applied before the ROM copy in `gba_main.c`. Mystery Gift / e-Reader:
+   decide whether an offline event writer (save editor) is in scope.
+4. Link cable: model SIO multi-player (SIOCNT/SIOMLT_SEND/RECV, the serial
+   IRQ) in `gba_io.c` over `np_host_net_*`, with `--lockstep` for a
+   deterministic two-instance trade test (tests/link style). Gen 3's
+   link.c exchanges 8 halfwords per frame per player with handshakes, so a
+   one-frame-delayed bus model is the first thing to try.
+5. OBJ mosaic approximate.
 
 ## Commands
 

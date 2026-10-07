@@ -1,11 +1,13 @@
 /*
  * Controller skins (Options > Controller skin): Delta's .deltaskin format
- * for the DS (skinfmt.h). Importing unpacks info.json and the art it names
- * into <user data>/skins/<name>/; the chosen skin then replaces the
- * built-in touch controls for every orientation it covers: its art fills
- * the window (aspect-fitted), the DS screens go to its screen frames (the
- * layout code places them, so the stylus maps through them as usual) and
- * touches on its items press DS buttons or run its actions.
+ * for the DS and the GBA (skinfmt.h). Importing unpacks info.json and the
+ * art it names into <user data>/skins/<name>/; each console has its own
+ * chosen skin (options skin / skin_gba), which replaces the built-in touch
+ * controls for every orientation it covers while a game of that console
+ * runs: its art fills the window (aspect-fitted), the game's screens go to
+ * its screen frames (the layout code places them, so the stylus maps
+ * through them as usual) and touches on its items press buttons or run its
+ * actions.
  *
  * PNG art loads through SDL; PDF art ("resizable") is rasterized for the
  * window's size where a PDF renderer exists (pdfraster.h) and redrawn when
@@ -90,28 +92,39 @@ static void load_art(np_app *app, int o)
         SDL_SetTextureScaleMode(sk.art[o], SDL_SCALEMODE_LINEAR);
 }
 
+static int running_gba(const np_app *app) { return np_game_is_gba(app->game); }
+
+/* The chosen skin for the running game's console. */
+static char *chosen(np_app *app) { return running_gba(app) ? app->opt.skin_gba : app->opt.skin; }
+
 void np_skin_apply(np_app *app)
 {
     unload();
-    if (!app->opt.skin[0] || !app->renderer)
+    const char *name = chosen(app);
+    if (!name[0] || !app->renderer)
         return;
     const char *why = "";
-    if (load_def(app->opt.skin, &sk.def, &why)) {
-        SDL_Log("skin \"%s\" not loaded: %s", app->opt.skin, why);
+    if (load_def(name, &sk.def, &why)) {
+        SDL_Log("skin \"%s\" not loaded: %s", name, why);
         return;
     }
-    SDL_strlcpy(sk.dir, app->opt.skin, sizeof sk.dir);
+    if (sk.def.gba != running_gba(app)) {
+        SDL_Log("skin \"%s\" not loaded: it is a %s skin", name, sk.def.gba ? "GBA" : "DS");
+        return;
+    }
+    SDL_strlcpy(sk.dir, name, sizeof sk.dir);
     for (int o = 0; o < 2; o++)
         load_art(app, o);
     sk.active = 1;
-    SDL_Log("skin: %s (%s%s)", sk.def.name, sk.def.rep[0].present ? "landscape " : "",
+    SDL_Log("skin: %s (%s, %s%s)", sk.def.name, sk.def.gba ? "GBA" : "DS", sk.def.rep[0].present ? "landscape " : "",
             sk.def.rep[1].present ? "portrait" : "");
 }
 
-/* The representation for the window's orientation, or NULL. */
+/* The representation for the window's orientation, or NULL (none loaded,
+ * or loaded for the other console). */
 static const np_skin_rep *current(const np_app *app, int *orientation)
 {
-    if (!sk.active)
+    if (!sk.active || sk.def.gba != running_gba(app))
         return NULL;
     int o = app->out_h > app->out_w;
     if (orientation)
@@ -138,7 +151,8 @@ int np_skin_frames(const np_app *app, float frames[8])
     transform(app, r, &sc, &ox, &oy);
     SDL_memset(frames, 0, 8 * sizeof *frames);
     for (int i = 0; i < r->nscreens; i++) {
-        int which = r->screen[i].input.y >= 192.0f ? 1 : 0; /* top above bottom in the 256x384 output */
+        /* DS: top above bottom in the 256x384 output; GBA: one screen */
+        int which = !sk.def.gba && r->screen[i].input.y >= 192.0f ? 1 : 0;
         float *f = frames + 4 * which;
         f[0] = ox + r->screen[i].output.x * sc;
         f[1] = oy + r->screen[i].output.y * sc;
@@ -245,6 +259,7 @@ static SDL_EnumerationResult SDLCALL collect(void *user, const char *dirname, co
 
 static int cmp(const void *a, const void *b) { return SDL_strcasecmp(a, b); }
 
+/* Next/previous installed skin of the running game's console, or none. */
 void np_skin_cycle(np_app *app, int dir)
 {
     static dir_list l;
@@ -252,14 +267,24 @@ void np_skin_cycle(np_app *app, int dir)
     char root[1100];
     skins_root(root, sizeof root);
     SDL_EnumerateDirectory(root, collect, &l);
+    np_skin_def *def = SDL_malloc(sizeof *def);
+    int n = 0;
+    for (int i = 0; i < l.count; i++) {
+        const char *why;
+        if (def && !load_def(l.names[i], def, &why) && def->gba == running_gba(app))
+            SDL_memmove(l.names[n++], l.names[i], sizeof l.names[0]);
+    }
+    SDL_free(def);
+    l.count = n;
     SDL_qsort(l.names, (size_t)l.count, sizeof l.names[0], cmp);
+    char *opt = chosen(app);
     int at = -1; /* -1 = none */
     for (int i = 0; i < l.count; i++)
-        if (!SDL_strcmp(l.names[i], app->opt.skin))
+        if (!SDL_strcmp(l.names[i], opt))
             at = i;
-    int n = l.count + 1;
+    n = l.count + 1;
     at = ((at + 1 + dir) % n + n) % n - 1;
-    SDL_strlcpy(app->opt.skin, at < 0 ? "" : l.names[at], sizeof app->opt.skin);
+    SDL_strlcpy(opt, at < 0 ? "" : l.names[at], sizeof app->opt.skin);
     app->options_dirty = 1;
     np_skin_apply(app);
 }
@@ -344,7 +369,7 @@ void np_skin_install(np_app *app, const char *path)
         why = SDL_GetError();
         goto cleanup;
     }
-    SDL_strlcpy(app->opt.skin, dir, sizeof app->opt.skin);
+    SDL_strlcpy(def->gba ? app->opt.skin_gba : app->opt.skin, dir, sizeof app->opt.skin);
     app->options_dirty = 1;
     np_skin_apply(app);
     np_app_toast(app, "Skin \"%s\" installed and selected", def->name);

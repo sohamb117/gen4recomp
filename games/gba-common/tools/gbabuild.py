@@ -145,7 +145,8 @@ class Build:
             if patch:
                 run(["patch", "-s", "-o", pc, src, patch])
                 cpp_src = pc
-                flags = flags + ["-iquote", os.path.dirname(src)]
+                # a patch may read host options (np_guest_abi.h, gba_option)
+                flags = flags + ["-iquote", os.path.dirname(src), "-idirafter", os.path.join(NPROOT, "core", "include")]
             std = ["-std=gnu89"] if kind == "game" else ["-std=gnu11"]
             run([CLANG, "-E", "-funsigned-char"] + std + [ "-MD", "-MF", o + ".d"] + flags + [cpp_src, "-o", i1], cwd=self.decomp)
             if kind == "game":

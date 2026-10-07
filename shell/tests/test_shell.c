@@ -368,26 +368,38 @@ static void test_sav_footer(void)
     uint8_t *buf = calloc(1, NP_SAVE_BYTES + footer + 64);
     size_t raw = 0;
     const char *why = NULL;
-    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES, &raw, &why) == 0 && raw == NP_SAVE_BYTES, "raw 512 KiB accepted");
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES, 0, &raw, &why) == 0 && raw == NP_SAVE_BYTES, "raw 512 KiB accepted");
     /* DeSmuME .dsv: raw image, then text marker, six u32 fields, cookie. */
     memcpy(buf + NP_SAVE_BYTES, snip, sizeof snip - 1);
     memcpy(buf + NP_SAVE_BYTES + footer - 16, cookie, 16);
     CHECK(sizeof snip - 1 + 24 + 16 == footer, "footer layout is %zu bytes", sizeof snip - 1 + 24 + 16);
     raw = 0;
-    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + footer, &raw, &why) == 0 && raw == NP_SAVE_BYTES,
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + footer, 0, &raw, &why) == 0 && raw == NP_SAVE_BYTES,
           "DeSmuME footer stripped");
-    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES - 1, &raw, &why) == -1 && why, "short file rejected");
-    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + 1, &raw, &why) == -1, "odd size rejected");
-    CHECK(np_sav_normalize(buf, 8192, &raw, &why) == -1, "8 KiB EEPROM save rejected");
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES - 1, 0, &raw, &why) == -1 && why, "short file rejected");
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + 1, 0, &raw, &why) == -1, "odd size rejected");
+    CHECK(np_sav_normalize(buf, 8192, 0, &raw, &why) == -1, "8 KiB EEPROM save rejected");
+    CHECK(np_sav_normalize(buf, NP_GBA_SAVE_BYTES, 0, &raw, &why) == -1, "GBA save rejected for a DS game");
     /* A .dsv for a 256 KiB chip: footer right after 256 KiB. */
     memset(buf, 0, NP_SAVE_BYTES + footer);
     memcpy(buf + NP_SAVE_BYTES / 2, snip, sizeof snip - 1);
     memcpy(buf + NP_SAVE_BYTES / 2 + footer - 16, cookie, 16);
-    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES / 2 + footer, &raw, &why) == -1, "256 KiB DeSmuME save rejected");
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES / 2 + footer, 0, &raw, &why) == -1, "256 KiB DeSmuME save rejected");
     /* Marker in the right place but a mangled cookie. */
     memset(buf, 0, NP_SAVE_BYTES + footer);
     memcpy(buf + NP_SAVE_BYTES, snip, sizeof snip - 1);
-    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + footer, &raw, &why) == -1, "footer without cookie rejected");
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES + footer, 0, &raw, &why) == -1, "footer without cookie rejected");
+    /* GBA: the raw 1 Mbit flash image, or mGBA's with its RTC record */
+    raw = 0;
+    CHECK(np_sav_normalize(buf, NP_GBA_SAVE_BYTES, 1, &raw, &why) == 0 && raw == NP_GBA_SAVE_BYTES,
+          "raw 128 KiB GBA save accepted");
+    raw = 0;
+    CHECK(np_sav_normalize(buf, NP_GBA_SAVE_BYTES + NP_MGBA_RTC_BYTES, 1, &raw, &why) == 0 &&
+              raw == NP_GBA_SAVE_BYTES,
+          "mGBA RTC record dropped");
+    why = NULL;
+    CHECK(np_sav_normalize(buf, NP_SAVE_BYTES, 1, &raw, &why) == -1 && why, "DS save rejected for a GBA game");
+    CHECK(np_sav_normalize(buf, 0x10000, 1, &raw, &why) == -1, "64 KiB flash save rejected");
     free(buf);
 }
 
@@ -408,8 +420,8 @@ static void test_launch(void)
           "args: --launcher");
     char *a4[] = {"nativeplat"};
     CHECK(np_launch_parse_args(1, a4, &l, err, sizeof err) == 0 && l.game < 0 && !l.slot[0], "args: none");
-    char *b1[] = {"nativeplat", "--game", "emerald"};
-    CHECK(np_launch_parse_args(3, b1, &l, err, sizeof err) == -1 && strstr(err, "emerald"), "args: bad game (%s)",
+    char *b1[] = {"nativeplat", "--game", "yellow"};
+    CHECK(np_launch_parse_args(3, b1, &l, err, sizeof err) == -1 && strstr(err, "yellow"), "args: bad game (%s)",
           err);
     char *b2[] = {"nativeplat", "--slot", "1"};
     CHECK(np_launch_parse_args(3, b2, &l, err, sizeof err) == -1, "args: slot without game");
@@ -990,6 +1002,20 @@ static void test_skin(void)
     CHECK(np_skin_dpad_keys(&p->item[0], 30, 660) == NP_KEY_LEFT && np_skin_dpad_keys(&p->item[0], 80, 660) == 0,
           "skin d-pad");
     CHECK(p->screen[1].input.y == 192 && p->screen[1].output.y == 290, "skin screens");
+    CHECK(!d.gba, "a DS skin");
+    /* A GBA skin: the older one-frame gameScreenFrame becomes the GBA screen. */
+    static const char gba[] =
+        "{\"name\":\"G\",\"gameTypeIdentifier\":\"com.rileytestut.delta.game.gba\",\"representations\":{\"iphone\":{"
+        "\"standard\":{\"portrait\":{\"assets\":{\"small\":\"g.png\"},\"mappingSize\":{\"width\":320,\"height\":480},"
+        "\"gameScreenFrame\":{\"x\":10,\"y\":20,\"width\":300,\"height\":200},\"items\":[{\"inputs\":[\"l\"],\"frame\":{"
+        "\"x\":0,\"y\":300,\"width\":40,\"height\":20}},{\"inputs\":[\"select\"],\"frame\":{\"x\":100,\"y\":440,"
+        "\"width\":40,\"height\":20}}]}}}}}";
+    CHECK(!np_skin_parse(gba, sizeof gba - 1, &d, &why), "GBA skin parsed (%s)", why);
+    CHECK(d.gba && d.rep[1].present && d.rep[1].nscreens == 1 && d.rep[1].screen[0].input.w == 240 &&
+              d.rep[1].screen[0].input.h == 160 && d.rep[1].screen[0].output.x == 10 &&
+              d.rep[1].screen[0].output.h == 200 && d.rep[1].nitems == 2 && d.rep[1].item[0].keys == NP_KEY_L &&
+              d.rep[1].item[1].keys == NP_KEY_SELECT,
+          "GBA skin: one 240x160 screen, L and SELECT");
     static const char *const bad[] = {
         "{\"gameTypeIdentifier\":\"com.rileytestut.delta.game.gba\",\"representations\":{}}",
         "{\"gameTypeIdentifier\":\"com.rileytestut.delta.game.ds\",\"representations\":{}}",

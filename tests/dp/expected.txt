@@ -11,9 +11,9 @@ plat-600  platinum  600   808adae3b9490905
 d-state-boot  diamond  400    ae26086a86be9952  --state-test 0 --state-span 100 --state-rounds 3
 d-state-save  diamond  12300  2dc2ff9408c62d1a  --schedule tests/dp/diamond_first_save.sched --state-test 11000 --state-span 300 --state-rounds 4
 e-title       emerald   650    79c8db871d08c72c  --schedule tests/rse/littleroot.sched
-e-littleroot  emerald   11000  92ed72416a70c14f  --schedule tests/rse/littleroot.sched
-r-littleroot  ruby      11000  199835829adcbdfc  --schedule tests/rse/littleroot.sched
-s-littleroot  sapphire  11000  373eb1e733bd442b  --schedule tests/rse/littleroot.sched
+e-littleroot  emerald   11000  1d7343a7ab322959  --schedule tests/rse/littleroot.sched
+r-littleroot  ruby      11000  febc31c98f364496  --schedule tests/rse/littleroot.sched
+s-littleroot  sapphire  11000  435c2ea4bd8d43cd  --schedule tests/rse/littleroot.sched
 #
 # History:
 # 2026-10-04 d-boot, d-intro, p-boot, p-intro: recorded (main 23e8f7b14: copyright, title, Rowan's intro; D/P identical until the title).
@@ -23,3 +23,6 @@ s-littleroot  sapphire  11000  373eb1e733bd442b  --schedule tests/rse/littleroot
 # 2026-10-04 p-intro: 1ee1d38b657efe90 -> c5b6c670776c7935: C->asm arity/return-width fixes (08c82c270, 2fe91aead, 5aff148cf), DPAudio's sound heap + SDAT player groups and the timers (D audio rms ~4500 like Platinum), CommSys UNK_021C59F4/F8 ROM layout; inspected: Diamond bedroom, start-menu save, CONTINUE on D and P
 # 2026-10-04 d-state-boot, d-state-save: recorded (snapshot round trips: the first round from frame 0 spans the creation of all three of D's threads, the idle, CTRDG and launcher contexts, which a played game never destroys; four rounds from 11000 span the first save's card writes, ~11400-11800).
 # 2026-10-07 e-title, e-littleroot, r-littleroot, s-littleroot: recorded (GBA games; tests/rse/littleroot.sched: START past the intro and title, A through Birch, naming (AAAAAAA) and the truck, RIGHT out of it; inspected: Emerald title logo at 650; all three in Littleroot, then the house 1F, map_id 256 and field_ready=1 at 11000).
+# 2026-10-07 e-littleroot: 92ed72416a70c14f -> 1d7343a7ab322959: m4a mixer plays compressed (DPCM) and reversed voices: pokeruby's cries are DPCM (decoder checked bit-exact against cry_poochyena.wav), so the intro and Birch's Pokemon now cry; same frames, map 256, field_ready 1
+# 2026-10-07 r-littleroot: 199835829adcbdfc -> febc31c98f364496: m4a mixer plays compressed (DPCM) and reversed voices: pokeruby's cries are DPCM (decoder checked bit-exact against cry_poochyena.wav), so the intro and Birch's Pokemon now cry; same frames, map 256, field_ready 1
+# 2026-10-07 s-littleroot: 373eb1e733bd442b -> 435c2ea4bd8d43cd: m4a mixer plays compressed (DPCM) and reversed voices: pokeruby's cries are DPCM (decoder checked bit-exact against cry_poochyena.wav), so the intro and Birch's Pokemon now cry; same frames, map 256, field_ready 1

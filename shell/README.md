@@ -50,15 +50,18 @@ options.ini              settings and bindings
 
 ## Save slots
 
-Each game has any number of named save slots (raw 512 KiB flash images, the
-format melonDS and DeSmuME's "raw .sav" use). Picking a game on the launcher
-opens its slots: *Continue* (last used), *New save slot*, each slot (Play,
-Rename, Duplicate, Export .sav, Delete with confirmation) and *Import .sav*
-(also by dropping a `.sav`/`.dsv` on that page). Imports must be exactly
-512 KiB, or a DeSmuME `.dsv` (512 KiB + its 122-byte footer, which is
-stripped). Names: up to 32 letters, digits, spaces and `- _ ( ) . ! ' #`,
-compared case-insensitively; Windows device names are refused. Names are typed
-or picked on an on-screen keyboard (gamepad/mouse/touch).
+Each game has any number of named save slots (raw flash images: 512 KiB for
+the DS games, the format melonDS and DeSmuME's "raw .sav" use; 128 KiB for
+Ruby/Sapphire/Emerald, as mGBA and VBA write them). Picking a game on the
+launcher opens its slots: *Continue* (last used), *New save slot*, each slot
+(Play, Rename, Duplicate, Export .sav, Delete with confirmation) and *Import
+.sav* (also by dropping a `.sav`/`.dsv` on that page). DS imports must be
+exactly 512 KiB, or a DeSmuME `.dsv` (512 KiB + its 122-byte footer, which is
+stripped); GBA imports 128 KiB, or mGBA's 128 KiB + 16-byte RTC record (the
+record is dropped: the core keeps time from the host clock). Names: up to 32
+letters, digits, spaces and `- _ ( ) . ! ' #`, compared case-insensitively;
+Windows device names are refused. Names are typed or picked on an on-screen
+keyboard (gamepad/mouse/touch).
 
 ## Launching
 

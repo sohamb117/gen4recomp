@@ -1,0 +1,19 @@
+# Ruby/Sapphire from Littleroot (5,9): CONTINUE, the rival's house next
+# door (her mother's lines), upstairs to May, back out and north to the
+# twin at (11,1). Quick saved at 5215, before the last steps north.
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1100:right:144
+1250:up:32
+1400:a:5:40:25
+2400:up:112
+2600:right:80
+2700:right:4
+2720:a:5:40:52
+4800:left:80
+4890:up:16
+5000:down:96
+5170:left:48
+5230:up:128

@@ -1,0 +1,39 @@
+--- a/src/text.c
++++ b/src/text.c
+@@ -1,4 +1,6 @@
+ #include "global.h"
++#include "np_guest_abi.h"
++unsigned int gba_option(unsigned int opt);
+ #include "text.h"
+ #include "battle.h"
+ #include "main.h"
+@@ -2402,8 +2404,29 @@
+ }
+ 
+ // Returns TRUE when all of the text has been printed.
++static u8 UpdateWindowTextOnce(struct Window *win);
++
++// nativeplat: instant text (NP_OPT_TEXT_INSTANT): a window the player can
++// speed up prints its characters up to the next wait at once
+ static u8 UpdateWindowText(struct Window *win)
+ {
++    u8 ret = UpdateWindowTextOnce(win);
++    int n = 0;
++
++    if (gba_option(NP_OPT_TEXT_INSTANT) && PlayerCanInterruptDelay(win))
++    {
++        while (!ret && win->state == WIN_STATE_CHAR_DELAY && ++n < 1024)
++        {
++            win->delayCounter = 0;
++            win->state = WIN_STATE_NORMAL;
++            ret = UpdateWindowTextOnce(win);
++        }
++    }
++    return ret;
++}
++
++static u8 UpdateWindowTextOnce(struct Window *win)
++{
+     switch (win->state)
+     {
+     case WIN_STATE_WAIT_BUTTON:

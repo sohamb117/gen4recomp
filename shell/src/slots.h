@@ -4,9 +4,10 @@
  * Windows, so the allowed alphabet is deliberately small, and names compare
  * case-insensitively (APFS and NTFS are case-insensitive by default).
  *
- * The files are raw 512 KiB flash images, the format DeSmuME ("raw .sav"
+ * DS slots are raw 512 KiB flash images, the format DeSmuME ("raw .sav"
  * export) and melonDS read and write; DeSmuME's native .dsv adds a
- * 122-byte footer, which import strips.
+ * 122-byte footer, which import strips. GBA slots are raw 128 KiB flash
+ * images, as mGBA and VBA write them.
  *
  * SDL-free so the rules are unit-tested.
  */
@@ -17,6 +18,8 @@
 #include <stdint.h>
 
 #define NP_SAVE_BYTES 0x80000u /* 4 Mbit flash in D/P/Pt and B/W cartridges */
+#define NP_GBA_SAVE_BYTES 0x20000u /* 1 Mbit flash in Ruby/Sapphire/Emerald */
+#define NP_MGBA_RTC_BYTES 16u      /* mGBA's RTC record after the flash image */
 #define NP_SLOT_NAME_MAX 32    /* characters, excluding the terminator */
 #define NP_DESMUME_FOOTER_BYTES 122u
 
@@ -43,11 +46,13 @@ int np_slot_unique(const char *base, const char *const *taken, int ntaken, char 
 void np_slot_default_name(const char *const *taken, int ntaken, char out[NP_SLOT_NAME_MAX + 1]);
 
 /*
- * Validates an imported save file. Accepts a raw image of exactly
- * NP_SAVE_BYTES, or a DeSmuME .dsv (raw image + footer). On success returns
- * 0 and sets *raw_len to NP_SAVE_BYTES (the bytes to keep, from offset 0);
- * otherwise returns -1 and *why explains.
+ * Validates an imported save file. DS games (gba = 0): a raw image of
+ * exactly NP_SAVE_BYTES, or a DeSmuME .dsv (raw image + footer). GBA games
+ * (gba = 1): the raw 1 Mbit flash image mGBA and VBA write, NP_GBA_SAVE_BYTES,
+ * optionally followed by mGBA's RTC record (dropped; the core keeps time from
+ * the host clock). On success returns 0 and sets *raw_len to the bytes to
+ * keep, from offset 0; otherwise returns -1 and *why explains.
  */
-int np_sav_normalize(const uint8_t *data, size_t size, size_t *raw_len, const char **why);
+int np_sav_normalize(const uint8_t *data, size_t size, int gba, size_t *raw_len, const char **why);
 
 #endif

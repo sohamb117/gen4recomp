@@ -1,0 +1,13 @@
+# Emerald from Littleroot (11,9): the twin, Route 101, Birch chased by
+# Zigzagoon, his bag, Torchic, SCRATCH until Zigzagoon faints.
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1100:up:128
+1300:a:5:40:16
+1960:up:48
+2040:a:5:40:17
+2710:up:16
+2740:left:48
+2800:a:5:40:80

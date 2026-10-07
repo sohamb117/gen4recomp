@@ -17,6 +17,7 @@
 #include "gba/m4a_internal.h"
 #undef SoundMainBTM
 #include "gba_port.h"
+#include "np_guest_abi.h"
 
 #define SI (*(struct SoundInfo **)0x3007FF0)
 #ifndef TONEDATA_TYPE_CMP
@@ -26,9 +27,15 @@
 
 extern void *const gMPlayJumpTableTemplate[];
 extern const u8 gClockTable[];
+extern const s8 gDeltaEncodingTable[];
+
+/* statusFlags bit the ARM mixer sets once a compressed/reversed voice's
+ * position became a sample index (cleared again by a note start) */
+#define SOUND_CHANNEL_SF_SPECIAL 0x20
 
 void gba_apu_pcm(const s8 *right, const s8 *left, u32 n, u32 rate);
 void gba_vstore8(void *p, u8 v);
+uint32_t gba_option(uint32_t opt);
 
 u32 MidiKeyToFreq(struct WaveData *wav, u8 key, u8 fineAdjust);
 
@@ -508,6 +515,103 @@ void m4aSoundVSync(void) {
     si->pcmDmaCounter = si->pcmDmaPeriod;
 }
 
+/* The host's volume for whoever owns a channel: the BGM player's tracks
+ * follow NP_OPT_BGM_VOLUME, everything else (the SE players, cries)
+ * NP_OPT_SE_VOLUME. 256 leaves the cartridge's mix as it is. */
+static u32 owner_volume(const struct MusicPlayerTrack *t) {
+    const struct MusicPlayerInfo *bgm = gMPlayTable[0].info;
+    int is_bgm = !t || (t >= bgm->tracks && t < bgm->tracks + bgm->trackCount);
+    u32 v = gba_option(is_bgm ? NP_OPT_BGM_VOLUME : NP_OPT_SE_VOLUME);
+    return v > 256 ? 256 : v;
+}
+
+/* the same for PSG channel `ch` (0..3), for the APU */
+u32 gba_m4a_psg_volume(int ch) {
+    struct SoundInfo *si = SI;
+    return owner_volume(si && si->cgbChans ? si->cgbChans[ch].track : NULL);
+}
+
+/* DPCM: blocks of 64 samples in 33 bytes, a raw first sample and then
+ * deltas from gDeltaEncodingTable, low nibble of byte 1, then high and low
+ * nibbles of bytes 2..32 (SoundMainRAM_Unk2). One block stays decoded. */
+static s8 s_dpcm[64];
+static const struct WaveData *s_dpcm_wav;
+static u32 s_dpcm_block = ~0u;
+
+static s32 dpcm_sample(const struct WaveData *w, u32 i) {
+    u32 b = i >> 6;
+    if (w != s_dpcm_wav || b != s_dpcm_block) {
+        const u8 *src = (const u8 *)w->data + b * 33;
+        s8 s = (s8)src[0];
+        s_dpcm[0] = s;
+        s = (s8)(s + gDeltaEncodingTable[src[1] & 15]);
+        s_dpcm[1] = s;
+        for (int k = 2; k < 64; k += 2) {
+            u8 v = src[1 + k / 2];
+            s = (s8)(s + gDeltaEncodingTable[v >> 4]);
+            s_dpcm[k] = s;
+            s = (s8)(s + gDeltaEncodingTable[v & 15]);
+            s_dpcm[k + 1] = s;
+        }
+        s_dpcm_wav = w;
+        s_dpcm_block = b;
+    }
+    return s_dpcm[i & 63];
+}
+
+/* sample `i` counted in playing order: reversed voices play from the end,
+ * compressed ones (WaveData.type != 0) are DPCM; past either end is 0 */
+static s32 special_sample(const struct WaveData *w, u32 i, int rev) {
+    if (i >= w->size) return 0;
+    if (rev) i = w->size - 1 - i;
+    return w->type ? dpcm_sample(w, i) : ((const s8 *)w->data)[i];
+}
+
+/* SoundMainRAM_Unk1: compressed and/or reversed voices. The channel's
+ * position is a sample index in playing order (in currentPointer, as the
+ * ARM code keeps it), interpolated like the plain path; only forward
+ * voices loop. */
+static void mix_special(struct SoundInfo *si, struct SoundChannel *c, const struct WaveData *w, s8 *buf, s32 n,
+                        s32 vr, s32 vl) {
+    int rev = (c->type & TONEDATA_TYPE_REV) != 0;
+    if (!(c->statusFlags & SOUND_CHANNEL_SF_SPECIAL)) {
+        c->statusFlags |= SOUND_CHANNEL_SF_SPECIAL;
+        c->currentPointer = (s8 *)(uintptr_t)(u32)(c->currentPointer - (const s8 *)w->data);
+    }
+    u32 pos = (u32)(uintptr_t)c->currentPointer;
+    s32 count = (s32)c->count;
+    int loop = !rev && (c->statusFlags & SOUND_CHANNEL_SF_LOOP);
+    u32 loop_len = w->size - w->loopStart;
+    u32 step = (c->type & TONEDATA_TYPE_FIX) ? 0x800000u : (u32)si->divFreq * c->frequency;
+    u32 fw = c->fw;
+    s8 *r = buf, *l = buf + PCM_DMA_BUF_SIZE;
+    s32 s0 = special_sample(w, pos, rev), d = special_sample(w, pos + 1, rev) - s0;
+    for (s32 i = 0; i < n; i++) {
+        s32 s = s0 + (s32)(((s64)(s32)fw * d) >> 23);
+        r[i] = (s8)(r[i] + ((s * vr) >> 8));
+        l[i] = (s8)(l[i] + ((s * vl) >> 8));
+        fw += step;
+        u32 adv = fw >> 23;
+        if (!adv) continue;
+        fw &= 0x7FFFFF;
+        count -= (s32)adv;
+        pos += adv;
+        if (count <= 0) {
+            if (!loop || loop_len == 0) {
+                c->statusFlags = 0;
+                return;
+            }
+            while (count <= 0) count += (s32)loop_len;
+            pos = w->size - (u32)count;
+        }
+        s0 = special_sample(w, pos, rev);
+        d = special_sample(w, pos + 1, rev) - s0;
+    }
+    c->fw = fw;
+    c->count = (u32)count;
+    c->currentPointer = (s8 *)(uintptr_t)pos;
+}
+
 /* mixes channel `c` into `n` samples at buf (right) / buf + PCM_DMA_BUF_SIZE (left) */
 static void mix_channel(struct SoundInfo *si, struct SoundChannel *c, s8 *buf, s32 n) {
     struct WaveData *w = c->wav;
@@ -580,9 +684,13 @@ store:
         loop_start = (const s8 *)w->data + w->loopStart;
         loop_len = (s32)(w->size - w->loopStart);
     }
+    {
+        u32 vol = owner_volume(c->track);
+        vr = (s32)((u32)vr * vol >> 8);
+        vl = (s32)((u32)vl * vol >> 8);
+    }
     if (c->type & (TONEDATA_TYPE_CMP | TONEDATA_TYPE_REV)) {
-        static int warned;
-        if (!warned++) gba_log("m4a: compressed/reverse samples are not mixed");
+        mix_special(si, c, w, buf, n, vr, vl);
         return;
     }
     s32 count = (s32)c->count;

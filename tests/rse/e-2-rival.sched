@@ -1,0 +1,20 @@
+# Emerald from Littleroot (5,9): the rival's house; upstairs May is out, so
+# the Poke Ball at (5,4) brings her in; back out and north to the twin.
+# Quick saved at 5320.
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1100:right:144
+1250:up:32
+1400:a:5:40:24
+2400:up:112
+2600:right:64
+2680:down:16
+2720:a:5:40:54
+4900:up:16
+4920:left:64
+4990:up:16
+5100:down:96
+5270:left:48
+5330:up:128

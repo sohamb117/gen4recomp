@@ -382,7 +382,7 @@ int np_touchedit_key(np_app *app, const SDL_KeyboardEvent *k);
 void np_touchedit_command(np_app *app, np_menu_cmd cmd);
 
 /* skin.c: Delta controller skins */
-void np_skin_apply(np_app *app);    /* loads opt.skin (none if "") */
+void np_skin_apply(np_app *app);    /* loads the running console's skin (opt.skin / opt.skin_gba; none if "") */
 void np_skin_install(np_app *app, const char *path);
 void np_skin_cycle(np_app *app, int dir); /* next/previous installed, or none */
 const char *np_skin_name(void);          /* the loaded skin, or NULL */

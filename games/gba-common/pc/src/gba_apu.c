@@ -3,9 +3,10 @@
  * from their registers (square with sweep, square, wave, noise; length,
  * envelope and sweep clocked by a 512 Hz frame sequencer), plus DirectSound
  * A/B, which the m4a mixer (gba_m4a.c) feeds one frame of 8-bit samples at
- * a time in place of the FIFO DMA. Mixed per SOUNDCNT_L/H/X and scaled by
- * the host's volume options (NP_OPT_BGM_VOLUME for everything the
- * cartridge plays as music: the PSG and the BGM player's DirectSound).
+ * a time in place of the FIFO DMA. Mixed per SOUNDCNT_L/H/X. The host's
+ * volume options apply per channel owner (gba_m4a.c): NP_OPT_BGM_VOLUME to
+ * the BGM player's DirectSound and PSG notes, NP_OPT_SE_VOLUME to the
+ * sound-effect players and cries.
  */
 #include <string.h>
 
@@ -13,7 +14,7 @@
 #include "np_guest_abi.h"
 
 void gba_audio_push(int16_t l, int16_t r);
-uint32_t gba_option(uint32_t opt);
+uint32_t gba_m4a_psg_volume(int ch);
 
 #define RATE 32768u
 #define CYC_PER_SAMPLE 512u /* 16777216 / 32768 */
@@ -216,8 +217,8 @@ void gba_apu_frame(void) {
     uint32_t n = (uint32_t)(sample_acc / CYC_PER_SAMPLE);
     sample_acc -= (uint64_t)n * CYC_PER_SAMPLE;
     uint16_t cl = IO16(R_SOUNDCNT_L), chh = IO16(R_SOUNDCNT_H), cx = IO16(R_SOUNDCNT_X);
-    int32_t vol = (int32_t)gba_option(NP_OPT_BGM_VOLUME);
-    if (vol > 256) vol = 256;
+    int32_t psg_vol[4];
+    for (int c = 0; c < 4; c++) psg_vol[c] = (int32_t)gba_m4a_psg_volume(c);
     for (uint32_t i = 0; i < n; i++) {
         if (++seq_count >= RATE / 512) {
             seq_count = 0;
@@ -237,14 +238,14 @@ void gba_apu_frame(void) {
         }
         int32_t pl = 0, pr = 0;
         for (int c = 0; c < 4; c++) {
-            int s = psg_sample(c);
+            int s = psg_sample(c) * psg_vol[c];
             if (cl & (0x100 << c)) pr += s;
             if (cl & (0x1000 << c)) pl += s;
         }
         static const int k_ratio[4] = {1, 2, 4, 4};
         int ratio = k_ratio[chh & 3];
-        pr = pr * (int32_t)((cl & 7) + 1) * ratio / 4;
-        pl = pl * (int32_t)(((cl >> 4) & 7) + 1) * ratio / 4;
+        pr = pr * (int32_t)((cl & 7) + 1) * ratio / (4 * 256);
+        pl = pl * (int32_t)(((cl >> 4) & 7) + 1) * ratio / (4 * 256);
         int32_t a = ds_cur_r * ((chh & 4) ? 2 : 1), b = ds_cur_l * ((chh & 8) ? 2 : 1);
         int32_t outr = pr, outl = pl;
         if (chh & 0x100) outr += a;
@@ -252,6 +253,6 @@ void gba_apu_frame(void) {
         if (chh & 0x1000) outr += b;
         if (chh & 0x2000) outl += b;
         if (!(cx & 0x80)) outr = outl = 0;
-        gba_audio_push(clamp16(outl * 64 * vol / 256), clamp16(outr * 64 * vol / 256));
+        gba_audio_push(clamp16(outl * 64), clamp16(outr * 64));
     }
 }
