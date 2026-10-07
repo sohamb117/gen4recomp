@@ -100,9 +100,11 @@ map = "MAP_HEADER_MT_CORONET_1F_SOUTH"
 do = "walk_to"
 x = 25
 z = 3
-max = 4000
+max = 9000
+hm = true
+surf = true
 on_battle = "flee"
-note = "1F South warp 2 (25,3) -> 2F (27,48)"
+note = "1F South warp 2 (25,3) -> 2F (27,48): row 11's ledges only go south, so round by the west: Rock Smash on row 23, Surf the north pool (x 7..16), row 10 east, Rock Climb (27,9..8) (land data 0x4B)"
 
 [[step]]
 do = "wait_map"
@@ -129,11 +131,12 @@ note = "push it down to (14,50): row 49 leads west"
 
 [[step]]
 do = "walk_to"
+via = [[11, 49], [11, 38], [4, 38], [4, 40], [8, 40], [8, 32], [11, 32], [11, 30], [26, 30], [26, 33], [22, 33], [22, 27], [15, 27], [15, 26]]
 x = 11
 z = 26
-max = 4000
+max = 6000
 on_battle = "flee"
-note = "coord (11,24..26) at VAR_MT_CORONET_2F_STATE 1 -> Looker, the Black Flute (scripts_mt_coronet_2f.s:20-56)"
+note = "via: tools/pt_route.py 14,49 11,26 MAP_HEADER_MT_CORONET_2F --matrix map_matrix_010 --heights (x 7..8 z 36..38 is a bridge at height 48 over the path at 16 that leads north); coord (11,24..26) at VAR_MT_CORONET_2F_STATE 1 -> Looker, the Black Flute (scripts_mt_coronet_2f.s:20-56)"
 
 [[step]]
 do = "advance_text"
@@ -146,10 +149,20 @@ max = 8000
 surf = true
 on_battle = "flee"
 x = 7
-z = 23
+z = 24
+face = "up"
 hm = true
 avoid = [[2, 59], [7, 12], [11, 4], [21, 4], [27, 48]]
-note = "MAP_HEADER_MT_CORONET_2F -> (7,23) -> MAP_HEADER_MT_CORONET_2F"
+note = "below the broken cave painting's hole, 2F warp 2 (7,23) (the painting hidden by 40's FLAG_HIDE_MT_CORONET_2F_CAVE_PAINTING)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+note = "through the hole: warp 2 -> warp 3 (7,12) of the same map, which walk_to cannot tell from arriving on the hole"
+
+[[step]]
+do = "wait_field"
 
 [[step]]
 do = "walk_to"

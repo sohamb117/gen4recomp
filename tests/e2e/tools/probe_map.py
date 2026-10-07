@@ -2,13 +2,18 @@
 """The probe's 64x64 tile window around the player as ASCII, from a save: for authoring walk_to steps on any game.
 
     python3 tests/e2e/tools/probe_map.py --game diamond SAVE [--warp MAP WARP | --map MAP X Z] [--keys K ...]
+        [--steps JSON] [--shot PNG] [--save-to OUT]
 
 Boots SAVE through CONTINUE (as run.py does) -- first moved by the save lab with --warp/--map --, optionally plays `--keys KEYS:FRAMES` holds, then prints the window the
 guest's e2e probe publishes (core/include/np_e2e.h): what walk_to plans over. Coordinates are the probe's (world tiles
 outdoors). Legend: '@' player, '#' collision, '.' floor, 'g' tall grass, '~' surfable water, 'F' waterfall,
 'r' rock-climb wall, 'v' ledge, 'M' exit mat, 'o' map object (local id listed), '?' not loaded, other behaviours
-as two hex digits are listed under the map.
+as two hex digits are listed under the map. --steps runs milestone steps first (a JSON list of step tables, e.g.
+'[{"do": "walk_to", "x": 40, "z": 54}]'), --shot writes the screen after them, --save-to quick-saves and writes the save
+to OUT: the next exploration boots from there (maps the probe cannot plan alone, e.g. the Distortion World).
 """
+import json
+import types
 import argparse
 import os
 import sys
@@ -80,6 +85,10 @@ def main():
     ap.add_argument("--warp", nargs=2, metavar=("MAP", "WARP"), help="lab-warp the save there first")
     ap.add_argument("--map", nargs=3, metavar=("MAP", "X", "Z"), help="lab-place the player there first")
     ap.add_argument("--keys", nargs="*", default=[], help="KEYS:FRAMES holds after the boot, e.g. up:16 a:4")
+    ap.add_argument("--steps", help="JSON list of milestone steps to run after the keys")
+    ap.add_argument("--shot", help="write the screen after the steps to this .png")
+    ap.add_argument("--save-to", help="quick-save after the steps and write the save here")
+    ap.add_argument("--frames", type=int, default=20000, help="frame budget (default 20000)")
     args = ap.parse_args()
     game = run.Game(args.game)
     game.tools()
@@ -92,17 +101,38 @@ def main():
         with open(recipe, "w") as f:
             f.write("warp %s %s\n" % tuple(args.warp) if args.warp else "map %s %s %s FACE_DOWN\n" % tuple(args.map))
         run.mint(game, recipe, sav, sav, work)
-    s = Session(game.gp, game.rom, game.name, sav, os.path.join(work, "run.log"), 20000,
+    s = Session(game.gp, game.rom, game.name, sav, os.path.join(work, "run.log"), args.frames,
                 options=run.DEFAULT_OPTIONS)
+    saved = False
     try:
         run.boot_continue(s)
         for k in args.keys:
             keys, n = k.rsplit(":", 1)
             s.run(int(n), keys)
             s.run(30)
+        try:
+            if args.steps:
+                ctx = run.Ctx(game, types.SimpleNamespace(dir=work))
+                for i, step in enumerate(json.loads(args.steps), 1):
+                    bots.BOTS[step["do"]](s, step, ctx)
+                    print("step %d %s ok, frame %d, map %d" % (i, step["do"], s.frame, s.map_id))
+        except Exception as e:  # noqa: BLE001 -- show where it stopped
+            print("steps stopped: %s" % e)
         print(render(s.probe()))
+        if args.shot:
+            ppm = os.path.join(work, "shot.ppm")
+            s.dump(ppm)
+            os.replace(run.ppm_to_png(ppm), args.shot)
+        if args.save_to:
+            bots.BOTS["save"](s, {}, run.Ctx(game, types.SimpleNamespace(dir=work)))
+            s.quit()
+            saved = True
+            with open(sav, "rb") as f, open(args.save_to, "wb") as g:
+                g.write(f.read())
     finally:
-        s.kill()
+        if not saved:
+            s.kill()
+        print("log: %s" % os.path.join(work, "run.log"))
 
 
 if __name__ == "__main__":

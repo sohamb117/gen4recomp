@@ -721,6 +721,47 @@ def bot_steps(s, step, ctx):
         s.run(12)
 
 
+def bot_moves(s, step, ctx):
+    """Replay a direction route: `dirs` = [["U"|"D"|"L"|"R", count], ...] (tools/pt_explore.py prints one), each move
+    held until the probe's (map, x, y, z) changes, then the player is free again (text a move starts is advanced).
+    For maps whose walkable surface the probe's land grid does not show (Platinum's Distortion World: floating
+    platforms, walls walked on, elevators). A move that changes nothing is tried again, three times at most."""
+    bound = _int(step, "max", 9000)
+    limit = s.frame + bound
+    total = sum(int(n) for _, n in step["dirs"])
+    done = 0
+    for name, n in step["dirs"]:
+        d = "UDLR".index(name)
+        for _ in range(int(n)):
+            p = s.probe()
+            here = (p.map_id, p.x, p.y, p.z)
+            for attempt in range(4):
+                if s.frame >= limit:
+                    raise HarnessError("moves: %d of %d done, out of %d frames at %s" % (done, total, bound, here))
+                # held without a gap: on a Distortion World wall a released key turns the player again
+                s.run(48, DIR_KEYS[d], until=["x!=%d" % here[1], "z!=%d" % here[3], "y!=%d" % here[2],
+                                             "map_id!=%d" % here[0], "in_battle=1"])
+                s.run(20, until="field_ready=1")
+                limit += _field_or_handle(s, step, ctx, limit)
+                p = s.probe()
+                if (p.map_id, p.x, p.y, p.z) != here:
+                    break
+                if attempt == 3:
+                    raise HarnessError("moves: stuck at %s going %s (move %d of %d)" % (here, name, done + 1, total))
+            done += 1
+    s.run(16)
+    p = s.probe()
+    s.note("moves: %d moves, at (%d,%d) y %d on map %d" % (done, p.x, p.z, p.y, s.map_id))
+    if "face" in step:
+        f = FACINGS[step["face"]]
+        if p.facing != f:
+            s.run(2, DIR_KEYS[f])
+            s.run(10)
+    if step.get("interact"):
+        s.run(4, "a")
+        s.run(12)
+
+
 def _use_field_move(s, step, ctx, what, limit):
     """Facing a field-move tile or object after a bump: A asks (Surf, Waterfall, Rock Climb, Cut, Rock Smash: 'Would
     you like to use ...?', YES is the cursor's default), A answers YES, then the scene plays until the player is
@@ -1238,5 +1279,6 @@ BOTS = {
     "slide": bot_slide,
     "fly": bot_fly,
     "steps": bot_steps,
+    "moves": bot_moves,
     "hatch": bot_hatch,
 }

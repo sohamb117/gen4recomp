@@ -1,5 +1,6 @@
 # Proves the lab OnFrame that lifts the Valor Lakefront Sunyshore block and frees the lake guardians.
-# Start: Sandgem lab (7,15), VAR_SANDGEM_TOWN_LAB_STATE 2 -> end: same map, lab state 3.
+# Start: Sendoff Spring after Cynthia (44's end) -> out by Spring Path (matrix 0, so Fly opens the town map there),
+# Fly to Sandgem, into the lab: VAR_SANDGEM_TOWN_LAB_STATE 2 -> end: the lab, lab state 3.
 
 title = "Sandgem lab: Rowan after the Distortion World"
 status = "planned"
@@ -27,7 +28,34 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 7500
+frames = 12000
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 56
+max = 4000
+on_battle = "flee"
+note = "Sendoff Spring exit warp 0 (12,56) -> Spring Path (762,713), on the overworld matrix"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SPRING_PATH"
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_SANDGEM_TOWN"
+note = "lands at the Pokemon Center (177,843) (src/spawn_locations.c:30)"
+
+[[step]]
+do = "walk_to"
+x = 168
+z = 842
+note = "lab door, events_sandgem_town warp 2 -> lab (7,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB"
 
 [[step]]
 do = "advance_text"

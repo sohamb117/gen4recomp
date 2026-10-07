@@ -153,7 +153,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [44-giratina-sendoff-spring](platinum/44-giratina-sendoff-spring/milestone.toml) | Giratina Origin battle, out to Sendoff Spring | P0 | 14000 | prev + `lab.recipe` | MAP_HEADER_SENDOFF_SPRING | planned |
 | [45-sandgem-rowan-unlocks-sunyshore](platinum/45-sandgem-rowan-unlocks-sunyshore/milestone.toml) | Sandgem lab: Rowan after the Distortion World | P0 | 5000 | prev + `lab.recipe` | MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB | planned |
 | [46-sunyshore-flint-lighthouse](platinum/46-sunyshore-flint-lighthouse/milestone.toml) | Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | planned |
-| [47-sunyshore-gym-volkner](platinum/47-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | 26000 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY_GYM_ROOM_3 | planned |
+| [47-sunyshore-gym-volkner](platinum/47-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | 26000 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | planned |
 | [48-sunyshore-jasmine-waterfall](platinum/48-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | 6000 | prev + `lab.recipe` | MAP_HEADER_SUNYSHORE_CITY | planned |
 | [49-route223-victory-road](platinum/49-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the League | P0 | 30000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE | planned |
 | [50-league-north-rival-door](platinum/50-league-north-rival-door/milestone.toml) | Pokémon League: last rival battle, door guard | P0 | 10000 | prev + `lab.recipe` | MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F | planned |
@@ -584,30 +584,30 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: scripts_distortion_world_b7f.s:16-22; scripts_distortion_world_giratina_room.s:61-70; scripts_distortion_world_giratina_room.s:71-85; scripts_distortion_world_giratina_room.s:97-100; scripts_distortion_world_giratina_room.s:87-95; scripts_distortion_world_giratina_room.s:29-51; scripts_sendoff_spring.s:18-48; scripts_distortion_world_giratina_room.s:25; scripts_distortion_world_giratina_room.s:68; scripts_distortion_world_giratina_room.s:70; scripts_distortion_world_giratina_room.s:98; scripts_distortion_world_giratina_room.s:99; scripts_distortion_world_giratina_room.s:100; scripts_distortion_world_giratina_room.s:43; scripts_distortion_world_giratina_room.s:44; scripts_sendoff_spring.s:20; scripts_sendoff_spring.s:37; scripts_sendoff_spring.s:38; scripts_sendoff_spring.s:39; scripts_sendoff_spring.s:40; scripts_sendoff_spring.s:41; scripts_sendoff_spring.s:42; scripts_sendoff_spring.s:47; scripts_sendoff_spring.s:43; scripts_sendoff_spring.s:44; scripts_sendoff_spring.s:45; scripts_sendoff_spring.s:46; pc_lab.c:660-672; src/overlay009/ov9_02249960.c; include/constants/distortion_world.h:19
 
 #### platinum/45-sandgem-rowan-unlocks-sunyshore — Sandgem lab: Rowan after the Distortion World
-- proves: Proves the lab OnFrame that lifts the Valor Lakefront Sunyshore block and frees the lake guardians. Start: Sandgem lab (7,15), VAR_SANDGEM_TOWN_LAB_STATE 2 -> end: same map, lab state 3.
-- start: prev + `lab.recipe`; warp MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB 0; lab state lines: 7 badge, 44 clear-flag, 212 flag, 29 item, 1 pokedex, 5 poketch, 1 register-item, 83 var
+- proves: Proves the lab OnFrame that lifts the Valor Lakefront Sunyshore block and frees the lake guardians. Start: Sendoff Spring after Cynthia (44's end) -> out by Spring Path (matrix 0, so Fly opens the town map there), Fly to Sandgem, into the lab: VAR_SANDGEM_TOWN_LAB_STATE 2 -> end: the lab, lab state 3.
+- start: prev + `lab.recipe`; map MAP_HEADER_SENDOFF_SPRING 31 19 FACE_UP; lab state lines: 7 badge, 44 clear-flag, 212 flag, 29 item, 1 pokedex, 5 poketch, 1 register-item, 83 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB; flags set FLAG_HIDE_VALOR_LAKEFRONT_COLLECTOR; vars VAR_VALOR_LAKEFRONT_BLOCK_SUNYSHORE_STATE=1, VAR_SANDGEM_TOWN_LAB_STATE=3, VAR_EXITED_DISTORTION_WORLD_STATE=3
-- frames: estimate 5000, budget 7500
+- frames: estimate 5000, budget 12000
 - refs: scripts_init_sandgem_town_pokemon_research_lab.s; scripts_sandgem_town_pokemon_research_lab.s:79-117; scripts_sandgem_town_pokemon_research_lab.s:23-37; scripts_sandgem_town_pokemon_research_lab.s:49; scripts_sandgem_town_pokemon_research_lab.s:81; scripts_sandgem_town_pokemon_research_lab.s:110; scripts_sandgem_town_pokemon_research_lab.s:111; scripts_sandgem_town_pokemon_research_lab.s:112; scripts_sandgem_town_pokemon_research_lab.s:113; scripts_sandgem_town_pokemon_research_lab.s:114; scripts_sandgem_town_pokemon_research_lab.s:115; scripts_valor_lakefront.s:516-533; scripts_sandgem_town_pokemon_research_lab.s:28; scripts_sandgem_town_pokemon_research_lab.s:32
 
 #### platinum/46-sunyshore-flint-lighthouse — Sunyshore: Flint, Volkner at Vista Lighthouse
-- proves: Proves the Flint arrival OnFrame, the lighthouse elevator and Volkner's return to the gym. Start: Sunyshore gate exit (832,790) -> end: Sunyshore City (150), Flint gone from the gym door.
-- start: prev + `lab.recipe`; warp MAP_HEADER_SUNYSHORE_CITY 3; lab state lines: 7 badge, 49 clear-flag, 213 flag, 29 item, 1 pokedex, 5 poketch, 1 register-item, 86 var
+- proves: Proves the Flint arrival OnFrame, the lighthouse elevator and Volkner's return to the gym. Start: the Sandgem lab after Rowan (45's end) -> Fly Veilstone, Route 214 south, Valor Lakefront (its Sunyshore block lifted by 45), Route 222 east, the gate -> Sunyshore (832,790) -> end: Sunyshore City (150), Flint gone from the gym door.
+- start: prev + `lab.recipe`; map MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB 7 13 FACE_DOWN; lab state lines: 7 badge, 49 clear-flag, 213 flag, 29 item, 1 pokedex, 5 poketch, 1 register-item, 86 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_SUNYSHORE_CITY; flags set FLAG_VOLKNER_RETURNED_TO_GYM, FLAG_HIDE_SUNYSHORE_CITY_FLINT; vars VAR_SUNYSHORE_CITY_STATE=1
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: scripts_init_sunyshore_city.s; scripts_sunyshore_city.s:449-487; scripts_vista_lighthouse.s:30-73; scripts_sunyshore_city.s:623-665; events_route_222.json; scripts_sunyshore_city.s:484; scripts_sunyshore_city.s:486; scripts_sunyshore_city.s:34; scripts_sunyshore_city.s:35; scripts_vista_lighthouse.s:71; scripts_vista_lighthouse.s:72; scripts_sunyshore_city.s:663; scripts_sunyshore_city.s:451-454; events_sunyshore_city.json; scripts_vista_lighthouse_elevator.s:7-26; events_vista_lighthouse.json; scripts_vista_lighthouse_elevator.s:28-35
 
 #### platinum/47-sunyshore-gym-volkner — Sunyshore Gym: Volkner and the Beacon Badge
-- proves: Proves the rotating-gear gym and Volkner's win script. Start: Sunyshore Gym room 1 (8,14) -> end: room 3 (156), BADGE_ID_BEACON, TM57.
-- start: prev + `lab.recipe`; warp MAP_HEADER_SUNYSHORE_CITY_GYM_ROOM_1 0; lab state lines: 7 badge, 49 clear-flag, 217 flag, 29 item, 1 pokedex, 5 poketch, 1 register-item, 88 var
+- proves: Proves the rotating-gear gym and Volkner's win script. Start: Sunyshore City below the gym door (845,749), where 46 ends -> end: Sunyshore City below the gym door after the walk back out (Volkner beaten in room 3), BADGE_ID_BEACON, TM57. Routes: tools/pt_gym.py sunyshore (BFS over tile and gear state: the arms' collision regions per state, the coord buttons NORMAL/REVERSE/DOUBLE; a room entered from its entrance starts in state 0, from above in 1 (room 2) / 2 (room 1)).
+- start: prev + `lab.recipe`; map MAP_HEADER_SUNYSHORE_CITY 845 749 FACE_UP; lab state lines: 7 badge, 49 clear-flag, 217 flag, 29 item, 1 pokedex, 5 poketch, 1 register-item, 88 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map MAP_HEADER_SUNYSHORE_CITY_GYM_ROOM_3; 8 badges; badge BADGE_ID_BEACON; >= 1 battles; flags set FLAG_RECEIVED_VOLKNER_TM57; vars VAR_SUNYSHORE_CITY_STATE=2
-- frames: estimate 26000, budget 39000
+- end state: map MAP_HEADER_SUNYSHORE_CITY; 8 badges; badge BADGE_ID_BEACON; >= 1 battles; flags set FLAG_RECEIVED_VOLKNER_TM57; vars VAR_SUNYSHORE_CITY_STATE=2
+- frames: estimate 26000, budget 50000
 - refs: gym_features.c:410; gym_features.c:215-220; scripts_sunyshore_city_gym_room_3.s:41; scripts_sunyshore_city_gym_room_3.s:43-50; scripts_sunyshore_city_gym_room_3.s:51; scripts_sunyshore_city_gym_room_3.s:58-61; scripts_sunyshore_city_gym_room_3.s:62; src/overlay008/gym_features.c:215-220; src/overlay008/gym_features.c:410; scripts_sunyshore_city_gym_room_3.s:41-62
 
 #### platinum/48-sunyshore-jasmine-waterfall — Sunyshore: Jasmine gives HM07 Waterfall

@@ -141,9 +141,10 @@ do = "walk_to"
 via = [[291, 306], [291, 271], [306, 271], [306, 258], [310, 258]]
 x = 310
 z = 244
-max = 10000
+max = 14000
+run = false
 on_battle = "flee"
-note = "Acuity Lakefront coord (310..311,244) (tools/pt_route.py 296,306 310,244 ROUTE_217 ACUITY_LAKEFRONT)"
+note = "Acuity Lakefront coord (310..311,244) (tools/pt_route.py 296,306 310,244 ROUTE_217 ACUITY_LAKEFRONT); run = false: holding B, the step from SNOW_DEEPER (291,283) north never starts (seen at x 290..293, z 283), walking it does"
 
 [[step]]
 do = "advance_text"
@@ -156,7 +157,8 @@ via = [[310, 243], [319, 243], [319, 241], [325, 241], [325, 242], [337, 242], [
        [359, 239], [367, 239], [367, 227], [375, 227], [375, 234]]
 x = 379
 z = 234
-max = 8000
+max = 12000
+run = false
 on_battle = "flee"
 note = "east into Snowpoint City, to the Pokemon Center door (tools/pt_route.py 310,244 379,234 ACUITY_LAKEFRONT SNOWPOINT_CITY)"
 

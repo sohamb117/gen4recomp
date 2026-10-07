@@ -837,5 +837,5 @@ clear-flag FLAG_HIDE_GALACTIC_HQ_1F_SATURN
 # scripts_sendoff_spring.s:46
 flag FLAG_GALACTIC_LEFT_LAKE_VALOR
 
-# start: (7,15); frame script 15 (scripts_init_sandgem_town_pokemon_research_lab.s)
-warp MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB 0
+# start: Sendoff Spring below Cynthia (31,17), where 44 ends (scripts_sendoff_spring.s)
+map MAP_HEADER_SENDOFF_SPRING 31 19 FACE_UP

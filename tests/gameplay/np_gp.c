@@ -494,7 +494,7 @@ static int finish(frame_run *fr, int64_t k) {
  *        hold KEYS ("a+up", "none") and, with X Y, a touch at (X,Y) for N
  *        frames, or until any of the conditions holds after a frame. NAME is a
  *        status (field_ready, map_id, in_battle, quicksave_seq,
- *        quicksave_result, link_active) or a probe field (field, x, z,
+ *        quicksave_result, link_active) or a probe field (field, x, z, y,
  *        facing, move_state, ui, ui_arg; core/include/np_e2e.h). Loaded
  *        schedules add their presses on top.
  *        -> "ok K HIT S0 .. S15": the next frame K, HIT 1 if the condition
@@ -515,7 +515,8 @@ typedef struct serve_cond {
 
 static const struct { const char *name; int offset; } k_e2e_fields[] = {
     {"field", offsetof(np_e2e_block, field)},   {"x", offsetof(np_e2e_block, x)},
-    {"z", offsetof(np_e2e_block, z)},           {"facing", offsetof(np_e2e_block, facing)},
+    {"z", offsetof(np_e2e_block, z)},           {"y", offsetof(np_e2e_block, y)},
+    {"facing", offsetof(np_e2e_block, facing)},
     {"move_state", offsetof(np_e2e_block, move_state)}, {"ui", offsetof(np_e2e_block, ui)},
     {"ui_arg", offsetof(np_e2e_block, ui_arg)},
 };

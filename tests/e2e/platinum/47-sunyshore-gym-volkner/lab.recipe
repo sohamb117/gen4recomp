@@ -869,5 +869,5 @@ flag FLAG_VOLKNER_RETURNED_TO_GYM
 # RemoveObject scripts_sunyshore_city.s:663 (cleared :484 first)
 flag FLAG_HIDE_SUNYSHORE_CITY_FLINT
 
-# start: (8,14)
-warp MAP_HEADER_SUNYSHORE_CITY_GYM_ROOM_1 0
+# start: below the gym door (845,749), where 46 ends
+map MAP_HEADER_SUNYSHORE_CITY 845 749 FACE_UP

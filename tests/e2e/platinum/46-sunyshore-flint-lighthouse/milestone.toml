@@ -1,5 +1,6 @@
 # Proves the Flint arrival OnFrame, the lighthouse elevator and Volkner's return to the gym.
-# Start: Sunyshore gate exit (832,790) -> end: Sunyshore City (150), Flint gone from the gym door.
+# Start: the Sandgem lab after Rowan (45's end) -> Fly Veilstone, Route 214 south, Valor Lakefront (its Sunyshore block
+# lifted by 45), Route 222 east, the gate -> Sunyshore (832,790) -> end: Sunyshore City (150), Flint gone from the gym door.
 
 title = "Sunyshore: Flint, Volkner at Vista Lighthouse"
 status = "planned"
@@ -30,7 +31,75 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 13500
+frames = 40000
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 15
+note = "lab exit mat (events_sandgem_town_pokemon_research_lab warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SANDGEM_TOWN"
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_VEILSTONE_CITY"
+note = "lands at the Pokemon Center (717,612) (src/spawn_locations.c:40)"
+
+[[step]]
+do = "walk_to"
+x = 718
+z = 638
+note = "south gate (events_veilstone_city warp 11) -> Route 214 gate (5,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_214_GATE_TO_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 12
+note = "gate south exit (warp 1) -> Route 214 (718,645)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_214"
+
+[[step]]
+do = "walk_to"
+max = 4000
+on_battle = "flee"
+via = [[718, 665], [726, 665], [726, 678], [727, 678], [727, 685], [725, 685], [725, 690], [732, 690], [732, 697], [731, 697],
+       [731, 708], [733, 708], [733, 719], [730, 719], [730, 743], [727, 743], [727, 759], [723, 759]]
+x = 723
+z = 770
+note = "south down Route 214 into Valor Lakefront (33's route)"
+
+[[step]]
+do = "walk_to"
+max = 12000
+on_battle = "flee"
+via = [[723, 784], [720, 784], [720, 789], [756, 789], [756, 787], [763, 787], [763, 788], [787, 788], [787, 787], [825, 787]]
+x = 825
+z = 790
+note = "past the Collector's spot (hidden, FLAG_HIDE_VALOR_LAKEFRONT_COLLECTOR, 45) and east along Route 222 (its trainers fought) to the gate, warp 0 (tools/pt_route.py 723,770 825,790 VALOR_LAKEFRONT ROUTE_222)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_222_GATE_TO_SUNYSHORE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "gate east exit (warp 1) -> Sunyshore City warp 3 (832,790)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SUNYSHORE_CITY"
 
 [[step]]
 do = "advance_text"

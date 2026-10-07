@@ -77,16 +77,7 @@ note = "Mars 528 + Jupiter 407; partner rival 619"
 [[step]]
 do = "advance_text"
 max = 20000
-note = "HealParty :185; Cyrus/Dialga/Palkia subscene 63 (:360-397); warp to the distorted pillar"
-
-[[step]]
-do = "wait_map"
-map = "MAP_HEADER_SPEAR_PILLAR_DISTORTED"
-
-[[step]]
-do = "advance_text"
-max = 8000
-note = "frame script 1 (scripts_spear_pillar_distorted.s:16-55): Cynthia, Yes -> DoDWWarp (:57-75)"
+note = "HealParty :185; Cyrus/Dialga/Palkia subscene 63 (:360-397); warp to the distorted pillar, whose frame script 1 (scripts_spear_pillar_distorted.s:16-55) asks 'Are you ready?' (A: YES) -> DoDWWarp (:57-75) -> DW 1F (55,40) and its first-entry frame script (scripts_distortion_world_1f.s:38-80), all one run of text"
 
 [[step]]
 do = "wait_map"

@@ -856,5 +856,5 @@ clear-flag FLAG_HIDE_ACUITY_CAVERN_UXIE
 # scripts_sandgem_town_pokemon_research_lab.s:115
 var VAR_SANDGEM_TOWN_LAB_STATE 3
 
-# start: gate exit (832,790), events_sunyshore_city.json warp3
-warp MAP_HEADER_SUNYSHORE_CITY 3
+# start: the Sandgem lab, where 45 ends
+map MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB 7 13 FACE_DOWN

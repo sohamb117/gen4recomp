@@ -337,9 +337,124 @@ def canalave(goal, trace=False, back=None):
     return end
 
 
+def sunyshore(room, start=None, goal=None):
+    """Sunyshore Gym room 1..3: BFS over (x, z, rotation state). A tile is blocked by the room's land collision, an
+    object, a height step of 20+ (the BDHC plates, as pastoria), a trainer who walked up to the player, or a gear arm: the regions sSunyshoreCollisionLists[room][state] picks from sSunyshoreRoomNCollisionRegions
+    (SunyshoreGym_DynamicMapFeaturesCheckCollision, src/overlay008/gym_features.c:2130-2148). Stepping onto a button
+    (a coord event) turns the gears: NORMAL +1, REVERSE -1, DOUBLE +2 (SunyshoreGym_PressButton :2150-). A room
+    entered from its entrance starts in state 0, from the room above in state 2 (room 1) / 1 (room 2)
+    (PersistedMapFeatures_InitForSunyshoreGym, src/persisted_map_features_init.c:70-101). `start` = (x, z, state[, height, trainers])
+    (default: the entrance, state 0). Prints a `steps` route (every button pressed is a corner); returns the end."""
+    src = open(os.path.join(PT, "src", "overlay008", "gym_features.c")).read()
+    i = src.index("sSunyshoreRoom%dCollisionRegions[" % room)
+    regions = [tuple(int(v) for v in m) for m in
+               re.findall(r"\.x = (\d+), \.z = (\d+), \.sizeX = (\d+), \.sizeZ = (\d+)", src[i:src.index("};", i)])]
+    n = {1: 6, 2: 11, 3: 14}[room]
+    lists = []
+    for st in range(4):
+        i = src.index("sSunyshoreRoom%dState%dCollisions[] = {" % (room, st))
+        lists.append([int(v) for v in re.findall(r"\d+", src[src.index("{", i):src.index("}", i)])][:n])
+    name = "MAP_HEADER_SUNYSHORE_CITY_GYM_ROOM_%d" % room
+    maps, ev = header(name)
+    scripts = open(os.path.join(PT, "res", "field", "scripts", "scripts_sunyshore_city_gym_room_%d.s" % room)).read()
+    entries = re.findall(r"ScriptEntry (\w+)", scripts)
+    delta = {"NORMAL": 1, "REVERSE": 3, "DOUBLE": 2}
+    buttons = {}
+    for c in ev["coord_events"]:
+        label = entries[c["script"] - 1]
+        kind = re.search(r"%s:\s*\n\s*PressSunyshoreGymButton SUNYSHORE_GYM_BUTTON_(\w+)" % label, scripts).group(1)
+        buttons[(c["x"], c["z"])] = delta[kind]
+    # A gym trainer who spots the player (the player steps into the sight line) walks up and then stands next to the
+    # player's tile, in the way of a route that comes back through there: the trainers' tiles are part of the state.
+    looks = {"SOUTH": (0, 1), "NORTH": (0, -1), "WEST": (-1, 0), "EAST": (1, 0)}
+    trainers, objs = [], set()
+    for o in ev["object_events"]:
+        rng = o.get("data", [0])[0] if o.get("data") else 0
+        dirs = [dd for word, dd in looks.items() if word in o.get("movement_type", "")]
+        if str(o.get("script", "")).startswith("TRAINER_") and rng and dirs:
+            trainers.append(((o["x"], o["z"]), [[(o["x"] + dx * k, o["z"] + dz * k) for k in range(1, rng + 1)]
+                                                for dx, dz in dirs]))
+        else:
+            objs.add((o["x"], o["z"]))
+    warps = [(w["x"], w["z"]) for w in ev["warp_events"]]
+    start = start or (warps[0][0], warps[0][1], 0)
+    goal = goal or ((11, 4) if room == 3 else warps[1])
+
+    member = int(maps[0][0].split("_")[1])
+    land = pt_map.land(member)
+    heights = bdhc_heights(member)
+
+    def blocked(x, z, st):
+        if not (0 <= x < 32 and 0 <= z < 32) or land[z * 32 + x] & 0x8000 or (x, z) in objs:
+            return True
+        return any(r[0] <= x < r[0] + r[2] and r[1] <= z < r[1] + r[3] for r in (regions[k] for k in lists[st]))
+
+    def height(x, z, h):  # the plate nearest the walker's height (GetHeight); a step of 20+ is a wall (:270)
+        hs = heights[(x, z)]
+        return min(hs, key=lambda v: abs(v - h)) if hs else None
+
+    h0 = height(start[0], start[1], start[3] if len(start) > 3 else 0)
+    # a start from an earlier run of the room carries its trainers (where they stand, all met)
+    first = (start[0], start[1], start[2], h0, start[4] if len(start) > 4 else tuple(t[0] for t in trainers),
+             (1 << len(trainers)) - 1 if len(start) > 4 else 0)
+    dist, came = {first: 0}, {first: None}
+    heap = [(0, first)]
+    end = None
+    while heap:
+        g, s = heapq.heappop(heap)
+        if g > dist[s]:
+            continue
+        if s[:2] == tuple(goal):
+            end = s
+            break
+        for dx, dz in DIRS.values():
+            nx, nz = s[0] + dx, s[1] + dz
+            if blocked(nx, nz, s[2]) or (nx, nz) in s[4]:
+                continue
+            nh = height(nx, nz, s[3])
+            if nh is None or abs(nh - s[3]) >= 20:
+                continue
+            tpos, seen, cost = list(s[4]), s[5], 1
+            for i, (_, lines) in enumerate(trainers):
+                if seen >> i & 1:
+                    continue
+                for line in lines:
+                    if (nx, nz) in line:  # walks up to the tile before the player's
+                        k = line.index((nx, nz))
+                        tpos[i] = line[k - 1] if k else tpos[i]
+                        seen |= 1 << i
+                        cost += 30
+                        break
+            ns = (nx, nz, (s[2] + buttons.get((nx, nz), 0)) % 4, nh, tuple(tpos), seen)
+            if g + cost < dist.get(ns, 1 << 30):
+                dist[ns] = g + cost
+                came[ns] = s
+                heapq.heappush(heap, (g + cost, ns))
+    if end is None:
+        sys.exit("sunyshore room %d: no route" % room)
+    path, s = [], end
+    while s is not None:
+        path.append(s)
+        s = came[s]
+    path.reverse()
+    route = []
+    for k in range(1, len(path)):
+        a, b = path[k - 1], path[k]
+        nxt = path[k + 1] if k + 1 < len(path) else None
+        turn = nxt is None or (nxt[0] - b[0], nxt[1] - b[1]) != (b[0] - a[0], b[1] - a[1])
+        if turn or (b[0], b[1]) in buttons:
+            route.append([b[0], b[1]])
+    presses = [(p[0], p[1], p[2]) for p in path[1:] if (p[0], p[1]) in buttons]
+    fights = bin(end[5]).count("1")
+    print("# room %d from (%d,%d): %d steps, %d trainers met, buttons pressed (x, z, state after) %s" % (
+        room, start[0], start[1], len(path) - 1, fights, presses))
+    print("route = %s" % json.dumps(route).replace("],[", "], ["))
+    return end
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("gym", choices=("veilstone", "pastoria", "canalave"))
+    ap.add_argument("gym", choices=("veilstone", "pastoria", "canalave", "sunyshore"))
     ap.add_argument("--start", default="13,41,64,32", help="pastoria: x,z,height,water (entrance, water MIDDLE)")
     ap.add_argument("--trace", action="store_true", help="canalave: print every tile of the route")
     ap.add_argument("--back", action="store_true", help="canalave: also the route back to the entrance after it")
@@ -348,6 +463,12 @@ def main():
     a = ap.parse_args()
     if a.gym == "veilstone":
         veilstone()
+    elif a.gym == "sunyshore":
+        ends = {room: sunyshore(room) for room in (1, 2, 3)}
+        print("# back out after Volkner: room 3 to its entrance, then rooms 2 and 1 entered from above")
+        sunyshore(3, start=ends[3], goal=(11, 25))
+        sunyshore(2, start=(9, 2, 1, 0, ends[2][4]), goal=(9, 21))
+        sunyshore(1, start=(8, 2, 2, 0, ends[1][4]), goal=(8, 14))
     elif a.gym == "canalave":
         end = canalave(tuple(int(v) for v in (a.goal or "16,4,3").split(",")), a.trace)
         if a.back:

@@ -18,6 +18,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import pt_gym  # noqa: E402
 import pt_map  # noqa: E402
 from np_e2e import behaviors  # noqa: E402
 
@@ -32,6 +33,10 @@ def main():
     ap.add_argument("--matrix", default="map_matrix_000")
     ap.add_argument("--cut", action="store_true", help="cut trees do not block")
     ap.add_argument("--surf", action="store_true", help="water is passable")
+    ap.add_argument("--heights", action="store_true", help="the BDHC plates' heights: a step of 20+ is a wall "
+                    "(caves with levels, e.g. Mt Coronet 2F, Victory Road)")
+    ap.add_argument("--climb", action="store_true", help="Rock Climb walls (0x4B N-S, 0x4C E-W) climb along their axis")
+    ap.add_argument("--smash", action="store_true", help="Rock Smash rocks do not block")
     a = ap.parse_args()
     b = behaviors()
     T = pt_map.TILES
@@ -54,7 +59,7 @@ def main():
                                          "%s.json" % pt_map.header_fields(h)["eventsArchiveID"])))
         for o in ev.get("object_events", []):
             g = o.get("graphics_id", "")
-            if "CUT_TREE" in g and a.cut:
+            if "CUT_TREE" in g and a.cut or "ROCK_SMASH" in g and a.smash:
                 continue
             if any(k in g for k in ("CUT_TREE", "ROCK", "BERRY", "SIGN", "POKEBALL", "BOULDER")) \
                     or o.get("movement_type") == "MOVEMENT_TYPE_NONE":
@@ -68,7 +73,20 @@ def main():
     def beh(x, z):
         return tile(x, z) & 0xFF
 
+    climb = {0x4B: (D[0], D[1]), 0x4C: (D[2], D[3])}
+    plates = {}
+
+    def height(x, z, h):
+        """The BDHC plate over (x, z) nearest the walker's height h (GetHeight), or None."""
+        c = maps[z // T][x // T]
+        if c not in plates:
+            plates[c] = pt_gym.bdhc_heights(int(c.split("_")[1]))
+        hs = plates[c][(x % T, z % T)]
+        return min(hs, key=lambda v: abs(v - h)) if hs else None
+
     def solid(x, z):
+        if a.climb and tile(x, z) & 0xFF in climb and (x, z) not in fixed:
+            return False
         return tile(x, z) & 0x8000 or (x, z) in fixed or beh(x, z) in slopes or (beh(x, z) in water and not a.surf)
 
     def deck(x, z):
@@ -93,6 +111,11 @@ def main():
             nx, nz = x + dx, z + dz
             if solid(nx, nz):
                 continue
+            if a.climb and (beh(nx, nz) in climb or beh(x, z) in climb):
+                if beh(nx, nz) in climb and (dx, dz) not in climb[beh(nx, nz)]:
+                    continue
+                if beh(x, z) in climb and (dx, dz) not in climb[beh(x, z)]:
+                    continue
             if beh(nx, nz) in jump:
                 if jump[beh(nx, nz)] == (dx, dz) and not solid(nx + dx, nz + dz):
                     yield d, nx + dx, nz + dz, False
@@ -109,7 +132,8 @@ def main():
 
     start = tuple(map(int, a.start.split(",")))
     goal = tuple(map(int, a.goal.split(",")))
-    first = (start[0], start[1], False, -1)
+    h0 = height(start[0], start[1], 0) if a.heights else 0
+    first = (start[0], start[1], False, -1, h0)
     dist, prev, q, end = {first: 0}, {first: None}, [(0, first)], None
     while q:
         c, u = heapq.heappop(q)
@@ -119,7 +143,18 @@ def main():
             end = u
             break
         for d, nx, nz, hi in moves(u[0], u[1], u[2]):
-            v = (nx, nz, hi, d)
+            nh = 0
+            if a.heights:
+                nh = height(nx, nz, u[4])
+                jumped = abs(nx - u[0]) + abs(nz - u[1]) > 1
+                climbing = a.climb and (beh(nx, nz) in climb or beh(u[0], u[1]) in climb)
+                if nh is None and not climbing:
+                    continue
+                if not jumped and not climbing and abs(nh - u[4]) >= 20:
+                    continue
+                if nh is None:
+                    nh = u[4]
+            v = (nx, nz, hi, d, nh)
             # a turn costs a little (fewer corners, fewer waypoints); grass a little more (fewer wild battles)
             w = c + 1 + (0.3 if d != u[3] else 0) + (0.5 if beh(nx, nz) in grass else 0)
             if w < dist.get(v, 1e9):
