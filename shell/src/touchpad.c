@@ -14,6 +14,7 @@
 
 #include <math.h>
 
+#include "romdb.h"
 #include "touchlayout.h"
 
 typedef struct touch_state {
@@ -105,6 +106,9 @@ static const np_tc_layout *current(const np_app *app, np_tc_layout *scratch)
     return scratch;
 }
 
+/* The controls the running console has none of (a GBA: X and Y). */
+static unsigned hidden(const np_app *app) { return app->core && np_game_is_gba(app->game) ? NP_TC_HIDE_GBA : 0; }
+
 /* A skin is a deliberate choice, so it shows whenever a game does; the
  * built-in controls follow Options > Touch controls. */
 int np_touchpad_visible(const np_app *app)
@@ -122,7 +126,8 @@ void np_touchpad_hit(const np_app *app, float x, float y, np_touch_hit *h)
     if (np_skin_hit(app, x, y, h))
         return;
     np_tc_layout scratch;
-    h->any = np_tc_hit(current(app, &scratch), app->out_w, app->out_h, x, y, &h->keys, &h->ff_toggle, &h->menu);
+    h->any = np_tc_hit(current(app, &scratch), hidden(app), app->out_w, app->out_h, x, y, &h->keys, &h->ff_toggle,
+                       &h->menu);
 }
 
 /* ---- drawing ------------------------------------------------------------------ */
@@ -211,8 +216,10 @@ void np_touchpad_draw(np_app *app)
     }
     np_tc_layout scratch;
     const np_tc_layout *l = current(app, &scratch);
+    unsigned hide = hidden(app);
     for (int i = 0; i < NP_TC_COUNT; i++)
-        draw_item(app, i, &l->item[i], app->control_keys, lit_flag(app, i, app->control_keys));
+        if (!(hide >> i & 1))
+            draw_item(app, i, &l->item[i], app->control_keys, lit_flag(app, i, app->control_keys));
 }
 
 /* ---- editor --------------------------------------------------------------------- */
@@ -224,7 +231,7 @@ void np_touchedit_open(np_app *app)
     int o = portrait(app);
     if (!tp.custom[o])
         np_tc_default(&tp.layout[o], app->out_w, app->out_h);
-    tp.sel = 0;
+    tp.sel = 0; /* the d-pad: never hidden */
     tp.drag = 0;
     np_app_open_page(app, NP_PAGE_TOUCH_EDIT);
 }
@@ -247,9 +254,18 @@ static void edit(np_app *app, float dx, float dy, float dsize, float dop)
 static void bar_action(np_app *app, int a)
 {
     int o = portrait(app);
+    unsigned hide = hidden(app);
     switch (a) {
-    case BAR_PREV: tp.sel = (tp.sel + NP_TC_COUNT - 1) % NP_TC_COUNT; break;
-    case BAR_NEXT: tp.sel = (tp.sel + 1) % NP_TC_COUNT; break;
+    case BAR_PREV:
+        do
+            tp.sel = (tp.sel + NP_TC_COUNT - 1) % NP_TC_COUNT;
+        while (hide >> tp.sel & 1);
+        break;
+    case BAR_NEXT:
+        do
+            tp.sel = (tp.sel + 1) % NP_TC_COUNT;
+        while (hide >> tp.sel & 1);
+        break;
     case BAR_SMALLER: edit(app, 0, 0, -0.1f, 0); break;
     case BAR_BIGGER: edit(app, 0, 0, 0.1f, 0); break;
     case BAR_FAINTER: edit(app, 0, 0, 0, -0.1f); break;
@@ -301,7 +317,7 @@ void np_touchedit_pointer(np_app *app, float x, float y, int pressed, int releas
             tp.drag = 2;
             return;
         }
-        int hit = np_tc_pick(l, app->out_w, app->out_h, x, y);
+        int hit = np_tc_pick(l, hidden(app), app->out_w, app->out_h, x, y);
         if (hit >= 0) {
             tp.sel = hit;
             tp.drag = 1;
@@ -388,8 +404,10 @@ void np_touchedit_draw(np_app *app)
         if (sp->visible)
             np_ui_frame(app, (SDL_FRect){sp->bx, sp->by, sp->bw, sp->bh}, 2, (SDL_Color){120, 170, 255, 200});
     }
+    unsigned hide = hidden(app);
     for (int i = 0; i < NP_TC_COUNT; i++)
-        draw_item(app, i, &l->item[i], 0, 0);
+        if (!(hide >> i & 1))
+            draw_item(app, i, &l->item[i], 0, 0);
     float r[4];
     np_tc_rect(&l->item[tp.sel], app->out_w, app->out_h, r);
     /* Toolbar text at least 2x once the window allows: it sits over the

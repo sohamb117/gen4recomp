@@ -16,6 +16,7 @@
 #include "app.h"
 
 #include "pdfraster.h"
+#include "romdb.h"
 #include "skinfmt.h"
 #include "slots.h"
 #include "zip.h"

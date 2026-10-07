@@ -930,16 +930,22 @@ static void test_touchlayout(void)
     uint16_t keys;
     int ff, menu;
     float dcx = m + 1.5f * u, dcy = H - m - 1.5f * u, fcx = W - m - 1.5f * u;
-    CHECK(np_tc_hit(&l, W, H, dcx - u, dcy, &keys, &ff, &menu) && keys == NP_KEY_LEFT, "d-pad left (%x)", keys);
-    CHECK(np_tc_hit(&l, W, H, dcx + u, dcy - u, &keys, &ff, &menu) && keys == (NP_KEY_RIGHT | NP_KEY_UP),
+    CHECK(np_tc_hit(&l, 0, W, H, dcx - u, dcy, &keys, &ff, &menu) && keys == NP_KEY_LEFT, "d-pad left (%x)", keys);
+    CHECK(np_tc_hit(&l, 0, W, H, dcx + u, dcy - u, &keys, &ff, &menu) && keys == (NP_KEY_RIGHT | NP_KEY_UP),
           "d-pad diagonal (%x)", keys);
-    CHECK(np_tc_hit(&l, W, H, dcx, dcy, &keys, &ff, &menu) && keys == 0, "d-pad centre is neutral");
-    CHECK(np_tc_hit(&l, W, H, fcx + 0.95f * u, dcy, &keys, &ff, &menu) && keys == NP_KEY_A, "A east");
-    CHECK(np_tc_hit(&l, W, H, fcx, dcy - 0.95f * u, &keys, &ff, &menu) && keys == NP_KEY_X, "X north");
-    CHECK(np_tc_hit(&l, W, H, m + 0.5f * u, m + 0.3f * u, &keys, &ff, &menu) && keys == NP_KEY_L, "L corner");
-    CHECK(np_tc_hit(&l, W, H, W * 0.5f + 0.95f * u, m + 0.3f * u, &keys, &ff, &menu) && menu && !keys, "menu");
-    CHECK(!np_tc_hit(&l, W, H, W * 0.5f, H * 0.5f, &keys, &ff, &menu), "screen centre is no control");
-    CHECK(np_tc_pick(&l, W, H, fcx + 0.95f * u, dcy) == NP_TC_A, "pick A");
+    CHECK(np_tc_hit(&l, 0, W, H, dcx, dcy, &keys, &ff, &menu) && keys == 0, "d-pad centre is neutral");
+    CHECK(np_tc_hit(&l, 0, W, H, fcx + 0.95f * u, dcy, &keys, &ff, &menu) && keys == NP_KEY_A, "A east");
+    CHECK(np_tc_hit(&l, 0, W, H, fcx, dcy - 0.95f * u, &keys, &ff, &menu) && keys == NP_KEY_X, "X north");
+    CHECK(np_tc_hit(&l, 0, W, H, m + 0.5f * u, m + 0.3f * u, &keys, &ff, &menu) && keys == NP_KEY_L, "L corner");
+    CHECK(np_tc_hit(&l, 0, W, H, W * 0.5f + 0.95f * u, m + 0.3f * u, &keys, &ff, &menu) && menu && !keys, "menu");
+    CHECK(!np_tc_hit(&l, 0, W, H, W * 0.5f, H * 0.5f, &keys, &ff, &menu), "screen centre is no control");
+    CHECK(np_tc_pick(&l, 0, W, H, fcx + 0.95f * u, dcy) == NP_TC_A, "pick A");
+    /* A GBA has no X or Y: not hit, not picked; A and B still are. */
+    CHECK(!np_tc_hit(&l, NP_TC_HIDE_GBA, W, H, fcx, dcy - 0.95f * u, &keys, &ff, &menu) && !keys, "GBA: no X");
+    CHECK(!np_tc_hit(&l, NP_TC_HIDE_GBA, W, H, fcx - 0.95f * u, dcy, &keys, &ff, &menu) && !keys, "GBA: no Y");
+    CHECK(np_tc_pick(&l, NP_TC_HIDE_GBA, W, H, fcx - 0.95f * u, dcy) < 0, "GBA: Y not picked");
+    CHECK(np_tc_hit(&l, NP_TC_HIDE_GBA, W, H, fcx + 0.95f * u, dcy, &keys, &ff, &menu) && keys == NP_KEY_A, "GBA: A");
+    CHECK(np_tc_hit(&l, NP_TC_HIDE_GBA, W, H, fcx, dcy + 0.95f * u, &keys, &ff, &menu) && keys == NP_KEY_B, "GBA: B");
 
     np_tc_layout moved = l, back;
     moved.item[NP_TC_B].cx = 0.25f;

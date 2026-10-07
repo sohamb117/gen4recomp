@@ -52,12 +52,18 @@ void np_tc_default(np_tc_layout *l, float W, float H);
 /* Item rectangle in window pixels: x, y, w, h. */
 void np_tc_rect(const np_tc_item *it, float W, float H, float r[4]);
 
-/* Keys held by a touch at (x, y); *ff / *menu for those buttons. Returns 1
- * when the touch is on any control. */
-int np_tc_hit(const np_tc_layout *l, float W, float H, float x, float y, uint16_t *keys, int *ff, int *menu);
+/* Controls a console has none of, as a mask of 1u << id: a GBA has no X
+ * or Y. Hidden controls are not drawn, hit, picked or selected. */
+#define NP_TC_HIDE_GBA ((1u << NP_TC_X) | (1u << NP_TC_Y))
 
-/* The control under (x, y) for the editor (smallest first), or -1. */
-int np_tc_pick(const np_tc_layout *l, float W, float H, float x, float y);
+/* Keys held by a touch at (x, y); *ff / *menu for those buttons. Returns 1
+ * when the touch is on any control not in `hide`. */
+int np_tc_hit(const np_tc_layout *l, unsigned hide, float W, float H, float x, float y, uint16_t *keys, int *ff,
+              int *menu);
+
+/* The control under (x, y) for the editor (smallest first, not in `hide`),
+ * or -1. */
+int np_tc_pick(const np_tc_layout *l, unsigned hide, float W, float H, float x, float y);
 
 /* Keeps an item usable: size 0.05..1 of the short side, centre on screen,
  * opacity 0.1..1. */
