@@ -24,7 +24,6 @@ frames = 19400
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 5
 z = 4
 face = "up"
@@ -37,7 +36,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "roark-battle"
 note = "TRAINER_LEADER_ROARK (246): GEODUDE 12, ONIX 12, CRANIDOS 14"
 
@@ -48,7 +46,6 @@ note = "GiveBadge BADGE_ID_COAL, Jubilife scene armed, TM76 (scripts_oreburgh_ci
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 5
 z = 24
 note = "gym exit (warp 0) -> Oreburgh (282,756)"

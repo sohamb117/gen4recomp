@@ -19,11 +19,13 @@
 #include <stdint.h>
 
 #define NP_E2E_MAGIC 0x31453245u /* 'E2E1' */
-#define NP_E2E_VERSION 1
+#define NP_E2E_VERSION 2
 
 /* The terrain window: GRID x GRID tiles, the player at (GRID/2, GRID/2). */
 #define NP_E2E_GRID 64
 #define NP_E2E_MAX_OBJECTS 64
+#define NP_E2E_MAX_BATTLERS 4
+#define NP_E2E_MAX_PARTY 6
 
 /* What the game was waiting on during the last frame (np_e2e_block.ui). */
 enum np_e2e_ui {
@@ -51,6 +53,20 @@ typedef struct np_e2e_object {
     uint16_t gfx;      /* graphics id */
 } np_e2e_object;
 
+/* A Pokemon in the battle report: a battler (the battle's own copy: its
+ * current types, its disabled move) or a party member (the party's copy;
+ * types 0xFF, not reported). species 0: no Pokemon. */
+typedef struct np_e2e_mon {
+    uint16_t species;
+    uint16_t hp, max_hp;
+    uint16_t moves[4];
+    uint16_t disabled_move; /* the move Disable blocks, 0 none */
+    uint8_t pp[4];
+    uint8_t level;
+    uint8_t types[2];
+    uint8_t egg;
+} np_e2e_mon;
+
 typedef struct np_e2e_block {
     uint32_t magic;   /* NP_E2E_MAGIC */
     uint32_t version; /* NP_E2E_VERSION */
@@ -69,6 +85,14 @@ typedef struct np_e2e_block {
     uint32_t nobjects;        /* other active map objects (people, items) */
     np_e2e_object objects[NP_E2E_MAX_OBJECTS];
     uint16_t grid[NP_E2E_GRID * NP_E2E_GRID]; /* row-major, z then x */
+    /* The battle, refreshed by the battle menu's input loop whenever the
+     * menu waits (ui NP_E2E_UI_BATTLE_MENU); stale otherwise. */
+    uint32_t battle_frame;  /* frame of the last refresh, 0 never */
+    uint32_t battle_type;   /* the game's BATTLE_TYPE_* bits */
+    uint32_t menu_battler;  /* the battler whose menu is up */
+    uint32_t nparty;        /* party[] entries */
+    np_e2e_mon battlers[NP_E2E_MAX_BATTLERS]; /* by battler: 0 and 2 the player's side, 1 and 3 the foe's */
+    np_e2e_mon party[NP_E2E_MAX_PARTY]; /* menu_battler's party in the battle party screen's order */
 } np_e2e_block;
 
 #endif /* NP_E2E_H */

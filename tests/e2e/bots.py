@@ -27,6 +27,7 @@ TAP_NO = (128, 140)            # sYesNoMenuTouchRects[1]: y 0x70-0xA8
 TAP_PARTY = [(64, 24), (192, 32), (64, 72), (192, 80), (64, 120), (192, 128)]
 TAP_SHIFT = (128, 76)
 TAP_RUN = (128, 172)          # sActionMenuTouchRects[3]: y 0x98-0xC0, x 0x58-0xA8
+TAP_POKEMON = (216, 168)      # sActionMenuTouchRects[2]: y 0x90-0xC0, x 0xB0-0xFF
 
 # The battle menu config indices (core/include/np_e2e.h) and what auto_battle answers.
 MENU_ACTION = range(1, 11)
@@ -186,47 +187,194 @@ def bot_advance_text(s, step, ctx):
             s.run(6, until=stop)
 
 
+# ---- auto_battle's move choice: the probe's battle report (np_e2e.py Probe.battlers / party) scored with the ROM's
+# move data and type chart (np_save4 gamedata). The constants are the game's (Platinum include/constants/battle.h,
+# generated/move_battle_effects.txt, generated/moves.h; D/P number them the same).
+BATTLE_TYPE_DOUBLES, BATTLE_TYPE_2VS2, BATTLE_TYPE_TAG = 0x02, 0x08, 0x10
+MOVE_CLASS_STATUS = 2
+# moves a bot should not pick for damage: the user faints, they fail unless the foe sleeps / the user sleeps / it is
+# the first turn / the user is not hit first
+AVOID_MOVES = {120, 153, 138, 173, 252, 264}  # Self-Destruct, Explosion, Dream Eater, Snore, Fake Out, Focus Punch
+# battle effects that spend two turns on one hit: a charge turn (Razor Wind, Sky Attack, Skull Bash, Solar Beam, Fly,
+# Dive, Dig, Bounce, Shadow Force) or a recharge turn after (Hyper Beam)
+TWO_TURN_EFFECTS = {39, 75, 145, 151, 155, 255, 256, 263, 272, 80}
+# power 1 in the move data: the power is computed in battle (Return, Low Kick, Hidden Power...) or the damage is
+# fixed (Seismic Toss, Dragon Rage); scored as an ordinary move
+COMPUTED_POWER = 60
+# a move that hits every adjacent battler (RANGE_ALL_ADJACENT: Earthquake, Surf) beside a live ally: scored down
+RANGE_ALL_ADJACENT, ALLY_HIT_FACTOR = 0x08, 0.25
+
+_GAMEDATA = {}
+
+
+def gamedata(ctx):
+    """The ROM's battle tables (np_save4 gamedata): species types, moves, type chart; loaded once per ROM."""
+    if ctx.rom not in _GAMEDATA:
+        out = subprocess.run([ctx.save4, "gamedata", ctx.rom], capture_output=True, text=True)
+        if out.returncode != 0:
+            raise HarnessError("np_save4 gamedata: %s" % out.stderr.strip())
+        _GAMEDATA[ctx.rom] = json.loads(out.stdout)
+    return _GAMEDATA[ctx.rom]
+
+
+def mon_types(gd, mon):
+    """A Pokemon's types: the battle's own (battlers) or its species' (party members)."""
+    if mon.types:
+        return set(mon.types)
+    return set(gd["species"][mon.species]) if mon.species < len(gd["species"]) else set()
+
+
+def move_value(gd, move, user_types, foe_types, ally=False):
+    """Expected damage of a move, relative: base power x STAB x type effectiveness x accuracy (halved for a move
+    that takes two turns, cut to ALLY_HIT_FACTOR when it would hit a live ally too); 0 for a status move or one in
+    AVOID_MOVES."""
+    if not move or move >= len(gd["moves"]) or move in AVOID_MOVES:
+        return 0.0
+    effect, cls, power, mtype, acc, _pp, _priority, rng = gd["moves"][move][:8]
+    if cls == MOVE_CLASS_STATUS or power == 0:
+        return 0.0
+    v = float(COMPUTED_POWER if power == 1 else power)
+    if mtype in user_types:
+        v *= 1.5
+    for t in foe_types:
+        v *= gd["type_chart"][mtype][t] / 10.0
+    v *= (acc or 100) / 100.0
+    if ally and rng & RANGE_ALL_ADJACENT:
+        v *= ALLY_HIT_FACTOR
+    return v / 2 if effect in TWO_TURN_EFFECTS else v
+
+
+def usable_slots(mon, rejected=()):
+    return [i for i in range(4) if mon.moves[i] and mon.pp[i] > 0 and mon.moves[i] != mon.disabled_move
+            and i not in rejected]
+
+
+def best_damage(gd, mon, foe, rejected=(), ally=False):
+    """(slot, value) of the mon's best damaging move with PP against foe; (None, 0) when it has none."""
+    best, value = None, 0.0
+    user, foes = mon_types(gd, mon), mon_types(gd, foe) if foe is not None else set()
+    for i in usable_slots(mon, rejected):
+        v = move_value(gd, mon.moves[i], user, foes, ally)
+        if v > value:
+            best, value = i, v
+    return best, value
+
+
+def choose_move(gd, mon, foe, rejected=(), ally=False):
+    """The slot to use: the best damaging move, else the first status move with PP, else None (the game uses
+    Struggle by itself when nothing has PP)."""
+    slot, _ = best_damage(gd, mon, foe, rejected, ally)
+    if slot is not None:
+        return slot
+    rest = usable_slots(mon, rejected)
+    return rest[0] if rest else None
+
+
+def replacement(gd, party, foe, first, ally=False):
+    """The party screen slot to send in: the first healthy member from `first` on with a damaging move against foe,
+    else the first healthy one; None when there is none."""
+    healthy = [k for k in range(first, len(party)) if party[k].alive]
+    for k in healthy:
+        if best_damage(gd, party[k], foe, ally=ally)[0] is not None:
+            return k
+    return healthy[0] if healthy else None
+
+
 # ---------------------------------------------------------------- auto_battle
 def bot_auto_battle(s, step, ctx):
     """FIGHT + one move each turn until the battle is over; prompts answered (MENU_ANSWER).
 
+    The move is the usable one (PP left, not disabled) with the highest expected damage against the targeted foe
+    (move_value: base power x STAB x type effectiveness, from the ROM); status moves only when no damaging move has
+    PP. A lead with no damaging move left is switched for the next healthy party member that has one, and a fainted
+    lead is replaced the same way. `move = N` overrides the choice with slot N (the next slot whenever the game
+    refuses one), for scripted fights.
+
     With flee = true it taps RUN at the first action menus (a wild battle ends; a trainer refuses, and so may a
     wild Pokemon) and fights once FLEE_TRIES runs have not ended the battle."""
+    fixed = "move" in step
     move = _int(step, "move", 0)
     flee = FLEE_TRIES if step.get("flee") else 0
     limit = s.frame + _int(step, "max", 30000)
     if not s.in_battle and not s.run(_int(step, "wait", 900), until="in_battle=1"):
         raise HarnessError("no battle started within %d frames" % _int(step, "wait", 900))
+    gd = None if fixed else gamedata(ctx)
+    p = s.probe()
+    since = p.frame if p is not None else 0  # battle reports older than this are another battle's
     party_try = 0
     turns = 0
-    last = None  # the menu answered last
-    target = 0   # TAP_TARGETS index
-    again = 0    # move-menu returns in a row
-    menus = {}   # battle menu config index -> times answered (the run log's trace of the battle)
+    last = None      # the menu answered last
+    target = 0       # TAP_TARGETS index: 0 the foe battler 1, 1 battler 3
+    again = 0        # move-menu returns in a row
+    menus = {}       # battle menu config index -> times answered (the run log's trace of the battle)
+    rejected = []    # move slots the game sent back this turn
+    slot = None      # the move slot tapped last
+    want = None      # the party screen slot auto_battle chose
+    switched_at = -1  # `turns` of the last switch
+    report = None    # the last battle report of this battle (a Probe)
     while s.in_battle:
         if s.frame >= limit:
             raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
         p = s.probe()
+        if p is not None and p.battle_frame >= since and p.battlers:
+            report = p
+        fresh = gd is not None and p is not None and p.battle_fresh and p.battle_frame >= since
         if p is not None and p.ui == UI_BATTLE_MENU:
             idx = p.ui_arg
+            me = foe = None
+            ally = False
+            if fresh:
+                me = p.battlers[p.menu_battler]
+                foes = [b for b in (1, 3) if b < len(p.battlers) and p.battlers[b].alive]
+                if foes and (1 + 2 * target) not in foes:
+                    target = (foes[0] - 1) // 2
+                foe = p.battlers[1 + 2 * target] if foes else None
+                mate = p.menu_battler ^ 2
+                ally = bool(p.battle_type & BATTLE_TYPE_DOUBLES) and mate < len(p.battlers) and p.battlers[mate].alive
             if idx in MENU_ACTION and flee:
                 flee -= 1
                 _tap(s, TAP_RUN)
             elif idx in MENU_ACTION:
-                _tap(s, TAP_FIGHT)
-                turns += 1
+                rejected = []
+                k = None
+                shared = fresh and p.battle_type & (BATTLE_TYPE_2VS2 | BATTLE_TYPE_TAG)  # party screen interleaved
+                if (fresh and not shared and me.alive and switched_at != turns
+                        and best_damage(gd, me, foe, ally=ally)[0] is None):
+                    first = 2 if p.battle_type & BATTLE_TYPE_DOUBLES else 1
+                    k = replacement(gd, p.party, foe, first, ally)
+                    if k is not None and best_damage(gd, p.party[k], foe, ally=ally)[0] is None:
+                        k = None
+                if k is not None:
+                    s.note("auto_battle: no damaging move left; switching to party slot %d" % k)
+                    want, switched_at = k, turns
+                    _tap(s, TAP_POKEMON)
+                else:
+                    _tap(s, TAP_FIGHT)
+                    turns += 1
                 party_try = 0
             elif idx == MENU_MOVES:
                 # the move menu again straight after a move: the tap may have fallen in the menu's slide-in, so
-                # the same move once more; a second time it cannot be used (no PP left, disabled): the next slot
+                # the same move once more; a second time it cannot be used (no PP left, disabled, Taunt, Torment, a
+                # choice lock): the next slot, or the next best move
                 again = again + 1 if last == MENU_MOVES else 0
-                if again >= 2:
+                refused = again >= 2
+                if refused:
                     again = 0
-                    move = (move + 1) % 4
-                    s.note("auto_battle: move slot %d" % move)
-                _tap(s, TAP_MOVES[move])
-                # the menu slides out for a few frames after an accepted tap: a probe taken then is not a refusal
-                s.run(30, until=["ui_arg!=%d" % MENU_MOVES, "ui!=%d" % UI_BATTLE_MENU, "in_battle=0"])
+                if fixed or not fresh:
+                    if refused:
+                        move = (move + 1) % 4
+                        s.note("auto_battle: move slot %d" % move)
+                    slot = move
+                else:
+                    if refused and slot is not None:
+                        rejected.append(slot)
+                    slot = choose_move(gd, me, foe, rejected, ally)
+                    if slot is None:
+                        rejected = []
+                        slot = choose_move(gd, me, foe, ally=ally) or 0
+                    s.note("auto_battle: battler %d slot %d (move %d, %d PP) on species %d" % (
+                        p.menu_battler, slot, me.moves[slot], me.pp[slot], foe.species if foe else 0))
+                _tap(s, TAP_MOVES[slot])
             elif idx == MENU_TARGET:
                 if last == MENU_TARGET:
                     target = 1 - target  # the target menu again: that opponent is gone, take the other
@@ -241,11 +389,25 @@ def bot_auto_battle(s, step, ctx):
             continue
         if p is not None and p.ui == UI_BATTLE_PARTY:
             if p.ui_arg == 0:
-                # the next slot each time: a fainted one says so and comes back here
-                party_try = party_try % 5 + 1
+                if want is None and report is not None and party_try == 0 and gd is not None:
+                    # a fainted lead: the battle's last report has the party (the screen's order) and the foe
+                    foe = next((report.battlers[b] for b in (1 + 2 * target, 3 - 2 * target)
+                                if b < len(report.battlers) and report.battlers[b].alive), None)
+                    first = 2 if report.battle_type & BATTLE_TYPE_DOUBLES else 1
+                    if not report.battle_type & (BATTLE_TYPE_2VS2 | BATTLE_TYPE_TAG):
+                        want = replacement(gd, report.party, foe, first)
+                if want is not None and last != ("party", want):
+                    party_try = want
+                    last = ("party", want)
+                else:
+                    # the next slot each time: a fainted one says so and comes back here
+                    want = None
+                    party_try = party_try % 5 + 1
+                    last = ("party", None)
                 _tap(s, TAP_PARTY[party_try])
             else:
                 _tap(s, TAP_SHIFT)
+                want = None
             continue
         # text, animations, the evolution scene: A advances text (B would cancel an evolution)
         if not s.run(6, until=["ui!=0", "in_battle=0"]):
@@ -410,7 +572,10 @@ def _field_or_handle(s, step, ctx, limit):
             if on_battle not in ("fight", "flee"):
                 raise HarnessError("walk_to: a battle started (on_battle = %r)" % on_battle)
             f0 = s.frame
-            bot_auto_battle(s, {"flee": on_battle == "flee", "move": step.get("move", 0)}, ctx)
+            sub = {"flee": on_battle == "flee"}
+            if "move" in step:
+                sub["move"] = step["move"]
+            bot_auto_battle(s, sub, ctx)
             in_battles += s.frame - f0
             continue
         if s.run(20, until=["field_ready=1", "in_battle=1"]):
@@ -635,8 +800,8 @@ def bot_walk_to_door(s, step, ctx):
 
 def bot_grind(s, step, ctx):
     """Fight wild battles in the tall grass at (x, z)/(x+1, z) until the lead reaches `level`, healing at the
-    Pokemon Center door `heal` = [x, z] (same coordinate space) whenever the lead is below half HP or its move
-    is down to 4 PP."""
+    Pokemon Center door `heal` = [x, z] (same coordinate space) whenever the lead is below half HP or down to 4 PP
+    (its `move`, else all its damaging moves together)."""
     level = _int(step, "level", 0)
     bound = _int(step, "max", 60000)
     limit = s.frame + bound
@@ -652,8 +817,14 @@ def bot_grind(s, step, ctx):
             break
         if s.frame >= limit:
             raise HarnessError("grind: lead at level %d after %d battles, wanted %d" % (lead["level"], battles, level))
-        mv = lead["moves"][_int(step, "move", 0)] if len(lead["moves"]) > _int(step, "move", 0) else {"pp": 0}
-        if door and (lead["hp"] * 2 < lead["stats"][0] or mv["pp"] < 5):
+        if "move" in step:
+            mv = lead["moves"][_int(step, "move", 0)] if len(lead["moves"]) > _int(step, "move", 0) else {"pp": 0}
+            pp = mv["pp"]
+        else:
+            gd = gamedata(ctx)
+            pp = sum(m["pp"] for m in lead["moves"] if m["id"] < len(gd["moves"])
+                     and gd["moves"][m["id"]][1] != MOVE_CLASS_STATUS and gd["moves"][m["id"]][2] > 0)
+        if door and (lead["hp"] * 2 < lead["stats"][0] or pp < 5):
             bot_heal(s, {"x": door[0], "z": door[1]}, ctx)
         bot_walk_to(s, {"x": spot[0], "z": spot[1]}, ctx)
         p = s.probe()
@@ -668,7 +839,7 @@ def bot_grind(s, step, ctx):
             s.run(24, "right" if k % 2 else "left", until=["in_battle=1", "x!=%d" % (spot[0] + (0 if k % 2 else 1))])
             s.run(12, until="in_battle=1")
         if s.in_battle:
-            bot_auto_battle(s, {"move": step.get("move", 0)}, ctx)
+            bot_auto_battle(s, {"move": step["move"]} if "move" in step else {}, ctx)
             battles += 1
             bot_wait_field(s, {}, ctx)
     s.note("grind: lead at level %d after %d battles" % (lead["level"], battles))

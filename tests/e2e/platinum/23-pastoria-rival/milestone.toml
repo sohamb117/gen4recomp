@@ -33,7 +33,6 @@ frames = 40000
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 8
 z = 11
 note = "warehouse exit (warp 0) -> Veilstone (701,591)"
@@ -44,7 +43,6 @@ map = "MAP_HEADER_VEILSTONE_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 via = [[701, 597], [694, 597], [694, 610], [702, 610], [702, 634], [718, 634]]
 x = 718
 z = 638
@@ -56,7 +54,6 @@ map = "MAP_HEADER_ROUTE_214_GATE_TO_VEILSTONE_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 5
 z = 12
 note = "gate south exit (warp 1) -> Route 214 (718,645)"
@@ -67,7 +64,6 @@ map = "MAP_HEADER_ROUTE_214"
 
 [[step]]
 do = "walk_to"
-move = 3
 max = 4000
 via = [[718, 665], [726, 665], [726, 678], [727, 678], [727, 685], [725, 685], [725, 690], [732, 690], [732, 697],
        [731, 697], [731, 708], [733, 708], [733, 719], [730, 719], [730, 743], [727, 743], [727, 759], [722, 759],
@@ -82,7 +78,6 @@ map = "MAP_HEADER_GRAND_LAKE_ROUTE_213_LOBBY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 8
 z = 11
 note = "lobby south door (warp 1) -> Route 213 beach (706,818)"
@@ -93,7 +88,6 @@ map = "MAP_HEADER_ROUTE_213"
 
 [[step]]
 do = "walk_to"
-move = 3
 max = 4000
 via = [[706, 832], [679, 832], [679, 835], [669, 835], [669, 827], [671, 827], [671, 812]]
 x = 646
@@ -106,7 +100,6 @@ map = "MAP_HEADER_ROUTE_213_GATE_TO_PASTORIA_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 1
 z = 7
 note = "gate west exit (warp 1) -> Pastoria (639,812)"
@@ -117,7 +110,6 @@ map = "MAP_HEADER_PASTORIA_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 via = [[603, 812], [603, 820], [594, 820], [594, 828]]
 x = 589
 z = 828
@@ -128,7 +120,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "pastoria_rival"
 note = "TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (474): STARAVIA 34, BUIZEL 32, ROSELIA 32, MONFERNO 36"
 

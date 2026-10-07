@@ -3,6 +3,8 @@
  * np_save4: inspect and edit Diamond/Pearl/Platinum saves.
  *
  *   np_save4 dump [<rom.nds>] <save.sav>        JSON summary (names from ROM)
+ *   np_save4 gamedata <rom.nds>                  JSON battle tables: species
+ *                                                types, moves, type chart
  *   np_save4 verify <save.sav>                   checksum / copy report
  *   np_save4 set-money <save> <n>
  *   np_save4 set-coins <save> <n>
@@ -46,6 +48,7 @@ static int usage(void)
     fprintf(stderr,
             "usage:\n"
             "  %s dump [<rom.nds>] <save.sav>\n"
+            "  %s gamedata <rom.nds>\n"
             "  %s verify <save.sav>\n"
             "  %s set-money <save> <n>\n"
             "  %s set-coins <save> <n>\n"
@@ -67,7 +70,7 @@ static int usage(void)
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
             prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
-            prog);
+            prog, prog);
     return EXIT_USAGE;
 }
 
@@ -476,6 +479,49 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     return 0;
 }
 
+/* gamedata: what a battle bot needs from the ROM (tests/e2e auto_battle).
+ * species[i] = [type1, type2]; moves[i] = [effect, class, power, type,
+ * accuracy, pp, priority, range]; type_chart[attack][defend] = multiplier x10. */
+static int cmd_gamedata(const char *rom_path)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return EXIT_USAGE;
+    nd_gamedata gd;
+    nd_status st = nd_gamedata_load(&gd, &rom);
+    if (st != ND_OK || !gd.type_chart_ok) {
+        fprintf(stderr, "%s: %s: no game data (%s)\n", prog, rom_path,
+                st != ND_OK ? nd_status_str(st) : "type chart not found");
+        if (st == ND_OK)
+            nd_gamedata_free(&gd);
+        nd_rom_close(&rom);
+        fclose(rf);
+        return EXIT_USAGE;
+    }
+    printf("{\"game\": \"%s\",\n\"species\": [", nd_game_name(gd.game));
+    for (uint32_t i = 0; i < gd.species_count; i++)
+        printf("%s[%u,%u]", i ? "," : "", gd.species[i].types[0], gd.species[i].types[1]);
+    printf("],\n\"moves\": [");
+    for (uint32_t i = 0; i < gd.move_count; i++) {
+        const nd_move *m = &gd.moves[i];
+        printf("%s[%u,%u,%u,%u,%u,%u,%d,%u]", i ? "," : "", m->effect, m->cls, m->power, m->type, m->accuracy, m->pp,
+               m->priority, m->range);
+    }
+    printf("],\n\"type_chart\": [");
+    for (int a = 0; a < ND_TYPES; a++) {
+        printf("%s[", a ? "," : "");
+        for (int d = 0; d < ND_TYPES; d++)
+            printf("%s%u", d ? "," : "", gd.type_chart[a][d]);
+        printf("]");
+    }
+    printf("]}\n");
+    nd_gamedata_free(&gd);
+    nd_rom_close(&rom);
+    fclose(rf);
+    return 0;
+}
+
 static int cmd_verify(const char *path)
 {
     save4 s;
@@ -767,6 +813,8 @@ int main(int argc, char **argv)
     }
     if (!strcmp(cmd, "verify"))
         return argc == 3 ? cmd_verify(argv[2]) : usage();
+    if (!strcmp(cmd, "gamedata"))
+        return argc == 3 ? cmd_gamedata(argv[2]) : usage();
     if (!strncmp(cmd, "set-", 4) || !strcmp(cmd, "add-gift") || !strcmp(cmd, "remove-gift") ||
         !strcmp(cmd, "add-mon"))
         return cmd_edit(argc, argv);

@@ -26,10 +26,37 @@ STATUS = ["link_active", "field_ready", "quicksave_seq", "quicksave_result", "ma
 E2E_MAGIC = 0x31453245
 E2E_GRID = 64
 E2E_MAX_OBJECTS = 64
+E2E_MAX_BATTLERS = 4
+E2E_MAX_PARTY = 6
 UI_NONE, UI_BATTLE_MENU, UI_BATTLE_PARTY = 0, 1, 2
 TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN = 0x00FF, 0x0100, 0x8000
 _HEAD = struct.Struct("<5I3i5I2i2I")
 _OBJ = struct.Struct("<hhHH")
+_BATTLE = struct.Struct("<4I")
+_MON = struct.Struct("<3H4HH4BB2BB")
+
+
+class Mon:
+    """One np_e2e_mon: a battler or a party member in the battle report."""
+
+    def __init__(self, raw, off):
+        v = _MON.unpack_from(raw, off)
+        self.species, self.hp, self.max_hp = v[0:3]
+        self.moves = list(v[3:7])
+        self.disabled_move = v[7]
+        self.pp = list(v[8:12])
+        self.level = v[12]
+        self.types = [t for t in v[13:15] if t != 0xFF]
+        self.egg = v[15]
+
+    @property
+    def alive(self):
+        return self.species != 0 and not self.egg and self.hp > 0
+
+    def __repr__(self):
+        return "Mon(%d L%d %d/%d moves=%s pp=%s)" % (self.species, self.level, self.hp, self.max_hp, self.moves,
+                                                    self.pp)
+
 
 FACINGS = {"up": 0, "down": 1, "left": 2, "right": 3}
 DIR_KEYS = ["up", "down", "left", "right"]
@@ -62,6 +89,21 @@ class Probe:
             self.objects.append((x, z, local_id, gfx))
         off += E2E_MAX_OBJECTS * _OBJ.size
         self.grid = struct.unpack_from("<%dH" % (E2E_GRID * E2E_GRID), raw, off)
+        off += E2E_GRID * E2E_GRID * 2
+        # the battle report (np_e2e_block.battle_frame ...): refreshed while the battle menu waits
+        self.battle_frame = self.battle_type = self.menu_battler = 0
+        self.battlers, self.party = [], []
+        if len(raw) >= off + _BATTLE.size + (E2E_MAX_BATTLERS + E2E_MAX_PARTY) * _MON.size:
+            self.battle_frame, self.battle_type, self.menu_battler, nparty = _BATTLE.unpack_from(raw, off)
+            off += _BATTLE.size
+            self.battlers = [Mon(raw, off + i * _MON.size) for i in range(E2E_MAX_BATTLERS)]
+            off += E2E_MAX_BATTLERS * _MON.size
+            self.party = [Mon(raw, off + i * _MON.size) for i in range(min(nparty, E2E_MAX_PARTY))]
+
+    @property
+    def battle_fresh(self):
+        """The battle report is this menu's: refreshed within the last few frames."""
+        return self.battle_frame != 0 and self.frame - self.battle_frame <= 8 and bool(self.battlers)
 
     def cell(self, x, z):
         """The grid cell at map tile (x, z), or None outside the window."""

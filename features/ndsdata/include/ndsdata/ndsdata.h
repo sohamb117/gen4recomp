@@ -196,16 +196,34 @@ typedef struct nd_species {
     uint8_t abilities[2];   /* ability ids; [1] is 0 when there is one */
 } nd_species;
 
+/* A move's battle data (pokeplatinum MoveTable). */
+typedef struct nd_move {
+    uint16_t effect;        /* battle effect id */
+    uint8_t cls;            /* 0 physical, 1 special, 2 status */
+    uint8_t power;
+    uint8_t type;
+    uint8_t accuracy;       /* 0: never misses */
+    uint8_t pp;             /* base PP */
+    int8_t priority;
+    uint16_t range;         /* targets: 0 one, RANGE_* bits (8: every adjacent battler, the ally too) */
+} nd_move;
+
+#define ND_TYPES 18 /* type ids 0..17 (9 is the ??? type) */
+
 typedef struct nd_gamedata {
     nd_game game;
     uint32_t species_count; /* personal NARC members (forms after 493) */
     nd_species *species;
     uint32_t exp[ND_EXP_RATES][101]; /* total exp for levels 0..100 */
     uint32_t move_count;
-    uint8_t *move_pp;       /* base PP per move id */
+    nd_move *moves;         /* per move id */
+    /* damage multiplier x10 (0, 5, 10, 20), [attacking type][defending
+     * type]; all 10 unless type_chart_ok */
+    uint8_t type_chart[ND_TYPES][ND_TYPES];
+    uint8_t type_chart_ok;
 } nd_gamedata;
 
-/* Species, experience and move tables for the ROM's game. */
+/* Species, experience, move tables and the type chart for the ROM's game. */
 nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom);
 void nd_gamedata_free(nd_gamedata *gd);
 /* NULL when out of range. */
@@ -214,7 +232,11 @@ const nd_species *nd_species_get(const nd_gamedata *gd, uint32_t species);
 uint32_t nd_exp_for_level(const nd_gamedata *gd, uint32_t species, uint32_t level);
 /* The level `exp` reaches, 1..100, as Pokemon_GetLevel computes it. */
 uint32_t nd_level_for_exp(const nd_gamedata *gd, uint32_t species, uint32_t exp);
+/* NULL when out of range. */
+const nd_move *nd_move_get(const nd_gamedata *gd, uint32_t move);
 uint8_t nd_move_base_pp(const nd_gamedata *gd, uint32_t move);
+/* The type chart's multiplier x10 for one attacking and one defending type. */
+uint8_t nd_type_multiplier(const nd_gamedata *gd, uint32_t attack, uint32_t defend);
 
 #ifdef __cplusplus
 }

@@ -1,3 +1,9 @@
 # Boost on 26's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
-# HP and PP refilled for the walk back through the Route 214/215 trainers (Crunch, slot 3 since 26).
+# HP refilled (party-level) and PP refilled (the four moves set again, as 20's boost gave them; auto_battle picks
+# between them by type).
+# For the walk back through the Route 214/215 trainers.
 party-level 0 61
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE

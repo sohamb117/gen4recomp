@@ -51,7 +51,6 @@ frames = 30000
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 638
 z = 812
 face = "left"
@@ -64,7 +63,6 @@ note = "he leaves through the gate (FLAG_TALKED_TO_PASTORIA_CITY_GRUNT_M, :183)"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 639
 z = 812
 note = "east gate door (events_pastoria_city warp 10) -> Route 213 gate (1,7)"
@@ -75,7 +73,6 @@ map = "MAP_HEADER_ROUTE_213_GATE_TO_PASTORIA_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 10
 z = 7
 note = "gate east exit (warp 0) -> Route 213 (646,812); the grunt now waits at (654,812) facing east (scripts_route_213.s:16-38)"
@@ -86,7 +83,6 @@ map = "MAP_HEADER_ROUTE_213"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 653
 z = 812
 face = "right"
@@ -99,7 +95,6 @@ note = "he moves to (683,833) (:40-86)"
 
 [[step]]
 do = "walk_to"
-move = 3
 via = [[671, 812], [671, 828], [669, 828], [669, 835], [682, 835]]
 x = 682
 z = 833
@@ -114,7 +109,6 @@ note = "he leaves; Looker scene (:88-145)"
 
 [[step]]
 do = "walk_to"
-move = 3
 via = [[682, 832], [706, 832]]
 x = 706
 z = 818
@@ -126,7 +120,6 @@ map = "MAP_HEADER_GRAND_LAKE_ROUTE_213_LOBBY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 8
 z = 2
 note = "lobby north door (warp 0) -> Valor Lakefront side (706,813)"
@@ -137,7 +130,6 @@ map = "MAP_HEADER_ROUTE_213"
 
 [[step]]
 do = "walk_to"
-move = 3
 via = [[706, 791]]
 x = 719
 z = 791
@@ -151,7 +143,6 @@ note = "he moves to (723,769) (scripts_valor_lakefront.s:25, 45-81)"
 
 [[step]]
 do = "walk_to"
-move = 3
 via = [[719, 779], [723, 779]]
 x = 723
 z = 770
@@ -164,7 +155,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "valor_grunt"
 note = "TRAINER_GALACTIC_GRUNT_VALOR_LAKEFRONT (847): CROAGUNK 31 (:83-91)"
 

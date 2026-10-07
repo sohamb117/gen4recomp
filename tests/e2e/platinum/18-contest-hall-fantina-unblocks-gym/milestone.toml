@@ -26,7 +26,6 @@ frames = 7300
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 479
 z = 691
 note = "Contest Hall door (events_hearthome_city warp 2) -> lobby (16,13)"
@@ -42,7 +41,6 @@ note = "OnFrame VAR_CONTEST_HALL_LOBBY_STATE==0: Keira and Mom, Glitter Powder, 
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 22
 z = 10
 face = "up"
@@ -56,7 +54,6 @@ note = "Fantina spins out; SetFlag FLAG_HIDE_HEARTHOME_CITY_GYM_GUIDE (scripts_c
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 16
 z = 13
 note = "lobby exit (warp 0) -> Hearthome (479,691)"
@@ -67,7 +64,6 @@ map = "MAP_HEADER_HEARTHOME_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 499
 z = 697
 note = "gym door (warp 8), the guide at (499,698) gone -> entrance room (4,8)"

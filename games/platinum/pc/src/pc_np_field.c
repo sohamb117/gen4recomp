@@ -43,6 +43,7 @@
 
 #include "battle/battle_context.h"
 #include "battle/battle_lib.h"
+#include "battle/battle_system.h"
 
 #include "camera.h"
 #include "field/field_system.h"
@@ -307,6 +308,63 @@ static void e2e_frame(FieldSystem *fs, int ready)
     }
     e2e_gym_log(fs);
     pc_e2e_end_frame();
+}
+
+/* The probe's battle half, from the battle menu's input loop (pc_np_options.h): every battler as the battle has it
+ * (BattleMon: current HP, PP, types and Disable), and the menu battler's party in the order its party screen lists
+ * it (BattleContext.partyOrder, as battle_display.c builds the screen). */
+static void e2e_mon_from_party(pc_e2e_mon *out, Pokemon *mon)
+{
+    int i;
+
+    out->species = (unsigned short)Pokemon_GetValue(mon, MON_DATA_SPECIES, NULL);
+    out->egg = (unsigned char)Pokemon_GetValue(mon, MON_DATA_IS_EGG, NULL);
+    out->level = (unsigned char)Pokemon_GetValue(mon, MON_DATA_LEVEL, NULL);
+    out->hp = (unsigned short)Pokemon_GetValue(mon, MON_DATA_HP, NULL);
+    out->max_hp = (unsigned short)Pokemon_GetValue(mon, MON_DATA_MAX_HP, NULL);
+    for (i = 0; i < LEARNED_MOVES_MAX; i++) {
+        out->moves[i] = (unsigned short)Pokemon_GetValue(mon, MON_DATA_MOVE1 + i, NULL);
+        out->pp[i] = (unsigned char)Pokemon_GetValue(mon, MON_DATA_MOVE1_PP + i, NULL);
+    }
+    out->types[0] = out->types[1] = 0xFF;
+}
+
+void pc_pl_e2e_battle(BattleSystem *battleSys, unsigned battler_type)
+{
+    pc_e2e_mon battlers[MAX_BATTLERS], party[MAX_PARTY_SIZE];
+    BattleContext *battleCtx;
+    int n, i, j, menu = 0, count;
+
+    if (!pc_e2e_on() || battleSys == NULL || (battleCtx = BattleSystem_GetBattleContext(battleSys)) == NULL) return;
+    memset(battlers, 0, sizeof battlers);
+    memset(party, 0, sizeof party);
+    n = BattleSystem_GetMaxBattlers(battleSys);
+    if (n > MAX_BATTLERS) n = MAX_BATTLERS;
+    for (i = 0; i < n; i++) {
+        const BattleMon *m = &battleCtx->battleMons[i];
+
+        if (BattleSystem_GetBattlerType(battleSys, i) == battler_type) menu = i;
+        battlers[i].species = m->species;
+        battlers[i].egg = (unsigned char)m->isEgg;
+        battlers[i].level = m->level;
+        battlers[i].hp = (unsigned short)(m->curHP > 0 ? m->curHP : 0);
+        battlers[i].max_hp = (unsigned short)m->maxHP;
+        battlers[i].types[0] = m->type1;
+        battlers[i].types[1] = m->type2;
+        battlers[i].disabled_move = m->moveEffectsData.disabledMove;
+        for (j = 0; j < LEARNED_MOVES_MAX; j++) {
+            battlers[i].moves[j] = m->moves[j];
+            battlers[i].pp[j] = m->ppCur[j];
+        }
+    }
+    count = BattleSystem_GetPartyCount(battleSys, menu);
+    if (count > MAX_PARTY_SIZE) count = MAX_PARTY_SIZE;
+    for (i = 0; i < count; i++) {
+        Pokemon *mon = BattleSystem_GetPartyPokemon(battleSys, menu, battleCtx->partyOrder[menu][i]);
+
+        if (mon != NULL) e2e_mon_from_party(&party[i], mon);
+    }
+    pc_e2e_battle((unsigned)menu, BattleSystem_GetBattleType(battleSys), battlers, (unsigned)n, party, (unsigned)count);
 }
 
 void pc_np_frame(void)

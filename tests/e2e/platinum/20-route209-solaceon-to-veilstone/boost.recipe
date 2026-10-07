@@ -1,6 +1,15 @@
 # Boost on 19's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
-# HP and PP refilled; Crunch (Dark, 15 PP) for TRAINER_RIVAL_ROUTE_209_TURTWIG (STARAVIA 25, BUIZEL 23,
-# ROSELIA 23, MONFERNO 27) and the Route 209/210/215 trainers (Route 215's Ace Trainers Maya and Dennis are the
-# toughest: a level-47 lead with Bite blacked out against them).
+# The lead gets four battle moves auto_battle chooses between by type (HP full, every PP full): Earthquake,
+# Crunch, Seed Bomb and Rock Slide cover TRAINER_RIVAL_ROUTE_209_TURTWIG (STARAVIA 25, BUIZEL 23, ROSELIA 23,
+# MONFERNO 27) and the Route 209/210/215 trainers, among them Route 215's unavoidable Ace Trainers Maya (ROSELIA 24,
+# RALTS 24, LICKITUNG 25) and Dennis (GLIGAR 24, BUIZEL 24, DRIFBLIM 25: Earthquake cannot touch Gligar or Drifblim,
+# Rock Slide and Crunch can). Cut and Rock Smash go to a second Pokemon behind the egg-hatched Togepi (slots 0-1; its
+# own level-40 moves stay in 2-3, a backup fighter), so no field move takes a battle slot.
 party-level 0 55
-party-move 0 3 MOVE_CRUNCH
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE
+party SPECIES_BIBAREL 40 ITEM_NONE
+party-move 2 0 MOVE_CUT
+party-move 2 1 MOVE_ROCK_SMASH

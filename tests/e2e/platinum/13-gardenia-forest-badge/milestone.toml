@@ -43,7 +43,6 @@ frames = 32600
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 312
 z = 564
 face = "up"
@@ -57,7 +56,6 @@ note = "she walks into the gym (RemoveObject scripts_eterna_city.s:688)"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 312
 z = 562
 note = "gym door (warp 10) -> gym (11,27)"
@@ -68,7 +66,6 @@ map = "MAP_HEADER_ETERNA_CITY_GYM"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 13
 z = 22
 face = "right"
@@ -80,7 +77,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 note = "TRAINER_LASS_CAROLINE (324): CHERUBI 17, ROSELIA 17 (scripts_eterna_city_gym.s:151)"
 
 [[step]]
@@ -89,28 +85,24 @@ note = "VAR_ETERNA_GYM_TRAINERS_BEATEN 1, AdvanceEternaGymClock -> state 1: hour
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 11
 z = 19
 note = "bottom rim; state 1 (6:15): the hour hand is the path (11,12..19), jump tile (11,18) N-S (gym_features.c:2310-2314). the clock (x 5..17, z 7..19) is walkable only along its hands: sEternaGymClockCollision (src/overlay008/gym_features.c:2333-2408, 0 = walkable)"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 11
 z = 13
 note = "up the hour hand to the centre"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 18
 z = 13
 note = "east along the minute hand (10..17,13) to the right ring"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 20
 z = 16
 face = "down"
@@ -122,7 +114,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 note = "TRAINER_AROMA_LADY_JENNA: BUDEW 15, 16, 17"
 
 [[step]]
@@ -131,21 +122,18 @@ note = "VAR_ETERNA_GYM_TRAINERS_BEATEN 2, clock state 2 (9:15): row z=13 across,
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 18
 z = 13
 note = "back to the clock's east end"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 4
 z = 13
 note = "west across the clock along z=13 (both hands), over the jump tile (6,13)"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 2
 z = 8
 face = "up"
@@ -157,7 +145,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 note = "TRAINER_AROMA_LADY_ANGELA: ROSELIA 19"
 
 [[step]]
@@ -166,28 +153,24 @@ note = "VAR_ETERNA_GYM_TRAINERS_BEATEN 3, clock state 3 (0:45): minute hand (5..
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 4
 z = 13
 note = "back down the left ring"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 11
 z = 13
 note = "east along the minute hand to the centre"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 11
 z = 7
 note = "north up the hour hand to the top rim"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 11
 z = 4
 face = "up"
@@ -199,7 +182,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "gardenia"
 note = "TRAINER_LEADER_GARDENIA: TURTWIG 20, CHERRIM 20, ROSERADE 22"
 
@@ -210,21 +192,18 @@ note = "GiveBadge BADGE_ID_FOREST, TM86 (scripts_eterna_city_gym.s:76-121); cloc
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 11
 z = 7
 note = "back to the top rim"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 11
 z = 19
 note = "down the hour hand"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 11
 z = 27
 note = "gym exit (warp 0) -> Eterna City (312,562), 14's start"

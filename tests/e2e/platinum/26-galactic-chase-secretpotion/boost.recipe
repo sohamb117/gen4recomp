@@ -1,4 +1,9 @@
 # Boost on 25's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
-# HP and PP refilled; Crunch for TRAINER_GALACTIC_GRUNT_VALOR_LAKEFRONT (CROAGUNK 31) and the Route 213 trainers.
+# HP refilled (party-level) and PP refilled (the four moves set again, as 20's boost gave them; auto_battle picks
+# between them by type).
+# For TRAINER_GALACTIC_GRUNT_VALOR_LAKEFRONT (CROAGUNK 31: Earthquake 2x) and the Route 213 trainers.
 party-level 0 60
-party-move 0 3 MOVE_CRUNCH
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE

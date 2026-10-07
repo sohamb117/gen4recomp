@@ -24,7 +24,6 @@ frames = 6900
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 303
 z = 524
 note = "coord (303,523..526) VAR_ETERNA_CITY_STATE==0 -> Barry, the statue, Cyrus -> 1 (scripts_eterna_city.s:710-820)"
@@ -35,7 +34,6 @@ shot = "cyrus-statue"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 305
 z = 522
 note = "coord (304..306,522) VAR_ETERNA_CITY_STATE==1 -> Cynthia [INFERENCE: the statue scene leaves the player off this tile, so the step fires the coord]"

@@ -70,6 +70,29 @@ int main(int argc, char **argv)
     CHECK_EQ_INT(nd_move_base_pp(&gd, 33), 35);
     CHECK_EQ_INT(nd_move_base_pp(&gd, 63), 5);
     CHECK_EQ_INT(nd_move_base_pp(&gd, 100000), 0);
+    /* Move battle data: Tackle physical Normal 35, Thunderbolt special
+     * Electric 95 accuracy 100, Growl status. */
+    const nd_move *tackle = nd_move_get(&gd, 33), *tbolt = nd_move_get(&gd, 85), *growl = nd_move_get(&gd, 45);
+    CHECK(tackle != NULL && tbolt != NULL && growl != NULL);
+    if (tackle && tbolt && growl) {
+        CHECK_EQ_INT(tackle->cls, 0);
+        CHECK_EQ_INT(tackle->power, 35);
+        CHECK_EQ_INT(tackle->type, 0);
+        CHECK_EQ_INT(tbolt->cls, 1);
+        CHECK_EQ_INT(tbolt->power, 95);
+        CHECK_EQ_INT(tbolt->type, 13);
+        CHECK_EQ_INT(tbolt->accuracy, 100);
+        CHECK_EQ_INT(growl->cls, 2);
+    }
+    CHECK(nd_move_get(&gd, 100000) == NULL);
+    /* Type chart: Fire->Grass 2, Water->Water 0.5, Electric->Ground 0,
+     * Normal->Ghost 0 (the Foresight rows), Normal->Normal 1. */
+    CHECK(gd.type_chart_ok);
+    CHECK_EQ_INT(nd_type_multiplier(&gd, 10, 12), 20);
+    CHECK_EQ_INT(nd_type_multiplier(&gd, 11, 11), 5);
+    CHECK_EQ_INT(nd_type_multiplier(&gd, 13, 4), 0);
+    CHECK_EQ_INT(nd_type_multiplier(&gd, 0, 7), 0);
+    CHECK_EQ_INT(nd_type_multiplier(&gd, 0, 0), 10);
 
     nd_gamedata_free(&gd);
     nd_rom_close(&rom);

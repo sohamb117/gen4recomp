@@ -58,10 +58,14 @@ A guest started with `PC_E2E=1` publishes one block every frame (`core/include/n
 status slot `NP_STAT_E2E`: the map, the player's tile/height/facing/move state, up to 64 other map objects (tile,
 local id, graphics id), a 64x64 tile window around the player (behavior byte, collision bit, loaded bit), and the
 battle input the game is waiting on (`ui` 1: the bottom-screen menu, `ui_arg` its config index: 1-10 actions, 11
-moves, 12 targets, 13-17 YES/NO prompts; `ui` 2: the battle party screen, 0 slots / 1 the SHIFT page). Without
-`PC_E2E` nothing runs and hashes are unchanged (`tests/dp/regress.sh`). Platinum's half is
-`games/platinum/pc/src/pc_np_field.c` + `pc_e2e.c` and the battle patches; D/P's is
-`games/diamond/pc/game/pc_dp_field.c` and the overlay 9/11 patches.
+moves, 12 targets, 13-17 YES/NO prompts; `ui` 2: the battle party screen, 0 slots / 1 the SHIFT page). While the
+battle menu waits, the block also carries a battle report: every battler (species, level, HP, the battle's types,
+moves, PP, the Disabled move) and the menu battler's party in its party screen's order. Without `PC_E2E` nothing
+runs and hashes are unchanged (`tests/dp/regress.sh`). Platinum's half is `games/platinum/pc/src/pc_np_field.c` +
+`pc_e2e.c` and the battle patches; D/P's is `games/diamond/pc/game/pc_dp_field.c` and the overlay 9/11 patches.
+
+`auto_battle` scores moves with the ROM's own tables, `np_save4 gamedata ROM` (`features/ndsdata` nd_gamedata:
+species types, each move's class/power/type/accuracy/range, the type chart read out of the battle overlay).
 
 `tests/gameplay/np_gp.c --serve 1` is the runner's link to the core: one command per line (`run N KEYS [X Y] [until
 COND]...`, `e2e`, `dump`, `opt`, `sched`, `quit`); `tests/e2e/np_e2e.py` wraps it (`Session`, `Probe`).
@@ -127,7 +131,7 @@ Names resolve per game as the lab recipes do (Platinum `MAP_HEADER_*`, `FLAG_*`,
 | `walk_to_door` | `pattern`, `doors`, opt. `wait` + `walk_to`'s | `walk_to` the door a guest log line names: the last match of `pattern` (one group) in run.log keys `doors` (`{"3" = [4, 2]}`). For doors the game rolls at random (Platinum's Hearthome Gym logs `pc-e2e: hearthome gym map M door D` under `PC_E2E`, pc_np_field.c). |
 | `talk_to` | `id` | talk to the map object with that local id wherever it is now (wandering people are chased): a free tile next to it, face it, A until a script starts |
 | `advance_text` | opt. `through_battle`, `map` | waits up to 40 frames for a script to start, then A every 8 frames until the field has been free for 30 frames; stops at a battle (unless `through_battle`) or as soon as `map` is loaded |
-| `auto_battle` | opt. `move` (slot, default 0), `wait` | taps FIGHT and the move every turn; YES/NO prompts: nickname NO, forget a move NO (gives up learning), use the next Pokemon YES, switch NO; on the party screen tries the next slot after a faint; otherwise A, so an evolution plays out |
+| `auto_battle` | opt. `move` (slot), `wait`, `flee` | FIGHT every turn with the usable move (PP left, not Disabled) of highest expected damage on the targeted foe: base power x STAB x type effectiveness x accuracy, halved for two-turn moves, cut to a quarter for a move that would hit a live ally (Earthquake beside a tag partner); Self-Destruct/Explosion, Dream Eater, Snore, Fake Out and Focus Punch never; status moves only when no damaging move has PP; a move the game refuses is skipped for the turn. A lead with no damaging move left against the foe is switched (POKEMON) for the first healthy party member that has one; a fainted lead is replaced the same way (else the next slot). `move = N` overrides the choice: slot N every turn, the next slot once the game refuses it (also the behaviour when the probe has no battle report). YES/NO prompts: nickname NO, forget a move NO (gives up learning), use the next Pokemon YES, switch NO; otherwise A, so an evolution plays out |
 | `wait_map` | `map` | until that map id |
 | `wait_field` | | until the player is free |
 | `wait_battle` | | until a battle starts |

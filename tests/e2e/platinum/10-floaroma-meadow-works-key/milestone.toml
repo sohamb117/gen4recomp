@@ -3,7 +3,7 @@
 # Start: Jubilife City warp 2 (Pokecenter door) -> end: Floaroma Town (11's town).
 title = "Floaroma Meadow: the Works Key"
 priority = "P0"
-estimate = 19685
+estimate = 20095
 refs = [
   "scripts_ravaged_path.s:8",
   "scripts_route_205_south.s:129-131",
@@ -38,11 +38,10 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 29600
+frames = 30200
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 171
 z = 705
 max = 8000
@@ -54,7 +53,6 @@ map = "MAP_HEADER_RAVAGED_PATH"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 21
 z = 42
 face = "right"
@@ -67,7 +65,6 @@ note = "'use Rock Smash?' A = YES (field move needs BADGE_ID_COAL: src/field_mov
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 28
 z = 44
 note = "Ravaged Path exit (warp 1) -> Route 204 North (180,698)"
@@ -78,7 +75,6 @@ map = "MAP_HEADER_ROUTE_204_NORTH"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 211
 z = 660
 max = 8000
@@ -90,7 +86,6 @@ note = "the little girl; Floaroma grunts hidden, VAR_VALLEY_WINDWORKS_STATE 1 (s
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 162
 z = 641
 note = "back west through Floaroma to the meadow entrance (events_floaroma_town warp 7) -> meadow (12,54)"
@@ -101,7 +96,6 @@ map = "MAP_HEADER_FLOAROMA_MEADOW"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 12
 z = 48
 note = "coord (12..13,48) VAR_FLOAROMA_MEADOW_STATE==0 -> two back-to-back grunt battles"
@@ -111,7 +105,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "meadow-grunt-1"
 note = "TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_1 (296): STUNKY 13 (scripts_floaroma_meadow.s:22)"
 
@@ -120,7 +113,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 note = "TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_2 (297): ZUBAT 11 x2 (scripts_floaroma_meadow.s:26)"
 
 [[step]]
@@ -130,7 +122,6 @@ note = "Works Key, Honey x10 (scripts_floaroma_meadow.s:107-134)"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 12
 z = 54
 note = "meadow exit (warp 3) -> Floaroma (162,641), 11's town"

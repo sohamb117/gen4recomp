@@ -24,6 +24,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "np_e2e.h"
 
@@ -102,6 +103,26 @@ void pc_e2e_ui(unsigned kind, unsigned arg)
     sUiSeen = 1;
 }
 
+_Static_assert(sizeof(pc_e2e_mon) == sizeof(np_e2e_mon), "pc_e2e_mon mirrors np_e2e_mon");
+
+void pc_e2e_battle(unsigned menu_battler, unsigned battle_type, const pc_e2e_mon *battlers, unsigned nbattlers,
+                   const pc_e2e_mon *party, unsigned nparty)
+{
+    np_e2e_block *b = &sBlock;
+    unsigned i;
+
+    if (nbattlers > NP_E2E_MAX_BATTLERS) nbattlers = NP_E2E_MAX_BATTLERS;
+    if (nparty > NP_E2E_MAX_PARTY) nparty = NP_E2E_MAX_PARTY;
+    memset(b->battlers, 0, sizeof b->battlers);
+    memset(b->party, 0, sizeof b->party);
+    for (i = 0; i < nbattlers; i++) memcpy(&b->battlers[i], &battlers[i], sizeof b->battlers[i]);
+    for (i = 0; i < nparty; i++) memcpy(&b->party[i], &party[i], sizeof b->party[i]);
+    b->nparty = nparty;
+    b->menu_battler = menu_battler;
+    b->battle_type = battle_type;
+    b->battle_frame = b->frame;
+}
+
 /* The battle runs its menu loop on every other frame boundary (and a busy
  * frame can skip one more), so a report holds through up to UI_GAP frames
  * without one: ui_count counts frames since the report began. */
@@ -153,6 +174,12 @@ void pc_e2e_object(int x, int z, unsigned local_id, unsigned gfx)
 void pc_e2e_ui(unsigned kind, unsigned arg)
 {
     (void)kind, (void)arg;
+}
+
+void pc_e2e_battle(unsigned menu_battler, unsigned battle_type, const pc_e2e_mon *battlers, unsigned nbattlers,
+                   const pc_e2e_mon *party, unsigned nparty)
+{
+    (void)menu_battler, (void)battle_type, (void)battlers, (void)nbattlers, (void)party, (void)nparty;
 }
 
 void pc_e2e_end_frame(void)

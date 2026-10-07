@@ -44,8 +44,11 @@
  * frames rather than mid-task.
  */
 #include <stdio.h>
+#include <string.h>
 
 #include "global.h"
+
+#include "constants/pokemon.h"
 
 #include "camera.h"
 #include "field_system.h"
@@ -205,8 +208,85 @@ extern int ov11_02258E74(void *subscreen);
 extern BOOL ov09_0221347C(void *battleParty);
 extern int ov09_022134F4(void *battleParty);
 
+/* The probe's battle report (pc_np_options.h pc_e2e_battle), D's half of
+ * Platinum's pc_pl_e2e_battle, through overlay 11's BattleSystem getters
+ * (ov11_0222FF68.s, in Platinum battle_system.c's order: GetBattleType
+ * 0x2C, GetBattleContext 0x30, GetMaxBattlers 0x44, GetPartyCount,
+ * GetPartyPokemon; GetBattlerType is ov11_02230260) and the BattleContext
+ * layout ov11_02242B78 (Platinum's BattleSystem_InitBattleMon) writes:
+ * battleMons[] 0xC0 bytes each at 0x2D40, species +0, moves +0xC, types
+ * +0x24, the IV word with isEgg (bit 30) +0x14, ppCur +0x2C, level +0x34,
+ * curHP +0x4C, maxHP +0x50; partyOrder[battler][6] at 0x312C (as Platinum).
+ * D's Disable slot is not located: disabled_move stays 0 and the bot learns
+ * a refused move from the menu coming back. The subscreen holds the
+ * BattleSystem at +0 and the menu's battler type at +0x69E (the byte before
+ * the config index, as Platinum's battlerType / activeMenuConfigIndex). */
+extern u32 ov11_0222FF74(void *battleSys);                      /* BattleSystem_GetBattleType */
+extern u8 *ov11_0222FF78(void *battleSys);                      /* BattleSystem_GetBattleContext */
+extern int ov11_0222FF84(void *battleSys);                      /* BattleSystem_GetMaxBattlers */
+extern int ov11_0222FFC8(void *battleSys, int battler);         /* BattleSystem_GetPartyCount */
+extern void *ov11_02230014(void *battleSys, int battler, int slot); /* BattleSystem_GetPartyPokemon */
+extern u8 ov11_02230260(void *battleSys, int battler);          /* BattleSystem_GetBattlerType */
+extern u32 GetMonData(void *mon, int attr, void *ptr);
+
+#define DP_CTX_BATTLE_MONS 0x2D40
+#define DP_BATTLE_MON_SIZE 0xC0
+#define DP_CTX_PARTY_ORDER 0x312C
+
+static void e2e_battle(void *subscreen) {
+    void *bs = *(void **)subscreen;
+    const unsigned menuType = *((u8 *)subscreen + 0x69E);
+    pc_e2e_mon battlers[4], party[6];
+    u8 *ctx;
+    int n, i, j, menu = 0, count;
+
+    if (bs == NULL || (ctx = ov11_0222FF78(bs)) == NULL) return;
+    memset(battlers, 0, sizeof battlers);
+    memset(party, 0, sizeof party);
+    n = ov11_0222FF84(bs);
+    if (n > 4) n = 4;
+    for (i = 0; i < n; i++) {
+        const u8 *m = ctx + DP_CTX_BATTLE_MONS + i * DP_BATTLE_MON_SIZE;
+        const s32 hp = *(const s32 *)(m + 0x4C);
+
+        if (ov11_02230260(bs, i) == menuType) menu = i;
+        battlers[i].species = *(const u16 *)m;
+        battlers[i].egg = (unsigned char)(*(const u32 *)(m + 0x14) >> 30 & 1);
+        battlers[i].level = m[0x34];
+        battlers[i].hp = (unsigned short)(hp > 0 ? hp : 0);
+        battlers[i].max_hp = (unsigned short)*(const u32 *)(m + 0x50);
+        battlers[i].types[0] = m[0x24];
+        battlers[i].types[1] = m[0x25];
+        for (j = 0; j < 4; j++) {
+            battlers[i].moves[j] = *(const u16 *)(m + 0xC + 2 * j);
+            battlers[i].pp[j] = m[0x2C + j];
+        }
+    }
+    count = ov11_0222FFC8(bs, menu);
+    if (count > 6) count = 6;
+    for (i = 0; i < count; i++) {
+        void *mon = ov11_02230014(bs, menu, ctx[DP_CTX_PARTY_ORDER + menu * 6 + i]);
+
+        if (mon == NULL) continue;
+        party[i].species = (unsigned short)GetMonData(mon, MON_DATA_SPECIES, NULL);
+        party[i].egg = (unsigned char)GetMonData(mon, MON_DATA_IS_EGG, NULL);
+        party[i].level = (unsigned char)GetMonData(mon, MON_DATA_LEVEL, NULL);
+        party[i].hp = (unsigned short)GetMonData(mon, MON_DATA_HP, NULL);
+        party[i].max_hp = (unsigned short)GetMonData(mon, MON_DATA_MAX_HP, NULL);
+        for (j = 0; j < 4; j++) {
+            party[i].moves[j] = (unsigned short)GetMonData(mon, MON_DATA_MOVE1 + j, NULL);
+            party[i].pp[j] = (unsigned char)GetMonData(mon, MON_DATA_MOVE1_PP + j, NULL);
+        }
+        party[i].types[0] = party[i].types[1] = 0xFF;
+    }
+    pc_e2e_battle((unsigned)menu, ov11_0222FF74(bs), battlers, (unsigned)n, party, (unsigned)count);
+}
+
 int PcDp_E2eMenuInput(void *subscreen) {
-    if (pc_e2e_on()) pc_e2e_ui(PC_E2E_UI_BATTLE_MENU, (unsigned)*((s8 *)subscreen + 0x69F));
+    if (pc_e2e_on()) {
+        pc_e2e_ui(PC_E2E_UI_BATTLE_MENU, (unsigned)*((s8 *)subscreen + 0x69F));
+        e2e_battle(subscreen);
+    }
     return ov11_02258E74(subscreen);
 }
 

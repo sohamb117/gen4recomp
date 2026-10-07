@@ -79,7 +79,7 @@ VAR_OREBURGH_CITY_STATE = 2
 | `walk_to` | `x`, `z`, opt. `via`, `map`, `face`, `interact`, `surf`, `hm` | path to the tile on the current map, re-planning around NPCs; walking into a warp tile takes it; trainers who spot you on the way are fought; `surf`/`hm` let the path cross water / Cut trees, Rock Smash rocks, Rock Climb walls (the party must know the move: boost it); `via = [[x, z], ...]` waypoints first (long routes, bridges) |
 | `talk_to` | `id` | talk to the map object with that local id wherever it stands (wandering people are chased) |
 | `advance_text` | opt. `map` | press A with spacing until the field is free (cutscenes, dialogue, item jingles); with `map`, stop as soon as that map loads |
-| `auto_battle` | opt. `move` (slot, default 0) | FIGHT + the move every turn until the battle ends; declines move learning and nicknames, allows evolution |
+| `auto_battle` | opt. `move` (slot) | FIGHT every turn with the best usable move by type (README: base power x STAB x effectiveness from the ROM), switching out a lead with no damaging move left; `move = N` forces slot N for scripted fights; declines move learning and nicknames, allows evolution |
 | `wait_map` | `map` | until the map id matches |
 | `wait_field` | | until the player is free in the field |
 | `wait_battle` | | until a battle starts (after walking into a trainer's sight) |
@@ -149,15 +149,16 @@ alone CONTINUE stops on a blank Journal page).
 
 ### The lab party
 
-Battles are A presses on slot 0, so choose species, level and slot-0 move from the opponents' real teams (Platinum
-`res/trainers/`, D/P `dp_script.py trainer TRAINER_X`), cite them in a step `note`, and give the lead a move that wins
-every battle of the milestone, including type-disadvantaged ones. Clear the lead's other move slots when a 0-PP
-fallback to Struggle is safer than a stalled menu. Field-move carriers sit behind the lead.
+`auto_battle` picks each turn's move by type and PP (README, `auto_battle`), so give the lead a few damaging moves
+of different types chosen from the opponents' real teams (Platinum `res/trainers/`, D/P `dp_script.py trainer
+TRAINER_X`) and cite them in a step `note`; no `move = N` is needed unless a fight is scripted. Field-move carriers
+sit behind the lead, so field moves do not take battle slots.
 
 ### Boosts (`boost.recipe`)
 
-`auto_battle` knows no types or HP, so a chained party that played the story honestly is often too weak for the
-next boss, and grinding it costs tens of thousands of frames. A milestone fixes that with `[start] boost =
+`auto_battle` knows types and PP but not levels or stats, so a chained party that played the story honestly is
+often too weak for the next boss, and grinding it costs tens of thousands of frames. A milestone fixes that with
+`[start] boost =
 "boost.recipe"`: after the start save is placed (the previous end save, or the minted lab start), the runner applies
 the boost recipe on top of it with the save lab (the derived-save mint `recipe` uses) and the run continues from
 there; the report says `... + boost boost.recipe`. The boosted party carries down the chain.

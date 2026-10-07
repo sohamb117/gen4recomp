@@ -46,7 +46,6 @@ frames = 24000
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 12
 z = 30
 note = "out of the gym (warp 0) -> Veilstone gym door (684,611)"
@@ -61,7 +60,6 @@ note = "OnFrame VeilstoneCity_OnFrame_CounterpartNeedsHelp (scripts_veilstone_ci
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 695
 z = 596
 face = "right"
@@ -74,7 +72,6 @@ note = "Yes (default) -> VeilstoneCity_WarehouseScene :496, tag battle starts :5
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "warehouse_tag_battle"
 note = "tag battle vs Grunts 848 (697,595) + 849 (697,597); doubles target menu"
 
@@ -93,7 +90,6 @@ note = "warehouse OnFrame: Looker points at the HM (scripts_veilstone_city_galac
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 13
 z = 9
 face = "up"

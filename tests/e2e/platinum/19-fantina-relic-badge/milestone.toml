@@ -45,7 +45,6 @@ note = "OnFrame VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE==FALSE (lab start): the gui
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 4
 z = 2
 note = "entrance warp (4,2) -> Trainer Room 1 (8,10)"
@@ -57,12 +56,10 @@ map = "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_1"
 [[step]]
 do = "talk_to"
 id = 0
-move = 3
 note = "Youngster Donny (LOCALID 0, wanders from (12,7), sight 2): fought here so the flag is proven, not left to his wandering"
 
 [[step]]
 do = "walk_to_door"
-move = 3
 pattern = 'hearthome gym map 89 door (\d)'
 doors = { "0" = [4, 2], "1" = [8, 2], "2" = [12, 2] }
 note = "the room rolls its open door on entry (MTRNG % 3, gym_features.c:3817-3842) and re-points the others to the entrance (:3844-3856); the guest logs the roll (pc_np_field.c e2e_gym_log). Doors circle 0 (4,2), square 1 (8,2), triangle 2 (12,2) (sTrainerRoom1Doors :3755-3760); Donny's battle, if still on, is fought first"
@@ -74,12 +71,10 @@ map = "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_2"
 [[step]]
 do = "talk_to"
 id = 1
-move = 3
 note = "Ace Trainer Allen (LOCALID 1, wanders from (18,7), sight 2)"
 
 [[step]]
 do = "walk_to_door"
-move = 3
 pattern = 'hearthome gym map 90 door (\d)'
 doors = { "3" = [4, 2], "4" = [9, 2], "5" = [14, 2], "6" = [19, 2], "7" = [24, 2] }
 note = "sun 3 (4,2), donut 4 (9,2), moon 5 (14,2), star 6 (19,2), heart 7 (24,2) (sTrainerRoom2Doors :3762-3769) -> Leader Room (4,13)"
@@ -90,7 +85,6 @@ map = "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 4
 z = 11
 face = "up"
@@ -102,7 +96,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "fantina"
 note = "TRAINER_LEADER_FANTINA: DUSKULL 24, HAUNTER 24, MISMAGIUS 26"
 
@@ -113,7 +106,6 @@ note = "BADGE_ID_RELIC, TM65, Route 209 blockade lifted; the bollards (8,9)/(8,1
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 14
 z = 3
 note = "leader room warp 4 -> entrance room (11,3)"
@@ -124,7 +116,6 @@ map = "MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 4
 z = 8
 note = "entrance exit (warp 3) -> Hearthome at the gym door, 20's start"

@@ -1,4 +1,10 @@
 # Boost on 22's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
-# HP and PP refilled for the Route 214/213 trainers and TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (STARAVIA 34,
-# BUIZEL 32, ROSELIA 32, MONFERNO 36: Crunch, slot 3 since 22, is neutral on all four).
-party-level 0 55
+# HP refilled (party-level) and PP refilled (the four moves set again, as 20's boost gave them; auto_battle picks
+# between them by type).
+# For the Route 214/213 trainers and TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (STARAVIA 34, BUIZEL 32, ROSELIA 32,
+# MONFERNO 36: Rock Slide on Staravia, Seed Bomb on Buizel, Earthquake on Monferno).
+party-level 0 58
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE

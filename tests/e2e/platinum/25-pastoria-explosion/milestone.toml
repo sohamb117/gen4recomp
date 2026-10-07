@@ -34,7 +34,6 @@ frames = 13500
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 610
 z = 810
 note = "coord2 (610,810), state 4 -> CoordEvent_Bomb (:619-640); branches on x 609/611/612"

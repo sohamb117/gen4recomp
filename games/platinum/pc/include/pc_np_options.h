@@ -77,13 +77,33 @@ void pc_np_camera_end(struct Camera *camera);
  * as PC_E2E_TILE_* bits, asked only after the player moved or the map
  * changed) and each other map object (pc_e2e_object), and closes the frame
  * with pc_e2e_end_frame. pc_e2e_ui is called by the game's patched input
- * loops: a PC_E2E_UI_* kind and its argument. */
+ * loops: a PC_E2E_UI_* kind and its argument. While the battle menu waits,
+ * the game's half also reports the battle (pc_e2e_battle: the battlers by
+ * id, the menu battler's party in its party screen's order). */
 int pc_e2e_on(void);
 void pc_e2e_field(int field, unsigned map, int x, int z, int y, unsigned facing, unsigned move_state);
 void pc_e2e_grid(unsigned (*cell)(void *ctx, int x, int z), void *ctx);
 void pc_e2e_object(int x, int z, unsigned local_id, unsigned gfx);
 void pc_e2e_end_frame(void);
 void pc_e2e_ui(unsigned kind, unsigned arg);
+/* np_e2e_mon, field for field */
+typedef struct pc_e2e_mon {
+    unsigned short species;
+    unsigned short hp, max_hp;
+    unsigned short moves[4];
+    unsigned short disabled_move;
+    unsigned char pp[4];
+    unsigned char level;
+    unsigned char types[2];
+    unsigned char egg;
+} pc_e2e_mon;
+void pc_e2e_battle(unsigned menu_battler, unsigned battle_type, const pc_e2e_mon *battlers, unsigned nbattlers,
+                   const pc_e2e_mon *party, unsigned nparty);
+/* Platinum's battle half (pc/src/pc_np_field.c), from the battle menu's
+ * input loop (pc/patches/src/battle/battle_subscreen.c.patch): the menu's
+ * BattleSystem and the battler type the menu is for. */
+struct BattleSystem;
+void pc_pl_e2e_battle(struct BattleSystem *battleSys, unsigned battler_type);
 #define PC_E2E_UI_BATTLE_MENU 1     /* NP_E2E_UI_BATTLE_MENU */
 #define PC_E2E_UI_BATTLE_PARTY 2    /* NP_E2E_UI_BATTLE_PARTY */
 #define PC_E2E_TILE_COLLISION 0x0100u /* NP_E2E_TILE_COLLISION */

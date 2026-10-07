@@ -63,7 +63,6 @@ frames = 90000
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 505
 z = 726
 note = "east exit (warp 19), blockade hidden by Fantina's win -> Route 209 gate (1,7)"
@@ -74,7 +73,6 @@ map = "MAP_HEADER_ROUTE_209_GATE_TO_HEARTHOME_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 5
 z = 7
 note = "coord (5,5..9) VAR_ROUTE_209_GATE_TO_HEARTHOME_CITY_STATE==1 -> Barry"
@@ -84,7 +82,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "rival-209"
 note = "TRAINER_RIVAL_ROUTE_209_TURTWIG (471): STARAVIA 25, BUIZEL 23, ROSELIA 23, MONFERNO 27 (scripts_route_209_gate_to_hearthome_city.s:41)"
 
@@ -94,7 +91,6 @@ note = "Barry leaves -> 2 (:64-66)"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 10
 z = 7
 note = "gate east exit (warp 1) -> Route 209 (512,726)"
@@ -105,10 +101,10 @@ map = "MAP_HEADER_ROUTE_209"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 560
 z = 669
 max = 12000
+on_battle = "flee"
 note = "east then north along Route 209 into Solaceon (seamless), round the plateau's BIKE_SLOPE (562,691..692) up the x557-558 column past Cowgirl Shelley (560,690) -> coord (557..563,669) VAR_SOLACEON_TOWN_STATE==0; Lost Tower and the cut tree (573,690) are optional"
 
 [[step]]
@@ -124,15 +120,15 @@ note = "Solaceon Pokemon Center (events_solaceon_town warp 5): full HP/PP before
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 671
 z = 598
 max = 3000
+on_battle = "flee"
 via = [[558, 657], [558, 619], [564, 619], [564, 598], [591, 598], [591, 596], [591, 588], [591, 587], [588, 587],
        [588, 593], [606, 593], [606, 599], [613, 599], [613, 598], [613, 584], [613, 582], [602, 582], [601, 582],
        [601, 579], [610, 579], [610, 590], [625, 590], [625, 583], [634, 583], [634, 587], [654, 587], [654, 593],
        [646, 593], [646, 598]]
-note = "north on Route 210 South (round its BIKE_SLOPEs (557,617..618), (562,625..626)), east on Route 215 before the Psyduck (560..561,585..587) to the Veilstone gate (events_route_215 warp 0). Waypoints: every corner of a route planned offline over the land data with bridge decks modelled (215's N-S decks x591-593 and x613-615, E-W deck z582-583 cross the paths under them; walk_to's A* cannot tell deck from underpass). No cut tree is in the way. Route 210 S and 215 sight trainers may engage"
+note = "north on Route 210 South (round its BIKE_SLOPEs (557,617..618), (562,625..626)), east on Route 215 before the Psyduck (560..561,585..587) to the Veilstone gate (events_route_215 warp 0). Waypoints: every corner of a route planned offline over the land data with bridge decks modelled (215's N-S decks x591-593 and x613-615, E-W deck z582-583 cross the paths under them; walk_to's A* cannot tell deck from underpass). No cut tree is in the way. Route 210 S and 215 sight trainers engage (Ace Trainers Maya (648,596) and Dennis (648,599) cannot be avoided) and are fought; wild battles are fled, to keep the PP for them"
 
 [[step]]
 do = "wait_map"
@@ -140,7 +136,6 @@ map = "MAP_HEADER_ROUTE_215_GATE_TO_VEILSTONE_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 10
 z = 7
 note = "gate east exit (warp 0) -> Veilstone (678,598)"
@@ -151,7 +146,6 @@ map = "MAP_HEADER_VEILSTONE_CITY"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 682
 z = 616
 note = "coord (681..684,616) VAR_VEILSTONE_CITY_CRASHER_WAKE_STATE==0 south of the gym"
@@ -163,7 +157,6 @@ note = "Dawn, Crasher Wake leaves the gym -> 1 (scripts_veilstone_city.s:86-124)
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 684
 z = 611
 note = "gym door (events_veilstone_city warp 13) -> gym (12,30), 21's start"
