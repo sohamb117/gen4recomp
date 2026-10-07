@@ -5,6 +5,7 @@
 ../diamond/93-battle-zone-ferry-fight-area
 ../diamond/94-battle-zone-route-225-north-gate
 ../diamond/95-stark-mountain-buck-magma-stone
+../diamond/95b-stark-mountain-buck-house
 ../diamond/96-battle-park-battle-tower
 ../diamond/97-gts-offline
 ../diamond/98-jubilife-tv
@@ -15,6 +16,7 @@
 103-legendary-dialga-palkia
 ../diamond/104-legendary-giratina-turnback
 ../diamond/105-legendary-uxie-azelf
+../diamond/105b-legendary-azelf
 ../diamond/106-legendary-heatran
 ../diamond/107-legendary-regigigas
 ../diamond/108-rotom-old-chateau

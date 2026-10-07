@@ -1,8 +1,8 @@
 # Regigigas in Snowpoint Temple B5F: with Regirock, Regice and Registeel in the party (species check only)
 # A awakens it (SetFlag 0x11A) -> LegendaryBattle 486, 70. D/P has no Regi trio battles (no Regi ruins maps).
-# Start: MAP_SNOWPOINT_TEMPLE_B5F (11,13) below Regigigas (11,12). End: same map, 0x11A set.
+# Defeating it takes the caught path (Unk00ED = sub_020480C8 is 0 for a win): SetFlag 0x11B.
+# Start: MAP_SNOWPOINT_TEMPLE_B5F (11,13) below Regigigas (11,12). End: same map, 0x11A and 0x11B set.
 title = "Legendary: Regigigas in Snowpoint Temple"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 5000
@@ -19,6 +19,7 @@ refs = [
   "scr_seq 0309 @0x00BE",
   "scr_seq 0309 @0x00C6",
   "msg 0252 #3",
+  "games/diamond/arm9/asm/unk_020476CC.s:1207-1217",
   "scr_seq 0192 @0x01F9-0x020B",
   "games/diamond/arm9/src/scrcmd.c:4277-4281",
   "games/diamond/arm9/asm/unk_02054C14.s:322-323",
@@ -54,15 +55,18 @@ note = "A-only never throws a ball: defeated, never caught"
 [[step]]
 do = "advance_text"
 max = 1500
-note = "not caught -> msg 252 #3 'REGIGIGAS disappeared from view...' (@0x00C6)"
+note = "defeated: Unk00ED -> 0 -> SetFlag 0x11B (@0x00BE), no text; 'REGIGIGAS disappeared from view...' (@0x00C6) is the run-away path. The Hall of Fame respawn (scr_seq 0192 @0x01F9-0x020B) needs 0x11B clear"
 
 [[step]]
 do = "wait_field"
 shot = "after"
 
+[[shots]]
+frames = [2500]
+
 [expect]
 map = "MAP_SNOWPOINT_TEMPLE_B5F"
 battles = 1
-flags = ["0x11A"]
-flags_clear = ["0x11B", "0x8E"]
+flags = ["0x11A", "0x11B"]
+flags_clear = ["0x8E"]
 party = ["SPECIES_REGIROCK", "SPECIES_REGICE", "SPECIES_REGISTEEL"]

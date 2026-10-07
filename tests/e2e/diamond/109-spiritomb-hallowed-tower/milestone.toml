@@ -3,7 +3,6 @@
 # keystone.recipe: the Odd Keystone itself (YES -> TakeItem 111, SetVar 0x408A 1).
 # Start: MAP_ROUTE_209 (566,715) below the tower (566..567,713..714). End: same map.
 title = "Spiritomb at the Hallowed Tower"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 4000

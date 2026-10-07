@@ -3,7 +3,6 @@
 # not required (only the optional Unk0270 2,1 when 0x964 is set).
 # Start: MAP_SANDGEM_ROWANS_LAB (7,6) below Rowan (7,5). End: same map, National Dex on.
 title = "National Dex upgrade from Rowan and Oak"
-status = "planned"
 priority = "P1"
 version = "both"
 estimate = 5000

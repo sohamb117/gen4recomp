@@ -1,8 +1,9 @@
 # Heatran in Stark Mountain Interior 3: ON_TRANSITION shows it only with game complete, National Dex,
 # Buck talked to (0x125) and var 0x409E==1; A -> SetFlag 0xD7, SetVar 0x409E 2, LegendaryBattle 485, 70.
+# Defeating it takes the caught path (Unk00ED = sub_020480C8 is 0 for a win): SetFlag 0x120 + 0x983.
+# Chained: 95b's end save (Buck talked to, on the Hall of Fame save) + the National Dex (110's) + the map line.
 # Start: MAP_STARK_MOUNTAIN_INTERIOR_3 (7,7) below Heatran (7,6). End: same map, var 0x409E 2.
 title = "Legendary: Heatran in Stark Mountain"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 5000
@@ -19,7 +20,8 @@ refs = [
   "scr_seq 0278 @0x01A8-0x01AC",
   "scr_seq 0278 @0x01BF",
   "scr_seq 0278 @0x01CB",
-  "msg 0247 #4",
+  "msg 0247 #3",
+  "games/diamond/arm9/asm/unk_020476CC.s:1207-1217",
   "scr_seq 1027 @0x0051",
   "scr_seq 0192 @0x01E2-0x01F1",
   "games/diamond/arm9/src/scrcmd.c:3872-3882",
@@ -27,7 +29,9 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
+from = "95b-stark-mountain-buck-house"
+recipe = "chain.recipe"
+lab = "start.recipe"
 
 [run]
 frames = 7500
@@ -49,20 +53,23 @@ shot = "legendary"
 
 [[step]]
 do = "auto_battle"
-note = "A-only never throws a ball: defeated, never caught"
+note = "the lead (chained: Torterra lv100, Earthquake 4x on Fire/Steel; lab: Garchomp Earthquake). A-only never throws a ball"
 
 [[step]]
 do = "advance_text"
 max = 1500
-note = "not caught -> msg 247 #4 'HEATRAN disappeared into the volcano...' (@0x01B4); caught would set 0x120 + Vs Seeker level 5 flag 0x983 (@0x01A8-0x01AC)"
+note = "defeated: Unk00ED -> 0 -> SetFlag 0x120 + Vs Seeker level-5 flag 0x983 (@0x01A8-0x01AC), no text; 'HEATRAN disappeared into the volcano...' (@0x01B4) is the run-away path"
 
 [[step]]
 do = "wait_field"
 shot = "after"
 
+[[shots]]
+frames = [2500]
+
 [expect]
 map = "MAP_STARK_MOUNTAIN_INTERIOR_3"
 battles = 1
 vars = { "0x409E" = 2 }
-flags = ["0xD7"]
-flags_clear = ["0x120", "0x8E"]
+flags = ["0xD7", "0x120", "0x983", "0x964"]
+flags_clear = ["0x8E"]

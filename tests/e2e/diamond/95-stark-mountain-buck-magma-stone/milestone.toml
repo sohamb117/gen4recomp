@@ -1,8 +1,8 @@
-# Stark Mountain story: in Interior 3 Buck takes the Magma Stone (coord (7,10) while var 0x409E==0);
-# buck.recipe: talk to Buck in the Survival Area west house -> flag 0x125 (Heatran's prerequisite).
+# Stark Mountain story: in Interior 3 Buck takes the Magma Stone (coord (7,10) while var 0x409E==0).
+# Chained: 93's end save (game complete, Fight Area arrival) + the warp to Interior 3's entry (the Route 227/
+# Stark Mountain walk is skipped). Buck in the Survival Area west house is ../95b-stark-mountain-buck-house.
 # Start: MAP_STARK_MOUNTAIN_INTERIOR_3 entry warp (7,17). End: same map, var 0x409E 1.
 title = "Stark Mountain: Buck and the Magma Stone"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 3000
@@ -30,11 +30,9 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
-# PHASE2: Buck-house run = this dir with buck.recipe: walk_to (8,5) face up interact (Buck SPRITE_SEVEN4
-# (8,4), hidden 0x1F4, zone_event 0432 object 1), advance_text -> SetFlag 0x125 (scr_seq 1027 @0x0051),
-# RemoveEvent 1, SetFlag 0xE7/0x1F4 (@0x007E/@0x0082); expect map MAP_SURVIVAL_AREA_WEST_HOUSE,
-# flags 0x125, 0xE7, 0x1F4.
+from = "93-battle-zone-ferry-fight-area"
+recipe = "chain.recipe"
+lab = "start.recipe"
 
 [run]
 frames = 4500
@@ -53,6 +51,9 @@ shot = "magma-stone"
 
 [[step]]
 do = "wait_field"
+
+[[shots]]
+frames = [1850, 1950, 2050, 2150]
 
 [expect]
 map = "MAP_STARK_MOUNTAIN_INTERIOR_3"

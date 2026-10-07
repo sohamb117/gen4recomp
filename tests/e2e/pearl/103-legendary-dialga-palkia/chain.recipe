@@ -1,0 +1,3 @@
+# On 59b's end save (the Hall of Fame script set var 0x4098 5, scr_seq 0192 @0x01D2): only the station.
+# One tile below coord 7 (29..33,26) (zone_event 0217 coord 7); the Mt. Coronet climb is skipped by the map line
+map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 27 FACE_UP

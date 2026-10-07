@@ -2,7 +2,6 @@
 # the 3F producer's interview (two easy-chat inputs -> GiveWallpaper / secret-phrase check).
 # Start: MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS (3,4) below board bg 1 (3,3). End: same map.
 title = "Jubilife TV: rankings board (and producer interview)"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 3000

@@ -1,0 +1,53 @@
+# Stark Mountain, part 2: after the Magma Stone scene Buck waits in the Survival Area west house (95 cleared his
+# hide flag 0x1F4); talking to him sets flag 0x125, Heatran's prerequisite, and he leaves (0xE7, 0x1F4).
+# Chained: 95's end save + the warp to the house door (the Stark Mountain / Route 228 walk is skipped).
+# Start: MAP_SURVIVAL_AREA_WEST_HOUSE door (warp 0, (4,8)). End: same map, below Buck's spot (8,5).
+title = "Stark Mountain: Buck in the Survival Area"
+priority = "P2"
+version = "both"
+estimate = 1500
+refs = [
+  "maps.h:458",
+  "zone_event 0432 object 1",
+  "zone_event 0432 warp 0",
+  "scr_seq 0377 @0x00FC",
+  "scr_seq 0278 @0x0108",
+  "scr_seq 1027 @0x0049-0x0088",
+  "scr_seq 1027 @0x0051",
+  "scr_seq 1027 @0x007A-0x0082",
+  "msg 0537 #3",
+  "games/diamond/arm9/src/map_object.c:295-300",
+]
+
+[start]
+from = "95-stark-mountain-buck-magma-stone"
+recipe = "chain.recipe"
+lab = "start.recipe"
+
+[run]
+frames = 3000
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 5
+face = "up"
+interact = true
+note = "Buck SPRITE_SEVEN4 (8,4), hidden 0x1F4 (cleared by 95, scr_seq 0278 @0x0108) (zone_event 0432 object 1)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "SetFlag 0x125 (@0x0051), msg 537 #3 'Buck: Gotcha, gramps! I'll put the Magma Stone back.', he walks out (player z 5 -> L_009E), RemoveEvent 1, SetFlag 0xE7, SetFlag 0x1F4 (@0x007A-0x0082)"
+shot = "buck-gone"
+
+[[step]]
+do = "wait_field"
+
+[[shots]]
+frames = [1800]
+
+[expect]
+map = "MAP_SURVIVAL_AREA_WEST_HOUSE"
+flags = ["0x125", "0xE7", "0x1F4", "0xD6"]
+vars = { "0x409E" = 1 }

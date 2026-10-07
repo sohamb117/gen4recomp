@@ -1,8 +1,8 @@
 # Hall of Fame PC: with flag 0x964 the Pokemon Center PC menu (std 2018) shows HALL OF FAME (row 3), which
-# runs InitHallOfFame on the record written by the real league clear. Documents the full game-complete set.
-# Start: MAP_SNOWPOINT_POKECENTER_1F facing the PC. End: same map.
+# runs InitHallOfFame on the record written by the real league clear. Chained from 59b's end save (the save
+# CallTask_GameClear wrote before the credits) with only a map line: the viewer shows record No. 1.
+# Start: MAP_SNOWPOINT_POKECENTER_1F (12,4) facing the PC. End: same map, field.
 title = "Hall of Fame on the Pokemon Center PC (game complete)"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 3000
@@ -29,10 +29,10 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
-# PHASE2: the real proof chains from the story's Hall-of-Fame milestone end save (the lab cannot write a HoF
-# record): use `from = "<hall-of-fame dir>"` + this recipe's map line once chain.txt exists. Lab-only, the
-# row appears but the HoF extra save is absent -> [INFERENCE] empty or error screen.
+from = "59b-hall-of-fame-credits"
+recipe = "chain.recipe"
+# No lab fallback: the lab cannot write a Hall of Fame record, so without 59b's end save the viewer has nothing
+# to show and [expect] fails on hall_of_fame.
 # Game complete, full list: CallTask_GameClear (ShowEndGameScreen scrcmd.c:2336-2338, scr_seq 0192 @0x00F2) sets
 # 0x964, 0x966, the PlayerProfile game-clear bit, the Sinnoh Champ ribbon and game stat 0x2E
 # (unk_020484A8.s:257-330); the HoF script adds SetFlag 0x982 (Vs Seeker level 4, @0x00AD), SetVar 0x40F4 1,
@@ -47,13 +47,22 @@ frames = 4500
 [[step]]
 do = "press"
 keys = "A"
-note = "PC tile facing north -> script 2018 (ov05_021D80E8.s:1335-1350); 'Which PC should be accessed?' (msg 199 #33)"
+note = "PC tile facing north -> script 2018 (ov05_021D80E8.s:1335-1350): '<player> booted up the PC.'"
 
 [[step]]
 do = "wait_frames"
-n = 300
+n = 60
+
+[[step]]
+do = "press"
+keys = "A"
+note = "'Which PC should be accessed?' (msg 199 #33)"
+
+[[step]]
+do = "wait_frames"
+n = 60
 shot = "pc-menu"
-note = "rows 0 someone's PC, 1 player's PC, 2 Rowan's PC, 3 HALL OF FAME only with 0x964 (scr_seq 0205 @0x0BE6-0x0C1A), 4 log off"
+note = "rows 0 someone's PC, 1 player's PC, 2 Rowan's PC, 3 HALL OF FAME only with 0x964 (scr_seq 0205 @0x0BE6-0x0C1A), 4 switch off"
 
 [[step]]
 do = "press"
@@ -69,8 +78,33 @@ note = "row 3 -> L_0EAD -> InitHallOfFame (scr_seq 0205 @0x0C4D-0x0C53, @0x0EB9)
 do = "wait_frames"
 n = 600
 shot = "hall-of-fame"
-# PHASE2: B out of the HoF viewer, B / log off back to the field (cursor path unrecorded).
+note = "'HALL OF FAME No. 1' with the league party (Staraptor, Torterra, Gyarados), the lead's page: OT and level"
+
+[[step]]
+do = "press"
+keys = "B"
+note = "B leaves the viewer for the PC menu"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "press"
+keys = "B"
+note = "B switches the PC off"
+
+[[step]]
+do = "wait_field"
+max = 600
+shot = "field"
 
 [expect]
 map = "MAP_SNOWPOINT_POKECENTER_1F"
-flags = ["0x964"]
+position = [12, 4]
+# 0x966 (set by CallTask_GameClear) reads set in 59b's save but clear after a CONTINUE: not checked here
+flags = ["0x964", "0x982"]
+# the record the viewer showed is the league party's: every Hall of Fame member is still in the party
+save = ["s['hall_of_fame']['total'] >= 1",
+        "len(s['hall_of_fame']['latest']['party']) >= 1",
+        "all(any(q['species'] == p['species'] for q in s['party']) for p in s['hall_of_fame']['latest']['party'])"]

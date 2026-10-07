@@ -1,8 +1,9 @@
 # Battle Zone areas: with the National-Dex flag 0x2B2 the two blockers north of the Fight Area are
 # gone (hidden_flag 0x2B2); walk through the Route 225 gatehouse onto Route 225.
+# Chained: 93's end save (the ferry and the arrival scene, on the Hall of Fame save) + flag 0x2B2 (the
+# National Dex scene's, 110 is a lab station) and the map line that reloads the Fight Area without the blockers.
 # Start: MAP_FIGHT_AREA (630,430) south of the blockade (629/630,429). End: MAP_ROUTE_225 (630,413).
 title = "Battle Zone: Route 225 through the Fight Area north gate"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 3500
@@ -31,7 +32,9 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
+from = "93-battle-zone-ferry-fight-area"
+recipe = "chain.recipe"
+lab = "start.recipe"
 # Other Battle Zone stations (same recipe, other map line): MAP_SURVIVAL_AREA PC door (657,338) /
 # west house (650,338) (zone_event 0428 warps 3/0), MAP_RESORT_AREA PC door (807,457) (zone_event 0435
 # warp 3), MAP_STARK_MOUNTAIN_EXTERIOR door (747,234) -> INTERIOR_1 (zone_event 0254 warp 0). Route 230

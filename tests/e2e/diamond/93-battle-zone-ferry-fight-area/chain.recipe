@@ -1,0 +1,4 @@
+# On 59b's end save (game complete played): only the station. Above the harbour sailor (356,247)
+# (zone_event 0164 object 8), on the tile the return ferry lands on (ShipAnimation 1, 0, 165, 356, 246,
+# scr_seq 0195 @0x0364); facing him
+map MAP_SNOWPOINT 356 246 FACE_DOWN

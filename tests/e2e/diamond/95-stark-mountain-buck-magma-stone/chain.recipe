@@ -1,0 +1,3 @@
+# On 93's end save (game complete, Fight Area arrival scene played): only the station. Entry warp (7,17) from
+# MAP_STARK_MOUNTAIN_INTERIOR_2 (zone_event 0257 warp 0); the Route 227 / Stark Mountain walk is skipped.
+warp MAP_STARK_MOUNTAIN_INTERIOR_3 0

@@ -1896,33 +1896,35 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 23 milestones, ~134500 frames estimated
+### Side systems: 25 milestones, ~141000 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 5500 | `start.recipe` | MAP_UNDERGROUND | planned |
 | [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 6000 | `start.recipe` | MAP_UNDERGROUND | planned |
 | [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 7000 | `start.recipe` | MAP_UNDERGROUND | planned |
-| [93-battle-zone-ferry-fight-area](diamond/93-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: Snowpoint ferry and Fight Area arrival | P1 | both | 6000 | `start.recipe` | MAP_FIGHT_AREA | planned |
-| [94-battle-zone-route-225-north-gate](diamond/94-battle-zone-route-225-north-gate/milestone.toml) | Battle Zone: Route 225 through the Fight Area north gate | P2 | both | 3500 | `start.recipe` | MAP_ROUTE_225 | planned |
-| [95-stark-mountain-buck-magma-stone](diamond/95-stark-mountain-buck-magma-stone/milestone.toml) | Stark Mountain: Buck and the Magma Stone | P2 | both | 3000 | `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | planned |
+| [93-battle-zone-ferry-fight-area](diamond/93-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: Snowpoint ferry and Fight Area arrival | P1 | both | 6000 | prev + `start.recipe` | MAP_FIGHT_AREA | passing |
+| [94-battle-zone-route-225-north-gate](diamond/94-battle-zone-route-225-north-gate/milestone.toml) | Battle Zone: Route 225 through the Fight Area north gate | P2 | both | 3500 | prev + `start.recipe` | MAP_ROUTE_225 | passing |
+| [95-stark-mountain-buck-magma-stone](diamond/95-stark-mountain-buck-magma-stone/milestone.toml) | Stark Mountain: Buck and the Magma Stone | P2 | both | 3000 | prev + `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | passing |
+| [95b-stark-mountain-buck-house](diamond/95b-stark-mountain-buck-house/milestone.toml) | Stark Mountain: Buck in the Survival Area | P2 | both | 1500 | prev + `start.recipe` | MAP_SURVIVAL_AREA_WEST_HOUSE | passing |
 | [96-battle-park-battle-tower](diamond/96-battle-park-battle-tower/milestone.toml) | Battle Park: Battle Tower single rooms, first set | P1 | both | 40000 | `start.recipe` | MAP_BATTLE_TOWER_LOBBY | planned |
-| [97-gts-offline](diamond/97-gts-offline/milestone.toml) | GTS: offline trade attempt returns to the field | P2 | both | 3500 | `start.recipe` | MAP_JUBLIFE_GLOBAL_TRADE_STATION | planned |
-| [98-jubilife-tv](diamond/98-jubilife-tv/milestone.toml) | Jubilife TV: rankings board (and producer interview) | P2 | both | 3000 | `start.recipe` | MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS | planned |
+| [97-gts-offline](diamond/97-gts-offline/milestone.toml) | GTS: offline trade attempt returns to the field | P2 | both | 3500 | `start.recipe` | MAP_JUBLIFE_GLOBAL_TRADE_STATION | passing |
+| [98-jubilife-tv](diamond/98-jubilife-tv/milestone.toml) | Jubilife TV: rankings board (and producer interview) | P2 | both | 3000 | `start.recipe` | MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS | passing |
 | [99-vs-seeker](diamond/99-vs-seeker/milestone.toml) | Vs. Seeker: Youngster Tristan rematch on Route 202 | P1 | both | 3500 | `start.recipe` | MAP_ROUTE_202 | planned |
-| [100-poketch-apps](diamond/100-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | both | 3000 | `start.recipe` | MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM | planned |
-| [101-roamer-mesprit](diamond/101-roamer-mesprit/milestone.toml) | Roamer: Mesprit leaves Verity Cavern | P1 | both | 2500 | `start.recipe` | MAP_VERITY_CAVERN | planned |
-| [102-roamer-cresselia](diamond/102-roamer-cresselia/milestone.toml) | Roamer: Cresselia leaves Fullmoon Island | P2 | both | 2000 | `start.recipe` | MAP_FULLMOON_ISLAND_INTERIOR | planned |
-| [103-legendary-dialga-palkia](diamond/103-legendary-dialga-palkia/milestone.toml) | Legendary: Dialga at Spear Pillar (Diamond) | P1 | diamond | 6000 | `start.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | planned |
-| [104-legendary-giratina-turnback](diamond/104-legendary-giratina-turnback/milestone.toml) | Legendary: Giratina in Turnback Cave | P2 | both | 6000 | `start.recipe` | MAP_TURNBACK_CAVE_GIRATINA_ROOM | planned |
-| [105-legendary-uxie-azelf](diamond/105-legendary-uxie-azelf/milestone.toml) | Legendary: Uxie (and Azelf) | P2 | both | 5000 | `start.recipe` | MAP_ACUITY_CAVERN | planned |
-| [106-legendary-heatran](diamond/106-legendary-heatran/milestone.toml) | Legendary: Heatran in Stark Mountain | P2 | both | 5000 | `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | planned |
-| [107-legendary-regigigas](diamond/107-legendary-regigigas/milestone.toml) | Legendary: Regigigas in Snowpoint Temple | P2 | both | 5000 | `start.recipe` | MAP_SNOWPOINT_TEMPLE_B5F | planned |
-| [108-rotom-old-chateau](diamond/108-rotom-old-chateau/milestone.toml) | Rotom in the Old Chateau TV | P2 | both | 4000 | `start.recipe` | MAP_OLD_CHATEAU_2F_ROOM_2 | planned |
-| [109-spiritomb-hallowed-tower](diamond/109-spiritomb-hallowed-tower/milestone.toml) | Spiritomb at the Hallowed Tower | P2 | both | 4000 | `start.recipe` | MAP_ROUTE_209 | planned |
-| [110-national-dex-upgrade](diamond/110-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | both | 5000 | `start.recipe` | MAP_SANDGEM_ROWANS_LAB | planned |
-| [111-pal-park](diamond/111-pal-park/milestone.toml) | Pal Park: entrance, Oak's Trainer Counter and the receptionist | P2 | both | 3000 | `start.recipe` | MAP_ROUTE_221_PAL_PARK_ENTRANCE | planned |
-| [112-hall-of-fame-pc-and-game-complete](diamond/112-hall-of-fame-pc-and-game-complete/milestone.toml) | Hall of Fame on the Pokemon Center PC (game complete) | P2 | both | 3000 | `start.recipe` | MAP_SNOWPOINT_POKECENTER_1F | planned |
+| [100-poketch-apps](diamond/100-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | both | 3000 | `start.recipe` | MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM | passing |
+| [101-roamer-mesprit](diamond/101-roamer-mesprit/milestone.toml) | Roamer: Mesprit leaves Verity Cavern | P1 | both | 2500 | `start.recipe` | MAP_VERITY_CAVERN | passing |
+| [102-roamer-cresselia](diamond/102-roamer-cresselia/milestone.toml) | Roamer: Cresselia leaves Fullmoon Island | P2 | both | 2000 | `start.recipe` | MAP_FULLMOON_ISLAND_INTERIOR | passing |
+| [103-legendary-dialga-palkia](diamond/103-legendary-dialga-palkia/milestone.toml) | Legendary: Dialga at Spear Pillar (Diamond) | P1 | diamond | 6000 | prev + `start.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
+| [104-legendary-giratina-turnback](diamond/104-legendary-giratina-turnback/milestone.toml) | Legendary: Giratina in Turnback Cave | P2 | both | 6000 | `start.recipe` | MAP_TURNBACK_CAVE_GIRATINA_ROOM | passing |
+| [105-legendary-uxie-azelf](diamond/105-legendary-uxie-azelf/milestone.toml) | Legendary: Uxie | P2 | both | 5000 | `start.recipe` | MAP_ACUITY_CAVERN | passing |
+| [105b-legendary-azelf](diamond/105b-legendary-azelf/milestone.toml) | Legendary: Azelf | P2 | both | 5000 | `start.recipe` | MAP_VALOR_CAVERN | passing |
+| [106-legendary-heatran](diamond/106-legendary-heatran/milestone.toml) | Legendary: Heatran in Stark Mountain | P2 | both | 5000 | prev + `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | passing |
+| [107-legendary-regigigas](diamond/107-legendary-regigigas/milestone.toml) | Legendary: Regigigas in Snowpoint Temple | P2 | both | 5000 | `start.recipe` | MAP_SNOWPOINT_TEMPLE_B5F | passing |
+| [108-rotom-old-chateau](diamond/108-rotom-old-chateau/milestone.toml) | Rotom in the Old Chateau TV | P2 | both | 4000 | prev + `start.recipe` | MAP_OLD_CHATEAU_2F_ROOM_2 | passing |
+| [109-spiritomb-hallowed-tower](diamond/109-spiritomb-hallowed-tower/milestone.toml) | Spiritomb at the Hallowed Tower | P2 | both | 4000 | `start.recipe` | MAP_ROUTE_209 | passing |
+| [110-national-dex-upgrade](diamond/110-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | both | 5000 | `start.recipe` | MAP_SANDGEM_ROWANS_LAB | passing |
+| [111-pal-park](diamond/111-pal-park/milestone.toml) | Pal Park: entrance, Oak's Trainer Counter and the receptionist | P2 | both | 3000 | prev + `start.recipe` | MAP_ROUTE_221_PAL_PARK_ENTRANCE | passing |
+| [112-hall-of-fame-pc-and-game-complete](diamond/112-hall-of-fame-pc-and-game-complete/milestone.toml) | Hall of Fame on the Pokemon Center PC (game complete) | P2 | both | 3000 | prev + `chain.recipe` | MAP_SNOWPOINT_POKECENTER_1F | passing |
 
 #### diamond/90-underground-explorer-kit — Underground: Explorer Kit and first entry
 - proves: Underground Man gives the Explorer Kit and becomes mentor (YES); walk out to Eterna and use the kit to enter the Underground. D/P has no lab underground hook (Platinum's PC_LAB_UNDERGROUND): input-driven. Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door (warp 0, (4,8)). End: MAP_UNDERGROUND (2).
@@ -1952,17 +1954,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:88; zone_event 0083 object 2; scr_seq 0089 @0x0295-0x02D1; scr_seq 0089 @0x02AB; scr_seq 0089 @0x02B8-0x02C4; scr_seq 0089 @0x02D3-0x02E2; scr_seq 0089 @0x00E6; scr_seq 0089 @0x02E9-0x0332; scr_seq 0089 @0x0341-0x0357; scr_seq 0089 @0x00F5; scr_seq 0089 @0x0379-0x03CD; scr_seq 0089 @0x03DE; scr_seq 0205 @0x08CB; scr_seq 0205 @0x08A4; msg 0571 #33; msg 0097 #16; msg 0097 #21; games/diamond/include/constants/decorations.h:13; games/diamond/include/constants/decorations.h:15; games/diamond/include/constants/decorations.h:21; games/diamond/include/constants/decorations.h:106; games/diamond/include/constants/decorations.h:117; games/diamond/arm9/src/unk_0205EC84.c:108; games/diamond/arm9/src/unk_0205EC84.c:112; games/diamond/arm9/src/unk_0205EC84.c:116; games/diamond/arm9/overlays/18/asm/overlay_18.s:28122; games/diamond/arm9/overlays/18/asm/overlay_18.s:37346; games/diamond/arm9/asm/unk_0204CB20.s:5482; games/diamond/arm9/asm/unk_0205F314.s:86-93
 
 #### diamond/93-battle-zone-ferry-fight-area — Battle Zone: Snowpoint ferry and Fight Area arrival
-- proves: Snowpoint harbour sailor sails to the Battle Zone once the game is complete; the Fight Area arrival scene (Barry and Buck talk, no battle in D/P) plays on the ON_FRAME table and sets var 0x4081 1. Start: MAP_SNOWPOINT (356,248) below the sailor (356,247). End: MAP_FIGHT_AREA (623,434), scene done.
-- start: `start.recipe`; map MAP_SNOWPOINT 356 248 FACE_UP; lab state lines: 1 flag, 1 var
+- proves: Snowpoint harbour sailor sails to the Battle Zone once the game is complete; the Fight Area arrival scene (Barry and Buck talk, no battle in D/P) plays on the ON_FRAME table and sets var 0x4081 1. Chained from 59b's end save (game complete played) with only the map line. The player talks to the sailor from the town side (356,246), where the ferry lands on the way back: from the dock side the boarding walk ends off the ship and ShipAnimation finds no ship model (sub_0204A8C4), so nothing sails (measured). Start: MAP_SNOWPOINT (356,246) above the sailor (356,247). End: MAP_FIGHT_AREA (627,434), scene done.
+- start: prev + `start.recipe`; map MAP_SNOWPOINT 356 246 FACE_DOWN; lab state lines: 1 flag, 1 var
 - party: SPECIES_GARCHOMP 100
 - trainers: none
-- end state: map MAP_FIGHT_AREA; flags set 0x1F1, 0x1F2; vars 0x4081=1
+- end state: map MAP_FIGHT_AREA; at (627, 434); flags set 0x1F1, 0x1F2, 0x964; vars 0x4081=1
 - frames: estimate 6000, budget 9000
 - refs: maps.h:169; maps.h:192; zone_event 0164 object 8; scr_seq 0168 @0x0232-0x0257; scr_seq 0168 @0x0260; scr_seq 0168 @0x0276-0x0287; msg 0167 #10; msg 0167 #13; scr_seq 0658 @0x0000; scr_seq 0658 @0x000B; scr_seq 0195 @0x0046-0x00A0; scr_seq 0195 @0x00A2-0x012D; scr_seq 0195 @0x00FF; scr_seq 0195 @0x0121; scr_seq 0195 @0x0125; zone_event 0187 object 7; zone_event 0187 object 8; zone_event 0187 object 18; scr_seq 0195 @0x0304-0x0364; games/diamond/arm9/src/map_object.c:295-300; games/diamond/arm9/src/scrcmd_flags.c:194-201; games/diamond/arm9/src/unk_0205EC84.c:55-56
 
 #### diamond/94-battle-zone-route-225-north-gate — Battle Zone: Route 225 through the Fight Area north gate
-- proves: Battle Zone areas: with the National-Dex flag 0x2B2 the two blockers north of the Fight Area are gone (hidden_flag 0x2B2); walk through the Route 225 gatehouse onto Route 225. Start: MAP_FIGHT_AREA (630,430) south of the blockade (629/630,429). End: MAP_ROUTE_225 (630,413).
-- start: `start.recipe`; map MAP_FIGHT_AREA 630 430 FACE_UP; lab state lines: 4 flag, 2 var
+- proves: Battle Zone areas: with the National-Dex flag 0x2B2 the two blockers north of the Fight Area are gone (hidden_flag 0x2B2); walk through the Route 225 gatehouse onto Route 225. Chained: 93's end save (the ferry and the arrival scene, on the Hall of Fame save) + flag 0x2B2 (the National Dex scene's, 110 is a lab station) and the map line that reloads the Fight Area without the blockers. Start: MAP_FIGHT_AREA (630,430) south of the blockade (629/630,429). End: MAP_ROUTE_225 (630,413).
+- start: prev + `start.recipe`; map MAP_FIGHT_AREA 630 430 FACE_UP; lab state lines: 4 flag, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
 - end state: map MAP_ROUTE_225; flags set 0x2B2
@@ -1970,13 +1972,22 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:192; maps.h:404; zone_event 0187 object 22; zone_event 0187 object 23; zone_event 0187 warp 0; zone_event 0187 warp 1; scr_seq 0195 @0x0538-0x0549; msg 0183 #5; zone_event 0192 warp 1; zone_event 0385 warp 0; zone_event 0448 object 16; zone_event 0448 object 17; scr_seq 0990 @0x058B; zone_event 0428 warp 0; zone_event 0428 warp 3; zone_event 0435 warp 3; zone_event 0254 warp 0; zone_event 0386 coord 0; zone_event 0386 coord 1; scr_seq 0454 @0x00ED; scr_seq 0454 @0x01D5
 
 #### diamond/95-stark-mountain-buck-magma-stone — Stark Mountain: Buck and the Magma Stone
-- proves: Stark Mountain story: in Interior 3 Buck takes the Magma Stone (coord (7,10) while var 0x409E==0); buck.recipe: talk to Buck in the Survival Area west house -> flag 0x125 (Heatran's prerequisite). Start: MAP_STARK_MOUNTAIN_INTERIOR_3 entry warp (7,17). End: same map, var 0x409E 1.
-- start: `start.recipe`; warp MAP_STARK_MOUNTAIN_INTERIOR_3 0; lab state lines: 4 flag, 2 var
+- proves: Stark Mountain story: in Interior 3 Buck takes the Magma Stone (coord (7,10) while var 0x409E==0). Chained: 93's end save (game complete, Fight Area arrival) + the warp to Interior 3's entry (the Route 227/ Stark Mountain walk is skipped). Buck in the Survival Area west house is ../95b-stark-mountain-buck-house. Start: MAP_STARK_MOUNTAIN_INTERIOR_3 entry warp (7,17). End: same map, var 0x409E 1.
+- start: prev + `start.recipe`; warp MAP_STARK_MOUNTAIN_INTERIOR_3 0; lab state lines: 4 flag, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
 - end state: map MAP_STARK_MOUNTAIN_INTERIOR_3; flags set 0xD6, 0x1F9, 0x1FC; flags clear 0x1F4; vars 0x409E=1
 - frames: estimate 3000, budget 4500
 - refs: maps.h:269; zone_event 0257 coord 0; zone_event 0257 object 2; zone_event 0257 object 3; zone_event 0257 warp 0; scr_seq 0278 @0x001C-0x0083; scr_seq 0278 @0x00A4-0x010E; scr_seq 0278 @0x00C5; scr_seq 0278 @0x00FA; scr_seq 0278 @0x00FE; scr_seq 0278 @0x0104; scr_seq 0278 @0x0108; msg 0247 #0; zone_event 0432 object 1; scr_seq 0377 @0x00FC; scr_seq 1027 @0x0049-0x0088; scr_seq 1027 @0x0051; scr_seq 1027 @0x007E; scr_seq 1027 @0x0082; games/diamond/arm9/src/map_object.c:295-300
+
+#### diamond/95b-stark-mountain-buck-house — Stark Mountain: Buck in the Survival Area
+- proves: Stark Mountain, part 2: after the Magma Stone scene Buck waits in the Survival Area west house (95 cleared his hide flag 0x1F4); talking to him sets flag 0x125, Heatran's prerequisite, and he leaves (0xE7, 0x1F4). Chained: 95's end save + the warp to the house door (the Stark Mountain / Route 228 walk is skipped). Start: MAP_SURVIVAL_AREA_WEST_HOUSE door (warp 0, (4,8)). End: same map, below Buck's spot (8,5).
+- start: prev + `start.recipe`; warp MAP_SURVIVAL_AREA_WEST_HOUSE 0; lab state lines: 1 clear-flag, 7 flag, 3 var
+- party: SPECIES_GARCHOMP 100
+- trainers: none
+- end state: map MAP_SURVIVAL_AREA_WEST_HOUSE; flags set 0x125, 0xE7, 0x1F4, 0xD6; vars 0x409E=1
+- frames: estimate 1500, budget 3000
+- refs: maps.h:458; zone_event 0432 object 1; zone_event 0432 warp 0; scr_seq 0377 @0x00FC; scr_seq 0278 @0x0108; scr_seq 1027 @0x0049-0x0088; scr_seq 1027 @0x0051; scr_seq 1027 @0x007A-0x0082; msg 0537 #3; games/diamond/arm9/src/map_object.c:295-300
 
 #### diamond/96-battle-park-battle-tower — Battle Park: Battle Tower single rooms, first set
 - proves: Battle Tower single rooms: the lobby attendant runs a 7-battle set with three distinct mons and distinct held items; 7 wins pay Battle Points. Gatehouse (Point Card) and Battle Park scenes pre-minted. Start: MAP_BATTLE_TOWER_LOBBY (11,6) below the single/double attendant (11,5). End: lobby after the set.
@@ -1988,7 +1999,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:330; maps.h:196; maps.h:326; zone_event 0187 warp 2; zone_event 0191 warp 1; zone_event 0309 warp 2; zone_event 0309 coord 0; zone_event 0311 object 0; scr_seq 0663 @0x000B; scr_seq 0200 @0x0026-0x0054; scr_seq 0355 @0x006E; scr_seq 0355 @0x0103-0x0107; scr_seq 0355 @0x0190-0x0194; scr_seq 0377 @0x00F4; scr_seq 0377 @0x00F8; scr_seq 0818 @0x0010-0x0022; scr_seq 0358 @0x03D6-0x0417; scr_seq 0358 @0x042A-0x047B; scr_seq 0358 @0x04D1-0x0508; scr_seq 0358 @0x0333; scr_seq 0358 @0x033E; scr_seq 0358 @0x0524-0x0557; scr_seq 0358 @0x012E; scr_seq 0358 @0x02B5; msg 0283 #0; msg 0283 #9; msg 0283 #10; games/diamond/include/constants/items.h:657; games/diamond/arm9/overlays/06/asm/overlay_06.s:21223; games/diamond/arm9/overlays/06/asm/overlay_06.s:45251; games/diamond/arm9/src/unk_0202A1E0.c:127
 
 #### diamond/97-gts-offline — GTS: offline trade attempt returns to the field
-- proves: GTS offline: the receptionist's trade path saves, walks the player through the door and starts the Nintendo WFC connection; without WFC data Unk00B2 returns 0 and the script walks back out ("Please do visit again"). D/P has only this building (no Global Terminal 2F/3F). Start: MAP_JUBLIFE_GLOBAL_TRADE_STATION (11,4) below the receptionist (11,3). End: same map, field.
+- proves: GTS offline: the receptionist's trade path saves, walks the player through the door and starts the Nintendo WFC connection. The port is an unconfigured console (pc_dwc_auth.c): the connect screen waits; B cancels it ("Reconnect to Nintendo WFC?"), NO makes Unk00B2 return 0 and the script walks back out ("Please do visit again"). D/P has only this building (no Global Terminal 2F/3F). Start: MAP_JUBLIFE_GLOBAL_TRADE_STATION (11,4) below the receptionist (11,3). End: same map (12,4), field.
 - start: `start.recipe`; map MAP_JUBLIFE_GLOBAL_TRADE_STATION 11 4 FACE_UP; lab state lines: 1 var
 - party: SPECIES_TURTWIG 15; SPECIES_STARLY 12
 - trainers: none
@@ -2019,7 +2030,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; warp MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM 0; lab state lines: 4 poketch, 2 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM
+- end state: map MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM; 1 save check(s)
 - frames: estimate 3000, budget 4500
 - refs: maps.h:383; zone_event 0364 object 0; zone_event 0364 warp 0; scr_seq 0430 @0x0012-0x0038; scr_seq 0205 @0x06A9-0x06BA; games/diamond/include/poketch.h:9-37; scr_seq 0002 @0x0DAC; scr_seq 0002 @0x0DD7-0x0E06; scr_seq 0008 @0x0049; scr_seq 0008 @0x006D; scr_seq 0008 @0x0080; scr_seq 0008 @0x0093; scr_seq 0008 @0x0126; scr_seq 0073 @0x00A9-0x00FF; scr_seq 0403 @0x02AB; scr_seq 0405 @0x008D-0x00D2; scr_seq 1007 @0x000E-0x0045; scr_seq 1002 @0x00D4-0x0101; scr_seq 0138 @0x011C-0x014C; scr_seq 1020 @0x0012-0x002E; scr_seq 0164 @0x000E-0x0119; scr_seq 0444 @0x0505-0x050E; scr_seq 0444 @0x059E; scr_seq 0444 @0x05B7-0x05E9; scr_seq 0444 @0x05FB-0x061A
 
@@ -2042,56 +2053,65 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:265; zone_event 0253 object 0; zone_event 0253 object 1; scr_seq 0377 @0x013A; scr_seq 0274 @0x000C-0x005A; scr_seq 0274 @0x0047; scr_seq 0274 @0x004F; scr_seq 0274 @0x0057; scr_seq 0274 @0x005A; zone_event 0032 object 16; scr_seq 0034 @0x06B7; scr_seq 0034 @0x06D3; scr_seq 0034 @0x06DE; scr_seq 0034 @0x079F; scr_seq 0034 @0x08A0-0x08DD; scr_seq 0046 @0x000E-0x0065; scr_seq 0046 @0x0158-0x0193; scr_seq 0046 @0x01EA-0x01EE; games/diamond/arm9/asm/unk_020603B0.s:200-226
 
 #### diamond/103-legendary-dialga-palkia — Legendary: Dialga at Spear Pillar (Diamond)
-- proves: Dialga at Spear Pillar (post-Hall-of-Fame rematch): var 0x4098==5 arms coord 7 below the altar; step on it -> LegendaryBattle 0x8004, 47 where GetGameVersion picks 483 (DIALGA) in Diamond; defeat it. Start: MAP_MOUNT_CORONET_SPEAR_PILLAR (31,27). End: same map, var 0x4098 4. Twin: ../../pearl/103-legendary-dialga-palkia.
-- start: `start.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 27 FACE_UP; lab state lines: 1 flag, 2 var
+- proves: Dialga at Spear Pillar (post-Hall-of-Fame rematch): var 0x4098==5 arms coord 7 below the altar; step on it -> LegendaryBattle 0x8004, 47 where GetGameVersion picks 483 (DIALGA) in Diamond; defeat it. Chained from 59b's end save, where the Hall of Fame script set var 0x4098 5 (played), with only the map line. Start: MAP_MOUNT_CORONET_SPEAR_PILLAR (31,27). End: same map, var 0x4098 4. Twin: ../../pearl/103-legendary-dialga-palkia.
+- start: prev + `start.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 27 FACE_UP; lab state lines: 1 flag, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
-- end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR; >= 1 battles; flags clear 0x15F, 0x8E; vars 0x4098=4
+- end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR; >= 1 battles; flags clear 0x15F, 0x8E; vars 0x4098=4; log /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 483/
 - frames: estimate 6000, budget 9000
 - refs: maps.h:224; zone_event 0217 object 5; zone_event 0217 object 12; zone_event 0217 object 13; zone_event 0217 coord 7; scr_seq 0690 @0x0000; scr_seq 0230 @0x0086-0x00A3; scr_seq 0230 @0x00A5-0x00BC; scr_seq 0230 @0x011F-0x016A; scr_seq 0230 @0x01AF-0x01B7; scr_seq 0230 @0x01CD-0x01E2; scr_seq 0230 @0x01E8-0x0205; scr_seq 0230 @0x11F3-0x1247; scr_seq 0230 @0x1243; scr_seq 0230 @0x124D-0x1262; scr_seq 0230 @0x1268-0x1281; scr_seq 0370 @0x17C6; scr_seq 0370 @0x17DA; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2-0x01DC; games/diamond/arm9/asm/unk_020476CC.s:1220-1228; games/diamond/arm9/src/map_header.c:663-672; games/diamond/include/config.h:9-10
 
 #### diamond/104-legendary-giratina-turnback — Legendary: Giratina in Turnback Cave
-- proves: Giratina in Turnback Cave (D/P: lv70, no story gate in the room script): A -> LegendaryBattle 487, 70; defeated -> "GIRATINA disappeared...", ClearFlag 0x26E (it is back on the next load). Start: MAP_TURNBACK_CAVE_GIRATINA_ROOM (11,15) below Giratina (11,14). End: same map.
+- proves: Giratina in Turnback Cave (D/P: lv70, no story gate in the room script): A -> LegendaryBattle 487, 70. Unk00ED is sub_020480C8: 0 for a win (outcome 1) or a catch (4), 1 otherwise, so defeating it takes the caught path: SetFlag 0x121 + hide flag 0x26E, ClearFlag 0x296. "GIRATINA disappeared..." is the run-away path. Start: MAP_TURNBACK_CAVE_GIRATINA_ROOM (11,15) below Giratina (11,14). End: same map, Giratina gone.
 - start: `start.recipe`; map MAP_TURNBACK_CAVE_GIRATINA_ROOM 11 15 FACE_UP; lab state lines: 1 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map MAP_TURNBACK_CAVE_GIRATINA_ROOM; >= 1 battles; flags clear 0x121, 0x26E, 0x8E
-- frames: estimate 6000, budget 9000
-- refs: maps.h:274; zone_event 0261 object 0; scr_seq 0283 @0x0016-0x0027; scr_seq 0283 @0x0029-0x0042; scr_seq 0283 @0x0044-0x005D; scr_seq 0283 @0x0067-0x0082; scr_seq 0283 @0x0089-0x0091; scr_seq 0283 @0x0099-0x00A0; msg 0250 #1; games/diamond/arm9/asm/unk_020476CC.s:1220-1228
+- end state: map MAP_TURNBACK_CAVE_GIRATINA_ROOM; >= 1 battles; flags set 0x121, 0x26E; flags clear 0x296, 0x8E
+- frames: estimate 6000, budget 15000
+- refs: maps.h:274; zone_event 0261 object 0; scr_seq 0283 @0x0016-0x0027; scr_seq 0283 @0x0029-0x0042; scr_seq 0283 @0x0044-0x005D; scr_seq 0283 @0x0067-0x0082; scr_seq 0283 @0x0089-0x0091; msg 0250 #0; games/diamond/arm9/src/scrcmd_7.c:236-244; games/diamond/arm9/asm/unk_020476CC.s:1207-1217
 
-#### diamond/105-legendary-uxie-azelf — Legendary: Uxie (and Azelf)
-- proves: Uxie in Acuity Cavern (Azelf in Valor Cavern with azelf.recipe), freed by the Spear Pillar story: A -> LegendaryBattle 480, 50 (Azelf 482, 50); defeated -> "disappeared", no persistent flag. Start: MAP_ACUITY_CAVERN (14,11) below Uxie (14,10). End: same map.
+#### diamond/105-legendary-uxie-azelf — Legendary: Uxie
+- proves: Uxie in Acuity Cavern, freed by the Spear Pillar story: A -> LegendaryBattle 480, 50; defeating it takes the caught path (SetFlag 0x127): it is gone for good. Azelf: ../105b-legendary-azelf. Start: MAP_ACUITY_CAVERN (14,11) below Uxie (14,10). End: same map.
 - start: `start.recipe`; map MAP_ACUITY_CAVERN 14 11 FACE_UP; lab state lines: 1 clear-flag, 1 var
 - party: SPECIES_GARCHOMP 100 (MOVE_CRUNCH)
 - trainers: none
-- end state: map MAP_ACUITY_CAVERN; >= 1 battles; flags clear 0x127, 0x8E
+- end state: map MAP_ACUITY_CAVERN; >= 1 battles; flags set 0x127; flags clear 0x8E
 - frames: estimate 5000, budget 7500
-- refs: maps.h:323; maps.h:320; zone_event 0306 object 0; zone_event 0303 object 0; scr_seq 0377 @0x001E; scr_seq 0377 @0x0022; scr_seq 0230 @0x0FD8; scr_seq 0230 @0x0FDC; scr_seq 0352 @0x0014-0x0029; scr_seq 0352 @0x002F-0x0046; scr_seq 0352 @0x0050-0x0072; scr_seq 0352 @0x007A; msg 0278 #1; scr_seq 0348 @0x0046-0x0075; scr_seq 0348 @0x0077-0x008E; scr_seq 0348 @0x00BA; scr_seq 0192 @0x01A1-0x0217
+- refs: maps.h:323; zone_event 0306 object 0; scr_seq 0377 @0x0022; scr_seq 0230 @0x0FDC; scr_seq 0352 @0x0014-0x0029; scr_seq 0352 @0x002F-0x0046; scr_seq 0352 @0x0050-0x0072; scr_seq 0352 @0x007A; msg 0278 #1; scr_seq 0192 @0x01A1-0x0217; games/diamond/arm9/src/scrcmd_7.c:236-244; games/diamond/arm9/asm/unk_020476CC.s:1207-1217
+
+#### diamond/105b-legendary-azelf — Legendary: Azelf
+- proves: Azelf in Valor Cavern, freed by the Spear Pillar story: A -> LegendaryBattle 482, 50; defeating it takes the caught path (SetFlag 0x126): it is gone for good. Uxie's twin station (../105-legendary-uxie-azelf). Start: MAP_VALOR_CAVERN (16,15) below Azelf (16,14). End: same map.
+- start: `start.recipe`; map MAP_VALOR_CAVERN 16 15 FACE_UP; lab state lines: 1 clear-flag, 1 var
+- party: SPECIES_GARCHOMP 100 (MOVE_CRUNCH)
+- trainers: none
+- end state: map MAP_VALOR_CAVERN; >= 1 battles; flags set 0x126; flags clear 0x8E
+- frames: estimate 5000, budget 7500
+- refs: maps.h:320; zone_event 0303 object 0; scr_seq 0377 @0x001E; scr_seq 0230 @0x0FD8; scr_seq 0348 @0x0046-0x0075; scr_seq 0348 @0x0077-0x008E; scr_seq 0348 @0x00A9-0x00BA; scr_seq 0348 @0x00C2; msg 0275 #4; scr_seq 0192 @0x01A1-0x0217; games/diamond/arm9/src/scrcmd_7.c:236-244; games/diamond/arm9/asm/unk_020476CC.s:1207-1217
 
 #### diamond/106-legendary-heatran — Legendary: Heatran in Stark Mountain
-- proves: Heatran in Stark Mountain Interior 3: ON_TRANSITION shows it only with game complete, National Dex, Buck talked to (0x125) and var 0x409E==1; A -> SetFlag 0xD7, SetVar 0x409E 2, LegendaryBattle 485, 70. Start: MAP_STARK_MOUNTAIN_INTERIOR_3 (7,7) below Heatran (7,6). End: same map, var 0x409E 2.
-- start: `start.recipe`; map MAP_STARK_MOUNTAIN_INTERIOR_3 7 7 FACE_UP; lab state lines: 8 flag, 1 national-dex, 1 pokedex, 2 var
+- proves: Heatran in Stark Mountain Interior 3: ON_TRANSITION shows it only with game complete, National Dex, Buck talked to (0x125) and var 0x409E==1; A -> SetFlag 0xD7, SetVar 0x409E 2, LegendaryBattle 485, 70. Defeating it takes the caught path (Unk00ED = sub_020480C8 is 0 for a win): SetFlag 0x120 + 0x983. Chained: 95b's end save (Buck talked to, on the Hall of Fame save) + the National Dex (110's) + the map line. Start: MAP_STARK_MOUNTAIN_INTERIOR_3 (7,7) below Heatran (7,6). End: same map, var 0x409E 2.
+- start: prev + `start.recipe`; map MAP_STARK_MOUNTAIN_INTERIOR_3 7 7 FACE_UP; lab state lines: 8 flag, 1 national-dex, 1 pokedex, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
-- end state: map MAP_STARK_MOUNTAIN_INTERIOR_3; >= 1 battles; flags set 0xD7; flags clear 0x120, 0x8E; vars 0x409E=2
+- end state: map MAP_STARK_MOUNTAIN_INTERIOR_3; >= 1 battles; flags set 0xD7, 0x120, 0x983, 0x964; flags clear 0x8E; vars 0x409E=2
 - frames: estimate 5000, budget 7500
-- refs: maps.h:269; zone_event 0257 object 1; zone_event 0257 object 3; scr_seq 0278 @0x001C-0x0031; scr_seq 0278 @0x0037-0x0083; scr_seq 0278 @0x0152-0x0160; scr_seq 0278 @0x0167; scr_seq 0278 @0x0173-0x017C; scr_seq 0278 @0x0182-0x01B4; scr_seq 0278 @0x01A8-0x01AC; scr_seq 0278 @0x01BF; scr_seq 0278 @0x01CB; msg 0247 #4; scr_seq 1027 @0x0051; scr_seq 0192 @0x01E2-0x01F1; games/diamond/arm9/src/scrcmd.c:3872-3882; games/diamond/arm9/src/unk_0205EC84.c:173
+- refs: maps.h:269; zone_event 0257 object 1; zone_event 0257 object 3; scr_seq 0278 @0x001C-0x0031; scr_seq 0278 @0x0037-0x0083; scr_seq 0278 @0x0152-0x0160; scr_seq 0278 @0x0167; scr_seq 0278 @0x0173-0x017C; scr_seq 0278 @0x0182-0x01B4; scr_seq 0278 @0x01A8-0x01AC; scr_seq 0278 @0x01BF; scr_seq 0278 @0x01CB; msg 0247 #3; games/diamond/arm9/asm/unk_020476CC.s:1207-1217; scr_seq 1027 @0x0051; scr_seq 0192 @0x01E2-0x01F1; games/diamond/arm9/src/scrcmd.c:3872-3882; games/diamond/arm9/src/unk_0205EC84.c:173
 
 #### diamond/107-legendary-regigigas — Legendary: Regigigas in Snowpoint Temple
-- proves: Regigigas in Snowpoint Temple B5F: with Regirock, Regice and Registeel in the party (species check only) A awakens it (SetFlag 0x11A) -> LegendaryBattle 486, 70. D/P has no Regi trio battles (no Regi ruins maps). Start: MAP_SNOWPOINT_TEMPLE_B5F (11,13) below Regigigas (11,12). End: same map, 0x11A set.
+- proves: Regigigas in Snowpoint Temple B5F: with Regirock, Regice and Registeel in the party (species check only) A awakens it (SetFlag 0x11A) -> LegendaryBattle 486, 70. D/P has no Regi trio battles (no Regi ruins maps). Defeating it takes the caught path (Unk00ED = sub_020480C8 is 0 for a win): SetFlag 0x11B. Start: MAP_SNOWPOINT_TEMPLE_B5F (11,13) below Regigigas (11,12). End: same map, 0x11A and 0x11B set.
 - start: `start.recipe`; map MAP_SNOWPOINT_TEMPLE_B5F 11 13 FACE_UP; lab state lines: 1 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_REGIROCK 30; SPECIES_REGICE 30; SPECIES_REGISTEEL 30
 - trainers: none
-- end state: map MAP_SNOWPOINT_TEMPLE_B5F; >= 1 battles; party SPECIES_REGIROCK, SPECIES_REGICE, SPECIES_REGISTEEL; flags set 0x11A; flags clear 0x11B, 0x8E
+- end state: map MAP_SNOWPOINT_TEMPLE_B5F; >= 1 battles; party SPECIES_REGIROCK, SPECIES_REGICE, SPECIES_REGISTEEL; flags set 0x11A, 0x11B; flags clear 0x8E
 - frames: estimate 5000, budget 7500
-- refs: maps.h:287; zone_event 0271 object 0; zone_event 0164 coord 0; scr_seq 0168 @0x0088; scr_seq 0168 @0x014A; scr_seq 0309 @0x000A-0x0023; scr_seq 0309 @0x002F-0x004B; scr_seq 0309 @0x0073; scr_seq 0309 @0x0081-0x0092; scr_seq 0309 @0x00BE; scr_seq 0309 @0x00C6; msg 0252 #3; scr_seq 0192 @0x01F9-0x020B; games/diamond/arm9/src/scrcmd.c:4277-4281; games/diamond/arm9/asm/unk_02054C14.s:322-323
+- refs: maps.h:287; zone_event 0271 object 0; zone_event 0164 coord 0; scr_seq 0168 @0x0088; scr_seq 0168 @0x014A; scr_seq 0309 @0x000A-0x0023; scr_seq 0309 @0x002F-0x004B; scr_seq 0309 @0x0073; scr_seq 0309 @0x0081-0x0092; scr_seq 0309 @0x00BE; scr_seq 0309 @0x00C6; msg 0252 #3; games/diamond/arm9/asm/unk_020476CC.s:1207-1217; scr_seq 0192 @0x01F9-0x020B; games/diamond/arm9/src/scrcmd.c:4277-4281; games/diamond/arm9/asm/unk_02054C14.s:322-323
 
 #### diamond/108-rotom-old-chateau — Rotom in the Old Chateau TV
-- proves: Rotom in the Old Chateau TV: with game complete, National Dex and night time, A on the TV -> YES -> SetFlag 0xAB0 (once per day) -> WildBattle 479, 15. Start: MAP_OLD_CHATEAU_2F_ROOM_2 (11,4) below the TV (11,3). End: same map.
-- start: `start.recipe`; map MAP_OLD_CHATEAU_2F_ROOM_2 11 4 FACE_UP; lab state lines: 1 flag, 1 national-dex, 1 pokedex, 1 var
+- proves: Rotom in the Old Chateau TV: with game complete, National Dex and night time, A on the TV -> YES -> SetFlag 0xAB0 (once per day) -> WildBattle 479, 15. Chained from 59b's end save (game complete played) + the National Dex (110's, a lab station) and the map line. Start: MAP_OLD_CHATEAU_2F_ROOM_2 (11,4) below the TV (11,3). End: same map.
+- start: prev + `start.recipe`; map MAP_OLD_CHATEAU_2F_ROOM_2 11 4 FACE_UP; lab state lines: 1 flag, 1 national-dex, 1 pokedex, 1 var
 - party: SPECIES_GARCHOMP 100 (MOVE_CRUNCH)
 - trainers: none
-- end state: map MAP_OLD_CHATEAU_2F_ROOM_2; >= 1 battles; flags set 0xAB0; flags clear 0x149
+- end state: map MAP_OLD_CHATEAU_2F_ROOM_2; >= 1 battles; flags set 0xAB0, 0x964; flags clear 0x149; log /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 479/
 - frames: estimate 4000, budget 6000
 - refs: maps.h:304; zone_event 0288 bg 0; zone_event 0288 bg 1; zone_event 0288 warp 0; scr_seq 0329 @0x000C-0x004F; scr_seq 0329 @0x0056-0x0063; scr_seq 0329 @0x007A-0x007E; scr_seq 0329 @0x0095-0x00A6; scr_seq 0329 @0x00AE; msg 0261 #1; msg 0261 #3; games/diamond/arm9/src/unk_0204B0A0.c:119-121; games/diamond/arm9/src/gf_rtc.c:136-170; games/diamond/include/gf_rtc.h:24-28; games/diamond/arm9/src/scrcmd.c:3872-3882
 
@@ -2114,20 +2134,20 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:426; zone_event 0400 object 0; zone_event 0400 object 4; scr_seq 0920 @0x000B; scr_seq 0990 @0x031D; scr_seq 0990 @0x0044-0x006B; scr_seq 0990 @0x0487-0x04E8; scr_seq 0990 @0x04B0-0x04C1; scr_seq 0990 @0x0528-0x052C; scr_seq 0990 @0x057C; scr_seq 0990 @0x0587; scr_seq 0990 @0x058B; scr_seq 0990 @0x058F; scr_seq 0990 @0x05D6; scr_seq 0990 @0x05F5-0x0601; scr_seq 0990 @0x0610; scr_seq 0377 @0x0044; scr_seq 0377 @0x0056; games/diamond/arm9/src/unk_0205EC84.c:381-383; games/diamond/arm9/asm/unk_02034E84.s:32-33; games/diamond/arm9/asm/unk_02034E84.s:246; games/diamond/arm9/src/pokedex.c:390-392; games/diamond/arm9/src/pokedex.c:405-414; games/diamond/arm9/src/pokedex.c:310-316; games/diamond/arm9/src/pokemon.c:2888-2891; games/diamond/files/poketool/shinzukan/narc_0000.bin; games/diamond/arm9/src/scrcmd.c:3872-3880; games/diamond/include/constants/items.h:656
 
 #### diamond/111-pal-park — Pal Park: entrance, Oak's Trainer Counter and the receptionist
-- proves: Pal Park entrance, first visit: Oak's ON_FRAME scene gives the Trainer Counter app (var 0x40C6 0 -> 1); the receptionist's first talk sets flag 0xD3. Migration itself is the feature-matrix `palpark` case (GBA cart + Emerald save -> MIGRATE FROM EMERALD), already done for Diamond and Pearl. Start: MAP_ROUTE_221_PAL_PARK_ENTRANCE door (warp 0, (7,19)). End: same map, below the receptionist.
-- start: `start.recipe`; warp MAP_ROUTE_221_PAL_PARK_ENTRANCE 0; lab state lines: 1 flag, 1 national-dex, 1 pokedex, 1 poketch, 2 var
+- proves: Pal Park entrance, first visit: Oak's ON_FRAME scene gives the Trainer Counter app (var 0x40C6 0 -> 1); the receptionist's first talk sets flag 0xD3. Migration itself is the feature-matrix `palpark` case (GBA cart + Emerald save -> MIGRATE FROM EMERALD), already done for Diamond and Pearl. Chained from 59b's end save (its Poketch and party) + the National Dex (110's, a lab station); the player walks in from Route 221, since the entrance's ON_FRAME scene would hold the lab's map line (the field never frees). Start: MAP_ROUTE_221 (306,910) below the entrance door (306,909). End: the entrance, below the receptionist.
+- start: prev + `start.recipe`; map MAP_ROUTE_221 306 910 FACE_UP; lab state lines: 1 flag, 1 national-dex, 1 pokedex, 1 poketch, 2 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map MAP_ROUTE_221_PAL_PARK_ENTRANCE; flags set 0xD3, 0x1F0; vars 0x40C6=1
-- frames: estimate 3000, budget 4500
+- end state: map MAP_ROUTE_221_PAL_PARK_ENTRANCE; flags set 0xD3, 0x1F0; vars 0x40C6=1; 1 save check(s)
+- frames: estimate 3000, budget 6000
 - refs: maps.h:397; zone_event 0378 object 1; zone_event 0378 object 7; zone_event 0378 warp 0; zone_event 0378 warp 1; scr_seq 0889 @0x000B; scr_seq 0444 @0x04C0-0x0545; scr_seq 0444 @0x0505-0x050E; scr_seq 0444 @0x0535; scr_seq 0444 @0x053D; scr_seq 0444 @0x007E-0x00FE; scr_seq 0444 @0x00A8; scr_seq 0444 @0x00DD; scr_seq 0444 @0x0186-0x01AD; msg 0464 #3; msg 0464 #21; tests/mac/feature_matrix.py:539-553; tests/mac/feature_matrix.py:544; docs/FEATURE_PARITY.md:97; docs/evidence/README.md:50; docs/evidence/README.md:90; games/diamond/pc/src/pc_dp_agb.c
 
 #### diamond/112-hall-of-fame-pc-and-game-complete — Hall of Fame on the Pokemon Center PC (game complete)
-- proves: Hall of Fame PC: with flag 0x964 the Pokemon Center PC menu (std 2018) shows HALL OF FAME (row 3), which runs InitHallOfFame on the record written by the real league clear. Documents the full game-complete set. Start: MAP_SNOWPOINT_POKECENTER_1F facing the PC. End: same map.
-- start: `start.recipe`; map MAP_SNOWPOINT_POKECENTER_1F 12 4 FACE_UP; lab state lines: 8 badge, 1 flag, 1 var
-- party: SPECIES_EMPOLEON 62
+- proves: Hall of Fame PC: with flag 0x964 the Pokemon Center PC menu (std 2018) shows HALL OF FAME (row 3), which runs InitHallOfFame on the record written by the real league clear. Chained from 59b's end save (the save CallTask_GameClear wrote before the credits) with only a map line: the viewer shows record No. 1. Start: MAP_SNOWPOINT_POKECENTER_1F (12,4) facing the PC. End: same map, field.
+- start: prev + `chain.recipe`; map MAP_SNOWPOINT_POKECENTER_1F 12 4 FACE_UP; lab state lines: none
+- party: the continued save
 - trainers: none
-- end state: map MAP_SNOWPOINT_POKECENTER_1F; flags set 0x964
+- end state: map MAP_SNOWPOINT_POKECENTER_1F; at (12, 4); flags set 0x964, 0x982; 3 save check(s)
 - frames: estimate 3000, budget 4500
 - refs: maps.h:172; zone_event 0167 object 0; games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:1335-1350; games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:1485; scr_seq 0205 @0x0B9F-0x0BFC; scr_seq 0205 @0x0BE6-0x0BEA; scr_seq 0205 @0x0C16-0x0C1E; scr_seq 0205 @0x0C4D-0x0C53; scr_seq 0205 @0x0EB9; msg 0199 #33; games/diamond/arm9/src/scrcmd.c:2336-2345; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/src/scrcmd_flags.c:194-201; games/diamond/arm9/src/unk_0205EC84.c:52; games/diamond/arm9/src/unk_0205EC84.c:55-56; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00F2; scr_seq 0192 @0x0106-0x010E; scr_seq 0192 @0x0178-0x0217
 <!-- plan.py:end diamond -->
@@ -2811,33 +2831,35 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 23 milestones, ~134500 frames estimated
+### Side systems: 25 milestones, ~141000 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 5500 | `start.recipe` | MAP_UNDERGROUND | planned |
 | [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 6000 | `start.recipe` | MAP_UNDERGROUND | planned |
 | [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 7000 | `start.recipe` | MAP_UNDERGROUND | planned |
-| [93-battle-zone-ferry-fight-area](diamond/93-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: Snowpoint ferry and Fight Area arrival | P1 | both | 6000 | `start.recipe` | MAP_FIGHT_AREA | planned |
-| [94-battle-zone-route-225-north-gate](diamond/94-battle-zone-route-225-north-gate/milestone.toml) | Battle Zone: Route 225 through the Fight Area north gate | P2 | both | 3500 | `start.recipe` | MAP_ROUTE_225 | planned |
-| [95-stark-mountain-buck-magma-stone](diamond/95-stark-mountain-buck-magma-stone/milestone.toml) | Stark Mountain: Buck and the Magma Stone | P2 | both | 3000 | `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | planned |
+| [93-battle-zone-ferry-fight-area](diamond/93-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: Snowpoint ferry and Fight Area arrival | P1 | both | 6000 | prev + `start.recipe` | MAP_FIGHT_AREA | passing |
+| [94-battle-zone-route-225-north-gate](diamond/94-battle-zone-route-225-north-gate/milestone.toml) | Battle Zone: Route 225 through the Fight Area north gate | P2 | both | 3500 | prev + `start.recipe` | MAP_ROUTE_225 | passing |
+| [95-stark-mountain-buck-magma-stone](diamond/95-stark-mountain-buck-magma-stone/milestone.toml) | Stark Mountain: Buck and the Magma Stone | P2 | both | 3000 | prev + `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | passing |
+| [95b-stark-mountain-buck-house](diamond/95b-stark-mountain-buck-house/milestone.toml) | Stark Mountain: Buck in the Survival Area | P2 | both | 1500 | prev + `start.recipe` | MAP_SURVIVAL_AREA_WEST_HOUSE | passing |
 | [96-battle-park-battle-tower](diamond/96-battle-park-battle-tower/milestone.toml) | Battle Park: Battle Tower single rooms, first set | P1 | both | 40000 | `start.recipe` | MAP_BATTLE_TOWER_LOBBY | planned |
-| [97-gts-offline](diamond/97-gts-offline/milestone.toml) | GTS: offline trade attempt returns to the field | P2 | both | 3500 | `start.recipe` | MAP_JUBLIFE_GLOBAL_TRADE_STATION | planned |
-| [98-jubilife-tv](diamond/98-jubilife-tv/milestone.toml) | Jubilife TV: rankings board (and producer interview) | P2 | both | 3000 | `start.recipe` | MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS | planned |
+| [97-gts-offline](diamond/97-gts-offline/milestone.toml) | GTS: offline trade attempt returns to the field | P2 | both | 3500 | `start.recipe` | MAP_JUBLIFE_GLOBAL_TRADE_STATION | passing |
+| [98-jubilife-tv](diamond/98-jubilife-tv/milestone.toml) | Jubilife TV: rankings board (and producer interview) | P2 | both | 3000 | `start.recipe` | MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS | passing |
 | [99-vs-seeker](diamond/99-vs-seeker/milestone.toml) | Vs. Seeker: Youngster Tristan rematch on Route 202 | P1 | both | 3500 | `start.recipe` | MAP_ROUTE_202 | planned |
-| [100-poketch-apps](diamond/100-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | both | 3000 | `start.recipe` | MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM | planned |
-| [101-roamer-mesprit](diamond/101-roamer-mesprit/milestone.toml) | Roamer: Mesprit leaves Verity Cavern | P1 | both | 2500 | `start.recipe` | MAP_VERITY_CAVERN | planned |
-| [102-roamer-cresselia](diamond/102-roamer-cresselia/milestone.toml) | Roamer: Cresselia leaves Fullmoon Island | P2 | both | 2000 | `start.recipe` | MAP_FULLMOON_ISLAND_INTERIOR | planned |
-| [103-legendary-dialga-palkia](pearl/103-legendary-dialga-palkia/milestone.toml) | Legendary: Palkia at Spear Pillar (Pearl) | P1 | pearl | 6000 | `start.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | planned |
-| [104-legendary-giratina-turnback](diamond/104-legendary-giratina-turnback/milestone.toml) | Legendary: Giratina in Turnback Cave | P2 | both | 6000 | `start.recipe` | MAP_TURNBACK_CAVE_GIRATINA_ROOM | planned |
-| [105-legendary-uxie-azelf](diamond/105-legendary-uxie-azelf/milestone.toml) | Legendary: Uxie (and Azelf) | P2 | both | 5000 | `start.recipe` | MAP_ACUITY_CAVERN | planned |
-| [106-legendary-heatran](diamond/106-legendary-heatran/milestone.toml) | Legendary: Heatran in Stark Mountain | P2 | both | 5000 | `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | planned |
-| [107-legendary-regigigas](diamond/107-legendary-regigigas/milestone.toml) | Legendary: Regigigas in Snowpoint Temple | P2 | both | 5000 | `start.recipe` | MAP_SNOWPOINT_TEMPLE_B5F | planned |
-| [108-rotom-old-chateau](diamond/108-rotom-old-chateau/milestone.toml) | Rotom in the Old Chateau TV | P2 | both | 4000 | `start.recipe` | MAP_OLD_CHATEAU_2F_ROOM_2 | planned |
-| [109-spiritomb-hallowed-tower](diamond/109-spiritomb-hallowed-tower/milestone.toml) | Spiritomb at the Hallowed Tower | P2 | both | 4000 | `start.recipe` | MAP_ROUTE_209 | planned |
-| [110-national-dex-upgrade](diamond/110-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | both | 5000 | `start.recipe` | MAP_SANDGEM_ROWANS_LAB | planned |
-| [111-pal-park](diamond/111-pal-park/milestone.toml) | Pal Park: entrance, Oak's Trainer Counter and the receptionist | P2 | both | 3000 | `start.recipe` | MAP_ROUTE_221_PAL_PARK_ENTRANCE | planned |
-| [112-hall-of-fame-pc-and-game-complete](diamond/112-hall-of-fame-pc-and-game-complete/milestone.toml) | Hall of Fame on the Pokemon Center PC (game complete) | P2 | both | 3000 | `start.recipe` | MAP_SNOWPOINT_POKECENTER_1F | planned |
+| [100-poketch-apps](diamond/100-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | both | 3000 | `start.recipe` | MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM | passing |
+| [101-roamer-mesprit](diamond/101-roamer-mesprit/milestone.toml) | Roamer: Mesprit leaves Verity Cavern | P1 | both | 2500 | `start.recipe` | MAP_VERITY_CAVERN | passing |
+| [102-roamer-cresselia](diamond/102-roamer-cresselia/milestone.toml) | Roamer: Cresselia leaves Fullmoon Island | P2 | both | 2000 | `start.recipe` | MAP_FULLMOON_ISLAND_INTERIOR | passing |
+| [103-legendary-dialga-palkia](pearl/103-legendary-dialga-palkia/milestone.toml) | Legendary: Palkia at Spear Pillar (Pearl) | P1 | pearl | 6000 | prev + `start.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
+| [104-legendary-giratina-turnback](diamond/104-legendary-giratina-turnback/milestone.toml) | Legendary: Giratina in Turnback Cave | P2 | both | 6000 | `start.recipe` | MAP_TURNBACK_CAVE_GIRATINA_ROOM | passing |
+| [105-legendary-uxie-azelf](diamond/105-legendary-uxie-azelf/milestone.toml) | Legendary: Uxie | P2 | both | 5000 | `start.recipe` | MAP_ACUITY_CAVERN | passing |
+| [105b-legendary-azelf](diamond/105b-legendary-azelf/milestone.toml) | Legendary: Azelf | P2 | both | 5000 | `start.recipe` | MAP_VALOR_CAVERN | passing |
+| [106-legendary-heatran](diamond/106-legendary-heatran/milestone.toml) | Legendary: Heatran in Stark Mountain | P2 | both | 5000 | prev + `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | passing |
+| [107-legendary-regigigas](diamond/107-legendary-regigigas/milestone.toml) | Legendary: Regigigas in Snowpoint Temple | P2 | both | 5000 | `start.recipe` | MAP_SNOWPOINT_TEMPLE_B5F | passing |
+| [108-rotom-old-chateau](diamond/108-rotom-old-chateau/milestone.toml) | Rotom in the Old Chateau TV | P2 | both | 4000 | prev + `start.recipe` | MAP_OLD_CHATEAU_2F_ROOM_2 | passing |
+| [109-spiritomb-hallowed-tower](diamond/109-spiritomb-hallowed-tower/milestone.toml) | Spiritomb at the Hallowed Tower | P2 | both | 4000 | `start.recipe` | MAP_ROUTE_209 | passing |
+| [110-national-dex-upgrade](diamond/110-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | both | 5000 | `start.recipe` | MAP_SANDGEM_ROWANS_LAB | passing |
+| [111-pal-park](diamond/111-pal-park/milestone.toml) | Pal Park: entrance, Oak's Trainer Counter and the receptionist | P2 | both | 3000 | prev + `start.recipe` | MAP_ROUTE_221_PAL_PARK_ENTRANCE | passing |
+| [112-hall-of-fame-pc-and-game-complete](diamond/112-hall-of-fame-pc-and-game-complete/milestone.toml) | Hall of Fame on the Pokemon Center PC (game complete) | P2 | both | 3000 | prev + `chain.recipe` | MAP_SNOWPOINT_POKECENTER_1F | passing |
 
 #### pearl/90-underground-explorer-kit — Underground: Explorer Kit and first entry
 - proves: Underground Man gives the Explorer Kit and becomes mentor (YES); walk out to Eterna and use the kit to enter the Underground. D/P has no lab underground hook (Platinum's PC_LAB_UNDERGROUND): input-driven. Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door (warp 0, (4,8)). End: MAP_UNDERGROUND (2).
@@ -2867,17 +2889,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:88; zone_event 0083 object 2; scr_seq 0089 @0x0295-0x02D1; scr_seq 0089 @0x02AB; scr_seq 0089 @0x02B8-0x02C4; scr_seq 0089 @0x02D3-0x02E2; scr_seq 0089 @0x00E6; scr_seq 0089 @0x02E9-0x0332; scr_seq 0089 @0x0341-0x0357; scr_seq 0089 @0x00F5; scr_seq 0089 @0x0379-0x03CD; scr_seq 0089 @0x03DE; scr_seq 0205 @0x08CB; scr_seq 0205 @0x08A4; msg 0571 #33; msg 0097 #16; msg 0097 #21; games/diamond/include/constants/decorations.h:13; games/diamond/include/constants/decorations.h:15; games/diamond/include/constants/decorations.h:21; games/diamond/include/constants/decorations.h:106; games/diamond/include/constants/decorations.h:117; games/diamond/arm9/src/unk_0205EC84.c:108; games/diamond/arm9/src/unk_0205EC84.c:112; games/diamond/arm9/src/unk_0205EC84.c:116; games/diamond/arm9/overlays/18/asm/overlay_18.s:28122; games/diamond/arm9/overlays/18/asm/overlay_18.s:37346; games/diamond/arm9/asm/unk_0204CB20.s:5482; games/diamond/arm9/asm/unk_0205F314.s:86-93
 
 #### pearl/93-battle-zone-ferry-fight-area — Battle Zone: Snowpoint ferry and Fight Area arrival
-- proves: Snowpoint harbour sailor sails to the Battle Zone once the game is complete; the Fight Area arrival scene (Barry and Buck talk, no battle in D/P) plays on the ON_FRAME table and sets var 0x4081 1. Start: MAP_SNOWPOINT (356,248) below the sailor (356,247). End: MAP_FIGHT_AREA (623,434), scene done.
-- start: `start.recipe`; map MAP_SNOWPOINT 356 248 FACE_UP; lab state lines: 1 flag, 1 var
+- proves: Snowpoint harbour sailor sails to the Battle Zone once the game is complete; the Fight Area arrival scene (Barry and Buck talk, no battle in D/P) plays on the ON_FRAME table and sets var 0x4081 1. Chained from 59b's end save (game complete played) with only the map line. The player talks to the sailor from the town side (356,246), where the ferry lands on the way back: from the dock side the boarding walk ends off the ship and ShipAnimation finds no ship model (sub_0204A8C4), so nothing sails (measured). Start: MAP_SNOWPOINT (356,246) above the sailor (356,247). End: MAP_FIGHT_AREA (627,434), scene done.
+- start: prev + `start.recipe`; map MAP_SNOWPOINT 356 246 FACE_DOWN; lab state lines: 1 flag, 1 var
 - party: SPECIES_GARCHOMP 100
 - trainers: none
-- end state: map MAP_FIGHT_AREA; flags set 0x1F1, 0x1F2; vars 0x4081=1
+- end state: map MAP_FIGHT_AREA; at (627, 434); flags set 0x1F1, 0x1F2, 0x964; vars 0x4081=1
 - frames: estimate 6000, budget 9000
 - refs: maps.h:169; maps.h:192; zone_event 0164 object 8; scr_seq 0168 @0x0232-0x0257; scr_seq 0168 @0x0260; scr_seq 0168 @0x0276-0x0287; msg 0167 #10; msg 0167 #13; scr_seq 0658 @0x0000; scr_seq 0658 @0x000B; scr_seq 0195 @0x0046-0x00A0; scr_seq 0195 @0x00A2-0x012D; scr_seq 0195 @0x00FF; scr_seq 0195 @0x0121; scr_seq 0195 @0x0125; zone_event 0187 object 7; zone_event 0187 object 8; zone_event 0187 object 18; scr_seq 0195 @0x0304-0x0364; games/diamond/arm9/src/map_object.c:295-300; games/diamond/arm9/src/scrcmd_flags.c:194-201; games/diamond/arm9/src/unk_0205EC84.c:55-56
 
 #### pearl/94-battle-zone-route-225-north-gate — Battle Zone: Route 225 through the Fight Area north gate
-- proves: Battle Zone areas: with the National-Dex flag 0x2B2 the two blockers north of the Fight Area are gone (hidden_flag 0x2B2); walk through the Route 225 gatehouse onto Route 225. Start: MAP_FIGHT_AREA (630,430) south of the blockade (629/630,429). End: MAP_ROUTE_225 (630,413).
-- start: `start.recipe`; map MAP_FIGHT_AREA 630 430 FACE_UP; lab state lines: 4 flag, 2 var
+- proves: Battle Zone areas: with the National-Dex flag 0x2B2 the two blockers north of the Fight Area are gone (hidden_flag 0x2B2); walk through the Route 225 gatehouse onto Route 225. Chained: 93's end save (the ferry and the arrival scene, on the Hall of Fame save) + flag 0x2B2 (the National Dex scene's, 110 is a lab station) and the map line that reloads the Fight Area without the blockers. Start: MAP_FIGHT_AREA (630,430) south of the blockade (629/630,429). End: MAP_ROUTE_225 (630,413).
+- start: prev + `start.recipe`; map MAP_FIGHT_AREA 630 430 FACE_UP; lab state lines: 4 flag, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
 - end state: map MAP_ROUTE_225; flags set 0x2B2
@@ -2885,13 +2907,22 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:192; maps.h:404; zone_event 0187 object 22; zone_event 0187 object 23; zone_event 0187 warp 0; zone_event 0187 warp 1; scr_seq 0195 @0x0538-0x0549; msg 0183 #5; zone_event 0192 warp 1; zone_event 0385 warp 0; zone_event 0448 object 16; zone_event 0448 object 17; scr_seq 0990 @0x058B; zone_event 0428 warp 0; zone_event 0428 warp 3; zone_event 0435 warp 3; zone_event 0254 warp 0; zone_event 0386 coord 0; zone_event 0386 coord 1; scr_seq 0454 @0x00ED; scr_seq 0454 @0x01D5
 
 #### pearl/95-stark-mountain-buck-magma-stone — Stark Mountain: Buck and the Magma Stone
-- proves: Stark Mountain story: in Interior 3 Buck takes the Magma Stone (coord (7,10) while var 0x409E==0); buck.recipe: talk to Buck in the Survival Area west house -> flag 0x125 (Heatran's prerequisite). Start: MAP_STARK_MOUNTAIN_INTERIOR_3 entry warp (7,17). End: same map, var 0x409E 1.
-- start: `start.recipe`; warp MAP_STARK_MOUNTAIN_INTERIOR_3 0; lab state lines: 4 flag, 2 var
+- proves: Stark Mountain story: in Interior 3 Buck takes the Magma Stone (coord (7,10) while var 0x409E==0). Chained: 93's end save (game complete, Fight Area arrival) + the warp to Interior 3's entry (the Route 227/ Stark Mountain walk is skipped). Buck in the Survival Area west house is ../95b-stark-mountain-buck-house. Start: MAP_STARK_MOUNTAIN_INTERIOR_3 entry warp (7,17). End: same map, var 0x409E 1.
+- start: prev + `start.recipe`; warp MAP_STARK_MOUNTAIN_INTERIOR_3 0; lab state lines: 4 flag, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
 - end state: map MAP_STARK_MOUNTAIN_INTERIOR_3; flags set 0xD6, 0x1F9, 0x1FC; flags clear 0x1F4; vars 0x409E=1
 - frames: estimate 3000, budget 4500
 - refs: maps.h:269; zone_event 0257 coord 0; zone_event 0257 object 2; zone_event 0257 object 3; zone_event 0257 warp 0; scr_seq 0278 @0x001C-0x0083; scr_seq 0278 @0x00A4-0x010E; scr_seq 0278 @0x00C5; scr_seq 0278 @0x00FA; scr_seq 0278 @0x00FE; scr_seq 0278 @0x0104; scr_seq 0278 @0x0108; msg 0247 #0; zone_event 0432 object 1; scr_seq 0377 @0x00FC; scr_seq 1027 @0x0049-0x0088; scr_seq 1027 @0x0051; scr_seq 1027 @0x007E; scr_seq 1027 @0x0082; games/diamond/arm9/src/map_object.c:295-300
+
+#### pearl/95b-stark-mountain-buck-house — Stark Mountain: Buck in the Survival Area
+- proves: Stark Mountain, part 2: after the Magma Stone scene Buck waits in the Survival Area west house (95 cleared his hide flag 0x1F4); talking to him sets flag 0x125, Heatran's prerequisite, and he leaves (0xE7, 0x1F4). Chained: 95's end save + the warp to the house door (the Stark Mountain / Route 228 walk is skipped). Start: MAP_SURVIVAL_AREA_WEST_HOUSE door (warp 0, (4,8)). End: same map, below Buck's spot (8,5).
+- start: prev + `start.recipe`; warp MAP_SURVIVAL_AREA_WEST_HOUSE 0; lab state lines: 1 clear-flag, 7 flag, 3 var
+- party: SPECIES_GARCHOMP 100
+- trainers: none
+- end state: map MAP_SURVIVAL_AREA_WEST_HOUSE; flags set 0x125, 0xE7, 0x1F4, 0xD6; vars 0x409E=1
+- frames: estimate 1500, budget 3000
+- refs: maps.h:458; zone_event 0432 object 1; zone_event 0432 warp 0; scr_seq 0377 @0x00FC; scr_seq 0278 @0x0108; scr_seq 1027 @0x0049-0x0088; scr_seq 1027 @0x0051; scr_seq 1027 @0x007A-0x0082; msg 0537 #3; games/diamond/arm9/src/map_object.c:295-300
 
 #### pearl/96-battle-park-battle-tower — Battle Park: Battle Tower single rooms, first set
 - proves: Battle Tower single rooms: the lobby attendant runs a 7-battle set with three distinct mons and distinct held items; 7 wins pay Battle Points. Gatehouse (Point Card) and Battle Park scenes pre-minted. Start: MAP_BATTLE_TOWER_LOBBY (11,6) below the single/double attendant (11,5). End: lobby after the set.
@@ -2903,7 +2934,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:330; maps.h:196; maps.h:326; zone_event 0187 warp 2; zone_event 0191 warp 1; zone_event 0309 warp 2; zone_event 0309 coord 0; zone_event 0311 object 0; scr_seq 0663 @0x000B; scr_seq 0200 @0x0026-0x0054; scr_seq 0355 @0x006E; scr_seq 0355 @0x0103-0x0107; scr_seq 0355 @0x0190-0x0194; scr_seq 0377 @0x00F4; scr_seq 0377 @0x00F8; scr_seq 0818 @0x0010-0x0022; scr_seq 0358 @0x03D6-0x0417; scr_seq 0358 @0x042A-0x047B; scr_seq 0358 @0x04D1-0x0508; scr_seq 0358 @0x0333; scr_seq 0358 @0x033E; scr_seq 0358 @0x0524-0x0557; scr_seq 0358 @0x012E; scr_seq 0358 @0x02B5; msg 0283 #0; msg 0283 #9; msg 0283 #10; games/diamond/include/constants/items.h:657; games/diamond/arm9/overlays/06/asm/overlay_06.s:21223; games/diamond/arm9/overlays/06/asm/overlay_06.s:45251; games/diamond/arm9/src/unk_0202A1E0.c:127
 
 #### pearl/97-gts-offline — GTS: offline trade attempt returns to the field
-- proves: GTS offline: the receptionist's trade path saves, walks the player through the door and starts the Nintendo WFC connection; without WFC data Unk00B2 returns 0 and the script walks back out ("Please do visit again"). D/P has only this building (no Global Terminal 2F/3F). Start: MAP_JUBLIFE_GLOBAL_TRADE_STATION (11,4) below the receptionist (11,3). End: same map, field.
+- proves: GTS offline: the receptionist's trade path saves, walks the player through the door and starts the Nintendo WFC connection. The port is an unconfigured console (pc_dwc_auth.c): the connect screen waits; B cancels it ("Reconnect to Nintendo WFC?"), NO makes Unk00B2 return 0 and the script walks back out ("Please do visit again"). D/P has only this building (no Global Terminal 2F/3F). Start: MAP_JUBLIFE_GLOBAL_TRADE_STATION (11,4) below the receptionist (11,3). End: same map (12,4), field.
 - start: `start.recipe`; map MAP_JUBLIFE_GLOBAL_TRADE_STATION 11 4 FACE_UP; lab state lines: 1 var
 - party: SPECIES_TURTWIG 15; SPECIES_STARLY 12
 - trainers: none
@@ -2934,7 +2965,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; warp MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM 0; lab state lines: 4 poketch, 2 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM
+- end state: map MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM; 1 save check(s)
 - frames: estimate 3000, budget 4500
 - refs: maps.h:383; zone_event 0364 object 0; zone_event 0364 warp 0; scr_seq 0430 @0x0012-0x0038; scr_seq 0205 @0x06A9-0x06BA; games/diamond/include/poketch.h:9-37; scr_seq 0002 @0x0DAC; scr_seq 0002 @0x0DD7-0x0E06; scr_seq 0008 @0x0049; scr_seq 0008 @0x006D; scr_seq 0008 @0x0080; scr_seq 0008 @0x0093; scr_seq 0008 @0x0126; scr_seq 0073 @0x00A9-0x00FF; scr_seq 0403 @0x02AB; scr_seq 0405 @0x008D-0x00D2; scr_seq 1007 @0x000E-0x0045; scr_seq 1002 @0x00D4-0x0101; scr_seq 0138 @0x011C-0x014C; scr_seq 1020 @0x0012-0x002E; scr_seq 0164 @0x000E-0x0119; scr_seq 0444 @0x0505-0x050E; scr_seq 0444 @0x059E; scr_seq 0444 @0x05B7-0x05E9; scr_seq 0444 @0x05FB-0x061A
 
@@ -2957,56 +2988,65 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:265; zone_event 0253 object 0; zone_event 0253 object 1; scr_seq 0377 @0x013A; scr_seq 0274 @0x000C-0x005A; scr_seq 0274 @0x0047; scr_seq 0274 @0x004F; scr_seq 0274 @0x0057; scr_seq 0274 @0x005A; zone_event 0032 object 16; scr_seq 0034 @0x06B7; scr_seq 0034 @0x06D3; scr_seq 0034 @0x06DE; scr_seq 0034 @0x079F; scr_seq 0034 @0x08A0-0x08DD; scr_seq 0046 @0x000E-0x0065; scr_seq 0046 @0x0158-0x0193; scr_seq 0046 @0x01EA-0x01EE; games/diamond/arm9/asm/unk_020603B0.s:200-226
 
 #### pearl/103-legendary-dialga-palkia — Legendary: Palkia at Spear Pillar (Pearl)
-- proves: Palkia at Spear Pillar (post-Hall-of-Fame rematch): var 0x4098==5 arms coord 7 below the altar; step on it -> LegendaryBattle 0x8004, 47 where GetGameVersion picks 484 (PALKIA) in Pearl; defeat it. Start: MAP_MOUNT_CORONET_SPEAR_PILLAR (31,27). End: same map, var 0x4098 4. Twin: ../../diamond/103-legendary-dialga-palkia.
-- start: `start.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 27 FACE_UP; lab state lines: 1 flag, 2 var
+- proves: Palkia at Spear Pillar (post-Hall-of-Fame rematch): var 0x4098==5 arms coord 7 below the altar; step on it -> LegendaryBattle 0x8004, 47 where GetGameVersion picks 484 (PALKIA) in Pearl; defeat it. Chained from 59b's end save, where the Hall of Fame script set var 0x4098 5 (played), with only the map line. Start: MAP_MOUNT_CORONET_SPEAR_PILLAR (31,27). End: same map, var 0x4098 4. Twin: ../../diamond/103-legendary-dialga-palkia.
+- start: prev + `start.recipe`; map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 27 FACE_UP; lab state lines: 1 flag, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR; >= 1 battles; flags clear 0x15F, 0x8E; vars 0x4098=4
+- end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR; >= 1 battles; flags clear 0x15F, 0x8E; vars 0x4098=4; log /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 484/
 - frames: estimate 6000, budget 9000
 - refs: maps.h:224; zone_event 0217 object 5; zone_event 0217 object 12; zone_event 0217 object 13; zone_event 0217 coord 7; scr_seq 0690 @0x0000; scr_seq 0230 @0x0086-0x00A3; scr_seq 0230 @0x00A5-0x00BC; scr_seq 0230 @0x011F-0x016A; scr_seq 0230 @0x01AF-0x01B7; scr_seq 0230 @0x01CD-0x01E2; scr_seq 0230 @0x01E8-0x0205; scr_seq 0230 @0x11F3-0x1247; scr_seq 0230 @0x1243; scr_seq 0230 @0x124D-0x1262; scr_seq 0230 @0x1268-0x1281; scr_seq 0370 @0x17C6; scr_seq 0370 @0x17DA; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2-0x01DC; games/diamond/arm9/asm/unk_020476CC.s:1220-1228; games/diamond/arm9/src/map_header.c:663-672; games/diamond/include/config.h:9-10
 
 #### pearl/104-legendary-giratina-turnback — Legendary: Giratina in Turnback Cave
-- proves: Giratina in Turnback Cave (D/P: lv70, no story gate in the room script): A -> LegendaryBattle 487, 70; defeated -> "GIRATINA disappeared...", ClearFlag 0x26E (it is back on the next load). Start: MAP_TURNBACK_CAVE_GIRATINA_ROOM (11,15) below Giratina (11,14). End: same map.
+- proves: Giratina in Turnback Cave (D/P: lv70, no story gate in the room script): A -> LegendaryBattle 487, 70. Unk00ED is sub_020480C8: 0 for a win (outcome 1) or a catch (4), 1 otherwise, so defeating it takes the caught path: SetFlag 0x121 + hide flag 0x26E, ClearFlag 0x296. "GIRATINA disappeared..." is the run-away path. Start: MAP_TURNBACK_CAVE_GIRATINA_ROOM (11,15) below Giratina (11,14). End: same map, Giratina gone.
 - start: `start.recipe`; map MAP_TURNBACK_CAVE_GIRATINA_ROOM 11 15 FACE_UP; lab state lines: 1 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map MAP_TURNBACK_CAVE_GIRATINA_ROOM; >= 1 battles; flags clear 0x121, 0x26E, 0x8E
-- frames: estimate 6000, budget 9000
-- refs: maps.h:274; zone_event 0261 object 0; scr_seq 0283 @0x0016-0x0027; scr_seq 0283 @0x0029-0x0042; scr_seq 0283 @0x0044-0x005D; scr_seq 0283 @0x0067-0x0082; scr_seq 0283 @0x0089-0x0091; scr_seq 0283 @0x0099-0x00A0; msg 0250 #1; games/diamond/arm9/asm/unk_020476CC.s:1220-1228
+- end state: map MAP_TURNBACK_CAVE_GIRATINA_ROOM; >= 1 battles; flags set 0x121, 0x26E; flags clear 0x296, 0x8E
+- frames: estimate 6000, budget 15000
+- refs: maps.h:274; zone_event 0261 object 0; scr_seq 0283 @0x0016-0x0027; scr_seq 0283 @0x0029-0x0042; scr_seq 0283 @0x0044-0x005D; scr_seq 0283 @0x0067-0x0082; scr_seq 0283 @0x0089-0x0091; msg 0250 #0; games/diamond/arm9/src/scrcmd_7.c:236-244; games/diamond/arm9/asm/unk_020476CC.s:1207-1217
 
-#### pearl/105-legendary-uxie-azelf — Legendary: Uxie (and Azelf)
-- proves: Uxie in Acuity Cavern (Azelf in Valor Cavern with azelf.recipe), freed by the Spear Pillar story: A -> LegendaryBattle 480, 50 (Azelf 482, 50); defeated -> "disappeared", no persistent flag. Start: MAP_ACUITY_CAVERN (14,11) below Uxie (14,10). End: same map.
+#### pearl/105-legendary-uxie-azelf — Legendary: Uxie
+- proves: Uxie in Acuity Cavern, freed by the Spear Pillar story: A -> LegendaryBattle 480, 50; defeating it takes the caught path (SetFlag 0x127): it is gone for good. Azelf: ../105b-legendary-azelf. Start: MAP_ACUITY_CAVERN (14,11) below Uxie (14,10). End: same map.
 - start: `start.recipe`; map MAP_ACUITY_CAVERN 14 11 FACE_UP; lab state lines: 1 clear-flag, 1 var
 - party: SPECIES_GARCHOMP 100 (MOVE_CRUNCH)
 - trainers: none
-- end state: map MAP_ACUITY_CAVERN; >= 1 battles; flags clear 0x127, 0x8E
+- end state: map MAP_ACUITY_CAVERN; >= 1 battles; flags set 0x127; flags clear 0x8E
 - frames: estimate 5000, budget 7500
-- refs: maps.h:323; maps.h:320; zone_event 0306 object 0; zone_event 0303 object 0; scr_seq 0377 @0x001E; scr_seq 0377 @0x0022; scr_seq 0230 @0x0FD8; scr_seq 0230 @0x0FDC; scr_seq 0352 @0x0014-0x0029; scr_seq 0352 @0x002F-0x0046; scr_seq 0352 @0x0050-0x0072; scr_seq 0352 @0x007A; msg 0278 #1; scr_seq 0348 @0x0046-0x0075; scr_seq 0348 @0x0077-0x008E; scr_seq 0348 @0x00BA; scr_seq 0192 @0x01A1-0x0217
+- refs: maps.h:323; zone_event 0306 object 0; scr_seq 0377 @0x0022; scr_seq 0230 @0x0FDC; scr_seq 0352 @0x0014-0x0029; scr_seq 0352 @0x002F-0x0046; scr_seq 0352 @0x0050-0x0072; scr_seq 0352 @0x007A; msg 0278 #1; scr_seq 0192 @0x01A1-0x0217; games/diamond/arm9/src/scrcmd_7.c:236-244; games/diamond/arm9/asm/unk_020476CC.s:1207-1217
+
+#### pearl/105b-legendary-azelf — Legendary: Azelf
+- proves: Azelf in Valor Cavern, freed by the Spear Pillar story: A -> LegendaryBattle 482, 50; defeating it takes the caught path (SetFlag 0x126): it is gone for good. Uxie's twin station (../105-legendary-uxie-azelf). Start: MAP_VALOR_CAVERN (16,15) below Azelf (16,14). End: same map.
+- start: `start.recipe`; map MAP_VALOR_CAVERN 16 15 FACE_UP; lab state lines: 1 clear-flag, 1 var
+- party: SPECIES_GARCHOMP 100 (MOVE_CRUNCH)
+- trainers: none
+- end state: map MAP_VALOR_CAVERN; >= 1 battles; flags set 0x126; flags clear 0x8E
+- frames: estimate 5000, budget 7500
+- refs: maps.h:320; zone_event 0303 object 0; scr_seq 0377 @0x001E; scr_seq 0230 @0x0FD8; scr_seq 0348 @0x0046-0x0075; scr_seq 0348 @0x0077-0x008E; scr_seq 0348 @0x00A9-0x00BA; scr_seq 0348 @0x00C2; msg 0275 #4; scr_seq 0192 @0x01A1-0x0217; games/diamond/arm9/src/scrcmd_7.c:236-244; games/diamond/arm9/asm/unk_020476CC.s:1207-1217
 
 #### pearl/106-legendary-heatran — Legendary: Heatran in Stark Mountain
-- proves: Heatran in Stark Mountain Interior 3: ON_TRANSITION shows it only with game complete, National Dex, Buck talked to (0x125) and var 0x409E==1; A -> SetFlag 0xD7, SetVar 0x409E 2, LegendaryBattle 485, 70. Start: MAP_STARK_MOUNTAIN_INTERIOR_3 (7,7) below Heatran (7,6). End: same map, var 0x409E 2.
-- start: `start.recipe`; map MAP_STARK_MOUNTAIN_INTERIOR_3 7 7 FACE_UP; lab state lines: 8 flag, 1 national-dex, 1 pokedex, 2 var
+- proves: Heatran in Stark Mountain Interior 3: ON_TRANSITION shows it only with game complete, National Dex, Buck talked to (0x125) and var 0x409E==1; A -> SetFlag 0xD7, SetVar 0x409E 2, LegendaryBattle 485, 70. Defeating it takes the caught path (Unk00ED = sub_020480C8 is 0 for a win): SetFlag 0x120 + 0x983. Chained: 95b's end save (Buck talked to, on the Hall of Fame save) + the National Dex (110's) + the map line. Start: MAP_STARK_MOUNTAIN_INTERIOR_3 (7,7) below Heatran (7,6). End: same map, var 0x409E 2.
+- start: prev + `start.recipe`; map MAP_STARK_MOUNTAIN_INTERIOR_3 7 7 FACE_UP; lab state lines: 8 flag, 1 national-dex, 1 pokedex, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
-- end state: map MAP_STARK_MOUNTAIN_INTERIOR_3; >= 1 battles; flags set 0xD7; flags clear 0x120, 0x8E; vars 0x409E=2
+- end state: map MAP_STARK_MOUNTAIN_INTERIOR_3; >= 1 battles; flags set 0xD7, 0x120, 0x983, 0x964; flags clear 0x8E; vars 0x409E=2
 - frames: estimate 5000, budget 7500
-- refs: maps.h:269; zone_event 0257 object 1; zone_event 0257 object 3; scr_seq 0278 @0x001C-0x0031; scr_seq 0278 @0x0037-0x0083; scr_seq 0278 @0x0152-0x0160; scr_seq 0278 @0x0167; scr_seq 0278 @0x0173-0x017C; scr_seq 0278 @0x0182-0x01B4; scr_seq 0278 @0x01A8-0x01AC; scr_seq 0278 @0x01BF; scr_seq 0278 @0x01CB; msg 0247 #4; scr_seq 1027 @0x0051; scr_seq 0192 @0x01E2-0x01F1; games/diamond/arm9/src/scrcmd.c:3872-3882; games/diamond/arm9/src/unk_0205EC84.c:173
+- refs: maps.h:269; zone_event 0257 object 1; zone_event 0257 object 3; scr_seq 0278 @0x001C-0x0031; scr_seq 0278 @0x0037-0x0083; scr_seq 0278 @0x0152-0x0160; scr_seq 0278 @0x0167; scr_seq 0278 @0x0173-0x017C; scr_seq 0278 @0x0182-0x01B4; scr_seq 0278 @0x01A8-0x01AC; scr_seq 0278 @0x01BF; scr_seq 0278 @0x01CB; msg 0247 #3; games/diamond/arm9/asm/unk_020476CC.s:1207-1217; scr_seq 1027 @0x0051; scr_seq 0192 @0x01E2-0x01F1; games/diamond/arm9/src/scrcmd.c:3872-3882; games/diamond/arm9/src/unk_0205EC84.c:173
 
 #### pearl/107-legendary-regigigas — Legendary: Regigigas in Snowpoint Temple
-- proves: Regigigas in Snowpoint Temple B5F: with Regirock, Regice and Registeel in the party (species check only) A awakens it (SetFlag 0x11A) -> LegendaryBattle 486, 70. D/P has no Regi trio battles (no Regi ruins maps). Start: MAP_SNOWPOINT_TEMPLE_B5F (11,13) below Regigigas (11,12). End: same map, 0x11A set.
+- proves: Regigigas in Snowpoint Temple B5F: with Regirock, Regice and Registeel in the party (species check only) A awakens it (SetFlag 0x11A) -> LegendaryBattle 486, 70. D/P has no Regi trio battles (no Regi ruins maps). Defeating it takes the caught path (Unk00ED = sub_020480C8 is 0 for a win): SetFlag 0x11B. Start: MAP_SNOWPOINT_TEMPLE_B5F (11,13) below Regigigas (11,12). End: same map, 0x11A and 0x11B set.
 - start: `start.recipe`; map MAP_SNOWPOINT_TEMPLE_B5F 11 13 FACE_UP; lab state lines: 1 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_REGIROCK 30; SPECIES_REGICE 30; SPECIES_REGISTEEL 30
 - trainers: none
-- end state: map MAP_SNOWPOINT_TEMPLE_B5F; >= 1 battles; party SPECIES_REGIROCK, SPECIES_REGICE, SPECIES_REGISTEEL; flags set 0x11A; flags clear 0x11B, 0x8E
+- end state: map MAP_SNOWPOINT_TEMPLE_B5F; >= 1 battles; party SPECIES_REGIROCK, SPECIES_REGICE, SPECIES_REGISTEEL; flags set 0x11A, 0x11B; flags clear 0x8E
 - frames: estimate 5000, budget 7500
-- refs: maps.h:287; zone_event 0271 object 0; zone_event 0164 coord 0; scr_seq 0168 @0x0088; scr_seq 0168 @0x014A; scr_seq 0309 @0x000A-0x0023; scr_seq 0309 @0x002F-0x004B; scr_seq 0309 @0x0073; scr_seq 0309 @0x0081-0x0092; scr_seq 0309 @0x00BE; scr_seq 0309 @0x00C6; msg 0252 #3; scr_seq 0192 @0x01F9-0x020B; games/diamond/arm9/src/scrcmd.c:4277-4281; games/diamond/arm9/asm/unk_02054C14.s:322-323
+- refs: maps.h:287; zone_event 0271 object 0; zone_event 0164 coord 0; scr_seq 0168 @0x0088; scr_seq 0168 @0x014A; scr_seq 0309 @0x000A-0x0023; scr_seq 0309 @0x002F-0x004B; scr_seq 0309 @0x0073; scr_seq 0309 @0x0081-0x0092; scr_seq 0309 @0x00BE; scr_seq 0309 @0x00C6; msg 0252 #3; games/diamond/arm9/asm/unk_020476CC.s:1207-1217; scr_seq 0192 @0x01F9-0x020B; games/diamond/arm9/src/scrcmd.c:4277-4281; games/diamond/arm9/asm/unk_02054C14.s:322-323
 
 #### pearl/108-rotom-old-chateau — Rotom in the Old Chateau TV
-- proves: Rotom in the Old Chateau TV: with game complete, National Dex and night time, A on the TV -> YES -> SetFlag 0xAB0 (once per day) -> WildBattle 479, 15. Start: MAP_OLD_CHATEAU_2F_ROOM_2 (11,4) below the TV (11,3). End: same map.
-- start: `start.recipe`; map MAP_OLD_CHATEAU_2F_ROOM_2 11 4 FACE_UP; lab state lines: 1 flag, 1 national-dex, 1 pokedex, 1 var
+- proves: Rotom in the Old Chateau TV: with game complete, National Dex and night time, A on the TV -> YES -> SetFlag 0xAB0 (once per day) -> WildBattle 479, 15. Chained from 59b's end save (game complete played) + the National Dex (110's, a lab station) and the map line. Start: MAP_OLD_CHATEAU_2F_ROOM_2 (11,4) below the TV (11,3). End: same map.
+- start: prev + `start.recipe`; map MAP_OLD_CHATEAU_2F_ROOM_2 11 4 FACE_UP; lab state lines: 1 flag, 1 national-dex, 1 pokedex, 1 var
 - party: SPECIES_GARCHOMP 100 (MOVE_CRUNCH)
 - trainers: none
-- end state: map MAP_OLD_CHATEAU_2F_ROOM_2; >= 1 battles; flags set 0xAB0; flags clear 0x149
+- end state: map MAP_OLD_CHATEAU_2F_ROOM_2; >= 1 battles; flags set 0xAB0, 0x964; flags clear 0x149; log /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 479/
 - frames: estimate 4000, budget 6000
 - refs: maps.h:304; zone_event 0288 bg 0; zone_event 0288 bg 1; zone_event 0288 warp 0; scr_seq 0329 @0x000C-0x004F; scr_seq 0329 @0x0056-0x0063; scr_seq 0329 @0x007A-0x007E; scr_seq 0329 @0x0095-0x00A6; scr_seq 0329 @0x00AE; msg 0261 #1; msg 0261 #3; games/diamond/arm9/src/unk_0204B0A0.c:119-121; games/diamond/arm9/src/gf_rtc.c:136-170; games/diamond/include/gf_rtc.h:24-28; games/diamond/arm9/src/scrcmd.c:3872-3882
 
@@ -3029,20 +3069,20 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:426; zone_event 0400 object 0; zone_event 0400 object 4; scr_seq 0920 @0x000B; scr_seq 0990 @0x031D; scr_seq 0990 @0x0044-0x006B; scr_seq 0990 @0x0487-0x04E8; scr_seq 0990 @0x04B0-0x04C1; scr_seq 0990 @0x0528-0x052C; scr_seq 0990 @0x057C; scr_seq 0990 @0x0587; scr_seq 0990 @0x058B; scr_seq 0990 @0x058F; scr_seq 0990 @0x05D6; scr_seq 0990 @0x05F5-0x0601; scr_seq 0990 @0x0610; scr_seq 0377 @0x0044; scr_seq 0377 @0x0056; games/diamond/arm9/src/unk_0205EC84.c:381-383; games/diamond/arm9/asm/unk_02034E84.s:32-33; games/diamond/arm9/asm/unk_02034E84.s:246; games/diamond/arm9/src/pokedex.c:390-392; games/diamond/arm9/src/pokedex.c:405-414; games/diamond/arm9/src/pokedex.c:310-316; games/diamond/arm9/src/pokemon.c:2888-2891; games/diamond/files/poketool/shinzukan/narc_0000.bin; games/diamond/arm9/src/scrcmd.c:3872-3880; games/diamond/include/constants/items.h:656
 
 #### pearl/111-pal-park — Pal Park: entrance, Oak's Trainer Counter and the receptionist
-- proves: Pal Park entrance, first visit: Oak's ON_FRAME scene gives the Trainer Counter app (var 0x40C6 0 -> 1); the receptionist's first talk sets flag 0xD3. Migration itself is the feature-matrix `palpark` case (GBA cart + Emerald save -> MIGRATE FROM EMERALD), already done for Diamond and Pearl. Start: MAP_ROUTE_221_PAL_PARK_ENTRANCE door (warp 0, (7,19)). End: same map, below the receptionist.
-- start: `start.recipe`; warp MAP_ROUTE_221_PAL_PARK_ENTRANCE 0; lab state lines: 1 flag, 1 national-dex, 1 pokedex, 1 poketch, 2 var
+- proves: Pal Park entrance, first visit: Oak's ON_FRAME scene gives the Trainer Counter app (var 0x40C6 0 -> 1); the receptionist's first talk sets flag 0xD3. Migration itself is the feature-matrix `palpark` case (GBA cart + Emerald save -> MIGRATE FROM EMERALD), already done for Diamond and Pearl. Chained from 59b's end save (its Poketch and party) + the National Dex (110's, a lab station); the player walks in from Route 221, since the entrance's ON_FRAME scene would hold the lab's map line (the field never frees). Start: MAP_ROUTE_221 (306,910) below the entrance door (306,909). End: the entrance, below the receptionist.
+- start: prev + `start.recipe`; map MAP_ROUTE_221 306 910 FACE_UP; lab state lines: 1 flag, 1 national-dex, 1 pokedex, 1 poketch, 2 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map MAP_ROUTE_221_PAL_PARK_ENTRANCE; flags set 0xD3, 0x1F0; vars 0x40C6=1
-- frames: estimate 3000, budget 4500
+- end state: map MAP_ROUTE_221_PAL_PARK_ENTRANCE; flags set 0xD3, 0x1F0; vars 0x40C6=1; 1 save check(s)
+- frames: estimate 3000, budget 6000
 - refs: maps.h:397; zone_event 0378 object 1; zone_event 0378 object 7; zone_event 0378 warp 0; zone_event 0378 warp 1; scr_seq 0889 @0x000B; scr_seq 0444 @0x04C0-0x0545; scr_seq 0444 @0x0505-0x050E; scr_seq 0444 @0x0535; scr_seq 0444 @0x053D; scr_seq 0444 @0x007E-0x00FE; scr_seq 0444 @0x00A8; scr_seq 0444 @0x00DD; scr_seq 0444 @0x0186-0x01AD; msg 0464 #3; msg 0464 #21; tests/mac/feature_matrix.py:539-553; tests/mac/feature_matrix.py:544; docs/FEATURE_PARITY.md:97; docs/evidence/README.md:50; docs/evidence/README.md:90; games/diamond/pc/src/pc_dp_agb.c
 
 #### pearl/112-hall-of-fame-pc-and-game-complete — Hall of Fame on the Pokemon Center PC (game complete)
-- proves: Hall of Fame PC: with flag 0x964 the Pokemon Center PC menu (std 2018) shows HALL OF FAME (row 3), which runs InitHallOfFame on the record written by the real league clear. Documents the full game-complete set. Start: MAP_SNOWPOINT_POKECENTER_1F facing the PC. End: same map.
-- start: `start.recipe`; map MAP_SNOWPOINT_POKECENTER_1F 12 4 FACE_UP; lab state lines: 8 badge, 1 flag, 1 var
-- party: SPECIES_EMPOLEON 62
+- proves: Hall of Fame PC: with flag 0x964 the Pokemon Center PC menu (std 2018) shows HALL OF FAME (row 3), which runs InitHallOfFame on the record written by the real league clear. Chained from 59b's end save (the save CallTask_GameClear wrote before the credits) with only a map line: the viewer shows record No. 1. Start: MAP_SNOWPOINT_POKECENTER_1F (12,4) facing the PC. End: same map, field.
+- start: prev + `chain.recipe`; map MAP_SNOWPOINT_POKECENTER_1F 12 4 FACE_UP; lab state lines: none
+- party: the continued save
 - trainers: none
-- end state: map MAP_SNOWPOINT_POKECENTER_1F; flags set 0x964
+- end state: map MAP_SNOWPOINT_POKECENTER_1F; at (12, 4); flags set 0x964, 0x982; 3 save check(s)
 - frames: estimate 3000, budget 4500
 - refs: maps.h:172; zone_event 0167 object 0; games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:1335-1350; games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:1485; scr_seq 0205 @0x0B9F-0x0BFC; scr_seq 0205 @0x0BE6-0x0BEA; scr_seq 0205 @0x0C16-0x0C1E; scr_seq 0205 @0x0C4D-0x0C53; scr_seq 0205 @0x0EB9; msg 0199 #33; games/diamond/arm9/src/scrcmd.c:2336-2345; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/src/scrcmd_flags.c:194-201; games/diamond/arm9/src/unk_0205EC84.c:52; games/diamond/arm9/src/unk_0205EC84.c:55-56; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00F2; scr_seq 0192 @0x0106-0x010E; scr_seq 0192 @0x0178-0x0217
 <!-- plan.py:end pearl -->

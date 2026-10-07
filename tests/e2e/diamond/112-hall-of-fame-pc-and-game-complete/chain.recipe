@@ -1,0 +1,4 @@
+# On 59b's end save (game complete and the Hall of Fame record, both played): only the station.
+# The PC is a tile behaviour, not a bg event (zone_event 0167 lists no bgs); nurse at (8,4) (object 0).
+# PC tile (12,3) as in the shared Pokemon Center interior (measured: A from (12,4) facing up boots it)
+map MAP_SNOWPOINT_POKECENTER_1F 12 4 FACE_UP

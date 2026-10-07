@@ -1,9 +1,9 @@
 # GTS offline: the receptionist's trade path saves, walks the player through the door and starts the
-# Nintendo WFC connection; without WFC data Unk00B2 returns 0 and the script walks back out ("Please do
-# visit again"). D/P has only this building (no Global Terminal 2F/3F).
-# Start: MAP_JUBLIFE_GLOBAL_TRADE_STATION (11,4) below the receptionist (11,3). End: same map, field.
+# Nintendo WFC connection. The port is an unconfigured console (pc_dwc_auth.c): the connect screen waits;
+# B cancels it ("Reconnect to Nintendo WFC?"), NO makes Unk00B2 return 0 and the script walks back out
+# ("Please do visit again"). D/P has only this building (no Global Terminal 2F/3F).
+# Start: MAP_JUBLIFE_GLOBAL_TRADE_STATION (11,4) below the receptionist (11,3). End: same map (12,4), field.
 title = "GTS: offline trade attempt returns to the field"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 3500
@@ -40,15 +40,48 @@ keys = "A"
 note = "receptionist SPRITE_WOMAN6 (11,3) (zone_event 0027 object 0, script #3): bad-egg check, first talk SetFlag 0xC3 + msg 41 #0 (scr_seq 0028 @0x00D4-0x00F4)"
 
 [[step]]
+do = "press"
+keys = "A"
+times = 40
+gap = 34
+note = "A through msg 41 #0, menu row 0 'trade' (@0x011B -> L_01C1), 2 non-egg mons (@0x01C1), std 2006 save prompt YES (@0x01E5), HealParty, SetVar 0x40D5 6, the walk through the door (@0x01FE-0x025D), Unk00B3 the WFC connect screen (sub_0206F3D8, scrcmd.c:2361-2365); A does nothing there (measured: on it by frame 3192)"
+
+[[step]]
+do = "wait_frames"
+n = 600
+shot = "wfc-connecting"
+note = "'Connecting to Nintendo Wi-Fi Connection... Please wait a moment...' stays up (no WFC settings, nothing to time out)"
+
+[[step]]
+do = "press"
+keys = "B"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "reconnect-prompt"
+note = "B cancels: 'Reconnect to Nintendo WFC?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "NO -> Unk00B2 returns 0 (sub_0203384C fails, scrcmd.c:2348-2359) -> L_02A6 RestoreOverworld"
+
+[[step]]
 do = "advance_text"
-max = 3000
-note = "[INFERENCE] A picks menu row 0 'trade' (@0x011B -> L_01C1): 2 non-egg mons (@0x01C1), std 2006 save prompt YES (@0x01E5), HealParty, SetVar 0x40D5 6, walk through the door (@0x01FE-0x025D)"
-shot = "gts-door"
-# PHASE2: Unk00B3 opens the WFC connect screen (sub_0206F3D8, scrcmd.c:2361-2365); record the input that
-# leaves it offline (B / NO) [INFERENCE]. Then Unk00B2 -> 0 when sub_0203384C fails (scrcmd.c:2348-2359),
-# L_02A6 RestoreOverworld, L_02C2 SetVar 0x40D5 0 + msg 41 #6 "Please do visit again." -> advance_text,
-# wait_field (shot "gts-back"). If the run is cut while 0x40D5==6, ON_RESUME/ON_FRAME replay the door exit
-# (scr_seq 0028 @0x002E-0x003B, level scr_seq 0491 @0x000B).
+max = 1500
+note = "L_02C2 SetVar 0x40D5 0 + msg 41 #6 'Please do visit again.', walk back below the counter"
+
+[[step]]
+do = "wait_field"
+shot = "gts-back"
+
+[[shots]]
+frames = [3990, 4080]
 
 [expect]
 map = "MAP_JUBLIFE_GLOBAL_TRADE_STATION"

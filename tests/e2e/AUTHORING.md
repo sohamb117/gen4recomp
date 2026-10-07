@@ -46,6 +46,10 @@ lab = "lab.recipe"          # ... or this recipe with --lab / when that save is 
 # boost = "boost.recipe"    # party strength applied on top of whichever start (Boosts)
 # recipe = "start.recipe"   # side systems: mint fresh
 # blank = true              # 01 only: blank chip, title screen -> new game by steps
+# Post-game side systems chain from a real save: from = "59b-hall-of-fame-credits" (or another system's dir)
+# + recipe = "chain.recipe" (only what no chained milestone plays, and the station's map line, minted on that
+# end save) + lab = "start.recipe" (the standalone start, used with --lab or when the from save is missing).
+# Run them with --out pointing at the chain's output (build/e2e/d22, p07) so the from save is found.
 
 [run]
 frames = 31500              # hard budget = estimate * 1.5, rounded up to 100

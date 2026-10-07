@@ -1,8 +1,10 @@
 # Snowpoint harbour sailor sails to the Battle Zone once the game is complete; the Fight Area arrival
 # scene (Barry and Buck talk, no battle in D/P) plays on the ON_FRAME table and sets var 0x4081 1.
-# Start: MAP_SNOWPOINT (356,248) below the sailor (356,247). End: MAP_FIGHT_AREA (623,434), scene done.
+# Chained from 59b's end save (game complete played) with only the map line. The player talks to the sailor
+# from the town side (356,246), where the ferry lands on the way back: from the dock side the boarding walk
+# ends off the ship and ShipAnimation finds no ship model (sub_0204A8C4), so nothing sails (measured).
+# Start: MAP_SNOWPOINT (356,246) above the sailor (356,247). End: MAP_FIGHT_AREA (627,434), scene done.
 title = "Battle Zone: Snowpoint ferry and Fight Area arrival"
-status = "planned"
 priority = "P1"
 version = "both"
 estimate = 6000
@@ -32,7 +34,9 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
+from = "59b-hall-of-fame-credits"
+recipe = "chain.recipe"
+lab = "start.recipe"
 
 [run]
 frames = 9000
@@ -40,13 +44,13 @@ frames = 9000
 [[step]]
 do = "press"
 keys = "A"
-note = "SPRITE_SEAMAN (356,247) facing N, hidden_flag 0x298 never set by a script (zone_event 0164 object 8); CheckFlag 0x964 (scr_seq 0168 @0x0232) else msg 167 #13 refusal"
+note = "SPRITE_SEAMAN (356,247), hidden_flag 0x298 never set by a script (zone_event 0164 object 8); CheckFlag 0x964 (scr_seq 0168 @0x0232) else msg 167 #13 refusal"
 
 [[step]]
 do = "advance_text"
 max = 1500
-note = "msg 167 #10 'sail to the Battle Zone?': VAR_RESULT 0 = YES -> L_0276 (@0x0244); [INFERENCE] A takes the YES default; ShipAnimation 2, 0, 188, 623, 434 (@0x0287)"
-shot = "sail"
+note = "msg 167 #10 'sail to the Battle Zone?': VAR_RESULT 0 = YES -> L_0276 (@0x0244), A takes the YES default; the sailor steps aside, the player boards (@0x0295-0x02B9), ShipAnimation 2, 0, 188, 623, 434 (@0x0287); the arrival scene runs on in the same A presses (measured: map 188 at frame 2454, free at 3158)"
+shot = "arrived"
 
 [[step]]
 do = "wait_map"
@@ -56,18 +60,21 @@ max = 3000
 [[step]]
 do = "advance_text"
 max = 3000
-note = "ON_FRAME var 0x4081==0 -> #1 (scr_seq 0658 @0x000B): Barry (object 7) + Buck (object 8) talk, RemoveEvent 7/8, SetVar 0x4081 1 (scr_seq 0195 @0x00A2-0x012D)"
-shot = "arrival-scene"
+note = "ON_FRAME var 0x4081==0 -> #1 (scr_seq 0658 @0x000B): Barry (object 7) + Buck (object 8) talk, RemoveEvent 7/8, SetVar 0x4081 1 (scr_seq 0195 @0x00A2-0x012D); a no-op when the previous step already ran it"
 
 [[step]]
 do = "wait_field"
 shot = "fight-area"
 
+[[shots]]
+frames = [2300, 2700, 2950]
+
 [expect]
 map = "MAP_FIGHT_AREA"
 vars = { "0x4081" = 1 }
 # RemoveEvent sets the object's hide flag (MapObject_Delete, map_object.c:295-300)
-flags = ["0x1F1", "0x1F2"]
+flags = ["0x1F1", "0x1F2", "0x964"]
+position = [627, 434]
 # Return: sailor (623,435) script #12 -> ShipAnimation 1, 0, 165, 356, 246 (scr_seq 0195 @0x0364).
 # Barry rematch (object 7 (628,434) by ON_TRANSITION when 0x409E>=1 and 0x410E>=1 on Sat/Sun,
 # @0x0046-0x00A0; TRAINER_PKMN_TRAINER_BARRY_CEDRIC_19..24 by GetStarter/Unk028F, @0x043A-0x04FA) is optional.

@@ -7,5 +7,6 @@ var 0x4030 SPECIES_TURTWIG
 # game completed: every script gate is CheckGameCompleted/CheckFlag 0x964 (scrcmd_flags.c:194-201 -> unk_0205EC84.c:55-56)
 flag 0x964
 party SPECIES_GARCHOMP 100 ITEM_NONE
-# below the harbour sailor (356,247) facing N (zone_event 0164 object 8); [INFERENCE] (356,248) walkable
-map MAP_SNOWPOINT 356 248 FACE_UP
+# above the harbour sailor (356,247) (zone_event 0164 object 8), on the tile the return ferry lands on
+# (ShipAnimation 1, 0, 165, 356, 246, scr_seq 0195 @0x0364); facing him
+map MAP_SNOWPOINT 356 246 FACE_DOWN

@@ -1,9 +1,10 @@
 # Pal Park entrance, first visit: Oak's ON_FRAME scene gives the Trainer Counter app (var 0x40C6 0 -> 1);
 # the receptionist's first talk sets flag 0xD3. Migration itself is the feature-matrix `palpark` case
 # (GBA cart + Emerald save -> MIGRATE FROM EMERALD), already done for Diamond and Pearl.
-# Start: MAP_ROUTE_221_PAL_PARK_ENTRANCE door (warp 0, (7,19)). End: same map, below the receptionist.
+# Chained from 59b's end save (its Poketch and party) + the National Dex (110's, a lab station); the player walks
+# in from Route 221, since the entrance's ON_FRAME scene would hold the lab's map line (the field never frees).
+# Start: MAP_ROUTE_221 (306,910) below the entrance door (306,909). End: the entrance, below the receptionist.
 title = "Pal Park: entrance, Oak's Trainer Counter and the receptionist"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 3000
@@ -33,14 +34,26 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
+from = "59b-hall-of-fame-credits"
+recipe = "chain.recipe"
+lab = "start.recipe"
 # Migration proof (not this runner): tests/mac/feature_matrix.py case `palpark` per --game (Emerald ROM + generated
 # save through Options, np_save4 set-national-dex, boot to the main menu "MIGRATE FROM EMERALD"; :539-553),
 # evidence diamond-palpark / pearl-palpark (docs/FEATURE_PARITY.md:97). The Catching Show needs 6 migrated
 # mons (scr_seq 0444 @0x0186-0x01AD) - not mintable by the lab.
 
 [run]
-frames = 4500
+frames = 6000
+
+[[step]]
+do = "walk_to"
+x = 306
+z = 909
+note = "Route 221 warp 1 (306,909) -> MAP_ROUTE_221_PAL_PARK_ENTRANCE warp 0 (7,19)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_221_PAL_PARK_ENTRANCE"
 
 [[step]]
 do = "advance_text"
@@ -60,10 +73,19 @@ interact = true
 note = "receptionist SPRITE_WORKMAN (7,11) (zone_event 0378 object 7, script #2): first talk SetFlag 0xD3 (male @0x00A8 / female @0x00DD), msg 464 #21 Yes/No"
 
 [[step]]
-do = "advance_text"
-max = 2500
-note = "[INFERENCE] A takes YES -> rules (@0x0107-0x0110) -> no migrated mons -> refusal path (@0x0186-0x01AD)"
+do = "press"
+keys = "A"
+times = 6
+gap = 30
+note = "first talk SetFlag 0xD3, msg 464 #21 and the rules (@0x0107-0x0110)"
 shot = "receptionist"
+
+[[step]]
+do = "press"
+keys = "B"
+times = 20
+gap = 30
+note = "A answers YES to '...Do you want me to explain anything else?' and loops through the rules (measured: advance_text never freed the field); B is NO and closes the text"
 
 [[step]]
 do = "wait_field"
@@ -72,4 +94,5 @@ do = "wait_field"
 map = "MAP_ROUTE_221_PAL_PARK_ENTRANCE"
 vars = { "0x40C6" = 1 }
 flags = ["0xD3", "0x1F0"]
-# PHASE2: reader-ext Poketch app 19 (TRAINER_COUNTER) unlocked.
+# std 2009 UnlockPoketchApp 19 (POKETCH_TRAINER_COUNTER)
+save = ["19 in s['poketch']['apps']"]

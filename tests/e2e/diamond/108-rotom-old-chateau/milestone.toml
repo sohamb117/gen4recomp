@@ -1,8 +1,8 @@
 # Rotom in the Old Chateau TV: with game complete, National Dex and night time, A on the TV -> YES ->
 # SetFlag 0xAB0 (once per day) -> WildBattle 479, 15.
+# Chained from 59b's end save (game complete played) + the National Dex (110's, a lab station) and the map line.
 # Start: MAP_OLD_CHATEAU_2F_ROOM_2 (11,4) below the TV (11,3). End: same map.
 title = "Rotom in the Old Chateau TV"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 4000
@@ -25,7 +25,9 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
+from = "59b-hall-of-fame-credits"
+recipe = "chain.recipe"
+lab = "start.recipe"
 
 [run]
 frames = 6000
@@ -49,7 +51,7 @@ shot = "rotom"
 
 [[step]]
 do = "auto_battle"
-note = "A-only defeats it; caught would set 0x149 (@0x00A6)"
+note = "the lead (chained: Torterra lv100 Crunch, 2x on Ghost/Electric; Earthquake fails on Levitate). Defeated, never caught: caught would set 0x149 (@0x00A6)"
 
 [[step]]
 do = "advance_text"
@@ -60,8 +62,13 @@ note = "msg 261 #3 'ROTOM disappeared into the TV set...' (@0x00AE)"
 do = "wait_field"
 shot = "after"
 
+[[shots]]
+frames = [2500]
+
 [expect]
 map = "MAP_OLD_CHATEAU_2F_ROOM_2"
 battles = 1
-flags = ["0xAB0"]
+flags = ["0xAB0", "0x964"]
 flags_clear = ["0x149"]
+# the foe auto_battle aimed at: SPECIES_ROTOM (479)
+log = ["auto_battle: battler \\d slot \\d \\(move \\d+, \\d+ PP\\) on species 479"]

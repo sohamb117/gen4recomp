@@ -5,6 +5,7 @@
 93-battle-zone-ferry-fight-area
 94-battle-zone-route-225-north-gate
 95-stark-mountain-buck-magma-stone
+95b-stark-mountain-buck-house
 96-battle-park-battle-tower
 97-gts-offline
 98-jubilife-tv
@@ -15,6 +16,7 @@
 103-legendary-dialga-palkia
 104-legendary-giratina-turnback
 105-legendary-uxie-azelf
+105b-legendary-azelf
 106-legendary-heatran
 107-legendary-regigigas
 108-rotom-old-chateau

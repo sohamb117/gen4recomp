@@ -1,0 +1,5 @@
+# On 59b's end save (game complete played): the National Dex, which no chained milestone plays (110 is a lab
+# station; NationalDex 2 gate scr_seq 0329 @0x0033, Pokedex_GetNatDexFlag scrcmd.c:3872-3882), and the station.
+national-dex 1
+# below the TV bg (11,3) (zone_event 0288 bg 0); door (11,7) <- MAP_OLD_CHATEAU_2F_CORRIDOR
+map MAP_OLD_CHATEAU_2F_ROOM_2 11 4 FACE_UP

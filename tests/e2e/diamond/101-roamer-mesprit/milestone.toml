@@ -2,7 +2,6 @@
 # roaming (CreateRoamer 0 = MESPRIT lv50); Rowan enters and asks about the Marking Map.
 # Start: MAP_VERITY_CAVERN (12,14) below Mesprit (12,13). End: same map, roamer slot 0 active.
 title = "Roamer: Mesprit leaves Verity Cavern"
-status = "planned"
 priority = "P1"
 version = "both"
 estimate = 2500

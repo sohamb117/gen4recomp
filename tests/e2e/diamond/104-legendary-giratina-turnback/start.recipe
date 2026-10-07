@@ -5,7 +5,14 @@ money 3000
 # chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
 var 0x4030 SPECIES_TURTWIG
 party SPECIES_GARCHOMP 100 ITEM_NONE
-# Ghost/Dragon takes 2x from Dragon [INFERENCE: hand calc, ~340 vs ~300 HP at lv70; Garchomp faster]
+# Ghost/Dragon takes 2x from Dragon; Giratina lv70 has Pressure and outlasted a 0-IV Garchomp's 9000-frame budget
+# (measured: 10 turns, Garchomp at 157/352), so max the attacking stats
 party-move 0 0 MOVE_DRAGON_CLAW
+party-iv 0 0 31
+party-iv 0 1 31
+party-iv 0 2 31
+party-iv 0 3 31
+party-ev 0 1 252
+party-ev 0 0 252
 # below Giratina (11,14) (zone_event 0261 object 0); [INFERENCE] (11,15) walkable
 map MAP_TURNBACK_CAVE_GIRATINA_ROOM 11 15 FACE_UP

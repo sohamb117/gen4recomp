@@ -1,8 +1,8 @@
-# Giratina in Turnback Cave (D/P: lv70, no story gate in the room script): A -> LegendaryBattle 487, 70;
-# defeated -> "GIRATINA disappeared...", ClearFlag 0x26E (it is back on the next load).
-# Start: MAP_TURNBACK_CAVE_GIRATINA_ROOM (11,15) below Giratina (11,14). End: same map.
+# Giratina in Turnback Cave (D/P: lv70, no story gate in the room script): A -> LegendaryBattle 487, 70.
+# Unk00ED is sub_020480C8: 0 for a win (outcome 1) or a catch (4), 1 otherwise, so defeating it takes the
+# caught path: SetFlag 0x121 + hide flag 0x26E, ClearFlag 0x296. "GIRATINA disappeared..." is the run-away path.
+# Start: MAP_TURNBACK_CAVE_GIRATINA_ROOM (11,15) below Giratina (11,14). End: same map, Giratina gone.
 title = "Legendary: Giratina in Turnback Cave"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 6000
@@ -14,9 +14,9 @@ refs = [
   "scr_seq 0283 @0x0044-0x005D",
   "scr_seq 0283 @0x0067-0x0082",
   "scr_seq 0283 @0x0089-0x0091",
-  "scr_seq 0283 @0x0099-0x00A0",
-  "msg 0250 #1",
-  "games/diamond/arm9/asm/unk_020476CC.s:1220-1228",
+  "msg 0250 #0",
+  "games/diamond/arm9/src/scrcmd_7.c:236-244",
+  "games/diamond/arm9/asm/unk_020476CC.s:1207-1217",
 ]
 
 [start]
@@ -25,7 +25,7 @@ recipe = "start.recipe"
 # warps); no script gate on any of them [INFERENCE: the Spring Path obstacle is overworld]; skipped by the map line.
 
 [run]
-frames = 9000
+frames = 15000
 
 [[step]]
 do = "press"
@@ -44,18 +44,22 @@ shot = "legendary"
 
 [[step]]
 do = "auto_battle"
-note = "A-only never throws a ball: defeated, never caught"
+note = "Garchomp lv100 leads with Dragon Claw (2x on Ghost/Dragon); Pressure takes 2 PP a turn. A-only never throws a ball"
 
 [[step]]
 do = "advance_text"
 max = 1500
-note = "not caught -> msg 250 #1 'GIRATINA disappeared...', ClearFlag 0x26E (@0x0099-0x00A0)"
+note = "defeated: Unk00ED -> 0 -> SetFlag 0x121, SetFlag 0x26E, ClearFlag 0x296 (@0x0078-0x0091); no text"
 
 [[step]]
 do = "wait_field"
 shot = "after"
 
+[[shots]]
+frames = [2500]
+
 [expect]
 map = "MAP_TURNBACK_CAVE_GIRATINA_ROOM"
 battles = 1
-flags_clear = ["0x121", "0x26E", "0x8E"]
+flags = ["0x121", "0x26E"]
+flags_clear = ["0x296", "0x8E"]

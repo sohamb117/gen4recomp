@@ -1,8 +1,8 @@
 # Dialga at Spear Pillar (post-Hall-of-Fame rematch): var 0x4098==5 arms coord 7 below the altar; step on it
 # -> LegendaryBattle 0x8004, 47 where GetGameVersion picks 483 (DIALGA) in Diamond; defeat it.
+# Chained from 59b's end save, where the Hall of Fame script set var 0x4098 5 (played), with only the map line.
 # Start: MAP_MOUNT_CORONET_SPEAR_PILLAR (31,27). End: same map, var 0x4098 4. Twin: ../../pearl/103-legendary-dialga-palkia.
 title = "Legendary: Dialga at Spear Pillar (Diamond)"
-status = "planned"
 priority = "P1"
 version = "diamond"
 estimate = 6000
@@ -33,7 +33,9 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
+from = "59b-hall-of-fame-credits"
+recipe = "chain.recipe"
+lab = "start.recipe"
 
 [run]
 frames = 9000
@@ -55,7 +57,7 @@ shot = "legendary"
 
 [[step]]
 do = "auto_battle"
-note = "A-only never throws a ball: defeated, never caught"
+note = "the lead (chained: Torterra lv100 Earthquake, 2x on Steel/Dragon; lab: Garchomp Earthquake). A-only never throws a ball"
 
 [[step]]
 do = "advance_text"
@@ -66,10 +68,15 @@ note = "SetVar 0x4098 4 on any non-loss (@0x1262); Unk02BC != caught -> 'disappe
 do = "wait_field"
 shot = "after"
 
+[[shots]]
+frames = [2500]
+
 [expect]
 map = "MAP_MOUNT_CORONET_SPEAR_PILLAR"
 battles = 1
 vars = { "0x4098" = 4 }
 flags_clear = ["0x15F", "0x8E"]
+# the foe auto_battle aimed at: SPECIES_DIALGA (483)
+log = ["auto_battle: battler \\d slot \\d \\(move \\d+, \\d+ PP\\) on species 483"]
 # version: Diamond Dialga, object gfx var 0x4021 = 154, orb ball ITEM_ADAMANT_ORB (Pearl twin: Palkia)
 # (scr_seq 0230 @0x0086-0x00BC, scr_seq 0370 @0x17C6/@0x17DA, map_header.c:663-672). Same level 47.

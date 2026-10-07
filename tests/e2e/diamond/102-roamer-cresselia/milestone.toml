@@ -2,7 +2,6 @@
 # Wing ball appears. Direct station (the Canalave ferry needs game complete + National Dex + flag 0x133).
 # Start: MAP_FULLMOON_ISLAND_INTERIOR (16,16) below Cresselia (16,15). End: same map, roamer slot 1 active.
 title = "Roamer: Cresselia leaves Fullmoon Island"
-status = "planned"
 priority = "P2"
 version = "both"
 estimate = 2000

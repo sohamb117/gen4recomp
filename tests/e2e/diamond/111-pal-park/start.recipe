@@ -12,5 +12,7 @@ var 0x4077 2
 pokedex 1
 national-dex 1
 flag 0x2B2
-# entrance door (7,19) <- MAP_ROUTE_221 warp 1 (zone_event 0378 warp 0)
-warp MAP_ROUTE_221_PAL_PARK_ENTRANCE 0
+# below the entrance door (306,909) = MAP_ROUTE_221 warp 1 -> MAP_ROUTE_221_PAL_PARK_ENTRANCE warp 0 (7,19)
+# (zone_event 0378 warp 0). Not the entrance itself: its ON_FRAME Oak scene keeps the field from freeing,
+# and the lab applies its lines only on a free field.
+map MAP_ROUTE_221 306 910 FACE_UP
