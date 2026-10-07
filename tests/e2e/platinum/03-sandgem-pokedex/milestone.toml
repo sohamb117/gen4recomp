@@ -1,9 +1,8 @@
 # Proves the Sandgem escort into Rowan's lab, the Pokedex, and the TM27 town tour, then the walk home.
 # Start: Sandgem Town (177,843) in front of the Pokecenter -> end: Twinleaf player house 1F (04's start).
 title = "Sandgem: Rowan's lab and the Pokedex"
-status = "planned"
 priority = "P0"
-estimate = 11000
+estimate = 12321
 refs = [
   "scripts_sandgem_town.s:169",
   "scripts_sandgem_town.s:188",
@@ -29,7 +28,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 18500
 
 [[step]]
 do = "walk_to"

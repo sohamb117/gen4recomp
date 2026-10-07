@@ -2,10 +2,9 @@
 # Start: Jubilife City at the Trainers' School door (168,776) -> end: Jubilife City with the Poketch, free in the
 # field (var 0x4077 = 2: the Route 203 exit is open for the next slice).
 title = "Jubilife: the Poketch campaign"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 9000
+estimate = 4565
 refs = [
   "zone_event 0002 coord 4",
   "scr_seq 0002 @0x0CD6",
@@ -42,7 +41,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 6900
 
 [[step]]
 do = "walk_to"

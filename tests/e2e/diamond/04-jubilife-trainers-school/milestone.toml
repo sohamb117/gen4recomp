@@ -2,10 +2,9 @@
 # the Trainers' School (Town Map), which opens the Poketch campaign (president and clowns 1-2 unhidden).
 # Start: Route 202 (180,827) after the catching tutorial -> end: Jubilife City outside the Trainers' School.
 title = "Jubilife: the Trainers' School and the Town Map"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 7000
+estimate = 20765
 refs = [
   "zone_event 0002 coord 0",
   "scr_seq 0002 @0x0122",
@@ -35,7 +34,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 31200
 
 [[step]]
 do = "heal"

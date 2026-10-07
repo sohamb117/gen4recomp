@@ -2,10 +2,9 @@
 # the Pokedex, and the friend's Pokemon Center / Poke Mart tour.
 # Start: Twinleaf Town at the player's house door (116,885) -> end: Sandgem Town after the tour, var 0x4071 = 2.
 title = "Sandgem: Rowan's lab and the Pokedex"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 11000
+estimate = 10695
 refs = [
   "zone_event 0396 coord 0",
   "scr_seq 0985 @0x02C6",
@@ -46,7 +45,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 16100
 
 [[step]]
 do = "walk_to"

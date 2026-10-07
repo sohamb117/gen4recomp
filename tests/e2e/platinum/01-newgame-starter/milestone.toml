@@ -2,9 +2,8 @@
 # briefcase starter, the first rival battle, home, running shoes.
 # Start: power-on (no save) -> end: Twinleaf Town outside the player's house, VAR_PLAYER_HOUSE_STATE 5.
 title = "New game to the starter and the running shoes"
-status = "planned"
 priority = "P0"
-estimate = 29000
+estimate = 29713
 refs = [
   "src/location.c:8-14",
   "scripts_init_new_game.s:7-126",
@@ -48,7 +47,7 @@ notes = "Estimate = rival.press's recorded 27400 frames (1-rival.scn FRAMES) plu
 blank = true
 
 [run]
-frames = 43500
+frames = 44600
 options = ["text_instant=0"]  # rival.press was recorded at the real text speed
 
 # rival.press is the recorded blank-chip run (player NATIVE, Turtwig from the briefcase, Barry's Chimchar beaten, home

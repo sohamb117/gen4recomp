@@ -2,10 +2,9 @@
 # tutorial (5 Poke Balls).
 # Start: Sandgem Town (177,843) in front of the Pokemon Center -> end: Route 202 after the tutorial, var 0x4087 = 1.
 title = "The Journal, the Parcel and the catching tutorial"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 15952
 refs = [
   "zone_event 0389 warp 1",
   "zone_event 0392 object 0",
@@ -42,7 +41,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 24000
 
 [[step]]
 do = "walk_to"

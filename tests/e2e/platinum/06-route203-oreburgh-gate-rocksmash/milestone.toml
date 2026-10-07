@@ -1,9 +1,8 @@
 # Proves the Route 203 rival battle, HM06 (Rock Smash) from the Oreburgh Gate hiker, and the Oreburgh gym tour.
 # Start: Jubilife City warp 2 (Pokecenter door) -> end: Oreburgh City after the youngster's tour (VAR_OREBURGH_CITY_STATE 1).
 title = "Route 203 rival, HM06, Oreburgh"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 75095
 refs = [
   "scripts_route_203.s:71-74",
   "scripts_route_203.s:81",
@@ -35,7 +34,15 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 112700
+
+[[step]]
+do = "grind"
+x = 181
+z = 806
+level = 13
+heal = [180, 776]
+note = "train the starter before the rival: at 05's level it loses Barry's Route 203 battle even at full HP (seen: 16 turns, a whiteout). Route 202's north tall grass (181..182,806; probe grid), healing at the Jubilife Pokemon Center below half HP"
 
 [[step]]
 do = "heal"

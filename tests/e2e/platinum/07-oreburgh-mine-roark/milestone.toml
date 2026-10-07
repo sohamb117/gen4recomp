@@ -1,9 +1,8 @@
 # Proves the Oreburgh Mine visit: Roark smashes the rock and returns to the gym, which hides Barry from the gym door.
 # Start: Oreburgh City warp 1 (Pokecenter door) -> end: inside Oreburgh Gym (08's start), Roark back.
 title = "Oreburgh Mine: Roark returns to the gym"
-status = "planned"
 priority = "P0"
-estimate = 8000
+estimate = 11346
 refs = [
   "scripts_oreburgh_mine_b1f.s:13-14",
   "scripts_oreburgh_mine_b2f.s:13-59",
@@ -22,10 +21,17 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 17100
+
+[[step]]
+do = "heal"
+x = 303
+z = 756
+note = "Oreburgh Pokemon Center first: 06's trainers leave the starter low (seen: 6/40 HP, a whiteout in the mine). events_oreburgh_city warp 1"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 302
 z = 795
 note = "mine mouth (events_oreburgh_city warps 11-15) -> B1F"
@@ -36,6 +42,7 @@ map = "MAP_HEADER_OREBURGH_MINE_B1F"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 12
 z = 21
 note = "B1F stairs (11..13,21) -> B2F (15,1)"
@@ -46,6 +53,7 @@ map = "MAP_HEADER_OREBURGH_MINE_B2F"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 18
 z = 29
 face = "up"
@@ -59,6 +67,7 @@ note = "Roark smashes the rock and leaves; FLAG_ROARK_RETURNED_TO_OREBURGH_GYM, 
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 15
 z = 1
 note = "B2F exit (warp 0) -> B1F"
@@ -69,6 +78,7 @@ map = "MAP_HEADER_OREBURGH_MINE_B1F"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 12
 z = 1
 note = "B1F exit (warp 1) -> Oreburgh"
@@ -79,6 +89,7 @@ map = "MAP_HEADER_OREBURGH_CITY"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 282
 z = 756
 note = "gym door (warp 0); Barry (282,757) is hidden now, so 08 starts inside"

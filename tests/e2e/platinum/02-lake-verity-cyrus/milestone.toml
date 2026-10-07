@@ -1,9 +1,8 @@
 # Proves Barry as follower on Route 201, the Verity Lakefront walk-in and the Lake Verity Cyrus scene.
 # Start: Twinleaf Town (116,886), the first respawn tile -> end: Verity Lakefront after leaving the lake.
 title = "Lake Verity with Barry: Cyrus at the lake"
-status = "planned"
 priority = "P0"
-estimate = 7000
+estimate = 4411
 refs = [
   "src/location.c:16-20",
   "scripts_route_201.s:1236-1241",
@@ -26,7 +25,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 6700
 
 [[step]]
 do = "walk_to"

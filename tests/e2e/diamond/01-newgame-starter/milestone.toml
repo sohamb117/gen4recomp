@@ -4,10 +4,9 @@
 # Start: power-on (no save) -> end: Twinleaf Town outside the player's house, var 0x40A4 = 5.
 # maps.h:416-419 name the Twinleaf houses swapped: MAP_TWINLEAF_RIVAL_HOUSE_1F/2F (414/415) are the player's.
 title = "New game to the Lake Verity starter and the running shoes"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 42000
+estimate = 41343
 refs = [
   "maps.h:415-419",
   "msg 0501 #0",
@@ -84,7 +83,7 @@ notes = "Estimate = rival.press's 41400 frames (1-rival.scn FRAMES; home and fre
 blank = true
 
 [run]
-frames = 63000
+frames = 62100
 options = ["text_instant=0"]  # rival.press was recorded at the real text speed
 
 # rival.press is the recorded blank-chip run (intro and naming, Turtwig = the briefcase's default pick, the Starly

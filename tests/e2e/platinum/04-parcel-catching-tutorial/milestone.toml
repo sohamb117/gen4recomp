@@ -1,9 +1,8 @@
 # Proves Mom's Journal, Barry's mom's Parcel, and the Route 202 catching tutorial (5 Poke Balls).
 # Start: Twinleaf player house 1F, warp 0 (door (6,10)) -> end: Route 202 after the tutorial.
 title = "The Parcel and the catching tutorial"
-status = "planned"
 priority = "P0"
-estimate = 8000
+estimate = 11498
 refs = [
   "scripts_twinleaf_town_player_house_1f.s:172-174",
   "scripts_twinleaf_town_player_house_1f.s:261-264",
@@ -29,7 +28,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 17300
 
 [[step]]
 do = "walk_to"

@@ -1,10 +1,9 @@
 # Proves the Route 203 rival battle, HM06 (Rock Smash) from the Oreburgh Gate hiker, and the Oreburgh youngster's gym tour.
 # Start: Jubilife warp 2 (Pokecenter door (180,776)) -> end: Oreburgh City at the gym after the tour (0x4079 = 1).
 title = "Route 203 rival, Oreburgh Gate HM06, Oreburgh tour"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 77453
 refs = [
   "maps.h:7",
   "maps.h:348",
@@ -55,7 +54,15 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 116200
+
+[[step]]
+do = "grind"
+x = 181
+z = 806
+level = 12
+heal = [180, 776]
+note = "train the starter before the rival: at 05's level it loses Barry's Route 203 battle even at full HP (seen: 16 turns, a whiteout). Route 202's north tall grass (181..182,806; probe grid), healing at the Jubilife Pokemon Center below half HP"
 
 [[step]]
 do = "heal"
@@ -82,9 +89,16 @@ do = "advance_text"
 note = "Barry walks off; RemoveEvent 5 (hidden_flag 0x199) + SetVar 0x4088 1 (scr_seq 0394 @0x01EF/@0x01F3)"
 
 [[step]]
+do = "heal"
+x = 180
+z = 776
+note = "back to the Jubilife Pokemon Center after Barry: Route 203's trainers on the way to the gate white out a starter fresh from the rival battle (seen at (222,758)). zone_event 0002 warp 2"
+
+[[step]]
 do = "walk_to"
 x = 246
 z = 749
+on_battle = "flee"
 note = "Oreburgh Gate door (zone_event 0329 warp 0) -> gate 1F warp 0 (4,22); Michael (204,750) W 2, Dallas (222,756) S 4, Kaitlin (234,757) W 5, Madeline (240,748) S 5, Sebastian (245,756) S 3 may engage"
 
 [[step]]

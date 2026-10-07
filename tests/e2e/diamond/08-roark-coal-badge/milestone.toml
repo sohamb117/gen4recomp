@@ -1,10 +1,9 @@
 # Proves the first gym: two sight youngsters, Roark, the Coal Badge and TM76; the win arms Barry's farewell and the Jubilife Galactic scene.
 # Start: Oreburgh Gym warp 0 (5,24) -> end: Oreburgh City at the gym door (282,756) (09's start).
 title = "Oreburgh Gym: Roark and the Coal Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 21000
+estimate = 16611
 refs = [
   "maps.h:51",
   "map_header.c:131",
@@ -51,22 +50,53 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 25000
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 5
+z = 5
+max = 12000
+note = "north to the tile below Roark (5,3): Jonathon (4,18) E sight 3 and Darius (7,11) W sight 4 stop you on the way (fought by walk_to, Razor Leaf)"
 
 [[step]]
 do = "walk_to"
 x = 5
+z = 24
+note = "out again to heal before Roark (lost to him after the two trainers, seen: a whiteout to the Oreburgh Pokemon Center): gym exit (zone_event 0046 warp 0) -> Oreburgh (282,757)"
+
+[[step]]
+do = "heal"
+x = 303
+z = 756
+note = "Oreburgh Pokemon Center (zone_event 0044 warp 1)"
+
+[[step]]
+do = "walk_to"
+x = 282
+z = 756
+note = "gym door (zone_event 0044 warp 0) -> gym warp 0 (5,24); the trainers are beaten"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH_GYM"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 5
 z = 4
 face = "up"
 interact = true
-max = 12000
-note = "straight north to Roark (5,3); Jonathon (4,18) E sight 3 and Darius (7,11) W sight 4 stop you on the way (fought by walk_to)"
+note = "Roark (5,3)"
 
 [[step]]
 do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 shot = "roark-battle"
 note = "TRAINER_LEADER_ROARK_ROARK (trdata.json #246): GEODUDE 12, ONIX 12, CRANIDOS 14 (scr_seq 0050 @0x003A)"
 
@@ -77,6 +107,7 @@ note = "GiveBadge BADGE_COAL, Barry's farewell + Jubilife scene armed, TM76 (scr
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 5
 z = 24
 note = "gym exit (zone_event 0046 warp 0) -> Oreburgh warp 0 (282,756)"

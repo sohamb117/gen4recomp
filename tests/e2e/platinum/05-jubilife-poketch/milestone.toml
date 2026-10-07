@@ -2,9 +2,8 @@
 # Poketch campaign (three clown coupons -> Poketch with 4 apps).
 # Start: Jubilife City (174,798) facing up -> end: Jubilife City with the Poketch.
 title = "Jubilife: Town Map and the Poketch"
-status = "planned"
 priority = "P0"
-estimate = 15000
+estimate = 22749
 refs = [
   "scripts_jubilife_city.s:89",
   "scripts_jubilife_city.s:190-191",
@@ -36,7 +35,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 34200
 
 [[step]]
 do = "heal"

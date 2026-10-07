@@ -6,7 +6,9 @@ cannot get there within its bound (`max` frames, default per bot). ctx is the
 milestone's context: the game, the milestone directory, the name resolver.
 """
 import heapq
+import json
 import os
+import subprocess
 
 from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN, UI_BATTLE_MENU,
                     UI_BATTLE_PARTY, HarnessError, behaviors)
@@ -179,6 +181,7 @@ def bot_auto_battle(s, step, ctx):
         raise HarnessError("no battle started within %d frames" % _int(step, "wait", 900))
     party_try = 0
     turns = 0
+    last = None  # the menu answered last
     while s.in_battle:
         if s.frame >= limit:
             raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
@@ -193,6 +196,11 @@ def bot_auto_battle(s, step, ctx):
                 turns += 1
                 party_try = 0
             elif idx == MENU_MOVES:
+                if last == MENU_MOVES:
+                    # the move menu again straight after a move: that move cannot be used (no PP left,
+                    # disabled); the next slot from now on
+                    move = (move + 1) % 4
+                    s.note("auto_battle: move slot %d" % move)
                 _tap(s, TAP_MOVES[move])
             elif idx == MENU_TARGET:
                 _tap(s, TAP_TARGET)
@@ -201,6 +209,7 @@ def bot_auto_battle(s, step, ctx):
             else:
                 s.run(2, "b")
                 s.run(10)
+            last = idx
             continue
         if p is not None and p.ui == UI_BATTLE_PARTY:
             if p.ui_arg == 0:
@@ -339,7 +348,7 @@ def _field_or_handle(s, step, ctx, limit):
             if on_battle not in ("fight", "flee"):
                 raise HarnessError("walk_to: a battle started (on_battle = %r)" % on_battle)
             f0 = s.frame
-            bot_auto_battle(s, {"flee": on_battle == "flee"}, ctx)
+            bot_auto_battle(s, {"flee": on_battle == "flee", "move": step.get("move", 0)}, ctx)
             in_battles += s.frame - f0
             continue
         if s.run(20, until=["field_ready=1", "in_battle=1"]):
@@ -434,15 +443,26 @@ def bot_walk_to(s, step, ctx):
     s.run(16)
     p = s.probe()
     s.note("walk_to: at (%d,%d) on map %d after %d steps" % (p.x, p.z, s.map_id, steps))
-    if "face" in step:
-        d = FACINGS[step["face"]]
-        p = s.probe()
-        if p.facing != d:
-            s.run(2, DIR_KEYS[d])
-            s.run(10)
-    if step.get("interact"):
+    if "face" not in step and not step.get("interact"):
+        return
+    for attempt in range(3):
+        if step.get("interact") and not warped and (not s.field_ready or s.in_battle):
+            # a trainer who spotted the arrival, or someone's text: not the talk this step is for
+            _field_or_handle(s, step, ctx, s.frame + _int(step, "max", 6000))
+            p = s.probe()
+            if (p.x, p.z) != goal:
+                bot_walk_to(s, {k: v for k, v in step.items() if k not in ("face", "interact")}, ctx)
+        if "face" in step:
+            d = FACINGS[step["face"]]
+            if s.probe().facing != d:
+                s.run(2, DIR_KEYS[d])
+                s.run(10)
+        if not step.get("interact"):
+            return
         s.run(4, "a")
-        s.run(12)
+        if not s.run(12, until="in_battle=1"):
+            return
+        s.note("walk_to: a battle started as the talk began; fought, then talking again")
 
 
 # ---------------------------------------------------------------- heal
@@ -466,6 +486,70 @@ def bot_heal(s, step, ctx):
     if s.map_id == center:
         raise HarnessError("heal: did not leave the Pokemon Center (map %d)" % center)
     s.note("heal: healed in map %d, back on map %d" % (center, s.map_id))
+
+
+# ---------------------------------------------------------------- party / grind
+def party(s, ctx):
+    """The party as the game has it now: an in-game save, then np_save4's dump of the save file np_gp wrote."""
+    before = _stores(s)
+    bot_save(s, {}, ctx)
+    for _ in range(60):  # np_gp writes the chip file when the game's card write completes
+        if _stores(s) > before:
+            break
+        s.run(2)
+    else:
+        raise HarnessError("party: the save was not written to %s" % s.save_path)
+    out = subprocess.run([ctx.save4, "dump", ctx.rom, s.save_path], capture_output=True, text=True)
+    if out.returncode != 0:
+        raise HarnessError("party: np_save4 cannot read %s" % s.save_path)
+    return json.loads(out.stdout)["party"]
+
+
+def _stores(s):
+    s._log.flush()
+    with open(s.log_path, errors="replace") as f:
+        return f.read().count("-byte save to ")
+
+
+def bot_grind(s, step, ctx):
+    """Fight wild battles in the tall grass at (x, z)/(x+1, z) until the lead reaches `level`, healing at the
+    Pokemon Center door `heal` = [x, z] (same coordinate space) whenever the lead is below half HP or its move
+    is down to 4 PP."""
+    level = _int(step, "level", 0)
+    bound = _int(step, "max", 60000)
+    limit = s.frame + bound
+    spot = (int(step["x"]), int(step["z"]))
+    door = step.get("heal")
+    battles = 0
+    while True:
+        mons = party(s, ctx)
+        lead = next((m for m in mons if not m.get("is_egg")), None)
+        if lead is None:
+            raise HarnessError("grind: no party")
+        if lead["level"] >= level:
+            break
+        if s.frame >= limit:
+            raise HarnessError("grind: lead at level %d after %d battles, wanted %d" % (lead["level"], battles, level))
+        mv = lead["moves"][_int(step, "move", 0)] if len(lead["moves"]) > _int(step, "move", 0) else {"pp": 0}
+        if door and (lead["hp"] * 2 < lead["stats"][0] or mv["pp"] < 5):
+            bot_heal(s, {"x": door[0], "z": door[1]}, ctx)
+        bot_walk_to(s, {"x": spot[0], "z": spot[1]}, ctx)
+        p = s.probe()
+        t = Terrain()
+        for c in (spot, (spot[0] + 1, spot[1])):
+            cell = p.cell(*c)
+            if cell is None or (cell & TILE_BEHAVIOR) not in t.grass:
+                raise HarnessError("grind: (%d,%d) is not tall grass" % c)
+        k = 0
+        while not s.in_battle and s.frame < limit:
+            k += 1
+            s.run(24, "right" if k % 2 else "left", until=["in_battle=1", "x!=%d" % (spot[0] + (0 if k % 2 else 1))])
+            s.run(12, until="in_battle=1")
+        if s.in_battle:
+            bot_auto_battle(s, {"move": step.get("move", 0)}, ctx)
+            battles += 1
+            bot_wait_field(s, {}, ctx)
+    s.note("grind: lead at level %d after %d battles" % (lead["level"], battles))
 
 
 # ---------------------------------------------------------------- talk_to
@@ -531,4 +615,5 @@ BOTS = {
     "walk_to": bot_walk_to,
     "talk_to": bot_talk_to,
     "heal": bot_heal,
+    "grind": bot_grind,
 }

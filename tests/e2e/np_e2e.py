@@ -89,6 +89,7 @@ def key_arg(keys):
 class Session:
     def __init__(self, gp, rom, game, save, log, budget, options=(), env=None):
         self.game = game
+        self.save_path = save
         self.budget = budget
         self.frame = 0
         self.status = [0] * 16
