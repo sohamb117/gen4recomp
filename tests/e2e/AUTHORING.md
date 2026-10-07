@@ -81,6 +81,9 @@ VAR_OREBURGH_CITY_STATE = 2
 | `talk_to` | `id` | talk to the map object with that local id wherever it stands (wandering people are chased) |
 | `advance_text` | opt. `map` | press A with spacing until the field is free (cutscenes, dialogue, item jingles); with `map`, stop as soon as that map loads |
 | `auto_battle` | opt. `move` (slot) | FIGHT every turn with the best usable move by type (README: base power x STAB x effectiveness from the ROM), switching out a lead with no damaging move left; `move = N` forces slot N for scripted fights; declines move learning and nicknames, allows evolution |
+| `fly` | `map`, opt. `slot`, `block` | Platinum: Fly to a visited town (`map` its header) through the start menu, the party member that knows Fly and the town map; boost a Fly carrier into the party; use it wherever the story moves the player across the region |
+| `steps` | `route` (`[[x, z], ...]` corners), opt. `face`, `interact` | a fixed tile route for maps whose collision the probe cannot show (moving-platform gyms: `tools/pt_gym.py canalave`) |
+| `hatch` | `x`, `z` | hatch a carried egg by pacing (x, z)/(x+1, z); no-op without one |
 | `wait_map` | `map` | until the map id matches |
 | `wait_field` | | until the player is free in the field |
 | `wait_battle` | | until a battle starts (after walking into a trainer's sight) |

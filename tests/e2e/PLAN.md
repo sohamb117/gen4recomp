@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~946690 frames estimated
+### Story chain: 56 milestones, ~999933 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -127,13 +127,13 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [18-contest-hall-fantina-unblocks-gym](platinum/18-contest-hall-fantina-unblocks-gym/milestone.toml) | Contest Hall: Fantina frees the gym door | P0 | 4841 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM | passing |
 | [19-fantina-relic-badge](platinum/19-fantina-relic-badge/milestone.toml) | Hearthome Gym: Fantina and the Relic Badge | P0 | 13283 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY | passing |
 | [20-route209-solaceon-to-veilstone](platinum/20-route209-solaceon-to-veilstone/milestone.toml) | Route 209 to Veilstone: rival, Solaceon, Crasher Wake | P0 | 65257 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GYM | passing |
-| [21-maylene-cobble-badge](platinum/21-maylene-cobble-badge/milestone.toml) | Veilstone Gym: Maylene and the Cobble Badge | P0 | 20000 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GYM | planned |
-| [22-veilstone-warehouse-fly](platinum/22-veilstone-warehouse-fly/milestone.toml) | Veilstone: warehouse tag battle and HM02 Fly | P0 | 16000 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE | planned |
-| [23-pastoria-rival](platinum/23-pastoria-rival/milestone.toml) | Pastoria: rival battle on the way to the gym | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_PASTORIA_CITY | planned |
-| [24-pastoria-gym-wake](platinum/24-pastoria-gym-wake/milestone.toml) | Pastoria Gym: Crasher Wake and the Fen Badge | P0 | 22000 | prev + `lab.recipe` | MAP_HEADER_PASTORIA_CITY | planned |
-| [25-pastoria-explosion](platinum/25-pastoria-explosion/milestone.toml) | Pastoria: Wake and rival scene, Great Marsh explosion | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_PASTORIA_CITY | planned |
-| [26-galactic-chase-secretpotion](platinum/26-galactic-chase-secretpotion/milestone.toml) | Pastoria to Valor Lakefront: grunt chase and the SecretPotion | P0 | 14000 | prev + `lab.recipe` | MAP_HEADER_VALOR_LAKEFRONT | planned |
-| [27-route210-psyduck-oldcharm](platinum/27-route210-psyduck-oldcharm/milestone.toml) | Route 210 South: SecretPotion on the Psyduck, Old Charm | P0 | 7000 | prev + `lab.recipe` | MAP_HEADER_ROUTE_210_SOUTH | planned |
+| [21-maylene-cobble-badge](platinum/21-maylene-cobble-badge/milestone.toml) | Veilstone Gym: Maylene and the Cobble Badge | P0 | 17681 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GYM | passing |
+| [22-veilstone-warehouse-fly](platinum/22-veilstone-warehouse-fly/milestone.toml) | Veilstone: warehouse tag battle and HM02 Fly | P0 | 10667 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE | passing |
+| [23-pastoria-rival](platinum/23-pastoria-rival/milestone.toml) | Pastoria: rival battle on the way to the gym | P0 | 28637 | prev + `lab.recipe` | MAP_HEADER_PASTORIA_CITY | passing |
+| [24-pastoria-gym-wake](platinum/24-pastoria-gym-wake/milestone.toml) | Pastoria Gym: Crasher Wake and the Fen Badge | P0 | 28793 | prev + `lab.recipe` | MAP_HEADER_PASTORIA_CITY | passing |
+| [25-pastoria-explosion](platinum/25-pastoria-explosion/milestone.toml) | Pastoria: Wake and rival scene, Great Marsh explosion | P0 | 2795 | prev + `lab.recipe` | MAP_HEADER_PASTORIA_CITY | passing |
+| [26-galactic-chase-secretpotion](platinum/26-galactic-chase-secretpotion/milestone.toml) | Pastoria to Valor Lakefront: grunt chase and the SecretPotion | P0 | 15145 | prev + `lab.recipe` | MAP_HEADER_VALOR_LAKEFRONT | passing |
+| [27-route210-psyduck-oldcharm](platinum/27-route210-psyduck-oldcharm/milestone.toml) | Route 210 South: SecretPotion on the Psyduck, Old Charm | P0 | 46525 | prev + `lab.recipe` | MAP_HEADER_ROUTE_210_SOUTH | passing |
 | [28-celestic-cyrus-surf](platinum/28-celestic-cyrus-surf/milestone.toml) | Celestic Town: grunt, Cyrus at the ruins painting, HM03 Surf | P0 | 16000 | prev + `lab.recipe` | MAP_HEADER_CELESTIC_TOWN | planned |
 | [29-route218-canalave-rival](platinum/29-route218-canalave-rival/milestone.toml) | Route 218 to Canalave: form-detection upgrade, bridge rival | P0 | 14000 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY | planned |
 | [30-canalave-gym-byron](platinum/30-canalave-gym-byron/milestone.toml) | Canalave Gym: Byron and the Mine Badge | P0 | 24000 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY_GYM | planned |
@@ -370,8 +370,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_BLACK_BELT_COLBY (309); TRAINER_BLACK_BELT_RAFAEL (311); TRAINER_BLACK_BELT_DARREN (310); TRAINER_BLACK_BELT_JEFFERY (312); TRAINER_LEADER_MAYLENE (317)
 - end state: map MAP_HEADER_VEILSTONE_CITY_GYM; 4 badges; badge BADGE_ID_COAL, BADGE_ID_FOREST, BADGE_ID_RELIC, BADGE_ID_COBBLE; >= 1 battles; flags set FLAG_RECEIVED_MAYLENE_TM60, FLAG_HIDE_GAME_CORNER_LOOKER, FLAG_DEFEATED_TRAINER_BLACK_BELT_COLBY, FLAG_DEFEATED_TRAINER_BLACK_BELT_RAFAEL; flags clear FLAG_HIDE_VEILSTONE_COUNTERPART; vars VAR_VEILSTONE_WAREHOUSE_GUARDS_FIGHTABLE=1, VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE=1; 1 save check(s)
-- frames: estimate 20000, budget 45000
-- refs: scripts_veilstone_city_gym.s:15; scripts_veilstone_city_gym.s:26; scripts_veilstone_city_gym.s:34-44; scripts_veilstone_city_gym.s:50-54; src/overlay008/gym_features.c:2951-3017; src/overlay008/gym_features.c:3136-3253; src/overlay008/gym_features.c:3148; src/overlay008/gym_features.c:3154; src/overlay008/gym_features.c:3241-3243; src/overlay008/gym_features.c:3545-3573; src/persisted_map_features_init.c:113-120; scripts_init_veilstone_city.s:9; scripts_veilstone_city.s:1357-1359; events_veilstone_city_gym (warp 0 (12,30)); TRAINER_BLACK_BELT_COLBY (309); TRAINER_BLACK_BELT_RAFAEL (311); TRAINER_BLACK_BELT_DARREN (310); TRAINER_BLACK_BELT_JEFFERY (312); TRAINER_LEADER_MAYLENE (317)
+- frames: estimate 17681, budget 26600
+- refs: scripts_veilstone_city_gym.s:15; scripts_veilstone_city_gym.s:26; scripts_veilstone_city_gym.s:34-44; scripts_veilstone_city_gym.s:50-54; src/overlay008/gym_features.c:2951-3017; src/overlay008/gym_features.c:3136-3253; src/overlay008/gym_features.c:3148; src/overlay008/gym_features.c:3154; src/overlay008/gym_features.c:3241-3243; src/overlay008/gym_features.c:3545-3573; src/persisted_map_features_init.c:113-120; scripts_init_veilstone_city.s:9; scripts_veilstone_city.s:1357-1359; events_veilstone_city_gym (warp 0 (12,30)); events_veilstone_city (gym door warp 13 (684,611)); TRAINER_BLACK_BELT_COLBY (309); TRAINER_BLACK_BELT_RAFAEL (311); TRAINER_BLACK_BELT_DARREN (310); TRAINER_BLACK_BELT_JEFFERY (312); TRAINER_LEADER_MAYLENE (317)
 - notes: Bag/stack tiles are the table values with z-2 (gym_features.c:3148,3154); a bag is kicked by walking into it (Field_CheckMapTransition, field_control.c:567), so each kick is a walk_to the tile before it, facing it, then a held direction. The kick order is a BFS over (bag positions, stacks left, player reach) with the slide rules of gym_features.c:3197-3253 (stop on a 4, stop before a 1 or a stack, topple that stack). The puzzle state persists (InitPersistedMapFeaturesForVeilstoneGym) and the lab cannot pre-topple stacks. Leaving after the badge starts the next chain (Veilstone OnFrame VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE==1, scripts_init_veilstone_city.s:9).
 
 #### platinum/22-veilstone-warehouse-fly — Veilstone: warehouse tag battle and HM02 Fly
@@ -380,7 +380,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE; 4 badges; >= 1 battles; flags set FLAG_OBTAINED_VEILSTONE_CITY_GALACTIC_WAREHOUSE_HM02, FLAG_HIDE_VEILSTONE_GALACTIC_GRUNTS; vars VAR_PASTORIA_CITY_STATE=1, VAR_VEILSTONE_CITY_GALACTIC_WAREHOUSE_STATE=2, VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE=2
-- frames: estimate 16000, budget 24000
+- frames: estimate 10667, budget 16100
 - refs: events_veilstone_city.json; scripts_init_veilstone_city.s:9; scripts_veilstone_city.s:1345-1361; scripts_veilstone_city.s:48-52; scripts_veilstone_city.s:451-469; scripts_veilstone_city.s:496; scripts_veilstone_city.s:503; scripts_veilstone_city.s:507-529; scripts_veilstone_city.s:609-617; scripts_init_veilstone_city_galactic_warehouse.s:9; scripts_veilstone_city_galactic_warehouse.s:75-96; scripts_veilstone_city.s:622-646; scripts_veilstone_city.s:1359; scripts_veilstone_city.s:1357; scripts_veilstone_city.s:516; scripts_veilstone_city.s:522; scripts_veilstone_city.s:537; scripts_veilstone_city.s:559; scripts_veilstone_city.s:610; scripts_veilstone_city.s:611; scripts_veilstone_city.s:612; scripts_veilstone_city.s:613; scripts_veilstone_city_galactic_warehouse.s:89; scripts_veilstone_city_galactic_warehouse.s:90; scripts_visible_items.s:1751; scripts_visible_items.s:1751-1752
 
 #### platinum/23-pastoria-rival — Pastoria: rival battle on the way to the gym
@@ -389,7 +389,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (474)
 - end state: map MAP_HEADER_PASTORIA_CITY; >= 1 battles; flags set FLAG_HIDE_PASTORIA_CITY_RIVAL; vars VAR_PASTORIA_CITY_STATE=2
-- frames: estimate 9000, budget 40000
+- frames: estimate 28637, budget 43000
 - refs: scripts_route_214.s; scripts_route_213.s:16-38; scripts_pastoria_city.s:371-419; scripts_pastoria_city.s:373; scripts_pastoria_city.s:416; scripts_pastoria_city.s:417; events_veilstone_city_galactic_warehouse (warp 0 (8,11)); events_veilstone_city (warps 4 (701,591), 11 (718,638)); events_route_214_gate_to_veilstone_city (warps (5,2), (5,12)); events_route_213 (warps 0 (646,812), 3 (706,818), 4 (706,813)); events_grand_lake_route_213_lobby (warps (8,2), (8,11)); events_route_213_gate_to_pastoria_city (warps (10,7), (1,7)); TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (474)
 - notes: Routes from tests/e2e/tools/pt_route.py. Route 213 is reached through the Hotel Grand Lake lobby (north door from the lakefront, south door to the beach).
 
@@ -399,7 +399,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_PASTORIA_CITY; 5 badges; badge BADGE_ID_FEN; >= 1 battles; flags set FLAG_RECEIVED_WAKE_TM55, FLAG_HIDE_PASTORIA_CITY_GYM_CRASHER_WAKE; flags clear FLAG_HIDE_PASTORIA_CITY_CRASHER_WAKE, FLAG_HIDE_PASTORIA_CITY_RIVAL; vars VAR_PASTORIA_CITY_STATE=4
-- frames: estimate 22000, budget 40000
+- frames: estimate 28793, budget 43200
 - refs: src/overlay008/gym_features.c; gym_features.c:448-456; gym_features.c:123-125; src/persisted_map_features_init.c:55; scripts_pastoria_city_gym.s:14-19; scripts_pastoria_city_gym.s:21-40; events_pastoria_city_gym.json; build/rom/res/field/maps/data/land_data.narc; gym_features.c:463-486; src/terrain_collision_manager.c:316; gym_features.c:656; leader_wake.json; scripts_pastoria_city_gym.s:58; scripts_pastoria_city_gym.s:60-65; scripts_pastoria_city_gym.s:66; scripts_pastoria_city_gym.s:67; scripts_pastoria_city_gym.s:68; scripts_pastoria_city_gym.s:75-78; scripts_pastoria_city_gym.s:79; src/overlay008/gym_features.c:448-456; src/overlay008/gym_features.c:123-125; scripts_pastoria_city_gym.s:58-79
 - notes: Route: tests/e2e/tools/pt_gym.py pastoria, a BFS over (x, z, player height, water level) with the BDHC heights of land data 223/224, the water plate x1..25 z2..38 (gym_features.c:656), getHeight's BDHC-vs-plate choice (terrain_collision_manager.c:98-121), the <20 height-step rule (:270), DYNAMIC_HEIGHT_COLLISION on plate-sourced tiles (:321-326) and the gated grounds checked at the player's height (gym_features.c:463-486). Buttons on the way: orange (3,34), green (17,9), blue (9,24), green (19,13), orange (23,31), blue (3,6). Out at HIGH by the outer ring (L_GROUND (1,36)).
 
@@ -409,7 +409,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_PASTORIA_CITY; flags set FLAG_PASTORIA_CITY_GRUNT_M_MOVED_EAST; vars VAR_PASTORIA_CITY_STATE=5
-- frames: estimate 9000, budget 13500
+- frames: estimate 2795, budget 4200
 - refs: scripts_init_pastoria_city.s:9; scripts_pastoria_city.s:457-526; scripts_pastoria_city.s:619-640; scripts_pastoria_city.s:725-746; scripts_pastoria_city.s:459; scripts_pastoria_city.s:522; scripts_pastoria_city.s:477; scripts_pastoria_city.s:519; scripts_pastoria_city.s:488; scripts_pastoria_city.s:524; scripts_pastoria_city.s:660; scripts_pastoria_city.s:681; scripts_pastoria_city.s:694; scripts_pastoria_city.s:699; scripts_pastoria_city.s:700; scripts_pastoria_city.s:701; scripts_pastoria_city.s:904-917
 
 #### platinum/26-galactic-chase-secretpotion — Pastoria to Valor Lakefront: grunt chase and the SecretPotion
@@ -418,7 +418,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_VALOR_LAKEFRONT; >= 1 battles; flags set FLAG_TALKED_TO_PASTORIA_CITY_GRUNT_M, FLAG_ROUTE_213_GRUNT_M_LEFT, FLAG_TALKED_TO_VALOR_LAKEFRONT_GRUNT_M; flags clear FLAG_BLOCK_PASTORIA_CITY_CROAGUNK_EVENT; vars VAR_PASTORIA_CITY_STATE=6
-- frames: estimate 14000, budget 30000
+- frames: estimate 15145, budget 22800
 - refs: scripts_pastoria_city.s:37-44; scripts_pastoria_city.s:133-190; scripts_route_213.s:16-38; scripts_route_213.s:40-86; scripts_route_213.s:88-145; scripts_valor_lakefront.s:45-81; scripts_valor_lakefront.s:83-91; scripts_valor_lakefront.s:180-366; events_route_213.json; scripts_pastoria_city.s:188; scripts_pastoria_city.s:187; scripts_route_213.s:31; scripts_route_213.s:83; scripts_route_213.s:78; scripts_route_213.s:118; scripts_route_213.s:119; scripts_route_213.s:142; scripts_route_213.s:143; scripts_route_213.s:138; scripts_valor_lakefront.s:79; scripts_valor_lakefront.s:117; scripts_valor_lakefront.s:118; scripts_valor_lakefront.s:185; scripts_valor_lakefront.s:197; scripts_valor_lakefront.s:344-346; scripts_valor_lakefront.s:360; scripts_valor_lakefront.s:361; scripts_valor_lakefront.s:362; scripts_valor_lakefront.s:363; scripts_valor_lakefront.s:364; scripts_pastoria_city.s:941-972; scripts_route_213.s:117
 
 #### platinum/27-route210-psyduck-oldcharm — Route 210 South: SecretPotion on the Psyduck, Old Charm
@@ -427,7 +427,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_ROUTE_210_SOUTH; flags set FLAG_USED_SECRETPOTION, FLAG_HIDE_ROUTE_210_SOUTH_PSYDUCK
-- frames: estimate 7000, budget 45000
+- frames: estimate 46525, budget 69800
 - refs: scripts_route_210_south.s:31-59; scripts_route_210_south.s:92-138; scripts_route_210_south.s:72-75; scripts_route_210_south.s:93; scripts_route_210_south.s:114-116; scripts_route_210_south.s:135; scripts_route_210_south.s:136; scripts_route_210_south.s:77-80; scripts_celestic_town.s:101
 
 #### platinum/28-celestic-cyrus-surf — Celestic Town: grunt, Cyrus at the ruins painting, HM03 Surf
@@ -436,52 +436,52 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map MAP_HEADER_CELESTIC_TOWN; >= 2 battles; flags set FLAG_HIDE_ROUTE_218_BLOCKADE, FLAG_DELIVERED_OLD_CHARM, FLAG_EXAMINED_CELESTIC_TOWN_CAVE_PAINTING; vars VAR_CELESTIC_TOWN_STATE=2
-- frames: estimate 16000, budget 45000
+- frames: estimate 16000, budget 70000
 - refs: events_route_210_north.json; scripts_celestic_town.s:24-46; scripts_celestic_town.s:83-107; scripts_celestic_town_cave.s:27-63; scripts_celestic_town_cave.s:415-429; scripts_celestic_town_cave.s:112-142; scripts_celestic_town.s:224-243; scripts_celestic_town.s:21; scripts_celestic_town.s:84; scripts_celestic_town.s:89; scripts_celestic_town.s:101; scripts_celestic_town.s:102; scripts_celestic_town_cave.s:31; scripts_celestic_town_cave.s:32; scripts_celestic_town_cave.s:48; scripts_celestic_town_cave.s:132; scripts_celestic_town_cave.s:49; scripts_celestic_town_cave.s:113; scripts_celestic_town_cave.s:114; scripts_celestic_town_cave.s:120; scripts_celestic_town_cave.s:129-131; scripts_celestic_town_cave.s:133; scripts_celestic_town_cave.s:134; scripts_celestic_town_cave.s:141; scripts_celestic_town.s:236; scripts_celestic_town.s:237; scripts_celestic_town.s:182-196; scripts_celestic_town.s:94-102; events_celestic_town_cave.json; scripts_celestic_town_cave.s:102-110
 
 #### platinum/29-route218-canalave-rival — Route 218 to Canalave: form-detection upgrade, bridge rival
-- proves: Proves Route 218 (blockade hidden after Celestic), the gate's Pokédex upgrade and the Canalave bridge rival. Start: Route 218 gate, Jubilife side (10,7) -> end: Canalave City (33), VAR_CANALAVE_CITY_STATE 1.
-- start: prev + `lab.recipe`; warp MAP_HEADER_ROUTE_218_GATE_TO_JUBILIFE_CITY 1; lab state lines: 5 badge, 22 clear-flag, 142 flag, 22 item, 1 pokedex, 5 poketch, 1 register-item, 60 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
-- trainers: none
+- proves: Proves Route 218 (blockade hidden after Celestic), the gate's Pokédex upgrade and the Canalave bridge rival. Fly from Celestic to Jubilife (the fly bot: start menu, party, FLY, town map), west through the Route 218 gate, Surf across Route 218. Start: Celestic Town (28's end; the lab at the Pokemon Center door (472,538)) -> end: Canalave City at the rival's coord (47,724), VAR_CANALAVE_CITY_STATE 1.
+- start: prev + `lab.recipe`; warp MAP_HEADER_CELESTIC_TOWN 5; lab state lines: 5 badge, 22 clear-flag, 153 flag, 22 item, 1 pokedex, 5 poketch, 1 register-item, 60 var
+- party: SPECIES_TORTERRA 62 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT)
+- trainers: events_route_218 (warp 0 (70,754); TRAINER_GUITARIST_TONY (80,753) sight 4, TRAINER_SAILOR_SKYLER (76,746) sight 3); TRAINER_RIVAL_CANALAVE_CITY_TURTWIG
 - end state: map MAP_HEADER_CANALAVE_CITY; >= 1 battles; flags set FLAG_HIDE_ROUTE_218_GATE_TO_CANALAVE_CITY_SCIENTIST_M; vars VAR_CANALAVE_CITY_STATE=1, VAR_ROUTE_218_GATE_TO_CANALAVE_CITY_STATE=1
 - frames: estimate 14000, budget 21000
-- refs: scripts_route_218_gate_to_canalave_city.s:10-40; scripts_canalave_city.s:118-189; events_route_218.json; scripts_canalave_city.s:36; scripts_route_218_gate_to_canalave_city.s:38; scripts_canalave_city.s:150; scripts_canalave_city.s:186; scripts_canalave_city.s:187; events_route_218_gate_to_jubilife_city.json; src/field_move_tasks.c:414; scripts_route_218_gate_to_canalave_city.s:36
+- refs: scripts_route_218_gate_to_canalave_city.s:10-40; scripts_canalave_city.s:118-189; events_route_218.json; scripts_canalave_city.s:36; scripts_route_218_gate_to_canalave_city.s:38; scripts_canalave_city.s:150; scripts_canalave_city.s:186; scripts_canalave_city.s:187; events_route_218_gate_to_jubilife_city.json; src/field_move_tasks.c:414; scripts_route_218_gate_to_canalave_city.s:36; src/start_menu.c:593-601; src/applications/party_menu/main.c:1791-1839; src/applications/town_map/graphics.c:223-247; src/applications/town_map/graphics.c:1125-1140; src/spawn_locations.c:34; events_jubilife_city (warp 12 (128,758)); events_route_218 (warp 0 (70,754); TRAINER_GUITARIST_TONY (80,753) sight 4, TRAINER_SAILOR_SKYLER (76,746) sight 3); events_canalave_city (coord (47,723..726)); TRAINER_RIVAL_CANALAVE_CITY_TURTWIG
 
 #### platinum/30-canalave-gym-byron — Canalave Gym: Byron and the Mine Badge
-- proves: Proves the moving-platform gym and Byron's win script (library NPCs shown, Canalave state 2). Start: Canalave Gym door (16,27) -> end: same map, BADGE_ID_MINE, TM91.
-- start: prev + `lab.recipe`; warp MAP_HEADER_CANALAVE_CITY_GYM 0; lab state lines: 5 badge, 22 clear-flag, 145 flag, 22 item, 1 pokedex, 5 poketch, 1 register-item, 62 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
-- trainers: none
-- end state: map MAP_HEADER_CANALAVE_CITY_GYM; 6 badges; badge BADGE_ID_MINE; >= 1 battles; flags set FLAG_RECEIVED_BYRON_TM91; vars VAR_CANALAVE_CITY_STATE=2
+- proves: Proves the moving-platform gym and Byron's win script (library NPCs shown, Canalave state 2). Start: Canalave City, 29's end on the bridge (47,724) (the lab at the gym door (39,731)) -> end: Canalave Gym in front of the entrance (16,26) after Byron on the top floor, BADGE_ID_MINE, TM91.
+- start: prev + `lab.recipe`; warp MAP_HEADER_CANALAVE_CITY 0; lab state lines: 5 badge, 22 clear-flag, 157 flag, 22 item, 1 pokedex, 5 poketch, 1 register-item, 62 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
+- trainers: TRAINER_LEADER_BYRON
+- end state: map MAP_HEADER_CANALAVE_CITY_GYM; at (16, 26); 6 badges; badge BADGE_ID_MINE; >= 1 battles; flags set FLAG_RECEIVED_BYRON_TM91; vars VAR_CANALAVE_CITY_STATE=2
 - frames: estimate 24000, budget 36000
-- refs: src/overlay008/gym_features.c:880-1017; src/overlay008/gym_features.c:1020-1220; src/overlay008/gym_features.c:1028-1035; src/overlay008/gym_features.c:1036-1067; src/overlay008/gym_features.c:1252-1303; src/overlay008/gym_features.c:412-421; scripts_canalave_city_gym.s:31; scripts_canalave_city_gym.s:33-39; scripts_canalave_city_gym.s:41; scripts_canalave_city_gym.s:42; scripts_canalave_city_gym.s:43; scripts_canalave_city_gym.s:44; scripts_canalave_city_gym.s:45; scripts_canalave_city_gym.s:46; scripts_canalave_city_gym.s:47; scripts_canalave_city_gym.s:52-55; scripts_canalave_city_gym.s:56; scripts_canalave_city_gym.s:31-56
+- refs: src/overlay008/gym_features.c:880-1017; src/overlay008/gym_features.c:1020-1220; src/overlay008/gym_features.c:1028-1035; src/overlay008/gym_features.c:1036-1067; src/overlay008/gym_features.c:1252-1303; src/overlay008/gym_features.c:412-421; scripts_canalave_city_gym.s:31; scripts_canalave_city_gym.s:33-39; scripts_canalave_city_gym.s:41; scripts_canalave_city_gym.s:42; scripts_canalave_city_gym.s:43; scripts_canalave_city_gym.s:44; scripts_canalave_city_gym.s:45; scripts_canalave_city_gym.s:46; scripts_canalave_city_gym.s:47; scripts_canalave_city_gym.s:52-55; scripts_canalave_city_gym.s:56; scripts_canalave_city_gym.s:31-56; src/persisted_map_features_init.c:22-47; src/overlay008/gym_features.c:1232-1250; src/overlay008/gym_features.c:1608-1650; src/overlay005/field_control.c:700-704; events_canalave_city (warp 0 (39,731)); events_canalave_city_gym (Byron (16,3) y 30); TRAINER_LEADER_BYRON
 
 #### platinum/31-iron-island-strength — Iron Island: Riley gives HM04 Strength
-- proves: Proves the rival-outside-gym OnFrame, the Canalave sailor's ship menu and Riley's HM04. Start: Canalave gym door (39,731), VAR_CANALAVE_CITY_STATE 2 -> end: Iron Island (288), HM04.
-- start: prev + `lab.recipe`; warp MAP_HEADER_CANALAVE_CITY 0; lab state lines: 6 badge, 27 clear-flag, 147 flag, 23 item, 1 pokedex, 5 poketch, 1 register-item, 63 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the rival-outside-gym OnFrame, the Canalave sailor's ship menu and Riley's HM04. Start: Canalave Gym entrance (16,26) (30's end; the lab on the gym's warp (16,27)), VAR_CANALAVE_CITY_STATE 2 -> end: Iron Island (288), HM04.
+- start: prev + `lab.recipe`; warp MAP_HEADER_CANALAVE_CITY_GYM 0; lab state lines: 6 badge, 27 clear-flag, 159 flag, 23 item, 1 pokedex, 5 poketch, 1 register-item, 63 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_IRON_ISLAND; flags set FLAG_HIDE_IRON_ISLAND_RILEY, FLAG_FIRST_ARRIVAL_IRON_ISLAND_EXTERIOR; vars VAR_CANALAVE_CITY_STATE=3, VAR_CANALAVE_LIBRARY_STATE=1
 - frames: estimate 12000, budget 18000
 - refs: scripts_init_canalave_city.s:9; scripts_canalave_city.s:219-231; scripts_canalave_city.s:494-530; scripts_canalave_city.s:528; scripts_iron_island.s:92-124; scripts_iron_island.s:101-114; scripts_iron_island.s:15-35; scripts_iron_island_b2f_left_room.s:38-60; scripts_iron_island_b2f_left_room.s:149-196; scripts_iron_island_b2f_left_room.s:232-270; scripts_canalave_city.s:229; scripts_canalave_city.s:230; scripts_canalave_city.s:228; scripts_iron_island.s:12; scripts_iron_island.s:98-100; scripts_iron_island.s:121; scripts_iron_island_b2f_left_room.s:51; scripts_canalave_city.s:52; scripts_iron_island_b2f_left_room.s:269; scripts_iron_island_b2f_left_room.s:56; scripts_iron_island_b2f_left_room.s:245; scripts_iron_island_b2f_left_room.s:246; scripts_iron_island_b2f_left_room.s:268
 
 #### platinum/32-canalave-library-explosion — Canalave Library: Lake Valor explosion
-- proves: Proves the library rival HM04 check, the 3F explosion OnFrame and the Canalave after-explosion OnFrame. Start: Canalave Pokémon Center door (58,722) -> end: Canalave City, VAR_CANALAVE_CITY_STATE 5.
-- start: prev + `lab.recipe`; warp MAP_HEADER_CANALAVE_CITY 1; lab state lines: 6 badge, 27 clear-flag, 150 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 65 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the library rival HM04 check, the 3F explosion OnFrame and the Canalave after-explosion OnFrame. Fly back from Iron Island (31's end) to Canalave first. Start: Iron Island (31's end at Riley's tile; the lab at the house door (111,499)) -> end: Canalave City, VAR_CANALAVE_CITY_STATE 5.
+- start: prev + `lab.recipe`; warp MAP_HEADER_IRON_ISLAND 0; lab state lines: 6 badge, 27 clear-flag, 162 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 65 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_CANALAVE_CITY; flags set FLAG_LAKE_VALOR_EXPLODED, FLAG_HIDE_VALOR_LAKEFRONT_CAMERAMEN; vars VAR_CANALAVE_CITY_STATE=5, VAR_CANALAVE_LIBRARY_STATE=2
 - frames: estimate 12000, budget 18000
 - refs: scripts_canalave_city.s:681-711; scripts_init_canalave_library_3f.s; scripts_canalave_library_3f.s:35-190; scripts_canalave_city.s:247-300; scripts_canalave_city.s:710; scripts_canalave_library_3f.s:184; scripts_canalave_library_3f.s:185; scripts_canalave_library_3f.s:186; scripts_canalave_library_3f.s:187; scripts_canalave_library_3f.s:188; scripts_canalave_library_3f.s:189; scripts_canalave_library_3f.s:190; scripts_canalave_city.s:253; scripts_canalave_city.s:296; scripts_canalave_city.s:297; scripts_canalave_city.s:298; scripts_canalave_city.s:299; events_canalave_library_1f.json; events_canalave_library_2f.json; scripts_canalave_city.s:262; scripts_canalave_city.s:270
 
 #### platinum/33-lake-valor-saturn — Lake Valor (drained): Saturn in Valor Cavern
-- proves: Proves the drained-lake warp choice (FLAG_GALACTIC_LEFT_LAKE_VALOR unset) and the Saturn battle. Start: Valor Lakefront east-house door (715,781) -> end: Valor Cavern (316), Saturn beaten.
-- start: prev + `lab.recipe`; warp MAP_HEADER_VALOR_LAKEFRONT 1; lab state lines: 6 badge, 32 clear-flag, 155 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 67 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the drained-lake warp choice (FLAG_GALACTIC_LEFT_LAKE_VALOR unset) and the Saturn battle. Fly to Veilstone, south through the Route 214 gate and down Route 214 to Valor Lakefront. Start: Canalave City (32's end; the lab at the Pokemon Center door (58,722)) -> end: Valor Cavern (316), Saturn beaten.
+- start: prev + `lab.recipe`; warp MAP_HEADER_CANALAVE_CITY 1; lab state lines: 6 badge, 32 clear-flag, 167 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 67 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_VALOR_CAVERN; >= 1 battles; flags set FLAG_DEFEATED_COMMANDER_SATURN_VALOR_CAVERN, FLAG_HIDE_LAKE_VALOR_GALACTIC
-- frames: estimate 12000, budget 18000
+- frames: estimate 12000, budget 36000
 - refs: scripts_valor_lakefront.s:19-42; scripts_valor_cavern.s:13; scripts_valor_cavern.s:87; scripts_valor_cavern.s:88; scripts_valor_cavern.s:89; events_lake_valor_drained.json
 
 #### platinum/34-lake-verity-mars — Lake Verity: Mars

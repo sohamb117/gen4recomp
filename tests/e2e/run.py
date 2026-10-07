@@ -68,10 +68,14 @@ STEP_KEYS = {
     "talk_to": {"id", "on_battle", "on_text", "move"},
     "heal": {"x", "z", "on_battle"},
     "grind": {"x", "z", "level", "heal", "move"},
+    "fly": {"map", "slot", "block"},
+    "steps": {"route", "run", "on_battle", "on_text", "move", "face", "interact"},
+    "hatch": {"x", "z"},
 }
 STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
                  "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},
-                 "heal": {"x", "z"}, "grind": {"x", "z", "level"}}
+                 "heal": {"x", "z"}, "grind": {"x", "z", "level"}, "fly": {"map"},
+                 "steps": {"route"}, "hatch": {"x", "z"}}
 NAME_KEYS = {"map"}  # step keys that take a game name
 # np_gp -o options every run gets first ([run] options come after and win): message boxes print at once, so
 # story scenes and battles cost their animations, not the text crawl. A recorded press schedule depends on the

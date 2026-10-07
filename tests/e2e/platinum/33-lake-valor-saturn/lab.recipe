@@ -10,18 +10,22 @@ money 20000
 # rival/counterpart teams pick the TURTWIG variants (src/scrcmd.c:3777-3782)
 var VAR_PLAYER_STARTER SPECIES_TURTWIG
 
-# lab party, pt_story_late.md 0.4: Dragon Claw in slot 0 on both (80 BP/100 acc/15 PP, res/moves/dragon_claw/data.json),
-# level 100 = no EXP/learn-move/evolution prompts; party mons get the player as OT (pc/src/pc_lab.c:680-686)
-party SPECIES_GARCHOMP 100 ITEM_LEPPA_BERRY
-party-move 0 0 MOVE_DRAGON_CLAW
-party-move 0 1 MOVE_SURF
-party-move 0 2 MOVE_STRENGTH
-party-move 0 3 MOVE_ROCK_CLIMB
-party SPECIES_SALAMENCE 100 ITEM_NONE
-party-move 1 0 MOVE_DRAGON_CLAW
-party-move 1 1 MOVE_WATERFALL
-party-move 1 2 MOVE_ROCK_SMASH
-party-move 1 3 MOVE_FLY
+# lab party: the chain's party (Torterra lead with four battle moves, the Togepi hatched from 16's egg, Bibarel
+# carrying Cut/Rock Smash/Surf, Staraptor carrying Fly: 20's and 29's boosts), so the boosts touch the same slots on
+# either start
+party SPECIES_TORTERRA 63 ITEM_NONE
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE
+party SPECIES_TOGEPI 1 ITEM_NONE
+party SPECIES_BIBAREL 40 ITEM_NONE
+party-move 2 0 MOVE_CUT
+party-move 2 1 MOVE_ROCK_SMASH
+party-move 2 2 MOVE_SURF
+party-move 2 3 MOVE_TAKE_DOWN
+party SPECIES_STARAPTOR 45 ITEM_NONE
+party-move 3 0 MOVE_FLY
 
 # -- 01 newgame-starter (early) --
 # scripts_twinleaf_town_player_house_2f.s:28
@@ -638,5 +642,20 @@ clear-flag FLAG_HIDE_LAKE_VERITY_LOW_WATER_PROF_ROWAN
 # scripts_canalave_city.s:299
 clear-flag FLAG_HIDE_LAKE_ACUITY_LOW_WATER_RIVAL
 
-# start: east-house door (715,781)
-warp MAP_HEADER_VALOR_LAKEFRONT 1
+# fly destinations: each town's first arrival, set on entering it (src/spawn_locations.c:135; the town map's fly
+# unlocks, src/applications/town_map/context.c:146)
+flag FLAG_FIRST_ARRIVAL_TWINLEAF_TOWN
+flag FLAG_FIRST_ARRIVAL_SANDGEM_TOWN
+flag FLAG_FIRST_ARRIVAL_JUBILIFE_CITY
+flag FLAG_FIRST_ARRIVAL_OREBURGH_CITY
+flag FLAG_FIRST_ARRIVAL_FLOAROMA_TOWN
+flag FLAG_FIRST_ARRIVAL_ETERNA_CITY
+flag FLAG_FIRST_ARRIVAL_HEARTHOME_CITY
+flag FLAG_FIRST_ARRIVAL_SOLACEON_TOWN
+flag FLAG_FIRST_ARRIVAL_VEILSTONE_CITY
+flag FLAG_FIRST_ARRIVAL_PASTORIA_CITY
+flag FLAG_FIRST_ARRIVAL_CELESTIC_TOWN
+flag FLAG_FIRST_ARRIVAL_CANALAVE_CITY
+
+# start: Canalave City, where 32 ends (the Pokemon Center door, events_canalave_city warp 1 (58,722))
+warp MAP_HEADER_CANALAVE_CITY 1

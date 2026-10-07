@@ -1,0 +1,9 @@
+# Boost on 32's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# HP and PP refilled (party-level, the four moves set again).
+# For TRAINER_COMMANDER_SATURN_VALOR_CAVERN (KADABRA, BRONZOR, TOXICROAK: Crunch, Crunch (Levitate), Earthquake) and the
+# drained lake's grunts.
+party-level 0 65
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE

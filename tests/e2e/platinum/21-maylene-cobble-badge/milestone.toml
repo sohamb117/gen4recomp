@@ -2,9 +2,8 @@
 # x=12 column up to Maylene) and Maylene's Cobble Badge, the 4th badge.
 # Start: Veilstone Gym (20's end at warp 0 (12,30)) -> end: Veilstone Gym with 4 badges.
 title = "Veilstone Gym: Maylene and the Cobble Badge"
-status = "planned"
 priority = "P0"
-estimate = 20000
+estimate = 17681
 refs = [
   "scripts_veilstone_city_gym.s:15",
   "scripts_veilstone_city_gym.s:26",
@@ -20,6 +19,7 @@ refs = [
   "scripts_init_veilstone_city.s:9",
   "scripts_veilstone_city.s:1357-1359",
   "events_veilstone_city_gym (warp 0 (12,30))",
+  "events_veilstone_city (gym door warp 13 (684,611))",
   "TRAINER_BLACK_BELT_COLBY (309)",
   "TRAINER_BLACK_BELT_RAFAEL (311)",
   "TRAINER_BLACK_BELT_DARREN (310)",
@@ -34,7 +34,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 45000
+frames = 26600
 
 [[step]]
 do = "walk_to"
@@ -42,6 +42,45 @@ x = 14
 z = 26
 face = "right"
 note = "kick 1: bag (15,26) east -> (19,26) and topples the stack at (20,26)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 17
+note = "Rafael (11,13) LOOK_SOUTH sight 4 spots (11,17) and walks to (11,16): fought. Column x=11 is the only way from the south half to the west half, so he now blocks it for good (as Darren at (16,14) blocks the ring's row 14 when he spots from (18,14)): leave and re-enter, which puts every gym trainer back on its event tile. Entering also resets the bags and stacks (OnTransition InitPersistedMapFeaturesForVeilstoneGym, scripts_veilstone_city_gym.s:15; src/persisted_map_features_init.c:113-120), so kick 1 is done again"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 30
+note = "gym exit (warp 0) -> Veilstone (684,612)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 684
+z = 611
+note = "gym door (events_veilstone_city warp 13) -> gym (12,30)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 26
+face = "right"
+note = "kick 1 again on the reset puzzle"
 
 [[step]]
 do = "press"

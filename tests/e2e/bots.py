@@ -11,7 +11,7 @@ import os
 import re
 import subprocess
 
-from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN, UI_BATTLE_MENU,
+from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, ROOT, TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN, UI_BATTLE_MENU,
                     UI_BATTLE_PARTY, HarnessError, behaviors)
 
 # ---- the battle's touch screen (Platinum src/battle/battle_subscreen.c touch rects; D/P's overlay 11
@@ -203,6 +203,11 @@ TWO_TURN_EFFECTS = {39, 75, 145, 151, 155, 255, 256, 263, 272, 80}
 COMPUTED_POWER = 60
 # a move that hits every adjacent battler (RANGE_ALL_ADJACENT: Earthquake, Surf) beside a live ally: scored down
 RANGE_ALL_ADJACENT, ALLY_HIT_FACTOR = 0x08, 0.25
+# abilities that make a move type do nothing (ability ids, generated/abilities.txt): Levitate (Ground), Water
+# Absorb and Dry Skin (Water), Volt Absorb and Motor Drive (Electric), Flash Fire (Fire); Wonder Guard lets only
+# super-effective moves through
+ABILITY_IMMUNE = {26: {4}, 11: {11}, 87: {11}, 10: {13}, 78: {13}, 18: {10}}
+WONDER_GUARD = 25
 
 _GAMEDATA = {}
 
@@ -221,17 +226,32 @@ def mon_types(gd, mon):
     """A Pokemon's types: the battle's own (battlers) or its species' (party members)."""
     if mon.types:
         return set(mon.types)
-    return set(gd["species"][mon.species]) if mon.species < len(gd["species"]) else set()
+    return set(gd["species"][mon.species][:2]) if mon.species < len(gd["species"]) else set()
 
 
-def move_value(gd, move, user_types, foe_types, ally=False):
+def blocking_abilities(gd, species, move, foe_types):
+    """(abilities the species may have that make `move` do nothing to it, all its abilities)."""
+    if species is None or species >= len(gd["species"]) or not move or move >= len(gd["moves"]):
+        return [], []
+    mtype = gd["moves"][move][3]
+    eff = 1.0
+    for t in foe_types:
+        eff *= gd["type_chart"][mtype][t] / 10.0
+    have = [a for a in gd["species"][species][2:4] if a]
+    return [a for a in have if mtype in ABILITY_IMMUNE.get(a, ()) or (a == WONDER_GUARD and eff <= 1)], have
+
+
+def move_value(gd, move, user_types, foe_types, ally=False, foe_species=None):
     """Expected damage of a move, relative: base power x STAB x type effectiveness x accuracy (halved for a move
-    that takes two turns, cut to ALLY_HIT_FACTOR when it would hit a live ally too); 0 for a status move or one in
-    AVOID_MOVES."""
+    that takes two turns, cut to ALLY_HIT_FACTOR when it would hit a live ally too); 0 for a status move, one in
+    AVOID_MOVES, or one every ability of the foe's species blocks (Gastly's Levitate)."""
     if not move or move >= len(gd["moves"]) or move in AVOID_MOVES:
         return 0.0
     effect, cls, power, mtype, acc, _pp, _priority, rng = gd["moves"][move][:8]
     if cls == MOVE_CLASS_STATUS or power == 0:
+        return 0.0
+    block, have = blocking_abilities(gd, foe_species, move, foe_types)
+    if have and len(block) == len(have):
         return 0.0
     v = float(COMPUTED_POWER if power == 1 else power)
     if mtype in user_types:
@@ -249,33 +269,36 @@ def usable_slots(mon, rejected=()):
             and i not in rejected]
 
 
-def best_damage(gd, mon, foe, rejected=(), ally=False):
-    """(slot, value) of the mon's best damaging move with PP against foe; (None, 0) when it has none."""
+def best_damage(gd, mon, foe, rejected=(), ally=False, useless=()):
+    """(slot, value) of the mon's best damaging move with PP against foe; (None, 0) when it has none. `useless`
+    holds the (move, foe species) pairs this battle has seen blocked by an ability (Bronzor's Levitate or Heatproof)."""
     best, value = None, 0.0
     user, foes = mon_types(gd, mon), mon_types(gd, foe) if foe is not None else set()
     for i in usable_slots(mon, rejected):
-        v = move_value(gd, mon.moves[i], user, foes, ally)
+        if foe is not None and (mon.moves[i], foe.species) in useless:
+            continue
+        v = move_value(gd, mon.moves[i], user, foes, ally, foe.species if foe is not None else None)
         if v > value:
             best, value = i, v
     return best, value
 
 
-def choose_move(gd, mon, foe, rejected=(), ally=False):
+def choose_move(gd, mon, foe, rejected=(), ally=False, useless=()):
     """The slot to use: the best damaging move, else the first status move with PP, else None (the game uses
     Struggle by itself when nothing has PP)."""
-    slot, _ = best_damage(gd, mon, foe, rejected, ally)
+    slot, _ = best_damage(gd, mon, foe, rejected, ally, useless)
     if slot is not None:
         return slot
     rest = usable_slots(mon, rejected)
     return rest[0] if rest else None
 
 
-def replacement(gd, party, foe, first, ally=False):
+def replacement(gd, party, foe, first, ally=False, useless=()):
     """The party screen slot to send in: the first healthy member from `first` on with a damaging move against foe,
     else the first healthy one; None when there is none."""
     healthy = [k for k in range(first, len(party)) if party[k].alive]
     for k in healthy:
-        if best_damage(gd, party[k], foe, ally=ally)[0] is not None:
+        if best_damage(gd, party[k], foe, ally=ally, useless=useless)[0] is not None:
             return k
     return healthy[0] if healthy else None
 
@@ -286,7 +309,10 @@ def bot_auto_battle(s, step, ctx):
 
     The move is the usable one (PP left, not disabled) with the highest expected damage against the targeted foe
     (move_value: base power x STAB x type effectiveness, from the ROM); status moves only when no damaging move has
-    PP. A lead with no damaging move left is switched for the next healthy party member that has one, and a fainted
+    PP. A species whose every ability blocks a move (Levitate, Water/Volt Absorb, Dry Skin, Motor Drive, Flash Fire,
+    Wonder Guard) scores it 0; when only one of its two may, a use that left the foe's HP unchanged shows which it
+    has, and the move is not used on that species again in the battle. A lead with no
+    damaging move left is switched for the next healthy party member that has one, and a fainted
     lead is replaced the same way. `move = N` overrides the choice with slot N (the next slot whenever the game
     refuses one), for scripted fights.
 
@@ -312,6 +338,8 @@ def bot_auto_battle(s, step, ctx):
     want = None      # the party screen slot auto_battle chose
     switched_at = -1  # `turns` of the last switch
     report = None    # the last battle report of this battle (a Probe)
+    tried = {}       # menu battler -> (move, foe battler, foe species, foe HP) of its last move
+    useless = set()  # (move, foe species) pairs an ability of the foe was seen to block
     while s.in_battle:
         if s.frame >= limit:
             raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
@@ -331,6 +359,16 @@ def bot_auto_battle(s, step, ctx):
                 foe = p.battlers[1 + 2 * target] if foes else None
                 mate = p.menu_battler ^ 2
                 ally = bool(p.battle_type & BATTLE_TYPE_DOUBLES) and mate < len(p.battlers) and p.battlers[mate].alive
+                if idx in MENU_ACTION and p.menu_battler in tried:
+                    mv, fb, sp, hp = tried.pop(p.menu_battler)
+                    b = p.battlers[fb] if fb < len(p.battlers) else None
+                    if b is not None and b.species == sp and b.hp > 0 and b.hp >= hp:
+                        # unchanged HP: a miss, a potion back to full, or the ability; only the last when it may be
+                        block, _ = blocking_abilities(gd, sp, mv, mon_types(gd, b))
+                        if block and (mv, sp) not in useless:
+                            useless.add((mv, sp))
+                            s.note("auto_battle: move %d did nothing to species %d (ability %s); not using it on it "
+                                   "again" % (mv, sp, block))
             if idx in MENU_ACTION and flee:
                 flee -= 1
                 _tap(s, TAP_RUN)
@@ -339,10 +377,10 @@ def bot_auto_battle(s, step, ctx):
                 k = None
                 shared = fresh and p.battle_type & (BATTLE_TYPE_2VS2 | BATTLE_TYPE_TAG)  # party screen interleaved
                 if (fresh and not shared and me.alive and switched_at != turns
-                        and best_damage(gd, me, foe, ally=ally)[0] is None):
+                        and best_damage(gd, me, foe, ally=ally, useless=useless)[0] is None):
                     first = 2 if p.battle_type & BATTLE_TYPE_DOUBLES else 1
-                    k = replacement(gd, p.party, foe, first, ally)
-                    if k is not None and best_damage(gd, p.party[k], foe, ally=ally)[0] is None:
+                    k = replacement(gd, p.party, foe, first, ally, useless)
+                    if k is not None and best_damage(gd, p.party[k], foe, ally=ally, useless=useless)[0] is None:
                         k = None
                 if k is not None:
                     s.note("auto_battle: no damaging move left; switching to party slot %d" % k)
@@ -368,12 +406,14 @@ def bot_auto_battle(s, step, ctx):
                 else:
                     if refused and slot is not None:
                         rejected.append(slot)
-                    slot = choose_move(gd, me, foe, rejected, ally)
+                    slot = choose_move(gd, me, foe, rejected, ally, useless)
                     if slot is None:
                         rejected = []
-                        slot = choose_move(gd, me, foe, ally=ally) or 0
+                        slot = choose_move(gd, me, foe, ally=ally, useless=useless) or 0
                     s.note("auto_battle: battler %d slot %d (move %d, %d PP) on species %d" % (
                         p.menu_battler, slot, me.moves[slot], me.pp[slot], foe.species if foe else 0))
+                    if foe is not None:
+                        tried[p.menu_battler] = (me.moves[slot], 1 + 2 * target, foe.species, foe.hp)
                 _tap(s, TAP_MOVES[slot])
                 # the move menu stays reported for a few frames while it slides out: not a refusal
                 s.run(30, until=["ui_arg!=%d" % MENU_MOVES, "ui!=%d" % UI_BATTLE_MENU, "in_battle=0"])
@@ -564,7 +604,10 @@ class Terrain:
 
 
 def _field_or_handle(s, step, ctx, limit):
-    """Back to a free player: battles fought (auto_battle), text advanced, else wait.
+    """Back to a free player: battles fought (auto_battle), text advanced with B, else wait. B advances a message
+    as A does (render_text.c:61, :382) but answers a YES/NO as NO: an egg that hatches on a walk's step asks for a
+    nickname, and A would open the naming screen (cutscenes/egg_hatch/main.c:155-187, the menu's B cancel,
+    egg_hatch/graphics.c:319).
 
     Returns the frames spent in battles, which do not count against walk_to's bound (the milestone's
     budget still does): how many wild battles a walk meets is the game's RNG, not the route."""
@@ -591,9 +634,63 @@ def _field_or_handle(s, step, ctx, limit):
         if waited >= 60:
             if on_text != "advance":
                 raise HarnessError("walk_to: the player is held (text or a cutscene; on_text = %r)" % on_text)
-            s.run(2, "a", until=["field_ready=1", "in_battle=1"])
+            s.run(2, "b", until=["field_ready=1", "in_battle=1"])
             s.run(6, until=["field_ready=1", "in_battle=1"])
     return in_battles
+
+
+def bot_steps(s, step, ctx):
+    """Walk a fixed route: `route` = [[x, z], ...], each a straight line from the one before (tools/pt_gym.py canalave
+    prints one), for maps whose collision the probe cannot show (the Canalave Gym's floors and platforms are the gym's
+    own tables, not the land data walk_to plans over). Each tile: the direction held until the player's tile changes;
+    whatever the step started (a platform ride, a trainer's sight, text) runs until the player is free. A step that
+    lands on the next corner instead (a platform carried the player there) counts it reached. A step that moves
+    nothing is tried again, three times at most."""
+    bound = _int(step, "max", 9000)
+    limit = s.frame + bound
+    run_key = "+b" if step.get("run", True) else ""
+    route = [tuple(int(v) for v in t) for t in step["route"]]
+    k, tiles, tries = 0, 0, 0
+    while k < len(route):
+        if s.frame >= limit:
+            raise HarnessError("steps: corner %d of %d after %d tiles, out of %d frames (battles excluded)" % (
+                k, len(route), tiles, bound))
+        limit += _field_or_handle(s, step, ctx, limit)
+        p = s.probe()
+        here = (p.x, p.z)
+        if here == route[k]:
+            k += 1
+            continue
+        dx, dz = route[k][0] - here[0], route[k][1] - here[1]
+        if dx and dz:
+            raise HarnessError("steps: at (%d,%d), corner %d (%d,%d) is not in a straight line" % (here + (k,) + route[k]))
+        d = DIR_DELTA.index(((dx > 0) - (dx < 0), (dz > 0) - (dz < 0)))
+        s.run(24, DIR_KEYS[d] + run_key, until=["x!=%d" % here[0], "z!=%d" % here[1], "in_battle=1"])
+        s.run(24, until="field_ready=1")
+        limit += _field_or_handle(s, step, ctx, limit)
+        p = s.probe()
+        if (p.x, p.z) == here:
+            tries += 1
+            if tries > 3:
+                raise HarnessError("steps: stuck at (%d,%d) going %s to corner %d (%d,%d)" % (
+                    here + (DIR_KEYS[d], k) + route[k]))
+            continue
+        tries = 0
+        tiles += 1
+        if k + 1 < len(route) and (p.x, p.z) == route[k + 1] and (p.x, p.z) != route[k]:
+            s.note("steps: carried to (%d,%d)" % (p.x, p.z))
+            k += 1
+    s.run(16)
+    p = s.probe()
+    s.note("steps: %d tiles, at (%d,%d) on map %d" % (tiles, p.x, p.z, s.map_id))
+    if "face" in step:
+        f = FACINGS[step["face"]]
+        if p.facing != f:
+            s.run(2, DIR_KEYS[f])
+            s.run(10)
+    if step.get("interact"):
+        s.run(4, "a")
+        s.run(12)
 
 
 def _use_field_move(s, step, ctx, what, limit):
@@ -610,11 +707,13 @@ def bot_walk_to(s, step, ctx):
     """Walk to tile (x, z): A* over the probe's terrain, replanning as it learns; warps by walking into them.
 
     With via = [[x, z], ...] it walks to each waypoint first (each under its own `max`): routes longer than the
-    probe's 64x64 window, or past what A* cannot know (a bridge's deck vs the path under it)."""
+    probe's 64x64 window, or past what A* cannot know (a bridge's deck vs the path under it). A waypoint someone
+    stands on (a trainer who walked up to the player there) counts as reached from the tile next to it."""
     if step.get("via"):
         leg = {k: v for k, v in step.items() if k not in ("via", "face", "interact", "map")}
         for i, (wx, wz) in enumerate(step["via"]):
-            bot_walk_to(s, dict(leg, x=wx, z=wz, **({"map": step["map"]} if i == 0 and "map" in step else {})), ctx)
+            bot_walk_to(s, dict(leg, x=wx, z=wz, _corner=True,
+                                **({"map": step["map"]} if i == 0 and "map" in step else {})), ctx)
         step = {k: v for k, v in step.items() if k not in ("via", "map")}
     goal = (int(step["x"]), int(step["z"]))
     bound = _int(step, "max", 6000)
@@ -637,6 +736,9 @@ def bot_walk_to(s, step, ctx):
             raise HarnessError("walk_to (%d,%d): still at (%d,%d) after %d frames (battles excluded)" % (
                 goal + (p.x, p.z, bound)))
         terrain.update(p)
+        if step.get("_corner") and goal in terrain.objects and abs(p.x - goal[0]) + abs(p.z - goal[1]) == 1:
+            s.note("walk_to: waypoint (%d,%d) is occupied; passing it from (%d,%d)" % (goal + (p.x, p.z)))
+            break
         dirs = terrain.path((p.x, p.z), goal)
         if not dirs and terrain.blocked_edges:
             # what bumping taught may have been a person in the way: forget it once
@@ -805,6 +907,38 @@ def bot_walk_to_door(s, step, ctx):
     bot_walk_to(s, sub, ctx)
 
 
+def bot_hatch(s, step, ctx):
+    """Pace between (x, z) and (x+1, z) until every egg in the party has hatched (a no-op without one): an egg hatches
+    on whichever step its cycles run out on (src/egg_hatch.c), so a chain hatches it here, on safe ground, rather than in
+    a later puzzle room's walk. The hatch scene's text runs with B (its nickname question: NO)."""
+    bound = _int(step, "max", 60000)
+    limit = s.frame + bound
+    eggs = sum(1 for m in party(s, ctx) if m.get("is_egg"))
+    if not eggs:
+        s.note("hatch: no egg in the party")
+        return
+    spot = (int(step["x"]), int(step["z"]))
+    bot_walk_to(s, {"x": spot[0], "z": spot[1]}, ctx)
+    k = 0
+    while s.frame < limit:
+        k += 1
+        p = s.probe()
+        d = "right" if p.x == spot[0] else "left"
+        s.run(24, d + "+b", until=["x!=%d" % p.x, "in_battle=1"])
+        held = s.frame
+        s.run(24, until="field_ready=1")
+        if s.field_ready:
+            continue
+        _field_or_handle(s, {"on_battle": "flee"}, ctx, limit)
+        if s.frame - held < 200:
+            continue
+        left = sum(1 for m in party(s, ctx) if m.get("is_egg"))
+        s.note("hatch: a scene of %d frames after %d steps; %d egg(s) left" % (s.frame - held, k, left))
+        if not left:
+            return
+    raise HarnessError("hatch: %d egg(s) still unhatched after %d frames" % (eggs, bound))
+
+
 def bot_grind(s, step, ctx):
     """Fight wild battles in the tall grass at (x, z)/(x+1, z) until the lead reaches `level`, healing at the
     Pokemon Center door `heal` = [x, z] (same coordinate space) whenever the lead is below half HP or down to 4 PP
@@ -926,6 +1060,110 @@ def bot_slide(s, step, ctx):
             last = (p.x, p.z)
     p = s.probe()
     s.note("slide: %d presses, at (%d,%d)" % (len(dirs), p.x, p.z))
+# ---------------------------------------------------------------- fly
+# Platinum's start menu, top to bottom once the Pokedex and a party are owned (src/start_menu.c:593-601, the hidden
+# RETIRE/CHAT left out). FieldSystem.menuCursorPos keeps the last chosen option and starts zeroed
+# (field_system.c:153-154): START_MENU_OPTION_POKEDEX.
+START_MENU = ["pokedex", "pokemon", "bag", "trainer_case", "save", "options", "exit"]
+# Moves the party menu lists as field moves, in sFieldMoves order (src/applications/party_menu/main.c:247-263):
+# Cut, Fly, Surf, Strength, Defog, Rock Smash, Waterfall, Rock Climb, Flash, Teleport, Dig, Sweet Scent, Chatter,
+# Milk Drink, Softboiled
+FIELD_MOVES = {15, 19, 57, 70, 432, 249, 127, 431, 148, 100, 91, 230, 448, 208, 135}
+MOVE_FLY = 19
+# The fly map's cursor stays within x 1..28, z 6..28 (town_map/graphics.c:399-425)
+FLY_X, FLY_Z = (1, 28), (6, 28)
+
+
+def fly_blocks(name):
+    """The town-map blocks of a fly destination: the cells of the overworld matrix (map_matrix_000, which
+    MainMapMatrixData_Load reads, src/map_matrix.c:149-161) whose header is `name` (CanFlyToHoveredLocation: the
+    hovered cell's header must be the fly location's, town_map/graphics.c:1125-1140, fly_locations.c:291-304)."""
+    path = os.path.join(ROOT, "games", "platinum", "res", "field", "matrices", "map_matrix_000.json")
+    headers = json.load(open(path))["headers"]
+    return [(x, z) for z, row in enumerate(headers) for x, h in enumerate(row) if h == name]
+
+
+def _menu_key(s, key, n=1, gap=8):
+    for _ in range(n):
+        s.run(2, key)
+        s.run(gap)
+
+
+def bot_fly(s, step, ctx):
+    """Fly to `map` (a town's header) the way a player does: X, POKEMON, the party member that knows Fly, FLY, the
+    town map's cursor moved block by block to the destination, A. `slot` names the party slot (default: the first
+    that knows Fly, from an in-game save's dump); `block = [x, z]` the town-map block (default: the destination's
+    block on the overworld matrix nearest the player's). Platinum menus (start_menu.c, party_menu/main.c,
+    town_map/graphics.c)."""
+    if ctx.game != "platinum" and "block" not in step:
+        raise HarnessError("fly: only Platinum's town map is known; give block = [x, z]")
+    dest = ctx.resolve(step["map"])
+    bot_wait_field(s, step, ctx)
+    p = s.probe()
+    here = (p.x // 32, p.z // 32)
+    if "block" in step:
+        goal = tuple(int(v) for v in step["block"])
+    else:
+        blocks = fly_blocks(step["map"])
+        if not blocks:
+            raise HarnessError("fly: %s is on no overworld block" % step["map"])
+        goal = min(blocks, key=lambda b: abs(b[0] - here[0]) + abs(b[1] - here[1]))
+    if "slot" in step:
+        slot = _int(step, "slot", 0)
+        moves = None
+    else:
+        mons = party(s, ctx)
+        k = next((i for i, m in enumerate(mons) if any(mv["id"] == MOVE_FLY for mv in m["moves"])), None)
+        if k is None:
+            raise HarnessError("fly: no party member knows Fly")
+        slot, moves = k, [mv["id"] for mv in mons[k]["moves"]]
+    if moves is None:
+        mons = party(s, ctx)
+        moves = [mv["id"] for mv in mons[slot]["moves"]]
+    # the context menu: SUMMARY, the field moves in move-slot order (up to the first empty slot), SWITCH, ITEM,
+    # CANCEL (party_menu/main.c:1791-1839)
+    known = []
+    for mv in moves:
+        if not mv:
+            break
+        if mv in FIELD_MOVES:
+            known.append(mv)
+    if MOVE_FLY not in known:
+        raise HarnessError("fly: party slot %d does not know Fly" % slot)
+    entry = 1 + known.index(MOVE_FLY)
+    s.note("fly: to %s (%d), block %s from %s, party slot %d, menu entry %d" % (step["map"], dest, goal, here, slot,
+                                                                                entry))
+    # start menu -> POKEMON
+    s.run(2, "x")
+    s.run(30)
+    cur = START_MENU.index(getattr(s, "start_menu_option", "pokedex"))
+    want = START_MENU.index("pokemon")
+    _menu_key(s, "down" if want > cur else "up", abs(want - cur))
+    s.run(2, "a")
+    s.start_menu_option = "pokemon"
+    s.run(90)
+    # the party grid: two columns, slot 0 at the top left (GridMenuCursorPosition moves)
+    _menu_key(s, "right", slot % 2)
+    _menu_key(s, "down", slot // 2)
+    s.run(2, "a")
+    s.run(20)
+    _menu_key(s, "down", entry)
+    s.run(2, "a")
+    s.run(120)
+    # the fly map opens with the cursor on the player's block (town_map/main.c:218-227)
+    gx = min(max(goal[0], FLY_X[0]), FLY_X[1])
+    gz = min(max(goal[1], FLY_Z[0]), FLY_Z[1])
+    _menu_key(s, "right" if gx > here[0] else "left", abs(gx - here[0]), gap=14)
+    _menu_key(s, "down" if gz > here[1] else "up", abs(gz - here[1]), gap=14)
+    s.run(20)
+    if s.shot_dir:
+        s.dump(os.path.join(s.shot_dir, "fly-map.ppm"))
+    s.run(2, "a")
+    if not s.run(_int(step, "max", 1500), until="map_id=%d" % dest):
+        raise HarnessError("fly: still on map %d, not %s (%d)" % (s.map_id, step["map"], dest))
+    bot_wait_field(s, {}, ctx)
+    p = s.probe()
+    s.note("fly: landed on map %d at (%d,%d)" % (s.map_id, p.x, p.z))
 
 
 BOTS = {
@@ -945,4 +1183,7 @@ BOTS = {
     "heal": bot_heal,
     "grind": bot_grind,
     "slide": bot_slide,
+    "fly": bot_fly,
+    "steps": bot_steps,
+    "hatch": bot_hatch,
 }

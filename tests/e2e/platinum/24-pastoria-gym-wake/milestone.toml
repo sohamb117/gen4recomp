@@ -3,9 +3,8 @@
 # Start: Pastoria at the gym door (23's end at (589,828)) -> end: Pastoria at the gym door, BADGE_ID_FEN, TM55.
 
 title = "Pastoria Gym: Crasher Wake and the Fen Badge"
-status = "planned"
 priority = "P0"
-estimate = 22000
+estimate = 28793
 refs = [
   "src/overlay008/gym_features.c",
   "gym_features.c:448-456",
@@ -38,13 +37,19 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 40000
+frames = 43200
 
 [[step]]
 do = "walk_to"
 x = 589
 z = 828
 note = "below the gym door (23 ends here; the lab starts on the door)"
+
+[[step]]
+do = "hatch"
+x = 587
+z = 829
+note = "the Togepi egg (GiveEgg, scripts_eterna_city.s:1089) is due about now: hatched here, by pacing; hatching on the gym's exit walk (a field reload on the water plate) left the player unable to walk off (1,37)"
 
 [[step]]
 do = "walk_to"

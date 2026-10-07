@@ -3,9 +3,8 @@
 # -> end: Valor Lakefront (336), SecretPotion.
 
 title = "Pastoria to Valor Lakefront: grunt chase and the SecretPotion"
-status = "planned"
 priority = "P0"
-estimate = 14000
+estimate = 15145
 refs = [
   "scripts_pastoria_city.s:37-44",
   "scripts_pastoria_city.s:133-190",
@@ -47,7 +46,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 22800
 
 [[step]]
 do = "walk_to"

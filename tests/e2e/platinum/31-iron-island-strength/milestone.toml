@@ -1,5 +1,5 @@
 # Proves the rival-outside-gym OnFrame, the Canalave sailor's ship menu and Riley's HM04.
-# Start: Canalave gym door (39,731), VAR_CANALAVE_CITY_STATE 2 -> end: Iron Island (288), HM04.
+# Start: Canalave Gym entrance (16,26) (30's end; the lab on the gym's warp (16,27)), VAR_CANALAVE_CITY_STATE 2 -> end: Iron Island (288), HM04.
 
 title = "Iron Island: Riley gives HM04 Strength"
 status = "planned"
@@ -34,9 +34,16 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 27
+note = "out of the gym by its exit mat (events_canalave_city_gym warp 0) -> Canalave (39,731)"
 
 [[step]]
 do = "advance_text"

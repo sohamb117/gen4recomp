@@ -3,9 +3,8 @@
 # Start: Galactic warehouse (22's end; the lab at its exit (8,11)) -> end: Pastoria, rival beaten, state 2.
 
 title = "Pastoria: rival battle on the way to the gym"
-status = "planned"
 priority = "P0"
-estimate = 9000
+estimate = 28637
 refs = [
   "scripts_route_214.s",
   "scripts_route_213.s:16-38",
@@ -29,7 +28,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 40000
+frames = 43000
 
 [[step]]
 do = "walk_to"

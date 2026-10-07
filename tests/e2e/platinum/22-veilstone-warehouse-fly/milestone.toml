@@ -4,9 +4,8 @@
 # VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE 1 -> end: warehouse (map 143), HM02 in the bag.
 
 title = "Veilstone: warehouse tag battle and HM02 Fly"
-status = "planned"
 priority = "P0"
-estimate = 16000
+estimate = 10667
 refs = [
   "events_veilstone_city.json",
   "scripts_init_veilstone_city.s:9",
@@ -42,7 +41,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 24000
+frames = 16100
 
 [[step]]
 do = "walk_to"

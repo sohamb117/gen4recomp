@@ -1,5 +1,8 @@
 # Proves Route 218 (blockade hidden after Celestic), the gate's Pokédex upgrade and the Canalave bridge rival.
-# Start: Route 218 gate, Jubilife side (10,7) -> end: Canalave City (33), VAR_CANALAVE_CITY_STATE 1.
+# Fly from Celestic to Jubilife (the fly bot: start menu, party, FLY, town map), west through the Route 218 gate,
+# Surf across Route 218.
+# Start: Celestic Town (28's end; the lab at the Pokemon Center door (472,538)) -> end: Canalave City at the rival's
+# coord (47,724), VAR_CANALAVE_CITY_STATE 1.
 
 title = "Route 218 to Canalave: form-detection upgrade, bridge rival"
 status = "planned"
@@ -17,28 +20,95 @@ refs = [
   "events_route_218_gate_to_jubilife_city.json",
   "src/field_move_tasks.c:414",
   "scripts_route_218_gate_to_canalave_city.s:36",
+  "src/start_menu.c:593-601",
+  "src/applications/party_menu/main.c:1791-1839",
+  "src/applications/town_map/graphics.c:223-247",
+  "src/applications/town_map/graphics.c:1125-1140",
+  "src/spawn_locations.c:34",
+  "events_jubilife_city (warp 12 (128,758))",
+  "events_route_218 (warp 0 (70,754); TRAINER_GUITARIST_TONY (80,753) sight 4, TRAINER_SAILOR_SKYLER (76,746) sight 3)",
+  "events_canalave_city (coord (47,723..726))",
+  "TRAINER_RIVAL_CANALAVE_CITY_TURTWIG",
 ]
 
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 21000
 
 [[step]]
+do = "fly"
+map = "MAP_HEADER_JUBILIFE_CITY"
+shot = "jubilife"
+note = "Staraptor's FLY (boost) from Celestic's block (14,16) to Jubilife's; lands at the Pokemon Center spawn (180,777) (src/spawn_locations.c:34)"
+
+[[step]]
+do = "walk_to"
+via = [[172, 777], [172, 758]]
+x = 128
+z = 758
+note = "west gate (events_jubilife_city warp 12) -> Route 218 gate (10,7); route: tools/pt_route.py"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_218_GATE_TO_JUBILIFE_CITY"
+
+[[step]]
 do = "walk_to"
 x = 1
 z = 7
-note = "west gate exit (events_route_218_gate_to_jubilife_city.json warp0) -> Route 218"
+note = "west gate exit (events_route_218_gate_to_jubilife_city warp 0) -> Route 218 (121,758)"
 
 [[step]]
 do = "wait_map"
 map = "MAP_HEADER_ROUTE_218"
-# PHASE2: Route 218 Surf crossing. Find the shore tile with a PC_LAB_MAPSCAN of map 388; face the water, A, Yes
-#   (Surf needs BADGE_ID_FEN, src/field_move_tasks.c:414); surf west to the gate (70,754) -> ROUTE_218_GATE_TO_CANALAVE_CITY (390):
-#   coord (7,5..9) fires the form-detection scene (scripts_route_218_gate_to_canalave_city.s:10-40) -> Canalave (63,754);
-#   walk west onto coord0 (47,723..726) -> rival battle (scripts_canalave_city.s:118-189): advance_text, auto_battle, advance_text.
+
+[[step]]
+do = "walk_to"
+surf = true
+on_battle = "flee"
+max = 4000
+via = [[93, 758], [93, 749], [75, 749], [75, 754]]
+x = 70
+z = 754
+shot = "route218"
+note = "Surf (Bibarel, boost) west across Route 218 to the Canalave gate (events_route_218 warp 0); route: tools/pt_route.py --surf. Fishermen Miguel/Luc stand in x=93 and are walked round; Tony (80,753) S 4 and Skyler (76,746) N/E 3 do not see the route"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_218_GATE_TO_CANALAVE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "west through the gate; crossing coord (7,5..9) the scientist upgrades the Pokedex (scripts_route_218_gate_to_canalave_city.s:10-40), text advanced by the walk -> Canalave (63,754)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CANALAVE_CITY"
+
+[[step]]
+do = "walk_to"
+via = [[57, 754], [57, 724], [50, 724]]
+x = 47
+z = 724
+note = "over the canal bridge onto coord (47,723..726): the rival walks up (scripts_canalave_city.s:118-162)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "rival"
+note = "TRAINER_RIVAL_CANALAVE_CITY_TURTWIG: STARAPTOR 36, FLOATZEL 35, HERACROSS 37, ROSERADE 35, INFERNAPE 38"
+
+[[step]]
+do = "advance_text"
+note = "rival leaves; VAR_CANALAVE_CITY_STATE 1 (scripts_canalave_city.s:186)"
 
 [expect]
 map = "MAP_HEADER_CANALAVE_CITY"

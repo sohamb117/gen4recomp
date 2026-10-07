@@ -1,5 +1,7 @@
 # Proves the library rival HM04 check, the 3F explosion OnFrame and the Canalave after-explosion OnFrame.
-# Start: Canalave Pokémon Center door (58,722) -> end: Canalave City, VAR_CANALAVE_CITY_STATE 5.
+# Fly back from Iron Island (31's end) to Canalave first.
+# Start: Iron Island (31's end at Riley's tile; the lab at the house door (111,499)) -> end: Canalave City,
+# VAR_CANALAVE_CITY_STATE 5.
 
 title = "Canalave Library: Lake Valor explosion"
 status = "planned"
@@ -32,9 +34,15 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 18000
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_CANALAVE_CITY"
+note = "Iron Island block (3,15) -> Canalave; lands at the Pokemon Center (58,723) (src/spawn_locations.c:35)"
 
 [[step]]
 do = "walk_to"
@@ -82,8 +90,42 @@ do = "advance_text"
 max = 12000
 shot = "library_explosion"
 note = "frame script 2 (scripts_init_canalave_library_3f.s; scripts_canalave_library_3f.s:35-190)"
-# PHASE2: walk back out 3F (4,3) -> 2F (4,4) -> 1F (11,11) -> Canalave (warp tiles per events_canalave_library_*.json; leaving the 3F
-#   the city OnFrame (VAR_CANALAVE_CITY_STATE==4 -> script 5, scripts_canalave_city.s:247-300) then runs: advance_text.
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 3
+note = "3F stairs (events_canalave_library_3f warp 0) -> 2F (11,4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CANALAVE_LIBRARY_2F"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 4
+note = "2F stairs (warp 0) -> 1F (11,4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CANALAVE_LIBRARY_1F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 11
+note = "1F door (warp 0) -> Canalave (37,718)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CANALAVE_CITY"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "after_explosion"
+note = "city OnFrame VAR_CANALAVE_CITY_STATE==4 -> script 5 (scripts_init_canalave_city.s:11; scripts_canalave_city.s:247-300): the tremor, the sailor, the rival to Lake Valor; state 5"
 
 [expect]
 map = "MAP_HEADER_CANALAVE_CITY"

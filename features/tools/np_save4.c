@@ -480,7 +480,7 @@ static int cmd_dump(const char *rom_path, const char *save_path)
 }
 
 /* gamedata: what a battle bot needs from the ROM (tests/e2e auto_battle).
- * species[i] = [type1, type2]; moves[i] = [effect, class, power, type,
+ * species[i] = [type1, type2, ability1, ability2 (0: one ability)]; moves[i] = [effect, class, power, type,
  * accuracy, pp, priority, range]; type_chart[attack][defend] = multiplier x10. */
 static int cmd_gamedata(const char *rom_path)
 {
@@ -501,7 +501,8 @@ static int cmd_gamedata(const char *rom_path)
     }
     printf("{\"game\": \"%s\",\n\"species\": [", nd_game_name(gd.game));
     for (uint32_t i = 0; i < gd.species_count; i++)
-        printf("%s[%u,%u]", i ? "," : "", gd.species[i].types[0], gd.species[i].types[1]);
+        printf("%s[%u,%u,%u,%u]", i ? "," : "", gd.species[i].types[0], gd.species[i].types[1],
+               gd.species[i].abilities[0], gd.species[i].abilities[1]);
     printf("],\n\"moves\": [");
     for (uint32_t i = 0; i < gd.move_count; i++) {
         const nd_move *m = &gd.moves[i];

@@ -1,5 +1,6 @@
 # Proves the moving-platform gym and Byron's win script (library NPCs shown, Canalave state 2).
-# Start: Canalave Gym door (16,27) -> end: same map, BADGE_ID_MINE, TM91.
+# Start: Canalave City, 29's end on the bridge (47,724) (the lab at the gym door (39,731)) -> end: Canalave Gym in
+# front of the entrance (16,26) after Byron on the top floor, BADGE_ID_MINE, TM91.
 
 title = "Canalave Gym: Byron and the Mine Badge"
 status = "planned"
@@ -24,26 +25,67 @@ refs = [
   "scripts_canalave_city_gym.s:52-55",
   "scripts_canalave_city_gym.s:56",
   "scripts_canalave_city_gym.s:31-56",
+  "src/persisted_map_features_init.c:22-47",
+  "src/overlay008/gym_features.c:1232-1250",
+  "src/overlay008/gym_features.c:1608-1650",
+  "src/overlay005/field_control.c:700-704",
+  "events_canalave_city (warp 0 (39,731))",
+  "events_canalave_city_gym (Byron (16,3) y 30)",
+  "TRAINER_LEADER_BYRON",
 ]
 
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 36000
 
 [[step]]
-do = "wait_field"
-# PHASE2: Canalave gym route. BFS over the four floor grids sCanalaveGymCollisionMaps[4][32*32]
-#   (src/overlay008/gym_features.c:880-1017) plus platform toggles from sCanalavePlatformPaths (:1020-1220; red platform
-#   (16,9) floor 0->3 :1028-1035; y-platforms (11,13),(15,13),(19,13),(24,13) floor 0->1 :1036-1067; CanalaveGym_MovePlatform
-#   :1252-1303; state bits CanalaveGymPersistedFeature.platformStates :412-421). Floor 0 cannot reach (16,9) directly (row 11);
-#   go up a y-platform and back down. Then talk to Byron (16,3) on floor 3 facing up, auto_battle, advance_text
-#   (badge + TM91, scripts_canalave_city_gym.s:31-56).
+do = "walk_to"
+x = 39
+z = 732
+note = "below the gym door"
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 731
+note = "gym door (events_canalave_city warp 0) -> gym (16,27), floor 0"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_CANALAVE_CITY_GYM"
+
+[[step]]
+do = "steps"
+route = [[8, 27], [8, 16], [18, 16], [18, 13], [19, 13], [19, 13], [19, 14], [20, 14], [20, 19], [24, 19], [24, 22], [25, 22], [25, 22], [24, 22], [24, 14], [24, 13], [24, 13], [24, 15], [29, 15], [29, 21], [29, 22], [29, 22], [28, 22], [28, 26], [21, 26], [21, 23], [21, 22], [21, 22], [19, 22], [18, 22], [11, 22], [8, 22], [8, 21], [2, 21], [2, 26], [4, 26], [5, 26], [5, 26], [2, 26], [2, 23], [2, 22], [2, 19], [2, 12], [4, 12], [4, 4], [9, 4], [10, 4], [14, 4], [18, 4], [19, 4], [22, 4], [24, 4], [24, 6], [26, 6], [26, 15], [26, 16], [26, 22], [26, 24], [29, 24], [29, 23], [29, 22], [29, 16], [29, 10], [29, 9], [29, 9], [28, 9], [28, 4], [23, 4], [23, 9], [24, 9], [25, 9], [25, 9], [17, 9], [16, 9], [16, 9], [16, 4]]
+face = "up"
+interact = true
+note = "tools/pt_gym.py canalave: 206 tiles, 15 platform rides (3, 7, 4, 8, 5, 10, 9, 16, 12, 13, 17, 18, 11, 6, 0) from the entrance to (16,4) on floor 3; the platforms start as sCanalaveGymPlatformsStartInPositionB (reset on entering, CanalaveGym_Init). The gym's collision is its own tables, not the land data walk_to plans over. Trainers whose sight the route crosses are fought"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "byron"
+note = "TRAINER_LEADER_BYRON: MAGNETON 37, STEELIX 38, BASTIODON 41 (Earthquake 4x/2x/4x)"
+
+[[step]]
+do = "advance_text"
+shot = "mine-badge"
+note = "GiveBadge BADGE_ID_MINE, TM91, VAR_CANALAVE_CITY_STATE 2 (scripts_canalave_city_gym.s:31-56)"
+
+[[step]]
+do = "steps"
+route = [[18, 4], [19, 4], [26, 4], [28, 4], [28, 5], [29, 5], [29, 6], [29, 7], [29, 23], [29, 25], [28, 25], [28, 26], [27, 26], [26, 26], [5, 26], [2, 26], [2, 24], [2, 23], [2, 12], [2, 9], [6, 9], [7, 9], [7, 9], [7, 26], [16, 26]]
+note = "tools/pt_gym.py canalave --back: back down to the entrance (16,26) over the platforms as the climb left them (5 rides); 31 walks out"
 
 [expect]
 map = "MAP_HEADER_CANALAVE_CITY_GYM"
+position = [16, 26]
 badges = 6
 badge = ["BADGE_ID_MINE"]
 flags = ["FLAG_RECEIVED_BYRON_TM91"]

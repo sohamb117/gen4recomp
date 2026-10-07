@@ -9,12 +9,16 @@
               (src/terrain_collision_manager.c:98-121), the <20 height step (:270), DYNAMIC_HEIGHT_COLLISION on
               plate-sourced tiles (:321-326) and the gated grounds at the player's height (gym_features.c:463-486);
               buttons are the coord events (blue HIGH, green MIDDLE, orange LOW). Prints the route's corners.
+  canalave    moving platforms: Dijkstra over (x, z, floor, platform states), the four floors' collision maps and the
+              platform paths of gym_features.c; prints the route as a `steps` bot route (corners, ride starts and ends).
 
     python3 tests/e2e/tools/pt_gym.py veilstone
     python3 tests/e2e/tools/pt_gym.py pastoria [--start X,Z,HEIGHT,WATER] [--goal X,Z]
+    python3 tests/e2e/tools/pt_gym.py canalave [--goal X,Z,FLOOR]
 """
 import argparse
 import collections
+import heapq
 import json
 import os
 import re
@@ -235,16 +239,122 @@ def pastoria(start, goal):
     print("x = %d\nz = %d" % goal)
 
 
+def canalave(goal, trace=False, back=None):
+    """Canalave Gym: Dijkstra over (x, z, floor, platform states). A step is allowed where the floor's collision map
+    is 0 (sCanalaveGymCollisionMaps, the gym's DynamicMapFeaturesCheckCollision, gym_features.c:1637-1650) and no
+    object of that floor stands; a step that ends on a platform's current tile of that floor rides it to its other
+    end (Field_ProcessStep -> CanalaveGym_CheckIfPlayerOnPlatform, gym_features.c:1232-1303, 1608-1628). The states
+    start as sCanalaveGymPlatformsStartInPositionB (persisted_map_features_init.c:22-47; reset on entering,
+    CanalaveGym_Init). Tiles in a gym trainer's sight on its floor cost 30, so the route avoids being walked up to."""
+    src = open(os.path.join(PT, "src", "overlay008", "gym_features.c")).read()
+    i = src.index("sCanalaveGymCollisionMaps[4]")
+    cells = [int(v) for v in re.findall(r"\b\d+\b", src[src.index("{", i):src.index("};", i)])]
+    coll = [cells[f * 1024:(f + 1) * 1024] for f in range(4)]
+    i = src.index("sCanalavePlatformPaths[CANALAVE_GYM_NUM_PLATFORMS]")
+    body = src[i:src.index("};", i)]
+    pos = re.findall(r"\.position([AB]) = \{ \.x = (\d+), \.y = (\d+), \.z = (\d+) \}", body)
+    plats = []
+    for k in range(0, len(pos), 2):
+        a, b = pos[k], pos[k + 1]
+        plats.append(((int(a[1]), int(a[2]) // 10, int(a[3])), (int(b[1]), int(b[2]) // 10, int(b[3]))))
+    init = open(os.path.join(PT, "src", "persisted_map_features_init.c")).read()
+    i = init.index("sCanalaveGymPlatformsStartInPositionB[")
+    starts = re.findall(r"\b(TRUE|FALSE)\b", init[i:init.index("};", i)])
+    mask0 = sum(1 << k for k, v in enumerate(starts) if v == "TRUE")
+    ev = header("MAP_HEADER_CANALAVE_CITY_GYM")[1]
+    blocked, sight = set(), set()
+    looks = {"SOUTH": [(0, 1)], "NORTH": [(0, -1)], "WEST": [(-1, 0)], "EAST": [(1, 0)]}
+    for o in ev["object_events"]:
+        f = o.get("y", 0) // 10
+        blocked.add((o["x"], o["z"], f))
+        rng = o.get("data", [0])[0] if o.get("data") else 0
+        if not str(o.get("script", "")).startswith("TRAINER_") or not rng:
+            continue
+        for word, dd in looks.items():
+            if word in o.get("movement_type", ""):
+                for dx, dz in dd:
+                    for n in range(1, rng + 1):
+                        x, z = o["x"] + dx * n, o["z"] + dz * n
+                        if not (0 <= x < 32 and 0 <= z < 32) or coll[f][z * 32 + x]:
+                            break
+                        sight.add((x, z, f))
+    start = (16, 27, 0, mask0)
+    if back is not None:
+        start, goal = back, (16, 26, 0)
+    keys = {(0, -1): "U", (0, 1): "D", (-1, 0): "L", (1, 0): "R"}
+    dist, came = {start: 0}, {start: None}
+    heap = [(0, start)]
+    end = None
+    while heap:
+        g, st = heapq.heappop(heap)
+        if g > dist[st]:
+            continue
+        x, z, f, mask = st
+        if (x, z, f) == goal:
+            end = st
+            break
+        for (dx, dz), key in keys.items():
+            nx, nz = x + dx, z + dz
+            if not (0 <= nx < 32 and 0 <= nz < 32) or coll[f][nz * 32 + nx] or (nx, nz, f) in blocked:
+                continue
+            nf, nm, cost, ride = f, mask, 1 + (30 if (nx, nz, f) in sight else 0), None
+            for k, (a, b) in enumerate(plats):
+                here = b if mask >> k & 1 else a
+                if here == (nx, f, nz):
+                    there = a if mask >> k & 1 else b
+                    nx, nz, nf, nm, cost, ride = there[0], there[2], there[1], mask ^ (1 << k), cost + 2, k
+                    break
+            ns = (nx, nz, nf, nm)
+            if g + cost < dist.get(ns, 1 << 30):
+                dist[ns] = g + cost
+                came[ns] = (st, key, ride)
+                heapq.heappush(heap, (g + cost, ns))
+    if end is None:
+        sys.exit("canalave: no route")
+    moves, st = [], end
+    while came[st] is not None:
+        prev, key, ride = came[st]
+        moves.append((key, ride, st))
+        st = prev
+    moves.reverse()
+    if trace:
+        for n, (key, ride, st) in enumerate(moves, 1):
+            print("# %3d %s -> (%d,%d) floor %d%s" % (n, key, st[0], st[1], st[2], " ride %d" % ride if ride is not None else ""))
+    # corners of the route: where it turns, the tile a ride starts from (stepped onto) and where it ends
+    route, out, prev = [], [], start[:2]
+    for n, (key, ride, st) in enumerate(moves):
+        nxt = moves[n + 1] if n + 1 < len(moves) else None
+        if ride is not None:
+            d = {"U": (0, -1), "D": (0, 1), "L": (-1, 0), "R": (1, 0)}[key]
+            route.append([prev[0] + d[0], prev[1] + d[1]])
+            route.append([st[0], st[1]])
+            out.append("ride platform %d to (%d,%d) floor %d" % (ride, st[0], st[1], st[2]))
+        elif nxt is None or nxt[0] != key or nxt[1] is not None:
+            route.append([st[0], st[1]])
+        prev = st[:2]
+    print("# %d steps, cost %d; %s" % (len(moves), dist[end], "; ".join(out)))
+    print("route = %s" % json.dumps(route).replace("],[", "], ["))
+    return end
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("gym", choices=("veilstone", "pastoria"))
+    ap.add_argument("gym", choices=("veilstone", "pastoria", "canalave"))
     ap.add_argument("--start", default="13,41,64,32", help="pastoria: x,z,height,water (entrance, water MIDDLE)")
-    ap.add_argument("--goal", default="13,5", help="pastoria: x,z (in front of Wake)")
+    ap.add_argument("--trace", action="store_true", help="canalave: print every tile of the route")
+    ap.add_argument("--back", action="store_true", help="canalave: also the route back to the entrance after it")
+    ap.add_argument("--goal", default=None, help="pastoria: x,z (default 13,5, in front of Wake); canalave: x,z,floor "
+                                                 "(default 16,4,3, in front of Byron)")
     a = ap.parse_args()
     if a.gym == "veilstone":
         veilstone()
+    elif a.gym == "canalave":
+        end = canalave(tuple(int(v) for v in (a.goal or "16,4,3").split(",")), a.trace)
+        if a.back:
+            print("# back to the entrance (16,26) from there:")
+            canalave(None, a.trace, back=end)
     else:
-        pastoria([int(v) for v in a.start.split(",")], tuple(int(v) for v in a.goal.split(",")))
+        pastoria([int(v) for v in a.start.split(",")], tuple(int(v) for v in (a.goal or "13,5").split(",")))
 
 
 if __name__ == "__main__":

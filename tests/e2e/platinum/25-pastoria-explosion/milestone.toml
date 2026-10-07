@@ -2,9 +2,8 @@
 # Start: Pastoria gym door (589,827), VAR_PASTORIA_CITY_STATE 4 -> end: Pastoria, state 5.
 
 title = "Pastoria: Wake and rival scene, Great Marsh explosion"
-status = "planned"
 priority = "P0"
-estimate = 9000
+estimate = 2795
 refs = [
   "scripts_init_pastoria_city.s:9",
   "scripts_pastoria_city.s:457-526",
@@ -30,7 +29,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 13500
+frames = 4200
 
 [[step]]
 do = "walk_to"
