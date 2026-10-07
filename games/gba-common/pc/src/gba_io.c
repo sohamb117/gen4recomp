@@ -170,7 +170,10 @@ void gba_check_irqs(void) {
 
 /* BIOS IntrWait: wait until the game's handler has set one of `flags` in
  * the BIOS check word (0x03007FF8), clearing them first if asked. */
+static int in_step;
+
 void gba_wait_irq(uint16_t flags, int discard_old) {
+    if (in_step) return; /* inside an interrupt handler no time can pass */
     IO16(R_IME) = 1;
     if (discard_old) INTR_CHECK &= (uint16_t)~flags;
     for (;;) {
@@ -184,7 +187,22 @@ void gba_wait_irq(uint16_t flags, int discard_old) {
 
 /* ------------------------------------------------------------ the clock */
 
+/* Game function calls per scanline of CPU time (gba_tick). A frame of
+ * overworld logic is a few thousand calls, well inside a frame's 228 lines;
+ * heavy work (a map load) spans frames, as it does on the console. */
+#define TICK_CALLS 96u
+
+static uint32_t tick_count;
+
+void gba_tick(void) {
+    if (++tick_count < TICK_CALLS) return;
+    tick_count = 0;
+    if (!in_step) gba_step_line();
+}
+
 void gba_step_line(void) {
+    if (in_step) return; /* time stands still inside interrupt handlers */
+    in_step = 1;
     uint32_t y = gba_vcount;
     uint16_t stat = IO16(R_DISPSTAT);
     if (y < GBA_H) {
@@ -208,22 +226,25 @@ void gba_step_line(void) {
     }
     if (y == (uint32_t)(stat >> 8) && (stat & 0x20)) gba_raise_irq(IRQ_VCOUNT);
     gba_check_irqs();
+    in_step = 0;
 }
 
 /* ----------------------------------------------------- register access */
 
-static uint32_t poll_off = 0xFFFF;
-static uint16_t poll_val;
+static uint32_t poll_off = 0xFFFFFFFF;
+static uint32_t poll_val;
 static uint32_t hblank_toggle;
 
-/* A value read eight times in a row means the game is waiting on the
- * clock (a sampler reads it once or twice): that read moves it a line on. */
+/* A volatile location (an I/O register, or a RAM flag an interrupt sets,
+ * such as gMain.intrCheck in WaitForVBlank) read eight times in a row with
+ * the same value means the game is waiting on the clock (a sampler reads it
+ * once or twice): that read moves the machine a line on. */
 static uint32_t poll_count;
-static void poll(uint32_t off, uint16_t v) {
+static void poll(uint32_t off, uint32_t v) {
     if (off == poll_off && v == poll_val) {
         if (++poll_count >= 8) {
             gba_step_line();
-            poll_off = 0xFFFF;
+            poll_off = 0xFFFFFFFF;
         }
     } else {
         poll_off = off;
@@ -337,18 +358,30 @@ static int is_io(const void *p) {
 }
 
 uint8_t gba_vload8(const void *p) {
-    if (!is_io(p)) return *(const uint8_t *)p;
+    if (!is_io(p)) {
+        uint8_t v = *(const uint8_t *)p;
+        poll((uint32_t)(uintptr_t)p, v);
+        return v;
+    }
     uint32_t a = (uint32_t)(uintptr_t)p;
     return (uint8_t)(gba_io_read16(a & 0x3FE) >> ((a & 1) * 8));
 }
 
 uint16_t gba_vload16(const void *p) {
-    if (!is_io(p)) return *(const uint16_t *)p;
+    if (!is_io(p)) {
+        uint16_t v = *(const uint16_t *)p;
+        poll((uint32_t)(uintptr_t)p, v);
+        return v;
+    }
     return gba_io_read16((uint32_t)(uintptr_t)p & 0x3FE);
 }
 
 uint32_t gba_vload32(const void *p) {
-    if (!is_io(p)) return *(const uint32_t *)p;
+    if (!is_io(p)) {
+        uint32_t v = *(const uint32_t *)p;
+        poll((uint32_t)(uintptr_t)p, v);
+        return v;
+    }
     uint32_t a = (uint32_t)(uintptr_t)p & 0x3FC;
     return gba_io_read16(a) | (uint32_t)gba_io_read16(a + 2) << 16;
 }

@@ -35,6 +35,10 @@ GBA addresses, because ROM tables point at RAM (sSpecialVars) and at code
  4. `load volatile` / `store volatile` of i8/i16/i32/ptr become calls to
     gba_vload{8,16,32} / gba_vstore{8,16,32}: I/O registers have side effects
     (DMA, timers, IF acknowledge, VCOUNT advancing while polled).
+ 5. Every function of a decomp TU starts with a call to gba_tick(), the
+    machine's stand-in for CPU time: every so many calls a scanline passes,
+    so interrupts arrive while the game computes, as they do on the console
+    (DoMapLoadLoop spins until the VBlank handler has run its DMA queue).
 """
 import hashlib
 import json
@@ -305,6 +309,10 @@ class Bridge:
                     name = unq(re.search(r'@(' + NAME + r')\(', ln).group(1))
                     fsig[name] = self.parse_define(ln)
                     self.cur_func = name
+                    out.append(ln)
+                    if self.obj and ln.rstrip().endswith("{"):
+                        out.append("  call void @gba_tick()")
+                    continue
                 out.append(ln)
                 continue
             if ln.startswith("@") and re.match(r'@' + NAME + r' = (?:[a-z_]+ )*(?:alias|ifunc) ', ln):
@@ -339,6 +347,8 @@ class Bridge:
         have = set(fdefs) | fdecls
         if not any(l.startswith("@gba_icall_site ") for l in lines):
             out.append("@gba_icall_site = external global i32, align 4")
+        if self.obj and "gba_tick" not in have:
+            out.append("declare void @gba_tick()")
         if "gba_dispatch" not in have:
             out.append("declare i32 @gba_dispatch(i32, i32, i32, i32, i32, i32, i32, i32, i32)")
         for w in (8, 16, 32):
