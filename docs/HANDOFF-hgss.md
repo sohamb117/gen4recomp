@@ -5,6 +5,21 @@ rebased onto main 843e58045 (the pokeheartgold subtree merge re-made with
 `git merge -s ours` + `read-tree --prefix`, since a plain rebase flattens
 it). Not integrated into `main`.
 
+## Hard boundary: DSProt (anti-piracy)
+
+HG/SS call DSProt (`lib/dsprot`, overlay `ds_protect`) on every field map
+load (`overlay_124.c` field init, `fieldmap.c`) and in the Pokédex,
+touch-save app and overlay 27. Its tests read the card's secure area and
+CRCs and the console's MAC address and owner data. A positive answer makes
+the game sabotage itself (heap offsets/allocations).
+
+This is copy protection, under the same rule as Black/White ov230: no
+forced "genuine" answers, no stubs that report success, and no emulation of
+the hardware it probes. `pc/src/pc_hg_dsprot.c` stops the core with a
+message naming the entry point. HG/SS therefore cannot reach the overworld
+(New Bark Town) in this port. Everything before the first field load (the
+copyright, the intro, the title, the new-game intro) is reachable.
+
 ## Current state (supersedes "Where it stopped" below)
 
 - SoulSilver ROM matches `f8dc38ea20c17541a43b58c5e6d18c1732c7e582`.
