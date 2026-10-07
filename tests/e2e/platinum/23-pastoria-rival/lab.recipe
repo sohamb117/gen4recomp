@@ -462,5 +462,5 @@ item ITEM_HM02 1
 # RemoveObject scripts_visible_items.s:1751
 flag FLAG_OBTAINED_VEILSTONE_CITY_GALACTIC_WAREHOUSE_HM02
 
-# start: east gate (639,812), events_pastoria_city.json warp10
-warp MAP_HEADER_PASTORIA_CITY 10
+# start: Galactic warehouse exit (8,11), events_veilstone_city_galactic_warehouse warp 0 (22 ends inside)
+warp MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE 0

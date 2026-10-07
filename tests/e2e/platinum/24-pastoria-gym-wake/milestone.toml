@@ -1,5 +1,6 @@
-# Proves the water-level gym (gym_features.c) and Wake's win script.
-# Start: Pastoria Gym door (13,42) -> end: same map, BADGE_ID_FEN, TM55.
+# Proves the water-level gym (gym_features.c: three button colours set the water plate LOW/MIDDLE/HIGH, gated
+# floor and ramps by height) and Wake's win script, then the way back out at the final water level.
+# Start: Pastoria at the gym door (23's end at (589,828)) -> end: Pastoria at the gym door, BADGE_ID_FEN, TM55.
 
 title = "Pastoria Gym: Crasher Wake and the Fen Badge"
 status = "planned"
@@ -29,30 +30,86 @@ refs = [
   "src/overlay008/gym_features.c:123-125",
   "scripts_pastoria_city_gym.s:58-79",
 ]
+notes = "Route: tests/e2e/tools/pt_gym.py pastoria, a BFS over (x, z, player height, water level) with the BDHC heights of land data 223/224, the water plate x1..25 z2..38 (gym_features.c:656), getHeight's BDHC-vs-plate choice (terrain_collision_manager.c:98-121), the <20 height-step rule (:270), DYNAMIC_HEIGHT_COLLISION on plate-sourced tiles (:321-326) and the gated grounds checked at the player's height (gym_features.c:463-486). Buttons on the way: orange (3,34), green (17,9), blue (9,24), green (19,13), orange (23,31), blue (3,6). Out at HIGH by the outer ring (L_GROUND (1,36))."
 
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 33000
+frames = 40000
 
 [[step]]
-do = "wait_field"
-# PHASE2: Pastoria gym route. Solve a BFS over (x, z, water level) with the BDHC heights (PC_LAB_MAPSCAN of map 122,
-#   land data matrix 111). Inputs: initial level MIDDLE (src/persisted_map_features_init.c:55; scripts_pastoria_city_gym.s:14-19);
-#   buttons (events_pastoria_city_gym.json coords): blue->HIGH (3,6),(9,24); green->MIDDLE (19,24),(17,9),(10,30),(19,13);
-#   orange->LOW (9,14),(23,31),(19,22),(3,34) (src/overlay008/gym_features.c:448-456, levels :123-125); a button re-arms only
-#   after another colour is pressed (scripts_pastoria_city_gym.s:21-40). Gated tiles (gym_features.c:463-486, height = player y,
-#   src/terrain_collision_manager.c:316): H_GROUND (passable at LOW) (10,4),(16,4),(6,8),(7,8),(6,10),(7,10),(13,19),(13,21),(16,25),(16,27);
-#   M_GROUND (at MIDDLE) (10,2),(16,2),(13,27),(13,29),(13,33),(13,35); L_GROUND (at HIGH) (13,6),(13,8),(20,21),(6,25),(20,25),(6,27),
-#   (1,34),(25,34),(1,36),(25,36); other floor x 1..25 z 2..38 rides the plate (gym_features.c:656). Then talk to Wake (13,4)
-#   from (13,5) facing up, auto_battle, advance_text (badge + TM55, scripts_pastoria_city_gym.s:58-79).
+do = "walk_to"
+move = 3
+x = 589
+z = 828
+note = "below the gym door (23 ends here; the lab starts on the door)"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 589
+z = 827
+note = "gym door (events_pastoria_city warp 0) -> gym (13,42), water MIDDLE (persisted_map_features_init.c:55)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_PASTORIA_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+move = 3
+max = 4000
+via = [[13, 41], [13, 26], [5, 26], [5, 34], [3, 34], [3, 33], [7, 33], [7, 28], [16, 28], [16, 22], [13, 22], [13, 9],
+       [17, 9], [17, 11], [14, 11], [14, 14], [15, 14], [15, 15], [16, 15], [16, 20], [5, 20], [5, 24], [9, 24],
+       [6, 24], [6, 34], [14, 34], [14, 33], [19, 33], [19, 26], [20, 26], [20, 13], [19, 13], [19, 16], [21, 16],
+       [21, 31], [23, 31], [23, 7], [7, 7], [7, 16], [5, 16], [5, 9], [4, 9], [4, 6], [3, 6], [3, 9], [13, 9]]
+x = 13
+z = 5
+face = "up"
+interact = true
+note = "every corner of the planned route (buttons are coord events stepped on along it); the gym's sight trainers may engage. Wake (13,4) faces south"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+move = 3
+shot = "wake"
+note = "TRAINER_LEADER_WAKE: GYARADOS 33, QUAGSIRE 34, FLOATZEL 37 (scripts_pastoria_city_gym.s:58)"
+
+[[step]]
+do = "advance_text"
+shot = "fen-badge"
+note = "BADGE_ID_FEN, VAR_PASTORIA_CITY_STATE 3, TM55 (scripts_pastoria_city_gym.s:60-79)"
+
+[[step]]
+do = "walk_to"
+move = 3
+max = 3000
+via = [[12, 5], [12, 3], [1, 3], [1, 37], [9, 37], [9, 42]]
+x = 13
+z = 42
+note = "out at HIGH water by the west ring and its L_GROUND (1,34)/(1,36) -> Pastoria at the gym door (589,827)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_PASTORIA_CITY"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "wake-rival-outside"
+note = "PastoriaCity_OnFrame_ExitGym (scripts_init_pastoria_city.s:9, scripts_pastoria_city.s:457-526): Wake and the rival at the door; ends with Wake at (611,810), the rival (608,814), state 4 (the end save needs the field free)"
 
 [expect]
-map = "MAP_HEADER_PASTORIA_CITY_GYM"
+map = "MAP_HEADER_PASTORIA_CITY"
 badges = 5
 badge = ["BADGE_ID_FEN"]
-flags = ["FLAG_RECEIVED_WAKE_TM55"]
-vars = { VAR_PASTORIA_CITY_STATE = 3 }
+flags = ["FLAG_RECEIVED_WAKE_TM55", "FLAG_HIDE_PASTORIA_CITY_GYM_CRASHER_WAKE"]
+flags_clear = ["FLAG_HIDE_PASTORIA_CITY_CRASHER_WAKE", "FLAG_HIDE_PASTORIA_CITY_RIVAL"]
+vars = { VAR_PASTORIA_CITY_STATE = 4 }
 battles = 1

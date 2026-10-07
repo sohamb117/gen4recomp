@@ -1,5 +1,6 @@
 # Proves the three-stage grunt chase (Pastoria -> Route 213 -> Valor Lakefront) and Cynthia's SecretPotion.
-# Start: Pastoria east gate (639,812), grunt at (637,812) -> end: Valor Lakefront (336), SecretPotion.
+# Start: Pastoria (25's end near (610,810); the lab at the east gate door (639,812)), grunt at (637,812)
+# -> end: Valor Lakefront (336), SecretPotion.
 
 title = "Pastoria to Valor Lakefront: grunt chase and the SecretPotion"
 status = "planned"
@@ -43,12 +44,14 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 21000
+frames = 30000
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 638
 z = 812
 face = "left"
@@ -57,14 +60,38 @@ note = "grunt obj21 at (637,812) facing east (scripts_pastoria_city.s:37-44, tal
 
 [[step]]
 do = "advance_text"
+note = "he leaves through the gate (FLAG_TALKED_TO_PASTORIA_CITY_GRUNT_M, :183)"
 
 [[step]]
 do = "walk_to"
+move = 3
+x = 639
+z = 812
+note = "east gate door (events_pastoria_city warp 10) -> Route 213 gate (1,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_213_GATE_TO_PASTORIA_CITY"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 10
+z = 7
+note = "gate east exit (warp 0) -> Route 213 (646,812); the grunt now waits at (654,812) facing east (scripts_route_213.s:16-38)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_213"
+
+[[step]]
+do = "walk_to"
+move = 3
 x = 653
 z = 812
 face = "right"
 interact = true
-note = "Route 213: grunt appears at (654,812) (scripts_route_213.s:16-38); [INFERENCE] approach tile"
+note = "Route 213 grunt (654,812), talked to from the west"
 
 [[step]]
 do = "advance_text"
@@ -72,11 +99,13 @@ note = "he moves to (683,833) (:40-86)"
 
 [[step]]
 do = "walk_to"
+move = 3
+via = [[671, 812], [671, 828], [669, 828], [669, 835], [682, 835]]
 x = 682
 z = 833
 face = "right"
 interact = true
-note = "[INFERENCE] approach tile west of (683,833)"
+note = "the grunt at (683,833), talked to from the west (route: tools/pt_route.py)"
 
 [[step]]
 do = "advance_text"
@@ -85,31 +114,59 @@ note = "he leaves; Looker scene (:88-145)"
 
 [[step]]
 do = "walk_to"
+move = 3
+via = [[682, 832], [706, 832]]
+x = 706
+z = 818
+note = "the hotel lobby's south door (events_route_213 warp 3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GRAND_LAKE_ROUTE_213_LOBBY"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 8
+z = 2
+note = "lobby north door (warp 0) -> Valor Lakefront side (706,813)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_213"
+
+[[step]]
+do = "walk_to"
+move = 3
+via = [[706, 791]]
 x = 719
 z = 791
 face = "up"
 interact = true
-note = "Valor Lakefront grunt obj5 (719,790); [INFERENCE] approach tile"
+note = "Valor Lakefront grunt obj5 (719,790) LOOK_NORTH, talked to from the south"
 
 [[step]]
 do = "advance_text"
-note = "he moves to (723,769) (scripts_valor_lakefront.s:45-81)"
+note = "he moves to (723,769) (scripts_valor_lakefront.s:25, 45-81)"
 
 [[step]]
 do = "walk_to"
+move = 3
+via = [[719, 779], [723, 779]]
 x = 723
 z = 770
 face = "up"
 interact = true
-note = "[INFERENCE] approach tile south of (723,769)"
+note = "the grunt at (723,769), talked to from the south"
 
 [[step]]
 do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 shot = "valor_grunt"
-note = "TRAINER_GALACTIC_GRUNT_VALOR_LAKEFRONT (847) (:83-91)"
+note = "TRAINER_GALACTIC_GRUNT_VALOR_LAKEFRONT (847): CROAGUNK 31 (:83-91)"
 
 [[step]]
 do = "advance_text"

@@ -1,0 +1,5 @@
+# Boost on 23's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# HP and PP refilled; Leaf Blade (Grass, 15 PP) for TRAINER_LEADER_WAKE (GYARADOS 33, QUAGSIRE 34 (4x weak),
+# FLOATZEL 37) and the gym's Water trainers.
+party-level 0 58
+party-move 0 3 MOVE_LEAF_BLADE

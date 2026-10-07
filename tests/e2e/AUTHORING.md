@@ -76,7 +76,7 @@ VAR_OREBURGH_CITY_STATE = 2
 
 | `do` | keys | what it does |
 |---|---|---|
-| `walk_to` | `x`, `z`, opt. `map`, `face`, `interact`, `surf`, `hm` | path to the tile on the current map, re-planning around NPCs; walking into a warp tile takes it; trainers who spot you on the way are fought; `surf`/`hm` let the path cross water / Cut trees, Rock Smash rocks, Rock Climb walls (the party must know the move: boost it) |
+| `walk_to` | `x`, `z`, opt. `via`, `map`, `face`, `interact`, `surf`, `hm` | path to the tile on the current map, re-planning around NPCs; walking into a warp tile takes it; trainers who spot you on the way are fought; `surf`/`hm` let the path cross water / Cut trees, Rock Smash rocks, Rock Climb walls (the party must know the move: boost it); `via = [[x, z], ...]` waypoints first (long routes, bridges) |
 | `talk_to` | `id` | talk to the map object with that local id wherever it stands (wandering people are chased) |
 | `advance_text` | opt. `map` | press A with spacing until the field is free (cutscenes, dialogue, item jingles); with `map`, stop as soon as that map loads |
 | `auto_battle` | opt. `move` (slot, default 0) | FIGHT + the move every turn until the battle ends; declines move learning and nicknames, allows evolution |

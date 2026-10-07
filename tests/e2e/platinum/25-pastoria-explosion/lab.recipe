@@ -479,6 +479,11 @@ flag FLAG_BLOCK_PASTORIA_CITY_CROAGUNK_EVENT
 item ITEM_TM55 1
 # scripts_pastoria_city_gym.s:79
 flag FLAG_RECEIVED_WAKE_TM55
+# OnFrame_ExitGym, played at the end of 24 (scripts_pastoria_city.s:457-526)
+clear-flag FLAG_HIDE_PASTORIA_CITY_RIVAL  # scripts_pastoria_city.s:459, :522
+clear-flag FLAG_HIDE_PASTORIA_CITY_CRASHER_WAKE  # scripts_pastoria_city.s:477, :519
+flag FLAG_HIDE_PASTORIA_CITY_GYM_CRASHER_WAKE  # scripts_pastoria_city.s:488
+var VAR_PASTORIA_CITY_STATE 4  # scripts_pastoria_city.s:524
 
-# start: gym door (589,827); frame script 19 (scripts_init_pastoria_city.s:9)
+# start: gym door (589,827), events_pastoria_city warp 0 (24 ends there after the ExitGym scene)
 warp MAP_HEADER_PASTORIA_CITY 0

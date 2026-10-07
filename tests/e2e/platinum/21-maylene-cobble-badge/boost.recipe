@@ -1,0 +1,5 @@
+# Boost on 20's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# HP and PP refilled; Earthquake for TRAINER_LEADER_MAYLENE (MEDITITE 28, MACHOKE 29, LUCARIO 32: Steel/Fighting,
+# weak to Ground) and the gym's Black Belts (Fighting).
+party-level 0 50
+party-move 0 3 MOVE_EARTHQUAKE

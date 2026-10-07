@@ -272,6 +272,9 @@ class Terrain:
         # Tall grass costs GRASS_COST steps: the planner goes round it where it can, as a player would, so a
         # walk meets fewer wild battles and reaches the route's trainers with more HP.
         self.grass = {b[k] for k in ("TALL_GRASS", "VERY_TALL_GRASS", "MUD_WITH_GRASS", "MUD_DEEP_WITH_GRASS") if k in b}
+        # Bike slopes (e.g. Route 209 (562,691..692)) go uphill only at bicycle speed: on foot the player
+        # slides back down forever, so walk_to never plans across one.
+        self.slopes = {b[k] for k in ("BIKE_SLOPE_TOP", "BIKE_SLOPE_BOTTOM") if k in b}
         self.blocked_edges = {}  # (x, z, d) -> attempts that failed
         # (x, z) -> times the walk stood there: each visit makes the tile cost VISIT_COST more, so plans that
         # flip as the window slides (unknown tiles are hoped passable) stop swinging between two tiles
@@ -334,7 +337,7 @@ class Terrain:
         if c is None:
             return True
         beh = c & TILE_BEHAVIOR
-        if c & TILE_COLLISION or beh in self.water or beh == WATERFALL:
+        if c & TILE_COLLISION or beh in self.water or beh == WATERFALL or beh in self.slopes:
             return False
         if beh in self.block_into and d in self.block_into[beh]:
             return False
@@ -432,7 +435,15 @@ def _use_field_move(s, step, ctx, what, limit):
 
 
 def bot_walk_to(s, step, ctx):
-    """Walk to tile (x, z): A* over the probe's terrain, replanning as it learns; warps by walking into them."""
+    """Walk to tile (x, z): A* over the probe's terrain, replanning as it learns; warps by walking into them.
+
+    With via = [[x, z], ...] it walks to each waypoint first (each under its own `max`): routes longer than the
+    probe's 64x64 window, or past what A* cannot know (a bridge's deck vs the path under it)."""
+    if step.get("via"):
+        leg = {k: v for k, v in step.items() if k not in ("via", "face", "interact", "map")}
+        for i, (wx, wz) in enumerate(step["via"]):
+            bot_walk_to(s, dict(leg, x=wx, z=wz, **({"map": step["map"]} if i == 0 and "map" in step else {})), ctx)
+        step = {k: v for k, v in step.items() if k not in ("via", "map")}
     goal = (int(step["x"]), int(step["z"]))
     bound = _int(step, "max", 6000)
     limit = s.frame + bound

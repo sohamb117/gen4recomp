@@ -1,5 +1,5 @@
-# Proves the post-Wake OnFrame and the explosion coord event.
-# Start: Pastoria gym door (589,827), VAR_PASTORIA_CITY_STATE 3 -> end: Pastoria, state 5.
+# Proves the explosion coord event (the post-Wake OnFrame scene is played at the end of 24).
+# Start: Pastoria gym door (589,827), VAR_PASTORIA_CITY_STATE 4 -> end: Pastoria, state 5.
 
 title = "Pastoria: Wake and rival scene, Great Marsh explosion"
 status = "planned"
@@ -33,12 +33,8 @@ lab = "lab.recipe"
 frames = 13500
 
 [[step]]
-do = "advance_text"
-max = 6000
-note = "PastoriaCity_OnFrame_ExitGym (scripts_pastoria_city.s:457-526): Wake ends at (611,810), rival (608,814)"
-
-[[step]]
 do = "walk_to"
+move = 3
 x = 610
 z = 810
 note = "coord2 (610,810), state 4 -> CoordEvent_Bomb (:619-640); branches on x 609/611/612"

@@ -1,6 +1,6 @@
-# Proves the Veilstone Gym punching-bag puzzle (two kicks topple the stacks on the x=12 column) and Maylene's Cobble
-# Badge, the 4th badge and the end of this chain.
-# Start: Veilstone Gym warp 0 (12,30) -> end: Veilstone Gym with 4 badges.
+# Proves the Veilstone Gym punching-bag puzzle (twelve kicks topple the tire stacks between the entrance and the
+# x=12 column up to Maylene) and Maylene's Cobble Badge, the 4th badge.
+# Start: Veilstone Gym (20's end at warp 0 (12,30)) -> end: Veilstone Gym with 4 badges.
 title = "Veilstone Gym: Maylene and the Cobble Badge"
 status = "planned"
 priority = "P0"
@@ -26,42 +26,187 @@ refs = [
   "TRAINER_BLACK_BELT_JEFFERY (312)",
   "TRAINER_LEADER_MAYLENE (317)",
 ]
-notes = "Bag/stack tiles are the table values with z-2 (gym_features.c:3148,3154). The puzzle state persists (InitPersistedMapFeaturesForVeilstoneGym) and the lab cannot pre-topple stacks. Leaving after the badge starts the next chain (Veilstone OnFrame VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE==1, scripts_init_veilstone_city.s:9)."
+notes = "Bag/stack tiles are the table values with z-2 (gym_features.c:3148,3154); a bag is kicked by walking into it (Field_CheckMapTransition, field_control.c:567), so each kick is a walk_to the tile before it, facing it, then a held direction. The kick order is a BFS over (bag positions, stacks left, player reach) with the slide rules of gym_features.c:3197-3253 (stop on a 4, stop before a 1 or a stack, topple that stack). The puzzle state persists (InitPersistedMapFeaturesForVeilstoneGym) and the lab cannot pre-topple stacks. Leaving after the badge starts the next chain (Veilstone OnFrame VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE==1, scripts_init_veilstone_city.s:9)."
 
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 45000
 
 [[step]]
 do = "walk_to"
+move = 3
+x = 14
+z = 26
+face = "right"
+note = "kick 1: bag (15,26) east -> (19,26) and topples the stack at (20,26)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 3
+z = 9
+face = "down"
+note = "kick 2: bag (3,10) south -> (3,14)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 2
+z = 14
+face = "right"
+note = "kick 3: bag (3,14) east -> (7,14) and topples the stack at (8,14)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 8
+z = 21
+face = "up"
+note = "kick 4: bag (8,20) north -> (8,17)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 9
+z = 17
+face = "left"
+note = "kick 5: bag (8,17) west -> (3,17)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 3
+z = 16
+face = "down"
+note = "kick 6: bag (3,17) south -> (3,20) and topples the stack at (3,21)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 4
+z = 23
+face = "up"
+note = "kick 7: bag (4,22) north -> (4,12)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 3
+z = 12
+face = "right"
+note = "kick 8: bag (4,12) east -> (7,12) and topples the stack at (8,12)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 20
+z = 18
+face = "up"
+note = "kick 9: bag (20,17) north -> (20,12) and topples the stack at (20,11)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
 x = 17
 z = 10
 face = "left"
-interact = true
-note = "kick bag (16,10) west: it stops at (13,10) and topples stack (12,10) (gym_features.c:2984-3017, 3545-3573) [INFERENCE: (17,10) walkable; route there not derived]; Colby (15,23) N/E 3 and Darren (16,14) look-around 2 may engage"
+note = "kick 10: bag (16,10) west -> (13,10) and topples the stack at (12,10)"
 
 [[step]]
-do = "wait_frames"
-n = 90
-note = "let the bag slide and the stack fall"
+do = "press"
+keys = "LEFT"
+hold = 8
+gap = 150
 
 [[step]]
 do = "walk_to"
+move = 3
+x = 14
+z = 10
+face = "left"
+note = "kick 11: bag (13,10) west -> (9,10) and topples the stack at (8,10)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+gap = 150
+
+[[step]]
+do = "walk_to"
+move = 3
 x = 7
 z = 7
 face = "right"
-interact = true
-note = "kick bag (8,7) east: stops at (11,7), topples stack (12,7) [INFERENCE: (7,7) walkable]; Jeffery (2,9) S/W 2 may engage"
+note = "kick 12: bag (8,7) east -> (11,7) and topples the stack at (12,7)"
 
 [[step]]
-do = "wait_frames"
-n = 90
+do = "press"
+keys = "RIGHT"
+hold = 8
+gap = 150
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 12
 z = 5
 face = "up"
@@ -73,6 +218,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 shot = "maylene"
 note = "TRAINER_LEADER_MAYLENE (317): MEDITITE 28, MACHOKE 29, LUCARIO 32 (scripts_veilstone_city_gym.s:26)"
 

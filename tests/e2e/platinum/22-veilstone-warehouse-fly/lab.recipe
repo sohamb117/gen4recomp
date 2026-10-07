@@ -441,5 +441,5 @@ badge BADGE_ID_COBBLE
 # scripts_veilstone_city_gym.s:50
 item ITEM_TM60 1
 
-# start: gym door (684,611), events_veilstone_city.json warp13
-warp MAP_HEADER_VEILSTONE_CITY 13
+# start: Veilstone Gym exit (12,30), events_veilstone_city_gym warp 0 (21 ends inside the gym)
+warp MAP_HEADER_VEILSTONE_CITY_GYM 0

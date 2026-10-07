@@ -1,5 +1,7 @@
-# Proves the Psyduck blockade script and Cynthia's Old Charm hand-off.
-# Start: Route 210 South Café Cabin door (566,591) -> end: same map, Old Charm.
+# Proves the walk back north from Valor Lakefront (Route 214, Veilstone, Route 215) and the Psyduck blockade script
+# with Cynthia's Old Charm hand-off.
+# Start: Valor Lakefront (26's end near (723,770); the lab at the east house door (715,781)) -> end: Route 210 South
+# at the Psyduck (561,588), Old Charm.
 
 title = "Route 210 South: SecretPotion on the Psyduck, Old Charm"
 status = "planned"
@@ -20,17 +22,72 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 10500
+frames = 45000
 
 [[step]]
 do = "walk_to"
+move = 3
+max = 3000
+via = [[723, 770], [723, 758], [727, 758], [727, 743], [730, 743], [730, 718], [733, 718], [733, 707], [731, 707],
+       [731, 694], [732, 694], [732, 690], [725, 690], [725, 685], [727, 685], [727, 675], [725, 675], [725, 660],
+       [718, 660]]
+x = 718
+z = 645
+note = "north up Route 214 to the Veilstone gate (events_route_214 warp 0); routes: tools/pt_route.py"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_214_GATE_TO_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 5
+z = 2
+note = "gate north exit (warp 0) -> Veilstone (718,638)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+move = 3
+via = [[718, 628], [702, 628], [702, 608], [690, 608], [690, 598]]
+x = 678
+z = 598
+note = "west gate (events_veilstone_city warp 0) -> Route 215 gate (10,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_215_GATE_TO_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 1
+z = 7
+note = "gate west exit (warp 1) -> Route 215 (671,598)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_215"
+
+[[step]]
+do = "walk_to"
+move = 3
+max = 3000
+via = [[646, 598], [646, 592], [654, 592], [654, 586], [630, 586], [630, 583], [624, 583], [624, 590], [608, 590],
+       [608, 579], [601, 579], [601, 583], [612, 583], [613, 583], [613, 597], [613, 599], [604, 599], [604, 590],
+       [588, 590], [588, 587], [591, 587], [591, 595], [591, 598], [561, 598]]
 x = 561
 z = 588
 face = "up"
 interact = true
-note = "Psyduck at (561,587); player must be at x 560/561 (scripts_route_210_south.s:31-59, :77-80)"
+note = "west over Route 215's bridge decks into Route 210 South, north to the Psyduck at (561,587); player must be at x 560/561 (scripts_route_210_south.s:31-59, :77-80)"
 
 [[step]]
 do = "advance_text"

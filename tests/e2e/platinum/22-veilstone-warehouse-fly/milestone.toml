@@ -1,8 +1,7 @@
 # Proves the post-Maylene Veilstone chain: counterpart OnFrame, tag battle vs the two warehouse
-# guards, Looker auto-warp, HM02 item ball. Start: Veilstone gym door (684,611) with
+# guards, Looker auto-warp, HM02 item ball.
+# Start: Veilstone Gym (21's end, or the lab at the gym's exit (12,30)) with
 # VAR_VEILSTONE_CITY_COUNTERPART_NEEDS_HELP_STATE 1 -> end: warehouse (map 143), HM02 in the bag.
-# Chain note: 21's end save carries the early party (EMPOLEON 60, Surf); the late party (research 0.4)
-# only arrives through lab.recipe. PHASE2: decide --lab here or add a party overlay recipe.
 
 title = "Veilstone: warehouse tag battle and HM02 Fly"
 status = "planned"
@@ -40,17 +39,29 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 24000
 
 [[step]]
-do = "wait_field"
-max = 3000
-note = "OnFrame VeilstoneCity_OnFrame_CounterpartNeedsHelp (scripts_veilstone_city.s:1345-1361): counterpart reappears at (696,596) facing east"
+do = "walk_to"
+move = 3
+x = 12
+z = 30
+note = "out of the gym (warp 0) -> Veilstone gym door (684,611)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VeilstoneCity_OnFrame_CounterpartNeedsHelp (scripts_veilstone_city.s:1345-1361): the counterpart asks for help, runs off and reappears at (696,596) facing east"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 695
 z = 596
 face = "right"
@@ -63,6 +74,7 @@ note = "Yes (default) -> VeilstoneCity_WarehouseScene :496, tag battle starts :5
 
 [[step]]
 do = "auto_battle"
+move = 3
 shot = "warehouse_tag_battle"
 note = "tag battle vs Grunts 848 (697,595) + 849 (697,597); doubles target menu"
 
@@ -81,6 +93,7 @@ note = "warehouse OnFrame: Looker points at the HM (scripts_veilstone_city_galac
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 13
 z = 9
 face = "up"

@@ -467,5 +467,5 @@ flag FLAG_HIDE_PASTORIA_CITY_RIVAL
 # scripts_pastoria_city.s:417
 var VAR_PASTORIA_CITY_STATE 2
 
-# start: (13,42), events_pastoria_city_gym.json warp0
-warp MAP_HEADER_PASTORIA_CITY_GYM 0
+# start: Pastoria gym door (589,827), events_pastoria_city warp 0 (23 ends just below it)
+warp MAP_HEADER_PASTORIA_CITY 0

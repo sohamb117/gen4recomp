@@ -532,5 +532,5 @@ clear-flag FLAG_HIDE_PASTORIA_CITY_GYM_CRASHER_WAKE
 # scripts_valor_lakefront.s:364
 var VAR_PASTORIA_CITY_STATE 6
 
-# start: Café Cabin door (566,591)
-warp MAP_HEADER_ROUTE_210_SOUTH 0
+# start: Valor Lakefront east house door (715,781), events_valor_lakefront warp 1 (26 ends nearby)
+warp MAP_HEADER_VALOR_LAKEFRONT 1

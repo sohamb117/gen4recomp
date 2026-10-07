@@ -59,7 +59,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 46500
+frames = 90000
 
 [[step]]
 do = "walk_to"
@@ -109,25 +109,30 @@ move = 3
 x = 560
 z = 669
 max = 12000
-note = "east then north along Route 209 into Solaceon (seamless) -> coord (557..563,669) VAR_SOLACEON_TOWN_STATE==0; Lost Tower and the cut tree (573,690) are optional [INFERENCE]; Route 209 sight trainers may engage"
+note = "east then north along Route 209 into Solaceon (seamless), round the plateau's BIKE_SLOPE (562,691..692) up the x557-558 column past Cowgirl Shelley (560,690) -> coord (557..563,669) VAR_SOLACEON_TOWN_STATE==0; Lost Tower and the cut tree (573,690) are optional"
 
 [[step]]
 do = "advance_text"
 shot = "solaceon"
 note = "Barry chat -> 1 (scripts_solaceon_town.s:115-136)"
 
-# PHASE2-risk: [INFERENCE] Route 215 cut trees (611,578), (621,594), (634,578), (657,588), (657,589) may block the
-# gate column; if walk_to reports no path, walk_to the tile before the blocking tree facing it with interact = true
-# and advance_text (Cut, A = YES). The probe sees 64x64 tiles, so waypoints may be needed around the Psyduck
-# (560..561,585..587).
+[[step]]
+do = "heal"
+x = 566
+z = 656
+note = "Solaceon Pokemon Center (events_solaceon_town warp 5): full HP/PP before Routes 210 South and 215"
 
 [[step]]
 do = "walk_to"
 move = 3
 x = 671
 z = 598
-max = 15000
-note = "north on Route 210 South, east on Route 215 (turn before the Psyduck) to the Veilstone gate (events_route_215 warp 0); Route 210 S and 215 sight trainers may engage"
+max = 3000
+via = [[558, 657], [558, 619], [564, 619], [564, 598], [591, 598], [591, 596], [591, 588], [591, 587], [588, 587],
+       [588, 593], [606, 593], [606, 599], [613, 599], [613, 598], [613, 584], [613, 582], [602, 582], [601, 582],
+       [601, 579], [610, 579], [610, 590], [625, 590], [625, 583], [634, 583], [634, 587], [654, 587], [654, 593],
+       [646, 593], [646, 598]]
+note = "north on Route 210 South (round its BIKE_SLOPEs (557,617..618), (562,625..626)), east on Route 215 before the Psyduck (560..561,585..587) to the Veilstone gate (events_route_215 warp 0). Waypoints: every corner of a route planned offline over the land data with bridge decks modelled (215's N-S decks x591-593 and x613-615, E-W deck z582-583 cross the paths under them; walk_to's A* cannot tell deck from underpass). No cut tree is in the way. Route 210 S and 215 sight trainers may engage"
 
 [[step]]
 do = "wait_map"

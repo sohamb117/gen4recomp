@@ -1,5 +1,6 @@
-# Proves the Pastoria rival coord event gated by VAR_PASTORIA_CITY_STATE==1 (set in 22).
-# Start: Pastoria east gate (639,812) -> end: Pastoria, rival beaten, state 2.
+# Proves the walk south from Veilstone (Route 214, Valor Lakefront, the Hotel Grand Lake lobby, Route 213) and the
+# Pastoria rival coord event gated by VAR_PASTORIA_CITY_STATE==1 (set in 22).
+# Start: Galactic warehouse (22's end; the lab at its exit (8,11)) -> end: Pastoria, rival beaten, state 2.
 
 title = "Pastoria: rival battle on the way to the gym"
 status = "planned"
@@ -12,17 +13,112 @@ refs = [
   "scripts_pastoria_city.s:373",
   "scripts_pastoria_city.s:416",
   "scripts_pastoria_city.s:417",
+  "events_veilstone_city_galactic_warehouse (warp 0 (8,11))",
+  "events_veilstone_city (warps 4 (701,591), 11 (718,638))",
+  "events_route_214_gate_to_veilstone_city (warps (5,2), (5,12))",
+  "events_route_213 (warps 0 (646,812), 3 (706,818), 4 (706,813))",
+  "events_grand_lake_route_213_lobby (warps (8,2), (8,11))",
+  "events_route_213_gate_to_pastoria_city (warps (10,7), (1,7))",
+  "TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (474)",
 ]
+notes = "Routes from tests/e2e/tools/pt_route.py. Route 213 is reached through the Hotel Grand Lake lobby (north door from the lakefront, south door to the beach)."
 
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 13500
+frames = 40000
 
 [[step]]
 do = "walk_to"
+move = 3
+x = 8
+z = 11
+note = "warehouse exit (warp 0) -> Veilstone (701,591)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+move = 3
+via = [[701, 597], [694, 597], [694, 610], [702, 610], [702, 634], [718, 634]]
+x = 718
+z = 638
+note = "south gate (warp 11) -> Route 214 gate (5,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_214_GATE_TO_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 5
+z = 12
+note = "gate south exit (warp 1) -> Route 214 (718,645)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_214"
+
+[[step]]
+do = "walk_to"
+move = 3
+max = 4000
+via = [[718, 665], [726, 665], [726, 678], [727, 678], [727, 685], [725, 685], [725, 690], [732, 690], [732, 697],
+       [731, 697], [731, 708], [733, 708], [733, 719], [730, 719], [730, 743], [727, 743], [727, 759], [722, 759],
+       [722, 784], [718, 784], [718, 791], [706, 791]]
+x = 706
+z = 813
+note = "south down Route 214 into Valor Lakefront, west to the hotel lobby's north door (events_route_213 warp 4); Route 214 sight trainers may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GRAND_LAKE_ROUTE_213_LOBBY"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 8
+z = 11
+note = "lobby south door (warp 1) -> Route 213 beach (706,818)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_213"
+
+[[step]]
+do = "walk_to"
+move = 3
+max = 4000
+via = [[706, 832], [679, 832], [679, 835], [669, 835], [669, 827], [671, 827], [671, 812]]
+x = 646
+z = 812
+note = "west along the beach to the Pastoria gate (warp 0); Route 213 sight trainers may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_213_GATE_TO_PASTORIA_CITY"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 1
+z = 7
+note = "gate west exit (warp 1) -> Pastoria (639,812)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_PASTORIA_CITY"
+
+[[step]]
+do = "walk_to"
+move = 3
+via = [[603, 812], [603, 820], [594, 820], [594, 828]]
 x = 589
 z = 828
 note = "coord1 (589,828), VAR_PASTORIA_CITY_STATE==1 -> PastoriaCity_CoordEvent_RivalBattle (scripts_pastoria_city.s:371-419)"
@@ -32,8 +128,9 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+move = 3
 shot = "pastoria_rival"
-note = "TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (474)"
+note = "TRAINER_RIVAL_PASTORIA_CITY_TURTWIG (474): STARAVIA 34, BUIZEL 32, ROSELIA 32, MONFERNO 36"
 
 [[step]]
 do = "advance_text"
