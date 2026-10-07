@@ -135,6 +135,15 @@ OBJS += $(HG_HOST_OBJS)
 OBJS := $(filter-out $(HOST_OBJ)/pc/pc_agb_slot.o $(HOST_OBJ)/dp/pc_dp_agb.o,$(OBJS)) \
         $(OBJ)/hghost/pc_ndsrec_noagb.o
 
+# HG/SS's own (pc/src), compiled as game C (bridged): the anti-piracy
+# overlay's entry points as a genuine console answers them (their callbacks
+# can be recompiled functions), and crt0's OSi_ReferSymbol.
+HG_GAME_HOST_OBJS := $(OBJ)/hgsrc/pc_hg_dsprot.o $(OBJ)/hgsrc/pc_hg_crt0.o
+$(OBJ)/hgsrc/%.o: $(MYPC)/src/%.c $(GAME_DEPS) $(BRIDGE_DEPS)
+	$(call BRIDGE_COMPILE,$(GAME_CFLAGS) $(GAME_GLB_DEFINES) $(GAME_DEPFLAGS))
+OBJS += $(HG_GAME_HOST_OBJS)
+-include $(addsuffix .d,$(HG_GAME_HOST_OBJS))
+
 all: $(TARGET)
 
 # The contract check and the overlay statics' addresses, as on D/P. D/P's

@@ -288,6 +288,23 @@ def rename_foreign_labels(name, addr, size, body):
     return [ADDR_LABEL.sub(lambda m: new.get(m.group(1), m.group(0)), l) for l in body]
 
 
+AT_LABEL = re.compile(r"@(\w+)")
+
+
+def rename_at_labels(name, body):
+    """
+    mwcc's `@name` local labels (HG/SS's os_cache.c `@innerLoop`) become
+    `_<function>_name`: `@` opens a comment for armrec, as for GNU as on ARM.
+    """
+    defined = set(m.group(1) for m in
+                  (re.match(r"^\s*@(\w+):", l) for l in body) if m)
+    if not defined:
+        return body
+    return [AT_LABEL.sub(lambda m: ("_%s_%s" % (name, m.group(1))
+                                    if m.group(1) in defined else m.group(0)), l)
+            for l in body]
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -344,7 +361,7 @@ def main():
             out.append("\t.section .%s\n\n" % sect)
             section = sect
         thumb = modes.get(header_line[name], False)
-        body = rename_foreign_labels(name, addr, size, body)
+        body = rename_at_labels(name, rename_foreign_labels(name, addr, size, body))
         body, pool = extract_asm.pool_literals(name, extract_asm.jump_tables(body))
         body = [folder.line(l) for l in body]
         pool = [folder.line(l) for l in pool]

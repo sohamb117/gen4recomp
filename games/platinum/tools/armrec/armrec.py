@@ -1014,11 +1014,14 @@ def parse_file(path, defines, incdirs=(), lines=None):
                 addr = addr_from_name(name)
             # A `.global` label with neither an address comment nor an
             # address-derived name is still somewhere, and the location
-            # counter is where. Narrowed to `.global` deliberately: a local
-            # label gaining an address would also gain a case in every
-            # computed branch resolving against the enclosing function's
-            # labels, which changes control flow rather than a symbol table.
-            if addr is None and loc is not None and name in globals_:
+            # counter is where. In code, narrowed to `.global` deliberately:
+            # a local label gaining an address would also gain a case in
+            # every computed branch resolving against the enclosing
+            # function's labels, which changes control flow rather than a
+            # symbol table. A data section has no such branches, and HG/SS
+            # name their file-local tables (unk_0203BA5C.s's sSpawnMaps).
+            if (addr is None and loc is not None
+                    and (name in globals_ or section != ".text")):
                 addr = loc
             # Where the label says it is, against where the assembler has got
             # to. The counter wins, and the disagreement is counted into the
@@ -1035,7 +1038,12 @@ def parse_file(path, defines, incdirs=(), lines=None):
             # arm9/lib/syscall do. The same shape also spells data, so the
             # promotion is undone below for any of these that no instruction
             # ever followed.
-            if ((cur_func is None or cur_func.markerless)
+            # Two names on one entry point (HG/SS's msl.s: `_dadd:` then
+            # `_d_add:`) are one function: the second is a label of the
+            # first, which nothing but labels has followed yet.
+            alias = (cur_func is not None and cur_func.markerless
+                     and all(isinstance(it, Label) for it in cur_func.items))
+            if ((cur_func is None or cur_func.markerless) and not alias
                     and section == ".text"
                     and (name in globals_ or name in ends_named)):
                 cur_func = Func(name, thumb_mode, addr, True, markerless=True,

@@ -60,7 +60,10 @@ $(GAME_SHADOW_DIR)/%: $(PLAT)/pc/include/%
 	@mkdir -p $(dir $@)
 	cp $< $@
 
+# lib/dsprot builds on its own (lib/dsprot/Makefile: -i ./include, GLB
+# defines only).
 game_tu_flags = $(GAME_CFLAGS) -iquote$(dir $(ROOT)/$(1)) \
+    $(if $(filter lib/dsprot/%,$(1)),-iquote$(ROOT)/lib/dsprot/include) \
     $(if $(filter lib/%,$(1)),,$(GAME_GF_DEFINES)) $(GAME_GLB_DEFINES)
 
 GAME_DEPFLAGS = -MMD -MP -MF $@.d -MT $@

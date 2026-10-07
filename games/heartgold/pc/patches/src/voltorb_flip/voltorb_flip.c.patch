@@ -1,0 +1,13 @@
+--- a/src/voltorb_flip/voltorb_flip.c
++++ b/src/voltorb_flip/voltorb_flip.c
+@@ -191,7 +191,9 @@
+     { 0x6B, 0x0B },
+ };
+ 
+-const TouchscreenListMenuTemplate sListMenuTemplate = {
++/* nativeplat: static; overlay_101_021E9270.c defines a global of the same
++ * name in another overlay, and the wasm guest links every overlay together. */
++static const TouchscreenListMenuTemplate sListMenuTemplate = {
+     .wrapAround = TRUE,
+     .centered = TRUE,
+     .xOffset = 0,

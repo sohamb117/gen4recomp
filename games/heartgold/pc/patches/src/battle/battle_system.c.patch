@@ -1,0 +1,15 @@
+--- a/src/battle/battle_system.c
++++ b/src/battle/battle_system.c
+@@ -838,7 +838,11 @@
+ }
+ 
+ // used to be related to poketch in dppt
+-void ov12_0223B870() {
++/* nativeplat: the parameters battle_command.c passes; wasm calls must match
++ * the callee's type, and `()` defines a function of none. */
++void ov12_0223B870(BattleSystem *battleSystem, Pokemon *mon) {
++    (void)battleSystem;
++    (void)mon;
+ }
+ 
+ void BattleSystem_SetBackground(BattleSystem *battleSystem) {
