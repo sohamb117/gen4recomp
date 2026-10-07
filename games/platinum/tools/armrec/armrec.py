@@ -151,6 +151,9 @@ class Func(object):
 ADDR_IN_NAME = re.compile(r"^_([0-9A-Fa-f]{6,8})$")
 OV_ADDR_IN_NAME = re.compile(r"^(?:ov\d+_|sub_|FUN_)([0-9A-Fa-f]{6,8})$")
 ADDR_COMMENT = re.compile(r";\s*0x([0-9A-Fa-f]+)")
+# A call target spelled as a guest address to dispatch at run time; see
+# emit_branch().
+DISPATCH_TARGET = re.compile(r"^armrec_dispatch_([0-9A-Fa-f]{8})$")
 
 # A label states its address twice: in its own `; 0x...` comment, and in the
 # assembler's location counter. Where they disagree the counter wins, and the
@@ -2062,6 +2065,21 @@ def emit_branch(ctx, ins, out, func, is_call):
     # label before this runs.
     if target in func.labels and not (is_call and target in func.entries):
         out.append("goto L_%s;" % sanitize(target))
+        return
+    # `bl armrec_dispatch_XXXXXXXX`: a call whose target the front end could
+    # not bind to a name at build time (tools/ndsrec: an address in an
+    # overlay window more than one overlay can occupy beside the caller).
+    # It is resolved at run time by residency, as the hardware does.
+    dm = DISPATCH_TARGET.match(target)
+    if dm:
+        addr = int(dm.group(1), 16)
+        if is_call:
+            t = ctx.newtmp()
+            out.append("{ uint64_t %s = armrec_dispatch(0x%08Xu, r0, r1, r2, r3);"
+                       % (t, addr))
+            out.append("  r0 = (uint32_t)%s; r1 = (uint32_t)(%s >> 32); }" % (t, t))
+        else:
+            out.append("return armrec_dispatch(0x%08Xu, r0, r1, r2, r3);" % addr)
         return
     # branch/call to another function
     sym = ctx.rename.get(target, sanitize(target))

@@ -296,6 +296,10 @@ def decode_arm(w, addr):
                 if not S and not cond:
                     I.text = "adr %s, {T}" % REGS[rd]
                 return I
+        if rd == 15 and opc in (0, 1, 3, 5, 6, 7, 12, 14, 15):
+            # and/eor/rsb/adc/sbc/rsc/orr/bic/mvn into pc: never compiler
+            # output; data decoded as code
+            return bad()
         if rd == 15 and opc not in (8, 9, 10, 11):
             if opc == 13 and (w & 0xFFF) == 0x00E and not (w & (1 << 25)):
                 I.kind = "ret"

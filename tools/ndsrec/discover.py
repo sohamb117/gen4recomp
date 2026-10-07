@@ -34,7 +34,7 @@ PROLOGUE_A = lambda w: (w & 0xFFFF4000) == 0xE92D4000    # stmdb sp!, {..., lr}
 
 class Func(object):
     __slots__ = ("addr", "thumb", "insns", "lits", "end", "calls",
-                 "tails", "jt", "source", "data")
+                 "tails", "jt", "source", "data", "longbr")
 
     def __init__(self, addr, thumb, source):
         self.addr = addr
@@ -46,6 +46,7 @@ class Func(object):
         self.calls = set()      # call targets (bit 0 = Thumb)
         self.tails = set()      # tail-call targets
         self.jt = {}            # jump instruction addr -> [targets]
+        self.longbr = set()     # Thumb BLs that are long branches
         self.source = source
 
 
@@ -116,7 +117,11 @@ class Module(object):
                     f.data.add(ins.adr)
                 k = ins.kind
                 if k == "call" and thumb and self.is_long_branch(f, ins, known):
+                    # a branch, not a call: no fall-through (a pool or
+                    # another block follows)
                     work.append(ins.target & ~1)
+                    f.longbr.add(a)
+                    break
                 elif k == "call":
                     f.calls.add(ins.target)
                 elif k == "b":
@@ -312,6 +317,7 @@ class Module(object):
                     f.calls = set()
                     f.tails = set()
                     f.jt = {}
+                    f.longbr = set()
                     self.explore(f, self.funcs)
                     changed = True
 

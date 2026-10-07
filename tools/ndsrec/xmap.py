@@ -21,7 +21,7 @@ SECTION_NAMES = (".text", ".rodata", ".data", ".bss", ".sinit", ".itcm",
 def module_of(section):
     """The ndsrec module a link-map output section belongs to."""
     s = section.split(".")[1] if section.startswith(".") else section
-    if s in ("arm9", "ITCM", "DTCM"):
+    if s in ("arm9", "main", "ITCM", "DTCM"):
         return "arm9"
     m = re.match(r"^OVERLAY_(\d+)$", s)
     if m:

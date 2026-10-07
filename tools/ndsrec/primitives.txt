@@ -1,0 +1,149 @@
+# The symbols the ROM-only build must find in a ROM: the host layer
+# (games/platinum/pc/{src,hw,wasm/src}, tools/armrec/armrec_rt.c and
+# games/diamond/pc/src, as games/diamond/pc/mk/host.mk compiles them)
+# either replaces them with C or refers to them by name.
+#
+#   override  a guest function the host defines: armrec drops the body and
+#             every call and dispatch goes to the host (--host-override)
+#   ref       a guest function or object the host calls or reads by name
+#
+# Derived from Diamond's build: `override` is every name the host objects
+# define that the ROM link map (arm9.elf.xMAP) has as code, plus
+# games/diamond/pc/host_overrides.txt; `ref` is every name the host
+# objects leave undefined that the link map has (libc excluded), plus the
+# asm names the bridge turns into addresses inside host C (pc_agb_slot.c,
+# pc_dp_agb.c, pc_tp.c, pc_wm.c, pc_dp_snd.c). tools/ndsrec/sigs.py learns
+# a signature for each from Diamond and finds it in another ROM.
+#
+# kind role name
+func override CARD_Init
+func override CARD_WaitRomAsync
+func override CARDi_ReadRom
+func override CARDi_Request
+func override CARDi_SetTask
+func override CheckFlashTimer
+func override DC_FlushAll
+func override DC_FlushRange
+func override DC_InvalidateRange
+func override DC_StoreRange
+func override DC_WaitWriteBufferEmpty
+func override FS_StartOverlay
+func override G3_RotX
+func override G3_RotY
+func override G3_RotZ
+func override GX_SendFifo48B
+func override GXi_NopClearFifo128_
+func override IC_InvalidateAll
+func override IC_InvalidateRange
+func override MI_Copy32B
+func override MI_Copy36B
+func override MI_Copy48B
+func override MI_Copy64B
+func override MI_CpuCopy8
+func override MI_CpuFill8
+func override MI_DmaCopy16
+func override MI_DmaCopy32
+func override MI_DmaCopy32Async
+func override MI_DmaFill32
+func override MI_DmaFill32Async
+func override MI_SendGXCommand
+func override MI_SendGXCommandAsync
+func override MI_SendGXCommandAsyncFast
+func override MI_StopDma
+func override MI_SwapWord
+func override MI_UncompressLZ8
+func override MI_WaitDma
+func override MI_Zero36B
+func override MIi_CpuClear16
+func override MIi_CpuClear32
+func override MIi_CpuClearFast
+func override MIi_CpuCopy16
+func override MIi_CpuCopy32
+func override MIi_CpuCopyFast
+func override MIi_CpuSend32
+func override MIi_UncompressBackward
+func override MTX_Copy43To44_
+func override MTX_Copy44To43_
+func override MTX_Identity22_
+func override MTX_Identity33_
+func override MTX_Identity43_
+func override MTX_Identity44_
+func override MTX_Rot22_
+func override MTX_RotX33_
+func override MTX_RotX43_
+func override MTX_RotX44_
+func override MTX_RotY33_
+func override MTX_RotY43_
+func override MTX_RotY44_
+func override MTX_RotZ33_
+func override MTX_RotZ44_
+func override MTX_Scale43_
+func override NNSi_SndCaptureStart
+func override OS_DisableInterrupts
+func override OS_DisableInterrupts_IrqAndFiq
+func override OS_EnableInterrupts
+func override OS_GetCpsrIrq
+func override OS_GetDTCMAddress
+func override OS_GetLockID
+func override OS_GetProcMode
+func override OS_Halt
+func override OS_InitContext
+func override OS_IrqHandler
+func override OS_LoadContext
+func override OS_ReleaseLockID
+func override OS_ResetSystem
+func override OS_RestoreInterrupts
+func override OS_RestoreInterrupts_IrqAndFiq
+func override OS_SaveContext
+func override OS_SetDPermissionsForProtectionRegion
+func override OS_SetProtectionRegion1
+func override OS_SetProtectionRegion2
+func override OS_SpinWait
+func override OS_UnLockCartridge
+func override OSi_AlarmHandler
+func override OSi_ExceptionHandler
+func override OsCountZeroBits
+func override PMi_ReadRegister
+func override PMi_ReadRegisterAsync
+func override PMi_WriteRegister
+func override PMi_WriteRegisterAsync
+func override PXI_Init
+func override PXI_InitFifo
+func override PXI_IsCallbackReady
+func override PXI_SendWordByFifo
+func override PXI_SetFifoRecvCallback
+func override SVC_CpuSet
+func override SVC_GetCRC16
+func override SVC_Sqrt
+func override SVC_WaitByLoop
+func override TP_CheckError
+func override TP_GetLatestRawPointInAuto
+func override TP_Init
+func override TP_RequestAutoSamplingStartAsync
+func override TP_RequestAutoSamplingStopAsync
+func override TP_RequestSamplingAsync
+func override TP_WaitBusy
+func override TP_WaitRawResult
+func override __msl_assertion_failed
+func override abort
+func ref CARDi_InitCommon
+func ref NitroMain
+func ref OS_GetIrqFunction
+func ref OS_UnlockCartridge
+func ref OS_WakeupThread
+func ref CTRDG_ReadAgbFlash
+func ref CTRDG_VerifyAgbFlash
+func ref CTRDG_WriteAgbFlashSector
+func ref CTRDGi_ReadFlashID
+func ref TP_GetCalibratedPoint
+func ref WMi_StartMP
+data ref OSi_IrqThreadQueue
+data ref OSi_ThreadInfo
+data ref cardi_common
+data ref AgbFlash
+data ref MX29L010
+data ref UNK_021D6B10
+data ref UNK_021D6B3C
+data ref UNK_021D6B44
+data ref sSeqPlayer
+data ref sPlayer
