@@ -2,10 +2,9 @@
 # check by the door guard and entry to the first lift room. Start: League outside (853,582) -> end: MAP_POKEMON_LEAGUE_ENTRANCE.
 
 title = "Pokemon League lobby: last rival battle, badge check"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 18348
 refs = [
   "zone_event 0171 warp 1",
   "maps.h:179",
@@ -41,7 +40,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 18000
+frames = 32000
 
 [[step]]
 do = "walk_to"
@@ -59,10 +58,10 @@ map = "MAP_POKEMON_LEAGUE_LOBBY_1F"
 [[step]]
 do = "walk_to"
 x = 4
-z = 5
+z = 6
 face = "up"
 interact = true
-note = "heal before the E4: nurse SPRITE_PCWOMAN1 (4,4), std 2002 (zone_event 0174 object 3, scr_seq 0180 @0x031F); keep off row z=4 x=10..12"
+note = "heal before the E4: nurse SPRITE_PCWOMAN1 (4,4), std 2002 (zone_event 0174 object 3, scr_seq 0180 @0x031F), talked to across the counter (row 5) from (4,6); keep off row z=4 x=10..12"
 
 [[step]]
 do = "advance_text"
@@ -73,6 +72,7 @@ note = "A on the heal prompt = yes [INFERENCE]"
 do = "walk_to"
 x = 11
 z = 4
+on_text = "stop"
 note = "coord 0 (10..12,4) var 0x40EF==0 -> rival object 5 appears (ClearFlag 0x23B @0x0152) and walks up (scr_seq 0180 @0x0150)"
 
 [[step]]

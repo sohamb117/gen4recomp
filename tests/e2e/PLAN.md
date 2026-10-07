@@ -1220,7 +1220,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Diamond
 
 <!-- plan.py:begin diamond -->
-### Story chain: 61 milestones, ~1268133 frames estimated
+### Story chain: 61 milestones, ~1342744 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -1277,14 +1277,14 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 14675 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
 | [53-sunyshore-gym-volkner](diamond/53-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | both | 39723 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
 | [54-sunyshore-jasmine-waterfall](diamond/54-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | both | 2707 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
-| [55-route223-victory-road](diamond/55-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the Pokemon League | P0 | both | 35000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE | planned |
-| [56-league-lobby-rival-guard](diamond/56-league-lobby-rival-guard/milestone.toml) | Pokemon League lobby: last rival battle, badge check | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_ENTRANCE | planned |
-| [57-e4-aaron](diamond/57-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK | planned |
-| [57b-e4-bertha](diamond/57b-e4-bertha/milestone.toml) | Elite Four: Bertha | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK | planned |
-| [58-e4-flint](diamond/58-e4-flint/milestone.toml) | Elite Four: Flint | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK | planned |
-| [58b-e4-lucian](diamond/58b-e4-lucian/milestone.toml) | Elite Four: Lucian | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK | planned |
-| [59-champion-cynthia](diamond/59-champion-cynthia/milestone.toml) | Champion Cynthia | P0 | both | 16000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR | planned |
-| [59b-hall-of-fame-credits](diamond/59b-hall-of-fame-credits/milestone.toml) | Hall of Fame, credits, continue | P0 | both | 30000 | prev + `lab.recipe` | - | planned |
+| [55-route223-victory-road](diamond/55-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the Pokemon League | P0 | both | 112547 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE | passing |
+| [56-league-lobby-rival-guard](diamond/56-league-lobby-rival-guard/milestone.toml) | Pokemon League lobby: last rival battle, badge check | P0 | both | 18348 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_ENTRANCE | passing |
+| [57-e4-aaron](diamond/57-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | both | 9725 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK | passing |
+| [57b-e4-bertha](diamond/57b-e4-bertha/milestone.toml) | Elite Four: Bertha | P0 | both | 10527 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK | passing |
+| [58-e4-flint](diamond/58-e4-flint/milestone.toml) | Elite Four: Flint | P0 | both | 11993 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK | passing |
+| [58b-e4-lucian](diamond/58b-e4-lucian/milestone.toml) | Elite Four: Lucian | P0 | both | 13817 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK | passing |
+| [59-champion-cynthia](diamond/59-champion-cynthia/milestone.toml) | Champion Cynthia | P0 | both | 13443 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR | passing |
+| [59b-hall-of-fame-credits](diamond/59b-hall-of-fame-credits/milestone.toml) | Hall of Fame, credits, reset | P0 | both | 25211 | prev + `lab.recipe` | - | passing |
 
 #### diamond/01-newgame-starter — New game to the Lake Verity starter and the running shoes
 - proves: Proves the real D/P new-game route from a blank chip: intro, the bedroom TV report, Mom, Barry's "Thud!!" and room, Barry's lake speech on Route 201, Lake Verity (Rowan, the briefcase, Turtwig vs the wild Starly), Barry's "You go ahead...", Route 201's Rowan scene, home and the Running Shoes, then out of the house. Start: power-on (no save) -> end: Twinleaf Town outside the player's house, var 0x40A4 = 5. maps.h:416-419 name the Twinleaf houses swapped: MAP_TWINLEAF_RIVAL_HOUSE_1F/2F (414/415) are the player's.
@@ -1822,7 +1822,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE; flags set 0x9CA
-- frames: estimate 35000, budget 141500
+- frames: estimate 112547, budget 168900
 - refs: maps.h:472; map_header.c:552; zone_event 0446 objects 0-11,14; maps.h:176; zone_event 0171 warp 0; zone_event 0171 warp 2; zone_event 0171 warp 3; maps.h:248; zone_event 0237 warp 7; zone_event 0237 warp 8; zone_event 0237 warps 0-6; zone_event 0238 warps 0-2; zone_event 0239 warps 0-2; scr_seq 0719 @0x0000; scr_seq 0259 @0x0026; scr_seq 0259 @0x002A; scr_seq 0177 @0x001A; zone_event 0238 object 7; zone_event 0239 object 1
 - notes: Victory Road 1F/2F/B1F are tile for tile Platinum's (same warps, boulders, rocks: dp_script.py events), so the route is Platinum 49's (tools/pt_cave.py, each floor checked there). Route 223: 12 swimmers/sailor lv 37-44 (zone_event 0446). Victory Road trainers lv 43-49 incl. two doubles: Al & Kay #237 2F (57,19-20), Jo & Pat #236 B1F (33,43-44). The back area (1F_BACK_1..3, Route 224) is post-game. Encounter banks of Route 223 and Victory Road are the same in D and P (version-diff).
 
@@ -1832,7 +1832,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_ENTRANCE; >= 1 battles; flags set 0x9F4, 0x2A0, 0x2A1, 0x2A2, 0x2A3, 0x23B, 0xAF; flags clear 0x2A4, 0x2A5, 0x2A6, 0x2A7, 0xB0, 0xB1, 0xB2, 0xB3; vars 0x40EF=1
-- frames: estimate 12000, budget 18000
+- frames: estimate 18348, budget 32000
 - refs: zone_event 0171 warp 1; maps.h:179; scr_seq 0643 @0x0000; scr_seq 0180 @0x001E; scr_seq 0180 @0x004E; scr_seq 0180 @0x0052; zone_event 0174 object 3; scr_seq 0180 @0x031F; zone_event 0174 coord 0; zone_event 0174 object 5; scr_seq 0180 @0x0150; scr_seq 0180 @0x0152; scr_seq 0180 @0x01CF; scr_seq 0180 @0x01D3; scr_seq 0180 @0x01FF; trdata.json #480; scr_seq 0180 @0x0296; scr_seq 0180 @0x029E; games/diamond/arm9/asm/unk_0205F314.s:86-94; zone_event 0174 object 0; scr_seq 0180 @0x0069; scr_seq 0180 @0x00E4; scr_seq 0180 @0x005F; zone_event 0174 warp 0; msg 0175 #0; msg 0175 #2
 - notes: GetStarter reads var 0x4030 (Save_VarsFlags_GetStarter, unk_0205F314.s:86-94): 387 TURTWIG -> TRAINER_PKMN_TRAINER_BARRY_CEDRIC_14 (480): STARAPTOR 48, FLOATZEL 49, HERACROSS 50, ROSERADE 49, SNORLAX 51, INFERNAPE 53 (trdata.json #480); 390 -> #481, else #479 (scr_seq 0180 @0x01D3-@0x01F3).
 
@@ -1842,7 +1842,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK; >= 1 battles; flags set 0xB0, 0x2A4; flags clear 0x2A0
-- frames: estimate 12000, budget 18000
+- frames: estimate 9725, budget 18000
 - refs: maps.h:180; zone_event 0175 coord 0; zone_event 0175 warp 0; scr_seq 0644 @0x0000; scr_seq 0181 @0x000E; scr_seq 0181 @0x0031; maps.h:181; scr_seq 0645 @0x0006; scr_seq 0182 @0x0071; scr_seq 0182 @0x0081; zone_event 0176 object 0; zone_event 0176 object 1; zone_event 0176 object 2; scr_seq 0182 @0x000A; scr_seq 0182 @0x0026; trdata.json #261; scr_seq 0182 @0x003D; scr_seq 0182 @0x0045; zone_event 0176 warp 0; msg 0176 #0; msg 0176 #1
 - notes: TRAINER_ELITE_FOUR_AARON_AARON (261): DUSTOX 53, BEAUTIFLY 53, VESPIQUEN 54, HERACROSS 54, DRAPION 57 (Sitrus); items 2x Full Restore (trdata.json #261). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E).
 
@@ -1852,7 +1852,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK; >= 1 battles; flags set 0xB1, 0x2A5; flags clear 0x2A1
-- frames: estimate 12000, budget 18000
+- frames: estimate 10527, budget 18000
 - refs: maps.h:182; zone_event 0177 coord 0; zone_event 0177 warp 0; scr_seq 0646 @0x0000; scr_seq 0183 @0x000E; scr_seq 0183 @0x0031; maps.h:183; scr_seq 0647 @0x0006; scr_seq 0184 @0x0071; scr_seq 0184 @0x0081; zone_event 0178 object 0; zone_event 0178 object 1; zone_event 0178 object 2; scr_seq 0184 @0x000A; scr_seq 0184 @0x0026; trdata.json #262; scr_seq 0184 @0x003D; scr_seq 0184 @0x0045; zone_event 0178 warp 0; msg 0177 #0; msg 0177 #1
 - notes: TRAINER_ELITE_FOUR_BERTHA_BERTHA (262): QUAGSIRE 55, SUDOWOODO 56, GOLEM 56, WHISCASH 55, HIPPOWDON 59 (Sitrus); items 2x Full Restore (trdata.json #262). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E).
 
@@ -1862,7 +1862,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK; >= 1 battles; flags set 0xB2, 0x2A6; flags clear 0x2A2
-- frames: estimate 12000, budget 18000
+- frames: estimate 11993, budget 18000
 - refs: maps.h:184; zone_event 0179 coord 0; zone_event 0179 warp 0; scr_seq 0648 @0x0000; scr_seq 0185 @0x000E; scr_seq 0185 @0x0031; maps.h:185; scr_seq 0649 @0x0006; scr_seq 0186 @0x0071; scr_seq 0186 @0x0081; zone_event 0180 object 0; zone_event 0180 object 2; zone_event 0180 object 1; scr_seq 0186 @0x000A; scr_seq 0186 @0x0026; trdata.json #263; scr_seq 0186 @0x003D; scr_seq 0186 @0x0045; zone_event 0180 warp 0; msg 0178 #0; msg 0178 #1
 - notes: TRAINER_ELITE_FOUR_FLINT_FLINT (263): RAPIDASH 58, STEELIX 57, DRIFBLIM 58, LOPUNNY 57, INFERNAPE 61 (Sitrus); items 2x Full Restore (trdata.json #263). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E).
 
@@ -1872,7 +1872,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK; >= 1 battles; flags set 0xB3, 0x2A7; flags clear 0x2A3
-- frames: estimate 12000, budget 18000
+- frames: estimate 13817, budget 30000
 - refs: maps.h:186; zone_event 0181 coord 0; zone_event 0181 warp 0; scr_seq 0650 @0x0000; scr_seq 0187 @0x000E; scr_seq 0187 @0x0031; maps.h:187; scr_seq 0651 @0x0006; scr_seq 0188 @0x0071; scr_seq 0188 @0x0081; zone_event 0182 object 0; zone_event 0182 object 2; zone_event 0182 object 1; scr_seq 0188 @0x000A; scr_seq 0188 @0x0026; trdata.json #264; scr_seq 0188 @0x003D; scr_seq 0188 @0x0045; zone_event 0182 warp 0; msg 0179 #0; msg 0179 #1
 - notes: TRAINER_ELITE_FOUR_LUCIEN_LUCIAN (264): MR_MIME 59, GIRAFARIG 59, MEDICHAM 60, ALAKAZAM 60, BRONZONG 63 (Sitrus); items 2x Full Restore (trdata.json #264). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E).
 
@@ -1881,18 +1881,18 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: 8 badge, 54 clear-flag, 265 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
-- end state: map MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR; at (5, 23); >= 1 battles; flags set 0x98B, 0xB4, 0x258, 0x259
-- frames: estimate 16000, budget 50000
+- end state: map MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR; >= 1 battles; flags set 0x98B, 0xB4, 0x258, 0x259; 1 save check(s)
+- frames: estimate 13443, budget 50000
 - refs: maps.h:188; zone_event 0183 coord 0; zone_event 0183 warp 0; scr_seq 0652 @0x0000; maps.h:189; scr_seq 0653 @0x0000; scr_seq 0653 @0x000B; zone_event 0184 object 0; scr_seq 0190 @0x000E; scr_seq 0190 @0x001C; scr_seq 0190 @0x0034; scr_seq 0190 @0x0038; trdata.json #267; scr_seq 0190 @0x0052; scr_seq 0190 @0x0093; scr_seq 0190 @0x0097; scr_seq 0190 @0x00B5; scr_seq 0190 @0x00DB; msg 0180 #0; msg 0180 #1; msg 0180 #2
 - notes: TRAINER_CHAMPION_CYNTHIA (267): SPIRITOMB 61, ROSERADE 60, GASTRODON 60, LUCARIO 63, MILOTIC 63, GARCHOMP 66 (Sitrus); 4x Full Restore (trdata.json #267). Milotic Ice Beam is 4x on Garchomp (~40% at level 100). First clear: 0x964 clear -> msg 0180 #0 (@0x001C). Loss: ClearFlag 0x98B + Blackout (@0x00DB). Cynthia's trainer flag 0x65B is not set by the script.
 
-#### diamond/59b-hall-of-fame-credits — Hall of Fame, credits, continue
-- proves: Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966, Champ ribbon, the game's own save, credits, OS_ResetSystem) and the continue into the post-game start location. Start: HoF corridor (5,23) after Cynthia -> end: CONTINUE after the reset, field in the player's bedroom (map 415).
+#### diamond/59b-hall-of-fame-credits — Hall of Fame, credits, reset
+- proves: Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966, Champ ribbon, the game's own save, credits, OS_ResetSystem). Start: HoF corridor (5,23) after Cynthia -> end: the reset after "Fin" (wait_reset); [expect] reads the save the game wrote before the credits (its HoF block included).
 - start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: 8 badge, 54 clear-flag, 269 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: 8 badges; flags set 0x964, 0x966, 0x982, 0xB4; flags clear 0x98B, 0x1EF, 0x1E2, 0x1FE, 0x1FF, 0x195; vars 0x40F4=1, 0x410F=1, 0x4098=5; 2 save check(s)
-- frames: estimate 30000, budget 45000
+- frames: estimate 25211, budget 45000
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
@@ -2135,7 +2135,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Pearl
 
 <!-- plan.py:begin pearl -->
-### Story chain: 61 milestones, ~1254046 frames estimated
+### Story chain: 61 milestones, ~1328657 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -2192,14 +2192,14 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 14675 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
 | [53-sunyshore-gym-volkner](diamond/53-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | both | 39723 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
 | [54-sunyshore-jasmine-waterfall](diamond/54-sunyshore-jasmine-waterfall/milestone.toml) | Sunyshore: Jasmine gives HM07 Waterfall | P0 | both | 2707 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
-| [55-route223-victory-road](diamond/55-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the Pokemon League | P0 | both | 35000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE | planned |
-| [56-league-lobby-rival-guard](diamond/56-league-lobby-rival-guard/milestone.toml) | Pokemon League lobby: last rival battle, badge check | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_ENTRANCE | planned |
-| [57-e4-aaron](diamond/57-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK | planned |
-| [57b-e4-bertha](diamond/57b-e4-bertha/milestone.toml) | Elite Four: Bertha | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK | planned |
-| [58-e4-flint](diamond/58-e4-flint/milestone.toml) | Elite Four: Flint | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK | planned |
-| [58b-e4-lucian](diamond/58b-e4-lucian/milestone.toml) | Elite Four: Lucian | P0 | both | 12000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK | planned |
-| [59-champion-cynthia](diamond/59-champion-cynthia/milestone.toml) | Champion Cynthia | P0 | both | 16000 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR | planned |
-| [59b-hall-of-fame-credits](diamond/59b-hall-of-fame-credits/milestone.toml) | Hall of Fame, credits, continue | P0 | both | 30000 | prev + `lab.recipe` | - | planned |
+| [55-route223-victory-road](diamond/55-route223-victory-road/milestone.toml) | Route 223 and Victory Road to the Pokemon League | P0 | both | 112547 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE | passing |
+| [56-league-lobby-rival-guard](diamond/56-league-lobby-rival-guard/milestone.toml) | Pokemon League lobby: last rival battle, badge check | P0 | both | 18348 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_ENTRANCE | passing |
+| [57-e4-aaron](diamond/57-e4-aaron/milestone.toml) | Elite Four: Aaron | P0 | both | 9725 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK | passing |
+| [57b-e4-bertha](diamond/57b-e4-bertha/milestone.toml) | Elite Four: Bertha | P0 | both | 10527 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK | passing |
+| [58-e4-flint](diamond/58-e4-flint/milestone.toml) | Elite Four: Flint | P0 | both | 11993 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK | passing |
+| [58b-e4-lucian](diamond/58b-e4-lucian/milestone.toml) | Elite Four: Lucian | P0 | both | 13817 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK | passing |
+| [59-champion-cynthia](diamond/59-champion-cynthia/milestone.toml) | Champion Cynthia | P0 | both | 13443 | prev + `lab.recipe` | MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR | passing |
+| [59b-hall-of-fame-credits](diamond/59b-hall-of-fame-credits/milestone.toml) | Hall of Fame, credits, reset | P0 | both | 25211 | prev + `lab.recipe` | - | passing |
 
 #### pearl/01-newgame-starter — New game to the Lake Verity starter and the running shoes
 - proves: Proves the real D/P new-game route from a blank chip: intro, the bedroom TV report, Mom, Barry's "Thud!!" and room, Barry's lake speech on Route 201, Lake Verity (Rowan, the briefcase, Turtwig vs the wild Starly), Barry's "You go ahead...", Route 201's Rowan scene, home and the Running Shoes, then out of the house. Start: power-on (no save) -> end: Twinleaf Town outside the player's house, var 0x40A4 = 5. maps.h:416-419 name the Twinleaf houses swapped: MAP_TWINLEAF_RIVAL_HOUSE_1F/2F (414/415) are the player's.
@@ -2737,7 +2737,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE; flags set 0x9CA
-- frames: estimate 35000, budget 141500
+- frames: estimate 112547, budget 168900
 - refs: maps.h:472; map_header.c:552; zone_event 0446 objects 0-11,14; maps.h:176; zone_event 0171 warp 0; zone_event 0171 warp 2; zone_event 0171 warp 3; maps.h:248; zone_event 0237 warp 7; zone_event 0237 warp 8; zone_event 0237 warps 0-6; zone_event 0238 warps 0-2; zone_event 0239 warps 0-2; scr_seq 0719 @0x0000; scr_seq 0259 @0x0026; scr_seq 0259 @0x002A; scr_seq 0177 @0x001A; zone_event 0238 object 7; zone_event 0239 object 1
 - notes: Victory Road 1F/2F/B1F are tile for tile Platinum's (same warps, boulders, rocks: dp_script.py events), so the route is Platinum 49's (tools/pt_cave.py, each floor checked there). Route 223: 12 swimmers/sailor lv 37-44 (zone_event 0446). Victory Road trainers lv 43-49 incl. two doubles: Al & Kay #237 2F (57,19-20), Jo & Pat #236 B1F (33,43-44). The back area (1F_BACK_1..3, Route 224) is post-game. Encounter banks of Route 223 and Victory Road are the same in D and P (version-diff).
 
@@ -2747,7 +2747,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_ENTRANCE; >= 1 battles; flags set 0x9F4, 0x2A0, 0x2A1, 0x2A2, 0x2A3, 0x23B, 0xAF; flags clear 0x2A4, 0x2A5, 0x2A6, 0x2A7, 0xB0, 0xB1, 0xB2, 0xB3; vars 0x40EF=1
-- frames: estimate 12000, budget 18000
+- frames: estimate 18348, budget 32000
 - refs: zone_event 0171 warp 1; maps.h:179; scr_seq 0643 @0x0000; scr_seq 0180 @0x001E; scr_seq 0180 @0x004E; scr_seq 0180 @0x0052; zone_event 0174 object 3; scr_seq 0180 @0x031F; zone_event 0174 coord 0; zone_event 0174 object 5; scr_seq 0180 @0x0150; scr_seq 0180 @0x0152; scr_seq 0180 @0x01CF; scr_seq 0180 @0x01D3; scr_seq 0180 @0x01FF; trdata.json #480; scr_seq 0180 @0x0296; scr_seq 0180 @0x029E; games/diamond/arm9/asm/unk_0205F314.s:86-94; zone_event 0174 object 0; scr_seq 0180 @0x0069; scr_seq 0180 @0x00E4; scr_seq 0180 @0x005F; zone_event 0174 warp 0; msg 0175 #0; msg 0175 #2
 - notes: GetStarter reads var 0x4030 (Save_VarsFlags_GetStarter, unk_0205F314.s:86-94): 387 TURTWIG -> TRAINER_PKMN_TRAINER_BARRY_CEDRIC_14 (480): STARAPTOR 48, FLOATZEL 49, HERACROSS 50, ROSERADE 49, SNORLAX 51, INFERNAPE 53 (trdata.json #480); 390 -> #481, else #479 (scr_seq 0180 @0x01D3-@0x01F3).
 
@@ -2757,7 +2757,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK; >= 1 battles; flags set 0xB0, 0x2A4; flags clear 0x2A0
-- frames: estimate 12000, budget 18000
+- frames: estimate 9725, budget 18000
 - refs: maps.h:180; zone_event 0175 coord 0; zone_event 0175 warp 0; scr_seq 0644 @0x0000; scr_seq 0181 @0x000E; scr_seq 0181 @0x0031; maps.h:181; scr_seq 0645 @0x0006; scr_seq 0182 @0x0071; scr_seq 0182 @0x0081; zone_event 0176 object 0; zone_event 0176 object 1; zone_event 0176 object 2; scr_seq 0182 @0x000A; scr_seq 0182 @0x0026; trdata.json #261; scr_seq 0182 @0x003D; scr_seq 0182 @0x0045; zone_event 0176 warp 0; msg 0176 #0; msg 0176 #1
 - notes: TRAINER_ELITE_FOUR_AARON_AARON (261): DUSTOX 53, BEAUTIFLY 53, VESPIQUEN 54, HERACROSS 54, DRAPION 57 (Sitrus); items 2x Full Restore (trdata.json #261). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E).
 
@@ -2767,7 +2767,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK; >= 1 battles; flags set 0xB1, 0x2A5; flags clear 0x2A1
-- frames: estimate 12000, budget 18000
+- frames: estimate 10527, budget 18000
 - refs: maps.h:182; zone_event 0177 coord 0; zone_event 0177 warp 0; scr_seq 0646 @0x0000; scr_seq 0183 @0x000E; scr_seq 0183 @0x0031; maps.h:183; scr_seq 0647 @0x0006; scr_seq 0184 @0x0071; scr_seq 0184 @0x0081; zone_event 0178 object 0; zone_event 0178 object 1; zone_event 0178 object 2; scr_seq 0184 @0x000A; scr_seq 0184 @0x0026; trdata.json #262; scr_seq 0184 @0x003D; scr_seq 0184 @0x0045; zone_event 0178 warp 0; msg 0177 #0; msg 0177 #1
 - notes: TRAINER_ELITE_FOUR_BERTHA_BERTHA (262): QUAGSIRE 55, SUDOWOODO 56, GOLEM 56, WHISCASH 55, HIPPOWDON 59 (Sitrus); items 2x Full Restore (trdata.json #262). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E).
 
@@ -2777,7 +2777,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK; >= 1 battles; flags set 0xB2, 0x2A6; flags clear 0x2A2
-- frames: estimate 12000, budget 18000
+- frames: estimate 11993, budget 18000
 - refs: maps.h:184; zone_event 0179 coord 0; zone_event 0179 warp 0; scr_seq 0648 @0x0000; scr_seq 0185 @0x000E; scr_seq 0185 @0x0031; maps.h:185; scr_seq 0649 @0x0006; scr_seq 0186 @0x0071; scr_seq 0186 @0x0081; zone_event 0180 object 0; zone_event 0180 object 2; zone_event 0180 object 1; scr_seq 0186 @0x000A; scr_seq 0186 @0x0026; trdata.json #263; scr_seq 0186 @0x003D; scr_seq 0186 @0x0045; zone_event 0180 warp 0; msg 0178 #0; msg 0178 #1
 - notes: TRAINER_ELITE_FOUR_FLINT_FLINT (263): RAPIDASH 58, STEELIX 57, DRIFBLIM 58, LOPUNNY 57, INFERNAPE 61 (Sitrus); items 2x Full Restore (trdata.json #263). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E).
 
@@ -2787,7 +2787,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK; >= 1 battles; flags set 0xB3, 0x2A7; flags clear 0x2A3
-- frames: estimate 12000, budget 18000
+- frames: estimate 13817, budget 30000
 - refs: maps.h:186; zone_event 0181 coord 0; zone_event 0181 warp 0; scr_seq 0650 @0x0000; scr_seq 0187 @0x000E; scr_seq 0187 @0x0031; maps.h:187; scr_seq 0651 @0x0006; scr_seq 0188 @0x0071; scr_seq 0188 @0x0081; zone_event 0182 object 0; zone_event 0182 object 2; zone_event 0182 object 1; scr_seq 0188 @0x000A; scr_seq 0188 @0x0026; trdata.json #264; scr_seq 0188 @0x003D; scr_seq 0188 @0x0045; zone_event 0182 warp 0; msg 0179 #0; msg 0179 #1
 - notes: TRAINER_ELITE_FOUR_LUCIEN_LUCIAN (264): MR_MIME 59, GIRAFARIG 59, MEDICHAM 60, ALAKAZAM 60, BRONZONG 63 (Sitrus); items 2x Full Restore (trdata.json #264). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E).
 
@@ -2796,18 +2796,18 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK 1; lab state lines: 8 badge, 54 clear-flag, 265 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
-- end state: map MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR; at (5, 23); >= 1 battles; flags set 0x98B, 0xB4, 0x258, 0x259
-- frames: estimate 16000, budget 50000
+- end state: map MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR; >= 1 battles; flags set 0x98B, 0xB4, 0x258, 0x259; 1 save check(s)
+- frames: estimate 13443, budget 50000
 - refs: maps.h:188; zone_event 0183 coord 0; zone_event 0183 warp 0; scr_seq 0652 @0x0000; maps.h:189; scr_seq 0653 @0x0000; scr_seq 0653 @0x000B; zone_event 0184 object 0; scr_seq 0190 @0x000E; scr_seq 0190 @0x001C; scr_seq 0190 @0x0034; scr_seq 0190 @0x0038; trdata.json #267; scr_seq 0190 @0x0052; scr_seq 0190 @0x0093; scr_seq 0190 @0x0097; scr_seq 0190 @0x00B5; scr_seq 0190 @0x00DB; msg 0180 #0; msg 0180 #1; msg 0180 #2
 - notes: TRAINER_CHAMPION_CYNTHIA (267): SPIRITOMB 61, ROSERADE 60, GASTRODON 60, LUCARIO 63, MILOTIC 63, GARCHOMP 66 (Sitrus); 4x Full Restore (trdata.json #267). Milotic Ice Beam is 4x on Garchomp (~40% at level 100). First clear: 0x964 clear -> msg 0180 #0 (@0x001C). Loss: ClearFlag 0x98B + Blackout (@0x00DB). Cynthia's trainer flag 0x65B is not set by the script.
 
-#### pearl/59b-hall-of-fame-credits — Hall of Fame, credits, continue
-- proves: Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966, Champ ribbon, the game's own save, credits, OS_ResetSystem) and the continue into the post-game start location. Start: HoF corridor (5,23) after Cynthia -> end: CONTINUE after the reset, field in the player's bedroom (map 415).
+#### pearl/59b-hall-of-fame-credits — Hall of Fame, credits, reset
+- proves: Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966, Champ ribbon, the game's own save, credits, OS_ResetSystem). Start: HoF corridor (5,23) after Cynthia -> end: the reset after "Fin" (wait_reset); [expect] reads the save the game wrote before the credits (its HoF block included).
 - start: prev + `lab.recipe`; warp MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR 1; lab state lines: 8 badge, 54 clear-flag, 269 flag, 26 item, 1 pokedex, 5 poketch, 74 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW); SPECIES_TYRANITAR 100 (MOVE_CRUNCH); SPECIES_BIBAREL 100 (MOVE_SURF); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: 8 badges; flags set 0x964, 0x966, 0x982, 0xB4; flags clear 0x98B, 0x1EF, 0x1E2, 0x1FE, 0x1FF, 0x195; vars 0x40F4=1, 0x410F=1, 0x4098=5; 2 save check(s)
-- frames: estimate 30000, budget 45000
+- frames: estimate 25211, budget 45000
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 

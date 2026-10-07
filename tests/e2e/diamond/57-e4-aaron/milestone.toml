@@ -2,10 +2,9 @@
 # Start: MAP_POKEMON_LEAGUE_ENTRANCE (4,15) -> end: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (next lift room). Nothing checks the previous member's flag.
 
 title = "Elite Four: Aaron"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 9725
 refs = [
   "maps.h:180",
   "zone_event 0175 coord 0",

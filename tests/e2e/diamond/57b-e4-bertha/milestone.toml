@@ -2,10 +2,9 @@
 # Start: MAP_POKEMON_LEAGUE_AARON_BERTHA_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (next lift room). Nothing checks the previous member's flag.
 
 title = "Elite Four: Bertha"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 10527
 refs = [
   "maps.h:182",
   "zone_event 0177 coord 0",

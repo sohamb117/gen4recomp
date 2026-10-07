@@ -2,10 +2,9 @@
 # Start: Sunyshore (855,743) after Jasmine -> end: Pokemon League outside, Victory Road exit (853,582).
 
 title = "Route 223 and Victory Road to the Pokemon League"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 35000
+estimate = 112547
 refs = [
   "maps.h:472",
   "map_header.c:552",
@@ -35,7 +34,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 141500
+frames = 168900
 
 [[step]]
 do = "walk_to"
@@ -73,11 +72,27 @@ do = "walk_to"
 on_battle = "flee"
 max = 8000
 hm = true
-via = [[15, 76], [15, 64], [15, 62], [18, 62], [31, 62], [34, 62], [34, 48], [36, 48], [36, 54], [25, 54], [25, 56], [12, 56],
-       [12, 43], [9, 43], [9, 37], [5, 37]]
+via = [[15, 76], [15, 64], [15, 62], [18, 62], [31, 62], [34, 62], [34, 48], [36, 48]]
+x = 36
+z = 54
+note = "1F: Rock Climb ledges, the wall (36,49..52) down (tools/pt_cave.py VICTORY_ROAD_1F 15,77 VICTORY_ROAD_2F ... --climb --smash)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 4000
+dirs = [["L", "x25"]]
+note = "west along row 54, under the bridge deck x 28-29 (z 45..58): walk_to's A* (no levels) climbed onto the deck at (28,53) and stuck there"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 8000
+hm = true
+via = [[25, 56], [12, 56], [12, 43], [9, 43], [9, 37], [5, 37]]
 x = 4
 z = 37
-note = "1F: Rock Climb ledges, to the west stairs (4,37) -> 2F (20,16) (tools/pt_cave.py VICTORY_ROAD_1F 15,77 VICTORY_ROAD_2F ... --climb --smash)"
+note = "to the west stairs (4,37) -> 2F (20,16)"
 
 [[step]]
 do = "wait_map"
@@ -185,10 +200,10 @@ do = "walk_to"
 on_battle = "flee"
 max = 6000
 hm = true
-via = [[29, 24], [29, 37], [38, 37], [38, 32], [38, 18], [38, 6], [35, 6]]
+via = [[29, 24], [29, 37], [38, 37], [38, 32], [38, 18], [38, 6], [35, 6], [35, 4]]
 x = 34
-z = 6
-note = "1F: Rock Climb (38,33..36) up, the bridge north, the exit (34,6) -> Pokemon League (853,583)"
+z = 4
+note = "1F: Rock Climb (38,33..36) up, the bridge north, the exit mats (33..34,4) entered going west (Platinum's is (34,6); D/P's room is two rows taller there) -> Pokemon League"
 
 [[step]]
 do = "wait_map"

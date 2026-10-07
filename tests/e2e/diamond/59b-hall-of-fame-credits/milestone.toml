@@ -1,12 +1,11 @@
 # Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966,
-# Champ ribbon, the game's own save, credits, OS_ResetSystem) and the continue into the post-game start location.
-# Start: HoF corridor (5,23) after Cynthia -> end: CONTINUE after the reset, field in the player's bedroom (map 415).
+# Champ ribbon, the game's own save, credits, OS_ResetSystem). Start: HoF corridor (5,23) after Cynthia -> end: the
+# reset after "Fin" (wait_reset); [expect] reads the save the game wrote before the credits (its HoF block included).
 
-title = "Hall of Fame, credits, continue"
-status = "planned"
+title = "Hall of Fame, credits, reset"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 25211
 refs = [
   "maps.h:190",
   "scr_seq 0654 @0x0006",
@@ -65,6 +64,7 @@ save = "none"  # CallTask_GameClear saves by itself (SaveGame, unk_020484A8.s:16
 [[step]]
 do = "advance_text"
 max = 8000
+map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME"
 note = "corridor ON_FRAME var 0x4003==0 (scr_seq 0654 @0x0006): walk 17 north, Cynthia + Rowan (ClearFlag 0x258/0x259 @0x001E/@0x0049), Warp 187,0,8,15 (@0x00F8)"
 
 [[step]]
@@ -109,7 +109,8 @@ shot = "fin"
 [[step]]
 do = "wait_reset"
 max = 15000
-note = "after the credits the task calls OS_ResetSystem (unk_020484A8.s:245); the port traps it (games/platinum/pc/src/pc_os_lite.c, shared by D/P) and the run ends. The post-game spawn (map 415 (4,6), sub_020377B0) is in the save the game wrote, not visible to a probe after the reset."
+keys = "A"
+note = "the credits application holds \"Fin\" until a button (A, held from the step's start); the GameClear task waits for it to end (FieldSystem_ApplicationIsRunning, unk_020484A8.s:236), then calls OS_ResetSystem (:245): the port traps it (games/platinum/pc/src/pc_os_lite.c, shared by D/P) and the run ends. The post-game spawn (map 415 (4,6), sub_020377B0) is in the save the game wrote, not visible to a probe after the reset."
 
 [expect]
 badges = 8
@@ -117,4 +118,5 @@ flags = ["0x964", "0x966", "0x982", "0xB4"]
 flags_clear = ["0x98B", "0x1EF", "0x1E2", "0x1FE", "0x1FF", "0x195"]
 vars = { "0x40F4" = 1, "0x410F" = 1, "0x4098" = 5 }
 # the Hall of Fame block SaveHallOfFame wrote (np_save4 dump: hall_of_fame), with the whole party
-save = ["s['hall_of_fame']['total'] >= 1", "len(s['hall_of_fame']['latest']['party']) == len(s['party'])"]
+save = ["s['hall_of_fame']['total'] >= 1",
+        "len(s['hall_of_fame']['latest']['party']) == len([p for p in s['party'] if not p['is_egg']])"]

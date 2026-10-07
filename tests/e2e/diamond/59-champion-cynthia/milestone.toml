@@ -2,10 +2,9 @@
 # the Hall of Fame corridor. Start: Lucian-Cynthia lift room (4,23) -> end: HoF corridor (5,23).
 
 title = "Champion Cynthia"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 16000
+estimate = 13443
 refs = [
   "maps.h:188",
   "zone_event 0183 coord 0",
@@ -34,6 +33,7 @@ notes = "TRAINER_CHAMPION_CYNTHIA (267): SPIRITOMB 61, ROSERADE 60, GASTRODON 60
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 50000
@@ -62,14 +62,12 @@ note = "TRAINER_CHAMPION_CYNTHIA (267)"
 [[step]]
 do = "advance_text"
 max = 8000
-note = "SetFlag 0xB4 @0x0052, lift walk, SetFlag 0x258/0x259 @0x0093/@0x0097, Warp 186,0,5,23 @0x00B5"
-
-[[step]]
-do = "wait_map"
 map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR"
+note = "SetFlag 0xB4 @0x0052, lift walk, SetFlag 0x258/0x259 @0x0093/@0x0097, Warp 186,0,5,23 @0x00B5; stops as the corridor loads: its ON_FRAME (walk north, Cynthia + Rowan, the warp into the Hall of Fame) is 59b's (as Platinum 55: left to run, it went on into the Hall of Fame and the game's own save)"
 
 [expect]
 map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR"
-position = [5, 23]
+# the save is made at (5,23); the live probe after it may have the ON_FRAME's walk under way, so the save is checked
+save = ["(s['location']['x'], s['location']['z']) == (5, 23)"]
 flags = ["0x98B", "0xB4", "0x258", "0x259"]
 battles = 1

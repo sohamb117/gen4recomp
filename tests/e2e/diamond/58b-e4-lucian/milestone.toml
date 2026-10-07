@@ -2,10 +2,9 @@
 # Start: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_LUCIAN_CYNTHIA_LINK (next lift room). Nothing checks the previous member's flag.
 
 title = "Elite Four: Lucian"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 13817
 refs = [
   "maps.h:186",
   "zone_event 0181 coord 0",
@@ -34,9 +33,10 @@ notes = "TRAINER_ELITE_FOUR_LUCIEN_LUCIAN (264): MR_MIME 59, GIRAFARIG 59, MEDIC
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 18000
+frames = 30000
 
 [[step]]
 do = "walk_to"
