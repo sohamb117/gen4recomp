@@ -102,8 +102,14 @@ void pc_e2e_ui(unsigned kind, unsigned arg)
     sUiSeen = 1;
 }
 
+/* The battle runs its menu loop on every other frame boundary (and a busy
+ * frame can skip one more), so a report holds through up to UI_GAP frames
+ * without one: ui_count counts frames since the report began. */
+#define UI_GAP 3
+
 void pc_e2e_end_frame(void)
 {
+    static unsigned gap;
     np_e2e_block *b = &sBlock;
 
     b->frame++;
@@ -111,6 +117,9 @@ void pc_e2e_end_frame(void)
         b->ui_count = b->ui == sUi && b->ui_arg == sUiArg ? b->ui_count + 1 : 1;
         b->ui = sUi;
         b->ui_arg = sUiArg;
+        gap = 0;
+    } else if (b->ui != NP_E2E_UI_NONE && ++gap <= UI_GAP) {
+        b->ui_count++;
     } else {
         b->ui = NP_E2E_UI_NONE;
         b->ui_arg = 0;

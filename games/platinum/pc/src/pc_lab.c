@@ -243,6 +243,28 @@ enum lab_verb {
     LAB_POKETCH,         /* app id: enable, register, select */
     LAB_POKETCH_STEPS,   /* pedometer count; registers the app so the write sticks */
     LAB_POKETCH_HISTORY, /* party slot, enqueued the way a catch is */
+    /*
+     * A party mon's IVs and EVs, one stat a line (STAT 0..5 = HP ATK DEF
+     * SPEED SPATK SPDEF, the save's order). Pokemon_CalcStats recomputes
+     * the stats the way a level-up does, and the current HP is then set to
+     * the new maximum, so a station starts with a healthy mon whose numbers
+     * are the game's own arithmetic. Shared with Diamond/Pearl's lab.
+     */
+    LAB_PARTY_IV,     /* party slot, stat, 0..31 */
+    LAB_PARTY_EV,     /* party slot, stat, 0..255 */
+    /* Pokedex entries through the game's own encounter/capture marking,
+     * on a scratch mon of the species (ScrCmd's SetSeenMon does the same). */
+    LAB_DEX_SEEN,     /* species */
+    LAB_DEX_CAUGHT,   /* species */
+};
+
+static const enum PokemonDataParam LAB_IV_PARAMS[6] = {
+    MON_DATA_HP_IV, MON_DATA_ATK_IV, MON_DATA_DEF_IV,
+    MON_DATA_SPEED_IV, MON_DATA_SPATK_IV, MON_DATA_SPDEF_IV,
+};
+static const enum PokemonDataParam LAB_EV_PARAMS[6] = {
+    MON_DATA_HP_EV, MON_DATA_ATK_EV, MON_DATA_DEF_EV,
+    MON_DATA_SPEED_EV, MON_DATA_SPATK_EV, MON_DATA_SPDEF_EV,
 };
 
 struct lab_op {
@@ -362,6 +384,10 @@ static const struct lab_verb_row LAB_VERBS[] = {
     { "poketch",         LAB_POKETCH,         1, 0 },
     { "poketch-steps",   LAB_POKETCH_STEPS,   1, 0 },
     { "poketch-history", LAB_POKETCH_HISTORY, 1, 0 },
+    { "party-iv",        LAB_PARTY_IV,        3, 0 },
+    { "party-ev",        LAB_PARTY_EV,        3, 0 },
+    { "dex-seen",        LAB_DEX_SEEN,        1, 0 },
+    { "dex-caught",      LAB_DEX_CAUGHT,      1, 0 },
 };
 
 static void lab_parse(const char *path)
@@ -783,7 +809,53 @@ static void lab_apply(SaveData *saveData, int pass)
             break;
         case LAB_VAR: {
             u16 *var = VarsFlags_GetVarAddress(varsFlags, (u16)op->a);
-            if (var != NULL) *var = (u16)op->b;
+            if (var == NULL) {
+                fprintf(stderr, "pc_lab: var: no saved var %d\n", op->a);
+                exit(2);
+            }
+            *var = (u16)op->b;
+            break;
+        }
+        case LAB_PARTY_IV:
+        case LAB_PARTY_EV: {
+            const int iv = op->verb == LAB_PARTY_IV;
+            Pokemon *mon;
+            u8 value = (u8)op->c;
+            u16 hp;
+
+            if (op->a < 0 || op->a >= Party_GetCurrentCount(party)) {
+                fprintf(stderr, "pc_lab: %s: no party slot %d\n", iv ? "party-iv" : "party-ev", op->a);
+                exit(2);
+            }
+            if (op->b < 0 || op->b > 5 || op->c < 0 || op->c > (iv ? 31 : 255)) {
+                fprintf(stderr, "pc_lab: %s: stat %d value %d out of range\n",
+                        iv ? "party-iv" : "party-ev", op->b, op->c);
+                exit(2);
+            }
+            mon = Party_GetPokemonBySlotIndex(party, op->a);
+            Pokemon_SetValue(mon, iv ? LAB_IV_PARAMS[op->b] : LAB_EV_PARAMS[op->b], &value);
+            Pokemon_CalcStats(mon);
+            hp = (u16)Pokemon_GetValue(mon, MON_DATA_MAX_HP, NULL);
+            Pokemon_SetValue(mon, MON_DATA_HP, &hp);
+            break;
+        }
+        case LAB_DEX_SEEN:
+        case LAB_DEX_CAUGHT: {
+            Pokemon *mon;
+
+            if (op->a < 1 || op->a > NATIONAL_DEX_COUNT) {
+                fprintf(stderr, "pc_lab: dex: no species %d\n", op->a);
+                exit(2);
+            }
+            mon = Pokemon_New(LAB_HEAP);
+            Pokemon_Init(mon);
+            Pokemon_InitWith(mon, op->a, 50, INIT_IVS_RANDOM, FALSE, 0, OTID_NOT_SET, 0);
+            if (op->verb == LAB_DEX_SEEN) {
+                Pokedex_Encounter(SaveData_GetPokedex(saveData), mon);
+            } else {
+                Pokedex_Capture(SaveData_GetPokedex(saveData), mon);
+            }
+            Heap_Free(mon);
             break;
         }
         case LAB_NATIONAL_DEX:

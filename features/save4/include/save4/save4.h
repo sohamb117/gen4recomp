@@ -267,6 +267,8 @@ const char *save4_pocket_name(save4_pocket p);
 int save4_pocket_capacity(save4_pocket p);
 save4_status save4_get_bag_slot(const save4 *s, save4_pocket p, int slot, uint16_t *item, uint16_t *qty);
 save4_status save4_set_bag_slot(save4 *s, save4_pocket p, int slot, uint16_t item, uint16_t qty);
+/* Bag.registeredItem (the Y button), after the eight pockets in both games. */
+save4_status save4_get_registered_item(const save4 *s, uint16_t *item);
 
 /* ----------------------------------------------------------- Pokédex */
 
@@ -296,6 +298,27 @@ typedef struct save4_location {
     uint32_t dir;  /* 0 up, 1 down, 2 left, 3 right */
 } save4_location;
 save4_status save4_get_location(const save4 *s, save4_location *loc);
+
+/* The game clock as the save last recorded it: SystemData.gameTime (Pt
+ * GameTime) / SaveSysInfo.rtcInfo (D/P SysInfo_RTC), both at 0x10 in the
+ * first entry. The field copies the RTC's date and time into it whenever
+ * at least a minute has passed or the clock went backwards (Pt
+ * sub_020559DC), so it is the RTC as of shortly before the save. */
+typedef struct save4_game_time {
+    uint16_t year; /* 2000 + RTCDate.year */
+    uint8_t month, day, hour, minute, second;
+} save4_game_time;
+save4_status save4_get_game_time(const save4 *s, save4_game_time *t);
+
+/* The Poketch (Pt Poketch / D/P Poketch, the save entry after VarsFlags):
+ * given = poketchEnabled / isGiven, apps[i] = appRegistry[i] /
+ * unlockedApps[i] for the 25 app ids. */
+#define SAVE4_POKETCH_APPS 25
+typedef struct save4_poketch {
+    bool given;
+    bool apps[SAVE4_POKETCH_APPS];
+} save4_poketch;
+save4_status save4_get_poketch(const save4 *s, save4_poketch *p);
 
 /* Platinum flag/var names from pokeplatinum generated/vars_flags.txt
  * (generated at build time). */

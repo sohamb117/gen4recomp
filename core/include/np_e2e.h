@@ -62,7 +62,8 @@ typedef struct np_e2e_block {
     uint32_t move_state; /* the avatar's move state (0 none .. 3 end) */
     uint32_t ui;      /* enum np_e2e_ui seen during the last frame */
     uint32_t ui_arg;
-    uint32_t ui_count; /* frames ui has been reported in a row */
+    uint32_t ui_count; /* frames since ui began (the battle's loops report
+                        * on every other frame; gaps of up to 3 frames hold) */
     int32_t grid_x0, grid_z0; /* the window's top-left tile */
     uint32_t grid_seq;        /* bumped whenever grid[] is refilled */
     uint32_t nobjects;        /* other active map objects (people, items) */

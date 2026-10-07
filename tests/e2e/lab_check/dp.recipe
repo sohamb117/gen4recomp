@@ -1,0 +1,43 @@
+# tests/e2e/lab_check.py: every save-lab verb an e2e milestone uses, once,
+# on the Diamond/Pearl new-game save (D's lab continues it). Each line's
+# effect is asserted on the minted save (np_save4 dump).
+clock 2024-06-15 13:37:00
+name LABCHK
+gender PLAYER_GENDER_FEMALE
+trainer-id 0x2D431                      # tid 54321, sid 2
+money 123456
+badge BADGE_COAL
+badge BADGE_BEACON
+party SPECIES_PIPLUP 25 ITEM_ORAN_BERRY
+party SPECIES_BIDOOF 12 ITEM_NONE
+party-move 0 3 MOVE_SURF
+party-iv 0 0 31
+party-iv 0 1 0
+party-iv 0 2 15
+party-iv 0 3 7
+party-iv 0 4 20
+party-iv 0 5 3
+party-ev 0 0 252
+party-ev 0 1 4
+party-ev 0 2 0
+party-ev 0 3 100
+party-ev 0 4 40
+party-ev 0 5 255
+dex-seen SPECIES_GARCHOMP
+dex-caught SPECIES_LUCARIO
+item ITEM_POTION 5
+item ITEM_POKE_BALL 3
+item ITEM_TM01 1
+item ITEM_HM01 1
+item ITEM_BICYCLE 1
+register-item ITEM_BICYCLE
+# Flags and vars by name (tests/gameplay/dp/names.txt) and by number.
+flag FLAG_DP_DEFEATED_TRAINER_ROARK
+clear-flag FLAG_DP_DEFEATED_TRAINER_1
+var VAR_DP_ROUTE201_STATE 3
+var 0x4087 2
+national-dex 1
+pokedex 1
+poketch POKETCH_CALCULATOR
+poketch POKETCH_PEDOMETER
+map MAP_JUBLIFE 180 777 FACE_LEFT

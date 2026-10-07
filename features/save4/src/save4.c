@@ -57,6 +57,7 @@ struct save4_layout {
     uint8_t mg_link_none;  /* PGT.wondercardSlot written for a gift received without a card */
     uint8_t mg_type_end;   /* MysteryGiftType values 1 .. mg_type_end-1 can be delivered */
     uint32_t location;     /* FieldOverworldState / LocalFieldData: Location player, entrance */
+    uint32_t poketch;      /* Poketch, the entry right after VarsFlags */
 };
 
 /*
@@ -86,12 +87,18 @@ struct save4_layout {
  *     at +0x14) directly before the Pokedex: 0x12DC - 0xA4 = 0x1238. Pt's
  *     FieldOverworldState (sizeof 0xA0, body 0xA8) likewise ends at the
  *     Pokedex: 0x1328 - 0xA8 = 0x1280, as a pc_lab-minted save shows.
+ *   poketch: the save table entry after VarsFlags (both tables), so
+ *     VarsFlags + its body: sizeof 0x3AC (vars u16[288] + flags u8[364]),
+ *     Pt body 0x3B4 -> 0xDAC + 0x3B4 = 0x1160; D/P body 0x3B0 -> 0xD9C +
+ *     0x3B0 = 0x114C. Cross-check: Pt Poketch body 0x120 ends at 0x1280,
+ *     D/P Poketch (include/poketch.h, sizeof 0xE8, body 0xEC) ends at
+ *     0x1238, each the next entry's offset above.
  */
 static const save4_layout kLayouts[] = {
     {SAVE4_GAME_PT, 0xCF2C, 0x121E4, 0x64, 0x98, 0x630, 0xDAC, 0xFEC, 0x1328, 0x48, 0x31A, 0x31B, 0xB4C0,
-     0, 0, 0x100, 0x920, 0x132C, 0, 3, SAVE4_MG_TYPE_MAX, 0x1280},
+     0, 0, 0x100, 0x920, 0x132C, 0, 3, SAVE4_MG_TYPE_MAX, 0x1280, 0x1160},
     {SAVE4_GAME_DP, 0xC100, 0x121E0, 0x60, 0x90, 0x624, 0xD9C, 0xFDC, 0x12DC, 0x48, 0x138, 0x139, 0xA6D0,
-     0x100, 0x120, 0x12C, 0x94C, 0, 1, 0, SAVE4_MG_SECRET_KEY, 0x1238},
+     0x100, 0x120, 0x12C, 0x94C, 0, 1, 0, SAVE4_MG_SECRET_KEY, 0x1238, 0x114C},
 };
 
 /* PlayerSave (include/save_player.h) = Options(2) + pad(2) + TrainerInfo
@@ -676,6 +683,13 @@ save4_status save4_set_bag_slot(save4 *s, save4_pocket p, int slot, uint16_t ite
     return SAVE4_OK;
 }
 
+save4_status save4_get_registered_item(const save4 *s, uint16_t *item)
+{
+    REQUIRE_LOADED(s);
+    *item = (uint16_t)g32(gen_c(s) + s->layout->bag + pocket_offset(SAVE4_POCKET_COUNT));
+    return SAVE4_OK;
+}
+
 /* ------------------------------------------------------------ Pokédex */
 
 save4_status save4_dex_get(const save4 *s, uint16_t species, bool *seen, bool *caught)
@@ -762,6 +776,34 @@ save4_status save4_get_location(const save4 *s, save4_location *loc)
     loc->x = g32(p + 8);
     loc->z = g32(p + 12);
     loc->dir = g32(p + 16);
+    return SAVE4_OK;
+}
+
+/* SystemData / SaveSysInfo: rtcOffset 8 + MAC 6 + birth month, day, then
+ * GameTime / SysInfo_RTC at 0x10: canary u32, RTCDate {year, month, day,
+ * week} u32 each at 0x14, RTCTime {hour, minute, second} u32 each at 0x24. */
+save4_status save4_get_game_time(const save4 *s, save4_game_time *t)
+{
+    REQUIRE_LOADED(s);
+    const uint8_t *p = gen_c(s) + 0x10;
+    t->year = (uint16_t)(2000 + g32(p + 0x04));
+    t->month = (uint8_t)g32(p + 0x08);
+    t->day = (uint8_t)g32(p + 0x0C);
+    t->hour = (uint8_t)g32(p + 0x14);
+    t->minute = (uint8_t)g32(p + 0x18);
+    t->second = (uint8_t)g32(p + 0x1C);
+    return SAVE4_OK;
+}
+
+/* Byte 0 bit 0 poketchEnabled / isGiven; appCount, appIndex; then the
+ * 32-byte app registry at 3. */
+save4_status save4_get_poketch(const save4 *s, save4_poketch *p)
+{
+    REQUIRE_LOADED(s);
+    const uint8_t *k = gen_c(s) + s->layout->poketch;
+    p->given = (k[0] & 1) != 0;
+    for (int i = 0; i < SAVE4_POKETCH_APPS; i++)
+        p->apps[i] = k[3 + i] != 0;
     return SAVE4_OK;
 }
 

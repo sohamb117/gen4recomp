@@ -16,7 +16,8 @@
  *
  * Once the player is free in the field at or after PC_LAB_AT, every line is
  * applied through the game's own setters (GiveMon, Bag_AddItem,
- * PlayerProfile_*, Save_VarsFlags_*, Save_Poketch_*); a `warp` or `map` line
+ * PlayerProfile_*, Save_VarsFlags_*, Save_Poketch_*, SetMonData +
+ * CalcMonStats, Pokedex_*); a `warp` or `map` line
  * then runs the field's own fade-and-load map change (sub_02049274, the one
  * ScrCmd's teleport uses) and the lab waits for the destination to be up and
  * settled. Then Field_SaveGame, the start menu's save (map objects synced,
@@ -24,9 +25,13 @@
  *
  * Verbs: name TEXT, gender G, trainer-id N, money N, badge B, var V N,
  * flag F, clear-flag F, party SPECIES LEVEL ITEM, party-move SLOT MOVESLOT
- * MOVE, item ITEM QTY, register-item ITEM, poketch APP, warp MAP WARP,
- * map MAP X Z DIR. Anything else stops the run: a recipe line that silently
- * did nothing is the failure the verb table exists to prevent.
+ * MOVE, party-iv SLOT STAT 0..31, party-ev SLOT STAT 0..255 (STAT 0..5 =
+ * HP ATK DEF SPEED SPATK SPDEF; stats recomputed, HP left full), item ITEM
+ * QTY, register-item ITEM, poketch APP, pokedex 1 (ScrCmd_GiveSinnohDex's
+ * flag), national-dex 1 (ScrCmd_NationalDex's two), dex-seen SPECIES,
+ * dex-caught SPECIES, warp MAP WARP, map MAP X Z DIR. Anything else stops
+ * the run: a recipe line that silently did nothing is the failure the verb
+ * table exists to prevent.
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,6 +47,8 @@
 #include "party.h"
 #include "player_data.h"
 #include "poketch.h"
+#include "pokedex.h"
+#include "heap.h"
 #include "save.h"
 #include "save_vars_flags.h"
 #include "script_pokemon_util.h"
@@ -55,7 +62,8 @@ extern int pc_dp_on_guest_stack(void (*fn)(void));   /* pc_dp_field.c */
 enum {
     LAB_NAME, LAB_GENDER, LAB_TRAINER_ID, LAB_MONEY, LAB_BADGE, LAB_VAR, LAB_FLAG,
     LAB_CLEAR_FLAG, LAB_PARTY, LAB_PARTY_MOVE, LAB_ITEM, LAB_REGISTER_ITEM,
-    LAB_POKETCH, LAB_WARP, LAB_MAP,
+    LAB_POKETCH, LAB_WARP, LAB_MAP, LAB_PARTY_IV, LAB_PARTY_EV, LAB_POKEDEX,
+    LAB_NATIONAL_DEX, LAB_DEX_SEEN, LAB_DEX_CAUGHT,
 };
 
 static const struct {
@@ -69,10 +77,21 @@ static const struct {
     { "party", LAB_PARTY, 3 },        { "party-move", LAB_PARTY_MOVE, 3 },
     { "item", LAB_ITEM, 2 },          { "register-item", LAB_REGISTER_ITEM, 1 },
     { "poketch", LAB_POKETCH, 1 },    { "warp", LAB_WARP, 2 },
-    { "map", LAB_MAP, 4 },
+    { "map", LAB_MAP, 4 },            { "party-iv", LAB_PARTY_IV, 3 },
+    { "party-ev", LAB_PARTY_EV, 3 },  { "pokedex", LAB_POKEDEX, 1 },
+    { "national-dex", LAB_NATIONAL_DEX, 1 }, { "dex-seen", LAB_DEX_SEEN, 1 },
+    { "dex-caught", LAB_DEX_CAUGHT, 1 },
 };
 
-#define LAB_MAX_OPS 64
+/* party-iv / party-ev STAT index -> MON_DATA_*, the save's stat order. */
+static const int sIvParams[6] = {
+    MON_DATA_HP_IV, MON_DATA_ATK_IV, MON_DATA_DEF_IV, MON_DATA_SPEED_IV, MON_DATA_SPATK_IV, MON_DATA_SPDEF_IV,
+};
+static const int sEvParams[6] = {
+    MON_DATA_HP_EV, MON_DATA_ATK_EV, MON_DATA_DEF_EV, MON_DATA_SPEED_EV, MON_DATA_SPATK_EV, MON_DATA_SPDEF_EV,
+};
+
+#define LAB_MAX_OPS 512 /* Platinum's: an e2e milestone's cumulative story state */
 #define LAB_TIMEOUT 6000      /* frames past PC_LAB_AT before giving up */
 #define LAB_SETTLE 60         /* frames the destination must stay free first */
 
@@ -238,6 +257,47 @@ static void lab_apply(FieldSystem *fs) {
             sWarpTo.direction = (u32)op->a[3];
             sWarpPending = 1;
             break;
+        case LAB_PARTY_IV:
+        case LAB_PARTY_EV: {
+            const int iv = op->verb == LAB_PARTY_IV;
+            Pokemon *mon;
+            u8 value = (u8)op->a[2];
+            u16 hp;
+            if (op->a[0] < 0 || op->a[0] >= Party_GetCount(party)) lab_fail("no such party slot", iv ? "party-iv" : "party-ev");
+            if (op->a[1] < 0 || op->a[1] > 5) lab_fail("stat is 0..5", iv ? "party-iv" : "party-ev");
+            if (op->a[2] < 0 || op->a[2] > (iv ? 31 : 255)) lab_fail("value out of range", iv ? "party-iv" : "party-ev");
+            mon = Party_GetMonByIndex(party, (int)op->a[0]);
+            SetMonData(mon, iv ? sIvParams[op->a[1]] : sEvParams[op->a[1]], &value);
+            CalcMonStats(mon);
+            hp = (u16)GetMonData(mon, MON_DATA_MAX_HP, NULL);
+            SetMonData(mon, MON_DATA_HP, &hp);
+            break;
+        }
+        case LAB_POKEDEX:
+            if (op->a[0]) Pokedex_SetSinnohDexFlag(Save_Pokedex_Get(save));
+            break;
+        case LAB_NATIONAL_DEX:
+            if (op->a[0]) {
+                Pokedex_SetNatDexFlag(Save_Pokedex_Get(save));
+                PlayerProfile_SetNatDexFlag(profile);
+            }
+            break;
+        case LAB_DEX_SEEN:
+        case LAB_DEX_CAUGHT: {
+            /* ScrCmd's set-seen path: a scratch mon of the species, marked. */
+            Pokemon *mon;
+            if (op->a[0] < 1 || op->a[0] > NATIONAL_DEX_COUNT) lab_fail("no such species", "dex");
+            mon = AllocMonZeroed(HEAP_ID_FIELD);
+            ZeroMonData(mon);
+            CreateMon(mon, (int)op->a[0], 50, 32, FALSE, 0, OT_ID_PLAYER_ID, 0);
+            if (op->verb == LAB_DEX_SEEN) {
+                Pokedex_SetMonSeenFlag(Save_Pokedex_Get(save), mon);
+            } else {
+                Pokedex_SetMonCaughtFlag(Save_Pokedex_Get(save), mon);
+            }
+            Heap_Free(mon);
+            break;
+        }
         }
     }
 }

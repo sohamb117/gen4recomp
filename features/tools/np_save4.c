@@ -352,6 +352,26 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     save4_location loc;
     save4_get_location(&s, &loc);
     fprintf(o, "  \"location\": {\"map\": %u, \"x\": %u, \"z\": %u, \"dir\": %u},\n", loc.map, loc.x, loc.z, loc.dir);
+    /* The game clock as last recorded (the RTC shortly before the save). */
+    save4_game_time gt;
+    save4_get_game_time(&s, &gt);
+    fprintf(o, "  \"game_time\": {\"date\": \"%04u-%02u-%02u\", \"time\": \"%02u:%02u:%02u\"},\n", gt.year, gt.month,
+            gt.day, gt.hour, gt.minute, gt.second);
+    /* Event state: the ids of every set flag, and every nonzero var keyed
+     * by its decimal id (tests/e2e checks story progress against these). */
+    fputs("  \"flags\": [", o);
+    for (unsigned id = 1, n = 0; id < SAVE4_NUM_FLAGS; id++) {
+        bool on = false;
+        if (save4_flag_get(&s, (uint16_t)id, &on) == SAVE4_OK && on)
+            fprintf(o, "%s%u", n++ ? ", " : "", id);
+    }
+    fputs("],\n  \"vars\": {", o);
+    for (unsigned id = SAVE4_VARS_START, n = 0; id < SAVE4_VARS_START + SAVE4_NUM_VARS; id++) {
+        uint16_t v = 0;
+        if (save4_var_get(&s, (uint16_t)id, &v) == SAVE4_OK && v)
+            fprintf(o, "%s\"%u\": %u", n++ ? ", " : "", id, v);
+    }
+    fputs("},\n", o);
 
     fputs("  \"party\": [", o);
     uint8_t count = save4_party_count(&s);
@@ -399,6 +419,11 @@ static int cmd_dump(const char *rom_path, const char *save_path)
         }
         fputc(']', o);
     }
+    uint16_t registered = 0;
+    save4_get_registered_item(&s, &registered);
+    fprintf(o, ",\n    \"registered\": %u", registered);
+    /* Counts, and the species ids themselves (a recipe's dex-seen and
+     * dex-caught lines are checked against these). */
     int seen = 0, caught = 0;
     int dex_ok = 1;
     for (int sp = 1; sp <= SAVE4_DEX_MAX; sp++) {
@@ -414,11 +439,29 @@ static int cmd_dump(const char *rom_path, const char *save_path)
         bool obtained = false, national = false;
         save4_dex_get_obtained(&s, &obtained);
         save4_dex_get_national(&s, &national);
-        fprintf(o, "\n  },\n  \"pokedex\": {\"seen\": %d, \"caught\": %d, \"obtained\": %s, \"national\": %s},\n",
+        fprintf(o, "\n  },\n  \"pokedex\": {\"seen\": %d, \"caught\": %d, \"obtained\": %s, \"national\": %s",
                 seen, caught, obtained ? "true" : "false", national ? "true" : "false");
+        for (int list = 0; list < 2; list++) {
+            fputs(list ? ", \"caught_list\": [" : ", \"seen_list\": [", o);
+            for (int sp = 1, n = 0; sp <= SAVE4_DEX_MAX; sp++) {
+                bool sv = false, cv = false;
+                save4_dex_get(&s, (uint16_t)sp, &sv, &cv);
+                if (list ? cv : sv)
+                    fprintf(o, "%s%d", n++ ? ", " : "", sp);
+            }
+            fputc(']', o);
+        }
+        fputs("},\n", o);
     } else {
         fputs("\n  },\n  \"pokedex\": null,\n", o);
     }
+    save4_poketch ptch;
+    save4_get_poketch(&s, &ptch);
+    fprintf(o, "  \"poketch\": {\"given\": %s, \"apps\": [", ptch.given ? "true" : "false");
+    for (int a = 0, n = 0; a < SAVE4_POKETCH_APPS; a++)
+        if (ptch.apps[a])
+            fprintf(o, "%s%d", n++ ? ", " : "", a);
+    fputs("]},\n", o);
     dump_mystery(o, &s);
     fputs("}\n", o);
 
