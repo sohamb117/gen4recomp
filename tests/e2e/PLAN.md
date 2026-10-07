@@ -1073,7 +1073,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/events/events_battle_frontier.json; res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40; res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s; src/unk_02049D08.c:161-206; src/unk_02049D08.c:750-787; src/unk_020494DC.c:72-78; src/wifi_battle_tower_save.c:156-176; src/overlay104/frscrcmd.c:1567-1580; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/103-global-terminal-offline — Global Terminal: machines refuse offline
-- proves: Global Terminal offline: the 2F Box Data machine saves (Common_SaveGame), then opens the Nintendo WFC screen (ScrCmd_2F6 with no WFC login, CommonScript_GlobalTerminalMachine); NO there returns to the field. YES traps the port (tests/e2e/DEFECTS.md, "Platinum: connecting to Nintendo WFC traps"). Start: GLOBAL_TERMINAL_2F (15,4). End: (10,8) beside the machine, the game's own save on the chip.
+- proves: Global Terminal offline: the 2F Box Data machine saves (Common_SaveGame), then opens the Nintendo WFC screen (ScrCmd_2F6 with no WFC login, CommonScript_GlobalTerminalMachine); NO there returns to the field. YES connects, finds no access point and shows error 51099: tests/gameplay scenario 8-wfc-offline covers that. Start: GLOBAL_TERMINAL_2F (15,4). End: (10,8) beside the machine, the game's own save on the chip.
 - start: `start.recipe`; map MAP_HEADER_GLOBAL_TERMINAL_2F 15 4 FACE_UP; lab state lines: 1 flag, 1 var
 - party: SPECIES_TURTWIG 15; SPECIES_STARLY 12
 - trainers: none

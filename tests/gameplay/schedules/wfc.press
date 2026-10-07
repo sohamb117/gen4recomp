@@ -1,0 +1,18 @@
+# From recipes/wfc.recipe: CONTINUE, then A on the Box Data machine, A
+# through its "Connect to Nintendo Wi-Fi Connection..." line, the save YES,
+# the overwrite YES, the "saved" box, then YES on the Nintendo WFC screen
+# ("Save this Nintendo DS system's Nintendo Wi-Fi Connection User
+# Information to this DS Card and connect?"), and B every 60 frames through
+# the connection attempt and its error message back to the field.
+1250:start
+1400:a
+1500:a
+1600:a
+1700:a
+1880:a
+2000:a
+2120:a
+2260:a
+2950:a
+3420:a
+3900:b:6:60:40

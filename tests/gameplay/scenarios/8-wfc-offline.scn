@@ -1,0 +1,14 @@
+# Scenario 8: connecting to Nintendo Wi-Fi Connection with no access point.
+# The Global Terminal's Box Data machine saves, opens the WFC screen, and YES
+# connects: NintendoWFC_ConnectToDWCServer runs the compiled DWC connect code
+# against the Auto Connect model (pc/src/pc_dwc_connect.c), which finds no access
+# point; the game shows its connection error and returns to the field.
+# Regression for the void(void) DWC_AC_*/DWC_Auth_SetCustomNas trap stubs:
+# the library's calls with arguments hit wasm signature-mismatch thunks and
+# the core trapped about 500 frames after YES, which fails the run.
+RECIPE=recipes/wfc.recipe
+SCHEDULE=schedules/wfc.press
+FRAMES=6600
+SHOTS=3410,3440,3480,3520,3560,3600,3650,3700,3800,3900,4000,4200,4500,5000,5800,6599
+EXPECT_MAP=567
+EXPECT_LOG='stored 524288-byte save'

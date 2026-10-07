@@ -79,7 +79,9 @@ HOST_EXTRA :=
 #   pc_lab.c pc_sprite_lab.c pc_text_lab.c pc_audio_lab.c pc_bgm_mute.c
 #                                       drive Platinum's own game C
 #   pc_probe2d.c                        reads Platinum's gSystem
-#   pc_dwc_auth.c                       Platinum's DWC
+#   pc_dwc_auth.c pc_dwc_connect.c      Platinum's DWC account and connect
+#                                       Connect models; D runs its own
+#                                       recompiled DWC
 #   pc_dgt.c pc_crypto_rc4.c            replace Platinum-SDK DGT/RC4; D's DGT
 #                                       is its own recompiled DGT_hash*.s, and
 #                                       D links no CRYPTO_RC4
@@ -93,7 +95,7 @@ HOST_EXTRA :=
 # Their calls from the shared files are answered by src/pc_dp_hooks.c.
 HOST_PC_EXCLUDE := pc_win_fiber.c pc_win_ipc.c pc_win_clock.c pc_os_context.c \
                    pc_lab.c pc_sprite_lab.c pc_text_lab.c pc_audio_lab.c \
-                   pc_bgm_mute.c pc_probe2d.c pc_dwc_auth.c \
+                   pc_bgm_mute.c pc_probe2d.c pc_dwc_auth.c pc_dwc_connect.c \
                    pc_dgt.c pc_crypto_rc4.c pc_selftest.c pc_div0.c \
                    pc_boot_glue.c pc_np_field.c
 

@@ -1,6 +1,6 @@
 # Global Terminal offline: the 2F Box Data machine saves (Common_SaveGame), then opens the Nintendo WFC
 # screen (ScrCmd_2F6 with no WFC login, CommonScript_GlobalTerminalMachine); NO there returns to the field.
-# YES traps the port (tests/e2e/DEFECTS.md, "Platinum: connecting to Nintendo WFC traps").
+# YES connects, finds no access point and shows error 51099: tests/gameplay scenario 8-wfc-offline covers that.
 # Start: GLOBAL_TERMINAL_2F (15,4). End: (10,8) beside the machine, the game's own save on the chip.
 title = "Global Terminal: machines refuse offline"
 priority = "P2"

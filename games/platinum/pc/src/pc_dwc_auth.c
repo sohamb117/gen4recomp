@@ -12,11 +12,12 @@
  * here says exactly that through the interface's own vocabulary, and the
  * compiled account code takes its normal "no configuration" branches.
  *
- * Signatures come from bm/util_wifiidtool.h and the extern declarations
- * in the account library's own dwc_init.c (BACKUPl has no public
- * header).
+ * Signatures come from bm/util_wifiidtool.h, auth/dwc_auth.h and the
+ * extern declarations in the account library's own dwc_init.c (BACKUPl
+ * has no public header).
  */
 #include <nitro.h>
+#include <auth/dwc_auth.h>
 #include <bm/util_wifiidtool.h>
 
 #include <string.h>
@@ -75,4 +76,11 @@ BOOL DWCi_BACKUPlWritePage(const void *data, const BOOL *page, void *work)
     (void)page;
     (void)work;
     return TRUE;
+}
+void DWC_Auth_SetCustomNas(const char *nasaddr)
+{
+    /* DWC_SetAuthServer names the NAS before every connection attempt.
+     * Remembering it would serve nothing: the connection fails at the
+     * access-point search (pc_dwc_ac.c) before any server is contacted. */
+    (void)nasaddr;
 }
