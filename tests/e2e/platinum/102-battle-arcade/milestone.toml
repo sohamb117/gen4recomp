@@ -1,7 +1,7 @@
-# Battle Arcade single set: 3 mons, roulette board before each battle.
-# Start: BATTLE_ARCADE (14,6) below the single attendant (14,5). End: Arcade lobby.
+# Battle Arcade single set: GARCHOMP, METAGROSS, SALAMENCE (Lv 50 in the Arcade). Before each battle the game board
+# spins; its STOP button is touch only (the circle at (128,96), r 32: battle_arcade/main.c sStopButtonHitBox) and it
+# stops by itself after 900 ticks. Start: BATTLE_ARCADE (14,6) below the single attendant (14,5). End: Arcade lobby.
 title = "Battle Arcade: first single set"
-status = "planned"
 priority = "P2"
 estimate = 45000
 refs = [
@@ -23,22 +23,379 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 67500
+frames = 80000
 
 [[step]]
 do = "press"
 keys = "A"
-note = "single attendant (14,5) -> BattleArcade_TryTakeSingleChallenge (ScrCmd_2D9 0, 3)"
+gap = 40
+times = 5
+note = "the single attendant (14,5): the welcome, SINGLE BATTLE, 'Please select the Pokemon you wish to enter.' -> the party select"
 shot = "attendant"
 
 [[step]]
 do = "wait_frames"
 n = 120
-# PHASE2: party pick and the roulette stop (A timing: deterministic per frame but brittle) are unrecorded.
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "GARCHOMP (slot 0): A, ENTER -> FIRST"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "METAGROSS (slot 1): ENTER -> SECOND"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "SALAMENCE (slot 2): ENTER -> THIRD; the cursor jumps to CONFIRM"
+shot = "three-entered"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONFIRM -> 'Would you like to save the game?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+times = 7
+note = "save YES, overwrite YES, 'saved', 'Right this way, please!', the walk to the game room"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 24
+note = "'Welcome to the Battle Arcade!', the held items taken, 'Game no. 1! Come on!', the board's countdown"
+
+[[step]]
+do = "tap"
+x = 128
+y = 96
+gap = 26
+times = 12
+note = "STOP once the board spins (taps before that do nothing); the cursor lands on the event"
+shot = "board-1"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "'This is our current event!', the event, 'OK! Let the battle commence!'; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 1 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "the win, the healing, then 'battle no. 2' with CONTINUE / RECORD / REST / RETIRE (built with canExitWithB 0: B does nothing)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+shot = "continue"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 8
+note = "'Game no. 2! Come on!', the board's countdown"
+
+[[step]]
+do = "tap"
+x = 128
+y = 96
+gap = 26
+times = 12
+note = "STOP once the board spins"
+shot = "board-2"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the event, 'OK! Let the battle commence!'; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 2 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "the win, the healing, 'battle no. 3' with CONTINUE / RECORD / REST / RETIRE (B does nothing)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 8
+note = "'Game no. 3! Come on!', the board's countdown"
+
+[[step]]
+do = "tap"
+x = 128
+y = 96
+gap = 26
+times = 12
+note = "STOP once the board spins"
+shot = "board-3"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the event, 'OK! Let the battle commence!'; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 3 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "the win, the healing, 'battle no. 4' with CONTINUE / RECORD / REST / RETIRE (B does nothing)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 8
+note = "'Game no. 4! Come on!', the board's countdown"
+
+[[step]]
+do = "tap"
+x = 128
+y = 96
+gap = 26
+times = 12
+note = "STOP once the board spins"
+shot = "board-4"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the event, 'OK! Let the battle commence!'; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 4 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "the win, the healing, 'battle no. 5' with CONTINUE / RECORD / REST / RETIRE (B does nothing)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 8
+note = "'Game no. 5! Come on!', the board's countdown"
+
+[[step]]
+do = "tap"
+x = 128
+y = 96
+gap = 26
+times = 12
+note = "STOP once the board spins"
+shot = "board-5"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the event, 'OK! Let the battle commence!'; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 5 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "the win, the healing, 'battle no. 6' with CONTINUE / RECORD / REST / RETIRE (B does nothing)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 8
+note = "'Game no. 6! Come on!', the board's countdown"
+
+[[step]]
+do = "tap"
+x = 128
+y = 96
+gap = 26
+times = 12
+note = "STOP once the board spins"
+shot = "board-6"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the event, 'OK! Let the battle commence!'; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 6 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "the win, the healing, 'battle no. 7' with CONTINUE / RECORD / REST / RETIRE (B does nothing)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 8
+note = "'Game no. 7! Come on!', the board's countdown"
+
+[[step]]
+do = "tap"
+x = 128
+y = 96
+gap = 26
+times = 12
+note = "STOP once the board spins"
+shot = "board-7"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the event, 'OK! Let the battle commence!'; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 7 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "the seventh win: the walk out to the lobby"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the held items returned, BP awarded"
+
+[[step]]
+do = "wait_field"
+max = 3000
+shot = "lobby"
 
 [expect]
 map = 565
 battles = 7
-# PHASE2: reader-ext Battle Points (WifiBattleTowerRecord_UpdateBattlePoints, wifi_battle_tower_save.c:156-176)
-# == 3 after the first solo set (unk_02049D08.c:750-787) or > 0; np_save4 has no BP field. Meanwhile
-# the in-run Common_SaveGame saves advance the save counter.
+# game records (generated/game_records.txt; np_save4 game_records): RECORD_BATTLE_ARCADE_VICTORIES (63),
+# RECORD_BATTLE_POINTS_RECEIVED (68)
+save = ['s["game_records"][63] >= 7', 's["game_records"][68] >= 1']
