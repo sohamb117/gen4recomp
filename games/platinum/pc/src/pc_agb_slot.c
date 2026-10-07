@@ -162,7 +162,8 @@ static void store_now(void)
 #endif
 }
 
-static void agb_slot_sync(void)
+/* Also before a soft reset (pc_os_lite.c OS_ResetSystem). */
+void pc_agb_slot_sync(void)
 {
     store_now();
 }
@@ -543,7 +544,7 @@ void pc_agb_slot_insert(void)
                             "erased chip, which will not be stored\n");
             memset(sImage, 0xFF, sImageSize);
         }
-        atexit(agb_slot_sync);
+        atexit(pc_agb_slot_sync);
     } else {
         rc = 0;
     }

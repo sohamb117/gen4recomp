@@ -31,6 +31,8 @@
 #define NP_CONTENT_DIR "/content"
 /* The largest GBA ROM the slot holds (0x08000000-0x09FFFFFF). */
 #define NP_GBA_ROM_MAX 0x02000000u
+/* The most a soft reset carries into the next instance (np_host_reset). */
+#define NP_RESET_CARRY_MAX 256u
 
 #define NP_FRAME_MAGIC 0x4E504652u /* 'NPFR' */
 
@@ -67,6 +69,8 @@ enum np_status {
                                     (wild, trainer, link, facility), 0 otherwise */
     NP_STAT_E2E = 6,             /* guest address of the test probe block (np_e2e.h), 0 unless
                                     the guest runs with PC_E2E=1 */
+    NP_STAT_RESETS = 7,          /* soft resets (np_host_reset) since np_core_create; the runtime
+                                    fills it, the guest's own slot is ignored */
     NP_STAT_COUNT = 16
 };
 
@@ -154,6 +158,20 @@ NP_IMPORT(rtc_now) int64_t np_host_rtc_now(void);
 NP_IMPORT(log) void np_host_log(const char *text, uint32_t len);
 /* Fatal: the runtime records the message and unwinds out of the guest. */
 NP_IMPORT(trap) __attribute__((noreturn)) void np_host_trap(const char *text, uint32_t len);
+
+/*
+ * Soft reset: the console's own reset (a DS's OS_ResetSystem, the player's
+ * L+R+START+SELECT). The runtime stores the backup chip image if it is dirty,
+ * keeps a copy of it, discards this instance (linear memory, every fiber)
+ * and boots a fresh one from _start within the same np_core_run_frame; the
+ * new instance's first save_load returns the kept chip. Options, the link
+ * and the host's files are untouched. `carry` (at most NP_RESET_CARRY_MAX
+ * bytes) is the rest of the machine that survives a reset, for the guest to
+ * define (a DS: the reset parameter word, the RTC); reset_carry copies it
+ * into the new instance and returns its length, 0 after a cold boot.
+ */
+NP_IMPORT(reset) __attribute__((noreturn)) void np_host_reset(const void *carry, uint32_t len);
+NP_IMPORT(reset_carry) uint32_t np_host_reset_carry(void *dst, uint32_t cap);
 
 /*
  * Local wireless transport, used by the ARM7 wireless (WM) model. Datagrams:

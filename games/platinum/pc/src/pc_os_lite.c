@@ -24,6 +24,9 @@
 #include <stdlib.h>
 
 #include "armrec_rt.h"
+#if defined(__wasm__)
+#include <pc_wasm.h>
+#endif
 
 static void pc_trap(const char *name, const char *why) __attribute__((noreturn));
 static void pc_trap(const char *name, const char *why)
@@ -645,14 +648,65 @@ void OSi_WaitVCount0(void)
 {
 }
 
-/* "Return to the DS menu." A PC port must answer this differently, restart
- * the process, or exit, and that is a frontend decision, not something to
- * guess here. */
+#if defined(__wasm__)
+/* "Reboot the console": the game's own reset (the player's
+ * L+R+START+SELECT, NINTENDO WFC SETTINGS, the error-reset screens, the end
+ * of the credits). On hardware the ARM7 resets both CPUs and the cartridge
+ * boots again from its header; RAM is gone except the reset parameter word
+ * (HW_RESET_PARAMETER_BUF), the card keeps its backup chip, and the RTC
+ * chip keeps running. Here the runtime does the reboot (np_host_reset): a
+ * fresh instance of this module, the chip kept, and the carry below for
+ * pc_os_reset_boot() to put back. The game itself waited for its card
+ * writes (CARD_TryWaitBackupAsync) before calling this; the syncs only
+ * hand the settled images to the host now instead of after a settle that
+ * will never come. */
+typedef struct PcResetCarry {
+    u32 parameter;
+    s32 rtc[8];
+} PcResetCarry;
+
+void OS_ResetSystem(u32 parameter)
+{
+    extern void pc_card_backup_sync(void);
+    extern void pc_agb_slot_sync(void);
+    extern void pc_rtc_carry_out(s32 out[8]);
+    PcResetCarry carry;
+
+    /* the "pc_os_lite: OS_ResetSystem:" prefix is what tools grep for */
+    fprintf(stderr, "pc_os_lite: OS_ResetSystem: soft reset (parameter %u)\n", (unsigned)parameter);
+    pc_card_backup_sync();
+    pc_agb_slot_sync();
+    carry.parameter = parameter;
+    pc_rtc_carry_out(carry.rtc);
+    np_host_reset(&carry, sizeof carry);
+}
+
+/* Boot, before NitroMain: after a soft reset, what survived it. */
+void pc_os_reset_boot(void)
+{
+    extern void pc_rtc_carry_in(const s32 in[8]);
+    PcResetCarry carry;
+
+    if (np_host_reset_carry(&carry, sizeof carry) != sizeof carry) {
+        return; /* a cold boot: the parameter word reads 0, as on power-on */
+    }
+    *(volatile u32 *)HW_RESET_PARAMETER_BUF = carry.parameter;
+    pc_rtc_carry_in(carry.rtc);
+}
+#else
+/* "Return to the DS menu." The native hosts have no reboot of their own
+ * yet (the wasm runtime's np_host_reset is the model): restart the
+ * process, or exit, is a frontend decision not guessed here. */
 void OS_ResetSystem(u32 parameter)
 {
     (void)parameter;
-    pc_trap("OS_ResetSystem", "soft reset has no host meaning yet; decide restart-vs-exit in the frontend");
+    pc_trap("OS_ResetSystem", "soft reset has no host meaning on this host; decide restart-vs-exit in the frontend");
 }
+
+void pc_os_reset_boot(void)
+{
+}
+#endif
 
 /* Wait-for-interrupt. Correct once an IRQ/pacing layer can wake it; until
  * then a caller reaching it would spin forever on hardware and must be seen,

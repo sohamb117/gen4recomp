@@ -321,7 +321,7 @@ static int dump_ppm(const char *dir, int64_t number, const np_frame *f) {
 static const char *const k_opt_names[] = {"bgm_volume", "se_volume",     "render_scale", "widescreen",  "camera_zoom",
                                           "camera_tilt", "quicksave_seq", "rules",        "text_instant"};
 static const char *const k_stat_names[] = {"link_active", "field_ready", "quicksave_seq", "quicksave_result",
-                                           "map_id",      "in_battle"};
+                                           "map_id",      "in_battle",   "e2e",           "resets"};
 
 typedef struct opt_set {
     int64_t frame;
@@ -447,7 +447,8 @@ static int run_frame(frame_run *fr, int64_t k, const np_input *in) {
 
     for (uint32_t i = 0; i < NP_STAT_COUNT; i++) {
         uint32_t v = np_core_status(fr->core, i);
-        if (v != fr->status[i] && i < sizeof k_stat_names / sizeof *k_stat_names && i != NP_STAT_QUICKSAVE_SEQ)
+        if (v != fr->status[i] && i < sizeof k_stat_names / sizeof *k_stat_names && i != NP_STAT_QUICKSAVE_SEQ &&
+            i != NP_STAT_E2E)
             fprintf(stderr, "[status] frame %lld: %s %u -> %u\n", (long long)k, k_stat_names[i], fr->status[i], v);
         fr->status[i] = v;
     }
@@ -494,7 +495,7 @@ static int finish(frame_run *fr, int64_t k) {
  *        hold KEYS ("a+up", "none") and, with X Y, a touch at (X,Y) for N
  *        frames, or until any of the conditions holds after a frame. NAME is a
  *        status (field_ready, map_id, in_battle, quicksave_seq,
- *        quicksave_result, link_active) or a probe field (field, x, z, y,
+ *        quicksave_result, link_active, resets: soft resets so far) or a probe field (field, x, z, y,
  *        facing, move_state, ui, ui_arg; core/include/np_e2e.h). Loaded
  *        schedules add their presses on top.
  *        -> "ok K HIT S0 .. S15": the next frame K, HIT 1 if the condition

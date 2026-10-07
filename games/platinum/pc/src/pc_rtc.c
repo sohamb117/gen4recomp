@@ -324,3 +324,28 @@ int pc_rtc_init(void)
     pc_pxi_set_responder(PXI_FIFO_TAG_RTC, rtc_respond);
     return 0;
 }
+
+#if defined(__wasm__)
+/* A soft reset (pc_os_lite.c OS_ResetSystem) boots a fresh instance whose
+ * frame counter starts again at 0, while the console's RTC chip runs on. So
+ * the time the clock reads now becomes the next instance's epoch, and the
+ * offset a game's clock write set against the host clock goes with it. */
+void pc_rtc_carry_out(s32 out[8])
+{
+    int y, mo, d, h, mi, s;
+
+    now(&y, &mo, &d, &h, &mi, &s);
+    out[0] = y; out[1] = mo; out[2] = d;
+    out[3] = h; out[4] = mi; out[5] = s;
+    out[6] = (s32)(u32)((unsigned long long)sHostOffset & 0xFFFFFFFFu);
+    out[7] = (s32)(u32)((unsigned long long)sHostOffset >> 32);
+}
+
+void pc_rtc_carry_in(const s32 in[8])
+{
+    ep_year = in[0]; ep_month = in[1]; ep_day = in[2];
+    ep_hour = in[3]; ep_min = in[4]; ep_sec = in[5];
+    ep_base_frames = pc_os_vblank_count;
+    sHostOffset = (long long)(((unsigned long long)(u32)in[7] << 32) | (u32)in[6]);
+}
+#endif

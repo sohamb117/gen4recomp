@@ -766,6 +766,13 @@ int main(int argc, char **argv)
         }
     }
 
+    /* After a soft reset: the reset parameter word and the RTC that
+     * survived it (pc_os_lite.c). A cold boot leaves both as they are. */
+    {
+        extern void pc_os_reset_boot(void);
+        pc_os_reset_boot();
+    }
+
     NitroMain();
 
     /* NitroMain's main loop never returns on hardware; reaching here is

@@ -20,7 +20,7 @@ import subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 
-STATUS = ["link_active", "field_ready", "quicksave_seq", "quicksave_result", "map_id", "in_battle", "e2e"]
+STATUS = ["link_active", "field_ready", "quicksave_seq", "quicksave_result", "map_id", "in_battle", "e2e", "resets"]
 
 # core/include/np_e2e.h
 E2E_MAGIC = 0x31453245
@@ -188,7 +188,7 @@ class Session:
         self.shot_frames = []
         self.shot_dir = None
         self.summary = None
-        self.ended = None  # why the guest stopped on purpose (bots.bot_wait_reset): the run has no live core after it
+        self.ended = None  # why the game ended on purpose (bots.bot_wait_reset): no end save or probe after it
         self.log_path = log
         self._log = open(log, "w")
         cmd = [gp, rom, "--game", game, "--serve", "1", "-e", "PC_E2E=1", "--save", save]

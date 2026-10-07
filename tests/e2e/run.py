@@ -553,15 +553,15 @@ def run_milestone(game, ms, prev, args, out):
                 path = os.path.join(d, "s%02d-%s.ppm" % (i, re.sub(r"[^\w.-]", "_", str(step["shot"]))))
                 s.dump(path)
                 shots.append(("%d %s f%d" % (i, step["shot"], s.frame), path))
-        # a step list that ends the game (bots.bot_wait_reset) leaves no core: the save is the one the game wrote
+        # a step list that ends the game (bots.bot_wait_reset: the guest rebooted) takes no end save or probe: the
+        # save is the one the game wrote
         if run.get("save", "quick") == "quick" and not s.ended:
             f0 = s.frame
             BOTS["save"](s, {}, ctx)
             res.steps.append((len(res.steps) + 1, "save (end)", s.frame - f0, "ok"))
-        if not s.ended:
-            shot = os.path.join(d, "s99-end.ppm")
-            s.dump(shot)
-            shots.append(("end f%d" % s.frame, shot))
+        shot = os.path.join(d, "s99-end.ppm")
+        s.dump(shot)
+        shots.append(("end f%d" % s.frame, shot))
         res.frames = s.frame
         end_state = (s.map_id, None if s.ended else s.probe())
         if env.get("PC_RTC"):

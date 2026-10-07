@@ -111,27 +111,32 @@ static void fiber_body(void *arg) {
     np_rt_fail(c, "fiber %u returned from np_fiber_entry", f->handle);
 }
 
+/* Readies slot i to start fiber_body: its pooled stack reset, or a new one. */
+static np_rt_fiber *fiber_arm(np_core *c, uint32_t i, size_t stack_size, uint32_t arg, uint32_t shadow_sp) {
+    np_rt_fiber *f = &c->fibers[i];
+    if (f->native) {
+        if (np_fiber_reset(f->native, fiber_body, f) != 0) return NULL;
+    } else {
+        f->native = np_fiber_create(stack_size, fiber_body, f);
+        if (!f->native) return NULL;
+    }
+    f->core = c;
+    f->arg = arg;
+    f->shadow_sp = shadow_sp;
+    f->unwind = &f->base_unwind;
+    f->handle = (f->generation << 8) | (i + 1);
+    return f;
+}
+
 np_rt_fiber *np_rt_fiber_new(np_core *c, size_t stack_size, uint32_t arg, uint32_t shadow_sp) {
-    for (uint32_t i = 0; i < NP_MAX_FIBERS; i++) {
+    /* Slot 0 is the boot fiber's (boot below), never handed out here. */
+    for (uint32_t i = 1; i < NP_MAX_FIBERS; i++) {
         np_rt_fiber *f = &c->fibers[i];
         if (f->handle) continue;
-        if (f->native) {
-            /* A pooled stack: only the boot fiber asks for more than the
-             * default and it is created first, so this never skips in
-             * practice; a stack is never swapped for a bigger one because a
-             * snapshot may still name its addresses. */
-            if (np_fiber_stack_size(f->native) < stack_size) continue;
-            if (np_fiber_reset(f->native, fiber_body, f) != 0) return NULL;
-        } else {
-            f->native = np_fiber_create(stack_size, fiber_body, f);
-            if (!f->native) return NULL;
-        }
-        f->core = c;
-        f->arg = arg;
-        f->shadow_sp = shadow_sp;
-        f->unwind = &f->base_unwind;
-        f->handle = (f->generation << 8) | (i + 1);
-        return f;
+        /* A pooled stack is never swapped for a bigger one because a
+         * snapshot may still name its addresses. */
+        if (f->native && np_fiber_stack_size(f->native) < stack_size) continue;
+        return fiber_arm(c, i, stack_size, arg, shadow_sp);
     }
     return NULL;
 }
@@ -145,6 +150,102 @@ np_rt_fiber *np_rt_fiber_lookup(np_core *c, uint32_t handle) {
 void np_rt_fiber_release(np_rt_fiber *f) {
     f->handle = 0;
     f->generation = (f->generation + 1) & 0xFFFFFFu;
+}
+
+/* Runs the boot fiber up to instantiation (data segments, start function)
+ * and parks it before _start. 0, or -1 with the core failed. */
+static int boot(np_core *c) {
+    /* Slot 0, handle 1 (np_guest_abi.h), on the stack it was first given
+     * at np_core_create when a soft reset boots again. */
+    np_rt_fiber *b = fiber_arm(c, 0, NP_BOOT_FIBER_STACK, 0, 0);
+    if (!b) {
+        snprintf(c->error, sizeof c->error, "could not allocate the boot fiber stack");
+        c->state = NP_RT_FAILED;
+        return -1;
+    }
+    np_rt_switch(c, b);
+    if (c->state == NP_RT_FAILED) {
+        char why[sizeof c->error];
+        snprintf(why, sizeof why, "%s", c->error);
+        snprintf(c->error, sizeof c->error, "instantiation failed: %.480s", why);
+        return -1;
+    }
+    c->parked = b;
+    return 0;
+}
+
+static uint64_t new_snapshot_token(const np_core *c) {
+    static uint64_t serial;
+    return ((uint64_t)(uintptr_t)c << 16) ^ ++serial ^ 0x9E3779B97F4A7C15ull;
+}
+
+int np_rt_store_save(np_core *c, const uint8_t *image, uint32_t len) {
+    if (c->host.save_store && c->host.save_store(c->host.user, image, len) == 0) {
+        c->save_dirty = 0; /* anything pending is older than this image */
+        return 0;
+    }
+    /* Keep a copy so np_core_save_flush can retry. */
+    if (len > c->pending_save_cap) {
+        uint8_t *grown = realloc(c->pending_save, len);
+        if (!grown) return -1;
+        c->pending_save = grown;
+        c->pending_save_cap = len;
+    }
+    memcpy(c->pending_save, image, len);
+    c->pending_save_len = len;
+    c->save_dirty = 1;
+    return -1;
+}
+
+/*
+ * A soft reset, as the console does one: the card keeps its backup chip,
+ * everything else boots again. The guest called reset at a moment of its
+ * choosing (a DS game waits for its card writes first), so its descriptor's
+ * chip image is whole even though it is not parked in vblank.
+ */
+int np_rt_reboot(np_core *c) {
+    const np_frame_desc *d = c->desc_addr ? (const np_frame_desc *)np_rt_guest(c, c->desc_addr, sizeof *d) : NULL;
+    c->kept_chip_len = 0;
+    if (d && d->save_image && d->save_size) {
+        const uint8_t *image = np_rt_guest(c, d->save_image, d->save_size);
+        if (d->save_size > c->kept_chip_cap) {
+            uint8_t *grown = realloc(c->kept_chip, d->save_size);
+            if (!grown) {
+                snprintf(c->error, sizeof c->error, "soft reset: out of memory keeping the %u-byte chip", d->save_size);
+                c->state = NP_RT_FAILED;
+                return -1;
+            }
+            c->kept_chip = grown;
+            c->kept_chip_cap = d->save_size;
+        }
+        memcpy(c->kept_chip, image, d->save_size);
+        c->kept_chip_len = d->save_size;
+        if (d->save_dirty) np_rt_store_save(c, image, d->save_size); /* a failure stays pending */
+    }
+
+    np_wasi_flush(c);
+    /* Every fiber goes with the instance; generations restart so the new
+     * boot fiber is handle 1 again. Native stacks stay pooled. */
+    for (uint32_t i = 0; i < NP_MAX_FIBERS; i++) {
+        c->fibers[i].handle = 0;
+        c->fibers[i].generation = 0;
+    }
+    c->mod->free(c->instance);
+    memset(c->instance, 0, c->mod->instance_size);
+    c->instantiated = 0;
+    c->desc_addr = 0;
+    c->audio_tail = 0;
+    c->parked = NULL;
+    memset(c->status, 0, sizeof c->status);
+    c->state = NP_RT_READY;
+    np_wasi_reboot(c);
+    /* A snapshot of the old instance names its tables, which are gone. */
+    c->snapshot_token = new_snapshot_token(c);
+    c->resets++;
+    char line[128];
+    snprintf(line, sizeof line, "np_core: soft reset %u (backup chip kept: %u bytes)", c->resets, c->kept_chip_len);
+    np_rt_log(c, line);
+    return boot(c);
 }
 
 /* ---- API ------------------------------------------------------------- */
@@ -221,23 +322,16 @@ np_core *np_core_create(np_game game, const np_host *host, const char *const *op
     c->opts[NP_OPT_SE_VOLUME] = 256;
     c->opts[NP_OPT_RENDER_SCALE] = 1;
     c->opts[NP_OPT_CAMERA_ZOOM] = 256;
-    {
-        static uint64_t serial;
-        c->snapshot_token = ((uint64_t)(uintptr_t)c << 16) ^ ++serial ^ 0x9E3779B97F4A7C15ull;
-    }
+    c->snapshot_token = new_snapshot_token(c);
 
     wasm_rt_init();
     c->driver.core = c;
     c->driver.native = np_fiber_enter_thread();
     if (!c->driver.native) return create_failed(c, "could not turn the calling thread into a fiber");
     c->current = &c->driver;
-    np_rt_fiber *boot = np_rt_fiber_new(c, NP_BOOT_FIBER_STACK, 0, 0);
-    if (!boot) return create_failed(c, "could not allocate the boot fiber stack");
 
     g_core = c;
-    np_rt_switch(c, boot);
-    if (c->state == NP_RT_FAILED) return create_failed(c, "%s: instantiation failed: %s", mod->name, c->error);
-    c->parked = boot;
+    if (boot(c) != 0) return create_failed(c, "%s: %s", mod->name, c->error);
     return c;
 }
 
@@ -259,11 +353,19 @@ int np_core_run_frame(np_core *c, const np_input *in, np_frame *out) {
     }
 
     np_rt_switch(c, c->parked);
+    while (c->state == NP_RT_RESET) {
+        if (np_rt_reboot(c) != 0) {
+            np_rt_log(c, c->error);
+            return -1;
+        }
+        np_rt_switch(c, c->parked);
+    }
 
     if (c->state == NP_RT_FAILED) return -1;
     if (c->state == NP_RT_EXITED) return 1;
     const np_frame_desc *d = (const np_frame_desc *)np_rt_guest(c, c->desc_addr, sizeof *d);
     memcpy(c->status, d->status, sizeof c->status);
+    c->status[NP_STAT_RESETS] = c->resets;
     if (out) {
         out->screen[0] = (const uint32_t *)np_rt_guest(c, d->screen[0], 0);
         out->screen[1] = d->screen[1] ? (const uint32_t *)np_rt_guest(c, d->screen[1], 0) : NULL;
@@ -371,6 +473,7 @@ void np_core_destroy(np_core *c) {
     free(c->instance);
     free(c->env_block);
     free(c->pending_save);
+    free(c->kept_chip);
     free(c->page_map);
     free(c);
 }

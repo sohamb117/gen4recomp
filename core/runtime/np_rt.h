@@ -51,6 +51,7 @@ typedef enum np_rt_state {
     NP_RT_RUNNING, /* parked in vblank */
     NP_RT_EXITED,  /* proc_exit or _start returned */
     NP_RT_FAILED,  /* trap, wasm trap or broken contract; see core->error */
+    NP_RT_RESET,   /* the guest asked for a soft reset; run_frame reboots it (np_rt_reboot) */
 } np_rt_state;
 
 typedef struct np_rt_fiber {
@@ -151,6 +152,13 @@ struct np_core {
     uint32_t pending_save_len, pending_save_cap;
     int save_dirty;
 
+    /* Soft reset (np_host_reset): what survives into the next instance. */
+    uint8_t *kept_chip; /* the backup chip; its first save_load takes it */
+    uint32_t kept_chip_len, kept_chip_cap;
+    uint8_t reset_carry[NP_RESET_CARRY_MAX];
+    uint32_t reset_carry_len;
+    uint32_t resets; /* NP_STAT_RESETS */
+
     char error[512];
 };
 
@@ -179,6 +187,9 @@ void np_wasi_init(np_core *c);
 int np_wasi_open_content(np_core *c, const char *root);
 /* Closes every content fd and the preopen (np_core_destroy). */
 void np_wasi_close_files(np_core *c);
+/* For a soft reset: closes the old instance's files (the preopen stays) and
+ * resets the rest of the WASI state as np_wasi_init does. */
+void np_wasi_reboot(np_core *c);
 
 /* Guest fiber slots. new returns NULL when out of slots or stack memory;
  * lookup returns NULL for a stale or invalid handle; release retires the
@@ -191,6 +202,15 @@ void np_rt_fiber_release(np_rt_fiber *f);
 
 /* One line to host.log, if any. */
 void np_rt_log(np_core *c, const char *line);
+
+/* Stores a backup chip image through host.save_store; if the host refuses,
+ * keeps a copy np_core_save_flush retries. 0 stored, -1 kept pending. */
+int np_rt_store_save(np_core *c, const uint8_t *image, uint32_t len);
+
+/* Run on the driver after a guest's np_host_reset: keeps the backup chip,
+ * discards the instance and boots a fresh one, parked before _start like
+ * np_core_create leaves it. 0, or -1 with the core failed. */
+int np_rt_reboot(np_core *c);
 
 /* WASM_RT_TRAP_HANDLER: wasm traps (unreachable, divide by zero, OOB in
  * bounds-check builds, bad call_indirect) land here instead of longjmp. */

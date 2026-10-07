@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, ROOT, TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN, UI_BATTLE_MENU,
-                    UI_BATTLE_PARTY, Dead, HarnessError, behaviors)
+                    UI_BATTLE_PARTY, HarnessError, behaviors)
 
 # ---- the battle's touch screen (Platinum src/battle/battle_subscreen.c touch rects; D/P's overlay 11
 # tables are byte-identical), as tap points: the centre of each button.
@@ -121,27 +121,17 @@ def bot_wait_battle(s, step, ctx):
 
 def bot_wait_reset(s, step, ctx):
     """Run until the game resets the system itself, the end of a step list that plays the game to its end: after the
-    credits ClearGame calls OS_ResetSystem (Platinum src/clear_game.c:163), which the port traps (pc/src/pc_os_lite.c:
-    the trap names OS_ResetSystem on stderr, the run log) and the core stops. That stop is this step's success; any
-    other stop, or none in `max` frames, fails it. The session has no live core after it (s.ended): run.py takes no
-    end save, shot or probe, and [expect] reads the save the game wrote before the reset."""
+    credits ClearGame calls OS_ResetSystem (Platinum src/clear_game.c:163). The port reboots the guest as the console
+    does (pc/src/pc_os_lite.c, np_host_reset): the backup chip is kept and stored, the runtime counts the reset in the
+    `resets` status and logs "np_core: soft reset N". That count going up is this step's success; a stop of the core,
+    or no reset in `max` frames, fails it. The game ends there (s.ended): the core runs on at the boot screens, so
+    run.py takes no end save or probe, and [expect] reads the save the game wrote before the reset."""
     bound = _int(step, "max", 20000)
-    f0 = s.frame
-    try:
-        s.run(bound, step.get("keys"))
-    except Dead as e:
-        with open(s.log_path, errors="replace") as f:
-            trapped = "pc_os_lite: OS_ResetSystem:" in f.read()  # the trap's own line (a step note may name it too)
-        if not trapped:
-            raise
-        s.ended = "OS_ResetSystem"
-        s.note("wait_reset: the game reset itself (OS_ResetSystem trapped; %s)" % e)
-        # np_gp ends by itself, reporting the stop as a trap DEFECT at that frame: the expected end, not a defect
-        s.quit()
-        s.defects = [d for d in s.defects if not re.match(r"DEFECT trap frame (\d+) ", d)
-                     or int(re.match(r"DEFECT trap frame (\d+) ", d).group(1)) < f0]
-        return
-    raise HarnessError("no OS_ResetSystem in %d frames" % bound)
+    resets = s.stat("resets")
+    if not s.run(bound, step.get("keys"), until="resets!=%d" % resets):
+        raise HarnessError("no OS_ResetSystem in %d frames" % bound)
+    s.ended = "OS_ResetSystem"
+    s.note("wait_reset: the game reset itself (soft reset %d)" % s.stat("resets"))
 
 
 def schedule_length(path):

@@ -53,6 +53,7 @@ enum {
     ST_CONTENT_OK = 1u << 8,
     ST_GBA_ROM_OK = 1u << 9,
     ST_GBA_SAVE_LOADED = 1u << 10,
+    ST_RESET_CARRIED = 1u << 11,
 };
 #define ST_ALWAYS (ST_ROM_OK | ST_ENV_OK | ST_CLOCK_OK | ST_LAYOUT_OK | ST_FIBERS_OK)
 #define SEED 7u
@@ -261,7 +262,7 @@ static void check_frame(const np_frame *f, uint32_t k, const np_input *in, int i
     for (uint32_t y = 0; y < NP_SCREEN_H; y++)
         for (uint32_t x = 0; x < NP_SCREEN_W; x++) {
             if (!(y == 0 && x < 3) && f->screen[0][y * f->stride + x] != top_pixel(k, x, y)) bad++;
-            if (!(y == 0 && x < 5) && f->screen[1][y * f->stride + x] != bottom_pixel(k, x, y)) bad++;
+            if (!(y == 0 && x < 6) && f->screen[1][y * f->stride + x] != bottom_pixel(k, x, y)) bad++;
         }
     CHECKF(bad == 0, "frame %u: %d pixels differ from the pattern", k, bad);
     if (input_applied) {
@@ -483,10 +484,12 @@ static void test_v2_net(test_host *th) {
         np_input in = input_for(k);
         CHECK(np_core_run_frame(c, &in, &f) == 0);
         check_frame(&f, k, &in, k > 0);
-        CHECKF(np_core_status(c, 6) == k + 1, "frame %u: %u datagrams back", k, np_core_status(c, 6));
+        CHECKF((np_core_status(c, 6) & 0xFFFFFFu) == k + 1, "frame %u: %u datagrams back", k,
+               np_core_status(c, 6) & 0xFFFFFFu);
     }
     CHECK(th->net_sent == 6 && th->net_count == 0);
-    CHECK(np_core_status(c, NP_STAT_LINK_ACTIVE) == 1 && np_core_status(c, 7) == NET_SELF);
+    CHECK(np_core_status(c, NP_STAT_LINK_ACTIVE) == 1 && np_core_status(c, 6) >> 24 == NET_SELF);
+    CHECK(np_core_status(c, NP_STAT_RESETS) == 0); /* the runtime's slot, not the guest's 0xDEAD */
     np_core_destroy(c);
 }
 
@@ -611,6 +614,56 @@ static void test_snapshots(test_host *th) {
     }
     free(s1);
     free(s2);
+}
+
+/*
+ * Soft reset: R+START makes the mock call np_host_reset at frame 8, and the
+ * same run_frame returns the rebooted guest's frame 0. The chip survives
+ * although the host cannot load one (save_load NULL): the frame-3 store and
+ * the frame-5 image, dirty at the reset, which the runtime stores. The carry
+ * arrives, the counter and the log say so, the core keeps running, and a
+ * snapshot of the old instance is refused.
+ */
+static void test_soft_reset(test_host *th) {
+    memset(th, 0, sizeof *th);
+    np_host host = make_host(th);
+    host.save_load = NULL;
+    np_core *c = np_core_create(NP_GAME_DIAMOND, &host, k_options);
+    CHECKF(c != NULL, "create: %s", np_core_create_error());
+    if (!c) return;
+    np_frame f;
+    np_input in;
+    for (uint32_t k = 0; k < 8; k++) {
+        in = input_for(k);
+        CHECK(np_core_run_frame(c, &in, &f) == 0);
+        check_frame(&f, k, &in, k > 0);
+    }
+    CHECK(!(f.screen[1][0] & (ST_SAVE_LOADED | ST_RESET_CARRIED)) && th->stores == 1);
+    size_t len;
+    void *snap = snapshot(c, &len);
+
+    np_input r = {0};
+    r.keys = NP_KEY_R | NP_KEY_START;
+    CHECK(np_core_run_frame(c, &r, &f) == 0);
+    check_frame(&f, 0, &r, 0);
+    CHECKF((f.screen[1][0] & (ST_SAVE_LOADED | ST_RESET_CARRIED)) == (ST_SAVE_LOADED | ST_RESET_CARRIED),
+           "status %#x after the reset", f.screen[1][0]);
+    CHECK(f.screen[1][1] == 1 && f.screen[1][5] == 8); /* the kept chip's counter, the carried frame */
+    CHECK(th->stores == 2 && th->save[16] == (uint8_t)(16 + 5));
+    CHECK(np_core_status(c, NP_STAT_RESETS) == 1 && np_core_status(c, NP_STAT_MAP_ID) == 400);
+    CHECK(logged(th, "np_core: soft reset 1 (backup chip kept: 256 bytes)"));
+    for (uint32_t k = 1; k < 4; k++) {
+        in = input_for(k);
+        CHECK(np_core_run_frame(c, &in, &f) == 0);
+        check_frame(&f, k, &in, 1);
+    }
+    CHECK(np_core_status(c, NP_STAT_RESETS) == 1);
+    CHECK(np_core_state_load(c, snap, len) == -1);
+    free(snap);
+    in = input_for(4);
+    CHECK(np_core_run_frame(c, &in, &f) == 0);
+    check_frame(&f, 4, &in, 1);
+    np_core_destroy(c);
 }
 
 /* ---- runtime content ------------------------------------------------- */
@@ -889,6 +942,7 @@ int main(void) {
     test_v2_options(&th);
     test_v2_net(&th);
     test_snapshots(&th);
+    test_soft_reset(&th);
     test_content(&th);
     test_gba(&th);
 
