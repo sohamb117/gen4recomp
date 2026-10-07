@@ -101,11 +101,11 @@ note = "Lake Valor is off the overworld matrix: its town-map block is Valor Lake
 [[step]]
 do = "walk_to"
 on_battle = "flee"
-via = [[105, 862], [96, 854], [81, 853]]
+via = [[111, 860], [100, 854], [81, 853]]
 x = 80
 z = 845
 max = 6000
-note = "north out of Twinleaf up the x 103..106 path, west along Route 201 (z 852..855), north up x 80..81 into Verity Lakefront (probe_map.py --map MAP_ROUTE_201 96 855); 41's start south of the lake mouth (zone_event 0319 warps 2/3 (80/81,843))"
+note = "north out of Twinleaf up the x 110..113 path, west along Route 201 (z 852..855), north up x 80..81 into Verity Lakefront (probe_map.py --map MAP_ROUTE_201 96 855); 41's start south of the lake mouth (zone_event 0319 warps 2/3 (80/81,843))"
 
 [[step]]
 do = "wait_field"

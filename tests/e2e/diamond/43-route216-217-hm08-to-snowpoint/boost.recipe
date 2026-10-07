@@ -1,6 +1,5 @@
-# Boost on 43's end save (AUTHORING.md, Boosts): party strength only, the story stays played. 43's boost set the same; the
-# level line here refills the lead before Candice.
-# Candice, trdata.json #319: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 (Avalanche on three of them); the gym's
+# Boost on 42's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Route 216/217 (Snover, Sneasel lines; ice is 4x on Torterra) and Candice, trdata.json #319: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 (Avalanche on three of them); the gym's
 # Ace Trainers (#268-271, #827-828) are SNOVER/SNEASEL/water lines lv35-39. Torterra (grass/ground) takes 4x from ice:
 # Stone Edge (TM71) in slot 0 is 2x on Snover, Sneasel and Abomasnow; Earthquake stays in slot 1 for Medicham. Level 75.
 party-level 0 75

@@ -27,6 +27,7 @@ notes = "Estimate: ~360 tiles, much of it deep snow (slow), three sight trainers
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 50000

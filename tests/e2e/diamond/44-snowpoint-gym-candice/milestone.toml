@@ -27,6 +27,12 @@ boost = "boost.recipe"
 frames = 45000
 
 [[step]]
+do = "heal"
+x = 379
+z = 233
+note = "Snowpoint Pokemon Center first (zone_event 0164 warp 4): Routes 216/217 (43) leave the chain's party low"
+
+[[step]]
 do = "walk_to"
 on_battle = "flee"
 x = 367
