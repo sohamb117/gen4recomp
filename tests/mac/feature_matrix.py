@@ -41,14 +41,23 @@ ROMS = {
     'platinum': os.path.join(ROOT, 'games/platinum/build/rom/pokeplatinum.us.nds'),
 }
 GBA_ROM = os.path.join(ROOT, '.cache/gba/pokeemerald/pokeemerald.gba')
+# The GBA games (--game ruby|sapphire|emerald run the console='gba' cases):
+# the decomp ROMs, and the save tests/rse/first_battle.sh makes in the
+# house 1F (its quick save at frame 10000).
+GBA_ROMS = {
+    'ruby': os.path.join(ROOT, '.cache/gba/pokeruby/pokeruby.gba'),
+    'sapphire': os.path.join(ROOT, '.cache/gba/pokeruby/pokesapphire.gba'),
+    'emerald': GBA_ROM,
+}
+GBA_HOUSE = {g: os.path.join(ROOT, 'build/rse/first_battle', g, 'house.sav') for g in GBA_ROMS}
 SAVE4 = os.environ.get('NP_SAVE4', os.path.join(ROOT, 'build', 'shell-stub', 'features', 'np_save4'))
 
 CASES = []
 
 
-def case(name, feature):
+def case(name, feature, console='ds'):
     def reg(fn):
-        CASES.append((name, feature, fn))
+        CASES.append((name, feature, fn, console))
         return fn
     return reg
 
@@ -95,7 +104,8 @@ class Ctx:
         os.makedirs(os.path.join(self.ud, 'roms'))
         for g in roms:
             # APFS clone: a 64-128 MB ROM costs nothing
-            subprocess.run(['cp', '-c', ROMS[g], os.path.join(self.ud, 'roms', g + '.nds')], check=True)
+            src, ext = (GBA_ROMS[g], '.gba') if g in GBA_ROMS else (ROMS[g], '.nds')
+            subprocess.run(['cp', '-c', src, os.path.join(self.ud, 'roms', g + ext)], check=True)
 
     def put_save(self, game, slot, src):
         d = os.path.join(self.ud, 'saves', game)
@@ -733,20 +743,218 @@ def _(c):
     assert 'userdata/ (portable)' in log
 
 
+# ---- GBA cases (--game ruby|sapphire|emerald) -------------------------------------
+
+# From the house save: title (Start twice), CONTINUE (A, A); the field from
+# ~1080 (tests/rse/rs-1-home.sched, shifted by the launcher's iterations).
+GBA_CONTINUE = '410:start:5;710:start:5;910:a:5;1010:a:5'
+GBA_SLOT = 'House'
+
+
+def gba_save(c, opts=''):
+    """User data with GAME's ROM and the slot House (the house 1F save)."""
+    c.need(GBA_ROMS[GAME], GBA_HOUSE[GAME])
+    c.fresh([GAME])
+    c.put_save(GAME, GBA_SLOT, GBA_HOUSE[GAME])
+    c.options('[session]\nlast_game = %s\nlast_slot_%s = %s\n%s' % (GAME, GAME, GBA_SLOT, opts))
+
+
+def gba_play(c, step='', frames=1200, script='', press=GBA_CONTINUE, **kw):
+    """`nativeplat --game <GAME> --slot House`, CONTINUE pressed."""
+    at = 'boot=app,frames=%d' % frames
+    if press:
+        at += ',press=' + press
+    at += ',script=' + (script or '0:move:1:1')
+    return c.run(at, step=step, args=['--game', GAME, '--slot', GBA_SLOT], **kw)
+
+
+def gba_card(after=None):
+    """Keys from the launcher (Diamond's card selected) to GAME's card and
+    its slots page; then `after` keys. Returns (script, next frame)."""
+    return keys(2, ['Right'] * GBA_CARD[GAME] + ['Return'] + ['@%d' % (2 * GBA_CARD[GAME] + 12)] + (after or []))
+
+
+# Launcher card index (shell/src/romdb.c np_launcher_games).
+GBA_CARD = {'ruby': 5, 'sapphire': 6, 'emerald': 7}
+
+
+def summary(log):
+    """iterations, guest_frame and audio_peak of a run's last summary line."""
+    m = re.findall(r'iterations=(\d+) guest_frame=(\d+) audio_frames=\d+ audio_peak=(\d+)', log)
+    assert m, 'no autotest summary'
+    return tuple(int(v) for v in m[-1])
+
+
+@case('gba_continue', 'GBA: --game/--slot, title CONTINUE to the house (single 240x160 screen)', 'gba')
+def _(c):
+    gba_save(c)
+    gba_play(c)
+
+
+@case('gba_quicksave', 'GBA: F1 quick save in the field (the game\'s own save), F2 F2 quick load', 'gba')
+def _(c):
+    gba_save(c)
+    sav = os.path.join(c.ud, 'saves', GAME, GBA_SLOT + '.sav')
+    before = open(sav, 'rb').read()
+    log = gba_play(c, step='f1', frames=1260, press=GBA_CONTINUE + ';1100:left:20', script='1160:key:F1')
+    assert 'toast: Saved' in log, 'F1: no "Saved" toast'
+    assert open(sav, 'rb').read() != before, 'F1 did not change the slot'
+    # F2 F2 reboots from the save: the guest's frame count starts again.
+    log = gba_play(c, step='f2', frames=1400, script='1150:key:F2;1160:key:F2')
+    it, gf, _ = summary(log)
+    assert gf < it - 1000, 'F2 F2 did not reboot (iterations %d, guest frame %d)' % (it, gf)
+
+
+@case('gba_snapshots', 'GBA: snapshot slots (F5 take, F6 next slot, F7 restore) and rewind (hold R)', 'gba')
+def _(c):
+    gba_save(c, opts='[game]\nrewind_seconds = 30')
+    gba_play(c, step='walked', frames=1270, press=GBA_CONTINUE + ';1155:left:80')
+    log = gba_play(c, step='restored', frames=1270, press=GBA_CONTINUE + ';1155:left:80',
+                   script='1150:key:F5;1250:key:F7')
+    assert 'toast: Snapshot 1 taken' in log and 'toast: Snapshot 1 loaded' in log, 'F5/F7'
+    log = gba_play(c, step='slot2', frames=1200, script='1150:key:F6;1152:key:F5')
+    assert 'toast: Snapshot 2 taken' in log, 'F6, F5'
+    log = c.run('boot=app,frames=1300,press=%s;1100:left:120,rewind=1260+30,script=0:move:1:1' % GBA_CONTINUE,
+                step='rewind', args=['--game', GAME, '--slot', GBA_SLOT])
+    assert 'rewind depth' in log
+
+
+@case('gba_speed', 'GBA: speed hotkey (1 cycles 1x..uncapped), fast-forward toggle (G)', 'gba')
+def _(c):
+    gba_save(c)
+    s, _ = keys(1100, ['1', '1', '1'], gap=1)
+    it, gf, _ = summary(gba_play(c, step='4x', frames=1200, script=s))
+    assert gf > it + 150, (it, gf)
+    s, _ = keys(1100, ['G'])
+    it, gf, _ = summary(gba_play(c, step='ff-toggle', frames=1200, script=s))
+    assert gf > it + 100, (it, gf)
+
+
+@case('gba_audio', 'GBA: music / sound-effect volume (the output\'s peak in the house)', 'gba')
+def _(c):
+    peaks = {}
+    for name, opts in (('default', ''), ('bgm0', '[game]\nbgm_volume = 0'), ('se0', '[game]\nse_volume = 0')):
+        gba_save(c, opts=opts)
+        peaks[name] = summary(gba_play(c, step=name))[2]
+    with open(os.path.join(EVID, '%s-peaks.txt' % c.name), 'w') as f:
+        f.write(json.dumps(peaks) + '\n')
+    assert peaks['default'] > 0 and peaks['bgm0'] < peaks['default'], peaks
+
+
+@case('gba_layouts', 'GBA: the single screen with rotation, integer scale + linear filter, an effect', 'gba')
+def _(c):
+    for name, video in (('fit', 'layout = vertical'), ('rotation90', 'rotation = 90'),
+                        ('integer-linear', 'scale = integer\nfilter = linear'),
+                        ('lcd', 'effect1 = lcd\neffect1_intensity = 80')):
+        gba_save(c, opts='[video]\n' + video)
+        gba_play(c, step=name)
+
+
+@case('gba_touch', 'GBA: touch controls without X/Y, and the layout editor (Tab skips X/Y)', 'gba')
+def _(c):
+    gba_save(c, opts='[input]\ntouch_controls = on')
+    gba_play(c, step='pad')
+    s, f = keys(1150, ['F10'] + opt_downs('Edit touch controls...', in_game=True) + ['Return'])
+    gba_play(c, step='editor', frames=f + 4, script=s)
+    # Tab x3 from the d-pad: A, B, then L (X and Y are skipped); move and grow it.
+    e, f2 = keys(f + 2, ['Tab', 'Tab', 'Tab', 'Down', 'Down', '=', '['])
+    gba_play(c, step='edited', frames=f2 + 4, script=s + ';' + e)
+    # Escape closes the editor, which saves the layout; the pad shows it.
+    e2, f3 = keys(f2 + 2, ['Escape'])
+    gba_play(c, step='saved', frames=f3 + 4, script=s + ';' + e + ';' + e2)
+    ini = open(os.path.join(c.ud, 'touch-controls.ini')).read()
+    assert re.search(r'^l = ', ini, re.M), ini
+
+
+@case('gba_skin', 'GBA: a hand-made GBA .deltaskin dropped on the window, landscape and portrait', 'gba')
+def _(c):
+    skin = fixtures.deltaskin(os.path.join(c.work, 'TestGBA.deltaskin'), name='nativeplat GBA Test Skin', gba=True)
+    gba_save(c)
+    c.run('boot=app,frames=1200,size=1280x592,press=%s,script=1100:drop:%s' % (GBA_CONTINUE, skin),
+          step='landscape', args=['--game', GAME, '--slot', GBA_SLOT])
+    ini = open(os.path.join(c.ud, 'options.ini')).read()
+    assert re.search(r'^skin_gba = \S', ini, re.M), ini
+    c.run('boot=app,frames=1200,size=390x844,press=%s,script=0:move:1:1' % GBA_CONTINUE, step='portrait',
+          args=['--game', GAME, '--slot', GBA_SLOT])
+
+
+GBA_MOD = os.path.join(ROOT, 'games/gba-common/mods/example_menu_text')
+
+
+@case('gba_mods', 'GBA: install the example data-patch package (.zip drop), boot: the main menu text is the patch\'s',
+      'gba')
+def _(c):
+    z = fixtures.mod_zip(GBA_MOD, os.path.join(c.work, 'example_menu_text.zip'))
+    gba_save(c)
+    s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='installed')
+    order = open(os.path.join(c.ud, 'mods', GAME, 'loadorder.txt')).read()
+    assert 'example_menu_text' in order, order
+    # The title, Start: the main menu (CONTINUE / NEW GAME / OPTION, patched).
+    log = c.run('boot=app,frames=860,press=410:start:5;710:start:5,script=0:move:1:1', step='menu',
+                args=['--game', GAME, '--slot', GBA_SLOT])
+    assert 'modfs: %s.ips from \'example_menu_text\' applied' % GAME in log, 'the patch was not applied'
+
+
+@case('gba_carts', 'GBA: seal the enabled package as a cart, bind it to the slot, boot it', 'gba')
+def _(c):
+    z = fixtures.mod_zip(GBA_MOD, os.path.join(c.work, 'example_menu_text.zip'))
+    gba_save(c)
+    s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='0-installed')
+    s3, f3 = keys(4, ['F10'] + opt_downs('Mods...') + ['Return', 'Down', 'Down', 'Return'])  # package, Install, Seal
+    c.run('boot=app,frames=%d,script=%s;%d:text:Menu Cart;%d:key:Return' % (f3 + 10, s3, f3 + 2, f3 + 4),
+          step='1-sealed')
+    assert glob.glob(os.path.join(c.ud, 'carts', GAME, '*.cart')), os.listdir(c.ud)
+    # Slots (Continue, New, House, Import) -> House -> Cart: none -> Menu Cart.
+    s, f = gba_card(['Down', 'Down', 'Return'] + ['Down'] * 5 + ['Return'])
+    c.run('boot=app,frames=%d,script=%s' % (f + 4, s), step='2-bound')
+    assert os.path.exists(os.path.join(c.ud, 'saves', GAME, GBA_SLOT + '.cart')), os.listdir(c.ud)
+    # Loose packages off: the cart alone brings the patch.
+    os.remove(os.path.join(c.ud, 'mods', GAME, 'loadorder.txt'))
+    log = c.run('boot=app,frames=860,press=410:start:5;710:start:5,script=0:move:1:1', step='3-boot',
+                args=['--game', GAME, '--slot', GBA_SLOT])
+    assert 'modfs: %s.ips from \'example_menu_text\' applied' % GAME in log, 'the cart did not apply the patch'
+
+
+@case('gba_slots', 'GBA: launcher card -> slots page, import a .sav (128 KiB), Continue', 'gba')
+def _(c):
+    c.need(GBA_ROMS[GAME], GBA_HOUSE[GAME])
+    c.fresh([GAME])
+    src = os.path.join(c.work, 'House.sav')
+    shutil.copyfile(GBA_HOUSE[GAME], src)
+    s, f = gba_card(['Down', 'Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:dialog:%s' % (f + 16, s, f + 4, src), step='1-import')
+    assert os.path.getsize(os.path.join(c.ud, 'saves', GAME, 'House.sav')) == 131072
+    # Continue (the first row) boots the slot; CONTINUE on the title.
+    s, _ = gba_card(['Return'])
+    c.run('boot=app,frames=1200,press=%s,script=%s' % (GBA_CONTINUE, s), step='2-continue')
+
+
+@case('gba_launch', 'GBA: nativeplat:// URL to a GBA slot', 'gba')
+def _(c):
+    gba_save(c)
+    log = c.run('boot=app,frames=300,script=4:drop:nativeplat://launch?game=%s&slot=%s' % (GAME, GBA_SLOT),
+                step='url', args=['--launcher'])
+    assert 'game=%s' % GAME in log and 'view=game' in log, log[-1500:]
+
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--zip', default=os.path.join(ROOT, 'build/dist/nativeplat-macos-arm64.zip'))
     ap.add_argument('--app', help='use this nativeplat.app instead of unzipping --zip')
     ap.add_argument('--list', action='store_true')
-    ap.add_argument('--game', default='platinum', choices=sorted(ROMS),
-                    help='the game in-game cases run; evidence names get a <game>- prefix unless platinum')
+    ap.add_argument('--game', default='platinum', choices=sorted(ROMS) + sorted(GBA_ROMS),
+                    help='the game in-game cases run; evidence names get a <game>- prefix unless platinum; '
+                    'a GBA game runs the GBA cases')
     ap.add_argument('cases', nargs='*')
     a = ap.parse_args()
     global GAME
     GAME = a.game
     if a.list:
-        for n, f, _ in CASES:
-            print('%-24s %s' % (n, f))
+        for n, f, _, con in CASES:
+            print('%-24s %-3s %s' % (n, con, f))
         return 0
     os.makedirs(EVID, exist_ok=True)
     tmp = tempfile.mkdtemp(prefix='np-macmatrix.')
@@ -763,8 +971,10 @@ def main():
     table_path = os.path.join(EVID, 'matrix.json')
     table = json.load(open(table_path)) if os.path.exists(table_path) else {}
     rc = 0
-    for name, feature, fn in CASES:
+    for name, feature, fn, console in CASES:
         if a.cases and name not in a.cases:
+            continue
+        if console != ('gba' if GAME in GBA_ROMS else 'ds'):
             continue
         if GAME != 'platinum':
             name = GAME + '-' + name

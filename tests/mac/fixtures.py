@@ -33,8 +33,9 @@ def png(path, w, h, pixel):
 
 # ---- Delta skin -------------------------------------------------------------
 
-def _skin_rep(w, h, portrait):
-    """Items and screens for one orientation, in mapping points."""
+def _skin_rep(w, h, portrait, gba=False):
+    """Items and screens for one orientation, in mapping points; a GBA skin
+    has one 240x160 screen and no X, Y or touch screen."""
     if portrait:
         top = {'x': 0, 'y': 40, 'width': w, 'height': w * 0.75}
         bot = {'x': 0, 'y': 40 + w * 0.75, 'width': w, 'height': w * 0.75}
@@ -76,6 +77,11 @@ def _skin_rep(w, h, portrait):
     ]
     screens = [{'inputFrame': {'x': 0, 'y': 0, 'width': 256, 'height': 192}, 'outputFrame': top},
                {'inputFrame': {'x': 0, 'y': 192, 'width': 256, 'height': 192}, 'outputFrame': bot}]
+    if gba:
+        items = [it for it in items if it['inputs'] not in (['x'], ['y']) and 'touchScreenX' not in str(it['inputs'])]
+        sh = min(h * 0.5 if not portrait else h, w * 2 / 3)  # 3:2
+        out = {'x': w / 2 - sh * 0.75, 'y': 40 if portrait else 0, 'width': sh * 1.5, 'height': sh}
+        screens = [{'inputFrame': {'x': 0, 'y': 0, 'width': 240, 'height': 160}, 'outputFrame': out}]
     return items, screens
 
 
@@ -101,19 +107,19 @@ def _skin_art(path, w, h, items, screens):
     png(path, int(w), int(h), pixel)
 
 
-def deltaskin(path, name='nativeplat Test Skin'):
-    """A hand-made DS skin: iphone/edgeToEdge portrait (390x844) and
-    landscape (844x390), PNG art drawn here."""
+def deltaskin(path, name='nativeplat Test Skin', gba=False):
+    """A hand-made DS (or GBA) skin: iphone/edgeToEdge portrait (390x844)
+    and landscape (844x390), PNG art drawn here."""
     reps = {}
     art = {}
     for orient, (w, h) in (('portrait', (390, 844)), ('landscape', (844, 390))):
-        items, screens = _skin_rep(w, h, orient == 'portrait')
+        items, screens = _skin_rep(w, h, orient == 'portrait', gba)
         fn = 'np_%s.png' % orient
         art[fn] = (w, h, items, screens)
         reps[orient] = {'assets': {'medium': fn}, 'items': items, 'screens': screens,
                         'mappingSize': {'width': w, 'height': h}, 'translucent': False}
-    info = {'name': name, 'identifier': 'org.nativeplat.testskin',
-            'gameTypeIdentifier': 'com.rileytestut.delta.game.ds', 'debug': False,
+    info = {'name': name, 'identifier': 'org.nativeplat.testskin' + ('.gba' if gba else ''),
+            'gameTypeIdentifier': 'com.rileytestut.delta.game.' + ('gba' if gba else 'ds'), 'debug': False,
             'representations': {'iphone': {'edgeToEdge': reps}}}
     tmp = path + '.d'
     os.makedirs(tmp, exist_ok=True)

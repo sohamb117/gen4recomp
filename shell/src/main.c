@@ -207,6 +207,8 @@ void np_app_toast(np_app *app, const char *fmt, ...)
     SDL_vsnprintf(app->toast, sizeof app->toast, fmt, ap);
     va_end(ap);
     app->toast_until = SDL_GetTicksNS() + 3 * SDL_NS_PER_SECOND;
+    if (app->autotest.active) /* the run's log is its evidence */
+        SDL_Log("autotest: frame %d toast: %s", app->autotest.ran, app->toast);
 }
 
 int np_app_speed(const np_app *app)
