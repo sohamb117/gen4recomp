@@ -37,8 +37,12 @@ shot = "attendant"
 [[step]]
 do = "wait_frames"
 n = 120
-# PHASE2: rental pick screen (touch/menu) and swap prompts are unrecorded; A-only must accept the default
-# rental picks [INFERENCE]; rental slot-0 moves are arbitrary, so A-only may stall.
+# PHASE2 (measured with tools/pt_poke.py on start.sav): A at 40-frame gaps goes 'Welcome', 'designed for a single
+# Trainer', SINGLE BATTLE, LEVEL 50, save YES, overwrite YES, 'saved', 'Right this way', the walk to the rental
+# room (~f2440), 'I've done a bit of research...', 'we will hold your Pokemon...', then the rental screen
+# (~f2750): six balls in a row, 'Please choose Pokemon no. 1.'; A on a ball opens SUMMARY / RENT / CANCEL with
+# the cursor on SUMMARY, so blind A opens the summary page. Next: per pick DOWN, A (RENT), RIGHT to the next
+# ball, three times, then the confirm prompt; swap prompts after each win (NO keeps the team).
 
 [expect]
 map = 562

@@ -2,9 +2,8 @@
 # Start: BATTLE_TOWER (15,6) below the single attendant (15,5). End: Tower lobby after the 7th win.
 # Frontier level cap 50 is [INFERENCE: not located in source].
 title = "Battle Tower: first single set"
-status = "planned"
 priority = "P1"
-estimate = 40000
+estimate = 45077
 refs = [
   "res/field/events/events_battle_tower.json",
   "res/field/scripts/scripts_battle_tower.s",
@@ -27,24 +26,183 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 60000
+frames = 67700
 
 [[step]]
 do = "press"
 keys = "A"
-note = "single attendant (15,5)"
-shot = "attendant"
+gap = 40
+times = 3
+note = "single attendant (15,5): 'Welcome to the Battle Tower!', 'take the Battle Room challenge?' CHALLENGE (first entry)"
+shot = "challenge"
 
 [[step]]
-do = "wait_frames"
-n = 120
-# PHASE2: lobby menu (Challenge -> Single -> choose 3 in the party screen -> 'save before entering' YES,
-# BattleTower_SingleAttendant / HealAndSaveBeforeEnteringBattleRoom) is unrecorded. Then 7 x
-# (wait_battle, auto_battle, advance_text); a fainted lead is replaced by the game's prompt; a loss ends the run.
+do = "press"
+keys = "A"
+gap = 40
+note = "'Which Battle Room? Single or Double?' SINGLE BATTLE (first entry)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 100
+note = "'Please select the Pokemon you wish to enter.' -> the party select screen"
+shot = "select"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "GARCHOMP (slot 0): A, ENTER -> FIRST"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "METAGROSS (slot 1): ENTER -> SECOND"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "SALAMENCE (slot 2): ENTER -> THIRD; the cursor jumps to CONFIRM"
+shot = "three-entered"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONFIRM -> 'Would you like to save the game?'"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "YES, overwrite YES, 'saved', 'I will now show you to the Battle Room', the elevator and the corridor; stops at the first battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 1 of 7"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: 'Would you like to continue?' A = CONTINUE (the first entry); the party is healed; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 2 of 7"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: 'Would you like to continue?' A = CONTINUE (the first entry); the party is healed; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 3 of 7"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: 'Would you like to continue?' A = CONTINUE (the first entry); the party is healed; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 4 of 7"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: 'Would you like to continue?' A = CONTINUE (the first entry); the party is healed; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 5 of 7"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: 'Would you like to continue?' A = CONTINUE (the first entry); the party is healed; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 6 of 7"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: 'Would you like to continue?' A = CONTINUE (the first entry); the party is healed; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 7 of 7"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the seventh win: back to the lobby, BP awarded"
+
+[[step]]
+do = "wait_field"
+max = 3000
+shot = "lobby"
 
 [expect]
 map = 326
 battles = 7
-# PHASE2: reader-ext Battle Points (WifiBattleTowerRecord_UpdateBattlePoints, wifi_battle_tower_save.c:156-176)
-# == 3 after the first solo set (unk_02049D08.c:750-787) or > 0; np_save4 has no BP field. Meanwhile
-# the in-run Common_SaveGame saves advance the save counter.
+# game records (generated/game_records.txt; np_save4 game_records): RECORD_BATTLE_TOWER_CHALLENGES (15) and
+# RECORD_BATTLE_TOWER_VICTORIES (29) count the set, RECORD_BATTLE_POINTS_RECEIVED (68) the BP
+save = ['s["game_records"][15] >= 1', 's["game_records"][29] >= 7', 's["game_records"][68] >= 3']
