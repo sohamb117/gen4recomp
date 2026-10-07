@@ -61,6 +61,8 @@ class Module(object):
         # BL targets proven to be inside their caller: they tear down a frame
         # they never built (see fold_fragments)
         self.fragments = set()
+        # why the module's bytes are left as data, or None
+        self.opaque = None
 
     # -------------------------------------------------------------- bytes
     def mem(self, addr, n):
@@ -296,6 +298,8 @@ class Module(object):
     def run(self, seeds, hints=(), pointer_scan=True, gap_fill=True):
         """seeds: [(addr, thumb, source)] taken as given; hints: pointer-like
         values from other modules, validated like the module's own words."""
+        if self.opaque:
+            return
         for a, t, s in seeds:
             self.add(a, t, s)
         self.descend()
@@ -320,6 +324,27 @@ class Module(object):
         self.prune_calls()
         self.reexplore_stale()
         self.check_secure_area()
+        self.check_self_modifying()
+
+    def check_self_modifying(self):
+        """An overlay that invalidates instruction-cache lines itself (the
+        SDK's IC_* live in the static) rewrites its own code when it runs:
+        the bytes at rest are not the code that executes, which no static
+        recompiler can translate, and in a retail cartridge such an overlay
+        is a protection scheme. It is not decoded here: the whole module
+        stays opaque data, so a call into it reaches run-time dispatch and
+        stops there by name."""
+        if not self.name.startswith("ov"):
+            return
+        for f in self.funcs.values():
+            for ia, ins in f.insns.items():
+                t = ins.text.replace(" ", "")
+                if t.startswith("mcrp15,0,") and t.endswith(",c7,c5,1"):
+                    self.opaque = ("self-modifying (invalidates I-cache lines "
+                                   "at 0x%08X)" % ia)
+                    self.funcs = {}
+                    self.external_calls = []
+                    return
 
     def check_secure_area(self):
         """The ARM9 secure area (the static's first 2 KB) is the one region
@@ -662,12 +687,17 @@ class Module(object):
                 del self.funcs[a]
 
     def resolve_overlaps(self):
-        """Drop functions that start inside another function's instructions."""
+        """Drop functions that start inside another function's instructions
+        or literal pool (a gap filled before the pool's owner was explored
+        decodes the pool's words as Thumb)."""
         owner = {}
         for a in sorted(self.funcs):
             f = self.funcs[a]
             for ia, ins in f.insns.items():
                 owner.setdefault(ia, a)
+            for la, n in f.lits.items():
+                for k in range(0, max(n, 2), 2):
+                    owner.setdefault((la & ~1) + k, a)
         for a in list(self.funcs):
             o = owner.get(a)
             if o is not None and o != a and self.funcs[a].source in ("pointer", "gap"):

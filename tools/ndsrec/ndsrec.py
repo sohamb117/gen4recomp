@@ -74,12 +74,16 @@ def cmd_info(a):
         tot["thumb"] += nt
         tot["insns"] += ni
         tot["invalid"] += bad
-        if a.verbose:
+        if m.opaque:
+            tot["opaque"] += 1
+            print("%-6s opaque, left as data: %s" % (name, m.opaque))
+        elif a.verbose:
             print("%-6s functions %6d (thumb %6d)  instructions %7d  invalid %d" % (
                 name, len(m.funcs), nt, ni, bad))
     print("discovery: %d modules, %d functions (%d Thumb, %d ARM), %d instructions, "
-          "%d undecodable" % (len(res), tot["funcs"], tot["thumb"],
-                              tot["funcs"] - tot["thumb"], tot["insns"], tot["invalid"]))
+          "%d undecodable, %d opaque" % (len(res), tot["funcs"], tot["thumb"],
+                                         tot["funcs"] - tot["thumb"], tot["insns"],
+                                         tot["invalid"], tot["opaque"]))
 
 
 def cmd_emit(a):
@@ -120,6 +124,9 @@ def cmd_emit(a):
                                  sum(len(res[n].funcs) for n in mods),
                                  stats.get("insns", 0), resolver.bound_cross,
                                  resolver.dyn))
+    for n in mods:
+        if res[n].opaque:
+            report += "opaque %s: %s\n" % (n, res[n].opaque)
     with open(os.path.join(a.out, "emit.txt"), "w") as fh:
         fh.write(report)
     sys.stdout.write(report)
