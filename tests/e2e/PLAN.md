@@ -1896,11 +1896,11 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 25 milestones, ~141273 frames estimated
+### Side systems: 25 milestones, ~142311 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
-| [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 5500 | `start.recipe` | MAP_UNDERGROUND | planned |
+| [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 6538 | `start.recipe` | MAP_UNDERGROUND | passing |
 | [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 6000 | `start.recipe` | MAP_UNDERGROUND | planned |
 | [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 7000 | `start.recipe` | MAP_UNDERGROUND | planned |
 | [93-battle-zone-ferry-fight-area](diamond/93-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: Snowpoint ferry and Fight Area arrival | P1 | both | 6000 | prev + `start.recipe` | MAP_FIGHT_AREA | passing |
@@ -1931,8 +1931,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; warp MAP_ETERNA_UNDERGROUND_MAN_HOUSE 0; lab state lines: 1 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map MAP_UNDERGROUND; flags set 0x79, 0x113, 0x111; 1 save check(s)
-- frames: estimate 5500, budget 8300
+- end state: map MAP_UNDERGROUND; flags set 0x79, 0x113, 0x111, 0x96E; 1 save check(s)
+- frames: estimate 6538, budget 9900
 - refs: maps.h:88; maps.h:6; zone_event 0083 object 2; zone_event 0083 warp 0; zone_event 0064 warp 11; scr_seq 0089 @0x001E-0x003A; scr_seq 0089 @0x0041-0x0050; scr_seq 0089 @0x0054; scr_seq 0089 @0x0058; scr_seq 0089 @0x005F-0x0074; scr_seq 0089 @0x0098; scr_seq 0089 @0x015E-0x01D3; scr_seq 0089 @0x01D9-0x01E8; scr_seq 0089 @0x00B9; scr_seq 0089 @0x011C; scr_seq 0205 @0x09C1; msg 0097 #0; msg 0097 #4; msg 0097 #5; games/diamond/include/constants/items.h:653; games/diamond/arm9/src/unk_0205EC84.c:96; games/diamond/arm9/overlays/18/asm/overlay_18.s:8116; games/diamond/arm9/asm/unk_0205F314.s:86-93
 
 #### diamond/91-underground-dig-spheres-traps — Underground: trap reward, digging and burying Spheres
@@ -2831,11 +2831,11 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 25 milestones, ~141273 frames estimated
+### Side systems: 25 milestones, ~142311 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
-| [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 5500 | `start.recipe` | MAP_UNDERGROUND | planned |
+| [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 6538 | `start.recipe` | MAP_UNDERGROUND | passing |
 | [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 6000 | `start.recipe` | MAP_UNDERGROUND | planned |
 | [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 7000 | `start.recipe` | MAP_UNDERGROUND | planned |
 | [93-battle-zone-ferry-fight-area](diamond/93-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: Snowpoint ferry and Fight Area arrival | P1 | both | 6000 | prev + `start.recipe` | MAP_FIGHT_AREA | passing |
@@ -2866,8 +2866,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; warp MAP_ETERNA_UNDERGROUND_MAN_HOUSE 0; lab state lines: 1 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map MAP_UNDERGROUND; flags set 0x79, 0x113, 0x111; 1 save check(s)
-- frames: estimate 5500, budget 8300
+- end state: map MAP_UNDERGROUND; flags set 0x79, 0x113, 0x111, 0x96E; 1 save check(s)
+- frames: estimate 6538, budget 9900
 - refs: maps.h:88; maps.h:6; zone_event 0083 object 2; zone_event 0083 warp 0; zone_event 0064 warp 11; scr_seq 0089 @0x001E-0x003A; scr_seq 0089 @0x0041-0x0050; scr_seq 0089 @0x0054; scr_seq 0089 @0x0058; scr_seq 0089 @0x005F-0x0074; scr_seq 0089 @0x0098; scr_seq 0089 @0x015E-0x01D3; scr_seq 0089 @0x01D9-0x01E8; scr_seq 0089 @0x00B9; scr_seq 0089 @0x011C; scr_seq 0205 @0x09C1; msg 0097 #0; msg 0097 #4; msg 0097 #5; games/diamond/include/constants/items.h:653; games/diamond/arm9/src/unk_0205EC84.c:96; games/diamond/arm9/overlays/18/asm/overlay_18.s:8116; games/diamond/arm9/asm/unk_0205F314.s:86-93
 
 #### pearl/91-underground-dig-spheres-traps — Underground: trap reward, digging and burying Spheres

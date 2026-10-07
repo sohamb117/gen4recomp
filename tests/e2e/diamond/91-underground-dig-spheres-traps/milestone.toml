@@ -89,3 +89,8 @@ map = "MAP_UNDERGROUND"
 vars = { "0x40B6" = 1 }
 flags = ["0x111", "0x96E", "0x96F", "0x970"]
 # PHASE2: traps are in the Underground save block, not in the np_save4 dump (reader-ext).
+# PHASE2 lead (SysDP2): descent = 90's bag/Y path + YES comms, YES save, YES overwrite; the UG field never sets
+# field_ready (advance_text/wait_field do not work there) and refuses the quick save (result 2): GO UP + descend
+# again to save, [run] save = "game". Mining spots are the 3-byte condensed table (x lo, x hi|z hi<<4, z lo) at
+# guest 0x0227115B after the first arrival (peek): nearest the Eterna entry (168,264) are (148,261), (147,261),
+# (146,261), (145,267), (139,261) - walls; face one from a free neighbour and A starts the dig (ov18_0223AC24 sets 0x96F).

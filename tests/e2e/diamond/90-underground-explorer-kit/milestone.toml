@@ -2,10 +2,9 @@
 # to enter the Underground. D/P has no lab underground hook (Platinum's PC_LAB_UNDERGROUND): input-driven.
 # Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door (warp 0, (4,8)). End: MAP_UNDERGROUND (2).
 title = "Underground: Explorer Kit and first entry"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 5500
+estimate = 6538
 refs = [
   "maps.h:88",
   "maps.h:6",
@@ -36,7 +35,9 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 8300
+frames = 9900
+# no end quick save: the Underground refuses it (quicksave_result 2); the second descent's forced save is the end save
+save = "game"
 
 [[step]]
 do = "walk_to"
@@ -65,14 +66,163 @@ map = "MAP_ETERNA"
 [[step]]
 do = "wait_field"
 shot = "eterna"
-# PHASE2: the gift does not register the kit; record the D/P bag path (X > BAG > Key Items cursor to
-# ITEM_EXPLORER_KIT 428 > USE), then the descent prompts ([INFERENCE] comms confirm + forced save as in
-# Platinum; not located in the D/P decomp) and wait_map MAP_UNDERGROUND. The kit only works outdoors
-# (msg 97 #5). Arrival runs sub_0205EDAC -> SetFlag 0x96E (unk_0205EC84.c:96, caller overlay_18.s:8116).
+
+# The kit from the bag: the start menu without a Pokedex is POKEMON, BAG, <player>, SAVE, OPTIONS, EXIT with the
+# cursor on POKEMON; the bag opens on ITEMS and LEFT wraps to KEY ITEMS, whose first row is the kit; A, USE.
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 8
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 40
+shot = "key-items"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "USE: 'DS Wireless Communications will be launched.' YES/NO"
+shot = "comms"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "YES -> the forced 'Would you like to save the game?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "YES -> 'There is already a saved file. Is it OK to overwrite it?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES: the save, the hole, MAP_UNDERGROUND"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERGROUND"
+max = 1500
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "roark"
+
+# Roark's first-visit talk. The Underground field never reports field_ready (the probe's field state), so
+# advance_text cannot see its end: A at a spacing that covers every page, then the UG menu.
+[[step]]
+do = "press"
+keys = "A"
+times = 60
+gap = 20
+
+# GO UP (the UG menu: TRAPS, SPHERES, GOODS, TREASURES, <player>, GO UP, CLOSE) and YES to 'return to the
+# surface from where you entered?'; then down again so that the descent's save holds 0x96E, set on arrival.
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "DOWN"
+times = 5
+gap = 8
+shot = "go-up"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+max = 1500
+
+[[step]]
+do = "wait_field"
+shot = "surface"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+shot = "menu-again"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 8
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "the start menu is back on POKEMON after the Underground; the bag keeps KEY ITEMS and the kit's row"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "bag-again"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERGROUND"
+max = 1500
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "underground"
 
 [expect]
 map = "MAP_UNDERGROUND"
-flags = ["0x79", "0x113", "0x111"]
+# 0x96E: the first arrival (sub_0205EDAC, unk_0205EC84.c:96, caller overlay_18.s:8116), saved by the second descent
+flags = ["0x79", "0x113", "0x111", "0x96E"]
 save = ['any(i["item"] == 428 for p in s["bag"].values() for i in p)']   # ITEM_EXPLORER_KIT
-# PHASE2: flag 0x96E (entered) is set in RAM on arrival; it is in the save only if the end quicksave
-# works inside the Underground [INFERENCE] - add "0x96E" to flags once proven.
