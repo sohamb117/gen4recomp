@@ -51,23 +51,26 @@ gate (`tests/dp/regress.sh` 11/11, `tests/gameplay/run.sh --game platinum`).
 
 ## Next steps
 
-1. Packaged app: build the macOS zip and the Windows zig cross-build with
-   the three GBA cores (`tools/package_macos.sh --test`,
-   `tools/package_windows.sh --test`) and run `tests/mac/feature_matrix.py`
-   rows on a GBA game (slots, import/export, quick save/load, snapshots,
-   rewind, speed, volume, instant text, a GBA `.deltaskin`).
-2. Touch pad: hide X/Y for GBA games in `touchpad.c`/`touchlayout.c`
-   (draw, hit test, editor selection).
-3. Mods for GBA: the guest reads no `/content`; a GBA package would patch
-   ROM data (only data: the code is compiled), e.g. an IPS in the package
-   applied before the ROM copy in `gba_main.c`. Mystery Gift / e-Reader:
-   decide whether an offline event writer (save editor) is in scope.
-4. Link cable: model SIO multi-player (SIOCNT/SIOMLT_SEND/RECV, the serial
-   IRQ) in `gba_io.c` over `np_host_net_*`, with `--lockstep` for a
-   deterministic two-instance trade test (tests/link style). Gen 3's
-   link.c exchanges 8 halfwords per frame per player with handshakes, so a
-   one-frame-delayed bus model is the first thing to try.
-5. OBJ mosaic approximate.
+1. Link trade test (tests/link style): `tools/gba/gen3_warp.py` turns a
+   house save into one that CONTINUEs into Oldale's Pokemon Center 2F
+   (`--map 2.3 --pos 7,4` in R/S, the trade attendant above; Emerald's
+   direct-corner attendant is at (10,2)) with a party of two and
+   FLAG_SYS_POKEDEX_GET (`--sb1-bit 0x1320.1`; Emerald `0x137C.1`). Two
+   instances: `np_headless ... --net 47210 --net-id 0x111111 --net-wait 20
+   -e PC_GBA_LINK_WAIT=1` and the same with 47211 / 0x222222 (the lower id
+   is the parent). Schedule so far (both): 400/700 start, 900/1000 a,
+   1150 up, A every 80 frames from 1200 to 3100: the link comes up at
+   ~2433, the parent's "Start link with 2 players" is confirmed, both warp
+   into the Trade Center at 3165 (map 6425) and see each other. Chairs are
+   the triggers at (4,5) and (7,5); players arrive at the door (5,8)/(6,8):
+   next try up 1 tile, then left (parent) / right (child), then up 2; then
+   the trade screens. The child unplugs at the end of a run because the
+   parent stops first (give the parent a few more frames).
+2. Package: `tools/package_macos.sh --test` and the Windows zig build with
+   all six cores; run `tests/mac/feature_matrix.py --game sapphire|emerald`
+   on the packaged app (Ruby ran on build/rse/shell's bundle: all 12 GBA
+   cases ok); zips to ~/Downloads/nativeplat/ named with main's sha.
+3. OBJ mosaic approximate.
 
 ## Commands
 

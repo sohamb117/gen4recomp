@@ -137,31 +137,33 @@ with Platinum data and run the same code for every game.
 ## Ruby / Sapphire / Emerald (GBA)
 
 Status as above; **core** rows are shown headless (`np_headless`,
-`tests/rse/first_battle.sh`, `tests/dp/regress.sh` e-/r-/s- cases), none
-yet in the packaged app. Evidence sheets are in `build/evidence/rse/`
-(outside git). Branch rse, 2026-10-07.
+`tests/rse/first_battle.sh`, `tests/dp/regress.sh` e-/r-/s- cases); **app**
+rows ran in the real macOS app bundle (`tests/mac/feature_matrix.py --app
+build/rse/shell/nativeplat.app --game ruby`, the GBA cases; Sapphire and
+Emerald not yet run there). Evidence is in `build/evidence/` (outside git).
+Branch rse, 2026-10-07.
 
 | Feature | GBA equivalent | Ruby | Sapphire | Emerald | Evidence |
 |---|---|---|---|---|---|
 | Boot, intro, new game | Boot to Littleroot and the house | core | core | core | regress r-/s-/e-littleroot |
 | First battle | Route 101: Birch's bag, Torchic, the wild battle won | core (Poochyena; lab, map 260) | core (Poochyena) | core (Zigzagoon) | first_battle.sh; `*-01-first-battle.png` |
 | Normal save / CONTINUE | The game's own flash save, CONTINUE from the title | core | core | core | first_battle.sh (continue) |
-| F1 quick save | The game's own save from the field (refused elsewhere) | core | core | core | first_battle.sh (quicksave, legs 1-2) |
-| Snapshots, rewind | Core snapshots (`np_core_state_*`), 17.5 MB each | core (`--state-test` 4/4) | core (4/4) | core (4/4) | first_battle.sh (state) |
-| Fast-forward | Shell speed keys, game-independent | shell | shell | shell |  |
+| F1 quick save, F2 F2 quick load | The game's own save from the field (refused elsewhere); quick load reboots from it | app (toast "Saved", slot changed; F2 F2 rebooted) | core | core | first_battle.sh; `ruby-gba_quicksave-*.png` |
+| Snapshots, rewind | Core snapshots (`np_core_state_*`), 17.5 MB each | app (F5/F7, F6 slot 2, rewind depth) | core (4/4) | core (4/4) | first_battle.sh (state); `ruby-gba_snapshots-*.png` |
+| Fast-forward, speed | Shell speed keys, game-independent | app (4x and G toggle: guest frames > iterations) | shell | shell | `ruby-gba_speed-*.png` |
 | Save slots, import/export | 128 KiB flash `.sav` (mGBA/VBA), mGBA's +16-byte RTC record dropped | shell (unit-tested) | shell | shell | test_shell (sav_footer) |
-| Screen layout | One 240x160 screen: rotation, integer/fit scale, effects | shell | shell | shell | `*-shell-autotest.png` |
+| Screen layout | One 240x160 screen: rotation, integer/fit scale, effects | app (fit, rotation 90, integer+linear, LCD) | shell | shell | `ruby-gba_layouts-*.png` |
 | Render scale / widescreen 3D | No 3D on the GBA | n/a | n/a | n/a |  |
 | Music / SFX volume | Per m4a channel owner: BGM player's tracks (DirectSound and PSG) vs the SE players and cries | core (battle: both 256 rms 2267; BGM 0: 998; SE 0: 2035; both 0: 0) | core (same mixer) | core (same mixer) | np_headless -o bgm_volume/se_volume |
 | Cries | m4a DPCM (compressed) and reversed voices mixed | core (DPCM decode bit-exact vs cry_poochyena.wav) | core | core |  |
 | Instant text | `NP_OPT_TEXT_INSTANT`: text printers print to the next wait (patches/text.c.patch) | core | core | core | `ruby-instant-text.png`, `emerald-instant-text.png` |
-| Touch skins | Delta `.deltaskin` with `com.rileytestut.delta.game.gba`, own choice per console (`skin_gba`) | shell (unit-tested parse) | shell | shell | test_shell (skin) |
-| On-screen touch pad, editor | Same layout as the DS games (X/Y drawn but unused on the GBA) | wip | wip | wip |  |
+| Touch skins | Delta `.deltaskin` with `com.rileytestut.delta.game.gba`, own choice per console (`skin_gba`) | app (dropped GBA skin, landscape and portrait) | shell | shell | `ruby-gba_skin-*.png` |
+| On-screen touch pad, editor | The DS layout without X/Y (not drawn, hit, picked or selected: `NP_TC_HIDE_GBA`) | app (pad A/B only; Tab skips X/Y; layout saved) | shell (unit-tested) | shell | `ruby-gba_touch-*.png`, test_shell |
 | Shell autotest | `NP_AUTOTEST rom=` on the real renderer | shell | shell | shell | `*-shell-autotest.png` |
-| Mods / custom carts | Content packages are DS file-system overlays; the GBA guest reads no `/content` | no | no | no |  |
-| Mystery Gift / e-Reader | Mystery Event / e-Reader need the link cable or a card reader | no | no | no |  |
-| Link cable trades/battles | SIO multi-player over the lockstep link layer | no | no | no |  |
-| macOS app / Windows build | Packaging the GBA cores | no (not re-run) | no | no |  |
+| Mods / custom carts | Data packages: `mod.toml` + `<game>.ips` applied to the ROM at boot (`gba_mods.c`; the code is compiled, so data only); per-game `mods/<game>/`, carts pin the set | app (install .zip, menu patched; cart sealed, bound, boots the patch) | core (menu labels patched) | core | `*-mod-menu.png` vs `*-vanilla-menu.png`, `ruby-gba_mods-*`, `ruby-gba_carts-*` |
+| Mystery Gift / e-Reader | n/a: Mystery Event needs an e-Reader/link partner distributing events that no longer exist; no offline event writer is in scope |  n/a | n/a | n/a |  |
+| Link cable trades/battles | SIO multi-player as an exact synchronous bus over `np_host_net_*` (`gba_link.c`; LAN/relay/loopback) | core: Ruby+Sapphire link up, both enter the Trade Center and see each other; the trade itself not yet driven | core (same run) | not run |  `build/evidence/rse/link-r*.png` |
+| macOS app / Windows build | Packaging the GBA cores | not run this session | no | no |  |
 
 ## n/a, with reasons
 
