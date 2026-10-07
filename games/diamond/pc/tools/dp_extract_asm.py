@@ -183,9 +183,30 @@ class Folder(object):
     def __init__(self, cc, src, workdir):
         self.cc = cc
         with open(src, errors="replace") as fh:
-            self.includes = "\n".join(self.INCLUDE.findall(fh.read()))
+            text = fh.read()
+        self.includes = "\n".join(self.INCLUDE.findall(text))
+        # Retried with the TU's own top-level typedefs when the includes
+        # alone do not resolve it: an immediate may name a type the .c
+        # defines itself (HG/SS's os_exception.c: `#OSiExContext.debug[1]`).
+        self.local = "\n".join(self.typedefs(text))
         self.workdir = workdir
         self.cache = {}
+
+    @staticmethod
+    def typedefs(text):
+        out = []
+        for m in re.finditer(r"^typedef\b", text, re.M):
+            depth = 0
+            for i in range(m.start(), len(text)):
+                c = text[i]
+                if c == "{":
+                    depth += 1
+                elif c == "}":
+                    depth -= 1
+                elif c == ";" and depth == 0:
+                    out.append(text[m.start():i + 1])
+                    break
+        return out
 
     def probe(self, expr):
         if expr in self.cache:
@@ -195,18 +216,23 @@ class Folder(object):
         # os_exception.c: `#OSiExContext.context.r[4]`): offsetof in C.
         c_expr = MEMBER_OFFSET.sub(
             lambda m: "__builtin_offsetof(%s, %s)" % (m.group(1), m.group(2)), expr)
+        v = self.evaluate(self.includes, c_expr)
+        if v is None and self.local:
+            v = self.evaluate(self.includes + "\n" + self.local, c_expr)
+        self.cache[expr] = v
+        return v
+
+    def evaluate(self, prelude, c_expr):
         fd, path = tempfile.mkstemp(suffix=".c", prefix=".dp_imm_", dir=self.workdir)
         with os.fdopen(fd, "w") as fh:
             fh.write("%s\nconst unsigned long __dp_imm = (unsigned long)(%s);\n"
-                     % (self.includes, c_expr))
+                     % (prelude, c_expr))
         r = subprocess.run(shlex.split(self.cc) + ["-S", "-o", "-", path],
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            universal_newlines=True)
         os.unlink(path)
         m = self.INT32.search(r.stdout) if r.returncode == 0 else None
-        v = "0x%X" % (int(m.group(1)) & 0xFFFFFFFF) if m else None
-        self.cache[expr] = v
-        return v
+        return "0x%X" % (int(m.group(1)) & 0xFFFFFFFF) if m else None
 
     def line(self, line):
         m = WORD.match(line)
