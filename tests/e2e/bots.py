@@ -43,6 +43,19 @@ FLEE_TRIES = 2
 # walk_to's A* cost of a tall-grass tile (a plain tile costs 1)
 GRASS_COST = 6
 
+# Surfable tile behaviors: Platinum src/map_tile_behavior.c sTileBehaviorFlags entries with
+# TILE_BEHAVIOR_FLAG_SURFABLE (0x10-0x15, 0x19, 0x22, 0x2A, 0x50-0x53), the bridges over water left out (they are
+# walked on). D/P's behaviors are the same numbers. 0x13 is the waterfall, climbed (up) with Waterfall.
+SURFABLE = {0x10, 0x11, 0x12, 0x14, 0x15, 0x19, 0x22, 0x2A, 0x50, 0x51, 0x52, 0x53}
+WATERFALL = 0x13
+ROCK_CLIMB = {0x4B: (0, 1), 0x4C: (2, 3)}  # ROCK_CLIMB_N_S / _E_W and the directions that climb them
+# Field-move obstacles among map objects, by graphics id (Platinum generated/object_events_gfx.txt rows 86-87,
+# D/P include/constants/sprites.h:80-81 SPRITE_BREAKROCK/TREE: the same ids). Strength boulders (84) are
+# puzzles: steps push them.
+GFX_ROCK_SMASH, GFX_CUT_TREE = 85, 86
+# A* cost of a field-move tile or object: one interaction plus its scene
+FIELD_MOVE_COST = 4
+
 
 def _int(step, key, default):
     v = step.get(key, default)
@@ -235,7 +248,8 @@ def bot_auto_battle(s, step, ctx):
 class Terrain:
     """What walk_to knows about the map: the probe's window plus what walking taught it."""
 
-    def __init__(self):
+    def __init__(self, surf=False, hm=False):
+        self.surf, self.hm = surf, hm
         b = behaviors()
         self.jump = {b["JUMP_NORTH"]: 0, b["JUMP_SOUTH"]: 1, b["JUMP_WEST"]: 2, b["JUMP_EAST"]: 3}
         self.block_into = {}  # behavior -> directions that cannot enter the tile
@@ -251,6 +265,7 @@ class Terrain:
         self.blocked_edges = {}  # (x, z, d) -> attempts that failed
         self.cells = {}          # (x, z) -> cell, kept across probes of the same map
         self.objects = set()
+        self.hm_objects = set()  # cut trees and Rock Smash rocks, when hm
         # exit mats and the direction that leaves through them (map_tile_behaviors.h)
         self.mats = {}
         for name, d in (("WARP_ENTRANCE_NORTH", 0), ("WARP_ENTRANCE_SOUTH", 1), ("WARP_ENTRANCE_WEST", 2),
@@ -273,6 +288,24 @@ class Terrain:
                 if c & TILE_KNOWN:
                     self.cells[(p.grid_x0 + gx, p.grid_z0 + gz)] = c
         self.objects = {(o[0], o[1]) for o in p.objects}
+        self.hm_objects = {(o[0], o[1]) for o in p.objects if self.hm and o[3] in (GFX_ROCK_SMASH, GFX_CUT_TREE)}
+
+    def field_move(self, x, z, d):
+        """The field move that enters (x, z) moving in direction d ('water', 'waterfall', 'climb', 'object'), if the
+        walk may use one there (`surf`, `hm`); else None."""
+        if (x, z) in self.hm_objects:
+            return "object"
+        c = self.cells.get((x, z))
+        if c is None:
+            return None
+        beh = c & TILE_BEHAVIOR
+        if self.surf and beh in SURFABLE:
+            return "water"
+        if self.surf and beh == WATERFALL and d == 0:
+            return "waterfall"
+        if self.hm and beh in ROCK_CLIMB and d in ROCK_CLIMB[beh]:
+            return "climb"
+        return None
 
     def passable(self, x, z, d, goal):
         """Can the player step into (x, z) moving in direction d? Unknown tiles are hoped passable."""
@@ -280,13 +313,15 @@ class Terrain:
             return False
         if (x, z) == goal:
             return True
+        if self.field_move(x, z, d):
+            return True
         if (x, z) in self.objects:
             return False
         c = self.cells.get((x, z))
         if c is None:
             return True
         beh = c & TILE_BEHAVIOR
-        if c & TILE_COLLISION or beh in self.water:
+        if c & TILE_COLLISION or beh in self.water or beh == WATERFALL:
             return False
         if beh in self.block_into and d in self.block_into[beh]:
             return False
@@ -306,7 +341,11 @@ class Terrain:
                 continue
             if self.passable(nx, nz, d, goal):
                 c = self.cells.get((nx, nz))
-                yield d, nx, nz, GRASS_COST if c is not None and (c & TILE_BEHAVIOR) in self.grass else 1
+                fm = self.field_move(nx, nz, d)
+                if fm in ("object", "climb"):
+                    yield d, nx, nz, FIELD_MOVE_COST
+                else:
+                    yield d, nx, nz, GRASS_COST if c is not None and (c & TILE_BEHAVIOR) in self.grass else 1
 
     def path(self, start, goal, limit=20000):
         """A* over tiles; returns the list of first-step directions, or None."""
@@ -368,6 +407,16 @@ def _field_or_handle(s, step, ctx, limit):
     return in_battles
 
 
+def _use_field_move(s, step, ctx, what, limit):
+    """Facing a field-move tile or object after a bump: A asks (Surf, Waterfall, Rock Climb, Cut, Rock Smash: 'Would
+    you like to use ...?', YES is the cursor's default), A answers YES, then the scene plays until the player is
+    free; a Rock Smash wild battle is fought. Returns the frames spent in battles."""
+    s.note("walk_to: %s ahead, using the field move" % what)
+    s.run(4, "a")
+    bot_advance_text(s, {"max": 2400}, ctx)
+    return _field_or_handle(s, step, ctx, limit)
+
+
 def bot_walk_to(s, step, ctx):
     """Walk to tile (x, z): A* over the probe's terrain, replanning as it learns; warps by walking into them."""
     goal = (int(step["x"]), int(step["z"]))
@@ -381,7 +430,8 @@ def bot_walk_to(s, step, ctx):
         raise HarnessError("walk_to: no probe (guest built without the e2e probe?)")
     if want_map is not None and p.map_id != want_map:
         raise HarnessError("walk_to: on map %d, the step expects %s (%d)" % (p.map_id, step["map"], want_map))
-    terrain = Terrain()
+    terrain = Terrain(surf=bool(step.get("surf")), hm=bool(step.get("hm")))
+    field_tries = {}  # tile -> field-move attempts
     start_map = p.map_id
     steps = 0
     warped = False
@@ -426,6 +476,15 @@ def bot_walk_to(s, step, ctx):
                 break
             raise HarnessError("walk_to (%d,%d): an unexpected warp to map %d at (%d,%d)" % (goal + (p.map_id,) + here))
         if (p.x, p.z) == here:
+            nxt = (here[0] + DIR_DELTA[d][0], here[1] + DIR_DELTA[d][1])
+            fm = terrain.field_move(nxt[0], nxt[1], d)
+            cell = p.cell(*here)
+            surfing = cell is not None and (cell & TILE_BEHAVIOR) in SURFABLE
+            if fm and not (fm == "water" and surfing) and field_tries.get(nxt, 0) < 2:
+                field_tries[nxt] = field_tries.get(nxt, 0) + 1
+                limit += _use_field_move(s, step, ctx, fm, limit)
+                p = s.probe()
+                continue
             key = (here[0], here[1], d)
             terrain.blocked_edges[key] = terrain.blocked_edges.get(key, 0) + 1
             if not moved:

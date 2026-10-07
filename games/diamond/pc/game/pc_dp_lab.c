@@ -25,7 +25,9 @@
  *
  * Verbs: name TEXT, gender G, trainer-id N, money N, badge B, var V N,
  * flag F, clear-flag F, party SPECIES LEVEL ITEM, party-move SLOT MOVESLOT
- * MOVE, party-iv SLOT STAT 0..31, party-ev SLOT STAT 0..255 (STAT 0..5 =
+ * MOVE, party-level SLOT LEVEL (exp set to the level's base, stats
+ * recomputed, HP full), party-item SLOT ITEM (held item), party-iv SLOT
+ * STAT 0..31, party-ev SLOT STAT 0..255 (STAT 0..5 =
  * HP ATK DEF SPEED SPATK SPDEF; stats recomputed, HP left full), item ITEM
  * QTY, register-item ITEM, poketch APP, pokedex 1 (ScrCmd_GiveSinnohDex's
  * flag), national-dex 1 (ScrCmd_NationalDex's two), dex-seen SPECIES,
@@ -63,7 +65,7 @@ enum {
     LAB_NAME, LAB_GENDER, LAB_TRAINER_ID, LAB_MONEY, LAB_BADGE, LAB_VAR, LAB_FLAG,
     LAB_CLEAR_FLAG, LAB_PARTY, LAB_PARTY_MOVE, LAB_ITEM, LAB_REGISTER_ITEM,
     LAB_POKETCH, LAB_WARP, LAB_MAP, LAB_PARTY_IV, LAB_PARTY_EV, LAB_POKEDEX,
-    LAB_NATIONAL_DEX, LAB_DEX_SEEN, LAB_DEX_CAUGHT,
+    LAB_NATIONAL_DEX, LAB_DEX_SEEN, LAB_DEX_CAUGHT, LAB_PARTY_LEVEL, LAB_PARTY_ITEM,
 };
 
 static const struct {
@@ -80,7 +82,8 @@ static const struct {
     { "map", LAB_MAP, 4 },            { "party-iv", LAB_PARTY_IV, 3 },
     { "party-ev", LAB_PARTY_EV, 3 },  { "pokedex", LAB_POKEDEX, 1 },
     { "national-dex", LAB_NATIONAL_DEX, 1 }, { "dex-seen", LAB_DEX_SEEN, 1 },
-    { "dex-caught", LAB_DEX_CAUGHT, 1 },
+    { "dex-caught", LAB_DEX_CAUGHT, 1 }, { "party-level", LAB_PARTY_LEVEL, 2 },
+    { "party-item", LAB_PARTY_ITEM, 2 },
 };
 
 /* party-iv / party-ev STAT index -> MON_DATA_*, the save's stat order. */
@@ -257,6 +260,26 @@ static void lab_apply(FieldSystem *fs) {
             sWarpTo.direction = (u32)op->a[3];
             sWarpPending = 1;
             break;
+        case LAB_PARTY_LEVEL: {
+            Pokemon *mon;
+            u32 exp;
+            u16 hp;
+            if (op->a[0] < 0 || op->a[0] >= Party_GetCount(party)) lab_fail("no such party slot", "party-level");
+            if (op->a[1] < 1 || op->a[1] > 100) lab_fail("level is 1..100", "party-level");
+            mon = Party_GetMonByIndex(party, (int)op->a[0]);
+            exp = GetMonExpBySpeciesAndLevel((int)GetMonData(mon, MON_DATA_SPECIES, NULL), (int)op->a[1]);
+            SetMonData(mon, MON_DATA_EXPERIENCE, &exp);
+            CalcMonLevelAndStats(mon);
+            hp = (u16)GetMonData(mon, MON_DATA_MAX_HP, NULL);
+            SetMonData(mon, MON_DATA_HP, &hp);
+            break;
+        }
+        case LAB_PARTY_ITEM: {
+            u16 item = (u16)op->a[1];
+            if (op->a[0] < 0 || op->a[0] >= Party_GetCount(party)) lab_fail("no such party slot", "party-item");
+            SetMonData(Party_GetMonByIndex(party, (int)op->a[0]), MON_DATA_HELD_ITEM, &item);
+            break;
+        }
         case LAB_PARTY_IV:
         case LAB_PARTY_EV: {
             const int iv = op->verb == LAB_PARTY_IV;

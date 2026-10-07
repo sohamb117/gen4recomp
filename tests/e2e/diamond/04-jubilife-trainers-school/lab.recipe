@@ -11,6 +11,49 @@ money 3000
 # the optional school kids (#342, #345 ABRA 6).
 party SPECIES_TURTWIG 14 ITEM_NONE
 party-move 0 0 MOVE_TACKLE
-# @@PRIOR@@
+# -- prior: tests/e2e/tools/dp_prior.py --
+# -- 01 New game to the Lake Verity starter and the running shoes --
+flag 0x87                    # scr_seq 0981 @0x0078 [MAP_TWINLEAF_RIVAL_HOUSE_1F]
+flag 0x192                   # scr_seq 0377 @0x0032 [script ids 9600+]
+flag 0x210                   # zone_event 0391 object 0 (SPRITE_RIVEL) hidden flag, set by its Remove/AddEvent [MAP_TWINLEAF_PLAYER_HOUSE_2F]
+flag 0xEA                    # scr_seq 0980 @0x004C [MAP_TWINLEAF_PLAYER_HOUSE_2F]
+flag 0x190                   # scr_seq 0392 @0x0130 [MAP_ROUTE_201]
+flag 0x193                   # scr_seq 0351 @0x0126 [MAP_LAKE_ACUITY_GALACTIC]
+flag 0x194                   # scr_seq 0365 @0x005C [script ids 9900+]
+flag 0x1AD                   # scr_seq 0342 @0x005B [MAP_LAKE_VERITY]
+flag 0x1B2                   # scr_seq 0351 @0x0122 [MAP_LAKE_ACUITY_GALACTIC]
+flag 0x196                   # scr_seq 0377 @0x000A [script ids 9600+]
+flag 0x197                   # scr_seq 0377 @0x0006 [script ids 9600+]
+flag 0x1B3                   # scr_seq 0392 @0x006F [MAP_ROUTE_201]
+flag 0x1B4                   # scr_seq 0392 @0x04F2 [MAP_ROUTE_201]
+clear-flag 0x8E              # scr_seq 0072 @0x0099 [MAP_ETERNA_GYM]
+var 0x40F9 1                 # scr_seq 0982 @0x0033 [MAP_TWINLEAF_RIVAL_HOUSE_2F]
+var 0x40E6 1                 # scr_seq 0978 @0x0564 [MAP_TWINLEAF]
+var 0x40A3 1                 # scr_seq 0980 @0x0050 [MAP_TWINLEAF_PLAYER_HOUSE_2F]
+var 0x4070 2                 # scr_seq 0980 @0x0056 [MAP_TWINLEAF_PLAYER_HOUSE_2F]
+var 0x4030 SPECIES_TURTWIG   # [INFERENCE] set in play by 01-newgame-starter (see its refs)
+var 0x4095 1                 # scr_seq 0342 @0x03CE [MAP_LAKE_VERITY]
+var 0x4086 3                 # scr_seq 0392 @0x04D7 [MAP_ROUTE_201]
+var 0x4082 4                 # scr_seq 0392 @0x04EC [MAP_ROUTE_201]
+var 0x40A4 5                 # scr_seq 0978 @0x005F [MAP_TWINLEAF]
+# -- 02 Sandgem: Rowan's lab and the Pokedex --
+flag 0x1B5                   # scr_seq 0377 @0x0040 [script ids 9600+]
+flag 0x993                   # scr_seq 0990 @0x0202 [MAP_SANDGEM_ROWANS_LAB]
+flag 0x90                    # scr_seq 0990 @0x024D [MAP_SANDGEM_ROWANS_LAB]
+flag 0x1B7                   # zone_event 0400 object 3 (GFX_FROM_VAR_0x4020) hidden flag, set by its Remove/AddEvent [MAP_SANDGEM_ROWANS_LAB]
+flag 0x195                   # zone_event 0396 object 4 (GFX_FROM_VAR_0x4020) hidden flag, set by its Remove/AddEvent [MAP_SANDGEM]
+var 0x40A6 1                 # scr_seq 0990 @0x031D [MAP_SANDGEM_ROWANS_LAB]
+var 0x4071 2                 # scr_seq 0985 @0x06D2 [MAP_SANDGEM]
+pokedex 1                    # 02-sandgem-pokedex: GiveSinnohDex (see its refs)
+# -- 03 The Journal, the Parcel and the catching tutorial --
+flag 0x8F                    # scr_seq 0981 @0x0507 [MAP_TWINLEAF_RIVAL_HOUSE_1F]
+flag 0x20F                   # scr_seq 0981 @0x005E [MAP_TWINLEAF_RIVAL_HOUSE_1F]
+flag 0x963                   # [INFERENCE] set in play by 03-parcel-catching-tutorial (no script SetFlag; see its refs)
+flag 0x1A6                   # zone_event 0328 object 3 (GFX_FROM_VAR_0x4020) hidden flag, set by its Remove/AddEvent [MAP_ROUTE_202]
+var 0x40A4 7                 # scr_seq 0978 @0x0057 [MAP_TWINLEAF]
+var 0x4087 1                 # scr_seq 0393 @0x024B [MAP_ROUTE_202]
+item ITEM_JOURNAL 1          # 03-parcel-catching-tutorial: given in play (see its refs)
+item ITEM_PARCEL 1           # 03-parcel-catching-tutorial: given in play (see its refs)
+item ITEM_POKE_BALL 5        # 03-parcel-catching-tutorial: given in play (see its refs)
 # -- start --
 map MAP_ROUTE_202 180 827 FACE_UP  # on the spent tutorial coord (180,825..829) (zone_event 0328 coord 0) [INFERENCE: coord tiles are walkable]
