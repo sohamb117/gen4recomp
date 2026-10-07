@@ -1,11 +1,14 @@
-# Secret base decorate: a lab-created base (secret-base verb) + a good in the PC; enter the
-# Underground, go into the base, PC -> Decorate -> place the chair -> leave decorate mode.
-# Start: Oreburgh with kit. End: UNDERGROUND (2) inside the base, decorated.
+# Secret base, in situ: the Digger Drill (the recipe's trap) on a straight wall makes the base and takes the player
+# inside; the base PC -> DECORATE -> DECORATE -> the Wooden Chair (the recipe's PC good) placed one tile left of
+# where it starts (in front of the PC it "can't be placed"), leave decorate mode (sets FLAG_DECORATED_SECRET_BASE),
+# out of the base's door (comms back on), GO UP. Start: Oreburgh with the kit, a Digger Drill and the chair in the PC. End: Oreburgh.
 title = "Underground: decorate a secret base"
-status = "planned"
 priority = "P2"
-estimate = 7000
+estimate = 5175
 refs = [
+  "src/underground/secret_bases.c:1789-1914",
+  "src/underground/secret_bases.c:1927-1987",
+  "src/underground/pc.c:613-657",
   "src/underground/secret_bases.c:2190-2201",
   "src/underground/secret_bases.c:2240",
   "src/underground/pc.c:640-648",
@@ -29,9 +32,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 10500
-# lab underground hook `enter` (pc_lab.c:1958-2062; corpus ug-enter.spec `underground: enter`)
-env = { PC_LAB_UNDERGROUND = "enter", PC_LAB_UNDERGROUND_AT = "4900" }
+frames = 12000
 clock = "2009-03-22 21:00:00"
 
 [[step]]
@@ -41,28 +42,152 @@ hold = 24
 note = "use the registered Explorer Kit"
 
 [[step]]
-do = "press"
-keys = "A"
-hold = 24
-gap = 176
-times = 9
-note = "comms confirm + the game's forced save (lab-ug-enter.txt: A every 200 frames from 3800)"
+do = "advance_text"
+max = 5000
+note = "'DS Wireless Communications', the save YES, overwrite YES, the hole, Roark's first-visit intro; the player is left free at (168,375)"
+shot = "underground"
 
 [[step]]
-do = "wait_map"
-map = 2
-max = 3000
-note = "the hook sets FLAG_HAS_SEEN_UNDERGROUND_ROARK_INTRO after arrival (solo first-visit path, pc_lab.c:1958-1992)"
+do = "walk_to"
+x = 172
+z = 373
+face = "up"
+note = "below a straight wall: the Digger Drill needs the tile in front and both its side neighbours to be walls (secret_bases.c SecretBases_ProcessBaseCreateRequest)"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+note = "the Underground menu (the cursor on TRAPS)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "the trap list: Digger Drill, CLOSE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+times = 6
+note = "the Digger Drill (used at once): 'The Digger Drill was used!', 'Discovered a small cavern!', 'Would you like to make your Secret Base here?' YES, the walk in, 'Blocked the entrance to decorate the Secret Base.'"
+shot = "base"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 13
+face = "up"
+interact = true
+note = "below the base PC (15,12): DECORATE / STORE GOODS / RECEIVE GOODS / CHECK FLAGS / EXIT"
+shot = "pc"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+times = 2
+note = "DECORATE (the fade into decorate mode), then DECORATE / PUT AWAY / MOVE GOODS / CANCEL: DECORATE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+note = "the PC goods: Wooden Chair, EXIT"
+shot = "goods"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+note = "the Wooden Chair: it follows the cursor, below the PC"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 2
+gap = 16
+times = 2
+note = "the chair left of the PC's front"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+note = "'The Wooden Chair was placed.'"
+shot = "placed"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+note = "back to DECORATE / PUT AWAY / MOVE GOODS / CANCEL"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 50
+times = 3
+note = "out of decorate mode (the fade back; sets FLAG_DECORATED_SECRET_BASE), then the PC menu: B on it closes the PC"
+shot = "decorated"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 23
+note = "back down to the base's door (GO UP does nothing inside the base)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 4
+gap = 40
+note = "into the door: 'Open the door and exit the Secret Base?' YES / NO"
+shot = "exit"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+times = 2
+note = "YES, then 'DS Wireless Communications will be launched.' YES (decorating closed the base's comms)"
+
+[[step]]
+do = "wait_frames"
+n = 480
+note = "the reconnect and the walk out: the player at (172,373) below the base's entrance"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+note = "the Underground menu (the cursor on TRAPS)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+times = 5
+gap = 10
+note = "GO UP"
+shot = "go-up"
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "advance_text"
+max = 2000
+map = 45
+note = "'Would you like to return to the surface from where you entered?' YES, the return to Oreburgh"
 
 [[step]]
 do = "wait_field"
-shot = "underground"
-# PHASE2: walk from the arrival tile to the base entrance written by `secret-base 72 437 FACE_UP`
-# (entrance opposite the facing, secret_bases.c:2190-2201) [INFERENCE: arrival tile unknown],
-# enter, A on the base PC -> Decorate -> place UG_GOOD_WOODEN_CHAIR -> leave (pc.c:640-648).
-# Drill variant: + `trap TRAP_DIGGER_DRILL`, face a wall, use it -> FLAG_CREATED_SECRET_BASE (:2201).
+shot = "oreburgh"
 
 [expect]
-map = 2
-flags = ["FLAG_DECORATED_SECRET_BASE"]
-# PHASE2: reader-ext `secret-base: active=1 x=72 z=437` (pc_save, pc_corpus.py:366-367)
+map = 45
+flags = ["FLAG_CREATED_SECRET_BASE", "FLAG_DECORATED_SECRET_BASE"]
+# np_save4 underground: the Digger Drill is used up
+save = ['s["underground"]["traps"] == []']

@@ -3,7 +3,7 @@
 # Start: Oreburgh with kit + stash. End: Oreburgh, one sphere and one trap fewer in the bags.
 title = "Underground: spheres, traps and goods"
 priority = "P2"
-estimate = 5500
+estimate = 3487
 refs = [
   "src/underground/spheres.c:378-385",
   "src/underground/vendors.c:232",

@@ -8,7 +8,8 @@ slot machines, the Underground menus) before writing `press`/`tap` steps.
 Script tokens: KEY/N holds KEY (a, b, x, y, start, select, up, down, left, right, l, r; joined with +) N frames;
 wN waits N frames; tX,Y/N touches the bottom screen at (X, Y) N frames; shot:NAME dumps DIR/NAME.png;
 until:COND runs up to 600 frames until COND (np_gp's until syntax, e.g. field_ready=1, map_id=188);
-probe prints the probe's map/tile/state; save makes an in-game save (DIR/poke.sav, the next poke's start). --steps runs milestone steps (JSON list, tools/ms_steps.py) first.
+probe prints the probe's map/tile/state; grid prints the probe's collision map around the player (# blocked, . open,
+? unknown, @ the player; 20 tiles each way); save makes an in-game save (DIR/poke.sav, the next poke's start). --steps runs milestone steps (JSON list, tools/ms_steps.py) first.
 The final save is written to DIR/poke.sav, the shots' contact sheet to DIR/poke.png.
 """
 import argparse
@@ -22,7 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 import bots  # noqa: E402
 import run  # noqa: E402
-from np_e2e import Session  # noqa: E402
+from np_e2e import TILE_COLLISION, TILE_KNOWN, Session  # noqa: E402
 
 
 def main():
@@ -74,6 +75,16 @@ def main():
             p = s.probe()
             print("f%d map %d (%d,%d) y %d facing %d field_ready %d battle %d" % (
                 s.frame, p.map_id, p.x, p.z, p.y, p.facing, s.field_ready, s.in_battle))
+        elif tok == "grid":
+            p = s.probe()
+            print("grid around (%d,%d), x %d..%d" % (p.x, p.z, p.x - 20, p.x + 20))
+            for z in range(p.z - 20, p.z + 21):
+                row = ""
+                for x in range(p.x - 20, p.x + 21):
+                    c = p.cell(x, z)
+                    row += "@" if (x, z) == (p.x, p.z) else "?" if c is None or not c & TILE_KNOWN else (
+                        "#" if c & TILE_COLLISION else ".")
+                print("%4d %s" % (z, row))
         elif tok[0] == "w" and tok[1:].isdigit():
             s.run(int(tok[1:]))
         elif tok[0] == "t" and "," in tok:

@@ -5,7 +5,7 @@
 # Start: Oreburgh (0x12F,0x2F5) with a registered kit. End: Oreburgh, three spheres in the Underground bag.
 title = "Underground: dig a wall"
 priority = "P1"
-estimate = 6500
+estimate = 4811
 refs = [
   "src/underground/mining.c:2257-2329",
   "src/underground/mining.c:2567-2599",

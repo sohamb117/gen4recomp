@@ -3,7 +3,7 @@
 # stops by itself after 900 ticks. Start: BATTLE_ARCADE (14,6) below the single attendant (14,5). End: Arcade lobby.
 title = "Battle Arcade: first single set"
 priority = "P2"
-estimate = 45000
+estimate = 48993
 refs = [
   "res/field/events/events_battle_frontier.json",
   "res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40",

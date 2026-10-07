@@ -691,7 +691,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~496495 frames estimated
+### Side systems: 52 milestones, ~494961 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -719,9 +719,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [80-trophy-garden](platinum/80-trophy-garden/milestone.toml) | Trophy Garden: Mr. Backlot's daily Pokemon | P2 | 2145 | `start.recipe` | 370 | passing |
 | [81-game-corner](platinum/81-game-corner/milestone.toml) | Game Corner: play the slots | P2 | 3183 | `start.recipe` | 136 | passing |
 | [90-underground-explorer-kit](platinum/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | 3649 | `start.recipe` | 65 | passing |
-| [91-underground-mining](platinum/91-underground-mining/milestone.toml) | Underground: dig a wall | P1 | 6500 | `start.recipe` | 2 | planned |
-| [92-underground-spheres-traps-goods](platinum/92-underground-spheres-traps-goods/milestone.toml) | Underground: spheres, traps and goods | P2 | 5500 | `start.recipe` | 2 | planned |
-| [93-underground-secret-base](platinum/93-underground-secret-base/milestone.toml) | Underground: decorate a secret base | P2 | 7000 | `start.recipe` | 2 | planned |
+| [91-underground-mining](platinum/91-underground-mining/milestone.toml) | Underground: dig a wall | P1 | 4811 | `start.recipe` | 45 | passing |
+| [92-underground-spheres-traps-goods](platinum/92-underground-spheres-traps-goods/milestone.toml) | Underground: spheres, traps and goods | P2 | 3487 | `start.recipe` | 45 | passing |
+| [93-underground-secret-base](platinum/93-underground-secret-base/milestone.toml) | Underground: decorate a secret base | P2 | 5175 | `start.recipe` | 45 | passing |
 | [94-vs-seeker](platinum/94-vs-seeker/milestone.toml) | Vs. Seeker: rematch Youngster Tristan | P1 | 3639 | `start.recipe` | 343 | passing |
 | [95-poketch-apps](platinum/95-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | 1979 | `start.recipe` | 379 | passing |
 | [96-battle-zone-ferry-fight-area](platinum/96-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: ferry to the Fight Area and the tag battle | P1 | 14803 | prev + `start.recipe` | 188 | passing |
@@ -730,7 +730,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [99-battle-factory](platinum/99-battle-factory/milestone.toml) | Battle Factory: first single set | P2 | 45000 | `start.recipe` | 562 | passing |
 | [100-battle-hall](platinum/100-battle-hall/milestone.toml) | Battle Hall: first single set | P2 | 40000 | `start.recipe` | 563 | passing |
 | [101-battle-castle](platinum/101-battle-castle/milestone.toml) | Battle Castle: first single set | P2 | 45000 | `start.recipe` | 564 | passing |
-| [102-battle-arcade](platinum/102-battle-arcade/milestone.toml) | Battle Arcade: first single set | P2 | 45000 | `start.recipe` | 565 | planned |
+| [102-battle-arcade](platinum/102-battle-arcade/milestone.toml) | Battle Arcade: first single set | P2 | 48993 | `start.recipe` | 565 | passing |
 | [103-global-terminal-offline](platinum/103-global-terminal-offline/milestone.toml) | Global Terminal: machines refuse offline | P2 | 2312 | `start.recipe` | 567 | passing |
 | [104-tv-jubilife-and-broadcasts](platinum/104-tv-jubilife-and-broadcasts/milestone.toml) | TV: watch a broadcast | P2 | 1847 | `start.recipe` | 58 | passing |
 | [105-national-dex-upgrade](platinum/105-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | 2769 | `start.recipe` | 422 | passing |
@@ -965,31 +965,31 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/events/events_eterna_city_underground_man_house.json; res/field/events/events_eterna_city.json; res/field/scripts/scripts_eterna_city_underground_man_house.s:17-35; res/field/scripts/scripts_eterna_city_underground_man_house.s:170-185; src/item_use_functions.c:365-367; res/field/scripts/scripts_underground.s:173-188; src/underground/comm_manager.c:68-85; src/underground/comm_manager.c:236-276; src/underground/manager.c:162; src/system_flags.c:119-121; src/underground/menus.c; tests/gameplay/scenarios/7-underground.scn
 
 #### platinum/91-underground-mining — Underground: dig a wall
-- proves: Underground mining: enter from Oreburgh with the kit, the lab hook starts the mining minigame (same task the wall-sparkle confirm starts). Board RNG is seeded from PC_RTC + frame. Start: Oreburgh (0x12F,0x2F5) with a registered kit. End: UNDERGROUND (2), dig done.
+- proves: Underground mining, in situ: the Explorer Kit on Y, the nearest wall spot, the first dig (3 items, no rocks) dug out completely by touch, GO UP. The mining spots come from the save's Underground seed (tools/pt_ugspots.py); the board is generated from the mining RNG when the dig starts, so it is the same in every run with the same inputs: tools/pt_mine.py reads it out of guest memory and plans the taps. Start: Oreburgh (0x12F,0x2F5) with a registered kit. End: Oreburgh, three spheres in the Underground bag.
 - start: `start.recipe`; map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN; lab state lines: 1 flag, 1 item, 1 register-item, 1 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map 2; flags set FLAG_DIGGING_FOR_FOSSILS; log /pc_lab: mining started at frame \d+/
-- frames: estimate 6500, budget 9800
-- refs: src/underground/mining.c:1727-1729; src/underground/mining.c:1735; src/underground.c:601; res/field/scripts/scripts_eterna_city_underground_man_house.s:192-194; pc/src/pc_lab.c:1972-1974; pc/src/pc_lab.c:2040-2055; pc/tests/pc_corpus.py:354-357; pc/tests/pc_corpus.py:497-504; pc/replays/lab-poketch-tap.txt; pc/src/pc_lab.c:950-990; pc/src/pc_lab.c:1958-2062; pc/tests/pc_corpus.py:495-513; pc/tests/corpus/ug-enter.recipe; pc/tests/corpus/ug-enter.spec; pc/replays/lab-ug-enter.txt; src/item_use_functions.c:365-367; src/underground/comm_manager.c:82
+- end state: map 45; flags set FLAG_DIGGING_FOR_FOSSILS; 2 save check(s)
+- frames: estimate 4811, budget 12000
+- refs: src/underground/mining.c:2257-2329; src/underground/mining.c:2567-2599; src/underground/mining.c:2711-2785; src/underground/mining.c:1904-1918; src/underground/mining.c:1727-1729; src/underground/mining.c:1735; src/underground.c:601; res/field/scripts/scripts_eterna_city_underground_man_house.s:192-194; pc/src/pc_lab.c:1972-1974; pc/src/pc_lab.c:2040-2055; pc/tests/pc_corpus.py:354-357; pc/tests/pc_corpus.py:497-504; pc/replays/lab-poketch-tap.txt; pc/src/pc_lab.c:950-990; pc/src/pc_lab.c:1958-2062; pc/tests/pc_corpus.py:495-513; pc/tests/corpus/ug-enter.recipe; pc/tests/corpus/ug-enter.spec; pc/replays/lab-ug-enter.txt; src/item_use_functions.c:365-367; src/underground/comm_manager.c:82
 
 #### platinum/92-underground-spheres-traps-goods — Underground: spheres, traps and goods
-- proves: Underground bags: lab-stocked spheres/traps/goods, enter the Underground, bury one sphere (sets FLAG_SPHERE_ACQUIRED, despite the name). Start: Oreburgh with kit + stash. End: UNDERGROUND (2), one sphere buried.
+- proves: Underground bags: lab-stocked spheres/traps/goods (the recipe), enter the Underground, bury the Prism Sphere (sets FLAG_SPHERE_ACQUIRED, despite the name), set the Smoke Trap on the next tile, look at the goods, GO UP. Start: Oreburgh with kit + stash. End: Oreburgh, one sphere and one trap fewer in the bags.
 - start: `start.recipe`; map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN; lab state lines: 1 flag, 1 item, 1 register-item, 1 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map 2; flags set FLAG_SPHERE_ACQUIRED
-- frames: estimate 5500, budget 8300
+- end state: map 45; flags set FLAG_SPHERE_ACQUIRED; 3 save check(s)
+- frames: estimate 3487, budget 9000
 - refs: src/underground/spheres.c:378-385; src/underground/vendors.c:232; generated/vars_flags.txt:4183; generated/sphere_types.txt; generated/traps.txt; generated/goods.txt; res/field/scripts/scripts_eterna_city_underground_man_house.s:213-215; pc/tests/corpus/ug-stash.recipe; pc/tests/corpus/ug-stash.spec; pc/src/pc_lab.c:950-990; pc/src/pc_lab.c:1958-2062; pc/tests/pc_corpus.py:495-513; pc/tests/corpus/ug-enter.recipe; pc/tests/corpus/ug-enter.spec; pc/replays/lab-ug-enter.txt; src/item_use_functions.c:365-367; src/underground/comm_manager.c:82
 
 #### platinum/93-underground-secret-base — Underground: decorate a secret base
-- proves: Secret base decorate: a lab-created base (secret-base verb) + a good in the PC; enter the Underground, go into the base, PC -> Decorate -> place the chair -> leave decorate mode. Start: Oreburgh with kit. End: UNDERGROUND (2) inside the base, decorated.
+- proves: Secret base, in situ: the Digger Drill (the recipe's trap) on a straight wall makes the base and takes the player inside; the base PC -> DECORATE -> DECORATE -> the Wooden Chair (the recipe's PC good) placed one tile left of where it starts (in front of the PC it "can't be placed"), leave decorate mode (sets FLAG_DECORATED_SECRET_BASE), out of the base's door (comms back on), GO UP. Start: Oreburgh with the kit, a Digger Drill and the chair in the PC. End: Oreburgh.
 - start: `start.recipe`; map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN; lab state lines: 1 flag, 1 item, 1 register-item, 1 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map 2; flags set FLAG_DECORATED_SECRET_BASE
-- frames: estimate 7000, budget 10500
-- refs: src/underground/secret_bases.c:2190-2201; src/underground/secret_bases.c:2240; src/underground/pc.c:640-648; src/underground.c:1323; src/underground/player.c:480; pc/src/pc_lab.c:986-990; pc/tests/pc_corpus.py:366-367; pc/tests/corpus/ug-stash.recipe; pc/tests/corpus/ug-stash.spec; pc/src/pc_lab.c:950-990; pc/src/pc_lab.c:1958-2062; pc/tests/pc_corpus.py:495-513; pc/tests/corpus/ug-enter.recipe; pc/tests/corpus/ug-enter.spec; pc/replays/lab-ug-enter.txt; src/item_use_functions.c:365-367; src/underground/comm_manager.c:82
+- end state: map 45; flags set FLAG_CREATED_SECRET_BASE, FLAG_DECORATED_SECRET_BASE; 1 save check(s)
+- frames: estimate 5175, budget 12000
+- refs: src/underground/secret_bases.c:1789-1914; src/underground/secret_bases.c:1927-1987; src/underground/pc.c:613-657; src/underground/secret_bases.c:2190-2201; src/underground/secret_bases.c:2240; src/underground/pc.c:640-648; src/underground.c:1323; src/underground/player.c:480; pc/src/pc_lab.c:986-990; pc/tests/pc_corpus.py:366-367; pc/tests/corpus/ug-stash.recipe; pc/tests/corpus/ug-stash.spec; pc/src/pc_lab.c:950-990; pc/src/pc_lab.c:1958-2062; pc/tests/pc_corpus.py:495-513; pc/tests/corpus/ug-enter.recipe; pc/tests/corpus/ug-enter.spec; pc/replays/lab-ug-enter.txt; src/item_use_functions.c:365-367; src/underground/comm_manager.c:82
 
 #### platinum/94-vs-seeker — Vs. Seeker: rematch Youngster Tristan
 - proves: Vs. Seeker rematch: charged seeker (battery 100), Y on Route 202 next to defeated Youngster Tristan; he spins for a rematch, talk to him, beat TRISTAN_REMATCH_1 (STARAVIA 24). Start: ROUTE_202 (166,816). End: (166,814) after the win.
@@ -1064,12 +1064,12 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/events/events_battle_frontier.json; res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40; res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s; src/unk_02049D08.c:161-206; src/unk_02049D08.c:750-787; src/unk_020494DC.c:72-78; src/wifi_battle_tower_save.c:156-176; src/overlay104/frscrcmd.c:1567-1580; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/102-battle-arcade — Battle Arcade: first single set
-- proves: Battle Arcade single set: 3 mons, roulette board before each battle. Start: BATTLE_ARCADE (14,6) below the single attendant (14,5). End: Arcade lobby.
+- proves: Battle Arcade single set: GARCHOMP, METAGROSS, SALAMENCE (Lv 50 in the Arcade). Before each battle the game board spins; its STOP button is touch only (the circle at (128,96), r 32: battle_arcade/main.c sStopButtonHitBox) and it stops by itself after 900 ticks. Start: BATTLE_ARCADE (14,6) below the single attendant (14,5). End: Arcade lobby.
 - start: `start.recipe`; map MAP_HEADER_BATTLE_ARCADE 14 6 FACE_UP; lab state lines: 8 badge, 5 flag, 1 story-cleared, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_METAGROSS 100 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map 565; >= 7 battles
-- frames: estimate 45000, budget 67500
+- end state: map 565; >= 7 battles; 2 save check(s)
+- frames: estimate 48993, budget 80000
 - refs: res/field/events/events_battle_frontier.json; res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40; res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s; src/unk_02049D08.c:161-206; src/unk_02049D08.c:750-787; src/unk_020494DC.c:72-78; src/wifi_battle_tower_save.c:156-176; src/overlay104/frscrcmd.c:1567-1580; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/103-global-terminal-offline — Global Terminal: machines refuse offline

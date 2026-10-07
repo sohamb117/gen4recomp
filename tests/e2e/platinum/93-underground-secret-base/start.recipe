@@ -8,8 +8,8 @@ item ITEM_EXPLORER_KIT 1
 register-item ITEM_EXPLORER_KIT
 # scripts_eterna_city_underground_man_house.s:29
 flag FLAG_RECEIVED_EXPLORER_KIT
-# base at (72,437) facing up (x,z,dir: pc_lab.c:986-990; coordinates from ug-stash.recipe)
-secret-base 72 437 FACE_UP
+# the base is dug in situ with the Digger Drill (secret_bases.c SecretBases_DiggerDrillTask)
+trap TRAP_DIGGER_DRILL
 good-pc UG_GOOD_WOODEN_CHAIR
 # main-matrix map, not a bridge: CanUseExplorerKit allows it (item_use_functions.c:365-367)
 map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN
