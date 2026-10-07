@@ -91,6 +91,12 @@ extern const gba_game_info gba_game;
  * image of *size bytes (which a patch may grow) */
 void gba_mods_apply(uint8_t *rom, uint32_t *size);
 
+/* gba_link.c: the link cable (SIO multi-player mode over np_host_net_*) */
+void gba_link_line(void);              /* each new scanline, before its timers */
+void gba_link_frame(uint32_t *status); /* each frame end: plugging, NP_STAT_LINK_ACTIVE */
+uint16_t gba_sio_read_cnt(void);
+void gba_sio_write_cnt(uint16_t v);
+
 /* gba_io.c */
 extern uint32_t gba_vcount;         /* current scanline */
 extern uint64_t gba_frames;         /* VBlanks since boot */

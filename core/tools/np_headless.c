@@ -52,6 +52,7 @@
  *     --net-peer H:P     also say hello to this address, repeatable
  *     --net-id ID        24-bit station id (default random)
  *     --net-drop PCT     drop this share of outgoing datagrams (loss testing)
+ *     --net-wait SECS    wait up to SECS for another station before frame 0
  *     --lockstep MY:PEER test only (POSIX): two instances on 127.0.0.1 ports MY
  *                        and PEER run in frame lockstep and exchange the game's
  *                        datagrams at frame boundaries, so runs repeat exactly
@@ -592,7 +593,7 @@ static int usage(void) {
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--wav FILE] [--schedule FILE] [--progress N]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
-                    "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]\n"
+                    "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT] [--net-wait SECS]\n"
                     "                    [--net-relay HOST:PORT --net-pin PIN]]\n"
                     "                   [--lockstep MYPORT:PEERPORT --net-id ID [--fork-at FRAME:CTLFILE]]\n");
     return 2;
@@ -758,7 +759,7 @@ int main(int argc, char **argv) {
     uint64_t watch_from = 0;
     static uint8_t watch_prev[256];
     int have_rtc = 0;
-    int net_on = 0, net_drop = 0, npeers = 0;
+    int net_on = 0, net_drop = 0, npeers = 0, net_wait = 0;
     uint16_t net_port = 0;
     uint32_t net_id = 0;
     const char *net_peers[8];
@@ -813,6 +814,8 @@ int main(int argc, char **argv) {
             net_id = (uint32_t)strtoul(v, NULL, 0);
         } else if (strcmp(a, "--net-drop") == 0) {
             net_drop = atoi(v);
+        } else if (strcmp(a, "--net-wait") == 0) {
+            net_wait = atoi(v);
         } else if (strcmp(a, "--lockstep") == 0) {
             lockstep = v;
         } else if (strcmp(a, "--fork-at") == 0) {
@@ -889,6 +892,17 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "np_headless: --net-peer: %s\n", err);
                 return 2;
             }
+        /* --net-wait SECS: a partner station before frame 0, so a guest
+         * that waits for its partner at boot (the GBA link cable's
+         * PC_GBA_LINK_WAIT) finds one */
+        for (double end = now_ms() + 1000.0 * net_wait; net_wait && np_net_peer_count(g_net) == 0;) {
+            if (now_ms() > end) {
+                fprintf(stderr, "np_headless: --net-wait: no station answered\n");
+                return 1;
+            }
+            np_net_poll(g_net);
+            sleep_until(now_ms() + 20);
+        }
         host.net_self = net_self_cb;
         host.net_send = net_send_cb;
         host.net_recv = net_recv_cb;

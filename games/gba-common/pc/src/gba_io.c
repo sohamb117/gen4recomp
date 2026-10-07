@@ -226,6 +226,7 @@ void gba_step_line(void) {
     y = (y + 1) % GBA_LINES;
     gba_vcount = y;
     gba_cycles += GBA_LINE_CYCLES;
+    gba_link_line(); /* the link cable's child takes the parent's transfers of this line */
     timers_advance();
     stat = IO16(R_DISPSTAT);
     if (y == GBA_H) {
@@ -282,6 +283,8 @@ uint16_t gba_io_read16(uint32_t off) {
     }
     case R_KEYINPUT:
         return (uint16_t)(~gba_keys & 0x3FF);
+    case R_SIOCNT:
+        return gba_sio_read_cnt();
     case R_TM0CNT: case R_TM0CNT + 4: case R_TM0CNT + 8: case R_TM0CNT + 12: {
         gba_cycles += 8;  /* a busy-read of a timer must see it move */
         timers_advance();
@@ -337,6 +340,9 @@ void gba_io_write16(uint32_t off, uint16_t v) {
     }
     case R_IF:
         IO16(off) &= (uint16_t)~v;
+        return;
+    case R_SIOCNT:
+        gba_sio_write_cnt(v);
         return;
     case R_FIFO_A: case R_FIFO_A + 2: case R_FIFO_B: case R_FIFO_B + 2:
         return;  /* the mixer's output is taken from its buffer (gba_m4a.c) */

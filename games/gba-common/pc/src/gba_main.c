@@ -88,6 +88,7 @@ void gba_frame_end(void) {
     gba_apu_frame();
     s_desc.audio_head = s_audio_head;
     gba_game.status(s_desc.status);
+    gba_link_frame(s_desc.status);
 
     np_host_vblank(&s_desc);
 
