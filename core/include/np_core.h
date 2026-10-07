@@ -185,7 +185,8 @@ uint32_t np_core_status(const np_core *core, uint32_t status);
  * np_core_run_frame (it grows as the guest touches more memory), or 0 when
  * no snapshot can be taken (MSVC-built Windows cores; a failed or exited core). Both
  * return 0 on success. A refused state_load (not this core's snapshot,
- * truncated) returns -1 and leaves the core as it was; one that fails
+ * truncated, or taken before a soft reset: NP_STAT_RESETS changed since)
+ * returns -1 and leaves the core as it was; one that fails
  * halfway leaves the core failed (np_core_last_error). Loading also
  * revives a failed or exited core, and reverts the guest's backup chip
  * image with the rest of memory (the host's stored save is untouched).

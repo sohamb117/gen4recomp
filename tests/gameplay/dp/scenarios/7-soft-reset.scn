@@ -1,0 +1,12 @@
+# Scenario 7 (Diamond/Pearl): soft reset from the field. L+R+START+SELECT
+# makes the game call OS_ResetSystem (arm9/src/main.c DoSoftReset); the port
+# reboots the guest (games/platinum/pc/src/pc_os_lite.c, shared by D/P;
+# np_host_reset: a fresh instance, the backup chip kept), the boot screens and
+# the title follow, and CONTINUE loads the save again (the GTS, map 28).
+# Regression for the reset that stopped the core.
+RECIPE=recipes/gts.recipe
+SCHEDULE=schedules/soft-reset.press
+FRAMES=4600
+SHOTS=2150,2300,2800,3500,3750,3900,4599
+EXPECT_MAP=28
+EXPECT_LOG='resets 0 -> 1'

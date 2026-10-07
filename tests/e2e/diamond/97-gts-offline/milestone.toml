@@ -1,6 +1,7 @@
 # GTS offline: the receptionist's trade path saves, walks the player through the door and starts the
-# Nintendo WFC connection. The port is an unconfigured console (pc_dwc_auth.c): the connect screen waits;
-# B cancels it ("Reconnect to Nintendo WFC?"), NO makes Unk00B2 return 0 and the script walks back out
+# Nintendo WFC connection. The port is an unconfigured console with no access point in range: D's own DWC
+# searches (~250 frames) and shows "No access point in range ... (50099)", which waits for a button; B gives
+# "Reconnect to Nintendo WFC?", NO makes Unk00B2 return 0 and the script walks back out
 # ("Please do visit again"). D/P has only this building (no Global Terminal 2F/3F).
 # Start: MAP_JUBLIFE_GLOBAL_TRADE_STATION (11,4) below the receptionist (11,3). End: same map (12,4), field.
 title = "GTS: offline trade attempt returns to the field"
@@ -50,7 +51,7 @@ note = "A through msg 41 #0, menu row 0 'trade' (@0x011B -> L_01C1), 2 non-egg m
 do = "wait_frames"
 n = 600
 shot = "wfc-connecting"
-note = "'Connecting to Nintendo Wi-Fi Connection... Please wait a moment...' stays up (no WFC settings, nothing to time out)"
+note = "'Connecting to Nintendo Wi-Fi Connection...' for ~250 frames, then the game's own 'No access point in range ... (50099)' box, which waits for a button"
 
 [[step]]
 do = "press"

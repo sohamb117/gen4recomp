@@ -1,0 +1,12 @@
+# CONTINUE, then A through the GTS receptionist's trade path: the talk, the
+# trade row, the save YES, the walk through the door and YES on "Save this
+# Nintendo DS system's Nintendo Wi-Fi Connection User Information to this Game
+# Card and connect?"; then B every 60 frames: through the connection error,
+# NO on "Reconnect to Nintendo WFC?", "Please do visit again." and back to the
+# field.
+1250:start
+1400:a
+1500:a
+1600:a
+1700:a:4:34:54
+4000:b:4:60:20

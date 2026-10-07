@@ -3,26 +3,35 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
-## D/P: the GTS connect screen waits with no time-out (observation, not blocking)
+No open entries.
 
-Seen: the GTS receptionist's trade path opens "Connecting to Nintendo Wi-Fi Connection... Please wait a moment..."
-and nothing changes for 1800+ frames; B cancels it ("Reconnect to Nintendo WFC?"), NO returns to the field.
-D/P is not affected by the Platinum Wi-Fi trap (fixed, see below): it links no DWC trap stubs and runs its own
-recompiled NitroDWC, Auto Connect and WCM code against the port's WM model (games/platinum/pc/src/pc_wm.c). That
-search never finishes here. Platinum's Auto Connect is a model (games/platinum/pc/src/pc_dwc_connect.c) that ends
-the search with error 51099 ("No compatible access point in range"). Whether a real unconfigured DS shows 51099 here
-after its scan instead of waiting is [INFERENCE: likely, unverified]; if so, the WM model's scan path is the
-suspect. diamond/97-gts-offline uses B + NO.
+## Fixed: OS_ResetSystem stopped the core (Platinum, Diamond, Pearl)
 
-## Platinum: Nintendo WFC SETTINGS on the main menu ends in a guest abort (port gap)
+Every reset the game makes itself ended the run: the player's L+R+START+SELECT, Platinum's NINTENDO WFC SETTINGS
+on the main menu (WFCSettings_StartApplication runs the WFC utility, DWC_StartUtility, then always calls
+OS_ResetSystem), the error-reset screens and the reset after the credits all reached
+`pc_os_lite: OS_ResetSystem: soft reset has no host meaning yet` and `guest trap: abort()`. The cause was the port
+itself: games/platinum/pc/src/pc_os_lite.c (D/P link the same file) had no reboot. It now does what the console
+does: the runtime (np_host_reset, core/runtime/np_core.c np_rt_reboot) stores the backup chip if it is dirty, keeps
+it, discards the instance (memory, fibers) and boots a fresh one from _start within the same frame; the new
+instance loads the kept chip, and the carry puts back the reset parameter word (RESET_ERROR survives) and the RTC.
+Options and the link are the host's and stay. The reset is counted in the `resets` status (NP_STAT_RESETS) and
+logged (`pc_os_lite: OS_ResetSystem: soft reset (parameter N)`, `np_core: soft reset N`); bots.wait_reset waits for
+the counter, so 56 (Platinum) and 59b (D/P) end on it with the core running and judge the save the game wrote.
+Regressions: tests/gameplay scenarios 9-soft-reset and 10-wfc-settings (Platinum), dp 7-soft-reset; core/tests
+test_soft_reset.
 
-Seen: CONTINUE save, title, main menu, DOWN, DOWN, A on NINTENDO WFC SETTINGS: frame ~1700
-`pc_os_lite: OS_ResetSystem: soft reset has no host meaning yet` and `guest trap: abort()`.
-Cause: WFCSettings_StartApplication runs the prebuilt Nintendo WFC utility (DWC_StartUtility), then always calls
-OS_ResetSystem. The utility is not in this build, so DWC_StartUtility (pc_dwc_connect.c) returns at once, as when the
-player leaves without saving. The abort comes from the reset that follows: the port has no soft reset back to the
-title screen yet (pc_os_lite). Before the Wi-Fi fix below, the same entry died earlier on a silent
-signature-mismatch trap.
+## Not a defect: D/P's GTS connect screen "waits with no time-out"
+
+The entry said the GTS trade path's "Connecting to Nintendo Wi-Fi Connection..." stayed up for 1800+ frames. That
+does not reproduce: after YES on "Save this Nintendo DS system's Nintendo Wi-Fi Connection User Information to this
+Game Card and connect?" the connecting screen lasts about 250 frames with no input, then D/P's own recompiled DWC
+shows "No access point in range. Please try again when closer to an access point. ... (50099)" and waits for a
+button; B gives "Reconnect to Nintendo WFC?", NO returns to the field (the 97 milestone's own contact sheet shows
+the 50099 box in its "wfc-connecting" shot). The search runs against the port's WM model (pc_wm.c), which reports
+no parent and no access point. 50099, not Platinum's 51099, is the Auto Connect library's own choice: overlay 4
+ov04_021ECCEC returns -50099 when the search found nothing and -51099 when it found a configured access point it
+could not use (the flag ov04_021EC2C4 sets). Regression: tests/gameplay dp scenario 8-gts-offline.
 
 ## Fixed: Platinum connecting to Nintendo WFC trapped the core
 

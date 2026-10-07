@@ -110,7 +110,7 @@ shot = "fin"
 do = "wait_reset"
 max = 15000
 keys = "A"
-note = "the credits application holds \"Fin\" until a button (A, held from the step's start); the GameClear task waits for it to end (FieldSystem_ApplicationIsRunning, unk_020484A8.s:236), then calls OS_ResetSystem (:245): the port traps it (games/platinum/pc/src/pc_os_lite.c, shared by D/P) and the run ends. The post-game spawn (map 415 (4,6), sub_020377B0) is in the save the game wrote, not visible to a probe after the reset."
+note = "the credits application holds \"Fin\" until a button (A, held from the step's start); the GameClear task waits for it to end (FieldSystem_ApplicationIsRunning, unk_020484A8.s:236), then calls OS_ResetSystem (:245): the port reboots the guest (games/platinum/pc/src/pc_os_lite.c, shared by D/P; the chip kept) and the game ends. The post-game spawn (map 415 (4,6), sub_020377B0) is in the save the game wrote, not visible to a probe after the reset."
 
 [expect]
 badges = 8

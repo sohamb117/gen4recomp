@@ -1,5 +1,5 @@
 # Proves ClearGame: HoF screen, the game's own save (FLAG_GAME_COMPLETED, isMainStoryCleared, the Hall of Fame entry),
-# the credits, and the reset that ends them (src/clear_game.c:163 OS_ResetSystem: the port traps it, the run ends there).
+# the credits, and the reset that ends them (src/clear_game.c:163 OS_ResetSystem: the port reboots the guest, the game ends there).
 # Start: HoF hallway (5,23) after Cynthia -> end: OS_ResetSystem after the credits; [expect] reads the game's own save.
 
 title = "Hall of Fame, save, credits"
@@ -43,7 +43,7 @@ lab = "lab.recipe"
 
 [run]
 frames = 42100
-save = "none"  # ClearGame state 4 writes the save itself (src/clear_game.c:92-160); the run ends in OS_ResetSystem
+save = "none"  # ClearGame state 4 writes the save itself (src/clear_game.c:92-160); the game ends in OS_ResetSystem
 
 [[step]]
 do = "advance_text"
@@ -93,7 +93,7 @@ shot = "fin"
 [[step]]
 do = "wait_reset"
 max = 10000
-note = "after the credits ClearGame calls OS_ResetSystem (src/clear_game.c:163): the port traps it and the run ends"
+note = "after the credits ClearGame calls OS_ResetSystem (src/clear_game.c:163): the port reboots the guest (np_host_reset, the chip kept) and the game ends"
 
 [expect]
 flags = ["FLAG_GAME_COMPLETED", "FLAG_COMMUNICATION_CLUB_ACCESSIBLE", "FLAG_UNLOCKED_VS_SEEKER_LVL_4", "FLAG_DEFEATED_CYNTHIA"]
