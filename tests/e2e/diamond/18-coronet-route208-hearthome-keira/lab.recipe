@@ -1,0 +1,24 @@
+# Diamond story 18-coronet-route208-hearthome-keira: standalone start (--lab, or no end save from 17-cycling-road-route207-vs-seeker).
+# Standard header + lab party + the cumulative state after 17-cycling-road-route207-vs-seeker, then the milestone's start.
+# Names resolve through tests/gameplay/labc.py --game diamond; flag/var lines cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party: Surf alone in slot 0 (slots 1-3 cleared, so an empty Surf falls back to Struggle instead of stalling
+# A-only battles); the Leppa Berry refills it once [INFERENCE: Gen 4 Leppa restores 10 PP to a move at 0 PP].
+# Opponents (optional sight trainers): Route 208 trdata.json #39, #40 (GOLBAT/GRAVELER/ONIX 35), #41, #42, #44, #45;
+# #43 Fisherman Cody is talk-only.
+# Staraptor carries Rock Smash for the Mt. Coronet rocks (scr_seq 0375 @0x0141 MOVE_ROCK_SMASH, @0x015A BADGE_COAL) and Cut.
+party SPECIES_EMPOLEON 60 ITEM_LEPPA_BERRY
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_MOUNT_CORONET_SOUTH_1F 0  # (4,8), arriving from Route 207, zone_event 0204 warp 0

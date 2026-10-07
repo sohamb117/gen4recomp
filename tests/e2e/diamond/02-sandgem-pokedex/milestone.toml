@@ -1,0 +1,104 @@
+# Proves the Sandgem escort into Rowan's lab (Barry bursts out), the starter becoming the player's (nickname declined),
+# the Pokedex, and the friend's Pokemon Center / Poke Mart tour.
+# Start: Twinleaf Town at the player's house door (116,885) -> end: Sandgem Town after the tour, var 0x4071 = 2.
+title = "Sandgem: Rowan's lab and the Pokedex"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 11000
+refs = [
+  "zone_event 0396 coord 0",
+  "scr_seq 0985 @0x02C6",
+  "scr_seq 0985 @0x0318",
+  "scr_seq 0985 @0x0373",
+  "scr_seq 0985 @0x0377",
+  "scr_seq 0985 @0x0389",
+  "scr_seq 0920 @0x000B",
+  "scr_seq 0990 @0x0115",
+  "scr_seq 0990 @0x0119",
+  "scr_seq 0990 @0x0142",
+  "scr_seq 0990 @0x0202",
+  "scr_seq 0990 @0x0210",
+  "scr_seq 0990 @0x0229-0x0240",
+  "scr_seq 0990 @0x024B",
+  "scr_seq 0990 @0x024D",
+  "scr_seq 0990 @0x0315",
+  "scr_seq 0990 @0x0319",
+  "scr_seq 0990 @0x031D",
+  "zone_event 0400 warp 0",
+  "scr_seq 0985 @0x005F",
+  "scr_seq 0915 @0x000B",
+  "scr_seq 0985 @0x06CE",
+  "scr_seq 0985 @0x06D2",
+  "games/diamond/arm9/src/scrcmd.c:1308",
+  "games/diamond/arm9/src/scrcmd_flags.c:48",
+  "games/diamond/arm9/src/unk_0205EC84.c:207-209",
+  "zone_event 0389 warp 1",
+  "map_header.c:495",
+  "map_header.c:426",
+  "map_header.c:502",
+  "tests/gameplay/dp/recipes/sandgem.recipe",
+]
+notes = "Estimate: walk Twinleaf -> Sandgem ~2000, escort ~1500, Rowan ~5000, tour ~2500. Twinleaf, Route 201 and Sandgem share matrix 0 (map_header.c:495,426,502), so the walk is seamless. Rowan's nickname YesNo is answered NO with B (YesNoMenu: 0 YES, 1 NO, scr_seq 0990 @0x0119 skips NamePokemonScreen on 1); B also answers NO to the Pokedex question, which only re-asks it (@0x0229-@0x0240), so the B burst may overshoot safely and A then answers YES. Pearl: no GetGameVersion on this path (scr_seq 0977 @0x0261 is the friend's own talk script, not run here)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 16500
+
+[[step]]
+do = "walk_to"
+x = 164
+z = 844
+max = 6000
+note = "Sandgem coord 0 (164,842..847) 0x4071==0 (zone_event 0396): north up Route 201, east to Sandgem; Route 201 coords (zone_event 0327) are spent at 0x4086 == 3"
+
+[[step]]
+do = "press"
+keys = "B"
+times = 250
+note = "escort, Barry's Thud (0985 @0x02C6-@0x0318), Warp into the lab (@0x0389), lab ON_FRAME 0x40A6==0: B advances text and answers NO to 'give it a nickname?' (scr_seq 0990 @0x0112-@0x011F) [INFERENCE: B advances D/P text and cancels YesNoMenu as NO]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SANDGEM_ROWANS_LAB"
+
+[[step]]
+do = "advance_text"
+shot = "pokedex"
+note = "A = YES to 'help with the Pokedex?' (@0x0210/@0x022F) -> GiveSinnohDex, flag 0x90 (@0x024B-@0x024D), friend leaves (@0x0315), 0x40A6 1 (@0x031D)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 15
+note = "lab exit (zone_event 0400 warp 0) -> Sandgem warp 2 (168,842)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SANDGEM"
+
+[[step]]
+do = "advance_text"
+shot = "sandgem-tour"
+note = "ON_TRANSITION puts the friend at (168,845) (scr_seq 0985 @0x005F); ON_FRAME 0x4071==1 (scr_seq 0915 @0x000B): Pokemon Center and Poke Mart tour, friend leaves, 0x4071 2 (scr_seq 0985 @0x06CE-@0x06D2)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_SANDGEM"
+flags = ["0x1B5", "0x993", "0x90", "0x1B7", "0x195"]
+party = ["SPECIES_TURTWIG"]
+save = [
+  's["pokedex"] is not None and s["pokedex"]["obtained"]',  # GiveSinnohDex, scr_seq 0990 @0x024B
+]
+
+[expect.vars]
+"0x40A6" = 1
+"0x4071" = 2

@@ -1,0 +1,24 @@
+# Diamond story 22-maylene-cobble-badge: standalone start (--lab, or no end save from 21-route210-215-veilstone-dawn).
+# Standard header + lab party + the cumulative state after 21-route210-215-veilstone-dawn, then the milestone's start.
+# Applied on top of the D/P new-game base save; names resolve through tests/gameplay/labc.py --game diamond;
+# flag/var lines cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Standard lab party: Surf in slot 0 and slots 1-3 cleared, so an empty Surf falls back to Struggle
+# instead of stalling A-only battles. Maylene (trdata.json #317): MEDITITE 27, MACHOKE 27, LUCARIO 30 — Surf from
+# EMPOLEON 60 KOs each (Lucario's Drain Punch / Force Palm are neutral on Water/Steel). Black Belts (trdata.json
+# #309 #310 #311 #312): MACHOKE/MACHOP/MEDITITE lv 25-28, one Surf each.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_VEILSTONE_GYM 0  # (12,25), zone_event 0132 warp 0 (Veilstone gym door zone_event 0131 warp 13 (684,611))

@@ -1,0 +1,61 @@
+# Stark Mountain story: in Interior 3 Buck takes the Magma Stone (coord (7,10) while var 0x409E==0);
+# buck.recipe: talk to Buck in the Survival Area west house -> flag 0x125 (Heatran's prerequisite).
+# Start: MAP_STARK_MOUNTAIN_INTERIOR_3 entry warp (7,17). End: same map, var 0x409E 1.
+title = "Stark Mountain: Buck and the Magma Stone"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 3000
+refs = [
+  "maps.h:269",
+  "zone_event 0257 coord 0",
+  "zone_event 0257 object 2",
+  "zone_event 0257 object 3",
+  "zone_event 0257 warp 0",
+  "scr_seq 0278 @0x001C-0x0083",
+  "scr_seq 0278 @0x00A4-0x010E",
+  "scr_seq 0278 @0x00C5",
+  "scr_seq 0278 @0x00FA",
+  "scr_seq 0278 @0x00FE",
+  "scr_seq 0278 @0x0104",
+  "scr_seq 0278 @0x0108",
+  "msg 0247 #0",
+  "zone_event 0432 object 1",
+  "scr_seq 0377 @0x00FC",
+  "scr_seq 1027 @0x0049-0x0088",
+  "scr_seq 1027 @0x0051",
+  "scr_seq 1027 @0x007E",
+  "scr_seq 1027 @0x0082",
+  "games/diamond/arm9/src/map_object.c:295-300",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: Buck-house run = this dir with buck.recipe: walk_to (8,5) face up interact (Buck SPRITE_SEVEN4
+# (8,4), hidden 0x1F4, zone_event 0432 object 1), advance_text -> SetFlag 0x125 (scr_seq 1027 @0x0051),
+# RemoveEvent 1, SetFlag 0xE7/0x1F4 (@0x007E/@0x0082); expect map MAP_SURVIVAL_AREA_WEST_HOUSE,
+# flags 0x125, 0xE7, 0x1F4.
+
+[run]
+frames = 4500
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 10
+note = "coord 0 (7,10) while var 0x409E==0 runs #3 (zone_event 0257 coord 0); Buck (7,9), Magma Stone rock (7,8)"
+
+[[step]]
+do = "advance_text"
+max = 2500
+note = "Buck takes the stone: RemoveEvent 3 (rock, @0x00C5), quake, RemoveEvent 2 (@0x00FA), SetVar 0x409E 1, SetFlag 0xD6, ClearFlag 0x1F4 (@0x00FE-0x0108)"
+shot = "magma-stone"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_STARK_MOUNTAIN_INTERIOR_3"
+vars = { "0x409E" = 1 }
+flags = ["0xD6", "0x1F9", "0x1FC"]
+flags_clear = ["0x1F4"]

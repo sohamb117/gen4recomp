@@ -1,0 +1,75 @@
+# Pal Park entrance, first visit: Oak's ON_FRAME scene gives the Trainer Counter app (var 0x40C6 0 -> 1);
+# the receptionist's first talk sets flag 0xD3. Migration itself is the feature-matrix `palpark` case
+# (GBA cart + Emerald save -> MIGRATE FROM EMERALD), already done for Diamond and Pearl.
+# Start: MAP_ROUTE_221_PAL_PARK_ENTRANCE door (warp 0, (7,19)). End: same map, below the receptionist.
+title = "Pal Park: entrance, Oak's Trainer Counter and the receptionist"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 3000
+refs = [
+  "maps.h:397",
+  "zone_event 0378 object 1",
+  "zone_event 0378 object 7",
+  "zone_event 0378 warp 0",
+  "zone_event 0378 warp 1",
+  "scr_seq 0889 @0x000B",
+  "scr_seq 0444 @0x04C0-0x0545",
+  "scr_seq 0444 @0x0505-0x050E",
+  "scr_seq 0444 @0x0535",
+  "scr_seq 0444 @0x053D",
+  "scr_seq 0444 @0x007E-0x00FE",
+  "scr_seq 0444 @0x00A8",
+  "scr_seq 0444 @0x00DD",
+  "scr_seq 0444 @0x0186-0x01AD",
+  "msg 0464 #3",
+  "msg 0464 #21",
+  "tests/mac/feature_matrix.py:539-553",
+  "tests/mac/feature_matrix.py:544",
+  "docs/FEATURE_PARITY.md:97",
+  "docs/evidence/README.md:50",
+  "docs/evidence/README.md:90",
+  "games/diamond/pc/src/pc_dp_agb.c",
+]
+
+[start]
+recipe = "start.recipe"
+# Migration proof (not this runner): tests/mac/feature_matrix.py case `palpark` per --game (Emerald ROM + generated
+# save through Options, np_save4 set-national-dex, boot to the main menu "MIGRATE FROM EMERALD"; :539-553),
+# evidence diamond-palpark / pearl-palpark (docs/FEATURE_PARITY.md:97). The Catching Show needs 6 migrated
+# mons (scr_seq 0444 @0x0186-0x01AD) - not mintable by the lab.
+
+[run]
+frames = 4500
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "ON_FRAME var 0x40C6==0 -> #10 (level scr_seq 0889 @0x000B): Oak (object 1, (7,15)) walks over, msg 464 #3, SetVar 0x8004 19 + std 2009 TRAINER_COUNTER, RemoveEvent 1 (sets 0x1F0), SetVar 0x40C6 1 (scr_seq 0444 @0x04C0-0x0545)"
+shot = "oak-trainer-counter"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 12
+face = "up"
+interact = true
+note = "receptionist SPRITE_WORKMAN (7,11) (zone_event 0378 object 7, script #2): first talk SetFlag 0xD3 (male @0x00A8 / female @0x00DD), msg 464 #21 Yes/No"
+
+[[step]]
+do = "advance_text"
+max = 2500
+note = "[INFERENCE] A takes YES -> rules (@0x0107-0x0110) -> no migrated mons -> refusal path (@0x0186-0x01AD)"
+shot = "receptionist"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ROUTE_221_PAL_PARK_ENTRANCE"
+vars = { "0x40C6" = 1 }
+flags = ["0xD3", "0x1F0"]
+# PHASE2: reader-ext Poketch app 19 (TRAINER_COUNTER) unlocked.

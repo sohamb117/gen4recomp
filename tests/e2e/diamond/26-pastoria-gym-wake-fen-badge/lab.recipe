@@ -1,0 +1,24 @@
+# Diamond story 26-pastoria-gym-wake-fen-badge: standalone start (--lab, or no end save from 25-route214-valor-route213-to-pastoria).
+# Standard header + lab party + the cumulative state after 25-route214-valor-route213-to-pastoria, then the milestone's start.
+# Applied on the D/P new-game base save (bedroom), so INIT_NEW_GAME state (scr_seq 0377) is present; RemoveEvent sets
+# an object's hidden_flag (games/diamond/arm9/src/map_object.c:295-299). The starter var comes from the prior deltas.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party (slice convention): Surf in slot 0, slots 1-3 cleared so an empty Surf falls back to Struggle.
+# Opponents: TRAINER_LEADER_WAKE_WAKE (trdata.json #316: GYARADOS 27, QUAGSIRE 27, FLOATZEL 30) and the gym trainers
+# #497 BUIZEL 26, #339 WINGULL 24 x2, #498 AZURILL 24 + MARILL 24, #483 SHELLOS 24/WINGULL 24/SHELLOS 24,
+# #293 GOLDEEN 22/BARBOACH 23/GYARADOS 24, #401 BARBOACH 26: Surf from a level-60 Empoleon wins even where resisted.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_PASTORIA_GYM 0  # (13,42), zone_event 0121 warp 0 (MAP_PASTORIA warp 0 (589,827) leads here)

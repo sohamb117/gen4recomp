@@ -1,0 +1,16 @@
+# Diamond story 04-jubilife-trainers-school: standalone start (--lab, or no end save from 03).
+# Standard header + lab party + the cumulative state after 03, then the milestone's start. Applied on the D/P
+# new-game base save (bedroom; scr_seq 0377's new-game flags already set). Names resolve through
+# tests/gameplay/labc.py --game diamond. The Running Shoes (PlayerSaveData, scrcmd_flags.c:68-73) have no lab verb.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 3000
+# Early party: no trainer battle is mandatory before Route 203 (Barry, trdata.json #247); Tackle in slot 0 beats the
+# Route 202 wild Pokemon, the optional Route 202 trainers (trdata.json #1 STARLY 5, #2 SHINX 5, #3 BIDOOF 3 x2) and
+# the optional school kids (#342, #345 ABRA 6).
+party SPECIES_TURTWIG 14 ITEM_NONE
+party-move 0 0 MOVE_TACKLE
+# @@PRIOR@@
+# -- start --
+map MAP_ROUTE_202 180 827 FACE_UP  # on the spent tutorial coord (180,825..829) (zone_event 0328 coord 0) [INFERENCE: coord tiles are walkable]

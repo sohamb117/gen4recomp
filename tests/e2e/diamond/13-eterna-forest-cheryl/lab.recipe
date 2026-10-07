@@ -1,0 +1,22 @@
+# Diamond story 13-eterna-forest-cheryl: standalone start (--lab, or no end save from 12).
+# Standard header + lab party + the cumulative state after 12, then the milestone's start. Applied on top of the
+# D/P new-game base save (bedroom); flag/var lines in the prior block cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party: Surf in slot 0 and slots 1-3 cleared (empty Surf -> Struggle, never a stalled A-only battle).
+# Opponents (all optional, multi battles beside Cheryl #608): trdata.json #201-#206, #395, #398 (lv 9-15).
+# Staraptor carries the field moves.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_ETERNA_FOREST_INTERIOR 0  # 12's end: (28,86), zone_event 0201 warp 0 (= Route 205 South zone_event 0332 warp 0's arrival)

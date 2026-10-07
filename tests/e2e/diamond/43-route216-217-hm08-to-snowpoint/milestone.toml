@@ -1,0 +1,115 @@
+# Proves the snow road: Route 216 west, Route 217 north with the HM08 (Rock Climb) item ball, Acuity Lakefront (lake still
+# guarded until the Icicle Badge) and Snowpoint City. Start: Route 216 cave mouth (375,403) -> end: Snowpoint (367,223),
+# below the gym door (44's start).
+title = "Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 22000
+refs = [
+  "maps.h:387 MAP_ROUTE_216 = 383; map_header.c:467 (scr_seq 0434, zone_event 0368, weather 26)",
+  "zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33",
+  "maps.h:389 MAP_ROUTE_217 = 385; map_header.c:469 (scr_seq 0436, zone_event 0370); no story scripts in scr_seq 0436",
+  "zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38",
+  "zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37",
+  "zone_event 0370 object 10 item ball (296,305) hidden_flag 0x47B, script 7174 -> scr_seq 0370 @0x119A SetVar 0x8008,427 (ITEM_HM08)",
+  "scr_seq 0370 @0x1834 RemoveEvent VAR_LAST_INTERACTED; @0x1838 GiveItem (item-ball common script_256)",
+  "scr_seq 0437 @0x0019 HasItem ITEM_HM08 (Route 217 south-house hiker: Icicle Plate only after HM08 is found)",
+  "maps.h:344 MAP_ACUITY_LAKEFRONT = 340; map_header.c:424 (scr_seq 0385, level scr_seq 0835, zone_event 0325)",
+  "zone_event 0325 objects 1/2 guards (310,240)/(311,240) hidden_flag 0x252; scr_seq 0385 @0x0052-@0x008D (moved aside only with BADGE_ICICLE)",
+  "msg 358 #0 ('make sure Snowpoint's Gym Leader doesn't disturb us')",
+  "maps.h:169 MAP_SNOWPOINT = 165; zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0",
+  "map_matrix 0 cells: MAP_ROUTE_216 (9..11,12) z384-415; MAP_ROUTE_217 (9,8..11) x288-319 z256-383; MAP_ACUITY_LAKEFRONT (9..10,6..7) x288-351 z192-255; MAP_SNOWPOINT (11,6..7) x352-383",
+  "files/fielddata/land_data/land_data_release.narc permission grids for the map_matrix 0 cells above (paths below are a BFS with objects solid)",
+]
+notes = "Estimate: ~360 tiles, much of it deep snow (slow), three sight trainers on the BFS path plus wild battles. In chain mode slot-0 PP runs low here: the Snowbound Lodge (zone_event 0368 warp 1 (303,398)) is beside the path [INFERENCE: heal there if Empoleon is on Struggle]."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 33000
+
+[[step]]
+do = "walk_to"
+x = 304
+z = 384
+max = 12000
+note = "north edge of Route 216; BFS (375,403)->(370,403)->(370,402)->(356,402)->(356,401)->(298,401)->(298,393)->(304,393)->(304,384); Maria (328,403) N2 sees (328,401)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+note = "cross z384 -> z383 into Route 217"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_217"
+
+[[step]]
+do = "walk_to"
+x = 296
+z = 306
+face = "up"
+interact = true
+max = 9000
+note = "HM08 ball obj 10 (296,305); BFS (304,383)->(304,381)->(303,381)->(303,375)->(304,375)->(304,369)->(302,369)->(302,336)->(300,336)->(300,334)->(298,334)->(298,324)->(296,324)->(296,306); Dalton (307,369) W3 sees (304,369)"
+
+[[step]]
+do = "advance_text"
+shot = "hm08"
+note = "item ball: RemoveEvent (flag 0x47B) + GiveItem ITEM_HM08 (scr_seq 0370 @0x1834/@0x1838)"
+
+[[step]]
+do = "walk_to"
+x = 311
+z = 256
+max = 9000
+note = "north edge of Route 217; BFS (296,306)->(290,306)->(290,272)->(293,272)->(293,271)->(307,271)->(307,267)->(311,267)->(311,256); Olivia (302,267) E5 sees (307,267)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+note = "cross z256 -> z255 into Acuity Lakefront"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ACUITY_LAKEFRONT"
+
+[[step]]
+do = "walk_to"
+x = 351
+z = 238
+max = 6000
+note = "east edge of Acuity Lakefront; BFS (311,255)->(311,251)->(313,251)->(313,249)->(317,249)->(317,247)->(337,247)->(337,245)->(345,245)->(345,239)->(351,239)->(351,238); the guards (310|311,240) stay in front of the lake mouth"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 16
+note = "cross x351 -> x352 into Snowpoint"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SNOWPOINT"
+
+[[step]]
+do = "walk_to"
+x = 367
+z = 223
+note = "below the gym door (367,222); BFS (352,238)->(354,238)->(354,240)->(359,240)->(359,239)->(367,239)->(367,223)"
+
+[[step]]
+do = "wait_field"
+shot = "snowpoint-gym-door"
+
+[expect]
+map = "MAP_SNOWPOINT"
+position = [367, 223]
+flags = ["0x47B"]
+save = [
+  'any(i["item"] == 427 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM08 [INFERENCE: np_save4 D/P bag dump shaped like Platinum's]
+]

@@ -1,0 +1,24 @@
+# Diamond story 25-route214-valor-route213-to-pastoria: standalone start (--lab, or no end save from 24-veilstone-warehouse-tag-battle).
+# Standard header + lab party + the cumulative state after 24-veilstone-warehouse-tag-battle, then the milestone's start.
+# Applied on the D/P new-game base save (bedroom), so INIT_NEW_GAME state (scr_seq 0377) is present; RemoveEvent sets
+# an object's hidden_flag (games/diamond/arm9/src/map_object.c:295-299). The starter var comes from the prior deltas.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party (slice convention): Surf in slot 0, slots 1-3 cleared so an empty Surf falls back to Struggle.
+# Opponents (sight trainers on the path): Route 214 PSYCHIC_F Abigail (trdata.json #120: GASTLY 22, MISDREAVUS 23,
+# KADABRA 24), RUIN_MANIAC Bryan (#113: CRANIDOS 24, GEODUDE 22, BRONZOR 23), COLLECTOR Jamal (#382: BUIZEL 21 x2, 24),
+# RUIN_MANIAC Hunter (#114: SHIELDON 26); Route 213 trainers only if the path crosses their sight.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+map MAP_VEILSTONE 696 595 FACE_DOWN  # [INFERENCE] 24's end tile: the west approach moves the player next to grunt 1 (697,595) (scr_seq 0131 L_04E2 @0x04E2; zone_event 0131 object 7)

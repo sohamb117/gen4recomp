@@ -1,0 +1,76 @@
+# Vs. Seeker rematch: with the seeker charged (var 0x4033 = 100) and registered, Y on Route 202 makes the
+# beaten Youngster Tristan ready (50% roll); talk to him and win his level-1 rematch party.
+# Start: MAP_ROUTE_202 (166,816), Tristan at (166,813) facing S, already beaten. End: same map, rematch won.
+title = "Vs. Seeker: Youngster Tristan rematch on Route 202"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 3500
+refs = [
+  "maps.h:347",
+  "zone_event 0328 object 0",
+  "trdata.json #1",
+  "trdata.json #765",
+  "zone_event 0338 coord 0",
+  "scr_seq 0403 @0x0295-0x02A5",
+  "scr_seq 0403 @0x02AB-0x02B1",
+  "scr_seq 0403 @0x030F-0x0315",
+  "games/diamond/include/constants/items.h:668",
+  "games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:215-222",
+  "games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:386-412",
+  "games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:418-431",
+  "games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:581-586",
+  "games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:744",
+  "games/diamond/arm9/overlays/05/asm/ov05_021E1374.s:1167",
+  "games/diamond/arm9/asm/unk_0205F314.s:158-183",
+  "games/diamond/arm9/src/unk_0205EC84.c:83-89",
+  "games/diamond/arm9/src/unk_0205EC84.c:155-176",
+  "scr_seq 1040 @0x0E00",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5300
+
+[[step]]
+do = "press"
+keys = "Y"
+note = "registered ITEM_VS__SEEKER (443): usable only at charge 100 (ov05_021E1518 cmp 0x64, ov05_021E1374.s:215-222); each visible beaten trainer rematches if LCRandom()%100 < 50 (:581-586)"
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "seeker"
+# PHASE2: the 50% roll is LCRNG-driven; if Tristan shows no '!' at this pinned start, shift the run's start
+# frame (or re-mint) until he does.
+
+[[step]]
+do = "walk_to"
+x = 166
+z = 814
+face = "up"
+interact = true
+note = "rematch id = next id of his row {1, 765, 766, 767} whose level flag is set: level 1 <-> flag 0x97F (sub_0205EEB8 unk_0205EC84.c:155-176, row ov05_021E1374.s:1167) -> TRAINER_YOUNGSTER_TRISTAN_2 (765), STARLY lv19"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "rematch"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ROUTE_202"
+battles = 1
+# the generic trainer script sets the fought id's flag: 0x550 + 765 (scr_seq 1040 @0x0E00 SetTrainerFlag 0x8004)
+flags = ["0x84D"]

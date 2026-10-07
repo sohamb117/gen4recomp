@@ -1,0 +1,86 @@
+# Proves the walk back from Celestic Town (Routes 210 North/South, Solaceon, Route 209) to Hearthome City and into the
+# Hearthome Gym, now open: 0x98D keeps the first room's elevator coord armed (var 0x4000 = 0).
+# Start: Celestic Town ruins door (463,521) (32's end) -> end: Hearthome Gym first question room (9,22) (34's start).
+title = "Celestic Town back to the Hearthome Gym"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 26000
+refs = [
+  "zone_event 0347 object 19",
+  "zone_event 0341 warp 0",
+  "zone_event 0109 warp 0",
+  "zone_event 0085 warp 8",
+  "zone_event 0085 coord 0",
+  "zone_event 0087 warp 3",
+  "zone_event 0087 coord 0",
+  "scr_seq 0092 @0x001A",
+  "scr_seq 0092 @0x0020",
+  "scr_seq 0092 @0x0022",
+  "scr_seq 0114 @0x012B",
+  "scr_seq 0090 @0x013B",
+  "games/diamond/arm9/asm/unk_02064CA8.s:32-57",
+  "games/diamond/arm9/src/unk_0205EC84.c:47-49",
+  "maps.h:92",
+  "map_header.c:172",
+]
+notes = "Estimate: ~350 tiles (Platinum 20 walked most of it the other way in ~31000 with a rival battle). No story state changes on the way: Route 209/210 South ON_TRANSITIONs only swap time-of-day jogger flags (scr_seq 0406 #8, 0412 #7). Hearthome coord 0 (484..489,718) var 0x407B==1 is off the gate-to-gym path and was spent earlier (scr_seq 0090 @0x013B)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 39000
+
+# PHASE2-risk: the probe sees 64x64 tiles; the waypoints below split the walk at the old Psyduck tile and the gatehouse.
+
+[[step]]
+do = "walk_to"
+x = 561
+z = 588
+max = 15000
+note = "east through Route 210 North, south into Route 210 South to the old Psyduck tile (Psyduck hidden 0x1CE); sight trainers fought by walk_to"
+
+[[step]]
+do = "walk_to"
+x = 512
+z = 726
+max = 20000
+note = "south through Solaceon Town onto Route 209, west to the Hearthome gatehouse (zone_event 0341 warp 0 -> MAP_HEARTHOME_ROUTE_209_GATEHOUSE warp 1 (10,7)) [INFERENCE: Solaceon/Route 209 seamless as in Platinum 20]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_ROUTE_209_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "west door warp 0 (1,7) -> MAP_HEARTHOME warp 19 (505,726) (zone_event 0109)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME"
+
+[[step]]
+do = "walk_to"
+x = 499
+z = 697
+note = "gym door warp 8 (499,697) -> MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM warp 3 (9,22) (zone_event 0085)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM"
+
+[[step]]
+do = "wait_field"
+shot = "hearthome-gym-entry"
+note = "ON_TRANSITION scr_seq 0092 #1: 0x4000 = 0, InitHearthomeGym, 0x98D set -> 0x4000 stays 0 (@0x001A-@0x0026)"
+
+[expect]
+map = "MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM"
+position = [9, 22]
+badges = 4
+badge = ["BADGE_COAL", "BADGE_FOREST", "BADGE_COBBLE", "BADGE_FEN"]
+flags = ["0x98D", "0xA5", "0x107"]

@@ -1,0 +1,119 @@
+# Proves the Canalave Gym (InitCanalaveGym platform state), Byron, the Mine Badge and TM91, and the rival's
+# post-badge frame script outside (0x4078 2 -> 3) that sends the player to the library (DPStory09's start).
+# Start: MAP_CANALAVE ferry landing (44,750) -> end: MAP_CANALAVE outside the gym door after scr_seq 0034 script_4.
+title = "Canalave Gym: Byron and the Mine Badge, rival points to the library"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 22500
+refs = [
+  "zone_event 0032 warp 0 (39,731) -> MAP_CANALAVE_GYM warp 0 (16,27)",
+  "scr_seq 0036 @0x0012 InitCanalaveGym (games/diamond/arm9/src/scrcmd.c:3352; games/diamond/arm9/asm/unk_02064CA8.s:67-89, 24 bytes UNK_020F7E54)",
+  "zone_event 0034 object 4 SPRITE_LEADER7 Byron (16,3) -> scr_seq 0036 script_2",
+  "zone_event 0034 objects 0,2,3,5,6,7,8 (gym trainers 232, 256, 257, 314, 279, 367, 283)",
+  "scr_seq 0036 @0x001E HasBadge BADGE_MINE",
+  "scr_seq 0036 @0x0042 TrainerBattle 250",
+  "scr_seq 0036 @0x0068 GiveBadge 5 (BADGE_MINE)",
+  "scr_seq 0036 @0x0070-@0x0088 SetTrainerFlag 232/256/257/279/283/314/367 (0x638/0x650/0x651/0x667/0x66B/0x68A/0x6BF)",
+  "scr_seq 0036 @0x0098 ClearFlag 0x1D0",
+  "scr_seq 0036 @0x009C ClearFlag 0x1D6",
+  "scr_seq 0036 @0x00A0 ClearFlag 0x1D4",
+  "scr_seq 0036 @0x00A4 ClearFlag 0x1D5",
+  "scr_seq 0036 @0x00A8 SetVar 0x4078, 2",
+  "scr_seq 0036 @0x00AE SetFlag 0x1B6",
+  "scr_seq 0036 @0x00C7 HasSpaceForItem ITEM_TM91; @0x00DC std 2044 (give item)",
+  "scr_seq 0036 @0x00E0 SetFlag 0x92",
+  "scr_seq 0036 @0x011C Blackout (loss)",
+  "trdata.json #250 TRAINER_LEADER_BYRON_BYRON",
+  "zone_event 0039 objects 2/3/4 hidden_flag 0x1D5/0x1D4/0x1D6 (MAP_CANALAVE_LIBRARY_3F)",
+  "scr_seq 0034 @0x00A9 ON_TRANSITION 0x4078==2 -> L_012A: Barry (object 11) parked at (39,733) facing north",
+  "scr_seq 0497 @0x0010 ON_FRAME_TABLE 0x4078==2 -> scr_seq 0034 script_4",
+  "scr_seq 0034 @0x0357 msg 47 #2",
+  "scr_seq 0034 @0x036E RemoveEvent 11 (sets hidden_flag 0x1D0, games/diamond/arm9/src/map_object.c:295-299)",
+  "scr_seq 0034 @0x0372 SetVar 0x4078, 3",
+  "scr_seq 0034 @0x0378 SetVar 0x40B2, 1",
+  "games/diamond/arm9/src/field_move.c:303 (BADGE_MINE enables Strength)",
+  "zone_event 0032 warp 1 (58,722) -> MAP_CANALAVE_POKECENTER_1F warp 0 (8,12); zone_event 0035 object 1 SPRITE_PCWOMAN1 (8,4) -> scr_seq 0037 script_1 (std 2002, heal)",
+]
+notes = "Estimate: Pokémon Center heal (~1500), platform rides + walking (~5000), 7 gym trainers if all engage (~9000), Byron (~2500), badge/TM text (~2000), exit + rival frame script (~1500), walk to the gym (~500). Which gym trainers are unavoidable is unknown until the platform route is solved."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 33800
+
+[[step]]
+do = "walk_to"
+x = 58
+z = 722
+max = 2000
+note = "Canalave Pokémon Center door (warp 1): heal Surf PP/HP after Iron Island"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "nurse obj1 (8,4) across the counter; [INFERENCE] counter row 5"
+
+[[step]]
+do = "advance_text"
+note = "std 2002 heal; [INFERENCE] YES is the default answer"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "Pokémon Center warp 0 -> Canalave (58,722)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE"
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 731
+max = 2000
+note = "gym door, Canalave warp 0 -> gym (16,27)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE_GYM"
+
+[[step]]
+do = "wait_field"
+shot = "canalave-gym"
+# PHASE2: Canalave Gym route. The D/P platform logic is assembly: InitCanalaveGym (games/diamond/arm9/asm/unk_02064CA8.s:67-89)
+#   seeds 24 gym-state bytes from UNK_020F7E54 into the save's gym block (sub_02025490/sub_020254A0 type 3); find the
+#   platform-move code that reads that block (field overlay) or map-scan the gym (map 35, matrix 112) per floor height —
+#   objects sit at y_raw 655360/1310720/1966080 (zone_event 0034: Jackson (14,3) and Breanna (27,5) on one level, David (24,3)
+#   and Gerardo (8,3) on the next, Byron (16,3) on the top). Gym trainers on the way (fought by walk_to): Gary (22,16) S sight 4
+#   ONIX 31; Ricky (9,17) W sight 3 STEELIX 33; Cesar (27,25) S sight 2 SKORUPI 30, STEELIX 32; Jackson ONIX 28 x3;
+#   Breanna AZUMARILL 33; David ONIX 30, STEELIX 32; Gerardo ONIX 29 x2.
+#   Then: walk_to Byron's front tile (16,4) face up interact -> advance_text -> auto_battle (shot "byron-battle";
+#   BRONZOR 36, STEELIX 36, BASTIODON 39) -> advance_text (shot "mine-badge"; GiveBadge 5, TM91) -> walk_to (16,27)
+#   -> wait_map MAP_CANALAVE -> advance_text (rival frame script scr_seq 0034 script_4, shot "rival-library")
+#   -> wait_field.
+
+[expect]
+map = "MAP_CANALAVE"
+badges = 6
+badge = ["BADGE_MINE"]
+flags = ["0x92", "0x1B6", "0x1D0", "0x638", "0x650", "0x651", "0x667", "0x66B", "0x68A", "0x6BF"]
+flags_clear = ["0x1D4", "0x1D5", "0x1D6"]
+battles = 1
+save = [
+  'any(i["item"] == 418 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM91
+]
+
+[expect.vars]
+"0x4078" = 3
+"0x40B2" = 1

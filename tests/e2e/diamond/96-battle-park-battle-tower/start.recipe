@@ -1,0 +1,32 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31096
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# game completed: every script gate is CheckGameCompleted/CheckFlag 0x964 (scrcmd_flags.c:194-201 -> unk_0205EC84.c:55-56)
+flag 0x964
+# Fight Area arrival scene already played (scr_seq 0195 @0x00A2-0x012D): RemoveEvent 7/8 set their hide flags
+# (MapObject_Delete, map_object.c:295-300), SetVar 0x4081 1 stops the ON_FRAME scene (level scr_seq 0658 @0x000B)
+flag 0x1F1
+flag 0x1F2
+var 0x4081 1
+# Battle Park gatehouse first-entry scene done (scr_seq 0200 @0x0026-0x0054): var 0x4113 1, 0x2AE/0x2AF, Point Card
+var 0x4113 1
+flag 0x2AE
+flag 0x2AF
+item ITEM_POINT_CARD 1
+# Battle Park Palmer/Barry coord scene done (scr_seq 0355 @0x006E-0x0194): RemoveEvent 11/12 re-set 0x294/0x295
+var 0x410E 1
+flag 0x294
+flag 0x295
+# three distinct species with distinct held items (msg 283 #9/#10 checks); slot-0 move wins by A
+party SPECIES_GARCHOMP 100 ITEM_LEFTOVERS
+party-move 0 0 MOVE_EARTHQUAKE
+party SPECIES_METAGROSS 100 ITEM_CHOICE_BAND
+party-move 1 0 MOVE_METEOR_MASH
+party SPECIES_SALAMENCE 100 ITEM_LIFE_ORB
+party-move 2 0 MOVE_DRAGON_CLAW
+# below the single/double attendant (11,5) (zone_event 0311 object 0); path from the Fight Area:
+# warp 2 (658,425) -> gatehouse warp 1 (5,2) -> MAP_BATTLE_PARK warp 2 (24,10) -> lobby
+map MAP_BATTLE_TOWER_LOBBY 11 6 FACE_UP

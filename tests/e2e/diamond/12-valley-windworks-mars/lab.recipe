@@ -1,0 +1,22 @@
+# Diamond story 12-valley-windworks-mars: standalone start (--lab, or no end save from 11).
+# Standard header + lab party + the cumulative state after 11, then the milestone's start. Applied on top of the
+# D/P new-game base save (bedroom); flag/var lines in the prior block cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party: Surf in slot 0 and slots 1-3 cleared (empty Surf -> Struggle, never a stalled A-only battle).
+# Opponents: trdata.json #843 GLAMEOW 11, #295 ZUBAT 14 + PURUGLY 16 (Mars); optional #298/#299 (lv 10-11) and the
+# Route 205 South trainers #16-#21/#377/#456 (lv 11-15). Staraptor carries the field moves.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_FLOAROMA 7  # 11's end: meadow entrance (162,641), zone_event 0404 warp 7 (= the meadow exit's arrival, zone_event 0248 warp 3)

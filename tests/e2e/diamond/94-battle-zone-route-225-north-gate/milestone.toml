@@ -1,0 +1,76 @@
+# Battle Zone areas: with the National-Dex flag 0x2B2 the two blockers north of the Fight Area are
+# gone (hidden_flag 0x2B2); walk through the Route 225 gatehouse onto Route 225.
+# Start: MAP_FIGHT_AREA (630,430) south of the blockade (629/630,429). End: MAP_ROUTE_225 (630,413).
+title = "Battle Zone: Route 225 through the Fight Area north gate"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 3500
+refs = [
+  "maps.h:192",
+  "maps.h:404",
+  "zone_event 0187 object 22",
+  "zone_event 0187 object 23",
+  "zone_event 0187 warp 0",
+  "zone_event 0187 warp 1",
+  "scr_seq 0195 @0x0538-0x0549",
+  "msg 0183 #5",
+  "zone_event 0192 warp 1",
+  "zone_event 0385 warp 0",
+  "zone_event 0448 object 16",
+  "zone_event 0448 object 17",
+  "scr_seq 0990 @0x058B",
+  "zone_event 0428 warp 0",
+  "zone_event 0428 warp 3",
+  "zone_event 0435 warp 3",
+  "zone_event 0254 warp 0",
+  "zone_event 0386 coord 0",
+  "zone_event 0386 coord 1",
+  "scr_seq 0454 @0x00ED",
+  "scr_seq 0454 @0x01D5",
+]
+
+[start]
+recipe = "start.recipe"
+# Other Battle Zone stations (same recipe, other map line): MAP_SURVIVAL_AREA PC door (657,338) /
+# west house (650,338) (zone_event 0428 warps 3/0), MAP_RESORT_AREA PC door (807,457) (zone_event 0435
+# warp 3), MAP_STARK_MOUNTAIN_EXTERIOR door (747,234) -> INTERIOR_1 (zone_event 0254 warp 0). Route 230
+# has the same 0x2B2 blockers at (682,430/431) (zone_event 0448 objects 16/17). Route 227 scenes: coord
+# (738,306) 2x1 while 0x408B==0 -> SetVar 0x408B 1 (scr_seq 0454 @0x00ED); coord (758,277) while
+# 0x4119==0 -> SetVar 0x4119 1 (@0x01D5) (zone_event 0386 coords 0/1).
+
+[run]
+frames = 5300
+
+[[step]]
+do = "walk_to"
+x = 630
+z = 421
+note = "through (630,429) - free only when hidden_flag 0x2B2 is set (zone_event 0187 object 23; without it msg 183 #5 blocks) - into warp 0 -> MAP_FIGHT_AREA_ROUTE_225_GATEHOUSE"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FIGHT_AREA_ROUTE_225_GATEHOUSE"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "gatehouse warp 1 (5,2) -> MAP_ROUTE_225 warp 0 (630,413) (zone_event 0192 warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_225"
+
+[[step]]
+do = "wait_field"
+shot = "route-225"
+
+[expect]
+map = "MAP_ROUTE_225"
+flags = ["0x2B2"]
+# version: Route 225 wild bank differs (d_enc_data/p_enc_data 0172, dp_script.py version-diff); the
+# walk stays on the gate tiles, so no encounter is expected in either version.

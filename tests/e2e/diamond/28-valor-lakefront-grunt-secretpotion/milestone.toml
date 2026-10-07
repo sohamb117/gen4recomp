@@ -1,0 +1,163 @@
+# Proves the Fen Badge's Galactic follow-up: the grunt chase over Route 213 (0x104) to Valor Lakefront (0x106), the
+# grunt battle, and Cynthia's SecretPotion that sends the player north to the Route 210 Psyduck (0x4083 = 2, 0xB7).
+# Start: Pastoria (636,812) by the east gate (27's end) -> end: Valor Lakefront below Cynthia's spot (723,761).
+title = "Route 213 to Valor Lakefront: grunt chase and Cynthia's SecretPotion"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "zone_event 0119 warp 10",
+  "zone_event 0359 warp 0",
+  "scr_seq 0869 @0x0000",
+  "scr_seq 0424 @0x0022",
+  "scr_seq 0424 @0x002F",
+  "scr_seq 0424 @0x0044",
+  "scr_seq 0424 @0x0051",
+  "zone_event 0358 object 30",
+  "scr_seq 0424 @0x0057",
+  "scr_seq 0424 @0x0073",
+  "scr_seq 0424 @0x00A3",
+  "scr_seq 0424 @0x00B3",
+  "scr_seq 0424 @0x00B7",
+  "scr_seq 0424 @0x00BB",
+  "zone_event 0321 object 5",
+  "zone_event 0321 object 0",
+  "zone_event 0321 coord 0",
+  "scr_seq 0831 @0x0005",
+  "scr_seq 0381 @0x002A",
+  "scr_seq 0381 @0x005A",
+  "scr_seq 0381 @0x00B8",
+  "scr_seq 0381 @0x0119",
+  "scr_seq 0381 @0x0141",
+  "scr_seq 0381 @0x014D",
+  "scr_seq 0381 @0x0155",
+  "scr_seq 0381 @0x015C",
+  "scr_seq 0381 @0x01B4",
+  "scr_seq 0381 @0x01DC",
+  "scr_seq 0381 @0x01E0",
+  "scr_seq 0381 @0x01E4",
+  "scr_seq 0381 @0x025C",
+  "scr_seq 0381 @0x0267",
+  "scr_seq 0381 @0x029C",
+  "scr_seq 0381 @0x02A8",
+  "scr_seq 0381 @0x02E0",
+  "scr_seq 0381 @0x02F8",
+  "scr_seq 0381 @0x02FC",
+  "scr_seq 0381 @0x0302",
+  "scr_seq 0412 @0x0081",
+  "games/diamond/arm9/src/map_object.c:295-299",
+  "trdata.json #847",
+  "msg 444 #1",
+  "msg 354 #2",
+  "msg 354 #4",
+  "msg 354 #7",
+  "items.h:689",
+]
+notes = "Valor Lakefront's wild bank differs by version (d/p_enc 0138, dp_script.py version-diff); no script here branches on GetGameVersion, so version = both. The Route 213 grunt only leaves when talked to facing south or east (scr_seq 0424 @0x0073-0x0091); other facings End with him still there. The SecretPotion is used on the Route 210 South Psyduck (scr_seq 0412 @0x0081 HasItem 464) by the next slice."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 639
+z = 812
+map = "MAP_PASTORIA"
+note = "east gate, zone_event 0119 warp 10 -> MAP_ROUTE_213_PASTORIA_GATEHOUSE warp 1 (1,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_213_PASTORIA_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "zone_event 0359 warp 0 -> MAP_ROUTE_213 warp 0 (646,812)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_213"
+note = "ON_TRANSITION (scr_seq 0869 @0x0000 -> scr_seq 0424 #1): 0x104 clear + BADGE_FEN + 0x103 -> ClearFlag 0x238 (@0x0051), grunt obj30 at (684,834)"
+
+[[step]]
+do = "walk_to"
+x = 683
+z = 834
+face = "right"
+interact = true
+max = 8000
+note = "[INFERENCE] tile west of the grunt (684,834); facing east -> L_00A3 (scr_seq 0424 @0x00A3). Route 213 sight trainers may engage on the beach (fought by walk_to)"
+
+[[step]]
+do = "advance_text"
+shot = "route213-grunt"
+note = "msg 444 #0/#1; grunt runs (RemoveEvent 30 @0x00B3 -> hidden 0x238), SetFlag 0x104 (@0x00B7), ClearFlag 0x239 (@0x00BB) puts the Valor grunt out"
+
+[[step]]
+do = "walk_to"
+x = 719
+z = 791
+face = "up"
+interact = true
+max = 6000
+note = "[INFERENCE] tile south of the Valor grunt obj5 (719,790) facing north; crossing into Valor Lakefront (z 736-799); keep off x=724 z789-791 (coord 0, 0x4112==0)"
+
+[[step]]
+do = "advance_text"
+note = "msg 354 #0/#1; facing north -> L_0119, SetEventPosition 5 -> (723,769) facing north (@0x0141), SetFlag 0x106 (@0x014D)"
+
+[[step]]
+do = "walk_to"
+x = 723
+z = 770
+face = "up"
+interact = true
+note = "[INFERENCE] tile south of the grunt's new spot (723,769)"
+
+[[step]]
+do = "advance_text"
+note = "msg 354 #2 -> TrainerBattle 847 (scr_seq 0381 @0x015C)"
+
+[[step]]
+do = "auto_battle"
+shot = "valor-grunt"
+note = "TRAINER_GALACTIC_GRUNT_36 (847): GLAMEOW 25"
+
+[[step]]
+do = "advance_text"
+note = "grunt leaves (L_01B4, RemoveEvent 5 @0x01DC -> hidden 0x239), ClearFlag 0x1CB (@0x01E0), AddEvent 0: Cynthia at (723,760) facing west"
+
+[[step]]
+do = "walk_to"
+x = 723
+z = 761
+face = "up"
+interact = true
+note = "Cynthia obj0 (723,760); [INFERENCE] tile south of her; facing north -> L_02E0 (@0x02E0)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "secretpotion"
+note = "msg 354 #4, YesNo either answer -> msg #7, ITEM_SECRETPOTION via std 2044 (@0x029C-0x02A8), Cynthia leaves (RemoveEvent 0 @0x02F8 -> hidden 0x1CB), SetVar 0x4083 2, SetFlag 0xB7"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_VALOR_LAKEFRONT"
+badges = 4
+flags = ["0x103", "0x104", "0x106", "0x238", "0x239", "0x1CB", "0xB7"]
+battles = 1
+save = [
+  'any(i["item"] == 464 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_SECRETPOTION (items.h:689)
+]
+
+[expect.vars]
+"0x4083" = 2

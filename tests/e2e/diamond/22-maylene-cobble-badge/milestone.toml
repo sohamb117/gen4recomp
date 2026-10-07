@@ -1,0 +1,109 @@
+# Proves the Veilstone Gym (12 two-state obstacles set up by InitVeilstoneGym, four Black Belts) and Maylene's Cobble Badge
+# (3rd badge in D/P) with TM60; the win arms the Veilstone warehouse scene (0x411A = 1) that S6's first milestone plays.
+# Start: Veilstone Gym warp 0 (12,25) -> end: Veilstone Gym facing Maylene (12,5) with BADGE_COBBLE; do NOT leave the gym
+# here: the Veilstone ON_FRAME (0x411A == 1) fires on the next entry to MAP_VEILSTONE and belongs to the next milestone.
+title = "Veilstone Gym: Maylene and the Cobble Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "maps.h:137",
+  "map_header.c:217",
+  "zone_event 0132 object 0",
+  "zone_event 0132 object 1",
+  "zone_event 0132 object 2",
+  "zone_event 0132 object 3",
+  "zone_event 0132 object 4",
+  "zone_event 0132 object 5",
+  "zone_event 0132 warp 0",
+  "scr_seq 0595 @0x0000",
+  "scr_seq 0132 @0x0012",
+  "scr_seq 0132 @0x001E",
+  "scr_seq 0132 @0x0042",
+  "scr_seq 0132 @0x0048",
+  "scr_seq 0132 @0x0068",
+  "scr_seq 0132 @0x0070",
+  "scr_seq 0132 @0x0074",
+  "scr_seq 0132 @0x0078",
+  "scr_seq 0132 @0x007C",
+  "scr_seq 0132 @0x008C",
+  "scr_seq 0132 @0x0090",
+  "scr_seq 0132 @0x0096",
+  "scr_seq 0132 @0x00A7",
+  "scr_seq 0132 @0x00C8",
+  "scr_seq 0132 @0x00CC",
+  "scr_seq 0594 @0x000B",
+  "scr_seq 0131 @0x0B24",
+  "msg 0136 #2",
+  "msg 0136 #3",
+  "games/diamond/arm9/src/scrcmd.c:3357",
+  "games/diamond/arm9/asm/unk_02064CA8.s:7-8",
+  "games/diamond/arm9/asm/unk_02064CA8.s:95-119",
+  "games/diamond/arm9/overlays/06/asm/overlay_06.s:17986-18253",
+  "games/diamond/arm9/overlays/06/asm/overlay_06.s:44861-44885",
+  "trdata.json #309",
+  "trdata.json #310",
+  "trdata.json #311",
+  "trdata.json #312",
+  "trdata.json #317",
+]
+notes = "Estimate: Platinum's Maylene milestone (~20000) — gym walk with up to four Black Belt battles plus Maylene's three. Pearl: no version branch in scr_seq 0132 and no encounters (version-diff), version = both. Maylene's own trainer flag 0x68D is never set by a script; her win sets the four gym trainers' flags (SetTrainerFlag 309-312). 0x407D = 1 disables the warehouse grunt push-back coord (zone_event 0131 coord 0) and 0x411A = 1 arms Veilstone's ON_FRAME_TABLE (scr_seq 0594 @0x000B -> scr_seq 0131 #30): counterpart asks for help, tag battle vs TRAINER_GALACTIC_GRUNT_37/38 -> SetFlag 0x101 — handed to S6 (E2EPlan2.DPStory06). HM02 Fly is NOT unlocked here in D/P: the warehouse entrance doors need ITEM_STORAGE_KEY (scr_seq 0143 @0x006B), whose grunt (zone_event 0131 object 24, hidden_flag 0x241) appears only after Lake Acuity (scr_seq 0351 @0x0110)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 30000
+
+# PHASE2: the gym floor has 12 two-state obstacles that InitVeilstoneGym (gym ON_TRANSITION scr_seq 0132 @0x0012,
+# scrcmd.c:3357 -> unk_02064CA8.s:95-119) loads from save block sub_02024ED8 / sub_020254A0(.., 4) [INFERENCE: the
+# persisted map-feature block, as Platinum's InitPersistedMapFeaturesForVeilstoneGym] with initial states
+# UNK_020F7E48 (unk_02064CA8.s:7-8: 0,0,1,1,1,0,0,1,0,1,0,1); overlay 06 (ov06_0224252C / ov06_022425C8,
+# overlay_06.s:17986-18253) moves them, per-obstacle rows in ov06_0224F8B8 / ov06_0224F918 (overlay_06.s:44861-44885).
+# Their tiles, which ones block the x=12 column and how the player toggles them are not decoded. Find them by
+# probing the collision/object layer at 12,25 after load (or decoding the table), then insert walk_to/interact
+# waypoints before the Maylene step. The lab cannot preset the obstacles.
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 5
+face = "up"
+interact = true
+max = 15000
+note = "north to Maylene (zone_event 0132 object 0 (12,4)); sight-1 Black Belts on the way: Jeffery (12,19) S (spins), Colby (12,13) S, Darren (5,19) E, Rafael (19,18) W; [INFERENCE] route through the obstacles not derived (see PHASE2)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "maylene"
+note = "TRAINER_LEADER_MAYLENE_MAYLENE (317) (scr_seq 0132 @0x0042): MEDITITE 27, MACHOKE 27, LUCARIO 30 @SITRUS_BERRY, 2x HYPER_POTION"
+
+[[step]]
+do = "advance_text"
+shot = "cobble-badge"
+note = "GiveBadge BADGE_COBBLE @0x0068, trainer flags 0x685-0x688, ClearFlag 0x1C6, 0x407D = 1, 0x411A = 1, TM60 (std 2044 @0x00C8) + flag 0x9D @0x00CC (msg 0136 #2-#4)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_VEILSTONE_GYM"
+badges = 3
+badge = ["BADGE_COAL", "BADGE_FOREST", "BADGE_COBBLE"]
+flags = ["0x9D", "0x685", "0x686", "0x687", "0x688"]
+flags_clear = ["0x1C6", "0x101"]
+party = ["SPECIES_EMPOLEON"]
+battles = 1
+save = [
+  'any(i["item"] == 387 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM60
+]
+
+[expect.vars]
+"0x407D" = 1
+"0x411A" = 1
+"0x40F5" = 1

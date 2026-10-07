@@ -1,0 +1,208 @@
+# Proves the long overworld leg after Veilstone: Pokémon Center heal, Route 214 gate and route (sight trainers),
+# Valor Lakefront, Route 213 and its Pastoria gatehouse, a second heal in Pastoria, and entry to the gym.
+# No story script fires on this leg (Route 214/Valor/213 level scripts only move warps or bail out).
+# Start: Veilstone in front of the warehouse (24's end) -> end: inside Pastoria Gym at its door (26's start).
+title = "Route 214, Valor Lakefront and Route 213 to Pastoria"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "zone_event 0131 warp 10",
+  "zone_event 0133 object 0",
+  "scr_seq 0133 @0x0014",
+  "zone_event 0133 warp 0",
+  "zone_event 0131 warp 11",
+  "zone_event 0366 warp 1",
+  "zone_event 0365 warp 0",
+  "scr_seq 0876 @0x0000",
+  "scr_seq 0431 @0x0075",
+  "zone_event 0365 object 3",
+  "zone_event 0365 object 4",
+  "zone_event 0365 object 5",
+  "zone_event 0365 object 8",
+  "trdata.json #113",
+  "trdata.json #114",
+  "trdata.json #382",
+  "trdata.json #120",
+  "scr_seq 0831 @0x0005",
+  "scr_seq 0381 @0x002A",
+  "zone_event 0321 coord 0",
+  "scr_seq 0381 @0x041E",
+  "zone_event 0321 object 5",
+  "scr_seq 0869 @0x0000",
+  "scr_seq 0424 @0x0022",
+  "zone_event 0358 object 30",
+  "zone_event 0358 warp 0",
+  "zone_event 0359 warp 1",
+  "zone_event 0119 warp 9",
+  "zone_event 0122 object 0",
+  "scr_seq 0121 @0x0014",
+  "zone_event 0122 warp 0",
+  "zone_event 0119 warp 0",
+  "zone_event 0119 object 21",
+  "scr_seq 0118 @0x01C8",
+  "games/diamond/files/fielddata/mapmatrix/map_matrix/narc_0000.bin",
+  "map_header.c:464",
+  "map_header.c:420",
+  "map_header.c:457",
+  "map_header.c:204",
+]
+notes = "Overworld matrix 0 (map_matrix narc_0000, 32-tile chunks): Veilstone x672-735 z576-639, Route 214 x704-735 z640-735, Valor Lakefront x672-735 z736-799, Route 213 x640-735 z800-863, Pastoria x576-639 z800-863. Wild encounter banks differ by version on Route 214 (d/p_enc 0163) and Valor Lakefront (d/p_enc 0138) only (dp_script.py version-diff); the steps do not depend on species, so version = both. Pastoria's grunt (614,810) only talks before the Fen Badge (scr_seq 0118 @0x01DE-0x0229). Two heals keep Surf PP up for the Route 214 trainers and the gym. D/P has no Great Marsh story scene (scr_seq 0124/0125: Safari Game and binoculars only)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 45000
+
+[[step]]
+do = "walk_to"
+x = 717
+z = 611
+note = "Veilstone Pokémon Center door, zone_event 0131 warp 10 -> MAP_VEILSTONE_POKECENTER_1F warp 0 (8,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "nurse obj0 (8,4), std 2002 heal (scr_seq 0133 @0x0014); [INFERENCE] talk across the counter from (8,6)"
+
+[[step]]
+do = "advance_text"
+note = "heal YesNo: A = YES [INFERENCE default cursor]"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "zone_event 0133 warp 0 -> MAP_VEILSTONE warp 10"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE"
+
+[[step]]
+do = "walk_to"
+x = 718
+z = 638
+note = "south exit, zone_event 0131 warp 11 -> MAP_ROUTE_214_VEILSTONE_GATEHOUSE warp 0 (5,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_214_VEILSTONE_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 12
+note = "zone_event 0366 warp 1 -> MAP_ROUTE_214 warp 0 (718,645)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_214"
+
+# PHASE2-risk: [INFERENCE] the south-end tile (719,735) and the Valor -> Route 213 crossing (705,800) are unverified
+# waypoints (no terrain decoder for D/P land data); if walk_to reports no path, read the map with the field probe and
+# pick a walkable tile on the chunk seam. Rock Smash rocks (712,681)/(711,682) only guard the Ruin Maniac cave (713,670).
+
+[[step]]
+do = "walk_to"
+x = 719
+z = 735
+max = 15000
+note = "south through Route 214 to the Valor Lakefront seam; sight trainers that face the path (fought by walk_to): Psychic Abigail (721,660) W sight 5 (trdata.json #120), Ruin Maniac Bryan (714,691) E sight 4 (#113), Collector Jamal (719,701) N sight 3 (#382), Ruin Maniac Hunter (721,709) N sight 3 (#114)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VALOR_LAKEFRONT"
+
+[[step]]
+do = "walk_to"
+x = 705
+z = 800
+max = 6000
+note = "[INFERENCE] south across Valor Lakefront into Route 213; stay off x=724 z789-791 (coord 0, 0x4112==0: the Route 222 guard pushes you back, scr_seq 0381 @0x041E). The Valor grunt (719,790) is still hidden (0x239, INIT_NEW_GAME scr_seq 0377 @0x0118)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_213"
+
+[[step]]
+do = "walk_to"
+x = 646
+z = 812
+max = 8000
+note = "west along Route 213 to the Pastoria gatehouse, zone_event 0358 warp 0 -> MAP_ROUTE_213_PASTORIA_GATEHOUSE warp 0 (10,7); the Route 213 grunt stays hidden (no Fen Badge, scr_seq 0424 @0x002F-0x0042)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_213_PASTORIA_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "zone_event 0359 warp 1 -> MAP_PASTORIA warp 10 (639,812)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PASTORIA"
+
+[[step]]
+do = "walk_to"
+x = 600
+z = 815
+note = "Pastoria Pokémon Center, zone_event 0119 warp 9 -> MAP_PASTORIA_POKECENTER_1F warp 0 (8,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PASTORIA_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "nurse obj0 (8,4), std 2002 heal (scr_seq 0121 @0x0014); [INFERENCE] counter tile (8,5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "zone_event 0122 warp 0 -> MAP_PASTORIA warp 9"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PASTORIA"
+
+[[step]]
+do = "walk_to"
+x = 589
+z = 827
+shot = "pastoria"
+note = "gym door, zone_event 0119 warp 0 -> MAP_PASTORIA_GYM warp 0 (13,42)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PASTORIA_GYM"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_PASTORIA_GYM"
+badges = 3
+flags = ["0x101", "0x238", "0x239", "0x1C7"]
+flags_clear = ["0x102", "0x22A"]

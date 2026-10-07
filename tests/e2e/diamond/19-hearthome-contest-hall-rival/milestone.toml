@@ -1,0 +1,178 @@
+# Proves Fantina's 'not yet' at the Contest Hall door, the Contest Hall first visit (Keira, Mom, Accessory, Tuxedo) that removes
+# the Route 209 gate blockers, and the rival battle it arms; the Hearthome Gym stays closed (guide: 'she's not here').
+# Start: Hearthome City (461,726) after Keira (18's end) -> end: Hearthome City (486,718) after Barry leaves, heading to Route 209.
+title = "Hearthome: Fantina, Contest Hall, rival"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "maps.h:90",
+  "map_header.c:170",
+  "zone_event 0085 warp 5",
+  "zone_event 0085 warp 2",
+  "zone_event 0085 warp 8",
+  "zone_event 0085 warp 19",
+  "zone_event 0085 object 35",
+  "zone_event 0085 object 20",
+  "zone_event 0085 object 21",
+  "zone_event 0085 object 23",
+  "zone_event 0085 coord 0",
+  "zone_event 0085 coord 2",
+  "scr_seq 0090 @0x0CB3",
+  "scr_seq 0090 @0x0CB8",
+  "scr_seq 0090 @0x0D0A",
+  "msg 0098 #3",
+  "maps.h:105",
+  "zone_event 0100 object 0",
+  "zone_event 0100 warp 0",
+  "maps.h:121",
+  "map_header.c:201",
+  "zone_event 0116 warp 0",
+  "zone_event 0116 object 5",
+  "zone_event 0116 object 6",
+  "scr_seq 0577 @0x0000",
+  "scr_seq 0577 @0x0011",
+  "scr_seq 0206 @0x0168",
+  "scr_seq 0206 @0x018C",
+  "scr_seq 0206 @0x0192",
+  "scr_seq 0114 @0x003A",
+  "scr_seq 0114 @0x0073",
+  "scr_seq 0114 @0x00A5",
+  "scr_seq 0114 @0x00A9",
+  "scr_seq 0114 @0x00CD",
+  "scr_seq 0114 @0x011F",
+  "scr_seq 0114 @0x0127",
+  "scr_seq 0114 @0x012B",
+  "scr_seq 0114 @0x0131",
+  "scr_seq 0114 @0x0135",
+  "msg 0120 #4",
+  "msg 0120 #8",
+  "scr_seq 0090 @0x0088",
+  "scr_seq 0090 @0x0098",
+  "scr_seq 0090 @0x00BD",
+  "scr_seq 0090 @0x00EF",
+  "scr_seq 0090 @0x010B",
+  "scr_seq 0090 @0x0137",
+  "scr_seq 0090 @0x013B",
+  "scr_seq 0090 @0x0145",
+  "msg 0098 #5",
+  "games/diamond/arm9/asm/unk_0205F314.s:86-93",
+  "trdata.json #471",
+  "maps.h:92",
+  "scr_seq 0092 @0x009E",
+  "msg 0100 #3",
+]
+notes = "Barry's team follows GetStarter (var 0x4030, unk_0205F314.s:86-93): SPECIES_TURTWIG (387) -> TRAINER_PKMN_TRAINER_BARRY_CEDRIC_5 (471): STARLY 19, BUIZEL 20, ROSELIA 20, MONFERNO 21 (scr_seq 0090 @0x00C1-@0x00EF); 390 -> 472, else 470. The Hearthome Gym is not part of the D/P story here: its guide says the leader is away (msg 0100 #3, scr_seq 0092 @0x009E), so no gym step. Fantina (479,692) stands south of the Contest Hall door (479,691), so she must be talked to first; she walks off (RemoveEvent 35). The Accessory (std 2047, 0x8004 49) and Tuxedo (male; Dress for a female player, msg 0120 #8/#9) have no lab verb. Bebe and the Fan Club are not story here."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 465
+z = 697
+note = "Pokecenter door (zone_event 0085 warp 5) -> MAP_HEARTHOME_POKECENTER_1F (8,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "nurse (8,4) across the counter (zone_event 0100 object 0) [INFERENCE: counter row z=5, talk from (8,6)]"
+
+[[step]]
+do = "advance_text"
+note = "heal YES is the default answer (A); full Surf PP for Barry"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "Pokecenter exit (warp 0) -> Hearthome (465,697)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME"
+
+[[step]]
+do = "walk_to"
+x = 479
+z = 693
+face = "up"
+interact = true
+note = "Fantina (479,692) DIR_NORTH, hidden_flag 0x25C (zone_event 0085 object 35), blocking the Contest Hall door (479,691)"
+
+[[step]]
+do = "advance_text"
+shot = "fantina"
+note = "'You may challenge me, but not yet!' (msg 0098 #3); player facing up -> she steps aside and leaves, RemoveEvent 35 (scr_seq 0090 @0x0CB8-@0x0D0A)"
+
+[[step]]
+do = "walk_to"
+x = 479
+z = 691
+note = "Contest Hall door (zone_event 0085 warp 2) -> MAP_HEARTHOME_SUPER_CONTEST_HALL_LOBBY warp 0 (16,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_SUPER_CONTEST_HALL_LOBBY"
+
+[[step]]
+do = "advance_text"
+shot = "contest-lobby"
+note = "ON_FRAME var 0x40F7 == 0 (scr_seq 0577 @0x0011): Keira, Mom, Accessory, Tuxedo; var 0x40F7 1, SetFlag 0x224 (Route 209 blockers gone), var 0x407B 1, SetFlag 0x978, var 0x40EB 1 (scr_seq 0114 @0x003A-@0x0135)"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 13
+note = "lobby exit (zone_event 0116 warp 0) -> Hearthome warp 2 (479,691)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME"
+
+[[step]]
+do = "walk_to"
+x = 486
+z = 718
+note = "coord (484..489,718) var 0x407B == 1 (zone_event 0085 coord 0) -> Barry runs up from (486,726)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "barry"
+note = "TrainerBattle 471 (scr_seq 0090 @0x00EF): STARLY 19, BUIZEL 20, ROSELIA 20, MONFERNO 21; a loss -> Blackout (@0x0145)"
+
+[[step]]
+do = "advance_text"
+shot = "rival-leaves"
+note = "'I'm going to challenge the Veilstone Gym next!' (msg 0098 #5); RemoveEvent 23, var 0x407B 2 (scr_seq 0090 @0x0137-@0x013B)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEARTHOME"
+position = [486, 718]
+badge = ["BADGE_COAL", "BADGE_FOREST"]
+flags = ["0x25C", "0x227", "0x226", "0x224", "0x978", "0x225", "0x21F", "0x220", "0x221", "0x222", "0x223"]
+battles = 1
+
+[expect.vars]
+"0x40F7" = 1
+"0x40EB" = 1
+"0x407B" = 2
+"0x40F6" = 1

@@ -1,0 +1,11 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31104
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# Ghost/Dragon takes 2x from Dragon [INFERENCE: hand calc, ~340 vs ~300 HP at lv70; Garchomp faster]
+party-move 0 0 MOVE_DRAGON_CLAW
+# below Giratina (11,14) (zone_event 0261 object 0); [INFERENCE] (11,15) walkable
+map MAP_TURNBACK_CAVE_GIRATINA_ROOM 11 15 FACE_UP

@@ -1,0 +1,115 @@
+# Proves the League lobby: ON_TRANSITION door/E4 reset, the rival coord battle (Turtwig -> Infernape team), the badge
+# check by the door guard and entry to the first lift room. Start: League outside (853,582) -> end: MAP_POKEMON_LEAGUE_ENTRANCE.
+
+title = "Pokemon League lobby: last rival battle, badge check"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "zone_event 0171 warp 1",
+  "maps.h:179",
+  "scr_seq 0643 @0x0000",
+  "scr_seq 0180 @0x001E",
+  "scr_seq 0180 @0x004E",
+  "scr_seq 0180 @0x0052",
+  "zone_event 0174 object 3",
+  "scr_seq 0180 @0x031F",
+  "zone_event 0174 coord 0",
+  "zone_event 0174 object 5",
+  "scr_seq 0180 @0x0150",
+  "scr_seq 0180 @0x0152",
+  "scr_seq 0180 @0x01CF",
+  "scr_seq 0180 @0x01D3",
+  "scr_seq 0180 @0x01FF",
+  "trdata.json #480",
+  "scr_seq 0180 @0x0296",
+  "scr_seq 0180 @0x029E",
+  "games/diamond/arm9/asm/unk_0205F314.s:86-94",
+  "zone_event 0174 object 0",
+  "scr_seq 0180 @0x0069",
+  "scr_seq 0180 @0x00E4",
+  "scr_seq 0180 @0x005F",
+  "zone_event 0174 warp 0",
+  "msg 0175 #0",
+  "msg 0175 #2",
+]
+notes = "GetStarter reads var 0x4030 (Save_VarsFlags_GetStarter, unk_0205F314.s:86-94): 387 TURTWIG -> TRAINER_PKMN_TRAINER_BARRY_CEDRIC_14 (480): STARAPTOR 48, FLOATZEL 49, HERACROSS 50, ROSERADE 49, SNORLAX 51, INFERNAPE 53 (trdata.json #480); 390 -> #481, else #479 (scr_seq 0180 @0x01D3-@0x01F3)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 847
+z = 559
+note = "League lobby door, warp 1 (847,559) -> LOBBY_1F warp 1 (11,11) (zone_event 0171 warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_LOBBY_1F"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 5
+face = "up"
+interact = true
+note = "heal before the E4: nurse SPRITE_PCWOMAN1 (4,4), std 2002 (zone_event 0174 object 3, scr_seq 0180 @0x031F); keep off row z=4 x=10..12"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "A on the heal prompt = yes [INFERENCE]"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+note = "coord 0 (10..12,4) var 0x40EF==0 -> rival object 5 appears (ClearFlag 0x23B @0x0152) and walks up (scr_seq 0180 @0x0150)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "league-rival"
+note = "TRAINER_PKMN_TRAINER_BARRY_CEDRIC_14 (480), starter 387 (scr_seq 0180 @0x01FF)"
+
+[[step]]
+do = "advance_text"
+note = "rival leaves: RemoveEvent 5 @0x0296 (0x23B), SetVar 0x40EF 1 @0x029E"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+face = "up"
+interact = true
+note = "door guard SPRITE_MAN3 (11,3), script #1 (zone_event 0174 object 0, scr_seq 0180 @0x0069): badge check"
+
+[[step]]
+do = "advance_text"
+shot = "league-badge-check"
+note = "SetFlag 0xAF @0x00E4; guard steps aside (ON_TRANSITION default (12,3), @0x005F)"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 2
+note = "warp 0 (11,2) -> MAP_POKEMON_LEAGUE_ENTRANCE warp 1 (4,15) (zone_event 0174 warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_ENTRANCE"
+
+[expect]
+map = "MAP_POKEMON_LEAGUE_ENTRANCE"
+flags = ["0x9F4", "0x2A0", "0x2A1", "0x2A2", "0x2A3", "0x23B", "0xAF"]
+flags_clear = ["0x2A4", "0x2A5", "0x2A6", "0x2A7", "0xB0", "0xB1", "0xB2", "0xB3"]
+vars = { "0x40EF" = 1 }
+battles = 1

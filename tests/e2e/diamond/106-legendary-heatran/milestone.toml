@@ -1,0 +1,68 @@
+# Heatran in Stark Mountain Interior 3: ON_TRANSITION shows it only with game complete, National Dex,
+# Buck talked to (0x125) and var 0x409E==1; A -> SetFlag 0xD7, SetVar 0x409E 2, LegendaryBattle 485, 70.
+# Start: MAP_STARK_MOUNTAIN_INTERIOR_3 (7,7) below Heatran (7,6). End: same map, var 0x409E 2.
+title = "Legendary: Heatran in Stark Mountain"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 5000
+refs = [
+  "maps.h:269",
+  "zone_event 0257 object 1",
+  "zone_event 0257 object 3",
+  "scr_seq 0278 @0x001C-0x0031",
+  "scr_seq 0278 @0x0037-0x0083",
+  "scr_seq 0278 @0x0152-0x0160",
+  "scr_seq 0278 @0x0167",
+  "scr_seq 0278 @0x0173-0x017C",
+  "scr_seq 0278 @0x0182-0x01B4",
+  "scr_seq 0278 @0x01A8-0x01AC",
+  "scr_seq 0278 @0x01BF",
+  "scr_seq 0278 @0x01CB",
+  "msg 0247 #4",
+  "scr_seq 1027 @0x0051",
+  "scr_seq 0192 @0x01E2-0x01F1",
+  "games/diamond/arm9/src/scrcmd.c:3872-3882",
+  "games/diamond/arm9/src/unk_0205EC84.c:173",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 7500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Heatran SPRITE_SPPOKE11 (7,6) facing S, hidden 0x1FB cleared by ON_TRANSITION only if !0x120, game complete, NationalDex 2 != 0, 0x125 and var 0x409E==1 (scr_seq 0278 @0x0037-0x007D)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "first time SetFlag 0xD7 (@0x01CB), SetVar 0x409E 2 (@0x0167), msg 247 #3, SetFlag 0x8E, LegendaryBattle 485, 70 (@0x017C)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "legendary"
+
+[[step]]
+do = "auto_battle"
+note = "A-only never throws a ball: defeated, never caught"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "not caught -> msg 247 #4 'HEATRAN disappeared into the volcano...' (@0x01B4); caught would set 0x120 + Vs Seeker level 5 flag 0x983 (@0x01A8-0x01AC)"
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = "MAP_STARK_MOUNTAIN_INTERIOR_3"
+battles = 1
+vars = { "0x409E" = 2 }
+flags = ["0xD7"]
+flags_clear = ["0x120", "0x8E"]

@@ -1,0 +1,16 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31100
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+# base Poketch as the Jubilife coupon man leaves it: GivePoketch, SetVar 0x4077 2, apps 0/1/3/4
+# (scr_seq 0002 @0x0DF2-0x0E06); the lab gives the Poketch after the map change
+poketch POKETCH_DIGITAL_WATCH
+poketch POKETCH_CALCULATOR
+poketch POKETCH_PEDOMETER
+poketch POKETCH_POKEMON_LIST
+var 0x4077 2
+# door (6,8) (zone_event 0364 warp 0)
+warp MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM 0

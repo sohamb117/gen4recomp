@@ -1,0 +1,158 @@
+# Proves Route 204 through the Ravaged Path (Rock Smash country), Cyrus at Floaroma's south entrance, the Route 205
+# little-girl scene that clears the meadow entrance, and the two Floaroma Meadow grunt battles for the Works Key.
+# Start: Jubilife at the north coord (174,743) (10's end) -> end: Floaroma at the meadow entrance (162,641).
+title = "Floaroma Meadow: the Works Key"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "maps.h:349 (MAP_ROUTE_204_SOUTH = 345, map_header.c:429)",
+  "maps.h:258 (MAP_RAVAGED_PATH = 254, map_header.c:338)",
+  "maps.h:350 (MAP_ROUTE_204_NORTH = 346, map_header.c:430)",
+  "maps.h:430 (MAP_FLOAROMA = 426, map_header.c:510)",
+  "maps.h:351 (MAP_ROUTE_205_SOUTH = 347, map_header.c:431)",
+  "maps.h:260 (MAP_FLOAROMA_MEADOW = 256, map_header.c:340)",
+  "zone_event 0330 warp 0 (171,705) -> MAP_RAVAGED_PATH warp 0 (19,50)",
+  "zone_event 0246 objects 0-26 (27 Rock Smash rocks, temp hidden_flags 0x20-0x3A); warp 1 (28,44) -> MAP_ROUTE_204_NORTH warp 0 (180,698)",
+  "scr_seq 0395 @0x0016 (msg 418 #0: boulders block the way inside the cavern)",
+  "scr_seq 0267 @0x0006 (Ravaged Path ON_TRANSITION SetFlag 0x9CD)",
+  "zone_event 0404 coord 0 (170,669) 3x1 var 0x4072 == 0 -> scr_seq 0994 #2 (Cyrus, object 3 hidden_flag 0x1C1)",
+  "scr_seq 0994 @0x0091-@0x00FC (Cyrus msg 513 #0-#1, RemoveEvent 3, SetVar 0x4072 1)",
+  "zone_event 0404 objects 7/8 (grunts on the meadow warps (162,641)/(163,641), hidden_flag 0x1BF); warps 7/8 -> MAP_FLOAROMA_MEADOW warps 3/4",
+  "zone_event 0332 coord 0 (211,659) 1x6 var 0x4089 == 0 -> scr_seq 0397 #6; object 18 (little girl (211,661), 0x216)",
+  "scr_seq 0397 @0x0177-@0x0228 (by player z: 659/660/661/662/663 run, 664 ends without setting anything)",
+  "scr_seq 0397 @0x0165-@0x016D (SetFlag 0x1BF, 0x91, SetVar 0x4089 1)",
+  "scr_seq 0269 @0x001E (meadow ON_TRANSITION SetFlag 0x9CE)",
+  "zone_event 0248 coord 0 (12,48) 2x1 var 0x40E9 == 0 -> scr_seq 0269 #2; grunts (12,47)/(13,47) 0x1BD/0x1BE; Works Key object 3 0x1BC; warps 3/4 (12..13,54)",
+  "scr_seq 0269 @0x002C (TrainerBattle 296), @0x0049 (TrainerBattle 297)",
+  "scr_seq 0269 @0x0107-@0x0186 (RemoveEvent 0/1, SetVar 0x40E9 1, ClearFlag/RemoveEvent 0x1BC, ITEM_WORKS_KEY, SetFlag 0x9F, ITEM_HONEY x1, SetFlag 0xA0)",
+  "scr_seq 0269 @0x0066 (SetFlag 0x989: meadow music, games/diamond/arm9/src/unk_0205EC84.c:253-260)",
+  "trdata.json #296 (TRAINER_GALACTIC_GRUNT: WURMPLE 9, SILCOON 9)",
+  "trdata.json #297 (TRAINER_GALACTIC_GRUNT_2: ZUBAT 11)",
+  "trdata.json #12 (TRAINER_LASS_SARAH), #11 (TRAINER_LASS_SAMANTHA), #10 (TRAINER_YOUNGSTER_TYLER) on Route 204 South (zone_event 0330 objects 0-2)",
+  "trdata.json #13 (TRAINER_BUG_CATCHER_BRANDON), #14 (TRAINER_AROMA_LADY_TAYLOR), #15 (TRAINER_TWINS_LIV_LIZ) on Route 204 North (zone_event 0331 objects 0-3)",
+]
+notes = "Estimate: Pt 10 (19000) plus the Floaroma Cyrus scene. Liv & Liz (Route 204 N (175..176,679)) is a true double: slots 0 and 1 battle; Staraptor's slot-0 Aerial Ace covers it. D/P's meadow gives Honey x1 (Pt x10). Version: no GetGameVersion branch, encounter banks d/p 0143/0053/0144/0145 identical (version-diff)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 30000
+
+[[step]]
+do = "walk_to"
+x = 171
+z = 705
+max = 8000
+note = "Jubilife north (seamless) -> Route 204 South -> Ravaged Path door (zone_event 0330 warp 0); Sarah (172,725) E sight 3, Tyler (167,722) W 3, Samantha (171,712) S 5 may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RAVAGED_PATH"
+
+# PHASE2: the Ravaged Path has 27 Rock Smash rocks (zone_event 0246 objects 0-26; (23,44), (22,43), (22,42) sit between
+# the entrance (19,50) and the exit (28,44)); which of them block was not derived from the map's collision. walk_to treats
+# a rock as an object; if it reports no path, walk_to the tile before the blocking rock facing it with interact = true and
+# advance_text (Rock Smash from Staraptor slot 1, needs BADGE_COAL [INFERENCE]; A = YES).
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 44
+note = "Ravaged Path exit (zone_event 0246 warp 1) -> Route 204 North (180,698)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_204_NORTH"
+
+[[step]]
+do = "walk_to"
+x = 171
+z = 669
+max = 8000
+note = "Floaroma south coord (170..172,669) var 0x4072==0 (zone_event 0404 coord 0); Route 204 N -> Floaroma seamless; Taylor (177,692) S 4, Brandon (182,685) W 1, Liv & Liz (175..176,679) S 3/4 may engage"
+
+[[step]]
+do = "advance_text"
+shot = "cyrus-floaroma"
+note = "Cyrus introduces himself and walks off (RemoveEvent 3 -> 0x1C1, var 0x4072 1; scr_seq 0994 @0x0091-@0x00FC)"
+
+[[step]]
+do = "walk_to"
+x = 211
+z = 660
+max = 6000
+note = "east to Route 205 South coord (211,659..664) var 0x4089==0; z=660 is a branch that runs (z=664 ends without effect, scr_seq 0397 @0x01BE); the girl stands on (211,661)"
+
+[[step]]
+do = "advance_text"
+note = "the little girl; Floaroma meadow grunts hidden (0x1BF), 0x91, var 0x4089 1 (scr_seq 0397 @0x0165-@0x016D)"
+
+[[step]]
+do = "walk_to"
+x = 162
+z = 641
+max = 6000
+note = "back west through Floaroma to the meadow entrance (zone_event 0404 warp 7, freed by 0x1BF) -> meadow (12,54); keep off (217,653) (coord 1 var 0x4089==1: grunt pushback)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FLOAROMA_MEADOW"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 48
+note = "coord (12..13,48) var 0x40E9==0 (zone_event 0248 coord 0) -> two back-to-back grunt battles"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "meadow-grunt-1"
+note = "TrainerBattle 296 (scr_seq 0269 @0x002C): WURMPLE 9, SILCOON 9"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TrainerBattle 297 (scr_seq 0269 @0x0049): ZUBAT 11"
+
+[[step]]
+do = "advance_text"
+shot = "works-key"
+note = "grunts leave, Works Key (0x9F), Honey x1 (0xA0) (scr_seq 0269 @0x00F6-@0x0186)"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 54
+note = "meadow exit (zone_event 0248 warp 3) -> Floaroma (162,641), 12's town"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FLOAROMA"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_FLOAROMA"
+badges = 1
+badge = ["BADGE_COAL"]
+flags = ["0x9CD", "0x1C1", "0x1BF", "0x91", "0x9CE", "0x1BD", "0x1BE", "0x1BC", "0x9F", "0xA0", "0x989"]
+battles = 2
+save = [
+  'any(i["item"] == 438 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_WORKS_KEY
+  'any(i["item"] == 94 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HONEY
+]
+
+[expect.vars]
+"0x4072" = 1
+"0x4089" = 1
+"0x40E9" = 1

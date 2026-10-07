@@ -1,0 +1,76 @@
+# Proves the Psyduck block is gone, the foggy Route 210 North walk without Defog and the arrival in Celestic Town,
+# where the elder's coord scene (0x40F1) tells of the spaceman at the ruins.
+# Start: Route 210 South (561,588) (29's end) -> end: Celestic Town coord (465,538), 0x980 + 0x40F1 = 1.
+title = "Route 210 North through the fog to Celestic Town"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "zone_event 0347 object 19",
+  "zone_event 0348 object 0",
+  "zone_event 0348 object 5",
+  "zone_event 0348 object 7",
+  "zone_event 0348 object 8",
+  "zone_event 0348 object 13",
+  "zone_event 0348 object 14",
+  "zone_event 0348 object 22",
+  "zone_event 0348 object 11",
+  "zone_event 0420 coord 0",
+  "zone_event 0420 object 3",
+  "scr_seq 0414 @0x0016",
+  "scr_seq 0942 @0x0000",
+  "scr_seq 1012 @0x002E",
+  "scr_seq 1012 @0x0224",
+  "scr_seq 1012 @0x0242",
+  "msg 0527 #0",
+  "trdata.json #73",
+  "trdata.json #75",
+  "games/diamond/arm9/src/unk_0205EC84.c:163-164",
+  "maps.h:367",
+  "map_header.c:447",
+  "maps.h:446",
+  "map_header.c:526",
+]
+notes = "Estimate: ~110 tiles plus up to ten sight trainers. Route 210 North has weather 14 (fog) and a Defog hint NPC (scr_seq 0414 #1) but no script needs Defog. 0x980 is one of the 0x97F-0x983 system flags read by sub_0205EEB8 (unk_0205EC84.c:155-177) [INFERENCE: a per-town visit flag]. Encounter bank d/p_enc_data 0157 differs by version; no script does."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 30000
+
+# PHASE2-risk: [INFERENCE] the rocks (497,540)/(498,541) and the tree (559,531) on Route 210 North (zone_event 0348 objects
+# 13/22/14, map-temp hidden flags 0x21/0x22/0x20) sit off the main path; if walk_to reports no path, smash/cut them
+# (walk_to facing them, interact = true, advance_text, A = YES). The probe sees 64x64 tiles: add waypoints such as the
+# Route 210 North sign (488,529) side (zone_event 0348 object 11) if the 100-tile plan fails.
+
+[[step]]
+do = "walk_to"
+x = 467
+z = 538
+max = 20000
+shot = "route210-fog"
+note = "north through Route 210 South (Psyduck gone), into foggy Route 210 North, west into Celestic Town; [INFERENCE] (467,538) is two tiles east of coord 0 (463..465,538), south of the sign (466,537); sight trainers fought by walk_to (Zac & Jen #75 is a true double)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CELESTIC"
+
+[[step]]
+do = "walk_to"
+x = 465
+z = 538
+note = "coord 0 (463..465,538) var 0x40F1==0 -> scr_seq 1012 #3 (elder (462,538), zone_event 0420 object 3)"
+
+[[step]]
+do = "advance_text"
+shot = "celestic-elder"
+note = "msg 0527 #0 (the odd spaceman at the ruins); SetVar 0x40F1 1 @0x0242"
+
+[expect]
+map = "MAP_CELESTIC"
+flags = ["0x980", "0x107", "0x1CE"]
+flags_clear = ["0xA6"]
+vars = { "0x40F1" = 1 }

@@ -1,0 +1,23 @@
+# Diamond story 11-floaroma-meadow-works-key: standalone start (--lab, or no end save from 10).
+# Standard header + lab party + the cumulative state after 10, then the milestone's start. Applied on top of the
+# D/P new-game base save (bedroom); flag/var lines in the prior block cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party: Surf in slot 0 and slots 1-3 cleared (empty Surf -> Struggle, never a stalled A-only battle).
+# Opponents: trdata.json #296 WURMPLE 9 + SILCOON 9, #297 ZUBAT 11 (meadow); optional Route 204 trainers #10-#15
+# (lv 5-9; #15 Liv & Liz is a true double, where Staraptor's slot-0 Aerial Ace fights too).
+# Staraptor carries Rock Smash for the Ravaged Path rocks (and Cut for later).
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+map MAP_JUBLIFE 174 743 FACE_UP  # 10's end: north coord strip zone_event 0002 coord 1 (173..175,743), var 0x4077 now 4

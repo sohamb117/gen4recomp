@@ -1,0 +1,223 @@
+# Proves the arrival in Eterna (Cynthia's HM01 on the west strip), Gardenia at the gym entrance, the four hidden gym
+# trainers that appear one after another, and the Forest Badge with TM86.
+# Start: Route 205 North (259,524), the forest's east exit (13's end) -> end: Eterna at the gym door (312,562) (15's start).
+title = "Eterna Gym: Gardenia and the Forest Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 28000
+refs = [
+  "maps.h:69 (MAP_ETERNA = 65, map_header.c:149)",
+  "maps.h:71 (MAP_ETERNA_GYM_ENTRANCE = 67, map_header.c:151)",
+  "maps.h:72 (MAP_ETERNA_GYM = 68, map_header.c:152)",
+  "zone_event 0064 coord 0 (303,523) 1x4 var 0x407A == 0 -> scr_seq 0069 #1; object 12 (Cynthia, hidden_flag 0x19E); warp 10 (312,562) -> MAP_ETERNA_GYM_ENTRANCE warp 0",
+  "scr_seq 0069 @0x0198-@0x01F1 (branches for player z 523/524/525 only; z 526 ends without effect)",
+  "scr_seq 0069 @0x01F9-@0x02B6 (ClearFlag 0x19E, AddEvent 12, msg 78 #0-#2, std 2044 ITEM_HM01 x1, RemoveEvent 12, SetVar 0x407A 1)",
+  "scr_seq 0069 @0x005E-@0x0090 (Eterna ON_TRANSITION: no Bicycle and no Explorer Kit -> SetVar 0x4114 0)",
+  "zone_event 0066 object 1 (Gardenia (8,3) DIR_SOUTH, hidden_flag 0x23F); warp 1 (8,2) -> MAP_ETERNA_GYM warp 0; warp 0 (8,11) -> MAP_ETERNA warp 10",
+  "scr_seq 0071 @0x0016-@0x002F (Gardenia msg 80 #0, RemoveEvent 1)",
+  "zone_event 0067 objects 4 (Caroline (10,13), 0x1A1), 1 (Jenna (9,27), 0x1A2), 2 (Angela (22,18), 0x1A3), 3 (Lindsay (20,9), 0x1A4), 0 (Gardenia (15,3), 0x1A5); warp 0 (16,29)",
+  "scr_seq 0072 @0x001E-@0x0082 (gym ON_TRANSITION by var 0x40AE: 0 -> SetFlag 0x1A2-0x1A5)",
+  "scr_seq 0072 @0x0084-@0x0099 (gym ON_LOAD: flag 0x8E -> ClearFlag 0x1A5, AddEvent 0, ClearFlag 0x8E)",
+  "scr_seq 0072 @0x01A2-@0x01C8 (TrainerBattle 324, SetVar 0x40AE 1, ClearFlag 0x1A2, AddEvent 1)",
+  "scr_seq 0072 @0x0203-@0x0227 (TrainerBattle 259, ClearFlag 0x1A3, AddEvent 2, SetVar 0x40AE 2)",
+  "scr_seq 0072 @0x0264-@0x0288 (TrainerBattle 260, ClearFlag 0x1A4, AddEvent 3, SetVar 0x40AE 3)",
+  "scr_seq 0072 @0x02C5-@0x02E9 (SetFlag 0x8E, TrainerBattle 348, ClearFlag 0x8E, SetVar 0x40AE 4)",
+  "scr_seq 0072 @0x0300-@0x0370 (hidden trainers turn to the player from any side)",
+  "scr_seq 0072 @0x00CB (TrainerBattle 315), @0x00F1 (GiveBadge 1 = BADGE_FOREST), @0x00F9-@0x0105 (SetTrainerFlag 259/260/324/348), @0x0115 (ClearFlag 0x1A0), @0x0124-@0x0149 (ITEM_TM86, SetFlag 0x74)",
+  "include/constants/badge.h:5 (BADGE_FOREST 1)",
+  "trdata.json #324 (TRAINER_LASS_CAROLINE: CHERUBI 15, ROSELIA 15)",
+  "trdata.json #259 (TRAINER_AROMA_LADY_JENNA: BUDEW 14, BUDEW 13, BUDEW 15)",
+  "trdata.json #260 (TRAINER_AROMA_LADY_ANGELA: TURTWIG 17)",
+  "trdata.json #348 (TRAINER_BEAUTY_LINDSAY: ROSELIA 17)",
+  "trdata.json #315 (TRAINER_LEADER_GARDENIA_GARDENIA: CHERUBI 19, TURTWIG 19, ROSERADE 22 @SITRUS_BERRY; 2x SUPER_POTION)",
+]
+notes = "Gym trainers are talk-only (no trainer type) and appear one at a time: Caroline -> Jenna -> Angela -> Lindsay -> Gardenia (re-added by ON_LOAD after Lindsay's battle). Their trainer flags are set only by Gardenia's win. Version: the only Eterna GetGameVersion branch is the statue text (scr_seq 0069 @0x039A, bg 2 (327,525)), off this path; Route 205 North's wild bank differs (d/p 0146), so version = both."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 42000
+
+[[step]]
+do = "walk_to"
+x = 303
+z = 524
+max = 6000
+note = "east along Route 205 North into Eterna (seamless) onto the west strip (303,523..526) var 0x407A==0 (zone_event 0064 coord 0); z=524 is a handled branch (z=526 is not)"
+
+[[step]]
+do = "advance_text"
+shot = "cynthia-hm01"
+note = "Cynthia walks up, gives HM01, leaves (0x19E, var 0x407A 1; scr_seq 0069 @0x01F9-@0x02B6)"
+
+[[step]]
+do = "walk_to"
+x = 312
+z = 562
+max = 6000
+note = "gym door (zone_event 0064 warp 10) -> gym entrance (8,11)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA_GYM_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 4
+face = "up"
+interact = true
+note = "Gardenia (8,3) stands in front of the inner door (8,2)"
+
+[[step]]
+do = "advance_text"
+note = "she walks into the gym (RemoveEvent 1 -> 0x23F, scr_seq 0071 @0x002F)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 2
+note = "inner door (zone_event 0066 warp 1) -> gym (16,29); ON_TRANSITION var 0x40AE==0 hides Jenna/Angela/Lindsay/Gardenia"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA_GYM"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 14
+face = "up"
+interact = true
+note = "Lass Caroline (10,13) DIR_SOUTH [INFERENCE: (10,14) walkable; she faces the player from any side]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TrainerBattle 324 (scr_seq 0072 @0x01A2): CHERUBI 15, ROSELIA 15"
+
+[[step]]
+do = "advance_text"
+note = "var 0x40AE 1, Jenna appears at (9,27) ('past the two boulders')"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 28
+face = "up"
+interact = true
+note = "Aroma Lady Jenna (9,27) [INFERENCE: (9,28) walkable; else another neighbour, scr_seq 0072 @0x0300 turns her to the player]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TrainerBattle 259 (scr_seq 0072 @0x0203): BUDEW 14, 13, 15"
+
+[[step]]
+do = "advance_text"
+note = "Angela appears at (22,18) ('in the middle of three trees'), var 0x40AE 2"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 19
+face = "up"
+interact = true
+note = "Aroma Lady Angela (22,18) [INFERENCE: (22,19) walkable; else another neighbour]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TrainerBattle 260 (scr_seq 0072 @0x0264): TURTWIG 17"
+
+[[step]]
+do = "advance_text"
+note = "Lindsay appears at (20,9) ('beside four flowers'), var 0x40AE 3"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 10
+face = "up"
+interact = true
+note = "Beauty Lindsay (20,9) [INFERENCE: (20,10) walkable; else another neighbour]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TrainerBattle 348 (scr_seq 0072 @0x02C9) with flag 0x8E set: the post-battle ON_LOAD re-adds Gardenia (15,3)"
+
+[[step]]
+do = "advance_text"
+note = "var 0x40AE 4"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 4
+face = "up"
+interact = true
+note = "Gardenia (15,3) DIR_SOUTH [INFERENCE: (15,4) walkable]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "gardenia-battle"
+note = "TrainerBattle 315 (scr_seq 0072 @0x00CB): CHERUBI 19, TURTWIG 19, ROSERADE 22"
+
+[[step]]
+do = "advance_text"
+shot = "forest-badge"
+note = "GiveBadge BADGE_FOREST, gym trainer flags, ClearFlag 0x1A0, TM86 + flag 0x74 (scr_seq 0072 @0x00E2-@0x0160)"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 29
+note = "gym exit (zone_event 0067 warp 0) -> entrance (8,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA_GYM_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 11
+note = "entrance exit (zone_event 0066 warp 0) -> Eterna gym door (312,562), 15's start"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ETERNA"
+badges = 2
+badge = ["BADGE_COAL", "BADGE_FOREST"]
+flags = ["0x19E", "0x23F", "0x653", "0x654", "0x694", "0x6AC", "0x74"]
+flags_clear = ["0x1A0", "0x1A2", "0x1A3", "0x1A4", "0x1A5", "0x8E"]
+battles = 5
+save = [
+  'any(i["item"] == 420 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM01
+  'any(i["item"] == 413 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM86
+]
+
+[expect.vars]
+"0x407A" = 1
+"0x40AE" = 4

@@ -1,0 +1,125 @@
+# Proves the walk back from Valor Lakefront (Route 214, Veilstone, Route 215) to the Route 210 South Psyduck block,
+# the SecretPotion clearing it and Cynthia's Old Charm hand-off (the errand that opens Celestic Town).
+# Start: Valor Lakefront (723,761) (28's end) -> end: Route 210 South (561,588), ITEM_OLD_CHARM, flag 0x107.
+title = "Route 210 South: SecretPotion on the Psyduck, Old Charm"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 28000
+refs = [
+  "zone_event 0321 object 0",
+  "zone_event 0365 warp 0",
+  "zone_event 0366 warp 0",
+  "zone_event 0131 warp 0",
+  "zone_event 0148 warp 1",
+  "zone_event 0367 warp 0",
+  "zone_event 0367 object 10",
+  "zone_event 0367 object 11",
+  "zone_event 0367 object 12",
+  "zone_event 0367 object 13",
+  "zone_event 0367 object 14",
+  "zone_event 0347 object 19",
+  "zone_event 0347 object 26",
+  "zone_event 0347 object 27",
+  "zone_event 0347 object 28",
+  "zone_event 0347 object 20",
+  "scr_seq 0412 @0x0081",
+  "scr_seq 0412 @0x00A4",
+  "scr_seq 0412 @0x00CA",
+  "scr_seq 0412 @0x0123",
+  "scr_seq 0412 @0x0139",
+  "scr_seq 0412 @0x0183",
+  "scr_seq 0412 @0x01A6",
+  "scr_seq 0412 @0x01E9",
+  "scr_seq 0412 @0x0240",
+  "scr_seq 0412 @0x0244",
+  "scr_seq 0149 @0x0025",
+  "scr_seq 0413 @0x00C9",
+  "scr_seq 0377 @0x0120",
+  "scr_seq 0132 @0x0090",
+  "scr_seq 0131 @0x0179",
+  "msg 0432 #1",
+  "msg 0432 #3",
+  "games/diamond/arm9/src/map_object.c:295-298",
+  "maps.h:366",
+  "map_header.c:446",
+]
+notes = "Estimate: Platinum 20's ~31000 for a similar three-map walk, minus its rival battle. SecretPotion is only checked (HasItem @0x0081), never taken. Encounter banks differ by version (d/p_enc_data 0156/0163/0164 per version-diff) but no script does, so version = both. Route 210 South's ON_TRANSITION (scr_seq 0412 #7) only swaps the jogger pair 0x28E/0x28F by time of day."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 42000
+
+[[step]]
+do = "walk_to"
+x = 718
+z = 645
+max = 15000
+note = "north along Route 214 to the Veilstone gatehouse door (zone_event 0365 warp 0 -> MAP_ROUTE_214_VEILSTONE_GATEHOUSE warp 1 (5,12)); [INFERENCE] Valor Lakefront and Route 214 are seamless; sight trainers (0365 objects 0-8) are fought by walk_to"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_214_VEILSTONE_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "north door warp 0 (5,2) -> MAP_VEILSTONE warp 11 (718,638) (zone_event 0366)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE"
+
+[[step]]
+do = "walk_to"
+x = 678
+z = 598
+note = "west exit warp 0 -> MAP_VEILSTONE_ROUTE_215_GATEHOUSE warp 0 (10,7) (zone_event 0131); Veilstone coords (697,596) 0x407D==0 / (681..684,616) 0x40F5==0 were spent before (scr_seq 0132 @0x0090, 0131 @0x0179)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_ROUTE_215_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "west door warp 1 (1,7) -> MAP_ROUTE_215 warp 0 (671,598) (zone_event 0148); the hiker's line flips on 0x107 (scr_seq 0149 @0x0025)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_215"
+
+# PHASE2-risk: Route 215 cut trees (611,578), (621,594), (634,578), (657,588), (657,589) (zone_event 0367 objects 10-14,
+# hidden flags 0x20-0x24 are map-temp, so they respawn) may block the row [INFERENCE: the main path is clear]. If walk_to
+# reports no path, walk_to the tile before the tree facing it with interact = true and advance_text (Cut, A = YES;
+# Staraptor slot 1 knows MOVE_CUT). The probe sees 64x64 tiles; add a waypoint at (580,597) [INFERENCE] if needed.
+
+[[step]]
+do = "walk_to"
+x = 561
+z = 588
+face = "up"
+interact = true
+max = 15000
+shot = "psyduck"
+note = "west along Route 215 into Route 210 South, below the Psyduck (561,587) (zone_event 0347 object 19); x must be 560/561 or Cynthia never appears (scr_seq 0412 @0x0139-@0x0159); sight trainers fought by walk_to"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "old-charm"
+note = "msg 0432 #1 YesNo: A = Yes (0 -> @0x00CA); the four Psyduck leave (RemoveEvent -> hidden 0x1CE); Cynthia (0347 object 20) walks up, msg #3 YesNo: A = Yes (0 -> @0x01E9) -> ITEM_OLD_CHARM (std 2044), she leaves (hidden 0x1CF), SetFlag 0x107 @0x0244"
+
+[expect]
+map = "MAP_ROUTE_210_SOUTH"
+position = [561, 588]
+flags = ["0x1CE", "0x1CF", "0x107"]
+save = [
+  'any(i["item"] == 439 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_OLD_CHARM
+  'any(i["item"] == 464 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_SECRETPOTION kept
+]

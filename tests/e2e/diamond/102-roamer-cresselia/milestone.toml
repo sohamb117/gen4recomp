@@ -1,0 +1,60 @@
+# Cresselia on Fullmoon Island: A -> it flies off and roams (CreateRoamer 1 = CRESSELIA lv50), the Lunar
+# Wing ball appears. Direct station (the Canalave ferry needs game complete + National Dex + flag 0x133).
+# Start: MAP_FULLMOON_ISLAND_INTERIOR (16,16) below Cresselia (16,15). End: same map, roamer slot 1 active.
+title = "Roamer: Cresselia leaves Fullmoon Island"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 2000
+refs = [
+  "maps.h:265",
+  "zone_event 0253 object 0",
+  "zone_event 0253 object 1",
+  "scr_seq 0377 @0x013A",
+  "scr_seq 0274 @0x000C-0x005A",
+  "scr_seq 0274 @0x0047",
+  "scr_seq 0274 @0x004F",
+  "scr_seq 0274 @0x0057",
+  "scr_seq 0274 @0x005A",
+  "zone_event 0032 object 16",
+  "scr_seq 0034 @0x06B7",
+  "scr_seq 0034 @0x06D3",
+  "scr_seq 0034 @0x06DE",
+  "scr_seq 0034 @0x079F",
+  "scr_seq 0034 @0x08A0-0x08DD",
+  "scr_seq 0046 @0x000E-0x0065",
+  "scr_seq 0046 @0x0158-0x0193",
+  "scr_seq 0046 @0x01EA-0x01EE",
+  "games/diamond/arm9/asm/unk_020603B0.s:200-226",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: ferry variant (story-faithful): flag 0x964 + national-dex 1 + Eldritch house boy talk (ON_TRANSITION
+# sets var 0x4106 1 only with game complete + National Dex, scr_seq 0046 @0x0037-0x0065; boy L_01EA SetFlag
+# 0x133, SetVar 0x4106 2, @0x01EA-0x01EE) -> Canalave sailor (45,750) (zone_event 0032 object 16) with
+# var 0x4106==2 -> Lunar Wing plea, YES -> ShipAnimation 3, 2, 260, 39, 277 (scr_seq 0034 @0x06B7, @0x08A0-0x08DD,
+# @0x079F) -> forest door. Newmoon Island (Darkrai) needs flag 0x13C (Member Card event, @0x06DE): skipped.
+
+[run]
+frames = 3000
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Cresselia SPRITE_SPPOKE9 (16,15) facing S, hidden 0x26D never set before (zone_event 0253 object 0)"
+
+[[step]]
+do = "advance_text"
+max = 2000
+note = "SetFlag 0x26D, ClearFlag 0x436 (Lunar Wing ball, object 1), CreateRoamer 1, SetFlag 0x11F (scr_seq 0274 @0x0047-0x005A)"
+shot = "cresselia-roams"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_FULLMOON_ISLAND_INTERIOR"
+flags = ["0x26D", "0x11F"]
+flags_clear = ["0x436"]
+# PHASE2: reader-ext roamer slot 1 (Save_Roamers_Get; CRESSELIA lv50, unk_020603B0.s:200-226).

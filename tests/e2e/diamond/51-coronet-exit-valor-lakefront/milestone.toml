@@ -1,0 +1,92 @@
+# Proves the way back from Spear Pillar: down Mt. Coronet 6F/5F/4F to the North Mountainside, Fly south, and the first
+# Valor Lakefront entry after Spear Pillar (flag 0x15E) that removes the Route 222 blackout guard.
+# Start: Spear Pillar (31,52) facing south (50's end, scr_seq 0230 @0x0FB0) -> end: Valor Lakefront, guard hidden.
+title = "Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "scr_seq 0230 @0x0FB0",
+  "scr_seq 0230 @0x0FEC",
+  "scr_seq 0230 @0x0FF4",
+  "zone_event 0217 warp 0",
+  "zone_event 0212 warp 0",
+  "zone_event 0212 object 0",
+  "zone_event 0211 warp 0",
+  "zone_event 0211 object 0",
+  "zone_event 0211 object 1",
+  "zone_event 0210 warp 0",
+  "map_header.c:294",
+  "maps.h:340",
+  "map_header.c:420",
+  "scr_seq 0831 @0x0005",
+  "scr_seq 0381 @0x0035",
+  "scr_seq 0381 @0x0088",
+  "scr_seq 0381 @0x008C",
+  "zone_event 0321 object 9",
+  "zone_event 0321 coord 0",
+  "scr_seq 0381 @0x041E",
+  "msg 0354 #11",
+]
+notes = "Galactic grunts on 6F/5F are hidden by 0x2AD (scr_seq 0230 @0x0FF4). Spear Pillar..4F maps are fly FALSE; the North Mountainside is fly TRUE (map_header.c:294). Estimate: 4 floor walks ~3500 + Fly ~1500 + Valor walk ~4000."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 53
+note = "Spear Pillar warp 0 (31,53) -> MAP_MOUNT_CORONET_6F warp 1 (7,5) (zone_event 0217 warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_6F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 24
+note = "6F warp 0 (10,24) -> 5F warp 1 (13,24) (zone_event 0212 warp 0); grunt object 0 hidden by 0x2AD"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_5F"
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 7
+note = "5F warp 0 (21,7) -> 4F room 3 warp 1 (18,8) (zone_event 0211 warp 0); grunts objects 0/1 hidden by 0x2AD"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_4F_ROOM_3"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 3
+note = "4F room 3 warp 0 (2,3) -> North Mountainside warp 1 (13,19) (zone_event 0210 warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_NORTH_MOUNTAINSIDE"
+
+[[step]]
+do = "wait_field"
+# PHASE2: Fly menu sequence (START -> POKEMON -> Staraptor slot 4 -> FLY -> town map cursor) to a city that reaches Valor
+#   Lakefront on foot: [INFERENCE] Pastoria -> Route 213 east -> north, or Veilstone -> Route 214 south. Pick from the
+#   town-map fly list and the map matrix, then walk_to Valor Lakefront; its ON_TRANSITION (scr_seq 0831 @0x0005 ->
+#   scr_seq 0381 @0x0035/@0x0088) hides the guard (724,788) and disables coord 0 (724,789..791). End there, e.g. (722,790).
+#   Record any SetFlag/SetVar done by ON_TRANSITION scripts of the maps crossed (Route 213 scr_seq 0424, Route 214 scr_seq 0431).
+
+[expect]
+map = "MAP_VALOR_LAKEFRONT"
+flags = ["0x15E", "0x29B"]
+vars = { "0x4112" = 1 }

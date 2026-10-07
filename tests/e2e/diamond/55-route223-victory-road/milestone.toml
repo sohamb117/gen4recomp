@@ -1,0 +1,52 @@
+# Proves Surf + Waterfall up Route 223 and the Victory Road HM floors to the League's north side.
+# Start: Sunyshore (855,743) after Jasmine -> end: Pokemon League outside, Victory Road exit (853,582).
+
+title = "Route 223 and Victory Road to the Pokemon League"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 35000
+refs = [
+  "maps.h:472",
+  "map_header.c:552",
+  "zone_event 0446 objects 0-11,14",
+  "maps.h:176",
+  "zone_event 0171 warp 0",
+  "zone_event 0171 warp 2",
+  "zone_event 0171 warp 3",
+  "maps.h:248",
+  "zone_event 0237 warp 7",
+  "zone_event 0237 warp 8",
+  "zone_event 0237 warps 0-6",
+  "zone_event 0238 warps 0-2",
+  "zone_event 0239 warps 0-2",
+  "scr_seq 0719 @0x0000",
+  "scr_seq 0259 @0x0026",
+  "scr_seq 0259 @0x002A",
+  "scr_seq 0177 @0x001A",
+  "zone_event 0238 object 7",
+  "zone_event 0239 object 1",
+]
+notes = "Route 223: 12 swimmers/sailor lv 37-44 (zone_event 0446). Victory Road trainers lv 43-49 incl. two doubles: Al & Kay #237 2F (57,19-20), Jo & Pat #236 B1F (33,43-44). The back area (1F_BACK_1..3, Route 224) is post-game. Encounter banks of Route 223 and Victory Road are the same in D and P (version-diff)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 52500
+
+[[step]]
+do = "wait_field"
+# PHASE2: Surf start tile on Sunyshore's north shore (PC_LAB_MAPSCAN of map 150/468), Surf north along Route 223 (468),
+#   Waterfall up to the League's south area (tile behaviour, no event; BADGE_BEACON). League south: Pokemon Center door
+#   (842,598) (zone_event 0171 warp 0; ON_TRANSITION SetFlag 0x9C0 scr_seq 0177 @0x001A if entered), Victory Road door
+#   (851,597) -> VICTORY_ROAD_1F (15,78) (warp 2 / zone_event 0237 warp 7). VR 1F ON_TRANSITION SetFlag 0x9CA (scr_seq 0259
+#   @0x0026). Floor order from the warp graph: 1F warps 0/1/5 <-> 2F warps 0/1/2, 1F warps 2/3/4 <-> B1F warps 0/1/2;
+#   Rock Climb / Strength boulders (2F SPRITE_ROCK objects 9-13,15-25) / Rock Smash (2F objects 14,26-31) / Surf+Waterfall
+#   in B1F as the map scan shows; exit 1F warp 8 (34,4) -> League warp 3 (853,582). Record the trainer flags (0x550+id)
+#   of every trainer fought on the chosen path into the delta.
+
+[expect]
+map = "MAP_POKEMON_LEAGUE"
+flags = ["0x9CA"]

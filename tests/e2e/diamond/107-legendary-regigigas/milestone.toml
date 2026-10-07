@@ -1,0 +1,68 @@
+# Regigigas in Snowpoint Temple B5F: with Regirock, Regice and Registeel in the party (species check only)
+# A awakens it (SetFlag 0x11A) -> LegendaryBattle 486, 70. D/P has no Regi trio battles (no Regi ruins maps).
+# Start: MAP_SNOWPOINT_TEMPLE_B5F (11,13) below Regigigas (11,12). End: same map, 0x11A set.
+title = "Legendary: Regigigas in Snowpoint Temple"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 5000
+refs = [
+  "maps.h:287",
+  "zone_event 0271 object 0",
+  "zone_event 0164 coord 0",
+  "scr_seq 0168 @0x0088",
+  "scr_seq 0168 @0x014A",
+  "scr_seq 0309 @0x000A-0x0023",
+  "scr_seq 0309 @0x002F-0x004B",
+  "scr_seq 0309 @0x0073",
+  "scr_seq 0309 @0x0081-0x0092",
+  "scr_seq 0309 @0x00BE",
+  "scr_seq 0309 @0x00C6",
+  "msg 0252 #3",
+  "scr_seq 0192 @0x01F9-0x020B",
+  "games/diamond/arm9/src/scrcmd.c:4277-4281",
+  "games/diamond/arm9/asm/unk_02054C14.s:322-323",
+]
+
+[start]
+recipe = "start.recipe"
+# Temple entry (skipped by the map line): Snowpoint coord (366,198) while var 0x407F==0 (zone_event 0164 coord 0)
+# checks game complete (scr_seq 0168 @0x0088) and National Dex, then Candice lets you in (SetVar 0x407F 1, @0x014A).
+
+[run]
+frames = 7500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "statue SPRITE_SSPOKE12 (11,12), hidden 0x261 only after an interrupted battle (zone_event 0271 object 0); !0x11A -> CheckRegis (scr_seq 0309 @0x003A)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "all three Regis -> SetFlag 0x11A, statue shakes, msg 252 #2, SetFlag 0x8E, LegendaryBattle 486, 70 (@0x004B-0x0092)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "legendary"
+
+[[step]]
+do = "auto_battle"
+note = "A-only never throws a ball: defeated, never caught"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "not caught -> msg 252 #3 'REGIGIGAS disappeared from view...' (@0x00C6)"
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = "MAP_SNOWPOINT_TEMPLE_B5F"
+battles = 1
+flags = ["0x11A"]
+flags_clear = ["0x11B", "0x8E"]
+party = ["SPECIES_REGIROCK", "SPECIES_REGICE", "SPECIES_REGISTEEL"]

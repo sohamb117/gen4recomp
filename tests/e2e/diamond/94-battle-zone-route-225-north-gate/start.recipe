@@ -1,0 +1,19 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31094
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# game completed: every script gate is CheckGameCompleted/CheckFlag 0x964 (scrcmd_flags.c:194-201 -> unk_0205EC84.c:55-56)
+flag 0x964
+# Fight Area arrival scene already played (scr_seq 0195 @0x00A2-0x012D): RemoveEvent 7/8 set their hide flags
+# (MapObject_Delete, map_object.c:295-300), SetVar 0x4081 1 stops the ON_FRAME scene (level scr_seq 0658 @0x000B)
+flag 0x1F1
+flag 0x1F2
+var 0x4081 1
+# National-Dex scene hides the Fight Area / Route 230 blockers (scr_seq 0990 @0x058B SetFlag 0x2B2)
+flag 0x2B2
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 0 0 MOVE_EARTHQUAKE
+# south of the blockers (629,429)/(630,429) (zone_event 0187 objects 22/23); [INFERENCE] (630,430) walkable
+map MAP_FIGHT_AREA 630 430 FACE_UP

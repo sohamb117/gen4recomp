@@ -1,0 +1,73 @@
+# Snowpoint harbour sailor sails to the Battle Zone once the game is complete; the Fight Area arrival
+# scene (Barry and Buck talk, no battle in D/P) plays on the ON_FRAME table and sets var 0x4081 1.
+# Start: MAP_SNOWPOINT (356,248) below the sailor (356,247). End: MAP_FIGHT_AREA (623,434), scene done.
+title = "Battle Zone: Snowpoint ferry and Fight Area arrival"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 6000
+refs = [
+  "maps.h:169",
+  "maps.h:192",
+  "zone_event 0164 object 8",
+  "scr_seq 0168 @0x0232-0x0257",
+  "scr_seq 0168 @0x0260",
+  "scr_seq 0168 @0x0276-0x0287",
+  "msg 0167 #10",
+  "msg 0167 #13",
+  "scr_seq 0658 @0x0000",
+  "scr_seq 0658 @0x000B",
+  "scr_seq 0195 @0x0046-0x00A0",
+  "scr_seq 0195 @0x00A2-0x012D",
+  "scr_seq 0195 @0x00FF",
+  "scr_seq 0195 @0x0121",
+  "scr_seq 0195 @0x0125",
+  "zone_event 0187 object 7",
+  "zone_event 0187 object 8",
+  "zone_event 0187 object 18",
+  "scr_seq 0195 @0x0304-0x0364",
+  "games/diamond/arm9/src/map_object.c:295-300",
+  "games/diamond/arm9/src/scrcmd_flags.c:194-201",
+  "games/diamond/arm9/src/unk_0205EC84.c:55-56",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 9000
+
+[[step]]
+do = "press"
+keys = "A"
+note = "SPRITE_SEAMAN (356,247) facing N, hidden_flag 0x298 never set by a script (zone_event 0164 object 8); CheckFlag 0x964 (scr_seq 0168 @0x0232) else msg 167 #13 refusal"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "msg 167 #10 'sail to the Battle Zone?': VAR_RESULT 0 = YES -> L_0276 (@0x0244); [INFERENCE] A takes the YES default; ShipAnimation 2, 0, 188, 623, 434 (@0x0287)"
+shot = "sail"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FIGHT_AREA"
+max = 3000
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "ON_FRAME var 0x4081==0 -> #1 (scr_seq 0658 @0x000B): Barry (object 7) + Buck (object 8) talk, RemoveEvent 7/8, SetVar 0x4081 1 (scr_seq 0195 @0x00A2-0x012D)"
+shot = "arrival-scene"
+
+[[step]]
+do = "wait_field"
+shot = "fight-area"
+
+[expect]
+map = "MAP_FIGHT_AREA"
+vars = { "0x4081" = 1 }
+# RemoveEvent sets the object's hide flag (MapObject_Delete, map_object.c:295-300)
+flags = ["0x1F1", "0x1F2"]
+# Return: sailor (623,435) script #12 -> ShipAnimation 1, 0, 165, 356, 246 (scr_seq 0195 @0x0364).
+# Barry rematch (object 7 (628,434) by ON_TRANSITION when 0x409E>=1 and 0x410E>=1 on Sat/Sun,
+# @0x0046-0x00A0; TRAINER_PKMN_TRAINER_BARRY_CEDRIC_19..24 by GetStarter/Unk028F, @0x043A-0x04FA) is optional.

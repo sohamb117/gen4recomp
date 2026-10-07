@@ -1,0 +1,24 @@
+# Diamond story 29-route210-psyduck-old-charm: standalone start (--lab, or no end save from 28-valor-lakefront-grunt-secretpotion).
+# Standard header + lab party + the cumulative state after 28-valor-lakefront-grunt-secretpotion, then the milestone's start. Names resolve
+# through tests/gameplay/labc.py --game diamond; flag/var lines cite the D/P script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Standard lab party (Platinum exemplar): Surf in slot 0 and slots 1-3 cleared, so an empty Surf falls back to
+# Struggle instead of stalling A-only battles. Staraptor carries the field moves (Rock Smash, Cut) and fights only
+# in true doubles.
+# Opponents: Route 214/215/210 South sight trainers only (zone_event 0365 objects 0-8, 0367 objects 0-7, 0347 objects
+# 0-9/24; strongest TRAINER_NINJA_BOY_BRUCE trdata.json #490 STUNKY 27, true doubles #65/#290 lv21): Surf lv60 OHKOs.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+map MAP_VALOR_LAKEFRONT 723 761 FACE_UP  # 28's end, below Cynthia's tile (723,760) (zone_event 0321 object 0, hidden 0x1CB after 28)

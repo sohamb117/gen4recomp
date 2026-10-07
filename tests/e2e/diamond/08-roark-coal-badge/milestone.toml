@@ -1,0 +1,105 @@
+# Proves the first gym: two sight youngsters, Roark, the Coal Badge and TM76; the win arms Barry's farewell and the Jubilife Galactic scene.
+# Start: Oreburgh Gym warp 0 (5,24) -> end: Oreburgh City at the gym door (282,756) (09's start).
+title = "Oreburgh Gym: Roark and the Coal Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 21000
+refs = [
+  "maps.h:51",
+  "map_header.c:131",
+  "zone_event 0046 object 0",
+  "zone_event 0046 object 2",
+  "zone_event 0046 object 3",
+  "zone_event 0046 warp 0",
+  "scr_seq 0050 @0x0016",
+  "scr_seq 0050 @0x003A",
+  "scr_seq 0050 @0x0040",
+  "scr_seq 0050 @0x0060",
+  "scr_seq 0050 @0x0064",
+  "scr_seq 0050 @0x0068",
+  "scr_seq 0050 @0x0078",
+  "scr_seq 0050 @0x007C",
+  "scr_seq 0050 @0x0082",
+  "scr_seq 0050 @0x0094",
+  "scr_seq 0050 @0x009A",
+  "scr_seq 0050 @0x009E",
+  "scr_seq 0050 @0x00A2",
+  "scr_seq 0050 @0x00A6",
+  "scr_seq 0050 @0x00C1",
+  "scr_seq 0050 @0x00D6",
+  "scr_seq 0050 @0x00DA",
+  "zone_event 0044 coord 1",
+  "zone_event 0002 coord 1",
+  "zone_event 0002 coord 3",
+  "zone_event 0002 object 7",
+  "zone_event 0002 object 16",
+  "zone_event 0002 object 17",
+  "zone_event 0002 object 18",
+  "zone_event 0400 object 0",
+  "zone_event 0005 object 4",
+  "trdata.json #246",
+  "trdata.json #244",
+  "trdata.json #245",
+  "include/constants/badge.h:4",
+  "tests/gameplay/dp/recipes/roark.recipe",
+]
+notes = "Estimate: Platinum's measured ~20200 for the same gym plus the exit. Surf is x2/x4 on every Roark mon (GEODUDE 12, ONIX 12, CRANIDOS 14). Roark's script sets the youngsters' trainer flags itself (0x644/0x645) whether or not they were fought; his own flag 0x646 is never set. Losing goes to Blackout (scr_seq 0050 @0x0113)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 31500
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 4
+face = "up"
+interact = true
+max = 12000
+note = "straight north to Roark (5,3); Jonathon (4,18) E sight 3 and Darius (7,11) W sight 4 stop you on the way (fought by walk_to)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "roark-battle"
+note = "TRAINER_LEADER_ROARK_ROARK (trdata.json #246): GEODUDE 12, ONIX 12, CRANIDOS 14 (scr_seq 0050 @0x003A)"
+
+[[step]]
+do = "advance_text"
+shot = "coal-badge"
+note = "GiveBadge BADGE_COAL, Barry's farewell + Jubilife scene armed, TM76 (scr_seq 0050 @0x0068-@0x00DA)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 24
+note = "gym exit (zone_event 0046 warp 0) -> Oreburgh warp 0 (282,756)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_OREBURGH"
+badges = 1
+badge = ["BADGE_COAL"]
+flags = ["0x644", "0x645", "0x25D", "0x1B6", "0x75"]
+flags_clear = ["0x198", "0x1BB", "0x1BA"]
+battles = 1
+save = [
+  'any(i["item"] == 403 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM76
+]
+
+[expect.vars]
+"0x40F0" = 1
+"0x4079" = 2
+"0x4077" = 3

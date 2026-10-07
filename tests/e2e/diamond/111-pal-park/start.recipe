@@ -1,0 +1,16 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31111
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+# Poketch owned (Oak's gift goes through UnlockPoketchApp, scr_seq 0205 @0x06BA); base apps as Jubilife gives them
+poketch POKETCH_DIGITAL_WATCH
+var 0x4077 2
+# Pal Park opens after the National Dex (Oak's Pal Park speech, scr_seq 0990 @0x058F-0x0601)
+pokedex 1
+national-dex 1
+flag 0x2B2
+# entrance door (7,19) <- MAP_ROUTE_221 warp 1 (zone_event 0378 warp 0)
+warp MAP_ROUTE_221_PAL_PARK_ENTRANCE 0

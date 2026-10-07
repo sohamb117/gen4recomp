@@ -1,0 +1,115 @@
+# Proves the post-Cobble Veilstone chain: the counterpart's ON_FRAME plea (0x411A==1), the tag battle with Dawn
+# against the two warehouse grunts, and the stolen Pokédex scene (flag 0x101 arms Pastoria's grunt).
+# Start: Veilstone Gym (22's end at Maylene, or the lab door warp 0 (12,25)) -> end: Veilstone in front of the
+# Galactic warehouse, 0x411A = 2, 0x101 set. HM02 Fly is NOT here in D/P (warehouse needs the Storage Key, msg 146 #2).
+title = "Veilstone: Dawn's stolen Pokédex, warehouse tag battle"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 11000
+refs = [
+  "scr_seq 0132 @0x0096",
+  "scr_seq 0132 @0x008C",
+  "zone_event 0132 warp 0",
+  "zone_event 0131 warp 13",
+  "scr_seq 0594 @0x000B",
+  "scr_seq 0131 @0x00BD",
+  "scr_seq 0131 @0x0B24",
+  "scr_seq 0131 @0x0B5A",
+  "scr_seq 0131 @0x0B5E",
+  "scr_seq 0131 @0x00A7",
+  "scr_seq 0131 @0x0B64",
+  "scr_seq 0131 @0x0B6C",
+  "zone_event 0131 object 6",
+  "zone_event 0131 object 7",
+  "zone_event 0131 object 20",
+  "zone_event 0131 coord 0",
+  "scr_seq 0131 @0x0284",
+  "scr_seq 0131 @0x02AC",
+  "scr_seq 0131 @0x0310",
+  "scr_seq 0131 @0x04E2",
+  "scr_seq 0131 @0x047C",
+  "scr_seq 0131 @0x0341",
+  "scr_seq 0131 @0x03A8",
+  "scr_seq 0131 @0x03D1",
+  "scr_seq 0131 @0x05A2",
+  "scr_seq 0131 @0x05A6",
+  "games/diamond/arm9/src/map_object.c:295-299",
+  "trdata.json #624",
+  "trdata.json #848",
+  "trdata.json #849",
+  "msg 135 #0",
+  "msg 135 #12",
+  "msg 135 #16",
+  "msg 146 #2",
+  "maps.h:136",
+  "maps.h:137",
+]
+notes = "Male player => counterpart Dawn (0x4020 = 97, scr_seq 0131 @0x00BD) and partner TRAINER_PKMN_TRAINER_DAWN_DAWN_4 (624) for a Turtwig starter (scr_seq 0131 @0x047C-0x04A6). Coord 0 (697,596) is dead (0x407D = 1 since Maylene). [INFERENCE] Gen IV Surf is a spread move that also hits the partner's Prinplup (resisted), so the doubles need no target menu."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 16500
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 24
+map = "MAP_VEILSTONE_GYM"
+note = "from Maylene (12,5) (22's end) or the lab start on the door (12,25)"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 25
+note = "gym exit, zone_event 0132 warp 0 -> MAP_VEILSTONE warp 13 (684,611)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "dawn-asks-help"
+note = "ON_FRAME 0x411A==1 (scr_seq 0594 @0x000B) -> #30 (scr_seq 0131 @0x0B24-0x0B74): Dawn (obj6 (682,614)) asks for help (msg 135 #0), walks off, RemoveEvent/AddEvent re-places her at (696,596) facing east (L_00A7), 0x411A = 2"
+
+[[step]]
+do = "walk_to"
+x = 695
+z = 596
+face = "right"
+interact = true
+note = "[INFERENCE] tile west of Dawn (696,596); facing east -> L_04E2 (scr_seq 0131 @0x0314) lines you up with grunt 1 (697,595); only east/south/north facings are handled (@0x0310-0x0334)"
+
+[[step]]
+do = "advance_text"
+note = "msg 135 #12, YesNo: A = YES [INFERENCE default cursor] -> msg #13 -> TrainerBattleWithPartner 624, 848, 849 (scr_seq 0131 @0x0341)"
+
+[[step]]
+do = "auto_battle"
+shot = "warehouse-tag-battle"
+note = "partner Dawn (624: CLEFAIRY 25, KADABRA 25, PRINPLUP 28) vs TRAINER_GALACTIC_GRUNT_37 (848: BEAUTIFLY 25, STUNKY 25) + TRAINER_GALACTIC_GRUNT_38 (849: DUSTOX 25, CROAGUNK 25)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "pokedex-returned"
+note = "grunts flee (RemoveEvent 7 @0x03A8, 20 @0x03D1 -> hidden 0x1DD), Dawn heads for Pastoria (msg 135 #16), SetFlag 0x101 @0x05A2, RemoveEvent 6 @0x05A6 (hidden 0x1C6)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_VEILSTONE"
+badges = 3
+badge = ["BADGE_COBBLE"]
+flags = ["0x101", "0x1C6", "0x1DD"]
+battles = 1
+
+[expect.vars]
+"0x411A" = 2
+"0x407D" = 1

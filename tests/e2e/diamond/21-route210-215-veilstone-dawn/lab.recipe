@@ -1,0 +1,24 @@
+# Diamond story 21-route210-215-veilstone-dawn: standalone start (--lab, or no end save from 20-route209-to-solaceon).
+# Standard header + lab party + the cumulative state after 20-route209-to-solaceon, then the milestone's start.
+# Applied on top of the D/P new-game base save; names resolve through tests/gameplay/labc.py --game diamond;
+# flag/var lines cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Standard lab party: Surf in slot 0 and slots 1-3 cleared, so an empty Surf falls back to Struggle
+# instead of stalling A-only battles. Route 210 South / 215 trainers are lv 17-27 (trdata.json #56 #57 #65 #290
+# #292 #306 #127 #128 #129 #130 #278 #287 #304 #307): one Surf from EMPOLEON 60 each (Route 215 rain helps).
+# Staraptor carries MOVE_CUT for the Route 215 trees and fights only in true doubles (Teri & Tia #65, Ava & Matt #290).
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_SOLACEON 5  # Pokemon Center door (566,656), zone_event 0411 warp 5; 20 ends one tile south (566,657)

@@ -1,0 +1,61 @@
+# Giratina in Turnback Cave (D/P: lv70, no story gate in the room script): A -> LegendaryBattle 487, 70;
+# defeated -> "GIRATINA disappeared...", ClearFlag 0x26E (it is back on the next load).
+# Start: MAP_TURNBACK_CAVE_GIRATINA_ROOM (11,15) below Giratina (11,14). End: same map.
+title = "Legendary: Giratina in Turnback Cave"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 6000
+refs = [
+  "maps.h:274",
+  "zone_event 0261 object 0",
+  "scr_seq 0283 @0x0016-0x0027",
+  "scr_seq 0283 @0x0029-0x0042",
+  "scr_seq 0283 @0x0044-0x005D",
+  "scr_seq 0283 @0x0067-0x0082",
+  "scr_seq 0283 @0x0089-0x0091",
+  "scr_seq 0283 @0x0099-0x00A0",
+  "msg 0250 #1",
+  "games/diamond/arm9/asm/unk_020476CC.s:1220-1228",
+]
+
+[start]
+recipe = "start.recipe"
+# Path in game: Route 214 Spring Path (341) -> Sendoff Spring (267) -> Turnback Cave pillar rooms (zone_event 0261
+# warps); no script gate on any of them [INFERENCE: the Spring Path obstacle is overworld]; skipped by the map line.
+
+[run]
+frames = 9000
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Giratina SPRITE_SPPOKE10 (11,14) facing S, hidden 0x26E set only by this map's scripts (zone_event 0261 object 0)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "PlayCry 487, msg 250 #0, SetFlag 0x8E, LegendaryBattle 487, 70 (scr_seq 0283 @0x0044-0x005D)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "legendary"
+
+[[step]]
+do = "auto_battle"
+note = "A-only never throws a ball: defeated, never caught"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "not caught -> msg 250 #1 'GIRATINA disappeared...', ClearFlag 0x26E (@0x0099-0x00A0)"
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = "MAP_TURNBACK_CAVE_GIRATINA_ROOM"
+battles = 1
+flags_clear = ["0x121", "0x26E", "0x8E"]

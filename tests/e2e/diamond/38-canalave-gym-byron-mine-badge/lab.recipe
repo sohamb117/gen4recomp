@@ -1,0 +1,23 @@
+# Diamond story 38-canalave-gym-byron-mine-badge: standalone start (--lab, or no end save from 37-iron-island-riley-egg).
+# Standard header + lab party + the cumulative state after 37-iron-island-riley-egg, then the milestone's start.
+# PRIOR must carry BADGE_COAL..BADGE_RELIC (Byron's script only checks BADGE_MINE, scr_seq 0036 @0x001E) and 0x4078 = 1.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party = 34's: Empoleon 60, Surf alone in slot 0. Byron (trdata.json #250): BRONZOR 36 (neutral), STEELIX 36 and BASTIODON 39
+# (Surf x2). Gym trainers (zone_event 0034): ONIX/STEELIX x2, SKORUPI 30, AZUMARILL 33 (resists: two hits).
+# Up to 16 foe mons: the milestone heals at the Canalave Pokémon Center first; Surf has 15 PP, so a full sweep may end
+# on Struggle (lv60 vs <= lv39: still wins).
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+map MAP_CANALAVE 44 750 DIR_EAST   # ferry landing tile, scr_seq 0316 @0x005F ShipAnimation 0, 2, 33, 44, 750 (37's end)

@@ -1,0 +1,68 @@
+# Uxie in Acuity Cavern (Azelf in Valor Cavern with azelf.recipe), freed by the Spear Pillar story:
+# A -> LegendaryBattle 480, 50 (Azelf 482, 50); defeated -> "disappeared", no persistent flag.
+# Start: MAP_ACUITY_CAVERN (14,11) below Uxie (14,10). End: same map.
+title = "Legendary: Uxie (and Azelf)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 5000
+refs = [
+  "maps.h:323",
+  "maps.h:320",
+  "zone_event 0306 object 0",
+  "zone_event 0303 object 0",
+  "scr_seq 0377 @0x001E",
+  "scr_seq 0377 @0x0022",
+  "scr_seq 0230 @0x0FD8",
+  "scr_seq 0230 @0x0FDC",
+  "scr_seq 0352 @0x0014-0x0029",
+  "scr_seq 0352 @0x002F-0x0046",
+  "scr_seq 0352 @0x0050-0x0072",
+  "scr_seq 0352 @0x007A",
+  "msg 0278 #1",
+  "scr_seq 0348 @0x0046-0x0075",
+  "scr_seq 0348 @0x0077-0x008E",
+  "scr_seq 0348 @0x00BA",
+  "scr_seq 0192 @0x01A1-0x0217",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: Azelf run = this dir with azelf.recipe (SPRITE_SPPOKE3 (16,14), hidden 0x1FE, zone_event 0303 object 0;
+# LegendaryBattle 482, 50 at scr_seq 0348 @0x008E; caught -> 0x126 @0x00BA); expect map MAP_VALOR_CAVERN.
+
+[run]
+frames = 7500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Uxie SPRITE_SPPOKE1 (14,10), hidden 0x1FF (zone_event 0306 object 0)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "PlayCry 480, msg 278 #0, SetFlag 0x8E, LegendaryBattle 480, 50 (scr_seq 0352 @0x002F-0x0046)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "legendary"
+
+[[step]]
+do = "auto_battle"
+note = "A-only never throws a ball: defeated, never caught"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "not caught -> msg 278 #1 'UXIE disappeared deep into its cavern...' (@0x007A); 0x127 stays clear"
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = "MAP_ACUITY_CAVERN"
+battles = 1
+flags_clear = ["0x127", "0x8E"]

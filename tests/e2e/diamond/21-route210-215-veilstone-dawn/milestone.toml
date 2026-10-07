@@ -1,0 +1,185 @@
+# Proves Route 210 South (south of the Psyduck block), Route 215 in the rain, the Veilstone gatehouse and the Veilstone
+# arrival scene: Dawn (Lucas for a female player) waits south of the gym (coord (681..684,616), 0x40F5 0 -> 1).
+# Start: Solaceon Pokemon Center door (566,656) -> end: inside Veilstone Gym at warp 0 (12,25) (22's start).
+title = "Route 210 South and Route 215 to Veilstone: counterpart at the gym"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 22000
+refs = [
+  "maps.h:136",
+  "maps.h:137",
+  "maps.h:153",
+  "maps.h:366",
+  "maps.h:386",
+  "map_header.c:446",
+  "map_header.c:466",
+  "map_header.c:216",
+  "zone_event 0411 warp 5",
+  "zone_event 0347 object 10",
+  "zone_event 0347 object 19",
+  "zone_event 0347 object 26",
+  "zone_event 0347 object 27",
+  "zone_event 0347 object 28",
+  "zone_event 0347 object 2",
+  "zone_event 0347 object 3",
+  "zone_event 0347 object 5",
+  "zone_event 0347 object 6",
+  "zone_event 0347 object 7",
+  "zone_event 0347 object 8",
+  "zone_event 0347 object 9",
+  "zone_event 0347 object 24",
+  "zone_event 0367 object 0",
+  "zone_event 0367 object 1",
+  "zone_event 0367 object 2",
+  "zone_event 0367 object 3",
+  "zone_event 0367 object 4",
+  "zone_event 0367 object 5",
+  "zone_event 0367 object 6",
+  "zone_event 0367 object 7",
+  "zone_event 0367 object 8",
+  "zone_event 0367 object 10",
+  "zone_event 0367 object 11",
+  "zone_event 0367 object 12",
+  "zone_event 0367 object 13",
+  "zone_event 0367 object 14",
+  "zone_event 0367 warp 0",
+  "zone_event 0148 warp 0",
+  "zone_event 0148 warp 1",
+  "zone_event 0131 warp 0",
+  "zone_event 0131 warp 13",
+  "zone_event 0131 object 6",
+  "zone_event 0131 coord 1",
+  "zone_event 0131 coord 0",
+  "zone_event 0132 warp 0",
+  "scr_seq 0594 @0x0000",
+  "scr_seq 0131 @0x0087",
+  "scr_seq 0131 @0x00BD",
+  "scr_seq 0131 @0x00CD",
+  "scr_seq 0131 @0x0186",
+  "scr_seq 0131 @0x0171",
+  "scr_seq 0131 @0x0179",
+  "scr_seq 0131 @0x07B2",
+  "scr_seq 0412 @0x0065",
+  "scr_seq 0433 @0x0069",
+  "msg 0135 #2",
+  "msg 0135 #3",
+  "trdata.json #56",
+  "trdata.json #57",
+  "trdata.json #65",
+  "trdata.json #290",
+  "trdata.json #292",
+  "trdata.json #306",
+  "trdata.json #127",
+  "trdata.json #128",
+  "trdata.json #129",
+  "trdata.json #130",
+  "trdata.json #278",
+  "trdata.json #287",
+  "trdata.json #304",
+  "trdata.json #307",
+  "d_enc_data 0156 / p_enc_data 0156 (version-diff: Route 210 South encounters differ)",
+  "d_enc_data 0164 / p_enc_data 0164 (version-diff: Route 215 encounters differ)",
+]
+notes = "Estimate: ~40 tiles north on Route 210 South, ~90 tiles east on Route 215 (rain: map_header.c:466 weather 2 [INFERENCE] boosts Surf), Veilstone to the gym, 3-6 sight trainers lv 17-27 (one Surf each) and the counterpart text. Pearl: only the Route 210 South / Route 215 wild encounter banks differ (d_enc_data vs p_enc_data 0156/0164, version-diff); scripts shared, version = both. The Psyduck block (zone_event 0347 objects 19/26/27/28 at (560..561,585..587), hidden_flag 0x1CE) lies north of the Route 215 junction (z 596) and is S6/S7's (SecretPotion). The counterpart gfx comes from var 0x4020 (Veilstone ON_TRANSITION scr_seq 0131 @0x0087-0x00C5: male player -> 97 (Dawn)). The Galactic grunt coord (697,596) (0x407D == 0, scr_seq 0131 @0x07B2) only pushes the player back from the warehouse; not on the route. Optional TM gifts not taken: Route 210 South TM51 (scr_seq 0412 @0x0341, flag 0xC7), Route 215 TM66 (scr_seq 0433 @0x00C2, flag 0xCD), Veilstone TM63 (scr_seq 0131 @0x0748, flag 0xCC)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 33000
+
+[[step]]
+do = "walk_to"
+x = 563
+z = 632
+face = "up"
+interact = true
+max = 6000
+note = "north out of Solaceon onto Route 210 South and read its sign (zone_event 0347 object 10 (563,631)); [INFERENCE] (563,632) walkable"
+
+[[step]]
+do = "advance_text"
+shot = "route210-south"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_210_SOUTH"
+
+[[step]]
+do = "walk_to"
+x = 580
+z = 597
+face = "up"
+interact = true
+max = 9000
+note = "north on Route 210 South to the Route 215 junction and read the Route 215 sign (zone_event 0367 object 8 (580,596)); [INFERENCE] (580,597) walkable and on Route 215; sight trainers may engage: Marco (555,627) E 3, Belle & Pa Ava & Matt (563,615..616) W 1 (double), Twins Teri & Tia (557..558,609) S 3 (double), Kahlil (554,604) W 2, Amber (563,601) S 3, jogger Wyatt (571,624) W 2 (time-dependent, scr_seq 0412 @0x0065)"
+
+[[step]]
+do = "advance_text"
+shot = "route215"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_215"
+
+# PHASE2-risk: [INFERENCE] Route 215 cut trees (611,578), (621,594), (634,578), (657,588), (657,589) (zone_event 0367
+# objects 10-14, temp hide flags 0x20-0x24, re-armed on every map load) may block the column to the gate; if walk_to
+# reports no path, walk_to the tile before the blocking tree facing it with interact = true and advance_text (Cut,
+# A = YES; Staraptor has MOVE_CUT, BADGE_FOREST in the save). Probe tiles around the trainers if the planner stalls.
+
+[[step]]
+do = "walk_to"
+x = 671
+z = 598
+max = 15000
+note = "east along Route 215 to the Veilstone gatehouse (zone_event 0367 warp 0 -> gatehouse warp 1 (1,7)); sight trainers may engage: Calvin (589,590) S 3, Craig (603,593) N 3 (jogger, time-dependent), Derek (607,584) W 3, Gregory (621,578) W 3, Nathaniel (643,582) W 2, Maya (648,596) S 2 and Dennis (648,599) N 2 face each other across z 597-598, Scott (654,589) S 3 (jogger)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_ROUTE_215_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "gatehouse east exit (zone_event 0148 warp 0) -> Veilstone (678,598)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE"
+
+[[step]]
+do = "walk_to"
+x = 682
+z = 616
+note = "south of the gym onto coord 1 (681..684,616) var 0x40F5 == 0 -> scr_seq 0131 #16; Dawn (object 6) stands at (682,614) facing east"
+
+[[step]]
+do = "advance_text"
+shot = "counterpart-veilstone"
+note = "Dawn: 'are you going to take the Gym challenge?' (msg 0135 #2; Lucas #3 for a female player); RemoveEvent 6 @0x0171, SetVar 0x40F5 1 @0x0179"
+
+[[step]]
+do = "walk_to"
+x = 684
+z = 611
+note = "gym door (zone_event 0131 warp 13) -> Veilstone Gym warp 0 (12,25), 22's start"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GYM"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_VEILSTONE_GYM"
+flags = ["0x1C6", "0x19C"]
+badges = 2
+badge = ["BADGE_COAL", "BADGE_FOREST"]
+
+[expect.vars]
+"0x40F5" = 1
+"0x407D" = 0

@@ -1,0 +1,76 @@
+# Proves Eterna Forest with Cheryl as partner (she joins at the entrance, multi battles on the way), her farewell at
+# the east exit, and the exit to Route 205 North.
+# Start: Eterna Forest warp 0 (28,86), the Route 205 South entrance (12's end) -> end: Route 205 North (259,524).
+title = "Eterna Forest with Cheryl"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "maps.h:207 (MAP_ETERNA_FOREST_INTERIOR = 203, map_header.c:287; encounters d_enc 0008 / p_enc 0008)",
+  "maps.h:353 (MAP_ROUTE_205_NORTH = 349, map_header.c:433; encounters d_enc 0146 / p_enc 0146)",
+  "zone_event 0201 object 0 (Cheryl (28,83) DIR_SOUTH, hidden_flag 0x1B9)",
+  "zone_event 0201 coord 0 (28,85) 2x1 var 0x40B1 == 0 -> scr_seq 0213 #1; coord 1 (28,86) 2x1 == 1 -> #2; coord 2 (82,34) 1x6 == 1 -> #3",
+  "zone_event 0201 warp 2 (86,36) -> MAP_ROUTE_205_NORTH warp 1 (259,524)",
+  "scr_seq 0213 @0x0049 (RideBike 0), @0x00B0-@0x00C7 (SetFlag 0x8B, SetVar 0x40B1 1, SetVar 0x403F 608, Unk0161)",
+  "games/diamond/arm9/src/scrcmd_flags.c:148-164 (Unk0161/Unk0162 -> sub_0205ED1C/sub_0205ED2C), arm9/src/unk_0205EC84.c:58-64 (set/clear flag 0x961)",
+  "scr_seq 0213 @0x0108-@0x0168 (stepping back onto (28..29,86) drops Cheryl: Unk0162, SetVar 0x40B1 0)",
+  "scr_seq 0213 @0x0198-@0x02A5 (exit scene: Unk0162 @0x0297, RemoveEvent 0 @0x0299, SetFlag 0xE3 @0x02A1, SetVar 0x40B1 2)",
+  "trdata.json #608 (TRAINER_PKMN_TRAINER_AROMA_LADY_CHERYL: CHANSEY 15)",
+  "trdata.json #201 (BUG_CATCHER_JACK (37,67) E 2), #204 (LASS_BRIANA (40,67) W 2), #206 (PSYCHIC_F_LINDSEY (50,67) E 4), #205 (PSYCHIC_M_ELIJAH (55,67) W 4) (zone_event 0201)",
+  "trdata.json #395 (PSYCHIC_M_KODY (74,67) E 2), #398 (PSYCHIC_F_RACHAEL (77,67) W 2), #202 (BUG_CATCHER_PHILLIP (65,87) N 3), #203 (BUG_CATCHER_DONALD (65,83) S 3) (zone_event 0201)",
+]
+notes = "D/P's Cheryl gives no item at the exit (Pt's Soothe Bell is not in scr_seq 0213). Multi battles with Cheryl: Surf hits both foes and Cheryl. [INFERENCE] the facing pairs Jack/Briana, Lindsey/Elijah, Kody/Rachael, Phillip/Donald engage together while she follows. Pearl differs only in the wild encounter banks d/p 0008 (forest) and 0146 (Route 205 N) (version-diff); no script branch, so version = both."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 85
+note = "coord (28..29,85) var 0x40B1==0 -> Cheryl joins (bike dismounted, 0x8B, var 0x40B1 1, partner 608, flag 0x961; scr_seq 0213 @0x0047-@0x00D6); never step back onto (28..29,86) (drops her, @0x0108)"
+
+[[step]]
+do = "advance_text"
+shot = "cheryl-joins"
+
+[[step]]
+do = "walk_to"
+x = 82
+z = 36
+max = 15000
+note = "coord (82,34..39) var 0x40B1==1; the row z=67 pairs and Phillip/Donald (65,83..87) are fought by walk_to [INFERENCE: waypoints may be needed through the forest maze]; cut trees (74..77,33) are off this path (Cut needs the Forest Badge)"
+
+[[step]]
+do = "advance_text"
+shot = "cheryl-farewell"
+note = "Cheryl thanks you and leaves (Unk0162 -> flag 0x961 clear, RemoveEvent 0 -> 0x1B9, 0xE3, var 0x40B1 2; scr_seq 0213 @0x0198-@0x02AD)"
+
+[[step]]
+do = "walk_to"
+x = 86
+z = 36
+note = "east exit (zone_event 0201 warp 2) -> Route 205 North (259,524)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_205_NORTH"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ROUTE_205_NORTH"
+badges = 1
+badge = ["BADGE_COAL"]
+flags = ["0x8B", "0x1B9", "0xE3"]
+flags_clear = ["0x961"]
+
+[expect.vars]
+"0x40B1" = 2
+"0x403F" = 608

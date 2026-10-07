@@ -1,0 +1,13 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31105
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# hidden at new game (scr_seq 0377 @0x0022), cleared after the Spear Pillar story (scr_seq 0230 @0x0FDC)
+clear-flag 0x1FF
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# Dark 2x vs Psychic [INFERENCE: hand calc, OHKO at lv50]
+party-move 0 0 MOVE_CRUNCH
+# below Uxie (14,10) (zone_event 0306 object 0); [INFERENCE] (14,11) walkable
+map MAP_ACUITY_CAVERN 14 11 FACE_UP

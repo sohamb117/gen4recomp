@@ -1,0 +1,65 @@
+# Jubilife TV: the 3F global-rankings boards open the ranking display (Unk01B5); interview.recipe:
+# the 3F producer's interview (two easy-chat inputs -> GiveWallpaper / secret-phrase check).
+# Start: MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS (3,4) below board bg 1 (3,3). End: same map.
+title = "Jubilife TV: rankings board (and producer interview)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 3000
+refs = [
+  "maps.h:15",
+  "maps.h:17",
+  "maps.h:20",
+  "zone_event 0002 warp 3",
+  "zone_event 0012 warp 3",
+  "zone_event 0015 bg 0",
+  "zone_event 0015 bg 1",
+  "zone_event 0015 bg 2",
+  "zone_event 0015 object 3",
+  "scr_seq 0016 @0x0024",
+  "scr_seq 0016 @0x002C-0x0038",
+  "scr_seq 0016 @0x0040",
+  "zone_event 0012 object 3",
+  "scr_seq 0013 @0x004B-0x0067",
+  "scr_seq 0013 @0x007B",
+  "scr_seq 0013 @0x00B1",
+  "scr_seq 0013 @0x00D6",
+  "scr_seq 0013 @0x0102",
+  "scr_seq 0013 @0x0121",
+  "msg 0027 #3",
+  "games/diamond/arm9/src/filesystem.c:139",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: interview run = this dir with interview.recipe: press A (producer SPRTIE_SUNGLASSES (10,15) facing N,
+# zone_event 0012 object 3), msg 27 #3 Yes/No (VAR_RESULT 0 = YES, scr_seq 0013 @0x0056-0x0060), then two
+# easy-chat screens (Unk0244 @0x007B/@0x00B1; touch/cursor input, unrecorded), GiveWallpaper (@0x00D6) or
+# CompareMysteryGiftEasyChatInput (@0x0102), msg 27 #5; expect map MAP_JUBLIFE_TV_3F.
+# House TV broadcasts: no D/P script or bg event drives them (data in arc/tv.narc, filesystem.c:139;
+# tile handler not located) - not testable from script facts.
+
+[run]
+frames = 4500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "board bg 1 (3,3) -> scr_seq 0016 #2 Unk01B5 1 (@0x0032); bg 0 (8,5) is blocked from below by the workman (8,6) until hidden_flag 0x2AE (Battle Park gatehouse)"
+
+[[step]]
+do = "wait_frames"
+n = 300
+shot = "rankings"
+
+[[step]]
+do = "press"
+keys = "B"
+note = "[INFERENCE] B leaves the ranking display"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_JUBLIFE_TV_3F_GLOBAL_RANKINGS"
+position = [3, 4]

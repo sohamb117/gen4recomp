@@ -1,0 +1,10 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31090
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+# Eterna reached; no badge gate in the Underground Man script (scr_seq 0089 @0x0016-0x0074).
+# house door (4,8) = zone_event 0083 warp 0; outside: MAP_ETERNA warp 11 at (310,530)
+warp MAP_ETERNA_UNDERGROUND_MAN_HOUSE 0

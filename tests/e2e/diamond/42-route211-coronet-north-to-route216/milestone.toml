@@ -1,0 +1,99 @@
+# Proves the D/P road north after Lake Verity: Route 211 East into Mt Coronet's north side, the Strength boulder in
+# North 1F Room 1, B1F and Room 2 out onto snowy Route 216. No story flags change; the proof is the map chain.
+# Start: Route 211 East (446,527) at the Celestic edge -> end: Route 216 at the cave mouth (375,403) (43's start).
+title = "Route 211 East and Mt Coronet north (Strength) to Route 216"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "maps.h:370 MAP_ROUTE_211_EAST = 366; zone_event 0351 warp 0 (419,527) -> MAP_MOUNT_CORONET_NORTH_1F_ROOM_1 warp 3",
+  "zone_event 0351 object 0 TRAINER_BIRD_KEEPER_KATHERINE (81) (432,520) E2; object 19 TRAINER_RUIN_MANIAC_HARRY (442) (429,525) S2; object 1 TRAINER_NINJA_BOY_NICK (80) (425,520) S1",
+  "trdata.json #81 NOCTOWL 31; #442 BRONZOR 30; #80 SKORUPI 27, GOLBAT 27",
+  "maps.h:222 MAP_MOUNT_CORONET_NORTH_1F_ROOM_1 = 218 (map_matrix 20); zone_event 0215 warp 3 (29,35) from Route 211 East, warp 1 (11,10) -> MAP_MOUNT_CORONET_B1F",
+  "zone_event 0215 object 7 boulder (29,30) script 10002 -> scr_seq 0375 script_3",
+  "scr_seq 0375 @0x0244 FindPartyMonWithMove 70 (MOVE_STRENGTH); @0x0257 HasBadge BADGE_MINE; @0x026D YesNoMenu; @0x0297 GetSetStrength 1",
+  "zone_event 0215 object 15 grunt (19,41) hidden_flag 0x2B3 (set by scr_seq 0377 @0x014C, new game)",
+  "maps.h:223 MAP_MOUNT_CORONET_B1F = 219 (map_matrix 21); zone_event 0216 warp 0 (8,60), warp 1 (8,3) -> MAP_MOUNT_CORONET_NORTH_1F_ROOM_2",
+  "maps.h:221 MAP_MOUNT_CORONET_NORTH_1F_ROOM_2 = 217 (map_matrix 19); zone_event 0214 warp 0 (10,27), warp 1 (2,18) -> MAP_ROUTE_216 warp 0",
+  "maps.h:387 MAP_ROUTE_216 = 383; zone_event 0368 warp 0 (375,403)",
+  "files/fielddata/land_data/land_data_release.narc permission grids (u16/tile, bit 0x8000 = blocked) via map_matrix 19/20/21 and map_matrix 0 cells (12..14,16)",
+]
+notes = "Estimate: ~200 tiles of walking, one or two Route 211 trainers, the Strength prompt and three pushes. Paths come from a BFS over the land_data permission grids with every object treated as solid; the Room 1 route from the Route 211 East side needs exactly one Strength boulder (29,30) pushed north three times and no Rock Smash; the B1F and Room 2 routes need neither."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 419
+z = 527
+max = 9000
+note = "cave mouth zone_event 0351 warp 0 -> Room 1 (29,35). Grass-free BFS (446,527)->(442,527)->(442,524)->(440,524)->(440,522)->(439,521)->(436,521)->(436,520)->(433,520)->(433,526)->(432,527)->(428,527)->(428,525)->(425,525)->(425,522)->(422,522)->(422,524)->(419,524)->(419,527); Katherine sees (433,520), Harry sees (429,527); tall grass is rows 529-540"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_NORTH_1F_ROOM_1"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 31
+face = "up"
+interact = true
+note = "boulder obj 7 (29,30); route (29,35)->(28,35)->(28,31)->(29,31)"
+
+[[step]]
+do = "advance_text"
+note = "msg 334 #6 'use Strength?' -> A on YES (VAR_RESULT 0, scr_seq 0375 @0x0277) -> msg 334 #10/#11"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 24
+gap = 24
+times = 3
+note = "push the boulder (29,30)->(29,27); the player ends on (29,28) [INFERENCE: hold/gap long enough for one push each]"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 10
+note = "B1F hole/stairs warp 1; BFS (29,28)->(28,28)->(28,27)->(27,27)->(27,11)->(11,11)->(11,10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_B1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 3
+max = 6000
+note = "B1F warp 1; BFS (8,60)->(4,60)->(4,59)->(3,59)->(3,14)->(4,14)->(4,4)->(8,4)->(8,3), passes beside the Rock Smash rocks at (4,57)/(4,43)/(4,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_NORTH_1F_ROOM_2"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 18
+note = "Room 2 warp 1 -> Route 216; BFS (10,27)->(15,27)->(15,19)->(2,19)->(2,18)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_216"
+
+[[step]]
+do = "wait_field"
+shot = "route216-arrival"
+
+[expect]
+map = "MAP_ROUTE_216"
+party = ["SPECIES_STARAPTOR"]

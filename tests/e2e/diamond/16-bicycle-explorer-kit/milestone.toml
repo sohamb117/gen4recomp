@@ -1,0 +1,202 @@
+# Proves the Cycle Shop Bicycle (Jupiter's thanks) and the Explorer Kit, which D/P requires: with the Bicycle but no kit,
+# Eterna's ON_TRANSITION sets var 0x4114 = 0 and coord (303..307,565) turns the player back from the Cycling Road gate.
+# Start: Eterna warp 3 (Galactic building door (305,519)) -> end: Eterna Route 206 gatehouse (5,2) after a Pokecenter heal (17's start).
+title = "Eterna: Bicycle and Explorer Kit"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "maps.h:69",
+  "map_header.c:149",
+  "scr_seq 0069 @0x005E",
+  "scr_seq 0069 @0x0073",
+  "scr_seq 0069 @0x0088",
+  "scr_seq 0069 @0x0090",
+  "scr_seq 0069 @0x0400",
+  "scr_seq 0069 @0x0453",
+  "msg 0078 #15",
+  "zone_event 0064 coord 1",
+  "zone_event 0064 object 15",
+  "zone_event 0064 warp 0",
+  "zone_event 0064 warp 2",
+  "zone_event 0064 warp 3",
+  "zone_event 0064 warp 8",
+  "zone_event 0064 warp 11",
+  "scr_seq 0375 @0x004A",
+  "scr_seq 0375 @0x005D",
+  "scr_seq 0375 @0x0073",
+  "scr_seq 0375 @0x00C3",
+  "maps.h:75",
+  "zone_event 0070 object 0",
+  "zone_event 0070 warp 0",
+  "scr_seq 0076 @0x001E",
+  "scr_seq 0076 @0x002C",
+  "scr_seq 0076 @0x003C",
+  "scr_seq 0076 @0x0040",
+  "scr_seq 0076 @0x0057",
+  "maps.h:88",
+  "zone_event 0083 object 2",
+  "zone_event 0083 warp 0",
+  "scr_seq 0089 @0x0044",
+  "scr_seq 0089 @0x0054",
+  "scr_seq 0089 @0x0058",
+  "scr_seq 0089 @0x005F",
+  "scr_seq 0089 @0x0070",
+  "scr_seq 0089 @0x00B9",
+  "maps.h:73",
+  "zone_event 0068 object 3",
+  "zone_event 0068 warp 0",
+  "scr_seq 0073 @0x0020",
+  "maps.h:84",
+  "zone_event 0079 coord 0",
+  "zone_event 0079 warp 0",
+  "scr_seq 0085 @0x001D",
+  "games/diamond/arm9/src/unk_0205EC84.c:40",
+]
+notes = "The Galactic-building cut trees (304..306,521) use map-temp hidden flags 0x20-0x22 (zone_event 0064 objects 14-16), cleared on every map load (ResetTempFlagsAndVars), so leaving the building puts the player north of a standing tree again. The Explorer Kit is story-blocking in D/P (scr_seq 0069 @0x005E-@0x0096 + coord 1). The mentor YES sets 0x113 and the first mission flag 0x111; a NO only skips those two flags. The Exp. Share aide in the gatehouse (object 2, needs 35 seen) is optional. Heal before 17: its sight trainers exceed Surf's 15 PP."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 305
+z = 520
+face = "down"
+interact = true
+note = "tree (305,521) south of the door is back (map-temp flag 0x21); Cut prompt needs MOVE_CUT in the party (scr_seq 0375 @0x004A) and BADGE_FOREST (@0x005D) [INFERENCE: x 303/307 at z 521 are not walkable]"
+
+[[step]]
+do = "advance_text"
+note = "YesNo opens on YES (A), Cut, RemoveEvent (scr_seq 0375 @0x0073-@0x00C3)"
+
+[[step]]
+do = "walk_to"
+x = 310
+z = 539
+note = "Cycle Shop door (zone_event 0064 warp 2) -> MAP_ETERNA_BIKE_SHOP warp 0 (7,11)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA_BIKE_SHOP"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 6
+face = "up"
+interact = true
+note = "shop owner (3,5) DIR_SOUTH, hidden_flag 0x1B0 cleared by Jupiter's win (zone_event 0070 object 0)"
+
+[[step]]
+do = "advance_text"
+shot = "bicycle"
+note = "ITEM_BICYCLE via std 2044, SetFlag 0x82, SetSpawn 9, var 0x411B 0 -> 1 (scr_seq 0076 @0x002C-@0x0057)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 11
+note = "shop exit (warp 0) -> Eterna (310,539); ON_TRANSITION: Bicycle without Explorer Kit -> var 0x4114 = 0 (scr_seq 0069 @0x0088)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+
+[[step]]
+do = "walk_to"
+x = 310
+z = 530
+note = "Underground Man's house door (zone_event 0064 warp 11) -> house (4,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA_UNDERGROUND_MAN_HOUSE"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "Underground Man (6,5) DIR_SOUTH, movement 15 range (1,0) (zone_event 0083 object 2) [INFERENCE: he is on (6,5) when the step ends]"
+
+[[step]]
+do = "advance_text"
+shot = "explorer-kit"
+note = "ITEM_EXPLORER_KIT via std 2044, SetFlag 0x79, ClearFlag 0x111 (scr_seq 0089 @0x0044-@0x0058); mentor YesNo on YES (A): SetFlag 0x113 @0x0070, then mission 1 SetFlag 0x111 @0x00B9"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+note = "house exit (warp 0) -> Eterna (310,530); ON_TRANSITION: Bicycle + Explorer Kit -> var 0x4114 = 1 (scr_seq 0069 @0x0073-@0x0090)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+
+[[step]]
+do = "walk_to"
+x = 305
+z = 530
+note = "Pokecenter door (zone_event 0064 warp 0) -> MAP_ETERNA_POKECENTER_1F (8,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "nurse (8,4) across the counter (zone_event 0068 object 3, std 2002 heal, scr_seq 0073 @0x0020) [INFERENCE: counter row z=5, talk from (8,6)]"
+
+[[step]]
+do = "advance_text"
+note = "heal YES is the default answer (A)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "Pokecenter exit (warp 0) -> Eterna (305,530)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+
+[[step]]
+do = "walk_to"
+x = 304
+z = 569
+note = "Route 206 gatehouse door (zone_event 0064 warp 8); coord 1 (303..307,565) fires only while var 0x4114 == 0"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA_ROUTE_206_GATEHOUSE"
+
+[[step]]
+do = "wait_field"
+note = "ON_TRANSITION HasItem ITEM_BICYCLE -> var 0x40EC = 1 (scr_seq 0085 @0x001D), so coord (4..6,7) 'You need a Bicycle' stays off"
+
+[expect]
+map = "MAP_ETERNA_ROUTE_206_GATEHOUSE"
+badge = ["BADGE_COAL", "BADGE_FOREST"]
+flags = ["0x82", "0x79", "0x113", "0x111", "0x81"]
+save = [
+  'any(i["item"] == 450 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_BICYCLE
+  'any(i["item"] == 428 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_EXPLORER_KIT
+]
+
+[expect.vars]
+"0x411B" = 1
+"0x4114" = 1
+"0x40EC" = 1

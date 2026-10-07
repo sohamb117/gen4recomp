@@ -1,0 +1,98 @@
+# Proves the drained Lake Valor (Galactic map chosen while flag 0x15E is clear), Valor Cavern and the Saturn battle, whose
+# win sets 0x13E (switches Verity Lakefront to the Galactic lake). Start: Valor Lakefront (719,761) -> end: Verity Lakefront
+# (80,845) south of the lake mouth (41's start), via the Fly bridge.
+title = "Lake Valor (drained): Saturn in Valor Cavern"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18000
+refs = [
+  "maps.h:340 MAP_VALOR_LAKEFRONT = 336; map_header.c:420 (scr_seq 0381, level scr_seq 0831, zone_event 0321)",
+  "zone_event 0321 warps 3/4 (717,760/761) -> MAP_LAKE_VALOR_GALACTIC warps 0/2; warps 5/6 -> MAP_LAKE_VALOR",
+  "scr_seq 0381 @0x0070-@0x00A4 (ON_LOAD: flag 0x15E clear -> plain-lake warps 5/6 moved to x713)",
+  "scr_seq 0230 @0x0FEC (0x15E is only set at Spear Pillar)",
+  "zone_event 0321 objects 1/2 hidden_flag 0x1CC (guards, hidden by 39)",
+  "maps.h:318 MAP_LAKE_VALOR_GALACTIC = 314; map_header.c:398 (scr_seq 0346, zone_event 0301, no encounters)",
+  "zone_event 0301 warp 1 (32,32) -> MAP_VALOR_CAVERN warp 0; warps 0/2 (52,10)/(52,11) -> Valor Lakefront",
+  "zone_event 0301 object 4 TRAINER_GALACTIC_GRUNT_12 (417) (17,32) N sight 4; object 5 TRAINER_GALACTIC_F_GRUNT_5 (425) (29,18) S sight 1; object 6 TRAINER_GALACTIC_GRUNT_13 (418) (25,35) N sight 3",
+  "trdata.json #417 GOLBAT 32, CROAGUNK 36; #425 GLAMEOW 33, CROAGUNK 33; #418 CROAGUNK 34, DUSTOX 31, BEAUTIFLY 31",
+  "maps.h:320 MAP_VALOR_CAVERN = 316; map_header.c:400 (scr_seq 0348, level scr_seq 0808, zone_event 0303)",
+  "zone_event 0303 object 1 Saturn (14,19) N, hidden_flag 0x1DA; warp 0 (14,29) -> MAP_LAKE_VALOR_GALACTIC warp 1",
+  "scr_seq 0348 @0x0012 / @0x0042 SetFlag 0x9E1 (ON_TRANSITION / ON_LOAD)",
+  "scr_seq 0348 @0x00F5 TrainerBattle 408 (TRAINER_COMMANDER_SATURN_SATURN)",
+  "trdata.json #408 KADABRA 35, BRONZOR 35, TOXICROAK 37 @SITRUS_BERRY",
+  "scr_seq 0348 @0x011D RemoveEvent 1; @0x0121 SetFlag 0x13E; @0x0125 SetFlag 0x984",
+  "games/diamond/arm9/src/unk_0205EC84.c:182-190 (0x984 = Lake Valor/Valor Cavern music after Saturn)",
+  "scr_seq 0379 @0x001A-@0x0054 (Verity Lakefront: 0x13E set -> plain-lake warps 0/1 moved to z840)",
+  "map_matrix 0 cells: MAP_TWINLEAF (3,27) x96-127 z864-895, MAP_ROUTE_201 (3..4,26), MAP_VERITY_LAKEFRONT (1..2,25..26) x32-95 z800-863",
+  "version-diff: d_enc/p_enc 0138 (MAP_VALOR_LAKEFRONT) differ by 4 bytes; scripts identical",
+]
+notes = "Estimate: ~1300 frames of walking, two or three grunt battles, Saturn, the cavern exit and the Fly bridge with the Route 201 walk. Valor Lakefront's wild table differs D vs P (encounters only)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 27000
+
+[[step]]
+do = "walk_to"
+x = 717
+z = 761
+note = "lake mouth: warp 4 (717,761) -> MAP_LAKE_VALOR_GALACTIC warp 2 (52,11) while 0x15E is clear (scr_seq 0381 @0x0070)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LAKE_VALOR_GALACTIC"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 32
+max = 12000
+note = "cavern hole, zone_event 0301 warp 1; land_data BFS (52,11)->(39,11)->(37,14)->(34,17)->(32,19)->(24,19)->(22,23)->(19,25)->(18,31)->(21,32)->(28,33)->(32,32); 425 sees (29,19), 418 sees (25,32): fought by walk_to"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VALOR_CAVERN"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 20
+face = "up"
+interact = true
+note = "Saturn, zone_event 0303 object 1 (14,19); straight north from the arrival (14,29)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "saturn-valor-cavern"
+note = "TRAINER_COMMANDER_SATURN_SATURN (408): KADABRA 35, BRONZOR 35, TOXICROAK 37 (trdata.json #408)"
+
+[[step]]
+do = "advance_text"
+note = "msg 275 #2, fade, RemoveEvent 1, SetFlag 0x13E/0x984 (scr_seq 0348 @0x010C-@0x0135)"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 29
+note = "cavern exit warp 0 -> MAP_LAKE_VALOR_GALACTIC (32,32) (scr_seq 0348 @0x002E keeps the Galactic exit while 0x15E is clear)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LAKE_VALOR_GALACTIC"
+shot = "lake-valor-after-saturn"
+# PHASE2: Fly bridge Lake Valor -> Verity Lakefront (41's start), same Fly sequence as 39's bridge with the cursor on Twinleaf
+#   (Lake Valor Galactic allows Fly: map_header.c:398 fly TRUE). From Twinleaf walk Route 201 west into Verity Lakefront
+#   (map_matrix 0 cells (3,27) -> (3..4,26) -> (1..2,25..26)), walk_to (80,845), wait_field.
+
+[expect]
+map = "MAP_VERITY_LAKEFRONT"
+flags = ["0x13E", "0x984", "0x1DA", "0x9E1"]
+flags_clear = ["0x15E"]
+battles = 1

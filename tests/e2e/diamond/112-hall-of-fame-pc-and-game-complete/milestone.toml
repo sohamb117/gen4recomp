@@ -1,0 +1,76 @@
+# Hall of Fame PC: with flag 0x964 the Pokemon Center PC menu (std 2018) shows HALL OF FAME (row 3), which
+# runs InitHallOfFame on the record written by the real league clear. Documents the full game-complete set.
+# Start: MAP_SNOWPOINT_POKECENTER_1F facing the PC. End: same map.
+title = "Hall of Fame on the Pokemon Center PC (game complete)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 3000
+refs = [
+  "maps.h:172",
+  "zone_event 0167 object 0",
+  "games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:1335-1350",
+  "games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:1485",
+  "scr_seq 0205 @0x0B9F-0x0BFC",
+  "scr_seq 0205 @0x0BE6-0x0BEA",
+  "scr_seq 0205 @0x0C16-0x0C1E",
+  "scr_seq 0205 @0x0C4D-0x0C53",
+  "scr_seq 0205 @0x0EB9",
+  "msg 0199 #33",
+  "games/diamond/arm9/src/scrcmd.c:2336-2345",
+  "games/diamond/arm9/asm/unk_020484A8.s:257-330",
+  "games/diamond/arm9/src/scrcmd_flags.c:194-201",
+  "games/diamond/arm9/src/unk_0205EC84.c:52",
+  "games/diamond/arm9/src/unk_0205EC84.c:55-56",
+  "scr_seq 0192 @0x00AD",
+  "scr_seq 0192 @0x00F2",
+  "scr_seq 0192 @0x0106-0x010E",
+  "scr_seq 0192 @0x0178-0x0217",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: the real proof chains from the story's Hall-of-Fame milestone end save (the lab cannot write a HoF
+# record): use `from = "<hall-of-fame dir>"` + this recipe's map line once chain.txt exists. Lab-only, the
+# row appears but the HoF extra save is absent -> [INFERENCE] empty or error screen.
+# Game complete, full list: CallTask_GameClear (ShowEndGameScreen scrcmd.c:2336-2338, scr_seq 0192 @0x00F2) sets
+# 0x964, 0x966, the PlayerProfile game-clear bit, the Sinnoh Champ ribbon and game stat 0x2E
+# (unk_020484A8.s:257-330); the HoF script adds SetFlag 0x982 (Vs Seeker level 4, @0x00AD), SetVar 0x40F4 1,
+# Unk0270 2,1 if natdex (@0x0106-0x010E), ClearFlag 0x1EF/0x98B, and the respawns: Dialga/Palkia (var 0x4098 5,
+# ClearFlag 0x1E2 if !0x15F), Heatran (0x125 && !0x120: ClearFlag 0x1FB, var 0x409E 1), Regigigas (natdex &&
+# !0x11B: ClearFlag 0x261), Azelf (!0x126: ClearFlag 0x1FE), Uxie (!0x127: ClearFlag 0x1FF), var 0x410F 1,
+# ClearFlag 0x195 (@0x0178-0x0217). Every script gate reads only flag 0x964 (scrcmd_flags.c:194-201).
+
+[run]
+frames = 4500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "PC tile facing north -> script 2018 (ov05_021D80E8.s:1335-1350); 'Which PC should be accessed?' (msg 199 #33)"
+
+[[step]]
+do = "wait_frames"
+n = 300
+shot = "pc-menu"
+note = "rows 0 someone's PC, 1 player's PC, 2 Rowan's PC, 3 HALL OF FAME only with 0x964 (scr_seq 0205 @0x0BE6-0x0C1A), 4 log off"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+times = 3
+
+[[step]]
+do = "press"
+keys = "A"
+note = "row 3 -> L_0EAD -> InitHallOfFame (scr_seq 0205 @0x0C4D-0x0C53, @0x0EB9)"
+
+[[step]]
+do = "wait_frames"
+n = 600
+shot = "hall-of-fame"
+# PHASE2: B out of the HoF viewer, B / log off back to the field (cursor path unrecorded).
+
+[expect]
+map = "MAP_SNOWPOINT_POKECENTER_1F"
+flags = ["0x964"]

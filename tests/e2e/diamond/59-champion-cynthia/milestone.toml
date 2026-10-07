@@ -1,0 +1,75 @@
+# Proves the Champion room frame script (walk 4 north, intro, battle with no interaction), the win and the walk-off to
+# the Hall of Fame corridor. Start: Lucian-Cynthia lift room (4,23) -> end: HoF corridor (5,23).
+
+title = "Champion Cynthia"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 16000
+refs = [
+  "maps.h:188",
+  "zone_event 0183 coord 0",
+  "zone_event 0183 warp 0",
+  "scr_seq 0652 @0x0000",
+  "maps.h:189",
+  "scr_seq 0653 @0x0000",
+  "scr_seq 0653 @0x000B",
+  "zone_event 0184 object 0",
+  "scr_seq 0190 @0x000E",
+  "scr_seq 0190 @0x001C",
+  "scr_seq 0190 @0x0034",
+  "scr_seq 0190 @0x0038",
+  "trdata.json #267",
+  "scr_seq 0190 @0x0052",
+  "scr_seq 0190 @0x0093",
+  "scr_seq 0190 @0x0097",
+  "scr_seq 0190 @0x00B5",
+  "scr_seq 0190 @0x00DB",
+  "msg 0180 #0",
+  "msg 0180 #1",
+  "msg 0180 #2",
+]
+notes = "TRAINER_CHAMPION_CYNTHIA (267): SPIRITOMB 61, ROSERADE 60, GASTRODON 60, LUCARIO 63, MILOTIC 63, GARCHOMP 66 (Sitrus); 4x Full Restore (trdata.json #267). Milotic Ice Beam is 4x on Garchomp (~40% at level 100). First clear: 0x964 clear -> msg 0180 #0 (@0x001C). Loss: ClearFlag 0x98B + Blackout (@0x00DB). Cynthia's trainer flag 0x65B is not set by the script."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 24000
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 2
+max = 4000
+note = "lift room: over coord (4,19) (Unk025C) to warp 0 (4,2) -> CYNTHIA_ROOM warp 1 (8,18) (zone_event 0183)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_CYNTHIA_ROOM"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "ON_FRAME var 0x4003==0 (scr_seq 0653 @0x000B): walk 4 north, msg 0180 #0, SetFlag 0x98B @0x0034, TrainerBattle 267 @0x0038"
+
+[[step]]
+do = "auto_battle"
+shot = "champion-cynthia"
+note = "TRAINER_CHAMPION_CYNTHIA (267)"
+
+[[step]]
+do = "advance_text"
+max = 8000
+note = "SetFlag 0xB4 @0x0052, lift walk, SetFlag 0x258/0x259 @0x0093/@0x0097, Warp 186,0,5,23 @0x00B5"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR"
+
+[expect]
+map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME_CORRIDOR"
+position = [5, 23]
+flags = ["0x98B", "0xB4", "0x258", "0x259"]
+battles = 1

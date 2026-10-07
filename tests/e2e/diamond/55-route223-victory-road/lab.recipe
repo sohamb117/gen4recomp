@@ -1,0 +1,42 @@
+# Diamond story 55-route223-victory-road: standalone start (--lab, or no end save from 54-sunyshore-jasmine-waterfall).
+# Standard header + lab party + the cumulative state after 54-sunyshore-jasmine-waterfall, then the milestone's start.
+# Opponents here: Route 223 swimmers lv 37-44 (zone_event 0446: trdata.json #183-#194, #482); Victory Road lv 43-49 (zone_event 0237/0238/0239: #224-#237, #444).
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party for S11 (Spear Pillar -> credits). Level 100: no EXP/learn-move/evolution prompts; GiveMon makes the player the
+# OT, so no obedience check. The three battle mons carry ONE move each, so an empty slot 0 falls back to Struggle instead
+# of stalling A-only battles: the E4 + Champion run has no heal between rooms (26 opponents + up to 12 Full Restores,
+# trdata.json #261 #262 #263 #264 #267). Dragon Claw is neutral or better against every required opponent except Steelix
+# (trdata.json #263) and Bronzong (#264), which it still 3HKOs at level 100; Crunch backs up. 5 mons: one slot stays free.
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 0 0 MOVE_DRAGON_CLAW
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_SALAMENCE 100 ITEM_NONE
+party-move 1 0 MOVE_DRAGON_CLAW
+party-move 1 1 MOVE_NONE
+party-move 1 2 MOVE_NONE
+party-move 1 3 MOVE_NONE
+party SPECIES_TYRANITAR 100 ITEM_NONE
+party-move 2 0 MOVE_CRUNCH
+party-move 2 1 MOVE_NONE
+party-move 2 2 MOVE_NONE
+party-move 2 3 MOVE_NONE
+# field-move carriers, never in front: Surf/Waterfall (Route 223, Victory Road), Strength/Rock Climb (Victory Road),
+# Fly (leaving Mt. Coronet), Rock Smash (Victory Road 2F breakrocks, zone_event 0238 objects 14,26-31)
+party SPECIES_BIBAREL 100 ITEM_NONE
+party-move 3 0 MOVE_SURF
+party-move 3 1 MOVE_WATERFALL
+party-move 3 2 MOVE_STRENGTH
+party-move 3 3 MOVE_ROCK_CLIMB
+party SPECIES_STARAPTOR 100 ITEM_NONE
+party-move 4 0 MOVE_FLY
+party-move 4 1 MOVE_ROCK_SMASH
+party-move 4 2 MOVE_NONE
+party-move 4 3 MOVE_NONE
+# @@PRIOR@@
+# -- start --
+map MAP_SUNYSHORE 855 743 FACE_UP  # Jasmine coord row (zone_event 0149 coord 0), harmless with var 0x407E 2

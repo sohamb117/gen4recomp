@@ -1,0 +1,141 @@
+# Proves the real D/P new-game route from a blank chip: intro, the bedroom TV report, Mom, Barry's "Thud!!" and room,
+# Barry's lake speech on Route 201, Lake Verity (Rowan, the briefcase, Turtwig vs the wild Starly), Barry's "You go
+# ahead...", Route 201's Rowan scene, home and the Running Shoes, then out of the house.
+# Start: power-on (no save) -> end: Twinleaf Town outside the player's house, var 0x40A4 = 5.
+# maps.h:416-419 name the Twinleaf houses swapped: MAP_TWINLEAF_RIVAL_HOUSE_1F/2F (414/415) are the player's.
+title = "New game to the Lake Verity starter and the running shoes"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 42000
+refs = [
+  "maps.h:415-419",
+  "msg 0501 #0",
+  "msg 0499 #0",
+  "scr_seq 0982 @0x0033",
+  "scr_seq 0981 @0x0078",
+  "scr_seq 0981 @0x0097",
+  "zone_event 0392 coord 0",
+  "scr_seq 0981 @0x0848",
+  "zone_event 0389 coord 1",
+  "scr_seq 0978 @0x04E3",
+  "scr_seq 0978 @0x0556",
+  "scr_seq 0978 @0x055E",
+  "scr_seq 0978 @0x0564",
+  "zone_event 0389 coord 0",
+  "scr_seq 0980 @0x0044",
+  "scr_seq 0980 @0x004C",
+  "scr_seq 0980 @0x0050",
+  "scr_seq 0980 @0x0056",
+  "zone_event 0327 coord 0",
+  "scr_seq 0392 @0x0130",
+  "scr_seq 0392 @0x0134",
+  "zone_event 0319 coord 0",
+  "scr_seq 0379 @0x00F0",
+  "scr_seq 0379 @0x0108",
+  "scr_seq 0802 @0x0010",
+  "scr_seq 0342 @0x01CB",
+  "scr_seq 0342 @0x01CF",
+  "scr_seq 0342 @0x023D",
+  "scr_seq 0342 @0x0298",
+  "scr_seq 0342 @0x029A",
+  "scr_seq 0342 @0x02AE",
+  "scr_seq 0342 @0x02B8",
+  "scr_seq 0342 @0x02BC",
+  "scr_seq 0342 @0x005B",
+  "scr_seq 0342 @0x0378",
+  "scr_seq 0342 @0x039C",
+  "scr_seq 0342 @0x03C6",
+  "scr_seq 0342 @0x03CA",
+  "scr_seq 0342 @0x03CE",
+  "scr_seq 0342 @0x03D4",
+  "scr_seq 0342 @0x03DA",
+  "scr_seq 0342 @0x03DE",
+  "scr_seq 0342 @0x03E4",
+  "scr_seq 0342 @0x040C",
+  "scr_seq 0829 @0x0010",
+  "scr_seq 0379 @0x0229",
+  "scr_seq 0392 @0x006F",
+  "zone_event 0327 coord 1",
+  "scr_seq 0392 @0x04C4",
+  "scr_seq 0392 @0x04C8",
+  "scr_seq 0392 @0x04D7",
+  "scr_seq 0392 @0x04E4",
+  "scr_seq 0392 @0x04E8",
+  "scr_seq 0392 @0x04EC",
+  "scr_seq 0392 @0x04F2",
+  "scr_seq 0392 @0x0508",
+  "scr_seq 0911 @0x0017",
+  "scr_seq 0981 @0x01B3",
+  "scr_seq 0981 @0x01C8",
+  "scr_seq 0978 @0x005F",
+  "games/diamond/arm9/src/scrcmd.c:2377",
+  "games/diamond/arm9/asm/unk_0205F314.s:76-93",
+  "games/diamond/arm9/src/scrcmd_flags.c:68-73",
+  "games/diamond/arm9/src/map_object.c:295-300",
+  "zone_event 0392 warp 0",
+  "zone_event 0389 warp 1",
+  "tests/gameplay/dp/schedules/rival.press",
+  "tests/gameplay/dp/scenarios/1-rival.scn",
+]
+notes = "Estimate = rival.press's 41400 frames (1-rival.scn FRAMES; home and free ~41124) plus the walk out. D/P has no Barry battle here: the first battle is FirstBattle SPECIES_STARLY lv2 (scr_seq 0342 @0x02BC); Barry's first trainer battle is on Route 203 (trdata.json #247, scr_seq 0394 @0x0136). Pearl: no GetGameVersion in these scripts (version-diff); only the Route 201 wild bank differs (d_enc/p_enc 0140, 4 bytes @0x7C), which rival.press never walks through grass for."
+
+[start]
+blank = true
+
+[run]
+frames = 63000
+
+# rival.press is the recorded blank-chip run (intro and naming, Turtwig = the briefcase's default pick, the Starly
+# battle won with Tackle by A spam, Route 201's Rowan scene Warps home (scr_seq 0392 @0x0508), Mom's Running Shoes;
+# free at home on map 414 by ~41124; tests/gameplay/dp/scenarios/1-rival.scn). Frames are relative to this step,
+# which is frame 0 of a blank-chip run.
+
+[[step]]
+do = "schedule"
+file = "../../../gameplay/dp/schedules/rival.press"
+shot = "home-running-shoes"
+note = "TV (scr_seq 0982), Mom (0981), Barry's Thud and room (0978, 0980), Route 201 speech (0392), Lake Verity starter + Starly (0342), Route 201 Rowan (0392 @0x02B4-@0x0522), Running Shoes (0981 @0x017C-@0x01D0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TWINLEAF_RIVAL_HOUSE_1F"
+note = "the player's 1F (maps.h:418; Mom, msg 0501 #0)"
+
+[[step]]
+do = "advance_text"
+note = "ON_FRAME 0x40A4==3 (scr_seq 0911 @0x0017): Mom's Running Shoes -> 0x40A4 4 (scr_seq 0981 @0x01C8); no-op if rival.press already finished it"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 10
+note = "1F door (zone_event 0392 warp 0) -> Twinleaf warp 1 (116,885); coord 0 on this tile only fires at 0x40A4 == 1"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TWINLEAF"
+
+[[step]]
+do = "wait_field"
+shot = "twinleaf"
+note = "Twinleaf ON_TRANSITION: 0x40A4 4 -> 5 (scr_seq 0978 @0x0033/@0x005F)"
+
+[expect]
+map = "MAP_TWINLEAF"
+flags = ["0x87", "0x192", "0x210", "0xEA", "0x190", "0x193", "0x194", "0x1AD", "0x1B2", "0x196", "0x197", "0x1B3", "0x1B4"]
+flags_clear = ["0x8E"]
+party = ["SPECIES_TURTWIG"]
+party_size = 1
+battles = 1
+
+[expect.vars]
+"0x40F9" = 1
+"0x40E6" = 1
+"0x40A3" = 1
+"0x4070" = 2
+"0x4030" = "SPECIES_TURTWIG"
+"0x4095" = 1
+"0x4086" = 3
+"0x4082" = 4
+"0x40A4" = 5

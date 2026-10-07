@@ -1,0 +1,51 @@
+# Mesprit in Verity Cavern (after the Spear Pillar story, pre-league in D/P): A -> it flees and starts
+# roaming (CreateRoamer 0 = MESPRIT lv50); Rowan enters and asks about the Marking Map.
+# Start: MAP_VERITY_CAVERN (12,14) below Mesprit (12,13). End: same map, roamer slot 0 active.
+title = "Roamer: Mesprit leaves Verity Cavern"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 2500
+refs = [
+  "maps.h:317",
+  "zone_event 0300 object 0",
+  "zone_event 0300 object 1",
+  "zone_event 0300 warp 0",
+  "scr_seq 0377 @0x001A",
+  "scr_seq 0377 @0x0026",
+  "scr_seq 0230 @0x0FD4",
+  "scr_seq 0344 @0x0010-0x0089",
+  "scr_seq 0344 @0x0081-0x0089",
+  "scr_seq 0344 @0x0111",
+  "scr_seq 0344 @0x0145",
+  "scr_seq 0344 @0x016A",
+  "games/diamond/arm9/asm/unk_020603B0.s:200-226",
+  "games/diamond/include/constants/roamer.h:4-32",
+  "games/diamond/arm9/src/map_object.c:295-300",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 3800
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Mesprit SPRITE_SPPOKE2 (12,13) facing S, hidden 0x1FD (zone_event 0300 object 0)"
+
+[[step]]
+do = "advance_text"
+max = 2500
+note = "blink loop SetFlag/ClearFlag 0x1FD, final SetFlag 0x1FD + RemoveEvent 0, CreateRoamer 0 (scr_seq 0344 @0x0081-0x0089); Rowan (object 1, ClearFlag 0x2B4 @0x0111) asks about the Marking Map (CheckPoketchApp 12, @0x0145), leaves (RemoveEvent 1, @0x016A)"
+shot = "mesprit-roams"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_VERITY_CAVERN"
+flags = ["0x1FD", "0x2B4"]
+# PHASE2: reader-ext roamer slot 0 (Save_Roamers_Get; MESPRIT 0x1E1 lv 0x32, unk_020603B0.s:200-226); not
+# in the np_save4 dump. Catching a roamer is not A-only (it flees).

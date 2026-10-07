@@ -1,0 +1,86 @@
+# Proves the Poketch campaign: the president's pitch, the three clowns' quiz coupons, and the Poketch with 4 apps.
+# Start: Jubilife City at the Trainers' School door (168,776) -> end: Jubilife City with the Poketch, free in the
+# field (var 0x4077 = 2: the Route 203 exit is open for the next slice).
+title = "Jubilife: the Poketch campaign"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "zone_event 0002 coord 4",
+  "scr_seq 0002 @0x0CD6",
+  "zone_event 0002 object 24",
+  "zone_event 0002 object 25",
+  "zone_event 0002 object 26",
+  "zone_event 0002 object 28",
+  "scr_seq 0002 @0x0FC2",
+  "scr_seq 0002 @0x0FE1",
+  "scr_seq 0002 @0x100A",
+  "scr_seq 0002 @0x1016-0x1026",
+  "scr_seq 0002 @0x0EE2-0x0F1F",
+  "scr_seq 0002 @0x0F59-0x0F96",
+  "scr_seq 0002 @0x0DAC-0x0DD5",
+  "scr_seq 0002 @0x0DDA-0x0DEA",
+  "scr_seq 0002 @0x0DF2",
+  "scr_seq 0002 @0x0DF4",
+  "scr_seq 0002 @0x0DFA-0x0E06",
+  "scr_seq 0002 @0x0E89",
+  "scr_seq 0002 @0x0E8D",
+  "scr_seq 0002 @0x0E91",
+  "scr_seq 0205 @0x0988",
+  "games/diamond/arm9/src/scrcmd.c:1308",
+  "games/diamond/arm9/src/scrcmd.c:2900",
+  "games/diamond/include/poketch.h:10-15",
+  "zone_event 0007 object 3",
+  "zone_event 0002 coord 2",
+  "scr_seq 0002 @0x04A4",
+]
+notes = "Each clown's answer is YES (YesNoMenu 0, scr_seq 0002 @0x0EE6/@0x0F5D/@0x0FE1), the cursor default, so A answers right; NO only repeats (@0x0F29/@0x0FA0/@0x1030). Clown 3 answers only once 0x40E7 >= 2 (@0x0FC2). Coupons are taken back by the president (@0x0DDA-@0x0DEA). 0x4077 = 2 ends the Route 203 block (coord 2 (188,757..760) fires at 1)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 172
+z = 776
+note = "coord 4 (172..176,776) 0x40E7==1 (zone_event 0002): the president walks over and explains the campaign -> 0x40E7 2 (scr_seq 0002 @0x0CD6)"
+
+[[step]]
+do = "advance_text"
+shot = "poketch-campaign"
+
+[[step]]
+do = "walk_to"
+x = 164
+z = 753
+face = "up"
+interact = true
+note = "clown 3 (164,752) (zone_event 0002 object 28, movement 9 [INFERENCE: LOOK_SOUTH_AND_EAST, stationary, as Platinum's movement table]); talk from the south"
+
+[[step]]
+do = "advance_text"
+note = "A = YES (@0x0FE1) -> president moved to (174,771) (@0x100A), flag 0xEF, ITEM_COUPON_3 (@0x1016-@0x1026)"
+
+# PHASE2: clowns 1 (183,769) and 2 (143,754) (zone_event 0002 objects 25/26) use movement 3 range (1,0)
+# [INFERENCE: WANDER_AROUND], so their tiles are not fixed. Find them by object id in the probe's object list, walk_to
+# an adjacent tile facing them, interact, advance_text (A = YES: flags 0xED/0xEE, ITEM_COUPON_1/2, scr_seq 0002
+# @0x0EE2-@0x0F1F, @0x0F59-@0x0F96). Then walk_to (174,772) face up interact (president (174,771), object 24) and
+# advance_text: coupons taken, GivePoketch, 0x4077 2, apps 0/1/3/4, president leaves, flag 0xF3 (@0x0DDA-@0x0E91).
+
+[expect]
+map = "MAP_JUBLIFE"
+flags = ["0xED", "0xEE", "0xEF", "0xF3", "0x214"]
+flags_clear = ["0x215"]
+save = [
+  's["poketch"]["given"] and {0, 1, 3, 4} <= set(s["poketch"]["apps"])',  # DIGITAL_WATCH, CALCULATOR, PEDOMETER, POKEMON_LIST (poketch.h:10-15)
+  'not any(i["item"] in (460, 461, 462) for k, p in s["bag"].items() if k != "registered" for i in p)',  # coupons taken back
+]
+
+[expect.vars]
+"0x40E7" = 2
+"0x4077" = 2

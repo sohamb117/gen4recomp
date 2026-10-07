@@ -1,0 +1,91 @@
+# Proves the Hall of Fame: corridor + HoF frame scripts, ShowEndGameScreen -> CallTask_GameClear (HoF record, flags 0x964/0x966,
+# Champ ribbon, the game's own save, credits, OS_ResetSystem) and the continue into the post-game start location.
+# Start: HoF corridor (5,23) after Cynthia -> end: CONTINUE after the reset, field in the player's bedroom (map 415).
+
+title = "Hall of Fame, credits, continue"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "maps.h:190",
+  "scr_seq 0654 @0x0006",
+  "scr_seq 0191 @0x000A",
+  "scr_seq 0191 @0x001E",
+  "scr_seq 0191 @0x0049",
+  "scr_seq 0191 @0x00F8",
+  "maps.h:191",
+  "scr_seq 0655 @0x0006",
+  "scr_seq 0192 @0x0006",
+  "scr_seq 0192 @0x00AD",
+  "scr_seq 0192 @0x00B1",
+  "scr_seq 0192 @0x00C3",
+  "scr_seq 0192 @0x0106",
+  "scr_seq 0192 @0x00EC",
+  "scr_seq 0192 @0x0178",
+  "scr_seq 0192 @0x017C",
+  "scr_seq 0192 @0x0180",
+  "scr_seq 0192 @0x01D2",
+  "scr_seq 0192 @0x01DC",
+  "scr_seq 0192 @0x018B",
+  "scr_seq 0192 @0x0196",
+  "scr_seq 0192 @0x0211",
+  "scr_seq 0192 @0x0217",
+  "scr_seq 0192 @0x01B7",
+  "scr_seq 0192 @0x01CA",
+  "scr_seq 0192 @0x01C4",
+  "scr_seq 0192 @0x00F2",
+  "games/diamond/arm9/src/scrcmd.c:2336-2338",
+  "games/diamond/arm9/asm/unk_020484A8.s:257-330",
+  "games/diamond/arm9/asm/unk_020484A8.s:312",
+  "games/diamond/arm9/asm/unk_020484A8.s:314-316",
+  "games/diamond/arm9/asm/unk_020484A8.s:318",
+  "games/diamond/arm9/asm/unk_020484A8.s:320",
+  "games/diamond/arm9/asm/unk_020484A8.s:322",
+  "games/diamond/arm9/asm/unk_020484A8.s:325-326",
+  "games/diamond/arm9/src/unk_0205EC84.c:51-53",
+  "games/diamond/arm9/src/unk_0205EC84.c:280-282",
+  "games/diamond/arm9/asm/unk_020377B0.s:7-14",
+  "games/diamond/arm9/asm/unk_020484A8.s:165",
+  "games/diamond/arm9/asm/unk_020484A8.s:245",
+  "scr_seq 0911 @0x0011",
+  "scr_seq 0978 @0x0026",
+  "msg 0182 #6",
+]
+notes = "Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 45000
+save = "none"  # CallTask_GameClear saves by itself (SaveGame, unk_020484A8.s:165), then OS_ResetSystem (:245)
+
+[[step]]
+do = "advance_text"
+max = 8000
+note = "corridor ON_FRAME var 0x4003==0 (scr_seq 0654 @0x0006): walk 17 north, Cynthia + Rowan (ClearFlag 0x258/0x259 @0x001E/@0x0049), Warp 187,0,8,15 (@0x00F8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "hall-of-fame"
+note = "HoF ON_FRAME (scr_seq 0655 @0x0006 -> 0192): msg 0182 #4-#6, SetFlag 0x982 @0x00AD, SetVar 0x40F4 1 @0x0106, L_0178 respawns, ShowEndGameScreen @0x00F2"
+# PHASE2: CallTask_GameClear task sub_020484F8 (unk_020484A8.s:61-250): HoF screen input (A or wait), "file does not belong
+#   to player" branch (Save_FileDoesNotBelongToPlayer :136) must not fire for the lab/chain save, SaveGame (:165), credits
+#   (wait only, length unknown), OS_ResetSystem (:245) -> title. Then boot to field: title A/START -> main menu CONTINUE
+#   (the harness's boot = "continue" logic) -> wait_field; expect map 415 at (4,6) [INFERENCE: continue loads the dynamic warp
+#   written by sub_020377B0, as Platinum's SetPlayerStartLocation, games/platinum/src/clear_game.c:202]. Shot "credits".
+
+[expect]
+map = "MAP_TWINLEAF_RIVAL_HOUSE_2F"
+position = [4, 6]
+badges = 8
+flags = ["0x964", "0x966", "0x982", "0xB4"]
+flags_clear = ["0x98B", "0x1EF", "0x1E2", "0x1FE", "0x1FF", "0x195"]
+vars = { "0x40F4" = 1, "0x410F" = 1, "0x4098" = 5 }

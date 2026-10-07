@@ -1,0 +1,109 @@
+# Proves the walk home with the Pokedex: Mom's heal and Journal, Barry's mom's Parcel, then the Route 202 catching
+# tutorial (5 Poke Balls).
+# Start: Sandgem Town (177,843) in front of the Pokemon Center -> end: Route 202 after the tutorial, var 0x4087 = 1.
+title = "The Journal, the Parcel and the catching tutorial"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "zone_event 0389 warp 1",
+  "zone_event 0392 object 0",
+  "scr_seq 0981 @0x0236",
+  "scr_seq 0981 @0x05CE-0x0638",
+  "scr_seq 0981 @0x02BE-0x02CE",
+  "scr_seq 0981 @0x0321",
+  "scr_seq 0981 @0x04F7-0x0507",
+  "scr_seq 0981 @0x05C0",
+  "scr_seq 0981 @0x05C4",
+  "scr_seq 0981 @0x005E",
+  "games/diamond/arm9/src/scrcmd.c:3534-3543",
+  "games/diamond/arm9/src/unk_0205EC84.c:377-378",
+  "zone_event 0392 warp 0",
+  "scr_seq 0978 @0x0040",
+  "scr_seq 0978 @0x0057",
+  "zone_event 0328 coord 0",
+  "scr_seq 0393 @0x014D",
+  "scr_seq 0393 @0x0255-0x0394",
+  "scr_seq 0393 @0x01B2",
+  "scr_seq 0393 @0x01F6-0x0202",
+  "scr_seq 0393 @0x0247",
+  "scr_seq 0393 @0x024B",
+  "scr_seq 0205 @0x09C7",
+  "map_header.c:427",
+  "zone_event 0328 object 0",
+  "zone_event 0328 object 1",
+  "zone_event 0328 object 2",
+]
+notes = "Estimate: walk Sandgem -> Twinleaf ~2500, Mom ~3500, walk to Route 202 ~3500, tutorial ~2500. Without flag 0x8F the Route 202 coord only turns the player back (scr_seq 0393 @0x0255-0x0394, flag 0x115). Optional Route 202 sight trainers north of the coord: Tristan (166,813) S sight 5 (trdata.json #1), Natalie (181,818) S sight 4 (#3), Logan (185,804) S sight 5 (#2). The Journal's system flag 0x963 is set by Unk01CC (scrcmd.c:3534-3543), which also attaches journal data the lab cannot."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 116
+z = 885
+max = 8000
+note = "player-house door (zone_event 0389 warp 1), west along Route 201 (matrix 0, seamless; wild battles fought)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TWINLEAF_RIVAL_HOUSE_1F"
+note = "the player's 1F (maps.h:418)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 9
+face = "up"
+interact = true
+note = "Mom (7,8) (zone_event 0392 object 0); flag 0x90 branch (scr_seq 0981 @0x0236 -> L_02B2)"
+
+[[step]]
+do = "advance_text"
+shot = "parcel"
+note = "heal (@0x05CE), Journal (@0x02BE-@0x02CE), Barry's mom walks in (@0x0321), Parcel + flag 0x8F (@0x04F7-@0x0507), she leaves (@0x05C0), 0x40A4 6 (@0x05C4); no YesNo"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 10
+note = "1F door (zone_event 0392 warp 0) -> Twinleaf; ON_TRANSITION 0x40A4 6 -> 7 (scr_seq 0978 @0x0040/@0x0057)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TWINLEAF"
+
+[[step]]
+do = "walk_to"
+x = 180
+z = 827
+max = 10000
+note = "Route 202 coord 0 (180,825..829) 0x4087==0 (zone_event 0328); Twinleaf -> Route 201 -> Sandgem -> north, all matrix 0"
+
+[[step]]
+do = "advance_text"
+through_battle = true
+shot = "catching-tutorial"
+note = "flag 0x8F set (scr_seq 0393 @0x014D): the friend's CatchTutorial demo battle (@0x01B2), 5 Poke Balls (@0x01F6-@0x0202), friend leaves (@0x0247), 0x4087 1 (@0x024B)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ROUTE_202"
+flags = ["0x8F", "0x20F", "0x963", "0x1A6"]
+save = [
+  'any(i["item"] == 433 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_JOURNAL
+  'any(i["item"] == 459 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_PARCEL
+  'any(i["item"] == 4 and i["qty"] >= 5 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_POKE_BALL x5
+]
+
+[expect.vars]
+"0x40A4" = 7
+"0x4087" = 1

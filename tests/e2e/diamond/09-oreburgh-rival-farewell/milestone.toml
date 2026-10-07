@@ -1,0 +1,51 @@
+# Proves the scene the Coal Badge arms: heading for Oreburgh's west exit, Barry runs into you, points to Eterna and leaves.
+# Start: Oreburgh warp 0 (gym door (282,756)) -> end: Oreburgh at the west coord strip (262,749), free, 0x4079 = 3.
+title = "Oreburgh: Barry's farewell at the west exit"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 3000
+refs = [
+  "maps.h:49",
+  "zone_event 0044 warp 0",
+  "zone_event 0044 coord 1",
+  "zone_event 0044 object 3",
+  "scr_seq 0050 @0x0082",
+  "scr_seq 0048 @0x00CD",
+  "scr_seq 0048 @0x0112",
+  "scr_seq 0048 @0x01AA",
+  "scr_seq 0048 @0x01BD",
+  "scr_seq 0048 @0x027F",
+  "scr_seq 0048 @0x0287",
+  "scr_seq 0002 @0x088B",
+]
+notes = "Coord 1 (262,748..751) runs scr_seq 0048 #4 while 0x4079 == 2 (set by Roark, scr_seq 0050 @0x0082). Barry is re-added east of you at (271,748..751) [scr_seq 0048 @0x0112 SetEventDefaultPosition] and runs west into you ('Thud!!', msg 58 #2), names Eterna/Route 207, then leaves (RemoveEvent 3) and 0x4079 becomes 3. If skipped (e.g. Fly out), the Jubilife Galactic scene also sets 0x4079 = 3 (scr_seq 0002 @0x088B). The player is only turned in place (Move_0304..0328), so the end tile is wherever walk_to entered the strip."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 4500
+
+[[step]]
+do = "walk_to"
+x = 262
+z = 749
+note = "west coord strip (262,748..751) 1x4, 0x4079 == 2 -> scr_seq 0048 #4 [INFERENCE: walk_to reaches x=262 from the east; any z in 748..751 triggers]"
+
+[[step]]
+do = "advance_text"
+shot = "barry-farewell"
+note = "Barry: 'You got the Gym Badge, huh? Eterna City is the next place...' (msg 58 #3-#5); RemoveEvent 3, SetVar 0x4079 3 (scr_seq 0048 @0x027F/@0x0287)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_OREBURGH"
+badge = ["BADGE_COAL"]
+flags = ["0x19A"]
+
+[expect.vars]
+"0x4079" = 3

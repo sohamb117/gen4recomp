@@ -1,0 +1,131 @@
+# Proves the post-Fen Pastoria scene: the Galactic grunt by the Great Marsh gate runs to the east gate (0x102), the
+# second talk sends him off to the lake and Barry bumps into you for a rival battle (0x103 arms Route 213).
+# Start: Pastoria at the gym door (589,827) -> end: Pastoria (636,812) by the east gate, rival gone.
+title = "Pastoria: Galactic grunt flees, rival battle"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 10000
+refs = [
+  "zone_event 0119 warp 0",
+  "zone_event 0119 warp 9",
+  "zone_event 0122 object 0",
+  "scr_seq 0121 @0x0014",
+  "zone_event 0122 warp 0",
+  "zone_event 0119 object 21",
+  "zone_event 0119 object 22",
+  "scr_seq 0118 @0x01B7",
+  "scr_seq 0118 @0x01DE",
+  "scr_seq 0118 @0x0205",
+  "scr_seq 0118 @0x024F",
+  "scr_seq 0118 @0x025B",
+  "scr_seq 0581 @0x0000",
+  "scr_seq 0118 @0x0042",
+  "scr_seq 0118 @0x004F",
+  "scr_seq 0118 @0x0263",
+  "scr_seq 0118 @0x02BD",
+  "scr_seq 0118 @0x0315",
+  "scr_seq 0118 @0x0319",
+  "scr_seq 0118 @0x0323",
+  "scr_seq 0118 @0x03A8",
+  "scr_seq 0118 @0x0378",
+  "scr_seq 0118 @0x03DA",
+  "scr_seq 0118 @0x03F6",
+  "scr_seq 0118 @0x0462",
+  "scr_seq 0118 @0x04B4",
+  "scr_seq 0118 @0x04B8",
+  "scr_seq 0118 @0x04C0",
+  "games/diamond/arm9/src/map_object.c:295-299",
+  "games/diamond/arm9/src/scrcmd.c:2654-2656",
+  "trdata.json #474",
+  "trdata.json #473",
+  "trdata.json #475",
+  "msg 123 #2",
+  "msg 123 #3",
+  "msg 123 #4",
+  "msg 123 #5",
+  "msg 123 #6",
+]
+notes = "GetStarter (scrcmd.c:2654) picks the rival team: Turtwig -> TRAINER_PKMN_TRAINER_BARRY_CEDRIC_8 (474); Chimchar -> 475, Piplup -> 473 (scr_seq 0118 @0x0378-0x0396). A loss clears 0x22A and sets 0x1C7 before the blackout (@0x04C0), so the grunt is back at (637,812) for a retry. [INFERENCE] the grunt's movement 14 with range (2,2) may turn/wander him; re-target the adjacent tile if he is not where the step expects."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 15000
+
+[[step]]
+do = "walk_to"
+x = 600
+z = 815
+map = "MAP_PASTORIA"
+note = "heal first (Wake drained Surf PP): zone_event 0119 warp 9 -> MAP_PASTORIA_POKECENTER_1F warp 0 (8,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PASTORIA_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "nurse obj0 (8,4), std 2002 heal (scr_seq 0121 @0x0014); [INFERENCE] counter tile (8,5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "zone_event 0122 warp 0 -> MAP_PASTORIA warp 9"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PASTORIA"
+
+[[step]]
+do = "walk_to"
+x = 614
+z = 811
+face = "up"
+interact = true
+note = "grunt obj21 (614,810) by the Great Marsh gate; [INFERENCE] tile south of him. With 0x101 + BADGE_FEN -> L_01DE (scr_seq 0118 @0x01DE)"
+
+[[step]]
+do = "advance_text"
+shot = "grunt-package"
+note = "msg 123 #2/#3; facing north -> Move_056C (@0x023D), SetEventPosition 21 -> (637,812) facing east (@0x024F), SetFlag 0x102 (@0x025B)"
+
+[[step]]
+do = "walk_to"
+x = 636
+z = 812
+face = "right"
+interact = true
+note = "grunt now at (637,812) by the east gate (warps 10/11 (639,812..813)); facing east -> 0x8007 = 3 (L_02BD @0x02BD)"
+
+[[step]]
+do = "advance_text"
+note = "msg 123 #4, grunt leaves (RemoveEvent 21 @0x0319 -> hidden 0x22A), Barry (obj22 (628,812)) appears (ClearFlag 0x1C7 @0x0323) and walks up (Move_0538 @0x03A8), msg #5"
+
+[[step]]
+do = "auto_battle"
+shot = "pastoria-rival"
+note = "TRAINER_PKMN_TRAINER_BARRY_CEDRIC_8 (474): STARLY 26, BUIZEL 25, ROSELIA 25, MONFERNO 28 (scr_seq 0118 @0x03DA)"
+
+[[step]]
+do = "advance_text"
+note = "msg 123 #6, Barry leaves (RemoveEvent 22 @0x04B4 -> hidden 0x1C7), SetFlag 0x103 (@0x04B8)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_PASTORIA"
+badges = 4
+flags = ["0x101", "0x102", "0x103", "0x22A", "0x1C7"]
+battles = 1

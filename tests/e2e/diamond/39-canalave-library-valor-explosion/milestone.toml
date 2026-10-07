@@ -1,0 +1,124 @@
+# Proves the Canalave Library 3F lake-legends meeting (ON_FRAME 0x40B2==1), the tremor, and the Canalave explosion news
+# (ON_FRAME 0x4078==4) that sends the player to Lake Valor. Start: Canalave below the gym door (39,732), right after
+# 38's rival scene (0x4078=3, 0x40B2=1) -> end: Valor Lakefront (719,761) east of the lake mouth (40's start), via the Fly bridge.
+title = "Canalave Library: lake legends and the Lake Valor explosion"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "maps.h:37 MAP_CANALAVE = 33; map_header.c:117 (scr_seq 0034, level scr_seq 0497, msg 47, zone_event 0032)",
+  "zone_event 0032 warp 3 (37,718) -> MAP_CANALAVE_LIBRARY_1F warp 0",
+  "zone_event 0037 warp 0 (11,11), warp 1 (11,4) -> MAP_CANALAVE_LIBRARY_2F",
+  "zone_event 0038 warp 0 (4,4) -> 1F, warp 1 (11,4) -> MAP_CANALAVE_LIBRARY_3F",
+  "zone_event 0039 warp 0 (4,3); object 2 Rowan hidden_flag 0x1D5, object 3 counterpart 0x1D4, object 4 rival 0x1D6",
+  "scr_seq 0505 @0x000B ON_FRAME_TABLE 0x40B2==1 -> scr_seq 0042 script_2",
+  "scr_seq 0042 @0x0062-@0x0245 (meeting: msg 53 #4-#18 lake legends and assignments, @0x01C5 ShakeCamera tremor)",
+  "scr_seq 0042 @0x01F0 RemoveEvent 4, @0x01F4 RemoveEvent 3, @0x021B RemoveEvent 2",
+  "scr_seq 0042 @0x0223 SetVar 0x4078,4; @0x0229 SetVar 0x40B2,2; @0x022F SetFlag 0xA8; @0x0233 SetFlag 0x1CC",
+  "scr_seq 0042 @0x0237 ClearFlag 0x1D1; @0x023B ClearFlag 0x1D3; @0x023F ClearFlag 0x1D0",
+  "scr_seq 0034 @0x0114 (ON_TRANSITION 0x4078==4 places the rival at (37,721))",
+  "scr_seq 0497 @0x0016 ON_FRAME_TABLE 0x4078==4 -> scr_seq 0034 script_5",
+  "scr_seq 0034 @0x03A0-@0x0463 (explosion news: msg 47 #3-#8)",
+  "scr_seq 0034 @0x03B1 ClearFlag 0x1D2; @0x03D6 RemoveEvent 14; @0x03F6 RemoveEvent 11",
+  "scr_seq 0034 @0x044F SetVar 0x4078,5; @0x0455 ClearFlag 0x1B2; @0x0459 ClearFlag 0x193; @0x045D ClearFlag 0x2B1",
+  "scr_seq 0034 @0x0150 (next Canalave ON_TRANSITION with 0x4078==5: SetFlag 0x1D1/0x1D3, SetVar 0x4078,6)",
+  "games/diamond/arm9/src/map_object.c:295-298 (RemoveEvent -> MapObject_Delete sets the object's hidden flag)",
+  "msg 53 #18 (Lake Valor lies between Veilstone and Pastoria)",
+  "map_matrix 0 cells (21..22,20..24): MAP_ROUTE_214 x704-735 z640-735, MAP_VALOR_LAKEFRONT x672-735 z736-799",
+  "zone_event 0321 warps 3/4 (717,760/761) -> MAP_LAKE_VALOR_GALACTIC",
+]
+notes = "Estimate: Platinum's library milestone (~12000) plus the Fly bridge and the Route 214 walk (~8000). No battles are required; Route 214 sight trainers may stop the bridge walk."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 30000
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 718
+note = "library door, zone_event 0032 warp 3; land_data BFS (39,732)->(37,732)->(37,733)->(35,733)->(35,726)->(37,726)->(37,718)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE_LIBRARY_1F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+note = "stairs, zone_event 0037 warp 1 -> MAP_CANALAVE_LIBRARY_2F (4,4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE_LIBRARY_2F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+note = "stairs, zone_event 0038 warp 1 -> MAP_CANALAVE_LIBRARY_3F (4,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE_LIBRARY_3F"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "library-lake-legends"
+note = "ON_FRAME 0x40B2==1 (scr_seq 0505 @0x000B) -> scr_seq 0042 script_2: Rowan's lake legends (msg 53 #4-#18), tremor @0x01C5, everyone leaves"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 3
+note = "3F stairs, zone_event 0039 warp 0 -> 2F (11,4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE_LIBRARY_2F"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 4
+note = "2F stairs, zone_event 0038 warp 0 -> 1F (11,4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE_LIBRARY_1F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 11
+note = "1F door, zone_event 0037 warp 0 -> Canalave (37,718)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CANALAVE"
+
+[[step]]
+do = "advance_text"
+max = 9000
+shot = "valor-explosion-news"
+note = "ON_FRAME 0x4078==4 (scr_seq 0497 @0x0016) -> scr_seq 0034 script_5: sailor's explosion news (msg 47 #4), rival runs off, Rowan (msg 47 #6), 0x4078=5"
+# PHASE2: Fly bridge Canalave -> Valor Lakefront (40's start). The Fly menu sequence (start menu -> POKEMON -> Staraptor (party
+#   slot 2, MOVE_FLY) -> FLY -> town-map cursor onto Veilstone -> A) is not stated anywhere in the tree; find it once in a run and
+#   reuse it for the 40 and 41 bridges. Then from the Veilstone Pokemon Center walk the Route 214 gate (zone_event of
+#   MAP_ROUTE_214 warps 0/1 (718,645)/(719,645)) and Route 214 south (map_matrix 0 cells (22,20..22)) into Valor Lakefront,
+#   walk_to (719,761), wait_field. Do not enter a Canalave building first: that runs scr_seq 0034 @0x0150 (0x4078 -> 6).
+
+[expect]
+map = "MAP_VALOR_LAKEFRONT"
+flags = ["0xA8", "0x1CC", "0x1D0", "0x1D2", "0x1D4", "0x1D5", "0x1D6"]
+flags_clear = ["0x1B2", "0x193", "0x2B1"]
+
+[expect.vars]
+"0x4078" = 5
+"0x40B2" = 2

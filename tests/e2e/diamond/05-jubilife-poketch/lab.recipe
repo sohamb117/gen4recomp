@@ -1,0 +1,15 @@
+# Diamond story 05-jubilife-poketch: standalone start (--lab, or no end save from 04).
+# Standard header + lab party + the cumulative state after 04, then the milestone's start. Applied on the D/P
+# new-game base save (bedroom; scr_seq 0377's new-game flags already set). Names resolve through
+# tests/gameplay/labc.py --game diamond. The Running Shoes (PlayerSaveData, scrcmd_flags.c:68-73) have no lab verb.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 3000
+# Early party: no battle in this milestone; Tackle in slot 0 stays the early-game default (Barry on Route 203,
+# trdata.json #247, is the next slice's).
+party SPECIES_TURTWIG 14 ITEM_NONE
+party-move 0 0 MOVE_TACKLE
+# @@PRIOR@@
+# -- start --
+warp MAP_JUBLIFE 7  # the Trainers' School door (168,776), zone_event 0002 warp 7 (04's end)

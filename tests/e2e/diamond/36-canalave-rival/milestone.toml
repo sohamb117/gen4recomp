@@ -1,0 +1,63 @@
+# Proves the Canalave bridge rival: coord 0 (47,723..726) adds Barry, who battles with the Turtwig-player team (Monferno).
+# Start: MAP_CANALAVE at the gatehouse door (warp 7, 63,754) -> end: MAP_CANALAVE on the bridge (47,724), 0x4078 = 1.
+title = "Canalave City: rival battle on the bridge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 6000
+refs = [
+  "zone_event 0032 warp 7 (63,754)",
+  "zone_event 0032 coord 0 (47,723) 1x4 var 0x4078==0 -> scr_seq 0034 script_2",
+  "zone_event 0032 object 11 SPRITE_RIVEL (37,723) hidden_flag 0x1D0",
+  "scr_seq 0034 @0x0288 ClearFlag 0x1D0",
+  "scr_seq 0034 @0x028C AddEvent 11",
+  "scr_seq 0034 @0x02A4 msg 47 #0",
+  "scr_seq 0034 @0x02A9 GetStarter (var 0x4030, games/diamond/arm9/asm/unk_0205F314.s:87-93)",
+  "scr_seq 0034 @0x02D9 TrainerBattle 477 (starter 387 TURTWIG)",
+  "scr_seq 0034 @0x0305 msg 47 #1",
+  "scr_seq 0034 @0x0314 RemoveEvent 11 (sets hidden_flag 0x1D0, games/diamond/arm9/src/map_object.c:295-299)",
+  "scr_seq 0034 @0x0318 SetVar 0x4078, 1",
+  "scr_seq 0034 @0x0322 SetFlag 0x1D0 + @0x0326 Blackout (loss)",
+  "trdata.json #477 TRAINER_PKMN_TRAINER_BARRY_CEDRIC_11",
+  "trdata.json #476 / #478 (Chimchar / Piplup player variants)",
+]
+notes = "Estimate: ~25 tiles (~500), rival text x2 (~1500), 5-mon battle (~3000), walk-in/out movements (~500). No GetGameVersion branch (version-diff lists only scr_seq 0069/0230/0977/1017)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 9000
+
+[[step]]
+do = "walk_to"
+x = 47
+z = 724
+max = 2000
+note = "coord 0 tiles (47,723..726); [INFERENCE] the path from the gatehouse door reaches the bridge from the east"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "Barry walks in (Move_032C) and talks (msg 47 #0)"
+
+[[step]]
+do = "auto_battle"
+shot = "canalave-rival"
+note = "TRAINER_PKMN_TRAINER_BARRY_CEDRIC_11 (477): STARAVIA 31, BUIZEL 32, HERACROSS 30, ROSELIA 32, MONFERNO 35"
+
+[[step]]
+do = "advance_text"
+note = "msg 47 #1; Barry leaves (Move_0334), RemoveEvent 11, SetVar 0x4078 1"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_CANALAVE"
+flags = ["0x1D0"]
+battles = 1
+
+[expect.vars]
+"0x4078" = 1

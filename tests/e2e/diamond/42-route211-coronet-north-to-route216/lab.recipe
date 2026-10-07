@@ -1,0 +1,27 @@
+# Diamond story 42-route211-coronet-north-to-route216: standalone start (--lab, or no end save from 41-lake-verity-mars).
+# Standard header + lab party + the cumulative state after 41-lake-verity-mars, then the milestone's start.
+# Lab party (see 39): STARAPTOR 100 must know MOVE_STRENGTH (scr_seq 0375 @0x0244) and BADGE_MINE must be in the prior
+# state (@0x0257). EMPOLEON 100 Surf-only beats the Route 211 East trainers on the path: #81 NOCTOWL 31, #442 BRONZOR 30
+# (#80 SKORUPI 27, GOLBAT 27 only if the ninja boy is crossed), and Mt Coronet wild Pokemon.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+party SPECIES_EMPOLEON 100 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 1 0 MOVE_DRAGON_CLAW
+party-move 1 1 MOVE_NONE
+party-move 1 2 MOVE_NONE
+party-move 1 3 MOVE_NONE
+party SPECIES_STARAPTOR 100 ITEM_NONE
+party-move 2 0 MOVE_FLY
+party-move 2 1 MOVE_STRENGTH
+party-move 2 2 MOVE_ROCK_SMASH
+party-move 2 3 MOVE_DEFOG
+# @@PRIOR@@
+# -- start --
+map MAP_ROUTE_211_EAST 446 527 FACE_LEFT  # east end of Route 211 East (map_matrix 0 cell (13,16), x416-447) next to Celestic

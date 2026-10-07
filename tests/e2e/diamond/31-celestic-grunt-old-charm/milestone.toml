@@ -1,0 +1,70 @@
+# Proves the Celestic Town grunt at the ruins door (Yes -> battle), the elder thanking the player and taking the
+# Old Charm from Cynthia (flag 0xA6), which leaves the ruins open.
+# Start: Celestic Town (465,538) (30's end) -> end: Celestic Town (463,523) below the ruins door, Old Charm handed over.
+title = "Celestic Town: Galactic grunt at the ruins, Old Charm to the elder"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 8000
+refs = [
+  "zone_event 0420 object 2",
+  "zone_event 0420 object 3",
+  "zone_event 0420 warp 4",
+  "scr_seq 1012 @0x003C",
+  "scr_seq 1012 @0x003F",
+  "scr_seq 1012 @0x006F",
+  "scr_seq 1012 @0x0075",
+  "scr_seq 1012 @0x008B",
+  "scr_seq 1012 @0x0138",
+  "scr_seq 1012 @0x013C",
+  "scr_seq 1012 @0x0140",
+  "scr_seq 1012 @0x0154",
+  "scr_seq 1012 @0x0176",
+  "scr_seq 1012 @0x017E",
+  "scr_seq 1012 @0x018D",
+  "msg 0527 #1",
+  "msg 0527 #5",
+  "msg 0527 #7",
+  "trdata.json #416",
+  "games/diamond/arm9/src/map_object.c:295-298",
+]
+notes = "TrainerBattle 416 from a map script: no trainer flag is set (the script has no SetTrainerFlag; 0x6F0 stays clear). The elder is re-added at (466,531) by SetEventDefaultPosition (@0x0140) [INFERENCE: not saved; she is hidden for good in 32]. Loss -> Blackout (@0x018D)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 12000
+
+[[step]]
+do = "walk_to"
+x = 463
+z = 523
+face = "up"
+interact = true
+note = "grunt (463,522) (zone_event 0420 object 2, hidden 0x1CD never set before) blocks the ruins door (463,521) (warp 4); facing north takes the L_00B8 movement branch (@0x008F)"
+
+[[step]]
+do = "advance_text"
+note = "msg 0527 #1 YesNo: A = Yes (0 -> @0x006A) -> TrainerBattle 416 (@0x006F)"
+
+[[step]]
+do = "auto_battle"
+shot = "celestic-grunt"
+note = "TRAINER_GALACTIC_GRUNT_11 (trdata.json #416): BEAUTIFLY 25, CROAGUNK 27"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "old-charm-delivered"
+note = "grunt flees (hidden 0x1CD), elder re-added (0x1CA set then cleared), msg #5/#6, TakeItem ITEM_OLD_CHARM (@0x0176), SetFlag 0xA6 (@0x017E), msg #7"
+
+[expect]
+map = "MAP_CELESTIC"
+flags = ["0x1CD", "0xA6"]
+flags_clear = ["0x1CA", "0xA7"]
+battles = 1
+save = [
+  'not any(i["item"] == 439 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_OLD_CHARM taken
+]

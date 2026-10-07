@@ -1,0 +1,100 @@
+# Underground Man mission 3: burying paid the Digger Drill (var 0x40B6 2->3); descend and drill a wall
+# for a Secret Base (flag 0x971). goods.recipe: base made -> 4 goods + var 4, then decorate (flag 0x972).
+# Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door, mission 2 given and done. End: MAP_UNDERGROUND, own base.
+title = "Underground: Digger Drill and Secret Base"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 7000
+refs = [
+  "maps.h:88",
+  "zone_event 0083 object 2",
+  "scr_seq 0089 @0x0295-0x02D1",
+  "scr_seq 0089 @0x02AB",
+  "scr_seq 0089 @0x02B8-0x02C4",
+  "scr_seq 0089 @0x02D3-0x02E2",
+  "scr_seq 0089 @0x00E6",
+  "scr_seq 0089 @0x02E9-0x0332",
+  "scr_seq 0089 @0x0341-0x0357",
+  "scr_seq 0089 @0x00F5",
+  "scr_seq 0089 @0x0379-0x03CD",
+  "scr_seq 0089 @0x03DE",
+  "scr_seq 0205 @0x08CB",
+  "scr_seq 0205 @0x08A4",
+  "msg 0571 #33",
+  "msg 0097 #16",
+  "msg 0097 #21",
+  "games/diamond/include/constants/decorations.h:13",
+  "games/diamond/include/constants/decorations.h:15",
+  "games/diamond/include/constants/decorations.h:21",
+  "games/diamond/include/constants/decorations.h:106",
+  "games/diamond/include/constants/decorations.h:117",
+  "games/diamond/arm9/src/unk_0205EC84.c:108",
+  "games/diamond/arm9/src/unk_0205EC84.c:112",
+  "games/diamond/arm9/src/unk_0205EC84.c:116",
+  "games/diamond/arm9/overlays/18/asm/overlay_18.s:28122",
+  "games/diamond/arm9/overlays/18/asm/overlay_18.s:37346",
+  "games/diamond/arm9/asm/unk_0204CB20.s:5482",
+  "games/diamond/arm9/asm/unk_0205F314.s:86-93",
+]
+
+[start]
+recipe = "start.recipe"
+# PHASE2: decorate run = this dir with goods.recipe: talk -> L_02D3 (0x111 + 0x971) -> var 0x40B6 4, goods
+# DECORATION_PLAIN_TABLE 11, WOODEN_CHAIR 9, SMALL_BOOKSHELF 17, BUNEARY_DOLL 113 (std 2046, @0x02E9-0x0332);
+# talk -> mission text (0x111, msg 97 #20). goods.recipe proves only that payout (expect vars 0x40B6 = 4):
+# the base itself lives in the Underground save block and no lab verb writes it, so decorating (base PC,
+# a good placed with the door closed, msg 97 #21 -> SetFlag 0x972, overlay_18.s:37346; then talk -> var 5 +
+# DECORATION_TURTWIG_DOLL 102 via GetStarter 387, @0x0379-0x03CD) continues this dir's end save.
+# Mission 5 (capture another player's flag, SetFlag 0x973, unk_0204CB20.s:5482) needs a second player: not headless.
+
+[run]
+frames = 10500
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "var 0x40B6==2, 0x111 and 0x970 set -> SetVar 0x40B6 3 (@0x02AB), ClearFlag 0x111"
+
+[[step]]
+do = "advance_text"
+max = 2000
+note = "GiveUndergroundTrap 33 Digger Drill (std 2013, @0x02B8-0x02C4; msg 0571 #33)"
+shot = "digger-drill"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "talk again: var 3, 0x111 clear -> L_00E6 SetFlag 0x111 + msg 97 #16 (make a Secret Base)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "press"
+keys = "Y"
+note = "registered Explorer Kit"
+# PHASE2: descent prompts ([INFERENCE] confirm + forced save) -> wait_map MAP_UNDERGROUND; UG menu >
+# Traps > Digger Drill while facing a wall -> base created, sub_0205EDD8 SetFlag 0x971 (overlay_18.s:28122).
+# The Underground menus are touch-screen; record taps.
+
+[expect]
+map = "MAP_UNDERGROUND"
+vars = { "0x40B6" = 3 }
+flags = ["0x111", "0x971"]

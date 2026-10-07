@@ -1,0 +1,22 @@
+# Diamond story 37-iron-island-riley-egg: standalone start (--lab, or no end save from 36-canalave-rival).
+# Standard header + lab party + the cumulative state after 36-canalave-rival, then the milestone's start.
+# Two party mons only: GiveEgg needs a free slot (scr_seq 0321 @0x031C CountPartyMons == 6 -> no egg).
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party = 34's: Empoleon 60, Surf alone in slot 0 (hits every adjacent mon, so no target prompt in the tag double).
+# Grunts (trdata.json #835/#836): ZUBAT 31, ZUBAT 31, GOLBAT 34 / GLAMEOW 32, STUNKY 32, CROAGUNK 32. Optional B2F trainers
+# top out at FLOATZEL 34 / STEELIX 33 (zone_event 0281 objects 7-14); Surf 15 PP, then Struggle.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_CANALAVE 7   # gatehouse door (63,754), zone_event 0032 warp 7 (36 ends on the bridge (47,724); walk_to starts anywhere)

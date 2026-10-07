@@ -1,0 +1,128 @@
+# Proves Barry's gym-door scene and the Oreburgh Mine visit: Roark smashes the rock and returns to the gym, which hides Barry.
+# Start: Oreburgh warp 1 (Pokecenter door (303,756)) -> end: inside Oreburgh Gym at warp 0 (08's start), gym door free.
+title = "Oreburgh: Barry at the gym, Mine, Roark returns"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "maps.h:49",
+  "maps.h:202",
+  "maps.h:203",
+  "maps.h:51",
+  "zone_event 0044 warp 1",
+  "zone_event 0044 object 3",
+  "scr_seq 0048 @0x0056",
+  "scr_seq 0048 @0x006C",
+  "zone_event 0044 warp 13",
+  "map_header.c:282",
+  "scr_seq 0668 @0x0000",
+  "scr_seq 0208 @0x000E",
+  "zone_event 0196 warp 1",
+  "zone_event 0196 warp 3",
+  "zone_event 0197 object 0",
+  "zone_event 0197 object 1",
+  "zone_event 0197 object 2",
+  "zone_event 0197 warp 0",
+  "scr_seq 0209 @0x0034",
+  "scr_seq 0209 @0x0055",
+  "scr_seq 0209 @0x0091",
+  "scr_seq 0209 @0x00A1",
+  "scr_seq 0209 @0x00A5",
+  "scr_seq 0209 @0x00A9",
+  "zone_event 0044 warp 0",
+  "zone_event 0197 object 5",
+  "zone_event 0197 object 6",
+  "trdata.json #195",
+  "trdata.json #196",
+]
+notes = "Talking to Barry (0x8A) is optional for the story (the mine Roark, hidden_flag 0x1A8, is never hidden before) but is the D/P scene that sends you to the mine. Barry (282,757) stands on the gym door's south tile until 0x19A is set by Roark (scr_seq 0209 @0x00A9). Roark (18,28) sits between two Rock Smash boulders (19,28)/(17,28) (zone_event 0197 objects 1/2, temp flags 0x20/0x21), so he is talked to from the north. The Workers have sight 0, so walking past is safe."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 282
+z = 758
+face = "up"
+interact = true
+note = "Barry (282,757) [INFERENCE: (282,758) is walkable; 06 ends at (279,759)] -> scr_seq 0048 #1: 'the Gym Leader went to Oreburgh Mine', SetFlag 0x8A (@0x006C)"
+
+[[step]]
+do = "advance_text"
+shot = "barry-gym-door"
+
+[[step]]
+do = "walk_to"
+x = 302
+z = 795
+note = "mine mouth (zone_event 0044 warps 11-15 (300..304,795)); warp 13 -> B1F warp 1 (12,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH_MINE_B1F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 21
+note = "B1F stairs (zone_event 0196 warps 3-5 (11..13,21)) -> B2F warp 0 (15,1); B1F ON_TRANSITION SetFlag 0x9C2 (scr_seq 0208 @0x000E)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH_MINE_B2F"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 27
+face = "down"
+interact = true
+note = "Roark (18,28) faces east at the boulder (19,28) [INFERENCE: north tile reachable from the B2F entrance; else (18,29) face up]"
+
+[[step]]
+do = "advance_text"
+shot = "roark-smashes"
+note = "Roark smashes boulder object 1 (scr_seq 0209 @0x0055), walks east 10 and leaves: RemoveEvent 0 (hidden_flag 0x1A8), SetFlag 0x7A, SetFlag 0x19A (@0x00A1-@0x00A9)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 1
+note = "B2F exit (zone_event 0197 warp 0) -> B1F warp 3 (12,21)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH_MINE_B1F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 1
+note = "B1F exit (zone_event 0196 warp 1) -> Oreburgh warp 13 (302,795)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH"
+
+[[step]]
+do = "walk_to"
+x = 282
+z = 756
+note = "gym door (zone_event 0044 warp 0) -> gym warp 0 (5,24); Barry (282,757) is hidden now (0x19A)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH_GYM"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_OREBURGH_GYM"
+flags = ["0x8A", "0x9C2", "0x1A8", "0x7A", "0x19A"]

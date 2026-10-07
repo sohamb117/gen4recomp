@@ -1,0 +1,131 @@
+# Proves the Route 203 rival battle, HM06 (Rock Smash) from the Oreburgh Gate hiker, and the Oreburgh youngster's gym tour.
+# Start: Jubilife warp 2 (Pokecenter door (180,776)) -> end: Oreburgh City at the gym after the tour (0x4079 = 1).
+title = "Route 203 rival, Oreburgh Gate HM06, Oreburgh tour"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "maps.h:7",
+  "maps.h:348",
+  "maps.h:262",
+  "maps.h:49",
+  "zone_event 0002 warp 2",
+  "zone_event 0002 coord 2",
+  "scr_seq 0002 @0x0DF4",
+  "zone_event 0329 coord 0",
+  "zone_event 0329 object 5",
+  "scr_seq 0394 @0x0112",
+  "scr_seq 0394 @0x0142",
+  "scr_seq 0394 @0x01EF",
+  "scr_seq 0394 @0x01F3",
+  "arm9/asm/unk_0205F314.s:86-94",
+  "trdata.json #248",
+  "zone_event 0329 warp 0",
+  "map_header.c:342",
+  "scr_seq 0731 @0x0000",
+  "scr_seq 0271 @0x000E",
+  "zone_event 0250 coord 0",
+  "zone_event 0250 object 10",
+  "zone_event 0250 warp 0",
+  "zone_event 0250 warp 1",
+  "scr_seq 0377 @0x00A2",
+  "arm9/asm/unk_02038C78.s:2448-2451",
+  "scr_seq 0271 @0x0092",
+  "scr_seq 0271 @0x009E",
+  "scr_seq 0205 @0x09C7",
+  "scr_seq 0271 @0x006F",
+  "scr_seq 0271 @0x0073",
+  "zone_event 0044 coord 0",
+  "zone_event 0044 object 4",
+  "scr_seq 0048 @0x0543",
+  "zone_event 0044 object 3",
+  "trdata.json #4",
+  "trdata.json #323",
+  "trdata.json #355",
+  "trdata.json #322",
+  "trdata.json #356",
+  "trdata.json #329",
+  "trdata.json #265",
+]
+notes = "Needs 0x4077 = 2 from 05 (scr_seq 0002 @0x0DF4; at 1 Jubilife coord 2 (188,757) stops you at the Route 203 exit) and the starter var 0x4030 = SPECIES_TURTWIG (Save_VarsFlags_GetStarter, arm9/asm/unk_0205F314.s:86-94; GetStarter scr_seq 0394 @0x0112 picks TrainerBattle 248 for 387). Hiker coord needs 0x4093 = 1, set by the new-game init script (scr_seq 0377 @0x00A2, script id 9600 run from arm9/asm/unk_02038C78.s:2448-2451), so it is in the base save. Rock Smash is usable in the field only with BADGE_COAL (msg 240 #1). Optional sight trainers on the way are fought by walk_to; the generic trainer script sets their 0x550+id flags (not part of the delta). No version branches or differing encounter banks here (version-diff)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 196
+z = 758
+note = "Route 203 coord 0 (196,757..760) 1x4, 0x4088 == 0 -> Barry walks in (zone_event 0329 coord 0 -> scr_seq 0394 #6); Jubilife coord 2 (188,757) is off since 0x4077 = 2"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "rival-203"
+note = "TRAINER_PKMN_TRAINER_BARRY_CEDRIC_2 (trdata.json #248, starter Turtwig): STARLY 7, CHIMCHAR 9 (scr_seq 0394 @0x0142)"
+
+[[step]]
+do = "advance_text"
+note = "Barry walks off; RemoveEvent 5 (hidden_flag 0x199) + SetVar 0x4088 1 (scr_seq 0394 @0x01EF/@0x01F3)"
+
+[[step]]
+do = "walk_to"
+x = 246
+z = 749
+note = "Oreburgh Gate door (zone_event 0329 warp 0) -> gate 1F warp 0 (4,22); Michael (204,750) W 2, Dallas (222,756) S 4, Kaitlin (234,757) W 5, Madeline (240,748) S 5, Sebastian (245,756) S 3 may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH_GATE_1F"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 22
+note = "coord 0 (7,22), 0x4093 == 1 -> the hiker (7,20) steps down and gives HM06 (zone_event 0250 coord 0 -> scr_seq 0271 #3)"
+
+[[step]]
+do = "advance_text"
+shot = "hm06"
+note = "ITEM_HM06 via std 2044 (scr_seq 0271 @0x009E), SetFlag 0x93, SetVar 0x4093 2 (@0x006F/@0x0073)"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 22
+note = "east exit (zone_event 0250 warp 1) -> Oreburgh warp 10 (258,749); Diana (24,21) S 3 and Curtis (17,25) N 3 may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH"
+
+[[step]]
+do = "walk_to"
+x = 266
+z = 749
+note = "coord 0 (266,748..751) 1x4, 0x4079 == 0 -> the youngster (266,752) walks you to the gym (zone_event 0044 coord 0 -> scr_seq 0048 #3)"
+
+[[step]]
+do = "advance_text"
+shot = "oreburgh-gym-tour"
+note = "SetVar 0x4079 1 (scr_seq 0048 @0x0543); player ends at (279,759) [INFERENCE: movement 0x0D south / 0x0F east as in Platinum's action table], Barry (282,757) blocks the gym door"
+
+[expect]
+map = "MAP_OREBURGH"
+flags = ["0x199", "0x9CF", "0x93"]
+battles = 1
+save = [
+  'any(i["item"] == 425 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM06
+]
+
+[expect.vars]
+"0x4088" = 1
+"0x4093" = 2
+"0x4079" = 1

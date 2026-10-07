@@ -1,0 +1,11 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31093
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# game completed: every script gate is CheckGameCompleted/CheckFlag 0x964 (scrcmd_flags.c:194-201 -> unk_0205EC84.c:55-56)
+flag 0x964
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# below the harbour sailor (356,247) facing N (zone_event 0164 object 8); [INFERENCE] (356,248) walkable
+map MAP_SNOWPOINT 356 248 FACE_UP

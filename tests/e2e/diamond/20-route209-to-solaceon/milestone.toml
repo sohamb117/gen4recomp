@@ -1,0 +1,123 @@
+# Proves the walk east out of Hearthome (the Route 209 gate blockade gone after 19's Contest Hall scene), Route 209 and
+# the arrival in Solaceon Town (ON_TRANSITION sets 0x19C). No story battle; Lost Tower, Day Care and Solaceon Ruins are optional.
+# Start: Hearthome (486,718) after Barry's battle -> end: Solaceon, in front of the Pokemon Center (566,657) (21's start).
+title = "Route 209 to Solaceon Town"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 14000
+refs = [
+  "maps.h:90",
+  "maps.h:114",
+  "maps.h:360",
+  "maps.h:437",
+  "map_header.c:440",
+  "map_header.c:517",
+  "zone_event 0085 coord 0",
+  "zone_event 0085 object 20",
+  "zone_event 0085 object 21",
+  "zone_event 0085 warp 19",
+  "zone_event 0109 warp 0",
+  "zone_event 0109 warp 1",
+  "zone_event 0341 warp 0",
+  "zone_event 0341 warp 2",
+  "zone_event 0341 object 0",
+  "zone_event 0341 object 1",
+  "zone_event 0341 object 2",
+  "zone_event 0341 object 3",
+  "zone_event 0341 object 4",
+  "zone_event 0341 object 5",
+  "zone_event 0341 object 6",
+  "zone_event 0341 object 7",
+  "zone_event 0341 object 8",
+  "zone_event 0341 object 11",
+  "zone_event 0341 object 22",
+  "zone_event 0411 object 4",
+  "zone_event 0411 warp 0",
+  "zone_event 0411 warp 5",
+  "zone_event 0411 warp 7",
+  "zone_event 0411 warp 8",
+  "scr_seq 0114 @0x0127",
+  "scr_seq 0090 @0x013B",
+  "scr_seq 0406 @0x0026",
+  "scr_seq 0406 @0x006D",
+  "scr_seq 0406 @0x007F",
+  "scr_seq 0411 @0x0012",
+  "scr_seq 0411 @0x0036",
+  "scr_seq 1002 @0x0030",
+  "scr_seq 1002 @0x0123",
+  "trdata.json #46",
+  "trdata.json #47",
+  "trdata.json #48",
+  "trdata.json #49",
+  "trdata.json #53",
+  "trdata.json #55",
+  "trdata.json #294",
+  "trdata.json #308",
+  "d_enc_data 0150 / p_enc_data 0150 (version-diff: Route 209 encounters differ)",
+]
+notes = "Estimate: ~2 screens of Hearthome/gate plus Route 209 (about 60 tiles east, 60 north) and 2-4 sight trainers at lv 14-19 (one Surf each). Pearl: only Route 209 / Lost Tower wild encounter banks differ (d_enc_data vs p_enc_data 0150-0155, version-diff); the scripts are shared, so version = both. Optional, not walked: Lost Tower (zone_event 0341 warp 2 (568,680)) gives HM04 Strength on 5F (scr_seq 0411 @0x0012-0x0036, flag 0x96, ITEM_HM04 via std 2044) — hand to the HM side system; the Route 209 cut tree (573,690) (object 11, temp hide flag 0x20); Solaceon Day Care (warp 0 (553,645)) and Solaceon Ruins (warps 7/8 (597,652)/(595,655)) are side systems. Route 209 joggers Richard/Raul swap with their non-battling twins by time of day (Route 209 ON_TRANSITION scr_seq 0406 @0x0026-0x008F)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 21000
+
+[[step]]
+do = "walk_to"
+x = 505
+z = 726
+note = "east exit (zone_event 0085 warp 19) -> Route 209 gatehouse (1,7); the blockade objects 20/21 at (505,726)/(505,727) are hidden by flag 0x224 (scr_seq 0114 @0x0127, set in 19)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_ROUTE_209_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "gatehouse east exit (zone_event 0109 warp 1) -> Route 209 (512,726)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_209"
+
+[[step]]
+do = "walk_to"
+x = 564
+z = 668
+face = "up"
+interact = true
+max = 15000
+note = "east then north along Route 209 into Solaceon (seamless; z 640-671 is Solaceon's 32x32 chunk [INFERENCE from the sign coordinates]) and read the town sign (zone_event 0411 object 4 (564,667)); sight trainers may engage: Albert (522,725) S 3, Twins Emma & Lil (544..545,720) S 4 (true double), Danielle (552,722), Jennifer (554,711) E 2, Shelley (560,690) E 2, Ty & Sue (561,684..685) 2 (double); [INFERENCE] (564,668) walkable"
+
+[[step]]
+do = "advance_text"
+shot = "solaceon"
+note = "Solaceon Town sign: scr_seq 1002 @0x0123 (#7), msg 0519 #9 \"Solaceon Town / Free of Worry!\""
+
+[[step]]
+do = "wait_map"
+map = "MAP_SOLACEON"
+
+[[step]]
+do = "walk_to"
+x = 566
+z = 657
+note = "in front of the Pokemon Center door (zone_event 0411 warp 5 (566,656)) [INFERENCE] tile walkable; 21 starts here"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_SOLACEON"
+position = [566, 657]
+flags = ["0x19C", "0x224"]
+badges = 2
+badge = ["BADGE_COAL", "BADGE_FOREST"]
+
+[expect.vars]
+"0x407B" = 2

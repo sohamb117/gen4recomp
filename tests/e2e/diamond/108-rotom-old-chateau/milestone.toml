@@ -1,0 +1,67 @@
+# Rotom in the Old Chateau TV: with game complete, National Dex and night time, A on the TV -> YES ->
+# SetFlag 0xAB0 (once per day) -> WildBattle 479, 15.
+# Start: MAP_OLD_CHATEAU_2F_ROOM_2 (11,4) below the TV (11,3). End: same map.
+title = "Rotom in the Old Chateau TV"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 4000
+refs = [
+  "maps.h:304",
+  "zone_event 0288 bg 0",
+  "zone_event 0288 bg 1",
+  "zone_event 0288 warp 0",
+  "scr_seq 0329 @0x000C-0x004F",
+  "scr_seq 0329 @0x0056-0x0063",
+  "scr_seq 0329 @0x007A-0x007E",
+  "scr_seq 0329 @0x0095-0x00A6",
+  "scr_seq 0329 @0x00AE",
+  "msg 0261 #1",
+  "msg 0261 #3",
+  "games/diamond/arm9/src/unk_0204B0A0.c:119-121",
+  "games/diamond/arm9/src/gf_rtc.c:136-170",
+  "games/diamond/include/gf_rtc.h:24-28",
+  "games/diamond/arm9/src/scrcmd.c:3872-3882",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 6000
+# GetTimeOfDay >= 3 (NITE 20:00-23:59, LATE 00:00-03:59; gf_rtc.c:136-170) from the saved RTC hour (unk_0204B0A0.c:119-121)
+clock = "2009-03-22 21:00:00"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "TV bg 0 (11,3) (zone_event 0288 bg 0): !0x149, !0xAB0, game complete, NationalDex 2, time of day >= 3 (scr_seq 0329 @0x000C-0x004F)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "msg 261 #1 Yes/No: VAR_RESULT 1 = NO (@0x005D); [INFERENCE] A takes YES; SetFlag 0xAB0, WildBattle 479, 15 (@0x007A-0x007E)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "rotom"
+
+[[step]]
+do = "auto_battle"
+note = "A-only defeats it; caught would set 0x149 (@0x00A6)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "msg 261 #3 'ROTOM disappeared into the TV set...' (@0x00AE)"
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = "MAP_OLD_CHATEAU_2F_ROOM_2"
+battles = 1
+flags = ["0xAB0"]
+flags_clear = ["0x149"]

@@ -1,0 +1,282 @@
+# Proves the Hearthome Gym quiz rooms (elevator + one of three answer doors per room), Fantina, the Relic Badge and
+# TM65, the walk back out, and Cynthia's Hearthome scene pointing to the Canalave library.
+# Start: Hearthome Gym first question room warp 3 (9,22) (33's end) -> end: Hearthome City at the gym door, 5 badges.
+title = "Hearthome Gym: Fantina and the Relic Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 22000
+refs = [
+  "zone_event 0087 coord 0",
+  "zone_event 0087 bg 0",
+  "zone_event 0087 warp 2",
+  "zone_event 0087 warp 3",
+  "zone_event 0090 warp 0",
+  "zone_event 0090 warp 3",
+  "zone_event 0092 warp 1",
+  "zone_event 0092 warp 3",
+  "zone_event 0094 warp 2",
+  "zone_event 0094 warp 3",
+  "zone_event 0099 object 0",
+  "zone_event 0099 warp 0",
+  "zone_event 0085 warp 8",
+  "zone_event 0085 object 19",
+  "scr_seq 0092 @0x0022",
+  "scr_seq 0092 @0x0037",
+  "scr_seq 0093 @0x0016",
+  "scr_seq 0094 @0x0016",
+  "scr_seq 0095 @0x0016",
+  "msg 0100 #0",
+  "msg 0101 #0",
+  "msg 0102 #0",
+  "msg 0103 #0",
+  "scr_seq 0096 @0x0096",
+  "scr_seq 0096 @0x00BA",
+  "scr_seq 0096 @0x00E0",
+  "scr_seq 0096 @0x00E8",
+  "scr_seq 0096 @0x0114",
+  "scr_seq 0096 @0x0118",
+  "scr_seq 0096 @0x0127",
+  "scr_seq 0096 @0x014C",
+  "scr_seq 0096 @0x01D8",
+  "scr_seq 0553 @0x000B",
+  "scr_seq 0090 @0x0599",
+  "scr_seq 0090 @0x05DE",
+  "scr_seq 0090 @0x05E2",
+  "scr_seq 0377 @0x00C4",
+  "msg 0104 #2",
+  "msg 0104 #5",
+  "msg 0098 #10",
+  "trdata.json #318",
+  "games/diamond/arm9/src/scrcmd.c:3342-3350",
+  "games/diamond/arm9/asm/unk_02064CA8.s:32-57",
+  "games/diamond/arm9/overlays/06/asm/overlay_06.s:16489-16600",
+  "games/diamond/arm9/src/map_object.c:295-298",
+  "maps.h:92-104",
+  "map_header.c:172-184",
+]
+notes = "D/P's gym is a fixed math quiz (no random doors, unlike Platinum): room 1 3+5+7=15 right (14,2), room 2 12+28=40 middle (9,2), room 3 3x13=39 left (4,2), room 4 'first answer' 15 right (14,2) (msg 0100-0103 #0); each correct door's warp leads to the next question room (zone_event 0087/0090/0092/0094), wrong ones to a trainer room. The (9,13) coord runs MoveHearthomeGymElevator, which raises the avatar to height 0xA0000 or lowers it if already up (overlay_06.s:16489-16600). Fantina's own trainer flag 0x68E is never set by a script. Lab leader-only test: warp MAP_HEARTHOME_GYM_LEADER_ROOM 0."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 33000
+
+# Room 1 (arrive (9,22))
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+note = "elevator coord 0 (9,13) var 0x4000==0 -> scr_seq 0092 #3 MoveHearthomeGymElevator (up)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 8
+face = "up"
+interact = true
+note = "[INFERENCE] upper-floor tile below the question board bg 0 (9,7)"
+
+[[step]]
+do = "advance_text"
+shot = "quiz-1"
+note = "msg 0100 #0: 3 plus 5 plus 7 -> 15 = right"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 2
+note = "right door warp 2 -> MAP_HEARTHOME_GYM_SECOND_QUESTION_ROOM warp 3 (9,22) (zone_event 0087); [INFERENCE] upper-floor path"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_SECOND_QUESTION_ROOM"
+
+# Room 2
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+note = "elevator coord (scr_seq 0093 #2)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 2
+note = "msg 0101 #0: 12 plus 28 -> 40 = middle; warp 0 -> MAP_HEARTHOME_GYM_THIRD_QUESTION_ROOM warp 3 (9,22) (zone_event 0090)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_THIRD_QUESTION_ROOM"
+
+# Room 3
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+note = "elevator coord (scr_seq 0094 #2)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 2
+note = "msg 0102 #0: 3 times 13 -> 39 = left; warp 1 -> MAP_HEARTHOME_GYM_FOURTH_QUESTION_ROOM warp 3 (9,22) (zone_event 0092)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_FOURTH_QUESTION_ROOM"
+
+# Room 4
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+note = "elevator coord (scr_seq 0095 #2)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 2
+note = "msg 0103 #0: the first room's answer -> 15 = right; warp 2 -> MAP_HEARTHOME_GYM_LEADER_ROOM warp 0 (9,12) (zone_event 0094)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_LEADER_ROOM"
+
+# Fantina
+[[step]]
+do = "walk_to"
+x = 9
+z = 6
+face = "up"
+interact = true
+note = "Fantina (9,5) (zone_event 0099 object 0) -> scr_seq 0096 #1"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "fantina-battle"
+note = "TRAINER_LEADER_FANTINA_FANTINA (trdata.json #318): DRIFBLIM 32, GENGAR 34, MISMAGIUS 36 (scr_seq 0096 @0x00BA)"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "relic-badge"
+note = "GiveBadge BADGE_RELIC (@0x00E0), 8 gym trainer flags, 0x1C8 cleared, 0x40D1 = 1, ITEM_TM65 + flag 0x7D (@0x0127-@0x014C)"
+
+# Walk out: every question room's (9,22) warp leads back one room; arrivals are on the upper floor at the door
+[[step]]
+do = "walk_to"
+x = 9
+z = 12
+note = "leader room warp 0 -> FOURTH_QUESTION_ROOM warp 2 (14,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_FOURTH_QUESTION_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+note = "[INFERENCE] elevator lowers when the avatar is already up (overlay_06.s:16513-16529)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 22
+note = "warp 3 -> THIRD_QUESTION_ROOM warp 1 (4,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_THIRD_QUESTION_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 22
+note = "warp 3 -> SECOND_QUESTION_ROOM warp 0 (9,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_SECOND_QUESTION_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 22
+note = "warp 3 -> FIRST_QUESTION_ROOM warp 2 (14,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 22
+note = "warp 3 -> MAP_HEARTHOME warp 8 (499,697)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "cynthia-canalave"
+note = "ON_FRAME var 0x40D1==1 (scr_seq 0553 @0x000B) -> scr_seq 0090 #6: Cynthia (0085 object 19 (494,699)) thanks you and points to the Canalave library (msg 0098 #10), leaves (hidden 0x1C8), 0x40D1 = 2"
+
+[expect]
+map = "MAP_HEARTHOME"
+badges = 5
+badge = ["BADGE_COAL", "BADGE_FOREST", "BADGE_COBBLE", "BADGE_FEN", "BADGE_RELIC"]
+flags = ["0x7D", "0x1C8", "0x65A", "0x668", "0x66C", "0x695", "0x69A", "0x6A4", "0x6A7", "0x6B5", "0x98D"]
+vars = { "0x40D1" = 2 }
+battles = 1
+save = [
+  'any(i["item"] == 392 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM65
+]

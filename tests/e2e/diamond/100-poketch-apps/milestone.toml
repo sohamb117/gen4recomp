@@ -1,0 +1,70 @@
+# Poketch app grant: with the Poketch owned, the Route 213 Grand Lake NE room man gives COIN_TOSS on
+# first talk (SetVar 0x8004 14 + std 2009 -> UnlockPoketchApp). Every app screen is a lab station:
+# `poketch POKETCH_<APP>` + any map line (the lab gives the Poketch after the map change).
+# Start: MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM door (warp 0, (6,8)). End: same map, app 14 unlocked.
+title = "Poketch: receive the Coin Toss app"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 3000
+refs = [
+  "maps.h:383",
+  "zone_event 0364 object 0",
+  "zone_event 0364 warp 0",
+  "scr_seq 0430 @0x0012-0x0038",
+  "scr_seq 0205 @0x06A9-0x06BA",
+  "games/diamond/include/poketch.h:9-37",
+  "scr_seq 0002 @0x0DAC",
+  "scr_seq 0002 @0x0DD7-0x0E06",
+  "scr_seq 0008 @0x0049",
+  "scr_seq 0008 @0x006D",
+  "scr_seq 0008 @0x0080",
+  "scr_seq 0008 @0x0093",
+  "scr_seq 0008 @0x0126",
+  "scr_seq 0073 @0x00A9-0x00FF",
+  "scr_seq 0403 @0x02AB",
+  "scr_seq 0405 @0x008D-0x00D2",
+  "scr_seq 1007 @0x000E-0x0045",
+  "scr_seq 1002 @0x00D4-0x0101",
+  "scr_seq 0138 @0x011C-0x014C",
+  "scr_seq 1020 @0x0012-0x002E",
+  "scr_seq 0164 @0x000E-0x0119",
+  "scr_seq 0444 @0x0505-0x050E",
+  "scr_seq 0444 @0x059E",
+  "scr_seq 0444 @0x05B7-0x05E9",
+  "scr_seq 0444 @0x05FB-0x061A",
+]
+
+[start]
+recipe = "start.recipe"
+# Other grants (std 2009 call sites; each a station like this one): MEMO_PAD 2 / MARKING_MAP 12 / LINK_SEARCHER 13 /
+# MOVE_TESTER 15 Poketch Co. president by badge count (scr_seq 0008 @0x0049-0x0126); FRIENDSHIP_CHECKER 5 Eterna PC
+# (scr_seq 0073 @0x00A9-0x00FF); DOWSING_MACHINE 6 Route 207 (scr_seq 0403 @0x02AB); BERRY_SEARCHER 7 Route 208
+# (scr_seq 0405 @0x008D-0x00D2); DAY_CARE_CHECKER 8 Solaceon (scr_seq 1007, needs flag 0xFE); POKEMON_HISTORY 9
+# (scr_seq 1002 @0x00D4-0x0101); COUNTER 10 Veilstone store 2F (scr_seq 0138 @0x011C-0x014C); ANALOG_WATCH 11
+# Celestic (scr_seq 1020 @0x0012-0x002E); CALENDAR 16 / DOT_ARTIST 17 / ROULETTE 18 Sunyshore developer by nature
+# (scr_seq 0164 @0x000E-0x0119); TRAINER_COUNTER 19 Oak at Pal Park (scr_seq 0444 @0x0505-0x050E, dir 111);
+# KITCHEN_TIMER 20 / COLOR_CHANGER 21 Pal Park girl with SNORLAX / KECLEON (@0x05B7-0x05E9, @0x059E-0x061A).
+# MATCHUP_CHECKER 22, STOPWATCH 23, ALARM_CLOCK 24: no field script unlocks them [INFERENCE: event only].
+
+[run]
+frames = 4500
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 5
+face = "up"
+interact = true
+note = "man SPRITE_GORGGEOUSM (4,4) facing S, movement 3 range (0,1) (zone_event 0364 object 0); [INFERENCE] (4,5) walkable when he is home"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "CheckPoketchApp 14 == 0 -> msg 450 #0, SetVar 0x8004 14, std 2009 UnlockPoketchApp (scr_seq 0430 @0x0012-0x002E, scr_seq 0205 @0x06BA)"
+shot = "cointoss-given"
+
+[expect]
+map = "MAP_ROUTE_213_GRAND_LAKE_NORTHEAST_ROOM"
+# PHASE2: reader-ext Poketch app bitmap (Save_Poketch_AppIsUnlocked, app 14); np_save4 does not dump the
+# Poketch. Visual proof: cycle the Poketch apps (bottom-screen button taps) and shot the Coin Toss screen.

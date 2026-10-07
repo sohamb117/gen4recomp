@@ -1,0 +1,142 @@
+# Proves the Valley Windworks: the door grunt, the Works Key door, Commander Mars, the father/daughter reunion, and the
+# Route 205 South bridge grunts leaving, then the walk north to the Eterna Forest door.
+# Start: Floaroma at the meadow entrance (162,641) (11's end) -> end: Eterna Forest warp 0 (28,86) (13's start).
+title = "Valley Windworks: Commander Mars"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "maps.h:204 (MAP_VALLEY_WINDWORKS_EXTERIOR = 200, map_header.c:284)",
+  "maps.h:205 (MAP_VALLEY_WINDWORKS_INTERIOR = 201, map_header.c:285)",
+  "maps.h:207 (MAP_ETERNA_FOREST_INTERIOR = 203, map_header.c:287)",
+  "zone_event 0198 object 0 (grunt (243,655) DIR_SOUTH, hidden_flag 0x1AC); bg 1 (243,654) door; warp 0 (243,654) -> MAP_VALLEY_WINDWORKS_INTERIOR warp 0",
+  "scr_seq 0210 @0x002D-@0x00C9 (ON_TRANSITION/ON_LOAD: flag 0x10F clear -> SetWarpPosition 0 to (243,650); set -> SetBgEventPosition 1 to (243,650))",
+  "scr_seq 0210 @0x00D8 (TrainerBattle 843), @0x0125 (RemoveEvent 0)",
+  "scr_seq 0210 @0x0152-@0x018B (door: CheckFlag 0x9F, YesNo, SetFlag 0x10F, SetWarpPosition 0 (243,654))",
+  "scr_seq 0210 @0x0020-@0x007E (ON_TRANSITION var 0x40CF == 2 -> 3)",
+  "scr_seq 0210 @0x0043-@0x0078 (Drifloon object 4 (241,660) shown only on day 5 after var 0x4089 >= 2 without flag 0xAA8; else SetFlag 0x229)",
+  "scr_seq 0211 @0x001A (interior ON_TRANSITION SetFlag 0x9C3)",
+  "scr_seq 0671 @0x000B (interior ON_FRAME_TABLE var 0x40CF == 0 -> scr_seq 0211 #2: grunt runs, RemoveEvent 0 @0x0068, SetVar 0x40CF 1 @0x006C)",
+  "zone_event 0199 coord 0 (19,6) 1x2 var 0x40CF == 1 -> scr_seq 0211 #4; Mars object 1 (20,7) DIR_WEST; grunts objects 3 (3,8) W sight 2, 4 (12,3) S sight 2, 6 (18,8) (all hidden_flag 0x1C3); warp 0 (12,16)",
+  "scr_seq 0211 @0x00E0 (TrainerBattle 295)",
+  "scr_seq 0211 @0x0108-@0x0126 (RemoveEvent 1/6/3/4, SetFlag 0x1C4, 0x1C0, SetVar 0x4089 2, SetFlag 0xAA8)",
+  "scr_seq 0211 @0x0181-@0x0248 (SetFlag 0x216, ClearFlag 0x217, AddEvent 5, SetVar 0x40CF 2, SetFlag 0x988)",
+  "games/diamond/arm9/src/unk_0205EC84.c:244-251 (flag 0x988: windworks interior music)",
+  "zone_event 0332 objects 12/13 (bridge grunts (218,653)/(216,653), hidden_flag 0x1C0); warp 0 (206,581) -> MAP_ETERNA_FOREST_INTERIOR warp 0",
+  "scr_seq 0213 @0x0032-@0x003F (forest ON_TRANSITION: flag 0xE3 clear -> SetVar 0x40B1 0)",
+  "trdata.json #843 (TRAINER_GALACTIC_GRUNT_35: GLAMEOW 11)",
+  "trdata.json #295 (TRAINER_COMMANDER_MARS_MARS: ZUBAT 14, PURUGLY 16 @ORAN_BERRY)",
+  "trdata.json #298 (TRAINER_GALACTIC_GRUNT_3: CASCOON 11), #299 (TRAINER_GALACTIC_GRUNT_4: WURMPLE 10, GLAMEOW 10)",
+  "trdata.json #18 (HIKER_DANIEL), #21 (AROMA_LADY_ELIZABETH), #16 (CAMPER_JACOB), #17 (PICNICKER_SIENA), #377 (CAMPER_ZACKARY), #19 (HIKER_NICHOLAS), #456 (PICNICKER_KARINA), #20 (BATTLE_GIRL_KELSEY) (zone_event 0332)",
+]
+notes = "Estimate: Pt 11 (15000; D/P has no Looker scene). The Friday Drifloon (LegendaryBattle SPECIES_DRIFLOON 22, scr_seq 0210 @0x01D4) is optional and off the path; Mars's win sets 0xAA8 which hides it the same day. No GetGameVersion branch; encounter banks d/p 0007/0145 identical (version-diff)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 243
+z = 656
+face = "up"
+interact = true
+max = 8000
+note = "door grunt (243,655) DIR_SOUTH; east through Floaroma and Route 205 South (seamless) to the windworks; keep off the bridge coord (217,653) (var 0x4089==1 pushback, scr_seq 0397 #7) [INFERENCE: talk from the tile south of him]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TrainerBattle 843 (scr_seq 0210 @0x00D8): GLAMEOW 11"
+
+[[step]]
+do = "advance_text"
+note = "he locks himself in (RemoveEvent 0 -> 0x1AC, scr_seq 0210 @0x0125)"
+
+[[step]]
+do = "walk_to"
+x = 243
+z = 655
+face = "up"
+interact = true
+note = "door bg 1 (243,654): with flag 0x9F 'Use the Works Key?' (scr_seq 0210 @0x0152-@0x018B)"
+
+[[step]]
+do = "advance_text"
+note = "A = YES on the YesNo menu -> SetFlag 0x10F, warp 0 moved back onto (243,654)"
+
+[[step]]
+do = "walk_to"
+x = 243
+z = 654
+note = "door warp -> interior (12,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VALLEY_WINDWORKS_INTERIOR"
+
+[[step]]
+do = "advance_text"
+note = "ON_FRAME var 0x40CF==0: the grunt runs to alert Mars (RemoveEvent 0 -> 0x1C2, var 0x40CF 1)"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 7
+note = "coord (19,6..7) var 0x40CF==1 -> Mars (20,7); grunts (3,8) W sight 2 and (12,3) S sight 2 may engage"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "mars"
+note = "TrainerBattle 295 (scr_seq 0211 @0x00E0): ZUBAT 14, PURUGLY 16"
+
+[[step]]
+do = "advance_text"
+shot = "reunion"
+note = "Team Galactic leaves (0x1C3, 0x1C4, 0x1C0 bridge grunts, var 0x4089 2), the father and daughter reunite (0x216, ~0x217), var 0x40CF 2 (scr_seq 0211 @0x00F7-@0x024C)"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 16
+note = "interior exit (warp 0) -> outside (243,654); ON_TRANSITION var 0x40CF 2 -> 3 (scr_seq 0210 @0x007E)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VALLEY_WINDWORKS_EXTERIOR"
+
+[[step]]
+do = "walk_to"
+x = 206
+z = 581
+max = 10000
+note = "west and north over the freed bridge along Route 205 South to the forest door (zone_event 0332 warp 0) -> Eterna Forest (28,86); Daniel (210,637) W 4, Elizabeth (215,633) W 3, Jacob (215,646) E 4, Siena (215,619) W 2, Zackary (206,625) E 2, Nicholas (208,610) S 2, Karina (208,595) S 3, Kelsey (207,598) S 2 may engage"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA_FOREST_INTERIOR"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ETERNA_FOREST_INTERIOR"
+badges = 1
+badge = ["BADGE_COAL"]
+flags = ["0x1AC", "0x10F", "0x9C3", "0x1C2", "0x1C3", "0x1C4", "0x1C0", "0xAA8", "0x216", "0x988", "0x229"]
+flags_clear = ["0x217", "0xE3"]
+battles = 2
+
+[expect.vars]
+"0x4089" = 2
+"0x40CF" = 3
+"0x40B1" = 0

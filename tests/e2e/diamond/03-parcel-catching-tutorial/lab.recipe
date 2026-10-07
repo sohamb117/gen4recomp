@@ -1,0 +1,15 @@
+# Diamond story 03-parcel-catching-tutorial: standalone start (--lab, or no end save from 02).
+# Standard header + lab party + the cumulative state after 02, then the milestone's start. Applied on the D/P
+# new-game base save (bedroom; scr_seq 0377's new-game flags already set). Names resolve through
+# tests/gameplay/labc.py --game diamond. The Running Shoes (PlayerSaveData, scrcmd_flags.c:68-73) have no lab verb.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 3000
+# Early party: no trainer battle is mandatory before Route 203 (Barry, trdata.json #247); Tackle in slot 0 beats the
+# Route 201/202 wild Pokemon and the optional Route 202 trainers (trdata.json #1 STARLY 5, #2 SHINX 5, #3 BIDOOF 3 x2).
+party SPECIES_TURTWIG 14 ITEM_NONE
+party-move 0 0 MOVE_TACKLE
+# @@PRIOR@@
+# -- start --
+map MAP_SANDGEM 177 843 FACE_DOWN  # in front of the Pokemon Center door (177,842) (zone_event 0396 warp 1), as tests/gameplay/dp/recipes/sandgem.recipe

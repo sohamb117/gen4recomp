@@ -1,0 +1,135 @@
+# Proves Route 222 to Sunyshore, Flint's arrival OnFrame, the Vista Lighthouse elevator, Volkner on the observation deck
+# and Flint leaving the gym door. Start: Valor Lakefront west of the old guard tile -> end: Sunyshore, Flint gone.
+
+title = "Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "zone_event 0321 coord 0",
+  "maps.h:399",
+  "map_header.c:479",
+  "zone_event 0380 warp 0",
+  "zone_event 0380 object 4",
+  "zone_event 0380 object 5",
+  "zone_event 0380 object 6",
+  "zone_event 0380 object 7",
+  "zone_event 0380 object 9",
+  "zone_event 0380 object 10",
+  "scr_seq 0446 @0x0069",
+  "scr_seq 0446 @0x0073",
+  "zone_event 0383 warp 1",
+  "scr_seq 0613 @0x000B",
+  "scr_seq 0150 @0x004E",
+  "scr_seq 0150 @0x0201",
+  "scr_seq 0150 @0x0245",
+  "scr_seq 0150 @0x0297",
+  "scr_seq 0150 @0x029F",
+  "zone_event 0149 warp 10",
+  "zone_event 0149 object 18",
+  "scr_seq 0629 @0x0006",
+  "scr_seq 0166 @0x0012",
+  "scr_seq 0166 @0x0050",
+  "scr_seq 0166 @0x0082",
+  "zone_event 0163 object 2",
+  "zone_event 0163 warp 0",
+  "scr_seq 0165 @0x004C",
+  "scr_seq 0165 @0x00F6",
+  "scr_seq 0165 @0x00FA",
+  "scr_seq 0150 @0x04C0",
+  "scr_seq 0150 @0x04C8",
+  "scr_seq 0150 @0x055E",
+  "msg 0153 #0",
+  "msg 0153 #3",
+  "msg 0165 #1",
+]
+notes = "Version: Route 222 wild encounters differ (d_enc_data/p_enc_data 0170, dp_script.py version-diff); no script differs. Sight trainers near the road: Nicola (771,777) S 2, Trey (751,782) E 6, Holly (787,788) N 2, Marc (808,781) E 3, Conner (812,781) W 3, Luther (814,785) S 2 (zone_event 0380), all lv 37-43. Do NOT walk Sunyshore row z=743 x=853..857 (Jasmine coord 0 would spend var 0x407E without HM07, see 54)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 825
+z = 790
+max = 9000
+note = "Route 222 east end, warp 0 (825,790) -> gatehouse 398 (1,7) (zone_event 0380 warp 0); [INFERENCE] the road joins Valor Lakefront's east edge; sight trainers above may stop the walk"
+# PHASE2: if a sight trainer engages, insert advance_text + auto_battle + advance_text and re-issue this walk_to.
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_222_SUNYSHORE_GATEOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "gatehouse warp 1 (10,7) -> Sunyshore warp 3 (832,790) (zone_event 0383 warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "flint-arrives"
+note = "ON_FRAME var 0x407E==0 (scr_seq 0613 @0x000B) -> Flint walks over (player z 790/791, scr_seq 0150 @0x0201), msg 0153 #0-#1, re-placed at the gym door (845,748): ClearFlag 0x257 @0x0297, SetVar 0x407E 1 @0x029F"
+
+[[step]]
+do = "walk_to"
+x = 886
+z = 790
+note = "Vista Lighthouse door, warp 10 (886,790) -> elevator 516 (zone_event 0149 warp 10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE_VISTA_LIGHTHOUSE_OBSERVATION_DECK"
+max = 3000
+note = "elevator ON_FRAME (scr_seq 0629 @0x0006): floor 1 -> Warp 164,0,6,10 (scr_seq 0166 @0x0050)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 5
+face = "up"
+interact = true
+note = "Volkner SPRITE_LEADER8 (6,4), hidden_flag 0x29F (zone_event 0163 object 2), script #4 scr_seq 0165 @0x004C"
+
+[[step]]
+do = "advance_text"
+shot = "volkner-lighthouse"
+note = "msg 0165 #0-#2; Volkner leaves: RemoveEvent 2 @0x00F6 (0x29F), SetFlag 0x162 @0x00FA"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 9
+note = "deck warp 0 (6,9) -> elevator (zone_event 0163 warp 0); floor 0 -> Warp 150,0,886,791 (scr_seq 0166 @0x0082)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SUNYSHORE"
+max = 3000
+
+[[step]]
+do = "walk_to"
+x = 845
+z = 749
+face = "up"
+interact = true
+note = "Flint at (845,748) in front of the gym door (845,747) (scr_seq 0150 @0x0283); [INFERENCE] approach tile from the south"
+
+[[step]]
+do = "advance_text"
+note = "0x162 set -> msg 0153 #3, Flint walks off: RemoveEvent 18 @0x055E (hidden_flag 0x257)"
+
+[expect]
+map = "MAP_SUNYSHORE"
+flags = ["0x162", "0x29F", "0x257"]
+vars = { "0x407E" = 1 }

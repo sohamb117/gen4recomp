@@ -1,0 +1,22 @@
+# Diamond story 06-route203-rival-oreburgh-gate-hm06: standalone start (--lab, or no end save from 05).
+# Standard header + lab party + the cumulative state after 05, then the milestone's start. Needs 05's 0x4077 = 2 and the starter var 0x4030 = SPECIES_TURTWIG (rival team, scr_seq 0394 @0x0112).
+# Names resolve through tests/gameplay/labc.py --game diamond; flag/var lines cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Standard lab party (as Platinum's): Surf in slot 0 and slots 1-3 cleared, so an empty Surf
+# falls back to Struggle instead of stalling A-only battles; Staraptor carries the field moves.
+# Opponents: Barry trdata.json #248 (STARLY 7, CHIMCHAR 9); optional Route 203 #4, #323, #355, #322, #356; gate 1F #329, #265 (all lv4-9).
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_JUBLIFE 2  # Pokecenter door (180,776), zone_event 0002 warp 2

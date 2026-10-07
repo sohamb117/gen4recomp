@@ -1,0 +1,24 @@
+# Diamond story 19-hearthome-contest-hall-rival: standalone start (--lab, or no end save from 18-coronet-route208-hearthome-keira).
+# Standard header + lab party + the cumulative state after 18-coronet-route208-hearthome-keira, then the milestone's start.
+# Names resolve through tests/gameplay/labc.py --game diamond; flag/var lines cite the script that sets them.
+# Barry's team needs the starter var 0x4030 = SPECIES_TURTWIG from 01's delta (GetStarter, unk_0205F314.s:86-93).
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party: Surf alone in slot 0 (slots 1-3 cleared, so an empty Surf falls back to Struggle instead of stalling
+# A-only battles); the Leppa Berry refills it once [INFERENCE: Gen 4 Leppa restores 10 PP to a move at 0 PP].
+# Opponent: TRAINER_PKMN_TRAINER_BARRY_CEDRIC_5 trdata.json #471 (STARLY 19, BUIZEL 20, ROSELIA 20, MONFERNO 21).
+# Staraptor carries Cut (scr_seq 0375 @0x004A, @0x005D) and Rock Smash (@0x0141, @0x015A).
+party SPECIES_EMPOLEON 60 ITEM_LEPPA_BERRY
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+map MAP_HEARTHOME 465 698 FACE_UP  # one tile south of the Pokecenter door (465,697), zone_event 0085 warp 5

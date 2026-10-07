@@ -1,0 +1,173 @@
+# Proves the D/P road to Canalave after the Relic Badge (no Fly yet in D/P): Hearthome -> Route 208 -> Mt. Coronet 1F ->
+# Route 207 -> Oreburgh -> Oreburgh Gate -> Route 203 -> Jubilife -> Route 218 (Surf, BADGE_RELIC) -> the Canalave gatehouse,
+# where Rowan's assistant upgrades the Pokédex (gender entries) on coord 0.
+# Start: MAP_HEARTHOME at the gym door (warp 8, 499,697) -> end: MAP_CANALAVE at the gatehouse door (warp 7, 63,754).
+title = "Hearthome to Canalave: Route 218 by Surf, Pokédex upgrade in the gatehouse"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 19500
+refs = [
+  "zone_event 0085 warp 8 (499,697) -> MAP_HEARTHOME_GYM_FIRST_QUESTION_ROOM; warp 14 (454,726) -> MAP_HEARTHOME_ROUTE_208_GATEHOUSE",
+  "zone_event 0085 warp 5 (465,697) -> MAP_HEARTHOME_POKECENTER_1F warp 0 (8,12); zone_event 0100 object 0 SPRITE_PCWOMAN1 (8,4) -> scr_seq 0097 script_1 (std 2002, heal)",
+  "zone_event 0085 coord 1 (461,725) 1x5 var 0x40F6==0 -> scr_seq 0090 script_23 (Keira/Buneary; SetVar 0x40F6,1 @0x0E56)",
+  "zone_event 0085 coord 2 (455,724) 1x6 var 0x407B==1 -> scr_seq 0090 script_33",
+  "zone_event 0108 warp 0 (10,7) / warp 1 (1,7) -> MAP_ROUTE_208 warp 0",
+  "zone_event 0339 warp 3 (392,724) -> MAP_MOUNT_CORONET_SOUTH_1F warp 1",
+  "zone_event 0204 warp 1 (27,20); warp 0 (4,8) -> MAP_ROUTE_207 warp 0; coord 0 (14,23) var 0x4096==0; Rock Smash rocks (16..25,22..23)",
+  "zone_event 0338 warp 0 (341,712); coord 0 (300,708) 8x1 var 0x408C==0 -> scr_seq 0403 script_2",
+  "zone_event 0044 warp 10 (258,749) -> MAP_OREBURGH_GATE_1F warp 1; coord 1 (262,748) 1x4 var 0x4079==2",
+  "zone_event 0250 warp 1 (27,22); warp 0 (4,22) -> MAP_ROUTE_203 warp 0 (246,749)",
+  "zone_event 0329 coord 0 (196,757) 1x4 var 0x4088==0 -> scr_seq 0394 script_6",
+  "zone_event 0002 warp 12 (128,758) -> MAP_ROUTE_218_JUBLIFE_GATEHOUSE warp 1",
+  "zone_event 0374 warp 1 (10,7); warp 0 (1,7) -> MAP_ROUTE_218 warp 2 (121,758)",
+  "zone_event 0373 warp 0 (70,754) -> MAP_ROUTE_218_CANALAVE_GATEHOUSE warp 1; trainers objects 0-3 (Tony 300, Skyler 338, Miguel 153, Luc 154)",
+  "games/diamond/arm9/src/field_move.c:265 (Surf needs BADGE_RELIC)",
+  "zone_event 0375 coord 0 (7,6) 1x3 var 0x4105==0 -> scr_seq 0441 script_2; object 1 SPRITE_ASSISTANTM (5,7) hidden_flag 0x23A",
+  "scr_seq 0441 @0x0046 UnlockGenderEntries (games/diamond/arm9/src/scrcmd.c:3867)",
+  "scr_seq 0441 @0x004E SetFlag 0x23A",
+  "scr_seq 0441 @0x0052 RemoveEvent 1 (sets hidden_flag 0x23A, games/diamond/arm9/src/map_object.c:295-299)",
+  "scr_seq 0441 @0x0056 SetVar 0x4105, 1",
+  "zone_event 0375 warp 0 (1,7) -> MAP_CANALAVE warp 7 (63,754)",
+  "map_header.c:472 MAP_ROUTE_218 d_enc_data 0167 / p_enc_data 0167 (banks differ: version-diff)",
+]
+notes = "Estimate: Pokémon Center heal after Fantina (~1500), ~430 walked tiles across 9 maps (~7000), 12 warps (~1500), surf crossing (~1500), gatehouse text (~1500), ~6 wild battles (~5000). Pearl differs only in Route 218/207 wild encounters (version-diff d_enc 0148/0167), not in scripts. Prior-state assumptions (all in earlier deltas): 0x40F6/0x4096/0x408C/0x4088 = 1 and 0x4079 = 3, else those scenes play once (advance_text)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 29300
+
+[[step]]
+do = "walk_to"
+x = 465
+z = 697
+max = 2000
+note = "Hearthome Pokémon Center door (warp 5): heal Surf PP/HP after the Fantina run"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "nurse obj0 (8,4) across the counter; [INFERENCE] counter row 5"
+
+[[step]]
+do = "advance_text"
+note = "[INFERENCE] std heal script, YES is the default answer"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "Pokémon Center warp 0 -> Hearthome (465,697)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME"
+
+[[step]]
+do = "walk_to"
+x = 454
+z = 726
+max = 3000
+note = "Hearthome warp 14 -> Route 208 gatehouse; coord 1 (461,725..729) Keira scene only if 0x40F6==0 (scr_seq 0090 script_23), coord 2 (455,724..729) only if 0x407B==1"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_ROUTE_208_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "gatehouse warp 1 -> Route 208 (447,726)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_208"
+
+[[step]]
+do = "walk_to"
+x = 392
+z = 724
+max = 4000
+note = "Route 208 warp 3 -> Mt. Coronet South 1F warp 1 (27,20); wild battles fought by walk_to; [INFERENCE] no HM needed westbound (earlier slices came this way eastbound)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_SOUTH_1F"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+max = 3000
+note = "1F warp 0 -> Route 207 (341,712); [INFERENCE] the Rock Smash rocks (16..25,22..23) are off this path; coord (14,23) only if 0x4096==0"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_207"
+
+[[step]]
+do = "walk_to"
+x = 258
+z = 749
+max = 5000
+note = "Route 207 west (downhill slope, [INFERENCE] passable on foot westbound) seamless into Oreburgh, to warp 10 -> Oreburgh Gate 1F (27,22); coord (262,748..751) idle once 0x4079 = 3 (scr_seq 0002 @0x088B)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH_GATE_1F"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 22
+note = "Gate 1F warp 0 -> Route 203 (246,749)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_203"
+
+[[step]]
+do = "walk_to"
+x = 128
+z = 758
+max = 5000
+note = "Route 203 west, seamless into Jubilife, to warp 12 -> Route 218 Jubilife gatehouse (10,7); Route 203 trainers already beaten in the chain; coord (196,757..760) idle once 0x4088 = 1"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_218_JUBLIFE_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "gatehouse warp 0 -> Route 218 (121,758)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_218"
+shot = "route218"
+# PHASE2: Route 218 Surf crossing. Find the first shore tile west of (121,758) with a map scan of MAP_ROUTE_218 (388);
+#   face the water, A, Yes (Surf needs BADGE_RELIC, games/diamond/arm9/src/field_move.c:265; Empoleon slot 0 knows Surf);
+#   surf west past the fishermen (93,751)/(93,757) (sight 0: talk-only) and Sailor Skyler (76,746) E sight 3, land and walk to
+#   warp 0 (70,754) -> MAP_ROUTE_218_CANALAVE_GATEHOUSE arriving at (10,7). Walk west: coord 0 (7,6..8) fires scr_seq 0441
+#   script_2 (assistant's Pokédex upgrade, msg 461 #2/#4) -> advance_text (shot "dex-upgrade"); then walk_to (1,7)
+#   -> wait_map MAP_CANALAVE (arrive warp 7, 63,754) -> wait_field.
+
+[expect]
+map = "MAP_CANALAVE"
+flags = ["0x23A"]
+
+[expect.vars]
+"0x4105" = 1

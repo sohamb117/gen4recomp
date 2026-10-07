@@ -1,0 +1,90 @@
+# Proves the Flint room: lift link room -> enter-room frame script (walk 2 north, door closes), single battle, exit door.
+# Start: MAP_POKEMON_LEAGUE_BERTHA_FLINT_LINK (4,15) -> end: MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK (next lift room). Nothing checks the previous member's flag.
+
+title = "Elite Four: Flint"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "maps.h:184",
+  "zone_event 0179 coord 0",
+  "zone_event 0179 warp 0",
+  "scr_seq 0648 @0x0000",
+  "scr_seq 0185 @0x000E",
+  "scr_seq 0185 @0x0031",
+  "maps.h:185",
+  "scr_seq 0649 @0x0006",
+  "scr_seq 0186 @0x0071",
+  "scr_seq 0186 @0x0081",
+  "zone_event 0180 object 0",
+  "zone_event 0180 object 2",
+  "zone_event 0180 object 1",
+  "scr_seq 0186 @0x000A",
+  "scr_seq 0186 @0x0026",
+  "trdata.json #263",
+  "scr_seq 0186 @0x003D",
+  "scr_seq 0186 @0x0045",
+  "zone_event 0180 warp 0",
+  "msg 0178 #0",
+  "msg 0178 #1",
+]
+notes = "TRAINER_ELITE_FOUR_FLINT_FLINT (263): RAPIDASH 58, STEELIX 57, DRIFBLIM 58, LOPUNNY 57, INFERNAPE 61 (Sitrus); items 2x Full Restore (trdata.json #263). Link room: ON_TRANSITION Unk025B/Unk025D (scrcmd.c:4047-4063), coord (4,11) runs Unk025C (scrcmd.c:4052, waits) [INFERENCE: the lift ride]. Door/defeat flags are reset by every lobby entry (scr_seq 0180 @0x0022-@0x004E)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 2
+max = 4000
+note = "lift link room: over coord (4,11) (Unk025C) to warp 0 (4,2) -> MAP_POKEMON_LEAGUE_FLINT_ROOM warp 1 (8,11) (zone_event 0179)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_FLINT_ROOM"
+
+[[step]]
+do = "wait_field"
+note = "ON_FRAME var 0x4001==0 (scr_seq 0649 @0x0006): walk 2 north to (8,9), entrance door appears (ClearFlag 0x2A2 @0x0081)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+note = "Flint at (8,5), script #1 (zone_event 0180 object 0)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "e4-flint"
+note = "TRAINER_ELITE_FOUR_FLINT_FLINT (263): RAPIDASH 58, STEELIX 57, DRIFBLIM 58, LOPUNNY 57, INFERNAPE 61 (Sitrus)"
+
+[[step]]
+do = "advance_text"
+note = "SetFlag 0xB2 @0x003D, exit door removed: RemoveEvent 1 @0x0045 (hidden_flag 0x2A6)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 2
+note = "exit warp 0 (8,2) -> MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK warp 1 (4,15) (zone_event 0180 warp 0); go around Flint at (8,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK"
+
+[expect]
+map = "MAP_POKEMON_LEAGUE_FLINT_LUCIAN_LINK"
+flags = ["0xB2", "0x2A6"]
+flags_clear = ["0x2A2"]
+battles = 1

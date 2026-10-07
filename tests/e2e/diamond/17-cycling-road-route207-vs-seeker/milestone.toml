@@ -1,0 +1,164 @@
+# Proves the Cycling Road (Route 206 mounts the Bicycle by script), the south gate, and Dawn's VS Seeker + Dowsing Machine
+# scene on Route 207 (male player; a female player meets Lucas).
+# Start: Eterna Route 206 gatehouse warp 0 (5,2) -> end: Mt. Coronet South 1F (4,8) (18's start).
+title = "Cycling Road, Route 207: VS Seeker"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 14000
+refs = [
+  "maps.h:84",
+  "zone_event 0079 warp 1",
+  "zone_event 0079 coord 0",
+  "maps.h:354",
+  "map_header.c:434",
+  "zone_event 0335 warp 2",
+  "zone_event 0335 warp 4",
+  "zone_event 0335 warp 0",
+  "zone_event 0335 object 0",
+  "zone_event 0335 object 1",
+  "zone_event 0335 object 2",
+  "zone_event 0335 object 3",
+  "zone_event 0335 object 4",
+  "zone_event 0335 object 5",
+  "zone_event 0335 object 6",
+  "zone_event 0335 object 7",
+  "zone_event 0335 object 22",
+  "scr_seq 0400 @0x002D",
+  "scr_seq 0400 @0x0033",
+  "scr_seq 0400 @0x003E",
+  "scr_seq 0400 @0x00A9",
+  "scr_seq 0400 @0x00AD",
+  "scr_seq 0400 @0x00B3",
+  "scr_seq 0400 @0x0022",
+  "scr_seq 0400 @0x0025",
+  "games/diamond/arm9/src/unk_0205EC84.c:345-347",
+  "maps.h:355",
+  "zone_event 0336 warp 2",
+  "zone_event 0336 warp 4",
+  "zone_event 0336 coord 0",
+  "scr_seq 0401 @0x0012",
+  "maps.h:357",
+  "map_header.c:437",
+  "zone_event 0338 coord 0",
+  "zone_event 0338 object 18",
+  "zone_event 0338 warp 0",
+  "zone_event 0338 object 24",
+  "scr_seq 0403 @0x003E",
+  "scr_seq 0403 @0x01F0",
+  "scr_seq 0403 @0x0202",
+  "scr_seq 0403 @0x021F",
+  "scr_seq 0403 @0x0295",
+  "scr_seq 0403 @0x0299",
+  "scr_seq 0403 @0x02AB",
+  "scr_seq 0403 @0x0307",
+  "scr_seq 0403 @0x030F",
+  "scr_seq 0403 @0x0315",
+  "scr_seq 0403 @0x039A",
+  "msg 0426 #0",
+  "msg 0426 #1",
+  "games/diamond/include/poketch.h:17",
+  "trdata.json #25",
+  "trdata.json #29",
+  "trdata.json #26",
+  "trdata.json #30",
+  "trdata.json #27",
+  "trdata.json #31",
+  "trdata.json #28",
+  "trdata.json #32",
+  "trdata.json #451",
+  "trdata.json #34",
+  "trdata.json #35",
+  "trdata.json #33",
+  "trdata.json #37",
+  "trdata.json #36",
+  "trdata.json #38",
+]
+notes = "Version: Route 206/207 wild banks differ (d_enc_data/p_enc_data 0147, 0148; tool version-diff); no script branches, so one dir. Route 206 level script (ON_RESUME by the tool's naming [INFERENCE]) mounts the Bicycle and enters cycling-road mode when arriving from map 80/351 at z 576/681, x 299..306 (scr_seq 0400 @0x003E-@0x00B3), so no Y press is needed. Sight trainers: Route 206 Axel (302,601) E 4, Megan (299,611) N 1, James (304,622) W 5, Nicole (299,631) patrol 2, John (303,644) E 3, Ryan (300,660) N 1, Rachel (299,669) E 3, Kayla (306,675) N 1, Hiker Theodore (311,622) S 2; Route 207 Anthony (320,716) N 5, Lauren (320,710) S 5, Austin (325,725) 2, Justin (335,715) N 5, Kevin (319,721) N 2, Helen (336,722) 2 — all Lv15-19, up to ~25 mons on one path, more than Surf's 15 PP + Leppa's 10 (16 heals first; Struggle at Lv60 still wins)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 21000
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 12
+note = "gatehouse south exit (zone_event 0079 warp 1) -> Route 206 warp 4 (304,576); coord (4..6,7) is off with var 0x40EC == 1 (scr_seq 0085 @0x001D)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_206"
+
+[[step]]
+do = "wait_field"
+note = "arrival from map 80 at z 576: SetFlag 0x994, var 0x411C 1, CyclingRoad 1 (scr_seq 0400 @0x00A9-@0x00B3); ON_FRAME 0x411C==1: RideBike 1, var 0x411C 0 (@0x0022-@0x0025)"
+
+[[step]]
+do = "walk_to"
+x = 302
+z = 681
+run = false
+max = 10000
+note = "down the cycling road to the south gate (zone_event 0335 warp 2) -> MAP_ROUTE_206_CYCLING_ROAD_GATEHOUSE (7,2); cyclists 25/29/26/30/27/28/32/31 and Hiker Theodore 451 may engage [INFERENCE: the slope rolls the bike south]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_206_CYCLING_ROAD_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 12
+run = false
+note = "gate south exit (zone_event 0336 warp 4) -> Route 206 warp 0 (302,688); ON_TRANSITION var 0x40EC = HasItem ITEM_BICYCLE (scr_seq 0401 @0x0012) keeps coord (5..9,7) off"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_206"
+
+[[step]]
+do = "walk_to"
+x = 303
+z = 708
+run = false
+note = "south onto Route 207 (seamless, matrix 0) -> coord (300..307,708) var 0x408C == 0 (zone_event 0338 coord 0)"
+
+[[step]]
+do = "advance_text"
+shot = "vs-seeker"
+note = "male player -> Dawn (scr_seq 0403 @0x0202); 'choose a hand' list (@0x021F, A takes the first entry, both lead to @0x023C); VS Seeker (@0x0295-@0x02A5), Dowsing Machine app (@0x02AB-@0x02B1); RemoveEvent 18, var 0x408C 1, var 0x411B 2 (@0x0307-@0x0315)"
+
+# PHASE2-risk: Route 207 has a muddy slope (Hiker at (307,723): 'That slope's too slippery. You'll need a Bike', scr_seq 0403
+# @0x039A). [INFERENCE] the slope lies between the Oreburgh side and this upper level, so the east walk below does not climb it;
+# if walk_to stalls, find the climb line and the gear toggle (B on the bike, msg 0084 #1).
+
+[[step]]
+do = "walk_to"
+x = 341
+z = 712
+run = false
+max = 8000
+note = "east to the Mt. Coronet door (zone_event 0338 warp 0) -> MAP_MOUNT_CORONET_SOUTH_1F warp 0 (4,8); Lauren (320,710) S 5 and Anthony (320,716) N 5 cover x=320, Justin (335,715) N 5 covers x=335"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_SOUTH_1F"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_MOUNT_CORONET_SOUTH_1F"
+flags = ["0x9E6", "0x97F", "0x1EA"]
+save = [
+  'any(i["item"] == 443 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_VS__SEEKER
+  '6 in s["poketch"]["apps"]',  # POKETCH_DOWSING_MACHINE (include/poketch.h:17)
+]
+
+[expect.vars]
+"0x408C" = 1
+"0x411B" = 2

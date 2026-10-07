@@ -1,0 +1,87 @@
+# Proves the Galactic Lake Verity (Verity Lakefront switches its lake warps on 0x13E), Rowan's briefing ON_FRAME and the Mars
+# battle whose win arms Lake Acuity (Jupiter shown, Acuity Lakefront guards shown, 0x40D3=1). Start: Verity Lakefront (80,845)
+# -> end: Route 211 East (446,527) at the Celestic edge (42's start), via the Fly bridge.
+title = "Lake Verity (Galactic): Mars"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18000
+refs = [
+  "maps.h:338 MAP_VERITY_LAKEFRONT = 334; map_header.c:418 (scr_seq 0379, level scr_seq 0829, zone_event 0319)",
+  "zone_event 0319 warps 0/1 (81,843)/(80,843) -> MAP_LAKE_VERITY, warps 2/3 (80,843)/(81,843) -> MAP_LAKE_VERITY_GALACTIC",
+  "scr_seq 0379 @0x001A-@0x0054 (ON_LOAD/ON_TRANSITION: 0x13E set -> plain-lake warps 0/1 moved to z840)",
+  "zone_event 0319 coords 0/1 (80,844) 2x1 need 0x4082==0/3; scr_seq 0392 @0x04EC SetVar 0x4082,4 (Route 201, S1)",
+  "maps.h:316 MAP_LAKE_VERITY_GALACTIC = 312; map_header.c:396 (scr_seq 0343, level scr_seq 0803, zone_event 0299)",
+  "scr_seq 0803 @0x0010 ON_FRAME_TABLE 0x4097==0 -> scr_seq 0343 script_5 @0x01D0 (Rowan msg 271 #4/#5, @0x0211 SetVar 0x4097,1)",
+  "zone_event 0299 object 7 Mars (55,38) W, object 6 counterpart (54,38), object 5 Rowan; hidden_flag 0x1DE on objects 0-3,7,8",
+  "zone_event 0299 object 0 TRAINER_GALACTIC_GRUNT_14 (419) (43,49) E6; object 1 TRAINER_GALACTIC_GRUNT_15 (420) (48,43) E4; object 2 TRAINER_GALACTIC_F_GRUNT_6 (426) (50,49) W6; object 3 TRAINER_GALACTIC_F_GRUNT_7 (427) (53,43) W4",
+  "trdata.json #419 GLAMEOW 33; #420 STUNKY 32, GLAMEOW 32; #426 SILCOON 32, GOLBAT 32, GLAMEOW 32; #427 BEAUTIFLY 31, GLAMEOW 33",
+  "scr_seq 0343 @0x0247 TrainerBattle 405 (TRAINER_COMMANDER_MARS_MARS_2)",
+  "trdata.json #405 GOLBAT 37, BRONZOR 37, PURUGLY 39 @SITRUS_BERRY",
+  "scr_seq 0343 @0x0275-@0x0289 RemoveEvent 7,8,0,1,2,3; @0x028D SetFlag 0x98E; @0x02BB SetFlag 0xBA",
+  "scr_seq 0343 @0x02BF ClearFlag 0x1D8; @0x02C3 ClearFlag 0x252; @0x02C7 SetVar 0x40D3,1; msg 271 #17 (go to Lake Acuity)",
+  "games/diamond/arm9/src/unk_0205EC84.c:192-195 (0x98E = Lake Verity music after Mars)",
+  "zone_event 0305 object 1 Jupiter (17,44) hidden_flag 0x1D8 (MAP_LAKE_ACUITY_GALACTIC); scr_seq 0811 @0x0006 ON_FRAME 0x40D3==1",
+  "zone_event 0325 objects 1/2 Acuity Lakefront guards hidden_flag 0x252",
+  "games/diamond/arm9/src/map_object.c:295-298 (RemoveEvent sets the hidden flag)",
+  "map_matrix 0 cells: MAP_CELESTIC (14,16) x448-479, MAP_ROUTE_211_EAST (13,16) x416-447 z512-543",
+]
+notes = "Estimate: Rowan's frame script, a 25-tile walk past four sight grunts (possibly a two-trainer double), Mars, the after-scene and the Fly bridge to Celestic."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 27000
+
+[[step]]
+do = "walk_to"
+x = 80
+z = 843
+note = "lake mouth: zone_event 0319 warp 2 (80,843) -> MAP_LAKE_VERITY_GALACTIC warp 1 (46,54) since 0x13E is set"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LAKE_VERITY_GALACTIC"
+
+[[step]]
+do = "advance_text"
+shot = "verity-rowan-briefing"
+note = "ON_FRAME 0x4097==0 (scr_seq 0803 @0x0010) -> scr_seq 0343 script_5: Rowan 'help Dawn/Lucas' (msg 271 #4/#5)"
+
+[[step]]
+do = "walk_to"
+x = 55
+z = 39
+face = "up"
+interact = true
+max = 12000
+note = "Mars obj 7 (55,38); land_data BFS (46,54)->(47,53)->(49,53)->(49,48)->(51,48)->(51,45)->(52,45)->(52,42)->(55,42)->(55,39). (49,49) is in the views of 419 (43,49) E6 and 426 (50,49) W6, (52,43) in 420 (48,43) E4 and 427 (53,43) W4 [INFERENCE: a tile seen by two trainers starts a double battle; slot 0+1 both attack]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "mars-verity"
+note = "TRAINER_COMMANDER_MARS_MARS_2 (405): GOLBAT 37, BRONZOR 37, PURUGLY 39 (trdata.json #405)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "verity-after-mars"
+note = "msg 271 #14-#17; grunts/Mars removed, 0xBA set, Jupiter + Acuity guards shown, 0x40D3=1 (scr_seq 0343 @0x025E-@0x02D9)"
+# PHASE2: Fly bridge Lake Verity -> Route 211 East (42's start), same Fly sequence as 39's bridge with the cursor on Celestic
+#   (Lake Verity Galactic allows Fly: map_header.c:396 fly TRUE). From the Celestic Pokemon Center walk west out of Celestic
+#   (map_matrix 0 cell (14,16)) onto Route 211 East, walk_to (446,527), wait_field.
+
+[expect]
+map = "MAP_ROUTE_211_EAST"
+flags = ["0x1DE", "0x98E", "0xBA"]
+flags_clear = ["0x1D8", "0x252"]
+battles = 1
+
+[expect.vars]
+"0x4097" = 1
+"0x40D3" = 1

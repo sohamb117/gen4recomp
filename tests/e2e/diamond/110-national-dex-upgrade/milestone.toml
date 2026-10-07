@@ -1,0 +1,71 @@
+# National Dex: with Eterna reached and all 150 non-mythical Sinnoh species seen, Rowan reviews the
+# Pokedex, Oak arrives, NationalDex 1, flag 0x2B2 (Battle Zone blockers), Poke Radar. Game completion is
+# not required (only the optional Unk0270 2,1 when 0x964 is set).
+# Start: MAP_SANDGEM_ROWANS_LAB (7,6) below Rowan (7,5). End: same map, National Dex on.
+title = "National Dex upgrade from Rowan and Oak"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 5000
+refs = [
+  "maps.h:426",
+  "zone_event 0400 object 0",
+  "zone_event 0400 object 4",
+  "scr_seq 0920 @0x000B",
+  "scr_seq 0990 @0x031D",
+  "scr_seq 0990 @0x0044-0x006B",
+  "scr_seq 0990 @0x0487-0x04E8",
+  "scr_seq 0990 @0x04B0-0x04C1",
+  "scr_seq 0990 @0x0528-0x052C",
+  "scr_seq 0990 @0x057C",
+  "scr_seq 0990 @0x0587",
+  "scr_seq 0990 @0x058B",
+  "scr_seq 0990 @0x058F",
+  "scr_seq 0990 @0x05D6",
+  "scr_seq 0990 @0x05F5-0x0601",
+  "scr_seq 0990 @0x0610",
+  "scr_seq 0377 @0x0044",
+  "scr_seq 0377 @0x0056",
+  "games/diamond/arm9/src/unk_0205EC84.c:381-383",
+  "games/diamond/arm9/asm/unk_02034E84.s:32-33",
+  "games/diamond/arm9/asm/unk_02034E84.s:246",
+  "games/diamond/arm9/src/pokedex.c:390-392",
+  "games/diamond/arm9/src/pokedex.c:405-414",
+  "games/diamond/arm9/src/pokedex.c:310-316",
+  "games/diamond/arm9/src/pokemon.c:2888-2891",
+  "games/diamond/files/poketool/shinzukan/narc_0000.bin",
+  "games/diamond/arm9/src/scrcmd.c:3872-3880",
+  "games/diamond/include/constants/items.h:656",
+]
+
+[start]
+recipe = "start.recipe"
+# The recipe needs ~165 lab lines (150 dex-seen): LAB_MAX_OPS 512 (E2EHarness2's pc_dp_lab.c; this worktree's is 64).
+
+[run]
+frames = 7500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Rowan SPRITE_DOCTOR (7,5), hidden 0x1B6 (clear in the new-game base) (zone_event 0400 object 0, script #3): NationalDex 2 == 0, flag 0x9BA (Eterna arrival) set, CheckSinnohDexComplete -> L_0487 (scr_seq 0990 @0x0044-0x006B)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "msg 509 #28 'show me your progress?' YES = VAR_RESULT 0 (@0x04B0-0x04C1; [INFERENCE] A takes YES); Oak enters (ClearFlag 0x248 + AddEvent 4), ClearFlag 0x21A, SetFlag 0x2B2, NationalDex 1, Oak leaves (RemoveEvent 4), ITEM_POKE_RADAR via std 2044 (@0x0528-0x0601)"
+shot = "oak"
+
+[[step]]
+do = "wait_field"
+shot = "natdex"
+
+[expect]
+map = "MAP_SANDGEM_ROWANS_LAB"
+flags = ["0x2B2", "0x248"]
+flags_clear = ["0x21A"]
+save = [
+  's["trainer"]["national_dex"] == True',
+  's["pokedex"]["national"] == True',
+  'any(i["item"] == 431 for p in s["bag"].values() for i in p)',   # ITEM_POKE_RADAR
+]

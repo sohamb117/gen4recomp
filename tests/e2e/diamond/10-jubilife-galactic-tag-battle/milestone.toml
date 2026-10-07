@@ -1,0 +1,96 @@
+# Proves the walk back from Oreburgh to Jubilife and the north-exit tag battle with Dawn against two grunts in front of
+# Rowan (then Rowan/Dawn leave and the Jubilife TV man gives the Fashion Case).
+# Start: Oreburgh at the west coord strip (262,749) after Barry's bump (09's end) -> end: Jubilife at the north coord (173..175,743).
+title = "Jubilife: tag battle against Team Galactic"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 8000
+refs = [
+  "maps.h:49 (MAP_OREBURGH = 45, map_header.c:129)",
+  "maps.h:7 (MAP_JUBLIFE = 3, map_header.c:87)",
+  "zone_event 0044 warp 10 (258,749) -> MAP_OREBURGH_GATE_1F warp 1",
+  "zone_event 0250 warp 0 (4,22) -> MAP_ROUTE_203 warp 0",
+  "zone_event 0002 coord 1 (173,743) 3x1 var 0x4077 == 3 -> scr_seq 0002 #4",
+  "zone_event 0002 object 7 (counterpart, hidden_flag 0x198), object 16 (Rowan (175,740), 0x1BB), objects 17/18 (grunts (174,739)/(174,740), 0x1BA)",
+  "zone_event 0002 objects 25/26 (clowns, 0x213), object 28 (clown, 0x256), object 31 (TV man, 0x1A9)",
+  "scr_seq 0002 @0x006E-@0x00B1 (ON_TRANSITION: var 0x4077 >= 3 moves the counterpart to (176,739); 0x4020 = 97 for a male player)",
+  "scr_seq 0002 @0x06AF-@0x0713 (msg 18 #46-#49)",
+  "scr_seq 0002 @0x071F-@0x07FD (partner: GetStarter, male player -> 616/617/618)",
+  "scr_seq 0002 @0x0725 (TrainerBattleWithPartner 0x8004, 414, 415)",
+  "scr_seq 0002 @0x075F-@0x0767 (RemoveEvent 17/18, SetFlag 0x1BA)",
+  "scr_seq 0002 @0x0879-@0x08AB (RemoveEvent 7/16, ClearFlag 0x1B6, SetVar 0x4077 4, 0x4079 3, RemoveEvent 25/26/28, ClearFlag 0x1A9)",
+  "scr_seq 0002 @0x08C4-@0x08F7 (std 2044 ITEM_FASHION_CASE x1, SetFlag 0xF2, accessories Unk01D2 / backdrops Unk01D5)",
+  "scr_seq 0002 @0x08DF (RemoveEvent 31)",
+  "games/diamond/arm9/asm/unk_0205F314.s:86-89 (GetStarter reads var 0x4030)",
+  "trdata.json #414 (TRAINER_GALACTIC_GRUNT_9: ZUBAT 9)",
+  "trdata.json #415 (TRAINER_GALACTIC_GRUNT_10: WURMPLE 9)",
+  "trdata.json #618 (TRAINER_PKMN_TRAINER_DAWN_DAWN_3: PIPLUP 13, partner for a male Turtwig player)",
+]
+notes = "Estimate: Pt 09 (8000) for the same walk + scene. A tag battle: one move for one battler; Surf is a spread move and also hits Dawn (partner fainting does not lose). Partner by GetStarter (var 0x4030) and gender: male player -> SPECIES_CHIMCHAR (390) starter 616 Dawn TURTWIG, SPECIES_PIPLUP (393) 617 Dawn CHIMCHAR, else (Turtwig) 618 Dawn PIPLUP; a female player gets Lucas 613-615 (scr_seq 0002 @0x07AD-@0x082F). Not representable by lab verbs: the random accessories/backdrops the TV man adds (Unk01D2/Unk01D5 @0x08FB-@0x0941). Version: no GetGameVersion branch on this path (version-diff)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 12000
+
+[[step]]
+do = "walk_to"
+x = 258
+z = 749
+note = "Oreburgh west exit (zone_event 0044 warp 10) -> Oreburgh Gate 1F (27,22); the rival strip (262,748..751) already ran in 09 (var 0x4079 3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OREBURGH_GATE_1F"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 22
+note = "gate west mouth (zone_event 0250 warp 0) -> Route 203 (246,749); Diana/Curtis already beaten in the earlier gate milestone [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_203"
+
+[[step]]
+do = "walk_to"
+x = 174
+z = 743
+max = 10000
+note = "Route 203 -> Jubilife (seamless) -> north coord (173..175,743) var 0x4077==3 (zone_event 0002 coord 1); Route 203 trainers are beaten in the earlier Route 203 milestone [INFERENCE]; avoid the Pokecenter strip (172..176,776) (coord 4, var 0x40E7==1)"
+
+[[step]]
+do = "advance_text"
+note = "Rowan asks for help, the grunts threaten, Dawn joins (msg 18 #46-#48)"
+
+[[step]]
+do = "auto_battle"
+shot = "tag-battle"
+note = "TrainerBattleWithPartner 618, 414, 415 (scr_seq 0002 @0x0725): ZUBAT 9 + WURMPLE 9; partner Dawn PIPLUP 13"
+
+[[step]]
+do = "advance_text"
+shot = "fashion-case"
+note = "grunts leave (0x1BA), Rowan's speech, Rowan/Dawn leave (0x4077 4), TV man gives the Fashion Case (0xF2) and leaves (scr_seq 0002 @0x0748-@0x08E3)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_JUBLIFE"
+badges = 1
+badge = ["BADGE_COAL"]
+flags = ["0x1BA", "0x198", "0x1BB", "0x213", "0x256", "0x1A9", "0xF2"]
+flags_clear = ["0x1B6"]
+battles = 1
+save = [
+  'any(i["item"] == 435 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_FASHION_CASE
+]
+
+[expect.vars]
+"0x4077" = 4
+"0x4079" = 3

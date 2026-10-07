@@ -1,0 +1,21 @@
+# Diamond story 36-canalave-rival: standalone start (--lab, or no end save from 35-hearthome-to-canalave-dex-upgrade).
+# Standard header + lab party + the cumulative state after 35-hearthome-to-canalave-dex-upgrade, then the milestone's start.
+# PRIOR must carry the starter var 0x4030 = SPECIES_TURTWIG (GetStarter, scr_seq 0034 @0x02A9 -> TrainerBattle 477).
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party = 34's: Empoleon 60, Surf alone in slot 0. Barry (trdata.json #477): STARAVIA 31, BUIZEL 32, HERACROSS 30,
+# ROSELIA 32, MONFERNO 35 — lv60 STAB Surf one- or two-shots each (Roselia/Buizel resist); a 25-level gap is safe.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_CANALAVE 7   # gatehouse door (63,754), zone_event 0032 warp 7 = 35's end

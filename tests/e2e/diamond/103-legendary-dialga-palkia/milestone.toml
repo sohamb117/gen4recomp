@@ -1,0 +1,75 @@
+# Dialga at Spear Pillar (post-Hall-of-Fame rematch): var 0x4098==5 arms coord 7 below the altar; step on it
+# -> LegendaryBattle 0x8004, 47 where GetGameVersion picks 483 (DIALGA) in Diamond; defeat it.
+# Start: MAP_MOUNT_CORONET_SPEAR_PILLAR (31,27). End: same map, var 0x4098 4. Twin: ../../pearl/103-legendary-dialga-palkia.
+title = "Legendary: Dialga at Spear Pillar (Diamond)"
+status = "planned"
+priority = "P1"
+version = "diamond"
+estimate = 6000
+refs = [
+  "maps.h:224",
+  "zone_event 0217 object 5",
+  "zone_event 0217 object 12",
+  "zone_event 0217 object 13",
+  "zone_event 0217 coord 7",
+  "scr_seq 0690 @0x0000",
+  "scr_seq 0230 @0x0086-0x00A3",
+  "scr_seq 0230 @0x00A5-0x00BC",
+  "scr_seq 0230 @0x011F-0x016A",
+  "scr_seq 0230 @0x01AF-0x01B7",
+  "scr_seq 0230 @0x01CD-0x01E2",
+  "scr_seq 0230 @0x01E8-0x0205",
+  "scr_seq 0230 @0x11F3-0x1247",
+  "scr_seq 0230 @0x1243",
+  "scr_seq 0230 @0x124D-0x1262",
+  "scr_seq 0230 @0x1268-0x1281",
+  "scr_seq 0370 @0x17C6",
+  "scr_seq 0370 @0x17DA",
+  "scr_seq 0192 @0x0180",
+  "scr_seq 0192 @0x01D2-0x01DC",
+  "games/diamond/arm9/asm/unk_020476CC.s:1220-1228",
+  "games/diamond/arm9/src/map_header.c:663-672",
+  "games/diamond/include/config.h:9-10",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 9000
+
+[[step]]
+do = "press"
+keys = "UP"
+note = "onto coord 7 (29..33,26) while var 0x4098==5 -> #14 (zone_event 0217 coord 7, scr_seq 0230 @0x11F3)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "cry of 0x8004 = 483 via L_01E8 (GetGameVersion == 10 Diamond keeps 0x8005=483, else 0x8006=484, @0x01E8-0x0205); SetFlag 0x8E, LegendaryBattle 0x8004, 47 (@0x1243-0x1247)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+shot = "legendary"
+
+[[step]]
+do = "auto_battle"
+note = "A-only never throws a ball: defeated, never caught"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "SetVar 0x4098 4 on any non-loss (@0x1262); Unk02BC != caught -> 'disappeared' text (@0x1281); 0x15F stays clear"
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[expect]
+map = "MAP_MOUNT_CORONET_SPEAR_PILLAR"
+battles = 1
+vars = { "0x4098" = 4 }
+flags_clear = ["0x15F", "0x8E"]
+# version: Diamond Dialga, object gfx var 0x4021 = 154, orb ball ITEM_ADAMANT_ORB (Pearl twin: Palkia)
+# (scr_seq 0230 @0x0086-0x00BC, scr_seq 0370 @0x17C6/@0x17DA, map_header.c:663-672). Same level 47.

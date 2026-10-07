@@ -1,0 +1,23 @@
+# Diamond story 14-gardenia-forest-badge: standalone start (--lab, or no end save from 13).
+# Standard header + lab party + the cumulative state after 13, then the milestone's start. Applied on top of the
+# D/P new-game base save (bedroom); flag/var lines in the prior block cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party: Surf in slot 0 and slots 1-3 cleared (empty Surf -> Struggle, never a stalled A-only battle).
+# Opponents: trdata.json #324 CHERUBI 15 + ROSELIA 15, #259 BUDEW 14/13/15, #260 TURTWIG 17, #348 ROSELIA 17,
+# #315 CHERUBI 19 + TURTWIG 19 + ROSERADE 22: lv 60 Surf one-shots each despite the Grass resistance.
+# Staraptor carries the field moves.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_ROUTE_205_NORTH 1  # 13's end: (259,524), zone_event 0334 warp 1 (= the forest exit zone_event 0201 warp 2's arrival)

@@ -1,0 +1,22 @@
+# Diamond story 07-oreburgh-barry-mine-roark: standalone start (--lab, or no end save from 06).
+# Standard header + lab party + the cumulative state after 06, then the milestone's start. Mine workers have sight 0 (zone_event 0197 objects 5/6): no forced battle.
+# Names resolve through tests/gameplay/labc.py --game diamond; flag/var lines cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Standard lab party (as Platinum's): Surf in slot 0 and slots 1-3 cleared, so an empty Surf
+# falls back to Struggle instead of stalling A-only battles; Staraptor carries the field moves.
+# Opponents: none forced; optional TRAINER_WORKER_COLIN trdata.json #195 (GEODUDE 7, ONIX 7), TRAINER_WORKER_MASON #196 (MACHOP 9).
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_OREBURGH 1  # Pokecenter door (303,756), zone_event 0044 warp 1

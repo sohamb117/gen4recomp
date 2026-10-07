@@ -1,0 +1,57 @@
+# GTS offline: the receptionist's trade path saves, walks the player through the door and starts the
+# Nintendo WFC connection; without WFC data Unk00B2 returns 0 and the script walks back out ("Please do
+# visit again"). D/P has only this building (no Global Terminal 2F/3F).
+# Start: MAP_JUBLIFE_GLOBAL_TRADE_STATION (11,4) below the receptionist (11,3). End: same map, field.
+title = "GTS: offline trade attempt returns to the field"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 3500
+refs = [
+  "maps.h:32",
+  "zone_event 0027 object 0",
+  "zone_event 0027 warp 0",
+  "zone_event 0002 warp 1",
+  "scr_seq 0028 @0x00CC-0x00F7",
+  "scr_seq 0028 @0x00F0",
+  "scr_seq 0028 @0x00FF-0x0142",
+  "scr_seq 0028 @0x01C1-0x01DA",
+  "scr_seq 0028 @0x02DE-0x0310",
+  "scr_seq 0028 @0x01E5-0x01FE",
+  "scr_seq 0028 @0x0271-0x0287",
+  "scr_seq 0028 @0x02A6-0x02D1",
+  "scr_seq 0491 @0x000B",
+  "scr_seq 0028 @0x002E-0x003B",
+  "msg 0041 #0",
+  "msg 0041 #6",
+  "msg 0041 #9",
+  "games/diamond/arm9/src/scrcmd.c:2348-2365",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5300
+
+[[step]]
+do = "press"
+keys = "A"
+note = "receptionist SPRITE_WOMAN6 (11,3) (zone_event 0027 object 0, script #3): bad-egg check, first talk SetFlag 0xC3 + msg 41 #0 (scr_seq 0028 @0x00D4-0x00F4)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "[INFERENCE] A picks menu row 0 'trade' (@0x011B -> L_01C1): 2 non-egg mons (@0x01C1), std 2006 save prompt YES (@0x01E5), HealParty, SetVar 0x40D5 6, walk through the door (@0x01FE-0x025D)"
+shot = "gts-door"
+# PHASE2: Unk00B3 opens the WFC connect screen (sub_0206F3D8, scrcmd.c:2361-2365); record the input that
+# leaves it offline (B / NO) [INFERENCE]. Then Unk00B2 -> 0 when sub_0203384C fails (scrcmd.c:2348-2359),
+# L_02A6 RestoreOverworld, L_02C2 SetVar 0x40D5 0 + msg 41 #6 "Please do visit again." -> advance_text,
+# wait_field (shot "gts-back"). If the run is cut while 0x40D5==6, ON_RESUME/ON_FRAME replay the door exit
+# (scr_seq 0028 @0x002E-0x003B, level scr_seq 0491 @0x000B).
+
+[expect]
+map = "MAP_JUBLIFE_GLOBAL_TRADE_STATION"
+flags = ["0xC3"]
+vars = { "0x40D5" = 0 }
+party_size = 2

@@ -1,0 +1,23 @@
+# Diamond story 24-veilstone-warehouse-tag-battle: standalone start (--lab, or no end save from 22-maylene-cobble-badge).
+# Standard header + lab party + the cumulative state after 22-maylene-cobble-badge, then the milestone's start.
+# Applied on the D/P new-game base save (bedroom), so INIT_NEW_GAME state (scr_seq 0377) is present; RemoveEvent sets
+# an object's hidden_flag (games/diamond/arm9/src/map_object.c:295-299). The starter var comes from the prior deltas.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party (slice convention): Surf in slot 0, slots 1-3 cleared so an empty Surf falls back to Struggle.
+# Opponents: tag battle vs TRAINER_GALACTIC_GRUNT_37 (trdata.json #848: BEAUTIFLY 25, STUNKY 25) and
+# TRAINER_GALACTIC_GRUNT_38 (trdata.json #849: DUSTOX 25, CROAGUNK 25); partner Dawn (trdata.json #624).
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_VEILSTONE_GYM 0  # (12,25), zone_event 0132 warp 0 -> MAP_VEILSTONE warp 13 (684,611)

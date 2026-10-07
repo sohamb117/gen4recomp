@@ -1,0 +1,104 @@
+# Proves the Celestic Ruins painting, the elder's HM03 Surf (Cynthia's grandmother; also arms the Hearthome Gym via
+# 0x98D) and Cyrus's speech outside the ruins (no battle in D/P), which brings Fantina back (0xA5).
+# Start: Celestic Town (463,523) (31's end) -> end: Celestic Town at the ruins door, ITEM_HM03, var 0x4074 = 2.
+title = "Celestic Ruins: the painting, HM03 Surf, Cyrus"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "zone_event 0420 warp 4",
+  "zone_event 0427 warp 0",
+  "zone_event 0427 bg 0",
+  "zone_event 0427 bg 1",
+  "zone_event 0427 object 0",
+  "zone_event 0420 object 4",
+  "zone_event 0423 object 1",
+  "scr_seq 1021 @0x000C",
+  "scr_seq 1021 @0x002D",
+  "scr_seq 1021 @0x0031",
+  "scr_seq 1021 @0x0035",
+  "scr_seq 1021 @0x003B",
+  "scr_seq 1021 @0x0043",
+  "scr_seq 1021 @0x00DE",
+  "scr_seq 1021 @0x00EE",
+  "scr_seq 1021 @0x00F2",
+  "scr_seq 1021 @0x00F6",
+  "scr_seq 1021 @0x0101",
+  "scr_seq 0942 @0x000B",
+  "scr_seq 1012 @0x028C",
+  "scr_seq 1012 @0x02C4",
+  "scr_seq 1012 @0x02C8",
+  "scr_seq 1012 @0x02CC",
+  "scr_seq 0377 @0x005A",
+  "scr_seq 0377 @0x005E",
+  "scr_seq 0377 @0x0062",
+  "scr_seq 0092 @0x0022",
+  "scr_seq 0092 @0x0058",
+  "scr_seq 0097 @0x004C",
+  "msg 0533 #0",
+  "msg 0533 #2",
+  "msg 0533 #3",
+  "msg 0527 #10",
+  "games/diamond/arm9/src/unk_0205EC84.c:47-49",
+  "games/diamond/arm9/src/map_object.c:295-298",
+  "maps.h:453",
+  "map_header.c:533",
+]
+notes = "Unlike Platinum there is no Cyrus battle: scr_seq 1012 #5 is talk only. The only GetGameVersion near here is the grandparents' house bg (scr_seq 1017 @0x0063), off this path, so version = both. msg 0533 #3: Surf in the field needs the Hearthome badge (Relic, 34)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 463
+z = 521
+note = "ruins door, zone_event 0420 warp 4 -> MAP_CELESTIC_RUINS warp 0 (10,20)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CELESTIC_RUINS"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 3
+face = "up"
+interact = true
+note = "painting bg 1 (10,2) (zone_event 0427); the elder's walk-in needs player x 9 or 10 (scr_seq 1021 @0x0043-@0x0063)"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "hm03"
+note = "msg 0533 #0, 0xA7, Cyrus/elder flags, elder (0427 object 0) walks up: msg #1/#2, ITEM_HM03 (@0x00DE std 2044), 0x1CA/0x1E1/0x98D, msg #3, she leaves (hidden 0x247)"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 20
+note = "exit warp 0 (10,20) -> MAP_CELESTIC warp 4 (463,521)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CELESTIC"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "celestic-cyrus"
+note = "ON_FRAME var 0x4074==1 (scr_seq 0942 @0x000B) -> scr_seq 1012 #5: Cyrus (0420 object 4, (461,523)) msg 0527 #9/#10, leaves (hidden 0x1DB), SetFlag 0xA5, 0x4074 = 2"
+
+[expect]
+map = "MAP_CELESTIC"
+flags = ["0xA7", "0x98D", "0xA5", "0x1CA", "0x247", "0x1DB"]
+flags_clear = ["0x1E1"]
+vars = { "0x4074" = 2 }
+save = [
+  'any(i["item"] == 422 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM03
+]

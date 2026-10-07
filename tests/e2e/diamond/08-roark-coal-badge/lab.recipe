@@ -1,0 +1,22 @@
+# Diamond story 08-roark-coal-badge: standalone start (--lab, or no end save from 07).
+# Standard header + lab party + the cumulative state after 07, then the milestone's start. Cf. tests/gameplay/dp/recipes/roark.recipe (same start, EMPOLEON 40 Surf).
+# Names resolve through tests/gameplay/labc.py --game diamond; flag/var lines cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Standard lab party (as Platinum's): Surf in slot 0 and slots 1-3 cleared, so an empty Surf
+# falls back to Struggle instead of stalling A-only battles; Staraptor carries the field moves.
+# Opponents: TRAINER_LEADER_ROARK_ROARK trdata.json #246 (GEODUDE 12, ONIX 12, CRANIDOS 14); Jonathon #244 (GEODUDE 10), Darius #245 (GEODUDE 8, ONIX 8). Surf is x2/x4 on all.
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_OREBURGH_GYM 0  # (5,24), zone_event 0046 warp 0; cf. tests/gameplay/dp/recipes/roark.recipe

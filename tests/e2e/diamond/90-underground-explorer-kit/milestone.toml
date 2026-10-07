@@ -1,0 +1,78 @@
+# Underground Man gives the Explorer Kit and becomes mentor (YES); walk out to Eterna and use the kit
+# to enter the Underground. D/P has no lab underground hook (Platinum's PC_LAB_UNDERGROUND): input-driven.
+# Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door (warp 0, (4,8)). End: MAP_UNDERGROUND (2).
+title = "Underground: Explorer Kit and first entry"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 5500
+refs = [
+  "maps.h:88",
+  "maps.h:6",
+  "zone_event 0083 object 2",
+  "zone_event 0083 warp 0",
+  "zone_event 0064 warp 11",
+  "scr_seq 0089 @0x001E-0x003A",
+  "scr_seq 0089 @0x0041-0x0050",
+  "scr_seq 0089 @0x0054",
+  "scr_seq 0089 @0x0058",
+  "scr_seq 0089 @0x005F-0x0074",
+  "scr_seq 0089 @0x0098",
+  "scr_seq 0089 @0x015E-0x01D3",
+  "scr_seq 0089 @0x01D9-0x01E8",
+  "scr_seq 0089 @0x00B9",
+  "scr_seq 0089 @0x011C",
+  "scr_seq 0205 @0x09C1",
+  "msg 0097 #0",
+  "msg 0097 #4",
+  "msg 0097 #5",
+  "games/diamond/include/constants/items.h:653",
+  "games/diamond/arm9/src/unk_0205EC84.c:96",
+  "games/diamond/arm9/overlays/18/asm/overlay_18.s:8116",
+  "games/diamond/arm9/asm/unk_0205F314.s:86-93",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 8300
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "Underground Man SPRITE_OLDMAN1 at (6,5) (zone_event 0083 object 2, script #1); [INFERENCE] (6,6) walkable"
+
+[[step]]
+do = "advance_text"
+max = 2500
+note = "msg 97 #0, ITEM_EXPLORER_KIT via std 2044 (scr_seq 0089 @0x0044-0x0050), SetFlag 0x79/ClearFlag 0x111, mentor Yes/No (@0x005F): VAR_RESULT 1 = NO -> L_0098; [INFERENCE] A takes the YES default -> SetFlag 0x113 (@0x0070) -> L_015E -> L_01D9 -> L_00B9 SetFlag 0x111 + msg 97 #4"
+shot = "kit"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+note = "door warp 0 -> MAP_ETERNA warp 11 (310,530) (zone_event 0083 warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+
+[[step]]
+do = "wait_field"
+shot = "eterna"
+# PHASE2: the gift does not register the kit; record the D/P bag path (X > BAG > Key Items cursor to
+# ITEM_EXPLORER_KIT 428 > USE), then the descent prompts ([INFERENCE] comms confirm + forced save as in
+# Platinum; not located in the D/P decomp) and wait_map MAP_UNDERGROUND. The kit only works outdoors
+# (msg 97 #5). Arrival runs sub_0205EDAC -> SetFlag 0x96E (unk_0205EC84.c:96, caller overlay_18.s:8116).
+
+[expect]
+map = "MAP_UNDERGROUND"
+flags = ["0x79", "0x113", "0x111"]
+save = ['any(i["item"] == 428 for p in s["bag"].values() for i in p)']   # ITEM_EXPLORER_KIT
+# PHASE2: flag 0x96E (entered) is set in RAM on arrival; it is in the save only if the end quicksave
+# works inside the Underground [INFERENCE] - add "0x96E" to flags once proven.

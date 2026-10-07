@@ -1,0 +1,54 @@
+# Proves Jasmine's coord scene north of the gym: with the Beacon Badge she hands over HM07 Waterfall.
+# Start: Sunyshore gym door (845,747), var 0x407E 1 -> end: Sunyshore coord row (855,743), HM07, var 0x407E 2.
+
+title = "Sunyshore: Jasmine gives HM07 Waterfall"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 5000
+refs = [
+  "zone_event 0149 warp 12",
+  "zone_event 0149 coord 0",
+  "zone_event 0149 object 9",
+  "scr_seq 0150 @0x0073",
+  "scr_seq 0150 @0x0075",
+  "scr_seq 0150 @0x011E",
+  "scr_seq 0150 @0x0125",
+  "scr_seq 0150 @0x0146",
+  "scr_seq 0150 @0x0155",
+  "scr_seq 0150 @0x0159",
+  "scr_seq 0150 @0x01B4",
+  "scr_seq 0150 @0x01BC",
+  "msg 0153 #4",
+  "msg 0153 #6",
+  "msg 0153 #7",
+  "items.h:651",
+]
+notes = "Coord 0 (853..857,743) fires once while var 0x407E==1 and sets it to 2 even without the badge (scr_seq 0150 @0x0075, msg 0153 #5); then HM07 is only given by talking to Jasmine object 9 (857,741), script #9 (@0x01B4: !0x9A and BADGE_BEACON -> L_0146). 52/53 must keep off that row."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 7500
+
+[[step]]
+do = "walk_to"
+x = 855
+z = 743
+note = "coord 0 (853..857,743) var 0x407E==1 -> Jasmine walks over (scr_seq 0150 @0x0073); [INFERENCE] path from the gym door north-east"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "hm07-waterfall"
+note = "msg 0153 #4, #6: std 2044 0x8004=426 ITEM_HM07 (@0x0155), SetFlag 0x9A (@0x0159), msg #7"
+
+[expect]
+map = "MAP_SUNYSHORE"
+flags = ["0xB5", "0x9A"]
+vars = { "0x407E" = 2 }
+save = [
+  'any(i["item"] == 426 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM07
+]

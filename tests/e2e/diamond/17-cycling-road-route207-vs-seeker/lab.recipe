@@ -1,0 +1,24 @@
+# Diamond story 17-cycling-road-route207-vs-seeker: standalone start (--lab, or no end save from 16-bicycle-explorer-kit).
+# Standard header + lab party + the cumulative state after 16-bicycle-explorer-kit, then the milestone's start.
+# Names resolve through tests/gameplay/labc.py --game diamond; flag/var lines cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party: Surf alone in slot 0 (slots 1-3 cleared, so an empty Surf falls back to Struggle instead of stalling
+# A-only battles); the Leppa Berry refills it once [INFERENCE: Gen 4 Leppa restores 10 PP to a move at 0 PP].
+# Opponents (all optional sight trainers, Lv15-19): Route 206 trdata.json #25, #29, #26, #30, #27, #31, #28, #32, #451;
+# Route 207 #34, #35, #33, #37, #36, #38.
+# Staraptor carries Cut (scr_seq 0375 @0x004A MOVE_CUT, @0x005D BADGE_FOREST) and Rock Smash (@0x0141, @0x015A BADGE_COAL).
+party SPECIES_EMPOLEON 60 ITEM_LEPPA_BERRY
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_ETERNA_ROUTE_206_GATEHOUSE 0  # (5,2), arriving from Eterna, zone_event 0079 warp 0

@@ -1,0 +1,70 @@
+# Proves the rotating-gear gym (InitSunyshoreGym / RotateSunyshoreGymGear coord buttons) and Volkner's win script.
+# Start: Sunyshore Gym room 1 (8,14) -> end: room 3, BADGE_BEACON, TM57.
+
+title = "Sunyshore Gym: Volkner and the Beacon Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 26000
+refs = [
+  "maps.h:158",
+  "zone_event 0153 warp 0",
+  "zone_event 0153 warp 1",
+  "zone_event 0153 coord 0",
+  "zone_event 0153 coord 1",
+  "zone_event 0153 object 1",
+  "scr_seq 0152 @0x0018",
+  "scr_seq 0152 @0x001D",
+  "zone_event 0154 coord 0",
+  "zone_event 0154 coord 1",
+  "zone_event 0154 coord 2",
+  "zone_event 0154 warp 1",
+  "zone_event 0154 object 0",
+  "zone_event 0154 object 1",
+  "zone_event 0154 object 2",
+  "scr_seq 0153 @0x001D",
+  "scr_seq 0153 @0x0022",
+  "zone_event 0155 coord 0",
+  "zone_event 0155 coord 1",
+  "zone_event 0155 coord 2",
+  "zone_event 0155 coord 3",
+  "zone_event 0155 object 0",
+  "zone_event 0155 objects 1-4",
+  "scr_seq 0154 @0x0027",
+  "scr_seq 0154 @0x0053",
+  "trdata.json #320",
+  "scr_seq 0154 @0x0079",
+  "scr_seq 0154 @0x0081",
+  "scr_seq 0154 @0x009D",
+  "scr_seq 0154 @0x00B6",
+  "scr_seq 0154 @0x00D7",
+  "scr_seq 0154 @0x00DB",
+  "msg 0156 #2",
+]
+notes = "Volkner (trdata.json #320): RAICHU 46, AMBIPOM 47, OCTILLERY 47, LUXRAY 49 (Sitrus); Dragon Claw OHKOs. His trainer flag 0x690 is not set by the script. Gym trainers (all lv 41-44): Tiera #344 (6,4) E 4; Forrest #341 (4,5) N 3, Jerry #301 (14,11) S 2, Meghan #331 (12,4) S 1; Destiny #285 (4,23) E 3, Preston #302 (3,3) S 2, Lonnie #303 (16,23) S 2, Zachery #281 (21,10) W 1."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 39000
+
+[[step]]
+do = "wait_field"
+# PHASE2: gear/button order per room (InitSunyshoreGym 0/1/2 scr_seq 0152/0153/0154 @0x0018; RotateSunyshoreGymGear N on the
+#   coord buttons, var 0x4000==0). Room 1 (154): buttons (3,8),(13,8) gear 0 -> exit warp 1 (8,2). Room 2 (155): (6,13) gear 0,
+#   (6,8),(11,8) gear 1 -> exit warp 1 (9,2). Room 3 (156): (6,8),(16,13) gear 0, (6,18),(16,18) gear 2 -> Volkner (11,3):
+#   walk_to (11,4) face up interact, advance_text, auto_battle (shot "volkner-battle"), advance_text (shot "beacon-badge").
+#   Find the button sequence from the gear collision code behind ScrCmd 0x175/0x176 (opcodes table) or by PC_LAB_MAPSCAN.
+
+[expect]
+map = "MAP_SUNYSHORE_GYM_ROOM_3"
+badges = 8
+badge = ["BADGE_BEACON"]
+flags = ["0xB6", "0x669", "0x66D", "0x67D", "0x67E", "0x67F", "0x69B", "0x6A5", "0x6A8"]
+battles = 1
+save = [
+  'any(i["item"] == 384 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM57
+  's["trainer"]["badges"] == 8',
+]

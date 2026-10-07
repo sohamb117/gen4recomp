@@ -1,0 +1,23 @@
+# Diamond story 35-hearthome-to-canalave-dex-upgrade: standalone start (--lab, or no end save from 34-hearthome-gym-fantina-relic-badge).
+# Standard header + lab party + the cumulative state after 34-hearthome-gym-fantina-relic-badge, then the milestone's start.
+# PRIOR must carry BADGE_RELIC (Surf, games/diamond/arm9/src/field_move.c:265) and ITEM_HM03 (DPStory07's slice).
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party = the S7 slice's (34's lab.recipe): Empoleon 60 with Surf alone in slot 0 (Surf for Route 218 and A-spam;
+# empty slots -> Struggle, never a stall). Only wild battles here (Route 208/207/203/218 grass and water, d_enc 0148/0167
+# differ D vs P); Route 218 trainers are optional: Tony LUXIO 31 (trdata.json #300), Skyler MANTYKE 27 + GYARADOS 31 (#338).
+# Staraptor carries Rock Smash in case the Mt. Coronet 1F rocks (zone_event 0204 objects 0-3) block (not expected).
+party SPECIES_EMPOLEON 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_HEARTHOME 8   # gym door (499,697), zone_event 0085 warp 8 = 34's end

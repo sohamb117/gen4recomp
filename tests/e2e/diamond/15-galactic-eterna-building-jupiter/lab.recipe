@@ -1,0 +1,24 @@
+# Diamond story 15-galactic-eterna-building-jupiter: standalone start (--lab, or no end save from 14-gardenia-forest-badge).
+# Standard header + lab party + the cumulative state after 14-gardenia-forest-badge, then the milestone's start.
+# Names resolve through tests/gameplay/labc.py --game diamond; flag/var lines cite the script that sets them.
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31415
+money 20000
+# Lab party: Surf alone in slot 0 (slots 1-3 cleared, so an empty Surf falls back to Struggle instead of stalling
+# A-only battles); the Leppa Berry refills it once [INFERENCE: Gen 4 Leppa restores 10 PP to a move at 0 PP].
+# Opponents: TRAINER_COMMANDER_JUPITER_JUPITER trdata.json #406 (ZUBAT 18, SKUNTANK 20); building grunts #410, #421,
+# #422, #412, #423 and TRAINER_SCIENTIST_TRAVON #831 (Lv12-15) — Lv60 Surf wins each in one hit.
+# Staraptor carries Cut (scr_seq 0375 @0x004A MOVE_CUT, @0x005D BADGE_FOREST) and Rock Smash (@0x0141, @0x015A BADGE_COAL).
+party SPECIES_EMPOLEON 60 ITEM_LEPPA_BERRY
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_NONE
+party-move 0 2 MOVE_NONE
+party-move 0 3 MOVE_NONE
+party SPECIES_STARAPTOR 50 ITEM_NONE
+party-move 1 0 MOVE_AERIAL_ACE
+party-move 1 1 MOVE_ROCK_SMASH
+party-move 1 2 MOVE_CUT
+# @@PRIOR@@
+# -- start --
+warp MAP_ETERNA 10  # Eterna Gym door (312,562), zone_event 0064 warp 10 (14-gardenia-forest-badge's end)

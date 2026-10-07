@@ -1,0 +1,99 @@
+# Proves the first arrival in Jubilife (the friend points to the Trainers' School) and the Parcel hand-off to Barry in
+# the Trainers' School (Town Map), which opens the Poketch campaign (president and clowns 1-2 unhidden).
+# Start: Route 202 (180,827) after the catching tutorial -> end: Jubilife City outside the Trainers' School.
+title = "Jubilife: the Trainers' School and the Town Map"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 7000
+refs = [
+  "zone_event 0002 coord 0",
+  "scr_seq 0002 @0x0122",
+  "scr_seq 0002 @0x0200",
+  "scr_seq 0002 @0x0208",
+  "zone_event 0002 object 7",
+  "zone_event 0002 warp 7",
+  "zone_event 0028 object 1",
+  "scr_seq 0029 @0x004F",
+  "scr_seq 0029 @0x0060-0x006C",
+  "scr_seq 0029 @0x00F6",
+  "scr_seq 0029 @0x00FE",
+  "scr_seq 0029 @0x0104",
+  "scr_seq 0029 @0x0108",
+  "scr_seq 0029 @0x010C",
+  "zone_event 0028 warp 0",
+  "zone_event 0002 coord 2",
+  "scr_seq 0002 @0x04A4",
+  "map_header.c:87",
+  "trdata.json #342",
+  "trdata.json #345",
+]
+notes = "Optional talk-only school trainers: TRAINER_SCHOOL_KID_M_HARRISON (trdata.json #342, ABRA 6) and TRAINER_SCHOOL_KID_F_CHRISTINE (#345, ABRA 6), scr_seq 0029 @0x01EC/@0x02D5. Until the Poketch, the man at Jubilife's east exit turns the player back (coord 2 (188,757..760) 0x4077==1, scr_seq 0002 @0x04A4)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 10500
+
+[[step]]
+do = "walk_to"
+x = 174
+z = 796
+max = 6000
+note = "Jubilife coord 0 (173..176,796) 0x4077==0 (zone_event 0002); from 03's end a seamless walk north up Route 202 (optional sight trainers fought)"
+
+[[step]]
+do = "advance_text"
+shot = "jubilife-friend"
+note = "friend walks up (ClearFlag 0x198 @0x0122), points to the Trainers' School, leaves (RemoveEvent 7 @0x0200), 0x4077 1 (@0x0208); no YesNo"
+
+[[step]]
+do = "walk_to"
+x = 168
+z = 776
+note = "Trainers' School door (zone_event 0002 warp 7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_JUBLIFE_TRAINER_SCHOOL"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 4
+face = "up"
+interact = true
+note = "Barry (6,3) (zone_event 0028 object 1, movement 14 [INFERENCE: LOOK_NORTH as Platinum's movement table]); talk from the tile south of him"
+
+[[step]]
+do = "advance_text"
+shot = "town-map"
+note = "Parcel taken (scr_seq 0029 @0x004F), Town Map (@0x0060-@0x006C), Barry leaves (@0x00F6), 0x40E7 1, flag 0xF1, president and clowns 1-2 unhidden (@0x00FE-@0x010C)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 11
+note = "school exit (zone_event 0028 warp 0) -> Jubilife warp 7 (168,776)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_JUBLIFE"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_JUBLIFE"
+flags = ["0x198", "0x212", "0xF1"]
+flags_clear = ["0x213", "0x214"]
+save = [
+  'any(i["item"] == 442 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TOWN_MAP
+  'not any(i["item"] == 459 for k, p in s["bag"].items() if k != "registered" for i in p)',  # no ITEM_PARCEL
+]
+
+[expect.vars]
+"0x4077" = 1
+"0x40E7" = 1

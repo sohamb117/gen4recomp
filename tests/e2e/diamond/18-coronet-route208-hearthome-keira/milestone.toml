@@ -1,0 +1,142 @@
+# Proves Cyrus's Mt. Coronet monologue, the Route 208 crossing, and the Hearthome arrival scene (Keira's runaway Buneary).
+# Start: Mt. Coronet South 1F warp 0 (4,8) -> end: Hearthome City on the arrival coord (461,726) after Keira leaves (19's start).
+title = "Mt. Coronet, Route 208, Hearthome arrival"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 10000
+refs = [
+  "maps.h:211",
+  "map_header.c:291",
+  "zone_event 0204 coord 0",
+  "zone_event 0204 object 6",
+  "zone_event 0204 object 0",
+  "zone_event 0204 object 1",
+  "zone_event 0204 object 2",
+  "zone_event 0204 object 3",
+  "zone_event 0204 warp 0",
+  "zone_event 0204 warp 1",
+  "scr_seq 0217 @0x000C",
+  "scr_seq 0217 @0x005B",
+  "scr_seq 0217 @0x005F",
+  "msg 0216 #1",
+  "scr_seq 0375 @0x0141",
+  "scr_seq 0375 @0x015A",
+  "maps.h:358",
+  "map_header.c:438",
+  "zone_event 0339 warp 3",
+  "zone_event 0339 warp 0",
+  "zone_event 0339 object 0",
+  "zone_event 0339 object 1",
+  "zone_event 0339 object 2",
+  "zone_event 0339 object 3",
+  "zone_event 0339 object 4",
+  "zone_event 0339 object 5",
+  "zone_event 0339 object 6",
+  "zone_event 0339 object 7",
+  "zone_event 0339 object 20",
+  "maps.h:113",
+  "zone_event 0108 warp 0",
+  "zone_event 0108 warp 1",
+  "maps.h:90",
+  "map_header.c:170",
+  "zone_event 0085 warp 14",
+  "zone_event 0085 coord 1",
+  "zone_event 0085 coord 2",
+  "zone_event 0085 object 33",
+  "zone_event 0085 object 34",
+  "scr_seq 0090 @0x0D38",
+  "scr_seq 0090 @0x0E05",
+  "scr_seq 0090 @0x0E09",
+  "scr_seq 0090 @0x0E3F",
+  "scr_seq 0090 @0x0E52",
+  "scr_seq 0090 @0x0E56",
+  "msg 0098 #2",
+  "trdata.json #39",
+  "trdata.json #40",
+  "trdata.json #41",
+  "trdata.json #42",
+  "trdata.json #43",
+  "trdata.json #44",
+  "trdata.json #45",
+]
+notes = "D/P has Cyrus here too: SPRITE_GINGABOSS (15,17), hidden_flag 0x1C9 is never set before this scene, coord (14,23) var 0x4096 == 0. Route 208 sight trainers: Robert (408,723) W 2 GEODUDE 17 x2, Alexander (390,719) E 2 GOLBAT/GRAVELER/ONIX 35, Jonathan (420,722) N 2 ONIX 19, Kyle (405,714) 2 MACHOP 19, Hannah (433,720) N 2, William (439,724) E 4; Fisherman Cody (413,727) sight 0 (talk only, Lv31). Lv60 Surf beats all. Hearthome coord 2 (455,724) and coord 0 (484..489,718) need var 0x407B == 1 (set in 19's Contest Hall), so the rival does not appear yet."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 15000
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 23
+note = "coord (14,23) var 0x4096 == 0 (zone_event 0204 coord 0) -> Cyrus walks down from (15,17)"
+
+[[step]]
+do = "advance_text"
+shot = "cyrus-coronet"
+note = "Cyrus monologue, RemoveEvent 6, var 0x4096 1 (scr_seq 0217 @0x000C-@0x005F)"
+
+# PHASE2: Rock Smash rocks stand at (16,23), (20,23), (24,23), (25,22) (zone_event 0204 objects 0-3, map-temp flags 0x20-0x23)
+# between the coord and the east exit (27,20); whether they block was not derived from collision. walk_to treats a rock as
+# an object; if it reports no path, walk_to the tile west of the blocking rock facing it with interact = true and
+# advance_text (Rock Smash from Staraptor slot 1: scr_seq 0375 @0x0141 MOVE_ROCK_SMASH, @0x015A BADGE_COAL; A = YES).
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 20
+max = 6000
+note = "east exit (zone_event 0204 warp 1) -> Route 208 warp 3 (392,724)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_208"
+
+[[step]]
+do = "walk_to"
+x = 447
+z = 726
+max = 8000
+note = "east along Route 208 to the Hearthome gatehouse (zone_event 0339 warp 0) -> MAP_HEARTHOME_ROUTE_208_GATEHOUSE warp 1 (1,7); Rock Smash rocks (419,713), (420,714), (420,715), (390,717), (391,718) [INFERENCE: off the walking line]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_ROUTE_208_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "gatehouse east exit (zone_event 0108 warp 0) -> Hearthome warp 14 (454,726)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME"
+
+[[step]]
+do = "walk_to"
+x = 461
+z = 726
+note = "coord (461,725..729) var 0x40F6 == 0 (zone_event 0085 coord 1) -> Buneary and Keira run in from the east"
+
+[[step]]
+do = "advance_text"
+shot = "hearthome-keira"
+note = "ClearFlag 0x25A/0x25B, AddEvent 34/33, Keira thanks you, RemoveEvent 33/34, var 0x40F6 1 (scr_seq 0090 @0x0E05-@0x0E56)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEARTHOME"
+flags = ["0x1C9", "0x25A", "0x25B"]
+flags_clear = ["0x224"]
+
+[expect.vars]
+"0x4096" = 1
+"0x40F6" = 1
+"0x407B" = 0
