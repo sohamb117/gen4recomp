@@ -35,7 +35,13 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 12000
+frames = 18000
+
+[[step]]
+do = "heal"
+x = 472
+z = 538
+note = "Celestic Pokemon Center first (zone_event 0420 warp 5): Route 210 North's trainers (30) leave the chain's lead with few PP for the grunt and the ruins"
 
 [[step]]
 do = "walk_to"

@@ -39,7 +39,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 30000
+frames = 50000
 
 # PHASE2-risk: [INFERENCE] the rocks (497,540)/(498,541) and the tree (559,531) on Route 210 North (zone_event 0348 objects
 # 13/22/14, map-temp hidden flags 0x21/0x22/0x20) sit off the main path; if walk_to reports no path, smash/cut them
