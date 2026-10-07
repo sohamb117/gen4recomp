@@ -1305,8 +1305,15 @@ def bot_fly(s, step, ctx):
     s.run(20)
     if s.shot_dir:
         s.dump(os.path.join(s.shot_dir, "fly-map.ppm"))
-    s.run(2, "a")
-    if not s.run(_int(step, "max", 1500), until="map_id=%d" % dest):
+    # A picks the hovered town; D/P's fly map can let the first press go (seen: Veilstone hovered, no flight), so
+    # press again while the map is still up
+    flown = False
+    for _ in range(5):
+        s.run(4, "a")
+        if s.run(120, until="map_id=%d" % dest):
+            flown = True
+            break
+    if not flown and not s.run(_int(step, "max", 1500), until="map_id=%d" % dest):
         raise HarnessError("fly: still on map %d, not %s (%d)" % (s.map_id, step["map"], dest))
     bot_wait_field(s, {}, ctx)
     p = s.probe()
