@@ -1,0 +1,63 @@
+--- a/lib/NitroSDK/src/os/os_exception.c
++++ b/lib/NitroSDK/src/os/os_exception.c
+@@ -8,11 +8,13 @@
+     u32 debug[4];
+ } OSiExContext;
+ 
+-static OSiExContext OSi_ExContext;
+-static OSExceptionHandler OSi_UserExceptionHandler;
+-static void *OSi_UserExceptionHandlerArg;
+-static void *OSi_DebuggerHandler = NULL;
+-static u32 OSi_ExceptionHookStack[8];
++/* nativeplat: not static; the asm bodies are recompiled in another object
++ * (pc/mk/game.mk extracts them) and load these by name. */
++OSiExContext OSi_ExContext;
++OSExceptionHandler OSi_UserExceptionHandler;
++void *OSi_UserExceptionHandlerArg;
++void *OSi_DebuggerHandler = NULL;
++u32 OSi_ExceptionHookStack[8];
+ 
+ asm void OSi_GetAndDisplayContext(void);
+ asm void OSi_SetExContext(void);
+@@ -117,33 +119,15 @@
+     bx lr
+ }
+ 
++/* nativeplat: the ROM switches to system mode on the exception stack around
++ * the user handler (a statement-level asm block, which neither clang nor the
++ * asm extraction can take). The host raises no CPU exception and replaces
++ * OSi_ExceptionHandler (pc/host_overrides.txt); this keeps the call itself:
++ * handler(&OSi_ExContext, arg) inside the protection-unit bracket. */
+ void OSi_DisplayExContext(void) {
+     if (OSi_UserExceptionHandler) {
+-        // asm must be on its own line
+-        asm
+-        {
+-            /* *INDENT-OFF* */
+-            mrs r2, cpsr
+-            mov r0, sp
+-            ldr r1, =0x9F // why not mov?
+-            msr cpsr_fsxc, r1
+-            mov r1, sp
+-            mov sp, r0
+-            stmdb sp!, {r1, r2}
+-            bl OS_EnableProtectionUnit
+-            ldr r0, =OSi_ExContext
+-            ldr r1, =OSi_UserExceptionHandlerArg
+-            ldr r1, [r1]
+-            ldr r12, =OSi_UserExceptionHandler
+-            ldr r12, [r12]
+-            ldr lr, =@ret
+-            bx r12
+-@ret:
+-            bl OS_DisableProtectionUnit
+-            ldmia sp!, {r1, r2}
+-            mov sp, r1
+-            msr cpsr_fsxc, r2
+-            /* *INDENT-ON* */
+-        }
++        OS_EnableProtectionUnit();
++        OSi_UserExceptionHandler((u32)&OSi_ExContext, OSi_UserExceptionHandlerArg);
++        OS_DisableProtectionUnit();
+     }
+ }

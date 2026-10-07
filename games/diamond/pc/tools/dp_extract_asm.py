@@ -74,6 +74,8 @@ MARKER = re.compile(r'^#\s*(\d+)\s+"((?:[^"\\]|\\.)*)"')
 PRAGMA_THUMB = re.compile(r"^\s*#\s*pragma\s+thumb\s+(on|off)\b")
 XMAP_CODE = re.compile(
     r"^\s+([0-9A-Fa-f]{8})\s+([0-9A-Fa-f]{8})\s+\.(text|itcm)\s+(\S+)\s+\((\S+)\)")
+MEMBER_OFFSET = re.compile(
+    r"\b([A-Za-z_]\w*)\.([A-Za-z_]\w*(?:\[[^\]]*\])*(?:\.[A-Za-z_]\w*(?:\[[^\]]*\])*)*)")
 ADDR_LABEL = re.compile(r"\b_([0-9A-Fa-f]{8})\b")
 
 # Casts and integer suffixes the SDK's register/constant macros carry.
@@ -149,6 +151,10 @@ def fold(expr):
 def split_operand(s, start):
     """End index of the operand that starts at s[start]."""
     depth = 0
+    # Brackets opened inside the operand (an mwcc member offset such as
+    # `#OSiExContext.debug[1]`) close inside it; a `]` at bracket depth 0
+    # ends a memory operand.
+    bdepth = 0
     i = start
     while i < len(s):
         c = s[i]
@@ -158,6 +164,10 @@ def split_operand(s, start):
             if depth == 0:
                 break
             depth -= 1
+        elif c == "[":
+            bdepth += 1
+        elif c == "]" and bdepth:
+            bdepth -= 1
         elif depth == 0 and (c in ",]}!;" or s.startswith("//", i)):
             break
         i += 1
@@ -180,10 +190,15 @@ class Folder(object):
     def probe(self, expr):
         if expr in self.cache:
             return self.cache[expr]
+        # mwcc's inline assembler spells a member offset `#Type.member`
+        # (HG/SS's os_irqHandler.c: `#OSThread.link.next`,
+        # os_exception.c: `#OSiExContext.context.r[4]`): offsetof in C.
+        c_expr = MEMBER_OFFSET.sub(
+            lambda m: "__builtin_offsetof(%s, %s)" % (m.group(1), m.group(2)), expr)
         fd, path = tempfile.mkstemp(suffix=".c", prefix=".dp_imm_", dir=self.workdir)
         with os.fdopen(fd, "w") as fh:
             fh.write("%s\nconst unsigned long __dp_imm = (unsigned long)(%s);\n"
-                     % (self.includes, expr))
+                     % (self.includes, c_expr))
         r = subprocess.run(shlex.split(self.cc) + ["-S", "-o", "-", path],
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                            universal_newlines=True)
