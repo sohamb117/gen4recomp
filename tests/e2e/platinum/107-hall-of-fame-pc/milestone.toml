@@ -1,10 +1,10 @@
 # Hall of Fame PC: with FLAG_GAME_COMPLETED the Pokemon Center PC menu shows HALL OF FAME, which
-# opens the PC HoF screen from the extra save written by the real league clear.
+# opens the PC HoF screen from the extra save written by the real league clear. Chained from
+# 56-hall-of-fame-credits' end save (run with --out at the story chain's output) with only the map line.
 # Start: JUBILIFE_CITY_POKECENTER_1F (12,4) facing the PC. End: same.
 title = "Hall of Fame on the Pokemon Center PC"
-status = "planned"
 priority = "P2"
-estimate = 3000
+estimate = 2527
 refs = [
   "res/field/scripts/scripts_common.s:925-966",
   "res/field/scripts/scripts_common.s:1112-1121",
@@ -19,27 +19,66 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
-# PHASE2: the real proof chains from the story's Champion/HoF milestone end save (the lab cannot
-# write a HoF entry): use `from = "<champion dir>"` + this recipe's map line once chain.txt exists.
-# Lab-only, the menu row appears but the extra save is absent -> [INFERENCE] empty list or "corrupted".
+from = "56-hall-of-fame-credits"
+recipe = "chain.recipe"
+lab = "start.recipe"
+# Lab-only (--lab) the menu row appears but the extra save holds no entry.
 
 [run]
-frames = 4500
+frames = 3800
 
 [[step]]
 do = "press"
 keys = "A"
-note = "PC tile (12,3) facing north (menu-box.recipe)"
+gap = 150
+note = "PC tile (12,3) facing north: boot-up animation, '<player> booted up the PC.' (CommonScript_AccessWhichPC, scripts_common.s:926-937)"
+shot = "booted"
 
 [[step]]
-do = "wait_frames"
-n = 300
-note = "'Access which PC?' menu, HALL OF FAME row only with FLAG_GAME_COMPLETED (scripts_common.s:925-966)"
+do = "press"
+keys = "A"
+gap = 30
+note = "'Which PC should be accessed?' and the menu"
 shot = "pc-menu"
-# PHASE2: cursor position of the HALL OF FAME row is unrecorded; then A -> OpenPCHallOfFameScreen
-# (shot), B out, B to the field.
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 8
+times = 3
+note = "entries SOMEONE'S/BEBE'S PC 0, GQ'S PC 1, ROWAN'S/OAK'S PC 2, HALL OF FAME 3 (only with FLAG_GAME_COMPLETED, scripts_common.s:955-963), SWITCH OFF 4"
+shot = "hof-row"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 300
+note = "CommonScript_PCHallOfFame -> the PC Hall of Fame screen over the extra save"
+shot = "hall-of-fame"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 200
+note = "out of the Hall of Fame screen, back to the PC menu"
+shot = "back-to-menu"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+note = "SWITCH OFF"
+
+[[step]]
+do = "advance_text"
+max = 600
+
+[[step]]
+do = "wait_field"
 
 [expect]
 map = 6
 position = [12, 4]
+flags = ["FLAG_GAME_COMPLETED"]
+# the entry the screen shows (No. 1, Mar. 22, 2009, TORTERRA Lv. 100 first) is the one 56 wrote
+save = ['s["hall_of_fame"]["total"] == 1', 's["hall_of_fame"]["latest"]["party"][0]["species"] == 389']

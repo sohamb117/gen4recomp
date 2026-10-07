@@ -691,7 +691,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~484340 frames estimated
+### Side systems: 52 milestones, ~486230 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -715,7 +715,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [76-contests](platinum/76-contests/milestone.toml) | Contests: Normal Cool, first place | P1 | 42777 | `start.recipe` | - | passing |
 | [77-poffin-making](platinum/77-poffin-making/milestone.toml) | Poffin making: cook one poffin alone | P2 | 10259 | `start.recipe` | 116 | passing |
 | [78-amity-square](platinum/78-amity-square/milestone.toml) | Amity Square: walk with Pikachu | P2 | 1899 | `start.recipe` | 253 | passing |
-| [79-great-marsh-safari](platinum/79-great-marsh-safari/milestone.toml) | Great Marsh: enter the Safari Game | P1 | 10000 | `start.recipe` | 509 | planned |
+| [79-great-marsh-safari](platinum/79-great-marsh-safari/milestone.toml) | Great Marsh: the Safari Game, catch and exit | P1 | 12363 | `start.recipe` | MAP_HEADER_PASTORIA_CITY_OBSERVATORY_GATE_1F | passing |
 | [80-trophy-garden](platinum/80-trophy-garden/milestone.toml) | Trophy Garden: Mr. Backlot's daily Pokemon | P2 | 2145 | `start.recipe` | 370 | passing |
 | [81-game-corner](platinum/81-game-corner/milestone.toml) | Game Corner: play the slots | P2 | 3183 | `start.recipe` | 136 | passing |
 | [90-underground-explorer-kit](platinum/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | 3649 | `start.recipe` | 65 | passing |
@@ -735,7 +735,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [104-tv-jubilife-and-broadcasts](platinum/104-tv-jubilife-and-broadcasts/milestone.toml) | TV: watch a broadcast | P2 | 1847 | `start.recipe` | 58 | passing |
 | [105-national-dex-upgrade](platinum/105-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | 2769 | `start.recipe` | 422 | passing |
 | [106-pal-park](platinum/106-pal-park/milestone.toml) | Pal Park: gate refuses without a GBA cartridge | P2 | 1823 | `start.recipe` | 393 | passing |
-| [107-hall-of-fame-pc](platinum/107-hall-of-fame-pc/milestone.toml) | Hall of Fame on the Pokemon Center PC | P2 | 3000 | `start.recipe` | 6 | planned |
+| [107-hall-of-fame-pc](platinum/107-hall-of-fame-pc/milestone.toml) | Hall of Fame on the Pokemon Center PC | P2 | 2527 | prev + `start.recipe` | 6 | passing |
 | [108-roamer-mesprit](platinum/108-roamer-mesprit/milestone.toml) | Roamer: Mesprit starts roaming | P1 | 3050 | `start.recipe` | MAP_HEADER_LAKE_VERITY | passing |
 | [109-roamer-cresselia](platinum/109-roamer-cresselia/milestone.toml) | Roamer: Cresselia starts roaming | P2 | 2280 | `start.recipe` | MAP_HEADER_FULLMOON_ISLAND | passing |
 | [110-roamer-legendary-birds](platinum/110-roamer-legendary-birds/milestone.toml) | Roamer: legendary birds from Prof. Oak | P2 | 4155 | `start.recipe` | MAP_HEADER_ROUTE_211_WEST | passing |
@@ -928,13 +928,13 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 1899, budget 2900
 - refs: res/field/events/events_amity_square.json; res/field/events/events_hearthome_city.json; res/field/scripts/scripts_amity_square.s:88-180; res/field/scripts/scripts_amity_square.s:115-121; res/field/scripts/scripts_amity_square.s:181-212; res/field/scripts/scripts_amity_square.s:202; res/field/scripts/scripts_amity_square.s:282-312; res/field/scripts/scripts_amity_square.s:349; res/field/scripts/scripts_amity_square.s:646-680; res/field/scripts/scripts_amity_square.s:726-745; res/field/scripts/scripts_amity_square.s:907-978; src/system_vars.c:194-213; src/start_menu.c:379-382; src/overlay005/field_control.c:763; features/tools/np_save4.c:14
 
-#### platinum/79-great-marsh-safari — Great Marsh: enter the Safari Game
-- proves: Great Marsh entry: one step north in the observatory gate 1F triggers the paid entry (500), 30 Safari Balls, StartSafariGame, warp into GREAT_MARSH_6. Start: PASTORIA_CITY_OBSERVATORY_GATE_1F (5,7). End: GREAT_MARSH_6 (68,116), safari active.
+#### platinum/79-great-marsh-safari — Great Marsh: the Safari Game, catch and exit
+- proves: Great Marsh Safari Game: one step north in the observatory gate 1F triggers the paid entry (500), 30 Safari Balls, StartSafariGame, warp into GREAT_MARSH_6; laps in the marsh grass catch with Safari Balls (auto_battle's FIGHT tap is the safari menu's BALL); the gate warp's exit prompt ends the game. Start: PASTORIA_CITY_OBSERVATORY_GATE_1F (5,7). End: the gate (5,8), three catches in the party.
 - start: `start.recipe`; map MAP_HEADER_PASTORIA_CITY_OBSERVATORY_GATE_1F 5 7 FACE_UP; lab state lines: 3 badge
 - party: SPECIES_MONFERNO 30 (MOVE_FLAMETHROWER)
 - trainers: none
-- end state: map 509; at (68, 116); 3 badges; flags set FLAG_SAFARI_GAME_ACTIVE; vars VAR_SAFARI_GAME_STATE=1; 1 save check(s)
-- frames: estimate 10000, budget 15000
+- end state: map MAP_HEADER_PASTORIA_CITY_OBSERVATORY_GATE_1F; at (5, 8); 3 badges; >= 1 battles; party size 4; flags clear FLAG_SAFARI_GAME_ACTIVE; vars VAR_SAFARI_GAME_STATE=0; 3 save check(s)
+- frames: estimate 12363, budget 18600
 - refs: res/field/events/events_pastoria_city.json; res/field/events/events_pastoria_city_observatory_gate_1f.json; res/field/scripts/scripts_pastoria_city_observatory_gate_1f.s:21-73; res/field/scripts/scripts_pastoria_city_observatory_gate_1f.s:155-167; res/field/scripts/scripts_pastoria_city_observatory_gate_2f.s:12-37; src/scrcmd.c:5285-5294; src/overlay005/field_control.c:930-942; src/field_move_tasks.c:151-158; src/field_move_tasks.c:385-387; res/field/encounters/encounters_great_marsh_6.json; res/field/encounters/encounters_great_marsh_lookout.json; pc/src/pc_lab.c:1385-1401; pc/tests/corpus/battle-safari.recipe; pc/tests/corpus/battle-safari.spec
 
 #### platinum/80-trophy-garden — Trophy Garden: Mr. Backlot's daily Pokemon
@@ -1109,12 +1109,12 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/scripts/scripts_pal_park_lobby.s:111; res/field/scripts/scripts_pal_park_lobby.s:172-176; res/field/scripts/scripts_pal_park_lobby.s:347; res/field/scripts/scripts_pal_park_lobby.s:364-383; res/field/scripts/scripts_pal_park_lobby.s:382; pc/tests/corpus/comm-palpark.recipe; pc/tests/corpus/comm-palpark.spec; pc/replays/lab-comm-palpark.txt
 
 #### platinum/107-hall-of-fame-pc — Hall of Fame on the Pokemon Center PC
-- proves: Hall of Fame PC: with FLAG_GAME_COMPLETED the Pokemon Center PC menu shows HALL OF FAME, which opens the PC HoF screen from the extra save written by the real league clear. Start: JUBILIFE_CITY_POKECENTER_1F (12,4) facing the PC. End: same.
-- start: `start.recipe`; map MAP_HEADER_JUBILIFE_CITY_POKECENTER_1F 12 4 FACE_UP; lab state lines: 8 badge, 1 flag, 1 story-cleared
+- proves: Hall of Fame PC: with FLAG_GAME_COMPLETED the Pokemon Center PC menu shows HALL OF FAME, which opens the PC HoF screen from the extra save written by the real league clear. Chained from 56-hall-of-fame-credits' end save (run with --out at the story chain's output) with only the map line. Start: JUBILIFE_CITY_POKECENTER_1F (12,4) facing the PC. End: same.
+- start: prev + `start.recipe`; map MAP_HEADER_JUBILIFE_CITY_POKECENTER_1F 12 4 FACE_UP; lab state lines: 8 badge, 1 flag, 1 story-cleared
 - party: SPECIES_EMPOLEON 62
 - trainers: none
-- end state: map 6; at (12, 4)
-- frames: estimate 3000, budget 4500
+- end state: map 6; at (12, 4); flags set FLAG_GAME_COMPLETED; 2 save check(s)
+- frames: estimate 2527, budget 3800
 - refs: res/field/scripts/scripts_common.s:925-966; res/field/scripts/scripts_common.s:1112-1121; src/scrcmd.c:3353-3366; src/clear_game.c:69-87; pc/tests/corpus/menu-box.recipe; pc/tests/corpus/menu-box.spec; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/108-roamer-mesprit — Roamer: Mesprit starts roaming

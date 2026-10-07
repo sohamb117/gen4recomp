@@ -1,10 +1,10 @@
-# Great Marsh entry: one step north in the observatory gate 1F triggers the paid entry (500),
-# 30 Safari Balls, StartSafariGame, warp into GREAT_MARSH_6.
-# Start: PASTORIA_CITY_OBSERVATORY_GATE_1F (5,7). End: GREAT_MARSH_6 (68,116), safari active.
-title = "Great Marsh: enter the Safari Game"
-status = "planned"
+# Great Marsh Safari Game: one step north in the observatory gate 1F triggers the paid entry (500),
+# 30 Safari Balls, StartSafariGame, warp into GREAT_MARSH_6; laps in the marsh grass catch with Safari Balls
+# (auto_battle's FIGHT tap is the safari menu's BALL); the gate warp's exit prompt ends the game.
+# Start: PASTORIA_CITY_OBSERVATORY_GATE_1F (5,7). End: the gate (5,8), three catches in the party.
+title = "Great Marsh: the Safari Game, catch and exit"
 priority = "P1"
-estimate = 10000
+estimate = 12363
 refs = [
   "res/field/events/events_pastoria_city.json",
   "res/field/events/events_pastoria_city_observatory_gate_1f.json",
@@ -26,7 +26,10 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 15000
+frames = 18600
+
+[[shots]]
+frames = [2600, 3400, 4000, 4300]
 
 [[step]]
 do = "press"
@@ -48,13 +51,44 @@ map = 509
 do = "wait_field"
 shot = "great-marsh"
 
+[[step]]
+do = "walk_to"
+x = 73
+z = 108
+note = "the plain corridor x 72..73 beside the mud-with-grass column x 74 (rows 90..109, behaviour 0xA6 TILE_BEHAVIOR_MUD_WITH_GRASS, map_data of GREAT_MARSH_6)"
+
+[[step]]
+do = "steps"
+route = [[74, 108], [74, 100], [74, 108], [74, 100], [74, 108], [74, 100], [74, 108]]
+max = 30000
+note = "laps in the marsh grass (encounters_great_marsh_6.json); each wild battle runs auto_battle, whose FIGHT tap is the safari menu's top button (SAFARI BALL); the nickname prompt answers NO"
+
+[[step]]
+do = "walk_to"
+x = 68
+z = 118
+note = "warp 0 back into the gate: PastoriaCityObservatoryGate1F_OnFrame_TryExitEarly 'exit the Great Marsh?'"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "A = YES: ThanksForPlaying, walk south 5, VAR_SAFARI_GAME_STATE 0, EndSafariGame (scripts_pastoria_city_observatory_gate_1f.s:140-158)"
+
+[[step]]
+do = "wait_field"
+shot = "back-in-gate"
+
 [expect]
-map = 509
-position = [68, 116]
+map = "MAP_HEADER_PASTORIA_CITY_OBSERVATORY_GATE_1F"
 badges = 3
-vars = { VAR_SAFARI_GAME_STATE = 1 }
-flags = ["FLAG_SAFARI_GAME_ACTIVE"]
-save = ['s["trainer"]["money"] == 10500']
-# PHASE2: safari catch station: corpus/battle-safari.recipe (PASTORIA_CITY 0x258 0x330) with env
-# PC_LAB_BATTLE="safari 111 22 30" PC_LAB_BATTLE_AT=2600 (pc_lab.c:1385-1401); a catch = party
-# or box 0 count +1. A-only selects Ball, so catches are random.
+vars = { VAR_SAFARI_GAME_STATE = 0 }
+flags_clear = ["FLAG_SAFARI_GAME_ACTIVE"]
+battles = 1
+position = [5, 8]
+# measured: four marsh battles, three catches (the nickname prompt, menu 13, three times): BIBAREL x2 and CARNIVINE
+party_size = 4
+save = [
+  's["trainer"]["money"] == 10500',
+  'sum(1 for m in s["party"] if m["ball"]["id"] == 5) == 3',   # ITEM_SAFARI_BALL
+  'any(m["species"] == 455 for m in s["party"])',              # CARNIVINE: the Great Marsh's own
+]
