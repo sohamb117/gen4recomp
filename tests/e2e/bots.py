@@ -8,6 +8,7 @@ milestone's context: the game, the milestone directory, the name resolver.
 import heapq
 import json
 import os
+import re
 import subprocess
 
 from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN, UI_BATTLE_MENU,
@@ -516,6 +517,30 @@ def _stores(s):
         return f.read().count("-byte save to ")
 
 
+def bot_walk_to_door(s, step, ctx):
+    """walk_to the door the guest's log names: the last match of `pattern` (one group) in the run log keys
+    `doors` (group -> [x, z]); the other keys go to walk_to. For a door the game rolls at random and shows only
+    as a clue (Platinum's Hearthome Gym: pc_np_field.c e2e_gym_log)."""
+    rx = re.compile(step["pattern"])
+    hits = []
+    for _ in range(_int(step, "wait", 120) // 10 + 1):
+        s._log.flush()
+        with open(s.log_path, errors="replace") as f:
+            hits = rx.findall(f.read())
+        if hits:
+            break
+        s.run(10)
+    if not hits:
+        raise HarnessError("walk_to_door: the log has no /%s/" % step["pattern"])
+    door = step["doors"].get(str(hits[-1]))
+    if door is None:
+        raise HarnessError("walk_to_door: no door %r in %s" % (hits[-1], sorted(step["doors"])))
+    s.note("walk_to_door: %s -> (%d,%d)" % (hits[-1], door[0], door[1]))
+    sub = {k: v for k, v in step.items() if k not in ("do", "pattern", "doors", "wait")}
+    sub.update(x=int(door[0]), z=int(door[1]))
+    bot_walk_to(s, sub, ctx)
+
+
 def bot_grind(s, step, ctx):
     """Fight wild battles in the tall grass at (x, z)/(x+1, z) until the lead reaches `level`, healing at the
     Pokemon Center door `heal` = [x, z] (same coordinate space) whenever the lead is below half HP or its move
@@ -600,7 +625,10 @@ def bot_talk_to(s, step, ctx):
             continue
         c = min(cands)[1]
         try:
-            bot_walk_to(s, {"x": c[0], "z": c[1], "max": min(900, max(limit - s.frame, 1))}, ctx)
+            # the walk fights what it meets with this step's move and on_battle (a sight trainer on the way)
+            sub = {k: step[k] for k in ("move", "on_battle", "on_text") if k in step}
+            sub.update(x=c[0], z=c[1], max=min(900, max(limit - s.frame, 1)))
+            bot_walk_to(s, sub, ctx)
         except HarnessError as e:
             s.note("talk_to: %s; re-planning" % e)
     raise HarnessError("talk_to: object %d not reached in %d frames" % (oid, bound))
@@ -618,6 +646,7 @@ BOTS = {
     "advance_text": bot_advance_text,
     "auto_battle": bot_auto_battle,
     "walk_to": bot_walk_to,
+    "walk_to_door": bot_walk_to_door,
     "talk_to": bot_talk_to,
     "heal": bot_heal,
     "grind": bot_grind,

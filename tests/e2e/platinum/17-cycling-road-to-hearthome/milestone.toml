@@ -2,9 +2,8 @@
 # Hearthome Keira/Buneary arrival.
 # Start: Cycling Road north gate warp 0 (7,2) -> end: Hearthome City after the Keira scene.
 title = "Cycling Road, Mt. Coronet, Hearthome"
-status = "planned"
 priority = "P0"
-estimate = 25000
+estimate = 27181
 refs = [
   "scripts_route_206_cycling_road_north_gate.s:36-51",
   "scripts_route_206.s:13",
@@ -52,9 +51,10 @@ notes = "PP: a single path past the sight trainers is up to ~20 mons, so expect 
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 37500
+frames = 40800
 
 [[step]]
 do = "press"
@@ -67,6 +67,7 @@ n = 30
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 7
 z = 12
 run = false
@@ -78,6 +79,7 @@ map = "MAP_HEADER_ROUTE_206"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 302
 z = 681
 run = false
@@ -90,6 +92,7 @@ map = "MAP_HEADER_ROUTE_206_CYCLING_ROAD_SOUTH_GATE"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 7
 z = 12
 run = false
@@ -104,6 +107,7 @@ map = "MAP_HEADER_ROUTE_206"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 340
 z = 713
 run = false
@@ -117,6 +121,7 @@ note = "Dawn's 'which hand' list (either answer; A takes the first), VS Seeker, 
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 341
 z = 712
 run = false
@@ -128,6 +133,7 @@ map = "MAP_HEADER_MT_CORONET_1F_SOUTH"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 14
 z = 23
 note = "coord (14,23) VAR_MT_CORONET_1F_SOUTH_STATE==0 -> Cyrus [INFERENCE: whether the 4 Rock Smash rocks (16..25,22..23) block was not derived]"
@@ -139,6 +145,7 @@ note = "Cyrus talk -> 1 (scripts_mt_coronet_1f_south.s:27-28)"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 27
 z = 20
 note = "east exit (warp 1) -> Route 208 (392,724)"
@@ -149,6 +156,7 @@ map = "MAP_HEADER_ROUTE_208"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 447
 z = 726
 max = 8000
@@ -160,6 +168,7 @@ map = "MAP_HEADER_ROUTE_208_GATE_TO_HEARTHOME_CITY"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 10
 z = 7
 note = "gate east exit (warp 0) -> Hearthome (454,726)"
@@ -170,6 +179,7 @@ map = "MAP_HEADER_HEARTHOME_CITY"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 461
 z = 727
 note = "coord (461,725..729) VAR_HEARTHOME_CITY_STATE==0 -> Keira/Buneary (scripts_hearthome_city.s:486-506)"

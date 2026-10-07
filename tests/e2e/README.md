@@ -24,7 +24,7 @@ Passing (`status` removed from `milestone.toml`), as a continuity chain from a b
 
 | game | milestones |
 |---|---|
-| Platinum | 01-08: new game, Lake Verity, Pokedex, Parcel + catching tutorial, Jubilife Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge |
+| Platinum | 01-19: new game .. Coal Badge, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Eterna statue/HM01, Galactic building, Togepi/Bicycle/Explorer Kit, Cycling Road to Hearthome, Contest Hall, Relic Badge |
 | Diamond | 01-08: new game, Pokedex, Parcel + catching tutorial, Trainers' School, Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge |
 
 Everything else is still `status = "planned"` and skipped unless `--planned`.
@@ -122,6 +122,7 @@ Names resolve per game as the lab recipes do (Platinum `MAP_HEADER_*`, `FLAG_*`,
 | `do` | keys | what it does |
 |---|---|---|
 | `walk_to` | `x`, `z`, opt. `map`, `face`, `interact`, `run`, `on_battle`, `on_text` | A* over the probe's tile window (collision, ledges as one-way jumps, water and one-way blocks avoided, tall grass costs 6 so paths go round it), re-planned every step; holds the direction through the turn-in-place; bumps teach blocked edges; NPCs are obstacles. Border crossings outdoors are seamless; walking into a door/warp that is the goal takes it; a goal on an exit mat pushes off it. Battles on the way are fought (`auto_battle`) and do not count against `max`; text and cutscenes on the way are advanced with A. |
+| `walk_to_door` | `pattern`, `doors`, opt. `wait` + `walk_to`'s | `walk_to` the door a guest log line names: the last match of `pattern` (one group) in run.log keys `doors` (`{"3" = [4, 2]}`). For doors the game rolls at random (Platinum's Hearthome Gym logs `pc-e2e: hearthome gym map M door D` under `PC_E2E`, pc_np_field.c). |
 | `talk_to` | `id` | talk to the map object with that local id wherever it is now (wandering people are chased): a free tile next to it, face it, A until a script starts |
 | `advance_text` | opt. `through_battle`, `map` | waits up to 40 frames for a script to start, then A every 8 frames until the field has been free for 30 frames; stops at a battle (unless `through_battle`) or as soon as `map` is loaded |
 | `auto_battle` | opt. `move` (slot, default 0), `wait` | taps FIGHT and the move every turn; YES/NO prompts: nickname NO, forget a move NO (gives up learning), use the next Pokemon YES, switch NO; on the party screen tries the next slot after a faint; otherwise A, so an evolution plays out |

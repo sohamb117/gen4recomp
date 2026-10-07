@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~928285 frames estimated
+### Story chain: 56 milestones, ~917587 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -122,10 +122,10 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [13-gardenia-forest-badge](platinum/13-gardenia-forest-badge/milestone.toml) | Eterna Gym: Gardenia and the Forest Badge | P0 | 21675 | prev + `lab.recipe` | MAP_HEADER_ETERNA_CITY | passing |
 | [14-eterna-cyrus-cut](platinum/14-eterna-cyrus-cut/milestone.toml) | Eterna: Cyrus at the statue, Cynthia's HM01 | P0 | 4571 | prev + `lab.recipe` | MAP_HEADER_ETERNA_CITY | passing |
 | [15-galactic-eterna-building-jupiter](platinum/15-galactic-eterna-building-jupiter/milestone.toml) | Team Galactic Eterna Building: Jupiter | P0 | 9707 | prev + `lab.recipe` | MAP_HEADER_ETERNA_CITY | passing |
-| [16-togepi-egg-bicycle-explorer-kit](platinum/16-togepi-egg-bicycle-explorer-kit/milestone.toml) | Eterna: Togepi egg, Bicycle, Explorer Kit | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_ROUTE_206_CYCLING_ROAD_NORTH_GATE | planned |
-| [17-cycling-road-to-hearthome](platinum/17-cycling-road-to-hearthome/milestone.toml) | Cycling Road, Mt. Coronet, Hearthome | P0 | 25000 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY | planned |
-| [18-contest-hall-fantina-unblocks-gym](platinum/18-contest-hall-fantina-unblocks-gym/milestone.toml) | Contest Hall: Fantina frees the gym door | P0 | 7000 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM | planned |
-| [19-fantina-relic-badge](platinum/19-fantina-relic-badge/milestone.toml) | Hearthome Gym: Fantina and the Relic Badge | P0 | 20000 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY | planned |
+| [16-togepi-egg-bicycle-explorer-kit](platinum/16-togepi-egg-bicycle-explorer-kit/milestone.toml) | Eterna: Togepi egg, Bicycle, Explorer Kit | P0 | 4997 | prev + `lab.recipe` | MAP_HEADER_ROUTE_206_CYCLING_ROAD_NORTH_GATE | passing |
+| [17-cycling-road-to-hearthome](platinum/17-cycling-road-to-hearthome/milestone.toml) | Cycling Road, Mt. Coronet, Hearthome | P0 | 27181 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY | passing |
+| [18-contest-hall-fantina-unblocks-gym](platinum/18-contest-hall-fantina-unblocks-gym/milestone.toml) | Contest Hall: Fantina frees the gym door | P0 | 4841 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM | passing |
+| [19-fantina-relic-badge](platinum/19-fantina-relic-badge/milestone.toml) | Hearthome Gym: Fantina and the Relic Badge | P0 | 13283 | prev + `lab.recipe` | MAP_HEADER_HEARTHOME_CITY | passing |
 | [20-route209-solaceon-to-veilstone](platinum/20-route209-solaceon-to-veilstone/milestone.toml) | Route 209 to Veilstone: rival, Solaceon, Crasher Wake | P0 | 31000 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GYM | planned |
 | [21-maylene-cobble-badge](platinum/21-maylene-cobble-badge/milestone.toml) | Veilstone Gym: Maylene and the Cobble Badge | P0 | 20000 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GYM | planned |
 | [22-veilstone-warehouse-fly](platinum/22-veilstone-warehouse-fly/milestone.toml) | Veilstone: warehouse tag battle and HM02 Fly | P0 | 16000 | prev + `lab.recipe` | MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE | planned |
@@ -320,7 +320,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEADER_ROUTE_206_CYCLING_ROAD_NORTH_GATE; flags set FLAG_RECEIVED_BICYCLE, FLAG_RECEIVED_EXPLORER_KIT; vars VAR_ETERNA_CITY_STATE=5, VAR_ETERNA_CITY_BLOCK_EXITS_STATE=0; 3 save check(s)
-- frames: estimate 9000, budget 13500
+- frames: estimate 4997, budget 7500
 - refs: scripts_eterna_city.s:37-50; scripts_eterna_city.s:394-420; scripts_eterna_city.s:1061; scripts_eterna_city.s:1079; scripts_eterna_city.s:1089-1090; scripts_eterna_city.s:1127-1193; scripts_eterna_city.s:1196; scripts_eterna_city.s:1206; scripts_cycle_shop.s:18-23; scripts_eterna_city_underground_man_house.s:10-33; events_eterna_city (coords (308,541..545), (309,540..545), (303..307,565), (297,532..534); warps 2 (310,539), 11 (310,530), 8 (304,569)); events_cycle_shop (owner (3,5); warp 0 (7,11)); events_eterna_city_underground_man_house (Underground Man (6,5), script 1; warp 0 (4,8)); events_route_206_cycling_road_north_gate (warp 0 (7,2)); src/field_move_tasks.c:332
 - notes: Estimate: research ~8000 plus the walk to the gate. The Explorer Kit requirement is Platinum-specific: after the bike and without the kit both Eterna exits push you back. Party must be <= 5 for the egg (NO or a full party -> state 4, coord (309,540..545) blocks the shop).
 
@@ -330,7 +330,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_CYCLIST_AXEL (25); TRAINER_CYCLIST_MEGAN (29); TRAINER_CYCLIST_JAMES (26); TRAINER_CYCLIST_NICOLE (30); TRAINER_CYCLIST_JOHN (27); TRAINER_CYCLIST_RYAN (28); TRAINER_CYCLIST_RACHEL (32); TRAINER_CYCLIST_KAYLA (31); TRAINER_HIKER_THEODORE (451); TRAINER_CAMPER_ANTHONY (34); TRAINER_PICNICKER_LAUREN (35); TRAINER_YOUNGSTER_AUSTIN (33); TRAINER_HIKER_JUSTIN (37); TRAINER_HIKER_KEVIN (36); TRAINER_BATTLE_GIRL_HELEN (38); TRAINER_HIKER_ROBERT (39); TRAINER_HIKER_ALEXANDER (40); TRAINER_HIKER_JONATHAN (41); TRAINER_BLACK_BELT_KYLE (42); TRAINER_FISHERMAN_CODY (43); TRAINER_AROMA_LADY_HANNAH (44); TRAINER_ARTIST_WILLIAM (45)
 - end state: map MAP_HEADER_HEARTHOME_CITY; flags set FLAG_UNLOCKED_VS_SEEKER_LVL_1, FLAG_HIDE_ROUTE_207_COUNTERPART, FLAG_HIDE_MT_CORONET_1F_SOUTH_CYRUS, FLAG_FIRST_ARRIVAL_CYCLING_ROAD_UNUSED; vars VAR_ROUTE_207_COUNTERPART_TRIGGER_STATE=1, VAR_MT_CORONET_1F_SOUTH_STATE=1, VAR_HEARTHOME_CITY_STATE=1; 2 save check(s)
-- frames: estimate 25000, budget 37500
+- frames: estimate 27181, budget 40800
 - refs: scripts_route_206_cycling_road_north_gate.s:36-51; scripts_route_206.s:13; scripts_route_206.s:33-34; scripts_route_207.s:46; scripts_route_207.s:87-90; scripts_route_207.s:94-95; scripts_route_207.s:103-105; scripts_mt_coronet_1f_south.s:27-28; scripts_hearthome_city.s:486-487; scripts_hearthome_city.s:500-506; events_route_206_cycling_road_north_gate (coord (5..8,8); warps (6..8,12)); events_route_206 (warps (304..305,576), (302,681), (302,688)); events_route_206_cycling_road_south_gate (warp 2 (7,2), warp 4 (7,12)); events_route_207 (coord (340,712..714); warp 0 (341,712)); events_mt_coronet_1f_south (coord (14,23); warps (4,8), (27,20); rocks (16..25,22..23)); events_route_208 (warp 0 (447,726)); events_route_208_gate_to_hearthome_city (warp 0 (10,7)); events_hearthome_city (coord (461,725..729); warp 14 (454,726)); TRAINER_CYCLIST_AXEL (25); TRAINER_CYCLIST_MEGAN (29); TRAINER_CYCLIST_JAMES (26); TRAINER_CYCLIST_NICOLE (30); TRAINER_CYCLIST_JOHN (27); TRAINER_CYCLIST_RYAN (28); TRAINER_CYCLIST_RACHEL (32); TRAINER_CYCLIST_KAYLA (31); TRAINER_HIKER_THEODORE (451); TRAINER_CAMPER_ANTHONY (34); TRAINER_PICNICKER_LAUREN (35); TRAINER_YOUNGSTER_AUSTIN (33); TRAINER_HIKER_JUSTIN (37); TRAINER_HIKER_KEVIN (36); TRAINER_BATTLE_GIRL_HELEN (38); TRAINER_HIKER_ROBERT (39); TRAINER_HIKER_ALEXANDER (40); TRAINER_HIKER_JONATHAN (41); TRAINER_BLACK_BELT_KYLE (42); TRAINER_FISHERMAN_CODY (43); TRAINER_AROMA_LADY_HANNAH (44); TRAINER_ARTIST_WILLIAM (45)
 - notes: PP: a single path past the sight trainers is up to ~20 mons, so expect Struggle or a Pokecenter (Oreburgh is just off Route 207). Hiker Alexander (GRAVELER 38, PROBOPASS 40) and Fisherman Cody (talk-only, Lv33) still lose to Lv60 Surf. [INFERENCE] the cycling road auto-rolls the bike south.
 
@@ -340,7 +340,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: none
 - end state: map MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM; flags set FLAG_HIDE_HEARTHOME_CITY_GYM_GUIDE, FLAG_CONTEST_HALL_VISITED, FLAG_HIDE_CONTEST_HALL_LOBBY_FANTINA; vars VAR_CONTEST_HALL_LOBBY_STATE=1, VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE=1
-- frames: estimate 7000, budget 10500
+- frames: estimate 4841, budget 7300
 - refs: scripts_init_contest_hall_lobby.s:10; scripts_contest_hall_lobby.s:38-40; scripts_contest_hall_lobby.s:50-51; scripts_contest_hall_lobby.s:83; scripts_contest_hall_lobby.s:85; scripts_contest_hall_lobby.s:438-444; scripts_hearthome_city_gym_entrance_room.s:74; events_hearthome_city (Gym Guide (499,698); gym door warp 8 (499,697); Contest Hall warp 2 (479,691)); events_contest_hall_lobby (Fantina (22,9) object 10; warp 0 (16,13)); events_amity_square
 - notes: Estimate: research ~5000 plus the walk into the gym. Amity Square and Cynthia are not mandatory: VAR_AMITY_SQUARE_STATE only feeds Amity's own warp coords (events_amity_square). Entering the gym plays the guide's OnFrame speech, which sets VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE (19 re-runs it from the lab).
 
@@ -350,7 +350,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_YOUNGSTER_DONNY (357); TRAINER_LASS_MOLLY (325); TRAINER_SCHOOL_KID_MACKENZIE (343); TRAINER_ACE_TRAINER_CATHERINE (284); TRAINER_ACE_TRAINER_ALLEN (280); TRAINER_SCHOOL_KID_CHANCE (340); TRAINER_LEADER_FANTINA (318)
 - end state: map MAP_HEADER_HEARTHOME_CITY; 3 badges; badge BADGE_ID_COAL, BADGE_ID_FOREST, BADGE_ID_RELIC; >= 1 battles; flags set FLAG_HIDE_HEARTHOME_CITY_ROUTE_209_BLOCKADE, FLAG_RECEIVED_FANTINA_TM65, FLAG_DEFEATED_TRAINER_YOUNGSTER_DONNY, FLAG_DEFEATED_TRAINER_ACE_TRAINER_ALLEN; flags clear FLAG_HIDE_HEARTHOME_CITY_ROUTE_209_GATE_RIVAL; vars VAR_ROUTE_209_GATE_TO_HEARTHOME_CITY_STATE=1, VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE=1; 1 save check(s)
-- frames: estimate 20000, budget 30000
+- frames: estimate 13283, budget 20000
 - refs: scripts_hearthome_city_gym_entrance_room.s:74; scripts_hearthome_city_gym_trainer_room_1.s:9; scripts_hearthome_city_gym_leader_room.s:19; scripts_hearthome_city_gym_leader_room.s:61-63; scripts_hearthome_city_gym_leader_room.s:62; scripts_hearthome_city_gym_leader_room.s:71; scripts_hearthome_city_gym_leader_room.s:73-84; scripts_hearthome_city_gym_leader_room.s:89-93; scripts_hearthome_city_gym_leader_room.s:165; src/overlay008/gym_features.c:142-149; src/overlay008/gym_features.c:3692-3861; src/overlay008/gym_features.c:3755-3769; src/overlay008/gym_features.c:3817-3857; src/persisted_map_features_init.c:122-128; events_hearthome_city_gym_entrance_room (warps (4,2), (11,7), (12,7), (11,3), (4,8)); events_hearthome_city_gym_trainer_room_1 (doors (4,2), (8,2), (12,2)); TRAINER_YOUNGSTER_DONNY (357); TRAINER_LASS_MOLLY (325); TRAINER_SCHOOL_KID_MACKENZIE (343); TRAINER_ACE_TRAINER_CATHERINE (284); TRAINER_ACE_TRAINER_ALLEN (280); TRAINER_SCHOOL_KID_CHANCE (340); TRAINER_LEADER_FANTINA (318)
 - notes: Not a math quiz in this decomp. Surf is neutral on Ghost; a Normal/Fighting lead would be immune, so keep the Surf lead. Lab leader-only test: warp MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM 3. [INFERENCE] entrance warps (11,7), (12,7), (11,3) are post-win shortcuts behind collision.
 

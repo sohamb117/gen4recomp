@@ -67,6 +67,12 @@
 #include "map_object.h"
 #include "terrain_collision_manager.h"
 
+#include "constants/field/dynamic_map_features.h"
+#include "overlay008/gym_features.h"
+#include "persisted_map_features.h"
+#include "persisted_map_features_init.h"
+#include "savedata_misc.h"
+
 extern FieldSystem *pc_lab_field_system(void); /* pc/patches/src/field_system.c.patch */
 extern Camera *pc_np_active_camera(void);      /* pc/patches/src/camera.c.patch */
 
@@ -256,6 +262,27 @@ static unsigned e2e_tile(void *ctx, int x, int z)
     return PC_E2E_TILE_KNOWN | behavior | (TerrainCollisionManager_CheckCollision(fs, x, z) ? PC_E2E_TILE_COLLISION : 0);
 }
 
+/*
+ * The Hearthome Gym rolls its open door per trainer room on entry (MTRNG, gym_features.c:3817-3842) and shows it only
+ * as a clue symbol lit near the player; every other door warps back to the entrance. The e2e walk_to_door bot reads
+ * the roll from this log line (tests/e2e/README.md). Logged once per roll, only under PC_E2E.
+ */
+static void e2e_gym_log(FieldSystem *fs)
+{
+    static int last = -1;
+    int door = -1;
+
+    if (PersistedMapFeatures_IsCurrentDynamicMap(fs, DYNAMIC_MAP_FEATURES_HEARTHOME_GYM)) {
+        const HearthomeGymPersistedFeatures *f = PersistedMapFeatures_GetBuffer(
+            MiscSaveBlock_GetPersistedMapFeatures(FieldSystem_GetSaveData(fs)), DYNAMIC_MAP_FEATURES_HEARTHOME_GYM);
+        if (f->initialized) door = f->correctDoorID;
+    }
+    if (door != last && door >= 0) {
+        fprintf(stderr, "pc-e2e: hearthome gym map %u door %d\n", (unsigned)fs->location->mapHeaderID, door);
+    }
+    last = door;
+}
+
 static void e2e_frame(FieldSystem *fs, int ready)
 {
     MapObject *player, *obj = NULL;
@@ -278,6 +305,7 @@ static void e2e_frame(FieldSystem *fs, int ready)
         if (obj == player) continue;
         pc_e2e_object(MapObject_GetX(obj), MapObject_GetZ(obj), MapObject_GetLocalID(obj), MapObject_GetGraphicsID(obj));
     }
+    e2e_gym_log(fs);
     pc_e2e_end_frame();
 }
 

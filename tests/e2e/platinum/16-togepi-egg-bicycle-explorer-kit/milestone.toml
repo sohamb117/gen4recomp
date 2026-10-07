@@ -1,9 +1,8 @@
 # Proves Cynthia's Togepi egg, the Bicycle (which blocks Eterna's exits) and the Explorer Kit (which reopens them).
 # Start: Eterna City warp 3 (Galactic building door (305,519)) -> end: Cycling Road north gate (17's start).
 title = "Eterna: Togepi egg, Bicycle, Explorer Kit"
-status = "planned"
 priority = "P0"
-estimate = 9000
+estimate = 4997
 refs = [
   "scripts_eterna_city.s:37-50",
   "scripts_eterna_city.s:394-420",
@@ -28,10 +27,11 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 13500
+frames = 7500
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 305
 z = 520
 face = "down"
@@ -43,6 +43,7 @@ do = "advance_text"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 308
 z = 543
 note = "coord (308,541..545) VAR_ETERNA_CITY_STATE==3 -> Cynthia offers the Togepi egg"
@@ -54,6 +55,7 @@ note = "A = YES with < 6 mons: GiveEgg SPECIES_TOGEPI -> state 5 (scripts_eterna
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 310
 z = 539
 note = "cycle shop door (warp 2) -> shop (7,11)"
@@ -64,6 +66,7 @@ map = "MAP_HEADER_CYCLE_SHOP"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 3
 z = 6
 face = "up"
@@ -77,6 +80,7 @@ note = "ITEM_BICYCLE, FLAG_RECEIVED_BICYCLE, VAR_ETERNA_CITY_BLOCK_EXITS_STATE 1
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 7
 z = 11
 note = "shop exit (warp 0) -> Eterna (310,539)"
@@ -87,6 +91,7 @@ map = "MAP_HEADER_ETERNA_CITY"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 310
 z = 530
 note = "Underground Man's house door (warp 11) -> house (4,8)"
@@ -97,6 +102,7 @@ map = "MAP_HEADER_ETERNA_CITY_UNDERGROUND_MAN_HOUSE"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 6
 z = 6
 face = "up"
@@ -110,6 +116,7 @@ note = "ITEM_EXPLORER_KIT, mentor yes/no (A = YES sets FLAG_ACCEPTED_UNDERGROUND
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 4
 z = 8
 note = "house exit (warp 0) -> Eterna; OnTransition: Bicycle + Explorer Kit -> VAR_ETERNA_CITY_BLOCK_EXITS_STATE 0 (scripts_eterna_city.s:37-50)"
@@ -120,6 +127,7 @@ map = "MAP_HEADER_ETERNA_CITY"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 304
 z = 569
 note = "Cycling Road north gate door (warp 8) -> gate (7,2), 17's start; the exit coords (303..307,565) push back only while the block state is 1"

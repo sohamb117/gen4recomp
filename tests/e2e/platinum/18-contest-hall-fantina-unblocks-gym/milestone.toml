@@ -1,9 +1,8 @@
 # Proves the Contest Hall first visit (Keira, Mom) and Fantina leaving, which removes the Gym Guide from the gym door.
 # Start: Hearthome City warp 5 (Pokecenter door (465,697)) -> end: Hearthome Gym entrance room after the guide's speech (19's start).
 title = "Contest Hall: Fantina frees the gym door"
-status = "planned"
 priority = "P0"
-estimate = 7000
+estimate = 4841
 refs = [
   "scripts_init_contest_hall_lobby.s:10",
   "scripts_contest_hall_lobby.s:38-40",
@@ -23,10 +22,11 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 10500
+frames = 7300
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 479
 z = 691
 note = "Contest Hall door (events_hearthome_city warp 2) -> lobby (16,13)"
@@ -42,6 +42,7 @@ note = "OnFrame VAR_CONTEST_HALL_LOBBY_STATE==0: Keira and Mom, Glitter Powder, 
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 22
 z = 10
 face = "up"
@@ -55,6 +56,7 @@ note = "Fantina spins out; SetFlag FLAG_HIDE_HEARTHOME_CITY_GYM_GUIDE (scripts_c
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 16
 z = 13
 note = "lobby exit (warp 0) -> Hearthome (479,691)"
@@ -65,6 +67,7 @@ map = "MAP_HEADER_HEARTHOME_CITY"
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 499
 z = 697
 note = "gym door (warp 8), the guide at (499,698) gone -> entrance room (4,8)"

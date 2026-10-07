@@ -46,7 +46,7 @@ TOP_KEYS = {"title", "notes", "status", "priority", "estimate", "refs", "version
 START_KEYS = {"from", "recipe", "lab", "blank", "boot", "boost"}
 # [start] boost: lab verbs a boost recipe may use on the start save (AUTHORING.md, Boosts). Party strength and
 # items only: a boost never writes story state (flags, vars, badges, the map), so the chain's story stays played.
-BOOST_VERBS = {"party", "party-move", "party-level", "party-item", "party-iv", "party-ev", "item"}
+BOOST_VERBS = {"party", "party-move", "party-level", "party-item", "party-iv", "party-ev", "item", "register-item"}
 RUN_KEYS = {"frames", "save", "options", "clock", "env"}
 EXPECT_KEYS = {"map", "position", "badges", "badge", "flags", "flags_clear", "vars", "party", "party_size", "battles",
                "log", "save"}
@@ -63,12 +63,14 @@ STEP_KEYS = {
     "advance_text": {"through_battle", "map"},
     "auto_battle": {"move", "wait", "flee"},
     "walk_to": {"x", "z", "map", "face", "interact", "run", "on_battle", "on_text", "move"},
+    "walk_to_door": {"pattern", "doors", "wait", "map", "face", "interact", "run", "on_battle", "on_text", "move"},
     "talk_to": {"id", "on_battle", "on_text", "move"},
     "heal": {"x", "z", "on_battle"},
     "grind": {"x", "z", "level", "heal", "move"},
 }
 STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"},
-                 "walk_to": {"x", "z"}, "talk_to": {"id"}, "heal": {"x", "z"}, "grind": {"x", "z", "level"}}
+                 "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},
+                 "heal": {"x", "z"}, "grind": {"x", "z", "level"}}
 NAME_KEYS = {"map"}  # step keys that take a game name
 # np_gp -o options every run gets first ([run] options come after and win): message boxes print at once, so
 # story scenes and battles cost their animations, not the text crawl. A recorded press schedule depends on the

@@ -1,0 +1,7 @@
+# Boost on 16's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# The Bicycle (16) on Y, so the gate's walker push-back coord is passed on the bike
+# (scripts_route_206_cycling_road_north_gate.s:36-51); the lead refilled (HP, Bite PP) for the Cycling Road,
+# Route 207 and Route 208 trainers.
+register-item ITEM_BICYCLE
+party-level 0 40
+party-move 0 3 MOVE_BITE

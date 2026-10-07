@@ -2,9 +2,8 @@
 # which lifts the Route 209 blockade.
 # Start: Hearthome Gym entrance room warp 3 (4,8) -> end: Hearthome City at the gym door (20's start).
 title = "Hearthome Gym: Fantina and the Relic Badge"
-status = "planned"
 priority = "P0"
-estimate = 20000
+estimate = 13283
 refs = [
   "scripts_hearthome_city_gym_entrance_room.s:74",
   "scripts_hearthome_city_gym_trainer_room_1.s:9",
@@ -35,9 +34,10 @@ notes = "Not a math quiz in this decomp. Surf is neutral on Ghost; a Normal/Figh
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 20000
 
 [[step]]
 do = "advance_text"
@@ -45,6 +45,7 @@ note = "OnFrame VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE==FALSE (lab start): the gui
 
 [[step]]
 do = "walk_to"
+move = 3
 x = 4
 z = 2
 note = "entrance warp (4,2) -> Trainer Room 1 (8,10)"
@@ -53,14 +54,87 @@ note = "entrance warp (4,2) -> Trainer Room 1 (8,10)"
 do = "wait_map"
 map = "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_1"
 
-# PHASE2: each entry rolls correctDoorID = MTRNG % 3 and a clue tile (gym_features.c:3817-3842) and re-points every
-# wrong door to the entrance room (:3844-3856), so re-entry re-rolls and blind tries do not converge. Read the clue
-# symbol tile or peek HearthomeGymPersistedFeatures.correctDoorID (DOOR_ID circle 0 .. heart 7, :142-149) through the
-# probe, then walk_to that door: Room 1 circle (4,2) / square (8,2) / triangle (12,2); Room 2 (arrive (14,22)) sun
-# (4,2) / donut (9,2) / moon (14,2) / star (19,2) / heart (24,2) -> Leader Room (4,13). Wandering sight-2 trainers in
-# the dark rooms are fought by walk_to. Then walk_to (4,11) face up interact (Fantina (4,10)), advance_text,
-# auto_battle (DUSKULL 24, HAUNTER 24, MISMAGIUS 26), advance_text (badge, TM65; bollards (8,9)/(8,10) removed), and
-# leave to Hearthome so 20 starts at the gym door.
+[[step]]
+do = "talk_to"
+id = 0
+move = 3
+note = "Youngster Donny (LOCALID 0, wanders from (12,7), sight 2): fought here so the flag is proven, not left to his wandering"
+
+[[step]]
+do = "walk_to_door"
+move = 3
+pattern = 'hearthome gym map 89 door (\d)'
+doors = { "0" = [4, 2], "1" = [8, 2], "2" = [12, 2] }
+note = "the room rolls its open door on entry (MTRNG % 3, gym_features.c:3817-3842) and re-points the others to the entrance (:3844-3856); the guest logs the roll (pc_np_field.c e2e_gym_log). Doors circle 0 (4,2), square 1 (8,2), triangle 2 (12,2) (sTrainerRoom1Doors :3755-3760); Donny's battle, if still on, is fought first"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_2"
+
+[[step]]
+do = "talk_to"
+id = 1
+move = 3
+note = "Ace Trainer Allen (LOCALID 1, wanders from (18,7), sight 2)"
+
+[[step]]
+do = "walk_to_door"
+move = 3
+pattern = 'hearthome gym map 90 door (\d)'
+doors = { "3" = [4, 2], "4" = [9, 2], "5" = [14, 2], "6" = [19, 2], "7" = [24, 2] }
+note = "sun 3 (4,2), donut 4 (9,2), moon 5 (14,2), star 6 (19,2), heart 7 (24,2) (sTrainerRoom2Doors :3762-3769) -> Leader Room (4,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 4
+z = 11
+face = "up"
+interact = true
+note = "Fantina (4,10) LOOK_SOUTH"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+move = 3
+shot = "fantina"
+note = "TRAINER_LEADER_FANTINA: DUSKULL 24, HAUNTER 24, MISMAGIUS 26"
+
+[[step]]
+do = "advance_text"
+shot = "relic-badge"
+note = "BADGE_ID_RELIC, TM65, Route 209 blockade lifted; the bollards (8,9)/(8,10) go"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 14
+z = 3
+note = "leader room warp 4 -> entrance room (11,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM"
+
+[[step]]
+do = "walk_to"
+move = 3
+x = 4
+z = 8
+note = "entrance exit (warp 3) -> Hearthome at the gym door, 20's start"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_HEARTHOME_CITY"
+
+[[step]]
+do = "wait_field"
 
 [expect]
 map = "MAP_HEADER_HEARTHOME_CITY"
@@ -76,3 +150,4 @@ save = [
 [expect.vars]
 VAR_ROUTE_209_GATE_TO_HEARTHOME_CITY_STATE = 1
 VAR_HAS_ENTERED_HEARTHOME_GYM_BEFORE = 1
+
