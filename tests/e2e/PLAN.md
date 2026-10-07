@@ -727,9 +727,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [96-battle-zone-ferry-fight-area](platinum/96-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: ferry to the Fight Area and the tag battle | P1 | 14803 | prev + `start.recipe` | 188 | passing |
 | [97-battle-zone-areas-routes](platinum/97-battle-zone-areas-routes/milestone.toml) | Battle Zone: Survival Area, Buck and the Battleground | P2 | 2585 | `start.recipe` | 454 | passing |
 | [98-battle-frontier-entry-tower](platinum/98-battle-frontier-entry-tower/milestone.toml) | Battle Tower: first single set | P1 | 45077 | `start.recipe` | 326 | passing |
-| [99-battle-factory](platinum/99-battle-factory/milestone.toml) | Battle Factory: first single set | P2 | 45000 | `start.recipe` | 562 | planned |
-| [100-battle-hall](platinum/100-battle-hall/milestone.toml) | Battle Hall: first single set | P2 | 40000 | `start.recipe` | 563 | planned |
-| [101-battle-castle](platinum/101-battle-castle/milestone.toml) | Battle Castle: first single set | P2 | 45000 | `start.recipe` | 564 | planned |
+| [99-battle-factory](platinum/99-battle-factory/milestone.toml) | Battle Factory: first single set | P2 | 45000 | `start.recipe` | 562 | passing |
+| [100-battle-hall](platinum/100-battle-hall/milestone.toml) | Battle Hall: first single set | P2 | 40000 | `start.recipe` | 563 | passing |
+| [101-battle-castle](platinum/101-battle-castle/milestone.toml) | Battle Castle: first single set | P2 | 45000 | `start.recipe` | 564 | passing |
 | [102-battle-arcade](platinum/102-battle-arcade/milestone.toml) | Battle Arcade: first single set | P2 | 45000 | `start.recipe` | 565 | planned |
 | [103-global-terminal-offline](platinum/103-global-terminal-offline/milestone.toml) | Global Terminal: machines refuse offline | P2 | 2312 | `start.recipe` | 567 | passing |
 | [104-tv-jubilife-and-broadcasts](platinum/104-tv-jubilife-and-broadcasts/milestone.toml) | TV: watch a broadcast | P2 | 1847 | `start.recipe` | 58 | passing |
@@ -1037,30 +1037,30 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/events/events_battle_tower.json; res/field/scripts/scripts_battle_tower.s; res/field/scripts/scripts_init_new_game.s:82; res/field/events/events_battle_frontier.json; res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40; res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s; src/unk_02049D08.c:161-206; src/unk_02049D08.c:750-787; src/unk_020494DC.c:72-78; src/wifi_battle_tower_save.c:156-176; src/overlay104/frscrcmd.c:1567-1580; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/99-battle-factory — Battle Factory: first single set
-- proves: Battle Factory single set with rentals: Single -> pick 3 rentals -> 7 battles with swap prompts. Start: BATTLE_FACTORY (21,7) below the single attendant (21,6). End: Factory lobby. Lab party is irrelevant (rentals) but the post-98 recipe is reused.
+- proves: Battle Factory single set with rentals: SINGLE, LEVEL 50, the game's save, three rentals (balls 4-6), 7 battles; each trade offer is answered NO. Start: BATTLE_FACTORY (21,7) below the single attendant (21,6). End: Factory lobby. Lab party is irrelevant (rentals) but the post-98 recipe is reused.
 - start: `start.recipe`; map MAP_HEADER_BATTLE_FACTORY 21 7 FACE_UP; lab state lines: 8 badge, 5 flag, 1 story-cleared, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_METAGROSS 100 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map 562; >= 7 battles
-- frames: estimate 45000, budget 67500
+- end state: map 562; >= 7 battles; 3 save check(s)
+- frames: estimate 45000, budget 80000
 - refs: res/field/scripts/scripts_battle_frontier.s; res/field/scripts/scripts_battle_factory.s:59-67; res/field/events/events_battle_frontier.json; res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40; res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s; src/unk_02049D08.c:161-206; src/unk_02049D08.c:750-787; src/unk_020494DC.c:72-78; src/wifi_battle_tower_save.c:156-176; src/overlay104/frscrcmd.c:1567-1580; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/100-battle-hall — Battle Hall: first single set
-- proves: Battle Hall single set: one mon (GARCHOMP), pick a type panel each round. Start: BATTLE_HALL (7,9) beside the single attendant (6,9) [INFERENCE: attendant facing]. End: Hall lobby.
+- proves: Battle Hall single set: one mon (GARCHOMP), ten battles (HALL_BATTLES_PER_ROUND), a different type panel each battle so every opponent is Rank 1 (Lv 70; NORMAL nine times climbs to a Lv 86 STARAPTOR that wins). Start: BATTLE_HALL (7,9) facing the single attendant (6,9). End: Hall lobby.
 - start: `start.recipe`; map MAP_HEADER_BATTLE_HALL 7 9 FACE_LEFT; lab state lines: 8 badge, 5 flag, 1 story-cleared, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_METAGROSS 100 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map 563; >= 7 battles
-- frames: estimate 40000, budget 60000
+- end state: map 563; >= 10 battles; 2 save check(s)
+- frames: estimate 40000, budget 90000
 - refs: res/field/scripts/scripts_battle_frontier.s; src/scrcmd_battle_hall.c:510-514; res/field/events/events_battle_frontier.json; res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40; res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s; src/unk_02049D08.c:161-206; src/unk_02049D08.c:750-787; src/unk_020494DC.c:72-78; src/wifi_battle_tower_save.c:156-176; src/overlay104/frscrcmd.c:1567-1580; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/101-battle-castle — Battle Castle: first single set
-- proves: Battle Castle single set: 3 mons, CP economy, menus between battles. Start: BATTLE_CASTLE (6,9) beside the single attendant (5,9) [INFERENCE: attendant facing]. End: Castle lobby.
+- proves: Battle Castle single set: GARCHOMP, METAGROSS, SALAMENCE (Lv 50 in the Castle), BATTLE from the SELF / OPPONENT / BATTLE menu before each of the seven battles, no CP spent. Start: BATTLE_CASTLE (6,9) facing the single attendant (5,9). End: Castle lobby.
 - start: `start.recipe`; map MAP_HEADER_BATTLE_CASTLE 6 9 FACE_LEFT; lab state lines: 8 badge, 5 flag, 1 story-cleared, 2 var
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_METAGROSS 100 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map 564; >= 7 battles
-- frames: estimate 45000, budget 67500
+- end state: map 564; >= 7 battles; 3 save check(s)
+- frames: estimate 45000, budget 80000
 - refs: res/field/events/events_battle_frontier.json; res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40; res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s; src/unk_02049D08.c:161-206; src/unk_02049D08.c:750-787; src/unk_020494DC.c:72-78; src/wifi_battle_tower_save.c:156-176; src/overlay104/frscrcmd.c:1567-1580; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/102-battle-arcade — Battle Arcade: first single set

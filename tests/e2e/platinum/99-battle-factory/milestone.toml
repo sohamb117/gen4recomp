@@ -1,8 +1,8 @@
-# Battle Factory single set with rentals: Single -> pick 3 rentals -> 7 battles with swap prompts.
+# Battle Factory single set with rentals: SINGLE, LEVEL 50, the game's save, three rentals (balls 4-6), 7 battles;
+# each trade offer is answered NO.
 # Start: BATTLE_FACTORY (21,7) below the single attendant (21,6). End: Factory lobby.
 # Lab party is irrelevant (rentals) but the post-98 recipe is reused.
 title = "Battle Factory: first single set"
-status = "planned"
 priority = "P2"
 estimate = 45000
 refs = [
@@ -26,27 +26,340 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 67500
+frames = 80000
+
+[[step]]
+do = "wait_frames"
+n = 37
+note = "the rentals and the battles follow the frame the attendant is first spoken to: from this frame the six balls are BONSLY, GLAMEOW, CHINGLING, CARVANHA, BUDEW, SABLEYE and the team wins all seven (without the wait the second battle, against MAWILE, is lost)"
 
 [[step]]
 do = "press"
 keys = "A"
-note = "single attendant (21,6) -> BattleFactory_TryTakeSingleChallenge (no party check)"
+gap = 40
+times = 23
+note = "the single attendant (21,6): 'Welcome', 'designed for a single Trainer', SINGLE BATTLE, LEVEL 50, save YES, overwrite YES, 'saved', 'Right this way', the walk to the rental room, the research lines; the 23rd A opens nothing yet (measured with tools/pt_poke.py)"
 shot = "attendant"
 
 [[step]]
 do = "wait_frames"
-n = 120
-# PHASE2 (measured with tools/pt_poke.py on start.sav): A at 40-frame gaps goes 'Welcome', 'designed for a single
-# Trainer', SINGLE BATTLE, LEVEL 50, save YES, overwrite YES, 'saved', 'Right this way', the walk to the rental
-# room (~f2440), 'I've done a bit of research...', 'we will hold your Pokemon...', then the rental screen
-# (~f2750): six balls in a row, 'Please choose Pokemon no. 1.'; A on a ball opens SUMMARY / RENT / CANCEL with
-# the cursor on SUMMARY, so blind A opens the summary page. Next: per pick DOWN, A (RENT), RIGHT to the next
-# ball, three times, then the confirm prompt; swap prompts after each win (NO keeps the team).
+n = 100
+note = "the rental screen: six balls, 'Please choose Pokemon no. 1.'"
+shot = "rental"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+times = 3
+note = "to ball 4"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "SUMMARY / RENT / CANCEL, the cursor on SUMMARY"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+note = "RENT CARVANHA (ball 4)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "SUMMARY / RENT / CANCEL, the cursor on SUMMARY"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+note = "RENT BUDEW (ball 5)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "SUMMARY / RENT / CANCEL, the cursor on SUMMARY"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "RENT SABLEYE (ball 6)"
+shot = "confirm"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "'Are you OK with the chosen 3 Pokemon?' YES -> 'Please go in.'"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the walk into the battle room and the first opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 1 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'Well done! Your party Pokemon will be healed now.', then 'Next up, battle no. 2!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+shot = "continue"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 12
+note = "'I've done a bit of research into your next opponent.', then 'Would you like to trade Pokemon before your battle?' (YES is the default): B = NO; the walk in"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 2 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'Well done! Your party Pokemon will be healed now.', then 'Next up, battle no. 3!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 12
+note = "'I've done a bit of research into your next opponent.', then 'Would you like to trade Pokemon before your battle?' (YES is the default): B = NO; the walk in"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 3 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'Well done! Your party Pokemon will be healed now.', then 'Next up, battle no. 4!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 12
+note = "'I've done a bit of research into your next opponent.', then 'Would you like to trade Pokemon before your battle?' (YES is the default): B = NO; the walk in"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 4 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'Well done! Your party Pokemon will be healed now.', then 'Next up, battle no. 5!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 12
+note = "'I've done a bit of research into your next opponent.', then 'Would you like to trade Pokemon before your battle?' (YES is the default): B = NO; the walk in"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 5 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'Well done! Your party Pokemon will be healed now.', then 'Next up, battle no. 6!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 12
+note = "'I've done a bit of research into your next opponent.', then 'Would you like to trade Pokemon before your battle?' (YES is the default): B = NO; the walk in"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 6 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'Well done! Your party Pokemon will be healed now.', then 'Next up, battle no. 7!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 12
+note = "'I've done a bit of research into your next opponent.', then 'Would you like to trade Pokemon before your battle?' (YES is the default): B = NO; the walk in"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 7 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the seventh win: 'Well done!', the walk out to the lobby, the Battle Points"
+
+[[step]]
+do = "advance_text"
+max = 3000
+
+[[step]]
+do = "wait_field"
+max = 3000
+shot = "lobby"
 
 [expect]
 map = 562
 battles = 7
-# PHASE2: reader-ext Battle Points (WifiBattleTowerRecord_UpdateBattlePoints, wifi_battle_tower_save.c:156-176)
-# == 3 after the first solo set (unk_02049D08.c:750-787) or > 0; np_save4 has no BP field. Meanwhile
-# the in-run Common_SaveGame saves advance the save counter.
+# game records (generated/game_records.txt; np_save4 game_records): RECORD_TIMES_STARTED_BATTLE_FRONTIER_CHALLENGE (58),
+# RECORD_BATTLE_FACTORY_VICTORIES (60), RECORD_BATTLE_POINTS_RECEIVED (68; 98's Tower set is already in the start)
+save = ['s["game_records"][58] >= 1', 's["game_records"][60] >= 7', 's["game_records"][68] >= 1']

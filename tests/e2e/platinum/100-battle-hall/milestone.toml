@@ -1,7 +1,6 @@
-# Battle Hall single set: one mon (GARCHOMP), pick a type panel each round.
-# Start: BATTLE_HALL (7,9) beside the single attendant (6,9) [INFERENCE: attendant facing]. End: Hall lobby.
+# Battle Hall single set: one mon (GARCHOMP), ten battles (HALL_BATTLES_PER_ROUND), a different type panel each
+# battle so every opponent is Rank 1 (Lv 70; NORMAL nine times climbs to a Lv 86 STARAPTOR that wins). Start: BATTLE_HALL (7,9) facing the single attendant (6,9). End: Hall lobby.
 title = "Battle Hall: first single set"
-status = "planned"
 priority = "P2"
 estimate = 40000
 refs = [
@@ -25,23 +24,650 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 60000
+frames = 90000
 
 [[step]]
 do = "press"
 keys = "A"
-note = "single attendant (6,9) -> BattleHall_TryTakeSingleChallenge (BH_LOBBY_FUNC_CHECK_PARTY_ELIGIBLE 1)"
+gap = 40
+times = 4
+note = "the single attendant (6,9): 'Welcome to the Battle Hall!', 'designed for a single Trainer', SINGLE BATTLE (the first entry), 'Please choose the Pokemon you wish to enter.'"
 shot = "attendant"
 
 [[step]]
+do = "press"
+keys = "A"
+gap = 40
+times = 3
+note = "the party select: GARCHOMP (slot 0) A, ENTER -> FIRST; the cursor jumps to CONFIRM"
+shot = "select"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+times = 4
+note = "CONFIRM, save YES, overwrite YES, 'GQ saved the game.' (measured with tools/pt_poke.py)"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "'Right this way', the walk to the hall, 'Please choose the type of Pokemon you will battle.', the type board (the cursor on NORMAL): A, 'Will you battle the NORMAL-type, Rank 1 Pokemon?' YES; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 1 of 10: NORMAL"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 2 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
 do = "wait_frames"
-n = 120
-# PHASE2: party pick (1 mon) and the type-board cursor screen are unrecorded; avoid Flying/Levitate panels
-# [INFERENCE] since Earthquake is the only move used.
+n = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "to FIGHTING"
+shot = "board-fighting"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "FIGHTING -> 'Will you battle the FIGHTING-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 2 of 10: FIGHTING"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 3 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+note = "to ROCK"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "ROCK -> 'Will you battle the ROCK-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 3 of 10: ROCK"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 4 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "to STEEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "STEEL -> 'Will you battle the STEEL-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 4 of 10: STEEL"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 5 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "to ELECTRIC"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "ELECTRIC -> 'Will you battle the ELECTRIC-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 5 of 10: ELECTRIC"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 6 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+note = "to FIRE"
+shot = "board-fire"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "FIRE -> 'Will you battle the FIRE-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 6 of 10: FIRE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 7 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "to ICE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "ICE -> 'Will you battle the ICE-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 7 of 10: ICE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 8 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "to DARK"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "DARK -> 'Will you battle the DARK-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 8 of 10: DARK"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 9 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+note = "to WATER"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "WATER -> 'Will you battle the WATER-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 9 of 10: WATER"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 14
+note = "the walk back, 'GARCHOMP will be fully restored.', then 'Battle no. 10 is next!' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "'Please choose the type of Pokemon you will battle.' -> the type board, the cursor on the last type chosen"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "to PSYCHIC"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "PSYCHIC -> 'Will you battle the PSYCHIC-type, Rank 1 Pokemon?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the opponent walks in; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 10 of 10: PSYCHIC"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the tenth win: back to the lobby, BP awarded"
+
+[[step]]
+do = "wait_field"
+max = 3000
+shot = "lobby"
 
 [expect]
 map = 563
-battles = 7
-# PHASE2: reader-ext Battle Points (WifiBattleTowerRecord_UpdateBattlePoints, wifi_battle_tower_save.c:156-176)
-# == 3 after the first solo set (unk_02049D08.c:750-787) or > 0; np_save4 has no BP field. Meanwhile
-# the in-run Common_SaveGame saves advance the save counter.
+battles = 10
+# game records (generated/game_records.txt; np_save4 game_records): RECORD_BATTLE_HALL_VICTORIES (62),
+# RECORD_BATTLE_POINTS_RECEIVED (68)
+save = ['s["game_records"][62] >= 10', 's["game_records"][68] >= 1']
