@@ -1,16 +1,18 @@
-# Global Terminal offline: the 2F Box Data machine saves (Common_SaveGame), then refuses without a
-# Wi-Fi login and returns to the field. GTS 1F refusal is the pinned corpus/comm-gts station.
-# Start: GLOBAL_TERMINAL_2F (15,4) below the machine (15,3). End: same, one extra in-game save.
+# Global Terminal offline: the 2F Box Data machine saves (Common_SaveGame), then opens the Nintendo WFC
+# screen (ScrCmd_2F6 with no WFC login, CommonScript_GlobalTerminalMachine); NO there returns to the field.
+# YES traps the port (tests/e2e/DEFECTS.md, "Platinum: connecting to Nintendo WFC traps").
+# Start: GLOBAL_TERMINAL_2F (15,4). End: (10,8) beside the machine, the game's own save on the chip.
 title = "Global Terminal: machines refuse offline"
-status = "planned"
 priority = "P2"
-estimate = 3500
+estimate = 2312
 refs = [
+  "res/field/events/events_global_terminal_2f.json",
   "src/scrcmd.c:3368-3378",
   "src/scrcmd.c:6850-6857",
   "res/field/scripts/scripts_global_terminal_2f.s:68-101",
   "res/field/scripts/scripts_common.s:79",
-  "res/field/scripts/scripts_common.s:1615-1634",
+  "res/field/scripts/scripts_common.s:1616-1634",
+  "src/nintendo_wfc/main.c:233-284",
   "res/field/scripts/scripts_jubilife_city.s:256-260",
   "pc/tests/corpus/comm-gts.recipe",
   "pc/tests/corpus/comm-gts.spec",
@@ -21,26 +23,63 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 5300
-save = "none"   # the proof is the game's own save; a quicksave would advance the counter too
+frames = 3500
+save = "none"   # the proof is the game's own save (the minted start has only the backup block valid)
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 8
+face = "left"
+interact = true
+note = "Box Data machine bg events (6..9,7..8) = script 13 GlobalTerminal2F_BoxDataMachine (events_global_terminal_2f.json; the sign at (15,3) is script 11, the 1F warp sign)"
+shot = "menu"
 
 [[step]]
 do = "press"
 keys = "A"
-note = "Box Data machine bg event (15,3): Use"
-shot = "machine"
+gap = 60
+note = "USE (entry 0, scripts_global_terminal_2f.s:76-84) -> Common_SaveGame: 'Would you like to save the game?'"
+shot = "save-prompt"
 
 [[step]]
-do = "advance_text"
-max = 2000
-note = "[INFERENCE] A answers Use and the save YES/NO; ScrCmd_2F6 has no valid login -> NoValidLogin text -> field"
-shot = "refused"
+do = "press"
+keys = "A"
+gap = 60
+note = "YES -> 'There is already a saved file. Is it OK to overwrite it?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "YES -> 'GQ saved the game.'"
+shot = "saved"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 200
+note = "CallCommonScript 0x802: fade, ScrCmd_2F6 -> the Nintendo WFC screen 'Save this Nintendo DS system's WFC user information to this DS Card and connect?' YES/NO"
+shot = "wfc-prompt"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+shot = "wfc-no"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "NO: no login -> CommonScript_GlobalTerminalMachineNoValidLogin -> ReturnToField"
 
 [[step]]
 do = "wait_field"
+max = 600
+shot = "back"
 
 [expect]
 map = 567
-position = [15, 4]
-# PHASE2: compare the save counter (s["blocks"][0]["save_counter"]) with start.sav's: must be greater;
-# the save-expr context has only the end save.
+position = [10, 8]
+# the game's Common_SaveGame wrote the chip: the minted start has the primary block invalid
+save = ['s["blocks"][0]["valid"] == [True, True]']

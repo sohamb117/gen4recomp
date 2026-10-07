@@ -2,9 +2,8 @@
 # RECORD_WATCHED_TV. Fresh save -> commercial path.
 # Start: OREBURGH_CITY_MIDDLE_HOUSE (6,4) below the TV. End: same.
 title = "TV: watch a broadcast"
-status = "planned"
 priority = "P2"
-estimate = 3500
+estimate = 1847
 refs = [
   "pc/tests/pc_maptiles.py",
   "include/data/map_headers.h",
@@ -22,20 +21,38 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 5300
+frames = 2800
 
 [[step]]
 do = "press"
 keys = "A"
-note = "TV tiles (6..7,2..3), no bg event over them: SCRIPT_ID(TV_BROADCAST,0)"
+gap = 20
+note = "TV tiles (6..7,2..3), no bg event over them: SCRIPT_ID(TV_BROADCAST,0) -> TVBroadcast_Interact; 'MC: Sinnoh! Now!'"
+shot = "sinnoh-now"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "'It's time for Sinnoh Now...', 'Here's the first story on the cutting edge of Sinnoh trends!'"
+shot = "story"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the segment: 'Helena: This is Helena bringing you on-the-spot weather!'"
+shot = "segment"
 
 [[step]]
 do = "advance_text"
 max = 2000
-shot = "broadcast"
+note = "the rest of the segment to 'That's the weather brought to you by Helena!' and back to the field"
 
 [expect]
 map = 58
 position = [6, 4]
-# PHASE2: reader-ext game record RECORD_WATCHED_TV == 1 (generated/game_records.txt:49); else a digest
-# of the message box. Jubilife TV (JUBILIFE_TV_1F door (9,18), 3F StartRankingsMachine) is NPC text/rankings.
+# RECORD_WATCHED_TV (generated/game_records.txt:49, id 48) counted once by the broadcast; the fresh save has 0
+save = ['s["game_records"][48] == 1']
+# Jubilife TV (JUBILIFE_TV_1F door (9,18), 3F StartRankingsMachine) is NPC text/rankings.

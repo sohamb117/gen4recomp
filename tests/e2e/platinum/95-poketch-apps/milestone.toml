@@ -3,9 +3,8 @@
 # already pinned as corpus/poketch-*.recipe stations (poketch verb).
 # Start: GRAND_LAKE_ROUTE_213_NORTHEAST_HOUSE warp 0. End: same map, appCount +1.
 title = "Poketch: receive the Coin Toss app"
-status = "planned"
 priority = "P1"
-estimate = 4000
+estimate = 1979
 refs = [
   "res/field/scripts/scripts_jubilife_city.s:1426-1435",
   "res/field/scripts/scripts_common.s:545-582",
@@ -29,13 +28,17 @@ refs = [
   "pc/tests/pc_save.py:757-770",
   "pc/tests/corpus/poketch-cointoss.recipe",
   "pc/tests/corpus/poketch-pedometer.spec",
+  "generated/poketch_apps.txt:15",
 ]
 
 [start]
 recipe = "start.recipe"
 
 [run]
-frames = 6000
+frames = 3000
+
+[[shots]]
+frames = [1775]
 
 [[step]]
 do = "walk_to"
@@ -53,6 +56,8 @@ shot = "cointoss-given"
 
 [expect]
 map = 379
-# PHASE2: reader-ext poketch appCount = minted + 1 (pc_save `poketch: count=`, pc_save.py:763);
-# np_save4 does not dump the Poketch. The 25 app stations stay in the corpus
-# (pc/tests/corpus/poketch-*.{recipe,spec}); Stopwatch/Alarm are Mystery-Gift-only [INFERENCE].
+# the minted Poketch has only the Digital Watch (0); the rich boy registers POKETCH_APPID_COINTOSS
+# (generated/poketch_apps.txt line 15: id 14)
+save = ['s["poketch"]["apps"] == [0, 14]']
+# The 25 app stations stay in the corpus (pc/tests/corpus/poketch-*.{recipe,spec}); Stopwatch/Alarm are
+# Mystery-Gift-only [INFERENCE].

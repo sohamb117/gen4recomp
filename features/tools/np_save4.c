@@ -504,6 +504,46 @@ static void dump_underground(FILE *o, const save4 *s)
     fprintf(o, "], \"has_mined\": %s},\n", (sizes[40 + 15 + 1] >> 4) ? "true" : "false");
 }
 
+/* Platinum's GameRecords (game_records.h: u32 recordsU32[71], u16 recordsU16[77], u16 padding, EncodingSeed
+ * {u16 byteSum, u16 modifier}) in the general block. recordsU32[0] (RECORD_STEPS) is stored plain; the rest, up
+ * to the seed, is EncodeData'd (math_util.c: each u16 XORed with the LCRNG stream from byteSum + (modifier << 16),
+ * game_records.c EncodeGameRecords), and byteSum is the plain bytes' sum. Offset found by scanning the general
+ * block for the one 0x1BC window whose decoded bytes sum to its byteSum (a save that watched TV once reads
+ * RECORD_WATCHED_TV 1). Printed as a list indexed by record id (generated/game_records.txt order). */
+#define PT_GAME_RECORDS_OFF 0x61B0
+#define PT_GAME_RECORDS_U32 71
+#define PT_GAME_RECORDS_U16 77
+#define PT_GAME_RECORDS_SEED (PT_GAME_RECORDS_U32 * 4 + PT_GAME_RECORDS_U16 * 2 + 2)
+
+static void dump_game_records(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_GAME_RECORDS_OFF + PT_GAME_RECORDS_SEED + 4 > len) {
+        fputs("  \"game_records\": null,\n", o);
+        return;
+    }
+    const uint8_t *r = img + base + PT_GAME_RECORDS_OFF;
+    uint8_t plain[PT_GAME_RECORDS_SEED];
+    uint32_t seed = (uint32_t)r[PT_GAME_RECORDS_SEED] | (uint32_t)r[PT_GAME_RECORDS_SEED + 1] << 8 |
+                    (uint32_t)r[PT_GAME_RECORDS_SEED + 2] << 16 | (uint32_t)r[PT_GAME_RECORDS_SEED + 3] << 24;
+    memcpy(plain, r, sizeof plain);
+    for (int i = 4; i < PT_GAME_RECORDS_SEED; i += 2) {
+        seed = seed * 0x41C64E6Du + 0x6073u;
+        plain[i] ^= (uint8_t)(seed >> 16);
+        plain[i + 1] ^= (uint8_t)(seed >> 24);
+    }
+    fputs("  \"game_records\": [", o);
+    for (int i = 0; i < PT_GAME_RECORDS_U32; i++)
+        fprintf(o, "%s%u", i ? ", " : "", le32(plain + i * 4));
+    for (int i = 0; i < PT_GAME_RECORDS_U16; i++) {
+        const uint8_t *h = plain + PT_GAME_RECORDS_U32 * 4 + i * 2;
+        fprintf(o, ", %u", (unsigned)(h[0] | h[1] << 8));
+    }
+    fputs("],\n", o);
+}
+
 static int cmd_dump(const char *rom_path, const char *save_path)
 {
     save4 s;
@@ -692,6 +732,7 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     dump_poffins(o, &s);
     dump_trophy_garden(o, &s);
     dump_underground(o, &s);
+    dump_game_records(o, &s);
     dump_mystery(o, &s);
     fputs("}\n", o);
 

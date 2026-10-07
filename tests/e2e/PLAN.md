@@ -691,7 +691,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~493171 frames estimated
+### Side systems: 52 milestones, ~484340 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -722,8 +722,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [91-underground-mining](platinum/91-underground-mining/milestone.toml) | Underground: dig a wall | P1 | 6500 | `start.recipe` | 2 | planned |
 | [92-underground-spheres-traps-goods](platinum/92-underground-spheres-traps-goods/milestone.toml) | Underground: spheres, traps and goods | P2 | 5500 | `start.recipe` | 2 | planned |
 | [93-underground-secret-base](platinum/93-underground-secret-base/milestone.toml) | Underground: decorate a secret base | P2 | 7000 | `start.recipe` | 2 | planned |
-| [94-vs-seeker](platinum/94-vs-seeker/milestone.toml) | Vs. Seeker: rematch Youngster Tristan | P1 | 3500 | `start.recipe` | 343 | planned |
-| [95-poketch-apps](platinum/95-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | 4000 | `start.recipe` | 379 | planned |
+| [94-vs-seeker](platinum/94-vs-seeker/milestone.toml) | Vs. Seeker: rematch Youngster Tristan | P1 | 3639 | `start.recipe` | 343 | passing |
+| [95-poketch-apps](platinum/95-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | 1979 | `start.recipe` | 379 | passing |
 | [96-battle-zone-ferry-fight-area](platinum/96-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: ferry to the Fight Area and the tag battle | P1 | 9000 | `start.recipe` | 188 | planned |
 | [97-battle-zone-areas-routes](platinum/97-battle-zone-areas-routes/milestone.toml) | Battle Zone: Survival Area to the Battleground | P2 | 3200 | `start.recipe` | 454 | planned |
 | [98-battle-frontier-entry-tower](platinum/98-battle-frontier-entry-tower/milestone.toml) | Battle Tower: first single set | P1 | 40000 | `start.recipe` | 326 | planned |
@@ -731,10 +731,10 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [100-battle-hall](platinum/100-battle-hall/milestone.toml) | Battle Hall: first single set | P2 | 40000 | `start.recipe` | 563 | planned |
 | [101-battle-castle](platinum/101-battle-castle/milestone.toml) | Battle Castle: first single set | P2 | 45000 | `start.recipe` | 564 | planned |
 | [102-battle-arcade](platinum/102-battle-arcade/milestone.toml) | Battle Arcade: first single set | P2 | 45000 | `start.recipe` | 565 | planned |
-| [103-global-terminal-offline](platinum/103-global-terminal-offline/milestone.toml) | Global Terminal: machines refuse offline | P2 | 3500 | `start.recipe` | 567 | planned |
-| [104-tv-jubilife-and-broadcasts](platinum/104-tv-jubilife-and-broadcasts/milestone.toml) | TV: watch a broadcast | P2 | 3500 | `start.recipe` | 58 | planned |
-| [105-national-dex-upgrade](platinum/105-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | 5000 | `start.recipe` | 422 | planned |
-| [106-pal-park](platinum/106-pal-park/milestone.toml) | Pal Park: gate refuses without a GBA cartridge | P2 | 3700 | `start.recipe` | 393 | planned |
+| [103-global-terminal-offline](platinum/103-global-terminal-offline/milestone.toml) | Global Terminal: machines refuse offline | P2 | 2312 | `start.recipe` | 567 | passing |
+| [104-tv-jubilife-and-broadcasts](platinum/104-tv-jubilife-and-broadcasts/milestone.toml) | TV: watch a broadcast | P2 | 1847 | `start.recipe` | 58 | passing |
+| [105-national-dex-upgrade](platinum/105-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | 2769 | `start.recipe` | 422 | passing |
+| [106-pal-park](platinum/106-pal-park/milestone.toml) | Pal Park: gate refuses without a GBA cartridge | P2 | 1823 | `start.recipe` | 393 | passing |
 | [107-hall-of-fame-pc](platinum/107-hall-of-fame-pc/milestone.toml) | Hall of Fame on the Pokemon Center PC | P2 | 3000 | `start.recipe` | 6 | planned |
 | [108-roamer-mesprit](platinum/108-roamer-mesprit/milestone.toml) | Roamer: Mesprit starts roaming | P1 | 3050 | `start.recipe` | MAP_HEADER_LAKE_VERITY | passing |
 | [109-roamer-cresselia](platinum/109-roamer-cresselia/milestone.toml) | Roamer: Cresselia starts roaming | P2 | 2280 | `start.recipe` | MAP_HEADER_FULLMOON_ISLAND | passing |
@@ -996,8 +996,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; map MAP_HEADER_ROUTE_202 166 816 FACE_UP; lab state lines: 2 flag, 1 item, 1 register-item, 1 var
 - party: SPECIES_INFERNAPE 40 (MOVE_FLAMETHROWER)
 - trainers: none
-- end state: map 343; >= 1 battles; flags set FLAG_VS_SEEKER_USED, FLAG_DEFEATED_TRAINER_YOUNGSTER_TRISTAN_REMATCH_1; vars VAR_VS_SEEKER_BATTERY_LEVEL=0
-- frames: estimate 3500, budget 5300
+- end state: map 343; at (166, 814); >= 1 battles; flags set FLAG_VS_SEEKER_USED, FLAG_DEFEATED_TRAINER_YOUNGSTER_TRISTAN_REMATCH_1; vars VAR_VS_SEEKER_BATTERY_LEVEL=2
+- frames: estimate 3639, budget 5500
 - refs: res/field/events/events_route_202.json; res/field/events/events_route_207.json; res/field/scripts/scripts_route_207.s:72-97; res/field/scripts/scripts_celestic_town.s:21; res/field/scripts/scripts_spear_pillar.s:390; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:47; res/field/scripts/scripts_stark_mountain_room_3.s:117; src/overlay005/vs_seeker.c:350; src/overlay005/vs_seeker.c:487-497; src/overlay005/vs_seeker.c:572-582; src/overlay005/vs_seeker.c:659-685; src/overlay005/vs_seeker.c:684; src/overlay005/vs_seeker.c:726-760; include/constants/vs_seeker.h:7; res/trainers/data/youngster_tristan_rematch_1.json; src/script_manager.c:522-525; generated/vars_flags.txt:1365; src/field_map_change.c:262; src/field_map_change.c:319; pc/tests/corpus/battle-legendary.recipe
 
 #### platinum/95-poketch-apps — Poketch: receive the Coin Toss app
@@ -1005,9 +1005,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; warp MAP_HEADER_GRAND_LAKE_ROUTE_213_NORTHEAST_HOUSE 0; lab state lines: 1 poketch, 1 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map 379
-- frames: estimate 4000, budget 6000
-- refs: res/field/scripts/scripts_jubilife_city.s:1426-1435; res/field/scripts/scripts_common.s:545-582; src/scrcmd.c:4150-4155; src/poketch.c:79; res/field/scripts/scripts_grand_lake_route_213_northeast_house.s:9-21; res/field/scripts/scripts_poketch_co_1f.s:43-101; res/field/scripts/scripts_eterna_city_pokecenter_1f.s:43-66; res/field/scripts/scripts_route_208_house.s:47-66; res/field/scripts/scripts_pokemon_day_care.s:10-30; res/field/scripts/scripts_solaceon_town.s:66-80; res/field/scripts/scripts_celestic_town_southwest_house.s:9-21; res/field/scripts/scripts_veilstone_store_2f.s:91-105; res/field/scripts/scripts_pastoria_city_observatory_gate_1f.s:148-170; res/field/scripts/scripts_sunyshore_city_east_house.s:10-90; res/field/scripts/scripts_pal_park_lobby.s:364-383; res/field/scripts/scripts_pal_park_lobby.s:410-445; src/scrcmd_mystery_gift.c:711; pc/src/pc_lab.c:680-687; pc/src/pc_lab.c:992-1027; pc/tests/pc_save.py:757-770; pc/tests/corpus/poketch-cointoss.recipe; pc/tests/corpus/poketch-pedometer.spec
+- end state: map 379; 1 save check(s)
+- frames: estimate 1979, budget 3000
+- refs: res/field/scripts/scripts_jubilife_city.s:1426-1435; res/field/scripts/scripts_common.s:545-582; src/scrcmd.c:4150-4155; src/poketch.c:79; res/field/scripts/scripts_grand_lake_route_213_northeast_house.s:9-21; res/field/scripts/scripts_poketch_co_1f.s:43-101; res/field/scripts/scripts_eterna_city_pokecenter_1f.s:43-66; res/field/scripts/scripts_route_208_house.s:47-66; res/field/scripts/scripts_pokemon_day_care.s:10-30; res/field/scripts/scripts_solaceon_town.s:66-80; res/field/scripts/scripts_celestic_town_southwest_house.s:9-21; res/field/scripts/scripts_veilstone_store_2f.s:91-105; res/field/scripts/scripts_pastoria_city_observatory_gate_1f.s:148-170; res/field/scripts/scripts_sunyshore_city_east_house.s:10-90; res/field/scripts/scripts_pal_park_lobby.s:364-383; res/field/scripts/scripts_pal_park_lobby.s:410-445; src/scrcmd_mystery_gift.c:711; pc/src/pc_lab.c:680-687; pc/src/pc_lab.c:992-1027; pc/tests/pc_save.py:757-770; pc/tests/corpus/poketch-cointoss.recipe; pc/tests/corpus/poketch-pedometer.spec; generated/poketch_apps.txt:15
 
 #### platinum/96-battle-zone-ferry-fight-area — Battle Zone: ferry to the Fight Area and the tag battle
 - proves: Battle Zone ferry: post-game, the Snowpoint SS Spiral sailor sails you to the Fight Area; on arrival Barry drags you into the forced tag battle vs Volkner + Flint, then Palmer/Buck scenes. Start: SNOWPOINT_CITY (356,248) below the sailor. End: FIGHT_AREA (188), VAR_FIGHT_AREA_STATE 2.
@@ -1073,30 +1073,30 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/events/events_battle_frontier.json; res/field/scripts/scripts_battle_frontier_gate_to_fight_area.s:20-40; res/field/scripts/scripts_init_battle_frontier_gate_to_fight_area.s; src/unk_02049D08.c:161-206; src/unk_02049D08.c:750-787; src/unk_020494DC.c:72-78; src/wifi_battle_tower_save.c:156-176; src/overlay104/frscrcmd.c:1567-1580; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/103-global-terminal-offline — Global Terminal: machines refuse offline
-- proves: Global Terminal offline: the 2F Box Data machine saves (Common_SaveGame), then refuses without a Wi-Fi login and returns to the field. GTS 1F refusal is the pinned corpus/comm-gts station. Start: GLOBAL_TERMINAL_2F (15,4) below the machine (15,3). End: same, one extra in-game save.
+- proves: Global Terminal offline: the 2F Box Data machine saves (Common_SaveGame), then opens the Nintendo WFC screen (ScrCmd_2F6 with no WFC login, CommonScript_GlobalTerminalMachine); NO there returns to the field. YES traps the port (tests/e2e/DEFECTS.md, "Platinum: connecting to Nintendo WFC traps"). Start: GLOBAL_TERMINAL_2F (15,4). End: (10,8) beside the machine, the game's own save on the chip.
 - start: `start.recipe`; map MAP_HEADER_GLOBAL_TERMINAL_2F 15 4 FACE_UP; lab state lines: 1 flag, 1 var
 - party: SPECIES_TURTWIG 15; SPECIES_STARLY 12
 - trainers: none
-- end state: map 567; at (15, 4)
-- frames: estimate 3500, budget 5300
-- refs: src/scrcmd.c:3368-3378; src/scrcmd.c:6850-6857; res/field/scripts/scripts_global_terminal_2f.s:68-101; res/field/scripts/scripts_common.s:79; res/field/scripts/scripts_common.s:1615-1634; res/field/scripts/scripts_jubilife_city.s:256-260; pc/tests/corpus/comm-gts.recipe; pc/tests/corpus/comm-gts.spec; pc/tests/pc_save.py:300-303
+- end state: map 567; at (10, 8); 1 save check(s)
+- frames: estimate 2312, budget 3500
+- refs: res/field/events/events_global_terminal_2f.json; src/scrcmd.c:3368-3378; src/scrcmd.c:6850-6857; res/field/scripts/scripts_global_terminal_2f.s:68-101; res/field/scripts/scripts_common.s:79; res/field/scripts/scripts_common.s:1616-1634; src/nintendo_wfc/main.c:233-284; res/field/scripts/scripts_jubilife_city.s:256-260; pc/tests/corpus/comm-gts.recipe; pc/tests/corpus/comm-gts.spec; pc/tests/pc_save.py:300-303
 
 #### platinum/104-tv-jubilife-and-broadcasts — TV: watch a broadcast
 - proves: TV broadcast: A on a TV tile (behaviour 0x86) facing north runs TVBroadcast_Interact and counts RECORD_WATCHED_TV. Fresh save -> commercial path. Start: OREBURGH_CITY_MIDDLE_HOUSE (6,4) below the TV. End: same.
 - start: `start.recipe`; map MAP_HEADER_OREBURGH_CITY_MIDDLE_HOUSE 6 4 FACE_UP; lab state lines: none
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map 58; at (6, 4)
-- frames: estimate 3500, budget 5300
+- end state: map 58; at (6, 4); 1 save check(s)
+- frames: estimate 1847, budget 2800
 - refs: pc/tests/pc_maptiles.py; include/data/map_headers.h; res/field/events/events_oreburgh_city_middle_house.json; src/overlay005/field_control.c:678-679; res/field/scripts/scripts_tv_broadcast.s:7-60; res/field/scripts/scripts_tv_broadcast.s:11; res/field/scripts/scripts_twinleaf_town_player_house_1f.s:784-800; res/field/scripts/scripts_twinleaf_town_player_house_2f.s:56-58; res/field/scripts/scripts_jubilife_tv_3f_global_ranking_room.s:14-17; generated/game_records.txt:49
 
 #### platinum/105-national-dex-upgrade — National Dex upgrade from Rowan and Oak
 - proves: National Dex: with all 210 Sinnoh species seen, Rowan reacts to the Pokedex, Oak arrives, SetNationalDexEnabled, Poke Radar given. Game completion is not required. Start: SANDGEM_TOWN_POKEMON_RESEARCH_LAB (7,6) below Rowan. End: same map, natdex on.
 - start: `start.recipe`; map MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB 7 6 FACE_UP; lab state lines: 2 flag, 1 pokedex, 1 var
-- party: SPECIES_ARCEUS 5; SPECIES_TURTWIG 5; SPECIES_GROTLE 5; SPECIES_TORTERRA 5; SPECIES_CHIMCHAR 5; SPECIES_MONFERNO 5; SPECIES_INFERNAPE 5; SPECIES_PIPLUP 5; SPECIES_PRINPLUP 5; SPECIES_EMPOLEON 5; SPECIES_STARLY 5; SPECIES_STARAVIA 5; SPECIES_STARAPTOR 5; SPECIES_BIDOOF 5; SPECIES_BIBAREL 5; SPECIES_KRICKETOT 5; SPECIES_KRICKETUNE 5; SPECIES_SHINX 5; SPECIES_LUXIO 5; SPECIES_LUXRAY 5; SPECIES_ABRA 5; SPECIES_KADABRA 5; SPECIES_ALAKAZAM 5; SPECIES_MAGIKARP 5; SPECIES_GYARADOS 5; SPECIES_BUDEW 5; SPECIES_ROSELIA 5; SPECIES_ROSERADE 5; SPECIES_ZUBAT 5; SPECIES_GOLBAT 5; SPECIES_CROBAT 5; SPECIES_GEODUDE 5; SPECIES_GRAVELER 5; SPECIES_GOLEM 5; SPECIES_ONIX 5; SPECIES_STEELIX 5; SPECIES_CRANIDOS 5; SPECIES_RAMPARDOS 5; SPECIES_SHIELDON 5; SPECIES_BASTIODON 5; SPECIES_MACHOP 5; SPECIES_MACHOKE 5; SPECIES_MACHAMP 5; SPECIES_PSYDUCK 5; SPECIES_GOLDUCK 5; SPECIES_BURMY 5; SPECIES_WORMADAM 5; SPECIES_MOTHIM 5; SPECIES_WURMPLE 5; SPECIES_SILCOON 5; SPECIES_BEAUTIFLY 5; SPECIES_CASCOON 5; SPECIES_DUSTOX 5; SPECIES_COMBEE 5; SPECIES_VESPIQUEN 5; SPECIES_PACHIRISU 5; SPECIES_BUIZEL 5; SPECIES_FLOATZEL 5; SPECIES_CHERUBI 5; SPECIES_CHERRIM 5; SPECIES_SHELLOS 5; SPECIES_GASTRODON 5; SPECIES_HERACROSS 5; SPECIES_AIPOM 5; SPECIES_AMBIPOM 5; SPECIES_DRIFLOON 5; SPECIES_DRIFBLIM 5; SPECIES_BUNEARY 5; SPECIES_LOPUNNY 5; SPECIES_GASTLY 5; SPECIES_HAUNTER 5; SPECIES_GENGAR 5; SPECIES_MISDREAVUS 5; SPECIES_MISMAGIUS 5; SPECIES_MURKROW 5; SPECIES_HONCHKROW 5; SPECIES_GLAMEOW 5; SPECIES_PURUGLY 5; SPECIES_GOLDEEN 5; SPECIES_SEAKING 5; SPECIES_BARBOACH 5; SPECIES_WHISCASH 5; SPECIES_CHINGLING 5; SPECIES_CHIMECHO 5; SPECIES_STUNKY 5; SPECIES_SKUNTANK 5; SPECIES_MEDITITE 5; SPECIES_MEDICHAM 5; SPECIES_BRONZOR 5; SPECIES_BRONZONG 5; SPECIES_PONYTA 5; SPECIES_RAPIDASH 5; SPECIES_BONSLY 5; SPECIES_SUDOWOODO 5; SPECIES_MIME_JR 5; SPECIES_MR_MIME 5; SPECIES_HAPPINY 5; SPECIES_CHANSEY 5; SPECIES_BLISSEY 5; SPECIES_CLEFFA 5; SPECIES_CLEFAIRY 5; SPECIES_CLEFABLE 5; SPECIES_CHATOT 5; SPECIES_PICHU 5; SPECIES_PIKACHU 5; SPECIES_RAICHU 5; SPECIES_HOOTHOOT 5; SPECIES_NOCTOWL 5; SPECIES_SPIRITOMB 5; SPECIES_GIBLE 5; SPECIES_GABITE 5; SPECIES_GARCHOMP 5; SPECIES_MUNCHLAX 5; SPECIES_SNORLAX 5; SPECIES_UNOWN 5; SPECIES_RIOLU 5; SPECIES_LUCARIO 5; SPECIES_WOOPER 5; SPECIES_QUAGSIRE 5; SPECIES_WINGULL 5; SPECIES_PELIPPER 5; SPECIES_GIRAFARIG 5; SPECIES_HIPPOPOTAS 5; SPECIES_HIPPOWDON 5; SPECIES_AZURILL 5; SPECIES_MARILL 5; SPECIES_AZUMARILL 5; SPECIES_SKORUPI 5; SPECIES_DRAPION 5; SPECIES_CROAGUNK 5; SPECIES_TOXICROAK 5; SPECIES_CARNIVINE 5; SPECIES_REMORAID 5; SPECIES_OCTILLERY 5; SPECIES_FINNEON 5; SPECIES_LUMINEON 5; SPECIES_TENTACOOL 5; SPECIES_TENTACRUEL 5; SPECIES_FEEBAS 5; SPECIES_MILOTIC 5; SPECIES_MANTYKE 5; SPECIES_MANTINE 5; SPECIES_SNOVER 5; SPECIES_ABOMASNOW 5; SPECIES_SNEASEL 5; SPECIES_WEAVILE 5; SPECIES_UXIE 5; SPECIES_MESPRIT 5; SPECIES_AZELF 5; SPECIES_DIALGA 5; SPECIES_PALKIA 5; SPECIES_MANAPHY 5; SPECIES_ROTOM 5; SPECIES_GLIGAR 5; SPECIES_GLISCOR 5; SPECIES_NOSEPASS 5; SPECIES_PROBOPASS 5; SPECIES_RALTS 5; SPECIES_KIRLIA 5; SPECIES_GARDEVOIR 5; SPECIES_GALLADE 5; SPECIES_LICKITUNG 5; SPECIES_LICKILICKY 5; SPECIES_EEVEE 5; SPECIES_VAPOREON 5; SPECIES_JOLTEON 5; SPECIES_FLAREON 5; SPECIES_ESPEON 5; SPECIES_UMBREON 5; SPECIES_LEAFEON 5; SPECIES_GLACEON 5; SPECIES_SWABLU 5; SPECIES_ALTARIA 5; SPECIES_TOGEPI 5; SPECIES_TOGETIC 5; SPECIES_TOGEKISS 5; SPECIES_HOUNDOUR 5; SPECIES_HOUNDOOM 5; SPECIES_MAGNEMITE 5; SPECIES_MAGNETON 5; SPECIES_MAGNEZONE 5; SPECIES_TANGELA 5; SPECIES_TANGROWTH 5; SPECIES_YANMA 5; SPECIES_YANMEGA 5; SPECIES_TROPIUS 5; SPECIES_RHYHORN 5; SPECIES_RHYDON 5; SPECIES_RHYPERIOR 5; SPECIES_DUSKULL 5; SPECIES_DUSCLOPS 5; SPECIES_DUSKNOIR 5; SPECIES_PORYGON 5; SPECIES_PORYGON2 5; SPECIES_PORYGON_Z 5; SPECIES_SCYTHER 5; SPECIES_SCIZOR 5; SPECIES_ELEKID 5; SPECIES_ELECTABUZZ 5; SPECIES_ELECTIVIRE 5; SPECIES_MAGBY 5; SPECIES_MAGMAR 5; SPECIES_MAGMORTAR 5; SPECIES_SWINUB 5; SPECIES_PILOSWINE 5; SPECIES_MAMOSWINE 5; SPECIES_SNORUNT 5; SPECIES_GLALIE 5; SPECIES_FROSLASS 5; SPECIES_ABSOL 5; SPECIES_GIRATINA 5
+- party: SPECIES_TURTWIG 15
 - trainers: none
 - end state: map 422; 2 save check(s)
-- frames: estimate 5000, budget 7500
+- frames: estimate 2769, budget 4200
 - refs: res/field/scripts/scripts_sunyshore_city.s:35; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:23-35; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:52-58; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:486-560; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:538; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:542; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:572; include/pokedex.h:16-18; src/pokedex.c:801-810; src/scrcmd.c:5473-5477; res/pokemon/sinnoh_pokedex.json; pc/src/pc_lab.c:140; pc/src/pc_lab.c:680-687; pc/src/pc_lab.c:789-793; features/tools/np_save4.c:348-350; features/tools/np_save4.c:416-417
 
 #### platinum/106-pal-park — Pal Park: gate refuses without a GBA cartridge
@@ -1104,9 +1104,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: `start.recipe`; map MAP_HEADER_PAL_PARK_LOBBY 7 12 FACE_UP; lab state lines: 1 flag, 2 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map 393; at (7, 12)
-- frames: estimate 3700, budget 5600
-- refs: res/field/scripts/scripts_pal_park_lobby.s:347; res/field/scripts/scripts_pal_park_lobby.s:364-383; res/field/scripts/scripts_pal_park_lobby.s:382; pc/tests/corpus/comm-palpark.recipe; pc/tests/corpus/comm-palpark.spec; pc/replays/lab-comm-palpark.txt
+- end state: map 393; at (7, 12); party size 1
+- frames: estimate 1823, budget 2800
+- refs: res/field/scripts/scripts_pal_park_lobby.s:111; res/field/scripts/scripts_pal_park_lobby.s:172-176; res/field/scripts/scripts_pal_park_lobby.s:347; res/field/scripts/scripts_pal_park_lobby.s:364-383; res/field/scripts/scripts_pal_park_lobby.s:382; pc/tests/corpus/comm-palpark.recipe; pc/tests/corpus/comm-palpark.spec; pc/replays/lab-comm-palpark.txt
 
 #### platinum/107-hall-of-fame-pc — Hall of Fame on the Pokemon Center PC
 - proves: Hall of Fame PC: with FLAG_GAME_COMPLETED the Pokemon Center PC menu shows HALL OF FAME, which opens the PC HoF screen from the extra save written by the real league clear. Start: JUBILIFE_CITY_POKECENTER_1F (12,4) facing the PC. End: same.

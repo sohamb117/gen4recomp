@@ -2,9 +2,8 @@
 # SetNationalDexEnabled, Poke Radar given. Game completion is not required.
 # Start: SANDGEM_TOWN_POKEMON_RESEARCH_LAB (7,6) below Rowan. End: same map, natdex on.
 title = "National Dex upgrade from Rowan and Oak"
-status = "planned"
 priority = "P1"
-estimate = 5000
+estimate = 2769
 refs = [
   "res/field/scripts/scripts_sunyshore_city.s:35",
   "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:23-35",
@@ -28,7 +27,10 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 7500
+frames = 4200
+
+[[shots]]
+frames = [1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700]
 
 [[step]]
 do = "press"
@@ -39,7 +41,7 @@ note = "talk to Rowan (7,5): SandgemTownLab_ProfRowanReactToPokedex"
 do = "advance_text"
 max = 6000
 note = "[INFERENCE] A answers the Yes prompt; Oak cutscene is unskippable text; Poke Radar given"
-shot = "oak"
+
 
 [[step]]
 do = "wait_field"

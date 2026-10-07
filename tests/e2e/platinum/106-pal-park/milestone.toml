@@ -2,10 +2,11 @@
 # an empty GBA slot. Real migration needs a GBA cartridge (not headless). Pinned corpus/comm-palpark.
 # Start: PAL_PARK_LOBBY (7,12) below the receptionist (7,11). End: same.
 title = "Pal Park: gate refuses without a GBA cartridge"
-status = "planned"
 priority = "P2"
-estimate = 3700
+estimate = 1823
 refs = [
+  "res/field/scripts/scripts_pal_park_lobby.s:111",
+  "res/field/scripts/scripts_pal_park_lobby.s:172-176",
   "res/field/scripts/scripts_pal_park_lobby.s:347",
   "res/field/scripts/scripts_pal_park_lobby.s:364-383",
   "res/field/scripts/scripts_pal_park_lobby.s:382",
@@ -18,18 +19,39 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 5600
+frames = 2800
 
 [[step]]
 do = "press"
 keys = "A"
-note = "receptionist (7,11): Enter / Info / Exit"
+gap = 20
+note = "receptionist (7,11): 'Hi there, GQ!'"
+shot = "greeting"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "'Did you come to participate in a Catching Show?' ENTER / INFO / EXIT"
+shot = "menu"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "ENTER -> GoToIfNotEnoughMonForCatchingShow (scripts_pal_park_lobby.s:111) -> 'Oh, hold on. You don't have enough Pokemon for a Catching Show.'"
+shot = "refused"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "'You should make some Pokemon migrate from Kanto or Hoenn!' (no GBA cartridge: nothing ever migrated)"
+shot = "migrate"
 
 [[step]]
 do = "advance_text"
-max = 2000
-note = "[INFERENCE] A picks Enter (first entry); the refusal text closes back to the field"
-shot = "refused"
+max = 600
 
 [[step]]
 do = "wait_field"
@@ -37,4 +59,5 @@ do = "wait_field"
 [expect]
 map = 393
 position = [7, 12]
-# PHASE2: corpus digest BCB13491F57535F3 (comm-palpark.spec) is a pc_corpus.py artefact, not an e2e expect.
+# nothing migrated, nothing entered: the party is the recipe's one TURTWIG
+party_size = 1

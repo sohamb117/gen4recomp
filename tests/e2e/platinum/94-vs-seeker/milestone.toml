@@ -2,9 +2,8 @@
 # Tristan; he spins for a rematch, talk to him, beat TRISTAN_REMATCH_1 (STARAVIA 24).
 # Start: ROUTE_202 (166,816). End: (166,814) after the win.
 title = "Vs. Seeker: rematch Youngster Tristan"
-status = "planned"
 priority = "P1"
-estimate = 3500
+estimate = 3639
 refs = [
   "res/field/events/events_route_202.json",
   "res/field/events/events_route_207.json",
@@ -32,8 +31,13 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 5300
-clock = "2009-03-22 21:00:00"   # the 50% LCRNG roll is deterministic per RTC/frame; shift if no trainer is picked
+frames = 5500
+# The roll (vs_seeker.c:659-685) is the first LCRandom after CONTINUE, as in D/P 99: on the harness's fixed boot
+# frames it depends only on PC_RTC. With this clock Tristan is picked (the '!!' above him at frame 1710).
+clock = "2009-03-22 21:00:00"
+
+[[shots]]
+frames = [1710, 1986, 2400, 2772]
 
 [[step]]
 do = "press"
@@ -42,9 +46,9 @@ hold = 24
 note = "registered Vs. Seeker; battery 100 and Tristan visible (vs_seeker.c:487-497)"
 
 [[step]]
-do = "advance_text"
-max = 900
-note = "50% roll per visible defeated trainer (vs_seeker.c:659-685); Tristan spins"
+do = "wait_frames"
+n = 240
+note = "50% roll per visible defeated trainer (vs_seeker.c:659-685); Tristan shows '!!' and spins; no text"
 shot = "seeker"
 
 [[step]]
@@ -56,20 +60,30 @@ interact = true
 note = "Tristan at (166,813) LOOK_SOUTH sight 5; he may walk up on his own first [INFERENCE]"
 
 [[step]]
+do = "advance_text"
+max = 600
+note = "his rematch intro text ('Did you get better since we met?') runs before the battle"
+
+[[step]]
 do = "wait_battle"
-max = 1200
+max = 1500
 
 [[step]]
 do = "auto_battle"
 note = "INFERNAPE 40 Flamethrower vs STARAVIA 24"
-shot = "rematch"
 
 [[step]]
 do = "advance_text"
+max = 1500
+
+[[step]]
+do = "wait_field"
 
 [expect]
 map = 343
 battles = 1
 flags = ["FLAG_VS_SEEKER_USED", "FLAG_DEFEATED_TRAINER_YOUNGSTER_TRISTAN_REMATCH_1"]
-# [INFERENCE] battery resets on use
-vars = { VAR_VS_SEEKER_BATTERY_LEVEL = 0 }
+position = [166, 814]
+# the seeker empties the battery on use (vs_seeker.c:431); each step adds one while below 100 (vs_seeker.c:572-582,
+# field_control.c:846): the two steps up to Tristan leave 2
+vars = { VAR_VS_SEEKER_BATTERY_LEVEL = 2 }
