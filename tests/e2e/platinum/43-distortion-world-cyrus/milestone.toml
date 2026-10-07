@@ -3,9 +3,8 @@
 # (scripts_spear_pillar_distorted.s:120-128). End: DW B7F (581), VAR_DISTORTION_WORLD_PROGRESS 10.
 
 title = "Distortion World: to B7F and Cyrus"
-status = "planned"
 priority = "P0"
-estimate = 40000
+estimate = 45213
 refs = [
   "scripts_spear_pillar_distorted.s:120-128",
   "src/overlay009/ov9_02249960.c:10198-10248",
@@ -29,7 +28,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 120000
+frames = 67900
 # Routes: ground legs from tools/pt_dw.py MAP --route X,Z X,Z (land data + JUMP_*_TWICE pairs + ledges); walls,
 # ceilings, platform rides and elevators from pt_dw.py MAP (floating platforms, jump points, events) and checked in
 # game with tools/pt_explore.py --try. Each leg is a `moves` target ("x40": until the probe's x is 40), so jump pairs
