@@ -1,0 +1,113 @@
+# A ROM-only Diamond core: every line of game and SDK code recompiled from
+# the cartridge image by tools/ndsrec + armrec, no decompilation involved,
+# linked with the machine model Diamond/Pearl and Platinum share.
+#
+#   make -f pc/Makefile.wasm -j6                 build/pc-wasm/ndsrec-diamond.wasm
+#   make -f pc/Makefile.wasm ROM=other.nds ...   another NitroSDK ROM
+#
+# (run from games/ndsrec). The inputs are the ROM and the primitive map:
+#
+#   1. tools/ndsrec/sigs.py learns signatures for the functions and objects
+#      tools/ndsrec/primitives.txt names (the host's replacements and what
+#      it names) from Diamond's ROM and link map, and matches them in ROM:
+#      $(NDSREC_OUT)/primitives.syms. Nothing else of the link map is used.
+#   2. tools/ndsrec/ndsrec.py emit writes the whole ARM9 side of ROM as
+#      armrec-ready assembly under $(NDSREC_OUT)/asm, naming only what the
+#      map names (sub_XXXXXXXX / ovNN_XXXXXXXX otherwise), plus the
+#      host-override list.
+#   3. armrec translates all of it (pc/mk/ndsrec.mk); the map's `override`
+#      functions are dropped and every call and dispatch to them reaches
+#      the host's C.
+#   4. Diamond's host fragment (games/diamond/pc/mk/host.mk: Platinum's
+#      machine model + games/diamond/pc/src) and bridge (bridge.mk) are
+#      used as they are, by reference. The two link values the boot takes
+#      from the xMAP there come from crt0's literal pool here
+#      (`ndsrec.py lcf`, written in the xMAP's form).
+#
+# Steps 1-3 write the file list the rest of the build is made of, so `all`
+# runs make twice: stage 1 (map, assembly, armrec), then the link.
+
+ROOT    := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))/..)
+SELF    := $(abspath $(lastword $(MAKEFILE_LIST)))
+NPROOT  := $(abspath $(ROOT)/../..)
+PLAT    := $(NPROOT)/games/platinum
+DP      := $(NPROOT)/games/diamond
+ARMREC  := $(PLAT)/tools/armrec
+NDSREC  := $(NPROOT)/tools/ndsrec
+# Diamond's pc/ directory: host.mk and bridge.mk read their sources, shadow
+# headers and D-specific host files from here.
+PCDIR   := $(DP)/pc
+MYPC    := $(ROOT)/pc
+
+TOOLCHAINS ?= $(NPROOT)/.cache/toolchains
+WASI_SDK   ?= $(TOOLCHAINS)/wasi-sdk
+WABT       ?= $(TOOLCHAINS)/wabt
+PYTHON     ?= python3
+
+VER     ?= diamond
+ROM     ?= $(DP)/build/diamond.us/pokediamond.us.nds
+# Where the signatures are learned: a ROM whose link map is known.
+LEARN_ROM  ?= $(DP)/build/diamond.us/pokediamond.us.nds
+LEARN_XMAP ?= $(DP)/arm9/build/diamond.us/arm9.elf.xMAP
+
+BUILD  := $(ROOT)/build/pc-wasm/$(VER)
+OBJ    := $(BUILD)/obj
+TARGET := $(ROOT)/build/pc-wasm/ndsrec-$(VER).wasm
+
+CC  := $(WASI_SDK)/bin/clang --target=wasm32-wasip1
+NM  := $(WASI_SDK)/bin/llvm-nm
+
+WASM_ABI := -fno-short-enums -fsigned-char -fno-common -std=gnu99 \
+            -fms-extensions -fno-strict-aliasing -fwrapv -w \
+            -Wno-error=implicit-function-declaration -Wno-error=implicit-int \
+            -Wno-error=int-conversion -Wno-error=incompatible-pointer-types \
+            -Wno-error=incompatible-function-pointer-types \
+            -Wno-error=return-type -Wno-error=return-mismatch
+OPT    ?= -O2
+HW_OPT ?= -O3
+
+np_abi_const = $(shell printf '%d' $$(sed -n 's/^\#define $(1) \(0x[0-9A-Fa-f]*\)u.*/\1/p' $(NPROOT)/core/include/np_guest_abi.h))
+NP_C_BASE := $(call np_abi_const,NP_GUEST_C_BASE)
+NP_MEMORY := $(call np_abi_const,NP_GUEST_MEMORY_BYTES)
+WASM_MAP  := $(BUILD)/ndsrec-$(VER).map
+LDFLAGS   := -Wl,--global-base=$(NP_C_BASE) -Wl,--no-stack-first \
+             -Wl,--initial-memory=$(NP_MEMORY) -Wl,--max-memory=$(NP_MEMORY) \
+             -Wl,-z,stack-size=1048576 -Wl,-Map=$(WASM_MAP)
+LDLIBS    := -lm
+
+.DEFAULT_GOAL := all
+.PHONY: all stage1 link clean
+.SECONDEXPANSION:
+
+OBJS :=
+# host.mk's overlay-statics table walks the decompiled overlays' objects;
+# there are none here.
+GAME_OBJS :=
+include $(PCDIR)/mk/bridge.mk
+include $(MYPC)/mk/ndsrec.mk
+include $(PCDIR)/mk/host.mk
+
+# What the host layer reaches in Diamond's decompiled game half that a
+# recompiled ROM does not have (pc/src/pc_ndsrec_hooks.c).
+MY_OBJS := $(OBJ)/ndsrec/pc_ndsrec_hooks.o
+$(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
+	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
+OBJS += $(MY_OBJS)
+
+all:
+	$(MAKE) -f $(SELF) stage1
+	$(MAKE) -f $(SELF) link
+
+link: $(TARGET)
+
+# The contract check, as Diamond and Platinum run it. No patch_ov_addrs.py:
+# its table lists decompiled overlays' C statics, and there are none.
+POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
+               $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
+$(TARGET): $(OBJS) $(LINK_EXTRA_DEPS)
+	@mkdir -p $(dir $@)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LINK_EXTRA_OBJS) $(LDLIBS)
+	@$(POST_LINK)
+
+clean:
+	rm -rf $(BUILD) $(TARGET)

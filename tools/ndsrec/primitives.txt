@@ -137,6 +137,11 @@ func ref CTRDG_WriteAgbFlashSector
 func ref CTRDGi_ReadFlashID
 func ref TP_GetCalibratedPoint
 func ref WMi_StartMP
+func ref CTRDG_GetAgbGameCode
+func ref CTRDG_IsAgbCartridge
+func ref CTRDG_IdentifyAgbBackup
+func ref OS_RescheduleThread
+func ref OS_GetTick
 data ref OSi_IrqThreadQueue
 data ref OSi_ThreadInfo
 data ref cardi_common

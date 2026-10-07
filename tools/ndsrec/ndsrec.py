@@ -4,6 +4,7 @@ ndsrec: static recompilation front end for NDS ROMs, from the ROM alone.
 
     ndsrec.py info ROM.nds
     ndsrec.py emit ROM.nds --out DIR [--symbols MAP] [--modules arm9,ov005]
+    ndsrec.py lcf ROM.nds
 
 `info` prints the cartridge layout (header, ARM9 static, autoloads,
 overlays, ARM7, TWL sections) and the discovery census per module.
@@ -124,6 +125,34 @@ def cmd_emit(a):
     sys.stdout.write(report)
 
 
+def cmd_lcf(a):
+    """The two NitroSDK link-time values the host's boot needs, read off
+    crt0's `_start` literal pool, in the xMAP's `#>VALUE NAME` form:
+    SDK_AUTOLOAD_DTCM_START (its first literal) and SDK_IRQ_STACKSIZE (the
+    first literal below 64 KB, which `_start` subtracts from the DTCM top
+    for the IRQ stack)."""
+    import disasm
+    rom = nds.Rom(a.rom)
+    view = rom.module_segment("arm9")
+    data, base = view.lookup(rom.arm9_entry)
+    dtcm = irq = None
+    addr = rom.arm9_entry
+    for _ in range(96):
+        ins = disasm.decode(data, addr - base, addr, False)
+        if ins.lit is not None and ins.lit_size == 4:
+            o = ins.lit - base
+            v = int.from_bytes(data[o:o + 4], "little")
+            if dtcm is None:
+                dtcm = v
+            elif irq is None and v < 0x10000:
+                irq = v
+        addr += 4
+    if dtcm is None or irq is None:
+        sys.exit("ndsrec lcf: crt0's literal pool does not have the expected shape")
+    print("#>%08X          SDK_AUTOLOAD_DTCM_START (crt0 _start literal)" % dtcm)
+    print("#>%08X          SDK_IRQ_STACKSIZE (crt0 _start literal)" % irq)
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -137,8 +166,10 @@ def main():
     p.add_argument("--symbols")
     p.add_argument("--modules")
     p.add_argument("--per-file", type=int, default=300)
+    p = sub.add_parser("lcf")
+    p.add_argument("rom")
     a = ap.parse_args()
-    {"info": cmd_info, "emit": cmd_emit}[a.cmd](a)
+    {"info": cmd_info, "emit": cmd_emit, "lcf": cmd_lcf}[a.cmd](a)
 
 
 if __name__ == "__main__":

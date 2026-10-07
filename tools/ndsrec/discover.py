@@ -58,6 +58,9 @@ class Module(object):
         self.funcs = {}
         self.external_calls = []    # (from_func, insn addr, target)
         self.claimed = {}           # byte-granular owner map: addr -> func addr
+        # BL targets proven to be inside their caller: they tear down a frame
+        # they never built (see fold_fragments)
+        self.fragments = set()
 
     # -------------------------------------------------------------- bytes
     def mem(self, addr, n):
@@ -163,6 +166,8 @@ class Module(object):
         if not (t & 1):
             return False
         t &= ~1
+        if t in self.fragments:
+            return True
         if t <= f.addr or t - f.addr > 0x4000 or t in known:
             return False
         if self.has_prologue(t, True):
@@ -247,7 +252,7 @@ class Module(object):
 
     # --------------------------------------------------------------- run
     def add(self, addr, thumb, source):
-        if addr in self.funcs or addr & (1 if thumb else 3):
+        if addr in self.funcs or addr & (1 if thumb else 3) or addr in self.fragments:
             return False
         # the ARM9 secure area (the static's first 2 KB) is the SDK's
         # syscall blob: data with a few SWI thunks reached by call only
@@ -268,6 +273,8 @@ class Module(object):
         for a, t, s in seeds:
             self.add(a, t, s)
         self.descend()
+        while self.fold_fragments():
+            self.descend()
         for _ in range(16):
             changed = False
             if hints:
@@ -278,6 +285,9 @@ class Module(object):
             if gap_fill and self.funcs:
                 changed |= self.fill_gaps()
                 self.descend()
+            while self.fold_fragments():
+                self.descend()
+                changed = True
             if not changed:
                 break
         self.resolve_overlaps()
@@ -373,7 +383,7 @@ class Module(object):
             # stmdb sp!, {r4-r11}
             if thumb:
                 hw = self.u16(addr)
-                if hw is not None and (hw & 0xFF00) == 0xB400 and hw & 0xF0:
+                if hw is not None and (hw & 0xFF00) == 0xB400 and hw & 0xFF:
                     return True
             else:
                 w = self.u32(addr)
@@ -524,6 +534,37 @@ class Module(object):
         """Where code stops: the end of the last function the descent
         reached from a call or an entry point (rodata follows)."""
         return max(f.end for f in self.funcs.values())
+
+    def fold_fragments(self):
+        """A Thumb BL target with no prologue that pops registers or the
+        return address, or releases stack, is the tail of its caller reached
+        by a long branch (mwcc duplicates epilogues, so the bytes before it
+        can look like a function end). Drop it; its callers re-explore with
+        the BL as a branch."""
+        found = []
+        for a, f in self.funcs.items():
+            if f.source != "call" or not f.thumb or self.has_prologue(a, True, weak=True):
+                continue
+            for ins in f.insns.values():
+                t = ins.text
+                if t.startswith("pop ") or (t.startswith("add sp, #") and ins.kind == "op"):
+                    found.append(a)
+                    break
+        if not found:
+            return False
+        for a in found:
+            self.fragments.add(a)
+            del self.funcs[a]
+        for b, g in self.funcs.items():
+            if any((c & ~1) in self.fragments for c in g.calls):
+                g.insns = {}
+                g.lits = {}
+                g.data = set()
+                g.calls = set()
+                g.tails = set()
+                g.jt = {}
+                g.longbr = set()
+        return True
 
     def prune_calls(self):
         """Drop call-sourced functions nothing calls any more (a target

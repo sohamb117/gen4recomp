@@ -178,10 +178,15 @@ def emit_module(rom, module, mod, resolver, names, data_names, outdir,
                     emit_func(out, module, seg, f, end, lits, resolver, names,
                               data_names, prims, stats, forced)
             if first_file:
-                bss = [(addr, v) for addr, v in data_names.items() if v[2] == "bss"]
+                # objects in BSS, or anywhere no segment's bytes cover (the
+                # DTCM's BSS after its 0x60 initialised bytes)
+                bss = [(addr, v) for addr, v in data_names.items()
+                       if v[2] == "bss" or not any(s.ram <= addr < s.end for _n, s in segs)]
                 if bss:
-                    out.append("\t.section .bss")
+                    # one section each: they are not contiguous, and armrec's
+                    # location counter runs per section
                     for addr, (nm, size, _sec) in sorted(bss):
+                        out.append("\t.section .bss.%s" % nm)
                         out.append("\t.global %s" % nm)
                         out.append("%s: ; 0x%08X" % (nm, addr))
                         out.append("\t.space 0x%x" % max(size, 4))
@@ -199,7 +204,7 @@ def resolve_operand(module, f, ins, end, resolver, names, local_targets):
         return label_name(module, t)
     if ins.kind == "call":
         ta = t & ~1
-        if ins.addr in f.longbr:
+        if ins.addr in f.longbr and f.addr < ta < end and ta in f.insns:
             return label_name(module, ta)          # long branch
         return resolver.call(module, t)
     # branch
