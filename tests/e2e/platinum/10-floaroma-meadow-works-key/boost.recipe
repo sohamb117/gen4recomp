@@ -1,0 +1,8 @@
+# Boost on 09's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Rock Smash (HM06, received in 06) for the Ravaged Path rock (22,42); Bite (the starter's own level-22 move)
+# in slot 3 as the one attacking move: neutral on the meadow grunts (TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_1
+# STUNKY 13, _2 ZUBAT 11 x2) where Razor Leaf is resisted x0.25 by Zubat.
+party-level 0 22
+party-move 0 1 MOVE_ROCK_SMASH
+party-move 0 2 MOVE_RAZOR_LEAF
+party-move 0 3 MOVE_BITE

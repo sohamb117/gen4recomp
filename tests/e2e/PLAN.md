@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~928747 frames estimated
+### Story chain: 56 milestones, ~929432 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -116,7 +116,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [07-oreburgh-mine-roark](platinum/07-oreburgh-mine-roark/milestone.toml) | Oreburgh Mine: Roark returns to the gym | P0 | 13362 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY_GYM | passing |
 | [08-roark-coal-badge](platinum/08-roark-coal-badge/milestone.toml) | Oreburgh Gym: Roark and the Coal Badge | P0 | 12905 | prev + `lab.recipe` | MAP_HEADER_OREBURGH_CITY | passing |
 | [09-jubilife-galactic-tag-battle](platinum/09-jubilife-galactic-tag-battle/milestone.toml) | Jubilife: tag battle against Team Galactic | P0 | 15643 | prev + `lab.recipe` | MAP_HEADER_JUBILIFE_CITY | passing |
-| [10-floaroma-meadow-works-key](platinum/10-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | 19000 | prev + `lab.recipe` | MAP_HEADER_FLOAROMA_TOWN | planned |
+| [10-floaroma-meadow-works-key](platinum/10-floaroma-meadow-works-key/milestone.toml) | Floaroma Meadow: the Works Key | P0 | 19685 | prev + `lab.recipe` | MAP_HEADER_FLOAROMA_TOWN | passing |
 | [11-valley-windworks-mars](platinum/11-valley-windworks-mars/milestone.toml) | Valley Windworks: Commander Mars | P0 | 15000 | prev + `lab.recipe` | MAP_HEADER_ETERNA_FOREST | planned |
 | [12-eterna-forest-cheryl](platinum/12-eterna-forest-cheryl/milestone.toml) | Eterna Forest with Cheryl | P0 | 15000 | prev + `lab.recipe` | MAP_HEADER_ROUTE_205_NORTH | planned |
 | [13-gardenia-forest-badge](platinum/13-gardenia-forest-badge/milestone.toml) | Eterna Gym: Gardenia and the Forest Badge | P0 | 25000 | prev + `lab.recipe` | MAP_HEADER_ETERNA_CITY | planned |
@@ -260,9 +260,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 60 (MOVE_SURF); SPECIES_STARAPTOR 50 (MOVE_AERIAL_ACE)
 - trainers: TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_1 (296); TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_2 (297); TRAINER_LASS_SARAH (12); TRAINER_YOUNGSTER_TYLER (10); TRAINER_LASS_SAMANTHA (11); TRAINER_AROMA_LADY_TAYLOR (14); TRAINER_BUG_CATCHER_BRANDON (13); TRAINER_TWINS_LIV_AND_LIZ (15)
 - end state: map MAP_HEADER_FLOAROMA_TOWN; >= 2 battles; flags set FLAG_OBTAINED_FLOAROMA_MEADOW_WORKS_KEY, FLAG_DEFEATED_FLOAROMA_MEADOW_GRUNTS, FLAG_HIDE_FLOAROMA_TOWN_GRUNTS, FLAG_FIRST_ARRIVAL_RAVAGED_PATH, FLAG_FIRST_ARRIVAL_FLOAROMA_MEADOW; vars VAR_FLOAROMA_MEADOW_STATE=1, VAR_VALLEY_WINDWORKS_STATE=1; 2 save check(s)
-- frames: estimate 19000, budget 28500
+- frames: estimate 19685, budget 29600
 - refs: scripts_ravaged_path.s:8; scripts_route_205_south.s:129-131; scripts_floaroma_meadow.s:16; scripts_floaroma_meadow.s:22; scripts_floaroma_meadow.s:26; scripts_floaroma_meadow.s:30; scripts_floaroma_meadow.s:107-109; scripts_floaroma_meadow.s:112; scripts_floaroma_meadow.s:117-127; scripts_floaroma_meadow.s:134; src/field_move_tasks.c:545; events_ravaged_path (27 Rock Smash rocks; warps (19,50), (28,44)); events_route_204_south (warp 0 (171,705)); events_route_205_south (coords (211,659..664), (217,653); grunts (216,653)/(218,653)); events_floaroma_town (warps 7-8 (162..163,641) meadow); events_floaroma_meadow (coord (12..13,48); warps (12..13,54)); TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_1 (296); TRAINER_GALACTIC_GRUNT_FLOAROMA_MEADOW_2 (297); TRAINER_LASS_SARAH (12); TRAINER_YOUNGSTER_TYLER (10); TRAINER_LASS_SAMANTHA (11); TRAINER_AROMA_LADY_TAYLOR (14); TRAINER_BUG_CATCHER_BRANDON (13); TRAINER_TWINS_LIV_AND_LIZ (15)
-- notes: Estimate: research ~18000 plus the meadow exit. Liv & Liz (Route 204 N) is a true double: slots 0 and 1 battle; Staraptor's slot-0 Aerial Ace covers it.
+- notes: Liv & Liz (Route 204 N) is a true double with a party of one. boost.recipe teaches Rock Smash (HM06, 06) and Bite.
 
 #### platinum/11-valley-windworks-mars — Valley Windworks: Commander Mars
 - proves: Proves the Valley Windworks: the door grunt, the Works Key door, Commander Mars, the reunion, Looker outside, and the Route 205 South grunts leaving. Start: Floaroma Town warp 1 (Pokecenter door) -> end: Eterna Forest warp 0 (28,86) (12's start).
