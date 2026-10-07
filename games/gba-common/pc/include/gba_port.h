@@ -57,13 +57,23 @@ enum {
     IRQ_TIMER3 = 1 << 6, IRQ_SERIAL = 1 << 7, IRQ_DMA0 = 1 << 8, IRQ_KEYPAD = 1 << 12, IRQ_GAMEPAK = 1 << 13,
 };
 
-/* per-game constants the port needs (games/<game>/pc/src) */
+/* A decomp static by object and name (gbabridge.py maps the symbol to the
+ * ELF's local): GBA_LOCAL(overworld, CB1_Overworld) is its address. */
+#define GBA_LOCAL(file, name) ((uint32_t)(uintptr_t)__gba_local__##file##__##name)
+#define GBA_LOCAL_DECL(file, name) extern char __gba_local__##file##__##name[]
+
+/* per-game constants and hooks the port needs (games/<game>/pc/src) */
 typedef struct gba_game_info {
     const char *name;
     const char *game_code;  /* ROM header 0xAC, e.g. "BPEE" */
     uint32_t save_size;     /* flash bytes */
     uint32_t intr_table;    /* address of gIntrTable */
     void (*agb_main)(void);
+    uint32_t *callback2;    /* &gMain.callback2 */
+    /* fills NP_STAT_FIELD_READY, NP_STAT_MAP_ID, NP_STAT_IN_BATTLE */
+    void (*status)(uint32_t *status);
+    /* the game's own save, run from the main loop; returns NP_QS_* */
+    uint32_t (*quicksave)(void);
 } gba_game_info;
 extern const gba_game_info gba_game;
 

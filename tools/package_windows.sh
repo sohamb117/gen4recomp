@@ -40,7 +40,10 @@ guest_args=() built=()
 : "${NP_GUEST_WASM_platinum:=$ROOT/games/platinum/build/pc-wasm/pokeplatinum.wasm}"
 : "${NP_GUEST_WASM_diamond:=$ROOT/games/diamond/build/pc-wasm/pokediamond.wasm}"
 : "${NP_GUEST_WASM_pearl:=$ROOT/games/diamond/build/pc-wasm/pokepearl.wasm}"
-for game in diamond pearl platinum; do
+: "${NP_GUEST_WASM_ruby:=$ROOT/games/ruby/build/pc-wasm/pokeruby.wasm}"
+: "${NP_GUEST_WASM_sapphire:=$ROOT/games/ruby/build/pc-wasm/pokesapphire.wasm}"
+: "${NP_GUEST_WASM_emerald:=$ROOT/games/emerald/build/pc-wasm/pokeemerald.wasm}"
+for game in diamond pearl platinum ruby sapphire emerald; do
     var="NP_GUEST_WASM_$game"
     wasm="${!var:-}"
     if [ -n "$wasm" ] && [ -f "$wasm" ]; then

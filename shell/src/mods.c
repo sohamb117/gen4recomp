@@ -540,7 +540,9 @@ void np_mods_command(np_app *app, np_menu_cmd cmd)
     case NP_CMD_CONFIRM: activate(app, app->sel); break;
     case NP_CMD_TAB_PREV:
     case NP_CMD_TAB_NEXT:
-        mods_game = (np_game)((mods_game + (cmd == NP_CMD_TAB_NEXT ? 1 : NP_GAME_COUNT - 1)) % NP_GAME_COUNT);
+        do
+            mods_game = (np_game)((mods_game + (cmd == NP_CMD_TAB_NEXT ? 1 : NP_GAME_COUNT - 1)) % NP_GAME_COUNT);
+        while (!np_game_known(mods_game));
         make_mods_dir();
         scan_all();
         ms.banner[0] = '\0';

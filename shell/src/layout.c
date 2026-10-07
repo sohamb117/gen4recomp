@@ -11,7 +11,7 @@
 #include <math.h>
 
 #define DS_W 256.0f
-#define SH 192.0f
+#define DS_H 192.0f
 
 static void place(np_layout *l, int which, float x, float y, float s)
 {
@@ -75,6 +75,7 @@ void np_layout_compute(np_layout *l, const np_layout_params *p, float win_w, flo
     l->rotation = ((p->rotation % 4) + 4) % 4;
     int a = p->swap ? 1 : 0, b = 1 - a;
     const float SW = p->screen_w > 0 ? (float)p->screen_w : DS_W;
+    const float SH = p->screen_h > 0 ? (float)p->screen_h : DS_H;
     l->screen_w = SW;
     switch (p->mode) {
     case NP_LAYOUT_HORIZONTAL:
@@ -166,10 +167,10 @@ int np_layout_touch(const np_layout *l, float wx, float wy, int clamp, int *tx, 
     unrotate_point(l, (wx - l->origin_x) / l->scale, (wy - l->origin_y) / l->scale, &x, &y);
     float u = floorf((x - sp->content_x) / sp->content_scale) - floorf((l->screen_w - DS_W) * 0.5f);
     float v = floorf((y - sp->content_y) / sp->content_scale);
-    int inside = u >= 0.0f && u < DS_W && v >= 0.0f && v < SH;
+    int inside = u >= 0.0f && u < DS_W && v >= 0.0f && v < DS_H;
     if (!inside && !clamp)
         return 0;
     *tx = (int)fminf(fmaxf(u, 0.0f), DS_W - 1);
-    *ty = (int)fminf(fmaxf(v, 0.0f), SH - 1);
+    *ty = (int)fminf(fmaxf(v, 0.0f), DS_H - 1);
     return 1;
 }

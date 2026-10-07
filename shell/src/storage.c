@@ -160,7 +160,7 @@ int np_storage_remove_tree(const char *path)
 void np_storage_rom_path(np_game game, char *out, size_t n)
 {
     char rel[64];
-    SDL_snprintf(rel, sizeof rel, "roms/%s.nds", np_game_id(game));
+    SDL_snprintf(rel, sizeof rel, "roms/%s.%s", np_game_id(game), np_game_is_gba(game) ? "gba" : "nds");
     np_storage_path(out, n, rel);
 }
 

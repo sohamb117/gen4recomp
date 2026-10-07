@@ -366,7 +366,8 @@ void np_sync_all(np_app *app, int quiet)
     db_load();
     sync_tally t = {0};
     for (int g = 0; g < NP_GAME_COUNT; g++)
-        sync_game(app, (np_game)g, NULL, &t);
+        if (np_game_known((np_game)g))
+            sync_game(app, (np_game)g, NULL, &t);
     db_save();
     if (t.pulled)
         np_app_refresh_slots(app, NULL);

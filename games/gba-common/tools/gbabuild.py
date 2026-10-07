@@ -8,7 +8,9 @@ guest.
 Inputs: the decomp tree with its matching ROM build (.elf beside it; the
 graphics and sound it built are what INCBIN sizes come from), the pinned
 wasi-sdk, and games/gba-common/pc (the GBA machine) plus games/<game>/pc.
-Output: build/rse/<game>/<game>.wasm (repository root build/, gitignored).
+Output: games/emerald/build/pc-wasm/pokeemerald.wasm, games/ruby/build/pc-wasm/
+poke{ruby,sapphire}.wasm (intermediates in a directory of the module's name
+beside it; gitignored like the DS games' builds).
 
 Per decomp TU: clang -E, the decomp's own preproc (charmap strings, INCBIN),
 srcfix.py (agbcc struct layout, asm), clang -S -emit-llvm without
@@ -39,13 +41,16 @@ CLANG = os.path.join(WASI, "bin", "clang")
 TARGET = "--target=wasm32-wasip1"
 ABI_H = os.path.join(NPROOT, "core", "include", "np_guest_abi.h")
 
+# pokeruby's Makefile: US English, revision 0, no debug menu
+RS_DEFS = ["-DREVISION=0", "-DENGLISH", "-DDEBUG=0", "-DDEBUG_FIX=0"]
+
 GAMES = {
     "emerald": dict(decomp=".cache/gba/pokeemerald", elf="pokeemerald.elf", defs=[],
-                    port="games/emerald/pc"),
-    "ruby": dict(decomp=".cache/gba/pokeruby", elf="pokeruby.elf", defs=["-DRUBY"],
-                 port="games/ruby/pc"),
-    "sapphire": dict(decomp=".cache/gba/pokeruby", elf="pokesapphire.elf", defs=["-DSAPPHIRE"],
-                     port="games/ruby/pc"),
+                    port="games/emerald/pc", wasm="pokeemerald"),
+    "ruby": dict(decomp=".cache/gba/pokeruby", elf="pokeruby.elf", defs=["-DRUBY"] + RS_DEFS,
+                 port="games/ruby/pc", wasm="pokeruby"),
+    "sapphire": dict(decomp=".cache/gba/pokeruby", elf="pokesapphire.elf", defs=["-DSAPPHIRE"] + RS_DEFS,
+                     port="games/ruby/pc", wasm="pokesapphire"),
 }
 
 # The decomp TUs the port replaces (pc/src has their API) or cannot run.
@@ -75,7 +80,8 @@ class Build:
         self.game = game
         self.cfg = GAMES[game]
         self.decomp = os.path.join(NPROOT, self.cfg["decomp"])
-        self.out = os.path.join(NPROOT, "build", "rse", game)
+        # games/<game>/build/pc-wasm/<module>/, beside the DS games' modules
+        self.out = os.path.join(NPROOT, os.path.dirname(self.cfg["port"]), "build", "pc-wasm", self.cfg["wasm"])
         self.tmp = os.path.join(self.out, "tmp")
         self.obj = os.path.join(self.out, "obj")
         os.makedirs(self.tmp, exist_ok=True)
@@ -182,8 +188,11 @@ class Build:
                 else:
                     objs.append(o)
                     sigs.append(sg)
+        errfile = os.path.join(self.out, "errors.txt")
+        if os.path.exists(errfile):
+            os.remove(errfile)
         if errs:
-            with open(os.path.join(self.out, "errors.txt"), "w") as f:
+            with open(errfile, "w") as f:
                 for s, e in errs:
                     f.write(f"==== {s}\n{e}\n")
             print(f"{len(errs)} TU(s) failed; see {self.out}/errors.txt")
@@ -202,7 +211,7 @@ class Build:
         def abi(name):
             m = re.search(r"#define %s (0x[0-9A-Fa-f]+)u" % name, open(ABI_H).read())
             return int(m.group(1), 16)
-        wasm = os.path.join(self.out, self.game + ".wasm")
+        wasm = os.path.join(os.path.dirname(self.out), self.cfg["wasm"] + ".wasm")
         rsp = os.path.join(self.out, "link.rsp")
         with open(rsp, "w") as f:
             f.write("\n".join(objs + [disp_o]))
@@ -211,7 +220,7 @@ class Build:
              f"-Wl,--initial-memory={abi('NP_GUEST_MEMORY_BYTES')}",
              f"-Wl,--max-memory={abi('NP_GUEST_MEMORY_BYTES')}",
              "-Wl,-z,stack-size=1048576", "-Wl,--gc-sections",
-             "-Wl,--export=np_fiber_entry", "-Wl,-Map=" + os.path.join(self.out, self.game + ".map")])
+             "-Wl,--export=np_fiber_entry", "-Wl,-Map=" + os.path.join(self.out, self.cfg["wasm"] + ".map")])
         print("built", os.path.relpath(wasm, NPROOT), os.path.getsize(wasm))
         return 0
 

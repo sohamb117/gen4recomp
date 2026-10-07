@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "np_core.h"
+#include "romdb.h"
 
 static int lower(int c) { return c >= 'A' && c <= 'Z' ? c - 'A' + 'a' : c; }
 
@@ -23,11 +24,7 @@ static int ieq_n(const char *a, const char *b, size_t n)
 
 int np_launch_game_from_name(const char *name)
 {
-    static const char *const ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
-    for (int g = 0; g < NP_GAME_COUNT; g++)
-        if (strlen(name) == strlen(ids[g]) && ieq_n(name, ids[g], strlen(ids[g])))
-            return g;
-    return -1;
+    return np_game_from_id(name);
 }
 
 int np_launch_slot_number(const char *slot)

@@ -30,4 +30,19 @@ const np_rom_entry *np_romdb_accepted(np_game game);
 const char *np_game_title(np_game game); /* "Diamond" */
 const char *np_game_id(np_game game);    /* "diamond": file names, options */
 
+/* Whether `game` is one this shell knows (np_game leaves gaps for games
+ * other branches add); loops over NP_GAME_COUNT skip the others. */
+int np_game_known(np_game game);
+/* A Game Boy Advance game (Ruby, Sapphire, Emerald): one 240x160 screen,
+ * no touch, a .gba cartridge. */
+int np_game_is_gba(np_game game);
+/* np_game_id() -> game, or -1 (case-insensitive). */
+int np_game_from_id(const char *id);
+
+/* The launcher's cards, in order; its selection (app->launcher_sel) is a
+ * card index or one of the buttons after them. */
+extern const np_game np_launcher_games[];
+extern const int np_launcher_game_count;
+int np_launcher_card(np_game game); /* the card showing `game` (0 if none) */
+
 #endif

@@ -200,6 +200,7 @@ class Bridge:
     def __init__(self, syms, objname):
         self.g = syms["globals"]
         self.loc = syms["locals"].get(objname, {}) if objname else {}
+        self.locals_all = syms["locals"]
         self.obj = objname
         self.types = Types()
         self.adapters = {}
@@ -209,6 +210,10 @@ class Bridge:
         self.site_base = (int.from_bytes(hashlib.sha1((objname or "port").encode()).digest()[:2], "little") & 0xFFF) << 20
 
     def data_addr(self, name, internal):
+        if name.startswith("__gba_local__"):
+            # port code naming a decomp static: __gba_local__<file>__<name>
+            f, _, n = name[len("__gba_local__"):].partition("__")
+            return self.locals_all.get(f + ".o", {}).get(n)
         if "." in name and not name.startswith("."):
             # function-scope static Func.var -> var.N in this object
             var = name.split(".", 1)[1]

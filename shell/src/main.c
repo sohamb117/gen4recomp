@@ -560,7 +560,7 @@ void np_app_stop_game(np_app *app)
     close_core(app);
     app->view = NP_VIEW_LAUNCHER;
     app->have_frame = 0;
-    app->launcher_sel = app->game;
+    app->launcher_sel = np_launcher_card(app->game);
     SDL_SetWindowTitle(app->window, "nativeplat");
     np_input_release_all(app);
     np_app_apply_video_options(app);
@@ -612,7 +612,7 @@ void np_app_launch(np_app *app, const np_launch *req)
         return;
     }
     np_game game = (np_game)req->game;
-    app->launcher_sel = game;
+    app->launcher_sel = np_launcher_card(game);
     if (!np_core_available(game)) {
         launch_fail(app, "The %s core is not included in this build.", np_game_title(game));
         return;
@@ -682,10 +682,12 @@ static int autotest_dialog(np_app *app, const char *what)
 
 void np_app_open_rom_dialog(np_app *app)
 {
-    static const SDL_DialogFileFilter filters[] = {{"Nintendo DS ROM (*.nds)", "nds"}};
+    static const SDL_DialogFileFilter filters[] = {{"Nintendo DS or Game Boy Advance ROM (*.nds, *.gba)", "nds;gba"},
+                                                   {"Nintendo DS ROM (*.nds)", "nds"},
+                                                   {"Game Boy Advance ROM (*.gba)", "gba"}};
     app->dialog_kind = NP_PENDING_ROM;
     if (!autotest_dialog(app, "ROM import"))
-        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 3, NULL, false);
 }
 
 void np_app_open_sav_import_dialog(np_app *app, np_game game)
@@ -781,7 +783,7 @@ static void import_rom(np_app *app, const char *path)
         SDL_strlcpy(app->status, r.message, sizeof app->status);
     SDL_Log("import %s: %s", path, app->status);
     if (r.ok)
-        app->launcher_sel = r.game;
+        app->launcher_sel = np_launcher_card(r.game);
 }
 
 /* A new cartridge or save takes effect when the core next boots: the
@@ -958,10 +960,11 @@ static void take_screenshot(np_app *app)
     if (!app->have_frame)
         return;
     uint32_t w = app->frame.width, h = app->frame.height;
+    int screens = app->frame.screen[1] ? 2 : 1; /* a GBA core has one */
     uint32_t *buf = SDL_malloc((size_t)w * h * 2 * 4);
     if (!buf)
         return;
-    for (int s = 0; s < 2; s++)
+    for (int s = 0; s < screens; s++)
         for (uint32_t y = 0; y < h; y++)
             SDL_memcpy(buf + ((size_t)s * h + y) * w, app->frame.screen[s] + (size_t)y * app->frame.stride, w * 4);
     SDL_Time now;
@@ -979,7 +982,7 @@ static void take_screenshot(np_app *app)
         if (!np_storage_exists(path))
             break;
     }
-    if (write_png(path, buf, w, h * 2, w))
+    if (write_png(path, buf, w, h * (uint32_t)screens, w))
         np_app_toast(app, "Screenshot failed: %s", SDL_GetError());
     else
         np_app_toast(app, "Saved %s", rel);
@@ -1093,8 +1096,11 @@ static void run_game(np_app *app)
 static void draw_screens(np_app *app)
 {
     /* Each DS pixel is an s x s block, s = height / 192; widescreen frames
-     * are wider than 256 blocks with the DS picture centred. */
-    uint32_t s = app->have_frame && app->frame.height >= 192 ? app->frame.height / 192 : 1;
+     * are wider than 256 blocks with the DS picture centred. A GBA frame is
+     * one 240x160 screen (times s), shown alone. */
+    int gba = app->have_frame && !app->frame.screen[1];
+    uint32_t base_h = gba ? NP_GBA_SCREEN_H : NP_SCREEN_H;
+    uint32_t s = app->have_frame && app->frame.height >= base_h ? app->frame.height / base_h : 1;
     int screen_w = app->have_frame ? (int)(app->frame.width / s) : 256;
     float frames[8];
     /* During a battle the battle layout, if one is chosen, replaces the
@@ -1105,7 +1111,13 @@ static void draw_screens(np_app *app)
                            app->opt.rotation,
                            app->opt.scale,
                            screen_w,
-                           np_skin_frames(app, frames) ? frames : NULL};
+                           np_skin_frames(app, frames) ? frames : NULL,
+                           gba ? NP_GBA_SCREEN_H : 0};
+    if (gba) {
+        lp.mode = NP_LAYOUT_TOP_ONLY;
+        lp.swap = 0;
+        lp.frames = NULL; /* DS skins have no GBA screen */
+    }
     np_layout_compute(&app->layout, &lp, app->out_w, app->out_h);
     for (int i = 0; i < 2; i++)
         np_fx_draw_screen(app, i);
@@ -1481,9 +1493,15 @@ static int parse_autotest(np_app *app, const char *spec, int options_only, int *
 
 static void fill_test_header(np_autotest *t, np_game game)
 {
-    static const char *const titles[NP_GAME_COUNT] = {"POKEMON D", "POKEMON P", "POKEMON PL", "POKEMON B",
-                                                      "POKEMON W"};
-    static const char *const codes[NP_GAME_COUNT] = {"ADAE", "APAE", "CPUE", "IRBO", "IRAO"};
+    static const char *const titles[NP_GAME_COUNT] = {
+        [NP_GAME_DIAMOND] = "POKEMON D", [NP_GAME_PEARL] = "POKEMON P",   [NP_GAME_PLATINUM] = "POKEMON PL",
+        [NP_GAME_BLACK] = "POKEMON B",   [NP_GAME_WHITE] = "POKEMON W",   [NP_GAME_RUBY] = "POKEMON RUBY",
+        [NP_GAME_SAPPHIRE] = "POKEMON SAPP", [NP_GAME_EMERALD] = "POKEMON EMER"};
+    static const char *const codes[NP_GAME_COUNT] = {
+        [NP_GAME_DIAMOND] = "ADAE", [NP_GAME_PEARL] = "APAE", [NP_GAME_PLATINUM] = "CPUE", [NP_GAME_BLACK] = "IRBO",
+        [NP_GAME_WHITE] = "IRAO",   [NP_GAME_RUBY] = "AXVE",  [NP_GAME_SAPPHIRE] = "AXPE", [NP_GAME_EMERALD] = "BPEE"};
+    if (!np_game_known(game))
+        game = NP_GAME_PLATINUM;
     SDL_memset(t->header, 0, sizeof t->header);
     SDL_memcpy(t->header, titles[game], SDL_strlen(titles[game]));
     SDL_memcpy(t->header + 0x0C, codes[game], 4);
@@ -1815,7 +1833,7 @@ static void startup_launch(np_app *app, int argc, char *argv[])
         return;
     }
     int g = app->opt.last_game;
-    if (app->opt.startup_continue && g >= 0 && g < NP_GAME_COUNT && np_core_available((np_game)g) &&
+    if (app->opt.startup_continue && np_game_known((np_game)g) && np_core_available((np_game)g) &&
         np_storage_rom_present((np_game)g))
         np_app_continue(app, (np_game)g);
 }

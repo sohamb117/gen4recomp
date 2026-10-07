@@ -21,7 +21,8 @@
 static np_frame_desc s_desc;
 static uint32_t s_audio[AUDIO_RING];
 static uint32_t s_audio_head;
-static uint32_t s_qs_seq;
+static uint32_t s_qs_seq;   /* last request seen */
+static uint32_t s_qs_cb2;   /* the game's callback2 while a quick save waits */
 
 extern uint32_t gba_flash_dirty;
 uint8_t *gba_flash_image(void);
@@ -64,6 +65,17 @@ void gba_audio_push(int16_t l, int16_t r) {
 
 /* ------------------------------------------------------------ frames */
 
+/* Runs once in place of the game's callback2 (main loop, field idle): the
+ * game's own save, then the callback it replaced. */
+static void quicksave_cb2(void) {
+    uint32_t cb2 = s_qs_cb2;
+    *gba_game.callback2 = cb2;
+    s_qs_cb2 = 0;
+    s_desc.status[NP_STAT_QUICKSAVE_RESULT] = gba_game.quicksave();
+    s_desc.status[NP_STAT_QUICKSAVE_SEQ] = s_qs_seq;
+    gba_call0(cb2);
+}
+
 void gba_frame_end(void) {
     s_desc.frame_lo = (uint32_t)gba_frames;
     s_desc.frame_hi = (uint32_t)(gba_frames >> 32);
@@ -74,15 +86,22 @@ void gba_frame_end(void) {
     gba_flash_dirty = 0;
     gba_apu_frame();
     s_desc.audio_head = s_audio_head;
+    gba_game.status(s_desc.status);
 
     np_host_vblank(&s_desc);
 
     gba_keys = s_desc.in_keys & 0x3FF;
-    /* no in-game quick save on the GBA: refuse each request */
-    if (s_desc.opt[NP_OPT_QUICKSAVE_SEQ] != s_qs_seq) {
+    /* a quick save is the game's own save, made from the field when the
+     * player could open the start menu; refused anywhere else */
+    if (s_desc.opt[NP_OPT_QUICKSAVE_SEQ] != s_qs_seq && !s_qs_cb2) {
         s_qs_seq = s_desc.opt[NP_OPT_QUICKSAVE_SEQ];
-        s_desc.status[NP_STAT_QUICKSAVE_SEQ] = s_qs_seq;
-        s_desc.status[NP_STAT_QUICKSAVE_RESULT] = NP_QS_REFUSED;
+        if (s_desc.status[NP_STAT_FIELD_READY]) {
+            s_qs_cb2 = *gba_game.callback2;
+            *gba_game.callback2 = (uint32_t)(uintptr_t)quicksave_cb2;
+        } else {
+            s_desc.status[NP_STAT_QUICKSAVE_SEQ] = s_qs_seq;
+            s_desc.status[NP_STAT_QUICKSAVE_RESULT] = NP_QS_REFUSED;
+        }
     }
     if (s_desc.in_quit) exit(0);
 }

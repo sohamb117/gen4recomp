@@ -286,6 +286,10 @@ static void open_path(np_app *app, np_game game, const char *label, const char *
 
 void np_editor_open(np_app *app, np_game game, const char *slot)
 {
+    if (np_game_is_gba(game)) {
+        np_app_toast(app, "The save editor reads Diamond, Pearl and Platinum saves only");
+        return;
+    }
     char path[1100];
     np_storage_slot_path(game, slot, path, sizeof path);
     open_path(app, game, slot, path, 0);
