@@ -2,10 +2,9 @@
 # scene on Route 207 (male player; a female player meets Lucas).
 # Start: Eterna Route 206 gatehouse warp 0 (5,2) -> end: Mt. Coronet South 1F (4,8) (18's start).
 title = "Cycling Road, Route 207: VS Seeker"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 14000
+estimate = 23339
 refs = [
   "maps.h:84",
   "zone_event 0079 warp 1",
@@ -81,7 +80,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 21000
+frames = 35100
 
 [[step]]
 do = "walk_to"

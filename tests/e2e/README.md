@@ -27,7 +27,7 @@ Passing (`status` removed from `milestone.toml`), as a continuity chain from a b
 | game | milestones |
 |---|---|
 | Platinum | 01-19: new game .. Coal Badge, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Eterna statue/HM01, Galactic building, Togepi/Bicycle/Explorer Kit, Cycling Road to Hearthome, Contest Hall, Relic Badge |
-| Diamond | 01-15: new game, Pokedex, Parcel + catching tutorial, Trainers' School, Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge, Barry's farewell, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Galactic building |
+| Diamond | 01-18: new game, Pokedex, Parcel + catching tutorial, Trainers' School, Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge, Barry's farewell, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Galactic building, Bicycle + Explorer Kit, Cycling Road + VS Seeker, Mt. Coronet + Route 208 to Hearthome |
 
 Everything else is still `status = "planned"` and skipped unless `--planned`.
 

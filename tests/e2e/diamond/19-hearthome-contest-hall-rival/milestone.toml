@@ -68,6 +68,7 @@ notes = "Barry's team follows GetStarter (var 0x4030, unk_0205F314.s:86-93): SPE
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 13500
@@ -146,15 +147,7 @@ map = "MAP_HEARTHOME"
 do = "walk_to"
 x = 486
 z = 718
-note = "coord (484..489,718) var 0x407B == 1 (zone_event 0085 coord 0) -> Barry runs up from (486,726)"
-
-[[step]]
-do = "advance_text"
-
-[[step]]
-do = "auto_battle"
-shot = "barry"
-note = "TrainerBattle 471 (scr_seq 0090 @0x00EF): STARLY 19, BUIZEL 20, ROSELIA 20, MONFERNO 21; a loss -> Blackout (@0x0145)"
+note = "Barry's battle (TrainerBattle 471 (scr_seq 0090 @0x00EF): STARLY 19, BUIZEL 20, ROSELIA 20, MONFERNO 21; a loss -> Blackout (@0x0145)) starts on the way: walk_to fights it and advances his text. coord (484..489,718) var 0x407B == 1 (zone_event 0085 coord 0) -> Barry runs up from (486,726)"
 
 [[step]]
 do = "advance_text"

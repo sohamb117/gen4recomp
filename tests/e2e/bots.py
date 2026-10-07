@@ -225,6 +225,8 @@ def bot_auto_battle(s, step, ctx):
                     move = (move + 1) % 4
                     s.note("auto_battle: move slot %d" % move)
                 _tap(s, TAP_MOVES[move])
+                # the menu slides out for a few frames after an accepted tap: a probe taken then is not a refusal
+                s.run(30, until=["ui_arg!=%d" % MENU_MOVES, "ui!=%d" % UI_BATTLE_MENU, "in_battle=0"])
             elif idx == MENU_TARGET:
                 if last == MENU_TARGET:
                     target = 1 - target  # the target menu again: that opponent is gone, take the other

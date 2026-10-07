@@ -1,0 +1,7 @@
+# Boost on 21's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Maylene's gym is fighting, which resists Crunch: trdata.json #317 MEDITITE 27, MACHOKE 27, LUCARIO 30 (SITRUS_BERRY,
+# 2x HYPER_POTION) and the gym trainers (black belts, MACHOP/MEDITITE lines). Earthquake in slot 0 (Torterra's own
+# level-33 move, STAB): neutral on Meditite/Machoke, x2 on Lucario; Crunch moves to slot 3. Level 60, HP full.
+party-level 0 60
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 3 MOVE_CRUNCH

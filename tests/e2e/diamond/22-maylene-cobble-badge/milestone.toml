@@ -53,6 +53,7 @@ notes = "Estimate: Platinum's Maylene milestone (~20000) — gym walk with up to
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 30000

@@ -1,10 +1,9 @@
 # Proves Cyrus's Mt. Coronet monologue, the Route 208 crossing, and the Hearthome arrival scene (Keira's runaway Buneary).
 # Start: Mt. Coronet South 1F warp 0 (4,8) -> end: Hearthome City on the arrival coord (461,726) after Keira leaves (19's start).
 title = "Mt. Coronet, Route 208, Hearthome arrival"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 10000
+estimate = 19661
 refs = [
   "maps.h:211",
   "map_header.c:291",
@@ -67,7 +66,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 15000
+frames = 29500
 
 [[step]]
 do = "walk_to"
