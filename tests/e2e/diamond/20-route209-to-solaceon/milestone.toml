@@ -2,10 +2,9 @@
 # the arrival in Solaceon Town (ON_TRANSITION sets 0x19C). No story battle; Lost Tower, Day Care and Solaceon Ruins are optional.
 # Start: Hearthome (486,718) after Barry's battle -> end: Solaceon, in front of the Pokemon Center (566,657) (21's start).
 title = "Route 209 to Solaceon Town"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 14000
+estimate = 12584
 refs = [
   "maps.h:90",
   "maps.h:114",
@@ -63,7 +62,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 21000
+frames = 18900
 
 [[step]]
 do = "walk_to"

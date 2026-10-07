@@ -2,10 +2,9 @@
 # the Route 209 gate blockers, and the rival battle it arms; the Hearthome Gym stays closed (guide: 'she's not here').
 # Start: Hearthome City (461,726) after Keira (18's end) -> end: Hearthome City (486,718) after Barry leaves, heading to Route 209.
 title = "Hearthome: Fantina, Contest Hall, rival"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 9000
+estimate = 10924
 refs = [
   "maps.h:90",
   "map_header.c:170",
@@ -71,7 +70,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 13500
+frames = 16400
 
 [[step]]
 do = "walk_to"

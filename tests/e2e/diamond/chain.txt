@@ -42,6 +42,8 @@
 41-lake-verity-mars
 42-route211-coronet-north-to-route216
 43-route216-217-hm08-to-snowpoint
+44-snowpoint-gym-candice
+45-lake-acuity-jupiter
 51-coronet-exit-valor-lakefront
 52-route222-sunyshore-flint-lighthouse
 53-sunyshore-gym-volkner

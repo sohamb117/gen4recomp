@@ -402,5 +402,28 @@ var 0x40D3 1                 # scr_seq 0343 @0x02C7 [MAP_LAKE_VERITY_GALACTIC]
 # -- 43 Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint --
 flag 0x47B                   # zone_event 0370 object 10 (SPRITE_MONSTARBALL) hidden flag, set by its Remove/AddEvent [MAP_ROUTE_217]
 item ITEM_HM08 1             # 43-route216-217-hm08-to-snowpoint: given in play (see its refs)
+# -- 44 Snowpoint Gym: the ice, Candice and the Icicle Badge --
+flag 0x65C                   # scr_seq 0170 @0x007F [MAP_SNOWPOINT_GYM]
+flag 0x65D                   # scr_seq 0170 @0x0083 [MAP_SNOWPOINT_GYM]
+flag 0x88B                   # scr_seq 0170 @0x0087 [MAP_SNOWPOINT_GYM]
+flag 0x65E                   # scr_seq 0170 @0x008B [MAP_SNOWPOINT_GYM]
+flag 0x65F                   # scr_seq 0170 @0x008F [MAP_SNOWPOINT_GYM]
+flag 0x88C                   # scr_seq 0170 @0x0093 [MAP_SNOWPOINT_GYM]
+flag 0x9E                    # scr_seq 0170 @0x00D5 [MAP_SNOWPOINT_GYM]
+badge BADGE_ICICLE           # scr_seq 0170 @0x0025-@0x00EC: TrainerBattle 319 @0x0051, GiveBadge BADGE_ICICLE @0x0077, SetTrainerFlag 268/269/827/270/271/828 @0x007F-@0x0093, SetFlag 0x1DD @0x00A3, TM72 (std 2044) @0x00D1, SetFlag 0x9E @0x00D5
+item ITEM_TM72 1             # 44-snowpoint-gym-candice: given in play (see its refs)
+# -- 45 Lake Acuity: Jupiter takes Uxie, the hurt rival --
+flag 0x98F                   # scr_seq 0351 @0x010C [MAP_LAKE_ACUITY_GALACTIC]
+flag 0x252                   # scr_seq 0351 @0x0114 [MAP_LAKE_ACUITY_GALACTIC]
+flag 0x1B2                   # scr_seq 0351 @0x0122 [MAP_LAKE_ACUITY_GALACTIC]
+flag 0x193                   # scr_seq 0351 @0x0126 [MAP_LAKE_ACUITY_GALACTIC]
+flag 0x2AB                   # scr_seq 0351 @0x012A [MAP_LAKE_ACUITY_GALACTIC]
+flag 0x2AA                   # scr_seq 0351 @0x012E [MAP_LAKE_ACUITY_GALACTIC]
+flag 0x1D8                   # scr_seq 0377 @0x002E [script ids 9600+]
+flag 0x1D7                   # zone_event 0305 object 2 (SPRITE_RIVEL) hidden flag, set by its Remove/AddEvent [MAP_LAKE_ACUITY_GALACTIC]
+clear-flag 0x241             # scr_seq 0351 @0x0110 [MAP_LAKE_ACUITY_GALACTIC]
+clear-flag 0x1B6             # scr_seq 0351 @0x011E [MAP_LAKE_ACUITY_GALACTIC]
+clear-flag 0xA8              # scr_seq 0351 @0x0132 [MAP_LAKE_ACUITY_GALACTIC]
+var 0x40D3 2                 # scr_seq 0351 @0x0118 [MAP_LAKE_ACUITY_GALACTIC]
 # -- start --
 map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 52 FACE_DOWN  # scr_seq 0230 @0x0FB0 Warp 220,0,31,52,1 (50's end)

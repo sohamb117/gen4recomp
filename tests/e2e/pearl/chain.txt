@@ -41,6 +41,8 @@
 ../diamond/41-lake-verity-mars
 ../diamond/42-route211-coronet-north-to-route216
 ../diamond/43-route216-217-hm08-to-snowpoint
+../diamond/44-snowpoint-gym-candice
+../diamond/45-lake-acuity-jupiter
 ../diamond/51-coronet-exit-valor-lakefront
 ../diamond/52-route222-sunyshore-flint-lighthouse
 ../diamond/53-sunyshore-gym-volkner

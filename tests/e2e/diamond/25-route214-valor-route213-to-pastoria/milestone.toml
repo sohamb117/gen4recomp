@@ -109,20 +109,22 @@ note = "zone_event 0366 warp 1 -> MAP_ROUTE_214 warp 0 (718,645)"
 do = "wait_map"
 map = "MAP_ROUTE_214"
 
-# PHASE2-risk: [INFERENCE] the south-end tile (719,735) and the Valor -> Route 213 crossing (705,800) are unverified
-# waypoints (no terrain decoder for D/P land data); if walk_to reports no path, read the map with the field probe and
-# pick a walkable tile on the chunk seam. Rock Smash rocks (712,681)/(711,682) only guard the Ruin Maniac cave (713,670).
+# Waypoints read with tools/probe_map.py: Route 214's south end is a corridor x 728..731, z 730..741, then open ground
+# x 718..725 down to the Valor Lakefront seam. Rock Smash rocks (712,681)/(711,682) only guard the Ruin Maniac cave (713,670).
 
 [[step]]
 do = "walk_to"
-x = 719
-z = 735
+x = 729
+z = 741
 max = 15000
 note = "south through Route 214 to the Valor Lakefront seam; sight trainers that face the path (fought by walk_to): Psychic Abigail (721,660) W sight 5 (trdata.json #120), Ruin Maniac Bryan (714,691) E sight 4 (#113), Collector Jamal (719,701) N sight 3 (#382), Ruin Maniac Hunter (721,709) N sight 3 (#114)"
 
 [[step]]
-do = "wait_map"
-map = "MAP_VALOR_LAKEFRONT"
+do = "walk_to"
+x = 721
+z = 788
+max = 6000
+note = "Route 214 south end (probe_map); the walk on crosses Valor Lakefront"
 
 [[step]]
 do = "walk_to"

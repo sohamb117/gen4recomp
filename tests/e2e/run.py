@@ -57,18 +57,19 @@ STEP_KEYS = {
     "wait_frames": {"n"},
     "wait_map": {"map"},
     "wait_field": set(),
+    "slide": {"dirs", "on_battle", "on_text", "move"},
     "wait_battle": set(),
     "schedule": {"file", "frames"},
     "save": set(),
     "advance_text": {"through_battle", "map"},
     "auto_battle": {"move", "wait", "flee"},
-    "walk_to": {"x", "z", "via", "map", "face", "interact", "run", "on_battle", "on_text", "move", "surf", "hm"},
+    "walk_to": {"x", "z", "via", "map", "face", "interact", "run", "on_battle", "on_text", "move", "surf", "hm", "avoid"},
     "walk_to_door": {"pattern", "doors", "wait", "map", "face", "interact", "run", "on_battle", "on_text", "move"},
     "talk_to": {"id", "on_battle", "on_text", "move"},
     "heal": {"x", "z", "on_battle"},
     "grind": {"x", "z", "level", "heal", "move"},
 }
-STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"},
+STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
                  "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},
                  "heal": {"x", "z"}, "grind": {"x", "z", "level"}}
 NAME_KEYS = {"map"}  # step keys that take a game name

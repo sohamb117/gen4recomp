@@ -1,0 +1,88 @@
+# Proves the Snowpoint Gym's ice: slides that build speed downhill and lose it uphill (Platinum's twin,
+# player_move.c:544-601, :763-811), snowballs crushed only by a fast slide, and the stair column x=11 (BLOCK_EAST_AND_WEST
+# tiles stop every slide) that leads to Candice once its six snowballs are gone; then Candice, the Icicle Badge, TM72.
+# Start: Snowpoint (367,223) below the gym door (43's end) -> end: Snowpoint at the gym door, Icicle Badge.
+title = "Snowpoint Gym: the ice, Candice and the Icicle Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "maps.h:171 MAP_SNOWPOINT_GYM = 167; map_header.c:251 (scr_seq 0170, zone_event 0166, matrix 114)",
+  "zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0 (11,28); zone_event 0166 warp 0 -> MAP_SNOWPOINT warp 5",
+  "zone_event 0166 objects 8-25: SPRITE 118 snowballs; object 0 Candice (11,3)",
+  "zone_event 0166 objects 2-7: Ace Trainers Anton (15,5), Savannah (20,10), Alicia (6,6), Isaiah (14,13), Brenna (5,15), Sergio (1,20), sight 1",
+  "scr_seq 0170 @0x0025-@0x00EC: TrainerBattle 319 @0x0051, GiveBadge BADGE_ICICLE @0x0077, SetTrainerFlag 268/269/827/270/271/828 @0x007F-@0x0093, SetFlag 0x1DD @0x00A3, TM72 (std 2044) @0x00D1, SetFlag 0x9E @0x00D5",
+  "trdata.json #319 TRAINER_LEADER_CANDICE_CANDICE: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 @SITRUS_BERRY",
+  "games/platinum/src/player_move.c:544-601 (ice slide), :763-811 (height change -> speed; speed < 0 reverses)",
+]
+notes = "The slide list is a route found in game, not derived: an explorer (one session, edges learned per (tile, direction), re-learned along a crushed snowball's row/column) mapped the gym; a BFS over its edges in the order it crushed snowballs gives these 86 presses. The probe has no height, so the uphill reversals are not plannable from the tile grid. Torterra is 4x weak to ice: the boost gives Stone Edge (2x on Snover, Sneasel, Abomasnow) and level 75."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+boost = "boost.recipe"
+
+[run]
+frames = 45000
+
+[[step]]
+do = "walk_to"
+x = 367
+z = 222
+note = "gym door (zone_event 0164 warp 5) -> MAP_SNOWPOINT_GYM (11,28)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SNOWPOINT_GYM"
+
+[[step]]
+do = "slide"
+dirs = """LEFT UP UP UP UP LEFT UP DOWN RIGHT UP LEFT RIGHT RIGHT UP LEFT DOWN UP RIGHT RIGHT UP LEFT LEFT DOWN LEFT LEFT UP DOWN LEFT LEFT DOWN LEFT LEFT UP UP RIGHT RIGHT UP DOWN LEFT LEFT UP LEFT UP RIGHT RIGHT RIGHT RIGHT UP RIGHT RIGHT DOWN LEFT LEFT DOWN RIGHT UP LEFT DOWN RIGHT LEFT DOWN LEFT LEFT UP RIGHT DOWN LEFT LEFT DOWN LEFT LEFT DOWN DOWN LEFT UP RIGHT UP RIGHT UP UP UP UP UP UP UP UP"""
+max = 30000
+note = "crushes (10,14)+(10,16), (11,15)+(12,15), (12,14)+(12,16), (11,16), (11,11), (11,14), (11,8), (11,19) (the x=11 column's six), then up the stairs to (11,4) facing Candice"
+
+[[step]]
+do = "press"
+keys = "A"
+shot = "candice"
+note = "Candice (11,3), msg 169 #0"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TrainerBattle 319 (scr_seq 0170 @0x0051)"
+
+[[step]]
+do = "advance_text"
+shot = "icicle-badge"
+note = "msg 169 #1-#4: the Icicle Badge, TM72 (Avalanche)"
+
+[[step]]
+do = "slide"
+dirs = "DOWN DOWN DOWN DOWN DOWN DOWN DOWN DOWN"
+note = "down the stair column: (11,5), (11,7), (11,10), (11,13), (11,17), (11,20), (11,23), (11,25)"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 28
+note = "gym door (zone_event 0166 warp 0) -> MAP_SNOWPOINT warp 5"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SNOWPOINT"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_SNOWPOINT"
+badge = ["BADGE_COAL", "BADGE_FOREST", "BADGE_COBBLE", "BADGE_FEN", "BADGE_RELIC", "BADGE_MINE", "BADGE_ICICLE"]
+flags = ["0x65C", "0x65D", "0x88B", "0x65E", "0x65F", "0x88C", "0x1DD", "0x9E"]
+battles = 1
+save = [
+  'any(i["item"] == 399 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TM72
+]

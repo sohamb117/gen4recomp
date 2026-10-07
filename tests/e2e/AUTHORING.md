@@ -76,7 +76,8 @@ VAR_OREBURGH_CITY_STATE = 2
 
 | `do` | keys | what it does |
 |---|---|---|
-| `walk_to` | `x`, `z`, opt. `via`, `map`, `face`, `interact`, `surf`, `hm` | path to the tile on the current map, re-planning around NPCs; walking into a warp tile takes it; trainers who spot you on the way are fought; `surf`/`hm` let the path cross water / Cut trees, Rock Smash rocks, Rock Climb walls (the party must know the move: boost it); `via = [[x, z], ...]` waypoints first (long routes, bridges) |
+| `walk_to` | `x`, `z`, opt. `via`, `map`, `face`, `interact`, `surf`, `hm` | path to the tile on the current map, re-planning around NPCs; walking into a warp tile takes it; trainers who spot you on the way are fought; `surf`/`hm` let the path cross water / Cut trees, Rock Smash rocks, Rock Climb walls (the party must know the move: boost it); `via = [[x, z], ...]` waypoints first (long routes, bridges); `avoid = [[x, z], ...]` lists tiles never planned through |
+| `slide` | `dirs` | ice: presses (space separated), each followed by a wait until the slide stops; battles handled |
 | `talk_to` | `id` | talk to the map object with that local id wherever it stands (wandering people are chased) |
 | `advance_text` | opt. `map` | press A with spacing until the field is free (cutscenes, dialogue, item jingles); with `map`, stop as soon as that map loads |
 | `auto_battle` | opt. `move` (slot) | FIGHT every turn with the best usable move by type (README: base power x STAB x effectiveness from the ROM), switching out a lead with no damaging move left; `move = N` forces slot N for scripted fights; declines move learning and nicknames, allows evolution |

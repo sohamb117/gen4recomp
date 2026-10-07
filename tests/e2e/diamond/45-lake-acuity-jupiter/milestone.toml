@@ -1,0 +1,63 @@
+# Proves Lake Acuity after the Icicle Badge: the Acuity Lakefront guards stand aside, the lake mouth leads into the
+# Galactic version of the lake (flag 0xBA from Lake Verity), and its ON_FRAME scene (var 0x40D3 == 1) plays: Jupiter
+# leaves with Uxie, the hurt rival, then 0x40D3 = 2 (which opens the Veilstone warehouse guard's 'Storage Key' talk).
+# Start: Snowpoint at the gym door (367,222) (44's end) -> end: Lake Acuity (Galactic) after the scene.
+title = "Lake Acuity: Jupiter takes Uxie, the hurt rival"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 6000
+refs = [
+  "maps.h:344 MAP_ACUITY_LAKEFRONT = 340; zone_event 0325 warps 2/3 (310..311,239) -> MAP_LAKE_ACUITY_GALACTIC warps 3/4",
+  "scr_seq 0385 @0x0052-@0x008D (ON_TRANSITION): HasBadge BADGE_ICICLE -> guards object 1 -> (312,240), object 2 -> (308,242)",
+  "scr_seq 0385 @0x0016-@0x0050 (ON_LOAD): flag 0xBA set -> the lake mouth (310..311,239) is MAP_LAKE_ACUITY_GALACTIC's",
+  "maps.h:322 MAP_LAKE_ACUITY_GALACTIC = 318; scr_seq 0811 @0x0006 ON_FRAME_TABLE var 0x40D3 == 1 -> scr_seq 0351 #1",
+  "scr_seq 0351 @0x0006-@0x0138: msg 277 #0-#5, RemoveEvent 1 (Jupiter, hidden 0x1D8) @0x0090, RemoveEvent 2 (rival, hidden 0x1D7) @0x0104",
+  "scr_seq 0351 @0x010C SetFlag 0x98F; @0x0110 ClearFlag 0x241; @0x0114 SetFlag 0x252; @0x0118 SetVar 0x40D3, 2",
+  "scr_seq 0351 @0x011E ClearFlag 0x1B6; @0x0122 SetFlag 0x1B2; @0x0126 SetFlag 0x193; @0x012A SetFlag 0x2AB; @0x012E SetFlag 0x2AA; @0x0132 ClearFlag 0xA8",
+  "scr_seq 0143 @0x001D: the Veilstone warehouse guard answers 0x40D3 >= 2 with msg 146 #2 (Storage Key)",
+  "zone_event 0166 warp 0 (11,28) -> MAP_SNOWPOINT warp 5 (367,222)",
+]
+notes = "The Snowpoint -> Acuity Lakefront walk is 43's in reverse (map_matrix 0 cells: MAP_SNOWPOINT x352-383, MAP_ACUITY_LAKEFRONT x288-351). 0xBA comes from Lake Verity (41, scr_seq 0343 @0x02BB). Pearl: no version branch in scr_seq 0351/0385 (version-diff)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 9000
+
+[[step]]
+do = "walk_to"
+x = 354
+z = 238
+max = 3000
+note = "west across Snowpoint to the Acuity Lakefront seam (x 352)"
+
+[[step]]
+do = "walk_to"
+x = 310
+z = 239
+max = 4000
+note = "lake mouth (zone_event 0325 warp 2) -> MAP_LAKE_ACUITY_GALACTIC; the guards stood aside on the Icicle Badge (scr_seq 0385 @0x007D-@0x008D)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LAKE_ACUITY_GALACTIC"
+
+[[step]]
+do = "advance_text"
+shot = "jupiter-acuity"
+note = "ON_FRAME 0x40D3 == 1: Jupiter, Uxie taken, the rival 'I have to be stronger' (msg 277 #0-#5)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_LAKE_ACUITY_GALACTIC"
+badge = ["BADGE_COAL", "BADGE_FOREST", "BADGE_COBBLE", "BADGE_FEN", "BADGE_RELIC", "BADGE_MINE", "BADGE_ICICLE"]
+flags = ["0x98F", "0x252", "0x1B2", "0x193", "0x2AB", "0x2AA", "0x1D8", "0x1D7"]
+flags_clear = ["0x241", "0x1B6", "0xA8"]
+
+[expect.vars]
+"0x40D3" = 2

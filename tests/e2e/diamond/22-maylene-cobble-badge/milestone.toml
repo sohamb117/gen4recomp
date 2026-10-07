@@ -56,16 +56,267 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 45000
 
-# PHASE2: the gym floor has 12 two-state obstacles that InitVeilstoneGym (gym ON_TRANSITION scr_seq 0132 @0x0012,
-# scrcmd.c:3357 -> unk_02064CA8.s:95-119) loads from save block sub_02024ED8 / sub_020254A0(.., 4) [INFERENCE: the
-# persisted map-feature block, as Platinum's InitPersistedMapFeaturesForVeilstoneGym] with initial states
-# UNK_020F7E48 (unk_02064CA8.s:7-8: 0,0,1,1,1,0,0,1,0,1,0,1); overlay 06 (ov06_0224252C / ov06_022425C8,
-# overlay_06.s:17986-18253) moves them, per-obstacle rows in ov06_0224F8B8 / ov06_0224F918 (overlay_06.s:44861-44885).
-# Their tiles, which ones block the x=12 column and how the player toggles them are not decoded. Find them by
-# probing the collision/object layer at 12,25 after load (or decoding the table), then insert walk_to/interact
-# waypoints before the Maylene step. The lab cannot preset the obstacles.
+# The gym floor's 12 sliding bars (overlay_06.s ov06_0224F8B8: model, row z, x per state; ov06_0224F918: the blocked
+# x segments per state; initial states UNK_020F7E48 (unk_02064CA8.s:7-8) 0,0,1,1,1,0,0,1,0,1,0,1) are not in the probe's
+# collision grid. A bump while standing on a push tile (ov06_0224F834: x, z, kind, bar; kind 0 = facing east moves a
+# bar from state 0 to 1, kind 1 = facing west moves it from 1 to 0; ov06_0224249C / ov06_022426AC) slides the bar.
+# The 14 pushes below are a BFS over (tile, bar states) from the door to Maylene; each walk_to avoids the bars' tiles in
+# the current state, so walk_to never bumps (and never pushes) a bar by accident. Black Belts (sight 1) are fought on
+# the way: Jeffery (12,19) S (spins), Colby (12,13) S, Darren (5,19) E, Rafael (19,18) W.
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 14
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[19,10],[21,10],[5,12],[6,12],[7,12],[8,12],[16,13],[17,13],[18,13],[19,13],[19,14],[20,14],[21,14],[22,14],[7,16],[8,16],[10,16],[16,16],[17,16],[19,16],[5,18],[6,18],[7,18],[8,18],[19,19],[20,19],[21,19],[22,19],[8,20],[9,20],[10,20],[11,20]]
+note = "push 1 of 14: bar 6 (row 14) state 0 -> 1, face east (ov06_0224F834 entries 7; bars ov06_0224F8B8/ov06_0224F918, state 001110010101)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+note = "bump: pushes bar 6"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 19
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[19,10],[21,10],[5,12],[6,12],[7,12],[8,12],[16,13],[17,13],[18,13],[19,13],[22,14],[7,16],[8,16],[10,16],[16,16],[17,16],[19,16],[5,18],[6,18],[7,18],[8,18],[19,19],[20,19],[21,19],[22,19],[8,20],[9,20],[10,20],[11,20]]
+note = "push 2 of 14: bar 10 (row 19) state 0 -> 1, face east (ov06_0224F834 entries 2; bars ov06_0224F8B8/ov06_0224F918, state 001110110101)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+note = "bump: pushes bar 10"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 20
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[19,10],[21,10],[5,12],[6,12],[7,12],[8,12],[16,13],[17,13],[18,13],[19,13],[22,14],[7,16],[8,16],[10,16],[16,16],[17,16],[19,16],[5,18],[6,18],[7,18],[8,18],[22,19],[8,20],[9,20],[10,20],[11,20]]
+note = "push 3 of 14: bar 11 (row 20) state 1 -> 0, face west (ov06_0224F834 entries 0/1; bars ov06_0224F8B8/ov06_0224F918, state 001110110111)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+note = "bump: pushes bar 11"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 16
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[19,10],[21,10],[5,12],[6,12],[7,12],[8,12],[16,13],[17,13],[18,13],[19,13],[22,14],[7,16],[8,16],[10,16],[16,16],[17,16],[19,16],[5,18],[6,18],[7,18],[8,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 4 of 14: bar 7 (row 16) state 1 -> 0, face west (ov06_0224F834 entries 6; bars ov06_0224F8B8/ov06_0224F918, state 001110110110)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+note = "bump: pushes bar 7"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 12
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[19,10],[21,10],[5,12],[6,12],[7,12],[8,12],[16,13],[17,13],[18,13],[19,13],[22,14],[4,16],[5,16],[7,16],[16,16],[17,16],[19,16],[5,18],[6,18],[7,18],[8,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 5 of 14: bar 4 (row 12) state 1 -> 0, face west (ov06_0224F834 entries 9; bars ov06_0224F8B8/ov06_0224F918, state 001110100110)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+note = "bump: pushes bar 4"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 16
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[19,10],[21,10],[4,12],[16,13],[17,13],[18,13],[19,13],[22,14],[4,16],[5,16],[7,16],[16,16],[17,16],[19,16],[5,18],[6,18],[7,18],[8,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 6 of 14: bar 8 (row 16) state 0 -> 1, face east (ov06_0224F834 entries 4/5; bars ov06_0224F8B8/ov06_0224F918, state 001100100110)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+note = "bump: pushes bar 8"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 13
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[19,10],[21,10],[4,12],[16,13],[17,13],[18,13],[19,13],[22,14],[4,16],[5,16],[7,16],[17,16],[18,16],[20,16],[5,18],[6,18],[7,18],[8,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 7 of 14: bar 5 (row 13) state 0 -> 1, face east (ov06_0224F834 entries 8; bars ov06_0224F8B8/ov06_0224F918, state 001100101110)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+note = "bump: pushes bar 5"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 10
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[19,10],[21,10],[4,12],[20,13],[22,14],[4,16],[5,16],[7,16],[17,16],[18,16],[20,16],[5,18],[6,18],[7,18],[8,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 8 of 14: bar 3 (row 10) state 1 -> 0, face west (ov06_0224F834 entries 10; bars ov06_0224F8B8/ov06_0224F918, state 001101101110)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+note = "bump: pushes bar 3"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 16
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[18,10],[20,10],[4,12],[20,13],[22,14],[4,16],[5,16],[7,16],[17,16],[18,16],[20,16],[5,18],[6,18],[7,18],[8,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 9 of 14: bar 8 (row 16) state 1 -> 0, face west (ov06_0224F834 entries 4/5; bars ov06_0224F8B8/ov06_0224F918, state 001001101110)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+note = "bump: pushes bar 8"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 10
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[12,10],[14,10],[15,10],[18,10],[20,10],[4,12],[20,13],[22,14],[4,16],[5,16],[7,16],[16,16],[17,16],[19,16],[5,18],[6,18],[7,18],[8,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 10 of 14: bar 2 (row 10) state 1 -> 0, face west (ov06_0224F834 entries 11; bars ov06_0224F8B8/ov06_0224F918, state 001001100110)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+note = "bump: pushes bar 2"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 18
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[11,10],[13,10],[14,10],[18,10],[20,10],[4,12],[20,13],[22,14],[4,16],[5,16],[7,16],[16,16],[17,16],[19,16],[5,18],[6,18],[7,18],[8,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 11 of 14: bar 9 (row 18) state 1 -> 0, face west (ov06_0224F834 entries 3; bars ov06_0224F8B8/ov06_0224F918, state 000001100110)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 8
+note = "bump: pushes bar 9"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 10
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[3,10],[5,10],[6,10],[11,10],[13,10],[14,10],[18,10],[20,10],[4,12],[20,13],[22,14],[4,16],[5,16],[7,16],[16,16],[17,16],[19,16],[4,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 12 of 14: bar 1 (row 10) state 0 -> 1, face east (ov06_0224F834 entries 12; bars ov06_0224F8B8/ov06_0224F918, state 000001100010)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+note = "bump: pushes bar 1"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 20
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[4,10],[6,10],[7,10],[11,10],[13,10],[14,10],[18,10],[20,10],[4,12],[20,13],[22,14],[4,16],[5,16],[7,16],[16,16],[17,16],[19,16],[4,18],[22,19],[3,20],[4,20],[5,20],[6,20]]
+note = "push 13 of 14: bar 11 (row 20) state 0 -> 1, face east (ov06_0224F834 entries 0/1; bars ov06_0224F8B8/ov06_0224F918, state 010001100010)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+note = "bump: pushes bar 11"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 9
+max = 6000
+avoid = [[9,9],[10,9],[12,9],[4,10],[6,10],[7,10],[11,10],[13,10],[14,10],[18,10],[20,10],[4,12],[20,13],[22,14],[4,16],[5,16],[7,16],[16,16],[17,16],[19,16],[4,18],[22,19],[8,20],[9,20],[10,20],[11,20]]
+note = "push 14 of 14: bar 0 (row 9) state 0 -> 1, face east (ov06_0224F834 entries 13; bars ov06_0224F8B8/ov06_0224F918, state 010001100011)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 8
+note = "bump: pushes bar 0"
+
+[[step]]
+do = "wait_frames"
+n = 60
 
 [[step]]
 do = "walk_to"
@@ -73,8 +324,9 @@ x = 12
 z = 5
 face = "up"
 interact = true
-max = 15000
-note = "north to Maylene (zone_event 0132 object 0 (12,4)); sight-1 Black Belts on the way: Jeffery (12,19) S (spins), Colby (12,13) S, Darren (5,19) E, Rafael (19,18) W; [INFERENCE] route through the obstacles not derived (see PHASE2)"
+max = 6000
+avoid = [[10,9],[11,9],[13,9],[4,10],[6,10],[7,10],[11,10],[13,10],[14,10],[18,10],[20,10],[4,12],[20,13],[22,14],[4,16],[5,16],[7,16],[16,16],[17,16],[19,16],[4,18],[22,19],[8,20],[9,20],[10,20],[11,20]]
+note = "Maylene (zone_event 0132 object 0 (12,4))"
 
 [[step]]
 do = "advance_text"

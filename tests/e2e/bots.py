@@ -422,8 +422,11 @@ def bot_auto_battle(s, step, ctx):
 class Terrain:
     """What walk_to knows about the map: the probe's window plus what walking taught it."""
 
-    def __init__(self, surf=False, hm=False):
+    def __init__(self, surf=False, hm=False, avoid=()):
         self.surf, self.hm = surf, hm
+        # tiles the step says are blocked though the probe's grid shows them free (props with their own collision,
+        # e.g. D/P Veilstone Gym's sliding bars): never planned through, so never bumped
+        self.avoid = {(int(x), int(z)) for x, z in avoid}
         b = behaviors()
         self.jump = {b["JUMP_NORTH"]: 0, b["JUMP_SOUTH"]: 1, b["JUMP_WEST"]: 2, b["JUMP_EAST"]: 3}
         self.block_into = {}  # behavior -> directions that cannot enter the tile
@@ -493,6 +496,8 @@ class Terrain:
             return False
         if (x, z) == goal:
             return True
+        if (x, z) in self.avoid:
+            return False
         if self.field_move(x, z, d):
             return True
         if (x, z) in self.objects:
@@ -622,7 +627,7 @@ def bot_walk_to(s, step, ctx):
         raise HarnessError("walk_to: no probe (guest built without the e2e probe?)")
     if want_map is not None and p.map_id != want_map:
         raise HarnessError("walk_to: on map %d, the step expects %s (%d)" % (p.map_id, step["map"], want_map))
-    terrain = Terrain(surf=bool(step.get("surf")), hm=bool(step.get("hm")))
+    terrain = Terrain(surf=bool(step.get("surf")), hm=bool(step.get("hm")), avoid=step.get("avoid", ()))
     field_tries = {}  # tile -> field-move attempts
     start_map = p.map_id
     steps = 0
@@ -899,6 +904,30 @@ def bot_talk_to(s, step, ctx):
     raise HarnessError("talk_to: object %d not reached in %d frames" % (oid, bound))
 
 
+def bot_slide(s, step, ctx):
+    """Ice: each direction in `dirs` (space separated) is a press, then a wait until the slide (or the step) has
+    stopped -- the tile unchanged over six probes with the player free; battles and text met on the way are handled
+    as walk_to does. A press made mid-slide would be ignored, so a plain press list cannot replay an ice route."""
+    dirs = step["dirs"].split()
+    limit = s.frame + _int(step, "max", 300 * len(dirs))
+    for i, d in enumerate(dirs):
+        s.run(8, d)
+        last, still = None, 0
+        while still < 6:
+            if s.frame >= limit:
+                raise HarnessError("slide: press %d (%s) has not settled by the step's bound" % (i + 1, d))
+            if s.in_battle or not s.field_ready:
+                limit += _field_or_handle(s, step, ctx, limit)
+                last, still = None, 0
+                continue
+            s.run(4)
+            p = s.probe()
+            still = still + 1 if (p.x, p.z) == last else 0
+            last = (p.x, p.z)
+    p = s.probe()
+    s.note("slide: %d presses, at (%d,%d)" % (len(dirs), p.x, p.z))
+
+
 BOTS = {
     "press": bot_press,
     "tap": bot_tap,
@@ -915,4 +944,5 @@ BOTS = {
     "talk_to": bot_talk_to,
     "heal": bot_heal,
     "grind": bot_grind,
+    "slide": bot_slide,
 }
