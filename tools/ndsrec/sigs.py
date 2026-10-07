@@ -21,8 +21,9 @@ primitive and for a set of helper functions around it:
   calls   the ordered list of call targets (by name) and literal values.
 
 Helpers are the functions that call a primitive (with which of their calls
-it is) or load an object's address (with which literal and the
-displacement), and the primitive's own callees.
+it is), hold its address in their literal pool (a veneer), or load an
+object's address (with which literal, where in the function it is loaded
+and the displacement), and the primitive's own callees.
 
 `match` places them in another ROM's ARM9 static module and autoloads, in
 rounds until nothing changes:
@@ -31,10 +32,17 @@ rounds until nothing changes:
   2. a normalised sequence equal to one discovered function's
      (tools/ndsrec/discover.py), several narrowed by address order between
      already-placed functions (SDK objects link in the same order);
-  3. a placed caller's k-th call (functions) or k-th literal plus the
-     displacement (objects);
+  3. a placed caller's k-th call (functions), the literal a placed veneer
+     branches through (functions), or a placed function's literal plus the
+     displacement (objects); the literal is the k-th when the function's
+     code is the learned one, else the one the aligned instruction streams
+     put at the learned load (the same source rebuilt by another SDK);
   4. call structure: the one function between the placed neighbours whose
-     ordered callees agree with every placed callee.
+     ordered callees agree with every placed callee;
+  5. a similar instruction stream between placed neighbours;
+  6. once the rounds stall: the one function anywhere in the module whose
+     instruction stream is a primitive's (TWL-SDK's rewritten OS, PXI, TP,
+     PM functions, whose neighbours moved too), then the rounds again.
 
 NitroMain, which is game code, is the literal crt0's `_start` branches
 through. `--verify` compares with a link map and prints correct/wrong.
@@ -59,7 +67,9 @@ import nds  # noqa: E402
 
 
 def is_ram(v):
-    return 0x01FF8000 <= v < 0x02800000
+    """ITCM, main RAM and its mirrors up to the TWL-SDK's DTCM (0x02FE0000)
+    and system area (0x02FFFxxx): layout, not code."""
+    return 0x01FF8000 <= v < 0x03000000
 
 
 def load_primitives(path):
@@ -98,8 +108,9 @@ class Image(object):
 # ------------------------------------------------------- function shapes
 
 def shape(img, insns, thumb):
-    """(seq, calls, lits) of a function given its instructions in order."""
-    seq, calls, lits = [], [], []
+    """(seq, calls, lits, litpos) of a function given its instructions in
+    order; litpos[k] is the index in seq of the instruction loading lits[k]."""
+    seq, calls, lits, litpos = [], [], [], []
     i = 0
     n = len(insns)
     while i < n:
@@ -123,33 +134,40 @@ def shape(img, insns, thumb):
             if ins.lit is not None:
                 v = img.u32(ins.lit) if ins.lit_size == 4 else None
                 lits.append(v)
+                litpos.append(len(seq))
                 text = text.replace("{T}", "=R" if v is None or is_ram(v & ~1)
                                     else "=0x%x" % v)
             else:
                 text = text.replace("{T}", "T")
         elif ins.lit is not None:
             lits.append(None)
+            litpos.append(len(seq))
         seq.append(("%s:" % cond if cond else "") + text)
         i += 1
-    return fold_epilogues(seq), calls, lits
+    folded, where = fold_epilogues(seq)
+    return folded, calls, lits, [where[p] for p in litpos]
 
 
 def fold_epilogues(seq):
     """`ldmia sp!, {..., lr}; bx lr` (older mwcc) and `ldmia sp!, {..., pc}`
-    (newer) are one return."""
-    out = []
+    (newer) are one return. Also returns each input line's index in the
+    output."""
+    out, where = [], []
     for t in seq:
         if out and t.endswith("bx lr"):
             prev = out[-1]
             c1 = t[:-len("bx lr")]
             if prev.startswith(c1 + "ldmia sp!, {") and prev.endswith(",lr}"):
                 out[-1] = prev[:-len("lr}")] + "pc}"
+                where.append(len(out) - 1)
                 continue
             if prev.startswith(c1 + "ldmia sp!, {lr}"):
                 out[-1] = c1 + "ldmia sp!, {pc}"
+                where.append(len(out) - 1)
                 continue
+        where.append(len(out))
         out.append(t)
-    return out
+    return out, where
 
 
 def make_pattern(img, start, end, thumb):
@@ -244,9 +262,9 @@ def learn(a):
         insns = explore_insns(mod, addr, thumb, end)
         if not insns:
             continue
-        seq, calls, lits = shape(img, insns, thumb)
+        seq, calls, lits, litpos = shape(img, insns, thumb)
         info[addr] = {"name": name, "thumb": thumb, "obj": obj, "end": end,
-                      "seq": seq, "calls": calls, "lits": lits}
+                      "seq": seq, "calls": calls, "lits": lits, "litpos": litpos}
         for k, t in enumerate(calls):
             callers[t].append((addr, k))
         for k, v in enumerate(lits):
@@ -294,8 +312,19 @@ def learn(a):
             for t in info[addr]["calls"]:
                 if t in info:
                     keep(t)
+            # Functions holding its address in their literal pool: an SDK
+            # veneer (`ldr r1, =target; bx r1`, OS_UnLockCartridge ->
+            # OS_UnlockCartridge) or a table names its target that way.
+            lithelpers = []
+            for (h, k) in sorted(litrefs.get(addr, []) + litrefs.get(addr | 1, []),
+                                 key=lambda h: rank(h[0])):
+                if all(x["func"] != info[h]["name"] for x in lithelpers):
+                    lithelpers.append({"func": keep(h), "lit": k,
+                                       "pos": info[h]["litpos"][k]})
+                if len(lithelpers) >= 4:
+                    break
             db["funcs"][name] = {"role": role, "thumb": info[addr]["thumb"],
-                                 "helpers": helpers}
+                                 "helpers": helpers, "lithelpers": lithelpers}
         else:
             addr = byname[name][1] if name in byname else bss.get(name)
             if addr is None:
@@ -305,15 +334,18 @@ def learn(a):
             for delta in range(0, 0x400, 4):
                 for (h, k) in litrefs.get(addr - delta, []):
                     refs.append((h, k, delta))
-            refs.sort(key=lambda r: (r[2],) + rank(r[0]))
+            # Functions already learned (primitives, their callers and
+            # callees) first: those are the ones another ROM places.
+            refs.sort(key=lambda r: (r[2], info[r[0]]["name"] not in db["shapes"]) + rank(r[0]))
             helpers = []
             seen = set()
             for (h, k, delta) in refs:
                 if h in seen:
                     continue
                 seen.add(h)
-                helpers.append({"func": keep(h), "lit": k, "delta": delta})
-                if len(helpers) >= 8:
+                helpers.append({"func": keep(h), "lit": k, "delta": delta,
+                                "pos": info[h]["litpos"][k]})
+                if len(helpers) >= 12:
                     break
             db["data"][name] = {"role": role, "helpers": helpers,
                                 "section": "bss" if name in bss else "data"}
@@ -362,8 +394,12 @@ def match(a):
         ins = [f.insns[x] for x in sorted(f.insns) if f.insns[x].kind != "invalid"]
         tshape[addr] = shape(img, ins, f.thumb)
     by_seq = collections.defaultdict(list)
-    for addr, (seq, _c, _l) in tshape.items():
+    for addr, (seq, _c, _l, _p) in tshape.items():
         by_seq[(mod.funcs[addr].thumb, tuple(seq))].append(addr)
+    tcallers = collections.defaultdict(set)
+    for addr, (_s, calls, _l, _p) in tshape.items():
+        for c in calls:
+            tcallers[c].add(addr)
 
     placed = {}
     how = {}
@@ -404,7 +440,71 @@ def match(a):
             ins = [f.insns[x] for x in sorted(f.insns) if f.insns[x].kind != "invalid"]
             tshape[addr] = shape(img, ins, thumb)
 
-    for rnd in range(6):
+    def mnem(seq):
+        return [t.split(" ")[0] for t in seq]
+
+    def aligned_literal(h, ha):
+        """The literal of the placed ha that is the learned helper h's k-th:
+        by index when the code is the same (the same normalised sequence or
+        a byte match), else through the alignment of the two instruction
+        streams (at least 80% alike) at the instruction loading it: the same
+        source rebuilt, e.g. TWL-SDK's OSi_RescheduleThread (0.85 alike, its
+        thread statics regrouped, one literal fewer)."""
+        hn, k = h["func"], h["lit"]
+        s = shapes[hn]
+        ensure_shape(ha, s["thumb"])
+        seq, _c, lits, litpos = tshape[ha]
+        if seq == s["seq"] or how.get(hn) == "bytes":
+            return lits[k] if k < len(lits) else None
+        pos = h.get("pos")
+        sm = difflib.SequenceMatcher(None, s["seq"], seq, autojunk=False)
+        if pos is None or sm.ratio() < 0.8:
+            return None
+        for tag, i1, i2, j1, j2 in sm.get_opcodes():
+            if i1 <= pos < i2 and (tag == "equal" or (tag == "replace" and i2 - i1 == j2 - j1)):
+                j = j1 + pos - i1
+                return lits[litpos.index(j)] if j in litpos else None
+        return None
+
+    def similar_anywhere():
+        """6. The static module's one function whose instruction stream is
+        a primitive's (mnemonics, >= 85%, >= 90% under 20 instructions, and
+        0.1 ahead of the next best): an SDK function TWL-SDK rebuilt where
+        no placed neighbour bounds it. Under 12 instructions too many
+        functions look alike (Black's game code has two 0.86-0.88 matches
+        for 9- and 10-instruction CTRDG functions it does not contain). A
+        candidate that does not call every placed callee the primitive
+        calls is not it."""
+        taken = set(placed.values())
+        for n in db["funcs"]:
+            if n in placed or n not in shapes or len(shapes[n]["seq"]) < 12:
+                continue
+            s = shapes[n]
+            mine = mnem(s["seq"])
+            least = 0.85 if len(mine) >= 20 else 0.9
+            need = set(placed[c] for c in s["calls"] if c and c in placed)
+            sm = difflib.SequenceMatcher(None, autojunk=False)
+            sm.set_seq2(mine)
+            scores = []
+            for t in starts:
+                theirs = tshape[t][0]
+                if (mod.funcs[t].thumb != s["thumb"] or t in taken
+                        or abs(len(theirs) - len(mine)) > max(4, len(mine) // 4)
+                        or not need <= set(tshape[t][1])):
+                    continue
+                sm.set_seq1(mnem(theirs))
+                if sm.real_quick_ratio() >= least and sm.quick_ratio() >= least:
+                    scores.append((sm.ratio(), t))
+            scores.sort(reverse=True)
+            if scores and scores[0][0] >= least and (
+                    len(scores) == 1 or scores[0][0] - scores[1][0] >= 0.1):
+                placed[n], how[n] = scores[0][1], "similar-anywhere %.2f" % scores[0][0]
+                taken.add(scores[0][1])
+
+    # Rounds until nothing changes; once they stall, rule 6 runs (once) and
+    # the rounds resume from what it placed.
+    anywhere_done = False
+    for rnd in range(12):
         before = len(placed)
         # 2. normalised sequence
         for n, s in shapes.items():
@@ -452,6 +552,19 @@ def match(a):
             for k, cn in enumerate(s["calls"]):
                 if cn and cn not in placed and cn in shapes:
                     placed[cn], how[cn] = tcalls[k], "call %d of %s" % (k, n)
+        # 3c. a placed function whose literal pool names the primitive (a
+        # veneer: `ldr r1, =target; bx r1`)
+        for n, info in db["funcs"].items():
+            if n in placed:
+                continue
+            for h in info.get("lithelpers", []):
+                ha = placed.get(h["func"])
+                if ha is None:
+                    continue
+                v = aligned_literal(h, ha)
+                if v is not None and is_ram(v & ~1) and (v & 1) == int(info["thumb"]):
+                    placed[n], how[n] = v & ~1, "literal %d of %s" % (h["lit"], h["func"])
+                    break
         # 4. call structure between placed neighbours
         for n, s in shapes.items():
             if n in placed or not s["calls"]:
@@ -478,6 +591,27 @@ def match(a):
             if len(ok) == 1 and (agree >= 2 or abs(len(tshape[ok[0]][0]) - len(s["seq"]))
                                  <= max(2, len(s["seq"]) // 8)):
                 placed[n], how[n] = ok[0], "call structure"
+        # 4b. the one function calling every placed callee a primitive
+        # calls whose instruction stream is clearly the closest to it
+        # (TWL-SDK's FS_StartOverlay: MIi_UncompressBackward's caller
+        # besides crt0)
+        for n in db["funcs"]:
+            if n in placed or n not in shapes:
+                continue
+            s = shapes[n]
+            need = set(placed[c] for c in s["calls"] if c and c in placed)
+            if not need:
+                continue
+            cand = set.intersection(*(tcallers.get(c, set()) for c in need))
+            cand = [t for t in cand if mod.funcs[t].thumb == s["thumb"]
+                    and t not in placed.values()]
+            mine = mnem(s["seq"])
+            scores = sorted(((difflib.SequenceMatcher(None, mine, mnem(tshape[t][0]),
+                                                      autojunk=False).ratio(), t)
+                             for t in cand), reverse=True)
+            if scores and scores[0][0] >= 0.6 and (
+                    len(scores) == 1 or scores[0][0] - scores[1][0] >= 0.15):
+                placed[n], how[n] = scores[0][1], "caller %.2f" % scores[0][0]
         # 5. similar instruction stream between the placed neighbours of
         # the same object (the same source through another compiler)
         for n, s in shapes.items():
@@ -504,7 +638,12 @@ def match(a):
                                                     scores[0][0] - scores[1][0] >= 0.15):
                 placed[n], how[n] = scores[0][1], "similar %.2f" % scores[0][0]
         if len(placed) == before:
-            break
+            if anywhere_done:
+                break
+            anywhere_done = True
+            similar_anywhere()
+            if len(placed) == before:
+                break
 
     out = []
     found = {}
@@ -526,12 +665,9 @@ def match(a):
             ha = placed.get(h["func"])
             if ha is None:
                 continue
-            ensure_shape(ha, shapes[h["func"]]["thumb"])
-            lits = tshape[ha][2]
-            if tshape[ha][0] != shapes[h["func"]]["seq"] and how.get(h["func"]) != "bytes":
-                continue
-            if h["lit"] < len(lits) and lits[h["lit"]] is not None:
-                addr = lits[h["lit"]] + h["delta"]
+            v = aligned_literal(h, ha)
+            if v is not None and is_ram(v):
+                addr = v + h["delta"]
                 how[name] = "literal %d of %s" % (h["lit"], h["func"])
                 break
         if addr is None:
@@ -550,6 +686,8 @@ def match(a):
     if missing:
         print("match: not found: " + " ".join(missing))
     if a.debug:
+        for n in sorted(found):
+            print("  placed %s 0x%08X: %s" % (n, found[n], how.get(n, "")))
         for n in missing:
             info = db["funcs"].get(n) or db["data"].get(n)
             print("  %s: helpers %s" % (n, ", ".join(

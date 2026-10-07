@@ -464,13 +464,59 @@ void IC_InvalidateAll(void) {}
 void IC_InvalidateRange(void *startAddr, u32 nBytes) { (void)startAddr; (void)nBytes; }
 
 /* ================================================================== */
-/* Loud traps                                                          */
+/* In-place backward LZ (mi_uncompress.c)                             */
 /* ================================================================== */
 
+/*
+ * The SDK's BLZ: `bottom` is the end of the compressed image. Its last two
+ * words are the footer: the low 24 bits of the first are the compressed
+ * part's length back from `bottom` and its top byte the footer's own
+ * length, the second how far the plain image extends past `bottom`. The
+ * stream is read backwards from below the footer and written backwards
+ * from the plain image's end: a flag byte, then per flag bit (MSB first)
+ * either a literal byte or a big-endian pair, length (hi >> 4) + 3 and
+ * distance ((hi & 0xF) << 8 | lo) + 3 above the write position. TWL-SDK
+ * games store overlays (and the static module) this way and FS_StartOverlay
+ * calls this before the static initialisers; a zero first word is an image
+ * stored plain. Same decoder as tools/ndsrec/nds.py's blz_decompress.
+ */
 void MIi_UncompressBackward(void *bottom)
 {
-    (void)bottom;
-    pc_mi_trap("MIi_UncompressBackward", "in-place backward BIOS decompression is dead code in this game and stays unimplemented by design");
+    u8 *end = (u8 *)bottom;
+    u32 w0, growth;
+    u8 *src, *dst, *stop;
+
+    if (end == NULL) {
+        return;
+    }
+    memcpy(&w0, end - 8, 4);
+    memcpy(&growth, end - 4, 4);
+    if (w0 == 0) {
+        return;
+    }
+    src = end - (w0 >> 24);
+    stop = end - (w0 & 0xFFFFFFu);
+    dst = end + growth;
+    while (src > stop) {
+        u8 flags = *--src;
+        int bit;
+
+        for (bit = 0; bit < 8 && src > stop; bit++, flags <<= 1) {
+            if (flags & 0x80) {
+                u8 hi = *--src;
+                u8 lo = *--src;
+                u32 disp = (((u32)(hi & 0x0F) << 8) | lo) + 3;
+                int n = (hi >> 4) + 3;
+
+                while (n-- > 0) {
+                    dst--;
+                    *dst = dst[disp];
+                }
+            } else {
+                *--dst = *--src;
+            }
+        }
+    }
 }
 
 /*

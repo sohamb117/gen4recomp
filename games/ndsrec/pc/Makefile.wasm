@@ -94,6 +94,17 @@ $(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
 OBJS += $(MY_OBJS)
 
+# The GBA slot. Diamond's host models it with a flash chip and D's flash
+# timer (pc_agb_slot.c, pc_dp_agb.c), which call CTRDG functions and read
+# CTRDG statics by name. A ROM whose primitive map places no CTRDG library
+# (Black/White) gets the empty slot instead (pc/src/pc_ndsrec_noagb.c). The
+# map is stage 1's output, so this decides in the link stage.
+NO_AGB := $(if $(wildcard $(PRIM_SYMS)),$(if $(shell grep -l ' CTRDG_IdentifyAgbBackup ' $(PRIM_SYMS)),,1))
+ifeq ($(NO_AGB),1)
+OBJS := $(filter-out $(HOST_OBJ)/pc/pc_agb_slot.o $(HOST_OBJ)/dp/pc_dp_agb.o,$(OBJS)) \
+        $(OBJ)/ndsrec/pc_ndsrec_noagb.o
+endif
+
 # The overlay-statics table: none here (pc/src/pc_ndsrec_ovstatics.c says
 # why it is not host.mk's generated one).
 MY_OVSTATICS_O := $(OBJ)/ndsrec/pc_ndsrec_ovstatics.o

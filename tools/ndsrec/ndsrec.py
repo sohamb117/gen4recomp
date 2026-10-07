@@ -134,24 +134,31 @@ def cmd_emit(a):
 
 def cmd_lcf(a):
     """The two NitroSDK link-time values the host's boot needs, read off
-    crt0's `_start` literal pool, in the xMAP's `#>VALUE NAME` form:
-    SDK_AUTOLOAD_DTCM_START (its first literal) and SDK_IRQ_STACKSIZE (the
-    first literal below 64 KB, which `_start` subtracts from the DTCM top
-    for the IRQ stack)."""
+    crt0's `_start` stack set-up, in the xMAP's `#>VALUE NAME` form:
+    SDK_AUTOLOAD_DTCM_START (the first literal loaded once `_start` has
+    switched to SVC mode, `mov r0, #0x13; msr cpsr_c, r0`, whose stack it
+    puts at the DTCM's top) and SDK_IRQ_STACKSIZE (the first literal below
+    64 KB loaded once it has switched to IRQ mode, `mov r0, #0x12`, which it
+    subtracts from the IRQ stack's top for the system-mode stack). NitroSDK
+    and TWL-SDK crt0 both have that shape; TWL-SDK's runs its autoload and
+    cache set-up first, so the literal pool's order says nothing."""
     import disasm
     rom = nds.Rom(a.rom)
     view = rom.module_segment("arm9")
     data, base = view.lookup(rom.arm9_entry)
     dtcm = irq = None
+    mode = None
     addr = rom.arm9_entry
-    for _ in range(96):
+    for _ in range(160):
         ins = disasm.decode(data, addr - base, addr, False)
-        if ins.lit is not None and ins.lit_size == 4:
+        if ins.text in ("mov r0, #0x13", "mov r0, #0x12"):
+            mode = ins.text[-4:]
+        elif ins.lit is not None and ins.lit_size == 4:
             o = ins.lit - base
             v = int.from_bytes(data[o:o + 4], "little")
-            if dtcm is None:
+            if mode == "0x13" and dtcm is None:
                 dtcm = v
-            elif irq is None and v < 0x10000:
+            elif mode == "0x12" and irq is None and v < 0x10000:
                 irq = v
         addr += 4
     if dtcm is None or irq is None:

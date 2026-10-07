@@ -243,3 +243,42 @@ the card layer from FS) and recorded as anchors in sigs.py.
 6. ARM7 protocol checks (sound, backup, RTC, touch, power, WM) as listed
    above, one responder at a time, each against a recorded scenario.
 7. Shell: add both SHA-1s to `shell/src/romdb.c` with the new core id.
+
+## Status of the Black core (2026-10-07)
+
+- Primitive map: `sigs.py` now places 97 of 136 in Black (Platinum's ROM
+  128 verified, 0 wrong; Diamond 136/136, map unchanged). The five
+  hand-read references are found by general rules: OS_UnlockCartridge is
+  the literal the placed OS_UnLockCartridge veneer branches through,
+  OSi_ThreadInfo the literal at OSi_RescheduleThread's aligned load
+  (0x02150FEC), OS_GetIrqFunction / OS_WakeupThread / TP_GetCalibratedPoint
+  the unique similar function in the module (rule 6). FS_StartOverlay
+  (0x0207902C) is MIi_UncompressBackward's caller besides crt0 (rule 4b);
+  PXI_Init/InitFifo/IsCallbackReady/SetFifoRecvCallback, PMi_ReadRegister,
+  TP_Init/WaitBusy/WaitRawResult/RequestAutoSampling*, MI_WaitDma,
+  MI_StopDma, MI_DmaCopy32Async, MI_SendGXCommandAsync(Fast),
+  OS_ResetSystem, WMi_StartMP placed too. Not placed: the card layer
+  (CARD_Init, CARDi_ReadRom, CARDi_Request, CARDi_SetTask,
+  CARD_WaitRomAsync, CARDi_InitCommon, cardi_common), MI_DmaCopy16/32,
+  MI_DmaFill32(Async), MI_SendGXCommand, MI_UncompressLZ8, MTX_Rot*4x_,
+  PMi_WriteRegister(Async), TP_CheckError, TP_GetLatestRawPointInAuto,
+  SVC_Sqrt, NNSi_SndCaptureStart, abort/assert.
+- Link: `make -f pc/Makefile.wasm ROM=<black> VER=black` links and passes
+  check_module (the Pal Park host files are left out when the map places no
+  CTRDG library; pc/src/pc_ndsrec_noagb.c is the empty slot). The unplaced
+  card primitives' host overrides are dead code there, which is why the
+  link no longer needs cardi_common.
+- `ndsrec.py lcf` reads crt0 by its stack set-up (Black: DTCM 0x02FE0000,
+  IRQ stack 0x800; it had read 0x02FFFF80 / 0x68 from the literal order).
+- Overlays: the host's MIi_UncompressBackward is implemented and
+  pc_dp_overlay_start decompresses an FS_OVERLAY_FLAG_COMP overlay in place.
+- First boot (Black module in the diamond slot of a separate core,
+  `cmake ... -DNP_GUEST_WASM_diamond=ndsrec-black.wasm`): stops before
+  frame 0 placing the DTCM autoload's data at 0x02FE00A0, outside every
+  armrec region. Next: the TWL memory map in armrec_rt.c (ARM_SHARED_BASE
+  0x02FE0000 under a TWL switch the Makefile sets when crt0's DTCM is above
+  0x02800000), the host's shared-area addresses moved by +0x800000 for TWL
+  (generate a shadow nitro/hw/common/mmap_shared.h with 0x007ff -> 0x00fff;
+  pc_input.c's PC_XY_BUF and pc_os_lite.c's PC_DTCM_BASE to the header
+  names), then the card layer (unplaced; the ARM9 reads the ROM through it).
+  ov230 has not been reached: no frame has run.
