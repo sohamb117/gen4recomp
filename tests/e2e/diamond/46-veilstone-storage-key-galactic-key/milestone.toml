@@ -4,10 +4,9 @@
 # through the warehouse to the HQ front door.
 # Start: Lake Acuity (Galactic) after Jupiter's scene (45's end) -> end: HQ 1F lobby at the front door (8,22) (47's start).
 title = "Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000
+estimate = 22369
 refs = [
   "zone_event 0131 object 24",
   "zone_event 0131 object 23",

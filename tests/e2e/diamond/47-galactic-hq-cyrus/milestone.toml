@@ -2,10 +2,9 @@
 # Cyrus's coordinate trigger, his battle and the Master Ball.
 # Start: HQ 1F at the front door (46's end) -> end: HQ 4F_1 after Cyrus leaves (var 0x40D6 = 1) (48's start).
 title = "Galactic HQ: the key doors, the warp panels and Cyrus"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 23863
 refs = [
   "zone_event 0292 object 5",
   "zone_event 0292 warp 4",

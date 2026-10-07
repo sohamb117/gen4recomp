@@ -3,10 +3,9 @@
 # tiles stop every slide) that leads to Candice once its six snowballs are gone; then Candice, the Icicle Badge, TM72.
 # Start: Snowpoint (367,223) below the gym door (43's end) -> end: Snowpoint at the gym door, Icicle Badge.
 title = "Snowpoint Gym: the ice, Candice and the Icicle Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 27355
 refs = [
   "maps.h:171 MAP_SNOWPOINT_GYM = 167; map_header.c:251 (scr_seq 0170, zone_event 0166, matrix 114)",
   "zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0 (11,28); zone_event 0166 warp 0 -> MAP_SNOWPOINT warp 5",

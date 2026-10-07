@@ -4,10 +4,9 @@
 # Spear Pillar.
 # Start: Veilstone outside the HQ east door (48's end) -> end: Spear Pillar at the entrance (31,53) (50's start).
 title = "Mt. Coronet: Route 208 up to Spear Pillar"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 59215
 refs = [
   "zone_event 0339 warp 3",
   "zone_event 0204 warp 2",
@@ -30,7 +29,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 80000
+frames = 88900
 
 [[step]]
 do = "fly"

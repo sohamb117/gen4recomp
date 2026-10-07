@@ -1220,7 +1220,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Diamond
 
 <!-- plan.py:begin diamond -->
-### Story chain: 61 milestones, ~1181781 frames estimated
+### Story chain: 61 milestones, ~1257724 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -1265,14 +1265,14 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [40-lake-valor-saturn](diamond/40-lake-valor-saturn/milestone.toml) | Lake Valor (drained): Saturn in Valor Cavern | P0 | both | 18272 | prev + `lab.recipe` | MAP_VERITY_LAKEFRONT | passing |
 | [41-lake-verity-mars](diamond/41-lake-verity-mars/milestone.toml) | Lake Verity (Galactic): Mars | P0 | both | 20762 | prev + `lab.recipe` | MAP_ROUTE_211_EAST | passing |
 | [42-route211-coronet-north-to-route216](diamond/42-route211-coronet-north-to-route216/milestone.toml) | Route 211 East and Mt Coronet north (Strength) to Route 216 | P0 | both | 12937 | prev + `lab.recipe` | MAP_ROUTE_216 | passing |
-| [43-route216-217-hm08-to-snowpoint](diamond/43-route216-217-hm08-to-snowpoint/milestone.toml) | Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint | P0 | both | 22000 | prev + `lab.recipe` | MAP_SNOWPOINT | planned |
-| [44-snowpoint-gym-candice](diamond/44-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: the ice, Candice and the Icicle Badge | P0 | both | 30000 | prev + `lab.recipe` | MAP_SNOWPOINT | planned |
-| [45-lake-acuity-jupiter](diamond/45-lake-acuity-jupiter/milestone.toml) | Lake Acuity: Jupiter takes Uxie, the hurt rival | P0 | both | 6000 | prev + `lab.recipe` | MAP_LAKE_ACUITY_GALACTIC | planned |
-| [46-veilstone-storage-key-galactic-key](diamond/46-veilstone-storage-key-galactic-key/milestone.toml) | Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key | P0 | both | 12000 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F | planned |
-| [47-galactic-hq-cyrus](diamond/47-galactic-hq-cyrus/milestone.toml) | Galactic HQ: the key doors, the warp panels and Cyrus | P0 | both | 20000 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 | planned |
-| [48-galactic-hq-saturn-free-lake-trio](diamond/48-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn, the lake trio freed, out of the HQ | P0 | both | 16000 | prev + `lab.recipe` | MAP_VEILSTONE | planned |
-| [49-mt-coronet-climb](diamond/49-mt-coronet-climb/milestone.toml) | Mt. Coronet: Route 208 up to Spear Pillar | P0 | both | 30000 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | planned |
-| [50-spear-pillar-dialga](diamond/50-spear-pillar-dialga/milestone.toml) | Spear Pillar: Galactic, Cyrus and Dialga (Diamond) | P0 | diamond | 30000 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | planned |
+| [43-route216-217-hm08-to-snowpoint](diamond/43-route216-217-hm08-to-snowpoint/milestone.toml) | Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint | P0 | both | 50640 | prev + `lab.recipe` | MAP_SNOWPOINT | passing |
+| [44-snowpoint-gym-candice](diamond/44-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: the ice, Candice and the Icicle Badge | P0 | both | 27355 | prev + `lab.recipe` | MAP_SNOWPOINT | passing |
+| [45-lake-acuity-jupiter](diamond/45-lake-acuity-jupiter/milestone.toml) | Lake Acuity: Jupiter takes Uxie, the hurt rival | P0 | both | 5261 | prev + `lab.recipe` | MAP_LAKE_ACUITY_GALACTIC | passing |
+| [46-veilstone-storage-key-galactic-key](diamond/46-veilstone-storage-key-galactic-key/milestone.toml) | Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key | P0 | both | 22369 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F | passing |
+| [47-galactic-hq-cyrus](diamond/47-galactic-hq-cyrus/milestone.toml) | Galactic HQ: the key doors, the warp panels and Cyrus | P0 | both | 23863 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 | passing |
+| [48-galactic-hq-saturn-free-lake-trio](diamond/48-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn, the lake trio freed, out of the HQ | P0 | both | 9153 | prev + `lab.recipe` | MAP_VEILSTONE | passing |
+| [49-mt-coronet-climb](diamond/49-mt-coronet-climb/milestone.toml) | Mt. Coronet: Route 208 up to Spear Pillar | P0 | both | 59215 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
+| [50-spear-pillar-dialga](diamond/50-spear-pillar-dialga/milestone.toml) | Spear Pillar: Galactic, Cyrus and Dialga (Diamond) | P0 | diamond | 44087 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
 | [51-coronet-exit-valor-lakefront](diamond/51-coronet-exit-valor-lakefront/milestone.toml) | Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens | P0 | both | 9000 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | planned |
 | [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 15000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
 | [53-sunyshore-gym-volkner](diamond/53-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | both | 26000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
@@ -1702,7 +1702,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37
 - end state: map MAP_SNOWPOINT; at (367, 223); flags set 0x47B, 0x9BF; 1 save check(s)
-- frames: estimate 22000, budget 90000
+- frames: estimate 50640, budget 120000
 - refs: maps.h:387 MAP_ROUTE_216 = 383; map_header.c:467 (scr_seq 0434, zone_event 0368, weather 26); zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; maps.h:389 MAP_ROUTE_217 = 385; map_header.c:469 (scr_seq 0436, zone_event 0370); no story scripts in scr_seq 0436; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37; zone_event 0370 object 10 item ball (296,305) hidden_flag 0x47B, script 7174 -> scr_seq 0370 @0x119A SetVar 0x8008,427 (ITEM_HM08); scr_seq 0370 @0x1834 RemoveEvent VAR_LAST_INTERACTED; @0x1838 GiveItem (item-ball common script_256); scr_seq 0437 @0x0019 HasItem ITEM_HM08 (Route 217 south-house hiker: Icicle Plate only after HM08 is found); maps.h:344 MAP_ACUITY_LAKEFRONT = 340; map_header.c:424 (scr_seq 0385, level scr_seq 0835, zone_event 0325); zone_event 0325 objects 1/2 guards (310,240)/(311,240) hidden_flag 0x252; scr_seq 0385 @0x0052-@0x008D (moved aside only with BADGE_ICICLE); msg 358 #0 ('make sure Snowpoint's Gym Leader doesn't disturb us'); maps.h:169 MAP_SNOWPOINT = 165; zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0; map_matrix 0 cells: MAP_ROUTE_216 (9..11,12) z384-415; MAP_ROUTE_217 (9,8..11) x288-319 z256-383; MAP_ACUITY_LAKEFRONT (9..10,6..7) x288-351 z192-255; MAP_SNOWPOINT (11,6..7) x352-383; files/fielddata/land_data/land_data_release.narc permission grids for the map_matrix 0 cells above (paths below are a BFS with objects solid)
 - notes: Estimate: ~360 tiles, much of it deep snow (slow), three sight trainers on the BFS path plus wild battles. In chain mode slot-0 PP runs low here: the Snowbound Lodge (zone_event 0368 warp 1 (303,398)) is beside the path [INFERENCE: heal there if Empoleon is on Struggle].
 
@@ -1712,7 +1712,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: trdata.json #319 TRAINER_LEADER_CANDICE_CANDICE: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 @SITRUS_BERRY
 - end state: map MAP_SNOWPOINT; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC, BADGE_MINE, BADGE_ICICLE; >= 1 battles; flags set 0x65C, 0x65D, 0x88B, 0x65E, 0x65F, 0x88C, 0x1DD, 0x9E; 1 save check(s)
-- frames: estimate 30000, budget 45000
+- frames: estimate 27355, budget 45000
 - refs: maps.h:171 MAP_SNOWPOINT_GYM = 167; map_header.c:251 (scr_seq 0170, zone_event 0166, matrix 114); zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0 (11,28); zone_event 0166 warp 0 -> MAP_SNOWPOINT warp 5; zone_event 0166 objects 8-25: SPRITE 118 snowballs; object 0 Candice (11,3); zone_event 0166 objects 2-7: Ace Trainers Anton (15,5), Savannah (20,10), Alicia (6,6), Isaiah (14,13), Brenna (5,15), Sergio (1,20), sight 1; scr_seq 0170 @0x0025-@0x00EC: TrainerBattle 319 @0x0051, GiveBadge BADGE_ICICLE @0x0077, SetTrainerFlag 268/269/827/270/271/828 @0x007F-@0x0093, SetFlag 0x1DD @0x00A3, TM72 (std 2044) @0x00D1, SetFlag 0x9E @0x00D5; trdata.json #319 TRAINER_LEADER_CANDICE_CANDICE: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 @SITRUS_BERRY; games/platinum/src/player_move.c:544-601 (ice slide), :763-811 (height change -> speed; speed < 0 reverses)
 - notes: The slide list is a route found in game, not derived: an explorer (one session, edges learned per (tile, direction), re-learned along a crushed snowball's row/column) mapped the gym; a BFS over its edges in the order it crushed snowballs gives these 86 presses. The probe has no height, so the uphill reversals are not plannable from the tile grid. Torterra is 4x weak to ice: the boost gives Stone Edge (2x on Snover, Sneasel, Abomasnow) and level 75.
 
@@ -1722,7 +1722,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_LAKE_ACUITY_GALACTIC; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC, BADGE_MINE, BADGE_ICICLE; flags set 0x98F, 0x252, 0x1B2, 0x193, 0x2AB, 0x2AA, 0x1D8, 0x1D7; flags clear 0x241, 0x1B6, 0xA8; vars 0x40D3=2
-- frames: estimate 6000, budget 9000
+- frames: estimate 5261, budget 9000
 - refs: maps.h:344 MAP_ACUITY_LAKEFRONT = 340; zone_event 0325 warps 2/3 (310..311,239) -> MAP_LAKE_ACUITY_GALACTIC warps 3/4; scr_seq 0385 @0x0052-@0x008D (ON_TRANSITION): HasBadge BADGE_ICICLE -> guards object 1 -> (312,240), object 2 -> (308,242); scr_seq 0385 @0x0016-@0x0050 (ON_LOAD): flag 0xBA set -> the lake mouth (310..311,239) is MAP_LAKE_ACUITY_GALACTIC's; maps.h:322 MAP_LAKE_ACUITY_GALACTIC = 318; scr_seq 0811 @0x0006 ON_FRAME_TABLE var 0x40D3 == 1 -> scr_seq 0351 #1; scr_seq 0351 @0x0006-@0x0138: msg 277 #0-#5, RemoveEvent 1 (Jupiter, hidden 0x1D8) @0x0090, RemoveEvent 2 (rival, hidden 0x1D7) @0x0104; scr_seq 0351 @0x010C SetFlag 0x98F; @0x0110 ClearFlag 0x241; @0x0114 SetFlag 0x252; @0x0118 SetVar 0x40D3, 2; scr_seq 0351 @0x011E ClearFlag 0x1B6; @0x0122 SetFlag 0x1B2; @0x0126 SetFlag 0x193; @0x012A SetFlag 0x2AB; @0x012E SetFlag 0x2AA; @0x0132 ClearFlag 0xA8; scr_seq 0143 @0x001D: the Veilstone warehouse guard answers 0x40D3 >= 2 with msg 146 #2 (Storage Key); zone_event 0166 warp 0 (11,28) -> MAP_SNOWPOINT warp 5 (367,222)
 - notes: The Snowpoint -> Acuity Lakefront walk is 43's in reverse (map_matrix 0 cells: MAP_SNOWPOINT x352-383, MAP_ACUITY_LAKEFRONT x288-351). 0xBA comes from Lake Verity (41, scr_seq 0343 @0x02BB). Pearl: no version branch in scr_seq 0351/0385 (version-diff).
 
@@ -1732,7 +1732,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F; flags set 0x241, 0x4C8, 0x10E, 0x4C6, 0x4C7, 0x245; 3 save check(s)
-- frames: estimate 12000, budget 36000
+- frames: estimate 22369, budget 36000
 - refs: zone_event 0131 object 24; zone_event 0131 object 23; scr_seq 0131 @0x087A-0x0936; scr_seq 0370 @0x0D76; zone_event 0131 warp 4; zone_event 0142 object 3; zone_event 0142 object 4; zone_event 0142 object 2; zone_event 0142 warp 1; scr_seq 0143 @0x0063-0x00E8; scr_seq 0370 @0x0D9E; zone_event 0297 object 5; zone_event 0297 warp 2; scr_seq 0370 @0x128A; zone_event 0131 warp 14; zone_event 0292 warp 0
 - notes: Fly: the chain party's Staraptor from 35's boost (in the story HM02 is the warehouse ball this milestone picks up; the walks Fly saves cross the region: Main's call). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35).
 
@@ -1742,7 +1742,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1; >= 1 battles; flags set 0x242, 0x244, 0x1DC; vars 0x40D6=1; 1 save check(s)
-- frames: estimate 20000, budget 40000
+- frames: estimate 23863, budget 40000
 - refs: zone_event 0292 object 5; zone_event 0292 warp 4; zone_event 0293 warp 10; zone_event 0293 warp 4; zone_event 0294 warp 4; zone_event 0294 warp 2; zone_event 0295 object 1; zone_event 0295 coord 0; scr_seq 0336 @0x0074; scr_seq 0336 @0x00D1; scr_seq 0336 @0x0199; trdata.json #403
 - notes: Route from the step layers (tests/e2e/tools/dp_warps.py): 1F lobby (8,22), the Galactic Key doors (22..23,18) (objects 5/6, hidden 0x242; YesNo, A = YES), (19,14) -> 2F (10,11), panel (29,13) -> 2F (52,6), (50,3) -> 3F (47,3), panel (15,13) -> 3F (6,14), (10,11) -> 4F_1 (3,15), the 4F doors (8..9,14) (objects 1/2, hidden 0x244, scr_seq 0336 @0x0154-@0x01A9), Cyrus's coord (8..9,11) when 0x40D6 == 0: TrainerBattle 403 (@0x0074), the Master Ball (std 2044), RemoveEvent 0 and SetVar 0x40D6 1 (@0x00CD-@0x00D1). Each walk avoids the other warps and panels of its floor.
 
@@ -1752,7 +1752,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE; >= 1 battles; flags set 0xAD, 0x97D, 0x253, 0x255; flags clear 0x2B3; vars 0x410D=0
-- frames: estimate 16000, budget 30000
+- frames: estimate 9153, budget 30000
 - refs: zone_event 0295 warp 1; zone_event 0473 warp 1; zone_event 0470 object 0; scr_seq 0339 @0x0078; scr_seq 0339 @0x008F; zone_event 0470 bg 3; scr_seq 0339 @0x01D7; scr_seq 0339 @0x0209; scr_seq 0339 @0x020D; scr_seq 0339 @0x02E3; zone_event 0470 warp 0; zone_event 0473 warp 0; zone_event 0295 warp 2; zone_event 0292 warp 2; trdata.json #409
 - notes: Route from the step layers (tests/e2e/tools/dp_warps.py): 4F_1 (22,3) -> 4F_2 (1,11), (36,2) -> 4F_BACK (8,13); back out (8,13) -> 4F_2 (36,2), (1,11) -> 4F_1 (22,3), the green panel (21,17) -> 1F (41,14), (42,22) -> Veilstone (720,589). Saturn (8,6) faces north at the machine; TrainerBattle 409 (scr_seq 0339 @0x0078), SetFlag 0xAD, 0x410D = 1, he steps aside by the player's facing. The button bg (8,5): YesNo, A = YES: 0x410D = 0, ClearFlag 0x2B3, SetFlag 0x97D, the trio fly off, Saturn's speech, the fade, RemoveEvent 0, SetFlag 0x253 (@0x01F7-@0x02E3).
 
@@ -1762,7 +1762,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR
-- frames: estimate 30000, budget 80000
+- frames: estimate 59215, budget 88900
 - refs: zone_event 0339 warp 3; zone_event 0204 warp 2; zone_event 0205 object 4; zone_event 0205 warp 2; zone_event 0205 warp 4; zone_event 0206 warp 2; zone_event 0208 warp 1; zone_event 0209 warp 4; zone_event 0207 warp 1; zone_event 0210 warp 1; zone_event 0211 warp 1; zone_event 0212 warp 1
 - notes: Warps (dp_script.py events): Hearthome warp 14 (454,726) -> the Route 208 gatehouse (10,7), its warp 1 (1,7) -> Route 208 (447,726); Route 208 warp 3 (392,724) -> South 1F (27,20); 1F (25,3) -> 2F (27,48); 2F (7,23) -> (7,12) (object 4 there, hidden 0x253); 2F (11,4) -> 3F (14,26); 3F (3,29) -> South Mountainside (12,35); (11,17) -> 4F room 1 (7,25); (40,10) -> North Mountainside (42,40); (13,19) -> 4F room 3 (2,3); (18,8) -> 5F (21,7); (13,24) -> 6F (10,24); (7,5) -> Spear Pillar (31,53). The mountainsides' Rock Smash rocks are smashed on the way (walk_to hm). 5F/6F grunts (sight 3-6, trdata.json #524/#519/#525) may engage.
 
@@ -1772,7 +1772,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR; at (31, 52); >= 4 battles; flags set 0x986, 0x15E, 0x2B3, 0x2AD, 0x981, 0x1EB; flags clear 0x8E; vars 0x4098=4
-- frames: estimate 30000, budget 60000
+- frames: estimate 44087, budget 66200
 - refs: zone_event 0217 coord 0; scr_seq 0230 @0x02C7; scr_seq 0230 @0x02DE; zone_event 0217 coord 1; scr_seq 0230 @0x035B; scr_seq 0230 @0x04F7; zone_event 0217 coord 2; scr_seq 0230 @0x0803; scr_seq 0230 @0x0BC0; scr_seq 0230 @0x0C1F; scr_seq 0230 @0x0DAD; zone_event 0217 coord 4; zone_event 0217 coord 3; scr_seq 0230 @0x0EE0; scr_seq 0230 @0x0FB0; scr_seq 0230 @0x0FF8; trdata.json #521; trdata.json #527; trdata.json #528; trdata.json #407; trdata.json #404
 - notes: Coordinate triggers by var 0x4098 (zone_event 0217): coord 0 (31,48) == 0: TrainerBattle 521, 527 (two grunts, double) -> 1; coord 1 (29..33,35) == 1: SpearPillarSequence, warps to Valley Windworks (240,660) and Hearthome (479,692) and back (scr_seq 0230 @0x03B7-@0x0458) -> 2; coord 2 (30..32,32) == 2: TrainerBattleWithPartner (Barry) vs Mars 528 + Jupiter 407, HealParty, the trio, TrainerBattle 404 (Cyrus), Rowan and Dawn/Lucas -> 3 (@0x0DAD); coord 4 (29..33,31) == 3 only nudges the player north; coord 3 (30..32,26) == 3: LegendaryBattle 0x8004, 47 (L_01E8: GetGameVersion Diamond -> 483 DIALGA), any non-loss goes on (caught sets 0x15F), Rowan, Warp 220 (31,52), SetFlag 0x15E/0x2B3/0x2AD/0x981/0x1EB, var 0x4098 = 4 (@0x0F30-@0x0FF8).
 
@@ -2135,7 +2135,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Pearl
 
 <!-- plan.py:begin pearl -->
-### Story chain: 61 milestones, ~1181781 frames estimated
+### Story chain: 61 milestones, ~1243637 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -2180,13 +2180,13 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [40-lake-valor-saturn](diamond/40-lake-valor-saturn/milestone.toml) | Lake Valor (drained): Saturn in Valor Cavern | P0 | both | 18272 | prev + `lab.recipe` | MAP_VERITY_LAKEFRONT | passing |
 | [41-lake-verity-mars](diamond/41-lake-verity-mars/milestone.toml) | Lake Verity (Galactic): Mars | P0 | both | 20762 | prev + `lab.recipe` | MAP_ROUTE_211_EAST | passing |
 | [42-route211-coronet-north-to-route216](diamond/42-route211-coronet-north-to-route216/milestone.toml) | Route 211 East and Mt Coronet north (Strength) to Route 216 | P0 | both | 12937 | prev + `lab.recipe` | MAP_ROUTE_216 | passing |
-| [43-route216-217-hm08-to-snowpoint](diamond/43-route216-217-hm08-to-snowpoint/milestone.toml) | Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint | P0 | both | 22000 | prev + `lab.recipe` | MAP_SNOWPOINT | planned |
-| [44-snowpoint-gym-candice](diamond/44-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: the ice, Candice and the Icicle Badge | P0 | both | 30000 | prev + `lab.recipe` | MAP_SNOWPOINT | planned |
-| [45-lake-acuity-jupiter](diamond/45-lake-acuity-jupiter/milestone.toml) | Lake Acuity: Jupiter takes Uxie, the hurt rival | P0 | both | 6000 | prev + `lab.recipe` | MAP_LAKE_ACUITY_GALACTIC | planned |
-| [46-veilstone-storage-key-galactic-key](diamond/46-veilstone-storage-key-galactic-key/milestone.toml) | Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key | P0 | both | 12000 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F | planned |
-| [47-galactic-hq-cyrus](diamond/47-galactic-hq-cyrus/milestone.toml) | Galactic HQ: the key doors, the warp panels and Cyrus | P0 | both | 20000 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 | planned |
-| [48-galactic-hq-saturn-free-lake-trio](diamond/48-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn, the lake trio freed, out of the HQ | P0 | both | 16000 | prev + `lab.recipe` | MAP_VEILSTONE | planned |
-| [49-mt-coronet-climb](diamond/49-mt-coronet-climb/milestone.toml) | Mt. Coronet: Route 208 up to Spear Pillar | P0 | both | 30000 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | planned |
+| [43-route216-217-hm08-to-snowpoint](diamond/43-route216-217-hm08-to-snowpoint/milestone.toml) | Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint | P0 | both | 50640 | prev + `lab.recipe` | MAP_SNOWPOINT | passing |
+| [44-snowpoint-gym-candice](diamond/44-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: the ice, Candice and the Icicle Badge | P0 | both | 27355 | prev + `lab.recipe` | MAP_SNOWPOINT | passing |
+| [45-lake-acuity-jupiter](diamond/45-lake-acuity-jupiter/milestone.toml) | Lake Acuity: Jupiter takes Uxie, the hurt rival | P0 | both | 5261 | prev + `lab.recipe` | MAP_LAKE_ACUITY_GALACTIC | passing |
+| [46-veilstone-storage-key-galactic-key](diamond/46-veilstone-storage-key-galactic-key/milestone.toml) | Veilstone: the Storage Key, the warehouse, HM02 Fly and the Galactic Key | P0 | both | 22369 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F | passing |
+| [47-galactic-hq-cyrus](diamond/47-galactic-hq-cyrus/milestone.toml) | Galactic HQ: the key doors, the warp panels and Cyrus | P0 | both | 23863 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 | passing |
+| [48-galactic-hq-saturn-free-lake-trio](diamond/48-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn, the lake trio freed, out of the HQ | P0 | both | 9153 | prev + `lab.recipe` | MAP_VEILSTONE | passing |
+| [49-mt-coronet-climb](diamond/49-mt-coronet-climb/milestone.toml) | Mt. Coronet: Route 208 up to Spear Pillar | P0 | both | 59215 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
 | [50-spear-pillar-palkia](pearl/50-spear-pillar-palkia/milestone.toml) | Spear Pillar: Galactic, Cyrus and Palkia (Pearl) | P0 | pearl | 30000 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | planned |
 | [51-coronet-exit-valor-lakefront](diamond/51-coronet-exit-valor-lakefront/milestone.toml) | Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens | P0 | both | 9000 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | planned |
 | [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 15000 | prev + `lab.recipe` | MAP_SUNYSHORE | planned |
@@ -2617,7 +2617,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37
 - end state: map MAP_SNOWPOINT; at (367, 223); flags set 0x47B, 0x9BF; 1 save check(s)
-- frames: estimate 22000, budget 90000
+- frames: estimate 50640, budget 120000
 - refs: maps.h:387 MAP_ROUTE_216 = 383; map_header.c:467 (scr_seq 0434, zone_event 0368, weather 26); zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33; maps.h:389 MAP_ROUTE_217 = 385; map_header.c:469 (scr_seq 0436, zone_event 0370); no story scripts in scr_seq 0436; zone_event 0370 object 7 TRAINER_ACE_TRAINER_SNOW_M_DALTON (140) (307,369) W3; trdata.json #140 RAICHU 34, PELIPPER 36, HIPPOPOTAS 38; zone_event 0370 object 8 TRAINER_ACE_TRAINER_SNOW_F_OLIVIA (141) (302,267) E5; trdata.json #141 ROSELIA 37, SEAKING 37; zone_event 0370 object 10 item ball (296,305) hidden_flag 0x47B, script 7174 -> scr_seq 0370 @0x119A SetVar 0x8008,427 (ITEM_HM08); scr_seq 0370 @0x1834 RemoveEvent VAR_LAST_INTERACTED; @0x1838 GiveItem (item-ball common script_256); scr_seq 0437 @0x0019 HasItem ITEM_HM08 (Route 217 south-house hiker: Icicle Plate only after HM08 is found); maps.h:344 MAP_ACUITY_LAKEFRONT = 340; map_header.c:424 (scr_seq 0385, level scr_seq 0835, zone_event 0325); zone_event 0325 objects 1/2 guards (310,240)/(311,240) hidden_flag 0x252; scr_seq 0385 @0x0052-@0x008D (moved aside only with BADGE_ICICLE); msg 358 #0 ('make sure Snowpoint's Gym Leader doesn't disturb us'); maps.h:169 MAP_SNOWPOINT = 165; zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0; map_matrix 0 cells: MAP_ROUTE_216 (9..11,12) z384-415; MAP_ROUTE_217 (9,8..11) x288-319 z256-383; MAP_ACUITY_LAKEFRONT (9..10,6..7) x288-351 z192-255; MAP_SNOWPOINT (11,6..7) x352-383; files/fielddata/land_data/land_data_release.narc permission grids for the map_matrix 0 cells above (paths below are a BFS with objects solid)
 - notes: Estimate: ~360 tiles, much of it deep snow (slow), three sight trainers on the BFS path plus wild battles. In chain mode slot-0 PP runs low here: the Snowbound Lodge (zone_event 0368 warp 1 (303,398)) is beside the path [INFERENCE: heal there if Empoleon is on Struggle].
 
@@ -2627,7 +2627,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: trdata.json #319 TRAINER_LEADER_CANDICE_CANDICE: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 @SITRUS_BERRY
 - end state: map MAP_SNOWPOINT; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC, BADGE_MINE, BADGE_ICICLE; >= 1 battles; flags set 0x65C, 0x65D, 0x88B, 0x65E, 0x65F, 0x88C, 0x1DD, 0x9E; 1 save check(s)
-- frames: estimate 30000, budget 45000
+- frames: estimate 27355, budget 45000
 - refs: maps.h:171 MAP_SNOWPOINT_GYM = 167; map_header.c:251 (scr_seq 0170, zone_event 0166, matrix 114); zone_event 0164 warp 5 (367,222) -> MAP_SNOWPOINT_GYM warp 0 (11,28); zone_event 0166 warp 0 -> MAP_SNOWPOINT warp 5; zone_event 0166 objects 8-25: SPRITE 118 snowballs; object 0 Candice (11,3); zone_event 0166 objects 2-7: Ace Trainers Anton (15,5), Savannah (20,10), Alicia (6,6), Isaiah (14,13), Brenna (5,15), Sergio (1,20), sight 1; scr_seq 0170 @0x0025-@0x00EC: TrainerBattle 319 @0x0051, GiveBadge BADGE_ICICLE @0x0077, SetTrainerFlag 268/269/827/270/271/828 @0x007F-@0x0093, SetFlag 0x1DD @0x00A3, TM72 (std 2044) @0x00D1, SetFlag 0x9E @0x00D5; trdata.json #319 TRAINER_LEADER_CANDICE_CANDICE: SNOVER 38, SNEASEL 38, MEDICHAM 40, ABOMASNOW 42 @SITRUS_BERRY; games/platinum/src/player_move.c:544-601 (ice slide), :763-811 (height change -> speed; speed < 0 reverses)
 - notes: The slide list is a route found in game, not derived: an explorer (one session, edges learned per (tile, direction), re-learned along a crushed snowball's row/column) mapped the gym; a BFS over its edges in the order it crushed snowballs gives these 86 presses. The probe has no height, so the uphill reversals are not plannable from the tile grid. Torterra is 4x weak to ice: the boost gives Stone Edge (2x on Snover, Sneasel, Abomasnow) and level 75.
 
@@ -2637,7 +2637,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_LAKE_ACUITY_GALACTIC; badge BADGE_COAL, BADGE_FOREST, BADGE_COBBLE, BADGE_FEN, BADGE_RELIC, BADGE_MINE, BADGE_ICICLE; flags set 0x98F, 0x252, 0x1B2, 0x193, 0x2AB, 0x2AA, 0x1D8, 0x1D7; flags clear 0x241, 0x1B6, 0xA8; vars 0x40D3=2
-- frames: estimate 6000, budget 9000
+- frames: estimate 5261, budget 9000
 - refs: maps.h:344 MAP_ACUITY_LAKEFRONT = 340; zone_event 0325 warps 2/3 (310..311,239) -> MAP_LAKE_ACUITY_GALACTIC warps 3/4; scr_seq 0385 @0x0052-@0x008D (ON_TRANSITION): HasBadge BADGE_ICICLE -> guards object 1 -> (312,240), object 2 -> (308,242); scr_seq 0385 @0x0016-@0x0050 (ON_LOAD): flag 0xBA set -> the lake mouth (310..311,239) is MAP_LAKE_ACUITY_GALACTIC's; maps.h:322 MAP_LAKE_ACUITY_GALACTIC = 318; scr_seq 0811 @0x0006 ON_FRAME_TABLE var 0x40D3 == 1 -> scr_seq 0351 #1; scr_seq 0351 @0x0006-@0x0138: msg 277 #0-#5, RemoveEvent 1 (Jupiter, hidden 0x1D8) @0x0090, RemoveEvent 2 (rival, hidden 0x1D7) @0x0104; scr_seq 0351 @0x010C SetFlag 0x98F; @0x0110 ClearFlag 0x241; @0x0114 SetFlag 0x252; @0x0118 SetVar 0x40D3, 2; scr_seq 0351 @0x011E ClearFlag 0x1B6; @0x0122 SetFlag 0x1B2; @0x0126 SetFlag 0x193; @0x012A SetFlag 0x2AB; @0x012E SetFlag 0x2AA; @0x0132 ClearFlag 0xA8; scr_seq 0143 @0x001D: the Veilstone warehouse guard answers 0x40D3 >= 2 with msg 146 #2 (Storage Key); zone_event 0166 warp 0 (11,28) -> MAP_SNOWPOINT warp 5 (367,222)
 - notes: The Snowpoint -> Acuity Lakefront walk is 43's in reverse (map_matrix 0 cells: MAP_SNOWPOINT x352-383, MAP_ACUITY_LAKEFRONT x288-351). 0xBA comes from Lake Verity (41, scr_seq 0343 @0x02BB). Pearl: no version branch in scr_seq 0351/0385 (version-diff).
 
@@ -2647,7 +2647,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F; flags set 0x241, 0x4C8, 0x10E, 0x4C6, 0x4C7, 0x245; 3 save check(s)
-- frames: estimate 12000, budget 36000
+- frames: estimate 22369, budget 36000
 - refs: zone_event 0131 object 24; zone_event 0131 object 23; scr_seq 0131 @0x087A-0x0936; scr_seq 0370 @0x0D76; zone_event 0131 warp 4; zone_event 0142 object 3; zone_event 0142 object 4; zone_event 0142 object 2; zone_event 0142 warp 1; scr_seq 0143 @0x0063-0x00E8; scr_seq 0370 @0x0D9E; zone_event 0297 object 5; zone_event 0297 warp 2; scr_seq 0370 @0x128A; zone_event 0131 warp 14; zone_event 0292 warp 0
 - notes: Fly: the chain party's Staraptor from 35's boost (in the story HM02 is the warehouse ball this milestone picks up; the walks Fly saves cross the region: Main's call). The guard (object 24, hidden 0x241) runs off and AddEvent 23 drops ball 7121 = ITEM_STORAGE_KEY (463) where he stood. The warehouse doors (objects 3/4, hidden 0x246) take the key (YesNo, A = YES; TakeItem, SetFlag 0x10E). Ball 7123 at (13,8) = ITEM_HM02 (421); ball 7186 at B2F (20,5) = ITEM_GALACTIC_KEY (440). HQ B2F grunts (hidden 0x255) may engage (trdata.json #507 GOLBAT 37, #508 DUSTOX 35 + BRONZOR 35).
 
@@ -2657,7 +2657,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1; >= 1 battles; flags set 0x242, 0x244, 0x1DC; vars 0x40D6=1; 1 save check(s)
-- frames: estimate 20000, budget 40000
+- frames: estimate 23863, budget 40000
 - refs: zone_event 0292 object 5; zone_event 0292 warp 4; zone_event 0293 warp 10; zone_event 0293 warp 4; zone_event 0294 warp 4; zone_event 0294 warp 2; zone_event 0295 object 1; zone_event 0295 coord 0; scr_seq 0336 @0x0074; scr_seq 0336 @0x00D1; scr_seq 0336 @0x0199; trdata.json #403
 - notes: Route from the step layers (tests/e2e/tools/dp_warps.py): 1F lobby (8,22), the Galactic Key doors (22..23,18) (objects 5/6, hidden 0x242; YesNo, A = YES), (19,14) -> 2F (10,11), panel (29,13) -> 2F (52,6), (50,3) -> 3F (47,3), panel (15,13) -> 3F (6,14), (10,11) -> 4F_1 (3,15), the 4F doors (8..9,14) (objects 1/2, hidden 0x244, scr_seq 0336 @0x0154-@0x01A9), Cyrus's coord (8..9,11) when 0x40D6 == 0: TrainerBattle 403 (@0x0074), the Master Ball (std 2044), RemoveEvent 0 and SetVar 0x40D6 1 (@0x00CD-@0x00D1). Each walk avoids the other warps and panels of its floor.
 
@@ -2667,7 +2667,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_VEILSTONE; >= 1 battles; flags set 0xAD, 0x97D, 0x253, 0x255; flags clear 0x2B3; vars 0x410D=0
-- frames: estimate 16000, budget 30000
+- frames: estimate 9153, budget 30000
 - refs: zone_event 0295 warp 1; zone_event 0473 warp 1; zone_event 0470 object 0; scr_seq 0339 @0x0078; scr_seq 0339 @0x008F; zone_event 0470 bg 3; scr_seq 0339 @0x01D7; scr_seq 0339 @0x0209; scr_seq 0339 @0x020D; scr_seq 0339 @0x02E3; zone_event 0470 warp 0; zone_event 0473 warp 0; zone_event 0295 warp 2; zone_event 0292 warp 2; trdata.json #409
 - notes: Route from the step layers (tests/e2e/tools/dp_warps.py): 4F_1 (22,3) -> 4F_2 (1,11), (36,2) -> 4F_BACK (8,13); back out (8,13) -> 4F_2 (36,2), (1,11) -> 4F_1 (22,3), the green panel (21,17) -> 1F (41,14), (42,22) -> Veilstone (720,589). Saturn (8,6) faces north at the machine; TrainerBattle 409 (scr_seq 0339 @0x0078), SetFlag 0xAD, 0x410D = 1, he steps aside by the player's facing. The button bg (8,5): YesNo, A = YES: 0x410D = 0, ClearFlag 0x2B3, SetFlag 0x97D, the trio fly off, Saturn's speech, the fade, RemoveEvent 0, SetFlag 0x253 (@0x01F7-@0x02E3).
 
@@ -2677,7 +2677,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR
-- frames: estimate 30000, budget 80000
+- frames: estimate 59215, budget 88900
 - refs: zone_event 0339 warp 3; zone_event 0204 warp 2; zone_event 0205 object 4; zone_event 0205 warp 2; zone_event 0205 warp 4; zone_event 0206 warp 2; zone_event 0208 warp 1; zone_event 0209 warp 4; zone_event 0207 warp 1; zone_event 0210 warp 1; zone_event 0211 warp 1; zone_event 0212 warp 1
 - notes: Warps (dp_script.py events): Hearthome warp 14 (454,726) -> the Route 208 gatehouse (10,7), its warp 1 (1,7) -> Route 208 (447,726); Route 208 warp 3 (392,724) -> South 1F (27,20); 1F (25,3) -> 2F (27,48); 2F (7,23) -> (7,12) (object 4 there, hidden 0x253); 2F (11,4) -> 3F (14,26); 3F (3,29) -> South Mountainside (12,35); (11,17) -> 4F room 1 (7,25); (40,10) -> North Mountainside (42,40); (13,19) -> 4F room 3 (2,3); (18,8) -> 5F (21,7); (13,24) -> 6F (10,24); (7,5) -> Spear Pillar (31,53). The mountainsides' Rock Smash rocks are smashed on the way (walk_to hm). 5F/6F grunts (sight 3-6, trdata.json #524/#519/#525) may engage.
 

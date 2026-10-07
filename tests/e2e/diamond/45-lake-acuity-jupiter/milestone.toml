@@ -3,10 +3,9 @@
 # leaves with Uxie, the hurt rival, then 0x40D3 = 2 (which opens the Veilstone warehouse guard's 'Storage Key' talk).
 # Start: Snowpoint at the gym door (367,222) (44's end) -> end: Lake Acuity (Galactic) after the scene.
 title = "Lake Acuity: Jupiter takes Uxie, the hurt rival"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 6000
+estimate = 5261
 refs = [
   "maps.h:344 MAP_ACUITY_LAKEFRONT = 340; zone_event 0325 warps 2/3 (310..311,239) -> MAP_LAKE_ACUITY_GALACTIC warps 3/4",
   "scr_seq 0385 @0x0052-@0x008D (ON_TRANSITION): HasBadge BADGE_ICICLE -> guards object 1 -> (312,240), object 2 -> (308,242)",

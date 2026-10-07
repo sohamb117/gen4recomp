@@ -2,10 +2,9 @@
 # the HQ: Saturn's fade-out sets 0x253, which opens Mt. Coronet's south 2F barrier for 49.
 # Start: HQ 4F_1 on Cyrus's coord after he left (47's end) -> end: Veilstone outside the HQ east door (720,589) (49's start).
 title = "Galactic HQ: Saturn, the lake trio freed, out of the HQ"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 16000
+estimate = 9153
 refs = [
   "zone_event 0295 warp 1",
   "zone_event 0473 warp 1",

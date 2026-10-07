@@ -2,10 +2,9 @@
 # guarded until the Icicle Badge) and Snowpoint City. Start: Route 216 cave mouth (375,403) -> end: Snowpoint (367,223),
 # below the gym door (44's start).
 title = "Routes 216/217 through the snow, HM08, Acuity Lakefront to Snowpoint"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 22000
+estimate = 50640
 refs = [
   "maps.h:387 MAP_ROUTE_216 = 383; map_header.c:467 (scr_seq 0434, zone_event 0368, weather 26)",
   "zone_event 0368 object 5 TRAINER_ACE_TRAINER_SNOW_F_MARIA (135) (328,403) N2; trdata.json #135 GOLDUCK 34, PONYTA 35, SUDOWOODO 33",
@@ -30,7 +29,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 90000
+frames = 120000
 
 [[step]]
 do = "walk_to"
@@ -56,7 +55,7 @@ x = 296
 z = 306
 face = "up"
 interact = true
-max = 9000
+max = 15000
 note = "HM08 ball obj 10 (296,305); BFS (304,383)->(304,381)->(303,381)->(303,375)->(304,375)->(304,369)->(302,369)->(302,336)->(300,336)->(300,334)->(298,334)->(298,324)->(296,324)->(296,306); Dalton (307,369) W3 sees (304,369)"
 
 [[step]]
@@ -69,7 +68,8 @@ do = "walk_to"
 on_battle = "flee"
 x = 311
 z = 256
-max = 9000
+max = 20000
+hold = 48  # Route 217's deep snow: slow steps (Platinum 35's Acuity Lakefront bound)
 note = "north edge of Route 217; BFS (296,306)->(290,306)->(290,272)->(293,272)->(293,271)->(307,271)->(307,267)->(311,267)->(311,256); Olivia (302,267) E5 sees (307,267)"
 
 [[step]]
@@ -87,7 +87,8 @@ do = "walk_to"
 on_battle = "flee"
 x = 351
 z = 238
-max = 6000
+max = 12000
+hold = 48
 note = "east edge of Acuity Lakefront; BFS (311,255)->(311,251)->(313,251)->(313,249)->(317,249)->(317,247)->(337,247)->(337,245)->(345,245)->(345,239)->(351,239)->(351,238); the guards (310|311,240) stay in front of the lake mouth"
 
 [[step]]
