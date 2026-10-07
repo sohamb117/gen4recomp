@@ -2,10 +2,14 @@
 # ActivateRoamingPokemon ROAMING_SLOT_CRESSELIA, Lunar Wing appears.
 # Start: FULLMOON_ISLAND_FOREST (16,16) below Cresselia (16,15). End: same.
 title = "Roamer: Cresselia starts roaming"
-status = "planned"
 priority = "P2"
-estimate = 3000
+estimate = 2280
 refs = [
+  "src/roaming_pokemon.c:199-213",
+  "src/roaming_pokemon.c:322-356",
+  "src/applications/poketch/marking_map/main.c:109-115",
+  "src/applications/poketch/marking_map/main.c:311-321",
+  "src/field_map_change_flags.c:48-52",
   "res/field/scripts/scripts_fullmoon_island_forest.s:9-36",
   "res/field/scripts/scripts_fullmoon_island_forest.s:26-33",
   "res/field/scripts/scripts_canalave_city.s:494-537",
@@ -16,7 +20,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 4500
+frames = 3500
 
 [[step]]
 do = "press"
@@ -32,8 +36,43 @@ shot = "cresselia"
 do = "wait_field"
 shot = "lunar-wing"
 
+[[step]]
+do = "wait_frames"
+n = 90
+note = "the Pokétch Marking Map (bottom screen) shows the active roamer's face on its route"
+shot = "marking-map"
+
+[[step]]
+do = "dump"
+expr = '[r["map"] for r in s["roamers"]["slots"]]'
+note = "the roamers' maps (np_save4 roamers): placed on a random route at activation"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 21
+note = "out (a warp: InitFlagsWarp moves no roamer, field_map_change_flags.c:55-77)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_FULLMOON_ISLAND"
+
+[[step]]
+do = "advance_text"
+max = 3000
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+note = "a step: the app re-reads the roamers only while the player walks (marking_map/main.c:296-327)"
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "roamed-1"
+
 [expect]
-map = 261
+map = "MAP_HEADER_FULLMOON_ISLAND"
 flags = ["FLAG_MET_CRESSELIA", "FLAG_HIDE_FULLMOON_ISLAND_FOREST_CRESSELIA"]
 flags_clear = ["FLAG_OBTAINED_FULLMOON_ISLAND_FOREST_LUNAR_WING"]
-# PHASE2: reader-ext roamer slot CRESSELIA active (special_encounter.c:159-163)
+save = ['[r["species"] for r in s["roamers"]["slots"] if r["active"]] == [488]', 'all(r["map"] not in (261, 260) for r in s["roamers"]["slots"])']

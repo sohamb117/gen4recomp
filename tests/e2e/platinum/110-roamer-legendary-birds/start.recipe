@@ -7,4 +7,8 @@ national-dex 1
 party SPECIES_EMPOLEON 62 ITEM_NONE
 # set at new game (scripts_init_new_game.s:59), cleared by the Pal Park first visit (scripts_pal_park_lobby.s:347)
 clear-flag FLAG_HIDE_ETERNA_CITY_SOUTH_HOUSE_PROF_OAK
+# Eterna past its story scenes (the last SetVar is 5): no coord script turns the walk east back
+var VAR_ETERNA_CITY_STATE 5
+# the Marking Map app selected: its faces are the roamers (marking_map/main.c:109-115)
+poketch POKETCH_APPID_MARKINGMAP
 map MAP_HEADER_ETERNA_CITY_SOUTH_HOUSE 4 6 FACE_UP

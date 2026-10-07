@@ -374,6 +374,38 @@ static void dump_daycare(FILE *o, const save4 *s)
             le32(d + 2 * DAYCARE_MON_SIZE) ? "true" : "false", d[2 * DAYCARE_MON_SIZE + 4]);
 }
 
+/* Platinum's SpecialEncounter roamers (struct_defs/special_encounter.h) in the general block: PlayerRecentRoutes
+ * (int current, previous map), then ROAMING_SLOT_MAX (6) Roamer of 20 bytes (int map, u32 ivs, u32 personality,
+ * u16 species, u16 hp, u8 level, status, active). Offset found by scanning played saves for the activated
+ * Mesprit (slot 0), Cresselia (slot 1) and Moltres (slot 3). */
+#define PT_ROAMERS_OFF 0x7FF4
+#define ROAMER_SIZE 20
+#define ROAMER_SLOTS 6
+
+static void dump_roamers(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_ROAMERS_OFF + ROAMER_SLOTS * ROAMER_SIZE > len) {
+        fputs("  \"roamers\": null,\n", o);
+        return;
+    }
+    const uint8_t *r = img + base + PT_ROAMERS_OFF;
+    fprintf(o, "  \"roamers\": {\"player_map\": %d, \"player_previous_map\": %d, \"slots\": [", (int32_t)le32(r - 8),
+            (int32_t)le32(r - 4));
+    for (int i = 0, n = 0; i < ROAMER_SLOTS; i++) {
+        const uint8_t *m = r + i * ROAMER_SIZE;
+        if (!le16(m + 12))
+            continue;
+        fprintf(o, "%s{\"slot\": %d, \"species\": %u, \"species_name\": ", n++ ? ", " : "", i, le16(m + 12));
+        jname(o, ND_TEXT_SPECIES, le16(m + 12));
+        fprintf(o, ", \"level\": %u, \"hp\": %u, \"map\": %d, \"active\": %s}", m[16], le16(m + 14), (int32_t)le32(m),
+                m[18] ? "true" : "false");
+    }
+    fputs("]},\n", o);
+}
+
 static int cmd_dump(const char *rom_path, const char *save_path)
 {
     save4 s;
@@ -558,6 +590,7 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     fputs("]},\n", o);
     dump_hall_of_fame(o, &s);
     dump_daycare(o, &s);
+    dump_roamers(o, &s);
     dump_mystery(o, &s);
     fputs("}\n", o);
 

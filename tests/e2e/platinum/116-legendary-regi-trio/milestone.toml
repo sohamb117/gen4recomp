@@ -1,21 +1,22 @@
-# Regi trio (battle-lab only): the statues need a fateful-encounter (event) Regigigas, which no lab
-# verb can set, so in-situ is blocked; the lab battle hook starts REGIROCK 30 directly.
-# Start: ROCK_PEAK_RUINS. End: same, battle won.
-title = "Legendary: Regirock/Regice/Registeel (battle lab)"
-status = "planned"
+# Regi trio, played: Rock Peak Ruins after the game is completed, with an event (fateful-encounter) Regigigas in
+# the party (the lab's party-fateful, as a Mystery Gift Regigigas carries it). Stepping on the seven dots in any
+# order (ov5_021F6454.c ScrCmd_ActivateRegiRuinsDot) activates the statue; A on the statue checks the event
+# Regigigas (ScrCmd_CheckPartyHasFatefulEncounterRegigigas) and starts REGIROCK 30. Regice/Registeel are the same
+# script on their own dots (iceberg/iron ruins).
+# Start: ROCK_PEAK_RUINS (7,11). End: same, Regirock defeated (RUINS_STATE_DID_NOT_CATCH_REGI).
+title = "Legendary: Regirock (Regi trio) with an event Regigigas"
 priority = "P2"
-estimate = 9000
+estimate = 4259
 refs = [
   "res/field/scripts/scripts_rock_peak_ruins.s:15-48",
   "include/constants/regi_ruins.h:4-7",
   "res/field/scripts/scripts_iceberg_ruins.s:47",
   "res/field/scripts/scripts_iron_ruins.s:47",
   "pc/src/pc_lab.c:685",
-  "pc/src/pc_lab.c:1337-1345",
-  "pc/src/pc_lab.c:1373-1375",
-  "pc/tests/corpus/battle-legendary.recipe",
-  "pc/tests/corpus/battle-legendary.spec",
-  "pc/replays/lab-battle.txt",
+  "res/field/scripts/scripts_rock_peak_ruins.s:91-151",
+  "src/overlay005/ov5_021F6454.c:853-912",
+  "src/scrcmd.c:7113-7135",
+  "pc/src/pc_lab.c:889-898",
   "pc/src/pc_lab.c:798-800",
   "src/clear_game.c:204-206",
   "src/scrcmd_system_flags.c:151",
@@ -24,18 +25,39 @@ refs = [
 
 [start]
 recipe = "start.recipe"
-# Blocked in-situ: missing prerequisite = a lab verb that sets MON_DATA_FATEFUL_ENCOUNTER
-# (`party` is Pokemon_GiveMonFromScript, pc_lab.c:685). Regice 378 / Registeel 379 are the same run.
 
 [run]
-frames = 13500
-# lab battle hook: legendary REGIROCK (377) lv30 (pc_lab.c:1337-1345,1373-1375)
-env = { PC_LAB_BATTLE = "legendary 377 30 0", PC_LAB_BATTLE_AT = "2600" }
+frames = 6400
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 9
+via = [[5, 9], [5, 7], [5, 5], [7, 7], [9, 5], [9, 7]]
+on_text = "stop"
+note = "the seven dots (5|7|9, 5|7|9 cross): the last one sets RUINS_STATE_ACTIVATED_ALL_DOTS"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "'Something changed in the air' (RockPeakRuins_ActivateStatue)"
+shot = "statue-active"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 2
+face = "up"
+interact = true
+note = "the statue (6..8,1)"
+
+[[step]]
+do = "advance_text"
+max = 2000
+note = "Regirock's cry, then StartLegendaryBattle REGIROCK 30"
 
 [[step]]
 do = "wait_battle"
-max = 5000
-note = "lab battle hook starts REGIROCK 30"
 shot = "regirock"
 
 [[step]]
@@ -49,4 +71,5 @@ max = 1500
 [expect]
 map = 592
 battles = 1
-log = ['pc_lab: battle over at frame \d+, resultMask=1']
+vars = { VAR_ROCK_PEAK_RUINS_STATE = 280 }   # RUINS_STATE_DID_NOT_CATCH_REGI (regi_ruins.h)
+save = ['[m["species"] for m in s["party"]] == [445, 486]', '377 in s["pokedex"]["seen_list"]']

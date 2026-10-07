@@ -2,9 +2,8 @@
 # (VAR_SPIRITOMB_COUNTER) -> A -> StartWildBattle SPIRITOMB 25; both vars reset after.
 # Start: ROUTE_209 (566,715) below the tower (566..567,713..714). End: same.
 title = "Spiritomb at the Hallowed Tower"
-status = "planned"
 priority = "P2"
-estimate = 8000
+estimate = 3025
 refs = [
   "res/field/scripts/scripts_route_208.s:28-40",
   "res/field/scripts/scripts_route_209.s:40-80",
@@ -17,7 +16,7 @@ recipe = "start.recipe"
 # PHASE2: keystone variant: `item ITEM_ODD_KEYSTONE 1`, state 0 -> A, Yes -> VAR_HALLOWED_TOWER_STATE = 1.
 
 [run]
-frames = 12000
+frames = 4600
 
 [[step]]
 do = "press"

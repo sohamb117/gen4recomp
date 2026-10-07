@@ -2,9 +2,8 @@
 # StartLegendaryBattle REGIGIGAS 1. Ice-floor puzzles B1F-B4F bypassed by the map line.
 # Start: SNOWPOINT_TEMPLE_B5F (11,13) below Regigigas (11,12). End: same, awakened.
 title = "Legendary: Regigigas awakens"
-status = "planned"
 priority = "P2"
-estimate = 9000
+estimate = 3435
 refs = [
   "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:129",
   "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:165-170",
@@ -27,7 +26,7 @@ recipe = "start.recipe"
 
 # PHASE2: battle-lab variant: env PC_LAB_BATTLE="legendary 486 1 0" PC_LAB_BATTLE_AT=2600 (pc_lab.c:1337-1345,1373-1375; input pc/replays/lab-battle.txt) proves `resultMask=1` in the log (); a variant run, so it is not set in this dir's [run] env (it would start a battle mid-flow).
 [run]
-frames = 13500
+frames = 5200
 
 [[step]]
 do = "press"

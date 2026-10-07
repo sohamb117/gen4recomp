@@ -4,4 +4,6 @@ trainer-id 26109
 money 3000
 party SPECIES_EMPOLEON 62 ITEM_NONE
 # Cresselia's hide flag is never set at new game (only by the encounter, scripts_fullmoon_island_forest.s:26)
+# the Marking Map app selected: its faces are the roamers (marking_map/main.c:109-115)
+poketch POKETCH_APPID_MARKINGMAP
 map MAP_HEADER_FULLMOON_ISLAND_FOREST 16 16 FACE_UP

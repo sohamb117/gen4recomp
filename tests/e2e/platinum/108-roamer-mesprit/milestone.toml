@@ -2,10 +2,14 @@
 # ActivateRoamingPokemon ROAMING_SLOT_MESPRIT, Rowan scene.
 # Start: VERITY_CAVERN (12,14) below Mesprit (12,13). End: same map, Mesprit roaming.
 title = "Roamer: Mesprit starts roaming"
-status = "planned"
 priority = "P1"
-estimate = 3000
+estimate = 3050
 refs = [
+  "src/roaming_pokemon.c:199-213",
+  "src/roaming_pokemon.c:322-356",
+  "src/applications/poketch/marking_map/main.c:109-115",
+  "src/applications/poketch/marking_map/main.c:311-321",
+  "src/field_map_change_flags.c:48-52",
   "res/field/scripts/scripts_init_new_game.s:16",
   "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:112",
   "res/field/scripts/scripts_verity_cavern.s:8-80",
@@ -16,15 +20,14 @@ refs = [
   "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:133",
   "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:184-187",
   "src/special_encounter.c:159-163",
-  "src/applications/poketch/marking_map/main.c:111",
-  "include/constants/roamer_states.h:4",
+    "include/constants/roamer_states.h:4",
 ]
 
 [start]
 recipe = "start.recipe"
 
 [run]
-frames = 4500
+frames = 4600
 
 [[step]]
 do = "press"
@@ -40,8 +43,43 @@ shot = "mesprit"
 [[step]]
 do = "wait_field"
 
+[[step]]
+do = "wait_frames"
+n = 90
+note = "the Pokétch Marking Map (bottom screen) shows the active roamer's face on its route"
+shot = "marking-map"
+
+[[step]]
+do = "dump"
+expr = '[r["map"] for r in s["roamers"]["slots"]]'
+note = "the roamers' maps (np_save4 roamers): placed on a random route at activation"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 29
+note = "out (a warp: InitFlagsWarp moves no roamer, field_map_change_flags.c:55-77)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_LAKE_VERITY"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "Rowan meets the player at the lake"
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+note = "a step: the app re-reads the roamers only while the player walks (marking_map/main.c:296-327)"
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "roamed-1"
+
 [expect]
-map = 313
+map = "MAP_HEADER_LAKE_VERITY"
 flags = ["FLAG_HIDE_VERITY_CAVERN_MESPRIT"]
-# PHASE2: reader-ext SpecialEncounter.roamers[ROAMING_SLOT_MESPRIT].active == 1 (special_encounter.c:159-163);
-# VAR_ROAMING_MESPRIT_STATE stays 0 (= ROAMING, roamer_states.h:4) so the var cannot prove it.
+save = ['[r["species"] for r in s["roamers"]["slots"] if r["active"]] == [481]', 'all(r["map"] not in (313, 312) for r in s["roamers"]["slots"])']

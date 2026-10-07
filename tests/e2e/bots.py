@@ -1215,6 +1215,13 @@ def bot_pace(s, step, ctx):
                 _field_or_handle(s, {"on_battle": "flee"}, ctx, limit)
 
 
+def bot_dump(s, step, ctx):
+    """Note the value of `expr` (a Python expression over the dump `s` of an in-game save made now, as [expect]
+    save expressions) in the run log as `dump: EXPR = VALUE`: a mid-run state for [expect] log patterns (a roamer's
+    map before and after a map change)."""
+    s.note("dump: %s = %r" % (step["expr"], eval(step["expr"], {}, {"s": save_dump(s, ctx)})))
+
+
 def bot_grind(s, step, ctx):
     """Fight wild battles in the tall grass at (x, z)/(x+1, z) until the lead reaches `level`, healing at the
     Pokemon Center door `heal` = [x, z] (same coordinate space) whenever the lead is below half HP or down to 4 PP
@@ -1573,4 +1580,5 @@ BOTS = {
     "fish": bot_fish,
     "hatch": bot_hatch,
     "pace": bot_pace,
+    "dump": bot_dump,
 }

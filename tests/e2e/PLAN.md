@@ -691,7 +691,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~537772 frames estimated
+### Side systems: 52 milestones, ~523861 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -709,7 +709,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [70-fishing-super-rod](platinum/70-fishing-super-rod/milestone.toml) | Super Rod: fish on Route 205 | P2 | 3271 | `start.recipe` | 347 | passing |
 | [71-honey-tree](platinum/71-honey-tree/milestone.toml) | Honey tree: Route 205 South Combee | P2 | 3237 | `start.recipe` | 347 | passing |
 | [72-day-care-deposit-and-egg](platinum/72-day-care-deposit-and-egg/milestone.toml) | Day Care: deposit two parents with the lady and collect an egg | P1 | 7273 | `start.recipe` | MAP_HEADER_SOLACEON_TOWN | passing |
-| [73-egg-hatch-and-flame-body](platinum/73-egg-hatch-and-flame-body/milestone.toml) | Egg hatch (and Flame Body cycle halving) | P1 | 9000 | prev + `start.recipe` | MAP_HEADER_SOLACEON_TOWN | planned |
+| [73-egg-hatch-and-flame-body](platinum/73-egg-hatch-and-flame-body/milestone.toml) | Egg hatch (and Flame Body cycle halving) | P1 | 39347 | prev + `start.recipe` | MAP_HEADER_SOLACEON_TOWN | passing |
 | [74-level-up-evolution-after-battle](platinum/74-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after battle: Caterpie -> Metapod | P1 | 10408 | `start.recipe` | MAP_HEADER_ROUTE_202 | passing |
 | [75-trade-evolution](platinum/75-trade-evolution/milestone.toml) | Trades: NPC trade (and link trade evolution) | P1 | 16800 | `start.recipe` | 54 | planned |
 | [76-contests](platinum/76-contests/milestone.toml) | Contests: Normal Cool, first place | P1 | 52000 | `start.recipe` | 86 | planned |
@@ -717,7 +717,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [78-amity-square](platinum/78-amity-square/milestone.toml) | Amity Square: walk with Pikachu | P2 | 4000 | `start.recipe` | 253 | planned |
 | [79-great-marsh-safari](platinum/79-great-marsh-safari/milestone.toml) | Great Marsh: enter the Safari Game | P1 | 10000 | `start.recipe` | 509 | planned |
 | [80-trophy-garden](platinum/80-trophy-garden/milestone.toml) | Trophy Garden: Mr. Backlot's daily Pokemon | P2 | 4000 | `start.recipe` | 370 | planned |
-| [81-game-corner](platinum/81-game-corner/milestone.toml) | Game Corner: play the slots | P2 | 5000 | `start.recipe` | 136 | planned |
+| [81-game-corner](platinum/81-game-corner/milestone.toml) | Game Corner: play the slots | P2 | 3183 | `start.recipe` | 136 | passing |
 | [90-underground-explorer-kit](platinum/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | 6400 | `start.recipe` | 2 | planned |
 | [91-underground-mining](platinum/91-underground-mining/milestone.toml) | Underground: dig a wall | P1 | 6500 | `start.recipe` | 2 | planned |
 | [92-underground-spheres-traps-goods](platinum/92-underground-spheres-traps-goods/milestone.toml) | Underground: spheres, traps and goods | P2 | 5500 | `start.recipe` | 2 | planned |
@@ -736,17 +736,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [105-national-dex-upgrade](platinum/105-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | 5000 | `start.recipe` | 422 | planned |
 | [106-pal-park](platinum/106-pal-park/milestone.toml) | Pal Park: gate refuses without a GBA cartridge | P2 | 3700 | `start.recipe` | 393 | planned |
 | [107-hall-of-fame-pc](platinum/107-hall-of-fame-pc/milestone.toml) | Hall of Fame on the Pokemon Center PC | P2 | 3000 | `start.recipe` | 6 | planned |
-| [108-roamer-mesprit](platinum/108-roamer-mesprit/milestone.toml) | Roamer: Mesprit starts roaming | P1 | 3000 | `start.recipe` | 313 | planned |
-| [109-roamer-cresselia](platinum/109-roamer-cresselia/milestone.toml) | Roamer: Cresselia starts roaming | P2 | 3000 | `start.recipe` | 261 | planned |
-| [110-roamer-legendary-birds](platinum/110-roamer-legendary-birds/milestone.toml) | Roamer: legendary birds from Prof. Oak | P2 | 3500 | `start.recipe` | 82 | planned |
-| [111-legendary-dialga-palkia](platinum/111-legendary-dialga-palkia/milestone.toml) | Legendary: Dialga (and Palkia) at Spear Pillar | P1 | 9000 | `start.recipe` | 584 | planned |
-| [112-legendary-giratina-turnback](platinum/112-legendary-giratina-turnback/milestone.toml) | Legendary: Giratina in Turnback Cave | P2 | 9000 | `start.recipe` | 270 | planned |
-| [113-legendary-uxie-azelf](platinum/113-legendary-uxie-azelf/milestone.toml) | Legendary: Uxie (and Azelf) | P2 | 9000 | `start.recipe` | 319 | planned |
-| [114-legendary-heatran](platinum/114-legendary-heatran/milestone.toml) | Legendary: Heatran at Stark Mountain | P2 | 9000 | `start.recipe` | 265 | planned |
-| [115-legendary-regigigas](platinum/115-legendary-regigigas/milestone.toml) | Legendary: Regigigas awakens | P2 | 9000 | `start.recipe` | 283 | planned |
-| [116-legendary-regi-trio](platinum/116-legendary-regi-trio/milestone.toml) | Legendary: Regirock/Regice/Registeel (battle lab) | P2 | 9000 | `start.recipe` | 592 | planned |
-| [117-rotom-old-chateau](platinum/117-rotom-old-chateau/milestone.toml) | Rotom in the Old Chateau TV | P2 | 8000 | `start.recipe` | 300 | planned |
-| [118-spiritomb-hallowed-tower](platinum/118-spiritomb-hallowed-tower/milestone.toml) | Spiritomb at the Hallowed Tower | P2 | 8000 | `start.recipe` | 356 | planned |
+| [108-roamer-mesprit](platinum/108-roamer-mesprit/milestone.toml) | Roamer: Mesprit starts roaming | P1 | 3050 | `start.recipe` | MAP_HEADER_LAKE_VERITY | passing |
+| [109-roamer-cresselia](platinum/109-roamer-cresselia/milestone.toml) | Roamer: Cresselia starts roaming | P2 | 2280 | `start.recipe` | MAP_HEADER_FULLMOON_ISLAND | passing |
+| [110-roamer-legendary-birds](platinum/110-roamer-legendary-birds/milestone.toml) | Roamer: legendary birds from Prof. Oak | P2 | 4155 | `start.recipe` | MAP_HEADER_ROUTE_211_WEST | passing |
+| [111-legendary-dialga-palkia](platinum/111-legendary-dialga-palkia/milestone.toml) | Legendary: Dialga (and Palkia) at Spear Pillar | P1 | 3801 | `start.recipe` | 584 | passing |
+| [112-legendary-giratina-turnback](platinum/112-legendary-giratina-turnback/milestone.toml) | Legendary: Giratina in Turnback Cave | P2 | 3331 | `start.recipe` | 270 | passing |
+| [113-legendary-uxie-azelf](platinum/113-legendary-uxie-azelf/milestone.toml) | Legendary: Uxie (and Azelf) | P2 | 3257 | `start.recipe` | 319 | passing |
+| [114-legendary-heatran](platinum/114-legendary-heatran/milestone.toml) | Legendary: Heatran at Stark Mountain | P2 | 3473 | `start.recipe` | 265 | passing |
+| [115-legendary-regigigas](platinum/115-legendary-regigigas/milestone.toml) | Legendary: Regigigas awakens | P2 | 3435 | `start.recipe` | 283 | passing |
+| [116-legendary-regi-trio](platinum/116-legendary-regi-trio/milestone.toml) | Legendary: Regirock (Regi trio) with an event Regigigas | P2 | 4259 | `start.recipe` | 592 | passing |
+| [117-rotom-old-chateau](platinum/117-rotom-old-chateau/milestone.toml) | Rotom in the Old Chateau TV | P2 | 2993 | `start.recipe` | 300 | passing |
+| [118-spiritomb-hallowed-tower](platinum/118-spiritomb-hallowed-tower/milestone.toml) | Spiritomb at the Hallowed Tower | P2 | 3025 | `start.recipe` | 356 | passing |
 
 #### platinum/31b-iron-island-riley-tag — Iron Island B2F: Riley tag battle and the Riolu egg (optional)
 - proves: Optional branch off 31: Riley follows from the B2F-left coord, tag double vs two grunts, Riolu egg. Start: 31's end (Iron Island exterior) -> end: Iron Island B2F left room (293), Riolu egg in the party.
@@ -880,7 +880,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_BIBAREL 25; SPECIES_BIBAREL 26; SPECIES_BIBAREL 27; SPECIES_MAGBY 20
 - trainers: none
 - end state: map MAP_HEADER_SOLACEON_TOWN; party SPECIES_BIDOOF, SPECIES_MAGBY; party size 3; 3 save check(s); log /hatch: a scene of \d+ frames after (1[7-9]\d\d|2\d\d\d) steps; 0 egg\(s\) left/
-- frames: estimate 9000, budget 59100
+- frames: estimate 39347, budget 59100
 - refs: src/overlay005/daycare.c:556-560; src/overlay005/daycare.c:672; src/overlay005/daycare.c:715; src/overlay005/daycare.c:779; src/overlay005/daycare.c:783-800; src/overlay005/daycare.c:885-916; src/overlay005/daycare.c:948-952; src/overlay005/daycare.c:953-975; src/overlay005/field_control.c:827-836; res/field/scripts/scripts_common.s:1429-1437; res/pokemon/magby/data.json; res/pokemon/bidoof/data.json (hatch_cycles 15); pc/src/pc_lab.c:848-901; pc/tests/corpus/egg-hatch.recipe; pc/tests/corpus/egg-hatch.spec; pc/replays/lab-walk.txt; pc/tests/pc_corpus.py:375
 
 #### platinum/74-level-up-evolution-after-battle — Level-up evolution after battle: Caterpie -> Metapod
@@ -947,12 +947,12 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/events/events_route_212_north.json; res/field/events/events_pokemon_mansion.json; res/field/events/events_pokemon_mansion_office.json; res/field/scripts/scripts_pokemon_mansion_office.s:31-95; src/overlay006/trophy_garden_daily_encounters.c:14-44; src/special_encounter.c:279; res/field/encounters/encounters_trophy_garden.json; src/overlay006/wild_encounters.c:209-227; src/overlay006/wild_encounters.c:336; pc/src/pc_lab.c:789-793
 
 #### platinum/81-game-corner — Game Corner: play the slots
-- proves: Game Corner slots: with a Coin Case and seeded coins, play machine 0 once. Start: GAME_CORNER (11,6) facing machine 0 at (12,6). End: same tile, coins changed.
+- proves: Game Corner: buy 50 coins from the clerk (1000 money), then play slot machine 0 once. Start: GAME_CORNER (11,6) facing machine 0 at (12,6). End: same tile, money -1000, coins changed from 50.
 - start: `start.recipe`; map MAP_HEADER_GAME_CORNER 11 6 FACE_RIGHT; lab state lines: 1 item
 - party: SPECIES_INFERNAPE 40
 - trainers: none
-- end state: map 136; at (11, 6); 1 save check(s); log /pc-journal: f=\d+ event=16 /
-- frames: estimate 5000, budget 7500
+- end state: map 136; at (11, 6); 2 save check(s); log /pc-journal: f=\d+ event=16 /
+- frames: estimate 3183, budget 4800
 - refs: res/field/events/events_veilstone_city.json; res/field/events/events_game_corner.json; res/field/scripts/scripts_veilstone_city_southeast_house.s:11-60; res/field/scripts/scripts_game_corner.s:80-99; res/field/scripts/scripts_game_corner.s:126-170; src/scrcmd.c:5824-5830; src/unk_0203D1B8.c:1535-1551; src/unk_0203D1B8.c:1569-1600; features/tools/np_save4.c:8; features/tools/np_save4.c:348; features/tools/np_save4.c:584-587; generated/journal_location_events.txt:17
 
 #### platinum/90-underground-explorer-kit — Underground: Explorer Kit and first entry
@@ -1119,30 +1119,30 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 
 #### platinum/108-roamer-mesprit — Roamer: Mesprit starts roaming
 - proves: Mesprit roamer activation: A on Mesprit in Verity Cavern -> preview, flicker, ActivateRoamingPokemon ROAMING_SLOT_MESPRIT, Rowan scene. Start: VERITY_CAVERN (12,14) below Mesprit (12,13). End: same map, Mesprit roaming.
-- start: `start.recipe`; map MAP_HEADER_VERITY_CAVERN 12 14 FACE_UP; lab state lines: 1 clear-flag
+- start: `start.recipe`; map MAP_HEADER_VERITY_CAVERN 12 14 FACE_UP; lab state lines: 1 clear-flag, 1 poketch
 - party: SPECIES_EMPOLEON 62
 - trainers: none
-- end state: map 313; flags set FLAG_HIDE_VERITY_CAVERN_MESPRIT
-- frames: estimate 3000, budget 4500
-- refs: res/field/scripts/scripts_init_new_game.s:16; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:112; res/field/scripts/scripts_verity_cavern.s:8-80; res/field/scripts/scripts_verity_cavern.s:42; src/roaming_pokemon.c:241-301; src/overlay006/wild_encounters.c:1425-1430; src/overlay006/roamer_after_battle.c:44; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:133; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:184-187; src/special_encounter.c:159-163; src/applications/poketch/marking_map/main.c:111; include/constants/roamer_states.h:4
+- end state: map MAP_HEADER_LAKE_VERITY; flags set FLAG_HIDE_VERITY_CAVERN_MESPRIT; 2 save check(s)
+- frames: estimate 3050, budget 4600
+- refs: src/roaming_pokemon.c:199-213; src/roaming_pokemon.c:322-356; src/applications/poketch/marking_map/main.c:109-115; src/applications/poketch/marking_map/main.c:311-321; src/field_map_change_flags.c:48-52; res/field/scripts/scripts_init_new_game.s:16; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:112; res/field/scripts/scripts_verity_cavern.s:8-80; res/field/scripts/scripts_verity_cavern.s:42; src/roaming_pokemon.c:241-301; src/overlay006/wild_encounters.c:1425-1430; src/overlay006/roamer_after_battle.c:44; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:133; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:184-187; src/special_encounter.c:159-163; include/constants/roamer_states.h:4
 
 #### platinum/109-roamer-cresselia — Roamer: Cresselia starts roaming
 - proves: Cresselia roamer activation on Fullmoon Island: A -> preview, flicker, ActivateRoamingPokemon ROAMING_SLOT_CRESSELIA, Lunar Wing appears. Start: FULLMOON_ISLAND_FOREST (16,16) below Cresselia (16,15). End: same.
-- start: `start.recipe`; map MAP_HEADER_FULLMOON_ISLAND_FOREST 16 16 FACE_UP; lab state lines: none
+- start: `start.recipe`; map MAP_HEADER_FULLMOON_ISLAND_FOREST 16 16 FACE_UP; lab state lines: 1 poketch
 - party: SPECIES_EMPOLEON 62
 - trainers: none
-- end state: map 261; flags set FLAG_MET_CRESSELIA, FLAG_HIDE_FULLMOON_ISLAND_FOREST_CRESSELIA; flags clear FLAG_OBTAINED_FULLMOON_ISLAND_FOREST_LUNAR_WING
-- frames: estimate 3000, budget 4500
-- refs: res/field/scripts/scripts_fullmoon_island_forest.s:9-36; res/field/scripts/scripts_fullmoon_island_forest.s:26-33; res/field/scripts/scripts_canalave_city.s:494-537; src/special_encounter.c:159-163
+- end state: map MAP_HEADER_FULLMOON_ISLAND; flags set FLAG_MET_CRESSELIA, FLAG_HIDE_FULLMOON_ISLAND_FOREST_CRESSELIA; flags clear FLAG_OBTAINED_FULLMOON_ISLAND_FOREST_LUNAR_WING; 2 save check(s)
+- frames: estimate 2280, budget 3500
+- refs: src/roaming_pokemon.c:199-213; src/roaming_pokemon.c:322-356; src/applications/poketch/marking_map/main.c:109-115; src/applications/poketch/marking_map/main.c:311-321; src/field_map_change_flags.c:48-52; res/field/scripts/scripts_fullmoon_island_forest.s:9-36; res/field/scripts/scripts_fullmoon_island_forest.s:26-33; res/field/scripts/scripts_canalave_city.s:494-537; src/special_encounter.c:159-163
 
 #### platinum/110-roamer-legendary-birds — Roamer: legendary birds from Prof. Oak
 - proves: Legendary birds: Prof. Oak in the Eterna south house (shown after the Pal Park first visit) gives the Upgrade and activates MOLTRES/ZAPDOS/ARTICUNO roamers (lv60). Start: ETERNA_CITY_SOUTH_HOUSE (4,6) below Oak (4,5). End: same.
-- start: `start.recipe`; map MAP_HEADER_ETERNA_CITY_SOUTH_HOUSE 4 6 FACE_UP; lab state lines: 1 clear-flag, 1 national-dex
+- start: `start.recipe`; map MAP_HEADER_ETERNA_CITY_SOUTH_HOUSE 4 6 FACE_UP; lab state lines: 1 clear-flag, 1 national-dex, 1 poketch, 1 var
 - party: SPECIES_EMPOLEON 62
 - trainers: none
-- end state: map 82; flags set FLAG_ACTIVATED_ROAMING_LEGENDARY_BIRDS, FLAG_RECEIVED_ETERNA_CITY_SOUTH_HOUSE_UPGRADE; 1 save check(s)
-- frames: estimate 3500, budget 5300
-- refs: res/field/scripts/scripts_pal_park_lobby.s:347; res/field/scripts/scripts_init_new_game.s:59; res/field/scripts/scripts_eterna_city_south_house.s:7-40; res/field/scripts/scripts_eterna_city_south_house.s:61-64; src/roaming_pokemon.c:267-278; pc/src/pc_lab.c:789-793
+- end state: map MAP_HEADER_ROUTE_211_WEST; flags set FLAG_ACTIVATED_ROAMING_LEGENDARY_BIRDS, FLAG_RECEIVED_ETERNA_CITY_SOUTH_HOUSE_UPGRADE; 2 save check(s); log /dump: [^\n]* = (\[[\d, ]+\])\n[\s\S]*dump: [^\n]* = (?!\1)\[/
+- frames: estimate 4155, budget 6300
+- refs: src/roaming_pokemon.c:199-213; src/roaming_pokemon.c:322-356; src/applications/poketch/marking_map/main.c:109-115; src/applications/poketch/marking_map/main.c:311-321; src/field_map_change_flags.c:48-52; res/field/scripts/scripts_pal_park_lobby.s:347; res/field/scripts/scripts_init_new_game.s:59; res/field/scripts/scripts_eterna_city_south_house.s:7-40; res/field/scripts/scripts_eterna_city_south_house.s:61-64; src/roaming_pokemon.c:267-278; pc/src/pc_lab.c:789-793
 
 #### platinum/111-legendary-dialga-palkia — Legendary: Dialga (and Palkia) at Spear Pillar
 - proves: Dialga at Spear Pillar (post-game rift): A on the rift -> Yes -> StartLegendaryBattle DIALGA 70, defeat it. Palkia is identical with palkia.recipe (SPEAR_PILLAR_PALKIA, Dragon Claw lead). Start: SPEAR_PILLAR_DIALGA (29,18) below the rift (29,16..17). End: same, VAR_SPEAR_PILLAR_DIALGA_STATE 1.
@@ -1150,7 +1150,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
 - end state: map 584; >= 1 battles; vars VAR_SPEAR_PILLAR_DIALGA_STATE=1
-- frames: estimate 9000, budget 13500
+- frames: estimate 3801, budget 5800
 - refs: res/field/scripts/scripts_celestic_town_north_house.s:39-50; res/field/scripts/scripts_mt_coronet_6f.s:22-60; res/field/scripts/scripts_visible_items.s:558; res/field/scripts/scripts_visible_items.s:570; res/field/scripts/scripts_spear_pillar_dialga.s:12-25; res/field/scripts/scripts_spear_pillar_dialga.s:28-55; res/field/scripts/scripts_spear_pillar_dialga.s:46; res/field/scripts/scripts_spear_pillar_dialga.s:48-53; res/field/scripts/scripts_spear_pillar_palkia.s:34-46; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:126-127; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:150-156; pc/src/pc_lab.c:1337-1345; pc/src/pc_lab.c:1373-1375; pc/tests/corpus/battle-legendary.recipe; pc/tests/corpus/battle-legendary.spec; pc/replays/lab-battle.txt; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/112-legendary-giratina-turnback — Legendary: Giratina in Turnback Cave
@@ -1159,7 +1159,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map 270; >= 1 battles
-- frames: estimate 9000, budget 13500
+- frames: estimate 3331, budget 5000
 - refs: res/field/scripts/scripts_distortion_world_giratina_room.s:99; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:132; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:180-182; res/field/scripts/scripts_turnback_cave_giratina_room.s:13-18; res/field/scripts/scripts_turnback_cave_giratina_room.s:25-50; res/field/scripts/scripts_turnback_cave_giratina_room.s:37; pc/src/pc_lab.c:1337-1345; pc/src/pc_lab.c:1373-1375; pc/tests/corpus/battle-legendary.recipe; pc/tests/corpus/battle-legendary.spec; pc/replays/lab-battle.txt; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/113-legendary-uxie-azelf — Legendary: Uxie (and Azelf)
@@ -1168,7 +1168,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_CRUNCH)
 - trainers: none
 - end state: map 319; >= 1 battles
-- frames: estimate 9000, budget 13500
+- frames: estimate 3257, budget 4900
 - refs: res/field/scripts/scripts_init_new_game.s:17-18; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:113-114; res/field/scripts/scripts_acuity_cavern.s:22-43; res/field/scripts/scripts_acuity_cavern.s:32; res/field/scripts/scripts_valor_cavern.s:40-61; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:130-131; pc/src/pc_lab.c:1337-1345; pc/src/pc_lab.c:1373-1375; pc/tests/corpus/battle-legendary.recipe; pc/tests/corpus/battle-legendary.spec; pc/replays/lab-battle.txt
 
 #### platinum/114-legendary-heatran — Legendary: Heatran at Stark Mountain
@@ -1177,7 +1177,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
 - trainers: none
 - end state: map 265; >= 1 battles; flags set FLAG_BATTLED_STARK_MOUNTAIN_ROOM_3_HEATRAN, FLAG_UNLOCKED_VS_SEEKER_LVL_5; vars VAR_STARK_MOUNTAIN_ROOM_3_STATE=2
-- frames: estimate 9000, budget 13500
+- frames: estimate 3473, budget 5300
 - refs: res/field/scripts/scripts_stark_mountain_room_3.s:15-18; res/field/scripts/scripts_stark_mountain_room_3.s:20-32; res/field/scripts/scripts_stark_mountain_room_3.s:69-90; res/field/scripts/scripts_stark_mountain_room_3.s:71-78; res/field/scripts/scripts_stark_mountain_room_3.s:85-86; res/field/scripts/scripts_stark_mountain_room_3.s:117; res/field/scripts/scripts_init_stark_mountain_room_3.s:10; res/field/scripts/scripts_battleground.s:118; pc/src/pc_lab.c:1337-1345; pc/src/pc_lab.c:1373-1375; pc/tests/corpus/battle-legendary.recipe; pc/tests/corpus/battle-legendary.spec; pc/replays/lab-battle.txt; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/115-legendary-regigigas — Legendary: Regigigas awakens
@@ -1186,17 +1186,17 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_REGIROCK 30; SPECIES_REGICE 30; SPECIES_REGISTEEL 30
 - trainers: none
 - end state: map 283; >= 1 battles; flags set FLAG_AWAKENED_REGIGIGAS
-- frames: estimate 9000, budget 13500
+- frames: estimate 3435, budget 5200
 - refs: res/field/scripts/scripts_pokemon_league_hall_of_fame.s:129; res/field/scripts/scripts_pokemon_league_hall_of_fame.s:165-170; res/field/scripts/scripts_snowpoint_city.s:28-50; res/field/scripts/scripts_snowpoint_temple_b5f.s:14-48; res/field/scripts/scripts_snowpoint_temple_b5f.s:19; pc/src/pc_lab.c:1337-1345; pc/src/pc_lab.c:1373-1375; pc/tests/corpus/battle-legendary.recipe; pc/tests/corpus/battle-legendary.spec; pc/replays/lab-battle.txt; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
-#### platinum/116-legendary-regi-trio — Legendary: Regirock/Regice/Registeel (battle lab)
-- proves: Regi trio (battle-lab only): the statues need a fateful-encounter (event) Regigigas, which no lab verb can set, so in-situ is blocked; the lab battle hook starts REGIROCK 30 directly. Start: ROCK_PEAK_RUINS. End: same, battle won.
+#### platinum/116-legendary-regi-trio — Legendary: Regirock (Regi trio) with an event Regigigas
+- proves: Regi trio, played: Rock Peak Ruins after the game is completed, with an event (fateful-encounter) Regigigas in the party (the lab's party-fateful, as a Mystery Gift Regigigas carries it). Stepping on the seven dots in any order (ov5_021F6454.c ScrCmd_ActivateRegiRuinsDot) activates the statue; A on the statue checks the event Regigigas (ScrCmd_CheckPartyHasFatefulEncounterRegigigas) and starts REGIROCK 30. Regice/Registeel are the same script on their own dots (iceberg/iron ruins). Start: ROCK_PEAK_RUINS (7,11). End: same, Regirock defeated (RUINS_STATE_DID_NOT_CATCH_REGI).
 - start: `start.recipe`; map MAP_HEADER_ROCK_PEAK_RUINS 7 11 FACE_UP; lab state lines: 1 flag, 1 story-cleared
-- party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE)
+- party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_REGIGIGAS 100
 - trainers: none
-- end state: map 592; >= 1 battles; log /pc_lab: battle over at frame \d+, resultMask=1/
-- frames: estimate 9000, budget 13500
-- refs: res/field/scripts/scripts_rock_peak_ruins.s:15-48; include/constants/regi_ruins.h:4-7; res/field/scripts/scripts_iceberg_ruins.s:47; res/field/scripts/scripts_iron_ruins.s:47; pc/src/pc_lab.c:685; pc/src/pc_lab.c:1337-1345; pc/src/pc_lab.c:1373-1375; pc/tests/corpus/battle-legendary.recipe; pc/tests/corpus/battle-legendary.spec; pc/replays/lab-battle.txt; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
+- end state: map 592; >= 1 battles; vars VAR_ROCK_PEAK_RUINS_STATE=280; 2 save check(s)
+- frames: estimate 4259, budget 6400
+- refs: res/field/scripts/scripts_rock_peak_ruins.s:15-48; include/constants/regi_ruins.h:4-7; res/field/scripts/scripts_iceberg_ruins.s:47; res/field/scripts/scripts_iron_ruins.s:47; pc/src/pc_lab.c:685; res/field/scripts/scripts_rock_peak_ruins.s:91-151; src/overlay005/ov5_021F6454.c:853-912; src/scrcmd.c:7113-7135; pc/src/pc_lab.c:889-898; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/117-rotom-old-chateau — Rotom in the Old Chateau TV
 - proves: Rotom in the Old Chateau TV (night only): A on the TV -> Yes -> StartWildBattle ROTOM 20; the daily flag is set before the battle. Start: OLD_CHATEAU_BACK_MIDDLE_WEST_ROOM (11,4) below the TV (11,3). End: same.
@@ -1204,7 +1204,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_CRUNCH)
 - trainers: none
 - end state: map 300; >= 1 battles; flags set FLAG_DAILY_BATTLED_OLD_CHATEAU_ROTOM
-- frames: estimate 8000, budget 12000
+- frames: estimate 2993, budget 4500
 - refs: res/field/scripts/scripts_old_chateau_back_middle_west_room.s:5-28; res/field/scripts/scripts_old_chateau_back_middle_west_room.s:20; pc/tests/corpus/ug-enter.spec
 
 #### platinum/118-spiritomb-hallowed-tower — Spiritomb at the Hallowed Tower
@@ -1213,7 +1213,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW)
 - trainers: none
 - end state: map 356; >= 1 battles; vars VAR_HALLOWED_TOWER_STATE=0, VAR_SPIRITOMB_COUNTER=0
-- frames: estimate 8000, budget 12000
+- frames: estimate 3025, budget 4600
 - refs: res/field/scripts/scripts_route_208.s:28-40; res/field/scripts/scripts_route_209.s:40-80; res/field/scripts/scripts_route_209.s:79-80; src/system_vars.c:274-281
 <!-- plan.py:end platinum -->
 

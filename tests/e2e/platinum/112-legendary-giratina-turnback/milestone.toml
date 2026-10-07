@@ -1,9 +1,8 @@
 # Giratina in Turnback Cave (post-game): A -> StartLegendaryBattle GIRATINA 47, defeat it.
 # Start: TURNBACK_CAVE_GIRATINA_ROOM (11,15) below Giratina (11,14). End: same.
 title = "Legendary: Giratina in Turnback Cave"
-status = "planned"
 priority = "P2"
-estimate = 9000
+estimate = 3331
 refs = [
   "res/field/scripts/scripts_distortion_world_giratina_room.s:99",
   "res/field/scripts/scripts_pokemon_league_hall_of_fame.s:132",
@@ -27,7 +26,7 @@ recipe = "start.recipe"
 
 # PHASE2: battle-lab variant: env PC_LAB_BATTLE="legendary 487 47 0" PC_LAB_BATTLE_AT=2600 (pc_lab.c:1337-1345,1373-1375; input pc/replays/lab-battle.txt) proves `resultMask=1` in the log (the proof the research prefers: on a defeat only the map-local flag changes); a variant run, so it is not set in this dir's [run] env (it would start a battle mid-flow).
 [run]
-frames = 13500
+frames = 5000
 
 [[step]]
 do = "press"

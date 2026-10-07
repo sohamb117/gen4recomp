@@ -261,6 +261,10 @@ enum lab_verb {
      */
     LAB_PARTY_LEVEL,  /* party slot, 1..100 */
     LAB_PARTY_ITEM,   /* party slot, held item */
+    /* The fateful-encounter bit an event (Mystery Gift) mon carries: the
+     * Regi ruins' statues check for an event Regigigas in the party
+     * (ScrCmd_CheckPartyHasFatefulEncounterRegigigas). */
+    LAB_PARTY_FATEFUL, /* party slot */
     /* Pokedex entries through the game's own encounter/capture marking,
      * on a scratch mon of the species (ScrCmd's SetSeenMon does the same). */
     LAB_DEX_SEEN,     /* species */
@@ -397,6 +401,7 @@ static const struct lab_verb_row LAB_VERBS[] = {
     { "party-ev",        LAB_PARTY_EV,        3, 0 },
     { "party-level",     LAB_PARTY_LEVEL,     2, 0 },
     { "party-item",      LAB_PARTY_ITEM,      2, 0 },
+    { "party-fateful",   LAB_PARTY_FATEFUL,   1, 0 },
     { "dex-seen",        LAB_DEX_SEEN,        1, 0 },
     { "dex-caught",      LAB_DEX_CAUGHT,      1, 0 },
 };
@@ -879,6 +884,16 @@ static void lab_apply(SaveData *saveData, int pass)
                 u16 item = (u16)op->b;
                 Pokemon_SetValue(mon, MON_DATA_HELD_ITEM, &item);
             }
+            break;
+        }
+        case LAB_PARTY_FATEFUL: {
+            u8 fateful = TRUE;
+
+            if (op->a < 0 || op->a >= Party_GetCurrentCount(party)) {
+                fprintf(stderr, "pc_lab: party-fateful: no party slot %d\n", op->a);
+                exit(2);
+            }
+            Pokemon_SetValue(Party_GetPokemonBySlotIndex(party, op->a), MON_DATA_FATEFUL_ENCOUNTER, &fateful);
             break;
         }
         case LAB_DEX_SEEN:

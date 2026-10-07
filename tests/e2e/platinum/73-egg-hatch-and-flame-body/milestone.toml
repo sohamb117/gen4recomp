@@ -3,9 +3,8 @@
 # (daycare.c Party_GetEggCyclesToSubtract, Daycare_Update): about 2040 steps instead of about 3825.
 # Start: 72's end, Solaceon (555,649), egg in slot 2. End: Solaceon, BIDOOF hatched in slot 2.
 title = "Egg hatch (and Flame Body cycle halving)"
-status = "planned"
 priority = "P1"
-estimate = 9000
+estimate = 39347
 refs = [
   "src/overlay005/daycare.c:556-560",
   "src/overlay005/daycare.c:672",

@@ -1,9 +1,8 @@
 # Uxie in Acuity Cavern (Azelf in Valor Cavern with azelf.recipe): A -> StartLegendaryBattle 50.
 # Start: ACUITY_CAVERN (14,11) below Uxie (14,10). End: same.
 title = "Legendary: Uxie (and Azelf)"
-status = "planned"
 priority = "P2"
-estimate = 9000
+estimate = 3257
 refs = [
   "res/field/scripts/scripts_init_new_game.s:17-18",
   "res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:113-114",
@@ -24,7 +23,7 @@ recipe = "start.recipe"
 
 # PHASE2: battle-lab variant: env PC_LAB_BATTLE="legendary 480 50 0" PC_LAB_BATTLE_AT=2600 (pc_lab.c:1337-1345,1373-1375; input pc/replays/lab-battle.txt) proves `resultMask=1` in the log (Azelf 482); a variant run, so it is not set in this dir's [run] env (it would start a battle mid-flow).
 [run]
-frames = 13500
+frames = 4900
 
 [[step]]
 do = "press"

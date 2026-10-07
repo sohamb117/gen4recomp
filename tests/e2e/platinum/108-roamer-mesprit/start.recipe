@@ -6,4 +6,6 @@ party SPECIES_EMPOLEON 62 ITEM_NONE
 # set at new game (scripts_init_new_game.s:16), cleared at Sandgem after the Distortion World
 # (scripts_sandgem_town_pokemon_research_lab.s:112)
 clear-flag FLAG_HIDE_VERITY_CAVERN_MESPRIT
+# the Marking Map app selected: its faces are the roamers (marking_map/main.c:109-115)
+poketch POKETCH_APPID_MARKINGMAP
 map MAP_HEADER_VERITY_CAVERN 12 14 FACE_UP

@@ -2,9 +2,8 @@
 # the daily flag is set before the battle.
 # Start: OLD_CHATEAU_BACK_MIDDLE_WEST_ROOM (11,4) below the TV (11,3). End: same.
 title = "Rotom in the Old Chateau TV"
-status = "planned"
 priority = "P2"
-estimate = 8000
+estimate = 2993
 refs = [
   "res/field/scripts/scripts_old_chateau_back_middle_west_room.s:5-28",
   "res/field/scripts/scripts_old_chateau_back_middle_west_room.s:20",
@@ -15,7 +14,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 12000
+frames = 4500
 clock = "2009-03-22 21:00:00"   # night (>= TIMEOFDAY_NIGHT), as ug-enter.spec
 
 [[step]]

@@ -73,7 +73,7 @@ a step lands at, so each tile lists up to two places to stand (a bridge deck and
 allowed from each. `walk_to` plans over (tile, height) states where layers exist and over the grid elsewhere;
 `tools/probe_map.py` prints the layers, `tools/dp_warps.py` routes through doors and warp panels with them.
 
-`auto_battle` with `snap = true` puts its first action menu on the contact sheet (bots.snap: any bot may dump `frame_NNNNNN.ppm`). `np_save4 dump` has a Platinum `daycare` field (both parents with their steps, `egg_waiting`, `step_counter`). `tools/pt_poke.py` plays a key script on a save with shots (menu layouts); `tools/ms_pass.py` marks proven milestones.
+`auto_battle` with `snap = true` puts its first action menu on the contact sheet (bots.snap: any bot may dump `frame_NNNNNN.ppm`). `np_save4 dump` has a Platinum `daycare` field (both parents with their steps, `egg_waiting`, `step_counter`) and a Platinum `roamers` field (the player's current and previous map, each used roamer slot's species, level, HP, map and `active`). `tools/pt_poke.py` plays a key script on a save with shots (menu layouts); `tools/ms_pass.py` marks proven milestones.
 
 `auto_battle` scores moves with the ROM's own tables, `np_save4 gamedata ROM` (`features/ndsdata` nd_gamedata:
 species types and abilities, each move's class/power/type/accuracy/range, the type chart read out of the battle
@@ -150,6 +150,7 @@ Names resolve per game as the lab recipes do (Platinum `MAP_HEADER_*`, `FLAG_*`,
 | `field_move` | `move`, opt. `slot`, `text` | a field move from the party menu as a player does (Defog, Flash, Teleport, Dig, Sweet Scent, Softboiled): X, POKEMON, the member that knows `move` (a MOVE_* name), the move in its context menu, then the text advanced; the start menu needs the Pokedex and a starter (VAR_PLAYER_STARTER) |
 | `fish` | opt. `casts` | Y casts the registered rod; the guest's fishing trace (`[run] env` PC_TRACE_FISH=1) says when the bite window opens and A hooks then; no-nibble casts are closed with B and recast; done when the hooked Pokemon's battle starts (the bite screen goes on the contact sheet) |
 | `pace` | `x`, `z`, `until`, opt. `every` | run laps between (x, z) and (x+1, z) until `until` (a Python expression over the save dump `s`) holds, checked by an in-game save every `every` steps (the Day Care's egg roll: `s["daycare"]["egg_waiting"]`) |
+| `dump` | `expr` | note `dump: EXPR = VALUE` in the run log, `expr` a Python expression over the dump `s` of an in-game save made now: a mid-run state for an [expect] `log` pattern (the roamers' maps before and after a map change, 110) |
 | `hatch` | `x`, `z` | pace between (x, z) and (x+1, z) until no egg is left in the party (no-op without one; checked by an in-game save's dump after each long scene): a chain hatches a carried egg on safe ground instead of mid-puzzle; the nickname question is answered NO |
 | `wait_map` | `map` | until that map id |
 | `wait_field` | | until the player is free |
