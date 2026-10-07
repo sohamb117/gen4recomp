@@ -16,6 +16,8 @@ with the cartridge's data read from the player's own ROM.
     dropped; other asm becomes a trap, `naked` removed).
   - `gbabridge.py`: rewrites one TU's LLVM IR against the ELF (see below).
   - `gen_dispatch.py`: the code-address table behind `gba_dispatch()`.
+  - `gbamod.py PKG`: cooks a content package's `text.txt` (`GAME SYMBOL =
+    "TEXT"`) into its data patches `<game>.ips` (see Mods below).
 - `pc/src`, `pc/include`: the GBA machine, compiled into every GBA module.
   - `gba_main.c`: entry, ROM copy to 0x08000000, frame boundary, soft reset.
   - `gba_io.c`: I/O registers, DMA, timers, interrupts (each decomp's crt0.s
@@ -30,11 +32,33 @@ with the cartridge's data read from the player's own ROM.
   - `gba_flash.c`, `gba_rtc.c`: the agb_flash and siirtc APIs over a flash
     image the host stores and the host clock.
   - `gba_link_stubs.c`: multiboot/GameCube boot (no partner).
+  - `gba_mods.c`: runtime content packages: the enabled packages' data
+    patches applied to the ROM image at boot.
+- `mods/example_menu_text`: an example package (the main menu's labels) for
+  all three games.
 - `games/emerald/pc/src`, `games/ruby/pc/src`: per-cartridge constants.
 - `games/ruby/pc/patches/<file>.c.patch`: fixes to pokeruby TUs that cannot
   build as they are (asm-only functions given C), applied by gbabuild.py to a
   copy. `pc/include/gba_prelude.h` makes pokeruby's K&R calls match their
   callee's arity, which wasm requires.
+
+## Mods
+
+The game's code is compiled, so a runtime content package changes only the
+cartridge's data (text, tables, graphics read from ROM). A package is a
+directory with `mod.toml` (as the DS packages: id, name, version, authors)
+and `<game>.ips`, an IPS patch for that game's ROM (`ruby.ips`,
+`sapphire.ips`, `emerald.ips`; one package may carry several). The shell
+keeps a game's packages in `<user data>/mods/<game>/` with its
+`loadorder.txt`, which the core sees as `/content`; a custom cart passes
+its package set as `PC_MODS`. `gba_mods.c` applies the patches in load
+order after the ROM copy; a missing package or patch, or a malformed
+patch, stops the boot with `modfs: ...` as the DS cores do. Headless:
+`np_headless ruby ROM --content DIR` (and `-e PC_MODS=...`).
+
+`tools/gbamod.py PKG` writes the patches from `PKG/text.txt`: each line
+names a string symbol of the decomp's ELF and its new text, which must fit
+the original. The patch holds only the package's own bytes.
 
 ## Inputs (outside git)
 

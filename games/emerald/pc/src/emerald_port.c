@@ -27,6 +27,7 @@ static uint32_t quicksave(void) {
 
 const gba_game_info gba_game = {
     .name = "Pokemon Emerald",
+    .id = "emerald",
     .game_code = "BPEE",
     .save_size = 0x20000,
     .intr_table = (uint32_t)(uintptr_t)gIntrTable,

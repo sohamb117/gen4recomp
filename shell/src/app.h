@@ -306,6 +306,10 @@ void np_sync_hit(np_app *app, int id);
 /* mods.c: runtime content packages, per game (mods/<game>/) */
 /* The content root for `game`'s core into out; 0 if it exists, else -1. */
 int np_mods_content_root(const np_app *app, np_game game, char *out, size_t n);
+/* The file that makes a package loadable by `game`'s core, relative to the
+ * package: the DS cores' cooked ".cooked/digest", a GBA core's data patch
+ * "<game id>.ips" (games/gba-common/pc/src/gba_mods.c). */
+void np_mods_payload(np_game game, char *out, size_t n);
 void np_mods_install(np_app *app, const char *zip_path);
 /* Opens the page; `banner` explains a boot error, or NULL. */
 void np_mods_open(np_app *app, const char *banner);

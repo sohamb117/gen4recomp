@@ -1,8 +1,9 @@
 /*
  * The GBA guest's entry and its contract with the nativeplat runtime
  * (core/include/np_guest_abi.h): copy the player's ROM to 0x08000000,
- * reset the machine, run the game's AgbMain, and hand a frame to the host
- * at every VBlank (gba_frame_end, from the scanline clock).
+ * apply the enabled packages' data patches (gba_mods.c), reset the
+ * machine, run the game's AgbMain, and hand a frame to the host at every
+ * VBlank (gba_frame_end, from the scanline clock).
  *
  * Soft reset (A+B+Start+Select, or the game's own) starts AgbMain again on
  * a fresh fiber, which retires the one that called SoftReset: the old call
@@ -155,6 +156,7 @@ int main(void) {
     if (memcmp(code, gba_game.game_code, 4) != 0)
         gba_fatal("this is not %s: the cartridge's game code is %.4s, want %s", gba_game.name, code,
                   gba_game.game_code);
+    gba_mods_apply(GBA_PTR(GBA_ROM), &size);
 
     s_desc.magic = NP_FRAME_MAGIC;
     s_desc.version = NP_GUEST_ABI_VERSION;

@@ -73,6 +73,7 @@ extern const gba_crt0 gba_crt0_emerald, gba_crt0_ruby;
 /* per-game constants and hooks the port needs (games/<game>/pc/src) */
 typedef struct gba_game_info {
     const char *name;
+    const char *id;         /* nativeplat's game id, e.g. "emerald" (mods' <id>.ips) */
     const char *game_code;  /* ROM header 0xAC, e.g. "BPEE" */
     uint32_t save_size;     /* flash bytes */
     uint32_t intr_table;    /* address of gIntrTable */
@@ -85,6 +86,10 @@ typedef struct gba_game_info {
     uint32_t (*quicksave)(void);
 } gba_game_info;
 extern const gba_game_info gba_game;
+
+/* gba_mods.c: the enabled packages' <id>.ips patches, applied to the ROM
+ * image of *size bytes (which a patch may grow) */
+void gba_mods_apply(uint8_t *rom, uint32_t *size);
 
 /* gba_io.c */
 extern uint32_t gba_vcount;         /* current scanline */

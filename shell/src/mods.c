@@ -8,7 +8,9 @@
  * meaningful without the app. L/R (Page Up/Down) switch the page's game.
  *
  * Installing takes a .zip holding one package (mod.toml at its root or in a
- * single top directory) with its cooked .cooked/digest. Every member name
+ * single top directory) with what makes it loadable by this game's core
+ * (np_mods_payload): its cooked .cooked/digest for a DS game, <game>.ips
+ * (a data patch) for a GBA game. Every member name
  * must be a plain relative path and no member may be a symlink, because the
  * core confines lookups to the root and a package must not reach outside
  * it. The package is extracted beside the others under a temporary name
@@ -31,7 +33,7 @@ typedef struct mod_pkg {
     char dir[NP_MOD_ID_MAX];
     np_mod_info info;
     int valid;   /* mod.toml parsed */
-    int cooked;  /* .cooked/digest present */
+    int cooked;  /* np_mods_payload present: cooked, or this game's patch */
     int enabled;
     char problem[96];
 } mod_pkg;
@@ -71,6 +73,14 @@ static void pkg_path(const char *dir, const char *rel, char *out, size_t n)
     char root[1100];
     mods_dir(root, sizeof root);
     SDL_snprintf(out, n, "%s/%s%s%s", root, dir, rel[0] ? "/" : "", rel);
+}
+
+void np_mods_payload(np_game game, char *out, size_t n)
+{
+    if (np_game_is_gba(game))
+        SDL_snprintf(out, n, "%s.ips", np_game_id(game));
+    else
+        SDL_strlcpy(out, ".cooked/digest", n);
 }
 
 int np_mods_content_root(const np_app *app, np_game game, char *out, size_t n)
@@ -118,10 +128,14 @@ static void load_package(mod_pkg *p, const char *dir)
         SDL_strlcpy(p->problem, why, sizeof p->problem);
         return;
     }
-    pkg_path(dir, ".cooked/digest", path, sizeof path);
+    char payload[64];
+    np_mods_payload(mods_game, payload, sizeof payload);
+    pkg_path(dir, payload, path, sizeof path);
     SDL_PathInfo info;
     p->cooked = SDL_GetPathInfo(path, &info) && info.type == SDL_PATHTYPE_FILE;
-    if (!p->cooked)
+    if (!p->cooked && np_game_is_gba(mods_game))
+        SDL_snprintf(p->problem, sizeof p->problem, "no %s: no patch for %s", payload, np_game_title(mods_game));
+    else if (!p->cooked)
         SDL_strlcpy(p->problem, "not cooked: run the cook step on it", sizeof p->problem);
 }
 
@@ -241,10 +255,12 @@ static int find_package_root(const np_zip *z, char *prefix, size_t pn, char *nam
         *why = "unusable package directory name";
         return -1;
     }
-    char digest[600];
-    SDL_snprintf(digest, sizeof digest, "%s.cooked/digest", prefix);
-    if (np_zip_find(z, digest, &e) < 0) {
-        *why = "the package is not cooked (.cooked/digest missing)";
+    char payload[64], member[600];
+    np_mods_payload(mods_game, payload, sizeof payload);
+    SDL_snprintf(member, sizeof member, "%s%s", prefix, payload);
+    if (np_zip_find(z, member, &e) < 0) {
+        *why = np_game_is_gba(mods_game) ? "the package has no data patch for this game (<game>.ips)"
+                                         : "the package is not cooked (.cooked/digest missing)";
         return -1;
     }
     return 0;

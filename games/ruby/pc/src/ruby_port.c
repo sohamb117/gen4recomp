@@ -30,9 +30,11 @@ static uint32_t quicksave(void) {
 const gba_game_info gba_game = {
 #ifdef SAPPHIRE
     .name = "Pokemon Sapphire",
+    .id = "sapphire",
     .game_code = "AXPE",
 #else
     .name = "Pokemon Ruby",
+    .id = "ruby",
     .game_code = "AXVE",
 #endif
     .save_size = 0x20000,

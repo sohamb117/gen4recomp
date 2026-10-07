@@ -1,0 +1,11 @@
+# The main menu's labels, as games/platinum/pc/mods/example_menu_text does
+# for Platinum. Cook: games/gba-common/tools/gbamod.py games/gba-common/mods/example_menu_text
+ruby gMainMenuString_NewGame = "MODDED!!"
+ruby gMainMenuString_Continue = "RESUME"
+ruby gMainMenuString_Option = "SETUP"
+sapphire gMainMenuString_NewGame = "MODDED!!"
+sapphire gMainMenuString_Continue = "RESUME"
+sapphire gMainMenuString_Option = "SETUP"
+emerald gText_MainMenuNewGame = "MODDED!!"
+emerald gText_MainMenuContinue = "RESUME"
+emerald gText_MainMenuOption = "SETUP"
