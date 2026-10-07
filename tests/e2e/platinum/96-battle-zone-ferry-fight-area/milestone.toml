@@ -1,10 +1,10 @@
 # Battle Zone ferry: post-game, the Snowpoint SS Spiral sailor sails you to the Fight Area; on
 # arrival Barry drags you into the forced tag battle vs Volkner + Flint, then Palmer/Buck scenes.
-# Start: SNOWPOINT_CITY (356,248) below the sailor. End: FIGHT_AREA (188), VAR_FIGHT_AREA_STATE 2.
+# Chained from 56-hall-of-fame-credits (run with --out at the story chain output).
+# Start: SNOWPOINT_CITY (356,246) above the sailor. End: FIGHT_AREA (188), VAR_FIGHT_AREA_STATE 2.
 title = "Battle Zone: ferry to the Fight Area and the tag battle"
-status = "planned"
 priority = "P1"
-estimate = 9000
+estimate = 14803
 refs = [
   "res/field/events/events_snowpoint_city.json",
   "res/field/scripts/scripts_snowpoint_city.s:183",
@@ -27,10 +27,15 @@ refs = [
 ]
 
 [start]
-recipe = "start.recipe"
+from = "56-hall-of-fame-credits"
+recipe = "chain.recipe"
+lab = "start.recipe"
 
 [run]
-frames = 13500
+frames = 22300
+
+[[shots]]
+frames = [1800, 2100, 2500, 2900, 3300, 3700, 4250, 5196, 13700, 14300]
 
 [[step]]
 do = "press"

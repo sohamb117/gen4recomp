@@ -18,6 +18,20 @@ badge BADGE_ID_BEACON
 national-dex 1
 # Route 225 blockade removed only with the national dex (scripts_fight_area.s:184-186)
 flag FLAG_HIDE_FIGHT_AREA_BLOCKADE
+# -- Stark Mountain Room 3, Charon arrested (scripts_stark_mountain_room_3.s:226-236) --
+# without FLAG_ARRESTED_CHARON_STARK_MOUNTAIN the Survival Area moves the Battleground warp off its door
+# (SurvivalArea_RemoveWarpBattleground, scripts_survival_area.s:22-33)
+var VAR_STARK_MOUNTAIN_OUTSIDE_STATE 2
+flag FLAG_HIDE_STARK_MOUNTAIN_ROOM_3_BUCK
+flag FLAG_HIDE_STARK_MOUNTAIN_ROOM_3_LOOKER
+var VAR_STARK_MOUNTAIN_ROOM_3_STATE 1
+flag FLAG_ARRESTED_CHARON_STARK_MOUNTAIN
+clear-flag FLAG_HIDE_GAME_CORNER_LOOKER
+clear-flag FLAG_HIDE_SURVIVAL_AREA_RIVAL
+clear-flag FLAG_HIDE_BATTLEGROUND_BUCK
+clear-flag FLAG_HIDE_SURVIVAL_AREA_BUCK
+clear-flag FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_BUCK
+clear-flag FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_LOOKER
 party SPECIES_EMPOLEON 62 ITEM_NONE
 # Survival Area fly spawn (survival-area.recipe)
 map MAP_HEADER_SURVIVAL_AREA 0x293 0x153 FACE_DOWN

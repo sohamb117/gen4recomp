@@ -691,7 +691,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~486230 frames estimated
+### Side systems: 52 milestones, ~491418 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -724,8 +724,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [93-underground-secret-base](platinum/93-underground-secret-base/milestone.toml) | Underground: decorate a secret base | P2 | 7000 | `start.recipe` | 2 | planned |
 | [94-vs-seeker](platinum/94-vs-seeker/milestone.toml) | Vs. Seeker: rematch Youngster Tristan | P1 | 3639 | `start.recipe` | 343 | passing |
 | [95-poketch-apps](platinum/95-poketch-apps/milestone.toml) | Poketch: receive the Coin Toss app | P1 | 1979 | `start.recipe` | 379 | passing |
-| [96-battle-zone-ferry-fight-area](platinum/96-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: ferry to the Fight Area and the tag battle | P1 | 9000 | `start.recipe` | 188 | planned |
-| [97-battle-zone-areas-routes](platinum/97-battle-zone-areas-routes/milestone.toml) | Battle Zone: Survival Area to the Battleground | P2 | 3200 | `start.recipe` | 454 | planned |
+| [96-battle-zone-ferry-fight-area](platinum/96-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: ferry to the Fight Area and the tag battle | P1 | 14803 | prev + `start.recipe` | 188 | passing |
+| [97-battle-zone-areas-routes](platinum/97-battle-zone-areas-routes/milestone.toml) | Battle Zone: Survival Area, Buck and the Battleground | P2 | 2585 | `start.recipe` | 454 | passing |
 | [98-battle-frontier-entry-tower](platinum/98-battle-frontier-entry-tower/milestone.toml) | Battle Tower: first single set | P1 | 40000 | `start.recipe` | 326 | planned |
 | [99-battle-factory](platinum/99-battle-factory/milestone.toml) | Battle Factory: first single set | P2 | 45000 | `start.recipe` | 562 | planned |
 | [100-battle-hall](platinum/100-battle-hall/milestone.toml) | Battle Hall: first single set | P2 | 40000 | `start.recipe` | 563 | planned |
@@ -1010,22 +1010,22 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/scripts/scripts_jubilife_city.s:1426-1435; res/field/scripts/scripts_common.s:545-582; src/scrcmd.c:4150-4155; src/poketch.c:79; res/field/scripts/scripts_grand_lake_route_213_northeast_house.s:9-21; res/field/scripts/scripts_poketch_co_1f.s:43-101; res/field/scripts/scripts_eterna_city_pokecenter_1f.s:43-66; res/field/scripts/scripts_route_208_house.s:47-66; res/field/scripts/scripts_pokemon_day_care.s:10-30; res/field/scripts/scripts_solaceon_town.s:66-80; res/field/scripts/scripts_celestic_town_southwest_house.s:9-21; res/field/scripts/scripts_veilstone_store_2f.s:91-105; res/field/scripts/scripts_pastoria_city_observatory_gate_1f.s:148-170; res/field/scripts/scripts_sunyshore_city_east_house.s:10-90; res/field/scripts/scripts_pal_park_lobby.s:364-383; res/field/scripts/scripts_pal_park_lobby.s:410-445; src/scrcmd_mystery_gift.c:711; pc/src/pc_lab.c:680-687; pc/src/pc_lab.c:992-1027; pc/tests/pc_save.py:757-770; pc/tests/corpus/poketch-cointoss.recipe; pc/tests/corpus/poketch-pedometer.spec; generated/poketch_apps.txt:15
 
 #### platinum/96-battle-zone-ferry-fight-area — Battle Zone: ferry to the Fight Area and the tag battle
-- proves: Battle Zone ferry: post-game, the Snowpoint SS Spiral sailor sails you to the Fight Area; on arrival Barry drags you into the forced tag battle vs Volkner + Flint, then Palmer/Buck scenes. Start: SNOWPOINT_CITY (356,248) below the sailor. End: FIGHT_AREA (188), VAR_FIGHT_AREA_STATE 2.
-- start: `start.recipe`; map MAP_HEADER_SNOWPOINT_CITY 356 248 FACE_UP; lab state lines: 8 badge, 1 flag, 1 story-cleared
+- proves: Battle Zone ferry: post-game, the Snowpoint SS Spiral sailor sails you to the Fight Area; on arrival Barry drags you into the forced tag battle vs Volkner + Flint, then Palmer/Buck scenes. Chained from 56-hall-of-fame-credits (run with --out at the story chain output). Start: SNOWPOINT_CITY (356,246) above the sailor. End: FIGHT_AREA (188), VAR_FIGHT_AREA_STATE 2.
+- start: prev + `start.recipe`; map MAP_HEADER_SNOWPOINT_CITY 356 246 FACE_DOWN; lab state lines: 8 badge, 1 flag, 1 story-cleared
 - party: SPECIES_GARCHOMP 100 (MOVE_EARTHQUAKE); SPECIES_EMPOLEON 62
 - trainers: none
 - end state: map 188; >= 1 battles; flags set FLAG_SAILED_TO_BATTLE_ZONE; vars VAR_FIGHT_AREA_STATE=2
-- frames: estimate 9000, budget 13500
+- frames: estimate 14803, budget 22300
 - refs: res/field/events/events_snowpoint_city.json; res/field/scripts/scripts_snowpoint_city.s:183; res/field/scripts/scripts_snowpoint_city.s:205; res/field/scripts/scripts_snowpoint_city.s:210; res/field/scripts/scripts_snowpoint_city.s:239; res/field/scripts/scripts_init_fight_area.s:9; res/field/scripts/scripts_fight_area.s:57-80; res/field/scripts/scripts_fight_area.s:174-186; res/field/scripts/scripts_fight_area.s:183-205; res/trainers/data/leader_volkner_fight_area.json; res/trainers/data/elite_four_flint_fight_area.json; res/field/scripts/scripts_init_new_game.s:123; generated/vars_flags.txt:470-486; pc/tests/corpus/resort-area.recipe; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
-#### platinum/97-battle-zone-areas-routes — Battle Zone: Survival Area to the Battleground
-- proves: Battle Zone areas: from the pinned Survival Area mint, walk into the Battleground (warp 0). Route 225-230 / Stark Mountain / Resort Area are the same pattern (map change + map id). Start: SURVIVAL_AREA (0x293,0x153). End: BATTLEGROUND (454).
-- start: `start.recipe`; map MAP_HEADER_SURVIVAL_AREA 0x293 0x153 FACE_DOWN; lab state lines: 8 badge, 2 flag, 1 national-dex, 1 story-cleared
+#### platinum/97-battle-zone-areas-routes — Battle Zone: Survival Area, Buck and the Battleground
+- proves: Battle Zone areas: after Charon's arrest at Stark Mountain, Buck waits at the Survival Area's Battleground door; talking to him opens it, and inside he welcomes the player and leaves (FLAG_TALKED_TO_BATTLEGROUND_BUCK). Route 225-230 / Stark Mountain / Resort Area are the same pattern (map change + map id). Start: SURVIVAL_AREA (0x293,0x153). End: BATTLEGROUND (454) (11,9).
+- start: `start.recipe`; map MAP_HEADER_SURVIVAL_AREA 0x293 0x153 FACE_DOWN; lab state lines: 8 badge, 6 clear-flag, 5 flag, 1 national-dex, 1 story-cleared, 2 var
 - party: SPECIES_EMPOLEON 62
 - trainers: none
-- end state: map 454; 8 badges
-- frames: estimate 3200, budget 4800
-- refs: res/field/events/events_survival_area.json; res/field/events/events_fight_area.json; res/field/events/events_route_225_gate_to_fight_area.json; res/field/scripts/scripts_fight_area.s:184-186; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:538; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:572; res/field/scripts/scripts_init_stark_mountain_room_3.s:10; res/field/scripts/scripts_stark_mountain_room_3.s:220-236; res/field/scripts/scripts_stark_mountain_room_3.s:229-230; res/field/scripts/scripts_battleground.s:118; pc/tests/corpus/survival-area.recipe; pc/tests/corpus/survival-area.spec; pc/tests/corpus/resort-area.recipe; pc/tests/corpus/resort-area.spec; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
+- end state: map 454; at (11, 9); 8 badges; flags set FLAG_TALKED_TO_BATTLEGROUND_BUCK, FLAG_BUCK_LEFT_BATTLEGROUND, FLAG_HIDE_BATTLEGROUND_BUCK, FLAG_HIDE_SURVIVAL_AREA_BUCK
+- frames: estimate 2585, budget 3900
+- refs: res/field/scripts/scripts_survival_area.s:18-33; res/field/scripts/scripts_survival_area.s:68-87; res/field/scripts/scripts_battleground.s:114-130; res/field/events/events_battleground.json; res/field/events/events_survival_area.json; res/field/events/events_fight_area.json; res/field/events/events_route_225_gate_to_fight_area.json; res/field/scripts/scripts_fight_area.s:184-186; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:538; res/field/scripts/scripts_sandgem_town_pokemon_research_lab.s:572; res/field/scripts/scripts_init_stark_mountain_room_3.s:10; res/field/scripts/scripts_stark_mountain_room_3.s:220-236; res/field/scripts/scripts_stark_mountain_room_3.s:229-230; res/field/scripts/scripts_battleground.s:118; pc/tests/corpus/survival-area.recipe; pc/tests/corpus/survival-area.spec; pc/tests/corpus/resort-area.recipe; pc/tests/corpus/resort-area.spec; pc/src/pc_lab.c:798-800; src/clear_game.c:204-206; src/scrcmd_system_flags.c:151; src/system_flags.c:69-71
 
 #### platinum/98-battle-frontier-entry-tower — Battle Tower: first single set
 - proves: Battle Tower single set: Challenge -> Single -> pick 3 -> save -> 7 battles, back in the lobby. Start: BATTLE_TOWER (15,6) below the single attendant (15,5). End: Tower lobby after the 7th win. Frontier level cap 50 is [INFERENCE: not located in source].

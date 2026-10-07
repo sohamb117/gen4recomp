@@ -1,11 +1,15 @@
-# Battle Zone areas: from the pinned Survival Area mint, walk into the Battleground (warp 0).
+# Battle Zone areas: after Charon's arrest at Stark Mountain, Buck waits at the Survival Area's Battleground
+# door; talking to him opens it, and inside he welcomes the player and leaves (FLAG_TALKED_TO_BATTLEGROUND_BUCK).
 # Route 225-230 / Stark Mountain / Resort Area are the same pattern (map change + map id).
-# Start: SURVIVAL_AREA (0x293,0x153). End: BATTLEGROUND (454).
-title = "Battle Zone: Survival Area to the Battleground"
-status = "planned"
+# Start: SURVIVAL_AREA (0x293,0x153). End: BATTLEGROUND (454) (11,9).
+title = "Battle Zone: Survival Area, Buck and the Battleground"
 priority = "P2"
-estimate = 3200
+estimate = 2585
 refs = [
+  "res/field/scripts/scripts_survival_area.s:18-33",
+  "res/field/scripts/scripts_survival_area.s:68-87",
+  "res/field/scripts/scripts_battleground.s:114-130",
+  "res/field/events/events_battleground.json",
   "res/field/events/events_survival_area.json",
   "res/field/events/events_fight_area.json",
   "res/field/events/events_route_225_gate_to_fight_area.json",
@@ -30,26 +34,56 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 4800
+frames = 3900
+
+[[shots]]
+frames = [1825, 1870, 1905, 2470]
+
+[[step]]
+do = "walk_to"
+x = 652
+z = 340
+face = "up"
+interact = true
+note = "Buck (652,339) LOOK_SOUTH in front of the Battleground door (652,338) (events_survival_area.json)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "SurvivalArea_Buck: 'This is my place', the door opens, he walks in, RemoveObject (sets FLAG_HIDE_SURVIVAL_AREA_BUCK)"
+shot = "buck-went-in"
 
 [[step]]
 do = "walk_to"
 x = 652
 z = 338
-note = "Survival Area warp 0 -> BATTLEGROUND (events_survival_area.json)"
+note = "warp 0 -> BATTLEGROUND (events_survival_area.json); the door is 0x69 behind collision, entered from the south"
 
 [[step]]
 do = "wait_map"
 map = 454
 
 [[step]]
-do = "wait_field"
+do = "walk_to"
+x = 11
+z = 9
+face = "up"
+interact = true
+note = "Buck (11,8) LOOK_SOUTH (events_battleground.json)"
 shot = "battleground"
-# PHASE2: Buck (11,8) in the Battleground -> FLAG_TALKED_TO_BATTLEGROUND_BUCK (scripts_battleground.s:118)
-# appears only after the Stark Mountain Room 3 Charon event (VAR_STARK_MOUNTAIN_ROOM_3_STATE 1,
-# scripts_stark_mountain_room_3.s:220-236); his hide flag is not in the research. Route 225 walk needs
-# FLAG_HIDE_FIGHT_AREA_BLOCKADE (set in this recipe).
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "Battleground_Buck: SetFlag FLAG_TALKED_TO_BATTLEGROUND_BUCK, 'open to the toughest Trainers', BuckLeaveZ9, RemoveObject"
+
+[[step]]
+do = "wait_field"
+shot = "buck-left"
 
 [expect]
 map = 454
+position = [11, 9]
 badges = 8
+flags = ["FLAG_TALKED_TO_BATTLEGROUND_BUCK", "FLAG_BUCK_LEFT_BATTLEGROUND", "FLAG_HIDE_BATTLEGROUND_BUCK",
+         "FLAG_HIDE_SURVIVAL_AREA_BUCK"]

@@ -17,5 +17,6 @@ badge BADGE_ID_BEACON
 party SPECIES_GARCHOMP 100 ITEM_NONE
 party-move 0 0 MOVE_EARTHQUAKE
 party SPECIES_EMPOLEON 62 ITEM_NONE
-# one tile south of the SS Spiral sailor (356,247) (events_snowpoint_city.json)
-map MAP_HEADER_SNOWPOINT_CITY 356 248 FACE_UP
+# one tile north of the SS Spiral sailor (356,247), on the town side (events_snowpoint_city.json): from the
+# ship side (356,248) the boarding walk has no ship to board and nothing sails (measured; D/P 93 alike)
+map MAP_HEADER_SNOWPOINT_CITY 356 246 FACE_DOWN
