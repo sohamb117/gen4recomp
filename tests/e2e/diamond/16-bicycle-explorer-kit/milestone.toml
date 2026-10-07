@@ -2,10 +2,9 @@
 # Eterna's ON_TRANSITION sets var 0x4114 = 0 and coord (303..307,565) turns the player back from the Cycling Road gate.
 # Start: Eterna warp 3 (Galactic building door (305,519)) -> end: Eterna Route 206 gatehouse (5,2) after a Pokecenter heal (17's start).
 title = "Eterna: Bicycle and Explorer Kit"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 9000
+estimate = 6315
 refs = [
   "maps.h:69",
   "map_header.c:149",
@@ -61,7 +60,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 13500
+frames = 9500
 
 [[step]]
 do = "walk_to"

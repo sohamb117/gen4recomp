@@ -55,6 +55,8 @@ ROCK_CLIMB = {0x4B: (0, 1), 0x4C: (2, 3)}  # ROCK_CLIMB_N_S / _E_W and the direc
 GFX_ROCK_SMASH, GFX_CUT_TREE = 85, 86
 # A* cost of a field-move tile or object: one interaction plus its scene
 FIELD_MOVE_COST = 4
+# A* cost added per earlier visit of a tile in the same walk (Terrain.visits)
+VISIT_COST = 2
 
 
 def _int(step, key, default):
@@ -269,6 +271,9 @@ class Terrain:
         # walk meets fewer wild battles and reaches the route's trainers with more HP.
         self.grass = {b[k] for k in ("TALL_GRASS", "VERY_TALL_GRASS", "MUD_WITH_GRASS", "MUD_DEEP_WITH_GRASS") if k in b}
         self.blocked_edges = {}  # (x, z, d) -> attempts that failed
+        # (x, z) -> times the walk stood there: each visit makes the tile cost VISIT_COST more, so plans that
+        # flip as the window slides (unknown tiles are hoped passable) stop swinging between two tiles
+        self.visits = {}
         self.cells = {}          # (x, z) -> cell, kept across probes of the same map
         self.objects = set()
         self.hm_objects = set()  # cut trees and Rock Smash rocks, when hm
@@ -343,15 +348,16 @@ class Terrain:
                 if self.jump[c & TILE_BEHAVIOR] == d and (x, z, d) not in self.blocked_edges:
                     lx, lz = nx + dx, nz + dz  # a ledge: over it, landing one tile beyond
                     if (lx, lz) not in self.objects:
-                        yield d, lx, lz, 2
+                        yield d, lx, lz, 2 + self.visits.get((lx, lz), 0) * VISIT_COST
                 continue
             if self.passable(nx, nz, d, goal):
                 c = self.cells.get((nx, nz))
                 fm = self.field_move(nx, nz, d)
+                extra = self.visits.get((nx, nz), 0) * VISIT_COST
                 if fm in ("object", "climb"):
-                    yield d, nx, nz, FIELD_MOVE_COST
+                    yield d, nx, nz, FIELD_MOVE_COST + extra
                 else:
-                    yield d, nx, nz, GRASS_COST if c is not None and (c & TILE_BEHAVIOR) in self.grass else 1
+                    yield d, nx, nz, extra + (GRASS_COST if c is not None and (c & TILE_BEHAVIOR) in self.grass else 1)
 
     def path(self, start, goal, limit=20000):
         """A* over tiles; returns the list of first-step directions, or None."""
@@ -462,6 +468,7 @@ def bot_walk_to(s, step, ctx):
             raise HarnessError("walk_to (%d,%d): no path from (%d,%d) on map %d" % (goal + (p.x, p.z, p.map_id)))
         d = dirs[0]
         here = (p.x, p.z)
+        terrain.visits[here] = terrain.visits.get(here, 0) + 1
         keys = DIR_KEYS[d] + ("+" + run_key if run_key else "")
         # Hold the direction through the turn-in-place (a short press only turns) until the step begins:
         # the probe's tile changes as a step starts. A bump into something solid never changes it.

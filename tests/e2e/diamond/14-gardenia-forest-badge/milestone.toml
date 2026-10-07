@@ -4,7 +4,7 @@
 title = "Eterna Gym: Gardenia and the Forest Badge"
 priority = "P0"
 version = "both"
-estimate = 20827
+estimate = 24081
 refs = [
   "maps.h:69 (MAP_ETERNA = 65, map_header.c:149)",
   "maps.h:71 (MAP_ETERNA_GYM_ENTRANCE = 67, map_header.c:151)",
@@ -39,7 +39,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 31300
+frames = 36200
 
 [[step]]
 do = "walk_to"

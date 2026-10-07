@@ -80,16 +80,13 @@ do = "advance_text"
 shot = "cyrus-coronet"
 note = "Cyrus monologue, RemoveEvent 6, var 0x4096 1 (scr_seq 0217 @0x000C-@0x005F)"
 
-# PHASE2: Rock Smash rocks stand at (16,23), (20,23), (24,23), (25,22) (zone_event 0204 objects 0-3, map-temp flags 0x20-0x23)
-# between the coord and the east exit (27,20); whether they block was not derived from collision. walk_to treats a rock as
-# an object; if it reports no path, walk_to the tile west of the blocking rock facing it with interact = true and
-# advance_text (Rock Smash from Staraptor slot 1: scr_seq 0375 @0x0141 MOVE_ROCK_SMASH, @0x015A BADGE_COAL; A = YES).
 
 [[step]]
 do = "walk_to"
 x = 27
 z = 20
 max = 6000
+hm = true
 note = "east exit (zone_event 0204 warp 1) -> Route 208 warp 3 (392,724)"
 
 [[step]]
@@ -101,6 +98,7 @@ do = "walk_to"
 x = 447
 z = 726
 max = 8000
+hm = true
 note = "east along Route 208 to the Hearthome gatehouse (zone_event 0339 warp 0) -> MAP_HEARTHOME_ROUTE_208_GATEHOUSE warp 1 (1,7); Rock Smash rocks (419,713), (420,714), (420,715), (390,717), (391,718) [INFERENCE: off the walking line]"
 
 [[step]]

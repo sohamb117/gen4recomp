@@ -4,7 +4,7 @@
 title = "Jubilife: tag battle against Team Galactic"
 priority = "P0"
 version = "both"
-estimate = 15489
+estimate = 20045
 refs = [
   "maps.h:49 (MAP_OREBURGH = 45, map_header.c:129)",
   "maps.h:7 (MAP_JUBLIFE = 3, map_header.c:87)",
@@ -33,7 +33,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 23300
+frames = 30100
 
 [[step]]
 do = "walk_to"

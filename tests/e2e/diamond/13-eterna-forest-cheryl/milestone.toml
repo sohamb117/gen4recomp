@@ -4,7 +4,7 @@
 title = "Eterna Forest with Cheryl"
 priority = "P0"
 version = "both"
-estimate = 30297
+estimate = 32803
 refs = [
   "maps.h:207 (MAP_ETERNA_FOREST_INTERIOR = 203, map_header.c:287; encounters d_enc 0008 / p_enc 0008)",
   "maps.h:353 (MAP_ROUTE_205_NORTH = 349, map_header.c:433; encounters d_enc 0146 / p_enc 0146)",
@@ -27,7 +27,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 45500
+frames = 49300
 
 [[step]]
 do = "walk_to"
