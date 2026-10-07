@@ -1,0 +1,12 @@
+# Scenario 7: the first Underground visit, solo, from a lab save with the
+# Explorer Kit: the real comm init (WM behind PXI tag 10, alone loopback) and
+# Roark's intro, which prints the player's name from CommInfo. Regression for
+# the port's old solo shortcut (no CommServerClient, so the player info was
+# never sent, the name lookup asserted, "a communication error" screen, A,
+# OS_ResetSystem): that ends in a trap, which fails the run.
+RECIPE=recipes/underground.recipe
+SCHEDULE=schedules/underground.press
+FRAMES=6800
+SHOTS=2100,2500,3000,3300,3700,4300,5000,6799
+EXPECT_MAP=2
+EXPECT_LOG='stored 524288-byte save'

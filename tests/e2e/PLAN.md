@@ -691,7 +691,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~495922 frames estimated
+### Side systems: 52 milestones, ~493171 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -718,7 +718,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [79-great-marsh-safari](platinum/79-great-marsh-safari/milestone.toml) | Great Marsh: enter the Safari Game | P1 | 10000 | `start.recipe` | 509 | planned |
 | [80-trophy-garden](platinum/80-trophy-garden/milestone.toml) | Trophy Garden: Mr. Backlot's daily Pokemon | P2 | 2145 | `start.recipe` | 370 | passing |
 | [81-game-corner](platinum/81-game-corner/milestone.toml) | Game Corner: play the slots | P2 | 3183 | `start.recipe` | 136 | passing |
-| [90-underground-explorer-kit](platinum/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | 6400 | `start.recipe` | 2 | planned |
+| [90-underground-explorer-kit](platinum/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | 3649 | `start.recipe` | 65 | passing |
 | [91-underground-mining](platinum/91-underground-mining/milestone.toml) | Underground: dig a wall | P1 | 6500 | `start.recipe` | 2 | planned |
 | [92-underground-spheres-traps-goods](platinum/92-underground-spheres-traps-goods/milestone.toml) | Underground: spheres, traps and goods | P2 | 5500 | `start.recipe` | 2 | planned |
 | [93-underground-secret-base](platinum/93-underground-secret-base/milestone.toml) | Underground: decorate a secret base | P2 | 7000 | `start.recipe` | 2 | planned |
@@ -956,13 +956,13 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: res/field/events/events_veilstone_city.json; res/field/events/events_game_corner.json; res/field/scripts/scripts_veilstone_city_southeast_house.s:11-60; res/field/scripts/scripts_game_corner.s:80-99; res/field/scripts/scripts_game_corner.s:126-170; src/scrcmd.c:5824-5830; src/unk_0203D1B8.c:1535-1551; src/unk_0203D1B8.c:1569-1600; features/tools/np_save4.c:8; features/tools/np_save4.c:348; features/tools/np_save4.c:584-587; generated/journal_location_events.txt:17
 
 #### platinum/90-underground-explorer-kit — Underground: Explorer Kit and first entry
-- proves: Underground Man gives the Explorer Kit and becomes mentor; walk out to Eterna and use the kit to enter the Underground. Start: ETERNA_CITY_UNDERGROUND_MAN_HOUSE door (warp 0). End: MAP_HEADER_UNDERGROUND (2).
+- proves: Underground Man gives the Explorer Kit and becomes mentor; walk out to Eterna, use the kit from the bag, enter the Underground for the first time (Roark's intro), and go back up. Start: ETERNA_CITY_UNDERGROUND_MAN_HOUSE door (warp 0). End: Eterna City (65), back from the Underground.
 - start: `start.recipe`; warp MAP_HEADER_ETERNA_CITY_UNDERGROUND_MAN_HOUSE 0; lab state lines: 1 var
 - party: SPECIES_TURTWIG 15
 - trainers: none
-- end state: map 2; flags set FLAG_RECEIVED_EXPLORER_KIT, FLAG_ACCEPTED_UNDERGROUND_MAN_AS_MENTOR, FLAG_ENTERED_UNDERGROUND; 1 save check(s); log /pc_lab: underground enter at frame \d+ map=2/
-- frames: estimate 6400, budget 9600
-- refs: res/field/events/events_eterna_city_underground_man_house.json; res/field/events/events_eterna_city.json; res/field/scripts/scripts_eterna_city_underground_man_house.s:17-35; res/field/scripts/scripts_eterna_city_underground_man_house.s:26-29; res/field/scripts/scripts_eterna_city_underground_man_house.s:34; res/field/scripts/scripts_eterna_city_underground_man_house.s:170-185; src/underground/manager.c:162; src/system_flags.c:119-121; pc/src/pc_lab.c:2023-2027; pc/src/pc_lab.c:2057-2059; pc/src/pc_lab.c:950-990; pc/src/pc_lab.c:1958-2062; pc/tests/pc_corpus.py:495-513; pc/tests/corpus/ug-enter.recipe; pc/tests/corpus/ug-enter.spec; pc/replays/lab-ug-enter.txt; src/item_use_functions.c:365-367; src/underground/comm_manager.c:82
+- end state: map 65; flags set FLAG_RECEIVED_EXPLORER_KIT, FLAG_ACCEPTED_UNDERGROUND_MAN_AS_MENTOR, FLAG_ENTERED_UNDERGROUND, FLAG_HAS_SEEN_UNDERGROUND_ROARK_INTRO; 1 save check(s)
+- frames: estimate 3649, budget 5500
+- refs: res/field/events/events_eterna_city_underground_man_house.json; res/field/events/events_eterna_city.json; res/field/scripts/scripts_eterna_city_underground_man_house.s:17-35; res/field/scripts/scripts_eterna_city_underground_man_house.s:170-185; src/item_use_functions.c:365-367; res/field/scripts/scripts_underground.s:173-188; src/underground/comm_manager.c:68-85; src/underground/comm_manager.c:236-276; src/underground/manager.c:162; src/system_flags.c:119-121; src/underground/menus.c; tests/gameplay/scenarios/7-underground.scn
 
 #### platinum/91-underground-mining — Underground: dig a wall
 - proves: Underground mining: enter from Oreburgh with the kit, the lab hook starts the mining minigame (same task the wall-sparkle confirm starts). Board RNG is seeded from PC_RTC + frame. Start: Oreburgh (0x12F,0x2F5) with a registered kit. End: UNDERGROUND (2), dig done.

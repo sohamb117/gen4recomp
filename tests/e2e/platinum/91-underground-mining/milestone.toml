@@ -67,3 +67,13 @@ map = 2
 flags = ["FLAG_DIGGING_FOR_FOSSILS"]
 log = ['pc_lab: mining started at frame \d+']
 # PHASE2: reader-ext sphere bag `sphere: filled=N` > 0 if a sphere was dug (pc_save, pc_corpus.py:354-357)
+# IN SITU (measured after the solo-Underground port fix, see tests/gameplay/scenarios/7-underground.scn): the lab
+# hook is no longer needed. Y, advance_text (comms, save YES, overwrite YES, the hole, Roark's intro) leaves the
+# player free at (168,375); field_ready now reads 1 in the Underground. tools/pt_ugspots.py lists the mining spots
+# (seeded from the save's Underground seed, so stable per recipe): for this recipe the nearest is the wall
+# (180,401), so walk_to x=181 z=401 face="left" interact=true, A = YES ('The wall is bulging slightly'), then A x7
+# through 'Something pinged... 3 confirmed', '...' and the first-dig tutorial. Taps: board cells x<208, y>=32
+# (16 px); the sidebar hammer (x 214-252, y 43-110) costs the wall 8, the pickaxe (y 114-174) 4
+# (mining.c Mining_MainGameLoop). A blind row sweep with the hammer collapses the wall by row 88 with a red sphere
+# half uncovered: next, tap only the cells around the items (the shine) with the pickaxe. Expect then
+# FLAG_DIGGING_FOR_FOSSILS and np_save4 `underground` spheres/treasures non-empty after GO UP (X, DOWN x5, A).

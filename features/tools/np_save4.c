@@ -462,6 +462,48 @@ static void dump_poffins(FILE *o, const save4 *s)
     fputs("],\n", o);
 }
 
+/* Platinum's Underground (underground.h) tail in the general block: u32 minedPlates, then u8 goodsPC[200],
+ * traps[40], goodsBag[40], treasure[40], sphereTypes[40], sphereSizes[40], placedGoodSlots[15], stepCount and a
+ * byte holding shouldSpawnNewBuriedObjects (low 4 bits) and hasMined (high 4). A zero is an empty slot. Offset
+ * found by scanning a lab save stocked with known spheres, traps and goods (92's recipe). Values are the
+ * generated sphere_types/traps/goods/treasure enums. */
+#define PT_UG_PLATES_OFF 0x446C
+
+static void dump_ug_bag(FILE *o, const char *key, const uint8_t *b, int n)
+{
+    fprintf(o, "\"%s\": [", key);
+    for (int i = 0, k = 0; i < n; i++)
+        if (b[i])
+            fprintf(o, "%s%u", k++ ? ", " : "", b[i]);
+    fputs("]", o);
+}
+
+static void dump_underground(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_UG_PLATES_OFF + 0x1A5 > len) {
+        fputs("  \"underground\": null,\n", o);
+        return;
+    }
+    const uint8_t *u = img + base + PT_UG_PLATES_OFF;
+    const uint8_t *types = u + 4 + 200 + 40 * 3, *sizes = types + 40;
+    fprintf(o, "  \"underground\": {\"mined_plates\": %u, ", le32(u));
+    dump_ug_bag(o, "goods_pc", u + 4, 200);
+    fputs(", ", o);
+    dump_ug_bag(o, "traps", u + 4 + 200, 40);
+    fputs(", ", o);
+    dump_ug_bag(o, "goods", u + 4 + 240, 40);
+    fputs(", ", o);
+    dump_ug_bag(o, "treasures", u + 4 + 280, 40);
+    fputs(", \"spheres\": [", o);
+    for (int i = 0, k = 0; i < 40; i++)
+        if (types[i])
+            fprintf(o, "%s{\"type\": %u, \"size\": %u}", k++ ? ", " : "", types[i], sizes[i]);
+    fprintf(o, "], \"has_mined\": %s},\n", (sizes[40 + 15 + 1] >> 4) ? "true" : "false");
+}
+
 static int cmd_dump(const char *rom_path, const char *save_path)
 {
     save4 s;
@@ -649,6 +691,7 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     dump_roamers(o, &s);
     dump_poffins(o, &s);
     dump_trophy_garden(o, &s);
+    dump_underground(o, &s);
     dump_mystery(o, &s);
     fputs("}\n", o);
 

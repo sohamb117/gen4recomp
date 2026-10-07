@@ -2149,11 +2149,11 @@ void pc_lab_underground_frame(unsigned long long frame)
     if (frame < sUgFrame) return;
 
     fs = pc_lab_field_system();
-    /* The hole animation is on screen at frame ~4900 and a communication
-     * error (leftover title WM, no PXI tag 10) covers it ~100 frames
-     * later. The field task is still the map change, so lab_field_settled
-     * is false for the whole window. Mining_StartGameForLab is a SysTask,
-     * not a field task, and only needs the map and MiningEnv. */
+    /* The hole animation is on screen at frame ~4900, then Roark's intro
+     * script runs. The field task is the map change and then that script,
+     * so lab_field_settled is false for the whole window.
+     * Mining_StartGameForLab is a SysTask, not a field task, and only needs
+     * the map and MiningEnv. */
     if (fs == NULL || fs->location == NULL
             || fs->location->mapHeaderID != MAP_HEADER_UNDERGROUND) {
         if (frame > sUgFrame + 6000) {

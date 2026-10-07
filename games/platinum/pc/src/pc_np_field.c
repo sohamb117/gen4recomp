@@ -85,16 +85,19 @@ static int field_ready(FieldSystem *fs)
     if (fs->processManager->pause || !FieldSystem_IsRunningFieldMap(fs)) return 0;
     if (fs->task != NULL || FieldSystem_HasChildProcess(fs)) return 0;
     move = PlayerAvatar_GetPlayerMoveState(fs->playerAvatar);
-    if (move != PLAYER_MOVE_STATE_END && move != PLAYER_MOVE_STATE_NONE) return 0;
-    return FieldSystem_IsInValidLocation(fs);
+    return move == PLAYER_MOVE_STATE_END || move == PLAYER_MOVE_STATE_NONE;
 }
 
 /* Where the start menu hides SAVE (start_menu.c, StartMenu_Get*Hidden
- * Options) or would ask before overwriting another adventure's save. */
+ * Options) or would ask before overwriting another adventure's save. A
+ * Mystery Zone map (the Underground, the Union Room) has no start menu at
+ * all (field_control.c): X opens the Underground's own menu there, which
+ * has no SAVE, and the player walking free there is still free. */
 static int save_allowed(FieldSystem *fs)
 {
     VarsFlags *vf = SaveData_GetVarsFlags(fs->saveData);
 
+    if (!FieldSystem_IsInValidLocation(fs)) return 0;
     if (SystemFlag_CheckSafariGameActive(vf) || SystemFlag_CheckInPalPark(vf)) return 0;
     if (FieldSystem_IsInBattleTowerSalon(fs)) return 0;
     if (fs->mapLoadType == MAP_LOAD_TYPE_COLOSSEUM || fs->mapLoadType == MAP_LOAD_TYPE_UNION) return 0;
