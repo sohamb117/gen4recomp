@@ -150,7 +150,10 @@ cleared flags, vars, badges, the Pokedex, Poketch apps, bag items; an item a lat
 recipes after it), each line citing the SetFlag/ClearFlag/SetVar site (`dp_script.py grep-flag/grep-var`, preferring
 one in the milestone's refs). So what a D/P milestone sets is its `[expect]`: change it, rerun the tool (`--check`
 fails on a stale recipe). The Journal flag 0x963 is never minted (no lab verb writes the journal data; with the flag
-alone CONTINUE stops on a blank Journal page).
+alone CONTINUE stops on a blank Journal page). The fly map's towns are the arrival flags 0x9B0 + id the game sets in
+code on entering a town (sub_02034F88, the table UNK_020F2224 in arm9/asm/unk_02034E84.s: Twinleaf 0x9B0 .. Veilstone
+0x9BD, Sunyshore 0x9BE, Snowpoint 0x9BF): list each in the `[expect]` flags of the milestone that first enters the
+town, so lab starts can Fly there.
 
 ### The lab party
 

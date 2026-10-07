@@ -627,6 +627,10 @@ class Terrain:
                 elif (nx, nz) == goal or self.field_move(nx, nz, d) in ("climb", "waterfall"):
                     # into a goal the terrain refuses (a door in a wall warps), or up a climb / waterfall
                     yield d, nx, nz, self._layer(nx, nz), self._step_cost(nx, nz, d)
+                elif (nx, nz) not in self.layers and self.passable(nx, nz, d, goal):
+                    # a tile the flood never reached (it stops at some map block edges, e.g. Oreburgh (300..304,
+                    # 767|768)): the grid's word, as for a tile without layers; a bump teaches the rest
+                    yield d, nx, nz, None, self._step_cost(nx, nz, d)
                 continue
             if c is not None and (c & TILE_BEHAVIOR) in self.jump and (nx, nz) != goal:
                 if self.jump[c & TILE_BEHAVIOR] == d and (x, z, d) not in self.blocked_edges:
@@ -700,6 +704,8 @@ def _field_or_handle(s, step, ctx, limit):
             continue
         waited += 20
         if waited >= 60:
+            if on_text == "stop":
+                raise _Held()
             if on_text != "advance":
                 raise HarnessError("walk_to: the player is held (text or a cutscene; on_text = %r)" % on_text)
             s.run(2, "b", until=["field_ready=1", "in_battle=1"])
@@ -812,7 +818,23 @@ def _use_field_move(s, step, ctx, what, limit):
     return _field_or_handle(s, step, ctx, limit)
 
 
+class _Held(Exception):
+    """walk_to with on_text = "stop": a script holds the player (a coord trigger's scene); the walk ends there."""
+
+
 def bot_walk_to(s, step, ctx):
+    """walk_to; with on_text = "stop" a script that holds the player on the way (a coordinate trigger) ends the walk
+    where it stands and the scene is left to the next steps (advance_text answers its menus with A, where the walk's
+    B would say NO or cancel)."""
+    try:
+        _walk_to(s, step, ctx)
+    except _Held:
+        p = s.probe()
+        s.note("walk_to: a script holds the player at (%d,%d) on map %d; on_text = stop ends the walk" % (
+            p.x, p.z, p.map_id))
+
+
+def _walk_to(s, step, ctx):
     """Walk to tile (x, z): A* over the probe's terrain, replanning as it learns; warps by walking into them.
 
     With via = [[x, z], ...] it walks to each waypoint first (each under its own `max`): routes longer than the
@@ -821,8 +843,8 @@ def bot_walk_to(s, step, ctx):
     if step.get("via"):
         leg = {k: v for k, v in step.items() if k not in ("via", "face", "interact", "map")}
         for i, (wx, wz) in enumerate(step["via"]):
-            bot_walk_to(s, dict(leg, x=wx, z=wz, _corner=True,
-                                **({"map": step["map"]} if i == 0 and "map" in step else {})), ctx)
+            _walk_to(s, dict(leg, x=wx, z=wz, _corner=True,
+                             **({"map": step["map"]} if i == 0 and "map" in step else {})), ctx)
         step = {k: v for k, v in step.items() if k not in ("via", "map")}
     goal = (int(step["x"]), int(step["z"]))
     bound = _int(step, "max", 6000)

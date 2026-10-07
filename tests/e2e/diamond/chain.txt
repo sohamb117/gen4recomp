@@ -45,6 +45,10 @@
 44-snowpoint-gym-candice
 45-lake-acuity-jupiter
 46-veilstone-storage-key-galactic-key
+47-galactic-hq-cyrus
+48-galactic-hq-saturn-free-lake-trio
+49-mt-coronet-climb
+50-spear-pillar-dialga
 51-coronet-exit-valor-lakefront
 52-route222-sunyshore-flint-lighthouse
 53-sunyshore-gym-volkner

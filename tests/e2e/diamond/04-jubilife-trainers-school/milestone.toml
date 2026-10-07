@@ -94,7 +94,7 @@ do = "wait_field"
 
 [expect]
 map = "MAP_JUBLIFE"
-flags = ["0x198", "0x212", "0xF1"]
+flags = ["0x198", "0x212", "0xF1", "0x9B7"]
 flags_clear = ["0x213", "0x214"]
 save = [
   'any(i["item"] == 442 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_TOWN_MAP

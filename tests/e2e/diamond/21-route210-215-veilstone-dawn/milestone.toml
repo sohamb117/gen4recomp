@@ -221,7 +221,7 @@ do = "wait_field"
 
 [expect]
 map = "MAP_VEILSTONE_GYM"
-flags = ["0x1C6", "0x19C"]
+flags = ["0x1C6", "0x19C", "0x9BD"]
 badges = 2
 badge = ["BADGE_COAL", "BADGE_FOREST"]
 

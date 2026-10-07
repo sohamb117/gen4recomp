@@ -141,7 +141,7 @@ do = "wait_field"
 map = "MAP_FLOAROMA"
 badges = 1
 badge = ["BADGE_COAL"]
-flags = ["0x9CD", "0x1C1", "0x1BF", "0x91", "0x9CE", "0x1BD", "0x1BE", "0x1BC", "0x9F", "0xA0", "0x989"]
+flags = ["0x9CD", "0x1C1", "0x1BF", "0x91", "0x9CE", "0x1BD", "0x1BE", "0x1BC", "0x9F", "0xA0", "0x989", "0x9B2"]
 battles = 2
 save = [
   'any(i["item"] == 438 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_WORKS_KEY

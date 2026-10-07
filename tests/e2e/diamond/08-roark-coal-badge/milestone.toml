@@ -54,7 +54,6 @@ frames = 25000
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 5
 z = 5
 max = 12000
@@ -84,7 +83,6 @@ map = "MAP_OREBURGH_GYM"
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 5
 z = 4
 face = "up"
@@ -96,7 +94,6 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-move = 3
 shot = "roark-battle"
 note = "TRAINER_LEADER_ROARK_ROARK (trdata.json #246): GEODUDE 12, ONIX 12, CRANIDOS 14 (scr_seq 0050 @0x003A)"
 
@@ -107,7 +104,6 @@ note = "GiveBadge BADGE_COAL, Barry's farewell + Jubilife scene armed, TM76 (scr
 
 [[step]]
 do = "walk_to"
-move = 3
 x = 5
 z = 24
 note = "gym exit (zone_event 0046 warp 0) -> Oreburgh warp 0 (282,756)"

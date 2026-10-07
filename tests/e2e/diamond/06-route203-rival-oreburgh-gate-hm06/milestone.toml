@@ -139,7 +139,7 @@ note = "SetVar 0x4079 1 (scr_seq 0048 @0x0543); player ends at (279,759) [INFERE
 
 [expect]
 map = "MAP_OREBURGH"
-flags = ["0x199", "0x9CF", "0x93"]
+flags = ["0x199", "0x9CF", "0x93", "0x9B9"]
 battles = 1
 save = [
   'any(i["item"] == 425 and i["qty"] >= 1 for k, p in s["bag"].items() if k != "registered" for i in p)',  # ITEM_HM06

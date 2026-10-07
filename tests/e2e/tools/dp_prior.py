@@ -6,7 +6,8 @@
 A D/P story milestone N's lab.recipe is: header, lab party, the state milestones 01..N-1 set, the start
 (AUTHORING.md, Recipes). The state is what each earlier milestone's [expect] says it leaves behind: its
 flags, cleared flags, vars, badges, the Pokedex, Poketch apps and bag items its `save` checks name. This tool
-derives that block from diamond/chain.txt and the milestone.tomls and writes it between
+derives that block from diamond/chain.txt (and pearl/chain.txt for the Pearl-local twins) and the milestone.tomls
+and writes it between
 
     # -- prior: tests/e2e/tools/dp_prior.py --
     ...
@@ -28,7 +29,6 @@ import tomllib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 E2E = os.path.dirname(HERE)
-GAME_DIR = os.path.join(E2E, "diamond")
 BEGIN = "# -- prior: tests/e2e/tools/dp_prior.py --"
 START = "# -- start --"
 
@@ -173,28 +173,34 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--check", action="store_true", help="exit 1 if a recipe is stale; write nothing")
     args = ap.parse_args()
-    chain = [ln.strip() for ln in open(os.path.join(GAME_DIR, "chain.txt"))
-             if ln.strip() and not ln.startswith("#")]
-    mss = {n: tomllib.load(open(os.path.join(GAME_DIR, n, "milestone.toml"), "rb")) for n in chain}
     stale = []
-    for name, block in blocks(chain, mss).items():
-        lab = mss[name].get("start", {}).get("lab")
-        if not lab:
-            continue
-        path = os.path.join(GAME_DIR, name, lab)
-        text = open(path).read()
-        if "# @@PRIOR@@" in text:
-            new = text.replace("# @@PRIOR@@", block)
-        elif BEGIN in text:
-            head, rest = text.split(BEGIN, 1)
-            new = head + block + "\n" + START + rest.split(START, 1)[1]
-        else:
-            sys.exit("%s: no '# @@PRIOR@@' or '%s' line" % (path, BEGIN))
-        if new != text:
-            stale.append(path)
-            if not args.check:
-                with open(path, "w") as f:
-                    f.write(new)
+    # diamond/chain.txt writes every Diamond dir; pearl/chain.txt (../diamond/<dir> entries plus Pearl-local twins)
+    # only its Pearl-local dirs
+    for game, own in (("diamond", True), ("pearl", False)):
+        gdir = os.path.join(E2E, game)
+        dirs = [os.path.normpath(os.path.join(gdir, ln.strip())) for ln in open(os.path.join(gdir, "chain.txt"))
+                if ln.strip() and not ln.startswith("#")]
+        chain = [os.path.basename(d) for d in dirs]
+        where = dict(zip(chain, dirs))
+        mss = {n: tomllib.load(open(os.path.join(where[n], "milestone.toml"), "rb")) for n in chain}
+        for name, block in blocks(chain, mss).items():
+            lab = mss[name].get("start", {}).get("lab")
+            if not lab or (not own and os.path.dirname(where[name]) != gdir):
+                continue
+            path = os.path.join(where[name], lab)
+            text = open(path).read()
+            if "# @@PRIOR@@" in text:
+                new = text.replace("# @@PRIOR@@", block)
+            elif BEGIN in text:
+                head, rest = text.split(BEGIN, 1)
+                new = head + block + "\n" + START + rest.split(START, 1)[1]
+            else:
+                sys.exit("%s: no '# @@PRIOR@@' or '%s' line" % (path, BEGIN))
+            if new != text:
+                stale.append(path)
+                if not args.check:
+                    with open(path, "w") as f:
+                        f.write(new)
     for p in stale:
         print(("stale " if args.check else "wrote ") + os.path.relpath(p, os.path.dirname(os.path.dirname(E2E))))
     sys.exit(1 if args.check and stale else 0)

@@ -121,6 +121,7 @@ map = "MAP_ROUTE_206"
 
 [[step]]
 do = "walk_to"
+on_text = "stop"
 x = 303
 z = 708
 run = false

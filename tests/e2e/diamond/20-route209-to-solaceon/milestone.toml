@@ -114,7 +114,7 @@ do = "wait_field"
 [expect]
 map = "MAP_SOLACEON"
 position = [566, 657]
-flags = ["0x19C", "0x224"]
+flags = ["0x19C", "0x224", "0x9B3"]
 badges = 2
 badge = ["BADGE_COAL", "BADGE_FOREST"]
 

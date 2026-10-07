@@ -25,6 +25,7 @@ flag 0x196                   # scr_seq 0377 @0x000A [script ids 9600+]
 flag 0x197                   # scr_seq 0377 @0x0006 [script ids 9600+]
 flag 0x1B3                   # scr_seq 0392 @0x006F [MAP_ROUTE_201]
 flag 0x1B4                   # scr_seq 0392 @0x04F2 [MAP_ROUTE_201]
+flag 0x9B0                   # [INFERENCE] set in play by 01-newgame-starter (no script SetFlag; see its refs)
 clear-flag 0x8E              # scr_seq 0072 @0x0099 [MAP_ETERNA_GYM]
 var 0x40F9 1                 # scr_seq 0982 @0x0033 [MAP_TWINLEAF_RIVAL_HOUSE_2F]
 var 0x40E6 1                 # scr_seq 0978 @0x0564 [MAP_TWINLEAF]

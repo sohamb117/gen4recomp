@@ -130,7 +130,7 @@ do = "wait_field"
 
 [expect]
 map = "MAP_HEARTHOME"
-flags = ["0x1C9", "0x25A", "0x25B"]
+flags = ["0x1C9", "0x25A", "0x25B", "0x9BB"]
 flags_clear = ["0x224"]
 
 [expect.vars]

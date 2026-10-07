@@ -44,6 +44,10 @@
 ../diamond/44-snowpoint-gym-candice
 ../diamond/45-lake-acuity-jupiter
 ../diamond/46-veilstone-storage-key-galactic-key
+../diamond/47-galactic-hq-cyrus
+../diamond/48-galactic-hq-saturn-free-lake-trio
+../diamond/49-mt-coronet-climb
+50-spear-pillar-palkia
 ../diamond/51-coronet-exit-valor-lakefront
 ../diamond/52-route222-sunyshore-flint-lighthouse
 ../diamond/53-sunyshore-gym-volkner

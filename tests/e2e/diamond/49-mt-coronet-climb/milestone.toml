@@ -1,0 +1,196 @@
+# Proves the climb to Spear Pillar once Saturn's fade has set 0x253 (the South 2F barrier, zone_event 0205 object 4,
+# is hidden): Fly to Hearthome, Route 208 into Mt. Coronet, 1F, 2F through the opened way, 3F, the South
+# Mountainside, 4F, the North Mountainside, 4F room 3, 5F and 6F (the grunts hidden by 0x2AD only after Spear Pillar), up to
+# Spear Pillar.
+# Start: Veilstone outside the HQ east door (48's end) -> end: Spear Pillar at the entrance (31,53) (50's start).
+title = "Mt. Coronet: Route 208 up to Spear Pillar"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "zone_event 0339 warp 3",
+  "zone_event 0204 warp 2",
+  "zone_event 0205 object 4",
+  "zone_event 0205 warp 2",
+  "zone_event 0205 warp 4",
+  "zone_event 0206 warp 2",
+  "zone_event 0208 warp 1",
+  "zone_event 0209 warp 4",
+  "zone_event 0207 warp 1",
+  "zone_event 0210 warp 1",
+  "zone_event 0211 warp 1",
+  "zone_event 0212 warp 1",
+]
+notes = "Warps (dp_script.py events): Hearthome warp 14 (454,726) -> the Route 208 gatehouse (10,7), its warp 1 (1,7) -> Route 208 (447,726); Route 208 warp 3 (392,724) -> South 1F (27,20); 1F (25,3) -> 2F (27,48); 2F (7,23) -> (7,12) (object 4 there, hidden 0x253); 2F (11,4) -> 3F (14,26); 3F (3,29) -> South Mountainside (12,35); (11,17) -> 4F room 1 (7,25); (40,10) -> North Mountainside (42,40); (13,19) -> 4F room 3 (2,3); (18,8) -> 5F (21,7); (13,24) -> 6F (10,24); (7,5) -> Spear Pillar (31,53). The mountainsides' Rock Smash rocks are smashed on the way (walk_to hm). 5F/6F grunts (sight 3-6, trdata.json #524/#519/#525) may engage."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+boost = "boost.recipe"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "fly"
+map = "MAP_HEARTHOME"
+shot = "fly-hearthome"
+
+[[step]]
+do = "walk_to"
+x = 454
+z = 726
+note = "Hearthome warp 14 -> MAP_HEARTHOME_ROUTE_208_GATEHOUSE (10,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEARTHOME_ROUTE_208_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "gatehouse warp 1 -> Route 208 (447,726)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_208"
+
+[[step]]
+do = "walk_to"
+x = 392
+z = 724
+max = 9000
+hm = true
+note = "Route 208 west to Mt. Coronet (zone_event 0339 warp 3) -> South 1F (27,20); sight trainers were beaten in 18"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_SOUTH_1F"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 3
+avoid = [[4, 8], [27, 20]]
+on_battle = "flee"
+note = "zone_event 0204 warp 2 -> South 2F (27,48)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_SOUTH_2F"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 23
+avoid = [[27, 48], [2, 59], [7, 12], [11, 4], [21, 4]]
+on_battle = "flee"
+shot = "south-2f-opened"
+note = "zone_event 0205 warp 2 (the barrier object 4 is hidden by 0x253) -> 2F (7,12)"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+avoid = [[27, 48], [2, 59], [7, 23], [7, 12], [21, 4]]
+on_battle = "flee"
+note = "zone_event 0205 warp 4 -> South 3F (14,26)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_SOUTH_3F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 29
+avoid = [[14, 26], [18, 26]]
+on_battle = "flee"
+note = "zone_event 0206 warp 2 -> South Mountainside (12,35)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_SOUTH_MOUNTAINSIDE"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 17
+hm = true
+avoid = [[12, 35], [39, 18]]
+on_battle = "flee"
+shot = "south-mountainside"
+note = "zone_event 0208 warp 1 -> 4F room 1 (7,25)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_4F_ROOM_1"
+
+[[step]]
+do = "walk_to"
+x = 40
+z = 10
+hm = true
+avoid = [[7, 25], [35, 24], [17, 6], [59, 6]]
+on_battle = "flee"
+note = "zone_event 0209 warp 4 -> North Mountainside (42,40)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_NORTH_MOUNTAINSIDE"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 19
+hm = true
+avoid = [[42, 40], [45, 28]]
+on_battle = "flee"
+note = "zone_event 0207 warp 1 -> 4F room 3 (2,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_4F_ROOM_3"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 8
+avoid = [[2, 3]]
+on_battle = "flee"
+note = "zone_event 0210 warp 1 -> 5F (21,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_5F"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 24
+avoid = [[21, 7]]
+note = "zone_event 0211 warp 1 -> 6F (10,24)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_6F"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 5
+avoid = [[10, 24]]
+note = "zone_event 0212 warp 1 -> Spear Pillar (31,53)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_CORONET_SPEAR_PILLAR"
+
+[[step]]
+do = "wait_field"
+shot = "spear-pillar"
+
+[expect]
+map = "MAP_MOUNT_CORONET_SPEAR_PILLAR"

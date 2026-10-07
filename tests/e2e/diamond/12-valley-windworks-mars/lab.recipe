@@ -32,6 +32,7 @@ flag 0x196                   # scr_seq 0377 @0x000A [script ids 9600+]
 flag 0x197                   # scr_seq 0377 @0x0006 [script ids 9600+]
 flag 0x1B3                   # scr_seq 0392 @0x006F [MAP_ROUTE_201]
 flag 0x1B4                   # scr_seq 0392 @0x04F2 [MAP_ROUTE_201]
+flag 0x9B0                   # [INFERENCE] set in play by 01-newgame-starter (no script SetFlag; see its refs)
 clear-flag 0x8E              # scr_seq 0072 @0x0099 [MAP_ETERNA_GYM]
 var 0x40F9 1                 # scr_seq 0982 @0x0033 [MAP_TWINLEAF_RIVAL_HOUSE_2F]
 var 0x40E6 1                 # scr_seq 0978 @0x0564 [MAP_TWINLEAF]
@@ -48,6 +49,7 @@ flag 0x993                   # scr_seq 0990 @0x0202 [MAP_SANDGEM_ROWANS_LAB]
 flag 0x90                    # scr_seq 0990 @0x024D [MAP_SANDGEM_ROWANS_LAB]
 flag 0x1B7                   # zone_event 0400 object 3 (GFX_FROM_VAR_0x4020) hidden flag, set by its Remove/AddEvent [MAP_SANDGEM_ROWANS_LAB]
 flag 0x195                   # zone_event 0396 object 4 (GFX_FROM_VAR_0x4020) hidden flag, set by its Remove/AddEvent [MAP_SANDGEM]
+flag 0x9B1                   # [INFERENCE] set in play by 02-sandgem-pokedex (no script SetFlag; see its refs)
 var 0x40A6 1                 # scr_seq 0990 @0x031D [MAP_SANDGEM_ROWANS_LAB]
 var 0x4071 2                 # scr_seq 0985 @0x06D2 [MAP_SANDGEM]
 pokedex 1                    # 02-sandgem-pokedex: GiveSinnohDex (see its refs)
@@ -63,6 +65,7 @@ item ITEM_POKE_BALL 5        # 03-parcel-catching-tutorial: given in play (see i
 flag 0x198                   # scr_seq 0377 @0x0066 [script ids 9600+]
 flag 0x212                   # zone_event 0028 object 1 (SPRITE_RIVEL) hidden flag, set by its Remove/AddEvent [MAP_JUBLIFE_TRAINER_SCHOOL]
 flag 0xF1                    # scr_seq 0029 @0x0104 [MAP_JUBLIFE_TRAINER_SCHOOL]
+flag 0x9B7                   # [INFERENCE] set in play by 04-jubilife-trainers-school (no script SetFlag; see its refs)
 clear-flag 0x213             # scr_seq 0029 @0x010C [MAP_JUBLIFE_TRAINER_SCHOOL]
 clear-flag 0x214             # scr_seq 0029 @0x0108 [MAP_JUBLIFE_TRAINER_SCHOOL]
 var 0x4077 1                 # scr_seq 0002 @0x0208 [MAP_JUBLIFE]
@@ -85,6 +88,7 @@ poketch 4                    # 05-jubilife-poketch: the Poketch app it checks (s
 flag 0x199                   # zone_event 0329 object 5 (SPRITE_RIVEL) hidden flag, set by its Remove/AddEvent [MAP_ROUTE_203]
 flag 0x9CF                   # scr_seq 0271 @0x000E [MAP_OREBURGH_GATE_1F]
 flag 0x93                    # scr_seq 0271 @0x006F [MAP_OREBURGH_GATE_1F]
+flag 0x9B9                   # [INFERENCE] set in play by 06-route203-rival-oreburgh-gate-hm06 (no script SetFlag; see its refs)
 var 0x4088 1                 # scr_seq 0394 @0x01F3 [MAP_ROUTE_203]
 var 0x4093 2                 # scr_seq 0271 @0x0073 [MAP_OREBURGH_GATE_1F]
 var 0x4079 1                 # scr_seq 0048 @0x0543 [MAP_OREBURGH]
@@ -134,6 +138,7 @@ flag 0x1BC                   # scr_seq 0377 @0x00E8 [script ids 9600+]
 flag 0x9F                    # scr_seq 0269 @0x014A [MAP_FLOAROMA_MEADOW]
 flag 0xA0                    # scr_seq 0269 @0x0186 [MAP_FLOAROMA_MEADOW]
 flag 0x989                   # scr_seq 0269 @0x0066 [MAP_FLOAROMA_MEADOW]
+flag 0x9B2                   # [INFERENCE] set in play by 11-floaroma-meadow-works-key (no script SetFlag; see its refs)
 var 0x4072 1                 # scr_seq 0377 @0x004C [script ids 9600+]
 var 0x4089 1                 # scr_seq 0397 @0x016D [MAP_ROUTE_205_SOUTH]
 var 0x40E9 1                 # scr_seq 0269 @0x010F [MAP_FLOAROMA_MEADOW]

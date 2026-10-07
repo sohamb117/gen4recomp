@@ -92,7 +92,7 @@ do = "wait_field"
 
 [expect]
 map = "MAP_SANDGEM"
-flags = ["0x1B5", "0x993", "0x90", "0x1B7", "0x195"]
+flags = ["0x1B5", "0x993", "0x90", "0x1B7", "0x195", "0x9B1"]
 party = ["SPECIES_TURTWIG"]
 save = [
   's["pokedex"] is not None and s["pokedex"]["obtained"]',  # GiveSinnohDex, scr_seq 0990 @0x024B

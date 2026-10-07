@@ -1,0 +1,149 @@
+# Proves Saturn at the back of Galactic HQ, the machine's button that frees Uxie, Mesprit and Azelf, and the way out of
+# the HQ: Saturn's fade-out sets 0x253, which opens Mt. Coronet's south 2F barrier for 49.
+# Start: HQ 4F_1 on Cyrus's coord after he left (47's end) -> end: Veilstone outside the HQ east door (720,589) (49's start).
+title = "Galactic HQ: Saturn, the lake trio freed, out of the HQ"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 16000
+refs = [
+  "zone_event 0295 warp 1",
+  "zone_event 0473 warp 1",
+  "zone_event 0470 object 0",
+  "scr_seq 0339 @0x0078",
+  "scr_seq 0339 @0x008F",
+  "zone_event 0470 bg 3",
+  "scr_seq 0339 @0x01D7",
+  "scr_seq 0339 @0x0209",
+  "scr_seq 0339 @0x020D",
+  "scr_seq 0339 @0x02E3",
+  "zone_event 0470 warp 0",
+  "zone_event 0473 warp 0",
+  "zone_event 0295 warp 2",
+  "zone_event 0292 warp 2",
+  "trdata.json #409",
+]
+notes = "Route from the step layers (tests/e2e/tools/dp_warps.py): 4F_1 (22,3) -> 4F_2 (1,11), (36,2) -> 4F_BACK (8,13); back out (8,13) -> 4F_2 (36,2), (1,11) -> 4F_1 (22,3), the green panel (21,17) -> 1F (41,14), (42,22) -> Veilstone (720,589). Saturn (8,6) faces north at the machine; TrainerBattle 409 (scr_seq 0339 @0x0078), SetFlag 0xAD, 0x410D = 1, he steps aside by the player's facing. The button bg (8,5): YesNo, A = YES: 0x410D = 0, ClearFlag 0x2B3, SetFlag 0x97D, the trio fly off, Saturn's speech, the fade, RemoveEvent 0, SetFlag 0x253 (@0x01F7-@0x02E3)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+boost = "boost.recipe"
+
+[run]
+frames = 30000
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 3
+avoid = [[3, 15], [21, 17]]
+note = "zone_event 0295 warp 1 -> MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_2 (1,11)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_2"
+
+[[step]]
+do = "walk_to"
+x = 36
+z = 2
+avoid = [[1, 11]]
+note = "zone_event 0473 warp 1 -> MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_BACK (8,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_BACK"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 7
+face = "up"
+interact = true
+avoid = [[8, 13]]
+note = "Saturn (zone_event 0470 object 0 (8,6)) from the south"
+
+[[step]]
+do = "advance_text"
+note = "msg 268 #0, TrainerBattle 409 (scr_seq 0339 @0x0078)"
+
+[[step]]
+do = "auto_battle"
+send = "best"
+shot = "saturn-battle"
+note = "TRAINER_COMMANDER_SATURN_SATURN_2 (trdata.json #409)"
+
+[[step]]
+do = "advance_text"
+note = "SetFlag 0xAD, 0x410D = 1, msg 268 #1; Saturn steps aside (@0x008F-@0x0101)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 6
+face = "up"
+interact = true
+avoid = [[8, 13]]
+note = "the machine's button bg 3 (8,5)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "trio-freed"
+note = "'Press the button and set the Pokemon free?' A = YES; the trio leave, Saturn's Red Chain speech, the fade: SetFlag 0x253 (@0x01D4-@0x02E3)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 13
+note = "zone_event 0470 warp 0 -> 4F_2 (36,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_2"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 11
+avoid = [[36, 2]]
+note = "zone_event 0473 warp 0 -> 4F_1 (22,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1"
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 17
+avoid = [[3, 15], [22, 3]]
+note = "the green warp panel zone_event 0295 warp 2 -> 1F (41,14)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE_GALACTIC_HEADQUARTERS_1F"
+
+[[step]]
+do = "walk_to"
+x = 42
+z = 22
+avoid = [[41, 14]]
+note = "zone_event 0292 warp 2 -> Veilstone (720,589)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VEILSTONE"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_VEILSTONE"
+flags = ["0xAD", "0x97D", "0x253", "0x255"]
+flags_clear = ["0x2B3"]
+battles = 1
+
+[expect.vars]
+"0x410D" = 0
