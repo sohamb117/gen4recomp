@@ -37,10 +37,82 @@ numbers below are its output):
 | ARM7 | ROM 0x2C7E00, RAM 0x02380000, 0x28F84 bytes | same |
 | overlays | 237 (229 BLZ-compressed), 3.26 MB plain; 57 are 32-byte empty stubs | 237 (228 compressed) |
 | TWL sections | ARM9i ROM 0xC403000 → 0x02400000 (0x12F24), ARM7i 0xC416000 → 0x02E80000 (0x470F8) | ARM9i 0x12F1C |
-| discovery | 35,993 functions (28,831 Thumb), 1,290,366 instructions, 30 undecodable words | 35,990 functions |
+| discovery | 35,941 functions (28,779 Thumb, 7,162 ARM), 1,288,513 instructions, 7 undecodable words; ov230 opaque (below) | 35,938 functions, 1,288,538 instructions |
+| primitive map (`sigs.py match`, learned from Diamond) | 71 of 136 placed (bytes 56, sequence 7, call 3, literal 3, crt0 1, similar 1) | not run |
+| emit + armrec | 316 files, 35,927 functions, 1,287,136 instructions; 5,252 cross-overlay calls bound by name, 7,457 left to run-time dispatch; armrec translates 35,871/35,871 cleanly (the 65 placed host overrides dropped) | not run |
 
-For scale, Diamond is 26,518 functions and 1,045,668 instructions, all of
-which armrec translates; Black/White are about 24% larger.
+For scale, the ROM-only Diamond build emits 26,508 functions and 1,046,608
+instructions (armrec 26,399/26,399 clean); Black/White are 23% larger.
+
+## Code size
+
+Measured on the ROM-only Diamond core and scaled by instruction count
+(x1.23): armrec's C is 129 MB for Diamond, so about 160 MB for Black; the
+wasm module (all of it, host included) 21.5 MB, so about 26 MB; the
+wasm2c'd guest library 34 MB and np_headless 28 MB natively, so about
+42 MB and 34 MB. A shell build carries one core per game, so Black and
+White together add two of those (their code differs by a few dozen bytes
+per module, but each core is built from its own ROM).
+
+## Plaintext and encrypted regions of the dumps
+
+Determined from header fields and from whether the stored bytes read as
+code; nothing is decrypted and no key is used.
+
+| Region | Stored as | Evidence |
+| --- | --- | --- |
+| header 0x000-0x1FF, TWL header 0x200-0xFFF | plaintext | header CRC16 at 0x15E matches |
+| ARM9 secure area, first 2 KB (0x4000-0x47FF → 0x02004000) | the decrypted form NTR dumps carry | starts `FF DE FF E7 FF DE FF E7` (the destroyed-ID marker of a decrypted dump); 17 plaintext Thumb `swi #N; bx lr` veneers (N = 0x00, 0x03-0x06, 0x09, 0x0B-0x15) among high-entropy filler (7.1 bits/byte per 256 bytes). Diamond, whose link map names the region (`libsyscall.a secure.o`: SVC_GetCRC16 = `swi 0xE`, SVC_CpuSet = `swi 0xB`, SVC_WaitByLoop = `swi 0x3`, SVC_Sqrt = `swi 0xD`, the rest `$d`), has the same layout and entropy. The header's secure-area CRC (0x6C) does not match the stored bytes, as expected: it covers the encrypted transfer form. |
+| ARM9 rest of the static, crt0 at 0x02004800 onwards | plaintext (BLZ-compressed from the end) | decodes as code; discovery reaches it from the entry point |
+| ARM7 (0x2C7E00, 0x28F84 bytes) | plaintext | 6.0 bits/byte, decodes as ARM |
+| overlays 0-236 | plaintext, 229/228 BLZ-compressed | decode as code, except ov230 (below) |
+| ARM9i (0xC403000) | modcrypt area 1 (0xC403000, 0x4000 bytes, header 0x220) | 8.0 bits/byte over its first 16 KB; TWL-only, never loaded in NTR mode, ignored |
+| ARM7i (0xC416000) | outside modcrypt area 1 | TWL-only, ignored |
+
+**Secure-area veneers.** Only the 2 KB the cartridge KEY1-encrypts needs
+care, and these dumps store it in the decrypted form, so the SDK's syscall
+veneers there are plain `swi #N; bx lr`. Discovery enters the range only
+through calls from plaintext code (Black calls three: 0x0200421A `swi 0xB`
+CpuSet, 0x02004490 `swi 0x3` WaitByLoop, 0x02004632 `swi 0xE` GetCRC16),
+never fills gaps or follows pointers into it, and `Module.check_secure_area`
+stops the build if anything other than such a veneer is found there; armrec
+turns each veneer into the host's `armrec_swi(N)`, the BIOS call the
+machine model already implements. The filler is never decoded. A dump that
+stored this area encrypted would fail that check, and the calls would then
+be routed to host SVC handlers named from their call sites (the 2-instruction
+veneer contract is the SDK's public libsyscall layout) rather than read.
+
+**ov230 is self-modifying.** Its five static initialisers start by taking
+their own address (`orr r0, pc, #0`), and one routine cleans and
+invalidates cache lines over a range (`mcr p15, 0, rN, c7, c5, 1` and
+`c7, c14, 1`): the overlay rewrites its own code when loaded, the shape of
+a protection scheme. Its bytes at rest are not the code that runs, so no
+static recompiler can translate it, and decoding it is out of bounds.
+`Module.check_self_modifying` leaves any such overlay opaque (data only;
+`info` and `emit.txt` list it), so a call into it reaches run-time dispatch
+and stops there by name. No other module has this shape (the only other
+I-cache line invalidations are crt0's and the SDK's IC_/DC_ functions in
+the static). Whether the game loads ov230 on the boot path is the first
+thing a Black boot will show; if it does, that is a hard blocker for this
+approach, to be reported, not worked around.
+
+## The ROM-only Diamond core (the proof)
+
+`games/ndsrec` builds Diamond from its ROM alone (`make -f pc/Makefile.wasm`,
+then the native core). Against the decompilation-built core:
+
+- `d-boot` (600 frames) and `d-intro` (3,000 frames, `tests/dp/intro.sched`)
+  give exactly the hashes in `tests/dp/expected.txt` (49e21389a9f73440,
+  74de04024a1ba0df): copyright, title and Rowan's intro are identical,
+  audio included.
+- The new game plays to the first save (`tests/dp/first_save.sh`): the
+  stored save holds the trainer NATIVE, CONTINUE loads it and saves again.
+  No run-time dispatch miss in the 12,600 + 3,400 frames (a miss aborts and
+  names the address). Audio is identical to the decompilation core's through
+  frame 12,300, and so are the frames up to 9,001.
+- One divergence: from the bedroom on (frame 10,001), the player's avatar
+  (a 16x23 px billboard at the screen centre, 314 pixels) is not drawn;
+  everything else on both screens is identical. Not yet diagnosed.
 
 ## What is different from Diamond
 
@@ -99,30 +171,56 @@ against the TWL-SDK 5 protocol before it is trusted:
   the IR transceiver on the cartridge and are out of scope (the IR
   requests must answer "no partner", not hang).
 
-**Signatures.** `tools/ndsrec/sigs.py` learns the 131 host primitives from
-Diamond (NitroSDK 3.2) and places them in Diamond 131/131 and in
+**Signatures.** `tools/ndsrec/sigs.py` learns the 136 host primitives from
+Diamond (NitroSDK 3.2) and places them in Diamond 136/136 and in
 Platinum's ROM 112/131 (0 wrong), using byte patterns, normalised
 instruction sequences that survive toolchain differences, callers and
-literal pools. TWL-SDK 5.3 code differs more: expect the byte and sequence
-stages to place fewer functions, and the caller/call-structure stages and
-hand-checked anchors to carry more. Where a primitive cannot be placed, the
-fallback is to leave it recompiled: most of the host's overrides exist for
-speed or for hardware the machine model also emulates at the register
-level, and only a few (thread context switch, IRQ entry, halt, cache and
-protection-unit control, card ROM reads) are mandatory.
+literal pools. In Black it places 71 of 136: the OS core (context save and
+load, reschedule, IRQ handler, halt, interrupts, lock IDs, alarm and
+exception handlers, tick), cache and protection-unit control, MI copies and
+fills, the matrix/G3 helpers, the three secure-area SVC veneers,
+`PXI_SendWordByFifo`, `OS_UnLockCartridge`, the NNS sound players and
+NitroMain. Not placed, i.e. rewritten in TWL-SDK 5: the card layer
+(`CARD_Init`, `CARDi_ReadRom`, `CARDi_Request`, `CARDi_SetTask`,
+`CARD_WaitRomAsync`, `CARDi_InitCommon`, `cardi_common`), `FS_StartOverlay`,
+`MIi_UncompressBackward`, `MI_UncompressLZ8`, the MI DMA and GX-command
+helpers, `PXI_Init`/`InitFifo`/`IsCallbackReady`/`SetFifoRecvCallback`,
+`PMi_*`, `TP_*`, `OS_GetIrqFunction`, `OS_WakeupThread`, `OSi_ThreadInfo`,
+`OS_ResetSystem`, `OS_SetDPermissionsForProtectionRegion`, `SVC_Sqrt`,
+`NNSi_SndCaptureStart`, `WMi_StartMP`, `MTX_RotX43_`/`Rot*44_`, abort and
+the assertion handler; the CTRDG/AGB-flash group is Pal Park's and has no
+counterpart. Where a primitive cannot be placed, the fallback is to leave
+it recompiled: most of the host's overrides exist for speed or for
+hardware the machine model also emulates at the register level. The ones
+the boot cannot do without are the card ROM reads (the host serves ROM
+reads from the file; the machine model has no card protocol), overlay
+loading with in-place BLZ decompression, and the PXI FIFO set-up: those
+have to be placed in Black by hand-reading the recompiled SDK (their
+callers are placed: `FS_StartOverlay` is reached from the overlay loader,
+the card layer from FS) and recorded as anchors in sigs.py.
 
 ## Steps, now that the ROMs are here
 
 1. Front end on both ROMs (done): `ndsrec.py info -v <rom>` (table above).
-2. Emit and translate, to find what armrec does not yet accept in TWL-SDK
-   code:
-   `python3 tools/ndsrec/ndsrec.py emit roms/<Black>.nds --out build/ndsrec/black`
-   then `armrec.py --scan --decomp-state /dev/null` over `arm9/**/*.s`
-   (as in games/ndsrec/pc/mk/ndsrec.mk). Fix constructs until 100%.
-3. Primitive map: `sigs.py match roms/<Black>.nds build/ndsrec/sigdb.json
-   --out build/ndsrec/black.syms --debug`; place the misses from their
-   callers or by hand-reading the recompiled SDK (crt0's literal pool
-   already gives NitroMain), and record any rule learned in sigs.py.
+2. Emit and translate (done for Black): `make -f pc/Makefile.wasm
+   ROM=<path without spaces, e.g. a symlink under build/> VER=black` in
+   games/ndsrec runs sigs, emit and armrec; stage 1 is 100% clean.
+3. Primitive map (in progress): 71/136 placed automatically. The link of
+   the Black core stops on 13 symbols the host references and the map does
+   not give: `OSi_ThreadInfo`, `OS_GetIrqFunction`, `OS_WakeupThread`,
+   `OS_UnlockCartridge`, `TP_GetCalibratedPoint` (TWL-SDK SDK code) and the
+   Pal Park group (`CTRDG_*`, `CTRDGi_ReadFlashID`, `AgbFlash`; Diamond-only
+   host code that a Black host fragment must leave out). Read off the
+   recompiled SDK, by the same instruction shapes as Diamond's: the five
+   are at 0x02150FEC (OSi_ThreadInfo: OSi_RescheduleThread's `strh` target,
+   irqDepth at +2 as in NitroSDK), 0x02084818 (OS_GetIrqFunction; TWL-SDK
+   scans 32 sources, the table is at DTCM+0x20 and timer slots are +5),
+   0x02085800 (OS_WakeupThread), 0x02084D78 (OS_UnlockCartridge, the target
+   of the placed OS_UnLockCartridge veneer; its lock word is 0x02FFFFE8) and
+   0x0208B104 (TP_GetCalibratedPoint; calibration flag at +0x34, not +0x30).
+   These are rules for sigs.py (a placed veneer's literal names its target;
+   an object is a placed caller's store target), not a committed map.
+   Then the boot-critical card/overlay/PXI primitives (above).
 4. Runtime: the main-RAM mirror and 0x02FE0000 DTCM in armrec_rt.c (under a
    per-game switch so Diamond/Pearl/Platinum stay byte-identical: re-run
    Platinum's 600-frame hash and Diamond's scenarios), overlay
