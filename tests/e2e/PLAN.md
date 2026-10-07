@@ -103,7 +103,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Platinum
 
 <!-- plan.py:begin platinum -->
-### Story chain: 56 milestones, ~1041971 frames estimated
+### Story chain: 56 milestones, ~1051466 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
@@ -140,9 +140,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [31-iron-island-strength](platinum/31-iron-island-strength/milestone.toml) | Iron Island: Riley gives HM04 Strength | P0 | 4427 | prev + `lab.recipe` | MAP_HEADER_IRON_ISLAND | passing |
 | [32-canalave-library-explosion](platinum/32-canalave-library-explosion/milestone.toml) | Canalave Library: Lake Valor explosion | P0 | 7557 | prev + `lab.recipe` | MAP_HEADER_CANALAVE_CITY | passing |
 | [33-lake-valor-saturn](platinum/33-lake-valor-saturn/milestone.toml) | Lake Valor (drained): Saturn in Valor Cavern | P0 | 21863 | prev + `lab.recipe` | MAP_HEADER_VALOR_CAVERN | passing |
-| [34-lake-verity-mars](platinum/34-lake-verity-mars/milestone.toml) | Lake Verity: Mars | P0 | 14000 | prev + `lab.recipe` | MAP_HEADER_LAKE_VERITY | planned |
+| [34-lake-verity-mars](platinum/34-lake-verity-mars/milestone.toml) | Lake Verity: Mars | P0 | 23495 | prev + `lab.recipe` | MAP_HEADER_LAKE_VERITY | passing |
 | [35-coronet-to-snowpoint](platinum/35-coronet-to-snowpoint/milestone.toml) | Mt Coronet B1F to Snowpoint via Routes 216/217, HM08 | P0 | 26000 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY | planned |
-| [36-snowpoint-gym-candice](platinum/36-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: Candice and the Icicle Badge | P0 | 22000 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY_GYM | planned |
+| [36-snowpoint-gym-candice](platinum/36-snowpoint-gym-candice/milestone.toml) | Snowpoint Gym: Candice and the Icicle Badge | P0 | 22000 | prev + `lab.recipe` | MAP_HEADER_SNOWPOINT_CITY | planned |
 | [37-lake-acuity-jupiter](platinum/37-lake-acuity-jupiter/milestone.toml) | Lake Acuity: Jupiter leaves, injured rival | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_LAKE_ACUITY | planned |
 | [38-veilstone-storage-key-hq-entry](platinum/38-veilstone-storage-key-hq-entry/milestone.toml) | Veilstone: storage key, Looker, Galactic HQ entry | P0 | 9000 | prev + `lab.recipe` | MAP_HEADER_GALACTIC_HQ_B2F | planned |
 | [39-galactic-hq-cyrus](platinum/39-galactic-hq-cyrus/milestone.toml) | Galactic HQ: Galactic Key, Cyrus, Master Ball | P0 | 30000 | prev + `lab.recipe` | MAP_HEADER_GALACTIC_HQ_4F | planned |
@@ -485,75 +485,75 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: scripts_valor_lakefront.s:19-42; scripts_valor_cavern.s:13; scripts_valor_cavern.s:87; scripts_valor_cavern.s:88; scripts_valor_cavern.s:89; events_lake_valor_drained.json
 
 #### platinum/34-lake-verity-mars — Lake Verity: Mars
-- proves: Proves the Rowan briefing OnFrame and the Mars battle that hides the Mt Coronet grunts. Start: Lake Verity (46,54) -> end: Lake Verity (312), Mars beaten, VAR_LAKE_ACUITY_STATE 1.
-- start: prev + `lab.recipe`; warp MAP_HEADER_LAKE_VERITY 1; lab state lines: 6 badge, 32 clear-flag, 159 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 67 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the Rowan briefing OnFrame and the Mars battle that hides the Mt Coronet grunts. Out of Valor Cavern and the drained lake, fly to Twinleaf, Route 201 west to Verity Lakefront, whose warps lead to the Galactic-held lake once Saturn is beaten (scripts_verity_lakefront.s:11-28). Start: Valor Cavern (14,20) (33's end) -> end: Lake Verity, Mars beaten, VAR_LAKE_ACUITY_STATE 1.
+- start: prev + `lab.recipe`; map MAP_HEADER_VALOR_CAVERN 14 20 FACE_UP; lab state lines: 6 badge, 32 clear-flag, 171 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 67 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_LAKE_VERITY; >= 1 battles; flags set FLAG_TEAM_GALACTIC_LEFT_LAKE_VERITY, FLAG_HIDE_MT_CORONET_1F_NORTH_ROOM_1_GRUNTS_M; vars VAR_LAKE_ACUITY_STATE=1, VAR_LAKE_VERITY_PROF_ROWAN_STATE=1
-- frames: estimate 14000, budget 21000
+- frames: estimate 23495, budget 35300
 - refs: scripts_verity_lakefront.s:11-28; scripts_lake_verity.s:157-183; events_lake_verity.json; scripts_lake_verity.s:179; scripts_lake_verity.s:209; scripts_lake_verity.s:215; scripts_lake_verity.s:222; scripts_lake_verity.s:223; scripts_lake_verity.s:224; scripts_lake_verity.s:225
 
 #### platinum/35-coronet-to-snowpoint — Mt Coronet B1F to Snowpoint via Routes 216/217, HM08
-- proves: Proves the Coronet B1F passage (grunts gone after Mars), Maylene on Route 217, HM08 and the Acuity rival. Start: Mt Coronet 1F North Room 1 (29,35) -> end: Snowpoint City (165), HM08.
-- start: prev + `lab.recipe`; warp MAP_HEADER_MT_CORONET_1F_NORTH_ROOM_1 3; lab state lines: 6 badge, 33 clear-flag, 163 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 69 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the Coronet B1F passage (grunts gone after Mars), Maylene on Route 217, HM08 and the Acuity rival. Fly to Celestic, west on Route 211 East into Mt Coronet 1F North Room 1, Strength up its east corridor, B1F, North Room 2, then the snow routes 216/217 (trainers fought) past Acuity Lakefront into Snowpoint. Start: Lake Verity (34's end) -> end: Snowpoint City, HM08.
+- start: prev + `lab.recipe`; map MAP_HEADER_LAKE_VERITY 55 39 FACE_UP; lab state lines: 6 badge, 33 clear-flag, 175 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 69 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_HEADER_SNOWPOINT_CITY; flags set FLAG_OBTAINED_ROUTE_217_HM08, FLAG_HIDE_ACUITY_LAKEFRONT_RIVAL; vars VAR_ROUTE_217_STATE=1, VAR_ACUITY_LAKEFRONT_STATE=1
-- frames: estimate 26000, budget 39000
+- frames: estimate 26000, budget 80000
 - refs: scripts_route_217.s:24-46; scripts_acuity_lakefront.s:43-61; scripts_route_217.s:26; scripts_route_217.s:43; scripts_route_217.s:44; scripts_route_217.s:45; scripts_acuity_lakefront.s:56; scripts_acuity_lakefront.s:60; events_mt_coronet_b1f.json; events_route_217.json; scripts_visible_items.s:1302
 
 #### platinum/36-snowpoint-gym-candice — Snowpoint Gym: Candice and the Icicle Badge
-- proves: Proves the ice-slide gym and Candice's win script. Start: Snowpoint Gym door (11,28) -> end: same map, BADGE_ID_ICICLE, TM72.
-- start: prev + `lab.recipe`; warp MAP_HEADER_SNOWPOINT_CITY_GYM 0; lab state lines: 6 badge, 33 clear-flag, 167 flag, 25 item, 1 pokedex, 5 poketch, 1 register-item, 71 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the ice-slide gym and Candice's win script. The ice route is tools/pt_ice.py's (the gym's slopes from the land data's BDHC heights, snowballs smashed at speed). Start: Snowpoint City below the Pokemon Center door (379,234) (35's end) -> end: Snowpoint City at the gym door, BADGE_ID_ICICLE, TM72.
+- start: prev + `lab.recipe`; map MAP_HEADER_SNOWPOINT_CITY 379 234 FACE_DOWN; lab state lines: 6 badge, 33 clear-flag, 179 flag, 25 item, 1 pokedex, 5 poketch, 1 register-item, 71 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY)
 - trainers: none
-- end state: map MAP_HEADER_SNOWPOINT_CITY_GYM; 7 badges; badge BADGE_ID_ICICLE; >= 1 battles; flags set FLAG_RECEIVED_CANDICE_TM72
+- end state: map MAP_HEADER_SNOWPOINT_CITY; 7 badges; badge BADGE_ID_ICICLE; >= 1 battles; flags set FLAG_RECEIVED_CANDICE_TM72
 - frames: estimate 22000, budget 33000
 - refs: scripts_snowpoint_city_gym.s:35; scripts_snowpoint_city_gym.s:37-42; scripts_snowpoint_city_gym.s:44; scripts_snowpoint_city_gym.s:49-52; scripts_snowpoint_city_gym.s:53; scripts_snowpoint_city_gym.s:35-53
 
 #### platinum/37-lake-acuity-jupiter — Lake Acuity: Jupiter leaves, injured rival
-- proves: Proves Rock Climb (ICICLE) into Lake Acuity and the Jupiter/rival OnFrame that unlocks the Veilstone storage-key grunt. Start: Snowpoint Pokémon Center door (379,233) -> end: Lake Acuity (318), VAR_LAKE_ACUITY_STATE 2.
-- start: prev + `lab.recipe`; warp MAP_HEADER_SNOWPOINT_CITY 4; lab state lines: 7 badge, 33 clear-flag, 169 flag, 26 item, 1 pokedex, 5 poketch, 1 register-item, 71 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves Rock Climb (ICICLE) into Lake Acuity and the Jupiter/rival OnFrame that unlocks the Veilstone storage-key grunt. Start: Snowpoint City at the gym door (367,223) (36's end) -> end: Lake Acuity, VAR_LAKE_ACUITY_STATE 2.
+- start: prev + `lab.recipe`; map MAP_HEADER_SNOWPOINT_CITY 367 223 FACE_DOWN; lab state lines: 7 badge, 33 clear-flag, 182 flag, 26 item, 1 pokedex, 5 poketch, 1 register-item, 71 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_LAKE_ACUITY; flags set FLAG_HIDE_LAKE_ACUITY_JUPITER; flags clear FLAG_HIDE_VEILSTONE_CITY_GRUNT_M_STORAGE_KEY; vars VAR_LAKE_ACUITY_STATE=2
 - frames: estimate 9000, budget 13500
 - refs: field_move_tasks.c:631; scripts_acuity_lakefront.s:27-31; scripts_lake_acuity.s:9-70; scripts_lake_acuity.s:35; scripts_lake_acuity.s:58; scripts_lake_acuity.s:60; scripts_lake_acuity.s:61; scripts_lake_acuity.s:62; scripts_lake_acuity.s:63; scripts_lake_acuity.s:64; scripts_lake_acuity.s:65; scripts_lake_acuity.s:66; scripts_lake_acuity.s:67; scripts_lake_acuity.s:68; scripts_acuity_lakefront.s:34-37; src/field_move_tasks.c:631
 
 #### platinum/38-veilstone-storage-key-hq-entry — Veilstone: storage key, Looker, Galactic HQ entry
-- proves: Proves the storage-key grunt, Looker's agreement and the warehouse HQ door coord. Start: Veilstone Pokémon Center door (717,611) -> end: Galactic HQ B2F (310).
-- start: prev + `lab.recipe`; warp MAP_HEADER_VEILSTONE_CITY 10; lab state lines: 7 badge, 37 clear-flag, 177 flag, 26 item, 1 pokedex, 5 poketch, 1 register-item, 72 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the storage-key grunt, Looker's agreement and the warehouse HQ door coord. Out of Lake Acuity, Fly to Veilstone. Start: Lake Acuity (37's end) -> end: Galactic HQ B2F (310).
+- start: prev + `lab.recipe`; map MAP_HEADER_LAKE_ACUITY 14 49 FACE_UP; lab state lines: 7 badge, 37 clear-flag, 190 flag, 26 item, 1 pokedex, 5 poketch, 1 register-item, 72 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_GALACTIC_HQ_B2F; flags set FLAG_USED_STORAGE_KEY, FLAG_AGREED_WITH_LOOKER_TO_ENTER_HIDEOUT; vars VAR_VEILSTONE_CITY_GALACTIC_WAREHOUSE_STATE=4
 - frames: estimate 9000, budget 13500
 - refs: scripts_veilstone_city.s:1068-1149; scripts_veilstone_city_galactic_warehouse.s:138-171; scripts_veilstone_city.s:1078; scripts_veilstone_city.s:1082; scripts_veilstone_city.s:1131; scripts_veilstone_city.s:1143; scripts_veilstone_city.s:1144; scripts_veilstone_city_galactic_warehouse.s:143; scripts_veilstone_city_galactic_warehouse.s:154; scripts_veilstone_city_galactic_warehouse.s:160-161; scripts_veilstone_city_galactic_warehouse.s:168; scripts_veilstone_city_galactic_warehouse.s:169; scripts_veilstone_city_galactic_warehouse.s:170
 
 #### platinum/39-galactic-hq-cyrus — Galactic HQ: Galactic Key, Cyrus, Master Ball
-- proves: Proves the key doors, the warp panels and the 4F Cyrus coord battle (Master Ball). Start: Galactic HQ B2F (3,16) -> end: Galactic HQ 4F (308), Cyrus beaten.
-- start: prev + `lab.recipe`; warp MAP_HEADER_GALACTIC_HQ_B2F 2; lab state lines: 7 badge, 37 clear-flag, 184 flag, 26 item, 1 pokedex, 5 poketch, 1 register-item, 73 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the key doors, the warp panels and the 4F Cyrus coord battle (Master Ball). The walk is tools/pt_warps.py's (the warp graph of the HQ floors, its panels and Veilstone outside): the Galactic Key on B2F is reached by the B1F/1F/2F panels, the rest through the HQ's front door, the 1F key door, the hall speech (which clears its grunts) and 2F/3F panels up to the 4F key door. Start: Galactic HQ B2F (3,16) (38's end) -> end: Galactic HQ 4F, Cyrus beaten.
+- start: prev + `lab.recipe`; warp MAP_HEADER_GALACTIC_HQ_B2F 2; lab state lines: 7 badge, 37 clear-flag, 197 flag, 26 item, 1 pokedex, 5 poketch, 1 register-item, 73 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_GALACTIC_HQ_4F; >= 1 battles; flags set FLAG_OBTAINED_GALACTIC_HQ_B2F_GALACTIC_KEY, FLAG_HIDE_GALACTIC_HQ_4F_CYRUS; vars VAR_GALACTIC_HQ_4F_STATE=1
-- frames: estimate 30000, budget 45000
+- frames: estimate 30000, budget 90000
 - refs: scripts_galactic_hq_b2f.s:19-47; scripts_galactic_hq_1f.s:96-124; scripts_galactic_hq_3f.s:15-43; scripts_galactic_hq_4f.s:104-132; scripts_galactic_hq_hall.s:9-101; scripts_galactic_hq_4f.s:13-58; scripts_galactic_hq_b2f.s:47; scripts_galactic_hq_1f.s:124; scripts_galactic_hq_3f.s:43; scripts_galactic_hq_4f.s:132; scripts_galactic_hq_1f.s:17; scripts_galactic_hq_hall.s:25; scripts_galactic_hq_4f.s:48-99; scripts_galactic_hq_hall.s:100; scripts_galactic_hq_4f.s:43-46; scripts_galactic_hq_4f.s:55; scripts_galactic_hq_4f.s:56; events_galactic_hq_b2f.json
 
 #### platinum/40-galactic-hq-saturn-free-lake-trio — Galactic HQ: Saturn and the lake trio freed
-- proves: Proves the control-room Saturn battle and the release button. Start: Galactic HQ laboratory (1,11) -> end: control room (494), FLAG_FREED_GALACTIC_HQ_POKEMON.
-- start: prev + `lab.recipe`; warp MAP_HEADER_GALACTIC_HQ_LABORATORY 0; lab state lines: 7 badge, 37 clear-flag, 191 flag, 28 item, 1 pokedex, 5 poketch, 1 register-item, 74 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the control-room Saturn battle and the release button. Start: Galactic HQ 4F at the Cyrus coord (8,11) (39's end) -> end: control room (494), FLAG_FREED_GALACTIC_HQ_POKEMON.
+- start: prev + `lab.recipe`; map MAP_HEADER_GALACTIC_HQ_4F 8 11 FACE_UP; lab state lines: 7 badge, 37 clear-flag, 204 flag, 28 item, 1 pokedex, 5 poketch, 1 register-item, 74 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM; >= 1 battles; flags set FLAG_FREED_GALACTIC_HQ_POKEMON, FLAG_DEFEATED_GALACTIC_HQ_CONTROL_ROOM_SATURN; vars VAR_MT_CORONET_2F_STATE=1
 - frames: estimate 12000, budget 18000
 - refs: scripts_galactic_hq_control_room.s:35-74; scripts_galactic_hq_control_room.s:50-70; events_galactic_hq_control_room.json:173-256; scripts_galactic_hq_control_room.s:307-316; scripts_galactic_hq_control_room.s:46; scripts_galactic_hq_control_room.s:47; scripts_galactic_hq_control_room.s:184; scripts_galactic_hq_control_room.s:189; scripts_galactic_hq_control_room.s:190; scripts_galactic_hq_control_room.s:216; scripts_galactic_hq_control_room.s:203-205; scripts_galactic_hq_control_room.s:249; scripts_galactic_hq_control_room.s:252; scripts_galactic_hq_control_room.s:253; scripts_galactic_hq_control_room.s:254; events_galactic_hq_laboratory.json; scripts_galactic_hq_control_room.s:173-256
 
 #### platinum/41-mt-coronet-climb — Mt Coronet: Black Flute and the climb to Spear Pillar
-- proves: Proves the Mt Coronet 2F Looker coord and the HM climb to the summit. Start: Mt Coronet 2F (27,48) -> end: Spear Pillar (220) at (31,53).
-- start: prev + `lab.recipe`; warp MAP_HEADER_MT_CORONET_2F 0; lab state lines: 7 badge, 39 clear-flag, 195 flag, 28 item, 1 pokedex, 5 poketch, 1 register-item, 76 var
-- party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
+- proves: Proves the Mt Coronet 2F Looker coord and the HM climb to the summit. Out of the HQ, Fly to Hearthome, Route 208 to Mt Coronet 1F South and 2F (Strength boulder, Looker), then the climb: tools/pt_warps.py MAP_HEADER_MT_CORONET_2F 14 49 MAP_HEADER_SPEAR_PILLAR 31 53 --maps MAP_HEADER_MT_CORONET_ MAP_HEADER_SPEAR_PILLAR --recipe <this lab.recipe> --hm (Rock Climb, Rock Smash, Surf on Bibarel). Start: Galactic HQ control room (40's end) -> end: Spear Pillar (220) at (31,53).
+- start: prev + `lab.recipe`; map MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM 8 6 FACE_UP; lab state lines: 7 badge, 39 clear-flag, 208 flag, 28 item, 1 pokedex, 5 poketch, 1 register-item, 76 var
+- party: SPECIES_TORTERRA 63 (MOVE_EARTHQUAKE); SPECIES_TOGEPI 1; SPECIES_BIBAREL 40 (MOVE_CUT); SPECIES_STARAPTOR 45 (MOVE_FLY); SPECIES_INFERNAPE 80 (MOVE_FLAMETHROWER)
 - trainers: none
 - end state: map MAP_HEADER_SPEAR_PILLAR; flags set FLAG_RECEIVED_MT_CORONET_2F_BLACK_FLUTE, FLAG_FIRST_ARRIVAL_SPEAR_PILLAR; vars VAR_MT_CORONET_2F_STATE=2
-- frames: estimate 30000, budget 45000
+- frames: estimate 30000, budget 120000
 - refs: scripts_mt_coronet_2f.s:20-56; scripts_mt_coronet_6f.s:8-63; scripts_mt_coronet_2f.s:23; scripts_mt_coronet_2f.s:27; scripts_mt_coronet_2f.s:42-45; scripts_mt_coronet_2f.s:52; scripts_spear_pillar.s:19
 
 #### platinum/42-spear-pillar — Spear Pillar: grunt double, Mars + Jupiter tag, Giratina's rift

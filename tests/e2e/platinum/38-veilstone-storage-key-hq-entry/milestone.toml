@@ -1,5 +1,6 @@
 # Proves the storage-key grunt, Looker's agreement and the warehouse HQ door coord.
-# Start: Veilstone Pokémon Center door (717,611) -> end: Galactic HQ B2F (310).
+# Out of Lake Acuity, Fly to Veilstone.
+# Start: Lake Acuity (37's end) -> end: Galactic HQ B2F (310).
 
 title = "Veilstone: storage key, Looker, Galactic HQ entry"
 status = "planned"
@@ -27,6 +28,21 @@ lab = "lab.recipe"
 
 [run]
 frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 50
+note = "Lake Acuity exit, events_lake_acuity warp 3 -> Acuity Lakefront (308,229): Fly from the overworld"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ACUITY_LAKEFRONT"
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_VEILSTONE_CITY"
+note = "lands at the Pokemon Center (717,612) (src/spawn_locations.c:40)"
 
 [[step]]
 do = "walk_to"

@@ -1,10 +1,11 @@
 # Proves the Rowan briefing OnFrame and the Mars battle that hides the Mt Coronet grunts.
-# Start: Lake Verity (46,54) -> end: Lake Verity (312), Mars beaten, VAR_LAKE_ACUITY_STATE 1.
+# Out of Valor Cavern and the drained lake, fly to Twinleaf, Route 201 west to Verity Lakefront, whose warps lead to
+# the Galactic-held lake once Saturn is beaten (scripts_verity_lakefront.s:11-28).
+# Start: Valor Cavern (14,20) (33's end) -> end: Lake Verity, Mars beaten, VAR_LAKE_ACUITY_STATE 1.
 
 title = "Lake Verity: Mars"
-status = "planned"
 priority = "P0"
-estimate = 14000
+estimate = 23495
 refs = [
   "scripts_verity_lakefront.s:11-28",
   "scripts_lake_verity.s:157-183",
@@ -21,9 +22,55 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 21000
+frames = 35300
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 29
+note = "cavern exit, events_valor_cavern warp 0 -> LAKE_VALOR_DRAINED (32,32) (the normal-lake warp is removed while FLAG_GALACTIC_LEFT_LAKE_VALOR is unset, scripts_valor_cavern.s:14)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_LAKE_VALOR_DRAINED"
+
+[[step]]
+do = "walk_to"
+x = 52
+z = 10
+max = 6000
+note = "drained lake exit, events_lake_valor_drained warp 0 -> Valor Lakefront (717,760); its grunts were beaten on the way in (33)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VALOR_LAKEFRONT"
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_TWINLEAF_TOWN"
+note = "lands at (116,886) (src/spawn_locations.c:29)"
+
+[[step]]
+do = "walk_to"
+via = [[110, 887], [110, 853], [80, 853]]
+x = 80
+z = 844
+max = 4000
+on_battle = "flee"
+note = "north up Route 201 and west to Verity Lakefront (tools/pt_route.py 116,887 80,844 TWINLEAF ROUTE_201 VERITY_LAKEFRONT); the (80,844) coord script only runs at VAR_VERITY_LAKEFRONT_STATE 0 (02 set it 1)"
+
+[[step]]
+do = "walk_to"
+x = 80
+z = 843
+note = "Verity Lakefront warp 2 -> LAKE_VERITY (46,54) once Saturn is beaten (scripts_verity_lakefront.s:11-23)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_LAKE_VERITY"
 
 [[step]]
 do = "advance_text"
@@ -36,7 +83,7 @@ z = 39
 face = "up"
 interact = true
 max = 9000
-note = "Mars obj7 (55,38); counterpart (54,38), Rowan (53,39); [INFERENCE] approach tile; z49/z43 grunt pairs likely see the walk"
+note = "Mars obj7 (55,38); counterpart (54,38), Rowan (53,39); the grunts at z49/z43 see the walk and are fought"
 
 [[step]]
 do = "advance_text"
@@ -55,3 +102,4 @@ map = "MAP_HEADER_LAKE_VERITY"
 vars = { VAR_LAKE_ACUITY_STATE = 1, VAR_LAKE_VERITY_PROF_ROWAN_STATE = 1 }
 flags = ["FLAG_TEAM_GALACTIC_LEFT_LAKE_VERITY", "FLAG_HIDE_MT_CORONET_1F_NORTH_ROOM_1_GRUNTS_M"]
 battles = 1
+

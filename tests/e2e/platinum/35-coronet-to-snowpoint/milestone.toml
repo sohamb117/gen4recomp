@@ -1,5 +1,7 @@
 # Proves the Coronet B1F passage (grunts gone after Mars), Maylene on Route 217, HM08 and the Acuity rival.
-# Start: Mt Coronet 1F North Room 1 (29,35) -> end: Snowpoint City (165), HM08.
+# Fly to Celestic, west on Route 211 East into Mt Coronet 1F North Room 1, Strength up its east corridor, B1F, North
+# Room 2, then the snow routes 216/217 (trainers fought) past Acuity Lakefront into Snowpoint.
+# Start: Lake Verity (34's end) -> end: Snowpoint City, HM08.
 
 title = "Mt Coronet B1F to Snowpoint via Routes 216/217, HM08"
 status = "planned"
@@ -22,23 +24,141 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 39000
+frames = 80000
+
+[[step]]
+do = "walk_to"
+x = 46
+z = 54
+note = "Lake Verity exit (events_lake_verity warp 1) -> Verity Lakefront: Fly from the overworld (off it the town map opens on the exit location, town_map/context.c:108-116)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VERITY_LAKEFRONT"
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_CELESTIC_TOWN"
+note = "lands at the Pokemon Center (472,539) (src/spawn_locations.c:33)"
+
+[[step]]
+do = "walk_to"
+via = [[462, 539], [462, 541], [455, 541], [455, 539], [451, 539], [451, 530], [435, 530], [435, 531], [423, 531], [423, 527]]
+x = 419
+z = 527
+max = 6000
+note = "Route 211 East to the Coronet door, events_route_211_east warp 0 (tools/pt_route.py 472,539 419,527 CELESTIC_TOWN ROUTE_211_EAST)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_MT_CORONET_1F_NORTH_ROOM_1"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 31
+face = "up"
+interact = true
+note = "below Strength boulder 1 (29,30) (events_mt_coronet_1f_north_room_1 obj 7): the only way north is the one-tile corridor x 29, z 28-30"
+
+[[step]]
+do = "advance_text"
+note = "'Would you like to use Strength?' YES (scripts_field_moves.s:187-226; needs the Mine Badge, 30)"
+
+[[step]]
+do = "steps"
+route = [[29, 28], [28, 28], [28, 26]]
+note = "push the boulder up to (29,27), step round it to the west"
 
 [[step]]
 do = "walk_to"
 x = 11
 z = 10
-note = "B1F warp (11,10); grunts obj16/17 hidden by FLAG_HIDE_MT_CORONET_1F_NORTH_ROOM_1_GRUNTS_M"
+max = 4000
+note = "B1F warp (11,10); grunts obj16/17 hidden by FLAG_HIDE_MT_CORONET_1F_NORTH_ROOM_1_GRUNTS_M (34)"
 
 [[step]]
 do = "wait_map"
 map = "MAP_HEADER_MT_CORONET_B1F"
-# PHASE2: B1F (8,60) -> (8,3) through Rock Smash rocks / Strength boulders (events_mt_coronet_b1f.json obj0-17): order needs
-#   collision (PC_LAB_MAPSCAN of map 219). Then 1F North Room 2 (217) -> (2,18) -> Route 216 (deep snow) -> Route 217: coord
-#   (302..303,376) Maylene (scripts_route_217.s:24-46); HM08 item ball obj10 (296,305) (events_route_217.json, scripts_visible_items.s:1302);
-#   Acuity Lakefront coord (310..311,244) rival (scripts_acuity_lakefront.s:43-61); continue north to Snowpoint (wait_map MAP_HEADER_SNOWPOINT_CITY).
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 3
+max = 6000
+hm = true
+on_battle = "flee"
+note = "B1F (8,60) -> warp 1 (8,3) up the west corridor x 2-4"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_MT_CORONET_1F_NORTH_ROOM_2"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 18
+max = 3000
+note = "warp 1 (2,18) -> Route 216 (375,403)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_216"
+
+[[step]]
+do = "walk_to"
+via = [[371, 404], [371, 402], [299, 402], [299, 388], [304, 388], [304, 378]]
+x = 302
+z = 376
+max = 20000
+on_battle = "flee"
+note = "Route 216 west and Route 217 north to Maylene's coord (302..303,376) (tools/pt_route.py 375,404 302,376 ROUTE_216 ROUTE_217); deep snow; sight trainers fought"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "Route217_CoordEvent_Maylene (scripts_route_217.s:24-46)"
+
+[[step]]
+do = "walk_to"
+via = [[302, 374], [304, 374], [304, 317], [296, 317]]
+x = 296
+z = 306
+face = "up"
+interact = true
+max = 12000
+on_battle = "flee"
+note = "HM08 item ball obj (296,305) (events_route_217.json; scripts_visible_items.s:1302)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+via = [[291, 306], [291, 271], [306, 271], [306, 258], [310, 258]]
+x = 310
+z = 244
+max = 10000
+on_battle = "flee"
+note = "Acuity Lakefront coord (310..311,244) (tools/pt_route.py 296,306 310,244 ROUTE_217 ACUITY_LAKEFRONT)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "AcuityLakefront_CoordEvent_Rival (scripts_acuity_lakefront.s:43-61)"
+
+[[step]]
+do = "walk_to"
+via = [[310, 243], [319, 243], [319, 241], [325, 241], [325, 242], [337, 242], [337, 238], [353, 238], [353, 240], [359, 240],
+       [359, 239], [367, 239], [367, 227], [375, 227], [375, 234]]
+x = 379
+z = 234
+max = 8000
+on_battle = "flee"
+note = "east into Snowpoint City, to the Pokemon Center door (tools/pt_route.py 310,244 379,234 ACUITY_LAKEFRONT SNOWPOINT_CITY)"
 
 [expect]
 map = "MAP_HEADER_SNOWPOINT_CITY"

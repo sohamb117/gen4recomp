@@ -1,0 +1,12 @@
+# Boost on 34's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Bibarel carries Strength from here on (Take Down out; Mt Coronet 1F North Room 1's boulder, 35); every member
+# levelled (HP refilled), the lead's four moves set again (PP refilled), for the Route 216/217 trainers.
+party-level 0 66
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE
+party-level 1 30
+party-level 2 45
+party-move 2 3 MOVE_STRENGTH
+party-level 3 50

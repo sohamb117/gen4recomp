@@ -1,5 +1,5 @@
 # Proves Rock Climb (ICICLE) into Lake Acuity and the Jupiter/rival OnFrame that unlocks the Veilstone storage-key grunt.
-# Start: Snowpoint Pokémon Center door (379,233) -> end: Lake Acuity (318), VAR_LAKE_ACUITY_STATE 2.
+# Start: Snowpoint City at the gym door (367,223) (36's end) -> end: Lake Acuity, VAR_LAKE_ACUITY_STATE 2.
 
 title = "Lake Acuity: Jupiter leaves, injured rival"
 status = "planned"
@@ -27,27 +27,27 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 13500
 
 [[step]]
 do = "walk_to"
+via = [[367, 239], [356, 239], [356, 240], [353, 240], [353, 238], [337, 238], [337, 242], [324, 242], [324, 241], [319, 241], [319, 242]]
 x = 310
 z = 242
-face = "up"
-interact = true
-note = "foot of the Rock Climb wall (310,238..241) on Acuity Lakefront; [INFERENCE] tile"
-
-[[step]]
-do = "advance_text"
-note = "Rock Climb: Yes (src/field_move_tasks.c:631)"
+max = 6000
+on_battle = "flee"
+note = "west back to Acuity Lakefront (tools/pt_route.py 367,223 310,242 ACUITY_LAKEFRONT SNOWPOINT_CITY), below the Rock Climb wall (310,238..241, behaviour ROCK_CLIMB_N_S)"
 
 [[step]]
 do = "walk_to"
 x = 308
 z = 229
-note = "lake warp (308|309,229) -> LAKE_ACUITY (scripts_acuity_lakefront.s:27-31)"
+hm = true
+max = 4000
+note = "up the wall (Rock Climb: needs the Icicle Badge, src/field_move_tasks.c:631) to the lake warp, events_acuity_lakefront warp 2 -> LAKE_ACUITY (14,50) (warps 0/1 moved off once Galactic left Lake Verity, scripts_acuity_lakefront.s:11-23)"
 
 [[step]]
 do = "wait_map"
@@ -57,7 +57,7 @@ map = "MAP_HEADER_LAKE_ACUITY"
 do = "advance_text"
 max = 8000
 shot = "acuity_rival"
-note = "LakeAcuity_CoordEvent_JupiterRival (scripts_lake_acuity.s:9-70); x 14/15 branches"
+note = "frame script at VAR_LAKE_ACUITY_STATE 1 (scripts_init_lake_acuity.s), LakeAcuity_CoordEvent_JupiterRival (scripts_lake_acuity.s:9-70); x 14/15 branches"
 
 [expect]
 map = "MAP_HEADER_LAKE_ACUITY"

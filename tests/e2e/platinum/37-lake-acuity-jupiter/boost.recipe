@@ -1,0 +1,4 @@
+# Boost on 36's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Bibarel carries Rock Climb from here on, in Cut's slot (Acuity Lakefront's wall, 37; no Cut tree is left on the
+# story's way).
+party-move 2 0 MOVE_ROCK_CLIMB

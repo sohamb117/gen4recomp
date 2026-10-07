@@ -293,10 +293,17 @@ def choose_move(gd, mon, foe, rejected=(), ally=False, useless=()):
     return rest[0] if rest else None
 
 
-def replacement(gd, party, foe, first, ally=False, useless=()):
+def replacement(gd, party, foe, first, ally=False, useless=(), best=False):
     """The party screen slot to send in: the first healthy member from `first` on with a damaging move against foe,
-    else the first healthy one; None when there is none."""
+    else the first healthy one; None when there is none. With best (auto_battle's send = "best"): the healthy member
+    whose best move scores highest against foe, weighted by its level."""
     healthy = [k for k in range(first, len(party)) if party[k].alive]
+    if best:
+        scored = [(best_damage(gd, party[k], foe, ally=ally, useless=useless)[1] * max(party[k].level, 1), -k, k)
+                  for k in healthy]
+        scored = [t for t in scored if t[0] > 0]
+        if scored:
+            return max(scored)[2]
     for k in healthy:
         if best_damage(gd, party[k], foe, ally=ally, useless=useless)[0] is not None:
             return k
@@ -320,6 +327,7 @@ def bot_auto_battle(s, step, ctx):
     wild Pokemon) and fights once FLEE_TRIES runs have not ended the battle."""
     fixed = "move" in step
     move = _int(step, "move", 0)
+    send_best = step.get("send") == "best"  # a fainted lead's replacement: the best scorer, not the first able
     flee = FLEE_TRIES if step.get("flee") else 0
     limit = s.frame + _int(step, "max", 30000)
     if not s.in_battle and not s.run(_int(step, "wait", 900), until="in_battle=1"):
@@ -336,6 +344,7 @@ def bot_auto_battle(s, step, ctx):
     rejected = []    # move slots the game sent back this turn
     slot = None      # the move slot tapped last
     want = None      # the party screen slot auto_battle chose
+    shift_taps = 0   # SHIFT taps on the current visit of a party member's page
     switched_at = -1  # `turns` of the last switch
     report = None    # the last battle report of this battle (a Probe)
     tried = {}       # menu battler -> (move, foe battler, foe species, foe HP) of its last move
@@ -379,7 +388,7 @@ def bot_auto_battle(s, step, ctx):
                 if (fresh and not shared and me.alive and switched_at != turns
                         and best_damage(gd, me, foe, ally=ally, useless=useless)[0] is None):
                     first = 2 if p.battle_type & BATTLE_TYPE_DOUBLES else 1
-                    k = replacement(gd, p.party, foe, first, ally, useless)
+                    k = replacement(gd, p.party, foe, first, ally, useless, best=send_best)
                     if k is not None and best_damage(gd, p.party[k], foe, ally=ally, useless=useless)[0] is None:
                         k = None
                 if k is not None:
@@ -431,13 +440,14 @@ def bot_auto_battle(s, step, ctx):
             continue
         if p is not None and p.ui == UI_BATTLE_PARTY:
             if p.ui_arg == 0:
+                shift_taps = 0
                 if want is None and report is not None and party_try == 0 and gd is not None:
                     # a fainted lead: the battle's last report has the party (the screen's order) and the foe
                     foe = next((report.battlers[b] for b in (1 + 2 * target, 3 - 2 * target)
                                 if b < len(report.battlers) and report.battlers[b].alive), None)
                     first = 2 if report.battle_type & BATTLE_TYPE_DOUBLES else 1
                     if not report.battle_type & (BATTLE_TYPE_2VS2 | BATTLE_TYPE_TAG):
-                        want = replacement(gd, report.party, foe, first)
+                        want = replacement(gd, report.party, foe, first, best=send_best)
                 if want is not None and last != ("party", want):
                     party_try = want
                     last = ("party", want)
@@ -447,8 +457,26 @@ def bot_auto_battle(s, step, ctx):
                     party_try = party_try % 5 + 1
                     last = ("party", None)
                 _tap(s, TAP_PARTY[party_try])
+            elif shift_taps >= 3:
+                # the page stayed up through three SHIFT taps (a member that cannot come in: fainted, or already
+                # out in a double battle): B back to the party list and the next slot at once (the probe keeps
+                # reporting the SHIFT page after B, so the list branch above would not run)
+                s.note("auto_battle: party slot %d refused; the next one" % party_try)
+                s.run(2, "b")
+                s.run(20)
+                shift_taps = 0
+                want = None
+                party_try = party_try % 5 + 1
+                last = ("party", None)
+                _tap(s, TAP_PARTY[party_try])
             else:
-                _tap(s, TAP_SHIFT)
+                if shift_taps == 0:
+                    _tap(s, TAP_SHIFT)
+                else:
+                    # the page in key mode (the cursor's red corners on SHIFT): A selects it
+                    s.run(2, "a")
+                    s.run(12)
+                shift_taps += 1
                 want = None
             continue
         # text, animations, the evolution scene: A advances text (B would cancel an evolution)
@@ -733,8 +761,11 @@ def bot_walk_to(s, step, ctx):
     warped = False
     while (p.x, p.z) != goal:
         if s.frame >= limit:
-            raise HarnessError("walk_to (%d,%d): still at (%d,%d) after %d frames (battles excluded)" % (
-                goal + (p.x, p.z, bound)))
+            near = sorted((o[0], o[1], o[2]) for o in p.objects if abs(o[0] - p.x) + abs(o[1] - p.z) <= 4)
+            raise HarnessError("walk_to (%d,%d): still at (%d,%d) after %d frames (battles excluded); facing %d, "
+                               "objects near (x, z, id) %s, %d edges learned blocked %s" % (
+                                   goal + (p.x, p.z, bound, p.facing, near, len(terrain.blocked_edges),
+                                           sorted(terrain.blocked_edges)[:8])))
         terrain.update(p)
         if step.get("_corner") and goal in terrain.objects and abs(p.x - goal[0]) + abs(p.z - goal[1]) == 1:
             s.note("walk_to: waypoint (%d,%d) is occupied; passing it from (%d,%d)" % (goal + (p.x, p.z)))
@@ -782,6 +813,16 @@ def bot_walk_to(s, step, ctx):
                 warped = True
                 break
             raise HarnessError("walk_to (%d,%d): an unexpected warp to map %d at (%d,%d)" % (goal + (p.map_id,) + here))
+        if abs(p.x - here[0]) + abs(p.z - here[1]) > 2:
+            # a warp panel to another spot of the same map (Platinum's Galactic HQ): the map id stays
+            nxt = (here[0] + DIR_DELTA[d][0], here[1] + DIR_DELTA[d][1])
+            s.note("walk_to: warped within map %d to (%d,%d) stepping %s from (%d,%d)" % (start_map, p.x, p.z,
+                                                                                         DIR_KEYS[d], *here))
+            if nxt == goal or here == goal or len(dirs) == 1:
+                warped = True
+                break
+            raise HarnessError("walk_to (%d,%d): an unexpected warp panel to (%d,%d) at (%d,%d)" % (
+                goal + (p.x, p.z) + here))
         if (p.x, p.z) == here:
             nxt = (here[0] + DIR_DELTA[d][0], here[1] + DIR_DELTA[d][1])
             fm = terrain.field_move(nxt[0], nxt[1], d)
@@ -1101,6 +1142,18 @@ def bot_fly(s, step, ctx):
     bot_wait_field(s, step, ctx)
     p = s.probe()
     here = (p.x // 32, p.z // 32)
+    if "start" in step:
+        # off the overworld matrix (caves, lakes, buildings) the town map opens on the exit location, the overworld
+        # tile the player last left it from (town_map/context.c:108-116), which the save dump does not show
+        here = tuple(int(v) for v in step["start"])
+    elif ctx.game == "platinum":
+        path = os.path.join(ROOT, "games", "platinum", "res", "field", "matrices", "map_matrix_000.json")
+        headers = json.load(open(path))["headers"]
+        on = here[1] < len(headers) and here[0] < len(headers[here[1]]) and headers[here[1]][here[0]] != "MAP_NONE" \
+            and ctx.resolve(headers[here[1]][here[0]]) == s.map_id
+        if not on:
+            raise HarnessError("fly: map %d is off the overworld matrix: walk out first, or give start = [x, z] (the "
+                               "town-map block of the exit location)" % s.map_id)
     if "block" in step:
         goal = tuple(int(v) for v in step["block"])
     else:

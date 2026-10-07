@@ -1,5 +1,7 @@
 # Proves the ice-slide gym and Candice's win script.
-# Start: Snowpoint Gym door (11,28) -> end: same map, BADGE_ID_ICICLE, TM72.
+# The ice route is tools/pt_ice.py's (the gym's slopes from the land data's BDHC heights, snowballs smashed at speed).
+# Start: Snowpoint City below the Pokemon Center door (379,234) (35's end) -> end: Snowpoint City at the gym door,
+# BADGE_ID_ICICLE, TM72.
 
 title = "Snowpoint Gym: Candice and the Icicle Badge"
 status = "planned"
@@ -17,19 +19,66 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 33000
 
 [[step]]
-do = "wait_field"
-# PHASE2: Snowpoint gym slide route. Grid (land data matrix 114) is in pt_story_late.md research 34 ('~' TILE_BEHAVIOR_ICE,
-#   '+' BLOCK_E_W/N_S edges, 'o' snowball objects (script 2037), trainers (17,3),(21,9),(3,6),(18,15),(5,16),(2,13) sight 1,
-#   Candice (11,3), guide (12,27)). Slide rules and snowball breaking live in the field ice code (not in scripts): confirm
-#   them, search the grid, then talk to Candice facing up, auto_battle, advance_text (scripts_snowpoint_city_gym.s:35-53).
+do = "walk_to"
+x = 367
+z = 222
+note = "gym door, events_snowpoint_city warp 5 -> MAP_HEADER_SNOWPOINT_CITY_GYM (11,28)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SNOWPOINT_CITY_GYM"
+
+[[step]]
+do = "slide"
+dirs = "LEFT LEFT LEFT UP UP RIGHT DOWN RIGHT LEFT DOWN RIGHT RIGHT DOWN LEFT LEFT DOWN LEFT LEFT DOWN LEFT LEFT LEFT UP RIGHT LEFT DOWN RIGHT UP UP UP UP UP UP UP"
+max = 30000
+note = "python3 tests/e2e/tools/pt_ice.py (from (11,28) to (11,4)): the x=11 column's snowballs smashed by slides gaining speed down the bowl's slopes"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+face = "up"
+interact = true
+shot = "candice"
+note = "Candice (11,3) (events_snowpoint_city_gym obj 0)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+send = "best"
+note = "TRAINER_LEADER_CANDICE: SNEASEL 40, PILOSWINE 40, ABOMASNOW 42, FROSLASS 44 (res/trainers/data/leader_candice.json)"
+
+[[step]]
+do = "advance_text"
+shot = "icicle_badge"
+note = "the Icicle Badge and TM72 (scripts_snowpoint_city_gym.s:35-53)"
+
+[[step]]
+do = "slide"
+dirs = "RIGHT DOWN"
+note = "back down to the entrance floor (python3 tests/e2e/tools/pt_ice.py --after <the route in> --to 11 25 ...): down the x=12 column, its snowballs smashed on the way in"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 28
+note = "gym door, events_snowpoint_city_gym warp 0 -> Snowpoint City (367,222)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SNOWPOINT_CITY"
 
 [expect]
-map = "MAP_HEADER_SNOWPOINT_CITY_GYM"
+map = "MAP_HEADER_SNOWPOINT_CITY"
 badges = 7
 badge = ["BADGE_ID_ICICLE"]
 flags = ["FLAG_RECEIVED_CANDICE_TM72"]

@@ -1,5 +1,8 @@
 # Proves the key doors, the warp panels and the 4F Cyrus coord battle (Master Ball).
-# Start: Galactic HQ B2F (3,16) -> end: Galactic HQ 4F (308), Cyrus beaten.
+# The walk is tools/pt_warps.py's (the warp graph of the HQ floors, its panels and Veilstone outside): the Galactic Key
+# on B2F is reached by the B1F/1F/2F panels, the rest through the HQ's front door, the 1F key door, the hall speech
+# (which clears its grunts) and 2F/3F panels up to the 4F key door.
+# Start: Galactic HQ B2F (3,16) (38's end) -> end: Galactic HQ 4F, Cyrus beaten.
 
 title = "Galactic HQ: Galactic Key, Cyrus, Master Ball"
 status = "planned"
@@ -29,9 +32,101 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
-frames = 45000
+frames = 90000
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 81
+z = 3
+avoid = [[50, 3]]
+note = "MAP_HEADER_GALACTIC_HQ_B2F -> (81,3) -> MAP_HEADER_GALACTIC_HQ_B1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_B1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 11
+z = 3
+note = "MAP_HEADER_GALACTIC_HQ_B1F -> (11,3) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 39
+z = 3
+avoid = [[1, 8], [4, 3], [8, 22], [11, 3], [19, 14], [27, 3], [29, 22], [32, 3], [36, 8], [41, 3], [41, 14], [42, 22], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (39,3) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 36
+z = 8
+avoid = [[1, 8], [4, 3], [8, 22], [11, 3], [19, 14], [27, 3], [29, 22], [39, 3], [41, 3], [41, 14], [42, 22], [46, 3], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (36,8) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 4
+z = 3
+avoid = [[8, 22], [11, 3], [19, 14], [27, 3], [29, 22], [32, 3], [36, 8], [39, 3], [41, 3], [41, 14], [42, 22], [46, 3], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (4,3) -> MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 1
+z = 3
+avoid = [[1, 14], [1, 22], [10, 11], [12, 3], [17, 5], [18, 20], [24, 3], [29, 13], [45, 12], [45, 22], [50, 3], [52, 6], [52, 12]]
+note = "MAP_HEADER_GALACTIC_HQ_2F -> (1,3) -> MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 24
+z = 3
+avoid = [[1, 3], [1, 14], [1, 22], [7, 3], [10, 11], [12, 3], [18, 20], [29, 13], [45, 12], [45, 22], [50, 3], [52, 6], [52, 12]]
+note = "MAP_HEADER_GALACTIC_HQ_2F -> (24,3) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 11
+z = 3
+avoid = [[1, 8], [4, 3], [8, 22], [19, 14], [29, 22], [32, 3], [36, 8], [39, 3], [41, 3], [41, 14], [42, 22], [46, 3], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (11,3) -> MAP_HEADER_GALACTIC_HQ_B2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_B2F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 20
+z = 6
+avoid = [[3, 16], [81, 3]]
+note = "MAP_HEADER_GALACTIC_HQ_B2F -> (20,6)"
 
 [[step]]
 do = "walk_to"
@@ -39,26 +134,258 @@ x = 20
 z = 6
 face = "up"
 interact = true
-note = "Galactic Key item ball obj5 (20,5); [INFERENCE] approach tile"
+note = "Galactic Key item ball obj 5 (20,5)"
 
 [[step]]
 do = "advance_text"
 
 [[step]]
 do = "walk_to"
-x = 14
-z = 9
+max = 8000
+x = 50
+z = 3
+avoid = [[3, 16], [81, 3]]
+note = "MAP_HEADER_GALACTIC_HQ_B2F -> (50,3) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 27
+z = 3
+avoid = [[1, 8], [4, 3], [8, 22], [19, 14], [29, 22], [32, 3], [36, 8], [39, 3], [41, 3], [41, 14], [42, 22], [46, 3], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (27,3) -> MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 17
+z = 5
+avoid = [[1, 3], [1, 14], [1, 22], [7, 3], [10, 11], [12, 3], [18, 20], [29, 13], [45, 12], [45, 22], [50, 3], [52, 6], [52, 12]]
+note = "MAP_HEADER_GALACTIC_HQ_2F -> (17,5) -> MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 7
+z = 3
+avoid = [[1, 14], [1, 22], [10, 11], [12, 3], [17, 5], [18, 20], [24, 3], [29, 13], [45, 12], [45, 22], [50, 3], [52, 6], [52, 12]]
+note = "MAP_HEADER_GALACTIC_HQ_2F -> (7,3) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 1
+z = 8
+avoid = [[8, 22], [11, 3], [19, 14], [27, 3], [29, 22], [32, 3], [36, 8], [39, 3], [41, 3], [41, 14], [42, 22], [46, 3], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (1,8) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 32
+z = 3
+avoid = [[1, 8], [4, 3], [8, 22], [11, 3], [19, 14], [27, 3], [29, 22], [39, 3], [41, 3], [41, 14], [42, 22], [46, 3], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (32,3) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 46
+z = 3
+avoid = [[1, 8], [4, 3], [8, 22], [11, 3], [19, 14], [27, 3], [29, 22], [32, 3], [36, 8], [41, 3], [41, 14], [42, 22], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (46,3) -> MAP_HEADER_GALACTIC_HQ_B1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_B1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 3
+z = 7
+note = "MAP_HEADER_GALACTIC_HQ_B1F -> (3,7) -> MAP_HEADER_GALACTIC_HQ_B2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_B2F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 3
+z = 16
+avoid = [[50, 3]]
+note = "MAP_HEADER_GALACTIC_HQ_B2F -> (3,16) -> MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 8
+z = 11
+note = "MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE -> (8,11) -> MAP_HEADER_VEILSTONE_CITY; crosses the door FLAG_HIDE_VEILSTONE_CITY_GALACTIC_WAREHOUSE_GALACTIC_HQ_DOOR"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 717
+z = 589
+avoid = [[678, 598], [678, 599], [684, 611], [690, 623], [696, 623], [701, 603], [706, 623], [711, 602], [714, 589], [716, 623], [717, 602], [717, 611], [718, 638], [719, 638], [720, 589]]
+note = "MAP_HEADER_VEILSTONE_CITY -> (717,589) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 19
 face = "up"
 interact = true
-note = "B2F key door (14..15,8) (scripts_galactic_hq_b2f.s:19-47); [INFERENCE] approach tile"
+max = 8000
+note = "below the 1F key door (22..23,18) (events_galactic_hq_1f obj 5/6)"
 
 [[step]]
 do = "advance_text"
-note = "Yes"
-# PHASE2: floor order through the warp panels (warp graph in events_galactic_hq_{b2f,1f,2f,3f,4f}.json: 1F warps 8-13, 2F 5-8 & 11-14,
-#   3F 3-8); key doors 1F (22..23,18) (scripts_galactic_hq_1f.s:96-124), 3F (27..28,19) (scripts_galactic_hq_3f.s:15-43),
-#   4F (8..9,14) (scripts_galactic_hq_4f.s:104-132); 4F coord0 (8..9,11) VAR_GALACTIC_HQ_4F_STATE==0 -> Cyrus battle (:13-58):
-#   advance_text, auto_battle, advance_text. Stay on the path: 12 optional grunts would exhaust Dragon Claw PP.
+note = "'Use the Galactic Key?' YES (scripts_galactic_hq_1f.s:96-124)"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 19
+z = 14
+avoid = [[1, 8], [4, 3], [8, 22], [11, 3], [27, 3], [32, 3], [36, 8], [39, 3], [41, 3], [41, 14], [42, 22], [46, 3], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (19,14) -> MAP_HEADER_GALACTIC_HQ_2F; crosses the door FLAG_HIDE_GALACTIC_HQ_1F_DOOR"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 29
+z = 13
+avoid = [[1, 3], [1, 14], [1, 22], [7, 3], [12, 3], [17, 5], [18, 20], [24, 3], [45, 12], [45, 22], [50, 3], [52, 6], [52, 12]]
+note = "MAP_HEADER_GALACTIC_HQ_2F -> (29,13) -> MAP_HEADER_GALACTIC_HQ_HALL"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_HALL"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 20
+z = 12
+avoid = [[1, 12], [17, 3]]
+note = "MAP_HEADER_GALACTIC_HQ_HALL -> (20,12)"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "hq_hall"
+note = "the hall coord (20,12) (VAR_GALACTIC_HQ_HALL_STATE 0): Cyrus's speech, the grunts leave (scripts_galactic_hq_hall.s:48-100)"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 1
+z = 12
+avoid = [[17, 3], [24, 6]]
+note = "MAP_HEADER_GALACTIC_HQ_HALL -> (1,12) -> MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_2F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 50
+z = 3
+avoid = [[1, 3], [1, 14], [1, 22], [7, 3], [10, 11], [12, 3], [17, 5], [18, 20], [24, 3], [29, 13], [45, 12], [45, 22], [52, 12]]
+note = "MAP_HEADER_GALACTIC_HQ_2F -> (50,3) -> MAP_HEADER_GALACTIC_HQ_3F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_3F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 15
+z = 13
+avoid = [[6, 14], [10, 11], [15, 3], [17, 11], [19, 11], [32, 22], [52, 12]]
+note = "MAP_HEADER_GALACTIC_HQ_3F -> (15,13) -> MAP_HEADER_GALACTIC_HQ_3F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 10
+z = 11
+avoid = [[15, 3], [15, 13], [17, 11], [19, 11], [32, 22], [47, 3], [52, 12]]
+note = "MAP_HEADER_GALACTIC_HQ_3F -> (10,11) -> MAP_HEADER_GALACTIC_HQ_4F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_4F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 15
+face = "up"
+interact = true
+max = 8000
+note = "below the 4F key door (8..9,14) (events_galactic_hq_4f obj 1/2)"
+
+[[step]]
+do = "advance_text"
+note = "'Use the Galactic Key?' YES (scripts_galactic_hq_4f.s:104-132)"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 8
+z = 11
+avoid = [[8, 3], [21, 17], [22, 3]]
+note = "MAP_HEADER_GALACTIC_HQ_4F -> (8,11); crosses the door FLAG_HIDE_GALACTIC_HQ_4F_DOOR"
+
+[[step]]
+do = "advance_text"
+note = "4F coord (8..9,11) at VAR_GALACTIC_HQ_4F_STATE 0: Cyrus (scripts_galactic_hq_4f.s:13-58)"
+
+[[step]]
+do = "auto_battle"
+shot = "cyrus_hq"
+note = "TRAINER_GALACTIC_BOSS_CYRUS_GALACTIC_HQ"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "the Master Ball; Cyrus leaves for Spear Pillar"
 
 [expect]
 map = "MAP_HEADER_GALACTIC_HQ_4F"

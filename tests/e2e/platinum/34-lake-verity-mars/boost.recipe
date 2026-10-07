@@ -1,0 +1,12 @@
+# Boost on 33's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# HP and PP refilled (party-level on every member, the lead's four moves set again): 33 ends with the Togepi fainted
+# and Earthquake at 4 PP, and the Lake Verity grunts fight in pairs (double battles), so the second slot must stand.
+# For TRAINER_COMMANDER_MARS_LAKE_VERITY (GOLBAT 38, BRONZOR 38, PURUGLY 40; res/trainers/data/commander_mars_lake_verity.json) and the four Lake Verity grunts.
+party-level 0 66
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE
+party-level 1 30
+party-level 2 45
+party-level 3 50

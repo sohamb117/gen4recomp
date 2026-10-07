@@ -1,5 +1,5 @@
 # Proves the control-room Saturn battle and the release button.
-# Start: Galactic HQ laboratory (1,11) -> end: control room (494), FLAG_FREED_GALACTIC_HQ_POKEMON.
+# Start: Galactic HQ 4F at the Cyrus coord (8,11) (39's end) -> end: control room (494), FLAG_FREED_GALACTIC_HQ_POKEMON.
 
 title = "Galactic HQ: Saturn and the lake trio freed"
 status = "planned"
@@ -28,9 +28,21 @@ refs = [
 [start]
 from = "prev"
 lab = "lab.recipe"
+boost = "boost.recipe"
 
 [run]
 frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 3
+avoid = [[8, 3], [3, 15], [21, 17]]
+note = "4F warp 1 (22,3) -> the laboratory (1,11) (tools/pt_warps.py MAP_HEADER_GALACTIC_HQ_4F 8 11 MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM 8 7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GALACTIC_HQ_LABORATORY"
 
 [[step]]
 do = "walk_to"
@@ -55,6 +67,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 shot = "saturn_hq"
 note = "TRAINER_COMMANDER_SATURN_GALACTIC_HQ (409)"
 
