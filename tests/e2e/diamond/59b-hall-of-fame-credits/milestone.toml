@@ -72,20 +72,49 @@ do = "wait_map"
 map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME"
 
 [[step]]
-do = "advance_text"
-max = 8000
-shot = "hall-of-fame"
-note = "HoF ON_FRAME (scr_seq 0655 @0x0006 -> 0192): msg 0182 #4-#6, SetFlag 0x982 @0x00AD, SetVar 0x40F4 1 @0x0106, L_0178 respawns, ShowEndGameScreen @0x00F2"
-# PHASE2: CallTask_GameClear task sub_020484F8 (unk_020484A8.s:61-250): HoF screen input (A or wait), "file does not belong
-#   to player" branch (Save_FileDoesNotBelongToPlayer :136) must not fire for the lab/chain save, SaveGame (:165), credits
-#   (wait only, length unknown), OS_ResetSystem (:245) -> title. Then boot to field: title A/START -> main menu CONTINUE
-#   (the harness's boot = "continue" logic) -> wait_field; expect map 415 at (4,6) [INFERENCE: continue loads the dynamic warp
-#   written by sub_020377B0, as Platinum's SetPlayerStartLocation, games/platinum/src/clear_game.c:202]. Shot "credits".
+do = "press"
+keys = "A"
+hold = 4
+gap = 26
+times = 60
+note = "HoF ON_FRAME (scr_seq 0655 @0x0006 -> 0192): msg 0182 #4-#6, SetFlag 0x982 @0x00AD, SetVar 0x40F4 1 @0x0106, L_0178 respawns, ShowEndGameScreen @0x00F2 -> CallTask_GameClear (unk_020484A8.s:61-250)"
+
+[[step]]
+do = "wait_frames"
+n = 3000
+shot = "hall_of_fame"
+note = "the HoF screen: each party member, then the trainer card"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "the HoF screen waits for A on its last page"
+
+[[step]]
+do = "wait_frames"
+n = 2400
+shot = "credits"
+note = "CallTask_GameClear saves (SaveGame, unk_020484A8.s:165: flags 0x964/0x966, the HoF record; np_gp stores the image as it settles), then the credits"
+
+[[step]]
+do = "wait_frames"
+n = 8000
+shot = "credits_late"
+
+[[step]]
+do = "wait_frames"
+n = 7200
+shot = "fin"
+
+[[step]]
+do = "wait_reset"
+max = 15000
+note = "after the credits the task calls OS_ResetSystem (unk_020484A8.s:245); the port traps it (games/platinum/pc/src/pc_os_lite.c, shared by D/P) and the run ends. The post-game spawn (map 415 (4,6), sub_020377B0) is in the save the game wrote, not visible to a probe after the reset."
 
 [expect]
-map = "MAP_TWINLEAF_RIVAL_HOUSE_2F"
-position = [4, 6]
 badges = 8
 flags = ["0x964", "0x966", "0x982", "0xB4"]
 flags_clear = ["0x98B", "0x1EF", "0x1E2", "0x1FE", "0x1FF", "0x195"]
 vars = { "0x40F4" = 1, "0x410F" = 1, "0x4098" = 5 }
+# the Hall of Fame block SaveHallOfFame wrote (np_save4 dump: hall_of_fame), with the whole party
+save = ["s['hall_of_fame']['total'] >= 1", "len(s['hall_of_fame']['latest']['party']) == len(s['party'])"]

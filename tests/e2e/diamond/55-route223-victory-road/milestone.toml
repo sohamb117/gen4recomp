@@ -35,7 +35,7 @@ lab = "lab.recipe"
 boost = "boost.recipe"
 
 [run]
-frames = 100000
+frames = 141500
 
 [[step]]
 do = "walk_to"
@@ -95,9 +95,10 @@ note = "2F: Rock Smash (16,19)/(17,19), down to the three boulders (16,28),(17,2
 
 [[step]]
 do = "moves"
+on_battle = "flee"
 max = 6000
-dirs = [["F", "D"], ["P", "D"], ["P", "L"], ["P", "D"], ["L", 1], ["D", 2]]
-note = "Strength: (17,28) south to (17,29), (16,28) west to (15,28), (16,29) south to (16,30) (the player steps into each vacated tile); through to (15,31)"
+dirs = [["F", "D"], ["D", "z28"], ["L", "x16"], ["D", "z29"], ["L", "x15"], ["D", "z31"]]
+note = "Strength (using it pushes (17,28) south to (17,29)); a move into a boulder pushes it and the player stays, so each leg is a coordinate target (the next try walks into the vacated tile): (16,28) west to (15,28), (16,29) south to (16,30); through to (15,31) (Platinum 49's route)"
 
 [[step]]
 do = "walk_to"
@@ -108,8 +109,9 @@ z = 31
 
 [[step]]
 do = "moves"
+on_battle = "flee"
 max = 6000
-dirs = [["P", "D"], ["L", 2], ["D", 2], ["R", 1], ["F", "R"], ["R", 1], ["P", "U"]]
+dirs = [["D", "z32"], ["L", "x3"], ["D", "z34"], ["R", "x4"], ["F", "R"], ["R", "x5"], ["U", "z33"]]
 note = "boulder (5,32) south to (5,33), round by (3,32)..(4,34), Rock Smash (5,34), push it back north to (5,32): row 33 opens east"
 
 [[step]]
@@ -124,9 +126,10 @@ note = "Rock Smash (9,36), the south passage (Ace Trainer Sydney (15,37) sees th
 
 [[step]]
 do = "moves"
+on_battle = "flee"
 max = 3000
-dirs = [["P", "R"]]
-note = "boulder (23,37) east to (24,37): the x 23 column north opens"
+dirs = [["R", "x23"]]
+note = "boulder (23,37) east to (24,37), into its tile: the x 23 column north opens"
 
 [[step]]
 do = "walk_to"
@@ -146,10 +149,17 @@ do = "walk_to"
 on_battle = "flee"
 max = 6000
 hm = true
-via = [[7, 48], [8, 48], [22, 48], [22, 53], [17, 53], [17, 42], [42, 42]]
-x = 42
-z = 41
-note = "1F: along the bridge, Rock Climb (22,49..52) down, north under the bridge, east to the B1F stairs (42,41) -> B1F (4,39)"
+via = [[7, 48], [8, 48], [22, 48]]
+x = 22
+z = 53
+note = "1F: along the bridge deck (rows 47-48), off its end (22,48) down the Rock Climb wall (22,49..52)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 8000
+dirs = [["L", "x17"], ["U", "z42"], ["R", "x42"], ["U", 1], ["R", 1]]
+note = "west, north up the passage under the bridge, east to the B1F stairs (42,41), entered going east -> B1F (4,39): walk_to's A* plans these legs back up the wall (the probe's grid has no levels)"
 
 [[step]]
 do = "wait_map"

@@ -283,13 +283,15 @@ static int open_rom(const char *path, FILE **fp, nd_rom *rom)
     return 0;
 }
 
-/* Platinum's Hall of Fame: the extra save block written by ClearGame (src/clear_game.c ClearGame_AddHallOfFameEntry,
- * SaveDataExtra_Save in src/savedata.c). It sits at sector SAVE_PAGE_MAX (32) of each copy: 0x20000 primary,
- * 0x60000 backup, each a HallOfFame (30 entries of six 0x3C-byte HallOfFamePokemon + a u16 year, u8 month, u8 day,
- * then u32 nextEntryIndex, u32 totalEntriesCount; include/hall_of_fame_entries.h) and a SaveCheckFooter (u32
- * signature 0x20060623, u32 saveCounter, u32 size, u16 id 0, u16 CRC16 of everything before it). The valid copy with
- * the higher counter is dumped: the entry count and the latest entry (date, species and levels). null: no valid
- * copy (no Hall of Fame entered yet) or a D/P save. */
+/* The Hall of Fame: the extra save block written by Platinum's ClearGame (src/clear_game.c
+ * ClearGame_AddHallOfFameEntry, SaveDataExtra_Save in src/savedata.c) and D/P's CallTask_GameClear (SaveHallOfFame,
+ * arm9/src/unk_02022504.c; chunk header UNK_020EE6E0[0] in arm9/src/save_arrays.c). It sits at sector 32 of each
+ * copy in both: 0x20000 primary, 0x60000 backup, each a HallOfFame (30 entries of six 0x3C-byte HallOfFamePokemon
+ * (D/P: struct HOFMon) + a u16 year, u8 month, u8 day, then u32 nextEntryIndex, u32 totalEntriesCount;
+ * include/hall_of_fame_entries.h, D/P include/hall_of_fame.h) and a footer (u32 signature 0x20060623, u32
+ * saveCounter, u32 size, u16 id 0, u16 CRC16 of everything before it; D/P CreateChunkFooter, arm9/src/save.c). The
+ * valid copy with the higher counter is dumped: the entry count and the latest entry (date, species and levels).
+ * null: no valid copy (no Hall of Fame entered yet). */
 #define HOF_MON_SIZE 0x3C
 #define HOF_ENTRY_SIZE (6 * HOF_MON_SIZE + 4)
 #define HOF_ENTRIES 30
@@ -305,7 +307,7 @@ static void dump_hall_of_fame(FILE *o, const save4 *s)
     const uint8_t *best = NULL;
     uint32_t best_counter = 0;
     static const size_t copies[2] = {0x20000, 0x60000};
-    for (int c = 0; s->game == SAVE4_GAME_PT && c < 2; c++) {
+    for (int c = 0; c < 2; c++) {
         if (copies[c] + HOF_SIZE + 16 > len)
             continue;
         const uint8_t *body = img + copies[c], *ft = body + HOF_SIZE;
