@@ -1,7 +1,7 @@
-# Battle Castle single set: 3 mons, CP economy, menus between battles.
-# Start: BATTLE_CASTLE (6,9) beside the single attendant (5,9) [INFERENCE: attendant facing]. End: Castle lobby.
+# Battle Castle single set: GARCHOMP, METAGROSS, SALAMENCE (Lv 50 in the Castle), BATTLE from the SELF / OPPONENT /
+# BATTLE menu before each of the seven battles, no CP spent. Start: BATTLE_CASTLE (6,9) facing the single attendant
+# (5,9). End: Castle lobby.
 title = "Battle Castle: first single set"
-status = "planned"
 priority = "P2"
 estimate = 45000
 refs = [
@@ -23,22 +23,408 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 67500
+frames = 80000
 
 [[step]]
 do = "press"
 keys = "A"
-note = "single attendant (5,9) -> BattleCastle_TryTakeSingleChallenge (BC_LOBBY_FUNC_CHECK_PARTY_ELIGIBLE, 3)"
+gap = 40
+times = 5
+note = "the single attendant (5,9): 'Welcome to the Battle Castle!', 'designed for a single Trainer', SINGLE BATTLE, 'Please select the Pokemon you wish to enter.' -> the party select (it takes input only once faded in; measured with tools/pt_poke.py)"
 shot = "attendant"
 
 [[step]]
 do = "wait_frames"
 n = 120
-# PHASE2: party pick and the between-battle CP menus (heal/level/rent) are unrecorded; A-only takes the first entry.
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "GARCHOMP (slot 0): A, ENTER -> FIRST"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "METAGROSS (slot 1): ENTER -> SECOND"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "SALAMENCE (slot 2): ENTER -> THIRD; the cursor jumps to CONFIRM"
+shot = "three-entered"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONFIRM -> 'Would you like to save the game?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+times = 7
+note = "save YES, overwrite YES, 'saved', 'Right this way', the walk in, Darach's welcome, the held items taken, the 10 CP"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 10
+note = "'Please choose what you wish to do.' then SELF / OPPONENT / BATTLE (the cursor on SELF), where B does nothing"
+shot = "castle-menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "to BATTLE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "BATTLE -> 'Very well. Please proceed.'"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the walk to the battle room, the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 1 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "Caitlin: 'Darach! CP for this Trainer at once!', Darach's verdict, the CP award, the walk back, then 'Upcoming is battle no. 2. I trust you are ready?' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+shot = "continue"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 10
+note = "to the SELF / OPPONENT / BATTLE menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "to BATTLE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "BATTLE"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 2 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "Caitlin: 'Darach! CP for this Trainer at once!', Darach's verdict, the CP award, the walk back, then 'Upcoming is battle no. 3. I trust you are ready?' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 10
+note = "to the SELF / OPPONENT / BATTLE menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "to BATTLE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "BATTLE"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 3 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "Caitlin: 'Darach! CP for this Trainer at once!', Darach's verdict, the CP award, the walk back, then 'Upcoming is battle no. 4. I trust you are ready?' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 10
+note = "to the SELF / OPPONENT / BATTLE menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "to BATTLE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "BATTLE"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 4 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "Caitlin: 'Darach! CP for this Trainer at once!', Darach's verdict, the CP award, the walk back, then 'Upcoming is battle no. 5. I trust you are ready?' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 10
+note = "to the SELF / OPPONENT / BATTLE menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "to BATTLE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "BATTLE"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 5 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "Caitlin: 'Darach! CP for this Trainer at once!', Darach's verdict, the CP award, the walk back, then 'Upcoming is battle no. 6. I trust you are ready?' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 10
+note = "to the SELF / OPPONENT / BATTLE menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "to BATTLE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "BATTLE"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 6 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "Caitlin: 'Darach! CP for this Trainer at once!', Darach's verdict, the CP award, the walk back, then 'Upcoming is battle no. 7. I trust you are ready?' with CONTINUE / RECORD / REST / RETIRE, where B does nothing"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONTINUE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 10
+note = "to the SELF / OPPONENT / BATTLE menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "to BATTLE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "BATTLE"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the opponent's intro; stops at the battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 7 of 7"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 18
+note = "the seventh win: the CP award, the walk out to the lobby"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the held items returned, BP awarded"
+
+[[step]]
+do = "wait_field"
+max = 3000
+shot = "lobby"
 
 [expect]
 map = 564
 battles = 7
-# PHASE2: reader-ext Battle Points (WifiBattleTowerRecord_UpdateBattlePoints, wifi_battle_tower_save.c:156-176)
-# == 3 after the first solo set (unk_02049D08.c:750-787) or > 0; np_save4 has no BP field. Meanwhile
-# the in-run Common_SaveGame saves advance the save counter.
+# game records (generated/game_records.txt; np_save4 game_records): RECORD_BATTLE_CASTLE_VICTORIES (61),
+# RECORD_CASTLE_POINTS_RECEIVED (65), RECORD_BATTLE_POINTS_RECEIVED (68)
+save = ['s["game_records"][61] >= 7', 's["game_records"][65] >= 1', 's["game_records"][68] >= 1']
