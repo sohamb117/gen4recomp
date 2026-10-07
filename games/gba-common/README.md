@@ -12,13 +12,15 @@ with the cartridge's data read from the player's own ROM.
     statics by FILE group) as JSON.
   - `srcfix.py`: agbcc's struct layout for clang (every struct/union aligned
     to 4 and padded to a multiple of 4; bit-field-only structs packed) and
-    inline ARM asm removed.
+    inline ARM asm removed (barriers, register bindings and file-scope asm
+    dropped; other asm becomes a trap, `naked` removed).
   - `gbabridge.py`: rewrites one TU's LLVM IR against the ELF (see below).
   - `gen_dispatch.py`: the code-address table behind `gba_dispatch()`.
 - `pc/src`, `pc/include`: the GBA machine, compiled into every GBA module.
   - `gba_main.c`: entry, ROM copy to 0x08000000, frame boundary, soft reset.
-  - `gba_io.c`: I/O registers, DMA, timers, interrupts (crt0.s's IntrMain
-    order), the scanline clock, the bridge's volatile hooks.
+  - `gba_io.c`: I/O registers, DMA, timers, interrupts (each decomp's crt0.s
+    IntrMain: `gba_crt0_emerald`, `gba_crt0_ruby`), the scanline clock, the
+    bridge's volatile hooks.
   - `gba_ppu.c`: scanline renderer (text/affine/bitmap BGs, sprites,
     windows, blending, mosaic).
   - `gba_bios.c`: the BIOS calls (libagbsyscall) in C.
@@ -29,6 +31,10 @@ with the cartridge's data read from the player's own ROM.
     image the host stores and the host clock.
   - `gba_link_stubs.c`: multiboot/GameCube boot (no partner).
 - `games/emerald/pc/src`, `games/ruby/pc/src`: per-cartridge constants.
+- `games/ruby/pc/patches/<file>.c.patch`: fixes to pokeruby TUs that cannot
+  build as they are (asm-only functions given C), applied by gbabuild.py to a
+  copy. `pc/include/gba_prelude.h` makes pokeruby's K&R calls match their
+  callee's arity, which wasm requires.
 
 ## Inputs (outside git)
 

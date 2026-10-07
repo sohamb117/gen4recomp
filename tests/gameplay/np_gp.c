@@ -695,10 +695,13 @@ int main(int argc, char **argv) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
         if (!v) return usage();
         if (strcmp(a, "--game") == 0) {
-            static const char *const names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
+            static const char *const names[NP_GAME_COUNT] = {
+                [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
+                [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white", [NP_GAME_RUBY] = "ruby",
+                [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
             game = -1;
             for (int g = 0; g < NP_GAME_COUNT; g++)
-                if (strcmp(v, names[g]) == 0) game = g;
+                if (names[g] && strcmp(v, names[g]) == 0) game = g;
             if (game < 0) return usage();
         } else if (strcmp(a, "--frames") == 0) frames = strtoll(v, NULL, 0);
         else if (strcmp(a, "--save") == 0) r.save_path = v;

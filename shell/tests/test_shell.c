@@ -106,7 +106,8 @@ static void test_romdb(void)
     CHECK(e && e->game == NP_GAME_PEARL && e->status == NP_ROM_ACCEPTED, "pearl accepted");
     CHECK(!np_romdb_lookup("a9993e364706816aba3e25717850c26c9cd0d89d"), "unknown hash rejected");
     for (int g = 0; g < NP_GAME_COUNT; g++)
-        CHECK(np_romdb_accepted((np_game)g) != NULL, "accepted dump for game %d", g);
+        if (np_game_known((np_game)g)) /* 5 and 6 are unassigned (HGSS) */
+            CHECK(np_romdb_accepted((np_game)g) != NULL, "accepted dump for game %d", g);
 }
 
 typedef struct membuf {
