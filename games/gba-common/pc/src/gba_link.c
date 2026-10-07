@@ -104,10 +104,21 @@ static int recv_msg(link_msg *m, uint32_t *from) {
 
 static uint64_t link_time(void) { return L.lines - L.origin; }
 
+/* SI and SD live in the register itself, because games also read SIOCNT
+ * through plain pointers (pokeruby's CheckMasterOrSlave): SD high while the
+ * cable is plugged, SI high on the child. Unplugged they stay as the game
+ * wrote them (low), as before the cable existed. */
+static void apply_terminals(void) {
+    uint16_t v = IO16(R_SIOCNT) & (uint16_t)~(SIO_SI | SIO_SD);
+    if (L.plugged) v |= (uint16_t)(SIO_SD | (L.parent ? 0 : SIO_SI));
+    IO16(R_SIOCNT) = v;
+}
+
 static void unplug(const char *why) {
     if (L.plugged) gba_log("link: cable unplugged (%s)", why);
     L.plugged = 0;
     L.have_pending = 0;
+    apply_terminals();
 }
 
 static void plug(uint32_t peer, int parent, uint32_t session) {
@@ -121,6 +132,7 @@ static void plug(uint32_t peer, int parent, uint32_t session) {
     L.have_pending = 0;
     L.prog_time = -1;
     L.prog_xfers = 0;
+    apply_terminals();
     gba_log("link: cable plugged, %s of station %06x (frame %llu)", parent ? "parent" : "child", peer,
             (unsigned long long)gba_frames);
 }
@@ -260,15 +272,6 @@ static void parent_transfer(void) {
     }
 }
 
-uint16_t gba_sio_read_cnt(void) {
-    uint16_t v = IO16(R_SIOCNT);
-    if (!L.plugged) return v;
-    v &= (uint16_t)~(SIO_SI | SIO_SD);
-    v |= SIO_SD;
-    if (!L.parent) v |= SIO_SI;
-    return v;
-}
-
 void gba_sio_write_cnt(uint16_t v) {
     uint16_t old = IO16(R_SIOCNT);
     /* SI, SD, ID and busy belong to the hardware; error is cleared by writing */
@@ -314,6 +317,7 @@ void gba_link_frame(uint32_t *status) {
         }
     }
     L.wait_done = 1;
+    apply_terminals(); /* again after a soft reset cleared the registers */
     if (L.plugged && L.parent) send_msg(L.peer, M_PROG, L.xfers, link_time(), 0);
     status[NP_STAT_LINK_ACTIVE] =
         L.plugged && multi_mode() && (IO16(R_SIOCNT) & SIO_IRQ) && (IO16(R_IE) & IRQ_SERIAL) ? 1 : 0;

@@ -283,8 +283,6 @@ uint16_t gba_io_read16(uint32_t off) {
     }
     case R_KEYINPUT:
         return (uint16_t)(~gba_keys & 0x3FF);
-    case R_SIOCNT:
-        return gba_sio_read_cnt();
     case R_TM0CNT: case R_TM0CNT + 4: case R_TM0CNT + 8: case R_TM0CNT + 12: {
         gba_cycles += 8;  /* a busy-read of a timer must see it move */
         timers_advance();
