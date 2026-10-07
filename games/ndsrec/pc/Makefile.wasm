@@ -94,6 +94,15 @@ $(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
 OBJS += $(MY_OBJS)
 
+# The overlay-statics table: none here (pc/src/pc_ndsrec_ovstatics.c says
+# why it is not host.mk's generated one).
+MY_OVSTATICS_O := $(OBJ)/ndsrec/pc_ndsrec_ovstatics.o
+$(MY_OVSTATICS_O): $(MYPC)/src/pc_ndsrec_ovstatics.c
+	@mkdir -p $(dir $@)
+	$(CC) $(HOST_CFLAGS) -c -o $@ $<
+LINK_EXTRA_DEPS := $(filter-out $(HOST_OVSTATICS_O),$(LINK_EXTRA_DEPS)) $(MY_OVSTATICS_O)
+LINK_EXTRA_OBJS := $(filter-out $(HOST_OVSTATICS_O),$(LINK_EXTRA_OBJS)) $(MY_OVSTATICS_O)
+
 all:
 	$(MAKE) -f $(SELF) stage1
 	$(MAKE) -f $(SELF) link

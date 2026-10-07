@@ -189,7 +189,7 @@ class Module(object):
         return True
 
     def is_tail(self, f, t, known):
-        if t == f.addr:
+        if t == f.addr or t in self.fragments:
             return False
         if t in known:
             return True
@@ -202,16 +202,30 @@ class Module(object):
         return False
 
     def arm_jt_count(self, f, a):
-        # cmp rN, #K a few instructions before: K + 1 cases.
-        for back in range(4, 24, 4):
-            ins = self.decode(a - back, False)
-            if ins is None:
+        """Entries of `add<cc> pc, pc, rN, lsl #2` at a: the run of
+        unconditional branches from a+8 (a+4 is the out-of-range branch).
+        When the condition is an unsigned upper bound (ls/cc) the
+        `cmp rN, #K` before it caps the run at K + 1; any other condition
+        (`addge` after a signed lower-bound check) relies on an earlier
+        compare, so the run alone counts."""
+        n_b = 0
+        while True:
+            w = self.u32(a + 8 + 4 * n_b)
+            if w is None or (w & 0xFF000000) != 0xEA000000:
                 break
-            w = ins.word
-            if (w & 0x0FF00000) == 0x03500000:        # cmp rn, #imm
-                v = disasm.ror32(w & 0xFF, ((w >> 8) & 0xF) * 2)
-                return v + 1
-        return 0
+            n_b += 1
+            if n_b > 1024:
+                break
+        cond = self.u32(a) >> 28
+        if cond in (9, 3):                            # ls, cc
+            for back in range(4, 24, 4):
+                w = self.u32(a - back)
+                if w is None:
+                    break
+                if (w & 0x0FF00000) == 0x03500000:    # cmp rn, #imm
+                    k = disasm.ror32(w & 0xFF, ((w >> 8) & 0xF) * 2) + (1 if cond == 9 else 0)
+                    return min(k, n_b) if n_b else k
+        return n_b
 
     def thumb_jt(self, f, a):
         """Targets of the mwcc Thumb switch ending in `add pc, rN` at a."""
@@ -231,23 +245,35 @@ class Module(object):
         if base is None or k is None:
             return [], None, 0
         tab = base + k
+        # the bound: `cmp rX, #N` before the switch, less any `sub rX, #K`
+        # that rebases the index between the compare and the table
         n = 0
+        bias = 0
         for back in range(2, 40, 2):
             hw = self.u16(a - back)
             if hw is None:
                 break
-            if (hw & 0xF800) == 0x2800:                               # cmp rX, #imm
-                n = (hw & 0xFF) + 1
+            if (hw & 0xF800) == 0x3800:                               # sub rX, #imm
+                bias += hw & 0xFF
+            elif (hw & 0xF800) == 0x2800:                             # cmp rX, #imm
+                n = (hw & 0xFF) + 1 - bias
                 break
-        if n == 0:
+        if n <= 0:
             return [], None, 0
         tg = []
+        lowest = None
         for i in range(n):
+            if lowest is not None and tab + 2 * i >= lowest:
+                break                   # the cases start where the table ends
             v = self.u16(tab + 2 * i)
             if v is None:
                 break
             v = disasm.sext(v, 16)
-            tg.append((a + 4 + v) & 0xFFFFFFFF)
+            t = (a + 4 + v) & 0xFFFFFFFF
+            tg.append(t)
+            if t > tab and (lowest is None or t < lowest):
+                lowest = t
+        n = len(tg)
         return tg, tab, 2 * n
 
     # --------------------------------------------------------------- run
@@ -292,6 +318,31 @@ class Module(object):
                 break
         self.resolve_overlaps()
         self.prune_calls()
+        self.reexplore_stale()
+        self.check_secure_area()
+
+    def check_secure_area(self):
+        """The ARM9 secure area (the static's first 2 KB) is the one region
+        a cartridge stores KEY1-encrypted; a dump in the decrypted form holds
+        the SDK's syscall veneers there in plaintext among filler. Nothing
+        here decrypts anything: the only code accepted in the range is a
+        veneer that already reads as `swi #N; bx lr` (reached by a call from
+        plaintext code), which armrec turns into the host's armrec_swi(N).
+        Any other function there means the bytes are not plaintext code, and
+        the module stops instead of recompiling them."""
+        if self.name != "arm9":
+            return
+        lo = self.rom.arm9_ram
+        for a, f in self.funcs.items():
+            if not lo <= a < lo + 0x800:
+                continue
+            texts = [i.text for _, i in sorted(f.insns.items())]
+            if (len(texts) != 2 or not texts[0].startswith("swi ")
+                    or texts[1] != "bx lr"):
+                raise ValueError(
+                    "secure area: 0x%08X is not a plaintext `swi; bx lr` "
+                    "veneer (%s); its bytes are opaque, route the call to "
+                    "the host instead" % (a, "; ".join(texts[:4])))
 
     def descend(self):
         done = set(a for a, f in self.funcs.items() if f.insns)
@@ -545,6 +596,9 @@ class Module(object):
         for a, f in self.funcs.items():
             if f.source != "call" or not f.thumb or self.has_prologue(a, True, weak=True):
                 continue
+            first = f.insns.get(a)
+            if first is not None and first.text.startswith("sub sp, "):
+                continue                    # a leaf that builds its own frame
             for ins in f.insns.values():
                 t = ins.text
                 if t.startswith("pop ") or (t.startswith("add sp, #") and ins.kind == "op"):
@@ -565,6 +619,28 @@ class Module(object):
                 g.jt = {}
                 g.longbr = set()
         return True
+
+    def reexplore_stale(self):
+        """A function explored while a later-dropped start existed took the
+        branch to it as a tail call; explore it again so the block is its
+        own."""
+        for _ in range(4):
+            stale = [a for a, f in self.funcs.items()
+                     if any((t & ~1) not in self.funcs and self.view.contains(t & ~1)
+                            for t in f.tails)]
+            if not stale:
+                return
+            for a in stale:
+                f = self.funcs[a]
+                f.insns = {}
+                f.lits = {}
+                f.data = set()
+                f.calls = set()
+                f.tails = set()
+                f.jt = {}
+                f.longbr = set()
+            self.descend()
+            self.prune_calls()
 
     def prune_calls(self):
         """Drop call-sourced functions nothing calls any more (a target

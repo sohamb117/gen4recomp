@@ -26,6 +26,7 @@ resident there, or outside every module -- is spelled
 armrec_dispatch() of that guest address (resolved by residency, as the
 hardware does).
 """
+import bisect
 import os
 import struct
 
@@ -58,6 +59,7 @@ class Resolver(object):
         self.names = names           # module -> {addr: name}
         self.dyn = 0
         self.bound_cross = 0
+        self.xlabels = {}            # module -> branch targets inside another function
 
     def overlay_range(self, name):
         ov = self.rom.overlay(int(name[2:]))
@@ -136,6 +138,36 @@ def emit_module(rom, module, mod, resolver, names, data_names, outdir,
         forced |= f.data
     forced |= set(lits)
 
+    # Branches into the middle of another function (mwcc and the runtime
+    # library share code between entry points: _ll_udiv jumps into
+    # _ull_mod's body). The target becomes a label in its owner and the
+    # branch names that label; armrec then gives the branching function a
+    # private copy of the code it enters (armrec.merge_multi_entry), which
+    # keeps every register live where a dispatch would not. Both functions
+    # must be in one file, so the chunking below never cuts between them.
+    starts_all = sorted(mod.funcs)
+    xlabels = set()
+    xpairs = []
+    for i, a0 in enumerate(starts_all):
+        f = mod.funcs[a0]
+        end = starts_all[i + 1] if i + 1 < len(starts_all) else a0 + 0x100000
+        for ia, ins in f.insns.items():
+            if ins.kind != "b" or ins.target is None or not (a0 <= ia < end):
+                continue
+            t = ins.target
+            if a0 <= t < end or t in mod.funcs:
+                continue
+            j = bisect.bisect_right(starts_all, t) - 1
+            if j < 0:
+                continue
+            g = mod.funcs[starts_all[j]]
+            gend = starts_all[j + 1] if j + 1 < len(starts_all) else g.addr + 0x100000
+            if t < gend and t in g.insns and g.thumb == f.thumb:
+                xlabels.add(t)
+                xpairs.append((min(ia, t), max(ia, t)))
+    resolver.xlabels.setdefault(module, set()).update(xlabels)
+    forced |= xlabels
+
     first_file = True
     for segname, seg in segs:
         starts = sorted(a for a in mod.funcs if seg.ram <= a < seg.end)
@@ -156,11 +188,14 @@ def emit_module(rom, module, mod, resolver, names, data_names, outdir,
         groups = []
         g = []
         nf = 0
-        for p in pieces:
+        for k, p in enumerate(pieces):
             g.append(p)
             if p[2] is not None:
                 nf += 1
             if nf >= per_file:
+                cut = pieces[k + 1][0] if k + 1 < len(pieces) else None
+                if cut is not None and any(lo < cut <= hi for lo, hi in xpairs):
+                    continue
                 groups.append(g)
                 g = []
                 nf = 0
@@ -209,6 +244,8 @@ def resolve_operand(module, f, ins, end, resolver, names, local_targets):
         return resolver.call(module, t)
     # branch
     if f.addr < t < end and t in f.insns:
+        return label_name(module, t)
+    if t in resolver.xlabels.get(module, ()):
         return label_name(module, t)
     if t == f.addr:
         return func_name(module, t, names)
