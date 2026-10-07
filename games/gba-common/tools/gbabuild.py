@@ -119,6 +119,13 @@ class Build:
         o = os.path.join(self.obj, base + ".o")
         sigs = os.path.join(self.obj, base + ".sigs")
         deps = [src, self.syms, os.path.join(HERE, "gbabridge.py"), os.path.join(HERE, "srcfix.py")]
+        # <port>/patches/<file>.patch: a fix to a decomp TU the port cannot
+        # build as is (pokeruby's asm-only functions), applied to a copy
+        patch = os.path.join(NPROOT, self.cfg["port"], "patches", os.path.basename(src) + ".patch")
+        if kind != "game" or not os.path.exists(patch):
+            patch = None
+        else:
+            deps.append(patch)
         if os.path.exists(o) and os.path.exists(sigs) and all(os.path.getmtime(o) >= os.path.getmtime(d) for d in deps) \
                 and not self.dirty_headers(o, kind):
             return o, sigs, None
@@ -127,14 +134,20 @@ class Build:
         i3 = os.path.join(self.tmp, base + ".fix.i")
         ll = os.path.join(self.tmp, base + ".ll")
         bl = os.path.join(self.tmp, base + ".b.ll")
+        pc = os.path.join(self.tmp, base + ".patched.c")
         try:
             flags = [TARGET] + CPPFLAGS_GAME + self.cfg["defs"] + self.inc + \
                 ["-include", os.path.join(COMMON, "pc", "include", "gba_prelude.h")]
             if kind == "port":
                 flags = [TARGET] + CPPFLAGS_GAME + self.cfg["defs"] + self.port_inc + self.inc + \
                         ["-I", os.path.join(NPROOT, self.cfg["port"], "include")]
+            cpp_src = src
+            if patch:
+                run(["patch", "-s", "-o", pc, src, patch])
+                cpp_src = pc
+                flags = flags + ["-iquote", os.path.dirname(src)]
             std = ["-std=gnu89"] if kind == "game" else ["-std=gnu11"]
-            run([CLANG, "-E", "-funsigned-char"] + std + [ "-MD", "-MF", o + ".d"] + flags + [src, "-o", i1], cwd=self.decomp)
+            run([CLANG, "-E", "-funsigned-char"] + std + [ "-MD", "-MF", o + ".d"] + flags + [cpp_src, "-o", i1], cwd=self.decomp)
             if kind == "game":
                 with open(i2, "w") as f:
                     assets = ["-g", "build/assets"] if os.path.isdir(os.path.join(self.decomp, "build", "assets")) else []
@@ -157,7 +170,7 @@ class Build:
         except RuntimeError as e:
             return None, None, str(e)
         finally:
-            for t in (i1, i2, i3, ll, bl):
+            for t in (i1, i2, i3, ll, bl, pc):
                 if os.path.exists(t) and not os.environ.get("GBA_KEEP"):
                     os.remove(t)
 

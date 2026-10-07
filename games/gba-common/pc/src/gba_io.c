@@ -133,29 +133,40 @@ static void dma_timing(int timing) {
 /* -------------------------------------------------------- interrupts */
 
 static int irq_depth;
-/* crt0.s IntrMain's search order; gIntrTable is indexed by position */
-static const uint16_t k_irq_order[14] = {
-    IRQ_VCOUNT, IRQ_SERIAL, IRQ_TIMER3, IRQ_HBLANK, IRQ_VBLANK, IRQ_TIMER0, IRQ_TIMER0 << 1,
-    IRQ_TIMER0 << 2, IRQ_DMA0, IRQ_DMA0 << 1, IRQ_DMA0 << 2, IRQ_DMA0 << 3, IRQ_KEYPAD, IRQ_GAMEPAK,
+/* crt0.s IntrMain. pokeemerald: VCount first and with IME = 0, then IME = 1
+ * and the rest; the wireless adapter's timer bit is not modelled. pokeruby:
+ * IME = 1 for all, VCount after VBlank, only Serial/Timer3/HBlank nest. */
+const gba_crt0 gba_crt0_emerald = {
+    .order = {IRQ_VCOUNT, IRQ_SERIAL, IRQ_TIMER3, IRQ_HBLANK, IRQ_VBLANK, IRQ_TIMER0, IRQ_TIMER0 << 1,
+              IRQ_TIMER0 << 2, IRQ_DMA0, IRQ_DMA0 << 1, IRQ_DMA0 << 2, IRQ_DMA0 << 3, IRQ_KEYPAD, IRQ_GAMEPAK},
+    .ie_keep = IRQ_GAMEPAK | IRQ_SERIAL | IRQ_TIMER3 | IRQ_VCOUNT | IRQ_HBLANK,
+    .ime0_bit = IRQ_VCOUNT,
+};
+const gba_crt0 gba_crt0_ruby = {
+    .order = {IRQ_SERIAL, IRQ_TIMER3, IRQ_HBLANK, IRQ_VBLANK, IRQ_VCOUNT, IRQ_TIMER0, IRQ_TIMER0 << 1,
+              IRQ_TIMER0 << 2, IRQ_DMA0, IRQ_DMA0 << 1, IRQ_DMA0 << 2, IRQ_DMA0 << 3, IRQ_KEYPAD, IRQ_GAMEPAK},
+    .ie_keep = IRQ_SERIAL | IRQ_TIMER3 | IRQ_HBLANK,
+    .ime0_bit = 0,
 };
 
 void gba_raise_irq(uint16_t bits) { IO16(R_IF) |= bits; }
 
 void gba_check_irqs(void) {
+    const gba_crt0 *crt0 = gba_game.crt0;
     while ((IO16(R_IME) & 1) && irq_depth < 4) {
         uint16_t ie = IO16(R_IE), pending = ie & IO16(R_IF) & 0x3FFF;
         if (!pending) return;
         int idx = 0;
-        while (!(pending & k_irq_order[idx])) idx++;
-        uint16_t bit = k_irq_order[idx];
+        while (!(pending & crt0->order[idx])) idx++;
+        uint16_t bit = crt0->order[idx];
         if (bit == IRQ_GAMEPAK) {  /* cartridge pulled: IntrMain spins */
             IO16(R_IF) &= (uint16_t)~bit;
             continue;
         }
         IO16(R_IF) &= (uint16_t)~bit;
         uint16_t ime = IO16(R_IME);
-        IO16(R_IME) = bit == IRQ_VCOUNT ? 0 : 1;
-        IO16(R_IE) = ie & (uint16_t)~bit & (IRQ_GAMEPAK | IRQ_SERIAL | IRQ_TIMER3 | IRQ_VCOUNT | IRQ_HBLANK);
+        IO16(R_IME) = bit == crt0->ime0_bit ? 0 : 1;
+        IO16(R_IE) = ie & (uint16_t)~bit & crt0->ie_keep;
         uint32_t handler = *(uint32_t *)(uintptr_t)(gba_game.intr_table + 4 * idx);
         if (!gba_is_code(handler))
             gba_fatal("IRQ %d (IF bit 0x%x) has handler 0x%08x (gIntrTable 0x%08x)", idx, bit, handler,

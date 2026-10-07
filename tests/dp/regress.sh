@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# tests/dp/regress.sh: Diamond/Pearl (and Platinum) headless regression runs.
+# tests/dp/regress.sh: Diamond/Pearl (and Platinum, Ruby/Sapphire/Emerald)
+# headless regression runs.
 #
 #   tests/dp/regress.sh [--no-build] [--only NAME]... [--update --reason TEXT]
 #
@@ -12,9 +13,11 @@
 # printed SKIP), 1 a hash mismatch, trap, failure or build error, 2 usage.
 #
 # Build (unless --no-build): the guest modules are rebuilt by their own
-# makefiles (incremental), then the native cores by cmake/ninja: Diamond and
-# Pearl into $NP_DP_CORE (default build/core-dp), Platinum into
-# $NP_PLAT_CORE (default build/core-plat), configured on first use. Each
+# makefiles (incremental; the GBA games by games/gba-common/tools/gbabuild.py
+# from the decomps in .cache/gba), then the native cores by cmake/ninja:
+# Diamond and Pearl into $NP_DP_CORE (default build/core-dp), Platinum into
+# $NP_PLAT_CORE (default build/core-plat), Ruby/Sapphire/Emerald into
+# $NP_RSE_CORE (default build/core-rse), configured on first use. Each
 # build runs under tools/heavy.sh with -j $NP_JOBS (default 4).
 #
 # Updating hashes is deliberate: --update re-runs the selected cases (all by
@@ -27,6 +30,7 @@ cd "$root"
 expected=tests/dp/expected.txt
 dp_core=${NP_DP_CORE:-build/core-dp}
 plat_core=${NP_PLAT_CORE:-build/core-plat}
+rse_core=${NP_RSE_CORE:-build/core-rse}
 build=1 update=0 reason=
 only=()
 while [ $# -gt 0 ]; do
@@ -35,7 +39,7 @@ while [ $# -gt 0 ]; do
     --only) only+=("$2"); shift 2 ;;
     --update) update=1; shift ;;
     --reason) reason=$2; shift 2 ;;
-    *) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
+    *) sed -n '2,23p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
     esac
 done
 if [ $update = 1 ] && [ -z "$reason" ]; then
@@ -48,12 +52,15 @@ rom_of() {
     diamond) echo games/diamond/build/diamond.us/pokediamond.us.nds ;;
     pearl) echo games/diamond/build/pearl.us/pokepearl.us.nds ;;
     platinum) echo games/platinum/build/rom/pokeplatinum.us.nds ;;
+    emerald) echo .cache/gba/pokeemerald/pokeemerald.gba ;;
+    ruby | sapphire) echo ".cache/gba/pokeruby/poke$1.gba" ;;
     esac
 }
 core_of() {
     case $1 in
     diamond | pearl) echo "$dp_core" ;;
     platinum) echo "$plat_core" ;;
+    emerald | ruby | sapphire) echo "$rse_core" ;;
     esac
 }
 selected() {
@@ -98,6 +105,9 @@ if [ $build = 1 ]; then
     want diamond && step "diamond module" "$heavy" make -C games/diamond -f pc/Makefile.wasm -j"$jobs"
     want pearl && step "pearl module" "$heavy" make -C games/diamond -f pc/Makefile.wasm -j"$jobs" GAME_VERSION=PEARL
     want platinum && step "platinum module" "$heavy" make -C games/platinum -f pc/Makefile.wasm -j"$jobs"
+    for g in emerald ruby sapphire; do
+        want $g && step "$g module" "$heavy" games/gba-common/tools/gbabuild.py $g -j "$jobs"
+    done
     configure() { # configure DIR GAME...
         local dir=$1
         shift
@@ -108,6 +118,8 @@ if [ $build = 1 ]; then
             diamond) defs+=("-DNP_GUEST_WASM_diamond=$root/games/diamond/build/pc-wasm/pokediamond.wasm") ;;
             pearl) defs+=("-DNP_GUEST_WASM_pearl=$root/games/diamond/build/pc-wasm/pokepearl.wasm") ;;
             platinum) defs+=("-DNP_GUEST_WASM_platinum=$root/games/platinum/build/pc-wasm/pokeplatinum.wasm") ;;
+            emerald) defs+=("-DNP_GUEST_WASM_emerald=$root/games/emerald/build/pc-wasm/pokeemerald.wasm") ;;
+            ruby | sapphire) defs+=("-DNP_GUEST_WASM_$g=$root/games/ruby/build/pc-wasm/poke$g.wasm") ;;
             esac
         done
         cmake -S core -B "$dir" -G Ninja -DCMAKE_BUILD_TYPE=Release -DNP_BUILD_TESTS=OFF \
@@ -123,6 +135,12 @@ if [ $build = 1 ]; then
     if want platinum; then
         step "configure $plat_core" configure "$plat_core" platinum
         step "core $plat_core" "$heavy" cmake --build "$plat_core" -j "$jobs"
+    fi
+    if want emerald || want ruby || want sapphire; then
+        rse=()
+        for g in emerald ruby sapphire; do [ -f "$(rom_of $g)" ] && rse+=($g); done
+        step "configure $rse_core" configure "$rse_core" "${rse[@]}"
+        step "core $rse_core" "$heavy" cmake --build "$rse_core" -j "$jobs"
     fi
     rm -f "$blog"
 fi

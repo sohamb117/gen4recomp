@@ -13,6 +13,7 @@
 
 GBA_LOCAL_DECL(overworld, CB1_Overworld);
 GBA_LOCAL_DECL(overworld, CB2_Overworld);
+extern IntrFunc gIntrTable[]; /* main.c; pokeruby's main.h does not declare it */
 
 static void status(uint32_t *st) {
     st[NP_STAT_FIELD_READY] = gMain.callback1 == (MainCallback)GBA_LOCAL(overworld, CB1_Overworld) &&
@@ -36,6 +37,7 @@ const gba_game_info gba_game = {
 #endif
     .save_size = 0x20000,
     .intr_table = (uint32_t)(uintptr_t)gIntrTable,
+    .crt0 = &gba_crt0_ruby,
     .agb_main = AgbMain,
     .callback2 = (uint32_t *)&gMain.callback2,
     .status = status,

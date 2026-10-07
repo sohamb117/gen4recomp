@@ -12,10 +12,13 @@ lay data out the way agbcc does, and compile for wasm32.
    __attribute__((aligned(4))), which does the same on clang; one made of
    bit-fields alone is also packed (see only_bitfields). The bridge then
    checks each dropped global's size against the ELF.
-2. Inline ARM asm cannot compile for wasm. `asm("")` (a cross-jump barrier)
-   becomes nothing; any other asm statement becomes __builtin_trap() (only
-   unreachable paths still have one: the script engine's halt on a null
-   script, an unused SWI wrapper).
+2. Inline ARM asm cannot compile for wasm. `asm("")` (a cross-jump barrier,
+   with or without a clobber list such as pokeruby's `asm("":::"r9")`)
+   becomes nothing; a register variable's binding (`register u32 x
+   asm("r4")`) is dropped; any other asm statement becomes __builtin_trap()
+   (only unreachable paths still have one: the script engine's halt on a null
+   script, an unused SWI wrapper, pokeruby's asm-only functions, which also
+   lose their naked attribute so the trap compiles).
 """
 import re
 import sys
@@ -34,7 +37,9 @@ def only_bitfields(body):
     decls = [d.strip() for d in body.split(";") if d.strip()]
     return bool(decls) and all(re.search(r":\s*\w+\s*$", d) for d in decls)
 WORD = re.compile(r"[A-Za-z_]\w*")
-ASM = re.compile(r'\b(?:asm|__asm__)\s*(?:volatile\s*|__volatile__\s*)?\(\s*((?:"(?:[^"\\]|\\.)*"\s*)*)\)')
+ASM = re.compile(r'\b(?:asm|__asm__)\s*(?:volatile\s*|__volatile__\s*)?\(')
+NAKED = re.compile(r'\b__attribute(?:__)?\s*\(\(\s*(?:__)?naked(?:__)?\s*\)\)')
+REG_NAME = re.compile(r'(?:r\d+|sp|lr|pc|ip|fp|sb|sl)$')
 
 
 def skip_string(s, i):
@@ -126,10 +131,44 @@ def align_structs(s):
 
 
 def scrub_asm(s):
-    def repl(m):
-        body = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)))
-        return "((void)0)" if not body.strip() else "__builtin_trap()"
-    return ASM.sub(repl, s)
+    out, last = [], 0
+    depth, pos = 0, 0  # brace depth at pos
+    for m in ASM.finditer(s):
+        if m.start() < last:
+            continue
+        while pos < m.start():
+            c = s[pos]
+            if c in "\"'":
+                pos = skip_string(s, pos)
+                continue
+            depth += (c == "{") - (c == "}")
+            pos += 1
+        end = skip_balanced(s, m.end() - 1, "(", ")")
+        pos = end
+        inner = s[m.end():end - 1]
+        tmpl = re.match(r'\s*((?:"(?:[^"\\]|\\.)*"\s*)*)', inner)
+        body = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', tmpl.group(1)))
+        rest = inner[tmpl.end():].strip()
+        before = s[max(0, m.start() - 64):m.start()].rstrip()
+        if depth == 0:
+            # file-scope asm (pokeruby: .space padding, .set aliases, .include):
+            # the bridge places every global at its ELF address anyway
+            repl = ""
+            end = skip_ws(s, end)
+            if s[end:end + 1] == ";":
+                end += 1
+            pos = end
+        elif not body.strip():
+            repl = "((void)0)"
+        elif not rest and REG_NAME.match(body.strip()) and before[-1:].isalnum():
+            repl = ""  # register variable binding
+        else:
+            repl = "__builtin_trap()"
+        out.append(s[last:m.start()])
+        out.append(repl)
+        last = end
+    out.append(s[last:])
+    return NAKED.sub("", "".join(out))
 
 
 def main():

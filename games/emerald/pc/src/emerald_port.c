@@ -30,6 +30,7 @@ const gba_game_info gba_game = {
     .game_code = "BPEE",
     .save_size = 0x20000,
     .intr_table = (uint32_t)(uintptr_t)gIntrTable,
+    .crt0 = &gba_crt0_emerald,
     .agb_main = AgbMain,
     .callback2 = (uint32_t *)&gMain.callback2,
     .status = status,

@@ -62,12 +62,21 @@ enum {
 #define GBA_LOCAL(file, name) ((uint32_t)(uintptr_t)__gba_local__##file##__##name)
 #define GBA_LOCAL_DECL(file, name) extern char __gba_local__##file##__##name[]
 
+/* crt0.s IntrMain, which differs between the decomps */
+typedef struct gba_crt0 {
+    uint16_t order[14];  /* IF bits in search order; gIntrTable is indexed by position */
+    uint16_t ie_keep;    /* IE bits left enabled while a handler runs */
+    uint16_t ime0_bit;   /* the interrupt whose handler runs with IME = 0 (0: none) */
+} gba_crt0;
+extern const gba_crt0 gba_crt0_emerald, gba_crt0_ruby;
+
 /* per-game constants and hooks the port needs (games/<game>/pc/src) */
 typedef struct gba_game_info {
     const char *name;
     const char *game_code;  /* ROM header 0xAC, e.g. "BPEE" */
     uint32_t save_size;     /* flash bytes */
     uint32_t intr_table;    /* address of gIntrTable */
+    const gba_crt0 *crt0;
     void (*agb_main)(void);
     uint32_t *callback2;    /* &gMain.callback2 */
     /* fills NP_STAT_FIELD_READY, NP_STAT_MAP_ID, NP_STAT_IN_BATTLE */

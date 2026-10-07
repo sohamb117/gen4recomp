@@ -27,11 +27,18 @@ static const struct FlashType s_type_64k = {
     .wait = {3, 1}, .ids = {.joined = 0x1B32}};
 static const u16 s_max_time[] = {10, 65469, 0, 0, 10, 65469, 0, 0, 2000, 65469, 0, 0, 2000, 65469, 0, 0};
 
+/* pokeruby declares the sector buffers void *, pokeemerald u8 * */
+#if defined(RUBY) || defined(SAPPHIRE)
+typedef void flash_buf;
+#else
+typedef u8 flash_buf;
+#endif
+
 /* RAM pointers the decomp keeps (their addresses are the cartridge's) */
 const struct FlashType *gFlash;
 const u16 *gFlashMaxTime;
 u16 (*ProgramFlashByte)(u16, u32, u8);
-u16 (*ProgramFlashSector)(u16, u8 *);
+u16 (*ProgramFlashSector)(u16, flash_buf *);
 u16 (*EraseFlashChip)(void);
 u16 (*EraseFlashSector)(u16);
 u16 (*WaitForFlashWrite)(u8, u8 *, u8);
@@ -59,7 +66,7 @@ u16 ProgramFlashByte_Port(u16 sector, u32 offset, u8 data) {
     return 0;
 }
 
-u16 ProgramFlashSector_Port(u16 sector, u8 *src) {
+u16 ProgramFlashSector_Port(u16 sector, flash_buf *src) {
     memcpy(sector_ptr(sector), src, SECTOR);
     gba_flash_dirty = 1;
     return 0;
@@ -98,7 +105,7 @@ u16 SetFlashTimerIntr(u8 timerNum, void (**intrFunc)(void)) {
     return 0;
 }
 
-void ReadFlash(u16 sector, u32 offset, u8 *dest, u32 size) {
+void ReadFlash(u16 sector, u32 offset, flash_buf *dest, u32 size) {
     memcpy(dest, sector_ptr(sector) + offset, size);
 }
 
@@ -119,7 +126,7 @@ u32 ProgramFlashSectorAndVerify(u16 sector, u8 *src) {
     return 0;
 }
 
-u32 ProgramFlashSectorAndVerifyNBytes(u16 sector, u8 *src, u32 n) {
+u32 ProgramFlashSectorAndVerifyNBytes(u16 sector, flash_buf *src, u32 n) {
     EraseFlashSector_Port(sector);
     memcpy(sector_ptr(sector), src, n);
     gba_flash_dirty = 1;
