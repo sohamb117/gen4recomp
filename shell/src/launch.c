@@ -23,7 +23,7 @@ static int ieq_n(const char *a, const char *b, size_t n)
 
 int np_launch_game_from_name(const char *name)
 {
-    static const char *const ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
+    static const char *const ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white", "heartgold", "soulsilver"};
     for (int g = 0; g < NP_GAME_COUNT; g++)
         if (strlen(name) == strlen(ids[g]) && ieq_n(name, ids[g], strlen(ids[g])))
             return g;

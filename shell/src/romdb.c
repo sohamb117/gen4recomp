@@ -16,6 +16,10 @@ static const np_rom_entry entries[] = {
      "Pokemon - Black Version (USA, Europe) (NDSi Enhanced)"},
     {"bc696a0dfb448c7b3a8a206f0f8214411a039208", NP_GAME_WHITE, NP_ROM_ACCEPTED,
      "Pokemon - White Version (USA, Europe) (NDSi Enhanced)"},
+    {"4fcded0e2713dc03929845de631d0932ea2b5a37", NP_GAME_HEARTGOLD, NP_ROM_ACCEPTED,
+     "Pokemon - HeartGold Version (USA)"},
+    {"f8dc38ea20c17541a43b58c5e6d18c1732c7e582", NP_GAME_SOULSILVER, NP_ROM_ACCEPTED,
+     "Pokemon - SoulSilver Version (USA)"},
 };
 
 const np_rom_entry *np_romdb_lookup(const char *sha1_hex)
@@ -36,12 +40,13 @@ const np_rom_entry *np_romdb_accepted(np_game game)
 
 const char *np_game_title(np_game game)
 {
-    static const char *const titles[NP_GAME_COUNT] = {"Diamond", "Pearl", "Platinum", "Black", "White"};
+    static const char *const titles[NP_GAME_COUNT] = {"Diamond", "Pearl", "Platinum", "Black", "White", "HeartGold",
+                                                      "SoulSilver"};
     return (unsigned)game < NP_GAME_COUNT ? titles[game] : "?";
 }
 
 const char *np_game_id(np_game game)
 {
-    static const char *const ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
+    static const char *const ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white", "heartgold", "soulsilver"};
     return (unsigned)game < NP_GAME_COUNT ? ids[game] : "unknown";
 }

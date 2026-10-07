@@ -13,7 +13,7 @@
 #include "storage.h"
 
 const int np_speeds[NP_SPEED_COUNT] = {1, 2, 3, 4, 8, 0};
-static const char *const np_game_ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
+static const char *const np_game_ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white", "heartgold", "soulsilver"};
 const int np_fps_caps[NP_FPS_CAP_COUNT] = {0, 30, 60, 120, 144, 240};
 const char *const np_fx_ids[NP_FX_COUNT] = {"off", "lcd", "scanlines", "crt", "smooth"};
 const char *const np_perf_ids[NP_PERF_COUNT] = {"custom", "high", "balanced", "low", "auto"};

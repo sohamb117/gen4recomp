@@ -2214,16 +2214,22 @@ def emit_insn(ctx, ins, func, out):
         out.append("r0 = armrec_swi(0x%Xu, r0, r1, r2, r3);" % num)
         return
     if m == "adr":
-        # ADR rd, label: materialise the address of a local label.
+        # ADR rd, label [+|- constant]: materialise the address of a local
+        # label, optionally offset (HG/SS's MSL: `adr r0, UNK_020F1D7C - 0x100`).
         toks = split_operands(ins.ops)
         rd = reg_num(toks[0])
         target = toks[1].strip()
+        off = 0
+        mo = re.match(r"^([A-Za-z_.$][\w.$]*)\s*([-+])\s*(\S+)$", target)
+        if mo and parse_int(mo.group(3)) is not None:
+            off = parse_int(mo.group(3)) * (-1 if mo.group(2) == "-" else 1)
+            target = mo.group(1)
         addr = ctx.symtab.get(target)
         if addr is None:
             addr = addr_from_name(target)
         if addr is None:
-            raise Unsupported("ADR to unknown label %r" % target)
-        out.append("%s = 0x%08Xu;" % (ctx.regc(rd), addr))
+            raise Unsupported("ADR to unknown label %r" % toks[1].strip())
+        out.append("%s = 0x%08Xu;" % (ctx.regc(rd), (addr + off) & 0xFFFFFFFF))
         return
     if m == "clz":
         toks = split_operands(ins.ops)

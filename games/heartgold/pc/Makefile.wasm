@@ -1,0 +1,162 @@
+# wasm32 build of Pokémon HeartGold / SoulSilver for the nativeplat runtime.
+#
+#   make -f pc/Makefile.wasm -j6                          build/pc-wasm/pokeheartgold.wasm
+#   make -f pc/Makefile.wasm -j6 GAME_VERSION=SOULSILVER  build/pc-wasm/pokesoulsilver.wasm
+#
+# (run from games/heartgold, after the ROM build: tools/rom_build.sh
+# heartgold|soulsilver, whose main.elf.xMAP is the source of every guest
+# address and whose generated headers the C and the assembly include).
+#
+# Built the way Diamond/Pearl are (games/diamond/pc/Makefile.wasm explains
+# the structure): the decompiled C through the typed bridge, the remaining
+# assembly through armrec, the machine model shared with Platinum and D/P.
+# The pieces:
+#
+#   pc/mk/game.mk     HG/SS's decompiled C (src/, lib/NitroSDK/src/{os,mi},
+#                     lib/dsprot/src), from main.lsf's object list
+#   pc/mk/armrec.mk   every linked .s (asm/, lib/asm, lib/*/asm) and the
+#                     mwcc asm bodies, through armrec
+#   games/diamond/pc/mk/bridge.mk  the IR bridge, used as it is
+#   games/diamond/pc/mk/host.mk    the machine model (Platinum's pc/src,
+#                     pc/hw, pc/wasm/src, armrec_rt.c, D/P's pc/src), used
+#                     as it is, by reference, exactly as the ROM-only core
+#                     (games/ndsrec) uses it
+#
+# What differs from D/P: HG/SS link NitroSDK 4.2 (071210) and keep almost
+# all of it as assembly (lib/asm/nitro.s), where D compiles its 3.2 SDK
+# from C. The host layer's SDK replacements therefore displace recompiled
+# functions (armrec --host-override, pc/host_overrides.txt), not weak C;
+# and the host compiles with PC_HOST_SDK42, which selects the 4.2 card
+# command block where D/P need their 3.2 one (pc_card_rom.c).
+
+ROOT    := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))/..)
+NPROOT  := $(abspath $(ROOT)/../..)
+PLAT    := $(NPROOT)/games/platinum
+DP      := $(NPROOT)/games/diamond
+ARMREC  := $(PLAT)/tools/armrec
+# Diamond's pc/ directory: bridge.mk and host.mk read their sources, shadow
+# headers and the D/P host files from here.
+PCDIR   := $(DP)/pc
+MYPC    := $(ROOT)/pc
+
+TOOLCHAINS ?= $(NPROOT)/.cache/toolchains
+WASI_SDK   ?= $(TOOLCHAINS)/wasi-sdk
+WABT       ?= $(TOOLCHAINS)/wabt
+PYTHON     ?= python3
+
+GAME_VERSION ?= HEARTGOLD
+GAME_LANGUAGE := ENGLISH
+ifeq ($(GAME_VERSION),HEARTGOLD)
+VER := heartgold
+else ifeq ($(GAME_VERSION),SOULSILVER)
+VER := soulsilver
+else
+$(error GAME_VERSION must be HEARTGOLD or SOULSILVER)
+endif
+
+BUILD  := $(ROOT)/build/pc-wasm/$(VER)
+OBJ    := $(BUILD)/obj
+TARGET := $(ROOT)/build/pc-wasm/poke$(VER).wasm
+# The ROM build's own outputs: the xMAP is the source of every address.
+ROMBUILD := $(ROOT)/build/$(VER).us
+ROM_XMAP := $(ROMBUILD)/main.elf.xMAP
+ROM_NDS  := $(ROMBUILD)/poke$(VER).nds
+LSF      := $(ROOT)/main.lsf
+HG_LSF   := $(MYPC)/tools/hg_lsf.py
+
+CC  := $(WASI_SDK)/bin/clang --target=wasm32-wasip1
+NM  := $(WASI_SDK)/bin/llvm-nm
+
+WASM_ABI := -fno-short-enums -fsigned-char -fno-common -std=gnu99 \
+            -fms-extensions -fno-strict-aliasing -fwrapv -w \
+            -Wno-error=implicit-function-declaration -Wno-error=implicit-int \
+            -Wno-error=int-conversion -Wno-error=incompatible-pointer-types \
+            -Wno-error=incompatible-function-pointer-types \
+            -Wno-error=return-type -Wno-error=return-mismatch
+OPT    ?= -O2
+HW_OPT ?= -O3
+
+np_abi_const = $(shell printf '%d' $$(sed -n 's/^\#define $(1) \(0x[0-9A-Fa-f]*\)u.*/\1/p' $(NPROOT)/core/include/np_guest_abi.h))
+NP_C_BASE := $(call np_abi_const,NP_GUEST_C_BASE)
+NP_MEMORY := $(call np_abi_const,NP_GUEST_MEMORY_BYTES)
+WASM_MAP  := $(BUILD)/poke$(VER).map
+LDFLAGS   := -Wl,--global-base=$(NP_C_BASE) -Wl,--no-stack-first \
+             -Wl,--initial-memory=$(NP_MEMORY) -Wl,--max-memory=$(NP_MEMORY) \
+             -Wl,-z,stack-size=1048576 -Wl,-Map=$(WASM_MAP)
+LDLIBS    := -lm
+
+.DEFAULT_GOAL := all
+.PHONY: all clean wasm2c-check
+.SECONDEXPANSION:
+
+OBJS :=
+include $(PCDIR)/mk/bridge.mk
+include $(MYPC)/mk/game.mk
+include $(MYPC)/mk/armrec.mk
+include $(PCDIR)/mk/host.mk
+
+# host.mk is D/P's: its D-only pieces swapped for HG/SS's.
+#  * PC_HOST_SDK42: the 4.2 card command block (pc_card_rom.c).
+#  * host.mk's overlay-statics table walks arm9/overlays/*/src, which this
+#    tree does not have; HG/SS's overlay membership is main.lsf's, so the
+#    map comes from pc/tools/hg_lsf.py (`hg/<flat>.c <ovl>`, the flat names
+#    gen_overlay_statics.py gives $(OBJ)/game/<path>.o).
+#  * D/P's decompiled half (games/diamond/pc/game: the field options, the
+#    save lab, the heap checker) is not here; the shared layer's calls into
+#    it are answered inertly by the ROM-only core's hooks file
+#    (games/ndsrec/pc/src/pc_ndsrec_hooks.c), compiled from its own path.
+HOST_CFLAGS += -DPC_HOST_SDK42
+
+HG_OVMAP := $(BUILD)/host/hg-overlay-map.txt
+HG_OVSTATICS_C := $(BUILD)/host/hg_overlay_statics.c
+HG_OVSTATICS_O := $(OBJ)/host/hg_overlay_statics.o
+$(HG_OVMAP): $(LSF) $(HG_LSF)
+	@mkdir -p $(dir $@)
+	$(PYTHON) $(HG_LSF) $(LSF) ovmap > $@.tmp && mv $@.tmp $@
+$(HG_OVSTATICS_C): $(HG_OVMAP) $(PLAT)/pc/gen_overlay_statics.py $(GAME_OBJS)
+	@mkdir -p $(dir $@)
+	$(PYTHON) $(PLAT)/pc/gen_overlay_statics.py --addr-table $(HG_OVMAP) $(OBJ)/game $@
+$(HG_OVSTATICS_O): $(HG_OVSTATICS_C)
+	@mkdir -p $(dir $@)
+	$(CC) $(HOST_CFLAGS) -c -o $@ $<
+LINK_EXTRA_DEPS := $(filter-out $(HOST_OVSTATICS_O),$(LINK_EXTRA_DEPS)) $(HG_OVSTATICS_O)
+LINK_EXTRA_OBJS := $(filter-out $(HOST_OVSTATICS_O),$(LINK_EXTRA_OBJS)) $(HG_OVSTATICS_O)
+
+HG_HOST_OBJS := $(OBJ)/hghost/pc_ndsrec_hooks.o
+$(OBJ)/hghost/%.o: $(NPROOT)/games/ndsrec/pc/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
+	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
+OBJS += $(HG_HOST_OBJS)
+-include $(addsuffix .d,$(HG_HOST_OBJS))
+
+# The GBA slot: HG/SS link no CTRDG backup library (no migration from the
+# GBA games), so the slot is the empty one the ROM-only core uses for a ROM
+# without it (games/ndsrec/pc/src/pc_ndsrec_noagb.c), in place of D/P's
+# flash-chip model.
+OBJS := $(filter-out $(HOST_OBJ)/pc/pc_agb_slot.o $(HOST_OBJ)/dp/pc_dp_agb.o,$(OBJS)) \
+        $(OBJ)/hghost/pc_ndsrec_noagb.o
+
+all: $(TARGET)
+
+# The contract check and the overlay statics' addresses, as on D/P. D/P's
+# five assembly lints (dp_*_lint.py) are not run: each reads D/P's own
+# allow-list of measured exceptions, which says nothing about HG/SS.
+POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HG_OVSTATICS_C) && \
+             $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
+               $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
+$(TARGET): $(OBJS) $(LINK_EXTRA_DEPS)
+	@mkdir -p $(dir $@)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LINK_EXTRA_OBJS) $(LDLIBS)
+	@$(POST_LINK)
+
+W2C_DIR := $(BUILD)/wasm2c
+wasm2c-check: $(TARGET)
+	@mkdir -p $(W2C_DIR)
+	$(WABT)/bin/wasm-validate $(TARGET)
+	$(WABT)/bin/wasm2c $(TARGET) -n $(VER) -o $(W2C_DIR)/$(VER).c
+	$(PYTHON) $(NPROOT)/tools/wasm2c_postprocess.py $(W2C_DIR)/$(VER).c
+	clang -O1 -c -w -I$(WABT)/include -I$(WABT)/share/wabt/wasm2c \
+	    -o $(W2C_DIR)/$(VER).o $(W2C_DIR)/$(VER).c
+	rm -rf $(W2C_DIR)
+
+clean:
+	rm -rf $(BUILD) $(TARGET)

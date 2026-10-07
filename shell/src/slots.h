@@ -16,7 +16,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define NP_SAVE_BYTES 0x80000u /* 4 Mbit flash in D/P/Pt and B/W cartridges */
+#define NP_SAVE_BYTES 0x80000u /* 4 Mbit flash in D/P/Pt, HG/SS and B/W cartridges */
 #define NP_SLOT_NAME_MAX 32    /* characters, excluding the terminator */
 #define NP_DESMUME_FOOTER_BYTES 122u
 

@@ -656,7 +656,7 @@ static void test_sync_plan(void)
               strlen(out) <= NP_SLOT_NAME_MAX && strstr(out, "(conflict 2026-01-02)") && !np_slot_name_problem(out),
           "long conflict name: %s", out);
 
-    static const char *const games[] = {"diamond", "pearl", "platinum", "black", "white"};
+    static const char *const games[] = {"diamond", "pearl", "platinum", "black", "white", "heartgold", "soulsilver"};
     np_sync_record r = {2, "Slot 1", {0}, 524288, 1759500000123456789LL, 524288, -5, "Slot 1 (conflict 2026-10-04)"};
     for (int i = 0; i < 20; i++)
         r.base[i] = (uint8_t)(i * 13);

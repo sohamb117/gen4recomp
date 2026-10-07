@@ -175,7 +175,7 @@ static void civil(int64_t secs, int *y, int *mo, int *d, int *h, int *mi, int *s
 static void draw_top(np_core *c, const np_input *in)
 {
     static const uint32_t base[NP_GAME_COUNT][3] = {
-        {40, 80, 190}, {190, 80, 130}, {120, 115, 100}, {70, 70, 80}, {200, 200, 205}};
+        {40, 80, 190}, {190, 80, 130}, {120, 115, 100}, {70, 70, 80}, {200, 200, 205}, {200, 160, 40}, {150, 160, 175}};
     const uint32_t *b = base[c->game];
     uint32_t *fb = c->fb[0];
     unsigned t = (unsigned)c->frame;
@@ -257,7 +257,7 @@ static void draw_bottom(np_core *c, const np_input *in)
 
 static void make_audio(np_core *c, const np_input *in)
 {
-    static const double base_hz[NP_GAME_COUNT] = {440.0, 493.88, 523.25, 587.33, 659.25};
+    static const double base_hz[NP_GAME_COUNT] = {440.0, 493.88, 523.25, 587.33, 659.25, 698.46, 783.99};
     /* Samples owed after `frame` frames at 59.8261 Hz, in integer math so the
      * stream never drifts. */
     uint64_t due = c->frame * (uint64_t)AUDIO_RATE * 10000u / 598261u;

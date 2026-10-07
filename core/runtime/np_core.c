@@ -24,7 +24,8 @@
 static np_core *g_core;
 static char g_create_error[256];
 
-static const char *const k_game_names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white"};
+static const char *const k_game_names[NP_GAME_COUNT] = {"diamond", "pearl",     "platinum",  "black",
+                                                        "white",   "heartgold", "soulsilver"};
 
 /* ---- fibers ---------------------------------------------------------- */
 

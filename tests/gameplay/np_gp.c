@@ -695,7 +695,7 @@ int main(int argc, char **argv) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
         if (!v) return usage();
         if (strcmp(a, "--game") == 0) {
-            static const char *const names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum"};
+            static const char *const names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum", "black", "white", "heartgold", "soulsilver"};
             game = -1;
             for (int g = 0; g < NP_GAME_COUNT; g++)
                 if (strcmp(v, names[g]) == 0) game = g;
