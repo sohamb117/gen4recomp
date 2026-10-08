@@ -143,7 +143,10 @@ NP_BLACK_ROM=… tests/mac/feature_matrix.py --app build/app-bwhgss/nativeplat.a
 All 15 `n2_*` cases ran on each game: 15/15 ok on Black and White; on
 HeartGold and SoulSilver 11 ok and 4 skipped with their reason (continue,
 slots, editor: no in-game save; audio: no music yet). The per-feature status is
-in docs/FEATURE_PARITY.md ("Black / White and HeartGold / SoulSilver").
+in docs/FEATURE_PARITY.md ("Black / White and HeartGold / SoulSilver"). A 16th
+case, `n2_render`, was added afterwards and passes on all four: F12's core frame
+is 256x384 at render scale 1, 512x768 at 2 and 684x768 with widescreen
+(`<game>-n2_render-*-frame.png`; White's widescreen bedroom looked at).
 Screenshots looked at: Black title (n2_boot), bedroom after CONTINUE
 (n2_continue), "Snapshot 1 loaded" in the bedroom (n2_snapshots-restored),
 the editor's Trainer tab on the real save (n2_editor-trainer: AAAAAAA, ID
