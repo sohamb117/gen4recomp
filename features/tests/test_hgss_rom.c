@@ -70,10 +70,12 @@ int main(int argc, char **argv)
         CHECK_EQ_INT(nd_exp_for_level(&gd, 25, 100), 1000000);  /* medium fast */
         CHECK_EQ_INT(nd_exp_for_level(&gd, 152, 100), 1059860); /* medium slow */
         CHECK_EQ_INT(nd_move_base_pp(&gd, 33), 35);
-        if (gd.type_chart_ok)
-            CHECK_EQ_INT(nd_type_multiplier(&gd, 10, 12), 20); /* Fire -> Grass */
-        else
-            printf("note: type chart not found (compressed battle overlay?)\n");
+        /* In the BLZ-compressed battle overlay. */
+        CHECK(gd.type_chart_ok);
+        CHECK_EQ_INT(nd_type_multiplier(&gd, 10, 12), 20); /* Fire -> Grass */
+        CHECK_EQ_INT(nd_type_multiplier(&gd, 0, 7), 0);    /* Normal -> Ghost */
+        CHECK_EQ_INT(nd_type_multiplier(&gd, 4, 2), 0);    /* Ground -> Flying */
+        CHECK_EQ_INT(gd.type_count, 18);
         nd_gamedata_free(&gd);
     }
 

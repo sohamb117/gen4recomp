@@ -1,14 +1,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # The save editor on synthetic HeartGold/SoulSilver saves, through the real
 # app on SDL's dummy video driver: every tab rendered to a PNG, a Kanto badge
-# toggled, a Wonder Card (.pcd) imported, each saved and checked with
-# np_save4; a SoulSilver save identifies itself; slot import from the
-# launcher's HeartGold card and the editor on that slot.
-# Inputs: APP (nativeplat), MAKE_SAVE (make_synth_save), NP_SAVE4, WORK.
+# toggled, a Wonder Card (.pcd) imported, and (with a HeartGold ROM) names
+# and an Add Pokemon, each saved and checked with np_save4; a SoulSilver save
+# identifies itself; slot import from the launcher's HeartGold card and the
+# editor on that slot.
+# Inputs: APP (nativeplat), MAKE_SAVE (make_synth_save), NP_SAVE4, WORK, ROM
+# (HeartGold ROM, optional).
 cmake_minimum_required(VERSION 3.21)
 
 set(GAME_ID heartgold)
-set(ROM "") # no HG/SS ROM: the editor shows ids
 include("${CMAKE_CURRENT_LIST_DIR}/editor_common.cmake")
 
 set(SAV "${WORK}/hg.sav")
@@ -49,6 +50,32 @@ expect_json("${j}" "pokemon" mystery_gift cards 0 type_name)
 execute_process(COMMAND "${NP_SAVE4}" verify "${SAV}" RESULT_VARIABLE rc OUTPUT_VARIABLE v)
 if(NOT rc EQUAL 0 OR NOT v MATCHES "all checksums valid")
     message(FATAL_ERROR "verify after editor saves: ${v}")
+endif()
+
+# ---- names and Add Pokemon (the ROM's tables): Party row 3, Chikorita, Lv 5
+if(EXISTS "${ROM}")
+    expect_log(2-party "editor: opened heartgold file")
+    keys(s 4 2 PageDown Down Down Return)
+    math(EXPR t "${s_end} + 1")
+    math(EXPR k "${t} + 3")
+    keys(s2 ${k} 3 Return Return Escape Return)
+    run(10-add-mon 60 "${s}${t}:text:Chikorita;${s2}" --editor --save "${SAV}")
+    expect_log(10-add-mon "Added to the party")
+    dump(j "${NP_SAVE4}" "${SAV}")
+    expect_json("${j}" "152" party 2 species)
+    expect_json("${j}" "5" party 2 level)
+    expect_json("${j}" "ON" party 2 checksum_ok)
+    expect_json("${j}" "Poké Ball" party 2 ball name)
+    string(JSON name GET "${j}" party 2 species_name)
+    string(TOUPPER "${name}" up)
+    if(NOT up STREQUAL "CHIKORITA")
+        message(FATAL_ERROR "species name ${name}")
+    endif()
+    keys(s 4 2 PageDown)
+    run(11-party-added 20 "${s}" --editor --save "${SAV}")
+    message(STATUS "Names and Add Pokemon with the HeartGold ROM: OK")
+else()
+    message(STATUS "HeartGold ROM not given (NP_HGSS_ROM): names and Add Pokemon not exercised")
 endif()
 
 # ---- slot import from the launcher's HeartGold card (Diamond, Pearl,

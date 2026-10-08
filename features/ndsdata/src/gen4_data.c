@@ -19,8 +19,8 @@
  *    src/battle/battle_lib.c sTypeMatchupMultipliers; D/P's overlay 11 has
  *    the same 111 rows), ended by {0xFF, 0xFF}. A {0xFE, 0xFE} row separates
  *    the two ghost immunities Foresight lifts; they count here. Found by its
- *    first five rows in the ARM9 overlays (stored uncompressed in the US
- *    ROMs; a BLZ-compressed overlay is not searched).
+ *    first five rows in the ARM9 overlays (D/P/Pt store them uncompressed;
+ *    HG/SS's are BLZ-compressed and are decompressed for the search).
  *
  * Archive paths (checked against the US ROMs):
  *   Platinum poketool/personal/pl_personal.narc, pl_growtbl.narc,
@@ -31,8 +31,8 @@
  *   HeartGold / SoulSilver (pokeheartgold filesystem.mk arc_strip_name;
  *            BaseStats in include/pokemon_types_def.h has the same 44-byte
  *            layout): personal a/0/0/2, growtbl a/0/0/3, waza_tbl a/0/1/1.
- *            Not checked against a retail ROM; its battle overlay may be
- *            BLZ-compressed, in which case the type chart is not found.
+ *            Checked against the retail HG/SS ROMs (names, tables, type
+ *            chart in a BLZ-compressed overlay).
  *
  * Black / White read their own layouts (gen5_data.c).
  */
@@ -85,14 +85,21 @@ static void load_type_chart(nd_gamedata *gd, const nd_rom *rom)
         if (nd_rom_read(rom, (uint64_t)ovt + off, e, sizeof e))
             return;
         const uint32_t file_id = (uint32_t)e[24] | (uint32_t)e[25] << 8 | (uint32_t)e[26] << 16 | (uint32_t)e[27] << 24;
-        if (e[31] & 1)
-            continue; /* compressed */
-        uint8_t *data;
-        size_t len;
+        uint8_t *data, *image;
+        size_t len, image_len;
         if (nd_rom_load_file(rom, file_id, &data, &len))
             continue;
-        const int found = parse_type_chart(gd, data, len);
-        free(data);
+        if (e[31] & 1) { /* BLZ-compressed (HG/SS) */
+            const nd_status st = nd_blz_decompress(data, len, &image, &image_len);
+            free(data);
+            if (st)
+                continue;
+        } else {
+            image = data;
+            image_len = len;
+        }
+        const int found = parse_type_chart(gd, image, image_len);
+        free(image);
         if (found) {
             gd->type_chart_ok = 1;
             return;

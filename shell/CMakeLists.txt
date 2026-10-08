@@ -234,6 +234,7 @@ if(BUILD_TESTING)
         -DAPP=$<TARGET_FILE:nativeplat>
         -DMAKE_SAVE=$<TARGET_FILE:np_make_synth_save>
         -DNP_SAVE4=$<TARGET_FILE:np_save4>
+        -DROM=${NP_HGSS_ROM}
         -DWORK=${CMAKE_CURRENT_BINARY_DIR}/editor_hgss
         -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/editor_hgss.cmake)
     set_tests_properties(shell_editor_hgss PROPERTIES TIMEOUT 300)
