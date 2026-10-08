@@ -195,22 +195,22 @@ SoulSilver's.
 | Save slots, Continue / Edit | app (import, Continue, Edit save...) | app | not yet: New boots (n2_boot); Continue/Edit need an in-game save (field load) | same | n2_slots, n2_continue, n2_editor |
 | Custom carts, mods | not yet: a mod loader in the game code (pc_modfs.c / gba_mods.c equivalent) | same | same | same |  |
 | Screen layouts, swap, rotation, scaling | app | app | app | app | n2_layouts (8 layouts) |
-| Battle layout | not yet: NP_STAT_IN_BATTLE from the game; B/W's battle stops | same | not yet (no field) | same |  |
+| Battle layout | not yet: no NP_STAT_IN_BATTLE source; B/W's battle stops (docs/BWHGSS_HOOKS.md) | same | not yet: the hook is in (`pc/patches/src/encounter.c.patch`, Encounter_New to _Delete), not reachable (no field) | same |  |
 | Camera zoom / tilt | not yet: NP_OPT_CAMERA_* hooks in the game code | same | same | same |  |
 | Shader FX, performance presets | app | app | app | app | n2_effects |
 | V-Sync, frame cap, logic clock, UI scale | shell | shell | shell | shell | game-independent |
-| 3D render scale, widescreen 3D | not yet: NP_OPT_RENDER_SCALE / WIDESCREEN hooks | same | same | same |  |
+| 3D render scale, widescreen 3D | core (renderer-side, no game hook: `-o render_scale=2` draws the title's Reshiram and the bedroom at 512x768; `-o widescreen=1` gives 342-wide frames with more of the bedroom's walls) | same core | core (the frame scales / widens; no 3D on screen before the field) | same | `build/evidence/bwhgss/hooks/` |
 | Screenshots (F12) | app | app | app | app | n2_screenshot (`screenshots/<game>-*.png`) |
 | Trainer Card, Pokédex diploma PNG | app/shell (editor on the save; export in shell_editor_bw) | same | shell (shell_editor_hgss exports both) | same | Unova / Johto badge names, 649 / 493 species |
 | ROM-derived music / SFX | core + app (title rms 7424; app output treble 1219) | same | not yet: silent through the title and intro | same | parity.sh title; n2_audio |
-| Music / SFX volume | not yet: NP_OPT_BGM/SE_VOLUME in the game's mixer (bgm_volume 0 left the output unchanged) | same | not yet | same | n2_audio-bgm0 |
+| Music / SFX volume | not yet: the split classes players by Platinum's SDAT (1, 2, 7 music); B/W's music is players 0 and 6, so on Black's title `bgm_volume=0` leaves rms 7470 and `se_volume=0` takes it to 0; fix in docs/BWHGSS_HOOKS.md | same SDAT players | not yet: Platinum's numbering plus PLAYER_OPED 8; no music to hear yet | same | np_headless -o; n2_audio-bgm0 |
 | Music low-pass filter | app (treble 1219 to 895 at 3X) | app (1224 to 895) | shell (no music to filter yet) | same | n2_audio-filter3 |
 | Speed hotkeys, fast-forward | app (4x: 7000 iterations ran 7294 frames; G: 28000) | app | app (1600 iterations ran 1894; G: 6400) | app | n2_speed |
 | Keyboard / gamepad rebinding | shell | shell | shell | shell |  |
 | Touch (stylus) | core (the SAVE item tapped in the X menu) | same | core (touch tutorial, naming done by taps) | same | parity.sh |
 | On-screen touch pad, layout editor | app | app | app | app | n2_touch |
 | Touch skins | app | app | app | app | n2_skin |
-| F1 quick save / F2 quick load | not yet: the game's quick-save hook (NP_OPT_QUICKSAVE_SEQ); F1 shows "Saving..." and nothing answers | same | not yet (also no field) | same | n2_quicksave |
+| F1 quick save / F2 quick load | not yet: the core refuses every request (`pc_bw_e2e.c` bw_frame); needs the save routine (docs/BWHGSS_HOOKS.md) | same | not yet: the hook is in (`pc_hg_field.c`: Field_SaveGameNormal behind the start menu's gates), not reachable (no field) | same | n2_quicksave |
 | Normal save, atomic writes, backups | core + app (X menu save; np_save5 verifies both copies; CONTINUE) | same | not yet: no in-game save (field load) | same | parity.sh save/continue, n2_continue |
 | Snapshots (F5/F6/F7), rewind | core + app (bedroom: 3/3 round trips; rewind depth 387 to 372) | app (401 to 386) | core + app (title and Oak: round trips; rewind 263 to 248) | same | parity.sh, n2_snapshots |
 | Folder sync | shell | shell | shell | shell | slot summaries read B/W and HG/SS saves |
@@ -222,7 +222,7 @@ SoulSilver's.
 | LAN / relay link | not yet: the games' wireless (C-Gear, Union Room) on the core's net host, past the battle / field blocks | same | same | same | the relay transport itself is shell |
 | Fast-forward locked in link play | not yet (no link) | same | same | same |  |
 | Mystery Gift | shell: `.pgf` cards into the 12 slots; delivery in game needs story progress | same | shell: `.pcd` / `.pgt` import; delivery needs the field | same | shell_editor_bw / hgss |
-| Fix cartridge bugs, instant text | not yet: NP_OPT_RULES / TEXT_INSTANT in the game code | same | same | same |  |
+| Fix cartridge bugs, instant text | not yet: NP_OPT_RULES / TEXT_INSTANT in the game code (docs/BWHGSS_HOOKS.md) | same | same | same |  |
 | macOS app | app (development build with these cores; packaging not run) | same | same | same | build/app-bwhgss |
 | Windows build | not yet | not yet | not yet | not yet |  |
 | URL launch, launch flags | app | app | app | app | n2_launch; `--game/--slot` in every case |
