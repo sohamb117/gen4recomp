@@ -1,0 +1,78 @@
+# Proves Route 34: the Day-Care coord scene (Lyra, warped inside, OnFrame VAR_UNK_408E 1), back out for the Day-Care
+# couple's phone numbers (OnFrame VAR_UNK_408E 2), the Route 34 trainers, into Goldenrod City.
+# Start: MAP_ROUTE_34 (372,448) -> end: MAP_GOLDENROD outside the gym (366,335), VAR_UNK_408E 3.
+title = "Route 34 Day-Care scene into Goldenrod City"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "zone_event 035_R34 coord 0 (363,413) w7 VAR_UNK_408E 0 -> 003",
+  "scr_seq_0237_R34.s:112-288 (Lyra scene, VAR_UNK_408E 1, Warp MAP_ROUTE_34_DAYCARE (3,12))",
+  "scr_seq_0238_R34R0101_hdr.s (OnFrame VAR_UNK_408E 1 -> 001); scr_seq_0238_R34R0101.s:12-83 (VAR_UNK_408E 2, FLAG_UNK_22D)",
+  "zone_event 302_R34R0101 warp 0 (3,12) -> MAP_ROUTE_34 2 (368,410)",
+  "scr_seq_0237_R34_hdr.s (OnFrame VAR_UNK_408E 2 -> 001); scr_seq_0237_R34.s:68-88 (PHONE_CONTACT_DAY_C_MAN, PHONE_CONTACT_DAY_C_LADY, VAR_UNK_408E 3)",
+  "zone_event 035_R34 coords 1/2 (370,472/473) VAR_UNK_4097 (Ace Trainer Irene/Jenn/Kate, south of the gate; not walked)",
+  "zone_event 073_T25 warp 2 (366,334) -> MAP_GOLDENROD_GYM",
+]
+notes = "Route 34 runs north from the Ilex gatehouse (372,449) to Goldenrod's south side; the Day-Care coord spans the road at z=413 [INFERENCE: on the walk north]. Trainers on the way (Youngster Samuel, Pokefan Brandon, Camper Todd ...) fight if they spot."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 366
+z = 413
+on_text = "stop"
+note = "Route 34 north; coord 0 (363..369,413) VAR_UNK_408E 0 -> Lyra, warp into the Day-Care (scr_seq_0237_R34.s:112-288)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_ROUTE_34_DAYCARE"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_34_DAYCARE"
+
+[[step]]
+do = "advance_text"
+shot = "daycare"
+note = "OnFrame VAR_UNK_408E 1 -> Day-Care scene -> 2 (scr_seq_0238_R34R0101.s:12-83)"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 12
+note = "Day-Care door (warp 0) -> Route 34 (368,410)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_34"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_UNK_408E 2 -> the couple's phone numbers -> 3 (scr_seq_0237_R34.s:68-88)"
+
+[[step]]
+do = "walk_to"
+x = 366
+z = 336
+note = "north into Goldenrod, two tiles south of the gym door (warp 2 (366,334)) [INFERENCE: (366,336) is open street]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+shot = "goldenrod"
+
+[expect]
+map = "MAP_GOLDENROD"
+badges = 2
+flags = ["FLAG_UNK_22D", "FLAG_GOT_HM01"]
+
+[expect.vars]
+VAR_UNK_408E = 3

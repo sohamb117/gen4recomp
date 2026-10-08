@@ -267,7 +267,16 @@ def emit_func(out, module, seg, f, end, lits, resolver, names, data_names,
         for tg in f.jt.get(ia, []):
             targets.add(tg)
     long_br = set(t for t in targets)
-    out.append("\t%s %s" % ("thumb_func_start" if f.thumb else "arm_func_start", name))
+    # thumb_func_start opens with `.balign 4` (armrec's location counter
+    # follows it), so a Thumb entry at a halfword address takes the
+    # non-word-aligned form or every label after it would shift by two
+    if not f.thumb:
+        start = "arm_func_start"
+    elif f.addr & 2:
+        start = "non_word_aligned_thumb_func_start"
+    else:
+        start = "thumb_func_start"
+    out.append("\t%s %s" % (start, name))
     if name in data_names_by_name(data_names):
         pass
     out.append("%s: ; 0x%08X" % (name, f.addr))
@@ -282,10 +291,18 @@ def emit_func(out, module, seg, f, end, lits, resolver, names, data_names,
                 op = resolve_operand(module, f, ins, end, resolver, names, long_br)
                 text = text.replace("{T}", op)
                 if ins.kind == "call":
-                    # BLX immediate and BL are one call to armrec; a long
-                    # branch is a BL to a local label, which armrec reads as
-                    # a goto
-                    text = "bl " + op
+                    # BLX immediate and BL are one call to armrec. A long
+                    # branch (a BL to a block of its own function, lr already
+                    # saved) is spelled `b` plus the BL's second halfword as
+                    # data, keeping its four bytes: armrec would read a BL to
+                    # a local label by B's exact reach, and mwcc used BL for
+                    # targets just inside it (Black's 0x0201558C, -2048)
+                    if (a in f.longbr
+                            and op == label_name(module, ins.target & ~1)):
+                        lo = seg.data[a + 2 - seg.ram:a + 4 - seg.ram]
+                        text = "b %s\n\t.byte 0x%02X, 0x%02X" % (op, lo[0], lo[1])
+                    else:
+                        text = "bl " + op
             out.append("\t" + text)
             stats["insns"] = stats.get("insns", 0) + 1
             a += ins.size

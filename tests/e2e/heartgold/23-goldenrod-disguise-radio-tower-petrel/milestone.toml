@@ -1,0 +1,185 @@
+# Proves the Radio Tower takeover's first half: back to Goldenrod, the Goldenrod Tunnel B1F coord scene that dresses
+# the player as a Rocket (VAR_SCENE_ROCKET_TAKEOVER 3), the Radio Tower 1F grunt (-> 4), floors 2-5 and the fake
+# director Petrel (TRAINER_EXECUTIVE_PETREL_PETREL) who hands over the Basement Key (VAR_UNK_40E7 2).
+# Start: MAP_MAHOGANY (523,184) -> end: MAP_GOLDENROD_RADIO_TOWER_5F (5,14), Basement Key, VAR_SCENE_ROCKET_TAKEOVER 4.
+title = "Rocket disguise, Radio Tower 1F-5F, Petrel and the Basement Key"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 45000
+refs = [
+  "zone_event 073_T25 warp 10 (347,334) -> MAP_GOLDENROD_TUNNEL_1F 0; zone_event 115_D37R0101 warp 2 (8,3) -> MAP_GOLDENROD_TUNNEL_B1F 5 (4,4)",
+  "scr_seq_0093_D37R0101_hdr.s (OnFrame VAR_UNK_40F8 0 -> Lyra's Fashion Case; VAR_UNK_40F8 is 2 since the takeover, scr_seq_0930_T28.s:25)",
+  "zone_event 192_D37R0102 coord 0 (15,7) h7 VAR_SCENE_ROCKET_TAKEOVER 2 -> 004",
+  "scr_seq_0094_D37R0102.s:581-699 (SetAvatarBits PLAYER_TRANSITION_ROCKET :687, VAR_SCENE_ROCKET_TAKEOVER 3 :696)",
+  "zone_event 073_T25 warp 7 (342,349) -> MAP_GOLDENROD_RADIO_TOWER_1F (2,14)",
+  "zone_event 109_D23R0101 coord 0 (23,5) VAR_SCENE_ROCKET_TAKEOVER 3 -> 009",
+  "scr_seq_0029_D23R0101.s:303-464 (TRAINER_TEAM_ROCKET_GRUNT_3, VAR_SCENE_ROCKET_TAKEOVER 4, FLAG_HIDE_RADIO_TOWER_RIVAL, VAR_UNK_409F 1)",
+  "TRAINER_TEAM_ROCKET_GRUNT_3 (185, include/constants/trainers.h:190): RATICATE 24, RATICATE 24",
+  "zone_event 109_D23R0101 warp 1 (23,5) -> 2F; zone_event 179_D23R0102 warp 1 (3,5) -> 3F; zone_event 180_D23R0103 warp 1 (12,5) -> 4F; zone_event 181_D23R0104 warp 1 (3,5) -> 5F",
+  "zone_event 182_D23R0105 object 0/2 (5,13) -> 002; object 1 TRAINER_EXECUTIVE_ARIANA_ARIANA (11,4) sight 4",
+  "scr_seq_0033_D23R0105.s:31-141 (Petrel revealed, TRAINER_EXECUTIVE_PETREL_PETREL, ITEM_BASEMENT_KEY, VAR_UNK_40E7 2, ClearFlag FLAG_HIDE_UNDERGROUND_KIMONO_GIRL)",
+  "TRAINER_EXECUTIVE_PETREL_PETREL (487, include/constants/trainers.h:492): KOFFING 30 x2, KOFFING 30, WEEZING 32, KOFFING 30 x2",
+  "include/constants/items.h:897 (ITEM_BASEMENT_KEY 476)",
+]
+notes = "The 3F->4F stairs used are (12,5); the card-key door at 3F (22,11) is for later. Petrel's six Koffing/Weezing: Psychic/Ground coverage by boost (Levitate blocks Ground: auto_battle knows). # PHASE2 below: travel back to Goldenrod."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 67500
+
+# PHASE2: Mahogany -> Goldenrod: Route 42 / Ecruteak / Route 37-36-35 on foot (long) or Fly to Goldenrod through the
+# touch-screen menu (unverified on HG/SS). The walk below targets the tunnel entrance directly.
+[[step]]
+do = "walk_to"
+x = 347
+z = 334
+surf = true
+note = "to Goldenrod's north-west tunnel entrance (warp 10) [INFERENCE: one long walk]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 3
+note = "-> B1F (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_B1F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+on_text = "stop"
+note = "coord 0 (15,7..13) VAR_SCENE_ROCKET_TAKEOVER 2 -> the Rocket disguise (scr_seq_0094_D37R0102.s:581-699)"
+
+[[step]]
+do = "advance_text"
+shot = "rocket-disguise"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 4
+note = "B1F -> 1F (warp 5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_1F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+note = "tunnel door (warp 0) -> Goldenrod"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "walk_to"
+x = 342
+z = 349
+note = "Radio Tower (warp 7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 5
+on_text = "stop"
+note = "coord 0 (23,5) VAR_SCENE_ROCKET_TAKEOVER 3 -> grunt (scr_seq_0029_D23R0101.s:303-401)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_TEAM_ROCKET_GRUNT_3: RATICATE 24 x2"
+
+[[step]]
+do = "advance_text"
+note = "VAR_SCENE_ROCKET_TAKEOVER 4 (:458)"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 5
+note = "-> 2F (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+note = "-> 3F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 5
+note = "-> 4F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_4F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+note = "-> 5F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_5F"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the 'director' (5,13)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_EXECUTIVE_PETREL_PETREL"
+
+[[step]]
+do = "advance_text"
+shot = "basement-key"
+note = "Basement Key, VAR_UNK_40E7 2 (scr_seq_0033_D23R0105.s:124-141)"
+
+[expect]
+map = "MAP_GOLDENROD_RADIO_TOWER_5F"
+badges = 7
+flags = ["FLAG_HIDE_RADIO_TOWER_RIVAL", "FLAG_ROCKET_TAKEOVER_ACTIVE", "FLAG_HIDE_RADIO_TOWER_5F_PETREL_REVEALED"]
+flags_clear = ["FLAG_HIDE_UNDERGROUND_KIMONO_GIRL", "FLAG_HIDE_RADIO_TOWER_5F_OFFICE_DIRECTOR"]
+battles = 2
+save = ['any(i["item"] == 476 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_SCENE_ROCKET_TAKEOVER = 4
+VAR_UNK_40E7 = 2
+VAR_UNK_409F = 1

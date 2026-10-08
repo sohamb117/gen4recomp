@@ -438,3 +438,57 @@ proven. `tests/e2e/run.py --game black|white` runs milestones on it
 the intro to the bedroom, walks it with `walk_to`, talks to Cheren and saves
 through the X menu. Not reported yet: the battle (the first battle does not
 run on the core) and warps.
+
+## First battle: discovery fixes and the current stop (2026-10-08)
+
+Five general ndsrec defects stood between the bedroom and the first battle.
+All are in `tools/ndsrec` (discover.py, emit.py), so they change what ndsrec
+emits for every ROM; D/P/Pt's decompilation-built cores do not use it.
+
+- **Thumb `bx pc` veneers.** mwldarm's Thumb-to-ARM/far call stub is
+  `bx pc; nop; ldr ip, [pc]; bx ip; .word T`. Discovery stopped at `bx pc`
+  and the ARM half was emitted as `.byte`, so the first battle's
+  `ov93_021BB9D8` aborted on 0x021BBB0C (White 0x021BBB2C), the veneer into
+  ov95, which loads into LCDC VRAM at 0x06898020. A word-aligned `bx pc`
+  now tail-enters an ARM function at +4, and a BL to a `bx pc` is never a
+  long branch. **901 sites in each ROM** (static 3, ov93 386, ov95 512).
+  With all five fixes below Black's discovery gains 1,247 functions (ov93
+  621, ov95 602, static 19, ov121 3, ov29 1, ov53 1) and 6,081 instructions,
+  most of them ov93 code lost behind veneer calls misread as long branches.
+- **Halfword-aligned Thumb entries.** main's armrec now follows
+  `thumb_func_start`'s `.balign 4`, which shifted every label after the
+  secure-area SVC veneers (0x0200421A) and aborted at boot ("two different
+  functions are registered at 0x020083B4"). ndsrec emits
+  `non_word_aligned_thumb_func_start` for those.
+- **Static helpers only overlays call** (0x0207AD58, MTX_Scale22_'s shape,
+  behind the ARM MTX_Identity22_; 0x0207AE24): the overlays' call census now
+  also feeds a second static round.
+- **Detached blocks**: a block a function reaches past its neighbour's start
+  (the static's unaligned MI copy loops, 0x02082F84 and five more) becomes
+  a function entered by a tail branch.
+- **Long branches**: a Thumb BL within 2,000 bytes is a call (0x02014A10 was
+  read as a long branch, losing the rest of sub_0201493C); a long branch is
+  emitted as `b label` plus the BL's second halfword as `.byte`, because
+  armrec reads a BL to a local label by B's exact reach and mwcc used BL
+  for a target 2,048 bytes back (0x0201558C).
+
+The static's `ndsrec_arm9_004.s` is unchanged by all of this: the startup
+helper's hashes and both tracked snapshots stand. Diamond's ROM-only
+emission gains 4 functions (static 3, ov13 1) and the new spellings; its
+hash check is in the report of this change.
+
+Result, both games, from the pre-starter save (`;5000:start:4:60:2;
+5300:a:4:40:20;7000:down:12;7030:a:4:40:1500`): gift box, Tepig chosen,
+overlays 93-96 load at frame 9801, the battle backdrop and "You are
+challenged by Pkmn Trainer Bianca!" with both party bars (frame 10001), no
+abort through frame 20000. **Current stop:** the intro never sends out a
+Pokémon; from about frame 10200 the screen stays on the backdrop with the
+bottom-screen Poké Ball while the clock runs. All game threads are idle
+(the main loop waits for VBlank each frame); every frame the battle proc
+`ov93_021B6434 -> 021B83F4 -> 021CDA18 -> 021CDDDC -> 021E9104 ->
+021EB52C -> 021EB870` polls `ov94_021F7EB4`, which reports busy while any
+count in the object at `*(0x0220AF20) + 0x1E8/0x1EC` is non-zero (writers:
+ov94_021F8884..021F903C, 021F9478, 021F94F8, 021FC374/448). Which pending
+job never completes (sound, an async load, an effect) is the next thing to
+establish. Guest memory in np_headless starts at host 0x300000000 (lldb
+`x/wx 0x300000000+ADDR`).

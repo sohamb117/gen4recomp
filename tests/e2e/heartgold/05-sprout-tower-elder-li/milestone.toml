@@ -1,0 +1,125 @@
+# Proves Sprout Tower, which opens the Violet Gym: the sages, the rival's 3F scene, Elder Li (TRAINER_ELDER_LI) and
+# TM70 Flash; Li's win hides the gym guy who blocks the Violet Gym (FLAG_HIDE_VIOLET_GYM_GYM_GUY_AFTER_SPROUT).
+# Start: MAP_VIOLET (510,269) -> end: MAP_VIOLET outside Sprout Tower (487,229), FLAG_UNK_076.
+title = "Sprout Tower: the sages and Elder Li (TM70)"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "zone_event 070_T22 warp 5 (487,228) -> MAP_SPROUT_TOWER_1F",
+  "zone_event 107_D15R0101 warps 1-6: (10,14/15) -> 2F 0, (24,8/9) -> 2F 1, (6,15/16) -> 2F 2; warp 0 (15,28) -> Violet",
+  "zone_event 150_D15R0102 warp 3 (15,27) -> MAP_SPROUT_TOWER_3F",
+  "zone_event 151_D15R0103 coord 0 (13,17) VAR_UNK_40A4 0 -> 001 (rival scene, FLAG_UNK_078, scr_seq_0018_D15R0103.s:22-52)",
+  "zone_event 151_D15R0103 object 3 obj_D15R0103_chourou (12,9) -> 002",
+  "scr_seq_0018_D15R0103.s:112-127 (TRAINER_ELDER_LI, ITEM_TM70, FLAG_UNK_076, FLAG_HIDE_VIOLET_GYM_GYM_GUY_AFTER_SPROUT, ClearFlag FLAG_HIDE_VIOLET_GYM_GYM_GUY_BEFORE_SPROUT)",
+  "TRAINER_ELDER_LI (290, include/constants/trainers.h:295): BELLSPROUT 7, BELLSPROUT 7, HOOTHOOT 10",
+  "zone_event 131_T22GYM0101 object 4 (15,20) hidden by FLAG_HIDE_VIOLET_GYM_GYM_GUY_AFTER_SPROUT",
+]
+notes = "Sages on the way: Chow (1F), Nico, Edmond (2F), Jin, Neal, Troy (3F) (zone_event 107/150/151 objects); Cyndaquil's Ember handles the Bellsprouts. Which 1F ladder reaches the 2F stairs at (15,27) is not in the event data: the steps take the (24,8) ladder [INFERENCE]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 30000
+
+[[step]]
+do = "walk_to"
+x = 487
+z = 228
+note = "Violet north to Sprout Tower (zone_event 070_T22 warp 5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_1F"
+
+# PHASE2: the 1F ladder that leads to the 2F stairs (15,27): probe_map both floors; (24,8) is a guess.
+[[step]]
+do = "walk_to"
+x = 24
+z = 8
+note = "1F ladder (warp 6) -> 2F (24,9) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 27
+note = "2F stairs (zone_event 150_D15R0102 warp 3) -> 3F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 17
+on_text = "stop"
+note = "coord 0 (13,17) VAR_UNK_40A4 0 -> the rival leaves Li's room (scr_seq_0018_D15R0103.s:22-52)"
+
+[[step]]
+do = "advance_text"
+shot = "rival-sprout"
+
+[[step]]
+do = "talk_to"
+id = 3
+note = "Elder Li (obj_D15R0103_chourou (12,9))"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_ELDER_LI: BELLSPROUT 7, BELLSPROUT 7, HOOTHOOT 10"
+
+[[step]]
+do = "advance_text"
+shot = "tm70"
+note = "TM70 Flash, FLAG_UNK_076, the gym guy moves (scr_seq_0018_D15R0103.s:119-127)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 27
+note = "back down: 3F stairs -> 2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 9
+note = "2F (24,9) -> 1F (24,8) [INFERENCE: the way up]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 28
+note = "1F door (warp 0) -> Violet"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIOLET"
+
+[expect]
+map = "MAP_VIOLET"
+flags = ["FLAG_UNK_076", "FLAG_UNK_078", "FLAG_HIDE_VIOLET_GYM_GYM_GUY_AFTER_SPROUT"]
+flags_clear = ["FLAG_HIDE_VIOLET_GYM_GYM_GUY_BEFORE_SPROUT"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_40A4 = 1

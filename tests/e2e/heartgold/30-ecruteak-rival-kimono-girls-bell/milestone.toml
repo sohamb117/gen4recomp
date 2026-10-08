@@ -1,0 +1,115 @@
+# Proves the Kimono Girls: Ecruteak's coord scene with the rival at the Dance Theater door (VAR_UNK_4079 3 -> 4,
+# VAR_UNK_410C 4), the theater's OnFrame five Kimono Girl battles (Zuki, Naoko, Miki, Sayo, Kuni) and the version's
+# bell (HG Clear Bell, SS Tidal Bell), VAR_UNK_40FA 1 for the legendary's summit/cave scene.
+# Start: MAP_NEW_BARK (684,394) -> end: MAP_ECRUTEAK outside the theater (397,174), VAR_UNK_410C 6, VAR_UNK_40FA 1.
+title = "Ecruteak: the rival, the five Kimono Girls, the bell"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 25000
+refs = [
+  "zone_event 075_T27 coord 0 (397,174) VAR_UNK_4079 3 -> 005",
+  "scr_seq_0920_T27.s:79-124 (rival scene, FLAG_HIDE_ECRUTEAK_RIVAL, VAR_UNK_4079 4, VAR_UNK_410C 4, ClearFlag FLAG_HIDE_DANCE_STUDIO_KIMONO_GIRLS, FLAG_UNK_241)",
+  "zone_event 075_T27 warp 4 (397,173) -> MAP_ECRUTEAK_DANCE_THEATER",
+  "scr_seq_0928_T27R0501_hdr.s (OnFrame VAR_UNK_410C 4 -> 016)",
+  "scr_seq_0928_T27R0501.s:714-880 (VAR_UNK_410C 5, YES/NO :737, TRAINER_KIMONO_GIRL_ZUKI/NAOKO/MIKI/SAYO/KUNI :750-798, GetGameVersion 7 -> ITEM_CLEAR_BELL + FLAG_UNK_103 else ITEM_TIDAL_BELL + FLAG_UNK_104 :807-816, FLAG_HIDE_DANCE_STUDIO_KIMONO_GIRLS, VAR_UNK_410C 6, VAR_UNK_40FA 1, HG ClearFlag FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS / SS ClearFlag FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS :868-874)",
+  "TRAINER_KIMONO_GIRL_ZUKI (162): UMBREON 38; _NAOKO (160): ESPEON 38; _MIKI (164): FLAREON 38; _SAYO (161): JOLTEON 38; _KUNI (163): VAPOREON 38 (include/constants/trainers.h:165-169)",
+]
+notes = "Version split inside the shared script: the bell and which Kimono Girls' summit flag clears (scr_seq_0928_T27R0501.s:807-874); checked in the version twins heartgold/31-bell-tower-ho-oh (FLAG_UNK_103) and soulsilver/31-whirl-islands-lugia (FLAG_UNK_104). The five battles run back to back without healing [INFERENCE: no HealParty between them]: boost."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 37500
+
+# PHASE2: New Bark -> Ecruteak: Fly through the touch-screen start menu (unverified on HG/SS).
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK"
+note = "arrival in Ecruteak (after the PHASE2 Fly)"
+
+[[step]]
+do = "walk_to"
+x = 397
+z = 174
+on_text = "stop"
+note = "coord 0 (397,174) VAR_UNK_4079 3 -> the rival (scr_seq_0920_T27.s:79-124)"
+
+[[step]]
+do = "advance_text"
+shot = "rival-ecruteak"
+
+[[step]]
+do = "walk_to"
+x = 397
+z = 173
+note = "Dance Theater (warp 4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK_DANCE_THEATER"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_UNK_410C 4: the Kimono Girls; YES (A) to battle"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_KIMONO_GIRL_ZUKI: UMBREON 38"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_KIMONO_GIRL_NAOKO: ESPEON 38"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_KIMONO_GIRL_MIKI: FLAREON 38"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_KIMONO_GIRL_SAYO: JOLTEON 38"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_KIMONO_GIRL_KUNI: VAPOREON 38"
+
+[[step]]
+do = "advance_text"
+shot = "bell"
+note = "the bell (HG Clear Bell / SS Tidal Bell), VAR_UNK_40FA 1"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 17
+note = "theater door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK"
+
+[expect]
+map = "MAP_ECRUTEAK"
+badges = 8
+flags = ["FLAG_HIDE_ECRUTEAK_RIVAL", "FLAG_HIDE_DANCE_STUDIO_KIMONO_GIRLS", "FLAG_UNK_241"]
+battles = 5
+
+[expect.vars]
+VAR_UNK_4079 = 4
+VAR_UNK_410C = 6
+VAR_UNK_40FA = 1

@@ -1,0 +1,125 @@
+# Proves the Slowpoke Well: Kurt in his house rushes off (the well's Rocket guard leaves), the Rocket harassing scene,
+# the well's grunts and Executive Proton (TRAINER_EXECUTIVE_PROTON_PROTON), the warp back to Kurt's house and Kurt's
+# thanks (OnFrame VAR_UNK_4080 2). Unlocks Bugsy (Azalea rocket gone), the Azalea rival and Ilex Forest's Farfetch'd.
+# Start: MAP_AZALEA (424,462) -> end: MAP_AZALEA_KURT_HOUSE (4,5), FLAG_BEAT_AZALEA_ROCKETS, VAR_UNK_4080 3.
+title = "Slowpoke Well: Kurt, Proton and the Rockets"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 22000
+refs = [
+  "zone_event 071_T23 warp 6 (399,454) -> MAP_AZALEA_KURT_HOUSE",
+  "zone_event 158_T23R0501 object 0 obj_T23R0501_gantetsu (4,4) -> 001",
+  "scr_seq_0874_T23R0501.s:42-70 (Kurt leaves: FLAG_UNK_077, FLAG_UNK_19E, FLAG_UNK_19F hides the well guard obj_T23_rocketm (434,461))",
+  "zone_event 071_T23 coord 1 (434,466) VAR_UNK_4080 0 -> 003 (scr_seq_0866_T23.s:217-235: FLAG_AZALEA_HARASSED_CIVILIAN, FLAG_AZALEA_ROCKET_HARASSING_CIVILIAN, VAR_UNK_4080 1)",
+  "zone_event 071_T23 warp 7 (433,454) -> MAP_SLOWPOKE_WELL_ENTRANCE; zone_event 111_D26R0101 warp 1 (11,6) -> MAP_SLOWPOKE_WELL_B1F (42,27)",
+  "zone_event 170_D26R0102 objects 1-3 TRAINER_TEAM_ROCKET_GRUNT_2 (42,11), TRAINER_TEAM_ROCKET_GRUNT (27,9), TRAINER_TEAM_ROCKET_F_GRUNT (37,7); object 4 obj_D26R0102_rkanbum3 (27,3) -> 002",
+  "scr_seq_0060_D26R0102.s:40-107 (TRAINER_EXECUTIVE_PROTON_PROTON, FLAG_UNK_1A9, FLAG_BEAT_AZALEA_ROCKETS, VAR_UNK_4075 1, VAR_UNK_4080 2, Warp MAP_AZALEA_KURT_HOUSE (4,5), FLAG_HIDE_ILEX_APPRENTICE/FARFETCHD_*_LOST cleared, VAR_UNK_40F4 1)",
+  "TRAINER_EXECUTIVE_PROTON_PROTON (486, include/constants/trainers.h:491): ZUBAT 8, KOFFING 12",
+  "scr_seq_0874_T23R0501_hdr.s (OnFrame VAR_UNK_4080 2 -> 005); scr_seq_0874_T23R0501.s:26-37 (VAR_UNK_4080 3, item 492, FLAG_UNK_07C)",
+]
+notes = "Order per the scripts: Kurt first (his FLAG_UNK_19F hides the Rocket at the well door), then the harassing coord in front of the well. The B1F walk passes the three grunts' sight lines (each fought). Proton's room is reached along the B1F floor [INFERENCE: no Strength needed; the boulder (23,3) is beside him]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 33000
+
+[[step]]
+do = "walk_to"
+x = 399
+z = 454
+note = "Kurt's house (warp 6)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA_KURT_HOUSE"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Kurt (obj_T23R0501_gantetsu) rushes to the well (scr_seq_0874_T23R0501.s:42-70)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 9
+note = "Kurt's door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA"
+
+[[step]]
+do = "walk_to"
+x = 434
+z = 466
+on_text = "stop"
+note = "coord 1 (434,466) VAR_UNK_4080 0 -> the Rocket harassing a civilian (scr_seq_0866_T23.s:217-235)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 433
+z = 454
+note = "Slowpoke Well (warp 7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLOWPOKE_WELL_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 6
+note = "down to B1F (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLOWPOKE_WELL_B1F"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "Proton (obj_D26R0102_rkanbum3 (27,3)); the grunts on the way fight"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_EXECUTIVE_PROTON_PROTON: ZUBAT 8, KOFFING 12"
+
+[[step]]
+do = "advance_text"
+map = "MAP_AZALEA_KURT_HOUSE"
+note = "the Rockets leave; Warp MAP_AZALEA_KURT_HOUSE (scr_seq_0060_D26R0102.s:58-98)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA_KURT_HOUSE"
+
+[[step]]
+do = "advance_text"
+shot = "kurt-thanks"
+note = "OnFrame VAR_UNK_4080 2 -> Kurt's thanks, VAR_UNK_4080 3 (scr_seq_0874_T23R0501.s:26-37)"
+
+[expect]
+map = "MAP_AZALEA_KURT_HOUSE"
+badges = 1
+flags = ["FLAG_BEAT_AZALEA_ROCKETS", "FLAG_UNK_1A9", "FLAG_UNK_07C", "FLAG_UNK_077"]
+flags_clear = ["FLAG_HIDE_ILEX_APPRENTICE", "FLAG_HIDE_FARFETCHD_1_LOST", "FLAG_HIDE_FARFETCHD_2_LOST", "FLAG_HIDE_AZALEA_SLOWPOKES"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_4075 = 1
+VAR_UNK_4080 = 3
+VAR_UNK_40F4 = 1

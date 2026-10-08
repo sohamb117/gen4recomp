@@ -1,0 +1,151 @@
+# Proves the Mahogany Gym: its three rooms of sliding ice, the Skiers/Boarders, Pryce (TRAINER_LEADER_PRYCE_PRYCE), the
+# Glacier Badge + TM07; outside, Mahogany's OnFrame (VAR_MIDGAME_BADGES 4) starts the Radio Tower takeover.
+# Start: MAP_TEAM_ROCKET_HEADQUARTERS_B2F (21,15) -> end: MAP_MAHOGANY outside the gym (523,184),
+# VAR_SCENE_ROCKET_TAKEOVER 2.
+title = "Pryce: Glacier Badge; the Rocket takeover begins"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 25000
+refs = [
+  "zone_event 084_T28 warp 2 (523,183) -> MAP_MAHOGANY_GYM_ROOM_1 (4,19)",
+  "zone_event 354_T28GYM0103 warp 1 (3,2) -> MAP_MAHOGANY_GYM_ROOM_2; zone_event 353_T28GYM0102 warp 1 (6,2) -> MAP_MAHOGANY_GYM_LEADER_ROOM",
+  "zone_event 136_T28GYM0101 object 0 obj_T28GYM0101_gsleader7 (7,4)",
+  "scr_seq_0932_T28GYM0101.s:69-102 (TRAINER_LEADER_PRYCE_PRYCE, GiveBadge BADGE_GLACIER, AddVar VAR_MIDGAME_BADGES 1, FLAG_GOT_TM07_FROM_PRYCE)",
+  "TRAINER_LEADER_PRYCE_PRYCE (32, include/constants/trainers.h:37): SEEL 30, DEWGONG 32, PILOSWINE 34",
+  "scr_seq_0930_T28_hdr.s (OnFrame VAR_MIDGAME_BADGES 4 -> 005); scr_seq_0930_T28.s:19-28 (VAR_SCENE_ROCKET_TAKEOVER 2, FLAG_UNK_0C5, FLAG_ROCKET_TAKEOVER_ACTIVE, VAR_UNK_40F8 2, VAR_MIDGAME_BADGES 5)",
+  "scr_seq_0255_R43R0101.s:11-15, scr_seq_0934_T28GYM0103.s (gym entry before/after FLAG_ROCKET_HIDEOUT_CLEARED)",
+]
+notes = "Fire is super-effective on all three. The gym floors are ice: slide steps (README slide) per room."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 37500
+
+# PHASE2: the way out of the hideout (back up B2F -> B1F -> shop stairs) is walk_to through cleared floors; check the
+# B1F traps are inert after the clear (VAR_ROCKET_TRAP_* 1, scr_seq_0090_D35R0103.s:717-732).
+[[step]]
+do = "walk_to"
+x = 10
+z = 29
+note = "B2F -> B1F (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B1F"
+
+[[step]]
+do = "walk_to"
+x = 51
+z = 4
+note = "B1F -> shop (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY_SOUVENIR_SHOP"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+note = "shop door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY"
+
+[[step]]
+do = "walk_to"
+x = 523
+z = 183
+note = "Mahogany Gym (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY_GYM_ROOM_1"
+
+# PHASE2: the ice slides of the three gym rooms (MAP_MAHOGANY_GYM_ROOM_1, _ROOM_2, _LEADER_ROOM): record each room's
+# slide directions with the probe (slide bot) between the entry warp and the next warp / Pryce (7,4).
+[[step]]
+do = "walk_to"
+x = 3
+z = 2
+note = "room 1 -> room 2 (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY_GYM_ROOM_2"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 2
+note = "room 2 -> Pryce's room (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY_GYM_LEADER_ROOM"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Pryce (7,4)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_PRYCE_PRYCE: SEEL 30, DEWGONG 32, PILOSWINE 34"
+
+[[step]]
+do = "advance_text"
+shot = "glacier-badge"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 19
+note = "leader room -> room 2 (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY_GYM_ROOM_2"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 15
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY_GYM_ROOM_1"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 19
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_MIDGAME_BADGES 4 -> the takeover: VAR_SCENE_ROCKET_TAKEOVER 2 (scr_seq_0930_T28.s:19-28)"
+
+[expect]
+map = "MAP_MAHOGANY"
+badges = 7
+badge = ["BADGE_ZEPHYR", "BADGE_HIVE", "BADGE_PLAIN", "BADGE_FOG", "BADGE_STORM", "BADGE_MINERAL", "BADGE_GLACIER"]
+flags = ["FLAG_GOT_TM07_FROM_PRYCE", "FLAG_ROCKET_TAKEOVER_ACTIVE", "FLAG_UNK_0C5", "FLAG_ROCKET_HIDEOUT_CLEARED"]
+battles = 1
+
+[expect.vars]
+VAR_MIDGAME_BADGES = 5
+VAR_SCENE_ROCKET_TAKEOVER = 2
+VAR_UNK_40F8 = 2

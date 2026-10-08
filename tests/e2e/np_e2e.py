@@ -43,6 +43,9 @@ _V4 = struct.Struct("<11I")
 _WARP = struct.Struct("<hhHBB")
 # the game families: the GBA games' probe (v4) and their constants differ from the DS games'
 GBA_GAMES = ("emerald", "ruby", "sapphire")
+# HeartGold/SoulSilver: a DS probe (step layers as D/P's) that also fills v4's avatar state, flags/vars/party
+# addresses, the battle menu cursor and the map's warps (games/heartgold/pc/src/pc_hg_field.c)
+HGSS_GAMES = ("heartgold", "soulsilver")
 
 
 class Mon:
@@ -370,9 +373,11 @@ class Session:
 
 # ---- the game's tile behaviors (Platinum's include/constants/field/map_tile_behaviors.h; D/P's
 # MetatileBehavior numbering is the same table: its asm predicates test the same values, e.g. the
-# four jumps 0x38..0x3B and the waterfall 0x13). Black/White number their MAPATTR values differently
-# and have no table here yet: none of their values means anything to the planner, which goes by the
-# attribute's collision ("hitch") flag and the game's own step check (docs/BW_RAM.md).
+# four jumps 0x38..0x3B and the waterfall 0x13; so is HG/SS's include/constants/metatile_behavior.h: most of its
+# names differ, but the 41 both tables name carry the same numbers, REFLECTIVE aside (HG 0x2D, Platinum 0x2C).
+# Black/White number their MAPATTR values differently and have no table here yet: none of their values means
+# anything to the planner, which goes by the attribute's collision ("hitch") flag and the game's own step check
+# (docs/BW_RAM.md).
 _BEHAVIORS = None
 BW_GAMES = ("black", "white")
 

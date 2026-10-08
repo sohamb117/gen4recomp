@@ -1,0 +1,60 @@
+# Proves the second Elite Four room: Will's opened exit to Koga's room (OnFrame shuts the way back), Koga
+# (TRAINER_ELITE_FOUR_KOGA_KOGA), his exit opens.
+# Start: MAP_POKEMON_LEAGUE_WILL_ROOM (6,11) -> end: MAP_POKEMON_LEAGUE_KOGA_ROOM (6,12), FLAG_DEFEATED_KOGA.
+title = "Elite Four: Koga"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "zone_event 272_T10R0201 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KOGA_ROOM 0 (6,22)",
+  "scr_seq_0821_T10R0301_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0821_T10R0301.s:22-36 (ClearFlag FLAG_HIDE_KOGAS_ROOM_RETREAT)",
+  "zone_event 273_T10R0301 object 0 obj_T10R0301_gsbigfour2 (6,11) -> 001",
+  "scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened)",
+  "TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44",
+]
+notes = "Fire handles Ariados/Venomoth/Forretress; Psychic/Ground for Muk and Crobat (boost)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 2
+note = "Will's exit (warp 1) -> Koga's room"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_KOGA_ROOM"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Koga (6,11)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_ELITE_FOUR_KOGA_KOGA: ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44"
+
+[[step]]
+do = "advance_text"
+shot = "koga-beaten"
+
+[expect]
+map = "MAP_POKEMON_LEAGUE_KOGA_ROOM"
+badges = 8
+flags = ["FLAG_DEFEATED_WILL", "FLAG_DEFEATED_KOGA"]
+flags_clear = ["FLAG_HIDE_KOGAS_ROOM_RETREAT"]
+battles = 1

@@ -144,6 +144,14 @@ $(OBJ)/hgsrc/%.o: $(MYPC)/src/%.c $(GAME_DEPS) $(BRIDGE_DEPS)
 OBJS += $(HG_GAME_HOST_OBJS)
 -include $(addsuffix .d,$(HG_GAME_HOST_OBJS))
 
+# The field half of the runtime's options and the tests/e2e probe
+# (pc/src/pc_hg_field.c): game C with the game's own defines, as src/ is.
+HG_FIELD_OBJ := $(OBJ)/hgsrc/pc_hg_field.o
+$(HG_FIELD_OBJ): $(MYPC)/src/pc_hg_field.c $(GAME_DEPS) $(BRIDGE_DEPS)
+	$(call BRIDGE_COMPILE,$(GAME_CFLAGS) $(GAME_GF_DEFINES) $(GAME_GLB_DEFINES) $(GAME_DEPFLAGS))
+OBJS += $(HG_FIELD_OBJ)
+-include $(HG_FIELD_OBJ).d
+
 all: $(TARGET)
 
 # The contract check and the overlay statics' addresses, as on D/P. D/P's

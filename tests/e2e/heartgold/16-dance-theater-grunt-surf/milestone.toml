@@ -1,0 +1,87 @@
+# Proves HM03 Surf: the Dance Theater's OnFrame Kimono Girl scene (VAR_UNK_410C 0 -> 1), the Rocket grunt pestering
+# a Kimono Girl (TRAINER_TEAM_ROCKET_GRUNT_26), and the stage coord that hands over HM03 (VAR_UNK_410C 3).
+# Start: MAP_ECRUTEAK (376,184) -> end: MAP_ECRUTEAK outside the theater (397,174), FLAG_GOT_HM03.
+title = "Ecruteak Dance Theater: the Rocket grunt and HM03 Surf"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 8000
+refs = [
+  "zone_event 075_T27 warp 4 (397,173) -> MAP_ECRUTEAK_DANCE_THEATER (7,17)",
+  "scr_seq_0928_T27R0501_hdr.s (OnFrame VAR_UNK_410C 0 -> 015); scr_seq_0928_T27R0501.s:73-108 (VAR_UNK_410C 1)",
+  "zone_event 083_T27R0501 object 9 obj_T27R0501_rocketm (7,6) FLAG_UNK_23A -> 003",
+  "scr_seq_0928_T27R0501.s:217-281 (TRAINER_TEAM_ROCKET_GRUNT_26, FLAG_UNK_23A, VAR_UNK_410C 2)",
+  "TRAINER_TEAM_ROCKET_GRUNT_26 (601, include/constants/trainers.h:606): KOFFING 12",
+  "zone_event 083_T27R0501 coords 0/1 (3,8)/(11,8) VAR_UNK_410C 2 -> 011/012",
+  "scr_seq_0928_T27R0501.s:371-399 (ITEM_HM03, FLAG_GOT_HM03, VAR_UNK_410C 3, VAR_UNK_4090 1)",
+  "src/field_move.c:250-254 (Surf in the field needs BADGE_FOG)",
+]
+notes = "No badge check in these scripts; Surf in the field needs the Fog Badge (15). VAR_UNK_4090 1 also retires Route 40's coord (zone_event 091_W40 coord 0)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 12000
+
+[[step]]
+do = "walk_to"
+x = 397
+z = 173
+note = "Dance Theater (warp 4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK_DANCE_THEATER"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_UNK_410C 0 -> Kimono Girls scene -> 1"
+
+[[step]]
+do = "talk_to"
+id = 9
+note = "the grunt (obj_T27R0501_rocketm (7,6))"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_TEAM_ROCKET_GRUNT_26: KOFFING 12"
+
+[[step]]
+do = "advance_text"
+note = "grunt leaves: VAR_UNK_410C 2 (scr_seq_0928_T27R0501.s:278-281)"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 8
+on_text = "stop"
+note = "coord 0 (3,8) VAR_UNK_410C 2 -> HM03 (scr_seq_0928_T27R0501.s:371-387)"
+
+[[step]]
+do = "advance_text"
+shot = "hm03"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 17
+note = "theater door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK"
+
+[expect]
+map = "MAP_ECRUTEAK"
+badges = 4
+flags = ["FLAG_GOT_HM03", "FLAG_UNK_23A"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_410C = 3
+VAR_UNK_4090 = 1

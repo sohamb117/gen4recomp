@@ -1,0 +1,125 @@
+# Proves the Goldenrod Gym: Whitney's battle and her crying (VAR_UNK_410A 1), Lass Cathy's coord scene
+# (FLAG_UNK_0B7), Whitney again for the Plain Badge + TM45, then the Flower Shop's SquirtBottle (needs the badge).
+# Start: MAP_GOLDENROD (366,336) -> end: MAP_GOLDENROD outside the Flower Shop (371,333), badge Plain, SquirtBottle.
+title = "Whitney: Plain Badge; the Flower Shop's SquirtBottle"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "zone_event 073_T25 warp 2 (366,334) -> MAP_GOLDENROD_GYM (6,25)",
+  "zone_event 133_T25GYM0101 object 0 obj_T25GYM0101_gsleader3 (13,4); trainers Cathy (14,15), Carrie (9,18), Victoria (6,11), Samantha (24,18)",
+  "scr_seq_0886_T25GYM0101.s:86-118 (TRAINER_LEADER_WHITNEY; won -> no badge yet: VAR_UNK_410A 1, FLAG_UNK_084, VAR_UNK_40DA 1)",
+  "zone_event 133_T25GYM0101 coord 0 (13,11) VAR_UNK_410A 1 -> 001; scr_seq_0886_T25GYM0101.s:160-178 (Cathy: FLAG_UNK_0B7)",
+  "scr_seq_0886_T25GYM0101.s:120-139 (FLAG_UNK_0B7 -> GiveBadge BADGE_PLAIN, VAR_UNK_410A 2, FLAG_GOT_TM45_FROM_WHITNEY)",
+  "TRAINER_LEADER_WHITNEY (30, include/constants/trainers.h:35): CLEFAIRY 17, MILTANK 19",
+  "zone_event 073_T25 warp 4 (371,332) -> MAP_GOLDENROD_FLOWER_SHOP; zone_event 177_T25R0601 object 0 obj_T25R0601_gswoman1 (3,5)",
+  "scr_seq_0896_T25R0601.s:120-140 (with BADGE_PLAIN: ITEM_SQUIRTBOTTLE via std_give_item_verbose)",
+  "include/constants/items.h:898 (ITEM_SQUIRTBOTTLE 477)",
+]
+notes = "Miltank (Rollout, Milk Drink) is the wall: boost (levels; a Fighting move behind the lead helps). The gym's floor is a maze in HG/SS; walk_to plans over it."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 366
+z = 334
+note = "gym door (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_GYM"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Whitney (13,4); trainers on the way fight"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_WHITNEY: CLEFAIRY 17, MILTANK 19"
+
+[[step]]
+do = "advance_text"
+shot = "whitney-cries"
+note = "she cries: VAR_UNK_410A 1 (scr_seq_0886_T25GYM0101.s:108-118)"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 11
+on_text = "stop"
+note = "coord 0 (13,11) VAR_UNK_410A 1 -> Cathy walks the player back (scr_seq_0886_T25GYM0101.s:160-178)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Whitney again: FLAG_UNK_0B7 -> Plain Badge + TM45 (:120-139)"
+
+[[step]]
+do = "advance_text"
+shot = "plain-badge"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 25
+note = "gym door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "walk_to"
+x = 371
+z = 332
+note = "Flower Shop (warp 4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_FLOWER_SHOP"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the florist (3,5): SquirtBottle (scr_seq_0896_T25R0601.s:128-140)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+note = "shop door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[expect]
+map = "MAP_GOLDENROD"
+badges = 3
+badge = ["BADGE_ZEPHYR", "BADGE_HIVE", "BADGE_PLAIN"]
+flags = ["FLAG_GOT_TM45_FROM_WHITNEY", "FLAG_UNK_0B7"]
+flags_clear = ["FLAG_UNK_084"]
+battles = 1
+save = ['any(i["item"] == 477 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_UNK_410A = 2
+VAR_UNK_40DA = 1

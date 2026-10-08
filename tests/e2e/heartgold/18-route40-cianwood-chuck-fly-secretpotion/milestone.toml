@@ -1,0 +1,144 @@
+# Proves Cianwood: Surf across Route 40/41, Chuck (TRAINER_LEADER_CHUCK_CHUCK) and the Storm Badge + TM01, his wife's
+# HM02 Fly (OnFrame VAR_UNK_4116 1), the pharmacist's SecretPotion (VAR_SCENE_LIGHTHOUSE_JASMINE 1), and back to Olivine.
+# Start: MAP_OLIVINE_LIGHTHOUSE_1F (8,16) -> end: MAP_OLIVINE outside the Lighthouse (301,264), badge Storm.
+title = "Cianwood: Chuck, Storm Badge, HM02 Fly, the SecretPotion"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "zone_event 112_D27R0101 warp 0 (8,17) -> MAP_OLIVINE",
+  "zone_event 091_W40 coord 0 (252,265) w4 VAR_UNK_4090 0 (retired by HM03, scr_seq_0928_T27R0501.s:381)",
+  "zone_event 072_T24 warp 0 (172,357) -> MAP_CIANWOOD_GYM (13,19)",
+  "zone_event 135_T24GYM0101 object 0 obj_T24GYM0101_gsleader5 (13,10); Black Belts Yoshi (6,9), Lao (18,7), Nob (7,5), Lung (15,3)",
+  "scr_seq_0877_T24GYM0101.s:19-57 (TRAINER_LEADER_CHUCK_CHUCK, GiveBadge BADGE_STORM, AddVar VAR_MIDGAME_BADGES 1, VAR_UNK_4116 1, FLAG_GOT_TM01_FROM_CHUCK)",
+  "TRAINER_LEADER_CHUCK_CHUCK (34, include/constants/trainers.h:39): PRIMEAPE 29, POLIWRATH 31",
+  "scr_seq_0875_T24_hdr.s (OnFrame VAR_UNK_4116 1 -> 006); scr_seq_0875_T24.s:31-41 (FLAG_GOT_HM02, VAR_UNK_4116 2)",
+  "zone_event 072_T24 warp 2 (179,370) -> MAP_CIANWOOD_PHARMACY; zone_event 219_T24R0501 object 0 (5,5)",
+  "scr_seq_0881_T24R0501.s:11-45 (VAR_SCENE_LIGHTHOUSE_JASMINE 1 -> ITEM_SECRETPOTION, FLAG_GOT_SECRETPOTION)",
+  "include/constants/items.h:883 (ITEM_SECRETPOTION 464)",
+  "zone_event 072_T24 coord 0 (176,334) VAR_UNK_4076 1 -> Suicune/Eusine (scr_seq_0875_T24.s:99-157; north end, not walked)",
+  "src/field_move.c:250-254 (Surf needs BADGE_FOG), :217-221 (Fly needs BADGE_STORM)",
+]
+notes = "Surf needs the Fog Badge and a Surf carrier (teach HM03 behind the lead: boost party-move). Chuck: Poliwrath lv31 (Water/Fighting) - the lead wants a Psychic/Flying move; boost. With Morty, Chuck and Jasmine VAR_MIDGAME_BADGES reaches 3 at the third of them (ROCKET_TAKEOVER 1). Fly is not used: the trip back surfs Route 41/40 (Fly through the touch menu is unverified on HG/SS)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 45000
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 17
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE"
+
+# PHASE2: the Route 40/41 surf route to Cianwood: the first water tile off Olivine's west shore and the landing on
+# Cianwood's east beach; check walk_to surf = true crosses the sea (whirlpools near Whirl Islands avoided).
+[[step]]
+do = "walk_to"
+x = 172
+z = 358
+surf = true
+note = "Olivine west, Route 40 and 41 by Surf, to Cianwood in front of the gym (warp 0 (172,357)) [INFERENCE: (172,358)]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CIANWOOD"
+
+[[step]]
+do = "walk_to"
+x = 172
+z = 357
+note = "Cianwood Gym (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CIANWOOD_GYM"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Chuck (13,10); Black Belts on the way fight"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_CHUCK_CHUCK: PRIMEAPE 29, POLIWRATH 31"
+
+[[step]]
+do = "advance_text"
+shot = "storm-badge"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 19
+note = "gym door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CIANWOOD"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_UNK_4116 1 -> Chuck's wife: HM02 Fly (scr_seq_0875_T24.s:31-41)"
+
+[[step]]
+do = "walk_to"
+x = 179
+z = 370
+note = "pharmacy (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CIANWOOD_PHARMACY"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "pharmacist (5,5): SecretPotion (scr_seq_0881_T24R0501.s:32-45)"
+
+[[step]]
+do = "advance_text"
+shot = "secretpotion"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+
+[[step]]
+do = "wait_map"
+map = "MAP_CIANWOOD"
+
+[[step]]
+do = "walk_to"
+x = 301
+z = 264
+surf = true
+note = "back by Surf (Route 41/40) to Olivine, in front of the Lighthouse (warp 3 (301,263))"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE"
+
+[expect]
+map = "MAP_OLIVINE"
+badges = 5
+badge = ["BADGE_ZEPHYR", "BADGE_HIVE", "BADGE_PLAIN", "BADGE_FOG", "BADGE_STORM"]
+flags = ["FLAG_GOT_TM01_FROM_CHUCK", "FLAG_GOT_HM02", "FLAG_GOT_SECRETPOTION"]
+battles = 1
+save = ['any(i["item"] == 464 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_UNK_4116 = 2
+VAR_MIDGAME_BADGES = 2

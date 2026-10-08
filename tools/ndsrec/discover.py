@@ -24,6 +24,7 @@ autoloads, one overlay, or the ARM7), from the bytes alone.
 The result per module: {addr: Func} plus the literal and data words found
 inside the code, which the emitter turns into labelled data.
 """
+import bisect
 import struct
 
 import disasm
@@ -147,6 +148,12 @@ class Module(object):
                         for o in range(0, nbytes, 2):
                             f.lits[tab + o] = 2
                     work.extend(tg)
+                elif thumb and ins.text == "bx pc" and not a & 3:
+                    # `bx pc; nop` switches to ARM at a + 4: the ARM half of
+                    # an interworking veneer (mwldarm's Thumb-to-ARM/far
+                    # call stub `bx pc; nop; ldr ip, [pc]; bx ip; .word T`)
+                    # is a function of its own, entered by this tail jump
+                    f.tails.add(a + 4)
                 if ins.ends_flow:
                     break
                 a += ins.size
@@ -163,7 +170,9 @@ class Module(object):
         saved LR). The target is then inside the caller: past its start,
         not a prologue, with no function start in between, and not right
         after a return or padding (where a function nothing else reaches
-        would begin)."""
+        would begin). A BL well inside B's reach is a call; mwcc's own
+        reach estimate is not exact (Black's 0x0201558C branches 2,048 bytes
+        back with BL), so the last 48 bytes are left to the other rules."""
         t = ins.target
         if not (t & 1):
             return False
@@ -172,19 +181,26 @@ class Module(object):
             return True
         if t <= f.addr or t - f.addr > 0x4000 or t in known:
             return False
+        if -2000 <= t - (ins.addr + 4) <= 2000:
+            return False
         if self.has_prologue(t, True):
             return False
         for k in known:
             if f.addr < k < t:
                 return False
         prev = self.u16(t - 2)
+        if self.u16(t) == 0x4778:               # bx pc: an interworking veneer
+            return False
         if (prev is None or prev in (0, 0x4770, 0x46C0)
                 or (prev & 0xFF00) == 0xBD00 or (prev & 0xFF87) == 0x4700):
             return False
-        # a literal pool right before the target: a function starts there
+        # a literal pool right before the target: a function starts there.
+        # Read from the word itself, not from the caller's pool so far: that
+        # depends on the order the caller's blocks were explored in (Black's
+        # sub_02014D2C lost its epilogue at 0x02015590 behind a `bl` pair)
         w = self.u32(t - 4)
-        if (t - 4) in f.lits or (w is not None and (
-                0x01FF8000 <= w < 0x02800000 or 0x04000000 <= w < 0x04800000)):
+        if w is not None and (0x01FF8000 <= w < 0x02800000
+                              or 0x04000000 <= w < 0x04800000):
             return False
         if (prev & 0xF800) == 0xE000:           # unconditional b: could be either
             pass
@@ -321,6 +337,10 @@ class Module(object):
             if not changed:
                 break
         self.resolve_overlaps()
+        for _ in range(8):
+            if not self.split_detached():
+                break
+            self.descend()
         self.prune_calls()
         self.reexplore_stale()
         self.check_secure_area()
@@ -703,6 +723,33 @@ class Module(object):
             if o is not None and o != a and self.funcs[a].source in ("pointer", "gap"):
                 del self.funcs[a]
 
+    def split_detached(self):
+        """A block a function reaches only past the next function's start
+        (Black's MI copy routines branch from one entry over another into
+        their shared unaligned loops) is outside the range emitted for it
+        and inside its neighbour's, which does not hold it: it becomes a
+        function of its own, entered by a tail branch. A block the
+        neighbour does hold is shared code, which emit labels instead."""
+        starts = sorted(self.funcs)
+        added = False
+        for i, a0 in enumerate(starts[:-1]):
+            f = self.funcs[a0]
+            end = starts[i + 1]
+            for ia, ins in list(f.insns.items()):
+                tg = list(f.jt.get(ia, ()))
+                if ins.kind == "b" and ins.target is not None:
+                    tg.append(ins.target)
+                elif ia in f.longbr:
+                    tg.append(ins.target & ~1)
+                for t in tg:
+                    if t < end or t not in f.insns or t in self.funcs:
+                        continue
+                    j = bisect.bisect_right(starts, t) - 1
+                    if t in self.funcs[starts[j]].insns:
+                        continue
+                    added |= self.add(t, f.thumb, "call")
+        return added
+
 
 def module_seeds(rom, name):
     seeds = []
@@ -765,7 +812,9 @@ def discover_all(rom, modules=None):
     resident beside it as hints (validated in the overlay: a prologue, or a
     function boundary that decodes to a return). A second round adds the
     call targets the first round found going into each overlay from the
-    static and from the overlays that can be resident beside it."""
+    static and from the overlays that can be resident beside it, and into
+    the static from every overlay (a static helper only overlays call, such
+    as Black's Thumb MTX_Scale22_ behind the ARM MTX_Identity22_)."""
     modules = list(modules or rom.modules())
     want_ov = [n for n in modules if n.startswith("ov")]
     out = {}
@@ -787,6 +836,11 @@ def discover_all(rom, modules=None):
         m = Module(rom, name)
         m.run(module_seeds(rom, name), hints=overlay_hints(rom, name, words) + calls)
         first[name] = m
+    scalls = [ta | (1 if th else 0) for m in first.values()
+              for (_f, ta, th) in m.external_calls
+              if static.view.contains(ta) and ta not in static.funcs]
+    if scalls:
+        static.run([], hints=scalls)
     xcalls = {}
     for name, m in first.items():
         ov = rom.overlay(int(name[2:]))

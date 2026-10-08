@@ -1,0 +1,69 @@
+# Proves Elm's reward after the eighth badge: back in New Bark, Elm's lab OnFrame (VAR_SCENE_ELMS_LAB 8) gives the
+# Master Ball, Lyra hears of the Kimono Girls; sets VAR_UNK_4079 3 (Ecruteak's rival scene) and
+# VAR_SCENE_NEW_BARK_EAST_EXIT 2 (Lyra now holds the Route 27 exit until the legendary).
+# Start: MAP_BLACKTHORN (672,133) -> end: MAP_NEW_BARK outside Elm's lab (684,394), VAR_SCENE_ELMS_LAB 9, Master Ball.
+title = "New Bark: Elm's Master Ball"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 8000
+refs = [
+  "scr_seq_0112_D44R0103.s:190-192 (VAR_SCENE_ELMS_LAB 8, VAR_SCENE_NEW_BARK_EAST_EXIT 1)",
+  "zone_event 057_T20 warp 0 (684,393) -> MAP_NEW_BARK_ELMS_LAB_1F",
+  "scr_seq_0616_T20R0101_hdr.s (OnFrame VAR_SCENE_ELMS_LAB 8 -> 014)",
+  "scr_seq_0843_T20R0101.s:887-950 (ITEM_MASTER_BALL via VAR_SPECIAL_x8004 1, FLAG_HIDE_ELMS_LAB_FRIEND, VAR_SCENE_ELMS_LAB 9, VAR_UNK_4079 3, FLAG_UNK_23B, ClearFlag FLAG_HIDE_NEW_BARK_FRIEND_2, VAR_SCENE_NEW_BARK_EAST_EXIT 2, VAR_UNK_407B 2)",
+  "include/constants/items.h:270 (ITEM_MASTER_BALL 1)",
+  "zone_event 057_T20 coords 2/3 (700,398) h5 VAR_SCENE_NEW_BARK_EAST_EXIT 1/2 -> 011 (Mom: 'Professor Elm is waiting', msg_0542_T20 21-24) / 012 (Lyra: 'I wonder what a Kimono Girl wants', msg 25-30); both walk the player back (scr_seq_0842_T20.s:1463-1735)",
+]
+notes = "Blackthorn -> New Bark is the far east of Johto to its south-east corner: Fly (HM02 from Chuck's wife, milestone 18) is the way a player goes."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 12000
+
+# PHASE2: Fly Blackthorn -> New Bark through the HG/SS touch-screen start menu (Pokemon icon, the Fly carrier, the
+# town map cursor): the `fly` bot is unverified on HG/SS; until it is, the run cannot leave Blackthorn's region.
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK"
+note = "arrival in New Bark (after the PHASE2 Fly)"
+
+[[step]]
+do = "walk_to"
+x = 684
+z = 393
+note = "Elm's lab (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK_ELMS_LAB_1F"
+
+[[step]]
+do = "advance_text"
+shot = "master-ball"
+note = "OnFrame VAR_SCENE_ELMS_LAB 8 -> Master Ball, Lyra (scr_seq_0843_T20R0101.s:887-950)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 14
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK"
+
+[expect]
+map = "MAP_NEW_BARK"
+badges = 8
+flags = ["FLAG_HIDE_ELMS_LAB_FRIEND", "FLAG_UNK_23B", "FLAG_UNK_0EA"]
+flags_clear = ["FLAG_HIDE_NEW_BARK_FRIEND_2"]
+save = ['any(i["item"] == 1 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_SCENE_ELMS_LAB = 9
+VAR_UNK_4079 = 3
+VAR_SCENE_NEW_BARK_EAST_EXIT = 2
+VAR_UNK_407B = 2

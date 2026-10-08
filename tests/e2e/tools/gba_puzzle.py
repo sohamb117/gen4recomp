@@ -28,7 +28,6 @@ The static model (gba_world.py) and the probe's window show the floor, not the p
     metatiles with setmetatile X, Y, METATILE_*, impassable in each branch: A facing it flips the arrows. The
     flags start clear (the layout's own metatiles). The switches' state rides in the state's gate slot
   With switches the route prints as milestone [[step]] blocks (steps, then the switch as face + interact).
-
   Strength boulders and Rock Smash rocks (Seafloor Cavern, Victory Road; field_player_avatar.c)
   - walking into an OBJ_EVENT_GFX_PUSHABLE_BOULDER pushes it one tile when the tile beyond has no collision, no
     object, no elevation mismatch for the boulder and is no non-animated door (TryPushBoulder); the player walks

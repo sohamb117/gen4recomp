@@ -1,0 +1,185 @@
+# Proves the Rising Badge: Dragon's Den by Surf to the shrine, the Elder's five-question quiz (OnFrame VAR_UNK_40C3 0),
+# Clair's Rising Badge, then her TM59 at the den entrance (coord VAR_UNK_40C4 1). Sets VAR_SCENE_ELMS_LAB 8 (Elm's
+# Master Ball) and VAR_SCENE_NEW_BARK_EAST_EXIT 1.
+# Start: MAP_BLACKTHORN (668,152) -> end: MAP_BLACKTHORN outside the den (672,133), badge Rising.
+title = "Dragon's Den: the Elder's quiz, Rising Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "zone_event 086_T30 warp 2 (672,132) -> MAP_DRAGONS_DEN_ENTRANCE; zone_event 122_D44R0101 warp 1 (6,5) -> MAP_DRAGONS_DEN (28,6)",
+  "zone_event 239_D44R0102 warp 2 (28,50) -> MAP_DRAGONS_DEN_SHRINE (6,19)",
+  "scr_seq_0112_D44R0103_hdr.s (OnFrame VAR_UNK_40C3 0 -> 003)",
+  "scr_seq_0112_D44R0103.s:57-120 (five MenuInitStdGmm questions; an item with value 1 is wrong -> _0310 FLAG_FAILED_DRAGONS_DEN_QUIZ): Q1 items 280/281/282 = 0/1/0, Q2 283/284/285 = 0/0/1, Q3 286/287/288 = 1/0/0, Q4 289/290/291 = 0/1/0, Q5 292/293/294 = 1/0/0",
+  "scr_seq_0112_D44R0103.s:121-192 (Clair: GiveBadge BADGE_RISING :153, FLAG_UNK_0EA, VAR_UNK_40C4 1, VAR_UNK_40C3 1, VAR_UNK_407B 1, VAR_SCENE_ELMS_LAB 8, ClearFlag FLAG_HIDE_ELMS_LAB_FRIEND, VAR_SCENE_NEW_BARK_EAST_EXIT 1)",
+  "zone_event 239_D44R0102 coord 0 (27,14) w3 VAR_UNK_40C4 1 -> 000 (TM59, FLAG_GOT_TM59_FROM_CLAIR, VAR_UNK_40C4 2, scr_seq_0111_D44R0102.s:125-181)",
+  "scr_seq_0941_T30_hdr.s (OnFrame VAR_UNK_407B 1 -> 007: VAR_UNK_407B 2)",
+]
+notes = "Quiz answers: the first item is right in Q1, Q2 and Q4, wrong in Q3 and Q5 (pick the second there) [INFERENCE: the menu cursor opens on the first item; DOWN then A]. The den's water route to the shrine needs Surf (and Whirlpool? not in these events) [INFERENCE: walk_to surf = true]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 30000
+
+[[step]]
+do = "walk_to"
+x = 672
+z = 132
+note = "Dragon's Den (warp 2); the guard steps aside after Clair"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DRAGONS_DEN_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_DRAGONS_DEN"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 50
+surf = true
+note = "across the den's water to the shrine (warp 2); Ace Trainers Kobe/Piper, Twins Clea and Gil fight if they spot"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DRAGONS_DEN_SHRINE"
+
+# PHASE2: the quiz menus: confirm the cursor opens on the first item and that A/DOWN+A pick as below (dump each menu).
+[[step]]
+do = "press"
+keys = "A"
+times = 3
+gap = 40
+note = "the Elder's intro to Q1 (msg 00000/00001) [INFERENCE: count]"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Q1: first item (value 0)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 40
+note = "'...' then Q2 text [INFERENCE: count]"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Q2: first item (value 0)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+note = "Q3: second item (value 0; the first is wrong)"
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 40
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Q4: first item (value 0)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+note = "Q5: second item (value 0; the first is wrong)"
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "advance_text"
+shot = "rising-badge"
+note = "Clair arrives: Rising Badge (scr_seq_0112_D44R0103.s:121-192)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 19
+note = "shrine door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DRAGONS_DEN"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 14
+surf = true
+on_text = "stop"
+note = "coord 0 (27..29,14) VAR_UNK_40C4 1 -> Clair's TM59 (scr_seq_0111_D44R0102.s:125-181)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 6
+note = "den exit (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DRAGONS_DEN_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 9
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_UNK_407B 1 -> 2"
+
+[expect]
+map = "MAP_BLACKTHORN"
+badges = 8
+badge = ["BADGE_ZEPHYR", "BADGE_HIVE", "BADGE_PLAIN", "BADGE_FOG", "BADGE_STORM", "BADGE_MINERAL", "BADGE_GLACIER", "BADGE_RISING"]
+flags = ["FLAG_UNK_0EA", "FLAG_GOT_TM59_FROM_CLAIR"]
+flags_clear = ["FLAG_FAILED_DRAGONS_DEN_QUIZ", "FLAG_HIDE_ELMS_LAB_FRIEND"]
+
+[expect.vars]
+VAR_UNK_40C3 = 1
+VAR_UNK_40C4 = 2
+VAR_UNK_407B = 2
+VAR_SCENE_ELMS_LAB = 8
+VAR_SCENE_NEW_BARK_EAST_EXIT = 1

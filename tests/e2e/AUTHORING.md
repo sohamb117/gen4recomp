@@ -21,7 +21,9 @@ tests/e2e/<game>/<nn>-<slug>/
 `<game>` is `platinum`, `diamond` or `pearl`. Diamond dirs hold everything both versions share
 (`version = "both"`); `pearl/chain.txt` and `pearl/systems.txt` list them as `../diamond/<dir>` and point at a
 Pearl-local dir only where the scripts branch on the version (`version = "pearl"`, its Diamond twin
-`version = "diamond"`). Numbers order the chain; a gap or a suffix (`31b-...`) is fine.
+`version = "diamond"`). Numbers order the chain; a gap or a suffix (`31b-...`) is fine. HeartGold/SoulSilver do the
+same: shared and HeartGold-only dirs under `heartgold/` (`version = "both"` / `"heartgold"`), SoulSilver-only ones
+under `soulsilver/`.
 
 ## milestone.toml
 
@@ -191,6 +193,7 @@ the recipe's comments, as for the lab party.
 |---|---|
 | Platinum | `scripts_<map>.s:LINE`, `events_<map> (...)`, `src/...c:LINE`, `TRAINER_X (id)`, other paths from `games/platinum/` |
 | Diamond/Pearl | `scr_seq NNNN @0xOFF`, `zone_event NNNN object|warp|coord|bg k`, `maps.h:LINE`, `map_header.c:LINE`, `trdata.json #N`, `msg NNNN #i`, other paths from `games/diamond/` |
+| HeartGold/SoulSilver | `scr_seq_NNNN_<CODE>.s:LINE` (files/fielddata/script/scr_seq), `zone_event NNN_<CODE> object|warp|coord|bg k` (files/fielddata/eventdata/zone_event/*.json), other paths from `games/heartgold/` |
 
 D/P field data is binary; `tests/e2e/tools/dp_script.py` decodes it (run from the repo root):
 

@@ -1,0 +1,68 @@
+# Proves the first Elite Four room: heal at the League's Pokemon Center counter, the north door to Will's room (the
+# OnFrame shuts the way back), Will (TRAINER_ELITE_FOUR_WILL_WILL), his exit opens.
+# Start: MAP_POKEMON_LEAGUE_ENTRANCE (11,24) -> end: MAP_POKEMON_LEAGUE_WILL_ROOM (6,11), FLAG_DEFEATED_WILL.
+title = "Elite Four: Will"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "zone_event 271_T10R0101 object 0 obj_T10R0101_pcwoman1 (6,19) (nurse)",
+  "zone_event 271_T10R0101 warp 1 (11,7) -> MAP_POKEMON_LEAGUE_WILL_ROOM 0 (6,22)",
+  "scr_seq_0820_T10R0201_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0820_T10R0201.s:22-36 (ClearFlag FLAG_HIDE_WILLS_ROOM_RETREAT)",
+  "zone_event 272_T10R0201 object 0 obj_T10R0201_gsbigfour1 (6,10) -> 001",
+  "scr_seq_0820_T10R0201.s:45-71 (VAR_UNK_4135 < 8 -> TRAINER_ELITE_FOUR_WILL_WILL :58, FLAG_DEFEATED_WILL, the exit door and stoppers hidden)",
+  "TRAINER_ELITE_FOUR_WILL_WILL (245, include/constants/trainers.h:250): XATU 40, JYNX 41, EXEGGUTOR 41, SLOWBRO 41, XATU 42",
+]
+notes = "First run: VAR_UNK_4135 < 8, so the first team (WILL_2 is the rematch). Fire/Electric/Dark coverage by boost (lv ~50). The heal tile in front of the nurse is [INFERENCE] (6,21) facing up."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 13500
+
+[[step]]
+do = "heal"
+x = 6
+z = 21
+note = "League Pokemon Center nurse (6,19) [INFERENCE: counter tile]"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 7
+note = "north door (warp 1) -> Will's room (6,22)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_WILL_ROOM"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame: the way back shuts (scr_seq_0820_T10R0201.s:22-36)"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Will (6,10)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_ELITE_FOUR_WILL_WILL: XATU 40, JYNX 41, EXEGGUTOR 41, SLOWBRO 41, XATU 42"
+
+[[step]]
+do = "advance_text"
+shot = "will-beaten"
+
+[expect]
+map = "MAP_POKEMON_LEAGUE_WILL_ROOM"
+badges = 8
+flags = ["FLAG_DEFEATED_WILL"]
+flags_clear = ["FLAG_HIDE_WILLS_ROOM_RETREAT"]
+battles = 1

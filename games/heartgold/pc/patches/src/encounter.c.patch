@@ -1,0 +1,43 @@
+--- a/src/encounter.c
++++ b/src/encounter.c
+@@ -41,6 +41,8 @@
+ #include "unk_02092BE8.h"
+ #include "use_item_on_mon.h"
+ 
++#include "pc_np_options.h"
++
+ static BOOL Task_StartBattle(TaskManager *taskManager);
+ static void CallTask_StartBattle(TaskManager *taskManager, BattleSetup *setup);
+ static Encounter *Encounter_New(BattleSetup *setup, s32 effect, s32 bgm, u32 *winFlag);
+@@ -84,6 +86,7 @@
+ 
+ static Encounter *Encounter_New(BattleSetup *setup, s32 effect, s32 bgm, u32 *winFlag) {
+     Encounter *encounter = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(Encounter));
++    pc_np_stat.in_encounter = 1; /* pc port: NP_STAT_IN_BATTLE, until the matching _Delete */
+     encounter->winFlag = winFlag;
+     if (winFlag != NULL) {
+         *winFlag = BATTLE_OUTCOME_NONE;
+@@ -95,6 +98,7 @@
+ }
+ 
+ static void Encounter_Delete(Encounter *encounter) {
++    pc_np_stat.in_encounter = 0;
+     BattleSetup_Delete(encounter->setup);
+     Heap_Free(encounter);
+ }
+@@ -296,6 +300,7 @@
+ 
+ static WildEncounter *WildEncounter_New(BattleSetup *setup, s32 effect, s32 bgm, u32 *winFlag) {
+     WildEncounter *encounter = Heap_AllocAtEnd(HEAP_ID_FIELD2, sizeof(WildEncounter));
++    pc_np_stat.in_encounter = 1; /* pc port: NP_STAT_IN_BATTLE, until the matching _Delete */
+     encounter->winFlag = winFlag;
+     if (winFlag != NULL) {
+         *winFlag = BATTLE_OUTCOME_NONE;
+@@ -308,6 +313,7 @@
+ }
+ 
+ static void WildEncounter_Delete(WildEncounter *encounter) {
++    pc_np_stat.in_encounter = 0;
+     BattleSetup_Delete(encounter->setup);
+     Heap_Free(encounter);
+ }

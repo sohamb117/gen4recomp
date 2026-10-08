@@ -34,6 +34,11 @@ void pc_agb_slot_step(void)
 {
 }
 
+/* pc_os_lite.c, before a soft reset: likewise nothing to store. */
+void pc_agb_slot_sync(void)
+{
+}
+
 /* armrec_rt.h's ARMREC_AGB_HOOK: no chip behind the bus. */
 uint32_t armrec_agb_load8(uint32_t a)
 {

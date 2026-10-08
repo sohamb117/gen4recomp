@@ -1,0 +1,171 @@
+# Proves the Mineral Badge: the SecretPotion given to Amphy (Jasmine leaves the Lighthouse: VAR_SCENE_LIGHTHOUSE_JASMINE
+# 2, then Olivine's OnFrame -> 3), the gym's two coord scenes (VAR_UNK_410E 1 -> 3), Jasmine
+# (TRAINER_LEADER_JASMINE_JASMINE), the Mineral Badge + TM23; the third mid-game badge starts the Rocket takeover count.
+# Start: MAP_OLIVINE (301,264) -> end: MAP_OLIVINE outside the gym (269,239), badge Mineral, VAR_SCENE_ROCKET_TAKEOVER 1.
+title = "Amphy's SecretPotion, Jasmine: Mineral Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "zone_event 074_T26 warp 3 (301,263) -> MAP_OLIVINE_LIGHTHOUSE_1F; zone_event 112_D27R0101 warp 1 (8,4) -> elevator; scr_seq_0067_D27R0108.s:11-73",
+  "scr_seq_0066_D27R0107.s:62-113 (YES/NO, TakeItem ITEM_SECRETPOTION, FLAG_UNK_96A, VAR_SCENE_LIGHTHOUSE_JASMINE 2, VAR_UNK_410E 1, FLAG_UNK_1D7, ClearFlag FLAG_HIDE_JASMINE_IN_GYM)",
+  "scr_seq_0911_T26_hdr.s (OnFrame VAR_SCENE_LIGHTHOUSE_JASMINE 2 -> 003); scr_seq_0911_T26.s:35-40 (FLAG_UNK_0F5, VAR_UNK_4057 1, FLAG_UNK_249, VAR 3)",
+  "zone_event 074_T26 warp 0 (269,238) -> MAP_OLIVINE_GYM (6,27)",
+  "zone_event 134_T26GYM0101 coord 1 (5,23) w3 VAR_UNK_410E 1 -> 001 (VAR_UNK_410E 2); coord 0 (5,15) w3 VAR_UNK_410E 2 -> 002 (VAR_UNK_410E 3)",
+  "zone_event 134_T26GYM0101 object 0 obj_T26GYM0101_gsleader6 (6,5)",
+  "scr_seq_0913_T26GYM0101.s:117-150 (TRAINER_LEADER_JASMINE_JASMINE, GiveBadge BADGE_MINERAL, AddVar VAR_MIDGAME_BADGES 1 :136, VAR_SCENE_ROCKET_TAKEOVER 1 at 3, FLAG_GOT_TM23_FROM_JASMINE)",
+  "TRAINER_LEADER_JASMINE_JASMINE (33, include/constants/trainers.h:38): MAGNEMITE 30, MAGNEMITE 30, STEELIX 35",
+]
+notes = "Fire is super-effective on all three. The SecretPotion YES/NO opens on YES [INFERENCE]. VAR_MIDGAME_BADGES counts Morty, Chuck, Jasmine (and Pryce): 3 here -> VAR_SCENE_ROCKET_TAKEOVER 1 (scr_seq_0913_T26GYM0101.s:136-140)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 301
+z = 263
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 4
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_ELEVATOR"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 6
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_LIGHT_ROOM"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Jasmine: give the SecretPotion (YES)"
+
+[[step]]
+do = "advance_text"
+shot = "amphy-healed"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 4
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_ELEVATOR"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 6
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 17
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_SCENE_LIGHTHOUSE_JASMINE 2 -> 3 (scr_seq_0911_T26.s:35-40)"
+
+[[step]]
+do = "walk_to"
+x = 269
+z = 238
+note = "Olivine Gym (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_GYM"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 23
+on_text = "stop"
+note = "coord 1 (5..7,23) VAR_UNK_410E 1 -> 001"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 15
+on_text = "stop"
+note = "coord 0 (5..7,15) VAR_UNK_410E 2 -> 002"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Jasmine (6,5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_JASMINE_JASMINE: MAGNEMITE 30, MAGNEMITE 30, STEELIX 35"
+
+[[step]]
+do = "advance_text"
+shot = "mineral-badge"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 27
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE"
+
+[expect]
+map = "MAP_OLIVINE"
+badges = 6
+badge = ["BADGE_ZEPHYR", "BADGE_HIVE", "BADGE_PLAIN", "BADGE_FOG", "BADGE_STORM", "BADGE_MINERAL"]
+flags = ["FLAG_GOT_TM23_FROM_JASMINE", "FLAG_UNK_96A", "FLAG_UNK_1D7", "FLAG_GOT_SECRETPOTION"]
+flags_clear = ["FLAG_HIDE_JASMINE_IN_GYM"]
+battles = 1
+save = ['not any(i["item"] == 464 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_SCENE_LIGHTHOUSE_JASMINE = 3
+VAR_UNK_410E = 3
+VAR_MIDGAME_BADGES = 3
+VAR_SCENE_ROCKET_TAKEOVER = 1

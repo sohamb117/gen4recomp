@@ -1,0 +1,111 @@
+# Proves Victory Road: 1F-3F (Strength boulders, Rock Smash rocks, the 3F holes), the rival's last story battle on
+# 3F (TRAINER_RIVAL_SILVER_13), out to Indigo Plateau and into the Pokemon League entrance.
+# Start: MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE (11,15) -> end: MAP_POKEMON_LEAGUE_ENTRANCE (11,24), VAR_UNK_40C5 1.
+title = "Victory Road: the rival, Indigo Plateau"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "zone_event 270_R22R0101 warp 1 (11,2) -> MAP_VICTORY_ROAD_1F 0 (46,59)",
+  "zone_event 121_D43R0101 warps 1/2 (19,7/6) -> 2F 0 (7,31); objects 3-5 Strength boulders (43,52) (25,17) (24,15)",
+  "zone_event 171_D43R0102 warps 1-8 -> 3F; zone_event 172_D43R0103 warps 1-4 back to 2F, warps 0/5 (38,14/13) -> MAP_INDIGO_PLATEAU (912,218)",
+  "zone_event 172_D43R0103 coords 1-5 VAR_UNK_40C9 0 -> 002..006 (drops to 2F at the listed tiles, scr_seq_0110_D43R0103.s:174-202)",
+  "zone_event 172_D43R0103 coord 0 (37,21) w3 VAR_UNK_40C5 0 -> 000",
+  "scr_seq_0110_D43R0103.s:17-97 (rival: 155 -> TRAINER_RIVAL_SILVER_13 :60, FLAG_HIDE_VICTORY_ROAD_RIVAL, VAR_UNK_40C5 1)",
+  "TRAINER_RIVAL_SILVER_13 (272, include/constants/trainers.h:277): SNEASEL 36, GOLBAT 38, MAGNETON 37, HAUNTER 37, KADABRA 37, FERALIGATR 40",
+  "zone_event 055_T10 warp 1 (912,200) -> MAP_POKEMON_LEAGUE_ENTRANCE 0 (11,25)",
+  "scr_seq_0819_T10R0101.s:19-31 (OnTransition: E4 retreat/exit flags reset, FLAG_DEFEATED_WILL/KOGA/BRUNO/KAREN cleared)",
+]
+notes = "Victory Road's floor route through the boulders/rocks and holes is not in the event data; walk_to hm = true crosses Rock Smash rocks, Strength boulders need steps (README). The League entrance rival (TRAINER_RIVAL_SILVER_19/20/21, lv55-60, scr_seq_0819_T10R0101.s:75-131) only appears post-game (VAR_UNK_4119 1 conditions, :34-48)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 45000
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 2
+note = "gate north door (warp 1) -> Victory Road 1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_1F"
+
+# PHASE2: Victory Road 1F/2F/3F routes (boulders, rocks, holes): probe_map each floor; the stairs below are the warps.
+[[step]]
+do = "walk_to"
+x = 19
+z = 6
+hm = true
+note = "1F -> 2F (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_2F"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 44
+hm = true
+note = "2F -> 3F (warp 2 -> 3F (25,45)) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_3F"
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 21
+hm = true
+on_text = "stop"
+note = "coord 0 (37..39,21) VAR_UNK_40C5 0 -> the rival (scr_seq_0110_D43R0103.s:17-60)"
+
+[[step]]
+do = "advance_text"
+shot = "rival-victory-road"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_RIVAL_SILVER_13: SNEASEL 36, GOLBAT 38, MAGNETON 37, HAUNTER 37, KADABRA 37, FERALIGATR 40"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 14
+note = "3F exit (warp 0) -> Indigo Plateau"
+
+[[step]]
+do = "wait_map"
+map = "MAP_INDIGO_PLATEAU"
+
+[[step]]
+do = "walk_to"
+x = 912
+z = 200
+note = "League entrance (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_ENTRANCE"
+shot = "indigo"
+
+[expect]
+map = "MAP_POKEMON_LEAGUE_ENTRANCE"
+badges = 8
+flags = ["FLAG_HIDE_VICTORY_ROAD_RIVAL", "FLAG_HIDE_WILLS_ROOM_RETREAT", "FLAG_HIDE_KOGAS_ROOM_RETREAT", "FLAG_HIDE_BRUNOS_ROOM_RETREAT", "FLAG_HIDE_KARENS_ROOM_RETREAT"]
+flags_clear = ["FLAG_DEFEATED_WILL", "FLAG_DEFEATED_KOGA", "FLAG_DEFEATED_BRUNO", "FLAG_DEFEATED_KAREN"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_40C5 = 1

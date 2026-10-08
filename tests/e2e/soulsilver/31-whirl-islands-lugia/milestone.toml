@@ -1,0 +1,122 @@
+# SoulSilver only: proves Lugia. Back to Olivine, Surf to the Whirl Islands (Whirlpool), down to B2F where the monk sees
+# the Silver Wing (FLAG_UNK_106), the Lugia cave's coord (VAR_UNK_40FA 1) that plays the Tidal Bell scene, and Lugia
+# (WildBattle 249, lv45 in SS); winning or catching sets FLAG_UNK_109 and frees New Bark's east exit
+# (VAR_SCENE_NEW_BARK_EAST_EXIT 3).
+# Start: MAP_ECRUTEAK (397,174) -> end: MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE (16,18), FLAG_UNK_109.
+title = "SoulSilver: Whirl Islands and Lugia"
+status = "planned"
+priority = "P0"
+version = "soulsilver"
+estimate = 45000
+refs = [
+  "scr_seq_0034_D23R0106.s:84-88 (SS: ITEM_SILVER_WING, FLAG_UNK_094)",
+  "scr_seq_0928_T27R0501.s:813-816,872-874 (SS: ITEM_TIDAL_BELL, FLAG_UNK_104, ClearFlag FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS)",
+  "zone_event 092_W41 warps 0-3 (208,341) (211,370) (237,340) (241,372) -> MAP_WHIRL_ISLANDS_1F 3/5/0/9",
+  "zone_event 118_D40R0101 warps 1/2/4/6/7/8 -> MAP_WHIRL_ISLANDS_B1F; zone_event 228_D40R0102 warp 4 (31,49) -> MAP_WHIRL_ISLANDS_B2F 0 (27,28), warp 11 (54,43) -> B2F 2",
+  "zone_event 229_D40R0104 object 0 obj_D40R0104_bozu (36,30) -> 000; scr_seq_0103_D40R0104.s:31-62 (FLAG_UNK_094 -> ShowLegendaryWing 1, FLAG_UNK_106)",
+  "zone_event 229_D40R0104 warp 5 (31,43) -> MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE (16,38)",
+  "zone_event 230_D40R0107 coord 0 (16,36) VAR_UNK_40FA 1 -> 005 (Tidal Bell scene, FLAG_UNK_10B, VAR_UNK_40FA 2, scr_seq_0104_D40R0107.s:116-446)",
+  "zone_event 230_D40R0107 object 5 obj_D40R0107_lug_obj01 (16,17) -> 000",
+  "scr_seq_0104_D40R0107.s:66-114 (WildBattle 249 at 45 in SS (70 in HG); outcome 2/3 -> WhiteOut; else FLAG_UNK_109, VAR_SCENE_NEW_BARK_EAST_EXIT 3, FLAG_HIDE_NEW_BARK_FRIEND/MARILL/FRIEND_2, FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS; caught -> FLAG_CAUGHT_LUGIA)",
+  "src/field_move.c:604-608 (Whirlpool needs BADGE_GLACIER); HM05 from scr_seq_0090_D35R0103.s:694",
+]
+notes = "SS Lugia is lv45 (scr_seq_0104_D40R0107.s:75-82). auto_battle knocks it out (the 'won' outcome progresses). The Whirl Islands floor route (which Route 41 entrance and which 1F/B1F warps lead to B1F (31,49)) is not in the event data alone."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 67500
+
+# PHASE2: Ecruteak -> Olivine -> Whirl Islands: Routes 38/39 and Surf on Route 40/41 (or Fly to Olivine/Cianwood, the
+# touch-screen menu is unverified); then the Whirl Islands floors (Whirlpool tiles: walk_to surf = true plus the HM).
+[[step]]
+do = "walk_to"
+x = 237
+z = 340
+surf = true
+note = "Routes 38/39, Olivine, Route 40/41 by Surf to the north-east Whirl Islands entrance (zone_event 092_W41 warp 2) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_WHIRL_ISLANDS_1F"
+
+[[step]]
+do = "walk_to"
+x = 51
+z = 22
+surf = true
+note = "1F -> B1F (warp 1 -> B1F (64,16)) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_WHIRL_ISLANDS_B1F"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 49
+surf = true
+note = "B1F -> B2F (warp 4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_WHIRL_ISLANDS_B2F"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the monk (36,30): the Silver Wing (scr_seq_0103_D40R0104.s:56-62)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 43
+surf = true
+note = "B2F -> Lugia's cave (warp 5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 36
+on_text = "stop"
+note = "coord 0 (16,36) VAR_UNK_40FA 1 -> the Tidal Bell, Lugia arrives (scr_seq_0104_D40R0107.s:116-446)"
+
+[[step]]
+do = "advance_text"
+shot = "lugia-arrives"
+
+[[step]]
+do = "talk_to"
+id = 5
+note = "Lugia (16,17)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "WildBattle SPECIES_LUGIA 45 (scr_seq_0104_D40R0107.s:85)"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE"
+badges = 8
+flags = ["FLAG_UNK_094", "FLAG_UNK_104", "FLAG_UNK_106", "FLAG_UNK_109", "FLAG_UNK_10B", "FLAG_HIDE_NEW_BARK_FRIEND_2", "FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS"]
+flags_clear = ["FLAG_HIDE_NEW_BARK_FRIENDS_ROOM_FRIEND", "FLAG_HIDE_DANCE_STUDIO_KIMONO_GIRLS"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_40FA = 2
+VAR_SCENE_NEW_BARK_EAST_EXIT = 3

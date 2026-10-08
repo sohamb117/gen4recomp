@@ -1,0 +1,136 @@
+# Proves the red Gyarados: Route 42 (the hiker's HM04 Strength on its coord), Mahogany, Route 43 (the Rocket toll
+# gate takes 1000), the Lake of Rage's red Gyarados (WildBattle SPECIES_GYARADOS 30, Red Scale) and Lance, who heads
+# for Mahogany's souvenir shop (VAR_UNK_40A8 1).
+# Start: MAP_OLIVINE (269,239) -> end: MAP_LAKE_OF_RAGE shore near Lance (528,84), FLAG_GOT_RED_SCALE, VAR_UNK_40A8 1.
+title = "Route 42, Mahogany, Lake of Rage: the red Gyarados and Lance"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 40000
+refs = [
+  "zone_event 075_T27 warps 10/11 (415,175/176) -> MAP_ROUTE_42_ECRUTEAK_GATEHOUSE; zone_event 128_R42R0101 warp 1 (10,7) -> MAP_ROUTE_42 (422,175)",
+  "zone_event 041_R42 coord 0 (434,172) h5 VAR_UNK_4091 0 -> 000 (hiker: ITEM_HM04, FLAG_HIDE_ROUTE_42_HIKER, VAR_UNK_4091 1, scr_seq_0252_R42.s:16-96)",
+  "zone_event 041_R42 warps 2-5 -> MAP_MOUNT_MORTAR_1F_ENTRANCE (436,171), (464,175), (466,164), (493,171)",
+  "zone_event 084_T28 warps 0/1 (524/525,165) -> MAP_ROUTE_43_MAHOGANY_GATEHOUSE; zone_event 138_R43R0101 warp 1 (5,2) -> MAP_ROUTE_43",
+  "zone_event 042_R43 warps 2-5 (537/538,143) and (537/538,134) -> MAP_ROUTE_43_GATEHOUSE",
+  "scr_seq_0256_R43R0201_hdr.s (OnFrame VAR_UNK_410F 0 -> 001); scr_seq_0256_R43R0201.s:14-76 (toll: HasEnoughMoneyImmediate 1000, SubMoneyImmediate 1000, VAR_UNK_410F 1)",
+  "zone_event 085_T29 object 3 obj_T29_rgyaradosu (525,71) -> 001",
+  "scr_seq_0938_T29.s:280-330 (WildBattle SPECIES_GYARADOS 30, ITEM_RED_SCALE, FLAG_GOT_RED_SCALE, FLAG_CAUGHT_RED_GYARADOS if caught, ClearFlag FLAG_HIDE_LAKE_OF_RAGE_LANCE)",
+  "scr_seq_0938_T29.s:131-142 (OnLoad after the battle: FLAG_HIDE_LAKE_OF_RAGE_RED_GYARADOS)",
+  "zone_event 085_T29 object 8 obj_T29_wataru (528,83) -> 003",
+  "scr_seq_0938_T29.s:332-363 (YES -> Lance leaves: FLAG_HIDE_LAKE_OF_RAGE_LANCE, ClearFlag FLAG_HIDE_MAHOGANY_SHOP_LANCE, VAR_UNK_40A8 1; NO -> FLAG_UNK_0C3 and he asks again)",
+]
+notes = "The Mahogany coord (540,176) VAR_UNK_407A 0 is the east exit's RageCandyBar man (Route 44 is shut until the Radio Tower). Route 42 is crossed on land or by Surf (surf = true lets the plan use the ponds). The toll gate needs 1000 money [INFERENCE: enough by now]; the gate's grass bypass west of it also reaches the lake. Gyarados (lv30): Electric/Grass coverage by boost."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 60000
+
+# PHASE2: Olivine -> Ecruteak is Routes 39/38 back east (or Fly to Ecruteak through the touch-screen menu, unverified).
+[[step]]
+do = "walk_to"
+x = 415
+z = 175
+note = "Routes 39/38 back to Ecruteak and its east gate (warp 10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_42_ECRUTEAK_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_42"
+
+[[step]]
+do = "walk_to"
+x = 434
+z = 174
+on_text = "stop"
+note = "coord 0 (434,172..176) VAR_UNK_4091 0 -> the hiker's HM04 (scr_seq_0252_R42.s:16-96)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 524
+z = 166
+surf = true
+note = "Route 42 east to Mahogany's north gate (warp 0 (524,165)) [INFERENCE: (524,166) the tile below]"
+
+[[step]]
+do = "walk_to"
+x = 524
+z = 165
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_43_MAHOGANY_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_43"
+
+[[step]]
+do = "walk_to"
+x = 528
+z = 84
+note = "Route 43 north (the toll gate's OnFrame takes 1000 if walked through) to the Lake of Rage shore by Lance (528,83)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LAKE_OF_RAGE"
+
+# PHASE2: reaching the red Gyarados on the water: talk_to while surfing (object 3 wanders, mv 3); confirm talk_to can
+# chase over water with the probe, else a walk_to surf = true next to its tile and A.
+[[step]]
+do = "talk_to"
+id = 3
+note = "the red Gyarados (525,71) (scr_seq_0938_T29.s:280-289)"
+
+[[step]]
+do = "advance_text"
+shot = "red-gyarados"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "WildBattle SPECIES_GYARADOS 30"
+
+[[step]]
+do = "advance_text"
+note = "Red Scale (:299-305)"
+
+[[step]]
+do = "talk_to"
+id = 8
+note = "Lance (528,83)"
+
+[[step]]
+do = "advance_text"
+shot = "lance"
+note = "YES (A) -> Lance leaves for Mahogany, VAR_UNK_40A8 1 (scr_seq_0938_T29.s:332-363)"
+
+[expect]
+map = "MAP_LAKE_OF_RAGE"
+badges = 6
+flags = ["FLAG_GOT_RED_SCALE", "FLAG_HIDE_LAKE_OF_RAGE_LANCE", "FLAG_HIDE_LAKE_OF_RAGE_RED_GYARADOS", "FLAG_HIDE_ROUTE_42_HIKER"]
+flags_clear = ["FLAG_HIDE_MAHOGANY_SHOP_LANCE"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_4091 = 1
+VAR_UNK_40A8 = 1

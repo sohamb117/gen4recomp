@@ -92,6 +92,16 @@ void pc_e2e_steps(int (*step)(void *ctx, int x, int z, int y, int dir, int *ty),
 void pc_e2e_object(int x, int z, unsigned local_id, unsigned gfx);
 void pc_e2e_end_frame(void);
 void pc_e2e_ui(unsigned kind, unsigned arg);
+/* v4 (np_e2e.h), reported by games that have them (HG/SS: pc/src/pc_hg_field.c;
+ * Platinum and D/P leave them 0): pc_e2e_cursor the cursor of the menu ui
+ * reports, from the same input loop; pc_e2e_v4 at every frame boundary, the
+ * avatar's state bits and the guest addresses of the event flags, the vars
+ * and the party; pc_e2e_warp each warp of the field's map, after
+ * pc_e2e_field (which clears the list). */
+void pc_e2e_cursor(unsigned cursor);
+void pc_e2e_v4(unsigned avatar_flags, unsigned flags_addr, unsigned flags_bytes, unsigned vars_addr,
+               unsigned vars_count, unsigned party_addr, unsigned party_count);
+void pc_e2e_warp(int x, int z, unsigned dest_map, unsigned dest_warp);
 /* np_e2e_mon, field for field */
 typedef struct pc_e2e_mon {
     unsigned short species;

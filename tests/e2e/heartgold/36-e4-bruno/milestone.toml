@@ -1,0 +1,60 @@
+# Proves the third Elite Four room: Koga's exit to Bruno's room (OnFrame shuts the way back), Bruno
+# (TRAINER_ELITE_FOUR_BRUNO_BRUNO), his exit opens.
+# Start: MAP_POKEMON_LEAGUE_KOGA_ROOM (6,12) -> end: MAP_POKEMON_LEAGUE_BRUNO_ROOM (6,11), FLAG_DEFEATED_BRUNO.
+title = "Elite Four: Bruno"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000
+refs = [
+  "zone_event 273_T10R0301 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_BRUNO_ROOM 0 (6,22)",
+  "scr_seq_0822_T10R0401_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0822_T10R0401.s:22-36 (ClearFlag FLAG_HIDE_BRUNOS_ROOM_RETREAT)",
+  "zone_event 274_T10R0401 object 0 obj_T10R0401_gsbigfour3 (6,10) -> 001",
+  "scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened)",
+  "TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46",
+]
+notes = "Psychic/Flying coverage for the Fighting types, Water/Grass for Onix (boost)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 13500
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 2
+note = "Koga's exit (warp 1) -> Bruno's room"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE_BRUNO_ROOM"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Bruno (6,10)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_ELITE_FOUR_BRUNO_BRUNO: HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46"
+
+[[step]]
+do = "advance_text"
+shot = "bruno-beaten"
+
+[expect]
+map = "MAP_POKEMON_LEAGUE_BRUNO_ROOM"
+badges = 8
+flags = ["FLAG_DEFEATED_WILL", "FLAG_DEFEATED_KOGA", "FLAG_DEFEATED_BRUNO"]
+flags_clear = ["FLAG_HIDE_BRUNOS_ROOM_RETREAT"]
+battles = 1

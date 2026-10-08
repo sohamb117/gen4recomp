@@ -1,0 +1,100 @@
+# Proves the Azalea Gym: the entrance hall, the gym's twelve switch tiles (coord events (3|9|15, 32|24|17|9)), the
+# Bug Catchers and Twins, Bugsy (TRAINER_LEADER_BUGSY_BUGSY) and the Hive Badge + TM89.
+# Start: MAP_AZALEA_KURT_HOUSE (4,5) -> end: MAP_AZALEA outside the gym (405,472), badge Hive.
+title = "Bugsy: Hive Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "zone_event 071_T23 warp 2 (405,471) -> MAP_AZALEA_GYM_ENTRANCE; zone_event 132_T23GYM0101 warp 1 (7,3) -> MAP_AZALEA_GYM (9,37)",
+  "zone_event 173_T23GYM0102 coords 0-11 (x 3/9/15, z 32/24/17/9) VAR_TEMP_x4000 0 -> 002..013",
+  "zone_event 173_T23GYM0102 object 5 obj_T23GYM0102_gsleader2 (9,5) -> 001",
+  "scr_seq_0869_T23GYM0102.s:65-93 (TRAINER_LEADER_BUGSY_BUGSY, GiveBadge BADGE_HIVE, FLAG_GOT_TM89_FROM_BUGSY)",
+  "TRAINER_LEADER_BUGSY_BUGSY (21, include/constants/trainers.h:26): SCYTHER 17, KAKUNA 15, METAPOD 15",
+  "zone_event 071_T23 object 1 obj_T23_rocketm_2 (405,472) FLAG_UNK_1A9: the Rocket at the gym door, hidden by the well (scr_seq_0060_D26R0102.s:58)",
+]
+notes = "Ember is super-effective on the whole team. The switch tiles' scripts (002..013) were not traced: which tiles open the path is unknown."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 9
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA"
+
+[[step]]
+do = "walk_to"
+x = 405
+z = 471
+note = "gym (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA_GYM_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 3
+note = "entrance hall -> the gym (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA_GYM"
+
+# PHASE2: the Azalea Gym route: trace scr_seq_0869_T23GYM0102.s 002..013 (the switch tiles) and probe_map the floor to
+# find which switches bridge the way to Bugsy (9,5); then replace this walk with walk_to/steps through them.
+[[step]]
+do = "talk_to"
+id = 5
+note = "Bugsy (obj_T23GYM0102_gsleader2 (9,5))"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_BUGSY_BUGSY: SCYTHER 17, KAKUNA 15, METAPOD 15"
+
+[[step]]
+do = "advance_text"
+shot = "hive-badge"
+note = "Hive Badge, TM89 (scr_seq_0869_T23GYM0102.s:83-93)"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 37
+note = "gym exit (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA_GYM_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 11
+note = "entrance hall door (warp 0) -> Azalea"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA"
+
+[expect]
+map = "MAP_AZALEA"
+badges = 2
+badge = ["BADGE_ZEPHYR", "BADGE_HIVE"]
+flags = ["FLAG_GOT_TM89_FROM_BUGSY", "FLAG_BEAT_AZALEA_ROCKETS"]
+battles = 1
