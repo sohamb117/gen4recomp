@@ -3,10 +3,9 @@
 # Sapphire): FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY.
 # Start: Route 114 (8,64) -> end: MAP_MT_CHIMNEY by the meteorite machine.
 title = "Cable car to Mt. Chimney: Matt and Archie (Sapphire)"
-status = "planned"
 priority = "P0"
 version = "sapphire"
-estimate = 35000
+estimate = 29491
 refs = [
   "data/maps/Route112/map.json warp_events[5] (22,10) -> FIERY_PATH (26,4), [0] (28,27) -> ROUTE112_CABLE_CAR_STATION",
   "data/maps/Route112_CableCarStation/scripts.inc:32-55 (attendant MSGBOX_YESNO -> CABLE_CAR_STATION_STATE 1, special CableCarWarp, special CableCar)",
@@ -23,7 +22,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 44300
 
 [[step]]
 do = "walk_to"

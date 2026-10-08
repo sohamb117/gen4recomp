@@ -3,10 +3,9 @@
 # the submarine dock (TRAINER_HIDEOUT_B2F_GRUNT_1 = TRAINER_MATT_1 in Sapphire): FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE.
 # Start: Slateport outside the harbor -> end: MAP_AQUA_HIDEOUT_B2F by the dock.
 title = "Team Aqua Hideout: Matt and the escaped submarine (Sapphire)"
-status = "planned"
 priority = "P0"
 version = "sapphire"
-estimate = 45000
+estimate = 40585
 refs = [
   "data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F (13,27) (map.bin entrance; Ruby's OnLoad replaces it)",
   "data/maps/AquaHideout_1F/map.json object_events grunts (13,11)/(14,11) FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT (hidden in 31), (20,4) sight 3",
@@ -21,7 +20,7 @@ notes = "Sapphire's branch: its hideout is the MAP_AQUA_HIDEOUT_* maps behind Li
 from = "prev"
 
 [run]
-frames = 60000
+frames = 60900
 
 [[step]]
 do = "heal"

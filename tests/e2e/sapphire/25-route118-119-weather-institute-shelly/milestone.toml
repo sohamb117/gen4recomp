@@ -3,10 +3,9 @@
 # VAR_WEATHER_INSTITUTE_STATE 1 and Castform.
 # Start: Wally's house -> end: MAP_ROUTE119 outside the Weather Institute (6,33).
 title = "Routes 118-119 and the Weather Institute: Shelly (Sapphire)"
-status = "planned"
 priority = "P0"
 version = "sapphire"
-estimate = 52000
+estimate = 37329
 refs = [
   "data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0",
   "data/maps/Route118/scripts.inc:50-95 (Steven (object 19) scene, ROUTE118_STATE 1)",
@@ -24,7 +23,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 56000
 
 [[step]]
 do = "walk_to"
