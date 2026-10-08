@@ -206,8 +206,9 @@ if(BUILD_TESTING)
       "SDL_VIDEO_DRIVER=dummy;NP_AUTOTEST=frames=60,png=${CMAKE_CURRENT_BINARY_DIR}/autotest.png,layout=hybrid,touch=100x80,keys=a+up")
   endif()
 
-  # The save editor on a synthetic Black save (stub core: the editor needs no
-  # core): tabs, edits, a .pgf import, slot import; checked with np_save5.
+  # The save editor on synthetic Black and HeartGold/SoulSilver saves (stub
+  # core: the editor needs no core): tabs, edits, gift imports, slot import;
+  # checked with np_save5 / np_save4.
   if(NP_CORE STREQUAL "stub")
     add_executable(np_make_synth_save5 "${NP_ROOT}/features/tests/make_synth_save5.c"
       "${NP_ROOT}/features/tests/synth_save5.c")
@@ -223,6 +224,19 @@ if(BUILD_TESTING)
         -DWORK=${CMAKE_CURRENT_BINARY_DIR}/editor_bw
         -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/editor_bw.cmake)
     set_tests_properties(shell_editor_bw PROPERTIES TIMEOUT 300)
+
+    add_executable(np_make_synth_save "${NP_ROOT}/features/tests/make_synth_save.c"
+      "${NP_ROOT}/features/tests/synth_save.c")
+    target_include_directories(np_make_synth_save PRIVATE "${NP_ROOT}/features/tests")
+    target_link_libraries(np_make_synth_save PRIVATE save4 ndsdata)
+    add_test(NAME shell_editor_hgss
+      COMMAND ${CMAKE_COMMAND}
+        -DAPP=$<TARGET_FILE:nativeplat>
+        -DMAKE_SAVE=$<TARGET_FILE:np_make_synth_save>
+        -DNP_SAVE4=$<TARGET_FILE:np_save4>
+        -DWORK=${CMAKE_CURRENT_BINARY_DIR}/editor_hgss
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/editor_hgss.cmake)
+    set_tests_properties(shell_editor_hgss PROPERTIES TIMEOUT 300)
   endif()
 endif()
 

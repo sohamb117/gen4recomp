@@ -28,6 +28,11 @@
  *   Diamond  poketool/personal/personal.narc, growtbl.narc,
  *            poketool/waza/waza_tbl.narc
  *   Pearl    poketool/personal_pearl/personal.narc, otherwise as Diamond
+ *   HeartGold / SoulSilver (pokeheartgold filesystem.mk arc_strip_name;
+ *            BaseStats in include/pokemon_types_def.h has the same 44-byte
+ *            layout): personal a/0/0/2, growtbl a/0/0/3, waza_tbl a/0/1/1.
+ *            Not checked against a retail ROM; its battle overlay may be
+ *            BLZ-compressed, in which case the type chart is not found.
  *
  * Black / White read their own layouts (gen5_data.c).
  */
@@ -124,6 +129,12 @@ nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom)
                                               : "poketool/personal/personal.narc";
         growth = "poketool/personal/growtbl.narc";
         moves = "poketool/waza/waza_tbl.narc";
+        break;
+    case ND_GAME_HEARTGOLD:
+    case ND_GAME_SOULSILVER:
+        personal = "a/0/0/2";
+        growth = "a/0/0/3";
+        moves = "a/0/1/1";
         break;
     case ND_GAME_BLACK:
     case ND_GAME_WHITE:

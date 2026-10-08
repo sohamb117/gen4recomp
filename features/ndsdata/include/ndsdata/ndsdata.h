@@ -53,11 +53,14 @@ typedef enum nd_game {
     ND_GAME_PEARL,
     ND_GAME_PLATINUM,
     ND_GAME_BLACK, /* gamecode IRB* */
-    ND_GAME_WHITE  /* gamecode IRA* */
+    ND_GAME_WHITE, /* gamecode IRA* */
+    ND_GAME_HEARTGOLD, /* gamecode IPK* */
+    ND_GAME_SOULSILVER /* gamecode IPG* */
 } nd_game;
 
 const char *nd_game_name(nd_game g);
-/* 4 for Diamond/Pearl/Platinum, 5 for Black/White, 0 when unknown. */
+/* 4 for Diamond/Pearl/Platinum/HeartGold/SoulSilver, 5 for Black/White, 0
+ * when unknown. */
 int nd_game_gen(nd_game g);
 
 typedef struct nd_rom {

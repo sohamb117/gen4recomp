@@ -1195,6 +1195,45 @@ static void test_edsave(void)
     CHECK(np_save_set_coins(&s, 50) == NP_SAVE_OK, "Pt coins");
     np_save_free(&s);
 
+    /* HeartGold/SoulSilver: their own format, Johto and Kanto badges. */
+    uint8_t *hg = malloc(SAVE4_IMAGE_SIZE);
+    synth_save_build(hg, SAVE4_GAME_SS);
+    CHECK(np_save_load(&s, -1, NP_GAME_DIAMOND, hg, SAVE4_IMAGE_SIZE) == NP_SAVE_OK && s.game == NP_GAME_SOULSILVER,
+          "SoulSilver save detected");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_PLATINUM, NP_GAME_DIAMOND, hg, SAVE4_IMAGE_SIZE) == NP_SAVE_ERR_WRONG_GAME,
+          "an HG/SS save is refused in a Platinum slot");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_HEARTGOLD, NP_GAME_DIAMOND, pt, SAVE4_IMAGE_SIZE) == NP_SAVE_ERR_WRONG_GAME,
+          "a Platinum save is refused in a HeartGold slot");
+    np_save_free(&s);
+    synth_save_build(hg, SAVE4_GAME_HG);
+    CHECK(np_save_load(&s, NP_GAME_HEARTGOLD, NP_GAME_DIAMOND, hg, SAVE4_IMAGE_SIZE) == NP_SAVE_OK &&
+              s.game == NP_GAME_HEARTGOLD,
+          "HeartGold loads");
+    CHECK(np_save_trainer(&s, &t) == NP_SAVE_OK && t.has_kanto && t.kanto_badges == SYNTH_KANTO_BADGES &&
+              t.badges == SYNTH_BADGES && t.has_coins,
+          "HG trainer: badges %02X kanto %02X", t.badges, t.kanto_badges);
+    CHECK(!strcmp(np_save_badge_names(&s)[0], "Zephyr") && !strcmp(np_save_kanto_badge_names(&s)[7], "Earth") &&
+              np_save_pocket_capacity(&s, SAVE4_POCKET_ITEMS) == 165 && np_save_var_count(&s) == 368 &&
+              np_save_origin_game(&s) == 7,
+          "HG shape");
+    CHECK(np_save_set_kanto_badges(&s, 0xFF) == NP_SAVE_OK && np_save_set_badges(&s, 0x80) == NP_SAVE_OK &&
+              np_save_var_set(&s, 0x416F, 3) == NP_SAVE_OK,
+          "HG edits");
+    save4 r4;
+    save4_trainer t4;
+    CHECK(save4_load(&r4, np_save_img(&s), np_save_len(&s)) == SAVE4_OK && save4_get_trainer(&r4, &t4) == SAVE4_OK &&
+              t4.kanto_badges == 0xFF && t4.badges == 0x80,
+          "HG edits read back");
+    save4_free(&r4);
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_PLATINUM, NP_GAME_DIAMOND, pt, SAVE4_IMAGE_SIZE) == NP_SAVE_OK &&
+              np_save_set_kanto_badges(&s, 1) == NP_SAVE_ERR_UNSUPPORTED && !np_save_kanto_badge_names(&s),
+          "no Kanto badges in Platinum");
+    np_save_free(&s);
+    free(hg);
+
     /* The Trainer Card with Unova's badges and the 649-species diploma. */
     static uint32_t a[NP_CARD_W * NP_CARD_H], b[NP_CARD_W * NP_CARD_H];
     static const char *const unova[8] = {"Trio", "Basic", "Insect", "Bolt", "Quake", "Jet", "Freeze", "Legend"};

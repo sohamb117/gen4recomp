@@ -1,8 +1,9 @@
 /*
  * Save editor page: edits one save slot's 512 KiB backup image through
- * edsave.h (features/save4 for Diamond/Pearl/Platinum, features/save5 for
- * Black/White), with names and game tables (species base stats, exp
- * tables, move PP) read from the player's imported ROM via features/ndsdata.
+ * edsave.h (features/save4 for Diamond/Pearl/Platinum/HeartGold/SoulSilver,
+ * features/save5 for Black/White), with names and game tables (species base
+ * stats, exp tables, move PP) read from the player's imported ROM via
+ * features/ndsdata.
  *
  * Tabs: Trainer, Party, Boxes, Bag, Pokedex, Events. Every edit is applied to a
  * scratch copy first and recorded on a snapshot undo stack (undo.h) only if
@@ -56,6 +57,7 @@ typedef enum field {
     F_TR_MONEY,
     F_TR_COINS, /* Gen 4 only */
     F_TR_BADGE,
+    F_TR_KANTO_BADGE, /* HG/SS */
     F_TR_HOURS,
     F_TR_MINUTES,
     F_TR_SECONDS,
@@ -302,7 +304,7 @@ static void open_path(np_app *app, int game, np_game dp_default, const char *lab
 void np_editor_open(np_app *app, np_game game, const char *slot)
 {
     if (!np_save_gen_of(game)) {
-        np_app_toast(app, "The save editor reads Diamond, Pearl, Platinum, Black and White saves");
+        np_app_toast(app, "The save editor reads the DS games' saves only");
         return;
     }
     char path[1100];
@@ -533,6 +535,8 @@ static np_save_status add_party_mon(np_editor *e, uint16_t species, uint8_t leve
         return st;
     np_mon_set_origin(&p, np_save_origin_game(&e->s));
     np_mon_set_met(&p, 0, level, 4 /* Poke Ball */, t.gender);
+    if ((st = np_save_mon_set_ball(&e->s, &p, 4)) != NP_SAVE_OK)
+        return st;
     uint16_t stats[6];
     np_mon_calc_stats(sp->base, ivs, evs, level, nature, species == 292, stats);
     np_mon_set_party_stats(&p, level, stats[0], stats, 0);
@@ -640,6 +644,13 @@ static void build_trainer(np_editor *e)
         char label[40];
         SDL_snprintf(label, sizeof label, "%s Badge", badge_names[b]);
         SDL_strlcpy(add_row(e, F_TR_BADGE, b, RK_TOGGLE, label)->value, (t.badges >> b) & 1 ? "Yes" : "No", 72);
+    }
+    const char *const *kanto = np_save_kanto_badge_names(&e->s);
+    for (int b = 0; kanto && b < 8; b++) {
+        char label[40];
+        SDL_snprintf(label, sizeof label, "%s Badge (Kanto)", kanto[b]);
+        SDL_strlcpy(add_row(e, F_TR_KANTO_BADGE, b, RK_TOGGLE, label)->value, (t.kanto_badges >> b) & 1 ? "Yes" : "No",
+                    72);
     }
     SDL_snprintf(add_row(e, F_TR_HOURS, 0, RK_NUMBER, "Play time: hours")->value, 72, "%u", t.play_hours);
     SDL_snprintf(add_row(e, F_TR_MINUTES, 0, RK_NUMBER, "Play time: minutes")->value, 72, "%u", t.play_minutes);
@@ -1219,6 +1230,10 @@ static void activate_row(np_app *app, np_editor *e, int dir)
     case F_TR_BADGE:
         begin_edit(e);
         end_edit(app, e, np_save_set_badges(&e->s, (uint8_t)(t.badges ^ (1u << r->arg))));
+        break;
+    case F_TR_KANTO_BADGE:
+        begin_edit(e);
+        end_edit(app, e, np_save_set_kanto_badges(&e->s, (uint8_t)(t.kanto_badges ^ (1u << r->arg))));
         break;
     case F_TR_TID: open_number(e, r->f, 0, t.tid, 0, 65535); break;
     case F_TR_SID: open_number(e, r->f, 0, t.sid, 0, 65535); break;

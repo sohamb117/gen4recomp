@@ -71,17 +71,32 @@ int np_save_gen_of(np_game game)
     switch (game) {
     case NP_GAME_DIAMOND:
     case NP_GAME_PEARL:
-    case NP_GAME_PLATINUM: return 4;
+    case NP_GAME_PLATINUM:
+    case NP_GAME_HEARTGOLD:
+    case NP_GAME_SOULSILVER: return 4;
     case NP_GAME_BLACK:
     case NP_GAME_WHITE: return 5;
     default: return 0;
     }
 }
 
+/* The three Gen 4 save formats: Diamond/Pearl, Platinum, HeartGold/SoulSilver. */
+static int format4_of_game(int game)
+{
+    return game == NP_GAME_PLATINUM ? 1 : game == NP_GAME_HEARTGOLD || game == NP_GAME_SOULSILVER ? 2 : 0;
+}
+
+static int format4_of_save(save4_game g) { return g == SAVE4_GAME_PT ? 1 : save4_game_is_hgss(g) ? 2 : 0; }
+
 static np_game game4(save4_game g, int slot_game, np_game dp_default)
 {
     if (g == SAVE4_GAME_PT)
         return NP_GAME_PLATINUM;
+    if (save4_game_is_hgss(g)) { /* HeartGold and SoulSilver share a format */
+        if (slot_game == NP_GAME_HEARTGOLD || slot_game == NP_GAME_SOULSILVER)
+            return (np_game)slot_game;
+        return g == SAVE4_GAME_SS ? NP_GAME_SOULSILVER : NP_GAME_HEARTGOLD;
+    }
     return slot_game == NP_GAME_DIAMOND || slot_game == NP_GAME_PEARL ? (np_game)slot_game : dp_default;
 }
 
@@ -102,8 +117,7 @@ np_save_status np_save_load(np_save *s, int game, np_game dp_default, const uint
     if (gen != 5) {
         st4 = from4(save4_load(&s->s4, data, len));
         if (st4 == NP_SAVE_OK) {
-            const int pt = s->s4.game == SAVE4_GAME_PT;
-            if (game >= 0 && pt != (game == NP_GAME_PLATINUM)) {
+            if (game >= 0 && format4_of_save(s->s4.game) != format4_of_game(game)) {
                 save4_free(&s->s4);
                 return NP_SAVE_ERR_WRONG_GAME;
             }
@@ -195,6 +209,8 @@ np_save_status np_save_trainer(const np_save *s, np_trainer *t)
     t->has_coins = true;
     t->coins = x.coins;
     t->badges = x.badges;
+    t->has_kanto = save4_game_is_hgss(s->s4.game);
+    t->kanto_badges = x.kanto_badges;
     t->play_hours = x.play_hours;
     t->play_minutes = x.play_minutes;
     t->play_seconds = x.play_seconds;
@@ -205,11 +221,20 @@ np_save_status np_save_trainer(const np_save *s, np_trainer *t)
 uint32_t np_save_money_max(const np_save *s) { return s->gen == 5 ? SAVE5_MONEY_MAX : SAVE4_MONEY_MAX; }
 uint32_t np_save_coins_max(const np_save *s) { return s->gen == 5 ? 0 : SAVE4_COINS_MAX; }
 
+static bool hgss(const np_save *s) { return s->gen == 4 && save4_game_is_hgss(s->s4.game); }
+
 const char *const *np_save_badge_names(const np_save *s)
 {
     static const char *const sinnoh[8] = {"Coal", "Forest", "Cobble", "Fen", "Relic", "Mine", "Icicle", "Beacon"};
+    static const char *const johto[8] = {"Zephyr", "Hive", "Plain", "Fog", "Storm", "Mineral", "Glacier", "Rising"};
     static const char *const unova[8] = {"Trio", "Basic", "Insect", "Bolt", "Quake", "Jet", "Freeze", "Legend"};
-    return s->gen == 5 ? unova : sinnoh;
+    return s->gen == 5 ? unova : hgss(s) ? johto : sinnoh;
+}
+
+const char *const *np_save_kanto_badge_names(const np_save *s)
+{
+    static const char *const kanto[8] = {"Boulder", "Cascade", "Thunder", "Rainbow", "Soul", "Marsh", "Volcano", "Earth"};
+    return hgss(s) ? kanto : NULL;
 }
 
 np_save_status np_save_set_name(np_save *s, const char *utf8)
@@ -241,6 +266,11 @@ np_save_status np_save_set_coins(np_save *s, uint16_t coins)
 np_save_status np_save_set_badges(np_save *s, uint8_t mask)
 {
     return s->gen == 5 ? from5(save5_set_badges(&s->s5, mask)) : from4(save4_set_badges(&s->s4, mask));
+}
+
+np_save_status np_save_set_kanto_badges(np_save *s, uint8_t mask)
+{
+    return hgss(s) ? from4(save4_set_kanto_badges(&s->s4, mask)) : NP_SAVE_ERR_UNSUPPORTED;
 }
 
 np_save_status np_save_set_play_time(np_save *s, uint16_t h, uint8_t m, uint8_t sec)
@@ -431,6 +461,11 @@ void np_mon_set_met(np_mon *m, uint16_t location, uint8_t level, uint8_t ball, u
 {
     BOTH(pkm4_set_met(&m->p4, location, level, ball, ot_gender), pkm5_set_met(&m->p5, location, level, ball, ot_gender));
 }
+np_save_status np_save_mon_set_ball(const np_save *s, np_mon *m, uint16_t ball_item)
+{
+    /* HG/SS keep a second ball byte their games read (pkm4_set_ball_hgss). */
+    return hgss(s) && m->gen == 4 ? from4(pkm4_set_ball_hgss(&m->p4, ball_item)) : NP_SAVE_OK;
+}
 void np_mon_set_party_stats(np_mon *m, uint8_t level, uint16_t hp, const uint16_t stats[6], uint32_t status)
 {
     BOTH(pkm4_set_party_stats(&m->p4, level, hp, stats, status), pkm5_set_party_stats(&m->p5, level, hp, stats, status));
@@ -446,6 +481,8 @@ uint8_t np_save_origin_game(const np_save *s)
 {
     if (s->gen == 5)
         return s->game == NP_GAME_WHITE ? 20 : 21;
+    if (hgss(s))
+        return s->game == NP_GAME_SOULSILVER ? 8 : 7;
     return s->game == NP_GAME_DIAMOND ? 10 : s->game == NP_GAME_PEARL ? 11 : 12;
 }
 
@@ -470,7 +507,7 @@ const char *np_save_pocket_name(const np_save *s, int pocket)
 
 int np_save_pocket_capacity(const np_save *s, int pocket)
 {
-    return s->gen == 5 ? save5_pocket_capacity((save5_pocket)pocket) : save4_pocket_capacity((save4_pocket)pocket);
+    return s->gen == 5 ? save5_pocket_capacity((save5_pocket)pocket) : save4_pocket_capacity(&s->s4, (save4_pocket)pocket);
 }
 
 uint16_t np_save_pocket_max_qty(const np_save *s, int pocket)
@@ -517,9 +554,9 @@ np_save_status np_save_set_dex_national(np_save *s, bool on)
 /* --------------------------------------------------------- event data */
 
 int np_save_flag_first(const np_save *s) { return s->gen == 5 ? 0 : 1; }
-int np_save_flag_count(const np_save *s) { return s->gen == 5 ? SAVE5_NUM_FLAGS : SAVE4_NUM_FLAGS; }
+int np_save_flag_count(const np_save *s) { return s->gen == 5 ? SAVE5_NUM_FLAGS : save4_num_flags(&s->s4); }
 int np_save_var_first(const np_save *s) { return s->gen == 5 ? SAVE5_VARS_START : SAVE4_VARS_START; }
-int np_save_var_count(const np_save *s) { return s->gen == 5 ? SAVE5_NUM_VARS : SAVE4_NUM_VARS; }
+int np_save_var_count(const np_save *s) { return s->gen == 5 ? SAVE5_NUM_VARS : save4_num_vars(&s->s4); }
 
 np_save_status np_save_flag_get(const np_save *s, uint16_t id, bool *v)
 {

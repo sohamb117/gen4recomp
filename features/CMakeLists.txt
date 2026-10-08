@@ -22,6 +22,8 @@ set(NP_VARS_FLAGS "${NP_GAMES_DIR}/platinum/generated/vars_flags.txt" CACHE FILE
 set(NP_PLATINUM_ROM "${NP_GAMES_DIR}/platinum/build/rom/pokeplatinum.us.nds" CACHE FILEPATH
     "Platinum ROM used by ROM-backed tests (skipped when absent)")
 set(NP_BLACK_ROM "" CACHE FILEPATH "Black ROM used by Gen 5 ROM-backed tests (skipped when empty/absent)")
+set(NP_HGSS_ROM "" CACHE FILEPATH
+    "HeartGold or SoulSilver ROM used by HG/SS ROM-backed tests (skipped when empty/absent)")
 
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     set(NP_WARN -Wall -Wextra -Wshadow -Wno-unused-parameter)
@@ -140,6 +142,13 @@ target_compile_options(test_gen5_rom PRIVATE ${NP_WARN})
 add_test(NAME gen5_rom COMMAND test_gen5_rom "${NP_BLACK_ROM}")
 set_tests_properties(gen5_rom PROPERTIES SKIP_RETURN_CODE 77)
 
+# ndsdata against a HeartGold or SoulSilver ROM (skipped when NP_HGSS_ROM is empty).
+add_executable(test_hgss_rom tests/test_hgss_rom.c)
+target_link_libraries(test_hgss_rom PRIVATE ndsdata)
+target_compile_options(test_hgss_rom PRIVATE ${NP_WARN})
+add_test(NAME hgss_rom COMMAND test_hgss_rom "${NP_HGSS_ROM}")
+set_tests_properties(hgss_rom PROPERTIES SKIP_RETURN_CODE 77)
+
 # End-to-end: build the synthetic Platinum save, dump it with real ROM names,
 # edit it through the CLI and dump again.
 set(NP_SYNTH_SAV "${CMAKE_CURRENT_BINARY_DIR}/synthetic_pt.sav")
@@ -150,6 +159,7 @@ add_test(NAME cli_e2e
         -DNP_SAVE4=$<TARGET_FILE:np_save4>
         -DMAKE_SAVE=$<TARGET_FILE:make_synth_save>
         -DROM=${NP_PLATINUM_ROM}
+        -DHGSS_ROM=${NP_HGSS_ROM}
         -DSAV=${NP_SYNTH_SAV}
         -DWORK=${CMAKE_CURRENT_BINARY_DIR}/cli_e2e
         -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_e2e.cmake")

@@ -92,8 +92,9 @@ packaged app on Diamond, Pearl and Platinum with a screenshot, listed in
   Pokémon), boxes, bag, Pokédex and events (Mystery Gift Wonder Cards for
   the Darkrai, Shaymin, Arceus and Rotom events; event flags and vars), with
   undo/redo and a `.bak` of the previous file; Trainer Card and Pokédex
-  diploma export as PNG. Black and White saves edit the same way (`.pgf`
-  Wonder Cards into their twelve slots). Also standalone:
+  diploma export as PNG. HeartGold/SoulSilver saves (Johto and Kanto
+  badges) and Black/White saves edit the same way (`.pgf` Wonder Cards into
+  Black/White's twelve slots). Also standalone:
   `nativeplat --editor --save file.sav`.
 - **Touch and skins:** on-screen controls with a layout editor; Delta
   `.deltaskin` controller skins (drop one on the window).

@@ -454,7 +454,7 @@ static void describe(np_game game, const char *slot, char *out, size_t n)
         if (np_save_trainer(&s, &t) == NP_SAVE_OK) {
             int badges = 0;
             for (int b = 0; b < 8; b++)
-                badges += t.badges >> b & 1;
+                badges += (t.badges >> b & 1) + (t.kanto_badges >> b & 1);
             SDL_snprintf(out, n, "%s, %u:%02u played, %d badge%s, %s", t.name, t.play_hours, t.play_minutes, badges,
                          badges == 1 ? "" : "s", when);
         } else {

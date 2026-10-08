@@ -52,6 +52,8 @@ const char *nd_game_name(nd_game g)
     case ND_GAME_PLATINUM: return "Platinum";
     case ND_GAME_BLACK: return "black";
     case ND_GAME_WHITE: return "white";
+    case ND_GAME_HEARTGOLD: return "HeartGold";
+    case ND_GAME_SOULSILVER: return "SoulSilver";
     default: return "Unknown";
     }
 }
@@ -61,7 +63,9 @@ int nd_game_gen(nd_game g)
     switch (g) {
     case ND_GAME_DIAMOND:
     case ND_GAME_PEARL:
-    case ND_GAME_PLATINUM: return 4;
+    case ND_GAME_PLATINUM:
+    case ND_GAME_HEARTGOLD:
+    case ND_GAME_SOULSILVER: return 4;
     case ND_GAME_BLACK:
     case ND_GAME_WHITE: return 5;
     default: return 0;
@@ -89,14 +93,20 @@ nd_status nd_rom_read(const nd_rom *rom, uint64_t offset, void *dst, size_t len)
 
 static nd_game game_from_code(const char *code)
 {
-    /* Retail game codes: ADA* Diamond, APA* Pearl, CPU* Platinum, IRB* Black,
-     * IRA* White (the fourth letter is the region, e.g. IRBO for the US). */
+    /* Retail game codes: ADA* Diamond, APA* Pearl, CPU* Platinum, IPK*
+     * HeartGold, IPG* SoulSilver (pokeheartgold config.mk GAME_CODE), IRB*
+     * Black, IRA* White (the fourth letter is the region, e.g. IRBO for the
+     * US). */
     if (!memcmp(code, "ADA", 3))
         return ND_GAME_DIAMOND;
     if (!memcmp(code, "APA", 3))
         return ND_GAME_PEARL;
     if (!memcmp(code, "CPU", 3))
         return ND_GAME_PLATINUM;
+    if (!memcmp(code, "IPK", 3))
+        return ND_GAME_HEARTGOLD;
+    if (!memcmp(code, "IPG", 3))
+        return ND_GAME_SOULSILVER;
     if (!memcmp(code, "IRB", 3))
         return ND_GAME_BLACK;
     if (!memcmp(code, "IRA", 3))

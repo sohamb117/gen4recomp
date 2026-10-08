@@ -32,6 +32,22 @@
  * (src/string_template.c): LOCATION_NAMES, SPECIAL_MET_LOCATION_NAMES,
  * MYSTERY_GIFT_EVENT_NAMES.
  *
+ * HeartGold / SoulSilver: a/0/2/7 (pokeheartgold filesystem.mk:
+ *   arc_strip_name files/msgdata/msg.narc -> files/a/0/2/7), built from
+ *   files/msgdata/msg/msg_NNNN*.gmm where NNNN is the member index
+ *   (files/msgdata/msg.mk sorts them by name; msg_0729 is generated from the
+ *   trainer JSON). Both versions share the file tree. The banks the game
+ *   itself loads:
+ *     msg_0237 species (src/msgdata.c, src/message_format.c)
+ *     msg_0750 moves (src/message_format.c)
+ *     msg_0222 items "None, Master Ball, Ultra Ball..."
+ *     msg_0720 abilities (src/message_format.c)
+ *     msg_0034 natures "Hardy, Lonely, Brave..."
+ *     msg_0279 / 0281 / 0280 met locations (src/message_format.c
+ *       BufferLocationName msgBanks[], selected by the same 0 / 2000 / 3000
+ *       bases: asm/unk_02017FAC.s _020F6280).
+ *   Unverified against a retail ROM (none was available when written).
+ *
  * Black / White: a/0/0/2 (Gen 5 message format, gen5_text.c). Identified by
  * decoding every member of the US ROMs (IRBO, IRAO; both share the layout):
  *     70  "―――――, Bulbasaur, Ivysaur..." 652 entries   species
@@ -58,10 +74,11 @@
 
 #include "gen5.h"
 
-static const int16_t kBanks[3][ND_TEXT_KIND_COUNT] = {
+static const int16_t kBanks[4][ND_TEXT_KIND_COUNT] = {
     /* D/P */ {362, 588, 344, 552, 190, 382, 384, 383, -1},
     /* Pt  */ {412, 647, 392, 610, 202, 433, 435, 434, -1},
     /* B/W */ {70, 203, 54, 182, 24, 89, 92, 90, 91},
+    /* HG/SS */ {237, 750, 222, 720, 34, 279, 281, 280, -1},
 };
 
 const char *nd_msg_narc_path(nd_game game)
@@ -75,6 +92,9 @@ const char *nd_msg_narc_path(nd_game game)
     case ND_GAME_BLACK:
     case ND_GAME_WHITE:
         return "a/0/0/2";
+    case ND_GAME_HEARTGOLD:
+    case ND_GAME_SOULSILVER:
+        return "a/0/2/7";
     default:
         return NULL;
     }
@@ -93,6 +113,9 @@ int nd_text_bank(nd_game game, nd_text_kind kind)
     case ND_GAME_BLACK:
     case ND_GAME_WHITE:
         return kBanks[2][kind];
+    case ND_GAME_HEARTGOLD:
+    case ND_GAME_SOULSILVER:
+        return kBanks[3][kind];
     default:
         return -1;
     }

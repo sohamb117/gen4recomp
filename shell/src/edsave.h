@@ -1,10 +1,11 @@
 /*
  * The save editor's view of a DS save, whichever library reads it:
- * features/save4 (Diamond, Pearl, Platinum) or features/save5 (Black,
- * White). The editor, the slot summaries and the Trainer Card work on this
- * one interface; things only one generation has (Gen 4 event gifts and the
- * MYSTERY GIFT unlock, Gen 5's twelve Wonder Card slots) are reported as
- * absent or reached through np_save_s4().
+ * features/save4 (Diamond, Pearl, Platinum, HeartGold, SoulSilver) or
+ * features/save5 (Black, White). The editor, the slot summaries and the
+ * Trainer Card work on this one interface; things only one generation has
+ * (Gen 4 event gifts and the MYSTERY GIFT unlock, HG/SS's Kanto badges,
+ * Gen 5's twelve Wonder Card slots) are reported as absent or reached
+ * through np_save_s4().
  *
  * SDL-free so the unit tests exercise it on synthetic saves.
  */
@@ -49,8 +50,8 @@ int np_save_gen_of(np_game game);
 
 /* Loads `data`. `game` is the slot's game; -1 detects it from the save
  * (Diamond/Pearl saves share a format and load as `dp_default`). A save of
- * another generation, or Platinum in a Diamond/Pearl slot and vice versa,
- * fails with NP_SAVE_ERR_WRONG_GAME. */
+ * another format (D/P, Pt, HG/SS, B/W) than the slot's game fails with
+ * NP_SAVE_ERR_WRONG_GAME; the two games of one format are interchangeable. */
 np_save_status np_save_load(np_save *s, int game, np_game dp_default, const uint8_t *data, size_t len);
 void np_save_free(np_save *s);
 uint8_t *np_save_img(np_save *s);
@@ -73,7 +74,9 @@ typedef struct np_trainer {
     uint8_t gender;
     bool has_coins;
     uint16_t coins;
-    uint8_t badges; /* bitmask of the region's eight */
+    uint8_t badges; /* bitmask of the region's eight (Johto's in HG/SS) */
+    bool has_kanto; /* HG/SS */
+    uint8_t kanto_badges;
     uint16_t play_hours;
     uint8_t play_minutes, play_seconds;
     bool national_dex;
@@ -84,12 +87,15 @@ uint32_t np_save_money_max(const np_save *s);
 uint32_t np_save_coins_max(const np_save *s);
 /* The eight badge names of the save's region ("Coal", ... / "Trio", ...). */
 const char *const *np_save_badge_names(const np_save *s);
+/* HG/SS's Kanto badges, else NULL. */
+const char *const *np_save_kanto_badge_names(const np_save *s);
 np_save_status np_save_set_name(np_save *s, const char *utf8);
 np_save_status np_save_set_gender(np_save *s, uint8_t gender);
 np_save_status np_save_set_ids(np_save *s, uint16_t tid, uint16_t sid);
 np_save_status np_save_set_money(np_save *s, uint32_t money);
 np_save_status np_save_set_coins(np_save *s, uint16_t coins);
 np_save_status np_save_set_badges(np_save *s, uint8_t mask);
+np_save_status np_save_set_kanto_badges(np_save *s, uint8_t mask);
 np_save_status np_save_set_play_time(np_save *s, uint16_t h, uint8_t m, uint8_t sec);
 
 /* --------------------------------------------------------- Pokemon */
@@ -151,12 +157,14 @@ void np_mon_set_friendship(np_mon *m, uint8_t v);
 np_save_status np_mon_set_nickname(np_mon *m, const char *utf8, bool is_nickname);
 void np_mon_set_origin(np_mon *m, uint8_t game);
 void np_mon_set_met(np_mon *m, uint16_t location, uint8_t level, uint8_t ball, uint8_t ot_gender);
+/* The save's game's ball fields for `ball_item` beyond np_mon_set_met's (HG/SS). */
+np_save_status np_save_mon_set_ball(const np_save *s, np_mon *m, uint16_t ball_item);
 void np_mon_set_party_stats(np_mon *m, uint8_t level, uint16_t hp, const uint16_t stats[6], uint32_t status);
 /* The game's stat formula (the same in Gen 4 and 5). */
 void np_mon_calc_stats(const uint8_t base[6], const uint8_t ivs[6], const uint8_t evs[6], uint8_t level,
                        uint8_t nature, bool shedinja, uint16_t out[6]);
-/* The origin-game byte the save's own Pokemon carry (10 D, 11 P, 12 Pt,
- * 20 White, 21 Black). */
+/* The origin-game byte the save's own Pokemon carry (7 HG, 8 SS, 10 D,
+ * 11 P, 12 Pt, 20 White, 21 Black). */
 uint8_t np_save_origin_game(const np_save *s);
 uint8_t np_save_language(const np_save *s);
 
