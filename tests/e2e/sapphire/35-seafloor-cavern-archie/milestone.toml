@@ -3,10 +3,9 @@
 # Kyogre awakens, VAR_SOOTOPOLIS_STATE 1, then Steven on Route 128 (VAR_ROUTE128_STATE 2).
 # Start: Mossdeep (19,11) -> end: MAP_ROUTE128 (the scene ends with Steven above the sea).
 title = "Seafloor Cavern: Archie wakes Kyogre (Sapphire)"
-status = "planned"
 priority = "P0"
 version = "sapphire"
-estimate = 45000
+estimate = 25936
 refs = [
   "data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0",
   "data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)",
@@ -21,7 +20,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 39000
 
 [[step]]
 do = "walk_to"

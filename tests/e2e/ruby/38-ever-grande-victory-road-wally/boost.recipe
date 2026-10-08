@@ -1,6 +1,14 @@
-# HM07 Waterfall (Cave of Origin B3F item ball, 36) taught to the lead in place of Dive, as a player teaches it: Ever
-# Grande's falls. Wally (pokeruby gTrainerParty_Wally1: ALTARIA 44 .. GARDEVOIR 45) and Victory Road's lv 40+
-# trainers: the level carries the lead.
-party-move 0 2 MOVE_WATERFALL
-party-level 0 64
+# Strength left the lead for Earthquake (37), and only the Marshtomp line learns Strength and Rock Smash in this party
+# (src/data/pokemon/tmhm_learnsets.h: CASTFORM HM05 only, SWELLOW HM02 only), so a Linoone (tmhm_learnsets.h:6415:
+# HM01, HM03, HM04, HM06) joins as the HM carrier for Victory Road's boulders and rocks; the lead keeps Dive (the way
+# out of Sootopolis) and Surf, and takes HM07 Waterfall (Cave of Origin B3F item ball, 36) in place of Rock Smash for
+# Ever Grande's falls (EverGrandeCity map.json: MB_WATERFALL (16..27, 60..67) below Victory Road). Wally (pokeruby gTrainerParty_Wally1: ALTARIA 44 .. GARDEVOIR 45) and Victory Road's
+# lv 40+ trainers: the level carries the lead.
+party-move 0 3 MOVE_WATERFALL
+party-level 0 70
+party SPECIES_LINOONE 50 ITEM_NONE
+party-move 3 0 MOVE_STRENGTH
+party-move 3 1 MOVE_ROCK_SMASH
+party-move 3 2 MOVE_CUT
+party-move 3 3 MOVE_SURF
 item ITEM_FULL_RESTORE 10

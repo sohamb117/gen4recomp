@@ -10,7 +10,7 @@ refs = [
   "data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE",
   "data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2",
 ]
-notes = "Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's waterfall needs HM07 (found on Cave of Origin B3F, 36) on the lead (boost); Victory Road needs Strength and Rock Smash (the lead keeps both). gba_world_cli has no surf route up Ever Grande's waterfall (F tiles), hence the PHASE2 note."
+notes = "Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's lower shore is reached by Surf from Route 128 and up its waterfall (HM07 on the lead, boost); Victory Road needs Strength and Rock Smash (a Linoone carrier, boost)."
 
 [start]
 from = "prev"
@@ -19,16 +19,53 @@ boost = "boost.recipe"
 [run]
 frames = 60000
 
-# PHASE2: the Ever Grande waterfall leg and the Victory Road floor route (Strength boulders, Rock Smash rocks; probe_map each floor).
+
+
+[[step]]
+do = "walk_to"
+x = 43
+z = 1
+map = "MAP_ROUTE128"
+dive = true
+on_battle = "flee"
+max = 20000
+note = "out of the crater by Dive (Sootopolis setdivewarp -> UNDERWATER_SOOTOPOLIS_CITY, its water door -> UNDERWATER2, surface on Route 126), Routes 126/127 east by Surf onto Route 128"
+
+[[step]]
+do = "walk_to"
+x = 119
+z = 32
+via = [[61, 8], [77, 17], [98, 21], [117, 27]]
+surf = true
+on_battle = "flee"
+note = "Route 128's open water east (waypoints along the static model's water path: a walk planned straight from the west end runs into the rock pocket at (76,30))"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 68
+map = "MAP_EVER_GRANDE_CITY"
+surf = true
+face = "up"
+note = "east across the border into Ever Grande's bay, below its falls (MB_WATERFALL 0x13 at (16..27, 60..67)): a waterfall tile pushes the surfer back south (ForcedMovement_RideCurrentSouth for MetatileBehavior_IsWaterfall, field_player_avatar.c:123-163), so the climb starts from the water below it"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "facing the falls: GetInteractedWaterScript (badge 8, surfing north, a waterfall ahead) -> UseWaterfallScript, 'Would you like to use WATERFALL?' (data/field_move_scripts.inc)"
+
+[[step]]
+do = "advance_text"
+note = "YES (the cursor's default), the climb to the top of the falls"
 
 [[step]]
 do = "walk_to"
 x = 18
 z = 42
-map = "MAP_EVER_GRANDE_CITY"
 surf = true
 hm = true
-note = "Sootopolis -> Route 126/127/128 east -> Ever Grande's waterfall (Surf + A + YES at the falls) [PHASE2: the waterfall leg]"
+note = "the upper basin to Ever Grande's shore below Victory Road (Ever Grande warp 2 (18,41))"
 
 [[step]]
 do = "walk_to"

@@ -4496,7 +4496,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 ## Ruby
 
 <!-- plan.py:begin ruby -->
-### Story chain: 44 milestones, ~758460 frames estimated
+### Story chain: 44 milestones, ~687301 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -4532,11 +4532,11 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [30-mt-pyre-summit-orb](ruby/30-mt-pyre-summit-orb/milestone.toml) | Mt. Pyre: the summit and the stolen orb | P0 | both | 15902 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
 | [31-slateport-harbor-submarine](ruby/31-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: the submarine is stolen | P0 | both | 20608 | prev + `None` | MAP_SLATEPORT_CITY | passing |
 | [32-magma-hideout-tabitha](ruby/32-magma-hideout-tabitha/milestone.toml) | Team Magma Hideout: Tabitha and the escaped submarine (Ruby) | P0 | ruby | 38287 | prev + `None` | MAP_MAGMA_HIDEOUT_B2F | passing |
-| [33-route124-mossdeep-gym-tate-liza](ruby/33-route124-mossdeep-gym-tate-liza/milestone.toml) | Route 124 and the Mossdeep Gym: Tate & Liza | P0 | both | 30000 | prev + `None` | MAP_MOSSDEEP_CITY | planned |
-| [34-mossdeep-stevens-house-hm-dive](ruby/34-mossdeep-stevens-house-hm-dive/milestone.toml) | Mossdeep: Steven's house and HM08 Dive | P0 | both | 4000 | prev + `None` | MAP_MOSSDEEP_CITY | planned |
-| [35-seafloor-cavern-maxie](ruby/35-seafloor-cavern-maxie/milestone.toml) | Seafloor Cavern: Maxie wakes Groudon (Ruby) | P0 | ruby | 45000 | prev + `None` | MAP_ROUTE128 | planned |
-| [36-sootopolis-cave-of-origin-groudon](ruby/36-sootopolis-cave-of-origin-groudon/milestone.toml) | Sootopolis and the Cave of Origin: Groudon (Ruby) | P0 | ruby | 40000 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | planned |
-| [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 30000 | prev + `None` | MAP_SOOTOPOLIS_CITY | planned |
+| [33-route124-mossdeep-gym-tate-liza](ruby/33-route124-mossdeep-gym-tate-liza/milestone.toml) | Route 124 and the Mossdeep Gym: Tate & Liza | P0 | both | 16820 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
+| [34-mossdeep-stevens-house-hm-dive](ruby/34-mossdeep-stevens-house-hm-dive/milestone.toml) | Mossdeep: Steven's house and HM08 Dive | P0 | both | 2019 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
+| [35-seafloor-cavern-maxie](ruby/35-seafloor-cavern-maxie/milestone.toml) | Seafloor Cavern: Maxie wakes Groudon (Ruby) | P0 | ruby | 21830 | prev + `None` | MAP_ROUTE128 | passing |
+| [36-sootopolis-cave-of-origin-groudon](ruby/36-sootopolis-cave-of-origin-groudon/milestone.toml) | Sootopolis and the Cave of Origin: Groudon (Ruby) | P0 | ruby | 19297 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | passing |
+| [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 17875 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
 | [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 40000 | prev + `None` | MAP_EVER_GRANDE_CITY | planned |
 | [39-pokemon-league-entrance](ruby/39-pokemon-league-entrance/milestone.toml) | Pokemon League: heal and into Sidney's room | P0 | both | 6000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
 | [40-e4-sidney](ruby/40-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | planned |
@@ -4871,9 +4871,9 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_MOSSDEEP_CITY; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_RECEIVED_TM_CALM_MIND
-- frames: estimate 30000, budget 60000
+- frames: estimate 16820, budget 25300
 - refs: data/maps/LilycoveCity/scripts.inc:31 (badge 7 walls the hideout door up); data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> MOSSDEEP_CITY_GYM (9,29); data/maps/MossdeepCity_Gym/map.json bg_events switches (2,7)/(8,10)/(17,15)/(5,24); arrows (5,5)/(8,14)/(15,17)/(1,23); data/maps/MossdeepCity_Gym/scripts.inc:5-46,78-160 (switch flags and arrow metatiles); src/field_player_avatar.c:123-480 (forced movement: MB_WALK_* 0x40-0x43, MB_SLIDE_* 0x44-0x47 ride until blocked; 0x48 slips on); data/maps/MossdeepCity_Gym/scripts.inc:47-76 (TateAndLizaDefeated: FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_BADGE07_GET; TM04)
-- notes: Tate & Liza: TRAINER_TATE_AND_LIZA (271) DOUBLE: LUNATONE 42, SOLROCK 42 (Surf x2 on both; a double battle needs two Pokemon: Castform and the Fly carrier from the boost stand by). The press list is a BFS over (tile, elevation, switch states) with the game's forced-movement rules (field_player_avatar.c; walk_to never plans onto forced tiles, bots.py:823): 3 switches pressed (1, 2, 3); the gym trainers' tiles are treated as walls, so sight battles on the way are not modelled [INFERENCE]. The (12,3) warp-back coord event is avoided. The hideout exit is walked back out by the route (its pads in reverse).
+- notes: Tate & Liza: TRAINER_TATE_AND_LIZA (271) DOUBLE: LUNATONE 42, SOLROCK 42 (Surf x2 on both; a double battle needs two Pokemon: Castform and the Fly carrier from the boost stand by). The gym route is tools/gba_puzzle.py's R/S Mossdeep mode (forced-movement arrows ridden, the sign switches' setmetatile toggles, trainers who see the player mid-ride); the (12,3) WarpToEntrance coord event is never stepped on. The hideout exit is walked back out by the route (its pads in reverse).
 
 #### ruby/34-mossdeep-stevens-house-hm-dive — Mossdeep: Steven's house and HM08 Dive
 - proves: Proves Steven's house OnFrame VAR_STEVENS_HOUSE_STATE 0: HM08 Dive (FLAG_RECEIVED_HM08), STEVENS_HOUSE_STATE 1. Start: Mossdeep (38,10) -> end: MAP_MOSSDEEP_CITY outside Steven's house (19,11).
@@ -4881,19 +4881,19 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_MOSSDEEP_CITY; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_RECEIVED_HM08, FLAG_OMIT_DIVE_FROM_STEVEN_LETTER; vars VAR_STEVENS_HOUSE_STATE=1
-- frames: estimate 4000, budget 60000
+- frames: estimate 2019, budget 3100
 - refs: data/maps/MossdeepCity/map.json warp_events[6] (19,10) -> MOSSDEEP_CITY_STEVENS_HOUSE (3,7); data/maps/MossdeepCity_StevensHouse/scripts.inc:25-50 (OnFrame STEVENS_HOUSE_STATE 0 -> StevenGivesDive: ITEM_HM08_DIVE, FLAG_RECEIVED_HM08, FLAG_OMIT_DIVE_FROM_STEVEN_LETTER, STATE 1)
 - notes: R/S give Dive in Steven's house right after the seventh badge (no Space Center attack, Emerald 35, in R/S).
 
 #### ruby/35-seafloor-cavern-maxie — Seafloor Cavern: Maxie wakes Groudon (Ruby)
-- proves: Proves Dive on Route 128 (the submarine's trail: Underwater_SeafloorCavern -> SEAFLOOR_CAVERN_ENTRANCE), the cavern's Strength and Rock Smash rooms, the admin (TRAINER_SEAFLOOR_CAVERN_GRUNT_3) and the leader at Room 9 (TRAINER_SEAFLOOR_CAVERN_GRUNT_5): Groudon awakens, VAR_SOOTOPOLIS_STATE 1, VAR_ROUTE128_STATE 1. Start: Mossdeep (19,11) -> end: MAP_ROUTE128 (the scene ends with Steven above the sea).
+- proves: Proves Dive on Route 128 (the submarine's trail: Underwater_SeafloorCavern -> SEAFLOOR_CAVERN_ENTRANCE), the cavern's Strength and Rock Smash rooms, the admin (TRAINER_SEAFLOOR_CAVERN_GRUNT_3) and the leader at Room 9 (TRAINER_SEAFLOOR_CAVERN_GRUNT_5): Groudon awakens, VAR_SOOTOPOLIS_STATE 1, then Steven on Route 128 (VAR_ROUTE128_STATE 2). Start: Mossdeep (19,11) -> end: MAP_ROUTE128 (the scene ends with Steven above the sea).
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)
-- end state: map MAP_ROUTE128; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_HIDE_EVIL_LEADER_SEAFLOOR_CAVERN; flags clear FLAG_HIDE_WALLACE_SOOTOPOLIS, FLAG_HIDE_STEVEN_SOOTOPOLIS; vars VAR_SOOTOPOLIS_STATE=1, VAR_ROUTE128_STATE=1
-- frames: estimate 45000, budget 60000
+- end state: map MAP_ROUTE128; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_HIDE_EVIL_LEADER_SEAFLOOR_CAVERN; flags clear FLAG_HIDE_WALLACE_SOOTOPOLIS, FLAG_HIDE_STEVEN_SOOTOPOLIS; vars VAR_SOOTOPOLIS_STATE=1, VAR_ROUTE128_STATE=2
+- frames: estimate 21830, budget 32800
 - refs: data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0; data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear); data/maps/SeafloorCavern_Entrance/map.json warp_events[1] (10,1) -> ROOM1; data/maps/Underwater_SeafloorCavern/map.json warp_events[0] (6,7) -> UNDERWATER4 (the cavern mouth); constants/version.inc (Ruby: SEAFLOOR_CAVERN_GRUNT_3 = COURTNEY_2, _5 = MAXIE_2)
-- notes: Ruby branch (other: ../sapphire/35-seafloor-cavern-archie). Admin: TRAINER_COURTNEY_2 (600): CAMERUPT 38, MIGHTYENA 38; leader: TRAINER_MAXIE_2 (601): MIGHTYENA 41, CROBAT 41, CAMERUPT 43. Dive is the A + YES prompt on dark water (field_control_avatar.c); the static model has no underwater legs and Seafloor Cavern's Strength boulders are not on walk_to's path (gba_world_cli: no static route Entrance (10,10) -> Room9 (17,43)), so the cavern walk is a PHASE2 route. The boost puts Dive and Strength on the lead.
+- notes: Ruby branch (other: ../sapphire/35-seafloor-cavern-archie). Admin: TRAINER_COURTNEY_2 (600): CAMERUPT 38, MIGHTYENA 38; leader: TRAINER_MAXIE_2 (601): MIGHTYENA 41, CROBAT 41, CAMERUPT 43. Dive: walk_to dive = true (gba_world dive/emerge legs). The rooms: gba_puzzle.py (boulders, rocks, Room 6's currents). The boost puts Dive and Strength on the lead.
 
 #### ruby/36-sootopolis-cave-of-origin-groudon — Sootopolis and the Cave of Origin: Groudon (Ruby)
 - proves: Proves Dive into Sootopolis (Route 126), Steven and Wallace's scene (coord (25,6) VAR_SOOTOPOLIS_STATE 1 -> 2), the Cave of Origin floors, HM07 Waterfall from B3F's item ball and the legend at B4F (coord (9,13) VAR_CAVE_OF_ORIGIN_B4F_STATE 0): FLAG_LEGENDARY_BATTLE_COMPLETED. Start: Route 128 -> end: MAP_CAVE_OF_ORIGIN_B4F.
@@ -4901,19 +4901,19 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_CAVE_OF_ORIGIN_B4F; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_LEGENDARY_BATTLE_COMPLETED, FLAG_ITEM_CAVE_OF_ORIGIN_B3F_1; vars VAR_SOOTOPOLIS_STATE=2
-- frames: estimate 40000, budget 60000
+- frames: estimate 19297, budget 29000
 - refs: data/maps/SootopolisCity/map.json coord_events (25,6) VAR_SOOTOPOLIS_STATE=1; data/maps/SootopolisCity/scripts.inc:200-282 (LeadPlayerCaveOfOrigin; .ifdef SAPPHIRE texts; SOOTOPOLIS_STATE 2); data/maps/SootopolisCity/map.json warp_events[3] (31,16) -> CAVE_OF_ORIGIN_ENTRANCE; data/maps/CaveOfOrigin_B3F/map.json object_events[0] ITEM_BALL (6,5) -> data/item_ball_scripts.inc:477-479 (ITEM_HM07_WATERFALL); data/maps/CaveOfOrigin_B4F/map.json coord_events (9,13); data/maps/CaveOfOrigin_B4F/scripts.inc (ScrSpecial_StartGroudonKyogreBattle; FLAG_LEGENDARY_BATTLE_COMPLETED); constants/version.inc (SPECIES_GROUDON_OR_KYOGRE: Ruby GROUDON, Sapphire KYOGRE); src/battle_setup.c:598-610 (ScrSpecial_StartGroudonKyogreBattle)
-- notes: Ruby branch (other: ../sapphire/36-sootopolis-cave-of-origin-kyogre). Groudon lv45 [INFERENCE: static_pokemon level]; auto_battle knocks it out (the flag is set either way) - catching it would need a ball-throw bot [open question]. The cave (static model: B4F (9,13) is reached from B3F (12,6)) is entered after the Sootopolis scene; Waterfall is found on B3F (R/S have no Wallace HM gift). Sootopolis is reached by Dive from Route 126 [PHASE2: dive/surface tiles].
+- notes: Ruby branch (other: ../sapphire/36-sootopolis-cave-of-origin-kyogre). Groudon lv45 [INFERENCE: static_pokemon level]; auto_battle knocks it out (the flag is set either way) - catching it would need a ball-throw bot [open question]. The cave (static model: B4F (9,13) is reached from B3F (12,6)) is entered after the Sootopolis scene; Waterfall is found on B3F (R/S have no Wallace HM gift). Sootopolis is reached by Dive from Route 126 (walk_to dive = true).
 
 #### ruby/37-sootopolis-gym-wallace — Sootopolis Gym: Wallace's Rain Badge
 - proves: Proves the ice-floor gym (1F cracked ice, B1F) and Wallace (TRAINER_WALLACE): FLAG_BADGE08_GET, TM03 Water Pulse. Start: Cave of Origin B4F -> end: MAP_SOOTOPOLIS_CITY at the gym door (31,33).
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)
-- end state: map MAP_SOOTOPOLIS_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_SOOTOPOLIS_GYM
-- frames: estimate 30000, budget 60000
+- end state: map MAP_SOOTOPOLIS_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_HIDE_STEVEN_SOOTOPOLIS
+- frames: estimate 17875, budget 26900
 - refs: data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> SOOTOPOLIS_CITY_GYM_1F (8,25); data/maps/SootopolisCity_Gym_1F/map.json object_events[0] WALLACE (8,2); data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)
-- notes: Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is an ice puzzle (cracked ice falls to B1F, gym_1F (11,22) -> B1F); the slide bot replays ice presses (AUTHORING: slide).
+- notes: Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is the thin-ice puzzle: every thin-ice tile of a field stepped on once opens the next stairs (VAR_ICE_STEP_COUNT 8, 28, 69); a cracked tile stepped on again drops the player to B1F. The routes are Hamiltonian paths over each field's tiles (map.json layout), entry to stairs.
 
 #### ruby/38-ever-grande-victory-road-wally — Ever Grande and Victory Road: Wally
 - proves: Proves Waterfall to Ever Grande (Route 128 east), Victory Road's floors and Wally's trigger (34,3..5) VAR_VICTORY_ROAD_1F_STATE 0: TRAINER_WALLY_1, FLAG_DEFEATED_WALLY_VICTORY_ROAD. Start: Sootopolis gym door -> end: MAP_EVER_GRANDE_CITY at the League door.
@@ -4923,7 +4923,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_WALLY_VICTORY_ROAD
 - frames: estimate 40000, budget 60000
 - refs: data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE; data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2
-- notes: Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's waterfall needs HM07 (found on Cave of Origin B3F, 36) on the lead (boost); Victory Road needs Strength and Rock Smash (the lead keeps both). gba_world_cli has no surf route up Ever Grande's waterfall (F tiles), hence the PHASE2 note.
+- notes: Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's lower shore is reached by Surf from Route 128 and up its waterfall (HM07 on the lead, boost); Victory Road needs Strength and Rock Smash (a Linoone carrier, boost).
 
 #### ruby/39-pokemon-league-entrance — Pokemon League: heal and into Sidney's room
 - proves: Proves the League building (heal at its nurse), the guards and Corridor 5 into Sidney's room (VAR_ELITE_4_STATE, FLAG_ENTERED_ELITE_FOUR). Start: Ever Grande (18,6) -> end: MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM, door shut.
@@ -4991,7 +4991,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin sapphire -->
-### Story chain: 44 milestones, ~781291 frames estimated
+### Story chain: 44 milestones, ~692000 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -5015,23 +5015,23 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [18-route111-112-fiery-path](ruby/18-route111-112-fiery-path/milestone.toml) | Route 111, Route 112 and the Fiery Path to Route 113 | P0 | both | 25899 | prev + `None` | MAP_ROUTE113 | passing |
 | [19-route113-fallarbor-route114](ruby/19-route113-fallarbor-route114/milestone.toml) | Route 113, Fallarbor and Route 114 to Meteor Falls | P0 | both | 22874 | prev + `None` | MAP_METEOR_FALLS_1F_1R | passing |
 | [20-meteor-falls-meteorite](ruby/20-meteor-falls-meteorite/milestone.toml) | Meteor Falls: the meteorite is taken | P0 | both | 3323 | prev + `None` | MAP_ROUTE114 | passing |
-| [21-cable-car-mt-chimney-archie](sapphire/21-cable-car-mt-chimney-archie/milestone.toml) | Cable car to Mt. Chimney: Matt and Archie (Sapphire) | P0 | sapphire | 35000 | prev + `None` | MAP_MT_CHIMNEY | planned |
+| [21-cable-car-mt-chimney-archie](sapphire/21-cable-car-mt-chimney-archie/milestone.toml) | Cable car to Mt. Chimney: Matt and Archie (Sapphire) | P0 | sapphire | 29491 | prev + `None` | MAP_MT_CHIMNEY | passing |
 | [22-jagged-pass-lavaridge](ruby/22-jagged-pass-lavaridge/milestone.toml) | Jagged Pass down to Lavaridge | P0 | both | 5230 | prev + `None` | MAP_LAVARIDGE_TOWN | passing |
 | [23-lavaridge-gym-flannery-goggles](ruby/23-lavaridge-gym-flannery-goggles/milestone.toml) | Lavaridge Gym: Flannery's Heat Badge and May's Go-Goggles | P0 | both | 10679 | prev + `None` | MAP_LAVARIDGE_TOWN | passing |
 | [24-petalburg-gym-norman-surf](ruby/24-petalburg-gym-norman-surf/milestone.toml) | Petalburg Gym: Norman's Balance Badge and HM03 Surf | P0 | both | 29678 | prev + `None` | MAP_PETALBURG_CITY_WALLYS_HOUSE | passing |
-| [25-route118-119-weather-institute-shelly](sapphire/25-route118-119-weather-institute-shelly/milestone.toml) | Routes 118-119 and the Weather Institute: Shelly (Sapphire) | P0 | sapphire | 52000 | prev + `None` | MAP_ROUTE119 | planned |
+| [25-route118-119-weather-institute-shelly](sapphire/25-route118-119-weather-institute-shelly/milestone.toml) | Routes 118-119 and the Weather Institute: Shelly (Sapphire) | P0 | sapphire | 37329 | prev + `None` | MAP_ROUTE119 | passing |
 | [26-route119-may-fly-fortree](ruby/26-route119-may-fly-fortree/milestone.toml) | Route 119: May's third battle, HM02 Fly, Fortree | P0 | both | 12980 | prev + `None` | MAP_FORTREE_CITY | passing |
 | [27-route120-steven-devon-scope](ruby/27-route120-steven-devon-scope/milestone.toml) | Route 120: Steven's Devon Scope, the Fortree Kecleon | P0 | both | 11697 | prev + `None` | MAP_FORTREE_CITY | passing |
 | [28-fortree-gym-winona](ruby/28-fortree-gym-winona/milestone.toml) | Fortree Gym: Winona's Feather Badge | P0 | both | 14288 | prev + `None` | MAP_FORTREE_CITY | passing |
 | [29-route121-lilycove-may](ruby/29-route121-lilycove-may/milestone.toml) | Route 121 and Lilycove: May's fourth battle | P0 | both | 26959 | prev + `None` | MAP_LILYCOVE_CITY | passing |
 | [30-mt-pyre-summit-orb](ruby/30-mt-pyre-summit-orb/milestone.toml) | Mt. Pyre: the summit and the stolen orb | P0 | both | 15902 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
 | [31-slateport-harbor-submarine](ruby/31-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: the submarine is stolen | P0 | both | 20608 | prev + `None` | MAP_SLATEPORT_CITY | passing |
-| [32-aqua-hideout-matt](sapphire/32-aqua-hideout-matt/milestone.toml) | Team Aqua Hideout: Matt and the escaped submarine (Sapphire) | P0 | sapphire | 45000 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | planned |
-| [33-route124-mossdeep-gym-tate-liza](ruby/33-route124-mossdeep-gym-tate-liza/milestone.toml) | Route 124 and the Mossdeep Gym: Tate & Liza | P0 | both | 30000 | prev + `None` | MAP_MOSSDEEP_CITY | planned |
-| [34-mossdeep-stevens-house-hm-dive](ruby/34-mossdeep-stevens-house-hm-dive/milestone.toml) | Mossdeep: Steven's house and HM08 Dive | P0 | both | 4000 | prev + `None` | MAP_MOSSDEEP_CITY | planned |
-| [35-seafloor-cavern-archie](sapphire/35-seafloor-cavern-archie/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre (Sapphire) | P0 | sapphire | 45000 | prev + `None` | MAP_ROUTE128 | planned |
-| [36-sootopolis-cave-of-origin-kyogre](sapphire/36-sootopolis-cave-of-origin-kyogre/milestone.toml) | Sootopolis and the Cave of Origin: Kyogre (Sapphire) | P0 | sapphire | 40000 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | planned |
-| [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 30000 | prev + `None` | MAP_SOOTOPOLIS_CITY | planned |
+| [32-aqua-hideout-matt](sapphire/32-aqua-hideout-matt/milestone.toml) | Team Aqua Hideout: Matt and the escaped submarine (Sapphire) | P0 | sapphire | 40585 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | passing |
+| [33-route124-mossdeep-gym-tate-liza](ruby/33-route124-mossdeep-gym-tate-liza/milestone.toml) | Route 124 and the Mossdeep Gym: Tate & Liza | P0 | both | 16820 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
+| [34-mossdeep-stevens-house-hm-dive](ruby/34-mossdeep-stevens-house-hm-dive/milestone.toml) | Mossdeep: Steven's house and HM08 Dive | P0 | both | 2019 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
+| [35-seafloor-cavern-archie](sapphire/35-seafloor-cavern-archie/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre (Sapphire) | P0 | sapphire | 25936 | prev + `None` | MAP_ROUTE128 | passing |
+| [36-sootopolis-cave-of-origin-kyogre](sapphire/36-sootopolis-cave-of-origin-kyogre/milestone.toml) | Sootopolis and the Cave of Origin: Kyogre (Sapphire) | P0 | sapphire | 21654 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | passing |
+| [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 17875 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
 | [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 40000 | prev + `None` | MAP_EVER_GRANDE_CITY | planned |
 | [39-pokemon-league-entrance](ruby/39-pokemon-league-entrance/milestone.toml) | Pokemon League: heal and into Sidney's room | P0 | both | 6000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
 | [40-e4-sidney](ruby/40-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | planned |
@@ -5246,7 +5246,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/MtChimney/scripts.inc:331-349 (admin/grunt: TRAINER_MT_CHIMNEY_GRUNT_1/_2); data/scripts/magma_chimney.inc:29-90 (leader: trainerbattle_no_intro TRAINER_MT_CHIMNEY_GRUNT_3; FLAG_HIDE_EVIL_TEAM_MT_CHIMNEY, FLAG_HIDE_OTHER_TEAM_MT_CHIMNEY, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, Cozmo back home); constants/version.inc (Sapphire: MT_CHIMNEY_GRUNT_1 = TRAINER_MATT_2, _2 = TRAINER_GRUNT_13, _3 = TRAINER_ARCHIE_3)
 - end state: map MAP_MT_CHIMNEY; 3 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, FLAG_HIDE_EVIL_TEAM_MT_CHIMNEY, FLAG_HIDE_OTHER_TEAM_MT_CHIMNEY, FLAG_HIDE_PROF_COSMO_METEOR_FALLS; flags clear FLAG_HIDE_PROF_COSMO_FALLARBOR
-- frames: estimate 35000, budget 60000
+- frames: estimate 29491, budget 44300
 - refs: data/maps/Route112/map.json warp_events[5] (22,10) -> FIERY_PATH (26,4), [0] (28,27) -> ROUTE112_CABLE_CAR_STATION; data/maps/Route112_CableCarStation/scripts.inc:32-55 (attendant MSGBOX_YESNO -> CABLE_CAR_STATION_STATE 1, special CableCarWarp, special CableCar); data/maps/MtChimney_CableCarStation/map.json warp_events[0] (6,11) -> MT_CHIMNEY (17,36); data/maps/MtChimney/map.json object_events[1] leader VAR_6 (13,6), [2] admin (12,11) sight 2, [21] grunt (9,15) sight 3; data/maps/MtChimney/scripts.inc:331-349 (admin/grunt: TRAINER_MT_CHIMNEY_GRUNT_1/_2); data/scripts/magma_chimney.inc:29-90 (leader: trainerbattle_no_intro TRAINER_MT_CHIMNEY_GRUNT_3; FLAG_HIDE_EVIL_TEAM_MT_CHIMNEY, FLAG_HIDE_OTHER_TEAM_MT_CHIMNEY, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, Cozmo back home); constants/version.inc (Sapphire: MT_CHIMNEY_GRUNT_1 = TRAINER_MATT_2, _2 = TRAINER_GRUNT_13, _3 = TRAINER_ARCHIE_3)
 - notes: Sapphire's branch of the Mt. Chimney scene (Ruby: ../ruby/21-cable-car-mt-chimney-maxie). Archie: TRAINER_ARCHIE_3 (35): MIGHTYENA 24, GOLBAT 24, SHARPEDO 25 (Sharpedo is Water/Dark: Water and Ground are neutral on it, so the boost's level carries it). Matt (12,11) sight 2: TRAINER_MATT_2 (31): CARVANHA 20, POOCHYENA 20, CARVANHA 20; grunt (9,15) sight 3: TRAINER_GRUNT_13 (14): ZUBAT 20, POOCHYENA 20. The Magma leader (24,19) only talks. Same maps and scripts as Ruby; only the trainers and texts differ.
 
@@ -5286,7 +5286,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/Route119_WeatherInstitute_1F/scripts.inc:47-55 (grunts TRAINER_WEATHER_INSTITUTE_GRUNT_1/_2: (15,3) sight 3, (10,5) sight 2); data/maps/Route119_WeatherInstitute_2F/scripts.inc:23-36 (grunts _3/_4, admin object 3 (4,6) sight 0: TRAINER_WEATHER_INSTITUTE_GRUNT_5); constants/version.inc (Sapphire: WEATHER_INSTITUTE_GRUNT_1..5 = TRAINER_GRUNT_16, _25, _17, _18, TRAINER_SHELLY_1)
 - end state: map MAP_ROUTE119; 5 badges; >= 1 battles; party SPECIES_CASTFORM; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_RECEIVED_CASTFORM, FLAG_HIDE_EVIL_TEAM_WEATHER_INSTITUTE, FLAG_HIDE_WEATHER_INSTITUTE_WORKERS_2F; vars VAR_WEATHER_INSTITUTE_STATE=2, VAR_ROUTE118_STATE=1
-- frames: estimate 52000, budget 60000
+- frames: estimate 37329, budget 56000
 - refs: data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0; data/maps/Route118/scripts.inc:50-95 (Steven (object 19) scene, ROUTE118_STATE 1); data/maps/Route119/map.json warp_events[0] (6,32) -> WEATHER_INSTITUTE_1F (9,12); data/maps/Route119_WeatherInstitute_1F/scripts.inc:47-55 (grunts TRAINER_WEATHER_INSTITUTE_GRUNT_1/_2: (15,3) sight 3, (10,5) sight 2); data/maps/Route119_WeatherInstitute_2F/scripts.inc:23-36 (grunts _3/_4, admin object 3 (4,6) sight 0: TRAINER_WEATHER_INSTITUTE_GRUNT_5); data/maps/Route119_WeatherInstitute_2F/scripts.inc:38-69 (WEATHER_INSTITUTE_STATE 1, FLAG_HIDE_EVIL_TEAM_WEATHER_INSTITUTE; givemon SPECIES_CASTFORM 25, FLAG_RECEIVED_CASTFORM; no nickname prompt); data/maps/Route119/scripts.inc:25-38 (OnTransition WEATHER_INSTITUTE_STATE 1 -> workers downstairs, STATE 2); constants/version.inc (Sapphire: WEATHER_INSTITUTE_GRUNT_1..5 = TRAINER_GRUNT_16, _25, _17, _18, TRAINER_SHELLY_1)
 - notes: Sapphire's branch (Ruby: ../ruby/25-route118-119-weather-institute-courtney). Shelly: TRAINER_SHELLY_1 (32): CARVANHA 28, MIGHTYENA 28; grunts: TRAINER_GRUNT_16 (17): ZUBAT 27, POOCHYENA 27; TRAINER_GRUNT_25 (26): CARVANHA 28; TRAINER_GRUNT_17 (18): POOCHYENA 27, CARVANHA 27; TRAINER_GRUNT_18 (19): POOCHYENA 26, ZUBAT 26, CARVANHA 26 (Carvanha's Rough Skin and Water resistance: Ground moves carry it). Back to Mauville the way 24 came (Petalburg Woods, Rustboro, the tunnel, Route 117): with Surf the static route prefers Route 103 -> Route 110's Cycling Road gates, which want the bike ridden [INFERENCE], so the walk to Mauville is given without surf. Castform (lv25, Mystic Water) joins the party as slot 1.
 
@@ -5356,7 +5356,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/AquaHideout_B2F/scripts.inc:26-70 (trainerbattle_single TRAINER_HIDEOUT_B2F_GRUNT_1; the submarine leaves: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE)
 - end state: map MAP_AQUA_HIDEOUT_B2F; 6 badges; >= 1 battles; flags set FLAG_BADGE06_GET, FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE
-- frames: estimate 45000, budget 60000
+- frames: estimate 40585, budget 60900
 - refs: data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F (13,27) (map.bin entrance; Ruby's OnLoad replaces it); data/maps/AquaHideout_1F/map.json object_events grunts (13,11)/(14,11) FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT (hidden in 31), (20,4) sight 3; data/maps/AquaHideout_1F/scripts.inc:9-46; data/maps/AquaHideout_B2F/map.json object_events[0] admin VAR_1 (23,19) sight 0; data/maps/AquaHideout_B2F/scripts.inc:26-70 (trainerbattle_single TRAINER_HIDEOUT_B2F_GRUNT_1; the submarine leaves: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE); constants/version.inc (Sapphire: HIDEOUT_1F_GRUNT = GRUNT_1, B1F = GRUNT_2/3/26, B2F_GRUNT_1 = MATT_1, B2F_GRUNT_2/3 = GRUNT_4/27)
 - notes: Sapphire's branch: its hideout is the MAP_AQUA_HIDEOUT_* maps behind Lilycove's (70,5) (Ruby: ../ruby/32-magma-hideout-tabitha, MAP_MAGMA_HIDEOUT_*). Matt: TRAINER_MATT_1 (30): CARVANHA 32, MIGHTYENA 32, SHARPEDO 32 (Water types: Surf neutral, the lead's level carries it). Grunts: GRUNT_1 (2): POOCHYENA 32 x2; GRUNT_2 (3): ZUBAT 30, POOCHYENA 30, CARVANHA 30, POOCHYENA 30; GRUNT_3 (4): CARVANHA 32, ZUBAT 32; GRUNT_26 (27): POOCHYENA 31, CARVANHA 31 x2; GRUNT_4 (5): CARVANHA 33; GRUNT_27 (28): ZUBAT 33. Walking, not Fly: bots.bot_fly drives the DS town map (overworld_headers) [INFERENCE: not usable on GBA]; the static route avoids the Cycling Road gates (bike-only) by the Route 110 waypoint. gba_world_cli --game sapphire (surf): Mauville -> ... -> Lilycove (70,5) -> 1F (22,1) -> B1F (27,4) -> B1F (32,19) -> B1F (18,1) -> B2F (31,8) -> B2F (3,3) -> B1F (12,1) -> B2F (8,8) -> B2F (24,19).
 
@@ -5366,9 +5366,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_MOSSDEEP_CITY; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_RECEIVED_TM_CALM_MIND
-- frames: estimate 30000, budget 60000
+- frames: estimate 16820, budget 25300
 - refs: data/maps/LilycoveCity/scripts.inc:31 (badge 7 walls the hideout door up); data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> MOSSDEEP_CITY_GYM (9,29); data/maps/MossdeepCity_Gym/map.json bg_events switches (2,7)/(8,10)/(17,15)/(5,24); arrows (5,5)/(8,14)/(15,17)/(1,23); data/maps/MossdeepCity_Gym/scripts.inc:5-46,78-160 (switch flags and arrow metatiles); src/field_player_avatar.c:123-480 (forced movement: MB_WALK_* 0x40-0x43, MB_SLIDE_* 0x44-0x47 ride until blocked; 0x48 slips on); data/maps/MossdeepCity_Gym/scripts.inc:47-76 (TateAndLizaDefeated: FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_BADGE07_GET; TM04)
-- notes: Tate & Liza: TRAINER_TATE_AND_LIZA (271) DOUBLE: LUNATONE 42, SOLROCK 42 (Surf x2 on both; a double battle needs two Pokemon: Castform and the Fly carrier from the boost stand by). The press list is a BFS over (tile, elevation, switch states) with the game's forced-movement rules (field_player_avatar.c; walk_to never plans onto forced tiles, bots.py:823): 3 switches pressed (1, 2, 3); the gym trainers' tiles are treated as walls, so sight battles on the way are not modelled [INFERENCE]. The (12,3) warp-back coord event is avoided. The hideout exit is walked back out by the route (its pads in reverse).
+- notes: Tate & Liza: TRAINER_TATE_AND_LIZA (271) DOUBLE: LUNATONE 42, SOLROCK 42 (Surf x2 on both; a double battle needs two Pokemon: Castform and the Fly carrier from the boost stand by). The gym route is tools/gba_puzzle.py's R/S Mossdeep mode (forced-movement arrows ridden, the sign switches' setmetatile toggles, trainers who see the player mid-ride); the (12,3) WarpToEntrance coord event is never stepped on. The hideout exit is walked back out by the route (its pads in reverse).
 
 #### sapphire/34-mossdeep-stevens-house-hm-dive — Mossdeep: Steven's house and HM08 Dive
 - proves: Proves Steven's house OnFrame VAR_STEVENS_HOUSE_STATE 0: HM08 Dive (FLAG_RECEIVED_HM08), STEVENS_HOUSE_STATE 1. Start: Mossdeep (38,10) -> end: MAP_MOSSDEEP_CITY outside Steven's house (19,11).
@@ -5376,19 +5376,19 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_MOSSDEEP_CITY; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_RECEIVED_HM08, FLAG_OMIT_DIVE_FROM_STEVEN_LETTER; vars VAR_STEVENS_HOUSE_STATE=1
-- frames: estimate 4000, budget 60000
+- frames: estimate 2019, budget 3100
 - refs: data/maps/MossdeepCity/map.json warp_events[6] (19,10) -> MOSSDEEP_CITY_STEVENS_HOUSE (3,7); data/maps/MossdeepCity_StevensHouse/scripts.inc:25-50 (OnFrame STEVENS_HOUSE_STATE 0 -> StevenGivesDive: ITEM_HM08_DIVE, FLAG_RECEIVED_HM08, FLAG_OMIT_DIVE_FROM_STEVEN_LETTER, STATE 1)
 - notes: R/S give Dive in Steven's house right after the seventh badge (no Space Center attack, Emerald 35, in R/S).
 
 #### sapphire/35-seafloor-cavern-archie — Seafloor Cavern: Archie wakes Kyogre (Sapphire)
-- proves: Proves Dive on Route 128 (the submarine's trail: Underwater_SeafloorCavern -> SEAFLOOR_CAVERN_ENTRANCE), the cavern's Strength and Rock Smash rooms, the admin (TRAINER_SEAFLOOR_CAVERN_GRUNT_3) and the leader at Room 9 (TRAINER_SEAFLOOR_CAVERN_GRUNT_5): Kyogre awakens, VAR_SOOTOPOLIS_STATE 1, VAR_ROUTE128_STATE 1. Start: Mossdeep (19,11) -> end: MAP_ROUTE128 (the scene ends with Steven above the sea).
+- proves: Proves Dive on Route 128 (the submarine's trail: Underwater_SeafloorCavern -> SEAFLOOR_CAVERN_ENTRANCE), the cavern's Strength and Rock Smash rooms, the admin (TRAINER_SEAFLOOR_CAVERN_GRUNT_3) and the leader at Room 9 (TRAINER_SEAFLOOR_CAVERN_GRUNT_5): Kyogre awakens, VAR_SOOTOPOLIS_STATE 1, then Steven on Route 128 (VAR_ROUTE128_STATE 2). Start: Mossdeep (19,11) -> end: MAP_ROUTE128 (the scene ends with Steven above the sea).
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)
-- end state: map MAP_ROUTE128; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_HIDE_EVIL_LEADER_SEAFLOOR_CAVERN; flags clear FLAG_HIDE_WALLACE_SOOTOPOLIS, FLAG_HIDE_STEVEN_SOOTOPOLIS; vars VAR_SOOTOPOLIS_STATE=1, VAR_ROUTE128_STATE=1
-- frames: estimate 45000, budget 60000
+- end state: map MAP_ROUTE128; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_HIDE_EVIL_LEADER_SEAFLOOR_CAVERN; flags clear FLAG_HIDE_WALLACE_SOOTOPOLIS, FLAG_HIDE_STEVEN_SOOTOPOLIS; vars VAR_SOOTOPOLIS_STATE=1, VAR_ROUTE128_STATE=2
+- frames: estimate 25936, budget 39000
 - refs: data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0; data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear); data/maps/SeafloorCavern_Entrance/map.json warp_events[1] (10,1) -> ROOM1; data/maps/Underwater_SeafloorCavern/map.json warp_events[0] (6,7) -> UNDERWATER4 (the cavern mouth); constants/version.inc (Sapphire: SEAFLOOR_CAVERN_GRUNT_3 = SHELLY_2, _5 = ARCHIE_2)
-- notes: Sapphire branch (other: ../ruby/35-seafloor-cavern-maxie). Admin: TRAINER_SHELLY_2 (33): SHARPEDO 38, MIGHTYENA 38; leader: TRAINER_ARCHIE_2 (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43. Dive is the A + YES prompt on dark water (field_control_avatar.c); the static model has no underwater legs and Seafloor Cavern's Strength boulders are not on walk_to's path (gba_world_cli: no static route Entrance (10,10) -> Room9 (17,43)), so the cavern walk is a PHASE2 route. The boost puts Dive and Strength on the lead.
+- notes: Sapphire branch (other: ../ruby/35-seafloor-cavern-maxie). Admin: TRAINER_SHELLY_2 (33): SHARPEDO 38, MIGHTYENA 38; leader: TRAINER_ARCHIE_2 (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43. Dive: walk_to dive = true (gba_world dive/emerge legs). The rooms: gba_puzzle.py (boulders, rocks, Room 6's currents). The boost puts Dive and Strength on the lead.
 
 #### sapphire/36-sootopolis-cave-of-origin-kyogre — Sootopolis and the Cave of Origin: Kyogre (Sapphire)
 - proves: Proves Dive into Sootopolis (Route 126), Steven and Wallace's scene (coord (25,6) VAR_SOOTOPOLIS_STATE 1 -> 2), the Cave of Origin floors, HM07 Waterfall from B3F's item ball and the legend at B4F (coord (9,13) VAR_CAVE_OF_ORIGIN_B4F_STATE 0): FLAG_LEGENDARY_BATTLE_COMPLETED. Start: Route 128 -> end: MAP_CAVE_OF_ORIGIN_B4F.
@@ -5396,19 +5396,19 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_CAVE_OF_ORIGIN_B4F; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_LEGENDARY_BATTLE_COMPLETED, FLAG_ITEM_CAVE_OF_ORIGIN_B3F_1; vars VAR_SOOTOPOLIS_STATE=2
-- frames: estimate 40000, budget 60000
+- frames: estimate 21654, budget 32500
 - refs: data/maps/SootopolisCity/map.json coord_events (25,6) VAR_SOOTOPOLIS_STATE=1; data/maps/SootopolisCity/scripts.inc:200-282 (LeadPlayerCaveOfOrigin; .ifdef SAPPHIRE texts; SOOTOPOLIS_STATE 2); data/maps/SootopolisCity/map.json warp_events[3] (31,16) -> CAVE_OF_ORIGIN_ENTRANCE; data/maps/CaveOfOrigin_B3F/map.json object_events[0] ITEM_BALL (6,5) -> data/item_ball_scripts.inc:477-479 (ITEM_HM07_WATERFALL); data/maps/CaveOfOrigin_B4F/map.json coord_events (9,13); data/maps/CaveOfOrigin_B4F/scripts.inc (ScrSpecial_StartGroudonKyogreBattle; FLAG_LEGENDARY_BATTLE_COMPLETED); constants/version.inc (SPECIES_GROUDON_OR_KYOGRE: Ruby GROUDON, Sapphire KYOGRE); src/battle_setup.c:598-610 (ScrSpecial_StartGroudonKyogreBattle)
-- notes: Sapphire branch (other: ../ruby/36-sootopolis-cave-of-origin-groudon). Kyogre lv45 [INFERENCE: static_pokemon level]; auto_battle knocks it out (the flag is set either way) - catching it would need a ball-throw bot [open question]. The cave (static model: B4F (9,13) is reached from B3F (12,6)) is entered after the Sootopolis scene; Waterfall is found on B3F (R/S have no Wallace HM gift). Sootopolis is reached by Dive from Route 126 [PHASE2: dive/surface tiles].
+- notes: Sapphire branch (other: ../ruby/36-sootopolis-cave-of-origin-groudon). Kyogre lv45 [INFERENCE: static_pokemon level]; auto_battle knocks it out (the flag is set either way) - catching it would need a ball-throw bot [open question]. The cave (static model: B4F (9,13) is reached from B3F (12,6)) is entered after the Sootopolis scene; Waterfall is found on B3F (R/S have no Wallace HM gift). Sootopolis is reached by Dive from Route 126 (walk_to dive = true).
 
 #### sapphire/37-sootopolis-gym-wallace — Sootopolis Gym: Wallace's Rain Badge
 - proves: Proves the ice-floor gym (1F cracked ice, B1F) and Wallace (TRAINER_WALLACE): FLAG_BADGE08_GET, TM03 Water Pulse. Start: Cave of Origin B4F -> end: MAP_SOOTOPOLIS_CITY at the gym door (31,33).
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)
-- end state: map MAP_SOOTOPOLIS_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_SOOTOPOLIS_GYM
-- frames: estimate 30000, budget 60000
+- end state: map MAP_SOOTOPOLIS_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_HIDE_STEVEN_SOOTOPOLIS
+- frames: estimate 17875, budget 26900
 - refs: data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> SOOTOPOLIS_CITY_GYM_1F (8,25); data/maps/SootopolisCity_Gym_1F/map.json object_events[0] WALLACE (8,2); data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)
-- notes: Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is an ice puzzle (cracked ice falls to B1F, gym_1F (11,22) -> B1F); the slide bot replays ice presses (AUTHORING: slide).
+- notes: Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is the thin-ice puzzle: every thin-ice tile of a field stepped on once opens the next stairs (VAR_ICE_STEP_COUNT 8, 28, 69); a cracked tile stepped on again drops the player to B1F. The routes are Hamiltonian paths over each field's tiles (map.json layout), entry to stairs.
 
 #### sapphire/38-ever-grande-victory-road-wally — Ever Grande and Victory Road: Wally
 - proves: Proves Waterfall to Ever Grande (Route 128 east), Victory Road's floors and Wally's trigger (34,3..5) VAR_VICTORY_ROAD_1F_STATE 0: TRAINER_WALLY_1, FLAG_DEFEATED_WALLY_VICTORY_ROAD. Start: Sootopolis gym door -> end: MAP_EVER_GRANDE_CITY at the League door.
@@ -5418,7 +5418,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_WALLY_VICTORY_ROAD
 - frames: estimate 40000, budget 60000
 - refs: data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE; data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2
-- notes: Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's waterfall needs HM07 (found on Cave of Origin B3F, 36) on the lead (boost); Victory Road needs Strength and Rock Smash (the lead keeps both). gba_world_cli has no surf route up Ever Grande's waterfall (F tiles), hence the PHASE2 note.
+- notes: Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's lower shore is reached by Surf from Route 128 and up its waterfall (HM07 on the lead, boost); Victory Road needs Strength and Rock Smash (a Linoone carrier, boost).
 
 #### sapphire/39-pokemon-league-entrance — Pokemon League: heal and into Sidney's room
 - proves: Proves the League building (heal at its nurse), the guards and Corridor 5 into Sidney's room (VAR_ELITE_4_STATE, FLAG_ENTERED_ELITE_FOUR). Start: Ever Grande (18,6) -> end: MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM, door shut.

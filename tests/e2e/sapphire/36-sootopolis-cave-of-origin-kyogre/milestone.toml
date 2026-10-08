@@ -3,10 +3,9 @@
 # FLAG_LEGENDARY_BATTLE_COMPLETED.
 # Start: Route 128 -> end: MAP_CAVE_OF_ORIGIN_B4F.
 title = "Sootopolis and the Cave of Origin: Kyogre (Sapphire)"
-status = "planned"
 priority = "P0"
 version = "sapphire"
-estimate = 40000
+estimate = 21654
 refs = [
   "data/maps/SootopolisCity/map.json coord_events (25,6) VAR_SOOTOPOLIS_STATE=1",
   "data/maps/SootopolisCity/scripts.inc:200-282 (LeadPlayerCaveOfOrigin; .ifdef SAPPHIRE texts; SOOTOPOLIS_STATE 2)",
@@ -22,7 +21,7 @@ notes = "Sapphire branch (other: ../ruby/36-sootopolis-cave-of-origin-groudon). 
 from = "prev"
 
 [run]
-frames = 60000
+frames = 32500
 
 
 [[step]]
