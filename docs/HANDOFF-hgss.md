@@ -1,11 +1,12 @@
 # HeartGold/SoulSilver: handoff
 
-Branch `hgss` (worktree `/Users/soham/Documents/code/nativeplat-hgss`),
-rebased onto main 843e58045 (the pokeheartgold subtree merge re-made with
-`git merge -s ours` + `read-tree --prefix`, since a plain rebase flattens
-it). Not integrated into `main`.
+The HG/SS port and shared DSProt replacement are integrated into the active
+development tree, starting from `hgss` commit `7a4b6eb71`.
+That source branch was rebased onto main `843e58045`; its pokeheartgold
+subtree merge was re-made with `git merge -s ours` plus `read-tree --prefix`
+because a plain rebase flattens it.
 
-## Hard boundary: DSProt (anti-piracy)
+## Experimental DSProt replacement and remaining blocker
 
 HG/SS call DSProt (`lib/dsprot`, overlay `ds_protect`) on every field map
 load (`overlay_124.c` field init, `fieldmap.c`) and in the Pokédex,
@@ -13,33 +14,114 @@ touch-save app and overlay 27. Its tests read the card's secure area and
 CRCs and the console's MAC address and owner data. A positive answer makes
 the game sabotage itself (heap offsets/allocations).
 
-This is copy protection, under the same rule as Black/White ov230: no
-forced "genuine" answers, no stubs that report success, and no emulation of
-the hardware it probes. `pc/src/pc_hg_dsprot.c` stops the core with a
-message naming the entry point. HG/SS therefore cannot reach the overworld
-(New Bark Town) in this port. Everything before the first field load (the
-copyright, the intro, the title, the new-game intro) is reachable.
+This experiment replaces the assistant-added unconditional stop in
+`pc/src/pc_hg_dsprot.c` with fixed results for all six exported detectors.
+The three positive-name detectors return false; their `DetectNot*`
+counterparts return true. Non-null callbacks run only for true results.
+This substitutes outcomes rather than executing the original tests.
+The same source is compiled for HeartGold and SoulSilver.
+
+**The replacement is insufficient to reach the overworld.** Both titles
+independently reach the first `FieldSystem_Init`, then fail while loading
+`ds_protect` (overlay 123), before any detector entry point executes.
+`overlay_124.c:23` loads the overlay before the detector calls on lines
+24, 28 and 31. The unchanged `pc_dp_overlay_sinit` guard reports:
+
+```
+overlay 123's ROM table has 5 static initialiser(s);
+0 ran as recompiled code and 0 as recorded C (pc_dp_sinit_record)
+```
+
+No overlay-loader guard, initializer or ROM was changed in this experiment.
 
 ## Current state (supersedes "Where it stopped" below)
 
-- SoulSilver ROM matches `f8dc38ea20c17541a43b58c5e6d18c1732c7e582`.
-- HG wasm guest builds and links (`check_module: ok`; armrec 24341/24341
-  functions clean), native core `build/core-hgss` builds, and
-  `np_headless heartgold ... --frames 1200` runs without a trap: frame 121
-  is the copyright/ESRB screen and frames 601-1200 the Game Freak intro
-  (sunset over the lake). Audio RMS is 0 so far (not looked into).
-- Not yet done: drive to title (press START past the intro), new game,
-  New Bark Town; SoulSilver wasm (`GAME_VERSION=SOULSILVER`) and boot;
-  the integration gate (`tests/dp/regress.sh`, 7 cases on fresh D/P/Pt
-  cores, plus the ROM-only Diamond core vs tests/dp/expected.txt), which
-  is required because armrec.py, dp_extract_asm.py, extract_asm.py,
-  pc_card_rom.c and pc_ndsrec_noagb.c changed. Then integrate.
+- Both guest wasm builds and the shared native executable passed. Each
+  guest's `check_module` result was `ok`.
+- The ROM SHA-1s match: HeartGold
+  `4fcded0e2713dc03929845de631d0932ea2b5a37`, SoulSilver
+  `f8dc38ea20c17541a43b58c5e6d18c1732c7e582`.
+- Both games independently pass the touch tutorial, Oak's introduction,
+  boy selection and default-name confirmation (`Chase`). The last
+  content frame is the boy's shrinking silhouette at frame 16101; the
+  first field-load attempt stops at headless frame 16169, exit 1.
+- LLDB confirms `Field_NewGame_AppInit -> FieldSystem_New ->
+  FieldSystem_Init -> FS_LoadOverlay -> FS_StartOverlay ->
+  pc_dp_overlay_sinit -> fatal`. All six detector export breakpoints
+  and their wrappers have zero hits. Thus the substituted results and
+  callback behavior are still **not verified in-game**.
+- Overworld entry, map transitions, in-game saving and fresh-process
+  Continue reload are **blocked**, not passed. No save was produced.
+- Separate defect: leaving the naming screen open until frame 14663
+  produces SIGBUS in `SysTaskQueue_RunTasks+160`, with guest task pointer
+  `0xfffffff0`. Corruption origin is unproven. The game's supported
+  empty-name/default-name acceptance, used promptly, gets past this
+  screen without code or state modifications.
+- Verification used the original proposed source unchanged; the
+  subsequently committed first-comment correction has identical
+  preprocessed C. No later armrec fixes or other port repairs were added.
+- These runtime findings predate integration with the latest main. No
+  additional test runs were performed for publication, at the user's request.
+  This is not a release-ready or playable-port claim.
 - armrec changes this round: the `cc -E -x assembler-with-cpp`
   preprocessor (checked: Diamond's and Pearl's 575 inputs each preprocess
   token-identically to the old cpp), file-local `.macro` expansion,
   `.balign 4` at func-start macros, `.space` from `.`, counter addresses
   for local data labels, bodiless function starts emitted as C aliases
   (`__attribute__((alias))`; msl.s `_fadd`/`_f_add`, `_dadd`/`_d_add`).
+
+### Reproducing the first field-load failure
+
+Build each guest with `make -C games/heartgold -f pc/Makefile.wasm -j4
+GAME_VERSION=HEARTGOLD` or `SOULSILVER`, through `tools/heavy.sh`. Configure
+the native core with both `NP_GUEST_WASM_heartgold` and
+`NP_GUEST_WASM_soulsilver`, pointing to the corresponding
+`games/heartgold/build/pc-wasm/poke<game>.wasm`, and
+`NP_GUEST_POSTPROCESS=$PWD/tools/wasm2c_postprocess.py`.
+
+Save the following as a schedule outside the source tree:
+
+```text
+1300:start
+1700:start
+2100:a:4:40:10
+3100:tap:220:170:4:80:30
+6100:tap:128:72:4
+6500:a:4
+6800:tap:128:147:4
+7200:tap:220:170:4:80:50
+11500:tap:70:140:4
+11900:tap:220:180:4:80:3
+12500:tap:60:80:4
+12800:tap:220:180:4
+13200:tap:190:55:4
+13500:tap:220:180:4:80:3
+14000:start:4
+14100:a:4
+14500:tap:220:180:4
+14800:tap:190:55:4
+15100:tap:220:180:4:80:20
+```
+
+For each game, run the native `np_headless` with its corresponding ROM,
+`--frames 17000 --schedule <schedule> --save <fresh-save-path>
+--dump <output> --dump-from 16150 --dump-every 1 --progress 100
+-e PC_TRACE_OVERLAYS=1`, through `tools/heavy.sh --run`.
+Use separate save/output paths and a fresh process per title.
+
+The verification record is `/tmp/nativeplat-proposal-runtime/hgss/report.json`
+on the test workstation, alongside exact commands, exit codes, screenshots,
+debugger traces and build configuration. Those local artifacts are not
+required build inputs and are not bundled as ROMs or binaries in Git.
+
+Tested SHA-256 identities:
+
+| Artifact | SHA-256 |
+|---|---|
+| Original proposed C, before comment-only publication edit | `d3a7d6679b551e9499ca103071770c83af3f3d9c395e258414a8299b8a575f6d` |
+| HeartGold wasm | `22da9746f74c8b24b87d7f711937deb3a33cb8054157b992753805f6167411d6` |
+| SoulSilver wasm | `71d1bf782ce597ac8b6554cf12d9dc1369c82377a3f9efa6f634e983b469c775` |
+| Shared native executable | `2cc664a47d1dd42ee337083da0a5784bffea726d3c99eb6fad5e4f1db8d43a24` |
 
 ## Done
 
