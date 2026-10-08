@@ -2,10 +2,9 @@
 # TM40 Aerial Ace; Fly usable from here.
 # Start: Fortree below the gym (22,12) -> end: MAP_FORTREE_CITY at the gym door.
 title = "Fortree Gym: Winona's Feather Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 21700
+estimate = 14288
 refs = [
   "data/maps/FortreeCity/map.json warp_events[2] (22,11) -> FORTREE_CITY_GYM (2,24)",
   "data/maps/FortreeCity_Gym/scripts.inc:6-16 (RotatingGate_InitPuzzle)",
@@ -20,7 +19,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 21500
 
 [[step]]
 do = "heal"

@@ -2,10 +2,9 @@
 # flag) and May's YES/NO battle (TRAINER_MAY_LILYCOVE_MUDKIP).
 # Start: Fortree gym door -> end: MAP_LILYCOVE_CITY in front of the Department Store (27,8).
 title = "Route 121 and Lilycove: May's fourth battle"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 14000
+estimate = 26959
 refs = [
   "data/maps/Route121/map.json coord_events (25,5..8) VAR_ROUTE121_STATE=0",
   "data/maps/Route121/scripts.inc:21-34 (the team's grunts leave, ROUTE121_STATE 1)",
@@ -21,7 +20,13 @@ notes = "May: TRAINER_MAY_LILYCOVE_MUDKIP (664): SWELLOW 31, NUMEL 32, WAILMER 3
 from = "prev"
 
 [run]
-frames = 60000
+frames = 40500
+
+[[step]]
+do = "heal"
+x = 5
+z = 6
+note = "Fortree Pokemon Center (FortreeCity/map.json warp 0 (5,6)): Winona's gym spent the lead's PP"
 
 [[step]]
 do = "walk_to"
@@ -33,6 +38,14 @@ note = "Route 120 south and east onto Route 121; grunts coord (25,5..8) ROUTE121
 
 [[step]]
 do = "advance_text"
+
+[[step]]
+do = "heal"
+map = "MAP_LILYCOVE_CITY"
+x = 24
+z = 14
+max = 12000
+note = "east into Lilycove, its Pokemon Center first (LilycoveCity/map.json warp_events[2] (24,14)): Route 120/121's trainers spend Surf and Muddy Water, and a first run lost to May with both spent"
 
 [[step]]
 do = "walk_to"

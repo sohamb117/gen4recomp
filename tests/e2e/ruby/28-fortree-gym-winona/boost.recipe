@@ -1,3 +1,5 @@
 # Party strength for Winona (pokeruby src/data/trainer_parties.h gTrainerParty_Winona: SWELLOW 31, PELIPPER 30,
 # SKARMORY 32, ALTARIA 33): no Electric/Ice mover in the chained party, so the lead's level carries the Flying team.
-party-level 0 50
+# Her moves (trainer_parties.h:3595-3615: Double Team, Sand Attack, Protect, Dragon Dance) and two Hyper Potions
+# (trainers_en.h TRAINER_WINONA items) outlasted a lv50 Marshtomp in a first run (22 turns, whited out).
+party-level 0 56

@@ -1224,6 +1224,9 @@ def _gba_route_to(s, step, ctx):
     avoid_warps = []
     # on_text = "stop" is for the goal map's own scene: on the way, trainers' and other text is advanced
     keys = {k: step[k] for k in ("on_battle", "run", "hold", "surf", "hm", "move", "max") if k in step}
+    dive = bool(step.get("dive"))
+    if dive:
+        keys["surf"] = True  # the dive tiles are deep water, and one surfaces surfing
     force = bool(step.get("_force"))  # route even from the goal's own map (walk_to found no path on it)
     for _ in range(GBA_ROUTE_TRIES):
         _field_or_handle(s, keys, ctx, s.frame + _int(step, "max", 6000))
@@ -1237,7 +1240,7 @@ def _gba_route_to(s, step, ctx):
         for gx, gz in ((tx, tz), (tx, tz + 1), (tx, tz - 1), (tx - 1, tz), (tx + 1, tz)):
             try:
                 legs = world.route(p.map_id, p.x, p.z, want, gx, gz, elevation=p.y, surf=bool(step.get("surf")),
-                                   avoid_warps=avoid_warps)
+                                   avoid_warps=avoid_warps, dive=dive)
                 break
             except gba_world.NoRoute as e:
                 why = why or e
@@ -1272,6 +1275,9 @@ def _gba_route_to(s, step, ctx):
                 # a step-on warp (a cave mouth, stairs) fires after the step ends: its fade takes a few dozen frames
                 s.run(120, until="map_id!=%d" % leg.map)
                 _field_or_handle(s, keys, ctx, s.frame + _int(step, "max", 6000))
+            if leg.kind in ("dive", "emerge") and s.map_id == leg.map:
+                _gba_dive(s, leg, ctx)
+                _field_or_handle(s, keys, ctx, s.frame + _int(step, "max", 6000))
             if s.map_id != leg.next_map:
                 if leg.kind == "warp" and s.map_id == leg.map:
                     avoid_warps.append((leg.map, leg.x, leg.z))
@@ -1280,6 +1286,36 @@ def _gba_route_to(s, step, ctx):
                 break
     if s.map_id != want:
         raise HarnessError("walk_to: not on %s after %d routes (on map %d)" % (step["map"], GBA_ROUTE_TRIES, s.map_id))
+
+
+def _gba_dive(s, leg, ctx):
+    """Dive (A) or surface (B) where the player stands, as a player does (field_control_avatar.c [519/529]
+    TrySetupDiveDownScript / TrySetupDiveEmergeScript -> UseDiveScript / S_UseDiveUnderwater,
+    data/field_move_scripts.inc [220-270]): the key starts the script, its YES/NO opens on YES, A answers it and
+    then advances "used DIVE" until the field effect warps (only up to the map change: one more A on deep water
+    would offer the dive again)."""
+    key = "a" if leg.kind == "dive" else "b"
+    start = s.map_id
+    for _ in range(3):
+        s.run(2, key)
+        if s.run(60, until="field_ready=0"):
+            break
+    else:
+        p = s.probe()
+        raise HarnessError("walk_to: no %s prompt at (%d,%d) on map %d (FLAG_BADGE07_GET and a party member with "
+                           "Dive are needed)" % (leg.kind, p.x, p.z, p.map_id))
+    for _ in range(12):
+        s.run(30)
+        if s.map_id != start:
+            break
+        s.run(2, "a")
+        if s.run(60, until="map_id!=%d" % start):
+            break
+    if s.map_id == start:
+        raise HarnessError("walk_to: the %s at (%d,%d) on map %d did not leave the map" % (
+            leg.kind, leg.x, leg.z, start))
+    s.run(60, until="field_ready=1")
+    s.note("walk_to: %s from map %d to %d" % (leg.kind, start, s.map_id))
 
 
 def _walk_to(s, step, ctx):

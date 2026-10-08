@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The static Ruby/Sapphire/Emerald world model (tests/e2e/gba_world.py) from the command line.
 
-    python3 tests/e2e/tools/gba_world_cli.py --game emerald route MAP_LITTLEROOT_TOWN 10 10 MAP_RUSTBORO_CITY 27 20 [--surf]
+    python3 tests/e2e/tools/gba_world_cli.py --game emerald route MAP_LITTLEROOT_TOWN 10 10 MAP_RUSTBORO_CITY 27 20 [--surf] [--dive]
         [--elevation E] [--avoid-map MAP ...] [--avoid-warp MAP X Z ...]
     python3 tests/e2e/tools/gba_world_cli.py --game emerald map MAP_LITTLEROOT_TOWN
 
@@ -29,6 +29,7 @@ def main():
     r.add_argument("tx", type=int)
     r.add_argument("tz", type=int)
     r.add_argument("--surf", action="store_true", help="the player can Surf")
+    r.add_argument("--dive", action="store_true", help="the player can Dive (and Surf)")
     r.add_argument("--elevation", type=int, help="the player's elevation (default: the start tile's)")
     r.add_argument("--avoid-map", nargs="*", default=[], metavar="MAP")
     r.add_argument("--avoid-warp", nargs=3, action="append", default=[], metavar=("MAP", "X", "Z"))
@@ -44,7 +45,7 @@ def main():
         return 0
     try:
         legs = w.route(args.src, args.sx, args.sz, args.dst, args.tx, args.tz, elevation=args.elevation,
-                       surf=args.surf, avoid_maps=args.avoid_map, avoid_warps=[(a, int(x), int(z)) for a, x, z in
+                       surf=args.surf, dive=args.dive, avoid_maps=args.avoid_map, avoid_warps=[(a, int(x), int(z)) for a, x, z in
                                                                               args.avoid_warp])
     except gba_world.NoRoute as e:
         print("no route: %s" % e)

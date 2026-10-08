@@ -3,4 +3,4 @@
 # (pokeruby gTrainerParty_TateAndLiza: LUNATONE 42, SOLROCK 42): the lead's Surf at lv 50 carries it.
 party SPECIES_SWELLOW 45 ITEM_NONE
 party-move 2 0 MOVE_FLY
-party-level 0 52
+party-level 0 58

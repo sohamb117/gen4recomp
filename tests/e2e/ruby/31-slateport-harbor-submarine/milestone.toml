@@ -3,10 +3,9 @@
 # VAR_SLATEPORT_HARBOR_STATE 1: the team steals the submarine; FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT open the hideout.
 # Start: Mt. Pyre summit -> end: MAP_SLATEPORT_CITY outside the harbor.
 title = "Slateport Harbor: the submarine is stolen"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 20608
 refs = [
   "data/maps/SlateportCity/scripts.inc:15-16,25-40 (SLATEPORT_STATE 1: Stern (object 11) at (28,13) with Gabby and Ty)",
   "data/maps/SlateportCity/scripts.inc:482-535 (CaptStern: the interview, the alarm, FLAG_HIDE_STERN_SLATEPORT_HARBOR etc. clear, SLATEPORT_STATE 2, warp SLATEPORT_CITY_HARBOR (11,14))",
@@ -20,7 +19,7 @@ notes = "No battle. The walk is split at Mauville and Route 110's lower path: wi
 from = "prev"
 
 [run]
-frames = 60000
+frames = 31000
 
 [[step]]
 do = "walk_to"

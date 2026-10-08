@@ -10,6 +10,8 @@ coordinates, (0, 0) top-left).
   "warp":       (x, z) is a warp event's tile on `map`; next_map is its dest_map. An animated door (MB_ANIMATED_DOOR)
                 is walked into moving north from the tile below; an arrow mat (MB_*_ARROW_WARP) is stood on and pushed
                 in its direction (World.push_dir); every other warp is stepped onto.
+  "dive":       (x, z) is a diveable water tile on `map` (surfing): A there and YES dives to next_map.
+  "emerge":     (x, z) is an underwater tile one may surface from: B there and YES surfaces on next_map.
   "goal":       the last leg, (tx, tz) on the destination map; next_map is None.
 
 The route is the cheapest in steps (Dijkstra over (map, x, y, elevation) states) through a static model of every map,
@@ -18,7 +20,8 @@ are pokeemerald's file:line, pokeruby's in brackets where the line differs):
 
 Data
   data/maps/map_groups.json: map id = group index (group_order) << 8 | index in the group (MAP_GROUP / MAP_NUM).
-  data/maps/<Map>/map.json: layout, connections (up/down/left/right; dive/emerge are not walked), warp_events.
+  data/maps/<Map>/map.json: layout, connections (up/down/left/right; dive/emerge only with route(dive=True)),
+    map_type, warp_events; scripts.inc's setdivewarp (the fixed dive warp of a map without that connection).
   data/layouts/layouts.json: width, height, blockdata_filepath (map.bin), primary/secondary tileset.
   map.bin: a u16 per tile, metatile id bits 0-9, collision bits 10-11, elevation bits 12-15
     (include/global.fieldmap.h:7-12 MAPGRID_*, both decomps).
@@ -73,6 +76,15 @@ Warps (field_control_avatar.c ProcessPlayerFieldInput):
 Connections: a tile past the edge belongs to the connected map at the offset (fieldmap.c:178 FillSouthConnection and
   siblings [172]); stepping onto it moves the player there (CameraMove :603 [607], SetPositionFromConnection :578
   [582]): south (x - offset, 0), north (x - offset, height' - 1), east (0, y - offset), west (width' - 1, y - offset).
+Dive (route(dive=True); TrySetDiveWarp field_control_avatar.c:965 [917], A/B through TrySetupDiveDownScript /
+  TrySetupDiveEmergeScript :463/:473 [519/529], which also want FLAG_BADGE07_GET and a party member with Dive):
+  - down: on the player's own tile, MetatileBehavior_IsDiveable (metatile_behavior.c:853 [927]: MB_SEMI_DEEP_WATER
+    0x11, MB_DEEP_WATER 0x12, MB_SOOTOPOLIS_DEEP_WATER 0x14) on a map that is not MAP_TYPE_UNDERWATER;
+  - up: on a MAP_TYPE_UNDERWATER map, any tile but MB_NO_SURFACING 0x19 / MB_SEAWEED_NO_SURFACING 0x2A
+    (MetatileBehavior_IsUnableToEmerge :863 [IsNotSurfacable :937]);
+  - where to (SetDiveWarp overworld.c:756 [575]): the map's dive/emerge connection at the same (x, y), else the
+    fixed dive warp its map scripts set (setdivewarp MAP, [warp 255,] x, y), used here only when the map's
+    scripts.inc has exactly one. The arrival takes the tile's elevation as a warp arrival does; cost as a warp.
 Cost: 1 a step, 6 into tall grass (MB_TALL_GRASS 0x02, MB_LONG_GRASS 0x03, MB_ASHGRASS 0x24), 2 a ledge jump, 10 a
   warp (+1 for the walk out of a door).
 
@@ -141,6 +153,10 @@ NONANIM_DOORS = frozenset({MB_NON_ANIMATED_DOOR, MB_WATER_DOOR, MB_DEEP_SOUTH_WA
 # (Route110_SeasideCyclingRoad{South,North}Entrance/scripts.inc BikeCheck: GetPlayerAvatarBike 0 -> NoBike), and
 # walk_to does not ride the bike
 ON_FOOT_BLOCKED = ("MAP_ROUTE110_SEASIDE_CYCLING_ROAD_SOUTH_ENTRANCE", "MAP_ROUTE110_SEASIDE_CYCLING_ROAD_NORTH_ENTRANCE")
+# MetatileBehavior_IsDiveable / IsUnableToEmerge [IsNotSurfacable] (module docstring, Dive)
+DIVEABLE = frozenset({0x11, 0x12, 0x14})
+NO_EMERGE = frozenset({0x19, 0x2A})
+_SETDIVEWARP = re.compile(r"^\s*setdivewarp\s+(MAP_\w+)((?:\s*,\s*\d+)+)\s*$", re.M)
 
 COST_STEP, COST_GRASS, COST_WARP = 1, 6, 10
 NUM_METATILES_IN_PRIMARY = 512
@@ -148,7 +164,8 @@ _CONN_DIRS = {"up": "n", "down": "s", "left": "w", "right": "e"}
 
 
 class _Map:
-    __slots__ = ("id", "name", "folder", "layout", "w", "h", "beh", "coll", "elev", "conns", "warps", "warp_at")
+    __slots__ = ("id", "name", "folder", "layout", "w", "h", "beh", "coll", "elev", "conns", "warps", "warp_at",
+                 "underwater", "dive_to")
 
 
 class World:
@@ -297,6 +314,24 @@ class World:
             d = _CONN_DIRS.get(c.get("direction"))
             if d and c.get("map") in self._ids:
                 m.conns[d].append((int(c["offset"]), self._ids[c["map"]]))
+        # Dive: (map id, x, y) the dive (or, underwater, the surfacing) leads to; x, y None = the same tile there
+        m.underwater = j.get("map_type") == "MAP_TYPE_UNDERWATER"
+        m.dive_to = None
+        kind = "emerge" if m.underwater else "dive"
+        for c in j.get("connections") or ():
+            if c.get("direction") == kind and c.get("map") in self._ids:
+                m.dive_to = (self._ids[c["map"]], None, None)
+        if m.dive_to is None:
+            try:
+                with open(os.path.join(self.dir, "data", "maps", j["name"], "scripts.inc")) as f:
+                    fixed = {(mm.group(1), tuple(int(v) for v in mm.group(2).split(",")[1:])[-2:])
+                             for mm in _SETDIVEWARP.finditer(f.read())}
+            except OSError:
+                fixed = set()
+            if len(fixed) == 1:
+                (name, (fx, fy)), = fixed
+                if name in self._ids:
+                    m.dive_to = (self._ids[name], fx, fy)
         m.warps, m.warp_at = [], {}
         for k, wv in enumerate(j.get("warp_events") or ()):
             dest = self._ids.get(wv["dest_map"])  # MAP_DYNAMIC is no map
@@ -420,8 +455,11 @@ class World:
             return c.id, nx, ny, e, pe, 1
         return m.id, x, y, e, pe, 0
 
-    def route(self, src_map, sx, sz, dst_map, tx, tz, elevation=None, surf=False, avoid_maps=(), avoid_warps=()):
-        """The cheapest static route from (sx, sz) on src_map to (tx, tz) on dst_map as [Leg]; raises NoRoute."""
+    def route(self, src_map, sx, sz, dst_map, tx, tz, elevation=None, surf=False, avoid_maps=(), avoid_warps=(),
+              dive=False):
+        """The cheapest static route from (sx, sz) on src_map to (tx, tz) on dst_map as [Leg]; raises NoRoute.
+        dive=True (implies surf) also dives and surfaces (module docstring, Dive)."""
+        surf = surf or dive
         src = self._map(self.map_id(src_map))
         dst = self._map(self.map_id(dst_map))
         if src is None or dst is None:
@@ -488,8 +526,22 @@ class World:
             w = m.w
             i = y * w + x
             bt, et = m.beh[i], m.elev[i]
-            t_surf = bt in surfable
+            # underwater the diver crosses "water" behaviours freely: only collision and elevation (3 or 0) count
+            t_surf = bt in surfable and not m.underwater
             arrow = ARROW.get(bt)
+            if dive and m.dive_to is not None and (bt not in NO_EMERGE if m.underwater else bt in DIVEABLE):
+                tid, fx, fy = m.dive_to
+                t = maps.get(tid) if tid in maps else self._map(tid)
+                ax, ay = (x, y) if fx is None else (fx, fy)
+                if t is not None and tid not in avoid_m and 0 <= ax < t.w and 0 <= ay < t.h:
+                    te = t.elev[ay * t.w + ax]
+                    ns = (tid, ax, ay, te if te != 15 else 0, te if 0 < te < 15 else pe)
+                    nc = cost + COST_WARP
+                    if nc < dist.get(ns, 1 << 60):
+                        dist[ns] = nc
+                        parent[ns] = (state, (Leg(mid, x, y, "emerge" if m.underwater else "dive", tid),))
+                        push(heap, (nc, tick, ns))
+                        tick += 1
             for d in (0, 1, 2, 3):
                 dx, dy = DIRS[d]
                 # TryArrowWarp: standing on an arrow mat, pushing its way
@@ -531,7 +583,7 @@ class World:
                     if cross is None and n is not m:
                         cross = (x + 2 * dx, y + 2 * dy, n.id)
                     bn = n.beh[j]
-                    if n.coll[j] or bn in FORBIDDEN or (bn in surfable and not t_surf):
+                    if n.coll[j] or bn in FORBIDDEN or (bn in surfable and not n.underwater and not t_surf):
                         continue
                     ne = n.elev[j]
                     if et == 15 or ne == 15:
@@ -544,7 +596,7 @@ class World:
                         continue
                     ne = n.elev[j]
                     mismatch = e != 0 and ne != 0 and ne != 15 and ne != e
-                    n_surf = bn in surfable
+                    n_surf = bn in surfable and not n.underwater
                     if n_surf:
                         if not surf or (bn == MB_WATERFALL and d != 0):
                             continue

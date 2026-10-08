@@ -3,4 +3,4 @@
 # Rock Smash is still needed in the cavern, so Strength takes Cut's slot and Dive Muddy Water's.
 party-move 0 0 MOVE_STRENGTH
 party-move 0 2 MOVE_DIVE
-party-level 0 56
+party-level 0 60

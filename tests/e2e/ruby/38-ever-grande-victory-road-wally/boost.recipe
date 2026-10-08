@@ -2,5 +2,5 @@
 # Grande's falls. Wally (pokeruby gTrainerParty_Wally1: ALTARIA 44 .. GARDEVOIR 45) and Victory Road's lv 40+
 # trainers: the level carries the lead.
 party-move 0 2 MOVE_WATERFALL
-party-level 0 62
+party-level 0 64
 item ITEM_FULL_RESTORE 10
