@@ -5,6 +5,25 @@ pinned in the port or shown to be the cartridge's own behaviour.
 
 No open entries.
 
+## Fixed: choosing a sphere or trap in the D/P Underground reset the game (armrec)
+
+Any sphere or trap chosen from an Underground list (UG menu > SPHERES/TRAPS > an entry) ended in "A communication
+error has occurred" and a reset: GF_AssertFail with the link layer up (error_handling.c). sub_0205EC6C was called on
+NULL from ov18_0224A0EC: the list's scroll prompts were never made. The UG start menu (ov18_02249684) compares the
+chosen entry, a function pointer from its data table (0x02249B51: `.word` of a Thumb function carries bit 0, as on
+the ROM and as C's &F does through irbridge), with `ldr rN, =ov18_02249B50` literals, and armrec translated those
+as 0x02249B50: nothing matched. The cause was the recompiler: literal_c_value (games/platinum/tools/armrec/armrec.py)
+dropped the interworking bit build_data_blobs already set. A bare literal naming a Thumb function now gets bit 0
+(51 `ldr =thumbfunc; cmp` sites in D/P); calls through such words still dispatch (armrec_dispatch tries the exact
+address, then bit 0 clear). Regressions: the armrec bridge test (asm literal, asm `.word`, C &F of one Thumb
+function agree, and a call through the literal works), tests/gameplay dp scenario 9-underground, milestones 91/92.
+
+## Fixed: the D/P e2e probe reset the game in the Underground
+
+The probe's tile grid asked GetMetatileBehavior about tiles past the map matrix; the block-loader provider asserts
+on such a block index (ov05_021EF844), harmless on the surface but a comm error and reset in the Underground. The
+probe (games/diamond/pc/game/pc_dp_field.c e2e_on_matrix) now asks only for tiles on the matrix.
+
 ## Fixed: OS_ResetSystem stopped the core (Platinum, Diamond, Pearl)
 
 Every reset the game makes itself ended the run: the player's L+R+START+SELECT, Platinum's NINTENDO WFC SETTINGS
