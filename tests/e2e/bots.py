@@ -69,6 +69,9 @@ VISIT_COST = 2
 GBA_SURFABLE = frozenset({0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x19, 0x22, 0x2A, 0x50, 0x51, 0x52, 0x53})
 GBA_WATERFALL = 0x13
 GBA_GFX_CUTTABLE_TREE, GBA_GFX_BREAKABLE_ROCK = 82, 86
+# PLAYER_AVATAR_FLAG_UNDERWATER (both decomps' include/global.fieldmap.h): B under water asks to surface
+# (field_control_avatar.c TrySetDiveWarp), so an underwater walk never holds B to run
+GBA_AVATAR_UNDERWATER = 1 << 4
 
 
 def _int(step, key, default):
@@ -1294,7 +1297,10 @@ def _gba_route_to(s, step, ctx):
                 s.note("walk_to: the warp at (%d,%d) on map %d is occupied; re-routing" % (leg.x, leg.z, leg.map))
                 break
             try:
-                _walk_to(s, dict(keys, x=leg.x, z=leg.z, max=_int(step, "max", 6000)), ctx)
+                if not (leg.kind in ("dive", "emerge") and (p.x, p.z) == (leg.x, leg.z)):
+                    # (on the spot already, e.g. arrived there through a water door: walking "to" it would push
+                    # through the door it is)
+                    _walk_to(s, dict(keys, x=leg.x, z=leg.z, max=_int(step, "max", 6000)), ctx)
             except HarnessError as e:
                 if s.map_id == leg.map and leg.kind == "warp":
                     avoid_warps.append((leg.map, leg.x, leg.z))
@@ -1431,7 +1437,8 @@ def _walk_to(s, step, ctx):
         d = dirs[0]
         here = (p.x, p.z)
         terrain.visits[here] = terrain.visits.get(here, 0) + 1
-        keys = DIR_KEYS[d] + ("+" + run_key if run_key else "")
+        run = run_key and not (terrain.gba and p.avatar_flags & GBA_AVATAR_UNDERWATER)
+        keys = DIR_KEYS[d] + ("+" + run_key if run else "")
         # Hold the direction through the turn-in-place (a short press only turns) until the step begins:
         # the probe's tile changes as a step starts. A bump into something solid never changes it. `hold`: deep
         # snow's slow steps need longer before the next one starts (Platinum 35, Acuity Lakefront)

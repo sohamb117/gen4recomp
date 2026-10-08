@@ -2,9 +2,8 @@
 # Shelly, Archie (TRAINER_ARCHIE) and the Kyogre scene: FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, then Route 128's Steven scene.
 # Start: Steven's house -> end: MAP_ROUTE128 after the Kyogre scene (VAR_ROUTE128_STATE 2).
 title = "Seafloor Cavern: Archie wakes Kyogre"
-status = "planned"
 priority = "P0"
-estimate = 22000
+estimate = 20844
 refs = [
   "data/maps/MossdeepCity/map.json connections down ROUTE127",
   "data/maps/Route128/map.json connections dive UNDERWATER_ROUTE128",
@@ -32,7 +31,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 90000
+frames = 31300
 
 # PHASE2: the Strength/Rock Smash pushes in Rooms 1, 2, 3 and 8 (steps routes with boulder pushes; walk_to does not push boulders) and the underwater path from the Route 127/128 dive spot to (38,26).
 
@@ -220,10 +219,15 @@ map = "MAP_SEAFLOOR_CAVERN_ROOM7"
 
 [[step]]
 do = "walk_to"
-x = 5
-z = 1
+x = 9
+z = 22
 surf = true
-note = "Room 7 (arrived at (3,23)): Surf north to its warp (5,1) -> ROOM3 (9,13)"
+note = "Room 7 (arrived at (3,23)): onto the water at (9,22)"
+
+[[step]]
+do = "steps"
+route = [[9, 23], [16, 23], [16, 15], [16, 14], [7, 12], [7, 8], [4, 10], [3, 10], [3, 2], [5, 2], [5, 1]]
+note = "Room 7's currents (MB_EASTWARD..SOUTHWARD_CURRENT 0x50-0x53 carry the player on: field_player_avatar.c ForcedMovement_*Current): east along row 23 (carried over (12,23)), into (16,23) up to (16,15), into (16,14) round to (7,12), up into (7,8) round to (4,10), then west and north ashore to the warp (5,1) -> ROOM3 (9,13); each pair of corners off the line is a current's entry and where it lets go (a BFS over the map's current tiles)"
 
 [[step]]
 do = "wait_map"
