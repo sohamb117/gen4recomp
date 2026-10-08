@@ -1,0 +1,2 @@
+# White story chain: the Black milestones (version = "both"), played on White.
+../black/01-newgame-bedroom

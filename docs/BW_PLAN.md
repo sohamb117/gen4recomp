@@ -423,6 +423,18 @@ in BLZ-compressed overlay 93).
   `shell_editor_bw` (the app on SDL's dummy driver, stub core: every tab,
   edits saved and checked with `np_save5`, slot import from the Black card;
   Add Pokemon with `-DNP_BLACK_ROM=<black.nds>`).
-- Still Gen 4 only: `tests/e2e` would need `np_save5 dump/gamedata` in place
-  of `np_save4`, Gen 5 type ids (17 types) and Gen 5 move effect ids in
-  `bots.py`.
+- `tests/e2e` judges Black/White end saves with `np_save5 dump`; `auto_battle`
+  would still need `np_save5 gamedata`, Gen 5 type ids (17 types) and Gen 5
+  move effect ids in `bots.py`.
+
+## End-to-end probe (2026-10-08)
+
+`games/ndsrec/pc/src/pc_bw_e2e.c` publishes the np_e2e.h block for both
+games from host code that reads the recompiled game's structures at the
+frame boundary and calls the game's own terrain query and object movement
+check; docs/BW_RAM.md lists every address and offset with how it was
+proven. `tests/e2e/run.py --game black|white` runs milestones on it
+(tests/e2e/README.md, "Black and White"): 01 plays a blank chip through
+the intro to the bedroom, walks it with `walk_to`, talks to Cheren and saves
+through the X menu. Not reported yet: the battle (the first battle does not
+run on the core) and warps.

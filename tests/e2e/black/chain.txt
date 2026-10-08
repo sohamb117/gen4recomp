@@ -1,0 +1,3 @@
+# Black story chain (docs/BW_PLAN.md: a ROM-only recompilation; the probe is docs/BW_RAM.md). version = "both"
+# dirs serve White too: white/chain.txt.
+01-newgame-bedroom

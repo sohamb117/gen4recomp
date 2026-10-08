@@ -90,6 +90,9 @@ include $(PCDIR)/mk/host.mk
 # What the host layer reaches in Diamond's decompiled game half that a
 # recompiled ROM does not have (pc/src/pc_ndsrec_hooks.c).
 MY_OBJS := $(OBJ)/ndsrec/pc_ndsrec_hooks.o
+# Black/White: the field status and the e2e probe (pc/src/pc_bw_e2e.c).
+MY_OBJS += $(if $(filter black white,$(VER)),$(OBJ)/ndsrec/pc_bw_e2e.o)
+$(OBJ)/ndsrec/pc_bw_e2e.o: HOST_CFLAGS += $(if $(filter white,$(VER)),-DPC_BW_VER_WHITE)
 $(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
 OBJS += $(MY_OBJS)

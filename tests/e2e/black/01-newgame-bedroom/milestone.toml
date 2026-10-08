@@ -1,0 +1,66 @@
+# Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's
+# intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the
+# furniture, a talk with Cheren, and the save through the game's own X menu.
+# Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
+title = "New game to the bedroom, a walk, a talk with Cheren and the first save"
+priority = "P0"
+version = "both"
+estimate = 15107
+refs = ["docs/BW_PLAN.md", "docs/BW_RAM.md"]
+notes = "Black and White play the same frames (the proposal run's ng.sched, its A presses cut where the player is free). The starter is the next milestone: the gift box's scene runs straight into Bianca's battle."
+
+[start]
+blank = true
+
+[run]
+frames = 23000
+
+[[step]]
+do = "schedule"
+file = "newgame.press"
+shot = "bedroom"
+note = "title START x2, A every 40 frames through the intro, the name (AAAAAAA) and Bianca/Cheren's arrival"
+
+[[step]]
+do = "advance_text"
+note = "whatever of the bedroom scene the presses left; a no-op once the player is free"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 4
+shot = "top-left"
+note = "round the gift box's table and Bianca to the floor by the shelf"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 5
+shot = "right"
+note = "along the room past Cheren to the floor above the bed"
+
+[[step]]
+do = "talk_to"
+id = 0
+shot = "cheren-talk"
+note = "Cheren (object 0)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 4
+face = "down"
+shot = "before-save"
+
+[expect]
+map = 391
+position = [7, 4]
+party_size = 0
+save = ['s["location"]["map"] == 391', '(s["location"]["x"], s["location"]["z"]) == (7, 4)',
+        's["trainer"]["name"] == "AAAAAAA"', 's["trainer"]["badges"] == 0']
+
+[[shots]]
+frames = [5200, 8000, 10600, 12400]  # the new-game menu, the professor's intro, the naming, Bianca and Cheren arriving

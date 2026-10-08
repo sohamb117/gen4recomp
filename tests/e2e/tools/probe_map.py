@@ -31,7 +31,7 @@ from np_e2e import GBA_GAMES, TILE_BEHAVIOR, TILE_COLLISION, TILE_CONNECTED, TIL
 def render(p, game="platinum"):
     t = bots.Terrain(game=game)
     gba = game in GBA_GAMES
-    b = {} if gba else behaviors()
+    b = {} if gba else behaviors(game)  # Black/White: {} too (np_e2e.behaviors)
     grass, ledges, mats = t.grass, set(t.jump), set(t.mats)
     if not gba:
         grass = {b[k] for k in ("TALL_GRASS", "VERY_TALL_GRASS") if k in b}

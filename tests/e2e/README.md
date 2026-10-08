@@ -1,6 +1,6 @@
 # tests/e2e: story and system milestones on the real core
 
-The e2e harness plays Platinum, Diamond and Pearl, and Emerald, Ruby and Sapphire, headless, milestone by milestone, from a new game toward the
+The e2e harness plays Platinum, Diamond and Pearl, Black and White, and Emerald, Ruby and Sapphire, headless, milestone by milestone, from a new game toward the
 Hall of Fame. Each milestone starts from the previous one's end save (or a minted lab save), drives the game with
 input bots that read a probe the guest publishes, saves in game, and is judged on the end save. The plan and the
 milestone list are in [PLAN.md](PLAN.md); how to write and prove a milestone is in [AUTHORING.md](AUTHORING.md).
@@ -18,8 +18,8 @@ tests/e2e/tools/dp_prior.py                                     # D/P: rewrite e
 ```
 
 Heavy runs go through `tools/heavy.sh --run` (its own pool of run slots). The runner needs the ROMs and a core build
-(`build/core-plat`, `build/core-dp`, `build/rse/native`; docs/BUILDING.md, docs/HANDOFF-rse.md) and builds `np_gp`
-and `np_save4` itself.
+(`build/core-plat`, `build/core-dp`, `build/core-bw`, `build/rse/native`; docs/BUILDING.md, docs/HANDOFF-rse.md) and
+builds `np_gp` and `np_save4`/`np_save5` itself.
 
 ## Status
 
@@ -31,6 +31,7 @@ Passing (`status` removed from `milestone.toml`), as a continuity chain from a b
 | Platinum systems | 60-72, 74: every HM field use (Cut, Rock Smash, Strength, Surf, Fly, Defog, Rock Climb, Waterfall), the three rods, a honey tree, the Day Care (deposit with the lady, egg from the man), level-up evolution after a wild battle |
 | Diamond | 01-20: new game, Pokedex, Parcel + catching tutorial, Trainers' School, Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge, Barry's farewell, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Galactic building, Bicycle + Explorer Kit, Cycling Road + VS Seeker, Mt. Coronet + Route 208 to Hearthome, Contest Hall + rival, Route 209 to Solaceon |
 | Emerald | 01-02: new game, truck and house; the wall clock, Dad on TV, May next door |
+| Black, White | 01: new game, the bedroom walked by the probe, Cheren, the first save through the X menu |
 
 Everything else is still `status = "planned"` and skipped unless `--planned`.
 
@@ -59,6 +60,24 @@ The same runner, bots and milestone format, with these differences:
 - **The end**: the credits end in the game's own `SoftReset`; `wait_reset` sees the probe's `soft_resets` go up.
 - **Waiting**: `press` takes `until` (np_gp's condition syntax) for screens only the probe sees (the wall clock
   taking over the field: `until = "field=0"`).
+
+## Black and White
+
+ROM-only recompilations (docs/BW_PLAN.md): `--game black|white` takes the cartridge from the checkout's gitignored
+`roms/` (or `NP_ROM`) and one core with both guests, `build/core-bw` (or `NP_CORE_BUILD`). With no game source the
+probe is host code reading the recompiled game's own structures, `games/ndsrec/pc/src/pc_bw_e2e.c`; every address
+and how it was proven is in docs/BW_RAM.md. Differences:
+
+- **Probe**: the field (zone id as map_id, the player's tile and facing, the map objects), the grid from the game's
+  own terrain query (collision = the attribute's blocked flag; the attribute values are not mapped to behaviors, so
+  the planner gives none of them a meaning) and step layers from the game's own object movement check.
+  `field_ready` is "a field, no event (script, menu, warp) running, the player on a tile centre". No battle report
+  and `in_battle` stays 0: the first battle does not run on the core yet.
+- **Saves**: `save` (and the end save) goes through the game's X menu (SAVE, then A); the host's quick save is
+  refused. `features/tools/np_save5 dump` reads the end save in np_save4's shapes (`location`, `trainer`, `party`,
+  `flags`, `vars`).
+- **Names**: none; zones, flags, vars and species are numbers. No lab or boost recipes.
+- **Boot**: CONTINUE waits for the opening movie (START at frame 5000).
 
 ## How a milestone runs
 
