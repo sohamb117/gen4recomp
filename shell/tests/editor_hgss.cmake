@@ -22,6 +22,9 @@ tabs("" "${SAV}")
 expect_log(1-trainer "editor: opened heartgold file .*\\(heartgold\\)")
 run(ss 12 "" --editor --save "${WORK}/ss.sav")
 expect_log(ss "editor: opened soulsilver file .*\\(soulsilver\\)")
+# Trainer Card and diploma: Name, Gender, TID, SID, Money, Coins, 8 Johto and
+# 8 Kanto badges, 3 play time rows, then the two Export rows (25, 26).
+export_cards("${SAV}" 25)
 
 # ---- Trainer: Name, Gender, TID, SID, Money, Coins, 8 Johto badges, then
 # the Kanto badges: row 21 is the Earth Badge (bit 7)

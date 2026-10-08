@@ -166,6 +166,67 @@ git). Branch rse, 2026-10-07.
 | Link cable trades/battles | SIO multi-player as an exact synchronous bus over `np_host_net_*` (`gba_link.c`; LAN/relay/loopback) | core: trade with Sapphire and with Emerald (both saves hold the swapped Pokemon), Colosseum battle with Sapphire (same frames and Win/Loss screen on both) | core (trade, battle) | core (trade with Ruby, Direct Corner) | `tests/link/run_gba_link_tests.py`; `build/evidence/rse/link-trade-rs.png`, `link-trade-re.png`, `link-battle-rs.png` |
 | macOS app / Windows build | All six cores in each package (main 80dc9d8c7): macOS arm64 zip, Windows x64 zig cross-build | app (package --test title; the 12 GBA cases on the packaged app); Windows: title under wine | same | same | `build/evidence/pkg-mac/<game>-arm64.png`, `pkg-win/shot-<game>.png`; docs/evidence/README.md |
 
+## Black / White and HeartGold / SoulSilver
+
+Where the cores are (docs/BW_PLAN.md, docs/HANDOFF-hgss.md): Black and White
+boot, play a new game to the controllable bedroom, save with the X menu and
+CONTINUE from it; the first battle stops (overlay 93). HeartGold and
+SoulSilver play the title, the touch-screen tutorial, Prof. Oak and naming;
+the first field load stops (overlay 123, `ds_protect`), so there is no in-game
+save, and their sound is silent through the title and intro (one sound near
+frame 8400).
+
+Status as above, plus **not yet** (what it needs is said). **core**:
+`tests/bwhgss/parity.sh` (np_headless; frames and logs in
+`build/evidence/bwhgss/<game>/`). **app**: `tests/mac/feature_matrix.py --app
+build/app-bwhgss/nativeplat.app --game <game>` (the 15 `n2_*` cases) on a
+development build of the app with only these four cores (NP_CORE=real from the
+cores' `.wasm`, 2026-10-08); evidence `build/evidence/<game>-n2_<case>-*`.
+B/W in-game cases run in the bedroom from parity.sh's save (CONTINUE), HG/SS's
+at ~1600 frames (the intro after the title). **shell**: the shell tests on
+synthetic saves (`shell_editor_bw`, `shell_editor_hgss`, `shell_unit`). Black's
+and White's columns are the same unless said; so are HeartGold's and
+SoulSilver's.
+
+| Feature | Black | White | HeartGold | SoulSilver | Evidence / what it needs |
+|---|---|---|---|---|---|
+| Launcher card, ROM import with SHA-1, drop | app | app | app | app | n2_import (drop: "Imported"), n2_boot (card → New → OK → title) |
+| Generated cache from ROM | n/a | n/a | n/a | n/a | the core reads the cartridge at run time |
+| Save slots, Continue / Edit | app (import, Continue, Edit save...) | app | not yet: New boots (n2_boot); Continue/Edit need an in-game save (field load) | same | n2_slots, n2_continue, n2_editor |
+| Custom carts, mods | not yet: a mod loader in the game code (pc_modfs.c / gba_mods.c equivalent) | same | same | same |  |
+| Screen layouts, swap, rotation, scaling | app | app | app | app | n2_layouts (8 layouts) |
+| Battle layout | not yet: NP_STAT_IN_BATTLE from the game; B/W's battle stops | same | not yet (no field) | same |  |
+| Camera zoom / tilt | not yet: NP_OPT_CAMERA_* hooks in the game code | same | same | same |  |
+| Shader FX, performance presets | app | app | app | app | n2_effects |
+| V-Sync, frame cap, logic clock, UI scale | shell | shell | shell | shell | game-independent |
+| 3D render scale, widescreen 3D | not yet: NP_OPT_RENDER_SCALE / WIDESCREEN hooks | same | same | same |  |
+| Screenshots (F12) | app | app | app | app | n2_screenshot (`screenshots/<game>-*.png`) |
+| Trainer Card, Pokédex diploma PNG | app/shell (editor on the save; export in shell_editor_bw) | same | shell (shell_editor_hgss exports both) | same | Unova / Johto badge names, 649 / 493 species |
+| ROM-derived music / SFX | core + app (title rms 7424; app output treble 1219) | same | not yet: silent through the title and intro | same | parity.sh title; n2_audio |
+| Music / SFX volume | not yet: NP_OPT_BGM/SE_VOLUME in the game's mixer (bgm_volume 0 left the output unchanged) | same | not yet | same | n2_audio-bgm0 |
+| Music low-pass filter | app (treble 1219 to 895 at 3X) | app (1224 to 895) | shell (no music to filter yet) | same | n2_audio-filter3 |
+| Speed hotkeys, fast-forward | app (4x: 7000 iterations ran 7294 frames; G: 28000) | app | app (1600 iterations ran 1894; G: 6400) | app | n2_speed |
+| Keyboard / gamepad rebinding | shell | shell | shell | shell |  |
+| Touch (stylus) | core (the SAVE item tapped in the X menu) | same | core (touch tutorial, naming done by taps) | same | parity.sh |
+| On-screen touch pad, layout editor | app | app | app | app | n2_touch |
+| Touch skins | app | app | app | app | n2_skin |
+| F1 quick save / F2 quick load | not yet: the game's quick-save hook (NP_OPT_QUICKSAVE_SEQ); F1 shows "Saving..." and nothing answers | same | not yet (also no field) | same | n2_quicksave |
+| Normal save, atomic writes, backups | core + app (X menu save; np_save5 verifies both copies; CONTINUE) | same | not yet: no in-game save (field load) | same | parity.sh save/continue, n2_continue |
+| Snapshots (F5/F6/F7), rewind | core + app (bedroom: 3/3 round trips; rewind depth 387 to 372) | app (401 to 386) | core + app (title and Oak: round trips; rewind 263 to 248) | same | parity.sh, n2_snapshots |
+| Folder sync | shell | shell | shell | shell | slot summaries read B/W and HG/SS saves |
+| Portable mode | app | app | app | app | every n2 case |
+| Save editor (embedded, standalone) | app (Edit save... on the real save: AAAAAAA, $3000) + shell | same | shell (synthetic saves; names and Add Pokemon with the HG ROM) | same | n2_editor; shell_editor_bw / hgss |
+| Save editor tabs, checks, undo, backups | shell | shell | shell | shell | shell_editor_bw / hgss, shell_unit |
+| Save import / export | app (import) + shell | same | shell (import from the HeartGold card) | same | n2_slots; shell_editor_hgss |
+| Cross-generation transfer | not yet: Poké Transfer needs story progress and a second DS | same | not yet: Pal Park needs the field and the GBA slot | same |  |
+| LAN / relay link | not yet: the games' wireless (C-Gear, Union Room) on the core's net host, past the battle / field blocks | same | same | same | the relay transport itself is shell |
+| Fast-forward locked in link play | not yet (no link) | same | same | same |  |
+| Mystery Gift | shell: `.pgf` cards into the 12 slots; delivery in game needs story progress | same | shell: `.pcd` / `.pgt` import; delivery needs the field | same | shell_editor_bw / hgss |
+| Fix cartridge bugs, instant text | not yet: NP_OPT_RULES / TEXT_INSTANT in the game code | same | same | same |  |
+| macOS app | app (development build with these cores; packaging not run) | same | same | same | build/app-bwhgss |
+| Windows build | not yet | not yet | not yet | not yet |  |
+| URL launch, launch flags | app | app | app | app | n2_launch; `--game/--slot` in every case |
+
 ## n/a, with reasons
 
 - Colour modes / GBC palettes: the DS renders in full colour; display effects replace them.

@@ -123,6 +123,34 @@ Ruby vs Sapphire in the Colosseum (in_battle 3605..14830 on both, the same
 Win/Loss screen). Sheets: `build/evidence/rse/link-trade-rs.png`,
 `link-trade-re.png`, `link-battle-rs.png`.
 
+## Black, White, HeartGold and SoulSilver
+
+Not the packaged app: a development build with only these four cores, made
+from the cores' `.wasm` (2026-10-08, the proposal builds of
+docs/BW_PLAN.md and docs/HANDOFF-hgss.md):
+
+```sh
+cmake -S shell -B build/app-bwhgss -G Ninja -DCMAKE_BUILD_TYPE=Release -DNP_CORE=real \
+  -DBUILD_TESTING=OFF -DNP_BUILD_TESTS=OFF "-DCMAKE_C_FLAGS_RELEASE=-O1 -g0 -DNDEBUG" \
+  -DNP_GUEST_WASM_black=<ndsrec-black.wasm> -DNP_GUEST_WASM_white=<ndsrec-white.wasm> \
+  -DNP_GUEST_WASM_heartgold=<pokeheartgold.wasm> -DNP_GUEST_WASM_soulsilver=<pokesoulsilver.wasm> \
+  -DNP_GUEST_POSTPROCESS=$PWD/tools/wasm2c_postprocess.py
+NP_BW_CORE=<dir with np_headless> NP_HGSS_CORE=<dir> NP_BLACK_ROM=… NP_WHITE_ROM=… NP_HG_ROM=… NP_SS_ROM=… \
+  NP_SAVE5=<np_save5> tests/bwhgss/parity.sh          # headless; also makes the B/W bedroom saves
+NP_BLACK_ROM=… tests/mac/feature_matrix.py --app build/app-bwhgss/nativeplat.app --game black   # n2_* cases
+```
+
+All 15 `n2_*` cases ran on each game: 15/15 ok on Black and White; on
+HeartGold and SoulSilver 11 ok and 4 skipped with their reason (continue,
+slots, editor: no in-game save; audio: no music yet). The per-feature status is
+in docs/FEATURE_PARITY.md ("Black / White and HeartGold / SoulSilver").
+Screenshots looked at: Black title (n2_boot), bedroom after CONTINUE
+(n2_continue), "Snapshot 1 loaded" in the bedroom (n2_snapshots-restored),
+the editor's Trainer tab on the real save (n2_editor-trainer: AAAAAAA, ID
+45994, $3000, 0:03:03), HeartGold's intro in the hybrid layout and the touch
+layout editor; headless: the bedroom after the X-menu save and after CONTINUE,
+HeartGold's naming screen.
+
 ## Defects and gaps
 
 - **Platinum ↔ Platinum LAN trade not completed in the app.** The stations
