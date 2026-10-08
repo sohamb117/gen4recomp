@@ -1,0 +1,121 @@
+# Proves the way to Ecruteak: Route 35, the Pokeathlon gatehouse, National Park, Route 36's Sudowoodo watered with
+# the SquirtBottle and fought (SPECIES_SUDOWOODO lv20), the florist's sister's Berry Pots, Route 37 north to Ecruteak.
+# Start: MAP_GOLDENROD (371,333) -> end: MAP_ECRUTEAK south entrance (397,184), FLAG_HIDE_ROUTE_36_SUDOWOODO.
+title = "National Park, Route 36 Sudowoodo, Route 37 to Ecruteak"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 24000
+refs = [
+  "zone_event 073_T25 warp 0 (358,325) -> MAP_ROUTE_35_GOLDENROD_GATEHOUSE; zone_event 098_R35R0101 warp 1 (5,2) -> MAP_ROUTE_35",
+  "zone_event 036_R35 warp 2 (362,266) -> MAP_ROUTE_35_NATIONAL_PARK_POKEATHALON_GATEHOUSE; zone_event 099_R35R0201 warp 1 (25,2) -> MAP_NATIONAL_PARK",
+  "zone_event 099_R35R0201 coord 0 (19,7) VAR_UNK_40DA 0 (Pokeathlon scene; 40DA is 1 after Whitney, scr_seq_0886_T25GYM0101.s:115)",
+  "zone_event 093_D22R0101 warp 2 (75,39) -> MAP_ROUTE_36_NATIONAL_PARK_GATEHOUSE; zone_event 101_R36R0201 warp 1 (10,7) -> MAP_ROUTE_36 (374,238)",
+  "zone_event 037_R36 object 4 obj_R36_usokky (415,246) FLAG_HIDE_ROUTE_36_SUDOWOODO -> 000",
+  "scr_seq_0243_R36.s:44-155 (SquirtBottle, FLAG_UNK_0B4, WildBattle SPECIES_SUDOWOODO 20, FLAG_UNK_0B5, ITEM_BERRY_POTS, FLAG_HIDE_ROUTE_36_FLOWERSHOP_GIRL, FLAG_CAUGHT_SUDOWOODO if caught)",
+  "scr_seq_0243_R36.s:34-42 (OnLoad: Sudowoodo hidden once FLAG_ENGAGING_STATIC_POKEMON is clear after the battle)",
+  "zone_event 038_R37 trainers: Twins Tori and Til (390/391,211), Psychic Greg (402,210), Beauties Callie (386,204), Kassandra (395,204)",
+  "zone_event 075_T27 warp 5 (397,183) -> MAP_ECRUTEAK_POKECENTER_1F",
+]
+notes = "Sudowoodo is a static wild battle (lv20): auto_battle knocks it out (Ember); catching is optional (FLAG_CAUGHT_SUDOWOODO only if caught). Route 37 runs north from Route 36's junction east of Sudowoodo [INFERENCE: GSC layout; walk_to plans the turn]. The Violet side (Route 36 gatehouse (447,246)) is an equivalent way."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 36000
+
+[[step]]
+do = "walk_to"
+x = 358
+z = 325
+note = "Goldenrod north gate (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35_GOLDENROD_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35"
+
+[[step]]
+do = "walk_to"
+x = 362
+z = 266
+note = "Route 35 north to the Pokeathlon gatehouse (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35_NATIONAL_PARK_POKEATHALON_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 2
+note = "-> National Park (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NATIONAL_PARK"
+
+[[step]]
+do = "walk_to"
+x = 75
+z = 39
+note = "park east exit (warp 2) -> Route 36 gatehouse"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_36_NATIONAL_PARK_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "-> Route 36 (374,238)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_36"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "Sudowoodo (obj_R36_usokky (415,246)): water it (scr_seq_0243_R36.s:44-100)"
+
+[[step]]
+do = "advance_text"
+shot = "sudowoodo"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "WildBattle SPECIES_SUDOWOODO 20 (:100)"
+
+[[step]]
+do = "advance_text"
+note = "the florist's sister: Berry Pots (:110-155)"
+
+[[step]]
+do = "walk_to"
+x = 397
+z = 184
+note = "Route 37 north into Ecruteak, in front of the Pokemon Center (warp 5 (397,183)) [INFERENCE: (397,184) open]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK"
+
+[expect]
+map = "MAP_ECRUTEAK"
+badges = 3
+flags = ["FLAG_HIDE_ROUTE_36_SUDOWOODO", "FLAG_UNK_0B4", "FLAG_UNK_0B5", "FLAG_HIDE_ROUTE_36_FLOWERSHOP_GIRL"]
+flags_clear = ["FLAG_HIDE_GOLDENROD_FLOWERSHOP_GIRL"]
+battles = 1

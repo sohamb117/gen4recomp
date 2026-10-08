@@ -1,0 +1,139 @@
+# Proves the rival's Azalea ambush (TRAINER_RIVAL_SILVER_10), Ilex Forest's apprentice and the two lost Farfetch'd
+# herded back, the charcoal master's HM01 Cut, the Cut tree and the forest's north gate to Route 34.
+# Start: MAP_AZALEA (405,472) -> end: MAP_ROUTE_34 south end (372,448), FLAG_GOT_HM01, VAR_UNK_4075 2.
+title = "Azalea rival, Ilex Forest Farfetch'd, HM01 Cut"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "zone_event 071_T23 coord 0 (395,462) h5 VAR_UNK_4075 1 -> 002",
+  "scr_seq_0866_T23.s:55-126 (rival: GetStarterChoice 155 -> TRAINER_RIVAL_SILVER_10 :113, VAR_UNK_4075 2)",
+  "TRAINER_RIVAL_SILVER_10 (269, include/constants/trainers.h:274): GASTLY 14, ZUBAT 16, CROCONAW 18",
+  "zone_event 071_T23 warp 0 (392,462) -> MAP_AZALEA_ILEX_FOREST_GATEHOUSE; zone_event 097_T23R0101 warp 1 (1,7) -> MAP_ILEX_FOREST (15,80)",
+  "zone_event 114_D36R0101 coord 8 (15,65) h2 VAR_UNK_40F4 1 -> 017 (apprentice, VAR_UNK_40F4 0, scr_seq_0092_D36R0101.s:1262-1273)",
+  "zone_event 114_D36R0101 objects 0 (25,62) / 2 (41,54) lost Farfetch'd; coords 0-5 the stick tiles (VAR_FARFETCHD*_STICKS*)",
+  "scr_seq_0092_D36R0101.s:116-304 (Farfetch'd 1: FLAG_FOUND_FIRST_FARFETCHD, Warp (15,65)), :470-676 (Farfetch'd 2: FLAG_FOUND_SECOND_FARFETCHD)",
+  "zone_event 114_D36R0101 object 4 obj_D36R0101_gsfighter (11,75) FLAG_HIDE_ILEX_CUT_MASTER -> 011",
+  "scr_seq_0092_D36R0101.s:1286-1345 (HM01: FLAG_GOT_HM01)",
+  "zone_event 114_D36R0101 object 5 Cut tree (16,62) std_field_cut",
+  "zone_event 114_D36R0101 coord 7 (37,42) VAR_UNK_40EA 0 -> 016 (VAR_UNK_40EA 1); coord 6 (40,20) w2 VAR_UNK_40E9 0 -> 015 (Kimono Girl, FLAG_UNK_23D, VAR_UNK_40E9 1)",
+  "zone_event 114_D36R0101 warps 2-5 (12/13,17/18) -> MAP_ROUTE_34_ILEX_FOREST_GATEHOUSE; zone_event 165_R34R0201 warp 0 (5,2) -> MAP_ROUTE_34",
+  "src/field_move.c:185-189 (Cut needs BADGE_HIVE)",
+]
+notes = "Rival's Croconaw (lv18) needs levels: boost. Farfetch'd herding: talking to a lost Farfetch'd (or stepping on its stick tiles) makes it move away from the player's side; it is returned when it reaches the apprentice (both flags -> Warp (15,65) and the cut master appears). Cut needs the Hive Badge (09) and a Cut carrier (teach HM01 behind the lead: boost party-move)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 45000
+
+[[step]]
+do = "walk_to"
+x = 395
+z = 464
+on_text = "stop"
+note = "coord 0 (395,462..466) VAR_UNK_4075 1 -> rival (scr_seq_0866_T23.s:55-126)"
+
+[[step]]
+do = "advance_text"
+shot = "rival-azalea"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_RIVAL_SILVER_10: GASTLY 14, ZUBAT 16, CROCONAW 18"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 392
+z = 462
+note = "Ilex gatehouse (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA_ILEX_FOREST_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "gatehouse west door (warp 1) -> Ilex Forest (15,80)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ILEX_FOREST"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 66
+on_text = "stop"
+note = "coord 8 (15,65..66) VAR_UNK_40F4 1 -> the apprentice (scr_seq_0092_D36R0101.s:1262-1273)"
+
+[[step]]
+do = "advance_text"
+
+# PHASE2: herding the two Farfetch'd (objects 0 and 2): the side the player talks from / the stick tiles (coords 0-5)
+# decide where each moves (scr_seq_0092_D36R0101.s:116-960). Work out a talk/step sequence per bird with the probe;
+# the talks below are the entry points only.
+[[step]]
+do = "talk_to"
+id = 0
+note = "Farfetch'd 1 (25,62)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "Farfetch'd 2 (41,54)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "the charcoal master (11,75): HM01 (scr_seq_0092_D36R0101.s:1286-1345)"
+
+[[step]]
+do = "advance_text"
+shot = "hm01"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 18
+hm = true
+note = "north through the forest (Cut tree (16,62); coords (37,42) and (40,20) scenes advanced) to the Route 34 gatehouse (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_34_ILEX_FOREST_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "gatehouse north door (warp 0) -> Route 34"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_34"
+
+[expect]
+map = "MAP_ROUTE_34"
+badges = 2
+flags = ["FLAG_GOT_HM01", "FLAG_FOUND_FIRST_FARFETCHD", "FLAG_FOUND_SECOND_FARFETCHD", "FLAG_HIDE_FARFETCHD_1_LOST", "FLAG_HIDE_FARFETCHD_2_LOST"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_4075 = 2
+VAR_UNK_40F4 = 0

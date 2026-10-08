@@ -1,0 +1,122 @@
+# Proves the way to Blackthorn, open since the Radio Tower (VAR_UNK_407A 1): Mahogany's east exit, Route 44, the Ice
+# Path (HM07 Waterfall item ball on 1F, the Kimono Girl, the B1F boulder holes, the ice slides) into Blackthorn City.
+# Start: MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK -> end: MAP_BLACKTHORN outside the Ice Path (697,145), HM07.
+title = "Route 44 and the Ice Path (HM07) to Blackthorn"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 50000
+refs = [
+  "zone_event 084_T28 coord 0 (540,176) h2 VAR_UNK_407A 0 -> 001 (RageCandyBar man blocks Route 44 until scr_seq_0034_D23R0106.s:142 sets VAR_UNK_407A 1)",
+  "zone_event 043_R44 warp 0 (633,169) -> MAP_ICE_PATH_1F 0 (11,58)",
+  "zone_event 117_D39R0101 object 0 FLAG_HIDE_ITEMBALL_D39R0101_HM07 std_itemball_d39r0101_hm07 (47,10); coord 0 (47,6) VAR_UNK_4100 0 -> 004 (scr_seq_0099_D39R0101.s:56-86)",
+  "zone_event 117_D39R0101 object 2 obj_D39R0101_dancer (55,29) FLAG_UNK_239 -> 002 (FLAG_UNK_239, VAR_UNK_40E8 1, scr_seq_0099_D39R0101.s:110-161)",
+  "zone_event 117_D39R0101 warps 2/3 (55,7)/(55,20) -> MAP_ICE_PATH_B1F; warp 1 (55,40) -> MAP_BLACKTHORN 0 (697,144)",
+  "zone_event 223_D39R0102 coords 0-3 (11,10) (10,18) (18,7) (19,19) VAR_UNK_40AA 0 (boulder holes -> B2F, scr_seq_0100_D39R0102.s:14-71)",
+  "zone_event 223_D39R0102 warps 2/3 -> MAP_ICE_PATH_B2F; zone_event 224_D39R0103 warps 2/3 -> MAP_ICE_PATH_B3F; zone_event 225_D39R0104 warps 0-3 -> B2F",
+  "include/constants/items.h:738 (ITEM_HM07 426)",
+]
+notes = "Ice Path in GSC order: 1F east -> B1F (Strength boulders into the holes) -> B2F -> B3F -> B2F -> B1F -> 1F (HM07 corner, Kimono Girl) -> Blackthorn [INFERENCE: GSC layout; the warps in refs connect so]. Strength needs HM04 (Route 42, milestone 20) on a party member and the Plain Badge (src/field_move.c:291-295). The B1F boulders/holes and the slide directions are unknown."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 75000
+
+# PHASE2: Goldenrod -> Mahogany: back along Routes 35-37/42 on foot (walk_to below) or Fly to Mahogany (touch-screen
+# start menu, unverified on HG/SS).
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "observation deck -> elevator (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_ELEVATOR"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 6
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_5F"
+
+[[step]]
+do = "walk_to"
+x = 633
+z = 169
+surf = true
+note = "down the tower and across Johto to Route 44's Ice Path mouth (warp 0) [INFERENCE: one walk_to per map in practice]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_1F"
+
+# PHASE2: the Ice Path floors: B1F's boulders (Strength) into coords 0-3, then B2F/B3F slides (slide bot) and the
+# warps listed in refs; record each floor's route with probe_map.
+[[step]]
+do = "walk_to"
+x = 55
+z = 20
+note = "1F -> B1F (warp 3) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_B1F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 21
+note = "B1F back up to 1F's north part (warp 0 -> 1F warp 2 (55,7)) after the lower floors [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_1F"
+
+[[step]]
+do = "walk_to"
+x = 47
+z = 11
+face = "up"
+interact = true
+note = "HM07 item ball (47,10)"
+
+[[step]]
+do = "advance_text"
+shot = "hm07"
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "the Kimono Girl (55,29) (scr_seq_0099_D39R0101.s:110-161)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 55
+z = 40
+note = "1F -> Blackthorn (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN"
+
+[expect]
+map = "MAP_BLACKTHORN"
+badges = 7
+flags = ["FLAG_HIDE_ITEMBALL_D39R0101_HM07", "FLAG_UNK_239", "FLAG_BEAT_RADIO_TOWER_ROCKETS"]
+save = ['any(i["item"] == 426 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_UNK_40E8 = 1

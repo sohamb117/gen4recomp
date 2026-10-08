@@ -1,0 +1,14 @@
+--- a/src/field_system.c
++++ b/src/field_system.c
+@@ -45,6 +45,11 @@
+ 
+ static FieldSystem *sFieldSysPtr;
+ 
++/* nativeplat: the field for the port's frame-boundary work (pc/src/pc_hg_field.c). */
++FieldSystem *pc_hg_field_system(void) {
++    return sFieldSysPtr;
++}
++
+ typedef struct UnkFieldSystemInit {
+     int unk0;
+     int unk4;

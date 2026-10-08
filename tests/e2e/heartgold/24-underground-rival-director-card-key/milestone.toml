@@ -1,0 +1,175 @@
+# Proves the Goldenrod Underground: the Kimono Girl's B1F coord (VAR_UNK_40E7 2 -> 3), the B2F rival
+# (TRAINER_RIVAL_SILVER_12), the shutter-switch puzzle, the warehouse grunts and the real director's Card Key.
+# Start: MAP_GOLDENROD_RADIO_TOWER_5F (5,14) -> end: MAP_GOLDENROD_TUNNEL_WAREHOUSE by the director (20,14), Card Key.
+title = "Goldenrod Underground: rival, shutters, the director's Card Key"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 40000
+refs = [
+  "zone_event 192_D37R0102 coord 1 (16,31) h2 VAR_UNK_40E7 2 -> 011 (Kimono Girl, FLAG_HIDE_UNDERGROUND_KIMONO_GIRL, VAR_UNK_40E7 3, scr_seq_0094_D37R0102.s:1208-1242)",
+  "zone_event 115_D37R0101 warp 5 (25,3) -> MAP_GOLDENROD_TUNNEL_B2F 0 (27,4)",
+  "zone_event 194_D37R0104 coord 0 (19,5) VAR_UNK_40A0 0 -> 004 (rival: 155 -> TRAINER_RIVAL_SILVER_12 :432, VAR_UNK_40A0 1, scr_seq_0096_D37R0104.s:406-445)",
+  "TRAINER_RIVAL_SILVER_12 (271, include/constants/trainers.h:276): GOLBAT 30, MAGNEMITE 28, HAUNTER 30, SNEASEL 32, FERALIGATR 32",
+  "scr_seq_0096_D37R0104.s:41-56 (OnTransition: the ten shutters' GATE_OPEN/GATE_CLOSED), :59-340 (switches 000-003 toggle them; 003 FLAG_OPENED_GOLDENROD_PURPLE_GATE)",
+  "zone_event 194_D37R0104 warp 1 (26,14) -> MAP_GOLDENROD_TUNNEL_WAREHOUSE (3,18)",
+  "zone_event 195_D37R0105 objects 0-2 TRAINER_TEAM_ROCKET_GRUNT_13 (16,20), _14 (24,11), _22 (17,5); object 3 obj_D37R0105_gsgentleman (20,13) -> 001",
+  "scr_seq_0097_D37R0105.s:22-31 (FLAG_UNK_1C1, ITEM_CARD_KEY)",
+  "include/constants/items.h:896 (ITEM_CARD_KEY 475)",
+]
+notes = "Which door the Basement Key opens and which switch order opens the shutters to the warehouse were not traced (scr_seq_0096_D37R0104.s switches 000-003 over VAR_TEMP_x4000..4009). Rival lv32 Feraligatr: boost."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+note = "5F -> 4F -> 3F -> 2F -> 1F stairs, back out (walk_to per floor below)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_4F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 14
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "walk_to"
+x = 347
+z = 374
+note = "south tunnel entrance (warp 11) -> Tunnel 1F (5,30)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 24
+note = "-> B1F (warp 3) (4,36)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_B1F"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 31
+on_text = "stop"
+note = "coord 1 (16,31..32) VAR_UNK_40E7 2 -> the Kimono Girl (scr_seq_0094_D37R0102.s:1208-1242)"
+
+[[step]]
+do = "advance_text"
+
+# PHASE2: the Basement Key door and the route to Tunnel 1F (25,3) -> B2F; then B2F's shutters (trace the four switch
+# scripts of scr_seq_0096_D37R0104.s and record the order with the probe).
+[[step]]
+do = "walk_to"
+x = 25
+z = 30
+note = "B1F -> 1F (warp 4 (25,30)) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_1F"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 3
+note = "Tunnel 1F -> B2F (warp 5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_B2F"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 5
+on_text = "stop"
+note = "coord 0 (19,5) VAR_UNK_40A0 0 -> rival"
+
+[[step]]
+do = "advance_text"
+shot = "rival-underground"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_RIVAL_SILVER_12: GOLBAT 30, MAGNEMITE 28, HAUNTER 30, SNEASEL 32, FERALIGATR 32"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 14
+note = "B2F -> warehouse (warp 1) through the opened shutters"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_WAREHOUSE"
+
+[[step]]
+do = "talk_to"
+id = 3
+note = "the director (20,13); grunts 13/14/22 fight on the way"
+
+[[step]]
+do = "advance_text"
+shot = "card-key"
+
+[expect]
+map = "MAP_GOLDENROD_TUNNEL_WAREHOUSE"
+badges = 7
+flags = ["FLAG_UNK_1C1", "FLAG_HIDE_UNDERGROUND_KIMONO_GIRL"]
+battles = 1
+save = ['any(i["item"] == 475 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_UNK_40E7 = 3
+VAR_UNK_40A0 = 1
+VAR_SCENE_ROCKET_TAKEOVER = 4

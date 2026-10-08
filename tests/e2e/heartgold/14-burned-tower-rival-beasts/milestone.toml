@@ -1,0 +1,123 @@
+# Proves the Burned Tower, which opens the Ecruteak Gym: Eusine and Morty's coord scene, the rival
+# (TRAINER_RIVAL_SILVER_11), B1F's legendary beasts scene (VAR_UNK_4079 2, Morty back in his gym).
+# Start: MAP_ECRUTEAK (397,184) -> end: MAP_ECRUTEAK outside the Burned Tower (376,150), VAR_UNK_4079 2.
+title = "Burned Tower: Eusine, the rival, the legendary beasts"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "zone_event 075_T27 warp 0 (376,149) -> MAP_BURNED_TOWER_1F (15,26)",
+  "scr_seq_0922_T27GYM0101_hdr.s + scr_seq_0922_T27GYM0101.s:62-75 (before the tower, VAR_UNK_4079 0: the gym puts the player out, VAR 1; scr_seq_0920_T27.s:47-66 sets it back to 0)",
+  "zone_event 005_D18R0101 coord 0 (19,23) VAR_UNK_40A2 0 -> 000 (Eusine/Morty, VAR_UNK_40A2 1, scr_seq_0023_D18R0101.s:93-104)",
+  "zone_event 005_D18R0101 coord 1 (22,19) VAR_UNK_40A6 0 -> 003",
+  "scr_seq_0023_D18R0101.s:14-57 (rival: 155 -> TRAINER_RIVAL_SILVER_11 :32, FLAG_HIDE_BURNED_TOWER_1F_RIVAL, VAR_UNK_40A6 1)",
+  "TRAINER_RIVAL_SILVER_11 (270, include/constants/trainers.h:275): GASTLY 20, MAGNEMITE 18, ZUBAT 20, CROCONAW 22",
+  "zone_event 005_D18R0101 warp 1 (22,16) -> MAP_BURNED_TOWER_B1F 0 (23,16)",
+  "zone_event 204_D18R0102 coord 0 (20,16) h2 VAR_UNK_40A1 0 -> 000",
+  "scr_seq_0024_D18R0102.s:23-136 (beasts flee, Eusine; FLAG_HIDE_BURNED_TOWER_*, ClearFlag FLAG_HIDE_CIANWOOD_SUICUNE, VAR_UNK_40A1 1, VAR_UNK_4076 1, VAR_UNK_4079 2, FLAG_UNK_247, ClearFlag FLAG_HIDE_ECRUTEAK_OLD_MAN)",
+  "zone_event 204_D18R0102 warps 0/1 (23,16)/(23,15) -> MAP_BURNED_TOWER_1F 1",
+]
+notes = "Firebreathers Richard (6,9) and Ned (22,8) are off the direct line. Rival's Croconaw lv22: boost. B1F after the scene: the way back up is the B1F ladder warps (23,15/16) -> 1F (22,16) [INFERENCE: the GSC fall-through hole is not a warp event here; the 1F (22,16) warp is how the player reaches B1F]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 376
+z = 149
+note = "Burned Tower (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BURNED_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 23
+on_text = "stop"
+note = "coord 0 (19,23) VAR_UNK_40A2 0 -> Eusine and Morty"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 19
+on_text = "stop"
+note = "coord 1 (22,19) VAR_UNK_40A6 0 -> rival (scr_seq_0023_D18R0101.s:14-36)"
+
+[[step]]
+do = "advance_text"
+shot = "rival-burned-tower"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_RIVAL_SILVER_11: GASTLY 20, MAGNEMITE 18, ZUBAT 20, CROCONAW 22"
+
+[[step]]
+do = "advance_text"
+
+# PHASE2: confirm how the player reaches B1F (warp (22,16) or a scripted fall after the rival) with the probe.
+[[step]]
+do = "walk_to"
+x = 22
+z = 16
+note = "-> B1F (warp 1) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BURNED_TOWER_B1F"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 16
+on_text = "stop"
+note = "coord 0 (20,16..17) VAR_UNK_40A1 0 -> the beasts wake and flee (scr_seq_0024_D18R0102.s:23-136)"
+
+[[step]]
+do = "advance_text"
+shot = "legendary-beasts"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 15
+note = "B1F ladder (warp 1) -> 1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BURNED_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 26
+note = "tower door (warp 0) -> Ecruteak"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK"
+
+[expect]
+map = "MAP_ECRUTEAK"
+badges = 3
+flags = ["FLAG_HIDE_BURNED_TOWER_1F_RIVAL", "FLAG_HIDE_BURNED_TOWER_1F_MORTY", "FLAG_HIDE_BURNED_TOWER_B1F_RAIKOU", "FLAG_HIDE_BURNED_TOWER_B1F_ENTEI", "FLAG_HIDE_BURNED_TOWER_B1F_SUICUNE", "FLAG_UNK_247"]
+flags_clear = ["FLAG_HIDE_CIANWOOD_SUICUNE"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_40A2 = 1
+VAR_UNK_40A6 = 1
+VAR_UNK_40A1 = 1
+VAR_UNK_4076 = 1
+VAR_UNK_4079 = 2

@@ -13,11 +13,13 @@ import struct
 import subprocess
 import sys
 
-from np_e2e import (BW_GAMES, DIR_DELTA, DIR_KEYS, FACINGS, GBA_GAMES, ROOT, TILE_BEHAVIOR, TILE_COLLISION,
-                    TILE_CONNECTED, TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, UI_FIELD_MENU, HarnessError, behaviors)
+from np_e2e import (BW_GAMES, DIR_DELTA, DIR_KEYS, FACINGS, GBA_GAMES, HGSS_GAMES, ROOT, TILE_BEHAVIOR,
+                    TILE_COLLISION, TILE_CONNECTED, TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, UI_FIELD_MENU,
+                    HarnessError, behaviors)
 
 # ---- the battle's touch screen (Platinum src/battle/battle_subscreen.c touch rects; D/P's overlay 11
-# tables are byte-identical), as tap points: the centre of each button.
+# tables are byte-identical, and so are HG/SS's: src/battle/battle_input.c sTouchscreenRect*Buttons, overlay 8's
+# party tables ov08_02224F1C / ov08_02224E54), as tap points: the centre of each button.
 TAP_FIGHT = (128, 80)          # sActionMenuTouchRects[0]: y 0x18-0x90, full width
 TAP_MOVES = [(64, 52), (192, 52), (64, 116), (192, 116)]  # sMoveSelectMenuTouchRects[1..4]
 # sTargetSelectMenuTouchRects[1] and [0]: the opponent on the right, then the one on the left (the right one may
@@ -56,6 +58,9 @@ ROCK_CLIMB = {0x4B: (0, 1), 0x4C: (2, 3)}  # ROCK_CLIMB_N_S / _E_W and the direc
 # D/P include/constants/sprites.h:80-81 SPRITE_BREAKROCK/TREE: the same ids). Strength boulders (84) are
 # puzzles: steps push them.
 GFX_ROCK_SMASH, GFX_CUT_TREE = 85, 86
+# HG/SS (src/metatile_behavior.c sMetatileBehaviorFlags with TILE_BEHAVIOR_FLAG_SURFABLE): Platinum's numbers plus
+# 0x73, 0x78 and 0x7C, and 0x11 is WHIRLPOOL, crossed only with the HM Whirlpool, so not planned through.
+HGSS_SURFABLE = (SURFABLE - {0x11}) | {0x73, 0x78, 0x7C}
 # A* cost of a field-move tile or object: one interaction plus its scene
 FIELD_MOVE_COST = 4
 # A* cost added per earlier visit of a tile in the same walk (Terrain.visits)
@@ -822,6 +827,10 @@ class Terrain:
                 self.block_into[b[name]] = dirs
         water = [v for k, v in b.items() if k.startswith("WATER") or k in ("WATERFALL", "DEEP_WATER")]
         self.water = set(water)
+        if game in HGSS_GAMES:
+            # HG/SS's surfable numbers (and the whirlpool) beyond Platinum's WATER* names
+            self.surfable = HGSS_SURFABLE
+            self.water |= HGSS_SURFABLE | {0x11}
         # Tall grass costs GRASS_COST steps: the planner goes round it where it can, as a player would, so a
         # walk meets fewer wild battles and reaches the route's trainers with more HP.
         self.grass = {b[k] for k in ("TALL_GRASS", "VERY_TALL_GRASS", "MUD_WITH_GRASS", "MUD_DEEP_WITH_GRASS") if k in b}
@@ -1551,6 +1560,10 @@ PC_COUNTER, PC_EXIT = (8, 6), (8, 12)
 # Ruby/Sapphire/Emerald: the nurse at (7,2) behind the counter (7,3), the exit arrow mats at (6,8)/(7,8) (every
 # data/maps/*_PokemonCenter_1F/map.json of both decomps, e.g. OldaleTown_PokemonCenter_1F)
 GBA_PC_COUNTER, GBA_PC_EXIT = (7, 4), (7, 8)
+# HG/SS: every *PC0101 (Pokemon Center 1F) zone_event has the nurse (SPRITE_PCWOMAN1) at (8,11) behind the counter
+# and the town exit warp at (8,19) (games/heartgold/files/fielddata/eventdata/zone_event/*PC0101.json, e.g.
+# 066_T21PC0101 Cherrygrove)
+HGSS_PC_COUNTER, HGSS_PC_EXIT = (8, 13), (8, 19)
 
 
 def bot_heal(s, step, ctx):
@@ -1565,7 +1578,8 @@ def bot_heal(s, step, ctx):
     if s.map_id == town:
         raise HarnessError("heal: (%d,%d) is not a door on map %d" % (int(step["x"]), int(step["z"]), town))
     center = s.map_id
-    counter, exit_ = (GBA_PC_COUNTER, GBA_PC_EXIT) if ctx.game in GBA_GAMES else (PC_COUNTER, PC_EXIT)
+    counter, exit_ = ((GBA_PC_COUNTER, GBA_PC_EXIT) if ctx.game in GBA_GAMES
+                      else (HGSS_PC_COUNTER, HGSS_PC_EXIT) if ctx.game in HGSS_GAMES else (PC_COUNTER, PC_EXIT))
     bot_walk_to(s, {"x": counter[0], "z": counter[1], "face": "up", "interact": True}, ctx)
     bot_advance_text(s, {}, ctx)  # A answers YES to resting the Pokemon
     bot_walk_to(s, {"x": exit_[0], "z": exit_[1]}, ctx)

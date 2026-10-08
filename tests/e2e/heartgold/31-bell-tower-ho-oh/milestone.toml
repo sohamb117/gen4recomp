@@ -1,0 +1,229 @@
+# HeartGold only: proves Ho-Oh. The Bell Tower barrier monk steps aside (Fog Badge), Bellchime Trail, the Bell Tower's
+# ten floors, the roof coord (VAR_UNK_40FA 1) that plays the Clear Bell scene, and Ho-Oh (WildBattle 250, lv45 in HG);
+# winning or catching sets FLAG_UNK_108 and frees New Bark's east exit (VAR_SCENE_NEW_BARK_EAST_EXIT 3).
+# Start: MAP_ECRUTEAK (397,174) -> end: MAP_BELL_TOWER_ROOF (15,17), FLAG_UNK_108.
+title = "HeartGold: Bell Tower and Ho-Oh"
+status = "planned"
+priority = "P0"
+version = "heartgold"
+estimate = 40000
+refs = [
+  "scr_seq_0034_D23R0106.s:75-80 (HG: ITEM_RAINBOW_WING, FLAG_UNK_093)",
+  "scr_seq_0928_T27R0501.s:807-812,868-870 (HG: ITEM_CLEAR_BELL, FLAG_UNK_103, ClearFlag FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS)",
+  "zone_event 075_T27 warp 2 (392,153) -> MAP_ECRUTEAK_BELL_TOWER_BARRIER_STATION (9,11)",
+  "zone_event 080_T27R0201 object 0 obj_T27R0201_bozu (15,7) -> 000; scr_seq_0926_T27R0201.s:22-64 (CheckBadge BADGE_FOG: he steps aside, VAR_TEMP_x4002 1)",
+  "zone_event 080_T27R0201 warp 1 (15,3) -> MAP_ECRUTEAK_BELL_TOWER_BARRIER_STATION_CORRIDOR; zone_event 203_T27R0202 warp 1 (6,3) -> MAP_BELLCHIME_TOWER; zone_event 004_D17R1101 warp 2 (37,16) -> MAP_BELL_TOWER_1F",
+  "zone_event 108_D17R0101 coords (7,12) w3 / (12,7) h4 VAR_UNK_40F3 0 -> 001 (ShowLegendaryWing 0, VAR_UNK_40F3 1, scr_seq_0019_D17R0101.s:51-193)",
+  "zone_event 108_D17R0101 warps 1/2 (9,8)/(9,7) -> 2F; 303_D17R0102 (15,25/24) -> 3F; 304_D17R0103 (24,8/7) -> 4F; 305_D17R0104 (6,8/7) -> 5F 0, (6,25/24) -> 5F 1, (24,25/24) -> 5F 2; 306_D17R0105 (13,25/24) -> 6F; 307_D17R0106 (6,19/18) -> 7F; 308_D17R0107 (15,26) -> 8F (7,12); 309_D17R0108 -> 9F warps 0-5; 310_D17R0109 (12,17/16) -> 10F; 312_D17R0112 (15,25/24) -> MAP_BELL_TOWER_ROOF",
+  "zone_event 311_D17R0110 coord 0 (15,20) VAR_UNK_40FA 1 -> 006 (Clear Bell scene, FLAG_UNK_10A, VAR_UNK_40FA 2, scr_seq_0021_D17R0110.s:104-342)",
+  "zone_event 311_D17R0110 object 5 obj_D17R0110_hou_obj01 (15,16) -> 000",
+  "scr_seq_0021_D17R0110.s:54-102 (WildBattle 250 at 45 in HG (70 in SS); outcome 2/3 -> WhiteOut; else FLAG_UNK_108, VAR_SCENE_NEW_BARK_EAST_EXIT 3, FLAG_HIDE_NEW_BARK_FRIEND/MARILL/FRIEND_2, FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS; caught -> FLAG_CAUGHT_HO_OH)",
+  "scr_seq_0842_T20.s:1661-1735 (VAR_SCENE_NEW_BARK_EAST_EXIT 2: Lyra turns the player back from Route 27 until this)",
+]
+notes = "HG Ho-Oh is lv45 (scr_seq_0021_D17R0110.s:63-70). auto_battle knocks it out (outcome 'won' progresses the story; catching needs ball throws the bots do not make). The 4F->5F and 8F->9F choices that lead on to 10F are not in the event data: guesses marked [INFERENCE]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 392
+z = 153
+note = "Bell Tower barrier station (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK_BELL_TOWER_BARRIER_STATION"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the monk (15,7): Fog Badge -> he steps aside (scr_seq_0926_T27R0201.s:49-64)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 3
+note = "-> corridor (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK_BELL_TOWER_BARRIER_STATION_CORRIDOR"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 3
+note = "-> Bellchime Trail (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELLCHIME_TOWER"
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 16
+note = "-> Bell Tower 1F (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+on_text = "stop"
+note = "coord (7..9,12) VAR_UNK_40F3 0 -> the Rainbow Wing glows (scr_seq_0019_D17R0101.s:51-193)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 7
+note = "1F -> 2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 24
+note = "2F -> 3F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 7
+note = "3F -> 4F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_4F"
+
+# PHASE2: which of 4F's three ways up (to 5F warps 0/1/2) reaches 5F's stairs (13,24/25), and which 8F warp reaches
+# 9F (12,16/17): probe_map each floor.
+[[step]]
+do = "walk_to"
+x = 24
+z = 24
+note = "4F -> 5F (warp 6 -> 5F (24,25)) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_5F"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 24
+note = "5F -> 6F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_6F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 18
+note = "6F -> 7F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_7F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 26
+note = "7F -> 8F (7,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_8F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 17
+note = "8F -> 9F (warp 4 -> 9F (6,12)) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_9F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 16
+note = "9F -> 10F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_10F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 24
+note = "10F -> roof"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_ROOF"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 20
+on_text = "stop"
+note = "coord 0 (15,20) VAR_UNK_40FA 1 -> the Clear Bell, Ho-Oh descends (scr_seq_0021_D17R0110.s:104-342)"
+
+[[step]]
+do = "advance_text"
+shot = "ho-oh-arrives"
+
+[[step]]
+do = "talk_to"
+id = 5
+note = "Ho-Oh (15,16)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "WildBattle SPECIES_HO_OH 45 (scr_seq_0021_D17R0110.s:73)"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_BELL_TOWER_ROOF"
+badges = 8
+flags = ["FLAG_UNK_093", "FLAG_UNK_103", "FLAG_UNK_108", "FLAG_UNK_10A", "FLAG_HIDE_NEW_BARK_FRIEND_2", "FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS"]
+flags_clear = ["FLAG_HIDE_NEW_BARK_FRIENDS_ROOM_FRIEND", "FLAG_HIDE_DANCE_STUDIO_KIMONO_GIRLS"]
+battles = 1
+
+[expect.vars]
+VAR_UNK_40F3 = 1
+VAR_UNK_40FA = 2
+VAR_SCENE_NEW_BARK_EAST_EXIT = 3

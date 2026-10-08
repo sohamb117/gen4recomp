@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Compile a gameplay lab recipe (names) to the inline PC_LAB form (numbers).
 
-    labc.py [--game platinum|diamond|pearl|emerald|ruby|sapphire] RECIPE           ->   inline:name GQ;party 390 30 0;...
-    labc.py [--game platinum|diamond|pearl|emerald|ruby|sapphire] --clock RECIPE   ->   the recipe's PC_RTC (empty: none)
+    labc.py [--game platinum|diamond|pearl|heartgold|soulsilver|emerald|ruby|sapphire] RECIPE           ->   inline:name GQ;party 390 30 0;...
+    labc.py [--game platinum|diamond|pearl|heartgold|soulsilver|emerald|ruby|sapphire] --clock RECIPE   ->   the recipe's PC_RTC (empty: none)
 
 Platinum: the recipe language and its name resolution are the save lab's own
 (games/platinum/pc/tests/pc_lab.py, pc/src/pc_lab.c); this only points that
@@ -22,6 +22,10 @@ enumerator, expression defines evaluated, the MAP_* of map_groups.h and the
 LOCALID_* of event_objects.h / map_event_ids.h among them
 (tools/gba/gen3.py decomp_constants).
 
+HeartGold/SoulSilver: names come from pokeheartgold's include/constants/*.h
+(one tree for both versions): MAP_* (maps.h), FLAG_*, VAR_*, BADGE_*,
+SPECIES_*, ITEM_*, MOVE_* and every other numeric #define and enumerator.
+
 Every argument may also be a number (decimal or 0x hex) on every game.
 
 One line is the compiler's rather than the guest's: `clock YYYY-MM-DD
@@ -39,6 +43,7 @@ GAMES = os.path.join(HERE, "..", "..", "games")
 DP_NAMES = os.path.join(HERE, "dp", "names.txt")
 GBA_TOOLS = os.path.join(HERE, "..", "..", "tools", "gba")
 GBA_GAMES = ("emerald", "ruby", "sapphire")
+HGSS_GAMES = ("heartgold", "soulsilver")
 
 TEXT_VERBS = {"name"}
 DEFINE_LINE = re.compile(r"^\s*#define\s+([A-Z_][A-Z0-9_]*)\s+\(?(-?\d+|0x[0-9a-fA-F]+)\)?\s*(?://.*)?$")
@@ -46,12 +51,14 @@ ENUM_NAME = re.compile(r"^\s*([A-Z_][A-Z0-9_]*)\s*(?:=\s*([A-Z_0-9x]+))?\s*,?\s*
 CLOCK = re.compile(r"^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$")
 
 
-def dp_constants():
-    root = os.path.join(GAMES, "diamond", "include")
+def dp_constants(root=None, extra=("poketch.h",), names=DP_NAMES):
+    """Every numeric #define and enumerator of a DS decomp's include/constants/*.h (and `extra` headers): pokediamond
+    by default, plus FACE_* and tests/gameplay/dp/names.txt; HG/SS through hgss_constants."""
+    root = root or os.path.join(GAMES, "diamond", "include")
     out = {"FACE_UP": 0, "FACE_DOWN": 1, "FACE_LEFT": 2, "FACE_RIGHT": 3}
     cdir = os.path.join(root, "constants")
     paths = [os.path.join(cdir, n) for n in sorted(os.listdir(cdir)) if n.endswith(".h")]
-    paths.append(os.path.join(root, "poketch.h"))
+    paths += [os.path.join(root, n) for n in extra]
     for path in paths:
         depth, nxt = 0, 0
         with open(path, errors="replace") as f:
@@ -74,8 +81,15 @@ def dp_constants():
                         nxt = out[v] if v in out else int(v, 0)
                     out.setdefault(m.group(1), nxt)
                     nxt += 1
-    dp_names(out)
+    if names:
+        dp_names(out, names)
     return out
+
+
+def hgss_constants():
+    """HeartGold/SoulSilver: pokeheartgold's include/constants/*.h (MAP_* maps.h, FLAG_* flags.h, VAR_* vars.h,
+    BADGE_* badge.h, SPECIES_*, ITEM_*, MOVE_*); one tree builds both versions."""
+    return dp_constants(os.path.join(GAMES, "heartgold", "include"), extra=(), names=None)
 
 
 def dp_names(out, path=DP_NAMES):
@@ -107,6 +121,8 @@ def make_resolver(game):
         sys.path.insert(0, GBA_TOOLS)
         import gen3  # noqa: E402
         consts = gen3.decomp_constants(game)
+    elif game in HGSS_GAMES:
+        consts = hgss_constants()
     else:
         consts = dp_constants()
 
@@ -169,7 +185,7 @@ if __name__ == "__main__":
             clock, args = True, args[1:]
         else:
             game, args = args[1], args[2:]
-    if len(args) != 1 or game not in ("platinum", "diamond", "pearl") + GBA_GAMES:
-        sys.exit("usage: labc.py [--game platinum|diamond|pearl|emerald|ruby|sapphire] [--clock] RECIPE")
+    if len(args) != 1 or game not in ("platinum", "diamond", "pearl") + HGSS_GAMES + GBA_GAMES:
+        sys.exit("usage: labc.py [--game platinum|diamond|pearl|heartgold|soulsilver|emerald|ruby|sapphire] [--clock] RECIPE")
     inline, env = compile_recipe(args[0], game)
     print(env.get("PC_RTC", "") if clock else inline)

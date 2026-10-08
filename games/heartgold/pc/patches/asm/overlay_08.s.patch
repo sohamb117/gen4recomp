@@ -1,0 +1,20 @@
+--- a/asm/overlay_08.s
++++ b/asm/overlay_08.s
+@@ -411,7 +411,7 @@
+ 	pop {r4, pc}
+ _0221C162:
+ 	add r0, r4, #0
+-	bl ov08_0221D438
++	bl PcHg_E2ePartySlots ; pc: tests/e2e probe, then ov08_0221D438 (pc/src/pc_hg_field.c)
+ 	cmp r0, #1
+ 	bne _0221C1BA
+ 	ldr r1, [r4]
+@@ -626,7 +626,7 @@
+ ov08_0221C318: ; 0x0221C318
+ 	push {r4, lr}
+ 	add r4, r0, #0
+-	bl ov08_0221D4B0
++	bl PcHg_E2ePartyShift ; pc: tests/e2e probe, then ov08_0221D4B0 (pc/src/pc_hg_field.c)
+ 	cmp r0, #3
+ 	bhi _0221C3BA
+ 	add r0, r0, r0

@@ -3,7 +3,15 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
-No open entries.
+## Open: HeartGold's first field load hangs (port; owner: the HG/SS port)
+
+HeartGold 01 (tests/e2e/heartgold/01-newgame-cyndaquil-pokegear) cannot start: the intro schedule
+(`intro.press`, docs/HANDOFF-hgss.md) reaches the first map load at frame 16169 (`[status] map_id 0 -> 64`, the
+bedroom) and then no frame completes (no `[progress]` line in 55 minutes). Repro: `np_headless heartgold
+pokeheartgold.us.nds --frames 17000 --schedule tests/e2e/heartgold/01-*/intro.press --progress 100` on main + the
+ds_protect fix (branch hgss2). Cause as the port side reports it: the field init (fieldmap.c ov01_021E662C) polls
+the cartridge's IR chip over AUXSPI (CARD_SpiWaitGetStatus, wants 0xAA) and a second OS_LockCard spins forever; the
+host's card model has no IR chip on that bus yet. Every HG/SS milestone waits on this.
 
 ## Fixed: Emerald dropped the player through Granite Cave B1F's floor on arrival (copyvar through NULL)
 

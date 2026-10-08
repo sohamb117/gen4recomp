@@ -1,0 +1,82 @@
+# Proves the Blackthorn Gym: its lava-floor puzzle (BlackthornGymInit, the pit coords that warp a misstep back), the Ace
+# Trainers, Clair (TRAINER_LEADER_CLAIR_CLAIR) who withholds the badge and sends the player to the Dragon's Den
+# (FLAG_UNK_0D1, the den guard steps aside).
+# Start: MAP_BLACKTHORN (697,145) -> end: MAP_BLACKTHORN outside the gym (668,152), FLAG_UNK_0D1.
+title = "Blackthorn Gym: Clair (no badge yet)"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 22000
+refs = [
+  "zone_event 086_T30 warp 1 (668,151) -> MAP_BLACKTHORN_GYM (13,87)",
+  "scr_seq_0034_D23R0106.s:144-145 (FLAG_HIDE_BLACKTHORN_GYM_GUARD_INFRONT set, _ASIDE cleared by the Radio Tower)",
+  "zone_event 137_T30GYM0101 coords 0-2 (5,9) (23,41) (3,62) VAR_UNK_4111 0 -> 002 (Warp MAP_BLACKTHORN_GYM (8,83), scr_seq_0943_T30GYM0101.s:147-155); coord 3 (12,82) w3 VAR_UNK_4120 0 -> 004",
+  "scr_seq_0943_T30GYM0101.s:16-18 (OnTransition BlackthornGymInit, VAR_UNK_4120 0)",
+  "zone_event 137_T30GYM0101 object 0 obj_T30GYM0101_gsleader8 (12,3); Ace Trainers Paulo (11,66), Lola (8,61), Cody (20,54), Fran (21,45), Mike (13,40)",
+  "scr_seq_0943_T30GYM0101.s:87-112 (TRAINER_LEADER_CLAIR_CLAIR, FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT, ClearFlag FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE)",
+  "TRAINER_LEADER_CLAIR_CLAIR (35, include/constants/trainers.h:40): GYARADOS 38, DRAGONAIR 38, DRAGONAIR 38, KINGDRA 41",
+]
+notes = "Kingdra (Water/Dragon) takes neutral damage from most types except Dragon: boost (Ice/Dragon coverage, levels ~45). The gym's moving floor tiles (BlackthornGymInit) and the gym guide's coord 3 (12..14,82) scene are untraced."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 33000
+
+[[step]]
+do = "walk_to"
+x = 668
+z = 151
+note = "Blackthorn Gym (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN_GYM"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 82
+on_text = "stop"
+note = "coord 3 (12..14,82) VAR_UNK_4120 0 -> 004 (scr_seq_0943_T30GYM0101.s:205-252)"
+
+[[step]]
+do = "advance_text"
+
+# PHASE2: the gym floor (BlackthornGymInit's moving platforms / lava) from (13,82) to Clair (12,3): avoid the pit
+# coords 0-2 and record the route with the probe.
+[[step]]
+do = "talk_to"
+id = 0
+note = "Clair (12,3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_CLAIR_CLAIR: GYARADOS 38, DRAGONAIR 38 x2, KINGDRA 41"
+
+[[step]]
+do = "advance_text"
+shot = "clair"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 87
+note = "gym door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN"
+
+[expect]
+map = "MAP_BLACKTHORN"
+badges = 7
+flags = ["FLAG_UNK_0D1", "FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT"]
+flags_clear = ["FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE"]
+battles = 1

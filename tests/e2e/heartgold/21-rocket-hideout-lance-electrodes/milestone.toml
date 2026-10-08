@@ -1,0 +1,259 @@
+# Proves the Team Rocket hideout under Mahogany: Lance opens the souvenir shop's stairs (OnFrame VAR_UNK_40A8 1), B1F's
+# Persian-statue alarms, B3F's rival and Petrel (TRAINER_EXECUTIVE_PETREL_PETREL_2), the three Murkrow passwords
+# (VAR_UNK_40AC 4..8), the multi battle with Lance vs Ariana, the three Electrodes, HM05 Whirlpool and
+# FLAG_ROCKET_HIDEOUT_CLEARED (opens the Mahogany Gym and Route 43's gate).
+# Start: MAP_LAKE_OF_RAGE (528,84) -> end: MAP_TEAM_ROCKET_HEADQUARTERS_B2F generator room (21,15), hideout cleared.
+title = "Rocket hideout: Lance, Petrel, Ariana, the Electrodes, HM05"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 50000
+refs = [
+  "zone_event 084_T28 warp 5 (528,174) -> MAP_MAHOGANY_SOUVENIR_SHOP",
+  "scr_seq_0088_D35R0101_hdr.s (OnFrame VAR_UNK_40A8 1 -> 006); scr_seq_0088_D35R0101.s:69-123 (Lance: FLAG_HIDE_MAHOGANY_SHOP_LANCE, VAR_UNK_40A8 2)",
+  "zone_event 113_D35R0101 warp 1 (6,3) -> MAP_TEAM_ROCKET_HEADQUARTERS_B1F (51,4)",
+  "zone_event 233_D35R0102 coords 0-4 (44,4) (18,4) (44,11) (44,29) (18,29) VAR_UNK_40AD..40B1 0 -> statue alarms (TRAINER_TEAM_ROCKET_GRUNT_20/21, scr_seq_0089_D35R0102.s:149-740); coords 5-20 the floor traps (VAR_ROCKET_TRAP_*)",
+  "zone_event 233_D35R0102 warp 1 (10,29) -> MAP_TEAM_ROCKET_HEADQUARTERS_B2F 0",
+  "scr_seq_0090_D35R0103_hdr.s (OnFrame VAR_UNK_40A9 0 -> 000: Lance, FLAG_UNK_1E5, VAR_UNK_40A9 1, :85-117)",
+  "zone_event 234_D35R0103 warps 1-4 -> B3F; zone_event 235_D35R0104 coord 0 (20,17) h3 VAR_UNK_40AC 2 -> rival (:150-199, VAR_UNK_40AC 3), coord 1 (23,12) w2 VAR_UNK_40AC 3 -> Petrel (:247-313, VAR_UNK_40AC 4)",
+  "scr_seq_0091_D35R0104.s:19-25 (OnTransition VAR_UNK_40AC 2), :38-64 (OnFrame VAR_UNK_40AC 0 -> 1)",
+  "TRAINER_EXECUTIVE_PETREL_PETREL_2 (488, include/constants/trainers.h:493): ZUBAT 22, RATICATE 24, KOFFING 22",
+  "zone_event 234_D35R0103 coord 5 (11,4) h2 VAR_UNK_40AC 4 -> Murkrow 1 (VAR_UNK_40AC 5); zone_event 235_D35R0104 coord 2 (50,4) h2 VAR_UNK_40AC 5 -> Murkrow 2 (6); zone_event 234_D35R0103 coord 6 (50,29) h2 VAR_UNK_40AC 6 -> (7); coord 3 (29,27) w4 VAR_UNK_40AC 7 -> Murkrow 3 (8, VAR_UNK_40A9 3)",
+  "zone_event 234_D35R0103 coord 0 (30,19) w2 VAR_UNK_40AC 8 -> 003",
+  "scr_seq_0090_D35R0103.s:314-443 (MultiBattle TRAINER_PKMN_TRAINER_LANCE_LANCE + TRAINER_EXECUTIVE_ARIANA_ARIANA_2 + TRAINER_TEAM_ROCKET_GRUNT_25 :370, FLAG_HIDE_ROCKET_HIDEOUT_B2F_ARIANA, FLAG_HIDE_MAHOGANY_SHOP_SHADY_SALESMAN, VAR_UNK_40AC 9, VAR_UNK_40A9 4)",
+  "TRAINER_EXECUTIVE_ARIANA_ARIANA_2 (479, include/constants/trainers.h:484): ARBOK 25, GLOOM 25, MURKROW 27; TRAINER_TEAM_ROCKET_GRUNT_25 (499): DROWZEE 18, GRIMER 20",
+  "zone_event 234_D35R0103 objects 9-11 Electrodes (21,12) (21,14) (21,16) -> 004/005/006",
+  "scr_seq_0090_D35R0103.s:593-732 (WildBattle SPECIES_ELECTRODE 23 x3, FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_1..3, ITEM_HM05, FLAG_ROCKET_HIDEOUT_CLEARED, FLAG_HIDE_ROUTE_43_GATE_ROCKETS, VAR_UNK_40AC 10, VAR_UNK_410F 1)",
+]
+notes = "The 40AC chain fixes the order: B3F (rival, Petrel), B2F Murkrow at (11,4), B3F Murkrow at (50,4), B2F (50,29), B2F (29..32,27), then the double door (30..31,19) and the multi battle. Electrode is Electric: Ground move by boost (Explosion/Selfdestruct risk is the RNG's). The statue alarm coords sit on the corridors: walk_to avoid them where the probe shows a way round [INFERENCE: each fires once, then its var is 2]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 75000
+
+[[step]]
+do = "walk_to"
+x = 528
+z = 174
+note = "Route 43 back south (toll gate already paid: VAR_UNK_410F 1) to Mahogany's souvenir shop (warp 5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY_SOUVENIR_SHOP"
+
+[[step]]
+do = "advance_text"
+shot = "lance-shop"
+note = "OnFrame VAR_UNK_40A8 1 -> Lance reveals the stairs -> 2"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 3
+note = "stairs (warp 1) -> B1F (51,4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B1F"
+
+# PHASE2: B1F's statue alarms and floor traps: probe_map B1F and route around coords 0-20 where the floor allows; each
+# alarm met is a grunt battle (walk_to fights). Then B2F/B3F per the VAR_UNK_40AC chain below.
+[[step]]
+do = "walk_to"
+x = 10
+z = 29
+note = "B1F -> B2F (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B2F"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_UNK_40A9 0 -> Lance (scr_seq_0090_D35R0103.s:85-117)"
+
+[[step]]
+do = "walk_to"
+x = 51
+z = 29
+note = "B2F -> B3F (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B3F"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 18
+on_text = "stop"
+note = "B3F coord 0 (20,17..19) VAR_UNK_40AC 2 -> the rival"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 12
+on_text = "stop"
+note = "coord 1 (23..24,12) VAR_UNK_40AC 3 -> Petrel (scr_seq_0091_D35R0104.s:247-313)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_EXECUTIVE_PETREL_PETREL_2: ZUBAT 22, RATICATE 24, KOFFING 22"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 4
+note = "B3F -> B2F (warp 2 (10,4))"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B2F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 4
+on_text = "stop"
+note = "coord 5 (11,4..5) VAR_UNK_40AC 4 -> Murkrow 1 (VAR 5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 51
+z = 4
+note = "B2F -> B3F (warp 4 (51,4))"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B3F"
+
+[[step]]
+do = "walk_to"
+x = 50
+z = 4
+on_text = "stop"
+note = "coord 2 (50,4..5) VAR_UNK_40AC 5 -> Murkrow 2 (VAR 6)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 51
+z = 29
+note = "B3F -> B2F (warp 0 (51,29))"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B2F"
+
+[[step]]
+do = "walk_to"
+x = 50
+z = 29
+on_text = "stop"
+note = "coord 6 (50,29..30) VAR_UNK_40AC 6 -> VAR 7"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 27
+on_text = "stop"
+note = "coord 3 (29..32,27) VAR_UNK_40AC 7 -> Murkrow 3: the password (VAR 8, VAR_UNK_40A9 3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 19
+on_text = "stop"
+note = "coord 0 (30..31,19) VAR_UNK_40AC 8 -> Ariana, Lance joins (scr_seq_0090_D35R0103.s:314-370)"
+
+[[step]]
+do = "advance_text"
+shot = "ariana-multi"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "MultiBattle: Lance (DRAGONITE 40) + player vs ARIANA_2 (ARBOK 25, GLOOM 25, MURKROW 27) + GRUNT_25 (DROWZEE 18, GRIMER 20)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 9
+note = "Electrode 1 (21,12)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "WildBattle SPECIES_ELECTRODE 23"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 10
+note = "Electrode 2 (21,14)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 11
+note = "Electrode 3 (21,16)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+shot = "hm05"
+note = "Lance: HM05, FLAG_ROCKET_HIDEOUT_CLEARED (scr_seq_0090_D35R0103.s:694-715)"
+
+[expect]
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B2F"
+badges = 6
+flags = ["FLAG_ROCKET_HIDEOUT_CLEARED", "FLAG_HIDE_ROUTE_43_GATE_ROCKETS", "FLAG_HIDE_ROCKET_HIDEOUT_B2F_ARIANA", "FLAG_HIDE_MAHOGANY_SHOP_SHADY_SALESMAN", "FLAG_HIDE_MAHOGANY_SHOP_LANCE", "FLAG_HIDE_ROCKET_HIDEOUT_B3F_PETREL", "FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_1", "FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_2", "FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_3"]
+battles = 5
+
+[expect.vars]
+VAR_UNK_40A8 = 2
+VAR_UNK_40AC = 10
+VAR_UNK_410F = 1

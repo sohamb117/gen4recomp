@@ -1,0 +1,172 @@
+# Proves the takeover's end: the 3F card-key door (FLAG_UNK_090), 4F/5F, Ariana on 5F, the elevator to the observation
+# deck and Archer (TRAINER_EXECUTIVE_ARCHER_ARCHER); the director gives the version's wing (HG Rainbow Wing, SS Silver
+# Wing) and opens Route 44 (VAR_UNK_407A 1) and the Blackthorn Gym (FLAG_HIDE_BLACKTHORN_GYM_GUARD_INFRONT).
+# Start: MAP_GOLDENROD_TUNNEL_WAREHOUSE (20,14) -> end: MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK, VAR_SCENE_ROCKET_TAKEOVER 5.
+title = "Radio Tower: the Card Key door, Archer, the director's wing"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 35000
+refs = [
+  "zone_event 195_D37R0105 warp 1 (28,4) -> MAP_GOLDENROD_DEPARTMENT_STORE_BASEMENT; zone_event 193_D37R0103 warp 1 (18,6) -> MAP_GOLDENROD_DEPARTMENT_STORE_ELEVATOR",
+  "zone_event 180_D23R0103 bg 2 (22,11) -> 007 (card key: FLAG_UNK_1BF hides the shutters (23/24,11), FLAG_UNK_090, scr_seq_0031_D23R0103.s:129-162)",
+  "zone_event 180_D23R0103 warp 2 (19,5) -> 4F 2; zone_event 181_D23R0104 warp 3 (23,5) -> 5F 2",
+  "zone_event 182_D23R0105 object 1 TRAINER_EXECUTIVE_ARIANA_ARIANA (11,4) sight 4; warp 1 (13,2) -> MAP_GOLDENROD_RADIO_TOWER_ELEVATOR",
+  "scr_seq_0035_D23R0107.s:11-71 (elevator: SetDynamicWarp OBSERVATION_DECK from 5F)",
+  "zone_event 183_D23R0106 object 0 obj_D23R0106_rkanbum (8,3) -> 001",
+  "scr_seq_0034_D23R0106.s:23-148 (TRAINER_EXECUTIVE_ARCHER_ARCHER, ClearFlag FLAG_ROCKET_TAKEOVER_ACTIVE, GetGameVersion 7 -> ITEM_RAINBOW_WING + FLAG_UNK_093, else ITEM_SILVER_WING + FLAG_UNK_094, VAR_SCENE_ROCKET_TAKEOVER 5, FLAG_BEAT_RADIO_TOWER_ROCKETS, VAR_UNK_407A 1, FLAG_HIDE_BLACKTHORN_GYM_GUARD_INFRONT, ClearFlag FLAG_HIDE_BLACKTHORN_GYM_GUARD_ASIDE)",
+  "TRAINER_EXECUTIVE_ARCHER_ARCHER (485, include/constants/trainers.h:490): HOUNDOUR 35, KOFFING 35, HOUNDOOM 38",
+  "TRAINER_EXECUTIVE_ARIANA_ARIANA (478, include/constants/trainers.h:483): ARBOK 32, VILEPLUME 32, MURKROW 32 (5F, sight 4)",
+  "zone_event 084_T28 coord 0 (540,176) VAR_UNK_407A 0 (Mahogany east exit, now open)",
+]
+notes = "Version split: the wing differs (FLAG_UNK_093 HG / FLAG_UNK_094 SS, scr_seq_0034_D23R0106.s:75-88); this dir is shared and checks only common state: heartgold/31-bell-tower-ho-oh expects FLAG_UNK_093, soulsilver/31-whirl-islands-lugia FLAG_UNK_094. The walk back from the warehouse retraces B2F and the tunnel [INFERENCE]; the warehouse's basement exit to the department store elevator is the alternative."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 52500
+
+# PHASE2: warehouse -> Radio Tower: the department store basement elevator's floor menu (cursor/presses) or the way
+# back through B2F/Tunnel 1F; then walk to the tower.
+[[step]]
+do = "walk_to"
+x = 3
+z = 18
+note = "warehouse -> B2F (warp 0) [INFERENCE: the way back]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_B2F"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 4
+note = "B2F -> Tunnel 1F (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_1F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+note = "Tunnel 1F north door (warp 0) -> Goldenrod"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "walk_to"
+x = 342
+z = 349
+note = "Radio Tower"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 12
+face = "up"
+interact = true
+note = "the card reader bg 2 (22,11) [INFERENCE: read from below] -> the shutters open (scr_seq_0031_D23R0103.s:129-162)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 5
+note = "3F east stairs (warp 2) -> 4F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_4F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 5
+note = "4F -> 5F (warp 3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_5F"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 2
+note = "5F elevator (warp 1); Ariana (11,4) fights on the way"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_ELEVATOR"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 6
+note = "elevator door (dynamic) -> observation deck"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Archer (8,3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_EXECUTIVE_ARCHER_ARCHER: HOUNDOUR 35, KOFFING 35, HOUNDOOM 38"
+
+[[step]]
+do = "advance_text"
+shot = "director-wing"
+note = "the director's wing, takeover over (scr_seq_0034_D23R0106.s:33-148)"
+
+[expect]
+map = "MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK"
+badges = 7
+flags = ["FLAG_BEAT_RADIO_TOWER_ROCKETS", "FLAG_UNK_090", "FLAG_UNK_1BF", "FLAG_HIDE_RADIO_TOWER_5F_PETREL_REVEALED", "FLAG_HIDE_BLACKTHORN_GYM_GUARD_INFRONT"]
+flags_clear = ["FLAG_ROCKET_TAKEOVER_ACTIVE", "FLAG_HIDE_RADIO_TOWER_5F_OFFICE_DIRECTOR", "FLAG_HIDE_MAHOGANY_SHOP_SALESWOMAN", "FLAG_HIDE_BLACKTHORN_GYM_GUARD_ASIDE"]
+battles = 1
+
+[expect.vars]
+VAR_SCENE_ROCKET_TAKEOVER = 5
+VAR_UNK_407A = 1

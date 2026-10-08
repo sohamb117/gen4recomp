@@ -3,7 +3,7 @@
 
     tests/e2e/run.py --game G [--from M] [--only M ...] [--systems] [--lab] [--planned] [--out DIR] [--check]
 
-G is platinum, diamond or pearl, black or white, or emerald, ruby or sapphire. The chain is tests/e2e/<G>/chain.txt (side
+G is platinum, diamond or pearl, heartgold or soulsilver, black or white, or emerald, ruby or sapphire. The chain is tests/e2e/<G>/chain.txt (side
 systems: systems.txt with --systems); each entry is a milestone directory
 holding milestone.toml. Every milestone runs np_gp in serve mode with the
 e2e probe on, starts from the previous milestone's end save (or a lab
@@ -33,12 +33,16 @@ sys.path.insert(0, GAMEPLAY)
 
 import labc  # noqa: E402
 from bots import BOTS  # noqa: E402
-from np_e2e import BW_GAMES, GBA_GAMES, Budget, Dead, HarnessError, Session  # noqa: E402
+from np_e2e import BW_GAMES, GBA_GAMES, HGSS_GAMES, Budget, Dead, HarnessError, Session  # noqa: E402
 
 GAMES = {
     "platinum": ("games/platinum/build/rom/pokeplatinum.us.nds", "build/core-plat"),
     "diamond": ("games/diamond/build/diamond.us/pokediamond.us.nds", "build/core-dp"),
     "pearl": ("games/diamond/build/pearl.us/pokepearl.us.nds", "build/core-dp"),
+    # HeartGold/SoulSilver: the pokeheartgold ROM builds (tools/rom_build.sh heartgold|soulsilver) and the HG/SS
+    # core (docs/HANDOFF-hgss.md)
+    "heartgold": ("games/heartgold/build/heartgold.us/pokeheartgold.us.nds", "build/core-hgss"),
+    "soulsilver": ("games/heartgold/build/soulsilver.us/pokesoulsilver.us.nds", "build/core-hgss"),
     # the GBA games: the decomps' own ROM builds (tools/rom_build.sh; docs/HANDOFF-rse.md) and the RSE core
     "emerald": (".cache/gba/pokeemerald/pokeemerald.gba", "build/rse/native"),
     "ruby": (".cache/gba/pokeruby/pokeruby.gba", "build/rse/native"),
@@ -337,6 +341,11 @@ def mint(game, recipe, out_sav, base, workdir):
     if os.path.exists(work):
         os.remove(work)
     run_env = dict(os.environ, PC_LAB=inline, PC_LAB_AT="1800", **env)
+    if game.name in HGSS_GAMES:
+        # no HG/SS save lab yet (Platinum's pc_lab.c / D/P's pc_dp_lab.c have no HG/SS twin): the chain runs from the
+        # previous milestone's end save
+        raise HarnessError("minting %s: HG/SS has no save lab yet; start from the previous milestone's end save"
+                           % os.path.basename(recipe))
     if game.name == "platinum":
         cmd = [game.gp, game.rom, "--frames", "6000", "--save", work]
         if base:

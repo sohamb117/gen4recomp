@@ -1,0 +1,73 @@
+# Proves the way south: Route 32 (the man at the north end lets the player pass once the aide's egg is carried),
+# Union Cave 1F, Route 33 into Azalea Town.
+# Start: MAP_VIOLET (469,258) -> end: MAP_AZALEA east side (424,462).
+title = "Route 32, Union Cave, Route 33 to Azalea Town"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 24000
+refs = [
+  "zone_event 070_T22 (Violet) south edge -> Route 32 (no warp; connected maps)",
+  "zone_event 033_R32 coord 0 (475,305) w2 VAR_UNK_408D 0 -> 002",
+  "scr_seq_0232_R32.s:233-300 (without FLAG_GOT_EGG_FROM_ELMS_ASSISTANT he walks the player back; with it, _03F0 lets the player pass)",
+  "scr_seq_0232_R32.s:164-228 (talking to him: Miracle Seed, VAR_UNK_408D 1, FLAG_UNK_074; optional)",
+  "zone_event 033_R32 warp 2 (462,430) -> MAP_UNION_CAVE_1F 0 (27,43)",
+  "zone_event 096_D25R0101 warp 2 (27,93) -> MAP_ROUTE_33 0 (467,461)",
+  "zone_event 071_T23 (Azalea) warps: Pokemon Center (410,460), Kurt (399,454), well (433,454), gym (405,471), Ilex gate (392,462)",
+]
+notes = "Route 32 trainers (Youngster Albert, Fisher Ralph/Justin/Henry, Camper Roland, Picnicker Liz, Bird Keeper Peter ...) fight if they spot; Union Cave 1F has hikers/firebreathers [INFERENCE: not enumerated]. The Union Cave 1F route from (27,43) to (27,93) is over the floor walk_to sees; no HM needed in GSC's layout [INFERENCE]. The Togepi egg may hatch on the way: walk_to answers the nickname question NO (README, _field_or_handle)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 36000
+
+[[step]]
+do = "walk_to"
+x = 475
+z = 305
+on_text = "stop"
+note = "south out of Violet onto Route 32; coord 0 (475..476,305) VAR_UNK_408D 0 -> the man, who lets the egg carrier pass (scr_seq_0232_R32.s:233-300)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 462
+z = 430
+note = "Route 32 south to Union Cave (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNION_CAVE_1F"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 93
+note = "Union Cave 1F south exit (warp 2) -> Route 33"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_33"
+
+[[step]]
+do = "walk_to"
+x = 424
+z = 462
+note = "Route 33 west into Azalea [INFERENCE: (424,462) is open ground east of the Pokemon Center (410,460)]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AZALEA"
+shot = "azalea"
+
+[expect]
+map = "MAP_AZALEA"
+badges = 1
+badge = ["BADGE_ZEPHYR"]
+flags = ["FLAG_GOT_EGG_FROM_ELMS_ASSISTANT"]
+party = ["SPECIES_CYNDAQUIL"]

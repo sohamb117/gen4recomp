@@ -1,0 +1,98 @@
+# Proves the road to the League, open once the legendary scene set VAR_SCENE_NEW_BARK_EAST_EXIT 3: New Bark's east
+# exit, Route 27's coord scene (VAR_UNK_408A), Tohjo Falls (Surf + Waterfall), Route 26 north to the Pokemon League
+# reception gate (FLAG_SYS_FLYPOINT_VICTORY_ROAD, the officer's coord VAR_UNK_4110).
+# Start: (HG) MAP_BELL_TOWER_ROOF / (SS) MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE -> end: MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE (11,15).
+title = "Route 27, Tohjo Falls, Route 26 to the League gate"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 40000
+refs = [
+  "zone_event 057_T20 coords 2/3 (700,398) h5 VAR_SCENE_NEW_BARK_EAST_EXIT 1/2 only (3 passes freely)",
+  "scr_seq_0021_D17R0110.s:84 (HG) / scr_seq_0104_D40R0107.s:96 (SS): VAR_SCENE_NEW_BARK_EAST_EXIT 3",
+  "zone_event 028_R27 coord 0 (734,402) h3 VAR_UNK_408A 0 -> 001 (scr_seq_0221_R27.s:27-54, VAR_UNK_408A 1)",
+  "zone_event 028_R27 warps 0/1 (740,396)/(755,394) -> MAP_TOHJO_FALLS 0 (30,22) / 1 (45,20)",
+  "src/field_move.c:358-365 (Waterfall needs BADGE_RISING); ITEM_HM07 from the Ice Path (milestone 26)",
+  "zone_event 027_R26 warps 2/3 (909/910,296) -> MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE 0 (11,23)",
+  "scr_seq_0213_R22R0101.s:28-29 (OnTransition: FLAG_SYS_FLYPOINT_VICTORY_ROAD)",
+  "zone_event 270_R22R0101 coord 0 (11,16) VAR_UNK_4110 0 -> 000 (officer, VAR_UNK_4110 1, scr_seq_0213_R22R0101.s:97-109)",
+]
+notes = "Route 26/27 trainers (Cooltrainers, Psychics, Dragon Tamer) fight if they spot. Tohjo Falls' inner route (land/water/waterfall) is planned by walk_to surf = true, which answers the Waterfall prompt with A + YES (README walk_to)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 60000
+
+# PHASE2: the legendary's summit/cave -> New Bark: Fly (touch-screen start menu, unverified on HG/SS).
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK"
+note = "arrival in New Bark (after the PHASE2 Fly)"
+
+[[step]]
+do = "walk_to"
+x = 734
+z = 403
+surf = true
+on_text = "stop"
+note = "east exit (no coord at VAR 3) onto Route 27 by Surf; coord 0 (734,402..404) VAR_UNK_408A 0 (scr_seq_0221_R27.s:27-54)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 740
+z = 396
+surf = true
+note = "Tohjo Falls west mouth (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TOHJO_FALLS"
+
+[[step]]
+do = "walk_to"
+x = 45
+z = 20
+surf = true
+note = "through the falls (Waterfall) to the east mouth (warp 1) -> Route 27 (755,394)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_27"
+
+[[step]]
+do = "walk_to"
+x = 909
+z = 296
+surf = true
+note = "Route 27 east, Route 26 north to the reception gate (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 16
+on_text = "stop"
+note = "coord 0 (11,16) VAR_UNK_4110 0 -> the officer (scr_seq_0213_R22R0101.s:97-109)"
+
+[[step]]
+do = "advance_text"
+shot = "league-gate"
+
+[expect]
+map = "MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE"
+badges = 8
+flags = ["FLAG_SYS_FLYPOINT_VICTORY_ROAD"]
+
+[expect.vars]
+VAR_UNK_408A = 1
+VAR_UNK_4110 = 1
+VAR_SCENE_NEW_BARK_EAST_EXIT = 3

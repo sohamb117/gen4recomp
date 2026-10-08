@@ -1,0 +1,73 @@
+# Proves the Ecruteak Gym: the invisible-floor maze (coord events that warp a misstep back to the entrance), the
+# Mediums, Morty (TRAINER_LEADER_MORTY_MORTY), the Fog Badge + TM30.
+# Start: MAP_ECRUTEAK (376,150) -> end: MAP_ECRUTEAK outside the gym (376,184), badge Fog.
+title = "Morty: Fog Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "zone_event 075_T27 warp 7 (376,183) -> MAP_ECRUTEAK_GYM (16,53)",
+  "zone_event 077_T27GYM0101 coords 0-14 VAR_UNK_4109 0 -> 002 (Warp MAP_ECRUTEAK_GYM (16,49), scr_seq_0922_T27GYM0101.s:156-164): the pit tiles",
+  "zone_event 077_T27GYM0101 object 1 obj_T27GYM0101_gsleader4 (10,8); Mediums Georgina (17,39), Grace (19,30), Edith (9,29), Martha (11,19)",
+  "scr_seq_0922_T27GYM0101.s:102-130 (TRAINER_LEADER_MORTY_MORTY, GiveBadge BADGE_FOG, AddVar VAR_MIDGAME_BADGES 1 :117, FLAG_GOT_TM30_FROM_MORTY)",
+  "TRAINER_LEADER_MORTY_MORTY (31, include/constants/trainers.h:36): GASTLY 21, HAUNTER 21, GENGAR 25, HAUNTER 23",
+]
+notes = "Ghosts are immune to Normal: the lead needs Ember plus a Dark/Ghost move (Bite/Shadow Ball) by boost. The pit tiles are the coord rectangles: walk_to avoid = every tile they cover keeps the path on the hidden floor [INFERENCE: the safe floor is exactly the complement inside the walls]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 376
+z = 183
+note = "Ecruteak Gym (warp 7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK_GYM"
+
+# PHASE2: the hidden path: expand the 15 coord rectangles of zone_event 077_T27GYM0101 into walk_to avoid tiles (or a
+# steps route) and check against the probe; the Mediums on the path are fought.
+[[step]]
+do = "talk_to"
+id = 1
+note = "Morty (obj_T27GYM0101_gsleader4 (10,8))"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_MORTY_MORTY: GASTLY 21, HAUNTER 21, GENGAR 25, HAUNTER 23"
+
+[[step]]
+do = "advance_text"
+shot = "fog-badge"
+note = "Fog Badge, TM30 (scr_seq_0922_T27GYM0101.s:116-130)"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 53
+note = "gym door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK"
+
+[expect]
+map = "MAP_ECRUTEAK"
+badges = 4
+badge = ["BADGE_ZEPHYR", "BADGE_HIVE", "BADGE_PLAIN", "BADGE_FOG"]
+flags = ["FLAG_GOT_TM30_FROM_MORTY"]
+battles = 1
+
+[expect.vars]
+VAR_MIDGAME_BADGES = 1

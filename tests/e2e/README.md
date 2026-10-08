@@ -1,6 +1,6 @@
 # tests/e2e: story and system milestones on the real core
 
-The e2e harness plays Platinum, Diamond and Pearl, Black and White, and Emerald, Ruby and Sapphire, headless, milestone by milestone, from a new game toward the
+The e2e harness plays Platinum, Diamond and Pearl, HeartGold and SoulSilver, Black and White, and Emerald, Ruby and Sapphire, headless, milestone by milestone, from a new game toward the
 Hall of Fame. Each milestone starts from the previous one's end save (or a minted lab save), drives the game with
 input bots that read a probe the guest publishes, saves in game, and is judged on the end save. The plan and the
 milestone list are in [PLAN.md](PLAN.md); how to write and prove a milestone is in [AUTHORING.md](AUTHORING.md).
@@ -60,6 +60,32 @@ The same runner, bots and milestone format, with these differences:
 - **The end**: the credits end in the game's own `SoftReset`; `wait_reset` sees the probe's `soft_resets` go up.
 - **Waiting**: `press` takes `until` (np_gp's condition syntax) for screens only the probe sees (the wall clock
   taking over the field: `until = "field=0"`).
+
+## HeartGold and SoulSilver
+
+The DS harness as Platinum and D/P use it, with these differences:
+
+- **Probe**: `games/heartgold/pc/src/pc_hg_field.c` (game C, compiled into both guests by pc/Makefile.wasm) through
+  Platinum's shared `pc_e2e.c`. The FieldSystem is field_system.c's `sFieldSysPtr` (getter added by
+  `pc/patches/src/field_system.c.patch`). The grid and the step layers are D/P's: the terrain provider's tile word
+  (`GetMetatileBehavior`, `sub_020548C0` collision) and a flood over the player's own step check `sub_020549F4`
+  (plate heights, Gymmick_CheckCollision, the collision bit; heights from `sub_02054940`), only on the map matrix.
+  The walking Pokemon is not listed among the objects. v4 fields: `avatar_flags` bit n = PLAYER_STATE_* n (walking,
+  cycling, surfing), the flags/vars (SaveVarsFlags) and party (Party.core.mons, encrypted as on the cartridge)
+  addresses, the map's warps (WarpEvent: tile, header, anchor) and, in the battle menu, `ui_cursor` = the raw
+  BattleMenuCursor (menuY << 4 | menuX, 0 while hidden). The battle report comes from `BattleInput_CheckTouch`
+  (`pc/patches/src/battle/battle_input.c.patch`), the party screen's two checks from overlay 8
+  (`pc/patches/asm/overlay_08.s.patch`), `in_battle` from `pc/patches/src/encounter.c.patch`. HG/SS's battle menu
+  ids and touch rects are Platinum's, so `auto_battle` taps the same points.
+- **Coordinates** are world tiles outdoors, as the zone_event JSON (`files/fielddata/eventdata/zone_event/`) gives
+  them; a `talk_to` id is the object's number in `files/fielddata/script/scr_seq/event_<MAP>.h`.
+- **Names**: pokeheartgold's `include/constants/*.h` (labc.py `--game heartgold|soulsilver`): `MAP_NEW_BARK`,
+  `FLAG_*`, `VAR_*`, `BADGE_ZEPHYR`..; `np_save4 dump` reads HG/SS saves (`trainer.badges` counts Johto's, Kanto's
+  are `kanto_badges`) and `np_save4 gamedata` HG/SS ROMs.
+- **Saves**: no HG/SS save lab yet, so every milestone starts from the previous one's end save (01 from a blank chip,
+  the intro schedule of docs/HANDOFF-hgss.md); lab recipes and boosts are refused. SoulSilver's chain lists
+  HeartGold's dirs and its own `31-whirl-islands-lugia`.
+- **Heal**: every Pokemon Center 1F has the nurse at (8,11) and the exit at (8,19).
 
 ## Black and White
 

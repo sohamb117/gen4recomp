@@ -1,0 +1,129 @@
+# Proves the first badge and the egg: Violet Gym (its elevator, Bird Keepers Abe/Rod), Falkner and the Zephyr Badge +
+# TM51, Elm's call on leaving (OnFrame VAR_SCENE_VIOLET_CITY_OW 1), the aide's Togepi egg in the Poke Mart and the
+# Kimono Girl's scene outside (OnFrame OW 3).
+# Start: MAP_VIOLET (487,229) -> end: MAP_VIOLET outside the Poke Mart (469,258), badge Zephyr, egg in the party.
+title = "Falkner: Zephyr Badge; the aide's Togepi egg"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18000
+refs = [
+  "zone_event 070_T22 warp 2 (479,257) -> MAP_VIOLET_GYM",
+  "zone_event 131_T22GYM0101 coord 0 (15,20) VAR_TEMP_x4000 0 -> 004 (VioletGymElevator, scr_seq_0859_T22GYM0101.s:166-169)",
+  "zone_event 131_T22GYM0101 object 0 obj_T22GYM0101_gsleader1 (15,4); objects 1/2 TRAINER_BIRD_KEEPER_GS_ABE (12,15), TRAINER_BIRD_KEEPER_GS_ROD (18,11)",
+  "scr_seq_0859_T22GYM0101.s:63-100 (TRAINER_LEADER_FALKNER_FALKNER, GiveBadge BADGE_ZEPHYR, VAR_SCENE_VIOLET_CITY_OW 1, VAR_SCENE_ELMS_LAB 6, FLAG_GOT_TM51_FROM_FALKNER)",
+  "TRAINER_LEADER_FALKNER_FALKNER (20, include/constants/trainers.h:25): PIDGEY 9, PIDGEOTTO 13",
+  "scr_seq_0857_T22_hdr.s (OnFrame VAR_SCENE_VIOLET_CITY_OW 1 -> 000, 3 -> 004)",
+  "scr_seq_0857_T22.s:25-31 (FLAG_GOT_PICK_UP_EGG_CALL_FROM_ELM, OW 2, ClearFlag FLAG_HIDE_VIOLET_SHOP_LAB_AIDE)",
+  "zone_event 070_T22 warp 10 (469,257) -> MAP_VIOLET_POKEMART; zone_event 152_T22FS0101 object 4 obj_T22FS0101_assistantm (6,8)",
+  "scr_seq_0858_T22FS0101.s:37-80 (YES/NO, GiveTogepiEgg, FLAG_GOT_EGG_FROM_ELMS_ASSISTANT, OW 3, VAR_SCENE_ELMS_LAB 7)",
+  "scr_seq_0857_T22.s:33-60 (Kimono Girl, FLAG_HIDE_VIOLET_KIMONO_GIRL, VAR_SCENE_VIOLET_CITY_OW 4)",
+]
+notes = "Falkner's Pidgeotto (lv13) outlevels a lv ~10 Cyndaquil: a boost (Ember + levels) is likely needed (AUTHORING.md, Boosts). The aide's YES/NO opens on YES [INFERENCE] (A takes the egg; NO only sets FLAG_UNK_06F and he asks again)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 27000
+
+[[step]]
+do = "walk_to"
+x = 479
+z = 257
+note = "Violet Gym door (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIOLET_GYM"
+
+# PHASE2: the Violet Gym elevator: coord (15,20) runs VioletGymElevator; whether walk_to can plan onto the raised
+# floor afterwards (and where the lift lands) needs the probe on this map.
+[[step]]
+do = "walk_to"
+x = 15
+z = 20
+note = "the lift (coord 0, VioletGymElevator)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Falkner (obj_T22GYM0101_gsleader1 (15,4)); Abe and Rod fought on the way if they spot"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_FALKNER_FALKNER: PIDGEY 9, PIDGEOTTO 13"
+
+[[step]]
+do = "advance_text"
+shot = "zephyr-badge"
+note = "Zephyr Badge, TM51 (scr_seq_0859_T22GYM0101.s:76-100)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 28
+note = "gym door (warp 0) [INFERENCE: walk_to plans back down the lift]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIOLET"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_SCENE_VIOLET_CITY_OW 1 -> Elm's call -> OW 2 (scr_seq_0857_T22.s:25-31)"
+
+[[step]]
+do = "walk_to"
+x = 469
+z = 257
+note = "Poke Mart (warp 10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIOLET_POKEMART"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "Elm's aide (obj_T22FS0101_assistantm (6,8))"
+
+[[step]]
+do = "advance_text"
+shot = "togepi-egg"
+note = "YES -> GiveTogepiEgg, FLAG_GOT_EGG_FROM_ELMS_ASSISTANT, OW 3, VAR_SCENE_ELMS_LAB 7 (scr_seq_0858_T22FS0101.s:43-80)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 11
+note = "mart door (warp 0) -> Violet"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIOLET"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame OW 3 -> Kimono Girl -> OW 4 (scr_seq_0857_T22.s:33-60)"
+
+[expect]
+map = "MAP_VIOLET"
+badges = 1
+badge = ["BADGE_ZEPHYR"]
+flags = ["FLAG_GOT_TM51_FROM_FALKNER", "FLAG_GOT_PICK_UP_EGG_CALL_FROM_ELM", "FLAG_GOT_EGG_FROM_ELMS_ASSISTANT", "FLAG_HIDE_VIOLET_SHOP_LAB_AIDE", "FLAG_HIDE_VIOLET_KIMONO_GIRL"]
+party = ["SPECIES_CYNDAQUIL"]
+party_size = 2
+battles = 1
+
+[expect.vars]
+VAR_SCENE_VIOLET_CITY_OW = 4
+VAR_SCENE_ELMS_LAB = 7

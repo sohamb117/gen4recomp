@@ -54,6 +54,7 @@ void pc_e2e_field(int field, unsigned map, int x, int z, int y, unsigned facing,
 
     b->field = field != 0;
     b->nobjects = 0;
+    b->nwarps = 0;
     if (!field) return;
     if (map != b->map_id || x != b->x || z != b->z) sGridDirty = sStepsDirty = 1;
     b->map_id = map;
@@ -198,6 +199,39 @@ void pc_e2e_ui(unsigned kind, unsigned arg)
     sUiSeen = 1;
 }
 
+void pc_e2e_cursor(unsigned cursor)
+{
+    sBlock.ui_cursor = cursor;
+}
+
+void pc_e2e_v4(unsigned avatar_flags, unsigned flags_addr, unsigned flags_bytes, unsigned vars_addr,
+               unsigned vars_count, unsigned party_addr, unsigned party_count)
+{
+    np_e2e_block *b = &sBlock;
+
+    b->avatar_flags = avatar_flags;
+    b->flags_addr = flags_addr;
+    b->flags_bytes = flags_bytes;
+    b->vars_addr = vars_addr;
+    b->vars_count = vars_count;
+    b->party_addr = party_addr;
+    b->party_count = party_count;
+}
+
+void pc_e2e_warp(int x, int z, unsigned dest_map, unsigned dest_warp)
+{
+    np_e2e_block *b = &sBlock;
+    np_e2e_warp *w;
+
+    if (b->nwarps >= NP_E2E_MAX_WARPS) return;
+    w = &b->warps[b->nwarps++];
+    w->x = (int16_t)x;
+    w->z = (int16_t)z;
+    w->dest_map = (uint16_t)dest_map;
+    w->dest_warp = (uint8_t)dest_warp;
+    w->elevation = 0;
+}
+
 _Static_assert(sizeof(pc_e2e_mon) == sizeof(np_e2e_mon), "pc_e2e_mon mirrors np_e2e_mon");
 
 void pc_e2e_battle(unsigned menu_battler, unsigned battle_type, const pc_e2e_mon *battlers, unsigned nbattlers,
@@ -274,6 +308,23 @@ void pc_e2e_object(int x, int z, unsigned local_id, unsigned gfx)
 void pc_e2e_ui(unsigned kind, unsigned arg)
 {
     (void)kind, (void)arg;
+}
+
+void pc_e2e_cursor(unsigned cursor)
+{
+    (void)cursor;
+}
+
+void pc_e2e_v4(unsigned avatar_flags, unsigned flags_addr, unsigned flags_bytes, unsigned vars_addr,
+               unsigned vars_count, unsigned party_addr, unsigned party_count)
+{
+    (void)avatar_flags, (void)flags_addr, (void)flags_bytes, (void)vars_addr, (void)vars_count, (void)party_addr,
+        (void)party_count;
+}
+
+void pc_e2e_warp(int x, int z, unsigned dest_map, unsigned dest_warp)
+{
+    (void)x, (void)z, (void)dest_map, (void)dest_warp;
 }
 
 void pc_e2e_battle(unsigned menu_battler, unsigned battle_type, const pc_e2e_mon *battlers, unsigned nbattlers,

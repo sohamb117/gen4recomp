@@ -1,0 +1,75 @@
+# Proves the walk to Violet: Route 29 west, Route 30 north (Youngster Joey now shown, Mom's call on the coord at its
+# north end), Route 31 west, the Violet gatehouse VS Recorder scene, into Violet City.
+# Start: MAP_ROUTE_29 (666,399) -> end: MAP_VIOLET east entrance (510,269), VAR_SCENE_ROUTE_30_PHONE_CALL 0.
+title = "Route 30 and 31 to Violet City (Mom's call, VS Recorder)"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000
+refs = [
+  "zone_event 031_R30 object 4 TRAINER_YOUNGSTER_JOEY (553,332) sight 4, hidden by FLAG_HIDE_ROUTE_30_YOUNGSTER_JOEY (cleared scr_seq_0843_T20R0101.s:759)",
+  "zone_event 031_R30 coord 1 (553,292) VAR_SCENE_ROUTE_30_PHONE_CALL 1 -> 004",
+  "scr_seq_0227_R30.s:183-190 (PhoneCall PHONE_CONTACT_MOTHER, VAR_SCENE_ROUTE_30_PHONE_CALL 0, FLAG_TALKED_TO_MOM_AFTER_NAMING_RIVAL)",
+  "zone_event 032_R31 object 5 TRAINER_BUG_CATCHER_WADE (540,279) sight 2; warps 0/1 (518,269/270) -> MAP_ROUTE_31_VIOLET_GATEHOUSE",
+  "zone_event 094_R31R0101 coord 0 (5,6) h3 VAR_UNK_4132 0 -> 000",
+  "scr_seq_0231_R31R0101.s:17-140 (ITEM_VS__RECORDER, VAR_UNK_4132 1)",
+  "zone_event 094_R31R0101 warp 0 (1,7) -> MAP_VIOLET 0 (511,269)",
+]
+notes = "No story battle; Joey/Mikey/Don/Wade fight if they spot the player (walk_to fights them). Mom's call (PhoneCall) needs only A [INFERENCE]. The gatehouse VS Recorder speech has no menu [INFERENCE: not read line by line; advance_text answers A]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 22500
+
+[[step]]
+do = "walk_to"
+x = 553
+z = 292
+on_text = "stop"
+note = "west on Route 29, north up Route 30 to coord 1 (553,292) -> Mom's call (scr_seq_0227_R30.s:183-190)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 518
+z = 269
+note = "Route 31 west to the Violet gatehouse (zone_event 032_R31 warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_31_VIOLET_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 7
+on_text = "stop"
+note = "coord 0 (5,6..8) VAR_UNK_4132 0 -> VS Recorder (scr_seq_0231_R31R0101.s:17-140)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "gatehouse west door (warp 0) -> Violet (511,269)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIOLET"
+shot = "violet"
+
+[expect]
+map = "MAP_VIOLET"
+flags = ["FLAG_TALKED_TO_MOM_AFTER_NAMING_RIVAL", "FLAG_GOT_POKEDEX", "FLAG_MET_PASSERBY_BOY"]
+party = ["SPECIES_CYNDAQUIL"]
+
+[expect.vars]
+VAR_SCENE_ROUTE_30_PHONE_CALL = 0
+VAR_UNK_4132 = 1

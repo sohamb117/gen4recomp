@@ -1,0 +1,21 @@
+--- a/src/battle/battle_input.c
++++ b/src/battle/battle_input.c
+@@ -22,6 +22,10 @@
+ #include "unk_02077678.h"
+ #include "unk_0208805C.h"
+ 
++#include "pc_np_options.h"
++
++void PcHg_E2eBattleMenu(BattleInput *battleInput); /* pc/src/pc_hg_field.c */
++
+ static void BattleInput_FreeDefaultResources(BattleInput *battleInput);
+ static void BattleInput_FreeBallGaugeResources(BattleInput *battleInput);
+ static void Task_AnimateBallGauge(SysTask *task, void *data);
+@@ -1699,6 +1703,7 @@
+     int keyPressed = 0;
+ 
+     GF_ASSERT(battleInput->curMenuId != BATTLE_MENU_NONE);
++    PcHg_E2eBattleMenu(battleInput); /* pc port: tests/e2e probe (pc/src/pc_hg_field.c) */
+ 
+     const BattleMenuTemplate *menuTemplate = &sBattleMenuTemplates[battleInput->curMenuId];
+ 

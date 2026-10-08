@@ -87,8 +87,9 @@ typedef struct np_e2e_mon {
     uint8_t egg;
 } np_e2e_mon;
 
-/* v4: a warp of the current map (GBA warp events), its tile and where it
- * leads (dest_map as map_id, the destination map's warp index). */
+/* v4: a warp of the current map (GBA warp events; HG/SS: WarpEvent, its
+ * header and anchor), its tile and where it leads (dest_map as map_id, the
+ * destination map's warp index). */
 typedef struct np_e2e_warp {
     int16_t x, z;
     uint16_t dest_map;
@@ -128,7 +129,8 @@ typedef struct np_e2e_block {
     int32_t player_height; /* the player's layer: its height (as heights[][]) */
     uint16_t steps[NP_E2E_LAYERS][NP_E2E_GRID * NP_E2E_GRID];
     int16_t heights[NP_E2E_LAYERS][NP_E2E_GRID * NP_E2E_GRID];
-    /* v4, filled by the GBA games (0 elsewhere): the cursor of the menu ui
+    /* v4, filled by the GBA games (0 elsewhere; HG/SS fill all but
+     * connection_seq, soft_resets and the warps' elevation): the cursor of the menu ui
      * reports (the action/move cursor 0 top left, 1 top right, 2 bottom
      * left, 3 bottom right; the target battler; a YES/NO cursor, 0 YES 1 NO;
      * the party menu's slot), the player avatar's state bits (the game's

@@ -1,0 +1,133 @@
+# Proves the way back: the rival's Cherrygrove ambush (TRAINER_PASSERBY_BOY_3, Totodile), Elm's lab OnFrame scene
+# (the officer, naming the rival, Elm keeps the Mystery Egg) and Lyra's Route 29 catching tutorial (5 Poke Balls).
+# Start: MAP_ROUTE_30 (568,295) -> end: MAP_ROUTE_29 east end (666,399), VAR_SCENE_ELMS_LAB 4, VAR_UNK_408B 0.
+title = "Cherrygrove rival, Elm's lab officer and rival name, Route 29 catching tutorial"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18000
+refs = [
+  "zone_event 064_T21 coord 1 (575,398) h4 VAR_SCENE_CHERRYGROVE_CITY_OW 3 -> 003",
+  "scr_seq_0850_T21.s:535-613 (rival: GetStarterChoice 155 -> TRAINER_PASSERBY_BOY_3 :555-557, FLAG_HIDE_CHERRYGROVE_RIVAL, VAR_SCENE_CHERRYGROVE_CITY_OW 4, FLAG_MET_PASSERBY_BOY)",
+  "TRAINER_PASSERBY_BOY_3 (497, include/constants/trainers.h:502): TOTODILE 5",
+  "zone_event 057_T20 warp 0 (684,393) -> MAP_NEW_BARK_ELMS_LAB_1F",
+  "scr_seq_0616_T20R0101_hdr.s (OnFrame VAR_SCENE_ELMS_LAB 3 -> 002)",
+  "scr_seq_0843_T20R0101.s:663-767 (officer, NameRival :696, 'Is it ...?' GetMenuChoice :706, FLAG_GAVE_RIVAL_NAME_TO_OFFICER, TakeItemNoCheck ITEM_MYSTERY_EGG :743, FLAG_HIDE_ROUTE_30_BATTLERS, Joey shown, VAR_SCENE_ELMS_LAB 4, VAR_UNK_408B 1, Route 29 friend shown, VAR_SCENE_MR_POKEMONS_HOUSE 2, VAR_SCENE_NEW_BARK_TOWN_OW 3, VAR_SCENE_ROUTE_30_PHONE_CALL 1)",
+  "src/scrcmd_c.c:2108-2112 (NameRival -> NAME_SCREEN_RIVAL)",
+  "src/naming_screen.c:654-675 (empty input -> FIRST_DEFAULT_NAME_RIVAL msg_0254_00085)",
+  "zone_event 030_R29 coord 0 (666,396) h7 VAR_UNK_408B 1 -> 001",
+  "scr_seq_0225_R29.s:125-321 (CatchingTutorial :305, GiveItemNoCheck ITEM_POKE_BALL 5 :310, FLAG_HIDE_ROUTE_29_FRIEND/MARILL, VAR_UNK_408B 0, FLAG_UNK_09A)",
+  "include/constants/items.h:905 (ITEM_MYSTERY_EGG 484)",
+]
+notes = "Rival naming: the empty name is accepted and becomes the default (naming_screen.c:654-675), so the keyboard is confirmed as the intro confirmed the player's default name: START (cursor to OK) then A [INFERENCE: same naming screen layout as intro.press 14000/14100]; then 'So his name is ...?' YES (A). # PHASE2: confirm the START+A confirm on the rival keyboard (dump the naming screen) and the YES/NO cursor default. The catching tutorial is Lyra's scripted battle (CatchingTutorial): advance_text with through_battle [INFERENCE: it needs only A]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 27000
+
+[[step]]
+do = "walk_to"
+x = 575
+z = 399
+on_text = "stop"
+note = "south through Route 30 into Cherrygrove's east exit; coord 1 (575,398..401) VAR 3 -> rival (scr_seq_0850_T21.s:535-561)"
+
+[[step]]
+do = "advance_text"
+shot = "rival-cherrygrove"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_PASSERBY_BOY_3: TOTODILE 5 (Cyndaquil's Tackle/Ember)"
+
+[[step]]
+do = "advance_text"
+note = "rival leaves: FLAG_HIDE_CHERRYGROVE_RIVAL, VAR 4, FLAG_MET_PASSERBY_BOY (:563-612)"
+
+[[step]]
+do = "walk_to"
+x = 684
+z = 393
+note = "east along Route 29 to Elm's lab (zone_event 057_T20 warp 0); Route 29's coord needs VAR_UNK_408B 1, still 0"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK_ELMS_LAB_1F"
+
+[[step]]
+do = "advance_text"
+shot = "officer"
+note = "OnFrame VAR_SCENE_ELMS_LAB 3 -> officer, Lyra; stops when the naming screen opens (NameRival, scr_seq_0843_T20R0101.s:696)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "naming screen fade-in"
+
+# PHASE2: the rival naming keyboard: confirm START moves the cursor to OK and A accepts the empty (default) name
+# (dump the naming screen after the fade-in), and that the 'Is it ...?' YES/NO opens on YES.
+
+[[step]]
+do = "press"
+keys = "START"
+note = "cursor to OK [INFERENCE: as intro.press 14000]"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "OK with an empty name -> the default rival name (src/naming_screen.c:669-673)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "advance_text"
+note = "'Is it ...?' YES (A on the default cursor), Elm keeps the egg (:703-767)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 14
+note = "lab door -> New Bark"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK"
+
+[[step]]
+do = "walk_to"
+x = 666
+z = 399
+on_text = "stop"
+note = "west exit (Elm's coord already done) into Route 29; coord 0 (666,396..402) VAR_UNK_408B 1 -> Lyra (scr_seq_0225_R29.s:125)"
+
+[[step]]
+do = "advance_text"
+through_battle = true
+shot = "catching-tutorial"
+note = "CatchingTutorial (:305), 5 Poke Balls (:310), VAR_UNK_408B 0 (:320)"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ROUTE_29"
+flags = ["FLAG_MET_PASSERBY_BOY", "FLAG_HIDE_CHERRYGROVE_RIVAL", "FLAG_GAVE_RIVAL_NAME_TO_OFFICER", "FLAG_HIDE_ELMS_LAB_OFFICER", "FLAG_HIDE_ROUTE_30_BATTLERS", "FLAG_HIDE_ROUTE_29_FRIEND", "FLAG_HIDE_ROUTE_29_MARILL", "FLAG_UNK_09A", "FLAG_GOT_POKEDEX"]
+flags_clear = ["FLAG_HIDE_ROUTE_30_YOUNGSTER_JOEY"]
+party = ["SPECIES_CYNDAQUIL"]
+battles = 1
+save = ['not any(i["item"] == 484 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_SCENE_CHERRYGROVE_CITY_OW = 4
+VAR_SCENE_ELMS_LAB = 4
+VAR_UNK_408B = 0
+VAR_SCENE_MR_POKEMONS_HOUSE = 2
+VAR_SCENE_NEW_BARK_TOWN_OW = 3
+VAR_SCENE_ROUTE_30_PHONE_CALL = 1
