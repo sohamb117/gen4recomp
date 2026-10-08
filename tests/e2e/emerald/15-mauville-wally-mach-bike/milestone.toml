@@ -3,7 +3,7 @@
 # Start: Mauville Pokemon Center (22,6) -> end: MAP_MAUVILLE_CITY outside the bike shop (35,6).
 title = "Mauville: Wally's battle and the Mach Bike"
 priority = "P0"
-estimate = 5103
+estimate = 4803
 refs = [
   "data/maps/MauvilleCity/map.json object_events[6] WALLY (8,6), [7] uncle (9,6)",
   "data/maps/MauvilleCity/scripts.inc:84-160",
@@ -19,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 7700
+frames = 7300
 
 [[step]]
 do = "walk_to"
@@ -66,22 +66,16 @@ id = 1
 note = "Rydel (object 1 (2,5))"
 
 [[step]]
-do = "advance_text"
-note = "to the far-away YES/NO"
+do = "menu"
+choose = 0
+count = 2
+note = "'came from far away?' YES -> FLAG_RECEIVED_BIKE, ChooseBike (MauvilleCity_BikeShop/scripts.inc:12-16,36-38)"
 
 [[step]]
-do = "press"
-keys = "A"
-note = "YES -> FLAG_RECEIVED_BIKE, ChooseBike multichoice (:36-38,21-27)"
-
-[[step]]
-do = "wait_frames"
-n = 60
-
-[[step]]
-do = "press"
-keys = "A"
-note = "MACH BIKE (case 0) -> giveitem ITEM_MACH_BIKE (:41-44)"
+do = "menu"
+choose = 0
+count = 2
+note = "MULTI_BIKE: MACH BIKE (case 0) -> giveitem ITEM_MACH_BIKE (:21-27,41-44); the Mach Bike crosses Sky Pillar's cracked floors (39)"
 
 [[step]]
 do = "advance_text"
@@ -101,3 +95,4 @@ map = "MAP_MAUVILLE_CITY"
 badges = 2
 flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_DEFEATED_WALLY_MAUVILLE", "FLAG_RECEIVED_BIKE", "FLAG_HIDE_MAUVILLE_CITY_WALLY", "FLAG_HIDE_MAUVILLE_CITY_WALLYS_UNCLE"]
 battles = 1
+save = ['any(i["name"] == "MACH BIKE" for i in s["bag"]["key_items"])']

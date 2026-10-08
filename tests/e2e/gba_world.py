@@ -159,6 +159,12 @@ ON_FOOT_BLOCKED = ("MAP_ROUTE110_SEASIDE_CYCLING_ROAD_SOUTH_ENTRANCE", "MAP_ROUT
 DIVEABLE = frozenset({0x11, 0x12, 0x14})
 NO_EMERGE = frozenset({0x19, 0x2A})
 _SETDIVEWARP = re.compile(r"^\s*setdivewarp\s+(MAP_\w+)((?:\s*,\s*\d+)+)\s*$", re.M)
+# A walker who steps onto MB_CRACKED_FLOOR (slower than the Mach Bike's top speed: field_tasks.c
+# CrackedFloorPerStepCallback zeroes VAR_ICE_STEP_COUNT, CaveHole_CheckFallDownHole) or MB_CRACKED_FLOOR_HOLE
+# (field_control_avatar.c TryStartMiscWalkingScripts) falls to the map's setholewarp map at the same x, y
+# (warphole MAP_UNDEFINED: Sky Pillar 4F's cracks are the way down to 3F's middle stairs)
+HOLES = frozenset({0xD2, 0x66})
+_SETHOLEWARP = re.compile(r"^\s*setholewarp\s+(MAP_\w+)", re.M)
 
 COST_STEP, COST_GRASS, COST_WARP = 1, 6, 10
 NUM_METATILES_IN_PRIMARY = 512
@@ -167,7 +173,7 @@ _CONN_DIRS = {"up": "n", "down": "s", "left": "w", "right": "e"}
 
 class _Map:
     __slots__ = ("id", "name", "folder", "layout", "w", "h", "beh", "coll", "elev", "conns", "warps", "warp_at",
-                 "underwater", "dive_to")
+                 "underwater", "dive_to", "hole_to")
 
 
 class World:
@@ -205,6 +211,7 @@ class World:
                 self._json[mid] = j
         self._attrs = {}
         self._tileset_files = None
+        self.var, self._cond_maps = None, set()
         self._surfable = self._parse_surfable()
         self.step_warp = STEP_WARP[decomp]
 
@@ -279,12 +286,75 @@ class World:
         self._attrs[label] = a
         return a
 
+    _COND = {"lt": lambda a, b: a < b, "le": lambda a, b: a <= b, "eq": lambda a, b: a == b,
+             "ne": lambda a, b: a != b, "ge": lambda a, b: a >= b, "gt": lambda a, b: a > b}
+
+    def _transition_layout(self, j):
+        """The layout a map's ON_TRANSITION script switches to (setmaplayoutindex LAYOUT_X; the last one the script
+        runs), or None for map.json's: Route131_EventScript_SetLayout -> LAYOUT_ROUTE131_SKY_PILLAR (the island the
+        Sky Pillar stands on, always), SkyPillar_2F's call_if_lt VAR_SKY_PILLAR_STATE, 2 -> ..._CLEAN (no cracked
+        floor before Rayquaza wakes). call_if_<op>/goto_if_<op> VAR, N are decided with self.var (name -> value, set by
+        route(var=...)); without it, or on a flag or VAR_RESULT, the branch is not taken. Records in self._cond_maps the
+        maps whose choice depends on a var."""
+        try:
+            with open(os.path.join(self.dir, "data", "maps", j["name"], "scripts.inc")) as f:
+                src = f.read()
+        except OSError:
+            return None
+        m = re.search(r"map_script\s+MAP_SCRIPT_ON_TRANSITION\s*,\s*(\w+)", src)
+        if not m:
+            return None
+        result = [None]
+        depth = [0]
+
+        def walk(label):
+            if depth[0] > 16:
+                return False
+            depth[0] += 1
+            body = re.search(r"^%s::?\s*\n(.*?)^\s*(?:end|return)\b" % re.escape(label), src, re.S | re.M)
+            for line in (body.group(1).splitlines() if body else ()):
+                op = [w for w in re.split(r"[\s,]+", line.split("@")[0].strip()) if w]
+                if not op:
+                    continue
+                if op[0] == "setmaplayoutindex" and len(op) > 1 and op[1].startswith("LAYOUT_"):
+                    result[0] = op[1]
+                elif op[0] in ("call", "goto") and len(op) > 1:
+                    walk(op[1])
+                    if op[0] == "goto":
+                        return True
+                else:
+                    c = re.match(r"(call|goto)_if_(lt|le|eq|ne|ge|gt)$", op[0])
+                    if c and len(op) > 3 and op[1].startswith("VAR_"):
+                        self._cond_maps.add(j["id"])
+                        v = self.var(op[1]) if self.var else None
+                        try:
+                            n = int(op[2], 0)
+                        except ValueError:
+                            continue
+                        if v is not None and self._COND[c.group(2)](v, n):
+                            walk(op[3])
+                            if c.group(1) == "goto":
+                                return True
+            return False
+
+        walk(m.group(1))
+        return result[0]
+
+    def set_var(self, var):
+        """Decide the map scripts' var conditions with var (name -> value or None) from now on; maps whose layout
+        depends on one are reloaded."""
+        if var is self.var:
+            return
+        self.var = var
+        for name in self._cond_maps:
+            self._maps.pop(self._ids.get(name), None)
+
     def _map(self, mid):
         m = self._maps.get(mid)
         if m is not None or mid in self._maps:
             return m
         j = self._json.get(mid)
-        lay = self._layouts.get(j["layout"]) if j else None
+        lay = self._layouts.get(self._transition_layout(j) or j["layout"]) if j else None
         if not lay or not lay.get("blockdata_filepath"):
             self._maps[mid] = None
             return None
@@ -334,6 +404,14 @@ class World:
                 (name, (fx, fy)), = fixed
                 if name in self._ids:
                     m.dive_to = (self._ids[name], fx, fy)
+        m.hole_to = None
+        try:
+            with open(os.path.join(self.dir, "data", "maps", j["name"], "scripts.inc")) as f:
+                holes = {mm.group(1) for mm in _SETHOLEWARP.finditer(f.read())}
+        except OSError:
+            holes = set()
+        if len(holes) == 1 and next(iter(holes)) in self._ids:
+            m.hole_to = self._ids[next(iter(holes))]
         m.warps, m.warp_at = [], {}
         for k, wv in enumerate(j.get("warp_events") or ()):
             dest = self._ids.get(wv["dest_map"])  # MAP_DYNAMIC is no map
@@ -458,10 +536,13 @@ class World:
         return m.id, x, y, e, pe, 0
 
     def route(self, src_map, sx, sz, dst_map, tx, tz, elevation=None, surf=False, avoid_maps=(), avoid_warps=(),
-              dive=False):
+              dive=False, var=None):
         """The cheapest static route from (sx, sz) on src_map to (tx, tz) on dst_map as [Leg]; raises NoRoute.
-        dive=True (implies surf) also dives and surfaces (module docstring, Dive)."""
+        dive=True (implies surf) also dives and surfaces (module docstring, Dive). var (name -> value) decides the
+        maps' ON_TRANSITION layout switches (_transition_layout)."""
         surf = surf or dive
+        if var is not None:
+            self.set_var(var)
         src = self._map(self.map_id(src_map))
         dst = self._map(self.map_id(dst_map))
         if src is None or dst is None:
@@ -594,6 +675,20 @@ class World:
                         ne_e, ne_pe = ne, (ne if ne else pe)
                     step = 2 + (COST_GRASS - 1 if bn in GRASS else 0)
                 else:
+                    if bn in HOLES and n.hole_to is not None and not n.coll[j] and not t_surf:
+                        # a cracked floor or hole: down to the hole warp's map, same tile
+                        h = self._map(n.hole_to)
+                        if h is not None and h.id not in avoid_m and 0 <= nmx < h.w and 0 <= nmy < h.h:
+                            he = h.elev[nmy * h.w + nmx]
+                            hs = (h.id, nmx, nmy, he if he != 15 else e, he if 0 < he < 15 else pe)
+                            nc = cost + COST_WARP
+                            if nc < dist.get(hs, 1 << 60):
+                                dist[hs] = nc
+                                parent[hs] = (state, ((Leg(mid, cross[0], cross[1], "connection", cross[2]),)
+                                                      if cross else ()) + (Leg(n.id, nmx, nmy, "warp", h.id),))
+                                push(heap, (nc, tick, hs))
+                                tick += 1
+                        continue
                     if n.coll[j] or bt in _LEAVE_BLOCKED[d] or bn in _ENTER_BLOCKED[d] or bn in FORBIDDEN:
                         continue
                     ne = n.elev[j]

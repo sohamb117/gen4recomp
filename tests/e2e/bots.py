@@ -912,7 +912,8 @@ class Terrain:
         if c is None:
             return None
         beh = c & TILE_BEHAVIOR
-        if self.surf and beh in self.surfable:
+        if self.surf and beh in self.surfable and not (self.gba and c & TILE_COLLISION):
+            # (a GBA rock drawn over the sea is ocean water with the collision bit: Route 128 (77,30))
             return "water"
         if self.surf and beh == self.waterfall and d == 0:
             return "waterfall"
@@ -1243,6 +1244,11 @@ def _use_field_move(s, step, ctx, what, limit):
     you like to use ...?', YES is the cursor's default), A answers YES, then the scene plays until the player is
     free; a Rock Smash wild battle is fought. Returns the frames spent in battles."""
     s.note("walk_to: %s ahead, using the field move" % what)
+    if what == "waterfall" and ctx.game in GBA_GAMES:
+        # a GBA surfer who bumps into the falls is turned to face downstream; A asks only facing north
+        # (field_control_avatar.c GetInteractedWaterScript: IsPlayerSurfingNorth)
+        s.run(2, "up")
+        s.run(12)
     s.run(4, "a")
     bot_advance_text(s, {"max": 2400}, ctx)
     return _field_or_handle(s, step, ctx, limit)
@@ -1266,6 +1272,25 @@ def bot_walk_to(s, step, ctx):
 
 # re-plans of a GBA cross-map walk (a leg that ended on another map than the route said, a door that did not open)
 GBA_ROUTE_TRIES = 10
+
+
+def _gba_vars(s, p, ctx):
+    """name -> the game's value of that VAR_ now (the probe's vars_addr/vars_count: gSaveBlock1's vars from 0x4000),
+    or None: what decides the maps' ON_TRANSITION layout switches for the static route (gba_world._transition_layout:
+    Sky Pillar's floors are whole until VAR_SKY_PILLAR_STATE 2)."""
+    cache = {}
+
+    def var(name):
+        if name not in cache:
+            cache[name] = None
+            try:
+                i = ctx.resolve(name) - 0x4000
+            except HarnessError:
+                return None
+            if p.vars_addr and 0 <= i < p.vars_count:
+                cache[name] = int.from_bytes(s.peek(p.vars_addr + 2 * i, 2), "little")
+        return cache[name]
+    return var
 
 
 def _gba_route_to(s, step, ctx):
@@ -1293,10 +1318,11 @@ def _gba_route_to(s, step, ctx):
         # a goal the static model cannot stand on (a door in a wall, a counter): the route only has to reach its
         # map, so a tile beside it will do; the walk that follows goes into the goal itself
         legs, why = None, None
+        var = _gba_vars(s, p, ctx)
         for gx, gz in ((tx, tz), (tx, tz + 1), (tx, tz - 1), (tx - 1, tz), (tx + 1, tz)):
             try:
                 legs = world.route(p.map_id, p.x, p.z, want, gx, gz, elevation=p.y, surf=bool(step.get("surf")),
-                                   avoid_warps=avoid_warps, dive=dive)
+                                   avoid_warps=avoid_warps, dive=dive, var=var)
                 break
             except gba_world.NoRoute as e:
                 why = why or e
@@ -1355,10 +1381,15 @@ def _gba_dive(s, leg, ctx):
     would offer the dive again)."""
     key = "a" if leg.kind == "dive" else "b"
     start = s.map_id
-    for _ in range(3):
+    # a wild battle the last step met starts a few frames after it: fought (fled) first, and again if one cuts in
+    s.run(30)
+    _field_or_handle(s, {"on_battle": "flee"}, ctx, s.frame + 30000)
+    for _ in range(4):
         s.run(2, key)
-        if s.run(60, until="field_ready=0"):
+        if s.run(60, until="field_ready=0") and not s.in_battle:
             break
+        if s.in_battle:
+            _field_or_handle(s, {"on_battle": "flee"}, ctx, s.frame + 30000)
     else:
         p = s.probe()
         raise HarnessError("walk_to: no %s prompt at (%d,%d) on map %d (FLAG_BADGE07_GET and a party member with "

@@ -2,9 +2,8 @@
 # legendaries gone), Maxie + Archie's goodbyes (FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE) and Wallace's HM07 Waterfall.
 # Start: Sky Pillar top -> end: MAP_SOOTOPOLIS_CITY in front of the gym (31,33).
 title = "Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall"
-status = "planned"
 priority = "P0"
-estimate = 8000
+estimate = 26673
 refs = [
   "data/maps/SootopolisCity/scripts.inc:167",
   "data/maps/SootopolisCity/scripts.inc:456-508",
@@ -22,11 +21,19 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 40100
 
 [[step]]
-do = "fly"
+do = "walk_to"
+x = 29
+z = 53
 map = "MAP_SOOTOPOLIS_CITY"
+surf = true
+dive = true
+on_text = "stop"
+on_battle = "flee"
+max = 30000
+note = "Surf Routes 131 -> 130 -> 129 -> 128 -> 127 -> 126, Dive under the crater (UNDERWATER_ROUTE126 (45,65) -> UNDERWATER_SOOTOPOLIS_CITY), surface at (29,53): OnFrame VAR_SKY_PILLAR_STATE 1 -> StartRayquazaScene, RayquazaSceneFromDive (SootopolisCity/scripts.inc:167,456-462,512-)"
 
 [[step]]
 do = "advance_text"
@@ -36,6 +43,7 @@ note = "OnFrame SKY_PILLAR_STATE 1 -> StartRayquazaScene from the Pokemon Center
 [[step]]
 do = "talk_to"
 id = 16
+surf = true
 note = "Maxie (object 16) -> MaxieRayquaza: FLAG_MET_MAXIE_SOOTOPOLIS (:1302-1315)"
 
 [[step]]
@@ -44,6 +52,7 @@ do = "advance_text"
 [[step]]
 do = "talk_to"
 id = 17
+surf = true
 note = "Archie (object 17) -> ArchieRayquaza: FLAG_MET_ARCHIE_SOOTOPOLIS -> MaxieArchieLeave: FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE, VAR_MT_PYRE_STATE 2, warpsilent (31,34) (:1317-1339)"
 
 [[step]]
@@ -52,6 +61,7 @@ do = "advance_text"
 [[step]]
 do = "talk_to"
 id = 18
+surf = true
 note = "Wallace (object 18) -> GiveWaterfall: ITEM_HM_WATERFALL, FLAG_RECEIVED_HM_WATERFALL, steps aside (:1251-1279)"
 
 [[step]]
