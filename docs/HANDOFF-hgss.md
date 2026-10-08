@@ -33,7 +33,20 @@ loader's exact count still stops on a sixth entry). Verified: HeartGold
 headless frame 16170 loads overlays 124 and 123, frame 16176 overlays 1,
 123, 2, 3 and frame 16180 overlay 27 (`PC_TRACE_OVERLAYS=1`).
 
-## Current blocker (hgss2, 2026-10-08): field init hangs in FieldMap_Init
+## Current blocker (hgss-play2, 2026-10-08): field runs, top screen black
+
+Fixed on main: armrec msl.s `.type @function` routines (fe357c02a), the
+cartridge IR chip (53b112d0c), the C OS_GetTick polling the timer model
+(13d513cd6). HeartGold now passes FieldMap_Init. From frame 16201 (same
+schedule) the bottom screen shows the field UI and 3D is submitted every
+frame (sampled), but the top screen stays black and unchanged through
+frame 18500: next, check master brightness/fade state and the 3D-to-top
+compositing. SoulSilver: not rebuilt with these fixes (its `make` sat at
+100% CPU after gen_bridge for over an hour, twice; HeartGold's finished in
+3 minutes; cause unknown). Checkpoint runs: /tmp/hgss2/forkrun.sh with
+/tmp/hgss2/np_headless-fork-at.patch applied (not on main).
+
+## Previous blocker (hgss2, 2026-10-08): field init hangs in FieldMap_Init
 
 Same schedule as below, HeartGold, native core built from hgss2:
 `FieldMap_Init -> ov01_021E662C (fieldmap.c:774) -> CARD_SpiWaitGetStatus`
