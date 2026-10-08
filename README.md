@@ -88,10 +88,12 @@ packaged app on Diamond, Pearl and Platinum with a screenshot, listed in
   and reduced motion.
 - **Game options (live):** music and sound-effect volume, the music
   low-pass filter, instant text, *Fix cartridge bugs*, real-time clock.
-- **Save editor:** *Edit save...* on a slot: trainer, party, boxes, bag,
-  Pokédex and events (Mystery Gift Wonder Cards for the Darkrai, Shaymin,
-  Arceus and Rotom events), with undo/redo and a `.bak` of the previous
-  file; Trainer Card and Pokédex diploma export as PNG. Also standalone:
+- **Save editor:** *Edit save...* on a slot: trainer, party (and Add
+  Pokémon), boxes, bag, Pokédex and events (Mystery Gift Wonder Cards for
+  the Darkrai, Shaymin, Arceus and Rotom events; event flags and vars), with
+  undo/redo and a `.bak` of the previous file; Trainer Card and Pokédex
+  diploma export as PNG. Black and White saves edit the same way (`.pgf`
+  Wonder Cards into their twelve slots). Also standalone:
   `nativeplat --editor --save file.sav`.
 - **Touch and skins:** on-screen controls with a layout editor; Delta
   `.deltaskin` controller skins (drop one on the window).

@@ -1,11 +1,12 @@
 /*
  * Save editor page: edits one save slot's 512 KiB backup image through
- * features/save4, with names and game tables (species base stats, exp
+ * edsave.h (features/save4 for Diamond/Pearl/Platinum, features/save5 for
+ * Black/White), with names and game tables (species base stats, exp
  * tables, move PP) read from the player's imported ROM via features/ndsdata.
  *
- * Tabs: Trainer, Party, Boxes, Bag, Pokedex. Every edit is applied to a
+ * Tabs: Trainer, Party, Boxes, Bag, Pokedex, Events. Every edit is applied to a
  * scratch copy first and recorded on a snapshot undo stack (undo.h) only if
- * save4 accepted it, so a rejected edit (text outside the game's charset,
+ * the save library accepted it, so a rejected edit (text outside the game's charset,
  * out of range) leaves no trace. Save writes the image atomically with a
  * .bak of the previous one; a slot whose blocks fail their checksums is
  * refused before anything is shown.
@@ -18,7 +19,8 @@
  *    the PID-derived gender and renames unnicknamed Pokemon;
  *  - a new move gets its full PP for the current PP Ups; EVs are capped at
  *    510 in total.
- * Nature and shininess come from the PID and are shown read-only.
+ * Nature and shininess are shown read-only (Gen 4 derives both from the
+ * PID; Gen 5 stores the nature).
  *
  * Input: one selection model for keyboard, gamepad, mouse and touch. L/R
  * (Page Up/Down) switch tabs, X/Y (or Ctrl/Cmd+Z / Ctrl/Cmd+Shift+Z) undo
@@ -32,10 +34,10 @@
 #include "ndsdata/ndsdata.h"
 #include "png.h"
 #include "romdb.h"
-#include "save4/save4.h"
+#include "edsave.h"
 #include "undo.h"
 
-#define MAX_ROWS 520
+#define MAX_ROWS 700 /* the Pokedex tab: 649 species in Gen 5, plus actions */
 
 enum { TAB_TRAINER, TAB_PARTY, TAB_BOXES, TAB_BAG, TAB_DEX, TAB_EVENTS, TAB_COUNT };
 enum { OV_NONE, OV_NUMBER, OV_CHOOSER, OV_MENU, OV_DISCARD };
@@ -52,13 +54,15 @@ typedef enum field {
     F_TR_TID,
     F_TR_SID,
     F_TR_MONEY,
-    F_TR_COINS,
+    F_TR_COINS, /* Gen 4 only */
     F_TR_BADGE,
     F_TR_HOURS,
     F_TR_MINUTES,
     F_TR_SECONDS,
     F_TR_EXPORT, /* arg: np_card_kind */
     F_PARTY_MON,
+    F_PARTY_ADD, /* Add Pokemon: species chooser, then a level */
+    F_PARTY_ADD_LEVEL,
     F_MON_SPECIES,
     F_MON_NICK,
     F_MON_LEVEL,
@@ -76,11 +80,15 @@ typedef enum field {
     F_DEX_ALL,
     F_DEX_NONE,
     F_DEX_SPECIES,
-    F_EV_UNLOCK,
-    F_EV_DEX,
+    F_EV_UNLOCK, /* Gen 4 */
+    F_EV_DEX,    /* Gen 4 */
     F_EV_CARD,
-    F_EV_ADD,
+    F_EV_ADD, /* Gen 4 event gifts */
     F_EV_IMPORT,
+    F_EV_FLAG_ID,
+    F_EV_FLAG,
+    F_EV_VAR_ID,
+    F_EV_VAR,
 } field;
 
 typedef enum row_kind { RK_NUMBER, RK_CHOOSE, RK_TEXT, RK_TOGGLE, RK_ACTION, RK_INFO } row_kind;
@@ -98,7 +106,7 @@ typedef struct np_editor {
     char slot[NP_SLOT_NAME_MAX + 1]; /* the slot, or (standalone) the file's name */
     char path[1100];
     int standalone; /* --editor on a file: no slot, quit on close */
-    save4 s;
+    np_save s;
     uint8_t *scratch; /* image before the edit in progress */
     np_undo undo;
     int dirty;
@@ -116,6 +124,8 @@ typedef struct np_editor {
     int box, cursor;                 /* boxes tab; cursor -1 = box header */
     int held_box, held_slot;         /* a Pokemon being moved, held_box -1 none */
     int pocket;
+    int flag_id, var_id; /* Events tab: the flag and var shown */
+    uint16_t add_species; /* Add Pokemon: the species picked */
 
     int ov;
     struct {
@@ -128,7 +138,7 @@ typedef struct np_editor {
     struct {
         field f;
         int arg;
-        int ids[600];
+        int ids[700]; /* every id of the longest list (Gen 5 species, items) */
         int nids;
         char filter[24];
         int sel, scroll;
@@ -176,7 +186,6 @@ static const event_gift event_gifts[] = {
      "The key to a room in the\nGalactic Warehouse.\nVisit any Poke Mart: the\ndeliveryman in green has\nit for you.\n- nativeplat"},
 };
 static const char *const stat_names[6] = {"HP", "Attack", "Defense", "Speed", "Sp. Atk", "Sp. Def"};
-static const char *const badge_names[8] = {"Coal", "Forest", "Cobble", "Fen", "Relic", "Mine", "Icicle", "Beacon"};
 
 static int hit_id(int group, int index) { return NP_EDITOR_HIT_BASE + group * 1000 + index; }
 static int wrapi(int v, int n) { return n > 0 ? ((v % n) + n) % n : 0; }
@@ -196,11 +205,12 @@ static uint32_t kind_count(const np_editor *e, nd_text_kind kind)
 {
     if (e->have_names && e->names.count[kind])
         return e->names.count[kind];
+    const int gen5 = e->s.gen == 5; /* Black/White id ranges */
     switch (kind) {
-    case ND_TEXT_SPECIES: return SAVE4_DEX_MAX + 1;
-    case ND_TEXT_MOVES: return 468;
-    case ND_TEXT_ITEMS: return 468;
-    case ND_TEXT_ABILITIES: return 124;
+    case ND_TEXT_SPECIES: return (uint32_t)np_save_dex_max(&e->s) + 1;
+    case ND_TEXT_MOVES: return gen5 ? 560 : 468;
+    case ND_TEXT_ITEMS: return gen5 ? 639 : 468;
+    case ND_TEXT_ABILITIES: return gen5 ? 165 : 124;
     default: return 0;
     }
 }
@@ -234,8 +244,10 @@ static void load_rom_data(np_editor *e)
 
 /* ---- open / close ------------------------------------------------------------ */
 
-/* Opens `path` as game `game`; `label` names it in messages. */
-static void open_path(np_app *app, np_game game, const char *label, const char *path, int standalone)
+/* Opens `path` as a save of `game` (-1: the save decides; Diamond/Pearl
+ * saves then edit as `dp_default`); `label` names it in messages. */
+static void open_path(np_app *app, int game, np_game dp_default, const char *label, const char *path,
+                      int standalone)
 {
     np_editor_close(app);
     np_editor *e = SDL_calloc(1, sizeof *e);
@@ -243,69 +255,74 @@ static void open_path(np_app *app, np_game game, const char *label, const char *
         np_app_toast(app, "Out of memory");
         return;
     }
-    e->game = game;
     e->standalone = standalone;
     SDL_strlcpy(e->slot, label, sizeof e->slot);
     SDL_strlcpy(e->path, path, sizeof e->path);
     size_t len = 0;
     uint8_t *data = SDL_LoadFile(e->path, &len);
-    save4_status st = data ? save4_load(&e->s, data, len) : SAVE4_ERR_ARG;
+    np_save_status st = data ? np_save_load(&e->s, game, dp_default, data, len) : NP_SAVE_ERR_ARG;
     SDL_free(data);
-    if (st != SAVE4_OK) {
-        if (data)
-            SDL_snprintf(app->status, sizeof app->status, "Cannot edit \"%s\": %s.", label, save4_status_str(st));
-        else
+    if (st != NP_SAVE_OK) {
+        if (!data)
             SDL_snprintf(app->status, sizeof app->status, "Cannot read \"%s\": %s", label, SDL_GetError());
+        else if (st == NP_SAVE_ERR_WRONG_GAME && game >= 0)
+            SDL_snprintf(app->status, sizeof app->status, "Cannot edit \"%s\": not a %s save.", label,
+                         np_game_title((np_game)game));
+        else
+            SDL_snprintf(app->status, sizeof app->status, "Cannot edit \"%s\": %s.", label, np_save_status_str(st));
         np_app_toast(app, "%s", app->status);
         SDL_Log("editor: %s", app->status);
         SDL_free(e);
         return;
     }
-    if (standalone && e->s.game == SAVE4_GAME_PT)
-        e->game = game = NP_GAME_PLATINUM; /* the save decides; D and P share a format */
-    e->scratch = SDL_malloc(e->s.len);
+    e->game = e->s.game;
+    e->scratch = SDL_malloc(np_save_len(&e->s));
     if (!e->scratch) {
-        save4_free(&e->s);
+        np_save_free(&e->s);
         SDL_free(e);
         np_app_toast(app, "Out of memory");
         return;
     }
-    np_undo_init(&e->undo, e->s.len);
+    np_undo_init(&e->undo, np_save_len(&e->s));
     load_rom_data(e);
     e->held_box = -1;
     e->focus = FOCUS_LIST;
+    e->flag_id = np_save_flag_first(&e->s);
+    e->var_id = np_save_var_first(&e->s);
     app->editor = e;
     np_app_open_page(app, NP_PAGE_EDITOR);
-    if (e->s.load_result == SAVE4_LOAD_RECOVERED)
+    if (np_save_recovered(&e->s))
         np_app_toast(app, "One copy of this save was damaged; editing the intact copy");
     else if (standalone && !e->have_names)
-        np_app_toast(app, "Import the %s ROM to see names (ids are shown)", np_game_title(game));
-    SDL_Log("editor: opened %s %s \"%s\" (%s)", np_game_id(game), standalone ? "file" : "slot", path,
-            save4_game_name(e->s.game));
+        np_app_toast(app, "Import the %s ROM to see names (ids are shown)", np_game_title(e->game));
+    SDL_Log("editor: opened %s %s \"%s\" (%s)", np_game_id(e->game), standalone ? "file" : "slot", path,
+            np_save_game_name(&e->s));
 }
 
 void np_editor_open(np_app *app, np_game game, const char *slot)
 {
-    if (np_game_is_gba(game)) {
-        np_app_toast(app, "The save editor reads Diamond, Pearl and Platinum saves only");
+    if (!np_save_gen_of(game)) {
+        np_app_toast(app, "The save editor reads Diamond, Pearl, Platinum, Black and White saves");
         return;
     }
     char path[1100];
     np_storage_slot_path(game, slot, path, sizeof path);
-    open_path(app, game, slot, path, 0);
+    open_path(app, game, game, slot, path, 0);
 }
 
 void np_editor_open_file(np_app *app, int game, const char *path)
 {
-    /* Without --game, D/P saves edit as whichever of the two is imported
-     * (names come from its ROM); Platinum saves identify themselves. */
-    if (game < 0)
-        game = np_storage_rom_present(NP_GAME_DIAMOND) || !np_storage_rom_present(NP_GAME_PEARL) ? NP_GAME_DIAMOND
-                                                                                                  : NP_GAME_PEARL;
+    /* The save decides its game. Diamond/Pearl saves (one format) edit as
+     * --game's when that is one of the two, else as whichever of the two is
+     * imported (names come from its ROM). */
+    np_game dp = game == NP_GAME_DIAMOND || game == NP_GAME_PEARL ? (np_game)game
+                 : np_storage_rom_present(NP_GAME_DIAMOND) || !np_storage_rom_present(NP_GAME_PEARL)
+                     ? NP_GAME_DIAMOND
+                     : NP_GAME_PEARL;
     const char *base = SDL_strrchr(path, '/');
     char label[NP_SLOT_NAME_MAX + 1];
     SDL_strlcpy(label, base ? base + 1 : path, sizeof label);
-    open_path(app, (np_game)game, label, path, 1);
+    open_path(app, -1, dp, label, path, 1);
 }
 
 void np_editor_close(np_app *app)
@@ -324,7 +341,7 @@ void np_editor_close(np_app *app)
     if (e->rom_io)
         SDL_CloseIO(e->rom_io);
     np_undo_free(&e->undo);
-    save4_free(&e->s);
+    np_save_free(&e->s);
     SDL_free(e->scratch);
     SDL_free(e);
     app->editor = NULL;
@@ -332,19 +349,21 @@ void np_editor_close(np_app *app)
 
 /* ---- editing ------------------------------------------------------------------- */
 
-static void begin_edit(np_editor *e) { SDL_memcpy(e->scratch, e->s.img, e->s.len); }
+static void begin_edit(np_editor *e) { SDL_memcpy(e->scratch, np_save_img(&e->s), np_save_len(&e->s)); }
 
 /* Keeps the edit (recording the previous image) or restores it. */
-static int end_edit(np_app *app, np_editor *e, save4_status st)
+static int end_edit(np_app *app, np_editor *e, np_save_status st)
 {
-    if (st != SAVE4_OK) {
-        SDL_memcpy(e->s.img, e->scratch, e->s.len);
-        save4_revalidate(&e->s);
-        np_app_toast(app, st == SAVE4_ERR_ENCODE ? "Not in the game's character set" : "Not allowed: %s",
-                     save4_status_str(st));
+    uint8_t *img = np_save_img(&e->s);
+    size_t len = np_save_len(&e->s);
+    if (st != NP_SAVE_OK) {
+        SDL_memcpy(img, e->scratch, len);
+        np_save_revalidate(&e->s);
+        np_app_toast(app, st == NP_SAVE_ERR_ENCODE ? "Not in the game's character set" : "Not allowed: %s",
+                     np_save_status_str(st));
         return -1;
     }
-    if (SDL_memcmp(e->scratch, e->s.img, e->s.len)) {
+    if (SDL_memcmp(e->scratch, img, len)) {
         if (np_undo_push(&e->undo, e->scratch))
             np_app_toast(app, "Out of memory: this edit cannot be undone");
         e->dirty = 1;
@@ -354,19 +373,19 @@ static int end_edit(np_app *app, np_editor *e, save4_status st)
 
 static void restore(np_app *app, np_editor *e, int redo)
 {
-    if ((redo ? np_undo_redo : np_undo_undo)(&e->undo, e->s.img)) {
+    if ((redo ? np_undo_redo : np_undo_undo)(&e->undo, np_save_img(&e->s))) {
         np_app_toast(app, redo ? "Nothing to redo" : "Nothing to undo");
         return;
     }
-    save4_revalidate(&e->s);
+    np_save_revalidate(&e->s);
     e->dirty = 1;
     np_app_toast(app, redo ? "Redone" : "Undone");
 }
 
 static void save_now(np_app *app, np_editor *e)
 {
-    size_t len;
-    const uint8_t *img = save4_image(&e->s, &len);
+    size_t len = np_save_len(&e->s);
+    const uint8_t *img = np_save_img(&e->s);
     if (np_storage_write_atomic(e->path, img, len, 1)) {
         np_app_toast(app, "Saving failed: %s", SDL_GetError());
         return;
@@ -378,35 +397,35 @@ static void save_now(np_app *app, np_editor *e)
         np_sync_slot(app, e->game, e->slot);
 }
 
-static save4_status get_mon(const np_editor *e, int box, int slot, pkm4 *p)
+static np_save_status get_mon(const np_editor *e, int box, int slot, np_mon *p)
 {
-    return box < 0 ? save4_get_party(&e->s, slot, p) : save4_get_box_mon(&e->s, box, slot, p);
+    return box < 0 ? np_save_get_party(&e->s, slot, p) : np_save_get_box(&e->s, box, slot, p);
 }
 
-static save4_status put_mon(np_editor *e, int box, int slot, pkm4 *p)
+static np_save_status put_mon(np_editor *e, int box, int slot, np_mon *p)
 {
-    return box < 0 ? save4_set_party(&e->s, slot, p) : save4_set_box_mon(&e->s, box, slot, p);
+    return box < 0 ? np_save_set_party(&e->s, slot, p) : np_save_set_box(&e->s, box, slot, p);
 }
 
 /* Level, stats and HP after species/EXP/IV/EV changes (party Pokemon). */
-static void mon_recalc(np_editor *e, pkm4 *p)
+static void mon_recalc(np_editor *e, np_mon *p)
 {
-    if (!e->have_gd || !p->party)
+    if (!e->have_gd || !np_mon_is_party(p))
         return;
-    pkm4_info in;
-    pkm4_info_get(p, &in);
+    np_mon_info in;
+    np_mon_info_get(p, &in);
     const nd_species *sp = nd_species_get(&e->gd, in.species);
     if (!sp)
         return;
     uint8_t level = (uint8_t)nd_level_for_exp(&e->gd, in.species, in.exp);
     uint16_t st[6];
-    pkm4_calc_stats(sp->base, in.ivs, in.evs, level, in.nature, in.species == 292 /* Shedinja */, st);
+    np_mon_calc_stats(sp->base, in.ivs, in.evs, level, in.nature, in.species == 292 /* Shedinja */, st);
     int hp = in.hp;
     if (in.stats[0] == 0)
         hp = st[0];
     else if (hp > 0)
         hp = SDL_clamp(hp + (int)st[0] - (int)in.stats[0], 1, (int)st[0]);
-    pkm4_set_party_stats(p, level, (uint16_t)hp, st, in.status);
+    np_mon_set_party_stats(p, level, (uint16_t)hp, st, in.status);
 }
 
 static uint8_t gender_for(const nd_species *sp, uint32_t pid)
@@ -421,82 +440,129 @@ static uint8_t gender_for(const nd_species *sp, uint32_t pid)
 }
 
 /* Applies a numeric or chooser value to the current Pokemon. */
-static save4_status edit_mon(np_editor *e, field f, int arg, int64_t v)
+static np_save_status edit_mon(np_editor *e, field f, int arg, int64_t v)
 {
-    pkm4 p;
-    save4_status st = get_mon(e, e->mon_box, e->mon_slot, &p);
-    if (st != SAVE4_OK)
+    np_mon p;
+    np_save_status st = get_mon(e, e->mon_box, e->mon_slot, &p);
+    if (st != NP_SAVE_OK)
         return st;
-    pkm4_info in;
-    pkm4_info_get(&p, &in);
+    np_mon_info in;
+    np_mon_info_get(&p, &in);
     switch (f) {
     case F_MON_SPECIES: {
-        pkm4_set_species(&p, (uint16_t)v);
+        np_mon_set_species(&p, (uint16_t)v);
         const nd_species *sp = e->have_gd ? nd_species_get(&e->gd, (uint32_t)v) : NULL;
         if (sp) {
-            pkm4_set_ability(&p, sp->abilities[0]);
-            pkm4_set_gender_form(&p, gender_for(sp, in.pid), 0);
+            np_mon_set_ability(&p, sp->abilities[0]);
+            np_mon_set_gender_form(&p, gender_for(sp, in.pid), 0);
             /* Keep the level: the new species may grow at another rate. */
             uint32_t level = e->have_gd ? nd_level_for_exp(&e->gd, in.species, in.exp) : 0;
             if (level)
-                pkm4_set_exp(&p, nd_exp_for_level(&e->gd, (uint32_t)v, level));
+                np_mon_set_exp(&p, nd_exp_for_level(&e->gd, (uint32_t)v, level));
         }
         if (!in.has_nickname && e->have_names) {
             const char *name = nd_name(&e->names, ND_TEXT_SPECIES, (uint32_t)v);
-            if (name && pkm4_set_nickname(&p, name, false) != SAVE4_OK)
-                return SAVE4_ERR_ENCODE;
+            if (name && np_mon_set_nickname(&p, name, false) != NP_SAVE_OK)
+                return NP_SAVE_ERR_ENCODE;
         }
         break;
     }
-    case F_MON_LEVEL: pkm4_set_exp(&p, nd_exp_for_level(&e->gd, in.species, (uint32_t)v)); break;
-    case F_MON_EXP: pkm4_set_exp(&p, (uint32_t)v); break;
-    case F_MON_ABILITY: pkm4_set_ability(&p, (uint8_t)v); break;
-    case F_MON_ITEM: pkm4_set_held_item(&p, (uint16_t)v); break;
+    case F_MON_LEVEL: np_mon_set_exp(&p, nd_exp_for_level(&e->gd, in.species, (uint32_t)v)); break;
+    case F_MON_EXP: np_mon_set_exp(&p, (uint32_t)v); break;
+    case F_MON_ABILITY: np_mon_set_ability(&p, (uint8_t)v); break;
+    case F_MON_ITEM: np_mon_set_held(&p, (uint16_t)v); break;
     case F_MON_MOVE: {
         uint8_t base = e->have_gd ? nd_move_base_pp(&e->gd, (uint32_t)v) : 5;
         uint8_t ups = v ? in.pp_ups[arg] : 0;
-        pkm4_set_move(&p, arg, (uint16_t)v, (uint8_t)(base * (5 + ups) / 5), ups);
+        np_mon_set_move(&p, arg, (uint16_t)v, (uint8_t)(base * (5 + ups) / 5), ups);
         break;
     }
-    case F_MON_IV: pkm4_set_iv(&p, arg, (uint8_t)v); break;
+    case F_MON_IV: np_mon_set_iv(&p, arg, (uint8_t)v); break;
     case F_MON_EV: {
         int others = 0;
         for (int i = 0; i < 6; i++)
             if (i != arg)
                 others += in.evs[i];
-        pkm4_set_ev(&p, arg, (uint8_t)SDL_min(v, (int64_t)SDL_max(0, 510 - others)));
+        np_mon_set_ev(&p, arg, (uint8_t)SDL_min(v, (int64_t)SDL_max(0, 510 - others)));
         break;
     }
-    case F_MON_FRIEND: pkm4_set_friendship(&p, (uint8_t)v); break;
-    default: return SAVE4_ERR_ARG;
+    case F_MON_FRIEND: np_mon_set_friendship(&p, (uint8_t)v); break;
+    default: return NP_SAVE_ERR_ARG;
     }
     mon_recalc(e, &p);
     return put_mon(e, e->mon_box, e->mon_slot, &p);
 }
 
-/* Bag pockets are compact lists: removing a slot shifts the rest up. */
-static save4_status bag_remove(np_editor *e, int pocket, int slot)
+/* Add Pokemon: one as the game's own gift would make it (the species' base
+ * friendship and first ability, the growth rate's EXP for the level, stats
+ * from base stats with IVs 20 and no EVs, the trainer as OT, met in a Poke
+ * Ball in this game), appended to the party. Needs the ROM's tables. */
+static np_save_status add_party_mon(np_editor *e, uint16_t species, uint8_t level)
 {
-    int cap = save4_pocket_capacity((save4_pocket)pocket);
+    const nd_species *sp = e->have_gd ? nd_species_get(&e->gd, species) : NULL;
+    const char *name = e->have_names ? nd_name(&e->names, ND_TEXT_SPECIES, species) : NULL;
+    uint8_t count = np_save_party_count(&e->s);
+    np_trainer t;
+    if (!sp || !sp->valid || !name)
+        return NP_SAVE_ERR_UNSUPPORTED;
+    if (count >= 6)
+        return NP_SAVE_ERR_NOSPACE;
+    np_save_status st = np_save_trainer(&e->s, &t);
+    if (st != NP_SAVE_OK)
+        return st;
+    np_mon p;
+    np_mon_blank(&e->s, &p);
+    /* A fixed personality per species, level and trainer (np_save4/5 add-mon). */
+    uint32_t pid = (uint32_t)species * 2654435761u ^ (uint32_t)level * 40503u ^ ((uint32_t)t.sid << 16 | t.tid);
+    uint8_t nature = (uint8_t)(pid % 25);
+    np_mon_set_pid(&p, pid);
+    np_mon_set_species(&p, species);
+    np_mon_set_ot(&p, t.tid, t.sid);
+    np_mon_set_exp(&p, nd_exp_for_level(&e->gd, species, level));
+    np_mon_set_friendship(&p, sp->base_friendship);
+    np_mon_set_ability(&p, sp->abilities[0]);
+    np_mon_set_language(&p, np_save_language(&e->s));
+    np_mon_set_nature(&p, nature);
+    np_mon_set_gender_form(&p, gender_for(sp, pid), 0);
+    uint8_t ivs[6], evs[6] = {0};
+    for (int i = 0; i < 6; i++) {
+        ivs[i] = 20;
+        np_mon_set_iv(&p, i, 20);
+    }
+    if ((st = np_mon_set_nickname(&p, name, false)) != NP_SAVE_OK || (st = np_mon_set_ot_name(&p, t.name)) != NP_SAVE_OK)
+        return st;
+    np_mon_set_origin(&p, np_save_origin_game(&e->s));
+    np_mon_set_met(&p, 0, level, 4 /* Poke Ball */, t.gender);
+    uint16_t stats[6];
+    np_mon_calc_stats(sp->base, ivs, evs, level, nature, species == 292, stats);
+    np_mon_set_party_stats(&p, level, stats[0], stats, 0);
+    st = np_save_set_party(&e->s, count, &p);
+    return st == NP_SAVE_OK ? np_save_set_party_count(&e->s, (uint8_t)(count + 1)) : st;
+}
+
+/* Bag pockets are compact lists: removing a slot shifts the rest up. */
+static np_save_status bag_remove(np_editor *e, int pocket, int slot)
+{
+    int cap = np_save_pocket_capacity(&e->s, pocket);
     for (int i = slot; i < cap; i++) {
         uint16_t item = 0, qty = 0;
         if (i + 1 < cap)
-            save4_get_bag_slot(&e->s, (save4_pocket)pocket, i + 1, &item, &qty);
-        save4_status st = save4_set_bag_slot(&e->s, (save4_pocket)pocket, i, item, qty);
-        if (st != SAVE4_OK)
+            np_save_get_bag(&e->s, pocket, i + 1, &item, &qty);
+        np_save_status st = np_save_set_bag(&e->s, pocket, i, item, qty);
+        if (st != NP_SAVE_OK)
             return st;
         if (!item)
             break;
     }
-    return SAVE4_OK;
+    return NP_SAVE_OK;
 }
 
 static int bag_count(const np_editor *e, int pocket)
 {
-    int cap = save4_pocket_capacity((save4_pocket)pocket), n = 0;
+    int cap = np_save_pocket_capacity(&e->s, pocket), n = 0;
     for (; n < cap; n++) {
         uint16_t item = 0, qty = 0;
-        if (save4_get_bag_slot(&e->s, (save4_pocket)pocket, n, &item, &qty) != SAVE4_OK || !item)
+        if (np_save_get_bag(&e->s, pocket, n, &item, &qty) != NP_SAVE_OK || !item)
             break;
     }
     return n;
@@ -504,37 +570,42 @@ static int bag_count(const np_editor *e, int pocket)
 
 static void apply_value(np_app *app, np_editor *e, field f, int arg, int64_t v)
 {
-    save4_trainer t;
-    save4_get_trainer(&e->s, &t);
+    np_trainer t;
+    np_save_trainer(&e->s, &t);
     begin_edit(e);
-    save4_status st = SAVE4_OK;
+    np_save_status st = NP_SAVE_OK;
     switch (f) {
-    case F_TR_TID: st = save4_set_trainer_ids(&e->s, (uint16_t)v, t.sid); break;
-    case F_TR_SID: st = save4_set_trainer_ids(&e->s, t.tid, (uint16_t)v); break;
-    case F_TR_MONEY: st = save4_set_money(&e->s, (uint32_t)v); break;
-    case F_TR_COINS: st = save4_set_coins(&e->s, (uint16_t)v); break;
-    case F_TR_HOURS: st = save4_set_play_time(&e->s, (uint16_t)v, t.play_minutes, t.play_seconds); break;
-    case F_TR_MINUTES: st = save4_set_play_time(&e->s, t.play_hours, (uint8_t)v, t.play_seconds); break;
-    case F_TR_SECONDS: st = save4_set_play_time(&e->s, t.play_hours, t.play_minutes, (uint8_t)v); break;
+    case F_TR_TID: st = np_save_set_ids(&e->s, (uint16_t)v, t.sid); break;
+    case F_TR_SID: st = np_save_set_ids(&e->s, t.tid, (uint16_t)v); break;
+    case F_TR_MONEY: st = np_save_set_money(&e->s, (uint32_t)v); break;
+    case F_TR_COINS: st = np_save_set_coins(&e->s, (uint16_t)v); break;
+    case F_TR_HOURS: st = np_save_set_play_time(&e->s, (uint16_t)v, t.play_minutes, t.play_seconds); break;
+    case F_TR_MINUTES: st = np_save_set_play_time(&e->s, t.play_hours, (uint8_t)v, t.play_seconds); break;
+    case F_TR_SECONDS: st = np_save_set_play_time(&e->s, t.play_hours, t.play_minutes, (uint8_t)v); break;
+    case F_PARTY_ADD_LEVEL: st = add_party_mon(e, e->add_species, (uint8_t)v); break;
+    case F_EV_FLAG_ID: e->flag_id = (int)v; break;
+    case F_EV_VAR_ID: e->var_id = (int)v; break;
+    case F_EV_VAR: st = np_save_var_set(&e->s, (uint16_t)e->var_id, (uint16_t)v); break;
     case F_BAG_SLOT: {
         /* arg = slot; quantity edits */
         uint16_t item = 0, qty = 0;
-        save4_get_bag_slot(&e->s, (save4_pocket)e->pocket, arg, &item, &qty);
-        st = save4_set_bag_slot(&e->s, (save4_pocket)e->pocket, arg, item, (uint16_t)v);
+        np_save_get_bag(&e->s, e->pocket, arg, &item, &qty);
+        st = np_save_set_bag(&e->s, e->pocket, arg, item, (uint16_t)v);
         break;
     }
     case F_BAG_ADD: {
         /* arg = item chosen; add with quantity 1 at the end */
         int n = bag_count(e, e->pocket);
-        if (n >= save4_pocket_capacity((save4_pocket)e->pocket))
-            st = SAVE4_ERR_RANGE;
+        if (n >= np_save_pocket_capacity(&e->s, e->pocket))
+            st = NP_SAVE_ERR_RANGE;
         else
-            st = save4_set_bag_slot(&e->s, (save4_pocket)e->pocket, n, (uint16_t)v, 1);
+            st = np_save_set_bag(&e->s, e->pocket, n, (uint16_t)v, 1);
         break;
     }
     default: st = edit_mon(e, f, arg, v); break;
     }
-    end_edit(app, e, st);
+    if (end_edit(app, e, st) == 0 && f == F_PARTY_ADD_LEVEL)
+        np_app_toast(app, "Added to the party");
 }
 
 /* ---- row model ----------------------------------------------------------------- */
@@ -554,15 +625,17 @@ static row *add_row(np_editor *e, field f, int arg, row_kind kind, const char *l
 
 static void build_trainer(np_editor *e)
 {
-    save4_trainer t;
-    if (save4_get_trainer(&e->s, &t) != SAVE4_OK)
+    np_trainer t;
+    if (np_save_trainer(&e->s, &t) != NP_SAVE_OK)
         return;
     SDL_strlcpy(add_row(e, F_TR_NAME, 0, RK_TEXT, "Name")->value, t.name, 72);
     SDL_strlcpy(add_row(e, F_TR_GENDER, 0, RK_TOGGLE, "Gender")->value, t.gender ? "Female" : "Male", 72);
     SDL_snprintf(add_row(e, F_TR_TID, 0, RK_NUMBER, "Trainer ID")->value, 72, "%05u", t.tid);
     SDL_snprintf(add_row(e, F_TR_SID, 0, RK_NUMBER, "Secret ID")->value, 72, "%05u", t.sid);
     SDL_snprintf(add_row(e, F_TR_MONEY, 0, RK_NUMBER, "Money")->value, 72, "$%u", t.money);
-    SDL_snprintf(add_row(e, F_TR_COINS, 0, RK_NUMBER, "Coins")->value, 72, "%u", t.coins);
+    if (t.has_coins)
+        SDL_snprintf(add_row(e, F_TR_COINS, 0, RK_NUMBER, "Coins")->value, 72, "%u", t.coins);
+    const char *const *badge_names = np_save_badge_names(&e->s);
     for (int b = 0; b < 8; b++) {
         char label[40];
         SDL_snprintf(label, sizeof label, "%s Badge", badge_names[b]);
@@ -575,10 +648,10 @@ static void build_trainer(np_editor *e)
     add_row(e, F_TR_EXPORT, NP_CARD_DIPLOMA, RK_ACTION, "Export Pokedex diploma PNG...");
 }
 
-static void mon_summary(const np_editor *e, const pkm4 *p, char *buf, size_t n)
+static void mon_summary(const np_editor *e, const np_mon *p, char *buf, size_t n)
 {
-    pkm4_info in;
-    pkm4_info_get(p, &in);
+    np_mon_info in;
+    np_mon_info_get(p, &in);
     char species[40];
     name_of(e, ND_TEXT_SPECIES, in.species, species, sizeof species);
     uint32_t level = in.has_party_data ? in.level : e->have_gd ? nd_level_for_exp(&e->gd, in.species, in.exp) : 0;
@@ -592,30 +665,33 @@ static void mon_summary(const np_editor *e, const pkm4 *p, char *buf, size_t n)
 
 static void build_party(np_editor *e)
 {
-    int n = save4_party_count(&e->s);
+    int n = np_save_party_count(&e->s);
     for (int i = 0; i < n; i++) {
-        pkm4 p;
+        np_mon p;
         char label[16];
         SDL_snprintf(label, sizeof label, "Slot %d", i + 1);
         row *r = add_row(e, F_PARTY_MON, i, RK_ACTION, label);
-        if (save4_get_party(&e->s, i, &p) == SAVE4_OK)
+        if (np_save_get_party(&e->s, i, &p) == NP_SAVE_OK)
             mon_summary(e, &p, r->value, sizeof r->value);
         else
             SDL_strlcpy(r->value, "(bad checksum)", sizeof r->value);
     }
     if (!n)
         add_row(e, F_INFO, 0, RK_INFO, "No Pokemon in the party yet.");
+    if (n < 6)
+        add_row(e, F_PARTY_ADD, 0, RK_CHOOSE, e->have_gd && e->have_names ? "Add Pokemon..."
+                                                                           : "Add Pokemon (needs the ROM)");
 }
 
 static void build_mon(np_editor *e)
 {
-    pkm4 p;
-    if (get_mon(e, e->mon_box, e->mon_slot, &p) != SAVE4_OK) {
+    np_mon p;
+    if (get_mon(e, e->mon_box, e->mon_slot, &p) != NP_SAVE_OK) {
         add_row(e, F_INFO, 0, RK_INFO, "This Pokemon's data fails its checksum.");
         return;
     }
-    pkm4_info in;
-    pkm4_info_get(&p, &in);
+    np_mon_info in;
+    np_mon_info_get(&p, &in);
     name_of(e, ND_TEXT_SPECIES, in.species, add_row(e, F_MON_SPECIES, 0, RK_CHOOSE, "Species")->value, 72);
     SDL_strlcpy(add_row(e, F_MON_NICK, 0, RK_TEXT, "Nickname")->value, in.nickname, 72);
     uint32_t level = e->have_gd ? nd_level_for_exp(&e->gd, in.species, in.exp) : in.level;
@@ -626,6 +702,8 @@ static void build_mon(np_editor *e)
     name_of(e, ND_TEXT_NATURES, in.nature, nature, sizeof nature);
     SDL_strlcpy(add_row(e, F_INFO, 0, RK_INFO, "Nature")->value, nature, 72);
     name_of(e, ND_TEXT_ABILITIES, in.ability, add_row(e, F_MON_ABILITY, 0, RK_CHOOSE, "Ability")->value, 72);
+    if (in.hidden_ability)
+        SDL_strlcat(e->rows[e->nrows - 1].value, " (hidden)", 72);
     name_of(e, ND_TEXT_ITEMS, in.held_item, add_row(e, F_MON_ITEM, 0, RK_CHOOSE, "Held item")->value, 72);
     for (int m = 0; m < 4; m++) {
         char label[16], move[40];
@@ -664,18 +742,17 @@ static void build_mon(np_editor *e)
 
 static void build_bag(np_editor *e)
 {
-    SDL_strlcpy(add_row(e, F_BAG_POCKET, 0, RK_TOGGLE, "Pocket")->value, save4_pocket_name((save4_pocket)e->pocket),
-                72);
+    SDL_strlcpy(add_row(e, F_BAG_POCKET, 0, RK_TOGGLE, "Pocket")->value, np_save_pocket_name(&e->s, e->pocket), 72);
     int n = bag_count(e, e->pocket);
     for (int i = 0; i < n; i++) {
         uint16_t item = 0, qty = 0;
-        save4_get_bag_slot(&e->s, (save4_pocket)e->pocket, i, &item, &qty);
+        np_save_get_bag(&e->s, e->pocket, i, &item, &qty);
         char name[40];
         name_of(e, ND_TEXT_ITEMS, item, name, sizeof name);
         row *r = add_row(e, F_BAG_SLOT, i, RK_ACTION, name);
         SDL_snprintf(r->value, sizeof r->value, "x%u", qty);
     }
-    if (n < save4_pocket_capacity((save4_pocket)e->pocket))
+    if (n < np_save_pocket_capacity(&e->s, e->pocket))
         add_row(e, F_BAG_ADD, 0, RK_CHOOSE, "Add item...");
 }
 
@@ -683,9 +760,9 @@ static void build_dex(np_editor *e)
 {
     add_row(e, F_DEX_ALL, 0, RK_ACTION, "Mark every species caught");
     add_row(e, F_DEX_NONE, 0, RK_ACTION, "Clear the Pokedex");
-    for (int sp = 1; sp <= SAVE4_DEX_MAX; sp++) {
+    for (int sp = 1; sp <= np_save_dex_max(&e->s); sp++) {
         bool seen = false, caught = false;
-        save4_dex_get(&e->s, (uint16_t)sp, &seen, &caught);
+        np_save_dex_get(&e->s, (uint16_t)sp, &seen, &caught);
         char name[40], label[40];
         name_of(e, ND_TEXT_SPECIES, (uint32_t)sp, name, sizeof name);
         SDL_snprintf(label, sizeof label, "%03d %s", sp, name);
@@ -711,61 +788,78 @@ static int64_t days_since_2000(void)
     return (int64_t)era * 146097 + doe - 719468 - 10957;
 }
 
-static void card_title(const uint8_t *card, char *buf, size_t n)
+/* Event flags and vars by id: pick an id, then toggle/set its value. */
+static void build_event_data(np_editor *e)
 {
-    uint16_t codes[SAVE4_WC_TITLE_LEN];
-    for (int i = 0; i < SAVE4_WC_TITLE_LEN; i++)
-        codes[i] = (uint16_t)(card[0x104 + 2 * i] | card[0x105 + 2 * i] << 8);
-    g4_text_decode(codes, SAVE4_WC_TITLE_LEN, buf, n);
+    bool on = false;
+    uint16_t v = 0;
+    int nflags = 0;
+    for (int id = np_save_flag_first(&e->s); id < np_save_flag_count(&e->s); id++)
+        nflags += np_save_flag_get(&e->s, (uint16_t)id, &on) == NP_SAVE_OK && on;
+    SDL_snprintf(add_row(e, F_INFO, 0, RK_INFO, "Event flags set")->value, 72, "%d of %d", nflags,
+                 np_save_flag_count(&e->s) - np_save_flag_first(&e->s));
+    SDL_snprintf(add_row(e, F_EV_FLAG_ID, 0, RK_NUMBER, "Event flag")->value, 72, "%d", e->flag_id);
+    on = false;
+    np_save_flag_get(&e->s, (uint16_t)e->flag_id, &on);
+    SDL_strlcpy(add_row(e, F_EV_FLAG, 0, RK_TOGGLE, "  Flag value")->value, on ? "Set" : "Clear", 72);
+    SDL_snprintf(add_row(e, F_EV_VAR_ID, 0, RK_NUMBER, "Event var")->value, 72, "0x%04X (%d)", e->var_id, e->var_id);
+    np_save_var_get(&e->s, (uint16_t)e->var_id, &v);
+    SDL_snprintf(add_row(e, F_EV_VAR, 0, RK_NUMBER, "  Var value")->value, 72, "%u", v);
 }
 
 static void build_events(np_editor *e)
 {
-    bool v = false;
-    if (save4_mg_get_unlocked(&e->s, &v) != SAVE4_OK) {
+    /* Gen 4: the MYSTERY GIFT unlock, Pokedex flag, Poke Mart gifts and our
+     * event cards; Gen 5: just the twelve Wonder Card slots. */
+    const save4 *s4 = np_save_s4c(&e->s);
+    bool unlocked = false, mg = !s4 || save4_mg_get_unlocked(s4, &unlocked) == SAVE4_OK;
+    if (!mg) {
         add_row(e, F_INFO, 0, RK_INFO, "This save has no Mystery Gift data the editor knows.");
-        return;
+    } else if (s4) {
+        bool v = false;
+        save4_dex_get_obtained(s4, &v);
+        SDL_strlcpy(add_row(e, F_EV_UNLOCK, 0, RK_TOGGLE, "MYSTERY GIFT on main menu")->value,
+                    unlocked ? "On" : "Off", 72);
+        SDL_strlcpy(add_row(e, F_EV_DEX, 0, RK_TOGGLE, "Pokedex obtained")->value, v ? "Yes" : "No", 72);
     }
-    SDL_strlcpy(add_row(e, F_EV_UNLOCK, 0, RK_TOGGLE, "MYSTERY GIFT on main menu")->value, v ? "On" : "Off", 72);
-    v = false;
-    save4_dex_get_obtained(&e->s, &v);
-    SDL_strlcpy(add_row(e, F_EV_DEX, 0, RK_TOGGLE, "Pokedex obtained")->value, v ? "Yes" : "No", 72);
-    for (int i = 0; i < SAVE4_WONDERCARD_SLOTS; i++) {
-        uint8_t card[SAVE4_WONDERCARD_SIZE];
+    for (int i = 0; mg && i < np_save_card_slots(&e->s); i++) {
         bool used = false;
         char label[24];
         SDL_snprintf(label, sizeof label, "Wonder Card %d", i + 1);
         row *r = add_row(e, F_EV_CARD, i, RK_ACTION, label);
-        if (save4_mg_get_card(&e->s, i, card, &used) == SAVE4_OK && used)
-            card_title(card, r->value, sizeof r->value);
-        else
+        if (np_save_card(&e->s, i, &used, r->value, sizeof r->value) != NP_SAVE_OK || !used)
             SDL_strlcpy(r->value, "(empty)", sizeof r->value);
     }
-    int pgts = 0;
-    save4_mg_pgt_count(&e->s, &pgts);
-    SDL_snprintf(add_row(e, F_INFO, 0, RK_INFO, "Gifts waiting at Poke Marts")->value, 72, "%d / %d", pgts,
-                 SAVE4_PGT_SLOTS);
-    for (size_t i = 0; i < SDL_arraysize(event_gifts); i++) {
-        if (!save4_mg_type_supported(e->s.game, event_gifts[i].type))
-            continue; /* e.g. the Secret Key exists only in Platinum */
-        char label[48];
-        SDL_snprintf(label, sizeof label, "Add %s", event_gifts[i].label);
-        add_row(e, F_EV_ADD, (int)i, RK_ACTION, label);
+    if (mg && s4) {
+        int pgts = 0;
+        save4_mg_pgt_count(s4, &pgts);
+        SDL_snprintf(add_row(e, F_INFO, 0, RK_INFO, "Gifts waiting at Poke Marts")->value, 72, "%d / %d", pgts,
+                     SAVE4_PGT_SLOTS);
+        for (size_t i = 0; i < SDL_arraysize(event_gifts); i++) {
+            if (!save4_mg_type_supported(s4->game, event_gifts[i].type))
+                continue; /* e.g. the Secret Key exists only in Platinum */
+            char label[48];
+            SDL_snprintf(label, sizeof label, "Add %s", event_gifts[i].label);
+            add_row(e, F_EV_ADD, (int)i, RK_ACTION, label);
+        }
     }
-    add_row(e, F_EV_IMPORT, 0, RK_ACTION, "Import .pgt / .pcd...");
+    if (mg)
+        add_row(e, F_EV_IMPORT, 0, RK_ACTION, s4 ? "Import .pgt / .pcd..." : "Import Wonder Card .pgf...");
+    build_event_data(e);
 }
 
 static void add_gift(np_app *app, np_editor *e, const uint8_t *data, size_t len)
 {
     begin_edit(e);
-    save4_status st = save4_mg_add(&e->s, data, len);
-    if (st == SAVE4_ERR_NOSPACE) {
-        end_edit(app, e, SAVE4_OK); /* nothing changed */
+    np_save_status st = np_save_gift_add(&e->s, data, len);
+    if (st == NP_SAVE_ERR_NOSPACE) {
+        end_edit(app, e, NP_SAVE_OK); /* nothing changed */
         np_app_toast(app, "No free Mystery Gift slot: remove a Wonder Card first");
         return;
     }
     if (!end_edit(app, e, st))
-        np_app_toast(app, "Added. The Poke Mart deliveryman will hand it over.");
+        np_app_toast(app, e->s.gen == 5 ? "Added. Receive it from the deliveryman in any Pokemon Center."
+                                        : "Added. The Poke Mart deliveryman will hand it over.");
 }
 
 void np_editor_import_gift(np_app *app, const char *path)
@@ -776,10 +870,10 @@ void np_editor_import_gift(np_app *app, const char *path)
     size_t len = 0;
     uint8_t *data = SDL_LoadFile(path, &len);
     const char *why = "cannot read the file";
-    if (data && save4_mg_validate(data, len, &why) == SAVE4_OK)
+    if (data && np_save_gift_validate(&e->s, data, len, &why) == NP_SAVE_OK)
         add_gift(app, e, data, len);
     else
-        np_app_toast(app, "Not a gift file: %s", why);
+        np_app_toast(app, "Not a gift file for %s: %s", np_game_title(e->game), why);
     SDL_Log("gift import %s: %s", path, app->toast);
     SDL_free(data);
 }
@@ -794,8 +888,10 @@ static void card_info(const np_editor *e, np_card_info *ci)
 {
     SDL_zerop(ci);
     ci->game = np_game_title(e->game);
-    save4_trainer t;
-    if (save4_get_trainer(&e->s, &t) == SAVE4_OK) {
+    ci->badge_names = np_save_badge_names(&e->s);
+    ci->dex_total = (uint16_t)np_save_dex_max(&e->s);
+    np_trainer t;
+    if (np_save_trainer(&e->s, &t) == NP_SAVE_OK) {
         SDL_strlcpy(ci->name, t.name, sizeof ci->name);
         ci->tid = t.tid;
         ci->female = t.gender == 1;
@@ -803,22 +899,22 @@ static void card_info(const np_editor *e, np_card_info *ci)
         ci->badges = t.badges;
         ci->play_hours = t.play_hours;
         ci->play_minutes = t.play_minutes;
-        ci->national_dex = t.has_national_dex;
+        ci->national_dex = t.national_dex;
     }
-    for (uint16_t sp = 1; sp <= 493; sp++) {
+    for (int sp = 1; sp <= np_save_dex_max(&e->s); sp++) {
         bool seen = false, caught = false;
-        if (save4_dex_get(&e->s, sp, &seen, &caught) == SAVE4_OK) {
+        if (np_save_dex_get(&e->s, (uint16_t)sp, &seen, &caught) == NP_SAVE_OK) {
             ci->dex_seen += seen;
             ci->dex_caught += caught;
         }
     }
-    int n = save4_party_count(&e->s);
+    int n = np_save_party_count(&e->s);
     for (int i = 0; i < n && ci->party_count < NP_CARD_PARTY_MAX; i++) {
-        pkm4 p;
-        if (save4_get_party(&e->s, i, &p) != SAVE4_OK)
+        np_mon p;
+        if (np_save_get_party(&e->s, i, &p) != NP_SAVE_OK)
             continue;
-        pkm4_info in;
-        pkm4_info_get(&p, &in);
+        np_mon_info in;
+        np_mon_info_get(&p, &in);
         int k = ci->party_count++;
         if (in.is_egg) {
             SDL_strlcpy(ci->party[k], "Egg", sizeof ci->party[k]);
@@ -904,19 +1000,18 @@ static int64_t pow10i(int n)
     return v;
 }
 
+static nd_text_kind chooser_kind(const np_editor *e);
+
 static void chooser_filter(np_editor *e)
 {
     /* For abilities with species data, the species' own (one or two). */
     e->ch.nids = 0;
-    nd_text_kind kind = e->ch.f == F_MON_SPECIES   ? ND_TEXT_SPECIES
-                        : e->ch.f == F_MON_MOVE    ? ND_TEXT_MOVES
-                        : e->ch.f == F_MON_ABILITY ? ND_TEXT_ABILITIES
-                                                   : ND_TEXT_ITEMS;
+    nd_text_kind kind = chooser_kind(e);
     if (e->ch.f == F_MON_ABILITY && e->have_gd && !e->ch.filter[0]) {
-        pkm4 p;
-        pkm4_info in;
-        if (get_mon(e, e->mon_box, e->mon_slot, &p) == SAVE4_OK) {
-            pkm4_info_get(&p, &in);
+        np_mon p;
+        np_mon_info in;
+        if (get_mon(e, e->mon_box, e->mon_slot, &p) == NP_SAVE_OK) {
+            np_mon_info_get(&p, &in);
             const nd_species *sp = nd_species_get(&e->gd, in.species);
             if (sp) {
                 e->ch.ids[e->ch.nids++] = sp->abilities[0];
@@ -928,8 +1023,8 @@ static void chooser_filter(np_editor *e)
     }
     uint32_t count = kind_count(e, kind);
     uint32_t first = kind == ND_TEXT_SPECIES ? 1 : 0;
-    if (kind == ND_TEXT_SPECIES && count > SAVE4_DEX_MAX + 1)
-        count = SAVE4_DEX_MAX + 1; /* no form entries */
+    if (kind == ND_TEXT_SPECIES && count > (uint32_t)np_save_dex_max(&e->s) + 1)
+        count = (uint32_t)np_save_dex_max(&e->s) + 1; /* no form entries */
     for (uint32_t id = first; id < count && e->ch.nids < (int)SDL_arraysize(e->ch.ids); id++) {
         char name[48];
         name_of(e, kind, id, name, sizeof name);
@@ -943,10 +1038,10 @@ static void chooser_filter(np_editor *e)
 
 static nd_text_kind chooser_kind(const np_editor *e)
 {
-    return e->ch.f == F_MON_SPECIES   ? ND_TEXT_SPECIES
-           : e->ch.f == F_MON_MOVE    ? ND_TEXT_MOVES
-           : e->ch.f == F_MON_ABILITY ? ND_TEXT_ABILITIES
-                                      : ND_TEXT_ITEMS;
+    return e->ch.f == F_MON_SPECIES || e->ch.f == F_PARTY_ADD ? ND_TEXT_SPECIES
+           : e->ch.f == F_MON_MOVE                           ? ND_TEXT_MOVES
+           : e->ch.f == F_MON_ABILITY                        ? ND_TEXT_ABILITIES
+                                                             : ND_TEXT_ITEMS;
 }
 
 static void open_chooser(np_app *app, np_editor *e, field f, int arg, int current)
@@ -981,9 +1076,14 @@ static void chooser_pick(np_app *app, np_editor *e)
     close_overlay(app, e);
     if (f == F_BAG_SLOT) {
         uint16_t item = 0, qty = 0;
-        save4_get_bag_slot(&e->s, (save4_pocket)e->pocket, arg, &item, &qty);
+        np_save_get_bag(&e->s, e->pocket, arg, &item, &qty);
         begin_edit(e);
-        end_edit(app, e, save4_set_bag_slot(&e->s, (save4_pocket)e->pocket, arg, (uint16_t)id, qty ? qty : 1));
+        end_edit(app, e, np_save_set_bag(&e->s, e->pocket, arg, (uint16_t)id, qty ? qty : 1));
+        return;
+    }
+    if (f == F_PARTY_ADD) { /* species picked; now the level */
+        e->add_species = (uint16_t)id;
+        open_number(e, F_PARTY_ADD_LEVEL, 0, 5, 1, 100);
         return;
     }
     apply_value(app, e, f, arg, id);
@@ -1015,18 +1115,18 @@ static void open_mon(np_editor *e, int box, int slot)
 
 static void box_place(np_app *app, np_editor *e, int box, int slot)
 {
-    pkm4 a, b;
-    if (save4_get_box_mon(&e->s, e->held_box, e->held_slot, &a) != SAVE4_OK ||
-        save4_get_box_mon(&e->s, box, slot, &b) != SAVE4_OK) {
+    np_mon a, b;
+    if (np_save_get_box(&e->s, e->held_box, e->held_slot, &a) != NP_SAVE_OK ||
+        np_save_get_box(&e->s, box, slot, &b) != NP_SAVE_OK) {
         np_app_toast(app, "That Pokemon's data fails its checksum");
         e->held_box = -1;
         return;
     }
     begin_edit(e);
-    save4_status st = save4_set_box_mon(&e->s, box, slot, &a);
-    if (st == SAVE4_OK)
-        st = pkm4_is_empty(&b) ? save4_clear_box_mon(&e->s, e->held_box, e->held_slot)
-                               : save4_set_box_mon(&e->s, e->held_box, e->held_slot, &b);
+    np_save_status st = np_save_set_box(&e->s, box, slot, &a);
+    if (st == NP_SAVE_OK)
+        st = np_mon_is_empty(&b) ? np_save_clear_box(&e->s, e->held_box, e->held_slot)
+                                 : np_save_set_box(&e->s, e->held_box, e->held_slot, &b);
     end_edit(app, e, st);
     e->held_box = -1;
 }
@@ -1044,25 +1144,25 @@ static void menu_pick(np_app *app, np_editor *e)
         break;
     case MA_DELETE:
         begin_edit(e);
-        end_edit(app, e, save4_clear_box_mon(&e->s, e->box, e->cursor));
+        end_edit(app, e, np_save_clear_box(&e->s, e->box, e->cursor));
         break;
     case MA_ITEM: {
         uint16_t item = 0, qty = 0;
         int slot = e->rows[e->sel].arg;
-        save4_get_bag_slot(&e->s, (save4_pocket)e->pocket, slot, &item, &qty);
+        np_save_get_bag(&e->s, e->pocket, slot, &item, &qty);
         open_chooser(app, e, F_BAG_SLOT, slot, item);
         break;
     }
     case MA_QTY: {
         uint16_t item = 0, qty = 0;
         int slot = e->rows[e->sel].arg;
-        save4_get_bag_slot(&e->s, (save4_pocket)e->pocket, slot, &item, &qty);
-        open_number(e, F_BAG_SLOT, slot, qty, 1, 999);
+        np_save_get_bag(&e->s, e->pocket, slot, &item, &qty);
+        open_number(e, F_BAG_SLOT, slot, qty, 1, np_save_pocket_max_qty(&e->s, e->pocket));
         break;
     }
     case MA_REMOVE_CARD:
         begin_edit(e);
-        end_edit(app, e, save4_mg_remove_card(&e->s, e->menu_arg));
+        end_edit(app, e, np_save_remove_card(&e->s, e->menu_arg));
         break;
     case MA_REMOVE:
         begin_edit(e);
@@ -1083,13 +1183,13 @@ static void activate_box_cell(np_app *app, np_editor *e)
             box_place(app, e, e->box, e->cursor);
         return;
     }
-    pkm4 p;
-    save4_status st = save4_get_box_mon(&e->s, e->box, e->cursor, &p);
-    if (st == SAVE4_OK && pkm4_is_empty(&p))
+    np_mon p;
+    np_save_status st = np_save_get_box(&e->s, e->box, e->cursor, &p);
+    if (st == NP_SAVE_OK && np_mon_is_empty(&p))
         return;
     static const char *const labels[4] = {"Edit...", "Move", "Release (delete)", "Cancel"};
     static const int ids[4] = {MA_EDIT, MA_MOVE, MA_DELETE, MA_CANCEL};
-    if (st != SAVE4_OK) /* corrupt data can still be released */
+    if (st != NP_SAVE_OK) /* corrupt data can still be released */
         open_menu(e, 2, labels + 2, ids + 2);
     else
         open_menu(e, 4, labels, ids);
@@ -1100,12 +1200,13 @@ static void activate_row(np_app *app, np_editor *e, int dir)
     if (e->sel < 0 || e->sel >= e->nrows)
         return;
     row *r = &e->rows[e->sel];
-    save4_trainer t;
-    save4_get_trainer(&e->s, &t);
-    pkm4 p;
-    pkm4_info in = {0};
-    if (e->mon_open && get_mon(e, e->mon_box, e->mon_slot, &p) == SAVE4_OK)
-        pkm4_info_get(&p, &in);
+    np_trainer t;
+    np_save_trainer(&e->s, &t);
+    np_mon p;
+    np_mon_info in = {0};
+    if (e->mon_open && get_mon(e, e->mon_box, e->mon_slot, &p) == NP_SAVE_OK)
+        np_mon_info_get(&p, &in);
+    save4 *s4 = np_save_s4(&e->s);
     switch (r->f) {
     case F_TR_NAME:
         e->text_field = F_TR_NAME;
@@ -1113,16 +1214,16 @@ static void activate_row(np_app *app, np_editor *e, int dir)
         break;
     case F_TR_GENDER:
         begin_edit(e);
-        end_edit(app, e, save4_set_gender(&e->s, t.gender ? 0 : 1));
+        end_edit(app, e, np_save_set_gender(&e->s, t.gender ? 0 : 1));
         break;
     case F_TR_BADGE:
         begin_edit(e);
-        end_edit(app, e, save4_set_badges(&e->s, (uint8_t)(t.badges ^ (1u << r->arg))));
+        end_edit(app, e, np_save_set_badges(&e->s, (uint8_t)(t.badges ^ (1u << r->arg))));
         break;
     case F_TR_TID: open_number(e, r->f, 0, t.tid, 0, 65535); break;
     case F_TR_SID: open_number(e, r->f, 0, t.sid, 0, 65535); break;
-    case F_TR_MONEY: open_number(e, r->f, 0, t.money, 0, SAVE4_MONEY_MAX); break;
-    case F_TR_COINS: open_number(e, r->f, 0, t.coins, 0, SAVE4_COINS_MAX); break;
+    case F_TR_MONEY: open_number(e, r->f, 0, t.money, 0, np_save_money_max(&e->s)); break;
+    case F_TR_COINS: open_number(e, r->f, 0, t.coins, 0, np_save_coins_max(&e->s)); break;
     case F_TR_HOURS: open_number(e, r->f, 0, t.play_hours, 0, 999); break;
     case F_TR_MINUTES: open_number(e, r->f, 0, t.play_minutes, 0, 59); break;
     case F_TR_SECONDS: open_number(e, r->f, 0, t.play_seconds, 0, 59); break;
@@ -1133,6 +1234,12 @@ static void activate_row(np_app *app, np_editor *e, int dir)
         open_menu(e, 2, labels, ids);
         break;
     }
+    case F_PARTY_ADD:
+        if (!e->have_gd || !e->have_names)
+            np_app_toast(app, "Import the %s ROM first: new Pokemon need its tables", np_game_title(e->game));
+        else
+            open_chooser(app, e, F_PARTY_ADD, 0, 1);
+        break;
     case F_MON_SPECIES: open_chooser(app, e, r->f, 0, in.species); break;
     case F_MON_NICK:
         e->text_field = F_MON_NICK;
@@ -1148,7 +1255,7 @@ static void activate_row(np_app *app, np_editor *e, int dir)
     case F_MON_IV: open_number(e, r->f, r->arg, in.ivs[r->arg], 0, 31); break;
     case F_MON_EV: open_number(e, r->f, r->arg, in.evs[r->arg], 0, 255); break;
     case F_MON_FRIEND: open_number(e, r->f, 0, in.friendship, 0, 255); break;
-    case F_BAG_POCKET: e->pocket = wrapi(e->pocket + (dir ? dir : 1), SAVE4_POCKET_COUNT); break;
+    case F_BAG_POCKET: e->pocket = wrapi(e->pocket + (dir ? dir : 1), np_save_pocket_count(&e->s)); break;
     case F_BAG_SLOT: {
         static const char *const labels[4] = {"Change item...", "Quantity...", "Remove", "Cancel"};
         static const int ids[4] = {MA_ITEM, MA_QTY, MA_REMOVE, MA_CANCEL};
@@ -1159,44 +1266,67 @@ static void activate_row(np_app *app, np_editor *e, int dir)
     case F_DEX_ALL:
     case F_DEX_NONE: {
         begin_edit(e);
-        save4_status st = SAVE4_OK;
-        for (int sp = 1; sp <= SAVE4_DEX_MAX && st == SAVE4_OK; sp++)
-            st = save4_dex_set(&e->s, (uint16_t)sp, r->f == F_DEX_ALL, r->f == F_DEX_ALL);
+        np_save_status st = NP_SAVE_OK;
+        for (int sp = 1; sp <= np_save_dex_max(&e->s) && st == NP_SAVE_OK; sp++)
+            st = np_save_dex_set(&e->s, (uint16_t)sp, r->f == F_DEX_ALL, r->f == F_DEX_ALL);
         end_edit(app, e, st);
         break;
     }
     case F_DEX_SPECIES: {
         bool seen = false, caught = false;
-        save4_dex_get(&e->s, (uint16_t)r->arg, &seen, &caught);
+        np_save_dex_get(&e->s, (uint16_t)r->arg, &seen, &caught);
         int state = caught ? 2 : seen ? 1 : 0;
         state = wrapi(state + (dir < 0 ? -1 : 1), 3);
         begin_edit(e);
-        end_edit(app, e, save4_dex_set(&e->s, (uint16_t)r->arg, state >= 1, state == 2));
+        end_edit(app, e, np_save_dex_set(&e->s, (uint16_t)r->arg, state >= 1, state == 2));
         break;
     }
     case F_EV_UNLOCK: {
         bool v = false;
-        save4_mg_get_unlocked(&e->s, &v);
+        if (!s4)
+            break;
+        save4_mg_get_unlocked(s4, &v);
         begin_edit(e);
-        end_edit(app, e, save4_mg_set_unlocked(&e->s, !v));
+        end_edit(app, e, save4_mg_set_unlocked(s4, !v) == SAVE4_OK ? NP_SAVE_OK : NP_SAVE_ERR_UNSUPPORTED);
         break;
     }
     case F_EV_DEX: {
         bool v = false;
-        save4_dex_get_obtained(&e->s, &v);
+        if (!s4)
+            break;
+        save4_dex_get_obtained(s4, &v);
         begin_edit(e);
-        end_edit(app, e, save4_dex_set_obtained(&e->s, !v));
+        end_edit(app, e, save4_dex_set_obtained(s4, !v) == SAVE4_OK ? NP_SAVE_OK : NP_SAVE_ERR_UNSUPPORTED);
         break;
     }
     case F_EV_CARD: {
-        uint8_t card[SAVE4_WONDERCARD_SIZE];
         bool used = false;
-        if (save4_mg_get_card(&e->s, r->arg, card, &used) != SAVE4_OK || !used)
+        if (np_save_card(&e->s, r->arg, &used, NULL, 0) != NP_SAVE_OK || !used)
             break;
         static const char *const labels[2] = {"Remove card and gift", "Cancel"};
         static const int ids[2] = {MA_REMOVE_CARD, MA_CANCEL};
         e->menu_arg = r->arg;
         open_menu(e, 2, labels, ids);
+        break;
+    }
+    case F_EV_FLAG_ID:
+        open_number(e, r->f, 0, e->flag_id, np_save_flag_first(&e->s), np_save_flag_count(&e->s) - 1);
+        break;
+    case F_EV_FLAG: {
+        bool v = false;
+        np_save_flag_get(&e->s, (uint16_t)e->flag_id, &v);
+        begin_edit(e);
+        end_edit(app, e, np_save_flag_set(&e->s, (uint16_t)e->flag_id, !v));
+        break;
+    }
+    case F_EV_VAR_ID:
+        open_number(e, r->f, 0, e->var_id, np_save_var_first(&e->s),
+                    np_save_var_first(&e->s) + np_save_var_count(&e->s) - 1);
+        break;
+    case F_EV_VAR: {
+        uint16_t v = 0;
+        np_save_var_get(&e->s, (uint16_t)e->var_id, &v);
+        open_number(e, r->f, 0, v, 0, 65535);
         break;
     }
     case F_EV_ADD: {
@@ -1211,7 +1341,7 @@ static void activate_row(np_app *app, np_editor *e, int dir)
             add_gift(app, e, card, sizeof card);
         break;
     }
-    case F_EV_IMPORT: np_app_open_gift_import_dialog(app); break;
+    case F_EV_IMPORT: np_app_open_gift_import_dialog(app, e->game); break;
     default: break;
     }
 }
@@ -1222,32 +1352,32 @@ const char *np_editor_text_done(np_app *app, const char *text)
     if (!e)
         return "The editor is closed.";
     begin_edit(e);
-    save4_status st;
+    np_save_status st;
     if (e->text_field == F_TR_NAME) {
-        st = *text ? save4_set_trainer_name(&e->s, text) : SAVE4_ERR_ARG;
+        st = *text ? np_save_set_name(&e->s, text) : NP_SAVE_ERR_ARG;
     } else {
-        pkm4 p;
+        np_mon p;
         st = get_mon(e, e->mon_box, e->mon_slot, &p);
-        if (st == SAVE4_OK) {
-            pkm4_info in;
-            pkm4_info_get(&p, &in);
+        if (st == NP_SAVE_OK) {
+            np_mon_info in;
+            np_mon_info_get(&p, &in);
             const char *species = e->have_names ? nd_name(&e->names, ND_TEXT_SPECIES, in.species) : NULL;
             /* An empty nickname, or the species name, means "no nickname". */
             if (!*text && species)
-                st = pkm4_set_nickname(&p, species, false);
+                st = np_mon_set_nickname(&p, species, false);
             else if (*text)
-                st = pkm4_set_nickname(&p, text, !(species && !SDL_strcmp(species, text)));
+                st = np_mon_set_nickname(&p, text, !(species && !SDL_strcmp(species, text)));
             else
-                st = SAVE4_ERR_ARG;
-            if (st == SAVE4_OK)
+                st = NP_SAVE_ERR_ARG;
+            if (st == NP_SAVE_OK)
                 st = put_mon(e, e->mon_box, e->mon_slot, &p);
         }
     }
-    if (st != SAVE4_OK) {
-        SDL_memcpy(e->s.img, e->scratch, e->s.len);
-        save4_revalidate(&e->s);
-        return st == SAVE4_ERR_ENCODE ? "Some characters are not in the game's character set."
-                                      : "That name cannot be used.";
+    if (st != NP_SAVE_OK) {
+        SDL_memcpy(np_save_img(&e->s), e->scratch, np_save_len(&e->s));
+        np_save_revalidate(&e->s);
+        return st == NP_SAVE_ERR_ENCODE ? "Some characters are not in the game's character set."
+                                        : "That name cannot be used.";
     }
     end_edit(app, e, st);
     np_app_open_page(app, NP_PAGE_EDITOR);
@@ -1422,13 +1552,13 @@ void np_editor_command(np_app *app, np_menu_cmd cmd)
         switch (cmd) {
         case NP_CMD_LEFT:
             if (c < 0)
-                e->box = wrapi(e->box - 1, SAVE4_BOX_COUNT);
+                e->box = wrapi(e->box - 1, np_save_box_count(&e->s));
             else if (c % 6)
                 e->cursor--;
             break;
         case NP_CMD_RIGHT:
             if (c < 0)
-                e->box = wrapi(e->box + 1, SAVE4_BOX_COUNT);
+                e->box = wrapi(e->box + 1, np_save_box_count(&e->s));
             else if (c % 6 < 5)
                 e->cursor++;
             break;
@@ -1566,7 +1696,7 @@ void np_editor_hit(np_app *app, int id, int activate, int dir)
         e->focus = FOCUS_LIST;
         if (idx >= 30) {
             if (activate)
-                e->box = wrapi(e->box + (idx == 30 ? -1 : 1), SAVE4_BOX_COUNT);
+                e->box = wrapi(e->box + (idx == 30 ? -1 : 1), np_save_box_count(&e->s));
             break;
         }
         e->cursor = idx;
@@ -1693,9 +1823,9 @@ static void draw_rows(np_app *app, np_editor *e, const np_page_frame *f, float y
 static void draw_boxes(np_app *app, np_editor *e, const np_page_frame *f, float y0, float h)
 {
     char name[48], title[64];
-    if (save4_get_box_name(&e->s, e->box, name, sizeof name) != SAVE4_OK)
+    if (np_save_box_name(&e->s, e->box, name, sizeof name) != NP_SAVE_OK)
         SDL_snprintf(name, sizeof name, "Box %d", e->box + 1);
-    SDL_snprintf(title, sizeof title, "%s (%d/%d)", name, e->box + 1, SAVE4_BOX_COUNT);
+    SDL_snprintf(title, sizeof title, "%s (%d/%d)", name, e->box + 1, np_save_box_count(&e->s));
     float x0 = f->panel.x + 2 * f->cw, w = f->panel.w - 4 * f->cw;
     int head_on = e->cursor < 0 && e->focus == FOCUS_LIST;
     np_ui_button(app, (SDL_FRect){x0, y0 - 2 * f->s, 3 * f->cw, f->lh}, "<", 0, hit_id(HG_BOX, 30), f->s);
@@ -1705,11 +1835,11 @@ static void draw_boxes(np_app *app, np_editor *e, const np_page_frame *f, float 
     np_ui_text(app, x0 + (w - tw) * 0.5f, y0, f->s, title, head_on ? accent : white);
     float gy = y0 + 1.5f * f->lh;
     float cw = w / 6.0f, ch = SDL_min((h - 1.5f * f->lh) / 5.0f, 3.2f * f->lh);
-    for (int i = 0; i < SAVE4_BOX_SLOTS; i++) {
+    for (int i = 0; i < np_save_box_slots(&e->s); i++) {
         SDL_FRect r = {x0 + (float)(i % 6) * cw, gy + (float)(i / 6) * ch, cw - f->s * 2, ch - f->s * 2};
-        pkm4 p;
-        save4_status st = save4_get_box_mon(&e->s, e->box, i, &p);
-        int empty = st == SAVE4_OK && pkm4_is_empty(&p);
+        np_mon p;
+        np_save_status st = np_save_get_box(&e->s, e->box, i, &p);
+        int empty = st == NP_SAVE_OK && np_mon_is_empty(&p);
         int held = e->held_box == e->box && e->held_slot == i;
         int on = i == e->cursor && e->focus == FOCUS_LIST && e->ov == OV_NONE;
         np_ui_fill(app, r, held ? (SDL_Color){120, 200, 255, 80} : empty ? (SDL_Color){255, 255, 255, 10}
@@ -1717,11 +1847,11 @@ static void draw_boxes(np_app *app, np_editor *e, const np_page_frame *f, float 
         if (on)
             np_ui_frame(app, r, f->s, accent);
         int cols = (int)(r.w / f->cw) - 1;
-        if (st != SAVE4_OK) {
+        if (st != NP_SAVE_OK) {
             np_ui_text_clip(app, r.x + f->cw * 0.5f, r.y + f->s * 3, f->s, "(bad)", cols, warn);
         } else if (!empty) {
-            pkm4_info in;
-            pkm4_info_get(&p, &in);
+            np_mon_info in;
+            np_mon_info_get(&p, &in);
             char sp[40], lv[16];
             name_of(e, ND_TEXT_SPECIES, in.species, sp, sizeof sp);
             np_ui_text_clip(app, r.x + f->cw * 0.5f, r.y + f->s * 3, f->s, in.is_egg ? "Egg" : sp, cols,

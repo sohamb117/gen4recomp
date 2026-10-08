@@ -151,6 +151,6 @@ int np_sav_normalize(const uint8_t *data, size_t size, int gba, size_t *raw_len,
     if (size > NP_SAVE_BYTES && size >= cookie && !memcmp(data + size - cookie, desmume_cookie, cookie))
         *why = "This DeSmuME save is not for a 512 KiB (4 Mbit) cartridge.";
     else
-        *why = "Not a Diamond/Pearl/Platinum save: expected a 512 KiB raw .sav or a DeSmuME .dsv.";
+        *why = "Not a DS Pokemon save: expected a 512 KiB raw .sav or a DeSmuME .dsv.";
     return -1;
 }

@@ -494,8 +494,7 @@ int np_storage_slot_import(np_game game, const char *src, char name_out[NP_SLOT_
     }
     int gba = np_game_is_gba(game);
     if (size > 4 * (Sint64)NP_SAVE_BYTES) {
-        SDL_snprintf(err, errn, "Not a %s save: the file is too large.",
-                     gba ? "Ruby/Sapphire/Emerald" : "Diamond/Pearl/Platinum");
+        SDL_snprintf(err, errn, "Not a %s save: the file is too large.", np_game_title(game));
         return -1;
     }
     size_t len;

@@ -414,9 +414,15 @@ in BLZ-compressed overlay 93).
   unmodified load/store is byte-exact.
 - Tests: `pkm5`, `save5`, `cli5_e2e` (synthetic saves), `gen5_rom` and the
   ROM half of `cli5_e2e` with `-DNP_BLACK_ROM=<black.nds>`.
-- Not wired into the shell: the save editor (`shell/src/editor.c`, 89
-  `save4_` calls) would need a game switch to `save5` and Gen 5
-  Pokémon/bag/event tabs, and the slot summary (`shell/src/sync.c`, trainer
-  name via `save4_load`) a `save5` path. `tests/e2e` would need
-  `np_save5 dump/gamedata` in place of `np_save4`, Gen 5 type ids (17 types)
-  and Gen 5 move effect ids in `bots.py`.
+- The shell's save editor, slot summaries, slot import/export and Mystery
+  Gift import read Black/White saves through `shell/src/edsave.c`, one
+  interface over `save4` and `save5`: trainer, money, badges (Unova's),
+  party/boxes with Add Pokemon (needs the imported ROM), bag, Pokédex,
+  event flags/vars, `.pgf` Wonder Cards into the twelve slots, Trainer Card
+  and diploma. Tests: `shell_unit` (the interface on synthetic saves) and
+  `shell_editor_bw` (the app on SDL's dummy driver, stub core: every tab,
+  edits saved and checked with `np_save5`, slot import from the Black card;
+  Add Pokemon with `-DNP_BLACK_ROM=<black.nds>`).
+- Still Gen 4 only: `tests/e2e` would need `np_save5 dump/gamedata` in place
+  of `np_save4`, Gen 5 type ids (17 types) and Gen 5 move effect ids in
+  `bots.py`.

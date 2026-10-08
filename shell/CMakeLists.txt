@@ -72,11 +72,16 @@ else()
   target_link_libraries(np_shell_common PUBLIC m)
 endif()
 
-# Save editor backends: save4 (D/P/Pt save data) and ndsdata (names read from
-# the player's own ROM at runtime). Built from features/ with its tests off.
+# Save editor backends: save4 (D/P/Pt save data), save5 (B/W) and ndsdata
+# (names read from the player's own ROM at runtime), built from features/
+# with its tests off, behind one interface (src/edsave.c, SDL-free).
 if(NOT TARGET save4)
   add_subdirectory("${NP_ROOT}/features" "${CMAKE_BINARY_DIR}/features")
 endif()
+add_library(np_shell_save STATIC src/edsave.c)
+target_include_directories(np_shell_save PUBLIC src "${NP_ROOT}/core/include")
+target_link_libraries(np_shell_save PUBLIC save4 save5 ndsdata)
+target_compile_options(np_shell_save PRIVATE ${NP_WARNINGS})
 
 if(NP_CORE STREQUAL "stub")
   # The stub draws with the shell's embedded font; np_font8x8 resolves from
@@ -120,7 +125,7 @@ add_executable(nativeplat MACOSX_BUNDLE WIN32
   src/ui.c
   src/update.c
 )
-target_link_libraries(nativeplat PRIVATE ${NP_CORE_LIBS} np_shell_common save4 ndsdata SDL3::SDL3)
+target_link_libraries(nativeplat PRIVATE ${NP_CORE_LIBS} np_shell_common np_shell_save SDL3::SDL3)
 target_compile_options(nativeplat PRIVATE ${NP_WARNINGS})
 if(NP_CORE STREQUAL "real")
   np_link_guest_modules(nativeplat ${NP_GUESTS})
@@ -184,8 +189,11 @@ endif()
 
 include(CTest)
 if(BUILD_TESTING)
-  add_executable(np_shell_tests tests/test_shell.c)
-  target_link_libraries(np_shell_tests PRIVATE np_shell_common)
+  # The save-interface tests build synthetic saves with features/tests' builders.
+  add_executable(np_shell_tests tests/test_shell.c "${NP_ROOT}/features/tests/synth_save.c"
+    "${NP_ROOT}/features/tests/synth_save5.c")
+  target_include_directories(np_shell_tests PRIVATE "${NP_ROOT}/features/tests")
+  target_link_libraries(np_shell_tests PRIVATE np_shell_common np_shell_save)
   target_compile_options(np_shell_tests PRIVATE ${NP_WARNINGS})
   add_test(NAME shell_unit COMMAND np_shell_tests)
 
@@ -196,6 +204,25 @@ if(BUILD_TESTING)
     add_test(NAME shell_autotest COMMAND nativeplat)
     set_tests_properties(shell_autotest PROPERTIES ENVIRONMENT
       "SDL_VIDEO_DRIVER=dummy;NP_AUTOTEST=frames=60,png=${CMAKE_CURRENT_BINARY_DIR}/autotest.png,layout=hybrid,touch=100x80,keys=a+up")
+  endif()
+
+  # The save editor on a synthetic Black save (stub core: the editor needs no
+  # core): tabs, edits, a .pgf import, slot import; checked with np_save5.
+  if(NP_CORE STREQUAL "stub")
+    add_executable(np_make_synth_save5 "${NP_ROOT}/features/tests/make_synth_save5.c"
+      "${NP_ROOT}/features/tests/synth_save5.c")
+    target_include_directories(np_make_synth_save5 PRIVATE "${NP_ROOT}/features/tests")
+    target_link_libraries(np_make_synth_save5 PRIVATE save5)
+    set(NP_BLACK_ROM "" CACHE FILEPATH "Black ROM for the editor test's names and Add Pokemon (optional)")
+    add_test(NAME shell_editor_bw
+      COMMAND ${CMAKE_COMMAND}
+        -DAPP=$<TARGET_FILE:nativeplat>
+        -DMAKE_SAVE=$<TARGET_FILE:np_make_synth_save5>
+        -DNP_SAVE5=$<TARGET_FILE:np_save5>
+        -DROM=${NP_BLACK_ROM}
+        -DWORK=${CMAKE_CURRENT_BINARY_DIR}/editor_bw
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/editor_bw.cmake)
+    set_tests_properties(shell_editor_bw PROPERTIES TIMEOUT 300)
   endif()
 endif()
 

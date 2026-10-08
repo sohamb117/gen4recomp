@@ -24,6 +24,7 @@
 
 #include "app.h"
 #include "card.h"
+#include "edsave.h"
 #include "fx.h"
 #include "net.h"
 #include "png.h"
@@ -702,12 +703,15 @@ void np_app_open_sav_import_dialog(np_app *app, np_game game)
         SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
 }
 
-void np_app_open_gift_import_dialog(np_app *app)
+void np_app_open_gift_import_dialog(np_app *app, np_game game)
 {
-    static const SDL_DialogFileFilter filters[] = {{"Mystery Gift (*.pgt, *.pcd)", "pgt;pcd"}};
+    /* The filters must outlive the dialog: one static list per kind. */
+    static const SDL_DialogFileFilter gen4[] = {{"Mystery Gift (*.pgt, *.pcd)", "pgt;pcd"}};
+    static const SDL_DialogFileFilter gen5[] = {{"Wonder Card (*.pgf)", "pgf"}};
     app->dialog_kind = NP_PENDING_GIFT_IMPORT;
     if (!autotest_dialog(app, "gift import"))
-        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, np_save_gen_of(game) == 5 ? gen5 : gen4, 1, NULL,
+                               false);
 }
 
 void np_app_open_card_export_dialog(np_app *app, int kind)
@@ -919,7 +923,7 @@ static void handle_drop(np_app *app, const char *data)
         np_app_request(app, NP_PENDING_MOD_INSTALL, data);
         return;
     }
-    if (has_extension(data, "pgt") || has_extension(data, "pcd")) {
+    if (has_extension(data, "pgt") || has_extension(data, "pcd") || has_extension(data, "pgf")) {
         if (app->page != NP_PAGE_EDITOR) {
             np_app_toast(app, "Open a save in the editor, then drop the gift there");
             return;
