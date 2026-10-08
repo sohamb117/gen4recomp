@@ -6,3 +6,5 @@
 61-frontier-battle-factory-lv50
 62-frontier-battle-arena-lv50
 63-frontier-battle-palace-lv50
+64-frontier-battle-dome-lv50
+65-frontier-battle-pike-lv50

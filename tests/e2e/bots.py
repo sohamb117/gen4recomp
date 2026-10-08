@@ -2420,6 +2420,28 @@ def bot_smash(s, step, ctx):
         raise HarnessError("smash: the rock %s of (%d,%d) is still there" % (step["dir"], p.x, p.z))
 
 
+def bot_repeat(s, step, ctx):
+    """Run `steps` (step tables, each with an optional `if`: an np_gp condition that must hold for it to run now)
+    over and over until `until` (an np_gp condition) holds, checked before each round and after each step; at most
+    `max_rounds` rounds (default 50). For a run of rooms whose kinds the game draws at random (the Battle Pike's doors:
+    a three-path room, then a room of one of several maps), where a fixed list of steps cannot know which comes."""
+    until = step["until"]
+    rounds = _int(step, "max_rounds", 50)
+    for r in range(rounds):
+        if s.run(1, until=until):
+            s.note("repeat: %s after %d rounds" % (until, r))
+            return
+        for sub in step["steps"]:
+            cond = sub.get("if")
+            if cond and not s.run(1, until=cond):
+                continue
+            BOTS[sub["do"]](s, {k: v for k, v in sub.items() if k != "if"}, ctx)
+            if s.run(1, until=until):
+                s.note("repeat: %s after %d rounds" % (until, r + 1))
+                return
+    raise HarnessError("repeat: %s not reached in %d rounds" % (until, rounds))
+
+
 BOTS = {
     "press": bot_press,
     "tap": bot_tap,
@@ -2449,4 +2471,5 @@ BOTS = {
     "menu": bot_menu,
     "push": bot_push,
     "smash": bot_smash,
+    "repeat": bot_repeat,
 }

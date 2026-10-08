@@ -4513,7 +4513,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - refs: data/maps/EverGrandeCity_Hall4/map.json warp_events[1] (5,2) -> CHAMPIONS_ROOM; data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:19-62; data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:93-123; TRAINER_WALLACE (335), src/data/trainers.h:4024; data/maps/EverGrandeCity_HallOfFame/scripts.inc:13-62; data/scripts/hall_of_fame.inc:1-25; data/event_scripts.s:628-634 (ResetEliteFour); src/post_battle_event_funcs.c:12-41 (GameClear: HealPlayerParty, FLAG_SYS_GAME_CLEAR, continue warp = Brendan's 2F, Champion ribbons); src/hall_of_fame.c:419-427 (CB2_DoHallOfFameScreen); src/hall_of_fame.c:524-526 (Task_Hof_TrySaveData: TrySavingData(SAVE_HALL_OF_FAME)); src/hall_of_fame.c:781-784 (StartCredits); src/credits.c:670-690 (Task_CreditsTheEnd6: 7200 frames or any key); src/credits.c:694-698 (Task_CreditsSoftReset: SoftReset(RESET_ALL))
 - notes: Wallace: TRAINER_WALLACE (335): WAILORD 57, TENTACRUEL 55, LUDICOLO 56, WHISCASH 56, GYARADOS 56, MILOTIC 58 (Electric/Grass coverage; boost ~60). Entering the Champion's room runs straight through: OnFrame EnterRoom walks up and starts the battle, Defeated brings May and Birch, warps to the Hall of Fame (7,16), whose OnFrame records the team and calls SetGameClearFlags + special GameClear. GameClear sets FLAG_SYS_GAME_CLEAR and the continue warp (Brendan's 2F heal location), CB2_DoHallOfFameScreen saves (SAVE_HALL_OF_FAME = the full game save + HoF record) before the credits; the credits end on "The End", which waits 7200 frames or a key (src/credits.c:674-678), then SoftReset(RESET_ALL) (src/credits.c:694-698): the game resets itself, so the run ends with wait_reset and [run] save = "none". SetGameClearFlags resets the Elite Four flags (data/event_scripts.s:628-634).
 
-### Side systems: 4 milestones, ~188285 frames estimated
+### Side systems: 6 milestones, ~243798 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -4521,6 +4521,8 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [61-frontier-battle-factory-lv50](emerald/61-frontier-battle-factory-lv50/milestone.toml) | Battle Frontier: Battle Factory, a Level 50 round of seven wins with rentals | P1 |  | 82966 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY | passing |
 | [62-frontier-battle-arena-lv50](emerald/62-frontier-battle-arena-lv50/milestone.toml) | Battle Frontier: Battle Arena, a Level 50 set of seven wins (three-turn judged battles) | P1 |  | 38210 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_ARENA_LOBBY | passing |
 | [63-frontier-battle-palace-lv50](emerald/63-frontier-battle-palace-lv50/milestone.toml) | Battle Frontier: Battle Palace, a Level 50 set of seven wins (the Pokemon choose their own moves) | P1 |  | 34665 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_PALACE_LOBBY | passing |
+| [64-frontier-battle-dome-lv50](emerald/64-frontier-battle-dome-lv50/milestone.toml) | Battle Frontier: Battle Dome, a Level 50 tournament won (four matches) | P1 |  | 19199 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_DOME_LOBBY | passing |
+| [65-frontier-battle-pike-lv50](emerald/65-frontier-battle-pike-lv50/milestone.toml) | Battle Frontier: Battle Pike, a Level 50 run of fourteen rooms | P1 |  | 36314 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_PIKE_LOBBY | passing |
 
 #### emerald/60-frontier-battle-tower-lv50-singles — Battle Frontier: Battle Tower, a Level 50 single set of seven wins
 - proves: Proves the Battle Frontier's Battle Tower, Level 50 single battle room: the singles attendant's menus (CHALLENGE, LV. 50), the choose-half party menu (three entries), the save before the challenge, the elevator and corridor scenes, seven room trainers in a row with the GO ON / REST / RETIRE menu between them, and the lobby's Battle Points for the seven-win set (GAME_STAT_BATTLE_TOWER_SINGLES_STREAK 7). Start: MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY (6,6) -> end: the lobby, the set won.
@@ -4561,6 +4563,26 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - frames: estimate 34665, budget 52000
 - refs: data/maps/BattleFrontier_BattlePalaceLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge); data/maps/BattleFrontier_BattlePalaceBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE); src/battle_controller_player.c / battle_palace.c (the player picks no moves: the nature table decides)
 - notes: In the Palace the Pokemon act by their natures; the player only watches (auto_battle has no menu to answer).
+
+#### emerald/64-frontier-battle-dome-lv50 — Battle Frontier: Battle Dome, a Level 50 tournament won (four matches)
+- proves: Proves the Battle Frontier's Battle Dome, Level 50: the attendant's menus, the choose-half party menu (three entries), the save before the challenge, four tournament matches (two of the three chosen before each), and the lobby's Battle Points. Start: MAP_BATTLE_FRONTIER_BATTLE_DOME_LOBBY (5,11) -> end: the lobby, the tournament won.
+- start: `start.recipe`; map MAP_BATTLE_FRONTIER_BATTLE_DOME_LOBBY 5 11; lab state lines: 1 flag
+- party: SPECIES_METAGROSS 50 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 50 (MOVE_DRAGON_CLAW); SPECIES_LATIOS 50 (MOVE_PSYCHIC)
+- trainers: none
+- end state: map MAP_BATTLE_FRONTIER_BATTLE_DOME_LOBBY; >= 4 battles
+- frames: estimate 19199, budget 28800
+- refs: data/maps/BattleFrontier_BattleDomeLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge); data/maps/BattleFrontier_BattleDomeBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE); data/maps/BattleFrontier_BattleDomePreBattleRoom/scripts.inc:14-160 (MULTI_TOURNEY_*: READY, choose two of the three, warp to the battle room); data/maps/BattleFrontier_BattleDomeBattleRoom/scripts.inc (the match, the round results, the champion)
+- notes: A single-elimination tournament of 16: four matches; before each the player picks two of the three entered Pokemon (src/battle_dome.c).
+
+#### emerald/65-frontier-battle-pike-lv50 — Battle Frontier: Battle Pike, a Level 50 run of fourteen rooms
+- proves: Proves the Battle Frontier's Battle Pike, Level 50: the attendant's menus, the choose-half party menu (three entries), the save before the challenge, seven left doors: fourteen rooms, each hall and the room behind it, and the lobby's Battle Points. Start: MAP_BATTLE_FRONTIER_BATTLE_PIKE_LOBBY (5,6) -> end: the lobby, the run won.
+- start: `start.recipe`; map MAP_BATTLE_FRONTIER_BATTLE_PIKE_LOBBY 5 6; lab state lines: 1 flag
+- party: SPECIES_METAGROSS 50 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 50 (MOVE_DRAGON_CLAW); SPECIES_LATIOS 50 (MOVE_PSYCHIC)
+- trainers: none
+- end state: map MAP_BATTLE_FRONTIER_BATTLE_PIKE_LOBBY; 1 save check(s)
+- frames: estimate 36314, budget 54500
+- refs: data/maps/BattleFrontier_BattlePikeLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge); data/maps/BattleFrontier_BattlePikeBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE); data/maps/BattleFrontier_BattlePikeThreePathRoom/map.json coord_events (2,3)/(6,3)/(10,3) the three doors; data/maps/BattleFrontier_BattlePikeRoomNormal/scripts.inc:12-260 (room types: single, double, hard battle, full heal, status; the exit coord (4,3)); data/scripts/battle_pike.inc:148-180 (the exit: PIKE_DATA_WIN_STREAK, FRONTIER_DATA_BATTLE_NUM, pike_isfinalroom -> ROOM_FINAL)
+- notes: Each door opens a random room (src/battle_pike.c): a trainer, a double battle, a hard battle, wild Pokemon in the grass, a heal or a status attack; the walk to each room exit fights and reads what comes.
 <!-- plan.py:end emerald -->
 
 ## Ruby
