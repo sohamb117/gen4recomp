@@ -3094,7 +3094,7 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~604593 frames estimated
+### Story chain: 48 milestones, ~778811 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3115,19 +3115,19 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [15-mauville-wally-mach-bike](emerald/15-mauville-wally-mach-bike/milestone.toml) | Mauville: Wally's battle and the Mach Bike | P0 |  | 5103 | prev + `None` | MAP_MAUVILLE_CITY | passing |
 | [16-mauville-gym-wattson-rock-smash](emerald/16-mauville-gym-wattson-rock-smash/milestone.toml) | Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash | P0 |  | 11200 | prev + `None` | MAP_MAUVILLE_CITY | passing |
 | [17-verdanturf-rusturf-strength](emerald/17-verdanturf-rusturf-strength/milestone.toml) | Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength | P0 |  | 23176 | prev + `None` | MAP_VERDANTURF_TOWN | passing |
-| [18-route111-112-fiery-path](emerald/18-route111-112-fiery-path/milestone.toml) | Route 111 rocks, Route 112 and the Fiery Path north | P0 |  | 10000 | prev + `None` | MAP_ROUTE113 | planned |
-| [19-route113-fallarbor-route114](emerald/19-route113-fallarbor-route114/milestone.toml) | Route 113 ash, Fallarbor Town and Route 114 | P0 |  | 10000 | prev + `None` | MAP_METEOR_FALLS_1F_1R | planned |
-| [20-meteor-falls-magma-archie](emerald/20-meteor-falls-magma-archie/milestone.toml) | Meteor Falls: Magma takes the meteorite, Archie appears | P0 |  | 4000 | prev + `None` | MAP_ROUTE114 | planned |
-| [21-cable-car-mt-chimney-maxie](emerald/21-cable-car-mt-chimney-maxie/milestone.toml) | Cable car to Mt. Chimney: Tabitha and Maxie | P0 |  | 13000 | prev + `None` | MAP_MT_CHIMNEY | planned |
-| [22-jagged-pass-lavaridge](emerald/22-jagged-pass-lavaridge/milestone.toml) | Down Jagged Pass to Lavaridge Town | P0 |  | 6000 | prev + `None` | MAP_LAVARIDGE_TOWN | planned |
-| [23-lavaridge-gym-flannery-goggles](emerald/23-lavaridge-gym-flannery-goggles/milestone.toml) | Lavaridge Gym: Flannery's Heat Badge, May's Go-Goggles | P0 |  | 12000 | prev + `None` | MAP_LAVARIDGE_TOWN | planned |
-| [24-petalburg-gym-norman-surf](emerald/24-petalburg-gym-norman-surf/milestone.toml) | Back to Petalburg: Norman's Balance Badge and HM03 Surf | P0 |  | 20000 | prev + `None` | MAP_PETALBURG_CITY_WALLYS_HOUSE | planned |
-| [25-route118-119-weather-institute](emerald/25-route118-119-weather-institute/milestone.toml) | Surf east: Route 118, Route 119 and the Weather Institute (Shelly) | P0 |  | 16000 | prev + `None` | MAP_ROUTE119 | planned |
-| [26-route119-may-fly-fortree](emerald/26-route119-may-fly-fortree/milestone.toml) | Route 119: May's third battle, HM02 Fly, into Fortree | P0 |  | 8000 | prev + `None` | MAP_FORTREE_CITY | planned |
-| [27-route120-steven-devon-scope](emerald/27-route120-steven-devon-scope/milestone.toml) | Route 120: Steven's Kecleon and the Devon Scope; Fortree's gym Kecleon | P0 |  | 6000 | prev + `None` | MAP_FORTREE_CITY | planned |
-| [28-fortree-gym-winona](emerald/28-fortree-gym-winona/milestone.toml) | Fortree Gym: Winona and the Feather Badge | P0 |  | 12000 | prev + `None` | MAP_FORTREE_CITY | planned |
-| [29-route121-lilycove-may](emerald/29-route121-lilycove-may/milestone.toml) | Routes 120-121 to Lilycove: May at the Department Store | P0 |  | 14000 | prev + `None` | MAP_LILYCOVE_CITY | planned |
-| [30-mt-pyre-summit-magma-emblem](emerald/30-mt-pyre-summit-magma-emblem/milestone.toml) | Mt. Pyre summit: Aqua takes the Red Orb, the Magma Emblem | P0 |  | 12000 | prev + `None` | MAP_MT_PYRE_SUMMIT | planned |
+| [18-route111-112-fiery-path](emerald/18-route111-112-fiery-path/milestone.toml) | Route 111 rocks, Route 112 and the Fiery Path north | P0 |  | 30284 | prev + `None` | MAP_ROUTE113 | passing |
+| [19-route113-fallarbor-route114](emerald/19-route113-fallarbor-route114/milestone.toml) | Route 113 ash, Fallarbor Town and Route 114 | P0 |  | 25684 | prev + `None` | MAP_METEOR_FALLS_1F_1R | passing |
+| [20-meteor-falls-magma-archie](emerald/20-meteor-falls-magma-archie/milestone.toml) | Meteor Falls: Magma takes the meteorite, Archie appears | P0 |  | 2381 | prev + `None` | MAP_ROUTE114 | passing |
+| [21-cable-car-mt-chimney-maxie](emerald/21-cable-car-mt-chimney-maxie/milestone.toml) | Cable car to Mt. Chimney: Tabitha and Maxie | P0 |  | 35531 | prev + `None` | MAP_MT_CHIMNEY | passing |
+| [22-jagged-pass-lavaridge](emerald/22-jagged-pass-lavaridge/milestone.toml) | Down Jagged Pass to Lavaridge Town | P0 |  | 12499 | prev + `None` | MAP_LAVARIDGE_TOWN | passing |
+| [23-lavaridge-gym-flannery-goggles](emerald/23-lavaridge-gym-flannery-goggles/milestone.toml) | Lavaridge Gym: Flannery's Heat Badge, May's Go-Goggles | P0 |  | 18422 | prev + `None` | MAP_LAVARIDGE_TOWN | passing |
+| [24-petalburg-gym-norman-surf](emerald/24-petalburg-gym-norman-surf/milestone.toml) | Back to Petalburg: Norman's Balance Badge and HM03 Surf | P0 |  | 29296 | prev + `None` | MAP_PETALBURG_CITY_WALLYS_HOUSE | passing |
+| [25-route118-119-weather-institute](emerald/25-route118-119-weather-institute/milestone.toml) | Surf east: Route 118, Route 119 and the Weather Institute (Shelly) | P0 |  | 51851 | prev + `None` | MAP_ROUTE119 | passing |
+| [26-route119-may-fly-fortree](emerald/26-route119-may-fly-fortree/milestone.toml) | Route 119: May's third battle, HM02 Fly, into Fortree | P0 |  | 11425 | prev + `None` | MAP_FORTREE_CITY | passing |
+| [27-route120-steven-devon-scope](emerald/27-route120-steven-devon-scope/milestone.toml) | Route 120: Steven's Kecleon and the Devon Scope; Fortree's gym Kecleon | P0 |  | 12185 | prev + `None` | MAP_FORTREE_CITY | passing |
+| [28-fortree-gym-winona](emerald/28-fortree-gym-winona/milestone.toml) | Fortree Gym: Winona and the Feather Badge | P0 |  | 21741 | prev + `None` | MAP_FORTREE_CITY | passing |
+| [29-route121-lilycove-may](emerald/29-route121-lilycove-may/milestone.toml) | Routes 120-121 to Lilycove: May at the Department Store | P0 |  | 48014 | prev + `None` | MAP_LILYCOVE_CITY | passing |
+| [30-mt-pyre-summit-magma-emblem](emerald/30-mt-pyre-summit-magma-emblem/milestone.toml) | Mt. Pyre summit: Aqua takes the Red Orb, the Magma Emblem | P0 |  | 17905 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
 | [31-magma-hideout-maxie-groudon](emerald/31-magma-hideout-maxie-groudon/milestone.toml) | Magma Hideout: Groudon wakes, Maxie's second battle | P0 |  | 14000 | prev + `None` | MAP_MAGMA_HIDEOUT_4F | planned |
 | [32-slateport-harbor-submarine](emerald/32-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: Aqua steals Stern's submarine | P0 |  | 5000 | prev + `None` | MAP_SLATEPORT_CITY_HARBOR | planned |
 | [33-aqua-hideout-matt](emerald/33-aqua-hideout-matt/milestone.toml) | Lilycove Aqua Hideout: Matt and the submarine escape | P0 |  | 16000 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | planned |
@@ -3323,7 +3323,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_ROUTE113; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_LANDMARK_FIERY_PATH
-- frames: estimate 10000, budget 60000
+- frames: estimate 30284, budget 45500
 - refs: data/maps/Route111/map.json object_events 15/16 BREAKABLE_ROCK (18,101)/(19,100); data/maps/Route111/map.json connections left ROUTE112 offset 20; data/maps/Route112/map.json object_events 1/6 Magma grunts (26,30)/(27,30) FLAG_HIDE_ROUTE_112_TEAM_MAGMA; data/maps/Route112/scripts.inc:10; data/maps/Route112/map.json warp_events[4] (11,36) / [5] (22,10) -> FIERY_PATH; data/maps/FieryPath/map.json warp_events (26,36)/(26,4); data/maps/FieryPath/scripts.inc:6-12; data/maps/Route112/map.json connections up ROUTE113 offset -60; src/party_menu.c:122
 - notes: Back east through Route 117 to Mauville, north on Route 111: the two rocks need Rock Smash (badge 3). Route 111's desert is closed by the sandstorm triggers until the Go-Goggles (23); the Route 112 junction is south of the desert (Route 112 rows 0..59 = Route 111 rows 20..79). Route 112 trainers: Brice, Trent, Larry, Carol, Bryant, Shayla (lv 16-18). Fiery Path: boulders (Strength) only fence side items [INFERENCE]; wild Grimer/Koffing/Slugma/Numel.
 
@@ -3333,7 +3333,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_METEOR_FALLS_1F_1R; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_FALLARBOR_TOWN
-- frames: estimate 10000, budget 60000
+- frames: estimate 25684, budget 38600
 - refs: data/maps/Route113/map.json object_events (trainers); data/maps/FallarborTown/scripts.inc:6-8; data/maps/FallarborTown/map.json warp_events[2] (14,7) -> POKEMON_CENTER_1F; data/maps/Route114/map.json warp_events[0] (8,63) -> METEOR_FALLS_1F_1R; data/maps/MeteorFalls_1F_1R/map.json warp_events[0] (27,18)
 - notes: Route 113: Jaylen, Dillon, Madeline, Lao, Lung, Tori & Tia (DOUBLE), Wyatt, Lawrence, Sophie, Coby (lv 17-19). Route 114: Lenny, Lucas, Shane, Nancy, Steve, Bernie, Claude, Nolan, Tyra & Ivy (DOUBLE), Charlotte, Angelina, Kai (lv 16-20). Route 114 crosses a river [INFERENCE: by the bridge, no Surf].
 
@@ -3343,7 +3343,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_ROUTE114; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_HIDE_ROUTE_112_TEAM_MAGMA, FLAG_MET_ARCHIE_METEOR_FALLS; vars VAR_METEOR_FALLS_STATE=1
-- frames: estimate 4000, budget 60000
+- frames: estimate 2381, budget 3600
 - refs: data/maps/MeteorFalls_1F_1R/map.json coord_events (14,18) VAR_METEOR_FALLS_STATE=0; data/maps/MeteorFalls_1F_1R/scripts.inc:16-82
 - notes: No battle (pure cutscene). Route 112's grunts (FLAG_HIDE_ROUTE_112_TEAM_MAGMA) disappear here.
 
@@ -3353,7 +3353,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAXIE_MT_CHIMNEY (602), src/data/trainers.h:7228; TRAINER_TABITHA_MT_CHIMNEY (597), src/data/trainers.h:7168; TRAINER_GRUNT_MT_CHIMNEY_1 (146), src/data/trainers.h:1756; TRAINER_GRUNT_MT_CHIMNEY_2 (579), src/data/trainers.h:6952
 - end state: map MAP_MT_CHIMNEY; 3 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, FLAG_HIDE_MT_CHIMNEY_TEAM_MAGMA, FLAG_HIDE_MT_CHIMNEY_TEAM_AQUA, FLAG_HIDE_METEOR_FALLS_1F_1R_COZMO; flags clear FLAG_HIDE_MT_CHIMNEY_LAVA_COOKIE_LADY
-- frames: estimate 13000, budget 60000
+- frames: estimate 35531, budget 53300
 - refs: data/maps/Route112/map.json warp_events[0] (28,27) -> CABLE_CAR_STATION; data/maps/Route112_CableCarStation/scripts.inc:31-51; data/maps/MtChimney/map.json object_events 2 MAXIE (13,6), 3 TABITHA (12,11), 22/29 grunts; data/maps/MtChimney/scripts.inc:33-68; data/maps/MtChimney/scripts.inc:427-436; TRAINER_MAXIE_MT_CHIMNEY (602), src/data/trainers.h:7228; TRAINER_TABITHA_MT_CHIMNEY (597), src/data/trainers.h:7168; TRAINER_GRUNT_MT_CHIMNEY_1 (146), src/data/trainers.h:1756; TRAINER_GRUNT_MT_CHIMNEY_2 (579), src/data/trainers.h:6952
 - notes: Maxie: TRAINER_MAXIE_MT_CHIMNEY (602): MIGHTYENA 24, ZUBAT 24, CAMERUPT 25; Tabitha (sight 2): TRAINER_TABITHA_MT_CHIMNEY (597): NUMEL 18, POOCHYENA 20, NUMEL 22, ZUBAT 22; grunts (sight 3): TRAINER_GRUNT_MT_CHIMNEY_1 (146): NUMEL 20, TRAINER_GRUNT_MT_CHIMNEY_2 (579): ZUBAT 20. The cable car station is on Route 112's south half (the grunts stood south of it): from Route 113 walk Route 112 north -> Fiery Path (22,10) -> (11,36) -> south half -> (28,27). Archie (24,19) only talks. The meteorite (bg event machine) is optional (FLAG_RECEIVED_METEORITE).
 
@@ -3363,7 +3363,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_ERIC (632), src/data/trainers.h:7588; TRAINER_DIANA_1 (474), src/data/trainers.h:5692; TRAINER_AUTUMN (217), src/data/trainers.h:2608; TRAINER_JULIO (566), src/data/trainers.h:6796; TRAINER_ETHAN_1 (216), src/data/trainers.h:2596
 - end state: map MAP_LAVARIDGE_TOWN; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_LAVARIDGE_TOWN, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
-- frames: estimate 6000, budget 60000
+- frames: estimate 12499, budget 18800
 - refs: data/maps/MtChimney/map.json warp_events[2] (20,41) -> JAGGED_PASS; data/maps/JaggedPass/map.json warp_events (13,5)/(14,40); data/maps/JaggedPass/scripts.inc:9-18; data/maps/Route112/map.json connections left LAVARIDGE_TOWN offset 40; data/maps/LavaridgeTown/scripts.inc:7-13; data/maps/LavaridgeTown/map.json warp_events[3] (9,6) -> POKEMON_CENTER_1F; TRAINER_ERIC (632), src/data/trainers.h:7588; TRAINER_DIANA_1 (474), src/data/trainers.h:5692; TRAINER_AUTUMN (217), src/data/trainers.h:2608; TRAINER_JULIO (566), src/data/trainers.h:6796; TRAINER_ETHAN_1 (216), src/data/trainers.h:2596
 - notes: Jagged Pass trainers: TRAINER_ERIC (632): GEODUDE 20, BALTOY 20; TRAINER_DIANA_1 (474): SHROOMISH 19, ODDISH 19, SWABLU 19; TRAINER_AUTUMN (217): SHROOMISH 21; TRAINER_JULIO (566): MAGNEMITE 21; TRAINER_ETHAN_1 (216): ZIGZAGOON 20, TAILLOW 20. Jagged Pass is one-way downhill by ledges (the Acro Bike climbs it) [INFERENCE].
 
@@ -3373,7 +3373,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_FLANNERY_1 (268), src/data/trainers.h:3220; TRAINER_COLE (201), src/data/trainers.h:2416; TRAINER_GERALD (648), src/data/trainers.h:7780; TRAINER_AXLE (203), src/data/trainers.h:2440; TRAINER_DANIELLE (650), src/data/trainers.h:7804; TRAINER_JACE (204), src/data/trainers.h:2452; TRAINER_KEEGAN (205), src/data/trainers.h:2464; TRAINER_JEFF (202), src/data/trainers.h:2428; TRAINER_ELI (501), src/data/trainers.h:6016
 - end state: map MAP_LAVARIDGE_TOWN; 4 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_DEFEATED_LAVARIDGE_GYM, FLAG_RECEIVED_TM_OVERHEAT, FLAG_RECEIVED_GO_GOGGLES, FLAG_PETALBURG_MART_EXPANDED_ITEMS; flags clear FLAG_HIDE_PETALBURG_GYM_GREETER; vars VAR_PETALBURG_GYM_STATE=6, VAR_LAVARIDGE_TOWN_STATE=2
-- frames: estimate 12000, budget 60000
+- frames: estimate 18422, budget 27700
 - refs: data/maps/LavaridgeTown/map.json warp_events[1] (5,15) -> GYM_1F; data/maps/LavaridgeTown_Gym_1F/map.json object_events[1] FLANNERY (13,9); data/maps/LavaridgeTown_Gym_1F/map.json warp_events 2..25 (geysers); data/maps/LavaridgeTown_Gym_1F/scripts.inc:44-95; data/maps/LavaridgeTown/scripts.inc:40-90; TRAINER_FLANNERY_1 (268), src/data/trainers.h:3220; TRAINER_COLE (201), src/data/trainers.h:2416; TRAINER_GERALD (648), src/data/trainers.h:7780; TRAINER_AXLE (203), src/data/trainers.h:2440; TRAINER_DANIELLE (650), src/data/trainers.h:7804; TRAINER_JACE (204), src/data/trainers.h:2452; TRAINER_KEEGAN (205), src/data/trainers.h:2464; TRAINER_JEFF (202), src/data/trainers.h:2428; TRAINER_ELI (501), src/data/trainers.h:6016; src/party_menu.c:123
 - notes: Flannery: TRAINER_FLANNERY_1 (268): NUMEL 24, SLUGMA 24, CAMERUPT 26, TORKOAL 29 (Water x2/x4; Torkoal's Overheat hurts Grovyle carriers). Buried trainers jump out (BURIED/1); 1F/B1F geyser warps pair up by index. Heat Badge = Strength usable (src/party_menu.c:123). Go-Goggles (FLAG_RECEIVED_GO_GOGGLES) open Route 111's desert (not on the story path) [INFERENCE].
 
@@ -3383,7 +3383,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_NORMAN_1 (269), src/data/trainers.h:3232
 - end state: map MAP_PETALBURG_CITY_WALLYS_HOUSE; 5 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_DEFEATED_PETALBURG_GYM, FLAG_RECEIVED_TM_FACADE, FLAG_RECEIVED_HM_SURF, FLAG_HIDE_PETALBURG_CITY_WALLYS_DAD, FLAG_HIDE_MAUVILLE_GYM_WATTSON; flags clear FLAG_HIDE_MAUVILLE_CITY_WATTSON; vars VAR_PETALBURG_GYM_STATE=7, VAR_PETALBURG_CITY_STATE=5
-- frames: estimate 20000, budget 60000
+- frames: estimate 29296, budget 44000
 - refs: data/maps/PetalburgCity_Gym/map.json warp_events 0..37 (room doors); data/maps/PetalburgCity_Gym/scripts.inc:5-15; data/maps/PetalburgCity_Gym/scripts.inc:101-111; data/maps/PetalburgCity_Gym/scripts.inc:360-437; TRAINER_NORMAN_1 (269), src/data/trainers.h:3232; data/maps/PetalburgCity/scripts.inc:29; data/maps/PetalburgCity/scripts.inc:57-80; data/maps/PetalburgCity_WallysHouse/scripts.inc:16-27; src/party_menu.c:124 (Surf needs FLAG_BADGE05_GET); src/field_control_avatar.c:450
 - notes: Norman: TRAINER_NORMAN_1 (269): SPINDA 27, VIGOROTH 27, LINOONE 29, SLAKING 31 (Slaking Truant; boost ~31). Rooms: entrance (7,105) -> Mary's room (1,98); (1,92) -> Alexia's (7,59); (1,53) -> Jody's (7,20); (7,14) -> Norman's (1,7) (warp_events 5/14/21/32 and their destinations); the sight-0 trainers in each room are optional [INFERENCE]. Doors open once GYM_STATE 6 (PetalburgCity_Gym/scripts.inc:9). After the badge Wally's dad walks you home (CITY_STATE 4 -> Petalburg OnFrame WalkToWallyHouse -> Wally's house OnFrame GiveHMSurf). HM03 Surf: FLAG_RECEIVED_HM_SURF; Surf needs this badge.
 
@@ -3392,8 +3392,8 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: TRAINER_SHELLY_WEATHER_INSTITUTE (32), src/data/trainers.h:388; TRAINER_GRUNT_WEATHER_INST_1 (17), src/data/trainers.h:208; TRAINER_GRUNT_WEATHER_INST_2 (18), src/data/trainers.h:220; TRAINER_GRUNT_WEATHER_INST_3 (19), src/data/trainers.h:232; TRAINER_GRUNT_WEATHER_INST_4 (26), src/data/trainers.h:316; TRAINER_GRUNT_WEATHER_INST_5 (596), src/data/trainers.h:7156
-- end state: map MAP_ROUTE119; 5 badges; >= 1 battles; party SPECIES_CASTFORM; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_RECEIVED_CASTFORM, FLAG_HIDE_ROUTE_119_TEAM_AQUA, FLAG_HIDE_WEATHER_INSTITUTE_2F_AQUA_GRUNT_M; vars VAR_WEATHER_INSTITUTE_STATE=1, VAR_ROUTE118_STATE=1
-- frames: estimate 16000, budget 60000
+- end state: map MAP_ROUTE119; 5 badges; >= 1 battles; party SPECIES_CASTFORM; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_RECEIVED_CASTFORM, FLAG_HIDE_ROUTE_119_TEAM_AQUA, FLAG_HIDE_WEATHER_INSTITUTE_2F_AQUA_GRUNT_M; vars VAR_WEATHER_INSTITUTE_STATE=2, VAR_ROUTE118_STATE=1
+- frames: estimate 51851, budget 77800
 - refs: data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0; data/maps/Route118/scripts.inc:62-95; data/maps/Route119/map.json warp_events[0] (6,32) -> WEATHER_INSTITUTE_1F; data/maps/Route119_WeatherInstitute_1F/map.json object_events 1/2 grunts; data/maps/Route119_WeatherInstitute_2F/map.json object_events 1,2,3,8; data/maps/Route119_WeatherInstitute_2F/scripts.inc:41-121; TRAINER_SHELLY_WEATHER_INSTITUTE (32), src/data/trainers.h:388; TRAINER_GRUNT_WEATHER_INST_1 (17), src/data/trainers.h:208; TRAINER_GRUNT_WEATHER_INST_2 (18), src/data/trainers.h:220; TRAINER_GRUNT_WEATHER_INST_3 (19), src/data/trainers.h:232; TRAINER_GRUNT_WEATHER_INST_4 (26), src/data/trainers.h:316; TRAINER_GRUNT_WEATHER_INST_5 (596), src/data/trainers.h:7156; src/field_control_avatar.c:450 (Surf: FLAG_BADGE05_GET + party Surf)
 - notes: Shelly: TRAINER_SHELLY_WEATHER_INSTITUTE (32): CARVANHA 28, MIGHTYENA 28; grunts: TRAINER_GRUNT_WEATHER_INST_1 (17): ZUBAT 27, POOCHYENA 27; TRAINER_GRUNT_WEATHER_INST_2 (18): POOCHYENA 27, CARVANHA 27; TRAINER_GRUNT_WEATHER_INST_3 (19): POOCHYENA 26, ZUBAT 26, CARVANHA 26; TRAINER_GRUNT_WEATHER_INST_4 (26): CARVANHA 28; TRAINER_GRUNT_WEATHER_INST_5 (596): ZUBAT 27, POOCHYENA 27. Back to Mauville the same way as 24 came (Petalburg -> Route 104 -> Rustboro -> 116 -> tunnel -> Verdanturf -> 117 -> Mauville), or Surf Route 104 -> 105.. [INFERENCE: walking is simpler]. Route 118 east of Mauville needs Surf for the inlet; Route 119 has long grass and the river. Castform (lv25, Mystic Water) joins the party: its nickname prompt must be answered NO.
 
@@ -3403,7 +3403,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_ROUTE_119_MUDKIP (531), src/data/trainers.h:6376
 - end state: map MAP_FORTREE_CITY; 5 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_RECEIVED_HM_FLY, FLAG_VISITED_FORTREE_CITY; vars VAR_ROUTE119_STATE=1
-- frames: estimate 8000, budget 60000
+- frames: estimate 11425, budget 17200
 - refs: data/maps/Route119/map.json coord_events (25,31)/(26,31) VAR_ROUTE119_STATE=0; data/maps/Route119/scripts.inc:29-160; TRAINER_MAY_ROUTE_119_MUDKIP (531), src/data/trainers.h:6376; data/maps/Route119/map.json connections right FORTREE_CITY offset 0; data/maps/FortreeCity/scripts.inc:7; data/maps/FortreeCity/map.json warp_events[0] (5,6) -> POKEMON_CENTER_1F; src/party_menu.c:125 (Fly needs FLAG_BADGE06_GET)
 - notes: May: TRAINER_MAY_ROUTE_119_MUDKIP (531): SLUGMA 29, LOMBRE 29, GROVYLE 31. HM02 Fly needs the Feather Badge (28) before the fly bot can use it; FLAG_VISITED_* of each town is what the town map offers [INFERENCE: GBA fly menu lists visited towns]. Route 119 north: hidden Kecleon (31,6)/(25,15) and tree-disguise ninjas (Yasu (28,14), Hideo (29,6)).
 
@@ -3413,7 +3413,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_FORTREE_CITY; 5 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_RECEIVED_DEVON_SCOPE, FLAG_KECLEON_FLED_FORTREE
-- frames: estimate 6000, budget 60000
+- frames: estimate 12185, budget 18300
 - refs: data/maps/Route120/map.json object_events 30 bridge KECLEON (12,16), 31 STEVEN (13,15); data/maps/Route120/scripts.inc:154-232; data/maps/FortreeCity/map.json object_events[7] KECLEON (25,8); data/maps/FortreeCity/scripts.inc:55-82; data/maps/FortreeCity/map.json warp_events[2] (22,11) -> GYM
 - notes: The bridge Kecleon battle ends the same way won, fled or lost-to-teleport (Route120/scripts.inc:196-207); auto_battle wins it. Fortree's Kecleon (25,8) blocks the gym door; talk_to it with the scope: YES -> it flees.
 
@@ -3423,7 +3423,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WINONA_1 (270), src/data/trainers.h:3244; TRAINER_JARED (401), src/data/trainers.h:4816; TRAINER_FLINT (654), src/data/trainers.h:7852; TRAINER_ASHLEY (655), src/data/trainers.h:7864; TRAINER_EDWARDO (404), src/data/trainers.h:4852; TRAINER_HUMBERTO (402), src/data/trainers.h:4828; TRAINER_DARIUS (803), src/data/trainers.h:9640
 - end state: map MAP_FORTREE_CITY; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_DEFEATED_FORTREE_GYM, FLAG_RECEIVED_TM_AERIAL_ACE
-- frames: estimate 12000, budget 60000
+- frames: estimate 21741, budget 32700
 - refs: data/maps/FortreeCity_Gym/map.json object_events 1..8; data/maps/FortreeCity_Gym/scripts.inc:1-63; TRAINER_WINONA_1 (270), src/data/trainers.h:3244; TRAINER_JARED (401), src/data/trainers.h:4816; TRAINER_FLINT (654), src/data/trainers.h:7852; TRAINER_ASHLEY (655), src/data/trainers.h:7864; TRAINER_EDWARDO (404), src/data/trainers.h:4852; TRAINER_HUMBERTO (402), src/data/trainers.h:4828; TRAINER_DARIUS (803), src/data/trainers.h:9640; src/rotating_gate.c; src/party_menu.c:125
 - notes: Winona: TRAINER_WINONA_1 (270): SWABLU 29, TROPIUS 29, PELIPPER 30, SKARMORY 31, ALTARIA 33 (Altaria Dragon/Flying, Skarmory Steel: an Electric or Ice mover helps; boost ~35). Trainers lv 27-30: Jared, Flint, Ashley, Edwardo, Humberto, Darius. Rotating gates turn when pushed; walk_to bumps teach blocked edges but the gate state changes the map [INFERENCE: a fixed steps route is needed].
 
@@ -3433,7 +3433,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_LILYCOVE_MUDKIP (664), src/data/trainers.h:7972
 - end state: map MAP_LILYCOVE_CITY; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_VISITED_LILYCOVE_CITY, FLAG_MET_RIVAL_LILYCOVE, FLAG_HIDE_LILYCOVE_CITY_RIVAL; flags clear FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM; vars VAR_ROUTE121_STATE=1
-- frames: estimate 14000, budget 60000
+- frames: estimate 48014, budget 72100
 - refs: data/maps/Route120/map.json connections right ROUTE121 offset 80; data/maps/Route121/map.json coord_events (25,5..8) VAR_ROUTE121_STATE=0; data/maps/Route121/scripts.inc:16-30; data/maps/LilycoveCity/scripts.inc:7-9; data/maps/LilycoveCity/map.json object_events[17] rival (27,7); data/maps/LilycoveCity/scripts.inc:226-256; data/maps/LilycoveCity/scripts.inc:301-304; data/maps/LilycoveCity/scripts.inc:321-390; TRAINER_MAY_LILYCOVE_MUDKIP (664), src/data/trainers.h:7972
 - notes: May: TRAINER_MAY_LILYCOVE_MUDKIP (664): TROPIUS 31, SLUGMA 32, PELIPPER 32, GROVYLE 34 (YES/NO; NO sets FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE). After the badge-6 check she leaves: FLAG_MET_RIVAL_LILYCOVE (LilycoveCity/scripts.inc:377-388). Route 120 trainers (lv 27-30) and hidden Kecleons; Route 121 trainers (lv 25-32). Fly is available now but Lilycove is not yet visited, so walk.
 
@@ -3443,7 +3443,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GRUNT_MT_PYRE_1 (23), src/data/trainers.h:280; TRAINER_GRUNT_MT_PYRE_2 (24), src/data/trainers.h:292; TRAINER_GRUNT_MT_PYRE_3 (25), src/data/trainers.h:304; TRAINER_GRUNT_MT_PYRE_4 (569), src/data/trainers.h:6832
 - end state: map MAP_MT_PYRE_SUMMIT; 6 badges; >= 2 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_RECEIVED_RED_OR_BLUE_ORB, FLAG_HIDE_JAGGED_PASS_MAGMA_GUARD, FLAG_HIDE_MT_PYRE_SUMMIT_ARCHIE, FLAG_HIDE_MT_PYRE_SUMMIT_TEAM_AQUA; vars VAR_MT_PYRE_STATE=1
-- frames: estimate 12000, budget 60000
+- frames: estimate 17905, budget 26900
 - refs: data/maps/Route121/map.json connections down ROUTE122 offset 20; data/maps/Route122/map.json warp_events[0] (22,29) -> MT_PYRE_1F; data/maps/MtPyre_1F/map.json warp_events[1] (3,6) -> EXTERIOR; data/maps/MtPyre_Exterior/map.json warp_events[1] (19,10) -> SUMMIT; data/maps/MtPyre_Summit/map.json object_events 4..7 grunts; data/maps/MtPyre_Summit/map.json coord_events (22..24,7) VAR_MT_PYRE_STATE=0; data/maps/MtPyre_Summit/scripts.inc:14-62; TRAINER_GRUNT_MT_PYRE_1 (23), src/data/trainers.h:280; TRAINER_GRUNT_MT_PYRE_2 (24), src/data/trainers.h:292; TRAINER_GRUNT_MT_PYRE_3 (25), src/data/trainers.h:304; TRAINER_GRUNT_MT_PYRE_4 (569), src/data/trainers.h:6832
 - notes: Summit grunts (sight 3): TRAINER_GRUNT_MT_PYRE_1 (23): ZUBAT 32; TRAINER_GRUNT_MT_PYRE_2 (24): CARVANHA 32; TRAINER_GRUNT_MT_PYRE_3 (25): POOCHYENA 30, CARVANHA 30; TRAINER_GRUNT_MT_PYRE_4 (569): WAILMER 30, ZUBAT 30. Emerald: Archie leaves with the Red Orb, the old lady hands over the Magma Emblem (the flag is named FLAG_RECEIVED_RED_OR_BLUE_ORB, MtPyre_Summit/scripts.inc:58-59) and hides the Jagged Pass guard (:60). The exterior has fog/sun weather triggers only. Route 121 -> 122 needs Surf.
 
@@ -3453,7 +3453,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAXIE_MAGMA_HIDEOUT (601), src/data/trainers.h:7216; TRAINER_TABITHA_MAGMA_HIDEOUT (732), src/data/trainers.h:8788
 - end state: map MAP_MAGMA_HIDEOUT_4F; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS; flags clear FLAG_HIDE_SLATEPORT_CITY_CAPTAIN_STERN, FLAG_HIDE_SLATEPORT_CITY_GABBY_AND_TY; vars VAR_JAGGED_PASS_STATE=2, VAR_SLATEPORT_CITY_STATE=1, VAR_SLATEPORT_HARBOR_STATE=1
-- frames: estimate 14000, budget 60000
+- frames: estimate 14000, budget 90000
 - refs: data/maps/JaggedPass/scripts.inc:9-18; data/maps/JaggedPass/map.json coord_events (13..14,15)/(21,15)/(21..22,20) VAR_JAGGED_PASS_STATE=1; data/maps/JaggedPass/scripts.inc:39-61; data/maps/JaggedPass/map.json warp_events[4] (16,18) -> MAGMA_HIDEOUT_1F; data/maps/MagmaHideout_1F/map.json warp_events[3] (20,22) -> 2F_3R; data/maps/MagmaHideout_2F_3R/map.json warp_events[1] (16,13) -> 3F_3R; data/maps/MagmaHideout_3F_3R/map.json warp_events[1] (16,21) -> 4F; data/maps/MagmaHideout_4F/map.json object_events 5 TABITHA (22,4), 6 MAXIE (16,21); data/maps/MagmaHideout_4F/scripts.inc:4-64; TRAINER_MAXIE_MAGMA_HIDEOUT (601), src/data/trainers.h:7216; TRAINER_TABITHA_MAGMA_HIDEOUT (732), src/data/trainers.h:8788; src/party_menu.c:125 (Fly)
 - notes: Maxie: TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAMERUPT 39; Tabitha (4F (22,4) sight 4, off the 3F_3R -> 4F path [INFERENCE]): TRAINER_TABITHA_MAGMA_HIDEOUT (732): NUMEL 26, MIGHTYENA 28, ZUBAT 30, CAMERUPT 33; ~12 grunts lv 28-30 (sight trainers). Fly to Lavaridge (visited in 22), Route 112 east, Jagged Pass up from the bottom (14,40). The hideout's 1F boulders (5..7,22..23) are Strength puzzles off the short route [INFERENCE].
 

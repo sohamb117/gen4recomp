@@ -43,16 +43,15 @@ do = "wait_map"
 map = "MAP_SLATEPORT_CITY"
 
 [[step]]
-do = "fly"
-map = "MAP_LILYCOVE_CITY"
-
-[[step]]
 do = "walk_to"
 x = 70
 z = 5
 map = "MAP_LILYCOVE_CITY"
 surf = true
-note = "east shore, Surf to the cave mouth (Lilycove warp 6) -> AQUA_HIDEOUT_1F (13,27)"
+hm = true
+on_battle = "flee"
+max = 40000
+note = "walked (no party member can Fly) to Lilycove's east shore and Surfed to the cave mouth (Lilycove warp 6) -> AQUA_HIDEOUT_1F (13,27)"
 
 [[step]]
 do = "wait_map"

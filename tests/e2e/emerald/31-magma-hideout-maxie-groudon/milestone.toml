@@ -23,35 +23,62 @@ notes = "Maxie: TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAME
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 90000
 
 # PHASE2: prove the short route 1F (20,22) -> 2F_3R (16,13) -> 3F_3R (16,21) -> 4F (20,21) is walkable (probe_map each floor) and whether a Strength boulder blocks it.
 
 [[step]]
-do = "fly"
-map = "MAP_LAVARIDGE_TOWN"
-note = "Fly (Feather Badge; carrier boosted) to Lavaridge"
+do = "heal"
+x = 22
+z = 5
+map = "MAP_MAUVILLE_CITY"
+surf = true
+hm = true
+max = 30000
+note = "down Mt. Pyre, Surf Route 122 -> 123 -> 118 to Mauville's Pokemon Center (22,5): HP and PP back for the hideout"
 
 [[step]]
 do = "walk_to"
 x = 6
-z = 46
-map = "MAP_ROUTE112"
-note = "east onto Route 112, Jagged Pass door (Route 112 warp 2) -> JAGGED_PASS (14,40)"
+z = 7
+map = "MAP_ROUTE112_CABLE_CAR_STATION"
+surf = true
+hm = true
+on_battle = "flee"
+max = 30000
+note = "down Mt. Pyre, Surf Route 122 -> 123 -> 118, Mauville, Route 111 north, Route 112's cable car station (Route 112 warp (28,27)); below the attendant (object 1 (6,6)). No party member can Fly; the cable car is the walker's way up"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Route112_CableCarStation_EventScript_Attendant: 'ready, get on?' YES/NO (Route112_CableCarStation/scripts.inc:31-37)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "YES -> RideCableCar: the ride to MT_CHIMNEY_CABLE_CAR_STATION (:39-)"
+
+[[step]]
+do = "advance_text"
+note = "'Please step this way.', then special CableCarWarp / CableCar (:40-50): the ride plays by itself"
 
 [[step]]
 do = "wait_map"
-map = "MAP_JAGGED_PASS"
+map = "MAP_MT_CHIMNEY_CABLE_CAR_STATION"
+max = 6000
 
 [[step]]
 do = "walk_to"
 x = 21
 z = 20
+map = "MAP_JAGGED_PASS"
 on_text = "stop"
-note = "OnTransition: Magma Emblem -> JAGGED_PASS_STATE 1 (JaggedPass/scripts.inc:9-18); coord (21,20) -> OpenMagmaHideout -> 2 (:39-61) [INFERENCE: (21,20) on the climb]"
+note = "out to Mt. Chimney, south (21,41) into Jagged Pass and down it: OnTransition gives VAR_JAGGED_PASS_STATE 1 with the Magma Emblem (JaggedPass/scripts.inc:9-18); the coord triggers (13..14,15)/(21,15)/(21..22,20) run OpenMagmaHideout -> 2 (:39-61)"
 
 [[step]]
 do = "advance_text"
@@ -68,33 +95,30 @@ map = "MAP_MAGMA_HIDEOUT_1F"
 
 [[step]]
 do = "walk_to"
+x = 7
+z = 23
+face = "left"
+interact = true
+note = "1F: the way north (5,21) is shut by three Strength boulders (objects 4-6 at (5,22), (7,22), (6,23)); A on (6,23)"
+
+[[step]]
+do = "advance_text"
+note = "EventScript_StrengthBoulder: 'use Strength?' YES, FLAG_SYS_USE_STRENGTH (data/scripts/field_move_scripts.inc:122-150)"
+
+[[step]]
+do = "steps"
+route = [[6, 23], [6, 22], [5, 22], [5, 21]]
+note = "push (6,23) west to (5,23), step up to (6,22), push (5,22) west to (4,22), then north up the corridor"
+
+[[step]]
+do = "walk_to"
 x = 20
-z = 22
-note = "1F (warp 3) -> 2F_3R (16,1)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_MAGMA_HIDEOUT_2F_3R"
-
-[[step]]
-do = "walk_to"
-x = 16
-z = 13
-note = "2F_3R (warp 1) -> 3F_3R (16,1)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_MAGMA_HIDEOUT_3F_3R"
-
-[[step]]
-do = "walk_to"
-x = 16
 z = 21
-note = "3F_3R (warp 1) -> 4F (20,21)"
-
-[[step]]
-do = "wait_map"
 map = "MAP_MAGMA_HIDEOUT_4F"
+on_battle = "flee"
+max = 20000
+note = "1F (25,34) -> 2F_1R -> 3F_1R (7,21) -> 4F (static route; the grunts on the way are fought)"
+
 
 [[step]]
 do = "talk_to"

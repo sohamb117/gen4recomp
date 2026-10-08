@@ -2,9 +2,8 @@
 # Route 114 to the Meteor Falls door (8,63).
 # Start: Route 113 east end -> end: MAP_METEOR_FALLS_1F_1R entrance (27,18).
 title = "Route 113 ash, Fallarbor Town and Route 114"
-status = "planned"
 priority = "P0"
-estimate = 10000
+estimate = 25684
 refs = [
   "data/maps/Route113/map.json object_events (trainers)",
   "data/maps/FallarborTown/scripts.inc:6-8",
@@ -19,7 +18,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 38600
 
 [[step]]
 do = "walk_to"

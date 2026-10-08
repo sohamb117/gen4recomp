@@ -2,9 +2,8 @@
 # (VAR_ROUTE121_STATE 1), Lilycove (visited flag) and May's YES/NO battle (TRAINER_MAY_LILYCOVE_MUDKIP).
 # Start: Fortree gym door -> end: MAP_LILYCOVE_CITY in front of the Department Store (27,8).
 title = "Routes 120-121 to Lilycove: May at the Department Store"
-status = "planned"
 priority = "P0"
-estimate = 14000
+estimate = 48014
 refs = [
   "data/maps/Route120/map.json connections right ROUTE121 offset 80",
   "data/maps/Route121/map.json coord_events (25,5..8) VAR_ROUTE121_STATE=0",
@@ -20,10 +19,11 @@ notes = "May: TRAINER_MAY_LILYCOVE_MUDKIP (664): TROPIUS 31, SLUGMA 32, PELIPPER
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 72100
 
 [[step]]
 do = "walk_to"
@@ -31,10 +31,20 @@ x = 25
 z = 6
 map = "MAP_ROUTE121"
 on_text = "stop"
+on_battle = "flee"
+max = 12000
 note = "Route 120 south and east onto Route 121; AquaGruntsMoveOut coord (25,5..8) ROUTE121_STATE 0 (Route121/scripts.inc:16-30)"
 
 [[step]]
 do = "advance_text"
+
+[[step]]
+do = "heal"
+x = 24
+z = 14
+map = "MAP_LILYCOVE_CITY"
+on_battle = "flee"
+note = "Lilycove Pokemon Center (24,14): HP and PP back after Routes 120 and 121's trainers, before May"
 
 [[step]]
 do = "walk_to"

@@ -2,9 +2,8 @@
 # Magma-blocked cable car, the Fiery Path (11,36) -> (22,10) and Route 112 north to Route 113.
 # Start: Verdanturf (16,4) -> end: MAP_ROUTE113 east end.
 title = "Route 111 rocks, Route 112 and the Fiery Path north"
-status = "planned"
 priority = "P0"
-estimate = 10000
+estimate = 30284
 refs = [
   "data/maps/Route111/map.json object_events 15/16 BREAKABLE_ROCK (18,101)/(19,100)",
   "data/maps/Route111/map.json connections left ROUTE112 offset 20",
@@ -23,7 +22,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 45500
 
 # PHASE2: prove that the Fiery Path straight route (26,36) -> (26,4) needs no Strength before the Heat Badge (probe_map MAP_FIERY_PATH).
 

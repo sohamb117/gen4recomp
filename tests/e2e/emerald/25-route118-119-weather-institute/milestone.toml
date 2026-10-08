@@ -2,9 +2,8 @@
 # Weather Institute: Aqua grunts, Shelly (TRAINER_SHELLY_WEATHER_INSTITUTE), VAR_WEATHER_INSTITUTE_STATE 1 and Castform.
 # Start: Wally's house -> end: MAP_ROUTE119 outside the Weather Institute (6,33).
 title = "Surf east: Route 118, Route 119 and the Weather Institute (Shelly)"
-status = "planned"
 priority = "P0"
-estimate = 16000
+estimate = 51851
 refs = [
   "data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0",
   "data/maps/Route118/scripts.inc:62-95",
@@ -24,10 +23,11 @@ notes = "Shelly: TRAINER_SHELLY_WEATHER_INSTITUTE (32): CARVANHA 28, MIGHTYENA 2
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 77800
 
 # PHASE2: the Castform nickname YES/NO after ShellyDefeated (Route119_WeatherInstitute_2F/scripts.inc:87-93): confirm advance_text answers it NO, else press B there.
 
@@ -129,5 +129,5 @@ party = ["SPECIES_CASTFORM"]
 battles = 1
 
 [expect.vars]
-VAR_WEATHER_INSTITUTE_STATE = 1
+VAR_WEATHER_INSTITUTE_STATE = 2   # 1 at Shelly's defeat; Route119_OnTransition moves the workers downstairs and sets 2 on the way out (Route119/scripts.inc:19,23-27)
 VAR_ROUTE118_STATE = 1

@@ -2,9 +2,8 @@
 # (FLAG_RECEIVED_HM_FLY), Scott, and Route 119's north end into Fortree (FLAG_VISITED_FORTREE_CITY, heal).
 # Start: Route 119 (6,33) -> end: MAP_FORTREE_CITY in front of the Pokemon Center (5,7).
 title = "Route 119: May's third battle, HM02 Fly, into Fortree"
-status = "planned"
 priority = "P0"
-estimate = 8000
+estimate = 11425
 refs = [
   "data/maps/Route119/map.json coord_events (25,31)/(26,31) VAR_ROUTE119_STATE=0",
   "data/maps/Route119/scripts.inc:29-160",
@@ -21,12 +20,25 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 17200
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 4
+map = "MAP_ROUTE119_WEATHER_INSTITUTE_1F"
+face = "up"
+interact = true
+note = "the Weather Institute bed (bg events (0-1,2-3), Route119_WeatherInstitute_1F/scripts.inc:53-59 Common_EventScript_OutOfCenterPartyHeal): HP/PP back after the institute's battles"
+
+[[step]]
+do = "advance_text"
 
 [[step]]
 do = "walk_to"
 x = 25
 z = 31
+map = "MAP_ROUTE119"
 on_text = "stop"
 note = "rival trigger (25,31) ROUTE119_STATE 0 (Route119/scripts.inc:29-56) [INFERENCE: reachable from the institute by the bridge]"
 

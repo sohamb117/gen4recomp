@@ -63,17 +63,17 @@ do = "wait_map"
 map = "MAP_JAGGED_PASS"
 
 [[step]]
-do = "fly"
-map = "MAP_SLATEPORT_CITY"
-
-[[step]]
 do = "walk_to"
 x = 27
 z = 13
 map = "MAP_SLATEPORT_CITY"
+surf = true
+hm = true
+on_battle = "flee"
+max = 30000
 face = "right"
 interact = true
-note = "left of Stern (28,13) [INFERENCE: free tile]"
+note = "left of Stern (28,13), walked (no party member can Fly): Jagged Pass down to Lavaridge, Routes 112 -> 111 -> Mauville -> 110 -> Slateport"
 
 [[step]]
 do = "advance_text"
