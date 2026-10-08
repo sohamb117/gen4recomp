@@ -226,6 +226,20 @@ asm_thumb_lit: ; 0x020001BC
 _020001C4: .word asm_thumb_mul
 	arm_func_end asm_thumb_lit
 
+; int asm_call_typed(int x) = asm_rt_twice(x) + 1, across a file boundary as
+; nitro.s calls msl.s's `_ll_udiv`. bridge_msl.s has msl.s's shape; were
+; asm_rt_twice a label of asm_rt_neg, this BL would become a goto into a copy
+; of that body and its `bx lr` would return 2x, skipping the `+ 1`.
+	arm_func_start asm_call_typed
+asm_call_typed: ; 0x020001C8
+	stmdb sp!, {lr}
+	sub sp, sp, #0x4
+	bl asm_rt_twice
+	add r0, r0, #0x1
+	add sp, sp, #0x4
+	ldmia sp!, {pc}
+	arm_func_end asm_call_typed
+
 	.data
 
 	.global asm_table

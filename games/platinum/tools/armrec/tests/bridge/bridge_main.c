@@ -35,6 +35,9 @@ int asm_call_structs(int *);
 int asm_call_u8(void);
 int asm_ldm_self(const int *);
 uint32_t asm_thumb_lit(void);
+int asm_call_typed(int);
+int asm_rt_neg(int);
+int asm_rt_twice(int);
 extern int asm_table[];
 extern uint32_t asm_cptrs[];
 
@@ -148,6 +151,12 @@ int main(void) {
           asm_thumb_lit(), (uint32_t)(uintptr_t)&asm_thumb_mul);
     CHECK("call through the asm literal",
           ((int (*)(int, int))(uintptr_t)asm_thumb_lit())(6, 9), 54);
+
+    /* A `.type NAME, @function` routine inside an unended start macro is a
+     * function of its own: a BL to it returns to the caller. */
+    CHECK("bl to a .type @function routine returns", asm_call_typed(5), 11);
+    CHECK("unended start macro stops at the next .type @function", asm_rt_neg(5), -5);
+    CHECK(".type @function routine callable from C", asm_rt_twice(21), 42);
 
     /* runtime entry points for C function pointers */
     CHECK("armrec_call_code(c_target)",

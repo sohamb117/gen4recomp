@@ -159,6 +159,9 @@ class Func(object):
 ADDR_IN_NAME = re.compile(r"^_([0-9A-Fa-f]{6,8})$")
 OV_ADDR_IN_NAME = re.compile(r"^(?:ov\d+_|sub_|FUN_)([0-9A-Fa-f]{6,8})$")
 ADDR_COMMENT = re.compile(r";\s*0x([0-9A-Fa-f]+)")
+# `.type NAME, @function` (or %function / STT_FUNC), matched on a raw line.
+TYPE_FUNCTION = re.compile(r"^\s*\.type\s+([A-Za-z_.$?][\w.$?]*)\s*,\s*"
+                           r"(?:[@%#]function|STT_FUNC)\b", re.I)
 # A call target spelled as a guest address to dispatch at run time; see
 # emit_branch().
 DISPATCH_TARGET = re.compile(r"^armrec_dispatch_([0-9A-Fa-f]{8})$")
@@ -928,12 +931,24 @@ def parse_file(path, defines, incdirs=(), lines=None):
     # the start marker and keep the end one, and an end marker naming a label
     # is the source saying that label is a function, so trust it.
     ends_named = set()
+    # Names this file declares `.type NAME, @function`. HG/SS's msl.s opens
+    # `_fadd` with arm_func_start, never ends it, and marks the fifty-odd
+    # runtime routines after it (`_ll_udiv`, `_fmul`, `_ll_shl`, ...) with
+    # nothing but `.type`. Without this they were labels inside `_f_add`, and a
+    # `bl _ll_udiv` became a goto whose `bx lr` returned from the caller.
+    typed_funcs = set()
     for raw in lines:
         code, _ = split_comment(raw.rstrip("\n"))
         parts = code.strip().split(None, 1)
         if len(parts) == 2 and parts[0].lower() in ("arm_func_end",
                                                     "thumb_func_end"):
             ends_named.add(parts[1].strip())
+            continue
+        # On the raw line: `@` opens a comment, so split_comment() has
+        # already cut `@function` off `code`.
+        m = TYPE_FUNCTION.match(raw)
+        if m:
+            typed_funcs.add(m.group(1))
 
     def enter_section(name):
         """Switch sections, remembering where the old one had got to."""
@@ -1058,12 +1073,18 @@ def parse_file(path, defines, incdirs=(), lines=None):
             # arm9/lib/syscall do. The same shape also spells data, so the
             # promotion is undone below for any of these that no instruction
             # ever followed.
-            if ((cur_func is None or cur_func.markerless)
-                    and section == ".text"
-                    and (name in globals_ or name in ends_named)):
+            # A `.type NAME, @function` label is an entry point, even inside a
+            # function a start macro opened and never ended, unless a start
+            # macro already named it.
+            typed_entry = (name in typed_funcs
+                           and not any(f.name == name for f in funcs))
+            if (((cur_func is None or cur_func.markerless)
+                    and (name in globals_ or name in ends_named))
+                    or typed_entry) and section == ".text":
                 prev = cur_func
                 cur_func = Func(name, thumb_mode, addr, True, markerless=True,
-                                attested=name in ends_named)
+                                attested=(name in ends_named
+                                          or name in typed_funcs))
                 funcs.append(cur_func)
                 # Two names on one entry point (HG/SS's msl.s: `_dadd:` then
                 # `_d_add:`): the first, which nothing but labels has
@@ -2900,7 +2921,11 @@ def absorb_foreign_entries(funcs, path, foreign):
         for _round in range(len(foreign) + 1):
             want = None
             for it in f.items:
-                if not (isinstance(it, Insn) and it.mnem in BRANCH_MNEMS):
+                # Only a plain branch. A BL into another file is a call: a
+                # private copy would turn it into a goto whose `bx lr` returns
+                # from this function. Left alone, it calls the symbol, or fails
+                # at the link if nothing defines it.
+                if not (isinstance(it, Insn) and it.mnem == "b"):
                     continue
                 target = (it.ops or "").strip()
                 if target in f.labels:
