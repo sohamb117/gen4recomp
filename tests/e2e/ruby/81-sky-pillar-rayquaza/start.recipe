@@ -1,0 +1,18 @@
+# Sky Pillar: Route 131 shows the Sky Pillar island (setmaplayoutindex 320) only after the Hall of Fame
+# (data/maps/Route131/scripts.inc:5-11 call_if_set FLAG_SYS_GAME_CLEAR).
+# FLAG_SYS_GAME_CLEAR: src/post_battle_event_funcs.c:27 (the Hall of Fame)
+flag FLAG_SYS_GAME_CLEAR
+# the Mach Bike for SkyPillar_2F's cracked floors (src/field_tasks.c:669-711: a step onto MB_CRACKED_FLOOR slower
+# than SPEED_FASTEST zeroes VAR_ICE_STEP_COUNT -> CaveHole_CheckFallDownHole), on SELECT (Rydel gives it:
+# data/maps/MauvilleCity_BikeShop/scripts.inc; register-item = the bag's REGISTER)
+item ITEM_MACH_BIKE 1
+register-item ITEM_MACH_BIKE
+# the lead for RAYQUAZA lv70 (Dragon/Flying: setwildbattle SPECIES_RAYQUAZA, 70, data/maps/SkyPillar_Top/scripts.inc:16):
+# Ice x4: Walrein's Blizzard (level 50, src/data/pokemon/level_up_learnsets.h:4578) and TM13 Ice Beam, a post-game party
+party SPECIES_WALREIN 100 ITEM_NONE
+party-move 0 0 MOVE_ICE_BEAM
+party-move 0 1 MOVE_BLIZZARD
+party-move 0 2 MOVE_SURF
+party-move 0 3 MOVE_BODY_SLAM
+# Route 131's Sky Pillar island, below its door (data/maps/Route131/map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE)
+map MAP_ROUTE131 36 7

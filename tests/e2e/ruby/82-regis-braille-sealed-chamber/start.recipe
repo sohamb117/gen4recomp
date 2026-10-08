@@ -1,0 +1,32 @@
+# The Sealed Chamber: Dive on Route 134, read the Braille, Dig at the far wall, and with RELICANTH first and WAILORD
+# last read the inner room's Braille: FLAG_REGI_DOORS_OPENED (data/maps/SealedChamber_InnerRoom/scripts.inc:5-34);
+# then Fly to Petalburg and Island Cave's REGICE (data/maps/IslandCave/scripts.inc).
+
+# Surf (FLAG_BADGE05_GET, src/field_control_avatar.c:506) and Dive (FLAG_BADGE07_GET: src/field_control_avatar.c:519-535)
+badge 5
+badge 7
+badge 6
+# the Fly map's Petalburg City (src/region_map.c:713; set on entering it in play: data/maps/PetalburgCity/scripts.inc:7)
+flag FLAG_VISITED_PETALBURG_CITY
+# Petalburg past Wally's catching tutorial: VAR_PETALBURG_STATE 3 (PetalburgCity/scripts.inc:44); at 0 the coord
+# events (8,10..13) walk the player to the Gym (PetalburgCity/map.json coord_events), on the way west to Route 104
+var VAR_PETALBURG_STATE 3
+# the start menu's POKEMON entry for Dig (src/start_menu.c:267-268; set by the starter: data/maps/Route101/scripts.inc:220)
+flag FLAG_SYS_POKEMON_GET
+# CheckRelicanthWailord (src/braille_puzzles.c:57-69): party slot 0 RELICANTH, the last slot WAILORD.
+# RELICANTH carries the field moves: the party menu lists a Pokemon's field moves first, in move-slot order
+# (src/pokemon_menu.c:192-230), so DIG is its first entry; DIVE for Route 134 / the chamber, SURF for the pool.
+party SPECIES_RELICANTH 100 ITEM_NONE
+party-move 0 0 MOVE_DIG
+party-move 0 1 MOVE_DIVE
+party-move 0 2 MOVE_SURF
+party-move 0 3 MOVE_ROCK_SLIDE
+# the Fly carrier for the way to Island Cave (HM02 Fly: FLAG_BADGE06_GET, src/pokemon_menu.c:728 badge check)
+party SPECIES_SWELLOW 100 ITEM_NONE
+party-move 1 0 MOVE_FLY
+party SPECIES_WAILORD 50 ITEM_NONE
+# Route 134's deep-water patch (behaviour 0x11, (59..62,30..33)); Route134/scripts.inc:5-7 setdivewarp
+# MAP_UNDERWATER_ROUTE134 (8,6). The patch is ringed by Route 134's currents (0x51-0x53), which walk_to cannot plan
+# (tests/e2e/gba_world.py FORBIDDEN), so the start is a CONTINUE on it, as after saving there: the game starts the
+# player surfing on a water tile (src/overworld.c:706-713 GetAdjustedInitialTransitionFlags).
+map MAP_ROUTE134 60 31

@@ -1,0 +1,69 @@
+# Proves Mirage Island: with a party Pokemon whose personality low half matches VAR_MIRAGE_RND_H, Route 130's
+# ON_TRANSITION keeps the island layout; surf there from Pacifidlog and pick the Liechi Berry tree.
+# Start: MAP_PACIFIDLOG_TOWN (8,16) -> end: MAP_ROUTE130 on Mirage Island (51,9), beside the berry tree (52,9).
+title = "Mirage Island: the island appears on Route 130, Liechi Berry"
+priority = "P2"
+version = "both"
+estimate = 8227
+refs = [
+  "src/time_events.c:12-24,42-52 (GetMirageRnd, IsMirageIslandPresent: party personality & 0xFFFF == VAR_MIRAGE_RND_H)",
+  "include/constants/vars.h:51-52 (VAR_MIRAGE_RND_H 0x4024, VAR_MIRAGE_RND_L 0x4025)",
+  "data/maps/Route130/scripts.inc:5-30 (ON_TRANSITION: present -> setmaplayoutindex 46, else FLAG_TEMP_11..20 + 264)",
+  "data/layouts/layouts.json (index 46 LAYOUT_UNREFERENCED_MAP = the island, 264 LAYOUT_ROUTE130)",
+  "src/overworld.c:605-640 (LoadMapFromCameraTransition runs RunOnTransitionMapScript on a connection crossing)",
+  "data/maps/Route130/map.json object_events[2] (52,9) berry tree 82, hidden by FLAG_TEMP_11",
+  "data/scripts/new_game.inc:81 (setberrytree 82, ITEM_LIECHI_BERRY, BERRY_STAGE_BERRIES)",
+  "data/scripts/berry_tree.inc:99-123 (stage 5: YES/NO, ObjectEventInteractionPickBerryTree)",
+  "src/clock.c:27-56 (no FLAG_SYS_CLOCK_SET in the base save: UpdateMirageRnd never runs)",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 12400
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 22
+map = "MAP_ROUTE130"
+surf = true
+on_battle = "flee"
+note = "east across Route 131 into Route 130 (Route131/map.json connections right MAP_ROUTE130): the crossing runs Route130's ON_TRANSITION (src/overworld.c:605-640 LoadMapFromCameraTransition)"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 22
+surf = true
+on_battle = "flee"
+note = "the island's west beach: land only in the island layout (LAYOUT_ROUTE130 has open sea here: tools/gba_world_cli.py map MAP_ROUTE130; probe_map shows the island)"
+shot = "mirage-island"
+
+[[step]]
+do = "talk_to"
+id = 3
+on_battle = "flee"
+note = "berry tree 82 (52,9), shown only with the island (FLAG_TEMP_11 not set): 'There are N LIECHI BERRIES! Want to pick?'"
+shot = "liechi-tree"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "YES: ObjectEventInteractionPickBerryTree (berry_tree.inc:109-123)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "picked"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_ROUTE130"
+save = [
+  'int(s["party"][0]["pid"], 16) & 0xFFFF == s["vars"]["16420"]',
+  'any(i["item"] == 168 for i in s["bag"]["berries"])',
+]

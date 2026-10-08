@@ -1,0 +1,18 @@
+# Mirage Island on Route 130: IsMirageIslandPresent (src/time_events.c:42-52) is TRUE when a party Pokemon's
+# personality low half equals VAR_MIRAGE_RND_H (the high half of the Mirage random, src/time_events.c:12-17);
+# Route130's ON_TRANSITION (data/maps/Route130/scripts.inc:5-27) then keeps the island layout (setmaplayoutindex 46,
+# LAYOUT_UNREFERENCED_MAP) instead of the open sea (264, LAYOUT_ROUTE130).
+# The base save never set the clock (FLAG_SYS_CLOCK_SET clear), so DoTimeBasedEvents (src/clock.c:27-35) never runs
+# UpdateMirageRnd (src/clock.c:51, src/time_events.c:31-40) and the value stays.
+
+# Surf outside battle: FLAG_BADGE05_GET + a party member with MOVE_SURF (src/field_control_avatar.c:506)
+badge 5
+# the lead: gen3_lab's fixed personality 0x4E500000 | species << 8 | level (tools/gba/gen3_lab.py v_party) =
+# 0x4E50833C for SPECIES_LAPRAS (131) lv60 (not shiny with the base save's TID 12716 / SID 1679: no bump)
+party SPECIES_LAPRAS 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+# VAR_MIRAGE_RND_H = 0x833C, the lead's personality low half (src/time_events.c:44-49; set in play by
+# UpdateMirageRnd's daily LCG step, src/clock.c:51)
+var VAR_MIRAGE_RND_H 33596
+# Pacifidlog Town, below the Pokemon Center door (data/maps/PacifidlogTown/map.json warp_events[0] (8,15))
+map MAP_PACIFIDLOG_TOWN 8 16
