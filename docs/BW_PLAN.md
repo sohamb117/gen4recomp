@@ -302,17 +302,88 @@ the card layer from FS) and recorded as anchors in sigs.py.
   name, "Let's go meet the world of Pokémon!", frames 5300-10000 with A
   held every 40 frames from 5300). Her sprite is not drawn in most of those
   frames (top screen white with the text box): not investigated.
-- **Blocker: ov230.** At frame 10044, right after the intro, the static
+- **Original blocker before the experimental proposal: ov230.** At frame
+  10044, right after the intro, the static
   module's sub_02011D9C (Thumb, reached through a function pointer from the
   state runner sub_020315F0 <- sub_020313EC <- sub_020055F8 <- NitroMain)
   loads overlay 230 through sub_02034AC4 -> sub_02079264 -> FS_StartOverlay
   and then calls into it (0x021882A0 and 0x02188354, run-time dispatch,
   comparing the first result with the complement of a literal). ov230 is the
   self-modifying overlay left opaque; its five static initialisers are not
-  recompiled, so the run stops in pc_dp_overlay_sinit by name. That is the
-  end of the road for this approach on the new-game path: the overlay is
-  neither decoded nor stubbed. `PC_TRACE_OVERLAYS=1` (np_headless
-  `-e PC_TRACE_OVERLAYS=1`) prints every overlay made resident.
-- White: the same core build reaches its title (Zekrom) by frame 4500 with
-  the same overlays (10, 11, 9, 13, 228, 88, 179, 15); its new game is
-  expected to reach the same ov230 load.
+  recompiled, so the unmodified run stops in pc_dp_overlay_sinit by name.
+  The experiment below leaves the overlay opaque and changes its caller
+  instead. `PC_TRACE_OVERLAYS=1` (np_headless `-e PC_TRACE_OVERLAYS=1`)
+  prints every overlay made resident.
+- White's original core reaches its title (Zekrom) by frame 4500 with the
+  same overlays (10, 11, 9, 13, 228, 88, 179, 15).
+
+## Experimental startup proposal and runtime verification (2026-10-07)
+
+The active development build deliberately substitutes outcomes in `sub_02011D9C`; it does
+not faithfully implement overlay 230 or establish full playability.
+`pc/patch_bw_startup.py` makes the five reviewed call-site substitutions
+in Black and White's generated `ndsrec_arm9_004.s`: omit this caller's
+overlay load/unload and third call, return zero from the first check, and
+return the complement of `r1` from the second. Each four-byte Thumb BL
+becomes two two-byte instructions, preserving guest addresses. Making
+both comparisons equal would be a different, untested proposal.
+
+`pc/mk/ndsrec.mk` runs the helper after assembly emission and before
+armrec, only for `VER=black` or `VER=white`. Full-file SHA-256 guards
+accept only the reviewed original or already-patched output; unknown
+inputs fail without modification. Regeneration reapplies the same
+proposal. The two checked-in generated caller files are exact tested
+snapshots, not substitutes for this build step. No ROM bytes are changed
+and overlay 230 is not decoded.
+
+Independent isolated runs used Black ROM SHA-1
+`26ad0b9967aa279c4a266ee69f52b9b2332399a5` and White ROM SHA-1
+`bc696a0dfb448c7b3a8a206f0f8214411a039208`.
+Both wasm guests and one native core containing both games compiled and
+linked successfully. Native configuration was Release,
+`CMAKE_C_FLAGS_RELEASE="-O1 -g0 -DNDEBUG"`, `NP_BUILD_TESTS=OFF`,
+and this checkout's `tools/wasm2c_postprocess.py`; the existing guest
+module rule appends `-O2` to generated native C. Builds used `heavy.sh`
+with `-j4`, and runtime invocations used `heavy.sh --run`.
+
+Observed independently for **both** games:
+
+- New-game intro and controllable starting bedroom passed; the original
+  frame-10044 stop was passed without loading overlay 230.
+- Movement and gift interaction selected Tepig. The first battle's
+  preceding dialogue rendered, but the battle itself did not start.
+- The real X-menu SAVE operation before choosing a starter wrote a
+  524288-byte backup file. The game displayed its saved-game message.
+  A fresh process displayed CONTINUE with the saved trainer, Nuvema Town,
+  zero badges and time 0:03, and restored the bedroom.
+- Repeated map transitions are **blocked, not verified**. Trying the
+  staircase before opening the gift triggers Cheren's “Aren't you going
+  to check out the gift box? Where are you going?” story gate. Following
+  the mandatory starter sequence instead hits the battle failure below.
+
+The extended new-game input was
+`5000:start:4:60:2;5300:a:4:40:400;22000:down:12;22030:a:4:40:1000`.
+Both runs failed with exit 1 at frame **24802**, while entering the first
+battle. Black reports an unowned indirect target **0x021BBB0C**; White
+reports **0x021BBB2C**. Resident overlays are 10, 11, 18, 20, 93, 94, 95
+and 96. Separate debugger runs of the same executable locate the callers
+in overlay 93 (`ov93_021BB9D8` in Black, `ov93_021BB9F8` in White).
+The emitted overlay-93 assembly has `bx pc` at 0x021BBB08 / 0x021BBB28,
+with the following ARM veneer left as `.byte` data rather than registered
+code. This mixed-ISA translation gap is the immediate observed blocker;
+the startup patch does not repair it or replace it with another bypass.
+
+The tested proposed source SHA-256 values are:
+
+- Black: `6ac07a4b418fd9e22ca11402bc1f9341fb01718c62f73c4aea8ed9e833982b3e`
+- White: `95777aa0b21db0f416c3fd6d30220a697476bd9a1e66fee82b170fe40c533597`
+
+The runtime result demonstrates limited startup/save/reload success,
+not reliable wider-world gameplay, postbattle saves, or harmlessness of
+all omitted overlay effects. Generic `field_ready` / `map_id` headless
+statistics were not used as BW gameplay evidence; actual frames,
+independent logs, game-menu saves and fresh-process reloads were.
+
+The patches and regeneration step are integrated into the active development
+tree. The results above predate integration; no additional test runs were
+performed for publication, at the user's request.
