@@ -100,6 +100,14 @@ static u32 sRomSize;
 static int sRomFd = -1;
 #endif
 
+/* The save chip's image (the backup section below); also read through the
+ * IR chip's pass-through on the card's SPI bus. */
+static u8 *sBackupImage;
+static u32 sBackupSize;
+/* The cartridge has an IR transceiver in front of its save chip (HG/SS,
+ * Black/White: game codes starting with 'I'); see card_spi_transfer(). */
+static int sCardIr;
+
 #if defined(__wasm__)
 /* No path: the runtime opened the image before the guest started. */
 #elif defined(__3DS__)
@@ -187,6 +195,7 @@ int pc_rom_init(void)
     /* HW_CARD_ROM_HEADER_SIZE, not sizeof header: see the comment in the
      * file-backed pc_rom_init below. */
     memcpy((void *)HW_ROM_HEADER_BUF, header, HW_CARD_ROM_HEADER_SIZE);
+    sCardIr = header[0x0C] == 'I';
 #if defined(ARMREC_TWL)
     card_firmware_words();
     pc_pxi_set_responder(PXI_FIFO_TAG_FS, card_fs_responder);
@@ -225,6 +234,7 @@ int pc_rom_init(void)
      * 0xA0-byte overrun this used to do was invisible; it would stop being
      * invisible the first time anything re-opened the cartridge. */
     memcpy((void *)HW_ROM_HEADER_BUF, header, HW_CARD_ROM_HEADER_SIZE);
+    sCardIr = header[0x0C] == 'I';
     fprintf(stderr, "pokeplatinum-pc: rom: %s\n", path);
     return 0;
 }
@@ -429,12 +439,114 @@ static u32 card_romctrl(void)
     return ctrl;
 }
 
+/*
+ * The card's SPI bus (AUXSPICNT 0x040001A0, AUXSPIDATA 0x040001A2), where
+ * the cartridge's IR transceiver sits in front of the save chip. Only on a
+ * cartridge that has one (game code 'I...'); elsewhere the data register
+ * stays the plain register it was, because the save chip itself is reached
+ * through card requests (card_backup_request), never this bus.
+ *
+ * A store to AUXSPIDATA, with the bus enabled in serial mode, clocks one
+ * byte out and the reply in; the transfer has no timing here, so busy
+ * (AUXSPICNT bit 7) never shows. Chip select stays asserted after a byte
+ * while AUXSPICNT bit 6 (hold) is set and drops after a byte sent without
+ * it, or when the bus is disabled. The first byte of a selection is the IR
+ * chip's command:
+ *
+ *   0x08  the chip's ID: every later byte answers 0xAA. HG/SS check it on
+ *         every field load (fieldmap.c ov01_021E662C), Black/White in ov231.
+ *   0x00  pass-through: the rest of the selection is the save chip's own
+ *         command, of which READ (0x03, 24-bit address) and RDSR (0x05,
+ *         never busy) are answered from the image. Writes go through card
+ *         requests on these SDKs, so no other command reaches here.
+ *
+ * Any other byte (the IR send/receive commands, with no Pokewalker or
+ * other console in front of the window) answers an undriven bus, 0xFF.
+ */
+#define PC_AUXSPICNT      ARM_CARD_BASE
+#define PC_AUXSPIDATA     (ARM_CARD_BASE + 0x02u)
+#define PC_AUXSPI_HOLD    0x0040u
+#define PC_AUXSPI_SERIAL  0x2000u
+#define PC_AUXSPI_ENABLE  0x8000u
+
+enum { IR_DESELECTED, IR_ID, IR_FLASH, IR_UNDRIVEN };
+static int sIrState;
+static u8 sFlashCmd;
+static u32 sFlashPos;   /* bytes of the flash command clocked so far */
+static u32 sFlashAddr;
+
+static u8 card_flash_byte(u8 out)
+{
+    u32 pos = sFlashPos++;
+
+    if (pos == 0) {
+        sFlashCmd = out;
+        sFlashAddr = 0;
+        return 0xFF;
+    }
+    switch (sFlashCmd) {
+    case 0x03:
+        if (pos <= 3) {
+            sFlashAddr = (sFlashAddr << 8) | out;
+            return 0xFF;
+        }
+        if (sBackupImage == NULL || sBackupSize == 0) {
+            return 0xFF;
+        }
+        return sBackupImage[sFlashAddr++ % sBackupSize];
+    case 0x05:
+        return 0x00;
+    default:
+        return 0xFF;
+    }
+}
+
+static void card_spi_transfer(void)
+{
+    u16 cnt = *(volatile u16 *)(uintptr_t)PC_AUXSPICNT;
+    u8 out = *(volatile u8 *)(uintptr_t)PC_AUXSPIDATA;
+    u8 in;
+
+    if ((cnt & (PC_AUXSPI_ENABLE | PC_AUXSPI_SERIAL))
+        != (PC_AUXSPI_ENABLE | PC_AUXSPI_SERIAL)) {
+        return;
+    }
+    switch (sIrState) {
+    case IR_DESELECTED:
+        sIrState = out == 0x08 ? IR_ID : out == 0x00 ? IR_FLASH : IR_UNDRIVEN;
+        sFlashPos = 0;
+        in = 0xFF;
+        break;
+    case IR_ID:
+        in = 0xAA;
+        break;
+    case IR_FLASH:
+        in = card_flash_byte(out);
+        break;
+    default:
+        in = 0xFF;
+        break;
+    }
+    *(volatile u16 *)(uintptr_t)PC_AUXSPIDATA = in;
+    if (!(cnt & PC_AUXSPI_HOLD)) {
+        sIrState = IR_DESELECTED;
+    }
+}
+
 void armrec_card_store(uint32_t a, uint32_t v, int size)
 {
     switch (size) {
     case 4: *(volatile u32 *)(uintptr_t)a = v; break;
     case 2: *(volatile u16 *)(uintptr_t)a = (u16)v; break;
     default: *(volatile u8 *)(uintptr_t)a = (u8)v; break;
+    }
+    if (sCardIr) {
+        if (a <= PC_AUXSPIDATA && a + (u32)size > PC_AUXSPIDATA) {
+            card_spi_transfer();
+        } else if (a <= PC_AUXSPICNT + 1u && a + (u32)size > PC_AUXSPICNT + 1u
+                   && !(*(volatile u16 *)(uintptr_t)PC_AUXSPICNT & PC_AUXSPI_ENABLE)) {
+            sIrState = IR_DESELECTED;
+        }
     }
     /* The start bit is ROMCTRL's top byte. */
     if (a <= PC_CARD_ROMCTRL + 3u && a + (u32)size > PC_CARD_ROMCTRL + 3u) {
@@ -518,8 +630,6 @@ static void card_firmware_words(void)
  */
 #include <nitro/card/backup.h>
 
-static u8 *sBackupImage;
-static u32 sBackupSize;
 #if !defined(__wasm__)
 static char sSavePath[PATH_MAX];
 
