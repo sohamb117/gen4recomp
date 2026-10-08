@@ -19,7 +19,8 @@
 # Diamond and Pearl into $NP_DP_CORE (default build/core-dp), Platinum into
 # $NP_PLAT_CORE (default build/core-plat), Ruby/Sapphire/Emerald into
 # $NP_RSE_CORE (default build/core-rse), configured on first use. Each
-# build runs under tools/heavy.sh with -j $NP_JOBS (default 4).
+# build runs under tools/heavy.sh with -j $NP_JOBS (default 4). With
+# NP_MIN_FREE_GB=N, a build step finding less than N GiB free fails instead.
 #
 # Updating hashes is deliberate: --update re-runs the selected cases (all by
 # default), writes the new hashes into expected.txt and appends one history
@@ -80,7 +81,7 @@ while [ $# -gt 0 ]; do
         echo "regress: --inputs dp|plat|rse" >&2
         exit 2
         ;;
-    *) sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
+    *) sed -n '2,27p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
     esac
 done
 if [ $update = 1 ] && [ -z "$reason" ]; then
@@ -220,6 +221,11 @@ if [ $build = 1 ]; then
     blog=$(mktemp "${TMPDIR:-/tmp}/regress-build.XXXXXX")
     step() { # step LABEL CMD...: quiet unless it fails
         echo "build: $1"
+        if [ -n "${NP_MIN_FREE_GB:-}" ] &&
+            [ "$(df -k . | awk 'NR == 2 { print $4 }')" -lt $((NP_MIN_FREE_GB * 1024 * 1024)) ]; then
+            echo "FAIL build: less than $NP_MIN_FREE_GB GiB free"
+            exit 1
+        fi
         shift
         if ! "$@" >>"$blog" 2>&1; then
             tail -n 30 "$blog"

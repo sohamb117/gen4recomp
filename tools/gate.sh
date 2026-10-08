@@ -2,6 +2,7 @@
 # tools/gate.sh: the regression gate for a branch, only as heavy as its diff.
 #
 #   tools/gate.sh [--dry-run] [--base REF] [BRANCH]
+#   tools/gate.sh --refresh-cores [--base REF]
 #
 # The changes are `git diff --name-only BASE...BRANCH` (BASE main, BRANCH
 # HEAD by default) and, when BRANCH is checked out here, its uncommitted and
@@ -26,21 +27,71 @@
 #   tests/e2e/, tests/gameplay/ or a *.py.
 #
 # Anything else (shell/, features/, docs/, ...) needs nothing more.
-# --dry-run prints the plan without running it. Exit status: 0 all passed,
-# 1 a failure, 2 usage.
+# --dry-run prints the plan without running it.
+#
+# --refresh-cores brings the gate cores up to BASE after core inputs change
+# there: NP_GATE_CORES's core-* and core-*.rev link into another checkout's
+# build/ (on this machine nativeplat-integrate, which no one works in). That
+# checkout is moved to BASE (detached; refused with tracked changes), and its
+# regress.sh rebuilds, incrementally, each core whose inputs differ from its
+# .rev's, with NP_MIN_FREE_GB=3 (a build step under 3 GiB free fails), then
+# stamps it and runs its cases. Exit status: 0 all passed, 1 a failure,
+# 2 usage.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$root"
-base=main branch=HEAD dry=0
+base=main branch=HEAD dry=0 refresh=0
 while [ $# -gt 0 ]; do
     case $1 in
     --dry-run) dry=1; shift ;;
     --base) base=$2; shift 2 ;;
-    -*) sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
+    --refresh-cores) refresh=1; shift ;;
+    -*) sed -n '2,39p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
     *) branch=$1; shift ;;
     esac
 done
+gates=${NP_GATE_CORES:-$HOME/Library/Caches/nativeplat-gate-cores}
+
+if [ $refresh = 1 ]; then
+    host=$(cd -P "$gates/core-dp/../.." 2>/dev/null && pwd) &&
+        git -C "$host" rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
+        { echo "gate: $gates/core-dp is not in a checkout's build/" >&2; exit 2; }
+    if [ "$(cd -P "$host" && pwd)" = "$(pwd -P)" ]; then
+        echo "gate: the gate cores are this checkout's own; refresh them from a checkout of their own" >&2
+        exit 2
+    fi
+    if [ -n "$(git -C "$host" status --porcelain --untracked-files=no)" ]; then
+        echo "gate: $host has tracked changes; not moving it" >&2
+        exit 1
+    fi
+    git -C "$host" checkout -q --detach "$base"
+    rev=$(git -C "$host" rev-parse HEAD)
+    stale=" "
+    for grp in dp plat rse; do
+        r=$(cat "$gates/core-$grp.rev" 2>/dev/null || true)
+        # shellcheck disable=SC2046 # pathspec word list
+        if [ -n "$r" ] && git -C "$host" diff --quiet "$r" "$rev" -- $("$host/tests/dp/regress.sh" --inputs $grp); then
+            echo "gate: core-$grp: built from ${r:0:9}, its inputs unchanged since"
+        else
+            stale="$stale$grp "
+        fi
+    done
+    only=()
+    while read -r name game rest; do
+        case $name in '' | '#'*) continue ;; esac
+        case $game in diamond | pearl) grp=dp ;; platinum) grp=plat ;; *) grp=rse ;; esac
+        case $stale in *" $grp "*) only+=(--only "$name") ;; esac
+    done <"$host/tests/dp/expected.txt"
+    if [ ${#only[@]} = 0 ]; then
+        echo "gate: $gates is up to date with $base ($(git -C "$host" rev-parse --short HEAD))"
+        exit 0
+    fi
+    echo "gate: rebuilding$stale in $host at $base ($(git -C "$host" rev-parse --short HEAD))"
+    cd "$host"
+    NP_GATE_CORES= NP_MIN_FREE_GB=${NP_MIN_FREE_GB:-3} exec tests/dp/regress.sh "${only[@]}"
+fi
+
 head=$(git rev-parse --verify --quiet "$branch^{commit}") || { echo "gate: no commit $branch" >&2; exit 2; }
 mb=$(git merge-base "$base" "$head")
 here=0
@@ -238,7 +289,7 @@ fi
 if [ -n "$cases" ]; then
     only=()
     for c in $cases; do only+=(--only "$c"); done
-    NP_GATE_CORES=${NP_GATE_CORES:-$HOME/Library/Caches/nativeplat-gate-cores} tests/dp/regress.sh "${only[@]}" ||
+    NP_GATE_CORES=$gates tests/dp/regress.sh "${only[@]}" ||
         status=1
 fi
 exit $status
