@@ -76,6 +76,12 @@ LAYOUT = {
         flags=0x1220, flags_bytes=0x1340 - 0x1220,  # flags[FLAGS_COUNT] (global.h:701)
         vars=0x1340, vars_count=(0x1540 - 0x1340) // 2,  # vars[VARS_COUNT] (global.h:702)
         game_stats=0x1540, game_stats_count=50,     # gameStats[NUM_GAME_STATS] (global.h:703, game_stat.h:54)
+        # secretBases[SECRET_BASES_COUNT 20] (global.h:705; struct SecretBaseRecord global.h:154-169: 0xA0 bytes,
+        # secretBaseId +0, decorations[16] +0x12, decorationPos[16] +0x22; [0] is the player's own base)
+        secret_bases=0x1A08, secret_base_size=0xA0, secret_base_count=20,
+        # the decoration inventories decorDesk..decorCushion (global.h:708-715)
+        decor=[("desk", 0x26A0, 10), ("chair", 0x26AA, 10), ("plant", 0x26B4, 10), ("ornament", 0x26BE, 30),
+               ("mat", 0x26DC, 30), ("poster", 0x26FA, 10), ("doll", 0x2704, 40), ("cushion", 0x272C, 10)],
     ),
 }
 # Common SaveBlock1 / SaveBlock2 fields (same offsets in both decomps).
@@ -1021,6 +1027,15 @@ def dump(rom, sav):
             dict(species=m["species"], species_name=rom.species_name(m["species"]), level=m["level"],
                  nickname=m["nickname"]) for m in teams[-1]]}}
     out["game_stats"] = [sav.u32_enc(lay["game_stats"] + 4 * i) for i in range(lay["game_stats_count"])]
+    if "secret_bases" in lay:  # Ruby/Sapphire
+        out["secret_bases"] = []
+        for i in range(lay["secret_base_count"]):
+            off = lay["secret_bases"] + i * lay["secret_base_size"]
+            if sb1[off]:
+                out["secret_bases"].append({"index": i, "id": sb1[off],
+                                            "decorations": list(sb1[off + 0x12:off + 0x22]),
+                                            "positions": list(sb1[off + 0x22:off + 0x32])})
+        out["decorations"] = {name: list(sb1[off:off + n]) for name, off, n in lay["decor"]}
     return out
 
 

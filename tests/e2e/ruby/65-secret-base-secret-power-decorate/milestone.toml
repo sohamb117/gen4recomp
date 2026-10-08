@@ -360,6 +360,8 @@ save = [
   'any(m["id"] == 290 for p in s["party"] if p["species"] == 283 for m in p["moves"])',
   's["trainer"]["money"] == 7000',
   's["location"]["map"] == 25 << 8 | 17',
+  's["secret_bases"][0]["index"] == 0 and s["secret_bases"][0]["decorations"][0] == 1',  # the player's base (secretBases[0]) holds DECOR_SMALL_DESK (include/constants/decorations.h:5)
+  's["decorations"]["desk"][0] == 1',  # the desk in the decorDesk inventory (include/global.h:708)
 ]
 
 [expect.vars]
