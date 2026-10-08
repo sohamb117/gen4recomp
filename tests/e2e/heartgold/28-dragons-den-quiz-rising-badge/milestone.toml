@@ -11,12 +11,13 @@ refs = [
   "zone_event 086_T30 warp 2 (672,132) -> MAP_DRAGONS_DEN_ENTRANCE; zone_event 122_D44R0101 warp 1 (6,5) -> MAP_DRAGONS_DEN (28,6)",
   "zone_event 239_D44R0102 warp 2 (28,50) -> MAP_DRAGONS_DEN_SHRINE (6,19)",
   "scr_seq_0112_D44R0103_hdr.s (OnFrame VAR_UNK_40C3 0 -> 003)",
-  "scr_seq_0112_D44R0103.s:57-120 (five MenuInitStdGmm questions; an item with value 1 is wrong -> _0310 FLAG_FAILED_DRAGONS_DEN_QUIZ): Q1 items 280/281/282 = 0/1/0, Q2 283/284/285 = 0/0/1, Q3 286/287/288 = 1/0/0, Q4 289/290/291 = 0/1/0, Q5 292/293/294 = 1/0/0",
+  "scr_seq_0112_D44R0103.s:57-120 (five MenuInitStdGmm 1, 1, 0, 0 questions: cursor on item 0, not cancellable; an item with value 1 is wrong -> _0310 FLAG_FAILED_DRAGONS_DEN_QUIZ): Q1 items 280/281/282 = 0/1/0, Q2 283/284/285 = 0/0/1, Q3 286/287/288 = 1/0/0, Q4 289/290/291 = 0/1/0, Q5 292/293/294 = 1/0/0",
+  "src/scrcmd_c.c:992-1000 (sub_02041770: x, y, initCursorPos, cancellable); asm/overlay_01_021EDAFC.s:1303-1330 (ov01_021EE49C: ListMenu_ProcessInput; B does nothing on a menu that cannot be cancelled, the list does not wrap)",
   "scr_seq_0112_D44R0103.s:121-192 (Clair: GiveBadge BADGE_RISING :153, FLAG_UNK_0EA, VAR_UNK_40C4 1, VAR_UNK_40C3 1, VAR_UNK_407B 1, VAR_SCENE_ELMS_LAB 8, ClearFlag FLAG_HIDE_ELMS_LAB_FRIEND, VAR_SCENE_NEW_BARK_EAST_EXIT 1)",
   "zone_event 239_D44R0102 coord 0 (27,14) w3 VAR_UNK_40C4 1 -> 000 (TM59, FLAG_GOT_TM59_FROM_CLAIR, VAR_UNK_40C4 2, scr_seq_0111_D44R0102.s:125-181)",
   "scr_seq_0941_T30_hdr.s (OnFrame VAR_UNK_407B 1 -> 007: VAR_UNK_407B 2)",
 ]
-notes = "Quiz answers: the first item is right in Q1, Q2 and Q4, wrong in Q3 and Q5 (pick the second there) [INFERENCE: the menu cursor opens on the first item; DOWN then A]. The den's water route to the shrine needs Surf (and Whirlpool? not in these events) [INFERENCE: walk_to surf = true]."
+notes = "Quiz answers (0-based items): Q1 0 or 2, Q2 0 or 1, Q3 1 or 2, Q4 0 or 2, Q5 1 or 2; the plan takes item 0 or item 2 (DOWN x2: the list does not wrap, so extra DOWNs stay on the last item). B advances the Elder's messages but does nothing on the menus (not cancellable), so generous B runs before each A are safe: the intro (msgs 00000/00001) takes 7 presses, each question after a right answer 1 (msg 00009, then the next question). The den's water route to the shrine needs Surf only (no whirlpool tiles in MAP_DRAGONS_DEN: tools/hg_map.py) [INFERENCE: walk_to surf = true]."
 
 [start]
 from = "prev"
@@ -55,71 +56,77 @@ note = "across the den's water to the shrine (warp 2); Ace Trainers Kobe/Piper, 
 do = "wait_map"
 map = "MAP_DRAGONS_DEN_SHRINE"
 
-# PHASE2: the quiz menus: confirm the cursor opens on the first item and that A/DOWN+A pick as below (dump each menu).
 [[step]]
 do = "press"
-keys = "A"
-times = 3
-gap = 40
-note = "the Elder's intro to Q1 (msg 00000/00001) [INFERENCE: count]"
+keys = "B"
+times = 10
+gap = 30
+note = "the Elder's walk-up and intro to Q1 (msg 00000, 00001: 7 presses); the extra B's land on the open menu, which ignores B"
 
 [[step]]
 do = "press"
 keys = "A"
-note = "Q1: first item (value 0)"
+note = "Q1: item 0 (value 0)"
+
+[[step]]
+do = "press"
+keys = "B"
+times = 4
+gap = 30
+note = "msg 00009, then Q2 (msg 00002)"
 
 [[step]]
 do = "press"
 keys = "A"
-times = 2
-gap = 40
-note = "'...' then Q2 text [INFERENCE: count]"
+note = "Q2: item 0 (value 0)"
 
 [[step]]
 do = "press"
-keys = "A"
-note = "Q2: first item (value 0)"
-
-[[step]]
-do = "press"
-keys = "A"
-times = 2
-gap = 40
+keys = "B"
+times = 4
+gap = 30
+note = "msg 00009, then Q3 (msg 00003)"
 
 [[step]]
 do = "press"
 keys = "DOWN"
-note = "Q3: second item (value 0; the first is wrong)"
-
-[[step]]
-do = "press"
-keys = "A"
-
-[[step]]
-do = "press"
-keys = "A"
 times = 2
-gap = 40
+gap = 10
 
 [[step]]
 do = "press"
 keys = "A"
-note = "Q4: first item (value 0)"
+note = "Q3: item 2 (value 0; item 0 is wrong)"
+
+[[step]]
+do = "press"
+keys = "B"
+times = 4
+gap = 30
+note = "msg 00009, then Q4 (msg 00004)"
 
 [[step]]
 do = "press"
 keys = "A"
-times = 2
-gap = 40
+note = "Q4: item 0 (value 0)"
+
+[[step]]
+do = "press"
+keys = "B"
+times = 4
+gap = 30
+note = "msg 00009, then Q5 (msg 00005)"
 
 [[step]]
 do = "press"
 keys = "DOWN"
-note = "Q5: second item (value 0; the first is wrong)"
+times = 2
+gap = 10
 
 [[step]]
 do = "press"
 keys = "A"
+note = "Q5: item 2 (value 0; item 0 is wrong)"
 
 [[step]]
 do = "advance_text"

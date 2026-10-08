@@ -16,9 +16,11 @@ refs = [
   "zone_event 005_D18R0101 warp 1 (22,16) -> MAP_BURNED_TOWER_B1F 0 (23,16)",
   "zone_event 204_D18R0102 coord 0 (20,16) h2 VAR_UNK_40A1 0 -> 000",
   "scr_seq_0024_D18R0102.s:23-136 (beasts flee, Eusine; FLAG_HIDE_BURNED_TOWER_*, ClearFlag FLAG_HIDE_CIANWOOD_SUICUNE, VAR_UNK_40A1 1, VAR_UNK_4076 1, VAR_UNK_4079 2, FLAG_UNK_247, ClearFlag FLAG_HIDE_ECRUTEAK_OLD_MAN)",
-  "zone_event 204_D18R0102 warps 0/1 (23,16)/(23,15) -> MAP_BURNED_TOWER_1F 1",
+  "zone_event 204_D18R0102 warps 0/1 (23,16) tile 0x3C / (23,15) tile 0x3D -> MAP_BURNED_TOWER_1F 1 (22,16): standing on 0x3C and pushing north warps (src/field/field_control.c:500-505)",
+  "zone_event 005_D18R0101 warp 1 (22,16): tile 0x3E ladder-down, a step-on warp (src/field/field_control.c:743-745; tools/hg_map.py MAP_BURNED_TOWER_1F --hex)",
+  "scr_seq_0024_D18R0102.s:80-125 (Eusine shown for the scene, then HidePerson + FLAG_HIDE_BURNED_TOWER_B1F_EUSINE: the ladder (23,16) is free)",
 ]
-notes = "Firebreathers Richard (6,9) and Ned (22,8) are off the direct line. Rival's Croconaw lv22: boost. B1F after the scene: the way back up is the B1F ladder warps (23,15/16) -> 1F (22,16) [INFERENCE: the GSC fall-through hole is not a warp event here; the 1F (22,16) warp is how the player reaches B1F]."
+notes = "Firebreathers Richard (6,9) and Ned (22,8) are off the direct line. Rival's Croconaw lv22: the boosted Scyther (10) behind a fainted lead (send = best). 1F (22,16) is a ladder-down tile (0x3E): stepping on it drops to B1F (23,16); there is no scripted fall. The player ends the beasts scene at (19,16) or (19,17) [INFERENCE: the coord's two tiles, walked onto from the east]; the way back up is the B1F ladder (23,16) (0x3C) pushed north, i.e. walk_to (23,15) from (23,17)."
 
 [start]
 from = "prev"
@@ -61,17 +63,17 @@ shot = "rival-burned-tower"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "TRAINER_RIVAL_SILVER_11: GASTLY 20, MAGNEMITE 18, ZUBAT 20, CROCONAW 22"
 
 [[step]]
 do = "advance_text"
 
-# PHASE2: confirm how the player reaches B1F (warp (22,16) or a scripted fall after the rival) with the probe.
 [[step]]
 do = "walk_to"
 x = 22
 z = 16
-note = "-> B1F (warp 1) [INFERENCE]"
+note = "1F (22,16) 0x3E ladder-down: stepping on it warps to B1F (23,16) (field_control.c:743-745)"
 
 [[step]]
 do = "wait_map"
@@ -92,7 +94,8 @@ shot = "legendary-beasts"
 do = "walk_to"
 x = 23
 z = 15
-note = "B1F ladder (warp 1) -> 1F"
+via = [[23, 17]]
+note = "from (23,17) up onto the 0x3C ladder (23,16) and north into (23,15): the ladder warp -> 1F (22,16) (field_control.c:500-505)"
 
 [[step]]
 do = "wait_map"

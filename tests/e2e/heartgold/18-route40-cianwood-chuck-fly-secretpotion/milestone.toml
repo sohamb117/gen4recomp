@@ -19,12 +19,14 @@ refs = [
   "include/constants/items.h:883 (ITEM_SECRETPOTION 464)",
   "zone_event 072_T24 coord 0 (176,334) VAR_UNK_4076 1 -> Suicune/Eusine (scr_seq_0875_T24.s:99-157; north end, not walked)",
   "src/field_move.c:250-254 (Surf needs BADGE_FOG), :217-221 (Fly needs BADGE_STORM)",
+  "land data (tools/hg_world.py grid 160 250 300 383, via tools/hg_map.py): Olivine's west exit (252,262..266), Route 40's beach to (235,280) (0x17 shallow), sea 0x15 from (235,281); Route 41 sea; Cianwood's east beach sand 0x21 (171..191,349); the gym door (172,357) 0x69 with sand (172,358) below; whirlpools 0x11 at (214..216,331..333), (247..249,346..348), (203..205,360..362), (230..232,374..376), not on the route",
 ]
-notes = "Surf needs the Fog Badge and a Surf carrier (teach HM03 behind the lead: boost party-move). Chuck: Poliwrath lv31 (Water/Fighting) - the lead wants a Psychic/Flying move; boost. With Morty, Chuck and Jasmine VAR_MIDGAME_BADGES reaches 3 at the third of them (ROCKET_TAKEOVER 1). Fly is not used: the trip back surfs Route 41/40 (Fly through the touch menu is unverified on HG/SS)."
+notes = "Surf needs the Fog Badge and a Surf carrier: boost.recipe adds PELIPPER (Surf, Fly) behind the party. Chuck: Poliwrath lv31 (Water/Fighting) - the lead wants a Psychic/Flying move (Pelipper's Fly behind a fainted lead). With Morty, Chuck and Jasmine VAR_MIDGAME_BADGES reaches 3 at the third of them (ROCKET_TAKEOVER 1). The via waypoints come from the static land data; walk_to plans each leg on the probe (Swimmers on Routes 40/41 that spot the player are fought)."
 
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
 frames = 45000
@@ -38,14 +40,13 @@ z = 17
 do = "wait_map"
 map = "MAP_OLIVINE"
 
-# PHASE2: the Route 40/41 surf route to Cianwood: the first water tile off Olivine's west shore and the landing on
-# Cianwood's east beach; check walk_to surf = true crosses the sea (whirlpools near Whirl Islands avoided).
 [[step]]
 do = "walk_to"
 x = 172
 z = 358
 surf = true
-note = "Olivine west, Route 40 and 41 by Surf, to Cianwood in front of the gym (warp 0 (172,357)) [INFERENCE: (172,358)]"
+via = [[252, 264], [235, 280], [233, 295], [228, 318], [224, 325], [192, 325], [191, 340], [189, 349]]
+note = "Olivine west exit, Route 40's beach (235,280) and its sea, Route 41 west along z 325 (clear of the Whirl Islands whirlpools), Cianwood's east beach (189,349), to the gym door's front tile (sand; the door 0x69 is (172,357)): tools/hg_world.py route 301 264 172 358 --surf"
 
 [[step]]
 do = "wait_map"
@@ -125,7 +126,8 @@ do = "walk_to"
 x = 301
 z = 264
 surf = true
-note = "back by Surf (Route 41/40) to Olivine, in front of the Lighthouse (warp 3 (301,263))"
+via = [[189, 349], [191, 340], [192, 325], [224, 325], [228, 318], [233, 295], [235, 280], [252, 264]]
+note = "back by Surf the same way (tools/hg_world.py route 179 371 301 264 --surf) to Olivine, in front of the Lighthouse (warp 3 (301,263)); the boost's Pelipper knows Fly, which the chain first uses in 20"
 
 [[step]]
 do = "wait_map"

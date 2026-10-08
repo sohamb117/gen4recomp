@@ -14,7 +14,7 @@ refs = [
   "TRAINER_LEADER_BUGSY_BUGSY (21, include/constants/trainers.h:26): SCYTHER 17, KAKUNA 15, METAPOD 15",
   "zone_event 071_T23 object 1 obj_T23_rocketm_2 (405,472) FLAG_UNK_1A9: the Rocket at the gym door, hidden by the well (scr_seq_0060_D26R0102.s:58)",
 ]
-notes = "Ember is super-effective on the whole team. The switch tiles' scripts (002..013) were not traced: which tiles open the path is unknown."
+notes = "Ember is super-effective on the whole team. Puzzle from src/field/gymmick/azalea.c: coords 0-11 are Spinarak stations (k = coord index); a ride needs a Spinarak at the station and follows sSpinarakRoutes_Froms[k][switches] (azalea.c:149-246); stations 0-2/6-8 ride forward (step on from the south), 3-5/9-11 backwards (step on from the north). Bugsy's island holds station 10, reached only from station 6 with switches 3 or station 7 with switches 2. Played: 0 -> 4, 7 -> 9 (switches 0), switch 0 at (4,7), 9 -> 6, switch 1 at (2,18), 6 -> 10. [INFERENCE: steps' single-tile moves onto a station start the ride and the probe settles after it]."
 
 [start]
 from = "prev"
@@ -52,8 +52,66 @@ note = "entrance hall -> the gym (warp 1)"
 do = "wait_map"
 map = "MAP_AZALEA_GYM"
 
-# PHASE2: the Azalea Gym route: trace scr_seq_0869_T23GYM0102.s 002..013 (the switch tiles) and probe_map the floor to
-# find which switches bridge the way to Bugsy (9,5); then replace this walk with walk_to/steps through them.
+[[step]]
+do = "walk_to"
+x = 3
+z = 33
+note = "bottom hall; stations sit at (3|9|15,32) with the Spinaraks on the row above (src/field/gymmick/azalea.c:134-147); AzaleaGymInit resets spiders 0,1,2,7 and switches 0 on every entry (src/gymmick_init.c:92-102, OnTransition 016)"
+
+[[step]]
+do = "steps"
+route = [[3, 32]]
+note = "station 0 (coord 0 -> AzaleaGymSpinarak 0): route 1to5 rides to (9,24), the player steps off north to (9,23) on the centre island (azalea.c:60-69,149-154,592-653)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 18
+note = "centre island; Bug Catcher Benny (7,20) faces east, sight 4"
+
+[[step]]
+do = "steps"
+route = [[9, 17]]
+note = "station 7 with switches 0: route 8to10 -> station 9, off at (3,8) on the top-left island (azalea.c:107-116,198-203); the Twins (2,7)/(3,7) face south, sight 1"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+face = "up"
+interact = true
+note = "switch 0 (bg (4,7) -> 014 AzaleaGymSwitch 0, dir 4 any facing): switches 0 -> 1 (azalea.c:291-312)"
+
+[[step]]
+do = "steps"
+route = [[3, 8], [3, 9]]
+note = "station 9 with switches 1: route 7to10 backwards -> station 6, off south at (3,18) on the left-middle island (azalea.c:91-98,205-210 -> From10[1], 358-367)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 18
+face = "left"
+interact = true
+note = "switch 1 (bg (2,18) -> 015 AzaleaGymSwitch 1): switches 1 -> 3"
+
+[[step]]
+do = "steps"
+route = [[3, 17]]
+note = "station 6 with switches 3: route 7to11 -> station 10, off north at (9,8) on Bugsy's island (azalea.c:100-105,191-196)"
+
+[[step]]
+do = "wait_field"
+
 [[step]]
 do = "talk_to"
 id = 5
@@ -71,6 +129,54 @@ note = "TRAINER_LEADER_BUGSY_BUGSY: SCYTHER 17, KAKUNA 15, METAPOD 15"
 do = "advance_text"
 shot = "hive-badge"
 note = "Hive Badge, TM89 (scr_seq_0869_T23GYM0102.s:83-93)"
+
+[[step]]
+do = "steps"
+route = [[9, 9]]
+note = "out, switches 3: station 10 backwards (route 7to11, From11[3]) -> station 6, off at (3,18)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 18
+face = "left"
+interact = true
+note = "switch 1: 3 -> 1"
+
+[[step]]
+do = "steps"
+route = [[3, 17]]
+note = "station 6 with switches 1: route 7to10 -> station 9, off at (3,8)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+face = "up"
+interact = true
+note = "switch 0: 1 -> 0"
+
+[[step]]
+do = "steps"
+route = [[3, 8], [3, 9]]
+note = "station 9 with switches 0: route 8to10 backwards -> station 7, off at (9,18)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "steps"
+route = [[9, 23], [9, 24]]
+note = "station 4 (Spinarak 0 parked there by the first ride): route 1to5 backwards -> station 0, off south at (3,33)"
+
+[[step]]
+do = "wait_field"
 
 [[step]]
 do = "walk_to"

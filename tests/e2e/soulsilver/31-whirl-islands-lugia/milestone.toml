@@ -11,16 +11,18 @@ estimate = 45000
 refs = [
   "scr_seq_0034_D23R0106.s:84-88 (SS: ITEM_SILVER_WING, FLAG_UNK_094)",
   "scr_seq_0928_T27R0501.s:813-816,872-874 (SS: ITEM_TIDAL_BELL, FLAG_UNK_104, ClearFlag FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS)",
-  "zone_event 092_W41 warps 0-3 (208,341) (211,370) (237,340) (241,372) -> MAP_WHIRL_ISLANDS_1F 3/5/0/9",
-  "zone_event 118_D40R0101 warps 1/2/4/6/7/8 -> MAP_WHIRL_ISLANDS_B1F; zone_event 228_D40R0102 warp 4 (31,49) -> MAP_WHIRL_ISLANDS_B2F 0 (27,28), warp 11 (54,43) -> B2F 2",
+  "zone_event 092_W41 warps 0-3 (208,341) (211,370) (237,340) (241,372) -> MAP_WHIRL_ISLANDS_1F 3/5/0/9; whirlpools 0x11 (collision bit) at (214..216,331..333), (247..249,346..348), (203..205,360..362), (230..232,374..376) cut every entrance off: tools/hg_world.py route 272 258 237 340 --surf finds no route, route 248 345 237 340 --surf does",
+  "tools/hg_world.py fly: MAP_OLIVINE fly point cursor x 8..9 y 7..8, lands (272,258); route 272 258 248 349 --surf: corners (252,258) (252,266) (250,266) (250,335) (251,335) (251,344) (252,344) (252,346) (250,346) (250,349) (248,349)",
+  "zone_event 118_D40R0101 warp 0 (37,25) <- Route 41 (237,340); warp 2 (56,9) 0x3E -> MAP_WHIRL_ISLANDS_B1F 7 (73,8); zone_event 228_D40R0102 warp 11 (54,43) 0x3E -> MAP_WHIRL_ISLANDS_B2F 2 (32,14) (warp 4 (31,49) -> B2F 0 (27,28) is a dead end); ladder-down 0x3E warps when stepped onto (src/field/field_control.c:743-745)",
   "zone_event 229_D40R0104 object 0 obj_D40R0104_bozu (36,30) -> 000; scr_seq_0103_D40R0104.s:31-62 (FLAG_UNK_094 -> ShowLegendaryWing 1, FLAG_UNK_106)",
-  "zone_event 229_D40R0104 warp 5 (31,43) -> MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE (16,38)",
+  "zone_event 229_D40R0104 warp 5 (31,43) 0x6E -> MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE 0 (16,38)",
   "zone_event 230_D40R0107 coord 0 (16,36) VAR_UNK_40FA 1 -> 005 (Tidal Bell scene, FLAG_UNK_10B, VAR_UNK_40FA 2, scr_seq_0104_D40R0107.s:116-446)",
-  "zone_event 230_D40R0107 object 5 obj_D40R0107_lug_obj01 (16,17) -> 000",
+  "zone_event 230_D40R0107 object 5 obj_D40R0107_lug_obj01 (16,17) -> 000, on the water: faced from (16,18) (tools/hg_map.py MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE)",
   "scr_seq_0104_D40R0107.s:66-114 (WildBattle 249 at 45 in SS (70 in HG); outcome 2/3 -> WhiteOut; else FLAG_UNK_109, VAR_SCENE_NEW_BARK_EAST_EXIT 3, FLAG_HIDE_NEW_BARK_FRIEND/MARILL/FRIEND_2, FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS; caught -> FLAG_CAUGHT_LUGIA)",
-  "src/field_move.c:604-608 (Whirlpool needs BADGE_GLACIER); HM05 from scr_seq_0090_D35R0103.s:694",
+  "src/field_move.c:604-608 (Whirlpool needs BADGE_GLACIER); HM05 from scr_seq_0090_D35R0103.s:694 (milestone 21)",
+  "src/battle/overlay_12_0224E4FC.c:2716-2792 (CantEscape: trapping abilities only, no legendary rule)",
 ]
-notes = "SS Lugia is lv45 (scr_seq_0104_D40R0107.s:75-82). auto_battle knocks it out (the 'won' outcome progresses). The Whirl Islands floor route (which Route 41 entrance and which 1F/B1F warps lead to B1F (31,49)) is not in the event data alone."
+notes = "SS Lugia is lv45 (scr_seq_0104_D40R0107.s:75-82). Every outcome but a loss or draw progresses the story (outcome 2/3 -> WhiteOut; won, caught or fled -> FLAG_UNK_109 and the rest), so the battle flees (auto_battle flee = true, then it fights) [INFERENCE: the run succeeds on the speed roll]. Fly to Olivine, Surf south down Route 40/41 to the whirlpool (248,348), cross it with Whirlpool (A on it facing north, YES; the field move carries the player through to (248,345) [INFERENCE]), then Surf to the north-east entrance (237,340). Inside: 1F (37,25) -> the drop (56,9) -> B1F (73,8) -> the drop (54,43) -> B2F (32,14), where the monk stands; B2F (31,43) -> the Lugia cave (16,38). Carriers: Surf/Fly = 18's boosted Pelipper, Whirlpool = the 26 carrier (party plan in the boost recipes)."
 
 [start]
 from = "prev"
@@ -29,14 +31,31 @@ from = "prev"
 [run]
 frames = 67500
 
-# PHASE2: Ecruteak -> Olivine -> Whirl Islands: Routes 38/39 and Surf on Route 40/41 (or Fly to Olivine/Cianwood, the
-# touch-screen menu is unverified); then the Whirl Islands floors (Whirlpool tiles: walk_to surf = true plus the HM).
+[[step]]
+do = "fly"
+map = "MAP_OLIVINE"
+note = "Ecruteak's block (12,5) -> Olivine's fly point (8..9,7..8); lands at (272,258) (tools/hg_world.py fly)"
+
+[[step]]
+do = "walk_to"
+x = 248
+z = 349
+surf = true
+via = [[250, 300], [250, 335]]
+face = "up"
+interact = true
+note = "Olivine's west beach and Route 40/41 south by Surf to the tile below the whirlpool (247..249,346..348) (tools/hg_world.py route 272 258 248 349 --surf), facing it: A -> the Whirlpool prompt (src/field_move.c:604-608: Glacier Badge)"
+
+[[step]]
+do = "advance_text"
+note = "YES (A on the default cursor) -> Whirlpool carries the player through to (248,345) [INFERENCE]"
+
 [[step]]
 do = "walk_to"
 x = 237
 z = 340
 surf = true
-note = "Routes 38/39, Olivine, Route 40/41 by Surf to the north-east Whirl Islands entrance (zone_event 092_W41 warp 2) [INFERENCE]"
+note = "inside the whirlpool ring, north-west by Surf to the north-east entrance (zone_event 092_W41 warp 2): tools/hg_world.py route 248 345 237 340 --surf"
 
 [[step]]
 do = "wait_map"
@@ -44,10 +63,10 @@ map = "MAP_WHIRL_ISLANDS_1F"
 
 [[step]]
 do = "walk_to"
-x = 51
-z = 22
+x = 56
+z = 9
 surf = true
-note = "1F -> B1F (warp 1 -> B1F (64,16)) [INFERENCE]"
+note = "1F (37,25) -> the drop (56,9) (warp 2, 0x3E) -> B1F (73,8)"
 
 [[step]]
 do = "wait_map"
@@ -55,10 +74,10 @@ map = "MAP_WHIRL_ISLANDS_B1F"
 
 [[step]]
 do = "walk_to"
-x = 31
-z = 49
+x = 54
+z = 43
 surf = true
-note = "B1F -> B2F (warp 4)"
+note = "B1F (73,8) -> the drop (54,43) (warp 11, 0x3E) -> B2F (32,14)"
 
 [[step]]
 do = "wait_map"
@@ -77,7 +96,7 @@ do = "walk_to"
 x = 31
 z = 43
 surf = true
-note = "B2F -> Lugia's cave (warp 5)"
+note = "B2F (31,43) (warp 5, 0x6E: a step-on warp) -> Lugia's cave (16,38)"
 
 [[step]]
 do = "wait_map"
@@ -95,9 +114,13 @@ do = "advance_text"
 shot = "lugia-arrives"
 
 [[step]]
-do = "talk_to"
-id = 5
-note = "Lugia (16,17)"
+do = "walk_to"
+x = 16
+z = 18
+surf = true
+face = "up"
+interact = true
+note = "by Surf below Lugia (16,17); A"
 
 [[step]]
 do = "advance_text"
@@ -105,7 +128,9 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-note = "WildBattle SPECIES_LUGIA 45 (scr_seq_0104_D40R0107.s:85)"
+flee = true
+send = "best"
+note = "WildBattle SPECIES_LUGIA 45 (scr_seq_0104_D40R0107.s:85): fleeing progresses as winning does"
 
 [[step]]
 do = "advance_text"

@@ -76,15 +76,15 @@ STEP_KEYS = {
     "wait_reset": {"keys"},
     "schedule": {"file", "frames"},
     "save": set(),
-    "advance_text": {"through_battle", "map"},
+    "advance_text": {"through_battle", "map", "key"},
     "auto_battle": {"move", "wait", "flee", "send", "snap"},
     "walk_to": {"x", "z", "via", "map", "face", "interact", "run", "on_battle", "on_text", "move", "surf", "hm", "avoid",
                 "hold", "dive"},
     "walk_to_door": {"pattern", "doors", "wait", "map", "face", "interact", "run", "on_battle", "on_text", "move"},
-    "talk_to": {"id", "on_battle", "on_text", "move"},
+    "talk_to": {"id", "on_battle", "on_text", "move", "surf", "hm", "avoid"},
     "heal": {"x", "z", "on_battle", "map", "surf", "hm"},
     "grind": {"x", "z", "level", "heal", "move"},
-    "fly": {"map", "slot", "block", "start"},
+    "fly": {"map", "slot", "block", "start", "dig"},
     "steps": {"route", "run", "on_battle", "on_text", "move", "face", "interact"},
     "moves": {"dirs", "on_battle", "on_text", "move", "face", "interact"},
     "hatch": {"x", "z"},
@@ -223,10 +223,11 @@ class Milestone:
                 except SystemExit as e:
                     problems.append("[start] boost: %s" % e)
                 else:
-                    bad = sorted({op.split()[0] for op in inline[len("inline:"):].split(";") if op} - BOOST_VERBS)
+                    allowed = HGSS_BOOST_VERBS if game.name in HGSS_GAMES else BOOST_VERBS
+                    bad = sorted({op.split()[0] for op in inline[len("inline:"):].split(";") if op} - allowed)
                     if bad or env:
                         problems.append("[start] boost %s: only %s, not %s" % (
-                            st["boost"], " ".join(sorted(BOOST_VERBS)), " ".join(bad + sorted(env))))
+                            st["boost"], " ".join(sorted(allowed)), " ".join(bad + sorted(env))))
         if "frames" not in d.get("run", {}) and d.get("status") != "planned":
             problems.append("[run] frames (the frame budget) is required")
         for i, s in enumerate(d.get("step", [])):
@@ -333,6 +334,45 @@ def recipe_env(path, game):
     return labc.compile_inline(path, game.name), {}
 
 
+# HG/SS boosts: `party SPECIES LEVEL` adds a Pokemon behind the party as the game's own gift makes it, with the
+# `party-move SLOT INDEX MOVE` lines that name its slot as its moves (np_save4 add-mon); nothing else is edited.
+HGSS_BOOST_VERBS = {"party", "party-move"}
+
+
+def hgss_boost(game, inline, sav, log):
+    """Applies an HG/SS boost recipe to `sav` with np_save4 (there is no HG/SS save lab): each `party` line becomes
+    an add-mon after the save's party, carrying the moves its `party-move` lines give it (slot = its party slot)."""
+    ops = [op.split() for op in inline[len("inline:"):].split(";") if op]
+    out = subprocess.run(game.save4 + ["dump", game.rom, sav], capture_output=True, text=True)
+    if out.returncode != 0:
+        raise HarnessError("boost: the save tool cannot read %s" % sav)
+    first = len(json.loads(out.stdout).get("party", []))
+    adds = []
+    for verb, *args in ops:
+        if verb not in HGSS_BOOST_VERBS:
+            raise HarnessError("boost: HG/SS boosts take only %s, not %s" % (" ".join(sorted(HGSS_BOOST_VERBS)), verb))
+        if verb == "party":
+            adds.append((int(args[0]), int(args[1]), {}))
+            continue
+        slot, index, move = (int(a) for a in args[:3])
+        if not 0 <= slot - first < len(adds) or not 0 <= index < 4:
+            raise HarnessError("boost: party-move %d %d: only the moves of a Pokemon the boost adds" % (slot, index))
+        adds[slot - first][2][index] = move
+    if first + len(adds) > 6:
+        raise HarnessError("boost: %d Pokemon after a party of %d" % (len(adds), first))
+    with open(log, "w") as f:
+        for species, level, moves in adds:
+            if sorted(moves) != list(range(len(moves))):
+                raise HarnessError("boost: the moves of slot %d must be indices 0..n-1" % first)
+            cmd = game.save4 + ["add-mon", sav, game.rom, str(species), str(level)] + [str(moves[i]) for i in
+                                                                                      range(len(moves))]
+            f.write("$ %s\n" % " ".join(cmd))
+            f.flush()
+            if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
+                raise HarnessError("boost: np_save4 add-mon failed (%s)" % log)
+
+
+
 def mint(game, recipe, out_sav, base, workdir):
     """Applies a lab recipe: on a new game (Platinum, base None) or on the save `base`. Returns the env it used."""
     inline, env = recipe_env(recipe, game)
@@ -342,10 +382,15 @@ def mint(game, recipe, out_sav, base, workdir):
         os.remove(work)
     run_env = dict(os.environ, PC_LAB=inline, PC_LAB_AT="1800", **env)
     if game.name in HGSS_GAMES:
-        # no HG/SS save lab yet (Platinum's pc_lab.c / D/P's pc_dp_lab.c have no HG/SS twin): the chain runs from the
-        # previous milestone's end save
-        raise HarnessError("minting %s: HG/SS has no save lab yet; start from the previous milestone's end save"
-                           % os.path.basename(recipe))
+        if base is None:
+            # no HG/SS save lab (Platinum's pc_lab.c / D/P's pc_dp_lab.c have no HG/SS twin): the chain runs from the
+            # previous milestone's end save
+            raise HarnessError("minting %s: HG/SS has no save lab yet; start from the previous milestone's end save"
+                               % os.path.basename(recipe))
+        shutil.copyfile(base, work)
+        hgss_boost(game, inline, work, log)
+        os.replace(work, out_sav)
+        return env
     if game.name == "platinum":
         cmd = [game.gp, game.rom, "--frames", "6000", "--save", work]
         if base:

@@ -14,8 +14,9 @@ refs = [
   "scr_seq_0843_T20R0101.s:887-950 (ITEM_MASTER_BALL via VAR_SPECIAL_x8004 1, FLAG_HIDE_ELMS_LAB_FRIEND, VAR_SCENE_ELMS_LAB 9, VAR_UNK_4079 3, FLAG_UNK_23B, ClearFlag FLAG_HIDE_NEW_BARK_FRIEND_2, VAR_SCENE_NEW_BARK_EAST_EXIT 2, VAR_UNK_407B 2)",
   "include/constants/items.h:270 (ITEM_MASTER_BALL 1)",
   "zone_event 057_T20 coords 2/3 (700,398) h5 VAR_SCENE_NEW_BARK_EAST_EXIT 1/2 -> 011 (Mom: 'Professor Elm is waiting', msg_0542_T20 21-24) / 012 (Lyra: 'I wonder what a Kimono Girl wants', msg 25-30); both walk the player back (scr_seq_0842_T20.s:1463-1735)",
+  "Fly: src/field_move.c:217-238 (BADGE_STORM, MAP_BLACKTHORN flyAllowed); fly map cursor from Blackthorn's block (672/32, 133/32) = (21,4) (src/unk_02092BE8.c:40-45) to New Bark's rect (21,12) 1x1 (src/application/pokegear/map/overlay_101_021F79B4.c); landing sSpawnMaps MAP_NEW_BARK (0x2B7,0x18D) = (695,397) (asm/unk_0203BA5C.s:14), west of the coords at x 700",
 ]
-notes = "Blackthorn -> New Bark is the far east of Johto to its south-east corner: Fly (HM02 from Chuck's wife, milestone 18) is the way a player goes."
+notes = "Blackthorn -> New Bark is the far east of Johto to its south-east corner: Fly (HM02 from Chuck's wife, milestone 18), as a player goes. The Fly carrier is the Pelipper boosted in at 18 (heartgold/18-*/boost.recipe)."
 
 [start]
 from = "prev"
@@ -24,12 +25,10 @@ from = "prev"
 [run]
 frames = 12000
 
-# PHASE2: Fly Blackthorn -> New Bark through the HG/SS touch-screen start menu (Pokemon icon, the Fly carrier, the
-# town map cursor): the `fly` bot is unverified on HG/SS; until it is, the run cannot leave Blackthorn's region.
 [[step]]
-do = "wait_map"
+do = "fly"
 map = "MAP_NEW_BARK"
-note = "arrival in New Bark (after the PHASE2 Fly)"
+note = "fly map: DOWN x8 from Blackthorn (21,4) to New Bark (21,12); lands at (695,397)"
 
 [[step]]
 do = "walk_to"

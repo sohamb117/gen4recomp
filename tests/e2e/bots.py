@@ -249,7 +249,10 @@ def bot_advance_text(s, step, ctx):
     """A with spacing until the player is free (or a battle starts, which auto_battle takes over).
 
     With `map`, it stops as soon as that map is loaded, before the next map's own scripts (an OnFrame that
-    asks something A must not answer) run on."""
+    asks something A must not answer) run on. `key = "b"` presses B instead: B advances a message as A does but
+    answers a YES/NO as NO; HG/SS's scripted phone calls need it (the call leaves the Pokegear open on its contact
+    list, where A would place another call and two B's close it: README, HeartGold and SoulSilver)."""
+    key = str(step.get("key", "a")).lower()
     bound = _int(step, "max", 6000)
     limit = s.frame + bound
     through = bool(step.get("through_battle"))
@@ -269,7 +272,7 @@ def bot_advance_text(s, step, ctx):
             continue
         if s.frame >= limit:
             raise HarnessError("text did not end in %d frames" % bound)
-        if not s.run(2, "a", until=stop):
+        if not s.run(2, key, until=stop):
             s.run(6, until=stop)
 
 
@@ -847,6 +850,11 @@ class Terrain:
                         ("WARP_EAST", 3), ("WARP_STAIRS_WEST", 2), ("WARP_STAIRS_EAST", 3)):
             if name in b:
                 self.mats[b[name]] = d
+        if game in HGSS_GAMES:
+            # HG/SS ladders (TILE_BEHAVIOR_LADDER_NORTH/_SOUTH 0x3C/0x3D) warp when the player stands on one and
+            # pushes north / south (src/field/field_control.c:500-511), as an exit mat does; LADDER_DOWN 0x3E warps
+            # when stepped onto (:743-745), as a door does
+            self.mats.update({0x3C: 0, 0x3D: 1})
 
     def _gba_tables(self):
         """Ruby/Sapphire/Emerald metatile behaviors (both decomps number include/constants/metatile_behaviors.h
@@ -1770,7 +1778,8 @@ def _toward(frm, to):
 
 def bot_talk_to(s, step, ctx):
     """Talk to map object `id` (its local id in the probe's object list) wherever it stands now: walk to a free
-    tile next to it, face it, A until a script starts. Wandering people are chased (re-planned) as they move."""
+    tile next to it, face it, A until a script starts. Wandering people are chased (re-planned) as they move. `surf`,
+    `hm` and `avoid` go to the walks as walk_to takes them (an object on the water is reached surfing)."""
     oid = int(step["id"])
     bound = _int(step, "max", 6000)
     limit = s.frame + bound
@@ -1823,8 +1832,9 @@ def bot_talk_to(s, step, ctx):
             continue
         c = min(cands)[1]
         try:
-            # the walk fights what it meets with this step's move and on_battle (a sight trainer on the way)
-            sub = {k: step[k] for k in ("move", "on_battle", "on_text") if k in step}
+            # the walk fights what it meets with this step's move and on_battle (a sight trainer on the way), and
+            # crosses water / field-move obstacles with its surf / hm (an object on the water: HG/SS's red Gyarados)
+            sub = {k: step[k] for k in ("move", "on_battle", "on_text", "surf", "hm", "avoid") if k in step}
             # a GBA wanderer moves every second or so: short legs, re-aimed at where it stands now
             leg = 90 if ctx.game in GBA_GAMES else 900
             sub.update(x=c[0], z=c[1], max=min(leg, max(limit - s.frame, 1)))
@@ -1900,11 +1910,12 @@ def _menu_key(s, key, n=1, gap=8):
         s.run(gap)
 
 
-def _field_move_entry(s, step, ctx, move, what):
+def _field_move_entry(s, step, ctx, move, what, mons=None, field_moves=FIELD_MOVES):
     """(party slot, context-menu entry) of a field move: `slot` names the slot, else the first party member that
-    knows `move` (an in-game save's dump). The context menu lists SUMMARY, then the field moves in move-slot order up
-    to the first empty slot, SWITCH, ITEM, CANCEL (party_menu/main.c:1791-1839)."""
-    mons = party(s, ctx)
+    knows `move` (`mons`, else an in-game save's dump). The context menu lists SUMMARY, then the field moves
+    (`field_moves`) in move-slot order up to the first empty slot, SWITCH, ITEM, CANCEL (party_menu/main.c:1791-1839)."""
+    if mons is None:
+        mons = party(s, ctx)
     if "slot" in step:
         slot = _int(step, "slot", 0)
     else:
@@ -1915,7 +1926,7 @@ def _field_move_entry(s, step, ctx, move, what):
     for mv in (mv["id"] for mv in mons[slot]["moves"]):
         if not mv:
             break
-        if mv in FIELD_MOVES:
+        if mv in field_moves:
             known.append(mv)
     if move not in known:
         raise HarnessError("%s: party slot %d does not know move %d" % (what, slot, move))
@@ -1945,15 +1956,17 @@ def bot_field_move(s, step, ctx):
     """Use a field move from the party menu as a player does (Defog, Flash, Teleport, Dig, Sweet Scent, Softboiled):
     X, POKEMON, the party member that knows `move` (a MOVE_* name or id; `slot` names the slot), the move in its
     context menu, then the text it starts is advanced (advance_text) unless `text = false`. The start menu needs the
-    Pokedex (START_MENU's order)."""
+    Pokedex (START_MENU's order). HG/SS: _hgss_open_party_move's menus."""
     move = ctx.resolve(step["move"])
     bot_wait_field(s, step, ctx)
-    slot, entry = _field_move_entry(s, step, ctx, move, "field_move")
-    s.note("field_move: move %d, party slot %d, menu entry %d" % (move, slot, entry))
-    _open_field_move(s, slot, entry)
+    if ctx.game in HGSS_GAMES:
+        _hgss_field_move(s, step, ctx, move)
+    else:
+        slot, entry = _field_move_entry(s, step, ctx, move, "field_move")
+        s.note("field_move: move %d, party slot %d, menu entry %d" % (move, slot, entry))
+        _open_field_move(s, slot, entry)
     if step.get("text", True):
         bot_advance_text(s, {"max": step["max"]} if "max" in step else {}, ctx)
-
 
 
 def bot_fly(s, step, ctx):
@@ -1961,7 +1974,10 @@ def bot_fly(s, step, ctx):
     town map's cursor moved block by block to the destination, A. `slot` names the party slot (default: the first
     that knows Fly, from an in-game save's dump); `block = [x, z]` the town-map block (default: the destination's
     block on the overworld matrix nearest the player's). Platinum menus (start_menu.c, party_menu/main.c,
-    town_map/graphics.c); D/P's start menu, party menu and fly map are laid out the same way."""
+    town_map/graphics.c); D/P's start menu, party menu and fly map are laid out the same way. HG/SS: _hgss_fly."""
+    if ctx.game in HGSS_GAMES:
+        _hgss_fly(s, step, ctx)
+        return
     dest = ctx.resolve(step["map"])
     bot_wait_field(s, step, ctx)
     p = s.probe()
@@ -2007,6 +2023,212 @@ def bot_fly(s, step, ctx):
             break
     if not flown and not s.run(_int(step, "max", 1500), until="map_id=%d" % dest):
         raise HarnessError("fly: still on map %d, not %s (%d)" % (s.map_id, step["map"], dest))
+    bot_wait_field(s, {}, ctx)
+    p = s.probe()
+    s.note("fly: landed on map %d at (%d,%d)" % (s.map_id, p.x, p.z))
+
+
+# ---------------------------------------------------------------- HG/SS: start menu, party menu, fly map
+# pokeheartgold's screens, driven with keys only. The probe sees none of them, so every count below is the decomp's
+# and unverified at runtime; each bot notes the presses it makes.
+#
+# X opens the start menu (src/field/field_control.c:151-157 -> StartMenu_Init). Overlay 27 draws it on the bottom
+# screen; outside the Safari Zone, Bug Contest, Pal Park and link rooms in layout 0 (ov27_0225BD50 returns 0;
+# asm/overlay_27.s ov27_0225CFC8 row 0): slot i holds icon i, START_MENU_ICON_POKEDEX..OPTIONS (include/start_menu.h:
+# 9-15), slots 0-3 the left column top to bottom, 4-6 the right one (touch rects ov27_0225CF68 entries 1-7). A slot
+# is drawn when FieldSystem_ShouldDrawStartMenuIcon says so (src/start_menu.c:535-556): its flag here
+# (src/sys_flags.c:273-288; CheckGotMenuIconI is FLAG_GOT_BAG + 0..3).
+HGSS_START_MENU = [("pokedex", "FLAG_GOT_POKEDEX"), ("pokemon", "FLAG_GOT_STARTER"), ("bag", "FLAG_GOT_BAG"),
+                   ("pokegear", "FLAG_GOT_POKEGEAR"), ("trainer_card", "FLAG_GOT_TRAINER_CARD"),
+                   ("save", "FLAG_GOT_SAVE_BUTTON"), ("options", "FLAG_GOT_OPTIONS_BUTTON")]
+# The D-pad (newKeys, ov27_0225B404) moves the cursor with ov27_0225B360: per slot and direction (up, down, left,
+# right) three candidates (ov27_0225D0B4), the first drawn one is the new slot (the slot itself: no move).
+HGSS_START_MENU_MOVES = [
+    ((3, 2, 1), (1, 2, 3), (4, 0, 0), (4, 0, 0)),
+    ((0, 3, 2), (2, 3, 0), (5, 1, 0), (5, 1, 0)),
+    ((1, 0, 3), (3, 0, 1), (6, 2, 0), (6, 2, 0)),
+    ((2, 1, 0), (0, 1, 2), (6, 3, 0), (6, 3, 0)),
+    ((6, 5, 4), (5, 6, 4), (0, 4, 0), (0, 4, 0)),
+    ((4, 6, 5), (6, 4, 5), (1, 5, 0), (1, 5, 0)),
+    ((5, 4, 6), (4, 5, 6), (2, 6, 0), (2, 6, 0)),
+]
+HGSS_DIRS = ("up", "down", "left", "right")
+# A takes the button FieldSystem.unkD3 names (StartMenu_HandleKeyInput, src/start_menu.c:591-605): the cursor's
+# index among the drawn slots, which ov27 writes on every move (ov27_0225C170) and reopens the menu on
+# (ov27_0225C1AC; a slot not drawn falls back to the first drawn, ov27_0225C1EC), so the menu remembers it. The
+# FieldSystem starts zeroed (src/field_system.c:143-144): index 0 after a boot. Tracked per run in s.hgss_menu_index
+# (as Platinum's s.start_menu_option), so steps that open the menu by hand (press) must leave it on POKEMON.
+# The party menu's field moves, sFieldMoves (src/party_menu.c:202-219): Cut, Fly, Surf, Strength, Rock Smash,
+# Waterfall, Rock Climb, Whirlpool, Flash, Teleport, Dig, Sweet Scent, Chatter, Headbutt, Milk Drink, Softboiled.
+HGSS_FIELD_MOVES = {15, 19, 57, 70, 249, 127, 431, 250, 148, 100, 91, 230, 448, 29, 208, 135}
+MOVE_DIG = 91
+# The fly map's cursor (fly_map.c:111-120, ov101_021EB654): x 2 .. maxXscroll - 1 (sMapXScrollLimits 26 Johto, 29
+# with the Indigo Plateau, 45 with Kanto), the fly points' y (playerY - 2) 0 .. 15
+HGSS_FLY_X, HGSS_FLY_Y = (2, 44), (0, 15)
+
+
+def _hg_world():
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools"))
+    import hg_world
+    return hg_world
+
+
+def _hgss_menu_path(shown, cur, want):
+    """The D-pad presses that take the start menu's cursor from slot `cur` to slot `want` over the drawn slots."""
+    prev = {cur: None}
+    queue = [cur]
+    for c in queue:
+        for d, cands in enumerate(HGSS_START_MENU_MOVES[c]):
+            n = next((k for k in cands if k in shown), c)
+            if n not in prev:
+                prev[n] = (c, d)
+                queue.append(n)
+    if want not in prev:
+        raise HarnessError("start menu: slot %d not reachable from %d over %s" % (want, cur, shown))
+    keys = []
+    while prev[want] is not None:
+        want, d = prev[want]
+        keys.append(HGSS_DIRS[d])
+    return keys[::-1]
+
+
+def _hgss_open_party_move(s, ctx, dump, slot, k):
+    """X, POKEMON, party slot `slot`, its k-th field move, A (HG/SS, keys only):
+    - start menu: the cursor from the remembered slot to POKEMON (_hgss_menu_path), A;
+    - party menu: opened on slot 0 (Task_StartMenu_Pokemon -> PartyMenu_LaunchApp_Unk1(.., 0), src/start_menu.c:808,
+      src/launch_application.c:252-257); RIGHT steps through the slots in order (_0210140C buttonRight 0->1->..->5,
+      src/party_menu.c:158-167), A opens the member's context menu (sub_0207AC70, :1476-1481);
+    - context menu (sub_0207B0B0, src/party_menu.c:1613-1659): SUMMARY, SWITCH, ITEM (MAIL), CANCEL, then the field
+      moves in move-slot order; it opens on SUMMARY (PartyMenu_CreateContextMenuCursor selection 0,
+      src/party_context_menu.c:470-498); LEFT or RIGHT goes to the first field move, DOWN to the next
+      (sDpadNavParam_PartyMenu rows numItems - 2, party_context_menu.c:217-288; PartyMenu_HandleInput_ContextMenu
+      :1196-1215), A uses it."""
+    flags = set(dump.get("flags", []))
+    shown = [i for i, (_, flag) in enumerate(HGSS_START_MENU) if ctx.resolve(flag) in flags]
+    pokemon = 1
+    if pokemon not in shown:
+        raise HarnessError("start menu: no POKEMON button (FLAG_GOT_STARTER clear)")
+    index = getattr(s, "hgss_menu_index", 0)
+    cur = shown[index] if index < len(shown) else 0
+    if cur not in shown:
+        cur = shown[0]
+    keys = _hgss_menu_path(shown, cur, pokemon)
+    s.note("start menu: slots %s, cursor %d -> POKEMON: %s; party slot %d (RIGHT x%d); context menu: LEFT, DOWN x%d"
+           % (shown, cur, " ".join(keys) or "-", slot, slot, k))
+    s.run(2, "x")
+    s.run(30)
+    for key in keys:
+        _menu_key(s, key)
+    s.run(2, "a")
+    s.hgss_menu_index = shown.index(pokemon)
+    s.run(90)
+    _menu_key(s, "right", slot)
+    s.run(2, "a")
+    s.run(20)
+    _menu_key(s, "left")
+    _menu_key(s, "down", k)
+    s.run(2, "a")
+
+
+def _hgss_party_field_move(s, step, ctx, move, what, dump=None):
+    """(dump, party slot, index among the member's field moves) for `move`."""
+    if dump is None:
+        dump = save_dump(s, ctx)
+    slot, entry = _field_move_entry(s, step, ctx, move, what, dump["party"], HGSS_FIELD_MOVES)
+    return dump, slot, entry - 1
+
+
+def _hgss_field_move(s, step, ctx, move):
+    dump, slot, k = _hgss_party_field_move(s, step, ctx, move, "field_move")
+    s.note("field_move: move %d, party slot %d, field move %d" % (move, slot, k))
+    _hgss_open_party_move(s, ctx, dump, slot, k)
+
+
+def _hgss_dig_out(s, step, ctx):
+    """Dig from a cave that allows it (FieldMove_CheckDig, src/field_move.c:510-525) back to the special spawn warp,
+    the dungeon's entrance outside; done when the map has changed and the player is free."""
+    before = s.map_id
+    _hgss_field_move(s, step, ctx, MOVE_DIG)
+    if not s.run(_int(step, "max", 1500), until="map_id!=%d" % before) and s.map_id == before:
+        raise HarnessError("fly: Dig did not leave map %d" % before)
+    bot_wait_field(s, {}, ctx)
+    p = s.probe()
+    s.note("fly: dug out to map %d (%d,%d)" % (s.map_id, p.x, p.z))
+
+
+def _hgss_fly(s, step, ctx):
+    """HG/SS Fly (bot_fly): the field move FLY (_hgss_open_party_move), then the fly map, the Pokegear map app in fly
+    mode (FieldMove_UseFly -> PokegearTownMap_LaunchApp(.., 0), src/field_move.c:240-248; FlyMap_*, fly_map.c):
+    - the cursor opens on the player's overworld block (x / 32, z / 32), off the overworld on the map header's
+      worldMapX/Y, else the special spawn warp's block (FieldSystem_InitPokegearArgs, src/unk_02092BE8.c:40-61;
+      fly_map.c:111-116); `start = [x, y]` overrides it;
+    - a held direction moves it one block per two frames (ov101_021EB654, ov101_021EC304), so each 2-frame press is
+      one block;
+    - A over a fly point whose flag is set (gMapFlypointParams rects, PokegearMap_GetFlyDestinationAtCoord,
+      overlay_101_021E9270.c:721-747; only within the player's region but for the Indigo Plateau / Route 26) opens
+      FLY / CANCEL with the cursor on FLY (PokegearMap_SpawnFlyContextMenu; TouchscreenListMenu_Create selection 0),
+      A flies (FlyMap_HandleContextMenu, overlay_101_021EDCE0.c:311-330; Task_UseFlyInField, src/start_menu.c:
+      1368-1390), landing on the fly point's spawn (tools/hg_world.py fly).
+    A map that does not allow Fly (FieldMove_CheckFly, src/field_move.c:217-238) fails, unless `dig = true` and it
+    allows Dig: then Dig first."""
+    hw = _hg_world()
+    want = step["map"]
+    point = hw.fly_destination(want)
+    if point is None:
+        raise HarnessError("fly: %s is no fly destination (tools/hg_world.py fly)" % want)
+    landing = hw.fly_landing(point["map"])
+    dest = ctx.resolve(landing[0] if landing else point["map"])
+    bot_wait_field(s, step, ctx)
+    if s.map_id == dest:
+        raise HarnessError("fly: already on %s" % want)
+    header = hw.map_headers().get(hw.map_name(s.map_id), {})
+    if not header.get("fly"):
+        if step.get("dig") and header.get("dig"):
+            _hgss_dig_out(s, step, ctx)
+            header = hw.map_headers().get(hw.map_name(s.map_id), {})
+        if not header.get("fly"):
+            raise HarnessError("fly: map %s does not allow Fly%s" % (
+                hw.map_name(s.map_id), " (it allows Dig: dig = true)" if header.get("dig") else ""))
+    p = s.probe()
+    if "start" in step:
+        here = tuple(int(v) for v in step["start"])
+    else:
+        here = hw.fly_start_block(hw.map_name(s.map_id), p.x, p.z)
+        if here is None:
+            raise HarnessError("fly: map %s has no world-map block: give start = [x, y] (its exit's block)"
+                               % hw.map_name(s.map_id))
+    # Pokegear_GetCurrentRegion reads the same tile the cursor starts from [INFERENCE: one block, one region]
+    region = hw.region(*here)
+    if "block" in step:
+        goal = tuple(int(v) for v in step["block"])
+    else:
+        cells = [(x, y) for x in range(point["x"], point["x"] + point["w"])
+                 for y in range(point["y"], point["y"] + point["h"]) if hw.fly_allowed_from(point, region, x, y)]
+        if not cells:
+            raise HarnessError("fly: %s is outside the region (%s) the fly map lets the player reach" % (want, region))
+        goal = min(cells, key=lambda c: abs(c[0] - here[0]) + abs(c[1] - here[1]))
+    gx = min(max(goal[0], HGSS_FLY_X[0]), HGSS_FLY_X[1])
+    gy = min(max(goal[1], HGSS_FLY_Y[0]), HGSS_FLY_Y[1])
+    dump, slot, k = _hgss_party_field_move(s, step, ctx, MOVE_FLY, "fly")
+    s.note("fly: to %s (lands on %s %s), cursor %s -> %s, party slot %d, field move %d" % (
+        want, landing[0] if landing else point["map"], landing[1:] if landing else "?", here, (gx, gy), slot, k))
+    _hgss_open_party_move(s, ctx, dump, slot, k)
+    s.run(150)
+    _menu_key(s, "right" if gx > here[0] else "left", abs(gx - here[0]), gap=6)
+    _menu_key(s, "down" if gy > here[1] else "up", abs(gy - here[1]), gap=6)
+    s.run(20)
+    if s.shot_dir:
+        s.dump(os.path.join(s.shot_dir, "fly-map.ppm"))
+    flown = False
+    for _ in range(3):
+        s.run(2, "a")   # the fly point: FLY / CANCEL
+        s.run(30)
+        s.run(2, "a")   # FLY
+        if s.run(240, until="map_id=%d" % dest):
+            flown = True
+            break
+    if not flown and not s.run(_int(step, "max", 1500), until="map_id=%d" % dest):
+        raise HarnessError("fly: still on map %d, not %s (%d)" % (s.map_id, want, dest))
     bot_wait_field(s, {}, ctx)
     p = s.probe()
     s.note("fly: landed on map %d at (%d,%d)" % (s.map_id, p.x, p.z))

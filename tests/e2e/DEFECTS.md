@@ -8,10 +8,12 @@ pinned in the port or shown to be the cartridge's own behaviour.
 HeartGold 01 (tests/e2e/heartgold/01-newgame-cyndaquil-pokegear) cannot start: the intro schedule
 (`intro.press`, docs/HANDOFF-hgss.md) reaches the first map load at frame 16169 (`[status] map_id 0 -> 64`, the
 bedroom) and then no frame completes (no `[progress]` line in 55 minutes). Repro: `np_headless heartgold
-pokeheartgold.us.nds --frames 17000 --schedule tests/e2e/heartgold/01-*/intro.press --progress 100` on main + the
-ds_protect fix (branch hgss2). Cause as the port side reports it: the field init (fieldmap.c ov01_021E662C) polls
-the cartridge's IR chip over AUXSPI (CARD_SpiWaitGetStatus, wants 0xAA) and a second OS_LockCard spins forever; the
-host's card model has no IR chip on that bus yet. Every HG/SS milestone waits on this.
+pokeheartgold.us.nds --frames 17000 --schedule tests/e2e/heartgold/01-*/intro.press --progress 100` on main
+ff616c003. Cause as the port side traced it (docs/HANDOFF-hgss.md, "Current blocker"): the field init (fieldmap.c
+ov01_021E662C) calls CARD_SpiWaitGetStatus twice, and the second call's OS_LockCard spins forever because armrec
+emits the first call's `bl _ll_udiv` as a goto into msl.s's helper body, whose `bx lr` returns before
+OS_UnLockCard; after that fix the same check needs the cartridge's IR chip on AUXSPI (command 0x08 -> 0xAA). Every
+HG/SS milestone waits on this.
 
 ## Fixed: Emerald dropped the player through Granite Cave B1F's floor on arrival (copyvar through NULL)
 

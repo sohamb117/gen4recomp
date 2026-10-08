@@ -46,6 +46,7 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "TRAINER_ELITE_FOUR_BRUNO_BRUNO: HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46"
 
 [[step]]

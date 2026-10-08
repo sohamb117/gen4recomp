@@ -20,10 +20,10 @@ refs = [
   "src/scrcmd_c.c:2023-2027 (HOFCredits -> CallTask_GameClear)",
   "src/game_clear.c:263-300 (CallTask_GameClear: Location_SetToPlayerRoom, SetGameClearFlag -> FLAG_GAME_CLEAR include/constants/flags.h:1710, league wins)",
   "src/game_clear.c:156-258 (RegisterHallOfFame app, SaveGameNormal + AddHallOfFameEntry (state 4), credits (state 10), OS_ResetSystem(0) (state 11))",
-  "src/register_hall_of_fame.c:2207-2215 (REGHOF_WHOLE_SUBPROC_WAIT_BUTTON: A/B/touch)",
-  "src/credits/credits.c:37-38,316-385 (CREDITS_FRAMES 4976, no skipping on the first clear, 'The End' waits for A/START/touch)",
+  "src/register_hall_of_fame.c:2207-2215 (REGHOF_WHOLE_SUBPROC_WAIT_BUTTON: the whole-team photo waits for a new A/B/touch, :2210)",
+  "src/credits/credits.c:37-38,316-385 (CREDITS_FRAMES 4976; on the first clear only START/touch could skip, A is ignored :318; 'The End' waits for a new A/START/touch :363-382)",
 ]
-notes = "Lance's three Dragonite: Ice coverage by boost (lv ~55). The registration screen waits for A after the whole-team photo (register_hall_of_fame.c:2207-2215); the first clear cannot skip the credits (credits.c:316-318). The save the run is judged on is SaveGameNormal in Task_GameClear state 4, written after CallTask_GameClear set FLAG_GAME_CLEAR, so the E4 defeat flags are still set in it (the League entrance clears them only on its next OnTransition)."
+notes = "Lance's three Dragonite: the Lapras boosted in at 34 (Ice Beam) behind a fainted lead (send = best). After Lance every screen waits for input: the Hall of Fame photo waits for A/B (register_hall_of_fame.c:2210), 'The End' for a new A/START (credits.c:363-382); A does not skip the first clear's credits (credits.c:318). So one long A cadence from the Hall of Fame's arrival through the walk-in, Lance's speech, the registration and the photo (110 presses, 56 frames apart, ~6160 frames) [INFERENCE: the photo's wait is reached within that run], then the save and the credits (6500 frames), one A for 'The End', and wait_reset without keys (its keys are held, i.e. one press, and none is needed). The save the run is judged on is SaveGameNormal in Task_GameClear state 4, written after CallTask_GameClear set FLAG_GAME_CLEAR, so the E4 defeat flags are still set in it (the League entrance clears them only on its next OnTransition)."
 
 [start]
 from = "prev"
@@ -61,6 +61,7 @@ shot = "lance"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "TRAINER_CHAMPION_LANCE: GYARADOS 46, DRAGONITE 49 x2, AERODACTYL 48, CHARIZARD 48, DRAGONITE 50"
 
 [[step]]
@@ -72,46 +73,29 @@ note = "Lyra, Elm, Oak; Warp MAP_POKEMON_LEAGUE_HALL_OF_FAME (scr_seq_0824_T10R0
 do = "wait_map"
 map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME"
 
-# PHASE2: the Hall of Fame registration screen's timing: how many frames until REGHOF_WHOLE_SUBPROC_WAIT_BUTTON and
-# whether other stages wait too; the A presses below are on a cadence.
 [[step]]
-do = "advance_text"
-note = "OnFrame: walk in with Lance, his speech (scr_seq_0825_T10R0701.s:16-38)"
+do = "press"
+keys = "A"
+times = 110
+gap = 56
+shot = "hall-of-fame"
+note = "OnFrame walk-in and Lance's speech (scr_seq_0825_T10R0701.s:16-38), HallOfFameAnim, the registration screen up to the whole-team photo's wait (register_hall_of_fame.c:2210) [INFERENCE: reached within these ~6160 frames]; later A's land on the save and the credits, which ignore A"
 
 [[step]]
 do = "wait_frames"
-n = 2400
-shot = "hall-of-fame"
-note = "HallOfFameAnim + the registration screen (each team member, then the whole team)"
+n = 6500
+shot = "the-end"
+note = "SaveGameNormal (game_clear.c:182-219) and the credits (CREDITS_FRAMES 4976, credits.c:37) up to 'The End'"
 
 [[step]]
 do = "press"
 keys = "A"
-gap = 60
-times = 10
-note = "REGHOF_WHOLE_SUBPROC_WAIT_BUTTON (register_hall_of_fame.c:2207-2215)"
-
-[[step]]
-do = "wait_frames"
-n = 1200
-note = "'Saving...' and SaveGameNormal (game_clear.c:182-219)"
-
-[[step]]
-do = "wait_frames"
-n = 3000
-shot = "credits"
-note = "credits (CREDITS_FRAMES 4976, credits.c:37)"
-
-[[step]]
-do = "wait_frames"
-n = 2400
-shot = "the-end"
+note = "'The End' waits for a new A/START (credits.c:363-382)"
 
 [[step]]
 do = "wait_reset"
-max = 6000
-keys = "A"
-note = "'The End' waits for A/START (credits.c:363-382), then OS_ResetSystem(0) (game_clear.c:249-255)"
+max = 1200
+note = "OS_ResetSystem(0) (game_clear.c:249-255)"
 
 [expect]
 badges = 8

@@ -12,20 +12,23 @@ refs = [
   "TRAINER_RIVAL_SILVER_10 (269, include/constants/trainers.h:274): GASTLY 14, ZUBAT 16, CROCONAW 18",
   "zone_event 071_T23 warp 0 (392,462) -> MAP_AZALEA_ILEX_FOREST_GATEHOUSE; zone_event 097_T23R0101 warp 1 (1,7) -> MAP_ILEX_FOREST (15,80)",
   "zone_event 114_D36R0101 coord 8 (15,65) h2 VAR_UNK_40F4 1 -> 017 (apprentice, VAR_UNK_40F4 0, scr_seq_0092_D36R0101.s:1262-1273)",
-  "zone_event 114_D36R0101 objects 0 (25,62) / 2 (41,54) lost Farfetch'd; coords 0-5 the stick tiles (VAR_FARFETCHD*_STICKS*)",
-  "scr_seq_0092_D36R0101.s:116-304 (Farfetch'd 1: FLAG_FOUND_FIRST_FARFETCHD, Warp (15,65)), :470-676 (Farfetch'd 2: FLAG_FOUND_SECOND_FARFETCHD)",
-  "zone_event 114_D36R0101 object 4 obj_D36R0101_gsfighter (11,75) FLAG_HIDE_ILEX_CUT_MASTER -> 011",
-  "scr_seq_0092_D36R0101.s:1286-1345 (HM01: FLAG_GOT_HM01)",
-  "zone_event 114_D36R0101 object 5 Cut tree (16,62) std_field_cut",
+  "zone_event 114_D36R0101 objects 0 (25,62) / 2 (41,54) lost Farfetch'd; coords 0-5 the 2x2 stick tiles (25,66) (28,63) (46,64) (50,49) (52,53) (45,53) (VAR_FARFETCHD1_STICKS1/2, VAR_FARFETCHD2_STICKS3/1/2/4)",
+  "scr_seq_0092_D36R0101.s:69-97 (OnTransition: bird 1 sticks1 active; bird 2 sticks4 active, sticks1-3 inactive; after bird 1 only bird 2's sticks4)",
+  "scr_seq_0092_D36R0101.s:116-304 (Farfetch'd 1 on the corners x 25/32, z 52/62; at (25,62) facing south with FARFETCHD1_BLIND_SPOT -> caught :231-260, FLAG_FOUND_FIRST_FARFETCHD, Warp (15,65)), :310-387 (sticks1 sets the blind spot :315), :389-460 (sticks2 clears it :396)",
+  "scr_seq_0092_D36R0101.s:470-680 (Farfetch'd 2 on the corners x 41/49, z 54/64; talked to at (41,54) facing north it runs right to (49,54) and arms sticks1/2 :513-526; at (49,54) facing east with FARFETCHD2_BLIND_SPOT -> caught :601-603,616-648), :755-826 (sticks2 sets the blind spot :758, arms sticks1/4 :812-820), :682-753 and :899-963 (sticks1/sticks4 clear it :685,:902)",
+  "zone_event 114_D36R0101 object 4 obj_D36R0101_gsfighter (11,75) FLAG_HIDE_ILEX_CUT_MASTER",
+  "scr_seq_0092_D36R0101.s:1316-1350 (both found: ShowPerson the cut master, Warp (15,65), HM01 given in the same script: FLAG_GOT_HM01)",
+  "zone_event 114_D36R0101 object 5 Cut tree (16,62) std_field_cut (the only way north: tools/hg_map.py MAP_ILEX_FOREST)",
   "zone_event 114_D36R0101 coord 7 (37,42) VAR_UNK_40EA 0 -> 016 (VAR_UNK_40EA 1); coord 6 (40,20) w2 VAR_UNK_40E9 0 -> 015 (Kimono Girl, FLAG_UNK_23D, VAR_UNK_40E9 1)",
   "zone_event 114_D36R0101 warps 2-5 (12/13,17/18) -> MAP_ROUTE_34_ILEX_FOREST_GATEHOUSE; zone_event 165_R34R0201 warp 0 (5,2) -> MAP_ROUTE_34",
   "src/field_move.c:185-189 (Cut needs BADGE_HIVE)",
 ]
-notes = "Rival's Croconaw (lv18) needs levels: boost. Farfetch'd herding: talking to a lost Farfetch'd (or stepping on its stick tiles) makes it move away from the player's side; it is returned when it reaches the apprentice (both flags -> Warp (15,65) and the cut master appears). Cut needs the Hive Badge (09) and a Cut carrier (teach HM01 behind the lead: boost party-move)."
+notes = "Rival's Croconaw (lv18): the boost's Scyther (lv21, Wing Attack/Pursuit) fights behind a fainted lead (send = best). Farfetch'd herding: each bird moves between the four corners of its rectangle depending on the side the player faces it from; the stick tiles (coords 0-5) arm/disarm a 'blind spot' (VAR_TEMP) that lets the player catch it from one side. Bird 1: sticks1 (25,66) sets the blind spot, then (25,61) facing down catches it; bird 2: pushed from (41,55) to (49,54), sticks2 (52,54) sets the blind spot, then (48,54) facing right catches it, avoiding sticks1/sticks4 on the way (they clear it). Catching the second bird runs the cut master's HM01 in the same script. Cut needs the Hive Badge (09) and the boost's Cut carrier."
 
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
 frames = 45000
@@ -44,7 +47,8 @@ shot = "rival-azalea"
 [[step]]
 do = "auto_battle"
 snap = true
-note = "TRAINER_RIVAL_SILVER_10: GASTLY 14, ZUBAT 16, CROCONAW 18"
+send = "best"
+note = "TRAINER_RIVAL_SILVER_10: GASTLY 14, ZUBAT 16, CROCONAW 18 (the boost's Scyther behind a fainted lead)"
 
 [[step]]
 do = "advance_text"
@@ -79,40 +83,73 @@ note = "coord 8 (15,65..66) VAR_UNK_40F4 1 -> the apprentice (scr_seq_0092_D36R0
 [[step]]
 do = "advance_text"
 
-# PHASE2: herding the two Farfetch'd (objects 0 and 2): the side the player talks from / the stick tiles (coords 0-5)
-# decide where each moves (scr_seq_0092_D36R0101.s:116-960). Work out a talk/step sequence per bird with the probe;
-# the talks below are the entry points only.
 [[step]]
-do = "talk_to"
-id = 0
-note = "Farfetch'd 1 (25,62)"
+do = "walk_to"
+x = 25
+z = 67
+on_text = "stop"
+note = "bird 1 (25,62): sticks1 coord 0 (25..26,66..67) sets FARFETCHD1_BLIND_SPOT (scr_seq_0092_D36R0101.s:310-317); it only turns to look (:365-375)"
 
 [[step]]
 do = "advance_text"
 
 [[step]]
-do = "talk_to"
-id = 2
-note = "Farfetch'd 2 (41,54)"
+do = "walk_to"
+x = 25
+z = 61
+avoid = [[28, 63], [29, 63], [28, 64], [29, 64]]
+face = "down"
+interact = true
+note = "round the ring (row 62 east, x 32 north, row 52 west, x 25 south) to the tile above bird 1, never on sticks2 (28..29,63..64), which clears the blind spot (:394-396); facing south with the blind spot -> caught (:181-193,212-214,231-260), Warp (15,65)"
+
+[[step]]
+do = "advance_text"
+shot = "farfetchd-1"
+note = "FLAG_FOUND_FIRST_FARFETCHD; the warp reloads the map: bird 2's sticks4 armed, the rest off (:69-97)"
+
+[[step]]
+do = "walk_to"
+x = 41
+z = 55
+face = "up"
+interact = true
+note = "bird 2 (41,54) talked to facing north: it runs right to (49,54); sticks1/2 armed, 3/4 off (:513-526)"
 
 [[step]]
 do = "advance_text"
 
 [[step]]
-do = "talk_to"
-id = 4
-note = "the charcoal master (11,75): HM01 (scr_seq_0092_D36R0101.s:1286-1345)"
+do = "walk_to"
+x = 52
+z = 54
+via = [[49, 64], [49, 56], [52, 56]]
+on_text = "stop"
+note = "down x 41, along row 64, up x 49 and round to sticks2 coord 4 (52..53,53..54): FARFETCHD2_BLIND_SPOT (:755-758), bird 2 at (49,54) -> sticks1/4 armed, sticks2 off (:812-820)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 48
+z = 54
+via = [[52, 48], [48, 48], [48, 50], [47, 50], [47, 54]]
+avoid = [[50, 49], [51, 49], [50, 50], [51, 50], [45, 53], [46, 53], [45, 54], [46, 54]]
+face = "right"
+interact = true
+note = "north and round to the west of bird 2, never on sticks1 (50..51,49..50) or sticks4 (45..46,53..54), which clear the blind spot (:685,:902); facing east with it -> caught (:574-586,601-603,616-635), then the cut master and HM01 (:1316-1350)"
 
 [[step]]
 do = "advance_text"
 shot = "hm01"
+note = "Warp (15,65), the cut master walks up: HM01, FLAG_GOT_HM01 (scr_seq_0092_D36R0101.s:1316-1350)"
 
 [[step]]
 do = "walk_to"
 x = 12
 z = 18
 hm = true
-note = "north through the forest (Cut tree (16,62); coords (37,42) and (40,20) scenes advanced) to the Route 34 gatehouse (warp 2)"
+note = "north through the Cut tree (16,62) (the boost's Scyther; coords (37,42) and (40,20) scenes advanced) to the Route 34 gatehouse (warp 2)"
 
 [[step]]
 do = "wait_map"

@@ -14,6 +14,7 @@ refs = [
   "scr_seq_0928_T27R0501_hdr.s (OnFrame VAR_UNK_410C 4 -> 016)",
   "scr_seq_0928_T27R0501.s:714-880 (VAR_UNK_410C 5, YES/NO :737, TRAINER_KIMONO_GIRL_ZUKI/NAOKO/MIKI/SAYO/KUNI :750-798, GetGameVersion 7 -> ITEM_CLEAR_BELL + FLAG_UNK_103 else ITEM_TIDAL_BELL + FLAG_UNK_104 :807-816, FLAG_HIDE_DANCE_STUDIO_KIMONO_GIRLS, VAR_UNK_410C 6, VAR_UNK_40FA 1, HG ClearFlag FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS / SS ClearFlag FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS :868-874)",
   "TRAINER_KIMONO_GIRL_ZUKI (162): UMBREON 38; _NAOKO (160): ESPEON 38; _MIKI (164): FLAREON 38; _SAYO (161): JOLTEON 38; _KUNI (163): VAPOREON 38 (include/constants/trainers.h:165-169)",
+  "Fly: src/field_move.c:217-238 (BADGE_STORM, MAP_NEW_BARK flyAllowed); fly map cursor from New Bark's block (684/32, 394/32) = (21,12) (src/unk_02092BE8.c:40-45) to Ecruteak's rect (11,4) 2x2, nearest cell (12,5) (src/application/pokegear/map/overlay_101_021F79B4.c); landing sSpawnMaps MAP_ECRUTEAK (0x18D,0xB8) = (397,184) (asm/unk_0203BA5C.s:21)",
 ]
 notes = "Version split inside the shared script: the bell and which Kimono Girls' summit flag clears (scr_seq_0928_T27R0501.s:807-874); checked in the version twins heartgold/31-bell-tower-ho-oh (FLAG_UNK_103) and soulsilver/31-whirl-islands-lugia (FLAG_UNK_104). The five battles run back to back without healing [INFERENCE: no HealParty between them]: boost."
 
@@ -24,11 +25,10 @@ from = "prev"
 [run]
 frames = 37500
 
-# PHASE2: New Bark -> Ecruteak: Fly through the touch-screen start menu (unverified on HG/SS).
 [[step]]
-do = "wait_map"
+do = "fly"
 map = "MAP_ECRUTEAK"
-note = "arrival in Ecruteak (after the PHASE2 Fly)"
+note = "fly map: LEFT x9, UP x7 from New Bark (21,12) to Ecruteak (12,5); lands at (397,184), south of the coord at (397,174). Needs the Fly carrier of milestone 29"
 
 [[step]]
 do = "walk_to"

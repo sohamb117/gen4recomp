@@ -1,8 +1,8 @@
 # Proves the Team Rocket hideout under Mahogany: Lance opens the souvenir shop's stairs (OnFrame VAR_UNK_40A8 1), B1F's
-# Persian-statue alarms, B3F's rival and Petrel (TRAINER_EXECUTIVE_PETREL_PETREL_2), the three Murkrow passwords
-# (VAR_UNK_40AC 4..8), the multi battle with Lance vs Ariana, the three Electrodes, HM05 Whirlpool and
+# Persian-statue alarms, B3F's password grunts, rival and Petrel (TRAINER_EXECUTIVE_PETREL_PETREL_2), the three Murkrow
+# passwords (VAR_UNK_40AC 4..8), the multi battle with Lance vs Ariana, the three Electrodes, HM05 Whirlpool and
 # FLAG_ROCKET_HIDEOUT_CLEARED (opens the Mahogany Gym and Route 43's gate).
-# Start: MAP_LAKE_OF_RAGE (528,84) -> end: MAP_TEAM_ROCKET_HEADQUARTERS_B2F generator room (21,15), hideout cleared.
+# Start: MAP_LAKE_OF_RAGE (528,84) -> end: MAP_TEAM_ROCKET_HEADQUARTERS_B2F generator room (30,18), hideout cleared.
 title = "Rocket hideout: Lance, Petrel, Ariana, the Electrodes, HM05"
 status = "planned"
 priority = "P0"
@@ -10,22 +10,29 @@ version = "both"
 estimate = 50000
 refs = [
   "zone_event 084_T28 warp 5 (528,174) -> MAP_MAHOGANY_SOUVENIR_SHOP",
-  "scr_seq_0088_D35R0101_hdr.s (OnFrame VAR_UNK_40A8 1 -> 006); scr_seq_0088_D35R0101.s:69-123 (Lance: FLAG_HIDE_MAHOGANY_SHOP_LANCE, VAR_UNK_40A8 2)",
+  "scr_seq_0349_D35R0101_hdr.s (OnFrame VAR_UNK_40A8 1 -> 006); scr_seq_0088_D35R0101.s:69-123 (Lance: FLAG_HIDE_MAHOGANY_SHOP_LANCE, VAR_UNK_40A8 2)",
   "zone_event 113_D35R0101 warp 1 (6,3) -> MAP_TEAM_ROCKET_HEADQUARTERS_B1F (51,4)",
-  "zone_event 233_D35R0102 coords 0-4 (44,4) (18,4) (44,11) (44,29) (18,29) VAR_UNK_40AD..40B1 0 -> statue alarms (TRAINER_TEAM_ROCKET_GRUNT_20/21, scr_seq_0089_D35R0102.s:149-740); coords 5-20 the floor traps (VAR_ROCKET_TRAP_*)",
+  "zone_event 233_D35R0102 coords 0-4 (44,4) (18,4) (44,11) (44,29) (18,29) w1 h2 VAR_UNK_40AD..40B1 == 0 -> statue alarms: TRAINER_TEAM_ROCKET_GRUNT_20 then _21, var -> 2 (scr_seq_0089_D35R0102.s:149-240 coord 0, :304-397 coord 1); the statues (objects 0/2) stand on (44,3)/(18,3), so B1F's top corridor (rows 3-5) is crossed only over coord 0's and coord 1's tiles",
+  "zone_event 233_D35R0102 coords 5-20 (11..16,16..22) VAR_ROCKET_TRAP_* == 0 -> RocketTrapBattle (scr_seq_0089_D35R0102.s:995-1206); coord 21 (16,28) VAR_UNK_40C2 == 0 (never set: include/constants/vars.h:209 is its only other use) -> Warp B1F (50,4) (:1208-1219)",
+  "bg 0 (37,21) the surveillance switch (scr_seq_0089_D35R0102.s:885-993, YES/NO; not used: it needs a detour through Scientist Gregg's sight (36,22))",
+  "TRAINER_TEAM_ROCKET_GRUNT_20 (223): DROWZEE 17, ZUBAT 19; TRAINER_TEAM_ROCKET_GRUNT_21 (224): ZUBAT 16, GRIMER 17, RATTATA 18; TRAINER_TEAM_ROCKET_GRUNT_15 (216, B1F (12,5) face east sight 4): RATTATA 16 x4",
   "zone_event 233_D35R0102 warp 1 (10,29) -> MAP_TEAM_ROCKET_HEADQUARTERS_B2F 0",
-  "scr_seq_0090_D35R0103_hdr.s (OnFrame VAR_UNK_40A9 0 -> 000: Lance, FLAG_UNK_1E5, VAR_UNK_40A9 1, :85-117)",
-  "zone_event 234_D35R0103 warps 1-4 -> B3F; zone_event 235_D35R0104 coord 0 (20,17) h3 VAR_UNK_40AC 2 -> rival (:150-199, VAR_UNK_40AC 3), coord 1 (23,12) w2 VAR_UNK_40AC 3 -> Petrel (:247-313, VAR_UNK_40AC 4)",
-  "scr_seq_0091_D35R0104.s:19-25 (OnTransition VAR_UNK_40AC 2), :38-64 (OnFrame VAR_UNK_40AC 0 -> 1)",
+  "scr_seq_0351_D35R0103_hdr.s (OnFrame VAR_UNK_40A9 0 -> 000: Lance, HealParty, FLAG_UNK_1E5, VAR_UNK_40A9 1, scr_seq_0090_D35R0103.s:85-117)",
+  "zone_event 234_D35R0103 warps 1 (51,29) / 3 (10,4) / 4 (51,4) <-> zone_event 235_D35R0104 warps 0 (51,29) / 2 (10,4) / 3 (51,4); B3F's east half (warps 0, 3) and west half (warps 1, 2) do not connect (land data BFS)",
+  "scr_seq_0352_D35R0104_hdr.s: OnFrame VAR_UNK_40AC 0 -> 001 (Lance, VAR_UNK_40AC 1, scr_seq_0091_D35R0104.s:38-64); OnTransition 006 (:19-26): VAR_UNK_40AC 2 once TRAINER_TEAM_ROCKET_F_GRUNT_5 and TRAINER_TEAM_ROCKET_GRUNT_19 are defeated, on entering B3F (src/field_warp_tasks.c:267)",
+  "zone_event 235_D35R0104 object 3 TRAINER_TEAM_ROCKET_GRUNT_19 (15,25) face east sight 5: RATICATE 19; object 4 TRAINER_TEAM_ROCKET_F_GRUNT_5 (38,15) sight 0: EKANS 18, GLOOM 18",
+  "zone_event 235_D35R0104 coord 0 (20,17) h3 VAR_UNK_40AC 2 -> rival (scr_seq_0091_D35R0104.s:150-199, VAR_UNK_40AC 3); objects 10/11 the door (23,15)/(24,15) -> 004 (:422-451: both grunts defeated -> the door opens); coord 1 (23,12) w2 VAR_UNK_40AC 3 -> Petrel (:247-313, VAR_UNK_40AC 4)",
   "TRAINER_EXECUTIVE_PETREL_PETREL_2 (488, include/constants/trainers.h:493): ZUBAT 22, RATICATE 24, KOFFING 22",
-  "zone_event 234_D35R0103 coord 5 (11,4) h2 VAR_UNK_40AC 4 -> Murkrow 1 (VAR_UNK_40AC 5); zone_event 235_D35R0104 coord 2 (50,4) h2 VAR_UNK_40AC 5 -> Murkrow 2 (6); zone_event 234_D35R0103 coord 6 (50,29) h2 VAR_UNK_40AC 6 -> (7); coord 3 (29,27) w4 VAR_UNK_40AC 7 -> Murkrow 3 (8, VAR_UNK_40A9 3)",
+  "zone_event 234_D35R0103 coord 5 (11,4) h2 VAR_UNK_40AC 4 -> Murkrow 1 (scr_seq_0090_D35R0103.s:137-155, VAR 5); zone_event 235_D35R0104 coord 2 (50,4) h2 VAR_UNK_40AC 5 -> Murkrow 2 (scr_seq_0091_D35R0104.s:105-125, VAR 6); zone_event 234_D35R0103 coord 6 (50,29) h2 VAR_UNK_40AC 6 -> (:177-190, VAR 7); coord 3 (29,27) w4 VAR_UNK_40AC 7 -> Murkrow 3 (:206-237: the doors (30,22)/(31,22) open, VAR 8, VAR_UNK_40A9 3)",
+  "scr_seq_0089_D35R0102.s:46-64 (B1F OnTransition: VAR_UNK_40AC 4..7 -> 8, VAR_UNK_40A9 2; the route never enters B1F then)",
   "zone_event 234_D35R0103 coord 0 (30,19) w2 VAR_UNK_40AC 8 -> 003",
-  "scr_seq_0090_D35R0103.s:314-443 (MultiBattle TRAINER_PKMN_TRAINER_LANCE_LANCE + TRAINER_EXECUTIVE_ARIANA_ARIANA_2 + TRAINER_TEAM_ROCKET_GRUNT_25 :370, FLAG_HIDE_ROCKET_HIDEOUT_B2F_ARIANA, FLAG_HIDE_MAHOGANY_SHOP_SHADY_SALESMAN, VAR_UNK_40AC 9, VAR_UNK_40A9 4)",
+  "scr_seq_0090_D35R0103.s:314-439 (MultiBattle TRAINER_PKMN_TRAINER_LANCE_LANCE + TRAINER_EXECUTIVE_ARIANA_ARIANA_2 + TRAINER_TEAM_ROCKET_GRUNT_25 :370, FLAG_HIDE_ROCKET_HIDEOUT_B2F_ARIANA, FLAG_HIDE_MAHOGANY_SHOP_SHADY_SALESMAN, VAR_UNK_40AC 9, VAR_UNK_40A9 4; the player is walked to (26,18))",
   "TRAINER_EXECUTIVE_ARIANA_ARIANA_2 (479, include/constants/trainers.h:484): ARBOK 25, GLOOM 25, MURKROW 27; TRAINER_TEAM_ROCKET_GRUNT_25 (499): DROWZEE 18, GRIMER 20",
+  "zone_event 234_D35R0103 coord 1 (28,10) and coord 2 (32,17) h3 VAR_UNK_40AC 9 -> Lance turns the player back (scr_seq_0090_D35R0103.s:783-826)",
   "zone_event 234_D35R0103 objects 9-11 Electrodes (21,12) (21,14) (21,16) -> 004/005/006",
-  "scr_seq_0090_D35R0103.s:593-732 (WildBattle SPECIES_ELECTRODE 23 x3, FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_1..3, ITEM_HM05, FLAG_ROCKET_HIDEOUT_CLEARED, FLAG_HIDE_ROUTE_43_GATE_ROCKETS, VAR_UNK_40AC 10, VAR_UNK_410F 1)",
+  "scr_seq_0090_D35R0103.s:593-732 (WildBattle SPECIES_ELECTRODE 23 x3, any order: a win sets FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_n (StaticWildWonOrCaughtCheck, src/battle/battle_setup.c:547-555); the third -> ITEM_HM05, FLAG_ROCKET_HIDEOUT_CLEARED, FLAG_HIDE_ROUTE_43_GATE_ROCKETS, VAR_UNK_40AC 10, VAR_UNK_410F 1, every VAR_ROCKET_TRAP_* 1)",
 ]
-notes = "The 40AC chain fixes the order: B3F (rival, Petrel), B2F Murkrow at (11,4), B3F Murkrow at (50,4), B2F (50,29), B2F (29..32,27), then the double door (30..31,19) and the multi battle. Electrode is Electric: Ground move by boost (Explosion/Selfdestruct risk is the RNG's). The statue alarm coords sit on the corridors: walk_to avoid them where the probe shows a way round [INFERENCE: each fires once, then its var is 2]."
+notes = "The 40AC chain fixes the order: B3F's two password grunts, then re-entering B3F from its west half (OnTransition -> 2), rival (3), the door, Petrel (4), B2F Murkrow at (11,4) (5), B3F (50,4) (6), B2F (50,29) (7), B2F (29..32,27) (8), the double door (30..31,19) and the multi battle (9), the Electrodes (10). B1F: coord 0 and coord 1 (two grunt battles each) cannot be walked round (the statues stand on the corridor's third row); the traps (coords 5-20) and the warp-back coord 21 are avoided: (14,15) (14,17) (13,17) (13,18) (12,18) (12,20) (14,20) (14,19) (16,19) (16,21) (15,21) (15,23) is trap-free (hg_map.py --avoid-coords BFS). Electrode is Electric: Ground move by boost (Explosion/Selfdestruct risk is the RNG's). battles = 11: the B1F alarms 4 (Grunt 20 + 21 at coords 0 and 1), Grunt 19, F Grunt 5, Petrel, the multi battle, 3 Electrodes; the sight grunts 15/16/17 are extra."
 
 [start]
 from = "prev"
@@ -59,13 +66,13 @@ note = "stairs (warp 1) -> B1F (51,4)"
 do = "wait_map"
 map = "MAP_TEAM_ROCKET_HEADQUARTERS_B1F"
 
-# PHASE2: B1F's statue alarms and floor traps: probe_map B1F and route around coords 0-20 where the floor allows; each
-# alarm met is a grunt battle (walk_to fights). Then B2F/B3F per the VAR_UNK_40AC chain below.
 [[step]]
 do = "walk_to"
 x = 10
 z = 29
-note = "B1F -> B2F (warp 1)"
+avoid = [[12, 17], [13, 16], [15, 16], [16, 16], [11, 18], [16, 17], [14, 18], [15, 18], [15, 20], [13, 19], [14, 21], [12, 21], [11, 22], [13, 21], [14, 22], [16, 22], [16, 28], [44, 11], [44, 12], [44, 29], [44, 30], [18, 29], [18, 30]]
+max = 12000
+note = "B1F -> B2F (warp 1). Avoided: the traps (coords 5-20), coord 21 (16,28) (warp back to (50,4)), statue coords 2-4. Crossed: coord 0 (44,4..5) and coord 1 (18,4..5), each Grunt 20 + Grunt 21 (fought in the walk, text advanced); Grunt 15 (12,5) faces east, sight 4: the shaft (14..16,6..9) starts in his line [INFERENCE: mv 0 trainers look their facing way]"
 
 [[step]]
 do = "wait_map"
@@ -73,13 +80,61 @@ map = "MAP_TEAM_ROCKET_HEADQUARTERS_B2F"
 
 [[step]]
 do = "advance_text"
-note = "OnFrame VAR_UNK_40A9 0 -> Lance (scr_seq_0090_D35R0103.s:85-117)"
+note = "OnFrame VAR_UNK_40A9 0 -> Lance heals the party, player walked to (15,25) (scr_seq_0090_D35R0103.s:85-117)"
 
 [[step]]
 do = "walk_to"
 x = 51
 z = 29
-note = "B2F -> B3F (warp 1)"
+note = "B2F -> B3F (warp 1); coords 3/4/6 on the way are inert (VAR_UNK_40AC 0, VAR_UNK_40A9 1); Grunt 16 (48,25) faces south over (48,26..30): fought in the walk"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B3F"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_UNK_40AC 0 -> Lance (scr_seq_0091_D35R0104.s:38-64), VAR_UNK_40AC 1"
+
+[[step]]
+do = "talk_to"
+id = 3
+avoid = [[14, 25], [15, 26]]
+note = "TRAINER_TEAM_ROCKET_GRUNT_19 (15,25), face east sight 5: (16,25), the only free side left, is in his line, so he spots the walk on (16..20,25) and the battle is fought in it; the talk is his after-battle line"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "TRAINER_TEAM_ROCKET_F_GRUNT_5 (38,15), sight 0: talked to"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_TEAM_ROCKET_F_GRUNT_5: EKANS 18, GLOOM 18"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 51
+z = 4
+note = "B3F east half -> B2F (warp 3 (51,4))"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TEAM_ROCKET_HEADQUARTERS_B2F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 4
+note = "B2F top corridor -> B3F west half (warp 3 (10,4)); Grunt 17 (13,3) faces south over (13,4..5), the corridor's only rows there: fought in the walk; coord 5 (11,4) inert (VAR_UNK_40AC 1)"
 
 [[step]]
 do = "wait_map"
@@ -90,7 +145,15 @@ do = "walk_to"
 x = 20
 z = 18
 on_text = "stop"
-note = "B3F coord 0 (20,17..19) VAR_UNK_40AC 2 -> the rival"
+note = "OnTransition set VAR_UNK_40AC 2 (both grunts defeated); coord 0 (20,17..19) -> the rival (no battle)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 10
+note = "the door (obj_D35R0104_babyboy1_9 (23,15)) from (23,16): both grunts defeated -> it opens (scr_seq_0091_D35R0104.s:422-451)"
 
 [[step]]
 do = "advance_text"
@@ -108,6 +171,7 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "TRAINER_EXECUTIVE_PETREL_PETREL_2: ZUBAT 22, RATICATE 24, KOFFING 22"
 
 [[step]]
@@ -117,7 +181,7 @@ do = "advance_text"
 do = "walk_to"
 x = 10
 z = 4
-note = "B3F -> B2F (warp 2 (10,4))"
+note = "B3F -> B2F (warp 2 (10,4)); coords 0/1 inert now (VAR_UNK_40AC 4)"
 
 [[step]]
 do = "wait_map"
@@ -157,7 +221,7 @@ do = "advance_text"
 do = "walk_to"
 x = 51
 z = 29
-note = "B3F -> B2F (warp 0 (51,29))"
+note = "B3F -> B2F (warp 0 (51,29)) down the east column"
 
 [[step]]
 do = "wait_map"
@@ -178,7 +242,7 @@ do = "walk_to"
 x = 30
 z = 27
 on_text = "stop"
-note = "coord 3 (29..32,27) VAR_UNK_40AC 7 -> Murkrow 3: the password (VAR 8, VAR_UNK_40A9 3)"
+note = "coord 3 (29..32,27) VAR_UNK_40AC 7 -> Murkrow 3: the password opens the doors (VAR 8, VAR_UNK_40A9 3); Grunt 16's line (48,26..30) crossed again, already beaten"
 
 [[step]]
 do = "advance_text"
@@ -188,7 +252,7 @@ do = "walk_to"
 x = 30
 z = 19
 on_text = "stop"
-note = "coord 0 (30..31,19) VAR_UNK_40AC 8 -> Ariana, Lance joins (scr_seq_0090_D35R0103.s:314-370)"
+note = "up the opened corridor (30..31,20..23): coord 0 (30..31,19) VAR_UNK_40AC 8 -> Ariana, Lance joins (scr_seq_0090_D35R0103.s:314-370)"
 
 [[step]]
 do = "advance_text"
@@ -197,15 +261,18 @@ shot = "ariana-multi"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "MultiBattle: Lance (DRAGONITE 40) + player vs ARIANA_2 (ARBOK 25, GLOOM 25, MURKROW 27) + GRUNT_25 (DROWZEE 18, GRIMER 20)"
 
 [[step]]
 do = "advance_text"
+note = "Lance walks the player to (26,18) and waits at (39,18); VAR_UNK_40AC 9"
 
 [[step]]
 do = "talk_to"
 id = 9
-note = "Electrode 1 (21,12)"
+avoid = [[28, 10], [32, 17], [32, 18], [32, 19]]
+note = "Electrode 1 (21,12) from (20,12); coords 1/2 (Lance turns the player back) avoided"
 
 [[step]]
 do = "advance_text"
@@ -220,7 +287,8 @@ do = "advance_text"
 [[step]]
 do = "talk_to"
 id = 10
-note = "Electrode 2 (21,14)"
+avoid = [[28, 10], [32, 17], [32, 18], [32, 19]]
+note = "Electrode 2 (21,14) from (20,14)"
 
 [[step]]
 do = "advance_text"
@@ -234,7 +302,8 @@ do = "advance_text"
 [[step]]
 do = "talk_to"
 id = 11
-note = "Electrode 3 (21,16)"
+avoid = [[28, 10], [32, 17], [32, 18], [32, 19]]
+note = "Electrode 3 (21,16) from (20,16); after it the player is walked S2 E10 to (30,18) (scr_seq_0090_D35R0103.s:667-685, _09E0 :736)"
 
 [[step]]
 do = "advance_text"
@@ -245,15 +314,19 @@ do = "auto_battle"
 [[step]]
 do = "advance_text"
 shot = "hm05"
-note = "Lance: HM05, FLAG_ROCKET_HIDEOUT_CLEARED (scr_seq_0090_D35R0103.s:694-715)"
+note = "Lance: HM05, FLAG_ROCKET_HIDEOUT_CLEARED, the traps' vars 1 (scr_seq_0090_D35R0103.s:694-732)"
 
 [expect]
 map = "MAP_TEAM_ROCKET_HEADQUARTERS_B2F"
 badges = 6
 flags = ["FLAG_ROCKET_HIDEOUT_CLEARED", "FLAG_HIDE_ROUTE_43_GATE_ROCKETS", "FLAG_HIDE_ROCKET_HIDEOUT_B2F_ARIANA", "FLAG_HIDE_MAHOGANY_SHOP_SHADY_SALESMAN", "FLAG_HIDE_MAHOGANY_SHOP_LANCE", "FLAG_HIDE_ROCKET_HIDEOUT_B3F_PETREL", "FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_1", "FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_2", "FLAG_REMOVED_ROCKET_HIDEOUT_B3F_ELECTRODE_3"]
-battles = 5
+battles = 11
 
 [expect.vars]
 VAR_UNK_40A8 = 2
+VAR_UNK_40A9 = 4
 VAR_UNK_40AC = 10
+VAR_UNK_40AD = 2
+VAR_UNK_40AE = 2
 VAR_UNK_410F = 1
+VAR_ROCKET_TRAP_KOFFING_1 = 1

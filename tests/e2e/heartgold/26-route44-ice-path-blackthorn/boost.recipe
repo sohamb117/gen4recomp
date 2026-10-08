@@ -1,0 +1,20 @@
+# Boost on 25's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
+# Party along the chain: 01-05 1 (CYNDAQUIL), 06 2 (+ the aide's Togepi egg), 10 3 (+ SCYTHER: Cut), 18 4
+# (+ PELIPPER: Surf/Fly) -> here 0 CYNDAQUIL, 1 Togepi, 2 SCYTHER, 3 PELIPPER: size 4; 34 adds LAPRAS -> 6.
+# Adds slot 4: the carrier of the field moves the rest of the story needs and no member knows:
+# - Strength (HM04, received in 20: scr_seq_0252_R42.s:16-96): the Ice Path B1F boulder (here), Victory Road 1F/2F
+#   boulders (33); Rock Smash is not needed on either route (33's refs: Victory Road's breakrocks are off the way);
+# - Whirlpool (HM05, received in 21: scr_seq_0090_D35R0103.s:694): SoulSilver 31, the Whirl Islands;
+# - Waterfall (HM07, received here: the Ice Path 1F item ball): Tohjo Falls (32);
+# - Dig (TM28, src/item.c:59): SoulSilver 32 digs out of Lugia's cave before flying.
+# FERALIGATR learns all four: files/poketool/personal/personal.json:12586 (FERALIGATR) tms include 28 (TM28 Dig) and
+# hms [1, 3, 4, 5, 6, 7, 8] (src/item.c:127-130: HM04 Strength, HM05 Whirlpool, HM07 Waterfall). The party menu
+# lists them as field moves (src/party_menu.c:206-213). Lv40 is the stretch's (TRAINER_LEADER_CLAIR_CLAIR (35):
+# GYARADOS 38, DRAGONAIR 38 x2, KINGDRA 41; TRAINER_RIVAL_SILVER_13 in 33: FERALIGATR 40 at the top); behind a fainted
+# lead it fights with Waterfall/Strength (80 power) and Dig (Ground).
+# Party after: 5 (CYNDAQUIL, Togepi, SCYTHER, PELIPPER, FERALIGATR).
+party SPECIES_FERALIGATR 40
+party-move 4 0 MOVE_STRENGTH
+party-move 4 1 MOVE_WHIRLPOOL
+party-move 4 2 MOVE_WATERFALL
+party-move 4 3 MOVE_DIG

@@ -14,9 +14,10 @@ refs = [
   "scr_seq_0943_T30GYM0101.s:16-18 (OnTransition BlackthornGymInit, VAR_UNK_4120 0)",
   "zone_event 137_T30GYM0101 object 0 obj_T30GYM0101_gsleader8 (12,3); Ace Trainers Paulo (11,66), Lola (8,61), Cody (20,54), Fran (21,45), Mike (13,40)",
   "scr_seq_0943_T30GYM0101.s:87-112 (TRAINER_LEADER_CLAIR_CLAIR, FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT, ClearFlag FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE)",
+  "src/field/gymmick/blackthorn.c (BlackthornPlatform_Init, BlackthornGymmick_GetButtonAction, ov04_02255CBC, Task_BlackthornGymmick_MovePlatform), src/gymmick_init.c:104-121",
   "TRAINER_LEADER_CLAIR_CLAIR (35, include/constants/trainers.h:40): GYARADOS 38, DRAGONAIR 38, DRAGONAIR 38, KINGDRA 41",
 ]
-notes = "Kingdra (Water/Dragon) takes neutral damage from most types except Dragon: boost (Ice/Dragon coverage, levels ~45). The gym's moving floor tiles (BlackthornGymInit) and the gym guide's coord 3 (12..14,82) scene are untraced."
+notes = "Kingdra (Water/Dragon) takes neutral damage from most types except Dragon: Ice/Dragon coverage, levels ~45. The floor puzzle is src/field/gymmick/blackthorn.c: three lava platforms (InitBlackthornGym, src/gymmick_init.c:104-121: (13,75) rot 0, (9,58) rot 1, (14,32) rot 0; reset on every entry by the OnTransition BlackthornGymInit, scr_seq_0943_T30GYM0101.s:16-18) whose 3x6 floors are walkable over the MAGMA 0x2C (GymmickCheckCollision_Blackthorn); stepping onto a platform's centre button rotates it a quarter turn about the player when its ring and sweep are lava (ov04_02255CBC), onto the side buttons moves it its width (5 or 4) carrying the player, all or nothing (Task_BlackthornGymmick_MovePlatform; triggered from FieldSystem_ProcessStep, src/field/field_control.c:633). The `steps` route below is a BFS over that model (player tile + the three platforms' x/z/rotation) on the decoded land data, splitting at every button tile and carry landing; it meets Paulo (14,66), Lola (7,61), Cody (20,57), Fran (21,49), Mike (15,40) as the plan around their approach tiles expects [INFERENCE: trainer sight crosses lava; Cody's movement 4 looks north/south]. From Clair's final platform layout no way back exists in the model, so the exit is pit coord 0 (5,9), whose script warps to (8,83) by the door (scr_seq_0943_T30GYM0101.s:147-159; VAR_UNK_4111 is never set). The whole model is untested in game [INFERENCE]."
 
 [start]
 from = "prev"
@@ -40,17 +41,18 @@ do = "walk_to"
 x = 13
 z = 82
 on_text = "stop"
-note = "coord 3 (12..14,82) VAR_UNK_4120 0 -> 004 (scr_seq_0943_T30GYM0101.s:205-252)"
+note = "coord 3 (12..14,82) VAR_UNK_4120 0 -> 004 (scr_seq_0943_T30GYM0101.s:205-254)"
 
 [[step]]
 do = "advance_text"
 
-# PHASE2: the gym floor (BlackthornGymInit's moving platforms / lava) from (13,82) to Clair (12,3): avoid the pit
-# coords 0-2 and record the route with the probe.
 [[step]]
-do = "talk_to"
-id = 0
-note = "Clair (12,3)"
+do = "steps"
+route = [[13, 75], [12, 75], [7, 75], [8, 75], [8, 76], [8, 75], [9, 75], [14, 75], [14, 62], [7, 62], [7, 57], [9, 57], [9, 53], [9, 54], [10, 54], [14, 54], [13, 54], [12, 54], [13, 54], [14, 54], [18, 54], [18, 57], [21, 57], [21, 49], [20, 49], [20, 40], [15, 40], [15, 33], [14, 33], [14, 32], [13, 32], [8, 32], [9, 32], [9, 31], [9, 32], [10, 32], [15, 32], [14, 32], [14, 31], [14, 26], [14, 27], [14, 26], [14, 21], [14, 22], [14, 21], [14, 16], [14, 17], [15, 17], [20, 17], [19, 17], [19, 16], [19, 11], [19, 12], [19, 11], [19, 6], [14, 6], [14, 4], [12, 4]]
+face = "up"
+interact = true
+max = 20000
+note = "the platform route to Clair (12,3): button steps rotate/move platforms 0/2/1 (blackthorn.c model, see notes)"
 
 [[step]]
 do = "advance_text"
@@ -58,11 +60,18 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "TRAINER_LEADER_CLAIR_CLAIR: GYARADOS 38, DRAGONAIR 38 x2, KINGDRA 41"
 
 [[step]]
 do = "advance_text"
 shot = "clair"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+note = "pit coord 0: warps to (8,83) (scr_seq_0943_T30GYM0101.s:147-159)"
 
 [[step]]
 do = "walk_to"

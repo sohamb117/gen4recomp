@@ -16,8 +16,11 @@ refs = [
   "zone_event 027_R26 warps 2/3 (909/910,296) -> MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE 0 (11,23)",
   "scr_seq_0213_R22R0101.s:28-29 (OnTransition: FLAG_SYS_FLYPOINT_VICTORY_ROAD)",
   "zone_event 270_R22R0101 coord 0 (11,16) VAR_UNK_4110 0 -> 000 (officer, VAR_UNK_4110 1, scr_seq_0213_R22R0101.s:97-109)",
+  "src/data/map_headers.h: MAP_BELL_TOWER_ROOF flyAllowed TRUE, escapeRopeAllowed FALSE, worldMapX/Y (12,4); MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE flyAllowed FALSE, escapeRopeAllowed TRUE, MAP_TYPE_CAVE (tools/hg_world.py map_headers)",
+  "src/field_move.c:217-238 (Fly: BADGE_STORM, flyAllowed), :510-525 (Dig: a cave with escapeRopeAllowed), :540-548 (Task_UseDigInField -> Task_FieldDig, asm/overlay_02_02248728.s:8094; where it lands [INFERENCE: the escape point, as an Escape Rope])",
+  "Fly: the fly map cursor opens on the map header's worldMapX/Y off the overworld (src/unk_02092BE8.c:46-58), the player's block on it; New Bark's rect (21,12) 1x1 (src/application/pokegear/map/overlay_101_021F79B4.c); landing sSpawnMaps MAP_NEW_BARK (0x2B7,0x18D) = (695,397) (asm/unk_0203BA5C.s:14)",
 ]
-notes = "Route 26/27 trainers (Cooltrainers, Psychics, Dragon Tamer) fight if they spot. Tohjo Falls' inner route (land/water/waterfall) is planned by walk_to surf = true, which answers the Waterfall prompt with A + YES (README walk_to)."
+notes = "Route 26/27 trainers (Cooltrainers, Psychics, Dragon Tamer) fight if they spot. Tohjo Falls' inner route (land/water/waterfall) is planned by walk_to surf = true, which answers the Waterfall prompt with A + YES (README walk_to). The two versions start apart: HeartGold on the Bell Tower roof (Fly allowed), SoulSilver in Lugia's cave (Fly not allowed, Dig allowed), so the Fly step has dig = true: in SoulSilver it digs out to the special spawn warp first [INFERENCE: the Whirl Islands entrance on Route 41 the player came in by, on the overworld], then flies. The party needs a Fly carrier, a Surf carrier with Waterfall, and in SoulSilver a Dig carrier (no HG/SS boosts yet)."
 
 [start]
 from = "prev"
@@ -26,11 +29,11 @@ from = "prev"
 [run]
 frames = 60000
 
-# PHASE2: the legendary's summit/cave -> New Bark: Fly (touch-screen start menu, unverified on HG/SS).
 [[step]]
-do = "wait_map"
+do = "fly"
 map = "MAP_NEW_BARK"
-note = "arrival in New Bark (after the PHASE2 Fly)"
+dig = true
+note = "HG: from the roof (world-map block (12,4)) RIGHT x9, DOWN x8 to New Bark (21,12); SS: Dig out of the Lugia cave, then from that block to (21,12). Lands at (695,397)"
 
 [[step]]
 do = "walk_to"
