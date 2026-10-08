@@ -842,6 +842,25 @@ void OS_Halt(void)
                 "interrupt source could ever wake this");
     }
 
+    /* The scanline counter. Nothing counted lines, so REG_VCOUNT (plain RAM
+     * in the IO window) read 0 for the whole run, and a frame never reached
+     * VBlank by the only measure the game can take of it. Black/White's
+     * VBlank tasks, which the main loop runs right after its VBlank wait
+     * (sub_0200567C), transfer only while VCOUNT is still in 192..200, the
+     * start of VBlank (static sub_02016880 / sub_0201691C, the battle's
+     * ov94_021FE9BC); otherwise they wait a frame, so the first battle's
+     * send-out waited forever. The port's guest frame begins here, at line
+     * 192, and the frame's work (those tasks included) runs before the next
+     * halt without the port counting its cycles, so every read until then
+     * sees 192. DISPSTAT's VBlank flag (bit 0, set on lines 192..261) says
+     * the same, so it is set here too: Black's ov10_02166A6C updates the
+     * BG2 affine only while it reads 1. Guest writes to DISPSTAT are
+     * read-modify-writes that keep it. Before the first VBlank the line is
+     * 0 (crt0 waits for line 0). HBlank is not modeled, so the per-line
+     * handlers that read VCOUNT or the HBlank flag (D/P/Pt's window and
+     * scroll effects) do not run either way. */
+    reg_GX_VCOUNT = 192;
+    reg_GX_DISPSTAT |= 1;
     reg_OS_IF = OS_IE_V_BLANK;
     fn = OS_GetIrqFunction(OS_IE_V_BLANK);
     if (fn == NULL) {
