@@ -1,21 +1,21 @@
 # Proves Sidney's room: the battle, FLAG_DEFEATED_ELITE_4_SYDNEY, the opened north door and the walk on through CORRIDOR1.
 # Start: Sidney's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_PHOEBES_ROOM.
 title = "Elite Four: Sidney"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 7000
+estimate = 6895
 refs = [
   "data/maps/EverGrandeCity_SidneysRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR1",
   "data/scripts/elite_four.inc",
 ]
-notes = "TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, SHARPEDO 48, ABSOL 49. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items]."
+notes = "TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, SHARPEDO 48, ABSOL 49. No healing between rooms: each room's boost restores HP and PP (boost.recipe)."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 10400
 
 [[step]]
 do = "walk_to"

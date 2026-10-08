@@ -1,21 +1,21 @@
 # Proves Phoebe's room: the battle, FLAG_DEFEATED_ELITE_4_PHOEBE, the opened north door and the walk on through CORRIDOR2.
 # Start: Phoebe's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_GLACIAS_ROOM.
 title = "Elite Four: Phoebe"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 7000
+estimate = 6329
 refs = [
   "data/maps/EverGrandeCity_PhoebesRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR2",
   "data/scripts/elite_four.inc",
 ]
-notes = "TRAINER_PHOEBE (262): DUSCLOPS 48, BANETTE 49, SABLEYE 50, BANETTE 49, DUSCLOPS 51. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items]."
+notes = "TRAINER_PHOEBE (262): DUSCLOPS 48, BANETTE 49, SABLEYE 50, BANETTE 49, DUSCLOPS 51. No healing between rooms: each room's boost restores HP and PP (boost.recipe)."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 9500
 
 [[step]]
 do = "walk_to"

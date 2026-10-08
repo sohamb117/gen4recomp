@@ -1,5 +1,5 @@
-# Party strength for Steven (trainer_parties.h:4480 gTrainerParty_Steven: SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56,
-# ARMALDO 56, METAGROSS 58): Earthquake and Surf are x2-x4 on most of his team; the level carries the rest.
+# Party strength for Phoebe (trainer_parties.h:3385 gTrainerParty_Phoebe: DUSCLOPS 48, BANETTE 49, SABLEYE 50, BANETTE 49,
+# DUSCLOPS 51): a first run spent Earthquake on Sidney and lost to the second Dusclops.
 # No Pokemon Center between the League's rooms: a player restores HP and PP from the bag between battles (the bag
 # holds Full Restores, 38); auto_battle uses no items, so each room's boost does it: the level (HP full, stats
 # recomputed) and the lead's four moves set again (PP full). The moves: TM26 Earthquake, HM03 Surf, TM13 Ice Beam
@@ -8,4 +8,4 @@ party-move 0 0 MOVE_EARTHQUAKE
 party-move 0 1 MOVE_SURF
 party-move 0 2 MOVE_ICE_BEAM
 party-move 0 3 MOVE_WATERFALL
-party-level 0 80
+party-level 0 74

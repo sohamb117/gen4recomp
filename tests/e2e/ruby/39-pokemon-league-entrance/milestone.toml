@@ -1,10 +1,9 @@
 # Proves the League building (heal at its nurse), the guards and Corridor 5 into Sidney's room (VAR_ELITE_4_STATE, FLAG_ENTERED_ELITE_FOUR).
 # Start: Ever Grande (18,6) -> end: MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM, door shut.
 title = "Pokemon League: heal and into Sidney's room"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 6000
+estimate = 2925
 refs = [
   "data/maps/EverGrandeCity_PokemonLeague/map.json warp_events[2] (9,1) -> CORRIDOR5",
   "data/scripts/elite_four.inc (rooms: OnFrame walk in, door closes)",
@@ -15,7 +14,7 @@ notes = "The League nurse heals (object 1 (3,2)); the guards check the 8 badges.
 from = "prev"
 
 [run]
-frames = 60000
+frames = 4400
 
 [[step]]
 do = "walk_to"
@@ -30,14 +29,25 @@ map = "MAP_EVER_GRANDE_CITY_POKEMON_LEAGUE"
 [[step]]
 do = "walk_to"
 x = 3
-z = 3
+z = 4
 face = "up"
 interact = true
-note = "the nurse (3,2) across the counter"
+note = "the nurse (object 1 (3,2)) across the counter (3,3): Common_EventScript_PkmnCenterNurse (EverGrandeCity_PokemonLeague/scripts.inc:17-22)"
 
 [[step]]
 do = "advance_text"
 note = "heal YES/NO answered by A (YES)"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 3
+face = "up"
+interact = true
+note = "the guards stand in the door (OnTransition GuardsBlockDoor: setobjectxyperm 3 (9,2), 4 (10,2) while FLAG_ENTERED_ELITE_FOUR is clear, :5-15): DoorGuard checks the badges, the guards step aside, FLAG_ENTERED_ELITE_FOUR (:44-70)"
+
+[[step]]
+do = "advance_text"
 
 [[step]]
 do = "walk_to"
@@ -52,9 +62,9 @@ map = "MAP_EVER_GRANDE_CITY_CORRIDOR5"
 [[step]]
 do = "walk_to"
 x = 6
-z = 6
+z = 13
 map = "MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM"
-note = "Corridor 5 north into Sidney's room"
+note = "Corridor 5 north into Sidney's room, whose OnFrame walks the player in to (6,7) and shuts the door (EverGrandeCity_SidneysRoom/scripts.inc)"
 
 [[step]]
 do = "advance_text"

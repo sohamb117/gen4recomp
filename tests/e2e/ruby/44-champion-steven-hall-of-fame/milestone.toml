@@ -1,11 +1,10 @@
 # Proves the Champion's room (TRAINER_STEVEN), May and Birch, the Hall of Fame (FLAG_SYS_GAME_CLEAR, the HoF save), the credits
 # and the game's own SoftReset.
-# Start: the Champion's room after the walk-in -> end: the reset after "The End" (wait_reset).
+# Start: Corridor 4 -> end: the reset after "The End" (wait_reset).
 title = "Champion Steven, the Hall of Fame, credits and the reset"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 26000
+estimate = 27646
 refs = [
   "data/maps/EverGrandeCity_ChampionsRoom/map.json object_events[0] STEVEN (6,5), warp_events[1] (6,2) -> HALL_OF_FAME",
   "data/scripts/hall_of_fame.inc (SetGameClearFlags, special GameClear)",
@@ -19,20 +18,22 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 41500
 save = "none"
 
 [[step]]
 do = "walk_to"
-x = 6
-z = 6
-face = "up"
-interact = true
-note = "below Steven (6,5) [INFERENCE: R/S's room starts the battle by script on entry as Emerald does; the talk is harmless if so]"
+x = 5
+z = 2
+note = "Corridor 4's north door (warp 1) -> MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM"
 
 [[step]]
 do = "advance_text"
-note = "intro"
+note = "OnFrame EnterRoom: the walk up to Steven, IntroSpeech, trainerbattle_no_intro TRAINER_STEVEN (EverGrandeCity_ChampionsRoom/scripts.inc:18-37)"
 
 [[step]]
 do = "auto_battle"
@@ -67,7 +68,7 @@ do = "press"
 keys = "A"
 gap = 60
 times = 10
-note = "[PHASE2] advance the HoF screen if it waits"
+note = "advances the HoF screen if it waits"
 
 [[step]]
 do = "wait_frames"
