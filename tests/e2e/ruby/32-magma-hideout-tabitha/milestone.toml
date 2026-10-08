@@ -4,10 +4,9 @@
 # FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE.
 # Start: Slateport outside the harbor -> end: MAP_MAGMA_HIDEOUT_B2F by the dock.
 title = "Team Magma Hideout: Tabitha and the escaped submarine (Ruby)"
-status = "planned"
 priority = "P0"
 version = "ruby"
-estimate = 45000
+estimate = 38287
 refs = [
   "data/maps/LilycoveCity/scripts.inc:15-31 (OnLoad .ifndef SAPPHIRE: the cove entrance metatiles, (71,5) BottomMid collision 0)",
   "data/maps/LilycoveCity/map.json warp_events[14] (71,5) -> MAGMA_HIDEOUT_1F (13,27); [6] (70,5) -> AQUA_HIDEOUT_1F is Sapphire's",
@@ -23,20 +22,17 @@ notes = "Ruby's branch: its hideout is the MAP_MAGMA_HIDEOUT_* maps behind Lilyc
 from = "prev"
 
 [run]
-frames = 60000
+frames = 57500
 
 [[step]]
-do = "walk_to"
-x = 34
-z = 57
-map = "MAP_ROUTE110"
-note = "north out of Slateport onto Route 110's walking path"
-
-[[step]]
-do = "walk_to"
-x = 22
-z = 6
-map = "MAP_MAUVILLE_CITY"
+do = "heal"
+x = 24
+z = 14
+map = "MAP_LILYCOVE_CITY"
+surf = true
+hm = true
+max = 40000
+note = "walked (no party member can Fly) Route 110 -> Mauville -> 118 -> 119 -> Fortree -> 120 -> 121 to Lilycove's Pokemon Center (LilycoveCity/map.json warp_events[2] (24,14)): HP and PP back for the hideout"
 
 [[step]]
 do = "walk_to"
@@ -44,7 +40,10 @@ x = 71
 z = 6
 map = "MAP_LILYCOVE_CITY"
 surf = true
-note = "Routes 118 (Surf), 119, Fortree, Routes 120/121, Lilycove, the cove water below the hideout door"
+hm = true
+on_battle = "flee"
+max = 20000
+note = "Lilycove's east shore, Surf to the cove water below the hideout door"
 
 [[step]]
 do = "walk_to"

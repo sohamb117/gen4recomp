@@ -24,25 +24,25 @@ from = "prev"
 frames = 60000
 
 [[step]]
-do = "walk_to"
-x = 34
-z = 57
-map = "MAP_ROUTE110"
-note = "north out of Slateport onto Route 110's walking path"
-
-[[step]]
-do = "walk_to"
-x = 22
-z = 6
-map = "MAP_MAUVILLE_CITY"
-
-[[step]]
-do = "walk_to"
-x = 13
-z = 26
-map = "MAP_AQUA_HIDEOUT_1F"
+do = "heal"
+x = 24
+z = 14
+map = "MAP_LILYCOVE_CITY"
 surf = true
-note = "Routes 118 (Surf), 119, Fortree, Routes 120/121, Lilycove, the cove door (Lilycove warp 6 (70,5)) -> AQUA_HIDEOUT_1F (13,27)"
+hm = true
+max = 40000
+note = "walked (no party member can Fly) Route 110 -> Mauville -> 118 -> 119 -> Fortree -> 120 -> 121 to Lilycove's Pokemon Center (LilycoveCity/map.json warp_events[2] (24,14)): HP and PP back for the hideout"
+
+[[step]]
+do = "walk_to"
+x = 70
+z = 6
+map = "MAP_LILYCOVE_CITY"
+surf = true
+hm = true
+on_battle = "flee"
+max = 20000
+note = "Lilycove's east shore, Surf to the cove water below the hideout door"
 
 [[step]]
 do = "walk_to"

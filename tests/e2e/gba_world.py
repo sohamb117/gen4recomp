@@ -600,8 +600,10 @@ class World:
                     if n_surf:
                         if not surf or (bn == MB_WATERFALL and d != 0):
                             continue
-                        if not t_surf:
-                            # IsPlayerFacingSurfableFishableWater: Surf from elevation 3 onto fishable water
+                        if not t_surf and e != 1:
+                            # IsPlayerFacingSurfableFishableWater: Surf from elevation 3 onto fishable water (at
+                            # elevation 1 the player is already surfing, on a tile a script made water: the arrival
+                            # through Lilycove's hideout door, setmetatile (71,5)/(70,5) in LilycoveCity OnLoad)
                             if pe != 3 or bn not in SURF_START:
                                 continue
                             mismatch = False

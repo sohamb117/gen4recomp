@@ -10,9 +10,9 @@ refs = [
   "data/maps/FortreeCity_Gym/scripts.inc:6-16 (RotatingGate_InitPuzzle)",
   "data/maps/FortreeCity_Gym/map.json object_events[0] WINONA (4,1); Jared (12,22) sight 3, Terrell (9,9) sight 3, Kylee (18,19) sight 4, Will (18,1) sight 1",
   "data/maps/FortreeCity_Gym/scripts.inc:18-44 (trainerbattle_single TRAINER_WINONA; WinonaDefeated: FLAG_DEFEATED_FORTREE_GYM, FLAG_BADGE06_GET; TM40)",
-  "tests/e2e/tools/gba_gates.py --game ruby MAP_FORTREE_CITY_GYM 2 23 4 2 (same route for --game sapphire)",
+  "tests/e2e/tools/gba_puzzle.py --game ruby MAP_FORTREE_CITY_GYM 2 23 4 2 (same route for --game sapphire)",
 ]
-notes = "Winona: TRAINER_WINONA (270): SWELLOW 31, PELIPPER 30, SKARMORY 32, ALTARIA 33 (no Electric/Ice in the party: the level carries it; Pelipper is Water/Flying, Surf neutral). Trainers: TRAINER_JARED (401): DODUO 30; TRAINER_TERRELL (654): TAILLOW 29, SWELLOW 29; TRAINER_KYLEE (655): SWABLU 30; TRAINER_WILL (404): WINGULL 28, SWELLOW 28, PELIPPER 28. R/S's gym entrance is (2,24) and Winona stands at (4,1) (Emerald's layout differs); the steps route is gba_gates.py's solution from the tile above the mat to below Winona."
+notes = "Winona: TRAINER_WINONA (270): SWELLOW 31, PELIPPER 30, SKARMORY 32, ALTARIA 33 (no Electric/Ice in the party: the level carries it; Pelipper is Water/Flying, Surf neutral). Trainers: TRAINER_JARED (401): DODUO 30; TRAINER_TERRELL (654): TAILLOW 29, SWELLOW 29; TRAINER_KYLEE (655): SWABLU 30; TRAINER_WILL (404): WINGULL 28, SWELLOW 28, PELIPPER 28. R/S's gym entrance is (2,24) and Winona stands at (4,1) (Emerald's layout differs); the steps route is tools/gba_puzzle.py's solution from the tile above the mat to below Winona."
 
 [start]
 from = "prev"
@@ -43,7 +43,7 @@ route = [[2, 23], [2, 20], [17, 20], [17, 19], [16, 19], [16, 20], [17, 20], [17
 max = 20000
 face = "up"
 interact = true
-note = "through the rotating gates to below Winona (4,1): python3 tests/e2e/tools/gba_gates.py --game ruby MAP_FORTREE_CITY_GYM 2 23 4 2 (src/rotating_gate.c sRotatingGate_FortreePuzzleConfig); the trainers who see the route are fought on the way"
+note = "through the rotating gates to below Winona (4,1): python3 tests/e2e/tools/gba_puzzle.py --game ruby MAP_FORTREE_CITY_GYM 2 23 4 2 (src/rotating_gate.c sRotatingGate_FortreePuzzleConfig); the trainers who see the route are fought on the way"
 
 [[step]]
 do = "advance_text"
