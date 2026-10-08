@@ -1,6 +1,9 @@
 # Emerald side systems (standalone: each starts from its start.recipe minted on the new-game base save, run with
 # --systems). Emerald-only systems first (the Battle Frontier, Trainer Hill, ...); the ones Ruby/Sapphire share
-# follow ruby/systems.txt's shapes.
+# follow ruby/systems.txt's shapes. Kept to where Emerald differs: contests (Lilycove only, no Contest Pass, the
+# Pokeblock Case from the receptionist) and the Berry Blender (Lilycove's lobby). The secret base (Secret Power from
+# Route 111, the base, the PC's decorations), berry planting/watering/harvest, the Day Care, the PC, the rods and the
+# HMs run Emerald the R/S scripts' way (data/scripts/secret_base.inc, berry_tree.inc): ruby/60-68 cover them.
 # P1
 60-frontier-battle-tower-lv50-singles
 61-frontier-battle-factory-lv50
@@ -9,3 +12,5 @@
 64-frontier-battle-dome-lv50
 65-frontier-battle-pike-lv50
 66-frontier-battle-pyramid-lv50
+67-contest-lilycove-normal-rank-win
+68-berry-blender-lilycove-pokeblock
