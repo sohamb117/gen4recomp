@@ -28,10 +28,11 @@ notes = "Archie: TRAINER_ARCHIE (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43; Shel
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 90000
 
 # PHASE2: the Strength/Rock Smash pushes in Rooms 1, 2, 3 and 8 (steps routes with boulder pushes; walk_to does not push boulders) and the underwater path from the Route 127/128 dive spot to (38,26).
 
@@ -47,78 +48,171 @@ map = "MAP_MOSSDEEP_CITY"
 
 [[step]]
 do = "walk_to"
-x = 38
-z = 26
-map = "MAP_ROUTE128"
-surf = true
-note = "Mossdeep south: Route 127 -> Route 128 (Surf) to the dark water above the cavern [INFERENCE: the dive spot over Underwater_Route128 (38,26)]"
-
-[[step]]
-do = "press"
-keys = "A"
-note = "Dive: A on deep water -> YES (field_control_avatar.c:465) [INFERENCE: prompt]"
-
-[[step]]
-do = "press"
-keys = "A"
-gap = 60
-
-[[step]]
-do = "wait_map"
-map = "MAP_UNDERWATER_ROUTE128"
-
-[[step]]
-do = "walk_to"
-x = 38
-z = 26
-note = "underwater cave door (warp 0) -> UNDERWATER_SEAFLOOR_CAVERN"
-
-[[step]]
-do = "wait_map"
-map = "MAP_UNDERWATER_SEAFLOOR_CAVERN"
-
-[[step]]
-do = "press"
-keys = "B"
-note = "surface: B on the underwater dive spot -> SEAFLOOR_CAVERN_ENTRANCE (setdivewarp, SeafloorCavern_Entrance/scripts.inc:6) [INFERENCE: B + YES]"
-
-[[step]]
-do = "press"
-keys = "A"
-gap = 60
-
-[[step]]
-do = "wait_map"
-map = "MAP_SEAFLOOR_CAVERN_ENTRANCE"
-
-[[step]]
-do = "walk_to"
 x = 10
 z = 1
+map = "MAP_SEAFLOOR_CAVERN_ENTRANCE"
 surf = true
-note = "entrance (warp 1) -> ROOM1 (5,18)"
+dive = true
+on_battle = "flee"
+max = 20000
+note = "Mossdeep south, Surf Routes 127 -> 128, Dive (Route128 map.json dive connection -> UNDERWATER_ROUTE128), surface in the cavern (setdivewarp, SeafloorCavern_Entrance/scripts.inc), Surf across the entrance to its north warp (10,1) -> ROOM1 (5,18)"
 
 [[step]]
 do = "wait_map"
 map = "MAP_SEAFLOOR_CAVERN_ROOM1"
 
+# Rooms 1, 2, 3 and 8: python3 tests/e2e/tools/gba_puzzle.py --game emerald MAP_SEAFLOOR_CAVERN_ROOM1 5 18 6 2
+# (ROOM2 10 7 11 1, ROOM3 9 13 8 1, ROOM8 5 12 5 2): Strength boulders and Rock Smash rocks (field_player_avatar.c TryPushBoulder)
 [[step]]
-do = "walk_to"
-x = 6
-z = 2
-hm = true
-note = "[PHASE2: Strength] Room1 (warp 2) -> Room2"
+do = "steps"
+route = [[5, 17], [4, 17], [4, 10]]
+
+[[step]]
+do = "steps"
+route = [[4, 10]]
+face = "right"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[5, 10]]
+
+[[step]]
+do = "steps"
+route = [[5, 10]]
+face = "down"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 11], [11, 11]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[12, 11], [12, 7], [9, 7], [9, 5], [7, 5], [7, 3], [6, 3], [6, 2]]
 
 [[step]]
 do = "wait_map"
 map = "MAP_SEAFLOOR_CAVERN_ROOM2"
 
 [[step]]
-do = "walk_to"
-x = 11
-z = 1
-hm = true
-note = "[PHASE2] Room2 (warp 3) -> Room7 (3,23)"
+do = "steps"
+route = [[9, 7]]
+
+[[step]]
+do = "steps"
+route = [[9, 7]]
+face = "left"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[7, 7], [7, 6], [4, 6]]
+
+[[step]]
+do = "steps"
+route = [[4, 6]]
+face = "up"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[4, 5]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[4, 4]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[4, 3], [8, 3]]
+
+[[step]]
+do = "steps"
+route = [[8, 3]]
+face = "right"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[9, 3]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[10, 3]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[11, 3], [11, 1]]
 
 [[step]]
 do = "wait_map"
@@ -129,28 +223,208 @@ do = "walk_to"
 x = 5
 z = 1
 surf = true
-note = "Room7 (warp 1) -> Room3 (9,13)"
+note = "Room 7 (arrived at (3,23)): Surf north to its warp (5,1) -> ROOM3 (9,13)"
 
 [[step]]
 do = "wait_map"
 map = "MAP_SEAFLOOR_CAVERN_ROOM3"
 
 [[step]]
-do = "walk_to"
-x = 8
-z = 1
-hm = true
-note = "[PHASE2: Strength] Room3 (warp 0) -> Room8 (5,12); Shelly + grunts fought on the way"
+do = "steps"
+route = [[9, 11], [11, 11]]
+
+[[step]]
+do = "steps"
+route = [[11, 11]]
+face = "right"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[12, 11], [12, 10]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[12, 9], [11, 9]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[11, 8]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[11, 7]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[11, 6]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[11, 5], [10, 5], [10, 2], [8, 2], [8, 1]]
 
 [[step]]
 do = "wait_map"
 map = "MAP_SEAFLOOR_CAVERN_ROOM8"
 
 [[step]]
-do = "walk_to"
-x = 5
-z = 2
-note = "[PHASE2: the boulder wall] Room8 (warp 0) -> Room9 (5,4)"
+do = "steps"
+route = [[5, 11], [3, 11], [3, 8], [5, 8]]
+
+[[step]]
+do = "steps"
+route = [[5, 8]]
+face = "up"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 7]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[4, 7], [4, 6]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 6]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 5]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[4, 5]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 5]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[6, 5]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[6, 4]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 4], [5, 2]]
 
 [[step]]
 do = "wait_map"

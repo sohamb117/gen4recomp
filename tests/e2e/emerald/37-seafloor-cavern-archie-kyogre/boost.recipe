@@ -1,0 +1,4 @@
+# HM08 Dive (FLAG_RECEIVED_HM_DIVE, milestone 36) taught to the Swampert in place of Rock Smash, which the Linoone
+# HM carrier (Cut, Strength) takes over: the cavern's rocks (OBJ_EVENT_GFX_BREAKABLE_ROCK) and the Route 128 dive.
+party-move 0 3 MOVE_DIVE
+party-move 2 2 MOVE_ROCK_SMASH
