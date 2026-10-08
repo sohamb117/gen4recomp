@@ -2,9 +2,8 @@
 # Juan (TRAINER_JUAN_1): FLAG_BADGE08_GET, TM03 Water Pulse, VAR_SOOTOPOLIS_CITY_STATE 6; Waterfall usable.
 # Start: Sootopolis (31,33) -> end: MAP_SOOTOPOLIS_CITY at the gym door (31,33).
 title = "Sootopolis Gym: Juan and the Rain Badge"
-status = "planned"
 priority = "P0"
-estimate = 14000
+estimate = 15873
 refs = [
   "data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> GYM_1F",
   "data/maps/SootopolisCity_Gym_1F/map.json object_events[1] JUAN (8,2)",
@@ -21,15 +20,21 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 23900
 
-# PHASE2: the ice route: each 1F ice tile once (VAR_ICE_STEP_COUNT thresholds 8/28/67 open three stairs, SootopolisCity_Gym_1F/scripts.inc:21-64); record a steps route (walk_to would re-step tiles).
+[[step]]
+do = "heal"
+x = 43
+z = 31
+surf = true
+note = "Sootopolis Pokemon Center: HP and PP back before Juan"
 
 [[step]]
 do = "walk_to"
 x = 31
 z = 32
-note = "gym door (warp 2) -> SOOTOPOLIS_CITY_GYM_1F (8..9,25)"
+surf = true
+note = "gym door (warp 2) -> SOOTOPOLIS_CITY_GYM_1F (8..9,25), across the crater lake"
 
 [[step]]
 do = "wait_map"
@@ -38,10 +43,25 @@ map = "MAP_SOOTOPOLIS_CITY_GYM_1F"
 [[step]]
 do = "walk_to"
 x = 8
-z = 3
+z = 20
+note = "up to the first ice field"
+
+[[step]]
+do = "steps"
+route = [[8, 19], [7, 19], [7, 18], [9, 18], [9, 17], [8, 17], [8, 16], [8, 15]]
+note = "every thin-ice tile once (field_tasks.c SootopolisGymIcePerStepCallback: VAR_ICE_STEP_COUNT 1 + 7 = 8 opens the first stairs, OnFrame UnlockFirstStairs); python3 tests/e2e/tools/gba_puzzle.py --game emerald MAP_SOOTOPOLIS_CITY_GYM_1F 8 20 8 16"
+
+[[step]]
+do = "steps"
+route = [[8, 14], [5, 14], [5, 12], [7, 12], [7, 13], [9, 13], [9, 14], [11, 14], [11, 12], [8, 12], [8, 11], [8, 10]]
+note = "the second field's 19 tiles: 9 + 19 = 28 opens the second stairs (gba_puzzle.py ... 8 15 8 11)"
+
+[[step]]
+do = "steps"
+route = [[8, 9], [6, 9], [6, 8], [5, 8], [5, 9], [3, 9], [3, 6], [4, 6], [4, 7], [6, 7], [6, 6], [7, 6], [7, 7], [8, 7], [8, 8], [9, 8], [9, 9], [10, 9], [10, 7], [11, 7], [11, 8], [12, 8], [12, 9], [13, 9], [13, 6], [8, 6], [8, 5], [8, 3]]
 face = "up"
 interact = true
-note = "below Juan (8,2) [PHASE2: ice route]"
+note = "the third field's 38 tiles: 29 + 38 = 67 opens the last stairs (gba_puzzle.py ... 8 10 8 5); up to below Juan (8,2)"
 
 [[step]]
 do = "advance_text"
@@ -59,8 +79,28 @@ note = "JuanDefeated: FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET, SOOTOPOLIS
 [[step]]
 do = "walk_to"
 x = 8
+z = 6
+note = "back down: the stairs are open but every tile below is cracked ice; (8,6) gives way (FallThroughIce: warphole MAP_SOOTOPOLIS_CITY_GYM_B1F, SootopolisCity_Gym_1F/scripts.inc:67-75)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SOOTOPOLIS_CITY_GYM_B1F"
+max = 3000
+
+[[step]]
+do = "steps"
+route = [[8, 22], [11, 22]]
+note = "B1F: straight south down the middle, over its MB_SLIDE_SOUTH chutes (8,10..11), (8,15..16), (8,20..21), then east onto the stairs (11,22) -> 1F (11,22)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SOOTOPOLIS_CITY_GYM_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
 z = 25
-note = "exit -> Sootopolis (31,32)"
+note = "1F's bottom room: the exit -> Sootopolis (31,32)"
 
 [[step]]
 do = "wait_map"

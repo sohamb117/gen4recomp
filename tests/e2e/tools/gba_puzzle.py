@@ -37,6 +37,12 @@ The static model (gba_world.py) and the probe's window show the floor, not the p
   With boulders or rocks the route prints as milestone [[step]] blocks (steps, the Strength / Rock Smash prompts
   as interact + advance_text, each push as a held press).
 
+  thin ice (Emerald's Sootopolis Gym; field_tasks.c SootopolisGymIcePerStepCallback)
+  - each MB_THIN_ICE step cracks the tile and counts VAR_ICE_STEP_COUNT up; a step onto MB_CRACKED_ICE zeroes it
+    and the floor gives way (OnFrame FallThroughIce); a section's stairs open when its count is reached, i.e. every
+    thin-ice tile of the section stepped on once: a Hamiltonian path over the section's ice from the tile beside the
+    start to the tile beside the target (the stairs). Printed as one `steps` route.
+
 The map's trainers are part of the state: one who sees the player (a straight line within its sight range, the
 way it faces, clear of collision and people: trainer_see.c CheckTrainer / CheckPathBetweenTrainerAndPlayer)
 walks up to the player and stays there after the battle. A battle costs BATTLE_COST tiles.
@@ -74,6 +80,7 @@ FORCED = {0x40: 3, 0x41: 2, 0x42: 0, 0x43: 1, 0x44: 3, 0x45: 2, 0x46: 0, 0x47: 1
           0x50: 3, 0x51: 2, 0x52: 0, 0x53: 1}
 STUCK = "stuck"
 MB_SLIPPERY = 0x48
+MB_THIN_ICE = 0x26
 
 
 def _array(src, name):
@@ -464,6 +471,57 @@ class Puzzle:
         return None
 
 
+def solve_ice(p, sx, sy, tx, ty):
+    """The thin-ice tiles 4-connected to (sx, sy), each stepped on exactly once, ending beside (tx, ty), then
+    (tx, ty): the list of tiles from (sx, sy) on, or None."""
+    m = p.m
+    ice = lambda x, y: 0 <= x < m.w and 0 <= y < m.h and not m.coll[y * m.w + x] and m.beh[y * m.w + x] == MB_THIN_ICE
+    comp, todo = set(), [(sx + dx, sy + dy) for dx, dy in DIRS if ice(sx + dx, sy + dy)]
+    while todo:
+        c = todo.pop()
+        if c in comp:
+            continue
+        comp.add(c)
+        todo.extend((c[0] + dx, c[1] + dy) for dx, dy in DIRS if ice(c[0] + dx, c[1] + dy))
+    ends = {(tx - dx, ty - dy) for dx, dy in DIRS} & comp
+    path = [(sx, sy)]
+    seen = set()
+
+    def free(c):
+        return c in comp and c not in seen
+
+    def dfs(c):
+        if len(seen) == len(comp):
+            return c in ends
+        nxt = [(c[0] + dx, c[1] + dy) for dx, dy in DIRS if free((c[0] + dx, c[1] + dy))]
+        # Warnsdorff: the tile with the fewest onward choices first
+        nxt.sort(key=lambda n: sum(free((n[0] + dx, n[1] + dy)) for dx, dy in DIRS))
+        for n in nxt:
+            seen.add(n)
+            path.append(n)
+            if dfs(n):
+                return True
+            seen.discard(n)
+            path.pop()
+        return False
+
+    if not dfs((sx, sy)):
+        return None
+    return path + [(tx, ty)]
+
+
+def tile_corners(tiles):
+    """Corners of a tile-by-tile path: the tiles where its direction changes, and its last."""
+    out = []
+    for i in range(1, len(tiles)):
+        if i + 1 < len(tiles):
+            a, b, c = tiles[i - 1], tiles[i], tiles[i + 1]
+            if (b[0] - a[0], b[1] - a[1]) == (c[0] - b[0], c[1] - b[1]):
+                continue
+        out.append(tiles[i])
+    return out
+
+
 def corners(sx, sy, moves):
     """The route's corners: one tile per straight run (a ledge's jump runs on in its direction); a warp panel's
     landing tile is a corner of its own, as the steps bot counts a tile it is carried to."""
@@ -549,6 +607,13 @@ def main():
                     help="sign switches whose flag is already set at the start (0-based, bg event order)")
     a = ap.parse_args()
     p = Puzzle(a.game, a.map, hidden=set(a.hide))
+    if MB_THIN_ICE in p.m.beh:
+        tiles = solve_ice(p, a.sx, a.sy, a.tx, a.ty)
+        if tiles is None:
+            raise SystemExit("no path over every thin-ice tile from (%d,%d) to (%d,%d)" % (a.sx, a.sy, a.tx, a.ty))
+        print("# %d thin-ice tiles" % (len(tiles) - 2))
+        print("route = %s" % json.dumps([list(c) for c in tile_corners(tiles)]))
+        return
     p.switches_on = tuple(k in a.switches for k in range(len(p.toggles)))
     moves, (x, y) = [], (a.sx, a.sy)
     for gx, gy in [tuple(int(v) for v in s.split(",")) for s in a.via] + [(a.tx, a.ty)]:

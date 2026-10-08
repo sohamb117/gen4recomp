@@ -27,10 +27,11 @@ notes = "Wally: TRAINER_WALLY_VR_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, M
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 90000
 
 # PHASE2: the Victory Road route 1F (15,40) -> ... -> 1F exit (39,5) through B1F/B2F with Strength pushes (steps routes); the Waterfall bump tile in Ever Grande.
 
@@ -41,12 +42,16 @@ z = 58
 map = "MAP_EVER_GRANDE_CITY"
 surf = true
 hm = true
+dive = true
+on_battle = "flee"
+max = 30000
 note = "Dive out of Sootopolis, Surf Route 126 -> 127 -> 128 east into Ever Grande; Waterfall up (hm/surf bump: A + YES); visited coord row y=58 (EverGrandeCity/scripts.inc:21-23) [PHASE2: waterfall tile]"
 
 [[step]]
 do = "heal"
 x = 27
 z = 48
+surf = true
 note = "Ever Grande Pokemon Center (warp 1)"
 
 [[step]]

@@ -912,7 +912,8 @@ class Terrain:
         if c is None:
             return None
         beh = c & TILE_BEHAVIOR
-        if self.surf and beh in self.surfable:
+        if self.surf and beh in self.surfable and not (self.gba and c & TILE_COLLISION):
+            # (a GBA rock drawn over the sea is ocean water with the collision bit: Route 128 (77,30))
             return "water"
         if self.surf and beh == self.waterfall and d == 0:
             return "waterfall"
@@ -1241,6 +1242,11 @@ def _use_field_move(s, step, ctx, what, limit):
     you like to use ...?', YES is the cursor's default), A answers YES, then the scene plays until the player is
     free; a Rock Smash wild battle is fought. Returns the frames spent in battles."""
     s.note("walk_to: %s ahead, using the field move" % what)
+    if what == "waterfall" and ctx.game in GBA_GAMES:
+        # a GBA surfer who bumps into the falls is turned to face downstream; A asks only facing north
+        # (field_control_avatar.c GetInteractedWaterScript: IsPlayerSurfingNorth)
+        s.run(2, "up")
+        s.run(12)
     s.run(4, "a")
     bot_advance_text(s, {"max": 2400}, ctx)
     return _field_or_handle(s, step, ctx, limit)

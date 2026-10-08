@@ -3959,7 +3959,7 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~959120 frames estimated
+### Story chain: 48 milestones, ~960993 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -4003,7 +4003,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [38-sootopolis-cave-of-origin-wallace](emerald/38-sootopolis-cave-of-origin-wallace/milestone.toml) | Sootopolis in the storm: Steven, the Cave of Origin, Wallace | P0 |  | 18043 | prev + `None` | MAP_CAVE_OF_ORIGIN_B1F | passing |
 | [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 29323 | prev + `None` | MAP_SKY_PILLAR_TOP | passing |
 | [40-sootopolis-rayquaza-waterfall](emerald/40-sootopolis-rayquaza-waterfall/milestone.toml) | Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall | P0 |  | 26673 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
-| [41-sootopolis-gym-juan](emerald/41-sootopolis-gym-juan/milestone.toml) | Sootopolis Gym: Juan and the Rain Badge | P0 |  | 14000 | prev + `None` | MAP_SOOTOPOLIS_CITY | planned |
+| [41-sootopolis-gym-juan](emerald/41-sootopolis-gym-juan/milestone.toml) | Sootopolis Gym: Juan and the Rain Badge | P0 |  | 15873 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
 | [42-ever-grande-victory-road-wally](emerald/42-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally's last battle | P0 |  | 24000 | prev + `None` | MAP_EVER_GRANDE_CITY | planned |
 | [43-pokemon-league-entrance](emerald/43-pokemon-league-entrance/milestone.toml) | Pokemon League lobby: heal and pass the badge guards | P0 |  | 4000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
 | [44-e4-sidney](emerald/44-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 |  | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | planned |
@@ -4418,7 +4418,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_JUAN_1 (272), src/data/trainers.h:3268
 - end state: map MAP_SOOTOPOLIS_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_RECEIVED_TM_WATER_PULSE, FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN, FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE; vars VAR_SOOTOPOLIS_CITY_STATE=6
-- frames: estimate 14000, budget 60000
+- frames: estimate 15873, budget 23900
 - refs: data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> GYM_1F; data/maps/SootopolisCity_Gym_1F/map.json object_events[1] JUAN (8,2); data/maps/SootopolisCity_Gym_1F/scripts.inc:9-73; data/maps/SootopolisCity_Gym_1F/scripts.inc:80-130; TRAINER_JUAN_1 (272), src/data/trainers.h:3268; data/maps/SootopolisCity/scripts.inc:10; src/party_menu.c:127
 - notes: Juan: TRAINER_JUAN_1 (272): LUVDISC 41, WHISCASH 41, SEALEO 43, CRAWDAUNT 43, KINGDRA 46 (Water; Kingdra only weak to Dragon: Swampert neutral; boost ~50 or an Electric/Grass lead). The gym door is locked until FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE (SootopolisCity/scripts.inc:10). Gym trainers on the ice floors (B1F after a fall) lv ~40.
 
@@ -4428,7 +4428,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WALLY_VR_1 (519), src/data/trainers.h:6232; TRAINER_ALBERT (80), src/data/trainers.h:964; TRAINER_EDGAR (79), src/data/trainers.h:952; TRAINER_HOPE (96), src/data/trainers.h:1156; TRAINER_QUINCY (324), src/data/trainers.h:3892; TRAINER_KATELYNN (325), src/data/trainers.h:3904
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_VISITED_EVER_GRANDE_CITY, FLAG_DEFEATED_WALLY_VICTORY_ROAD, FLAG_RECEIVED_HM_WATERFALL
-- frames: estimate 24000, budget 60000
+- frames: estimate 24000, budget 90000
 - refs: data/maps/Route128/map.json connections right EVER_GRANDE_CITY offset -40; data/maps/EverGrandeCity/scripts.inc:21-23; data/maps/EverGrandeCity/map.json warp_events 2 (18,41) / 3 (18,27) -> VICTORY_ROAD_1F, 0 (18,5) -> LEAGUE_1F; data/maps/VictoryRoad_1F/map.json coord_events (2,23)/(3,23) VAR_VICTORY_ROAD_1F_STATE=0; data/maps/VictoryRoad_1F/scripts.inc:20-45; data/maps/VictoryRoad_1F/map.json warp_events 0..4; data/maps/VictoryRoad_B1F/map.json object_events boulders/rocks, warp_events; data/maps/VictoryRoad_B2F/map.json warp_events; TRAINER_WALLY_VR_1 (519), src/data/trainers.h:6232; src/field_control_avatar.c:455 (Waterfall: FLAG_BADGE08_GET); src/party_menu.c:122-127; TRAINER_ALBERT (80), src/data/trainers.h:964; TRAINER_EDGAR (79), src/data/trainers.h:952; TRAINER_HOPE (96), src/data/trainers.h:1156; TRAINER_QUINCY (324), src/data/trainers.h:3892; TRAINER_KATELYNN (325), src/data/trainers.h:3904
 - notes: Wally: TRAINER_WALLY_VR_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Victory Road trainers lv 42-45 (Albert, Edgar, Hope, Quincy, Katelynn on 1F; Halle, Michelle, Mitchell, Samuel, Shannon on B1F; Caroline, Dianne, Felix, Julie, Owen, Vito on B2F). Field moves on the way: Surf (Routes 126-128), Waterfall (Ever Grande's fall, badge 8), Strength + Rock Smash (VR B1F: boulders (20,5)/(21,4)/(4,7)/(9,10)/(20,26)/(21,25)/(35,6)/(34,4), rocks (19,5)/(20,4)/(18,12)/(20,25)/(21,26)/(34,3)), Flash not needed [INFERENCE: Emerald VR is lit]. Ever Grande south coord row y=58 sets FLAG_VISITED_EVER_GRANDE_CITY.
 
