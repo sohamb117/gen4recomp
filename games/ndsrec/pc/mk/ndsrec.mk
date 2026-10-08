@@ -11,7 +11,7 @@
 #                                   host.mk's launcher stack (ROM_XMAP)
 #   $(ARMREC_C)/*.c, classes.txt    armrec --wasm over all of it
 #
-# Everything here is the ROM's code or data: build/ only, never committed.
+# Generated code stays in build/; the two reviewed BW caller snapshots are tracked.
 
 NDSREC_OUT     := $(BUILD)/ndsrec
 NDSREC_ASM     := $(NDSREC_OUT)/asm
@@ -46,13 +46,26 @@ $(NDSREC_STAMP): $(ROM) $(PRIM_SYMS) $(NDSREC_PY)
 	    --out $(NDSREC_ASM)
 	@touch $@
 
+# Experimental BW startup proposal, after emission and before translation.
+# The helper accepts only the reviewed original or exact proposed file hashes.
+ARMREC_ASM_READY := $(NDSREC_STAMP)
+ifneq ($(filter black white,$(VER)),)
+BW_STARTUP_PATCH := $(MYPC)/patch_bw_startup.py
+BW_STARTUP_STAMP := $(NDSREC_OUT)/bw-startup.stamp
+$(BW_STARTUP_STAMP): $(NDSREC_STAMP) $(BW_STARTUP_PATCH)
+	$(PYTHON) $(BW_STARTUP_PATCH) $(VER) \
+	    $(NDSREC_ASM)/arm9/asm/ndsrec_arm9_004.s
+	@touch $@
+ARMREC_ASM_READY := $(BW_STARTUP_STAMP)
+endif
+
 # armrec over every file at once (the symbol table is global). Paths are
 # relative to the assembly root so `arm9/overlays/<id>/asm/` names the
 # overlay. No --xmap: every label carries its own address.
 ARMREC_FLAGS := --wasm --decomp-state /dev/null \
                 --host-override $(NDSREC_ASM)/host_overrides.txt
 
-$(ARMREC_STAMP): $(NDSREC_STAMP) $(ARMREC)/armrec.py
+$(ARMREC_STAMP): $(ARMREC_ASM_READY) $(ARMREC)/armrec.py
 	@rm -rf $(ARMREC_C) && mkdir -p $(ARMREC_C)
 	cd $(NDSREC_ASM) && $(PYTHON) $(ARMREC)/armrec.py $(ARMREC_FLAGS) \
 	    --out $(ARMREC_C) --classes $(ARMREC_CLASSES).tmp \
