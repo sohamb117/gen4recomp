@@ -3,7 +3,7 @@
 # Start: Rustboro Pokemon Center (16,39) -> end: MAP_RUSTBORO_CITY at the gym door (27,20).
 title = "Rustboro: HM01 Cut and Roxanne's Stone Badge"
 priority = "P0"
-estimate = 16213
+estimate = 18425
 refs = [
   "data/maps/RustboroCity/map.json warp_events[8] (9,38) -> CUTTERS_HOUSE",
   "data/maps/RustboroCity_CuttersHouse/scripts.inc:4-13",
@@ -23,7 +23,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 24400
+frames = 27700
 
 [[step]]
 do = "walk_to"

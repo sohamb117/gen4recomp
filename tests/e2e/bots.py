@@ -2353,6 +2353,73 @@ def bot_menu(s, step, ctx):
     _gba_press(s, "a", 10)
 
 
+def _gba_flag(s, p, ctx, name):
+    """A GBA flag's value now (the probe's flags_addr: gSaveBlock1's flags bitfield), or None."""
+    try:
+        fid = ctx.resolve(name)
+    except HarnessError:
+        return None
+    if not p.flags_addr or fid // 8 >= p.flags_bytes:
+        return None
+    return bool(s.peek(p.flags_addr + fid // 8, 1)[0] >> (fid % 8) & 1)
+
+
+def _gba_boulder_ahead(p, d):
+    """The object on the tile in direction d from the player, as (x, z), or None."""
+    front = (p.x + DIR_DELTA[d][0], p.z + DIR_DELTA[d][1])
+    return front if front in {(o[0], o[1]) for o in p.objects} else None
+
+
+def bot_push(s, step, ctx):
+    """GBA Strength: push the boulder in direction `dir` one tile (field_player_avatar.c TryPushBoulder: the player
+    walks in place, the boulder moves). Strength is first switched on when FLAG_SYS_USE_STRENGTH is clear (map loads
+    clear it): A on the boulder, YES (EventScript_StrengthBoulder). A wild battle that cuts in is fled and the push
+    tried again; done when the boulder has left the tile ahead."""
+    d = FACINGS[step["dir"]]
+    key = DIR_KEYS[d]
+    for _ in range(4):
+        _field_or_handle(s, {"on_battle": step.get("on_battle", "flee")}, ctx, s.frame + 30000)
+        p = s.probe()
+        front = _gba_boulder_ahead(p, d)
+        if front is None:
+            raise HarnessError("push: nothing to push %s of (%d,%d)" % (step["dir"], p.x, p.z))
+        if not _gba_flag(s, p, ctx, "FLAG_SYS_USE_STRENGTH"):
+            if p.facing != d:
+                s.run(2, key)
+                s.run(10)
+            s.run(4, "a")
+            bot_advance_text(s, {"max": 2400}, ctx)
+            continue
+        s.run(24, key)
+        s.run(40, until="field_ready=1")
+        q = s.probe()
+        if (q.x, q.z) == (p.x, p.z) and front not in {(o[0], o[1]) for o in q.objects}:
+            s.note("push: the boulder at (%d,%d) went %s" % (front + (step["dir"],)))
+            return
+    raise HarnessError("push: the boulder %s of (%d,%d) did not move" % (step["dir"], p.x, p.z))
+
+
+def bot_smash(s, step, ctx):
+    """GBA Rock Smash: the rock in direction `dir` (A, YES: EventScript_RockSmash; a wild battle it starts is
+    fought), tried again after a battle that cut in; done when the rock has gone."""
+    d = FACINGS[step["dir"]]
+    for _ in range(4):
+        _field_or_handle(s, {"on_battle": step.get("on_battle", "fight")}, ctx, s.frame + 30000)
+        p = s.probe()
+        front = _gba_boulder_ahead(p, d)
+        if front is None:
+            s.note("smash: no rock %s of (%d,%d) any more" % (step["dir"], p.x, p.z))
+            return
+        if p.facing != d:
+            s.run(2, DIR_KEYS[d])
+            s.run(10)
+        s.run(4, "a")
+        bot_advance_text(s, {"max": 2400}, ctx)
+    p = s.probe()
+    if _gba_boulder_ahead(p, d) is not None:
+        raise HarnessError("smash: the rock %s of (%d,%d) is still there" % (step["dir"], p.x, p.z))
+
+
 BOTS = {
     "press": bot_press,
     "tap": bot_tap,
@@ -2380,4 +2447,6 @@ BOTS = {
     "pace": bot_pace,
     "dump": bot_dump,
     "menu": bot_menu,
+    "push": bot_push,
+    "smash": bot_smash,
 }

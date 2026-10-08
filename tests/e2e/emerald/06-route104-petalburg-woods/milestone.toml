@@ -3,7 +3,7 @@
 # Start: Petalburg (15,9) -> end: MAP_RUSTBORO_CITY in front of the Pokemon Center (16,39).
 title = "Route 104 and Petalburg Woods: the Aqua grunt and the Devon researcher"
 priority = "P0"
-estimate = 24092
+estimate = 18670
 refs = [
   "data/maps/PetalburgCity/map.json coord_events (4,10..13) VAR_SCOTT_PETALBURG_ENCOUNTER=0",
   "data/maps/Route104/map.json warp_events 2..7 (Petalburg Woods)",
@@ -28,7 +28,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 36200
+frames = 28100
 
 # PHASE2: prove the woods door the south half of Route 104 reaches (probe_map on Route 104 rows 38..44) and the walk around the woods' trees to (26,23).
 

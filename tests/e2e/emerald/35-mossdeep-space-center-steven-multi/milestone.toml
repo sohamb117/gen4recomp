@@ -3,7 +3,7 @@
 # Start: Mossdeep gym door -> end: MAP_MOSSDEEP_CITY_SPACE_CENTER_2F, FLAG_DEFEATED_MAGMA_SPACE_CENTER.
 title = "Mossdeep Space Center: Magma's raid, the Steven multi battle"
 priority = "P0"
-estimate = 26865
+estimate = 27107
 refs = [
   "data/maps/MossdeepCity/map.json coord_events (42,21)/(41,22..24)/(40,25..26) VAR_MOSSDEEP_CITY_STATE=1",
   "data/maps/MossdeepCity/scripts.inc:76-97",
@@ -30,7 +30,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 40300
+frames = 40700
 
 # PHASE2: the ChooseHalfPartyForBattle selection inputs (special ChooseHalfPartyForBattle, SpaceCenter_2F/scripts.inc:228): pick the first three, CONFIRM; write press steps.
 

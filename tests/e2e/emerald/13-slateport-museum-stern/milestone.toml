@@ -3,7 +3,7 @@
 # Start: Dewford (8,18) -> end: MAP_SLATEPORT_CITY outside the museum (30,27).
 title = "Sail to Slateport: the shipyard, the Oceanic Museum grunts, Devon Goods to Stern"
 priority = "P0"
-estimate = 15319
+estimate = 14897
 refs = [
   "data/maps/DewfordTown/scripts.inc:9-35",
   "data/maps/DewfordTown/scripts.inc:141-180",
@@ -27,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 23000
+frames = 22400
 
 [[step]]
 do = "talk_to"

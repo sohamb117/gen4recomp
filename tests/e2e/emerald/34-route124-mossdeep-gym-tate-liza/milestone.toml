@@ -3,7 +3,7 @@
 # Start: Aqua Hideout B2F -> end: MAP_MOSSDEEP_CITY at the gym door (38,10).
 title = "Surf to Mossdeep: Tate & Liza's Mind Badge"
 priority = "P0"
-estimate = 37999
+estimate = 35793
 refs = [
   "data/maps/LilycoveCity/map.json object_events[10] Wailmer grunt (73,15) FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS",
   "data/maps/Route124/map.json connections right MOSSDEEP_CITY offset 40",
@@ -22,7 +22,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 57000
+frames = 53700
 
 # PHASE2: the gym's spin tiles / floor switches (MossdeepCity_Gym coord_events: Yellow/Blue/Green/Purple/Red switches, WarpToEntrance (21,6)) to Tate & Liza (23..24,7): record a steps route.
 

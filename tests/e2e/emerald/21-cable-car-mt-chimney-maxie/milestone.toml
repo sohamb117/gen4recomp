@@ -3,7 +3,7 @@
 # Start: Route 114 (8,64) -> end: MAP_MT_CHIMNEY by the meteorite machine.
 title = "Cable car to Mt. Chimney: Tabitha and Maxie"
 priority = "P0"
-estimate = 35531
+estimate = 34787
 refs = [
   "data/maps/Route112/map.json warp_events[0] (28,27) -> CABLE_CAR_STATION",
   "data/maps/Route112_CableCarStation/scripts.inc:31-51",
@@ -22,7 +22,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 53300
+frames = 52200
 
 [[step]]
 do = "walk_to"

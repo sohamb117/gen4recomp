@@ -3,7 +3,7 @@
 # Start: Mt. Pyre summit -> end: MAP_MAGMA_HIDEOUT_4F by the empty Groudon pool.
 title = "Magma Hideout: Groudon wakes, Maxie's second battle"
 priority = "P0"
-estimate = 69564
+estimate = 72802
 refs = [
   "data/maps/JaggedPass/scripts.inc:9-18",
   "data/maps/JaggedPass/map.json coord_events (13..14,15)/(21,15)/(21..22,20) VAR_JAGGED_PASS_STATE=1",
@@ -26,7 +26,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 104400
+frames = 109300
 
 # PHASE2: prove the short route 1F (20,22) -> 2F_3R (16,13) -> 3F_3R (16,21) -> 4F (20,21) is walkable (probe_map each floor) and whether a Strength boulder blocks it.
 

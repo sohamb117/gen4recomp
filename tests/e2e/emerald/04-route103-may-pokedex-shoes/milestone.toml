@@ -3,7 +3,7 @@
 # Start: Birch's lab -> end: MAP_LITTLEROOT_TOWN north exit (11,2), FLAG_RECEIVED_RUNNING_SHOES.
 title = "Route 103: first May battle, the Pokedex, the Running Shoes"
 priority = "P0"
-estimate = 12757
+estimate = 11140
 refs = [
   "data/maps/LittlerootTown_ProfessorBirchsLab/map.json warp_events[0] (6,12)",
   "data/maps/Route103/map.json object_events[2] LOCALID_ROUTE103_RIVAL (10,3)",
@@ -27,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 19200
+frames = 16800
 
 [[step]]
 do = "walk_to"
@@ -41,6 +41,7 @@ map = "MAP_LITTLEROOT_TOWN"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 10
 z = 4
 map = "MAP_ROUTE103"

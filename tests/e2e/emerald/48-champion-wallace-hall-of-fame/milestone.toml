@@ -3,7 +3,7 @@
 # Start: Hall 4 (5,3) -> end: the reset after "The End" (wait_reset); [expect] reads the save the HoF screen wrote.
 title = "Champion Wallace, the Hall of Fame, credits and the reset"
 priority = "P0"
-estimate = 27254
+estimate = 31252
 refs = [
   "data/maps/EverGrandeCity_Hall4/map.json warp_events[1] (5,2) -> CHAMPIONS_ROOM",
   "data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:19-62",
@@ -27,7 +27,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 40900
+frames = 46900
 save = "none"
 
 # PHASE2: HoF screen input: confirm whether the HoF slideshow waits for A per mon (src/hall_of_fame.c Task_Hof_* ) and how many presses; the steps below press A on a cadence.

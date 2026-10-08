@@ -3,7 +3,7 @@
 # Start: Magma Hideout 4F -> end: MAP_SLATEPORT_CITY_HARBOR beside Stern (8,13).
 title = "Slateport Harbor: Aqua steals Stern's submarine"
 priority = "P0"
-estimate = 18462
+estimate = 21171
 refs = [
   "data/maps/SlateportCity/map.json object_events[11] CAPT_STERN (28,13)",
   "data/maps/SlateportCity/scripts.inc:523-568",
@@ -19,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 27700
+frames = 31800
 
 [[step]]
 do = "walk_to"

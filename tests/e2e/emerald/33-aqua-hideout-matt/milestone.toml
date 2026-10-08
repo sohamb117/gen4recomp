@@ -3,7 +3,7 @@
 # Start: Slateport Harbor -> end: MAP_AQUA_HIDEOUT_B2F at the submarine dock.
 title = "Lilycove Aqua Hideout: Matt and the submarine escape"
 priority = "P0"
-estimate = 61764
+estimate = 53785
 refs = [
   "data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F",
   "data/maps/AquaHideout_1F/map.json warp_events[2] (22,1) -> B1F",
@@ -27,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 92700
+frames = 80700
 
 # PHASE2: the B1F/B2F warp-panel route from 1F (22,1) to Matt: map the panel pairs (B1F warps 4..24, B2F 3..8) with probe_map and write per-panel walk_to steps.
 

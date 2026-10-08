@@ -3,7 +3,7 @@
 # Start: Route 119 (6,33) -> end: MAP_FORTREE_CITY in front of the Pokemon Center (5,7).
 title = "Route 119: May's third battle, HM02 Fly, into Fortree"
 priority = "P0"
-estimate = 11425
+estimate = 10470
 refs = [
   "data/maps/Route119/map.json coord_events (25,31)/(26,31) VAR_ROUTE119_STATE=0",
   "data/maps/Route119/scripts.inc:29-160",
@@ -20,7 +20,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 17200
+frames = 15800
 
 [[step]]
 do = "walk_to"

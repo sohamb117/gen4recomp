@@ -3,7 +3,7 @@
 # Start: Slateport (30,27) -> end: MAP_MAUVILLE_CITY in front of the Pokemon Center (22,6).
 title = "Route 110: Birch's Match Call and May's second battle"
 priority = "P0"
-estimate = 27997
+estimate = 27724
 refs = [
   "data/maps/Route110/map.json coord_events (7..10,85) VAR_REGISTER_BIRCH_STATE=1",
   "data/maps/Route110/scripts.inc:559-614",
@@ -22,7 +22,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 42000
+frames = 41600
 
 [[step]]
 do = "heal"

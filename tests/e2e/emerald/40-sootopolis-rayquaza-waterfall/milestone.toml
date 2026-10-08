@@ -3,7 +3,7 @@
 # Start: Sky Pillar top -> end: MAP_SOOTOPOLIS_CITY in front of the gym (31,33).
 title = "Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall"
 priority = "P0"
-estimate = 26673
+estimate = 23121
 refs = [
   "data/maps/SootopolisCity/scripts.inc:167",
   "data/maps/SootopolisCity/scripts.inc:456-508",
@@ -21,7 +21,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 40100
+frames = 34700
 
 [[step]]
 do = "walk_to"

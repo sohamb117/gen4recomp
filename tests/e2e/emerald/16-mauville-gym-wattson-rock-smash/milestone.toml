@@ -3,7 +3,7 @@
 # Start: Mauville (35,6) -> end: MAP_MAUVILLE_CITY outside house 1 (32,15).
 title = "Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash"
 priority = "P0"
-estimate = 11200
+estimate = 10909
 refs = [
   "data/maps/MauvilleCity/map.json warp_events[0] (8,5) -> gym",
   "data/maps/MauvilleCity_Gym/map.json coord_events switches",
@@ -26,7 +26,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 16800
+frames = 16400
 
 # PHASE2: the switch order to Wattson (4 coord switches toggle FLAG_MAUVILLE_GYM_BARRIERS_STATE; MauvilleCity_Gym/scripts.inc:15-46,175-196): probe_map the barrier tiles after each switch and write a via list or steps route.
 

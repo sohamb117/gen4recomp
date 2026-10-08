@@ -3,7 +3,7 @@
 # Start: Wally's house -> end: MAP_ROUTE119 outside the Weather Institute (6,33).
 title = "Surf east: Route 118, Route 119 and the Weather Institute (Shelly)"
 priority = "P0"
-estimate = 51851
+estimate = 53131
 refs = [
   "data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0",
   "data/maps/Route118/scripts.inc:62-95",
@@ -27,7 +27,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 77800
+frames = 79700
 
 # PHASE2: the Castform nickname YES/NO after ShellyDefeated (Route119_WeatherInstitute_2F/scripts.inc:87-93): confirm advance_text answers it NO, else press B there.
 

@@ -93,8 +93,10 @@ STEP_KEYS = {
     "pace": {"x", "z", "until", "every"},
     "dump": {"expr"},
     "menu": {"choose", "count"},
+    "push": {"dir", "on_battle"},
+    "smash": {"dir", "on_battle"},
 }
-STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
+STEP_REQUIRED = {"press": {"keys"}, "push": {"dir"}, "smash": {"dir"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
                  "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},
                  "heal": {"x", "z"}, "grind": {"x", "z", "level"}, "fly": {"map"},
                  "steps": {"route"}, "moves": {"dirs"}, "hatch": {"x", "z"}, "field_move": {"move"},

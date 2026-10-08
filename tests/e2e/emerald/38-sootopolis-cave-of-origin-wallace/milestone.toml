@@ -3,7 +3,7 @@
 # Start: Route 128 -> end: MAP_CAVE_OF_ORIGIN_B1F, FLAG_WALLACE_GOES_TO_SKY_PILLAR.
 title = "Sootopolis in the storm: Steven, the Cave of Origin, Wallace"
 priority = "P0"
-estimate = 18043
+estimate = 20185
 refs = [
   "data/maps/Route126/map.json connections dive UNDERWATER_ROUTE126",
   "data/maps/Underwater_Route126/map.json warp_events[0] (45,65) -> UNDERWATER_SOOTOPOLIS_CITY",
@@ -23,7 +23,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 27100
+frames = 30300
 
 # PHASE2: the Route 127 -> 126 -> dive spot path and the surfacing tile inside Sootopolis (Underwater_SootopolisCity warps (9..10,8)).
 

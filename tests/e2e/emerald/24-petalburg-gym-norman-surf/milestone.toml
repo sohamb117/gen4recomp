@@ -3,7 +3,7 @@
 # Start: Lavaridge (5,16) -> end: MAP_PETALBURG_CITY_WALLYS_HOUSE, FLAG_RECEIVED_HM_SURF.
 title = "Back to Petalburg: Norman's Balance Badge and HM03 Surf"
 priority = "P0"
-estimate = 29296
+estimate = 30741
 refs = [
   "data/maps/PetalburgCity_Gym/map.json warp_events 0..37 (room doors)",
   "data/maps/PetalburgCity_Gym/scripts.inc:5-15",
@@ -24,7 +24,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 44000
+frames = 46200
 
 [[step]]
 do = "walk_to"

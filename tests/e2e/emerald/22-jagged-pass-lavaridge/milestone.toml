@@ -3,7 +3,7 @@
 # Start: Mt. Chimney summit -> end: MAP_LAVARIDGE_TOWN in front of the Pokemon Center (9,7).
 title = "Down Jagged Pass to Lavaridge Town"
 priority = "P0"
-estimate = 12499
+estimate = 12115
 refs = [
   "data/maps/MtChimney/map.json warp_events[2] (20,41) -> JAGGED_PASS",
   "data/maps/JaggedPass/map.json warp_events (13,5)/(14,40)",
@@ -24,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 18800
+frames = 18200
 
 [[step]]
 do = "walk_to"

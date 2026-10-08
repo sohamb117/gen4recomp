@@ -3,7 +3,7 @@
 # Start: Mauville (32,15) -> end: MAP_VERDANTURF_TOWN in front of the Pokemon Center (16,4).
 title = "Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength"
 priority = "P0"
-estimate = 23176
+estimate = 24511
 refs = [
   "data/maps/VerdanturfTown/map.json warp_events[4] (8,1) -> RUSTURF_TUNNEL",
   "data/maps/RusturfTunnel/map.json object_events 2/8 BREAKABLE_ROCK (24,5)/(24,4)",
@@ -22,7 +22,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 34800
+frames = 36800
 
 [[step]]
 do = "walk_to"

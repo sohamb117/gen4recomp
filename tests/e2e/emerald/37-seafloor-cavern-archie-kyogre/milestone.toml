@@ -3,7 +3,7 @@
 # Start: Steven's house -> end: MAP_ROUTE128 after the Kyogre scene (VAR_ROUTE128_STATE 2).
 title = "Seafloor Cavern: Archie wakes Kyogre"
 priority = "P0"
-estimate = 20844
+estimate = 21890
 refs = [
   "data/maps/MossdeepCity/map.json connections down ROUTE127",
   "data/maps/Route128/map.json connections dive UNDERWATER_ROUTE128",
@@ -31,7 +31,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 31300
+frames = 32900
 
 # PHASE2: the Strength/Rock Smash pushes in Rooms 1, 2, 3 and 8 (steps routes with boulder pushes; walk_to does not push boulders) and the underwater path from the Route 127/128 dive spot to (38,26).
 
@@ -67,46 +67,24 @@ do = "steps"
 route = [[5, 17], [4, 17], [4, 10]]
 
 [[step]]
-do = "steps"
-route = [[4, 10]]
-face = "right"
-interact = true
-note = "Rock Smash: A + YES"
-
-[[step]]
-do = "advance_text"
+do = "smash"
+dir = "right"
 
 [[step]]
 do = "steps"
 route = [[5, 10]]
 
 [[step]]
-do = "steps"
-route = [[5, 10]]
-face = "down"
-interact = true
-note = "Strength: A on the boulder + YES"
-
-[[step]]
-do = "advance_text"
-
-[[step]]
-do = "press"
-keys = "down"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "down"
 
 [[step]]
 do = "steps"
 route = [[5, 11], [11, 11]]
 
 [[step]]
-do = "press"
-keys = "right"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "right"
 
 [[step]]
 do = "steps"
@@ -121,93 +99,56 @@ do = "steps"
 route = [[9, 7]]
 
 [[step]]
-do = "steps"
-route = [[9, 7]]
-face = "left"
-interact = true
-note = "Rock Smash: A + YES"
-
-[[step]]
-do = "advance_text"
+do = "smash"
+dir = "left"
 
 [[step]]
 do = "steps"
 route = [[7, 7], [7, 6], [4, 6]]
 
 [[step]]
-do = "steps"
-route = [[4, 6]]
-face = "up"
-interact = true
-note = "Strength: A on the boulder + YES"
-
-[[step]]
-do = "advance_text"
-
-[[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[4, 5]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[4, 4]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[4, 3], [8, 3]]
 
 [[step]]
-do = "steps"
-route = [[8, 3]]
-face = "right"
-interact = true
-note = "Rock Smash: A + YES"
-
-[[step]]
-do = "advance_text"
+do = "smash"
+dir = "right"
 
 [[step]]
 do = "steps"
 route = [[9, 3]]
 
 [[step]]
-do = "press"
-keys = "right"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "right"
 
 [[step]]
 do = "steps"
 route = [[10, 3]]
 
 [[step]]
-do = "press"
-keys = "right"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "right"
 
 [[step]]
 do = "steps"
@@ -238,76 +179,48 @@ do = "steps"
 route = [[9, 11], [11, 11]]
 
 [[step]]
-do = "steps"
-route = [[11, 11]]
-face = "right"
-interact = true
-note = "Strength: A on the boulder + YES"
-
-[[step]]
-do = "advance_text"
-
-[[step]]
-do = "press"
-keys = "right"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "right"
 
 [[step]]
 do = "steps"
 route = [[12, 11], [12, 10]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[12, 9], [11, 9]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[11, 8]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[11, 7]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[11, 6]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
@@ -322,109 +235,72 @@ do = "steps"
 route = [[5, 11], [3, 11], [3, 8], [5, 8]]
 
 [[step]]
-do = "steps"
-route = [[5, 8]]
-face = "up"
-interact = true
-note = "Strength: A on the boulder + YES"
-
-[[step]]
-do = "advance_text"
-
-[[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[5, 7]]
 
 [[step]]
-do = "press"
-keys = "left"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "left"
 
 [[step]]
 do = "steps"
 route = [[4, 7], [4, 6]]
 
 [[step]]
-do = "press"
-keys = "right"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "right"
 
 [[step]]
 do = "steps"
 route = [[5, 6]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[5, 5]]
 
 [[step]]
-do = "press"
-keys = "left"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "left"
 
 [[step]]
 do = "steps"
 route = [[4, 5]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[5, 5]]
 
 [[step]]
-do = "press"
-keys = "right"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "right"
 
 [[step]]
 do = "steps"
 route = [[6, 5]]
 
 [[step]]
-do = "press"
-keys = "up"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "up"
 
 [[step]]
 do = "steps"
 route = [[6, 4]]
 
 [[step]]
-do = "press"
-keys = "left"
-hold = 24
-gap = 40
-note = "push the boulder"
+do = "push"
+dir = "left"
 
 [[step]]
 do = "steps"

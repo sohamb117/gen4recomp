@@ -3,7 +3,7 @@
 # Start: Route 116 (47,9) -> end: MAP_RUSTBORO_CITY south exit, VAR_RUSTBORO_CITY_STATE 8.
 title = "Devon Corp: Mr. Stone, the PokeNav and May's Rustboro battle"
 priority = "P0"
-estimate = 12951
+estimate = 11671
 refs = [
   "data/maps/RustboroCity/map.json coord_events (30,9)/(31,10)/(30,11)/(30,12) VAR_RUSTBORO_CITY_STATE=4",
   "data/maps/RustboroCity/scripts.inc:526-568",
@@ -25,7 +25,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 19500
+frames = 17600
 
 # PHASE2: the PokeNav tutorial inputs (RustboroCity/scripts.inc:62-91: a one-item start menu, then the PokeNav app opened and closed); the steps below are [INFERENCE] A, then B out.
 

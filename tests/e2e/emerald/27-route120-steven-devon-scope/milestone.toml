@@ -3,7 +3,7 @@
 # Start: Fortree (5,7) -> end: MAP_FORTREE_CITY below the gym door (22,12).
 title = "Route 120: Steven's Kecleon and the Devon Scope; Fortree's gym Kecleon"
 priority = "P0"
-estimate = 12185
+estimate = 10224
 refs = [
   "data/maps/Route120/map.json object_events 30 bridge KECLEON (12,16), 31 STEVEN (13,15)",
   "data/maps/Route120/scripts.inc:154-232",
@@ -18,7 +18,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 18300
+frames = 15400
 
 [[step]]
 do = "walk_to"

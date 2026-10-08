@@ -3980,58 +3980,58 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~1011348 frames estimated
+### Story chain: 48 milestones, ~1021509 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [01-newgame-truck-house](emerald/01-newgame-truck-house/milestone.toml) | New game: intro, Birch speech, truck ride, into the house | P0 |  | 10076 | blank chip | MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F | passing |
 | [02-clock-tv-mays-house](emerald/02-clock-tv-mays-house/milestone.toml) | Set the wall clock, Dad on TV, meet May next door | P0 |  | 4061 | prev + `None` | MAP_LITTLEROOT_TOWN | passing |
-| [03-route101-birch-mudkip](emerald/03-route101-birch-mudkip/milestone.toml) | Route 101: save Birch, choose Mudkip, first battle, the lab | P0 |  | 4414 | prev + `None` | MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB | passing |
-| [04-route103-may-pokedex-shoes](emerald/04-route103-may-pokedex-shoes/milestone.toml) | Route 103: first May battle, the Pokedex, the Running Shoes | P0 |  | 12757 | prev + `None` | MAP_LITTLEROOT_TOWN | passing |
-| [05-route102-petalburg-wally](emerald/05-route102-petalburg-wally/milestone.toml) | Route 102 to Petalburg: Norman and Wally's catching tutorial | P0 |  | 16421 | prev + `None` | MAP_PETALBURG_CITY | passing |
-| [06-route104-petalburg-woods](emerald/06-route104-petalburg-woods/milestone.toml) | Route 104 and Petalburg Woods: the Aqua grunt and the Devon researcher | P0 |  | 24092 | prev + `None` | MAP_RUSTBORO_CITY | passing |
-| [07-rustboro-cut-roxanne](emerald/07-rustboro-cut-roxanne/milestone.toml) | Rustboro: HM01 Cut and Roxanne's Stone Badge | P0 |  | 16213 | prev + `None` | MAP_RUSTBORO_CITY | passing |
-| [08-devon-goods-rusturf-tunnel](emerald/08-devon-goods-rusturf-tunnel/milestone.toml) | Stolen Devon Goods: the Rusturf Tunnel grunt and Peeko | P0 |  | 18884 | prev + `None` | MAP_ROUTE116 | passing |
-| [09-devon-pokenav-rival-rustboro](emerald/09-devon-pokenav-rival-rustboro/milestone.toml) | Devon Corp: Mr. Stone, the PokeNav and May's Rustboro battle | P0 |  | 12951 | prev + `None` | MAP_RUSTBORO_CITY | passing |
+| [03-route101-birch-mudkip](emerald/03-route101-birch-mudkip/milestone.toml) | Route 101: save Birch, choose Mudkip, first battle, the lab | P0 |  | 4834 | prev + `None` | MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB | passing |
+| [04-route103-may-pokedex-shoes](emerald/04-route103-may-pokedex-shoes/milestone.toml) | Route 103: first May battle, the Pokedex, the Running Shoes | P0 |  | 11140 | prev + `None` | MAP_LITTLEROOT_TOWN | passing |
+| [05-route102-petalburg-wally](emerald/05-route102-petalburg-wally/milestone.toml) | Route 102 to Petalburg: Norman and Wally's catching tutorial | P0 |  | 17196 | prev + `None` | MAP_PETALBURG_CITY | passing |
+| [06-route104-petalburg-woods](emerald/06-route104-petalburg-woods/milestone.toml) | Route 104 and Petalburg Woods: the Aqua grunt and the Devon researcher | P0 |  | 18670 | prev + `None` | MAP_RUSTBORO_CITY | passing |
+| [07-rustboro-cut-roxanne](emerald/07-rustboro-cut-roxanne/milestone.toml) | Rustboro: HM01 Cut and Roxanne's Stone Badge | P0 |  | 18425 | prev + `None` | MAP_RUSTBORO_CITY | passing |
+| [08-devon-goods-rusturf-tunnel](emerald/08-devon-goods-rusturf-tunnel/milestone.toml) | Stolen Devon Goods: the Rusturf Tunnel grunt and Peeko | P0 |  | 18292 | prev + `None` | MAP_ROUTE116 | passing |
+| [09-devon-pokenav-rival-rustboro](emerald/09-devon-pokenav-rival-rustboro/milestone.toml) | Devon Corp: Mr. Stone, the PokeNav and May's Rustboro battle | P0 |  | 11671 | prev + `None` | MAP_RUSTBORO_CITY | passing |
 | [10-briney-sail-dewford](emerald/10-briney-sail-dewford/milestone.toml) | Mr. Briney sails to Dewford | P0 |  | 5304 | prev + `None` | MAP_DEWFORD_TOWN | passing |
-| [11-granite-cave-flash-steven](emerald/11-granite-cave-flash-steven/milestone.toml) | Granite Cave: HM05 Flash and Steven's letter | P0 |  | 15007 | prev + `None` | MAP_DEWFORD_TOWN | passing |
-| [12-dewford-gym-brawly](emerald/12-dewford-gym-brawly/milestone.toml) | Dewford Gym: Brawly and the Knuckle Badge | P0 |  | 10618 | prev + `None` | MAP_DEWFORD_TOWN | passing |
-| [13-slateport-museum-stern](emerald/13-slateport-museum-stern/milestone.toml) | Sail to Slateport: the shipyard, the Oceanic Museum grunts, Devon Goods to Stern | P0 |  | 15319 | prev + `None` | MAP_SLATEPORT_CITY | passing |
-| [14-route110-birch-may](emerald/14-route110-birch-may/milestone.toml) | Route 110: Birch's Match Call and May's second battle | P0 |  | 27997 | prev + `None` | MAP_MAUVILLE_CITY | passing |
+| [11-granite-cave-flash-steven](emerald/11-granite-cave-flash-steven/milestone.toml) | Granite Cave: HM05 Flash and Steven's letter | P0 |  | 18871 | prev + `None` | MAP_DEWFORD_TOWN | passing |
+| [12-dewford-gym-brawly](emerald/12-dewford-gym-brawly/milestone.toml) | Dewford Gym: Brawly and the Knuckle Badge | P0 |  | 9135 | prev + `None` | MAP_DEWFORD_TOWN | passing |
+| [13-slateport-museum-stern](emerald/13-slateport-museum-stern/milestone.toml) | Sail to Slateport: the shipyard, the Oceanic Museum grunts, Devon Goods to Stern | P0 |  | 14897 | prev + `None` | MAP_SLATEPORT_CITY | passing |
+| [14-route110-birch-may](emerald/14-route110-birch-may/milestone.toml) | Route 110: Birch's Match Call and May's second battle | P0 |  | 27724 | prev + `None` | MAP_MAUVILLE_CITY | passing |
 | [15-mauville-wally-mach-bike](emerald/15-mauville-wally-mach-bike/milestone.toml) | Mauville: Wally's battle and the Mach Bike | P0 |  | 4803 | prev + `None` | MAP_MAUVILLE_CITY | passing |
-| [16-mauville-gym-wattson-rock-smash](emerald/16-mauville-gym-wattson-rock-smash/milestone.toml) | Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash | P0 |  | 11200 | prev + `None` | MAP_MAUVILLE_CITY | passing |
-| [17-verdanturf-rusturf-strength](emerald/17-verdanturf-rusturf-strength/milestone.toml) | Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength | P0 |  | 23176 | prev + `None` | MAP_VERDANTURF_TOWN | passing |
-| [18-route111-112-fiery-path](emerald/18-route111-112-fiery-path/milestone.toml) | Route 111 rocks, Route 112 and the Fiery Path north | P0 |  | 30284 | prev + `None` | MAP_ROUTE113 | passing |
-| [19-route113-fallarbor-route114](emerald/19-route113-fallarbor-route114/milestone.toml) | Route 113 ash, Fallarbor Town and Route 114 | P0 |  | 25684 | prev + `None` | MAP_METEOR_FALLS_1F_1R | passing |
+| [16-mauville-gym-wattson-rock-smash](emerald/16-mauville-gym-wattson-rock-smash/milestone.toml) | Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash | P0 |  | 10909 | prev + `None` | MAP_MAUVILLE_CITY | passing |
+| [17-verdanturf-rusturf-strength](emerald/17-verdanturf-rusturf-strength/milestone.toml) | Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength | P0 |  | 24511 | prev + `None` | MAP_VERDANTURF_TOWN | passing |
+| [18-route111-112-fiery-path](emerald/18-route111-112-fiery-path/milestone.toml) | Route 111 rocks, Route 112 and the Fiery Path north | P0 |  | 28941 | prev + `None` | MAP_ROUTE113 | passing |
+| [19-route113-fallarbor-route114](emerald/19-route113-fallarbor-route114/milestone.toml) | Route 113 ash, Fallarbor Town and Route 114 | P0 |  | 27682 | prev + `None` | MAP_METEOR_FALLS_1F_1R | passing |
 | [20-meteor-falls-magma-archie](emerald/20-meteor-falls-magma-archie/milestone.toml) | Meteor Falls: Magma takes the meteorite, Archie appears | P0 |  | 2381 | prev + `None` | MAP_ROUTE114 | passing |
-| [21-cable-car-mt-chimney-maxie](emerald/21-cable-car-mt-chimney-maxie/milestone.toml) | Cable car to Mt. Chimney: Tabitha and Maxie | P0 |  | 35531 | prev + `None` | MAP_MT_CHIMNEY | passing |
-| [22-jagged-pass-lavaridge](emerald/22-jagged-pass-lavaridge/milestone.toml) | Down Jagged Pass to Lavaridge Town | P0 |  | 12499 | prev + `None` | MAP_LAVARIDGE_TOWN | passing |
-| [23-lavaridge-gym-flannery-goggles](emerald/23-lavaridge-gym-flannery-goggles/milestone.toml) | Lavaridge Gym: Flannery's Heat Badge, May's Go-Goggles | P0 |  | 18422 | prev + `None` | MAP_LAVARIDGE_TOWN | passing |
-| [24-petalburg-gym-norman-surf](emerald/24-petalburg-gym-norman-surf/milestone.toml) | Back to Petalburg: Norman's Balance Badge and HM03 Surf | P0 |  | 29296 | prev + `None` | MAP_PETALBURG_CITY_WALLYS_HOUSE | passing |
-| [25-route118-119-weather-institute](emerald/25-route118-119-weather-institute/milestone.toml) | Surf east: Route 118, Route 119 and the Weather Institute (Shelly) | P0 |  | 51851 | prev + `None` | MAP_ROUTE119 | passing |
-| [26-route119-may-fly-fortree](emerald/26-route119-may-fly-fortree/milestone.toml) | Route 119: May's third battle, HM02 Fly, into Fortree | P0 |  | 11425 | prev + `None` | MAP_FORTREE_CITY | passing |
-| [27-route120-steven-devon-scope](emerald/27-route120-steven-devon-scope/milestone.toml) | Route 120: Steven's Kecleon and the Devon Scope; Fortree's gym Kecleon | P0 |  | 12185 | prev + `None` | MAP_FORTREE_CITY | passing |
-| [28-fortree-gym-winona](emerald/28-fortree-gym-winona/milestone.toml) | Fortree Gym: Winona and the Feather Badge | P0 |  | 21741 | prev + `None` | MAP_FORTREE_CITY | passing |
-| [29-route121-lilycove-may](emerald/29-route121-lilycove-may/milestone.toml) | Routes 120-121 to Lilycove: May at the Department Store | P0 |  | 48014 | prev + `None` | MAP_LILYCOVE_CITY | passing |
-| [30-mt-pyre-summit-magma-emblem](emerald/30-mt-pyre-summit-magma-emblem/milestone.toml) | Mt. Pyre summit: Aqua takes the Red Orb, the Magma Emblem | P0 |  | 17905 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
-| [31-magma-hideout-maxie-groudon](emerald/31-magma-hideout-maxie-groudon/milestone.toml) | Magma Hideout: Groudon wakes, Maxie's second battle | P0 |  | 69564 | prev + `None` | MAP_MAGMA_HIDEOUT_4F | passing |
-| [32-slateport-harbor-submarine](emerald/32-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: Aqua steals Stern's submarine | P0 |  | 18462 | prev + `None` | MAP_SLATEPORT_CITY_HARBOR | passing |
-| [33-aqua-hideout-matt](emerald/33-aqua-hideout-matt/milestone.toml) | Lilycove Aqua Hideout: Matt and the submarine escape | P0 |  | 61764 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | passing |
-| [34-route124-mossdeep-gym-tate-liza](emerald/34-route124-mossdeep-gym-tate-liza/milestone.toml) | Surf to Mossdeep: Tate & Liza's Mind Badge | P0 |  | 37999 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
-| [35-mossdeep-space-center-steven-multi](emerald/35-mossdeep-space-center-steven-multi/milestone.toml) | Mossdeep Space Center: Magma's raid, the Steven multi battle | P0 |  | 26865 | prev + `None` | MAP_MOSSDEEP_CITY_SPACE_CENTER_2F | passing |
+| [21-cable-car-mt-chimney-maxie](emerald/21-cable-car-mt-chimney-maxie/milestone.toml) | Cable car to Mt. Chimney: Tabitha and Maxie | P0 |  | 34787 | prev + `None` | MAP_MT_CHIMNEY | passing |
+| [22-jagged-pass-lavaridge](emerald/22-jagged-pass-lavaridge/milestone.toml) | Down Jagged Pass to Lavaridge Town | P0 |  | 12115 | prev + `None` | MAP_LAVARIDGE_TOWN | passing |
+| [23-lavaridge-gym-flannery-goggles](emerald/23-lavaridge-gym-flannery-goggles/milestone.toml) | Lavaridge Gym: Flannery's Heat Badge, May's Go-Goggles | P0 |  | 18376 | prev + `None` | MAP_LAVARIDGE_TOWN | passing |
+| [24-petalburg-gym-norman-surf](emerald/24-petalburg-gym-norman-surf/milestone.toml) | Back to Petalburg: Norman's Balance Badge and HM03 Surf | P0 |  | 30741 | prev + `None` | MAP_PETALBURG_CITY_WALLYS_HOUSE | passing |
+| [25-route118-119-weather-institute](emerald/25-route118-119-weather-institute/milestone.toml) | Surf east: Route 118, Route 119 and the Weather Institute (Shelly) | P0 |  | 53131 | prev + `None` | MAP_ROUTE119 | passing |
+| [26-route119-may-fly-fortree](emerald/26-route119-may-fly-fortree/milestone.toml) | Route 119: May's third battle, HM02 Fly, into Fortree | P0 |  | 10470 | prev + `None` | MAP_FORTREE_CITY | passing |
+| [27-route120-steven-devon-scope](emerald/27-route120-steven-devon-scope/milestone.toml) | Route 120: Steven's Kecleon and the Devon Scope; Fortree's gym Kecleon | P0 |  | 10224 | prev + `None` | MAP_FORTREE_CITY | passing |
+| [28-fortree-gym-winona](emerald/28-fortree-gym-winona/milestone.toml) | Fortree Gym: Winona and the Feather Badge | P0 |  | 26015 | prev + `None` | MAP_FORTREE_CITY | passing |
+| [29-route121-lilycove-may](emerald/29-route121-lilycove-may/milestone.toml) | Routes 120-121 to Lilycove: May at the Department Store | P0 |  | 46514 | prev + `None` | MAP_LILYCOVE_CITY | passing |
+| [30-mt-pyre-summit-magma-emblem](emerald/30-mt-pyre-summit-magma-emblem/milestone.toml) | Mt. Pyre summit: Aqua takes the Red Orb, the Magma Emblem | P0 |  | 18792 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
+| [31-magma-hideout-maxie-groudon](emerald/31-magma-hideout-maxie-groudon/milestone.toml) | Magma Hideout: Groudon wakes, Maxie's second battle | P0 |  | 72802 | prev + `None` | MAP_MAGMA_HIDEOUT_4F | passing |
+| [32-slateport-harbor-submarine](emerald/32-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: Aqua steals Stern's submarine | P0 |  | 21171 | prev + `None` | MAP_SLATEPORT_CITY_HARBOR | passing |
+| [33-aqua-hideout-matt](emerald/33-aqua-hideout-matt/milestone.toml) | Lilycove Aqua Hideout: Matt and the submarine escape | P0 |  | 53785 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | passing |
+| [34-route124-mossdeep-gym-tate-liza](emerald/34-route124-mossdeep-gym-tate-liza/milestone.toml) | Surf to Mossdeep: Tate & Liza's Mind Badge | P0 |  | 35793 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
+| [35-mossdeep-space-center-steven-multi](emerald/35-mossdeep-space-center-steven-multi/milestone.toml) | Mossdeep Space Center: Magma's raid, the Steven multi battle | P0 |  | 27107 | prev + `None` | MAP_MOSSDEEP_CITY_SPACE_CENTER_2F | passing |
 | [36-stevens-house-hm-dive](emerald/36-stevens-house-hm-dive/milestone.toml) | Steven's house: HM08 Dive | P0 |  | 3072 | prev + `None` | MAP_MOSSDEEP_CITY_STEVENS_HOUSE | passing |
-| [37-seafloor-cavern-archie-kyogre](emerald/37-seafloor-cavern-archie-kyogre/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre | P0 |  | 20844 | prev + `None` | MAP_ROUTE128 | passing |
-| [38-sootopolis-cave-of-origin-wallace](emerald/38-sootopolis-cave-of-origin-wallace/milestone.toml) | Sootopolis in the storm: Steven, the Cave of Origin, Wallace | P0 |  | 18043 | prev + `None` | MAP_CAVE_OF_ORIGIN_B1F | passing |
-| [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 29323 | prev + `None` | MAP_SKY_PILLAR_TOP | passing |
-| [40-sootopolis-rayquaza-waterfall](emerald/40-sootopolis-rayquaza-waterfall/milestone.toml) | Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall | P0 |  | 26673 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
-| [41-sootopolis-gym-juan](emerald/41-sootopolis-gym-juan/milestone.toml) | Sootopolis Gym: Juan and the Rain Badge | P0 |  | 15873 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
-| [42-ever-grande-victory-road-wally](emerald/42-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally's last battle | P0 |  | 63226 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
+| [37-seafloor-cavern-archie-kyogre](emerald/37-seafloor-cavern-archie-kyogre/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre | P0 |  | 21890 | prev + `None` | MAP_ROUTE128 | passing |
+| [38-sootopolis-cave-of-origin-wallace](emerald/38-sootopolis-cave-of-origin-wallace/milestone.toml) | Sootopolis in the storm: Steven, the Cave of Origin, Wallace | P0 |  | 20185 | prev + `None` | MAP_CAVE_OF_ORIGIN_B1F | passing |
+| [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 30319 | prev + `None` | MAP_SKY_PILLAR_TOP | passing |
+| [40-sootopolis-rayquaza-waterfall](emerald/40-sootopolis-rayquaza-waterfall/milestone.toml) | Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall | P0 |  | 23121 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
+| [41-sootopolis-gym-juan](emerald/41-sootopolis-gym-juan/milestone.toml) | Sootopolis Gym: Juan and the Rain Badge | P0 |  | 15474 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
+| [42-ever-grande-victory-road-wally](emerald/42-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally's last battle | P0 |  | 72642 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
 | [43-pokemon-league-entrance](emerald/43-pokemon-league-entrance/milestone.toml) | Pokemon League lobby: heal and pass the badge guards | P0 |  | 2993 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | passing |
 | [44-e4-sidney](emerald/44-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 |  | 7347 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | passing |
 | [45-e4-phoebe](emerald/45-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 |  | 7220 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | passing |
-| [46-e4-glacia](emerald/46-e4-glacia/milestone.toml) | Elite Four: Glacia | P0 |  | 14792 | prev + `None` | MAP_EVER_GRANDE_CITY_DRAKES_ROOM | passing |
-| [47-e4-drake](emerald/47-e4-drake/milestone.toml) | Elite Four: Drake | P0 |  | 9523 | prev + `None` | MAP_EVER_GRANDE_CITY_HALL4 | passing |
-| [48-champion-wallace-hall-of-fame](emerald/48-champion-wallace-hall-of-fame/milestone.toml) | Champion Wallace, the Hall of Fame, credits and the reset | P0 |  | 27254 | prev + `None` | - | passing |
+| [46-e4-glacia](emerald/46-e4-glacia/milestone.toml) | Elite Four: Glacia | P0 |  | 15028 | prev + `None` | MAP_EVER_GRANDE_CITY_DRAKES_ROOM | passing |
+| [47-e4-drake](emerald/47-e4-drake/milestone.toml) | Elite Four: Drake | P0 |  | 9620 | prev + `None` | MAP_EVER_GRANDE_CITY_HALL4 | passing |
+| [48-champion-wallace-hall-of-fame](emerald/48-champion-wallace-hall-of-fame/milestone.toml) | Champion Wallace, the Hall of Fame, credits and the reset | P0 |  | 31252 | prev + `None` | - | passing |
 
 #### emerald/01-newgame-truck-house — New game: intro, Birch speech, truck ride, into the house
 - proves: Proves the blank-chip Emerald start: title, Birch speech (BOY, the default; name AAAAAAA), the moving truck, Mom at the door and into the house (LittlerootTown OnFrame StepOffTruckMale -> warpsilent 1F (8,8)). Start: power-on (no save) -> end: MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F (8,7), VAR_LITTLEROOT_INTRO_STATE 4.
@@ -4059,7 +4059,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB; >= 1 battles; party SPECIES_MUDKIP; party size 1; flags set FLAG_SYS_POKEMON_GET, FLAG_RESCUED_BIRCH, FLAG_HIDE_ROUTE_101_BIRCH_ZIGZAGOON_BATTLE, FLAG_HIDE_ROUTE_101_BIRCH_STARTERS_BAG, FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM; flags clear FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_BIRCH, FLAG_HIDE_ROUTE_101_BOY; vars VAR_STARTER_MON=2, VAR_BIRCH_LAB_STATE=3, VAR_ROUTE101_STATE=3, VAR_LITTLEROOT_TOWN_STATE=2
-- frames: estimate 4414, budget 6700
+- frames: estimate 4834, budget 7300
 - refs: data/maps/LittlerootTown/map.json coord_events (11,1) VAR_LITTLEROOT_TOWN_STATE=1 GoSaveBirchTrigger; data/maps/LittlerootTown/scripts.inc:366-376; data/maps/Route101/scripts.inc:10-17; data/maps/Route101/map.json coord_events (10,19)/(11,19) VAR_ROUTE101_STATE=1; data/maps/Route101/scripts.inc:19-41; data/maps/Route101/map.json object_events[3] BIRCHS_BAG (7,14); data/maps/Route101/scripts.inc:214-243; src/starter_choose.c:113-118 (Treecko, Torchic, Mudkip); src/starter_choose.c:443 (cursor starts on 1 = Torchic); src/starter_choose.c:506-515 (LEFT/RIGHT); src/starter_choose.c:534 (YES/NO opens on YES); src/battle_setup.c:917-927 (CB2_GiveStarter: VAR_STARTER_MON = choice, Mudkip lv5, first battle); data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc:98-136; tests/rse/e-3-route101.sched
 - notes: Starter: MUDKIP (VAR_STARTER_MON 2): Water/Ground from Marshtomp (lv16) handles Roxanne, Wattson (immune), Flannery, Norman/Tate&Liza neutral; the cost is the rival leading with the Treecko line (TRAINER_MAY_*_MUDKIP). e-3-route101.sched picks the default Torchic instead (A at the bag). The first battle is BATTLE_TYPE_FIRST_BATTLE vs the wild Zigzagoon Birch fled from [INFERENCE: lv2]; Tackle wins. The nickname prompt is answered NO (B), the go-see-rival prompt YES.
 
@@ -4069,7 +4069,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_ROUTE_103_MUDKIP (529), src/data/trainers.h:6352
 - end state: map MAP_LITTLEROOT_TOWN; >= 1 battles; party SPECIES_MUDKIP; flags set FLAG_DEFEATED_RIVAL_ROUTE103, FLAG_ADVENTURE_STARTED, FLAG_SYS_POKEDEX_GET, FLAG_RECEIVED_POKEDEX_FROM_BIRCH, FLAG_RECEIVED_RUNNING_SHOES, FLAG_SYS_B_DASH, FLAG_VISITED_OLDALE_TOWN, FLAG_HIDE_OLDALE_TOWN_RIVAL; vars VAR_BIRCH_LAB_STATE=5, VAR_LITTLEROOT_RIVAL_STATE=4, VAR_LITTLEROOT_TOWN_STATE=4, VAR_OLDALE_TOWN_STATE=1, VAR_OLDALE_RIVAL_STATE=2
-- frames: estimate 12757, budget 19200
+- frames: estimate 11140, budget 16800
 - refs: data/maps/LittlerootTown_ProfessorBirchsLab/map.json warp_events[0] (6,12); data/maps/Route103/map.json object_events[2] LOCALID_ROUTE103_RIVAL (10,3); data/maps/Route103/scripts.inc:20-39; data/maps/Route103/scripts.inc:65-68; data/maps/Route103/scripts.inc:129-135; data/maps/OldaleTown/map.json coord_events (8..10,19) VAR_OLDALE_RIVAL_STATE=1; data/maps/OldaleTown/scripts.inc:216-270; data/maps/LittlerootTown/scripts.inc:63-65; data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc:100; data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc:144-147; data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc:499-540; data/maps/LittlerootTown/map.json coord_events (10,2)/(11,2)/(8..11,9) VAR_LITTLEROOT_TOWN_STATE=3; data/maps/LittlerootTown/scripts.inc:817-850; TRAINER_MAY_ROUTE_103_MUDKIP (529), src/data/trainers.h:6352
 - notes: May: TRAINER_MAY_ROUTE_103_MUDKIP (529): TREECKO 5 (Treecko resists Water; Mudkip lv5-6 Tackle, boost if needed). The Oldale scene (VAR_OLDALE_RIVAL_STATE 1) fires on (8..10,19) going south, else Littleroot OnTransition finishes it (LittlerootTown/scripts.inc:45,63-65). Oldale's west gate (0,10) is open once FLAG_ADVENTURE_STARTED (OldaleTown/scripts.inc:8,14-15). Running Shoes: TOWN_STATE 3 triggers at (10,2)/(11,2) and (8..11,9) -> Mom (LittlerootTown_EventScript_Mom: FLAG_RECEIVED_RUNNING_SHOES, FLAG_SYS_B_DASH, TOWN_STATE 4).
 
@@ -4079,7 +4079,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_CALVIN_1 (318), src/data/trainers.h:3820; TRAINER_RICK (615), src/data/trainers.h:7384; TRAINER_TIANA (603), src/data/trainers.h:7240; TRAINER_ALLEN (333), src/data/trainers.h:4000
 - end state: map MAP_PETALBURG_CITY; >= 1 battles; party SPECIES_MUDKIP; flags set FLAG_VISITED_PETALBURG_CITY, FLAG_HIDE_PETALBURG_CITY_WALLY, FLAG_HIDE_PETALBURG_CITY_WALLYS_MOM; vars VAR_PETALBURG_CITY_STATE=3, VAR_PETALBURG_GYM_STATE=2
-- frames: estimate 16421, budget 24700
+- frames: estimate 17196, budget 25800
 - refs: data/maps/Route102/map.json object_events 2/3/4/9 (Calvin, Rick, Tiana, Allen); data/maps/PetalburgCity/map.json coord_events (8,10..13) VAR_PETALBURG_CITY_STATE=0; data/maps/PetalburgCity/scripts.inc:259-262; data/maps/PetalburgCity/map.json warp_events[2] (15,8) -> gym; data/maps/PetalburgCity_Gym/scripts.inc:36-41; data/maps/PetalburgCity_Gym/scripts.inc:101-118; data/maps/PetalburgCity_Gym/scripts.inc:141-188; data/maps/PetalburgCity/scripts.inc:27-55; src/battle_setup.c:480 (StartWallyTutorialBattle); data/maps/PetalburgCity_Gym/scripts.inc:72-91; TRAINER_CALVIN_1 (318), src/data/trainers.h:3820; TRAINER_RICK (615), src/data/trainers.h:7384; TRAINER_TIANA (603), src/data/trainers.h:7240; TRAINER_ALLEN (333), src/data/trainers.h:4000
 - notes: Route 102 sight trainers: TRAINER_CALVIN_1 (318): POOCHYENA 5; TRAINER_RICK (615): WURMPLE 4, WURMPLE 4; TRAINER_TIANA (603): ZIGZAGOON 4, SHROOMISH 4; TRAINER_ALLEN (333): ZIGZAGOON 4, TAILLOW 3. The Wally tutorial is a scripted battle (Zigzagoon on loan catches Ralts) that only needs text advanced. Norman stands at the entrance while GYM_STATE < 6 (PetalburgCity_Gym/scripts.inc:40). The Scott trigger (4,10..13) fires on the west side later (Route 104 exit).
 
@@ -4089,7 +4089,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GRUNT_PETALBURG_WOODS (10), src/data/trainers.h:124; TRAINER_LYLE (616), src/data/trainers.h:7396; TRAINER_JAMES_1 (621), src/data/trainers.h:7456; TRAINER_HALEY_1 (604), src/data/trainers.h:7252; TRAINER_WINSTON_1 (136), src/data/trainers.h:1636; TRAINER_GINA_AND_MIA_1 (483), src/data/trainers.h:5800; TRAINER_BILLY (319), src/data/trainers.h:3832; TRAINER_CINDY_1 (114), src/data/trainers.h:1372; TRAINER_DARIAN (696), src/data/trainers.h:8356
 - end state: map MAP_RUSTBORO_CITY; >= 1 battles; flags set FLAG_VISITED_RUSTBORO_CITY; vars VAR_PETALBURG_WOODS_STATE=1
-- frames: estimate 24092, budget 36200
+- frames: estimate 18670, budget 28100
 - refs: data/maps/PetalburgCity/map.json coord_events (4,10..13) VAR_SCOTT_PETALBURG_ENCOUNTER=0; data/maps/Route104/map.json warp_events 2..7 (Petalburg Woods); data/maps/PetalburgWoods/map.json coord_events (26,23)/(27,23) VAR_PETALBURG_WOODS_STATE=0; data/maps/PetalburgWoods/scripts.inc:4-31; data/maps/PetalburgWoods/scripts.inc:60-93; data/maps/PetalburgWoods/map.json warp_events[0..1] (14,5)/(15,5) -> Route 104 north; TRAINER_GRUNT_PETALBURG_WOODS (10), src/data/trainers.h:124; TRAINER_LYLE (616), src/data/trainers.h:7396; TRAINER_JAMES_1 (621), src/data/trainers.h:7456; TRAINER_HALEY_1 (604), src/data/trainers.h:7252; TRAINER_WINSTON_1 (136), src/data/trainers.h:1636; TRAINER_GINA_AND_MIA_1 (483), src/data/trainers.h:5800; TRAINER_BILLY (319), src/data/trainers.h:3832; TRAINER_CINDY_1 (114), src/data/trainers.h:1372; TRAINER_DARIAN (696), src/data/trainers.h:8356
 - notes: Grunt: TRAINER_GRUNT_PETALBURG_WOODS (10): POOCHYENA 9. Route 104/woods trainers: Billy, Cindy, Darian (south), Lyle, James (woods), Haley, Winston, Gina & Mia (DOUBLE: SEEDOT 6, LOTAD 6; needs 2 mons, else skipped) (north). Petalburg west exit passes the Scott trigger (4,10..13) (talk only). Which Route 104 woods door the south path reaches is unproven: (32,42)/(33,42) -> woods (36,38) [INFERENCE], (10,38) -> woods (16,38) the other.
 
@@ -4099,7 +4099,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_ROXANNE_1 (265), src/data/trainers.h:3184; TRAINER_JOSH (320), src/data/trainers.h:3844; TRAINER_TOMMY (321), src/data/trainers.h:3856; TRAINER_MARC (571), src/data/trainers.h:6856
 - end state: map MAP_RUSTBORO_CITY; 1 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_DEFEATED_RUSTBORO_GYM, FLAG_RECEIVED_TM_ROCK_TOMB, FLAG_RECEIVED_HM_CUT; vars VAR_RUSTBORO_CITY_STATE=1, VAR_PETALBURG_GYM_STATE=3
-- frames: estimate 16213, budget 24400
+- frames: estimate 18425, budget 27700
 - refs: data/maps/RustboroCity/map.json warp_events[8] (9,38) -> CUTTERS_HOUSE; data/maps/RustboroCity_CuttersHouse/scripts.inc:4-13; data/maps/RustboroCity/map.json warp_events[0] (27,19) -> gym; data/maps/RustboroCity_Gym/map.json object_events 1..5; data/maps/RustboroCity_Gym/scripts.inc:4-34; TRAINER_ROXANNE_1 (265), src/data/trainers.h:3184; TRAINER_JOSH (320), src/data/trainers.h:3844; TRAINER_TOMMY (321), src/data/trainers.h:3856; TRAINER_MARC (571), src/data/trainers.h:6856; src/party_menu.c:120 (Cut needs FLAG_BADGE01_GET)
 - notes: Roxanne: TRAINER_ROXANNE_1 (265): GEODUDE 12, GEODUDE 12, NOSEPASS 15; Water Gun / Mud-Slap are x2-x4 on all three (Mudkip learns Water Gun at 6, Mud-Slap at 10 [INFERENCE: Emerald learnset]); boost to ~14. Gym trainers: TRAINER_JOSH (320): GEODUDE 10; TRAINER_TOMMY (321): GEODUDE 8, GEODUDE 8; TRAINER_MARC (571): GEODUDE 8, GEODUDE 8. HM01 Cut (FLAG_RECEIVED_HM_CUT) is usable after this badge (src/party_menu.c:120); the story path does not need it [INFERENCE], carriers come from boosts.
 
@@ -4109,7 +4109,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GRUNT_RUSTURF_TUNNEL (16), src/data/trainers.h:196
 - end state: map MAP_ROUTE116; 1 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_RECOVERED_DEVON_GOODS, FLAG_INTERACTED_WITH_DEVON_EMPLOYEE_GOODS_STOLEN, FLAG_HIDE_ROUTE_116_MR_BRINEY; flags clear FLAG_DEVON_GOODS_STOLEN; vars VAR_RUSTBORO_CITY_STATE=4, VAR_RUSTURF_TUNNEL_STATE=3, VAR_ROUTE116_STATE=2, VAR_BRINEY_HOUSE_STATE=1
-- frames: estimate 18884, budget 28400
+- frames: estimate 18292, budget 27500
 - refs: data/maps/RustboroCity/map.json coord_events (23,20..24) VAR_RUSTBORO_CITY_STATE=1; data/maps/RustboroCity/scripts.inc:231-298; data/maps/RustboroCity/map.json coord_events (30,9)/(29,10)/(30,11)/(30,12) VAR_RUSTBORO_CITY_STATE=2; data/maps/RustboroCity/scripts.inc:452-488; data/maps/Route116/map.json coord_events (47,9) VAR_ROUTE116_STATE=1; data/maps/Route116/scripts.inc:132-148; data/maps/Route116/map.json warp_events[0] (47,8) -> RUSTURF_TUNNEL; data/maps/RusturfTunnel/map.json coord_events (9,4)/(9,5) VAR_RUSTURF_TUNNEL_STATE=2; data/maps/RusturfTunnel/scripts.inc:258-270; data/maps/RusturfTunnel/scripts.inc:287-326; TRAINER_GRUNT_RUSTURF_TUNNEL (16), src/data/trainers.h:196
 - notes: Grunt: TRAINER_GRUNT_RUSTURF_TUNNEL (16): POOCHYENA 11. Route 116 sight trainers between Rustboro and the tunnel: Joey, Jose, Janice, Karen, Jerry, Clark, Sarah, Dawson, Johnson, Devan (lv 8-9). The tunnel's east half stays blocked by rocks until Rock Smash (17).
 
@@ -4119,7 +4119,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_RUSTBORO_MUDKIP (600), src/data/trainers.h:7204
 - end state: map MAP_RUSTBORO_CITY; 1 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_RETURNED_DEVON_GOODS, FLAG_SYS_POKENAV_GET, FLAG_RECEIVED_POKENAV, FLAG_HAS_MATCH_CALL, FLAG_ADDED_MATCH_CALL_TO_POKENAV, FLAG_MET_RIVAL_RUSTBORO, FLAG_DEFEATED_RIVAL_RUSTBORO, FLAG_ENABLE_RIVAL_MATCH_CALL; flags clear FLAG_HIDE_BRINEYS_HOUSE_MR_BRINEY, FLAG_HIDE_BRINEYS_HOUSE_PEEKO, FLAG_HIDE_RUSTURF_TUNNEL_WANDA; vars VAR_RUSTBORO_CITY_STATE=8, VAR_DEVON_CORP_3F_STATE=1, VAR_ROUTE104_STATE=2, VAR_BRINEY_LOCATION=1
-- frames: estimate 12951, budget 19500
+- frames: estimate 11671, budget 17600
 - refs: data/maps/RustboroCity/map.json coord_events (30,9)/(31,10)/(30,11)/(30,12) VAR_RUSTBORO_CITY_STATE=4; data/maps/RustboroCity/scripts.inc:526-568; data/maps/RustboroCity_DevonCorp_3F/scripts.inc:24-68; data/maps/RustboroCity_DevonCorp_3F/map.json warp_events[0] (2,1); data/maps/RustboroCity_DevonCorp_2F/map.json warp_events (14,1)/(2,1); data/maps/RustboroCity_DevonCorp_1F/map.json warp_events (5,8)/(6,8); data/maps/RustboroCity/scripts.inc:27-91; data/maps/RustboroCity/map.json coord_events (12..19,53) VAR_RUSTBORO_CITY_STATE=7; data/maps/RustboroCity/scripts.inc:634-764; data/maps/RustboroCity/scripts.inc:790-794; TRAINER_MAY_RUSTBORO_MUDKIP (600), src/data/trainers.h:7204
 - notes: May: TRAINER_MAY_RUSTBORO_MUDKIP (600): WINGULL 13, TREECKO 15 (Treecko resists Water and Ground; Wingull resists Ground: bring a Tackle/Peck-type mover or boost). The Match Call tutorial (special ScriptMenu_CreateStartMenuForPokenavTutorial + OpenPokenavForTutorial) needs START-menu-like input. May's battle is a YES/NO offer (RustboroCity/scripts.inc:745); YES.
 
@@ -4139,7 +4139,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_DEWFORD_TOWN; 1 badges; flags set FLAG_BADGE01_GET, FLAG_RECEIVED_HM_FLASH, FLAG_DELIVERED_STEVEN_LETTER, FLAG_REGISTERED_STEVEN_POKENAV, FLAG_HIDE_GRANITE_CAVE_STEVEN
-- frames: estimate 15007, budget 22600
+- frames: estimate 18871, budget 28400
 - refs: data/maps/DewfordTown/map.json connections up MAP_ROUTE106 offset -60; data/maps/Route106/map.json warp_events[0] (48,16) -> GRANITE_CAVE_1F; data/maps/GraniteCave_1F/map.json object_events[1] HIKER (36,9); data/maps/GraniteCave_1F/scripts.inc:4-15; data/maps/GraniteCave_1F/map.json warp_events (35,3)/(17,11)/(5,10); data/maps/GraniteCave_B1F/map.json warp_events 0..6; data/maps/GraniteCave_B1F/scripts.inc:9 (setholewarp B2F: cracked floor); data/maps/GraniteCave_B2F/map.json warp_events 0..4; data/maps/GraniteCave_StevensRoom/map.json object_events[1] STEVEN (7,8); data/maps/GraniteCave_StevensRoom/scripts.inc:4-32; src/party_menu.c:121 (Flash needs FLAG_BADGE02_GET)
 - notes: HM05 Flash: FLAG_RECEIVED_HM_FLASH here; Flash needs the Knuckle Badge (src/party_menu.c:121) so the cave is walked dark (1F/B1F/B2F are dark; walk_to uses the probe's collision, not the screen [INFERENCE]). Route to Steven's room: 1F (35,3) -> B1F (25,13); B1F (29,13) -> B2F (29,13); B2F north to (8,5)/(12,3) -> B1F west; B1F (4,21) -> 1F (17,11); 1F west to (5,10) [INFERENCE from the warp table; B1F's cracked floor drops to B2F without the Mach Bike].
 
@@ -4149,7 +4149,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_BRAWLY_1 (266), src/data/trainers.h:3196; TRAINER_TAKAO (179), src/data/trainers.h:2152; TRAINER_JOCELYN (425), src/data/trainers.h:5104; TRAINER_LAURA (426), src/data/trainers.h:5116; TRAINER_BRENDEN (572), src/data/trainers.h:6868; TRAINER_CRISTIAN (574), src/data/trainers.h:6892; TRAINER_LILITH (573), src/data/trainers.h:6880
 - end state: map MAP_DEWFORD_TOWN; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_DEFEATED_DEWFORD_GYM, FLAG_RECEIVED_TM_BULK_UP; vars VAR_PETALBURG_GYM_STATE=4
-- frames: estimate 10618, budget 16000
+- frames: estimate 9135, budget 13800
 - refs: data/maps/DewfordTown/map.json warp_events[2] (8,17) -> gym; data/maps/DewfordTown_Gym/map.json object_events 1..8; data/maps/DewfordTown_Gym/scripts.inc:9-133; data/maps/DewfordTown_Gym/scripts.inc:135-182; TRAINER_BRAWLY_1 (266), src/data/trainers.h:3196; TRAINER_TAKAO (179), src/data/trainers.h:2152; TRAINER_JOCELYN (425), src/data/trainers.h:5104; TRAINER_LAURA (426), src/data/trainers.h:5116; TRAINER_BRENDEN (572), src/data/trainers.h:6868; TRAINER_CRISTIAN (574), src/data/trainers.h:6892; TRAINER_LILITH (573), src/data/trainers.h:6880
 - notes: Brawly: TRAINER_BRAWLY_1 (266): MACHOP 16, MEDITITE 16, MAKUHITA 19 (Fighting; Water Gun/Mud-Slap neutral, Marshtomp at 16 helps; boost ~18). Gym trainers lv13: Takao (2,18), Jocelyn (15,3), Laura (12,25), Cristian (7,8), Lilith (16,9), Brenden (14,12). The gym stays dark until trainers fall; walk_to plans on probe collision [INFERENCE: dark palette does not hide collision].
 
@@ -4159,7 +4159,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GRUNT_MUSEUM_1 (20), src/data/trainers.h:244; TRAINER_GRUNT_MUSEUM_2 (21), src/data/trainers.h:256
 - end state: map MAP_SLATEPORT_CITY; 2 badges; >= 2 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_VISITED_SLATEPORT_CITY, FLAG_DOCK_REJECTED_DEVON_GOODS, FLAG_HIDE_SLATEPORT_CITY_TEAM_AQUA, FLAG_DELIVERED_DEVON_GOODS, FLAG_HIDE_ROUTE_110_TEAM_AQUA, FLAG_HIDE_SLATEPORT_CITY_OCEANIC_MUSEUM_AQUA_GRUNTS, FLAG_ENABLE_SCOTT_MATCH_CALL; vars VAR_SLATEPORT_OUTSIDE_MUSEUM_STATE=2, VAR_REGISTER_BIRCH_STATE=1
-- frames: estimate 15319, budget 23000
+- frames: estimate 14897, budget 22400
 - refs: data/maps/DewfordTown/scripts.inc:9-35; data/maps/DewfordTown/scripts.inc:141-180; data/maps/Route109/map.json object_events 1/2 Briney boat (21,26)/(21,24); data/maps/SlateportCity/map.json warp_events[2] (26,38) -> STERNS_SHIPYARD_1F; data/maps/SlateportCity_SternsShipyard_1F/scripts.inc:4-18; data/maps/SlateportCity/map.json object_events 5,18,19,26..33 Aqua queue (FLAG_HIDE_SLATEPORT_CITY_TEAM_AQUA); data/maps/SlateportCity/map.json warp_events[5] (30,26) -> OCEANIC_MUSEUM_1F; data/maps/SlateportCity_OceanicMuseum_1F/scripts.inc:8-40; data/maps/SlateportCity_OceanicMuseum_1F/map.json warp_events[2] (6,1) -> 2F; data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:4-81; data/maps/SlateportCity/scripts.inc:7-10; data/maps/SlateportCity/scripts.inc:36-82; TRAINER_GRUNT_MUSEUM_1 (20), src/data/trainers.h:244; TRAINER_GRUNT_MUSEUM_2 (21), src/data/trainers.h:256
 - notes: Grunts (back to back, trainerbattle_no_intro): TRAINER_GRUNT_MUSEUM_1 (20): CARVANHA 15; TRAINER_GRUNT_MUSEUM_2 (21): ZUBAT 14, CARVANHA 14. Briney's Dewford menu (multichoicedefault default 2 = CANCEL, DewfordTown/scripts.inc:15): UP once -> SLATEPORT. The museum fee is 50; with less money the attendant lets you in anyway before the delivery (SlateportCity_OceanicMuseum_1F/scripts.inc:42-53). Route 109 beach trainers (Huey, Edmond, Ricky, Lola, Hailey, Chandler) stand off the straight path [INFERENCE].
 
@@ -4169,7 +4169,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_ROUTE_110_MUDKIP (530), src/data/trainers.h:6364
 - end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_ENABLE_PROF_BIRCH_MATCH_CALL, FLAG_VISITED_MAUVILLE_CITY, FLAG_SYS_TV_START; vars VAR_REGISTER_BIRCH_STATE=2, VAR_ROUTE110_STATE=1
-- frames: estimate 27997, budget 42000
+- frames: estimate 27724, budget 41600
 - refs: data/maps/Route110/map.json coord_events (7..10,85) VAR_REGISTER_BIRCH_STATE=1; data/maps/Route110/scripts.inc:559-614; data/maps/Route110/map.json object_events 22..26 Aqua grunts (FLAG_HIDE_ROUTE_110_TEAM_AQUA); data/maps/Route110/map.json coord_events (33..35,56) VAR_ROUTE110_STATE=0; data/maps/Route110/scripts.inc:351-420; data/maps/Route110/scripts.inc:452-470; TRAINER_MAY_ROUTE_110_MUDKIP (530), src/data/trainers.h:6364; data/maps/MauvilleCity/map.json warp_events[1] (22,5) -> POKEMON_CENTER_1F
 - notes: May: TRAINER_MAY_ROUTE_110_MUDKIP (530): WINGULL 18, SLUGMA 18, GROVYLE 20 (Grovyle is x4 on Marshtomp's Water/Ground: boost a non-Water lead or levels ~22). Route 110 trainers below the Cycling Road: Edward, Jaclyn, Edwin, Dale, Anthony/Benjamin/Jasmine/Abigail/Alyssa/Jacob (triathletes), Timmy, Isabel, Kaleb, Joseph (lv 6-16); walk_to fights those who see it. The Aqua grunts at (7..10,83) are hidden by the museum delivery (13).
 
@@ -4189,7 +4189,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WATTSON_1 (267), src/data/trainers.h:3208; TRAINER_KIRK (191), src/data/trainers.h:2296; TRAINER_SHAWN (194), src/data/trainers.h:2332; TRAINER_BEN (323), src/data/trainers.h:3880; TRAINER_VIVIAN (649), src/data/trainers.h:7792; TRAINER_ANGELO (802), src/data/trainers.h:9628
 - end state: map MAP_MAUVILLE_CITY; 3 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_DEFEATED_MAUVILLE_GYM, FLAG_RECEIVED_TM_SHOCK_WAVE, FLAG_RECEIVED_HM_ROCK_SMASH, FLAG_HIDE_ROUTE_111_ROCK_SMASH_TIP_GUY; vars VAR_PETALBURG_GYM_STATE=5, VAR_SLATEPORT_OUTSIDE_MUSEUM_STATE=3
-- frames: estimate 11200, budget 16800
+- frames: estimate 10909, budget 16400
 - refs: data/maps/MauvilleCity/map.json warp_events[0] (8,5) -> gym; data/maps/MauvilleCity_Gym/map.json coord_events switches; data/maps/MauvilleCity_Gym/scripts.inc:139-196; data/maps/MauvilleCity_Gym/scripts.inc:76-128; TRAINER_WATTSON_1 (267), src/data/trainers.h:3208; TRAINER_KIRK (191), src/data/trainers.h:2296; TRAINER_SHAWN (194), src/data/trainers.h:2332; TRAINER_BEN (323), src/data/trainers.h:3880; TRAINER_VIVIAN (649), src/data/trainers.h:7792; TRAINER_ANGELO (802), src/data/trainers.h:9628; data/maps/MauvilleCity/map.json warp_events[4] (32,14) -> HOUSE1; data/maps/MauvilleCity_House1/scripts.inc:4-16; src/party_menu.c:122 (Rock Smash needs FLAG_BADGE03_GET)
 - notes: Wattson: TRAINER_WATTSON_1 (267): VOLTORB 20, ELECTRIKE 20, MAGNETON 22, MANECTRIC 24 (Marshtomp's Ground typing is immune to Electric; Mud-Slap/Mud Shot hit x2). Trainers lv17: TRAINER_KIRK (191): ELECTRIKE 17, VOLTORB 17; TRAINER_SHAWN (194): VOLTORB 17, MAGNEMITE 17; TRAINER_BEN (323): ZIGZAGOON 17, GULPIN 17; TRAINER_VIVIAN (649): MEDITITE 17, MEDITITE 17; TRAINER_ANGELO (802): ILLUMISE 17, VOLBEAT 17. HM06 Rock Smash: FLAG_RECEIVED_HM_ROCK_SMASH, needs this badge (src/party_menu.c:122); it opens Route 111 (rocks (18,101)/(19,100)) and the Rusturf Tunnel (17).
 
@@ -4199,7 +4199,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_VERDANTURF_TOWN; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_VERDANTURF_TOWN, FLAG_RECEIVED_HM_STRENGTH, FLAG_RUSTURF_TUNNEL_OPENED, FLAG_HIDE_RUSTURF_TUNNEL_ROCK_1; vars VAR_RUSTURF_TUNNEL_STATE=6
-- frames: estimate 23176, budget 34800
+- frames: estimate 24511, budget 36800
 - refs: data/maps/VerdanturfTown/map.json warp_events[4] (8,1) -> RUSTURF_TUNNEL; data/maps/RusturfTunnel/map.json object_events 2/8 BREAKABLE_ROCK (24,5)/(24,4); data/maps/RusturfTunnel/map.json coord_events (23,4)/(25,4)/(25,5) TRIGGER_RUN_IMMEDIATELY; data/maps/RusturfTunnel/scripts.inc:47-70; data/maps/RusturfTunnel/scripts.inc:246-256; data/event_scripts.s:780-786 (SetRusturfTunnelOpen); data/scripts/field_move_scripts.inc (EventScript_RockSmash); src/party_menu.c:123 (Strength needs FLAG_BADGE04_GET)
 - notes: Route 117 trainers: Isaac, Lydia, Dylan, Maria, Derek, Anna & Meg (DOUBLE), Melina, Brandi, Aisha (lv 11-17). The Rock Smash carrier sits in the party (boost). Strength is usable only after the Heat Badge (src/party_menu.c:123); it is needed in Seafloor Cavern (37) and Victory Road (42), maybe the Magma Hideout (31). Getting it now keeps those milestones free of a backtrack; the tunnel also becomes the walking route back to Petalburg (24).
 
@@ -4209,7 +4209,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_ROUTE113; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_LANDMARK_FIERY_PATH
-- frames: estimate 30284, budget 45500
+- frames: estimate 28941, budget 43500
 - refs: data/maps/Route111/map.json object_events 15/16 BREAKABLE_ROCK (18,101)/(19,100); data/maps/Route111/map.json connections left ROUTE112 offset 20; data/maps/Route112/map.json object_events 1/6 Magma grunts (26,30)/(27,30) FLAG_HIDE_ROUTE_112_TEAM_MAGMA; data/maps/Route112/scripts.inc:10; data/maps/Route112/map.json warp_events[4] (11,36) / [5] (22,10) -> FIERY_PATH; data/maps/FieryPath/map.json warp_events (26,36)/(26,4); data/maps/FieryPath/scripts.inc:6-12; data/maps/Route112/map.json connections up ROUTE113 offset -60; src/party_menu.c:122
 - notes: Back east through Route 117 to Mauville, north on Route 111: the two rocks need Rock Smash (badge 3). Route 111's desert is closed by the sandstorm triggers until the Go-Goggles (23); the Route 112 junction is south of the desert (Route 112 rows 0..59 = Route 111 rows 20..79). Route 112 trainers: Brice, Trent, Larry, Carol, Bryant, Shayla (lv 16-18). Fiery Path: boulders (Strength) only fence side items [INFERENCE]; wild Grimer/Koffing/Slugma/Numel.
 
@@ -4219,7 +4219,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_METEOR_FALLS_1F_1R; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_FALLARBOR_TOWN
-- frames: estimate 25684, budget 38600
+- frames: estimate 27682, budget 41600
 - refs: data/maps/Route113/map.json object_events (trainers); data/maps/FallarborTown/scripts.inc:6-8; data/maps/FallarborTown/map.json warp_events[2] (14,7) -> POKEMON_CENTER_1F; data/maps/Route114/map.json warp_events[0] (8,63) -> METEOR_FALLS_1F_1R; data/maps/MeteorFalls_1F_1R/map.json warp_events[0] (27,18)
 - notes: Route 113: Jaylen, Dillon, Madeline, Lao, Lung, Tori & Tia (DOUBLE), Wyatt, Lawrence, Sophie, Coby (lv 17-19). Route 114: Lenny, Lucas, Shane, Nancy, Steve, Bernie, Claude, Nolan, Tyra & Ivy (DOUBLE), Charlotte, Angelina, Kai (lv 16-20). Route 114 crosses a river [INFERENCE: by the bridge, no Surf].
 
@@ -4239,7 +4239,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAXIE_MT_CHIMNEY (602), src/data/trainers.h:7228; TRAINER_TABITHA_MT_CHIMNEY (597), src/data/trainers.h:7168; TRAINER_GRUNT_MT_CHIMNEY_1 (146), src/data/trainers.h:1756; TRAINER_GRUNT_MT_CHIMNEY_2 (579), src/data/trainers.h:6952
 - end state: map MAP_MT_CHIMNEY; 3 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, FLAG_HIDE_MT_CHIMNEY_TEAM_MAGMA, FLAG_HIDE_MT_CHIMNEY_TEAM_AQUA, FLAG_HIDE_METEOR_FALLS_1F_1R_COZMO; flags clear FLAG_HIDE_MT_CHIMNEY_LAVA_COOKIE_LADY
-- frames: estimate 35531, budget 53300
+- frames: estimate 34787, budget 52200
 - refs: data/maps/Route112/map.json warp_events[0] (28,27) -> CABLE_CAR_STATION; data/maps/Route112_CableCarStation/scripts.inc:31-51; data/maps/MtChimney/map.json object_events 2 MAXIE (13,6), 3 TABITHA (12,11), 22/29 grunts; data/maps/MtChimney/scripts.inc:33-68; data/maps/MtChimney/scripts.inc:427-436; TRAINER_MAXIE_MT_CHIMNEY (602), src/data/trainers.h:7228; TRAINER_TABITHA_MT_CHIMNEY (597), src/data/trainers.h:7168; TRAINER_GRUNT_MT_CHIMNEY_1 (146), src/data/trainers.h:1756; TRAINER_GRUNT_MT_CHIMNEY_2 (579), src/data/trainers.h:6952
 - notes: Maxie: TRAINER_MAXIE_MT_CHIMNEY (602): MIGHTYENA 24, ZUBAT 24, CAMERUPT 25; Tabitha (sight 2): TRAINER_TABITHA_MT_CHIMNEY (597): NUMEL 18, POOCHYENA 20, NUMEL 22, ZUBAT 22; grunts (sight 3): TRAINER_GRUNT_MT_CHIMNEY_1 (146): NUMEL 20, TRAINER_GRUNT_MT_CHIMNEY_2 (579): ZUBAT 20. The cable car station is on Route 112's south half (the grunts stood south of it): from Route 113 walk Route 112 north -> Fiery Path (22,10) -> (11,36) -> south half -> (28,27). Archie (24,19) only talks. The meteorite (bg event machine) is optional (FLAG_RECEIVED_METEORITE).
 
@@ -4249,7 +4249,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_ERIC (632), src/data/trainers.h:7588; TRAINER_DIANA_1 (474), src/data/trainers.h:5692; TRAINER_AUTUMN (217), src/data/trainers.h:2608; TRAINER_JULIO (566), src/data/trainers.h:6796; TRAINER_ETHAN_1 (216), src/data/trainers.h:2596
 - end state: map MAP_LAVARIDGE_TOWN; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_LAVARIDGE_TOWN, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
-- frames: estimate 12499, budget 18800
+- frames: estimate 12115, budget 18200
 - refs: data/maps/MtChimney/map.json warp_events[2] (20,41) -> JAGGED_PASS; data/maps/JaggedPass/map.json warp_events (13,5)/(14,40); data/maps/JaggedPass/scripts.inc:9-18; data/maps/Route112/map.json connections left LAVARIDGE_TOWN offset 40; data/maps/LavaridgeTown/scripts.inc:7-13; data/maps/LavaridgeTown/map.json warp_events[3] (9,6) -> POKEMON_CENTER_1F; TRAINER_ERIC (632), src/data/trainers.h:7588; TRAINER_DIANA_1 (474), src/data/trainers.h:5692; TRAINER_AUTUMN (217), src/data/trainers.h:2608; TRAINER_JULIO (566), src/data/trainers.h:6796; TRAINER_ETHAN_1 (216), src/data/trainers.h:2596
 - notes: Jagged Pass trainers: TRAINER_ERIC (632): GEODUDE 20, BALTOY 20; TRAINER_DIANA_1 (474): SHROOMISH 19, ODDISH 19, SWABLU 19; TRAINER_AUTUMN (217): SHROOMISH 21; TRAINER_JULIO (566): MAGNEMITE 21; TRAINER_ETHAN_1 (216): ZIGZAGOON 20, TAILLOW 20. Jagged Pass is one-way downhill by ledges (the Acro Bike climbs it) [INFERENCE].
 
@@ -4259,7 +4259,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_FLANNERY_1 (268), src/data/trainers.h:3220; TRAINER_COLE (201), src/data/trainers.h:2416; TRAINER_GERALD (648), src/data/trainers.h:7780; TRAINER_AXLE (203), src/data/trainers.h:2440; TRAINER_DANIELLE (650), src/data/trainers.h:7804; TRAINER_JACE (204), src/data/trainers.h:2452; TRAINER_KEEGAN (205), src/data/trainers.h:2464; TRAINER_JEFF (202), src/data/trainers.h:2428; TRAINER_ELI (501), src/data/trainers.h:6016
 - end state: map MAP_LAVARIDGE_TOWN; 4 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_DEFEATED_LAVARIDGE_GYM, FLAG_RECEIVED_TM_OVERHEAT, FLAG_RECEIVED_GO_GOGGLES, FLAG_PETALBURG_MART_EXPANDED_ITEMS; flags clear FLAG_HIDE_PETALBURG_GYM_GREETER; vars VAR_PETALBURG_GYM_STATE=6, VAR_LAVARIDGE_TOWN_STATE=2
-- frames: estimate 18422, budget 27700
+- frames: estimate 18376, budget 27600
 - refs: data/maps/LavaridgeTown/map.json warp_events[1] (5,15) -> GYM_1F; data/maps/LavaridgeTown_Gym_1F/map.json object_events[1] FLANNERY (13,9); data/maps/LavaridgeTown_Gym_1F/map.json warp_events 2..25 (geysers); data/maps/LavaridgeTown_Gym_1F/scripts.inc:44-95; data/maps/LavaridgeTown/scripts.inc:40-90; TRAINER_FLANNERY_1 (268), src/data/trainers.h:3220; TRAINER_COLE (201), src/data/trainers.h:2416; TRAINER_GERALD (648), src/data/trainers.h:7780; TRAINER_AXLE (203), src/data/trainers.h:2440; TRAINER_DANIELLE (650), src/data/trainers.h:7804; TRAINER_JACE (204), src/data/trainers.h:2452; TRAINER_KEEGAN (205), src/data/trainers.h:2464; TRAINER_JEFF (202), src/data/trainers.h:2428; TRAINER_ELI (501), src/data/trainers.h:6016; src/party_menu.c:123
 - notes: Flannery: TRAINER_FLANNERY_1 (268): NUMEL 24, SLUGMA 24, CAMERUPT 26, TORKOAL 29 (Water x2/x4; Torkoal's Overheat hurts Grovyle carriers). Buried trainers jump out (BURIED/1); 1F/B1F geyser warps pair up by index. Heat Badge = Strength usable (src/party_menu.c:123). Go-Goggles (FLAG_RECEIVED_GO_GOGGLES) open Route 111's desert (not on the story path) [INFERENCE].
 
@@ -4269,7 +4269,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_NORMAN_1 (269), src/data/trainers.h:3232
 - end state: map MAP_PETALBURG_CITY_WALLYS_HOUSE; 5 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_DEFEATED_PETALBURG_GYM, FLAG_RECEIVED_TM_FACADE, FLAG_RECEIVED_HM_SURF, FLAG_HIDE_PETALBURG_CITY_WALLYS_DAD, FLAG_HIDE_MAUVILLE_GYM_WATTSON; flags clear FLAG_HIDE_MAUVILLE_CITY_WATTSON; vars VAR_PETALBURG_GYM_STATE=7, VAR_PETALBURG_CITY_STATE=5
-- frames: estimate 29296, budget 44000
+- frames: estimate 30741, budget 46200
 - refs: data/maps/PetalburgCity_Gym/map.json warp_events 0..37 (room doors); data/maps/PetalburgCity_Gym/scripts.inc:5-15; data/maps/PetalburgCity_Gym/scripts.inc:101-111; data/maps/PetalburgCity_Gym/scripts.inc:360-437; TRAINER_NORMAN_1 (269), src/data/trainers.h:3232; data/maps/PetalburgCity/scripts.inc:29; data/maps/PetalburgCity/scripts.inc:57-80; data/maps/PetalburgCity_WallysHouse/scripts.inc:16-27; src/party_menu.c:124 (Surf needs FLAG_BADGE05_GET); src/field_control_avatar.c:450
 - notes: Norman: TRAINER_NORMAN_1 (269): SPINDA 27, VIGOROTH 27, LINOONE 29, SLAKING 31 (Slaking Truant; boost ~31). Rooms: entrance (7,105) -> Mary's room (1,98); (1,92) -> Alexia's (7,59); (1,53) -> Jody's (7,20); (7,14) -> Norman's (1,7) (warp_events 5/14/21/32 and their destinations); the sight-0 trainers in each room are optional [INFERENCE]. Doors open once GYM_STATE 6 (PetalburgCity_Gym/scripts.inc:9). After the badge Wally's dad walks you home (CITY_STATE 4 -> Petalburg OnFrame WalkToWallyHouse -> Wally's house OnFrame GiveHMSurf). HM03 Surf: FLAG_RECEIVED_HM_SURF; Surf needs this badge.
 
@@ -4279,7 +4279,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_SHELLY_WEATHER_INSTITUTE (32), src/data/trainers.h:388; TRAINER_GRUNT_WEATHER_INST_1 (17), src/data/trainers.h:208; TRAINER_GRUNT_WEATHER_INST_2 (18), src/data/trainers.h:220; TRAINER_GRUNT_WEATHER_INST_3 (19), src/data/trainers.h:232; TRAINER_GRUNT_WEATHER_INST_4 (26), src/data/trainers.h:316; TRAINER_GRUNT_WEATHER_INST_5 (596), src/data/trainers.h:7156
 - end state: map MAP_ROUTE119; 5 badges; >= 1 battles; party SPECIES_CASTFORM; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_RECEIVED_CASTFORM, FLAG_HIDE_ROUTE_119_TEAM_AQUA, FLAG_HIDE_WEATHER_INSTITUTE_2F_AQUA_GRUNT_M; vars VAR_WEATHER_INSTITUTE_STATE=2, VAR_ROUTE118_STATE=1
-- frames: estimate 51851, budget 77800
+- frames: estimate 53131, budget 79700
 - refs: data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0; data/maps/Route118/scripts.inc:62-95; data/maps/Route119/map.json warp_events[0] (6,32) -> WEATHER_INSTITUTE_1F; data/maps/Route119_WeatherInstitute_1F/map.json object_events 1/2 grunts; data/maps/Route119_WeatherInstitute_2F/map.json object_events 1,2,3,8; data/maps/Route119_WeatherInstitute_2F/scripts.inc:41-121; TRAINER_SHELLY_WEATHER_INSTITUTE (32), src/data/trainers.h:388; TRAINER_GRUNT_WEATHER_INST_1 (17), src/data/trainers.h:208; TRAINER_GRUNT_WEATHER_INST_2 (18), src/data/trainers.h:220; TRAINER_GRUNT_WEATHER_INST_3 (19), src/data/trainers.h:232; TRAINER_GRUNT_WEATHER_INST_4 (26), src/data/trainers.h:316; TRAINER_GRUNT_WEATHER_INST_5 (596), src/data/trainers.h:7156; src/field_control_avatar.c:450 (Surf: FLAG_BADGE05_GET + party Surf)
 - notes: Shelly: TRAINER_SHELLY_WEATHER_INSTITUTE (32): CARVANHA 28, MIGHTYENA 28; grunts: TRAINER_GRUNT_WEATHER_INST_1 (17): ZUBAT 27, POOCHYENA 27; TRAINER_GRUNT_WEATHER_INST_2 (18): POOCHYENA 27, CARVANHA 27; TRAINER_GRUNT_WEATHER_INST_3 (19): POOCHYENA 26, ZUBAT 26, CARVANHA 26; TRAINER_GRUNT_WEATHER_INST_4 (26): CARVANHA 28; TRAINER_GRUNT_WEATHER_INST_5 (596): ZUBAT 27, POOCHYENA 27. Back to Mauville the same way as 24 came (Petalburg -> Route 104 -> Rustboro -> 116 -> tunnel -> Verdanturf -> 117 -> Mauville), or Surf Route 104 -> 105.. [INFERENCE: walking is simpler]. Route 118 east of Mauville needs Surf for the inlet; Route 119 has long grass and the river. Castform (lv25, Mystic Water) joins the party: its nickname prompt must be answered NO.
 
@@ -4289,7 +4289,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_ROUTE_119_MUDKIP (531), src/data/trainers.h:6376
 - end state: map MAP_FORTREE_CITY; 5 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_RECEIVED_HM_FLY, FLAG_VISITED_FORTREE_CITY; vars VAR_ROUTE119_STATE=1
-- frames: estimate 11425, budget 17200
+- frames: estimate 10470, budget 15800
 - refs: data/maps/Route119/map.json coord_events (25,31)/(26,31) VAR_ROUTE119_STATE=0; data/maps/Route119/scripts.inc:29-160; TRAINER_MAY_ROUTE_119_MUDKIP (531), src/data/trainers.h:6376; data/maps/Route119/map.json connections right FORTREE_CITY offset 0; data/maps/FortreeCity/scripts.inc:7; data/maps/FortreeCity/map.json warp_events[0] (5,6) -> POKEMON_CENTER_1F; src/party_menu.c:125 (Fly needs FLAG_BADGE06_GET)
 - notes: May: TRAINER_MAY_ROUTE_119_MUDKIP (531): SLUGMA 29, LOMBRE 29, GROVYLE 31. HM02 Fly needs the Feather Badge (28) before the fly bot can use it; FLAG_VISITED_* of each town is what the town map offers [INFERENCE: GBA fly menu lists visited towns]. Route 119 north: hidden Kecleon (31,6)/(25,15) and tree-disguise ninjas (Yasu (28,14), Hideo (29,6)).
 
@@ -4299,7 +4299,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_FORTREE_CITY; 5 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_RECEIVED_DEVON_SCOPE, FLAG_KECLEON_FLED_FORTREE
-- frames: estimate 12185, budget 18300
+- frames: estimate 10224, budget 15400
 - refs: data/maps/Route120/map.json object_events 30 bridge KECLEON (12,16), 31 STEVEN (13,15); data/maps/Route120/scripts.inc:154-232; data/maps/FortreeCity/map.json object_events[7] KECLEON (25,8); data/maps/FortreeCity/scripts.inc:55-82; data/maps/FortreeCity/map.json warp_events[2] (22,11) -> GYM
 - notes: The bridge Kecleon battle ends the same way won, fled or lost-to-teleport (Route120/scripts.inc:196-207); auto_battle wins it. Fortree's Kecleon (25,8) blocks the gym door; talk_to it with the scope: YES -> it flees.
 
@@ -4309,7 +4309,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WINONA_1 (270), src/data/trainers.h:3244; TRAINER_JARED (401), src/data/trainers.h:4816; TRAINER_FLINT (654), src/data/trainers.h:7852; TRAINER_ASHLEY (655), src/data/trainers.h:7864; TRAINER_EDWARDO (404), src/data/trainers.h:4852; TRAINER_HUMBERTO (402), src/data/trainers.h:4828; TRAINER_DARIUS (803), src/data/trainers.h:9640
 - end state: map MAP_FORTREE_CITY; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_DEFEATED_FORTREE_GYM, FLAG_RECEIVED_TM_AERIAL_ACE
-- frames: estimate 21741, budget 32700
+- frames: estimate 26015, budget 39100
 - refs: data/maps/FortreeCity_Gym/map.json object_events 1..8; data/maps/FortreeCity_Gym/scripts.inc:1-63; TRAINER_WINONA_1 (270), src/data/trainers.h:3244; TRAINER_JARED (401), src/data/trainers.h:4816; TRAINER_FLINT (654), src/data/trainers.h:7852; TRAINER_ASHLEY (655), src/data/trainers.h:7864; TRAINER_EDWARDO (404), src/data/trainers.h:4852; TRAINER_HUMBERTO (402), src/data/trainers.h:4828; TRAINER_DARIUS (803), src/data/trainers.h:9640; src/rotating_gate.c; src/party_menu.c:125
 - notes: Winona: TRAINER_WINONA_1 (270): SWABLU 29, TROPIUS 29, PELIPPER 30, SKARMORY 31, ALTARIA 33 (Altaria Dragon/Flying, Skarmory Steel: an Electric or Ice mover helps; boost ~35). Trainers lv 27-30: Jared, Flint, Ashley, Edwardo, Humberto, Darius. Rotating gates turn when pushed; walk_to bumps teach blocked edges but the gate state changes the map [INFERENCE: a fixed steps route is needed].
 
@@ -4319,7 +4319,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_LILYCOVE_MUDKIP (664), src/data/trainers.h:7972
 - end state: map MAP_LILYCOVE_CITY; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_VISITED_LILYCOVE_CITY, FLAG_MET_RIVAL_LILYCOVE, FLAG_HIDE_LILYCOVE_CITY_RIVAL; flags clear FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM; vars VAR_ROUTE121_STATE=1
-- frames: estimate 48014, budget 72100
+- frames: estimate 46514, budget 69800
 - refs: data/maps/Route120/map.json connections right ROUTE121 offset 80; data/maps/Route121/map.json coord_events (25,5..8) VAR_ROUTE121_STATE=0; data/maps/Route121/scripts.inc:16-30; data/maps/LilycoveCity/scripts.inc:7-9; data/maps/LilycoveCity/map.json object_events[17] rival (27,7); data/maps/LilycoveCity/scripts.inc:226-256; data/maps/LilycoveCity/scripts.inc:301-304; data/maps/LilycoveCity/scripts.inc:321-390; TRAINER_MAY_LILYCOVE_MUDKIP (664), src/data/trainers.h:7972
 - notes: May: TRAINER_MAY_LILYCOVE_MUDKIP (664): TROPIUS 31, SLUGMA 32, PELIPPER 32, GROVYLE 34 (YES/NO; NO sets FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE). After the badge-6 check she leaves: FLAG_MET_RIVAL_LILYCOVE (LilycoveCity/scripts.inc:377-388). Route 120 trainers (lv 27-30) and hidden Kecleons; Route 121 trainers (lv 25-32). Fly is available now but Lilycove is not yet visited, so walk.
 
@@ -4329,7 +4329,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GRUNT_MT_PYRE_1 (23), src/data/trainers.h:280; TRAINER_GRUNT_MT_PYRE_2 (24), src/data/trainers.h:292; TRAINER_GRUNT_MT_PYRE_3 (25), src/data/trainers.h:304; TRAINER_GRUNT_MT_PYRE_4 (569), src/data/trainers.h:6832
 - end state: map MAP_MT_PYRE_SUMMIT; 6 badges; >= 2 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_RECEIVED_RED_OR_BLUE_ORB, FLAG_HIDE_JAGGED_PASS_MAGMA_GUARD, FLAG_HIDE_MT_PYRE_SUMMIT_ARCHIE, FLAG_HIDE_MT_PYRE_SUMMIT_TEAM_AQUA; vars VAR_MT_PYRE_STATE=1
-- frames: estimate 17905, budget 26900
+- frames: estimate 18792, budget 28200
 - refs: data/maps/Route121/map.json connections down ROUTE122 offset 20; data/maps/Route122/map.json warp_events[0] (22,29) -> MT_PYRE_1F; data/maps/MtPyre_1F/map.json warp_events[1] (3,6) -> EXTERIOR; data/maps/MtPyre_Exterior/map.json warp_events[1] (19,10) -> SUMMIT; data/maps/MtPyre_Summit/map.json object_events 4..7 grunts; data/maps/MtPyre_Summit/map.json coord_events (22..24,7) VAR_MT_PYRE_STATE=0; data/maps/MtPyre_Summit/scripts.inc:14-62; TRAINER_GRUNT_MT_PYRE_1 (23), src/data/trainers.h:280; TRAINER_GRUNT_MT_PYRE_2 (24), src/data/trainers.h:292; TRAINER_GRUNT_MT_PYRE_3 (25), src/data/trainers.h:304; TRAINER_GRUNT_MT_PYRE_4 (569), src/data/trainers.h:6832
 - notes: Summit grunts (sight 3): TRAINER_GRUNT_MT_PYRE_1 (23): ZUBAT 32; TRAINER_GRUNT_MT_PYRE_2 (24): CARVANHA 32; TRAINER_GRUNT_MT_PYRE_3 (25): POOCHYENA 30, CARVANHA 30; TRAINER_GRUNT_MT_PYRE_4 (569): WAILMER 30, ZUBAT 30. Emerald: Archie leaves with the Red Orb, the old lady hands over the Magma Emblem (the flag is named FLAG_RECEIVED_RED_OR_BLUE_ORB, MtPyre_Summit/scripts.inc:58-59) and hides the Jagged Pass guard (:60). The exterior has fog/sun weather triggers only. Route 121 -> 122 needs Surf.
 
@@ -4339,7 +4339,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAXIE_MAGMA_HIDEOUT (601), src/data/trainers.h:7216; TRAINER_TABITHA_MAGMA_HIDEOUT (732), src/data/trainers.h:8788
 - end state: map MAP_MAGMA_HIDEOUT_4F; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS; flags clear FLAG_HIDE_SLATEPORT_CITY_CAPTAIN_STERN, FLAG_HIDE_SLATEPORT_CITY_GABBY_AND_TY; vars VAR_JAGGED_PASS_STATE=2, VAR_SLATEPORT_CITY_STATE=1, VAR_SLATEPORT_HARBOR_STATE=1
-- frames: estimate 69564, budget 104400
+- frames: estimate 72802, budget 109300
 - refs: data/maps/JaggedPass/scripts.inc:9-18; data/maps/JaggedPass/map.json coord_events (13..14,15)/(21,15)/(21..22,20) VAR_JAGGED_PASS_STATE=1; data/maps/JaggedPass/scripts.inc:39-61; data/maps/JaggedPass/map.json warp_events[4] (16,18) -> MAGMA_HIDEOUT_1F; data/maps/MagmaHideout_1F/map.json warp_events[3] (20,22) -> 2F_3R; data/maps/MagmaHideout_2F_3R/map.json warp_events[1] (16,13) -> 3F_3R; data/maps/MagmaHideout_3F_3R/map.json warp_events[1] (16,21) -> 4F; data/maps/MagmaHideout_4F/map.json object_events 5 TABITHA (22,4), 6 MAXIE (16,21); data/maps/MagmaHideout_4F/scripts.inc:4-64; TRAINER_MAXIE_MAGMA_HIDEOUT (601), src/data/trainers.h:7216; TRAINER_TABITHA_MAGMA_HIDEOUT (732), src/data/trainers.h:8788; src/party_menu.c:125 (Fly)
 - notes: Maxie: TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAMERUPT 39; Tabitha (4F (22,4) sight 4, off the 3F_3R -> 4F path [INFERENCE]): TRAINER_TABITHA_MAGMA_HIDEOUT (732): NUMEL 26, MIGHTYENA 28, ZUBAT 30, CAMERUPT 33; ~12 grunts lv 28-30 (sight trainers). Fly to Lavaridge (visited in 22), Route 112 east, Jagged Pass up from the bottom (14,40). The hideout's 1F boulders (5..7,22..23) are Strength puzzles off the short route [INFERENCE].
 
@@ -4349,7 +4349,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_SLATEPORT_CITY_HARBOR; 6 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_MET_TEAM_AQUA_HARBOR, FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1_BLOCKING_ENTRANCE, FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_2_BLOCKING_ENTRANCE, FLAG_HIDE_LILYCOVE_MOTEL_SCOTT; vars VAR_SLATEPORT_HARBOR_STATE=2, VAR_SLATEPORT_CITY_STATE=2
-- frames: estimate 18462, budget 27700
+- frames: estimate 21171, budget 31800
 - refs: data/maps/SlateportCity/map.json object_events[11] CAPT_STERN (28,13); data/maps/SlateportCity/scripts.inc:523-568; data/maps/SlateportCity_Harbor/map.json coord_events (8,11..14) VAR_SLATEPORT_HARBOR_STATE=1; data/maps/SlateportCity_Harbor/scripts.inc:6-20; data/maps/SlateportCity_Harbor/scripts.inc:23-76; src/party_menu.c:3879
 - notes: No battle. Fly to Slateport (visited in 13). Stern (28,13) stands at the harbor door with Gabby & Ty (VAR_SLATEPORT_CITY_STATE 1 -> MovePeopleForSternInterview, SlateportCity/scripts.inc:9,19). The harbor scene hides FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1_BLOCKING_ENTRANCE and FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_2_BLOCKING_ENTRANCE (SlateportCity_Harbor/scripts.inc:71-72), which opens the Aqua Hideout (33).
 
@@ -4359,7 +4359,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MATT (30), src/data/trainers.h:364; TRAINER_GRUNT_AQUA_HIDEOUT_1 (2), src/data/trainers.h:28; TRAINER_GRUNT_AQUA_HIDEOUT_2 (3), src/data/trainers.h:40; TRAINER_GRUNT_AQUA_HIDEOUT_3 (4), src/data/trainers.h:52; TRAINER_GRUNT_AQUA_HIDEOUT_4 (5), src/data/trainers.h:64; TRAINER_GRUNT_AQUA_HIDEOUT_5 (27), src/data/trainers.h:328; TRAINER_GRUNT_AQUA_HIDEOUT_6 (28), src/data/trainers.h:340; TRAINER_GRUNT_AQUA_HIDEOUT_7 (192), src/data/trainers.h:2308; TRAINER_GRUNT_AQUA_HIDEOUT_8 (193), src/data/trainers.h:2320
 - end state: map MAP_AQUA_HIDEOUT_B2F; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS
-- frames: estimate 61764, budget 92700
+- frames: estimate 53785, budget 80700
 - refs: data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F; data/maps/AquaHideout_1F/map.json warp_events[2] (22,1) -> B1F; data/maps/AquaHideout_B1F/map.json warp_events 0..24 (panels); data/maps/AquaHideout_B2F/map.json object_events[1] MATT (23,19), coord_events (28,16)/(28,17); data/maps/AquaHideout_B2F/scripts.inc:13-46; TRAINER_MATT (30), src/data/trainers.h:364; TRAINER_GRUNT_AQUA_HIDEOUT_1 (2), src/data/trainers.h:28; TRAINER_GRUNT_AQUA_HIDEOUT_2 (3), src/data/trainers.h:40; TRAINER_GRUNT_AQUA_HIDEOUT_3 (4), src/data/trainers.h:52; TRAINER_GRUNT_AQUA_HIDEOUT_4 (5), src/data/trainers.h:64; TRAINER_GRUNT_AQUA_HIDEOUT_5 (27), src/data/trainers.h:328; TRAINER_GRUNT_AQUA_HIDEOUT_6 (28), src/data/trainers.h:340; TRAINER_GRUNT_AQUA_HIDEOUT_7 (192), src/data/trainers.h:2308; TRAINER_GRUNT_AQUA_HIDEOUT_8 (193), src/data/trainers.h:2320
 - notes: Matt: TRAINER_MATT (30): MIGHTYENA 34, GOLBAT 34; grunts lv 31-32. The B1F warp panels pair by warp index (AquaHideout_B1F warp_events 4..24 self-links); two Electrode item-ball fakes (lv30) on B1F. The Master Ball item ball sits in the hideout [INFERENCE: optional]. Lilycove's east cave (70,5) is reached by Surf from the shore.
 
@@ -4369,7 +4369,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_TATE_AND_LIZA_1 (271), src/data/trainers.h:3256
 - end state: map MAP_MOSSDEEP_CITY; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_VISITED_MOSSDEEP_CITY, FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_RECEIVED_TM_CALM_MIND, FLAG_HIDE_AQUA_HIDEOUT_GRUNTS, FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_1F_STEVEN; flags clear FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA, FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_2F_STEVEN; vars VAR_MOSSDEEP_CITY_STATE=1, VAR_MOSSDEEP_SPACE_CENTER_STATE=1
-- frames: estimate 37999, budget 57000
+- frames: estimate 35793, budget 53700
 - refs: data/maps/LilycoveCity/map.json object_events[10] Wailmer grunt (73,15) FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS; data/maps/Route124/map.json connections right MOSSDEEP_CITY offset 40; data/maps/MossdeepCity/scripts.inc:71-74; data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> GYM; data/maps/MossdeepCity_Gym/map.json coord_events switches/warp; data/maps/MossdeepCity_Gym/scripts.inc:51-104; data/maps/MossdeepCity_Gym/scripts.inc:113-196; TRAINER_TATE_AND_LIZA_1 (271), src/data/trainers.h:3256; src/party_menu.c:126 (Dive needs FLAG_BADGE07_GET)
 - notes: Tate & Liza (DOUBLE, two mons needed): TRAINER_TATE_AND_LIZA_1 (271): CLAYDOL 41, XATU 41, LUNATONE 42, SOLROCK 42 (Lunatone/Solrock Rock/Psychic, Claydol Ground: Surf hits hard; auto_battle must target in doubles). Gym trainers lv36 (Preston, Virgil, Blake, Hannah, Samantha, Maura, Sylvia, Nate, Kathleen, Clifford, Macey, Nicholas). Route 124 swimmers lv 33-34. Badge 7 also arms the Space Center raid (MOSSDEEP_CITY_STATE 1, Magma objects shown: MossdeepCity_Gym/scripts.inc:73-79) and hides the Aqua hideout grunts (:67).
 
@@ -4379,7 +4379,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAXIE_MOSSDEEP (734), src/data/trainers.h:8812; TRAINER_TABITHA_MOSSDEEP (514), src/data/trainers.h:6172; TRAINER_GRUNT_SPACE_CENTER_2 (116), src/data/trainers.h:1396; TRAINER_GRUNT_SPACE_CENTER_5 (588), src/data/trainers.h:7060; TRAINER_GRUNT_SPACE_CENTER_6 (589), src/data/trainers.h:7072; TRAINER_GRUNT_SPACE_CENTER_7 (590), src/data/trainers.h:7084
 - end state: map MAP_MOSSDEEP_CITY_SPACE_CENTER_2F; 7 badges; >= 5 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_DEFEATED_GRUNT_SPACE_CENTER_1F, FLAG_DEFEATED_MAGMA_SPACE_CENTER, FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_1F_TEAM_MAGMA, FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_2F_TEAM_MAGMA, FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA; flags clear FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_STEVEN; vars VAR_MOSSDEEP_CITY_STATE=3, VAR_MOSSDEEP_SPACE_CENTER_STATE=3, VAR_STEVENS_HOUSE_STATE=1
-- frames: estimate 26865, budget 40300
+- frames: estimate 27107, budget 40700
 - refs: data/maps/MossdeepCity/map.json coord_events (42,21)/(41,22..24)/(40,25..26) VAR_MOSSDEEP_CITY_STATE=1; data/maps/MossdeepCity/scripts.inc:76-97; data/maps/MossdeepCity/map.json warp_events[8] (64,15) -> SPACE_CENTER_1F; data/maps/MossdeepCity_SpaceCenter_1F/map.json object_events[9] stair grunt (13,2); data/maps/MossdeepCity_SpaceCenter_1F/scripts.inc:207-225; data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:27-62; data/maps/MossdeepCity_SpaceCenter_2F/map.json object_events[4] STEVEN (1,8); data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:170-245; data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:246-290; data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:313-320; TRAINER_MAXIE_MOSSDEEP (734), src/data/trainers.h:8812; TRAINER_TABITHA_MOSSDEEP (514), src/data/trainers.h:6172; TRAINER_GRUNT_SPACE_CENTER_2 (116), src/data/trainers.h:1396; TRAINER_GRUNT_SPACE_CENTER_5 (588), src/data/trainers.h:7060; TRAINER_GRUNT_SPACE_CENTER_6 (589), src/data/trainers.h:7072; TRAINER_GRUNT_SPACE_CENTER_7 (590), src/data/trainers.h:7084; src/battle_setup.c (DoSpecialTrainerBattle SPECIAL_BATTLE_STEVEN) [INFERENCE: battle_tower.c]
 - notes: Multi battle (Steven's Metang/Skarmory/Aggron [INFERENCE] beside you): TRAINER_MAXIE_MOSSDEEP (734): MIGHTYENA 42, CROBAT 43, CAMERUPT 44 + TRAINER_TABITHA_MOSSDEEP (514): CAMERUPT 36, MIGHTYENA 38, GOLBAT 40. 1F stair grunt: TRAINER_GRUNT_SPACE_CENTER_2 (116): MIGHTYENA 26, MIGHTYENA 28, NUMEL 30; 2F trio: TRAINER_GRUNT_SPACE_CENTER_5 (588): ZUBAT 32; TRAINER_GRUNT_SPACE_CENTER_6 (589): MIGHTYENA 32; TRAINER_GRUNT_SPACE_CENTER_7 (590): BALTOY 32. 1F sight grunts (12,9)/(11,6)/(10,2) lv 31-32. ChooseHalfPartyForBattle opens the party screen to pick 3 (selection menu); losing whites out (SetCB2WhiteOut, :244). Talking to the 1F grunt from the south (facing north) moves him off the stairs (the non-BUGFIX DIR_EAST case falls through, SpaceCenter_1F/scripts.inc:215-223).
 
@@ -4399,7 +4399,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_ARCHIE (34), src/data/trainers.h:412; TRAINER_SHELLY_SEAFLOOR_CAVERN (33), src/data/trainers.h:400
 - end state: map MAP_ROUTE128; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, FLAG_LEGENDARIES_IN_SOOTOPOLIS, FLAG_SYS_WEATHER_CTRL, FLAG_HIDE_SEAFLOOR_CAVERN_ROOM_9_ARCHIE, FLAG_HIDE_SEAFLOOR_CAVERN_AQUA_GRUNTS; flags clear FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN, FLAG_HIDE_SOOTOPOLIS_CITY_ARCHIE, FLAG_HIDE_SOOTOPOLIS_CITY_MAXIE; vars VAR_SOOTOPOLIS_CITY_STATE=1, VAR_SEAFLOOR_CAVERN_STATE=1, VAR_ROUTE128_STATE=2, VAR_STEVENS_HOUSE_STATE=2
-- frames: estimate 20844, budget 31300
+- frames: estimate 21890, budget 32900
 - refs: data/maps/MossdeepCity/map.json connections down ROUTE127; data/maps/Route128/map.json connections dive UNDERWATER_ROUTE128; data/maps/Underwater_Route128/map.json warp_events[0] (38,26) -> UNDERWATER_SEAFLOOR_CAVERN; data/maps/SeafloorCavern_Entrance/scripts.inc:6-7; data/maps/SeafloorCavern_Entrance/map.json warp_events[1] (10,1) -> ROOM1; data/maps/SeafloorCavern_Room1/map.json warp_events[2] (6,2) -> ROOM2; data/maps/SeafloorCavern_Room2/map.json warp_events[3] (11,1) -> ROOM7; data/maps/SeafloorCavern_Room7/map.json warp_events[1] (5,1) -> ROOM3; data/maps/SeafloorCavern_Room3/map.json warp_events[0] (8,1) -> ROOM8; data/maps/SeafloorCavern_Room8/map.json warp_events[0] (5,2) -> ROOM9; data/maps/SeafloorCavern_Room3/scripts.inc:5; data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0; data/maps/SeafloorCavern_Room9/scripts.inc:4-124; data/maps/Route128/scripts.inc:14-67; TRAINER_ARCHIE (34), src/data/trainers.h:412; TRAINER_SHELLY_SEAFLOOR_CAVERN (33), src/data/trainers.h:400; src/party_menu.c:122-123 (Rock Smash, Strength)
 - notes: Archie: TRAINER_ARCHIE (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43; Shelly (Room 3, sight trainer): TRAINER_SHELLY_SEAFLOOR_CAVERN (33): SHARPEDO 37, MIGHTYENA 37; Aqua grunts in rooms 1, 3, 4. Needs Surf + Dive (Mind Badge), Strength (Heat Badge, HM from 17) and Rock Smash (HM from 16); carriers boosted. Room boulders: Room1 (5,11)/(12,11), Room2 five, Room3 seven, Room8 twelve (the boulder wall before Room 9). After the cutscene the game warps to Route 128 (38,22) and Route 128 OnFrame VAR_ROUTE128_STATE 1 plays Steven's scene -> 2.
 
@@ -4409,7 +4409,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_CAVE_OF_ORIGIN_B1F; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_VISITED_SOOTOPOLIS_CITY, FLAG_STEVEN_GUIDES_TO_CAVE_OF_ORIGIN, FLAG_WALLACE_GOES_TO_SKY_PILLAR, FLAG_HIDE_CAVE_OF_ORIGIN_B1F_WALLACE; flags clear FLAG_HIDE_SKY_PILLAR_WALLACE; vars VAR_SOOTOPOLIS_CITY_STATE=3
-- frames: estimate 18043, budget 27100
+- frames: estimate 20185, budget 30300
 - refs: data/maps/Route126/map.json connections dive UNDERWATER_ROUTE126; data/maps/Underwater_Route126/map.json warp_events[0] (45,65) -> UNDERWATER_SOOTOPOLIS_CITY; data/maps/SootopolisCity/scripts.inc:162; data/maps/SootopolisCity/scripts.inc:166; data/maps/SootopolisCity/scripts.inc:171-341; data/maps/SootopolisCity/map.json object_events[7] STEVEN (20,36); data/maps/SootopolisCity/scripts.inc:860-903; data/maps/CaveOfOrigin_Entrance/map.json warp_events[1] (9,5) -> 1F; data/maps/CaveOfOrigin_1F/map.json warp_events[1] (14,5) -> B1F; data/maps/CaveOfOrigin_B1F/scripts.inc:4-53
 - notes: No battles. Sootopolis is entered only by Dive (Route 126 deep water over Underwater_Route126 (45,65)), surfacing inside the crater. The legendaries scene runs from the dive spot (LegendariesSceneFromDive) or the Pokemon Center door (43,32). Wallace's multichoice: CAVE OF ORIGIN / MT. PYRE / SKY PILLAR / DON'T REMEMBER (DOWN x2, A). Cave of Origin 1F/B1F are dark (no story need for Flash) [INFERENCE].
 
@@ -4419,7 +4419,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_SKY_PILLAR_TOP; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_LANDMARK_SKY_PILLAR, FLAG_SYS_WEATHER_CTRL; flags clear FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE; vars VAR_SOOTOPOLIS_CITY_STATE=5, VAR_SKY_PILLAR_STATE=1, VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE=1
-- frames: estimate 29323, budget 44000
+- frames: estimate 30319, budget 45500
 - refs: data/maps/Route131/map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE; data/maps/SkyPillar_Entrance/map.json warp_events[1] (14,4) -> OUTSIDE; data/maps/SkyPillar_Outside/scripts.inc:20-30; data/maps/SkyPillar_Outside/scripts.inc:33-79; data/maps/SkyPillar_Outside/map.json warp_events[1] (14,5) -> SKY_PILLAR_1F; data/maps/SkyPillar_1F/map.json warp_events[2] (10,1); data/maps/SkyPillar_5F/map.json warp_events[1] (10,1) -> TOP; data/maps/SkyPillar_Top/map.json coord_events (14,9) VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE=0; data/maps/SkyPillar_Top/scripts.inc:85-125; data/maps/SkyPillar_1F/scripts.inc:6 (CleanFloor while SKY_PILLAR_STATE < 2)
 - notes: No battle: in Emerald Rayquaza only wakes and flies to Sootopolis here (the catchable Rayquaza is post-game, SkyPillar_Top/scripts.inc:18-19,36-57). Cracked floors (2F/4F) drop to the floor below unless crossed at speed on the Mach Bike (15) [INFERENCE: walk_to needs a bike mode]. Out of the Cave of Origin: Sootopolis -> Dive out -> Route 126 -> 127 -> 128 -> 129 -> 130 -> 131 (Surf; Route 130/131 currents). Abnormal weather (rain) en route.
 
@@ -4429,7 +4429,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_SOOTOPOLIS_CITY; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_MET_MAXIE_SOOTOPOLIS, FLAG_MET_ARCHIE_SOOTOPOLIS, FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE, FLAG_RECEIVED_HM_WATERFALL, FLAG_HIDE_SOOTOPOLIS_CITY_MAXIE, FLAG_HIDE_SOOTOPOLIS_CITY_ARCHIE; flags clear FLAG_LEGENDARIES_IN_SOOTOPOLIS, FLAG_SYS_WEATHER_CTRL; vars VAR_SKY_PILLAR_STATE=3, VAR_SOOTOPOLIS_CITY_STATE=5, VAR_MT_PYRE_STATE=2
-- frames: estimate 26673, budget 40100
+- frames: estimate 23121, budget 34700
 - refs: data/maps/SootopolisCity/scripts.inc:167; data/maps/SootopolisCity/scripts.inc:456-508; data/maps/SootopolisCity/map.json object_events 16 MAXIE (29,33), 17 ARCHIE (31,33), 18 WALLACE (31,18); data/maps/SootopolisCity/scripts.inc:1302-1339; data/maps/SootopolisCity/scripts.inc:1251-1279; data/maps/SootopolisCity/scripts.inc:114-137; src/party_menu.c:127 (Waterfall needs FLAG_BADGE08_GET); src/field_control_avatar.c:455
 - notes: No battle. Fly works from the Sky Pillar top [INFERENCE: outdoor map type]; landing at (43,32) runs RayquazaSceneFromPokeCenter (SKY_PILLAR_STATE 3, warpwhitefade (43,32)). Maxie and Archie stand by the gym (SetOutsideGymObjPos, SOOTOPOLIS_CITY_STATE 5) and Wallace beside them (VAR_SOOTOPOLIS_WALLACE_STATE positions); after both talk, MaxieArchieLeave warps to (31,34) and sets VAR_MT_PYRE_STATE 2 (the orbs return scene on Mt. Pyre is optional). Waterfall needs the Rain Badge (41).
 
@@ -4439,7 +4439,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_JUAN_1 (272), src/data/trainers.h:3268
 - end state: map MAP_SOOTOPOLIS_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_RECEIVED_TM_WATER_PULSE, FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN, FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE; vars VAR_SOOTOPOLIS_CITY_STATE=6
-- frames: estimate 15873, budget 23900
+- frames: estimate 15474, budget 23300
 - refs: data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> GYM_1F; data/maps/SootopolisCity_Gym_1F/map.json object_events[1] JUAN (8,2); data/maps/SootopolisCity_Gym_1F/scripts.inc:9-73; data/maps/SootopolisCity_Gym_1F/scripts.inc:80-130; TRAINER_JUAN_1 (272), src/data/trainers.h:3268; data/maps/SootopolisCity/scripts.inc:10; src/party_menu.c:127
 - notes: Juan: TRAINER_JUAN_1 (272): LUVDISC 41, WHISCASH 41, SEALEO 43, CRAWDAUNT 43, KINGDRA 46 (Water; Kingdra only weak to Dragon: Swampert neutral; boost ~50 or an Electric/Grass lead). The gym door is locked until FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE (SootopolisCity/scripts.inc:10). Gym trainers on the ice floors (B1F after a fall) lv ~40.
 
@@ -4449,7 +4449,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WALLY_VR_1 (519), src/data/trainers.h:6232; TRAINER_ALBERT (80), src/data/trainers.h:964; TRAINER_EDGAR (79), src/data/trainers.h:952; TRAINER_HOPE (96), src/data/trainers.h:1156; TRAINER_QUINCY (324), src/data/trainers.h:3892; TRAINER_KATELYNN (325), src/data/trainers.h:3904
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_VISITED_EVER_GRANDE_CITY, FLAG_DEFEATED_WALLY_VICTORY_ROAD, FLAG_RECEIVED_HM_WATERFALL
-- frames: estimate 63226, budget 94900
+- frames: estimate 72642, budget 109000
 - refs: data/maps/Route128/map.json connections right EVER_GRANDE_CITY offset -40; data/maps/EverGrandeCity/scripts.inc:21-23; data/maps/EverGrandeCity/map.json warp_events 2 (18,41) / 3 (18,27) -> VICTORY_ROAD_1F, 0 (18,5) -> LEAGUE_1F; data/maps/VictoryRoad_1F/map.json coord_events (2,23)/(3,23) VAR_VICTORY_ROAD_1F_STATE=0; data/maps/VictoryRoad_1F/scripts.inc:20-45; data/maps/VictoryRoad_1F/map.json warp_events 0..4; data/maps/VictoryRoad_B1F/map.json object_events boulders/rocks, warp_events; data/maps/VictoryRoad_B2F/map.json warp_events; TRAINER_WALLY_VR_1 (519), src/data/trainers.h:6232; src/field_control_avatar.c:455 (Waterfall: FLAG_BADGE08_GET); src/party_menu.c:122-127; TRAINER_ALBERT (80), src/data/trainers.h:964; TRAINER_EDGAR (79), src/data/trainers.h:952; TRAINER_HOPE (96), src/data/trainers.h:1156; TRAINER_QUINCY (324), src/data/trainers.h:3892; TRAINER_KATELYNN (325), src/data/trainers.h:3904
 - notes: Wally: TRAINER_WALLY_VR_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Victory Road trainers lv 42-45 (Albert, Edgar, Hope, Quincy, Katelynn on 1F; Halle, Michelle, Mitchell, Samuel, Shannon on B1F; Caroline, Dianne, Felix, Julie, Owen, Vito on B2F). Field moves on the way: Surf (Routes 126-128), Waterfall (Ever Grande's fall, badge 8), Strength + Rock Smash (VR B1F: boulders (20,5)/(21,4)/(4,7)/(9,10)/(20,26)/(21,25)/(35,6)/(34,4), rocks (19,5)/(20,4)/(18,12)/(20,25)/(21,26)/(34,3)), Flash not needed [INFERENCE: Emerald VR is lit]. Ever Grande south coord row y=58 sets FLAG_VISITED_EVER_GRANDE_CITY.
 
@@ -4489,7 +4489,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GLACIA (263), src/data/trainers.h:3160
 - end state: map MAP_EVER_GRANDE_CITY_DRAKES_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SIDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA; vars VAR_ELITE_4_STATE=4
-- frames: estimate 14792, budget 22200
+- frames: estimate 15028, budget 22600
 - refs: data/maps/EverGrandeCity_GlaciasRoom/map.json object_events[1]; data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:45; data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:55; data/maps/EverGrandeCity_GlaciasRoom/map.json warp_events[1] (6,2); data/maps/EverGrandeCity_Hall3/map.json warp_events (5,2); TRAINER_GLACIA (263), src/data/trainers.h:3160; data/scripts/elite_four.inc
 - notes: Glacia: TRAINER_GLACIA (263): SEALEO 50, GLALIE 50, SEALEO 52, GLALIE 52, WALREIN 53. No healing between E4 rooms: the boost recipe should carry Full Restores / levels for the whole run [INFERENCE]. A quick save inside the E4 rooms resumes in place (src/save_location.c has no E4 special warp).
 
@@ -4499,7 +4499,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_DRAKE (264), src/data/trainers.h:3172
 - end state: map MAP_EVER_GRANDE_CITY_HALL4; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SIDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA, FLAG_DEFEATED_ELITE_4_DRAKE; vars VAR_ELITE_4_STATE=4
-- frames: estimate 9523, budget 14300
+- frames: estimate 9620, budget 14500
 - refs: data/maps/EverGrandeCity_DrakesRoom/map.json object_events[1]; data/maps/EverGrandeCity_DrakesRoom/scripts.inc:46; data/maps/EverGrandeCity_DrakesRoom/scripts.inc:58; data/maps/EverGrandeCity_DrakesRoom/map.json warp_events[1] (6,2); data/maps/EverGrandeCity_Hall4/map.json warp_events (5,2); TRAINER_DRAKE (264), src/data/trainers.h:3172; data/scripts/elite_four.inc
 - notes: Drake: TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, KINGDRA 53, FLYGON 53, SALAMENCE 55. No healing between E4 rooms: the boost recipe should carry Full Restores / levels for the whole run [INFERENCE]. A quick save inside the E4 rooms resumes in place (src/save_location.c has no E4 special warp).
 
@@ -4509,7 +4509,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WALLACE (335), src/data/trainers.h:4024
 - end state: 8 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_SYS_GAME_CLEAR, FLAG_IS_CHAMPION, FLAG_ENTERED_ELITE_FOUR, FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY, FLAG_HIDE_LILYCOVE_CITY_RIVAL, FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM, FLAG_SYS_RIBBON_GET; flags clear FLAG_DEFEATED_ELITE_4_SIDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA, FLAG_DEFEATED_ELITE_4_DRAKE, FLAG_HIDE_VICTORY_ROAD_EXIT_WALLY; vars VAR_ELITE_4_STATE=0, VAR_STEVENS_HOUSE_STATE=2
-- frames: estimate 27254, budget 40900
+- frames: estimate 31252, budget 46900
 - refs: data/maps/EverGrandeCity_Hall4/map.json warp_events[1] (5,2) -> CHAMPIONS_ROOM; data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:19-62; data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:93-123; TRAINER_WALLACE (335), src/data/trainers.h:4024; data/maps/EverGrandeCity_HallOfFame/scripts.inc:13-62; data/scripts/hall_of_fame.inc:1-25; data/event_scripts.s:628-634 (ResetEliteFour); src/post_battle_event_funcs.c:12-41 (GameClear: HealPlayerParty, FLAG_SYS_GAME_CLEAR, continue warp = Brendan's 2F, Champion ribbons); src/hall_of_fame.c:419-427 (CB2_DoHallOfFameScreen); src/hall_of_fame.c:524-526 (Task_Hof_TrySaveData: TrySavingData(SAVE_HALL_OF_FAME)); src/hall_of_fame.c:781-784 (StartCredits); src/credits.c:670-690 (Task_CreditsTheEnd6: 7200 frames or any key); src/credits.c:694-698 (Task_CreditsSoftReset: SoftReset(RESET_ALL))
 - notes: Wallace: TRAINER_WALLACE (335): WAILORD 57, TENTACRUEL 55, LUDICOLO 56, WHISCASH 56, GYARADOS 56, MILOTIC 58 (Electric/Grass coverage; boost ~60). Entering the Champion's room runs straight through: OnFrame EnterRoom walks up and starts the battle, Defeated brings May and Birch, warps to the Hall of Fame (7,16), whose OnFrame records the team and calls SetGameClearFlags + special GameClear. GameClear sets FLAG_SYS_GAME_CLEAR and the continue warp (Brendan's 2F heal location), CB2_DoHallOfFameScreen saves (SAVE_HALL_OF_FAME = the full game save + HoF record) before the credits; the credits end on "The End", which waits 7200 frames or a key (src/credits.c:674-678), then SoftReset(RESET_ALL) (src/credits.c:694-698): the game resets itself, so the run ends with wait_reset and [run] save = "none". SetGameClearFlags resets the Elite Four flags (data/event_scripts.s:628-634).
 <!-- plan.py:end emerald -->

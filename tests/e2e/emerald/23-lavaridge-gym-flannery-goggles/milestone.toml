@@ -3,7 +3,7 @@
 # Start: Lavaridge (9,7) -> end: MAP_LAVARIDGE_TOWN outside the gym (5,16).
 title = "Lavaridge Gym: Flannery's Heat Badge, May's Go-Goggles"
 priority = "P0"
-estimate = 18422
+estimate = 18376
 refs = [
   "data/maps/LavaridgeTown/map.json warp_events[1] (5,15) -> GYM_1F",
   "data/maps/LavaridgeTown_Gym_1F/map.json object_events[1] FLANNERY (13,9)",
@@ -28,7 +28,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 27700
+frames = 27600
 
 # PHASE2: the geyser route to Flannery (probe the 1F/B1F warp pairs; Flannery (13,9) is on 1F behind the B1F loop) -> via list or steps.
 

@@ -3,7 +3,7 @@
 # Start: Littleroot (14,9) -> end: MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB, VAR_BIRCH_LAB_STATE 3, party Mudkip.
 title = "Route 101: save Birch, choose Mudkip, first battle, the lab"
 priority = "P0"
-estimate = 4414
+estimate = 4834
 refs = [
   "data/maps/LittlerootTown/map.json coord_events (11,1) VAR_LITTLEROOT_TOWN_STATE=1 GoSaveBirchTrigger",
   "data/maps/LittlerootTown/scripts.inc:366-376",
@@ -27,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 6700
+frames = 7300
 
 [[step]]
 do = "walk_to"

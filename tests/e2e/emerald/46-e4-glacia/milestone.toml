@@ -2,7 +2,7 @@
 # Start: Glacia's room (6,6) after the door closed -> end: Drake's room, door shut (VAR_ELITE_4_STATE 4).
 title = "Elite Four: Glacia"
 priority = "P0"
-estimate = 14792
+estimate = 15028
 refs = [
   "data/maps/EverGrandeCity_GlaciasRoom/map.json object_events[1]",
   "data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:45",
@@ -19,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 22200
+frames = 22600
 
 [[step]]
 do = "walk_to"

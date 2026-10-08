@@ -3,7 +3,7 @@
 # Start: Fortree gym door -> end: MAP_LILYCOVE_CITY in front of the Department Store (27,8).
 title = "Routes 120-121 to Lilycove: May at the Department Store"
 priority = "P0"
-estimate = 48014
+estimate = 46514
 refs = [
   "data/maps/Route120/map.json connections right ROUTE121 offset 80",
   "data/maps/Route121/map.json coord_events (25,5..8) VAR_ROUTE121_STATE=0",
@@ -23,7 +23,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 72100
+frames = 69800
 
 [[step]]
 do = "walk_to"

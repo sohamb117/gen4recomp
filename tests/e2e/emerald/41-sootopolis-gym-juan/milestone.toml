@@ -3,7 +3,7 @@
 # Start: Sootopolis (31,33) -> end: MAP_SOOTOPOLIS_CITY at the gym door (31,33).
 title = "Sootopolis Gym: Juan and the Rain Badge"
 priority = "P0"
-estimate = 15873
+estimate = 15474
 refs = [
   "data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> GYM_1F",
   "data/maps/SootopolisCity_Gym_1F/map.json object_events[1] JUAN (8,2)",
@@ -20,7 +20,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 23900
+frames = 23300
 
 [[step]]
 do = "heal"

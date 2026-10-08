@@ -34,8 +34,7 @@ The static model (gba_world.py) and the probe's window show the floor, not the p
     in place (PushBoulder_Move). FLAG_SYS_USE_STRENGTH clears on every map load (overworld.c), so the first push
     on a map is preceded by A on the boulder and YES (EventScript_StrengthBoulder)
   - an OBJ_EVENT_GFX_BREAKABLE_ROCK goes with A and YES (EventScript_RockSmash); both come back on a map load
-  With boulders or rocks the route prints as milestone [[step]] blocks (steps, the Strength / Rock Smash prompts
-  as interact + advance_text, each push as a held press).
+  With boulders or rocks the route prints as milestone [[step]] blocks: `steps` walks, `push` and `smash` steps.
 
   thin ice (Emerald's Sootopolis Gym; field_tasks.c SootopolisGymIcePerStepCallback)
   - each MB_THIN_ICE step cracks the tile and counts VAR_ICE_STEP_COUNT up; a step onto MB_CRACKED_ICE zeroes it
@@ -548,9 +547,9 @@ FACE_NAMES = ("up", "down", "left", "right")
 
 
 def blocks(sx, sy, moves):
-    """The route as milestone [[step]] blocks: walks as `steps` corners, each push a held press (the first on the map
-    after A + YES on the boulder), each rock A + YES."""
-    out, walk, x, y, strength = [], [], sx, sy, False
+    """The route as milestone [[step]] blocks: walks as `steps` corners, each push a `push` step (bots.py bot_push
+    switches Strength on first when the map load cleared it), each rock a `smash` step."""
+    out, walk, x, y = [], [], sx, sy
 
     def flush():
         if walk:
@@ -571,13 +570,7 @@ def blocks(sx, sy, moves):
                         "note": "the switch: its arrows turn (MossdeepCity_Gym/scripts.inc)"})
             out.append({"do": "wait_frames", "n": 60})
             continue
-        if act == "smash" or not strength:
-            out.append({"do": "steps", "route": [[x, y]], "face": FACE_NAMES[d], "interact": True,
-                        "note": "Rock Smash: A + YES" if act == "smash" else "Strength: A on the boulder + YES"})
-            out.append({"do": "advance_text"})
-            strength = strength or act == "push"
-        if act == "push":
-            out.append({"do": "press", "keys": FACE_NAMES[d], "hold": 24, "gap": 40, "note": "push the boulder"})
+        out.append({"do": act, "dir": FACE_NAMES[d]})
     flush()
     return out
 

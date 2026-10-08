@@ -3,7 +3,7 @@
 # Start: Fortree below the gym (22,12) -> end: MAP_FORTREE_CITY at the gym door.
 title = "Fortree Gym: Winona and the Feather Badge"
 priority = "P0"
-estimate = 21741
+estimate = 26015
 refs = [
   "data/maps/FortreeCity_Gym/map.json object_events 1..8",
   "data/maps/FortreeCity_Gym/scripts.inc:1-63",
@@ -25,7 +25,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 32700
+frames = 39100
 
 # PHASE2: the rotating-gate route to Winona (src/rotating_gate.c puzzle for MAP_FORTREE_CITY_GYM): record a steps/moves route with the game as oracle.
 

@@ -3,7 +3,7 @@
 # Start: Dewford dock -> end: MAP_DEWFORD_TOWN, outside the gym door (8,18).
 title = "Granite Cave: HM05 Flash and Steven's letter"
 priority = "P0"
-estimate = 15007
+estimate = 18871
 refs = [
   "data/maps/DewfordTown/map.json connections up MAP_ROUTE106 offset -60",
   "data/maps/Route106/map.json warp_events[0] (48,16) -> GRANITE_CAVE_1F",
@@ -24,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 22600
+frames = 28400
 
 # PHASE2: prove the Granite Cave route (probe_map each floor; which B2F ladder reaches the B1F west half) and replace the via lists.
 
