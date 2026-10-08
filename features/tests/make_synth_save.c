@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
-/* make_synth_save pt|dp|pt-corrupt <out.sav>: write a synthetic 512 KiB save
- * image. pt-corrupt flips a byte in both copies of the general block so no
- * valid copy remains.
+/* make_synth_save pt|dp|hg|ss|pt-corrupt|hg-corrupt <out.sav>: write a
+ * synthetic 512 KiB save image. The -corrupt modes flip a byte in both
+ * copies of the general block so no valid copy remains.
  * make_synth_save card <type> <out.pcd>: write a Wonder Card of that
  * MysteryGiftType (card id 42) built by save4_mg_build_card. */
 #include <stdio.h>
@@ -31,17 +31,28 @@ int main(int argc, char **argv)
         }
         return write_out(argv[3], card, sizeof card);
     }
-    const char *mode = argc == 3 ? argv[1] : "";
-    int pt = !strcmp(mode, "pt"), dp = !strcmp(mode, "dp"), bad = !strcmp(mode, "pt-corrupt");
-    if (!pt && !dp && !bad) {
-        fprintf(stderr, "usage: %s pt|dp|pt-corrupt <out.sav>\n       %s card <type> <out.pcd>\n", argv[0], argv[0]);
+    static const struct {
+        const char *mode;
+        save4_game game;
+        int corrupt;
+    } kModes[] = {
+        {"pt", SAVE4_GAME_PT, 0}, {"dp", SAVE4_GAME_DP, 0},         {"hg", SAVE4_GAME_HG, 0},
+        {"ss", SAVE4_GAME_SS, 0}, {"pt-corrupt", SAVE4_GAME_PT, 1}, {"hg-corrupt", SAVE4_GAME_HG, 1},
+    };
+    int m = -1;
+    for (size_t i = 0; argc == 3 && i < sizeof kModes / sizeof kModes[0]; i++)
+        if (!strcmp(argv[1], kModes[i].mode))
+            m = (int)i;
+    if (m < 0) {
+        fprintf(stderr, "usage: %s pt|dp|hg|ss|pt-corrupt|hg-corrupt <out.sav>\n       %s card <type> <out.pcd>\n",
+                argv[0], argv[0]);
         return 2;
     }
     uint8_t *img = malloc(SAVE4_IMAGE_SIZE);
     if (!img)
         return 1;
-    synth_save_build(img, dp ? SAVE4_GAME_DP : SAVE4_GAME_PT);
-    if (bad) {
+    synth_save_build(img, kModes[m].game);
+    if (kModes[m].corrupt) {
         img[0x100] ^= 0x5A;
         img[SAVE4_COPY_SIZE + 0x100] ^= 0x5A;
     }

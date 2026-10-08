@@ -12,10 +12,10 @@ progress · **no** not started · **n/a** no counterpart (reason given).
 
 Evidence names are cases in [docs/evidence/README.md](evidence/README.md)
 (screenshots in `build/evidence/`, made by `tests/mac/feature_matrix.py` on
-`build/dist/nativeplat-macos-arm64.zip`, 2026-10-04). Platinum rows: main
-904498583; Diamond/Pearl rows and Windows: main 33e316444.
+`build/dist/nativeplat-macos-arm64.zip`, 2026-10-04). Platinum, Diamond,
+Pearl, and Windows rows: main 80dc9d8c7.
 
-**All three games** were run in the packaged app (main 33e316444 plus this
+**All three games** were run in the packaged app (main 80dc9d8c7 plus this
 shell): the in-game rows were run on Diamond, Pearl and Platinum from saves
 minted with `tests/gameplay` recipes (`--game diamond|pearl` runs of
 `tests/mac/feature_matrix.py`; Diamond and Pearl evidence names carry a
@@ -137,11 +137,11 @@ with Platinum data and run the same code for every game.
 ## Ruby / Sapphire / Emerald (GBA)
 
 Status as above; **core** rows are shown headless (`np_headless`,
-`tests/rse/first_battle.sh`, `tests/dp/regress.sh` e-/r-/s- cases,
-`tests/link/run_gba_link_tests.py`); **app** rows ran in the packaged macOS
-app (`tests/mac/feature_matrix.py --game ruby|sapphire|emerald` on the zip
-built from main e63e18331, the 12 GBA cases, all ok on each game).
-Evidence is in `build/evidence/` (outside git). Branch rse, 2026-10-07.
+`tests/rse/first_battle.sh`, `tests/dp/regress.sh` e-/r-/s- cases);
+**app** rows ran in the packaged macOS app (`tests/mac/feature_matrix.py
+--game ruby|sapphire|emerald` on the zip built from main 80dc9d8c7, the 12
+GBA cases, all ok on each game). Evidence is in `build/evidence/` (outside
+git). Branch rse, 2026-10-07.
 
 | Feature | GBA equivalent | Ruby | Sapphire | Emerald | Evidence |
 |---|---|---|---|---|---|
@@ -164,7 +164,7 @@ Evidence is in `build/evidence/` (outside git). Branch rse, 2026-10-07.
 | nativeplat:// URL | Launch a GBA slot from a URL | app | app | app | `<game>-gba_launch-url.png` |
 | Mystery Gift / e-Reader | n/a: Mystery Event needs an e-Reader/link partner distributing events that no longer exist; no offline event writer is in scope |  n/a | n/a | n/a |  |
 | Link cable trades/battles | SIO multi-player as an exact synchronous bus over `np_host_net_*` (`gba_link.c`; LAN/relay/loopback) | core: trade with Sapphire and with Emerald (both saves hold the swapped Pokemon), Colosseum battle with Sapphire (same frames and Win/Loss screen on both) | core (trade, battle) | core (trade with Ruby, Direct Corner) | `tests/link/run_gba_link_tests.py`; `build/evidence/rse/link-trade-rs.png`, `link-trade-re.png`, `link-battle-rs.png` |
-| macOS app / Windows build | All six cores in each package (main e63e18331): macOS arm64 zip, Windows x64 zig cross-build | app (package --test title; the 12 GBA cases on the packaged app); Windows: title under wine | same | same | `build/evidence/pkg-mac/<game>-arm64.png`, `pkg-win/shot-<game>.png`; docs/evidence/README.md |
+| macOS app / Windows build | All six cores in each package (main 80dc9d8c7): macOS arm64 zip, Windows x64 zig cross-build | app (package --test title; the 12 GBA cases on the packaged app); Windows: title under wine | same | same | `build/evidence/pkg-mac/<game>-arm64.png`, `pkg-win/shot-<game>.png`; docs/evidence/README.md |
 
 ## n/a, with reasons
 

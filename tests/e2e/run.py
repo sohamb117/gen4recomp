@@ -3,7 +3,7 @@
 
     tests/e2e/run.py --game G [--from M] [--only M ...] [--systems] [--lab] [--planned] [--out DIR] [--check]
 
-G is platinum, diamond or pearl, or emerald, ruby or sapphire. The chain is tests/e2e/<G>/chain.txt (side
+G is platinum, diamond or pearl, black or white, or emerald, ruby or sapphire. The chain is tests/e2e/<G>/chain.txt (side
 systems: systems.txt with --systems); each entry is a milestone directory
 holding milestone.toml. Every milestone runs np_gp in serve mode with the
 e2e probe on, starts from the previous milestone's end save (or a lab
@@ -33,7 +33,7 @@ sys.path.insert(0, GAMEPLAY)
 
 import labc  # noqa: E402
 from bots import BOTS  # noqa: E402
-from np_e2e import GBA_GAMES, Budget, Dead, HarnessError, Session  # noqa: E402
+from np_e2e import BW_GAMES, GBA_GAMES, Budget, Dead, HarnessError, Session  # noqa: E402
 
 GAMES = {
     "platinum": ("games/platinum/build/rom/pokeplatinum.us.nds", "build/core-plat"),
@@ -43,6 +43,9 @@ GAMES = {
     "emerald": (".cache/gba/pokeemerald/pokeemerald.gba", "build/rse/native"),
     "ruby": (".cache/gba/pokeruby/pokeruby.gba", "build/rse/native"),
     "sapphire": (".cache/gba/pokeruby/pokesapphire.gba", "build/rse/native"),
+    # ROM-only recompilations (docs/BW_PLAN.md): the cartridge in the checkout's gitignored roms/, one core for both
+    "black": ("roms/Pokemon - Black Version (USA, Europe) (NDSi Enhanced).nds", "build/core-bw"),
+    "white": ("roms/Pokemon - White Version (USA, Europe) (NDSi Enhanced).nds", "build/core-bw"),
 }
 # the GBA games' save tool (tools/gba/gen3_dump.py: `dump ROM SAV`, `gamedata ROM`, np_save4's shapes) and save lab
 GEN3_DUMP = os.path.join(ROOT, "tools", "gba", "gen3_dump.py")
@@ -115,9 +118,15 @@ class Game:
         self._resolve = None
 
     def resolve(self, token, where="milestone"):
-        """A game name (MAP_*, FLAG_*, SPECIES_*, ...) or a number, as the lab recipes resolve it."""
+        """A game name (MAP_*, FLAG_*, SPECIES_*, ...) or a number, as the lab recipes resolve it. Black/White have
+        no name tables: numbers only (zone ids, flag and var ids, species as docs/BW_RAM.md gives them)."""
         if isinstance(token, int):
             return token
+        if self.name in BW_GAMES:
+            try:
+                return int(str(token), 0)
+            except ValueError:
+                raise HarnessError("%s: %s has no names; give %r as a number" % (where, self.name, token))
         if self._resolve is None:
             self._resolve = labc.make_resolver(self.name)
         try:
@@ -126,8 +135,8 @@ class Game:
             raise HarnessError(str(e))
 
     def tools(self):
-        """np_gp for this core build (rebuilt when stale) and the save tool, a command prefix: np_save4 (DS), or
-        tools/gba/gen3_dump.py (GBA)."""
+        """np_gp for this core build (rebuilt when stale) and the save tool, a command prefix: np_save4 (D/P/Pt),
+        np_save5 (Black/White), or tools/gba/gen3_dump.py (GBA)."""
         if not os.path.isfile(self.rom):
             die("no ROM at %s (set NP_ROM)" % self.rom)
         libs = sorted(glob.glob(os.path.join(self.core, "libnp_guest_*.a")))
@@ -149,14 +158,16 @@ class Game:
         if self.name in GBA_GAMES:
             self.gp, self.save4 = gp, [sys.executable, GEN3_DUMP]
             return
-        save4 = os.path.join(ROOT, "build", "features", "np_save4")
-        src4 = os.path.join(ROOT, "features", "tools", "np_save4.c")
+        # np_save5 (features/save5) reads Black/White's saves with np_save4's commands and JSON shapes
+        tool = "np_save5" if self.name in BW_GAMES else "np_save4"
+        save4 = os.path.join(ROOT, "build", "features", tool)
+        src4 = os.path.join(ROOT, "features", "tools", tool + ".c")
         if not os.path.isfile(save4) or os.path.getmtime(save4) < os.path.getmtime(src4):
             build = os.path.join(ROOT, "build", "features")
             if subprocess.call(["cmake", "-S", os.path.join(ROOT, "features"), "-B", build, "-G", "Ninja"],
                                stdout=subprocess.DEVNULL) != 0 or subprocess.call(
-                    ["cmake", "--build", build, "--target", "np_save4"], stdout=subprocess.DEVNULL) != 0:
-                die("np_save4 did not build")
+                    ["cmake", "--build", build, "--target", tool], stdout=subprocess.DEVNULL) != 0:
+                die("%s did not build" % tool)
         self.gp, self.save4 = gp, [save4]
 
 
@@ -369,11 +380,16 @@ class Ctx:
         return self._game.resolve(token)
 
 
+# Frames before the title takes START: D/P/Pt's title is up by 1250; Black/White's opening movie runs to about
+# frame 4750 (docs/BW_PLAN.md) and the proven CONTINUE run pressed START at 5000.
+TITLE_FRAMES = {"black": 5000, "white": 5000}
+
+
 def boot_continue(s):
     """Title screen, then CONTINUE, until the player is free (tests/gameplay/schedules/continue.press timings)."""
     if s.game in GBA_GAMES:
         return gba_boot_continue(s)
-    if s.run(1250, until="field_ready=1"):
+    if s.run(TITLE_FRAMES.get(s.game, 1250), until="field_ready=1"):
         return
     s.run(4, "start")
     if s.run(146, until="field_ready=1"):

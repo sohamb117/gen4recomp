@@ -25,9 +25,11 @@ typedef struct np_card_info {
     bool female;
     uint32_t money;
     uint8_t badges; /* bitmask */
+    const char *const *badge_names; /* the region's eight; NULL: Sinnoh's */
     uint16_t play_hours;
     uint8_t play_minutes;
-    uint16_t dex_seen, dex_caught; /* national numbering, 1..493 */
+    uint16_t dex_seen, dex_caught; /* national numbering */
+    uint16_t dex_total;            /* species in the game's dex; 0: 493 */
     bool national_dex;
     int party_count;
     char party[NP_CARD_PARTY_MAX][48];      /* nickname, species or "Egg" */

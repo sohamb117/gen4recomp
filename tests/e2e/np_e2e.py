@@ -370,12 +370,17 @@ class Session:
 
 # ---- the game's tile behaviors (Platinum's include/constants/field/map_tile_behaviors.h; D/P's
 # MetatileBehavior numbering is the same table: its asm predicates test the same values, e.g. the
-# four jumps 0x38..0x3B and the waterfall 0x13).
+# four jumps 0x38..0x3B and the waterfall 0x13). Black/White number their MAPATTR values differently
+# and have no table here yet: none of their values means anything to the planner, which goes by the
+# attribute's collision ("hitch") flag and the game's own step check (docs/BW_RAM.md).
 _BEHAVIORS = None
+BW_GAMES = ("black", "white")
 
 
-def behaviors():
+def behaviors(game=None):
     global _BEHAVIORS
+    if game in BW_GAMES:
+        return {}
     if _BEHAVIORS is None:
         path = os.path.join(ROOT, "games", "platinum", "include", "constants", "field", "map_tile_behaviors.h")
         out, n, inside = {}, 0, False

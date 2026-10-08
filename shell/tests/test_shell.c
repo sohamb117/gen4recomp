@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "card.h"
+#include "edsave.h"
 #include "json.h"
 #include "launch.h"
 #include "layout.h"
@@ -28,6 +29,8 @@
 #include "sha256.h"
 #include "skinfmt.h"
 #include "slots.h"
+#include "synth_save.h"
+#include "synth_save5.h"
 #include "sync_plan.h"
 #include "touchlayout.h"
 #include "undo.h"
@@ -1076,6 +1079,177 @@ static void test_lowpass(void)
     CHECK(loud[0] <= 32767 && loud[1] >= -32768, "low-pass stays in range");
 }
 
+/* The editor's save interface on synthetic Platinum and Black saves
+ * (features/tests builders): detection, refusal of another game's save,
+ * and the edits the editor makes, read back through the save libraries. */
+static void test_edsave(void)
+{
+    uint8_t *pt = malloc(SAVE4_IMAGE_SIZE), *bw = malloc(SAVE5_IMAGE_SIZE);
+    synth_save_build(pt, SAVE4_GAME_PT);
+    synth5_build(bw, SAVE5_GAME_BLACK);
+    np_save s;
+
+    CHECK(np_save_gen_of(NP_GAME_PLATINUM) == 4 && np_save_gen_of(NP_GAME_WHITE) == 5 &&
+              !np_save_gen_of(NP_GAME_EMERALD),
+          "generations");
+    CHECK(np_save_load(&s, -1, NP_GAME_PEARL, pt, SAVE4_IMAGE_SIZE) == NP_SAVE_OK && s.gen == 4 &&
+              s.game == NP_GAME_PLATINUM,
+          "Platinum save detected");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, -1, NP_GAME_DIAMOND, bw, SAVE5_IMAGE_SIZE) == NP_SAVE_OK && s.gen == 5 &&
+              s.game == NP_GAME_BLACK,
+          "Black save detected");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_WHITE, NP_GAME_DIAMOND, bw, SAVE5_IMAGE_SIZE) == NP_SAVE_OK &&
+              s.game == NP_GAME_WHITE,
+          "a Black save in a White slot edits as White (one format)");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_BLACK, NP_GAME_DIAMOND, pt, SAVE4_IMAGE_SIZE) == NP_SAVE_ERR_WRONG_GAME,
+          "Platinum save refused in a Black slot");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_PLATINUM, NP_GAME_DIAMOND, bw, SAVE5_IMAGE_SIZE) == NP_SAVE_ERR_WRONG_GAME,
+          "Black save refused in a Platinum slot");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_EMERALD, NP_GAME_DIAMOND, bw, SAVE5_IMAGE_SIZE) == NP_SAVE_ERR_WRONG_GAME,
+          "no editor for GBA saves");
+    np_save_free(&s);
+    uint8_t *bad = malloc(SAVE5_IMAGE_SIZE);
+    memcpy(bad, bw, SAVE5_IMAGE_SIZE);
+    bad[0x19430] ^= 1; /* trainer block, both copies */
+    bad[SAVE5_COPY_OFFSET + 0x19430] ^= 1;
+    CHECK(np_save_load(&s, -1, NP_GAME_DIAMOND, bad, SAVE5_IMAGE_SIZE) == NP_SAVE_ERR_CHECKSUM,
+          "a damaged Black save reports its checksums");
+    np_save_free(&s);
+    free(bad);
+
+    /* Black: what the editor shows and edits. */
+    CHECK(np_save_load(&s, NP_GAME_BLACK, NP_GAME_DIAMOND, bw, SAVE5_IMAGE_SIZE) == NP_SAVE_OK, "Black loads");
+    np_trainer t;
+    CHECK(np_save_trainer(&s, &t) == NP_SAVE_OK && !strcmp(t.name, SYNTH5_TRAINER_NAME) &&
+              t.money == SYNTH5_MONEY_NEW && t.badges == SYNTH5_BADGES && !t.has_coins,
+          "Black trainer: %s $%u", t.name, t.money);
+    CHECK(!strcmp(np_save_badge_names(&s)[0], "Trio") && np_save_dex_max(&s) == 649 && np_save_box_count(&s) == 24 &&
+              np_save_card_slots(&s) == 12 && np_save_pocket_count(&s) == 5 && np_save_flag_first(&s) == 0,
+          "Black shape");
+    np_mon m;
+    np_mon_info in;
+    CHECK(np_save_party_count(&s) == 2 && np_save_get_party(&s, 0, &m) == NP_SAVE_OK, "Black party");
+    np_mon_info_get(&m, &in);
+    CHECK(in.species == 495 && in.level == 5 && in.nature == 3 && !strcmp(in.nickname, "SNIVY"), "Snivy: %u %s",
+          in.species, in.nickname);
+    CHECK(np_save_get_box(&s, 0, 0, &m) == NP_SAVE_OK && !np_mon_is_empty(&m) &&
+              np_save_get_box(&s, 0, 1, &m) == NP_SAVE_OK && np_mon_is_empty(&m),
+          "Black box 1");
+    bool used = false;
+    char title[64];
+    CHECK(np_save_card(&s, 0, &used, title, sizeof title) == NP_SAVE_OK && used && !strcmp(title, "Test Card"),
+          "Black Wonder Card 1: %s", title);
+    CHECK(np_save_set_money(&s, 9999999) == NP_SAVE_OK && np_save_set_money(&s, 10000000) == NP_SAVE_ERR_RANGE &&
+              np_save_set_coins(&s, 5) == NP_SAVE_ERR_UNSUPPORTED && np_save_set_badges(&s, 0xFF) == NP_SAVE_OK &&
+              np_save_set_name(&s, "N") == NP_SAVE_OK,
+          "Black trainer edits");
+    CHECK(np_save_set_bag(&s, 3, 1, 28, 9) == NP_SAVE_OK && np_save_set_bag(&s, 1, 0, 450, 2) == NP_SAVE_ERR_RANGE,
+          "Black bag edits");
+    CHECK(np_save_flag_set(&s, 0, true) == NP_SAVE_OK && np_save_var_set(&s, 0x4001, 9) == NP_SAVE_OK,
+          "Black event edits");
+    uint8_t pgf[SAVE5_PGF_SIZE];
+    synth5_make_pgf(pgf, SAVE5_MG_ITEM, 300);
+    const char *why = NULL;
+    CHECK(np_save_gift_validate(&s, pgf, sizeof pgf, &why) == NP_SAVE_OK && np_save_gift_add(&s, pgf, sizeof pgf) ==
+                                                                                 NP_SAVE_OK,
+          "Black .pgf import");
+    CHECK(np_save_gift_validate(&s, pt, 0x358, &why) != NP_SAVE_OK, "a Gen 4 card is not a .pgf");
+    /* A Pokemon added the way the editor's Add Pokemon does. */
+    np_mon_blank(&s, &m);
+    np_mon_set_pid(&m, 0x1234567u);
+    np_mon_set_species(&m, 498);
+    np_mon_set_ot(&m, t.tid, t.sid);
+    np_mon_set_nature(&m, 7);
+    const uint16_t stats[6] = {20, 11, 10, 12, 10, 9};
+    np_mon_set_party_stats(&m, 5, 20, stats, 0);
+    CHECK(np_mon_set_nickname(&m, "TEPIG", false) == NP_SAVE_OK && np_save_set_party(&s, 2, &m) == NP_SAVE_OK &&
+              np_save_set_party_count(&s, 3) == NP_SAVE_OK,
+          "Black add-mon");
+    /* The edited image reloads with every checksum valid. */
+    save5 r;
+    CHECK(save5_load(&r, np_save_img(&s), np_save_len(&s)) == SAVE5_OK && r.load_result == SAVE5_LOAD_OK,
+          "edited Black save validates");
+    save5_trainer rt;
+    save5_get_trainer(&r, &rt);
+    pkm5 rp;
+    pkm5_info ri;
+    CHECK(save5_get_party(&r, 2, &rp) == SAVE5_OK, "added Pokemon's checksum");
+    pkm5_info_get(&rp, &ri);
+    CHECK(rt.money == 9999999 && rt.badges == 0xFF && !strcmp(rt.name, "N") && ri.species == 498 && ri.nature == 7 &&
+              ri.level == 5,
+          "Black edits read back: $%u %s species %u", rt.money, rt.name, ri.species);
+    save5_free(&r);
+    np_save_free(&s);
+
+    /* Platinum keeps its Gen 4 shape. */
+    CHECK(np_save_load(&s, NP_GAME_PLATINUM, NP_GAME_DIAMOND, pt, SAVE4_IMAGE_SIZE) == NP_SAVE_OK, "Pt loads");
+    CHECK(np_save_trainer(&s, &t) == NP_SAVE_OK && t.has_coins && !strcmp(t.name, SYNTH_TRAINER_NAME) &&
+              !strcmp(np_save_badge_names(&s)[0], "Coal") && np_save_dex_max(&s) == 493 &&
+              np_save_card_slots(&s) == 3 && np_save_flag_first(&s) == 1 && np_save_s4(&s),
+          "Pt shape");
+    CHECK(np_save_set_coins(&s, 50) == NP_SAVE_OK, "Pt coins");
+    np_save_free(&s);
+
+    /* HeartGold/SoulSilver: their own format, Johto and Kanto badges. */
+    uint8_t *hg = malloc(SAVE4_IMAGE_SIZE);
+    synth_save_build(hg, SAVE4_GAME_SS);
+    CHECK(np_save_load(&s, -1, NP_GAME_DIAMOND, hg, SAVE4_IMAGE_SIZE) == NP_SAVE_OK && s.game == NP_GAME_SOULSILVER,
+          "SoulSilver save detected");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_PLATINUM, NP_GAME_DIAMOND, hg, SAVE4_IMAGE_SIZE) == NP_SAVE_ERR_WRONG_GAME,
+          "an HG/SS save is refused in a Platinum slot");
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_HEARTGOLD, NP_GAME_DIAMOND, pt, SAVE4_IMAGE_SIZE) == NP_SAVE_ERR_WRONG_GAME,
+          "a Platinum save is refused in a HeartGold slot");
+    np_save_free(&s);
+    synth_save_build(hg, SAVE4_GAME_HG);
+    CHECK(np_save_load(&s, NP_GAME_HEARTGOLD, NP_GAME_DIAMOND, hg, SAVE4_IMAGE_SIZE) == NP_SAVE_OK &&
+              s.game == NP_GAME_HEARTGOLD,
+          "HeartGold loads");
+    CHECK(np_save_trainer(&s, &t) == NP_SAVE_OK && t.has_kanto && t.kanto_badges == SYNTH_KANTO_BADGES &&
+              t.badges == SYNTH_BADGES && t.has_coins,
+          "HG trainer: badges %02X kanto %02X", t.badges, t.kanto_badges);
+    CHECK(!strcmp(np_save_badge_names(&s)[0], "Zephyr") && !strcmp(np_save_kanto_badge_names(&s)[7], "Earth") &&
+              np_save_pocket_capacity(&s, SAVE4_POCKET_ITEMS) == 165 && np_save_var_count(&s) == 368 &&
+              np_save_origin_game(&s) == 7,
+          "HG shape");
+    CHECK(np_save_set_kanto_badges(&s, 0xFF) == NP_SAVE_OK && np_save_set_badges(&s, 0x80) == NP_SAVE_OK &&
+              np_save_var_set(&s, 0x416F, 3) == NP_SAVE_OK,
+          "HG edits");
+    save4 r4;
+    save4_trainer t4;
+    CHECK(save4_load(&r4, np_save_img(&s), np_save_len(&s)) == SAVE4_OK && save4_get_trainer(&r4, &t4) == SAVE4_OK &&
+              t4.kanto_badges == 0xFF && t4.badges == 0x80,
+          "HG edits read back");
+    save4_free(&r4);
+    np_save_free(&s);
+    CHECK(np_save_load(&s, NP_GAME_PLATINUM, NP_GAME_DIAMOND, pt, SAVE4_IMAGE_SIZE) == NP_SAVE_OK &&
+              np_save_set_kanto_badges(&s, 1) == NP_SAVE_ERR_UNSUPPORTED && !np_save_kanto_badge_names(&s),
+          "no Kanto badges in Platinum");
+    np_save_free(&s);
+    free(hg);
+
+    /* The Trainer Card with Unova's badges and the 649-species diploma. */
+    static uint32_t a[NP_CARD_W * NP_CARD_H], b[NP_CARD_W * NP_CARD_H];
+    static const char *const unova[8] = {"Trio", "Basic", "Insect", "Bolt", "Quake", "Jet", "Freeze", "Legend"};
+    np_card_info ci = {.game = "Black", .name = "N", .badges = 0x0F, .dex_caught = 100};
+    np_card_render(NP_CARD_TRAINER, &ci, a);
+    ci.badge_names = unova;
+    np_card_render(NP_CARD_TRAINER, &ci, b);
+    CHECK(memcmp(a, b, sizeof a) != 0, "card shows the region's badge names");
+    np_card_render(NP_CARD_DIPLOMA, &ci, a);
+    ci.dex_total = 649;
+    np_card_render(NP_CARD_DIPLOMA, &ci, b);
+    CHECK(memcmp(a, b, sizeof a) != 0, "diploma counts the game's species");
+    free(pt);
+    free(bw);
+}
+
 int main(void)
 {
     test_sha1();
@@ -1099,6 +1273,7 @@ int main(void)
     test_touchlayout();
     test_skin();
     test_lowpass();
+    test_edsave();
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

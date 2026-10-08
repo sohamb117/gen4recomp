@@ -1,0 +1,7 @@
+# Black/White from a blank chip to the free player in the bedroom (docs/BW_PLAN.md, the proven proposal run's
+# ng.sched): START twice at the title (NEW GAME), then A every 40 frames through the professor's intro, the
+# boy/girl choice (the default), the name (A on the keyboard types AAAAAAA) and Bianca and Cheren's arrival in
+# the bedroom; the player is free there from about frame 13500 (the proposal run kept pressing A to 21300).
+# Frames are relative to the schedule step, which is frame 0 of a blank-chip run.
+5000:start:4:60:2
+5300:a:4:40:215

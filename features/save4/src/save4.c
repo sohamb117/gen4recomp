@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /*
- * Gen 4 Sinnoh save image: copy selection, checksums and typed views.
+ * Gen 4 save image (Sinnoh and Johto): copy selection, checksums and typed
+ * views.
  *
  * Block layout (offsets within one 0x40000 copy):
  *   Each save table entry occupies SaveTableEntry_BodySize() bytes: Platinum
@@ -25,6 +26,23 @@
  *       PCStorage (pokediamond include/pokemon_storage_system.h, sizeof
  *       0x121C8, body 0x121CC)
  *       + footer = 0x121E0.
+ *
+ * HG/SS (pokeheartgold): every entry occupies GetSaveChunkSizePlusCRC() =
+ *   ((sizeof + 3) & ~3) + 4 bytes in gSaveChunkHeaders order (src/save.c
+ *   SaveData_InitSubstructs, src/save_arrays.c); the general block (entries
+ *   0-40) ends in a 0x10-byte SaveChunkFooter, and the storage block (entry
+ *   41, PCStorage) starts at the next 0x100 boundary (SaveData_InitSlotSpecs).
+ *   The sizeof()s, taken from the decomp's structs (and the asm *_sizeof
+ *   constants for the undecompiled entries), give:
+ *     SysInfo 0x00 (0x5C) -> PLAYERDATA 0x60 (0x2C) -> Party 0x90 (0x5B0:
+ *     PartyCore 0x590 + PartyExtra 0x20) -> Bag 0x644 (0x79C) -> VarsFlags
+ *     0xDE4 (0x44C: vars u16[368], flags at 0x10C4) -> LocalFieldData 0x1234
+ *     (0x80) -> Pokedex 0x12B8 (0x340) -> ... MysteryGift 0x9D3C (entry 27,
+ *     0x1680) ... TrainerHouse 0xE714 (0xF00); general block 0xF628 =
+ *     0xE714 + 0xF04 + 0x10. Storage block at 0xF700: PCStorage (sizeof
+ *     0x122FC, body 0x12300) + footer = 0x12310. These match PKHeX's
+ *     SAV4HGSS GeneralSize 0xF628, StorageSize 0x12310 and storage start
+ *     0xF700.
  */
 #include "save4/save4.h"
 
@@ -35,30 +53,49 @@
 
 struct save4_layout {
     save4_game game;
+    bool hgss;               /* HG/SS footer, copy selection and PCStorage */
     uint32_t general_size;
+    uint32_t storage_offset; /* within a copy */
     uint32_t storage_size;
     uint32_t player; /* PlayerSave / PlayerData */
     uint32_t party;  /* Party: capacity, count, Pokemon[6] */
     uint32_t bag;
+    const uint8_t *pocket_cap; /* slots per pocket, in Bag order */
     uint32_t vars;
     uint32_t flags;
+    uint16_t num_vars;
     uint32_t dex;
-    uint32_t mg_unlocked;  /* SystemData.isMysteryGiftUnlocked / SaveSysInfo.mysteryGiftActive */
-    uint32_t dex_obtained; /* Pokedex.pokedexObtained / unlockedSinnohDex, relative to dex */
-    uint32_t dex_national; /* Pokedex.nationalDexObtained / unlockedNationalDex, relative to dex */
+    uint32_t mg_unlocked;  /* SystemData.isMysteryGiftUnlocked / SaveSysInfo / SysInfo.mysteryGiftActive */
+    uint32_t dex_obtained; /* Pokedex.pokedexObtained / unlockedSinnohDex / dexEnabled, relative to dex */
+    uint32_t dex_national; /* Pokedex.nationalDexObtained / unlockedNationalDex / nationalDex, relative to dex */
     uint32_t mystery;      /* MysteryGift save table entry */
     /* Inside the MysteryGift entry (see the Mystery Gift section below). */
     uint16_t mg_pgt_used;  /* u32 pgtUsed[8] slot markers; 0: a slot is used when its type is valid */
     uint16_t mg_card_used; /* u32 cardUsed[3] slot markers; 0: likewise */
     uint16_t mg_pgts;      /* PGT pgts[8] */
     uint16_t mg_cards;     /* WonderCard wonderCards[3] */
+    uint16_t mg_special;   /* HG/SS specialWonderCard; 0: none */
     uint16_t mg_crc;       /* entry CRC-16 offset (= bytes covered); 0: the game keeps none */
     uint8_t mg_link_card0; /* PGT.wondercardSlot written for Wonder Card slot 0 (slot i: +i) */
     uint8_t mg_link_none;  /* PGT.wondercardSlot written for a gift received without a card */
-    uint8_t mg_type_end;   /* MysteryGiftType values 1 .. mg_type_end-1 can be delivered */
+    uint8_t mg_tag_end;    /* a slot's type is valid while 0 < type < mg_tag_end */
+    uint32_t mg_types;     /* bit t: MysteryGiftType t can be delivered */
     uint32_t location;     /* FieldOverworldState / LocalFieldData: Location player, entrance */
-    uint32_t poketch;      /* Poketch, the entry right after VarsFlags */
+    uint32_t poketch;      /* Poketch, the entry right after VarsFlags; 0: none */
+    /* PC storage, relative to the storage block. */
+    uint32_t box_current;  /* u32 current box */
+    uint32_t box_mons;     /* box 0 slot 0 */
+    uint32_t box_stride;   /* bytes per box */
+    uint32_t box_names;    /* u16 names[18][20] */
+    uint32_t box_modified; /* HG/SS u32 boxModifiedFlag; 0: none */
 };
+
+#define MG_TYPES(lo, hi) ((uint32_t)(((1ull << ((hi) + 1)) - 1) & ~((1ull << (lo)) - 1)))
+#define MG_TYPE(t) (1u << (t))
+
+static const uint8_t kPocketCapSinnoh[SAVE4_POCKET_COUNT] = {165, 50, 100, 12, 40, 64, 15, 30};
+/* NUM_BAG_ITEMS .. NUM_BAG_BATTLE_ITEMS, pokeheartgold include/constants/items.h. */
+static const uint8_t kPocketCapJohto[SAVE4_POCKET_COUNT] = {165, 50, 101, 12, 40, 64, 24, 30};
 
 /*
  * Pt: SystemData.isMysteryGiftUnlocked 0x48 (body 0x64, first entry);
@@ -93,16 +130,54 @@ struct save4_layout {
  *     0x3B0 = 0x114C. Cross-check: Pt Poketch body 0x120 ends at 0x1280,
  *     D/P Poketch (include/poketch.h, sizeof 0xE8, body 0xEC) ends at
  *     0x1238, each the next entry's offset above.
+ * HG/SS (pokeheartgold):
+ *   mg_unlocked: SysInfo.mysteryGiftActive (include/sav_system_info.h) 0x48
+ *     = rtc_offset 8 + mac 6 + birth 2 + SysInfo_RTC 0x38 (the compiler
+ *     aligns s64 to 4, as the D/P layout above shows).
+ *   dex: Pokedex (include/pokedex.h, size 0x340) dexEnabled 0x336
+ *     (Pokedex_Enable), nationalDex 0x337 (Pokedex_SetNatDexFlag).
+ *   mystery: MysteryGiftSave (include/mystery_gift.h): receivedFlags 0x000,
+ *     MysteryGift gifts[8] 0x100, WonderCard cards[3] 0x920,
+ *     specialWonderCard 0x1328, size 0x1680; CRC-16 at 0x1680 over 0x1680
+ *     bytes (SaveSubstruct_UpdateCRC / SaveSubstruct_AssertCRC, src/save.c).
+ *     A gift without card is linked to 3 (ov74 TryInsertGift(mg, gift, 3)),
+ *     a card's gift to its slot (SaveMysteryGift_TryInsertCard).
+ *   location: LocalFieldData.currentPosition 0x1234.
+ *   PCStorage (include/pokemon_storage_system.h): PC_BOX boxes[18] (30
+ *     BoxPokemon + 16 bytes = 0x1000 each), curBox 0x12000,
+ *     boxModifiedFlag 0x12004, box_names 0x12008.
  */
 static const save4_layout kLayouts[] = {
-    {SAVE4_GAME_PT, 0xCF2C, 0x121E4, 0x64, 0x98, 0x630, 0xDAC, 0xFEC, 0x1328, 0x48, 0x31A, 0x31B, 0xB4C0,
-     0, 0, 0x100, 0x920, 0x132C, 0, 3, SAVE4_MG_TYPE_MAX, 0x1280, 0x1160},
-    {SAVE4_GAME_DP, 0xC100, 0x121E0, 0x60, 0x90, 0x624, 0xD9C, 0xFDC, 0x12DC, 0x48, 0x138, 0x139, 0xA6D0,
-     0x100, 0x120, 0x12C, 0x94C, 0, 1, 0, SAVE4_MG_SECRET_KEY, 0x1238, 0x114C},
+    {.game = SAVE4_GAME_PT, .general_size = 0xCF2C, .storage_offset = 0xCF2C, .storage_size = 0x121E4,
+     .player = 0x64, .party = 0x98, .bag = 0x630, .pocket_cap = kPocketCapSinnoh, .vars = 0xDAC, .flags = 0xFEC,
+     .num_vars = SAVE4_NUM_VARS, .dex = 0x1328, .mg_unlocked = 0x48, .dex_obtained = 0x31A, .dex_national = 0x31B,
+     .mystery = 0xB4C0, .mg_pgts = 0x100, .mg_cards = 0x920, .mg_crc = 0x132C, .mg_link_card0 = 0, .mg_link_none = 3,
+     .mg_tag_end = SAVE4_MG_UNKNOWN + 1, .mg_types = MG_TYPES(SAVE4_MG_POKEMON, SAVE4_MG_UNKNOWN),
+     .location = 0x1280, .poketch = 0x1160, .box_current = 0, .box_mons = 4,
+     .box_stride = SAVE4_BOX_SLOTS * PKM4_BOX_SIZE, .box_names = 0x11EE4},
+    {.game = SAVE4_GAME_DP, .general_size = 0xC100, .storage_offset = 0xC100, .storage_size = 0x121E0,
+     .player = 0x60, .party = 0x90, .bag = 0x624, .pocket_cap = kPocketCapSinnoh, .vars = 0xD9C, .flags = 0xFDC,
+     .num_vars = SAVE4_NUM_VARS, .dex = 0x12DC, .mg_unlocked = 0x48, .dex_obtained = 0x138, .dex_national = 0x139,
+     .mystery = 0xA6D0, .mg_pgt_used = 0x100, .mg_card_used = 0x120, .mg_pgts = 0x12C, .mg_cards = 0x94C,
+     .mg_link_card0 = 1, .mg_link_none = 0, .mg_tag_end = SAVE4_MG_SECRET_KEY,
+     .mg_types = MG_TYPES(SAVE4_MG_POKEMON, SAVE4_MG_POKETCH_APP), .location = 0x1238, .poketch = 0x114C,
+     .box_current = 0, .box_mons = 4, .box_stride = SAVE4_BOX_SLOTS * PKM4_BOX_SIZE, .box_names = 0x11EE4},
+    {.game = SAVE4_GAME_HG, .hgss = true, .general_size = 0xF628, .storage_offset = 0xF700,
+     .storage_size = 0x12310, .player = 0x60, .party = 0x90, .bag = 0x644, .pocket_cap = kPocketCapJohto,
+     .vars = 0xDE4, .flags = 0x10C4, .num_vars = SAVE4_HGSS_NUM_VARS, .dex = 0x12B8, .mg_unlocked = 0x48,
+     .dex_obtained = 0x336, .dex_national = 0x337, .mystery = 0x9D3C, .mg_pgts = 0x100, .mg_cards = 0x920,
+     .mg_special = 0x1328, .mg_crc = 0x1680, .mg_link_card0 = 0, .mg_link_none = 3,
+     .mg_tag_end = SAVE4_MG_MEMORIAL_PHOTO + 1, /* MG_TAG_MAX */
+     .mg_types = MG_TYPES(SAVE4_MG_POKEMON, SAVE4_MG_BATTLE_REG) | MG_TYPE(SAVE4_MG_COSMETICS) |
+                 MG_TYPE(SAVE4_MG_MANAPHY_EGG) | MG_TYPES(SAVE4_MG_UNKNOWN, SAVE4_MG_MEMORIAL_PHOTO),
+     .location = 0x1234, .poketch = 0, .box_current = 0x12000, .box_mons = 0, .box_stride = 0x1000,
+     .box_names = 0x12008, .box_modified = 0x12004},
 };
 
 /* PlayerSave (include/save_player.h) = Options(2) + pad(2) + TrainerInfo
- * (include/trainer_info.h) + coins + PlayTime. */
+ * (include/trainer_info.h) + coins + PlayTime. HG/SS PLAYERDATA
+ * (include/player_data.h) has the same shape: Options, PlayerProfile
+ * (version 0x20, kantoBadges 0x23), coins, IGT. */
 enum {
     PL_NAME = 0x04, /* charcode_t name[8] */
     PL_ID = 0x14,   /* u32: TID low, SID high */
@@ -110,28 +185,29 @@ enum {
     PL_GENDER = 0x1C,
     PL_LANGUAGE = 0x1D,
     PL_BADGES = 0x1E,
-    PL_GAMECODE = 0x20,
+    PL_GAMECODE = 0x20,   /* version */
     PL_STORYFLAGS = 0x21, /* bit0 isMainStoryCleared, bit1 hasNationalDex */
+    PL_KANTO_BADGES = 0x23, /* HG/SS only */
     PL_COINS = 0x24,
     PL_HOURS = 0x26,
     PL_MINUTES = 0x28,
     PL_SECONDS = 0x29
 };
 
-/* PCBoxes (include/pc_boxes.h). */
+/* Box names: PC_BOX_NAME_BUFFER_LEN / HG/SS BOX_NAME_LENGTH. */
 enum {
-    BOX_CURRENT = 0x0,
-    BOX_MONS = 0x4,
-    BOX_NAMES = 0x4 + SAVE4_BOX_COUNT * SAVE4_BOX_SLOTS * PKM4_BOX_SIZE, /* 0x11EE4 */
-    BOX_NAME_CODES = 20,  /* PC_BOX_NAME_BUFFER_LEN */
+    BOX_NAME_CODES = 20,
     BOX_NAME_MAX = 8      /* BOX_NAME_LEN, include/constants/string.h */
 };
+
+#define VERSION_HEARTGOLD 7  /* pokeheartgold include/config.h */
+#define VERSION_SOULSILVER 8
+#define ITEM_LOCK_CAPSULE 533 /* pokeheartgold include/constants/items.h */
 
 #define DEX_MAGIC 0xBEEFCAFEu /* MAGIC_NUMBER, include/pokedex.h */
 #define DEX_CAUGHT 0x04
 #define DEX_SEEN 0x44
 
-static const uint8_t kPocketCap[SAVE4_POCKET_COUNT] = {165, 50, 100, 12, 40, 64, 15, 30};
 static const char *const kPocketNames[SAVE4_POCKET_COUNT] = {
     "items", "key_items", "tms_hms", "mail", "medicine", "berries", "balls", "battle_items"};
 
@@ -158,7 +234,7 @@ const char *save4_status_str(save4_status st)
     case SAVE4_ERR_ARG: return "invalid argument";
     case SAVE4_ERR_SIZE: return "save image smaller than 512 KiB";
     case SAVE4_ERR_EMPTY: return "save image is blank (no save data)";
-    case SAVE4_ERR_UNKNOWN_GAME: return "not a Diamond/Pearl/Platinum save";
+    case SAVE4_ERR_UNKNOWN_GAME: return "not a Diamond/Pearl/Platinum/HeartGold/SoulSilver save";
     case SAVE4_ERR_CHECKSUM: return "save checksum failure: no valid copy of a save block";
     case SAVE4_ERR_RANGE: return "value or index out of range";
     case SAVE4_ERR_NOMEM: return "out of memory";
@@ -176,9 +252,13 @@ const char *save4_game_name(save4_game g)
     switch (g) {
     case SAVE4_GAME_DP: return "DP";
     case SAVE4_GAME_PT: return "Pt";
+    case SAVE4_GAME_HG: return "heartgold";
+    case SAVE4_GAME_SS: return "soulsilver";
     default: return "unknown";
     }
 }
+
+bool save4_game_is_hgss(save4_game g) { return g == SAVE4_GAME_HG || g == SAVE4_GAME_SS; }
 
 /* MATH_CalcCRC16CCITT (NitroSDK libraries/math/src/crc.c): table-driven,
  * r = (r << 8) ^ t[((r >> 8) ^ byte) & 0xFF], init 0xFFFF. */
@@ -206,17 +286,21 @@ uint16_t save4_crc16(const void *data, size_t len)
 
 static uint32_t block_offset(const save4_layout *L, int b)
 {
-    return b == SAVE4_BLOCK_GENERAL ? 0 : L->general_size;
+    return b == SAVE4_BLOCK_GENERAL ? 0 : L->storage_offset;
 }
 static uint32_t block_size(const save4_layout *L, int b)
 {
     return b == SAVE4_BLOCK_GENERAL ? L->general_size : L->storage_size;
 }
+static uint32_t footer_size(const save4_layout *L) { return L->hgss ? SAVE4_HGSS_FOOTER_SIZE : SAVE4_FOOTER_SIZE; }
 
-/* SaveBlockFooter_Validate minus the checksum. */
+/* SaveBlockFooter_Validate (HG/SS ValidateSaveSectorFooter) minus the
+ * checksum. Both footers end in the u16 CRC. */
 static bool footer_shape_ok(const uint8_t *img, const save4_layout *L, int copy, int b)
 {
-    const uint8_t *f = img + copy * SAVE4_COPY_SIZE + block_offset(L, b) + block_size(L, b) - SAVE4_FOOTER_SIZE;
+    const uint8_t *f = img + copy * SAVE4_COPY_SIZE + block_offset(L, b) + block_size(L, b) - footer_size(L);
+    if (L->hgss)
+        return g32(f + 4) == block_size(L, b) && g32(f + 8) == SAVE4_SIGNATURE && g16(f + 12) == b;
     return g32(f + 8) == block_size(L, b) && g32(f + 12) == SAVE4_SIGNATURE && f[16] == b;
 }
 
@@ -224,20 +308,20 @@ static void check_block(save4 *s, int b)
 {
     const save4_layout *L = s->layout;
     save4_block_state *st = &s->blocks[b];
+    const uint32_t fs = footer_size(L);
     st->offset = block_offset(L, b);
     st->size = block_size(L, b);
     for (int c = 0; c < 2; c++) {
         const uint8_t *base = s->img + c * SAVE4_COPY_SIZE + st->offset;
-        const uint8_t *f = base + st->size - SAVE4_FOOTER_SIZE;
+        const uint8_t *f = base + st->size - fs;
         st->save_counter[c] = g32(f);
-        st->block_counter[c] = g32(f + 4);
-        st->stored_crc[c] = g16(f + 18);
-        st->valid[c] = footer_shape_ok(s->img, L, c, b) &&
-                       st->stored_crc[c] == save4_crc16(base, st->size - SAVE4_FOOTER_SIZE);
+        st->block_counter[c] = L->hgss ? 0 : g32(f + 4);
+        st->stored_crc[c] = g16(base + st->size - 2);
+        st->valid[c] = footer_shape_ok(s->img, L, c, b) && st->stored_crc[c] == save4_crc16(base, st->size - fs);
     }
 }
 
-/* SaveCheckInfo_CompareCounters */
+/* SaveCheckInfo_CompareCounters (HG/SS SaveCounterCompare: the same) */
 static int cmp_counters(uint32_t a, uint32_t b)
 {
     if (a == 0xFFFFFFFFu && b == 0)
@@ -308,6 +392,82 @@ static save4_status select_copies(save4 *s)
     return SAVE4_OK;
 }
 
+/* HG/SS SaveSlotCheckCompare: 2, 1 or 0 valid copies; *newer / *older the
+ * copy index (2: none). An invalid copy counts as 0
+ * (SaveSlotCheck_InitFromSavedat). */
+static int hgss_compare(const save4_block_state *b, int *newer, int *older)
+{
+    int r = cmp_counters(b->valid[0] ? b->save_counter[0] : 0, b->valid[1] ? b->save_counter[1] : 0);
+    if (b->valid[0] && b->valid[1]) {
+        *newer = r < 0 ? 1 : 0;
+        *older = !*newer;
+        return 2;
+    }
+    *older = 2;
+    if (b->valid[0] || b->valid[1]) {
+        *newer = b->valid[0] ? 0 : 1;
+        return 1;
+    }
+    *newer = 2;
+    return 0;
+}
+
+static uint32_t hgss_count(const save4_block_state *b, int copy) { return b->valid[copy] ? b->save_counter[copy] : 0; }
+
+/* HG/SS Save_GetSaveFilesStatus (pokeheartgold src/save.c): both blocks come
+ * from one copy, the one whose general and storage counts agree.
+ * LOAD_STATUS_IS_GOOD -> OK, LOAD_STATUS_SLOT_FAIL -> RECOVERED,
+ * LOAD_STATUS_TOTAL_FAIL / NOT_EXIST -> checksum failure. */
+static save4_status select_copies_hgss(save4 *s)
+{
+    save4_block_state *n = &s->blocks[SAVE4_BLOCK_GENERAL], *x = &s->blocks[SAVE4_BLOCK_STORAGE];
+    int nn, on, nb, ob;
+    int gn = hgss_compare(n, &nn, &on), gb = hgss_compare(x, &nb, &ob);
+    if (gn == 0 || gb == 0)
+        return SAVE4_ERR_CHECKSUM;
+    int slot = -1;
+    save4_load_result res = SAVE4_LOAD_OK;
+    if (gn == 2 && gb == 2) {
+        if (hgss_count(n, nn) == hgss_count(x, nn)) {
+            slot = nn;
+        } else if (hgss_count(n, on) == hgss_count(x, on)) {
+            slot = on;
+            res = SAVE4_LOAD_RECOVERED;
+        }
+    } else if (gn == 1 && gb == 2) {
+        if (hgss_count(n, nn) == hgss_count(x, nn)) {
+            slot = nn;
+            res = SAVE4_LOAD_RECOVERED;
+        }
+    } else if (gn == 2 && gb == 1) {
+        if (hgss_count(n, nn) == hgss_count(x, nn)) {
+            slot = nn;
+        } else if (hgss_count(n, on) == hgss_count(x, on)) {
+            slot = on;
+            res = SAVE4_LOAD_RECOVERED;
+        }
+    } else if (nn == nb) {
+        slot = nn;
+    }
+    if (slot < 0)
+        return SAVE4_ERR_CHECKSUM;
+    n->active = x->active = slot;
+    s->load_result = res;
+    return SAVE4_OK;
+}
+
+/* HG and SS share the layout; PlayerProfile.version (set by
+ * PlayerProfile_Init to GAME_VERSION, pokeheartgold src/player_data.c) tells
+ * them apart. Read from the active copy, or the primary when none loads. */
+static save4_game hgss_version(const save4 *s, int copy)
+{
+    switch (s->img[copy * SAVE4_COPY_SIZE + s->layout->player + PL_GAMECODE]) {
+    case VERSION_HEARTGOLD: return SAVE4_GAME_HG;
+    case VERSION_SOULSILVER: return SAVE4_GAME_SS;
+    default: return SAVE4_GAME_UNKNOWN;
+    }
+}
+
 static save4_status detect(save4 *s)
 {
     s->layout = NULL;
@@ -330,7 +490,13 @@ static save4_status detect(save4 *s)
     s->game = s->layout->game;
     for (int b = 0; b < SAVE4_BLOCK_COUNT; b++)
         check_block(s, b);
-    return select_copies(s);
+    if (!s->layout->hgss)
+        return select_copies(s);
+    save4_status st = select_copies_hgss(s);
+    s->game = hgss_version(s, st == SAVE4_OK ? s->blocks[SAVE4_BLOCK_GENERAL].active : 0);
+    if (st == SAVE4_OK && s->game == SAVE4_GAME_UNKNOWN)
+        return SAVE4_ERR_UNKNOWN_GAME;
+    return st;
 }
 
 save4_status save4_load(save4 *s, const uint8_t *data, size_t len)
@@ -394,8 +560,8 @@ void save4_commit_block(save4 *s, save4_block_id b)
 {
     save4_block_state *st = &s->blocks[b];
     uint8_t *base = s->img + save4_block_base(s, b);
-    uint16_t crc = save4_crc16(base, st->size - SAVE4_FOOTER_SIZE);
-    s16(base + st->size - SAVE4_FOOTER_SIZE + 18, crc);
+    uint16_t crc = save4_crc16(base, st->size - footer_size(s->layout));
+    s16(base + st->size - 2, crc); /* the footer's last field in every game */
     st->stored_crc[st->active] = crc;
     st->valid[st->active] = true;
 }
@@ -436,6 +602,7 @@ save4_status save4_get_trainer(const save4 *s, save4_trainer *t)
     t->language = p[PL_LANGUAGE];
     t->badges = p[PL_BADGES];
     t->game_code = p[PL_GAMECODE];
+    t->kanto_badges = s->layout->hgss ? p[PL_KANTO_BADGES] : 0;
     t->main_story_cleared = p[PL_STORYFLAGS] & 1;
     t->has_national_dex = (p[PL_STORYFLAGS] >> 1) & 1;
     t->coins = g16(p + PL_COINS);
@@ -519,6 +686,16 @@ save4_status save4_set_badges(save4 *s, uint8_t mask)
     return SAVE4_OK;
 }
 
+save4_status save4_set_kanto_badges(save4 *s, uint8_t mask)
+{
+    REQUIRE_LOADED(s);
+    if (!s->layout->hgss)
+        return SAVE4_ERR_UNSUPPORTED;
+    player_m(s)[PL_KANTO_BADGES] = mask;
+    save4_commit_block(s, SAVE4_BLOCK_GENERAL);
+    return SAVE4_OK;
+}
+
 save4_status save4_set_play_time(save4 *s, uint16_t hours, uint8_t minutes, uint8_t seconds)
 {
     REQUIRE_LOADED(s);
@@ -579,9 +756,9 @@ static save4_status box_slot_ok(int box, int slot)
     return (box < 0 || box >= SAVE4_BOX_COUNT || slot < 0 || slot >= SAVE4_BOX_SLOTS) ? SAVE4_ERR_RANGE : SAVE4_OK;
 }
 
-static uint32_t box_mon_offset(int box, int slot)
+static uint32_t box_mon_offset(const save4_layout *L, int box, int slot)
 {
-    return BOX_MONS + (uint32_t)(box * SAVE4_BOX_SLOTS + slot) * PKM4_BOX_SIZE;
+    return L->box_mons + (uint32_t)box * L->box_stride + (uint32_t)slot * PKM4_BOX_SIZE;
 }
 
 save4_status save4_get_box_mon(const save4 *s, int box, int slot, pkm4 *out)
@@ -589,7 +766,7 @@ save4_status save4_get_box_mon(const save4 *s, int box, int slot, pkm4 *out)
     REQUIRE_LOADED(s);
     if (box_slot_ok(box, slot) != SAVE4_OK)
         return SAVE4_ERR_RANGE;
-    return pkm4_decrypt(sto_c(s) + box_mon_offset(box, slot), PKM4_BOX_SIZE, out);
+    return pkm4_decrypt(sto_c(s) + box_mon_offset(s->layout, box, slot), PKM4_BOX_SIZE, out);
 }
 
 save4_status save4_set_box_mon(save4 *s, int box, int slot, pkm4 *p)
@@ -597,15 +774,25 @@ save4_status save4_set_box_mon(save4 *s, int box, int slot, pkm4 *p)
     REQUIRE_LOADED(s);
     if (box_slot_ok(box, slot) != SAVE4_OK)
         return SAVE4_ERR_RANGE;
-    save4_status st = pkm4_encrypt(p, sto_m(s) + box_mon_offset(box, slot), PKM4_BOX_SIZE);
-    if (st == SAVE4_OK)
-        save4_commit_block(s, SAVE4_BLOCK_STORAGE);
-    return st;
+    const save4_layout *L = s->layout;
+    save4_status st = pkm4_encrypt(p, sto_m(s) + box_mon_offset(L, box, slot), PKM4_BOX_SIZE);
+    if (st != SAVE4_OK)
+        return st;
+    /* HG/SS write only the boxes flagged here (plus last save's) to the other
+     * copy on the next save (src/save.c Save_CalcPCBoxModifiedFlags,
+     * Save_WriteNextPCBox); every box change sets its bit
+     * (PCStorage_SetBoxModified, src/pokemon_storage_system.c). */
+    if (L->box_modified) {
+        uint8_t *f = sto_m(s) + L->box_modified;
+        s32(f, g32(f) | 1u << box);
+    }
+    save4_commit_block(s, SAVE4_BLOCK_STORAGE);
+    return SAVE4_OK;
 }
 
 save4_status save4_clear_box_mon(save4 *s, int box, int slot)
 {
-    /* BoxPokemon_Init: zero, then encrypt with checksum 0. */
+    /* BoxPokemon_Init (HG/SS ZeroBoxMonData): zero, then encrypt with checksum 0. */
     pkm4 empty;
     memset(&empty, 0, sizeof(empty));
     return save4_set_box_mon(s, box, slot, &empty);
@@ -616,7 +803,7 @@ save4_status save4_get_box_name(const save4 *s, int box, char *utf8, size_t cap)
     REQUIRE_LOADED(s);
     if (box < 0 || box >= SAVE4_BOX_COUNT)
         return SAVE4_ERR_RANGE;
-    decode_codes(sto_c(s) + BOX_NAMES + box * BOX_NAME_CODES * 2, BOX_NAME_CODES, utf8, cap);
+    decode_codes(sto_c(s) + s->layout->box_names + box * BOX_NAME_CODES * 2, BOX_NAME_CODES, utf8, cap);
     return SAVE4_OK;
 }
 
@@ -625,7 +812,8 @@ save4_status save4_set_box_name(save4 *s, int box, const char *utf8)
     REQUIRE_LOADED(s);
     if (box < 0 || box >= SAVE4_BOX_COUNT)
         return SAVE4_ERR_RANGE;
-    save4_status st = write_name(sto_m(s) + BOX_NAMES + box * BOX_NAME_CODES * 2, BOX_NAME_CODES, BOX_NAME_MAX, utf8);
+    save4_status st =
+        write_name(sto_m(s) + s->layout->box_names + box * BOX_NAME_CODES * 2, BOX_NAME_CODES, BOX_NAME_MAX, utf8);
     if (st == SAVE4_OK)
         save4_commit_block(s, SAVE4_BLOCK_STORAGE);
     return st;
@@ -635,7 +823,7 @@ uint32_t save4_current_box(const save4 *s)
 {
     if (!s || !s->img)
         return 0;
-    return g32(sto_c(s) + BOX_CURRENT);
+    return g32(sto_c(s) + s->layout->box_current);
 }
 
 /* ---------------------------------------------------------------- bag */
@@ -645,25 +833,25 @@ const char *save4_pocket_name(save4_pocket p)
     return (unsigned)p < SAVE4_POCKET_COUNT ? kPocketNames[p] : NULL;
 }
 
-int save4_pocket_capacity(save4_pocket p)
+int save4_pocket_capacity(const save4 *s, save4_pocket p)
 {
-    return (unsigned)p < SAVE4_POCKET_COUNT ? kPocketCap[p] : 0;
+    return s && s->layout && (unsigned)p < SAVE4_POCKET_COUNT ? s->layout->pocket_cap[p] : 0;
 }
 
-static int pocket_offset(save4_pocket p)
+static int pocket_offset(const save4_layout *L, save4_pocket p)
 {
     int off = 0;
     for (int i = 0; i < (int)p; i++)
-        off += kPocketCap[i] * 4;
+        off += L->pocket_cap[i] * 4;
     return off;
 }
 
 save4_status save4_get_bag_slot(const save4 *s, save4_pocket p, int slot, uint16_t *item, uint16_t *qty)
 {
     REQUIRE_LOADED(s);
-    if ((unsigned)p >= SAVE4_POCKET_COUNT || slot < 0 || slot >= kPocketCap[p])
+    if (slot < 0 || slot >= save4_pocket_capacity(s, p))
         return SAVE4_ERR_RANGE;
-    const uint8_t *e = gen_c(s) + s->layout->bag + pocket_offset(p) + slot * 4;
+    const uint8_t *e = gen_c(s) + s->layout->bag + pocket_offset(s->layout, p) + slot * 4;
     *item = g16(e);
     *qty = g16(e + 2);
     return SAVE4_OK;
@@ -672,11 +860,11 @@ save4_status save4_get_bag_slot(const save4 *s, save4_pocket p, int slot, uint16
 save4_status save4_set_bag_slot(save4 *s, save4_pocket p, int slot, uint16_t item, uint16_t qty)
 {
     REQUIRE_LOADED(s);
-    if ((unsigned)p >= SAVE4_POCKET_COUNT || slot < 0 || slot >= kPocketCap[p])
+    if (slot < 0 || slot >= save4_pocket_capacity(s, p))
         return SAVE4_ERR_RANGE;
     if (qty > 999 || (item == 0) != (qty == 0))
         return SAVE4_ERR_RANGE;
-    uint8_t *e = gen_m(s) + s->layout->bag + pocket_offset(p) + slot * 4;
+    uint8_t *e = gen_m(s) + s->layout->bag + pocket_offset(s->layout, p) + slot * 4;
     s16(e, item);
     s16(e + 2, qty);
     save4_commit_block(s, SAVE4_BLOCK_GENERAL);
@@ -686,7 +874,7 @@ save4_status save4_set_bag_slot(save4 *s, save4_pocket p, int slot, uint16_t ite
 save4_status save4_get_registered_item(const save4 *s, uint16_t *item)
 {
     REQUIRE_LOADED(s);
-    *item = (uint16_t)g32(gen_c(s) + s->layout->bag + pocket_offset(SAVE4_POCKET_COUNT));
+    *item = (uint16_t)g32(gen_c(s) + s->layout->bag + pocket_offset(s->layout, SAVE4_POCKET_COUNT));
     return SAVE4_OK;
 }
 
@@ -726,10 +914,13 @@ save4_status save4_dex_set(save4 *s, uint16_t species, bool seen, bool caught)
 
 /* ------------------------------------------------------- vars & flags */
 
+int save4_num_flags(const save4 *s) { return s && s->layout ? SAVE4_NUM_FLAGS : 0; }
+int save4_num_vars(const save4 *s) { return s && s->layout ? s->layout->num_vars : 0; }
+
 save4_status save4_flag_get(const save4 *s, uint16_t id, bool *value)
 {
     REQUIRE_LOADED(s);
-    if (id == 0 || id >= SAVE4_NUM_FLAGS)
+    if (id == 0 || id >= save4_num_flags(s))
         return SAVE4_ERR_RANGE;
     *value = (gen_c(s)[s->layout->flags + id / 8] >> (id % 8)) & 1;
     return SAVE4_OK;
@@ -738,7 +929,7 @@ save4_status save4_flag_get(const save4 *s, uint16_t id, bool *value)
 save4_status save4_flag_set(save4 *s, uint16_t id, bool value)
 {
     REQUIRE_LOADED(s);
-    if (id == 0 || id >= SAVE4_NUM_FLAGS)
+    if (id == 0 || id >= save4_num_flags(s))
         return SAVE4_ERR_RANGE;
     uint8_t *b = gen_m(s) + s->layout->flags + id / 8;
     uint8_t m = (uint8_t)(1u << (id % 8));
@@ -750,7 +941,7 @@ save4_status save4_flag_set(save4 *s, uint16_t id, bool value)
 save4_status save4_var_get(const save4 *s, uint16_t id, uint16_t *value)
 {
     REQUIRE_LOADED(s);
-    if (id < SAVE4_VARS_START || id >= SAVE4_VARS_START + SAVE4_NUM_VARS)
+    if (id < SAVE4_VARS_START || id >= SAVE4_VARS_START + save4_num_vars(s))
         return SAVE4_ERR_RANGE;
     *value = g16(gen_c(s) + s->layout->vars + (id - SAVE4_VARS_START) * 2);
     return SAVE4_OK;
@@ -759,7 +950,7 @@ save4_status save4_var_get(const save4 *s, uint16_t id, uint16_t *value)
 save4_status save4_var_set(save4 *s, uint16_t id, uint16_t value)
 {
     REQUIRE_LOADED(s);
-    if (id < SAVE4_VARS_START || id >= SAVE4_VARS_START + SAVE4_NUM_VARS)
+    if (id < SAVE4_VARS_START || id >= SAVE4_VARS_START + save4_num_vars(s))
         return SAVE4_ERR_RANGE;
     s16(gen_m(s) + s->layout->vars + (id - SAVE4_VARS_START) * 2, value);
     save4_commit_block(s, SAVE4_BLOCK_GENERAL);
@@ -779,9 +970,10 @@ save4_status save4_get_location(const save4 *s, save4_location *loc)
     return SAVE4_OK;
 }
 
-/* SystemData / SaveSysInfo: rtcOffset 8 + MAC 6 + birth month, day, then
- * GameTime / SysInfo_RTC at 0x10: canary u32, RTCDate {year, month, day,
- * week} u32 each at 0x14, RTCTime {hour, minute, second} u32 each at 0x24. */
+/* SystemData / SaveSysInfo / SysInfo: rtcOffset 8 + MAC 6 + birth month,
+ * day, then GameTime / SysInfo_RTC at 0x10: canary u32, RTCDate {year,
+ * month, day, week} u32 each at 0x14, RTCTime {hour, minute, second} u32
+ * each at 0x24. */
 save4_status save4_get_game_time(const save4 *s, save4_game_time *t)
 {
     REQUIRE_LOADED(s);
@@ -800,6 +992,8 @@ save4_status save4_get_game_time(const save4 *s, save4_game_time *t)
 save4_status save4_get_poketch(const save4 *s, save4_poketch *p)
 {
     REQUIRE_LOADED(s);
+    if (!s->layout->poketch)
+        return SAVE4_ERR_UNSUPPORTED;
     const uint8_t *k = gen_c(s) + s->layout->poketch;
     p->given = (k[0] & 1) != 0;
     for (int i = 0; i < SAVE4_POKETCH_APPS; i++)
@@ -850,6 +1044,11 @@ const char *save4_pt_flag_name(uint16_t id)
  * D/P (pokediamond arm9/asm/unk_0202AC20.s): u32 pgtUsed[8] / cardUsed[3]
  * hold 0xEDB88320 for a used slot (0 = free); PGT.wondercardSlot is card
  * slot + 1, 0 for a gift without card; no entry CRC.
+ *
+ * HG/SS (pokeheartgold include/mystery_gift.h, src/mystery_gift.c): Pt's
+ * shape (MysteryGift.flag = the card link) plus specialWonderCard at
+ * 0x1328; the CRC-16 after the body is asserted on every access
+ * (Save_MysteryGift_Get -> SaveSubstruct_AssertCRC).
  */
 #define MG_RECEIVED 0
 #define MG_SLOT_USED 0xEDB88320u
@@ -871,11 +1070,16 @@ static void mg_commit(save4 *s)
     save4_commit_block(s, SAVE4_BLOCK_GENERAL);
 }
 
-/* Any game's MysteryGiftType (Pt CheckIsValidWcType). */
-static bool mg_type_ok(uint16_t type) { return type > 0 && type < SAVE4_MG_TYPE_MAX; }
+/* Any game's MysteryGiftType (the format check for .pgt/.pcd files). */
+static bool mg_type_any(uint16_t type) { return type > 0 && type < SAVE4_MG_TYPE_MAX; }
+/* A slot of this game holds a gift (Pt CheckIsValidWcType, HG/SS
+ * MysteryGiftTagIsValid). */
+static bool mg_type_ok(const save4_layout *L, uint16_t type) { return type > 0 && type < L->mg_tag_end; }
 
 static const save4_layout *layout_for(save4_game game)
 {
+    if (game == SAVE4_GAME_SS)
+        game = SAVE4_GAME_HG; /* one layout */
     for (size_t i = 0; i < sizeof(kLayouts) / sizeof(kLayouts[0]); i++)
         if (kLayouts[i].game == game)
             return &kLayouts[i];
@@ -885,7 +1089,7 @@ static const save4_layout *layout_for(save4_game game)
 bool save4_mg_type_supported(save4_game game, uint16_t type)
 {
     const save4_layout *L = layout_for(game);
-    return L && type > 0 && type < L->mg_type_end;
+    return L && type < 32 && ((L->mg_types >> type) & 1);
 }
 
 static uint8_t *mg_pgt(uint8_t *mg, const save4_layout *L, int i) { return mg + L->mg_pgts + i * SAVE4_PGT_SIZE; }
@@ -899,7 +1103,7 @@ static bool mg_pgt_used(const save4 *s, int i)
     const save4_layout *L = s->layout;
     const uint8_t *mg = mg_c(s);
     return L->mg_pgt_used ? g32(mg + L->mg_pgt_used + i * 4) != 0
-                          : mg_type_ok(g16(mg + L->mg_pgts + i * SAVE4_PGT_SIZE));
+                          : mg_type_ok(L, g16(mg + L->mg_pgts + i * SAVE4_PGT_SIZE));
 }
 
 static bool mg_card_used(const save4 *s, int i)
@@ -907,7 +1111,7 @@ static bool mg_card_used(const save4 *s, int i)
     const save4_layout *L = s->layout;
     const uint8_t *mg = mg_c(s);
     return L->mg_card_used ? g32(mg + L->mg_card_used + i * 4) != 0
-                           : mg_type_ok(g16(mg + L->mg_cards + i * SAVE4_WONDERCARD_SIZE));
+                           : mg_type_ok(L, g16(mg + L->mg_cards + i * SAVE4_WONDERCARD_SIZE));
 }
 
 /* Stores a PGT in slot i linked to `link` (D/P sub_0202AC98, Pt
@@ -961,7 +1165,7 @@ save4_status save4_mg_validate(const uint8_t *data, size_t len, const char **why
         *why = "not a .pgt (260 bytes) or .pcd (856 bytes) file";
         return SAVE4_ERR_SIZE;
     }
-    if (!mg_type_ok(g16(data))) {
+    if (!mg_type_any(g16(data))) {
         *why = "unknown gift type";
         return SAVE4_ERR_ARG;
     }
@@ -984,7 +1188,8 @@ save4_status save4_mg_validate(const uint8_t *data, size_t len, const char **why
 
 /* The reception bookkeeping of the Mystery Gift app (Pt mystery_gift_app.c
  * + MysteryGift_TrySaveWondercard; D/P overlay 83 ov83_0222FCE4 +
- * sub_0202AD08): received flag, the card, and its PGT linked to it. */
+ * sub_0202AD08; HG/SS overlay 74 ov74_0222A1BC + SaveMysteryGift_TryInsertCard):
+ * received flag, the card, and its PGT linked to it. */
 save4_status save4_mg_add(save4 *s, const uint8_t *data, size_t len)
 {
     REQUIRE_LOADED(s);
@@ -1001,6 +1206,18 @@ save4_status save4_mg_add(save4 *s, const uint8_t *data, size_t len)
         if (p < 0)
             return SAVE4_ERR_NOSPACE;
         mg_put_pgt(s, p, data, L->mg_link_none);
+        mg_commit(s);
+        return SAVE4_OK;
+    }
+    if (L->mg_special && ((data[WC_FLAGS] >> 2) & 1) && g16(data) == SAVE4_MG_ITEM &&
+        g32(data + 4) == ITEM_LOCK_CAPSULE) {
+        /* HG/SS: the Lock Capsule card goes to the special slot
+         * (SaveMysteryGift_TrySetSpecialCard keeps an occupied one). */
+        uint8_t *special = mg + L->mg_special;
+        if (mg_type_ok(L, g16(special)))
+            return SAVE4_ERR_NOSPACE;
+        memcpy(special, data, SAVE4_WONDERCARD_SIZE);
+        mg_set_received(s, g16(data + WC_ID), true);
         mg_commit(s);
         return SAVE4_OK;
     }
@@ -1024,7 +1241,10 @@ save4_status save4_mg_add(save4 *s, const uint8_t *data, size_t len)
 
 /* Pt MysteryGift_FreeWcErasePgt: the card's type, its received flag and its
  * PGT. D/P sub_0202ADC8: cardUsed and the PGT linked to slot + 1
- * (sub_0202AEC4 -> sub_0202AD94); the type and received flag stay. */
+ * (sub_0202AEC4 -> sub_0202AD94); the type and received flag stay. HG/SS
+ * (ov74 card toss): with a linked gift
+ * SaveMysteryGift_ReceiveGiftAndClearCardByIndex (type, received flag and
+ * the gift), else SaveMysteryGift_DeleteWonderCardByIndex (the type only). */
 save4_status save4_mg_remove_card(save4 *s, int slot)
 {
     REQUIRE_LOADED(s);
@@ -1034,23 +1254,27 @@ save4_status save4_mg_remove_card(save4 *s, int slot)
         return SAVE4_OK;
     const save4_layout *L = s->layout;
     uint8_t *mg = mg_m(s), *card = mg_card(mg, L, slot);
+    unsigned link = L->mg_link_card0 + (unsigned)slot;
+    int linked = -1;
+    for (int i = 0; i < SAVE4_PGT_SLOTS && linked < 0; i++) {
+        const uint8_t *p = mg_pgt(mg, L, i);
+        if ((g16(p + 2) & 3u) == link && (L->mg_pgt_used || mg_type_ok(L, g16(p))))
+            linked = i;
+    }
     if (L->mg_card_used) {
         s32(mg + L->mg_card_used + slot * 4, 0);
     } else {
         s16(card, 0);
-        mg_set_received(s, g16(card + WC_ID), false);
+        if (!L->hgss || linked >= 0)
+            mg_set_received(s, g16(card + WC_ID), false);
     }
-    unsigned link = L->mg_link_card0 + (unsigned)slot;
-    for (int i = 0; i < SAVE4_PGT_SLOTS; i++) {
-        uint8_t *p = mg_pgt(mg, L, i);
-        if ((g16(p + 2) & 3u) != link || (!L->mg_pgt_used && !mg_type_ok(g16(p))))
-            continue;
+    if (linked >= 0) {
+        uint8_t *p = mg_pgt(mg, L, linked);
         if (L->mg_pgt_used)
-            s32(mg + L->mg_pgt_used + i * 4, 0);
+            s32(mg + L->mg_pgt_used + linked * 4, 0);
         else
             s16(p, 0);
         s16(p + 2, (uint16_t)(g16(p + 2) & ~3u));
-        break;
     }
     mg_commit(s);
     return SAVE4_OK;
@@ -1065,7 +1289,8 @@ save4_status save4_mg_get_unlocked(const save4 *s, bool *unlocked)
 }
 
 /* Both switches the main menu reads (Pt RenderMysteryGiftOption, D/P
- * ov83_0222DF40: SaveSysInfo.mysteryGiftActive == 1 or received bit 2047). */
+ * ov83_0222DF40, HG/SS MainMenu_PrintMysteryGiftButton:
+ * mysteryGiftActive == 1 or received bit 2047). */
 save4_status save4_mg_set_unlocked(save4 *s, bool unlocked)
 {
     REQUIRE_LOADED(s);
@@ -1143,7 +1368,7 @@ static save4_status put_text(uint8_t *dst, int slots, const char *utf8)
 save4_status save4_mg_build_card(const save4_card_spec *spec, uint8_t card[SAVE4_WONDERCARD_SIZE])
 {
     memset(card, 0, SAVE4_WONDERCARD_SIZE);
-    if (!mg_type_ok(spec->type) || spec->id >= SAVE4_MG_ID_MAX)
+    if (!mg_type_any(spec->type) || spec->id >= SAVE4_MG_ID_MAX)
         return SAVE4_ERR_ARG;
     s16(card, spec->type);
     if (spec->type == SAVE4_MG_ITEM) {

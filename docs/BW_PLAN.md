@@ -387,3 +387,54 @@ independent logs, game-menu saves and fresh-process reloads were.
 The patches and regeneration step are integrated into the active development
 tree. The results above predate integration; no additional test runs were
 performed for publication, at the user's request.
+
+## Save data: `save5` and `np_save5` (2026-10-08)
+
+`features/save5` reads and edits Black/White saves the way `save4` does for
+D/P/Pt, and `features/tools/np_save5` mirrors `np_save4` (`dump [rom]`,
+`gamedata`, `verify`, and the edit verbs except `set-coins`,
+`set-dex-obtained` and `set-mystery-gift`, which have no Black/White
+counterpart). `ndsdata` reads Black/White ROMs for names, zone names and the
+battle tables (Gen 5 text banks, personal/growth/move NARCs, the type chart
+in BLZ-compressed overlay 93).
+
+- Layout: primary copy at 0x00000, backup at 0x24000; 69 data blocks, each
+  followed by {u16 write counter, u16 CRC-16-CCITT}, and a checksum block at
+  0x23F00 mirroring every block CRC, ending in {u32 save counter, u32
+  0x23F9C, u32 magic 0x31053527, u16 0, u16 CRC of the mirror table}.
+  Every check (footer, mirror, table) is verified per copy and mismatches are
+  reported per block. The game writes both copies; the two real saves have
+  identical copies (save counter 2).
+- The runtime saves of both games (pre-starter, X-menu SAVE) validate in
+  both copies and dump as AAAAAAA, Nuvema Town (zone 391), 0 badges,
+  0:03:03, money 3000. Their 1,440 empty box slots per game equal save5's
+  encryption of an empty Pokémon.
+- Edits recompute the block CRC, its mirror entry and the table CRC, and are
+  mirrored to the other copy when that block was identical in both; an
+  unmodified load/store is byte-exact.
+- Tests: `pkm5`, `save5`, `cli5_e2e` (synthetic saves), `gen5_rom` and the
+  ROM half of `cli5_e2e` with `-DNP_BLACK_ROM=<black.nds>`.
+- The shell's save editor, slot summaries, slot import/export and Mystery
+  Gift import read Black/White saves through `shell/src/edsave.c`, one
+  interface over `save4` and `save5`: trainer, money, badges (Unova's),
+  party/boxes with Add Pokemon (needs the imported ROM), bag, Pokédex,
+  event flags/vars, `.pgf` Wonder Cards into the twelve slots, Trainer Card
+  and diploma. Tests: `shell_unit` (the interface on synthetic saves) and
+  `shell_editor_bw` (the app on SDL's dummy driver, stub core: every tab,
+  edits saved and checked with `np_save5`, slot import from the Black card;
+  Add Pokemon with `-DNP_BLACK_ROM=<black.nds>`).
+- `tests/e2e` judges Black/White end saves with `np_save5 dump`; `auto_battle`
+  would still need `np_save5 gamedata`, Gen 5 type ids (17 types) and Gen 5
+  move effect ids in `bots.py`.
+
+## End-to-end probe (2026-10-08)
+
+`games/ndsrec/pc/src/pc_bw_e2e.c` publishes the np_e2e.h block for both
+games from host code that reads the recompiled game's structures at the
+frame boundary and calls the game's own terrain query and object movement
+check; docs/BW_RAM.md lists every address and offset with how it was
+proven. `tests/e2e/run.py --game black|white` runs milestones on it
+(tests/e2e/README.md, "Black and White"): 01 plays a blank chip through
+the intro to the bedroom, walks it with `walk_to`, talks to Cheren and saves
+through the X menu. Not reported yet: the battle (the first battle does not
+run on the core) and warps.

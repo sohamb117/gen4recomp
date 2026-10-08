@@ -1,7 +1,8 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /*
  * Gen 4 Pokémon data (pokeplatinum include/struct_defs/pokemon.h,
- * src/pokemon.c, src/math_util.c).
+ * src/pokemon.c, src/math_util.c; HG/SS: pokeheartgold
+ * include/pokemon_types_def.h, the same 136/236-byte format).
  *
  * BoxPokemon (136 bytes): u32 personality, u16 flags, u16 checksum, then four
  * 32-byte blocks A-D stored in a PID-dependent order
@@ -11,6 +12,10 @@
  * The checksum is the u16 sum of the 64 decrypted block words.
  * Pokemon (236 bytes) appends PartyPokemon (100 bytes) encrypted with
  * seed = personality.
+ *
+ * HG/SS-only bytes that D/P/Pt leave unused (block B 0x19 shiny leaves,
+ * block D 0x1E HGSS_Pokeball, 0x1F mood) are only written by
+ * pkm4_set_ball_hgss; every other setter keeps them.
  */
 #include "save4/save4.h"
 
@@ -55,6 +60,7 @@ enum {
     OFS_POKERUS = 0x82,
     OFS_BALL = 0x83,
     OFS_METLEVEL_OTGENDER = 0x84,
+    OFS_BALL_HGSS = 0x86, /* PokemonDataBlockD.HGSS_Pokeball (block D 0x1E) */
     /* party tail */
     OFS_STATUS = 0x88,
     OFS_LEVEL = 0x8C,
@@ -64,6 +70,16 @@ enum {
 
 #define NICK_CODES 11
 #define OT_CODES 8
+
+/* pokeheartgold include/config.h, constants/items.h, constants/balls.h */
+#define VERSION_HEARTGOLD 7
+#define VERSION_SOULSILVER 8
+#define ITEM_MASTER_BALL 1
+#define ITEM_CHERISH_BALL 16
+#define ITEM_FAST_BALL 492
+#define ITEM_SPORT_BALL 499
+#define BALL_POKE 4
+#define BALL_FAST 17
 
 static uint16_t g16(const uint8_t *p) { return (uint16_t)(p[0] | (p[1] << 8)); }
 static uint32_t g32(const uint8_t *p)
@@ -215,7 +231,11 @@ void pkm4_info_get(const pkm4 *p, pkm4_info *info)
     info->egg_location = egg_pt ? egg_pt : g16(d + OFS_EGG_LOC_DP);
     info->met_location = met_pt ? met_pt : g16(d + OFS_MET_LOC_DP);
     info->pokerus = d[OFS_POKERUS];
+    /* GetBoxMonDataInternal MON_DATA_POKEBALL (pokeheartgold src/pokemon.c):
+     * an HG/SS-origin mon with a nonzero HGSS ball shows that one. */
     info->ball = d[OFS_BALL];
+    if ((info->origin_game == VERSION_HEARTGOLD || info->origin_game == VERSION_SOULSILVER) && d[OFS_BALL_HGSS])
+        info->ball = d[OFS_BALL_HGSS];
     info->met_level = d[OFS_METLEVEL_OTGENDER] & 0x7F;
     info->ot_gender = d[OFS_METLEVEL_OTGENDER] >> 7;
     info->nature = (uint8_t)(info->pid % 25);
@@ -320,6 +340,20 @@ void pkm4_set_met(pkm4 *p, uint16_t location, uint8_t level, uint8_t ball, uint8
     s16(p->data + OFS_MET_LOC_DP, location);
     p->data[OFS_BALL] = ball;
     p->data[OFS_METLEVEL_OTGENDER] = (uint8_t)((level & 0x7F) | ((ot_gender & 1) << 7));
+}
+
+save4_status pkm4_set_ball_hgss(pkm4 *p, uint16_t ball_item)
+{
+    if (ball_item >= ITEM_MASTER_BALL && ball_item <= ITEM_CHERISH_BALL) {
+        p->data[OFS_BALL_HGSS] = (uint8_t)ball_item;
+        p->data[OFS_BALL] = (uint8_t)ball_item;
+    } else if (ball_item >= ITEM_FAST_BALL && ball_item <= ITEM_SPORT_BALL) {
+        p->data[OFS_BALL_HGSS] = (uint8_t)(ball_item - (ITEM_FAST_BALL - BALL_FAST));
+        p->data[OFS_BALL] = BALL_POKE;
+    } else {
+        return SAVE4_ERR_RANGE;
+    }
+    return SAVE4_OK;
 }
 
 void pkm4_set_party_stats(pkm4 *p, uint8_t level, uint16_t hp, const uint16_t stats[6], uint32_t status)

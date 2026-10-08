@@ -52,7 +52,7 @@ typedef enum np_pending_kind {
     NP_PENDING_SAV_IMPORT, /* add a .sav as a slot of pending_game */
     NP_PENDING_SAV_EXPORT, /* write slot pending_slot of pending_game to path */
     NP_PENDING_MESSAGE,    /* a dialog failed; path holds the message */
-    NP_PENDING_GIFT_IMPORT, /* a .pgt/.pcd for the open save editor */
+    NP_PENDING_GIFT_IMPORT, /* a .pgt/.pcd/.pgf for the open save editor */
     NP_PENDING_CARD_EXPORT, /* PNG of the open save; pending_card is the np_card_kind */
     NP_PENDING_SYNC_FOLDER, /* path is the folder picked for sync */
     NP_PENDING_MOD_INSTALL, /* a package .zip for mods.c */
@@ -252,7 +252,8 @@ void np_app_request(np_app *app, np_pending_kind kind, const char *path);
 void np_app_open_rom_dialog(np_app *app);
 void np_app_open_sav_import_dialog(np_app *app, np_game game);
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot);
-void np_app_open_gift_import_dialog(np_app *app);
+/* The gift file kinds `game` takes: .pgt/.pcd (Gen 4) or .pgf (Gen 5). */
+void np_app_open_gift_import_dialog(np_app *app, np_game game);
 void np_app_open_card_export_dialog(np_app *app, int kind);
 void np_app_open_sync_folder_dialog(np_app *app);
 void np_app_open_mod_install_dialog(np_app *app);
@@ -453,7 +454,7 @@ int np_editor_event(np_app *app, const SDL_Event *e);
  * returns NULL on success or an error to show on the text page. */
 const char *np_editor_text_done(np_app *app, const char *text);
 void np_editor_text_cancel(np_app *app);
-/* Adds a .pgt/.pcd file to the open save as a Mystery Gift. */
+/* Adds a gift file (.pgt/.pcd, or .pgf for Black/White) to the open save. */
 void np_editor_import_gift(np_app *app, const char *path);
 /* Writes a Trainer Card or Pokedex diploma PNG (np_card_kind) of the open save. */
 void np_editor_export_card(np_app *app, int kind, const char *path);

@@ -19,8 +19,8 @@
  *    src/battle/battle_lib.c sTypeMatchupMultipliers; D/P's overlay 11 has
  *    the same 111 rows), ended by {0xFF, 0xFF}. A {0xFE, 0xFE} row separates
  *    the two ghost immunities Foresight lifts; they count here. Found by its
- *    first five rows in the ARM9 overlays (stored uncompressed in the US
- *    ROMs; a BLZ-compressed overlay is not searched).
+ *    first five rows in the ARM9 overlays (D/P/Pt store them uncompressed;
+ *    HG/SS's are BLZ-compressed and are decompressed for the search).
  *
  * Archive paths (checked against the US ROMs):
  *   Platinum poketool/personal/pl_personal.narc, pl_growtbl.narc,
@@ -28,11 +28,18 @@
  *   Diamond  poketool/personal/personal.narc, growtbl.narc,
  *            poketool/waza/waza_tbl.narc
  *   Pearl    poketool/personal_pearl/personal.narc, otherwise as Diamond
+ *   HeartGold / SoulSilver (pokeheartgold filesystem.mk arc_strip_name;
+ *            BaseStats in include/pokemon_types_def.h has the same 44-byte
+ *            layout): personal a/0/0/2, growtbl a/0/0/3, waza_tbl a/0/1/1.
+ *            Checked against the retail HG/SS ROMs (names, tables, type
+ *            chart in a BLZ-compressed overlay).
+ *
+ * Black / White read their own layouts (gen5_data.c).
  */
-#include "ndsdata/ndsdata.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "gen5.h"
 
 #define SPECIES_RECORD 44
 #define MOVE_RECORD_MIN 11
@@ -78,14 +85,21 @@ static void load_type_chart(nd_gamedata *gd, const nd_rom *rom)
         if (nd_rom_read(rom, (uint64_t)ovt + off, e, sizeof e))
             return;
         const uint32_t file_id = (uint32_t)e[24] | (uint32_t)e[25] << 8 | (uint32_t)e[26] << 16 | (uint32_t)e[27] << 24;
-        if (e[31] & 1)
-            continue; /* compressed */
-        uint8_t *data;
-        size_t len;
+        uint8_t *data, *image;
+        size_t len, image_len;
         if (nd_rom_load_file(rom, file_id, &data, &len))
             continue;
-        const int found = parse_type_chart(gd, data, len);
-        free(data);
+        if (e[31] & 1) { /* BLZ-compressed (HG/SS) */
+            const nd_status st = nd_blz_decompress(data, len, &image, &image_len);
+            free(data);
+            if (st)
+                continue;
+        } else {
+            image = data;
+            image_len = len;
+        }
+        const int found = parse_type_chart(gd, image, image_len);
+        free(image);
         if (found) {
             gd->type_chart_ok = 1;
             return;
@@ -93,7 +107,7 @@ static void load_type_chart(nd_gamedata *gd, const nd_rom *rom)
     }
 }
 
-static nd_status load_narc(const nd_rom *rom, const char *path, uint8_t **data, size_t *len, nd_narc *narc)
+nd_status nd_load_narc(const nd_rom *rom, const char *path, uint8_t **data, size_t *len, nd_narc *narc)
 {
     nd_status st = nd_rom_load_path(rom, path, data, len);
     if (st)
@@ -123,15 +137,25 @@ nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom)
         growth = "poketool/personal/growtbl.narc";
         moves = "poketool/waza/waza_tbl.narc";
         break;
+    case ND_GAME_HEARTGOLD:
+    case ND_GAME_SOULSILVER:
+        personal = "a/0/0/2";
+        growth = "a/0/0/3";
+        moves = "a/0/1/1";
+        break;
+    case ND_GAME_BLACK:
+    case ND_GAME_WHITE:
+        return g5_gamedata_load(gd, rom);
     default:
         return ND_ERR_UNSUPPORTED;
     }
     gd->game = rom->game;
+    gd->type_count = ND_TYPES;
 
     uint8_t *data;
     size_t len;
     nd_narc narc;
-    nd_status st = load_narc(rom, personal, &data, &len, &narc);
+    nd_status st = nd_load_narc(rom, personal, &data, &len, &narc);
     if (st)
         return st;
     gd->species = calloc(narc.count ? narc.count : 1, sizeof *gd->species);
@@ -158,7 +182,7 @@ nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom)
     gd->species_count = narc.count;
     free(data);
 
-    st = load_narc(rom, growth, &data, &len, &narc);
+    st = nd_load_narc(rom, growth, &data, &len, &narc);
     if (st)
         goto fail;
     for (uint32_t r = 0; r < ND_EXP_RATES && r < narc.count; r++) {
@@ -175,7 +199,7 @@ nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom)
     }
     free(data);
 
-    st = load_narc(rom, moves, &data, &len, &narc);
+    st = nd_load_narc(rom, moves, &data, &len, &narc);
     if (st)
         goto fail;
     gd->moves = calloc(narc.count ? narc.count : 1, sizeof *gd->moves);

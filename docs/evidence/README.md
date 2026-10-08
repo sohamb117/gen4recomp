@@ -1,7 +1,7 @@
 # macOS app evidence
 
 Every row was run on the packaged app (`tools/package_macos.sh --test` →
-`build/dist/nativeplat-macos-arm64.zip`, all three cores, main 904498583),
+`build/dist/nativeplat-macos-arm64.zip`, all three cores, main 80dc9d8c7),
 unzipped into a temporary folder with `portable.txt` beside the bundle, by
 `tests/mac/feature_matrix.py`: one `NP_AUTOTEST` run per step in a real window
 (Metal renderer), each on its own portable user data. The screenshots were
@@ -54,7 +54,7 @@ and in-game runs start as `nativeplat --game platinum --slot Sandgem`.
 | Updater | `[updates] api =` local release server (fixtures.ReleaseServer); Check, Download and verify; bad digest | updater-* | "v9.9.9 is available", "Verified (SHA-256 …)", wrong digest refused and deleted |
 | Launch flags | `--game platinum --slot Sandgem`, `--launcher`, unknown slot | launch-* | Game starts; launcher; "Platinum has no save slot Nope" |
 | URL | `open -n -a nativeplat.app 'nativeplat://launch?game=platinum&slot=Sandgem'` (LaunchServices) | url_open | Log "link: nativeplat://…", Platinum running in slot Sandgem |
-| Windows package | `tools/package_windows.sh --test`: zig cross-build with all six cores, the exe run under wine (OrbStack amd64, image `nativeplat-wine`), DS `frames=1500,press=1200:start:10`, GBA `frames=900,press=400:start:10`; `NP_WIN_SHOTS=build/evidence/pkg-win` | pkg-win/shot-diamond/pearl/platinum/ruby/sapphire/emerald.png | The six title screens from nativeplat.exe (wine, dummy video: no real window; main e63e18331) |
+| Windows package | `tools/package_windows.sh --test`: zig cross-build with all six cores, the exe run under wine (OrbStack amd64, image `nativeplat-wine`), DS `frames=1500,press=1200:start:10`, GBA `frames=900,press=400:start:10`; `NP_WIN_SHOTS=build/evidence/pkg-win` | pkg-win/shot-diamond/pearl/platinum/ruby/sapphire/emerald.png | The six title screens from nativeplat.exe (wine, dummy video; main 80dc9d8c7) |
 | Portable mode | `portable.txt` beside the bundle (every case) | portable | Launcher footer "Portable data: …/userdata/" |
 | UI scale, reduced motion | `ui_scale = 2/6`; `reduce_motion = 1` on the name page | ui_scale-* | 2x small text; "6x (5x fits)"; steady caret |
 | About | About button | about | License and credits |
@@ -62,7 +62,7 @@ and in-game runs start as `nativeplat --game platinum --slot Sandgem`.
 ## Diamond and Pearl
 
 The same in-game cases, run as `tests/mac/feature_matrix.py --game diamond`
-and `--game pearl` on the package built from main 33e316444 (evidence names
+and `--game pearl` on the package built from main 80dc9d8c7 (evidence names
 `diamond-<case>` / `pearl-<case>`). Saves: `tests/gameplay/dp/recipes/sandgem.recipe`
 and `tests/link/recipes/dp-union-a.recipe` minted with `tests/gameplay/mint.sh`
 (`NP_GAME=diamond|pearl`, base = the new-game save from
@@ -94,7 +94,7 @@ and `tests/link/recipes/dp-union-a.recipe` minted with `tests/gameplay/mint.sh`
 
 The 12 GBA cases, run as `tests/mac/feature_matrix.py --game ruby`,
 `--game sapphire` and `--game emerald` on the package built from main
-e63e18331 (evidence names `<game>-gba_<case>`; 12/12 ok on each game).
+80dc9d8c7 (evidence names `<game>-gba_<case>`; 12/12 ok on each game).
 Saves are the games' own: the house save `tests/rse/first_battle.sh` writes
 (`build/rse/first_battle/<game>/house.sav`, littleroot.sched and a quick
 save). `tools/package_macos.sh --test` also boots each

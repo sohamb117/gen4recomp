@@ -1,17 +1,24 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /*
- * save4: Diamond / Pearl / Platinum save data (512 KiB DS flash image).
+ * save4: Diamond / Pearl / Platinum / HeartGold / SoulSilver save data
+ * (512 KiB DS flash image).
  *
  * The image holds two copies (primary at 0x00000, backup at 0x40000), each
  * with a "general" block and a "storage" (PC boxes) block, each ending in a
- * 0x14-byte footer {u32 saveCounter, u32 blockCounter, u32 size,
- * u32 signature 0x20060623, u8 blockID, u16 CRC-16-CCITT}
- * (pokeplatinum include/savedata.h, src/savedata.c; pokediamond
- * arm9/src/save.c). The newest valid copy of each block is selected with the
- * game's own rules (SaveData_LoadCheck). Edits are applied to that active
- * copy and its footer checksum is recomputed; every other byte of the image
- * (including the stale copy and anything after 512 KiB, e.g. emulator
- * trailers) is preserved.
+ * footer:
+ *   D/P/Pt: 0x14 bytes {u32 saveCounter, u32 blockCounter, u32 size,
+ *     u32 signature 0x20060623, u8 blockID, u16 CRC-16-CCITT}
+ *     (pokeplatinum include/savedata.h, src/savedata.c; pokediamond
+ *     arm9/src/save.c). The newest valid copy of each block is selected
+ *     with the game's own rules (SaveData_LoadCheck).
+ *   HG/SS: 0x10 bytes {u32 count, u32 size, u32 magic 0x20060623,
+ *     u16 slot, u16 CRC-16-CCITT} (pokeheartgold include/save.h
+ *     SaveChunkFooter). Both blocks are always read from the same copy,
+ *     chosen by Save_GetSaveFilesStatus (src/save.c); HG/SS footers have no
+ *     block counter (save4_block_state.block_counter is 0).
+ * Edits are applied to the active copy and its footer checksum is
+ * recomputed; every other byte of the image (including the stale copy and
+ * anything after 512 KiB, e.g. emulator trailers) is preserved.
  *
  * Undo: a save4 owns a private copy of the image. Snapshot with
  * save4_clone() (or keep the bytes from save4_image()) before editing and
@@ -30,17 +37,19 @@ extern "C" {
 
 #define SAVE4_IMAGE_SIZE 0x80000u
 #define SAVE4_COPY_SIZE 0x40000u
-#define SAVE4_FOOTER_SIZE 0x14u
+#define SAVE4_FOOTER_SIZE 0x14u      /* D/P/Pt */
+#define SAVE4_HGSS_FOOTER_SIZE 0x10u /* sizeof(struct SaveChunkFooter), pokeheartgold include/save.h */
 #define SAVE4_SIGNATURE 0x20060623u
 
 #define SAVE4_PARTY_MAX 6
-#define SAVE4_BOX_COUNT 18
+#define SAVE4_BOX_COUNT 18 /* every Gen 4 game (HG/SS NUM_BOXES, include/constants/pokemon.h) */
 #define SAVE4_BOX_SLOTS 30
-#define SAVE4_NUM_FLAGS 2912   /* NUM_FLAGS, pokeplatinum include/vars_flags.h */
-#define SAVE4_NUM_VARS 288     /* VARS_END - VARS_START, generated/vars_flags.txt */
-#define SAVE4_VARS_START 0x4000 /* generated/vars_flags.txt VARS_START */
-#define SAVE4_MONEY_MAX 999999u /* MONEY_MAX, src/trainer_info.c */
-#define SAVE4_COINS_MAX 50000u  /* MAX_COINS, include/coins.h */
+#define SAVE4_NUM_FLAGS 2912   /* NUM_FLAGS, pokeplatinum include/vars_flags.h (HG/SS: the same) */
+#define SAVE4_NUM_VARS 288     /* D/P/Pt: VARS_END - VARS_START, generated/vars_flags.txt */
+#define SAVE4_HGSS_NUM_VARS 368 /* NUM_VARS 0x170, pokeheartgold include/constants/vars.h */
+#define SAVE4_VARS_START 0x4000 /* generated/vars_flags.txt VARS_START (HG/SS VAR_BASE) */
+#define SAVE4_MONEY_MAX 999999u /* MONEY_MAX, src/trainer_info.c (HG/SS MAX_MONEY) */
+#define SAVE4_COINS_MAX 50000u  /* MAX_COINS, include/coins.h (both decomps) */
 #define SAVE4_DEX_MAX 493
 
 #define PKM4_BOX_SIZE 136   /* sizeof(BoxPokemon) */
@@ -51,7 +60,7 @@ typedef enum save4_status {
     SAVE4_ERR_ARG,
     SAVE4_ERR_SIZE,         /* image shorter than 512 KiB */
     SAVE4_ERR_EMPTY,        /* no save footers at all (blank/erased image) */
-    SAVE4_ERR_UNKNOWN_GAME, /* footers present but not D/P/Pt sized */
+    SAVE4_ERR_UNKNOWN_GAME, /* footers present but not D/P/Pt/HG/SS sized, or an HG/SS version byte other than 7/8 */
     SAVE4_ERR_CHECKSUM,     /* no copy of a block passes its checksum */
     SAVE4_ERR_RANGE,
     SAVE4_ERR_NOMEM,
@@ -67,10 +76,15 @@ const char *save4_status_str(save4_status st);
 typedef enum save4_game {
     SAVE4_GAME_UNKNOWN = 0,
     SAVE4_GAME_DP,
-    SAVE4_GAME_PT
+    SAVE4_GAME_PT,
+    SAVE4_GAME_HG, /* HG/SS share one layout; PlayerProfile.version 7 (VERSION_HEARTGOLD) */
+    SAVE4_GAME_SS  /* PlayerProfile.version 8 (VERSION_SOULSILVER), pokeheartgold include/config.h */
 } save4_game;
 
+/* "DP", "Pt", "heartgold", "soulsilver", "unknown". */
 const char *save4_game_name(save4_game g);
+/* HeartGold or SoulSilver. */
+bool save4_game_is_hgss(save4_game g);
 
 typedef enum save4_block_id {
     SAVE4_BLOCK_GENERAL = 0,
@@ -83,9 +97,9 @@ typedef struct save4_block_state {
     uint32_t size;              /* including footer */
     bool valid[2];              /* footer + checksum OK in primary/backup */
     uint32_t save_counter[2];
-    uint32_t block_counter[2];
+    uint32_t block_counter[2];  /* 0 for HG/SS (no block counter in its footer) */
     uint16_t stored_crc[2];
-    int active;                 /* 0 = primary, 1 = backup */
+    int active;                 /* 0 = primary, 1 = backup (HG/SS: the same for both blocks) */
 } save4_block_state;
 
 typedef enum save4_load_result {
@@ -128,8 +142,9 @@ typedef struct save4_trainer {
     uint32_t money;
     uint8_t gender;      /* 0 male, 1 female */
     uint8_t language;
-    uint8_t badges;      /* bitmask, 8 Sinnoh badges */
-    uint8_t game_code;
+    uint8_t badges;      /* bitmask, the region's 8 badges (Sinnoh; Johto for HG/SS) */
+    uint8_t kanto_badges; /* bitmask, HG/SS PlayerProfile.kantoBadges; 0 for D/P/Pt */
+    uint8_t game_code;   /* PlayerProfile.version (HG 7, SS 8) */
     bool main_story_cleared;
     bool has_national_dex;
     uint16_t coins;
@@ -144,6 +159,8 @@ save4_status save4_set_trainer_name(save4 *s, const char *utf8);
 save4_status save4_set_trainer_ids(save4 *s, uint16_t tid, uint16_t sid);
 save4_status save4_set_gender(save4 *s, uint8_t gender);
 save4_status save4_set_badges(save4 *s, uint8_t mask);
+/* HG/SS only (SAVE4_ERR_UNSUPPORTED for D/P/Pt). */
+save4_status save4_set_kanto_badges(save4 *s, uint8_t mask);
 save4_status save4_set_play_time(save4 *s, uint16_t hours, uint8_t minutes, uint8_t seconds);
 
 /* ----------------------------------------------------------- Pokémon */
@@ -185,7 +202,8 @@ typedef struct pkm4_info {
     uint16_t met_location;
     uint8_t met_level;
     uint8_t ot_gender;
-    uint8_t ball;
+    uint8_t ball;        /* MON_DATA_POKEBALL: HG/SS-origin mons with a nonzero HGSS ball read that (ball ids,
+                          * BALL_FAST 17..BALL_SPORT 24 for the Apricorn balls), else the D/P/Pt field */
     uint8_t pokerus;
     uint8_t nature;      /* pid % 25 */
     bool shiny;
@@ -227,8 +245,15 @@ void pkm4_set_gender_form(pkm4 *p, uint8_t gender, uint8_t form);
 save4_status pkm4_set_nickname(pkm4 *p, const char *utf8, bool is_nickname);
 save4_status pkm4_set_ot_name(pkm4 *p, const char *utf8);
 void pkm4_set_origin_game(pkm4 *p, uint8_t game);
-/* Writes both the Pt/HGSS (block B) and D/P (block D) location fields. */
+/* Writes both the Pt/HGSS (block B) and D/P (block D) location fields and
+ * the D/P/Pt ball (block D 0x1B); the HGSS ball byte (block D 0x1E) and
+ * HG/SS mood (0x1F) stay as they are. */
 void pkm4_set_met(pkm4 *p, uint16_t location, uint8_t level, uint8_t ball, uint8_t ot_gender);
+/* HG/SS's SetMonData(MON_DATA_POKEBALL) (pokeheartgold src/pokemon.c) for a
+ * ball item id: Master..Cherish Ball (1..16) go to both ball bytes, the
+ * Apricorn balls (items 492..499) to the HGSS byte as BALL_FAST..BALL_SPORT
+ * with a Poke Ball in the D/P/Pt byte. Other ids: SAVE4_ERR_RANGE. */
+save4_status pkm4_set_ball_hgss(pkm4 *p, uint16_t ball_item);
 /* Party tail. */
 void pkm4_set_party_stats(pkm4 *p, uint8_t level, uint16_t hp, const uint16_t stats[6], uint32_t status);
 /* Party stats (MaxHP Atk Def Spe SpA SpD) from species base stats (same
@@ -243,6 +268,8 @@ save4_status save4_set_party(save4 *s, int slot, pkm4 *p);
 save4_status save4_set_party_count(save4 *s, uint8_t count);
 
 save4_status save4_get_box_mon(const save4 *s, int box, int slot, pkm4 *out);
+/* HG/SS: also marks the box modified (PCStorage_SetBoxModified), so the
+ * game's next save writes it to the other copy too. */
 save4_status save4_set_box_mon(save4 *s, int box, int slot, pkm4 *p);
 save4_status save4_clear_box_mon(save4 *s, int box, int slot);
 save4_status save4_get_box_name(const save4 *s, int box, char *utf8, size_t cap);
@@ -264,10 +291,13 @@ typedef enum save4_pocket {
 } save4_pocket;
 
 const char *save4_pocket_name(save4_pocket p);
-int save4_pocket_capacity(save4_pocket p);
+/* Slots in pocket `p` of this save's game (D/P/Pt and HG/SS differ:
+ * TMs/HMs 100 vs 101, balls 15 vs 24); 0 for an unloaded save. */
+int save4_pocket_capacity(const save4 *s, save4_pocket p);
 save4_status save4_get_bag_slot(const save4 *s, save4_pocket p, int slot, uint16_t *item, uint16_t *qty);
 save4_status save4_set_bag_slot(save4 *s, save4_pocket p, int slot, uint16_t item, uint16_t qty);
-/* Bag.registeredItem (the Y button), after the eight pockets in both games. */
+/* Bag.registeredItem (the Y button), after the eight pockets in every game
+ * (HG/SS: registeredItems[0]). */
 save4_status save4_get_registered_item(const save4 *s, uint16_t *item);
 
 /* ----------------------------------------------------------- Pokédex */
@@ -278,12 +308,16 @@ save4_status save4_dex_set(save4 *s, uint16_t species, bool seen, bool caught);
 
 /* ------------------------------------------------------ event data */
 
-/* Flag ids 1..SAVE4_NUM_FLAGS-1 (VarsFlags.flags, bit id%8 of byte id/8). */
+/* Flag ids 1..save4_num_flags()-1 (VarsFlags.flags, bit id%8 of byte id/8). */
 save4_status save4_flag_get(const save4 *s, uint16_t id, bool *value);
 save4_status save4_flag_set(save4 *s, uint16_t id, bool value);
-/* Saved var ids SAVE4_VARS_START .. +SAVE4_NUM_VARS-1. */
+/* Saved var ids SAVE4_VARS_START .. +save4_num_vars()-1. */
 save4_status save4_var_get(const save4 *s, uint16_t id, uint16_t *value);
 save4_status save4_var_set(save4 *s, uint16_t id, uint16_t value);
+/* SAVE4_NUM_FLAGS (every game); SAVE4_NUM_VARS (D/P/Pt) or
+ * SAVE4_HGSS_NUM_VARS. 0 for an unloaded save. */
+int save4_num_flags(const save4 *s);
+int save4_num_vars(const save4 *s);
 
 /* ---------------------------------------------------------- location */
 
@@ -300,8 +334,9 @@ typedef struct save4_location {
 save4_status save4_get_location(const save4 *s, save4_location *loc);
 
 /* The game clock as the save last recorded it: SystemData.gameTime (Pt
- * GameTime) / SaveSysInfo.rtcInfo (D/P SysInfo_RTC), both at 0x10 in the
- * first entry. The field copies the RTC's date and time into it whenever
+ * GameTime) / SaveSysInfo.rtcInfo (D/P SysInfo_RTC) / SysInfo.rtc_info
+ * (HG/SS SysInfo_RTC), all at 0x10 in the first entry. The field copies the
+ * RTC's date and time into it whenever
  * at least a minute has passed or the clock went backwards (Pt
  * sub_020559DC), so it is the RTC as of shortly before the save. */
 typedef struct save4_game_time {
@@ -312,7 +347,8 @@ save4_status save4_get_game_time(const save4 *s, save4_game_time *t);
 
 /* The Poketch (Pt Poketch / D/P Poketch, the save entry after VarsFlags):
  * given = poketchEnabled / isGiven, apps[i] = appRegistry[i] /
- * unlockedApps[i] for the 25 app ids. */
+ * unlockedApps[i] for the 25 app ids. HG/SS have none
+ * (SAVE4_ERR_UNSUPPORTED). */
 #define SAVE4_POKETCH_APPS 25
 typedef struct save4_poketch {
     bool given;
@@ -321,7 +357,8 @@ typedef struct save4_poketch {
 save4_status save4_get_poketch(const save4 *s, save4_poketch *p);
 
 /* Platinum flag/var names from pokeplatinum generated/vars_flags.txt
- * (generated at build time). */
+ * (generated at build time). Platinum ids only: HG/SS number theirs
+ * differently. */
 struct save4_named_id {
     uint16_t id;
     const char *name;
@@ -335,8 +372,8 @@ int save4_pt_lookup_name(const char *name, uint16_t *id);
 const char *save4_pt_flag_name(uint16_t id);
 
 /* ------------------------------------------------------ Mystery Gift */
-/* Diamond/Pearl and Platinum (the MysteryGift entry's layout differs per game;
- * save4 handles both). */
+/* Diamond/Pearl, Platinum and HeartGold/SoulSilver (the MysteryGift entry's
+ * layout differs per game; save4 handles each). */
 
 #define SAVE4_PGT_SIZE 0x104        /* sizeof(PGT): a .pgt file */
 #define SAVE4_WONDERCARD_SIZE 0x358 /* sizeof(WonderCard): a .pcd file */
@@ -346,9 +383,12 @@ const char *save4_pt_flag_name(uint16_t id);
 #define SAVE4_WC_TITLE_LEN 36
 #define SAVE4_WC_DESC_LEN 250
 
-/* enum MysteryGiftType, pokeplatinum include/mystery_gift.h. D/P deliver
- * types 1-11 (pokediamond arm9/asm/scrcmd_12.s UNK_020F43E4 has 11 handler
- * rows), Platinum 1-13. */
+/* enum MysteryGiftType, pokeplatinum include/mystery_gift.h, extended with
+ * HG/SS's MG_TAG_* (pokeheartgold include/mystery_gift.h; the same values).
+ * D/P deliver types 1-11 (pokediamond arm9/asm/scrcmd_12.s UNK_020F43E4 has
+ * 11 handler rows), Platinum 1-13, HG/SS 1-4, 6, 7 and 13-15 (pokeheartgold
+ * src/scrcmd_mystery_gift.c sScriptMysteryGiftActionTable: the
+ * MGCheck_* of 5 and 8-12 return FALSE). */
 enum {
     SAVE4_MG_POKEMON = 1,
     SAVE4_MG_EGG,
@@ -362,7 +402,9 @@ enum {
     SAVE4_MG_AZURE_FLUTE, /* Arceus event */
     SAVE4_MG_POKETCH_APP,
     SAVE4_MG_SECRET_KEY,  /* Rotom event: Platinum only */
-    SAVE4_MG_UNKNOWN,     /* Platinum only (handled like SAVE4_MG_POKEMON) */
+    SAVE4_MG_UNKNOWN,     /* Pt and HG/SS (MG_TAG_POKEMON_MOVIE): handled like SAVE4_MG_POKEMON */
+    SAVE4_MG_POKEWALKER_COURSE, /* HG/SS only */
+    SAVE4_MG_MEMORIAL_PHOTO,    /* HG/SS only */
     SAVE4_MG_TYPE_MAX
 };
 
@@ -388,21 +430,31 @@ save4_status save4_mg_build_card(const save4_card_spec *spec, uint8_t card[SAVE4
 save4_status save4_mg_validate(const uint8_t *data, size_t len, const char **why);
 /* Stores a .pcd (card + gift) or .pgt (gift only) as the game does on
  * reception. SAVE4_ERR_UNSUPPORTED for a type the save's game cannot
- * deliver, SAVE4_ERR_NOSPACE when the slots are full. */
+ * deliver, SAVE4_ERR_NOSPACE when the slots are full. HG/SS put a Lock
+ * Capsule item card in the special Wonder Card slot instead (overlay 74
+ * ov74_0222A1BC: SaveMysteryGift_TrySetSpecialCard). */
 save4_status save4_mg_add(save4 *s, const uint8_t *data, size_t len);
 save4_status save4_mg_get_card(const save4 *s, int slot, uint8_t card[SAVE4_WONDERCARD_SIZE], bool *used);
+/* Tosses card `slot` as the game's card menu does (Pt
+ * MysteryGift_FreeWcErasePgt, D/P sub_0202ADC8, HG/SS ov74 card toss:
+ * SaveMysteryGift_ReceiveGiftAndClearCardByIndex when a gift is linked,
+ * else SaveMysteryGift_DeleteWonderCardByIndex). */
 save4_status save4_mg_remove_card(save4 *s, int slot);
 save4_status save4_mg_pgt_count(const save4 *s, int *count);
-/* The MYSTERY GIFT main menu option: SystemData/SaveSysInfo flag or received
- * bit 2047, either one shows it (both games). */
+/* The MYSTERY GIFT main menu option: SystemData/SaveSysInfo/SysInfo flag or
+ * received bit 2047, either one shows it (every game; HG/SS also need the
+ * Pokédex, pokeheartgold main_menu.c MainMenu_PrintMysteryGiftButton). */
 save4_status save4_mg_get_unlocked(const save4 *s, bool *unlocked);
 save4_status save4_mg_set_unlocked(save4 *s, bool unlocked);
-/* Pt Pokedex.pokedexObtained / D/P Pokedex.unlockedSinnohDex. */
+/* Pt Pokedex.pokedexObtained / D/P Pokedex.unlockedSinnohDex / HG/SS
+ * Pokedex.dexEnabled. */
 save4_status save4_dex_get_obtained(const save4 *s, bool *obtained);
 save4_status save4_dex_set_obtained(save4 *s, bool obtained);
-/* The National Pokédex (Pokedex.nationalDexObtained / unlockedNationalDex;
- * the setter also sets TrainerInfo.hasNationalDex / PlayerProfile.nationalDex
- * as the game's award does). The main menu offers Pal Park migration from a
+/* The National Pokédex (Pokedex.nationalDexObtained / unlockedNationalDex /
+ * HG/SS nationalDex; the setter also sets TrainerInfo.hasNationalDex /
+ * PlayerProfile.nationalDex as the game's award does: HG/SS
+ * src/scrcmd_c.c Pokedex_SetNatDexFlag + PlayerProfile_SetNatDexFlag). The
+ * main menu offers Pal Park migration from a
  * GBA cartridge only once the Pokédex flag is set (D/P ov83_0222D67C: a GBA
  * Pokemon cartridge whose language matches the game's, and
  * Pokedex_GetNatDexFlag != 0). */

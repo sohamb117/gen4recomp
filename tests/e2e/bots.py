@@ -13,8 +13,8 @@ import struct
 import subprocess
 import sys
 
-from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, GBA_GAMES, ROOT, TILE_BEHAVIOR, TILE_COLLISION, TILE_CONNECTED,
-                    TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, UI_FIELD_MENU, HarnessError, behaviors)
+from np_e2e import (BW_GAMES, DIR_DELTA, DIR_KEYS, FACINGS, GBA_GAMES, ROOT, TILE_BEHAVIOR, TILE_COLLISION,
+                    TILE_CONNECTED, TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, UI_FIELD_MENU, HarnessError, behaviors)
 
 # ---- the battle's touch screen (Platinum src/battle/battle_subscreen.c touch rects; D/P's overlay 11
 # tables are byte-identical), as tap points: the centre of each button.
@@ -195,9 +195,32 @@ def bot_schedule(s, step, ctx):
     s.run(_int(step, "frames", schedule_length(path) + 1))
 
 
+# Black/White's in-game save through their own menu (they have no host quick save): X opens the start menu on the
+# touch screen, SAVE is its left button of the second row, A answers YES and closes the messages. The tap point and
+# the timings are the proven proposal run's (docs/BW_PLAN.md: X, then SAVE at (64,94), then A every 40 frames).
+BW_TAP_SAVE = (64, 94)
+
+
+def _bw_menu_save(s):
+    s.run(4, "x")
+    if s.run(40, until="field_ready=1") or s.field_ready:
+        raise HarnessError("save: X did not open the menu")
+    _tap(s, BW_TAP_SAVE, 4, 60)
+    for _ in range(30):
+        s.run(4, "a")
+        if s.run(36, until="field_ready=1"):
+            s.run(4)
+            return
+    raise HarnessError("save: the save menu did not close in 1200 frames")
+
+
 def bot_save(s, step, ctx):
-    """The in-game save, through the host's quick-save request (np_core's quicksave_seq)."""
+    """The in-game save, through the host's quick-save request (np_core's quicksave_seq); Black/White through the
+    game's menu."""
     bot_wait_field(s, {"max": step.get("max", 3000)}, ctx)
+    if s.game in BW_GAMES:
+        _bw_menu_save(s)
+        return
     seq = s.stat("quicksave_seq") + 1
     s.opt("quicksave_seq", seq)
     if not s.run(240, until="quicksave_seq=%d" % seq):
@@ -785,10 +808,13 @@ class Terrain:
         if self.gba:
             self._gba_tables()
             return
-        self.surfable, self.waterfall, self.rock_climb = SURFABLE, WATERFALL, ROCK_CLIMB
-        self.hm_gfx = (GFX_ROCK_SMASH, GFX_CUT_TREE)
-        b = behaviors()
-        self.jump = {b["JUMP_NORTH"]: 0, b["JUMP_SOUTH"]: 1, b["JUMP_WEST"]: 2, b["JUMP_EAST"]: 3}
+        # Black/White: np_e2e.behaviors has none for them, and the Surf/HM tiles and objects below are Platinum/D/P
+        # numbers, so their walks go by the collision bit and the game's step layers alone
+        bw = game in BW_GAMES
+        self.surfable, self.waterfall, self.rock_climb = (set(), None, {}) if bw else (SURFABLE, WATERFALL, ROCK_CLIMB)
+        self.hm_gfx = () if bw else (GFX_ROCK_SMASH, GFX_CUT_TREE)
+        b = behaviors(game)
+        self.jump = {b[k]: d for d, k in enumerate(("JUMP_NORTH", "JUMP_SOUTH", "JUMP_WEST", "JUMP_EAST")) if k in b}
         self.block_into = {}  # behavior -> directions that cannot enter the tile
         for name, dirs in (("BLOCK_EASTWARD", (3,)), ("BLOCK_WESTWARD", (2,)), ("BLOCK_NORTHWARD", (0,)),
                            ("BLOCK_SOUTHWARD", (1,))):

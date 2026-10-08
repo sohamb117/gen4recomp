@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Gen 4 data libraries (ROM-side ndsdata, save-side save4), the np_save4 CLI
+# Gen 4/5 data libraries (ROM-side ndsdata, save-side save4/save5), and CLIs.
 # and their tests.
 #
 #   cmake -S features -B build/features -G Ninja
@@ -21,6 +21,9 @@ set(NP_VARS_FLAGS "${NP_GAMES_DIR}/platinum/generated/vars_flags.txt" CACHE FILE
     "Platinum vars/flags list (pret/pokeplatinum generated/vars_flags.txt)")
 set(NP_PLATINUM_ROM "${NP_GAMES_DIR}/platinum/build/rom/pokeplatinum.us.nds" CACHE FILEPATH
     "Platinum ROM used by ROM-backed tests (skipped when absent)")
+set(NP_BLACK_ROM "" CACHE FILEPATH "Black ROM used by Gen 5 ROM-backed tests (skipped when empty/absent)")
+set(NP_HGSS_ROM "" CACHE FILEPATH
+    "HeartGold or SoulSilver ROM used by HG/SS ROM-backed tests (skipped when empty/absent)")
 
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     set(NP_WARN -Wall -Wextra -Wshadow -Wno-unused-parameter)
@@ -52,9 +55,12 @@ add_custom_command(
 add_library(ndsdata STATIC
     ndsdata/src/nds_rom.c
     ndsdata/src/lz77.c
+    ndsdata/src/blz.c
     ndsdata/src/gen4_text.c
     ndsdata/src/gen4_names.c
     ndsdata/src/gen4_data.c
+    ndsdata/src/gen5_text.c
+    ndsdata/src/gen5_data.c
     "${NP_GEN_DIR}/gen4_charmap.c")
 target_include_directories(ndsdata
     PUBLIC ndsdata/include
@@ -70,7 +76,17 @@ target_include_directories(save4 PUBLIC save4/include)
 target_link_libraries(save4 PUBLIC ndsdata)
 target_compile_options(save4 PRIVATE ${NP_WARN})
 
-# -------------------------------------------------------------------- CLI
+# ------------------------------------------------------------------ save5
+add_library(save5 STATIC
+    save5/src/save5.c
+    save5/src/pkm5.c)
+target_include_directories(save5 PUBLIC save5/include)
+target_compile_options(save5 PRIVATE ${NP_WARN})
+
+add_executable(np_save5 tools/np_save5.c)
+target_link_libraries(np_save5 PRIVATE save5 ndsdata)
+target_compile_options(np_save5 PRIVATE ${NP_WARN})
+
 add_executable(np_save4 tools/np_save4.c)
 target_link_libraries(np_save4 PRIVATE save4 ndsdata)
 target_compile_options(np_save4 PRIVATE ${NP_WARN})
@@ -119,6 +135,20 @@ add_test(NAME rom_text_vs_decomp
             $<TARGET_FILE:dump_bank> "${NP_PLATINUM_ROM}" "${NP_GAMES_DIR}/platinum")
 set_tests_properties(rom_text_vs_decomp PROPERTIES SKIP_RETURN_CODE 77)
 
+# ndsdata against a Black or White ROM (skipped when NP_BLACK_ROM is empty).
+add_executable(test_gen5_rom tests/test_gen5_rom.c)
+target_link_libraries(test_gen5_rom PRIVATE ndsdata)
+target_compile_options(test_gen5_rom PRIVATE ${NP_WARN})
+add_test(NAME gen5_rom COMMAND test_gen5_rom "${NP_BLACK_ROM}")
+set_tests_properties(gen5_rom PROPERTIES SKIP_RETURN_CODE 77)
+
+# ndsdata against a HeartGold or SoulSilver ROM (skipped when NP_HGSS_ROM is empty).
+add_executable(test_hgss_rom tests/test_hgss_rom.c)
+target_link_libraries(test_hgss_rom PRIVATE ndsdata)
+target_compile_options(test_hgss_rom PRIVATE ${NP_WARN})
+add_test(NAME hgss_rom COMMAND test_hgss_rom "${NP_HGSS_ROM}")
+set_tests_properties(hgss_rom PROPERTIES SKIP_RETURN_CODE 77)
+
 # End-to-end: build the synthetic Platinum save, dump it with real ROM names,
 # edit it through the CLI and dump again.
 set(NP_SYNTH_SAV "${CMAKE_CURRENT_BINARY_DIR}/synthetic_pt.sav")
@@ -129,7 +159,39 @@ add_test(NAME cli_e2e
         -DNP_SAVE4=$<TARGET_FILE:np_save4>
         -DMAKE_SAVE=$<TARGET_FILE:make_synth_save>
         -DROM=${NP_PLATINUM_ROM}
+        -DHGSS_ROM=${NP_HGSS_ROM}
         -DSAV=${NP_SYNTH_SAV}
         -DWORK=${CMAKE_CURRENT_BINARY_DIR}/cli_e2e
         -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_e2e.cmake")
 set_tests_properties(cli_e2e PROPERTIES FIXTURES_REQUIRED synth_save)
+
+# ---- Black/White (save5)
+add_library(np_testsupport5 STATIC tests/synth_save5.c)
+target_include_directories(np_testsupport5 PUBLIC tests)
+target_link_libraries(np_testsupport5 PUBLIC save5)
+target_compile_options(np_testsupport5 PRIVATE ${NP_WARN})
+foreach(t test_pkm5 test_save5)
+    add_executable(${t} tests/${t}.c)
+    target_link_libraries(${t} PRIVATE np_testsupport5 save5)
+    target_compile_options(${t} PRIVATE ${NP_WARN})
+endforeach()
+add_executable(make_synth_save5 tests/make_synth_save5.c)
+target_link_libraries(make_synth_save5 PRIVATE np_testsupport5)
+target_compile_options(make_synth_save5 PRIVATE ${NP_WARN})
+add_test(NAME pkm5 COMMAND test_pkm5)
+add_test(NAME save5 COMMAND test_save5)
+
+# End-to-end: a synthetic Black save through np_save5 (names from the Black
+# ROM when NP_BLACK_ROM points at one).
+set(NP_SYNTH_SAV5 "${CMAKE_CURRENT_BINARY_DIR}/synthetic_black.sav")
+add_test(NAME cli5_make_save COMMAND make_synth_save5 black "${NP_SYNTH_SAV5}")
+set_tests_properties(cli5_make_save PROPERTIES FIXTURES_SETUP synth_save5)
+add_test(NAME cli5_e2e
+    COMMAND ${CMAKE_COMMAND}
+        -DNP_SAVE5=$<TARGET_FILE:np_save5>
+        -DMAKE_SAVE=$<TARGET_FILE:make_synth_save5>
+        -DROM=${NP_BLACK_ROM}
+        -DSAV=${NP_SYNTH_SAV5}
+        -DWORK=${CMAKE_CURRENT_BINARY_DIR}/cli5_e2e
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli5_e2e.cmake")
+set_tests_properties(cli5_e2e PROPERTIES FIXTURES_REQUIRED synth_save5)

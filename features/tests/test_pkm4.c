@@ -123,6 +123,58 @@ int main(void)
     CHECK_EQ_STR(info.nickname, "ABCDEFGHIJ");
     CHECK(info.has_nickname);
 
+    /* HG/SS bytes D/P/Pt leave unused (pokeheartgold
+     * include/pokemon_types_def.h): block B 0x19 shiny leaves (canonical
+     * 0x41), block D 0x1E HGSS_Pokeball (0x86) and 0x1F mood (0x87). Every
+     * setter except pkm4_set_ball_hgss keeps them, through encrypt/decrypt. */
+    {
+        pkm4 h;
+        synth_make_mon(&h, 152, 5, 0x0BEEF123u, "CHIKORITA", 33, 1);
+        pkm4_set_origin_game(&h, 7); /* VERSION_HEARTGOLD */
+        CHECK(pkm4_set_ball_hgss(&h, 494) == SAVE4_OK); /* Lure Ball */
+        CHECK_EQ_INT(h.data[0x86], 19);                 /* BALL_LURE */
+        CHECK_EQ_INT(h.data[0x83], 4);                  /* BALL_POKE */
+        h.data[0x41] = 0x25;                            /* shiny leaves */
+        h.data[0x87] = 0xF6;                            /* mood -10 */
+        pkm4_info_get(&h, &info);
+        CHECK_EQ_INT(info.ball, 19);
+        pkm4_set_pid(&h, 0x0BEEF124u);
+        pkm4_set_species(&h, 153);
+        pkm4_set_held_item(&h, 234);
+        pkm4_set_ot_ids(&h, 1, 2);
+        pkm4_set_exp(&h, 999);
+        pkm4_set_friendship(&h, 1);
+        pkm4_set_ability(&h, 65);
+        pkm4_set_language(&h, 2);
+        for (int i = 0; i < 6; i++) {
+            pkm4_set_ev(&h, i, 3);
+            pkm4_set_iv(&h, i, 31);
+        }
+        pkm4_set_move(&h, 3, 75, 25, 1);
+        pkm4_set_is_egg(&h, false);
+        pkm4_set_gender_form(&h, 1, 0);
+        CHECK(pkm4_set_nickname(&h, "Leafy", 1) == SAVE4_OK);
+        CHECK(pkm4_set_ot_name(&h, "Ethan") == SAVE4_OK);
+        pkm4_set_met(&h, 126, 9, 4, 0);
+        uint16_t hs[6] = {30, 20, 20, 20, 20, 20};
+        pkm4_set_party_stats(&h, 9, 30, hs, 0);
+        uint8_t he[PKM4_PARTY_SIZE];
+        CHECK(pkm4_encrypt(&h, he, PKM4_PARTY_SIZE) == SAVE4_OK);
+        pkm4 hb;
+        CHECK(pkm4_decrypt(he, PKM4_PARTY_SIZE, &hb) == SAVE4_OK);
+        CHECK_EQ_INT(hb.data[0x41], 0x25);
+        CHECK_EQ_INT(hb.data[0x86], 19);
+        CHECK_EQ_INT(hb.data[0x87], 0xF6);
+        pkm4_info_get(&hb, &info);
+        CHECK_EQ_INT(info.ball, 19); /* HG/SS origin: the HGSS ball */
+        pkm4_set_origin_game(&hb, 12);
+        pkm4_info_get(&hb, &info);
+        CHECK_EQ_INT(info.ball, 4); /* any other origin: the D/P/Pt ball */
+        CHECK(pkm4_set_ball_hgss(&hb, 16) == SAVE4_OK); /* Cherish Ball: both bytes */
+        CHECK(hb.data[0x83] == 16 && hb.data[0x86] == 16);
+        CHECK(pkm4_set_ball_hgss(&hb, 0) == SAVE4_ERR_RANGE);
+        CHECK(pkm4_set_ball_hgss(&hb, 500) == SAVE4_ERR_RANGE);
+    }
     CHECK(pkm4_decrypt(enc, 100, &back) == SAVE4_ERR_ARG);
     /* Stat formula: Bulbapedia's worked example, a level 78 Adamant Garchomp
      * (base 108/130/95/102/80/85 as HP Atk Def Spe SpA SpD, IVs 24/12/30/5/16/23,

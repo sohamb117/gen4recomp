@@ -25,6 +25,8 @@ static void test_game(save4_game game)
     uint8_t *img = malloc(SAVE4_IMAGE_SIZE);
     synth_save_build(img, game);
     const uint32_t gsize = synth_general_size(game), ssize = synth_storage_size(game);
+    const uint32_t soff = synth_storage_offset(game), fsz = synth_footer_size(game);
+    const bool hgss = save4_game_is_hgss(game);
 
     /* CRC-16-CCITT check value (init 0xFFFF, poly 0x1021): "123456789" -> 0x29B1 */
     CHECK_EQ_INT(save4_crc16("123456789", 9), 0x29B1);
@@ -38,6 +40,7 @@ static void test_game(save4_game game)
     CHECK(s.blocks[0].valid[0] && s.blocks[0].valid[1]);
     CHECK_EQ_INT(s.blocks[0].size, gsize);
     CHECK_EQ_INT(s.blocks[1].size, ssize);
+    CHECK_EQ_INT(s.blocks[1].offset, soff);
 
     save4_trainer t;
     CHECK(save4_get_trainer(&s, &t) == SAVE4_OK);
@@ -50,6 +53,22 @@ static void test_game(save4_game game)
     CHECK_EQ_INT(t.play_hours, 12);
     CHECK_EQ_INT(t.play_minutes, 34);
     CHECK_EQ_INT(t.play_seconds, 56);
+    if (hgss) {
+        CHECK_EQ_INT(t.kanto_badges, SYNTH_KANTO_BADGES);
+        CHECK_EQ_INT(t.game_code, game == SAVE4_GAME_HG ? 7 : 8);
+        CHECK_EQ_INT(save4_num_vars(&s), SAVE4_HGSS_NUM_VARS);
+        CHECK_EQ_INT(save4_pocket_capacity(&s, SAVE4_POCKET_TMHM), 101);
+        CHECK_EQ_INT(save4_pocket_capacity(&s, SAVE4_POCKET_BALLS), 24);
+        save4_poketch pt;
+        CHECK(save4_get_poketch(&s, &pt) == SAVE4_ERR_UNSUPPORTED);
+    } else {
+        CHECK_EQ_INT(t.kanto_badges, 0);
+        CHECK_EQ_INT(save4_num_vars(&s), SAVE4_NUM_VARS);
+        CHECK_EQ_INT(save4_pocket_capacity(&s, SAVE4_POCKET_TMHM), 100);
+        CHECK_EQ_INT(save4_pocket_capacity(&s, SAVE4_POCKET_BALLS), 15);
+    }
+    CHECK_EQ_INT(save4_num_flags(&s), SAVE4_NUM_FLAGS);
+    CHECK_EQ_INT(save4_pocket_capacity(NULL, SAVE4_POCKET_ITEMS), 0);
 
     CHECK_EQ_INT(save4_party_count(&s), 2);
     pkm4 p;
@@ -63,6 +82,9 @@ static void test_game(save4_game game)
     pkm4_info_get(&p, &info);
     CHECK_EQ_INT(info.species, 1);
     CHECK_EQ_STR(info.nickname, "Bulby");
+    /* HG/SS: the Level Ball in HGSS_Pokeball (Poke Ball in the D/P/Pt byte). */
+    CHECK_EQ_INT(info.ball, hgss ? SYNTH_HGSS_BULBY_BALL : 4);
+    CHECK_EQ_INT(p.data[0x83], 4);
     CHECK(save4_get_party(&s, 6, &p) == SAVE4_ERR_RANGE);
 
     CHECK(save4_get_box_mon(&s, 0, 0, &p) == SAVE4_OK);
@@ -91,6 +113,14 @@ static void test_game(save4_game game)
     uint16_t var;
     CHECK(save4_var_get(&s, 0x4010, &var) == SAVE4_OK && var == 0x1234);
     CHECK(save4_var_get(&s, 0x3FFF, &var) == SAVE4_ERR_RANGE);
+    /* The last saved var: HG/SS NUM_VARS 0x170, D/P/Pt 288. */
+    CHECK(save4_var_get(&s, (uint16_t)(SAVE4_VARS_START + SAVE4_NUM_VARS), &var) ==
+          (hgss ? SAVE4_OK : SAVE4_ERR_RANGE));
+    CHECK(save4_var_get(&s, (uint16_t)(SAVE4_VARS_START + SAVE4_HGSS_NUM_VARS - 1), &var) ==
+          (hgss ? SAVE4_OK : SAVE4_ERR_RANGE));
+    CHECK(save4_var_get(&s, (uint16_t)(SAVE4_VARS_START + SAVE4_HGSS_NUM_VARS), &var) == SAVE4_ERR_RANGE);
+    CHECK(save4_flag_get(&s, SAVE4_NUM_FLAGS - 1, &fv) == SAVE4_OK);
+    CHECK(save4_flag_get(&s, SAVE4_NUM_FLAGS, &fv) == SAVE4_ERR_RANGE);
 
     /* ---- edits on a snapshot (undo = keep the original) */
     save4 e;
@@ -100,6 +130,10 @@ static void test_game(save4_game game)
     CHECK(save4_set_trainer_name(&e, "Dawn") == SAVE4_OK);
     CHECK(save4_set_trainer_name(&e, "TooLongName") == SAVE4_ERR_RANGE);
     CHECK(save4_set_badges(&e, 0xFF) == SAVE4_OK);
+    CHECK(save4_set_kanto_badges(&e, 0x81) == (hgss ? SAVE4_OK : SAVE4_ERR_UNSUPPORTED));
+    CHECK(save4_set_bag_slot(&e, SAVE4_POCKET_BALLS, 20, 6, 2) == (hgss ? SAVE4_OK : SAVE4_ERR_RANGE));
+    if (hgss)
+        CHECK(save4_var_set(&e, (uint16_t)(SAVE4_VARS_START + 300), 99) == SAVE4_OK);
     CHECK(save4_set_bag_slot(&e, SAVE4_POCKET_ITEMS, 1, 50, 3) == SAVE4_OK); /* Rare Candy */
     CHECK(save4_set_bag_slot(&e, SAVE4_POCKET_ITEMS, 1, 50, 1000) == SAVE4_ERR_RANGE);
     CHECK(save4_dex_set(&e, 2, false, true) == SAVE4_OK);
@@ -129,6 +163,16 @@ static void test_game(save4_game game)
     CHECK_EQ_INT(t.money, 123456);
     CHECK_EQ_STR(t.name, "Dawn");
     CHECK_EQ_INT(t.badges, 0xFF);
+    CHECK_EQ_INT(t.kanto_badges, hgss ? 0x81 : 0);
+    if (hgss) {
+        CHECK(save4_get_bag_slot(&r, SAVE4_POCKET_BALLS, 20, &item, &qty) == SAVE4_OK && item == 6 && qty == 2);
+        CHECK(save4_var_get(&r, (uint16_t)(SAVE4_VARS_START + 300), &var) == SAVE4_OK && var == 99);
+        /* Kanto badges sit in PlayerProfile.kantoBadges (PLAYERDATA 0x60 + 4 + 0x1F). */
+        CHECK_EQ_INT(eimg[SAVE4_COPY_SIZE + 0x60 + 0x23], 0x81);
+        /* The box edit marked box 4 modified (PCStorage.boxModifiedFlag 0x12004). */
+        CHECK_EQ_INT(r32(eimg + SAVE4_COPY_SIZE + soff + 0x12004), 1u << 4);
+        CHECK_EQ_INT(r32(img + SAVE4_COPY_SIZE + soff + 0x12004), 0);
+    }
     CHECK(save4_get_bag_slot(&r, SAVE4_POCKET_ITEMS, 1, &item, &qty) == SAVE4_OK && item == 50 && qty == 3);
     CHECK(save4_dex_get(&r, 2, &seen, &caught) == SAVE4_OK && seen && caught);
     CHECK(save4_flag_get(&r, 10, &fv) == SAVE4_OK && !fv);
@@ -145,16 +189,19 @@ static void test_game(save4_game game)
 
     /* Only the active copy changed; the stale copy and the tail are byte-identical. */
     CHECK_EQ_INT(count_diff(img, eimg, 0, SAVE4_COPY_SIZE), 0);
-    CHECK_EQ_INT(count_diff(img, eimg, SAVE4_COPY_SIZE + gsize + ssize, SAVE4_IMAGE_SIZE), 0);
+    CHECK_EQ_INT(count_diff(img, eimg, SAVE4_COPY_SIZE + soff + ssize, SAVE4_IMAGE_SIZE), 0);
+    /* HG/SS: the bytes between the blocks too. */
+    CHECK_EQ_INT(count_diff(img, eimg, SAVE4_COPY_SIZE + gsize, SAVE4_COPY_SIZE + soff), 0);
     /* Footer counters / signature untouched; only the CRC moved. */
-    const uint8_t *fo = img + SAVE4_COPY_SIZE + gsize - SAVE4_FOOTER_SIZE;
-    const uint8_t *fe = eimg + SAVE4_COPY_SIZE + gsize - SAVE4_FOOTER_SIZE;
-    CHECK(memcmp(fo, fe, 18) == 0);
+    const uint8_t *fo = img + SAVE4_COPY_SIZE + gsize - fsz;
+    const uint8_t *fe = eimg + SAVE4_COPY_SIZE + gsize - fsz;
+    CHECK(memcmp(fo, fe, fsz - 2) == 0);
     /* Unknown bytes (noise) preserved: Poketch / field state between the end
-     * of VarsFlags and the Pokédex (PKHeX PoketchStart Pt 0x1160, DP 0x114C). */
+     * of VarsFlags and the Pokédex (PKHeX PoketchStart Pt 0x1160, DP 0x114C;
+     * HG/SS LocalFieldData 0x1234..0x12B8). */
     {
-        uint32_t a = SAVE4_COPY_SIZE + (game == SAVE4_GAME_PT ? 0x1160 : 0x114C);
-        uint32_t b = SAVE4_COPY_SIZE + (game == SAVE4_GAME_PT ? 0x1328 : 0x12DC);
+        uint32_t a = SAVE4_COPY_SIZE + (hgss ? 0x1234 : game == SAVE4_GAME_PT ? 0x1160 : 0x114C);
+        uint32_t b = SAVE4_COPY_SIZE + (hgss ? 0x12B8 : game == SAVE4_GAME_PT ? 0x1328 : 0x12DC);
         CHECK_EQ_INT(count_diff(img, eimg, a, b), 0);
     }
     /* A money edit changes exactly the money bytes + CRC. */
@@ -190,8 +237,8 @@ static void test_game(save4_game game)
 
     /* corrupt both storage copies -> checksum error */
     memcpy(bad, img, SAVE4_IMAGE_SIZE);
-    bad[gsize + 0x100] ^= 1;
-    bad[SAVE4_COPY_SIZE + gsize + 0x100] ^= 1;
+    bad[soff + 0x100] ^= 1;
+    bad[SAVE4_COPY_SIZE + soff + 0x100] ^= 1;
     CHECK(save4_load(&c, bad, SAVE4_IMAGE_SIZE) == SAVE4_ERR_CHECKSUM);
     save4_free(&c);
 
@@ -206,14 +253,15 @@ static void test_game(save4_game game)
     /* counter wrap rule: 0xFFFFFFFF vs 0 -> 0 is newer */
     memcpy(bad, img, SAVE4_IMAGE_SIZE);
     {
-        uint8_t *f0 = bad + gsize - SAVE4_FOOTER_SIZE;
-        uint8_t *f1 = bad + SAVE4_COPY_SIZE + gsize - SAVE4_FOOTER_SIZE;
-        uint8_t *g0 = bad + gsize + ssize - SAVE4_FOOTER_SIZE;
-        uint8_t *g1 = bad + SAVE4_COPY_SIZE + gsize + ssize - SAVE4_FOOTER_SIZE;
-        memset(f0, 0, 8);   /* primary: counter 0 */
-        memset(g0, 0, 8);
-        memset(f1, 0xFF, 8); /* backup: counter 0xFFFFFFFF */
-        memset(g1, 0xFF, 8);
+        uint8_t *f0 = bad + gsize - fsz;
+        uint8_t *f1 = bad + SAVE4_COPY_SIZE + gsize - fsz;
+        uint8_t *g0 = bad + soff + ssize - fsz;
+        uint8_t *g1 = bad + SAVE4_COPY_SIZE + soff + ssize - fsz;
+        const size_t counters = hgss ? 4 : 8; /* HG/SS: count only */
+        memset(f0, 0, counters); /* primary: counter 0 */
+        memset(g0, 0, counters);
+        memset(f1, 0xFF, counters); /* backup: counter 0xFFFFFFFF */
+        memset(g1, 0xFF, counters);
         CHECK(save4_load(&c, bad, SAVE4_IMAGE_SIZE) == SAVE4_OK);
         CHECK_EQ_INT(c.blocks[0].active, 0);
         CHECK_EQ_INT(r32(f0), 0);
@@ -465,12 +513,226 @@ static void test_mystery_dp(void)
     free(img);
 }
 
+static void w32le(uint8_t *p, uint32_t v)
+{
+    for (int i = 0; i < 4; i++)
+        p[i] = (uint8_t)(v >> (8 * i));
+}
+
+/* HG/SS copy selection (Save_GetSaveFilesStatus, pokeheartgold src/save.c):
+ * both blocks always come from the copy whose general and storage counts
+ * agree; footers {count, size, magic, slot, crc} (0x10 bytes) with the
+ * storage block at 0xF700; the version byte picks HG or SS. */
+static void test_hgss_selection(void)
+{
+    CHECK_EQ_STR(save4_game_name(SAVE4_GAME_HG), "heartgold");
+    CHECK_EQ_STR(save4_game_name(SAVE4_GAME_SS), "soulsilver");
+    CHECK_EQ_STR(save4_game_name(SAVE4_GAME_PT), "Pt");
+    CHECK(save4_game_is_hgss(SAVE4_GAME_SS) && !save4_game_is_hgss(SAVE4_GAME_PT));
+
+    uint8_t *img = malloc(SAVE4_IMAGE_SIZE), *bad = malloc(SAVE4_IMAGE_SIZE);
+    synth_save_build(img, SAVE4_GAME_HG);
+    const uint32_t gs = 0xF628, so = 0xF700, ss = 0x12310;
+    /* The footer as the decomp lays it out. */
+    const uint8_t *f = img + SAVE4_COPY_SIZE + gs - 0x10;
+    CHECK_EQ_INT(r32(f), SYNTH_COUNTER_NEW);
+    CHECK_EQ_INT(r32(f + 4), gs);
+    CHECK_EQ_INT(r32(f + 8), SAVE4_SIGNATURE);
+    CHECK_EQ_INT(f[12] | f[13] << 8, 0);
+    CHECK_EQ_INT(f[14] | f[15] << 8, save4_crc16(img + SAVE4_COPY_SIZE, gs - 0x10));
+    save4 c;
+
+    /* Newest counts disagree (storage 6, general 5), the older copy's agree:
+     * LOAD_STATUS_SLOT_FAIL with the older copy for both blocks. */
+    memcpy(bad, img, SAVE4_IMAGE_SIZE);
+    w32le(bad + SAVE4_COPY_SIZE + so + ss - 0x10, 6);
+    CHECK(save4_load(&c, bad, SAVE4_IMAGE_SIZE) == SAVE4_OK);
+    CHECK(c.load_result == SAVE4_LOAD_RECOVERED);
+    CHECK(c.blocks[0].active == 0 && c.blocks[1].active == 0);
+    CHECK(c.blocks[0].block_counter[1] == 0 && c.blocks[1].save_counter[1] == 6);
+    save4_free(&c);
+    /* ... and neither copy agrees: LOAD_STATUS_TOTAL_FAIL. */
+    w32le(bad + so + ss - 0x10, 9);
+    CHECK(save4_load(&c, bad, SAVE4_IMAGE_SIZE) == SAVE4_ERR_CHECKSUM);
+    save4_free(&c);
+
+    /* Newer general and older storage each lost a copy: one valid copy of
+     * each, but not the same one -> TOTAL_FAIL (D/P/Pt would mix copies). */
+    memcpy(bad, img, SAVE4_IMAGE_SIZE);
+    bad[SAVE4_COPY_SIZE + 0x200] ^= 1;
+    bad[so + 0x200] ^= 1;
+    CHECK(save4_load(&c, bad, SAVE4_IMAGE_SIZE) == SAVE4_ERR_CHECKSUM);
+    CHECK(c.blocks[0].valid[0] && !c.blocks[0].valid[1] && !c.blocks[1].valid[0] && c.blocks[1].valid[1]);
+    save4_free(&c);
+
+    /* Older storage copy bad, both general copies fine: the newest copy
+     * still agrees -> LOAD_STATUS_IS_GOOD. */
+    memcpy(bad, img, SAVE4_IMAGE_SIZE);
+    bad[so + 0x200] ^= 1;
+    CHECK(save4_load(&c, bad, SAVE4_IMAGE_SIZE) == SAVE4_OK);
+    CHECK(c.load_result == SAVE4_LOAD_OK && c.blocks[0].active == 1 && c.blocks[1].active == 1);
+    save4_free(&c);
+
+    /* Newer storage copy bad: the newer general copy has no partner, the older
+     * pair agrees -> SLOT_FAIL on copy 0. */
+    memcpy(bad, img, SAVE4_IMAGE_SIZE);
+    bad[SAVE4_COPY_SIZE + so + 0x200] ^= 1;
+    CHECK(save4_load(&c, bad, SAVE4_IMAGE_SIZE) == SAVE4_OK);
+    CHECK(c.load_result == SAVE4_LOAD_RECOVERED && c.blocks[0].active == 0 && c.blocks[1].active == 0);
+    save4_trainer t;
+    CHECK(save4_get_trainer(&c, &t) == SAVE4_OK && t.money == SYNTH_MONEY_OLD);
+    save4_free(&c);
+
+    /* A version byte other than 7/8 (re-checksummed) is not an HG/SS save. */
+    memcpy(bad, img, SAVE4_IMAGE_SIZE);
+    for (int copy = 0; copy < 2; copy++) {
+        uint8_t *g = bad + copy * SAVE4_COPY_SIZE;
+        g[0x60 + 0x20] = 12;
+        uint16_t crc = save4_crc16(g, gs - 0x10);
+        g[gs - 2] = (uint8_t)crc;
+        g[gs - 1] = (uint8_t)(crc >> 8);
+    }
+    CHECK(save4_load(&c, bad, SAVE4_IMAGE_SIZE) == SAVE4_ERR_UNKNOWN_GAME);
+    save4_free(&c);
+
+    /* SoulSilver: same layout, version 8. */
+    synth_save_build(img, SAVE4_GAME_SS);
+    CHECK(save4_load(&c, img, SAVE4_IMAGE_SIZE) == SAVE4_OK && c.game == SAVE4_GAME_SS);
+    save4_free(&c);
+    free(bad);
+    free(img);
+}
+
+/* Mystery Gift / Pokédex on the synthetic HeartGold save: MysteryGiftSave at
+ * 0x9D3C (gifts 0x100, cards 0x920, specialWonderCard 0x1328, CRC-16 at
+ * 0x1680), SysInfo.mysteryGiftActive 0x48, Pokedex 0x12B8 + 0x336 / 0x337,
+ * and the gift types HG/SS deliver. */
+static void test_mystery_hgss(void)
+{
+    static const uint16_t yes[] = {SAVE4_MG_POKEMON,  SAVE4_MG_EGG,     SAVE4_MG_ITEM,
+                                   SAVE4_MG_BATTLE_REG, SAVE4_MG_COSMETICS, SAVE4_MG_MANAPHY_EGG,
+                                   SAVE4_MG_UNKNOWN,  SAVE4_MG_POKEWALKER_COURSE, SAVE4_MG_MEMORIAL_PHOTO};
+    static const uint16_t no[] = {0, SAVE4_MG_DECORATION, SAVE4_MG_MEMBER_CARD, SAVE4_MG_OAKS_LETTER,
+                                  SAVE4_MG_AZURE_FLUTE, SAVE4_MG_POKETCH_APP, SAVE4_MG_SECRET_KEY,
+                                  SAVE4_MG_TYPE_MAX};
+    for (size_t i = 0; i < sizeof yes / sizeof yes[0]; i++)
+        CHECK(save4_mg_type_supported(SAVE4_GAME_HG, yes[i]) && save4_mg_type_supported(SAVE4_GAME_SS, yes[i]));
+    for (size_t i = 0; i < sizeof no / sizeof no[0]; i++)
+        CHECK(!save4_mg_type_supported(SAVE4_GAME_HG, no[i]) && !save4_mg_type_supported(SAVE4_GAME_SS, no[i]));
+    CHECK(!save4_mg_type_supported(SAVE4_GAME_PT, SAVE4_MG_POKEWALKER_COURSE));
+    CHECK(!save4_mg_type_supported(SAVE4_GAME_PT, SAVE4_MG_MEMORIAL_PHOTO));
+    CHECK(!save4_mg_type_supported(SAVE4_GAME_DP, SAVE4_MG_UNKNOWN));
+
+    uint8_t *img = malloc(SAVE4_IMAGE_SIZE);
+    synth_save_build(img, SAVE4_GAME_HG);
+    save4 s;
+    CHECK(save4_load(&s, img, SAVE4_IMAGE_SIZE) == SAVE4_OK && s.game == SAVE4_GAME_HG);
+    size_t len;
+    const uint8_t *im = save4_image(&s, &len);
+    const uint8_t *gen = im + save4_block_base(&s, SAVE4_BLOCK_GENERAL);
+    const uint8_t *mg = gen + 0x9D3C;
+    CHECK_EQ_INT(save4_crc16(mg, 0x1680), mg[0x1680] | mg[0x1681] << 8);
+
+    /* Main menu switches and the Pokédex flags. */
+    bool on = true;
+    CHECK(save4_mg_get_unlocked(&s, &on) == SAVE4_OK && !on);
+    CHECK(save4_mg_set_unlocked(&s, true) == SAVE4_OK);
+    CHECK(save4_mg_get_unlocked(&s, &on) == SAVE4_OK && on);
+    CHECK_EQ_INT(gen[0x48], 1);    /* SysInfo.mysteryGiftActive */
+    CHECK_EQ_INT(mg[255] >> 7, 1); /* received bit 2047 */
+    CHECK(save4_dex_get_obtained(&s, &on) == SAVE4_OK && !on);
+    CHECK(save4_dex_set_obtained(&s, true) == SAVE4_OK);
+    CHECK(save4_dex_get_obtained(&s, &on) == SAVE4_OK && on);
+    CHECK_EQ_INT(gen[0x12B8 + 0x336], 1); /* Pokedex.dexEnabled */
+    CHECK(save4_dex_set_national(&s, true) == SAVE4_OK);
+    CHECK_EQ_INT(gen[0x12B8 + 0x337], 1);          /* Pokedex.nationalDex */
+    CHECK_EQ_INT((gen[0x60 + 0x21] >> 1) & 1, 1); /* PlayerProfile.natDex */
+
+    /* A card with its gift: card slot 0, gift 0 linked to slot 0. */
+    save4_card_spec spec = {SAVE4_MG_POKEMON, 42, 0, {249, 0, 0}, 3500, "Lugia", "Gift"};
+    uint8_t card[SAVE4_WONDERCARD_SIZE], back[SAVE4_WONDERCARD_SIZE];
+    CHECK(save4_mg_build_card(&spec, card) == SAVE4_OK);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    bool used = false;
+    CHECK(save4_mg_get_card(&s, 0, back, &used) == SAVE4_OK && used && !memcmp(back, card, sizeof card));
+    CHECK(!memcmp(mg + 0x920, card, sizeof card));
+    CHECK_EQ_INT(mg[0x100] | mg[0x101] << 8, SAVE4_MG_POKEMON);
+    CHECK_EQ_INT(mg[0x102] & 3, 0);
+    CHECK_EQ_INT(mg[42 / 8] >> (42 % 8) & 1, 1);
+    CHECK_EQ_INT(save4_crc16(mg, 0x1680), mg[0x1680] | mg[0x1681] << 8);
+    CHECK(save4_revalidate(&s) == SAVE4_OK);
+
+    /* A gift-only .pgt: linked to no card (3). */
+    CHECK(save4_mg_add(&s, card, SAVE4_PGT_SIZE) == SAVE4_OK);
+    CHECK_EQ_INT(mg[0x100 + 0x104 + 2] & 3, 3);
+    int pgts = 0;
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 2);
+
+    /* Types HG/SS cannot deliver are refused and change nothing. */
+    uint8_t *snap = malloc(SAVE4_IMAGE_SIZE);
+    memcpy(snap, im, SAVE4_IMAGE_SIZE);
+    save4_card_spec darkrai = {SAVE4_MG_MEMBER_CARD, 50, 0, {491, 0, 0}, 3500, "Member Card", "Darkrai"};
+    CHECK(save4_mg_build_card(&darkrai, card) == SAVE4_OK);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_ERR_UNSUPPORTED);
+    CHECK(!memcmp(snap, im, SAVE4_IMAGE_SIZE));
+
+    /* The Lock Capsule card goes to the special slot, once. */
+    save4_card_spec lock = {SAVE4_MG_ITEM, 60, 533, {0, 0, 0}, 3500, "Lock Capsule", "Capsule"};
+    CHECK(save4_mg_build_card(&lock, card) == SAVE4_OK);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    CHECK(!memcmp(mg + 0x1328, card, sizeof card));
+    CHECK(save4_mg_get_card(&s, 1, back, &used) == SAVE4_OK && !used);
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 2);
+    CHECK_EQ_INT(mg[60 / 8] >> (60 % 8) & 1, 1);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_ERR_NOSPACE);
+
+    /* A card without a gift (savePgt clear) in slot 1. */
+    spec.id = 43;
+    CHECK(save4_mg_build_card(&spec, card) == SAVE4_OK);
+    card[0x104 + 0x4E] &= (uint8_t)~(1u << 3);
+    CHECK(save4_mg_add(&s, card, sizeof card) == SAVE4_OK);
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 2);
+
+    /* Tossing card 0 (gift linked): type, received flag and its gift go. */
+    CHECK(save4_mg_remove_card(&s, 0) == SAVE4_OK);
+    CHECK(save4_mg_get_card(&s, 0, back, &used) == SAVE4_OK && !used);
+    CHECK_EQ_INT(mg[42 / 8] >> (42 % 8) & 1, 0);
+    CHECK_EQ_INT(mg[0x100] | mg[0x101] << 8, 0);
+    CHECK(save4_mg_pgt_count(&s, &pgts) == SAVE4_OK && pgts == 1);
+    /* Tossing card 1 (no gift): only the type (DeleteWonderCardByIndex). */
+    CHECK(save4_mg_remove_card(&s, 1) == SAVE4_OK);
+    CHECK(save4_mg_get_card(&s, 1, back, &used) == SAVE4_OK && !used);
+    CHECK_EQ_INT(mg[43 / 8] >> (43 % 8) & 1, 1);
+    CHECK_EQ_INT(save4_crc16(mg, 0x1680), mg[0x1680] | mg[0x1681] << 8);
+
+    /* Reloads with the same state. */
+    save4 s2;
+    CHECK(save4_load(&s2, im, len) == SAVE4_OK && s2.load_result == SAVE4_LOAD_OK && s2.game == SAVE4_GAME_HG);
+    CHECK(save4_mg_get_unlocked(&s2, &on) == SAVE4_OK && on);
+    CHECK(save4_dex_get_national(&s2, &on) == SAVE4_OK && on);
+    save4_trainer tr;
+    CHECK(save4_get_trainer(&s2, &tr) == SAVE4_OK && tr.has_national_dex);
+    save4_free(&s2);
+    /* Nothing outside the MysteryGift entry (+ CRC), SysInfo's flag and the
+     * Pokédex / profile flags moved in the general block. */
+    size_t gb = save4_block_base(&s, SAVE4_BLOCK_GENERAL);
+    CHECK_EQ_INT(count_diff(snap, im, gb + 0x49, gb + 0x9D3C), 0);
+    CHECK_EQ_INT(count_diff(snap, im, gb + 0x9D3C + 0x1684, gb + 0xF628 - 2), 0);
+    free(snap);
+    save4_free(&s);
+    free(img);
+}
+
 int main(void)
 {
     test_game(SAVE4_GAME_PT);
     test_game(SAVE4_GAME_DP);
+    test_game(SAVE4_GAME_HG);
+    test_game(SAVE4_GAME_SS);
     test_mystery();
     test_mystery_dp();
+    test_hgss_selection();
+    test_mystery_hgss();
 
     /* Flag/var names generated from the decomp. */
     uint16_t id = 0;
