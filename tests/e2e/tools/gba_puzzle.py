@@ -166,8 +166,10 @@ class Puzzle:
             clear = self._script(scripts, mm.group(2))
             self.toggles.append(((b["x"], b["y"]), self._metatiles(body), self._metatiles(clear)))
         self.switches_on = (False,) * len(self.toggles)  # the flags at the start (--switches)
-        # forced movement is ridden (not just avoided) on switch maps and on maps with currents (Seafloor Cavern)
-        self.forced_map = bool(self.toggles) or any(0x50 <= b <= 0x53 for b in m.beh)
+        # forced movement is ridden (not just avoided) on switch maps and on maps with arrows, slides or currents
+        # (Seafloor Cavern, the Sootopolis Gym's B1F chutes), unless boulders or rocks need the push/smash model
+        self.forced_map = bool(self.toggles) or (any(b in FORCED for b in m.beh)
+                                                 and not any(k[0] in ("boulder", "rock") for k in self.kinds))
 
     @staticmethod
     def _script(scripts, label):

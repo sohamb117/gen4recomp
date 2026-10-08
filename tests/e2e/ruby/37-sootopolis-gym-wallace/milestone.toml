@@ -1,43 +1,54 @@
 # Proves the ice-floor gym (1F cracked ice, B1F) and Wallace (TRAINER_WALLACE): FLAG_BADGE08_GET, TM03 Water Pulse.
 # Start: Cave of Origin B4F -> end: MAP_SOOTOPOLIS_CITY at the gym door (31,33).
 title = "Sootopolis Gym: Wallace's Rain Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 17875
 refs = [
   "data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> SOOTOPOLIS_CITY_GYM_1F (8,25)",
   "data/maps/SootopolisCity_Gym_1F/map.json object_events[0] WALLACE (8,2)",
   "data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)",
 ]
-notes = "Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is an ice puzzle (cracked ice falls to B1F, gym_1F (11,22) -> B1F); the slide bot replays ice presses (AUTHORING: slide)."
+notes = "Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is the thin-ice puzzle: every thin-ice tile of a field stepped on once opens the next stairs (VAR_ICE_STEP_COUNT 8, 28, 69); a cracked tile stepped on again drops the player to B1F. The routes are Hamiltonian paths over each field's tiles (map.json layout), entry to stairs."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 26900
 
-# PHASE2: the 1F/B1F ice route to Wallace (cracked tiles drop to B1F): a slide press list, solved offline like 33.
 
 [[step]]
 do = "walk_to"
 x = 31
-z = 33
+z = 34
 map = "MAP_SOOTOPOLIS_CITY"
 surf = true
-note = "out of the cave, across the crater to the gym"
+note = "out of the cave, across the crater to the gym, below Steven: after the legend he waits at the gym door (31,33) (SootopolisCity OnTransition FLAG_LEGENDARY_BATTLE_COMPLETED -> SetStevenOutsideGymPostLegendary, scripts.inc:35)"
+
+[[step]]
+do = "talk_to"
+id = 10
+shot = "steven"
+note = "Steven (object 10): WeOweItAllToYou, flies off, removeobject (FLAG_HIDE_STEVEN_SOOTOPOLIS) (SootopolisCity/scripts.inc:452-468)"
+
+[[step]]
+do = "advance_text"
 
 [[step]]
 do = "heal"
 x = 43
 z = 31
-note = "Sootopolis Pokemon Center (warp 0)"
+surf = true
+note = "Sootopolis Pokemon Center (warp 0), across the crater lake"
 
 [[step]]
 do = "walk_to"
 x = 31
 z = 32
+map = "MAP_SOOTOPOLIS_CITY"
+surf = true
 note = "gym door (Sootopolis warp 2) -> GYM_1F (8,25)"
 
 [[step]]
@@ -47,10 +58,43 @@ map = "MAP_SOOTOPOLIS_CITY_GYM_1F"
 [[step]]
 do = "walk_to"
 x = 8
-z = 3
+z = 20
+note = "up the entrance hall to the first ice field (SootopolisCity_Gym_1F map.json: thin ice MB_THIN_ICE 0x26 at rows 17-19, 12-14, 6-9)"
+
+[[step]]
+do = "steps"
+route = [[8, 19], [9, 19], [9, 18], [7, 18], [7, 17], [8, 17]]
+note = "each thin-ice tile once (a second step on cracked ice falls to B1F: OnFrame VAR_ICE_STEP_COUNT 0 -> FallThroughIce): the 7 tiles take VAR_ICE_STEP_COUNT 1 -> 8, OnFrame UnlockFirstStairs opens (8,15..16) (SootopolisCity_Gym_1F/scripts.inc:7-9,28-42,46-52); a Hamiltonian path from the entry to the stairs"
+
+[[step]]
+do = "wait_frames"
+n = 90
+note = "the stairs' delay 40 + setmetatile + DrawWholeMapView"
+
+[[step]]
+do = "steps"
+route = [[8, 14], [5, 14], [5, 12], [7, 12], [7, 13], [10, 13], [10, 14], [11, 14], [11, 12], [8, 12]]
+note = "up the stairs, the 19 tiles of the second field: 9 -> 28, UnlockSecondStairs (8,10..11)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "steps"
+route = [[8, 9], [10, 9], [10, 7], [11, 7], [11, 8], [12, 8], [12, 9], [13, 9], [13, 6], [9, 6], [9, 8], [7, 8], [7, 9], [6, 9], [6, 8], [5, 8], [5, 9], [4, 9], [4, 8], [3, 8], [3, 6], [4, 6], [4, 7], [5, 7], [5, 6], [6, 6], [6, 7], [7, 7], [7, 6], [8, 6]]
+note = "the 40 tiles of the third field: 29 -> 69, UnlockThirdStairs (8,4..5)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "steps"
+route = [[8, 3]]
 face = "up"
 interact = true
-note = "below Wallace (8,2) [PHASE2: the ice route]"
+note = "up the last stairs, below Wallace (object 1 (8,2))"
 
 [[step]]
 do = "advance_text"
@@ -65,17 +109,33 @@ do = "advance_text"
 shot = "rain-badge"
 
 [[step]]
-do = "walk_to"
-x = 8
-z = 25
-note = "exit -> Sootopolis (31,32)"
+do = "press"
+keys = "DOWN"
+hold = 60
+note = "back down the stairs onto the cracked ice (8,6): VAR_ICE_STEP_COUNT 0 -> FallThroughIce, warphole MAP_SOOTOPOLIS_CITY_GYM_B1F (SootopolisCity_Gym_1F/scripts.inc:46-63); the static model has the stairs closed (map.bin) and never plans onto ice"
 
 [[step]]
 do = "wait_map"
+map = "MAP_SOOTOPOLIS_CITY_GYM_B1F"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "steps"
+route = [[7, 6], [7, 8], [8, 8], [8, 10], [8, 12], [5, 12], [5, 14], [8, 14], [8, 15], [8, 17], [8, 20], [8, 22], [11, 22]]
+note = "B1F down to its stairs (11,22) -> 1F (11,22): python3 tests/e2e/tools/gba_puzzle.py --game ruby MAP_SOOTOPOLIS_CITY_GYM_B1F 8 6 11 22 (the chutes (8,10..11), (8,15..16), (8,20..21) are MB_SLIDE_SOUTH 0x47, ridden; the gym's B1F trainers who see the route are fought)"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 33
 map = "MAP_SOOTOPOLIS_CITY"
+surf = true
+note = "the entrance hall's mat (8,25) -> Sootopolis (31,32)"
 
 [expect]
 map = "MAP_SOOTOPOLIS_CITY"
 badges = 8
-flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_DEFEATED_SOOTOPOLIS_GYM"]
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_DEFEATED_SOOTOPOLIS_GYM", "FLAG_HIDE_STEVEN_SOOTOPOLIS"]
 battles = 1

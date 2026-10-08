@@ -1375,6 +1375,8 @@ def _walk_to(s, step, ctx):
     stands on (a trainer who walked up to the player there) counts as reached from the tile next to it.
 
     GBA: `map` naming another map than the current one walks there first (_gba_route_to)."""
+    if step.get("dive") and not step.get("surf"):
+        step = dict(step, surf=True)  # a dive route arrives surfing (the cavern's pool): its last leg surfs too
     if ctx.game in GBA_GAMES and "map" in step and s.map_id != ctx.resolve(step["map"]):
         _gba_route_to(s, step, ctx)
     if step.get("via"):

@@ -16,7 +16,7 @@ refs = [
   "constants/version.inc (SPECIES_GROUDON_OR_KYOGRE: Ruby GROUDON, Sapphire KYOGRE)",
   "src/battle_setup.c:598-610 (ScrSpecial_StartGroudonKyogreBattle)",
 ]
-notes = "Sapphire branch (other: ../ruby/36-sootopolis-cave-of-origin-groudon). Kyogre lv45 [INFERENCE: static_pokemon level]; auto_battle knocks it out (the flag is set either way) - catching it would need a ball-throw bot [open question]. The cave (static model: B4F (9,13) is reached from B3F (12,6)) is entered after the Sootopolis scene; Waterfall is found on B3F (R/S have no Wallace HM gift). Sootopolis is reached by Dive from Route 126 [PHASE2: dive/surface tiles]."
+notes = "Sapphire branch (other: ../ruby/36-sootopolis-cave-of-origin-groudon). Kyogre lv45 [INFERENCE: static_pokemon level]; auto_battle knocks it out (the flag is set either way) - catching it would need a ball-throw bot [open question]. The cave (static model: B4F (9,13) is reached from B3F (12,6)) is entered after the Sootopolis scene; Waterfall is found on B3F (R/S have no Wallace HM gift). Sootopolis is reached by Dive from Route 126 (walk_to dive = true)."
 
 [start]
 from = "prev"
@@ -24,15 +24,16 @@ from = "prev"
 [run]
 frames = 60000
 
-# PHASE2: Dive from Route 126 into Sootopolis; the Cave of Origin floors (dark; probe_map each).
 
 [[step]]
 do = "walk_to"
 x = 25
 z = 7
 map = "MAP_SOOTOPOLIS_CITY"
-surf = true
-note = "Route 128 west to Route 126, Dive, surface inside the crater [PHASE2: the dive and surface tiles]"
+dive = true
+on_battle = "flee"
+max = 20000
+note = "Route 128 west to Route 126, Dive (Route126 map.json dive connection -> MAP_UNDERWATER2), its water door (45,65) -> UNDERWATER_SOOTOPOLIS_CITY, surface in the crater (setdivewarp MAP_SOOTOPOLIS_CITY 29,53: Underwater_SootopolisCity/scripts.inc:5-6), Surf to the north shore"
 
 [[step]]
 do = "walk_to"
