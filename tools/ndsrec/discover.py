@@ -147,6 +147,12 @@ class Module(object):
                         for o in range(0, nbytes, 2):
                             f.lits[tab + o] = 2
                     work.extend(tg)
+                elif thumb and ins.text == "bx pc" and not a & 3:
+                    # `bx pc; nop` switches to ARM at a + 4: the ARM half of
+                    # an interworking veneer (mwldarm's Thumb-to-ARM/far
+                    # call stub `bx pc; nop; ldr ip, [pc]; bx ip; .word T`)
+                    # is a function of its own, entered by this tail jump
+                    f.tails.add(a + 4)
                 if ins.ends_flow:
                     break
                 a += ins.size
@@ -178,6 +184,8 @@ class Module(object):
             if f.addr < k < t:
                 return False
         prev = self.u16(t - 2)
+        if self.u16(t) == 0x4778:               # bx pc: an interworking veneer
+            return False
         if (prev is None or prev in (0, 0x4770, 0x46C0)
                 or (prev & 0xFF00) == 0xBD00 or (prev & 0xFF87) == 0x4700):
             return False
