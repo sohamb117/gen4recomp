@@ -4,7 +4,7 @@
 title = "Route 111, Route 112 and the Fiery Path to Route 113"
 priority = "P0"
 version = "both"
-estimate = 24730
+estimate = 25899
 refs = [
   "data/maps/Route111/map.json object_events[14] (18,101), [15] (19,100) OBJ_EVENT_GFX_BREAKABLE_ROCK",
   "data/maps/Route112/map.json object_events[0],[5] grunts (26,30)/(27,30) FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR",
@@ -15,9 +15,10 @@ notes = "Back east through Route 117 to Mauville, north on Route 111: the two ro
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 
 [run]
-frames = 37100
+frames = 38900
 
 [[step]]
 do = "walk_to"

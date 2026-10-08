@@ -2,10 +2,9 @@
 # TM50 Overheat, PETALBURG_GYM_STATE 6 (Norman ready), then May's OnFrame Go-Goggles (VAR_LAVARIDGE_RIVAL_STATE 2).
 # Start: Lavaridge (9,7) -> end: MAP_LAVARIDGE_TOWN outside the gym (5,16).
 title = "Lavaridge Gym: Flannery's Heat Badge and May's Go-Goggles"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 18400
+estimate = 10679
 refs = [
   "data/maps/LavaridgeTown/map.json warp_events[1] (5,15) -> LAVARIDGE_TOWN_GYM_1F (8,23)",
   "data/maps/LavaridgeTown_Gym_1F/map.json object_events[0] FLANNERY (8,10); buried trainers (BURIED/1)",
@@ -19,7 +18,7 @@ notes = "Flannery: TRAINER_FLANNERY (268): SLUGMA 26, SLUGMA 26, TORKOAL 28 (Wat
 from = "prev"
 
 [run]
-frames = 60000
+frames = 16100
 
 [[step]]
 do = "walk_to"

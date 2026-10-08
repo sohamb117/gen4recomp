@@ -1,3 +1,6 @@
 # HM03 Surf (FLAG_RECEIVED_HM_SURF, milestone 24) taught to the lead in place of Mud Shot, as a player teaches it
 # from the TM case: Route 118's inlet and Route 119's river (walk_to surf = true).
 party-move 0 1 MOVE_SURF
+# Route 118/119's trainers (pokeruby src/data/trainer_parties.h, lv 25-30) come one after another with no Pokemon
+# Center between Mauville and the Institute: the lead's level (stats, HP full) shortens each fight.
+party-level 0 48

@@ -27,6 +27,19 @@ frames = 60000
 
 [[step]]
 do = "walk_to"
+x = 14
+z = 8
+map = "MAP_FALLARBOR_TOWN"
+note = "Route 114 east into Fallarbor, below its Pokemon Center door"
+
+[[step]]
+do = "heal"
+x = 14
+z = 7
+note = "Fallarbor Pokemon Center (FallarborTown/map.json warp_events[2] (14,7)): Route 113/114's trainers drained the lead's PP; Mt. Chimney's admin, grunt and leader come back to back (a first Sapphire run lost to Archie with Mud Shot spent)"
+
+[[step]]
+do = "walk_to"
 x = 22
 z = 10
 map = "MAP_ROUTE112"
@@ -89,6 +102,7 @@ map = "MAP_MT_CHIMNEY"
 [[step]]
 do = "talk_to"
 id = 2
+shot = "archie"
 note = "Archie (object 2 (13,6)); Matt (12,11) and the grunt (9,15) fought on the way"
 
 [[step]]

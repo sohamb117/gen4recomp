@@ -3,5 +3,5 @@
 party-move 0 0 MOVE_CUT
 # Norman (pokeruby src/data/trainer_parties.h gTrainerParty_Norman: SLAKING 28, VIGOROTH 30, SLAKING 31): Water Gun
 # alone loses to the Slakings; the lead's own Muddy Water (Marshtomp lv37, Swampert lv39) and a level carry it.
-party-level 0 42
+party-level 0 46
 party-move 0 2 MOVE_MUDDY_WATER   # pokeruby src/data/pokemon/level_up_learnsets.h gMarshtompLevelUpLearnset

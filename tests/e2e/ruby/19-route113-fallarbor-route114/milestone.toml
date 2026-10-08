@@ -4,7 +4,7 @@
 title = "Route 113, Fallarbor and Route 114 to Meteor Falls"
 priority = "P0"
 version = "both"
-estimate = 24843
+estimate = 22874
 refs = [
   "data/maps/FallarborTown/map.json warp_events[2] (14,7) -> POKEMON_CENTER_1F",
   "data/maps/Route114/map.json warp_events[0] (8,63) -> METEOR_FALLS_1F_1R (27,18)",
@@ -15,7 +15,7 @@ notes = "Route 113 and Route 114 sight trainers (lv 16-20) are fought on the way
 from = "prev"
 
 [run]
-frames = 37300
+frames = 34400
 
 [[step]]
 do = "walk_to"

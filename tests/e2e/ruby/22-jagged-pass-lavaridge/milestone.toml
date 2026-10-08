@@ -2,10 +2,9 @@
 # (FLAG_VISITED_LAVARIDGE_TOWN, heal).
 # Start: Mt. Chimney summit -> end: MAP_LAVARIDGE_TOWN in front of the Pokemon Center (9,7).
 title = "Jagged Pass down to Lavaridge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12500
+estimate = 5230
 refs = [
   "data/maps/MtChimney/map.json warp_events[2] (20,41) -> JAGGED_PASS (13,5)",
   "data/maps/JaggedPass/map.json warp_events[0] (14,40) -> Route 112 (6,46)",
@@ -17,7 +16,7 @@ notes = "Jagged Pass trainers (lv 19-22) stand by the ledges; Jagged Pass is one
 from = "prev"
 
 [run]
-frames = 60000
+frames = 7900
 
 [[step]]
 do = "walk_to"

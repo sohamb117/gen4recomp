@@ -1,0 +1,5 @@
+# Party strength for Route 111/112's grass users (pokeruby src/data/trainer_parties.h: Brooke1:1230 WINGULL 18,
+# NUMEL 18, ROSELIA 18; Carol:6327 TAILLOW 18, LOMBRE 18; Irene:6397 SHROOMISH 18, MARILL 18; Larry:2684 ZIGZAGOON 18,
+# NUZLEAF 18): their Grass moves hit the lone Marshtomp (Water/Ground) x4, and a lv33 lead whited out on Route 111's
+# north end on Sapphire. Levels only.
+party-level 0 40

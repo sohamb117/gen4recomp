@@ -4,7 +4,7 @@
 title = "Meteor Falls: the meteorite is taken"
 priority = "P0"
 version = "both"
-estimate = 3325
+estimate = 3323
 refs = [
   "data/maps/MeteorFalls_1F_1R/map.json coord_events (14,18) VAR_METEOR_FALLS_STATE=0",
   "data/maps/MeteorFalls_1F_1R/scripts.inc:9-83 (scene; .ifdef SAPPHIRE only swaps text at :56-60; FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR, METEOR_FALLS_STATE 1)",

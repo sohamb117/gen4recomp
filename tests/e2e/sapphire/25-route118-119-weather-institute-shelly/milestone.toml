@@ -34,6 +34,12 @@ map = "MAP_MAUVILLE_CITY"
 note = "back to Mauville's east edge by the 24 walk in reverse"
 
 [[step]]
+do = "heal"
+x = 22
+z = 5
+note = "Mauville Pokemon Center (MauvilleCity/map.json warp_events[1] (22,5)): the walk back fights Route 104/116/117 trainers, and without HP and PP back a first run whited out on Route 119 before the Institute"
+
+[[step]]
 do = "walk_to"
 x = 44
 z = 12

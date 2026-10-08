@@ -3,10 +3,9 @@
 # VAR_WEATHER_INSTITUTE_STATE 1 and Castform.
 # Start: Wally's house -> end: MAP_ROUTE119 outside the Weather Institute (6,33).
 title = "Routes 118-119 and the Weather Institute: the Magma admin (Ruby)"
-status = "planned"
 priority = "P0"
 version = "ruby"
-estimate = 52000
+estimate = 41522
 refs = [
   "data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0",
   "data/maps/Route118/scripts.inc:50-95 (Steven (object 19) scene, ROUTE118_STATE 1)",
@@ -24,7 +23,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 62300
 
 [[step]]
 do = "walk_to"
@@ -32,6 +31,12 @@ x = 39
 z = 10
 map = "MAP_MAUVILLE_CITY"
 note = "back to Mauville's east edge by the 24 walk in reverse"
+
+[[step]]
+do = "heal"
+x = 22
+z = 5
+note = "Mauville Pokemon Center (MauvilleCity/map.json warp_events[1] (22,5)): the walk back fights Route 104/116/117 trainers, and without HP and PP back a first run whited out on Route 119 before the Institute"
 
 [[step]]
 do = "walk_to"

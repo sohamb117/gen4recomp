@@ -3,10 +3,9 @@
 # Ruby): FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY.
 # Start: Route 114 (8,64) -> end: MAP_MT_CHIMNEY by the meteorite machine.
 title = "Cable car to Mt. Chimney: Tabitha and Maxie (Ruby)"
-status = "planned"
 priority = "P0"
 version = "ruby"
-estimate = 35000
+estimate = 29360
 refs = [
   "data/maps/Route112/map.json warp_events[5] (22,10) -> FIERY_PATH (26,4), [0] (28,27) -> ROUTE112_CABLE_CAR_STATION",
   "data/maps/Route112_CableCarStation/scripts.inc:32-55 (attendant MSGBOX_YESNO -> CABLE_CAR_STATION_STATE 1, special CableCarWarp, special CableCar)",
@@ -22,7 +21,20 @@ notes = "Ruby's branch of the Mt. Chimney scene (Sapphire: ../sapphire/21-cable-
 from = "prev"
 
 [run]
-frames = 60000
+frames = 44100
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 8
+map = "MAP_FALLARBOR_TOWN"
+note = "Route 114 east into Fallarbor, below its Pokemon Center door"
+
+[[step]]
+do = "heal"
+x = 14
+z = 7
+note = "Fallarbor Pokemon Center (FallarborTown/map.json warp_events[2] (14,7)): Route 113/114's trainers drained the lead's PP; Mt. Chimney's admin, grunt and leader come back to back (a first Sapphire run lost to Archie with Mud Shot spent)"
 
 [[step]]
 do = "walk_to"
@@ -88,6 +100,7 @@ map = "MAP_MT_CHIMNEY"
 [[step]]
 do = "talk_to"
 id = 2
+shot = "maxie"
 note = "Maxie (object 2 (13,6)); Tabitha (12,11) and the grunt (9,15) fought on the way"
 
 [[step]]

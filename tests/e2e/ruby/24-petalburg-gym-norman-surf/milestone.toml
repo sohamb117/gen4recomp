@@ -2,10 +2,9 @@
 # Petalburg; no Fly yet), the gym's rooms to Norman (TRAINER_NORMAN): FLAG_BADGE05_GET, then Wally's dad and HM03 Surf.
 # Start: Lavaridge (5,16) -> end: MAP_PETALBURG_CITY_WALLYS_HOUSE, FLAG_RECEIVED_HM_SURF.
 title = "Petalburg Gym: Norman's Balance Badge and HM03 Surf"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 29300
+estimate = 29678
 refs = [
   "data/maps/PetalburgCity/map.json warp_events[2] (15,8) -> PETALBURG_CITY_GYM (4,111), [1] (7,5) -> WALLYS_HOUSE",
   "data/maps/PetalburgCity_Gym/map.json bg_events (7,105) AccuracyRoomDoor, (1,92) RightDefenseRoomDoor, (1,53) RightStrengthRoomDoor, (7,14) LeftGymLeadersRoomDoor",
@@ -24,7 +23,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 44600
 
 [[step]]
 do = "walk_to"
@@ -182,6 +181,40 @@ note = "TRAINER_NORMAN (269): SLAKING 28, VIGOROTH 30, SLAKING 31 (PetalburgCity
 do = "advance_text"
 shot = "balance-badge"
 note = "badge, TM42 Facade, Norman's farewell (:386-432)"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "back the way in, room by room: R/S's gym doors are warp events, closed metatiles until Norman's UnlockAllDoors + DrawWholeMapView (PetalburgCity_Gym/scripts.inc:396-397), so the static world model has no way out; the probe sees them open. Norman's room west door (warp 34 (1,7)) -> Jody's room (7,14)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 20
+note = "Jody's room south-east door (warp 26 (7,20)) -> Lori's room (1,53)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 59
+note = "Lori's room south-east door (warp 16 (7,59)) -> Mary's room (1,92)"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 98
+note = "Mary's room south-west door (warp 6 (1,98)) -> the lobby (7,105)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 111
+note = "lobby exit mat (warp 0) -> Petalburg (15,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PETALBURG_CITY"
 
 [[step]]
 do = "walk_to"

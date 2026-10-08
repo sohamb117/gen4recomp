@@ -2,10 +2,9 @@
 # FLAG_RECEIVED_DEVON_SCOPE) and the Devon Scope on Fortree's invisible Kecleon (FLAG_KECLEON_FLED_FORTREE).
 # Start: Fortree (5,7) -> end: MAP_FORTREE_CITY below the gym door (22,12).
 title = "Route 120: Steven's Devon Scope, the Fortree Kecleon"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12200
+estimate = 11697
 refs = [
   "data/maps/Route120/map.json object_events[30] STEVEN (13,15), [29] KECLEON_1 (12,16) invisible",
   "data/maps/Route120/scripts.inc:179-200 (Steven: MSGBOX_YESNO; NO sets FLAG_NOT_READY_FOR_BATTLE_ROUTE120 and asks again)",
@@ -20,7 +19,7 @@ notes = "The bridge Kecleon battle continues to the scope whatever its outcome (
 from = "prev"
 
 [run]
-frames = 60000
+frames = 17600
 
 [[step]]
 do = "walk_to"

@@ -2,10 +2,9 @@
 # (FLAG_RECEIVED_HM02), and Route 119's north end into Fortree (FLAG_VISITED_FORTREE_CITY, heal).
 # Start: Route 119 (6,33) -> end: MAP_FORTREE_CITY in front of the Pokemon Center (5,7).
 title = "Route 119: May's third battle, HM02 Fly, Fortree"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 11500
+estimate = 12980
 refs = [
   "data/maps/Route119_WeatherInstitute_1F/map.json bg_events (0..1,2..3) bed -> Route119_WeatherInstitute_1F_EventScript_163C83 (party heal)",
   "data/maps/Route119/map.json coord_events (25,31)/(26,31) VAR_ROUTE119_STATE=0",
@@ -20,7 +19,7 @@ notes = "May: TRAINER_MAY_3 (531): NUMEL 29, WAILMER 29, GROVYLE 31 (Grovyle x4 
 from = "prev"
 
 [run]
-frames = 60000
+frames = 19500
 
 [[step]]
 do = "walk_to"
