@@ -2,9 +2,8 @@
 # (STATE 3 -> 4), the Mach Bike climb over cracked floors 1F..5F and the top's AwakenRayquaza coord: STATE 5, SKY_PILLAR_STATE 1.
 # Start: Cave of Origin B1F -> end: MAP_SKY_PILLAR_TOP after Rayquaza flies off.
 title = "Sky Pillar: Wallace opens the door, Rayquaza wakes"
-status = "planned"
 priority = "P0"
-estimate = 20000
+estimate = 29323
 refs = [
   "data/maps/Route131/map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE",
   "data/maps/SkyPillar_Entrance/map.json warp_events[1] (14,4) -> OUTSIDE",
@@ -24,9 +23,8 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 44000
 
-# PHASE2: Sky Pillar 2F-4F cracked-floor crossings with the Mach Bike (register it on SELECT, ride, steps routes per floor); the Route 129-131 surf path.
 
 [[step]]
 do = "walk_to"
@@ -64,6 +62,10 @@ x = 36
 z = 6
 map = "MAP_ROUTE131"
 surf = true
+dive = true
+hm = true
+on_battle = "flee"
+max = 30000
 note = "[PHASE2] Dive out of Sootopolis, Surf Routes 126 -> 127 -> 128 -> 129 -> 130 -> 131, Sky Pillar door (Route 131 warp 0) -> SKY_PILLAR_ENTRANCE (6,16)"
 
 [[step]]
@@ -96,37 +98,13 @@ map = "MAP_SKY_PILLAR_1F"
 
 [[step]]
 do = "walk_to"
-x = 10
-z = 1
-note = "1F (warp 2) -> 2F"
-
-[[step]]
-do = "wait_map"
-map = "MAP_SKY_PILLAR_2F"
-
-[[step]]
-do = "walk_to"
-x = 3
-z = 1
-map = "MAP_SKY_PILLAR_5F"
-note = "[PHASE2: Mach Bike over 2F/4F cracks] 2F -> 3F -> 4F -> 5F"
-
-[[step]]
-do = "walk_to"
-x = 10
-z = 1
-note = "5F (warp 1) -> SKY_PILLAR_TOP (16,14)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_SKY_PILLAR_TOP"
-
-[[step]]
-do = "walk_to"
 x = 14
 z = 9
+map = "MAP_SKY_PILLAR_TOP"
 on_text = "stop"
-note = "AwakenRayquaza coord (14,9) VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE 0"
+on_battle = "flee"
+max = 20000
+note = "up the Sky Pillar: whole floors while VAR_SKY_PILLAR_STATE < 2 (SkyPillar_2F/3F/4F/5F OnTransition -> LAYOUT_..._CLEAN, the router reads the var), 4F's two cracked tiles (6,4)/(7,4) the way down to 3F's middle stairs (setholewarp MAP_SKY_PILLAR_3F), 4F (7,1) -> 5F (3,1) -> Top; the Rayquaza scene (SkyPillar_Top coord (14,9))"
 
 [[step]]
 do = "advance_text"

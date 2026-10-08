@@ -3959,7 +3959,7 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~931424 frames estimated
+### Story chain: 48 milestones, ~959120 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3977,7 +3977,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [12-dewford-gym-brawly](emerald/12-dewford-gym-brawly/milestone.toml) | Dewford Gym: Brawly and the Knuckle Badge | P0 |  | 10618 | prev + `None` | MAP_DEWFORD_TOWN | passing |
 | [13-slateport-museum-stern](emerald/13-slateport-museum-stern/milestone.toml) | Sail to Slateport: the shipyard, the Oceanic Museum grunts, Devon Goods to Stern | P0 |  | 15319 | prev + `None` | MAP_SLATEPORT_CITY | passing |
 | [14-route110-birch-may](emerald/14-route110-birch-may/milestone.toml) | Route 110: Birch's Match Call and May's second battle | P0 |  | 27997 | prev + `None` | MAP_MAUVILLE_CITY | passing |
-| [15-mauville-wally-mach-bike](emerald/15-mauville-wally-mach-bike/milestone.toml) | Mauville: Wally's battle and the Mach Bike | P0 |  | 5103 | prev + `None` | MAP_MAUVILLE_CITY | passing |
+| [15-mauville-wally-mach-bike](emerald/15-mauville-wally-mach-bike/milestone.toml) | Mauville: Wally's battle and the Mach Bike | P0 |  | 4803 | prev + `None` | MAP_MAUVILLE_CITY | passing |
 | [16-mauville-gym-wattson-rock-smash](emerald/16-mauville-gym-wattson-rock-smash/milestone.toml) | Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash | P0 |  | 11200 | prev + `None` | MAP_MAUVILLE_CITY | passing |
 | [17-verdanturf-rusturf-strength](emerald/17-verdanturf-rusturf-strength/milestone.toml) | Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength | P0 |  | 23176 | prev + `None` | MAP_VERDANTURF_TOWN | passing |
 | [18-route111-112-fiery-path](emerald/18-route111-112-fiery-path/milestone.toml) | Route 111 rocks, Route 112 and the Fiery Path north | P0 |  | 30284 | prev + `None` | MAP_ROUTE113 | passing |
@@ -4001,8 +4001,8 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [36-stevens-house-hm-dive](emerald/36-stevens-house-hm-dive/milestone.toml) | Steven's house: HM08 Dive | P0 |  | 3072 | prev + `None` | MAP_MOSSDEEP_CITY_STEVENS_HOUSE | passing |
 | [37-seafloor-cavern-archie-kyogre](emerald/37-seafloor-cavern-archie-kyogre/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre | P0 |  | 20844 | prev + `None` | MAP_ROUTE128 | passing |
 | [38-sootopolis-cave-of-origin-wallace](emerald/38-sootopolis-cave-of-origin-wallace/milestone.toml) | Sootopolis in the storm: Steven, the Cave of Origin, Wallace | P0 |  | 18043 | prev + `None` | MAP_CAVE_OF_ORIGIN_B1F | passing |
-| [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 20000 | prev + `None` | MAP_SKY_PILLAR_TOP | planned |
-| [40-sootopolis-rayquaza-waterfall](emerald/40-sootopolis-rayquaza-waterfall/milestone.toml) | Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall | P0 |  | 8000 | prev + `None` | MAP_SOOTOPOLIS_CITY | planned |
+| [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 29323 | prev + `None` | MAP_SKY_PILLAR_TOP | passing |
+| [40-sootopolis-rayquaza-waterfall](emerald/40-sootopolis-rayquaza-waterfall/milestone.toml) | Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall | P0 |  | 26673 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
 | [41-sootopolis-gym-juan](emerald/41-sootopolis-gym-juan/milestone.toml) | Sootopolis Gym: Juan and the Rain Badge | P0 |  | 14000 | prev + `None` | MAP_SOOTOPOLIS_CITY | planned |
 | [42-ever-grande-victory-road-wally](emerald/42-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally's last battle | P0 |  | 24000 | prev + `None` | MAP_EVER_GRANDE_CITY | planned |
 | [43-pokemon-league-entrance](emerald/43-pokemon-league-entrance/milestone.toml) | Pokemon League lobby: heal and pass the badge guards | P0 |  | 4000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
@@ -4157,8 +4157,8 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: TRAINER_WALLY_MAUVILLE (656), src/data/trainers.h:7876
-- end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_DEFEATED_WALLY_MAUVILLE, FLAG_RECEIVED_BIKE, FLAG_HIDE_MAUVILLE_CITY_WALLY, FLAG_HIDE_MAUVILLE_CITY_WALLYS_UNCLE
-- frames: estimate 5103, budget 7700
+- end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_DEFEATED_WALLY_MAUVILLE, FLAG_RECEIVED_BIKE, FLAG_HIDE_MAUVILLE_CITY_WALLY, FLAG_HIDE_MAUVILLE_CITY_WALLYS_UNCLE; 1 save check(s)
+- frames: estimate 4803, budget 7300
 - refs: data/maps/MauvilleCity/map.json object_events[6] WALLY (8,6), [7] uncle (9,6); data/maps/MauvilleCity/scripts.inc:84-160; data/maps/MauvilleCity/scripts.inc:187-200; TRAINER_WALLY_MAUVILLE (656), src/data/trainers.h:7876; data/maps/MauvilleCity/map.json warp_events[2] (35,5) -> BIKE_SHOP; data/maps/MauvilleCity_BikeShop/scripts.inc:4-45
 - notes: Wally: TRAINER_WALLY_MAUVILLE (656): RALTS 16. Rydel: "came from far away?" YES (cursor on YES) -> FLAG_RECEIVED_BIKE -> multichoice MULTI_BIKE (case 0 = MACH BIKE, MauvilleCity_BikeShop/scripts.inc:24-27): A on the first entry. The Mach Bike crosses Sky Pillar's cracked floors (and Granite Cave B1F's); Acro is never needed on the story path [INFERENCE].
 
@@ -4398,7 +4398,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_SKY_PILLAR_TOP; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_LANDMARK_SKY_PILLAR, FLAG_SYS_WEATHER_CTRL; flags clear FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE; vars VAR_SOOTOPOLIS_CITY_STATE=5, VAR_SKY_PILLAR_STATE=1, VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE=1
-- frames: estimate 20000, budget 60000
+- frames: estimate 29323, budget 44000
 - refs: data/maps/Route131/map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE; data/maps/SkyPillar_Entrance/map.json warp_events[1] (14,4) -> OUTSIDE; data/maps/SkyPillar_Outside/scripts.inc:20-30; data/maps/SkyPillar_Outside/scripts.inc:33-79; data/maps/SkyPillar_Outside/map.json warp_events[1] (14,5) -> SKY_PILLAR_1F; data/maps/SkyPillar_1F/map.json warp_events[2] (10,1); data/maps/SkyPillar_5F/map.json warp_events[1] (10,1) -> TOP; data/maps/SkyPillar_Top/map.json coord_events (14,9) VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE=0; data/maps/SkyPillar_Top/scripts.inc:85-125; data/maps/SkyPillar_1F/scripts.inc:6 (CleanFloor while SKY_PILLAR_STATE < 2)
 - notes: No battle: in Emerald Rayquaza only wakes and flies to Sootopolis here (the catchable Rayquaza is post-game, SkyPillar_Top/scripts.inc:18-19,36-57). Cracked floors (2F/4F) drop to the floor below unless crossed at speed on the Mach Bike (15) [INFERENCE: walk_to needs a bike mode]. Out of the Cave of Origin: Sootopolis -> Dive out -> Route 126 -> 127 -> 128 -> 129 -> 130 -> 131 (Surf; Route 130/131 currents). Abnormal weather (rain) en route.
 
@@ -4408,7 +4408,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_SOOTOPOLIS_CITY; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_MET_MAXIE_SOOTOPOLIS, FLAG_MET_ARCHIE_SOOTOPOLIS, FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE, FLAG_RECEIVED_HM_WATERFALL, FLAG_HIDE_SOOTOPOLIS_CITY_MAXIE, FLAG_HIDE_SOOTOPOLIS_CITY_ARCHIE; flags clear FLAG_LEGENDARIES_IN_SOOTOPOLIS, FLAG_SYS_WEATHER_CTRL; vars VAR_SKY_PILLAR_STATE=3, VAR_SOOTOPOLIS_CITY_STATE=5, VAR_MT_PYRE_STATE=2
-- frames: estimate 8000, budget 60000
+- frames: estimate 26673, budget 40100
 - refs: data/maps/SootopolisCity/scripts.inc:167; data/maps/SootopolisCity/scripts.inc:456-508; data/maps/SootopolisCity/map.json object_events 16 MAXIE (29,33), 17 ARCHIE (31,33), 18 WALLACE (31,18); data/maps/SootopolisCity/scripts.inc:1302-1339; data/maps/SootopolisCity/scripts.inc:1251-1279; data/maps/SootopolisCity/scripts.inc:114-137; src/party_menu.c:127 (Waterfall needs FLAG_BADGE08_GET); src/field_control_avatar.c:455
 - notes: No battle. Fly works from the Sky Pillar top [INFERENCE: outdoor map type]; landing at (43,32) runs RayquazaSceneFromPokeCenter (SKY_PILLAR_STATE 3, warpwhitefade (43,32)). Maxie and Archie stand by the gym (SetOutsideGymObjPos, SOOTOPOLIS_CITY_STATE 5) and Wallace beside them (VAR_SOOTOPOLIS_WALLACE_STATE positions); after both talk, MaxieArchieLeave warps to (31,34) and sets VAR_MT_PYRE_STATE 2 (the orbs return scene on Mt. Pyre is optional). Waterfall needs the Rain Badge (41).
 
