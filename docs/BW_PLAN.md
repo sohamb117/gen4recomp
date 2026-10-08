@@ -495,7 +495,7 @@ job never completes (sound, an async load, an effect) is the next thing to
 establish. Guest memory in np_headless starts at host 0x300000000 (lldb
 `x/wx 0x300000000+ADDR`).
 
-## First battle runs: VCOUNT, three ndsrec rules, and the stop at ov230 (2026-10-08)
+## First battle runs: VCOUNT, three ndsrec rules, and the other overlay-230 callers (2026-10-08)
 
 The send-out wait above was the machine model. `ov94_021F78E4` stores the
 battle effect VM's busy state (`ov94_021F9478` -> `sub_02011298`) into
@@ -544,11 +544,41 @@ FIGHT/BAG/RUN/POKÉMON on the touch screen (Black frame 10609). Turns run
 ("The foe's Snivy used Tackle!", frame 10801), and mashing A wins: "got
 $500 for winning!" at frame 13701 (Black Tepig 14/22, White 12/22).
 
-**Current stop:** right after the win, overlay 92 loads at 0x021B95A0 and
-`ov10_0216EB98` (White `ov10_0216EBB8`) calls `sub_02034AC4` (White
-`sub_02034ADC`), which starts overlay 230. That happens at frame 13756 in
-Black and 13796 in White. The core then traps, because ov230's five static
-initialisers have no translation (ov230 is opaque and self-modifying).
-Besides `sub_02011D9C` (which the startup patch covers), the code that
-loads ov230 is here and in `ov020_021841C0` (field). By direction, this
-path is left as found rather than worked around.
+**After the win**, overlay 92 loads at 0x021B95A0, and `ov10_0216EB98`
+(White `ov10_0216EBB8`) calls `sub_02034AC4` (White `sub_02034ADC`) to
+start overlay 230: frame 13756 in Black, 13796 in White. ov230's five
+static initialisers have no translation, so the core trapped. By the
+user's decision, `pc/patch_bw_startup.py` now gives every ov230 caller the
+startup treatment. ov230 itself is never decoded, decrypted or
+recompiled. Its load, unload and calls are removed, each four-byte BL
+becomes two two-byte instructions (no guest address moves), and each
+caller gets the outcome a genuine cartridge produces, read from its own
+comparisons. Full-file SHA-256 guards cover each file, the same as for
+`ndsrec_arm9_004.s`.
+
+| Caller (Black / White) | ov230 call | Substituted outcome |
+| --- | --- | --- |
+| `sub_02011D9C` (startup) | load, 0x021882A0 / 0x021882C0, 0x02188354 / 0x02188374, 0x02188390 / 0x021883B0, unload | as before: load/unload and third call omitted, first returns 0, second `~r1` |
+| `ov10_0216EB98` / `ov10_0216EBB8` (after a battle, `ndsrec_ov010_005.s`) | load (l. 3379), 0x021882DC / 0x021882FC (l. 3393), 0x02188354 / 0x02188374 (l. 3426), 0x02188390 / 0x021883B0 (l. 3445), unload (l. 3476) | load/unload omitted; returns `~r1`, `~r1`, 0 |
+| `ov20_021841C0` (field, `ndsrec_ov020_000.s`, both games) | load (l. 840), 0x021882A0 / 0x021882C0 (l. 870), 0x02188318 / 0x02188338 (l. 909), 0x021883CC / 0x021883EC (l. 929), unload (l. 956) | all omitted: the caller reads none of the results |
+
+How `ov10_0216EB98`'s outcome is derived: r7 starts at 0x013A1AB5, which
+is 0x1933 × 3191. At the state machine's exit, any r7 % 0x1933 other than
+0 queues the `0x02011D35` VBlank task and bumps the counter at
+0x0214624C. The startup caller registers the same task on its failure
+path. The first two checks add 0 to r7 only when the result equals `~r1`
+(otherwise 0x3D1 or 0x5D1). The third adds 0x9D when the result equals
+`~r1` (key 0x0216F07D), so it returns 0.
+
+Search: these three functions are the only code that loads overlay id
+0xE6 (a literal 0xE6 before the overlay-load call), in both games. The
+other `sub_02034AC4` callers in ov10 and ov20 load other overlays.
+
+Result with the substitutions, both games, same save and schedule, run to
+frame 30000 with A every 40 frames. After Bianca's win, overlay 92 loads
+and the field returns (overlays 20/21/18/24/30 at frame 13920 in Black,
+13960 in White) with no ov230 load. Cheren's battle follows: overlays
+93-96 at 17042 / 17082, Oshawott sent out. Tepig (now Lv 6) wins it: Black
+10/25, White "Player defeated Pkmn Trainer Cheren" at 3/24 (frame 20501).
+The wrecked bedroom with the player free follows at frame 25001 (zone 391,
+field_ready 1), and the run exits 0.
