@@ -16,7 +16,7 @@ from pathlib import Path
 
 E2E = Path(__file__).resolve().parents[1]
 PLAN = E2E / "PLAN.md"
-GAMES = ("platinum", "diamond", "pearl")
+GAMES = ("platinum", "diamond", "pearl", "emerald", "ruby", "sapphire")
 STATE_VERBS = ("flag", "clear-flag", "var", "badge", "item", "poketch", "pokedex", "national-dex",
                "story-cleared", "register-item")
 

@@ -23,7 +23,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 27000
+frames = 60000
 
 # PHASE2: the gym's spin tiles / floor switches (MossdeepCity_Gym coord_events: Yellow/Blue/Green/Purple/Red switches, WarpToEntrance (21,6)) to Tate & Liza (23..24,7): record a steps route.
 
@@ -76,7 +76,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "tate-liza"
 note = "TRAINER_TATE_AND_LIZA_1 (271): CLAYDOL 41, XATU 41, LUNATONE 42, SOLROCK 42 (double)"
 
 [[step]]

@@ -25,7 +25,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 12000
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -89,7 +89,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-shot = "tunnel-grunt"
+snap = true
 note = "TRAINER_GRUNT_RUSTURF_TUNNEL (16): POOCHYENA 11"
 
 [[step]]

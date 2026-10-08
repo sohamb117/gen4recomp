@@ -27,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 39000
+frames = 60000
 save = "none"
 
 # PHASE2: HoF screen input: confirm whether the HoF slideshow waits for A per mon (src/hall_of_fame.c Task_Hof_* ) and how many presses; the steps below press A on a cadence.
@@ -49,7 +49,6 @@ note = "OnFrame VAR_TEMP_1 0 -> EnterRoom: walk up, IntroSpeech (EverGrandeCity_
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "wallace"
 note = "TRAINER_WALLACE (335): WAILORD 57, TENTACRUEL 55, LUDICOLO 56, WHISCASH 56, GYARADOS 56, MILOTIC 58 (:41)"
 
 [[step]]

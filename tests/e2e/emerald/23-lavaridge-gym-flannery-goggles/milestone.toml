@@ -29,7 +29,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 18000
+frames = 60000
 
 # PHASE2: the geyser route to Flannery (probe the 1F/B1F warp pairs; Flannery (13,9) is on 1F behind the B1F loop) -> via list or steps.
 
@@ -57,7 +57,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "flannery"
 note = "TRAINER_FLANNERY_1 (268): NUMEL 24, SLUGMA 24, CAMERUPT 26, TORKOAL 29"
 
 [[step]]

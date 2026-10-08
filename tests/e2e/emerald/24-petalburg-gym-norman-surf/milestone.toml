@@ -24,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 30000
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -88,7 +88,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "norman"
 note = "TRAINER_NORMAN_1 (269): SPINDA 27, VIGOROTH 27, LINOONE 29, SLAKING 31 (PetalburgCity_Gym/scripts.inc:360-362)"
 
 [[step]]

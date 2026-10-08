@@ -25,7 +25,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 18000
+frames = 60000
 
 # PHASE2: the rotating-gate route to Winona (src/rotating_gate.c puzzle for MAP_FORTREE_CITY_GYM): record a steps/moves route with the game as oracle.
 
@@ -53,7 +53,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "winona"
 note = "TRAINER_WINONA_1 (270): SWABLU 29, TROPIUS 29, PELIPPER 30, SKARMORY 31, ALTARIA 33"
 
 [[step]]

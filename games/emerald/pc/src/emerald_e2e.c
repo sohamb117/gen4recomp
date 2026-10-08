@@ -155,19 +155,28 @@ static void e2e_mon(np_e2e_mon *m, struct Pokemon *mon) {
     m->egg = GetMonData(mon, MON_DATA_IS_EGG) ? 1 : 0;
 }
 
-static void e2e_party(np_e2e_block *b) {
+/* The party; with `order` (a battler's gBattleStruct->battlerPartyOrders,
+ * battle.h:381: three bytes of two nybbles), in the battle party menu's
+ * order: menu slot i shows field slot nybble i (party_menu.c
+ * GetPartyIdFromBattleSlot, UpdatePartyToFieldOrder :6089). During a
+ * battle gPlayerParty stays in field order; the party menu copies it into
+ * that order while it is open (UpdatePartyToBattleOrder :6078, called at
+ * :5778 / :5785 / :2781), so the menu's own report needs no order. */
+static void e2e_party(np_e2e_block *b, const u8 *order) {
     int i;
 
     b->nparty = gPlayerPartyCount <= PARTY_SIZE ? gPlayerPartyCount : PARTY_SIZE;
     for (i = 0; i < NP_E2E_MAX_PARTY; i++) {
-        if (i < (int)b->nparty) e2e_mon(&b->party[i], &gPlayerParty[i]);
-        else memset(&b->party[i], 0, sizeof b->party[i]);
+        if (i < (int)b->nparty) {
+            int slot = order ? (i & 1 ? order[i / 2] & 0xF : order[i / 2] >> 4) : i;
+
+            e2e_mon(&b->party[i], &gPlayerParty[slot < PARTY_SIZE ? slot : i]);
+        } else memset(&b->party[i], 0, sizeof b->party[i]);
     }
 }
 
 /* The battle report: every battler's battle copy, the party as the party
- * menu lists it (gPlayerParty in slot order: the battle swaps the mon it
- * sends out into the slot of the one it replaces). */
+ * menu will list it for menu_battler (e2e_party). */
 static void e2e_battle(np_e2e_block *b, unsigned menu_battler) {
     int i, j;
 
@@ -190,7 +199,7 @@ static void e2e_battle(np_e2e_block *b, unsigned menu_battler) {
         m->types[1] = bm->types[1];
         m->egg = bm->isEgg;
     }
-    e2e_party(b);
+    e2e_party(b, gBattleStruct ? gBattleStruct->battlerPartyOrders[menu_battler] : NULL);
     b->menu_battler = menu_battler;
     b->battle_type = gBattleTypeFlags;
     b->battle_frame = b->frame;
@@ -210,7 +219,7 @@ static void e2e_battle_ui(np_e2e_block *b) {
 
     if (gMain.callback2 == (MainCallback)GBA_LOCAL(party_menu, CB2_UpdatePartyMenu)) {
         if (gPartyMenu.menuType != PARTY_MENU_TYPE_IN_BATTLE) return;
-        e2e_party(b);
+        e2e_party(b, NULL);
         gba_e2e_ui(b, NP_E2E_UI_BATTLE_PARTY,
                    e2e_task_running(GBA_LOCAL(party_menu, Task_HandleSelectionMenuInput)) >= 0 ? 1 : 0,
                    (u8)gPartyMenu.slotId);

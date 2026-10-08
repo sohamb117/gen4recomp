@@ -19,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 9000
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -44,7 +44,7 @@ do = "wait_battle"
 
 [[step]]
 do = "auto_battle"
-shot = "kecleon"
+snap = true
 note = "wild KECLEON lv30 (setwildbattle, :190)"
 
 [[step]]

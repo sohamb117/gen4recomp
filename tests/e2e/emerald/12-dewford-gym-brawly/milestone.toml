@@ -25,7 +25,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 15000
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -51,7 +51,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "brawly"
 note = "TRAINER_BRAWLY_1 (266): MACHOP 16, MEDITITE 16, MAKUHITA 19"
 
 [[step]]

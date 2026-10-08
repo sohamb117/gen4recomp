@@ -23,7 +23,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 19500
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -95,7 +95,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "maxie-chimney"
 note = "TRAINER_MAXIE_MT_CHIMNEY (602): MIGHTYENA 24, ZUBAT 24, CAMERUPT 25 (MtChimney/scripts.inc:42)"
 
 [[step]]

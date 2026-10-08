@@ -19,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 6000
+frames = 60000
 
 [[step]]
 do = "heal"

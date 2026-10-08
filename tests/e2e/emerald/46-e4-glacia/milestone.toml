@@ -20,7 +20,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 10500
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -37,7 +37,6 @@ note = "IntroSpeech"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "glacia"
 note = "TRAINER_GLACIA (263): SEALEO 50, GLALIE 50, SEALEO 52, GLALIE 52, WALREIN 53"
 
 [[step]]

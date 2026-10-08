@@ -24,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 18000
+frames = 60000
 
 # PHASE2: the Route 127 -> 126 -> dive spot path and the surfacing tile inside Sootopolis (Underwater_SootopolisCity warps (9..10,8)).
 

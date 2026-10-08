@@ -22,7 +22,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 15000
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -50,7 +50,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "may-route110"
 note = "TRAINER_MAY_ROUTE_110_MUDKIP (530): WINGULL 18, SLUGMA 18, GROVYLE 20"
 
 [[step]]

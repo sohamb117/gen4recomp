@@ -25,7 +25,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 13500
+frames = 60000
 
 # PHASE2: the PokeNav tutorial inputs (RustboroCity/scripts.inc:62-91: a one-item start menu, then the PokeNav app opened and closed); the steps below are [INFERENCE] A, then B out.
 
@@ -127,7 +127,6 @@ do = "wait_battle"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "may-rustboro"
 note = "TRAINER_MAY_RUSTBORO_MUDKIP (600): WINGULL 13, TREECKO 15"
 
 [[step]]

@@ -24,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 13500
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -78,7 +78,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "roxanne"
 note = "TRAINER_ROXANNE_1 (265): GEODUDE 12, GEODUDE 12, NOSEPASS 15"
 
 [[step]]

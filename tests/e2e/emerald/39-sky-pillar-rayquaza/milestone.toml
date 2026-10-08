@@ -24,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 30000
+frames = 60000
 
 # PHASE2: Sky Pillar 2F-4F cracked-floor crossings with the Mach Bike (register it on SELECT, ride, steps routes per floor); the Route 129-131 surf path.
 

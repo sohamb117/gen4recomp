@@ -21,7 +21,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 21000
+frames = 60000
 
 # PHASE2: the ice route: each 1F ice tile once (VAR_ICE_STEP_COUNT thresholds 8/28/67 open three stairs, SootopolisCity_Gym_1F/scripts.inc:21-64); record a steps route (walk_to would re-step tiles).
 
@@ -49,7 +49,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "juan"
 note = "TRAINER_JUAN_1 (272): LUVDISC 41, WHISCASH 41, SEALEO 43, CRAWDAUNT 43, KINGDRA 46"
 
 [[step]]

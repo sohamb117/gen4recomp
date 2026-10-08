@@ -771,6 +771,7 @@ class Terrain:
         # flip as the window slides (unknown tiles are hoped passable) stop swinging between two tiles
         self.visits = {}
         self.cells = {}          # (x, z) -> cell, kept across probes of the same map
+        self.window = None       # the latest probe window's top-left tile
         # The probe's step layers (D/P, GBA): (x, z) -> {height: {d: (tx, tz, height or None)}}, the steps the
         # game's own movement check allows from each place to stand (a bridge deck and the path under it are two),
         # and the player's height. Tiles without layers (Platinum, or not reached) are planned from the cells alone.
@@ -837,6 +838,7 @@ class Terrain:
                 c = p.grid[row + gx]
                 if c & TILE_KNOWN:
                     self.cells[(p.grid_x0 + gx, p.grid_z0 + gz)] = c
+        self.window = (p.grid_x0, p.grid_z0)
         lay = p.layers()
         if lay:
             self.layers.update(lay)
@@ -861,13 +863,21 @@ class Terrain:
             return "climb"
         return None
 
+    def goal_ok(self, x, z, d):
+        """A goal may be entered from any side, but a GBA animated door only moving north (field_control_avatar.c
+        TryDoorWarp: the player faces north into MB_ANIMATED_DOOR 0x69 / MB_PETALBURG_GYM_DOOR 0x8D)."""
+        if not self.gba or d == 0:
+            return True
+        c = self.cells.get((x, z))
+        return c is None or (c & TILE_BEHAVIOR) not in (0x69, 0x8D)
+
     def passable(self, x, z, d, goal, terrain=False):
         """Can the player step into (x, z) moving in direction d? Unknown tiles are hoped passable. With terrain the
         game's own check already allowed the step (step layers), so the collision bit is not asked again."""
         if (x - DIR_DELTA[d][0], z - DIR_DELTA[d][1], d) in self.blocked_edges:
             return False
         if (x, z) == goal:
-            return True
+            return self.goal_ok(x, z, d)
         if (x, z) in self.avoid:
             return False
         if self.field_move(x, z, d):
@@ -876,9 +886,11 @@ class Terrain:
             return False
         c = self.cells.get((x, z))
         if c is None:
-            return True
-        if self.gba and c & TILE_CONNECTED and not self.goal_connected:
-            return False  # across a GBA map border: only a walk to the next map goes there
+            # a GBA window cell the game knows no tile for is off the map (GetMapBorderIdAt: CONNECTION_INVALID);
+            # elsewhere, and beyond the window, an unknown tile is hoped passable
+            return not (self.gba and self.window and 0 <= x - self.window[0] < 64 and 0 <= z - self.window[1] < 64)
+        if self.gba and c & TILE_CONNECTED:
+            return False  # across a GBA map border: only the goal (the walk ends where the player crosses)
         beh = c & TILE_BEHAVIOR
         if (c & TILE_COLLISION and not terrain) or beh in self.water or beh == self.waterfall or beh in self.slopes:
             return False
@@ -918,7 +930,7 @@ class Terrain:
                         continue
                     if self.passable(nx, nz, d, goal, terrain=True):
                         yield d, nx, nz, th, self._step_cost(nx, nz, d)
-                elif (nx, nz) == goal or self.field_move(nx, nz, d) in ("climb", "waterfall"):
+                elif ((nx, nz) == goal and self.goal_ok(nx, nz, d)) or self.field_move(nx, nz, d) in ("climb", "waterfall"):
                     # into a goal the terrain refuses (a door in a wall warps), or up a climb / waterfall
                     yield d, nx, nz, self._layer(nx, nz), self._step_cost(nx, nz, d)
                 elif (nx, nz) not in self.layers and self.passable(nx, nz, d, goal):
@@ -999,8 +1011,13 @@ def _field_or_handle(s, step, ctx, limit):
         waited += 20
         if waited >= 60:
             if on_text == "stop":
-                raise _Held()
-            if on_text != "advance":
+                # GBA walks stop only for the goal's own scene (the coord event the goal is on): a trainer who
+                # spots the player on the way is fought, as with on_text = "advance"
+                at = step.get("_stop_at")
+                p = s.probe() if at is not None else None
+                if p is None or abs(p.x - at[0]) + abs(p.z - at[1]) <= 1:
+                    raise _Held()
+            if on_text not in ("advance", "stop"):
                 raise HarnessError("walk_to: the player is held (text or a cutscene; on_text = %r)" % on_text)
             s.run(2, "b", until=["field_ready=1", "in_battle=1"])
             s.run(6, until=["field_ready=1", "in_battle=1"])
@@ -1176,12 +1193,70 @@ def bot_walk_to(s, step, ctx):
             p.x, p.z, p.map_id))
 
 
+# re-plans of a GBA cross-map walk (a leg that ended on another map than the route said, a door that did not open)
+GBA_ROUTE_TRIES = 6
+
+
+def _gba_route_to(s, step, ctx):
+    """A GBA walk_to whose `map` is not the current map: the static world route (gba_world.py: the decomp's map
+    layouts, connections and warps under the game's own step rules) gives the maps to cross and the exit tile on
+    each; each leg is an ordinary walk on the probe, which sees the people and scripts the static model does not.
+    A leg that lands on another map than planned re-routes from there; a warp that did not fire (a locked door) is
+    avoided from then on. Returns once the player is on `map`."""
+    import gba_world
+    want = ctx.resolve(step["map"])
+    world = gba_world.World(ctx.game)
+    avoid_warps = []
+    # on_text = "stop" is for the goal map's own scene: on the way, trainers' and other text is advanced
+    keys = {k: step[k] for k in ("on_battle", "run", "hold", "surf", "hm", "move", "max") if k in step}
+    for _ in range(GBA_ROUTE_TRIES):
+        _field_or_handle(s, keys, ctx, s.frame + _int(step, "max", 6000))
+        p = s.probe()
+        if p.map_id == want:
+            return
+        tx, tz = int(step["x"]), int(step["z"])
+        # a goal the static model cannot stand on (a door in a wall, a counter): the route only has to reach its
+        # map, so a tile beside it will do; the walk that follows goes into the goal itself
+        legs, why = None, None
+        for gx, gz in ((tx, tz), (tx, tz + 1), (tx, tz - 1), (tx - 1, tz), (tx + 1, tz)):
+            try:
+                legs = world.route(p.map_id, p.x, p.z, want, gx, gz, elevation=p.y, surf=bool(step.get("surf")),
+                                   avoid_warps=avoid_warps)
+                break
+            except gba_world.NoRoute as e:
+                why = why or e
+        if legs is None:
+            raise HarnessError("walk_to: %s" % why)
+        s.note("walk_to: route to %s (%d,%d): %s" % (step["map"], int(step["x"]), int(step["z"]), "; ".join(
+            "%s %s (%d,%d)" % (l.kind, world.map_name(l.map), l.x, l.z) for l in legs)))
+        for leg in legs[:-1]:
+            if s.map_id != leg.map:
+                break
+            _walk_to(s, dict(keys, x=leg.x, z=leg.z), ctx)
+            if leg.kind == "warp" and s.map_id == leg.map:
+                # a step-on warp (a cave mouth, stairs) fires after the step ends: its fade takes a few dozen frames
+                s.run(120, until="map_id!=%d" % leg.map)
+                _field_or_handle(s, keys, ctx, s.frame + _int(step, "max", 6000))
+            if s.map_id != leg.next_map:
+                if leg.kind == "warp" and s.map_id == leg.map:
+                    avoid_warps.append((leg.map, leg.x, leg.z))
+                s.note("walk_to: the %s at (%d,%d) left map %d for %d, not %d; re-routing" % (
+                    leg.kind, leg.x, leg.z, leg.map, s.map_id, leg.next_map))
+                break
+    if s.map_id != want:
+        raise HarnessError("walk_to: not on %s after %d routes (on map %d)" % (step["map"], GBA_ROUTE_TRIES, s.map_id))
+
+
 def _walk_to(s, step, ctx):
     """Walk to tile (x, z): A* over the probe's terrain, replanning as it learns; warps by walking into them.
 
     With via = [[x, z], ...] it walks to each waypoint first (each under its own `max`): routes longer than the
     probe's 64x64 window, or past what A* cannot know (a bridge's deck vs the path under it). A waypoint someone
-    stands on (a trainer who walked up to the player there) counts as reached from the tile next to it."""
+    stands on (a trainer who walked up to the player there) counts as reached from the tile next to it.
+
+    GBA: `map` naming another map than the current one walks there first (_gba_route_to)."""
+    if ctx.game in GBA_GAMES and "map" in step and s.map_id != ctx.resolve(step["map"]):
+        _gba_route_to(s, step, ctx)
     if step.get("via"):
         leg = {k: v for k, v in step.items() if k not in ("via", "face", "interact", "map")}
         for i, (wx, wz) in enumerate(step["via"]):
@@ -1189,6 +1264,8 @@ def _walk_to(s, step, ctx):
                              **({"map": step["map"]} if i == 0 and "map" in step else {})), ctx)
         step = {k: v for k, v in step.items() if k not in ("via", "map")}
     goal = (int(step["x"]), int(step["z"]))
+    if ctx.game in GBA_GAMES and step.get("on_text") == "stop":
+        step = dict(step, _stop_at=goal)  # _field_or_handle: stop only for a scene at the goal
     bound = _int(step, "max", 6000)
     limit = s.frame + bound
     run_key = "b" if step.get("run", True) else None
@@ -1218,6 +1295,9 @@ def _walk_to(s, step, ctx):
                                    goal + (p.x, p.z, bound, p.facing, near, len(terrain.blocked_edges),
                                            sorted(terrain.blocked_edges)[:8])))
         terrain.update(p)
+        if terrain.gba and not terrain.goal_connected:
+            # a far goal across the border comes into the window on the way
+            terrain.goal_connected = bool(terrain.cells.get(goal, 0) & TILE_CONNECTED)
         if step.get("_corner") and goal in terrain.objects and abs(p.x - goal[0]) + abs(p.z - goal[1]) == 1:
             s.note("walk_to: waypoint (%d,%d) is occupied; passing it from (%d,%d)" % (goal + (p.x, p.z)))
             break
@@ -1254,7 +1334,7 @@ def _walk_to(s, step, ctx):
         if terrain.gba and p.map_id != start_map and p.connection_seq != conn0:
             # a GBA map's coordinates are its own: across a connection the map and the coordinates change at once
             s.note("walk_to: crossed from map %d into map %d, now at (%d,%d)" % (start_map, p.map_id, p.x, p.z))
-            if terrain.goal_connected:
+            if terrain.goal_connected or (here[0] + DIR_DELTA[d][0], here[1] + DIR_DELTA[d][1]) == goal:
                 warped = True
                 break
             raise HarnessError("walk_to (%d,%d): crossed into map %d at (%d,%d) on the way; give this walk a goal across "

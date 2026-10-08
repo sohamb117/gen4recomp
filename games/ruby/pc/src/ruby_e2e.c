@@ -171,21 +171,24 @@ static int e2e_step(void *ctx, int x, int z, int e, int dir, int *te) {
     return 1;
 }
 
+/* pokeruby declares GetMonData K&R (pokemon.h:450) and defines it with three
+ * parameters; a wasm call must pass all three (gba_prelude.h does this for
+ * the decomp's own TUs, not for the port's). */
 static void e2e_mon(np_e2e_mon *m, struct Pokemon *mon) {
     int i;
 
     memset(m, 0, sizeof *m);
-    m->species = GetMonData(mon, MON_DATA_SPECIES);
+    m->species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     if (!m->species) return;
-    m->hp = GetMonData(mon, MON_DATA_HP);
-    m->max_hp = GetMonData(mon, MON_DATA_MAX_HP);
+    m->hp = GetMonData(mon, MON_DATA_HP, NULL);
+    m->max_hp = GetMonData(mon, MON_DATA_MAX_HP, NULL);
     for (i = 0; i < MAX_MON_MOVES; i++) {
-        m->moves[i] = GetMonData(mon, MON_DATA_MOVE1 + i);
-        m->pp[i] = GetMonData(mon, MON_DATA_PP1 + i);
+        m->moves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
+        m->pp[i] = GetMonData(mon, MON_DATA_PP1 + i, NULL);
     }
-    m->level = GetMonData(mon, MON_DATA_LEVEL);
+    m->level = GetMonData(mon, MON_DATA_LEVEL, NULL);
     m->types[0] = m->types[1] = 0xFF;
-    m->egg = GetMonData(mon, MON_DATA_IS_EGG) ? 1 : 0;
+    m->egg = GetMonData(mon, MON_DATA_IS_EGG, NULL) ? 1 : 0;
 }
 
 /* The party; order (a battler's gBattleStruct->unk1606C) lists it in the

@@ -31,7 +31,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 21000
+frames = 60000
 
 # PHASE2: the ChooseHalfPartyForBattle selection inputs (special ChooseHalfPartyForBattle, SpaceCenter_2F/scripts.inc:228): pick the first three, CONFIRM; write press steps.
 
@@ -135,7 +135,6 @@ do = "wait_battle"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "steven-multi"
 note = "multi battle: TRAINER_MAXIE_MOSSDEEP (734): MIGHTYENA 42, CROBAT 43, CAMERUPT 44 + TRAINER_TABITHA_MOSSDEEP (514): CAMERUPT 36, MIGHTYENA 38, GOLBAT 40"
 
 [[step]]

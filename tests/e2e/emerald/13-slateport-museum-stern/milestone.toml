@@ -28,7 +28,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 18000
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -142,7 +142,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-shot = "museum-grunt-1"
+snap = true
 note = "TRAINER_GRUNT_MUSEUM_1 (20): CARVANHA 15"
 
 [[step]]
@@ -150,7 +150,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-shot = "museum-grunt-2"
+snap = true
 note = "TRAINER_GRUNT_MUSEUM_2 (21): ZUBAT 14, CARVANHA 14"
 
 [[step]]

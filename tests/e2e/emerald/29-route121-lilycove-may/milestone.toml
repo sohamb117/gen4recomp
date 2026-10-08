@@ -23,7 +23,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 21000
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -60,7 +60,6 @@ do = "wait_battle"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "may-lilycove"
 note = "TRAINER_MAY_LILYCOVE_MUDKIP (664): TROPIUS 31, SLUGMA 32, PELIPPER 32, GROVYLE 34 (:301-302)"
 
 [[step]]

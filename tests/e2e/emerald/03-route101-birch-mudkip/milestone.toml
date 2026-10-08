@@ -2,9 +2,8 @@
 # RIGHT from the default Torchic to Mudkip, YES), the first wild battle, the warp to the lab and the starter talk.
 # Start: Littleroot (14,9) -> end: MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB, VAR_BIRCH_LAB_STATE 3, party Mudkip.
 title = "Route 101: save Birch, choose Mudkip, first battle, the lab"
-status = "planned"
 priority = "P0"
-estimate = 6500
+estimate = 4414
 refs = [
   "data/maps/LittlerootTown/map.json coord_events (11,1) VAR_LITTLEROOT_TOWN_STATE=1 GoSaveBirchTrigger",
   "data/maps/LittlerootTown/scripts.inc:366-376",
@@ -28,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 9800
+frames = 6700
 
 [[step]]
 do = "walk_to"
@@ -43,10 +42,9 @@ do = "advance_text"
 [[step]]
 do = "walk_to"
 x = 10
-z = 19
-map = "MAP_ROUTE101"
+z = -1
 on_text = "stop"
-note = "Route 101 OnFrame ROUTE101_STATE 0 -> 1 (Route101/scripts.inc:10-17); coord (10,19)/(11,19) state 1 -> StartBirchRescue -> state 2 (:19-41)"
+note = "across Littleroot's north border into Route 101 (10,19), whose coord event (10,19)/(11,19) at ROUTE101_STATE 1 starts StartBirchRescue -> state 2 (Route101/scripts.inc:19-41; OnFrame state 0 -> 1 :10-17)"
 
 [[step]]
 do = "advance_text"
@@ -83,7 +81,7 @@ do = "wait_battle"
 
 [[step]]
 do = "auto_battle"
-shot = "first-battle"
+snap = true
 note = "wild Zigzagoon [INFERENCE lv2]; Tackle"
 
 [[step]]

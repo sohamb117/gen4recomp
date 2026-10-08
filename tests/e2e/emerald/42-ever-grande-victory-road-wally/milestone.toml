@@ -30,7 +30,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 36000
+frames = 60000
 
 # PHASE2: the Victory Road route 1F (15,40) -> ... -> 1F exit (39,5) through B1F/B2F with Strength pushes (steps routes); the Waterfall bump tile in Ever Grande.
 
@@ -72,7 +72,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "wally-victory-road"
 note = "TRAINER_WALLY_VR_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45 (:39)"
 
 [[step]]

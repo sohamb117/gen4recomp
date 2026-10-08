@@ -23,7 +23,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 15000
+frames = 60000
 
 # PHASE2: prove that the Fiery Path straight route (26,36) -> (26,4) needs no Strength before the Heat Badge (probe_map MAP_FIERY_PATH).
 

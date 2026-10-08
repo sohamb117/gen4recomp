@@ -20,7 +20,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 7500
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -45,7 +45,6 @@ do = "wait_battle"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "wally-mauville"
 note = "TRAINER_WALLY_MAUVILLE (656): RALTS 16"
 
 [[step]]

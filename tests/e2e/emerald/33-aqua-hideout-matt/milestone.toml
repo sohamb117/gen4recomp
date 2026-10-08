@@ -28,7 +28,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 24000
+frames = 60000
 
 # PHASE2: the B1F/B2F warp-panel route from 1F (22,1) to Matt: map the panel pairs (B1F warps 4..24, B2F 3..8) with probe_map and write per-panel walk_to steps.
 
@@ -99,7 +99,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "matt"
 note = "TRAINER_MATT (30): MIGHTYENA 34, GOLBAT 34"
 
 [[step]]

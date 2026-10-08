@@ -25,7 +25,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 18000
+frames = 60000
 
 # PHASE2: prove the Granite Cave route (probe_map each floor; which B2F ladder reaches the B1F west half) and replace the via lists.
 

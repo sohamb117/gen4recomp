@@ -31,7 +31,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 33000
+frames = 60000
 
 # PHASE2: the Strength/Rock Smash pushes in Rooms 1, 2, 3 and 8 (steps routes with boulder pushes; walk_to does not push boulders) and the underwater path from the Route 127/128 dive spot to (38,26).
 
@@ -169,7 +169,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "archie"
 note = "TRAINER_ARCHIE (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43 (:23)"
 
 [[step]]

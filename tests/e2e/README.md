@@ -1,6 +1,6 @@
 # tests/e2e: story and system milestones on the real core
 
-The e2e harness plays Platinum, Diamond and Pearl headless, milestone by milestone, from a new game toward the
+The e2e harness plays Platinum, Diamond and Pearl, and Emerald, Ruby and Sapphire, headless, milestone by milestone, from a new game toward the
 Hall of Fame. Each milestone starts from the previous one's end save (or a minted lab save), drives the game with
 input bots that read a probe the guest publishes, saves in game, and is judged on the end save. The plan and the
 milestone list are in [PLAN.md](PLAN.md); how to write and prove a milestone is in [AUTHORING.md](AUTHORING.md).
@@ -18,7 +18,8 @@ tests/e2e/tools/dp_prior.py                                     # D/P: rewrite e
 ```
 
 Heavy runs go through `tools/heavy.sh --run` (its own pool of run slots). The runner needs the ROMs and a core build
-(`build/core-plat`, `build/core-dp`; docs/BUILDING.md) and builds `np_gp` and `np_save4` itself.
+(`build/core-plat`, `build/core-dp`, `build/rse/native`; docs/BUILDING.md, docs/HANDOFF-rse.md) and builds `np_gp`
+and `np_save4` itself.
 
 ## Status
 
@@ -29,8 +30,35 @@ Passing (`status` removed from `milestone.toml`), as a continuity chain from a b
 | Platinum | 01-43: new game .. Relic Badge, Route 209 .. Cobble/Fen/Mine/Icicle badges, the lakes, Galactic HQ, Mt. Coronet and Spear Pillar into the Distortion World, B1F..B7F and Cyrus |
 | Platinum systems | 60-72, 74: every HM field use (Cut, Rock Smash, Strength, Surf, Fly, Defog, Rock Climb, Waterfall), the three rods, a honey tree, the Day Care (deposit with the lady, egg from the man), level-up evolution after a wild battle |
 | Diamond | 01-20: new game, Pokedex, Parcel + catching tutorial, Trainers' School, Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge, Barry's farewell, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Galactic building, Bicycle + Explorer Kit, Cycling Road + VS Seeker, Mt. Coronet + Route 208 to Hearthome, Contest Hall + rival, Route 209 to Solaceon |
+| Emerald | 01-02: new game, truck and house; the wall clock, Dad on TV, May next door |
 
 Everything else is still `status = "planned"` and skipped unless `--planned`.
+
+## The GBA games (Emerald, Ruby, Sapphire)
+
+The same runner, bots and milestone format, with these differences:
+
+- **Probe**: np_e2e.h version 4, published by `games/gba-common/pc/src/gba_e2e.c` and the game halves
+  `games/emerald/pc/src/emerald_e2e.c`, `games/ruby/pc/src/ruby_e2e.c` from the status hook at every frame
+  boundary (the probe's calls into game functions do not count as game CPU time: `gba_tick`'s phase is put back).
+  The grid is the game's own `MapGridGet*At` queries; grid cells also carry the tile's elevation and
+  `NP_E2E_TILE_CONNECTED` (a connected map's tile seen across the border). Step layers are a flood over the player's
+  on-foot step check, with heights = elevations. v4 adds the menu cursor (`ui_cursor`), the avatar flags, the guest
+  addresses of the flags, vars and party (read with `Session.peek`), `connection_seq`, `soft_resets` and the map's
+  warps.
+- **Coordinates** are each map's own (map.json). A `walk_to` goal across a map border (a connected tile, e.g.
+  Littleroot's (10,-1) for Route 101) ends the walk where the player crosses into that map. Any other crossing is
+  an error. `walk_to` with `map` naming another map routes there over the world's maps (`gba_world.py`).
+- **Saves** are edited and read on the host: `tools/gba/gen3_dump.py dump|gamedata` gives the JSON shapes
+  `np_save4` gives. Lab and boost recipes run through `tools/gba/gen3_lab.py` (D/P's verbs; `map MAP X Z`; `badge 1..8`)
+  on a new-game base save, the house 1F after `tests/rse/littleroot.sched`. The GBA guest leaves storing its flash
+  chip to the host, so the bots `flush` (np_gp's serve command) after an in-game save.
+- **Battles** take buttons: `auto_battle` makes the DS choices and moves the cursor the probe reports.
+- **Names** come from the decomp headers (`labc.py --game emerald|ruby|sapphire`). Badges are `badges = N` plus
+  the `FLAG_BADGE0N_GET` flags. A `talk_to` id is the object's 1-based index in map.json.
+- **The end**: the credits end in the game's own `SoftReset`; `wait_reset` sees the probe's `soft_resets` go up.
+- **Waiting**: `press` takes `until` (np_gp's condition syntax) for screens only the probe sees (the wall clock
+  taking over the field: `until = "field=0"`).
 
 ## How a milestone runs
 

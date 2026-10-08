@@ -27,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 16500
+frames = 60000
 
 # PHASE2: the switch order to Wattson (4 coord switches toggle FLAG_MAUVILLE_GYM_BARRIERS_STATE; MauvilleCity_Gym/scripts.inc:15-46,175-196): probe_map the barrier tiles after each switch and write a via list or steps route.
 
@@ -55,7 +55,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "wattson"
 note = "TRAINER_WATTSON_1 (267): VOLTORB 20, ELECTRIKE 20, MAGNETON 22, MANECTRIC 24"
 
 [[step]]

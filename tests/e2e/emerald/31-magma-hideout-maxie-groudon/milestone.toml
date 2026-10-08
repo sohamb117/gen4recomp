@@ -26,7 +26,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 21000
+frames = 60000
 
 # PHASE2: prove the short route 1F (20,22) -> 2F_3R (16,13) -> 3F_3R (16,21) -> 4F (20,21) is walkable (probe_map each floor) and whether a Strength boulder blocks it.
 
@@ -108,7 +108,6 @@ shot = "groudon-awakes"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "maxie-hideout"
 note = "TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAMERUPT 39 (:50)"
 
 [[step]]

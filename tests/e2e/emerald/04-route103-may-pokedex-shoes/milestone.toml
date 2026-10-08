@@ -2,9 +2,8 @@
 # (FLAG_ADVENTURE_STARTED) and Mom's Running Shoes at Littleroot's north exit.
 # Start: Birch's lab -> end: MAP_LITTLEROOT_TOWN north exit (11,2), FLAG_RECEIVED_RUNNING_SHOES.
 title = "Route 103: first May battle, the Pokedex, the Running Shoes"
-status = "planned"
 priority = "P0"
-estimate = 9000
+estimate = 12757
 refs = [
   "data/maps/LittlerootTown_ProfessorBirchsLab/map.json warp_events[0] (6,12)",
   "data/maps/Route103/map.json object_events[2] LOCALID_ROUTE103_RIVAL (10,3)",
@@ -28,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 13500
+frames = 19200
 
 [[step]]
 do = "walk_to"
@@ -43,9 +42,9 @@ map = "MAP_LITTLEROOT_TOWN"
 [[step]]
 do = "walk_to"
 x = 10
-z = 5
+z = 4
 map = "MAP_ROUTE103"
-note = "north through Route 101 and Oldale to Route 103, below May (10,3) [INFERENCE: tile (10,5) is free]"
+note = "north through Route 101 and Oldale to Route 103, the tile below May (10,3) ((10,5) is a ledge)"
 
 [[step]]
 do = "talk_to"
@@ -58,7 +57,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "may-route103"
 note = "TRAINER_MAY_ROUTE_103_MUDKIP (529): TREECKO 5"
 
 [[step]]

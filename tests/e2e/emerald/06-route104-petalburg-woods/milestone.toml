@@ -2,9 +2,8 @@
 # (Great Ball, VAR_PETALBURG_WOODS_STATE 1) and Route 104 north into Rustboro.
 # Start: Petalburg (15,9) -> end: MAP_RUSTBORO_CITY in front of the Pokemon Center (16,39).
 title = "Route 104 and Petalburg Woods: the Aqua grunt and the Devon researcher"
-status = "planned"
 priority = "P0"
-estimate = 11000
+estimate = 24092
 refs = [
   "data/maps/PetalburgCity/map.json coord_events (4,10..13) VAR_SCOTT_PETALBURG_ENCOUNTER=0",
   "data/maps/Route104/map.json warp_events 2..7 (Petalburg Woods)",
@@ -29,38 +28,17 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 16500
+frames = 36200
 
 # PHASE2: prove the woods door the south half of Route 104 reaches (probe_map on Route 104 rows 38..44) and the walk around the woods' trees to (26,23).
 
 [[step]]
 do = "walk_to"
-x = 33
-z = 42
-map = "MAP_ROUTE104"
-on_text = "stop"
-note = "Petalburg west exit (Scott scene on (4,10..13) answered by advance_text), Route 104 south half north to the woods door [INFERENCE]"
-
-[[step]]
-do = "advance_text"
-
-[[step]]
-do = "walk_to"
-x = 33
-z = 42
-map = "MAP_ROUTE104"
-note = "Route 104 warp 7 -> MAP_PETALBURG_WOODS (37,38) [INFERENCE]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_PETALBURG_WOODS"
-
-[[step]]
-do = "walk_to"
 x = 26
 z = 23
+map = "MAP_PETALBURG_WOODS"
 on_text = "stop"
-note = "DevonResearcherLeft coord (26,23) VAR_PETALBURG_WOODS_STATE 0 (PetalburgWoods/scripts.inc:4-31)"
+note = "Petalburg west exit, Route 104's south half into the woods (Route 104 warps 4/5 or 6/7), onto the coord event (26,23): DevonResearcherLeft at VAR_PETALBURG_WOODS_STATE 0 (PetalburgWoods/scripts.inc:4-31)"
 
 [[step]]
 do = "advance_text"
@@ -68,7 +46,6 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "woods-grunt"
 note = "TRAINER_GRUNT_PETALBURG_WOODS (10): POOCHYENA 9 (trainerbattle_no_intro, :23)"
 
 [[step]]

@@ -20,7 +20,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 10500
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -37,7 +37,6 @@ note = "IntroSpeech"
 [[step]]
 do = "auto_battle"
 snap = true
-shot = "drake"
 note = "TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, KINGDRA 53, FLYGON 53, SALAMENCE 55"
 
 [[step]]
