@@ -1,0 +1,140 @@
+# Proves Route 106 to Granite Cave, the 1F Hiker's HM05 Flash, the floors down and back up to the west side and
+# Steven (FLAG_DELIVERED_STEVEN_LETTER, TM47 Steel Wing, FLAG_REGISTERED_STEVEN_POKENAV); back out to Dewford.
+# Start: Dewford dock -> end: MAP_DEWFORD_TOWN, outside the gym door (8,18).
+title = "Granite Cave: HM05 Flash and Steven's letter"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "data/maps/DewfordTown/map.json connections up MAP_ROUTE106 offset -60",
+  "data/maps/Route106/map.json warp_events[0] (48,16) -> GRANITE_CAVE_1F",
+  "data/maps/GraniteCave_1F/map.json object_events[1] HIKER (36,9)",
+  "data/maps/GraniteCave_1F/scripts.inc:4-15",
+  "data/maps/GraniteCave_1F/map.json warp_events (35,3)/(17,11)/(5,10)",
+  "data/maps/GraniteCave_B1F/map.json warp_events 0..6",
+  "data/maps/GraniteCave_B1F/scripts.inc:9 (setholewarp B2F: cracked floor)",
+  "data/maps/GraniteCave_B2F/map.json warp_events 0..4",
+  "data/maps/GraniteCave_StevensRoom/map.json object_events[1] STEVEN (7,8)",
+  "data/maps/GraniteCave_StevensRoom/scripts.inc:4-32",
+  "src/party_menu.c:121 (Flash needs FLAG_BADGE02_GET)",
+]
+notes = "HM05 Flash: FLAG_RECEIVED_HM_FLASH here; Flash needs the Knuckle Badge (src/party_menu.c:121) so the cave is walked dark (1F/B1F/B2F are dark; walk_to uses the probe's collision, not the screen [INFERENCE]). Route to Steven's room: 1F (35,3) -> B1F (25,13); B1F (29,13) -> B2F (29,13); B2F north to (8,5)/(12,3) -> B1F west; B1F (4,21) -> 1F (17,11); 1F west to (5,10) [INFERENCE from the warp table; B1F's cracked floor drops to B2F without the Mach Bike]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 18000
+
+# PHASE2: prove the Granite Cave route (probe_map each floor; which B2F ladder reaches the B1F west half) and replace the via lists.
+
+[[step]]
+do = "walk_to"
+x = 48
+z = 16
+map = "MAP_ROUTE106"
+note = "Dewford north to Route 106's beach and the cave mouth (Route 106 warp 0) [INFERENCE: land path along the beach]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GRANITE_CAVE_1F"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Hiker (object 1 (36,9)) -> giveitem ITEM_HM_FLASH, FLAG_RECEIVED_HM_FLASH (GraniteCave_1F/scripts.inc:4-15)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 35
+z = 3
+note = "1F ladder (warp 1) -> B1F (25,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GRANITE_CAVE_B1F"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 13
+note = "B1F ladder (warp 2) -> B2F (29,13) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GRANITE_CAVE_B2F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 5
+note = "B2F ladder (warp 2) -> B1F (8,5) [INFERENCE: B2F rocks need Rock Smash only on side paths]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GRANITE_CAVE_B1F"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 21
+note = "B1F ladder (warp 1) -> 1F (17,11) [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GRANITE_CAVE_1F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 10
+note = "1F west ladder (warp 3) -> STEVENS_ROOM (7,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GRANITE_CAVE_STEVENS_ROOM"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Steven (object 1 (7,8)): letter, TM Steel Wing, Match Call, leaves (GraniteCave_StevensRoom/scripts.inc:4-32)"
+
+[[step]]
+do = "advance_text"
+shot = "steven-letter"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 3
+note = "back up (warp 0) -> 1F (5,10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GRANITE_CAVE_1F"
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 12
+note = "1F exit (warp 0) -> Route 106 (48,16) [INFERENCE: 1F west half connects to the entrance over ledges]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE106"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 18
+map = "MAP_DEWFORD_TOWN"
+note = "back to Dewford, below the gym door (8,17)"
+
+[expect]
+map = "MAP_DEWFORD_TOWN"
+badges = 1
+flags = ["FLAG_BADGE01_GET", "FLAG_RECEIVED_HM_FLASH", "FLAG_DELIVERED_STEVEN_LETTER", "FLAG_REGISTERED_STEVEN_POKENAV", "FLAG_HIDE_GRANITE_CAVE_STEVEN"]

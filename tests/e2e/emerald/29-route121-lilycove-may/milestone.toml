@@ -1,0 +1,78 @@
+# Proves Route 120 south (past the cleared bridge), Route 121's Aqua grunts walking off toward Mt. Pyre
+# (VAR_ROUTE121_STATE 1), Lilycove (visited flag) and May's YES/NO battle (TRAINER_MAY_LILYCOVE_MUDKIP).
+# Start: Fortree gym door -> end: MAP_LILYCOVE_CITY in front of the Department Store (27,8).
+title = "Routes 120-121 to Lilycove: May at the Department Store"
+status = "planned"
+priority = "P0"
+estimate = 14000
+refs = [
+  "data/maps/Route120/map.json connections right ROUTE121 offset 80",
+  "data/maps/Route121/map.json coord_events (25,5..8) VAR_ROUTE121_STATE=0",
+  "data/maps/Route121/scripts.inc:16-30",
+  "data/maps/LilycoveCity/scripts.inc:7-9",
+  "data/maps/LilycoveCity/map.json object_events[17] rival (27,7)",
+  "data/maps/LilycoveCity/scripts.inc:226-256",
+  "data/maps/LilycoveCity/scripts.inc:301-304",
+  "data/maps/LilycoveCity/scripts.inc:321-390",
+  "TRAINER_MAY_LILYCOVE_MUDKIP (664), src/data/trainers.h:7972",
+]
+notes = "May: TRAINER_MAY_LILYCOVE_MUDKIP (664): TROPIUS 31, SLUGMA 32, PELIPPER 32, GROVYLE 34 (YES/NO; NO sets FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE). After the badge-6 check she leaves: FLAG_MET_RIVAL_LILYCOVE (LilycoveCity/scripts.inc:377-388). Route 120 trainers (lv 27-30) and hidden Kecleons; Route 121 trainers (lv 25-32). Fly is available now but Lilycove is not yet visited, so walk."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 21000
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 6
+map = "MAP_ROUTE121"
+on_text = "stop"
+note = "Route 120 south and east onto Route 121; AquaGruntsMoveOut coord (25,5..8) ROUTE121_STATE 0 (Route121/scripts.inc:16-30)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 8
+map = "MAP_LILYCOVE_CITY"
+face = "up"
+interact = true
+note = "east into Lilycove, below May (27,7) in front of the Department Store door (27,6)"
+
+[[step]]
+do = "advance_text"
+note = "May: AskToBattle YES/NO (LilycoveCity/scripts.inc:226-256)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES"
+
+[[step]]
+do = "wait_battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "may-lilycove"
+note = "TRAINER_MAY_LILYCOVE_MUDKIP (664): TROPIUS 31, SLUGMA 32, PELIPPER 32, GROVYLE 34 (:301-302)"
+
+[[step]]
+do = "advance_text"
+note = "DefeatedMay -> RivalFlyAway: FLAG_MET_RIVAL_LILYCOVE (:321-390)"
+
+[expect]
+map = "MAP_LILYCOVE_CITY"
+badges = 6
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_VISITED_LILYCOVE_CITY", "FLAG_MET_RIVAL_LILYCOVE", "FLAG_HIDE_LILYCOVE_CITY_RIVAL"]
+flags_clear = ["FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM"]
+battles = 1
+
+[expect.vars]
+VAR_ROUTE121_STATE = 1

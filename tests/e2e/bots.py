@@ -13,8 +13,8 @@ import struct
 import subprocess
 import sys
 
-from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, ROOT, TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN, UI_BATTLE_MENU,
-                    UI_BATTLE_PARTY, HarnessError, behaviors)
+from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, GBA_GAMES, ROOT, TILE_BEHAVIOR, TILE_COLLISION, TILE_CONNECTED,
+                    TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, HarnessError, behaviors)
 
 # ---- the battle's touch screen (Platinum src/battle/battle_subscreen.c touch rects; D/P's overlay 11
 # tables are byte-identical), as tap points: the centre of each button.
@@ -61,6 +61,15 @@ FIELD_MOVE_COST = 4
 # A* cost added per earlier visit of a tile in the same walk (Terrain.visits)
 VISIT_COST = 2
 
+# Ruby/Sapphire/Emerald (include/constants/metatile_behaviors.h, the same numbers in both decomps): the behaviors
+# with TILE_FLAG_SURFABLE in pokeemerald src/metatile_behavior.c sTileBitAttributes (MB_POND_WATER 0x10 ..
+# MB_OCEAN_WATER 0x15, MB_NO_SURFACING 0x19, MB_SEAWEED 0x22, MB_SEAWEED_NO_SURFACING 0x2A, the currents
+# 0x50..0x53); MB_WATERFALL 0x13 among them is climbed with Waterfall. Field-move objects by graphics id
+# (include/constants/event_objects.h, both decomps): OBJ_EVENT_GFX_CUTTABLE_TREE 82, OBJ_EVENT_GFX_BREAKABLE_ROCK 86.
+GBA_SURFABLE = frozenset({0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x19, 0x22, 0x2A, 0x50, 0x51, 0x52, 0x53})
+GBA_WATERFALL = 0x13
+GBA_GFX_CUTTABLE_TREE, GBA_GFX_BREAKABLE_ROCK = 82, 86
+
 
 def _int(step, key, default):
     v = step.get(key, default)
@@ -81,11 +90,20 @@ def _tap(s, xy, hold=4, gap=10):
 
 # ---------------------------------------------------------------- simple input
 def bot_press(s, step, ctx):
+    """Raw buttons. With `until` (np_gp's condition syntax: a status or probe field, e.g. "field=0", "map_id=9"),
+    the press repeats (up to `times`, default 20) until the condition holds after a press, and fails if it never
+    does: for a screen whose readiness is only seen in the probe (the GBA wall clock taking over the field)."""
     keys = step["keys"]
-    hold, gap, times = _int(step, "hold", 4), _int(step, "gap", 12), _int(step, "times", 1)
+    until = step.get("until")
+    hold, gap, times = _int(step, "hold", 4), _int(step, "gap", 12), _int(step, "times", 20 if until else 1)
+    if until and s.run(1, until=until):
+        return
     for _ in range(times):
         s.run(hold, keys)
-        s.run(gap)
+        if s.run(gap, until=until or ()) and until:
+            return
+    if until:
+        raise HarnessError("press %s: %s not reached after %d presses" % (keys, until, times))
 
 
 def bot_tap(s, step, ctx):
@@ -127,6 +145,19 @@ def bot_wait_reset(s, step, ctx):
     or no reset in `max` frames, fails it. The game ends there (s.ended): the core runs on at the boot screens, so
     run.py takes no end save or probe, and [expect] reads the save the game wrote before the reset."""
     bound = _int(step, "max", 20000)
+    if ctx.game in GBA_GAMES:
+        # the GBA games end the credits in SoftReset (pokeemerald src/credits.c Task_CreditsSoftReset), which the port
+        # runs in place (gba_main.c gba_soft_reset): the probe's soft_resets counts it
+        r0 = s.probe().soft_resets
+        end = s.frame + bound
+        while s.frame < end:
+            s.run(min(60, end - s.frame), step.get("keys"))
+            p = s.probe()
+            if p is not None and p.soft_resets != r0:
+                s.ended = "SoftReset"
+                s.note("wait_reset: the game reset itself (soft reset %d)" % p.soft_resets)
+                return
+        raise HarnessError("no SoftReset in %d frames" % bound)
     resets = s.stat("resets")
     if not s.run(bound, step.get("keys"), until="resets!=%d" % resets):
         raise HarnessError("no OS_ResetSystem in %d frames" % bound)
@@ -239,7 +270,7 @@ _GAMEDATA = {}
 def gamedata(ctx):
     """The ROM's battle tables (np_save4 gamedata): species types, moves, type chart; loaded once per ROM."""
     if ctx.rom not in _GAMEDATA:
-        out = subprocess.run([ctx.save4, "gamedata", ctx.rom], capture_output=True, text=True)
+        out = subprocess.run(ctx.save4 + ["gamedata", ctx.rom], capture_output=True, text=True)
         if out.returncode != 0:
             raise HarnessError("np_save4 gamedata: %s" % out.stderr.strip())
         _GAMEDATA[ctx.rom] = json.loads(out.stdout)
@@ -350,7 +381,11 @@ def bot_auto_battle(s, step, ctx):
     With flee = true it taps RUN at the first action menus (a wild battle ends; a trainer refuses, and so may a
     wild Pokemon) and fights once FLEE_TRIES runs have not ended the battle.
 
-    With snap = true the screen at the first action menu (both battlers on the field) goes on the contact sheet."""
+    With snap = true the screen at the first action menu (both battlers on the field) goes on the contact sheet.
+
+    Ruby/Sapphire/Emerald have no touch screen: _gba_auto_battle makes the same choices with buttons."""
+    if ctx.game in GBA_GAMES:
+        return _gba_auto_battle(s, step, ctx)
     fixed = "move" in step
     move = _int(step, "move", 0)
     send_best = step.get("send") == "best"  # a fainted lead's replacement: the best scorer, not the first able
@@ -516,15 +551,240 @@ def bot_auto_battle(s, step, ctx):
         turns, ", ".join("%d x%d" % kv for kv in sorted(menus.items()))))
 
 
+# ---------------------------------------------------------------- auto_battle on the GBA
+# Ruby/Sapphire/Emerald battles take buttons; the probe (np_e2e.h v4) reports the menu the game waits on with the DS
+# numbering and its cursor (games/emerald/pc/src/emerald_e2e.c, ruby_e2e.c). The game's BATTLE_TYPE_* bits
+# (include/constants/battle.h): DOUBLE 1 << 0, TRAINER 1 << 3, MULTI 1 << 6.
+GBA_BATTLE_DOUBLE, GBA_BATTLE_TRAINER, GBA_BATTLE_MULTI = 0x01, 0x08, 0x40
+# the YES/NO cursor (0 YES, 1 NO) each prompt is answered with: nickname NO, "delete a move?" NO, "stop learning?"
+# YES, "use the next Pokemon?" YES, "switch Pokemon?" NO
+GBA_MENU_ANSWER = {13: 1, 14: 1, 15: 0, 16: 0, 17: 1}
+GBA_ACTION_FIGHT, GBA_ACTION_POKEMON, GBA_ACTION_RUN = 0, 2, 3  # the action menu's 2x2 cursor
+
+
+def _gba_press(s, key, settle=6):
+    """One press: the game's menus take a key on the frame it goes down (JOY_NEW)."""
+    s.run(2, key)
+    s.run(settle)
+
+
+def _gba_grid_cursor(s, idx, want):
+    """Moves the 2x2 cursor of battle menu `idx` (0 top left, 1 top right, 2 bottom left, 3 bottom right:
+    battle_controller_player.c HandleInputChooseAction / HandleInputChooseMove) onto `want`; False when the menu
+    went away or the cursor would not go there (a move slot past the last move)."""
+    for _ in range(4):
+        p = s.probe()
+        if p is None or p.ui != UI_BATTLE_MENU or p.ui_arg != idx:
+            return False
+        if p.ui_cursor == want:
+            return True
+        if (p.ui_cursor ^ want) & 1:
+            _gba_press(s, "right" if want & 1 else "left")
+        else:
+            _gba_press(s, "down" if want & 2 else "up")
+    p = s.probe()
+    return p is not None and p.ui == UI_BATTLE_MENU and p.ui_arg == idx and p.ui_cursor == want
+
+
+def _gba_auto_battle(s, step, ctx):
+    """bot_auto_battle for the GBA games: the same move and switch choices (best_damage, choose_move, replacement
+    over the probe's battle report), made with the D-pad and A on the cursor the probe reports. The party menu
+    lists gPlayerParty in slot order with the battler that is out in slot 0 (slots 0 and 1 in a double battle)."""
+    fixed = "move" in step
+    move = _int(step, "move", 0)
+    send_best = step.get("send") == "best"
+    flee = FLEE_TRIES if step.get("flee") else 0
+    snap_menu = bool(step.get("snap"))
+    limit = s.frame + _int(step, "max", 30000)
+    if not s.in_battle and not s.run(_int(step, "wait", 900), until="in_battle=1"):
+        raise HarnessError("no battle started within %d frames" % _int(step, "wait", 900))
+    gd = None if fixed else gamedata(ctx)
+    p = s.probe()
+    since = p.frame if p is not None else 0
+    party_try = 0
+    turns = 0
+    last = None
+    target = 0       # 0 the foe battler 1, 1 battler 3
+    again = 0
+    menus = {}
+    rejected = []
+    slot = None
+    want = None
+    shift_tries = 0
+    switched_at = -1
+    report = None
+    tried = {}
+    useless = set()
+    while s.in_battle:
+        if s.frame >= limit:
+            raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
+        p = s.probe()
+        if p is not None and p.battle_frame >= since and p.battlers:
+            report = p
+        fresh = gd is not None and p is not None and p.battle_fresh and p.battle_frame >= since
+        if p is not None and p.ui == UI_BATTLE_MENU:
+            idx = p.ui_arg
+            me = foe = None
+            ally = False
+            if fresh and idx in (1, 11, 12):
+                me = p.battlers[p.menu_battler]
+                foes = [b for b in (1, 3) if b < len(p.battlers) and p.battlers[b].alive]
+                if foes and (1 + 2 * target) not in foes:
+                    target = (foes[0] - 1) // 2
+                foe = p.battlers[1 + 2 * target] if foes else None
+                mate = p.menu_battler ^ 2
+                ally = bool(p.battle_type & GBA_BATTLE_DOUBLE) and mate < len(p.battlers) and p.battlers[mate].alive
+                if idx == 1 and p.menu_battler in tried:
+                    mv, fb, sp, hp = tried.pop(p.menu_battler)
+                    b = p.battlers[fb] if fb < len(p.battlers) else None
+                    if b is not None and b.species == sp and b.hp > 0 and b.hp >= hp:
+                        block, _ = blocking_abilities(gd, sp, mv, mon_types(gd, b))
+                        if block and (mv, sp) not in useless:
+                            useless.add((mv, sp))
+                            s.note("auto_battle: move %d did nothing to species %d (ability %s); not using it on it "
+                                   "again" % (mv, sp, block))
+            if idx == 1 and snap_menu:
+                snap_menu = False
+                snap(s)
+            if idx == 1:
+                choice = GBA_ACTION_FIGHT
+                if flee:
+                    flee -= 1
+                    choice = GBA_ACTION_RUN
+                else:
+                    rejected = []
+                    k = None
+                    if (fresh and not p.battle_type & GBA_BATTLE_MULTI and me.alive and switched_at != turns
+                            and best_damage(gd, me, foe, ally=ally, useless=useless)[0] is None):
+                        first = 2 if p.battle_type & GBA_BATTLE_DOUBLE else 1
+                        k = replacement(gd, p.party, foe, first, ally, useless, best=send_best)
+                        if k is not None and best_damage(gd, p.party[k], foe, ally=ally, useless=useless)[0] is None:
+                            k = None
+                    if k is not None:
+                        s.note("auto_battle: no damaging move left; switching to party slot %d" % k)
+                        want, switched_at = k, turns
+                        choice = GBA_ACTION_POKEMON
+                    else:
+                        turns += 1
+                    party_try = 0
+                if _gba_grid_cursor(s, 1, choice):
+                    _gba_press(s, "a")
+            elif idx == 11:
+                again = again + 1 if last == 11 else 0
+                refused = again >= 2
+                if refused:
+                    again = 0
+                if fixed or not fresh:
+                    if refused:
+                        move = (move + 1) % 4
+                        s.note("auto_battle: move slot %d" % move)
+                    slot = move
+                else:
+                    if refused and slot is not None:
+                        rejected.append(slot)
+                    slot = choose_move(gd, me, foe, rejected, ally, useless)
+                    if slot is None:
+                        rejected = []
+                        slot = choose_move(gd, me, foe, ally=ally, useless=useless) or 0
+                    s.note("auto_battle: battler %d slot %d (move %d, %d PP) on species %d" % (
+                        p.menu_battler, slot, me.moves[slot], me.pp[slot], foe.species if foe else 0))
+                    if foe is not None:
+                        tried[p.menu_battler] = (me.moves[slot], 1 + 2 * target, foe.species, foe.hp)
+                if _gba_grid_cursor(s, 11, slot):
+                    _gba_press(s, "a")
+                    s.run(30, until=["ui_arg!=11", "ui!=%d" % UI_BATTLE_MENU, "in_battle=0"])
+                else:
+                    again = 2  # the slot cannot be reached (no move there): the next one
+            elif idx == 12:
+                if last == 12:
+                    target = 1 - target  # the target menu again: that opponent is gone, take the other
+                tb = 1 + 2 * target
+                for _ in range(4):
+                    q = s.probe()
+                    if q is None or q.ui != UI_BATTLE_MENU or q.ui_arg != 12 or q.ui_cursor == tb:
+                        break
+                    _gba_press(s, "right")
+                _gba_press(s, "a")
+            elif idx in GBA_MENU_ANSWER:
+                answer = GBA_MENU_ANSWER[idx]
+                if p.ui_cursor != answer:
+                    _gba_press(s, "down" if answer else "up")
+                _gba_press(s, "a")
+            else:
+                _gba_press(s, "b", 10)
+            last = idx
+            menus[idx] = menus.get(idx, 0) + 1
+            continue
+        if p is not None and p.ui == UI_BATTLE_PARTY:
+            if p.ui_arg == 0:
+                if want is None and report is not None and party_try == 0 and gd is not None:
+                    # a fainted lead: the party menu's own list (gPlayerParty, the one out in slot 0) and the foe
+                    foe = next((report.battlers[b] for b in (1 + 2 * target, 3 - 2 * target)
+                                if b < len(report.battlers) and report.battlers[b].alive), None)
+                    first = 2 if report.battle_type & GBA_BATTLE_DOUBLE else 1
+                    if not report.battle_type & GBA_BATTLE_MULTI:
+                        want = replacement(gd, p.party or report.party, foe, first, best=send_best)
+                if want is not None and last != ("party", want):
+                    party_try = want
+                    last = ("party", want)
+                else:
+                    want = None
+                    party_try = party_try % 5 + 1
+                    last = ("party", None)
+                shift_tries = 0
+                for _ in range(8):  # party_menu.c: DOWN walks the slots in order, then CANCEL, then slot 0
+                    q = s.probe()
+                    if q is None or q.ui != UI_BATTLE_PARTY or q.ui_arg != 0 or q.ui_cursor == party_try:
+                        break
+                    _gba_press(s, "down")
+                _gba_press(s, "a", 12)
+            elif shift_tries >= 3:
+                s.note("auto_battle: party slot %d refused; the next one" % party_try)
+                _gba_press(s, "b", 20)
+                shift_tries = 0
+                want = None
+            else:
+                # SHIFT is the first entry of Task_HandleSelectionMenuInput's list
+                _gba_press(s, "a", 12)
+                shift_tries += 1
+                want = None
+            continue
+        # text, animations, the evolution scene: A advances text (B would cancel an evolution)
+        if not s.run(6, until=["ui!=0", "in_battle=0"]):
+            s.run(2, "a", until=["ui!=0", "in_battle=0"])
+    s.note("auto_battle: battle over after %d turns (menus answered %s)" % (
+        turns, ", ".join("%d x%d" % kv for kv in sorted(menus.items()))))
+
+
 # ---------------------------------------------------------------- walk_to
 class Terrain:
     """What walk_to knows about the map: the probe's window plus what walking taught it."""
 
-    def __init__(self, surf=False, hm=False, avoid=()):
+    def __init__(self, surf=False, hm=False, avoid=(), game=None):
         self.surf, self.hm = surf, hm
         # tiles the step says are blocked though the probe's grid shows them free (props with their own collision,
         # e.g. D/P Veilstone Gym's sliding bars): never planned through, so never bumped
         self.avoid = {(int(x), int(z)) for x, z in avoid}
+        self.gba = game in GBA_GAMES
+        self.blocked_edges = {}  # (x, z, d) -> attempts that failed
+        # (x, z) -> times the walk stood there: each visit makes the tile cost VISIT_COST more, so plans that
+        # flip as the window slides (unknown tiles are hoped passable) stop swinging between two tiles
+        self.visits = {}
+        self.cells = {}          # (x, z) -> cell, kept across probes of the same map
+        # The probe's step layers (D/P, GBA): (x, z) -> {height: {d: (tx, tz, height or None)}}, the steps the
+        # game's own movement check allows from each place to stand (a bridge deck and the path under it are two),
+        # and the player's height. Tiles without layers (Platinum, or not reached) are planned from the cells alone.
+        self.layers = {}
+        self.height = None
+        self.objects = set()
+        self.hm_objects = set()  # cut trees and Rock Smash rocks, when hm
+        # the goal is across a GBA map border (a connected map's tile): only then are such tiles planned through
+        self.goal_connected = False
+        if self.gba:
+            self._gba_tables()
+            return
+        self.surfable, self.waterfall, self.rock_climb = SURFABLE, WATERFALL, ROCK_CLIMB
+        self.hm_gfx = (GFX_ROCK_SMASH, GFX_CUT_TREE)
         b = behaviors()
         self.jump = {b["JUMP_NORTH"]: 0, b["JUMP_SOUTH"]: 1, b["JUMP_WEST"]: 2, b["JUMP_EAST"]: 3}
         self.block_into = {}  # behavior -> directions that cannot enter the tile
@@ -540,18 +800,6 @@ class Terrain:
         # Bike slopes (e.g. Route 209 (562,691..692)) go uphill only at bicycle speed: on foot the player
         # slides back down forever, so walk_to never plans across one.
         self.slopes = {b[k] for k in ("BIKE_SLOPE_TOP", "BIKE_SLOPE_BOTTOM") if k in b}
-        self.blocked_edges = {}  # (x, z, d) -> attempts that failed
-        # (x, z) -> times the walk stood there: each visit makes the tile cost VISIT_COST more, so plans that
-        # flip as the window slides (unknown tiles are hoped passable) stop swinging between two tiles
-        self.visits = {}
-        self.cells = {}          # (x, z) -> cell, kept across probes of the same map
-        # The probe's step layers (D/P): (x, z) -> {height: {d: (tx, tz, height or None)}}, the steps the game's own
-        # movement check allows from each place to stand (a bridge deck and the path under it are two), and the
-        # player's height. Tiles without layers (Platinum, or not reached) are planned from the cells alone.
-        self.layers = {}
-        self.height = None
-        self.objects = set()
-        self.hm_objects = set()  # cut trees and Rock Smash rocks, when hm
         # exit mats and the direction that leaves through them (map_tile_behaviors.h)
         self.mats = {}
         for name, d in (("WARP_ENTRANCE_NORTH", 0), ("WARP_ENTRANCE_SOUTH", 1), ("WARP_ENTRANCE_WEST", 2),
@@ -559,6 +807,22 @@ class Terrain:
                         ("WARP_EAST", 3), ("WARP_STAIRS_WEST", 2), ("WARP_STAIRS_EAST", 3)):
             if name in b:
                 self.mats[b[name]] = d
+
+    def _gba_tables(self):
+        """Ruby/Sapphire/Emerald metatile behaviors (both decomps number include/constants/metatile_behaviors.h
+        alike). The step layers carry the game's own verdict on collision, ledges, one-way tiles and elevation
+        (water is elevation 1 to a walker at 3); these sets are what the planner adds to it."""
+        self.surfable, self.waterfall, self.rock_climb = GBA_SURFABLE - {GBA_WATERFALL}, GBA_WATERFALL, {}
+        self.hm_gfx = (GBA_GFX_BREAKABLE_ROCK, GBA_GFX_CUTTABLE_TREE)
+        self.jump = {0x3A: 0, 0x3B: 1, 0x39: 2, 0x38: 3}  # MB_JUMP_NORTH, _SOUTH, _WEST, _EAST
+        self.block_into = {}
+        self.water = set(GBA_SURFABLE)
+        self.grass = {0x02, 0x03, 0x24}  # MB_TALL_GRASS, MB_LONG_GRASS, MB_ASHGRASS
+        # forced movement (MB_WALK_* 0x40..0x43, MB_SLIDE_* 0x44..0x47) and MB_MUDDY_SLOPE (the Mach Bike's)
+        self.slopes = set(range(0x40, 0x48)) | {0xD0}
+        # arrow warps (field_control_avatar.c TryArrowWarp): MB_EAST/WEST/NORTH/SOUTH_ARROW_WARP 0x62..0x65,
+        # MB_WATER_SOUTH_ARROW_WARP 0x6D
+        self.mats = {0x62: 3, 0x63: 2, 0x64: 0, 0x65: 1, 0x6D: 1}
 
     def mat_exit(self, cell):
         """The direction that leaves through the exit mat `cell`, or None."""
@@ -578,7 +842,7 @@ class Terrain:
             self.layers.update(lay)
         self.height = p.player_height if lay and p.player_height in lay.get((p.x, p.z), {}) else None
         self.objects = {(o[0], o[1]) for o in p.objects}
-        self.hm_objects = {(o[0], o[1]) for o in p.objects if self.hm and o[3] in (GFX_ROCK_SMASH, GFX_CUT_TREE)}
+        self.hm_objects = {(o[0], o[1]) for o in p.objects if self.hm and o[3] in self.hm_gfx}
 
     def field_move(self, x, z, d):
         """The field move that enters (x, z) moving in direction d ('water', 'waterfall', 'climb', 'object'), if the
@@ -589,11 +853,11 @@ class Terrain:
         if c is None:
             return None
         beh = c & TILE_BEHAVIOR
-        if self.surf and beh in SURFABLE:
+        if self.surf and beh in self.surfable:
             return "water"
-        if self.surf and beh == WATERFALL and d == 0:
+        if self.surf and beh == self.waterfall and d == 0:
             return "waterfall"
-        if self.hm and beh in ROCK_CLIMB and d in ROCK_CLIMB[beh]:
+        if self.hm and beh in self.rock_climb and d in self.rock_climb[beh]:
             return "climb"
         return None
 
@@ -613,8 +877,10 @@ class Terrain:
         c = self.cells.get((x, z))
         if c is None:
             return True
+        if self.gba and c & TILE_CONNECTED and not self.goal_connected:
+            return False  # across a GBA map border: only a walk to the next map goes there
         beh = c & TILE_BEHAVIOR
-        if (c & TILE_COLLISION and not terrain) or beh in self.water or beh == WATERFALL or beh in self.slopes:
+        if (c & TILE_COLLISION and not terrain) or beh in self.water or beh == self.waterfall or beh in self.slopes:
             return False
         if beh in self.block_into and d in self.block_into[beh]:
             return False
@@ -933,11 +1199,17 @@ def _walk_to(s, step, ctx):
         raise HarnessError("walk_to: no probe (guest built without the e2e probe?)")
     if want_map is not None and p.map_id != want_map:
         raise HarnessError("walk_to: on map %d, the step expects %s (%d)" % (p.map_id, step["map"], want_map))
-    terrain = Terrain(surf=bool(step.get("surf")), hm=bool(step.get("hm")), avoid=step.get("avoid", ()))
+    terrain = Terrain(surf=bool(step.get("surf")), hm=bool(step.get("hm")), avoid=step.get("avoid", ()), game=ctx.game)
     field_tries = {}  # tile -> field-move attempts
     start_map = p.map_id
+    conn0 = p.connection_seq
     steps = 0
     warped = False
+    if terrain.gba:
+        # a GBA goal across the map's border (a connected map's tile, as the probe's window shows it in this map's
+        # coordinates): the walk ends where the player crosses into that map
+        c = p.cell(*goal)
+        terrain.goal_connected = c is not None and bool(c & TILE_CONNECTED)
     while (p.x, p.z) != goal:
         if s.frame >= limit:
             near = sorted((o[0], o[1], o[2]) for o in p.objects if abs(o[0] - p.x) + abs(o[1] - p.z) <= 4)
@@ -979,11 +1251,19 @@ def _walk_to(s, step, ctx):
         if not s.field_ready:
             limit += _field_or_handle(s, step, ctx, limit)
         p = s.probe()
+        if terrain.gba and p.map_id != start_map and p.connection_seq != conn0:
+            # a GBA map's coordinates are its own: across a connection the map and the coordinates change at once
+            s.note("walk_to: crossed from map %d into map %d, now at (%d,%d)" % (start_map, p.map_id, p.x, p.z))
+            if terrain.goal_connected:
+                warped = True
+                break
+            raise HarnessError("walk_to (%d,%d): crossed into map %d at (%d,%d) on the way; give this walk a goal across "
+                               "the border and walk on in the next map's coordinates" % (goal + (p.map_id, p.x, p.z)))
         if p.map_id != start_map:
             # Outdoors the matrix is one coordinate space: a step across a map border changes map_id
             # and moves one tile (two over a ledge). Anything else is a warp.
             nxt = (here[0] + DIR_DELTA[d][0], here[1] + DIR_DELTA[d][1])
-            if abs(p.x - here[0]) + abs(p.z - here[1]) <= 2:
+            if not terrain.gba and abs(p.x - here[0]) + abs(p.z - here[1]) <= 2:
                 s.note("walk_to: crossed from map %d to %d at (%d,%d)" % (start_map, p.map_id, p.x, p.z))
                 start_map = p.map_id
                 steps += 1
@@ -1008,7 +1288,7 @@ def _walk_to(s, step, ctx):
             nxt = (here[0] + DIR_DELTA[d][0], here[1] + DIR_DELTA[d][1])
             fm = terrain.field_move(nxt[0], nxt[1], d)
             cell = p.cell(*here)
-            surfing = cell is not None and (cell & TILE_BEHAVIOR) in SURFABLE
+            surfing = cell is not None and (cell & TILE_BEHAVIOR) in terrain.surfable
             if fm and not (fm == "water" and surfing) and field_tries.get(nxt, 0) < 2:
                 field_tries[nxt] = field_tries.get(nxt, 0) + 1
                 limit += _use_field_move(s, step, ctx, fm, limit)
@@ -1076,6 +1356,9 @@ def _walk_to(s, step, ctx):
 # exit mat at (8,12) (e.g. Platinum events_sandgem_town_pokecenter_1f / events_jubilife_city_pokecenter_1f,
 # D/P zone_event 0398 / 0005).
 PC_COUNTER, PC_EXIT = (8, 6), (8, 12)
+# Ruby/Sapphire/Emerald: the nurse at (7,2) behind the counter (7,3), the exit arrow mats at (6,8)/(7,8) (every
+# data/maps/*_PokemonCenter_1F/map.json of both decomps, e.g. OldaleTown_PokemonCenter_1F)
+GBA_PC_COUNTER, GBA_PC_EXIT = (7, 4), (7, 8)
 
 
 def bot_heal(s, step, ctx):
@@ -1086,9 +1369,10 @@ def bot_heal(s, step, ctx):
     if s.map_id == town:
         raise HarnessError("heal: (%d,%d) is not a door on map %d" % (int(step["x"]), int(step["z"]), town))
     center = s.map_id
-    bot_walk_to(s, {"x": PC_COUNTER[0], "z": PC_COUNTER[1], "face": "up", "interact": True}, ctx)
+    counter, exit_ = (GBA_PC_COUNTER, GBA_PC_EXIT) if ctx.game in GBA_GAMES else (PC_COUNTER, PC_EXIT)
+    bot_walk_to(s, {"x": counter[0], "z": counter[1], "face": "up", "interact": True}, ctx)
     bot_advance_text(s, {}, ctx)  # A answers YES to resting the Pokemon
-    bot_walk_to(s, {"x": PC_EXIT[0], "z": PC_EXIT[1]}, ctx)
+    bot_walk_to(s, {"x": exit_[0], "z": exit_[1]}, ctx)
     if s.map_id == center:
         raise HarnessError("heal: did not leave the Pokemon Center (map %d)" % center)
     s.note("heal: healed in map %d, back on map %d" % (center, s.map_id))
@@ -1104,13 +1388,15 @@ def save_dump(s, ctx):
     """np_save4's dump of an in-game save made now (the whole save, as [expect] save expressions see it)."""
     before = _stores(s)
     bot_save(s, {}, ctx)
+    if ctx.game in GBA_GAMES:
+        s.flush()  # the GBA flash chip is stored by the host, when asked
     for _ in range(60):  # np_gp writes the chip file when the game's card write completes
         if _stores(s) > before:
             break
         s.run(2)
     else:
         raise HarnessError("party: the save was not written to %s" % s.save_path)
-    out = subprocess.run([ctx.save4, "dump", ctx.rom, s.save_path], capture_output=True, text=True)
+    out = subprocess.run(ctx.save4 + ["dump", ctx.rom, s.save_path], capture_output=True, text=True)
     if out.returncode != 0:
         raise HarnessError("party: np_save4 cannot read %s" % s.save_path)
     return json.loads(out.stdout)
@@ -1242,7 +1528,7 @@ def bot_grind(s, step, ctx):
             bot_heal(s, {"x": door[0], "z": door[1]}, ctx)
         bot_walk_to(s, {"x": spot[0], "z": spot[1]}, ctx)
         p = s.probe()
-        t = Terrain()
+        t = Terrain(game=ctx.game)
         for c in (spot, (spot[0] + 1, spot[1])):
             cell = p.cell(*c)
             if cell is None or (cell & TILE_BEHAVIOR) not in t.grass:
@@ -1288,7 +1574,7 @@ def bot_talk_to(s, step, ctx):
                 s.note("talk_to: talking to object %d at (%d,%d)" % (oid, obj[0], obj[1]))
                 return
             continue
-        t = Terrain()
+        t = Terrain(game=ctx.game)
         t.update(p)
         cands = []
         for dx, dz in DIR_DELTA:

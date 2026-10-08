@@ -1,0 +1,134 @@
+# Proves Surf (badge 5) across Route 118 from Mauville, Steven's Route 118 scene, Route 119 north (river: Surf) to the
+# Weather Institute: Aqua grunts, Shelly (TRAINER_SHELLY_WEATHER_INSTITUTE), VAR_WEATHER_INSTITUTE_STATE 1 and Castform.
+# Start: Wally's house -> end: MAP_ROUTE119 outside the Weather Institute (6,33).
+title = "Surf east: Route 118, Route 119 and the Weather Institute (Shelly)"
+status = "planned"
+priority = "P0"
+estimate = 16000
+refs = [
+  "data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0",
+  "data/maps/Route118/scripts.inc:62-95",
+  "data/maps/Route119/map.json warp_events[0] (6,32) -> WEATHER_INSTITUTE_1F",
+  "data/maps/Route119_WeatherInstitute_1F/map.json object_events 1/2 grunts",
+  "data/maps/Route119_WeatherInstitute_2F/map.json object_events 1,2,3,8",
+  "data/maps/Route119_WeatherInstitute_2F/scripts.inc:41-121",
+  "TRAINER_SHELLY_WEATHER_INSTITUTE (32), src/data/trainers.h:388",
+  "TRAINER_GRUNT_WEATHER_INST_1 (17), src/data/trainers.h:208",
+  "TRAINER_GRUNT_WEATHER_INST_2 (18), src/data/trainers.h:220",
+  "TRAINER_GRUNT_WEATHER_INST_3 (19), src/data/trainers.h:232",
+  "TRAINER_GRUNT_WEATHER_INST_4 (26), src/data/trainers.h:316",
+  "TRAINER_GRUNT_WEATHER_INST_5 (596), src/data/trainers.h:7156",
+  "src/field_control_avatar.c:450 (Surf: FLAG_BADGE05_GET + party Surf)",
+]
+notes = "Shelly: TRAINER_SHELLY_WEATHER_INSTITUTE (32): CARVANHA 28, MIGHTYENA 28; grunts: TRAINER_GRUNT_WEATHER_INST_1 (17): ZUBAT 27, POOCHYENA 27; TRAINER_GRUNT_WEATHER_INST_2 (18): POOCHYENA 27, CARVANHA 27; TRAINER_GRUNT_WEATHER_INST_3 (19): POOCHYENA 26, ZUBAT 26, CARVANHA 26; TRAINER_GRUNT_WEATHER_INST_4 (26): CARVANHA 28; TRAINER_GRUNT_WEATHER_INST_5 (596): ZUBAT 27, POOCHYENA 27. Back to Mauville the same way as 24 came (Petalburg -> Route 104 -> Rustboro -> 116 -> tunnel -> Verdanturf -> 117 -> Mauville), or Surf Route 104 -> 105.. [INFERENCE: walking is simpler]. Route 118 east of Mauville needs Surf for the inlet; Route 119 has long grass and the river. Castform (lv25, Mystic Water) joins the party: its nickname prompt must be answered NO."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 24000
+
+# PHASE2: the Castform nickname YES/NO after ShellyDefeated (Route119_WeatherInstitute_2F/scripts.inc:87-93): confirm advance_text answers it NO, else press B there.
+
+# PHASE2: the Route 119 river/bike-path route from Route 118 to the institute (probe_map MAP_ROUTE119 rows 30..140).
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 10
+map = "MAP_MAUVILLE_CITY"
+note = "back to Mauville's east edge by the 24 walk in reverse [INFERENCE]"
+
+[[step]]
+do = "walk_to"
+x = 44
+z = 12
+map = "MAP_ROUTE118"
+surf = true
+on_text = "stop"
+note = "Route 118 east across the inlet (Surf); Steven trigger (43..45,11) ROUTE118_STATE 0 (Route118/scripts.inc:62-95)"
+
+[[step]]
+do = "advance_text"
+note = "Steven scene, ROUTE118_STATE 1"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 33
+map = "MAP_ROUTE119"
+surf = true
+note = "north on Route 119 to the Weather Institute door [PHASE2: route]"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 32
+note = "Weather Institute door (Route 119 warp 0) -> WEATHER_INSTITUTE_1F (9,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE119_WEATHER_INSTITUTE_1F"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 1
+note = "1F stairs (warp 2) -> 2F; grunts (15,3) W 3 and (10,5) S 2 fought on the way"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE119_WEATHER_INSTITUTE_2F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 6
+face = "left"
+interact = true
+note = "right of Shelly (4,6); grunts (15,6) E 4, (10,8) N/S 2, (19,6) W 3 fought on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "shelly"
+note = "TRAINER_SHELLY_WEATHER_INSTITUTE (32): CARVANHA 28, MIGHTYENA 28 (Route119_WeatherInstitute_2F/scripts.inc:42)"
+
+[[step]]
+do = "advance_text"
+note = "ShellyDefeated: WEATHER_INSTITUTE_STATE 1, FLAG_HIDE_ROUTE_119_TEAM_AQUA; scientist gives Castform (nickname NO) -> FLAG_RECEIVED_CASTFORM (:46-121)"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 1
+note = "2F stairs -> 1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE119_WEATHER_INSTITUTE_1F"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 12
+note = "exit -> Route 119 (6,32)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE119"
+
+[expect]
+map = "MAP_ROUTE119"
+badges = 5
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_RECEIVED_CASTFORM", "FLAG_HIDE_ROUTE_119_TEAM_AQUA", "FLAG_HIDE_WEATHER_INSTITUTE_2F_AQUA_GRUNT_M"]
+party = ["SPECIES_CASTFORM"]
+battles = 1
+
+[expect.vars]
+VAR_WEATHER_INSTITUTE_STATE = 1
+VAR_ROUTE118_STATE = 1

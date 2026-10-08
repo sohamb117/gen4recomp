@@ -1,0 +1,66 @@
+# Proves Mt. Chimney's south exit, Jagged Pass' ledges down (ash weather, trainers), Route 112 west into Lavaridge
+# (FLAG_VISITED_LAVARIDGE_TOWN, heal). The Magma Hideout door (16,18) stays shut until the Magma Emblem (30).
+# Start: Mt. Chimney summit -> end: MAP_LAVARIDGE_TOWN in front of the Pokemon Center (9,7).
+title = "Down Jagged Pass to Lavaridge Town"
+status = "planned"
+priority = "P0"
+estimate = 6000
+refs = [
+  "data/maps/MtChimney/map.json warp_events[2] (20,41) -> JAGGED_PASS",
+  "data/maps/JaggedPass/map.json warp_events (13,5)/(14,40)",
+  "data/maps/JaggedPass/scripts.inc:9-18",
+  "data/maps/Route112/map.json connections left LAVARIDGE_TOWN offset 40",
+  "data/maps/LavaridgeTown/scripts.inc:7-13",
+  "data/maps/LavaridgeTown/map.json warp_events[3] (9,6) -> POKEMON_CENTER_1F",
+  "TRAINER_ERIC (632), src/data/trainers.h:7588",
+  "TRAINER_DIANA_1 (474), src/data/trainers.h:5692",
+  "TRAINER_AUTUMN (217), src/data/trainers.h:2608",
+  "TRAINER_JULIO (566), src/data/trainers.h:6796",
+  "TRAINER_ETHAN_1 (216), src/data/trainers.h:2596",
+]
+notes = "Jagged Pass trainers: TRAINER_ERIC (632): GEODUDE 20, BALTOY 20; TRAINER_DIANA_1 (474): SHROOMISH 19, ODDISH 19, SWABLU 19; TRAINER_AUTUMN (217): SHROOMISH 21; TRAINER_JULIO (566): MAGNEMITE 21; TRAINER_ETHAN_1 (216): ZIGZAGOON 20, TAILLOW 20. Jagged Pass is one-way downhill by ledges (the Acro Bike climbs it) [INFERENCE]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 9000
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 41
+note = "Mt. Chimney south exit (warp 2) -> JAGGED_PASS (13,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_JAGGED_PASS"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 40
+note = "bottom exit (warp 0) -> Route 112 (6,46)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE112"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 7
+map = "MAP_LAVARIDGE_TOWN"
+note = "west into Lavaridge (Route 112 rows 40..59 = Lavaridge 0..19)"
+
+[[step]]
+do = "heal"
+x = 9
+z = 6
+note = "Lavaridge Pokemon Center (warp 3)"
+
+[expect]
+map = "MAP_LAVARIDGE_TOWN"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_VISITED_LAVARIDGE_TOWN", "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"]

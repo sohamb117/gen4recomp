@@ -133,9 +133,12 @@ void np_fiber_entry(uint32_t arg) {
     run_game();
 }
 
+uint32_t gba_soft_resets;
+
 void gba_soft_reset(void) {
     uint32_t self = np_host_fiber_self();
     uint8_t *stack = s_stacks[s_next_stack];
+    gba_soft_resets++;
     s_next_stack ^= 1;
     /* the boot fiber (handle 1) is never destroyed, only left parked */
     s_old_fiber = self != 1 ? self : 0;

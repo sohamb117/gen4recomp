@@ -1,0 +1,114 @@
+# Proves Fly to Lilycove, Surf to the hideout cave (70,5), 1F -> B1F warp-panel maze -> B2F, Matt (TRAINER_MATT) and
+# SubmarineEscape: FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS (opens Route 124).
+# Start: Slateport Harbor -> end: MAP_AQUA_HIDEOUT_B2F at the submarine dock.
+title = "Lilycove Aqua Hideout: Matt and the submarine escape"
+status = "planned"
+priority = "P0"
+estimate = 16000
+refs = [
+  "data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F",
+  "data/maps/AquaHideout_1F/map.json warp_events[2] (22,1) -> B1F",
+  "data/maps/AquaHideout_B1F/map.json warp_events 0..24 (panels)",
+  "data/maps/AquaHideout_B2F/map.json object_events[1] MATT (23,19), coord_events (28,16)/(28,17)",
+  "data/maps/AquaHideout_B2F/scripts.inc:13-46",
+  "TRAINER_MATT (30), src/data/trainers.h:364",
+  "TRAINER_GRUNT_AQUA_HIDEOUT_1 (2), src/data/trainers.h:28",
+  "TRAINER_GRUNT_AQUA_HIDEOUT_2 (3), src/data/trainers.h:40",
+  "TRAINER_GRUNT_AQUA_HIDEOUT_3 (4), src/data/trainers.h:52",
+  "TRAINER_GRUNT_AQUA_HIDEOUT_4 (5), src/data/trainers.h:64",
+  "TRAINER_GRUNT_AQUA_HIDEOUT_5 (27), src/data/trainers.h:328",
+  "TRAINER_GRUNT_AQUA_HIDEOUT_6 (28), src/data/trainers.h:340",
+  "TRAINER_GRUNT_AQUA_HIDEOUT_7 (192), src/data/trainers.h:2308",
+  "TRAINER_GRUNT_AQUA_HIDEOUT_8 (193), src/data/trainers.h:2320",
+]
+notes = "Matt: TRAINER_MATT (30): MIGHTYENA 34, GOLBAT 34; grunts lv 31-32. The B1F warp panels pair by warp index (AquaHideout_B1F warp_events 4..24 self-links); two Electrode item-ball fakes (lv30) on B1F. The Master Ball item ball sits in the hideout [INFERENCE: optional]. Lilycove's east cave (70,5) is reached by Surf from the shore."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 24000
+
+# PHASE2: the B1F/B2F warp-panel route from 1F (22,1) to Matt: map the panel pairs (B1F warps 4..24, B2F 3..8) with probe_map and write per-panel walk_to steps.
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 14
+note = "harbor exit (warp 0) -> Slateport (28,12); no Fly indoors"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY"
+
+[[step]]
+do = "fly"
+map = "MAP_LILYCOVE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 70
+z = 5
+map = "MAP_LILYCOVE_CITY"
+surf = true
+note = "east shore, Surf to the cave mouth (Lilycove warp 6) -> AQUA_HIDEOUT_1F (13,27)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AQUA_HIDEOUT_1F"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 1
+note = "1F (warp 2) -> B1F (29,1); grunt (20,4) sight 3"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AQUA_HIDEOUT_B1F"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 1
+note = "[PHASE2] B1F panels to the B2F ladder (warp 1) -> B2F (18,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_AQUA_HIDEOUT_B2F"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 17
+on_text = "stop"
+note = "[PHASE2] B2F to MattNoticePlayer (28,16..17) (AquaHideout_B2F/scripts.inc:13-21)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Matt (object 1 (23,19)) -> trainerbattle_single TRAINER_MATT (:23-24)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "matt"
+note = "TRAINER_MATT (30): MIGHTYENA 34, GOLBAT 34"
+
+[[step]]
+do = "advance_text"
+shot = "submarine-escape"
+note = "SubmarineEscape: FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS (:29-46)"
+
+[expect]
+map = "MAP_AQUA_HIDEOUT_B2F"
+badges = 6
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE", "FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS"]
+battles = 1

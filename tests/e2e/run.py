@@ -3,7 +3,7 @@
 
     tests/e2e/run.py --game G [--from M] [--only M ...] [--systems] [--lab] [--planned] [--out DIR] [--check]
 
-G is platinum, diamond or pearl. The chain is tests/e2e/<G>/chain.txt (side
+G is platinum, diamond or pearl, or emerald, ruby or sapphire. The chain is tests/e2e/<G>/chain.txt (side
 systems: systems.txt with --systems); each entry is a milestone directory
 holding milestone.toml. Every milestone runs np_gp in serve mode with the
 e2e probe on, starts from the previous milestone's end save (or a lab
@@ -33,13 +33,20 @@ sys.path.insert(0, GAMEPLAY)
 
 import labc  # noqa: E402
 from bots import BOTS  # noqa: E402
-from np_e2e import Budget, Dead, HarnessError, Session  # noqa: E402
+from np_e2e import GBA_GAMES, Budget, Dead, HarnessError, Session  # noqa: E402
 
 GAMES = {
     "platinum": ("games/platinum/build/rom/pokeplatinum.us.nds", "build/core-plat"),
     "diamond": ("games/diamond/build/diamond.us/pokediamond.us.nds", "build/core-dp"),
     "pearl": ("games/diamond/build/pearl.us/pokepearl.us.nds", "build/core-dp"),
+    # the GBA games: the decomps' own ROM builds (tools/rom_build.sh; docs/HANDOFF-rse.md) and the RSE core
+    "emerald": (".cache/gba/pokeemerald/pokeemerald.gba", "build/rse/native"),
+    "ruby": (".cache/gba/pokeruby/pokeruby.gba", "build/rse/native"),
+    "sapphire": (".cache/gba/pokeruby/pokesapphire.gba", "build/rse/native"),
 }
+# the GBA games' save tool (tools/gba/gen3_dump.py: `dump ROM SAV`, `gamedata ROM`, np_save4's shapes) and save lab
+GEN3_DUMP = os.path.join(ROOT, "tools", "gba", "gen3_dump.py")
+GEN3_LAB = os.path.join(ROOT, "tools", "gba", "gen3_lab.py")
 
 TOP_KEYS = {"title", "notes", "status", "priority", "estimate", "refs", "version", "start", "run", "step", "expect",
             "shots"}
@@ -52,7 +59,7 @@ EXPECT_KEYS = {"map", "position", "badges", "badge", "flags", "flags_clear", "va
                "log", "save"}
 STEP_COMMON = {"do", "max", "shot", "note"}
 STEP_KEYS = {
-    "press": {"keys", "hold", "gap", "times"},
+    "press": {"keys", "hold", "gap", "times", "until"},
     "tap": {"x", "y", "hold", "gap", "times"},
     "wait_frames": {"n"},
     "wait_map": {"map"},
@@ -118,7 +125,8 @@ class Game:
             raise HarnessError(str(e))
 
     def tools(self):
-        """np_gp for this core build (rebuilt when stale) and np_save4."""
+        """np_gp for this core build (rebuilt when stale) and the save tool, a command prefix: np_save4 (DS), or
+        tools/gba/gen3_dump.py (GBA)."""
         if not os.path.isfile(self.rom):
             die("no ROM at %s (set NP_ROM)" % self.rom)
         libs = sorted(glob.glob(os.path.join(self.core, "libnp_guest_*.a")))
@@ -137,6 +145,9 @@ class Game:
             if subprocess.call(cmd) != 0:
                 die("np_gp did not build")
             os.replace(tmp, gp)
+        if self.name in GBA_GAMES:
+            self.gp, self.save4 = gp, [sys.executable, GEN3_DUMP]
+            return
         save4 = os.path.join(ROOT, "build", "features", "np_save4")
         src4 = os.path.join(ROOT, "features", "tools", "np_save4.c")
         if not os.path.isfile(save4) or os.path.getmtime(save4) < os.path.getmtime(src4):
@@ -145,7 +156,7 @@ class Game:
                                stdout=subprocess.DEVNULL) != 0 or subprocess.call(
                     ["cmake", "--build", build, "--target", "np_save4"], stdout=subprocess.DEVNULL) != 0:
                 die("np_save4 did not build")
-        self.gp, self.save4 = gp, save4
+        self.gp, self.save4 = gp, [save4]
 
 
 class Milestone:
@@ -278,6 +289,27 @@ def dp_base_save(game, out):
     return base
 
 
+def gba_base_save(game, out):
+    """A Ruby/Sapphire/Emerald new game saved in the house 1F (tests/rse/first_battle.sh's quicksave leg: the boot
+    schedule tests/rse/littleroot.sched, the game's own save at frame 10000), the base GBA lab recipes apply to."""
+    base = os.path.join(out, "base.sav")
+    if os.path.isfile(base):
+        return base
+    tmp = base + ".tmp"
+    if os.path.exists(tmp):
+        os.remove(tmp)
+    log_path = os.path.join(out, "base.log")
+    with open(log_path, "w") as log:
+        subprocess.call([game.gp, game.rom, "--game", game.name, "--frames", "10600", "--save", tmp, "--schedule",
+                         os.path.join(ROOT, "tests", "rse", "littleroot.sched"), "-o", "10000:quicksave_seq=1"],
+                        stdout=subprocess.DEVNULL, stderr=log)
+    if not re.search(r"quicksave_result 0 -> 1", open(log_path).read()) or not os.path.isfile(tmp):
+        raise HarnessError("the %s new-game base save failed (%s)" % (game.name, log_path))
+    os.replace(tmp, base)
+    return base
+
+
+
 def recipe_env(path, game):
     """(inline recipe, env) from a recipe file; env carries a `clock` line as PC_RTC."""
     if hasattr(labc, "compile_recipe"):
@@ -300,6 +332,16 @@ def mint(game, recipe, out_sav, base, workdir):
         else:
             run_env["PC_INPUT"] = "inline:" + ";".join(
                 "%d keys A;%d keys none" % (f, f + 12) for f in range(120, 1500, 40))
+    elif game.name in GBA_GAMES:
+        # the GBA lab edits the save itself (tools/gba/gen3_lab.py): the game reads it back on CONTINUE
+        shutil.copyfile(base or gba_base_save(game, workdir), work)
+        with open(log, "w") as f:
+            rc = subprocess.call([sys.executable, GEN3_LAB, game.rom, work, work, inline], stdout=f,
+                                 stderr=subprocess.STDOUT)
+        if rc != 0:
+            raise HarnessError("minting %s failed: %s" % (os.path.basename(recipe), open(log).read().strip()[-300:]))
+        os.replace(work, out_sav)
+        return env
     else:
         shutil.copyfile(base or dp_base_save(game, workdir), work)
         cmd = [game.gp, game.rom, "--game", game.name, "--frames", "9000", "--save", work, "--schedule",
@@ -328,6 +370,8 @@ class Ctx:
 
 def boot_continue(s):
     """Title screen, then CONTINUE, until the player is free (tests/gameplay/schedules/continue.press timings)."""
+    if s.game in GBA_GAMES:
+        return gba_boot_continue(s)
     if s.run(1250, until="field_ready=1"):
         return
     s.run(4, "start")
@@ -340,6 +384,23 @@ def boot_continue(s):
     raise HarnessError("CONTINUE never reached a free player")
 
 
+def gba_boot_continue(s):
+    """Ruby/Sapphire/Emerald: START past the intro and the title, then A on the main menu, whose cursor starts on
+    CONTINUE, until the player is free (tests/rse/e-1-home.sched's 400 / 700 / 900 / 1000; free at 1051)."""
+    s.run(400)
+    s.run(5, "start")
+    s.run(295)
+    s.run(5, "start")
+    s.run(195)
+    for _ in range(8):
+        s.run(5, "a", until="field_ready=1")
+        if s.run(95, until="field_ready=1"):
+            return
+    if s.run(600, until="field_ready=1"):
+        return
+    raise HarnessError("CONTINUE never reached a free player")
+
+
 def ppm_to_png(path):
     png = path[:-4] + ".png"
     if subprocess.call(["sips", "-s", "format", "png", path, "--out", png], stdout=subprocess.DEVNULL,
@@ -349,15 +410,15 @@ def ppm_to_png(path):
     return path
 
 
-def contact_sheet(d, name, shots):
+def contact_sheet(d, name, shots, gba=False):
     if not shots:
         return None
     sheet = os.path.join(d, name + ".png")
     args = ["montage"]
     for label, path in shots:
         args += ["-label", label, path]
-    args += ["-tile", "6x", "-geometry", "256x384+3+3", "-pointsize", "11", "-fill", "#e0e0e0",
-             "-background", "#202020", sheet]
+    args += ["-tile", "6x", "-geometry", "240x160+3+3" if gba else "256x384+3+3", "-pointsize", "11", "-fill",
+             "#e0e0e0", "-background", "#202020", sheet]
     if subprocess.call(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
         return None
     return sheet
@@ -456,8 +517,8 @@ def judge(game, ms, end_state, log_path, d, end_save):
         return "no end save to check"
     dump = os.path.join(d, "end.json")
     with open(dump, "w") as f:
-        if subprocess.call([game.save4, "dump", game.rom, end_save], stdout=f, stderr=subprocess.STDOUT) != 0:
-            return "np_save4 cannot read the end save"
+        if subprocess.call(game.save4 + ["dump", game.rom, end_save], stdout=f, stderr=subprocess.STDOUT) != 0:
+            return "the save tool cannot read the end save"
     sj = json.load(open(dump))
     tr = sj.get("trainer", {})
     if "badges" in ex and tr.get("badges") != int(ex["badges"]):
@@ -588,7 +649,7 @@ def run_milestone(game, ms, prev, args, out):
     for path in sorted(glob.glob(os.path.join(d, "frame_*.ppm"))):
         shots.append((os.path.basename(path)[6:-4].lstrip("0") or "0", path))
     shots = [(label, ppm_to_png(p)) for label, p in shots if os.path.isfile(p)]
-    res.sheet = contact_sheet(d, ms.name, shots)
+    res.sheet = contact_sheet(d, ms.name, shots, gba=game.name in GBA_GAMES)
     with open(os.path.join(d, "steps.txt"), "w") as f:
         f.write("milestone %s: %s (started from %s)\n" % (ms.name, res.status, res.started))
         for n, do, frames, result in res.steps:

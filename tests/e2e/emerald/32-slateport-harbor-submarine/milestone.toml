@@ -1,0 +1,106 @@
+# Proves Stern's TV interview in Slateport (talk -> warp to the harbor, VAR_SLATEPORT_CITY_STATE 2) and the harbor's
+# AquaEscapeScene coord (8,11..14): VAR_SLATEPORT_HARBOR_STATE 2, the Aqua Hideout entrance guards hidden.
+# Start: Magma Hideout 4F -> end: MAP_SLATEPORT_CITY_HARBOR beside Stern (8,13).
+title = "Slateport Harbor: Aqua steals Stern's submarine"
+status = "planned"
+priority = "P0"
+estimate = 5000
+refs = [
+  "data/maps/SlateportCity/map.json object_events[11] CAPT_STERN (28,13)",
+  "data/maps/SlateportCity/scripts.inc:523-568",
+  "data/maps/SlateportCity_Harbor/map.json coord_events (8,11..14) VAR_SLATEPORT_HARBOR_STATE=1",
+  "data/maps/SlateportCity_Harbor/scripts.inc:6-20",
+  "data/maps/SlateportCity_Harbor/scripts.inc:23-76",
+  "src/party_menu.c:3879",
+]
+notes = "No battle. Fly to Slateport (visited in 13). Stern (28,13) stands at the harbor door with Gabby & Ty (VAR_SLATEPORT_CITY_STATE 1 -> MovePeopleForSternInterview, SlateportCity/scripts.inc:9,19). The harbor scene hides FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1_BLOCKING_ENTRANCE and FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_2_BLOCKING_ENTRANCE (SlateportCity_Harbor/scripts.inc:71-72), which opens the Aqua Hideout (33)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 7500
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 21
+note = "4F (warp 1) -> 3F_3R (16,21); Fly is refused underground (src/party_menu.c:3879 Overworld_MapTypeAllowsTeleportAndFly)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAGMA_HIDEOUT_3F_3R"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 1
+note = "3F_3R (warp 0) -> 2F_3R (16,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAGMA_HIDEOUT_2F_3R"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 1
+note = "2F_3R (warp 0) -> 1F (20,22)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAGMA_HIDEOUT_1F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 34
+note = "1F exit (warp 0) -> Jagged Pass (16,18)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_JAGGED_PASS"
+
+[[step]]
+do = "fly"
+map = "MAP_SLATEPORT_CITY"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 13
+map = "MAP_SLATEPORT_CITY"
+face = "right"
+interact = true
+note = "left of Stern (28,13) [INFERENCE: free tile]"
+
+[[step]]
+do = "advance_text"
+map = "MAP_SLATEPORT_CITY_HARBOR"
+note = "CaptStern: interview, SLATEPORT_CITY_STATE 2, warp harbor (11,14) (SlateportCity/scripts.inc:523-568)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY_HARBOR"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 13
+on_text = "stop"
+note = "AquaEscapeTrigger2 (8,13) HARBOR_STATE 1 (SlateportCity_Harbor/scripts.inc:35-48)"
+
+[[step]]
+do = "advance_text"
+shot = "submarine-stolen"
+note = "AquaEscapeScene: HARBOR_STATE 2, FLAG_MET_TEAM_AQUA_HARBOR, entrance guards hidden (:48-76)"
+
+[expect]
+map = "MAP_SLATEPORT_CITY_HARBOR"
+badges = 6
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_MET_TEAM_AQUA_HARBOR", "FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1_BLOCKING_ENTRANCE", "FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_2_BLOCKING_ENTRANCE", "FLAG_HIDE_LILYCOVE_MOTEL_SCOTT"]
+
+[expect.vars]
+VAR_SLATEPORT_HARBOR_STATE = 2
+VAR_SLATEPORT_CITY_STATE = 2

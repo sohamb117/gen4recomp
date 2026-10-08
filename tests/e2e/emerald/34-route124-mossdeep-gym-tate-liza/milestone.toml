@@ -1,0 +1,106 @@
+# Proves Route 124 by Surf from Lilycove (its east exit open now), Mossdeep (visited flag) and the warp-tile/switch gym,
+# Tate & Liza's double battle (TRAINER_TATE_AND_LIZA_1): FLAG_BADGE07_GET, TM04 Calm Mind, VAR_MOSSDEEP_CITY_STATE 1.
+# Start: Aqua Hideout B2F -> end: MAP_MOSSDEEP_CITY at the gym door (38,10).
+title = "Surf to Mossdeep: Tate & Liza's Mind Badge"
+status = "planned"
+priority = "P0"
+estimate = 18000
+refs = [
+  "data/maps/LilycoveCity/map.json object_events[10] Wailmer grunt (73,15) FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS",
+  "data/maps/Route124/map.json connections right MOSSDEEP_CITY offset 40",
+  "data/maps/MossdeepCity/scripts.inc:71-74",
+  "data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> GYM",
+  "data/maps/MossdeepCity_Gym/map.json coord_events switches/warp",
+  "data/maps/MossdeepCity_Gym/scripts.inc:51-104",
+  "data/maps/MossdeepCity_Gym/scripts.inc:113-196",
+  "TRAINER_TATE_AND_LIZA_1 (271), src/data/trainers.h:3256",
+  "src/party_menu.c:126 (Dive needs FLAG_BADGE07_GET)",
+]
+notes = "Tate & Liza (DOUBLE, two mons needed): TRAINER_TATE_AND_LIZA_1 (271): CLAYDOL 41, XATU 41, LUNATONE 42, SOLROCK 42 (Lunatone/Solrock Rock/Psychic, Claydol Ground: Surf hits hard; auto_battle must target in doubles). Gym trainers lv36 (Preston, Virgil, Blake, Hannah, Samantha, Maura, Sylvia, Nate, Kathleen, Clifford, Macey, Nicholas). Route 124 swimmers lv 33-34. Badge 7 also arms the Space Center raid (MOSSDEEP_CITY_STATE 1, Magma objects shown: MossdeepCity_Gym/scripts.inc:73-79) and hides the Aqua hideout grunts (:67)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 27000
+
+# PHASE2: the gym's spin tiles / floor switches (MossdeepCity_Gym coord_events: Yellow/Blue/Green/Purple/Red switches, WarpToEntrance (21,6)) to Tate & Liza (23..24,7): record a steps route.
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 27
+map = "MAP_AQUA_HIDEOUT_1F"
+note = "[PHASE2: 33's panel route in reverse] back up to 1F and out (warp 0) -> Lilycove (70,5); Fly does not work indoors [INFERENCE: Gen 3 Fly needs an outdoor map]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LILYCOVE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 17
+map = "MAP_MOSSDEEP_CITY"
+surf = true
+note = "Lilycove east exit (the Wailmer grunt is gone) -> Route 124 (Surf) -> Mossdeep, Pokemon Center door below (28,16); VisitedMossdeep coord sets FLAG_VISITED_MOSSDEEP_CITY (MossdeepCity/scripts.inc:71-74)"
+
+[[step]]
+do = "heal"
+x = 28
+z = 16
+note = "Mossdeep Pokemon Center (warp 2)"
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 9
+note = "gym door (warp 1) -> MOSSDEEP_CITY_GYM (6..7,35)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 8
+face = "up"
+interact = true
+note = "below Tate (23,7) [PHASE2: switch route]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "tate-liza"
+note = "TRAINER_TATE_AND_LIZA_1 (271): CLAYDOL 41, XATU 41, LUNATONE 42, SOLROCK 42 (double)"
+
+[[step]]
+do = "advance_text"
+shot = "mind-badge"
+note = "TateAndLizaDefeated: FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_BADGE07_GET, MOSSDEEP_CITY_STATE 1, MOSSDEEP_SPACE_CENTER_STATE 1; TM Calm Mind (MossdeepCity_Gym/scripts.inc:60-104)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 35
+note = "[PHASE2] back to the exit (warp 0) -> Mossdeep (38,9)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY"
+
+[expect]
+map = "MAP_MOSSDEEP_CITY"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_VISITED_MOSSDEEP_CITY", "FLAG_DEFEATED_MOSSDEEP_GYM", "FLAG_RECEIVED_TM_CALM_MIND", "FLAG_HIDE_AQUA_HIDEOUT_GRUNTS", "FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_1F_STEVEN"]
+flags_clear = ["FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA", "FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_2F_STEVEN"]
+battles = 1
+
+[expect.vars]
+VAR_MOSSDEEP_CITY_STATE = 1
+VAR_MOSSDEEP_SPACE_CENTER_STATE = 1

@@ -1,0 +1,145 @@
+# Proves the long Surf west (Route 126 -> 127 -> 128 -> 129 -> 130 -> 131), Sky Pillar's outside Wallace scene
+# (STATE 3 -> 4), the Mach Bike climb over cracked floors 1F..5F and the top's AwakenRayquaza coord: STATE 5, SKY_PILLAR_STATE 1.
+# Start: Cave of Origin B1F -> end: MAP_SKY_PILLAR_TOP after Rayquaza flies off.
+title = "Sky Pillar: Wallace opens the door, Rayquaza wakes"
+status = "planned"
+priority = "P0"
+estimate = 20000
+refs = [
+  "data/maps/Route131/map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE",
+  "data/maps/SkyPillar_Entrance/map.json warp_events[1] (14,4) -> OUTSIDE",
+  "data/maps/SkyPillar_Outside/scripts.inc:20-30",
+  "data/maps/SkyPillar_Outside/scripts.inc:33-79",
+  "data/maps/SkyPillar_Outside/map.json warp_events[1] (14,5) -> SKY_PILLAR_1F",
+  "data/maps/SkyPillar_1F/map.json warp_events[2] (10,1)",
+  "data/maps/SkyPillar_5F/map.json warp_events[1] (10,1) -> TOP",
+  "data/maps/SkyPillar_Top/map.json coord_events (14,9) VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE=0",
+  "data/maps/SkyPillar_Top/scripts.inc:85-125",
+  "data/maps/SkyPillar_1F/scripts.inc:6 (CleanFloor while SKY_PILLAR_STATE < 2)",
+]
+notes = "No battle: in Emerald Rayquaza only wakes and flies to Sootopolis here (the catchable Rayquaza is post-game, SkyPillar_Top/scripts.inc:18-19,36-57). Cracked floors (2F/4F) drop to the floor below unless crossed at speed on the Mach Bike (15) [INFERENCE: walk_to needs a bike mode]. Out of the Cave of Origin: Sootopolis -> Dive out -> Route 126 -> 127 -> 128 -> 129 -> 130 -> 131 (Surf; Route 130/131 currents). Abnormal weather (rain) en route."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 30000
+
+# PHASE2: Sky Pillar 2F-4F cracked-floor crossings with the Mach Bike (register it on SELECT, ride, steps routes per floor); the Route 129-131 surf path.
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 3
+note = "B1F (warp 0) -> 1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CAVE_OF_ORIGIN_1F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 17
+note = "1F (warp 0) -> entrance"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CAVE_OF_ORIGIN_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 20
+note = "entrance (warp 0) -> Sootopolis (31,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SOOTOPOLIS_CITY"
+
+[[step]]
+do = "walk_to"
+x = 36
+z = 6
+map = "MAP_ROUTE131"
+surf = true
+note = "[PHASE2] Dive out of Sootopolis, Surf Routes 126 -> 127 -> 128 -> 129 -> 130 -> 131, Sky Pillar door (Route 131 warp 0) -> SKY_PILLAR_ENTRANCE (6,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 4
+note = "entrance (warp 1) -> SKY_PILLAR_OUTSIDE (17,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_OUTSIDE"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame SOOTOPOLIS_CITY_STATE 3 -> WallaceScene: door opens, STATE 4, FLAG_SYS_WEATHER_CTRL (SkyPillar_Outside/scripts.inc:29-79)"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 5
+note = "Sky Pillar door (warp 1) -> SKY_PILLAR_1F (6..7,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_1F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 1
+note = "1F (warp 2) -> 2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_2F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 1
+map = "MAP_SKY_PILLAR_5F"
+note = "[PHASE2: Mach Bike over 2F/4F cracks] 2F -> 3F -> 4F -> 5F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 1
+note = "5F (warp 1) -> SKY_PILLAR_TOP (16,14)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_TOP"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 9
+on_text = "stop"
+note = "AwakenRayquaza coord (14,9) VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE 0"
+
+[[step]]
+do = "advance_text"
+shot = "rayquaza-wakes"
+note = "Rayquaza flies off: SOOTOPOLIS_CITY_STATE 5, SKY_PILLAR_STATE 1, RAYQUAZA_CRY_DONE 1 (SkyPillar_Top/scripts.inc:85-125)"
+
+[expect]
+map = "MAP_SKY_PILLAR_TOP"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_LANDMARK_SKY_PILLAR", "FLAG_SYS_WEATHER_CTRL"]
+flags_clear = ["FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE"]
+
+[expect.vars]
+VAR_SOOTOPOLIS_CITY_STATE = 5
+VAR_SKY_PILLAR_STATE = 1
+VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE = 1

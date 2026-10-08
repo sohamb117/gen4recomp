@@ -298,14 +298,17 @@ static uint64_t fnv(uint64_t h, const void *p, size_t n) {
     return h;
 }
 
+/* Both screens stacked (DS); the GBA has one (screen[1] NULL). */
+static int frame_screens(const np_frame *f) { return f->screen[1] ? 2 : 1; }
+
 static int dump_ppm(const char *dir, int64_t number, const np_frame *f) {
     char path[1024];
     snprintf(path, sizeof path, "%s/frame_%06lld.ppm", dir, (long long)number);
     FILE *out = fopen(path, "wb");
     if (!out) return -1;
-    fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * 2);
+    fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * frame_screens(f));
     uint8_t *row = malloc((size_t)f->width * 3);
-    for (int s = 0; s < 2; s++)
+    for (int s = 0; s < frame_screens(f); s++)
         for (uint32_t y = 0; y < f->height; y++) {
             for (uint32_t x = 0; x < f->width; x++) {
                 uint32_t p = f->screen[s][y * f->stride + x];
@@ -401,10 +404,11 @@ static int run_frame(frame_run *fr, int64_t k, const np_input *in) {
     if (fr->rc != 0) return fr->rc;
 
     const np_frame *f = &fr->f;
-    uint64_t sh = fnv(0xCBF29CE484222325ull, f->screen[0], (size_t)f->stride * f->height * 4);
-    sh = fnv(sh, f->screen[1], (size_t)f->stride * f->height * 4);
-    fr->hash = fnv(fr->hash, f->screen[0], (size_t)f->stride * f->height * 4);
-    fr->hash = fnv(fr->hash, f->screen[1], (size_t)f->stride * f->height * 4);
+    uint64_t sh = 0xCBF29CE484222325ull;
+    for (int s = 0; s < frame_screens(f); s++) {
+        sh = fnv(sh, f->screen[s], (size_t)f->stride * f->height * 4);
+        fr->hash = fnv(fr->hash, f->screen[s], (size_t)f->stride * f->height * 4);
+    }
     size_t n, got = 0;
     while ((n = np_core_audio_read(fr->core, g_audio, 8192)) > 0) {
         fr->hash = fnv(fr->hash, g_audio, n * 4);
@@ -503,9 +507,11 @@ static int finish(frame_run *fr, int64_t k) {
  *           stopped it, the 16 status words; "dead K" once the core stopped
  *   e2e         -> "e2e HEX" the probe block, or "e2e none" (PC_E2E unset)
  *   peek A L    -> "peek HEX", L bytes of guest memory at A
- *   dump PATH   -> "ok": the last frame as a PPM (both screens)
+ *   dump PATH   -> "ok": the last frame as a PPM (both screens; one on the GBA)
  *   opt NAME=V  -> "ok": an np_core option, from the next frame on
  *   sched PATH  -> "ok": a press schedule, its frames counted from now
+ *   flush       -> "ok": the save image stored now if the guest changed it (np_core_save_flush): a GBA
+ *                  guest publishes its flash chip every frame and leaves the storing to the host
  *   quit        -> the summary line (as the batch mode ends), then exit
  */
 typedef struct serve_cond {
@@ -639,8 +645,8 @@ static int64_t serve(frame_run *fr, int64_t k) {
                 printf("error cannot write %s\n", path ? path : "(no path)");
             } else {
                 const np_frame *f = &fr->f;
-                fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * 2);
-                for (int s = 0; s < 2; s++)
+                fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * frame_screens(f));
+                for (int s = 0; s < frame_screens(f); s++)
                     for (uint32_t y = 0; y < f->height; y++)
                         for (uint32_t x = 0; x < f->width; x++) {
                             uint32_t p = f->screen[s][y * f->stride + x];
@@ -660,6 +666,8 @@ static int64_t serve(frame_run *fr, int64_t k) {
         } else if (strcmp(cmd, "sched") == 0) {
             char *path = strtok_r(NULL, "\r\n", &save);
             printf(path && load_schedule(path, k) == 0 ? "ok\n" : "error cannot read schedule\n");
+        } else if (strcmp(cmd, "flush") == 0) {
+            printf(np_core_save_flush(fr->core) == 0 ? "ok\n" : "error the save store failed\n");
         } else if (strcmp(cmd, "quit") == 0) {
             return k;
         } else {

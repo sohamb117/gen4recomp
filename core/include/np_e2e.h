@@ -19,13 +19,14 @@
 #include <stdint.h>
 
 #define NP_E2E_MAGIC 0x31453245u /* 'E2E1' */
-#define NP_E2E_VERSION 3
+#define NP_E2E_VERSION 4
 
 /* The terrain window: GRID x GRID tiles, the player at (GRID/2, GRID/2). */
 #define NP_E2E_GRID 64
 #define NP_E2E_MAX_OBJECTS 64
 #define NP_E2E_MAX_BATTLERS 4
 #define NP_E2E_MAX_PARTY 6
+#define NP_E2E_MAX_WARPS 64
 
 /* What the game was waiting on during the last frame (np_e2e_block.ui). */
 enum np_e2e_ui {
@@ -45,6 +46,9 @@ enum np_e2e_ui {
 /* np_e2e_block.grid[] cells. */
 #define NP_E2E_TILE_BEHAVIOR 0x00FFu  /* the map's tile behavior byte */
 #define NP_E2E_TILE_COLLISION 0x0100u /* terrain collision bit set */
+#define NP_E2E_TILE_CONNECTED 0x0200u /* v4 (GBA): the tile is a connected map's, seen across the border */
+#define NP_E2E_TILE_ELEVATION 0x3C00u /* v4 (GBA): the tile's elevation (0..15) << 10 */
+#define NP_E2E_TILE_ELEVATION_SHIFT 10
 #define NP_E2E_TILE_KNOWN 0x8000u     /* the tile is on a loaded map block */
 
 /* v3, np_e2e_block.steps[][]: the game's own step check over the window,
@@ -79,6 +83,15 @@ typedef struct np_e2e_mon {
     uint8_t egg;
 } np_e2e_mon;
 
+/* v4: a warp of the current map (GBA warp events), its tile and where it
+ * leads (dest_map as map_id, the destination map's warp index). */
+typedef struct np_e2e_warp {
+    int16_t x, z;
+    uint16_t dest_map;
+    uint8_t dest_warp;
+    uint8_t elevation;
+} np_e2e_warp;
+
 typedef struct np_e2e_block {
     uint32_t magic;   /* NP_E2E_MAGIC */
     uint32_t version; /* NP_E2E_VERSION */
@@ -111,6 +124,29 @@ typedef struct np_e2e_block {
     int32_t player_height; /* the player's layer: its height (as heights[][]) */
     uint16_t steps[NP_E2E_LAYERS][NP_E2E_GRID * NP_E2E_GRID];
     int16_t heights[NP_E2E_LAYERS][NP_E2E_GRID * NP_E2E_GRID];
+    /* v4, filled by the GBA games (0 elsewhere): the cursor of the menu ui
+     * reports (the action/move cursor 0 top left, 1 top right, 2 bottom
+     * left, 3 bottom right; the target battler; a YES/NO cursor, 0 YES 1 NO;
+     * the party menu's slot), the player avatar's state bits (the game's
+     * PLAYER_AVATAR_FLAG_*: on foot, biking, surfing), and where the game
+     * keeps what a bot may read with np_gp's `peek`: the event flags (bit n
+     * of the bytes is flag n), the vars (u16 each, var 0x4000 + i), the party
+     * (the cartridge's own Pokemon structs, party_count of them). steps
+     * heights are elevations there (GBA tiles: 0 any, 15 multi-level), and
+     * a GBA map's coordinates are its own: tiles of a connected map seen
+     * across the border carry NP_E2E_TILE_CONNECTED, and walking across
+     * the border changes map_id and the coordinates without a warp, which
+     * connection_seq counts. soft_resets counts the game's own SoftReset
+     * calls (the end of the credits), which restart the guest in place. */
+    uint32_t ui_cursor;
+    uint32_t avatar_flags;
+    uint32_t flags_addr, flags_bytes;
+    uint32_t vars_addr, vars_count;
+    uint32_t party_addr, party_count;
+    uint32_t connection_seq;
+    uint32_t soft_resets;
+    uint32_t nwarps;
+    np_e2e_warp warps[NP_E2E_MAX_WARPS];
 } np_e2e_block;
 
 #endif /* NP_E2E_H */

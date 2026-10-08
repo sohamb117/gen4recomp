@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Compile a gameplay lab recipe (names) to the inline PC_LAB form (numbers).
 
-    labc.py [--game platinum|diamond|pearl] RECIPE           ->   inline:name GQ;party 390 30 0;...
-    labc.py [--game platinum|diamond|pearl] --clock RECIPE   ->   the recipe's PC_RTC (empty: none)
+    labc.py [--game platinum|diamond|pearl|emerald|ruby|sapphire] RECIPE           ->   inline:name GQ;party 390 30 0;...
+    labc.py [--game platinum|diamond|pearl|emerald|ruby|sapphire] --clock RECIPE   ->   the recipe's PC_RTC (empty: none)
 
 Platinum: the recipe language and its name resolution are the save lab's own
 (games/platinum/pc/tests/pc_lab.py, pc/src/pc_lab.c); this only points that
@@ -15,7 +15,14 @@ include/constants/*.h plus include/poketch.h's PoketchApp, the field's four
 facings (FACE_UP/DOWN/LEFT/RIGHT, global_fieldmap.h's DIR_* numbering), and
 tests/gameplay/dp/names.txt, the flag and var names pokediamond does not have.
 
-Every argument may also be a number (decimal or 0x hex) on both games.
+Ruby/Sapphire/Emerald (tools/gba/gen3_lab.py applies the result to a save):
+names come from the decomp's own include/constants/*.h, pokeemerald for
+Emerald and pokeruby built as RUBY or SAPPHIRE: every numeric #define and
+enumerator, expression defines evaluated, the MAP_* of map_groups.h and the
+LOCALID_* of event_objects.h / map_event_ids.h among them
+(tools/gba/gen3.py decomp_constants).
+
+Every argument may also be a number (decimal or 0x hex) on every game.
 
 One line is the compiler's rather than the guest's: `clock YYYY-MM-DD
 HH:MM:SS` sets the game clock, which is the RTC, which the port takes from
@@ -30,6 +37,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 GAMES = os.path.join(HERE, "..", "..", "games")
 DP_NAMES = os.path.join(HERE, "dp", "names.txt")
+GBA_TOOLS = os.path.join(HERE, "..", "..", "tools", "gba")
+GBA_GAMES = ("emerald", "ruby", "sapphire")
 
 TEXT_VERBS = {"name"}
 DEFINE_LINE = re.compile(r"^\s*#define\s+([A-Z_][A-Z0-9_]*)\s+\(?(-?\d+|0x[0-9a-fA-F]+)\)?\s*(?://.*)?$")
@@ -94,7 +103,12 @@ def make_resolver(game):
         import pc_lab  # noqa: E402
         pc_lab.GENINCLUDE = os.path.join(GAMES, "platinum", "build", "pc-wasm", "geninclude", "generated")
         return pc_lab.resolve
-    consts = dp_constants()
+    if game in GBA_GAMES:
+        sys.path.insert(0, GBA_TOOLS)
+        import gen3  # noqa: E402
+        consts = gen3.decomp_constants(game)
+    else:
+        consts = dp_constants()
 
     def resolve(token, where):
         try:
@@ -155,7 +169,7 @@ if __name__ == "__main__":
             clock, args = True, args[1:]
         else:
             game, args = args[1], args[2:]
-    if len(args) != 1 or game not in ("platinum", "diamond", "pearl"):
-        sys.exit("usage: labc.py [--game platinum|diamond|pearl] [--clock] RECIPE")
+    if len(args) != 1 or game not in ("platinum", "diamond", "pearl") + GBA_GAMES:
+        sys.exit("usage: labc.py [--game platinum|diamond|pearl|emerald|ruby|sapphire] [--clock] RECIPE")
     inline, env = compile_recipe(args[0], game)
     print(env.get("PC_RTC", "") if clock else inline)

@@ -1,0 +1,48 @@
+# Proves the Meteor Falls coord scene (14,18) VAR_METEOR_FALLS_STATE 0: Magma steals Cozmo's meteorite, Archie +
+# grunts arrive; FLAG_HIDE_ROUTE_112_TEAM_MAGMA opens the cable car, FLAG_MET_ARCHIE_METEOR_FALLS.
+# Start: Meteor Falls 1F (27,18) -> end: MAP_ROUTE114 outside the falls (8,64).
+title = "Meteor Falls: Magma takes the meteorite, Archie appears"
+status = "planned"
+priority = "P0"
+estimate = 4000
+refs = [
+  "data/maps/MeteorFalls_1F_1R/map.json coord_events (14,18) VAR_METEOR_FALLS_STATE=0",
+  "data/maps/MeteorFalls_1F_1R/scripts.inc:16-82",
+]
+notes = "No battle (pure cutscene). Route 112's grunts (FLAG_HIDE_ROUTE_112_TEAM_MAGMA) disappear here."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 6000
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 18
+on_text = "stop"
+note = "MagmaStealsMeteoriteScene coord (MeteorFalls_1F_1R/scripts.inc:16-82)"
+
+[[step]]
+do = "advance_text"
+shot = "meteor-falls"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 18
+note = "exit (warp 0) -> Route 114 (8,63)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE114"
+
+[expect]
+map = "MAP_ROUTE114"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_HIDE_ROUTE_112_TEAM_MAGMA", "FLAG_MET_ARCHIE_METEOR_FALLS"]
+
+[expect.vars]
+VAR_METEOR_FALLS_STATE = 1

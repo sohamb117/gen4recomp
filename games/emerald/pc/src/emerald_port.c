@@ -8,8 +8,11 @@
 #include "palette.h"
 #include "save.h"
 #include "script.h"
+#include "gba_e2e.h"
 #include "gba_port.h"
 #include "np_guest_abi.h"
+
+void emerald_e2e_frame(void); /* emerald_e2e.c */
 
 static void status(uint32_t *st) {
     st[NP_STAT_FIELD_READY] = gMain.callback1 == CB1_Overworld &&
@@ -19,6 +22,8 @@ static void status(uint32_t *st) {
                                               (uint8_t)gSaveBlock1Ptr->location.mapNum
                                         : 0;
     st[NP_STAT_IN_BATTLE] = gMain.inBattle;
+    st[NP_STAT_E2E] = gba_e2e_addr();
+    emerald_e2e_frame();
 }
 
 static uint32_t quicksave(void) {

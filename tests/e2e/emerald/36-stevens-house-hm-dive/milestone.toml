@@ -1,0 +1,64 @@
+# Proves Steven's house OnFrame VAR_STEVENS_HOUSE_STATE 1 -> StevenGivesDive: ITEM_HM_DIVE (FLAG_RECEIVED_HM_DIVE),
+# the Seafloor Cavern entrance grunt hidden, STEVENS_HOUSE_STATE 2.
+# Start: Space Center 2F -> end: MAP_MOSSDEEP_CITY_STEVENS_HOUSE.
+title = "Steven's house: HM08 Dive"
+status = "planned"
+priority = "P0"
+estimate = 3000
+refs = [
+  "data/maps/MossdeepCity/map.json warp_events[6] (19,10) -> STEVENS_HOUSE",
+  "data/maps/MossdeepCity_StevensHouse/scripts.inc:24-47",
+  "src/party_menu.c:126",
+  "src/field_control_avatar.c:465-475 (Dive: FLAG_BADGE07_GET)",
+]
+notes = "No battle. Dive needs the Mind Badge (src/party_menu.c:126, field_control_avatar.c:465); the Dive carrier comes from a boost. Beldum's ball is only shown after the game (hall_of_fame.inc ShowStevensHouseBeldum)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 4500
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 1
+note = "2F stairs -> 1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY_SPACE_CENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 9
+note = "exit -> Mossdeep (64,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 10
+note = "Steven's house door (warp 6)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY_STEVENS_HOUSE"
+
+[[step]]
+do = "advance_text"
+shot = "hm-dive"
+note = "OnFrame STEVENS_HOUSE_STATE 1 -> StevenGivesDive (MossdeepCity_StevensHouse/scripts.inc:24-47)"
+
+[expect]
+map = "MAP_MOSSDEEP_CITY_STEVENS_HOUSE"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_RECEIVED_HM_DIVE", "FLAG_OMIT_DIVE_FROM_STEVEN_LETTER", "FLAG_HIDE_SEAFLOOR_CAVERN_ENTRANCE_AQUA_GRUNT", "FLAG_HIDE_MOSSDEEP_CITY_SCOTT"]
+
+[expect.vars]
+VAR_STEVENS_HOUSE_STATE = 2

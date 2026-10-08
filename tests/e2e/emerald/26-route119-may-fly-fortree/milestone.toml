@@ -1,0 +1,67 @@
+# Proves the Route 119 rival trigger (25,31)/(26,31) VAR_ROUTE119_STATE 0: TRAINER_MAY_ROUTE_119_MUDKIP, HM02 Fly
+# (FLAG_RECEIVED_HM_FLY), Scott, and Route 119's north end into Fortree (FLAG_VISITED_FORTREE_CITY, heal).
+# Start: Route 119 (6,33) -> end: MAP_FORTREE_CITY in front of the Pokemon Center (5,7).
+title = "Route 119: May's third battle, HM02 Fly, into Fortree"
+status = "planned"
+priority = "P0"
+estimate = 8000
+refs = [
+  "data/maps/Route119/map.json coord_events (25,31)/(26,31) VAR_ROUTE119_STATE=0",
+  "data/maps/Route119/scripts.inc:29-160",
+  "TRAINER_MAY_ROUTE_119_MUDKIP (531), src/data/trainers.h:6376",
+  "data/maps/Route119/map.json connections right FORTREE_CITY offset 0",
+  "data/maps/FortreeCity/scripts.inc:7",
+  "data/maps/FortreeCity/map.json warp_events[0] (5,6) -> POKEMON_CENTER_1F",
+  "src/party_menu.c:125 (Fly needs FLAG_BADGE06_GET)",
+]
+notes = "May: TRAINER_MAY_ROUTE_119_MUDKIP (531): SLUGMA 29, LOMBRE 29, GROVYLE 31. HM02 Fly needs the Feather Badge (28) before the fly bot can use it; FLAG_VISITED_* of each town is what the town map offers [INFERENCE: GBA fly menu lists visited towns]. Route 119 north: hidden Kecleon (31,6)/(25,15) and tree-disguise ninjas (Yasu (28,14), Hideo (29,6))."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 12000
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 31
+on_text = "stop"
+note = "rival trigger (25,31) ROUTE119_STATE 0 (Route119/scripts.inc:29-56) [INFERENCE: reachable from the institute by the bridge]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "may-route119"
+note = "TRAINER_MAY_ROUTE_119_MUDKIP (531): SLUGMA 29, LOMBRE 29, GROVYLE 31"
+
+[[step]]
+do = "advance_text"
+shot = "hm-fly"
+note = "GiveFlyHM: ITEM_HM_FLY, FLAG_RECEIVED_HM_FLY; RivalExitScottArrive: ROUTE119_STATE 1 (:92-160)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 7
+map = "MAP_FORTREE_CITY"
+note = "north end of Route 119 east into Fortree"
+
+[[step]]
+do = "heal"
+x = 5
+z = 6
+note = "Fortree Pokemon Center (warp 0)"
+
+[expect]
+map = "MAP_FORTREE_CITY"
+badges = 5
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_RECEIVED_HM_FLY", "FLAG_VISITED_FORTREE_CITY"]
+battles = 1
+
+[expect.vars]
+VAR_ROUTE119_STATE = 1

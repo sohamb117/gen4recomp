@@ -1,0 +1,112 @@
+# Proves the switch-barrier gym (coord switches (0,15)/(4,12)/(3,9)/(8,9) -> special MauvilleGymPressSwitch), Wattson
+# (TRAINER_WATTSON_1): FLAG_BADGE03_GET, TM34 Shock Wave, PETALBURG_GYM_STATE 5; the Rock Smash guy's HM06.
+# Start: Mauville (35,6) -> end: MAP_MAUVILLE_CITY outside house 1 (32,15).
+title = "Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash"
+status = "planned"
+priority = "P0"
+estimate = 11000
+refs = [
+  "data/maps/MauvilleCity/map.json warp_events[0] (8,5) -> gym",
+  "data/maps/MauvilleCity_Gym/map.json coord_events switches",
+  "data/maps/MauvilleCity_Gym/scripts.inc:139-196",
+  "data/maps/MauvilleCity_Gym/scripts.inc:76-128",
+  "TRAINER_WATTSON_1 (267), src/data/trainers.h:3208",
+  "TRAINER_KIRK (191), src/data/trainers.h:2296",
+  "TRAINER_SHAWN (194), src/data/trainers.h:2332",
+  "TRAINER_BEN (323), src/data/trainers.h:3880",
+  "TRAINER_VIVIAN (649), src/data/trainers.h:7792",
+  "TRAINER_ANGELO (802), src/data/trainers.h:9628",
+  "data/maps/MauvilleCity/map.json warp_events[4] (32,14) -> HOUSE1",
+  "data/maps/MauvilleCity_House1/scripts.inc:4-16",
+  "src/party_menu.c:122 (Rock Smash needs FLAG_BADGE03_GET)",
+]
+notes = "Wattson: TRAINER_WATTSON_1 (267): VOLTORB 20, ELECTRIKE 20, MAGNETON 22, MANECTRIC 24 (Marshtomp's Ground typing is immune to Electric; Mud-Slap/Mud Shot hit x2). Trainers lv17: TRAINER_KIRK (191): ELECTRIKE 17, VOLTORB 17; TRAINER_SHAWN (194): VOLTORB 17, MAGNEMITE 17; TRAINER_BEN (323): ZIGZAGOON 17, GULPIN 17; TRAINER_VIVIAN (649): MEDITITE 17, MEDITITE 17; TRAINER_ANGELO (802): ILLUMISE 17, VOLBEAT 17. HM06 Rock Smash: FLAG_RECEIVED_HM_ROCK_SMASH, needs this badge (src/party_menu.c:122); it opens Route 111 (rocks (18,101)/(19,100)) and the Rusturf Tunnel (17)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 16500
+
+# PHASE2: the switch order to Wattson (4 coord switches toggle FLAG_MAUVILLE_GYM_BARRIERS_STATE; MauvilleCity_Gym/scripts.inc:15-46,175-196): probe_map the barrier tiles after each switch and write a via list or steps route.
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 5
+note = "gym door (Mauville warp 0) -> MAUVILLE_CITY_GYM (4,20); Wally no longer blocks it"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 3
+face = "up"
+interact = true
+note = "below Wattson (5,2) [PHASE2: switch route]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "wattson"
+note = "TRAINER_WATTSON_1 (267): VOLTORB 20, ELECTRIKE 20, MAGNETON 22, MANECTRIC 24"
+
+[[step]]
+do = "advance_text"
+shot = "dynamo-badge"
+note = "WattsonDefeated: FLAG_DEFEATED_MAUVILLE_GYM, FLAG_BADGE03_GET, addvar PETALBURG_GYM_STATE, OUTSIDE_MUSEUM_STATE 3, puzzle off; TM Shock Wave (MauvilleCity_Gym/scripts.inc:86-128)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 20
+note = "exit mat (warp 0) -> Mauville (8,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 14
+note = "house 1 door (warp 4) -> MAUVILLE_CITY_HOUSE1 (3,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY_HOUSE1"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Rock Smash guy (object 1 (4,4)) -> ITEM_HM_ROCK_SMASH, FLAG_RECEIVED_HM_ROCK_SMASH (MauvilleCity_House1/scripts.inc:4-16)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 7
+note = "exit -> Mauville (32,14)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY"
+
+[expect]
+map = "MAP_MAUVILLE_CITY"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_DEFEATED_MAUVILLE_GYM", "FLAG_RECEIVED_TM_SHOCK_WAVE", "FLAG_RECEIVED_HM_ROCK_SMASH", "FLAG_HIDE_ROUTE_111_ROCK_SMASH_TIP_GUY"]
+battles = 1
+
+[expect.vars]
+VAR_PETALBURG_GYM_STATE = 5
+VAR_SLATEPORT_OUTSIDE_MUSEUM_STATE = 3

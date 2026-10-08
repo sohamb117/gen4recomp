@@ -1,0 +1,144 @@
+# Proves Dive into Sootopolis (Route 126 underwater (45,65)), the OnFrame Groudon/Kyogre scene (SOOTOPOLIS_CITY_STATE 1 -> 2),
+# Steven leading to the Cave of Origin and Wallace on B1F (MULTI_WHERES_RAYQUAZA -> SKY PILLAR): STATE 3.
+# Start: Route 128 -> end: MAP_CAVE_OF_ORIGIN_B1F, FLAG_WALLACE_GOES_TO_SKY_PILLAR.
+title = "Sootopolis in the storm: Steven, the Cave of Origin, Wallace"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "data/maps/Route126/map.json connections dive UNDERWATER_ROUTE126",
+  "data/maps/Underwater_Route126/map.json warp_events[0] (45,65) -> UNDERWATER_SOOTOPOLIS_CITY",
+  "data/maps/SootopolisCity/scripts.inc:162",
+  "data/maps/SootopolisCity/scripts.inc:166",
+  "data/maps/SootopolisCity/scripts.inc:171-341",
+  "data/maps/SootopolisCity/map.json object_events[7] STEVEN (20,36)",
+  "data/maps/SootopolisCity/scripts.inc:860-903",
+  "data/maps/CaveOfOrigin_Entrance/map.json warp_events[1] (9,5) -> 1F",
+  "data/maps/CaveOfOrigin_1F/map.json warp_events[1] (14,5) -> B1F",
+  "data/maps/CaveOfOrigin_B1F/scripts.inc:4-53",
+]
+notes = "No battles. Sootopolis is entered only by Dive (Route 126 deep water over Underwater_Route126 (45,65)), surfacing inside the crater. The legendaries scene runs from the dive spot (LegendariesSceneFromDive) or the Pokemon Center door (43,32). Wallace's multichoice: CAVE OF ORIGIN / MT. PYRE / SKY PILLAR / DON'T REMEMBER (DOWN x2, A). Cave of Origin 1F/B1F are dark (no story need for Flash) [INFERENCE]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 18000
+
+# PHASE2: the Route 127 -> 126 -> dive spot path and the surfacing tile inside Sootopolis (Underwater_SootopolisCity warps (9..10,8)).
+
+[[step]]
+do = "walk_to"
+x = 45
+z = 65
+map = "MAP_ROUTE126"
+surf = true
+note = "Route 128 -> Route 127 -> Route 126 (Surf) to the dive spot [INFERENCE: deep water over (45,65)]"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 60
+note = "Dive YES [INFERENCE]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERWATER_ROUTE126"
+
+[[step]]
+do = "walk_to"
+x = 45
+z = 65
+note = "underwater tunnel (warp 0) -> UNDERWATER_SOOTOPOLIS_CITY"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERWATER_SOOTOPOLIS_CITY"
+
+[[step]]
+do = "press"
+keys = "B"
+note = "surface (B + YES) [INFERENCE]"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "wait_map"
+map = "MAP_SOOTOPOLIS_CITY"
+
+[[step]]
+do = "advance_text"
+shot = "legendaries-clash"
+note = "OnFrame SOOTOPOLIS_CITY_STATE 1 -> StartLegendariesScene (FromDive) -> STATE 2 (SootopolisCity/scripts.inc:166,171-341)"
+
+[[step]]
+do = "talk_to"
+id = 7
+note = "Steven (object 7) -> StevenLeadPlayerCaveOfOrigin: FLAG_STEVEN_GUIDES_TO_CAVE_OF_ORIGIN, warp CAVE_OF_ORIGIN_ENTRANCE (9,20) (:860-903)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_CAVE_OF_ORIGIN_ENTRANCE"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CAVE_OF_ORIGIN_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 5
+note = "entrance (warp 1) -> 1F (11,17)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CAVE_OF_ORIGIN_1F"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 5
+note = "1F (warp 1) -> B1F (9,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CAVE_OF_ORIGIN_B1F"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Wallace (object 1 (9,13)) -> WallaceStory, MULTI_WHERES_RAYQUAZA (CaveOfOrigin_B1F/scripts.inc:4-27)"
+
+[[step]]
+do = "advance_text"
+note = "to the multichoice"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+times = 2
+gap = 20
+note = "SKY PILLAR (case 2)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "AtSkyPillar: FLAG_WALLACE_GOES_TO_SKY_PILLAR, SOOTOPOLIS_CITY_STATE 3, Wallace leaves (:45-53)"
+
+[[step]]
+do = "advance_text"
+shot = "wallace-cave"
+
+[expect]
+map = "MAP_CAVE_OF_ORIGIN_B1F"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_VISITED_SOOTOPOLIS_CITY", "FLAG_STEVEN_GUIDES_TO_CAVE_OF_ORIGIN", "FLAG_WALLACE_GOES_TO_SKY_PILLAR", "FLAG_HIDE_CAVE_OF_ORIGIN_B1F_WALLACE"]
+flags_clear = ["FLAG_HIDE_SKY_PILLAR_WALLACE"]
+
+[expect.vars]
+VAR_SOOTOPOLIS_CITY_STATE = 3

@@ -28,14 +28,21 @@ E2E_GRID = 64
 E2E_MAX_OBJECTS = 64
 E2E_MAX_BATTLERS = 4
 E2E_MAX_PARTY = 6
+E2E_MAX_WARPS = 64
 UI_NONE, UI_BATTLE_MENU, UI_BATTLE_PARTY = 0, 1, 2
 TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN = 0x00FF, 0x0100, 0x8000
+# v4 (GBA): a connected map's tile seen across the border; the tile's elevation
+TILE_CONNECTED, TILE_ELEVATION, TILE_ELEVATION_SHIFT = 0x0200, 0x3C00, 10
 E2E_LAYERS = 2
 STEP_LAYER, STEP_DIRS, STEP_TARGET, STEP_JUMP = 0x8000, 0x000F, 0x00F0, 0x0F00
 _HEAD = struct.Struct("<5I3i5I2i2I")
 _OBJ = struct.Struct("<hhHH")
 _BATTLE = struct.Struct("<4I")
 _MON = struct.Struct("<3H4HH4BB2BB")
+_V4 = struct.Struct("<11I")
+_WARP = struct.Struct("<hhHBB")
+# the game families: the GBA games' probe (v4) and their constants differ from the DS games'
+GBA_GAMES = ("emerald", "ruby", "sapphire")
 
 
 class Mon:
@@ -112,6 +119,19 @@ class Probe:
             if self.steps_seq:
                 self.steps = struct.unpack_from("<%dH" % n, raw, off)
                 self.heights = struct.unpack_from("<%dh" % n, raw, off + n * 2)
+            off += n * 4
+        # v4 (the GBA games; zeros elsewhere): the menu cursor, the avatar's state, where flags/vars/party live,
+        # map connections crossed, soft resets, the map's warps
+        self.ui_cursor = self.avatar_flags = self.connection_seq = self.soft_resets = 0
+        self.flags_addr = self.flags_bytes = self.vars_addr = self.vars_count = 0
+        self.party_addr = self.party_count = 0
+        self.warps = []
+        if self.version >= 4 and len(raw) >= off + _V4.size + E2E_MAX_WARPS * _WARP.size:
+            (self.ui_cursor, self.avatar_flags, self.flags_addr, self.flags_bytes, self.vars_addr, self.vars_count,
+             self.party_addr, self.party_count, self.connection_seq, self.soft_resets, nwarps) = _V4.unpack_from(raw, off)
+            off += _V4.size
+            # (x, z, dest map id, dest warp index, elevation)
+            self.warps = [_WARP.unpack_from(raw, off + i * _WARP.size) for i in range(min(nwarps, E2E_MAX_WARPS))]
 
     def layers(self):
         """{(x, z): {height: {d: (tx, tz, target height or None if unknown)}}} from the step layers, or None.
@@ -296,6 +316,17 @@ class Session:
         if p.magic != E2E_MAGIC:
             raise HarnessError("probe block has a bad magic (stale guest build?)")
         return p
+
+    def peek(self, addr, length):
+        """`length` bytes of guest memory at `addr` (np_gp's peek)."""
+        out = self._cmd("peek %d %d" % (addr, length))
+        if not out.startswith("peek "):
+            raise HarnessError("np_gp: unexpected answer to peek: %r" % out[:80])
+        return bytes.fromhex(out[5:])
+
+    def flush(self):
+        """The save image stored now (np_gp's flush): a GBA guest leaves the storing of its flash chip to the host."""
+        self._cmd("flush")
 
     def dump(self, path):
         self._cmd("dump %s" % path)

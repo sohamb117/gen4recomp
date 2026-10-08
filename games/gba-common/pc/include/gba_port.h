@@ -125,6 +125,7 @@ void gba_apu_pcm(const int8_t *left, const int8_t *right, uint32_t n, uint32_t r
 /* gba_main.c: the frame boundary with the host */
 void gba_frame_end(void);
 void gba_soft_reset(void);
+extern uint32_t gba_soft_resets; /* soft resets since boot (the game's SoftReset, A+B+START+SELECT) */
 __attribute__((noreturn)) void gba_fatal(const char *fmt, ...);
 void gba_log(const char *fmt, ...);
 

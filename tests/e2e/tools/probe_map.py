@@ -25,14 +25,17 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 import bots  # noqa: E402
 import run  # noqa: E402
-from np_e2e import TILE_BEHAVIOR, TILE_COLLISION, TILE_KNOWN, Session, behaviors  # noqa: E402
+from np_e2e import GBA_GAMES, TILE_BEHAVIOR, TILE_COLLISION, TILE_CONNECTED, TILE_KNOWN, Session, behaviors  # noqa: E402
 
 
-def render(p):
-    b = behaviors()
-    grass = {b[k] for k in ("TALL_GRASS", "VERY_TALL_GRASS") if k in b}
-    ledges = {b[k] for k in ("JUMP_NORTH", "JUMP_SOUTH", "JUMP_WEST", "JUMP_EAST")}
-    mats = {v for k, v in b.items() if k.startswith("WARP_")}
+def render(p, game="platinum"):
+    t = bots.Terrain(game=game)
+    gba = game in GBA_GAMES
+    b = {} if gba else behaviors()
+    grass, ledges, mats = t.grass, set(t.jump), set(t.mats)
+    if not gba:
+        grass = {b[k] for k in ("TALL_GRASS", "VERY_TALL_GRASS") if k in b}
+        mats = {v for k, v in b.items() if k.startswith("WARP_")}
     objs = {(o[0], o[1]): o for o in p.objects}
     other = {}
     lines = ["map %d player (%d,%d) facing %d; window x %d..%d z %d..%d" % (
@@ -51,11 +54,11 @@ def render(p):
                 ch = "o"
             elif not c & TILE_KNOWN:
                 ch = "?"
-            elif beh in bots.SURFABLE:
+            elif beh in t.surfable:
                 ch = "~"
-            elif beh == bots.WATERFALL:
+            elif beh == t.waterfall:
                 ch = "F"
-            elif beh in bots.ROCK_CLIMB:
+            elif beh in t.rock_climb:
                 ch = "r"
             elif beh in ledges:
                 ch = "v"
@@ -63,6 +66,8 @@ def render(p):
                 ch = "M"
             elif c & TILE_COLLISION:
                 ch = "#"
+            elif gba and c & TILE_CONNECTED:
+                ch = ","
             elif beh in grass:
                 ch = "g"
             elif beh == 0:
@@ -74,6 +79,8 @@ def render(p):
         lines.append("%5d %s" % (z, "".join(row)))
     for (x, z), o in sorted(objs.items()):
         lines.append("object id %d gfx %d at (%d,%d)" % (o[2], o[3], x, z))
+    for w in getattr(p, "warps", []):
+        lines.append("warp at (%d,%d) -> map %d warp %d" % w[:4])
     names = {v: k for k, v in b.items()}
     for beh, tiles in sorted(other.items()):
         lines.append("'=' 0x%02X %s: %d tiles, e.g. %s" % (beh, names.get(beh, "?"), len(tiles), tiles[:4]))
@@ -118,7 +125,9 @@ def main():
     if args.warp or args.map:
         recipe = os.path.join(work, "move.recipe")
         with open(recipe, "w") as f:
-            f.write("warp %s %s\n" % tuple(args.warp) if args.warp else "map %s %s %s FACE_DOWN\n" % tuple(args.map))
+            # gen3_lab's map verb takes no facing
+            face = "" if args.game in GBA_GAMES else " FACE_DOWN"
+            f.write("warp %s %s\n" % tuple(args.warp) if args.warp else "map %s %s %s%s\n" % (tuple(args.map) + (face,)))
         run.mint(game, recipe, sav, sav, work)
     s = Session(game.gp, game.rom, game.name, sav, os.path.join(work, "run.log"), args.frames,
                 options=run.DEFAULT_OPTIONS)
@@ -137,7 +146,7 @@ def main():
                     print("step %d %s ok, frame %d, map %d" % (i, step["do"], s.frame, s.map_id))
         except Exception as e:  # noqa: BLE001 -- show where it stopped
             print("steps stopped: %s" % e)
-        print(render(s.probe()))
+        print(render(s.probe(), args.game))
         if args.shot:
             ppm = os.path.join(work, "shot.ppm")
             s.dump(ppm)

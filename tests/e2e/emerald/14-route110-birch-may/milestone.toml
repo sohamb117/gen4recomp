@@ -1,0 +1,81 @@
+# Proves Route 110 north from Slateport: Birch's scene (VAR_REGISTER_BIRCH_STATE 1 -> 2), the rival trigger
+# (TRAINER_MAY_ROUTE_110_MUDKIP, Itemfinder, VAR_ROUTE110_STATE 1) and arrival in Mauville.
+# Start: Slateport (30,27) -> end: MAP_MAUVILLE_CITY in front of the Pokemon Center (22,6).
+title = "Route 110: Birch's Match Call and May's second battle"
+status = "planned"
+priority = "P0"
+estimate = 10000
+refs = [
+  "data/maps/Route110/map.json coord_events (7..10,85) VAR_REGISTER_BIRCH_STATE=1",
+  "data/maps/Route110/scripts.inc:559-614",
+  "data/maps/Route110/map.json object_events 22..26 Aqua grunts (FLAG_HIDE_ROUTE_110_TEAM_AQUA)",
+  "data/maps/Route110/map.json coord_events (33..35,56) VAR_ROUTE110_STATE=0",
+  "data/maps/Route110/scripts.inc:351-420",
+  "data/maps/Route110/scripts.inc:452-470",
+  "TRAINER_MAY_ROUTE_110_MUDKIP (530), src/data/trainers.h:6364",
+  "data/maps/MauvilleCity/map.json warp_events[1] (22,5) -> POKEMON_CENTER_1F",
+]
+notes = "May: TRAINER_MAY_ROUTE_110_MUDKIP (530): WINGULL 18, SLUGMA 18, GROVYLE 20 (Grovyle is x4 on Marshtomp's Water/Ground: boost a non-Water lead or levels ~22). Route 110 trainers below the Cycling Road: Edward, Jaclyn, Edwin, Dale, Anthony/Benjamin/Jasmine/Abigail/Alyssa/Jacob (triathletes), Timmy, Isabel, Kaleb, Joseph (lv 6-16); walk_to fights those who see it. The Aqua grunts at (7..10,83) are hidden by the museum delivery (13)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 15000
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 85
+map = "MAP_ROUTE110"
+on_text = "stop"
+note = "north out of Slateport; Birch scene coord (7..10,85) REGISTER_BIRCH_STATE 1 (Route110/scripts.inc:559-614)"
+
+[[step]]
+do = "advance_text"
+note = "FLAG_ENABLE_PROF_BIRCH_MATCH_CALL, REGISTER_BIRCH_STATE 2"
+
+[[step]]
+do = "walk_to"
+x = 34
+z = 56
+map = "MAP_ROUTE110"
+on_text = "stop"
+note = "rival trigger (33..35,56) ROUTE110_STATE 0 (:351-366) [INFERENCE: the path under the Cycling Road passes x 33..35]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "may-route110"
+note = "TRAINER_MAY_ROUTE_110_MUDKIP (530): WINGULL 18, SLUGMA 18, GROVYLE 20"
+
+[[step]]
+do = "advance_text"
+note = "MayDefeated: ITEM_ITEMFINDER, RivalExit, ROUTE110_STATE 1 (:415-470)"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 6
+map = "MAP_MAUVILLE_CITY"
+note = "north into Mauville, Pokemon Center door below (22,5)"
+
+[[step]]
+do = "heal"
+x = 22
+z = 5
+note = "Mauville Pokemon Center (warp 1)"
+
+[expect]
+map = "MAP_MAUVILLE_CITY"
+badges = 2
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_ENABLE_PROF_BIRCH_MATCH_CALL", "FLAG_VISITED_MAUVILLE_CITY", "FLAG_SYS_TV_START"]
+battles = 1
+
+[expect.vars]
+VAR_REGISTER_BIRCH_STATE = 2
+VAR_ROUTE110_STATE = 1

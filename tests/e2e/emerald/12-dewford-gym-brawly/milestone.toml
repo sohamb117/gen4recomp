@@ -1,0 +1,79 @@
+# Proves the dark gym (light grows per trainer beaten: DewfordTown_Gym CountTrainersDefeated) and Brawly
+# (TRAINER_BRAWLY_1): FLAG_BADGE02_GET, TM08 Bulk Up, PETALBURG_GYM_STATE 4; Flash usable from here.
+# Start: Dewford (8,18) -> end: MAP_DEWFORD_TOWN at the gym door (8,18).
+title = "Dewford Gym: Brawly and the Knuckle Badge"
+status = "planned"
+priority = "P0"
+estimate = 10000
+refs = [
+  "data/maps/DewfordTown/map.json warp_events[2] (8,17) -> gym",
+  "data/maps/DewfordTown_Gym/map.json object_events 1..8",
+  "data/maps/DewfordTown_Gym/scripts.inc:9-133",
+  "data/maps/DewfordTown_Gym/scripts.inc:135-182",
+  "TRAINER_BRAWLY_1 (266), src/data/trainers.h:3196",
+  "TRAINER_TAKAO (179), src/data/trainers.h:2152",
+  "TRAINER_JOCELYN (425), src/data/trainers.h:5104",
+  "TRAINER_LAURA (426), src/data/trainers.h:5116",
+  "TRAINER_BRENDEN (572), src/data/trainers.h:6868",
+  "TRAINER_CRISTIAN (574), src/data/trainers.h:6892",
+  "TRAINER_LILITH (573), src/data/trainers.h:6880",
+]
+notes = "Brawly: TRAINER_BRAWLY_1 (266): MACHOP 16, MEDITITE 16, MAKUHITA 19 (Fighting; Water Gun/Mud-Slap neutral, Marshtomp at 16 helps; boost ~18). Gym trainers lv13: Takao (2,18), Jocelyn (15,3), Laura (12,25), Cristian (7,8), Lilith (16,9), Brenden (14,12). The gym stays dark until trainers fall; walk_to plans on probe collision [INFERENCE: dark palette does not hide collision]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 15000
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 17
+note = "gym door (Dewford warp 2) -> MAP_DEWFORD_TOWN_GYM (5,27)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DEWFORD_TOWN_GYM"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 4
+face = "up"
+interact = true
+note = "below Brawly (4,3); sight trainers on the maze path are fought (Laura (12,25) N 2, Takao (2,18) N 3, Cristian (7,8) E 3 ...)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "brawly"
+note = "TRAINER_BRAWLY_1 (266): MACHOP 16, MEDITITE 16, MAKUHITA 19"
+
+[[step]]
+do = "advance_text"
+shot = "knuckle-badge"
+note = "BrawlyDefeated: FLAG_DEFEATED_DEWFORD_GYM, FLAG_BADGE02_GET, addvar PETALBURG_GYM_STATE; TM Bulk Up (DewfordTown_Gym/scripts.inc:144-182)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 27
+note = "exit mat (warp 0) -> Dewford (8,17)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DEWFORD_TOWN"
+
+[expect]
+map = "MAP_DEWFORD_TOWN"
+badges = 2
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_DEFEATED_DEWFORD_GYM", "FLAG_RECEIVED_TM_BULK_UP"]
+battles = 1
+
+[expect.vars]
+VAR_PETALBURG_GYM_STATE = 4

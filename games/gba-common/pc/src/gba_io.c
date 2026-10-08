@@ -211,6 +211,12 @@ void gba_tick(void) {
     if (!in_step) gba_step_line();
 }
 
+/* The phase within the current scanline's TICK_CALLS: host-side work that
+ * calls game functions at the frame boundary (the e2e probe, gba_e2e.c)
+ * puts it back afterwards, so the game's own CPU time is what it was. */
+uint32_t gba_tick_phase(void) { return tick_count; }
+void gba_tick_set_phase(uint32_t phase) { tick_count = phase; }
+
 void gba_step_line(void) {
     if (in_step) return; /* time stands still inside interrupt handlers */
     in_step = 1;

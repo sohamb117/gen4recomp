@@ -1,0 +1,79 @@
+# Proves Sidney's room: the battle (TRAINER_SIDNEY), FLAG_DEFEATED_ELITE_4_SIDNEY, the opened north door and the walk on.
+# Start: Sidney's room (6,6) after the door closed -> end: Phoebe's room, door shut (VAR_ELITE_4_STATE 2).
+title = "Elite Four: Sidney"
+status = "planned"
+priority = "P0"
+estimate = 7000
+refs = [
+  "data/maps/EverGrandeCity_SidneysRoom/map.json object_events[1]",
+  "data/maps/EverGrandeCity_SidneysRoom/scripts.inc:51",
+  "data/maps/EverGrandeCity_SidneysRoom/scripts.inc:61",
+  "data/maps/EverGrandeCity_SidneysRoom/map.json warp_events[1] (6,2)",
+  "data/maps/EverGrandeCity_Hall1/map.json warp_events (5,2)",
+  "TRAINER_SIDNEY (261), src/data/trainers.h:3136",
+  "data/scripts/elite_four.inc",
+]
+notes = "Sidney: TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, CRAWDAUNT 48, ABSOL 49. No healing between E4 rooms: the boost recipe should carry Full Restores / levels for the whole run [INFERENCE]. A quick save inside the E4 rooms resumes in place (src/save_location.c has no E4 special warp)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 10500
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "below Sidney (object 1 (6,5))"
+
+[[step]]
+do = "advance_text"
+note = "IntroSpeech"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "sidney"
+note = "TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, CRAWDAUNT 48, ABSOL 49"
+
+[[step]]
+do = "advance_text"
+shot = "sidney-defeated"
+note = "Defeated: FLAG_DEFEATED_ELITE_4_SIDNEY, door to the next hall opens (PokemonLeague_EliteFour_SetAdvanceToNextRoomMetatiles)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 2
+note = "north door (warp 1) -> MAP_EVER_GRANDE_CITY_HALL1 (5,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_HALL1"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "Hall1 north door (warp 1) -> MAP_EVER_GRANDE_CITY_PHOEBES_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_PHOEBES_ROOM"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_ELITE_4_STATE 1 -> WalkInCloseDoor -> 2"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY_PHOEBES_ROOM"
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_ENTERED_ELITE_FOUR", "FLAG_DEFEATED_ELITE_4_SIDNEY"]
+battles = 1
+
+[expect.vars]
+VAR_ELITE_4_STATE = 2

@@ -1,0 +1,78 @@
+# Proves the rotating-gate gym (special RotatingGate_InitPuzzle) and Winona (TRAINER_WINONA_1): FLAG_BADGE06_GET,
+# TM40 Aerial Ace; Fly usable from here (src/party_menu.c:125).
+# Start: Fortree below the gym (22,12) -> end: MAP_FORTREE_CITY at the gym door.
+title = "Fortree Gym: Winona and the Feather Badge"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "data/maps/FortreeCity_Gym/map.json object_events 1..8",
+  "data/maps/FortreeCity_Gym/scripts.inc:1-63",
+  "TRAINER_WINONA_1 (270), src/data/trainers.h:3244",
+  "TRAINER_JARED (401), src/data/trainers.h:4816",
+  "TRAINER_FLINT (654), src/data/trainers.h:7852",
+  "TRAINER_ASHLEY (655), src/data/trainers.h:7864",
+  "TRAINER_EDWARDO (404), src/data/trainers.h:4852",
+  "TRAINER_HUMBERTO (402), src/data/trainers.h:4828",
+  "TRAINER_DARIUS (803), src/data/trainers.h:9640",
+  "src/rotating_gate.c",
+  "src/party_menu.c:125",
+]
+notes = "Winona: TRAINER_WINONA_1 (270): SWABLU 29, TROPIUS 29, PELIPPER 30, SKARMORY 31, ALTARIA 33 (Altaria Dragon/Flying, Skarmory Steel: an Electric or Ice mover helps; boost ~35). Trainers lv 27-30: Jared, Flint, Ashley, Edwardo, Humberto, Darius. Rotating gates turn when pushed; walk_to bumps teach blocked edges but the gate state changes the map [INFERENCE: a fixed steps route is needed]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 18000
+
+# PHASE2: the rotating-gate route to Winona (src/rotating_gate.c puzzle for MAP_FORTREE_CITY_GYM): record a steps/moves route with the game as oracle.
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 11
+note = "gym door (Fortree warp 2) -> FORTREE_CITY_GYM (15,24)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FORTREE_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 3
+face = "up"
+interact = true
+note = "below Winona (15,2) [PHASE2: rotating gates]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "winona"
+note = "TRAINER_WINONA_1 (270): SWABLU 29, TROPIUS 29, PELIPPER 30, SKARMORY 31, ALTARIA 33"
+
+[[step]]
+do = "advance_text"
+shot = "feather-badge"
+note = "WinonaDefeated: FLAG_DEFEATED_FORTREE_GYM, FLAG_BADGE06_GET; TM Aerial Ace (FortreeCity_Gym/scripts.inc:28-63)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 24
+note = "exit -> Fortree (22,11)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FORTREE_CITY"
+
+[expect]
+map = "MAP_FORTREE_CITY"
+badges = 6
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_DEFEATED_FORTREE_GYM", "FLAG_RECEIVED_TM_AERIAL_ACE"]
+battles = 1

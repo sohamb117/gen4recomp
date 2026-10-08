@@ -1,0 +1,104 @@
+# Proves Surf + Waterfall (Rain Badge) from Sootopolis to Ever Grande, Victory Road 1F's Wally trigger (2..3,23)
+# (TRAINER_WALLY_VR_1, FLAG_DEFEATED_WALLY_VICTORY_ROAD) and the cave (Strength, Rock Smash) out to the League plateau.
+# Start: Sootopolis gym door -> end: MAP_EVER_GRANDE_CITY in front of the Pokemon League door (18,6).
+title = "Ever Grande and Victory Road: Wally's last battle"
+status = "planned"
+priority = "P0"
+estimate = 24000
+refs = [
+  "data/maps/Route128/map.json connections right EVER_GRANDE_CITY offset -40",
+  "data/maps/EverGrandeCity/scripts.inc:21-23",
+  "data/maps/EverGrandeCity/map.json warp_events 2 (18,41) / 3 (18,27) -> VICTORY_ROAD_1F, 0 (18,5) -> LEAGUE_1F",
+  "data/maps/VictoryRoad_1F/map.json coord_events (2,23)/(3,23) VAR_VICTORY_ROAD_1F_STATE=0",
+  "data/maps/VictoryRoad_1F/scripts.inc:20-45",
+  "data/maps/VictoryRoad_1F/map.json warp_events 0..4",
+  "data/maps/VictoryRoad_B1F/map.json object_events boulders/rocks, warp_events",
+  "data/maps/VictoryRoad_B2F/map.json warp_events",
+  "TRAINER_WALLY_VR_1 (519), src/data/trainers.h:6232",
+  "src/field_control_avatar.c:455 (Waterfall: FLAG_BADGE08_GET)",
+  "src/party_menu.c:122-127",
+  "TRAINER_ALBERT (80), src/data/trainers.h:964",
+  "TRAINER_EDGAR (79), src/data/trainers.h:952",
+  "TRAINER_HOPE (96), src/data/trainers.h:1156",
+  "TRAINER_QUINCY (324), src/data/trainers.h:3892",
+  "TRAINER_KATELYNN (325), src/data/trainers.h:3904",
+]
+notes = "Wally: TRAINER_WALLY_VR_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Victory Road trainers lv 42-45 (Albert, Edgar, Hope, Quincy, Katelynn on 1F; Halle, Michelle, Mitchell, Samuel, Shannon on B1F; Caroline, Dianne, Felix, Julie, Owen, Vito on B2F). Field moves on the way: Surf (Routes 126-128), Waterfall (Ever Grande's fall, badge 8), Strength + Rock Smash (VR B1F: boulders (20,5)/(21,4)/(4,7)/(9,10)/(20,26)/(21,25)/(35,6)/(34,4), rocks (19,5)/(20,4)/(18,12)/(20,25)/(21,26)/(34,3)), Flash not needed [INFERENCE: Emerald VR is lit]. Ever Grande south coord row y=58 sets FLAG_VISITED_EVER_GRANDE_CITY."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 36000
+
+# PHASE2: the Victory Road route 1F (15,40) -> ... -> 1F exit (39,5) through B1F/B2F with Strength pushes (steps routes); the Waterfall bump tile in Ever Grande.
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 58
+map = "MAP_EVER_GRANDE_CITY"
+surf = true
+hm = true
+note = "Dive out of Sootopolis, Surf Route 126 -> 127 -> 128 east into Ever Grande; Waterfall up (hm/surf bump: A + YES); visited coord row y=58 (EverGrandeCity/scripts.inc:21-23) [PHASE2: waterfall tile]"
+
+[[step]]
+do = "heal"
+x = 27
+z = 48
+note = "Ever Grande Pokemon Center (warp 1)"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 41
+note = "Victory Road door (warp 2) -> VICTORY_ROAD_1F (15,40)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_1F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 23
+on_text = "stop"
+note = "WallyBattleTrigger2 (3,23) VICTORY_ROAD_1F_STATE 0 (VictoryRoad_1F/scripts.inc:20-36) [INFERENCE: on the walk west/north]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "wally-victory-road"
+note = "TRAINER_WALLY_VR_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45 (:39)"
+
+[[step]]
+do = "advance_text"
+note = "FLAG_DEFEATED_WALLY_VICTORY_ROAD, entrance Wally shown (:41-45)"
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 5
+map = "MAP_VICTORY_ROAD_1F"
+hm = true
+note = "[PHASE2: B1F/B2F route with Strength/Rock Smash] to the 1F exit (warp 1) -> Ever Grande (18,27)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 6
+note = "north to the League door"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY"
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_VISITED_EVER_GRANDE_CITY", "FLAG_DEFEATED_WALLY_VICTORY_ROAD", "FLAG_RECEIVED_HM_WATERFALL"]
+battles = 1

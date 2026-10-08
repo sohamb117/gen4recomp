@@ -1,0 +1,109 @@
+# Proves the Champion's OnFrame EnterRoom -> TRAINER_WALLACE, May + Birch, the Hall of Fame (SetGameClearFlags, special
+# GameClear: FLAG_SYS_GAME_CLEAR, HoF save via TrySavingData(SAVE_HALL_OF_FAME)), the credits and SoftReset(RESET_ALL).
+# Start: Hall 4 (5,3) -> end: the reset after "The End" (wait_reset); [expect] reads the save the HoF screen wrote.
+title = "Champion Wallace, the Hall of Fame, credits and the reset"
+status = "planned"
+priority = "P0"
+estimate = 26000
+refs = [
+  "data/maps/EverGrandeCity_Hall4/map.json warp_events[1] (5,2) -> CHAMPIONS_ROOM",
+  "data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:19-62",
+  "data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:93-123",
+  "TRAINER_WALLACE (335), src/data/trainers.h:4024",
+  "data/maps/EverGrandeCity_HallOfFame/scripts.inc:13-62",
+  "data/scripts/hall_of_fame.inc:1-25",
+  "data/event_scripts.s:628-634 (ResetEliteFour)",
+  "src/post_battle_event_funcs.c:12-41 (GameClear: HealPlayerParty, FLAG_SYS_GAME_CLEAR, continue warp = Brendan's 2F, Champion ribbons)",
+  "src/hall_of_fame.c:419-427 (CB2_DoHallOfFameScreen)",
+  "src/hall_of_fame.c:524-526 (Task_Hof_TrySaveData: TrySavingData(SAVE_HALL_OF_FAME))",
+  "src/hall_of_fame.c:781-784 (StartCredits)",
+  "src/credits.c:670-690 (Task_CreditsTheEnd6: 7200 frames or any key)",
+  "src/credits.c:694-698 (Task_CreditsSoftReset: SoftReset(RESET_ALL))",
+]
+notes = "Wallace: TRAINER_WALLACE (335): WAILORD 57, TENTACRUEL 55, LUDICOLO 56, WHISCASH 56, GYARADOS 56, MILOTIC 58 (Electric/Grass coverage; boost ~60). Entering the Champion's room runs straight through: OnFrame EnterRoom walks up and starts the battle, Defeated brings May and Birch, warps to the Hall of Fame (7,16), whose OnFrame records the team and calls SetGameClearFlags + special GameClear. GameClear sets FLAG_SYS_GAME_CLEAR and the continue warp (Brendan's 2F heal location), CB2_DoHallOfFameScreen saves (SAVE_HALL_OF_FAME = the full game save + HoF record) before the credits; the credits end on \"The End\", which waits 7200 frames or a key (src/credits.c:674-678), then SoftReset(RESET_ALL) (src/credits.c:694-698): the game resets itself, so the run ends with wait_reset and [run] save = \"none\". SetGameClearFlags resets the Elite Four flags (data/event_scripts.s:628-634)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 39000
+save = "none"
+
+# PHASE2: HoF screen input: confirm whether the HoF slideshow waits for A per mon (src/hall_of_fame.c Task_Hof_* ) and how many presses; the steps below press A on a cadence.
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "Hall 4 north door (warp 1) -> CHAMPIONS_ROOM (6,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_TEMP_1 0 -> EnterRoom: walk up, IntroSpeech (EverGrandeCity_ChampionsRoom/scripts.inc:19-40)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "wallace"
+note = "TRAINER_WALLACE (335): WAILORD 57, TENTACRUEL 55, LUDICOLO 56, WHISCASH 56, GYARADOS 56, MILOTIC 58 (:41)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_EVER_GRANDE_CITY_HALL_OF_FAME"
+note = "Defeated: May's advice, Birch, warp HALL_OF_FAME (7,16) (:45-123)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_HALL_OF_FAME"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 4
+gap = 30
+times = 20
+note = "HoF OnFrame EnterHallOfFame: two msgboxes, FLDEFF_HALL_OF_FAME_RECORD, SetGameClearFlags, special GameClear (EverGrandeCity_HallOfFame/scripts.inc:13-62)"
+
+[[step]]
+do = "wait_frames"
+n = 3000
+shot = "hall_of_fame"
+note = "HoF screen: each party member, then the trainer; saving (SAVE_HALL_OF_FAME, src/hall_of_fame.c:524-526)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+times = 10
+note = "[PHASE2] advance the HoF screen if it waits"
+
+[[step]]
+do = "wait_frames"
+n = 6000
+shot = "credits"
+note = "credits (CB2_StartCreditsSequence, src/hall_of_fame.c:781-784)"
+
+[[step]]
+do = "wait_frames"
+n = 6000
+shot = "credits_late"
+
+[[step]]
+do = "wait_reset"
+max = 16000
+keys = "A"
+note = "\"The End\" (Task_CreditsTheEnd6) waits 7200 frames or a key, then SoftReset(RESET_ALL) (src/credits.c:670-698)"
+
+[expect]
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_SYS_GAME_CLEAR", "FLAG_IS_CHAMPION", "FLAG_ENTERED_ELITE_FOUR", "FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY", "FLAG_HIDE_LILYCOVE_CITY_RIVAL", "FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM", "FLAG_SYS_RIBBON_GET"]
+flags_clear = ["FLAG_DEFEATED_ELITE_4_SIDNEY", "FLAG_DEFEATED_ELITE_4_PHOEBE", "FLAG_DEFEATED_ELITE_4_GLACIA", "FLAG_DEFEATED_ELITE_4_DRAKE", "FLAG_HIDE_VICTORY_ROAD_EXIT_WALLY"]
+
+[expect.vars]
+VAR_ELITE_4_STATE = 0
+VAR_STEVENS_HOUSE_STATE = 2

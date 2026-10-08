@@ -1,0 +1,128 @@
+# Proves Fly to Lavaridge, Jagged Pass' OpenMagmaHideout trigger (VAR_JAGGED_PASS_STATE 1 -> 2, Magma Emblem in the bag),
+# the hideout 1F -> 2F_3R -> 3F_3R -> 4F and Maxie (TRAINER_MAXIE_MAGMA_HIDEOUT): FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT.
+# Start: Mt. Pyre summit -> end: MAP_MAGMA_HIDEOUT_4F by the empty Groudon pool.
+title = "Magma Hideout: Groudon wakes, Maxie's second battle"
+status = "planned"
+priority = "P0"
+estimate = 14000
+refs = [
+  "data/maps/JaggedPass/scripts.inc:9-18",
+  "data/maps/JaggedPass/map.json coord_events (13..14,15)/(21,15)/(21..22,20) VAR_JAGGED_PASS_STATE=1",
+  "data/maps/JaggedPass/scripts.inc:39-61",
+  "data/maps/JaggedPass/map.json warp_events[4] (16,18) -> MAGMA_HIDEOUT_1F",
+  "data/maps/MagmaHideout_1F/map.json warp_events[3] (20,22) -> 2F_3R",
+  "data/maps/MagmaHideout_2F_3R/map.json warp_events[1] (16,13) -> 3F_3R",
+  "data/maps/MagmaHideout_3F_3R/map.json warp_events[1] (16,21) -> 4F",
+  "data/maps/MagmaHideout_4F/map.json object_events 5 TABITHA (22,4), 6 MAXIE (16,21)",
+  "data/maps/MagmaHideout_4F/scripts.inc:4-64",
+  "TRAINER_MAXIE_MAGMA_HIDEOUT (601), src/data/trainers.h:7216",
+  "TRAINER_TABITHA_MAGMA_HIDEOUT (732), src/data/trainers.h:8788",
+  "src/party_menu.c:125 (Fly)",
+]
+notes = "Maxie: TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAMERUPT 39; Tabitha (4F (22,4) sight 4, off the 3F_3R -> 4F path [INFERENCE]): TRAINER_TABITHA_MAGMA_HIDEOUT (732): NUMEL 26, MIGHTYENA 28, ZUBAT 30, CAMERUPT 33; ~12 grunts lv 28-30 (sight trainers). Fly to Lavaridge (visited in 22), Route 112 east, Jagged Pass up from the bottom (14,40). The hideout's 1F boulders (5..7,22..23) are Strength puzzles off the short route [INFERENCE]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 21000
+
+# PHASE2: prove the short route 1F (20,22) -> 2F_3R (16,13) -> 3F_3R (16,21) -> 4F (20,21) is walkable (probe_map each floor) and whether a Strength boulder blocks it.
+
+[[step]]
+do = "fly"
+map = "MAP_LAVARIDGE_TOWN"
+note = "Fly (Feather Badge; carrier boosted) to Lavaridge"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 46
+map = "MAP_ROUTE112"
+note = "east onto Route 112, Jagged Pass door (Route 112 warp 2) -> JAGGED_PASS (14,40)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_JAGGED_PASS"
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 20
+on_text = "stop"
+note = "OnTransition: Magma Emblem -> JAGGED_PASS_STATE 1 (JaggedPass/scripts.inc:9-18); coord (21,20) -> OpenMagmaHideout -> 2 (:39-61) [INFERENCE: (21,20) on the climb]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 18
+note = "hideout door (Jagged Pass warp 4) -> MAGMA_HIDEOUT_1F (10,34)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAGMA_HIDEOUT_1F"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 22
+note = "1F (warp 3) -> 2F_3R (16,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAGMA_HIDEOUT_2F_3R"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 13
+note = "2F_3R (warp 1) -> 3F_3R (16,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAGMA_HIDEOUT_3F_3R"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 21
+note = "3F_3R (warp 1) -> 4F (20,21)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAGMA_HIDEOUT_4F"
+
+[[step]]
+do = "talk_to"
+id = 6
+note = "Maxie (object 6 (16,21)) -> orb, Groudon wakes and leaves (MagmaHideout_4F/scripts.inc:4-48)"
+
+[[step]]
+do = "advance_text"
+shot = "groudon-awakes"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "maxie-hideout"
+note = "TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAMERUPT 39 (:50)"
+
+[[step]]
+do = "advance_text"
+note = "VAR_SLATEPORT_CITY_STATE 1, FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, VAR_SLATEPORT_HARBOR_STATE 1, Magma leaves, FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS (:51-64)"
+
+[expect]
+map = "MAP_MAGMA_HIDEOUT_4F"
+badges = 6
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT", "FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS"]
+flags_clear = ["FLAG_HIDE_SLATEPORT_CITY_CAPTAIN_STERN", "FLAG_HIDE_SLATEPORT_CITY_GABBY_AND_TY"]
+battles = 1
+
+[expect.vars]
+VAR_JAGGED_PASS_STATE = 2
+VAR_SLATEPORT_CITY_STATE = 1
+VAR_SLATEPORT_HARBOR_STATE = 1

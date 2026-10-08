@@ -1,0 +1,156 @@
+# Proves the TeamMagmaEnterSpaceCenter coord scene (MOSSDEEP_CITY_STATE 1 -> 2), the 1F stair grunt, the three 2F grunts
+# (OnFrame YES/NO) and Steven's tag battle vs Maxie + Tabitha (SPECIAL_BATTLE_STEVEN, ChooseHalfPartyForBattle).
+# Start: Mossdeep gym door -> end: MAP_MOSSDEEP_CITY_SPACE_CENTER_2F, FLAG_DEFEATED_MAGMA_SPACE_CENTER.
+title = "Mossdeep Space Center: Magma's raid, the Steven multi battle"
+status = "planned"
+priority = "P0"
+estimate = 14000
+refs = [
+  "data/maps/MossdeepCity/map.json coord_events (42,21)/(41,22..24)/(40,25..26) VAR_MOSSDEEP_CITY_STATE=1",
+  "data/maps/MossdeepCity/scripts.inc:76-97",
+  "data/maps/MossdeepCity/map.json warp_events[8] (64,15) -> SPACE_CENTER_1F",
+  "data/maps/MossdeepCity_SpaceCenter_1F/map.json object_events[9] stair grunt (13,2)",
+  "data/maps/MossdeepCity_SpaceCenter_1F/scripts.inc:207-225",
+  "data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:27-62",
+  "data/maps/MossdeepCity_SpaceCenter_2F/map.json object_events[4] STEVEN (1,8)",
+  "data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:170-245",
+  "data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:246-290",
+  "data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:313-320",
+  "TRAINER_MAXIE_MOSSDEEP (734), src/data/trainers.h:8812",
+  "TRAINER_TABITHA_MOSSDEEP (514), src/data/trainers.h:6172",
+  "TRAINER_GRUNT_SPACE_CENTER_2 (116), src/data/trainers.h:1396",
+  "TRAINER_GRUNT_SPACE_CENTER_5 (588), src/data/trainers.h:7060",
+  "TRAINER_GRUNT_SPACE_CENTER_6 (589), src/data/trainers.h:7072",
+  "TRAINER_GRUNT_SPACE_CENTER_7 (590), src/data/trainers.h:7084",
+  "src/battle_setup.c (DoSpecialTrainerBattle SPECIAL_BATTLE_STEVEN) [INFERENCE: battle_tower.c]",
+]
+notes = "Multi battle (Steven's Metang/Skarmory/Aggron [INFERENCE] beside you): TRAINER_MAXIE_MOSSDEEP (734): MIGHTYENA 42, CROBAT 43, CAMERUPT 44 + TRAINER_TABITHA_MOSSDEEP (514): CAMERUPT 36, MIGHTYENA 38, GOLBAT 40. 1F stair grunt: TRAINER_GRUNT_SPACE_CENTER_2 (116): MIGHTYENA 26, MIGHTYENA 28, NUMEL 30; 2F trio: TRAINER_GRUNT_SPACE_CENTER_5 (588): ZUBAT 32; TRAINER_GRUNT_SPACE_CENTER_6 (589): MIGHTYENA 32; TRAINER_GRUNT_SPACE_CENTER_7 (590): BALTOY 32. 1F sight grunts (12,9)/(11,6)/(10,2) lv 31-32. ChooseHalfPartyForBattle opens the party screen to pick 3 (selection menu); losing whites out (SetCB2WhiteOut, :244). Talking to the 1F grunt from the south (facing north) moves him off the stairs (the non-BUGFIX DIR_EAST case falls through, SpaceCenter_1F/scripts.inc:215-223)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 21000
+
+# PHASE2: the ChooseHalfPartyForBattle selection inputs (special ChooseHalfPartyForBattle, SpaceCenter_2F/scripts.inc:228): pick the first three, CONFIRM; write press steps.
+
+[[step]]
+do = "walk_to"
+x = 41
+z = 23
+on_text = "stop"
+note = "TeamMagmaEnterSpaceCenter coord (41,23) MOSSDEEP_CITY_STATE 1 -> Maxie's group walks in, state 2 (MossdeepCity/scripts.inc:76-97)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 64
+z = 15
+note = "Space Center door (warp 8) -> SPACE_CENTER_1F (7..8,9)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY_SPACE_CENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 3
+face = "up"
+interact = true
+note = "below the stair grunt (13,2); sight grunts fought on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_GRUNT_SPACE_CENTER_2 (116): MIGHTYENA 26, MIGHTYENA 28, NUMEL 30"
+
+[[step]]
+do = "advance_text"
+note = "FLAG_DEFEATED_GRUNT_SPACE_CENTER_1F, the grunt steps aside (:212-224)"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 1
+note = "stairs (warp 2) -> 2F (13,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY_SPACE_CENTER_2F"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame SPACE_CENTER_STATE 1 -> ThreeMagmaGrunts YES/NO (:27-36)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_GRUNT_SPACE_CENTER_5 (588): ZUBAT 32"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_GRUNT_SPACE_CENTER_6 (589): MIGHTYENA 32"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_GRUNT_SPACE_CENTER_7 (590): BALTOY 32"
+
+[[step]]
+do = "advance_text"
+note = "SPACE_CENTER_STATE 2 (:61)"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "Steven (object 4 (1,8)) -> first talk sets FLAG_INTERACTED_WITH_STEVEN_SPACE_CENTER, then ReadyForBattlePrompt (:170-217)"
+
+[[step]]
+do = "advance_text"
+note = "to the \"ready to battle?\" YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> ChooseHalfPartyForBattle [PHASE2: party pick presses]"
+
+[[step]]
+do = "wait_battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "steven-multi"
+note = "multi battle: TRAINER_MAXIE_MOSSDEEP (734): MIGHTYENA 42, CROBAT 43, CAMERUPT 44 + TRAINER_TABITHA_MOSSDEEP (514): CAMERUPT 36, MIGHTYENA 38, GOLBAT 40"
+
+[[step]]
+do = "advance_text"
+shot = "space-center-saved"
+note = "DefeatedMaxieTabitha: MOSSDEEP_CITY_STATE 3, SPACE_CENTER_STATE 3, FLAG_DEFEATED_MAGMA_SPACE_CENTER, VAR_STEVENS_HOUSE_STATE 1 (:246-290)"
+
+[expect]
+map = "MAP_MOSSDEEP_CITY_SPACE_CENTER_2F"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_DEFEATED_GRUNT_SPACE_CENTER_1F", "FLAG_DEFEATED_MAGMA_SPACE_CENTER", "FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_1F_TEAM_MAGMA", "FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_2F_TEAM_MAGMA", "FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA"]
+flags_clear = ["FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_STEVEN"]
+battles = 5
+
+[expect.vars]
+VAR_MOSSDEEP_CITY_STATE = 3
+VAR_MOSSDEEP_SPACE_CENTER_STATE = 3
+VAR_STEVENS_HOUSE_STATE = 1

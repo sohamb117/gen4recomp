@@ -1,0 +1,71 @@
+# Proves Briney's cottage (SailingIntro YES -> SailToDewford, VAR_BOARD_BRINEY_BOAT_STATE 1), the Route 104 boat
+# cutscene (Route104 OnFrame StartSailToDewford -> ArriveInDewford) and landing in Dewford.
+# Start: Rustboro south exit -> end: MAP_DEWFORD_TOWN at the dock, Briney + boat shown there.
+title = "Mr. Briney sails to Dewford"
+status = "planned"
+priority = "P0"
+estimate = 4500
+refs = [
+  "data/maps/Route104/map.json warp_events[0] (17,50) -> MR_BRINEYS_HOUSE",
+  "data/maps/Route104_MrBrineysHouse/scripts.inc:22-36",
+  "data/maps/Route104_MrBrineysHouse/scripts.inc:71-82",
+  "data/maps/Route104/scripts.inc:6-14",
+  "data/maps/Route104/scripts.inc:374-396",
+  "data/maps/DewfordTown/map.json object_events 2/4 Briney + boat",
+]
+notes = "No battles. Briney's first talk: SailingIntro YESNO (cursor on YES) -> sail (Route104_MrBrineysHouse/scripts.inc:31-36). ArriveInDewford sets VAR_BOARD_BRINEY_BOAT_STATE back to 0 and reminds about the letter (Route104/scripts.inc:394-399)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 6800
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 50
+map = "MAP_ROUTE104"
+note = "south on Route 104 (north half, back over the bridge) to Briney's cottage door (Route 104 warp 0) [INFERENCE: the walk around the woods is open land]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE104_MR_BRINEYS_HOUSE"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Briney (object 1, walks a square) -> SailingIntro"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 3
+gap = 40
+note = "WaitUpPeeko, ItsYouLetsSailToDewford YES [INFERENCE: counts]"
+
+[[step]]
+do = "advance_text"
+map = "MAP_ROUTE104"
+note = "SailToDewford: BOARD_BRINEY_BOAT_STATE 1, warp Route 104 (13,51) (Route104_MrBrineysHouse/scripts.inc:71-82)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DEWFORD_TOWN"
+max = 6000
+note = "Route 104 OnFrame BOARD_BRINEY_BOAT_STATE 1 -> StartSailToDewford boat ride (Route104/scripts.inc:6-14) -> ArriveInDewford (:374-396)"
+
+[[step]]
+do = "advance_text"
+shot = "dewford"
+
+[expect]
+map = "MAP_DEWFORD_TOWN"
+badges = 1
+flags = ["FLAG_BADGE01_GET", "FLAG_MR_BRINEY_SAILING_INTRO", "FLAG_VISITED_DEWFORD_TOWN", "FLAG_HIDE_BRINEYS_HOUSE_MR_BRINEY", "FLAG_HIDE_ROUTE_104_MR_BRINEY_BOAT"]
+flags_clear = ["FLAG_HIDE_MR_BRINEY_DEWFORD_TOWN", "FLAG_HIDE_MR_BRINEY_BOAT_DEWFORD_TOWN"]
+
+[expect.vars]
+VAR_BOARD_BRINEY_BOAT_STATE = 0
+VAR_ROUTE104_STATE = 2

@@ -1,0 +1,99 @@
+# Proves the walk west (Oldale -> Route 102 trainers -> Petalburg), the gym boy's ShowGymToPlayer scene, Norman's
+# first talk and Wally's Ralts tutorial battle (special StartWallyTutorialBattle), back in the gym (GYM_STATE 2).
+# Start: Littleroot (11,2) -> end: MAP_PETALBURG_CITY outside the gym door (15,9).
+title = "Route 102 to Petalburg: Norman and Wally's catching tutorial"
+status = "planned"
+priority = "P0"
+estimate = 12000
+refs = [
+  "data/maps/Route102/map.json object_events 2/3/4/9 (Calvin, Rick, Tiana, Allen)",
+  "data/maps/PetalburgCity/map.json coord_events (8,10..13) VAR_PETALBURG_CITY_STATE=0",
+  "data/maps/PetalburgCity/scripts.inc:259-262",
+  "data/maps/PetalburgCity/map.json warp_events[2] (15,8) -> gym",
+  "data/maps/PetalburgCity_Gym/scripts.inc:36-41",
+  "data/maps/PetalburgCity_Gym/scripts.inc:101-118",
+  "data/maps/PetalburgCity_Gym/scripts.inc:141-188",
+  "data/maps/PetalburgCity/scripts.inc:27-55",
+  "src/battle_setup.c:480 (StartWallyTutorialBattle)",
+  "data/maps/PetalburgCity_Gym/scripts.inc:72-91",
+  "TRAINER_CALVIN_1 (318), src/data/trainers.h:3820",
+  "TRAINER_RICK (615), src/data/trainers.h:7384",
+  "TRAINER_TIANA (603), src/data/trainers.h:7240",
+  "TRAINER_ALLEN (333), src/data/trainers.h:4000",
+]
+notes = "Route 102 sight trainers: TRAINER_CALVIN_1 (318): POOCHYENA 5; TRAINER_RICK (615): WURMPLE 4, WURMPLE 4; TRAINER_TIANA (603): ZIGZAGOON 4, SHROOMISH 4; TRAINER_ALLEN (333): ZIGZAGOON 4, TAILLOW 3. The Wally tutorial is a scripted battle (Zigzagoon on loan catches Ralts) that only needs text advanced. Norman stands at the entrance while GYM_STATE < 6 (PetalburgCity_Gym/scripts.inc:40). The Scott trigger (4,10..13) fires on the west side later (Route 104 exit)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 18000
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 11
+map = "MAP_PETALBURG_CITY"
+on_text = "stop"
+note = "west via Oldale (0,10) and Route 102 (trainers fought on the way); (8,10..13) ShowGymToPlayer (PETALBURG_CITY_STATE 0)"
+
+[[step]]
+do = "advance_text"
+note = "gym boy leads to the gym [INFERENCE: ends at the door]"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 8
+note = "gym door (Petalburg warp 2) -> MAP_PETALBURG_CITY_GYM (4,111)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PETALBURG_CITY_GYM"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Norman (object 1, moved to the entrance, PetalburgCity_Gym/scripts.inc:40) -> GYM_STATE 0 -> BeginWallyTutorial (:114-188): GYM_STATE 1, CITY_STATE 2, warp Petalburg (15,8)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_PETALBURG_CITY"
+
+[[step]]
+do = "advance_text"
+through_battle = true
+shot = "wally-tutorial"
+note = "Petalburg OnFrame CITY_STATE 2 -> WallyTutorial: special StartWallyTutorialBattle, CITY_STATE 3, GYM_STATE 1, warp gym (4,108) (PetalburgCity/scripts.inc:28,32-55)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PETALBURG_CITY_GYM"
+
+[[step]]
+do = "advance_text"
+note = "gym OnFrame GYM_STATE 1 -> ReturnFromWallyTutorial: Wally exits, GYM_STATE 2 (PetalburgCity_Gym/scripts.inc:73,76-91)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 111
+note = "gym exit mat (warp 0) -> Petalburg (15,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PETALBURG_CITY"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_PETALBURG_CITY"
+flags = ["FLAG_VISITED_PETALBURG_CITY", "FLAG_HIDE_PETALBURG_CITY_WALLY", "FLAG_HIDE_PETALBURG_CITY_WALLYS_MOM"]
+party = ["SPECIES_MUDKIP"]
+battles = 1
+
+[expect.vars]
+VAR_PETALBURG_CITY_STATE = 3
+VAR_PETALBURG_GYM_STATE = 2

@@ -8,12 +8,14 @@
 #include "palette.h"
 #include "save.h"
 #include "script.h"
+#include "gba_e2e.h"
 #include "gba_port.h"
 #include "np_guest_abi.h"
 
 GBA_LOCAL_DECL(overworld, CB1_Overworld);
 GBA_LOCAL_DECL(overworld, CB2_Overworld);
 extern IntrFunc gIntrTable[]; /* main.c; pokeruby's main.h does not declare it */
+void ruby_e2e_frame(void); /* ruby_e2e.c */
 
 static void status(uint32_t *st) {
     st[NP_STAT_FIELD_READY] = gMain.callback1 == (MainCallback)GBA_LOCAL(overworld, CB1_Overworld) &&
@@ -21,6 +23,8 @@ static void status(uint32_t *st) {
                               !ArePlayerFieldControlsLocked() && !gPaletteFade.active && !gMain.inBattle;
     st[NP_STAT_MAP_ID] = (uint32_t)gSaveBlock1.location.mapGroup << 8 | (uint8_t)gSaveBlock1.location.mapNum;
     st[NP_STAT_IN_BATTLE] = gMain.inBattle;
+    st[NP_STAT_E2E] = gba_e2e_addr();
+    ruby_e2e_frame();
 }
 
 static uint32_t quicksave(void) {

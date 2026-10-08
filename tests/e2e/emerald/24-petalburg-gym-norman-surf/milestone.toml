@@ -1,0 +1,126 @@
+# Proves the walk back (Route 112 -> 111 -> Mauville -> 117 -> Verdanturf -> Rusturf Tunnel -> 116 -> Rustboro -> 104 ->
+# Petalburg; no Fly yet), the gym's rooms to Norman (TRAINER_NORMAN_1): FLAG_BADGE05_GET, then Wally's dad and HM03 Surf.
+# Start: Lavaridge (5,16) -> end: MAP_PETALBURG_CITY_WALLYS_HOUSE, FLAG_RECEIVED_HM_SURF.
+title = "Back to Petalburg: Norman's Balance Badge and HM03 Surf"
+status = "planned"
+priority = "P0"
+estimate = 20000
+refs = [
+  "data/maps/PetalburgCity_Gym/map.json warp_events 0..37 (room doors)",
+  "data/maps/PetalburgCity_Gym/scripts.inc:5-15",
+  "data/maps/PetalburgCity_Gym/scripts.inc:101-111",
+  "data/maps/PetalburgCity_Gym/scripts.inc:360-437",
+  "TRAINER_NORMAN_1 (269), src/data/trainers.h:3232",
+  "data/maps/PetalburgCity/scripts.inc:29",
+  "data/maps/PetalburgCity/scripts.inc:57-80",
+  "data/maps/PetalburgCity_WallysHouse/scripts.inc:16-27",
+  "src/party_menu.c:124 (Surf needs FLAG_BADGE05_GET)",
+  "src/field_control_avatar.c:450",
+]
+notes = "Norman: TRAINER_NORMAN_1 (269): SPINDA 27, VIGOROTH 27, LINOONE 29, SLAKING 31 (Slaking Truant; boost ~31). Rooms: entrance (7,105) -> Mary's room (1,98); (1,92) -> Alexia's (7,59); (1,53) -> Jody's (7,20); (7,14) -> Norman's (1,7) (warp_events 5/14/21/32 and their destinations); the sight-0 trainers in each room are optional [INFERENCE]. Doors open once GYM_STATE 6 (PetalburgCity_Gym/scripts.inc:9). After the badge Wally's dad walks you home (CITY_STATE 4 -> Petalburg OnFrame WalkToWallyHouse -> Wally's house OnFrame GiveHMSurf). HM03 Surf: FLAG_RECEIVED_HM_SURF; Surf needs this badge."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 30000
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 53
+map = "MAP_RUSTBORO_CITY"
+note = "long walk east/south: Route 112 -> Route 111 -> Mauville -> Route 117 -> Verdanturf -> Rusturf Tunnel (opened in 17) -> Route 116 -> Rustboro south [INFERENCE: walk_to crosses maps by connection and the tunnel warps when given intermediate targets; split per map if not]"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+map = "MAP_PETALBURG_CITY"
+note = "Route 104 south (Petalburg Woods or its west bank) to Petalburg, below the gym door"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 8
+note = "gym door (warp 2) -> PETALBURG_CITY_GYM (4,111)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PETALBURG_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 105
+note = "entrance room right door (warp 5) -> (1,98)"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 92
+note = "Mary's room left door (warp 14) -> (7,59)"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 53
+note = "Alexia's room left door (warp 21) -> (7,20)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 14
+note = "Jody's room right door (warp 32) -> Norman's room (1,7)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 3
+face = "up"
+interact = true
+note = "below Norman (4,2)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "norman"
+note = "TRAINER_NORMAN_1 (269): SPINDA 27, VIGOROTH 27, LINOONE 29, SLAKING 31 (PetalburgCity_Gym/scripts.inc:360-362)"
+
+[[step]]
+do = "advance_text"
+shot = "balance-badge"
+note = "FLAG_DEFEATED_PETALBURG_GYM, GYM_STATE 7, FLAG_BADGE05_GET, TM Facade; Wally's dad arrives, CITY_STATE 4, warp Petalburg (15,8) (:367-437)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PETALBURG_CITY"
+
+[[step]]
+do = "advance_text"
+map = "MAP_PETALBURG_CITY_WALLYS_HOUSE"
+note = "OnFrame CITY_STATE 4 -> WalkToWallyHouse -> warp WALLYS_HOUSE (2,4) (PetalburgCity/scripts.inc:29,57-80)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PETALBURG_CITY_WALLYS_HOUSE"
+
+[[step]]
+do = "advance_text"
+shot = "hm-surf"
+note = "OnFrame CITY_STATE 4 -> GiveHMSurf: ITEM_HM_SURF, FLAG_RECEIVED_HM_SURF, CITY_STATE 5 (PetalburgCity_WallysHouse/scripts.inc:16-27)"
+
+[expect]
+map = "MAP_PETALBURG_CITY_WALLYS_HOUSE"
+badges = 5
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_DEFEATED_PETALBURG_GYM", "FLAG_RECEIVED_TM_FACADE", "FLAG_RECEIVED_HM_SURF", "FLAG_HIDE_PETALBURG_CITY_WALLYS_DAD", "FLAG_HIDE_MAUVILLE_GYM_WATTSON"]
+flags_clear = ["FLAG_HIDE_MAUVILLE_CITY_WATTSON"]
+battles = 1
+
+[expect.vars]
+VAR_PETALBURG_GYM_STATE = 7
+VAR_PETALBURG_CITY_STATE = 5

@@ -1,0 +1,51 @@
+# Proves Route 113 west through the ash (trainers incl. buried Lao/Lung), Fallarbor (visited flag, heal) and
+# Route 114 to the Meteor Falls door (8,63).
+# Start: Route 113 east end -> end: MAP_METEOR_FALLS_1F_1R entrance (27,18).
+title = "Route 113 ash, Fallarbor Town and Route 114"
+status = "planned"
+priority = "P0"
+estimate = 10000
+refs = [
+  "data/maps/Route113/map.json object_events (trainers)",
+  "data/maps/FallarborTown/scripts.inc:6-8",
+  "data/maps/FallarborTown/map.json warp_events[2] (14,7) -> POKEMON_CENTER_1F",
+  "data/maps/Route114/map.json warp_events[0] (8,63) -> METEOR_FALLS_1F_1R",
+  "data/maps/MeteorFalls_1F_1R/map.json warp_events[0] (27,18)",
+]
+notes = "Route 113: Jaylen, Dillon, Madeline, Lao, Lung, Tori & Tia (DOUBLE), Wyatt, Lawrence, Sophie, Coby (lv 17-19). Route 114: Lenny, Lucas, Shane, Nancy, Steve, Bernie, Claude, Nolan, Tyra & Ivy (DOUBLE), Charlotte, Angelina, Kai (lv 16-20). Route 114 crosses a river [INFERENCE: by the bridge, no Surf]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 15000
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 8
+map = "MAP_FALLARBOR_TOWN"
+note = "west on Route 113 into Fallarbor; OnTransition FLAG_VISITED_FALLARBOR_TOWN (FallarborTown/scripts.inc:6)"
+
+[[step]]
+do = "heal"
+x = 14
+z = 7
+note = "Fallarbor Pokemon Center (warp 2)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 63
+map = "MAP_ROUTE114"
+note = "west and south on Route 114 to the Meteor Falls door (Route 114 warp 0) -> METEOR_FALLS_1F_1R (27,18)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_METEOR_FALLS_1F_1R"
+
+[expect]
+map = "MAP_METEOR_FALLS_1F_1R"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_VISITED_FALLARBOR_TOWN"]

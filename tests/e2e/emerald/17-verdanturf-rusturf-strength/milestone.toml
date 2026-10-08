@@ -1,0 +1,84 @@
+# Proves Route 117 to Verdanturf, the tunnel's east half, Rock Smash on the blockage rocks (24,4)/(24,5) and Wanda's
+# boyfriend's ClearTunnelScene: HM04 Strength (FLAG_RECEIVED_HM_STRENGTH), FLAG_RUSTURF_TUNNEL_OPENED.
+# Start: Mauville (32,15) -> end: MAP_VERDANTURF_TOWN in front of the Pokemon Center (16,4).
+title = "Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength"
+status = "planned"
+priority = "P0"
+estimate = 7000
+refs = [
+  "data/maps/VerdanturfTown/map.json warp_events[4] (8,1) -> RUSTURF_TUNNEL",
+  "data/maps/RusturfTunnel/map.json object_events 2/8 BREAKABLE_ROCK (24,5)/(24,4)",
+  "data/maps/RusturfTunnel/map.json coord_events (23,4)/(25,4)/(25,5) TRIGGER_RUN_IMMEDIATELY",
+  "data/maps/RusturfTunnel/scripts.inc:47-70",
+  "data/maps/RusturfTunnel/scripts.inc:246-256",
+  "data/event_scripts.s:780-786 (SetRusturfTunnelOpen)",
+  "data/scripts/field_move_scripts.inc (EventScript_RockSmash)",
+  "src/party_menu.c:123 (Strength needs FLAG_BADGE04_GET)",
+]
+notes = "Route 117 trainers: Isaac, Lydia, Dylan, Maria, Derek, Anna & Meg (DOUBLE), Melina, Brandi, Aisha (lv 11-17). The Rock Smash carrier sits in the party (boost). Strength is usable only after the Heat Badge (src/party_menu.c:123); it is needed in Seafloor Cavern (37) and Victory Road (42), maybe the Magma Hideout (31). Getting it now keeps those milestones free of a backtrack; the tunnel also becomes the walking route back to Petalburg (24)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 10500
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 4
+map = "MAP_VERDANTURF_TOWN"
+note = "west on Route 117 (trainers) to Verdanturf"
+
+[[step]]
+do = "heal"
+x = 16
+z = 3
+note = "Verdanturf Pokemon Center (warp 2)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 1
+note = "tunnel door (Verdanturf warp 4) -> RUSTURF_TUNNEL (29,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTURF_TUNNEL"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 5
+hm = true
+on_text = "stop"
+note = "smash rock (24,5) then (24,4) (hm = true: A + YES at the rock) [INFERENCE: walk_to clears both on its path]; stepping on (25,5)/(23,4)/(25,4) runs TunnelBlockagePos* (RusturfTunnel/scripts.inc:246-256)"
+
+[[step]]
+do = "advance_text"
+shot = "strength"
+note = "ClearTunnelScene: HM04 Strength, FLAG_RECEIVED_HM_STRENGTH, Wanda reunion, SetRusturfTunnelOpen: RUSTURF_TUNNEL_STATE 6, FLAG_RUSTURF_TUNNEL_OPENED (:47-70; data/event_scripts.s:780-786)"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 16
+note = "tunnel east exit (warp 1) -> Verdanturf (8,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VERDANTURF_TOWN"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 4
+
+[expect]
+map = "MAP_VERDANTURF_TOWN"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_VISITED_VERDANTURF_TOWN", "FLAG_RECEIVED_HM_STRENGTH", "FLAG_RUSTURF_TUNNEL_OPENED", "FLAG_HIDE_RUSTURF_TUNNEL_ROCK_1", "FLAG_HIDE_RUSTURF_TUNNEL_ROCK_2"]
+
+[expect.vars]
+VAR_RUSTURF_TUNNEL_STATE = 6

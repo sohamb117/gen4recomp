@@ -1,0 +1,87 @@
+# Proves Steven on the Route 120 bridge (YES -> wild KECLEON lv30 via setwildbattle/dowildbattle -> ITEM_DEVON_SCOPE,
+# FLAG_RECEIVED_DEVON_SCOPE) and the Devon Scope on Fortree's invisible Kecleon (FLAG_KECLEON_FLED_FORTREE).
+# Start: Fortree (5,7) -> end: MAP_FORTREE_CITY below the gym door (22,12).
+title = "Route 120: Steven's Kecleon and the Devon Scope; Fortree's gym Kecleon"
+status = "planned"
+priority = "P0"
+estimate = 6000
+refs = [
+  "data/maps/Route120/map.json object_events 30 bridge KECLEON (12,16), 31 STEVEN (13,15)",
+  "data/maps/Route120/scripts.inc:154-232",
+  "data/maps/FortreeCity/map.json object_events[7] KECLEON (25,8)",
+  "data/maps/FortreeCity/scripts.inc:55-82",
+  "data/maps/FortreeCity/map.json warp_events[2] (22,11) -> GYM",
+]
+notes = "The bridge Kecleon battle ends the same way won, fled or lost-to-teleport (Route120/scripts.inc:196-207); auto_battle wins it. Fortree's Kecleon (25,8) blocks the gym door; talk_to it with the scope: YES -> it flees."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 9000
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 16
+map = "MAP_ROUTE120"
+face = "up"
+interact = true
+note = "east into Route 120, below Steven (13,15) on the bridge [INFERENCE: (13,16) free; the bridge Kecleon (12,16) is invisible]"
+
+[[step]]
+do = "advance_text"
+note = "StevenGreeting YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> StevenBattleKecleon (Route120/scripts.inc:154-193)"
+
+[[step]]
+do = "wait_battle"
+
+[[step]]
+do = "auto_battle"
+shot = "kecleon"
+note = "wild KECLEON lv30 (setwildbattle, :190)"
+
+[[step]]
+do = "advance_text"
+note = "StevenGiveDeconScope: ITEM_DEVON_SCOPE, FLAG_RECEIVED_DEVON_SCOPE (:210-232)"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 8
+map = "MAP_FORTREE_CITY"
+note = "back west to Fortree, beside the gym Kecleon (25,8) [INFERENCE]"
+
+[[step]]
+do = "talk_to"
+id = 7
+note = "Kecleon (object 7, INVISIBLE) -> checkitem DEVON_SCOPE -> AskUseDevonScope (FortreeCity/scripts.inc:55-66)"
+
+[[step]]
+do = "advance_text"
+note = "stops at the YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> UseDevonScope: removeobject, FLAG_KECLEON_FLED_FORTREE (:70-82)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 12
+
+[expect]
+map = "MAP_FORTREE_CITY"
+badges = 5
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_RECEIVED_DEVON_SCOPE", "FLAG_KECLEON_FLED_FORTREE"]
+battles = 1

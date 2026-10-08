@@ -1,0 +1,79 @@
+# Proves Glacia's room: the battle (TRAINER_GLACIA), FLAG_DEFEATED_ELITE_4_GLACIA, the opened north door and the walk on.
+# Start: Glacia's room (6,6) after the door closed -> end: Drake's room, door shut (VAR_ELITE_4_STATE 4).
+title = "Elite Four: Glacia"
+status = "planned"
+priority = "P0"
+estimate = 7000
+refs = [
+  "data/maps/EverGrandeCity_GlaciasRoom/map.json object_events[1]",
+  "data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:45",
+  "data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:55",
+  "data/maps/EverGrandeCity_GlaciasRoom/map.json warp_events[1] (6,2)",
+  "data/maps/EverGrandeCity_Hall3/map.json warp_events (5,2)",
+  "TRAINER_GLACIA (263), src/data/trainers.h:3160",
+  "data/scripts/elite_four.inc",
+]
+notes = "Glacia: TRAINER_GLACIA (263): SEALEO 50, GLALIE 50, SEALEO 52, GLALIE 52, WALREIN 53. No healing between E4 rooms: the boost recipe should carry Full Restores / levels for the whole run [INFERENCE]. A quick save inside the E4 rooms resumes in place (src/save_location.c has no E4 special warp)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 10500
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "below Glacia (object 1 (6,5))"
+
+[[step]]
+do = "advance_text"
+note = "IntroSpeech"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "glacia"
+note = "TRAINER_GLACIA (263): SEALEO 50, GLALIE 50, SEALEO 52, GLALIE 52, WALREIN 53"
+
+[[step]]
+do = "advance_text"
+shot = "glacia-defeated"
+note = "Defeated: FLAG_DEFEATED_ELITE_4_GLACIA, door to the next hall opens (PokemonLeague_EliteFour_SetAdvanceToNextRoomMetatiles)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 2
+note = "north door (warp 1) -> MAP_EVER_GRANDE_CITY_HALL3 (5,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_HALL3"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "Hall3 north door (warp 1) -> MAP_EVER_GRANDE_CITY_DRAKES_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_DRAKES_ROOM"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_ELITE_4_STATE 3 -> WalkInCloseDoor -> 4"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY_DRAKES_ROOM"
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_ENTERED_ELITE_FOUR", "FLAG_DEFEATED_ELITE_4_SIDNEY", "FLAG_DEFEATED_ELITE_4_PHOEBE", "FLAG_DEFEATED_ELITE_4_GLACIA"]
+battles = 1
+
+[expect.vars]
+VAR_ELITE_4_STATE = 4

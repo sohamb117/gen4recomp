@@ -1,0 +1,70 @@
+# Proves Fly to Sootopolis (lands at the Pokemon Center (43,32)), OnFrame StartRayquazaScene (SKY_PILLAR_STATE 1 -> 3,
+# legendaries gone), Maxie + Archie's goodbyes (FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE) and Wallace's HM07 Waterfall.
+# Start: Sky Pillar top -> end: MAP_SOOTOPOLIS_CITY in front of the gym (31,33).
+title = "Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall"
+status = "planned"
+priority = "P0"
+estimate = 8000
+refs = [
+  "data/maps/SootopolisCity/scripts.inc:167",
+  "data/maps/SootopolisCity/scripts.inc:456-508",
+  "data/maps/SootopolisCity/map.json object_events 16 MAXIE (29,33), 17 ARCHIE (31,33), 18 WALLACE (31,18)",
+  "data/maps/SootopolisCity/scripts.inc:1302-1339",
+  "data/maps/SootopolisCity/scripts.inc:1251-1279",
+  "data/maps/SootopolisCity/scripts.inc:114-137",
+  "src/party_menu.c:127 (Waterfall needs FLAG_BADGE08_GET)",
+  "src/field_control_avatar.c:455",
+]
+notes = "No battle. Fly works from the Sky Pillar top [INFERENCE: outdoor map type]; landing at (43,32) runs RayquazaSceneFromPokeCenter (SKY_PILLAR_STATE 3, warpwhitefade (43,32)). Maxie and Archie stand by the gym (SetOutsideGymObjPos, SOOTOPOLIS_CITY_STATE 5) and Wallace beside them (VAR_SOOTOPOLIS_WALLACE_STATE positions); after both talk, MaxieArchieLeave warps to (31,34) and sets VAR_MT_PYRE_STATE 2 (the orbs return scene on Mt. Pyre is optional). Waterfall needs the Rain Badge (41)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 12000
+
+[[step]]
+do = "fly"
+map = "MAP_SOOTOPOLIS_CITY"
+
+[[step]]
+do = "advance_text"
+shot = "rayquaza-sootopolis"
+note = "OnFrame SKY_PILLAR_STATE 1 -> StartRayquazaScene from the Pokemon Center tile: SKY_PILLAR_STATE 3, FLAG_LEGENDARIES_IN_SOOTOPOLIS cleared, FLAG_SYS_WEATHER_CTRL cleared (SootopolisCity/scripts.inc:167,456-508)"
+
+[[step]]
+do = "talk_to"
+id = 16
+note = "Maxie (object 16) -> MaxieRayquaza: FLAG_MET_MAXIE_SOOTOPOLIS (:1302-1315)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 17
+note = "Archie (object 17) -> ArchieRayquaza: FLAG_MET_ARCHIE_SOOTOPOLIS -> MaxieArchieLeave: FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE, VAR_MT_PYRE_STATE 2, warpsilent (31,34) (:1317-1339)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 18
+note = "Wallace (object 18) -> GiveWaterfall: ITEM_HM_WATERFALL, FLAG_RECEIVED_HM_WATERFALL, steps aside (:1251-1279)"
+
+[[step]]
+do = "advance_text"
+shot = "hm-waterfall"
+
+[expect]
+map = "MAP_SOOTOPOLIS_CITY"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_MET_MAXIE_SOOTOPOLIS", "FLAG_MET_ARCHIE_SOOTOPOLIS", "FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE", "FLAG_RECEIVED_HM_WATERFALL", "FLAG_HIDE_SOOTOPOLIS_CITY_MAXIE", "FLAG_HIDE_SOOTOPOLIS_CITY_ARCHIE"]
+flags_clear = ["FLAG_LEGENDARIES_IN_SOOTOPOLIS", "FLAG_SYS_WEATHER_CTRL"]
+
+[expect.vars]
+VAR_SKY_PILLAR_STATE = 3
+VAR_SOOTOPOLIS_CITY_STATE = 5
+VAR_MT_PYRE_STATE = 2

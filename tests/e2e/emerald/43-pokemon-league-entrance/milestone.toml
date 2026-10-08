@@ -1,0 +1,71 @@
+# Proves the League 1F (FLAG_LANDMARK_POKEMON_LEAGUE), the nurse and the door guards' badge check (FLAG_ENTERED_ELITE_FOUR),
+# then Hall 5 into Sidney's room where the door closes behind (VAR_ELITE_4_STATE 0 -> 1).
+# Start: Ever Grande (18,6) -> end: MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM (6,6), door shut.
+title = "Pokemon League lobby: heal and pass the badge guards"
+status = "planned"
+priority = "P0"
+estimate = 4000
+refs = [
+  "data/maps/EverGrandeCity_PokemonLeague_1F/map.json object_events 1 nurse (3,2), 3/4 guards (8,2)/(11,2)",
+  "data/maps/EverGrandeCity_PokemonLeague_1F/scripts.inc:8-15",
+  "data/maps/EverGrandeCity_PokemonLeague_1F/scripts.inc:48-72",
+  "data/maps/EverGrandeCity_Hall5/map.json warp_events[1] (5,2) -> SIDNEYS_ROOM",
+  "data/maps/EverGrandeCity_SidneysRoom/scripts.inc:34-43",
+]
+notes = "No battle. The guards only check FLAG_BADGE06_GET (EverGrandeCity_PokemonLeague_1F/scripts.inc:57) [the script text says all badges]. Heal at the League nurse with the heal bot (the nurse is a counter NPC, not a door) [INFERENCE: heal x/z = the League 1F door (18,5) seen from Ever Grande; else talk_to id 1 + A x N]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 6000
+
+[[step]]
+do = "heal"
+x = 18
+z = 5
+note = "[INFERENCE] League 1F nurse (object 1) via the heal bot with the building door (Ever Grande warp 0); falls back to talk_to 1 + YES"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 3
+face = "up"
+interact = true
+note = "between the guards (8,2)/(11,2) facing the door; DoorGuard: badge check -> guards step aside, FLAG_ENTERED_ELITE_FOUR (:48-72)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 1
+note = "League 1F north door (warp 2) -> HALL5 (5,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_HALL5"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "Hall 5 (warp 1) -> SIDNEYS_ROOM (6,13)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame VAR_ELITE_4_STATE 0 -> WalkInCloseDoor -> 1 (EverGrandeCity_SidneysRoom/scripts.inc:34-43)"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM"
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_LANDMARK_POKEMON_LEAGUE", "FLAG_ENTERED_ELITE_FOUR", "FLAG_MET_SCOTT_IN_EVERGRANDE"]
+
+[expect.vars]
+VAR_ELITE_4_STATE = 1

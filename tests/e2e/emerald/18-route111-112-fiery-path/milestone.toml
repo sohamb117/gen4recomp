@@ -1,0 +1,69 @@
+# Proves Rock Smash on Route 111 ((19,100)/(18,101) north of Mauville), the turn west onto Route 112 below the
+# Magma-blocked cable car, the Fiery Path (11,36) -> (22,10) and Route 112 north to Route 113.
+# Start: Verdanturf (16,4) -> end: MAP_ROUTE113 east end.
+title = "Route 111 rocks, Route 112 and the Fiery Path north"
+status = "planned"
+priority = "P0"
+estimate = 10000
+refs = [
+  "data/maps/Route111/map.json object_events 15/16 BREAKABLE_ROCK (18,101)/(19,100)",
+  "data/maps/Route111/map.json connections left ROUTE112 offset 20",
+  "data/maps/Route112/map.json object_events 1/6 Magma grunts (26,30)/(27,30) FLAG_HIDE_ROUTE_112_TEAM_MAGMA",
+  "data/maps/Route112/scripts.inc:10",
+  "data/maps/Route112/map.json warp_events[4] (11,36) / [5] (22,10) -> FIERY_PATH",
+  "data/maps/FieryPath/map.json warp_events (26,36)/(26,4)",
+  "data/maps/FieryPath/scripts.inc:6-12",
+  "data/maps/Route112/map.json connections up ROUTE113 offset -60",
+  "src/party_menu.c:122",
+]
+notes = "Back east through Route 117 to Mauville, north on Route 111: the two rocks need Rock Smash (badge 3). Route 111's desert is closed by the sandstorm triggers until the Go-Goggles (23); the Route 112 junction is south of the desert (Route 112 rows 0..59 = Route 111 rows 20..79). Route 112 trainers: Brice, Trent, Larry, Carol, Bryant, Shayla (lv 16-18). Fiery Path: boulders (Strength) only fence side items [INFERENCE]; wild Grimer/Koffing/Slugma/Numel."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 15000
+
+# PHASE2: prove that the Fiery Path straight route (26,36) -> (26,4) needs no Strength before the Heat Badge (probe_map MAP_FIERY_PATH).
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 99
+map = "MAP_ROUTE111"
+hm = true
+note = "east via Route 117 to Mauville, north onto Route 111; hm = true smashes the rocks (19,100)/(18,101) on the way [INFERENCE: one of them blocks the path]"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 36
+map = "MAP_ROUTE112"
+note = "west onto Route 112 (Route 111 rows 20..79) to the Fiery Path door (Route 112 warp 4) -> FIERY_PATH (26,36)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FIERY_PATH"
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 4
+note = "north exit (warp 1) -> Route 112 (22,10); OnTransition FLAG_LANDMARK_FIERY_PATH (FieryPath/scripts.inc:6-12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE112"
+
+[[step]]
+do = "walk_to"
+x = 85
+z = 10
+map = "MAP_ROUTE113"
+note = "north onto Route 113 (ash grass), east end [INFERENCE: (85,10) walkable; the weather coord events there are harmless]"
+
+[expect]
+map = "MAP_ROUTE113"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_LANDMARK_FIERY_PATH"]

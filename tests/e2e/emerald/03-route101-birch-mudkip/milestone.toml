@@ -1,0 +1,137 @@
+# Proves the Birch rescue: the twin's GoSaveBirch trigger, the Route 101 chase scene, Birch's bag (ChooseStarter:
+# RIGHT from the default Torchic to Mudkip, YES), the first wild battle, the warp to the lab and the starter talk.
+# Start: Littleroot (14,9) -> end: MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB, VAR_BIRCH_LAB_STATE 3, party Mudkip.
+title = "Route 101: save Birch, choose Mudkip, first battle, the lab"
+status = "planned"
+priority = "P0"
+estimate = 6500
+refs = [
+  "data/maps/LittlerootTown/map.json coord_events (11,1) VAR_LITTLEROOT_TOWN_STATE=1 GoSaveBirchTrigger",
+  "data/maps/LittlerootTown/scripts.inc:366-376",
+  "data/maps/Route101/scripts.inc:10-17",
+  "data/maps/Route101/map.json coord_events (10,19)/(11,19) VAR_ROUTE101_STATE=1",
+  "data/maps/Route101/scripts.inc:19-41",
+  "data/maps/Route101/map.json object_events[3] BIRCHS_BAG (7,14)",
+  "data/maps/Route101/scripts.inc:214-243",
+  "src/starter_choose.c:113-118 (Treecko, Torchic, Mudkip)",
+  "src/starter_choose.c:443 (cursor starts on 1 = Torchic)",
+  "src/starter_choose.c:506-515 (LEFT/RIGHT)",
+  "src/starter_choose.c:534 (YES/NO opens on YES)",
+  "src/battle_setup.c:917-927 (CB2_GiveStarter: VAR_STARTER_MON = choice, Mudkip lv5, first battle)",
+  "data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc:98-136",
+  "tests/rse/e-3-route101.sched",
+]
+notes = "Starter: MUDKIP (VAR_STARTER_MON 2): Water/Ground from Marshtomp (lv16) handles Roxanne, Wattson (immune), Flannery, Norman/Tate&Liza neutral; the cost is the rival leading with the Treecko line (TRAINER_MAY_*_MUDKIP). e-3-route101.sched picks the default Torchic instead (A at the bag). The first battle is BATTLE_TYPE_FIRST_BATTLE vs the wild Zigzagoon Birch fled from [INFERENCE: lv2]; Tackle wins. The nickname prompt is answered NO (B), the go-see-rival prompt YES."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 9800
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 1
+on_text = "stop"
+note = "north exit; (11,1) VAR_LITTLEROOT_TOWN_STATE=1 -> twin GoSaveBirchTrigger -> TOWN_STATE 2 (LittlerootTown/scripts.inc:366-376)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 19
+map = "MAP_ROUTE101"
+on_text = "stop"
+note = "Route 101 OnFrame ROUTE101_STATE 0 -> 1 (Route101/scripts.inc:10-17); coord (10,19)/(11,19) state 1 -> StartBirchRescue -> state 2 (:19-41)"
+
+[[step]]
+do = "advance_text"
+shot = "birch-chased"
+
+[[step]]
+do = "talk_to"
+id = 3
+note = "Birch's bag (object 3 (7,14)) -> FLAG_SYS_POKEMON_GET, FLAG_RESCUED_BIRCH, special ChooseStarter (Route101/scripts.inc:214-223)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "starter choose screen fades in"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+note = "cursor from Torchic (src/starter_choose.c:443) to Mudkip (:511-515)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "\"Do you choose MUDKIP?\" YES/NO opens on YES (src/starter_choose.c:534)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> CB2_GiveStarter: VAR_STARTER_MON 2, MUDKIP lv5, first battle (src/battle_setup.c:917-927)"
+
+[[step]]
+do = "wait_battle"
+
+[[step]]
+do = "auto_battle"
+shot = "first-battle"
+note = "wild Zigzagoon [INFERENCE lv2]; Tackle"
+
+[[step]]
+do = "advance_text"
+map = "MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB"
+note = "YouSavedMe, HealPlayerParty, BIRCH_LAB_STATE 2, ROUTE101_STATE 3, warp lab (6,5) (Route101/scripts.inc:224-236)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB"
+
+[[step]]
+do = "wait_frames"
+n = 60
+note = "lab OnFrame BIRCH_LAB_STATE 2 -> GiveStarterEvent (LittlerootTown_ProfessorBirchsLab/scripts.inc:99,107-116)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 3
+gap = 40
+note = "LikeYouToHavePokemon + fanfare [INFERENCE: count]"
+
+[[step]]
+do = "press"
+keys = "B"
+note = "nickname YES/NO -> NO (README: B answers a field YES/NO as NO)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 40
+note = "MightBeGoodIdeaToGoSeeRival YES (cursor on YES) -> AgreeToSeeRival: BIRCH_LAB_STATE 3 (:125-136)"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB"
+flags = ["FLAG_SYS_POKEMON_GET", "FLAG_RESCUED_BIRCH", "FLAG_HIDE_ROUTE_101_BIRCH_ZIGZAGOON_BATTLE", "FLAG_HIDE_ROUTE_101_BIRCH_STARTERS_BAG", "FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM"]
+flags_clear = ["FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_BIRCH", "FLAG_HIDE_ROUTE_101_BOY"]
+party = ["SPECIES_MUDKIP"]
+party_size = 1
+battles = 1
+
+[expect.vars]
+VAR_STARTER_MON = 2
+VAR_BIRCH_LAB_STATE = 3
+VAR_ROUTE101_STATE = 3
+VAR_LITTLEROOT_TOWN_STATE = 2

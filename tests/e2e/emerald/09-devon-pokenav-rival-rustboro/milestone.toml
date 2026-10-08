@@ -1,0 +1,148 @@
+# Proves the goods return (ReturnGoodsTrigger -> warp Devon 3F), Mr. Stone's letter + PokeNav (FLAG_RECEIVED_POKENAV),
+# the Match Call tutorial outside, and May at Rustboro's south exit (TRAINER_MAY_RUSTBORO_MUDKIP).
+# Start: Route 116 (47,9) -> end: MAP_RUSTBORO_CITY south exit, VAR_RUSTBORO_CITY_STATE 8.
+title = "Devon Corp: Mr. Stone, the PokeNav and May's Rustboro battle"
+status = "planned"
+priority = "P0"
+estimate = 9000
+refs = [
+  "data/maps/RustboroCity/map.json coord_events (30,9)/(31,10)/(30,11)/(30,12) VAR_RUSTBORO_CITY_STATE=4",
+  "data/maps/RustboroCity/scripts.inc:526-568",
+  "data/maps/RustboroCity_DevonCorp_3F/scripts.inc:24-68",
+  "data/maps/RustboroCity_DevonCorp_3F/map.json warp_events[0] (2,1)",
+  "data/maps/RustboroCity_DevonCorp_2F/map.json warp_events (14,1)/(2,1)",
+  "data/maps/RustboroCity_DevonCorp_1F/map.json warp_events (5,8)/(6,8)",
+  "data/maps/RustboroCity/scripts.inc:27-91",
+  "data/maps/RustboroCity/map.json coord_events (12..19,53) VAR_RUSTBORO_CITY_STATE=7",
+  "data/maps/RustboroCity/scripts.inc:634-764",
+  "data/maps/RustboroCity/scripts.inc:790-794",
+  "TRAINER_MAY_RUSTBORO_MUDKIP (600), src/data/trainers.h:7204",
+]
+notes = "May: TRAINER_MAY_RUSTBORO_MUDKIP (600): WINGULL 13, TREECKO 15 (Treecko resists Water and Ground; Wingull resists Ground: bring a Tackle/Peck-type mover or boost). The Match Call tutorial (special ScriptMenu_CreateStartMenuForPokenavTutorial + OpenPokenavForTutorial) needs START-menu-like input. May's battle is a YES/NO offer (RustboroCity/scripts.inc:745); YES."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 13500
+
+# PHASE2: the PokeNav tutorial inputs (RustboroCity/scripts.inc:62-91: a one-item start menu, then the PokeNav app opened and closed); the steps below are [INFERENCE] A, then B out.
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 12
+map = "MAP_RUSTBORO_CITY"
+on_text = "stop"
+note = "ReturnGoodsTrigger3 (30,12) RUSTBORO 4 -> Great Ball, FLAG_RETURNED_DEVON_GOODS, RUSTBORO 5, warp DEVON_CORP_3F (2,2) (RustboroCity/scripts.inc:544-568)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_RUSTBORO_CITY_DEVON_CORP_3F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY_DEVON_CORP_3F"
+
+[[step]]
+do = "advance_text"
+shot = "mr-stone"
+note = "3F OnFrame DEVON_CORP_3F_STATE 0 -> MeetPresident: ITEM_LETTER, FLAG_SYS_POKENAV_GET, FLAG_RECEIVED_POKENAV, VAR_BRINEY_LOCATION 1, DEVON_CORP_3F 1, RUSTBORO 6 (RustboroCity_DevonCorp_3F/scripts.inc:24-68)"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 1
+note = "3F stairs (warp 0) -> 2F (2,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY_DEVON_CORP_2F"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 1
+note = "2F stairs (warp 0) -> 1F (14,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY_DEVON_CORP_1F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 8
+note = "1F exit (warp 0) -> Rustboro (11,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame RUSTBORO 6 -> ScientistAddMatchCall: ROUTE104_STATE 1, FLAG_HAS_MATCH_CALL (RustboroCity/scripts.inc:27-61)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "[INFERENCE] pick POKeNAV in the tutorial start menu (special ScriptMenu_CreateStartMenuForPokenavTutorial, :70)"
+
+[[step]]
+do = "wait_frames"
+n = 180
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+times = 2
+note = "[INFERENCE] leave the PokeNav (special OpenPokenavForTutorial, :80)"
+
+[[step]]
+do = "advance_text"
+note = "FLAG_ADDED_MATCH_CALL_TO_POKENAV, RUSTBORO 7 (:69,86-89)"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 53
+on_text = "stop"
+note = "south exit row y=53 (12..19) RivalTrigger RUSTBORO 7 (:634-722)"
+
+[[step]]
+do = "advance_text"
+note = "May registers in Match Call, FLAG_MET_RIVAL_RUSTBORO, RUSTBORO 8, ROUTE104 2 (:728-743); stops at the battle YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "\"want to battle?\" YES (:745)"
+
+[[step]]
+do = "wait_battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "may-rustboro"
+note = "TRAINER_MAY_RUSTBORO_MUDKIP (600): WINGULL 13, TREECKO 15"
+
+[[step]]
+do = "advance_text"
+note = "FLAG_DEFEATED_RIVAL_RUSTBORO (:790-794), Briney hint"
+
+[expect]
+map = "MAP_RUSTBORO_CITY"
+badges = 1
+flags = ["FLAG_BADGE01_GET", "FLAG_RETURNED_DEVON_GOODS", "FLAG_SYS_POKENAV_GET", "FLAG_RECEIVED_POKENAV", "FLAG_HAS_MATCH_CALL", "FLAG_ADDED_MATCH_CALL_TO_POKENAV", "FLAG_MET_RIVAL_RUSTBORO", "FLAG_DEFEATED_RIVAL_RUSTBORO", "FLAG_ENABLE_RIVAL_MATCH_CALL"]
+flags_clear = ["FLAG_HIDE_BRINEYS_HOUSE_MR_BRINEY", "FLAG_HIDE_BRINEYS_HOUSE_PEEKO", "FLAG_HIDE_RUSTURF_TUNNEL_WANDA"]
+battles = 1
+
+[expect.vars]
+VAR_RUSTBORO_CITY_STATE = 8
+VAR_DEVON_CORP_3F_STATE = 1
+VAR_ROUTE104_STATE = 2
+VAR_BRINEY_LOCATION = 1

@@ -1,0 +1,105 @@
+# Proves Wally at the gym door (YES -> TRAINER_WALLY_MAUVILLE, FLAG_DEFEATED_WALLY_MAUVILLE, Scott) and Rydel's
+# Mach Bike (FLAG_RECEIVED_BIKE, multichoice MULTI_BIKE case 0); the bike is needed at Sky Pillar (39).
+# Start: Mauville Pokemon Center (22,6) -> end: MAP_MAUVILLE_CITY outside the bike shop (35,6).
+title = "Mauville: Wally's battle and the Mach Bike"
+status = "planned"
+priority = "P0"
+estimate = 5000
+refs = [
+  "data/maps/MauvilleCity/map.json object_events[6] WALLY (8,6), [7] uncle (9,6)",
+  "data/maps/MauvilleCity/scripts.inc:84-160",
+  "data/maps/MauvilleCity/scripts.inc:187-200",
+  "TRAINER_WALLY_MAUVILLE (656), src/data/trainers.h:7876",
+  "data/maps/MauvilleCity/map.json warp_events[2] (35,5) -> BIKE_SHOP",
+  "data/maps/MauvilleCity_BikeShop/scripts.inc:4-45",
+]
+notes = "Wally: TRAINER_WALLY_MAUVILLE (656): RALTS 16. Rydel: \"came from far away?\" YES (cursor on YES) -> FLAG_RECEIVED_BIKE -> multichoice MULTI_BIKE (case 0 = MACH BIKE, MauvilleCity_BikeShop/scripts.inc:24-27): A on the first entry. The Mach Bike crosses Sky Pillar's cracked floors (and Granite Cave B1F's); Acro is never needed on the story path [INFERENCE]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 7500
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 6
+face = "right"
+interact = true
+note = "left of Wally (8,6), facing him [INFERENCE: (7,6) free]; MauvilleCity_EventScript_Wally (:84-96)"
+
+[[step]]
+do = "advance_text"
+note = "stops at WallyWillYouBattleMe YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> BattleWally (:99-100,187-196)"
+
+[[step]]
+do = "wait_battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "wally-mauville"
+note = "TRAINER_WALLY_MAUVILLE (656): RALTS 16"
+
+[[step]]
+do = "advance_text"
+note = "DefeatedWally: FLAG_DEFEATED_WALLY_MAUVILLE, Scott, Wally + uncle leave (:144-160)"
+
+[[step]]
+do = "walk_to"
+x = 35
+z = 5
+note = "bike shop door (Mauville warp 2) -> BIKE_SHOP (3,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY_BIKE_SHOP"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Rydel (object 1 (2,5))"
+
+[[step]]
+do = "advance_text"
+note = "to the far-away YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> FLAG_RECEIVED_BIKE, ChooseBike multichoice (:36-38,21-27)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "press"
+keys = "A"
+note = "MACH BIKE (case 0) -> giveitem ITEM_MACH_BIKE (:41-44)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 8
+note = "exit (warp 0) -> Mauville (35,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY"
+
+[expect]
+map = "MAP_MAUVILLE_CITY"
+badges = 2
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_DEFEATED_WALLY_MAUVILLE", "FLAG_RECEIVED_BIKE", "FLAG_HIDE_MAUVILLE_CITY_WALLY", "FLAG_HIDE_MAUVILLE_CITY_WALLYS_UNCLE"]
+battles = 1
