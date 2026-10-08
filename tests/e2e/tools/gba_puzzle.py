@@ -19,6 +19,16 @@ The static model (gba_world.py) and the probe's window show the floor, not the p
   - warp panels (MB_MOSSDEEP_GYM_WARP and the map's other step-on warps to itself) move the player to the paired
     warp; coord events that warp elsewhere (WarpToEntrance) are never stepped on
 
+  arrow tiles and sign switches (Ruby/Sapphire's Mossdeep Gym; pokeruby field_player_avatar.c:330-475)
+  - standing on MB_WALK_* 0x40-0x43 / MB_SLIDE_* 0x44-0x47 the player is moved that way (DoForcedMovement), on the
+    slippery MB_TRICK_HOUSE_PUZZLE_8_FLOOR 0x48 on in the direction it moves (ForcedMovement_Slip), until a tile
+    without forced movement; a refused step (collision, elevation, a person) stops it where it stands, and from
+    there the player walks off as usual. A ride that never ends is never planned
+  - a switch is a bg event whose script toggles a flag (goto_if_set FLAG, <clear>; setflag) and rewrites
+    metatiles with setmetatile X, Y, METATILE_*, impassable in each branch: A facing it flips the arrows. The
+    flags start clear (the layout's own metatiles). The switches' state rides in the state's gate slot
+  With switches the route prints as milestone [[step]] blocks (steps, then the switch as face + interact).
+
   Strength boulders and Rock Smash rocks (Seafloor Cavern, Victory Road; field_player_avatar.c)
   - walking into an OBJ_EVENT_GFX_PUSHABLE_BOULDER pushes it one tile when the tile beyond has no collision, no
     object, no elevation mismatch for the boulder and is no non-animated door (TryPushBoulder); the player walks
@@ -53,9 +63,13 @@ DIRS = ((0, -1), (0, 1), (-1, 0), (1, 0))  # up, down, left, right (DIR_NORTH, _
 DIR_NAMES = ("North", "South", "West", "East")
 ARROW_DIRS = ((1, 0), (0, 1), (-1, 0), (0, -1))  # puzzle tiles 0..3: right, down, left, up
 BATTLE_COST = 25
-PUSH_COST, SMASH_COST = 2, 8
+PUSH_COST, SMASH_COST, SWITCH_COST = 2, 8, 3
 FACE = {"FACE_UP": (0,), "FACE_DOWN": (1,), "FACE_LEFT": (2,), "FACE_RIGHT": (3,)}
 MB_MOSSDEEP_GYM_WARP = 0x0E
+# forced movement (pokeruby metatile_behaviors.h): MB_WALK_EAST/WEST/NORTH/SOUTH 0x40-0x43, MB_SLIDE_* 0x44-0x47 ->
+# the direction moved; MB_TRICK_HOUSE_PUZZLE_8_FLOOR 0x48 keeps the current one (ForcedMovement_Slip)
+FORCED = {0x40: 3, 0x41: 2, 0x42: 0, 0x43: 1, 0x44: 3, 0x45: 2, 0x46: 0, 0x47: 1}
+MB_SLIPPERY = 0x48
 
 
 def _array(src, name):
@@ -125,8 +139,7 @@ class Puzzle:
             scripts = f.read()
         self.switches, self.no_step = {}, set()
         for c in j.get("coord_events", []):
-            body = re.search(r"^%s::\n(.*?)(?:^\S|\Z)" % re.escape(c.get("script", "")), scripts, re.S | re.M)
-            body = body.group(1) if body else ""
+            body = self._script(scripts, c.get("script", ""))
             sw = re.search(r"moverotatingtileobjects\s+(\d+)", body)
             if sw:
                 self.switches[(c["x"], c["y"])] = int(sw.group(1))
@@ -137,6 +150,107 @@ class Puzzle:
         for x, y, _e, dmid, dk, _k in [r for recs in m.warp_at.values() for r in recs]:
             if dmid == self.mid and dk is not None and dk < len(m.warps):
                 self.pads[(x, y)] = (m.warps[dk][0], m.warps[dk][1])
+        # sign switches that rewrite arrow metatiles: [(switch tile, {tile: (behaviour, collision)} when the flag is
+        # set, ... when clear)]
+        self.toggles = []
+        for b in j.get("bg_events", []):
+            label = b.get("script", "")
+            body = self._script(scripts, label)
+            mm = re.search(r"goto_if_set\s+(FLAG_\w+),\s*(\w+)", body)
+            if not mm or "setmetatile" not in body:
+                continue
+            clear = self._script(scripts, mm.group(2))
+            self.toggles.append(((b["x"], b["y"]), self._metatiles(body), self._metatiles(clear)))
+
+    @staticmethod
+    def _script(scripts, label):
+        """A script label's lines up to the next label."""
+        body = re.search(r"^%s::.*?\n(.*?)(?=^\w+::|\Z)" % re.escape(label), scripts, re.S | re.M)
+        return body.group(1) if body else ""
+
+    def _metatiles(self, body):
+        """{(x, y): (behaviour, collision)} of a script's setmetatile lines (the metatile's attribute behaviour as
+        gba_world reads the layout's)."""
+        w, lay = self.world, self.m.layout
+        out = {}
+        for x, y, name, imp in re.findall(r"setmetatile\s+(\d+),\s*(\d+),\s*(\w+),\s*(\w+)", body):
+            mt = self._metatile_label(name)
+            if mt is None:
+                continue
+            if mt < gba_world.NUM_METATILES_IN_PRIMARY:
+                attrs = w._tileset_attrs(lay["primary_tileset"])
+            else:
+                attrs, mt = w._tileset_attrs(lay["secondary_tileset"]), mt - gba_world.NUM_METATILES_IN_PRIMARY
+            beh = attrs[mt] & 0xFF if mt < len(attrs) else 0xFF
+            out[(int(x), int(y))] = (beh, 1 if imp in ("1", "TRUE") else 0)
+        return out
+
+    # ---------------------------------------------------------------- arrow tiles and sign switches
+    def tile_at(self, x, y, sw):
+        """(behaviour, collision, elevation) of (x, y) with the switches' metatiles as `sw` (flags) leaves them."""
+        m = self.m
+        i = y * m.w + x
+        t = (m.beh[i], m.coll[i])
+        for (_, on, off), s in zip(self.toggles, sw):
+            t = (on if s else off).get((x, y), t)
+        return t[0], t[1], m.elev[i]
+
+    def _free(self, x, y, d, e, sw, busy):
+        """The step from (x, y) in direction d: the new elevation, or None when the game refuses it."""
+        m = self.m
+        dx, dy = DIRS[d]
+        nx, ny = x + dx, y + dy
+        if not (0 <= nx < m.w and 0 <= ny < m.h) or (nx, ny) in busy or (nx, ny) in self.no_step:
+            return None
+        bt = self.tile_at(x, y, sw)[0]
+        bn, cn, ne = self.tile_at(nx, ny, sw)
+        if cn or bt in gba_world._LEAVE_BLOCKED[d] or bn in gba_world._ENTER_BLOCKED[d]:
+            return None
+        if bn in gba_world.STEP_WARP[self.world.decomp] and (nx, ny) != self.goal:
+            return None
+        # no elevation test: the arrow tracks (elevation 4) are ridden onto from the elevation-3 floor in the game
+        # (probe_map: a press north from (1,17) rides column 1 and row 14 to (8,17))
+        return e if ne in (0, 15) else ne
+
+    def _arrow_steps(self, state):
+        x, y, e, sw, people = state
+        busy = {(a, b) for a, b, _ in people}
+        for k, ((sx, sy), _, _) in enumerate(self.toggles):
+            d = next((d for d, (dx, dy) in enumerate(DIRS) if (x + dx, y + dy) == (sx, sy)), None)
+            if d is not None:
+                t = list(sw)
+                t[k] = not t[k]
+                yield d, (x, y, e, tuple(t), people), 0, 0, "switch"
+        for d in range(4):
+            ne = self._free(x, y, d, e, sw, busy)
+            if ne is None:
+                continue
+            cx, cy, ce, cd = x + DIRS[d][0], y + DIRS[d][1], ne, d
+            seen = set()
+            while True:  # the forced movement the tile entered starts
+                # a trainer who sees the player on any tile of the ride stops it there: after the battle the
+                # avatar's return to the field (PLAYER_AVATAR_FLAG_5, field_player_avatar.c:752) holds forced
+                # movement until the player moves by input
+                npeople, battles = self.spotted(cx, cy, people)
+                if battles:
+                    break
+                b = self.tile_at(cx, cy, sw)[0]
+                if b in FORCED:
+                    cd = FORCED[b]
+                elif b != MB_SLIPPERY:
+                    break
+                if (cx, cy, cd) in seen:
+                    cx = None  # rides round forever
+                    break
+                seen.add((cx, cy, cd))
+                fe = self._free(cx, cy, cd, ce, sw, busy)
+                if fe is None:
+                    break
+                cx, cy, ce = cx + DIRS[cd][0], cy + DIRS[cd][1], fe
+            if cx is None:
+                continue
+            yield d, (cx, cy, ce, sw, npeople), 1, battles, "walk"
+
 
     def _metatile_label(self, name):
         try:
@@ -235,6 +349,9 @@ class Puzzle:
 
     def steps(self, state):
         """(direction, next state, tiles moved, battles) for each step from state."""
+        if self.toggles:
+            yield from self._arrow_steps(state)
+            return
         m = self.m
         x, y, e, orients, people = state
         busy = {(a, b) for a, b, _ in people}
@@ -297,7 +414,7 @@ class Puzzle:
         m = self.m
         self.goal = (tx, ty)
         e0 = m.elev[sy * m.w + sx]
-        start = (sx, sy, 3 if e0 in (0, 15) else e0, tuple(g[3] for g in self.gates),
+        start = (sx, sy, 3 if e0 in (0, 15) else e0, tuple(g[3] for g in self.gates) or (False,) * len(self.toggles),
                  tuple((p[0], p[1], False) for p in self.people))
         dist, parent = {start: 0}, {start: None}
         heap = [(0, 0, start)]
@@ -314,7 +431,8 @@ class Puzzle:
                     st = prev
                 return moves[::-1]
             for d, nst, n, b, act in self.steps(st):
-                nc = c + n + b * BATTLE_COST + (PUSH_COST if act == "push" else SMASH_COST if act == "smash" else 0)
+                nc = c + n + b * BATTLE_COST + (PUSH_COST if act == "push" else SMASH_COST if act == "smash"
+                                                else SWITCH_COST if act == "switch" else 0)
                 if nc < dist.get(nst, 1 << 60):
                     dist[nst] = nc
                     parent[nst] = (st, d, n, act)
@@ -365,6 +483,11 @@ def blocks(sx, sy, moves):
             x, y = landed
             continue
         flush()
+        if act == "switch":
+            out.append({"do": "steps", "route": [[x, y]], "face": FACE_NAMES[d], "interact": True,
+                        "note": "the switch: its arrows turn (MossdeepCity_Gym/scripts.inc)"})
+            out.append({"do": "wait_frames", "n": 60})
+            continue
         if act == "smash" or not strength:
             out.append({"do": "steps", "route": [[x, y]], "face": FACE_NAMES[d], "interact": True,
                         "note": "Rock Smash: A + YES" if act == "smash" else "Strength: A on the boulder + YES"})
