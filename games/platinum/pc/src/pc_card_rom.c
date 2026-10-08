@@ -37,8 +37,10 @@
  * CARDi_IdentifyBackupCore (Black 0x020766D8) clears the 0x48-byte spec at
  * +0x18 and writes total_size +0x18, sect_size +0x1C, page_size +0x24,
  * addr_width +0x28, initial_status +0x54 and caps +0x58, and its stream
- * requests set src +0x0C, dst +0x10, len +0x14 after result and type. */
-#if defined(PC_GAME_DP) && !defined(ARMREC_TWL)
+ * requests set src +0x0C, dst +0x10, len +0x14 after result and type.
+ * HeartGold/SoulSilver (PC_HOST_SDK42) are recompiled like D/P but link
+ * NitroSDK 4.2, Platinum's own layout. */
+#if defined(PC_GAME_DP) && !defined(ARMREC_TWL) && !defined(PC_HOST_SDK42)
 #include <pc_dp_card_common.h>
 #else
 #include <../libraries/card/include/card_common.h>
@@ -923,7 +925,7 @@ static BOOL card_backup_request(CARDiCommandArg *cmd, int req_type)
         memset(sBackupImage + cmd->dst, 0xFF, cmd->spec.sect_size);
         backup_touch();
         break;
-#if !defined(PC_GAME_DP) || defined(ARMREC_TWL)
+#if !defined(PC_GAME_DP) || defined(ARMREC_TWL) || defined(PC_HOST_SDK42)
     /* SDK 4.2's subsector erase; 3.2's chip spec has no subsector size and
      * its SDK never issues the request. */
     case CARD_REQ_ERASE_SUBSECTOR_BACKUP:

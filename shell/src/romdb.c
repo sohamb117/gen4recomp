@@ -16,6 +16,10 @@ static const np_rom_entry entries[] = {
      "Pokemon - Black Version (USA, Europe) (NDSi Enhanced)"},
     {"bc696a0dfb448c7b3a8a206f0f8214411a039208", NP_GAME_WHITE, NP_ROM_ACCEPTED,
      "Pokemon - White Version (USA, Europe) (NDSi Enhanced)"},
+    {"4fcded0e2713dc03929845de631d0932ea2b5a37", NP_GAME_HEARTGOLD, NP_ROM_ACCEPTED,
+     "Pokemon - HeartGold Version (USA)"},
+    {"f8dc38ea20c17541a43b58c5e6d18c1732c7e582", NP_GAME_SOULSILVER, NP_ROM_ACCEPTED,
+     "Pokemon - SoulSilver Version (USA)"},
     /* GBA: the US 1.0 releases pret's pokeruby and pokeemerald match */
     {"f28b6ffc97847e94a6c21a63cacf633ee5c8df1e", NP_GAME_RUBY, NP_ROM_ACCEPTED, "Pokemon - Ruby Version (USA)"},
     {"610b96a9c9a7d03d2bafb655e7560ccff1a6d894", NP_GAME_RUBY, NP_ROM_UNSUPPORTED,
@@ -35,14 +39,17 @@ static const np_rom_entry entries[] = {
 static const char *const k_titles[NP_GAME_COUNT] = {
     [NP_GAME_DIAMOND] = "Diamond", [NP_GAME_PEARL] = "Pearl",       [NP_GAME_PLATINUM] = "Platinum",
     [NP_GAME_BLACK] = "Black",     [NP_GAME_WHITE] = "White",       [NP_GAME_RUBY] = "Ruby",
+    [NP_GAME_HEARTGOLD] = "HeartGold", [NP_GAME_SOULSILVER] = "SoulSilver",
     [NP_GAME_SAPPHIRE] = "Sapphire", [NP_GAME_EMERALD] = "Emerald"};
 static const char *const k_ids[NP_GAME_COUNT] = {
     [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl",       [NP_GAME_PLATINUM] = "platinum",
     [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white",       [NP_GAME_RUBY] = "ruby",
+    [NP_GAME_HEARTGOLD] = "heartgold", [NP_GAME_SOULSILVER] = "soulsilver",
     [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
 
 const np_game np_launcher_games[] = {NP_GAME_DIAMOND, NP_GAME_PEARL, NP_GAME_PLATINUM, NP_GAME_BLACK,
-                                     NP_GAME_WHITE,   NP_GAME_RUBY,  NP_GAME_SAPPHIRE, NP_GAME_EMERALD};
+                                     NP_GAME_WHITE, NP_GAME_HEARTGOLD, NP_GAME_SOULSILVER,
+                                     NP_GAME_RUBY, NP_GAME_SAPPHIRE, NP_GAME_EMERALD};
 const int np_launcher_game_count = (int)(sizeof np_launcher_games / sizeof np_launcher_games[0]);
 
 int np_launcher_card(np_game game)

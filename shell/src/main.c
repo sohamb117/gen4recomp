@@ -1501,9 +1501,11 @@ static void fill_test_header(np_autotest *t, np_game game)
     static const char *const titles[NP_GAME_COUNT] = {
         [NP_GAME_DIAMOND] = "POKEMON D", [NP_GAME_PEARL] = "POKEMON P",   [NP_GAME_PLATINUM] = "POKEMON PL",
         [NP_GAME_BLACK] = "POKEMON B",   [NP_GAME_WHITE] = "POKEMON W",   [NP_GAME_RUBY] = "POKEMON RUBY",
+        [NP_GAME_HEARTGOLD] = "POKEMON HG", [NP_GAME_SOULSILVER] = "POKEMON SS",
         [NP_GAME_SAPPHIRE] = "POKEMON SAPP", [NP_GAME_EMERALD] = "POKEMON EMER"};
     static const char *const codes[NP_GAME_COUNT] = {
         [NP_GAME_DIAMOND] = "ADAE", [NP_GAME_PEARL] = "APAE", [NP_GAME_PLATINUM] = "CPUE", [NP_GAME_BLACK] = "IRBO",
+        [NP_GAME_HEARTGOLD] = "IPKE", [NP_GAME_SOULSILVER] = "IPGE",
         [NP_GAME_WHITE] = "IRAO",   [NP_GAME_RUBY] = "AXVE",  [NP_GAME_SAPPHIRE] = "AXPE", [NP_GAME_EMERALD] = "BPEE"};
     if (!np_game_known(game))
         game = NP_GAME_PLATINUM;

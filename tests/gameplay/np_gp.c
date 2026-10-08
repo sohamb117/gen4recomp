@@ -8,8 +8,9 @@
  * snapshots cannot cross processes, they hold this process's fiber stack
  * addresses, so a scenario starts from a save, never from a snapshot.)
  *
- *   np_gp <rom.nds> [options]
- *     --game NAME         diamond, pearl or platinum (default platinum)
+ *   np_gp <rom> [options]
+ *     --game NAME         diamond, pearl, platinum, black, white, heartgold,
+ *                         soulsilver, ruby, sapphire or emerald (default platinum)
  *     --frames N          run until frame N (absolute; counts from 0 at boot)
  *     --save FILE         backup chip file (loaded if present, written on store)
  *     --schedule FILE     shell press schedule (shell/README.md), repeatable
@@ -352,7 +353,7 @@ static int parse_opt(const char *v, opt_set *s) {
 }
 
 static int usage(void) {
-    fprintf(stderr, "usage: np_gp <rom.nds> [--game diamond|pearl|platinum] [--frames N] [--save FILE]\n"
+    fprintf(stderr, "usage: np_gp <rom> [--game diamond|pearl|platinum|black|white|heartgold|soulsilver|ruby|sapphire|emerald] [--frames N] [--save FILE]\n"
                     "             [--schedule FILE]...\n"
                     "             [--dump DIR [--dump-at F,..]... [--dump-every N\n"
                     "             [--dump-from F]]] [-o [F:]NAME=V]... [-e K=V]... [--random SEED\n"
@@ -698,8 +699,9 @@ int main(int argc, char **argv) {
         if (strcmp(a, "--game") == 0) {
             static const char *const names[NP_GAME_COUNT] = {
                 [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
-                [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white", [NP_GAME_RUBY] = "ruby",
-                [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
+                [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white",
+                [NP_GAME_HEARTGOLD] = "heartgold", [NP_GAME_SOULSILVER] = "soulsilver",
+                [NP_GAME_RUBY] = "ruby", [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
             game = -1;
             for (int g = 0; g < NP_GAME_COUNT; g++)
                 if (names[g] && strcmp(v, names[g]) == 0) game = g;

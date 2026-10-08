@@ -1,0 +1,80 @@
+#ifndef POKEHEARTGOLD_SAFARI_ZONE_H
+#define POKEHEARTGOLD_SAFARI_ZONE_H
+
+#include "constants/safari.h"
+
+#include "igt.h"
+#include "player_data.h"
+#include "save.h"
+
+typedef struct SAFARIZONE_OBJECT {
+    u8 id;
+    u8 x;
+    u8 y;
+    u8 z;
+} SAFARIZONE_OBJECT;
+
+typedef struct SAFARIZONE_AREA {
+    u8 area_no;
+    u8 active_object_count;
+    SAFARIZONE_OBJECT objects[SAFARI_ZONE_MAX_OBJECTS];
+} SAFARIZONE_AREA;
+
+typedef struct SafariZoneAreaSet {
+    SAFARIZONE_AREA areas[SAFARI_ZONE_MAX_AREAS_PER_SET];
+    u8 areaLevels[NUM_SAFARI_ZONE_AREAS];
+} SafariZoneAreaSet;
+
+typedef struct SAFARIZONE_LINKLEADER {
+    s64 received_timestamp;
+    s64 rtc_offset;
+    u8 linked; // TODO: bool8
+    u8 gender;
+    u8 language;
+    u8 version;
+    u32 id;
+    u16 name[PLAYER_NAME_LENGTH + 1];
+} SAFARIZONE_LINKLEADER;
+
+typedef struct SafariZone {
+    SafariZoneAreaSet area_sets[SAFARI_ZONE_MAX_AREA_SETS];
+    SAFARIZONE_LINKLEADER link_leader;
+    u8 unk5F8;
+    u8 objectUnlockLevel : 6;
+    u8 unk5F9_6 : 2;
+    u16 unk5FA;
+} SafariZone;
+
+u32 Save_SafariZone_sizeof(void);
+SafariZone *Save_SafariZone_Get(SaveData *saveData);
+void Save_SafariZone_Init(SafariZone *safari_zone);
+void SafariZone_ResetAreaSetToDefaultSet(SafariZoneAreaSet *area_set, u32 default_set_no);
+void sub_0202F5F8(SafariZone *safari_zone, s32 areaSetNo);
+u8 sub_0202F620(SafariZone *safari_zone);
+SafariZoneAreaSet *SafariZone_GetAreaSet(SafariZone *safari_zone, s32 area_set_no);
+void SafariZone_CopyAreaSet(SafariZone *safari_zone, s32 area_set_no, SafariZoneAreaSet *area_set_dest);
+void SafariZone_SetAreaSet(SafariZone *safari_zone, s32 area_set_no, SafariZoneAreaSet *area_set_src);
+void SafariZone_SetLevel(SafariZone *safari_zone, u8 a1);
+u8 SafariZone_GetLevel(SafariZone *safari_zone);
+void SafariZone_AddToAllAreaLevels(SafariZone *safariZone, s32 a1);
+u8 SafariZone_GetObjectUnlockLevel(SafariZone *safari_zone);
+u8 SafariZone_IncObjectUnlockLevel(SafariZone *safari_zone, s32 a1);
+void SafariZone_SetObjectUnlockLevel(SafariZone *safari_zone, u8 a1);
+void sub_0202F784(SafariZone *safari_zone, IGT *igt);
+u32 sub_0202F798(SafariZone *safari_zone, IGT *igt, s32 a2);
+void SafariZone_SetLinkLeaderFromProfile(SafariZone *safari_zone, PlayerProfile *profile, enum HeapID heapID);
+void SafariZone_GetLinkLeaderToProfile(SafariZone *safari_zone, PlayerProfile *profile);
+u8 SafariZone_GetLinkLeaderGender(SafariZone *safari_zone);
+u8 SafariZone_IsCurrentlyLinked(SafariZone *safari_zone);
+void SafariZone_DeactivateLinkIfExpired(SafariZone *safari_zone);
+void SafariZone_SwapAreasInSet(SafariZoneAreaSet *area_set, u32 first, u32 second);
+void SafariZone_InitAreaInSet(SafariZoneAreaSet *area_set, s32 area_idx, u32 area_no);
+void SafariZone_AddObjectToArea(SafariZoneAreaSet *area_set, s32 area_idx, const SAFARIZONE_OBJECT *object);
+void SafariZone_RemoveObjectFromArea(SafariZoneAreaSet *area_set, s32 area_idx, s32 object_idx);
+void SafariZone_InitAreaSet(SafariZoneAreaSet *area_set);
+void SafariZone_InitArea(SAFARIZONE_AREA *area, u8 area_no);
+void SafariZone_ClearObject(SAFARIZONE_OBJECT *object);
+void SafariZone_ClearLeader(SAFARIZONE_LINKLEADER *link_leader);
+BOOL sub_0202FA3C(u8 a0, u8 *a1, u8 a2);
+
+#endif

@@ -1,7 +1,8 @@
 /*
  * np_core: what the shell sees of a game core.
  *
- * A core is one game (Diamond, Pearl or Platinum) compiled to wasm32 and
+ * A core is one game (Diamond, Pearl, Platinum, Black, White, HeartGold,
+ * SoulSilver, Ruby, Sapphire or Emerald) compiled to wasm32 and
  * turned back into C by wasm2c, plus the native runtime that hosts it. The
  * shell never sees wasm, fibers or guest addresses; it drives frames, feeds
  * input, drains audio and supplies the cartridge and backup storage.
@@ -27,6 +28,11 @@ typedef enum np_game {
     NP_GAME_PLATINUM = 2,
     NP_GAME_BLACK = 3,
     NP_GAME_WHITE = 4,
+    NP_GAME_HEARTGOLD = 5,
+    NP_GAME_SOULSILVER = 6,
+    NP_GAME_RUBY = 7,
+    NP_GAME_SAPPHIRE = 8,
+    NP_GAME_EMERALD = 9,
     NP_GAME_COUNT
 } np_game;
 

@@ -1,0 +1,460 @@
+--- a/lib/asm/nitro.s
++++ b/lib/asm/nitro.s
+@@ -184,7 +184,8 @@
+ _021E37C0:
+ 	.space 0x60
+ 
+-_021E3820:
++	.public cardi_common
++cardi_common:
+ 	.space 0x620
+ 
+ _021E3E40:
+@@ -9435,7 +9436,7 @@
+ 	arm_func_start CARDi_SetTask
+ CARDi_SetTask: ; 0x020DC65C
+ 	stmdb sp!, {r3, r4, r5, lr}
+-	ldr r4, _020DC694 ; =_021E3820
++	ldr r4, _020DC694 ; =cardi_common
+ 	mov r5, r0
+ 	ldr r1, [r4, #0x108]
+ 	add r0, r4, #0x44
+@@ -9449,13 +9450,13 @@
+ 	bl OS_WakeupThreadDirect
+ 	ldmia sp!, {r3, r4, r5, pc}
+ 	.align 2, 0
+-_020DC694: .word _021E3820
++_020DC694: .word cardi_common
+ 	arm_func_end CARDi_SetTask
+ 
+ 	arm_func_start CARDi_LockResource
+ CARDi_LockResource: ; 0x020DC698
+ 	stmdb sp!, {r4, r5, r6, r7, r8, lr}
+-	ldr r4, _020DC718 ; =_021E3820
++	ldr r4, _020DC718 ; =cardi_common
+ 	mov r8, r0
+ 	mov r7, r1
+ 	bl OS_DisableInterrupts
+@@ -9491,13 +9492,13 @@
+ 	bl OS_RestoreInterrupts
+ 	ldmia sp!, {r4, r5, r6, r7, r8, pc}
+ 	.align 2, 0
+-_020DC718: .word _021E3820
++_020DC718: .word cardi_common
+ 	arm_func_end CARDi_LockResource
+ 
+ 	arm_func_start CARDi_UnlockResource
+ CARDi_UnlockResource: ; 0x020DC71C
+ 	stmdb sp!, {r3, r4, r5, r6, r7, lr}
+-	ldr r4, _020DC7A4 ; =_021E3820
++	ldr r4, _020DC7A4 ; =cardi_common
+ 	mov r7, r0
+ 	mov r6, r1
+ 	bl OS_DisableInterrupts
+@@ -9535,14 +9536,14 @@
+ 	bl OS_RestoreInterrupts
+ 	ldmia sp!, {r3, r4, r5, r6, r7, pc}
+ 	.align 2, 0
+-_020DC7A4: .word _021E3820
++_020DC7A4: .word cardi_common
+ 	arm_func_end CARDi_UnlockResource
+ 
+ 	arm_func_start CARDi_InitCommon
+ CARDi_InitCommon: ; 0x020DC7A8
+ 	stmdb sp!, {r4, lr}
+ 	sub sp, sp, #8
+-	ldr r4, _020DC89C ; =_021E3820
++	ldr r4, _020DC89C ; =cardi_common
+ 	ldr r1, _020DC8A0 ; =_021E37C0
+ 	mvn r2, #2
+ 	mov r0, #0
+@@ -9603,7 +9604,7 @@
+ 	add sp, sp, #8
+ 	ldmia sp!, {r4, pc}
+ 	.align 2, 0
+-_020DC89C: .word _021E3820
++_020DC89C: .word cardi_common
+ _020DC8A0: .word _021E37C0
+ _020DC8A4: .word 0x027FFC40
+ _020DC8A8: .word 0x027FFE00
+@@ -9643,7 +9644,7 @@
+ 	arm_func_start CARDi_WaitAsync
+ CARDi_WaitAsync: ; 0x020DC8F0
+ 	stmdb sp!, {r3, r4, r5, lr}
+-	ldr r4, _020DC938 ; =_021E3820
++	ldr r4, _020DC938 ; =cardi_common
+ 	bl OS_DisableInterrupts
+ 	mov r5, r0
+ 	b _020DC90C
+@@ -9663,29 +9664,29 @@
+ 	movne r0, #0
+ 	ldmia sp!, {r3, r4, r5, pc}
+ 	.align 2, 0
+-_020DC938: .word _021E3820
++_020DC938: .word cardi_common
+ 	arm_func_end CARDi_WaitAsync
+ 
+ 	arm_func_start CARDi_TryWaitAsync
+ CARDi_TryWaitAsync: ; 0x020DC93C
+-	ldr r0, _020DC954 ; =_021E3820
++	ldr r0, _020DC954 ; =cardi_common
+ 	ldr r0, [r0, #0x114]
+ 	tst r0, #4
+ 	moveq r0, #1
+ 	movne r0, #0
+ 	bx lr
+ 	.align 2, 0
+-_020DC954: .word _021E3820
++_020DC954: .word cardi_common
+ 	arm_func_end CARDi_TryWaitAsync
+ 
+ 	arm_func_start CARD_GetResultCode
+ CARD_GetResultCode: ; 0x020DC958
+-	ldr r0, _020DC968 ; =_021E3820
++	ldr r0, _020DC968 ; =cardi_common
+ 	ldr r0, [r0]
+ 	ldr r0, [r0]
+ 	bx lr
+ 	.align 2, 0
+-_020DC968: .word _021E3820
++_020DC968: .word cardi_common
+ 	arm_func_end CARD_GetResultCode
+ 
+ 	arm_func_start CARD_LockRom
+@@ -9736,18 +9737,18 @@
+ 
+ 	arm_func_start CARD_SetCacheFlushThreshold
+ CARD_SetCacheFlushThreshold: ; 0x020DC9DC
+-	ldr r2, _020DC9EC ; =_021E3820
++	ldr r2, _020DC9EC ; =cardi_common
+ 	str r0, [r2, #0x118]
+ 	str r1, [r2, #0x11c]
+ 	bx lr
+ 	.align 2, 0
+-_020DC9EC: .word _021E3820
++_020DC9EC: .word cardi_common
+ 	arm_func_end CARD_SetCacheFlushThreshold
+ 
+ 	arm_func_start CARDi_IdentifyBackupCore
+ CARDi_IdentifyBackupCore: ; 0x020DC9F0
+ 	stmdb sp!, {r3, r4, r5, lr}
+-	ldr r1, _020DCD54 ; =_021E3820
++	ldr r1, _020DCD54 ; =cardi_common
+ 	mov r5, r0
+ 	ldr r4, [r1]
+ 	mov r1, #0
+@@ -9977,13 +9978,13 @@
+ 	mov r1, #0
+ 	str r1, [r4, #4]
+ 	str r1, [r4, #0x18]
+-	ldr r0, _020DCD54 ; =_021E3820
++	ldr r0, _020DCD54 ; =cardi_common
+ 	mov r1, #3
+ 	ldr r0, [r0]
+ 	str r1, [r0]
+ 	ldmia sp!, {r3, r4, r5, pc}
+ 	.align 2, 0
+-_020DCD54: .word _021E3820
++_020DCD54: .word cardi_common
+ _020DCD58: .word 0x0000203F
+ _020DCD5C: .word 0x00001388
+ _020DCD60: .word 0x0000EA60
+@@ -10010,7 +10011,7 @@
+ 	b _020DCDB8
+ _020DCDA8:
+ 	cmp r7, #0xf
+-	ldreq r0, _020DCF60 ; =_021E3820
++	ldreq r0, _020DCF60 ; =cardi_common
+ 	ldreq r0, [r0]
+ 	ldreq r5, [r0, #0x20]
+ _020DCDB8:
+@@ -10132,14 +10133,14 @@
+ 	ldmia sp!, {r3, r4, r5, r6, r7, r8, sb, sl, fp, pc}
+ 	.align 2, 0
+ _020DCF5C: .word _version_NINTENDO_BACKUP
+-_020DCF60: .word _021E3820
++_020DCF60: .word cardi_common
+ 	arm_func_end CARDi_RequestStreamCommandCore
+ 
+ 	arm_func_start CARDi_RequestStreamCommand
+ CARDi_RequestStreamCommand: ; 0x020DCF64
+ 	stmdb sp!, {r3, r4, r5, r6, r7, r8, sb, lr}
+ 	mov sb, r0
+-	ldr r4, _020DD03C ; =_021E3820
++	ldr r4, _020DD03C ; =cardi_common
+ 	ldr r0, _020DD040 ; =_version_NINTENDO_BACKUP
+ 	mov r8, r1
+ 	mov r7, r2
+@@ -10183,7 +10184,7 @@
+ 	ldmia sp!, {r3, r4, r5, r6, r7, r8, sb, pc}
+ _020DD00C:
+ 	ldr r0, _020DD048 ; =OSi_ThreadInfo
+-	ldr r1, _020DD03C ; =_021E3820
++	ldr r1, _020DD03C ; =cardi_common
+ 	ldr r2, [r0, #4]
+ 	mov r0, r4
+ 	str r2, [r1, #0x104]
+@@ -10195,7 +10196,7 @@
+ 	movne r0, #0
+ 	ldmia sp!, {r3, r4, r5, r6, r7, r8, sb, pc}
+ 	.align 2, 0
+-_020DD03C: .word _021E3820
++_020DD03C: .word cardi_common
+ _020DD040: .word _version_NINTENDO_BACKUP
+ _020DD044: .word CARDi_RequestStreamCommandCore
+ _020DD048: .word OSi_ThreadInfo
+@@ -10203,12 +10204,12 @@
+ 
+ 	arm_func_start CARD_GetBackupSectorSize
+ CARD_GetBackupSectorSize: ; 0x020DD04C
+-	ldr r0, _020DD05C ; =_021E3820
++	ldr r0, _020DD05C ; =cardi_common
+ 	ldr r0, [r0]
+ 	ldr r0, [r0, #0x1c]
+ 	bx lr
+ 	.align 2, 0
+-_020DD05C: .word _021E3820
++_020DD05C: .word cardi_common
+ 	arm_func_end CARD_GetBackupSectorSize
+ 
+ 	arm_func_start CARD_IdentifyBackup
+@@ -10216,7 +10217,7 @@
+ 	stmdb sp!, {r3, r4, r5, r6, r7, lr}
+ 	mov r6, r0
+ 	ldr r0, _020DD18C ; =_version_NINTENDO_BACKUP
+-	ldr r4, _020DD190 ; =_021E3820
++	ldr r4, _020DD190 ; =cardi_common
+ 	bl OSi_ReferSymbol
+ 	cmp r6, #0
+ 	bne _020DD080
+@@ -10246,7 +10247,7 @@
+ 	mov r0, r6
+ 	bl CARDi_IdentifyBackupCore
+ 	ldr r0, _020DD194 ; =OSi_ThreadInfo
+-	ldr r1, _020DD190 ; =_021E3820
++	ldr r1, _020DD190 ; =cardi_common
+ 	ldr r2, [r0, #4]
+ 	mov r0, r4
+ 	str r2, [r1, #0x104]
+@@ -10295,7 +10296,7 @@
+ 	ldmia sp!, {r3, r4, r5, r6, r7, pc}
+ 	.align 2, 0
+ _020DD18C: .word _version_NINTENDO_BACKUP
+-_020DD190: .word _021E3820
++_020DD190: .word cardi_common
+ _020DD194: .word OSi_ThreadInfo
+ 	arm_func_end CARD_IdentifyBackup
+ 
+@@ -10319,20 +10320,20 @@
+ CARD_CancelBackupAsync: ; 0x020DD1B0
+ 	stmdb sp!, {r3, lr}
+ 	bl OS_DisableInterrupts
+-	ldr r1, _020DD1D0 ; =_021E3820
++	ldr r1, _020DD1D0 ; =cardi_common
+ 	ldr r2, [r1, #0x114]
+ 	orr r2, r2, #0x40
+ 	str r2, [r1, #0x114]
+ 	bl OS_RestoreInterrupts
+ 	ldmia sp!, {r3, pc}
+ 	.align 2, 0
+-_020DD1D0: .word _021E3820
++_020DD1D0: .word cardi_common
+ 	arm_func_end CARD_CancelBackupAsync
+ 
+ 	arm_func_start CARDi_ReadFromCache
+ CARDi_ReadFromCache: ; 0x020DD1D4
+ 	stmdb sp!, {r3, r4, r5, lr}
+-	ldr r4, _020DD25C ; =_021E3820
++	ldr r4, _020DD25C ; =cardi_common
+ 	mov r1, #0x200
+ 	ldr r3, [r4, #0x1c]
+ 	rsb r1, r1, #0
+@@ -10367,7 +10368,7 @@
+ 	moveq r0, #0
+ 	ldmia sp!, {r3, r4, r5, pc}
+ 	.align 2, 0
+-_020DD25C: .word _021E3820
++_020DD25C: .word cardi_common
+ 	arm_func_end CARDi_ReadFromCache
+ 
+ 	arm_func_start CARDi_SetRomOp
+@@ -10403,7 +10404,7 @@
+ 	arm_func_start CARDi_SetCardDma
+ CARDi_SetCardDma: ; 0x020DD2C0
+ 	stmdb sp!, {r3, r4, r5, lr}
+-	ldr r4, _020DD304 ; =_021E3820
++	ldr r4, _020DD304 ; =cardi_common
+ 	ldr r1, _020DD308 ; =0x04100010
+ 	ldr r0, [r4, #0x28]
+ 	ldr r2, [r4, #0x20]
+@@ -10420,7 +10421,7 @@
+ 	str r1, [r0]
+ 	ldmia sp!, {r3, r4, r5, pc}
+ 	.align 2, 0
+-_020DD304: .word _021E3820
++_020DD304: .word cardi_common
+ _020DD308: .word 0x04100010
+ _020DD30C: .word _021E3E60
+ _020DD310: .word 0x040001A4
+@@ -10429,10 +10430,10 @@
+ 	arm_func_start CARDi_OnReadCard
+ CARDi_OnReadCard: ; 0x020DD314
+ 	stmdb sp!, {r3, r4, r5, r6, r7, lr}
+-	ldr r0, _020DD3E0 ; =_021E3820
++	ldr r0, _020DD3E0 ; =cardi_common
+ 	ldr r0, [r0, #0x28]
+ 	bl MI_StopDma
+-	ldr r3, _020DD3E0 ; =_021E3820
++	ldr r3, _020DD3E0 ; =cardi_common
+ 	ldr r0, [r3, #0x24]
+ 	ldr r2, [r3, #0x1c]
+ 	ldr r1, [r3, #0x20]
+@@ -10450,7 +10451,7 @@
+ 	bl OS_DisableIrqMask
+ 	mov r0, #0x80000
+ 	bl OS_ResetRequestIrqMask
+-	ldr r4, _020DD3E0 ; =_021E3820
++	ldr r4, _020DD3E0 ; =cardi_common
+ 	bl CARDi_ReadRomIDCore
+ 	bl CARDi_CheckPulledOutCore
+ 	ldr r0, [r4]
+@@ -10482,13 +10483,13 @@
+ 	bl CARDi_SetCardDma
+ 	ldmia sp!, {r3, r4, r5, r6, r7, pc}
+ 	.align 2, 0
+-_020DD3E0: .word _021E3820
++_020DD3E0: .word cardi_common
+ 	arm_func_end CARDi_OnReadCard
+ 
+ 	arm_func_start CARDi_TryReadCardDma
+ CARDi_TryReadCardDma: ; 0x020DD3E4
+ 	stmdb sp!, {r3, r4, r5, r6, r7, r8, sb, sl, fp, lr}
+-	ldr r4, _020DD55C ; =_021E3820
++	ldr r4, _020DD55C ; =cardi_common
+ 	mov r6, #0
+ 	ldr sb, [r4, #0x20]
+ 	mov fp, r0
+@@ -10594,7 +10595,7 @@
+ 	mov r0, r6
+ 	ldmia sp!, {r3, r4, r5, r6, r7, r8, sb, sl, fp, pc}
+ 	.align 2, 0
+-_020DD55C: .word _021E3820
++_020DD55C: .word cardi_common
+ _020DD560: .word OS_IrqHandler
+ _020DD564: .word 0x000001FF
+ _020DD568: .word _02110FB8
+@@ -10604,7 +10605,7 @@
+ 	arm_func_start CARDi_ReadCard
+ CARDi_ReadCard: ; 0x020DD570
+ 	stmdb sp!, {r4, r5, r6, lr}
+-	ldr r4, _020DD654 ; =_021E3820
++	ldr r4, _020DD654 ; =cardi_common
+ 	mov r6, r0
+ _020DD57C:
+ 	mov r0, #0x200
+@@ -10648,7 +10649,7 @@
+ 	ldr r0, [r4, #0x20]
+ 	cmp r5, r0
+ 	bne _020DD640
+-	ldr r0, _020DD654 ; =_021E3820
++	ldr r0, _020DD654 ; =cardi_common
+ 	ldr r1, [r0, #0x1c]
+ 	add r1, r1, #0x200
+ 	str r1, [r0, #0x1c]
+@@ -10667,7 +10668,7 @@
+ 	bne _020DD57C
+ 	ldmia sp!, {r4, r5, r6, pc}
+ 	.align 2, 0
+-_020DD654: .word _021E3820
++_020DD654: .word cardi_common
+ _020DD658: .word 0x040001A4
+ _020DD65C: .word 0x04100010
+ 	arm_func_end CARDi_ReadCard
+@@ -10713,7 +10714,7 @@
+ 	mov r0, r4
+ 	blx r1
+ _020DD6E0:
+-	ldr r4, _020DD750 ; =_021E3820
++	ldr r4, _020DD750 ; =cardi_common
+ 	bl CARDi_ReadRomIDCore
+ 	bl CARDi_CheckPulledOutCore
+ 	ldr r0, [r4]
+@@ -10743,7 +10744,7 @@
+ 	ldmia sp!, {r3, r4, r5, r6, r7, pc}
+ 	.align 2, 0
+ _020DD74C: .word _021E3E60
+-_020DD750: .word _021E3820
++_020DD750: .word cardi_common
+ 	arm_func_end CARDi_ReadRomSyncCore
+ 
+ 	arm_func_start CARDi_ReadRom
+@@ -10754,7 +10755,7 @@
+ 	mov r8, r2
+ 	mov r7, r3
+ 	ldr r4, _020DD838 ; =_021E3E60
+-	ldr r5, _020DD83C ; =_021E3820
++	ldr r5, _020DD83C ; =cardi_common
+ 	bl CARD_CheckEnabled
+ 	bl OS_DisableInterrupts
+ 	mov r6, r0
+@@ -10812,7 +10813,7 @@
+ 	ldmia sp!, {r4, r5, r6, r7, r8, sb, sl, pc}
+ 	.align 2, 0
+ _020DD838: .word _021E3E60
+-_020DD83C: .word _021E3820
++_020DD83C: .word cardi_common
+ _020DD840: .word _021E3E40
+ _020DD844: .word CARDi_ReadRomSyncCore
+ _020DD848: .word OSi_ThreadInfo
+@@ -10821,7 +10822,7 @@
+ 	arm_func_start CARD_Init
+ CARD_Init: ; 0x020DD84C
+ 	stmdb sp!, {r3, lr}
+-	ldr ip, _020DD8A8 ; =_021E3820
++	ldr ip, _020DD8A8 ; =cardi_common
+ 	ldr r0, [ip, #0x114]
+ 	cmp r0, #0
+ 	ldmneia sp!, {r3, pc}
+@@ -10844,7 +10845,7 @@
+ 	bl CARD_InitPulledOutCallback
+ 	ldmia sp!, {r3, pc}
+ 	.align 2, 0
+-_020DD8A8: .word _021E3820
++_020DD8A8: .word cardi_common
+ _020DD8AC: .word _021E3E40
+ _020DD8B0: .word _021E3E60
+ 	arm_func_end CARD_Init
+@@ -10872,7 +10873,7 @@
+ 	ldmneia sp!, {r3, pc}
+ 	cmp r2, #0
+ 	ldmeqia sp!, {r3, pc}
+-	ldr r2, _020DD8FC ; =_021E3820
++	ldr r2, _020DD8FC ; =cardi_common
+ 	ldr r1, [r2, #0x114]
+ 	ldr r0, [r2, #0x104]
+ 	bic r1, r1, #0x20
+@@ -10880,13 +10881,13 @@
+ 	bl OS_WakeupThreadDirect
+ 	ldmia sp!, {r3, pc}
+ 	.align 2, 0
+-_020DD8FC: .word _021E3820
++_020DD8FC: .word cardi_common
+ 	arm_func_end CARDi_OnFifoRecv
+ 
+ 	arm_func_start CARDi_TaskThread
+ CARDi_TaskThread: ; 0x020DD900
+ 	stmdb sp!, {r4, r5, r6, lr}
+-	ldr r5, _020DD94C ; =_021E3820
++	ldr r5, _020DD94C ; =cardi_common
+ 	mov r4, #0
+ _020DD90C:
+ 	bl OS_DisableInterrupts
+@@ -10908,7 +10909,7 @@
+ 	blx r1
+ 	b _020DD90C
+ 	.align 2, 0
+-_020DD94C: .word _021E3820
++_020DD94C: .word cardi_common
+ 	arm_func_end CARDi_TaskThread
+ 
+ 	arm_func_start CARDi_Request

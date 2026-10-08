@@ -1,0 +1,175 @@
+{
+  "kind": "cell",
+  "graphics": [
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 48,
+      "compressed": false,
+      "id": 0,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 128,
+      "compressed": false,
+      "id": 1,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_1_6_2",
+      "file": 63,
+      "compressed": false,
+      "id": 2,
+      "extra": [
+        162,
+        162
+      ]
+    },
+    {
+      "narc": "NARC_a_0_0_8",
+      "file": 242,
+      "compressed": true,
+      "id": 3,
+      "extra": [
+        8,
+        8
+      ]
+    },
+    {
+      "narc": "NARC_poketool_icongra_poke_icon",
+      "file": 2,
+      "compressed": false,
+      "id": 4,
+      "extra": [
+        20,
+        20
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 63,
+      "compressed": false,
+      "id": 5,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 67,
+      "compressed": false,
+      "id": 6,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 60,
+      "compressed": false,
+      "id": 7,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 51,
+      "compressed": false,
+      "id": 8,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_0_1_5",
+      "file": 28,
+      "compressed": false,
+      "id": 9,
+      "extra": [
+        15,
+        15
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 18,
+      "compressed": false,
+      "id": 10,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 45,
+      "compressed": false,
+      "id": 11,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 71,
+      "compressed": false,
+      "id": 12,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 123,
+      "compressed": false,
+      "id": 13,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_1_6_2",
+      "file": 6,
+      "compressed": false,
+      "id": 15,
+      "extra": [
+        162,
+        162
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 134,
+      "compressed": false,
+      "id": 16,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_a_1_6_2",
+      "file": 67,
+      "compressed": false,
+      "id": 17,
+      "extra": [
+        162,
+        162
+      ]
+    }
+  ]
+}

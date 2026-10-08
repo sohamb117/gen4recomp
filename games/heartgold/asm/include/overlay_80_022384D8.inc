@@ -1,0 +1,13 @@
+#include <nitro/fs/overlay.h>
+#pragma once
+.public SysTask_CreateOnMainQueue
+.public SysTask_Destroy
+.public Heap_Alloc
+.public Heap_Free
+.public LoadRectToBgTilemapRect
+.public ScheduleBgTilemapBufferTransfer
+.public MI_CpuFill8
+.public ov80_022384D8
+.public ov80_022385B0
+.public ov80_022385D8
+.public ov80_02238610

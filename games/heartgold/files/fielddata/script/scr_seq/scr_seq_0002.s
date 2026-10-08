@@ -1,0 +1,260 @@
+#include "constants/scrcmd.h"
+#include "fielddata/script/scr_seq/event_0002.h"
+#include "msgdata/msg/msg_0748.h"
+	.include "asm/macros/script.inc"
+
+	.rodata
+
+	ScrDef scr_seq_0002_000
+	ScrDef scr_seq_0002_001
+	ScrDef scr_seq_0002_002
+	ScrDefEnd
+
+scr_seq_0002_000:
+	SetVar VAR_SPECIAL_x8000, MOVE_TUTOR_NPC_FRONTIER_TOP_LEFT
+	SetVar VAR_TEMP_x400F, 0
+	SetVar VAR_SPECIAL_x8007, 0
+	GoTo _005C
+	End
+
+scr_seq_0002_001:
+	SetVar VAR_SPECIAL_x8000, MOVE_TUTOR_NPC_FRONTIER_TOP_RIGHT
+	SetVar VAR_TEMP_x400F, 12
+	SetVar VAR_SPECIAL_x8007, 1
+	GoTo _005C
+	End
+
+scr_seq_0002_002:
+	SetVar VAR_SPECIAL_x8000, MOVE_TUTOR_NPC_FRONTIER_BOTTOM_RIGHT
+	SetVar VAR_TEMP_x400F, 24
+	SetVar VAR_SPECIAL_x8007, 2
+	GoTo _005C
+	End
+
+_005C:
+	ScriptOverlayCmd 3, 0
+	ScrCmd_116 1, 21, 1
+	SetVar VAR_SPECIAL_x8004, 4
+	AddVar VAR_SPECIAL_x8004, VAR_TEMP_x400F
+	NonNPCMsgVar VAR_SPECIAL_x8004
+	TouchscreenMenuHide
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfNe _0352
+_008A:
+	FadeScreen 6, 1, 0, RGB_BLACK
+	WaitFade
+	CloseMsg
+	ScrCmd_117
+	PartySelectUI
+	GetPartySelection VAR_SPECIAL_x8001
+	RestoreOverworld
+	ScrCmd_116 1, 21, 1
+	FadeScreen 6, 1, 1, RGB_BLACK
+	WaitFade
+	Compare VAR_SPECIAL_x8001, 255
+	GoToIfEq _0352
+	GetPartyMonSpecies VAR_SPECIAL_x8001, VAR_SPECIAL_x8002
+	Compare VAR_SPECIAL_x8002, 0
+	GoToIfEq _0391
+	ScrCmd_652 VAR_SPECIAL_x8001, VAR_SPECIAL_x8000, VAR_SPECIAL_x8002
+	Compare VAR_SPECIAL_x8002, 0
+	GoToIfEq _00F0
+	GoTo _0125
+
+_00F0:
+	Compare VAR_SPECIAL_x8007, 0
+	GoToIfNe _0106
+	NPCMsg msg_0748_00005
+	GoTo _011F
+
+_0106:
+	Compare VAR_SPECIAL_x8007, 1
+	GoToIfNe _011C
+	NPCMsg msg_0748_00017
+	GoTo _011F
+
+_011C:
+	NPCMsg msg_0748_00029
+_011F:
+	GoTo _008A
+
+_0125:
+	SetVar VAR_SPECIAL_x8004, 0
+	TouchscreenMenuHide
+	NopVar490 VAR_SPECIAL_x8000
+	NopVar490 VAR_SPECIAL_x8001
+	NopVar490 VAR_SPECIAL_x8002
+	NopVar490 VAR_SPECIAL_x8003
+_013D:
+	MoveTutorChooseMove VAR_SPECIAL_x8001, VAR_SPECIAL_x8000, VAR_SPECIAL_x8004, VAR_SPECIAL_RESULT
+	NopVar490 VAR_SPECIAL_x8000
+	NopVar490 VAR_SPECIAL_x8001
+	NopVar490 VAR_SPECIAL_x8002
+	NopVar490 VAR_SPECIAL_x8003
+	CopyVar VAR_SPECIAL_x8003, VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_x8003, 65533
+	GoToIfNe _018F
+	AddVar VAR_SPECIAL_x8004, 1
+	Compare VAR_SPECIAL_x8004, VAR_SPECIAL_x8002
+	GoToIfLt _013D
+	SetVar VAR_SPECIAL_x8004, 0
+	GoTo _013D
+
+_0189:
+	GoTo _01D0
+
+_018F:
+	Compare VAR_SPECIAL_x8003, 65534
+	GoToIfNe _01D0
+	BufferPartyMonNick 0, VAR_SPECIAL_x8001
+	SetVar VAR_SPECIAL_x8004, 7
+	AddVar VAR_SPECIAL_x8004, VAR_TEMP_x400F
+	NonNPCMsgVar VAR_SPECIAL_x8004
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _0352
+	SetVar VAR_SPECIAL_x8004, 0
+	CloseMsg
+	GoTo _013D
+
+_01D0:
+	TutorMoveGetPrice VAR_SPECIAL_x8003, VAR_SPECIAL_x8005
+	CheckBattlePoints VAR_SPECIAL_x8005, VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _01EF
+	GoTo _0224
+
+_01EF:
+	Compare VAR_SPECIAL_x8007, 0
+	GoToIfNe _0205
+	NPCMsg msg_0748_00006
+	GoTo _021E
+
+_0205:
+	Compare VAR_SPECIAL_x8007, 1
+	GoToIfNe _021B
+	NPCMsg msg_0748_00018
+	GoTo _021E
+
+_021B:
+	NPCMsg msg_0748_00030
+_021E:
+	GoTo _0352
+
+_0224:
+	BufferPartyMonNick 0, VAR_SPECIAL_x8001
+	BufferMoveName 1, VAR_SPECIAL_x8003
+	CountMonMoves VAR_SPECIAL_x8006, VAR_SPECIAL_x8001
+	Compare VAR_SPECIAL_x8006, 4
+	GoToIfLt _0328
+_0241:
+	SetVar VAR_SPECIAL_x8004, 8
+	AddVar VAR_SPECIAL_x8004, VAR_TEMP_x400F
+	NonNPCMsgVar VAR_SPECIAL_x8004
+	TouchscreenMenuHide
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _03A4
+	FadeScreen 6, 1, 0, RGB_BLACK
+	WaitFade
+	CloseMsg
+	ScrCmd_117
+	PokemonSummaryScreen 1, VAR_SPECIAL_x8001, VAR_SPECIAL_x8003
+	GetMoveSelection 1, VAR_SPECIAL_x8006
+	NopVar490 VAR_SPECIAL_x8006
+	RestoreOverworld
+	ScrCmd_116 1, 21, 1
+	FadeScreen 6, 1, 1, RGB_BLACK
+	WaitFade
+	Compare VAR_SPECIAL_x8006, 4
+	GoToIfEq _03A4
+	NopVar490 VAR_SPECIAL_x8006
+	BufferPartyMonMoveName 2, VAR_SPECIAL_x8001, VAR_SPECIAL_x8006
+	SetVar VAR_SPECIAL_x8004, 9
+	AddVar VAR_SPECIAL_x8004, VAR_TEMP_x400F
+	NonNPCMsgVar VAR_SPECIAL_x8004
+	TouchscreenMenuHide
+	GetMenuChoice VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _03A4
+	Compare VAR_SPECIAL_x8007, 0
+	GoToIfNe _02EA
+	NPCMsg msg_0748_00012
+	GoTo _0303
+
+_02EA:
+	Compare VAR_SPECIAL_x8007, 1
+	GoToIfNe _0300
+	NPCMsg msg_0748_00024
+	GoTo _0303
+
+_0300:
+	NPCMsg msg_0748_00036
+_0303:
+	PlaySE SEQ_SE_DP_KON
+	WaitSE SEQ_SE_DP_KON
+	Wait 30, VAR_SPECIAL_RESULT
+	BufferPartyMonMoveName 1, VAR_SPECIAL_x8001, VAR_SPECIAL_x8006
+	SetVar VAR_SPECIAL_x8004, 13
+	AddVar VAR_SPECIAL_x8004, VAR_TEMP_x400F
+	NonNPCMsgVar VAR_SPECIAL_x8004
+_0328:
+	BufferMoveName 1, VAR_SPECIAL_x8003
+	SetVar VAR_SPECIAL_x8004, 14
+	AddVar VAR_SPECIAL_x8004, VAR_TEMP_x400F
+	NonNPCMsgVar VAR_SPECIAL_x8004
+	PlayFanfare SEQ_ME_LVUP
+	WaitFanfare
+	ScrCmd_556 VAR_SPECIAL_x8005
+	ScrCmd_118 1
+	TutorMoveTeachInSlot VAR_SPECIAL_x8001, VAR_SPECIAL_x8006, VAR_SPECIAL_x8003
+_0352:
+	Compare VAR_SPECIAL_x8007, 0
+	GoToIfNe _0368
+	NPCMsg msg_0748_00015
+	GoTo _0381
+
+_0368:
+	Compare VAR_SPECIAL_x8007, 1
+	GoToIfNe _037E
+	NPCMsg msg_0748_00027
+	GoTo _0381
+
+_037E:
+	NPCMsg msg_0748_00039
+_0381:
+	WaitButton
+	CloseMsg
+	TouchscreenMenuShow
+	ScrCmd_117
+	ScriptOverlayCmd 3, 1
+	RestartCurrentScript
+	End
+
+_0391:
+	NPCMsg msg_0748_00040
+	WaitButton
+	CloseMsg
+	TouchscreenMenuShow
+	ScrCmd_117
+	ScriptOverlayCmd 3, 1
+	RestartCurrentScript
+	End
+
+_03A4:
+	SetVar VAR_SPECIAL_x8004, 10
+	AddVar VAR_SPECIAL_x8004, VAR_TEMP_x400F
+	NonNPCMsgVar VAR_SPECIAL_x8004
+	TouchscreenMenuHide
+	GetMenuChoice VAR_SPECIAL_RESULT
+	TouchscreenMenuShow
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _0241
+	SetVar VAR_SPECIAL_x8004, 11
+	AddVar VAR_SPECIAL_x8004, VAR_TEMP_x400F
+	NonNPCMsgVar VAR_SPECIAL_x8004
+	GoTo _0352
+	End
+
+	.balign 4, 0

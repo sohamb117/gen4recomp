@@ -26,8 +26,9 @@ static char g_create_error[256];
 
 static const char *const k_game_names[NP_GAME_COUNT] = {
     [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
-    [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white", [NP_GAME_RUBY] = "ruby",
-    [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
+    [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white",
+    [NP_GAME_HEARTGOLD] = "heartgold", [NP_GAME_SOULSILVER] = "soulsilver",
+    [NP_GAME_RUBY] = "ruby", [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
 
 /* ---- fibers ---------------------------------------------------------- */
 

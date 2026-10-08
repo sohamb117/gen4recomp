@@ -31,6 +31,7 @@ INLINE_ASM = re.compile(r"^\s*asm\s*$")
 
 # The parameter list of an asm function, from the "(" to the matching ")".
 PARAMS = re.compile(r"^(?:static\s+)?asm\s+[\w \t\*]*?[A-Za-z_]\w*\s*\((.*?)\)\s*\{?\s*$")
+PROTOTYPE = re.compile(r"^(?:static\s+)?asm\s+[^{]*\)\s*;\s*$")
 IDENT = re.compile(r"[A-Za-z_]\w*")
 
 # A parameter that does not occupy exactly one register. AAPCS softfp does put
@@ -131,6 +132,11 @@ def extract(lines, path="<input>"):
                 "%s:%d: statement-level 'asm { ... }' block; extract it by "
                 "hand." % (path, i + 1))
         if not ASM_START.match(lines[i]):
+            i += 1
+            continue
+        # A prototype (`asm void OS_IrqHandler_ThreadSwitch(void);`, HG/SS's
+        # os_irqHandler.c) declares an asm function defined elsewhere.
+        if PROTOTYPE.match(lines[i]):
             i += 1
             continue
         m = NAME.match(lines[i])

@@ -8,7 +8,10 @@
  * statics by name, which such a ROM does not have, so pc/Makefile.wasm
  * leaves them out and links this instead. The slot is the console's empty
  * one: pc_main.c's zero-filled window, which nothing in the game reads.
+ * HG/SS's recompiled SDK (lib/asm/nitro.s) does name the backup bus, so
+ * its byte accesses arrive here and are the window's plain ones.
  */
+#include <stdint.h>
 #include <stdio.h>
 
 #if defined(__wasm__)
@@ -29,4 +32,15 @@ void pc_agb_slot_insert(void)
 /* pc_os_lite.c, once per frame: there is no backup chip to store. */
 void pc_agb_slot_step(void)
 {
+}
+
+/* armrec_rt.h's ARMREC_AGB_HOOK: no chip behind the bus. */
+uint32_t armrec_agb_load8(uint32_t a)
+{
+    return *(const volatile uint8_t *)(uintptr_t)a;
+}
+
+void armrec_agb_store8(uint32_t a, uint32_t v)
+{
+    *(volatile uint8_t *)(uintptr_t)a = (uint8_t)v;
 }

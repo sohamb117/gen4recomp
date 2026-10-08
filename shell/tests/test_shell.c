@@ -106,8 +106,7 @@ static void test_romdb(void)
     CHECK(e && e->game == NP_GAME_PEARL && e->status == NP_ROM_ACCEPTED, "pearl accepted");
     CHECK(!np_romdb_lookup("a9993e364706816aba3e25717850c26c9cd0d89d"), "unknown hash rejected");
     for (int g = 0; g < NP_GAME_COUNT; g++)
-        if (np_game_known((np_game)g)) /* 5 and 6 are unassigned (HGSS) */
-            CHECK(np_romdb_accepted((np_game)g) != NULL, "accepted dump for game %d", g);
+        CHECK(np_romdb_accepted((np_game)g) != NULL, "accepted dump for game %d", g);
 }
 
 typedef struct membuf {
@@ -669,7 +668,7 @@ static void test_sync_plan(void)
               strlen(out) <= NP_SLOT_NAME_MAX && strstr(out, "(conflict 2026-01-02)") && !np_slot_name_problem(out),
           "long conflict name: %s", out);
 
-    static const char *const games[] = {"diamond", "pearl", "platinum", "black", "white"};
+    static const char *const games[] = {"diamond", "pearl", "platinum", "black", "white", "heartgold", "soulsilver"};
     np_sync_record r = {2, "Slot 1", {0}, 524288, 1759500000123456789LL, 524288, -5, "Slot 1 (conflict 2026-10-04)"};
     for (int i = 0; i < 20; i++)
         r.base[i] = (uint8_t)(i * 13);

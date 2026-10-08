@@ -27,8 +27,8 @@ static const SDL_Color game_colors[NP_GAME_COUNT] = {
     [NP_GAME_DIAMOND] = {64, 110, 210, 255}, [NP_GAME_PEARL] = {200, 104, 150, 255},
     [NP_GAME_PLATINUM] = {150, 140, 120, 255}, [NP_GAME_BLACK] = {70, 70, 80, 255},
     [NP_GAME_WHITE] = {200, 200, 205, 255}, [NP_GAME_RUBY] = {190, 50, 60, 255},
+    [NP_GAME_HEARTGOLD] = {200, 160, 40, 255}, [NP_GAME_SOULSILVER] = {150, 160, 175, 255},
     [NP_GAME_SAPPHIRE] = {50, 80, 190, 255}, [NP_GAME_EMERALD] = {40, 150, 90, 255}};
-
 
 /* ---- drawing primitives ---------------------------------------------- */
 

@@ -175,7 +175,11 @@ static void civil(int64_t secs, int *y, int *mo, int *d, int *h, int *mi, int *s
 static void draw_top(np_core *c, const np_input *in)
 {
     static const uint32_t base[NP_GAME_COUNT][3] = {
-        {40, 80, 190}, {190, 80, 130}, {120, 115, 100}, {70, 70, 80}, {200, 200, 205}};
+        [NP_GAME_DIAMOND] = {40, 80, 190}, [NP_GAME_PEARL] = {190, 80, 130},
+        [NP_GAME_PLATINUM] = {120, 115, 100}, [NP_GAME_BLACK] = {70, 70, 80},
+        [NP_GAME_WHITE] = {200, 200, 205}, [NP_GAME_HEARTGOLD] = {200, 160, 40},
+        [NP_GAME_SOULSILVER] = {150, 160, 175},
+        [NP_GAME_RUBY] = {0, 0, 0}, [NP_GAME_SAPPHIRE] = {0, 0, 0}, [NP_GAME_EMERALD] = {0, 0, 0}};
     const uint32_t *b = base[c->game];
     uint32_t *fb = c->fb[0];
     unsigned t = (unsigned)c->frame;
@@ -257,7 +261,11 @@ static void draw_bottom(np_core *c, const np_input *in)
 
 static void make_audio(np_core *c, const np_input *in)
 {
-    static const double base_hz[NP_GAME_COUNT] = {440.0, 493.88, 523.25, 587.33, 659.25};
+    static const double base_hz[NP_GAME_COUNT] = {
+        [NP_GAME_DIAMOND] = 440.0, [NP_GAME_PEARL] = 493.88, [NP_GAME_PLATINUM] = 523.25,
+        [NP_GAME_BLACK] = 587.33, [NP_GAME_WHITE] = 659.25,
+        [NP_GAME_HEARTGOLD] = 698.46, [NP_GAME_SOULSILVER] = 783.99,
+        [NP_GAME_RUBY] = 0.0, [NP_GAME_SAPPHIRE] = 0.0, [NP_GAME_EMERALD] = 0.0};
     /* Samples owed after `frame` frames at 59.8261 Hz, in integer math so the
      * stream never drifts. */
     uint64_t due = c->frame * (uint64_t)AUDIO_RATE * 10000u / 598261u;

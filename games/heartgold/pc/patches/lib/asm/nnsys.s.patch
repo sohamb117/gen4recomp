@@ -1,0 +1,194 @@
+--- a/lib/asm/nnsys.s
++++ b/lib/asm/nnsys.s
+@@ -231,12 +231,12 @@
+ _021DF978:
+ 	.space 0xC
+ 
+-	.public _021DF984
+-_021DF984:
++	.public sSeqPlayer
++sSeqPlayer:
+ 	.space 0x440
+ 
+-	.public _021DFDC4
+-_021DFDC4:
++	.public sPlayer
++sPlayer:
+ 	.space 0x8
+ 
+ 	.public _021DFDCC
+@@ -23653,7 +23653,7 @@
+ 	addeq sp, sp, #4
+ 	moveq r0, #0
+ 	ldmeqia sp!, {r3, r4, r5, r6, pc}
+-	ldr r2, _020C8054 ; =_021DFDC4
++	ldr r2, _020C8054 ; =sPlayer
+ 	mov r1, #0x24
+ 	mla r2, r6, r1, r2
+ 	str r0, [r4, #8]
+@@ -23665,7 +23665,7 @@
+ 	ldmia sp!, {r3, r4, r5, r6, pc}
+ 	.align 2, 0
+ _020C8050: .word PlayerHeapDisposeCallback
+-_020C8054: .word _021DFDC4
++_020C8054: .word sPlayer
+ 	arm_func_end NNS_SndPlayerCreateHeap
+ 
+ 	arm_func_start NNS_SndPlayerStopSeq
+@@ -23680,10 +23680,10 @@
+ 	arm_func_start NNS_SndPlayerStopSeqByPlayerNo
+ NNS_SndPlayerStopSeqByPlayerNo: ; 0x020C8068
+ 	stmdb sp!, {r3, r4, r5, r6, r7, lr}
+-	ldr r3, _020C80BC ; =_021DFDC4
++	ldr r3, _020C80BC ; =sPlayer
+ 	mov r2, #0x24
+ 	mla r6, r0, r2, r3
+-	ldr r5, _020C80C0 ; =_021DF984
++	ldr r5, _020C80C0 ; =sSeqPlayer
+ 	mov r7, r1
+ 	mov r4, #0
+ _020C8084:
+@@ -23703,14 +23703,14 @@
+ 	blt _020C8084
+ 	ldmia sp!, {r3, r4, r5, r6, r7, pc}
+ 	.align 2, 0
+-_020C80BC: .word _021DFDC4
+-_020C80C0: .word _021DF984
++_020C80BC: .word sPlayer
++_020C80C0: .word sSeqPlayer
+ 	arm_func_end NNS_SndPlayerStopSeqByPlayerNo
+ 
+ 	arm_func_start NNS_SndPlayerStopSeqBySeqNo
+ NNS_SndPlayerStopSeqBySeqNo: ; 0x020C80C4
+ 	stmdb sp!, {r3, r4, r5, r6, r7, lr}
+-	ldr r5, _020C8118 ; =_021DF984
++	ldr r5, _020C8118 ; =sSeqPlayer
+ 	mov r7, r0
+ 	mov r6, r1
+ 	mov r4, #0
+@@ -23733,13 +23733,13 @@
+ 	blt _020C80D8
+ 	ldmia sp!, {r3, r4, r5, r6, r7, pc}
+ 	.align 2, 0
+-_020C8118: .word _021DF984
++_020C8118: .word sSeqPlayer
+ 	arm_func_end NNS_SndPlayerStopSeqBySeqNo
+ 
+ 	arm_func_start NNS_SndPlayerStopSeqAll
+ NNS_SndPlayerStopSeqAll: ; 0x020C811C
+ 	stmdb sp!, {r4, r5, r6, lr}
+-	ldr r5, _020C8158 ; =_021DF984
++	ldr r5, _020C8158 ; =sSeqPlayer
+ 	mov r6, r0
+ 	mov r4, #0
+ _020C812C:
+@@ -23756,7 +23756,7 @@
+ 	blt _020C812C
+ 	ldmia sp!, {r4, r5, r6, pc}
+ 	.align 2, 0
+-_020C8158: .word _021DF984
++_020C8158: .word sSeqPlayer
+ 	arm_func_end NNS_SndPlayerStopSeqAll
+ 
+ 	arm_func_start NNS_SndPlayerPause
+@@ -23773,7 +23773,7 @@
+ 	stmdb sp!, {r4, r5, r6, r7, r8, lr}
+ 	mov r2, #0x24
+ 	mul r6, r0, r2
+-	ldr r5, _020C81C0 ; =_021DFDC4
++	ldr r5, _020C81C0 ; =sPlayer
+ 	mov r8, r1
+ 	add r0, r5, r6
+ 	mov r1, #0
+@@ -23793,7 +23793,7 @@
+ 	bne _020C8194
+ 	ldmia sp!, {r4, r5, r6, r7, r8, pc}
+ 	.align 2, 0
+-_020C81C0: .word _021DFDC4
++_020C81C0: .word sPlayer
+ 	arm_func_end NNS_SndPlayerPauseByPlayerNo
+ 
+ 	arm_func_start NNS_SndHandleInit
+@@ -24008,7 +24008,7 @@
+ 	mov r1, #0x14
+ 	bl NNS_FndInitList
+ 	mov r6, #0
+-	ldr r7, _020C8490 ; =_021DF984
++	ldr r7, _020C8490 ; =sSeqPlayer
+ 	ldr r4, _020C848C ; =_021DF96C
+ 	mov r5, r6
+ _020C8410:
+@@ -24022,7 +24022,7 @@
+ 	add r7, r7, #0x44
+ 	blt _020C8410
+ 	mov sl, #0
+-	ldr sb, _020C8494 ; =_021DFDC4
++	ldr sb, _020C8494 ; =sPlayer
+ 	mov r8, #0xc
+ 	mov r7, sl
+ 	mov r6, #0x7f
+@@ -24046,8 +24046,8 @@
+ 	.align 2, 0
+ _020C8488: .word _021DF978
+ _020C848C: .word _021DF96C
+-_020C8490: .word _021DF984
+-_020C8494: .word _021DFDC4
++_020C8490: .word sSeqPlayer
++_020C8494: .word sPlayer
+ 	arm_func_end NNSi_SndPlayerInit
+ 
+ 	arm_func_start NNSi_SndPlayerMain
+@@ -24154,7 +24154,7 @@
+ 	arm_func_start NNSi_SndPlayerAllocSeqPlayer
+ NNSi_SndPlayerAllocSeqPlayer: ; 0x020C85FC
+ 	stmdb sp!, {r3, r4, r5, r6, r7, lr}
+-	ldr ip, _020C8690 ; =_021DFDC4
++	ldr ip, _020C8690 ; =sPlayer
+ 	mov r3, #0x24
+ 	mov r4, r0
+ 	ldr r5, [r4]
+@@ -24193,7 +24193,7 @@
+ 	str r5, [r4]
+ 	ldmia sp!, {r3, r4, r5, r6, r7, pc}
+ 	.align 2, 0
+-_020C8690: .word _021DFDC4
++_020C8690: .word sPlayer
+ 	arm_func_end NNSi_SndPlayerAllocSeqPlayer
+ 
+ 	arm_func_start NNSi_SndPlayerFreeSeqPlayer
+@@ -24271,7 +24271,7 @@
+ 	arm_func_start NNSi_SndPlayerAllocHeap
+ NNSi_SndPlayerAllocHeap: ; 0x020C8764
+ 	stmdb sp!, {r4, r5, r6, lr}
+-	ldr r3, _020C87B4 ; =_021DFDC4
++	ldr r3, _020C87B4 ; =sPlayer
+ 	mov r2, #0x24
+ 	mla r5, r0, r2, r3
+ 	mov r6, r1
+@@ -24291,7 +24291,7 @@
+ 	ldr r0, [r4, #8]
+ 	ldmia sp!, {r4, r5, r6, pc}
+ 	.align 2, 0
+-_020C87B4: .word _021DFDC4
++_020C87B4: .word sPlayer
+ 	arm_func_end NNSi_SndPlayerAllocHeap
+ 
+ 	arm_func_start InitPlayer
+@@ -24475,7 +24475,7 @@
+ 	strne r0, [r1, #8]
+ 	ldmneia sp!, {r4, pc}
+ 	ldr r1, [r4, #0x10]
+-	ldr r2, _020C8A14 ; =_021DFDC4
++	ldr r2, _020C8A14 ; =sPlayer
+ 	mov r0, #0x24
+ 	mla r0, r1, r0, r2
+ 	mov r1, r4
+@@ -24483,7 +24483,7 @@
+ 	bl NNS_FndRemoveListObject
+ 	ldmia sp!, {r4, pc}
+ 	.align 2, 0
+-_020C8A14: .word _021DFDC4
++_020C8A14: .word sPlayer
+ 	arm_func_end PlayerHeapDisposeCallback
+ 
+ 	arm_func_start SetPlayerPriority

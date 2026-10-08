@@ -142,6 +142,14 @@ class Func(object):
         # copies a sibling entry point's code in, and it is what tells a BL to
         # a real function apart from a BL used as a long branch.
         self.entries = set([name])
+        # Its start macro opens with `.balign 4`: every one but
+        # non_word_aligned_thumb_func_start.
+        self.word_aligned = not thumb
+        # A second name for the function that follows it at the same
+        # address, with no body of its own: HG/SS's msl.s opens _fadd and
+        # _f_add back to back. Emitted as a C alias, so dispatch sees one
+        # function under both names.
+        self.alias_of = None
 
 
 # --------------------------------------------------------------------------
@@ -602,8 +610,15 @@ def preprocess(path, defines, incdirs):
     "no such file or directory: 'c'"), and a failed cpp silently leaves the
     file unpreprocessed, which is what left GAME_VERSION and every
     constants/*.h name unresolved in Diamond's assembly.
+
+    The preprocessor is the compiler's assembler-with-cpp mode, the one a
+    `.S` file gets, not macOS's /usr/bin/cpp: that one is traditional, so it
+    pastes nothing (HG/SS's FS_OVERLAY_ID(OVY_45) stays
+    SDK_OVERLAY_##OVY_45##_ID) and keeps a define's `//` comment in its
+    expansion (`MAP_NEW_BARK 60 // MAP_T20` ends the line it lands in).
+    Diamond's and Pearl's assembly preprocess identically under both.
     """
-    cmd = ["cpp", "-P"]
+    cmd = ["cc", "-E", "-P", "-x", "assembler-with-cpp"]
     text = None
     lines = expand_includes(path, incdirs)
     if lines is None:
@@ -615,9 +630,8 @@ def preprocess(path, defines, incdirs):
         if any(INDENTED_DIRECTIVE.match(l) for l in raw):
             lines = raw
     if lines is not None:
-        # macOS's cpp is a traditional-mode preprocessor, and it ignores an
-        # indented `#include` on the first line of its input; mwasm does
-        # not care. Moving every directive to column one costs nothing.
+        # mwasm takes an indented `#include`; cpp wants the `#` in column
+        # one. Moving every directive there costs nothing.
         text = "".join(INDENTED_DIRECTIVE.sub(r"#", l) for l in lines)
         cmd.append("-I" + (os.path.dirname(path) or "."))
     for d in incdirs:
@@ -635,7 +649,7 @@ def preprocess(path, defines, incdirs):
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, input=text)
         if r.returncode == 0 and r.stdout:
-            return r.stdout.splitlines(True)
+            return expand_local_macros(path, r.stdout.splitlines(True))
     except (OSError, subprocess.SubprocessError):
         pass
     return None
@@ -643,6 +657,61 @@ def preprocess(path, defines, incdirs):
 
 INDENTED_DIRECTIVE = re.compile(
     r"^[ \t]+#(?=\s*(?:include|if|ifdef|ifndef|elif|else|endif|define|undef)\b)")
+
+
+MACRO_DEF = re.compile(r"^\s*\.macro\s+([A-Za-z_][\w.]*)[\s,]*(.*)$", re.I)
+
+
+def expand_local_macros(path, lines):
+    """
+    Expand the invocations of a macro the .s file defines itself.
+
+    armrec matches the shared macros (asm/macros.inc, cw.inc) by name, but a
+    file's own macro is content: HG/SS's unk_0203BA5C.s builds its spawn table
+    from a `spawn` macro of `.short`s. Its arguments substitute for `\\param`
+    textually, as the assembler does. Definitions stay in place; parse_file
+    skips them.
+    """
+    try:
+        with open(path, "r", errors="replace") as fh:
+            local = {m.group(1) for m in map(MACRO_DEF.match, fh) if m}
+    except OSError:
+        return lines
+    if not local:
+        return lines
+    macros = {}
+    out = []
+    cur = None
+    for line in lines:
+        code = split_comment(line.rstrip("\n"))[0].strip()
+        if cur is not None:
+            if code.lower().startswith(".endm"):
+                cur = None
+            else:
+                macros[cur][1].append(line)
+            out.append(line)
+            continue
+        m = MACRO_DEF.match(code)
+        if m and m.group(1) in local:
+            cur = m.group(1)
+            params = [p.split("=")[0].strip()
+                      for p in re.split(r"[,\s]+", m.group(2).strip()) if p]
+            macros[cur] = (params, [])
+            out.append(line)
+            continue
+        word = code.split(None, 1)
+        if word and word[0] in macros:
+            params, body = macros[word[0]]
+            args = [a.strip() for a in word[1].split(",")] if len(word) > 1 else []
+            # Longest name first, so `\flag` cannot eat the head of `\flagIdx`.
+            subst = sorted(zip(params, args), key=lambda pa: -len(pa[0]))
+            for b in body:
+                for p, a in subst:
+                    b = b.replace("\\" + p, a)
+                out.append(b)
+            continue
+        out.append(line)
+    return out
 
 
 def place_functions(funcs):
@@ -663,7 +732,7 @@ def place_functions(funcs):
         # `arm_func_end NAME` with no start marker is still the source calling
         # it a function.
         if nxt.addr is None and (not nxt.markerless or nxt.attested):
-            align = 2 if nxt.thumb else 4
+            align = 4 if nxt.word_aligned else 2
             nxt.addr = (end + align - 1) & ~(align - 1)
 
 
@@ -697,6 +766,21 @@ def bl_is_call(ins, target_addr, thumb):
         return None
     d = target_addr - (ins.addr + 4)
     return THUMB_B_REACH[0] <= d <= THUMB_B_REACH[1]
+
+
+def is_bodiless(f):
+    """Nothing but labels yet: a function start that another one follows."""
+    return all(isinstance(it, Label) for it in f.items)
+
+
+def alias_target(f, funcs):
+    """The function an alias (chain) names, or None."""
+    by_name = dict((g.name, g) for g in funcs)
+    seen = set()
+    while f is not None and f.alias_of is not None and f.name not in seen:
+        seen.add(f.name)
+        f = by_name.get(f.alias_of)
+    return f.name if f is not None and f.alias_of is None else None
 
 
 def split_call_targets(funcs, globals_, problems):
@@ -806,6 +890,9 @@ def parse_file(path, defines, incdirs=(), lines=None):
     # is known, so a directive armrec cannot size costs the rest of one
     # label's run rather than the rest of the file.
     loc = None
+    # Where this file's labels are, for a size that measures from one
+    # (`.space 0x40-(.-ov00_022186AC)`, HG/SS's padded overlay tables).
+    here = {}
     # A section's origin appears in no .s file, so the first label carrying an
     # address fixes it and everything before that label is placed by
     # subtracting. `off` counts bytes from the section start while the origin
@@ -947,11 +1034,14 @@ def parse_file(path, defines, incdirs=(), lines=None):
                 addr = addr_from_name(name)
             # A `.global` label with neither an address comment nor an
             # address-derived name is still somewhere, and the location
-            # counter is where. Narrowed to `.global` deliberately: a local
-            # label gaining an address would also gain a case in every
-            # computed branch resolving against the enclosing function's
-            # labels, which changes control flow rather than a symbol table.
-            if addr is None and loc is not None and name in globals_:
+            # counter is where. In code, narrowed to `.global` deliberately:
+            # a local label gaining an address would also gain a case in
+            # every computed branch resolving against the enclosing
+            # function's labels, which changes control flow rather than a
+            # symbol table. A data section has no such branches, and HG/SS
+            # name their file-local tables (unk_0203BA5C.s's sSpawnMaps).
+            if (addr is None and loc is not None
+                    and (name in globals_ or section != ".text")):
                 addr = loc
             # Where the label says it is, against where the assembler has got
             # to. The counter wins, and the disagreement is counted into the
@@ -960,6 +1050,8 @@ def parse_file(path, defines, incdirs=(), lines=None):
                 problems[addr_contradiction(name, addr, loc)] += 1
                 addr = loc
             lab = Label(name, addr, lineno)
+            if addr is not None or loc is not None:
+                here[name] = addr if addr is not None else loc
             prev_was_insn = False
             # A file predating the arm_func_start convention marks its entry
             # points with a bare ".global NAME" / "NAME:", as both files in
@@ -969,9 +1061,15 @@ def parse_file(path, defines, incdirs=(), lines=None):
             if ((cur_func is None or cur_func.markerless)
                     and section == ".text"
                     and (name in globals_ or name in ends_named)):
+                prev = cur_func
                 cur_func = Func(name, thumb_mode, addr, True, markerless=True,
                                 attested=name in ends_named)
                 funcs.append(cur_func)
+                # Two names on one entry point (HG/SS's msl.s: `_dadd:` then
+                # `_d_add:`): the first, which nothing but labels has
+                # followed, is the second's alias.
+                if prev is not None and is_bodiless(prev):
+                    prev.alias_of = name
             if cur_func is not None and section == ".text":
                 # The address of a function is that of its own label: the
                 # "; 0x…" comment, checked against the location counter just
@@ -1007,12 +1105,23 @@ def parse_file(path, defines, incdirs=(), lines=None):
             thumb = hl.startswith("thumb") or hl.startswith("non_word")
             name = rest.strip()
             addr = addr_from_name(name)
+            prev = cur_func if section == ".text" else None
             cur_func = Func(name, thumb, addr, hl != "local_arm_func_start",
                             file_local=hl == "local_arm_func_start")
+            cur_func.word_aligned = hl != "non_word_aligned_thumb_func_start"
             thumb_mode = thumb
             funcs.append(cur_func)
+            # Two start macros back to back (msl.s's `_fadd` and `_f_add`):
+            # one function, two names.
+            if prev is not None and is_bodiless(prev):
+                prev.alias_of = name
             if section != ".text":
                 enter_section(".text")
+            # The macro opens with `.balign 4, 0`, bar the non-word-aligned
+            # form. HG/SS's Thumb functions often carry no address comment,
+            # so the counter is all that places them.
+            if hl != "non_word_aligned_thumb_func_start" and loc is not None:
+                loc = align_up(loc, 4)
             prev_was_insn = False
             continue
         if hl in ("arm_func_end", "thumb_func_end"):
@@ -1133,6 +1242,8 @@ def parse_file(path, defines, incdirs=(), lines=None):
                     off = None
                 if loc is None and off is not None:
                     pend.append((len(data_items), off))
+                if d in ("space", "skip", "fill") and loc is not None:
+                    rest = location_expr(rest, loc, here)
                 data_items.append((loc, None, d, rest))
                 if cur_func is not None and section == ".text":
                     cur_func.items.append(Directive(d, rest, lineno))
@@ -1173,9 +1284,12 @@ def parse_file(path, defines, incdirs=(), lines=None):
         cur_func.items.append(ins)
         prev_was_insn = True
 
-    # A markerless label that turned out to head data, not code, is data.
+    # A markerless label that turned out to head data, not code, is data. An
+    # alias stays exactly when the function it names does.
+    bodied = set(f.name for f in funcs if f.alias_of is None and (
+        not f.markerless or any(isinstance(it, Insn) for it in f.items)))
     funcs = [f for f in funcs
-             if not f.markerless or any(isinstance(it, Insn) for it in f.items)]
+             if (alias_target(f, funcs) if f.alias_of else f.name) in bodied]
 
     # Twice, either side of the split, and neither is redundant. The first
     # pass gives split_call_targets() an address for every `bl` to compare
@@ -2214,16 +2328,22 @@ def emit_insn(ctx, ins, func, out):
         out.append("r0 = armrec_swi(0x%Xu, r0, r1, r2, r3);" % num)
         return
     if m == "adr":
-        # ADR rd, label: materialise the address of a local label.
+        # ADR rd, label [+|- constant]: materialise the address of a local
+        # label, optionally offset (HG/SS's MSL: `adr r0, UNK_020F1D7C - 0x100`).
         toks = split_operands(ins.ops)
         rd = reg_num(toks[0])
         target = toks[1].strip()
+        off = 0
+        mo = re.match(r"^([A-Za-z_.$][\w.$]*)\s*([-+])\s*(\S+)$", target)
+        if mo and parse_int(mo.group(3)) is not None:
+            off = parse_int(mo.group(3)) * (-1 if mo.group(2) == "-" else 1)
+            target = mo.group(1)
         addr = ctx.symtab.get(target)
         if addr is None:
             addr = addr_from_name(target)
         if addr is None:
-            raise Unsupported("ADR to unknown label %r" % target)
-        out.append("%s = 0x%08Xu;" % (ctx.regc(rd), addr))
+            raise Unsupported("ADR to unknown label %r" % toks[1].strip())
+        out.append("%s = 0x%08Xu;" % (ctx.regc(rd), (addr + off) & 0xFFFFFFFF))
         return
     if m == "clz":
         toks = split_operands(ins.ops)
@@ -2396,6 +2516,23 @@ def insn_size(mnem, ops, thumb):
     if mnem in ("bl", "blx") and reg_num((ops or "").strip()) is None:
         return 4
     return 2
+
+
+HERE_DOT = re.compile(r"(?<![\w.$?])\.(?![\w.$?])")
+
+
+def location_expr(rest, loc, labels):
+    """
+    A size spelled from the location counter (`.`) and this file's labels,
+    with both as numbers: `.space 0x40-(.-ov00_022186AC)` pads a table to
+    0x40 bytes, which only the counter can say.
+    """
+    if not HERE_DOT.search(rest):
+        return rest
+    out = HERE_DOT.sub("0x%X" % loc, rest)
+    return re.sub(r"[A-Za-z_$?][\w.$?]*",
+                  lambda m: ("0x%X" % labels[m.group(0)]
+                             if m.group(0) in labels else m.group(0)), out)
 
 
 def directive_size(name, args):
@@ -3496,7 +3633,16 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
     ok_funcs = 0
     total_funcs = len(funcs)
     ext_calls = Counter()
+    aliases = []
     for f in funcs:
+        if f.alias_of:
+            target = alias_target(f, funcs)
+            tf = next(g for g in funcs if g.name == target)
+            f.addr = tf.addr
+            f.thumb = tf.thumb
+            aliases.append((f, tf))
+            ok_funcs += 1
+            continue
         body, ctx, ok, failures = emit_func(f, symtab, literals, stats, rename,
                                             asm_funcs, abi_trap)
         ext |= ctx.used_ext
@@ -3586,6 +3732,10 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
             for line in render_func(f, body, ctx):
                 out.write(line + "\n")
             out.write("\n")
+        for f, tf in aliases:
+            out.write('uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t) '
+                      '__attribute__((alias("%s")));\n\n'
+                      % (rename.get(f.name, f.name), rename.get(tf.name, tf.name)))
 
         # Always-resident code does both jobs at startup. An overlay does not:
         # Its slots are reserved at startup so a dispatch to a non-resident
