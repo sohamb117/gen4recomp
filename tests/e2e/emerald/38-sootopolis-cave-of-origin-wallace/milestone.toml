@@ -2,9 +2,8 @@
 # Steven leading to the Cave of Origin and Wallace on B1F (MULTI_WHERES_RAYQUAZA -> SKY PILLAR): STATE 3.
 # Start: Route 128 -> end: MAP_CAVE_OF_ORIGIN_B1F, FLAG_WALLACE_GOES_TO_SKY_PILLAR.
 title = "Sootopolis in the storm: Steven, the Cave of Origin, Wallace"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 18043
 refs = [
   "data/maps/Route126/map.json connections dive UNDERWATER_ROUTE126",
   "data/maps/Underwater_Route126/map.json warp_events[0] (45,65) -> UNDERWATER_SOOTOPOLIS_CITY",
@@ -24,57 +23,42 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 27100
 
 # PHASE2: the Route 127 -> 126 -> dive spot path and the surfacing tile inside Sootopolis (Underwater_SootopolisCity warps (9..10,8)).
 
 [[step]]
-do = "walk_to"
-x = 45
-z = 65
-map = "MAP_ROUTE126"
+do = "heal"
+x = 28
+z = 16
+map = "MAP_MOSSDEEP_CITY"
 surf = true
-note = "Route 128 -> Route 127 -> Route 126 (Surf) to the dive spot [INFERENCE: deep water over (45,65)]"
-
-[[step]]
-do = "press"
-keys = "A"
-times = 2
-gap = 60
-note = "Dive YES [INFERENCE]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_UNDERWATER_ROUTE126"
+max = 20000
+note = "Surf north to Mossdeep's Pokemon Center: HP and PP back after the cavern"
 
 [[step]]
 do = "walk_to"
-x = 45
-z = 65
-note = "underwater tunnel (warp 0) -> UNDERWATER_SOOTOPOLIS_CITY"
-
-[[step]]
-do = "wait_map"
-map = "MAP_UNDERWATER_SOOTOPOLIS_CITY"
-
-[[step]]
-do = "press"
-keys = "B"
-note = "surface (B + YES) [INFERENCE]"
-
-[[step]]
-do = "press"
-keys = "A"
-gap = 60
-
-[[step]]
-do = "wait_map"
+x = 29
+z = 53
 map = "MAP_SOOTOPOLIS_CITY"
+surf = true
+dive = true
+on_text = "stop"
+on_battle = "flee"
+max = 20000
+note = "Routes 127 -> 126, Dive at (45,66), under the crater wall (UNDERWATER_ROUTE126 (45,65) -> UNDERWATER_SOOTOPOLIS_CITY), surface at (29,53) (Underwater_SootopolisCity/scripts.inc:6 setdivewarp); OnFrame VAR_SOOTOPOLIS_CITY_STATE 1 -> StartLegendariesScene (SootopolisCity/scripts.inc:166)"
 
 [[step]]
 do = "advance_text"
 shot = "legendaries-clash"
 note = "OnFrame SOOTOPOLIS_CITY_STATE 1 -> StartLegendariesScene (FromDive) -> STATE 2 (SootopolisCity/scripts.inc:166,171-341)"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 37
+surf = true
+note = "Surf across the crater lake ashore below Steven (object 7 (20,36))"
 
 [[step]]
 do = "talk_to"
@@ -115,20 +99,11 @@ id = 1
 note = "Wallace (object 1 (9,13)) -> WallaceStory, MULTI_WHERES_RAYQUAZA (CaveOfOrigin_B1F/scripts.inc:4-27)"
 
 [[step]]
-do = "advance_text"
-note = "to the multichoice"
-
-[[step]]
-do = "press"
-keys = "DOWN"
-times = 2
-gap = 20
-note = "SKY PILLAR (case 2)"
-
-[[step]]
-do = "press"
-keys = "A"
-note = "AtSkyPillar: FLAG_WALLACE_GOES_TO_SKY_PILLAR, SOOTOPOLIS_CITY_STATE 3, Wallace leaves (:45-53)"
+do = "menu"
+choose = 2
+count = 4
+max = 6000
+note = "WallaceStory's text, then MULTI_WHERES_RAYQUAZA: SKY PILLAR (case 2) -> AtSkyPillar: FLAG_WALLACE_GOES_TO_SKY_PILLAR, SOOTOPOLIS_CITY_STATE 3, Wallace leaves (:45-53); the other answers ask again"
 
 [[step]]
 do = "advance_text"

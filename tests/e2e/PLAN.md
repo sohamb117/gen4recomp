@@ -3959,7 +3959,7 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~926537 frames estimated
+### Story chain: 48 milestones, ~931424 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3999,8 +3999,8 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [34-route124-mossdeep-gym-tate-liza](emerald/34-route124-mossdeep-gym-tate-liza/milestone.toml) | Surf to Mossdeep: Tate & Liza's Mind Badge | P0 |  | 37999 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
 | [35-mossdeep-space-center-steven-multi](emerald/35-mossdeep-space-center-steven-multi/milestone.toml) | Mossdeep Space Center: Magma's raid, the Steven multi battle | P0 |  | 26865 | prev + `None` | MAP_MOSSDEEP_CITY_SPACE_CENTER_2F | passing |
 | [36-stevens-house-hm-dive](emerald/36-stevens-house-hm-dive/milestone.toml) | Steven's house: HM08 Dive | P0 |  | 3072 | prev + `None` | MAP_MOSSDEEP_CITY_STEVENS_HOUSE | passing |
-| [37-seafloor-cavern-archie-kyogre](emerald/37-seafloor-cavern-archie-kyogre/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre | P0 |  | 22000 | prev + `None` | MAP_ROUTE128 | planned |
-| [38-sootopolis-cave-of-origin-wallace](emerald/38-sootopolis-cave-of-origin-wallace/milestone.toml) | Sootopolis in the storm: Steven, the Cave of Origin, Wallace | P0 |  | 12000 | prev + `None` | MAP_CAVE_OF_ORIGIN_B1F | planned |
+| [37-seafloor-cavern-archie-kyogre](emerald/37-seafloor-cavern-archie-kyogre/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre | P0 |  | 20844 | prev + `None` | MAP_ROUTE128 | passing |
+| [38-sootopolis-cave-of-origin-wallace](emerald/38-sootopolis-cave-of-origin-wallace/milestone.toml) | Sootopolis in the storm: Steven, the Cave of Origin, Wallace | P0 |  | 18043 | prev + `None` | MAP_CAVE_OF_ORIGIN_B1F | passing |
 | [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 20000 | prev + `None` | MAP_SKY_PILLAR_TOP | planned |
 | [40-sootopolis-rayquaza-waterfall](emerald/40-sootopolis-rayquaza-waterfall/milestone.toml) | Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall | P0 |  | 8000 | prev + `None` | MAP_SOOTOPOLIS_CITY | planned |
 | [41-sootopolis-gym-juan](emerald/41-sootopolis-gym-juan/milestone.toml) | Sootopolis Gym: Juan and the Rain Badge | P0 |  | 14000 | prev + `None` | MAP_SOOTOPOLIS_CITY | planned |
@@ -4378,7 +4378,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_ARCHIE (34), src/data/trainers.h:412; TRAINER_SHELLY_SEAFLOOR_CAVERN (33), src/data/trainers.h:400
 - end state: map MAP_ROUTE128; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, FLAG_LEGENDARIES_IN_SOOTOPOLIS, FLAG_SYS_WEATHER_CTRL, FLAG_HIDE_SEAFLOOR_CAVERN_ROOM_9_ARCHIE, FLAG_HIDE_SEAFLOOR_CAVERN_AQUA_GRUNTS; flags clear FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN, FLAG_HIDE_SOOTOPOLIS_CITY_ARCHIE, FLAG_HIDE_SOOTOPOLIS_CITY_MAXIE; vars VAR_SOOTOPOLIS_CITY_STATE=1, VAR_SEAFLOOR_CAVERN_STATE=1, VAR_ROUTE128_STATE=2, VAR_STEVENS_HOUSE_STATE=2
-- frames: estimate 22000, budget 60000
+- frames: estimate 20844, budget 31300
 - refs: data/maps/MossdeepCity/map.json connections down ROUTE127; data/maps/Route128/map.json connections dive UNDERWATER_ROUTE128; data/maps/Underwater_Route128/map.json warp_events[0] (38,26) -> UNDERWATER_SEAFLOOR_CAVERN; data/maps/SeafloorCavern_Entrance/scripts.inc:6-7; data/maps/SeafloorCavern_Entrance/map.json warp_events[1] (10,1) -> ROOM1; data/maps/SeafloorCavern_Room1/map.json warp_events[2] (6,2) -> ROOM2; data/maps/SeafloorCavern_Room2/map.json warp_events[3] (11,1) -> ROOM7; data/maps/SeafloorCavern_Room7/map.json warp_events[1] (5,1) -> ROOM3; data/maps/SeafloorCavern_Room3/map.json warp_events[0] (8,1) -> ROOM8; data/maps/SeafloorCavern_Room8/map.json warp_events[0] (5,2) -> ROOM9; data/maps/SeafloorCavern_Room3/scripts.inc:5; data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0; data/maps/SeafloorCavern_Room9/scripts.inc:4-124; data/maps/Route128/scripts.inc:14-67; TRAINER_ARCHIE (34), src/data/trainers.h:412; TRAINER_SHELLY_SEAFLOOR_CAVERN (33), src/data/trainers.h:400; src/party_menu.c:122-123 (Rock Smash, Strength)
 - notes: Archie: TRAINER_ARCHIE (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43; Shelly (Room 3, sight trainer): TRAINER_SHELLY_SEAFLOOR_CAVERN (33): SHARPEDO 37, MIGHTYENA 37; Aqua grunts in rooms 1, 3, 4. Needs Surf + Dive (Mind Badge), Strength (Heat Badge, HM from 17) and Rock Smash (HM from 16); carriers boosted. Room boulders: Room1 (5,11)/(12,11), Room2 five, Room3 seven, Room8 twelve (the boulder wall before Room 9). After the cutscene the game warps to Route 128 (38,22) and Route 128 OnFrame VAR_ROUTE128_STATE 1 plays Steven's scene -> 2.
 
@@ -4388,7 +4388,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_CAVE_OF_ORIGIN_B1F; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_VISITED_SOOTOPOLIS_CITY, FLAG_STEVEN_GUIDES_TO_CAVE_OF_ORIGIN, FLAG_WALLACE_GOES_TO_SKY_PILLAR, FLAG_HIDE_CAVE_OF_ORIGIN_B1F_WALLACE; flags clear FLAG_HIDE_SKY_PILLAR_WALLACE; vars VAR_SOOTOPOLIS_CITY_STATE=3
-- frames: estimate 12000, budget 60000
+- frames: estimate 18043, budget 27100
 - refs: data/maps/Route126/map.json connections dive UNDERWATER_ROUTE126; data/maps/Underwater_Route126/map.json warp_events[0] (45,65) -> UNDERWATER_SOOTOPOLIS_CITY; data/maps/SootopolisCity/scripts.inc:162; data/maps/SootopolisCity/scripts.inc:166; data/maps/SootopolisCity/scripts.inc:171-341; data/maps/SootopolisCity/map.json object_events[7] STEVEN (20,36); data/maps/SootopolisCity/scripts.inc:860-903; data/maps/CaveOfOrigin_Entrance/map.json warp_events[1] (9,5) -> 1F; data/maps/CaveOfOrigin_1F/map.json warp_events[1] (14,5) -> B1F; data/maps/CaveOfOrigin_B1F/scripts.inc:4-53
 - notes: No battles. Sootopolis is entered only by Dive (Route 126 deep water over Underwater_Route126 (45,65)), surfacing inside the crater. The legendaries scene runs from the dive spot (LegendariesSceneFromDive) or the Pokemon Center door (43,32). Wallace's multichoice: CAVE OF ORIGIN / MT. PYRE / SKY PILLAR / DON'T REMEMBER (DOWN x2, A). Cave of Origin 1F/B1F are dark (no story need for Flash) [INFERENCE].
 
