@@ -31,10 +31,12 @@
 #include <nitroWiFi/cps.h>
 #include <util/dwc_utility.h>
 
-/* Nintendo's support code 51099, "unable to locate your wireless network"
- * (the 51000-51099 access-point family); the AC layer reports its errors
- * negated, and the game prints the code. */
-#define AC_NO_ACCESS_POINT (-51099)
+/* What the Auto Connect library itself reports when the search finds
+ * nothing: -50099 ("No access point in range"). -51099 is only for a
+ * configured access point that was found but could not be used (D/P's
+ * recompiled library, overlay 4 ov04_021ECCEC). The AC layer reports its
+ * errors negated, and the game prints the code. */
+#define AC_NO_ACCESS_POINT (-50099)
 
 /* About two seconds of searching before giving up. A real console's scan
  * length is not modelled; this only keeps the "Connecting..." screen on

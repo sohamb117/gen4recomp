@@ -29,9 +29,10 @@ Game Card and connect?" the connecting screen lasts about 250 frames with no inp
 shows "No access point in range. Please try again when closer to an access point. ... (50099)" and waits for a
 button; B gives "Reconnect to Nintendo WFC?", NO returns to the field (the 97 milestone's own contact sheet shows
 the 50099 box in its "wfc-connecting" shot). The search runs against the port's WM model (pc_wm.c), which reports
-no parent and no access point. 50099, not Platinum's 51099, is the Auto Connect library's own choice: overlay 4
-ov04_021ECCEC returns -50099 when the search found nothing and -51099 when it found a configured access point it
-could not use (the flag ov04_021EC2C4 sets). Regression: tests/gameplay dp scenario 8-gts-offline.
+no parent and no access point. 50099 is the Auto Connect library's own choice: overlay 4 ov04_021ECCEC returns
+-50099 when the search found nothing and -51099 when it found a configured access point it could not use (the flag
+ov04_021EC2C4 sets). Platinum's modelled AC layer (pc_dwc_connect.c) follows the same rule. Regression: tests/gameplay
+dp scenario 8-gts-offline.
 
 ## Fixed: Platinum connecting to Nintendo WFC trapped the core
 
@@ -40,7 +41,7 @@ NintendoWFC_ConnectToDWCServer, which called pc/stubs.list trap stubs generated 
 CPS_SetSslHandshakePriority, DWC_Auth_SetCustomNas and DWC_AC_Create. wasm-ld routes such calls to a silent
 signature-mismatch thunk. games/platinum/pc/src/pc_dwc_connect.c and pc_dwc_auth.c now give those functions, and the
 rest of the Auto Connect layer, their header signatures, modelling a console that finds no access point. The game
-then shows its own "No compatible access point in range ... Error code: 51099" and "Reconnect to Nintendo WFC?";
+then shows its own "No access point in range ... Error code: 50099" and "Reconnect to Nintendo WFC?";
 NO returns to the field. The regression test is tests/gameplay scenario 8-wfc-offline.
 
 An audit of the remaining signature-mismatch thunks (64; listed by pc/wasm/check_module.py) found that every other
