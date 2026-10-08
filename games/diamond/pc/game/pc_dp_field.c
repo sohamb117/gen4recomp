@@ -157,14 +157,37 @@ static void warp_frame(FieldSystem *fs, int ready) {
  * same tile attributes (arm9/asm/unk_0204A498.s; Platinum's
  * TerrainCollisionManager_CheckCollision), both through fs+0x58, the
  * terrain provider, which exists once a map is loaded.
+ *
+ * Only tiles on the map matrix are asked. The block-loader provider
+ * (UNK_020F4708: sub_0204A5F4 -> ov05_021EF844, on the loader at fs+0x24:
+ * the matrix is +0xC0 blocks wide and +0xC4 high, 32 tiles a block)
+ * GF_ASSERTs on a block index past the matrix, and while the link layer is
+ * up (the Underground) GF_AssertFail is the comm error screen and
+ * OS_ResetSystem (error_handling.c). A column past the right edge does not
+ * assert but reads the next block row's tile: also unknown, not that. The
+ * other provider (UNK_020F4710, sub_0204A640 on fs+0x28's matrix) is asked
+ * as before.
  */
 extern u8 GetMetatileBehavior(FieldSystem *fieldSystem, s32 x, s32 z);
 extern BOOL sub_0204A6B4(FieldSystem *fieldSystem, s32 x, s32 z);
+extern const u32 UNK_020F4708[2];                /* arm9/asm/unk_0204A498.s */
+
+static int e2e_on_matrix(FieldSystem *fs, int x, int z) {
+    const u8 *loader;
+
+    if (x < 0 || z < 0) return 0;
+    if (FS_WORD(fs, 0x58) != (u32)UNK_020F4708) return 1;
+    loader = (const u8 *)FS_WORD(fs, 0x24);
+    return loader != NULL && (u32)x < *(const u32 *)(loader + 0xC0) * 32
+        && (u32)z < *(const u32 *)(loader + 0xC4) * 32;
+}
 
 static unsigned e2e_tile(void *ctx, int x, int z) {
     FieldSystem *fs = ctx;
-    const u8 behavior = GetMetatileBehavior(fs, x, z);
+    u8 behavior;
 
+    if (!e2e_on_matrix(fs, x, z)) return 0;
+    behavior = GetMetatileBehavior(fs, x, z);
     if (behavior == 0xFF) return 0;
     return PC_E2E_TILE_KNOWN | behavior | (sub_0204A6B4(fs, x, z) ? PC_E2E_TILE_COLLISION : 0);
 }
@@ -193,15 +216,16 @@ static int e2e_step(void *ctx, int x, int z, int y, int dir, int *ty) {
     FieldSystem *fs = ctx;
     const int nx = x + dx[dir], nz = z + dz[dir];
     VecFx32 pos;
-    u8 source;
+    u8 source, behavior;
     s8 vertical;
-    const u8 behavior = GetMetatileBehavior(fs, nx, nz);
 
+    if (!e2e_on_matrix(fs, nx, nz)) return 0;
+    behavior = GetMetatileBehavior(fs, nx, nz);
     if (behavior == 0xFF) return 0;
     if (behavior == jump[dir]) {
         const int lx = nx + dx[dir], lz = nz + dz[dir];
 
-        if (lx < 0 || lz < 0 || GetMetatileBehavior(fs, lx, lz) == 0xFF || sub_0204A6B4(fs, lx, lz)) return 0;
+        if (!e2e_on_matrix(fs, lx, lz) || GetMetatileBehavior(fs, lx, lz) == 0xFF || sub_0204A6B4(fs, lx, lz)) return 0;
         *ty = sub_0204A708(fs, y, lx * 16 * FX32_ONE + 8 * FX32_ONE, lz * 16 * FX32_ONE + 8 * FX32_ONE, &source);
         return 2;
     }
