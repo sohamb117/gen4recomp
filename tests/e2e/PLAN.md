@@ -3094,7 +3094,7 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~778811 frames estimated
+### Story chain: 48 milestones, ~926537 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3128,12 +3128,12 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [28-fortree-gym-winona](emerald/28-fortree-gym-winona/milestone.toml) | Fortree Gym: Winona and the Feather Badge | P0 |  | 21741 | prev + `None` | MAP_FORTREE_CITY | passing |
 | [29-route121-lilycove-may](emerald/29-route121-lilycove-may/milestone.toml) | Routes 120-121 to Lilycove: May at the Department Store | P0 |  | 48014 | prev + `None` | MAP_LILYCOVE_CITY | passing |
 | [30-mt-pyre-summit-magma-emblem](emerald/30-mt-pyre-summit-magma-emblem/milestone.toml) | Mt. Pyre summit: Aqua takes the Red Orb, the Magma Emblem | P0 |  | 17905 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
-| [31-magma-hideout-maxie-groudon](emerald/31-magma-hideout-maxie-groudon/milestone.toml) | Magma Hideout: Groudon wakes, Maxie's second battle | P0 |  | 14000 | prev + `None` | MAP_MAGMA_HIDEOUT_4F | planned |
-| [32-slateport-harbor-submarine](emerald/32-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: Aqua steals Stern's submarine | P0 |  | 5000 | prev + `None` | MAP_SLATEPORT_CITY_HARBOR | planned |
-| [33-aqua-hideout-matt](emerald/33-aqua-hideout-matt/milestone.toml) | Lilycove Aqua Hideout: Matt and the submarine escape | P0 |  | 16000 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | planned |
-| [34-route124-mossdeep-gym-tate-liza](emerald/34-route124-mossdeep-gym-tate-liza/milestone.toml) | Surf to Mossdeep: Tate & Liza's Mind Badge | P0 |  | 18000 | prev + `None` | MAP_MOSSDEEP_CITY | planned |
-| [35-mossdeep-space-center-steven-multi](emerald/35-mossdeep-space-center-steven-multi/milestone.toml) | Mossdeep Space Center: Magma's raid, the Steven multi battle | P0 |  | 14000 | prev + `None` | MAP_MOSSDEEP_CITY_SPACE_CENTER_2F | planned |
-| [36-stevens-house-hm-dive](emerald/36-stevens-house-hm-dive/milestone.toml) | Steven's house: HM08 Dive | P0 |  | 3000 | prev + `None` | MAP_MOSSDEEP_CITY_STEVENS_HOUSE | planned |
+| [31-magma-hideout-maxie-groudon](emerald/31-magma-hideout-maxie-groudon/milestone.toml) | Magma Hideout: Groudon wakes, Maxie's second battle | P0 |  | 69564 | prev + `None` | MAP_MAGMA_HIDEOUT_4F | passing |
+| [32-slateport-harbor-submarine](emerald/32-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: Aqua steals Stern's submarine | P0 |  | 18462 | prev + `None` | MAP_SLATEPORT_CITY_HARBOR | passing |
+| [33-aqua-hideout-matt](emerald/33-aqua-hideout-matt/milestone.toml) | Lilycove Aqua Hideout: Matt and the submarine escape | P0 |  | 61764 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | passing |
+| [34-route124-mossdeep-gym-tate-liza](emerald/34-route124-mossdeep-gym-tate-liza/milestone.toml) | Surf to Mossdeep: Tate & Liza's Mind Badge | P0 |  | 37999 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
+| [35-mossdeep-space-center-steven-multi](emerald/35-mossdeep-space-center-steven-multi/milestone.toml) | Mossdeep Space Center: Magma's raid, the Steven multi battle | P0 |  | 26865 | prev + `None` | MAP_MOSSDEEP_CITY_SPACE_CENTER_2F | passing |
+| [36-stevens-house-hm-dive](emerald/36-stevens-house-hm-dive/milestone.toml) | Steven's house: HM08 Dive | P0 |  | 3072 | prev + `None` | MAP_MOSSDEEP_CITY_STEVENS_HOUSE | passing |
 | [37-seafloor-cavern-archie-kyogre](emerald/37-seafloor-cavern-archie-kyogre/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre | P0 |  | 22000 | prev + `None` | MAP_ROUTE128 | planned |
 | [38-sootopolis-cave-of-origin-wallace](emerald/38-sootopolis-cave-of-origin-wallace/milestone.toml) | Sootopolis in the storm: Steven, the Cave of Origin, Wallace | P0 |  | 12000 | prev + `None` | MAP_CAVE_OF_ORIGIN_B1F | planned |
 | [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 20000 | prev + `None` | MAP_SKY_PILLAR_TOP | planned |
@@ -3453,7 +3453,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAXIE_MAGMA_HIDEOUT (601), src/data/trainers.h:7216; TRAINER_TABITHA_MAGMA_HIDEOUT (732), src/data/trainers.h:8788
 - end state: map MAP_MAGMA_HIDEOUT_4F; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS; flags clear FLAG_HIDE_SLATEPORT_CITY_CAPTAIN_STERN, FLAG_HIDE_SLATEPORT_CITY_GABBY_AND_TY; vars VAR_JAGGED_PASS_STATE=2, VAR_SLATEPORT_CITY_STATE=1, VAR_SLATEPORT_HARBOR_STATE=1
-- frames: estimate 14000, budget 90000
+- frames: estimate 69564, budget 104400
 - refs: data/maps/JaggedPass/scripts.inc:9-18; data/maps/JaggedPass/map.json coord_events (13..14,15)/(21,15)/(21..22,20) VAR_JAGGED_PASS_STATE=1; data/maps/JaggedPass/scripts.inc:39-61; data/maps/JaggedPass/map.json warp_events[4] (16,18) -> MAGMA_HIDEOUT_1F; data/maps/MagmaHideout_1F/map.json warp_events[3] (20,22) -> 2F_3R; data/maps/MagmaHideout_2F_3R/map.json warp_events[1] (16,13) -> 3F_3R; data/maps/MagmaHideout_3F_3R/map.json warp_events[1] (16,21) -> 4F; data/maps/MagmaHideout_4F/map.json object_events 5 TABITHA (22,4), 6 MAXIE (16,21); data/maps/MagmaHideout_4F/scripts.inc:4-64; TRAINER_MAXIE_MAGMA_HIDEOUT (601), src/data/trainers.h:7216; TRAINER_TABITHA_MAGMA_HIDEOUT (732), src/data/trainers.h:8788; src/party_menu.c:125 (Fly)
 - notes: Maxie: TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAMERUPT 39; Tabitha (4F (22,4) sight 4, off the 3F_3R -> 4F path [INFERENCE]): TRAINER_TABITHA_MAGMA_HIDEOUT (732): NUMEL 26, MIGHTYENA 28, ZUBAT 30, CAMERUPT 33; ~12 grunts lv 28-30 (sight trainers). Fly to Lavaridge (visited in 22), Route 112 east, Jagged Pass up from the bottom (14,40). The hideout's 1F boulders (5..7,22..23) are Strength puzzles off the short route [INFERENCE].
 
@@ -3463,7 +3463,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_SLATEPORT_CITY_HARBOR; 6 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_MET_TEAM_AQUA_HARBOR, FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1_BLOCKING_ENTRANCE, FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_2_BLOCKING_ENTRANCE, FLAG_HIDE_LILYCOVE_MOTEL_SCOTT; vars VAR_SLATEPORT_HARBOR_STATE=2, VAR_SLATEPORT_CITY_STATE=2
-- frames: estimate 5000, budget 60000
+- frames: estimate 18462, budget 27700
 - refs: data/maps/SlateportCity/map.json object_events[11] CAPT_STERN (28,13); data/maps/SlateportCity/scripts.inc:523-568; data/maps/SlateportCity_Harbor/map.json coord_events (8,11..14) VAR_SLATEPORT_HARBOR_STATE=1; data/maps/SlateportCity_Harbor/scripts.inc:6-20; data/maps/SlateportCity_Harbor/scripts.inc:23-76; src/party_menu.c:3879
 - notes: No battle. Fly to Slateport (visited in 13). Stern (28,13) stands at the harbor door with Gabby & Ty (VAR_SLATEPORT_CITY_STATE 1 -> MovePeopleForSternInterview, SlateportCity/scripts.inc:9,19). The harbor scene hides FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1_BLOCKING_ENTRANCE and FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_2_BLOCKING_ENTRANCE (SlateportCity_Harbor/scripts.inc:71-72), which opens the Aqua Hideout (33).
 
@@ -3473,7 +3473,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MATT (30), src/data/trainers.h:364; TRAINER_GRUNT_AQUA_HIDEOUT_1 (2), src/data/trainers.h:28; TRAINER_GRUNT_AQUA_HIDEOUT_2 (3), src/data/trainers.h:40; TRAINER_GRUNT_AQUA_HIDEOUT_3 (4), src/data/trainers.h:52; TRAINER_GRUNT_AQUA_HIDEOUT_4 (5), src/data/trainers.h:64; TRAINER_GRUNT_AQUA_HIDEOUT_5 (27), src/data/trainers.h:328; TRAINER_GRUNT_AQUA_HIDEOUT_6 (28), src/data/trainers.h:340; TRAINER_GRUNT_AQUA_HIDEOUT_7 (192), src/data/trainers.h:2308; TRAINER_GRUNT_AQUA_HIDEOUT_8 (193), src/data/trainers.h:2320
 - end state: map MAP_AQUA_HIDEOUT_B2F; 6 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS
-- frames: estimate 16000, budget 60000
+- frames: estimate 61764, budget 92700
 - refs: data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F; data/maps/AquaHideout_1F/map.json warp_events[2] (22,1) -> B1F; data/maps/AquaHideout_B1F/map.json warp_events 0..24 (panels); data/maps/AquaHideout_B2F/map.json object_events[1] MATT (23,19), coord_events (28,16)/(28,17); data/maps/AquaHideout_B2F/scripts.inc:13-46; TRAINER_MATT (30), src/data/trainers.h:364; TRAINER_GRUNT_AQUA_HIDEOUT_1 (2), src/data/trainers.h:28; TRAINER_GRUNT_AQUA_HIDEOUT_2 (3), src/data/trainers.h:40; TRAINER_GRUNT_AQUA_HIDEOUT_3 (4), src/data/trainers.h:52; TRAINER_GRUNT_AQUA_HIDEOUT_4 (5), src/data/trainers.h:64; TRAINER_GRUNT_AQUA_HIDEOUT_5 (27), src/data/trainers.h:328; TRAINER_GRUNT_AQUA_HIDEOUT_6 (28), src/data/trainers.h:340; TRAINER_GRUNT_AQUA_HIDEOUT_7 (192), src/data/trainers.h:2308; TRAINER_GRUNT_AQUA_HIDEOUT_8 (193), src/data/trainers.h:2320
 - notes: Matt: TRAINER_MATT (30): MIGHTYENA 34, GOLBAT 34; grunts lv 31-32. The B1F warp panels pair by warp index (AquaHideout_B1F warp_events 4..24 self-links); two Electrode item-ball fakes (lv30) on B1F. The Master Ball item ball sits in the hideout [INFERENCE: optional]. Lilycove's east cave (70,5) is reached by Surf from the shore.
 
@@ -3483,7 +3483,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_TATE_AND_LIZA_1 (271), src/data/trainers.h:3256
 - end state: map MAP_MOSSDEEP_CITY; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_VISITED_MOSSDEEP_CITY, FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_RECEIVED_TM_CALM_MIND, FLAG_HIDE_AQUA_HIDEOUT_GRUNTS, FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_1F_STEVEN; flags clear FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA, FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_2F_STEVEN; vars VAR_MOSSDEEP_CITY_STATE=1, VAR_MOSSDEEP_SPACE_CENTER_STATE=1
-- frames: estimate 18000, budget 60000
+- frames: estimate 37999, budget 57000
 - refs: data/maps/LilycoveCity/map.json object_events[10] Wailmer grunt (73,15) FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS; data/maps/Route124/map.json connections right MOSSDEEP_CITY offset 40; data/maps/MossdeepCity/scripts.inc:71-74; data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> GYM; data/maps/MossdeepCity_Gym/map.json coord_events switches/warp; data/maps/MossdeepCity_Gym/scripts.inc:51-104; data/maps/MossdeepCity_Gym/scripts.inc:113-196; TRAINER_TATE_AND_LIZA_1 (271), src/data/trainers.h:3256; src/party_menu.c:126 (Dive needs FLAG_BADGE07_GET)
 - notes: Tate & Liza (DOUBLE, two mons needed): TRAINER_TATE_AND_LIZA_1 (271): CLAYDOL 41, XATU 41, LUNATONE 42, SOLROCK 42 (Lunatone/Solrock Rock/Psychic, Claydol Ground: Surf hits hard; auto_battle must target in doubles). Gym trainers lv36 (Preston, Virgil, Blake, Hannah, Samantha, Maura, Sylvia, Nate, Kathleen, Clifford, Macey, Nicholas). Route 124 swimmers lv 33-34. Badge 7 also arms the Space Center raid (MOSSDEEP_CITY_STATE 1, Magma objects shown: MossdeepCity_Gym/scripts.inc:73-79) and hides the Aqua hideout grunts (:67).
 
@@ -3493,7 +3493,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAXIE_MOSSDEEP (734), src/data/trainers.h:8812; TRAINER_TABITHA_MOSSDEEP (514), src/data/trainers.h:6172; TRAINER_GRUNT_SPACE_CENTER_2 (116), src/data/trainers.h:1396; TRAINER_GRUNT_SPACE_CENTER_5 (588), src/data/trainers.h:7060; TRAINER_GRUNT_SPACE_CENTER_6 (589), src/data/trainers.h:7072; TRAINER_GRUNT_SPACE_CENTER_7 (590), src/data/trainers.h:7084
 - end state: map MAP_MOSSDEEP_CITY_SPACE_CENTER_2F; 7 badges; >= 5 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_DEFEATED_GRUNT_SPACE_CENTER_1F, FLAG_DEFEATED_MAGMA_SPACE_CENTER, FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_1F_TEAM_MAGMA, FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_2F_TEAM_MAGMA, FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA; flags clear FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_STEVEN; vars VAR_MOSSDEEP_CITY_STATE=3, VAR_MOSSDEEP_SPACE_CENTER_STATE=3, VAR_STEVENS_HOUSE_STATE=1
-- frames: estimate 14000, budget 60000
+- frames: estimate 26865, budget 40300
 - refs: data/maps/MossdeepCity/map.json coord_events (42,21)/(41,22..24)/(40,25..26) VAR_MOSSDEEP_CITY_STATE=1; data/maps/MossdeepCity/scripts.inc:76-97; data/maps/MossdeepCity/map.json warp_events[8] (64,15) -> SPACE_CENTER_1F; data/maps/MossdeepCity_SpaceCenter_1F/map.json object_events[9] stair grunt (13,2); data/maps/MossdeepCity_SpaceCenter_1F/scripts.inc:207-225; data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:27-62; data/maps/MossdeepCity_SpaceCenter_2F/map.json object_events[4] STEVEN (1,8); data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:170-245; data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:246-290; data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:313-320; TRAINER_MAXIE_MOSSDEEP (734), src/data/trainers.h:8812; TRAINER_TABITHA_MOSSDEEP (514), src/data/trainers.h:6172; TRAINER_GRUNT_SPACE_CENTER_2 (116), src/data/trainers.h:1396; TRAINER_GRUNT_SPACE_CENTER_5 (588), src/data/trainers.h:7060; TRAINER_GRUNT_SPACE_CENTER_6 (589), src/data/trainers.h:7072; TRAINER_GRUNT_SPACE_CENTER_7 (590), src/data/trainers.h:7084; src/battle_setup.c (DoSpecialTrainerBattle SPECIAL_BATTLE_STEVEN) [INFERENCE: battle_tower.c]
 - notes: Multi battle (Steven's Metang/Skarmory/Aggron [INFERENCE] beside you): TRAINER_MAXIE_MOSSDEEP (734): MIGHTYENA 42, CROBAT 43, CAMERUPT 44 + TRAINER_TABITHA_MOSSDEEP (514): CAMERUPT 36, MIGHTYENA 38, GOLBAT 40. 1F stair grunt: TRAINER_GRUNT_SPACE_CENTER_2 (116): MIGHTYENA 26, MIGHTYENA 28, NUMEL 30; 2F trio: TRAINER_GRUNT_SPACE_CENTER_5 (588): ZUBAT 32; TRAINER_GRUNT_SPACE_CENTER_6 (589): MIGHTYENA 32; TRAINER_GRUNT_SPACE_CENTER_7 (590): BALTOY 32. 1F sight grunts (12,9)/(11,6)/(10,2) lv 31-32. ChooseHalfPartyForBattle opens the party screen to pick 3 (selection menu); losing whites out (SetCB2WhiteOut, :244). Talking to the 1F grunt from the south (facing north) moves him off the stairs (the non-BUGFIX DIR_EAST case falls through, SpaceCenter_1F/scripts.inc:215-223).
 
@@ -3503,7 +3503,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_MOSSDEEP_CITY_STEVENS_HOUSE; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_RECEIVED_HM_DIVE, FLAG_OMIT_DIVE_FROM_STEVEN_LETTER, FLAG_HIDE_SEAFLOOR_CAVERN_ENTRANCE_AQUA_GRUNT, FLAG_HIDE_MOSSDEEP_CITY_SCOTT; vars VAR_STEVENS_HOUSE_STATE=2
-- frames: estimate 3000, budget 60000
+- frames: estimate 3072, budget 4700
 - refs: data/maps/MossdeepCity/map.json warp_events[6] (19,10) -> STEVENS_HOUSE; data/maps/MossdeepCity_StevensHouse/scripts.inc:24-47; src/party_menu.c:126; src/field_control_avatar.c:465-475 (Dive: FLAG_BADGE07_GET)
 - notes: No battle. Dive needs the Mind Badge (src/party_menu.c:126, field_control_avatar.c:465); the Dive carrier comes from a boost. Beldum's ball is only shown after the game (hall_of_fame.inc ShowStevensHouseBeldum).
 

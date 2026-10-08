@@ -2,9 +2,8 @@
 # the hideout 1F -> 2F_3R -> 3F_3R -> 4F and Maxie (TRAINER_MAXIE_MAGMA_HIDEOUT): FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT.
 # Start: Mt. Pyre summit -> end: MAP_MAGMA_HIDEOUT_4F by the empty Groudon pool.
 title = "Magma Hideout: Groudon wakes, Maxie's second battle"
-status = "planned"
 priority = "P0"
-estimate = 14000
+estimate = 69564
 refs = [
   "data/maps/JaggedPass/scripts.inc:9-18",
   "data/maps/JaggedPass/map.json coord_events (13..14,15)/(21,15)/(21..22,20) VAR_JAGGED_PASS_STATE=1",
@@ -27,7 +26,7 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 90000
+frames = 104400
 
 # PHASE2: prove the short route 1F (20,22) -> 2F_3R (16,13) -> 3F_3R (16,21) -> 4F (20,21) is walkable (probe_map each floor) and whether a Strength boulder blocks it.
 
@@ -112,12 +111,21 @@ note = "push (6,23) west to (5,23), step up to (6,22), push (5,22) west to (4,22
 
 [[step]]
 do = "walk_to"
-x = 20
-z = 21
+x = 25
+z = 12
 map = "MAP_MAGMA_HIDEOUT_4F"
 on_battle = "flee"
 max = 20000
-note = "1F (25,34) -> 2F_1R -> 3F_1R (7,21) -> 4F (static route; the grunts on the way are fought)"
+note = "1F (25,34) -> 2F_1R -> 3F_1R (7,21) -> 4F (46,8), west past the grunts (the static route; trainers on the way are fought)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 21
+via = [[24, 6], [12, 6], [6, 12], [6, 20]]
+on_battle = "flee"
+max = 12000
+note = "north and round the west side to beside Maxie (16,21), who stands in the corridor (gba_world static path)"
 
 
 [[step]]

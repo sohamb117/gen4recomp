@@ -51,7 +51,7 @@ route = [[15, 22], [4, 22], [4, 19], [2, 19], [2, 21], [3, 21], [3, 19], [4, 19]
 max = 20000
 face = "up"
 interact = true
-note = "through the rotating gates to below Winona (15,2): python3 tests/e2e/tools/gba_gates.py --game emerald MAP_FORTREE_CITY_GYM 15 24 15 3 (src/rotating_gate.c sRotatingGate_FortreePuzzleConfig); the trainers who see the route are fought on the way"
+note = "through the rotating gates to below Winona (15,2): python3 tests/e2e/tools/gba_puzzle.py --game emerald MAP_FORTREE_CITY_GYM 15 24 15 3 (src/rotating_gate.c sRotatingGate_FortreePuzzleConfig); the trainers who see the route are fought on the way"
 
 [[step]]
 do = "advance_text"
