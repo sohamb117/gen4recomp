@@ -3980,7 +3980,7 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~960993 frames estimated
+### Story chain: 48 milestones, ~1011348 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -4025,13 +4025,13 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 29323 | prev + `None` | MAP_SKY_PILLAR_TOP | passing |
 | [40-sootopolis-rayquaza-waterfall](emerald/40-sootopolis-rayquaza-waterfall/milestone.toml) | Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall | P0 |  | 26673 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
 | [41-sootopolis-gym-juan](emerald/41-sootopolis-gym-juan/milestone.toml) | Sootopolis Gym: Juan and the Rain Badge | P0 |  | 15873 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
-| [42-ever-grande-victory-road-wally](emerald/42-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally's last battle | P0 |  | 24000 | prev + `None` | MAP_EVER_GRANDE_CITY | planned |
-| [43-pokemon-league-entrance](emerald/43-pokemon-league-entrance/milestone.toml) | Pokemon League lobby: heal and pass the badge guards | P0 |  | 4000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
-| [44-e4-sidney](emerald/44-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 |  | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | planned |
-| [45-e4-phoebe](emerald/45-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 |  | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | planned |
-| [46-e4-glacia](emerald/46-e4-glacia/milestone.toml) | Elite Four: Glacia | P0 |  | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_DRAKES_ROOM | planned |
-| [47-e4-drake](emerald/47-e4-drake/milestone.toml) | Elite Four: Drake | P0 |  | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_HALL4 | planned |
-| [48-champion-wallace-hall-of-fame](emerald/48-champion-wallace-hall-of-fame/milestone.toml) | Champion Wallace, the Hall of Fame, credits and the reset | P0 |  | 26000 | prev + `None` | - | planned |
+| [42-ever-grande-victory-road-wally](emerald/42-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally's last battle | P0 |  | 63226 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
+| [43-pokemon-league-entrance](emerald/43-pokemon-league-entrance/milestone.toml) | Pokemon League lobby: heal and pass the badge guards | P0 |  | 2993 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | passing |
+| [44-e4-sidney](emerald/44-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 |  | 7347 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | passing |
+| [45-e4-phoebe](emerald/45-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 |  | 7220 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | passing |
+| [46-e4-glacia](emerald/46-e4-glacia/milestone.toml) | Elite Four: Glacia | P0 |  | 14792 | prev + `None` | MAP_EVER_GRANDE_CITY_DRAKES_ROOM | passing |
+| [47-e4-drake](emerald/47-e4-drake/milestone.toml) | Elite Four: Drake | P0 |  | 9523 | prev + `None` | MAP_EVER_GRANDE_CITY_HALL4 | passing |
+| [48-champion-wallace-hall-of-fame](emerald/48-champion-wallace-hall-of-fame/milestone.toml) | Champion Wallace, the Hall of Fame, credits and the reset | P0 |  | 27254 | prev + `None` | - | passing |
 
 #### emerald/01-newgame-truck-house — New game: intro, Birch speech, truck ride, into the house
 - proves: Proves the blank-chip Emerald start: title, Birch speech (BOY, the default; name AAAAAAA), the moving truck, Mom at the door and into the house (LittlerootTown OnFrame StepOffTruckMale -> warpsilent 1F (8,8)). Start: power-on (no save) -> end: MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F (8,7), VAR_LITTLEROOT_INTRO_STATE 4.
@@ -4449,7 +4449,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WALLY_VR_1 (519), src/data/trainers.h:6232; TRAINER_ALBERT (80), src/data/trainers.h:964; TRAINER_EDGAR (79), src/data/trainers.h:952; TRAINER_HOPE (96), src/data/trainers.h:1156; TRAINER_QUINCY (324), src/data/trainers.h:3892; TRAINER_KATELYNN (325), src/data/trainers.h:3904
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_VISITED_EVER_GRANDE_CITY, FLAG_DEFEATED_WALLY_VICTORY_ROAD, FLAG_RECEIVED_HM_WATERFALL
-- frames: estimate 24000, budget 90000
+- frames: estimate 63226, budget 94900
 - refs: data/maps/Route128/map.json connections right EVER_GRANDE_CITY offset -40; data/maps/EverGrandeCity/scripts.inc:21-23; data/maps/EverGrandeCity/map.json warp_events 2 (18,41) / 3 (18,27) -> VICTORY_ROAD_1F, 0 (18,5) -> LEAGUE_1F; data/maps/VictoryRoad_1F/map.json coord_events (2,23)/(3,23) VAR_VICTORY_ROAD_1F_STATE=0; data/maps/VictoryRoad_1F/scripts.inc:20-45; data/maps/VictoryRoad_1F/map.json warp_events 0..4; data/maps/VictoryRoad_B1F/map.json object_events boulders/rocks, warp_events; data/maps/VictoryRoad_B2F/map.json warp_events; TRAINER_WALLY_VR_1 (519), src/data/trainers.h:6232; src/field_control_avatar.c:455 (Waterfall: FLAG_BADGE08_GET); src/party_menu.c:122-127; TRAINER_ALBERT (80), src/data/trainers.h:964; TRAINER_EDGAR (79), src/data/trainers.h:952; TRAINER_HOPE (96), src/data/trainers.h:1156; TRAINER_QUINCY (324), src/data/trainers.h:3892; TRAINER_KATELYNN (325), src/data/trainers.h:3904
 - notes: Wally: TRAINER_WALLY_VR_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Victory Road trainers lv 42-45 (Albert, Edgar, Hope, Quincy, Katelynn on 1F; Halle, Michelle, Mitchell, Samuel, Shannon on B1F; Caroline, Dianne, Felix, Julie, Owen, Vito on B2F). Field moves on the way: Surf (Routes 126-128), Waterfall (Ever Grande's fall, badge 8), Strength + Rock Smash (VR B1F: boulders (20,5)/(21,4)/(4,7)/(9,10)/(20,26)/(21,25)/(35,6)/(34,4), rocks (19,5)/(20,4)/(18,12)/(20,25)/(21,26)/(34,3)), Flash not needed [INFERENCE: Emerald VR is lit]. Ever Grande south coord row y=58 sets FLAG_VISITED_EVER_GRANDE_CITY.
 
@@ -4459,7 +4459,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM; 8 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_LANDMARK_POKEMON_LEAGUE, FLAG_ENTERED_ELITE_FOUR, FLAG_MET_SCOTT_IN_EVERGRANDE; vars VAR_ELITE_4_STATE=1
-- frames: estimate 4000, budget 60000
+- frames: estimate 2993, budget 4500
 - refs: data/maps/EverGrandeCity_PokemonLeague_1F/map.json object_events 1 nurse (3,2), 3/4 guards (8,2)/(11,2); data/maps/EverGrandeCity_PokemonLeague_1F/scripts.inc:8-15; data/maps/EverGrandeCity_PokemonLeague_1F/scripts.inc:48-72; data/maps/EverGrandeCity_Hall5/map.json warp_events[1] (5,2) -> SIDNEYS_ROOM; data/maps/EverGrandeCity_SidneysRoom/scripts.inc:34-43
 - notes: No battle. The guards only check FLAG_BADGE06_GET (EverGrandeCity_PokemonLeague_1F/scripts.inc:57) [the script text says all badges]. Heal at the League nurse with the heal bot (the nurse is a counter NPC, not a door) [INFERENCE: heal x/z = the League 1F door (18,5) seen from Ever Grande; else talk_to id 1 + A x N].
 
@@ -4469,7 +4469,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_SIDNEY (261), src/data/trainers.h:3136
 - end state: map MAP_EVER_GRANDE_CITY_PHOEBES_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SIDNEY; vars VAR_ELITE_4_STATE=2
-- frames: estimate 7000, budget 60000
+- frames: estimate 7347, budget 11100
 - refs: data/maps/EverGrandeCity_SidneysRoom/map.json object_events[1]; data/maps/EverGrandeCity_SidneysRoom/scripts.inc:51; data/maps/EverGrandeCity_SidneysRoom/scripts.inc:61; data/maps/EverGrandeCity_SidneysRoom/map.json warp_events[1] (6,2); data/maps/EverGrandeCity_Hall1/map.json warp_events (5,2); TRAINER_SIDNEY (261), src/data/trainers.h:3136; data/scripts/elite_four.inc
 - notes: Sidney: TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, CRAWDAUNT 48, ABSOL 49. No healing between E4 rooms: the boost recipe should carry Full Restores / levels for the whole run [INFERENCE]. A quick save inside the E4 rooms resumes in place (src/save_location.c has no E4 special warp).
 
@@ -4479,7 +4479,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_PHOEBE (262), src/data/trainers.h:3148
 - end state: map MAP_EVER_GRANDE_CITY_GLACIAS_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SIDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE; vars VAR_ELITE_4_STATE=3
-- frames: estimate 7000, budget 60000
+- frames: estimate 7220, budget 10900
 - refs: data/maps/EverGrandeCity_PhoebesRoom/map.json object_events[1]; data/maps/EverGrandeCity_PhoebesRoom/scripts.inc:45; data/maps/EverGrandeCity_PhoebesRoom/scripts.inc:55; data/maps/EverGrandeCity_PhoebesRoom/map.json warp_events[1] (6,2); data/maps/EverGrandeCity_Hall2/map.json warp_events (5,2); TRAINER_PHOEBE (262), src/data/trainers.h:3148; data/scripts/elite_four.inc
 - notes: Phoebe: TRAINER_PHOEBE (262): DUSCLOPS 48, BANETTE 49, SABLEYE 50, BANETTE 49, DUSCLOPS 51. No healing between E4 rooms: the boost recipe should carry Full Restores / levels for the whole run [INFERENCE]. A quick save inside the E4 rooms resumes in place (src/save_location.c has no E4 special warp).
 
@@ -4489,7 +4489,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GLACIA (263), src/data/trainers.h:3160
 - end state: map MAP_EVER_GRANDE_CITY_DRAKES_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SIDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA; vars VAR_ELITE_4_STATE=4
-- frames: estimate 7000, budget 60000
+- frames: estimate 14792, budget 22200
 - refs: data/maps/EverGrandeCity_GlaciasRoom/map.json object_events[1]; data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:45; data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:55; data/maps/EverGrandeCity_GlaciasRoom/map.json warp_events[1] (6,2); data/maps/EverGrandeCity_Hall3/map.json warp_events (5,2); TRAINER_GLACIA (263), src/data/trainers.h:3160; data/scripts/elite_four.inc
 - notes: Glacia: TRAINER_GLACIA (263): SEALEO 50, GLALIE 50, SEALEO 52, GLALIE 52, WALREIN 53. No healing between E4 rooms: the boost recipe should carry Full Restores / levels for the whole run [INFERENCE]. A quick save inside the E4 rooms resumes in place (src/save_location.c has no E4 special warp).
 
@@ -4499,7 +4499,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_DRAKE (264), src/data/trainers.h:3172
 - end state: map MAP_EVER_GRANDE_CITY_HALL4; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SIDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA, FLAG_DEFEATED_ELITE_4_DRAKE; vars VAR_ELITE_4_STATE=4
-- frames: estimate 7000, budget 60000
+- frames: estimate 9523, budget 14300
 - refs: data/maps/EverGrandeCity_DrakesRoom/map.json object_events[1]; data/maps/EverGrandeCity_DrakesRoom/scripts.inc:46; data/maps/EverGrandeCity_DrakesRoom/scripts.inc:58; data/maps/EverGrandeCity_DrakesRoom/map.json warp_events[1] (6,2); data/maps/EverGrandeCity_Hall4/map.json warp_events (5,2); TRAINER_DRAKE (264), src/data/trainers.h:3172; data/scripts/elite_four.inc
 - notes: Drake: TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, KINGDRA 53, FLYGON 53, SALAMENCE 55. No healing between E4 rooms: the boost recipe should carry Full Restores / levels for the whole run [INFERENCE]. A quick save inside the E4 rooms resumes in place (src/save_location.c has no E4 special warp).
 
@@ -4509,7 +4509,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WALLACE (335), src/data/trainers.h:4024
 - end state: 8 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_SYS_GAME_CLEAR, FLAG_IS_CHAMPION, FLAG_ENTERED_ELITE_FOUR, FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY, FLAG_HIDE_LILYCOVE_CITY_RIVAL, FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM, FLAG_SYS_RIBBON_GET; flags clear FLAG_DEFEATED_ELITE_4_SIDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA, FLAG_DEFEATED_ELITE_4_DRAKE, FLAG_HIDE_VICTORY_ROAD_EXIT_WALLY; vars VAR_ELITE_4_STATE=0, VAR_STEVENS_HOUSE_STATE=2
-- frames: estimate 26000, budget 60000
+- frames: estimate 27254, budget 40900
 - refs: data/maps/EverGrandeCity_Hall4/map.json warp_events[1] (5,2) -> CHAMPIONS_ROOM; data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:19-62; data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:93-123; TRAINER_WALLACE (335), src/data/trainers.h:4024; data/maps/EverGrandeCity_HallOfFame/scripts.inc:13-62; data/scripts/hall_of_fame.inc:1-25; data/event_scripts.s:628-634 (ResetEliteFour); src/post_battle_event_funcs.c:12-41 (GameClear: HealPlayerParty, FLAG_SYS_GAME_CLEAR, continue warp = Brendan's 2F, Champion ribbons); src/hall_of_fame.c:419-427 (CB2_DoHallOfFameScreen); src/hall_of_fame.c:524-526 (Task_Hof_TrySaveData: TrySavingData(SAVE_HALL_OF_FAME)); src/hall_of_fame.c:781-784 (StartCredits); src/credits.c:670-690 (Task_CreditsTheEnd6: 7200 frames or any key); src/credits.c:694-698 (Task_CreditsSoftReset: SoftReset(RESET_ALL))
 - notes: Wallace: TRAINER_WALLACE (335): WAILORD 57, TENTACRUEL 55, LUDICOLO 56, WHISCASH 56, GYARADOS 56, MILOTIC 58 (Electric/Grass coverage; boost ~60). Entering the Champion's room runs straight through: OnFrame EnterRoom walks up and starts the battle, Defeated brings May and Birch, warps to the Hall of Fame (7,16), whose OnFrame records the team and calls SetGameClearFlags + special GameClear. GameClear sets FLAG_SYS_GAME_CLEAR and the continue warp (Brendan's 2F heal location), CB2_DoHallOfFameScreen saves (SAVE_HALL_OF_FAME = the full game save + HoF record) before the credits; the credits end on "The End", which waits 7200 frames or a key (src/credits.c:674-678), then SoftReset(RESET_ALL) (src/credits.c:694-698): the game resets itself, so the run ends with wait_reset and [run] save = "none". SetGameClearFlags resets the Elite Four flags (data/event_scripts.s:628-634).
 <!-- plan.py:end emerald -->

@@ -3,6 +3,7 @@
 # headless regression runs.
 #
 #   tests/dp/regress.sh [--no-build] [--only NAME]... [--update --reason TEXT]
+#   tests/dp/regress.sh --inputs dp|plat|rse
 #
 # Each case in tests/dp/expected.txt runs np_headless to a fixed frame count
 # and compares the final hash (frames + audio, np_headless's formula):
@@ -18,11 +19,35 @@
 # Diamond and Pearl into $NP_DP_CORE (default build/core-dp), Platinum into
 # $NP_PLAT_CORE (default build/core-plat), Ruby/Sapphire/Emerald into
 # $NP_RSE_CORE (default build/core-rse), configured on first use. Each
-# build runs under tools/heavy.sh with -j $NP_JOBS (default 4).
+# build runs under tools/heavy.sh with -j $NP_JOBS (default 4). With
+# NP_MIN_FREE_GB=N, a build step finding less than N GiB free fails instead.
 #
 # Updating hashes is deliberate: --update re-runs the selected cases (all by
 # default), writes the new hashes into expected.txt and appends one history
 # line per changed hash with the date and the required --reason.
+#
+# Core inputs: the tracked files each core is built from, as git pathspecs
+# (--inputs prints them; tools/gate.sh selects cases by them):
+#   every core  core/CMakeLists.txt core/cmake core/include core/runtime
+#               core/tools, shell/src/net.c shell/src/net.h (np_headless
+#               links them), tools/wasm2c_postprocess.py tools/toolchains.lock
+#   dp (D/P)    games/diamond, and the Platinum port code its makefile builds:
+#               games/platinum/pc games/platinum/tools/armrec
+#               games/platinum/subprojects
+#   plat (Pt)   games/platinum
+#   rse (R/S/E) games/gba-common games/emerald games/ruby (the decomps are
+#               the read-only .cache/gba)
+#
+# Reused cores (NP_GATE_CORES=DIR; unset by default, tools/gate.sh sets it):
+# DIR is laid out like build/ (core-dp, core-plat, core-rse; links will do),
+# each core with the commit it was built from beside it (DIR/core-dp.rev,
+# ...). A wanted core is run from DIR, building neither its guest modules
+# nor the core, when this tree's inputs for it are that commit's (no diff, no
+# untracked file), its CMakeCache.txt is configure()'s Release build of
+# exactly the games whose ROMs are here, and its np_headless is not newer
+# than its .rev; otherwise it is built as usual. After building a core whose
+# inputs are HEAD's before and after, regress.sh writes <core dir>.rev (e.g.
+# build/core-dp.rev), so any build/ can serve as such a DIR.
 set -u
 
 root=$(cd "$(dirname "$0")/../.." && pwd)
@@ -31,15 +56,32 @@ expected=tests/dp/expected.txt
 dp_core=${NP_DP_CORE:-build/core-dp}
 plat_core=${NP_PLAT_CORE:-build/core-plat}
 rse_core=${NP_RSE_CORE:-build/core-rse}
+gate=${NP_GATE_CORES:-}
 build=1 update=0 reason=
 only=()
+
+inputs() { # inputs dp|plat|rse: the core's git pathspecs (header)
+    echo core/CMakeLists.txt core/cmake core/include core/runtime core/tools \
+        shell/src/net.c shell/src/net.h tools/wasm2c_postprocess.py tools/toolchains.lock
+    case $1 in
+    dp) echo games/diamond games/platinum/pc games/platinum/tools/armrec games/platinum/subprojects ;;
+    plat) echo games/platinum ;;
+    rse) echo games/gba-common games/emerald games/ruby ;;
+    esac
+}
+
 while [ $# -gt 0 ]; do
     case $1 in
     --no-build) build=0; shift ;;
     --only) only+=("$2"); shift 2 ;;
     --update) update=1; shift ;;
     --reason) reason=$2; shift 2 ;;
-    *) sed -n '2,23p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
+    --inputs)
+        case ${2:-} in dp | plat | rse) inputs "$2" | tr ' ' '\n'; exit 0 ;; esac
+        echo "regress: --inputs dp|plat|rse" >&2
+        exit 2
+        ;;
+    *) sed -n '2,27p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
     esac
 done
 if [ $update = 1 ] && [ -z "$reason" ]; then
@@ -56,13 +98,30 @@ rom_of() {
     ruby | sapphire) echo ".cache/gba/pokeruby/poke$1.gba" ;;
     esac
 }
-core_of() {
+group_of() {
     case $1 in
-    diamond | pearl) echo "$dp_core" ;;
-    platinum) echo "$plat_core" ;;
-    emerald | ruby | sapphire) echo "$rse_core" ;;
+    diamond | pearl) echo dp ;;
+    platinum) echo plat ;;
+    emerald | ruby | sapphire) echo rse ;;
     esac
 }
+games_of() {
+    case $1 in
+    dp) echo diamond pearl ;;
+    plat) echo platinum ;;
+    rse) echo emerald ruby sapphire ;;
+    esac
+}
+present() { # present GROUP: its games whose ROM is here (the ones its core holds)
+    local g out=
+    for g in $(games_of "$1"); do [ -f "$(rom_of "$g")" ] && out="$out $g"; done
+    echo $out
+}
+# Each core's build directory, and the np_headless it runs from: the one in
+# its build directory unless reused.
+dir_of() { eval "echo \"\$${1}_core\""; }
+dp_bin=$dp_core/np_headless plat_bin=$plat_core/np_headless rse_bin=$rse_core/np_headless
+bin_of() { eval "echo \"\$$(group_of "$1")_bin\""; }
 selected() {
     [ ${#only[@]} = 0 ] && return 0
     local o
@@ -87,6 +146,73 @@ if [ ${#names[@]} = 0 ]; then
     exit 0
 fi
 want() { printf '%s\n' "${games[@]}" | grep -qx "$1"; }
+want_group() {
+    local g
+    for g in $(games_of "$1"); do want "$g" && return 0; done
+    return 1
+}
+
+configure() { # configure DIR GAME...
+    local dir=$1
+    shift
+    [ -f "$dir/build.ninja" ] && return 0
+    local defs=() g
+    for g in "$@"; do
+        case $g in
+        diamond) defs+=("-DNP_GUEST_WASM_diamond=$root/games/diamond/build/pc-wasm/pokediamond.wasm") ;;
+        pearl) defs+=("-DNP_GUEST_WASM_pearl=$root/games/diamond/build/pc-wasm/pokepearl.wasm") ;;
+        platinum) defs+=("-DNP_GUEST_WASM_platinum=$root/games/platinum/build/pc-wasm/pokeplatinum.wasm") ;;
+        emerald) defs+=("-DNP_GUEST_WASM_emerald=$root/games/emerald/build/pc-wasm/pokeemerald.wasm") ;;
+        ruby | sapphire) defs+=("-DNP_GUEST_WASM_$g=$root/games/ruby/build/pc-wasm/poke$g.wasm") ;;
+        esac
+    done
+    cmake -S core -B "$dir" -G Ninja -DCMAKE_BUILD_TYPE=Release -DNP_BUILD_TESTS=OFF \
+        -DNP_GUEST_POSTPROCESS="$root/tools/wasm2c_postprocess.py" "${defs[@]}"
+}
+
+# same_inputs REV GROUP: this tree's inputs of GROUP are commit REV's: no
+# difference, tracked or not.
+same_inputs() {
+    local paths
+    paths=$(inputs "$2")
+    git rev-parse --verify --quiet "$1^{commit}" >/dev/null || return 1
+    # shellcheck disable=SC2086 # pathspec word lists
+    git diff --quiet "$1" -- $paths || return 1
+    # shellcheck disable=SC2086
+    [ -z "$(git ls-files --others --exclude-standard -- $paths)" ]
+}
+# holds DIR GROUP: DIR is configure()'s build of exactly GROUP's present
+# games, and DIR.rev says what it was built from.
+holds() {
+    local cache=$1/CMakeCache.txt built
+    [ -x "$1/np_headless" ] && [ -f "$1.rev" ] && [ ! "$1/np_headless" -nt "$1.rev" ] && [ -f "$cache" ] ||
+        return 1
+    grep -qx 'CMAKE_BUILD_TYPE:STRING=Release' "$cache" && grep -qx 'NP_BOUNDS_CHECK:BOOL=OFF' "$cache" ||
+        return 1
+    built=$(sed -n 's/^NP_GUEST_WASM_\([a-z]*\):FILEPATH=..*/\1/p' "$cache" | sort | xargs)
+    [ "$built" = "$(present "$2" | tr ' ' '\n' | sort | xargs)" ]
+}
+
+# Each wanted core: run from NP_GATE_CORES (header), or built here; one to
+# build whose inputs are HEAD's now is stamped if they still are after.
+reuse=" " clean=" "
+head=$(git rev-parse HEAD)
+for grp in dp plat rse; do
+    want_group $grp || continue
+    if [ -n "$gate" ]; then
+        c=$gate/core-$grp
+        rev=$(cat "$c.rev" 2>/dev/null)
+        if [ -n "$rev" ] && holds "$c" $grp && same_inputs "$rev" $grp; then
+            eval "${grp}_bin=\$c/np_headless"
+            reuse="$reuse$grp "
+            echo "reuse: $c (built from ${rev:0:9}, whose $grp inputs are this tree's)"
+            continue
+        fi
+        echo "build: $grp: $c${rev:+ (${rev:0:9})} is not a build of this tree's $grp inputs"
+    fi
+    if [ $build = 1 ] && same_inputs "$head" $grp; then clean="$clean$grp "; fi
+done
+reused() { case $reuse in *" $1 "*) return 0 ;; esac; return 1; }
 
 if [ $build = 1 ]; then
     # The machine-wide semaphore and job cap for heavy builds (tools/heavy.sh).
@@ -95,6 +221,11 @@ if [ $build = 1 ]; then
     blog=$(mktemp "${TMPDIR:-/tmp}/regress-build.XXXXXX")
     step() { # step LABEL CMD...: quiet unless it fails
         echo "build: $1"
+        if [ -n "${NP_MIN_FREE_GB:-}" ] &&
+            [ "$(df -k . | awk 'NR == 2 { print $4 }')" -lt $((NP_MIN_FREE_GB * 1024 * 1024)) ]; then
+            echo "FAIL build: less than $NP_MIN_FREE_GB GiB free"
+            exit 1
+        fi
         shift
         if ! "$@" >>"$blog" 2>&1; then
             tail -n 30 "$blog"
@@ -102,46 +233,30 @@ if [ $build = 1 ]; then
             exit 1
         fi
     }
-    want diamond && step "diamond module" "$heavy" make -C games/diamond -f pc/Makefile.wasm -j"$jobs"
-    want pearl && step "pearl module" "$heavy" make -C games/diamond -f pc/Makefile.wasm -j"$jobs" GAME_VERSION=PEARL
-    want platinum && step "platinum module" "$heavy" make -C games/platinum -f pc/Makefile.wasm -j"$jobs"
-    for g in emerald ruby sapphire; do
-        want $g && step "$g module" "$heavy" games/gba-common/tools/gbabuild.py $g -j "$jobs"
-    done
-    configure() { # configure DIR GAME...
-        local dir=$1
-        shift
-        [ -f "$dir/build.ninja" ] && return 0
-        local defs=() g
-        for g in "$@"; do
-            case $g in
-            diamond) defs+=("-DNP_GUEST_WASM_diamond=$root/games/diamond/build/pc-wasm/pokediamond.wasm") ;;
-            pearl) defs+=("-DNP_GUEST_WASM_pearl=$root/games/diamond/build/pc-wasm/pokepearl.wasm") ;;
-            platinum) defs+=("-DNP_GUEST_WASM_platinum=$root/games/platinum/build/pc-wasm/pokeplatinum.wasm") ;;
-            emerald) defs+=("-DNP_GUEST_WASM_emerald=$root/games/emerald/build/pc-wasm/pokeemerald.wasm") ;;
-            ruby | sapphire) defs+=("-DNP_GUEST_WASM_$g=$root/games/ruby/build/pc-wasm/poke$g.wasm") ;;
-            esac
+    if ! reused dp; then
+        want diamond && step "diamond module" "$heavy" make -C games/diamond -f pc/Makefile.wasm -j"$jobs"
+        want pearl && step "pearl module" "$heavy" make -C games/diamond -f pc/Makefile.wasm -j"$jobs" GAME_VERSION=PEARL
+    fi
+    if ! reused plat; then
+        want platinum && step "platinum module" "$heavy" make -C games/platinum -f pc/Makefile.wasm -j"$jobs"
+    fi
+    if ! reused rse; then
+        for g in emerald ruby sapphire; do
+            want $g && step "$g module" "$heavy" games/gba-common/tools/gbabuild.py $g -j "$jobs"
         done
-        cmake -S core -B "$dir" -G Ninja -DCMAKE_BUILD_TYPE=Release -DNP_BUILD_TESTS=OFF \
-            -DNP_GUEST_POSTPROCESS="$root/tools/wasm2c_postprocess.py" "${defs[@]}"
-    }
-    if want diamond || want pearl; then
-        dp=()
-        [ -f "$(rom_of diamond)" ] && dp+=(diamond)
-        [ -f "$(rom_of pearl)" ] && dp+=(pearl)
-        step "configure $dp_core" configure "$dp_core" "${dp[@]}"
-        step "core $dp_core" "$heavy" cmake --build "$dp_core" -j "$jobs"
     fi
-    if want platinum; then
-        step "configure $plat_core" configure "$plat_core" platinum
-        step "core $plat_core" "$heavy" cmake --build "$plat_core" -j "$jobs"
-    fi
-    if want emerald || want ruby || want sapphire; then
-        rse=()
-        for g in emerald ruby sapphire; do [ -f "$(rom_of $g)" ] && rse+=($g); done
-        step "configure $rse_core" configure "$rse_core" "${rse[@]}"
-        step "core $rse_core" "$heavy" cmake --build "$rse_core" -j "$jobs"
-    fi
+    for grp in dp plat rse; do
+        want_group $grp && ! reused $grp || continue
+        dir=$(dir_of $grp)
+        rm -f "$dir.rev"
+        # shellcheck disable=SC2046 # a word list of games
+        step "configure $dir" configure "$dir" $(present $grp)
+        step "core $dir" "$heavy" cmake --build "$dir" -j "$jobs"
+        case $clean in *" $grp "*)
+            if [ "$(git rev-parse HEAD)" = "$head" ] && same_inputs "$head" $grp; then echo "$head" >"$dir.rev"; fi
+            ;;
+        esac
+    done
     rm -f "$blog"
 fi
 
@@ -153,7 +268,7 @@ while read -r name game frames hash args; do
     run=0
     for n in "${names[@]}"; do [ "$n" = "$name" ] && run=1; done
     [ $run = 1 ] || continue
-    bin=$(core_of "$game")/np_headless
+    bin=$(bin_of "$game")
     if [ ! -x "$bin" ]; then
         echo "FAIL $name: no $bin"
         fail=1

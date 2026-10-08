@@ -1,9 +1,8 @@
 # Proves Sidney's room: the battle (TRAINER_SIDNEY), FLAG_DEFEATED_ELITE_4_SIDNEY, the opened north door and the walk on.
 # Start: Sidney's room (6,6) after the door closed -> end: Phoebe's room, door shut (VAR_ELITE_4_STATE 2).
 title = "Elite Four: Sidney"
-status = "planned"
 priority = "P0"
-estimate = 7000
+estimate = 7347
 refs = [
   "data/maps/EverGrandeCity_SidneysRoom/map.json object_events[1]",
   "data/maps/EverGrandeCity_SidneysRoom/scripts.inc:51",
@@ -20,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 11100
 
 [[step]]
 do = "walk_to"

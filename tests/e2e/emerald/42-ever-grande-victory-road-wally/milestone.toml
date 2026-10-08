@@ -2,9 +2,8 @@
 # (TRAINER_WALLY_VR_1, FLAG_DEFEATED_WALLY_VICTORY_ROAD) and the cave (Strength, Rock Smash) out to the League plateau.
 # Start: Sootopolis gym door -> end: MAP_EVER_GRANDE_CITY in front of the Pokemon League door (18,6).
 title = "Ever Grande and Victory Road: Wally's last battle"
-status = "planned"
 priority = "P0"
-estimate = 24000
+estimate = 63226
 refs = [
   "data/maps/Route128/map.json connections right EVER_GRANDE_CITY offset -40",
   "data/maps/EverGrandeCity/scripts.inc:21-23",
@@ -31,9 +30,8 @@ boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 90000
+frames = 94900
 
-# PHASE2: the Victory Road route 1F (15,40) -> ... -> 1F exit (39,5) through B1F/B2F with Strength pushes (steps routes); the Waterfall bump tile in Ever Grande.
 
 [[step]]
 do = "walk_to"
@@ -84,12 +82,161 @@ do = "advance_text"
 note = "FLAG_DEFEATED_WALLY_VICTORY_ROAD, entrance Wally shown (:41-45)"
 
 [[step]]
+do = "heal"
+x = 27
+z = 48
+map = "MAP_EVER_GRANDE_CITY"
+surf = true
+max = 20000
+note = "back out of Victory Road's entrance to Ever Grande's Pokemon Center: HP and PP back after Wally, before the cave's trainers"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 14
+map = "MAP_VICTORY_ROAD_1F"
+on_battle = "flee"
+max = 20000
+note = "Victory Road's static route (gba_world): 1F (9,14) -> B1F (8,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_B1F"
+
+# B1F: python3 tests/e2e/tools/gba_puzzle.py --game emerald MAP_VICTORY_ROAD_B1F 8 3 30 25 (Strength boulders, Rock Smash rocks)
+[[step]]
+do = "steps"
+route = [[8, 4], [9, 4], [9, 7], [5, 7]]
+
+[[step]]
+do = "steps"
+route = [[5, 7]]
+face = "left"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[4, 7], [4, 10], [8, 10]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[9, 10], [9, 13], [15, 13], [15, 12], [17, 12]]
+
+[[step]]
+do = "steps"
+route = [[17, 12]]
+face = "right"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[21, 12], [21, 9], [32, 9], [32, 12], [34, 12], [34, 13], [37, 13], [37, 25], [36, 25], [36, 26], [31, 26], [31, 25], [30, 25]]
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_B2F"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 12
+surf = true
+on_battle = "flee"
+max = 20000
+note = "B2F: Surf the upper lake and down its falls (MB_WATERFALL pushes south) to the island warp (19,12) -> B1F (17,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_B1F"
+
+# B1F again: gba_puzzle.py --game emerald MAP_VICTORY_ROAD_B1F 17 16 20 21
+[[step]]
+do = "steps"
+route = [[17, 17], [16, 17], [16, 19], [15, 19], [15, 25], [19, 25]]
+
+[[step]]
+do = "steps"
+route = [[19, 25]]
+face = "right"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[20, 25]]
+
+[[step]]
+do = "steps"
+route = [[20, 25]]
+face = "down"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[20, 26]]
+
+[[step]]
+do = "steps"
+route = [[20, 26]]
+face = "right"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[22, 26], [22, 21], [20, 21]]
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_1F"
+
+[[step]]
 do = "walk_to"
 x = 39
 z = 5
 map = "MAP_VICTORY_ROAD_1F"
-hm = true
-note = "[PHASE2: B1F/B2F route with Strength/Rock Smash] to the 1F exit (warp 1) -> Ever Grande (18,27)"
+on_battle = "flee"
+max = 20000
+note = "1F (21,32) north to the exit (warp 1) -> Ever Grande (18,27)"
 
 [[step]]
 do = "wait_map"
