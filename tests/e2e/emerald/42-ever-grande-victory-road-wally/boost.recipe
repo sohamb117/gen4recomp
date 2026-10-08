@@ -1,3 +1,9 @@
 # HM07 Waterfall (FLAG_RECEIVED_HM_WATERFALL, milestone 40) taught to the Swampert in place of Muddy Water: Ever
 # Grande City's waterfall up to the Pokemon League (walk_to surf: A + YES at the falls).
 party-move 0 2 MOVE_WATERFALL
+# Victory Road's trainers (double battles among them: VictoryRoad_1F/B1F scripts, lv 40-45) after Wally, with no
+# Pokemon Center inside: the chained Swampert alone runs dry and the HM carriers (Castform lv27, Linoone lv30) fall
+# in the doubles; levels to carry the cave in one go.
+party-level 0 70
+party-level 1 55
+party-level 2 55

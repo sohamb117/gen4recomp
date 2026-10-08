@@ -1,9 +1,8 @@
 # Proves Phoebe's room: the battle (TRAINER_PHOEBE), FLAG_DEFEATED_ELITE_4_PHOEBE, the opened north door and the walk on.
 # Start: Phoebe's room (6,6) after the door closed -> end: Glacia's room, door shut (VAR_ELITE_4_STATE 3).
 title = "Elite Four: Phoebe"
-status = "planned"
 priority = "P0"
-estimate = 7000
+estimate = 7220
 refs = [
   "data/maps/EverGrandeCity_PhoebesRoom/map.json object_events[1]",
   "data/maps/EverGrandeCity_PhoebesRoom/scripts.inc:45",
@@ -20,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 10900
 
 [[step]]
 do = "walk_to"

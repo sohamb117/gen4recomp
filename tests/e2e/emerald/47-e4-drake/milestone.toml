@@ -1,9 +1,8 @@
 # Proves Drake's room: the battle (TRAINER_DRAKE), FLAG_DEFEATED_ELITE_4_DRAKE, the opened north door and the walk on.
 # Start: Drake's room (6,6) after the door closed -> end: Hall 4 below the Champion's door (5,3).
 title = "Elite Four: Drake"
-status = "planned"
 priority = "P0"
-estimate = 7000
+estimate = 9523
 refs = [
   "data/maps/EverGrandeCity_DrakesRoom/map.json object_events[1]",
   "data/maps/EverGrandeCity_DrakesRoom/scripts.inc:46",
@@ -20,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 14300
 
 [[step]]
 do = "walk_to"

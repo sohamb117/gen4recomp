@@ -2,9 +2,8 @@
 # then Hall 5 into Sidney's room where the door closes behind (VAR_ELITE_4_STATE 0 -> 1).
 # Start: Ever Grande (18,6) -> end: MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM (6,6), door shut.
 title = "Pokemon League lobby: heal and pass the badge guards"
-status = "planned"
 priority = "P0"
-estimate = 4000
+estimate = 2993
 refs = [
   "data/maps/EverGrandeCity_PokemonLeague_1F/map.json object_events 1 nurse (3,2), 3/4 guards (8,2)/(11,2)",
   "data/maps/EverGrandeCity_PokemonLeague_1F/scripts.inc:8-15",
@@ -16,16 +15,34 @@ notes = "No battle. The guards only check FLAG_BADGE06_GET (EverGrandeCity_Pokem
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 4500
 
 [[step]]
-do = "heal"
+do = "walk_to"
 x = 18
 z = 5
-note = "[INFERENCE] League 1F nurse (object 1) via the heal bot with the building door (Ever Grande warp 0); falls back to talk_to 1 + YES"
+note = "the Pokemon League door -> EVER_GRANDE_CITY_POKEMON_LEAGUE_1F (9..10,11)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_POKEMON_LEAGUE_1F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 4
+face = "up"
+interact = true
+note = "the League's nurse (object 1 (3,2)) across the counter (3,3): not a Pokemon Center layout, so walked to by hand"
+
+[[step]]
+do = "advance_text"
+note = "her rest YES/NO (A answers YES), the heal"
+
 
 [[step]]
 do = "walk_to"

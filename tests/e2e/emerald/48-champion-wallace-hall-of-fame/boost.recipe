@@ -1,0 +1,8 @@
+# Before the Champion's room a player uses a Max Elixir and a Full Restore in the hall (the bot uses no items): the
+# chained Swampert's moves re-set at full PP (party-move: PP full) and its HP full (party-level: HP full) after four
+# Elite Four battles left Ice Beam 1, Surf 2 and Earthquake 0 PP.
+party-level 0 91
+party-move 0 0 MOVE_ICE_BEAM
+party-move 0 1 MOVE_SURF
+party-move 0 2 MOVE_WATERFALL
+party-move 0 3 MOVE_EARTHQUAKE
