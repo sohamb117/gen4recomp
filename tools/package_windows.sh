@@ -96,12 +96,15 @@ if [ "$TEST" = 1 ]; then
     trap 'rm -rf "$TMP"' EXIT
     (cd "$TMP" && unzip -q "$DIST/$NAME.zip")
     for game in "${built[@]}"; do
+        # DS: title screen at 1500 (START at 1200 skips the intro); GBA: START
+        # at 400 skips the intro, the title screen ("<GAME> VERSION") at 900.
+        run="frames=1500,press=1200:start:10"
         case "$game" in
             platinum) ROM="${NP_TEST_ROM:-$ROOT/games/platinum/build/rom/pokeplatinum.us.nds}" ;;
             diamond) ROM="$ROOT/games/diamond/build/diamond.us/pokediamond.us.nds" ;;
             pearl) ROM="$ROOT/games/diamond/build/pearl.us/pokepearl.us.nds" ;;
-            ruby | sapphire) ROM="$ROOT/.cache/gba/pokeruby/poke$game.gba" ;;
-            emerald) ROM="$ROOT/.cache/gba/pokeemerald/pokeemerald.gba" ;;
+            ruby | sapphire) ROM="$ROOT/.cache/gba/pokeruby/poke$game.gba" run="frames=900,press=400:start:10" ;;
+            emerald) ROM="$ROOT/.cache/gba/pokeemerald/pokeemerald.gba" run="frames=900,press=400:start:10" ;;
         esac
         [ -f "$ROM" ] || { echo "package_windows: no $game ROM at $ROM; not tested"; continue; }
         ext="${ROM##*.}"
@@ -114,7 +117,7 @@ if [ "$TEST" = 1 ]; then
             "${DOCKER[@]}" run --rm --platform linux/amd64 -v "$TMP:/t" -w /t/$NAME \
                 -e XDG_RUNTIME_DIR=/tmp -e WINEDEBUG=-all \
                 -e SDL_VIDEO_DRIVER=dummy -e SDL_AUDIO_DRIVER=dummy \
-                -e "NP_AUTOTEST=frames=1500,png=Z:\\t\\shot-$game.png,game=$game,rom=Z:\\t\\rom.$ext,press=1200:start:10" \
+                -e "NP_AUTOTEST=$run,png=Z:\\t\\shot-$game.png,game=$game,rom=Z:\\t\\rom.$ext" \
                 -e WINEPATH= "$IMAGE" sh -c 'wine64 nativeplat.exe; s=$?; echo; echo "exit status $s"' 2>&1 | tee "$TMP/log-$game.txt"
             grep -q 'rosetta error' "$TMP/log-$game.txt" || break
             echo "package_windows: Rosetta crashed wine (attempt $attempt)"

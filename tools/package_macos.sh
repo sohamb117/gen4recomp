@@ -129,19 +129,22 @@ if [ "$TEST" = 1 ]; then
     ditto -x -k "$DIST/$NAME.zip" "$TMP"
     codesign --verify --deep --strict "$TMP/$NAME/nativeplat.app"
     for game in "${built[@]}"; do
+        # DS: title screen at 1500 (START at 1200 skips the intro); GBA: START
+        # at 400 skips the intro, the title screen ("<GAME> VERSION") at 900.
+        run="frames=1500,press=1200:start:10"
         case "$game" in
             platinum) ROM="${NP_TEST_ROM:-$ROOT/games/platinum/build/rom/pokeplatinum.us.nds}" ;;
             diamond) ROM="$ROOT/games/diamond/build/diamond.us/pokediamond.us.nds" ;;
             pearl) ROM="$ROOT/games/diamond/build/pearl.us/pokepearl.us.nds" ;;
-            ruby | sapphire) ROM="$ROOT/.cache/gba/pokeruby/poke$game.gba" ;;
-            emerald) ROM="$ROOT/.cache/gba/pokeemerald/pokeemerald.gba" ;;
+            ruby | sapphire) ROM="$ROOT/.cache/gba/pokeruby/poke$game.gba" run="frames=900,press=400:start:10" ;;
+            emerald) ROM="$ROOT/.cache/gba/pokeemerald/pokeemerald.gba" run="frames=900,press=400:start:10" ;;
         esac
         [ -f "$ROM" ] || { echo "package_macos: no $game ROM at $ROM; not tested"; continue; }
         for arch in $(lipo -archs "$TMP/$NAME/nativeplat.app/Contents/MacOS/nativeplat"); do
             rm -f "$TMP/shot.png"
             echo "package_macos: autotest $game ($arch) from $TMP"
             SDL_VIDEO_DRIVER=dummy SDL_AUDIO_DRIVER=dummy \
-                NP_AUTOTEST="frames=1500,png=$TMP/shot.png,game=$game,rom=$ROM,press=1200:start:10" \
+                NP_AUTOTEST="$run,png=$TMP/shot.png,game=$game,rom=$ROM" \
                 arch "-$arch" "$TMP/$NAME/nativeplat.app/Contents/MacOS/nativeplat"
             [ -s "$TMP/shot.png" ] || { echo "package_macos: autotest wrote no screenshot" >&2; exit 1; }
             echo "package_macos: autotest $game passed ($arch, $(wc -c <"$TMP/shot.png") byte screenshot)"
