@@ -1,0 +1,17 @@
+# The Underground Man's house in Eterna (map 84), at the door: the Explorer
+# Kit owned and registered to Y, mentor accepted, mission 0 (enter the
+# Underground) given and done, so talking to him pays three Traps (Move,
+# Bubble, Leaf; scr_seq 0089 @0x01D9-0x0228).
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31091
+money 3000
+var 0x4030 SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+item ITEM_EXPLORER_KIT 1
+register-item ITEM_EXPLORER_KIT
+flag 0x79
+flag 0x113
+flag 0x111
+flag 0x96E
+warp MAP_ETERNA_UNDERGROUND_MAN_HOUSE 0
