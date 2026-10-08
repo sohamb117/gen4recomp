@@ -1,0 +1,18 @@
+# Gen 3 link battle, station b (child): Sapphire, the same walk as a's but
+# right 3 onto the right spot. A every 40 frames picks FIGHT and TACKLE;
+# when MUDKIP faints the party menu opens (~8700): down to RALTS, A, SHIFT,
+# then A every 40 frames again until the battle ends (B loses).
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1150:up:4
+1200:a:5:80:24
+3300:up:12
+3340:right:44
+3400:up:28
+3600:a:5:40:125
+8800:down:4
+8830:a:5
+8860:a:5
+8920:a:5:40:153

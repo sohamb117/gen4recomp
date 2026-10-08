@@ -17,7 +17,8 @@
 # amd64 container, tools/docker/wine.Dockerfile) with SDL's dummy video and
 # audio drivers and NP_AUTOTEST booting each built-in game whose ROM is in
 # the build tree (Platinum: NP_TEST_ROM, default
-# games/platinum/build/rom/pokeplatinum.us.nds) to its title screen;
+# games/platinum/build/rom/pokeplatinum.us.nds; Ruby/Sapphire/Emerald: the
+# decomp ROMs in .cache/gba) to its title screen;
 # NP_WIN_SHOTS=<dir> keeps the screenshots.
 set -euo pipefail
 
@@ -99,10 +100,13 @@ if [ "$TEST" = 1 ]; then
             platinum) ROM="${NP_TEST_ROM:-$ROOT/games/platinum/build/rom/pokeplatinum.us.nds}" ;;
             diamond) ROM="$ROOT/games/diamond/build/diamond.us/pokediamond.us.nds" ;;
             pearl) ROM="$ROOT/games/diamond/build/pearl.us/pokepearl.us.nds" ;;
+            ruby | sapphire) ROM="$ROOT/.cache/gba/pokeruby/poke$game.gba" ;;
+            emerald) ROM="$ROOT/.cache/gba/pokeemerald/pokeemerald.gba" ;;
         esac
         [ -f "$ROM" ] || { echo "package_windows: no $game ROM at $ROM; not tested"; continue; }
-        rm -f "$TMP/rom.nds" "$TMP/shot-$game.png"
-        cp "$ROM" "$TMP/rom.nds"
+        ext="${ROM##*.}"
+        rm -f "$TMP"/rom.* "$TMP/shot-$game.png"
+        cp "$ROM" "$TMP/rom.$ext"
         # Z: is the container's root in wine's default prefix. Wine under
         # Rosetta (OrbStack) sometimes dies at start with "rosetta error:
         # invalid gdt selector": such a run is retried, up to 3 attempts.
@@ -110,7 +114,7 @@ if [ "$TEST" = 1 ]; then
             "${DOCKER[@]}" run --rm --platform linux/amd64 -v "$TMP:/t" -w /t/$NAME \
                 -e XDG_RUNTIME_DIR=/tmp -e WINEDEBUG=-all \
                 -e SDL_VIDEO_DRIVER=dummy -e SDL_AUDIO_DRIVER=dummy \
-                -e "NP_AUTOTEST=frames=1500,png=Z:\\t\\shot-$game.png,game=$game,rom=Z:\\t\\rom.nds,press=1200:start:10" \
+                -e "NP_AUTOTEST=frames=1500,png=Z:\\t\\shot-$game.png,game=$game,rom=Z:\\t\\rom.$ext,press=1200:start:10" \
                 -e WINEPATH= "$IMAGE" sh -c 'wine64 nativeplat.exe; s=$?; echo; echo "exit status $s"' 2>&1 | tee "$TMP/log-$game.txt"
             grep -q 'rosetta error' "$TMP/log-$game.txt" || break
             echo "package_windows: Rosetta crashed wine (attempt $attempt)"

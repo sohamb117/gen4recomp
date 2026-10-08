@@ -22,8 +22,10 @@
 # --test unzips into a temporary directory and runs the copied app's
 # autotest (SDL dummy video/audio) on each built-in game whose ROM is in the
 # build tree (Platinum: NP_TEST_ROM, default
-# games/platinum/build/rom/pokeplatinum.us.nds), after checking with otool
-# that no load command or rpath points outside the bundle and the system.
+# games/platinum/build/rom/pokeplatinum.us.nds; Ruby/Sapphire/Emerald: the
+# decomp ROMs in .cache/gba), after checking with otool that no load command
+# or rpath points outside the bundle and the system. NP_MAC_SHOTS=<dir>
+# keeps the screenshots (<game>-<arch>.png).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -131,6 +133,8 @@ if [ "$TEST" = 1 ]; then
             platinum) ROM="${NP_TEST_ROM:-$ROOT/games/platinum/build/rom/pokeplatinum.us.nds}" ;;
             diamond) ROM="$ROOT/games/diamond/build/diamond.us/pokediamond.us.nds" ;;
             pearl) ROM="$ROOT/games/diamond/build/pearl.us/pokepearl.us.nds" ;;
+            ruby | sapphire) ROM="$ROOT/.cache/gba/pokeruby/poke$game.gba" ;;
+            emerald) ROM="$ROOT/.cache/gba/pokeemerald/pokeemerald.gba" ;;
         esac
         [ -f "$ROM" ] || { echo "package_macos: no $game ROM at $ROM; not tested"; continue; }
         for arch in $(lipo -archs "$TMP/$NAME/nativeplat.app/Contents/MacOS/nativeplat"); do
@@ -141,6 +145,7 @@ if [ "$TEST" = 1 ]; then
                 arch "-$arch" "$TMP/$NAME/nativeplat.app/Contents/MacOS/nativeplat"
             [ -s "$TMP/shot.png" ] || { echo "package_macos: autotest wrote no screenshot" >&2; exit 1; }
             echo "package_macos: autotest $game passed ($arch, $(wc -c <"$TMP/shot.png") byte screenshot)"
+            [ -z "${NP_MAC_SHOTS:-}" ] || cp "$TMP/shot.png" "$NP_MAC_SHOTS/$game-$arch.png"
         done
     done
 fi
