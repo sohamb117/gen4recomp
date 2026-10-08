@@ -45,6 +45,11 @@ endif()
 set(NP_CORE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "")
 get_filename_component(_np_repo "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
 
+# The compiler runs as arm64 on Apple Silicon and through tools/ccache.sh
+# when it says so (cmake/NpLauncher.cmake).
+include(cmake/NpLauncher.cmake)
+np_compiler_launcher("${_np_repo}")
+
 set(NP_WABT_ROOT "${_np_repo}/.cache/toolchains/wabt" CACHE PATH "wabt install (tools/fetch_toolchains.sh)")
 set(NP_WASI_SDK "${_np_repo}/.cache/toolchains/wasi-sdk" CACHE PATH "wasi-sdk install (tools/fetch_toolchains.sh)")
 # wasm2c runs on the build machine, so search the host-side toolchain even

@@ -32,6 +32,11 @@ set_property(CACHE NP_CORE PROPERTY STRINGS stub real)
 
 get_filename_component(NP_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
 
+# The compiler runs as arm64 on Apple Silicon and through tools/ccache.sh
+# when it says so (core/cmake/NpLauncher.cmake).
+include("${NP_ROOT}/core/cmake/NpLauncher.cmake")
+np_compiler_launcher("${NP_ROOT}")
+
 find_package(SDL3 CONFIG REQUIRED)
 
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")

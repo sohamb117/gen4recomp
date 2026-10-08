@@ -75,7 +75,7 @@ GAME_SHADOWS := $(shell find $(MYPC)/include -type f 2>/dev/null)
 FORCE:
 $(GAME_FLAGSTAMP): FORCE
 	@mkdir -p $(dir $@)
-	@want='$(CC) $(GAME_CFLAGS) $(GAME_GF_DEFINES) $(GAME_GLB_DEFINES)'; \
+	@want='$(filter-out $(CCACHE),$(CC)) $(GAME_CFLAGS) $(GAME_GF_DEFINES) $(GAME_GLB_DEFINES)'; \
 	 if [ ! -f $@ ] || [ "$$(cat $@)" != "$$want" ]; then printf '%s' "$$want" > $@; fi
 GAME_DEPS := $(GAME_FLAGSTAMP) $(GAME_SHADOWS) $(GAME_SHADOW_H)
 

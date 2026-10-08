@@ -114,7 +114,7 @@ GAME_SHADOWS := $(shell find $(PCDIR)/include -type f)
 FORCE:
 $(GAME_FLAGSTAMP): FORCE
 	@mkdir -p $(dir $@)
-	@want='$(CC) $(GAME_CFLAGS) $(GAME_MSL_RENAME)'; \
+	@want='$(filter-out $(CCACHE),$(CC)) $(GAME_CFLAGS) $(GAME_MSL_RENAME)'; \
 	 if [ ! -f $@ ] || [ "$$(cat $@)" != "$$want" ]; then printf '%s' "$$want" > $@; fi
 GAME_DEPS := $(GAME_FLAGSTAMP) $(GAME_SHADOWS)
 

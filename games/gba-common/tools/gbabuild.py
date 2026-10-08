@@ -40,6 +40,11 @@ WASI = os.path.join(NPROOT, ".cache", "toolchains", "wasi-sdk")
 CLANG = os.path.join(WASI, "bin", "clang")
 TARGET = "--target=wasm32-wasip1"
 ABI_H = os.path.join(NPROOT, "core", "include", "np_guest_abi.h")
+# tools/ccache.sh when it says builds should use it (its header), read once
+# per run: the launcher of each TU's cpp-output -> IR compile. Its -E and its
+# -O2 compile of LLVM IR run directly: ccache caches neither.
+CCACHE = subprocess.run([os.path.join(NPROOT, "tools", "ccache.sh"), "--enabled"],
+                        capture_output=True, text=True).stdout.split()
 
 # pokeruby's Makefile: US English, revision 0, no debug menu
 RS_DEFS = ["-DREVISION=0", "-DENGLISH", "-DDEBUG=0", "-DDEBUG_FIX=0"]
@@ -160,7 +165,7 @@ class Build:
                 os.replace(i1, i2)
             run([sys.executable, os.path.join(HERE, "srcfix.py"), i2, i3])
             std = ["-std=gnu89"] if kind == "game" else ["-std=gnu11"]
-            run([CLANG, TARGET, "-x", "cpp-output", "-S", "-emit-llvm", "-Xclang", "-disable-llvm-passes"]
+            run(CCACHE + [CLANG, TARGET, "-x", "cpp-output", "-S", "-emit-llvm", "-Xclang", "-disable-llvm-passes"]
                 + std + CFLAGS_GAME + [i3, "-o", ll])
             objname = os.path.basename(base) + ".o" if kind == "game" else ""
             if kind == "game":

@@ -54,7 +54,9 @@ BUILD  := $(ROOT)/build/pc-wasm/$(VER)
 OBJ    := $(BUILD)/obj
 TARGET := $(ROOT)/build/pc-wasm/ndsrec-$(VER).wasm
 
-CC  := $(WASI_SDK)/bin/clang --target=wasm32-wasip1
+# Compiles go through tools/ccache.sh when it says so (its header).
+CCACHE := $(shell $(NPROOT)/tools/ccache.sh --enabled)
+CC  := $(strip $(CCACHE) $(WASI_SDK)/bin/clang --target=wasm32-wasip1)
 NM  := $(WASI_SDK)/bin/llvm-nm
 
 WASM_ABI := -fno-short-enums -fsigned-char -fno-common -std=gnu99 \

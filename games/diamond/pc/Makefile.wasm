@@ -56,7 +56,10 @@ ROMBUILD := $(ROOT)/arm9/build/$(VER).us
 ROM_XMAP := $(ROMBUILD)/arm9.elf.xMAP
 ROM_NDS  := $(ROOT)/build/$(VER).us/poke$(VER).us.nds
 
-CC  := $(WASI_SDK)/bin/clang --target=wasm32-wasip1
+# Compiles go through tools/ccache.sh when it says so (its header); the flags
+# stamp (mk/game.mk) leaves it out.
+CCACHE := $(shell $(NPROOT)/tools/ccache.sh --enabled)
+CC  := $(strip $(CCACHE) $(WASI_SDK)/bin/clang --target=wasm32-wasip1)
 NM  := $(WASI_SDK)/bin/llvm-nm
 
 # Shared by every C TU in the module (game, recompiled, host).
