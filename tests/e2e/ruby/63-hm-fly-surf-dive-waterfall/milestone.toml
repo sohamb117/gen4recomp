@@ -1,0 +1,134 @@
+# Proves the four sea/sky HMs in the field: Fly from the party menu (start menu > POKEMON > Swellow > FLY > the region
+# map's cursor from Mossdeep to Ever Grande > A), Surf (A + YES at Ever Grande's pond, then down its falls), Dive (A +
+# YES on Route 128's deep water into MAP_UNDERWATER4), the surfacing (B + YES) and Waterfall (A + YES up Ever Grande's falls).
+# Start: Mossdeep City (28,17) -> end: MAP_EVER_GRANDE_CITY (19,59), surfing above the falls.
+title = "HMs in the field: Fly, Surf, Dive and Waterfall"
+priority = "P1"
+version = "both"
+estimate = 12277
+refs = [
+  "src/start_menu.c:263-275 (no Pokedex: POKEMON is the first entry)",
+  "src/pokemon_menu.c:168-184 (sFieldMoveFuncs: field moves head the party popup), :728 (field move id <= 7 needs FLAG_BADGE01_GET + id: Fly 5 -> badge 6)",
+  "src/pokemon_menu.c:833-845 (SetUpFieldMove_Fly -> FLDEFF_USE_FLY)",
+  "src/data/region_map/region_map_entries.h:103,105 (MOSSDEEP (24,5) 2x1, EVER_GRANDE (27,8) 1x2: RIGHT x3, DOWN x3)",
+  "src/region_map.c:728-729,1182,1630-1631 (Ever Grande needs FLAG_VISITED_EVER_GRANDE_CITY; no FLAG_SYS_POKEMON_LEAGUE_FLY -> HEAL_LOCATION_EVER_GRANDE_CITY)",
+  "src/data/heal_locations.h:67-72 (HEAL_LOCATION_EVER_GRANDE_CITY (27,49))",
+  "src/field_control_avatar.c:506-515 (Surf: FLAG_BADGE05_GET + a Surf user; Waterfall: FLAG_BADGE08_GET, surfing north)",
+  "src/field_control_avatar.c:519-535 (Dive down: FLAG_BADGE07_GET + deep water; emerge underwater)",
+  "data/maps/Route128/map.json connections (dive -> MAP_UNDERWATER4; right -> MAP_EVER_GRANDE_CITY offset -40)",
+  "data/maps/EverGrandeCity/map.json (pond (17..25,56..59), falls (16..27,60..67))",
+]
+notes = "Party: Swampert 60 (Surf, Dive, Waterfall, Earthquake) leads, Swellow 45 (Fly) behind it. The region map opens with the cursor on Mossdeep's west block (the player stands at x 28 of the 2-block city). Route 128's wild Tentacool/Staryu and an Ever Grande swimmer are fought by walk_to's battles."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 18500
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 3
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 90
+note = "POKEMON: the party menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 3
+gap = 20
+note = "slot 2: Swellow"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 30
+note = "FLY / SUMMARY / SWITCH / ITEM / CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 120
+shot = "fly-map-mossdeep"
+note = "FLY: the region map, cursor on Mossdeep (24,5)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 3
+gap = 20
+times = 3
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 3
+gap = 20
+times = 3
+shot = "fly-map-ever-grande"
+note = "Ever Grande (27,8)"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 20
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY"
+max = 900
+
+[[step]]
+do = "wait_field"
+shot = "fly-landed"
+note = "HEAL_LOCATION_EVER_GRANDE_CITY (27,49)"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 68
+surf = true
+shot = "surf-below-falls"
+note = "Surf (A + YES) onto the pond at (19,56), then down the falls (the current carries a surfer south)"
+
+[[step]]
+do = "walk_to"
+map = "MAP_UNDERWATER4"
+x = 75
+z = 20
+surf = true
+dive = true
+shot = "dive-underwater"
+note = "west into Route 128, Dive (A + YES) at (75,20)"
+
+[[step]]
+do = "walk_to"
+map = "MAP_EVER_GRANDE_CITY"
+x = 19
+z = 59
+surf = true
+dive = true
+shot = "waterfall-top"
+note = "surface (B + YES) at (80,22), back east and up the falls (Waterfall: A + YES facing north)"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY"
+position = [19, 59]
+log = [
+  "map_id 6 -> 8",
+  "walk_to: water ahead, using the field move",
+  "walk_to: dive from map 43 to 53",
+  "walk_to: emerge from map 53 to 43",
+  "walk_to: waterfall ahead, using the field move",
+]
+save = ['s["location"]["map"] == 8']

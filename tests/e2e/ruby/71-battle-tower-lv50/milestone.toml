@@ -1,0 +1,261 @@
+# Proves the Battle Tower's Level 50 single challenge: the receptionist's menus (MAKE A CHALLENGE, LV. 50), the
+# three-member entry screen (src/choose_party.c), the save before the challenge (GAME_STAT_ENTERED_BATTLE_TOWER),
+# the elevator and corridor scenes, seven battle-room trainers in a row (healed and asked to continue between
+# them), and the lobby's prize for the seven-win set (GAME_STAT_BATTLE_TOWER_BEST_STREAK 7).
+# Start: MAP_BATTLE_TOWER_LOBBY (6,6) -> end: MAP_BATTLE_TOWER_LOBBY (6,6), the prize in the bag.
+title = "Battle Tower: a Level 50 single set of seven wins"
+priority = "P1"
+version = "both"
+estimate = 34397
+refs = [
+  "data/maps/BattleTower_Lobby/map.json object_events[0] receptionist (6,5) BattleTower_Lobby_EventScript_16049E",
+  "data/maps/BattleTower_Lobby/scripts.inc:182-200 (multichoice 23: MAKE A CHALLENGE / OBTAIN INFORMATION / CANCEL, src/script_menu.c:129-134)",
+  "data/maps/BattleTower_Lobby/scripts.inc:202-226 (multichoice 24: LV. 50 / LV. 100 / CANCEL, src/script_menu.c:136-141; CheckPartyBattleTowerBanlist; level type; ChooseBattleTowerPlayerParty; MSGBOX_YESNO)",
+  "src/choose_party.c:279-306,428-445 (entry screen: A on a member opens the popup ENTER / SUMMARY / EXIT (gUnknown_084017D0 {1,0,3}), ENTER fills gSelectedOrderFromParty, the third moves the cursor to OK (SelectBattleTowerOKButton); A on OK (slot 6) closes: sub_81224A8)",
+  "data/maps/BattleTower_Lobby/scripts.inc:228-257 (challenge set up, Common_EventScript_SaveGame, incrementgamestat GAME_STAT_ENTERED_BATTLE_TOWER, warp MAP_BATTLE_TOWER_ELEVATOR)",
+  "src/start_menu.c:703-764 (the save dialog: YES, then 'There is already a saved file' YES; not a script menu, so A presses)",
+  "data/maps/BattleTower_Elevator/scripts.inc:6-24, data/maps/BattleTower_Corridor/scripts.inc:75-97 (OnFrame scenes, warp MAP_BATTLE_TOWER_BATTLE_ROOM)",
+  "data/maps/BattleTower_BattleRoom/scripts.inc:9-39 (ChooseNextBattleTowerTrainer, greeting, heal, StartSpecialBattle)",
+  "data/maps/BattleTower_BattleRoom/scripts.inc:41-66 (a win: SetBattleTowerProperty 6 (curChallengeBattleNum++, SaveCurrentWinStreak); 8 -> the set is won; else heal and MSGBOX_YESNO continue)",
+  "data/maps/BattleTower_BattleRoom/scripts.inc:90-105 (seventh win: var_4AE 4, curChallengeBattleNum 1, curStreakChallengesNum++, warp MAP_BATTLE_TOWER_LOBBY (6,6))",
+  "src/battle_tower.c:1121-1187 SetBattleTowerProperty, :1248-1276 SaveCurrentWinStreak (SetGameStat GAME_STAT_BATTLE_TOWER_BEST_STREAK), :1397-1406 GetCurrentBattleTowerWinStreak ((challenges - 1) * 7 - 1 + battle num)",
+  "src/battle_tower.c:289-332 sub_8134548 (var_4AE 4 -> VAR_TEMP_0 2), data/maps/BattleTower_Lobby/scripts.inc:71-128 (the prize: DetermineBattleTowerPrize, SaveBattleTowerProgress, GiveBattleTowerPrize)",
+  "src/battle_tower.c:238-246,1408-1432 (a first set's prize: HP UP / PROTEIN / IRON / CALCIUM / CARBOS / ZINC)",
+  "include/constants/game_stat.h:34,36 (GAME_STAT_ENTERED_BATTLE_TOWER 30, GAME_STAT_BATTLE_TOWER_BEST_STREAK 32)",
+]
+notes = "Opponents are random level-50 Battle Tower trainers (src/battle_tower.c ChooseNextBattleTowerTrainer, FillBattleTowerTrainerParty); the lab party (Metagross, Salamence, Latios, IVs 31, EVs 255) with Steel/Ground/Psychic/Ghost, Dragon/Ground/Fire/Flying and Psychic/Dragon/Water/Electric moves covers them. Measured on Ruby: the seven trainers led with Spinda, Nosepass, Sharpedo, Masquerain, Beautifly, Zigzagoon and Shiftry; the prize was PROTEIN (Random() over sShortStreakPrizes, so the expect takes any of the six)."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 51600
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the receptionist (BattleTower_Lobby/map.json object_events[0] (6,5))"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+shot = "tower-challenge-menu"
+note = "MAKE A CHALLENGE (multichoice 23, scripts.inc:193-200)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "LV. 50 (multichoice 24, scripts.inc:203-208)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'select three Pokemon' (scripts.inc:216), the fade to the entry screen (ChooseBattleTowerPlayerParty)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "tower-entry-popup"
+note = "slot 0 (Metagross): the popup ENTER / SUMMARY / EXIT (src/choose_party.c:279-306)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "ENTER (popup entry 0)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "slot 1 (Salamence)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "popup"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "ENTER"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "slot 2 (Latios)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "popup"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "tower-entry-three"
+note = "ENTER: the third entry moves the cursor to OK (SelectBattleTowerOKButton)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "OK (sub_81224A8): back to the field"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "'Is this OK?' YES (scripts.inc:222-225)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 60
+until = "map_id=6662"
+note = "the save dialog: YES, overwrite YES, saved; the receptionist's walk to the elevator (MAP_BATTLE_TOWER_ELEVATOR 6662)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_TOWER_BATTLE_ROOM"
+max = 3000
+note = "elevator and corridor OnFrame scenes"
+
+[[step]]
+do = "advance_text"
+note = "trainer 1 walks in, greeting (BattleRoom/scripts.inc:15-27)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 1 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+shot = "tower-continue-1"
+note = "win 1: healed, 'continue?' YES (BattleRoom/scripts.inc:53-66, :82-88)"
+
+[[step]]
+do = "advance_text"
+note = "trainer 2 walks in, greeting (BattleRoom/scripts.inc:15-27)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 2 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "win 2: healed, 'continue?' YES (BattleRoom/scripts.inc:53-66, :82-88)"
+
+[[step]]
+do = "advance_text"
+note = "trainer 3 walks in, greeting (BattleRoom/scripts.inc:15-27)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 3 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "win 3: healed, 'continue?' YES (BattleRoom/scripts.inc:53-66, :82-88)"
+
+[[step]]
+do = "advance_text"
+note = "trainer 4 walks in, greeting (BattleRoom/scripts.inc:15-27)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 4 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "win 4: healed, 'continue?' YES (BattleRoom/scripts.inc:53-66, :82-88)"
+
+[[step]]
+do = "advance_text"
+note = "trainer 5 walks in, greeting (BattleRoom/scripts.inc:15-27)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 5 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "win 5: healed, 'continue?' YES (BattleRoom/scripts.inc:53-66, :82-88)"
+
+[[step]]
+do = "advance_text"
+note = "trainer 6 walks in, greeting (BattleRoom/scripts.inc:15-27)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 6 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "win 6: healed, 'continue?' YES (BattleRoom/scripts.inc:53-66, :82-88)"
+
+[[step]]
+do = "advance_text"
+note = "trainer 7 walks in, greeting (BattleRoom/scripts.inc:15-27)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 7 of 7"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_TOWER_LOBBY"
+note = "seventh win: back to the lobby (BattleRoom/scripts.inc:90-105)"
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "tower-prize"
+note = "the prize scene's text (Lobby/scripts.inc:71-121: seven wins, the save, the prize item)"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the lobby's OnFrame (VAR_TEMP_0 2): seven wins, the save, the prize (Lobby/scripts.inc:71-128)"
+
+[expect]
+map = "MAP_BATTLE_TOWER_LOBBY"
+battles = 7
+party_size = 3
+save = [
+  's["game_stats"][30] == 1',
+  's["game_stats"][32] == 7',
+  'any(i["item"] in (63, 64, 65, 66, 67, 70) for i in s["bag"]["items"])',
+]
+
+[expect.vars]
+VAR_BRAVO_TRAINER_BATTLE_TOWER_ON = 1

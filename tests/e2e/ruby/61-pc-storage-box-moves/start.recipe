@@ -1,0 +1,6 @@
+# 61 PC storage: a party of three to move through the boxes, in front of Oldale Town's Pokemon Center PC.
+party SPECIES_MUDKIP 10 ITEM_NONE        # slot 0
+party SPECIES_ZIGZAGOON 5 ITEM_NONE      # slot 1: deposited into BOX 1, moved to BOX 2, withdrawn last
+party SPECIES_WURMPLE 5 ITEM_NONE        # slot 2
+# below the PC (MB_PC 0x83 at (10,1) of LAYOUT_POKEMON_CENTER_1F; src/field_control_avatar.c:459-460 -> EventScript_PC)
+map MAP_OLDALE_TOWN_POKEMON_CENTER_1F 10 2

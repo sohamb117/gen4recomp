@@ -1,0 +1,210 @@
+# Proves the Day Care end to end: the Day-Care Lady takes DITTO and MAGIKARP through her own menus (YES, the party
+# menu, STORE, "raise another?" YES, the second pick; GAME_STAT_USED_DAYCARE per deposit), the player runs laps on
+# Route 117 until the egg roll sets FLAG_PENDING_DAYCARE_EGG, the Day-Care Man hands the egg over, and the egg
+# hatches on further laps (GAME_STAT_HATCHED_EGGS): a MAGIKARP in the party.
+# Start: MAP_ROUTE117_POKEMON_DAY_CARE (2,5) -> end: MAP_ROUTE117 east of the Day Care, MAGIKARP hatched.
+title = "Day Care: deposit two, collect the egg, hatch it"
+priority = "P1"
+version = "both"
+estimate = 17914
+refs = [
+  "data/maps/Route117_PokemonDayCare/map.json object_events[0] (2,2) the lady, warp_events (2,8),(3,8) -> Route117 warp 0",
+  "data/scripts/day_care.inc:81-96 (the lady: GetDaycareState 0 -> 'Would you like us to raise one?' YES/NO)",
+  "data/scripts/day_care.inc:98-122 (ChooseSendDaycareMon, StoreSelectedPokemonInDaycare, incrementgamestat GAME_STAT_USED_DAYCARE, state 2 -> raise another?)",
+  "data/scripts/day_care.inc:129-134 ('Would you like us to raise another?' YES -> the party menu again)",
+  "src/daycare.c:1071-1075 (ChooseSendDaycareMon: PARTY_MENU_TYPE_DAYCARE)",
+  "src/choose_party.c:782-787,798-830 (A on a Pokemon: STORE / SUMMARY / EXIT, cursor on STORE)",
+  "src/daycare.c:738-756 (_ShouldEggHatch: each step; at steps[1] % 256 == 255 an egg roll against the compatibility score)",
+  "src/daycare.c:862-912 (GetDaycareCompatibilityScore: Ditto + other OT -> 50)",
+  "src/daycare.c:363-372 (_TriggerPendingDaycareEgg: pendingEggPersonality, FLAG_PENDING_DAYCARE_EGG)",
+  "include/constants/flags.h:92 (FLAG_PENDING_DAYCARE_EGG 0x86)",
+  "data/maps/Route117/map.json object_events[2] (47,4) the Day-Care Man, warp_events[0] (51,5) the Day Care door",
+  "data/scripts/day_care.inc:1-27 (the man: GetDaycareState 1 -> 'Your POKeMON had an EGG! ... want it?' YES/NO)",
+  "data/scripts/day_care.inc:29-47 (party < 6 -> GiveEggFromDaycare, clearflag FLAG_PENDING_DAYCARE_EGG)",
+  "src/daycare.c:625-660 (the egg species: the non-Ditto parent's GetEggSpecies)",
+  "src/daycare.c:701,728 (the egg's friendship = eggCycles: MAGIKARP 5)",
+  "src/daycare.c:758-773 (every 256 steps each egg's cycle count drops; at 0 it hatches)",
+  "src/field_control_avatar.c:583-587 (ShouldEggHatch -> GAME_STAT_HATCHED_EGGS, S_EggHatch)",
+  "data/scripts/day_care.inc:285-291 (S_EggHatch: special EggHatch)",
+  "include/constants/game_stat.h:17,51 (GAME_STAT_HATCHED_EGGS 13, GAME_STAT_USED_DAYCARE 47)",
+]
+notes = "R/S have no Flame Body / Magma Armor halving (src/daycare.c:758-773 drops one cycle per 256 steps for every egg), so MAGIKARP's 5 cycles take 1281-1536 steps (measured: the egg after 256 steps, the hatch after 1529 more). Laps run on Route 117's path (53,6)/(54,6): no grass, out of the triathlete's sight (object 8 at (35,7) walking row 7). The parents stay in the Day Care, so the hatch laps may roll the next egg (FLAG_PENDING_DAYCARE_EGG set again at the end: not checked)."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 26900
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 4
+face = "up"
+interact = true
+note = "across the counter from the Day-Care Lady (2,2): 'I'm the DAY-CARE LADY ... Would you like us to raise one?' (day_care.inc:81-96)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "YES -> 'Which POKeMON should we raise for you?', fade, ChooseSendDaycareMon (day_care.inc:98-105)"
+
+[[step]]
+do = "wait_frames"
+n = 100
+note = "'Which POKeMON should we raise for you?' printed (a MSGBOX_DEFAULT: waits for A)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+shot = "party-first"
+note = "fadescreen, ChooseSendDaycareMon: the Day Care party menu, DITTO (slot 0) highlighted (day_care.inc:102-105)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+shot = "store-ditto"
+note = "STORE / SUMMARY / EXIT (choose_party.c:782-787,798-804), cursor on STORE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "STORE -> back to the field: 'Fine, we'll raise your DITTO for a while.' (day_care.inc:111-117)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "state 2 -> 'Would you like us to raise another?' YES (day_care.inc:118-120,129-132)"
+
+[[step]]
+do = "wait_frames"
+n = 100
+note = "'Which POKeMON should we raise for you?' again"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "the party menu again: MUDKIP (slot 0), MAGIKARP (slot 1)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+shot = "party-second"
+note = "slot 1: MAGIKARP (party_menu.c:1188-1222 DOWN = next slot)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+shot = "store-magikarp"
+note = "STORE / SUMMARY / EXIT"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "STORE -> 'Fine, we'll raise your MAGIKARP for a while.'"
+
+[[step]]
+do = "advance_text"
+shot = "stored-both"
+note = "state 3: the lady's script ends (day_care.inc:118-122)"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 8
+note = "the door mat (warp 0) -> Route 117 (51,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE117"
+
+[[step]]
+do = "pace"
+x = 53
+z = 6
+every = 64
+until = '0x86 in s["flags"]'
+max = 30000
+shot = "egg-pending"
+note = "laps until the egg roll sets FLAG_PENDING_DAYCARE_EGG (daycare.c:755-756, 363-372)"
+
+[[step]]
+do = "walk_to"
+x = 47
+z = 5
+face = "up"
+interact = true
+note = "the Day-Care Man (47,4) across the fence: GetDaycareState 1 (day_care.inc:1-7)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "'Your POKeMON had an EGG! ... do you want it?' YES (day_care.inc:16-19)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "egg-received"
+note = "'AAAAAAA received the EGG!' fanfare (day_care.inc:37-42)"
+
+[[step]]
+do = "advance_text"
+note = "'Take good care of it.', GiveEggFromDaycare, FLAG_PENDING_DAYCARE_EGG cleared (day_care.inc:43-47)"
+
+[[step]]
+do = "dump"
+expr = '[(m["species"], m["is_egg"]) for m in s["party"]]'
+note = "the party with the egg: MUDKIP and a MAGIKARP egg"
+
+[[step]]
+do = "hatch"
+x = 53
+z = 6
+max = 30000
+note = "laps until the MAGIKARP egg's 5 cycles run out: S_EggHatch, the hatch scene (field_control_avatar.c:583-587)"
+
+[[step]]
+do = "press"
+keys = "START"
+gap = 30
+note = "start menu: POKEMON (entry 0, FLAG_SYS_POKEMON_GET; no Pokedex) (start_menu.c:263-276)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "party-hatched"
+note = "the party screen: MUDKIP, MAGIKARP lv5 (hatched)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 90
+note = "back to the start menu"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 30
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ROUTE117"
+log = ['dump: .* = \[\(283, False\), \(129, True\)\]']
+party_size = 2
+save = [
+  '[m["species"] for m in s["party"]] == [283, 129]',
+  'not any(m["is_egg"] for m in s["party"])',
+  's["game_stats"][47] >= 2',
+  's["party"][1]["level"] == 5',
+  's["game_stats"][13] >= 1',
+]

@@ -1,0 +1,59 @@
+# Battle Tower, Level 50 singles: three eligible party members (level <= 50, not banned, distinct species and held
+# items: src/choose_party.c:177-232 IsMonAllowedInBattleTower / sub_81220C8, src/battle_tower.c:222-235 ban list),
+# placed in the lobby in front of the receptionist. In play the post-game S.S. Tidal brings the player there
+# (data/maps/SlateportCity_Harbor/scripts.inc:161,206 after FLAG_SYS_GAME_CLEAR: warp MAP_BATTLE_TOWER_OUTSIDE).
+# The opponents are level-50 trainers with random sets (src/battle_tower.c FillBattleTowerTrainerParty), so the
+# party is a strong level-50 one: maximum IVs, EVs and four damaging moves of different types each.
+flag FLAG_SYS_POKEMON_GET              # data/maps/Route101/scripts.inc:220 (the starter)
+party SPECIES_METAGROSS 50 ITEM_NONE
+party-move 0 0 MOVE_METEOR_MASH
+party-move 0 1 MOVE_EARTHQUAKE
+party-move 0 2 MOVE_PSYCHIC
+party-move 0 3 MOVE_SHADOW_BALL
+party SPECIES_SALAMENCE 50 ITEM_NONE
+party-move 1 0 MOVE_DRAGON_CLAW
+party-move 1 1 MOVE_EARTHQUAKE
+party-move 1 2 MOVE_FLAMETHROWER
+party-move 1 3 MOVE_AERIAL_ACE
+party SPECIES_LATIOS 50 ITEM_NONE
+party-move 2 0 MOVE_PSYCHIC
+party-move 2 1 MOVE_DRAGON_CLAW
+party-move 2 2 MOVE_SURF
+party-move 2 3 MOVE_THUNDERBOLT
+party-iv 0 0 31
+party-iv 0 1 31
+party-iv 0 2 31
+party-iv 0 3 31
+party-iv 0 4 31
+party-iv 0 5 31
+party-iv 1 0 31
+party-iv 1 1 31
+party-iv 1 2 31
+party-iv 1 3 31
+party-iv 1 4 31
+party-iv 1 5 31
+party-iv 2 0 31
+party-iv 2 1 31
+party-iv 2 2 31
+party-iv 2 3 31
+party-iv 2 4 31
+party-iv 2 5 31
+party-ev 0 0 255
+party-ev 0 1 255
+party-ev 0 2 255
+party-ev 0 3 255
+party-ev 0 4 255
+party-ev 0 5 255
+party-ev 1 0 255
+party-ev 1 1 255
+party-ev 1 2 255
+party-ev 1 3 255
+party-ev 1 4 255
+party-ev 1 5 255
+party-ev 2 0 255
+party-ev 2 1 255
+party-ev 2 2 255
+party-ev 2 3 255
+party-ev 2 4 255
+party-ev 2 5 255
+map MAP_BATTLE_TOWER_LOBBY 6 6         # BattleTower_Lobby/map.json object_events[0] receptionist (6,5): the tile below her

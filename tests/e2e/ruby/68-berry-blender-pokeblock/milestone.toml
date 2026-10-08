@@ -1,0 +1,140 @@
+# Proves the Berry Blender against the computer: the Slateport Contest Lobby's little girl gives the Pokeblock Case,
+# the old man by the blender gives a Pecha Berry and blends it with the player and his partner; the Pokeblock goes
+# in the case (GAME_STAT_POKEBLOCKS).
+# Start: MAP_SLATEPORT_CITY_CONTEST_LOBBY (5,5) -> end: below the blender (12,6).
+title = "Berry Blender: blend a Pokeblock with the old man"
+priority = "P1"
+version = "both"
+estimate = 6626
+refs = [
+  "data/maps/SlateportCity_ContestLobby/map.json object_events[7] (1,5) little girl; bg_events (12,5) BerryBlender1",
+  "data/maps/SlateportCity_ContestLobby/scripts.inc:101-110 (giveitem ITEM_POKEBLOCK_CASE, FLAG_RECEIVED_POKEBLOCK_CASE)",
+  "data/scripts/pokeblocks.inc:9-16 (SlateportCity_ContestLobby_EventScript_BerryBlender1: VAR_0x8009 2 opponents)",
+  "data/scripts/pokeblocks.inc:36-111 (YES/NO, case check, no berries -> giveitem ITEM_PECHA_BERRY, 'Do you know how?' YES/NO, DoBerryBlending)",
+  "src/berry_blender.c:875-957 (DoBerryBlending: 'choose a berry', sub_80A6978 the berry pocket)",
+  "src/item_menu.c:239,2588-2620 (RETURN_TO_FIELD_5 popup {CHECK TAG, CONFIRM, -, CANCEL}, cursor on CONFIRM)",
+  "src/berry_blender.c:1373-1520 (sub_804F378: the NPCs' berries, the countdown, the NPC tasks)",
+  "src/berry_blender.c:1533-1688 (the NPC hit tasks), 1812-1867 (the player's A: a miss slows the blender)",
+  "src/berry_blender.c:2161-2325 (end: ranking, results, IncrementGameStat(GAME_STAT_POKEBLOCKS), 'blend another?' YES/NO; B = NO)",
+  "src/berry_blender.c:2499-2547 (sub_80510E8: back to the field)",
+  "include/constants/game_stat.h:37 (GAME_STAT_POKEBLOCKS 33)",
+]
+notes = "The player never presses A during the spin: a miss takes RPM away (berry_blender.c:1735-1739) and the two NPCs finish the blend alone."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 10000
+
+[[step]]
+do = "talk_to"
+id = 7
+note = "the little girl (map.json object_events[7] (1,5)): 'You can have this POKEBLOCK CASE' (scripts.inc:101-110)"
+
+[[step]]
+do = "advance_text"
+shot = "case"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 6
+face = "up"
+interact = true
+note = "the blender (bg_events (12,5) SlateportCity_ContestLobby_EventScript_BerryBlender1)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "'make some POKEBLOCKS with this old-timer?' YES (pokeblocks.inc:40-46)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "no berries: the old man gives a PECHA BERRY (pokeblocks.inc:76-80,106-111); 'Do you know how to make a POKEBLOCK?' YES (:68-74)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 30
+note = "'Let's get started, then! / Let's BERRY BLENDER!' (pokeblocks.inc:88-97)"
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "blender"
+note = "the blender screen: 'Starting up the BERRY BLENDER.' (berry_blender.c sub_804E56C)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 30
+note = "'Starting up...' then 'Please select a BERRY from your BAG' (gOtherText_BlenderChooseBerry, berry_blender.c:930-944); the second A opens the berry pocket"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "berry-pocket"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "confirm"
+note = "the Pecha Berry, first slot of the berry pocket: the popup opens"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "CONFIRM (the popup's cursor starts there: item_menu.c OnItemSelect_Field05 sPopupMenuSelection 1)"
+
+[[step]]
+do = "wait_frames"
+n = 1500
+shot = "spin"
+note = "no A: the NPCs' hits (berry_blender.c:1549-1688) raise the RPM and fill the bar to 1000 (sub_80501FC)"
+
+[[step]]
+do = "wait_frames"
+n = 2400
+shot = "ranking"
+note = "Blender_PrintBlendingRanking (berry_blender.c:3171-3258)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "results"
+note = "ranking -> results: max RPM, time (Blender_PrintBlendingResults case 4)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "pokeblock"
+note = "results -> 'made a ... POKEBLOCK': RemoveBagItem, GivePokeblock (berry_blender.c:3073-3093); IncrementGameStat(GAME_STAT_POKEBLOCKS) (:2218-2225)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 20
+until = "field_ready=1"
+note = "'Would you like to blend another BERRY?' B = NO (berry_blender.c:2260-2264) -> sub_80510E8 -> the field; the script's releaseall"
+
+[[step]]
+do = "advance_text"
+shot = "end"
+
+[expect]
+map = "MAP_SLATEPORT_CITY_CONTEST_LOBBY"
+flags = ["FLAG_RECEIVED_POKEBLOCK_CASE"]
+position = [12, 6]
+save = [
+  's["game_stats"][33] >= 1',
+  'any(i["item"] == 273 for i in s["bag"]["key_items"])',
+  'not s["bag"]["berries"]',
+]

@@ -1,0 +1,15 @@
+# 69 Normal Rank contest: one Pokemon with Cool appeal moves, in front of the Verdanturf contest receptionist.
+# No Contest Pass: at Normal Rank the receptionist gives it (data/scripts/contest_hall.inc:23-46).
+# The entrant: Hitmonlee, its own level-up moves (src/data/pokemon/level_up_learnsets.h:1458-1473: JUMP_KICK 16,
+# FOCUS_ENERGY 21, HI_JUMP_KICK 26, MEGA_KICK 46). Contest data (src/data/contest_moves.h:30-31,121,141;
+# gContestEffects :362-): HI_JUMP_KICK / JUMP_KICK Cool, USER_MORE_EASILY_STARTLED appeal 60; FOCUS_ENERGY Cool,
+# BADLY_STARTLE_PREV_MONS appeal 10 jam 30, combo starter; MEGA_KICK Cool, HIGHLY_APPEALING 40, combo after
+# FOCUS_ENERGY. Conditions (cool..sheen) stay 0: no lab verb writes them (tools/gba/gen3_lab.py).
+party SPECIES_HITMONLEE 50 ITEM_NONE
+party-move 0 0 MOVE_HI_JUMP_KICK
+party-move 0 1 MOVE_JUMP_KICK
+party-move 0 2 MOVE_FOCUS_ENERGY
+party-move 0 3 MOVE_MEGA_KICK
+# in front of the counter, below the receptionist (VerdanturfTown_ContestLobby/map.json object_events[1] (5,2));
+# the tile LinkContestRoom1/scripts.inc:385 warps the player back to
+map MAP_VERDANTURF_TOWN_CONTEST_LOBBY 5 4

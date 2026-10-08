@@ -1,0 +1,15 @@
+# 66 berry plant + water: a Cheri Berry and the Wailmer Pail, the player below Route 104's empty soft soil.
+# The game clock: the player sets it in the bedroom (data/scripts/players_house.inc:114 special StartWallClock ->
+# src/clock.c:19-25 InitTimeBasedEvents: FLAG_SYS_CLOCK_SET, lastBerryTreeUpdate = now). Without the flag
+# DoTimeBasedEvents (src/clock.c:27-35) never runs and no berry tree ever grows (67 harvests this tree).
+flag FLAG_SYS_CLOCK_SET                  # src/clock.c:21
+clock 2026-01-01 08:00:00
+# the Pail: Route104_PrettyPetalFlowerShop/scripts.inc:78-80 (giveitem ITEM_WAILMER_PAIL, FLAG_RECEIVED_WAILMER_PAIL)
+item ITEM_WAILMER_PAIL 1
+flag FLAG_RECEIVED_WAILMER_PAIL          # Route104_PrettyPetalFlowerShop/scripts.inc:80
+# the berry to plant: the flower shop girl's daily berry is a random one (Route104_PrettyPetalFlowerShop/scripts.inc:91
+# addvar VAR_RESULT, ITEM_CHERI_BERRY); Cheri: stageDuration 3 h (src/berry.c:284-292)
+item ITEM_CHERI_BERRY 1
+# below berry tree 9 (Route104/map.json object_events[11] (35,6), local id 11): new_game.inc:2-20 pre-plants trees
+# 8 (Cheri) and 10 (Leppa) beside it, not 9, so its soil is empty (BERRY_STAGE_NO_BERRY)
+map MAP_ROUTE104 35 7

@@ -1,0 +1,106 @@
+# Proves the Safari Zone: the Route 121 gate takes 500 money (Pokeblock Case checked), EnterSafariMode (30 Safari
+# Balls, 500 steps, GAME_STAT_ENTERED_SAFARI_ZONE), the Southeast area's tall grass, a Safari battle driven through
+# its own action menu (BALL / POKeBLOCK / GO NEAR / RUN) with Safari Balls thrown until the wild Pokemon is caught.
+# Start: MAP_ROUTE121_SAFARI_ZONE_ENTRANCE (14,12) -> end: MAP_SAFARI_ZONE_SOUTHEAST, the catch in the party.
+title = "Safari Zone: pay, enter and catch with Safari Balls"
+priority = "P1"
+version = "both"
+estimate = 4568
+refs = [
+  "data/maps/Route121_SafariZoneEntrance/map.json coord_events[0] (8,4) VAR_TEMP_1 0 -> EventScript_15C383",
+  "data/maps/Route121_SafariZoneEntrance/scripts.inc:48-58 (money box, MSGBOX_YESNO)",
+  "data/maps/Route121_SafariZoneEntrance/scripts.inc:61-87 (ITEM_POKEBLOCK_CASE, checkmoney/removemoney 500, EnterSafariMode, VAR_SAFARI_ZONE_STATE 2, warp MAP_SAFARI_ZONE_SOUTHEAST (32,33))",
+  "data/maps/SafariZone_Southeast/scripts.inc:6-20 (OnFrame VAR_SAFARI_ZONE_STATE 2: the attendant steps aside, state back to 0)",
+  "src/safari_zone.c:57-64 (EnterSafariMode: GAME_STAT_ENTERED_SAFARI_ZONE, FLAG_SYS_SAFARI_MODE, 30 balls, 500 steps)",
+  "src/data/wild_encounters.json:9162-9215 (MAP_SAFARI_ZONE_SOUTHEAST land_mons, encounter_rate 25: Oddish, Girafarig, Natu, Doduo, Gloom, Wobbuffet, Pikachu)",
+  "src/battle_controller_safari.c:207-230 (bx_battle_menu_t6_2: A picks the action under gActionSelectionCursor, 0 = BALL; LEFT on cursor 0 does nothing, B nothing)",
+  "src/battle_script_commands.c atkF3_trygivecaughtmonnick (the nickname YES/NO: probe ui 1 / ui_arg 13, games/ruby/pc/src/ruby_e2e.c:329-331)",
+  "include/constants/game_stat.h:21 (GAME_STAT_ENTERED_SAFARI_ZONE 17)",
+  "include/constants/game_stat.h:15 GAME_STAT_POKEMON_CAPTURES 11: pokeruby never increments it (no IncrementGameStat of it in src/), so the catch is proven by the party, its Safari Ball (ITEM_SAFARI_BALL 5) and the dex",
+]
+notes = "The encounter is the game's RNG over the row-32 tall grass (x 19..27): LEFT presses walk west through it until a battle starts. In the battle A throws a Safari Ball from the menu's default BALL and advances the battle text; the run stops pressing at the nickname question (B = NO). A wild Pokemon that flees ends the battle without the catch (the expects fail). Measured (Ruby and Sapphire alike): a wild PIKACHU Lv25 after 3 steps into the grass, caught with Safari Balls."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 6900
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 4
+on_text = "stop"
+note = "the gate's coord event (8,4) (map.json coord_events[0]): the attendant asks 500 for the Safari Zone"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+shot = "safari-gate-yesno"
+note = "YES (scripts.inc:54-56)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_SAFARI_ZONE_SOUTHEAST"
+note = "500 paid, 30 Safari Balls, the walk to the west door and the warp (scripts.inc:69-85)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 32
+note = "east of the row-32 tall grass (x 19..27), round the grass (gba_world_cli map MAP_SAFARI_ZONE_SOUTHEAST)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 16
+gap = 8
+times = 20
+until = "in_battle=1"
+note = "west through the tall grass until a wild Pokemon appears (encounter_rate 25)"
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "safari-battle"
+note = "the Safari battle's opening ('Wild X appeared!') and its action menu"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 4
+gap = 40
+times = 200
+until = ["ui_arg=13", "in_battle=0"]
+note = "BALL (cursor 0) thrown and the text advanced until the nickname question after 'Gotcha!' (or the battle's end)"
+
+[[step]]
+do = "press"
+keys = "B"
+shot = "safari-caught"
+note = "nickname: NO"
+
+[[step]]
+do = "wait_field"
+max = 1200
+
+[expect]
+map = "MAP_SAFARI_ZONE_SOUTHEAST"
+flags = ["FLAG_SYS_SAFARI_MODE"]
+party_size = 2
+battles = 1
+save = [
+  's["game_stats"][17] == 1',
+  'len(s["party"]) == 2 and s["party"][1]["species_name"] in ("ODDISH", "GIRAFARIG", "NATU", "DODUO", "GLOOM", "WOBBUFFET", "PIKACHU")',
+  's["party"][1]["ball"]["id"] == 5',
+  's["party"][1]["species"] in s["pokedex"]["caught_list"]',
+  'not any(i["item"] == 5 for i in s["bag"]["balls"])',
+  's["trainer"]["money"] == 2500',
+]
+
+[expect.vars]
+VAR_SAFARI_ZONE_STATE = 0

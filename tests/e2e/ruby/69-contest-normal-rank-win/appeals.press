@@ -1,0 +1,10 @@
+# The contest's appeal turns (src/contest.c): DOWN and A alternate, one every 20 frames (4-frame presses).
+# Each turn the prompt 'Appeal no. N! Which move will be played?' takes only A (or B) (Task_TryShowMoveSelectScreen,
+# contest.c:462-476): the DOWN before it is ignored, its A opens the move list, the next DOWN moves the cursor one
+# move down (Task_HandleMoveSelectInput, contest.c:528-610, wrapping) and the next A plays it. The cursor
+# (sContest.playerMoveChoice) is kept between turns, so the five appeals are slots 1, 2, 3, 0, 1:
+# JUMP_KICK, FOCUS_ENERGY, MEGA_KICK (combo after FOCUS_ENERGY), HI_JUMP_KICK, JUMP_KICK: no move twice in a row.
+# Outside the two menus the contest reads no keys (contest*.c JOY_NEW: contest.c:464,547, the results' A at
+# contest_link_util.c:687), and the contest room's scripts hold the player (lockall) while A advances their text.
+0:down:4:40:500
+20:a:4:40:500

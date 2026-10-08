@@ -1,0 +1,379 @@
+# Proves Mystery Event's gate: a normal save's main menu is CONTINUE / NEW GAME / OPTION (no MYSTERY EVENTS:
+# FLAG_SYS_EXDATA_ENABLE unset). The profile man in Petalburg's Pokemon Center takes the secret saying MYSTERY EVENT /
+# IS EXCITING through Easy Chat (needs the fifth badge) and sets the flag; after a save and a soft reset the main menu
+# lists MYSTERY EVENTS, whose screen only waits for a link partner ("Link standby... B Button: Cancel"): its use is n/a
+# headless; B soft-resets, CONTINUE goes back in.
+# Start: boot (main menu) -> MAP_PETALBURG_CITY_POKEMON_CENTER_1F (11,3) -> end: same tile after CONTINUE.
+title = "Mystery Event: absent on a normal save, unlocked by the secret saying, needs a link"
+priority = "P2"
+version = "both"
+estimate = 5964
+refs = [
+  "src/main_menu.c:272-302 (save OK: IsMysteryEventEnabled -> HAS_MYSTERY_EVENT layout, else CONTINUE / NEW GAME / OPTION)",
+  "src/main_menu.c:546-562 (HAS_MYSTERY_EVENT: CONTINUE, NEW GAME, MYSTERY EVENTS, OPTION)",
+  "src/event_data.c:83-91 (EnableMysteryEvent / IsMysteryEventEnabled: FLAG_SYS_EXDATA_ENABLE)",
+  "include/constants/flags.h:853 (FLAG_SYS_EXDATA_ENABLE = SYSTEM_FLAGS + 0x4C)",
+  "data/maps/PetalburgCity_PokemonCenter_1F/map.json object_events[1] (11,2) the profile man, script PetalburgCity_PokemonCenter_1F_EventScript_1B1B14",
+  "data/scripts/mystery_event_club.inc:1-37 (May I see your profile? YES -> Common_EventScript_ShowEasyChatScreen, VAR_0x8004 1 -> 1B1C77)",
+  "data/scripts/mystery_event_club.inc:98-104 (needs FLAG_BADGE05_GET; setflag FLAG_SYS_EXDATA_ENABLE, 'You know the secret saying!')",
+  "src/easy_chat_1.c:24 (gMysteryEventPhrase: EC_WORD_MYSTERY, EC_WORD_EVENT, EC_WORD_IS, EC_WORD_EXCITING)",
+  "src/easy_chat_1.c:863-870,1674-1695 (the profile's OK: VAR_0x8004 = the phrase check)",
+  "src/easy_chat_2.c:2081-2095 (groups shown: all but EVENTS / MOVE_1 / MOVE_2 (FLAG_SYS_GAME_CLEAR), TRENDY SAYING, POKEMON 2)",
+  "src/easy_chat_2.c:2404-2432 (a group's words in gEasyChatGroupOrders order, two per row)",
+  "src/data/text/easy_chat/groups/conditions/order.h:48 (MYSTERY 58: entry 42), lifestyle/order.h:15 (EVENT 23: entry 9), endings/order.h:34 (IS 11: entry 28), adjectives/order.h:11 (EXCITING 15: entry 5)",
+  "src/mystery_event_menu.c:95-121,315-323 (MYSTERY EVENTS: 'Link standby...', OpenLink, waits for a partner; B -> fade, DoSoftReset)",
+]
+notes = "Group grid (two per row, cursor on POKeMON at each opening): ENDINGS is entry 8 (4 DOWN), CONDITIONS 10 (5 DOWN), LIFESTYLE 12 (6 DOWN), ADJECTIVES 16 (8 DOWN). Words: MYSTERY row 21 left, EVENT row 4 right, IS row 14 left, EXCITING row 2 right. The profile slots are 2x2 (A on a slot opens the groups); DOWN from the last slot reaches the button row on CANCEL, RIGHT is OK, and 'Your profile is as shown. Okay?' opens on YES. The flag lives in RAM until a save: the step `save` writes it before the soft reset (A+B+START+SELECT). The boot timings are run.py gba_boot_continue's plus one START (the menu appears on the third)."
+
+[start]
+recipe = "start.recipe"
+boot = "none"
+
+[run]
+frames = 9000
+
+[[step]]
+do = "wait_frames"
+n = 400
+note = "the copyright screen and the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 295
+note = "skip the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 195
+note = "the title screen"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 150
+shot = "main-menu-normal"
+note = "the main menu of a normal save: CONTINUE, NEW GAME, OPTION (main_menu.c:272-302)"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 5
+gap = 95
+times = 8
+until = "field_ready=1"
+note = "CONTINUE"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "the profile man (11,2): Hello there, TRAINER! ... May I see your profile? (mystery_event_club.inc:1-11)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "YES / NO / INFO: YES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "profile"
+note = "'Yes! Thank you!' -> the Easy Chat profile: I AM / A / POKeMON / GREAT, cursor on slot 0"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "slot 0: the group grid"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 5
+note = "CONDITIONS"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 21
+note = "MYSTERY (row 21, left)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "slot 1"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 6
+note = "LIFESTYLE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 4
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 12
+note = "EVENT (row 4, right)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+note = "slot 2"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 4
+note = "ENDINGS"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 14
+note = "IS (row 14, left)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "slot 3"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 8
+note = "ADJECTIVES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 2
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 12
+note = "EXCITING (row 2, right)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "secret-saying"
+note = "MYSTERY EVENT / IS EXCITING"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "the button row, on CANCEL"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "OK"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "profile-ok"
+note = "'Your profile is as shown. Okay?' YES / NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "YES -> VAR_0x8004 = the phrase check (easy_chat_1.c:863-870)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "secret-saying-known"
+note = "BADGE05 set, EXDATA unset -> setflag FLAG_SYS_EXDATA_ENABLE: Oh? You know the secret saying! (mystery_event_club.inc:98-104)"
+
+[[step]]
+do = "advance_text"
+note = "... a fellow member of the MYSTERY EVENT CLUB!"
+
+[[step]]
+do = "save"
+note = "the flag into the save before the reset"
+
+[[step]]
+do = "press"
+keys = "A+B+START+SELECT"
+hold = 10
+gap = 30
+note = "soft reset"
+
+[[step]]
+do = "wait_frames"
+n = 400
+note = "the copyright screen and the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 295
+note = "skip the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 195
+note = "the title screen"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 150
+shot = "main-menu-mystery-events"
+note = "CONTINUE, NEW GAME, MYSTERY EVENTS, OPTION (main_menu.c:546-562)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "MYSTERY EVENTS"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "mystery-events-link-standby"
+note = "'Link standby... B Button: Cancel': waits for a link partner (mystery_event_menu.c:95-121)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+note = "cancel: CloseLink, fade, DoSoftReset (mystery_event_menu.c:116-121,315-323)"
+
+[[step]]
+do = "wait_frames"
+n = 400
+note = "the copyright screen and the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 295
+note = "skip the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 195
+note = "the title screen"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 150
+note = "the main menu again"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 5
+gap = 95
+times = 8
+until = "field_ready=1"
+note = "CONTINUE"
+
+[[step]]
+do = "wait_field"
+shot = "field"
+
+[expect]
+map = "MAP_PETALBURG_CITY_POKEMON_CENTER_1F"
+position = [11, 3]
+flags = ["FLAG_SYS_EXDATA_ENABLE", "FLAG_BADGE05_GET"]

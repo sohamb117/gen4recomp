@@ -1,0 +1,10 @@
+# Petalburg's west pond with the three rods, on the GBA new-game base save (Brendan in the house 1F).
+flag FLAG_SYS_POKEMON_GET                 # data/maps/Route101/scripts.inc:220 (Birch's bag): POKEMON in the start menu (src/start_menu.c:267-268)
+party SPECIES_SWAMPERT 50 ITEM_NONE       # the lead for the wild battles (src/data/wild_encounters.h:58-72 PetalburgCity_Ruby_FishingMons, lv 5-30) [INFERENCE: any strong lead]
+item ITEM_OLD_ROD 1                       # data/maps/DewfordTown/scripts.inc:86 giveitem ITEM_OLD_ROD
+item ITEM_GOOD_ROD 1                      # data/maps/Route118/scripts.inc:22 giveitem ITEM_GOOD_ROD
+item ITEM_SUPER_ROD 1                     # data/maps/MossdeepCity_House3/scripts.inc:12 giveitem ITEM_SUPER_ROD
+register-item ITEM_OLD_ROD                # the bag's REGISTER (src/item_menu.c:221-227): SELECT uses it (src/field_control_avatar.c:267)
+flag FLAG_VISITED_PETALBURG_CITY          # data/maps/PetalburgCity/scripts.inc:7 (on transition)
+# the pond's east bank, the water at (6,20) to the west (data/maps/PetalburgCity/map.json; gba_world_cli.py map)
+map MAP_PETALBURG_CITY 7 20

@@ -1,0 +1,9 @@
+# The Trick House's first puzzle (Cut trees), on the GBA new-game base save (Brendan in the house 1F).
+flag FLAG_SYS_POKEMON_GET                 # data/maps/Route101/scripts.inc:220 (Birch's bag)
+badge 1                                   # data/maps/RustboroCity_Gym/scripts.inc:17: Cut in the field (src/pokemon_menu.c:728, field move 0)
+# a lead that cuts the puzzle's trees (HM01, data/maps/RustboroCity_CuttersHouse) and beats Sally, Eddie and Robin
+# (src/data/trainer_parties.h gTrainerParty_Sally/Eddie/Robin: Oddish, Zigzagoon, Skitty, lv 12-16)
+party SPECIES_SWAMPERT 40 ITEM_NONE
+party-move 0 3 MOVE_CUT
+# Route 110 below the Trick House door (data/maps/Route110/map.json warp_events[1] (11,66) -> ROUTE110_TRICK_HOUSE_ENTRANCE)
+map MAP_ROUTE110 11 67

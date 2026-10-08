@@ -1,0 +1,84 @@
+# Proves berry planting and watering: the empty soft soil of Route 104's berry tree 9 takes a Cheri Berry from the
+# bag's berry pocket (GAME_STAT_PLANTED_BERRIES), then the Wailmer Pail waters the planted berry. The clock is set
+# (FLAG_SYS_CLOCK_SET), so the tree grows on the RTC: 67 harvests it from this end save.
+# Start: MAP_ROUTE104 (35,7) below the soil -> end: same tile.
+title = "Berries: plant a Cheri Berry and water it"
+priority = "P1"
+version = "both"
+estimate = 1526
+refs = [
+  "data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree",
+  "data/scripts/new_game.inc:2-20 (setberrytree pre-plants 8 and 10 beside it, not 9)",
+  "data/scripts/berry_tree.inc:1-11 (S_BerryTree: switch on the tree stage)",
+  "data/scripts/berry_tree.inc:21-52 (empty soil: PlayerHasBerries, YES/NO, Berry_FadeAndGoToBerryBagMenu, removeitem)",
+  "data/scripts/berry_tree.inc:174-180 (S_PlantBerryTree: incrementgamestat GAME_STAT_PLANTED_BERRIES)",
+  "data/scripts/berry_tree.inc:54-59,146-172 (planted: checkitem ITEM_WAILMER_PAIL, YES/NO, S_WaterBerryTree)",
+  "src/item_menu.c:2566-2578 (CB2_ChooseBerry: the berry pocket, A selects the item: OnItemSelect_Field4)",
+  "src/berry.c:1155-1179 (ObjectEventInteractionWaterBerryTree: BERRY_STAGE_PLANTED -> watered1)",
+  "src/berry.c:1451-1457 (ObjectEventInteractionPlantBerryTree: stage 1, growthSparkle off)",
+  "include/constants/game_stat.h:7 (GAME_STAT_PLANTED_BERRIES 3)",
+  "src/clock.c:19-35 (FLAG_SYS_CLOCK_SET gates DoTimeBasedEvents)",
+]
+notes = "No party: the soil is reached by the CONTINUE warp, no grass on the way. The bag opens on the berry pocket with the cursor on its first (only) slot, so one A plants the Cheri Berry."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 2300
+
+[[step]]
+do = "talk_to"
+id = 11
+shot = "soil"
+note = "berry tree 9 (Route104/map.json object_events[11], local id 11): stage 0 -> 'soft, loamy soil... plant a BERRY?' (berry_tree.inc:21-34)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "YES: Berry_FadeAndGoToBerryBagMenu (berry_tree.inc:41-45)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "berry-pocket"
+note = "the bag fades in on the berry pocket (item_menu.c:2566-2571)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "the Cheri Berry: OnItemSelect_Field4 (item_menu.c:2580-2585) -> removeitem, S_PlantBerryTree (berry_tree.inc:46-49,174-180)"
+
+[[step]]
+do = "advance_text"
+shot = "planted"
+
+[[step]]
+do = "talk_to"
+id = 11
+note = "stage 1 (BERRY_STAGE_PLANTED): 'One CHERI BERRY was planted here.' (berry_tree.inc:54-59)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "'Want to water it with the WAILMER PAIL?' YES (berry_tree.inc:146-152)"
+
+[[step]]
+do = "wait_frames"
+n = 150
+shot = "watering"
+note = "S_WaterBerryTree: ObjectEventInteractionWaterBerryTree (watered1), DoWateringBerryTreeAnim, the message (berry_tree.inc:162-172)"
+
+[[step]]
+do = "advance_text"
+shot = "watered"
+
+[expect]
+map = "MAP_ROUTE104"
+position = [35, 7]
+flags = ["FLAG_SYS_CLOCK_SET", "FLAG_RECEIVED_WAILMER_PAIL"]
+save = [
+  's["game_stats"][3] >= 1',
+  'all(i["item"] != 133 for i in s["bag"]["berries"])',
+  'any(i["item"] == 268 for i in s["bag"]["key_items"])',
+]
