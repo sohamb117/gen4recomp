@@ -52,7 +52,9 @@ On-foot step from (x, y) at elevation e in direction d (field_player_avatar.c:69
     water (IsPlayerFacingSurfableFishableWater, field_player_avatar.c:1322 [1121]): previous elevation 3 and a
     MetatileBehavior_IsSurfableFishableWater tile (metatile_behavior.c:1162 [1199]); the surfer takes the water's
     elevation (1). Water to land: an elevation mismatch is allowed onto elevation 3 (CanStopSurfing,
-    field_player_avatar.c:729 [616]). MB_WATERFALL 0x13 is entered, and left, only going north.
+    field_player_avatar.c:729 [616]). MB_WATERFALL 0x13 is entered, and left, only going north (Waterfall: A + YES)
+    or south: surfing down it is the forced current (sForcedMovementTestFuncs' MetatileBehavior_IsWaterfall ->
+    ForcedMovement_RideCurrentSouth, field_player_avatar.c [123-163]; Victory Road B2F's falls into its lower lake).
 Warps (field_control_avatar.c ProcessPlayerFieldInput):
   - fire only when a warp event sits on the tile at the player's previous elevation, or at elevation 0
     (GetWarpEventAtPosition :860 [812]); MAP_DYNAMIC / non-numeric dest_warp_id destinations are never used (the tile
@@ -550,7 +552,7 @@ class World:
                     if rec is not None:
                         warp_to(rec, cost, state, (Leg(mid, x, y, "warp", rec[3]),))
                         continue
-                if t_surf and bt == MB_WATERFALL and d != 0:
+                if t_surf and bt == MB_WATERFALL and d not in (0, 1):
                     continue
                 nx, ny = x + dx, y + dy
                 if 0 <= nx < w and 0 <= ny < m.h:
@@ -598,7 +600,7 @@ class World:
                     mismatch = e != 0 and ne != 0 and ne != 15 and ne != e
                     n_surf = bn in surfable and not n.underwater
                     if n_surf:
-                        if not surf or (bn == MB_WATERFALL and d != 0):
+                        if not surf or (bn == MB_WATERFALL and d not in (0, 1)):
                             continue
                         if not t_surf and e != 1:
                             # IsPlayerFacingSurfableFishableWater: Surf from elevation 3 onto fishable water (at

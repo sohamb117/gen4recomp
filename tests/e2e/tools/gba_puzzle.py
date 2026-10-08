@@ -226,7 +226,7 @@ class Puzzle:
             return None  # Surf starts with A + YES: routes start on the water
         # no elevation test: the arrow tracks (elevation 4) are ridden onto from the elevation-3 floor in the game
         # (probe_map: a press north from (1,17) rides column 1 and row 14 to (8,17))
-        return e if ne in (0, 15) else ne
+        return e if ne == 15 else ne
 
     def _arrow_steps(self, state):
         x, y, e, sw, people = state
@@ -409,7 +409,7 @@ class Puzzle:
                 if m.coll[k] or m.beh[k] in gba_world.FORBIDDEN:
                     continue
                 ne = m.elev[k]
-                a = self.arrive(lx, ly, e if ne in (0, 15) else ne, orients, people)
+                a = self.arrive(lx, ly, e if ne == 15 else ne, orients, people)
                 if a:
                     yield d, a[0], 2, a[1], "walk"
                 continue
@@ -419,11 +419,13 @@ class Puzzle:
             if bn in gba_world.STEP_WARP[self.world.decomp] and (nx, ny) not in self.pads and (nx, ny) != self.goal:
                 continue  # a warp off the map, unless it is where the route goes
             ne = m.elev[j]
+            # IsZCoordMismatchAt; then ObjectEventUpdateZCoord (event_object_movement.c [7586]): the player takes
+            # every tile's elevation but 15's, 0 included (from 0 it goes anywhere)
             if e not in (0, 15) and ne not in (0, 15) and ne != e:
                 continue
             ok, no = self.gate_step(d, nx, ny, orients) if self.gates else (True, orients)
             if ok:
-                a = self.arrive(nx, ny, e if ne in (0, 15) else ne, no, people)
+                a = self.arrive(nx, ny, e if ne == 15 else ne, no, people)
                 if a:
                     yield d, a[0], 1, a[1], "walk"
 
