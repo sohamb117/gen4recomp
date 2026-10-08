@@ -19,6 +19,15 @@ The static model (gba_world.py) and the probe's window show the floor, not the p
   - warp panels (MB_MOSSDEEP_GYM_WARP and the map's other step-on warps to itself) move the player to the paired
     warp; coord events that warp elsewhere (WarpToEntrance) are never stepped on
 
+  Strength boulders and Rock Smash rocks (Seafloor Cavern, Victory Road; field_player_avatar.c)
+  - walking into an OBJ_EVENT_GFX_PUSHABLE_BOULDER pushes it one tile when the tile beyond has no collision, no
+    object, no elevation mismatch for the boulder and is no non-animated door (TryPushBoulder); the player walks
+    in place (PushBoulder_Move). FLAG_SYS_USE_STRENGTH clears on every map load (overworld.c), so the first push
+    on a map is preceded by A on the boulder and YES (EventScript_StrengthBoulder)
+  - an OBJ_EVENT_GFX_BREAKABLE_ROCK goes with A and YES (EventScript_RockSmash); both come back on a map load
+  With boulders or rocks the route prints as milestone [[step]] blocks (steps, the Strength / Rock Smash prompts
+  as interact + advance_text, each push as a held press).
+
 The map's trainers are part of the state: one who sees the player (a straight line within its sight range, the
 way it faces, clear of collision and people: trainer_see.c CheckTrainer / CheckPathBetweenTrainerAndPlayer)
 walks up to the player and stays there after the battle. A battle costs BATTLE_COST tiles.
@@ -44,6 +53,7 @@ DIRS = ((0, -1), (0, 1), (-1, 0), (1, 0))  # up, down, left, right (DIR_NORTH, _
 DIR_NAMES = ("North", "South", "West", "East")
 ARROW_DIRS = ((1, 0), (0, 1), (-1, 0), (0, -1))  # puzzle tiles 0..3: right, down, left, up
 BATTLE_COST = 25
+PUSH_COST, SMASH_COST = 2, 8
 FACE = {"FACE_UP": (0,), "FACE_DOWN": (1,), "FACE_LEFT": (2,), "FACE_RIGHT": (3,)}
 MB_MOSSDEEP_GYM_WARP = 0x0E
 
@@ -81,7 +91,7 @@ def load_gate_rules(decomp_dir, puzzle):
 
 
 class Puzzle:
-    def __init__(self, game, map_name):
+    def __init__(self, game, map_name, hidden=()):
         self.world = w = gba_world.World(game)
         self.mid = w.map_id(map_name)
         self.m = m = w._map(self.mid)
@@ -97,14 +107,19 @@ class Puzzle:
             blocks.byteswap()
         self.mt = [v & 0x3FF for v in blocks]
         self.arrow_base = self._metatile_label("METATILE_MossdeepGym_YellowArrow_Right")
-        # people: (x, y, facing directions, sight range; range 0 = never battles)
-        self.people = []
-        for o in j.get("object_events", []):
+        # people: (x, y, facing directions, sight range (0: never battles), kind, elevation); objects whose flag is
+        # set (`hidden`, local ids) are not there
+        self.people, self.kinds = [], []
+        for i, o in enumerate(j.get("object_events", [])):
             r = int(o.get("trainer_sight_or_berry_tree_id") or 0)
             if o.get("trainer_type", "TRAINER_TYPE_NONE") in ("TRAINER_TYPE_NONE", 0, "0"):
                 r = 0
             mt = o.get("movement_type", "")
-            self.people.append((o["x"], o["y"], next((v for k, v in FACE.items() if mt.endswith(k)), (0, 1, 2, 3)), r))
+            g = o.get("graphics_id", "")
+            kind = "boulder" if g.endswith("PUSHABLE_BOULDER") else "rock" if g.endswith("BREAKABLE_ROCK") else "person"
+            x, y = (-1, -1) if i + 1 in hidden else (o["x"], o["y"])
+            self.people.append((x, y, next((v for k, v in FACE.items() if mt.endswith(k)), (0, 1, 2, 3)), r))
+            self.kinds.append((kind, int(o.get("elevation", 0))))
         # coord events: floor switches (colour), warps away (never stepped on)
         with open(os.path.join(w.dir, "data", "maps", m.folder, "scripts.inc")) as f:
             scripts = f.read()
@@ -118,7 +133,7 @@ class Puzzle:
             elif re.search(r"\bwarp", body):
                 self.no_step.add((c["x"], c["y"]))
         # step-on warps to this same map: (x, y) -> the paired warp's tile
-        self.pads = {}
+        self.pads, self.goal = {}, None
         for x, y, _e, dmid, dk, _k in [r for recs in m.warp_at.values() for r in recs]:
             if dmid == self.mid and dk is not None and dk < len(m.warps):
                 self.pads[(x, y)] = (m.warps[dk][0], m.warps[dk][1])
@@ -226,7 +241,27 @@ class Puzzle:
         bt = m.beh[y * m.w + x]
         for d, (dx, dy) in enumerate(DIRS):
             nx, ny = x + dx, y + dy
-            if not (0 <= nx < m.w and 0 <= ny < m.h) or (nx, ny) in busy or (nx, ny) in self.no_step:
+            if not (0 <= nx < m.w and 0 <= ny < m.h) or (nx, ny) in self.no_step:
+                continue
+            if (nx, ny) in busy:
+                i = next(k for k, (a, b, _) in enumerate(people) if (a, b) == (nx, ny))
+                kind, be = self.kinds[i]
+                if kind == "rock":
+                    t = list(people)
+                    t[i] = (-1, -1, True)
+                    yield d, (x, y, e, orients, tuple(t)), 0, 0, "smash"
+                elif kind == "boulder":
+                    bx, by = nx + dx, ny + dy
+                    if not (0 <= bx < m.w and 0 <= by < m.h) or (bx, by) in busy:
+                        continue
+                    k = by * m.w + bx
+                    te = m.elev[k]
+                    if (m.coll[k] or m.beh[k] in gba_world.NONANIM_DOORS
+                            or (be not in (0, 15) and te not in (0, 15) and te != be)):
+                        continue
+                    t = list(people)
+                    t[i] = (bx, by, people[i][2])
+                    yield d, (x, y, e, orients, tuple(t)), 0, 0, "push"
                 continue
             j = ny * m.w + nx
             bn = m.beh[j]
@@ -240,13 +275,13 @@ class Puzzle:
                 ne = m.elev[k]
                 a = self.arrive(lx, ly, e if ne in (0, 15) else ne, orients, people)
                 if a:
-                    yield d, a[0], 2, a[1]
+                    yield d, a[0], 2, a[1], "walk"
                 continue
             if (m.coll[j] or bt in gba_world._LEAVE_BLOCKED[d] or bn in gba_world._ENTER_BLOCKED[d]
                     or bn in gba_world.FORBIDDEN):
                 continue
-            if bn in gba_world.STEP_WARP[self.world.decomp] and (nx, ny) not in self.pads:
-                continue  # a warp off the map
+            if bn in gba_world.STEP_WARP[self.world.decomp] and (nx, ny) not in self.pads and (nx, ny) != self.goal:
+                continue  # a warp off the map, unless it is where the route goes
             ne = m.elev[j]
             if e not in (0, 15) and ne not in (0, 15) and ne != e:
                 continue
@@ -254,11 +289,13 @@ class Puzzle:
             if ok:
                 a = self.arrive(nx, ny, e if ne in (0, 15) else ne, no, people)
                 if a:
-                    yield d, a[0], 1, a[1]
+                    yield d, a[0], 1, a[1], "walk"
 
     def solve(self, sx, sy, tx, ty):
-        """Dijkstra from (sx, sy) to (tx, ty): the list of (direction, tiles, landed tile) moves, or None."""
+        """Dijkstra from (sx, sy) to (tx, ty): the list of (direction, tiles, landed tile, action) moves, or
+        None."""
         m = self.m
+        self.goal = (tx, ty)
         e0 = m.elev[sy * m.w + sx]
         start = (sx, sy, 3 if e0 in (0, 15) else e0, tuple(g[3] for g in self.gates),
                  tuple((p[0], p[1], False) for p in self.people))
@@ -272,15 +309,15 @@ class Puzzle:
             if st[:2] == (tx, ty):
                 moves = []
                 while parent[st] is not None:
-                    prev, d, n = parent[st]
-                    moves.append((d, n, st[:2]))
+                    prev, d, n, act = parent[st]
+                    moves.append((d, n, st[:2], act))
                     st = prev
                 return moves[::-1]
-            for d, nst, n, b in self.steps(st):
-                nc = c + n + b * BATTLE_COST
+            for d, nst, n, b, act in self.steps(st):
+                nc = c + n + b * BATTLE_COST + (PUSH_COST if act == "push" else SMASH_COST if act == "smash" else 0)
                 if nc < dist.get(nst, 1 << 60):
                     dist[nst] = nc
-                    parent[nst] = (st, d, n)
+                    parent[nst] = (st, d, n, act)
                     heapq.heappush(heap, (nc, tick, nst))
                     tick += 1
         return None
@@ -290,7 +327,7 @@ def corners(sx, sy, moves):
     """The route's corners: one tile per straight run (a ledge's jump runs on in its direction); a warp panel's
     landing tile is a corner of its own, as the steps bot counts a tile it is carried to."""
     out, x, y, last = [], sx, sy, None
-    for d, n, landed in moves:
+    for d, n, landed, _act in moves:
         ex, ey = x + DIRS[d][0] * n, y + DIRS[d][1] * n
         if last is not None and d != last:
             out.append((x, y))
@@ -306,6 +343,49 @@ def corners(sx, sy, moves):
     return out
 
 
+FACE_NAMES = ("up", "down", "left", "right")
+
+
+def blocks(sx, sy, moves):
+    """The route as milestone [[step]] blocks: walks as `steps` corners, each push a held press (the first on the map
+    after A + YES on the boulder), each rock A + YES."""
+    out, walk, x, y, strength = [], [], sx, sy, False
+
+    def flush():
+        if walk:
+            out.append({"do": "steps", "route": [list(t) for t in corners(walk[0][0], walk[0][1], walk[1:])]})
+            walk.clear()
+
+    for mv in moves:
+        d, n, landed, act = mv
+        if act == "walk":
+            if not walk:
+                walk.append((x, y))
+            walk.append(mv)
+            x, y = landed
+            continue
+        flush()
+        if act == "smash" or not strength:
+            out.append({"do": "steps", "route": [[x, y]], "face": FACE_NAMES[d], "interact": True,
+                        "note": "Rock Smash: A + YES" if act == "smash" else "Strength: A on the boulder + YES"})
+            out.append({"do": "advance_text"})
+            strength = strength or act == "push"
+        if act == "push":
+            out.append({"do": "press", "keys": FACE_NAMES[d], "hold": 24, "gap": 40, "note": "push the boulder"})
+    flush()
+    return out
+
+
+def toml_blocks(bl):
+    lines = []
+    for b in bl:
+        lines.append("[[step]]")
+        for k, v in b.items():
+            lines.append("%s = %s" % (k, json.dumps(v) if not isinstance(v, bool) else ("true" if v else "false")))
+        lines.append("")
+    return "\n".join(lines)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--game", default="emerald", choices=sorted(gba_world.DECOMPS))
@@ -314,14 +394,21 @@ def main():
     ap.add_argument("sy", type=int)
     ap.add_argument("tx", type=int)
     ap.add_argument("ty", type=int)
+    ap.add_argument("--hide", type=int, nargs="*", default=[], metavar="LOCAL_ID",
+                    help="objects the save has hidden (their map.json flag set), by 1-based local id")
     a = ap.parse_args()
-    p = Puzzle(a.game, a.map)
+    p = Puzzle(a.game, a.map, hidden=set(a.hide))
     moves = p.solve(a.sx, a.sy, a.tx, a.ty)
     if moves is None:
         raise SystemExit("no route from (%d,%d) to (%d,%d) on %s" % (a.sx, a.sy, a.tx, a.ty, a.map))
+    if any(act != "walk" for *_, act in moves):
+        print("# %d moves (%d pushes, %d rocks)" % (len(moves), sum(m[3] == "push" for m in moves),
+                                                  sum(m[3] == "smash" for m in moves)))
+        print(toml_blocks(blocks(a.sx, a.sy, moves)))
+        return
     route = corners(a.sx, a.sy, moves)
     print("# %d tiles, %d corners; gates (x, y, shape, orientation) %s; switches %s; panels %s" % (
-        sum(n for _, n, _ in moves), len(route), p.gates, p.switches, p.pads))
+        sum(m[1] for m in moves), len(route), p.gates, p.switches, p.pads))
     print("route = %s" % json.dumps([list(t) for t in route]))
 
 
