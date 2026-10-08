@@ -21,18 +21,72 @@ counterparts return true. Non-null callbacks run only for true results.
 This substitutes outcomes rather than executing the original tests.
 The same source is compiled for HeartGold and SoulSilver.
 
-**The replacement is insufficient to reach the overworld.** Both titles
-independently reach the first `FieldSystem_Init`, then fail while loading
-`ds_protect` (overlay 123), before any detector entry point executes.
-`overlay_124.c:23` loads the overlay before the detector calls on lines
-24, 28 and 31. The unchanged `pc_dp_overlay_sinit` guard reports:
+**Resolved (hgss2):** `ds_protect`'s five static initialisers are the
+`NitroStaticInit` of `lib/dsprot/build/*_decoder.s` (dsprot_main_decrypter,
+integrity_decrypter, encryptor, coretests_decrypter, rc4). Each only hands
+its table of encoded function bodies to `Encryptor_DecodeFunctionTable`,
+which rewrites those instruction words in place in the overlay's RAM image.
+The port runs `lib/dsprot/src`'s C in the clear and answers the detector
+entry points itself, so `pc_hg_dsprot.c` records the five as superseded with
+`pc_dp_sinit_record(FS_OVERLAY_ID(ds_protect), ...)` (overlay 123 only; the
+loader's exact count still stops on a sixth entry). Verified: HeartGold
+headless frame 16170 loads overlays 124 and 123, frame 16176 overlays 1,
+123, 2, 3 and frame 16180 overlay 27 (`PC_TRACE_OVERLAYS=1`).
 
-```
-overlay 123's ROM table has 5 static initialiser(s);
-0 ran as recompiled code and 0 as recorded C (pc_dp_sinit_record)
-```
+## Current blocker (hgss2, 2026-10-08): field init hangs in FieldMap_Init
 
-No overlay-loader guard, initializer or ROM was changed in this experiment.
+Same schedule as below, HeartGold, native core built from hgss2:
+`FieldMap_Init -> ov01_021E662C (fieldmap.c:774) -> CARD_SpiWaitGetStatus`
+(twice) spins forever in the second call's `OS_LockCard` (sampled; 0% guest
+progress after frame 16180). LLDB watchpoint on the card lock word
+(guest 0x027FFFE0): the first call writes lockFlag=0xFFFD, ownerID=0xFFFD,
+and nothing writes it again before the second call; no `armrec_dispatch` to
+`OS_UnlockCard` happens in between. Root cause, read in the generated
+`build/pc-wasm/heartgold/armrec/c/nitro.c`: `bl _ll_udiv` in
+`CARD_SpiWaitGetStatus` is emitted as `goto L__ll_udiv;`, because the
+msl.s helper bodies (`_fadd`, `_ll_udiv`/`_ull_div`, `_ll_shl`, ...) appear
+as local labels at the end of the calling function (`emit_branch` in
+armrec.py: a target in `func.labels` and not in `func.entries` becomes a
+goto). The helper's `bx lr` then returns from the whole caller, so the
+first call returns before `OS_UnLockCard`. The same `goto L__ll_udiv`
+pattern occurs in 18 generated files (nitro.c 7, overlay_00_arm.c 33,
+nnsys.c 4, overlay_39_arm.c 6, overlay_40.c 5, MSL_*, wifi.c, ...), so it
+breaks every recompiled 64-bit division caller, not only this check.
+Suspects: armrec `33a712360` (bodiless function starts become C aliases of
+the function that follows) or the HG staging of msl.s; find why msl.s's
+`.type X, @function` labels land in a nitro.s function's label set, fix it
+in armrec, then gate D/P/Pt (`tests/dp/regress.sh --only` the cases whose
+armrec output changes) before integrating.
+
+Next, after that fix: the same function needs the cartridge's IR chip on
+the ARM9's AUXSPI bus (0x040001A0/A2): command 0x08 must answer 0xAA, or
+`ov01_021E662C` returns FALSE and fieldmap.c queues the anti-piracy
+`Task_AntipiracyMath` tasks. Planned model (agreed with BWPlay1, who wants a
+ping when it lands): `games/platinum/pc/src/pc_card_rom.c`
+`armrec_card_store/load`, CS held by AUXSPICNT bit 6, first byte the IR
+command (0x08 -> 0xAA, 0x00 pass-through to the flash, 0x01/0x02 nothing in
+range), enabled when the header game code starts with 'I' (HG/SS, B/W).
+
+Naming-screen SIGBUS (task pointer 0xFFFFFFF0): 0xFFFFFFF0 is armrec's
+`ARMREC_LR_SENTINEL`, the `lr` value recompiled code starts with when C
+calls it, so a sentinel `lr` reached guest memory and became a SysTask
+link; not yet traced to the storing instruction. naming_screen.c's
+`SysTask_NamingScreen_WiggleEffect` also has a documented use-after-free
+(`++data->state` after `DestroySysTaskAndEnvironment`) to rule in or out.
+
+Tooling for the next session:
+- LLDB cannot open ROMs under ~/Documents (TCC): debug with the APFS clones
+  `/tmp/nativeplat-proposal-runtime/hgss/poke{heartgold,soulsilver}.debug.nds`.
+- `breakpoint command add -o` keeps only the last `-o`; drive LLDB from a
+  Python module instead (`/tmp/hgss2/lockdrv.py`: breakpoint, then a
+  watchpoint at memory base + guest address, base = `*(u64 *)(x0 + 0x18)`
+  in any `w2c_heartgold_*` frame). Small recompiled callees are inlined
+  natively, so name breakpoints miss them; watchpoints do not.
+- `/tmp/hgss2/np_headless-fork-at.patch` (unbuilt) lets `--fork-at
+  F:CTL` work without `--lockstep`: run once to a frame, then fork one child
+  per control-file line, so experiments skip the 16000-frame intro.
+- Long jobs: start detached (`/tmp/hgss2/detach.sh LOG cmd...`); a tool
+  call's own deadline kills an attached `tools/heavy.sh` waiting for a slot.
 
 ## Current state (supersedes "Where it stopped" below)
 
