@@ -21,8 +21,9 @@ refs = [
   "scr_seq_0033_D23R0105.s:31-141 (Petrel revealed, TRAINER_EXECUTIVE_PETREL_PETREL, ITEM_BASEMENT_KEY, VAR_UNK_40E7 2, ClearFlag FLAG_HIDE_UNDERGROUND_KIMONO_GIRL)",
   "TRAINER_EXECUTIVE_PETREL_PETREL (487, include/constants/trainers.h:492): KOFFING 30 x2, KOFFING 30, WEEZING 32, KOFFING 30 x2",
   "include/constants/items.h:897 (ITEM_BASEMENT_KEY 476)",
+  "tools/hg_world.py fly: MAP_GOLDENROD fly point cursor x 9..11 y 10..11, lands (352,369); src/field_move.c:217-221 (Fly needs BADGE_STORM)",
 ]
-notes = "The 3F->4F stairs used are (12,5); the card-key door at 3F (22,11) is for later. Petrel's six Koffing/Weezing: Psychic/Ground coverage by boost (Levitate blocks Ground: auto_battle knows). # PHASE2 below: travel back to Goldenrod."
+notes = "The 3F->4F stairs used are (12,5); the card-key door at 3F (22,11) is for later. Back to Goldenrod by Fly from Mahogany (block (16,5)) with the Pelipper boosted in at 18. Petrel's six Koffing/Weezing (lv30-32): the lead first; behind a fainted lead the best scorer is sent in (send = best: Pelipper's Surf/Fly, Scyther)."
 
 [start]
 from = "prev"
@@ -31,14 +32,16 @@ from = "prev"
 [run]
 frames = 67500
 
-# PHASE2: Mahogany -> Goldenrod: Route 42 / Ecruteak / Route 37-36-35 on foot (long) or Fly to Goldenrod through the
-# touch-screen menu (unverified on HG/SS). The walk below targets the tunnel entrance directly.
+[[step]]
+do = "fly"
+map = "MAP_GOLDENROD"
+note = "Mahogany's block (16,5) -> Goldenrod's fly point (9..11,10..11) on the fly map; lands at (352,369) (tools/hg_world.py fly); the Fly carrier is 18's boosted Pelipper"
+
 [[step]]
 do = "walk_to"
 x = 347
 z = 334
-surf = true
-note = "to Goldenrod's north-west tunnel entrance (warp 10) [INFERENCE: one long walk]"
+note = "north through Goldenrod to the north-west tunnel entrance (zone_event 073_T25 warp 10)"
 
 [[step]]
 do = "wait_map"
@@ -164,7 +167,8 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-note = "TRAINER_EXECUTIVE_PETREL_PETREL"
+send = "best"
+note = "TRAINER_EXECUTIVE_PETREL_PETREL: KOFFING 30 x5, WEEZING 32"
 
 [[step]]
 do = "advance_text"

@@ -18,6 +18,9 @@ make("${WORK}/item.pgf" pgf 2 300)
 # ---- every tab (standalone editor: the save says it is Black)
 tabs("" "${SAV}")
 expect_log(1-trainer "editor: opened black file .*\\(black\\)")
+# Trainer Card and diploma: Name, Gender, TID, SID, Money, 8 badges, 3 play
+# time rows, then the two Export rows (16, 17).
+export_cards("${SAV}" 16)
 
 # ---- money: Trainer row 5 (Name, Gender, TID, SID, Money), +3, saved
 keys(s 4 2 Down Down Down Down Return Up Up Up Return Escape Return)

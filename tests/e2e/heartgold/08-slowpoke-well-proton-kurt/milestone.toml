@@ -18,7 +18,7 @@ refs = [
   "TRAINER_EXECUTIVE_PROTON_PROTON (486, include/constants/trainers.h:491): ZUBAT 8, KOFFING 12",
   "scr_seq_0874_T23R0501_hdr.s (OnFrame VAR_UNK_4080 2 -> 005); scr_seq_0874_T23R0501.s:26-37 (VAR_UNK_4080 3, item 492, FLAG_UNK_07C)",
 ]
-notes = "Order per the scripts: Kurt first (his FLAG_UNK_19F hides the Rocket at the well door), then the harassing coord in front of the well. The B1F walk passes the three grunts' sight lines (each fought). Proton's room is reached along the B1F floor [INFERENCE: no Strength needed; the boulder (23,3) is beside him]."
+notes = "Order per the scripts: Kurt first (his FLAG_UNK_19F hides the Rocket at the well door), then the harassing coord in front of the well. Routes from the land data: the entrance's (17,5) arrival reaches the (11,6) 0x6E step-on warp by (16,5) (16,7) (11,7); B1F's dry floor (no 0x15 water, no Strength: the boulder (23,3) is west of Proton) leads from (42,27) up column 42, then (41,7) (38,6) (34,6) (34,9) (31,9) (31,7) (30,4) to (27,4) below Proton, round the Slowpokes (31,6) (29,3). On that line Grunt_2 (42,11, facing south, sight 4), the F grunt (37,7, facing west, sight 3) and the grunt (27,9, facing east, sight 4) each spot the player: three trainer battles before Proton."
 
 [start]
 from = "prev"

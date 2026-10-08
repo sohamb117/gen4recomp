@@ -1,0 +1,15 @@
+# Boost on 17's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
+# Party before: 0 CYNDAQUIL, 1 Togepi (egg, 06), 2 SCYTHER (10's Cut carrier) -> size 3.
+# Adds slot 3: the Surf and Fly carrier. HM03 Surf is received in 16 (scr_seq_0928_T27R0501.s:371-399) and first
+# needed here (Route 40/41 to Cianwood); HM02 Fly is received here (scr_seq_0875_T24.s:31-41, Storm Badge) and first
+# needed in 20 (fly to Ecruteak), then 23, 29, 30, 32 and SoulSilver's 31. One carrier for both keeps a party slot:
+# PELIPPER learns HM02, HM03 and HM05 (personal.json hms [2, 3, 5]). Lv32 is the area's (TRAINER_LEADER_CHUCK_CHUCK:
+# PRIMEAPE 29, POLIWRATH 31; TRAINER_LEADER_JASMINE_JASMINE: MAGNEMITE 30 x2, STEELIX 35); behind a fainted lead:
+# Fly for Chuck's fighters, Surf for Steelix (x2) and Archer's Houndoom (25), Ice Beam (TM13, personal.json tms) for
+# the rival's Golbat (24), Wing Attack (level-up 1/11) as a one-turn Flying move.
+# Party after: 4 (CYNDAQUIL, Togepi, SCYTHER, PELIPPER).
+party SPECIES_PELIPPER 32
+party-move 3 0 MOVE_SURF
+party-move 3 1 MOVE_FLY
+party-move 3 2 MOVE_ICE_BEAM
+party-move 3 3 MOVE_WING_ATTACK

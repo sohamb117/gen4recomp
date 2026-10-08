@@ -19,8 +19,10 @@ refs = [
   "scr_seq_0938_T29.s:131-142 (OnLoad after the battle: FLAG_HIDE_LAKE_OF_RAGE_RED_GYARADOS)",
   "zone_event 085_T29 object 8 obj_T29_wataru (528,83) -> 003",
   "scr_seq_0938_T29.s:332-363 (YES -> Lance leaves: FLAG_HIDE_LAKE_OF_RAGE_LANCE, ClearFlag FLAG_HIDE_MAHOGANY_SHOP_LANCE, VAR_UNK_40A8 1; NO -> FLAG_UNK_0C3 and he asks again)",
+  "Fly: src/field_move.c:217-238 (BADGE_STORM, map flyAllowed); gMapFlypointParams Ecruteak rect (11,4) 2x2 (src/application/pokegear/map/overlay_101_021F79B4.c); landing sSpawnMaps MAP_ECRUTEAK (0x18D,0xB8) = (397,184) (asm/unk_0203BA5C.s:21); Ecruteak's flypoint flag set on entering it (src/field_warp_tasks.c:233-235 -> asm/unk_02067A60.s sub_02067A88/sub_02067AE4 -> FlypointFlagAction)",
+  "land data (tools/hg_world.py grid 505 55 560 100): the lake south shore, land (528,79), water 0x10 from (527,79) west and north",
 ]
-notes = "The Mahogany coord (540,176) VAR_UNK_407A 0 is the east exit's RageCandyBar man (Route 44 is shut until the Radio Tower). Route 42 is crossed on land or by Surf (surf = true lets the plan use the ponds). The toll gate needs 1000 money [INFERENCE: enough by now]; the gate's grass bypass west of it also reaches the lake. Gyarados (lv30): Electric/Grass coverage by boost."
+notes = "The Mahogany coord (540,176) VAR_UNK_407A 0 is the east exit's RageCandyBar man (Route 44 is shut until the Radio Tower). Route 42 is crossed on land or by Surf (surf = true lets the plan use the ponds). The toll gate needs 1000 money [INFERENCE: enough by now]; the gate's grass bypass west of it also reaches the lake. Gyarados (lv30): Electric/Grass coverage. Fly and Surf: the Pelipper boosted in at 18 (heartgold/18-*/boost.recipe); without Fly, walk Routes 39/38 east instead (walk_to (415,175))."
 
 [start]
 from = "prev"
@@ -29,12 +31,16 @@ from = "prev"
 [run]
 frames = 60000
 
-# PHASE2: Olivine -> Ecruteak is Routes 39/38 back east (or Fly to Ecruteak through the touch-screen menu, unverified).
+[[step]]
+do = "fly"
+map = "MAP_ECRUTEAK"
+note = "Olivine's block (8,7) -> Ecruteak's fly point (11..12,4..5): RIGHT x3, UP x3 on the fly map; lands at (397,184) (tools/hg_world.py fly)"
+
 [[step]]
 do = "walk_to"
 x = 415
 z = 175
-note = "Routes 39/38 back to Ecruteak and its east gate (warp 10)"
+note = "Ecruteak's east gate (warp 10)"
 
 [[step]]
 do = "wait_map"
@@ -94,12 +100,11 @@ note = "Route 43 north (the toll gate's OnFrame takes 1000 if walked through) to
 do = "wait_map"
 map = "MAP_LAKE_OF_RAGE"
 
-# PHASE2: reaching the red Gyarados on the water: talk_to while surfing (object 3 wanders, mv 3); confirm talk_to can
-# chase over water with the probe, else a walk_to surf = true next to its tile and A.
 [[step]]
 do = "talk_to"
 id = 3
-note = "the red Gyarados (525,71) (scr_seq_0938_T29.s:280-289)"
+surf = true
+note = "the red Gyarados (525,71), wandering 1 tile (movement 3, x/yRange 1) on the lake: talk_to's walks surf (surf = true: the bump into the water off the shore at (528,79) -> (527,79) is A + YES), then face it and A (scr_seq_0938_T29.s:280-289) [INFERENCE: A reaches a map object from the water as on land]"
 
 [[step]]
 do = "advance_text"
@@ -117,7 +122,8 @@ note = "Red Scale (:299-305)"
 [[step]]
 do = "talk_to"
 id = 8
-note = "Lance (528,83)"
+surf = true
+note = "Lance (528,83) on the shore, walked to from the water (surf = true lets the plan start on it)"
 
 [[step]]
 do = "advance_text"

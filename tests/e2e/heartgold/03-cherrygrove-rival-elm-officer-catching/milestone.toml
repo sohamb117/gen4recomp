@@ -14,12 +14,14 @@ refs = [
   "scr_seq_0616_T20R0101_hdr.s (OnFrame VAR_SCENE_ELMS_LAB 3 -> 002)",
   "scr_seq_0843_T20R0101.s:663-767 (officer, NameRival :696, 'Is it ...?' GetMenuChoice :706, FLAG_GAVE_RIVAL_NAME_TO_OFFICER, TakeItemNoCheck ITEM_MYSTERY_EGG :743, FLAG_HIDE_ROUTE_30_BATTLERS, Joey shown, VAR_SCENE_ELMS_LAB 4, VAR_UNK_408B 1, Route 29 friend shown, VAR_SCENE_MR_POKEMONS_HOUSE 2, VAR_SCENE_NEW_BARK_TOWN_OW 3, VAR_SCENE_ROUTE_30_PHONE_CALL 1)",
   "src/scrcmd_c.c:2108-2112 (NameRival -> NAME_SCREEN_RIVAL)",
-  "src/naming_screen.c:654-675 (empty input -> FIRST_DEFAULT_NAME_RIVAL msg_0254_00085)",
+  "src/naming_screen.c:645-653,656-675,705-708 (an empty input on exit -> the default rival name: HG msg_0254_00084, SS msg_0254_00085)",
+  "src/naming_screen.c:219,1449-1455 (START puts the keyboard cursor on (12,0) = NAME_SCREEN_BUTTON_OK)",
+  "src/launch_application.c:1046-1064 (the NameRival result var = noInput, 0 for the rival: SetName; scr_seq_0843_T20R0101.s:699-700 reopens the screen only on 1)",
   "zone_event 030_R29 coord 0 (666,396) h7 VAR_UNK_408B 1 -> 001",
   "scr_seq_0225_R29.s:125-321 (CatchingTutorial :305, GiveItemNoCheck ITEM_POKE_BALL 5 :310, FLAG_HIDE_ROUTE_29_FRIEND/MARILL, VAR_UNK_408B 0, FLAG_UNK_09A)",
   "include/constants/items.h:905 (ITEM_MYSTERY_EGG 484)",
 ]
-notes = "Rival naming: the empty name is accepted and becomes the default (naming_screen.c:654-675), so the keyboard is confirmed as the intro confirmed the player's default name: START (cursor to OK) then A [INFERENCE: same naming screen layout as intro.press 14000/14100]; then 'So his name is ...?' YES (A). # PHASE2: confirm the START+A confirm on the rival keyboard (dump the naming screen) and the YES/NO cursor default. The catching tutorial is Lyra's scripted battle (CatchingTutorial): advance_text with through_battle [INFERENCE: it needs only A]."
+notes = "Rival naming: START jumps the keyboard cursor to OK (naming_screen.c:1449-1455, home-row index 12 = NAME_SCREEN_BUTTON_OK :219) and A on OK with nothing typed exits with the default rival name (naming_screen.c:705-708 -> :669-673); the result var is 0, so the script goes on (launch_application.c:1046-1064, scr_seq_0843_T20R0101.s:699-700). 'Is it ...?' (GetMenuChoice :706): A takes the cursor's answer, YES on the default cursor [INFERENCE: the field YES/NO opens on YES, as every HG/SS bot assumes; a NO only loops back to the naming screen, :708-709, :771-774]. The catching tutorial is Lyra's scripted battle (CatchingTutorial): advance_text with through_battle [INFERENCE: it needs only A]."
 
 [start]
 from = "prev"
@@ -59,28 +61,28 @@ do = "wait_map"
 map = "MAP_NEW_BARK_ELMS_LAB_1F"
 
 [[step]]
-do = "advance_text"
-shot = "officer"
-note = "OnFrame VAR_SCENE_ELMS_LAB 3 -> officer, Lyra; stops when the naming screen opens (NameRival, scr_seq_0843_T20R0101.s:696)"
+do = "press"
+keys = "B"
+times = 40
+gap = 26
+shot = "rival-naming-screen"
+note = "OnFrame VAR_SCENE_ELMS_LAB 3 -> officer, Lyra (scr_seq_0843_T20R0101.s:663-692): 10 message waits (msg 00023: 5, 00024/00025: 3, 00026: 2) paged with B (src/render_text.c:57), no YES/NO before NameRival (:696). Not advance_text: field_ready stays 0 on the naming screen, so its A presses would type letters. The B presses that land on the keyboard are BACK on an empty name: nothing (src/naming_screen.c:637-638, 1695-1696)"
 
 [[step]]
 do = "wait_frames"
 n = 120
 note = "naming screen fade-in"
 
-# PHASE2: the rival naming keyboard: confirm START moves the cursor to OK and A accepts the empty (default) name
-# (dump the naming screen after the fade-in), and that the 'Is it ...?' YES/NO opens on YES.
-
 [[step]]
 do = "press"
 keys = "START"
-note = "cursor to OK [INFERENCE: as intro.press 14000]"
+note = "keyboard cursor to (12,0) = OK (src/naming_screen.c:1449-1455, :219)"
 
 [[step]]
 do = "press"
 keys = "A"
 gap = 60
-note = "OK with an empty name -> the default rival name (src/naming_screen.c:669-673)"
+note = "OK with an empty name -> the default rival name (src/naming_screen.c:705-708, 669-673); result 0, the script goes on (src/launch_application.c:1046-1064)"
 
 [[step]]
 do = "wait_frames"

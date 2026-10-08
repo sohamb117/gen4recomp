@@ -98,7 +98,7 @@ elseif(NP_CORE STREQUAL "real")
   # registry of guests; games without a module report np_core_available 0.
   set(NP_CORE_LIBS)
   set(NP_GUESTS)
-  foreach(game diamond pearl platinum ruby sapphire emerald)
+  foreach(game diamond pearl platinum black white heartgold soulsilver ruby sapphire emerald)
     if(TARGET np_guest_${game})
       list(APPEND NP_GUESTS np_guest_${game})
     endif()

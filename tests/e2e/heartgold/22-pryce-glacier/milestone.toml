@@ -1,6 +1,6 @@
 # Proves the Mahogany Gym: its three rooms of sliding ice, the Skiers/Boarders, Pryce (TRAINER_LEADER_PRYCE_PRYCE), the
 # Glacier Badge + TM07; outside, Mahogany's OnFrame (VAR_MIDGAME_BADGES 4) starts the Radio Tower takeover.
-# Start: MAP_TEAM_ROCKET_HEADQUARTERS_B2F (21,15) -> end: MAP_MAHOGANY outside the gym (523,184),
+# Start: MAP_TEAM_ROCKET_HEADQUARTERS_B2F generator room (30,18) -> end: MAP_MAHOGANY outside the gym (523,184),
 # VAR_SCENE_ROCKET_TAKEOVER 2.
 title = "Pryce: Glacier Badge; the Rocket takeover begins"
 status = "planned"
@@ -15,8 +15,11 @@ refs = [
   "TRAINER_LEADER_PRYCE_PRYCE (32, include/constants/trainers.h:37): SEEL 30, DEWGONG 32, PILOSWINE 34",
   "scr_seq_0930_T28_hdr.s (OnFrame VAR_MIDGAME_BADGES 4 -> 005); scr_seq_0930_T28.s:19-28 (VAR_SCENE_ROCKET_TAKEOVER 2, FLAG_UNK_0C5, FLAG_ROCKET_TAKEOVER_ACTIVE, VAR_UNK_40F8 2, VAR_MIDGAME_BADGES 5)",
   "scr_seq_0255_R43R0101.s:11-15, scr_seq_0934_T28GYM0103.s (gym entry before/after FLAG_ROCKET_HIDEOUT_CLEARED)",
+  "the way out after the clear: B2F coords 0-6 test VAR_UNK_40AC 7/8/9 or VAR_UNK_40A9 2 (zone_event 234_D35R0103), now 10/4, so inert; every Rocket object carries FLAG_HIDE_MAHOGANY_SHOP_SHADY_SALESMAN (set scr_seq_0090_D35R0103.s:394); B2F OnResume keeps the doors open at (29,22) (VAR_UNK_40A9 >= 3, :25-38)",
+  "B1F after the clear: the traps' vars are all 1 (scr_seq_0090_D35R0103.s:717-732; coords 5-20 fire on == 0); B1F OnResume sets the statue vars 40AD..40B1 to 2 once VAR_UNK_40AC >= 9 (scr_seq_0089_D35R0102.s:66-68, :141-147; coords 0-4 fire on == 0); coord 21 (16,28) VAR_UNK_40C2 == 0 stays live (never set) and warps to (50,4) (:1208-1219): avoided",
+  "zone_event 113_D35R0101 warp 1 (6,3) <- B1F warp 0 (51,4); warp 0 (5,9) -> MAP_MAHOGANY 5",
 ]
-notes = "Fire is super-effective on all three. The gym floors are ice: slide steps (README slide) per room."
+notes = "Fire is super-effective on all three. The gym rooms are ice with SPRITE_ICE blocks the slide pushes (src/unk_0206D494.c: a slide that runs into a block facing south pushes it along the ice until it stops; meeting another object both turn north and freeze). Slides from `python3 tests/e2e/tools/hg_map.py MAP_MAHOGANY_GYM_<room> --solve X Z TX TZ` (simulated over the decoded ice; trainers' far sight avoided): room 1 (4,16) UP LEFT UP RIGHT UP -> (3,5) pushing block (4,12) onto (4,8) (both frozen); room 2: Boarder Patton (11,12) LOOK_WEST sight 2 is met adjacent at (10,12), then (10,12) UP LEFT UP RIGHT RIGHT UP -> (6,5) pushing (5,10) onto (8,10); leader room (6,17) UP LEFT UP LEFT DOWN RIGHT RIGHT UP -> (7,8) (Skier Jill (3,9) met adjacent at (4,9)). Back: leader room (7,8) DOWN LEFT DOWN -> (5,17); room 2 (6,5) DOWN RIGHT -> (10,11), valid with its blocks reset or as pushed; room 1 (3,5) DOWN RIGHT DOWN -> (4,16) [INFERENCE: map objects respawn at their event tiles on each room load; an 8-frame press from a standstill walks one tile as on Platinum 36]."
 
 [start]
 from = "prev"
@@ -25,13 +28,11 @@ from = "prev"
 [run]
 frames = 37500
 
-# PHASE2: the way out of the hideout (back up B2F -> B1F -> shop stairs) is walk_to through cleared floors; check the
-# B1F traps are inert after the clear (VAR_ROCKET_TRAP_* 1, scr_seq_0090_D35R0103.s:717-732).
 [[step]]
 do = "walk_to"
 x = 10
 z = 29
-note = "B2F -> B1F (warp 0)"
+note = "B2F -> B1F (warp 0): down the opened corridor (30..31,19..23), west along rows 24-25; coords inert, grunts gone"
 
 [[step]]
 do = "wait_map"
@@ -41,7 +42,8 @@ map = "MAP_TEAM_ROCKET_HEADQUARTERS_B1F"
 do = "walk_to"
 x = 51
 z = 4
-note = "B1F -> shop (warp 0)"
+avoid = [[16, 28]]
+note = "B1F -> shop (warp 0): up the west column (traps inert) and along the top corridor (statues inert); coord 21 (16,28) avoided"
 
 [[step]]
 do = "wait_map"
@@ -67,13 +69,22 @@ note = "Mahogany Gym (warp 2)"
 do = "wait_map"
 map = "MAP_MAHOGANY_GYM_ROOM_1"
 
-# PHASE2: the ice slides of the three gym rooms (MAP_MAHOGANY_GYM_ROOM_1, _ROOM_2, _LEADER_ROOM): record each room's
-# slide directions with the probe (slide bot) between the entry warp and the next warp / Pryce (7,4).
+[[step]]
+do = "walk_to"
+x = 4
+z = 16
+note = "room 1 entry floor"
+
+[[step]]
+do = "slide"
+dirs = "UP LEFT UP RIGHT UP"
+note = "(4,16) -> (4,13) pushing the block (4,12) onto (4,8), (1,13), (1,8), (3,8), (3,5) (hg_map.py --solve 4 16 3 3)"
+
 [[step]]
 do = "walk_to"
 x = 3
 z = 2
-note = "room 1 -> room 2 (warp 1)"
+note = "room 1 -> room 2 (warp 1, door)"
 
 [[step]]
 do = "wait_map"
@@ -81,13 +92,39 @@ map = "MAP_MAHOGANY_GYM_ROOM_2"
 
 [[step]]
 do = "walk_to"
+x = 10
+z = 13
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 12
+note = "next to Boarder Patton (11,12), LOOK_WEST sight 2: he battles without moving"
+
+[[step]]
+do = "slide"
+dirs = "UP LEFT UP RIGHT RIGHT UP"
+note = "(10,11), (2,11), (2,10), (4,10) pushing (5,10) onto (8,10), (6,10), (6,5)"
+
+[[step]]
+do = "walk_to"
 x = 6
 z = 2
-note = "room 2 -> Pryce's room (warp 1)"
+note = "room 2 -> Pryce's room (warp 1, door)"
 
 [[step]]
 do = "wait_map"
 map = "MAP_MAHOGANY_GYM_LEADER_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 17
+
+[[step]]
+do = "slide"
+dirs = "UP LEFT UP LEFT DOWN RIGHT RIGHT UP"
+note = "(6,14) pushing (6,13) to (6,12), (5,14), (5,9), (4,9) next to Skier Jill (battle), (4,12), (5,12) pushing (6,12) onto Boarder Gerardo -> (8,12), (7,12), (7,8)"
 
 [[step]]
 do = "talk_to"
@@ -100,11 +137,22 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "TRAINER_LEADER_PRYCE_PRYCE: SEEL 30, DEWGONG 32, PILOSWINE 34"
 
 [[step]]
 do = "advance_text"
 shot = "glacier-badge"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 8
+
+[[step]]
+do = "slide"
+dirs = "DOWN LEFT DOWN"
+note = "(7,14), (5,14), (5,17)"
 
 [[step]]
 do = "walk_to"
@@ -119,7 +167,18 @@ map = "MAP_MAHOGANY_GYM_ROOM_2"
 [[step]]
 do = "walk_to"
 x = 6
+z = 5
+
+[[step]]
+do = "slide"
+dirs = "DOWN RIGHT"
+note = "(6,11), (10,11)"
+
+[[step]]
+do = "walk_to"
+x = 6
 z = 15
+note = "room 2 -> room 1 (warp 0)"
 
 [[step]]
 do = "wait_map"
@@ -127,8 +186,19 @@ map = "MAP_MAHOGANY_GYM_ROOM_1"
 
 [[step]]
 do = "walk_to"
+x = 3
+z = 5
+
+[[step]]
+do = "slide"
+dirs = "DOWN RIGHT DOWN"
+note = "(3,13), (4,13), (4,16)"
+
+[[step]]
+do = "walk_to"
 x = 4
 z = 19
+note = "room 1 -> Mahogany (warp 0)"
 
 [[step]]
 do = "wait_map"

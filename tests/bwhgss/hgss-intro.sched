@@ -1,0 +1,16 @@
+# HeartGold/SoulSilver: title, the touch-screen tutorial (taps), Prof. Oak's
+# introduction, boy, the default name accepted (~frame 13600).
+1300:start
+1700:start
+2100:a:4:40:10
+3100:tap:220:170:4:80:30
+6100:tap:128:72:4
+6500:a:4
+6800:tap:128:147:4
+7200:tap:220:170:4:80:50
+11500:tap:70:140:4
+11900:tap:220:180:4:80:3
+12500:tap:60:80:4
+12800:tap:220:180:4
+13200:tap:190:55:4
+13500:tap:220:180:4:80:3

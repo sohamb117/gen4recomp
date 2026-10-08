@@ -14,13 +14,15 @@ refs = [
   "zone_event 080_T27R0201 object 0 obj_T27R0201_bozu (15,7) -> 000; scr_seq_0926_T27R0201.s:22-64 (CheckBadge BADGE_FOG: he steps aside, VAR_TEMP_x4002 1)",
   "zone_event 080_T27R0201 warp 1 (15,3) -> MAP_ECRUTEAK_BELL_TOWER_BARRIER_STATION_CORRIDOR; zone_event 203_T27R0202 warp 1 (6,3) -> MAP_BELLCHIME_TOWER; zone_event 004_D17R1101 warp 2 (37,16) -> MAP_BELL_TOWER_1F",
   "zone_event 108_D17R0101 coords (7,12) w3 / (12,7) h4 VAR_UNK_40F3 0 -> 001 (ShowLegendaryWing 0, VAR_UNK_40F3 1, scr_seq_0019_D17R0101.s:51-193)",
-  "zone_event 108_D17R0101 warps 1/2 (9,8)/(9,7) -> 2F; 303_D17R0102 (15,25/24) -> 3F; 304_D17R0103 (24,8/7) -> 4F; 305_D17R0104 (6,8/7) -> 5F 0, (6,25/24) -> 5F 1, (24,25/24) -> 5F 2; 306_D17R0105 (13,25/24) -> 6F; 307_D17R0106 (6,19/18) -> 7F; 308_D17R0107 (15,26) -> 8F (7,12); 309_D17R0108 -> 9F warps 0-5; 310_D17R0109 (12,17/16) -> 10F; 312_D17R0112 (15,25/24) -> MAP_BELL_TOWER_ROOF",
+  "zone_event 108_D17R0101 warps 1/2 (9,8)/(9,7) -> 2F; 303_D17R0102 (15,25/24) -> 3F; 304_D17R0103 (24,8/7) -> 4F; 305_D17R0104 (6,8/7) -> 5F 0, (6,25/24) -> 5F 1, (24,25/24) -> 5F 2; 306_D17R0105 (13,25/24) -> 6F; 307_D17R0106 (6,19/18) -> 7F; 312_D17R0112 (15,25/24) -> MAP_BELL_TOWER_ROOF",
+  "ladders: the lower tile 0x3C, the upper 0x3D; standing on 0x3C and pushing north warps (src/field/field_control.c:500-505), so each walk_to goes via the tile below the ladder to the tile beyond it (tools/hg_map.py MAP_BELL_TOWER_<n>F)",
+  "warp panels 0x67, warping when stepped onto (src/field/field_control.c:738-741): zone_event 308_D17R0107 warp 1 (15,26) -> 8F 0 (7,12); 309_D17R0108 warp 1 (7,20) -> 9F 1 (20,7), warp 4 (23,17) -> 9F 0 (6,12), warp 2 (16,9) -> 9F 2 (18,15); 310_D17R0109 warp 0 (6,12) -> 8F 4 (23,17), warp 2 (18,15) -> 8F 2 (16,9), warps 6/7 (12,17/16) -> 10F (11,17)",
   "zone_event 311_D17R0110 coord 0 (15,20) VAR_UNK_40FA 1 -> 006 (Clear Bell scene, FLAG_UNK_10A, VAR_UNK_40FA 2, scr_seq_0021_D17R0110.s:104-342)",
   "zone_event 311_D17R0110 object 5 obj_D17R0110_hou_obj01 (15,16) -> 000",
   "scr_seq_0021_D17R0110.s:54-102 (WildBattle 250 at 45 in HG (70 in SS); outcome 2/3 -> WhiteOut; else FLAG_UNK_108, VAR_SCENE_NEW_BARK_EAST_EXIT 3, FLAG_HIDE_NEW_BARK_FRIEND/MARILL/FRIEND_2, FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS; caught -> FLAG_CAUGHT_HO_OH)",
   "scr_seq_0842_T20.s:1661-1735 (VAR_SCENE_NEW_BARK_EAST_EXIT 2: Lyra turns the player back from Route 27 until this)",
 ]
-notes = "HG Ho-Oh is lv45 (scr_seq_0021_D17R0110.s:63-70). auto_battle knocks it out (outcome 'won' progresses the story; catching needs ball throws the bots do not make). The 4F->5F and 8F->9F choices that lead on to 10F are not in the event data: guesses marked [INFERENCE]."
+notes = "HG Ho-Oh is lv45 (scr_seq_0021_D17R0110.s:63-70). Every outcome but a loss or draw progresses the story (outcome 2/3 -> WhiteOut, :75-79; won, caught or fled -> FLAG_UNK_108 and the rest, :80-92), so the battle flees (auto_battle flee = true: RUN at the first action menus, then it fights): CantEscape (src/battle/overlay_12_0224E4FC.c:2716-2792) has no legendary rule, only trapping abilities [INFERENCE: the run succeeds on the speed roll]. Floor route (tools/hg_map.py): 1F-6F by ladders, 7F's panel to 8F, then 8F (7,20) -> 9F (20,7), 9F (6,12) -> 8F (23,17), 8F (16,9) -> 9F (18,15), the part of 9F with the ladder to 10F."
 
 [start]
 from = "prev"
@@ -91,7 +93,8 @@ do = "advance_text"
 do = "walk_to"
 x = 9
 z = 7
-note = "1F -> 2F"
+via = [[9, 9]]
+note = "1F ladder (9,8) pushed north -> 2F"
 
 [[step]]
 do = "wait_map"
@@ -101,7 +104,8 @@ map = "MAP_BELL_TOWER_2F"
 do = "walk_to"
 x = 15
 z = 24
-note = "2F -> 3F"
+via = [[15, 26]]
+note = "2F ladder (15,25) -> 3F"
 
 [[step]]
 do = "wait_map"
@@ -111,19 +115,19 @@ map = "MAP_BELL_TOWER_3F"
 do = "walk_to"
 x = 24
 z = 7
-note = "3F -> 4F"
+via = [[24, 9]]
+note = "3F ladder (24,8) -> 4F"
 
 [[step]]
 do = "wait_map"
 map = "MAP_BELL_TOWER_4F"
 
-# PHASE2: which of 4F's three ways up (to 5F warps 0/1/2) reaches 5F's stairs (13,24/25), and which 8F warp reaches
-# 9F (12,16/17): probe_map each floor.
 [[step]]
 do = "walk_to"
-x = 24
-z = 24
-note = "4F -> 5F (warp 6 -> 5F (24,25)) [INFERENCE]"
+x = 6
+z = 7
+via = [[6, 9]]
+note = "4F ladder (6,8) (warps 1/2) -> 5F 0 (6,8), the part of 5F with the ladder up"
 
 [[step]]
 do = "wait_map"
@@ -133,7 +137,8 @@ map = "MAP_BELL_TOWER_5F"
 do = "walk_to"
 x = 13
 z = 24
-note = "5F -> 6F"
+via = [[13, 26]]
+note = "5F ladder (13,25) -> 6F"
 
 [[step]]
 do = "wait_map"
@@ -143,7 +148,8 @@ map = "MAP_BELL_TOWER_6F"
 do = "walk_to"
 x = 6
 z = 18
-note = "6F -> 7F"
+via = [[6, 20]]
+note = "6F ladder (6,19) -> 7F"
 
 [[step]]
 do = "wait_map"
@@ -153,7 +159,7 @@ map = "MAP_BELL_TOWER_7F"
 do = "walk_to"
 x = 15
 z = 26
-note = "7F -> 8F (7,12)"
+note = "7F warp panel (15,26) -> 8F (7,12)"
 
 [[step]]
 do = "wait_map"
@@ -161,9 +167,29 @@ map = "MAP_BELL_TOWER_8F"
 
 [[step]]
 do = "walk_to"
-x = 23
-z = 17
-note = "8F -> 9F (warp 4 -> 9F (6,12)) [INFERENCE]"
+x = 7
+z = 20
+note = "8F panel (7,20) (warp 1) -> 9F (20,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_9F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 12
+note = "9F panel (6,12) (warp 0) -> 8F (23,17)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_8F"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 9
+note = "8F panel (16,9) (warp 2) -> 9F (18,15)"
 
 [[step]]
 do = "wait_map"
@@ -173,7 +199,8 @@ map = "MAP_BELL_TOWER_9F"
 do = "walk_to"
 x = 12
 z = 16
-note = "9F -> 10F"
+via = [[12, 18]]
+note = "9F ladder (12,17) -> 10F (11,17)"
 
 [[step]]
 do = "wait_map"
@@ -183,7 +210,8 @@ map = "MAP_BELL_TOWER_10F"
 do = "walk_to"
 x = 15
 z = 24
-note = "10F -> roof"
+via = [[15, 26]]
+note = "10F ladder (15,25) -> roof"
 
 [[step]]
 do = "wait_map"
@@ -211,7 +239,9 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-note = "WildBattle SPECIES_HO_OH 45 (scr_seq_0021_D17R0110.s:73)"
+flee = true
+send = "best"
+note = "WildBattle SPECIES_HO_OH 45 (scr_seq_0021_D17R0110.s:73): fleeing progresses as winning does (:75-92)"
 
 [[step]]
 do = "advance_text"

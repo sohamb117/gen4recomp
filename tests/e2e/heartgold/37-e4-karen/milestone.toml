@@ -46,6 +46,7 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "TRAINER_ELITE_FOUR_KAREN_KAREN: UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47"
 
 [[step]]

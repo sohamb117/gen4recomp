@@ -15,18 +15,19 @@ refs = [
   "zone_event 223_D39R0102 coords 0-3 (11,10) (10,18) (18,7) (19,19) VAR_UNK_40AA 0 (boulder holes -> B2F, scr_seq_0100_D39R0102.s:14-71)",
   "zone_event 223_D39R0102 warps 2/3 -> MAP_ICE_PATH_B2F; zone_event 224_D39R0103 warps 2/3 -> MAP_ICE_PATH_B3F; zone_event 225_D39R0104 warps 0-3 -> B2F",
   "include/constants/items.h:738 (ITEM_HM07 426)",
+  "asm/overlay_01_021F1AFC.s ov01_021F1F8C + ov01_02206A14 (B1F boulder i at its hole: hide flag set, FLAG_HIDE_ICE_PATH_BOULDER_<i>_FALLEN cleared); scr_seq_0149.s:42-45 (FALLEN flags set at new game)",
+  "src/unk_0206D494.c, asm/unk_0205CB48.s sub_0205D01C/sub_0205D0A8 (ice: forced movement while on ICE 0x20); src/metatile_behavior.c:40 (ICE has no encounters)",
 ]
-notes = "Ice Path in GSC order: 1F east -> B1F (Strength boulders into the holes) -> B2F -> B3F -> B2F -> B1F -> 1F (HM07 corner, Kimono Girl) -> Blackthorn [INFERENCE: GSC layout; the warps in refs connect so]. Strength needs HM04 (Route 42, milestone 20) on a party member and the Plain Badge (src/field_move.c:291-295). The B1F boulders/holes and the slide directions are unknown."
+notes = "Route (`python3 tests/e2e/tools/hg_map.py MAP_ICE_PATH_<floor> --solve ...`, ice simulated over the decoded land data): 1F entrance -> HM07 (reachable from the entrance side; the man at (47,7) and coord 0 (47,6) only bar the way east until the ball is taken, scr_seq_0099_D39R0101.s:56-86) -> (55,7) -> B1F: Strength boulder 0 (10,13) up to (10,9), right to (11,9), down into hole (11,10): ov01_021F1F8C (asm/overlay_01_021F1AFC.s, table ov01_02206A14) hides it (FLAG_HIDE_ICE_PATH_BOULDER_1_INIT) and clears FLAG_HIDE_ICE_PATH_BOULDER_1_FALLEN so it stands on B2F (12,13), the stopper B2F west needs (BFS: without a fallen boulder (16,17) is unreachable); the player follows through the hole (coord 0 -> B2F (12,12), scr_seq_0100_D39R0102.s:14-75; VAR_UNK_40AA is never set) -> B2F west slides -> B3F (walk) -> B2F east slides -> B1F lower (walk) -> 1F (55,20) -> the Kimono Girl must be pushed from behind: the player at (55,28) facing south (GetPlayerFacing 1, scr_seq_0099_D39R0101.s:114-117), reached by sliding DOWN from (55,25) into her -> (55,40) Blackthorn. Strength needs HM04 on a party member and the Plain Badge (src/field_move.c:291-305; not usable on B2F): boost.recipe adds the carrier, FERALIGATR in slot 4 (Strength, Whirlpool, Waterfall, Dig for the rest of the chain). Travel: down the Radio Tower stairs, Fly to Mahogany (HgFlyMenu's fly bot), Route 44 with waypoints; the Route 44 mania (603,163) LOOK_WEST sight 7 is avoided, the others are off the path [INFERENCE: Fly lands outside Mahogany's Pokemon Center]."
 
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
 frames = 75000
 
-# PHASE2: Goldenrod -> Mahogany: back along Routes 35-37/42 on foot (walk_to below) or Fly to Mahogany (touch-screen
-# start menu, unverified on HG/SS).
 [[step]]
 do = "walk_to"
 x = 8
@@ -39,11 +40,13 @@ map = "MAP_GOLDENROD_RADIO_TOWER_ELEVATOR"
 
 [[step]]
 do = "advance_text"
+note = "OnFrame VAR_UNK_4125 0: the elevator rides to 5F (scr_seq_0035_D23R0107.s:11-73)"
 
 [[step]]
 do = "walk_to"
 x = 3
 z = 6
+note = "elevator exit (dynamic warp -> 5F warp 1)"
 
 [[step]]
 do = "wait_map"
@@ -51,32 +54,65 @@ map = "MAP_GOLDENROD_RADIO_TOWER_5F"
 
 [[step]]
 do = "walk_to"
+x = 3
+z = 5
+note = "5F stairs (warp 0) -> 4F (3,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_4F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 5
+note = "4F stairs (warp 0) -> 3F (12,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+note = "3F stairs (warp 0) -> 2F (3,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 5
+note = "2F stairs (warp 0) -> 1F (23,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 14
+note = "1F exit (warp 0) -> Goldenrod"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "fly"
+map = "MAP_MAHOGANY"
+
+[[step]]
+do = "walk_to"
 x = 633
 z = 169
-surf = true
-note = "down the tower and across Johto to Route 44's Ice Path mouth (warp 0) [INFERENCE: one walk_to per map in practice]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_ICE_PATH_1F"
-
-# PHASE2: the Ice Path floors: B1F's boulders (Strength) into coords 0-3, then B2F/B3F slides (slide bot) and the
-# warps listed in refs; record each floor's route with probe_map.
-[[step]]
-do = "walk_to"
-x = 55
-z = 20
-note = "1F -> B1F (warp 3) [INFERENCE]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_ICE_PATH_B1F"
-
-[[step]]
-do = "walk_to"
-x = 6
-z = 21
-note = "B1F back up to 1F's north part (warp 0 -> 1F warp 2 (55,7)) after the lower floors [INFERENCE]"
+via = [[543, 175], [557, 169], [570, 162], [600, 162], [607, 173], [611, 179], [621, 179], [620, 172]]
+avoid = [[596, 163], [597, 163], [598, 163], [599, 163], [600, 163], [601, 163], [602, 163]]
+note = "Mahogany east (coord 0 (540,176) inert: VAR_UNK_407A 1) and Route 44 to the Ice Path (warp 0); the mania's sight (596..602,163) avoided"
 
 [[step]]
 do = "wait_map"
@@ -84,9 +120,21 @@ map = "MAP_ICE_PATH_1F"
 
 [[step]]
 do = "walk_to"
-x = 47
-z = 11
-face = "up"
+x = 17
+z = 46
+note = "1F entrance floor"
+
+[[step]]
+do = "slide"
+dirs = "UP RIGHT UP RIGHT RIGHT RIGHT UP UP UP UP UP UP UP RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT UP UP UP UP UP UP UP UP LEFT LEFT LEFT LEFT DOWN DOWN LEFT LEFT DOWN LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT UP LEFT UP LEFT DOWN LEFT UP RIGHT DOWN RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT UP LEFT DOWN LEFT UP RIGHT"
+max = 12000
+note = "hg_map.py MAP_ICE_PATH_1F --solve 17 46 46 10 --last RIGHT --avoid 47,6: ends at (46,10) facing the HM07 ball"
+
+[[step]]
+do = "walk_to"
+x = 46
+z = 10
+face = "right"
 interact = true
 note = "HM07 item ball (47,10)"
 
@@ -95,18 +143,130 @@ do = "advance_text"
 shot = "hm07"
 
 [[step]]
-do = "talk_to"
-id = 2
-note = "the Kimono Girl (55,29) (scr_seq_0099_D39R0101.s:110-161)"
+do = "slide"
+dirs = "LEFT DOWN LEFT LEFT UP LEFT UP LEFT UP UP UP UP RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT DOWN RIGHT DOWN DOWN RIGHT RIGHT RIGHT RIGHT UP UP RIGHT RIGHT"
+max = 9000
+note = "--solve 46 10 55 7 --hide 0: through coord 0 (47,6) (the man's line, VAR_UNK_4100 -> 1) to the B1F ladder (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_B1F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 14
+avoid = [[11, 10], [10, 18], [18, 7], [19, 19]]
+note = "below boulder 0 (10,13); the four hole coords avoided"
+
+[[step]]
+do = "moves"
+dirs = [["F", "U"], ["P", "U"], ["U", 1], ["P", "U"], ["U", 1], ["P", "U"], ["U", 1], ["P", "U"]]
+note = "Strength, then boulder 0 up to (10,9); the player at (10,10)"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 9
+avoid = [[11, 10], [10, 18], [18, 7], [19, 19]]
+
+[[step]]
+do = "moves"
+dirs = [["P", "R"]]
+note = "boulder 0 -> (11,9)"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 8
+avoid = [[11, 10], [10, 18], [18, 7], [19, 19]]
+
+[[step]]
+do = "moves"
+dirs = [["P", "D"]]
+note = "boulder 0 -> hole (11,10): falls (ov01_021F1F8C)"
 
 [[step]]
 do = "advance_text"
 
 [[step]]
 do = "walk_to"
+x = 11
+z = 10
+note = "into hole coord 0 -> B2F (12,12) (scr_seq_0100_D39R0102.s:14-17,71)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_B2F"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "slide"
+dirs = "LEFT DOWN RIGHT RIGHT UP LEFT DOWN DOWN DOWN RIGHT RIGHT RIGHT"
+note = "--solve 12 12 16 17 --hide 1 2 3: stopped by the fallen boulder (12,13); onto the ladder (16,17) (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_B3F"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 12
+note = "B3F (no ice; the Rock Smash rock (10,12) is off the way) -> B2F (50,5) (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_B2F"
+
+[[step]]
+do = "slide"
+dirs = "DOWN LEFT LEFT LEFT LEFT DOWN DOWN DOWN DOWN DOWN LEFT DOWN DOWN DOWN DOWN LEFT UP UP RIGHT"
+note = "--solve 50 5 43 22: onto the ladder (43,22) (warp 4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_B1F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 42
+note = "B1F lower part (floor) -> 1F (55,20) (warp 4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ICE_PATH_1F"
+
+[[step]]
+do = "slide"
+dirs = "DOWN DOWN DOWN LEFT LEFT DOWN DOWN LEFT DOWN RIGHT UP DOWN"
+note = "--solve 55 20 55 28 --last DOWN: ... (55,28) RIGHT, UP to (55,25), DOWN into the Kimono Girl: at (55,28) facing south"
+
+[[step]]
+do = "walk_to"
+x = 55
+z = 28
+face = "down"
+interact = true
+note = "talk to the Kimono Girl from behind (scr_seq_0099_D39R0101.s:114-117)"
+
+[[step]]
+do = "advance_text"
+note = "YES (first choice) -> she leaves: FLAG_UNK_239, VAR_UNK_40E8 1 (scr_seq_0099_D39R0101.s:143-166)"
+
+[[step]]
+do = "slide"
+dirs = "DOWN"
+note = "(55,35)"
+
+[[step]]
+do = "walk_to"
 x = 55
 z = 40
-note = "1F -> Blackthorn (warp 1)"
+note = "1F -> Blackthorn (warp 1, exit mat)"
 
 [[step]]
 do = "wait_map"
@@ -115,8 +275,12 @@ map = "MAP_BLACKTHORN"
 [expect]
 map = "MAP_BLACKTHORN"
 badges = 7
-flags = ["FLAG_HIDE_ITEMBALL_D39R0101_HM07", "FLAG_UNK_239", "FLAG_BEAT_RADIO_TOWER_ROCKETS"]
+flags = ["FLAG_HIDE_ITEMBALL_D39R0101_HM07", "FLAG_UNK_239", "FLAG_BEAT_RADIO_TOWER_ROCKETS", "FLAG_HIDE_ICE_PATH_BOULDER_1_INIT"]
+flags_clear = ["FLAG_HIDE_ICE_PATH_BOULDER_1_FALLEN"]
 save = ['any(i["item"] == 426 for k, p in s["bag"].items() if k != "registered" for i in p)']
+party = ["SPECIES_FERALIGATR"]
+party_size = 5
 
 [expect.vars]
 VAR_UNK_40E8 = 1
+VAR_UNK_4100 = 1

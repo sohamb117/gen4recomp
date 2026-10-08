@@ -10,6 +10,8 @@ estimate = 18000
 refs = [
   "zone_event 070_T22 warp 2 (479,257) -> MAP_VIOLET_GYM",
   "zone_event 131_T22GYM0101 coord 0 (15,20) VAR_TEMP_x4000 0 -> 004 (VioletGymElevator, scr_seq_0859_T22GYM0101.s:166-169)",
+  "src/field/gymmick/violet.c:10-11,47-64,66-80 (the lift: dynamic height plate (14..16,19..21) at y 32 (down) or 496 (up); each ride toggles liftState); scr_seq_0859_T22GYM0101.s:16 (VioletGymInit)",
+  "land data map_matrix_0087_T22GYM0101: ground floor rows 19-28 (door (15,28)), walkway maze rows 4-18 with Falkner's room rows 4-8",
   "zone_event 131_T22GYM0101 object 0 obj_T22GYM0101_gsleader1 (15,4); objects 1/2 TRAINER_BIRD_KEEPER_GS_ABE (12,15), TRAINER_BIRD_KEEPER_GS_ROD (18,11)",
   "scr_seq_0859_T22GYM0101.s:63-100 (TRAINER_LEADER_FALKNER_FALKNER, GiveBadge BADGE_ZEPHYR, VAR_SCENE_VIOLET_CITY_OW 1, VAR_SCENE_ELMS_LAB 6, FLAG_GOT_TM51_FROM_FALKNER)",
   "TRAINER_LEADER_FALKNER_FALKNER (20, include/constants/trainers.h:25): PIDGEY 9, PIDGEOTTO 13",
@@ -38,21 +40,25 @@ note = "Violet Gym door (warp 2)"
 do = "wait_map"
 map = "MAP_VIOLET_GYM"
 
-# PHASE2: the Violet Gym elevator: coord (15,20) runs VioletGymElevator; whether walk_to can plan onto the raised
-# floor afterwards (and where the lift lands) needs the probe on this map.
 [[step]]
 do = "walk_to"
 x = 15
 z = 20
-note = "the lift (coord 0, VioletGymElevator)"
+note = "the lift: a 3x3 dynamic-height plate on (14..16,19..21) (src/field/gymmick/violet.c:55, ELEVATOR_Y_DOWN 32 / _UP 496 :10-11); stepping onto its centre fires coord 0 (VAR_TEMP_x4000 0, which script 004 sets back to 0) -> VioletGymElevator: down -> up (violet.c:66-80)"
 
 [[step]]
 do = "wait_field"
+note = "the lift rises with the player to the walkways' height"
+
+[[step]]
+do = "steps"
+route = [[15, 18]]
+note = "off the lift's north edge onto the raised walkway (rows 4-18 of the land data; the ground floor is rows 19-28) [INFERENCE: the walkways are the raised BDHC level the lift reaches; the probe's step layers show it]"
 
 [[step]]
 do = "talk_to"
 id = 0
-note = "Falkner (obj_T22GYM0101_gsleader1 (15,4)); Abe and Rod fought on the way if they spot"
+note = "Falkner (obj_T22GYM0101_gsleader1 (15,4)): walkway route (15,18) (15,15) (18,15) (18,13) (21,13) (21,8) (18,8) (18,5) (land-data BFS); Abe (12,15) faces east, sight 3: he spots (13..15,15); Rod (18,11) faces west, sight 3"
 
 [[step]]
 do = "advance_text"
@@ -70,8 +76,17 @@ note = "Zephyr Badge, TM51 (scr_seq_0859_T22GYM0101.s:76-100)"
 [[step]]
 do = "walk_to"
 x = 15
+z = 20
+note = "back onto the lift's centre (from the walkway over (15,19)): coord 0 again -> VioletGymElevator: up -> down"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
 z = 28
-note = "gym door (warp 0) [INFERENCE: walk_to plans back down the lift]"
+note = "gym door (warp 0)"
 
 [[step]]
 do = "wait_map"

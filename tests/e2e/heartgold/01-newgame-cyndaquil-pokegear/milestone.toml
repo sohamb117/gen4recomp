@@ -19,7 +19,7 @@ refs = [
   "zone_event 057_T20 warp 0 (684,393) -> MAP_NEW_BARK_ELMS_LAB_1F",
   "zone_event 058_T20R0101 coord 1 (3,10) w4 VAR_SCENE_ELMS_LAB 0 -> 011",
   "scr_seq_0843_T20R0101.s:53-101 (Elm's intro and phone call: FLAG_ELMS_LAB_PREVENT_PLAYER_ESCAPE)",
-  "zone_event 058_T20R0101 bg (8,4) dir 0 -> scr_seq_T20R0101_012",
+  "zone_event 058_T20R0101 bg 9 (8,4) dir 0 -> scr_seq_T20R0101_012; asm/unk_0203DB6C.s:279-310 (bg dir 0: facing north only)",
   "scr_seq_0843_T20R0101.s:164-216 (ChooseStarter, FLAG_GOT_STARTER, SetStarterChoice, nickname menu, VAR_SCENE_ELMS_LAB 1, VAR_SCENE_NEW_BARK_TOWN_OW 1)",
   "src/choose_starter_app.c:307-311 (Chikorita, Cyndaquil, Totodile)",
   "src/choose_starter_app.c:1071-1104 (A / LEFT / RIGHT; one nav input plus two A presses)",
@@ -29,7 +29,8 @@ refs = [
   "scr_seq_0843_T20R0101.s:492-553 (aide: 5 ITEM_POTION, VAR_SCENE_ELMS_LAB 2)",
   "scr_seq_0842_T20.s:1181-1215 (Lyra's starter scene: VAR_SCENE_NEW_BARK_TOWN_OW 2)",
   "zone_event 057_T20 warp 1 (695,396) -> MAP_NEW_BARK_PLAYER_HOUSE_1F",
-  "scr_seq_0845_T20R0201.s:100-144 (Mom after FLAG_GOT_STARTER: FLAG_GOT_POKEGEAR, YES/NO)",
+  "scr_seq_0845_T20R0201.s:100-144 (Mom after FLAG_GOT_STARTER: FLAG_GOT_POKEGEAR, one YES/NO, no day/time setting)",
+  "src/field/scrcmd_message.c:142-152 (NPCMsg waits for the print only), src/render_text.c:57 (A or B pages a message)",
   "zone_event 057_T20 coord 0 (676,396) h7 VAR_SCENE_NEW_BARK_WEST_EXIT 0 -> 002",
   "scr_seq_0842_T20.s:269-282 (no Pokegear: pushed back), :493-621 (Elm: RegisterGearNumber PHONE_CONTACT_PROF__ELM, VAR_SCENE_NEW_BARK_WEST_EXIT 1)",
   "TRAINER_LEADER_FALKNER_FALKNER (20, include/constants/trainers.h:25): PIDGEY 9, PIDGEOTTO 13",
@@ -37,7 +38,7 @@ refs = [
   "TRAINER_LEADER_JASMINE_JASMINE (33, include/constants/trainers.h:38): MAGNEMITE 30, MAGNEMITE 30, STEELIX 35",
   "TRAINER_LEADER_PRYCE_PRYCE (32, include/constants/trainers.h:37): SEEL 30, DEWGONG 32, PILOSWINE 34",
 ]
-notes = "Starter: CYNDAQUIL (VAR_PLAYER_STARTER 155). Fire hits Bugsy's whole team (Scyther/Kakuna/Metapod), Jasmine's Magnemite/Steelix and Pryce's Ice types super-effectively and is neutral on Falkner (Pidgey/Pidgeotto), Whitney (Clefairy/Miltank) and Morty; Chikorita is weak to Falkner and Bugsy, Totodile only helps against Chuck's Primeape. Cost: the rival takes Totodile (Cherrygrove TRAINER_PASSERBY_BOY_3, then the Croconaw/Feraligatr teams, scr_seq_0850_T21.s:548-561). Starter machine: curSelection starts at 0 = Chikorita [INFERENCE: the work struct is zero-filled; no other init writes curSelection]; LEFT rotates clockwise to index 1 = Cyndaquil, then A (zoom in, confirm) and A (choose). The nickname question (GetMenuChoice, :186) is answered NO with B. Mom's Pokegear YES/NO (:130) either answer only changes the text. Intro: 16101 frames to the boy's silhouette (HANDOFF-hgss.md:44-47)."
+notes = "Starter: CYNDAQUIL (VAR_PLAYER_STARTER 155). Fire hits Bugsy's whole team (Scyther/Kakuna/Metapod), Jasmine's Magnemite/Steelix and Pryce's Ice types super-effectively and is neutral on Falkner (Pidgey/Pidgeotto), Whitney (Clefairy/Miltank) and Morty; Chikorita is weak to Falkner and Bugsy, Totodile only helps against Chuck's Primeape. Cost: the rival takes Totodile (Cherrygrove TRAINER_PASSERBY_BOY_3, then the Croconaw/Feraligatr teams, scr_seq_0850_T21.s:548-561). Starter machine: bg (8,4) has dir 0, read only facing north (asm/unk_0203DB6C.s:279-310 BgEventDirectionIsCompatibleWithPlayerFacing: dir 0 = DIR_NORTH, 4 = any), from (8,5), a free tile of the lab's land data (a/0/6/5 member of map_matrix_0100_T20R0101). curSelection starts at 0 = Chikorita [INFERENCE: the work struct is zero-filled; no other init writes curSelection]; LEFT rotates clockwise to index 1 = Cyndaquil, then A (zoom in, confirm) and A (choose). After the scene no button is needed until the nickname YES/NO: msg 00007 has no wait (NPCMsg only waits for the print, src/field/scrcmd_message.c:142-152), the fanfare plays, msg 00008 prints and GetMenuChoice opens; B answers it NO (result 1: no NicknameInput, scr_seq_0843_T20R0101.s:186-189) and the later B presses page msgs 00010/00011 (A or B, src/render_text.c:57). Mom's Pokegear scene sets no day or time: its only input is the 'Do you remember?' GetMenuChoice (scr_seq_0845_T20R0201.s:115-140), either answer only changes the text. Intro: 16101 frames to the boy's silhouette (HANDOFF-hgss.md:44-47)."
 
 [start]
 blank = true
@@ -113,7 +114,7 @@ x = 8
 z = 5
 face = "up"
 interact = true
-note = "the starter machine: bg (8,4) dir 0 -> scr_seq_T20R0101_012 ChooseStarter [INFERENCE: approached from below]"
+note = "the starter machine: bg (8,4) dir 0 (facing north only) -> scr_seq_T20R0101_012 ChooseStarter"
 
 [[step]]
 do = "wait_frames"
@@ -152,15 +153,10 @@ note = "the scene fades out to the field; ScrCmd_605/608 follower setup (scr_seq
 
 [[step]]
 do = "press"
-keys = "A"
-times = 2
-gap = 40
-note = "'... received CYNDAQUIL' + fanfare, then the nickname question (msg 00007/00008) [INFERENCE: count]"
-
-[[step]]
-do = "press"
 keys = "B"
-note = "nickname YES/NO -> NO (GetMenuChoice :186; README: B answers YES/NO as NO)"
+times = 24
+gap = 26
+note = "'... received CYNDAQUIL' (msg 00007, no button wait) + SEQ_ME_POKEGET, then msg 00008 and the nickname YES/NO (scr_seq_0843_T20R0101.s:178-186): B answers NO; a B before the menu speeds the print or hits the fanfare wait, one after it pages msg 00010/00011 (src/render_text.c:57) - none can pick YES"
 
 [[step]]
 do = "advance_text"

@@ -1,0 +1,7 @@
+# Black/White: title (START), NEW GAME, the intro to the controllable bedroom
+# (~frame 21000), then the X menu, SAVE (tap) and A: the game's own save.
+5000:start:4:60:2
+5300:a:4:40:400
+22000:x:4
+22060:tap:64:94:4
+22120:a:4:40:20

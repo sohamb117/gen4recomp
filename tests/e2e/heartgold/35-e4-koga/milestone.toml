@@ -46,6 +46,7 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
+send = "best"
 note = "TRAINER_ELITE_FOUR_KOGA_KOGA: ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44"
 
 [[step]]

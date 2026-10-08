@@ -8,15 +8,17 @@ version = "both"
 estimate = 20000
 refs = [
   "zone_event 070_T22 warp 5 (487,228) -> MAP_SPROUT_TOWER_1F",
-  "zone_event 107_D15R0101 warps 1-6: (10,14/15) -> 2F 0, (24,8/9) -> 2F 1, (6,15/16) -> 2F 2; warp 0 (15,28) -> Violet",
-  "zone_event 150_D15R0102 warp 3 (15,27) -> MAP_SPROUT_TOWER_3F",
+  "zone_event 107_D15R0101 warps 1/5 (10,15/14) -> 2F 0, 2/6 (24,9/8) -> 2F 1, 4/3 (6,15/16) -> 2F 2; warp 0 (15,28) -> Violet",
+  "zone_event 150_D15R0102 warps 0 (11,14) -> 1F 1, 1 (24,9) -> 1F 2, 2 (6,16) -> 1F 3, 3 (15,27) -> MAP_SPROUT_TOWER_3F; zone_event 151_D15R0103 warp 0 (15,27) -> 2F 3",
+  "land data (a/0/6/5, attributes at 0x14 + the u16 at 0x12): 1F ladders 0x3C (LADDER_NORTH) at (10,15) (24,9) (6,16) under 0x3D at (10,14) (24,8) (6,15); 2F (11,14) (24,9) (6,16) and 3F (15,27) are 0x3E (LADDER_DOWN); 2F (15,27) is 0x3C with a wall at (15,26)",
+  "src/field/field_control.c:500-511 (standing on 0x3C and pushing north, or on 0x3D pushing south, takes the warp), :743-745 (stepping onto 0x3E takes it)",
   "zone_event 151_D15R0103 coord 0 (13,17) VAR_UNK_40A4 0 -> 001 (rival scene, FLAG_UNK_078, scr_seq_0018_D15R0103.s:22-52)",
   "zone_event 151_D15R0103 object 3 obj_D15R0103_chourou (12,9) -> 002",
   "scr_seq_0018_D15R0103.s:112-127 (TRAINER_ELDER_LI, ITEM_TM70, FLAG_UNK_076, FLAG_HIDE_VIOLET_GYM_GYM_GUY_AFTER_SPROUT, ClearFlag FLAG_HIDE_VIOLET_GYM_GYM_GUY_BEFORE_SPROUT)",
   "TRAINER_ELDER_LI (290, include/constants/trainers.h:295): BELLSPROUT 7, BELLSPROUT 7, HOOTHOOT 10",
   "zone_event 131_T22GYM0101 object 4 (15,20) hidden by FLAG_HIDE_VIOLET_GYM_GYM_GUY_AFTER_SPROUT",
 ]
-notes = "Sages on the way: Chow (1F), Nico, Edmond (2F), Jin, Neal, Troy (3F) (zone_event 107/150/151 objects); Cyndaquil's Ember handles the Bellsprouts. Which 1F ladder reaches the 2F stairs at (15,27) is not in the event data: the steps take the (24,8) ladder [INFERENCE]."
+notes = "Sages on the way: Chow (1F), Nico, Edmond (2F), Jin, Neal, Troy (3F) (zone_event 107/150/151 objects); Cyndaquil's Ember handles the Bellsprouts. Floor route from the land data (connected regions per floor): 1F entrance room -> (10,15) ladder -> 2F (11,14), whose region only holds the (24,9) drop -> 1F outer ring (24,9) -> (6,16) ladder -> 2F (6,16), whose region holds the 3F ladder (15,27). Back: 3F (15,27) drop -> 2F (15,27) -> (6,16) drop -> 1F ring -> (24,9) ladder -> 2F (24,9) -> (11,14) drop -> 1F (10,15) in the entrance room. Ladder goals are the tile past the 0x3C one (or the wall above it) so walk_to's last step is the push that climbs; avoid lists keep it off the other ladder tiles."
 
 [start]
 from = "prev"
@@ -35,12 +37,34 @@ note = "Violet north to Sprout Tower (zone_event 070_T22 warp 5)"
 do = "wait_map"
 map = "MAP_SPROUT_TOWER_1F"
 
-# PHASE2: the 1F ladder that leads to the 2F stairs (15,27): probe_map both floors; (24,8) is a guess.
+[[step]]
+do = "walk_to"
+x = 10
+z = 14
+via = [[10, 16]]
+note = "1F entrance room: its only ladder is (10,15) 0x3C / (10,14) 0x3D (land data); from (10,16) step onto (10,15) and push north (field_control.c:500-505) -> 2F warp 0 (11,14)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_2F"
+
 [[step]]
 do = "walk_to"
 x = 24
-z = 8
-note = "1F ladder (warp 6) -> 2F (24,9) [INFERENCE]"
+z = 9
+note = "2F (11,14)'s region holds only (11,14) and (24,9) 0x3E: step onto (24,9) -> 1F warp 2 (24,9), the outer ring"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 15
+via = [[6, 17]]
+avoid = [[24, 8]]
+note = "1F ring from the (24,9) ladder (leave it west, not north) to the (6,16) 0x3C / (6,15) 0x3D ladder, pushed north from (6,16) -> 2F warp 2 (6,16)"
 
 [[step]]
 do = "wait_map"
@@ -49,8 +73,8 @@ map = "MAP_SPROUT_TOWER_2F"
 [[step]]
 do = "walk_to"
 x = 15
-z = 27
-note = "2F stairs (zone_event 150_D15R0102 warp 3) -> 3F"
+z = 26
+note = "2F (6,16)'s region reaches (15,27) 0x3C; (15,26) is a wall, so the walk ends bumping north from (15,27): the push climbs (field_control.c:500-505) -> 3F warp 0 (15,27). Sages Edmond (13,27, facing west, sight 6) and Nico fight if they spot"
 
 [[step]]
 do = "wait_map"
@@ -89,7 +113,7 @@ note = "TM70 Flash, FLAG_UNK_076, the gym guy moves (scr_seq_0018_D15R0103.s:119
 do = "walk_to"
 x = 15
 z = 27
-note = "back down: 3F stairs -> 2F"
+note = "back down: 3F (15,27) is a LADDER_DOWN 0x3E, stepping onto it warps (src/field/field_control.c:743-745) -> 2F warp 3 (15,27)"
 
 [[step]]
 do = "wait_map"
@@ -97,9 +121,31 @@ map = "MAP_SPROUT_TOWER_2F"
 
 [[step]]
 do = "walk_to"
+x = 6
+z = 16
+note = "2F arrives on the 0x3C ladder (15,27): leave it sideways/south; 2F (6,16) is 0x3E -> 1F warp 3 (6,16); 2F's (15,27) region holds only (6,16) and (15,27) (land-data flood)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_1F"
+
+[[step]]
+do = "walk_to"
 x = 24
-z = 9
-note = "2F (24,9) -> 1F (24,8) [INFERENCE: the way up]"
+z = 8
+via = [[24, 10]]
+avoid = [[6, 15]]
+note = "1F outer ring from (6,16) (pushing north there would climb back): up the (24,9) 0x3C ladder from (24,10), pushing north on it warps (field_control.c:500-505) -> 2F warp 1 (24,9)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SPROUT_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 14
+note = "2F (11,14) 0x3E -> 1F warp 1 (10,15), in the entrance room"
 
 [[step]]
 do = "wait_map"
@@ -109,7 +155,8 @@ map = "MAP_SPROUT_TOWER_1F"
 do = "walk_to"
 x = 15
 z = 28
-note = "1F door (warp 0) -> Violet"
+avoid = [[10, 14]]
+note = "1F door (warp 0) -> Violet; leave the (10,15) ladder south, not north"
 
 [[step]]
 do = "wait_map"
