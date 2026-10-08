@@ -2,10 +2,9 @@
 # for a Secret Base (flag 0x971). goods.recipe: base made -> 4 goods + var 4, then decorate (flag 0x972).
 # Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door, mission 2 given and done. End: MAP_UNDERGROUND, own base.
 title = "Underground: Digger Drill and Secret Base"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 7000
+estimate = 8178
 refs = [
   "maps.h:88",
   "zone_event 0083 object 2",
@@ -49,7 +48,9 @@ recipe = "start.recipe"
 # Mission 5 (capture another player's flag, SetFlag 0x973, unk_0204CB20.s:5482) needs a second player: not headless.
 
 [run]
-frames = 10500
+frames = 12300
+# no end quick save: the Underground refuses it; the second descent's forced save is the end save
+save = "game"
 
 [[step]]
 do = "walk_to"
@@ -89,14 +90,227 @@ do = "wait_field"
 [[step]]
 do = "press"
 keys = "Y"
-note = "registered Explorer Kit"
-# PHASE2: descent prompts ([INFERENCE] confirm + forced save) -> wait_map MAP_UNDERGROUND; UG menu >
-# Traps > Digger Drill while facing a wall -> base created, sub_0205EDD8 SetFlag 0x971 (overlay_18.s:28122).
-# The Underground menus are touch-screen; record taps.
+gap = 120
+note = "registered Explorer Kit: 'DS Wireless Communications will be launched.' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "YES -> the forced save YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "YES -> overwrite YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES: the save, the hole, MAP_UNDERGROUND"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERGROUND"
+max = 1500
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "roark"
+
+# Roark's first-visit talk (not gated by 0x96E); the Underground field never reports field_ready.
+[[step]]
+do = "press"
+keys = "A"
+times = 60
+gap = 20
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 48
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 320
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 4
+gap = 30
+shot = "wall"
+note = "(148,262) facing the wall at (148,261)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 32
+gap = 20
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 4
+gap = 30
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 96
+gap = 20
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 4
+gap = 30
+shot = "base-wall"
+note = "8 tiles right of the dig spot, facing up: a wall the drill takes (the bulging dig-spot walls and the wall 2 tiles right say 'That can't be used here!')"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 40
+shot = "ug-menu"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "traps"
+note = "TRAPS: Digger Drill, CLOSE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "cavern"
+note = "the Digger Drill: 'Discovered a small cavern!'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "make-base"
+note = "'Would you like to make your Secret Base here?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "yes"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "base0"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "base1"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "base2"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "base3"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 48
+gap = 120
+shot = "left-base"
+note = "the entrance: 'Open the door and exit the Secret Base?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "YES: 'DS Wireless Communications will be launched.' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 200
+shot = "outside"
+note = "YES: back in the tunnel, facing away from the base"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+times = 5
+gap = 10
+shot = "go-up"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+max = 1500
+
+[[step]]
+do = "wait_field"
+shot = "surface"
+
+[[step]]
+do = "press"
+keys = "Y"
+gap = 120
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERGROUND"
+max = 1500
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "underground"
 
 [expect]
 map = "MAP_UNDERGROUND"
 vars = { "0x40B6" = 3 }
 flags = ["0x111", "0x971"]
-# PHASE2 lead (SysDP3): descent as 91 (Y, A gap 120, A gap 150, A; Roark A x60 gap 20), UP hold 48, LEFT hold 320,
-# UP hold 4 faces (148,261); X, A (TRAPS), A on 'Digger Drill' hits the same armrec Thumb-literal defect as 91.
+# The base itself is in the Underground save block (not in the np_save4 dump); 0x971 is set when it is made
+# (ov18_02246FB4 -> sub_0205EDD8) and kept by the second descent's save.

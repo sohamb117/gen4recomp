@@ -1896,13 +1896,13 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 25 milestones, ~169656 frames estimated
+### Side systems: 25 milestones, ~174518 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 6538 | `start.recipe` | MAP_UNDERGROUND | passing |
-| [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 6000 | `start.recipe` | MAP_UNDERGROUND | planned |
-| [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 7000 | `start.recipe` | MAP_UNDERGROUND | planned |
+| [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 9684 | `start.recipe` | MAP_UNDERGROUND | passing |
+| [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 8178 | `start.recipe` | MAP_UNDERGROUND | passing |
 | [93-battle-zone-ferry-fight-area](diamond/93-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: Snowpoint ferry and Fight Area arrival | P1 | both | 6000 | prev + `start.recipe` | MAP_FIGHT_AREA | passing |
 | [94-battle-zone-route-225-north-gate](diamond/94-battle-zone-route-225-north-gate/milestone.toml) | Battle Zone: Route 225 through the Fight Area north gate | P2 | both | 3500 | prev + `start.recipe` | MAP_ROUTE_225 | passing |
 | [95-stark-mountain-buck-magma-stone](diamond/95-stark-mountain-buck-magma-stone/milestone.toml) | Stark Mountain: Buck and the Magma Stone | P2 | both | 3000 | prev + `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | passing |
@@ -1941,7 +1941,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TURTWIG 15
 - trainers: none
 - end state: map MAP_UNDERGROUND; flags set 0x111, 0x96E, 0x96F, 0x970; vars 0x40B6=1
-- frames: estimate 6000, budget 9000
+- frames: estimate 9684, budget 14600
 - refs: maps.h:88; zone_event 0083 object 2; scr_seq 0089 @0x015E-0x0164; scr_seq 0089 @0x01D9-0x0235; scr_seq 0089 @0x01EF; scr_seq 0089 @0x01F5; scr_seq 0089 @0x01FC-0x0228; scr_seq 0089 @0x0237-0x0246; scr_seq 0089 @0x00C8; scr_seq 0089 @0x024D-0x0286; scr_seq 0205 @0x08CB; scr_seq 0205 @0x08ED; msg 0571 #1; msg 0571 #23; msg 0571 #28; msg 0097 #6; msg 0097 #8; games/diamond/arm9/src/unk_0205EC84.c:96; games/diamond/arm9/src/unk_0205EC84.c:100; games/diamond/arm9/src/unk_0205EC84.c:104; games/diamond/arm9/overlays/18/asm/overlay_18.s:2717; games/diamond/arm9/overlays/18/asm/overlay_18.s:7514
 
 #### diamond/92-underground-secret-base — Underground: Digger Drill and Secret Base
@@ -1950,7 +1950,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TURTWIG 15
 - trainers: none
 - end state: map MAP_UNDERGROUND; flags set 0x111, 0x971; vars 0x40B6=3
-- frames: estimate 7000, budget 10500
+- frames: estimate 8178, budget 12300
 - refs: maps.h:88; zone_event 0083 object 2; scr_seq 0089 @0x0295-0x02D1; scr_seq 0089 @0x02AB; scr_seq 0089 @0x02B8-0x02C4; scr_seq 0089 @0x02D3-0x02E2; scr_seq 0089 @0x00E6; scr_seq 0089 @0x02E9-0x0332; scr_seq 0089 @0x0341-0x0357; scr_seq 0089 @0x00F5; scr_seq 0089 @0x0379-0x03CD; scr_seq 0089 @0x03DE; scr_seq 0205 @0x08CB; scr_seq 0205 @0x08A4; msg 0571 #33; msg 0097 #16; msg 0097 #21; games/diamond/include/constants/decorations.h:13; games/diamond/include/constants/decorations.h:15; games/diamond/include/constants/decorations.h:21; games/diamond/include/constants/decorations.h:106; games/diamond/include/constants/decorations.h:117; games/diamond/arm9/src/unk_0205EC84.c:108; games/diamond/arm9/src/unk_0205EC84.c:112; games/diamond/arm9/src/unk_0205EC84.c:116; games/diamond/arm9/overlays/18/asm/overlay_18.s:28122; games/diamond/arm9/overlays/18/asm/overlay_18.s:37346; games/diamond/arm9/asm/unk_0204CB20.s:5482; games/diamond/arm9/asm/unk_0205F314.s:86-93
 
 #### diamond/93-battle-zone-ferry-fight-area — Battle Zone: Snowpoint ferry and Fight Area arrival
@@ -2831,13 +2831,13 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 25 milestones, ~169656 frames estimated
+### Side systems: 25 milestones, ~174518 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 6538 | `start.recipe` | MAP_UNDERGROUND | passing |
-| [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 6000 | `start.recipe` | MAP_UNDERGROUND | planned |
-| [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 7000 | `start.recipe` | MAP_UNDERGROUND | planned |
+| [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 9684 | `start.recipe` | MAP_UNDERGROUND | passing |
+| [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 8178 | `start.recipe` | MAP_UNDERGROUND | passing |
 | [93-battle-zone-ferry-fight-area](diamond/93-battle-zone-ferry-fight-area/milestone.toml) | Battle Zone: Snowpoint ferry and Fight Area arrival | P1 | both | 6000 | prev + `start.recipe` | MAP_FIGHT_AREA | passing |
 | [94-battle-zone-route-225-north-gate](diamond/94-battle-zone-route-225-north-gate/milestone.toml) | Battle Zone: Route 225 through the Fight Area north gate | P2 | both | 3500 | prev + `start.recipe` | MAP_ROUTE_225 | passing |
 | [95-stark-mountain-buck-magma-stone](diamond/95-stark-mountain-buck-magma-stone/milestone.toml) | Stark Mountain: Buck and the Magma Stone | P2 | both | 3000 | prev + `start.recipe` | MAP_STARK_MOUNTAIN_INTERIOR_3 | passing |
@@ -2876,7 +2876,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TURTWIG 15
 - trainers: none
 - end state: map MAP_UNDERGROUND; flags set 0x111, 0x96E, 0x96F, 0x970; vars 0x40B6=1
-- frames: estimate 6000, budget 9000
+- frames: estimate 9684, budget 14600
 - refs: maps.h:88; zone_event 0083 object 2; scr_seq 0089 @0x015E-0x0164; scr_seq 0089 @0x01D9-0x0235; scr_seq 0089 @0x01EF; scr_seq 0089 @0x01F5; scr_seq 0089 @0x01FC-0x0228; scr_seq 0089 @0x0237-0x0246; scr_seq 0089 @0x00C8; scr_seq 0089 @0x024D-0x0286; scr_seq 0205 @0x08CB; scr_seq 0205 @0x08ED; msg 0571 #1; msg 0571 #23; msg 0571 #28; msg 0097 #6; msg 0097 #8; games/diamond/arm9/src/unk_0205EC84.c:96; games/diamond/arm9/src/unk_0205EC84.c:100; games/diamond/arm9/src/unk_0205EC84.c:104; games/diamond/arm9/overlays/18/asm/overlay_18.s:2717; games/diamond/arm9/overlays/18/asm/overlay_18.s:7514
 
 #### pearl/92-underground-secret-base — Underground: Digger Drill and Secret Base
@@ -2885,7 +2885,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_TURTWIG 15
 - trainers: none
 - end state: map MAP_UNDERGROUND; flags set 0x111, 0x971; vars 0x40B6=3
-- frames: estimate 7000, budget 10500
+- frames: estimate 8178, budget 12300
 - refs: maps.h:88; zone_event 0083 object 2; scr_seq 0089 @0x0295-0x02D1; scr_seq 0089 @0x02AB; scr_seq 0089 @0x02B8-0x02C4; scr_seq 0089 @0x02D3-0x02E2; scr_seq 0089 @0x00E6; scr_seq 0089 @0x02E9-0x0332; scr_seq 0089 @0x0341-0x0357; scr_seq 0089 @0x00F5; scr_seq 0089 @0x0379-0x03CD; scr_seq 0089 @0x03DE; scr_seq 0205 @0x08CB; scr_seq 0205 @0x08A4; msg 0571 #33; msg 0097 #16; msg 0097 #21; games/diamond/include/constants/decorations.h:13; games/diamond/include/constants/decorations.h:15; games/diamond/include/constants/decorations.h:21; games/diamond/include/constants/decorations.h:106; games/diamond/include/constants/decorations.h:117; games/diamond/arm9/src/unk_0205EC84.c:108; games/diamond/arm9/src/unk_0205EC84.c:112; games/diamond/arm9/src/unk_0205EC84.c:116; games/diamond/arm9/overlays/18/asm/overlay_18.s:28122; games/diamond/arm9/overlays/18/asm/overlay_18.s:37346; games/diamond/arm9/asm/unk_0204CB20.s:5482; games/diamond/arm9/asm/unk_0205F314.s:86-93
 
 #### pearl/93-battle-zone-ferry-fight-area — Battle Zone: Snowpoint ferry and Fight Area arrival
