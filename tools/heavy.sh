@@ -14,8 +14,10 @@
 # without queueing behind, or blocking, a build.
 #
 # A slot is a directory /tmp/np-heavy/slot.<n> (runs: run.<n>) holding the
-# owner's pid; a slot whose owner is gone is reclaimed. The command runs
-# niced. Waiting is printed once, so a log shows the time spent queued.
+# owner's pid; a slot whose owner is gone is reclaimed. Nothing starts while
+# the disk under the working directory has less than NP_HEAVY_MIN_FREE_GB
+# (default 2) GiB free: it waits for space, deleting nothing. The command
+# runs niced. Waiting is printed once, so a log shows the time spent queued.
 set -euo pipefail
 
 POOL=slot
@@ -26,7 +28,14 @@ if [ "${1:-}" = "--run" ]; then
     SLOTS="${NP_HEAVY_RUN_SLOTS:-6}"
 fi
 DIR=/tmp/np-heavy
+MIN_FREE_KB=$((${NP_HEAVY_MIN_FREE_GB:-2} * 1024 * 1024))
 mkdir -p "$DIR"
+
+disk_ok() {
+    local free
+    free=$(df -k . | awk 'NR == 2 { print $4 }')
+    [ "${free:-0}" -ge "$MIN_FREE_KB" ]
+}
 
 claim() {
     local i
@@ -47,9 +56,18 @@ claim() {
 }
 
 SLOT=""
-if ! claim; then
-    echo "heavy.sh: waiting for a free $POOL slot ($SLOTS in use): $*" >&2
-    until claim; do sleep 5; done
-fi
+waited_disk=0 waited_slot=0
+while :; do
+    if ! disk_ok; then
+        [ $waited_disk = 1 ] || echo "heavy.sh: waiting for disk (<${NP_HEAVY_MIN_FREE_GB:-2} GiB free): $*" >&2
+        waited_disk=1
+        sleep 30
+        continue
+    fi
+    claim && break
+    [ $waited_slot = 1 ] || echo "heavy.sh: waiting for a free $POOL slot ($SLOTS in use): $*" >&2
+    waited_slot=1
+    sleep 5
+done
 trap 'rm -rf "$SLOT"' EXIT INT TERM
 nice -n 10 "$@"
