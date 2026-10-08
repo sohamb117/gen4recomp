@@ -34,6 +34,7 @@ int asm_call_var(void);
 int asm_call_structs(int *);
 int asm_call_u8(void);
 int asm_ldm_self(const int *);
+uint32_t asm_thumb_lit(void);
 extern int asm_table[];
 extern uint32_t asm_cptrs[];
 
@@ -138,6 +139,15 @@ int main(void) {
     CHECK("asm .word c_data is the address",
           asm_cptrs[1], (uint32_t)(uintptr_t)c_data);
     CHECK("call through asm .word", ((int (*)(int))(uintptr_t)asm_cptrs[0])(7), 22);
+
+    /* The address of a Thumb function, by every route: asm literal pool,
+     * asm .word in data, C &F (the static tab[0] above). */
+    CHECK("asm literal =asm_thumb_mul is the Thumb address", asm_thumb_lit(), 0x02000021u);
+    CHECK("asm .word asm_thumb_mul is the Thumb address", asm_cptrs[2], 0x02000021u);
+    CHECK("asm literal == C &asm_thumb_mul",
+          asm_thumb_lit(), (uint32_t)(uintptr_t)&asm_thumb_mul);
+    CHECK("call through the asm literal",
+          ((int (*)(int, int))(uintptr_t)asm_thumb_lit())(6, 9), 54);
 
     /* runtime entry points for C function pointers */
     CHECK("armrec_call_code(c_target)",

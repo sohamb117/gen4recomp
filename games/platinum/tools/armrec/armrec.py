@@ -2328,16 +2328,22 @@ def collect_literals(path, lines=None):
     return lits
 
 
-def literal_c_value(ctx, tok):
+def literal_c_value(ctx, tok, thumb_funcs=()):
     """
     Resolve a literal-pool word to a C expression.
 
     Handles a bare constant, a symbol, and a symbol with an offset expression
-    such as "gMTRNG_State + 607 * 4".
+    such as "gMTRNG_State + 607 * 4". A bare name of a Thumb function carries
+    the interworking bit, as the ROM's word does and as build_data_blobs()
+    gives the same `.word` in data: code compares such a word with a function
+    pointer read from a table (ov18_02249684, the Underground menu).
     """
     tok = tok.strip()
     try:
-        return "0x%08Xu" % (eval_asm_expr(tok, ctx.symtab) & 0xFFFFFFFF)
+        v = eval_asm_expr(tok, ctx.symtab) & 0xFFFFFFFF
+        if tok in thumb_funcs:
+            v |= 1
+        return "0x%08Xu" % v
     except Unsupported:
         pass
     # Leading symbol we cannot resolve yet (it lives in decompiled C), plus an
@@ -3481,7 +3487,7 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
     literals = {}
     for k, v in literals_raw.items():
         try:
-            literals[k] = literal_c_value(tmpctx, v)
+            literals[k] = literal_c_value(tmpctx, v, thumb_funcs or ())
         except Unsupported:
             continue
     ext |= tmpctx.used_ext

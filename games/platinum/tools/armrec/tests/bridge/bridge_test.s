@@ -216,6 +216,16 @@ asm_ldm_self: ; 0x020001B4
 	bx lr
 	thumb_func_end asm_ldm_self
 
+; u32 asm_thumb_lit(void) = the literal-pool word naming asm_thumb_mul: its
+; Thumb address, bit 0 set, the same value as `.word asm_thumb_mul` in data
+; and as C's &asm_thumb_mul (code compares the two: ov18_02249684).
+	arm_func_start asm_thumb_lit
+asm_thumb_lit: ; 0x020001BC
+	ldr r0, _020001C4 ; =asm_thumb_mul
+	bx lr
+_020001C4: .word asm_thumb_mul
+	arm_func_end asm_thumb_lit
+
 	.data
 
 	.global asm_table
@@ -226,3 +236,4 @@ asm_table: ; 0x02001000
 asm_cptrs: ; 0x0200100C
 	.word c_target
 	.word c_data
+	.word asm_thumb_mul
