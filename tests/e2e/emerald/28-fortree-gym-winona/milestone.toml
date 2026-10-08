@@ -2,9 +2,8 @@
 # TM40 Aerial Ace; Fly usable from here (src/party_menu.c:125).
 # Start: Fortree below the gym (22,12) -> end: MAP_FORTREE_CITY at the gym door.
 title = "Fortree Gym: Winona and the Feather Badge"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 21741
 refs = [
   "data/maps/FortreeCity_Gym/map.json object_events 1..8",
   "data/maps/FortreeCity_Gym/scripts.inc:1-63",
@@ -22,12 +21,19 @@ notes = "Winona: TRAINER_WINONA_1 (270): SWABLU 29, TROPIUS 29, PELIPPER 30, SKA
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 32700
 
 # PHASE2: the rotating-gate route to Winona (src/rotating_gate.c puzzle for MAP_FORTREE_CITY_GYM): record a steps/moves route with the game as oracle.
+
+[[step]]
+do = "heal"
+x = 5
+z = 6
+note = "Fortree Pokemon Center (warp 0): HP and PP back before the gym"
 
 [[step]]
 do = "walk_to"
@@ -40,12 +46,12 @@ do = "wait_map"
 map = "MAP_FORTREE_CITY_GYM"
 
 [[step]]
-do = "walk_to"
-x = 15
-z = 3
+do = "steps"
+route = [[15, 22], [4, 22], [4, 19], [2, 19], [2, 21], [3, 21], [3, 19], [4, 19], [4, 18], [7, 18], [7, 14], [9, 14], [9, 12], [7, 12], [7, 15], [7, 14], [9, 14], [9, 10], [8, 10], [8, 9], [7, 9], [7, 8], [2, 8], [2, 7], [1, 7], [1, 6], [2, 6], [2, 8], [5, 8], [5, 2], [2, 2], [2, 8], [6, 8], [5, 8], [5, 4], [14, 4], [14, 3], [15, 3]]
+max = 20000
 face = "up"
 interact = true
-note = "below Winona (15,2) [PHASE2: rotating gates]"
+note = "through the rotating gates to below Winona (15,2): python3 tests/e2e/tools/gba_gates.py --game emerald MAP_FORTREE_CITY_GYM 15 24 15 3 (src/rotating_gate.c sRotatingGate_FortreePuzzleConfig); the trainers who see the route are fought on the way"
 
 [[step]]
 do = "advance_text"

@@ -1,0 +1,7 @@
+# HM01 Cut (FLAG_RECEIVED_HM_CUT, milestone 07) taught to the lead in place of Tackle, as a player teaches it from
+# the TM case: the walk back across Hoenn meets Cut trees and Rock Smash rocks (hm = true).
+party-move 0 0 MOVE_CUT
+# Norman (TRAINER_NORMAN_1, src/data/trainer_parties.h sParty_Norman1: SPINDA 27, VIGOROTH 27, LINOONE 29,
+# SLAKING 31): the chained Swampert's Water Gun alone loses to Slaking; its own Muddy Water carries it.
+party-level 0 48
+party-move 0 2 MOVE_MUDDY_WATER   # Swampert's level-39 move (src/data/pokemon/level_up_learnsets.h sSwampertLevelUpLearnset)

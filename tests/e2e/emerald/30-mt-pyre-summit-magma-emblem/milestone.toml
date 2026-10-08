@@ -2,9 +2,8 @@
 # scene (22..24,7) VAR_MT_PYRE_STATE 0 -> 1: the old lady's ITEM_MAGMA_EMBLEM (FLAG_RECEIVED_RED_OR_BLUE_ORB).
 # Start: Lilycove (27,8) -> end: MAP_MT_PYRE_SUMMIT below the old couple (23,7).
 title = "Mt. Pyre summit: Aqua takes the Red Orb, the Magma Emblem"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 17905
 refs = [
   "data/maps/Route121/map.json connections down ROUTE122 offset 20",
   "data/maps/Route122/map.json warp_events[0] (22,29) -> MT_PYRE_1F",
@@ -25,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 26900
 
 [[step]]
 do = "walk_to"

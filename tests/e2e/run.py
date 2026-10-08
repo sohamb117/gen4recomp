@@ -75,7 +75,7 @@ STEP_KEYS = {
                 "hold"},
     "walk_to_door": {"pattern", "doors", "wait", "map", "face", "interact", "run", "on_battle", "on_text", "move"},
     "talk_to": {"id", "on_battle", "on_text", "move"},
-    "heal": {"x", "z", "on_battle"},
+    "heal": {"x", "z", "on_battle", "map", "surf", "hm"},
     "grind": {"x", "z", "level", "heal", "move"},
     "fly": {"map", "slot", "block", "start"},
     "steps": {"route", "run", "on_battle", "on_text", "move", "face", "interact"},

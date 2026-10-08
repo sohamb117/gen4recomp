@@ -2,9 +2,8 @@
 # FLAG_RECEIVED_DEVON_SCOPE) and the Devon Scope on Fortree's invisible Kecleon (FLAG_KECLEON_FLED_FORTREE).
 # Start: Fortree (5,7) -> end: MAP_FORTREE_CITY below the gym door (22,12).
 title = "Route 120: Steven's Kecleon and the Devon Scope; Fortree's gym Kecleon"
-status = "planned"
 priority = "P0"
-estimate = 6000
+estimate = 12185
 refs = [
   "data/maps/Route120/map.json object_events 30 bridge KECLEON (12,16), 31 STEVEN (13,15)",
   "data/maps/Route120/scripts.inc:154-232",
@@ -19,7 +18,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 18300
 
 [[step]]
 do = "walk_to"
@@ -53,10 +52,10 @@ note = "StevenGiveDeconScope: ITEM_DEVON_SCOPE, FLAG_RECEIVED_DEVON_SCOPE (:210-
 
 [[step]]
 do = "walk_to"
-x = 24
-z = 8
+x = 25
+z = 7
 map = "MAP_FORTREE_CITY"
-note = "back west to Fortree, beside the gym Kecleon (25,8) [INFERENCE]"
+note = "back west to Fortree, on the bridge north of the gym Kecleon (object 7 at (25,8)), the only way down to the gym door (22,11)"
 
 [[step]]
 do = "talk_to"

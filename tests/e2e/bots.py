@@ -1073,7 +1073,11 @@ def bot_steps(s, step, ctx):
             continue
         tries = 0
         tiles += 1
-        if k + 1 < len(route) and (p.x, p.z) == route[k + 1] and (p.x, p.z) != route[k]:
+        # landing on the next corner off the line to this one (a platform ride) reaches it; walking the line onto
+        # a tile the route passes again later (a gate puzzle's back and forth) does not
+        on_line = (p.x - here[0]) * (route[k][0] - p.x) >= 0 and (p.z - here[1]) * (route[k][1] - p.z) >= 0 and (
+            p.x == here[0] or p.z == here[1])
+        if k + 1 < len(route) and (p.x, p.z) == route[k + 1] and (p.x, p.z) != route[k] and not on_line:
             s.note("steps: carried to (%d,%d)" % (p.x, p.z))
             k += 1
     s.run(16)
@@ -1205,7 +1209,7 @@ def bot_walk_to(s, step, ctx):
 
 
 # re-plans of a GBA cross-map walk (a leg that ended on another map than the route said, a door that did not open)
-GBA_ROUTE_TRIES = 6
+GBA_ROUTE_TRIES = 10
 
 
 def _gba_route_to(s, step, ctx):
@@ -1220,10 +1224,11 @@ def _gba_route_to(s, step, ctx):
     avoid_warps = []
     # on_text = "stop" is for the goal map's own scene: on the way, trainers' and other text is advanced
     keys = {k: step[k] for k in ("on_battle", "run", "hold", "surf", "hm", "move", "max") if k in step}
+    force = bool(step.get("_force"))  # route even from the goal's own map (walk_to found no path on it)
     for _ in range(GBA_ROUTE_TRIES):
         _field_or_handle(s, keys, ctx, s.frame + _int(step, "max", 6000))
         p = s.probe()
-        if p.map_id == want:
+        if p.map_id == want and not force:
             return
         tx, tz = int(step["x"]), int(step["z"])
         # a goal the static model cannot stand on (a door in a wall, a counter): the route only has to reach its
@@ -1238,14 +1243,26 @@ def _gba_route_to(s, step, ctx):
                 why = why or e
         if legs is None:
             raise HarnessError("walk_to: %s" % why)
+        if len(legs) == 1 and p.map_id == want:
+            return  # forced: the static model goes straight there now
         s.note("walk_to: route to %s (%d,%d): %s" % (step["map"], int(step["x"]), int(step["z"]), "; ".join(
             "%s %s (%d,%d)" % (l.kind, world.map_name(l.map), l.x, l.z) for l in legs)))
         for leg in legs[:-1]:
             if s.map_id != leg.map:
                 break
+            p = s.probe()
+            if leg.kind == "warp" and (leg.x, leg.z) in {(o[0], o[1]) for o in p.objects}:
+                # someone stands on the warp (Lavaridge Gym's trainers wait in its sand holes): another way
+                avoid_warps.append((leg.map, leg.x, leg.z))
+                s.note("walk_to: the warp at (%d,%d) on map %d is occupied; re-routing" % (leg.x, leg.z, leg.map))
+                break
             try:
-                _walk_to(s, dict(keys, x=leg.x, z=leg.z), ctx)
+                _walk_to(s, dict(keys, x=leg.x, z=leg.z, max=_int(step, "max", 6000)), ctx)
             except HarnessError as e:
+                if s.map_id == leg.map and leg.kind == "warp":
+                    avoid_warps.append((leg.map, leg.x, leg.z))
+                    s.note("walk_to: %s; avoiding that warp, re-routing" % e)
+                    break
                 if s.map_id == leg.map:
                     raise
                 # an unplanned warp (a floor that gave way, a hole): the route goes on from where it landed
@@ -1332,6 +1349,13 @@ def _walk_to(s, step, ctx):
             terrain.layers.clear()
             terrain.update(p)
             dirs = terrain.path((p.x, p.z), goal)
+        if not dirs and terrain.gba and not step.get("_rerouted"):
+            # a goal on this map reached only through another (Lavaridge Gym's floors, a cave's upper level): the
+            # static world route goes round, then the walk ends on this map as asked
+            s.note("walk_to (%d,%d): no path on map %d from (%d,%d); routing through the world" % (
+                goal + (p.map_id, p.x, p.z)))
+            _gba_route_to(s, dict(step, map=p.map_id, _force=True), ctx)
+            return _walk_to(s, dict(step, map=p.map_id, _rerouted=True), ctx)
         if not dirs:
             raise HarnessError("walk_to (%d,%d): no path from (%d,%d) on map %d" % (goal + (p.x, p.z, p.map_id)))
         d = dirs[0]
@@ -1460,10 +1484,14 @@ GBA_PC_COUNTER, GBA_PC_EXIT = (7, 4), (7, 8)
 
 
 def bot_heal(s, step, ctx):
-    """Heal the party at the Pokemon Center whose door is (x, z) on this map, and come back out of it."""
-    town = s.map_id
-    bot_walk_to(s, {"x": step["x"], "z": step["z"], "on_battle": step.get("on_battle", "flee"),
-                    "max": _int(step, "max", 6000)}, ctx)
+    """Heal the party at the Pokemon Center whose door is (x, z) on this map (GBA: or on `map`, walked to first,
+    with walk_to's `surf` and `hm`), and come back out of it."""
+    town = ctx.resolve(step["map"]) if "map" in step else s.map_id
+    walk = {"x": step["x"], "z": step["z"], "on_battle": step.get("on_battle", "flee"), "max": _int(step, "max", 6000)}
+    for k in ("map", "surf", "hm"):
+        if k in step:
+            walk[k] = step[k]
+    bot_walk_to(s, walk, ctx)
     if s.map_id == town:
         raise HarnessError("heal: (%d,%d) is not a door on map %d" % (int(step["x"]), int(step["z"]), town))
     center = s.map_id

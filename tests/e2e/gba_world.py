@@ -137,6 +137,10 @@ _STEP_WARP_RS = frozenset({0x69, 0x61, 0x6A, 0x6B, 0x60, 0x6C, 0x6E, 0x29, 0x68,
 STEP_WARP = {"pokeemerald": _STEP_WARP_RS | {0x0E, 0x70}, "pokeruby": _STEP_WARP_RS}
 DOORS = frozenset({MB_ANIMATED_DOOR, MB_PETALBURG_GYM_DOOR})  # MetatileBehavior_IsDoor
 NONANIM_DOORS = frozenset({MB_NON_ANIMATED_DOOR, MB_WATER_DOOR, MB_DEEP_SOUTH_WARP})  # MetatileBehavior_IsNonAnimDoor
+# Maps a walker never crosses: the Seaside Cycling Road gates' coord events push a player on foot back
+# (Route110_SeasideCyclingRoad{South,North}Entrance/scripts.inc BikeCheck: GetPlayerAvatarBike 0 -> NoBike), and
+# walk_to does not ride the bike
+ON_FOOT_BLOCKED = ("MAP_ROUTE110_SEASIDE_CYCLING_ROAD_SOUTH_ENTRANCE", "MAP_ROUTE110_SEASIDE_CYCLING_ROAD_NORTH_ENTRANCE")
 
 COST_STEP, COST_GRASS, COST_WARP = 1, 6, 10
 NUM_METATILES_IN_PRIMARY = 512
@@ -431,7 +435,7 @@ class World:
         src, sx, sz, si = r
         dst, tx, tz = g[0], g[1], g[2]
         goal_m, goal_xy = dst.id, (tx, tz)
-        avoid_m = {self.map_id(a) for a in avoid_maps} - {src.id}
+        avoid_m = ({self.map_id(a) for a in avoid_maps} | {self._ids[a] for a in ON_FOOT_BLOCKED if a in self._ids}) - {src.id}
         avoid_w = {(self.map_id(a), int(x), int(y)) for a, x, y in avoid_warps}
         te = src.elev[si]
         if elevation is None:

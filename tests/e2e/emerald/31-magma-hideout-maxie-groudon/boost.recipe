@@ -1,0 +1,3 @@
+# HM04 Strength (FLAG_RECEIVED_HM_STRENGTH, RusturfTunnel/scripts.inc:57, milestone 17) taught to the Linoone that
+# carries Cut: Magma Hideout 1F's boulders (objects 4-6) shut the way in.
+party-move 2 1 MOVE_STRENGTH
