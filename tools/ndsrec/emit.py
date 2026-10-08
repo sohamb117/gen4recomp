@@ -293,12 +293,16 @@ def emit_func(out, module, seg, f, end, lits, resolver, names, data_names,
                 if ins.kind == "call":
                     # BLX immediate and BL are one call to armrec. A long
                     # branch (a BL to a block of its own function, lr already
-                    # saved) is spelled `b`: armrec would read a BL to a
-                    # local label by B's exact reach, and mwcc used BL for
+                    # saved) is spelled `b` plus the BL's second halfword as
+                    # data, keeping its four bytes: armrec would read a BL to
+                    # a local label by B's exact reach, and mwcc used BL for
                     # targets just inside it (Black's 0x0201558C, -2048)
-                    lb = (a in f.longbr
-                          and op == label_name(module, ins.target & ~1))
-                    text = ("b " if lb else "bl ") + op
+                    if (a in f.longbr
+                            and op == label_name(module, ins.target & ~1)):
+                        lo = seg.data[a + 2 - seg.ram:a + 4 - seg.ram]
+                        text = "b %s\n\t.byte 0x%02X, 0x%02X" % (op, lo[0], lo[1])
+                    else:
+                        text = "bl " + op
             out.append("\t" + text)
             stats["insns"] = stats.get("insns", 0) + 1
             a += ins.size
