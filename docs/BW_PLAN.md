@@ -436,8 +436,10 @@ check; docs/BW_RAM.md lists every address and offset with how it was
 proven. `tests/e2e/run.py --game black|white` runs milestones on it
 (tests/e2e/README.md, "Black and White"): 01 plays a blank chip through
 the intro to the bedroom, walks it with `walk_to`, talks to Cheren and saves
-through the X menu. Not reported yet: the battle (the first battle does not
-run on the core) and warps.
+through the X menu. In a battle the probe sets `in_battle` and reports the
+battlers and the player's party (species, level, HP, types, moves, PP) from
+overlay 93's POKECON, shown on both games in Bianca's battle; not reported
+yet: the battle's menus (`ui`, needed by `auto_battle`) and warps.
 
 ## First battle: discovery fixes and the current stop (2026-10-08)
 

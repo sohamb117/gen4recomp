@@ -82,6 +82,20 @@ publish warps.
 | location | save 0x19580: u32 zone, VecFx32 | same | 0x187 and the tile the save was made on |
 | save footer | slot + 0x23F8C u32 save count, + 0x23F94 magic 0x31053527 | same | both 0x24000-byte slots written on every save; the count 2 -> 3 on a second save |
 
+## Battle
+
+Observed in Bianca's first battle (Black, from the bedroom save: the gift box, Tepig, the battle intro, where the
+battle waits today, docs/BW_PLAN.md "First battle"). Cross-checked against the unlicensed squiddonaut/pokeblack
+disassembly (same Black ROM), which names some of these functions; everything below was proven on our core.
+
+| field | Black | White | how it was proven |
+| --- | --- | --- | --- |
+| battle view static | `0x021F6398` (overlay 93 .bss) | `0x021F63B8` | overlay 93's view code loads it (`_ov093_021EECCC` and 9 more literals; White's identical functions at +0x20); +0x00 the battle main module, +0x04 its POKECON. Only meaningful while overlay 93 is resident |
+| battle main module | `*view` | same | a `procsys.c` heap block (0x490) holding the `btl_setup.c`, `btl_server.c` and `btl_client.c` blocks; the field is gone meanwhile (GAMESYS+0x14 = 0) |
+| POKECON | main+0xC8 = `*(view+4)` | same | its +0x00 points back to main; `ov93_021B9940` reads BattleMon pointers by Pokemon id at +0x84 (`ov93_021EED24` calls it with `*(view+4)`), `ov93_021B985C` the clients' POKEPARTYs at +0x74 (= the two `pokeparty.c` blocks), and a second POKECON at main+0x1B0 holds the clients' copies |
+| client party | POKECON + 4 + 0x1C x client: BattleMon pointers by slot, u8 count at +0x18 | same | `ov93_021B9864` / `ov93_021B98AC` index parties by `client * 0x1C` from POKECON+4; `ov93_021B9B94` reads the count at +0x18, `ov93_021B9C00` slot i (bounded by it), `ov93_021B9C10` swaps two slots. In the battle: client 0 = Tepig, client 1 = Bianca's Snivy, counts 1 and 1 |
+| BattleMon | 0x214 bytes (`btl_pokeparam.c`) | same | +0x00 the source POKEMON (in the client's POKEPARTY), +0x0C species, +0x0E max HP, +0x10 HP, +0x16 ability, +0x18 level, +0xEE..+0xF6 the five battle stats, +0xF8/+0xF9 the current types, +0xFC seven stat stages (6 = neutral), +0x104 four 0x0E-byte move slots {u16 move, u8 PP, u8 max PP, ...}. `ov93_021D4D84` (the constructor) fills +0x0C/+0x10/+0x0E/+0x18/+0x16 from the POKEMON params species / HP / max HP / level / ability, and the level-up code `ov93_021D69B8` reloads only +0x0E from max HP. Values: Tepig 498, 22/22, level 5, Blaze 66, Fire/Fire (9), Tackle 35/35, Tail Whip 30/30; Snivy 495, 19/19, level 5, Overgrow 65, Grass/Grass (11), Tackle, Leer 30/30 |
+
 ## The probe on the core
 
 `tests/e2e/tools/probe_map.py --game black` on the bedroom save (CONTINUE free at frame 5295) prints zone 391, the
@@ -90,13 +104,17 @@ Cheren) at (6,6), and the room's walls, desk, shelf, bed, table and stairs as co
 z 2..8 exactly as the terrain entries above; the step layers (the game's movement check flooded from the player)
 cover the same floor. `walk_to (2,4)` then `walk_to (10,5)` take 5 and 9 steps, the shortest paths round Bianca,
 Cheren and the table. Milestone 01 (tests/e2e/black) passes on both games with the end save at the tile the probe
-reported.
+reported. From the bedroom saves, the gift box and A presses, `in_battle` goes 1 at frame 8127 (Black) / 8227
+(White) as Bianca's battle opens, the field gone (`field` 0); the probe's battle report then reads battler 0 Tepig
+(498) L5 22/22 Fire/Fire, Tackle 35 / Tail Whip 30, battler 1 Snivy (495) L5 19/19 Grass/Grass, Tackle 35 / Leer
+30, and a party of one Tepig, on both games; the screen at that point is the battle intro before the send-out.
 
 ## Not established
 
-- **Battle**: in_battle, the battlers, moves, PP, HP and types. The first battle stops the core while it starts
-  (overlays 93-96 load, then an indirect branch to untranslated code; docs/BW_PLAN.md), so no battle structure can
-  be observed yet; the probe reports `in_battle` 0 and no battle block.
+- **Battle input and type**: the menu state (`ui`, the battle's own menus) and the battle type bits. Bianca's battle
+  waits in its intro on the core today, so no battle menu has been seen; the probe reports the battlers and the
+  party but `ui` stays 0, and `menu_battler` and `battle_type` are 0. Only a single battle has been seen: battler n
+  is client n's front Pokemon.
 - **Menus and text**: no separate text-wait or menu state was needed: the running-event pointer (GAMESYS+0x18) is
   set for the whole of every held scene seen (menu, dialogue, save, the starter scene), and `field_ready` is "a
   field, no event, the player on a tile centre".

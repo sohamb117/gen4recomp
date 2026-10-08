@@ -45,11 +45,13 @@
 
 #if defined(PC_BW_VER_WHITE)
 #define BW_GAMESYS_PTR 0x02146268u
+#define BW_BATTLE_VIEW 0x021F63B8u
 #define BW_GRID_QUERY ov21_0218DB0C
 #define BW_OFF_MAP ov21_0218DC24
 #define BW_HIT_CHECK ov10_021638EC
 #else
 #define BW_GAMESYS_PTR 0x02146248u
+#define BW_BATTLE_VIEW 0x021F6398u
 #define BW_GRID_QUERY ov21_0218DAEC
 #define BW_OFF_MAP ov21_0218DC04
 #define BW_HIT_CHECK ov10_021638CC
@@ -63,6 +65,26 @@ extern uint32_t armrec_sp;
 /* the field overlays the two functions live in */
 #define BW_OVERLAY_MMDL 10
 #define BW_OVERLAY_FIELD 21
+/* the battle overlay; BW_BATTLE_VIEW is a static of its .bss (docs/BW_RAM.md, Battle) */
+#define BW_OVERLAY_BATTLE 93
+
+/* The battle: BW_BATTLE_VIEW +0x00 the battle main module, +0x04 its POKECON (main+0xC8, whose +0x00
+ * points back to main). POKECON +0x04 + 0x1C*client: a client's party, BattleMon pointers by slot
+ * (slot 0 in front) and the u8 count at +0x18. BattleMon: +0x0C species, +0x0E max HP, +0x10 HP,
+ * +0x18 level, +0xF8/+0xF9 the current types, +0x104 four 0x0E-byte move slots {u16 move, u8 PP}. */
+#define BATTLE_MAIN_POKECON 0xC8
+#define POKECON_PARTY 0x04
+#define POKECON_PARTY_SIZE 0x1C
+#define PARTY_COUNT 0x18
+#define BTL_CLIENTS 4
+#define BTL_PARTY_MAX 6
+#define BPP_SPECIES 0x0C
+#define BPP_MAX_HP 0x0E
+#define BPP_HP 0x10
+#define BPP_LEVEL 0x18
+#define BPP_TYPES 0xF8
+#define BPP_MOVES 0x104
+#define BPP_MOVE_SIZE 0x0E
 
 #define GAMESYS_FIELDMAP 0x14
 #define GAMESYS_EVENT 0x18
@@ -207,13 +229,70 @@ static int bw_step(void *ctx, int x, int z, int y, int dir, int *ty)
     return 1;
 }
 
+/* ---- the battle */
+
+static void bw_mon(uint32_t bpp, pc_e2e_mon *m)
+{
+    int i;
+
+    memset(m, 0, sizeof *m);
+    m->species = (unsigned short)rd16(bpp + BPP_SPECIES);
+    m->hp = (unsigned short)rd16(bpp + BPP_HP);
+    m->max_hp = (unsigned short)rd16(bpp + BPP_MAX_HP);
+    m->level = *(const volatile uint8_t *)(uintptr_t)(bpp + BPP_LEVEL);
+    m->types[0] = *(const volatile uint8_t *)(uintptr_t)(bpp + BPP_TYPES);
+    m->types[1] = *(const volatile uint8_t *)(uintptr_t)(bpp + BPP_TYPES + 1);
+    for (i = 0; i < 4; i++) {
+        m->moves[i] = (unsigned short)rd16(bpp + BPP_MOVES + i * BPP_MOVE_SIZE);
+        m->pp[i] = *(const volatile uint8_t *)(uintptr_t)(bpp + BPP_MOVES + i * BPP_MOVE_SIZE + 2);
+    }
+}
+
+/* The battle's POKECON, 0 outside a battle: the battle overlay resident, its view static naming a
+ * main module whose POKECON points back at it, and no field (the field is torn down for a battle). */
+static uint32_t bw_pokecon(int field)
+{
+    uint32_t main_, pokecon;
+
+    if (field || !armrec_overlay_resident(BW_OVERLAY_BATTLE)) return 0;
+    main_ = rd32(BW_BATTLE_VIEW);
+    pokecon = rd32(BW_BATTLE_VIEW + 4);
+    if (!bw_ram(main_) || pokecon != main_ + BATTLE_MAIN_POKECON || rd32(pokecon) != main_) return 0;
+    return pokecon;
+}
+
+/* Each client's front Pokemon as battler 0..3 (0 the player, 1 the foe in a single battle) and the
+ * player's party in slot order. */
+static void bw_battle_report(uint32_t pokecon)
+{
+    pc_e2e_mon battlers[BTL_CLIENTS], party[BTL_PARTY_MAX];
+    unsigned c, i, nparty = 0;
+
+    memset(battlers, 0, sizeof battlers);
+    for (c = 0; c < BTL_CLIENTS; c++) {
+        const uint32_t p = pokecon + POKECON_PARTY + c * POKECON_PARTY_SIZE;
+        unsigned n = *(const volatile uint8_t *)(uintptr_t)(p + PARTY_COUNT);
+
+        if (n > BTL_PARTY_MAX) n = 0;
+        for (i = 0; i < n; i++) {
+            const uint32_t bpp = rd32(p + i * 4);
+
+            if (!bw_ram(bpp)) continue;
+            if (i == 0) bw_mon(bpp, &battlers[c]);
+            if (c == 0) bw_mon(bpp, &party[nparty++]);
+        }
+    }
+    pc_e2e_battle(0, 0, battlers, BTL_CLIENTS, party, nparty);
+}
+
 /* ---- the frame */
 
-static void bw_e2e_frame(const bw_field *f, int field, int ready)
+static void bw_e2e_frame(const bw_field *f, int field, int ready, uint32_t pokecon)
 {
     uint32_t arr;
     unsigned i, n;
 
+    if (pokecon) bw_battle_report(pokecon);
     if (!field) {
         pc_e2e_field(0, 0, 0, 0, 0, 0, 0);
         pc_e2e_end_frame();
@@ -242,16 +321,19 @@ static void bw_frame(void)
     bw_field f;
     const int field = bw_field_get(&f);
     const int ready = field && f.event == 0 && !bw_player_moving(&f);
+    uint32_t pokecon;
 
     pc_np_stat.field_ready = (unsigned)ready;
     pc_np_stat.map_id = field ? f.zone : 0;
+    pokecon = bw_pokecon(field);
+    pc_np_stat.in_battle_app = pokecon != 0;
     /* Black/White have no quick save: a milestone saves through the game's
      * own menu (tests/e2e bots, `save`), so a request is refused at once. */
     if (pc_np_opt.quicksave_seq != pc_np_stat.quicksave_seq) {
         pc_np_stat.quicksave_seq = pc_np_opt.quicksave_seq;
         pc_np_stat.quicksave_result = PC_NP_QS_REFUSED;
     }
-    if (pc_e2e_on()) bw_e2e_frame(&f, field, ready);
+    if (pc_e2e_on()) bw_e2e_frame(&f, field, ready, pokecon);
 }
 
 void pc_np_frame(void)

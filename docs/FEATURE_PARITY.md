@@ -199,7 +199,7 @@ SoulSilver's.
 | Camera zoom / tilt | not yet: NP_OPT_CAMERA_* hooks in the game code | same | same | same |  |
 | Shader FX, performance presets | app | app | app | app | n2_effects |
 | V-Sync, frame cap, logic clock, UI scale | shell | shell | shell | shell | game-independent |
-| 3D render scale, widescreen 3D | core (renderer-side, no game hook: `-o render_scale=2` draws the title's Reshiram and the bedroom at 512x768; `-o widescreen=1` gives 342-wide frames with more of the bedroom's walls) | same core | core (the frame scales / widens; no 3D on screen before the field) | same | `build/evidence/bwhgss/hooks/` |
+| 3D render scale, widescreen 3D | app (renderer-side, no game hook: F12's core frame is 256x384 at 1x, 512x768 at render_scale 2, 684x768 with widescreen, the bedroom's walls in full) | app (same sizes) | app (same sizes; no 3D on screen before the field) | app | n2_render (`<game>-n2_render-*-frame.png`); `build/evidence/bwhgss/hooks/` |
 | Screenshots (F12) | app | app | app | app | n2_screenshot (`screenshots/<game>-*.png`) |
 | Trainer Card, Pokédex diploma PNG | app/shell (editor on the save; export in shell_editor_bw) | same | shell (shell_editor_hgss exports both) | same | Unova / Johto badge names, 649 / 493 species |
 | ROM-derived music / SFX | core + app (title rms 7424; app output treble 1219) | same | not yet: silent through the title and intro | same | parity.sh title; n2_audio |

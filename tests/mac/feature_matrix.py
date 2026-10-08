@@ -24,6 +24,7 @@ import os
 import re
 import shutil
 import subprocess
+import struct
 import sys
 import tempfile
 import time
@@ -1124,6 +1125,26 @@ def _(c):
     new_play(c, script='%d:key:F12' % (base - 20))
     shots = glob.glob(os.path.join(c.ud, 'screenshots', GAME + '-*.png'))
     assert shots, os.listdir(c.ud)
+
+
+@case('n2_render', '3D render scale and widescreen 3D: the core frame F12 saves grows (renderer-side, no game hook)',
+      'nds2')
+def _(c):
+    # F12 writes the core's frame as it is (shell/src/main.c take_screenshot),
+    # both screens stacked, so its size is the frame the options produced.
+    sizes = {}
+    for name, game, want in (('1x', 'render_scale = 1', (256, 384)), ('2x', 'render_scale = 2', (512, 768)),
+                             ('2x-widescreen', 'render_scale = 2\nwidescreen = 1', (684, 768))):
+        new_save(c, opts='[video]\nlayout = top\n[game]\n' + game)
+        base, _ = new_at()
+        new_play(c, step=name, script='%d:key:F12' % (base - 20))
+        shots = glob.glob(os.path.join(c.ud, 'screenshots', GAME + '-*.png'))
+        assert len(shots) == 1, shots
+        with open(shots[0], 'rb') as f:
+            head = f.read(24)
+        sizes[name] = struct.unpack('>II', head[16:24])
+        shutil.copy(shots[0], os.path.join(EVID, '%s-%s-frame.png' % (c.name, name)))
+        assert sizes[name] == want, (name, sizes[name], want)
 
 
 @case('n2_touch', 'Touch controls on, and the touch layout editor', 'nds2')
