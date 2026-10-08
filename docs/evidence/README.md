@@ -54,7 +54,7 @@ and in-game runs start as `nativeplat --game platinum --slot Sandgem`.
 | Updater | `[updates] api =` local release server (fixtures.ReleaseServer); Check, Download and verify; bad digest | updater-* | "v9.9.9 is available", "Verified (SHA-256 …)", wrong digest refused and deleted |
 | Launch flags | `--game platinum --slot Sandgem`, `--launcher`, unknown slot | launch-* | Game starts; launcher; "Platinum has no save slot Nope" |
 | URL | `open -n -a nativeplat.app 'nativeplat://launch?game=platinum&slot=Sandgem'` (LaunchServices) | url_open | Log "link: nativeplat://…", Platinum running in slot Sandgem |
-| Windows package | `tools/package_windows.sh --test`: zig cross-build with all three cores, the exe run under wine (OrbStack amd64), `game=<g>,rom=…,press=1200:start:10` | windows/wine-diamond/pearl/platinum-small.png | Diamond, Pearl and Platinum title screens from nativeplat.exe (wine, dummy video: no real window) |
+| Windows package | `tools/package_windows.sh --test`: zig cross-build with all six cores, the exe run under wine (OrbStack amd64, image `nativeplat-wine`), DS `frames=1500,press=1200:start:10`, GBA `frames=900,press=400:start:10`; `NP_WIN_SHOTS=build/evidence/pkg-win` | pkg-win/shot-diamond/pearl/platinum/ruby/sapphire/emerald.png | The six title screens from nativeplat.exe (wine, dummy video: no real window; main e63e18331) |
 | Portable mode | `portable.txt` beside the bundle (every case) | portable | Launcher footer "Portable data: …/userdata/" |
 | UI scale, reduced motion | `ui_scale = 2/6`; `reduce_motion = 1` on the name page | ui_scale-* | 2x small text; "6x (5x fits)"; steady caret |
 | About | About button | about | License and credits |
@@ -89,6 +89,39 @@ and `tests/link/recipes/dp-union-a.recipe` minted with `tests/gameplay/mint.sh`
 | Custom carts | *-carts-* | Sealed "Menu Cart" (1 package), bound to Sandgem, boots the modded menu |
 | Pal Park | *-palpark-options/menu | Emerald cart and save inserted; main menu "MIGRATE FROM EMERALD" |
 | LAN, Diamond ↔ Platinum | diamond-lan-station-a/b (`-008000/-009000/-012000.png`), diamond-lan-parties.txt | A Diamond app and a Platinum app on this Mac meet in the Union Room, open the trade screen (TURTWIG ↔ CHIMCHAR), the trade animation runs on both, Diamond: "Take good care of CHIMCHAR!"; afterwards the Diamond save holds CHIMCHAR and the Platinum save TURTWIG (tests/link `dp-pt-trade` schedules, `realtime=1`) |
+
+## Ruby, Sapphire and Emerald
+
+The 12 GBA cases, run as `tests/mac/feature_matrix.py --game ruby`,
+`--game sapphire` and `--game emerald` on the package built from main
+e63e18331 (evidence names `<game>-gba_<case>`; 12/12 ok on each game).
+Saves are the games' own: the house save `tests/rse/first_battle.sh` writes
+(`build/rse/first_battle/<game>/house.sav`, littleroot.sched and a quick
+save). `tools/package_macos.sh --test` also boots each
+of the six games from the unzipped bundle (`NP_MAC_SHOTS=build/evidence/pkg-mac`:
+`<game>-arm64.png`, the six title screens; GBA: START at 400, capture at 900).
+
+| Feature | Evidence | What they show |
+|---|---|---|
+| Continue | *-gba_continue | CONTINUE from the title into the Littleroot house |
+| F1 / F2 | *-gba_quicksave-* | "Saved" (the game's own save, slot file changed); F2 F2 reboots into the saved game |
+| Snapshots, rewind | *-gba_snapshots-* | F5/F7, F6 slot 2, rewind depth falls |
+| Speed | *-gba_speed-* | 4x and the G fast-forward toggle: more guest frames than iterations |
+| Audio | *-gba_audio-* logs | BGM 0 and SE 0 change the measured output per channel owner |
+| Layouts | *-gba_layouts-* | One 240x160 screen: fit, rotation 90, integer+linear, LCD effect |
+| Touch pad, editor | *-gba_touch-* | A/B pad without X/Y; the editor skips X/Y; the layout is saved |
+| Delta skin | *-gba_skin-* | A GBA `.deltaskin` (fixtures.deltaskin(gba=True)), landscape and portrait |
+| Mods | *-gba_mods-* | The example data patch installed from a zip; the main menu labels patched |
+| Custom carts | *-gba_carts-* | Cart sealed, bound to the slot, boots the patched game (Emerald: title screen) |
+| Save slots | *-gba_slots-* | `.sav` import, Continue from the imported slot |
+| URL | *-gba_launch-url | `nativeplat://launch?game=<game>&slot=…` starts that game's slot |
+
+Link cable (headless, two `np_headless` stations over the network layer):
+`tests/link/run_gba_link_tests.py` trades Ruby↔Sapphire and Ruby↔Emerald
+(each save's party holds the other side's Pokémon afterwards) and battles
+Ruby vs Sapphire in the Colosseum (in_battle 3605..14830 on both, the same
+Win/Loss screen). Sheets: `build/evidence/rse/link-trade-rs.png`,
+`link-trade-re.png`, `link-battle-rs.png`.
 
 ## Defects and gaps
 

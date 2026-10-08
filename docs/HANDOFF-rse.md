@@ -48,29 +48,26 @@ gate (`tests/dp/regress.sh` 11/11, `tests/gameplay/run.sh --game platinum`).
 - Shell: GBA cards, ROM SHA-1s, `.gba` import, single-screen layout,
   editor refusal.
 - Decomps are not vendored (disk): pinned clones in `.cache/gba`.
+- Link cable: `tests/link/run_gba_link_tests.py` (rs_trade, re_trade,
+  rs_battle; ~7 min, real-time while linked). Saves: littleroot.sched +
+  quick save, then `gen3_warp.py --map 2.3 --pos 7,4` (R/S trade
+  attendant; Emerald's Direct Corner `10,4`; R/S Colosseum `4,4`) with a
+  party of two and FLAG_SYS_POKEDEX_GET. The lower station id is the
+  parent; the same press schedule works for Ruby with Sapphire or Emerald
+  (`tests/link/schedules/gba-*.sched`). Frames are exact: Trade Center at
+  3165, trade screen ~3800, trade saved by ~6600; battle 3605..14830.
+- App matrix (`tests/mac/feature_matrix.py --game ruby|sapphire|emerald`):
+  12/12 GBA cases on each game.
 
 ## Next steps
 
-1. Link trade test (tests/link style): `tools/gba/gen3_warp.py` turns a
-   house save into one that CONTINUEs into Oldale's Pokemon Center 2F
-   (`--map 2.3 --pos 7,4` in R/S, the trade attendant above; Emerald's
-   direct-corner attendant is at (10,2)) with a party of two and
-   FLAG_SYS_POKEDEX_GET (`--sb1-bit 0x1320.1`; Emerald `0x137C.1`). Two
-   instances: `np_headless ... --net 47210 --net-id 0x111111 --net-wait 20
-   -e PC_GBA_LINK_WAIT=1` and the same with 47211 / 0x222222 (the lower id
-   is the parent). Schedule so far (both): 400/700 start, 900/1000 a,
-   1150 up, A every 80 frames from 1200 to 3100: the link comes up at
-   ~2433, the parent's "Start link with 2 players" is confirmed, both warp
-   into the Trade Center at 3165 (map 6425) and see each other. Chairs are
-   the triggers at (4,5) and (7,5); players arrive at the door (5,8)/(6,8):
-   next try up 1 tile, then left (parent) / right (child), then up 2; then
-   the trade screens. The child unplugs at the end of a run because the
-   parent stops first (give the parent a few more frames).
-2. Package: `tools/package_macos.sh --test` and the Windows zig build with
-   all six cores; run `tests/mac/feature_matrix.py --game sapphire|emerald`
-   on the packaged app (Ruby ran on build/rse/shell's bundle: all 12 GBA
-   cases ok); zips to ~/Downloads/nativeplat/ named with main's sha.
-3. OBJ mosaic approximate.
+1. Link: more pairs on the same fixtures (Sapphire/Emerald trades, an
+   Emerald Colosseum battle: the Direct Corner menu's second entry, then
+   the 2P Colosseum spots (3,5)/(10,5) as in R/S), the Record Corner, and
+   a LAN run between two app installs (the bus is the same; only the
+   pacing differs). The wireless adapter (Emerald's Union Room) is not
+   modelled.
+2. OBJ mosaic approximate.
 
 ## Commands
 

@@ -55,9 +55,11 @@ for game in diamond pearl platinum ruby sapphire emerald; do
 done
 [ ${#guest_args[@]} -gt 0 ] || { echo "package_windows: no wasm core found; build one first (docs/BUILDING.md)" >&2; exit 1; }
 
+# -g0: zig cc emits debug info by default, which the package strips anyway
+# (llvm-strip below); with it the six cores' objects take ~3.5 GB.
 cmake -S "$ROOT/shell" -B "$BUILD" -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE="$ROOT/tools/cmake/windows-x64.cmake" \
-    -DCMAKE_BUILD_TYPE=Release -DNP_CORE=real -DBUILD_TESTING=OFF \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS=-g0 -DNP_CORE=real -DBUILD_TESTING=OFF \
     "${guest_args[@]}"
 cmake --build "$BUILD" --target nativeplat
 
