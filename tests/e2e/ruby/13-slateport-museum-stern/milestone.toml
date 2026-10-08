@@ -1,0 +1,171 @@
+# Proves Briney to Slateport (Route 109 landing), the shipyard Dock (FLAG_DOCK_REJECTED_DEVON_GOODS hides the team's
+# queue), the museum fee, Stern on 2F and the two museum grunts -> FLAG_DELIVERED_DEVON_GOODS.
+# Start: Dewford (8,18) -> end: MAP_SLATEPORT_CITY outside the museum (30,27).
+title = "Sail to Slateport: the shipyard, the Oceanic Museum grunts, Devon Goods to Stern"
+priority = "P0"
+version = "both"
+estimate = 12431
+refs = [
+  "data/maps/DewfordTown/scripts.inc:9-35 (Briney: multichoicedefault 21, 6, 0, 2, 0: PETALBURG, SLATEPORT, CANCEL, default CANCEL)",
+  "data/maps/DewfordTown/scripts.inc:149-185 (SailToSlateport: the ride, showobjectat MAP_ROUTE109, LandedSlateportDeliverGoods)",
+  "data/maps/SlateportCity/map.json warp_events[2] (26,38) -> STERNS_SHIPYARD_1F",
+  "data/maps/SlateportCity_SternsShipyard_1F/scripts.inc:4-20 (Dock: FLAG_DOCK_REJECTED_DEVON_GOODS, FLAG_HIDE_EVIL_TEAM_SLATEPORT)",
+  "data/maps/SlateportCity/map.json warp_events[5] (30,26) -> OCEANIC_MUSEUM_1F",
+  "data/maps/SlateportCity_OceanicMuseum_1F/map.json coord_events (9,7)/(10,7) VAR_SLATEPORT_MUSEUM_1F_STATE=0",
+  "data/maps/SlateportCity_OceanicMuseum_1F/scripts.inc:19-57 (fee YES/NO, 50, MUSEUM_1F_STATE 1)",
+  "data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:9-95 (Stern: TRAINER_MUSEUM_2F_GRUNT_1/_2 back to back, the leader appears, FLAG_HIDE_EVIL_TEAM_OCEANIC_MUSEUM, FLAG_HIDE_EVIL_TEAM_ROUTE110, FLAG_DELIVERED_DEVON_GOODS)",
+  "constants/version.inc (MUSEUM_2F_GRUNT_1/_2: Ruby TRAINER_GRUNT_46/47, Sapphire TRAINER_GRUNT_19/20)",
+]
+notes = "Grunts (trainerbattle_no_intro): Ruby TRAINER_GRUNT_46 (585): NUMEL 15, TRAINER_GRUNT_47 (586): ZUBAT 14, NUMEL 14; Sapphire TRAINER_GRUNT_19 (20): CARVANHA 15, TRAINER_GRUNT_20 (21): ZUBAT 14, CARVANHA 14 (Mud Shot/Water Gun cover both). Maxie (Ruby) or Archie (Sapphire) appears after the second (ArchieWarning/MaxieWarning texts, :62-68). Briney's Dewford menu defaults to CANCEL: UP once -> SLATEPORT. The fee is 50; without it the attendant lets you in before the delivery (:59-74). R/S have no Scott scene outside."
+
+[start]
+from = "prev"
+
+[run]
+frames = 18700
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "Briney (object 2 at the dock (12,9)) -> where are we bound? multichoice (DewfordTown/scripts.inc:9-21)"
+
+[[step]]
+do = "menu"
+choose = 1
+count = 3
+note = "PETALBURG, SLATEPORT, CANCEL -> ChooseSlateport -> SailToSlateport (:30-35,149-185)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_ROUTE109"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE109"
+max = 6000
+
+[[step]]
+do = "advance_text"
+note = "LandedSlateportDeliverGoods (:187-189)"
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 38
+map = "MAP_SLATEPORT_CITY"
+note = "north into Slateport, shipyard door (warp 2) -> STERNS_SHIPYARD_1F (2,14)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY_STERNS_SHIPYARD_1F"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Dock (object 1 (5,5)) -> FLAG_DOCK_REJECTED_DEVON_GOODS, FLAG_HIDE_EVIL_TEAM_SLATEPORT (SlateportCity_SternsShipyard_1F/scripts.inc:4-20)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 14
+note = "exit (warp 0) -> Slateport (26,38)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY"
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 26
+note = "museum door (warp 5) -> OCEANIC_MUSEUM_1F (9,8); the team's queue is hidden now"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY_OCEANIC_MUSEUM_1F"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 7
+on_text = "stop"
+note = "PayEntranceFeeLeft coord (9,7) MUSEUM_1F_STATE 0 (:19-24)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 40
+note = "fee YES (cursor on YES) [INFERENCE: count]"
+
+[[step]]
+do = "advance_text"
+note = "MUSEUM_1F_STATE 1 (:46-57)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 1
+note = "stairs (warp 2) -> 2F (6,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY_OCEANIC_MUSEUM_2F"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Capt. Stern (object 1 (13,6)) -> grunts close in (SlateportCity_OceanicMuseum_2F/scripts.inc:9-38)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MUSEUM_2F_GRUNT_1: Ruby GRUNT_46 NUMEL 15 / Sapphire GRUNT_19 CARVANHA 15 (:40)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MUSEUM_2F_GRUNT_2: Ruby GRUNT_47 ZUBAT 14, NUMEL 14 / Sapphire GRUNT_20 ZUBAT 14, CARVANHA 14 (:49)"
+
+[[step]]
+do = "advance_text"
+shot = "stern-goods"
+note = "the leader warns and leaves; Devon Goods handed over: FLAG_DELIVERED_DEVON_GOODS (:55-95)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 1
+note = "2F stairs -> 1F (6,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY_OCEANIC_MUSEUM_1F"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 8
+note = "exit (warp 0) -> Slateport (30,26)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_SLATEPORT_CITY"
+badges = 2
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_VISITED_SLATEPORT_CITY", "FLAG_DOCK_REJECTED_DEVON_GOODS", "FLAG_HIDE_EVIL_TEAM_SLATEPORT", "FLAG_DELIVERED_DEVON_GOODS", "FLAG_HIDE_EVIL_TEAM_ROUTE110", "FLAG_HIDE_EVIL_TEAM_OCEANIC_MUSEUM"]
+battles = 2

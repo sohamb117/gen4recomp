@@ -1,0 +1,56 @@
+# Proves Route 122 (Surf) to Mt. Pyre, the climb to the summit, the summit grunts and the coord scene (22..24,7)
+# VAR_MT_PYRE_STATE 0: the leader takes the orb (FLAG_MT_PYRE_ORB_STOLEN), the old couple's orb
+# (FLAG_RECEIVED_RED_OR_BLUE_ORB), VAR_SLATEPORT_STATE 1 / VAR_SLATEPORT_HARBOR_STATE 1 (Stern's interview armed).
+# Start: Lilycove (27,8) -> end: MAP_MT_PYRE_SUMMIT below the old couple.
+title = "Mt. Pyre: the summit and the stolen orb"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "data/maps/Route122/map.json warp_events[0] (22,29) -> MT_PYRE_1F (17,18)",
+  "data/maps/MtPyre_1F/map.json warp_events[1] (3,6) -> MT_PYRE_EXTERIOR (10,42)",
+  "data/maps/MtPyre_Exterior/map.json warp_events[1] (19,10) -> MT_PYRE_SUMMIT (23,31)",
+  "data/maps/MtPyre_Summit/map.json object_events[3..5] grunts (21,18)/(25,15)/(21,11) sight 3; coord_events (22..24,7) VAR_MT_PYRE_STATE=0",
+  "data/scripts/magma_summit.inc:1-28 (grunts: TRAINER_MT_PYRE_SUMMIT_GRUNT_1..3)",
+  "data/maps/MtPyre_Summit/scripts.inc:9-78 (scene: the leader leaves with the orb, FLAG_HIDE_LEADER_MT_PYRE_SUMMIT, FLAG_HIDE_GRUNTS_MT_PYRE_SUMMIT, FLAG_MT_PYRE_ORB_STOLEN, SLATEPORT_STATE 1, SLATEPORT_HARBOR_STATE 1, MT_PYRE_STATE 1, ITEM_RED_OR_BLUE_ORB, FLAG_RECEIVED_RED_OR_BLUE_ORB)",
+  "constants/version.inc (ITEM_RED_OR_BLUE_ORB: Ruby ITEM_RED_ORB, Sapphire ITEM_BLUE_ORB; summit grunts: Ruby TRAINER_GRUNT_49/50/51, Sapphire TRAINER_GRUNT_22/23/24)",
+]
+notes = "Shared scene (texts .ifdef SAPPHIRE only). Summit grunts: Ruby TRAINER_GRUNT_49 (588): ZUBAT 30 x3; TRAINER_GRUNT_50 (589): POOCHYENA 31, NUMEL 31; TRAINER_GRUNT_51 (590): NUMEL 31 x2; Sapphire TRAINER_GRUNT_22 (23): ZUBAT 30 x3; TRAINER_GRUNT_23 (24): POOCHYENA 31, CARVANHA 31; TRAINER_GRUNT_24 (25): CARVANHA 31 x2. Ruby's leader takes the Blue Orb and the player gets the Red Orb; Sapphire the other way round (save check is on the flag only). gba_world_cli (surf): Lilycove -> Route 121 -> Route 122 (22,29) -> Mt. Pyre 1F (4,6) -> Exterior (20,10) -> Summit (23,8)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 8
+map = "MAP_MT_PYRE_SUMMIT"
+surf = true
+note = "Route 121 west, Route 122 by Surf, Mt. Pyre 1F, the exterior path, the summit; the summit grunts fought on the way; the tile below the trigger row"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 7
+on_text = "stop"
+note = "coord (23,7) MT_PYRE_STATE 0 (MtPyre_Summit/scripts.inc:15-19,27-78)"
+
+[[step]]
+do = "advance_text"
+shot = "orb-stolen"
+note = "the leader takes the orb, the team leaves; the old man gives ITEM_RED_OR_BLUE_ORB"
+
+[expect]
+map = "MAP_MT_PYRE_SUMMIT"
+badges = 6
+flags = ["FLAG_BADGE06_GET", "FLAG_MT_PYRE_ORB_STOLEN", "FLAG_RECEIVED_RED_OR_BLUE_ORB", "FLAG_HIDE_LEADER_MT_PYRE_SUMMIT", "FLAG_HIDE_GRUNTS_MT_PYRE_SUMMIT"]
+flags_clear = ["FLAG_HIDE_STERN_SLATEPORT", "FLAG_HIDE_GABBY_AND_TY_SLATEPORT"]
+
+[expect.vars]
+VAR_MT_PYRE_STATE = 1
+VAR_SLATEPORT_STATE = 1
+VAR_SLATEPORT_HARBOR_STATE = 1

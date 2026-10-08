@@ -1,0 +1,3 @@
+# Party strength for Winona (pokeruby src/data/trainer_parties.h gTrainerParty_Winona: SWELLOW 31, PELIPPER 30,
+# SKARMORY 32, ALTARIA 33): no Electric/Ice mover in the chained party, so the lead's level carries the Flying team.
+party-level 0 45

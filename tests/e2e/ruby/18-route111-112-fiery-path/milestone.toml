@@ -1,0 +1,74 @@
+# Proves Rock Smash on Route 111 ((19,100)/(18,101) north of Mauville), the turn west onto Route 112 below the
+# grunt-blocked cable car, the Fiery Path (11,36) -> (22,10) and Route 112 north to Route 113.
+# Start: Verdanturf (16,4) -> end: MAP_ROUTE113 east end.
+title = "Route 111, Route 112 and the Fiery Path to Route 113"
+priority = "P0"
+version = "both"
+estimate = 24730
+refs = [
+  "data/maps/Route111/map.json object_events[14] (18,101), [15] (19,100) OBJ_EVENT_GFX_BREAKABLE_ROCK",
+  "data/maps/Route112/map.json object_events[0],[5] grunts (26,30)/(27,30) FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR",
+  "data/maps/Route112/map.json warp_events[4] (11,36) -> FIERY_PATH (26,36), [5] (22,10) <- FIERY_PATH (26,4)",
+  "data/maps/FieryPath/map.json warp_events[1] (26,4) -> Route 112 (22,10)",
+]
+notes = "Back east through Route 117 to Mauville, north on Route 111: the two rocks need Rock Smash (badge 3; the lead knows it from 17's boost). Route 111's desert is closed by the sandstorm (coord events, VAR_TEMP_3) until the Go-Goggles (23); the Route 112 junction is south of it. gba_world_cli: Verdanturf -> Route 117 -> Mauville -> Route 111 (19,99); Route 111 -> Route 112 (11,37); Route 112 (11,36) -> Fiery Path (26,4) -> Route 112 north -> Route 111 north -> Route 113 (85,10)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 37100
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 6
+map = "MAP_MAUVILLE_CITY"
+note = "east via Route 117 to Mauville, below its Pokemon Center door"
+
+[[step]]
+do = "heal"
+x = 22
+z = 5
+note = "Mauville Pokemon Center (MauvilleCity/map.json warp_events[1] (22,5)): the tunnel and Route 117 left the lone lead short of PP, and Route 111/112's trainers otherwise white it out (a first run lost on Route 111's north end)"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 99
+map = "MAP_ROUTE111"
+hm = true
+note = "east via Route 117 to Mauville, north onto Route 111; hm = true smashes the rocks (19,100)/(18,101) on the way"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 36
+map = "MAP_ROUTE112"
+note = "west onto Route 112 to the Fiery Path door (Route 112 warp 4) -> FIERY_PATH (26,36)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FIERY_PATH"
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 4
+note = "north exit (warp 1) -> Route 112 (22,10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE112"
+
+[[step]]
+do = "walk_to"
+x = 85
+z = 10
+map = "MAP_ROUTE113"
+note = "north via Route 112's north half and Route 111's north end onto Route 113 (ash grass), east end"
+
+[expect]
+map = "MAP_ROUTE113"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET"]

@@ -1,0 +1,7 @@
+# Party strength for Route 102's trainers (pokeruby src/data/trainer_parties.h: Calvin ZIGZAGOON 5, Rick WURMPLE 4 /
+# WURMPLE 4, Tiana ZIGZAGOON 4 / ZIGZAGOON 4, Allen POOCHYENA 5 / TAILLOW 3): the chained Mudkip arrives tired from
+# May's Treecko and Route 101/103's grass. Levels, moves and items only.
+party-level 0 12
+party-move 0 2 MOVE_WATER_GUN   # Mudkip's level-10 move (pokeruby src/data/pokemon/level_up_learnsets.h)
+party-move 0 3 MOVE_MUD_SLAP    # its level-6 move
+item ITEM_POTION 5

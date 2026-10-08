@@ -1,0 +1,75 @@
+# Proves Route 120 south, Route 121's grunts walking off toward Mt. Pyre (VAR_ROUTE121_STATE 1), Lilycove (visited
+# flag) and May's YES/NO battle (TRAINER_MAY_LILYCOVE_MUDKIP).
+# Start: Fortree gym door -> end: MAP_LILYCOVE_CITY in front of the Department Store (27,8).
+title = "Route 121 and Lilycove: May's fourth battle"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 14000
+refs = [
+  "data/maps/Route121/map.json coord_events (25,5..8) VAR_ROUTE121_STATE=0",
+  "data/maps/Route121/scripts.inc:21-34 (the team's grunts leave, ROUTE121_STATE 1)",
+  "data/maps/LilycoveCity/scripts.inc:6-7 (FLAG_VISITED_LILYCOVE_CITY)",
+  "data/maps/LilycoveCity/map.json object_events[16] rival VAR_0 (27,7) FLAG_HIDE_RIVAL_LILYCOVE_MART",
+  "data/maps/LilycoveCity/scripts.inc:237-270 (May: MSGBOX_YESNO; NO sets FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE)",
+  "data/maps/LilycoveCity/scripts.inc:315-318 (trainerbattle_no_intro TRAINER_MAY_LILYCOVE_MUDKIP)",
+  "data/maps/LilycoveCity/scripts.inc:335-346,394-407 (DefeatedMay: FLAG_HIDE_MAY_UPSTAIRS clear; RivalFlyAway: FLAG_MET_RIVAL_LILYCOVE)",
+]
+notes = "May: TRAINER_MAY_LILYCOVE_MUDKIP (664): SWELLOW 31, NUMEL 32, WAILMER 32, GROVYLE 34. Route 120 trainers (lv 27-30) and hidden Kecleons; Route 121 trainers (lv 25-32). Fly is available now but Lilycove is not yet visited, so walk (gba_world_cli: Fortree -> Route 120 -> Route 121 (25,6) -> Lilycove (27,8))."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 6
+map = "MAP_ROUTE121"
+on_text = "stop"
+note = "Route 120 south and east onto Route 121; grunts coord (25,5..8) ROUTE121_STATE 0 (Route121/scripts.inc:21-34)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 8
+map = "MAP_LILYCOVE_CITY"
+face = "up"
+interact = true
+note = "east into Lilycove, below May (27,7) in front of the Department Store door (27,6)"
+
+[[step]]
+do = "advance_text"
+note = "May: battle me? YES/NO (LilycoveCity/scripts.inc:247-265)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES"
+
+[[step]]
+do = "wait_battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MAY_LILYCOVE_MUDKIP (664): SWELLOW 31, NUMEL 32, WAILMER 32, GROVYLE 34 (:315-318)"
+
+[[step]]
+do = "advance_text"
+note = "DefeatedMay -> RivalFlyAway: FLAG_MET_RIVAL_LILYCOVE (:335-407)"
+
+[expect]
+map = "MAP_LILYCOVE_CITY"
+badges = 6
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_VISITED_LILYCOVE_CITY", "FLAG_MET_RIVAL_LILYCOVE", "FLAG_HIDE_RIVAL_LILYCOVE_MART"]
+flags_clear = ["FLAG_HIDE_MAY_UPSTAIRS", "FLAG_DECLINED_RIVAL_BATTLE_LILYCOVE"]
+battles = 1
+
+[expect.vars]
+VAR_ROUTE121_STATE = 1

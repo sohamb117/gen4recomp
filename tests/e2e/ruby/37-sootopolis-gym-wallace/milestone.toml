@@ -1,0 +1,81 @@
+# Proves the ice-floor gym (1F cracked ice, B1F) and Wallace (TRAINER_WALLACE): FLAG_BADGE08_GET, TM03 Water Pulse.
+# Start: Cave of Origin B4F -> end: MAP_SOOTOPOLIS_CITY at the gym door (31,33).
+title = "Sootopolis Gym: Wallace's Rain Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> SOOTOPOLIS_CITY_GYM_1F (8,25)",
+  "data/maps/SootopolisCity_Gym_1F/map.json object_events[0] WALLACE (8,2)",
+  "data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)",
+]
+notes = "Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is an ice puzzle (cracked ice falls to B1F, gym_1F (11,22) -> B1F); the slide bot replays ice presses (AUTHORING: slide)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+# PHASE2: the 1F/B1F ice route to Wallace (cracked tiles drop to B1F): a slide press list, solved offline like 33.
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 33
+map = "MAP_SOOTOPOLIS_CITY"
+surf = true
+note = "out of the cave, across the crater to the gym"
+
+[[step]]
+do = "heal"
+x = 43
+z = 31
+note = "Sootopolis Pokemon Center (warp 0)"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 32
+note = "gym door (Sootopolis warp 2) -> GYM_1F (8,25)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SOOTOPOLIS_CITY_GYM_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 3
+face = "up"
+interact = true
+note = "below Wallace (8,2) [PHASE2: the ice route]"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43"
+
+[[step]]
+do = "advance_text"
+shot = "rain-badge"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 25
+note = "exit -> Sootopolis (31,32)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SOOTOPOLIS_CITY"
+
+[expect]
+map = "MAP_SOOTOPOLIS_CITY"
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_DEFEATED_SOOTOPOLIS_GYM"]
+battles = 1

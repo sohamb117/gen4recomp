@@ -1,0 +1,134 @@
+# Proves the Birch rescue: the twin's GoSaveBirch trigger, the Route 101 chase scene, Birch's bag (ChooseStarter:
+# RIGHT from the default Torchic to Mudkip, YES), the first wild battle (Poochyena), the warp to the lab and the
+# starter talk.
+# Start: Littleroot (14,9) -> end: MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB, VAR_BIRCH_LAB_STATE 3, party Mudkip.
+title = "Route 101: save Birch, choose Mudkip, first battle, the lab"
+priority = "P0"
+version = "both"
+estimate = 3950
+refs = [
+  "data/maps/LittlerootTown/map.json coord_events (11,1) VAR_LITTLEROOT_STATE=1 GoSaveBirchTrigger",
+  "data/maps/LittlerootTown/scripts.inc:309-321 (LITTLEROOT_STATE 2)",
+  "data/maps/Route101/scripts.inc:10-17 (OnFrame ROUTE101_STATE 0 -> 1)",
+  "data/maps/Route101/map.json coord_events (10,19)/(11,19) VAR_ROUTE101_STATE=1",
+  "data/maps/Route101/scripts.inc:19-42 (chase scene, ROUTE101_STATE 2)",
+  "data/maps/Route101/map.json object_events[2] BIRCHS_BAG (7,14)",
+  "data/maps/Route101/scripts.inc:217-243 (bag: FLAG_SYS_POKEMON_GET, FLAG_RESCUED_BIRCH, ChooseStarter, BIRCH_LAB_STATE 2, ROUTE101_STATE 3, warp lab (6,5))",
+  "src/starter_choose.c:50 (Treecko, Torchic, Mudkip), :323 (cursor starts on 1 = Torchic), :401-410 (LEFT/RIGHT)",
+  "src/starter_choose.c:430 + src/menu.c:606-611 (DisplayYesNoMenu: cursor on YES)",
+  "src/battle_setup.c:872-882 (CB2_GiveStarter: VAR_STARTER_MON = choice, starter lv5, first battle)",
+  "data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc:20-58 (GiveStarterEvent, nickname YES/NO, AgreeToSeeRival: BIRCH_LAB_STATE 3)",
+  "tests/rse/rs-3-route101.sched",
+]
+notes = "Starter: MUDKIP (VAR_STARTER_MON 2), as Emerald's chain. rs-3-route101.sched picks the default Torchic instead (A at the bag) and wins the Poochyena battle with Scratch. The first battle is BATTLE_TYPE_FIRST_BATTLE vs the wild Poochyena Birch fled from [INFERENCE: lv2]; Tackle wins. The nickname prompt is answered NO (B), the go-see-rival prompt YES."
+
+[start]
+from = "prev"
+
+[run]
+frames = 6000
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 1
+on_text = "stop"
+note = "north exit; (11,1) VAR_LITTLEROOT_STATE=1 -> twin GoSaveBirchTrigger -> LITTLEROOT_STATE 2 (LittlerootTown/scripts.inc:309-321)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = -1
+on_text = "stop"
+note = "across Littleroot's north border into Route 101 (10,19), whose coord event (10,19)/(11,19) at ROUTE101_STATE 1 starts the chase (Route101/scripts.inc:19-42)"
+
+[[step]]
+do = "advance_text"
+shot = "birch-chased"
+
+[[step]]
+do = "talk_to"
+id = 3
+note = "Birch's bag (object 3 (7,14)) -> FLAG_SYS_POKEMON_GET, FLAG_RESCUED_BIRCH, special ScrSpecial_ChooseStarter (Route101/scripts.inc:217-228)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "starter choose screen fades in"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+note = "cursor from Torchic (src/starter_choose.c:323) to Mudkip (:406-410)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "\"Do you choose this POKeMON?\" YES/NO opens on YES (src/starter_choose.c:430)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> CB2_GiveStarter: VAR_STARTER_MON 2, MUDKIP lv5, first battle (src/battle_setup.c:872-882)"
+
+[[step]]
+do = "wait_battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "wild Poochyena [INFERENCE lv2]; Tackle"
+
+[[step]]
+do = "advance_text"
+map = "MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB"
+note = "YouSavedMe, HealPlayerParty, BIRCH_LAB_STATE 2, ROUTE101_STATE 3, warp lab (6,5) (Route101/scripts.inc:229-239)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB"
+
+[[step]]
+do = "wait_frames"
+n = 60
+note = "lab OnFrame BIRCH_LAB_STATE 2 -> GiveStarterEvent (LittlerootTown_ProfessorBirchsLab/scripts.inc:20-31)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 3
+gap = 40
+note = "LikeYouToHavePokemon + fanfare [INFERENCE: count]"
+
+[[step]]
+do = "press"
+keys = "B"
+note = "nickname MSGBOX_YESNO (:32) -> NO"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 40
+note = "MightBeGoodIdeaToGoSeeRival YES (cursor on YES) -> AgreeToSeeRival: BIRCH_LAB_STATE 3 (:45-58)"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB"
+flags = ["FLAG_SYS_POKEMON_GET", "FLAG_RESCUED_BIRCH", "FLAG_HIDE_BIRCH_BATTLE_POOCHYENA", "FLAG_HIDE_BIRCH_STARTERS_BAG"]
+flags_clear = ["FLAG_HIDE_BIRCH_IN_LAB", "FLAG_HIDE_BOY_ROUTE101"]
+party = ["SPECIES_MUDKIP"]
+party_size = 1
+battles = 1
+
+[expect.vars]
+VAR_STARTER_MON = 2
+VAR_BIRCH_LAB_STATE = 3
+VAR_ROUTE101_STATE = 3
+VAR_LITTLEROOT_STATE = 2

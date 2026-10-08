@@ -1,0 +1,70 @@
+# Proves Drake's room: the battle, FLAG_DEFEATED_ELITE_4_DRAKE, the opened north door and the walk on through CORRIDOR4.
+# Start: Drake's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM.
+title = "Elite Four: Drake"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 7000
+refs = [
+  "data/maps/EverGrandeCity_DrakesRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR4",
+  "data/scripts/elite_four.inc",
+]
+notes = "TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, FLYGON 53, FLYGON 53, SALAMENCE 55. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items]."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "below Drake (6,5)"
+
+[[step]]
+do = "advance_text"
+note = "intro"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, FLYGON 53, FLYGON 53, SALAMENCE 55"
+
+[[step]]
+do = "advance_text"
+shot = "drake-defeated"
+note = "FLAG_DEFEATED_ELITE_4_DRAKE; the north door opens"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 2
+note = "north door (warp 1) -> CORRIDOR4"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_CORRIDOR4"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "CORRIDOR4 north door -> MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame: walk in, the door closes"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM"
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_ENTERED_ELITE_FOUR", "FLAG_DEFEATED_ELITE_4_SYDNEY", "FLAG_DEFEATED_ELITE_4_PHOEBE", "FLAG_DEFEATED_ELITE_4_GLACIA", "FLAG_DEFEATED_ELITE_4_DRAKE"]
+battles = 1

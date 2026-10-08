@@ -1,0 +1,47 @@
+# Ruby story chain (Brendan, starter MUDKIP), new game -> Hall of Fame, credits and the game's own reset.
+# Shared dirs (version = "both") also serve tests/e2e/sapphire/chain.txt; Ruby-only branches: version = "ruby".
+# walk_to with map = MAP_X: x/z are MAP_X's own event coordinates (pokeruby map.json).
+01-newgame-truck-house
+02-clock-tv-mays-house
+03-route101-birch-mudkip
+04-route103-may-pokedex-shoes
+05-route102-petalburg-wally
+06-route104-petalburg-woods
+07-rustboro-cut-roxanne
+08-devon-goods-rusturf-tunnel
+09-devon-letter-pokenav
+10-briney-sail-dewford
+11-granite-cave-flash-steven
+12-dewford-gym-brawly
+13-slateport-museum-stern
+14-route110-may
+15-mauville-wally-bike
+16-mauville-gym-wattson-rock-smash
+17-verdanturf-rusturf-strength
+18-route111-112-fiery-path
+19-route113-fallarbor-route114
+20-meteor-falls-meteorite
+21-cable-car-mt-chimney-maxie
+22-jagged-pass-lavaridge
+23-lavaridge-gym-flannery-goggles
+24-petalburg-gym-norman-surf
+25-route118-119-weather-institute-courtney
+26-route119-may-fly-fortree
+27-route120-steven-devon-scope
+28-fortree-gym-winona
+29-route121-lilycove-may
+30-mt-pyre-summit-orb
+31-slateport-harbor-submarine
+32-magma-hideout-tabitha
+33-route124-mossdeep-gym-tate-liza
+34-mossdeep-stevens-house-hm-dive
+35-seafloor-cavern-maxie
+36-sootopolis-cave-of-origin-groudon
+37-sootopolis-gym-wallace
+38-ever-grande-victory-road-wally
+39-pokemon-league-entrance
+40-e4-sidney
+41-e4-phoebe
+42-e4-glacia
+43-e4-drake
+44-champion-steven-hall-of-fame

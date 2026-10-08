@@ -1,0 +1,93 @@
+# Proves the way back south (Mt. Pyre -> Route 123 -> Route 118 -> Mauville -> Route 110 -> Slateport), Capt. Stern's
+# interview (talk -> warp SLATEPORT_CITY_HARBOR, VAR_SLATEPORT_STATE 2) and the harbor coord scene (x=8, rows 11..14)
+# VAR_SLATEPORT_HARBOR_STATE 1: the team steals the submarine; FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT open the hideout.
+# Start: Mt. Pyre summit -> end: MAP_SLATEPORT_CITY outside the harbor.
+title = "Slateport Harbor: the submarine is stolen"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "data/maps/SlateportCity/scripts.inc:15-16,25-40 (SLATEPORT_STATE 1: Stern (object 11) at (28,13) with Gabby and Ty)",
+  "data/maps/SlateportCity/scripts.inc:482-535 (CaptStern: the interview, the alarm, FLAG_HIDE_STERN_SLATEPORT_HARBOR etc. clear, SLATEPORT_STATE 2, warp SLATEPORT_CITY_HARBOR (11,14))",
+  "data/maps/SlateportCity_Harbor/map.json coord_events (8,11..14) VAR_SLATEPORT_HARBOR_STATE=1",
+  "data/maps/SlateportCity_Harbor/scripts.inc:5-80 (EvilTeamEscapeScene: SLATEPORT_HARBOR_STATE 2, FLAG_HIDE_GRUNT_1_BLOCKING_HIDEOUT, FLAG_HIDE_GRUNT_2_BLOCKING_HIDEOUT)",
+  "data/maps/SlateportCity_Harbor/map.json warp_events[0] (11,14) -> Slateport (28,12)",
+]
+notes = "No battle. The walk is split at Mauville and Route 110's lower path: with Surf the static route from Mt. Pyre prefers the Seaside Cycling Road gates, whose coord events push a player without a bike back (Route110_SeasideCyclingRoadNorthEntrance/scripts.inc:17-34, GetPlayerAvatarBike 0). Route 123's ledges run downhill toward Route 118 (gba_world_cli: Summit -> Exterior -> 1F -> Route 122 -> Route 123 -> Route 118 -> Mauville (22,6))."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 6
+map = "MAP_MAUVILLE_CITY"
+surf = true
+note = "down Mt. Pyre, Route 122 by Surf, Route 123's ledges west, Route 118 to Mauville"
+
+[[step]]
+do = "walk_to"
+x = 34
+z = 57
+map = "MAP_ROUTE110"
+note = "Route 110's walking path under the Cycling Road"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 13
+map = "MAP_SLATEPORT_CITY"
+face = "right"
+interact = true
+note = "south into Slateport, left of Capt. Stern (object 11, moved to (28,13) by SLATEPORT_STATE 1; Gabby (28,14) and Ty (29,13) stand by him)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_SLATEPORT_CITY_HARBOR"
+note = "the interview and the alarm, warp to the harbor (11,14) (SlateportCity/scripts.inc:482-535)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY_HARBOR"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 13
+note = "east of the trigger column"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 13
+on_text = "stop"
+note = "EvilTeamEscapeTrigger2 (8,13) SLATEPORT_HARBOR_STATE 1 (SlateportCity_Harbor/scripts.inc:36-80)"
+
+[[step]]
+do = "advance_text"
+shot = "submarine-stolen"
+note = "the team boards the submarine; Stern; FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 14
+note = "harbor exit (warp 0) -> Slateport (28,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SLATEPORT_CITY"
+
+[expect]
+map = "MAP_SLATEPORT_CITY"
+badges = 6
+flags = ["FLAG_BADGE06_GET", "FLAG_MT_PYRE_ORB_STOLEN", "FLAG_HIDE_GRUNT_1_BLOCKING_HIDEOUT", "FLAG_HIDE_GRUNT_2_BLOCKING_HIDEOUT"]
+
+[expect.vars]
+VAR_SLATEPORT_STATE = 2
+VAR_SLATEPORT_HARBOR_STATE = 2

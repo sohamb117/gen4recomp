@@ -1,0 +1,52 @@
+# Proves Steven's house OnFrame VAR_STEVENS_HOUSE_STATE 0: HM08 Dive (FLAG_RECEIVED_HM08), STEVENS_HOUSE_STATE 1.
+# Start: Mossdeep (38,10) -> end: MAP_MOSSDEEP_CITY outside Steven's house (19,11).
+title = "Mossdeep: Steven's house and HM08 Dive"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 4000
+refs = [
+  "data/maps/MossdeepCity/map.json warp_events[6] (19,10) -> MOSSDEEP_CITY_STEVENS_HOUSE (3,7)",
+  "data/maps/MossdeepCity_StevensHouse/scripts.inc:25-50 (OnFrame STEVENS_HOUSE_STATE 0 -> StevenGivesDive: ITEM_HM08_DIVE, FLAG_RECEIVED_HM08, FLAG_OMIT_DIVE_FROM_STEVEN_LETTER, STATE 1)",
+]
+notes = "R/S give Dive in Steven's house right after the seventh badge (no Space Center attack, Emerald 35, in R/S)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 10
+map = "MAP_MOSSDEEP_CITY"
+note = "Steven's house door (Mossdeep warp 6)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY_STEVENS_HOUSE"
+
+[[step]]
+do = "advance_text"
+shot = "hm-dive"
+note = "OnFrame -> StevenGivesDive"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 7
+note = "exit -> Mossdeep (19,10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOSSDEEP_CITY"
+
+[expect]
+map = "MAP_MOSSDEEP_CITY"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_RECEIVED_HM08", "FLAG_OMIT_DIVE_FROM_STEVEN_LETTER"]
+
+[expect.vars]
+VAR_STEVENS_HOUSE_STATE = 1

@@ -1,0 +1,74 @@
+# Proves the walk north (Slateport -> Route 110 -> Mauville -> Routes 118/119 -> Fortree -> Routes 120/121 -> Lilycove's
+# cove by Surf), Sapphire's hideout door (Lilycove (70,5) -> MAP_AQUA_HIDEOUT_1F), the hideout floors and the admin by
+# the submarine dock (TRAINER_HIDEOUT_B2F_GRUNT_1 = TRAINER_MATT_1 in Sapphire): FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE.
+# Start: Slateport outside the harbor -> end: MAP_AQUA_HIDEOUT_B2F by the dock.
+title = "Team Aqua Hideout: Matt and the escaped submarine (Sapphire)"
+status = "planned"
+priority = "P0"
+version = "sapphire"
+estimate = 45000
+refs = [
+  "data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F (13,27) (map.bin entrance; Ruby's OnLoad replaces it)",
+  "data/maps/AquaHideout_1F/map.json object_events grunts (13,11)/(14,11) FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT (hidden in 31), (20,4) sight 3",
+  "data/maps/AquaHideout_1F/scripts.inc:9-46",
+  "data/maps/AquaHideout_B2F/map.json object_events[0] admin VAR_1 (23,19) sight 0",
+  "data/maps/AquaHideout_B2F/scripts.inc:26-70 (trainerbattle_single TRAINER_HIDEOUT_B2F_GRUNT_1; the submarine leaves: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE)",
+  "constants/version.inc (Sapphire: HIDEOUT_1F_GRUNT = GRUNT_1, B1F = GRUNT_2/3/26, B2F_GRUNT_1 = MATT_1, B2F_GRUNT_2/3 = GRUNT_4/27)",
+]
+notes = "Sapphire's branch: its hideout is the MAP_AQUA_HIDEOUT_* maps behind Lilycove's (70,5) (Ruby: ../ruby/32-magma-hideout-tabitha, MAP_MAGMA_HIDEOUT_*). Matt: TRAINER_MATT_1 (30): CARVANHA 32, MIGHTYENA 32, SHARPEDO 32 (Water types: Surf neutral, the lead's level carries it). Grunts: GRUNT_1 (2): POOCHYENA 32 x2; GRUNT_2 (3): ZUBAT 30, POOCHYENA 30, CARVANHA 30, POOCHYENA 30; GRUNT_3 (4): CARVANHA 32, ZUBAT 32; GRUNT_26 (27): POOCHYENA 31, CARVANHA 31 x2; GRUNT_4 (5): CARVANHA 33; GRUNT_27 (28): ZUBAT 33. Walking, not Fly: bots.bot_fly drives the DS town map (overworld_headers) [INFERENCE: not usable on GBA]; the static route avoids the Cycling Road gates (bike-only) by the Route 110 waypoint. gba_world_cli --game sapphire (surf): Mauville -> ... -> Lilycove (70,5) -> 1F (22,1) -> B1F (27,4) -> B1F (32,19) -> B1F (18,1) -> B2F (31,8) -> B2F (3,3) -> B1F (12,1) -> B2F (8,8) -> B2F (24,19)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 34
+z = 57
+map = "MAP_ROUTE110"
+note = "north out of Slateport onto Route 110's walking path"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 6
+map = "MAP_MAUVILLE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 26
+map = "MAP_AQUA_HIDEOUT_1F"
+surf = true
+note = "Routes 118 (Surf), 119, Fortree, Routes 120/121, Lilycove, the cove door (Lilycove warp 6 (70,5)) -> AQUA_HIDEOUT_1F (13,27)"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 19
+map = "MAP_AQUA_HIDEOUT_B2F"
+surf = true
+face = "left"
+interact = true
+note = "through 1F/B1F/B2F's warp pads to the right of Matt (23,19); sight trainers fought on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MATT_1 (30): CARVANHA 32, MIGHTYENA 32, SHARPEDO 32 (AquaHideout_B2F/scripts.inc:28)"
+
+[[step]]
+do = "advance_text"
+shot = "submarine-escapes"
+note = "the submarine leaves: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE (:33-70)"
+
+[expect]
+map = "MAP_AQUA_HIDEOUT_B2F"
+badges = 6
+flags = ["FLAG_BADGE06_GET", "FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE", "FLAG_HIDE_GRUNTS_LILYCOVE"]
+battles = 1

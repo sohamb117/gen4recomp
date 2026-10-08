@@ -1,0 +1,70 @@
+# Proves Sidney's room: the battle, FLAG_DEFEATED_ELITE_4_SYDNEY, the opened north door and the walk on through CORRIDOR1.
+# Start: Sidney's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_PHOEBES_ROOM.
+title = "Elite Four: Sidney"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 7000
+refs = [
+  "data/maps/EverGrandeCity_SidneysRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR1",
+  "data/scripts/elite_four.inc",
+]
+notes = "TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, SHARPEDO 48, ABSOL 49. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items]."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "below Sidney (6,5)"
+
+[[step]]
+do = "advance_text"
+note = "intro"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, SHARPEDO 48, ABSOL 49"
+
+[[step]]
+do = "advance_text"
+shot = "sidney-defeated"
+note = "FLAG_DEFEATED_ELITE_4_SYDNEY; the north door opens"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 2
+note = "north door (warp 1) -> CORRIDOR1"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_CORRIDOR1"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "CORRIDOR1 north door -> MAP_EVER_GRANDE_CITY_PHOEBES_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_PHOEBES_ROOM"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame: walk in, the door closes"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY_PHOEBES_ROOM"
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_ENTERED_ELITE_FOUR", "FLAG_DEFEATED_ELITE_4_SYDNEY"]
+battles = 1

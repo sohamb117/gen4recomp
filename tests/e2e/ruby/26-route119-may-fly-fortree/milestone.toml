@@ -1,0 +1,86 @@
+# Proves the Route 119 rival trigger (25,31)/(26,31) VAR_ROUTE119_STATE 0: TRAINER_MAY_3 (VAR_STARTER_MON 2), HM02 Fly
+# (FLAG_RECEIVED_HM02), and Route 119's north end into Fortree (FLAG_VISITED_FORTREE_CITY, heal).
+# Start: Route 119 (6,33) -> end: MAP_FORTREE_CITY in front of the Pokemon Center (5,7).
+title = "Route 119: May's third battle, HM02 Fly, Fortree"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 11500
+refs = [
+  "data/maps/Route119_WeatherInstitute_1F/map.json bg_events (0..1,2..3) bed -> Route119_WeatherInstitute_1F_EventScript_163C83 (party heal)",
+  "data/maps/Route119/map.json coord_events (25,31)/(26,31) VAR_ROUTE119_STATE=0",
+  "data/maps/Route119/scripts.inc:40-110 (rival scene, switch VAR_STARTER_MON: 2 -> trainerbattle_no_intro TRAINER_MAY_3 (:107-108))",
+  "data/maps/Route119/scripts.inc:112-170 (ITEM_HM02_FLY, FLAG_RECEIVED_HM02, May leaves, ROUTE119_STATE 1)",
+  "data/maps/FortreeCity/scripts.inc:6-7 (FLAG_VISITED_FORTREE_CITY)",
+  "data/maps/FortreeCity/map.json warp_events[0] (5,6) -> POKEMON_CENTER_1F",
+]
+notes = "May: TRAINER_MAY_3 (531): NUMEL 29, WAILMER 29, GROVYLE 31 (Grovyle x4 on Marshtomp/Swampert: the boost's level from 24 carries it; Castform in slot 1 can take a turn). HM02 Fly needs the Feather Badge (28) before the fly bot can use it. R/S have no Scott on Route 119. Route 119 north: hidden Kecleon and tree-disguise trainers."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 4
+map = "MAP_ROUTE119_WEATHER_INSTITUTE_1F"
+face = "up"
+interact = true
+note = "the Weather Institute bed (bg events (0..1,2..3)): HP/PP back after the institute's battles"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 32
+map = "MAP_ROUTE119"
+surf = true
+note = "out of the institute, the tile below the rival trigger row"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 31
+on_text = "stop"
+note = "rival trigger (25,31) ROUTE119_STATE 0 (Route119/scripts.inc:40-110)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MAY_3 (531): NUMEL 29, WAILMER 29, GROVYLE 31"
+
+[[step]]
+do = "advance_text"
+shot = "hm-fly"
+note = "ITEM_HM02_FLY, FLAG_RECEIVED_HM02; May leaves, ROUTE119_STATE 1 (:112-170)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 7
+map = "MAP_FORTREE_CITY"
+surf = true
+note = "north end of Route 119 east into Fortree"
+
+[[step]]
+do = "heal"
+x = 5
+z = 6
+note = "Fortree Pokemon Center (warp 0)"
+
+[expect]
+map = "MAP_FORTREE_CITY"
+badges = 5
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_RECEIVED_HM02", "FLAG_VISITED_FORTREE_CITY"]
+battles = 1
+
+[expect.vars]
+VAR_ROUTE119_STATE = 1

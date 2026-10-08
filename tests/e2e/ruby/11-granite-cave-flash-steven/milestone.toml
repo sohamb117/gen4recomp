@@ -1,0 +1,67 @@
+# Proves Route 106 to Granite Cave, the 1F Hiker's HM05 Flash, the floors down and back up to the west side and
+# Steven (FLAG_DELIVERED_STEVEN_LETTER, TM47 Steel Wing); back out to Dewford.
+# Start: Dewford dock -> end: MAP_DEWFORD_TOWN below the gym door (8,18).
+title = "Granite Cave: HM05 Flash and Steven's letter"
+priority = "P0"
+version = "both"
+estimate = 17533
+refs = [
+  "data/maps/Route106/map.json warp_events[0] (48,16) -> GRANITE_CAVE_1F",
+  "data/maps/GraniteCave_1F/scripts.inc:4-14 (Hiker object 1 (36,9): ITEM_HM05_FLASH, FLAG_RECEIVED_HM05)",
+  "data/maps/GraniteCave_1F/map.json warp_events[3] (5,10) -> STEVENS_ROOM",
+  "data/maps/GraniteCave_StevensRoom/scripts.inc:4-28 (Steven object 1 (7,8): letter, FLAG_DELIVERED_STEVEN_LETTER, TM47, removeobject)",
+]
+notes = "The 1F west half (Steven's room door (5,10)) is reached only through B1F and B2F: gba_world_cli route 1F (17,11) -> B1F (28,21) -> B2F (29,13) -> B1F (25,13) -> 1F (5,10). Flash is not needed (walk_to plans on the probe's collision; the cave is dark until the Knuckle Badge anyway). R/S have no Steven Match Call registration (no FLAG_REGISTERED_STEVEN_POKENAV)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 26300
+
+[[step]]
+do = "walk_to"
+x = 48
+z = 16
+map = "MAP_ROUTE106"
+note = "Dewford north onto Route 106's beach, the cave mouth (Route 106 warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GRANITE_CAVE_1F"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Hiker (object 1 (36,9)) -> HM05 Flash (GraniteCave_1F/scripts.inc:4-14)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 9
+map = "MAP_GRANITE_CAVE_STEVENS_ROOM"
+note = "through B1F and B2F to the 1F west half and Steven's room; the tile below Steven (7,8)"
+
+[[step]]
+do = "talk_to"
+id = 1
+shot = "steven-letter"
+note = "Steven (object 1 (7,8)): letter, TM47 Steel Wing, leaves (GraniteCave_StevensRoom/scripts.inc:4-28)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 18
+map = "MAP_DEWFORD_TOWN"
+note = "back to Dewford, below the gym door (8,17)"
+
+[expect]
+map = "MAP_DEWFORD_TOWN"
+badges = 1
+flags = ["FLAG_BADGE01_GET", "FLAG_RECEIVED_HM05", "FLAG_DELIVERED_STEVEN_LETTER", "FLAG_HIDE_STEVEN_GRANITE_CAVE"]

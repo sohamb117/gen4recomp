@@ -1,0 +1,4 @@
+# Party strength for Brawly (pokeruby src/data/trainer_parties.h gTrainerParty_Brawly: MACHOP 17, MAKUHITA 18):
+# Fighting is neutral on Water, and Makuhita's bulk outlasts a lv14 Mudkip. Levels and moves only.
+party-level 0 20
+party-move 0 1 MOVE_MUD_SHOT   # Marshtomp's level-16 move (pokeruby src/data/pokemon/level_up_learnsets.h); no evolution in a boost

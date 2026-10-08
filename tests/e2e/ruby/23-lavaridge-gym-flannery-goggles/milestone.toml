@@ -1,0 +1,80 @@
+# Proves the hot-spring gym (buried trainers, geyser warps 1F <-> B1F) and Flannery (TRAINER_FLANNERY): FLAG_BADGE04_GET,
+# TM50 Overheat, PETALBURG_GYM_STATE 6 (Norman ready), then May's OnFrame Go-Goggles (VAR_LAVARIDGE_RIVAL_STATE 2).
+# Start: Lavaridge (9,7) -> end: MAP_LAVARIDGE_TOWN outside the gym (5,16).
+title = "Lavaridge Gym: Flannery's Heat Badge and May's Go-Goggles"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18400
+refs = [
+  "data/maps/LavaridgeTown/map.json warp_events[1] (5,15) -> LAVARIDGE_TOWN_GYM_1F (8,23)",
+  "data/maps/LavaridgeTown_Gym_1F/map.json object_events[0] FLANNERY (8,10); buried trainers (BURIED/1)",
+  "data/maps/LavaridgeTown_Gym_1F/scripts.inc:61-93 (trainerbattle_single TRAINER_FLANNERY; FlanneryDefeated: FLAG_DEFEATED_LAVARIDGE_GYM, FLAG_BADGE04_GET, addvar PETALBURG_GYM_STATE, LAVARIDGE_RIVAL_STATE 1; TM50)",
+  "data/event_scripts.s:823-826 (ReadyPetalburgGymForBattle at GYM_STATE 6: FLAG_HIDE_PETALBURG_GYM_GUIDE clear, FLAG_PETALBURG_MART_EXPANDED_ITEMS)",
+  "data/maps/LavaridgeTown/scripts.inc:24-118 (OnFrame LAVARIDGE_RIVAL_STATE 1 -> Go-Goggles: FLAG_RECEIVED_GO_GOGGLES, STATE 2)",
+]
+notes = "Flannery: TRAINER_FLANNERY (268): SLUGMA 26, SLUGMA 26, TORKOAL 28 (Water x2). Flannery's dais is reached only through the geysers: gba_world_cli route 1F (6,20) -> B1F (3,21) -> 1F (0,17) -> B1F (1,14) -> 1F (0,11) -> B1F (1,6) -> 1F (4,2) -> B1F (9,2) -> 1F (6,6) -> B1F (6,14) -> 1F (8,11). Buried trainers jump out when passed. Heat Badge = Strength usable."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 15
+note = "gym door (Lavaridge warp 1) -> LAVARIDGE_TOWN_GYM_1F (8,23)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LAVARIDGE_TOWN_GYM_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 11
+map = "MAP_LAVARIDGE_TOWN_GYM_1F"
+face = "up"
+interact = true
+note = "below Flannery (8,10) by the geyser warps (the 1F static route goes through B1F)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_FLANNERY (268): SLUGMA 26, SLUGMA 26, TORKOAL 28"
+
+[[step]]
+do = "advance_text"
+shot = "heat-badge"
+note = "FlanneryDefeated + TM50 Overheat (LavaridgeTown_Gym_1F/scripts.inc:68-93)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 23
+note = "exit mat (warp 0) -> Lavaridge (5,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LAVARIDGE_TOWN"
+
+[[step]]
+do = "advance_text"
+shot = "go-goggles"
+note = "OnFrame LAVARIDGE_RIVAL_STATE 1 -> May: ITEM_GO_GOGGLES, FLAG_RECEIVED_GO_GOGGLES, STATE 2 (LavaridgeTown/scripts.inc:24-118)"
+
+[expect]
+map = "MAP_LAVARIDGE_TOWN"
+badges = 4
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_DEFEATED_LAVARIDGE_GYM", "FLAG_RECEIVED_TM_OVERHEAT", "FLAG_RECEIVED_GO_GOGGLES", "FLAG_PETALBURG_MART_EXPANDED_ITEMS"]
+flags_clear = ["FLAG_HIDE_PETALBURG_GYM_GUIDE"]
+battles = 1
+
+[expect.vars]
+VAR_PETALBURG_GYM_STATE = 6
+VAR_LAVARIDGE_RIVAL_STATE = 2

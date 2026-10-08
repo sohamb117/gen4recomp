@@ -1,0 +1,48 @@
+# Proves the Meteor Falls coord scene (14,18) VAR_METEOR_FALLS_STATE 0: the evil team (Ruby: Magma, Sapphire: Aqua)
+# takes Cozmo's meteorite, the other team arrives; FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR opens the cable car.
+# Start: Meteor Falls 1F (27,18) -> end: MAP_ROUTE114 outside the falls (8,64).
+title = "Meteor Falls: the meteorite is taken"
+priority = "P0"
+version = "both"
+estimate = 3325
+refs = [
+  "data/maps/MeteorFalls_1F_1R/map.json coord_events (14,18) VAR_METEOR_FALLS_STATE=0",
+  "data/maps/MeteorFalls_1F_1R/scripts.inc:9-83 (scene; .ifdef SAPPHIRE only swaps text at :56-60; FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR, METEOR_FALLS_STATE 1)",
+  "data/maps/Route112/map.json object_events[0],[5] grunts FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR",
+]
+notes = "No battle (pure cutscene). The scene's objects are the version's own team (VAR_OBJ_GFX ids) and one text line differs (.ifdef SAPPHIRE); flags and vars are the same, so one milestone serves both."
+
+[start]
+from = "prev"
+
+[run]
+frames = 5000
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 18
+on_text = "stop"
+shot = "meteorite-taken"
+note = "meteorite scene coord (MeteorFalls_1F_1R/scripts.inc:9-83)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 18
+note = "exit (warp 0) -> Route 114 (8,63)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE114"
+
+[expect]
+map = "MAP_ROUTE114"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_HIDE_GRUNTS_BLOCKING_CABLE_CAR"]
+
+[expect.vars]
+VAR_METEOR_FALLS_STATE = 1

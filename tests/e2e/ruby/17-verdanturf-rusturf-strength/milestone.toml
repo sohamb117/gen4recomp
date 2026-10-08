@@ -1,0 +1,81 @@
+# Proves Route 117 to Verdanturf, the tunnel's east half, Rock Smash on the blockage rocks (24,4)/(24,5) and the
+# boyfriend's reunion scene: HM04 Strength (FLAG_RECEIVED_HM04), FLAG_RUSTURF_TUNNEL_OPENED.
+# Start: Mauville (32,15) -> end: MAP_VERDANTURF_TOWN in front of the Pokemon Center (16,4).
+title = "Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength"
+priority = "P0"
+version = "both"
+estimate = 16683
+refs = [
+  "data/maps/VerdanturfTown/map.json warp_events[2] (16,3) -> POKEMON_CENTER_1F, [4] (8,1) -> RUSTURF_TUNNEL (29,16)",
+  "data/maps/RusturfTunnel/map.json object_events[1] rock 2 (24,5) FLAG_HIDE_RUSTURF_TUNNEL_ROCK_1, [7] rock (24,4) FLAG_HIDE_RUSTURF_TUNNEL_ROCK_2",
+  "src/field_specials.c:1715-1728 (a smashed rock sets RUSTURF_TUNNEL_STATE 4 or 5)",
+  "data/maps/RusturfTunnel/scripts.inc:6-8,52-87 (OnFrame state 4/5 -> ITEM_HM04_STRENGTH, FLAG_RECEIVED_HM04, SetRusturfTunnelOpen)",
+  "data/event_scripts.s:931-938 (SetRusturfTunnelOpen: RUSTURF_TUNNEL_STATE 6, FLAG_RUSTURF_TUNNEL_OPENED)",
+]
+notes = "Route 117 trainers (lv 14-17) on the way west. The Rock Smash carrier is the lead (boost). Strength is needed in Seafloor Cavern (34) and Victory Road (37); getting it now keeps those free of a backtrack, and the open tunnel is the walking route back to Petalburg (24)."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 25100
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 4
+map = "MAP_VERDANTURF_TOWN"
+note = "west on Route 117 (trainers) to Verdanturf"
+
+[[step]]
+do = "heal"
+x = 16
+z = 3
+note = "Verdanturf Pokemon Center (warp 2)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 1
+note = "tunnel door (Verdanturf warp 4) -> RUSTURF_TUNNEL (29,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTURF_TUNNEL"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 4
+hm = true
+on_text = "stop"
+shot = "reunion"
+note = "past the rocks (hm = true: A + YES at a rock); one smashed rock sets RUSTURF_TUNNEL_STATE 4/5, whose OnFrame runs the reunion"
+
+[[step]]
+do = "advance_text"
+note = "HM04 Strength, FLAG_RECEIVED_HM04, SetRusturfTunnelOpen (RusturfTunnel/scripts.inc:52-87)"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 16
+note = "tunnel east exit (warp 1) -> Verdanturf (8,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VERDANTURF_TOWN"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 4
+
+[expect]
+map = "MAP_VERDANTURF_TOWN"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_VISITED_VERDANTURF_TOWN", "FLAG_RECEIVED_HM04", "FLAG_RUSTURF_TUNNEL_OPENED"]
+
+[expect.vars]
+VAR_RUSTURF_TUNNEL_STATE = 6

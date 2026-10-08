@@ -1,0 +1,92 @@
+# Proves Dive on Route 128 (the submarine's trail: Underwater_SeafloorCavern -> SEAFLOOR_CAVERN_ENTRANCE), the cavern's Strength
+# and Rock Smash rooms, the admin (TRAINER_SEAFLOOR_CAVERN_GRUNT_3) and the leader at Room 9 (TRAINER_SEAFLOOR_CAVERN_GRUNT_5):
+# Kyogre awakens, VAR_SOOTOPOLIS_STATE 1, VAR_ROUTE128_STATE 1.
+# Start: Mossdeep (19,11) -> end: MAP_ROUTE128 (the scene ends with Steven above the sea).
+title = "Seafloor Cavern: Archie wakes Kyogre (Sapphire)"
+status = "planned"
+priority = "P0"
+version = "sapphire"
+estimate = 45000
+refs = [
+  "data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0",
+  "data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)",
+  "data/maps/SeafloorCavern_Entrance/map.json warp_events[1] (10,1) -> ROOM1",
+  "data/maps/Underwater_SeafloorCavern/map.json warp_events[0] (6,7) -> UNDERWATER4 (the cavern mouth)",
+  "constants/version.inc (Sapphire: SEAFLOOR_CAVERN_GRUNT_3 = SHELLY_2, _5 = ARCHIE_2)",
+]
+notes = "Sapphire branch (other: ../ruby/35-seafloor-cavern-maxie). Admin: TRAINER_SHELLY_2 (33): SHARPEDO 38, MIGHTYENA 38; leader: TRAINER_ARCHIE_2 (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43. Dive is the A + YES prompt on dark water (field_control_avatar.c); the static model has no underwater legs and Seafloor Cavern's Strength boulders are not on walk_to's path (gba_world_cli: no static route Entrance (10,10) -> Room9 (17,43)), so the cavern walk is a PHASE2 route. The boost puts Dive and Strength on the lead."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 60000
+
+# PHASE2: Route 128 dive tile and the underwater leg to Underwater_SeafloorCavern; the Seafloor Cavern room route with its Strength boulders (probe_map each room).
+
+[[step]]
+do = "walk_to"
+x = 40
+z = 24
+map = "MAP_ROUTE128"
+surf = true
+note = "Mossdeep west, Route 127 south to Route 128 by Surf, by the dark-water trench [INFERENCE: the dive spot near the submarine shadow]"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "Dive? YES/NO on the dark water [PHASE2: the exact trench tile]"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "YES -> underwater"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 1
+map = "MAP_SEAFLOOR_CAVERN_ENTRANCE"
+note = "underwater to the cavern mouth (surface in its pool), the entrance's north door -> ROOM1"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 43
+map = "MAP_SEAFLOOR_CAVERN_ROOM9"
+hm = true
+note = "Rooms 1-8 (Rock Smash rocks, Strength boulders) to the room below the leader; the admin is fought on the way"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 42
+on_text = "stop"
+note = "coord (17,42) SEAFLOOR_CAVERN_STATE 0"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_ARCHIE_2 (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43"
+
+[[step]]
+do = "advance_text"
+shot = "legend-awakes"
+note = "the legend wakes and leaves; the teams leave"
+
+[expect]
+map = "MAP_ROUTE128"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_HIDE_EVIL_LEADER_SEAFLOOR_CAVERN"]
+flags_clear = ["FLAG_HIDE_WALLACE_SOOTOPOLIS", "FLAG_HIDE_STEVEN_SOOTOPOLIS"]
+battles = 1
+
+[expect.vars]
+VAR_SOOTOPOLIS_STATE = 1
+VAR_ROUTE128_STATE = 1

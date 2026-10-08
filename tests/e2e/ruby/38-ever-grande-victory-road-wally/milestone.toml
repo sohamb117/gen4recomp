@@ -1,0 +1,81 @@
+# Proves Waterfall to Ever Grande (Route 128 east), Victory Road's floors and Wally's trigger (34,3..5) VAR_VICTORY_ROAD_1F_STATE 0:
+# TRAINER_WALLY_1, FLAG_DEFEATED_WALLY_VICTORY_ROAD.
+# Start: Sootopolis gym door -> end: MAP_EVER_GRANDE_CITY at the League door.
+title = "Ever Grande and Victory Road: Wally"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 40000
+refs = [
+  "data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE",
+  "data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2",
+]
+notes = "Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's waterfall needs HM07 (found on Cave of Origin B3F, 36) on the lead (boost); Victory Road needs Strength and Rock Smash (the lead keeps both). gba_world_cli has no surf route up Ever Grande's waterfall (F tiles), hence the PHASE2 note."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 60000
+
+# PHASE2: the Ever Grande waterfall leg and the Victory Road floor route (Strength boulders, Rock Smash rocks; probe_map each floor).
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 42
+map = "MAP_EVER_GRANDE_CITY"
+surf = true
+hm = true
+note = "Sootopolis -> Route 126/127/128 east -> Ever Grande's waterfall (Surf + A + YES at the falls) [PHASE2: the waterfall leg]"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 41
+note = "Victory Road door (Ever Grande warp 2) -> VICTORY_ROAD_1F (15,40)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_1F"
+
+[[step]]
+do = "walk_to"
+x = 35
+z = 5
+map = "MAP_VICTORY_ROAD_1F"
+hm = true
+note = "through Victory Road (B1F/B2F loop) to the tile east of Wally's trigger column (34,3..5)"
+
+[[step]]
+do = "walk_to"
+x = 34
+z = 5
+on_text = "stop"
+note = "WallyTrigger2 (34,5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 6
+map = "MAP_EVER_GRANDE_CITY"
+hm = true
+note = "Victory Road exit (39,5) -> Ever Grande (18,27), north to the League door"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY"
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_DEFEATED_WALLY_VICTORY_ROAD"]
+battles = 1

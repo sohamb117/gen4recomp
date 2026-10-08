@@ -1,0 +1,6 @@
+# HM08 Dive (FLAG_RECEIVED_HM08, 34) and HM04 Strength (FLAG_RECEIVED_HM04, 17) taught to the lead as a player teaches
+# them: Route 128's trench and Seafloor Cavern's boulders. Slot 0 (Cut) and slot 3 (Rock Smash) keep their order:
+# Rock Smash is still needed in the cavern, so Strength takes Cut's slot and Dive Muddy Water's.
+party-move 0 0 MOVE_STRENGTH
+party-move 0 2 MOVE_DIVE
+party-level 0 55

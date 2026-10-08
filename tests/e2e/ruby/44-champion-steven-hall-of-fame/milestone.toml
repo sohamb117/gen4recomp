@@ -1,0 +1,90 @@
+# Proves the Champion's room (TRAINER_STEVEN), May and Birch, the Hall of Fame (FLAG_SYS_GAME_CLEAR, the HoF save), the credits
+# and the game's own SoftReset.
+# Start: the Champion's room after the walk-in -> end: the reset after "The End" (wait_reset).
+title = "Champion Steven, the Hall of Fame, credits and the reset"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 26000
+refs = [
+  "data/maps/EverGrandeCity_ChampionsRoom/map.json object_events[0] STEVEN (6,5), warp_events[1] (6,2) -> HALL_OF_FAME",
+  "data/scripts/hall_of_fame.inc (SetGameClearFlags, special GameClear)",
+  "src/hall_of_fame.c (HoF screen, the save, StartCredits)",
+  "src/credits.c (The End, SoftReset)",
+]
+notes = "Steven: TRAINER_STEVEN (335): SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56, ARMALDO 56, METAGROSS 58 (Aggron x4 from Surf/Water, Claydol and Cradily resist: the boost levels the lead). After the battle May and Birch come in and the player is walked to the Hall of Fame; the HoF screen saves before the credits; the credits end in a SoftReset. [run] save = \"none\": the end save is the HoF save the game wrote."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 60000
+save = "none"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "below Steven (6,5) [INFERENCE: R/S's room starts the battle by script on entry as Emerald does; the talk is harmless if so]"
+
+[[step]]
+do = "advance_text"
+note = "intro"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_STEVEN (335): SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56, ARMALDO 56, METAGROSS 58"
+
+[[step]]
+do = "advance_text"
+map = "MAP_EVER_GRANDE_CITY_HALL_OF_FAME"
+note = "May, Birch, the walk to the Hall of Fame"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY_HALL_OF_FAME"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 4
+gap = 30
+times = 20
+note = "HoF OnFrame: two message boxes, SetGameClearFlags, special GameClear"
+
+[[step]]
+do = "wait_frames"
+n = 3000
+shot = "hall_of_fame"
+note = "HoF screen and its save"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+times = 10
+note = "[PHASE2] advance the HoF screen if it waits"
+
+[[step]]
+do = "wait_frames"
+n = 6000
+shot = "credits"
+
+[[step]]
+do = "wait_frames"
+n = 6000
+shot = "credits_late"
+
+[[step]]
+do = "wait_reset"
+max = 16000
+keys = "A"
+note = "\"The End\" waits for a key or a timeout, then SoftReset"
+
+[expect]
+badges = 8
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_BADGE08_GET", "FLAG_SYS_GAME_CLEAR", "FLAG_ENTERED_ELITE_FOUR"]

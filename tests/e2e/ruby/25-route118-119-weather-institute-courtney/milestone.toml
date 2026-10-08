@@ -1,0 +1,132 @@
+# Proves Surf (badge 5) across Route 118 from Mauville, Steven's Route 118 scene, Route 119 north (river: Surf) to the
+# Weather Institute: Magma grunts, the admin (TRAINER_WEATHER_INSTITUTE_GRUNT_5 = TRAINER_COURTNEY_1 in Ruby),
+# VAR_WEATHER_INSTITUTE_STATE 1 and Castform.
+# Start: Wally's house -> end: MAP_ROUTE119 outside the Weather Institute (6,33).
+title = "Routes 118-119 and the Weather Institute: the Magma admin (Ruby)"
+status = "planned"
+priority = "P0"
+version = "ruby"
+estimate = 52000
+refs = [
+  "data/maps/Route118/map.json coord_events (43..45,11) VAR_ROUTE118_STATE=0",
+  "data/maps/Route118/scripts.inc:50-95 (Steven (object 19) scene, ROUTE118_STATE 1)",
+  "data/maps/Route119/map.json warp_events[0] (6,32) -> WEATHER_INSTITUTE_1F (9,12)",
+  "data/maps/Route119_WeatherInstitute_1F/scripts.inc:47-55 (grunts TRAINER_WEATHER_INSTITUTE_GRUNT_1/_2: (15,3) sight 3, (10,5) sight 2)",
+  "data/maps/Route119_WeatherInstitute_2F/scripts.inc:23-36 (grunts _3/_4, admin object 3 (4,6) sight 0: TRAINER_WEATHER_INSTITUTE_GRUNT_5)",
+  "data/maps/Route119_WeatherInstitute_2F/scripts.inc:38-69 (WEATHER_INSTITUTE_STATE 1, FLAG_HIDE_EVIL_TEAM_WEATHER_INSTITUTE; givemon SPECIES_CASTFORM 25, FLAG_RECEIVED_CASTFORM; no nickname prompt)",
+  "data/maps/Route119/scripts.inc:25-38 (OnTransition WEATHER_INSTITUTE_STATE 1 -> workers downstairs, STATE 2)",
+  "constants/version.inc (Ruby: WEATHER_INSTITUTE_GRUNT_1..5 = TRAINER_GRUNT_43, _52, _44, _45, TRAINER_COURTNEY_1)",
+]
+notes = "Ruby's branch (Sapphire: ../sapphire/25-route118-119-weather-institute-shelly). Admin: TRAINER_COURTNEY_1 (599): NUMEL 28, MIGHTYENA 28; grunts: TRAINER_GRUNT_43 (582): ZUBAT 27, POOCHYENA 27; TRAINER_GRUNT_52 (591): NUMEL 28; TRAINER_GRUNT_44 (583): POOCHYENA 27, NUMEL 27; TRAINER_GRUNT_45 (584): POOCHYENA 26, ZUBAT 26, NUMEL 26. Back to Mauville the way 24 came (Petalburg Woods, Rustboro, the tunnel, Route 117): with Surf the static route prefers Route 103 -> Route 110's Cycling Road gates, which want the bike ridden [INFERENCE], so the walk to Mauville is given without surf. Castform (lv25, Mystic Water) joins the party as slot 1."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 10
+map = "MAP_MAUVILLE_CITY"
+note = "back to Mauville's east edge by the 24 walk in reverse"
+
+[[step]]
+do = "walk_to"
+x = 44
+z = 12
+map = "MAP_ROUTE118"
+surf = true
+note = "Route 118 east across the inlet (Surf), the tile below the Steven trigger row"
+
+[[step]]
+do = "walk_to"
+x = 44
+z = 11
+on_text = "stop"
+note = "Steven trigger (43..45,11) ROUTE118_STATE 0 (Route118/scripts.inc:50-95)"
+
+[[step]]
+do = "advance_text"
+note = "Steven scene, ROUTE118_STATE 1"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 33
+map = "MAP_ROUTE119"
+surf = true
+note = "north on Route 119 to the Weather Institute door"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 32
+note = "Weather Institute door (Route 119 warp 0) -> WEATHER_INSTITUTE_1F (9,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE119_WEATHER_INSTITUTE_1F"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 1
+note = "1F stairs (warp 2) -> 2F (17,1); grunts (15,3) and (10,5) fought on the way"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE119_WEATHER_INSTITUTE_2F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 6
+face = "left"
+interact = true
+note = "right of the admin (4,6); grunts (15,6) sight 4 and (10,8) sight 2 fought on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_COURTNEY_1 (599): NUMEL 28, MIGHTYENA 28 (Route119_WeatherInstitute_2F/scripts.inc:34)"
+
+[[step]]
+do = "advance_text"
+note = "WEATHER_INSTITUTE_STATE 1, the team leaves; the scientist gives Castform (:38-69)"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 1
+note = "2F stairs -> 1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE119_WEATHER_INSTITUTE_1F"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 12
+note = "exit -> Route 119 (6,32)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE119"
+
+[expect]
+map = "MAP_ROUTE119"
+badges = 5
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_RECEIVED_CASTFORM", "FLAG_HIDE_EVIL_TEAM_WEATHER_INSTITUTE", "FLAG_HIDE_WEATHER_INSTITUTE_WORKERS_2F"]
+party = ["SPECIES_CASTFORM"]
+battles = 1
+
+[expect.vars]
+VAR_WEATHER_INSTITUTE_STATE = 2   # 1 at the admin's defeat; Route119's OnTransition sets 2 on the way out
+VAR_ROUTE118_STATE = 1

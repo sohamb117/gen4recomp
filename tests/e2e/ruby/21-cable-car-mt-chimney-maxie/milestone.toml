@@ -1,0 +1,110 @@
+# Proves the way back to Route 112's south half (Route 113 -> Route 112 north -> Fiery Path -> Route 112 south), the
+# cable car (attendant YES), Mt. Chimney's Magma admin/grunt and Maxie (TRAINER_MT_CHIMNEY_GRUNT_3 = TRAINER_MAXIE_3 in
+# Ruby): FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY.
+# Start: Route 114 (8,64) -> end: MAP_MT_CHIMNEY by the meteorite machine.
+title = "Cable car to Mt. Chimney: Tabitha and Maxie (Ruby)"
+status = "planned"
+priority = "P0"
+version = "ruby"
+estimate = 35000
+refs = [
+  "data/maps/Route112/map.json warp_events[5] (22,10) -> FIERY_PATH (26,4), [0] (28,27) -> ROUTE112_CABLE_CAR_STATION",
+  "data/maps/Route112_CableCarStation/scripts.inc:32-55 (attendant MSGBOX_YESNO -> CABLE_CAR_STATION_STATE 1, special CableCarWarp, special CableCar)",
+  "data/maps/MtChimney_CableCarStation/map.json warp_events[0] (6,11) -> MT_CHIMNEY (17,36)",
+  "data/maps/MtChimney/map.json object_events[1] leader VAR_6 (13,6), [2] admin (12,11) sight 2, [21] grunt (9,15) sight 3",
+  "data/maps/MtChimney/scripts.inc:331-349 (admin/grunt: TRAINER_MT_CHIMNEY_GRUNT_1/_2)",
+  "data/scripts/magma_chimney.inc:29-90 (leader: trainerbattle_no_intro TRAINER_MT_CHIMNEY_GRUNT_3; FLAG_HIDE_EVIL_TEAM_MT_CHIMNEY, FLAG_HIDE_OTHER_TEAM_MT_CHIMNEY, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, Cozmo back home)",
+  "constants/version.inc (Ruby: MT_CHIMNEY_GRUNT_1 = TRAINER_TABITHA_2, _2 = TRAINER_GRUNT_40, _3 = TRAINER_MAXIE_3)",
+]
+notes = "Ruby's branch of the Mt. Chimney scene (Sapphire: ../sapphire/21-cable-car-mt-chimney-archie). Maxie: TRAINER_MAXIE_3 (602): MIGHTYENA 24, GOLBAT 24, CAMERUPT 25 (Camerupt takes x4 from Water). Tabitha (12,11) sight 2: TRAINER_TABITHA_2 (597): NUMEL 20, POOCHYENA 20, NUMEL 20; grunt (9,15) sight 3: TRAINER_GRUNT_40 (579): ZUBAT 20, POOCHYENA 20. The Aqua leader (24,19) only talks. The meteorite (bg event machine) is optional (FLAG_RECEIVED_METEORITE). Same maps and scripts as Sapphire; only the trainers and texts differ."
+
+[start]
+from = "prev"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 10
+map = "MAP_ROUTE112"
+note = "Route 114 -> Fallarbor -> Route 113 -> Route 111 north -> Route 112 north half, Fiery Path north door (Route 112 warp 5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FIERY_PATH"
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 36
+note = "Fiery Path south exit (warp 0) -> Route 112 (11,36)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE112"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 27
+note = "cable car station door (Route 112 warp 0) -> ROUTE112_CABLE_CAR_STATION (6,11); the grunts are gone (20)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE112_CABLE_CAR_STATION"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "attendant (object 1 (6,6)) -> YES/NO (Route112_CableCarStation/scripts.inc:32-40)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "YES -> CABLE_CAR_STATION_STATE 1, special CableCar (:42-55)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_MT_CHIMNEY_CABLE_CAR_STATION"
+max = 4000
+
+[[step]]
+do = "advance_text"
+note = "the car docks and the player steps out"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 11
+note = "station exit (warp 0) -> MT_CHIMNEY (17,36)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MT_CHIMNEY"
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "Maxie (object 2 (13,6)); Tabitha (12,11) and the grunt (9,15) fought on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MAXIE_3 (602): MIGHTYENA 24, GOLBAT 24, CAMERUPT 25 (magma_chimney.inc:50-51)"
+
+[[step]]
+do = "advance_text"
+note = "Magma leaves, Archie thanks and leaves: FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY (magma_chimney.inc:53-90)"
+
+[expect]
+map = "MAP_MT_CHIMNEY"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY", "FLAG_HIDE_EVIL_TEAM_MT_CHIMNEY", "FLAG_HIDE_OTHER_TEAM_MT_CHIMNEY", "FLAG_HIDE_PROF_COSMO_METEOR_FALLS"]
+flags_clear = ["FLAG_HIDE_PROF_COSMO_FALLARBOR"]
+battles = 1

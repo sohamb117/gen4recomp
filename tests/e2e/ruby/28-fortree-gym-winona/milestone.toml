@@ -1,0 +1,76 @@
+# Proves the rotating-gate gym (special RotatingGate_InitPuzzle) and Winona (TRAINER_WINONA): FLAG_BADGE06_GET,
+# TM40 Aerial Ace; Fly usable from here.
+# Start: Fortree below the gym (22,12) -> end: MAP_FORTREE_CITY at the gym door.
+title = "Fortree Gym: Winona's Feather Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 21700
+refs = [
+  "data/maps/FortreeCity/map.json warp_events[2] (22,11) -> FORTREE_CITY_GYM (2,24)",
+  "data/maps/FortreeCity_Gym/scripts.inc:6-16 (RotatingGate_InitPuzzle)",
+  "data/maps/FortreeCity_Gym/map.json object_events[0] WINONA (4,1); Jared (12,22) sight 3, Terrell (9,9) sight 3, Kylee (18,19) sight 4, Will (18,1) sight 1",
+  "data/maps/FortreeCity_Gym/scripts.inc:18-44 (trainerbattle_single TRAINER_WINONA; WinonaDefeated: FLAG_DEFEATED_FORTREE_GYM, FLAG_BADGE06_GET; TM40)",
+  "tests/e2e/tools/gba_gates.py --game ruby MAP_FORTREE_CITY_GYM 2 23 4 2 (same route for --game sapphire)",
+]
+notes = "Winona: TRAINER_WINONA (270): SWELLOW 31, PELIPPER 30, SKARMORY 32, ALTARIA 33 (no Electric/Ice in the party: the level carries it; Pelipper is Water/Flying, Surf neutral). Trainers: TRAINER_JARED (401): DODUO 30; TRAINER_TERRELL (654): TAILLOW 29, SWELLOW 29; TRAINER_KYLEE (655): SWABLU 30; TRAINER_WILL (404): WINGULL 28, SWELLOW 28, PELIPPER 28. R/S's gym entrance is (2,24) and Winona stands at (4,1) (Emerald's layout differs); the steps route is gba_gates.py's solution from the tile above the mat to below Winona."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "heal"
+x = 5
+z = 6
+note = "Fortree Pokemon Center (warp 0): HP and PP back before the gym"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 11
+note = "gym door (Fortree warp 2) -> FORTREE_CITY_GYM (2,24)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FORTREE_CITY_GYM"
+
+[[step]]
+do = "steps"
+route = [[2, 23], [2, 20], [17, 20], [17, 19], [16, 19], [16, 20], [17, 20], [17, 19], [15, 19], [15, 12], [14, 12], [14, 13], [15, 13], [15, 12], [17, 12], [17, 13], [15, 13], [15, 16], [18, 16], [18, 13], [13, 13], [13, 14], [9, 14], [9, 13], [8, 13], [8, 6], [12, 6], [12, 5], [15, 5], [15, 4], [17, 4], [17, 3], [16, 3], [16, 4], [18, 4], [18, 3], [17, 3], [17, 1], [14, 1], [14, 2], [13, 2], [13, 9], [15, 9], [15, 4], [17, 4], [17, 1], [14, 1], [14, 2], [13, 2], [13, 3], [5, 3], [5, 2], [4, 2]]
+max = 20000
+face = "up"
+interact = true
+note = "through the rotating gates to below Winona (4,1): python3 tests/e2e/tools/gba_gates.py --game ruby MAP_FORTREE_CITY_GYM 2 23 4 2 (src/rotating_gate.c sRotatingGate_FortreePuzzleConfig); the trainers who see the route are fought on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_WINONA (270): SWELLOW 31, PELIPPER 30, SKARMORY 32, ALTARIA 33"
+
+[[step]]
+do = "advance_text"
+shot = "feather-badge"
+note = "WinonaDefeated + TM40 Aerial Ace (FortreeCity_Gym/scripts.inc:25-44)"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 24
+note = "exit mat -> Fortree (22,11) [the gates as left by the route; walk_to plans on the probe]"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FORTREE_CITY"
+
+[expect]
+map = "MAP_FORTREE_CITY"
+badges = 6
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_DEFEATED_FORTREE_GYM", "FLAG_RECEIVED_TM_AERIAL_ACE"]
+battles = 1

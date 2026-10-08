@@ -1,0 +1,77 @@
+# Proves Route 110 north from Slateport: the rival trigger (TRAINER_MAY_2 for VAR_STARTER_MON 2, Itemfinder,
+# VAR_ROUTE110_STATE 1) and arrival in Mauville.
+# Start: Slateport (30,27) -> end: MAP_MAUVILLE_CITY in front of the Pokemon Center (22,6).
+title = "Route 110: May's second battle"
+priority = "P0"
+version = "both"
+estimate = 22678
+refs = [
+  "data/maps/SlateportCity/map.json warp_events[0] (19,19) -> POKEMON_CENTER_1F",
+  "data/maps/Route110/map.json coord_events (33..35,56) VAR_ROUTE110_STATE=0",
+  "data/maps/Route110/scripts.inc:311-368 (rival scene, switch VAR_STARTER_MON: 2 -> trainerbattle_no_intro TRAINER_MAY_2 (:380-382))",
+  "data/maps/Route110/scripts.inc:415-451 (ITEM_ITEMFINDER, May leaves, ROUTE110_STATE 1)",
+  "data/maps/MauvilleCity/scripts.inc:5-12 (FLAG_VISITED_MAUVILLE_CITY, FLAG_SYS_TV_START)",
+  "data/maps/MauvilleCity/map.json warp_events[1] (22,5) -> POKEMON_CENTER_1F",
+]
+notes = "May: TRAINER_MAY_2 (530): WAILMER 18, NUMEL 18, GROVYLE 20 (Grovyle's Absorb is x4 once the lead has evolved into Marshtomp: the boost's level carries it). R/S have no Birch Match Call scene on Route 110. Route 110 trainers below the Cycling Road: Edward, Jaclyn, Edwin, Dale, Jacob/Anthony/Benjamin/Jasmine/Abigail (triathletes), Isabel, Timmy (lv 12-16); walk_to fights those who see it. The team's grunts on Route 110 are hidden by the museum delivery (13)."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 34100
+
+[[step]]
+do = "heal"
+x = 19
+z = 19
+note = "Slateport Pokemon Center (Slateport warp 0): the museum fights leave the lead low"
+
+[[step]]
+do = "walk_to"
+x = 34
+z = 57
+map = "MAP_ROUTE110"
+note = "north out of Slateport to the tile below the rival trigger row"
+
+[[step]]
+do = "walk_to"
+x = 34
+z = 56
+on_text = "stop"
+note = "rival trigger (33..35,56) ROUTE110_STATE 0 (Route110/scripts.inc:311-368)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MAY_2 (530): WAILMER 18, NUMEL 18, GROVYLE 20"
+
+[[step]]
+do = "advance_text"
+note = "Itemfinder, May leaves, ROUTE110_STATE 1 (:415-451)"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 6
+map = "MAP_MAUVILLE_CITY"
+note = "north into Mauville, Pokemon Center door above (22,5)"
+
+[[step]]
+do = "heal"
+x = 22
+z = 5
+note = "Mauville Pokemon Center (warp 1)"
+
+[expect]
+map = "MAP_MAUVILLE_CITY"
+badges = 2
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_VISITED_MAUVILLE_CITY", "FLAG_SYS_TV_START"]
+battles = 1
+
+[expect.vars]
+VAR_ROUTE110_STATE = 1

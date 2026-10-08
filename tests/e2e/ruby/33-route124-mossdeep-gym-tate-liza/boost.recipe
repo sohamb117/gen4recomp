@@ -1,0 +1,6 @@
+# A Fly carrier for the rest of the chain and a second Pokemon for Tate & Liza's double battle: a Swellow at slot 2
+# (party SPECIES LEVEL ITEM appends), Fly as a player teaches it (HM02 from milestone 26). Lunatone/Solrock
+# (pokeruby gTrainerParty_TateAndLiza: LUNATONE 42, SOLROCK 42): the lead's Surf at lv 50 carries it.
+party SPECIES_SWELLOW 45 ITEM_NONE
+party-move 2 0 MOVE_FLY
+party-level 0 50

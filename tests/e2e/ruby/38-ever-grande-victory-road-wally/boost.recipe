@@ -1,0 +1,6 @@
+# HM07 Waterfall (Cave of Origin B3F item ball, 36) taught to the lead in place of Dive, as a player teaches it: Ever
+# Grande's falls. Wally (pokeruby gTrainerParty_Wally1: ALTARIA 44 .. GARDEVOIR 45) and Victory Road's lv 40+
+# trainers: the level carries the lead.
+party-move 0 2 MOVE_WATERFALL
+party-level 0 62
+item ITEM_FULL_RESTORE 10
