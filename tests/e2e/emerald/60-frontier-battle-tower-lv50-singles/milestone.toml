@@ -1,0 +1,226 @@
+# Proves the Battle Frontier's Battle Tower, Level 50 single battle room: the singles attendant's menus (CHALLENGE,
+# LV. 50), the choose-half party menu (three entries), the save before the challenge, the elevator and corridor scenes,
+# seven room trainers in a row with the GO ON / REST / RETIRE menu between them, and the lobby's Battle Points for the
+# seven-win set (GAME_STAT_BATTLE_TOWER_SINGLES_STREAK 7).
+# Start: MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY (6,6) -> end: the lobby, the set won.
+title = "Battle Frontier: Battle Tower, a Level 50 single set of seven wins"
+priority = "P1"
+estimate = 32444
+refs = [
+  "data/maps/BattleFrontier_BattleTowerLobby/map.json object_events[0] SinglesAttendant (6,5)",
+  "data/maps/BattleFrontier_BattleTowerLobby/scripts.inc:167-222 (MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, elevator)",
+  "data/maps/BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-126 (opponents, MULTI_GO_ON_RECORD_REST_RETIRE, WarpToLobbyWon)",
+  "data/maps/BattleFrontier_BattleTowerLobby/scripts.inc:60-92 (WonChallenge: ribbons, Battle Points, record YES/NO)",
+  "include/constants/game_stat.h:34,36 (GAME_STAT_ENTERED_BATTLE_TOWER 30, GAME_STAT_BATTLE_TOWER_SINGLES_STREAK 32)",
+]
+notes = "Random level-50 frontier trainers (src/battle_tower.c); the lab party is ruby/71's (Metagross, Salamence, Latios, IVs 31, EVs 255)."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 48700
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the singles attendant (BattleFrontier_BattleTowerLobby/map.json object_events[0] (6,5), SinglesAttendant: SavePlayerParty)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+shot = "tower-challenge-menu"
+note = "MULTI_CHALLENGEINFO: CHALLENGE (BattleFrontier_BattleTowerLobby/scripts.inc:173-181)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_LEVEL_MODE: LV. 50 (scripts.inc:183-190)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'select three Pokemon', the fade to the choose-half party menu (special ChoosePartyForBattleFrontier, scripts.inc:196-199)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 0: ENTER/SUMMARY/CANCEL (party_menu.c sPartyMenuAction_EnterSummaryCancel)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "ENTER (CursorCb_Enter)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 1 entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "tower-entry-three"
+note = "slot 2 entered: the third of three moves the cursor to CONFIRM (MoveCursorToConfirm)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM: back to the field"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "'okay to save before entering?' YES (scripts.inc:201-205)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 60
+until = "map_id=6662"
+note = "Common_EventScript_SaveGame's dialog answered with A, the walk to the elevator (MAP_BATTLE_FRONTIER_BATTLE_TOWER_ELEVATOR 6662)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_TOWER_BATTLE_ROOM"
+max = 3000
+note = "elevator and corridor OnFrame scenes"
+
+[[step]]
+do = "advance_text"
+note = "opponent 1 walks in, greeting (BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-39)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 1 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (scripts.inc:62-84)"
+shot = "tower-continue-1"
+
+[[step]]
+do = "advance_text"
+note = "opponent 2 walks in, greeting (BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-39)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 2 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (scripts.inc:62-84)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 3 walks in, greeting (BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-39)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 3 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (scripts.inc:62-84)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 4 walks in, greeting (BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-39)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 4 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (scripts.inc:62-84)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 5 walks in, greeting (BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-39)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 5 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (scripts.inc:62-84)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 6 walks in, greeting (BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-39)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 6 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (scripts.inc:62-84)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 7 walks in, greeting (BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-39)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Tower trainer 7 of 7"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY"
+max = 3000
+note = "the seventh win: WarpToLobbyWon (scripts.inc:121-126)"
+
+[[step]]
+do = "advance_text"
+shot = "tower-seven-wins"
+note = "WonChallenge: Battle Points, then the record-battle YES/NO, whose default NO (multichoicedefault MULTI_YESNO, 1) A takes (BattleFrontier_BattleTowerLobby/scripts.inc:60-92,113-130)"
+
+[expect]
+map = "MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY"
+save = ['s["game_stats"][30] >= 1', 's["game_stats"][32] >= 7']

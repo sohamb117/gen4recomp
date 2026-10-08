@@ -1,0 +1,8 @@
+# Emerald side systems (standalone: each starts from its start.recipe minted on the new-game base save, run with
+# --systems). Emerald-only systems first (the Battle Frontier, Trainer Hill, ...); the ones Ruby/Sapphire share
+# follow ruby/systems.txt's shapes.
+# P1
+60-frontier-battle-tower-lv50-singles
+61-frontier-battle-factory-lv50
+62-frontier-battle-arena-lv50
+63-frontier-battle-palace-lv50

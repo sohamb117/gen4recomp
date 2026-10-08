@@ -3,7 +3,7 @@
 # Start: Cave of Origin B1F -> end: MAP_SKY_PILLAR_TOP after Rayquaza flies off.
 title = "Sky Pillar: Wallace opens the door, Rayquaza wakes"
 priority = "P0"
-estimate = 30319
+estimate = 30321
 refs = [
   "data/maps/Route131/map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE",
   "data/maps/SkyPillar_Entrance/map.json warp_events[1] (14,4) -> OUTSIDE",
@@ -107,8 +107,13 @@ max = 20000
 note = "up the Sky Pillar: whole floors while VAR_SKY_PILLAR_STATE < 2 (SkyPillar_2F/3F/4F/5F OnTransition -> LAYOUT_..._CLEAN, the router reads the var), 4F's two cracked tiles (6,4)/(7,4) the way down to 3F's middle stairs (setholewarp MAP_SKY_PILLAR_3F), 4F (7,1) -> 5F (3,1) -> Top; the Rayquaza scene (SkyPillar_Top coord (14,9))"
 
 [[step]]
-do = "advance_text"
+do = "wait_frames"
+n = 90
 shot = "rayquaza-wakes"
+note = "AwakenRayquaza: the camera pans up to the sleeping Rayquaza (SkyPillar_Top_Movement_CameraPanUp), it stirs and cries while the screen shakes (SkyPillar_Top/scripts.inc:85-110): the shot while it is on screen"
+
+[[step]]
+do = "advance_text"
 note = "Rayquaza flies off: SOOTOPOLIS_CITY_STATE 5, SKY_PILLAR_STATE 1, RAYQUAZA_CRY_DONE 1 (SkyPillar_Top/scripts.inc:85-125)"
 
 [expect]

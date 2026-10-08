@@ -3980,7 +3980,7 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~1021509 frames estimated
+### Story chain: 48 milestones, ~1021511 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -4022,7 +4022,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [36-stevens-house-hm-dive](emerald/36-stevens-house-hm-dive/milestone.toml) | Steven's house: HM08 Dive | P0 |  | 3072 | prev + `None` | MAP_MOSSDEEP_CITY_STEVENS_HOUSE | passing |
 | [37-seafloor-cavern-archie-kyogre](emerald/37-seafloor-cavern-archie-kyogre/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre | P0 |  | 21890 | prev + `None` | MAP_ROUTE128 | passing |
 | [38-sootopolis-cave-of-origin-wallace](emerald/38-sootopolis-cave-of-origin-wallace/milestone.toml) | Sootopolis in the storm: Steven, the Cave of Origin, Wallace | P0 |  | 20185 | prev + `None` | MAP_CAVE_OF_ORIGIN_B1F | passing |
-| [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 30319 | prev + `None` | MAP_SKY_PILLAR_TOP | passing |
+| [39-sky-pillar-rayquaza](emerald/39-sky-pillar-rayquaza/milestone.toml) | Sky Pillar: Wallace opens the door, Rayquaza wakes | P0 |  | 30321 | prev + `None` | MAP_SKY_PILLAR_TOP | passing |
 | [40-sootopolis-rayquaza-waterfall](emerald/40-sootopolis-rayquaza-waterfall/milestone.toml) | Rayquaza calms Sootopolis: Maxie and Archie leave, HM07 Waterfall | P0 |  | 23121 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
 | [41-sootopolis-gym-juan](emerald/41-sootopolis-gym-juan/milestone.toml) | Sootopolis Gym: Juan and the Rain Badge | P0 |  | 15474 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
 | [42-ever-grande-victory-road-wally](emerald/42-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally's last battle | P0 |  | 72642 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
@@ -4419,7 +4419,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_SKY_PILLAR_TOP; 7 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_LANDMARK_SKY_PILLAR, FLAG_SYS_WEATHER_CTRL; flags clear FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE; vars VAR_SOOTOPOLIS_CITY_STATE=5, VAR_SKY_PILLAR_STATE=1, VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE=1
-- frames: estimate 30319, budget 45500
+- frames: estimate 30321, budget 45500
 - refs: data/maps/Route131/map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE; data/maps/SkyPillar_Entrance/map.json warp_events[1] (14,4) -> OUTSIDE; data/maps/SkyPillar_Outside/scripts.inc:20-30; data/maps/SkyPillar_Outside/scripts.inc:33-79; data/maps/SkyPillar_Outside/map.json warp_events[1] (14,5) -> SKY_PILLAR_1F; data/maps/SkyPillar_1F/map.json warp_events[2] (10,1); data/maps/SkyPillar_5F/map.json warp_events[1] (10,1) -> TOP; data/maps/SkyPillar_Top/map.json coord_events (14,9) VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE=0; data/maps/SkyPillar_Top/scripts.inc:85-125; data/maps/SkyPillar_1F/scripts.inc:6 (CleanFloor while SKY_PILLAR_STATE < 2)
 - notes: No battle: in Emerald Rayquaza only wakes and flies to Sootopolis here (the catchable Rayquaza is post-game, SkyPillar_Top/scripts.inc:18-19,36-57). Cracked floors (2F/4F) drop to the floor below unless crossed at speed on the Mach Bike (15) [INFERENCE: walk_to needs a bike mode]. Out of the Cave of Origin: Sootopolis -> Dive out -> Route 126 -> 127 -> 128 -> 129 -> 130 -> 131 (Surf; Route 130/131 currents). Abnormal weather (rain) en route.
 
@@ -4512,6 +4512,55 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - frames: estimate 31252, budget 46900
 - refs: data/maps/EverGrandeCity_Hall4/map.json warp_events[1] (5,2) -> CHAMPIONS_ROOM; data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:19-62; data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:93-123; TRAINER_WALLACE (335), src/data/trainers.h:4024; data/maps/EverGrandeCity_HallOfFame/scripts.inc:13-62; data/scripts/hall_of_fame.inc:1-25; data/event_scripts.s:628-634 (ResetEliteFour); src/post_battle_event_funcs.c:12-41 (GameClear: HealPlayerParty, FLAG_SYS_GAME_CLEAR, continue warp = Brendan's 2F, Champion ribbons); src/hall_of_fame.c:419-427 (CB2_DoHallOfFameScreen); src/hall_of_fame.c:524-526 (Task_Hof_TrySaveData: TrySavingData(SAVE_HALL_OF_FAME)); src/hall_of_fame.c:781-784 (StartCredits); src/credits.c:670-690 (Task_CreditsTheEnd6: 7200 frames or any key); src/credits.c:694-698 (Task_CreditsSoftReset: SoftReset(RESET_ALL))
 - notes: Wallace: TRAINER_WALLACE (335): WAILORD 57, TENTACRUEL 55, LUDICOLO 56, WHISCASH 56, GYARADOS 56, MILOTIC 58 (Electric/Grass coverage; boost ~60). Entering the Champion's room runs straight through: OnFrame EnterRoom walks up and starts the battle, Defeated brings May and Birch, warps to the Hall of Fame (7,16), whose OnFrame records the team and calls SetGameClearFlags + special GameClear. GameClear sets FLAG_SYS_GAME_CLEAR and the continue warp (Brendan's 2F heal location), CB2_DoHallOfFameScreen saves (SAVE_HALL_OF_FAME = the full game save + HoF record) before the credits; the credits end on "The End", which waits 7200 frames or a key (src/credits.c:674-678), then SoftReset(RESET_ALL) (src/credits.c:694-698): the game resets itself, so the run ends with wait_reset and [run] save = "none". SetGameClearFlags resets the Elite Four flags (data/event_scripts.s:628-634).
+
+### Side systems: 4 milestones, ~188285 frames estimated
+
+| milestone | title | P | version | est. frames | start | end map | status |
+|---|---|---|---|---|---|---|---|
+| [60-frontier-battle-tower-lv50-singles](emerald/60-frontier-battle-tower-lv50-singles/milestone.toml) | Battle Frontier: Battle Tower, a Level 50 single set of seven wins | P1 |  | 32444 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY | passing |
+| [61-frontier-battle-factory-lv50](emerald/61-frontier-battle-factory-lv50/milestone.toml) | Battle Frontier: Battle Factory, a Level 50 round of seven wins with rentals | P1 |  | 82966 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY | passing |
+| [62-frontier-battle-arena-lv50](emerald/62-frontier-battle-arena-lv50/milestone.toml) | Battle Frontier: Battle Arena, a Level 50 set of seven wins (three-turn judged battles) | P1 |  | 38210 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_ARENA_LOBBY | passing |
+| [63-frontier-battle-palace-lv50](emerald/63-frontier-battle-palace-lv50/milestone.toml) | Battle Frontier: Battle Palace, a Level 50 set of seven wins (the Pokemon choose their own moves) | P1 |  | 34665 | `start.recipe` | MAP_BATTLE_FRONTIER_BATTLE_PALACE_LOBBY | passing |
+
+#### emerald/60-frontier-battle-tower-lv50-singles — Battle Frontier: Battle Tower, a Level 50 single set of seven wins
+- proves: Proves the Battle Frontier's Battle Tower, Level 50 single battle room: the singles attendant's menus (CHALLENGE, LV. 50), the choose-half party menu (three entries), the save before the challenge, the elevator and corridor scenes, seven room trainers in a row with the GO ON / REST / RETIRE menu between them, and the lobby's Battle Points for the seven-win set (GAME_STAT_BATTLE_TOWER_SINGLES_STREAK 7). Start: MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY (6,6) -> end: the lobby, the set won.
+- start: `start.recipe`; map MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY 6 6; lab state lines: 1 flag
+- party: SPECIES_METAGROSS 50 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 50 (MOVE_DRAGON_CLAW); SPECIES_LATIOS 50 (MOVE_PSYCHIC)
+- trainers: none
+- end state: map MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY; 2 save check(s)
+- frames: estimate 32444, budget 48700
+- refs: data/maps/BattleFrontier_BattleTowerLobby/map.json object_events[0] SinglesAttendant (6,5); data/maps/BattleFrontier_BattleTowerLobby/scripts.inc:167-222 (MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, elevator); data/maps/BattleFrontier_BattleTowerBattleRoom/scripts.inc:19-126 (opponents, MULTI_GO_ON_RECORD_REST_RETIRE, WarpToLobbyWon); data/maps/BattleFrontier_BattleTowerLobby/scripts.inc:60-92 (WonChallenge: ribbons, Battle Points, record YES/NO); include/constants/game_stat.h:34,36 (GAME_STAT_ENTERED_BATTLE_TOWER 30, GAME_STAT_BATTLE_TOWER_SINGLES_STREAK 32)
+- notes: Random level-50 frontier trainers (src/battle_tower.c); the lab party is ruby/71's (Metagross, Salamence, Latios, IVs 31, EVs 255).
+
+#### emerald/61-frontier-battle-factory-lv50 — Battle Frontier: Battle Factory, a Level 50 round of seven wins with rentals
+- proves: Proves the Battle Frontier's Battle Factory, Level 50 singles: the attendant's menus, the rental screen (three of six rental Pokemon, src/battle_factory_screen.c), seven battles with the rentals, the heal / GO ON menu and the swap question (NO) between them, and the lobby's Battle Points for the seven-win round. Start: MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY (4,8) -> end: the lobby, the round won.
+- start: `start.recipe`; map MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY 4 8; lab state lines: 1 flag
+- party: SPECIES_SWAMPERT 50
+- trainers: none
+- end state: map MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY; >= 7 battles
+- frames: estimate 82966, budget 124500
+- refs: data/maps/BattleFrontier_BattleFactoryLobby/scripts.inc:108-172 (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, save, warp); data/maps/BattleFrontier_BattleFactoryPreBattleRoom/scripts.inc:23-160 (rentals, heal, GO ON menu, swap YES/NO); src/battle_factory_screen.c:302-307,1832-1855 (SUMMARY / RENT / OTHERS, the YES/NO); data/maps/BattleFrontier_BattleFactoryBattleRoom/scripts.inc:62-110 (battles, warp back, WarpToLobbyWon)
+- notes: Rentals and opponents are random level-50 Factory sets (src/battle_factory.c); the first three rentals are taken as they come.
+
+#### emerald/62-frontier-battle-arena-lv50 — Battle Frontier: Battle Arena, a Level 50 set of seven wins (three-turn judged battles)
+- proves: Proves the Battle Frontier's Battle Arena, Level 50: the attendant's menus, the choose-half party menu (three entries), the save before the challenge, seven trainers in a row with the GO ON menu between them, and the lobby's Battle Points. Start: MAP_BATTLE_FRONTIER_BATTLE_ARENA_LOBBY (7,8) -> end: the lobby, seven wins.
+- start: `start.recipe`; map MAP_BATTLE_FRONTIER_BATTLE_ARENA_LOBBY 7 8; lab state lines: 1 flag
+- party: SPECIES_METAGROSS 50 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 50 (MOVE_DRAGON_CLAW); SPECIES_LATIOS 50 (MOVE_PSYCHIC)
+- trainers: none
+- end state: map MAP_BATTLE_FRONTIER_BATTLE_ARENA_LOBBY; >= 7 battles
+- frames: estimate 38210, budget 57400
+- refs: data/maps/BattleFrontier_BattleArenaLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge); data/maps/BattleFrontier_BattleArenaBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE); src/battle_arena.c (three turns, then the judges: Mind, Skill, Body)
+- notes: Arena battles are one on one, no switching; after three turns the judges decide (src/battle_arena.c).
+
+#### emerald/63-frontier-battle-palace-lv50 — Battle Frontier: Battle Palace, a Level 50 set of seven wins (the Pokemon choose their own moves)
+- proves: Proves the Battle Frontier's Battle Palace, Level 50: the attendant's menus, the choose-half party menu (three entries), the save before the challenge, seven trainers in a row with the GO ON menu between them, and the lobby's Battle Points. Start: MAP_BATTLE_FRONTIER_BATTLE_PALACE_LOBBY (5,7) -> end: the lobby, seven wins.
+- start: `start.recipe`; map MAP_BATTLE_FRONTIER_BATTLE_PALACE_LOBBY 5 7; lab state lines: 1 flag
+- party: SPECIES_METAGROSS 50 (MOVE_METEOR_MASH); SPECIES_SALAMENCE 50 (MOVE_DRAGON_CLAW); SPECIES_LATIOS 50 (MOVE_PSYCHIC)
+- trainers: none
+- end state: map MAP_BATTLE_FRONTIER_BATTLE_PALACE_LOBBY; >= 7 battles
+- frames: estimate 34665, budget 52000
+- refs: data/maps/BattleFrontier_BattlePalaceLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge); data/maps/BattleFrontier_BattlePalaceBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE); src/battle_controller_player.c / battle_palace.c (the player picks no moves: the nature table decides)
+- notes: In the Palace the Pokemon act by their natures; the player only watches (auto_battle has no menu to answer).
 <!-- plan.py:end emerald -->
 
 ## Ruby
