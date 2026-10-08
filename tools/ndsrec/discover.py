@@ -10,8 +10,11 @@ autoloads, one overlay, or the ARM7), from the bytes alone.
 2. Recursive descent per function: basic blocks are followed through
    branches, conditional branches and the two switch idioms mwcc emits (ARM
    `addls pc, pc, rN, lsl #2` over a branch table; Thumb `add pc, rN` over a
-   halfword offset table); a pc-relative load marks its literal word as data;
-   BL/BLX targets become functions in the instruction set the encoding says.
+   halfword offset table, bounded by the compare that tests the upper bound);
+   an ARM `add pc, pc, rN, lsl #3` jump into a run of 8-byte blocks makes
+   every block start an entry point; a pc-relative load marks its literal
+   word as data; BL/BLX targets become functions in the instruction set the
+   encoding says.
    A branch to a known function start, or to a `push {..., lr}` /
    `stmdb sp!, {..., lr}` (which mwcc emits once, at entry), is a tail call.
 3. Gap filling: mwcc lays functions out back to back, each followed by its
@@ -19,7 +22,8 @@ autoloads, one overlay, or the ARM7), from the bytes alone.
    discovered functions is either padding, a pool, or a function nothing
    reaches by a direct call (dead code, or reached only through a computed
    address). A gap that starts with a prologue, or decodes cleanly to a
-   return and fills the gap, becomes a function, and the descent repeats.
+   return and fills the gap, becomes a function, and the descent repeats; a
+   pointer word to the gap's start decides its instruction set.
 
 The result per module: {addr: Func} plus the literal and data words found
 inside the code, which the emitter turns into labelled data.
@@ -154,6 +158,14 @@ class Module(object):
                     # call stub `bx pc; nop; ldr ip, [pc]; bx ip; .word T`)
                     # is a function of its own, entered by this tail jump
                     f.tails.add(a + 4)
+                elif k == "ijump" and not thumb:
+                    # `add pc, pc, rN, lsl #k` with k > 2 jumps into a run
+                    # of straight-line blocks of 1 << k bytes from a + 8,
+                    # each falling into the next (the static's small-copy
+                    # tails, sub_02082EA4 / sub_02083194: 8-byte
+                    # ldrb/strb pairs ending in `bx lr`). Every block start
+                    # is an entry point.
+                    f.tails.update(self.arm_block_jump(a))
                 if ins.ends_flow:
                     break
                 a += ins.size
@@ -245,6 +257,53 @@ class Module(object):
                     return min(k, n_b) if n_b else k
         return n_b
 
+    def arm_block_jump(self, a):
+        """Entry points of `add<cc> pc, pc, rM, lsl #k` (3 <= k <= 5) at a:
+        the starts of the 1 << k byte blocks from a + 8 up to the
+        unconditional return or jump that ends the straight run there."""
+        w = self.u32(a)
+        if w is None or (w & 0x0FFFF070) != 0x008FF000:
+            return []
+        k = (w >> 7) & 0x1F
+        if not 3 <= k <= 5:
+            return []
+        b = a + 8
+        end = None
+        for _ in range(256):
+            ins = self.decode(b, False)
+            if ins is None or ins.kind in ("invalid", "call", "icall", "jt_arm"):
+                return []
+            if ins.ends_flow and not ins.cond:
+                end = b
+                break
+            b += 4
+        if end is None:
+            return []
+        step = 1 << k
+        return [t for t in range(a + 8, end + 1, step)]
+
+    def thumb_bound_extra(self, c, a):
+        """How `cmp rX, #N` at c bounds the switch at a, from the conditional
+        branch right after it: 1 if the cases are 0..N (`bhi`/`bgt` out,
+        `bls`/`ble` in), 0 if 0..N-1 (`bcs`/`bge` out, `bcc`/`blt` in), None
+        if it tests a lower bound instead. "In" is a branch into the switch
+        sequence (c, a]. Without a conditional branch there, 0..N."""
+        hw = self.u16(c + 2)
+        if hw is None or (hw & 0xF000) != 0xD000 or ((hw >> 8) & 0xF) >= 0xE:
+            return 1
+        cond = (hw >> 8) & 0xF
+        t = c + 2 + 4 + disasm.sext(hw & 0xFF, 8) * 2
+        inside = c < t <= a
+        upper_incl = (9, 0xD) if inside else (8, 0xC)    # ls, le / hi, gt
+        upper_excl = (3, 0xB) if inside else (2, 0xA)    # cc, lt / cs, ge
+        if cond in upper_incl:
+            return 1
+        if cond in upper_excl:
+            return 0
+        if cond in (2, 3, 8, 9, 0xA, 0xB, 0xC, 0xD):
+            return None
+        return 1
+
     def thumb_jt(self, f, a):
         """Targets of the mwcc Thumb switch ending in `add pc, rN` at a."""
         # add rX, pc at a-8 (add rX,rX,rX; add rX,pc; ldrh rX,[rX,#k];
@@ -264,7 +323,10 @@ class Module(object):
             return [], None, 0
         tab = base + k
         # the bound: `cmp rX, #N` before the switch, less any `sub rX, #K`
-        # that rebases the index between the compare and the table
+        # that rebases the index between the compare and the table. A
+        # compare whose branch tests a lower bound (`cmp rX, #0; bge` into
+        # the switch, after a signed `cmp rX, #N; bgt default` further up)
+        # is not the bound: the search goes on past it.
         n = 0
         bias = 0
         for back in range(2, 40, 2):
@@ -274,7 +336,10 @@ class Module(object):
             if (hw & 0xF800) == 0x3800:                               # sub rX, #imm
                 bias += hw & 0xFF
             elif (hw & 0xF800) == 0x2800:                             # cmp rX, #imm
-                n = (hw & 0xFF) + 1 - bias
+                extra = self.thumb_bound_extra(a - back, a)
+                if extra is None:
+                    continue
+                n = (hw & 0xFF) + extra - bias
                 break
         if n <= 0:
             return [], None, 0
@@ -571,6 +636,12 @@ class Module(object):
         code_hi = self.code_end()
         mod_hi = max(s.end for s in self.view.segs)
         added = False
+        # A pointer word to a hole address says which instruction set it is
+        # entered in (bit 0), which a decode in the walking function's set
+        # can only guess: ov121's ARM leaves 0x021DDC30/0x021DDC44, reached
+        # by `blx` through even literals after a Thumb function, decode as
+        # Thumb too.
+        ptrs = set(self.pointer_words(self.view.segs))
         starts = sorted(self.funcs)
         for i, s0 in enumerate(starts):
             f = self.funcs[s0]
@@ -585,6 +656,10 @@ class Module(object):
                 if (a & 3) == 0 and self.has_prologue(a, False, weak=True):
                     th = False
                 elif self.has_prologue(a, True, weak=True):
+                    th = True
+                elif (a & 3) == 0 and a in ptrs and (a | 1) not in ptrs and self.plausible(a, False, 64):
+                    th = False
+                elif (a | 1) in ptrs and a not in ptrs and self.plausible(a, True, 64):
                     th = True
                 elif (a < code_hi and (f.thumb or (a & 3) == 0)
                       and self.plausible(a, f.thumb, 64)):
