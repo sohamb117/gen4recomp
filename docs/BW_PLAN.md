@@ -494,3 +494,61 @@ ov94_021F8884..021F903C, 021F9478, 021F94F8, 021FC374/448). Which pending
 job never completes (sound, an async load, an effect) is the next thing to
 establish. Guest memory in np_headless starts at host 0x300000000 (lldb
 `x/wx 0x300000000+ADDR`).
+
+## First battle runs: VCOUNT, three ndsrec rules, and the stop at ov230 (2026-10-08)
+
+The send-out wait above was the machine model. `ov94_021F78E4` stores the
+battle effect VM's busy state (`ov94_021F9478` -> `sub_02011298`) into
+`*(0x0220AF20) + 0x1E8` every frame; the send-out effect sat in VM wait mode
+2 on `ov94_021FC9F4`, which waits for bit 16 of the VM's work word. Only
+the VBlank task `ov94_021FE9BC` clears it (registered with `sub_020056A0`;
+the main loop runs these tasks right after its VBlank wait, in
+`sub_0200567C`), and it transfers only while REG_VCOUNT is 192..200. The IO
+window is plain RAM and nothing counted lines, so VCOUNT read 0 forever
+(the static's `sub_02016880` / `sub_0201691C` have the same check). Proven
+with a write watchpoint on the busy word and, without a rebuild, by
+storing 0xC0 into 0x04000006 with lldb: both Pokémon were sent out. Fix
+(`pc_os_lite.c`, OS_Halt): VBlank delivery sets VCOUNT to 192 and
+DISPSTAT's VBlank flag (Black's `ov10_02166A6C` updates BG2's affine only
+while that bit is 1). HBlank is still not modeled, so per-line readers
+(D/P/Pt's window and scroll effects) still don't run.
+
+Past the send-out the battle aborted at 0x021CCE60 (White 0x021CCE80).
+Three general discovery rules in `tools/ndsrec/discover.py`:
+
+- **Thumb switch bound**: the bound is the compare that tests the upper
+  bound. In `ov93_021CCC0C` a signed `cmp r6, #0x34; bgt default` comes
+  first and a `cmp r6, #0; bge` into the switch follows; the nearest
+  compare was taken as the bound (one case), so the other cases were
+  `.byte`.
+- **ARM block jumps**: in `add pc, pc, rN, lsl #3` (or #4, #5), every block
+  start from a + 8 is an entry point. These are the static's small-copy
+  tails `sub_02082EA4` / `sub_02083194`, which overlays 9, 21, 119, 135
+  and 172 call; armrec's multi-entry merge handles the fall-through.
+- **Gap ISA from pointers**: a pointer word to a gap's start decides
+  whether the gap is ARM or Thumb. `ov121_021DDC30` / `021DDC44` are ARM
+  leaves called by `blx` through even literals; six bogus Thumb functions
+  disappear.
+
+Black has 37,181 functions (was 37,167). `ndsrec_arm9_004.s` is
+byte-identical, so the startup patch and both snapshots stand. bw-coverage's
+census finds nothing undecoded left in overlays 93-96. Diamond's ROM-only
+emission changes only through the switch rule (8 files, new cases only).
+Its four cases keep their hashes (d-boot 49e21389a9f73440, d-intro
+74de04024a1ba0df, d-state-boot ae26086a86be9952, d-state-save
+2dc2ff9408c62d1a).
+
+Result, both games, same save and schedule as above: Snivy and Tepig are
+sent out (frame ~10400). "What will Tepig do?" appears with
+FIGHT/BAG/RUN/POKÉMON on the touch screen (Black frame 10609). Turns run
+("The foe's Snivy used Tackle!", frame 10801), and mashing A wins: "got
+$500 for winning!" at frame 13701 (Black Tepig 14/22, White 12/22).
+
+**Current stop:** right after the win, overlay 92 loads at 0x021B95A0 and
+`ov10_0216EB98` (White `ov10_0216EBB8`) calls `sub_02034AC4` (White
+`sub_02034ADC`), which starts overlay 230. That happens at frame 13756 in
+Black and 13796 in White. The core then traps, because ov230's five static
+initialisers have no translation (ov230 is opaque and self-modifying).
+Besides `sub_02011D9C` (which the startup patch covers), the code that
+loads ov230 is here and in `ov020_021841C0` (field). By direction, this
+path is left as found rather than worked around.
