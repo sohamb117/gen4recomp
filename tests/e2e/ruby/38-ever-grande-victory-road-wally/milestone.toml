@@ -2,10 +2,9 @@
 # TRAINER_WALLY_1, FLAG_DEFEATED_WALLY_VICTORY_ROAD.
 # Start: Sootopolis gym door -> end: MAP_EVER_GRANDE_CITY at the League door.
 title = "Ever Grande and Victory Road: Wally"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 40000
+estimate = 45860
 refs = [
   "data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE",
   "data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2",
@@ -17,7 +16,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 68800
 
 
 

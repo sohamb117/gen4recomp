@@ -4496,7 +4496,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 ## Ruby
 
 <!-- plan.py:begin ruby -->
-### Story chain: 44 milestones, ~687301 frames estimated
+### Story chain: 44 milestones, ~693161 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -4537,7 +4537,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [35-seafloor-cavern-maxie](ruby/35-seafloor-cavern-maxie/milestone.toml) | Seafloor Cavern: Maxie wakes Groudon (Ruby) | P0 | ruby | 21830 | prev + `None` | MAP_ROUTE128 | passing |
 | [36-sootopolis-cave-of-origin-groudon](ruby/36-sootopolis-cave-of-origin-groudon/milestone.toml) | Sootopolis and the Cave of Origin: Groudon (Ruby) | P0 | ruby | 19297 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | passing |
 | [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 17875 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
-| [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 40000 | prev + `None` | MAP_EVER_GRANDE_CITY | planned |
+| [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 45860 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
 | [39-pokemon-league-entrance](ruby/39-pokemon-league-entrance/milestone.toml) | Pokemon League: heal and into Sidney's room | P0 | both | 6000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
 | [40-e4-sidney](ruby/40-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | planned |
 | [41-e4-phoebe](ruby/41-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | planned |
@@ -4921,7 +4921,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_WALLY_VICTORY_ROAD
-- frames: estimate 40000, budget 60000
+- frames: estimate 45860, budget 68800
 - refs: data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE; data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2
 - notes: Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's lower shore is reached by Surf from Route 128 and up its waterfall (HM07 on the lead, boost); Victory Road needs Strength and Rock Smash (a Linoone carrier, boost).
 
@@ -4991,7 +4991,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin sapphire -->
-### Story chain: 44 milestones, ~692000 frames estimated
+### Story chain: 44 milestones, ~697860 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -5032,7 +5032,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [35-seafloor-cavern-archie](sapphire/35-seafloor-cavern-archie/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre (Sapphire) | P0 | sapphire | 25936 | prev + `None` | MAP_ROUTE128 | passing |
 | [36-sootopolis-cave-of-origin-kyogre](sapphire/36-sootopolis-cave-of-origin-kyogre/milestone.toml) | Sootopolis and the Cave of Origin: Kyogre (Sapphire) | P0 | sapphire | 21654 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | passing |
 | [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 17875 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
-| [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 40000 | prev + `None` | MAP_EVER_GRANDE_CITY | planned |
+| [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 45860 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
 | [39-pokemon-league-entrance](ruby/39-pokemon-league-entrance/milestone.toml) | Pokemon League: heal and into Sidney's room | P0 | both | 6000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
 | [40-e4-sidney](ruby/40-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | planned |
 | [41-e4-phoebe](ruby/41-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | planned |
@@ -5416,7 +5416,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_WALLY_VICTORY_ROAD
-- frames: estimate 40000, budget 60000
+- frames: estimate 45860, budget 68800
 - refs: data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE; data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2
 - notes: Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's lower shore is reached by Surf from Route 128 and up its waterfall (HM07 on the lead, boost); Victory Road needs Strength and Rock Smash (a Linoone carrier, boost).
 
