@@ -1,0 +1,21 @@
+--- a/src/scrcmd.c	2026-10-08 01:47:59.967381000 -0400
++++ b/src/scrcmd.c	2026-10-08 01:48:00.060843696 -0400
+@@ -368,7 +368,17 @@
+ bool8 ScrCmd_copyvar(struct ScriptContext *ctx)
+ {
+     u16 *ptr = GetVarPointer(ScriptReadHalfword(ctx));
+-    *ptr = *GetVarPointer(ScriptReadHalfword(ctx));
++    u16 src = ScriptReadHalfword(ctx);
++    u16 *srcPtr = GetVarPointer(src);
++
++    /* nativeplat: a source that is no variable (data/scripts/cave_hole.inc
++     * `copyvar VAR_ICE_STEP_COUNT, 1`) has GetVarPointer return NULL, and
++     * the console reads the BIOS there: open bus, never 0. In the port
++     * NULL is zeroed memory, which made VAR_ICE_STEP_COUNT 0 and the cave
++     * floors give way at once (tests/e2e/DEFECTS.md). Such a source is
++     * read as its number, as VarGet reads it (and as the UBFIX build of the
++     * script, `setvar VAR_ICE_STEP_COUNT, 1`, means it). */
++    *ptr = srcPtr != NULL ? *srcPtr : VarGet(src);
+     return FALSE;
+ }
+ 

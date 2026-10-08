@@ -41,6 +41,10 @@ enum np_e2e_ui {
     /* the battle's party screen; ui_arg 0 the six slots, 1 the chosen
      * Pokemon's SHIFT/SUMMARY/MOVES page */
     NP_E2E_UI_BATTLE_PARTY = 2,
+    /* v4 (GBA): a field menu a script waits on (a multichoice, a YES/NO);
+     * ui_arg the number of entries, ui_cursor the highlighted one (0 the
+     * first: YES) */
+    NP_E2E_UI_FIELD_MENU = 3,
 };
 
 /* np_e2e_block.grid[] cells. */

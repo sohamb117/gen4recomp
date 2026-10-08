@@ -2,9 +2,8 @@
 # Mach Bike (FLAG_RECEIVED_BIKE, multichoice MULTI_BIKE case 0); the bike is needed at Sky Pillar (39).
 # Start: Mauville Pokemon Center (22,6) -> end: MAP_MAUVILLE_CITY outside the bike shop (35,6).
 title = "Mauville: Wally's battle and the Mach Bike"
-status = "planned"
 priority = "P0"
-estimate = 5000
+estimate = 5103
 refs = [
   "data/maps/MauvilleCity/map.json object_events[6] WALLY (8,6), [7] uncle (9,6)",
   "data/maps/MauvilleCity/scripts.inc:84-160",
@@ -20,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 7700
 
 [[step]]
 do = "walk_to"

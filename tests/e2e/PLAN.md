@@ -3094,7 +3094,7 @@ grid queries and battle loops, saves are read and edited host-side by tools/gba 
 are fought with buttons. Player Brendan, starter Mudkip.
 
 <!-- plan.py:begin emerald -->
-### Story chain: 48 milestones, ~540321 frames estimated
+### Story chain: 48 milestones, ~604593 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3104,17 +3104,17 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [04-route103-may-pokedex-shoes](emerald/04-route103-may-pokedex-shoes/milestone.toml) | Route 103: first May battle, the Pokedex, the Running Shoes | P0 |  | 12757 | prev + `None` | MAP_LITTLEROOT_TOWN | passing |
 | [05-route102-petalburg-wally](emerald/05-route102-petalburg-wally/milestone.toml) | Route 102 to Petalburg: Norman and Wally's catching tutorial | P0 |  | 16421 | prev + `None` | MAP_PETALBURG_CITY | passing |
 | [06-route104-petalburg-woods](emerald/06-route104-petalburg-woods/milestone.toml) | Route 104 and Petalburg Woods: the Aqua grunt and the Devon researcher | P0 |  | 24092 | prev + `None` | MAP_RUSTBORO_CITY | passing |
-| [07-rustboro-cut-roxanne](emerald/07-rustboro-cut-roxanne/milestone.toml) | Rustboro: HM01 Cut and Roxanne's Stone Badge | P0 |  | 9000 | prev + `None` | MAP_RUSTBORO_CITY | planned |
-| [08-devon-goods-rusturf-tunnel](emerald/08-devon-goods-rusturf-tunnel/milestone.toml) | Stolen Devon Goods: the Rusturf Tunnel grunt and Peeko | P0 |  | 8000 | prev + `None` | MAP_ROUTE116 | planned |
-| [09-devon-pokenav-rival-rustboro](emerald/09-devon-pokenav-rival-rustboro/milestone.toml) | Devon Corp: Mr. Stone, the PokeNav and May's Rustboro battle | P0 |  | 9000 | prev + `None` | MAP_RUSTBORO_CITY | planned |
-| [10-briney-sail-dewford](emerald/10-briney-sail-dewford/milestone.toml) | Mr. Briney sails to Dewford | P0 |  | 4500 | prev + `None` | MAP_DEWFORD_TOWN | planned |
-| [11-granite-cave-flash-steven](emerald/11-granite-cave-flash-steven/milestone.toml) | Granite Cave: HM05 Flash and Steven's letter | P0 |  | 12000 | prev + `None` | MAP_DEWFORD_TOWN | planned |
-| [12-dewford-gym-brawly](emerald/12-dewford-gym-brawly/milestone.toml) | Dewford Gym: Brawly and the Knuckle Badge | P0 |  | 10000 | prev + `None` | MAP_DEWFORD_TOWN | planned |
-| [13-slateport-museum-stern](emerald/13-slateport-museum-stern/milestone.toml) | Sail to Slateport: the shipyard, the Oceanic Museum grunts, Devon Goods to Stern | P0 |  | 12000 | prev + `None` | MAP_SLATEPORT_CITY | planned |
-| [14-route110-birch-may](emerald/14-route110-birch-may/milestone.toml) | Route 110: Birch's Match Call and May's second battle | P0 |  | 10000 | prev + `None` | MAP_MAUVILLE_CITY | planned |
-| [15-mauville-wally-mach-bike](emerald/15-mauville-wally-mach-bike/milestone.toml) | Mauville: Wally's battle and the Mach Bike | P0 |  | 5000 | prev + `None` | MAP_MAUVILLE_CITY | planned |
-| [16-mauville-gym-wattson-rock-smash](emerald/16-mauville-gym-wattson-rock-smash/milestone.toml) | Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash | P0 |  | 11000 | prev + `None` | MAP_MAUVILLE_CITY | planned |
-| [17-verdanturf-rusturf-strength](emerald/17-verdanturf-rusturf-strength/milestone.toml) | Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength | P0 |  | 7000 | prev + `None` | MAP_VERDANTURF_TOWN | planned |
+| [07-rustboro-cut-roxanne](emerald/07-rustboro-cut-roxanne/milestone.toml) | Rustboro: HM01 Cut and Roxanne's Stone Badge | P0 |  | 16213 | prev + `None` | MAP_RUSTBORO_CITY | passing |
+| [08-devon-goods-rusturf-tunnel](emerald/08-devon-goods-rusturf-tunnel/milestone.toml) | Stolen Devon Goods: the Rusturf Tunnel grunt and Peeko | P0 |  | 18884 | prev + `None` | MAP_ROUTE116 | passing |
+| [09-devon-pokenav-rival-rustboro](emerald/09-devon-pokenav-rival-rustboro/milestone.toml) | Devon Corp: Mr. Stone, the PokeNav and May's Rustboro battle | P0 |  | 12951 | prev + `None` | MAP_RUSTBORO_CITY | passing |
+| [10-briney-sail-dewford](emerald/10-briney-sail-dewford/milestone.toml) | Mr. Briney sails to Dewford | P0 |  | 5304 | prev + `None` | MAP_DEWFORD_TOWN | passing |
+| [11-granite-cave-flash-steven](emerald/11-granite-cave-flash-steven/milestone.toml) | Granite Cave: HM05 Flash and Steven's letter | P0 |  | 15007 | prev + `None` | MAP_DEWFORD_TOWN | passing |
+| [12-dewford-gym-brawly](emerald/12-dewford-gym-brawly/milestone.toml) | Dewford Gym: Brawly and the Knuckle Badge | P0 |  | 10618 | prev + `None` | MAP_DEWFORD_TOWN | passing |
+| [13-slateport-museum-stern](emerald/13-slateport-museum-stern/milestone.toml) | Sail to Slateport: the shipyard, the Oceanic Museum grunts, Devon Goods to Stern | P0 |  | 15319 | prev + `None` | MAP_SLATEPORT_CITY | passing |
+| [14-route110-birch-may](emerald/14-route110-birch-may/milestone.toml) | Route 110: Birch's Match Call and May's second battle | P0 |  | 27997 | prev + `None` | MAP_MAUVILLE_CITY | passing |
+| [15-mauville-wally-mach-bike](emerald/15-mauville-wally-mach-bike/milestone.toml) | Mauville: Wally's battle and the Mach Bike | P0 |  | 5103 | prev + `None` | MAP_MAUVILLE_CITY | passing |
+| [16-mauville-gym-wattson-rock-smash](emerald/16-mauville-gym-wattson-rock-smash/milestone.toml) | Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash | P0 |  | 11200 | prev + `None` | MAP_MAUVILLE_CITY | passing |
+| [17-verdanturf-rusturf-strength](emerald/17-verdanturf-rusturf-strength/milestone.toml) | Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength | P0 |  | 23176 | prev + `None` | MAP_VERDANTURF_TOWN | passing |
 | [18-route111-112-fiery-path](emerald/18-route111-112-fiery-path/milestone.toml) | Route 111 rocks, Route 112 and the Fiery Path north | P0 |  | 10000 | prev + `None` | MAP_ROUTE113 | planned |
 | [19-route113-fallarbor-route114](emerald/19-route113-fallarbor-route114/milestone.toml) | Route 113 ash, Fallarbor Town and Route 114 | P0 |  | 10000 | prev + `None` | MAP_METEOR_FALLS_1F_1R | planned |
 | [20-meteor-falls-magma-archie](emerald/20-meteor-falls-magma-archie/milestone.toml) | Meteor Falls: Magma takes the meteorite, Archie appears | P0 |  | 4000 | prev + `None` | MAP_ROUTE114 | planned |
@@ -3213,7 +3213,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_ROXANNE_1 (265), src/data/trainers.h:3184; TRAINER_JOSH (320), src/data/trainers.h:3844; TRAINER_TOMMY (321), src/data/trainers.h:3856; TRAINER_MARC (571), src/data/trainers.h:6856
 - end state: map MAP_RUSTBORO_CITY; 1 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_DEFEATED_RUSTBORO_GYM, FLAG_RECEIVED_TM_ROCK_TOMB, FLAG_RECEIVED_HM_CUT; vars VAR_RUSTBORO_CITY_STATE=1, VAR_PETALBURG_GYM_STATE=3
-- frames: estimate 9000, budget 60000
+- frames: estimate 16213, budget 24400
 - refs: data/maps/RustboroCity/map.json warp_events[8] (9,38) -> CUTTERS_HOUSE; data/maps/RustboroCity_CuttersHouse/scripts.inc:4-13; data/maps/RustboroCity/map.json warp_events[0] (27,19) -> gym; data/maps/RustboroCity_Gym/map.json object_events 1..5; data/maps/RustboroCity_Gym/scripts.inc:4-34; TRAINER_ROXANNE_1 (265), src/data/trainers.h:3184; TRAINER_JOSH (320), src/data/trainers.h:3844; TRAINER_TOMMY (321), src/data/trainers.h:3856; TRAINER_MARC (571), src/data/trainers.h:6856; src/party_menu.c:120 (Cut needs FLAG_BADGE01_GET)
 - notes: Roxanne: TRAINER_ROXANNE_1 (265): GEODUDE 12, GEODUDE 12, NOSEPASS 15; Water Gun / Mud-Slap are x2-x4 on all three (Mudkip learns Water Gun at 6, Mud-Slap at 10 [INFERENCE: Emerald learnset]); boost to ~14. Gym trainers: TRAINER_JOSH (320): GEODUDE 10; TRAINER_TOMMY (321): GEODUDE 8, GEODUDE 8; TRAINER_MARC (571): GEODUDE 8, GEODUDE 8. HM01 Cut (FLAG_RECEIVED_HM_CUT) is usable after this badge (src/party_menu.c:120); the story path does not need it [INFERENCE], carriers come from boosts.
 
@@ -3223,7 +3223,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GRUNT_RUSTURF_TUNNEL (16), src/data/trainers.h:196
 - end state: map MAP_ROUTE116; 1 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_RECOVERED_DEVON_GOODS, FLAG_INTERACTED_WITH_DEVON_EMPLOYEE_GOODS_STOLEN, FLAG_HIDE_ROUTE_116_MR_BRINEY; flags clear FLAG_DEVON_GOODS_STOLEN; vars VAR_RUSTBORO_CITY_STATE=4, VAR_RUSTURF_TUNNEL_STATE=3, VAR_ROUTE116_STATE=2, VAR_BRINEY_HOUSE_STATE=1
-- frames: estimate 8000, budget 60000
+- frames: estimate 18884, budget 28400
 - refs: data/maps/RustboroCity/map.json coord_events (23,20..24) VAR_RUSTBORO_CITY_STATE=1; data/maps/RustboroCity/scripts.inc:231-298; data/maps/RustboroCity/map.json coord_events (30,9)/(29,10)/(30,11)/(30,12) VAR_RUSTBORO_CITY_STATE=2; data/maps/RustboroCity/scripts.inc:452-488; data/maps/Route116/map.json coord_events (47,9) VAR_ROUTE116_STATE=1; data/maps/Route116/scripts.inc:132-148; data/maps/Route116/map.json warp_events[0] (47,8) -> RUSTURF_TUNNEL; data/maps/RusturfTunnel/map.json coord_events (9,4)/(9,5) VAR_RUSTURF_TUNNEL_STATE=2; data/maps/RusturfTunnel/scripts.inc:258-270; data/maps/RusturfTunnel/scripts.inc:287-326; TRAINER_GRUNT_RUSTURF_TUNNEL (16), src/data/trainers.h:196
 - notes: Grunt: TRAINER_GRUNT_RUSTURF_TUNNEL (16): POOCHYENA 11. Route 116 sight trainers between Rustboro and the tunnel: Joey, Jose, Janice, Karen, Jerry, Clark, Sarah, Dawson, Johnson, Devan (lv 8-9). The tunnel's east half stays blocked by rocks until Rock Smash (17).
 
@@ -3233,7 +3233,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_RUSTBORO_MUDKIP (600), src/data/trainers.h:7204
 - end state: map MAP_RUSTBORO_CITY; 1 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_RETURNED_DEVON_GOODS, FLAG_SYS_POKENAV_GET, FLAG_RECEIVED_POKENAV, FLAG_HAS_MATCH_CALL, FLAG_ADDED_MATCH_CALL_TO_POKENAV, FLAG_MET_RIVAL_RUSTBORO, FLAG_DEFEATED_RIVAL_RUSTBORO, FLAG_ENABLE_RIVAL_MATCH_CALL; flags clear FLAG_HIDE_BRINEYS_HOUSE_MR_BRINEY, FLAG_HIDE_BRINEYS_HOUSE_PEEKO, FLAG_HIDE_RUSTURF_TUNNEL_WANDA; vars VAR_RUSTBORO_CITY_STATE=8, VAR_DEVON_CORP_3F_STATE=1, VAR_ROUTE104_STATE=2, VAR_BRINEY_LOCATION=1
-- frames: estimate 9000, budget 60000
+- frames: estimate 12951, budget 19500
 - refs: data/maps/RustboroCity/map.json coord_events (30,9)/(31,10)/(30,11)/(30,12) VAR_RUSTBORO_CITY_STATE=4; data/maps/RustboroCity/scripts.inc:526-568; data/maps/RustboroCity_DevonCorp_3F/scripts.inc:24-68; data/maps/RustboroCity_DevonCorp_3F/map.json warp_events[0] (2,1); data/maps/RustboroCity_DevonCorp_2F/map.json warp_events (14,1)/(2,1); data/maps/RustboroCity_DevonCorp_1F/map.json warp_events (5,8)/(6,8); data/maps/RustboroCity/scripts.inc:27-91; data/maps/RustboroCity/map.json coord_events (12..19,53) VAR_RUSTBORO_CITY_STATE=7; data/maps/RustboroCity/scripts.inc:634-764; data/maps/RustboroCity/scripts.inc:790-794; TRAINER_MAY_RUSTBORO_MUDKIP (600), src/data/trainers.h:7204
 - notes: May: TRAINER_MAY_RUSTBORO_MUDKIP (600): WINGULL 13, TREECKO 15 (Treecko resists Water and Ground; Wingull resists Ground: bring a Tackle/Peck-type mover or boost). The Match Call tutorial (special ScriptMenu_CreateStartMenuForPokenavTutorial + OpenPokenavForTutorial) needs START-menu-like input. May's battle is a YES/NO offer (RustboroCity/scripts.inc:745); YES.
 
@@ -3243,7 +3243,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_DEWFORD_TOWN; 1 badges; flags set FLAG_BADGE01_GET, FLAG_MR_BRINEY_SAILING_INTRO, FLAG_VISITED_DEWFORD_TOWN, FLAG_HIDE_BRINEYS_HOUSE_MR_BRINEY, FLAG_HIDE_ROUTE_104_MR_BRINEY_BOAT; flags clear FLAG_HIDE_MR_BRINEY_DEWFORD_TOWN, FLAG_HIDE_MR_BRINEY_BOAT_DEWFORD_TOWN; vars VAR_BOARD_BRINEY_BOAT_STATE=0, VAR_ROUTE104_STATE=2
-- frames: estimate 4500, budget 60000
+- frames: estimate 5304, budget 8000
 - refs: data/maps/Route104/map.json warp_events[0] (17,50) -> MR_BRINEYS_HOUSE; data/maps/Route104_MrBrineysHouse/scripts.inc:22-36; data/maps/Route104_MrBrineysHouse/scripts.inc:71-82; data/maps/Route104/scripts.inc:6-14; data/maps/Route104/scripts.inc:374-396; data/maps/DewfordTown/map.json object_events 2/4 Briney + boat
 - notes: No battles. Briney's first talk: SailingIntro YESNO (cursor on YES) -> sail (Route104_MrBrineysHouse/scripts.inc:31-36). ArriveInDewford sets VAR_BOARD_BRINEY_BOAT_STATE back to 0 and reminds about the letter (Route104/scripts.inc:394-399).
 
@@ -3253,7 +3253,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_DEWFORD_TOWN; 1 badges; flags set FLAG_BADGE01_GET, FLAG_RECEIVED_HM_FLASH, FLAG_DELIVERED_STEVEN_LETTER, FLAG_REGISTERED_STEVEN_POKENAV, FLAG_HIDE_GRANITE_CAVE_STEVEN
-- frames: estimate 12000, budget 60000
+- frames: estimate 15007, budget 22600
 - refs: data/maps/DewfordTown/map.json connections up MAP_ROUTE106 offset -60; data/maps/Route106/map.json warp_events[0] (48,16) -> GRANITE_CAVE_1F; data/maps/GraniteCave_1F/map.json object_events[1] HIKER (36,9); data/maps/GraniteCave_1F/scripts.inc:4-15; data/maps/GraniteCave_1F/map.json warp_events (35,3)/(17,11)/(5,10); data/maps/GraniteCave_B1F/map.json warp_events 0..6; data/maps/GraniteCave_B1F/scripts.inc:9 (setholewarp B2F: cracked floor); data/maps/GraniteCave_B2F/map.json warp_events 0..4; data/maps/GraniteCave_StevensRoom/map.json object_events[1] STEVEN (7,8); data/maps/GraniteCave_StevensRoom/scripts.inc:4-32; src/party_menu.c:121 (Flash needs FLAG_BADGE02_GET)
 - notes: HM05 Flash: FLAG_RECEIVED_HM_FLASH here; Flash needs the Knuckle Badge (src/party_menu.c:121) so the cave is walked dark (1F/B1F/B2F are dark; walk_to uses the probe's collision, not the screen [INFERENCE]). Route to Steven's room: 1F (35,3) -> B1F (25,13); B1F (29,13) -> B2F (29,13); B2F north to (8,5)/(12,3) -> B1F west; B1F (4,21) -> 1F (17,11); 1F west to (5,10) [INFERENCE from the warp table; B1F's cracked floor drops to B2F without the Mach Bike].
 
@@ -3263,7 +3263,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_BRAWLY_1 (266), src/data/trainers.h:3196; TRAINER_TAKAO (179), src/data/trainers.h:2152; TRAINER_JOCELYN (425), src/data/trainers.h:5104; TRAINER_LAURA (426), src/data/trainers.h:5116; TRAINER_BRENDEN (572), src/data/trainers.h:6868; TRAINER_CRISTIAN (574), src/data/trainers.h:6892; TRAINER_LILITH (573), src/data/trainers.h:6880
 - end state: map MAP_DEWFORD_TOWN; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_DEFEATED_DEWFORD_GYM, FLAG_RECEIVED_TM_BULK_UP; vars VAR_PETALBURG_GYM_STATE=4
-- frames: estimate 10000, budget 60000
+- frames: estimate 10618, budget 16000
 - refs: data/maps/DewfordTown/map.json warp_events[2] (8,17) -> gym; data/maps/DewfordTown_Gym/map.json object_events 1..8; data/maps/DewfordTown_Gym/scripts.inc:9-133; data/maps/DewfordTown_Gym/scripts.inc:135-182; TRAINER_BRAWLY_1 (266), src/data/trainers.h:3196; TRAINER_TAKAO (179), src/data/trainers.h:2152; TRAINER_JOCELYN (425), src/data/trainers.h:5104; TRAINER_LAURA (426), src/data/trainers.h:5116; TRAINER_BRENDEN (572), src/data/trainers.h:6868; TRAINER_CRISTIAN (574), src/data/trainers.h:6892; TRAINER_LILITH (573), src/data/trainers.h:6880
 - notes: Brawly: TRAINER_BRAWLY_1 (266): MACHOP 16, MEDITITE 16, MAKUHITA 19 (Fighting; Water Gun/Mud-Slap neutral, Marshtomp at 16 helps; boost ~18). Gym trainers lv13: Takao (2,18), Jocelyn (15,3), Laura (12,25), Cristian (7,8), Lilith (16,9), Brenden (14,12). The gym stays dark until trainers fall; walk_to plans on probe collision [INFERENCE: dark palette does not hide collision].
 
@@ -3273,7 +3273,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_GRUNT_MUSEUM_1 (20), src/data/trainers.h:244; TRAINER_GRUNT_MUSEUM_2 (21), src/data/trainers.h:256
 - end state: map MAP_SLATEPORT_CITY; 2 badges; >= 2 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_VISITED_SLATEPORT_CITY, FLAG_DOCK_REJECTED_DEVON_GOODS, FLAG_HIDE_SLATEPORT_CITY_TEAM_AQUA, FLAG_DELIVERED_DEVON_GOODS, FLAG_HIDE_ROUTE_110_TEAM_AQUA, FLAG_HIDE_SLATEPORT_CITY_OCEANIC_MUSEUM_AQUA_GRUNTS, FLAG_ENABLE_SCOTT_MATCH_CALL; vars VAR_SLATEPORT_OUTSIDE_MUSEUM_STATE=2, VAR_REGISTER_BIRCH_STATE=1
-- frames: estimate 12000, budget 60000
+- frames: estimate 15319, budget 23000
 - refs: data/maps/DewfordTown/scripts.inc:9-35; data/maps/DewfordTown/scripts.inc:141-180; data/maps/Route109/map.json object_events 1/2 Briney boat (21,26)/(21,24); data/maps/SlateportCity/map.json warp_events[2] (26,38) -> STERNS_SHIPYARD_1F; data/maps/SlateportCity_SternsShipyard_1F/scripts.inc:4-18; data/maps/SlateportCity/map.json object_events 5,18,19,26..33 Aqua queue (FLAG_HIDE_SLATEPORT_CITY_TEAM_AQUA); data/maps/SlateportCity/map.json warp_events[5] (30,26) -> OCEANIC_MUSEUM_1F; data/maps/SlateportCity_OceanicMuseum_1F/scripts.inc:8-40; data/maps/SlateportCity_OceanicMuseum_1F/map.json warp_events[2] (6,1) -> 2F; data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:4-81; data/maps/SlateportCity/scripts.inc:7-10; data/maps/SlateportCity/scripts.inc:36-82; TRAINER_GRUNT_MUSEUM_1 (20), src/data/trainers.h:244; TRAINER_GRUNT_MUSEUM_2 (21), src/data/trainers.h:256
 - notes: Grunts (back to back, trainerbattle_no_intro): TRAINER_GRUNT_MUSEUM_1 (20): CARVANHA 15; TRAINER_GRUNT_MUSEUM_2 (21): ZUBAT 14, CARVANHA 14. Briney's Dewford menu (multichoicedefault default 2 = CANCEL, DewfordTown/scripts.inc:15): UP once -> SLATEPORT. The museum fee is 50; with less money the attendant lets you in anyway before the delivery (SlateportCity_OceanicMuseum_1F/scripts.inc:42-53). Route 109 beach trainers (Huey, Edmond, Ricky, Lola, Hailey, Chandler) stand off the straight path [INFERENCE].
 
@@ -3283,7 +3283,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_MAY_ROUTE_110_MUDKIP (530), src/data/trainers.h:6364
 - end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_ENABLE_PROF_BIRCH_MATCH_CALL, FLAG_VISITED_MAUVILLE_CITY, FLAG_SYS_TV_START; vars VAR_REGISTER_BIRCH_STATE=2, VAR_ROUTE110_STATE=1
-- frames: estimate 10000, budget 60000
+- frames: estimate 27997, budget 42000
 - refs: data/maps/Route110/map.json coord_events (7..10,85) VAR_REGISTER_BIRCH_STATE=1; data/maps/Route110/scripts.inc:559-614; data/maps/Route110/map.json object_events 22..26 Aqua grunts (FLAG_HIDE_ROUTE_110_TEAM_AQUA); data/maps/Route110/map.json coord_events (33..35,56) VAR_ROUTE110_STATE=0; data/maps/Route110/scripts.inc:351-420; data/maps/Route110/scripts.inc:452-470; TRAINER_MAY_ROUTE_110_MUDKIP (530), src/data/trainers.h:6364; data/maps/MauvilleCity/map.json warp_events[1] (22,5) -> POKEMON_CENTER_1F
 - notes: May: TRAINER_MAY_ROUTE_110_MUDKIP (530): WINGULL 18, SLUGMA 18, GROVYLE 20 (Grovyle is x4 on Marshtomp's Water/Ground: boost a non-Water lead or levels ~22). Route 110 trainers below the Cycling Road: Edward, Jaclyn, Edwin, Dale, Anthony/Benjamin/Jasmine/Abigail/Alyssa/Jacob (triathletes), Timmy, Isabel, Kaleb, Joseph (lv 6-16); walk_to fights those who see it. The Aqua grunts at (7..10,83) are hidden by the museum delivery (13).
 
@@ -3293,7 +3293,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WALLY_MAUVILLE (656), src/data/trainers.h:7876
 - end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_DEFEATED_WALLY_MAUVILLE, FLAG_RECEIVED_BIKE, FLAG_HIDE_MAUVILLE_CITY_WALLY, FLAG_HIDE_MAUVILLE_CITY_WALLYS_UNCLE
-- frames: estimate 5000, budget 60000
+- frames: estimate 5103, budget 7700
 - refs: data/maps/MauvilleCity/map.json object_events[6] WALLY (8,6), [7] uncle (9,6); data/maps/MauvilleCity/scripts.inc:84-160; data/maps/MauvilleCity/scripts.inc:187-200; TRAINER_WALLY_MAUVILLE (656), src/data/trainers.h:7876; data/maps/MauvilleCity/map.json warp_events[2] (35,5) -> BIKE_SHOP; data/maps/MauvilleCity_BikeShop/scripts.inc:4-45
 - notes: Wally: TRAINER_WALLY_MAUVILLE (656): RALTS 16. Rydel: "came from far away?" YES (cursor on YES) -> FLAG_RECEIVED_BIKE -> multichoice MULTI_BIKE (case 0 = MACH BIKE, MauvilleCity_BikeShop/scripts.inc:24-27): A on the first entry. The Mach Bike crosses Sky Pillar's cracked floors (and Granite Cave B1F's); Acro is never needed on the story path [INFERENCE].
 
@@ -3303,7 +3303,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: TRAINER_WATTSON_1 (267), src/data/trainers.h:3208; TRAINER_KIRK (191), src/data/trainers.h:2296; TRAINER_SHAWN (194), src/data/trainers.h:2332; TRAINER_BEN (323), src/data/trainers.h:3880; TRAINER_VIVIAN (649), src/data/trainers.h:7792; TRAINER_ANGELO (802), src/data/trainers.h:9628
 - end state: map MAP_MAUVILLE_CITY; 3 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_DEFEATED_MAUVILLE_GYM, FLAG_RECEIVED_TM_SHOCK_WAVE, FLAG_RECEIVED_HM_ROCK_SMASH, FLAG_HIDE_ROUTE_111_ROCK_SMASH_TIP_GUY; vars VAR_PETALBURG_GYM_STATE=5, VAR_SLATEPORT_OUTSIDE_MUSEUM_STATE=3
-- frames: estimate 11000, budget 60000
+- frames: estimate 11200, budget 16800
 - refs: data/maps/MauvilleCity/map.json warp_events[0] (8,5) -> gym; data/maps/MauvilleCity_Gym/map.json coord_events switches; data/maps/MauvilleCity_Gym/scripts.inc:139-196; data/maps/MauvilleCity_Gym/scripts.inc:76-128; TRAINER_WATTSON_1 (267), src/data/trainers.h:3208; TRAINER_KIRK (191), src/data/trainers.h:2296; TRAINER_SHAWN (194), src/data/trainers.h:2332; TRAINER_BEN (323), src/data/trainers.h:3880; TRAINER_VIVIAN (649), src/data/trainers.h:7792; TRAINER_ANGELO (802), src/data/trainers.h:9628; data/maps/MauvilleCity/map.json warp_events[4] (32,14) -> HOUSE1; data/maps/MauvilleCity_House1/scripts.inc:4-16; src/party_menu.c:122 (Rock Smash needs FLAG_BADGE03_GET)
 - notes: Wattson: TRAINER_WATTSON_1 (267): VOLTORB 20, ELECTRIKE 20, MAGNETON 22, MANECTRIC 24 (Marshtomp's Ground typing is immune to Electric; Mud-Slap/Mud Shot hit x2). Trainers lv17: TRAINER_KIRK (191): ELECTRIKE 17, VOLTORB 17; TRAINER_SHAWN (194): VOLTORB 17, MAGNEMITE 17; TRAINER_BEN (323): ZIGZAGOON 17, GULPIN 17; TRAINER_VIVIAN (649): MEDITITE 17, MEDITITE 17; TRAINER_ANGELO (802): ILLUMISE 17, VOLBEAT 17. HM06 Rock Smash: FLAG_RECEIVED_HM_ROCK_SMASH, needs this badge (src/party_menu.c:122); it opens Route 111 (rocks (18,101)/(19,100)) and the Rusturf Tunnel (17).
 
@@ -3312,8 +3312,8 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: map MAP_VERDANTURF_TOWN; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_VERDANTURF_TOWN, FLAG_RECEIVED_HM_STRENGTH, FLAG_RUSTURF_TUNNEL_OPENED, FLAG_HIDE_RUSTURF_TUNNEL_ROCK_1, FLAG_HIDE_RUSTURF_TUNNEL_ROCK_2; vars VAR_RUSTURF_TUNNEL_STATE=6
-- frames: estimate 7000, budget 60000
+- end state: map MAP_VERDANTURF_TOWN; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_VERDANTURF_TOWN, FLAG_RECEIVED_HM_STRENGTH, FLAG_RUSTURF_TUNNEL_OPENED, FLAG_HIDE_RUSTURF_TUNNEL_ROCK_1; vars VAR_RUSTURF_TUNNEL_STATE=6
+- frames: estimate 23176, budget 34800
 - refs: data/maps/VerdanturfTown/map.json warp_events[4] (8,1) -> RUSTURF_TUNNEL; data/maps/RusturfTunnel/map.json object_events 2/8 BREAKABLE_ROCK (24,5)/(24,4); data/maps/RusturfTunnel/map.json coord_events (23,4)/(25,4)/(25,5) TRIGGER_RUN_IMMEDIATELY; data/maps/RusturfTunnel/scripts.inc:47-70; data/maps/RusturfTunnel/scripts.inc:246-256; data/event_scripts.s:780-786 (SetRusturfTunnelOpen); data/scripts/field_move_scripts.inc (EventScript_RockSmash); src/party_menu.c:123 (Strength needs FLAG_BADGE04_GET)
 - notes: Route 117 trainers: Isaac, Lydia, Dylan, Maria, Derek, Anna & Meg (DOUBLE), Melina, Brandi, Aisha (lv 11-17). The Rock Smash carrier sits in the party (boost). Strength is usable only after the Heat Badge (src/party_menu.c:123); it is needed in Seafloor Cavern (37) and Victory Road (42), maybe the Magma Hideout (31). Getting it now keeps those milestones free of a backtrack; the tunnel also becomes the walking route back to Petalburg (24).
 

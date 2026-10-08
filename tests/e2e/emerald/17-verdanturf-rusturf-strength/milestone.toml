@@ -2,9 +2,8 @@
 # boyfriend's ClearTunnelScene: HM04 Strength (FLAG_RECEIVED_HM_STRENGTH), FLAG_RUSTURF_TUNNEL_OPENED.
 # Start: Mauville (32,15) -> end: MAP_VERDANTURF_TOWN in front of the Pokemon Center (16,4).
 title = "Route 117, Verdanturf and the Rusturf Tunnel: HM04 Strength"
-status = "planned"
 priority = "P0"
-estimate = 7000
+estimate = 23176
 refs = [
   "data/maps/VerdanturfTown/map.json warp_events[4] (8,1) -> RUSTURF_TUNNEL",
   "data/maps/RusturfTunnel/map.json object_events 2/8 BREAKABLE_ROCK (24,5)/(24,4)",
@@ -19,10 +18,11 @@ notes = "Route 117 trainers: Isaac, Lydia, Dylan, Maria, Derek, Anna & Meg (DOUB
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 34800
 
 [[step]]
 do = "walk_to"
@@ -49,11 +49,11 @@ map = "MAP_RUSTURF_TUNNEL"
 
 [[step]]
 do = "walk_to"
-x = 24
-z = 5
+x = 23
+z = 4
 hm = true
 on_text = "stop"
-note = "smash rock (24,5) then (24,4) (hm = true: A + YES at the rock) [INFERENCE: walk_to clears both on its path]; stepping on (25,5)/(23,4)/(25,4) runs TunnelBlockagePos* (RusturfTunnel/scripts.inc:246-256)"
+note = "past the rocks (hm = true: A + YES at a rock); one smashed rock is enough: src/field_specials.c:1398-1416 TryUpdateRusturfTunnelState sets RUSTURF_TUNNEL_STATE 4 (rock 1) or 5 (rock 2), whose OnFrame runs ClearTunnelScene; stepping on (25,5)/(23,4)/(25,4) runs TunnelBlockagePos* (RusturfTunnel/scripts.inc:246-256)"
 
 [[step]]
 do = "advance_text"
@@ -78,7 +78,7 @@ z = 4
 [expect]
 map = "MAP_VERDANTURF_TOWN"
 badges = 3
-flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_VISITED_VERDANTURF_TOWN", "FLAG_RECEIVED_HM_STRENGTH", "FLAG_RUSTURF_TUNNEL_OPENED", "FLAG_HIDE_RUSTURF_TUNNEL_ROCK_1", "FLAG_HIDE_RUSTURF_TUNNEL_ROCK_2"]
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_VISITED_VERDANTURF_TOWN", "FLAG_RECEIVED_HM_STRENGTH", "FLAG_RUSTURF_TUNNEL_OPENED", "FLAG_HIDE_RUSTURF_TUNNEL_ROCK_1"]
 
 [expect.vars]
 VAR_RUSTURF_TUNNEL_STATE = 6

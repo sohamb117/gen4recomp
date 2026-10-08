@@ -2,9 +2,8 @@
 # cutscene (Route104 OnFrame StartSailToDewford -> ArriveInDewford) and landing in Dewford.
 # Start: Rustboro south exit -> end: MAP_DEWFORD_TOWN at the dock, Briney + boat shown there.
 title = "Mr. Briney sails to Dewford"
-status = "planned"
 priority = "P0"
-estimate = 4500
+estimate = 5304
 refs = [
   "data/maps/Route104/map.json warp_events[0] (17,50) -> MR_BRINEYS_HOUSE",
   "data/maps/Route104_MrBrineysHouse/scripts.inc:22-36",
@@ -20,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 8000
 
 [[step]]
 do = "walk_to"
@@ -51,7 +50,7 @@ map = "MAP_ROUTE104"
 note = "SailToDewford: BOARD_BRINEY_BOAT_STATE 1, warp Route 104 (13,51) (Route104_MrBrineysHouse/scripts.inc:71-82)"
 
 [[step]]
-do = "wait_map"
+do = "advance_text"
 map = "MAP_DEWFORD_TOWN"
 max = 6000
 note = "Route 104 OnFrame BOARD_BRINEY_BOAT_STATE 1 -> StartSailToDewford boat ride (Route104/scripts.inc:6-14) -> ArriveInDewford (:374-396)"

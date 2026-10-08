@@ -5,6 +5,20 @@ pinned in the port or shown to be the cartridge's own behaviour.
 
 No open entries.
 
+## Fixed: Emerald dropped the player through Granite Cave B1F's floor on arrival (copyvar through NULL)
+
+Arriving on Granite Cave B1F by ladder, the first step fell to B2F at once, on plain cave floor. B1F's map scripts
+(data/maps/GraniteCave_B1F/scripts.inc) set VAR_ICE_STEP_COUNT on transition with `copyvar VAR_ICE_STEP_COUNT, 1`
+(data/scripts/cave_hole.inc in both decomps; the ROMs are built without UBFIX) and fall through a hole whenever it
+is 0 (CaveHole_CheckFallDownHole). `copyvar` copies `*GetVarPointer(1)`, and GetVarPointer returns NULL for a number
+below VARS_START (pokeemerald src/event_data.c:164-172, src/scrcmd.c:368-373; pokeruby the same lines): the console
+reads the BIOS there, open bus and never 0; the port's zeroed low memory made the count 0. Filling the BIOS region
+with the open-bus word was tried and rejected: other NULL reads (the naming screen's VBlank callback after
+FREE_AND_SET_NULL(sNamingScreen)) then followed it as a pointer and crashed the native core. The fix is
+games/{emerald,ruby}/pc/patches/scrcmd.c.patch: ScrCmd_copyvar reads a source that is no variable as its number,
+as VarGet does and as the UBFIX script (`setvar VAR_ICE_STEP_COUNT, 1`) means. Regression: Emerald milestone 11
+(Granite Cave B1F/B2F), tests/dp/regress.sh e-/r-/s- cases unchanged.
+
 ## Fixed: choosing a sphere or trap in the D/P Underground reset the game (armrec)
 
 Any sphere or trap chosen from an Underground list (UG menu > SPHERES/TRAPS > an entry) ended in "A communication

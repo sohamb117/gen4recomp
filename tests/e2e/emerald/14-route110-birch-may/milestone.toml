@@ -2,9 +2,8 @@
 # (TRAINER_MAY_ROUTE_110_MUDKIP, Itemfinder, VAR_ROUTE110_STATE 1) and arrival in Mauville.
 # Start: Slateport (30,27) -> end: MAP_MAUVILLE_CITY in front of the Pokemon Center (22,6).
 title = "Route 110: Birch's Match Call and May's second battle"
-status = "planned"
 priority = "P0"
-estimate = 10000
+estimate = 27997
 refs = [
   "data/maps/Route110/map.json coord_events (7..10,85) VAR_REGISTER_BIRCH_STATE=1",
   "data/maps/Route110/scripts.inc:559-614",
@@ -19,10 +18,17 @@ notes = "May: TRAINER_MAY_ROUTE_110_MUDKIP (530): WINGULL 18, SLUGMA 18, GROVYLE
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 42000
+
+[[step]]
+do = "heal"
+x = 19
+z = 19
+note = "Slateport Pokemon Center (Slateport warp to POKEMON_CENTER_1F): the museum fights leave the lead low"
 
 [[step]]
 do = "walk_to"

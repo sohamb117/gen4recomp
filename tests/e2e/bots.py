@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 from np_e2e import (DIR_DELTA, DIR_KEYS, FACINGS, GBA_GAMES, ROOT, TILE_BEHAVIOR, TILE_COLLISION, TILE_CONNECTED,
-                    TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, HarnessError, behaviors)
+                    TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, UI_FIELD_MENU, HarnessError, behaviors)
 
 # ---- the battle's touch screen (Platinum src/battle/battle_subscreen.c touch rects; D/P's overlay 11
 # tables are byte-identical), as tap points: the centre of each button.
@@ -772,6 +772,7 @@ class Terrain:
         self.visits = {}
         self.cells = {}          # (x, z) -> cell, kept across probes of the same map
         self.window = None       # the latest probe window's top-left tile
+        self.warp_tiles = set()  # GBA: step-on warp tiles of the map, avoided unless the goal
         # The probe's step layers (D/P, GBA): (x, z) -> {height: {d: (tx, tz, height or None)}}, the steps the
         # game's own movement check allows from each place to stand (a bridge deck and the path under it are two),
         # and the player's height. Tiles without layers (Platinum, or not reached) are planned from the cells alone.
@@ -819,8 +820,10 @@ class Terrain:
         self.block_into = {}
         self.water = set(GBA_SURFABLE)
         self.grass = {0x02, 0x03, 0x24}  # MB_TALL_GRASS, MB_LONG_GRASS, MB_ASHGRASS
-        # forced movement (MB_WALK_* 0x40..0x43, MB_SLIDE_* 0x44..0x47) and MB_MUDDY_SLOPE (the Mach Bike's)
-        self.slopes = set(range(0x40, 0x48)) | {0xD0}
+        # forced movement (MB_WALK_* 0x40..0x43, MB_SLIDE_* 0x44..0x47), MB_MUDDY_SLOPE (the Mach Bike's)
+        # and the cracked floors (MB_CRACKED_FLOOR 0xD2 gives way under a second visit, MB_CRACKED_FLOOR_HOLE 0x66 drops
+        # the player a floor: Granite Cave B1F, Sky Pillar), as tests/e2e/gba_world.py leaves them out
+        self.slopes = set(range(0x40, 0x48)) | {0xD0, 0xD2, 0x66}
         # arrow warps (field_control_avatar.c TryArrowWarp): MB_EAST/WEST/NORTH/SOUTH_ARROW_WARP 0x62..0x65,
         # MB_WATER_SOUTH_ARROW_WARP 0x6D
         self.mats = {0x62: 3, 0x63: 2, 0x64: 0, 0x65: 1, 0x6D: 1}
@@ -845,6 +848,14 @@ class Terrain:
         self.height = p.player_height if lay and p.player_height in lay.get((p.x, p.z), {}) else None
         self.objects = {(o[0], o[1]) for o in p.objects}
         self.hm_objects = {(o[0], o[1]) for o in p.objects if self.hm and o[3] in self.hm_gfx}
+        if self.gba:
+            # warp tiles that fire when stepped on (ladders, holes, cave mouths; not arrow mats, which need a push,
+            # nor doors, entered moving north): never walked over unless they are the goal
+            self.warp_tiles = set()
+            for w in p.warps:
+                c = self.cells.get((w[0], w[1]))
+                if c is not None and (c & TILE_BEHAVIOR) not in self.mats and (c & TILE_BEHAVIOR) not in (0x69, 0x8D):
+                    self.warp_tiles.add((w[0], w[1]))
 
     def field_move(self, x, z, d):
         """The field move that enters (x, z) moving in direction d ('water', 'waterfall', 'climb', 'object'), if the
@@ -878,7 +889,7 @@ class Terrain:
             return False
         if (x, z) == goal:
             return self.goal_ok(x, z, d)
-        if (x, z) in self.avoid:
+        if (x, z) in self.avoid or (x, z) in self.warp_tiles:
             return False
         if self.field_move(x, z, d):
             return True
@@ -1232,7 +1243,14 @@ def _gba_route_to(s, step, ctx):
         for leg in legs[:-1]:
             if s.map_id != leg.map:
                 break
-            _walk_to(s, dict(keys, x=leg.x, z=leg.z), ctx)
+            try:
+                _walk_to(s, dict(keys, x=leg.x, z=leg.z), ctx)
+            except HarnessError as e:
+                if s.map_id == leg.map:
+                    raise
+                # an unplanned warp (a floor that gave way, a hole): the route goes on from where it landed
+                s.note("walk_to: %s; re-routing" % e)
+                break
             if leg.kind == "warp" and s.map_id == leg.map:
                 # a step-on warp (a cave mouth, stairs) fires after the step ends: its fade takes a few dozen frames
                 s.run(120, until="map_id!=%d" % leg.map)
@@ -1641,14 +1659,32 @@ def bot_talk_to(s, step, ctx):
         limit += _field_or_handle(s, step, ctx, limit)
         p = s.probe()
         obj = next(((o[0], o[1]) for o in p.objects if o[2] == oid), None)
+        if obj is None and ctx.game in GBA_GAMES:
+            # a GBA map spawns its people only near the camera: until then, head for where map.json puts it
+            import gba_world
+            home = next(((x, z) for i, x, z in gba_world.World(ctx.game).objects(p.map_id) if i == oid), None)
+            if home is not None and abs(p.x - home[0]) + abs(p.z - home[1]) > 6:
+                obj = home
         if obj is None:
             raise HarnessError("talk_to: no object with local id %d on map %d" % (oid, p.map_id))
+        if ctx.game in GBA_GAMES and abs(p.x - obj[0]) + abs(p.z - obj[1]) > 1 and abs(p.x - obj[0]) + abs(p.z - obj[1]) <= 3:
+            # GBA people walking a loop (Mr. Briney round his table) or wandering pass by: near one, wait a little
+            # for it to come next to the player before chasing it
+            for _ in range(24):
+                s.run(4)
+                p = s.probe()
+                obj = next(((o[0], o[1]) for o in p.objects if o[2] == oid), obj)
+                if abs(p.x - obj[0]) + abs(p.z - obj[1]) == 1 or not s.field_ready:
+                    break
         if abs(p.x - obj[0]) + abs(p.z - obj[1]) == 1:
             d = _toward((p.x, p.z), obj)
             if p.facing != d:
                 s.run(2, DIR_KEYS[d])
-                s.run(8)
-                continue  # it may have moved meanwhile
+                if ctx.game not in GBA_GAMES:
+                    s.run(8)
+                    continue  # it may have moved meanwhile
+                # a GBA walker moves on within a few frames: the turn (a 2-frame press turns in place) and A at once
+                s.run(4)
             s.run(2, "a")
             if s.run(30, until=["field_ready=0", "in_battle=1"]):
                 s.note("talk_to: talking to object %d at (%d,%d)" % (oid, obj[0], obj[1]))
@@ -1670,7 +1706,9 @@ def bot_talk_to(s, step, ctx):
         try:
             # the walk fights what it meets with this step's move and on_battle (a sight trainer on the way)
             sub = {k: step[k] for k in ("move", "on_battle", "on_text") if k in step}
-            sub.update(x=c[0], z=c[1], max=min(900, max(limit - s.frame, 1)))
+            # a GBA wanderer moves every second or so: short legs, re-aimed at where it stands now
+            leg = 90 if ctx.game in GBA_GAMES else 900
+            sub.update(x=c[0], z=c[1], max=min(leg, max(limit - s.frame, 1)))
             bot_walk_to(s, sub, ctx)
         except HarnessError as e:
             s.note("talk_to: %s; re-planning" % e)
@@ -1911,6 +1949,34 @@ def bot_fish(s, step, ctx):
 
 
 
+def bot_menu(s, step, ctx):
+    """GBA: answer the field menu a script is about to show (np_e2e.h NP_E2E_UI_FIELD_MENU: a multichoice or a
+    YES/NO): A advances the text before it (a press on the frame the menu appears is not a new press there), then
+    the cursor goes to entry `choose` (0 the first; a YES/NO's YES) and A picks it. With `count`, the menu must have
+    that many entries (a check that it is the menu meant)."""
+    want = _int(step, "choose", 0)
+    limit = s.frame + _int(step, "max", 3000)
+    while True:
+        p = s.probe()
+        if p is not None and p.ui == UI_FIELD_MENU:
+            break
+        if s.frame >= limit:
+            raise HarnessError("menu: no field menu within %d frames" % _int(step, "max", 3000))
+        if not s.run(2, "a", until="ui=%d" % UI_FIELD_MENU):
+            s.run(8, until="ui=%d" % UI_FIELD_MENU)
+    s.run(4)  # the menu's own input delay (script_menu.c sProcessInputDelay)
+    p = s.probe()
+    if "count" in step and p.ui_arg != _int(step, "count", 0):
+        raise HarnessError("menu: %d entries, the step expects %d" % (p.ui_arg, _int(step, "count", 0)))
+    for _ in range(16):
+        p = s.probe()
+        if p.ui != UI_FIELD_MENU or p.ui_cursor == want:
+            break
+        _gba_press(s, "down" if p.ui_cursor < want else "up")
+    s.note("menu: entry %d of %d" % (want, p.ui_arg))
+    _gba_press(s, "a", 10)
+
+
 BOTS = {
     "press": bot_press,
     "tap": bot_tap,
@@ -1937,4 +2003,5 @@ BOTS = {
     "hatch": bot_hatch,
     "pace": bot_pace,
     "dump": bot_dump,
+    "menu": bot_menu,
 }

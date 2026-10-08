@@ -47,6 +47,7 @@
 #include "event_object_movement.h"
 #include "fieldmap.h"
 #include "main.h"
+#include "menu.h"
 #include "overworld.h"
 #include "party_menu.h"
 #include "pokemon.h"
@@ -62,6 +63,9 @@ GBA_LOCAL_DECL(battle_controller_player, HandleInputChooseTarget);
 GBA_LOCAL_DECL(party_menu, CB2_UpdatePartyMenu);
 GBA_LOCAL_DECL(party_menu, Task_HandleSelectionMenuInput);
 GBA_LOCAL_DECL(evolution_scene, Task_EvolutionScene);
+GBA_LOCAL_DECL(script_menu, Task_HandleMultichoiceInput);
+GBA_LOCAL_DECL(script_menu, Task_HandleYesNoInput);
+GBA_LOCAL_DECL(menu, sMenu);
 
 extern bool8 (*const gOppositeDirectionBlockedMetatileFuncs[])(u8); /* event_object_movement.c:893 */
 extern bool8 (*const gDirectionBlockedMetatileFuncs[])(u8);         /* event_object_movement.c:900 */
@@ -213,6 +217,18 @@ static int e2e_task_running(u32 func) {
     return -1;
 }
 
+/* A script's menu waiting in the field (script_menu.c Task_HandleMultichoiceInput / Task_HandleYesNoInput, both
+ * on menu.c's sMenu: cursorPos at +2, maxCursorPos at +4, struct Menu menu.c:36-50): NP_E2E_UI_FIELD_MENU with
+ * the number of entries and the cursor (Menu_GetCursorPos). */
+static void e2e_field_menu(np_e2e_block *b) {
+    const s8 *menu = (const s8 *)GBA_LOCAL(menu, sMenu);
+
+    if (e2e_task_running(GBA_LOCAL(script_menu, Task_HandleMultichoiceInput)) < 0
+        && e2e_task_running(GBA_LOCAL(script_menu, Task_HandleYesNoInput)) < 0)
+        return;
+    gba_e2e_ui(b, NP_E2E_UI_FIELD_MENU, (unsigned)(menu[4] + 1), Menu_GetCursorPos());
+}
+
 static void e2e_battle_ui(np_e2e_block *b) {
     int i;
     const u8 *ip;
@@ -318,6 +334,7 @@ static void e2e_fill(np_e2e_block *b) {
 
             gba_e2e_warp(b, w->x, w->y, (u32)w->mapGroup << 8 | w->mapNum, w->warpId, w->elevation);
         }
+    e2e_field_menu(b);
 }
 
 void emerald_e2e_frame(void) { gba_e2e_frame(e2e_fill); }

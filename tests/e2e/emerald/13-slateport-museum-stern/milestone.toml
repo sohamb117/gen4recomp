@@ -2,9 +2,8 @@
 # queue), the museum fee, Stern on 2F and the two museum grunts -> FLAG_DELIVERED_DEVON_GOODS; the Scott scene outside.
 # Start: Dewford (8,18) -> end: MAP_SLATEPORT_CITY outside the museum (30,27).
 title = "Sail to Slateport: the shipyard, the Oceanic Museum grunts, Devon Goods to Stern"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 15319
 refs = [
   "data/maps/DewfordTown/scripts.inc:9-35",
   "data/maps/DewfordTown/scripts.inc:141-180",
@@ -28,29 +27,18 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
-
-[[step]]
-do = "walk_to"
-x = 12
-z = 10
-note = "beside Briney (12,9) at the dock [INFERENCE: (12,10) free]"
+frames = 23000
 
 [[step]]
 do = "talk_to"
 id = 2
-note = "Briney (object 2) -> WhereAreWeBound multichoice (DewfordTown/scripts.inc:9-21)"
+note = "Briney (object 2 at the dock (12,9)) -> WhereAreWeBound multichoice (DewfordTown/scripts.inc:9-21)"
 
 [[step]]
-do = "press"
-keys = "UP"
-gap = 30
-note = "CANCEL (default 2) -> SLATEPORT (1)"
-
-[[step]]
-do = "press"
-keys = "A"
-note = "ChooseSlateport -> SailToSlateport (:30-35,141-180)"
+do = "menu"
+choose = 1
+count = 3
+note = "MULTI_BRINEY_ON_DEWFORD: PETALBURG, SLATEPORT, CANCEL -> ChooseSlateport -> SailToSlateport (:30-35,141-180)"
 
 [[step]]
 do = "advance_text"

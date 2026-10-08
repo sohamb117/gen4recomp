@@ -2,9 +2,8 @@
 # (TRAINER_BRAWLY_1): FLAG_BADGE02_GET, TM08 Bulk Up, PETALBURG_GYM_STATE 4; Flash usable from here.
 # Start: Dewford (8,18) -> end: MAP_DEWFORD_TOWN at the gym door (8,18).
 title = "Dewford Gym: Brawly and the Knuckle Badge"
-status = "planned"
 priority = "P0"
-estimate = 10000
+estimate = 10618
 refs = [
   "data/maps/DewfordTown/map.json warp_events[2] (8,17) -> gym",
   "data/maps/DewfordTown_Gym/map.json object_events 1..8",
@@ -25,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 16000
 
 [[step]]
 do = "walk_to"

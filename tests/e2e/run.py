@@ -85,6 +85,7 @@ STEP_KEYS = {
     "fish": {"casts"},
     "pace": {"x", "z", "until", "every"},
     "dump": {"expr"},
+    "menu": {"choose", "count"},
 }
 STEP_REQUIRED = {"press": {"keys"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
                  "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},

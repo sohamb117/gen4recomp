@@ -2,9 +2,8 @@
 # Route 116, the tunnel grunt (TRAINER_GRUNT_RUSTURF_TUNNEL) and FLAG_RECOVERED_DEVON_GOODS (RUSTBORO_CITY_STATE 4).
 # Start: Rustboro gym door (27,20) -> end: MAP_ROUTE116 outside the tunnel (47,9).
 title = "Stolen Devon Goods: the Rusturf Tunnel grunt and Peeko"
-status = "planned"
 priority = "P0"
-estimate = 8000
+estimate = 18884
 refs = [
   "data/maps/RustboroCity/map.json coord_events (23,20..24) VAR_RUSTBORO_CITY_STATE=1",
   "data/maps/RustboroCity/scripts.inc:231-298",
@@ -25,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 28400
 
 [[step]]
 do = "walk_to"

@@ -185,6 +185,12 @@ class World:
         self._surfable = self._parse_surfable()
         self.step_warp = STEP_WARP[decomp]
 
+    def objects(self, mid):
+        """[(local id, x, y)] of map mid's object events (map.json object_events; the local id is the 1-based
+        index, as the probe reports ObjectEvent.localId): where a person stands before the game spawns it near
+        the camera."""
+        j = self._json.get(self.map_id(mid), {})
+        return [(i + 1, o["x"], o["y"]) for i, o in enumerate(j.get("object_events", []))]
     def _parse_surfable(self):
         """sTileBitAttributes' TILE_FLAG_SURFABLE behaviors (metatile_behavior.c:9 [7])."""
         with open(os.path.join(self.dir, "src", "metatile_behavior.c")) as f:

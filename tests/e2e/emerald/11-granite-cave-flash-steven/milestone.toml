@@ -2,9 +2,8 @@
 # Steven (FLAG_DELIVERED_STEVEN_LETTER, TM47 Steel Wing, FLAG_REGISTERED_STEVEN_POKENAV); back out to Dewford.
 # Start: Dewford dock -> end: MAP_DEWFORD_TOWN, outside the gym door (8,18).
 title = "Granite Cave: HM05 Flash and Steven's letter"
-status = "planned"
 priority = "P0"
-estimate = 12000
+estimate = 15007
 refs = [
   "data/maps/DewfordTown/map.json connections up MAP_ROUTE106 offset -60",
   "data/maps/Route106/map.json warp_events[0] (48,16) -> GRANITE_CAVE_1F",
@@ -25,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 22600
 
 # PHASE2: prove the Granite Cave route (probe_map each floor; which B2F ladder reaches the B1F west half) and replace the via lists.
 
@@ -50,53 +49,10 @@ do = "advance_text"
 
 [[step]]
 do = "walk_to"
-x = 35
-z = 3
-note = "1F ladder (warp 1) -> B1F (25,13)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_GRANITE_CAVE_B1F"
-
-[[step]]
-do = "walk_to"
-x = 29
-z = 13
-note = "B1F ladder (warp 2) -> B2F (29,13) [INFERENCE]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_GRANITE_CAVE_B2F"
-
-[[step]]
-do = "walk_to"
-x = 8
-z = 5
-note = "B2F ladder (warp 2) -> B1F (8,5) [INFERENCE: B2F rocks need Rock Smash only on side paths]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_GRANITE_CAVE_B1F"
-
-[[step]]
-do = "walk_to"
-x = 4
-z = 21
-note = "B1F ladder (warp 1) -> 1F (17,11) [INFERENCE]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_GRANITE_CAVE_1F"
-
-[[step]]
-do = "walk_to"
-x = 5
-z = 10
-note = "1F west ladder (warp 3) -> STEVENS_ROOM (7,3)"
-
-[[step]]
-do = "wait_map"
+x = 7
+z = 9
 map = "MAP_GRANITE_CAVE_STEVENS_ROOM"
+note = "1F's upper rooms are reached only through B1F and B2F (tests/e2e/gba_world.py routes it: 1F ladder (17,11), B1F (28,21), B2F (29,13), back up to 1F and its ladder to STEVENS_ROOM); the tile below Steven (7,8)"
 
 [[step]]
 do = "talk_to"
@@ -106,26 +62,6 @@ note = "Steven (object 1 (7,8)): letter, TM Steel Wing, Match Call, leaves (Gran
 [[step]]
 do = "advance_text"
 shot = "steven-letter"
-
-[[step]]
-do = "walk_to"
-x = 7
-z = 3
-note = "back up (warp 0) -> 1F (5,10)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_GRANITE_CAVE_1F"
-
-[[step]]
-do = "walk_to"
-x = 37
-z = 12
-note = "1F exit (warp 0) -> Route 106 (48,16) [INFERENCE: 1F west half connects to the entrance over ledges]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_ROUTE106"
 
 [[step]]
 do = "walk_to"

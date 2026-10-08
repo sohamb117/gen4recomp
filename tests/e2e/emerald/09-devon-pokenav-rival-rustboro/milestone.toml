@@ -2,9 +2,8 @@
 # the Match Call tutorial outside, and May at Rustboro's south exit (TRAINER_MAY_RUSTBORO_MUDKIP).
 # Start: Route 116 (47,9) -> end: MAP_RUSTBORO_CITY south exit, VAR_RUSTBORO_CITY_STATE 8.
 title = "Devon Corp: Mr. Stone, the PokeNav and May's Rustboro battle"
-status = "planned"
 priority = "P0"
-estimate = 9000
+estimate = 12951
 refs = [
   "data/maps/RustboroCity/map.json coord_events (30,9)/(31,10)/(30,11)/(30,12) VAR_RUSTBORO_CITY_STATE=4",
   "data/maps/RustboroCity/scripts.inc:526-568",
@@ -22,10 +21,11 @@ notes = "May: TRAINER_MAY_RUSTBORO_MUDKIP (600): WINGULL 13, TREECKO 15 (Treecko
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 19500
 
 # PHASE2: the PokeNav tutorial inputs (RustboroCity/scripts.inc:62-91: a one-item start menu, then the PokeNav app opened and closed); the steps below are [INFERENCE] A, then B out.
 
@@ -81,29 +81,53 @@ do = "wait_map"
 map = "MAP_RUSTBORO_CITY"
 
 [[step]]
-do = "advance_text"
-note = "OnFrame RUSTBORO 6 -> ScientistAddMatchCall: ROUTE104_STATE 1, FLAG_HAS_MATCH_CALL (RustboroCity/scripts.inc:27-61)"
+do = "menu"
+choose = 3
+count = 8
+note = "OnFrame RUSTBORO 6 -> ScientistAddMatchCall: ROUTE104_STATE 1, FLAG_HAS_MATCH_CALL (RustboroCity/scripts.inc:27-61), then the tutorial start menu (special ScriptMenu_CreateStartMenuForPokenavTutorial, :68; src/script_menu.c:687-700: POKeDEX POKeMON BAG POKeNAV NAME SAVE OPTION EXIT, cursor on the first); any other choice is 'Please select the POKeNAV' (:62-65)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+note = "the PokeNav fades in"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "main menu HOENN MAP, CONDITION, MATCH CALL, SWITCH OFF (cursor on HOENN MAP; the tutorial takes only MATCH CALL: pokenav_menu_handler.c HandleMainMenuInputTutorial)"
 
 [[step]]
 do = "press"
 keys = "A"
-gap = 60
-note = "[INFERENCE] pick POKeNAV in the tutorial start menu (special ScriptMenu_CreateStartMenuForPokenavTutorial, :70)"
-
-[[step]]
-do = "wait_frames"
-n = 180
+gap = 45
+times = 8
+note = "special OpenPokenavForTutorial (:76; pokenav.c:333-353 POKENAV_MODE_FORCE_CALL_READY): MATCH CALL, MR. STONE, CALL and his call's text (pokenav_match_call_list.c: the call sets POKENAV_MODE_FORCE_CALL_EXIT)"
 
 [[step]]
 do = "press"
 keys = "B"
-gap = 60
-times = 2
-note = "[INFERENCE] leave the PokeNav (special OpenPokenavForTutorial, :80)"
+gap = 45
+until = "field=1"
+times = 10
+note = "B out of the call list and, in POKENAV_MODE_FORCE_CALL_EXIT, out of the PokeNav (pokenav_menu_handler.c HandleMainMenuInputEndTutorial: B exits)"
 
 [[step]]
 do = "advance_text"
 note = "FLAG_ADDED_MATCH_CALL_TO_POKENAV, RUSTBORO 7 (:69,86-89)"
+
+[[step]]
+do = "heal"
+x = 16
+z = 38
+note = "Rustboro Pokemon Center (Rustboro warp 3): HP and PP back before May"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 52
+note = "the tile above the rival triggers, so that the stop walk below steps onto the row where it means to"
 
 [[step]]
 do = "walk_to"
@@ -113,13 +137,14 @@ on_text = "stop"
 note = "south exit row y=53 (12..19) RivalTrigger RUSTBORO 7 (:634-722)"
 
 [[step]]
-do = "advance_text"
-note = "May registers in Match Call, FLAG_MET_RIVAL_RUSTBORO, RUSTBORO 8, ROUTE104 2 (:728-743); stops at the battle YES/NO"
+do = "menu"
+choose = 0
+count = 2
+note = "May registers in Match Call, FLAG_MET_RIVAL_RUSTBORO, RUSTBORO 8, ROUTE104 2 (:728-743), then MSGBOX_YESNO want to battle? YES (:744-745)"
 
 [[step]]
-do = "press"
-keys = "A"
-note = "\"want to battle?\" YES (:745)"
+do = "advance_text"
+note = "May registers, FLAG_MET_RIVAL_RUSTBORO, RUSTBORO 8, ROUTE104 2 (:728-743); stops at the battle YES/NO"
 
 [[step]]
 do = "wait_battle"

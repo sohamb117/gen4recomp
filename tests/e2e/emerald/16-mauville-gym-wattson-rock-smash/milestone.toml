@@ -2,9 +2,8 @@
 # (TRAINER_WATTSON_1): FLAG_BADGE03_GET, TM34 Shock Wave, PETALBURG_GYM_STATE 5; the Rock Smash guy's HM06.
 # Start: Mauville (35,6) -> end: MAP_MAUVILLE_CITY outside house 1 (32,15).
 title = "Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash"
-status = "planned"
 priority = "P0"
-estimate = 11000
+estimate = 11200
 refs = [
   "data/maps/MauvilleCity/map.json warp_events[0] (8,5) -> gym",
   "data/maps/MauvilleCity_Gym/map.json coord_events switches",
@@ -27,7 +26,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 16800
 
 # PHASE2: the switch order to Wattson (4 coord switches toggle FLAG_MAUVILLE_GYM_BARRIERS_STATE; MauvilleCity_Gym/scripts.inc:15-46,175-196): probe_map the barrier tiles after each switch and write a via list or steps route.
 
@@ -43,11 +42,24 @@ map = "MAP_MAUVILLE_CITY_GYM"
 
 [[step]]
 do = "walk_to"
+x = 3
+z = 9
+avoid = [[0, 15], [4, 12], [8, 9]]
+note = "in the barriers' first layout (the layout's own map.bin) the gym's middle opens at (4,11)/(5,11) to row 9 but row 7 is closed; switch 3 (coord event (3,9), MauvilleCity_Gym_EventScript_Switch3 -> special MauvilleGymPressSwitch, scripts.inc:60-64) flips the barriers to FLAG_MAUVILLE_GYM_BARRIERS_STATE's other layout, which opens row 7 at x 4..5. The other switches are avoided: each flips them back (a defeated trainer standing at (4,10) closes the way round)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+note = "the barrier metatiles redrawn; the probe re-reads its window after a second standing still"
+
+[[step]]
+do = "walk_to"
 x = 5
 z = 3
 face = "up"
 interact = true
-note = "below Wattson (5,2) [PHASE2: switch route]"
+avoid = [[3, 9], [4, 12], [8, 9], [0, 15]]
+note = "below Wattson (5,2), the gym's trainers fought on the way; the other switches (coord events (3,9), (4,12), (8,9)) would flip the barriers back"
 
 [[step]]
 do = "advance_text"
