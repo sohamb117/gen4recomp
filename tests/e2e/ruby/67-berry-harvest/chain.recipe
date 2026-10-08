@@ -1,0 +1,8 @@
+# 67 berry harvest, minted on 66's end save (the Cheri Berry planted and watered in berry tree 9 at 08:00, the player
+# below it on Route 104): only the clock moves on, 13 hours.
+# Growth: DoTimeBasedEvents on the map load (src/overworld.c:618,1477 -> src/clock.c:59-74) passes the minutes since
+# lastBerryTreeUpdate to BerryTreeTimeUpdate (src/berry.c:1239-1287). Cheri's stage is 3 h (src/berry.c:292,
+# 1413-1416: 180 min): PLANTED -> SPROUTED -> TALLER -> FLOWERING -> BERRIES after 4 x 180 = 720 min, and the berries
+# stay for 4 x 180 more (src/berry.c:1281-1282), so 780 min lands in BERRIES (< 71 x 180, the unwatered reset,
+# src/berry.c:1254-1257).
+clock 2026-01-01 21:00:00

@@ -1,0 +1,52 @@
+# Proves berry growth on the RTC and the harvest: 13 hours after 66 planted a Cheri Berry in Route 104's berry tree 9,
+# the tree bears berries; picking them puts them in the berry pocket and leaves the soil empty.
+# Start: 66's end save + the clock 13 h later, MAP_ROUTE104 (35,7) below the tree -> end: same tile.
+title = "Berries: harvest the grown Cheri Berry tree"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 4000
+refs = [
+  "data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree",
+  "src/clock.c:27-35,59-74 (DoTimeBasedEvents -> UpdatePerMinute -> BerryTreeTimeUpdate)",
+  "src/berry.c:1210-1287 (BerryTreeGrow, BerryTreeTimeUpdate), src/berry.c:292 (Cheri stageDuration 3)",
+  "src/berry.c:1374-1406 (CalcBerryYield: Cheri min 2, max 3, src/berry.c:288-289)",
+  "data/scripts/berry_tree.inc:99-123 (stage 5: YES/NO, ObjectEventInteractionPickBerryTree, RemoveBerryTree)",
+  "src/berry.c:1459-1471 (PickBerryTree: AddBagItem berry x yield; RemoveBerryTree)",
+]
+notes = "Chained: [start] from 66's end save (run 66 first, same --out and core); chain.recipe only moves the clock (labc clock -> PC_RTC, overriding 66's end.clock: run.py place_start), which needs the GBA RTC to take PC_RTC as its base (games/gba-common/pc/src/gba_rtc.c; before that every GBA run starts at 2004-01-01 10:00 and the 13 hours would be 2.6M frames of waiting). No lab fallback: no lab verb plants a berry tree. One watering (66) gives a yield of exactly 2 (CalcBerryYieldInternal water 1: rand in [0, max-min] = [0,1], rand/4 = 0)."
+
+[start]
+from = "66-berry-plant-water"
+recipe = "chain.recipe"
+
+[run]
+frames = 6000
+
+[[step]]
+do = "talk_to"
+id = 11
+shot = "berries"
+note = "BERRY_STAGE_BERRIES: 'There are 2 CHERI BERRIES! Want to pick?' (berry_tree.inc:99-103)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "YES: ObjectEventInteractionPickBerryTree, RemoveBerryTree, the berry fanfare (berry_tree.inc:109-123)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "picked"
+
+[[step]]
+do = "advance_text"
+shot = "empty-soil"
+
+[expect]
+map = "MAP_ROUTE104"
+position = [35, 7]
+save = [
+  'any(i["item"] == 133 and i["qty"] >= 2 for i in s["bag"]["berries"])',
+  's["game_stats"][3] >= 1',
+]
