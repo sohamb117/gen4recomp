@@ -8,3 +8,4 @@
 63-frontier-battle-palace-lv50
 64-frontier-battle-dome-lv50
 65-frontier-battle-pike-lv50
+66-frontier-battle-pyramid-lv50

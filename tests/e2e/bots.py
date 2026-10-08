@@ -13,7 +13,7 @@ import struct
 import subprocess
 import sys
 
-from np_e2e import (BW_GAMES, DIR_DELTA, DIR_KEYS, FACINGS, GBA_GAMES, HGSS_GAMES, ROOT, TILE_BEHAVIOR,
+from np_e2e import (BW_GAMES, DIR_DELTA, DIR_KEYS, E2E_GRID, FACINGS, GBA_GAMES, HGSS_GAMES, ROOT, TILE_BEHAVIOR,
                     TILE_COLLISION, TILE_CONNECTED, TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, UI_FIELD_MENU,
                     HarnessError, behaviors)
 
@@ -1668,6 +1668,25 @@ def _stores(s):
         return f.read().count("-byte save to ")
 
 
+def bot_walk_onto(s, step, ctx):
+    """walk_to the nearest tile of the probe's window whose metatile behavior is `behavior` (an MB_ value): the goal
+    of a map the game lays out at run time, which the decomp's static layout does not show (the Battle Pyramid's
+    floors: src/battle_pyramid.c GenerateBattlePyramidFloorLayout keeps one square's exit, MB_BATTLE_PYRAMID_WARP).
+    The other keys are walk_to's."""
+    want = int(step["behavior"])
+    p = s.probe()
+    if p is None:
+        raise HarnessError("walk_onto: no probe (guest built without the e2e probe?)")
+    tiles = [(p.grid_x0 + i % E2E_GRID, p.grid_z0 + i // E2E_GRID) for i, c in enumerate(p.grid)
+             if c & TILE_KNOWN and (c & TILE_BEHAVIOR) == want]
+    if not tiles:
+        raise HarnessError("walk_onto: no tile of behavior 0x%02X in the probe's window on map %d" % (want, p.map_id))
+    goal = min(tiles, key=lambda t: abs(t[0] - p.x) + abs(t[1] - p.z))
+    s.note("walk_onto: behavior 0x%02X at (%d,%d) on map %d (%d such tiles)" % (want, goal[0], goal[1], p.map_id,
+                                                                                len(tiles)))
+    _walk_to(s, dict({k: v for k, v in step.items() if k != "behavior"}, x=goal[0], z=goal[1]), ctx)
+
+
 def bot_walk_to_door(s, step, ctx):
     """walk_to the door the guest's log names: the last match of `pattern` (one group) in the run log keys
     `doors` (group -> [x, z]); the other keys go to walk_to. For a door the game rolls at random and shows only
@@ -2456,6 +2475,7 @@ BOTS = {
     "auto_battle": bot_auto_battle,
     "walk_to": bot_walk_to,
     "walk_to_door": bot_walk_to_door,
+    "walk_onto": bot_walk_onto,
     "talk_to": bot_talk_to,
     "heal": bot_heal,
     "grind": bot_grind,

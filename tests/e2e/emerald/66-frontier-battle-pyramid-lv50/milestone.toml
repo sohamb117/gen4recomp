@@ -1,0 +1,218 @@
+# Proves the Battle Frontier's Battle Pyramid, Level 50: the attendant's menus, the choose-half party menu (three entries), the
+# save before the challenge, seven dark floors laid out at run time (each one's exit tile found on the live map), the top, and the lobby's Battle Points.
+# Start: MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_LOBBY (7,13) -> end: the lobby, the pyramid conquered.
+title = "Battle Frontier: Battle Pyramid, a Level 50 climb of seven floors"
+priority = "P1"
+estimate = 19081
+refs = [
+  "data/maps/BattleFrontier_BattlePyramidLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge)",
+  "data/maps/BattleFrontier_BattlePyramidBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE)",
+  "data/maps/BattleFrontier_BattlePyramidFloor/scripts.inc:88-104 (BattlePyramid_WarpToNextFloor: the exit tile, FRONTIER_DATA_BATTLE_NUM, the seventh floor to the top)",
+  "src/battle_pyramid.c:1523-1572 GenerateBattlePyramidFloorLayout (sixteen 8x8 squares drawn from pyramidRandoms; one keeps its exit, MB_BATTLE_PYRAMID_WARP)",
+  "src/field_control_avatar.c:517 (MetatileBehavior_IsBattlePyramidWarp -> BattlePyramid_WarpToNextFloor)",
+  "data/maps/BattleFrontier_BattlePyramidTop/scripts.inc (the attendant: ReachedSummitUpYouGo, PlayerConqueredPyramid, WarpToLobbyWon)",
+]
+notes = "Each floor is laid out at run time from the challenge seeds, dark but for a light radius; trainers and wild Pokemon in the way are fought, with no healing between floors."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 28700
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the attendant (BattleFrontier_BattlePyramidLobby/map.json object_events[0])"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_CHALLENGEINFO: CHALLENGE (BattleFrontier_BattlePyramidLobby/scripts.inc)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_LEVEL_MODE: LV. 50"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'select three Pokemon', the fade to the choose-half party menu (special ChoosePartyForBattleFrontier)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 0: ENTER/SUMMARY/CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "ENTER"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 1 entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "entry-three"
+note = "slot 2 entered: the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "'okay to save?' YES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 60
+until = "map_id!=6681"
+note = "Common_EventScript_SaveGame's dialog answered with A, the walk out of the lobby"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR"
+note = "the corridor: the attendant's words and the Pyramid Bag, the walk to the panel and the first floor"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "floor-1"
+note = "floor 1: dark but for the light radius (OnTransition pyramid_updatelight 32)"
+
+[[step]]
+do = "walk_onto"
+behavior = 13
+max = 20000
+note = "floor 1: the exit tile, MB_BATTLE_PYRAMID_WARP (0x0D, include/constants/metatile_behaviors.h), wherever the floor's layout put it; the trainers and wild Pokemon met on the way are fought"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "floor 2 laid out (pyramid_seedfloor, warp MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)"
+
+[[step]]
+do = "walk_onto"
+behavior = 13
+max = 20000
+note = "floor 2: the exit tile, MB_BATTLE_PYRAMID_WARP (0x0D, include/constants/metatile_behaviors.h), wherever the floor's layout put it; the trainers and wild Pokemon met on the way are fought"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "floor 3 laid out (pyramid_seedfloor, warp MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)"
+
+[[step]]
+do = "walk_onto"
+behavior = 13
+max = 20000
+note = "floor 3: the exit tile, MB_BATTLE_PYRAMID_WARP (0x0D, include/constants/metatile_behaviors.h), wherever the floor's layout put it; the trainers and wild Pokemon met on the way are fought"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "floor 4 laid out (pyramid_seedfloor, warp MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)"
+
+[[step]]
+do = "walk_onto"
+behavior = 13
+max = 20000
+note = "floor 4: the exit tile, MB_BATTLE_PYRAMID_WARP (0x0D, include/constants/metatile_behaviors.h), wherever the floor's layout put it; the trainers and wild Pokemon met on the way are fought"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "floor 5 laid out (pyramid_seedfloor, warp MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)"
+
+[[step]]
+do = "walk_onto"
+behavior = 13
+max = 20000
+note = "floor 5: the exit tile, MB_BATTLE_PYRAMID_WARP (0x0D, include/constants/metatile_behaviors.h), wherever the floor's layout put it; the trainers and wild Pokemon met on the way are fought"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "floor 6 laid out (pyramid_seedfloor, warp MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)"
+
+[[step]]
+do = "walk_onto"
+behavior = 13
+max = 20000
+note = "floor 6: the exit tile, MB_BATTLE_PYRAMID_WARP (0x0D, include/constants/metatile_behaviors.h), wherever the floor's layout put it; the trainers and wild Pokemon met on the way are fought"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "floor 7 laid out (pyramid_seedfloor, warp MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)"
+
+[[step]]
+do = "walk_onto"
+behavior = 13
+max = 20000
+note = "floor 7: the exit tile, MB_BATTLE_PYRAMID_WARP (0x0D, include/constants/metatile_behaviors.h), wherever the floor's layout put it; the trainers and wild Pokemon met on the way are fought; the seventh floor's exit warps to the top (MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_TOP 17,17)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_TOP"
+max = 2000
+note = "the top"
+
+[[step]]
+do = "talk_to"
+id = 1
+shot = "summit"
+note = "the attendant: ReachedSummitUpYouGo, the climb to the top"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_LOBBY"
+note = "PlayerConqueredPyramid, the Battle Points fanfare, WarpToLobbyWon"
+
+[[step]]
+do = "advance_text"
+shot = "pyramid-won"
+note = "the lobby's WonChallenge: Battle Points; the record YES/NO's default NO taken by A"
+
+[expect]
+map = "MAP_BATTLE_FRONTIER_BATTLE_PYRAMID_LOBBY"
+save = ['s["location"]["map"] == 6681']
