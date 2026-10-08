@@ -1,0 +1,63 @@
+--- a/src/text.c
++++ b/src/text.c
+@@ -198,6 +198,45 @@
+     return MAX_TEXT_PRINTERS;
+ }
+ 
++#include "pc_np_options.h"
++
++/*
++ * pc port: NP_OPT_TEXT_INSTANT, as Platinum's pc/patches/src/text.c.patch.
++ * A printing task normally renders one character per frame (more with a
++ * lower delay). Here it keeps rendering within the frame for as long as
++ * RenderText is only handing out characters or counting down the
++ * per-character delay, and stops at anything else: a wait for the button,
++ * a scroll, a pause, the end of the message, or a control code that has
++ * something for the callback (unk2E). So a box fills at once, and every
++ * prompt, scroll and scripted pause still behaves as the game wrote it.
++ * Off (the default), this is never called.
++ */
++static RenderResult PcNp_RushPrinter(TextPrinter *printer, RenderResult result) {
++    BOOL printed = FALSE;
++    int i;
++
++    for (i = 0; i < 4096; i++) {
++        if (result == RENDER_PRINT) {
++            printed = TRUE;
++        } else if (result != RENDER_UPDATE) {
++            break; /* finished */
++        }
++        if (printer->state != 0 || printer->unk2E != 0) {
++            break; /* left the character state, or the callback is wanted */
++        }
++        printer->delayCounter = 0;
++        result = RenderFont(printer);
++    }
++    if (printed) {
++        if (result == RENDER_FINISH) {
++            CopyWindowToVram(printer->template.window);
++        } else {
++            result = RENDER_PRINT; /* copy what was drawn, then the callback */
++        }
++    }
++    return result;
++}
++
+ static void RunTextPrinter(SysTask *task, TextPrinter *printer) {
+     if (_021D1F6C != 0) {
+         return;
+@@ -208,7 +247,13 @@
+ 
+         GenerateFontHalfRowLookupTable(printer->template.fgColor, printer->template.bgColor, printer->template.shadowColor);
+ 
+-        switch (RenderFont(printer)) {
++        RenderResult result = RenderFont(printer);
++
++        if (pc_np_opt.text_instant) {
++            result = PcNp_RushPrinter(printer, result);
++        }
++
++        switch (result) {
+         case RENDER_PRINT:
+             CopyWindowToVram(printer->template.window);
+             // fallthrough

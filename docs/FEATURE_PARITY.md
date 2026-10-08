@@ -222,7 +222,8 @@ SoulSilver's.
 | LAN / relay link | not yet: the games' wireless (C-Gear, Union Room) on the core's net host, past the battle / field blocks | same | same | same | the relay transport itself is shell |
 | Fast-forward locked in link play | not yet (no link) | same | same | same |  |
 | Mystery Gift | shell: `.pgf` cards into the 12 slots; delivery in game needs story progress | same | shell: `.pcd` / `.pgt` import; delivery needs the field | same | shell_editor_bw / hgss |
-| Fix cartridge bugs, instant text | not yet: NP_OPT_RULES / TEXT_INSTANT in the game code (docs/BWHGSS_HOOKS.md) | same | same | same |  |
+| Fix cartridge bugs | not yet: NP_OPT_RULES in the game code, per documented bug; needs battles (docs/BWHGSS_HOOKS.md) | same | same | same |  |
+| Instant text | not yet (docs/BWHGSS_HOOKS.md) | same | core: Platinum's rule on HG's printer (`pc/patches/src/text.c.patch`); Oak's first page whole at frame 7285 where the cartridge shows "H", button waits kept, the intro still reaches naming | same patch (SoulSilver's core not rebuilt) | parity.sh `instant text (Oak)`; `bwhgss/hooks/heartgold-text-*.png` |
 | macOS app | app (development build with these cores; packaging not run) | same | same | same | build/app-bwhgss |
 | Windows build | not yet | not yet | not yet | not yet |  |
 | URL launch, launch flags | app | app | app | app | n2_launch; `--game/--slot` in every case |

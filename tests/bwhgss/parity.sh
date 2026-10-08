@@ -71,6 +71,21 @@ pngs() { # DIR: the dumped frames as PNGs
         sips -s format png "$f" --out "${f%.ppm}.png" > /dev/null 2>&1 && rm -f "$f"
     done
 }
+instant() { # NAME STEP_OFF STEP_ON A B X0 Y0 X1 Y1: in the box (the
+    # message's text, not its blinking arrow) a page still printing between
+    # frames A and B without the option, already whole (A == B) with it
+    local off=$w/$2 on=$w/$3 n=$1 a=$4 b=$5
+    shift 5
+    if python3 $here/region_same.py "$off/frame_$a.png" "$off/frame_$b.png" "$@"; then
+        echo "FAIL $n: without instant text frames $a and $b show the same text ($off)"
+        fail=1
+    elif ! python3 $here/region_same.py "$on/frame_$a.png" "$on/frame_$b.png" "$@"; then
+        echo "FAIL $n: with instant text frames $a and $b show different text ($on)"
+        fail=1
+    else
+        echo "ok   $n (frame $a: the page printing, whole at once with text_instant)"
+    fi
+}
 
 for g in "${games[@]}"; do
     case $g in
@@ -129,6 +144,12 @@ for g in "${games[@]}"; do
         echo "note $g: $(grep '^audio rms' "$w/intro.log") (music: not yet)"
         run title --frames 1700 --state-test 1400 --state-span 120 --state-rounds 2 --dump-from 1700
         state_ok "$g title snapshots" "$w/title.log" 2
+        # Oak's first page ("Huh? It's already become so bright outside!")
+        # starts printing at ~7283; text_instant from 7284 fills it at once.
+        run text-off --frames 7302 --schedule $here/hgss-intro.sched --dump-from 7284 --dump-every 16
+        run text-on --frames 7302 --schedule $here/hgss-intro.sched --dump-from 7284 --dump-every 16 \
+            -o 7284:text_instant=1
+        instant "$g instant text (Oak)" text-off text-on 007285 007301 8 150 236 186
         ;;
     esac
 done
