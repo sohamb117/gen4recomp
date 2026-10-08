@@ -267,7 +267,16 @@ def emit_func(out, module, seg, f, end, lits, resolver, names, data_names,
         for tg in f.jt.get(ia, []):
             targets.add(tg)
     long_br = set(t for t in targets)
-    out.append("\t%s %s" % ("thumb_func_start" if f.thumb else "arm_func_start", name))
+    # thumb_func_start opens with `.balign 4` (armrec's location counter
+    # follows it), so a Thumb entry at a halfword address takes the
+    # non-word-aligned form or every label after it would shift by two
+    if not f.thumb:
+        start = "arm_func_start"
+    elif f.addr & 2:
+        start = "non_word_aligned_thumb_func_start"
+    else:
+        start = "thumb_func_start"
+    out.append("\t%s %s" % (start, name))
     if name in data_names_by_name(data_names):
         pass
     out.append("%s: ; 0x%08X" % (name, f.addr))
