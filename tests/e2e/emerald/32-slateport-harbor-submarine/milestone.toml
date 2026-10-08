@@ -2,9 +2,8 @@
 # AquaEscapeScene coord (8,11..14): VAR_SLATEPORT_HARBOR_STATE 2, the Aqua Hideout entrance guards hidden.
 # Start: Magma Hideout 4F -> end: MAP_SLATEPORT_CITY_HARBOR beside Stern (8,13).
 title = "Slateport Harbor: Aqua steals Stern's submarine"
-status = "planned"
 priority = "P0"
-estimate = 5000
+estimate = 18462
 refs = [
   "data/maps/SlateportCity/map.json object_events[11] CAPT_STERN (28,13)",
   "data/maps/SlateportCity/scripts.inc:523-568",
@@ -20,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 27700
 
 [[step]]
 do = "walk_to"
@@ -51,6 +50,23 @@ note = "2F_3R (warp 0) -> 1F (20,22)"
 [[step]]
 do = "wait_map"
 map = "MAP_MAGMA_HIDEOUT_1F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 21
+face = "down"
+interact = true
+note = "1F: back at its three Strength boulders, which the map load put back (objects 4-6 at (5,22), (7,22), (6,23); FLAG_TEMP_11..13); A on (5,22)"
+
+[[step]]
+do = "advance_text"
+note = "EventScript_StrengthBoulder: 'use Strength?' YES (data/scripts/field_move_scripts.inc:122-150)"
+
+[[step]]
+do = "steps"
+route = [[5, 22], [6, 22], [7, 22], [7, 23], [8, 23]]
+note = "push (5,22) south to (5,23), then (7,22) east to (8,22), and out past them"
 
 [[step]]
 do = "walk_to"

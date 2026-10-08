@@ -1059,7 +1059,15 @@ def bot_steps(s, step, ctx):
             continue
         dx, dz = route[k][0] - here[0], route[k][1] - here[1]
         if dx and dz:
-            raise HarnessError("steps: at (%d,%d), corner %d (%d,%d) is not in a straight line" % (here + (k,) + route[k]))
+            # a corner off the line is where a warp puts the player (GBA warp panels and step-on warps fire a few
+            # dozen frames after the step that reached them)
+            s.run(180, until=["x!=%d" % here[0], "z!=%d" % here[1], "in_battle=1"])
+            s.run(24, until="field_ready=1")
+            p = s.probe()
+            if (p.x, p.z) == here:
+                raise HarnessError("steps: at (%d,%d), corner %d (%d,%d) is not in a straight line" % (
+                    here + (k,) + route[k]))
+            continue
         d = DIR_DELTA.index(((dx > 0) - (dx < 0), (dz > 0) - (dz < 0)))
         s.run(24, DIR_KEYS[d] + run_key, until=["x!=%d" % here[0], "z!=%d" % here[1], "in_battle=1"])
         s.run(24, until="field_ready=1")

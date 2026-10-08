@@ -2,9 +2,8 @@
 # Tate & Liza's double battle (TRAINER_TATE_AND_LIZA_1): FLAG_BADGE07_GET, TM04 Calm Mind, VAR_MOSSDEEP_CITY_STATE 1.
 # Start: Aqua Hideout B2F -> end: MAP_MOSSDEEP_CITY at the gym door (38,10).
 title = "Surf to Mossdeep: Tate & Liza's Mind Badge"
-status = "planned"
 priority = "P0"
-estimate = 18000
+estimate = 37999
 refs = [
   "data/maps/LilycoveCity/map.json object_events[10] Wailmer grunt (73,15) FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS",
   "data/maps/Route124/map.json connections right MOSSDEEP_CITY offset 40",
@@ -23,20 +22,9 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 57000
 
 # PHASE2: the gym's spin tiles / floor switches (MossdeepCity_Gym coord_events: Yellow/Blue/Green/Purple/Red switches, WarpToEntrance (21,6)) to Tate & Liza (23..24,7): record a steps route.
-
-[[step]]
-do = "walk_to"
-x = 13
-z = 27
-map = "MAP_AQUA_HIDEOUT_1F"
-note = "[PHASE2: 33's panel route in reverse] back up to 1F and out (warp 0) -> Lilycove (70,5); Fly does not work indoors [INFERENCE: Gen 3 Fly needs an outdoor map]"
-
-[[step]]
-do = "wait_map"
-map = "MAP_LILYCOVE_CITY"
 
 [[step]]
 do = "walk_to"
@@ -44,7 +32,10 @@ x = 28
 z = 17
 map = "MAP_MOSSDEEP_CITY"
 surf = true
-note = "Lilycove east exit (the Wailmer grunt is gone) -> Route 124 (Surf) -> Mossdeep, Pokemon Center door below (28,16); VisitedMossdeep coord sets FLAG_VISITED_MOSSDEEP_CITY (MossdeepCity/scripts.inc:71-74)"
+hm = true
+on_battle = "flee"
+max = 30000
+note = "back up through the hideout's panels and out (Surf) to Lilycove; Lilycove east exit (the Wailmer grunt is gone) -> Route 124 (Surf) -> Mossdeep, Pokemon Center door below (28,16); VisitedMossdeep coord sets FLAG_VISITED_MOSSDEEP_CITY (MossdeepCity/scripts.inc:71-74)"
 
 [[step]]
 do = "heal"
@@ -63,12 +54,12 @@ do = "wait_map"
 map = "MAP_MOSSDEEP_CITY_GYM"
 
 [[step]]
-do = "walk_to"
-x = 23
-z = 8
+do = "steps"
+route = [[6, 31], [3, 31], [3, 29], [3, 31], [1, 31], [1, 33], [20, 24], [24, 24], [24, 31], [23, 31], [23, 32], [22, 32], [22, 33], [21, 33], [21, 34], [15, 34], [16, 34], [15, 34], [21, 34], [21, 33], [22, 33], [22, 32], [23, 32], [23, 31], [24, 31], [24, 24], [23, 24], [23, 20], [9, 18], [7, 18], [8, 12], [8, 9], [8, 10], [8, 9], [8, 10], [8, 9], [7, 9], [7, 7], [6, 7], [6, 8], [6, 7], [6, 8], [6, 7], [7, 7], [7, 6], [8, 6], [8, 5], [8, 6], [8, 5], [8, 6], [8, 4], [5, 4], [5, 6], [6, 6], [6, 7], [7, 7], [7, 9], [8, 9], [8, 10], [8, 9], [11, 9], [11, 3], [11, 35], [12, 35], [12, 34], [13, 34], [13, 32], [21, 10], [21, 9], [23, 9], [23, 8]]
+max = 30000
 face = "up"
 interact = true
-note = "below Tate (23,7) [PHASE2: switch route]"
+note = "the floor switches move the statues on their colour's arrows, the warp panels pair up: python3 tests/e2e/tools/gba_puzzle.py --game emerald MAP_MOSSDEEP_CITY_GYM 6 35 23 8 (src/rotating_tile_puzzle.c MoveRotatingTileObjects); the gym's trainers who see the route are fought on the way; ends below Tate (23,7)"
 
 [[step]]
 do = "advance_text"
@@ -85,9 +76,15 @@ note = "TateAndLizaDefeated: FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_BADGE07_GET, MOSSD
 
 [[step]]
 do = "walk_to"
+x = 21
+z = 6
+note = "the leaders' room's WarpToEntrance coord event (21,6): warpmossdeepgym to (7,30) (MossdeepCity_Gym/scripts.inc:191-196)"
+
+[[step]]
+do = "walk_to"
 x = 6
 z = 35
-note = "[PHASE2] back to the exit (warp 0) -> Mossdeep (38,9)"
+note = "from (7,30) to the exit (warp 0) -> Mossdeep (38,9)"
 
 [[step]]
 do = "wait_map"

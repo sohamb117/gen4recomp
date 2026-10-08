@@ -2,9 +2,8 @@
 # SubmarineEscape: FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS (opens Route 124).
 # Start: Slateport Harbor -> end: MAP_AQUA_HIDEOUT_B2F at the submarine dock.
 title = "Lilycove Aqua Hideout: Matt and the submarine escape"
-status = "planned"
 priority = "P0"
-estimate = 16000
+estimate = 61764
 refs = [
   "data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F",
   "data/maps/AquaHideout_1F/map.json warp_events[2] (22,1) -> B1F",
@@ -28,7 +27,7 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 92700
 
 # PHASE2: the B1F/B2F warp-panel route from 1F (22,1) to Matt: map the panel pairs (B1F warps 4..24, B2F 3..8) with probe_map and write per-panel walk_to steps.
 
@@ -41,6 +40,16 @@ note = "harbor exit (warp 0) -> Slateport (28,12); no Fly indoors"
 [[step]]
 do = "wait_map"
 map = "MAP_SLATEPORT_CITY"
+
+[[step]]
+do = "heal"
+x = 24
+z = 14
+map = "MAP_LILYCOVE_CITY"
+surf = true
+hm = true
+max = 40000
+note = "walked (no party member can Fly) Route 110 -> Mauville -> 118 -> 119 -> Fortree -> 120 -> 121 to Lilycove's Pokemon Center (24,14): HP and PP back for the hideout"
 
 [[step]]
 do = "walk_to"
@@ -59,30 +68,14 @@ map = "MAP_AQUA_HIDEOUT_1F"
 
 [[step]]
 do = "walk_to"
-x = 22
-z = 1
-note = "1F (warp 2) -> B1F (29,1); grunt (20,4) sight 3"
-
-[[step]]
-do = "wait_map"
-map = "MAP_AQUA_HIDEOUT_B1F"
-
-[[step]]
-do = "walk_to"
-x = 18
-z = 1
-note = "[PHASE2] B1F panels to the B2F ladder (warp 1) -> B2F (18,1)"
-
-[[step]]
-do = "wait_map"
-map = "MAP_AQUA_HIDEOUT_B2F"
-
-[[step]]
-do = "walk_to"
 x = 28
 z = 17
+map = "MAP_AQUA_HIDEOUT_B2F"
+surf = true
 on_text = "stop"
-note = "[PHASE2] B2F to MattNoticePlayer (28,16..17) (AquaHideout_B2F/scripts.inc:13-21)"
+on_battle = "flee"
+max = 20000
+note = "1F (22,1) -> B1F and B2F's warp panels (the static route: 1F (22,1), B1F (27,4), (32,19), (18,1), B2F (31,8), (3,3), B1F (12,1), B2F (8,8)) to MattNoticePlayer (28,16..17) (AquaHideout_B2F/scripts.inc:13-21); the player arrives surfing at (13,27)"
 
 [[step]]
 do = "advance_text"

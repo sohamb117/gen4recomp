@@ -2,9 +2,8 @@
 # (OnFrame YES/NO) and Steven's tag battle vs Maxie + Tabitha (SPECIAL_BATTLE_STEVEN, ChooseHalfPartyForBattle).
 # Start: Mossdeep gym door -> end: MAP_MOSSDEEP_CITY_SPACE_CENTER_2F, FLAG_DEFEATED_MAGMA_SPACE_CENTER.
 title = "Mossdeep Space Center: Magma's raid, the Steven multi battle"
-status = "planned"
 priority = "P0"
-estimate = 14000
+estimate = 26865
 refs = [
   "data/maps/MossdeepCity/map.json coord_events (42,21)/(41,22..24)/(40,25..26) VAR_MOSSDEEP_CITY_STATE=1",
   "data/maps/MossdeepCity/scripts.inc:76-97",
@@ -31,9 +30,15 @@ from = "prev"
 # lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
 
 [run]
-frames = 60000
+frames = 40300
 
 # PHASE2: the ChooseHalfPartyForBattle selection inputs (special ChooseHalfPartyForBattle, SpaceCenter_2F/scripts.inc:228): pick the first three, CONFIRM; write press steps.
+
+[[step]]
+do = "heal"
+x = 28
+z = 16
+note = "Mossdeep Pokemon Center: the multi battle's party pick (ChooseHalfPartyForBattle) takes three Pokemon that can fight"
 
 [[step]]
 do = "walk_to"
@@ -122,12 +127,74 @@ note = "Steven (object 4 (1,8)) -> first talk sets FLAG_INTERACTED_WITH_STEVEN_S
 
 [[step]]
 do = "advance_text"
-note = "to the \"ready to battle?\" YES/NO"
+note = "the first talk only sets FLAG_INTERACTED_WITH_STEVEN_SPACE_CENTER and Steven squares up (MossdeepCity_SpaceCenter_2F/scripts.inc:170-182)"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "again: ReadyForBattlePrompt, 'ready to battle?' YES/NO (:211-218)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "YES -> SavePlayerParty, ChooseHalfPartyForBattle (:219-224)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+note = "the fade into the choose-half party menu"
 
 [[step]]
 do = "press"
-keys = "A"
-note = "YES -> ChooseHalfPartyForBattle [PHASE2: party pick presses]"
+keys = "a"
+gap = 30
+note = "slot 0: ENTER/SUMMARY/CANCEL (party_menu.c sPartyMenuAction_EnterSummaryCancel)"
+
+[[step]]
+do = "press"
+keys = "a"
+gap = 30
+note = "ENTER (CursorCb_Enter)"
+
+[[step]]
+do = "press"
+keys = "down"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "a"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "a"
+gap = 30
+note = "slot 1 entered"
+
+[[step]]
+do = "press"
+keys = "down"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "a"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "a"
+gap = 30
+note = "slot 2 entered: the third of GetMaxBattleEntries' 3 moves the cursor to CONFIRM (MoveCursorToConfirm)"
+
+[[step]]
+do = "press"
+keys = "a"
+gap = 30
+note = "CONFIRM -> ReducePlayerPartyToSelectedMons, DoSpecialTrainerBattle SPECIAL_BATTLE_STEVEN (:226-231)"
+
 
 [[step]]
 do = "wait_battle"
