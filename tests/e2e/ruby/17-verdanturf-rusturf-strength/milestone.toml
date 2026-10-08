@@ -50,15 +50,7 @@ x = 23
 z = 4
 hm = true
 on_text = "stop"
-note = "past the rocks (hm = true: A + YES at a rock); one smashed rock sets RUSTURF_TUNNEL_STATE 4/5, whose OnFrame runs the reunion"
-
-[[step]]
-do = "press"
-keys = "A"
-times = 2
-gap = 40
-shot = "reunion"
-note = "the first lines of the reunion (the walk stops as the field effect of the smashed rock still greys the screen)"
+note = "past the rocks (hm = true: A + YES at a rock); one smashed rock sets RUSTURF_TUNNEL_STATE 4/5, whose OnFrame runs the reunion; the walk advances its text, so the sheet has no reunion frame and FLAG_RECEIVED_HM04 is the proof"
 
 [[step]]
 do = "advance_text"

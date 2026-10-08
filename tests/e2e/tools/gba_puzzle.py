@@ -68,7 +68,12 @@ FACE = {"FACE_UP": (0,), "FACE_DOWN": (1,), "FACE_LEFT": (2,), "FACE_RIGHT": (3,
 MB_MOSSDEEP_GYM_WARP = 0x0E
 # forced movement (pokeruby metatile_behaviors.h): MB_WALK_EAST/WEST/NORTH/SOUTH 0x40-0x43, MB_SLIDE_* 0x44-0x47 ->
 # the direction moved; MB_TRICK_HOUSE_PUZZLE_8_FLOOR 0x48 keeps the current one (ForcedMovement_Slip)
-FORCED = {0x40: 3, 0x41: 2, 0x42: 0, 0x43: 1, 0x44: 3, 0x45: 2, 0x46: 0, 0x47: 1}
+FORCED = {0x40: 3, 0x41: 2, 0x42: 0, 0x43: 1, 0x44: 3, 0x45: 2, 0x46: 0, 0x47: 1,
+          # the currents (MetatileBehavior_Is*Current, metatile_behavior.c: MB_UNUSED_EASTWARD_CURRENT 0x50 east,
+          # MB_WESTWARD_CURRENT 0x51, MB_NORTHWARD_CURRENT 0x52, MB_SOUTHWARD_CURRENT 0x53), ridden by
+          # ForcedMovement_RideCurrent* = DoForcedMovement
+          0x50: 3, 0x51: 2, 0x52: 0, 0x53: 1}
+STUCK = "stuck"
 MB_SLIPPERY = 0x48
 
 
@@ -161,6 +166,9 @@ class Puzzle:
                 continue
             clear = self._script(scripts, mm.group(2))
             self.toggles.append(((b["x"], b["y"]), self._metatiles(body), self._metatiles(clear)))
+        self.switches_on = (False,) * len(self.toggles)  # the flags at the start (--switches)
+        # forced movement is ridden (not just avoided) on switch maps and on maps with currents (Seafloor Cavern)
+        self.forced_map = bool(self.toggles) or any(0x50 <= b <= 0x53 for b in m.beh)
 
     @staticmethod
     def _script(scripts, label):
@@ -195,8 +203,10 @@ class Puzzle:
             t = (on if s else off).get((x, y), t)
         return t[0], t[1], m.elev[i]
 
-    def _free(self, x, y, d, e, sw, busy):
-        """The step from (x, y) in direction d: the new elevation, or None when the game refuses it."""
+    def _free(self, x, y, d, e, sw, busy, ride=False):
+        """The step from (x, y) in direction d: the new elevation, None when the game refuses it, STUCK for a ride
+        that pushes a surfer onto land (CheckForPlayerAvatarCollision's stop-surfing collision makes
+        DoForcedMovement report the movement done every frame without moving: the player never gets control)."""
         m = self.m
         dx, dy = DIRS[d]
         nx, ny = x + dx, y + dy
@@ -208,6 +218,11 @@ class Puzzle:
             return None
         if bn in gba_world.STEP_WARP[self.world.decomp] and (nx, ny) != self.goal:
             return None
+        ws, wn = self.world.surfable(bt), self.world.surfable(bn)
+        if ws and not wn and ride:
+            return STUCK
+        if wn and not ws:
+            return None  # Surf starts with A + YES: routes start on the water
         # no elevation test: the arrow tracks (elevation 4) are ridden onto from the elevation-3 floor in the game
         # (probe_map: a press north from (1,17) rides column 1 and row 14 to (8,17))
         return e if ne in (0, 15) else ne
@@ -243,7 +258,10 @@ class Puzzle:
                     cx = None  # rides round forever
                     break
                 seen.add((cx, cy, cd))
-                fe = self._free(cx, cy, cd, ce, sw, busy)
+                fe = self._free(cx, cy, cd, ce, sw, busy, ride=True)
+                if fe is STUCK:
+                    cx = None
+                    break
                 if fe is None:
                     break
                 cx, cy, ce = cx + DIRS[cd][0], cy + DIRS[cd][1], fe
@@ -349,7 +367,7 @@ class Puzzle:
 
     def steps(self, state):
         """(direction, next state, tiles moved, battles) for each step from state."""
-        if self.toggles:
+        if self.forced_map:
             yield from self._arrow_steps(state)
             return
         m = self.m
@@ -414,16 +432,20 @@ class Puzzle:
         m = self.m
         self.goal = (tx, ty)
         e0 = m.elev[sy * m.w + sx]
-        start = (sx, sy, 3 if e0 in (0, 15) else e0, tuple(g[3] for g in self.gates) or (False,) * len(self.toggles),
+        start = (sx, sy, 3 if e0 in (0, 15) else e0, tuple(g[3] for g in self.gates) or self.switches_on,
                  tuple((p[0], p[1], False) for p in self.people))
         dist, parent = {start: 0}, {start: None}
-        heap = [(0, 0, start)]
+        # A*: the tiles still to go in a straight line (admissible without warp panels, which may shorten it)
+        h = (lambda s: 0) if self.pads else (lambda s: abs(s[0] - tx) + abs(s[1] - ty))
+        heap = [(h(start), 0, start)]
         tick = 1
         while heap:
-            c, _, st = heapq.heappop(heap)
-            if c > dist[st]:
+            f, _, st = heapq.heappop(heap)
+            c = dist[st]
+            if f > c + h(st):
                 continue
             if st[:2] == (tx, ty):
+                self.end = st
                 moves = []
                 while parent[st] is not None:
                     prev, d, n, act = parent[st]
@@ -436,7 +458,7 @@ class Puzzle:
                 if nc < dist.get(nst, 1 << 60):
                     dist[nst] = nc
                     parent[nst] = (st, d, n, act)
-                    heapq.heappush(heap, (nc, tick, nst))
+                    heapq.heappush(heap, (nc + h(nst), tick, nst))
                     tick += 1
         return None
 
@@ -519,11 +541,29 @@ def main():
     ap.add_argument("ty", type=int)
     ap.add_argument("--hide", type=int, nargs="*", default=[], metavar="LOCAL_ID",
                     help="objects the save has hidden (their map.json flag set), by 1-based local id")
+    ap.add_argument("--via", nargs="*", default=[], metavar="X,Y",
+                    help="waypoints solved in turn, each from the state the last left (big boulder rooms, whose "
+                         "one-goal search would wander through every boulder arrangement)")
+    ap.add_argument("--switches", type=int, nargs="*", default=[], metavar="N",
+                    help="sign switches whose flag is already set at the start (0-based, bg event order)")
     a = ap.parse_args()
     p = Puzzle(a.game, a.map, hidden=set(a.hide))
-    moves = p.solve(a.sx, a.sy, a.tx, a.ty)
-    if moves is None:
-        raise SystemExit("no route from (%d,%d) to (%d,%d) on %s" % (a.sx, a.sy, a.tx, a.ty, a.map))
+    p.switches_on = tuple(k in a.switches for k in range(len(p.toggles)))
+    moves, (x, y) = [], (a.sx, a.sy)
+    for gx, gy in [tuple(int(v) for v in s.split(",")) for s in a.via] + [(a.tx, a.ty)]:
+        leg = p.solve(x, y, gx, gy)
+        if leg is None:
+            raise SystemExit("no route from (%d,%d) to (%d,%d) on %s" % (x, y, gx, gy, a.map))
+        moves += leg
+        # the next leg starts from this one's end: people where they ended (a beaten trainer battles no more),
+        # the gates' or switches' state
+        _, _, _, puzzle, people = p.end
+        p.people = [(px, py, dirs, 0 if beaten else r) for (px, py, beaten), (_, _, dirs, r) in zip(people, p.people)]
+        if p.gates:
+            p.gates = [g[:3] + (o,) for g, o in zip(p.gates, puzzle)]
+        else:
+            p.switches_on = puzzle
+        x, y = gx, gy
     if any(act != "walk" for *_, act in moves):
         print("# %d moves (%d pushes, %d rocks)" % (len(moves), sum(m[3] == "push" for m in moves),
                                                   sum(m[3] == "smash" for m in moves)))

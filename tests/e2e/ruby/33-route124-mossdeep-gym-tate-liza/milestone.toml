@@ -2,10 +2,9 @@
 # and their arrow metatiles) to Tate & Liza (trainerbattle_double TRAINER_TATE_AND_LIZA): FLAG_BADGE07_GET, TM04 Calm Mind.
 # Start: the hideout B2F -> end: MAP_MOSSDEEP_CITY outside the gym (38,10).
 title = "Route 124 and the Mossdeep Gym: Tate & Liza"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 16820
 refs = [
   "data/maps/LilycoveCity/scripts.inc:31 (badge 7 walls the hideout door up)",
   "data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> MOSSDEEP_CITY_GYM (9,29)",
@@ -14,14 +13,14 @@ refs = [
   "src/field_player_avatar.c:123-480 (forced movement: MB_WALK_* 0x40-0x43, MB_SLIDE_* 0x44-0x47 ride until blocked; 0x48 slips on)",
   "data/maps/MossdeepCity_Gym/scripts.inc:47-76 (TateAndLizaDefeated: FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_BADGE07_GET; TM04)",
 ]
-notes = "Tate & Liza: TRAINER_TATE_AND_LIZA (271) DOUBLE: LUNATONE 42, SOLROCK 42 (Surf x2 on both; a double battle needs two Pokemon: Castform and the Fly carrier from the boost stand by). The press list is a BFS over (tile, elevation, switch states) with the game's forced-movement rules (field_player_avatar.c; walk_to never plans onto forced tiles, bots.py:823): 3 switches pressed (1, 2, 3); the gym trainers' tiles are treated as walls, so sight battles on the way are not modelled [INFERENCE]. The (12,3) warp-back coord event is avoided. The hideout exit is walked back out by the route (its pads in reverse)."
+notes = "Tate & Liza: TRAINER_TATE_AND_LIZA (271) DOUBLE: LUNATONE 42, SOLROCK 42 (Surf x2 on both; a double battle needs two Pokemon: Castform and the Fly carrier from the boost stand by). The gym route is tools/gba_puzzle.py's R/S Mossdeep mode (forced-movement arrows ridden, the sign switches' setmetatile toggles, trainers who see the player mid-ride); the (12,3) WarpToEntrance coord event is never stepped on. The hideout exit is walked back out by the route (its pads in reverse)."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 25300
 
 [[step]]
 do = "walk_to"
@@ -47,60 +46,74 @@ note = "gym door (Mossdeep warp 1) -> MOSSDEEP_CITY_GYM (9,29)"
 do = "wait_map"
 map = "MAP_MOSSDEEP_CITY_GYM"
 
+# gym route: python3 tests/e2e/tools/gba_puzzle.py --game ruby MAP_MOSSDEEP_CITY_GYM 9 29 8 4 (arrow tiles ridden, the four sign
+# switches as face + interact; trainers who see the route are fought on the way)
 [[step]]
-do = "slide"
-dirs = "U R R R L U"
-note = "single steps and arrow-tile rides; the last press faces the switch"
+do = "steps"
+route = [[9, 28], [12, 28], [18, 16], [17, 16]]
 
 [[step]]
-do = "press"
-keys = "A"
-gap = 40
-note = "the switch (sign bg event): toggles its arrow tile (MossdeepCity_Gym/scripts.inc:78-160)"
-
-[[step]]
-do = "wait_frames"
-n = 60
-
-[[step]]
-do = "slide"
-dirs = "R U R U R R R L U L L"
-note = "single steps and arrow-tile rides; the last press faces the switch"
-
-[[step]]
-do = "press"
-keys = "A"
-gap = 40
-note = "the switch (sign bg event): toggles its arrow tile (MossdeepCity_Gym/scripts.inc:78-160)"
+do = "steps"
+route = [[17, 16]]
+face = "up"
+interact = true
+note = "the switch: its arrows turn (MossdeepCity_Gym/scripts.inc)"
 
 [[step]]
 do = "wait_frames"
 n = 60
 
 [[step]]
-do = "slide"
-dirs = "D R D D D L L D L U L U U U L"
-note = "single steps and arrow-tile rides; the last press faces the switch"
+do = "steps"
+route = [[18, 16], [18, 15], [6, 19], [7, 19], [8, 19], [8, 18], [11, 18], [11, 11], [10, 11], [10, 10], [9, 10]]
 
 [[step]]
-do = "press"
-keys = "A"
-gap = 40
-note = "the switch (sign bg event): toggles its arrow tile (MossdeepCity_Gym/scripts.inc:78-160)"
+do = "steps"
+route = [[9, 10]]
+face = "left"
+interact = true
+note = "the switch: its arrows turn (MossdeepCity_Gym/scripts.inc)"
 
 [[step]]
 do = "wait_frames"
 n = 60
 
 [[step]]
-do = "slide"
-dirs = "D D D D D U U U U L U R U"
-note = "on to (8,4) below Tate (8,3); the last press faces him"
+do = "steps"
+route = [[9, 11], [10, 11], [10, 12], [10, 18], [10, 20], [8, 20], [8, 21], [7, 21], [4, 11], [4, 10], [3, 10], [3, 7]]
 
 [[step]]
-do = "press"
-keys = "A"
-note = "talk to Tate (object 1 (8,3))"
+do = "steps"
+route = [[3, 7]]
+face = "left"
+interact = true
+note = "the switch: its arrows turn (MossdeepCity_Gym/scripts.inc)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "steps"
+route = [[3, 12], [14, 26], [14, 24], [6, 24]]
+
+[[step]]
+do = "steps"
+route = [[6, 24]]
+face = "left"
+interact = true
+note = "the switch: its arrows turn (MossdeepCity_Gym/scripts.inc)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "steps"
+route = [[6, 26], [8, 26], [8, 28], [6, 28], [7, 5], [7, 4], [8, 4]]
+face = "up"
+interact = true
+note = "below Tate (object 1 (8,3)), facing him: TateAndLiza (MossdeepCity_Gym/scripts.inc)"
 
 [[step]]
 do = "advance_text"
@@ -116,9 +129,20 @@ shot = "mind-badge"
 
 [[step]]
 do = "walk_to"
-x = 9
-z = 29
-note = "exit mat -> Mossdeep (38,9) [the arrows as left by the switches]"
+x = 12
+z = 3
+note = "the dais has no way back over the arrows (gba_puzzle.py --switches 0 1 2 3: no route to the mat): the WarpToEntrance coord event (12,3) -> warpteleport (14,29) (MossdeepCity_Gym/scripts.inc WarpToEntrance)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 10
+map = "MAP_MOSSDEEP_CITY"
+note = "the entrance row to the mat (9,29) -> Mossdeep (38,9), a step south"
 
 [[step]]
 do = "wait_map"
