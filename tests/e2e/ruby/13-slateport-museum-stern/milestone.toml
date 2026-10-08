@@ -22,7 +22,7 @@ notes = "Grunts (trainerbattle_no_intro): Ruby TRAINER_GRUNT_46 (585): NUMEL 15,
 from = "prev"
 
 [run]
-frames = 18700
+frames = 19200
 
 [[step]]
 do = "talk_to"

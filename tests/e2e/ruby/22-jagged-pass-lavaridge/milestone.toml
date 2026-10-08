@@ -16,7 +16,7 @@ notes = "Jagged Pass trainers (lv 19-22) stand by the ledges; Jagged Pass is one
 from = "prev"
 
 [run]
-frames = 7900
+frames = 8000
 
 [[step]]
 do = "walk_to"

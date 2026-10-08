@@ -20,7 +20,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 34100
+frames = 37000
 
 [[step]]
 do = "heal"

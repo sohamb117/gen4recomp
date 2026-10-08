@@ -5,7 +5,7 @@
 title = "Seafloor Cavern: Archie wakes Kyogre (Sapphire)"
 priority = "P0"
 version = "sapphire"
-estimate = 25936
+estimate = 24843
 refs = [
   "data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0",
   "data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)",
@@ -20,7 +20,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 39000
+frames = 37300
 
 [[step]]
 do = "walk_to"

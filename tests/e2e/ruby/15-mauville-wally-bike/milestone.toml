@@ -18,7 +18,7 @@ notes = "Wally: TRAINER_WALLY_2 (656): RALTS 16. The talk must face north or eas
 from = "prev"
 
 [run]
-frames = 6600
+frames = 6800
 
 [[step]]
 do = "walk_to"

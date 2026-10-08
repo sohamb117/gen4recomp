@@ -31,6 +31,7 @@ Passing (`status` removed from `milestone.toml`), as a continuity chain from a b
 | Platinum systems | 60-72, 74: every HM field use (Cut, Rock Smash, Strength, Surf, Fly, Defog, Rock Climb, Waterfall), the three rods, a honey tree, the Day Care (deposit with the lady, egg from the man), level-up evolution after a wild battle |
 | Diamond | 01-20: new game, Pokedex, Parcel + catching tutorial, Trainers' School, Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge, Barry's farewell, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Galactic building, Bicycle + Explorer Kit, Cycling Road + VS Seeker, Mt. Coronet + Route 208 to Hearthome, Contest Hall + rival, Route 209 to Solaceon |
 | Emerald | 01-02: new game, truck and house; the wall clock, Dad on TV, May next door |
+| Ruby, Sapphire | 01-44: new game .. Hall of Fame, credits and the game's reset (`sapphire/chain.txt` reuses `ruby/`, with Sapphire-local 21, 25, 32, 35, 36 for Team Aqua, Archie and Kyogre where pokeruby's scripts branch on the version) |
 | Black, White | 01: new game, the bedroom walked by the probe, Cheren, the first save through the X menu |
 
 Everything else is still `status = "planned"` and skipped unless `--planned`.

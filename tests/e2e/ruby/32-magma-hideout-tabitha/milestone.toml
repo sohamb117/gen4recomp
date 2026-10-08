@@ -6,7 +6,7 @@
 title = "Team Magma Hideout: Tabitha and the escaped submarine (Ruby)"
 priority = "P0"
 version = "ruby"
-estimate = 38287
+estimate = 38301
 refs = [
   "data/maps/LilycoveCity/scripts.inc:15-31 (OnLoad .ifndef SAPPHIRE: the cove entrance metatiles, (71,5) BottomMid collision 0)",
   "data/maps/LilycoveCity/map.json warp_events[14] (71,5) -> MAGMA_HIDEOUT_1F (13,27); [6] (70,5) -> AQUA_HIDEOUT_1F is Sapphire's",

@@ -3,7 +3,7 @@
 title = "Sootopolis Gym: Wallace's Rain Badge"
 priority = "P0"
 version = "both"
-estimate = 17875
+estimate = 16681
 refs = [
   "data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> SOOTOPOLIS_CITY_GYM_1F (8,25)",
   "data/maps/SootopolisCity_Gym_1F/map.json object_events[0] WALLACE (8,2)",
@@ -16,7 +16,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 26900
+frames = 25100
 
 
 [[step]]

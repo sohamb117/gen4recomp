@@ -19,7 +19,7 @@ notes = "No battle. The walk is split at Mauville and Route 110's lower path: wi
 from = "prev"
 
 [run]
-frames = 31000
+frames = 36100
 
 [[step]]
 do = "walk_to"

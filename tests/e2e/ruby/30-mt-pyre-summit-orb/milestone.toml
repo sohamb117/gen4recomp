@@ -5,7 +5,7 @@
 title = "Mt. Pyre: the summit and the stolen orb"
 priority = "P0"
 version = "both"
-estimate = 15902
+estimate = 15442
 refs = [
   "data/maps/Route122/map.json warp_events[0] (22,29) -> MT_PYRE_1F (17,18)",
   "data/maps/MtPyre_1F/map.json warp_events[1] (3,6) -> MT_PYRE_EXTERIOR (10,42)",
@@ -21,7 +21,7 @@ notes = "Shared scene (texts .ifdef SAPPHIRE only). Summit grunts: Ruby TRAINER_
 from = "prev"
 
 [run]
-frames = 23900
+frames = 23700
 
 [[step]]
 do = "walk_to"

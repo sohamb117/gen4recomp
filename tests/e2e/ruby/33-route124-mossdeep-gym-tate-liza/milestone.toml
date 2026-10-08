@@ -4,7 +4,7 @@
 title = "Route 124 and the Mossdeep Gym: Tate & Liza"
 priority = "P0"
 version = "both"
-estimate = 16820
+estimate = 14864
 refs = [
   "data/maps/LilycoveCity/scripts.inc:31 (badge 7 walls the hideout door up)",
   "data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> MOSSDEEP_CITY_GYM (9,29)",
@@ -20,7 +20,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 25300
+frames = 26400
 
 [[step]]
 do = "walk_to"

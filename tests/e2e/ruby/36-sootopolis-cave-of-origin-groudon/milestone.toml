@@ -5,7 +5,7 @@
 title = "Sootopolis and the Cave of Origin: Groudon (Ruby)"
 priority = "P0"
 version = "ruby"
-estimate = 19297
+estimate = 22414
 refs = [
   "data/maps/SootopolisCity/map.json coord_events (25,6) VAR_SOOTOPOLIS_STATE=1",
   "data/maps/SootopolisCity/scripts.inc:200-282 (LeadPlayerCaveOfOrigin; .ifdef SAPPHIRE texts; SOOTOPOLIS_STATE 2)",
@@ -19,9 +19,10 @@ notes = "Ruby branch (other: ../sapphire/36-sootopolis-cave-of-origin-kyogre). G
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 
 [run]
-frames = 29000
+frames = 33700
 
 
 [[step]]
@@ -45,10 +46,19 @@ note = "coord (25,6) SOOTOPOLIS_STATE 1 -> Steven leads to Wallace (SootopolisCi
 do = "advance_text"
 
 [[step]]
+do = "heal"
+x = 43
+z = 31
+map = "MAP_SOOTOPOLIS_CITY"
+surf = true
+note = "Sootopolis Pokemon Center (SootopolisCity/map.json warp_events[0] (43,31)) before the cave: Routes 126-128 and the cave's wild battles spend Surf, and a full Sapphire chain lost to Kyogre with Surf at 2 PP"
+
+[[step]]
 do = "walk_to"
 x = 6
 z = 6
 map = "MAP_CAVE_OF_ORIGIN_B3F"
+surf = true
 face = "up"
 interact = true
 note = "through the cave floors to B3F, below the HM07 item ball (6,5)"

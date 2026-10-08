@@ -5,7 +5,7 @@
 title = "Seafloor Cavern: Maxie wakes Groudon (Ruby)"
 priority = "P0"
 version = "ruby"
-estimate = 21830
+estimate = 21882
 refs = [
   "data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0",
   "data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)",
@@ -20,7 +20,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 32800
+frames = 32900
 
 [[step]]
 do = "walk_to"

@@ -1,0 +1,6 @@
+# Party strength for the legend (KYOGRE lv45, ScrSpecial_StartGroudonKyogreBattle, src/battle_setup.c:598-610): the
+# lead's Water moves are resisted or neutral and Strength is weak; TM26 Earthquake (Marshtomp's TM learnset,
+# src/data/pokemon/tmhm_learnsets.h:6299) in place of Strength, as a player teaches it (the cave needs no Strength),
+# and a level.
+party-move 0 0 MOVE_EARTHQUAKE
+party-level 0 64

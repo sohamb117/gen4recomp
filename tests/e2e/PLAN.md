@@ -4496,7 +4496,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 ## Ruby
 
 <!-- plan.py:begin ruby -->
-### Story chain: 44 milestones, ~693161 frames estimated
+### Story chain: 44 milestones, ~686648 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -4529,21 +4529,21 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [27-route120-steven-devon-scope](ruby/27-route120-steven-devon-scope/milestone.toml) | Route 120: Steven's Devon Scope, the Fortree Kecleon | P0 | both | 11697 | prev + `None` | MAP_FORTREE_CITY | passing |
 | [28-fortree-gym-winona](ruby/28-fortree-gym-winona/milestone.toml) | Fortree Gym: Winona's Feather Badge | P0 | both | 14288 | prev + `None` | MAP_FORTREE_CITY | passing |
 | [29-route121-lilycove-may](ruby/29-route121-lilycove-may/milestone.toml) | Route 121 and Lilycove: May's fourth battle | P0 | both | 26959 | prev + `None` | MAP_LILYCOVE_CITY | passing |
-| [30-mt-pyre-summit-orb](ruby/30-mt-pyre-summit-orb/milestone.toml) | Mt. Pyre: the summit and the stolen orb | P0 | both | 15902 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
+| [30-mt-pyre-summit-orb](ruby/30-mt-pyre-summit-orb/milestone.toml) | Mt. Pyre: the summit and the stolen orb | P0 | both | 15442 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
 | [31-slateport-harbor-submarine](ruby/31-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: the submarine is stolen | P0 | both | 20608 | prev + `None` | MAP_SLATEPORT_CITY | passing |
-| [32-magma-hideout-tabitha](ruby/32-magma-hideout-tabitha/milestone.toml) | Team Magma Hideout: Tabitha and the escaped submarine (Ruby) | P0 | ruby | 38287 | prev + `None` | MAP_MAGMA_HIDEOUT_B2F | passing |
-| [33-route124-mossdeep-gym-tate-liza](ruby/33-route124-mossdeep-gym-tate-liza/milestone.toml) | Route 124 and the Mossdeep Gym: Tate & Liza | P0 | both | 16820 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
+| [32-magma-hideout-tabitha](ruby/32-magma-hideout-tabitha/milestone.toml) | Team Magma Hideout: Tabitha and the escaped submarine (Ruby) | P0 | ruby | 38301 | prev + `None` | MAP_MAGMA_HIDEOUT_B2F | passing |
+| [33-route124-mossdeep-gym-tate-liza](ruby/33-route124-mossdeep-gym-tate-liza/milestone.toml) | Route 124 and the Mossdeep Gym: Tate & Liza | P0 | both | 14864 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
 | [34-mossdeep-stevens-house-hm-dive](ruby/34-mossdeep-stevens-house-hm-dive/milestone.toml) | Mossdeep: Steven's house and HM08 Dive | P0 | both | 2019 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
-| [35-seafloor-cavern-maxie](ruby/35-seafloor-cavern-maxie/milestone.toml) | Seafloor Cavern: Maxie wakes Groudon (Ruby) | P0 | ruby | 21830 | prev + `None` | MAP_ROUTE128 | passing |
-| [36-sootopolis-cave-of-origin-groudon](ruby/36-sootopolis-cave-of-origin-groudon/milestone.toml) | Sootopolis and the Cave of Origin: Groudon (Ruby) | P0 | ruby | 19297 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | passing |
-| [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 17875 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
-| [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 45860 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
-| [39-pokemon-league-entrance](ruby/39-pokemon-league-entrance/milestone.toml) | Pokemon League: heal and into Sidney's room | P0 | both | 6000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
-| [40-e4-sidney](ruby/40-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | planned |
-| [41-e4-phoebe](ruby/41-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | planned |
-| [42-e4-glacia](ruby/42-e4-glacia/milestone.toml) | Elite Four: Glacia | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_DRAKES_ROOM | planned |
-| [43-e4-drake](ruby/43-e4-drake/milestone.toml) | Elite Four: Drake | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM | planned |
-| [44-champion-steven-hall-of-fame](ruby/44-champion-steven-hall-of-fame/milestone.toml) | Champion Steven, the Hall of Fame, credits and the reset | P0 | both | 26000 | prev + `None` | - | planned |
+| [35-seafloor-cavern-maxie](ruby/35-seafloor-cavern-maxie/milestone.toml) | Seafloor Cavern: Maxie wakes Groudon (Ruby) | P0 | ruby | 21882 | prev + `None` | MAP_ROUTE128 | passing |
+| [36-sootopolis-cave-of-origin-groudon](ruby/36-sootopolis-cave-of-origin-groudon/milestone.toml) | Sootopolis and the Cave of Origin: Groudon (Ruby) | P0 | ruby | 22414 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | passing |
+| [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 16681 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
+| [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 41737 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
+| [39-pokemon-league-entrance](ruby/39-pokemon-league-entrance/milestone.toml) | Pokemon League: heal and into Sidney's room | P0 | both | 2925 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | passing |
+| [40-e4-sidney](ruby/40-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 | both | 6895 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | passing |
+| [41-e4-phoebe](ruby/41-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 | both | 6329 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | passing |
+| [42-e4-glacia](ruby/42-e4-glacia/milestone.toml) | Elite Four: Glacia | P0 | both | 7622 | prev + `None` | MAP_EVER_GRANDE_CITY_DRAKES_ROOM | passing |
+| [43-e4-drake](ruby/43-e4-drake/milestone.toml) | Elite Four: Drake | P0 | both | 6620 | prev + `None` | MAP_EVER_GRANDE_CITY_CORRIDOR4 | passing |
+| [44-champion-steven-hall-of-fame](ruby/44-champion-steven-hall-of-fame/milestone.toml) | Champion Steven, the Hall of Fame, credits and the reset | P0 | both | 27646 | prev + `None` | - | passing |
 
 #### ruby/01-newgame-truck-house — New game: intro, Birch speech, truck ride, into the house
 - proves: Proves the blank-chip Ruby/Sapphire start: title, Birch speech (BOY, the default; name AAAAAAA), the moving truck, Mom at the door and into the house (LittlerootTown OnFrame StepOffTruckMale -> warpsilent 1F (8,8)). Start: power-on (no save) -> end: MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F, VAR_LITTLEROOT_INTRO_STATE 4. Refs are pokeruby's (.cache/gba/pokeruby), the one source both versions build from.
@@ -4671,7 +4671,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:9-95 (Stern: TRAINER_MUSEUM_2F_GRUNT_1/_2 back to back, the leader appears, FLAG_HIDE_EVIL_TEAM_OCEANIC_MUSEUM, FLAG_HIDE_EVIL_TEAM_ROUTE110, FLAG_DELIVERED_DEVON_GOODS); constants/version.inc (MUSEUM_2F_GRUNT_1/_2: Ruby TRAINER_GRUNT_46/47, Sapphire TRAINER_GRUNT_19/20)
 - end state: map MAP_SLATEPORT_CITY; 2 badges; >= 2 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_VISITED_SLATEPORT_CITY, FLAG_DOCK_REJECTED_DEVON_GOODS, FLAG_HIDE_EVIL_TEAM_SLATEPORT, FLAG_DELIVERED_DEVON_GOODS, FLAG_HIDE_EVIL_TEAM_ROUTE110, FLAG_HIDE_EVIL_TEAM_OCEANIC_MUSEUM
-- frames: estimate 12431, budget 18700
+- frames: estimate 12431, budget 19200
 - refs: data/maps/DewfordTown/scripts.inc:9-35 (Briney: multichoicedefault 21, 6, 0, 2, 0: PETALBURG, SLATEPORT, CANCEL, default CANCEL); data/maps/DewfordTown/scripts.inc:149-185 (SailToSlateport: the ride, showobjectat MAP_ROUTE109, LandedSlateportDeliverGoods); data/maps/SlateportCity/map.json warp_events[2] (26,38) -> STERNS_SHIPYARD_1F; data/maps/SlateportCity_SternsShipyard_1F/scripts.inc:4-20 (Dock: FLAG_DOCK_REJECTED_DEVON_GOODS, FLAG_HIDE_EVIL_TEAM_SLATEPORT); data/maps/SlateportCity/map.json warp_events[5] (30,26) -> OCEANIC_MUSEUM_1F; data/maps/SlateportCity_OceanicMuseum_1F/map.json coord_events (9,7)/(10,7) VAR_SLATEPORT_MUSEUM_1F_STATE=0; data/maps/SlateportCity_OceanicMuseum_1F/scripts.inc:19-57 (fee YES/NO, 50, MUSEUM_1F_STATE 1); data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:9-95 (Stern: TRAINER_MUSEUM_2F_GRUNT_1/_2 back to back, the leader appears, FLAG_HIDE_EVIL_TEAM_OCEANIC_MUSEUM, FLAG_HIDE_EVIL_TEAM_ROUTE110, FLAG_DELIVERED_DEVON_GOODS); constants/version.inc (MUSEUM_2F_GRUNT_1/_2: Ruby TRAINER_GRUNT_46/47, Sapphire TRAINER_GRUNT_19/20)
 - notes: Grunts (trainerbattle_no_intro): Ruby TRAINER_GRUNT_46 (585): NUMEL 15, TRAINER_GRUNT_47 (586): ZUBAT 14, NUMEL 14; Sapphire TRAINER_GRUNT_19 (20): CARVANHA 15, TRAINER_GRUNT_20 (21): ZUBAT 14, CARVANHA 14 (Mud Shot/Water Gun cover both). Maxie (Ruby) or Archie (Sapphire) appears after the second (ArchieWarning/MaxieWarning texts, :62-68). Briney's Dewford menu defaults to CANCEL: UP once -> SLATEPORT. The fee is 50; without it the attendant lets you in before the delivery (:59-74). R/S have no Scott scene outside.
 
@@ -4681,7 +4681,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: data/maps/Route110/scripts.inc:311-368 (rival scene, switch VAR_STARTER_MON: 2 -> trainerbattle_no_intro TRAINER_MAY_2 (:380-382))
 - end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_VISITED_MAUVILLE_CITY, FLAG_SYS_TV_START; vars VAR_ROUTE110_STATE=1
-- frames: estimate 22678, budget 34100
+- frames: estimate 22678, budget 37000
 - refs: data/maps/SlateportCity/map.json warp_events[0] (19,19) -> POKEMON_CENTER_1F; data/maps/Route110/map.json coord_events (33..35,56) VAR_ROUTE110_STATE=0; data/maps/Route110/scripts.inc:311-368 (rival scene, switch VAR_STARTER_MON: 2 -> trainerbattle_no_intro TRAINER_MAY_2 (:380-382)); data/maps/Route110/scripts.inc:415-451 (ITEM_ITEMFINDER, May leaves, ROUTE110_STATE 1); data/maps/MauvilleCity/scripts.inc:5-12 (FLAG_VISITED_MAUVILLE_CITY, FLAG_SYS_TV_START); data/maps/MauvilleCity/map.json warp_events[1] (22,5) -> POKEMON_CENTER_1F
 - notes: May: TRAINER_MAY_2 (530): WAILMER 18, NUMEL 18, GROVYLE 20 (Grovyle's Absorb is x4 once the lead has evolved into Marshtomp: the boost's level carries it). R/S have no Birch Match Call scene on Route 110. Route 110 trainers below the Cycling Road: Edward, Jaclyn, Edwin, Dale, Jacob/Anthony/Benjamin/Jasmine/Abigail (triathletes), Isabel, Timmy (lv 12-16); walk_to fights those who see it. The team's grunts on Route 110 are hidden by the museum delivery (13).
 
@@ -4691,7 +4691,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: data/maps/MauvilleCity/scripts.inc:152-173 (BattleWally: trainerbattle_no_intro TRAINER_WALLY_2; DefeatedWally: FLAG_DEFEATED_WALLY_MAUVILLE)
 - end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_DEFEATED_WALLY_MAUVILLE, FLAG_RECEIVED_BIKE, FLAG_HIDE_WALLY_MAUVILLE, FLAG_HIDE_WALLY_FATHER_MAUVILLE
-- frames: estimate 4385, budget 6600
+- frames: estimate 4385, budget 6800
 - refs: data/maps/MauvilleCity/map.json object_events[5] WALLY (8,6), [6] uncle (9,6); data/maps/MauvilleCity/scripts.inc:84-111 (Wally: MSGBOX_YESNO; the exit scene is chosen by VAR_FACING: north or east); data/maps/MauvilleCity/scripts.inc:152-173 (BattleWally: trainerbattle_no_intro TRAINER_WALLY_2; DefeatedWally: FLAG_DEFEATED_WALLY_MAUVILLE); data/maps/MauvilleCity/map.json warp_events[2] (35,5) -> BIKE_SHOP; data/maps/MauvilleCity_BikeShop/scripts.inc:4-55 (Rydel: far-away YES/NO -> FLAG_RECEIVED_BIKE, multichoice 21, 8, 12, 1: MACH BIKE / ACRO BIKE)
 - notes: Wally: TRAINER_WALLY_2 (656): RALTS 16. The talk must face north or east (switch VAR_FACING cases 2 and 4 only): from (7,6) facing right. Rydel: YES (cursor on YES) -> FLAG_RECEIVED_BIKE -> multichoice, A on the first entry (MACH BIKE). The Mach Bike is never needed on R/S's story path [INFERENCE: no Sky Pillar in the story]; taken for parity with Emerald.
 
@@ -4761,7 +4761,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_LAVARIDGE_TOWN; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_LAVARIDGE_TOWN, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
-- frames: estimate 5230, budget 7900
+- frames: estimate 5230, budget 8000
 - refs: data/maps/MtChimney/map.json warp_events[2] (20,41) -> JAGGED_PASS (13,5); data/maps/JaggedPass/map.json warp_events[0] (14,40) -> Route 112 (6,46); data/maps/LavaridgeTown/map.json warp_events[3] (9,6) -> POKEMON_CENTER_1F
 - notes: Jagged Pass trainers (lv 19-22) stand by the ledges; Jagged Pass is one-way downhill by ledges [INFERENCE]. R/S have no Magma Hideout door in Jagged Pass (Emerald-only map): its coord events are ash-weather triggers only.
 
@@ -4841,7 +4841,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: data/scripts/magma_summit.inc:1-28 (grunts: TRAINER_MT_PYRE_SUMMIT_GRUNT_1..3); constants/version.inc (ITEM_RED_OR_BLUE_ORB: Ruby ITEM_RED_ORB, Sapphire ITEM_BLUE_ORB; summit grunts: Ruby TRAINER_GRUNT_49/50/51, Sapphire TRAINER_GRUNT_22/23/24)
 - end state: map MAP_MT_PYRE_SUMMIT; 6 badges; flags set FLAG_BADGE06_GET, FLAG_MT_PYRE_ORB_STOLEN, FLAG_RECEIVED_RED_OR_BLUE_ORB, FLAG_HIDE_LEADER_MT_PYRE_SUMMIT, FLAG_HIDE_GRUNTS_MT_PYRE_SUMMIT; flags clear FLAG_HIDE_STERN_SLATEPORT, FLAG_HIDE_GABBY_AND_TY_SLATEPORT; vars VAR_MT_PYRE_STATE=1, VAR_SLATEPORT_STATE=1, VAR_SLATEPORT_HARBOR_STATE=1
-- frames: estimate 15902, budget 23900
+- frames: estimate 15442, budget 23700
 - refs: data/maps/Route122/map.json warp_events[0] (22,29) -> MT_PYRE_1F (17,18); data/maps/MtPyre_1F/map.json warp_events[1] (3,6) -> MT_PYRE_EXTERIOR (10,42); data/maps/MtPyre_Exterior/map.json warp_events[1] (19,10) -> MT_PYRE_SUMMIT (23,31); data/maps/MtPyre_Summit/map.json object_events[3..5] grunts (21,18)/(25,15)/(21,11) sight 3; coord_events (22..24,7) VAR_MT_PYRE_STATE=0; data/scripts/magma_summit.inc:1-28 (grunts: TRAINER_MT_PYRE_SUMMIT_GRUNT_1..3); data/maps/MtPyre_Summit/scripts.inc:9-78 (scene: the leader leaves with the orb, FLAG_HIDE_LEADER_MT_PYRE_SUMMIT, FLAG_HIDE_GRUNTS_MT_PYRE_SUMMIT, FLAG_MT_PYRE_ORB_STOLEN, SLATEPORT_STATE 1, SLATEPORT_HARBOR_STATE 1, MT_PYRE_STATE 1, ITEM_RED_OR_BLUE_ORB, FLAG_RECEIVED_RED_OR_BLUE_ORB); constants/version.inc (ITEM_RED_OR_BLUE_ORB: Ruby ITEM_RED_ORB, Sapphire ITEM_BLUE_ORB; summit grunts: Ruby TRAINER_GRUNT_49/50/51, Sapphire TRAINER_GRUNT_22/23/24)
 - notes: Shared scene (texts .ifdef SAPPHIRE only). Summit grunts: Ruby TRAINER_GRUNT_49 (588): ZUBAT 30 x3; TRAINER_GRUNT_50 (589): POOCHYENA 31, NUMEL 31; TRAINER_GRUNT_51 (590): NUMEL 31 x2; Sapphire TRAINER_GRUNT_22 (23): ZUBAT 30 x3; TRAINER_GRUNT_23 (24): POOCHYENA 31, CARVANHA 31; TRAINER_GRUNT_24 (25): CARVANHA 31 x2. Ruby's leader takes the Blue Orb and the player gets the Red Orb; Sapphire the other way round (save check is on the flag only). gba_world_cli (surf): Lilycove -> Route 121 -> Route 122 (22,29) -> Mt. Pyre 1F (4,6) -> Exterior (20,10) -> Summit (23,8).
 
@@ -4851,7 +4851,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_SLATEPORT_CITY; 6 badges; flags set FLAG_BADGE06_GET, FLAG_MT_PYRE_ORB_STOLEN, FLAG_HIDE_GRUNT_1_BLOCKING_HIDEOUT, FLAG_HIDE_GRUNT_2_BLOCKING_HIDEOUT; vars VAR_SLATEPORT_STATE=2, VAR_SLATEPORT_HARBOR_STATE=2
-- frames: estimate 20608, budget 31000
+- frames: estimate 20608, budget 36100
 - refs: data/maps/SlateportCity/scripts.inc:15-16,25-40 (SLATEPORT_STATE 1: Stern (object 11) at (28,13) with Gabby and Ty); data/maps/SlateportCity/scripts.inc:482-535 (CaptStern: the interview, the alarm, FLAG_HIDE_STERN_SLATEPORT_HARBOR etc. clear, SLATEPORT_STATE 2, warp SLATEPORT_CITY_HARBOR (11,14)); data/maps/SlateportCity_Harbor/map.json coord_events (8,11..14) VAR_SLATEPORT_HARBOR_STATE=1; data/maps/SlateportCity_Harbor/scripts.inc:5-80 (EvilTeamEscapeScene: SLATEPORT_HARBOR_STATE 2, FLAG_HIDE_GRUNT_1_BLOCKING_HIDEOUT, FLAG_HIDE_GRUNT_2_BLOCKING_HIDEOUT); data/maps/SlateportCity_Harbor/map.json warp_events[0] (11,14) -> Slateport (28,12)
 - notes: No battle. The walk is split at Mauville and Route 110's lower path: with Surf the static route from Mt. Pyre prefers the Seaside Cycling Road gates, whose coord events push a player without a bike back (Route110_SeasideCyclingRoadNorthEntrance/scripts.inc:17-34, GetPlayerAvatarBike 0). Route 123's ledges run downhill toward Route 118 (gba_world_cli: Summit -> Exterior -> 1F -> Route 122 -> Route 123 -> Route 118 -> Mauville (22,6)).
 
@@ -4861,7 +4861,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: data/maps/AquaHideout_B2F/scripts.inc:26-70 (trainerbattle_single TRAINER_HIDEOUT_B2F_GRUNT_1; the submarine leaves: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE)
 - end state: map MAP_MAGMA_HIDEOUT_B2F; 6 badges; >= 1 battles; flags set FLAG_BADGE06_GET, FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE
-- frames: estimate 38287, budget 57500
+- frames: estimate 38301, budget 57500
 - refs: data/maps/LilycoveCity/scripts.inc:15-31 (OnLoad .ifndef SAPPHIRE: the cove entrance metatiles, (71,5) BottomMid collision 0); data/maps/LilycoveCity/map.json warp_events[14] (71,5) -> MAGMA_HIDEOUT_1F (13,27); [6] (70,5) -> AQUA_HIDEOUT_1F is Sapphire's; data/maps/MagmaHideout_1F/map.json object_events grunts (13,19)/(14,19) FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT (hidden in 31), (20,3) sight trainer; data/maps/AquaHideout_1F/scripts.inc:9-46 (shared hideout scripts: MagmaHideout_* labels alias AquaHideout_*); data/maps/MagmaHideout_B2F/map.json object_events[0] admin VAR_1 (8,19) sight 0 -> MagmaHideout_B2F_EventScript_15D8E1; data/maps/AquaHideout_B2F/scripts.inc:26-70 (trainerbattle_single TRAINER_HIDEOUT_B2F_GRUNT_1; the submarine leaves: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE); constants/version.inc (Ruby: HIDEOUT_1F_GRUNT = GRUNT_28, B1F = GRUNT_29/30/53, B2F_GRUNT_1 = TABITHA_1, B2F_GRUNT_2/3 = GRUNT_31/54)
 - notes: Ruby's branch: its hideout is the MAP_MAGMA_HIDEOUT_* maps behind Lilycove's (71,5) (Sapphire: ../sapphire/32-aqua-hideout-matt, MAP_AQUA_HIDEOUT_* behind (70,5)). Tabitha: TRAINER_TABITHA_1 (596): NUMEL 32, MIGHTYENA 32, CAMERUPT 32 (Surf x2-x4). Grunts: GRUNT_28 (567): POOCHYENA 32 x2; GRUNT_29 (568): ZUBAT 30, POOCHYENA 30, NUMEL 30, POOCHYENA 30; GRUNT_30 (569): NUMEL 32, ZUBAT 32; GRUNT_53 (592): POOCHYENA 31, NUMEL 31 x2; GRUNT_31 (570): NUMEL 33; GRUNT_54 (593): ZUBAT 33. The static model keeps Lilycove's map.bin, where (71,5) is a wall: the walk stops on the water below it (71,6) and the last step north is planned on the probe, which sees the OnLoad metatiles. Walking, not Fly: bots.bot_fly drives the DS town map (overworld_headers) [INFERENCE: not usable on GBA]; the static route avoids the Cycling Road gates (bike-only) by the Route 110 waypoint. Inside, gba_world_cli (surf): 1F (13,1) -> B1F (8,5) -> B1F (14,3) -> B2F (12,1) -> B1F (23,5) -> B1F (43,19) -> B1F (29,1) -> B2F (17,13) -> B2F (7,19). The Electrode 'items' on B1F are only met if talked to.
 
@@ -4871,7 +4871,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_MOSSDEEP_CITY; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_RECEIVED_TM_CALM_MIND
-- frames: estimate 16820, budget 25300
+- frames: estimate 14864, budget 26400
 - refs: data/maps/LilycoveCity/scripts.inc:31 (badge 7 walls the hideout door up); data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> MOSSDEEP_CITY_GYM (9,29); data/maps/MossdeepCity_Gym/map.json bg_events switches (2,7)/(8,10)/(17,15)/(5,24); arrows (5,5)/(8,14)/(15,17)/(1,23); data/maps/MossdeepCity_Gym/scripts.inc:5-46,78-160 (switch flags and arrow metatiles); src/field_player_avatar.c:123-480 (forced movement: MB_WALK_* 0x40-0x43, MB_SLIDE_* 0x44-0x47 ride until blocked; 0x48 slips on); data/maps/MossdeepCity_Gym/scripts.inc:47-76 (TateAndLizaDefeated: FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_BADGE07_GET; TM04)
 - notes: Tate & Liza: TRAINER_TATE_AND_LIZA (271) DOUBLE: LUNATONE 42, SOLROCK 42 (Surf x2 on both; a double battle needs two Pokemon: Castform and the Fly carrier from the boost stand by). The gym route is tools/gba_puzzle.py's R/S Mossdeep mode (forced-movement arrows ridden, the sign switches' setmetatile toggles, trainers who see the player mid-ride); the (12,3) WarpToEntrance coord event is never stepped on. The hideout exit is walked back out by the route (its pads in reverse).
 
@@ -4891,7 +4891,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)
 - end state: map MAP_ROUTE128; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_HIDE_EVIL_LEADER_SEAFLOOR_CAVERN; flags clear FLAG_HIDE_WALLACE_SOOTOPOLIS, FLAG_HIDE_STEVEN_SOOTOPOLIS; vars VAR_SOOTOPOLIS_STATE=1, VAR_ROUTE128_STATE=2
-- frames: estimate 21830, budget 32800
+- frames: estimate 21882, budget 32900
 - refs: data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0; data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear); data/maps/SeafloorCavern_Entrance/map.json warp_events[1] (10,1) -> ROOM1; data/maps/Underwater_SeafloorCavern/map.json warp_events[0] (6,7) -> UNDERWATER4 (the cavern mouth); constants/version.inc (Ruby: SEAFLOOR_CAVERN_GRUNT_3 = COURTNEY_2, _5 = MAXIE_2)
 - notes: Ruby branch (other: ../sapphire/35-seafloor-cavern-archie). Admin: TRAINER_COURTNEY_2 (600): CAMERUPT 38, MIGHTYENA 38; leader: TRAINER_MAXIE_2 (601): MIGHTYENA 41, CROBAT 41, CAMERUPT 43. Dive: walk_to dive = true (gba_world dive/emerge legs). The rooms: gba_puzzle.py (boulders, rocks, Room 6's currents). The boost puts Dive and Strength on the lead.
 
@@ -4901,7 +4901,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_CAVE_OF_ORIGIN_B4F; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_LEGENDARY_BATTLE_COMPLETED, FLAG_ITEM_CAVE_OF_ORIGIN_B3F_1; vars VAR_SOOTOPOLIS_STATE=2
-- frames: estimate 19297, budget 29000
+- frames: estimate 22414, budget 33700
 - refs: data/maps/SootopolisCity/map.json coord_events (25,6) VAR_SOOTOPOLIS_STATE=1; data/maps/SootopolisCity/scripts.inc:200-282 (LeadPlayerCaveOfOrigin; .ifdef SAPPHIRE texts; SOOTOPOLIS_STATE 2); data/maps/SootopolisCity/map.json warp_events[3] (31,16) -> CAVE_OF_ORIGIN_ENTRANCE; data/maps/CaveOfOrigin_B3F/map.json object_events[0] ITEM_BALL (6,5) -> data/item_ball_scripts.inc:477-479 (ITEM_HM07_WATERFALL); data/maps/CaveOfOrigin_B4F/map.json coord_events (9,13); data/maps/CaveOfOrigin_B4F/scripts.inc (ScrSpecial_StartGroudonKyogreBattle; FLAG_LEGENDARY_BATTLE_COMPLETED); constants/version.inc (SPECIES_GROUDON_OR_KYOGRE: Ruby GROUDON, Sapphire KYOGRE); src/battle_setup.c:598-610 (ScrSpecial_StartGroudonKyogreBattle)
 - notes: Ruby branch (other: ../sapphire/36-sootopolis-cave-of-origin-kyogre). Groudon lv45 [INFERENCE: static_pokemon level]; auto_battle knocks it out (the flag is set either way) - catching it would need a ball-throw bot [open question]. The cave (static model: B4F (9,13) is reached from B3F (12,6)) is entered after the Sootopolis scene; Waterfall is found on B3F (R/S have no Wallace HM gift). Sootopolis is reached by Dive from Route 126 (walk_to dive = true).
 
@@ -4911,7 +4911,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)
 - end state: map MAP_SOOTOPOLIS_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_HIDE_STEVEN_SOOTOPOLIS
-- frames: estimate 17875, budget 26900
+- frames: estimate 16681, budget 25100
 - refs: data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> SOOTOPOLIS_CITY_GYM_1F (8,25); data/maps/SootopolisCity_Gym_1F/map.json object_events[0] WALLACE (8,2); data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)
 - notes: Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is the thin-ice puzzle: every thin-ice tile of a field stepped on once opens the next stairs (VAR_ICE_STEP_COUNT 8, 28, 69); a cracked tile stepped on again drops the player to B1F. The routes are Hamiltonian paths over each field's tiles (map.json layout), entry to stairs.
 
@@ -4921,7 +4921,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_WALLY_VICTORY_ROAD
-- frames: estimate 45860, budget 68800
+- frames: estimate 41737, budget 62700
 - refs: data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE; data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2
 - notes: Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's lower shore is reached by Surf from Route 128 and up its waterfall (HM07 on the lead, boost); Victory Road needs Strength and Rock Smash (a Linoone carrier, boost).
 
@@ -4931,7 +4931,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM; 8 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR
-- frames: estimate 6000, budget 60000
+- frames: estimate 2925, budget 4400
 - refs: data/maps/EverGrandeCity_PokemonLeague/map.json warp_events[2] (9,1) -> CORRIDOR5; data/scripts/elite_four.inc (rooms: OnFrame walk in, door closes)
 - notes: The League nurse heals (object 1 (3,2)); the guards check the 8 badges. No healing between E4 rooms: the boost in 38 carries Full Restores.
 
@@ -4941,9 +4941,9 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_PHOEBES_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY
-- frames: estimate 7000, budget 60000
+- frames: estimate 6895, budget 10400
 - refs: data/maps/EverGrandeCity_SidneysRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR1; data/scripts/elite_four.inc
-- notes: TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, SHARPEDO 48, ABSOL 49. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items].
+- notes: TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, SHARPEDO 48, ABSOL 49. No healing between rooms: each room's boost restores HP and PP (boost.recipe).
 
 #### ruby/41-e4-phoebe — Elite Four: Phoebe
 - proves: Proves Phoebe's room: the battle, FLAG_DEFEATED_ELITE_4_PHOEBE, the opened north door and the walk on through CORRIDOR2. Start: Phoebe's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_GLACIAS_ROOM.
@@ -4951,9 +4951,9 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_GLACIAS_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE
-- frames: estimate 7000, budget 60000
+- frames: estimate 6329, budget 9500
 - refs: data/maps/EverGrandeCity_PhoebesRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR2; data/scripts/elite_four.inc
-- notes: TRAINER_PHOEBE (262): DUSCLOPS 48, BANETTE 49, SABLEYE 50, BANETTE 49, DUSCLOPS 51. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items].
+- notes: TRAINER_PHOEBE (262): DUSCLOPS 48, BANETTE 49, SABLEYE 50, BANETTE 49, DUSCLOPS 51. No healing between rooms: each room's boost restores HP and PP (boost.recipe).
 
 #### ruby/42-e4-glacia — Elite Four: Glacia
 - proves: Proves Glacia's room: the battle, FLAG_DEFEATED_ELITE_4_GLACIA, the opened north door and the walk on through CORRIDOR3. Start: Glacia's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_DRAKES_ROOM.
@@ -4961,27 +4961,27 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_DRAKES_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA
-- frames: estimate 7000, budget 60000
+- frames: estimate 7622, budget 13500
 - refs: data/maps/EverGrandeCity_GlaciasRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR3; data/scripts/elite_four.inc
-- notes: TRAINER_GLACIA (263): GLALIE 50, SEALEO 50, SEALEO 52, GLALIE 52, WALREIN 53. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items].
+- notes: TRAINER_GLACIA (263): GLALIE 50, SEALEO 50, SEALEO 52, GLALIE 52, WALREIN 53. No healing between rooms: each room's boost restores HP and PP (boost.recipe).
 
 #### ruby/43-e4-drake — Elite Four: Drake
-- proves: Proves Drake's room: the battle, FLAG_DEFEATED_ELITE_4_DRAKE, the opened north door and the walk on through CORRIDOR4. Start: Drake's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM.
+- proves: Proves Drake's room: the battle, FLAG_DEFEATED_ELITE_4_DRAKE, the opened north door and the walk on through CORRIDOR4. Start: Drake's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_CORRIDOR4 below the Champion's door.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: map MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA, FLAG_DEFEATED_ELITE_4_DRAKE
-- frames: estimate 7000, budget 60000
+- end state: map MAP_EVER_GRANDE_CITY_CORRIDOR4; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA, FLAG_DEFEATED_ELITE_4_DRAKE
+- frames: estimate 6620, budget 10000
 - refs: data/maps/EverGrandeCity_DrakesRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR4; data/scripts/elite_four.inc
-- notes: TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, FLYGON 53, FLYGON 53, SALAMENCE 55. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items].
+- notes: TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, FLYGON 53, FLYGON 53, SALAMENCE 55. No healing between rooms: each room's boost restores HP and PP (boost.recipe).
 
 #### ruby/44-champion-steven-hall-of-fame — Champion Steven, the Hall of Fame, credits and the reset
-- proves: Proves the Champion's room (TRAINER_STEVEN), May and Birch, the Hall of Fame (FLAG_SYS_GAME_CLEAR, the HoF save), the credits and the game's own SoftReset. Start: the Champion's room after the walk-in -> end: the reset after "The End" (wait_reset).
+- proves: Proves the Champion's room (TRAINER_STEVEN), May and Birch, the Hall of Fame (FLAG_SYS_GAME_CLEAR, the HoF save), the credits and the game's own SoftReset. Start: Corridor 4 -> end: the reset after "The End" (wait_reset).
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
 - end state: 8 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_SYS_GAME_CLEAR, FLAG_ENTERED_ELITE_FOUR
-- frames: estimate 26000, budget 60000
+- frames: estimate 27646, budget 43300
 - refs: data/maps/EverGrandeCity_ChampionsRoom/map.json object_events[0] STEVEN (6,5), warp_events[1] (6,2) -> HALL_OF_FAME; data/scripts/hall_of_fame.inc (SetGameClearFlags, special GameClear); src/hall_of_fame.c (HoF screen, the save, StartCredits); src/credits.c (The End, SoftReset)
 - notes: Steven: TRAINER_STEVEN (335): SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56, ARMALDO 56, METAGROSS 58 (Aggron x4 from Surf/Water, Claydol and Cradily resist: the boost levels the lead). After the battle May and Birch come in and the player is walked to the Hall of Fame; the HoF screen saves before the credits; the credits end in a SoftReset. [run] save = "none": the end save is the HoF save the game wrote.
 <!-- plan.py:end ruby -->
@@ -4991,7 +4991,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin sapphire -->
-### Story chain: 44 milestones, ~697860 frames estimated
+### Story chain: 44 milestones, ~682121 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -5024,21 +5024,21 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [27-route120-steven-devon-scope](ruby/27-route120-steven-devon-scope/milestone.toml) | Route 120: Steven's Devon Scope, the Fortree Kecleon | P0 | both | 11697 | prev + `None` | MAP_FORTREE_CITY | passing |
 | [28-fortree-gym-winona](ruby/28-fortree-gym-winona/milestone.toml) | Fortree Gym: Winona's Feather Badge | P0 | both | 14288 | prev + `None` | MAP_FORTREE_CITY | passing |
 | [29-route121-lilycove-may](ruby/29-route121-lilycove-may/milestone.toml) | Route 121 and Lilycove: May's fourth battle | P0 | both | 26959 | prev + `None` | MAP_LILYCOVE_CITY | passing |
-| [30-mt-pyre-summit-orb](ruby/30-mt-pyre-summit-orb/milestone.toml) | Mt. Pyre: the summit and the stolen orb | P0 | both | 15902 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
+| [30-mt-pyre-summit-orb](ruby/30-mt-pyre-summit-orb/milestone.toml) | Mt. Pyre: the summit and the stolen orb | P0 | both | 15442 | prev + `None` | MAP_MT_PYRE_SUMMIT | passing |
 | [31-slateport-harbor-submarine](ruby/31-slateport-harbor-submarine/milestone.toml) | Slateport Harbor: the submarine is stolen | P0 | both | 20608 | prev + `None` | MAP_SLATEPORT_CITY | passing |
-| [32-aqua-hideout-matt](sapphire/32-aqua-hideout-matt/milestone.toml) | Team Aqua Hideout: Matt and the escaped submarine (Sapphire) | P0 | sapphire | 40585 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | passing |
-| [33-route124-mossdeep-gym-tate-liza](ruby/33-route124-mossdeep-gym-tate-liza/milestone.toml) | Route 124 and the Mossdeep Gym: Tate & Liza | P0 | both | 16820 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
+| [32-aqua-hideout-matt](sapphire/32-aqua-hideout-matt/milestone.toml) | Team Aqua Hideout: Matt and the escaped submarine (Sapphire) | P0 | sapphire | 40191 | prev + `None` | MAP_AQUA_HIDEOUT_B2F | passing |
+| [33-route124-mossdeep-gym-tate-liza](ruby/33-route124-mossdeep-gym-tate-liza/milestone.toml) | Route 124 and the Mossdeep Gym: Tate & Liza | P0 | both | 14864 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
 | [34-mossdeep-stevens-house-hm-dive](ruby/34-mossdeep-stevens-house-hm-dive/milestone.toml) | Mossdeep: Steven's house and HM08 Dive | P0 | both | 2019 | prev + `None` | MAP_MOSSDEEP_CITY | passing |
-| [35-seafloor-cavern-archie](sapphire/35-seafloor-cavern-archie/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre (Sapphire) | P0 | sapphire | 25936 | prev + `None` | MAP_ROUTE128 | passing |
-| [36-sootopolis-cave-of-origin-kyogre](sapphire/36-sootopolis-cave-of-origin-kyogre/milestone.toml) | Sootopolis and the Cave of Origin: Kyogre (Sapphire) | P0 | sapphire | 21654 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | passing |
-| [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 17875 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
-| [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 45860 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
-| [39-pokemon-league-entrance](ruby/39-pokemon-league-entrance/milestone.toml) | Pokemon League: heal and into Sidney's room | P0 | both | 6000 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | planned |
-| [40-e4-sidney](ruby/40-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | planned |
-| [41-e4-phoebe](ruby/41-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | planned |
-| [42-e4-glacia](ruby/42-e4-glacia/milestone.toml) | Elite Four: Glacia | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_DRAKES_ROOM | planned |
-| [43-e4-drake](ruby/43-e4-drake/milestone.toml) | Elite Four: Drake | P0 | both | 7000 | prev + `None` | MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM | planned |
-| [44-champion-steven-hall-of-fame](ruby/44-champion-steven-hall-of-fame/milestone.toml) | Champion Steven, the Hall of Fame, credits and the reset | P0 | both | 26000 | prev + `None` | - | planned |
+| [35-seafloor-cavern-archie](sapphire/35-seafloor-cavern-archie/milestone.toml) | Seafloor Cavern: Archie wakes Kyogre (Sapphire) | P0 | sapphire | 24843 | prev + `None` | MAP_ROUTE128 | passing |
+| [36-sootopolis-cave-of-origin-kyogre](sapphire/36-sootopolis-cave-of-origin-kyogre/milestone.toml) | Sootopolis and the Cave of Origin: Kyogre (Sapphire) | P0 | sapphire | 17098 | prev + `None` | MAP_CAVE_OF_ORIGIN_B4F | passing |
+| [37-sootopolis-gym-wallace](ruby/37-sootopolis-gym-wallace/milestone.toml) | Sootopolis Gym: Wallace's Rain Badge | P0 | both | 16681 | prev + `None` | MAP_SOOTOPOLIS_CITY | passing |
+| [38-ever-grande-victory-road-wally](ruby/38-ever-grande-victory-road-wally/milestone.toml) | Ever Grande and Victory Road: Wally | P0 | both | 41737 | prev + `None` | MAP_EVER_GRANDE_CITY | passing |
+| [39-pokemon-league-entrance](ruby/39-pokemon-league-entrance/milestone.toml) | Pokemon League: heal and into Sidney's room | P0 | both | 2925 | prev + `None` | MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM | passing |
+| [40-e4-sidney](ruby/40-e4-sidney/milestone.toml) | Elite Four: Sidney | P0 | both | 6895 | prev + `None` | MAP_EVER_GRANDE_CITY_PHOEBES_ROOM | passing |
+| [41-e4-phoebe](ruby/41-e4-phoebe/milestone.toml) | Elite Four: Phoebe | P0 | both | 6329 | prev + `None` | MAP_EVER_GRANDE_CITY_GLACIAS_ROOM | passing |
+| [42-e4-glacia](ruby/42-e4-glacia/milestone.toml) | Elite Four: Glacia | P0 | both | 7622 | prev + `None` | MAP_EVER_GRANDE_CITY_DRAKES_ROOM | passing |
+| [43-e4-drake](ruby/43-e4-drake/milestone.toml) | Elite Four: Drake | P0 | both | 6620 | prev + `None` | MAP_EVER_GRANDE_CITY_CORRIDOR4 | passing |
+| [44-champion-steven-hall-of-fame](ruby/44-champion-steven-hall-of-fame/milestone.toml) | Champion Steven, the Hall of Fame, credits and the reset | P0 | both | 27646 | prev + `None` | - | passing |
 
 #### sapphire/01-newgame-truck-house — New game: intro, Birch speech, truck ride, into the house
 - proves: Proves the blank-chip Ruby/Sapphire start: title, Birch speech (BOY, the default; name AAAAAAA), the moving truck, Mom at the door and into the house (LittlerootTown OnFrame StepOffTruckMale -> warpsilent 1F (8,8)). Start: power-on (no save) -> end: MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F, VAR_LITTLEROOT_INTRO_STATE 4. Refs are pokeruby's (.cache/gba/pokeruby), the one source both versions build from.
@@ -5166,7 +5166,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:9-95 (Stern: TRAINER_MUSEUM_2F_GRUNT_1/_2 back to back, the leader appears, FLAG_HIDE_EVIL_TEAM_OCEANIC_MUSEUM, FLAG_HIDE_EVIL_TEAM_ROUTE110, FLAG_DELIVERED_DEVON_GOODS); constants/version.inc (MUSEUM_2F_GRUNT_1/_2: Ruby TRAINER_GRUNT_46/47, Sapphire TRAINER_GRUNT_19/20)
 - end state: map MAP_SLATEPORT_CITY; 2 badges; >= 2 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_VISITED_SLATEPORT_CITY, FLAG_DOCK_REJECTED_DEVON_GOODS, FLAG_HIDE_EVIL_TEAM_SLATEPORT, FLAG_DELIVERED_DEVON_GOODS, FLAG_HIDE_EVIL_TEAM_ROUTE110, FLAG_HIDE_EVIL_TEAM_OCEANIC_MUSEUM
-- frames: estimate 12431, budget 18700
+- frames: estimate 12431, budget 19200
 - refs: data/maps/DewfordTown/scripts.inc:9-35 (Briney: multichoicedefault 21, 6, 0, 2, 0: PETALBURG, SLATEPORT, CANCEL, default CANCEL); data/maps/DewfordTown/scripts.inc:149-185 (SailToSlateport: the ride, showobjectat MAP_ROUTE109, LandedSlateportDeliverGoods); data/maps/SlateportCity/map.json warp_events[2] (26,38) -> STERNS_SHIPYARD_1F; data/maps/SlateportCity_SternsShipyard_1F/scripts.inc:4-20 (Dock: FLAG_DOCK_REJECTED_DEVON_GOODS, FLAG_HIDE_EVIL_TEAM_SLATEPORT); data/maps/SlateportCity/map.json warp_events[5] (30,26) -> OCEANIC_MUSEUM_1F; data/maps/SlateportCity_OceanicMuseum_1F/map.json coord_events (9,7)/(10,7) VAR_SLATEPORT_MUSEUM_1F_STATE=0; data/maps/SlateportCity_OceanicMuseum_1F/scripts.inc:19-57 (fee YES/NO, 50, MUSEUM_1F_STATE 1); data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:9-95 (Stern: TRAINER_MUSEUM_2F_GRUNT_1/_2 back to back, the leader appears, FLAG_HIDE_EVIL_TEAM_OCEANIC_MUSEUM, FLAG_HIDE_EVIL_TEAM_ROUTE110, FLAG_DELIVERED_DEVON_GOODS); constants/version.inc (MUSEUM_2F_GRUNT_1/_2: Ruby TRAINER_GRUNT_46/47, Sapphire TRAINER_GRUNT_19/20)
 - notes: Grunts (trainerbattle_no_intro): Ruby TRAINER_GRUNT_46 (585): NUMEL 15, TRAINER_GRUNT_47 (586): ZUBAT 14, NUMEL 14; Sapphire TRAINER_GRUNT_19 (20): CARVANHA 15, TRAINER_GRUNT_20 (21): ZUBAT 14, CARVANHA 14 (Mud Shot/Water Gun cover both). Maxie (Ruby) or Archie (Sapphire) appears after the second (ArchieWarning/MaxieWarning texts, :62-68). Briney's Dewford menu defaults to CANCEL: UP once -> SLATEPORT. The fee is 50; without it the attendant lets you in before the delivery (:59-74). R/S have no Scott scene outside.
 
@@ -5176,7 +5176,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/Route110/scripts.inc:311-368 (rival scene, switch VAR_STARTER_MON: 2 -> trainerbattle_no_intro TRAINER_MAY_2 (:380-382))
 - end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_VISITED_MAUVILLE_CITY, FLAG_SYS_TV_START; vars VAR_ROUTE110_STATE=1
-- frames: estimate 22678, budget 34100
+- frames: estimate 22678, budget 37000
 - refs: data/maps/SlateportCity/map.json warp_events[0] (19,19) -> POKEMON_CENTER_1F; data/maps/Route110/map.json coord_events (33..35,56) VAR_ROUTE110_STATE=0; data/maps/Route110/scripts.inc:311-368 (rival scene, switch VAR_STARTER_MON: 2 -> trainerbattle_no_intro TRAINER_MAY_2 (:380-382)); data/maps/Route110/scripts.inc:415-451 (ITEM_ITEMFINDER, May leaves, ROUTE110_STATE 1); data/maps/MauvilleCity/scripts.inc:5-12 (FLAG_VISITED_MAUVILLE_CITY, FLAG_SYS_TV_START); data/maps/MauvilleCity/map.json warp_events[1] (22,5) -> POKEMON_CENTER_1F
 - notes: May: TRAINER_MAY_2 (530): WAILMER 18, NUMEL 18, GROVYLE 20 (Grovyle's Absorb is x4 once the lead has evolved into Marshtomp: the boost's level carries it). R/S have no Birch Match Call scene on Route 110. Route 110 trainers below the Cycling Road: Edward, Jaclyn, Edwin, Dale, Jacob/Anthony/Benjamin/Jasmine/Abigail (triathletes), Isabel, Timmy (lv 12-16); walk_to fights those who see it. The team's grunts on Route 110 are hidden by the museum delivery (13).
 
@@ -5186,7 +5186,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/MauvilleCity/scripts.inc:152-173 (BattleWally: trainerbattle_no_intro TRAINER_WALLY_2; DefeatedWally: FLAG_DEFEATED_WALLY_MAUVILLE)
 - end state: map MAP_MAUVILLE_CITY; 2 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_DEFEATED_WALLY_MAUVILLE, FLAG_RECEIVED_BIKE, FLAG_HIDE_WALLY_MAUVILLE, FLAG_HIDE_WALLY_FATHER_MAUVILLE
-- frames: estimate 4385, budget 6600
+- frames: estimate 4385, budget 6800
 - refs: data/maps/MauvilleCity/map.json object_events[5] WALLY (8,6), [6] uncle (9,6); data/maps/MauvilleCity/scripts.inc:84-111 (Wally: MSGBOX_YESNO; the exit scene is chosen by VAR_FACING: north or east); data/maps/MauvilleCity/scripts.inc:152-173 (BattleWally: trainerbattle_no_intro TRAINER_WALLY_2; DefeatedWally: FLAG_DEFEATED_WALLY_MAUVILLE); data/maps/MauvilleCity/map.json warp_events[2] (35,5) -> BIKE_SHOP; data/maps/MauvilleCity_BikeShop/scripts.inc:4-55 (Rydel: far-away YES/NO -> FLAG_RECEIVED_BIKE, multichoice 21, 8, 12, 1: MACH BIKE / ACRO BIKE)
 - notes: Wally: TRAINER_WALLY_2 (656): RALTS 16. The talk must face north or east (switch VAR_FACING cases 2 and 4 only): from (7,6) facing right. Rydel: YES (cursor on YES) -> FLAG_RECEIVED_BIKE -> multichoice, A on the first entry (MACH BIKE). The Mach Bike is never needed on R/S's story path [INFERENCE: no Sky Pillar in the story]; taken for parity with Emerald.
 
@@ -5256,7 +5256,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_LAVARIDGE_TOWN; 3 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_VISITED_LAVARIDGE_TOWN, FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
-- frames: estimate 5230, budget 7900
+- frames: estimate 5230, budget 8000
 - refs: data/maps/MtChimney/map.json warp_events[2] (20,41) -> JAGGED_PASS (13,5); data/maps/JaggedPass/map.json warp_events[0] (14,40) -> Route 112 (6,46); data/maps/LavaridgeTown/map.json warp_events[3] (9,6) -> POKEMON_CENTER_1F
 - notes: Jagged Pass trainers (lv 19-22) stand by the ledges; Jagged Pass is one-way downhill by ledges [INFERENCE]. R/S have no Magma Hideout door in Jagged Pass (Emerald-only map): its coord events are ash-weather triggers only.
 
@@ -5336,7 +5336,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/scripts/magma_summit.inc:1-28 (grunts: TRAINER_MT_PYRE_SUMMIT_GRUNT_1..3); constants/version.inc (ITEM_RED_OR_BLUE_ORB: Ruby ITEM_RED_ORB, Sapphire ITEM_BLUE_ORB; summit grunts: Ruby TRAINER_GRUNT_49/50/51, Sapphire TRAINER_GRUNT_22/23/24)
 - end state: map MAP_MT_PYRE_SUMMIT; 6 badges; flags set FLAG_BADGE06_GET, FLAG_MT_PYRE_ORB_STOLEN, FLAG_RECEIVED_RED_OR_BLUE_ORB, FLAG_HIDE_LEADER_MT_PYRE_SUMMIT, FLAG_HIDE_GRUNTS_MT_PYRE_SUMMIT; flags clear FLAG_HIDE_STERN_SLATEPORT, FLAG_HIDE_GABBY_AND_TY_SLATEPORT; vars VAR_MT_PYRE_STATE=1, VAR_SLATEPORT_STATE=1, VAR_SLATEPORT_HARBOR_STATE=1
-- frames: estimate 15902, budget 23900
+- frames: estimate 15442, budget 23700
 - refs: data/maps/Route122/map.json warp_events[0] (22,29) -> MT_PYRE_1F (17,18); data/maps/MtPyre_1F/map.json warp_events[1] (3,6) -> MT_PYRE_EXTERIOR (10,42); data/maps/MtPyre_Exterior/map.json warp_events[1] (19,10) -> MT_PYRE_SUMMIT (23,31); data/maps/MtPyre_Summit/map.json object_events[3..5] grunts (21,18)/(25,15)/(21,11) sight 3; coord_events (22..24,7) VAR_MT_PYRE_STATE=0; data/scripts/magma_summit.inc:1-28 (grunts: TRAINER_MT_PYRE_SUMMIT_GRUNT_1..3); data/maps/MtPyre_Summit/scripts.inc:9-78 (scene: the leader leaves with the orb, FLAG_HIDE_LEADER_MT_PYRE_SUMMIT, FLAG_HIDE_GRUNTS_MT_PYRE_SUMMIT, FLAG_MT_PYRE_ORB_STOLEN, SLATEPORT_STATE 1, SLATEPORT_HARBOR_STATE 1, MT_PYRE_STATE 1, ITEM_RED_OR_BLUE_ORB, FLAG_RECEIVED_RED_OR_BLUE_ORB); constants/version.inc (ITEM_RED_OR_BLUE_ORB: Ruby ITEM_RED_ORB, Sapphire ITEM_BLUE_ORB; summit grunts: Ruby TRAINER_GRUNT_49/50/51, Sapphire TRAINER_GRUNT_22/23/24)
 - notes: Shared scene (texts .ifdef SAPPHIRE only). Summit grunts: Ruby TRAINER_GRUNT_49 (588): ZUBAT 30 x3; TRAINER_GRUNT_50 (589): POOCHYENA 31, NUMEL 31; TRAINER_GRUNT_51 (590): NUMEL 31 x2; Sapphire TRAINER_GRUNT_22 (23): ZUBAT 30 x3; TRAINER_GRUNT_23 (24): POOCHYENA 31, CARVANHA 31; TRAINER_GRUNT_24 (25): CARVANHA 31 x2. Ruby's leader takes the Blue Orb and the player gets the Red Orb; Sapphire the other way round (save check is on the flag only). gba_world_cli (surf): Lilycove -> Route 121 -> Route 122 (22,29) -> Mt. Pyre 1F (4,6) -> Exterior (20,10) -> Summit (23,8).
 
@@ -5346,7 +5346,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_SLATEPORT_CITY; 6 badges; flags set FLAG_BADGE06_GET, FLAG_MT_PYRE_ORB_STOLEN, FLAG_HIDE_GRUNT_1_BLOCKING_HIDEOUT, FLAG_HIDE_GRUNT_2_BLOCKING_HIDEOUT; vars VAR_SLATEPORT_STATE=2, VAR_SLATEPORT_HARBOR_STATE=2
-- frames: estimate 20608, budget 31000
+- frames: estimate 20608, budget 36100
 - refs: data/maps/SlateportCity/scripts.inc:15-16,25-40 (SLATEPORT_STATE 1: Stern (object 11) at (28,13) with Gabby and Ty); data/maps/SlateportCity/scripts.inc:482-535 (CaptStern: the interview, the alarm, FLAG_HIDE_STERN_SLATEPORT_HARBOR etc. clear, SLATEPORT_STATE 2, warp SLATEPORT_CITY_HARBOR (11,14)); data/maps/SlateportCity_Harbor/map.json coord_events (8,11..14) VAR_SLATEPORT_HARBOR_STATE=1; data/maps/SlateportCity_Harbor/scripts.inc:5-80 (EvilTeamEscapeScene: SLATEPORT_HARBOR_STATE 2, FLAG_HIDE_GRUNT_1_BLOCKING_HIDEOUT, FLAG_HIDE_GRUNT_2_BLOCKING_HIDEOUT); data/maps/SlateportCity_Harbor/map.json warp_events[0] (11,14) -> Slateport (28,12)
 - notes: No battle. The walk is split at Mauville and Route 110's lower path: with Surf the static route from Mt. Pyre prefers the Seaside Cycling Road gates, whose coord events push a player without a bike back (Route110_SeasideCyclingRoadNorthEntrance/scripts.inc:17-34, GetPlayerAvatarBike 0). Route 123's ledges run downhill toward Route 118 (gba_world_cli: Summit -> Exterior -> 1F -> Route 122 -> Route 123 -> Route 118 -> Mauville (22,6)).
 
@@ -5356,7 +5356,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/AquaHideout_B2F/scripts.inc:26-70 (trainerbattle_single TRAINER_HIDEOUT_B2F_GRUNT_1; the submarine leaves: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE)
 - end state: map MAP_AQUA_HIDEOUT_B2F; 6 badges; >= 1 battles; flags set FLAG_BADGE06_GET, FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE
-- frames: estimate 40585, budget 60900
+- frames: estimate 40191, budget 60300
 - refs: data/maps/LilycoveCity/map.json warp_events[6] (70,5) -> AQUA_HIDEOUT_1F (13,27) (map.bin entrance; Ruby's OnLoad replaces it); data/maps/AquaHideout_1F/map.json object_events grunts (13,11)/(14,11) FLAG_HIDE_GRUNT_1/2_BLOCKING_HIDEOUT (hidden in 31), (20,4) sight 3; data/maps/AquaHideout_1F/scripts.inc:9-46; data/maps/AquaHideout_B2F/map.json object_events[0] admin VAR_1 (23,19) sight 0; data/maps/AquaHideout_B2F/scripts.inc:26-70 (trainerbattle_single TRAINER_HIDEOUT_B2F_GRUNT_1; the submarine leaves: FLAG_EVIL_TEAM_ESCAPED_IN_SUBMARINE, FLAG_HIDE_GRUNTS_LILYCOVE); constants/version.inc (Sapphire: HIDEOUT_1F_GRUNT = GRUNT_1, B1F = GRUNT_2/3/26, B2F_GRUNT_1 = MATT_1, B2F_GRUNT_2/3 = GRUNT_4/27)
 - notes: Sapphire's branch: its hideout is the MAP_AQUA_HIDEOUT_* maps behind Lilycove's (70,5) (Ruby: ../ruby/32-magma-hideout-tabitha, MAP_MAGMA_HIDEOUT_*). Matt: TRAINER_MATT_1 (30): CARVANHA 32, MIGHTYENA 32, SHARPEDO 32 (Water types: Surf neutral, the lead's level carries it). Grunts: GRUNT_1 (2): POOCHYENA 32 x2; GRUNT_2 (3): ZUBAT 30, POOCHYENA 30, CARVANHA 30, POOCHYENA 30; GRUNT_3 (4): CARVANHA 32, ZUBAT 32; GRUNT_26 (27): POOCHYENA 31, CARVANHA 31 x2; GRUNT_4 (5): CARVANHA 33; GRUNT_27 (28): ZUBAT 33. Walking, not Fly: bots.bot_fly drives the DS town map (overworld_headers) [INFERENCE: not usable on GBA]; the static route avoids the Cycling Road gates (bike-only) by the Route 110 waypoint. gba_world_cli --game sapphire (surf): Mauville -> ... -> Lilycove (70,5) -> 1F (22,1) -> B1F (27,4) -> B1F (32,19) -> B1F (18,1) -> B2F (31,8) -> B2F (3,3) -> B1F (12,1) -> B2F (8,8) -> B2F (24,19).
 
@@ -5366,7 +5366,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_MOSSDEEP_CITY; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_RECEIVED_TM_CALM_MIND
-- frames: estimate 16820, budget 25300
+- frames: estimate 14864, budget 26400
 - refs: data/maps/LilycoveCity/scripts.inc:31 (badge 7 walls the hideout door up); data/maps/MossdeepCity/map.json warp_events[1] (38,9) -> MOSSDEEP_CITY_GYM (9,29); data/maps/MossdeepCity_Gym/map.json bg_events switches (2,7)/(8,10)/(17,15)/(5,24); arrows (5,5)/(8,14)/(15,17)/(1,23); data/maps/MossdeepCity_Gym/scripts.inc:5-46,78-160 (switch flags and arrow metatiles); src/field_player_avatar.c:123-480 (forced movement: MB_WALK_* 0x40-0x43, MB_SLIDE_* 0x44-0x47 ride until blocked; 0x48 slips on); data/maps/MossdeepCity_Gym/scripts.inc:47-76 (TateAndLizaDefeated: FLAG_DEFEATED_MOSSDEEP_GYM, FLAG_BADGE07_GET; TM04)
 - notes: Tate & Liza: TRAINER_TATE_AND_LIZA (271) DOUBLE: LUNATONE 42, SOLROCK 42 (Surf x2 on both; a double battle needs two Pokemon: Castform and the Fly carrier from the boost stand by). The gym route is tools/gba_puzzle.py's R/S Mossdeep mode (forced-movement arrows ridden, the sign switches' setmetatile toggles, trainers who see the player mid-ride); the (12,3) WarpToEntrance coord event is never stepped on. The hideout exit is walked back out by the route (its pads in reverse).
 
@@ -5386,7 +5386,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)
 - end state: map MAP_ROUTE128; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_HIDE_EVIL_LEADER_SEAFLOOR_CAVERN; flags clear FLAG_HIDE_WALLACE_SOOTOPOLIS, FLAG_HIDE_STEVEN_SOOTOPOLIS; vars VAR_SOOTOPOLIS_STATE=1, VAR_ROUTE128_STATE=2
-- frames: estimate 25936, budget 39000
+- frames: estimate 24843, budget 37300
 - refs: data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0; data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear); data/maps/SeafloorCavern_Entrance/map.json warp_events[1] (10,1) -> ROOM1; data/maps/Underwater_SeafloorCavern/map.json warp_events[0] (6,7) -> UNDERWATER4 (the cavern mouth); constants/version.inc (Sapphire: SEAFLOOR_CAVERN_GRUNT_3 = SHELLY_2, _5 = ARCHIE_2)
 - notes: Sapphire branch (other: ../ruby/35-seafloor-cavern-maxie). Admin: TRAINER_SHELLY_2 (33): SHARPEDO 38, MIGHTYENA 38; leader: TRAINER_ARCHIE_2 (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43. Dive: walk_to dive = true (gba_world dive/emerge legs). The rooms: gba_puzzle.py (boulders, rocks, Room 6's currents). The boost puts Dive and Strength on the lead.
 
@@ -5396,7 +5396,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_CAVE_OF_ORIGIN_B4F; 7 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_LEGENDARY_BATTLE_COMPLETED, FLAG_ITEM_CAVE_OF_ORIGIN_B3F_1; vars VAR_SOOTOPOLIS_STATE=2
-- frames: estimate 21654, budget 32500
+- frames: estimate 17098, budget 25700
 - refs: data/maps/SootopolisCity/map.json coord_events (25,6) VAR_SOOTOPOLIS_STATE=1; data/maps/SootopolisCity/scripts.inc:200-282 (LeadPlayerCaveOfOrigin; .ifdef SAPPHIRE texts; SOOTOPOLIS_STATE 2); data/maps/SootopolisCity/map.json warp_events[3] (31,16) -> CAVE_OF_ORIGIN_ENTRANCE; data/maps/CaveOfOrigin_B3F/map.json object_events[0] ITEM_BALL (6,5) -> data/item_ball_scripts.inc:477-479 (ITEM_HM07_WATERFALL); data/maps/CaveOfOrigin_B4F/map.json coord_events (9,13); data/maps/CaveOfOrigin_B4F/scripts.inc (ScrSpecial_StartGroudonKyogreBattle; FLAG_LEGENDARY_BATTLE_COMPLETED); constants/version.inc (SPECIES_GROUDON_OR_KYOGRE: Ruby GROUDON, Sapphire KYOGRE); src/battle_setup.c:598-610 (ScrSpecial_StartGroudonKyogreBattle)
 - notes: Sapphire branch (other: ../ruby/36-sootopolis-cave-of-origin-groudon). Kyogre lv45 [INFERENCE: static_pokemon level]; auto_battle knocks it out (the flag is set either way) - catching it would need a ball-throw bot [open question]. The cave (static model: B4F (9,13) is reached from B3F (12,6)) is entered after the Sootopolis scene; Waterfall is found on B3F (R/S have no Wallace HM gift). Sootopolis is reached by Dive from Route 126 (walk_to dive = true).
 
@@ -5406,7 +5406,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)
 - end state: map MAP_SOOTOPOLIS_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_HIDE_STEVEN_SOOTOPOLIS
-- frames: estimate 17875, budget 26900
+- frames: estimate 16681, budget 25100
 - refs: data/maps/SootopolisCity/map.json warp_events[2] (31,32) -> SOOTOPOLIS_CITY_GYM_1F (8,25); data/maps/SootopolisCity_Gym_1F/map.json object_events[0] WALLACE (8,2); data/maps/SootopolisCity_Gym_1F/scripts.inc (trainerbattle_single TRAINER_WALLACE; FLAG_DEFEATED_SOOTOPOLIS_GYM, FLAG_BADGE08_GET)
 - notes: Wallace: TRAINER_WALLACE (272): LUVDISC 40, WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 (Water: the lead's level carries it; no Electric/Grass in the party). The gym is the thin-ice puzzle: every thin-ice tile of a field stepped on once opens the next stairs (VAR_ICE_STEP_COUNT 8, 28, 69); a cracked tile stepped on again drops the player to B1F. The routes are Hamiltonian paths over each field's tiles (map.json layout), entry to stairs.
 
@@ -5416,7 +5416,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_DEFEATED_WALLY_VICTORY_ROAD
-- frames: estimate 45860, budget 68800
+- frames: estimate 41737, budget 62700
 - refs: data/maps/EverGrandeCity/map.json warp_events[2] (18,41) -> VICTORY_ROAD_1F, [3] (18,27) <- VICTORY_ROAD_1F (39,5), [0] (18,5) -> POKEMON_LEAGUE; data/maps/VictoryRoad_1F/map.json coord_events (34,3..5) VAR_VICTORY_ROAD_1F_STATE=0 WallyTrigger0..2
 - notes: Wally: TRAINER_WALLY_1 (519): ALTARIA 44, DELCATTY 43, ROSELIA 44, MAGNETON 41, GARDEVOIR 45. Ever Grande's lower shore is reached by Surf from Route 128 and up its waterfall (HM07 on the lead, boost); Victory Road needs Strength and Rock Smash (a Linoone carrier, boost).
 
@@ -5426,7 +5426,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM; 8 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR
-- frames: estimate 6000, budget 60000
+- frames: estimate 2925, budget 4400
 - refs: data/maps/EverGrandeCity_PokemonLeague/map.json warp_events[2] (9,1) -> CORRIDOR5; data/scripts/elite_four.inc (rooms: OnFrame walk in, door closes)
 - notes: The League nurse heals (object 1 (3,2)); the guards check the 8 badges. No healing between E4 rooms: the boost in 38 carries Full Restores.
 
@@ -5436,9 +5436,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_PHOEBES_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY
-- frames: estimate 7000, budget 60000
+- frames: estimate 6895, budget 10400
 - refs: data/maps/EverGrandeCity_SidneysRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR1; data/scripts/elite_four.inc
-- notes: TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, SHARPEDO 48, ABSOL 49. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items].
+- notes: TRAINER_SIDNEY (261): MIGHTYENA 46, SHIFTRY 48, CACTURNE 46, SHARPEDO 48, ABSOL 49. No healing between rooms: each room's boost restores HP and PP (boost.recipe).
 
 #### sapphire/41-e4-phoebe — Elite Four: Phoebe
 - proves: Proves Phoebe's room: the battle, FLAG_DEFEATED_ELITE_4_PHOEBE, the opened north door and the walk on through CORRIDOR2. Start: Phoebe's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_GLACIAS_ROOM.
@@ -5446,9 +5446,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_GLACIAS_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE
-- frames: estimate 7000, budget 60000
+- frames: estimate 6329, budget 9500
 - refs: data/maps/EverGrandeCity_PhoebesRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR2; data/scripts/elite_four.inc
-- notes: TRAINER_PHOEBE (262): DUSCLOPS 48, BANETTE 49, SABLEYE 50, BANETTE 49, DUSCLOPS 51. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items].
+- notes: TRAINER_PHOEBE (262): DUSCLOPS 48, BANETTE 49, SABLEYE 50, BANETTE 49, DUSCLOPS 51. No healing between rooms: each room's boost restores HP and PP (boost.recipe).
 
 #### sapphire/42-e4-glacia — Elite Four: Glacia
 - proves: Proves Glacia's room: the battle, FLAG_DEFEATED_ELITE_4_GLACIA, the opened north door and the walk on through CORRIDOR3. Start: Glacia's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_DRAKES_ROOM.
@@ -5456,27 +5456,27 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map MAP_EVER_GRANDE_CITY_DRAKES_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA
-- frames: estimate 7000, budget 60000
+- frames: estimate 7622, budget 13500
 - refs: data/maps/EverGrandeCity_GlaciasRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR3; data/scripts/elite_four.inc
-- notes: TRAINER_GLACIA (263): GLALIE 50, SEALEO 50, SEALEO 52, GLALIE 52, WALREIN 53. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items].
+- notes: TRAINER_GLACIA (263): GLALIE 50, SEALEO 50, SEALEO 52, GLALIE 52, WALREIN 53. No healing between rooms: each room's boost restores HP and PP (boost.recipe).
 
 #### sapphire/43-e4-drake — Elite Four: Drake
-- proves: Proves Drake's room: the battle, FLAG_DEFEATED_ELITE_4_DRAKE, the opened north door and the walk on through CORRIDOR4. Start: Drake's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM.
+- proves: Proves Drake's room: the battle, FLAG_DEFEATED_ELITE_4_DRAKE, the opened north door and the walk on through CORRIDOR4. Start: Drake's room (6,6) after the door closed -> end: MAP_EVER_GRANDE_CITY_CORRIDOR4 below the Champion's door.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: map MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA, FLAG_DEFEATED_ELITE_4_DRAKE
-- frames: estimate 7000, budget 60000
+- end state: map MAP_EVER_GRANDE_CITY_CORRIDOR4; 8 badges; >= 1 battles; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_ENTERED_ELITE_FOUR, FLAG_DEFEATED_ELITE_4_SYDNEY, FLAG_DEFEATED_ELITE_4_PHOEBE, FLAG_DEFEATED_ELITE_4_GLACIA, FLAG_DEFEATED_ELITE_4_DRAKE
+- frames: estimate 6620, budget 10000
 - refs: data/maps/EverGrandeCity_DrakesRoom/map.json object_events[0] (6,5), warp_events[1] (6,2) -> CORRIDOR4; data/scripts/elite_four.inc
-- notes: TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, FLYGON 53, FLYGON 53, SALAMENCE 55. No healing between rooms (Full Restores from the 38 boost) [INFERENCE: auto_battle uses no items].
+- notes: TRAINER_DRAKE (264): SHELGON 52, ALTARIA 54, FLYGON 53, FLYGON 53, SALAMENCE 55. No healing between rooms: each room's boost restores HP and PP (boost.recipe).
 
 #### sapphire/44-champion-steven-hall-of-fame — Champion Steven, the Hall of Fame, credits and the reset
-- proves: Proves the Champion's room (TRAINER_STEVEN), May and Birch, the Hall of Fame (FLAG_SYS_GAME_CLEAR, the HoF save), the credits and the game's own SoftReset. Start: the Champion's room after the walk-in -> end: the reset after "The End" (wait_reset).
+- proves: Proves the Champion's room (TRAINER_STEVEN), May and Birch, the Hall of Fame (FLAG_SYS_GAME_CLEAR, the HoF save), the credits and the game's own SoftReset. Start: Corridor 4 -> end: the reset after "The End" (wait_reset).
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
 - end state: 8 badges; flags set FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET, FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_SYS_GAME_CLEAR, FLAG_ENTERED_ELITE_FOUR
-- frames: estimate 26000, budget 60000
+- frames: estimate 27646, budget 43300
 - refs: data/maps/EverGrandeCity_ChampionsRoom/map.json object_events[0] STEVEN (6,5), warp_events[1] (6,2) -> HALL_OF_FAME; data/scripts/hall_of_fame.inc (SetGameClearFlags, special GameClear); src/hall_of_fame.c (HoF screen, the save, StartCredits); src/credits.c (The End, SoftReset)
 - notes: Steven: TRAINER_STEVEN (335): SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56, ARMALDO 56, METAGROSS 58 (Aggron x4 from Surf/Water, Claydol and Cradily resist: the boost levels the lead). After the battle May and Birch come in and the player is walked to the Hall of Fame; the HoF screen saves before the credits; the credits end in a SoftReset. [run] save = "none": the end save is the HoF save the game wrote.
 <!-- plan.py:end sapphire -->
