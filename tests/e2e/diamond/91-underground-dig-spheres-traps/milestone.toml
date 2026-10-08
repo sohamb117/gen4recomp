@@ -94,3 +94,13 @@ flags = ["0x111", "0x96E", "0x96F", "0x970"]
 # again to save, [run] save = "game". Mining spots are the 3-byte condensed table (x lo, x hi|z hi<<4, z lo) at
 # guest 0x0227115B after the first arrival (peek): nearest the Eterna entry (168,264) are (148,261), (147,261),
 # (146,261), (145,267), (139,261) - walls; face one from a free neighbour and A starts the dig (ov18_0223AC24 sets 0x96F).
+# PHASE2 lead (SysDP3): Roark's first-visit talk plays here too (0x96E is not its gate): A x60 gap 20 after arrival.
+# From the entry, press UP hold 48, LEFT hold 320 -> (148,262), UP hold 4, A ('The wall is bulging slightly'), A (YES),
+# A x4 gap 60 (tutorial). Board: 13x10 cells, cell (c,r) at (16c+8, 32+16r+8); pickaxe default, 4 of 196 per tap, the
+# 49th tap collapses the wall and uncovered items are kept. With these steps a lattice (cols 1,4,7,10 x rows 1,4,7)
+# showed a Red Sphere at (10..11,1..2) and a Blue one at (10..11,7..8); 2 taps on each other cell then 25 on (0,9)
+# gave 'You obtained a Blue Sphere, size 2!'. BLOCKED by a port defect: selecting any sphere/trap in a UG list is
+# GF_AssertFail -> comm error -> OS_ResetSystem: armrec emits literal-pool Thumb function words without bit 0
+# (ov18_02249684 compares the chosen start-menu entry, 0x02249B51 from data, with literal 0x02249B50: the list's
+# scroll prompts are never made, SetDrawFlag on NULL). Fix literal_c_value (armrec.py), then: DOWN hold 4 (face
+# open floor), X, DOWN (SPHERES), A, A (sphere), A (BURY), go up and descend again for the save.

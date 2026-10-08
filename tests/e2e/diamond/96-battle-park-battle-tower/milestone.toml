@@ -2,10 +2,9 @@
 # distinct held items; 7 wins pay Battle Points. Gatehouse (Point Card) and Battle Park scenes pre-minted.
 # Start: MAP_BATTLE_TOWER_LOBBY (11,6) below the single/double attendant (11,5). End: lobby after the set.
 title = "Battle Park: Battle Tower single rooms, first set"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 40000
+estimate = 67345
 refs = [
   "maps.h:330",
   "maps.h:196",
@@ -44,26 +43,196 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 60000
+frames = 101100
 
 [[step]]
 do = "press"
 keys = "A"
-note = "attendant SPRITE_PCWOMAN2 (11,5) (zone_event 0311 object 0, script #1): msg 283 #0, 'take the challenge?' (scr_seq 0358 @0x03E1)"
+gap = 90
+note = "attendant SPRITE_PCWOMAN2 (11,5) (zone_event 0311 object 0, script #1): msg 283 #0 (scr_seq 0358 @0x03DE)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 70
+note = "msg 283 #1 'take the Battle Room challenge?' + CHALLENGE/INFO/EXIT (@0x03E1-0x03E4)"
+shot = "challenge"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 70
+note = "CHALLENGE (row 0, @0x03F0) -> msg 283 #4 SINGLE BATTLE/DOUBLE BATTLE/CANCEL (@0x042A-0x0443)"
+shot = "single"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 70
+note = "SINGLE (row 0, @0x044C -> L_047B) -> msg 283 #8 'Please select the Pokemon you wish to enter.' (@0x04D1)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "the party-select screen (L_0305), cursor on slot 0"
+
+# The party select: A opens ENTER/SUMMARY/CANCEL, A enters (FIRST/SECOND/THIRD); with three entered the cursor
+# goes to CONFIRM by itself.
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+note = "GARCHOMP FIRST"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+note = "METAGROSS SECOND"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "SALAMENCE THIRD; cursor on CONFIRM"
+shot = "party"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "CONFIRM -> distinct species/items pass (@0x04E7-0x0508), HealParty, std 2006 'save the game?' YES/NO (L_02B5)"
+shot = "save"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "YES -> 'There is already a saved file. Is it OK to overwrite it?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "YES -> 'GQ saved the game.'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 80
+note = "msg 283 #11 'I will now show you to the Battle Room.' (@0x0557)"
 
 [[step]]
 do = "advance_text"
-max = 1500
-note = "[INFERENCE] A picks row 0 of each menu: challenge (@0x03F0) -> Single (@0x044C, row 0 -> L_047B) -> 'select the Pokemon' (msg 283 #8, @0x04D1)"
-shot = "single-room"
-# PHASE2: the party-select screen (L_0305) needs a recorded cursor path: pick slots 0,1,2 and confirm.
-# Distinct species / held items are checked at @0x04E7-0x0508 (msg 283 #9/#10). Then HealParty, the
-# std 2006 save prompt (L_02B5, YES), 'I will now show you to the Battle Room' (@0x0557), the room, and
-# 7x (wait_battle, auto_battle, advance_text). A loss ends the set.
+max = 4000
+note = "the attendant walks you to the elevator and the Battle Room; the trainer walks in, intro text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "battle1"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the room attendant heals; continue (row 0); the next trainer walks in"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "battle2"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the room attendant heals; continue (row 0); the next trainer walks in"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "battle3"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the room attendant heals; continue (row 0); the next trainer walks in"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "battle4"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the room attendant heals; continue (row 0); the next trainer walks in"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "battle5"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the room attendant heals; continue (row 0); the next trainer walks in"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "battle6"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the room attendant heals; continue (row 0); the next trainer walks in"
+
+[[step]]
+do = "auto_battle"
+snap = true
+shot = "battle7"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "seven wins: back to the lobby, Battle Points"
+shot = "lobby"
 
 [expect]
 map = "MAP_BATTLE_TOWER_LOBBY"
 battles = 7
-# PHASE2: reader-ext Battle Points (Save_FrontierData u_0, FrontierData_BattlePointAction unk_0202A1E0.c:127)
-# = 3 after the first set (table {0,3,3,4,4,5,5,6} overlay_06.s:45251, used by ov06_02243DE0 :21223)
-# [INFERENCE: index = completed sets of the streak]; np_save4 does not dump frontier data.
+# Proof: seven battle starts (the snaps: seven trainers, foes at Lv50 against GARCHOMP, so the Tower's level cap
+# holds), each won, and the walk back to the lobby that only the seventh win plays. Not checked: the Battle Points
+# (Save_FrontierData u_0, FrontierData_BattlePointAction unk_0202A1E0.c:127; 3 after the first set, table
+# {0,3,3,4,4,5,5,6} overlay_06.s:45251) - np_save4 does not dump frontier data.

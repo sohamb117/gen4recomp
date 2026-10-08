@@ -43,6 +43,12 @@ for k in " ".join(sys.argv[3:]).replace(",", " ").split():
         continue
     if keys == "WAIT":
         s.run(int(n)); continue
+    if keys == "TAP":
+        # TAP:X_Y[_GAP]: a 4-frame bottom-screen touch at (X, Y), then GAP (default 20) idle frames
+        xy = [int(v) for v in n.split("_")]
+        s.run(4, touch=(xy[0], xy[1]))
+        s.run(xy[2] if len(xy) > 2 else 20)
+        continue
     if keys.startswith("T"):
         keys = keys[1:]; last = None; tr = []
         for f in range(int(n)):

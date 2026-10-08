@@ -98,3 +98,5 @@ note = "registered Explorer Kit"
 map = "MAP_UNDERGROUND"
 vars = { "0x40B6" = 3 }
 flags = ["0x111", "0x971"]
+# PHASE2 lead (SysDP3): descent as 91 (Y, A gap 120, A gap 150, A; Roark A x60 gap 20), UP hold 48, LEFT hold 320,
+# UP hold 4 faces (148,261); X, A (TRAPS), A on 'Digger Drill' hits the same armrec Thumb-literal defect as 91.
