@@ -28,11 +28,13 @@
  *   Diamond  poketool/personal/personal.narc, growtbl.narc,
  *            poketool/waza/waza_tbl.narc
  *   Pearl    poketool/personal_pearl/personal.narc, otherwise as Diamond
+ *
+ * Black / White read their own layouts (gen5_data.c).
  */
-#include "ndsdata/ndsdata.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "gen5.h"
 
 #define SPECIES_RECORD 44
 #define MOVE_RECORD_MIN 11
@@ -93,7 +95,7 @@ static void load_type_chart(nd_gamedata *gd, const nd_rom *rom)
     }
 }
 
-static nd_status load_narc(const nd_rom *rom, const char *path, uint8_t **data, size_t *len, nd_narc *narc)
+nd_status nd_load_narc(const nd_rom *rom, const char *path, uint8_t **data, size_t *len, nd_narc *narc)
 {
     nd_status st = nd_rom_load_path(rom, path, data, len);
     if (st)
@@ -123,15 +125,19 @@ nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom)
         growth = "poketool/personal/growtbl.narc";
         moves = "poketool/waza/waza_tbl.narc";
         break;
+    case ND_GAME_BLACK:
+    case ND_GAME_WHITE:
+        return g5_gamedata_load(gd, rom);
     default:
         return ND_ERR_UNSUPPORTED;
     }
     gd->game = rom->game;
+    gd->type_count = ND_TYPES;
 
     uint8_t *data;
     size_t len;
     nd_narc narc;
-    nd_status st = load_narc(rom, personal, &data, &len, &narc);
+    nd_status st = nd_load_narc(rom, personal, &data, &len, &narc);
     if (st)
         return st;
     gd->species = calloc(narc.count ? narc.count : 1, sizeof *gd->species);
@@ -158,7 +164,7 @@ nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom)
     gd->species_count = narc.count;
     free(data);
 
-    st = load_narc(rom, growth, &data, &len, &narc);
+    st = nd_load_narc(rom, growth, &data, &len, &narc);
     if (st)
         goto fail;
     for (uint32_t r = 0; r < ND_EXP_RATES && r < narc.count; r++) {
@@ -175,7 +181,7 @@ nd_status nd_gamedata_load(nd_gamedata *gd, const nd_rom *rom)
     }
     free(data);
 
-    st = load_narc(rom, moves, &data, &len, &narc);
+    st = nd_load_narc(rom, moves, &data, &len, &narc);
     if (st)
         goto fail;
     gd->moves = calloc(narc.count ? narc.count : 1, sizeof *gd->moves);

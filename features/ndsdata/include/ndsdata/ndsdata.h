@@ -4,11 +4,14 @@
  *
  *  - NDS ROM: header, FNT/FAT, files by path or FAT id, over a read callback
  *  - NARC archives (BTAF/BTNF/GMIF)
- *  - LZ77 type 0x10 / 0x11 decompression
+ *  - LZ77 type 0x10 / 0x11 and backward LZ (BLZ, compressed overlays)
+ *    decompression
  *  - Gen 4 message banks (pret/pokeplatinum src/message.c scheme) -> UTF-8
  *  - Gen 4 character set (generated from the decomp's charmap.txt)
+ *  - Gen 5 message banks (UTF-16 text) -> UTF-8
  *  - Game-aware name tables (species, moves, items, abilities, natures,
- *    locations) for Diamond, Pearl and Platinum
+ *    locations) and battle tables for Diamond, Pearl, Platinum, Black and
+ *    White
  *
  * No dependencies beyond libc. All returned heap memory is owned by the
  * caller unless noted and is released with free() or the matching *_free().
@@ -48,10 +51,14 @@ typedef enum nd_game {
     ND_GAME_UNKNOWN = 0,
     ND_GAME_DIAMOND,
     ND_GAME_PEARL,
-    ND_GAME_PLATINUM
+    ND_GAME_PLATINUM,
+    ND_GAME_BLACK, /* gamecode IRB* */
+    ND_GAME_WHITE  /* gamecode IRA* */
 } nd_game;
 
 const char *nd_game_name(nd_game g);
+/* 4 for Diamond/Pearl/Platinum, 5 for Black/White, 0 when unknown. */
+int nd_game_gen(nd_game g);
 
 typedef struct nd_rom {
     nd_read_fn read;
@@ -114,6 +121,13 @@ nd_status nd_lz_decompress(const uint8_t *src, size_t src_len, uint8_t *dst, siz
 /* Convenience: allocate and decompress. */
 nd_status nd_lz_decompress_alloc(const uint8_t *src, size_t src_len, uint8_t **out, size_t *out_len);
 
+/* Backward LZ ("BLZ", the ARM9 / overlay compression of the DS SDK): the
+ * stream decompresses from its end, described by an 8-byte footer (u32
+ * header length << 24 | compressed length, u32 size increase). Allocates
+ * the decompressed image; a footer with a zero size increase means the data
+ * is stored uncompressed and is copied as is. */
+nd_status nd_blz_decompress(const uint8_t *src, size_t src_len, uint8_t **out, size_t *out_len);
+
 /* ------------------------------------------------------------ Gen 4 text */
 
 /* Decode in-game charcodes to UTF-8. Stops at 0xFFFF (EOS) or after `n`
@@ -128,6 +142,16 @@ char *g4_text_decode_alloc(const uint16_t *codes, size_t n);
  * appending 0xFFFF. `cap` counts u16 slots including the terminator.
  * ND_ERR_RANGE if it does not fit, ND_ERR_FORMAT on an unmappable char. */
 nd_status g4_text_encode(const char *utf8, uint16_t *out, size_t cap, size_t *out_len);
+
+/* ------------------------------------------------------------ Gen 5 text */
+
+/* Decode Gen 5 text (UTF-16 code units) to UTF-8. Stops at 0xFFFF or after
+ * `n` units. 0xFFFE renders as "\n", a 0xF000 control (0xF000, command,
+ * argc, args...) as "{CMD_XXXX a, b}", the game's gender glyphs 0x246D /
+ * 0x246E as U+2642 / U+2640; unpaired surrogates and 0xF100 render as
+ * "\\x%04X". snprintf-like, like g4_text_decode. */
+size_t g5_text_decode(const uint16_t *codes, size_t n, char *out, size_t cap);
+char *g5_text_decode_alloc(const uint16_t *codes, size_t n);
 
 /* -------------------------------------------------------- message banks */
 
@@ -153,9 +177,10 @@ typedef enum nd_text_kind {
     ND_TEXT_ITEMS,
     ND_TEXT_ABILITIES,
     ND_TEXT_NATURES,
-    ND_TEXT_LOCATIONS,         /* met locations 0..1999 */
-    ND_TEXT_SPECIAL_LOCATIONS, /* met locations 2000..2999 */
-    ND_TEXT_EVENT_LOCATIONS,   /* met locations 3000.. */
+    ND_TEXT_LOCATIONS,         /* met locations 0..1999 (Gen 4), 0..29999 (Gen 5) */
+    ND_TEXT_SPECIAL_LOCATIONS, /* met locations 2000..2999 (Gen 4), 30001.. (Gen 5) */
+    ND_TEXT_EVENT_LOCATIONS,   /* met locations 3000.. (Gen 4), 40001.. (Gen 5) */
+    ND_TEXT_PERSON_LOCATIONS,  /* Gen 5 met locations 60001.. (Day-Care Couple...); empty in Gen 4 */
     ND_TEXT_KIND_COUNT
 } nd_text_kind;
 
@@ -168,6 +193,8 @@ typedef struct nd_names {
     nd_game game;
     char **list[ND_TEXT_KIND_COUNT];
     uint32_t count[ND_TEXT_KIND_COUNT];
+    uint16_t *zone_location; /* Gen 5: ND_TEXT_LOCATIONS index per zone id */
+    uint32_t zone_count;
 } nd_names;
 
 /* Load every name list for the ROM's game. */
@@ -175,9 +202,13 @@ nd_status nd_names_load(nd_names *names, const nd_rom *rom);
 void nd_names_free(nd_names *names);
 /* Borrowed string or NULL if out of range / not loaded. */
 const char *nd_name(const nd_names *names, nd_text_kind kind, uint32_t id);
-/* Met/egg location id -> name (routes 2000/3000 ranges like
- * StringTemplate_SetMetLocationName in pokeplatinum). */
+/* Met/egg location id -> name. Gen 4: routes 2000/3000 ranges like
+ * StringTemplate_SetMetLocationName in pokeplatinum. Gen 5: 0.., 30001..,
+ * 40001.., 60001.. (see gen4_names.c). NULL when unknown. */
 const char *nd_location_name(const nd_names *names, uint32_t location);
+/* Location name of an overworld zone (map) id, as a Gen 5 save stores the
+ * player's position. NULL for Gen 4 or an unknown zone. */
+const char *nd_zone_name(const nd_names *names, uint32_t zone);
 /* Nature name for a PID (nature = pid % 25). */
 const char *nd_nature_name(const nd_names *names, uint32_t pid);
 
@@ -193,34 +224,37 @@ typedef struct nd_species {
     uint8_t gender_ratio;   /* 0 male only .. 254 female only, 255 genderless */
     uint8_t base_friendship;
     uint8_t exp_rate;       /* index into exp[] */
-    uint8_t abilities[2];   /* ability ids; [1] is 0 when there is one */
+    uint8_t abilities[2];   /* ability ids; [1] is 0 when there is one (Gen 5: the two non-hidden abilities) */
 } nd_species;
 
 /* A move's battle data (pokeplatinum MoveTable). */
 typedef struct nd_move {
-    uint16_t effect;        /* battle effect id */
+    uint16_t effect;        /* battle effect id (Gen 5: the move's effect sequence id) */
     uint8_t cls;            /* 0 physical, 1 special, 2 status */
     uint8_t power;
     uint8_t type;
     uint8_t accuracy;       /* 0: never misses */
     uint8_t pp;             /* base PP */
     int8_t priority;
-    uint16_t range;         /* targets: 0 one, RANGE_* bits (8: every adjacent battler, the ally too) */
+    uint16_t range;         /* targets: 0 one, RANGE_* bits (8: every adjacent battler, the ally too);
+                             * Gen 5 targets are mapped onto the Gen 4 bits */
 } nd_move;
 
-#define ND_TYPES 18 /* type ids 0..17 (9 is the ??? type) */
+#define ND_TYPES 18 /* type ids 0..17 (Gen 4: 9 is the ??? type; Gen 5 uses 0..16) */
 
 typedef struct nd_gamedata {
     nd_game game;
-    uint32_t species_count; /* personal NARC members (forms after 493) */
+    uint32_t species_count; /* personal NARC members (forms after 493 / 649) */
     nd_species *species;
     uint32_t exp[ND_EXP_RATES][101]; /* total exp for levels 0..100 */
     uint32_t move_count;
     nd_move *moves;         /* per move id */
     /* damage multiplier x10 (0, 5, 10, 20), [attacking type][defending
-     * type]; all 10 unless type_chart_ok */
+     * type]; all 10 unless type_chart_ok, and 10 in rows/columns at or past
+     * type_count */
     uint8_t type_chart[ND_TYPES][ND_TYPES];
     uint8_t type_chart_ok;
+    uint8_t type_count;     /* types in use: 18 in Gen 4, 17 in Gen 5 */
 } nd_gamedata;
 
 /* Species, experience, move tables and the type chart for the ROM's game. */
