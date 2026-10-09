@@ -1,6 +1,15 @@
 --- a/src/field/overlay_01_02204004.c
 +++ b/src/field/overlay_01_02204004.c
-@@ -268,7 +268,13 @@
+@@ -1,4 +1,8 @@
++/* nativeplat: ov01_02204698 returns the prop animation count (see its
++ * definition); the header's void prototype is renamed out of the way. */
++#define ov01_02204698 ov01_02204698_header_void
+ #include "field/overlay_01_02204004.h"
++#undef ov01_02204698
+ 
+ #include "global.h"
+ 
+@@ -268,7 +272,13 @@
  static void ov01_022044B0(FieldSystemUnkSubCC_Sub0 *unkCC_Sub0, MapPropAnimation *animation, void *res, int arg3) {
      void (*unkFunc)() = unkCC_Sub0->unk1C;
      if (unkFunc != NULL) {
@@ -15,3 +24,22 @@
          animation->res = res;
      }
  }
+@@ -396,8 +406,16 @@
+     MapPropAnimation_RemoveFromRenderObj(renderObj, unkCC->mapPropAnimation);
+ }
+ 
+-void ov01_02204698(FieldSystemUnkSubCC *unkCC) {
+-    ov01_0220434C(unkCC->unk0);
++/* nativeplat: returns the prop animation count, as on the ROM. mwcc
++ * compiled the void body to a tail call of ov01_0220434C (`ldr r0, [r0];
++ * ldr r3, =ov01_0220434C; bx r3`), so r0 still held unk22, and every
++ * assembly caller tests it before adding the map's prop animation to the
++ * map's render object (ov01_021F4C6C, ov01_021F5568, ov01_021F6620:
++ * `cmp r0, #0; beq` past ov01_02204678). The wasm bridge returns 0 from a
++ * void C function, so the animation was never added (found by
++ * games/diamond/pc/tools/dp_voidret_lint.py). */
++u16 ov01_02204698(FieldSystemUnkSubCC *unkCC) {
++    return ov01_0220434C(unkCC->unk0);
+ }
+ 
+ static void ov01_022046A4(NNSFndAllocator *pAllocator, NNSG3dAnmObj **pAlloc, void *res) {

@@ -1,0 +1,19 @@
+--- a/src/save_rankings.c
++++ b/src/save_rankings.c
+@@ -14,6 +14,16 @@
+ #include "unk_0202C730.h"
+ #include "unk_02030A98.h"
+ 
++/* nativeplat: the group id is a 32-bit word (sub_0202C7C0 stores
++ * MTRandom() at +0x24 and Save_FriendGroup_GetGroupId loads it with `ldr`),
++ * declared u8 in unk_0202C730.h. mwcc's callers here keep the whole word
++ * (each stores r0 to the int groupId as it comes); the wasm bridge narrows
++ * the result to the prototype's u8, so the rankings saved and compared
++ * against other players' entries carried only the low byte (found by
++ * games/diamond/pc/tools/dp_retwidth_lint.py). Called as the word it is. */
++#define Save_FriendGroup_GetGroupId(group, idx) \
++    ((u32 (*)(SAV_FRIEND_GRP *, int))Save_FriendGroup_GetGroupId)(group, idx)
++
+ struct SaveRankingsEntry {
+     int groupId;
+     u32 stat;
