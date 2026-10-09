@@ -3,10 +3,9 @@
 # for Mahogany's souvenir shop (VAR_UNK_40A8 1).
 # Start: MAP_OLIVINE (269,239) -> end: MAP_LAKE_OF_RAGE shore near Lance (528,84), FLAG_GOT_RED_SCALE, VAR_UNK_40A8 1.
 title = "Route 42, Mahogany, Lake of Rage: the red Gyarados and Lance"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 40000
+estimate = 42862
 refs = [
   "zone_event 075_T27 warps 10/11 (415,175/176) -> MAP_ROUTE_42_ECRUTEAK_GATEHOUSE; zone_event 128_R42R0101 warp 1 (10,7) -> MAP_ROUTE_42 (422,175)",
   "zone_event 041_R42 coord 0 (434,172) h5 VAR_UNK_4091 0 -> 000 (hiker: ITEM_HM04, FLAG_HIDE_ROUTE_42_HIKER, VAR_UNK_4091 1, scr_seq_0252_R42.s:16-96)",
@@ -29,7 +28,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 65000
+frames = 64300
 
 [[step]]
 do = "fly"

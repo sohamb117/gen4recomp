@@ -4,10 +4,9 @@
 # FLAG_ROCKET_HIDEOUT_CLEARED (opens the Mahogany Gym and Route 43's gate).
 # Start: MAP_LAKE_OF_RAGE (528,84) -> end: MAP_TEAM_ROCKET_HEADQUARTERS_B2F generator room (30,18), hideout cleared.
 title = "Rocket hideout: Lance, Petrel, Ariana, the Electrodes, HM05"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 50000
+estimate = 72808
 refs = [
   "zone_event 084_T28 warp 5 (528,174) -> MAP_MAHOGANY_SOUVENIR_SHOP",
   "scr_seq_0349_D35R0101_hdr.s (OnFrame VAR_UNK_40A8 1 -> 006); scr_seq_0088_D35R0101.s:69-123 (Lance: FLAG_HIDE_MAHOGANY_SHOP_LANCE, VAR_UNK_40A8 2)",
@@ -39,7 +38,33 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 75000
+frames = 109300
+
+[[step]]
+do = "walk_to"
+x = 524
+z = 156
+note = "Lake of Rage south down Route 43's west path (no toll gate) to the Mahogany gatehouse (zone_event 042_R43 warp 0, WARP_SOUTH 0x6F, left pushing south), the way 20 came"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_43_MAHOGANY_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 12
+note = "gatehouse south door (warp 0) -> Mahogany"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAHOGANY"
+
+[[step]]
+do = "heal"
+x = 534
+z = 183
+note = "Mahogany's Pokemon Center (zone_event T28 warp 3) before the hideout"
 
 [[step]]
 do = "walk_to"
