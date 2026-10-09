@@ -3,10 +3,9 @@
 # winning or catching sets FLAG_UNK_108 and frees New Bark's east exit (VAR_SCENE_NEW_BARK_EAST_EXIT 3).
 # Start: MAP_ECRUTEAK (397,174) -> end: MAP_BELL_TOWER_ROOF (15,17), FLAG_UNK_108.
 title = "HeartGold: Bell Tower and Ho-Oh"
-status = "planned"
 priority = "P0"
 version = "heartgold"
-estimate = 40000
+estimate = 20498
 refs = [
   "scr_seq_0034_D23R0106.s:75-80 (HG: ITEM_RAINBOW_WING, FLAG_UNK_093)",
   "scr_seq_0928_T27R0501.s:807-812,868-870 (HG: ITEM_CLEAR_BELL, FLAG_UNK_103, ClearFlag FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS)",
@@ -29,7 +28,13 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 60000
+frames = 30800
+
+[[step]]
+do = "heal"
+x = 397
+z = 183
+note = "Ecruteak's Pokemon Center (warp 5): 30 ends in Ecruteak after the five Kimono Girls; the first chained run climbed the tower unhealed and whited out to Ho-Oh"
 
 [[step]]
 do = "walk_to"
