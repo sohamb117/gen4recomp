@@ -8,10 +8,13 @@
 #   tools/heavy.sh --run tests/e2e/run.py --game platinum
 #
 # Two pools. Builds (the default) share NP_HEAVY_SLOTS slots (default 2):
-# each is many processes at -j N. Runs (--run: headless np_gp runs, e2e
-# milestone chains, gameplay scenarios, all one thread each) share their own
-# NP_HEAVY_RUN_SLOTS slots (default 6), so six or more runs go in parallel
-# without queueing behind, or blocking, a build.
+# each is many processes at -j N. Two is what 16 GB holds: a native core
+# build at -j4 peaks at 4-9 GB (one wasm2c'd C file compiles in up to 1.0 GB
+# for Platinum, 1.9 GB D/P, 1.3 GB R/S/E, 3.1 GB HG/SS, 3.5 GB B/W; measured
+# 2026-10-08), next to ~7 GB the desktop keeps resident. Runs (--run:
+# headless np_gp runs, e2e milestone chains, gameplay scenarios, all one
+# thread each) share their own NP_HEAVY_RUN_SLOTS slots (default 6), so six
+# or more runs go in parallel without queueing behind, or blocking, a build.
 #
 # A slot is a directory /tmp/np-heavy/slot.<n> (runs: run.<n>) holding the
 # owner's pid; a slot whose owner is gone is reclaimed. Nothing starts while
