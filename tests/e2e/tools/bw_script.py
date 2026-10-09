@@ -759,6 +759,7 @@ NAMES = r"""
 0A6 PlaySound u
 0A8 WaitSound u
 0A9 PlayFanfare u
+0AB PlayCry u (species, 0)
 0AA WaitFanfare u
 0B3 FadeScreen u
 0B4 WaitFade u
@@ -768,12 +769,17 @@ NAMES = r"""
 0C1 Warp u (zone, x, z) [INFERENCE]
 0C2 Warp u (zone, x, z, dir)
 0C4 Warp u (zone, x, y, z, dir) [INFERENCE]
+0D5 CheckBadge u (var, badge): the gym leaders test their own badge before battling
 0E0 GetVersion u (var): Black 21, White 20
 0E1 GetPlayerGender u (var): 0 male
 10C GivePokemon u (result var, species, form, level) [INFERENCE: form]
+11E GiveBadge u (badge 0-7) right after each gym leader's win (scr 0014 @0x09DF ... scr 0242 @0x00F4)
+156 Cmd156 u ends the script and starts another; N's farewell ends with it (scr 0556 @0x15FC) [INFERENCE: the ending]
+178 WildBattle u (species, level, result var): the legendary and Darmanitan encounters
 """
 
 SIZE = {"b": 1, "h": 2, "v": 2, "p": 2, "w": 4, "o": 4, "m": 4, "d": 4}
+BADGES = ("Trio", "Basic", "Insect", "Bolt", "Quake", "Jet", "Freeze", "Legend")
 CONDS = {0: "<", 1: "==", 2: ">", 3: "<=", 4: ">=", 5: "!=", 6: "or", 7: "and"}
 FLOW_TERM = {0x002, 0x005, 0x01D, 0x01E}  # End, Return, EndStd, Jump: no fall-through
 
@@ -1458,6 +1464,11 @@ class Annotator:
                 notes.append("with " + trainer_summary(L[1]))
         if op == 0x10C and L[1] is not None:
             notes.append(f"{species_name(L[1])}" + (f" lv {L[3]}" if L[3] is not None else ""))
+        if op in (0x178, 0x0AB) and L[0] is not None:
+            notes.append(species_name(L[0]) + (f" lv {L[1]}" if op == 0x178 and L[1] is not None else ""))
+        if op in (0x11E, 0x0D5) and L[-1 if op == 0x11E else 1] is not None:
+            b = L[-1 if op == 0x11E else 1]
+            notes.append(f"badge {b} ({BADGES[b] if 0 <= b < 8 else '?'})")
         if op == 0x057 and L[1] is not None:
             notes.append(species_name(L[1]))
         if op in WARPS and L[0] is not None:
@@ -1762,7 +1773,7 @@ def cmd_resolve(args):
 
 def cmd_version_diff(args):
     """Black vs White: which ROM files differ, and the scripts that branch on the version."""
-    other = Rom(args.other)
+    other = Rom(args.other or default_rom("white" if rom().game == "black" else "black"))
     for path in ("a/0/1/2", "a/1/2/5", "a/0/5/7", "a/0/0/3", "a/0/0/2", "a/0/9/2", "a/0/9/3"):
         a, b = rom().narc(path), other.narc(path)
         diff = [i for i in range(min(len(a), len(b))) if a[i] != b[i]]
@@ -1848,7 +1859,7 @@ def main(argv=None):
     s.add_argument("sid")
     s.set_defaults(fn=cmd_resolve)
     s = sub.add_parser("version-diff", help="this ROM vs the other version's ROM")
-    s.add_argument("other", help="the other ROM")
+    s.add_argument("other", nargs="?", help="the other version's ROM (default: found like --rom)")
     s.set_defaults(fn=cmd_version_diff)
     s = sub.add_parser("derive", help="re-derive the command table from the ROM + generated asm; diff OPTABLE")
     s.add_argument("--asm", help="the recompiler's arm9 asm dir")

@@ -66,9 +66,10 @@ GAMEDATA+0x158 -> the `eventdata_system` block: +0x10 u16 zone, then u16 counts 
 events (8), connections (1) and position triggers (1) in the bedroom; +0x1C/+0x20/+0x24/+0x28 their arrays. The
 bedroom's one connection reads destination zone 0x186 (the 1F), destination exit 1, centre x 0x98 / z 0x28 units
 (tiles 9.5, 2.5: the two stairs tiles (9,2)-(10,2), MAPATTR value 0x18 in the first terrain word); the position
-trigger at tile (8,2) waits on var 0x4081 = 0: Cheren's "where are you going?" gate in front of the stairs. Only
-this one map has been read, so entry sizes and the remaining fields are not established; the probe does not
-publish warps.
+trigger at tile (8,2) fires while var 0x4081 = 1: Cheren's "where are you going?" gate in front of the stairs
+(the intro scene sets 1, the two battles set 2: scr 0782 @0x017D / @0x06D2). The ROM's event files (a/1/2/5, as
+`tests/e2e/tools/bw_script.py events` decodes them) give the entry sizes: bg 20, object 36, warp 20, trigger 22
+bytes, the trigger as {script, value, var, ..., x, z, w, h}; the probe does not publish warps.
 
 ## Party, event work, save
 

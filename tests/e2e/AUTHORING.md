@@ -193,6 +193,7 @@ the recipe's comments, as for the lab party.
 |---|---|
 | Platinum | `scripts_<map>.s:LINE`, `events_<map> (...)`, `src/...c:LINE`, `TRAINER_X (id)`, other paths from `games/platinum/` |
 | Diamond/Pearl | `scr_seq NNNN @0xOFF`, `zone_event NNNN object|warp|coord|bg k`, `maps.h:LINE`, `map_header.c:LINE`, `trdata.json #N`, `msg NNNN #i`, other paths from `games/diamond/` |
+| Black/White | `scr NNNN @0xOFF` (a/0/5/7 member), `zone_event ZZZ object|warp|trigger|bg k` and `zone ZZZ` (zone id), `msg NNN #i` (a/0/0/3), `sysmsg NNN #i` (a/0/0/2), `trdata #N` — all read from the cartridge by `tools/bw_script.py` |
 | HeartGold/SoulSilver | `scr_seq_NNNN_<CODE>.s:LINE` (files/fielddata/script/scr_seq), `zone_event NNN_<CODE> object|warp|coord|bg k` (files/fielddata/eventdata/zone_event/*.json), other paths from `games/heartgold/` |
 
 D/P field data is binary; `tests/e2e/tools/dp_script.py` decodes it (run from the repo root):
@@ -206,6 +207,20 @@ python3 tests/e2e/tools/dp_script.py grep-flag 0x198            # who sets/clear
 python3 tests/e2e/tools/dp_script.py grep-var 0x4086
 python3 tests/e2e/tools/dp_script.py text-grep "Coal Badge"
 python3 tests/e2e/tools/dp_script.py version-diff               # Diamond vs Pearl differences
+```
+
+Black/White have no decomp; `tests/e2e/tools/bw_script.py` reads the same kinds of data out of the ROM itself
+(`--game white`, `--rom PATH` or `NP_BW_ROMS=DIR`; the command table is derived from the ROM's handler table, see
+its docstring):
+
+```
+python3 tests/e2e/tools/bw_script.py zone 391                   # header: scripts, level scripts, text bank, events
+python3 tests/e2e/tools/bw_script.py events 391                 # bg events, objects, warps, triggers, level scripts
+python3 tests/e2e/tools/bw_script.py script 782                 # disassembly: offsets, flags/vars, text, trainers
+python3 tests/e2e/tools/bw_script.py grep-var 0x4081            # every script/trigger/level script using it
+python3 tests/e2e/tools/bw_script.py trainer 21 --where         # party and the TrainerBattle commands using it
+python3 tests/e2e/tools/bw_script.py version-diff               # Black vs White: files, GetVersion/MessageVersion users
+python3 tests/e2e/tools/bw_script.py coverage                   # every script file decoded, every byte accounted for
 ```
 
 Facts the scripts do not prove are `[INFERENCE]`.
