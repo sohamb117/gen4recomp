@@ -1,0 +1,24 @@
+# Proves Route 2: the entrance scene (var 0x407D 0 -> 1), Bianca's second battle, and the walk to Striaton City.
+# Start: Accumula Town (zone 397) -> end: Striaton City (zone 6), 0x407D = 2.
+title = "Route 2: Bianca's battle and Striaton City"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000
+refs = [
+  "zone_event 397 warp 5 (768,647) 1x3 -> zone 320 (Accumula Gate) -> zone 319 (Route 2)",
+  "zone_event 319 trigger 0 (754,647) var 0x407D == 0 -> scr 0638 script 1; @0x0557 SetVar 0x407D 1",
+  "zone_event 319 trigger 1 (784,613) var 0x407D == 1 -> scr 0638 script 2; @0x0284 SetVar 0x407D 2",
+  "scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030",
+  "zone 6 (Striaton City)",
+]
+notes = "Bianca's Route 2 battle is mode 0. Route 2 trainers: `bw_script.py events 319`. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 6
+
+[expect.vars]
+"0x407D" = 2

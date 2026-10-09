@@ -1,0 +1,32 @@
+# Proves Castelia City: Skyarrow Bridge, Cheren's news, Burgh's chase after Team Plasma (Bianca's Munna) through the
+# streets and their hideout, and Burgh's Insect Badge.
+# Start: Pinwheel Forest (zone 155) -> end: the Castelia Gym (zone 29), 3 badges, 0x40AF = 4.
+title = "Castelia City: Team Plasma's hideout and Burgh's Insect Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "zone 249 (Skyarrow Bridge) -> zone 250 (Bridge Gate) -> Castelia",
+  "zone_event 31 trigger 0 (24,48) var 0x40AF == 0 -> scr 0062 script 4 (Cheren, msg 36 #0); @0x01BB SetVar 0x40AF 1; @0x01C9 SetVar 0x40D3 1",
+  "zone_event 38 level type 1: 0x40D3 == 1 -> scr 0076 script 8; @0x042E SetVar 0x40D3 2; @0x0434 SetVar 0x40AD 1",
+  "zone_event 28 trigger 0 (4,24) var 0x40AD == 1 -> scr 0056 script 19 (Burgh, msg 33 #0); @0x024C/@0x0256 SetVar 0x40AD 2, 0x40AF 2",
+  "zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1",
+  "zone_event 56 trigger 0 (6,10) var 0x40D9 == 1 -> scr 0112 script 1; @0x050D SetVar 0x40D9 2; @0x0517 SetVar 0x40D7 1",
+  "scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76",
+  "scr 0058 @0x030A SetVar 0x409C 1; @0x0310 SetVar 0x40AC 1; @0x0316 SetVar 0x40AD 2; @0x031C SetVar 0x40AF 4; @0x0332 SetFlag 0x973",
+]
+notes = "Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 29
+badges = 3
+flags = ["0x973"]
+
+[expect.vars]
+"0x40AF" = 4
+"0x409C" = 1
+"0x40AC" = 1

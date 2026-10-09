@@ -1,0 +1,26 @@
+# Proves the Opelucid Gym and Iris's Legend Badge on White, then Professor Juniper's Master Ball and the gate north.
+# Start: Opelucid City (zone 120) -> end: the Opelucid Gate (zone 132), 8 badges, 0x40B8 = 3.
+title = "Opelucid Gym (White): Iris's Legend Badge"
+status = "planned"
+priority = "P0"
+version = "white"
+estimate = 25000
+refs = [
+  "scr 0242 script 1 @0x007F GetVersion: 20 (White) -> L_0203: Iris; zone_event 121 via scr 0242 script 2 (@0x0069 SetVar 0x4020 0x5C: the leader's sprite on White)",
+  "scr 0242 @0x0224 TrainerBattle trdata #132 (Iris: Fraxure 41, Druddigon 41, Haxorus 43); @0x025B GiveBadge 7 (Legend); @0x02C7 CallStd 2805 TM82; @0x0315 SetVar 0x40A9 1; @0x031B SetVar 0x40B8 1; @0x0321 SetFlag 0x978",
+  "zone_event 120 level type 1: 0x40B8 == 1 -> scr 0240 script 17; @0x0FD9 CallStd 2805 Master Ball; @0x100C SetVar 0x40B8 2",
+  "zone_event 132 trigger 0 (2,11) var 0x40B8 == 2 -> scr 0264 script 3; @0x01A4 SetVar 0x40B8 3; @0x01AA SetVar 0x40C0 1; @0x01B0 SetFlag 0x96F",
+]
+notes = "Black plays black/27-opelucid-drayden-legend-badge. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 132
+badges = 8
+flags = ["0x978"]
+
+[expect.vars]
+"0x40B8" = 3
+"0x40A9" = 1

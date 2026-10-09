@@ -1,0 +1,27 @@
+# Proves the first steps on Route 1: the three friends' walk out of Nuvema, Professor Juniper's catching lesson
+# (five Poké Balls), Bianca's catch race, and the way north to Accumula Town.
+# Start: Nuvema Town (zone 389), 0x4080 = 2 -> end: Accumula Town (zone 397) at its south entrance, 0x407C = 2.
+title = "Route 1: the catching lesson and the way to Accumula"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 14000
+refs = [
+  "zone_event 389 trigger 1 (786..791,739) 6x1 var 0x4080 == 2 -> scr 0778 script 14 (msg 428 #20, first step)",
+  "zone_event 317 object 2 gfx 0x69 (788,724) hidden by flag 0x1FC -> scr 0634 script 1 (Juniper)",
+  "scr 0634 @0x0106 CallStd 2805 Poké Ball x5; @0x0242 SetFlag 0x1FC; @0x0246 SetVar 0x407C 1",
+  "zone_event 317 trigger 0 (788..794,678) 7x1 var 0x407C == 1 -> scr 0634 script 5 (Bianca's compare, YES/NO var 0x8010)",
+  "scr 0634 @0x066A SetFlag 0x203; @0x066E SetVar 0x407C 2",
+  "zone 317 (Route 1, sysmsg 89 #14); zone 397 (Accumula Town)",
+]
+notes = "Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 397
+flags = ["0x1FC", "0x203"]
+
+[expect.vars]
+"0x407C" = 2

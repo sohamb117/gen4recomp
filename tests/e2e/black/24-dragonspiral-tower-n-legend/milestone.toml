@@ -1,0 +1,25 @@
+# Proves Dragonspiral Tower: Cedric at the gate, Team Plasma's grunts on the climb, and N waking his legendary
+# dragon at the top.
+# Start: Icirrus City (zone 113) -> end: Dragonspiral Tower's foot (zone 205), 0x40A7 = 9.
+title = "Dragonspiral Tower: N and the legendary dragon"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000
+refs = [
+  "zone_event 205 trigger 0 (177,146) var 0x40A7 == 1 -> scr 0410 script 1 (Cedric); @0x057B CallStd 2805 Old Gateau; @0x05C5 SetVar 0x40A7 2; @0x05CB SetVar 0x4097 5",
+  "zone_event 207 trigger 0 (24,2) 0x40A7 == 2 -> scr 0414 (@0x0064 SetVar 3); zone_event 208 trigger 0 (14,24) == 3 -> scr 0416 (@0x006A SetVar 4); zone_event 210 triggers (21,14)/(22,14) == 5/4 -> scr 0420 (@0x0073/@0x00C4 SetVar 5/6)",
+  "zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34)",
+  "zone_event 213 trigger 0 (16,21) var 0x40A7 == 8 -> scr 0426 script 1 (N, msg 221 #0); @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205 (179,146)",
+  "scr 0410 @0x02D0 SetVar 0x409D 1 (Cedric: on to the Relic Castle)",
+]
+notes = "The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 205
+
+[expect.vars]
+"0x40A7" = 9

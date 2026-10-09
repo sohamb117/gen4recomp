@@ -1,0 +1,25 @@
+# Proves the Elite Four: Shauntal, Grimsley, Marshal and Caitlin in any order, then the way to the Champion's room.
+# Start: the Pokémon League (zone 136) -> end: the League's centre (zone 137) after the fourth win, 0x40A1 = 1.
+title = "The Elite Four"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 40000
+refs = [
+  "zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1",
+  "scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137",
+  "scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137",
+  "scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137",
+  "scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137",
+  "zones 140-143 (the four rooms)",
+]
+notes = "The rematch parties (trdata #563-#566, levels 71-73) are post-game. [INFERENCE] the order is free. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 137
+
+[expect.vars]
+"0x40A1" = 1

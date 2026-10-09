@@ -1,0 +1,26 @@
+# Proves the way to Opelucid City: Route 8 (Bianca's battle), the Moor of Icirrus, Tubeline Bridge, Route 9, and
+# Opelucid's welcome by Alder, Iris and Drayden.
+# Start: Nacrene City (zone 16) -> end: Opelucid City (zone 120), 0x40A8 = 4.
+title = "Route 8 (Bianca) and Route 9 to Opelucid City"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 35000
+refs = [
+  "zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40)",
+  "zone 254 (Tubeline Bridge) scr 0508: vars 0x40DB/0x40A4; zone 308/348 (Route 9)",
+  "zone_event 120 trigger 0 (395,173) var 0x40A8 == 0 -> scr 0240 script 1 (Alder, msg 125 #0); @0x0AA4 SetFlag 0x9B9; @0x0AAC SetVar 0x40A8 1",
+  "zone_event 120 triggers 1-3 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3",
+  "zone_event 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1; @0x013E SetVar 0x40A8 4",
+]
+notes = "Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion (scr 0240 @0x0EAB ...), no other branch: the dir serves White. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 120
+
+[expect.vars]
+"0x40A8" = 4
+"0x40CB" = 1

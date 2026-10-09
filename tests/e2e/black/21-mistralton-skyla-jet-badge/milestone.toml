@@ -1,0 +1,25 @@
+# Proves Mistralton City: Skyla's welcome, the cannon gym and Skyla's Jet Badge.
+# Start: Mistralton City (zone 107) -> end: the Mistralton Gym (zone 108), 6 badges, 0x4099 = 2.
+title = "Mistralton Gym: Skyla's Jet Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "zone_event 107 trigger 0 (100,302) var 0x4099 == 0 -> scr 0214 script 8 (msg 112 #0); @0x09B4 SetVar 0x4099 1",
+  "scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2",
+  "zone_event 107 level type 1: 0x4099 == 2 -> scr 0214 script 13 (N, msg 112 #21); @0x013D SetVar 0x4099 3",
+]
+notes = "The Celestial Tower (zone 342, vars 0x40BA/0x40D2) is [INFERENCE] optional here. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 108
+badges = 6
+flags = ["0x976"]
+
+[expect.vars]
+"0x4099" = 2
+"0x40B4" = 1

@@ -1,0 +1,28 @@
+# Proves Fennel's errand: the C-Gear/HM01 visit, the Dreamyard's Munna and Team Plasma's grunts, and the Pal Pad
+# back at Fennel's lab.
+# Start: Striaton Gym (zone 7) -> end: Fennel's lab (zone 10), 0x4094 = 5, 0x4088 = 3.
+title = "Fennel, the Dreamyard's Munna and Team Plasma"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 16000
+refs = [
+  "zone_event 6 level type 1: 0x4088 == 1 -> scr 0012 script 14 (Fennel, msg 11 #0); @0x04DC SetVar 0x4088 2; @0x04E2 SetVar 0x4087 1; @0x04E8 Warp zone 9 (7,10)",
+  "zone_event 9 level type 1: 0x4087 == 1 -> scr 0018 script 5; @0x0148 Warp zone 10 (11,2); @0x0156 SetVar 0x4087 2",
+  "zone_event 10 level type 1: 0x4086 == 0 -> scr 0020 script 1; @0x006A CallStd 2805 HM01; @0x0092 SetVar 0x4086 1; @0x0098 SetVar 0x4094 1",
+  "zone_event 152 triggers 0-2 var 0x4094 == 1/2/3 -> scr 0304 scripts 2/4/5 (Bianca, the wall, Munna)",
+  "scr 0304 @0x0777/@0x07DC TrainerBattle trdata #293/#308 (Plasma grunts: Patrat 10, Purrloin 10); @0x0B6E SetVar 0x4094 4",
+  "scr 0020 @0x039A CallStd 2805 Pal Pad; @0x041D SetVar 0x4094 5; @0x0423 SetVar 0x4086 2; @0x0429 SetVar 0x4088 3",
+]
+notes = "zone_event 6 trigger 1 (750,584) var 0x4088 == 2 -> scr 0012 script 20 sends the player back to Fennel. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 10
+
+[expect.vars]
+"0x4088" = 3
+"0x4094" = 5
+"0x4086" = 2

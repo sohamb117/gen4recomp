@@ -1,2 +1,35 @@
-# White story chain: the Black milestones (version = "both"), played on White.
+# White story chain: the Black milestones (version = "both"), played on White, and White's own where the scripts
+# branch on the version (GetVersion): the Opelucid leader (Iris) and the throne room's legend (Zekrom; N with Reshiram).
 ../black/01-newgame-bedroom
+../black/02-gift-box-starter-first-battles
+../black/03-mom-bianca-house-juniper-pokedex
+../black/04-route1-catching-lesson
+../black/05-accumula-plasma-speech-n
+../black/06-route2-bianca-striaton
+../black/07-striaton-dreamyard-monkey
+../black/08-striaton-gym-trio-badge
+../black/09-fennel-dreamyard-plasma-munna
+../black/10-route3-cheren-wellspring-plasma
+../black/11-nacrene-n-lenora-basic-badge
+../black/12-museum-skull-pinwheel-plasma
+../black/13-castelia-plasma-burgh-insect-badge
+../black/14-castelia-gate-bianca-route4-cheren
+../black/15-nimbasa-musical-ferris-wheel-n
+../black/16-nimbasa-elesa-bolt-badge
+../black/17-route5-cheren-drawbridge-driftveil
+../black/18-cold-storage-plasma
+../black/19-driftveil-clay-quake-badge-bianca
+../black/20-route6-chargestone-n
+../black/21-mistralton-skyla-jet-badge
+../black/22-twist-mountain-cheren-icirrus
+../black/23-icirrus-brycen-freeze-badge
+../black/24-dragonspiral-tower-n-legend
+../black/25-relic-castle-nacrene-stone
+../black/26-route8-bianca-route9-opelucid
+27-opelucid-iris-legend-badge
+../black/28-route10-cheren-victory-road
+../black/29-elite-four
+../black/30-champion-room-n-castle
+../black/31-n-castle-climb
+32-n-castle-zekrom-n
+../black/33-ghetsis-ending

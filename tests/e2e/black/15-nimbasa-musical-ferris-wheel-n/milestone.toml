@@ -1,0 +1,27 @@
+# Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father,
+# and N's Ferris wheel battle.
+# Start: Nimbasa City (zone 62) -> end: Nimbasa City, 0x4089 = 3, 0x408E = 1.
+title = "Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 25000
+refs = [
+  "zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1",
+  "zone_event 62 trigger 0 (391,436) var 0x4089 == 1 -> scr 0124 script 2; @0x08B5 Warp zone 77 (14,20)",
+  "zone_event 77 level type 1: 0x40B3 == 0 -> scr 0154 script 11; @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1; @0x01DC SetVar 0x4089 2",
+  "zone_event 62 level type 1: 0x4089 == 2 -> scr 0124 script 20 (msg 67 #18, Bianca's father); @0x0C38 SetVar 0x4089 3",
+  "zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1",
+]
+notes = "The Musical itself (the dress-up) is a separate app; [INFERENCE] its exit returns to zone 77. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 62
+
+[expect.vars]
+"0x4089" = 3
+"0x408E" = 1
+"0x40B3" = 1

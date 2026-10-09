@@ -1,0 +1,25 @@
+# Proves the search for the other legend's stone: the Desert Resort and the Relic Castle with Cheren and Alder, then
+# Nacrene's museum where Professor Juniper and Lenora hand over the stone.
+# Start: Dragonspiral Tower's foot (zone 205) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
+title = "The Relic Castle and the stone at Nacrene's museum"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 35000
+refs = [
+  "zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; @0x02A7 SetVar 0x4092 6",
+  "scr 0328 (zone 164) @0x0014 unless 0x409F == 0 ...; @0x0038/@0x0046 Warp zone 165 (the Relic Castle's sand pits)",
+  "zone_event 16 trigger 2 (640,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36)",
+  "scr 0032 @0x0AE9 MessageVersion (White: Dark Stone msg 21 #48 / Black: Light Stone #49); @0x0BF3 CallStd 2805 Light Stone (Black) / @0x0C19 Dark Stone (White); @0x0DCE SetVar 0x4092 7",
+]
+notes = "The stone is the one version branch here, by item: Black's bag gets the Light Stone. Relic Castle's quicksand floors (zones 160-165, WarpC1 holes): `bw_script.py events 160` [INFERENCE: the path down]. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 16
+
+[expect.vars]
+"0x4092" = 7
+"0x409D" = 2

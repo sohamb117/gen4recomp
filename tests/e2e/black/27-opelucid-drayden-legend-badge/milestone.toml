@@ -1,0 +1,27 @@
+# Proves the Opelucid Gym (the dragon-head lifts) and Drayden's Legend Badge on Black, then Professor Juniper's
+# Master Ball and the gate north.
+# Start: Opelucid City (zone 120) -> end: the Opelucid Gate (zone 132), 8 badges, 0x40B8 = 3.
+title = "Opelucid Gym (Black): Drayden's Legend Badge"
+status = "planned"
+priority = "P0"
+version = "black"
+estimate = 25000
+refs = [
+  "scr 0242 script 1 @0x007F GetVersion: 21 (Black) -> Drayden; @0x0083 CheckBadge var 0x8008, 7",
+  "scr 0242 @0x00BD TrainerBattle trdata #133 (Drayden: Fraxure 41, Druddigon 41, Haxorus 43); @0x00F4 GiveBadge 7 (Legend); @0x0160 CallStd 2805 TM82; @0x01AE SetVar 0x40A9 1; @0x01B4 SetVar 0x40B8 1; @0x01BA SetFlag 0x979",
+  "zone_event 120 level type 1: 0x40B8 == 1 -> scr 0240 script 17; @0x0FD9 CallStd 2805 Master Ball; @0x100C SetVar 0x40B8 2",
+  "zone_event 132 trigger 0 (2,11) var 0x40B8 == 2 -> scr 0264 script 3; @0x01A4 SetVar 0x40B8 3; @0x01AA SetVar 0x40C0 1; @0x01B0 SetFlag 0x96F",
+]
+notes = "White plays white/27-opelucid-iris-legend-badge (Iris, trdata #132, the same party). Haxorus: Ice or Dragon [INFERENCE]. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 132
+badges = 8
+flags = ["0x979"]
+
+[expect.vars]
+"0x40B8" = 3
+"0x40A9" = 1

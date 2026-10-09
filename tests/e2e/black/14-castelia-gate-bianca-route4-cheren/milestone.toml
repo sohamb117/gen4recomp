@@ -1,0 +1,25 @@
+# Proves the road south: Bianca's battle in the Castelia Gate, Route 4's sandstorm and Cheren's battle, to Nimbasa
+# City.
+# Start: the Castelia Gym (zone 29) -> end: Nimbasa City (zone 62), 0x40AC = 2, 0x409C = 2.
+title = "Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "zone_event 51 trigger 0 (1,9) var 0x40AC == 1 -> scr 0102 script 4 (MessageGender msg 56 #0/#1)",
+  "scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2",
+  "zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2",
+  "zone_event 326 trigger 0 (430,564) var 0x409C == 0 -> scr 0652 script 2 (the road closed before the Insect Badge)",
+]
+notes = "[INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 62
+
+[expect.vars]
+"0x40AC" = 2
+"0x409C" = 2

@@ -1,0 +1,25 @@
+# Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Team Plasma and Brycen in the mountain, out to Icirrus
+# City and Cedric Juniper.
+# Start: the Mistralton Gym (zone 108) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
+title = "Twist Mountain: Cheren; Icirrus City"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 25000
+refs = [
+  "zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2",
+  "zone_event 202 trigger 0 (52,13) var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D",
+  "zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2",
+]
+notes = "[INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 113
+
+[expect.vars]
+"0x40B4" = 2
+"0x4097" = 2
+"0x40BB" = 1

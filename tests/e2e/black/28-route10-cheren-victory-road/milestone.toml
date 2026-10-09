@@ -1,0 +1,22 @@
+# Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokémon League.
+# Start: the Opelucid Gate (zone 132) -> end: the Pokémon League (zone 136), 0x40B8 = 4.
+title = "Route 10 (Cheren), the Badge Check Gates and Victory Road"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 45000
+refs = [
+  "zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4",
+  "zones 356-363 (the Badge Check Gates): scr 0712 @0x011A ... scr 0726 @0x010E Warp to the next gate",
+  "zones 214-228 (Victory Road); scr 0428 @0x004E Warp zone 136 (32,60)",
+]
+notes = "Victory Road needs Strength/Surf [INFERENCE: HM04 Strength's source is not in these scripts]. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 136
+
+[expect.vars]
+"0x40B8" = 4

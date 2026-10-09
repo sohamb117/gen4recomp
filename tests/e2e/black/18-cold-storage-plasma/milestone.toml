@@ -1,0 +1,28 @@
+# Proves the Cold Storage raid: Cheren at the entrance, the containers, four grunts and Zinzolin, and Ghetsis
+# meeting Clay in Driftveil.
+# Start: Driftveil City (zone 96) -> end: Driftveil City, 0x408B = 8, 0x408F = 3.
+title = "Cold Storage: Team Plasma and Ghetsis"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "zone_event 191 trigger 0 (167,474) var 0x4090 == 0 -> scr 0382 script 1 (Cheren, msg 199 #2); @0x0109 SetVar 0x4090 1",
+  "zone_event 192 level type 1: 0x408B == 0 -> scr 0384 script 1; @0x00A6 SetVar 0x408B 1; trigger 0 (6,8) 0x408B == 1 -> script 2; @0x0117 SetVar 0x408B 2",
+  "zone_event 193 level type 1: 0x408B == 2 -> scr 0386 script 1 (Zinzolin, msg 201 #0); @0x01DA SetVar 0x408B 3",
+  "scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24)",
+  "scr 0386 @0x08D3 SetVar 0x408B 8; @0x08ED SetVar 0x408F 2",
+  "zone_event 96 trigger 0 (206,404) var 0x408F == 2 -> scr 0192 script 9 (Ghetsis, msg 101 #6); @0x0444 SetVar 0x408F 3",
+]
+notes = "[INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 96
+
+[expect.vars]
+"0x408B" = 8
+"0x408F" = 3
+"0x4090" = 1

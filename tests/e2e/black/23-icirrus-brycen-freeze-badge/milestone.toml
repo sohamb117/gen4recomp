@@ -1,0 +1,24 @@
+# Proves the Icirrus Gym (the ice slides) and Brycen's Freeze Badge, then Cheren and Bianca's talk.
+# Start: Icirrus City (zone 113) -> end: Icirrus City, 7 badges, 0x40A7 = 1, 0x4097 = 4.
+title = "Icirrus Gym: Brycen's Freeze Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 22000
+refs = [
+  "scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977",
+  "zone_event 113 level type 1: 0x4097 == 3 -> scr 0226 script 2 (Cheren, msg 118 #10); @0x03C0 SetVar 0x4097 4",
+]
+notes = "The gym's ice paths: `bw_script.py events 114` (triggers on var 0x400F/0x400A). [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 113
+badges = 7
+flags = ["0x977"]
+
+[expect.vars]
+"0x40A7" = 1
+"0x4097" = 4

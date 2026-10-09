@@ -1,0 +1,23 @@
+# Proves the Nimbasa Gym: the roller-coaster switches and Elesa's Bolt Badge.
+# Start: Nimbasa City (zone 62) -> end: the Nimbasa Gym (zone 63), 4 badges, 0x4093 = 1.
+title = "Nimbasa Gym: Elesa's Bolt Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18000
+refs = [
+  "scr 0126 @0x0362 msg 68 #16 (the switches change the roller coaster's path)",
+  "scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974",
+]
+notes = "Emolga is Electric/Flying: Rock or Ice moves [INFERENCE]. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 63
+badges = 4
+flags = ["0x974"]
+
+[expect.vars]
+"0x4093" = 1

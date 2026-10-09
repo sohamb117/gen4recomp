@@ -1,0 +1,26 @@
+# Proves Route 3: the day care twins, Cheren's battle, Team Plasma's stolen Pokémon at Wellspring Cave, and the way
+# on to Nacrene City.
+# Start: Fennel's lab (zone 10) -> end: Nacrene City (zone 16), 0x4095 = 5, 0x407E = 2.
+title = "Route 3: Cheren and Team Plasma at Wellspring Cave"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "zone 321 (Route 3) scr 0642 @0x0344 TrainerBattle trdata #18 (Twins Kumi & Amy, double); @0x036D SetVar 0x407E 1",
+  "zone_event 321 trigger 0 (719,581) var 0x407E == 1 -> scr 0642 script 6 (msg 353 #6); @0x051F/@0x0569/@0x05A0 TrainerBattle trdata #56/#57/#58 (Cheren: starter 14, Purrloin 12)",
+  "zone_event 321 triggers 1-7 on var 0x4095 0..4 -> scr 0642 scripts 5/7/8/11 (Bianca's stolen Pokémon)",
+  "zone_event 324 trigger 0 (25,4) var 0x4095 == 3 -> scr 0648 script 1; @0x0155 TrainerBattle trdata #294 (grunt: Patrat 12); @0x0464 SetVar 0x4095 4",
+  "scr 0642 @0x0DF7 CallStd 2805 Heal Ball x3; @0x0E32 SetVar 0x4095 5; @0x0F68 SetVar 0x407E 2",
+]
+notes = "Which of the 0x4095 triggers fires depends on the side the player enters from; `bw_script.py events 321`. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 16
+
+[expect.vars]
+"0x4095" = 5
+"0x407E" = 2

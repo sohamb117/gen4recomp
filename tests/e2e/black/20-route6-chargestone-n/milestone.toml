@@ -1,0 +1,25 @@
+# Proves Route 6 and Chargestone Cave: Clay clears the nest at the entrance, Bianca and Professor Juniper inside,
+# and N's battle, out to Mistralton City.
+# Start: Driftveil City (zone 96) -> end: Mistralton City (zone 107), 0x409B = 5, 0x409A = 2.
+title = "Chargestone Cave: N's battle"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 25000
+refs = [
+  "scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2",
+  "zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg)",
+  "scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28)",
+  "zone 107 (Mistralton City)",
+]
+notes = "Chargestone's floating stones: [INFERENCE] the boulders the player pushes; no puzzle state found in the scripts. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 107
+
+[expect.vars]
+"0x409B" = 5
+"0x409A" = 2

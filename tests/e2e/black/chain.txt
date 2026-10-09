@@ -1,3 +1,36 @@
 # Black story chain (docs/BW_PLAN.md: a ROM-only recompilation; the probe is docs/BW_RAM.md). version = "both"
-# dirs serve White too: white/chain.txt.
+# dirs serve White too (white/chain.txt); 27 and 32 are Black's (version = "black"), White has its own.
+# 02-33 are planned drafts from the decoded scripts (tests/e2e/tools/bw_script.py).
 01-newgame-bedroom
+02-gift-box-starter-first-battles
+03-mom-bianca-house-juniper-pokedex
+04-route1-catching-lesson
+05-accumula-plasma-speech-n
+06-route2-bianca-striaton
+07-striaton-dreamyard-monkey
+08-striaton-gym-trio-badge
+09-fennel-dreamyard-plasma-munna
+10-route3-cheren-wellspring-plasma
+11-nacrene-n-lenora-basic-badge
+12-museum-skull-pinwheel-plasma
+13-castelia-plasma-burgh-insect-badge
+14-castelia-gate-bianca-route4-cheren
+15-nimbasa-musical-ferris-wheel-n
+16-nimbasa-elesa-bolt-badge
+17-route5-cheren-drawbridge-driftveil
+18-cold-storage-plasma
+19-driftveil-clay-quake-badge-bianca
+20-route6-chargestone-n
+21-mistralton-skyla-jet-badge
+22-twist-mountain-cheren-icirrus
+23-icirrus-brycen-freeze-badge
+24-dragonspiral-tower-n-legend
+25-relic-castle-nacrene-stone
+26-route8-bianca-route9-opelucid
+27-opelucid-drayden-legend-badge
+28-route10-cheren-victory-road
+29-elite-four
+30-champion-room-n-castle
+31-n-castle-climb
+32-n-castle-reshiram-n
+33-ghetsis-ending

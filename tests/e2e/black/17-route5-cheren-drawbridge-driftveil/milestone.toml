@@ -1,0 +1,25 @@
+# Proves Route 5 (Cheren's battle and Alder) and the Driftveil Drawbridge into Driftveil City, where Clay meets the
+# player.
+# Start: the Nimbasa Gym (zone 63) -> end: Driftveil City (zone 96), 0x4093 = 3, 0x408F = 1.
+title = "Route 5: Cheren and Alder; Driftveil City"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18000
+refs = [
+  "zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2",
+  "zone_event 329 trigger 2 (339,431) var 0x4093 == 2 -> scr 0658 script 5; @0x09B0 SetVar 0x4093 3",
+  "zone 253/301 (Driftveil Drawbridge)",
+  "zone_event 96 trigger 1 (204,430) var 0x408F == 0 -> scr 0192 script 8 (Clay, msg 101 #0); @0x01DB SetFlag 0x9B6; @0x01E3 SetVar 0x408F 1",
+]
+notes = "[INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 96
+
+[expect.vars]
+"0x4093" = 3
+"0x408F" = 1

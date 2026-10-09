@@ -1,0 +1,30 @@
+# Proves Nacrene City: Cheren's welcome, N's second battle, the museum's library gym (the bookshelf puzzle) and
+# Lenora's Basic Badge.
+# Start: Nacrene City (zone 16) -> end: the Nacrene Gym (zone 19), 2 badges, 0x4092 = 3.
+title = "Nacrene City: N and Lenora's Basic Badge"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18000
+refs = [
+  "zone_event 16 trigger 0 (665,598) var 0x4092 == 0 -> scr 0032 script 10; @0x0215 CallStd 2805 Chesto Berry x3; @0x024F SetVar 0x4092 1",
+  "zone_event 16 trigger 1 (644,582) var 0x4092 == 1 -> scr 0032 script 11 (msg 21 #3); @0x03E6 SetVar 0x4092 2; @0x03F2 TrainerBattle trdata #65 (N: Pidove, Tympole, Timburr 13)",
+  "zone_event 17 trigger 0 (11,23) var 0x4084 == 0 -> scr 0034 script 16; @0x0423 SetVar 0x4084 1",
+  "zone 18 (the library) scr 0036 var 0x408A 1..7 bookshelf puzzle (@0x027E ... @0x12A2 SetVar 0x408A 7)",
+  "scr 0038 @0x00C8 TrainerBattle trdata #21 (Lenora: Herdier 18, Watchog 20); @0x00FD GiveBadge 1 (Basic); @0x0167 CallStd 2805 TM67",
+  "scr 0038 @0x0059/@0x0069 SetFlag 0x972/0x970; @0x006D SetVar 0x4084 2; @0x0073 SetVar 0x408C 1; @0x0079 SetVar 0x4092 3",
+]
+notes = "Lenora's Watchog: Retaliate/Hypnosis; Fighting-type counters from Route 3/Pinwheel are [INFERENCE]. [INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 19
+badges = 2
+flags = ["0x972"]
+
+[expect.vars]
+"0x4092" = 3
+"0x4084" = 2
+"0x408C" = 1

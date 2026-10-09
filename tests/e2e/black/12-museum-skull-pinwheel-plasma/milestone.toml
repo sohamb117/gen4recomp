@@ -1,0 +1,28 @@
+# Proves the stolen Dragon Skull: Team Plasma at the museum, Burgh and the chase into Pinwheel Forest, four grunts
+# and the skull returned.
+# Start: the Nacrene Gym (zone 19) -> end: Pinwheel Forest (zone 155), 0x408D = 3, 0x4092 = 5.
+title = "The Dragon Skull: Team Plasma in Pinwheel Forest"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 18000
+refs = [
+  "zone_event 17 trigger 1 (10,9) var 0x4084 == 2 -> scr 0034 script 17 (msg 22 #12); @0x07DB SetVar 0x4084 3",
+  "zone_event 16 level type 1: 0x4092 == 3 -> scr 0032 script 7; @0x065B CallStd 2805 Dowsing MCHN; @0x070D SetVar 0x4092 4",
+  "zone_event 154 trigger 0 (592,583) var 0x408C == 1 -> scr 0308 script 2 (Burgh, msg 162 #1); @0x005E SetVar 0x408C 2; @0x0064 SetVar 0x408D 1",
+  "zone_event 155 trigger 1 (71,71) var 0x408D == 1 -> scr 0310 script 10; @0x02DF SetVar 0x408D 2",
+  "zone_event 155 triggers 2,4-6 on var 0x40AA 0..3; scr 0310 @0x0687/@0x08A4/@0x0996/@0x0A47 TrainerBattle trdata #295/#309/#296/#297 (grunts, Sandile 16 ... Patrat 14 x2 + Sandile 14)",
+  "scr 0310 @0x0ABB CallStd 2805 Dragon Skull; @0x0D0D SetVar 0x408D 3; @0x0D13 SetVar 0x40AA 4; @0x0D31 SetVar 0x4092 5",
+]
+notes = "[INFERENCE] estimate."
+
+[start]
+from = "prev"
+
+[expect]
+map = 155
+
+[expect.vars]
+"0x408D" = 3
+"0x40AA" = 4
+"0x4092" = 5
