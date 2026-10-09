@@ -1859,6 +1859,9 @@ def _walk_to(s, step, ctx):
         # An exit mat (WARP_ENTRANCE_*, stairs, WARP_<dir>) warps when the player pushes off it in its
         # direction; a goal on one means "leave through it".
         p = s.probe()
+        if step.get("on_text") == "stop" and not s.run(60, until="field_ready=1"):
+            # the goal's own coord scene began on arrival (HG/SS Radio Tower 1F (23,5): a coord event on the stairs)
+            raise _Held()
         d = terrain.mat_exit(p.cell(p.x, p.z))
         if d is not None:
             # a mat may warp within the map (D/P Mt. Coronet South 2F (7,23) -> (7,12)): a jump counts too
@@ -1871,6 +1874,14 @@ def _walk_to(s, step, ctx):
                 if abs(q.x - here[0]) + abs(q.z - here[1]) > 2:
                     left = True
                     break
+                if not s.field_ready:
+                    # a trainer spotted the player on the mat (HG/SS Radio Tower 4F: Proton (23,8) sees the stairs
+                    # (23,5)): fight, then push again
+                    limit += _field_or_handle(s, step, ctx, limit)
+                    q = s.probe()
+                    if q.map_id != start_map:
+                        left = True
+                        break
             if not left:
                 raise HarnessError("walk_to (%d,%d): the exit mat did not warp pushing %s" % (goal + (DIR_KEYS[d],)))
             _field_or_handle(s, step, ctx, limit)

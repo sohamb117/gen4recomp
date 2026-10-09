@@ -28,7 +28,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 52500
+frames = 57500
 
 [[step]]
 do = "walk_to"
@@ -79,6 +79,12 @@ note = "Tunnel 1F north door (warp 0) -> Goldenrod"
 [[step]]
 do = "wait_map"
 map = "MAP_GOLDENROD"
+
+[[step]]
+do = "heal"
+x = 352
+z = 368
+note = "Goldenrod's Pokemon Center (zone_event T25 warp 5) before the Radio Tower: its grunts, Ariana and Archer follow"
 
 [[step]]
 do = "walk_to"

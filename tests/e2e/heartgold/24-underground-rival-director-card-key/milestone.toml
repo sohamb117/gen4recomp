@@ -2,10 +2,9 @@
 # (TRAINER_RIVAL_SILVER_12), the shutter-switch puzzle, the warehouse grunts and the real director's Card Key.
 # Start: MAP_GOLDENROD_RADIO_TOWER_5F (5,14) -> end: MAP_GOLDENROD_TUNNEL_WAREHOUSE by the director (20,14), Card Key.
 title = "Goldenrod Underground: rival, shutters, the director's Card Key"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 40000
+estimate = 42580
 refs = [
   "zone_event 192_D37R0102 coord 1 (16,31) h2 VAR_UNK_40E7 2 -> 011 (Kimono Girl, FLAG_HIDE_UNDERGROUND_KIMONO_GIRL, VAR_UNK_40E7 3, scr_seq_0094_D37R0102.s:1208-1242)",
   "zone_event 192_D37R0102 object 11 obj_D37R0102_babyboy1_8 (25,30) FLAG_UNK_1C0 -> 010: the Basement Key door on B1F warp 4 (25,30) -> MAP_GOLDENROD_TUNNEL_1F 4 (25,9) (scr_seq_0094_D37R0102.s:1303-1329: with ITEM_BASEMENT_KEY it slides 2 east, SetFlag FLAG_UNK_1C0)",
@@ -26,7 +25,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 60000
+frames = 63900
 
 [[step]]
 do = "walk_to"
@@ -73,6 +72,12 @@ z = 14
 [[step]]
 do = "wait_map"
 map = "MAP_GOLDENROD"
+
+[[step]]
+do = "heal"
+x = 352
+z = 368
+note = "Goldenrod's Pokemon Center (zone_event T25 warp 5) before the tunnel: its grunts, the rival and the warehouse grunts follow"
 
 [[step]]
 do = "walk_to"

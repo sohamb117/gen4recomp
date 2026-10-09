@@ -3,10 +3,9 @@
 # director Petrel (TRAINER_EXECUTIVE_PETREL_PETREL) who hands over the Basement Key (VAR_UNK_40E7 2).
 # Start: MAP_MAHOGANY (523,184) -> end: MAP_GOLDENROD_RADIO_TOWER_5F (5,14), Basement Key, VAR_SCENE_ROCKET_TAKEOVER 4.
 title = "Rocket disguise, Radio Tower 1F-5F, Petrel and the Basement Key"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 45000
+estimate = 43900
 refs = [
   "zone_event 073_T25 warp 10 (347,334) -> MAP_GOLDENROD_TUNNEL_1F 0; zone_event 115_D37R0101 warp 2 (8,3) -> MAP_GOLDENROD_TUNNEL_B1F 5 (4,4)",
   "scr_seq_0093_D37R0101_hdr.s (OnFrame VAR_UNK_40F8 0 -> Lyra's Fashion Case; VAR_UNK_40F8 is 2 since the takeover, scr_seq_0930_T28.s:25)",
@@ -30,12 +29,18 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 67500
+frames = 65900
 
 [[step]]
 do = "fly"
 map = "MAP_GOLDENROD"
 note = "Mahogany's block (16,5) -> Goldenrod's fly point (9..11,10..11) on the fly map; lands at (352,369) (tools/hg_world.py fly); the Fly carrier is 18's boosted Pelipper"
+
+[[step]]
+do = "heal"
+x = 352
+z = 368
+note = "Goldenrod's Pokemon Center (zone_event T25 warp 5): Pryce leaves the party fainted, and the first chained run whited out to Petrel"
 
 [[step]]
 do = "walk_to"
@@ -89,6 +94,12 @@ do = "wait_map"
 map = "MAP_GOLDENROD"
 
 [[step]]
+do = "heal"
+x = 352
+z = 368
+note = "Goldenrod's Pokemon Center (zone_event T25 warp 5) before the Radio Tower: the grunts, the rival scene's grunt and Petrel follow"
+
+[[step]]
 do = "walk_to"
 x = 342
 z = 349
@@ -97,6 +108,17 @@ note = "Radio Tower (warp 7)"
 [[step]]
 do = "wait_map"
 map = "MAP_GOLDENROD_RADIO_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 6
+face = "up"
+interact = true
+note = "the disguised grunt (object 6) stands on the stairs (23,5): spoken to from the south he steps west (scr_seq_0029_D23R0101.s script 005: _02C2, player z 6 -> _0360 WalkNormalWest)"
+
+[[step]]
+do = "advance_text"
 
 [[step]]
 do = "walk_to"
@@ -178,8 +200,9 @@ note = "Basement Key, VAR_UNK_40E7 2 (scr_seq_0033_D23R0105.s:124-141)"
 [expect]
 map = "MAP_GOLDENROD_RADIO_TOWER_5F"
 badges = 7
-flags = ["FLAG_HIDE_RADIO_TOWER_RIVAL", "FLAG_ROCKET_TAKEOVER_ACTIVE", "FLAG_HIDE_RADIO_TOWER_5F_PETREL_REVEALED"]
-flags_clear = ["FLAG_HIDE_UNDERGROUND_KIMONO_GIRL", "FLAG_HIDE_RADIO_TOWER_5F_OFFICE_DIRECTOR"]
+# Petrel won: the director hidden, the revealed Petrel shown (scr_seq_0033_D23R0105.s:103-104; a loss sets them back, :221-223)
+flags = ["FLAG_HIDE_RADIO_TOWER_RIVAL", "FLAG_ROCKET_TAKEOVER_ACTIVE", "FLAG_HIDE_RADIO_TOWER_5F_OFFICE_DIRECTOR"]
+flags_clear = ["FLAG_HIDE_UNDERGROUND_KIMONO_GIRL", "FLAG_HIDE_RADIO_TOWER_5F_PETREL_REVEALED"]
 battles = 2
 save = ['any(i["item"] == 476 for k, p in s["bag"].items() if k != "registered" for i in p)']
 

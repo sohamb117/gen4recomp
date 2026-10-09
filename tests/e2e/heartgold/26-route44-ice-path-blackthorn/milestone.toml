@@ -26,7 +26,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 75000
+frames = 80000
 
 [[step]]
 do = "walk_to"
@@ -105,6 +105,12 @@ map = "MAP_GOLDENROD"
 [[step]]
 do = "fly"
 map = "MAP_MAHOGANY"
+
+[[step]]
+do = "heal"
+x = 534
+z = 183
+note = "Mahogany's Pokemon Center (zone_event T28 warp 3) before Route 44 and the Ice Path"
 
 [[step]]
 do = "walk_to"
