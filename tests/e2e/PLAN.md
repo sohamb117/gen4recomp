@@ -6031,7 +6031,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~1009829 frames estimated
+### Story chain: 33 milestones, ~1070360 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6054,7 +6054,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 27352 | prev + `None` | 96 | passing |
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 30033 | prev + `None` | 96 | passing |
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 32243 | prev + `None` | 96 | passing |
-| [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 25000 | prev + `None` | 107 | planned |
+| [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 85531 | prev + `None` | 107 | passing |
 | [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
 | [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
 | [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 22000 | prev + `None` | 113 | planned |
@@ -6265,9 +6265,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28)
 - end state: map 107; vars 0x409B=5, 0x409A=2
-- frames: estimate 25000, budget -
+- frames: estimate 85531, budget 128500
 - refs: scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2; zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg); scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28); zone 107 (Mistralton City)
-- notes: Chargestone's floating stones: [INFERENCE] the boulders the player pushes; no puzzle state found in the scripts. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 77518, White 85531 frames on the core of 2026-10-08 (main 21cf05779, instant text). Chargestone's floating boulders are pushed (moves P); the route through the cave came from scouting.
 
 #### black/21-mistralton-skyla-jet-badge — Mistralton Gym: Skyla's Jet Badge
 - proves: Proves Mistralton City: Skyla's welcome, the cannon gym and Skyla's Jet Badge. Start: Mistralton City (zone 107) -> end: the Mistralton Gym (zone 108), 6 badges, 0x4099 = 2.
@@ -6405,7 +6405,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~1009829 frames estimated
+### Story chain: 33 milestones, ~1070360 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6428,7 +6428,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 27352 | prev + `None` | 96 | passing |
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 30033 | prev + `None` | 96 | passing |
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 32243 | prev + `None` | 96 | passing |
-| [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 25000 | prev + `None` | 107 | planned |
+| [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 85531 | prev + `None` | 107 | passing |
 | [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
 | [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
 | [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 22000 | prev + `None` | 113 | planned |
@@ -6639,9 +6639,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28)
 - end state: map 107; vars 0x409B=5, 0x409A=2
-- frames: estimate 25000, budget -
+- frames: estimate 85531, budget 128500
 - refs: scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2; zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg); scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28); zone 107 (Mistralton City)
-- notes: Chargestone's floating stones: [INFERENCE] the boulders the player pushes; no puzzle state found in the scripts. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 77518, White 85531 frames on the core of 2026-10-08 (main 21cf05779, instant text). Chargestone's floating boulders are pushed (moves P); the route through the cave came from scouting.
 
 #### white/21-mistralton-skyla-jet-badge — Mistralton Gym: Skyla's Jet Badge
 - proves: Proves Mistralton City: Skyla's welcome, the cannon gym and Skyla's Jet Badge. Start: Mistralton City (zone 107) -> end: the Mistralton Gym (zone 108), 6 badges, 0x4099 = 2.

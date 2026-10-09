@@ -1498,9 +1498,13 @@ def bot_moves(s, step, ctx):
             limit += _use_field_move(s, step, ctx, "a field move %s" % n, limit)
             continue
         if name == "P":
-            s.run(40, DIR_KEYS["UDLR".index(n)])
-            s.run(20, until="field_ready=1")
-            limit += _field_or_handle(s, step, ctx, limit)
+            for _ in range(3):  # a wild battle during the push (a cave's floor) ends it: push again
+                s.run(40, DIR_KEYS["UDLR".index(n)])
+                s.run(20, until="field_ready=1")
+                spent = _field_or_handle(s, step, ctx, limit)
+                limit += spent
+                if not spent:
+                    break
             continue
         if name == "A":
             for _ in range(3):

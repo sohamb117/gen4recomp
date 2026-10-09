@@ -2,20 +2,239 @@
 # and N's battle, out to Mistralton City.
 # Start: Driftveil City (zone 96) -> end: Mistralton City (zone 107), 0x409B = 5, 0x409A = 2.
 title = "Chargestone Cave: N's battle"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 25000
+estimate = 85531
 refs = [
   "scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2",
   "zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg)",
   "scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28)",
   "zone 107 (Mistralton City)",
 ]
-notes = "Chargestone's floating stones: [INFERENCE] the boulders the player pushes; no puzzle state found in the scripts. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 77518, White 85531 frames on the core of 2026-10-08 (main 21cf05779, instant text). Chargestone's floating boulders are pushed (moves P); the route through the cave came from scouting."
 
 [start]
 from = "prev"
+
+[run]
+frames = 128500
+
+[[step]]
+do = "walk_to"
+x = 107
+z = 341
+on_battle = "flee"
+max = 20000
+note = "Route 6 north-west to Chargestone Cave's mouth (zone 194)"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the Galvantula nest (zone_event 194 object 0 on the door (107,339)) -> scr 0388 script 1: Clay clears it, TM78 Bulldoze; 0x409A 2 (@0x0429)"
+
+[[step]]
+do = "advance_text"
+shot = "clay-clears-the-nest"
+
+[[step]]
+do = "walk_to"
+x = 107
+z = 339
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 55
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+on_battle = "flee"
+note = "zone_event 195 trigger 3 (6..9,54) 0x409B == 0 -> scr 0390 script 7; 0x409B 1"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 42
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+on_battle = "flee"
+note = "trigger 0 (15..18,41) 0x409B == 1 -> script 1: Lucky Egg (@0x0583); 0x409B 2"
+
+[[step]]
+do = "advance_text"
+shot = "lucky-egg"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 39
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["P", "L"], ["L", 1], ["U", 1]]
+on_battle = "flee"
+note = "push the floating boulders (moves P = push; route from scouting)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 26
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["P", "R"]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 16
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["P", "L"], ["L", 1], ["P", "D"]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 25
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+on_battle = "flee"
+note = "trigger 1 (33,24..26) 0x409B == 2 -> script 2; 0x409B 3"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 40
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+on_battle = "flee"
+note = "trigger 4 (38,41..42) 0x409B == 3 -> script 3; 0x409B 4"
+
+[[step]]
+do = "advance_text"
+shot = "cave-scene"
+
+[[step]]
+do = "walk_to"
+x = 60
+z = 41
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["P", "D"]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 66
+z = 50
+on_battle = "flee"
+
+[[step]]
+do = "talk_to"
+id = 8
+on_battle = "flee"
+note = "the doctor (object 8): a battle, then a heal"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 8
+on_battle = "flee"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 46
+z = 14
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["P", "L"]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 43
+z = 13
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["P", "U"]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 53
+z = 5
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 65
+z = 13
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+on_battle = "flee"
+note = "trigger 2 (66,12..14) 0x409B == 4 -> script 4: N; 0x409B 5 (@0x0B85)"
+
+[[step]]
+do = "advance_text"
+shot = "n-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "N, trdata #218 (Boldore, Ferroseed, Joltik, Klink 28), scr 0390 @0x0B9D"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 75
+z = 5
+on_battle = "flee"
+note = "zone_event 195 warp 1 (75,5) -> zone 107, Mistralton City"
 
 [expect]
 map = 107
