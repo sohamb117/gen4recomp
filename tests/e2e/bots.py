@@ -1977,7 +1977,8 @@ def _stores(s):
 def bot_rail(s, step, ctx):
     """Black/White rail maps (Skyarrow Bridge, Castelia's waterfront): the player follows the map's rails, the field
     never reports ready and walk_to cannot plan there. Hold `keys` (with B to run when `run = true`) until the probe's
-    position (the rail position the game keeps in the player's map object) is within `near` (default 2) of (x, z),
+    position (the rail position the game keeps in the player's map object) is within `near` (default 2) of (x, z)
+    (or of x alone, or z alone, when only one is given),
     or, with `map`, until the map becomes `map`; a hold that stops moving the player for 120 frames fails, unless
     `script = true` (a trigger on the way runs a script that stops the player: the hold ends there). The rails turn
     with the camera: which key follows a street depends on where on its width the player is, so a route is the one
@@ -1985,17 +1986,21 @@ def bot_rail(s, step, ctx):
     keys = step["keys"] + ("+b" if step.get("run") else "")
     want_map = ctx.resolve(step["map"]) if "map" in step else None
     near = _int(step, "near", 2)
+    chunk = 1 if near == 0 else 6  # an exact stop is checked every frame: a 6-frame hold can step over the tile
     limit = s.frame + _int(step, "max", 6000)
-    still, last = 0, None
+    still, last, logged = 0, None, 0
     while True:
         if want_map is not None and s.map_id == want_map:
             break
         p = s.probe()
         pos = (p.x, p.z, s.map_id) if p is not None else None
-        if want_map is None and p is not None and "x" in step and \
-                abs(p.x - int(step["x"])) <= near and abs(p.z - int(step["z"])) <= near:
+        if want_map is None and p is not None and ("x" in step or "z" in step) and \
+                all(abs(v - int(step[k])) <= near for k, v in (("x", p.x), ("z", p.z)) if k in step):
             break
-        still = still + 6 if pos == last else 0
+        if pos and pos != last and (s.frame - logged >= 60):
+            logged = s.frame
+            s.note("rail: at (%d,%d) on map %d" % pos)
+        still = still + chunk if pos == last else 0
         last = pos
         if still >= 120:
             if step.get("script"):
@@ -2004,7 +2009,7 @@ def bot_rail(s, step, ctx):
         if s.frame >= limit:
             raise HarnessError("rail: %s did not get there in %d frames (at %s, map %d)" % (
                 keys, _int(step, "max", 6000), pos[:2] if pos else "?", s.map_id))
-        s.run(6, keys)
+        s.run(chunk, keys)
     p = s.probe()
     s.note("rail: %s to (%d,%d) on map %d" % (keys, p.x if p else -1, p.z if p else -1, s.map_id))
 

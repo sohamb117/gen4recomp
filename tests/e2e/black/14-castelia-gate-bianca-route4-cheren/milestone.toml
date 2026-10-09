@@ -2,20 +2,294 @@
 # City.
 # Start: the Castelia Gym (zone 29) -> end: Nimbasa City (zone 62), 0x40AC = 2, 0x409C = 2.
 title = "Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 40495
 refs = [
   "zone_event 51 trigger 0 (1,9) var 0x40AC == 1 -> scr 0102 script 4 (MessageGender msg 56 #0/#1)",
   "scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2",
   "zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2",
   "zone_event 326 trigger 0 (430,564) var 0x409C == 0 -> scr 0652 script 2 (the road closed before the Insect Badge)",
 ]
-notes = "From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 40495, White 35744 frames on the core of 2026-10-08 (main 21cf05779, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30."
 
 [start]
 from = "prev"
+
+[run]
+frames = 61000
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 32
+z = 19
+near = 0
+note = "out of Burgh's room down through honey wall 0 (32,17), opened in 13 (the walls' state is saved: overlay 38's init draws them from it)"
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 28
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 38
+z = 31
+near = 0
+note = "down through honey wall 5 (38,29)"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 32
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 32
+z = 35
+near = 0
+note = "down through honey wall 6 (32,33)"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 47
+note = "zone_event 29 warp 0 (31..33,48) -> zone 31"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 31
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 62
+note = "to Castelia's Pokemon Center (zone 41): its door is zone 28 warp 10, a rail warp (line 3, front 8, side 3)"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 180
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 67
+near = 0
+note = "east along the waterfront to the Center's door, rail front 8: on the side the chain walks (from 31 (13,62)), x 66 is still front 9, the door one step east (the screen at x 66) ; UP at front 9 meets the building wall. Which side of the waterfront the player walks on depends on where he came from: scouting from 31 (13,62) by set-location walked (66,66), the chain walks (66,67)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 90
+note = "UP crosses to side 3 and through the door"
+
+[[step]]
+do = "wait_map"
+map = 41
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 13
+
+[[step]]
+do = "talk_to"
+id = 10
+note = "the Geonet man stands on the counter tile (7,12) until flag 0x169 (zone 41 level script, scr 0082 script 6); his question (A: yes) moves him aside (scr 0082 script 5)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 12
+face = "up"
+interact = true
+note = "the nurse (the heal bot walks onto a door tile; this door is a rail warp)"
+
+[[step]]
+do = "advance_text"
+shot = "castelia-center"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 18
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 28
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 10
+note = "back to the walking side (side 3 at front 9 is wall)"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 26
+z = 33
+max = 4000
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 31
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 18
+note = "zone_event 31 warp 0 (9..22,16) -> zone 30, the avenue (rails)"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 3
+z = 8
+near = 0
+note = "up through the warp onto the avenue to its west end (3,8)"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 15
+z = 8
+near = 1
+note = "east along the avenue to the street north (UP enters zone 32 from x 13..17)"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 32
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 17
+note = "zone_event 32 warp 0 (13..18,16) -> zone 51, the Castelia Gate"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 51
+
+[[step]]
+do = "moves"
+dirs = [["U", "z9"]]
+note = "zone_event 51 trigger 0 (1..7,9) 0x40AC == 1 -> scr 0102 script 4: Bianca"
+
+[[step]]
+do = "advance_text"
+shot = "bianca-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Bianca, trdata #507/#508/#509 by 0x4030 (scr 0102 @0x02A5/@0x02E7/@0x0316)"
+
+[[step]]
+do = "advance_text"
+note = "@0x044E 0x40AC 2"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "zone_event 51 warp 1 (4..6,1) -> zone 326, Route 4"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 326
+
+[[step]]
+do = "walk_to"
+x = 430
+z = 586
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 326 trigger 1 (427..433,585) 0x409C == 1 -> scr 0652 script 6: Cheren"
+
+[[step]]
+do = "advance_text"
+shot = "cheren-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Cheren, trdata #403/#404/#405 by 0x4030 (scr 0652 @0x032F/@0x0371/@0x03A0)"
+
+[[step]]
+do = "advance_text"
+note = "@0x054C 0x409C 2"
+
+[[step]]
+do = "walk_to"
+x = 430
+z = 490
+on_battle = "flee"
+max = 12000
+note = "north through Route 4's sandstorm; zone_event 326 warp 0 (429..431,489) -> zone 90, the Nimbasa Gate"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 90
+
+[[step]]
+do = "moves"
+dirs = [["U", "z10"]]
+note = "zone_event 90 trigger 0 (2..7,10) 0x40C2 == 0 -> scr 0180 script 4: Juniper, Ultra Ball x10 (@0x01EE), 0x40C2 1"
+
+[[step]]
+do = "advance_text"
+shot = "juniper"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "zone_event 90 warp 0 (4..6,1) -> zone 62, Nimbasa City"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 60
+
+[[step]]
+do = "wait_map"
+map = 62
 
 [expect]
 map = 62

@@ -1,0 +1,11 @@
+# Boost on 12's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Castelia has no Pokemon Center on the way (its door is on the waterfront's rails): the hideout grunt (trdata #552:
+# Sandile 17 x2), the gym's Harlequins and Burgh (trdata #22: Whirlipede 21, Dwebble 21, Leavanny 23; scr 0058
+# @0x0249) wore the chain's party down and Burgh whited it out on Black. A Fire carrier against the bugs, led by
+# lead.press: Darumaka (554) at 30 with Fire Fang (424), Fire Punch (7), Headbutt (29) and Rock Tomb (317, for
+# Dwebble).
+party 554 30
+party-move 5 0 424
+party-move 5 1 7
+party-move 5 2 29
+party-move 5 3 317

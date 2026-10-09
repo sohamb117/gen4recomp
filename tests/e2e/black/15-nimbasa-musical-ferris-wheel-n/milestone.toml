@@ -18,6 +18,38 @@ notes = "The Musical itself (the dress-up) is a separate app; [INFERENCE] its ex
 [start]
 from = "prev"
 
+[run]
+frames = 60000
+
+[[step]]
+do = "moves"
+dirs = [["U", "z471"]]
+note = "zone_event 62 trigger 1 (427..433,471) 0x4089 == 0 -> scr 0124 script 1: Team Plasma at the Day Care"
+
+[[step]]
+do = "advance_text"
+shot = "day-care-grunts-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #279 (Watchog 18, Trubbish 18), scr 0124 @0x0288"
+
+[[step]]
+do = "advance_text"
+note = "Bicycle (@0x0323); Bianca; 0x4089 1 (@0x03F7)"
+
+[[step]]
+do = "heal"
+x = 406
+z = 467
+note = "zone_event 62 warp 5 (406,467) -> zone 65, the Pokemon Center"
+
+[[step]]
+do = "walk_to"
+x = 392
+z = 438
+note = "beside zone_event 62 trigger 0 (391,436..440) 0x4089 == 1 -> scr 0124 script 2: Bianca takes the player to the Musical (Warp zone 77 (14,20), @0x08B5)"
+
 [expect]
 map = 62
 
