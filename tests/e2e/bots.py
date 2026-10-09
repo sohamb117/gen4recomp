@@ -1202,8 +1202,10 @@ class Terrain:
             return "water"
         if self.surf and beh == self.waterfall and d == 0:
             return "waterfall"
-        if self.gba and self.surf and beh == self.waterfall and d == 1:
-            return "water"  # down the falls: the forced current carries a surfer (gba_world.py, waterfalls)
+        if (self.gba or self.hgss) and self.surf and beh == self.waterfall and d == 1:
+            # down the falls: the forced current carries a surfer (gba_world.py, waterfalls); HG/SS [INFERENCE] moves a
+            # surfer down one too (field_control.c:232-237 passes PLAYER_EVENT_USED_WATERFALL when the party knows it)
+            return "water"
         if self.hm and beh in self.rock_climb and d in self.rock_climb[beh]:
             return "climb"
         return None

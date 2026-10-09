@@ -3,10 +3,9 @@
 # reception gate (FLAG_SYS_FLYPOINT_VICTORY_ROAD, the officer's coord VAR_UNK_4110).
 # Start: (HG) MAP_BELL_TOWER_ROOF / (SS) MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE -> end: MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE (11,15).
 title = "Route 27, Tohjo Falls, Route 26 to the League gate"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 40000
+estimate = 68951
 refs = [
   "zone_event 057_T20 coords 2/3 (700,398) h5 VAR_SCENE_NEW_BARK_EAST_EXIT 1/2 only (3 passes freely)",
   "scr_seq_0021_D17R0110.s:84 (HG) / scr_seq_0104_D40R0107.s:96 (SS): VAR_SCENE_NEW_BARK_EAST_EXIT 3",
@@ -27,7 +26,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 60000
+frames = 103500
 
 [[step]]
 do = "fly"
@@ -73,6 +72,7 @@ do = "walk_to"
 x = 909
 z = 296
 surf = true
+via = [[914, 348], [914, 331], [924, 331], [924, 325], [917, 325], [917, 307], [909, 305]]  # tools/hg_world.py route 755 394 909 296 --surf: Route 26's last corners; the first chained run wandered at Ace Trainer Gaven (926,330)
 note = "Route 27 east, Route 26 north to the reception gate (warp 2)"
 
 [[step]]
