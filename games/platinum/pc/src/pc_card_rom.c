@@ -282,6 +282,52 @@ static void rom_read(u32 src, void *dst, u32 len)
     }
 }
 #endif
+#if defined(PC_CARD_READ_TIME)
+/*
+ * A card read takes time. On a console the reading thread sleeps while the
+ * card's DMA runs and the idle thread halts, so every VBlank that falls
+ * inside a long read is delivered then, and its handler runs the game's
+ * VBlank work in the middle of whatever the reader was doing. Here a read
+ * is instant, so a logical frame that loads a lot (HG/SS's FieldMap_Init:
+ * the map, the field effects, the overworld sprites) used to see no VBlank
+ * at all: the field effects' 32 VBlank-queue tasks (SysTask_CreateOnVBlankQueue,
+ * system.c's 32-entry queue) were never drained in between, 22 creations
+ * failed, and among them the task that uploads the overworld sprites'
+ * textures (ov01_021F19B4), so the player drew from VRAM nothing had written.
+ *
+ * The model: a frame's worth of card bandwidth, PC_CARD_BYTES_PER_FRAME, read
+ * within one logical frame delivers one VBlank (OS_Halt, the port's whole
+ * frame) from inside the read. Reads that fit in a frame cost nothing: the
+ * frame's own VBlank, at the next natural halt, absorbs them (pc_card_step
+ * clears the count). Only when the reader could be interrupted, as on
+ * hardware: IME, the VBlank enable and the CPSR I bit; otherwise the time
+ * stays owed until it can. Deterministic: a function of the reads only.
+ *
+ * 0x8000 bytes a frame is about 1.96 MB/s, the order of a retail card's
+ * effective rate through the SDK (6.7 MHz bus, per-0x200-block latency).
+ * Per game (Makefile): D/P/Pt do not define it yet, so their frames and
+ * regression hashes are unchanged.
+ */
+#define PC_CARD_BYTES_PER_FRAME 0x8000u
+
+static u32 sCardReadOwed;
+static int sCardReadHalting;
+
+static void card_read_elapse(u32 len)
+{
+    sCardReadOwed += len;
+    while (sCardReadOwed >= PC_CARD_BYTES_PER_FRAME && !sCardReadHalting) {
+        if (!(reg_OS_IME & 1) || !(reg_OS_IE & OS_IE_V_BLANK)
+            || OS_GetCpsrIrq() != OS_INTRMODE_IRQ_ENABLE) {
+            return;
+        }
+        sCardReadOwed -= PC_CARD_BYTES_PER_FRAME;
+        sCardReadHalting = 1;
+        OS_Halt();
+        sCardReadHalting = 0;
+    }
+}
+#endif
 
 void CARDi_ReadRom(u32 dma, const void *src, void *dst, u32 len,
                    MIDmaCallback callback, void *arg, BOOL is_async)
@@ -299,6 +345,9 @@ void CARDi_ReadRom(u32 dma, const void *src, void *dst, u32 len,
     }
 #endif
     rom_read((u32)src, dst, len);
+#if defined(PC_CARD_READ_TIME)
+    card_read_elapse(len);
+#endif
     if (callback) {
         callback(arg);
     }
@@ -861,6 +910,13 @@ void pc_card_step(void)
     extern unsigned long long pc_irq_frames(void);
     unsigned long long waited;
 
+#if defined(PC_CARD_READ_TIME)
+    /* A frame boundary the game reached by itself: the reads since the last
+     * one fitted in its frame (card_read_elapse). */
+    if (!sCardReadHalting) {
+        sCardReadOwed = 0;
+    }
+#endif
     if (!sBackupDirty) {
         return;
     }

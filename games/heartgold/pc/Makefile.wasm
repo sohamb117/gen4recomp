@@ -109,6 +109,10 @@ include $(PCDIR)/mk/host.mk
 #    it are answered inertly by the ROM-only core's hooks file
 #    (games/ndsrec/pc/src/pc_ndsrec_hooks.c), compiled from its own path.
 HOST_CFLAGS += -DPC_HOST_SDK42
+# PC_CARD_READ_TIME: card reads take time and deliver the VBlanks a long read
+# spans (pc_card_rom.c card_read_elapse); FieldMap_Init's VBlank-queue tasks
+# overflow the 32-entry queue without it.
+HOST_CFLAGS += -DPC_CARD_READ_TIME
 
 HG_OVMAP := $(BUILD)/host/hg-overlay-map.txt
 HG_OVSTATICS_C := $(BUILD)/host/hg_overlay_statics.c
