@@ -21,6 +21,308 @@ notes = "Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 =
 [start]
 from = "prev"
 
+[run]
+frames = 80000
+
+[[step]]
+do = "walk_to"
+x = 73
+z = 24
+on_battle = "flee"
+via = [[62, 68], [71, 68]]
+note = "zone_event 155 warp 1 (72..75,23) -> zone 250 (Bridge Gate)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 250
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 25
+note = "zone_event 250 warp 1 (20,25..26) -> zone 251"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 251
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 1
+note = "zone_event 251 warp 1 (12..14,0) -> zone 249, Skyarrow Bridge"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 249
+note = "Skyarrow Bridge is a rail map (bw-play2's scouting: x 89..139, z 275 -> 42 along the deck)"
+
+[[step]]
+do = "rail"
+keys = "up"
+run = true
+map = 252
+max = 6000
+shot = "skyarrow"
+note = "the deck's far end -> zone 252 (Bridge Gate) at (9,11)"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 4
+note = "zone_event 252 warp 1 (1,3..5) -> zone 28, Castelia's waterfront (rails)"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 26
+z = 33
+max = 4000
+note = "along the waterfront to its west end (left from 252 runs south, west, then north: (68,32) -> (73,64) -> (30,67) -> (26,33))"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 31
+shot = "castelia"
+note = "the street up from the west end: zone 28 warp 7 -> zone 31 (the Gym's street) at (13,63)"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 48
+note = "zone_event 31 trigger 0 (24,48) 0x40AF == 0 -> scr 0062 script 4: Cheren, then Burgh (msg 36 #0-#5), 0x40AF 1, 0x40D3 1 (@0x01BB/@0x01C9)"
+
+[[step]]
+do = "advance_text"
+shot = "cheren-burgh"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 62
+note = "column 13: the street's column sets the side of the waterfront rail the player lands on (from 15 RIGHT stops at (25,38))"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 180
+note = "zone_event 31 warp 1 (9..22,63) -> zone 28 at the waterfront's west end, held on through the warp onto the waterfront's middle as the probe walk did (a fresh press after the warp turns the rail another way)"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 46
+z = 74
+near = 1
+note = "back east along the waterfront to the street down to zone 38 (DOWN from the waterfront there: (44..47,73..74) on the core; from (43,73) it misses the door, at (41,80)); the key that follows it turns with the camera"
+
+[[step]]
+do = "rail"
+keys = "down"
+map = 38
+
+[[step]]
+do = "advance_text"
+shot = "munna-stolen"
+note = "zone_event 38 level 3 (on entry) 0x40D3 == 1 -> scr 0076 script 8: Burgh, Bianca, Iris; 0x40D3 2, 0x40AD 1 (@0x042E/@0x0434)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 2
+note = "zone_event 38 warp 0 (11..15,1) -> zone 28 warp 17"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 28
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 47
+z = 74
+near = 1
+note = "back onto the waterfront's middle (holding on crosses into zone 33)"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 26
+z = 33
+script = true
+max = 4000
+note = "west along the waterfront: zone_event 28 trigger 0 (a rail trigger) 0x40AD == 1 -> scr 0056 script 19 stops the player: Burgh, 0x40AD 2, 0x40AF 2 (@0x024C/@0x0256)"
+
+[[step]]
+do = "press"
+keys = "a"
+times = 10
+gap = 40
+shot = "burgh-that-way"
+note = "the script's text (the field never reports ready on rails, so advance_text cannot tell its end)"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 26
+z = 33
+max = 4000
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 31
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 36
+note = "below zone_event 31 trigger 1 (9..12,35) 0x40AF == 2 -> scr 0062 script 8"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+shot = "hideout-grunts"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #552 (Sandile 17 x2), scr 0062 @0x05F0"
+
+[[step]]
+do = "advance_text"
+note = "Iris and Bianca arrive; 0x40AF 3, 0x40D9 1 (@0x0776/@0x077C)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 33
+note = "zone_event 31 warp 3 (6,32..34) -> zone 56, Team Plasma's hideout"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 56
+
+[[step]]
+do = "moves"
+dirs = [["U", "z10"]]
+note = "zone_event 56 trigger 0 (6..8,10) 0x40D9 == 1 -> scr 0112 script 1"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "munna-returned"
+note = "Munna returned; Yache Berry (@0x046E); 0x40D9 2, 0x40D7 1 (@0x050D/@0x0517)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 12
+note = "zone_event 56 warp 0 (6..8,12) -> zone 31"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 31
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 48
+note = "zone_event 31 warp 2 (25,48) -> zone 29, the Gym: a door in the street's east wall"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 29
+shot = "gym"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 34
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 32
+z = 31
+near = 0
+note = "through the honey wall (32,33) (zone_event 29 object 0): a held direction pushes through it in ~60 frames; walk_to plans around objects"
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 30
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 38
+z = 28
+near = 0
+note = "the honey wall (38,29) (object 1)"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 18
+note = "past trigger 9 (38,25) 0x4008 == 0 -> scr 0058 script 15: a Harlequin pops out"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 32
+z = 16
+near = 0
+note = "the honey wall (32,17) (object 6) into Burgh's room"
+
+[[step]]
+do = "talk_to"
+id = 9
+note = "Burgh (zone_event 29 object 9 at (32,4)) -> scr 0058 script 20"
+
+[[step]]
+do = "advance_text"
+shot = "burgh-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Burgh, trdata #22 (Whirlipede 21, Dwebble 21, Leavanny 23), scr 0058 @0x0249"
+
+[[step]]
+do = "advance_text"
+shot = "insect-badge"
+note = "GiveBadge 2 (@0x027E), TM76 (@0x02E8); 0x409C 1, 0x40AC 1, 0x40AD 2, 0x40AF 4, flag 0x973 (@0x030A..@0x0332)"
+
 [expect]
 map = 29
 badges = 3

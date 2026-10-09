@@ -12,7 +12,7 @@ refs = [
   "zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2",
   "zone_event 326 trigger 0 (430,564) var 0x409C == 0 -> scr 0652 script 2 (the road closed before the Insect Badge)",
 ]
-notes = "[INFERENCE] estimate."
+notes = "From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30. [INFERENCE] estimate."
 
 [start]
 from = "prev"
