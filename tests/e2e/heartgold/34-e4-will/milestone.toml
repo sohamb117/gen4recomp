@@ -2,10 +2,9 @@
 # OnFrame shuts the way back), Will (TRAINER_ELITE_FOUR_WILL_WILL), his exit opens.
 # Start: MAP_POKEMON_LEAGUE_ENTRANCE (11,24) -> end: MAP_POKEMON_LEAGUE_WILL_ROOM (6,11), FLAG_DEFEATED_WILL.
 title = "Elite Four: Will"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 9000
+estimate = 19115
 refs = [
   "zone_event 271_T10R0101 object 0 obj_T10R0101_pcwoman1 (6,19) (nurse)",
   "zone_event 271_T10R0101 warp 1 (11,7) -> MAP_POKEMON_LEAGUE_WILL_ROOM 0 (6,22)",
@@ -22,13 +21,30 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 13500
+frames = 28700
 
 [[step]]
-do = "heal"
+do = "walk_to"
 x = 6
 z = 21
-note = "League Pokemon Center nurse (6,19) [INFERENCE: counter tile]"
+face = "up"
+interact = true
+note = "the League's nurse (object 0 (6,19)) stands in the entrance hall itself, behind the counter (row 20): spoken to across it (heal takes a Pokemon Center door)"
+
+[[step]]
+do = "advance_text"
+note = "A answers YES to resting the Pokemon"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 9
+face = "up"
+interact = true
+note = "the guard (object 8 (11,8)) stands in front of the door: spoken to, he steps aside (scr_seq_0819_T10R0101.s script 008: west, or east when the player faces west; VAR_TEMP_x4005 1)"
+
+[[step]]
+do = "advance_text"
 
 [[step]]
 do = "walk_to"

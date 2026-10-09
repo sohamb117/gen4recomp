@@ -3140,7 +3140,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## HeartGold
 
 <!-- plan.py:begin heartgold -->
-### Story chain: 38 milestones, ~1156106 frames estimated
+### Story chain: 38 milestones, ~1166221 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3177,7 +3177,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [31-bell-tower-ho-oh](heartgold/31-bell-tower-ho-oh/milestone.toml) | HeartGold: Bell Tower and Ho-Oh | P0 | heartgold | 20498 | prev + `None` | MAP_BELL_TOWER_ROOF | passing |
 | [32-route27-tohjo-falls-route26-league-gate](heartgold/32-route27-tohjo-falls-route26-league-gate/milestone.toml) | Route 27, Tohjo Falls, Route 26 to the League gate | P0 | both | 68951 | prev + `None` | MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE | passing |
 | [33-victory-road-rival](heartgold/33-victory-road-rival/milestone.toml) | Victory Road: the rival, Indigo Plateau | P0 | both | 79407 | prev + `None` | MAP_POKEMON_LEAGUE_ENTRANCE | passing |
-| [34-e4-will](heartgold/34-e4-will/milestone.toml) | Elite Four: Will | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_WILL_ROOM | planned |
+| [34-e4-will](heartgold/34-e4-will/milestone.toml) | Elite Four: Will | P0 | both | 19115 | prev + `None` | MAP_POKEMON_LEAGUE_WILL_ROOM | passing |
 | [35-e4-koga](heartgold/35-e4-koga/milestone.toml) | Elite Four: Koga | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_KOGA_ROOM | planned |
 | [36-e4-bruno](heartgold/36-e4-bruno/milestone.toml) | Elite Four: Bruno | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_BRUNO_ROOM | planned |
 | [37-e4-karen](heartgold/37-e4-karen/milestone.toml) | Elite Four: Karen | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_KAREN_ROOM | planned |
@@ -3519,7 +3519,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0820_T10R0201.s:45-71 (VAR_UNK_4135 < 8 -> TRAINER_ELITE_FOUR_WILL_WILL :58, FLAG_DEFEATED_WILL, the exit door and stoppers hidden); TRAINER_ELITE_FOUR_WILL_WILL (245, include/constants/trainers.h:250): XATU 40, JYNX 41, EXEGGUTOR 41, SLOWBRO 41, XATU 42
 - end state: map MAP_POKEMON_LEAGUE_WILL_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL; flags clear FLAG_HIDE_WILLS_ROOM_RETREAT
-- frames: estimate 9000, budget 13500
+- frames: estimate 19115, budget 28700
 - refs: zone_event 271_T10R0101 object 0 obj_T10R0101_pcwoman1 (6,19) (nurse); zone_event 271_T10R0101 warp 1 (11,7) -> MAP_POKEMON_LEAGUE_WILL_ROOM 0 (6,22); scr_seq_0820_T10R0201_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0820_T10R0201.s:22-36 (ClearFlag FLAG_HIDE_WILLS_ROOM_RETREAT); zone_event 272_T10R0201 object 0 obj_T10R0201_gsbigfour1 (6,10) -> 001; scr_seq_0820_T10R0201.s:45-71 (VAR_UNK_4135 < 8 -> TRAINER_ELITE_FOUR_WILL_WILL :58, FLAG_DEFEATED_WILL, the exit door and stoppers hidden); TRAINER_ELITE_FOUR_WILL_WILL (245, include/constants/trainers.h:250): XATU 40, JYNX 41, EXEGGUTOR 41, SLOWBRO 41, XATU 42
 - notes: First run: VAR_UNK_4135 < 8, so the first team (WILL_2 is the rematch). Coverage by boost: boost.recipe gives the lead its declined level-up moves (Lava Plume, Swift); the party is full since 26 (Flaaffy's Discharge, Pelipper's Ice Beam and Surf, Feraligatr). The heal tile in front of the nurse is [INFERENCE] (6,21) facing up.
 
@@ -3529,7 +3529,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened); TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44
 - end state: map MAP_POKEMON_LEAGUE_KOGA_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA; flags clear FLAG_HIDE_KOGAS_ROOM_RETREAT
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: zone_event 272_T10R0201 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KOGA_ROOM 0 (6,22); scr_seq_0821_T10R0301_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0821_T10R0301.s:22-36 (ClearFlag FLAG_HIDE_KOGAS_ROOM_RETREAT); zone_event 273_T10R0301 object 0 obj_T10R0301_gsbigfour2 (6,11) -> 001; scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened); TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44
 - notes: Fire handles Ariados/Venomoth/Forretress; Psychic/Ground for Muk and Crobat (boost).
 
@@ -3539,7 +3539,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened); TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46
 - end state: map MAP_POKEMON_LEAGUE_BRUNO_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO; flags clear FLAG_HIDE_BRUNOS_ROOM_RETREAT
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: zone_event 273_T10R0301 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_BRUNO_ROOM 0 (6,22); scr_seq_0822_T10R0401_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0822_T10R0401.s:22-36 (ClearFlag FLAG_HIDE_BRUNOS_ROOM_RETREAT); zone_event 274_T10R0401 object 0 obj_T10R0401_gsbigfour3 (6,10) -> 001; scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened); TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46
 - notes: Psychic/Flying coverage for the Fighting types, Water/Grass for Onix (boost).
 
@@ -3549,7 +3549,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0823_T10R0501.s:45-70 (TRAINER_ELITE_FOUR_KAREN_KAREN :59, FLAG_DEFEATED_KAREN, exit opened); TRAINER_ELITE_FOUR_KAREN_KAREN (246, include/constants/trainers.h:251): UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47
 - end state: map MAP_POKEMON_LEAGUE_KAREN_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO, FLAG_DEFEATED_KAREN; flags clear FLAG_HIDE_KARENS_ROOM_RETREAT
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: zone_event 274_T10R0401 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KAREN_ROOM 0 (6,22); scr_seq_0823_T10R0501_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0823_T10R0501.s:22-36 (ClearFlag FLAG_HIDE_KARENS_ROOM_RETREAT); zone_event 275_T10R0501 object 0 obj_T10R0501_gsbigfour4 (6,10) -> 001; scr_seq_0823_T10R0501.s:45-70 (TRAINER_ELITE_FOUR_KAREN_KAREN :59, FLAG_DEFEATED_KAREN, exit opened); TRAINER_ELITE_FOUR_KAREN_KAREN (246, include/constants/trainers.h:251): UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47
 - notes: Fighting/Fire/Water coverage (boost).
 
@@ -3559,7 +3559,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0824_T10R0601.s:41-163 (VAR_UNK_4135 < 8 -> TRAINER_CHAMPION_LANCE :77; Lyra, Elm, Oak; ClearFlag FLAG_HIDE_OLIVINE_PORT_OAK, VAR_UNK_411A 1, Warp MAP_POKEMON_LEAGUE_HALL_OF_FAME (6,22)); TRAINER_CHAMPION_LANCE (244, include/constants/trainers.h:249): GYARADOS 46, DRAGONITE 49, DRAGONITE 49, AERODACTYL 48, CHARIZARD 48, DRAGONITE 50
 - end state: 8 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN, BADGE_FOG, BADGE_STORM, BADGE_MINERAL, BADGE_GLACIER, BADGE_RISING; >= 1 battles; flags set FLAG_GAME_CLEAR, FLAG_UNK_97E, FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO, FLAG_DEFEATED_KAREN; flags clear FLAG_HIDE_OLIVINE_PORT_OAK, FLAG_HIDE_LAKE_OF_RAGE_PRYCE; vars VAR_UNK_411A=1, VAR_SCENE_PLAYERS_HOUSE_1F=3
-- frames: estimate 26000, budget 39000
+- frames: estimate 26000, budget 70000
 - refs: zone_event 275_T10R0501 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_LANCE_ROOM 0 (6,28); scr_seq_0597_T10R0601_hdr.s (OnFrame VAR_UNK_40C8 0 -> 001: ClearFlag FLAG_UNK_210, VAR_UNK_40C8 1); zone_event 276_T10R0601 coord 0 (5,10) w3 VAR_UNK_40C7 0 -> 000; scr_seq_0824_T10R0601.s:41-163 (VAR_UNK_4135 < 8 -> TRAINER_CHAMPION_LANCE :77; Lyra, Elm, Oak; ClearFlag FLAG_HIDE_OLIVINE_PORT_OAK, VAR_UNK_411A 1, Warp MAP_POKEMON_LEAGUE_HALL_OF_FAME (6,22)); TRAINER_CHAMPION_LANCE (244, include/constants/trainers.h:249): GYARADOS 46, DRAGONITE 49, DRAGONITE 49, AERODACTYL 48, CHARIZARD 48, DRAGONITE 50; scr_seq_0598_T10R0701_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0825_T10R0701.s:16-89 (HallOfFameAnim :40, no S.S. Ticket -> VAR_SCENE_PLAYERS_HOUSE_1F 3 :45-48, FLAG_UNK_97E, ClearFlag FLAG_HIDE_LAKE_OF_RAGE_PRYCE, uncaught legendaries reset, HOFCredits 0 :84); src/scrcmd_c.c:2023-2027 (HOFCredits -> CallTask_GameClear); src/game_clear.c:263-300 (CallTask_GameClear: Location_SetToPlayerRoom, SetGameClearFlag -> FLAG_GAME_CLEAR include/constants/flags.h:1710, league wins); src/game_clear.c:156-258 (RegisterHallOfFame app, SaveGameNormal + AddHallOfFameEntry (state 4), credits (state 10), OS_ResetSystem(0) (state 11)); src/register_hall_of_fame.c:2207-2215 (REGHOF_WHOLE_SUBPROC_WAIT_BUTTON: the whole-team photo waits for a new A/B/touch, :2210); src/credits/credits.c:37-38,316-385 (CREDITS_FRAMES 4976; on the first clear only START/touch could skip, A is ignored :318; 'The End' waits for a new A/START/touch :363-382)
 - notes: Lance's three Dragonite: Pelipper's Ice Beam (18's boost) behind a fainted lead (send = best). After Lance every screen waits for input: the Hall of Fame photo waits for A/B (register_hall_of_fame.c:2210), 'The End' for a new A/START (credits.c:363-382); A does not skip the first clear's credits (credits.c:318). So one long A cadence from the Hall of Fame's arrival through the walk-in, Lance's speech, the registration and the photo (110 presses, 56 frames apart, ~6160 frames) [INFERENCE: the photo's wait is reached within that run], then the save and the credits (6500 frames), one A for 'The End', and wait_reset without keys (its keys are held, i.e. one press, and none is needed). The save the run is judged on is SaveGameNormal in Task_GameClear state 4, written after CallTask_GameClear set FLAG_GAME_CLEAR, so the E4 defeat flags are still set in it (the League entrance clears them only on its next OnTransition).
 <!-- plan.py:end heartgold -->
@@ -3567,7 +3567,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## SoulSilver
 
 <!-- plan.py:begin soulsilver -->
-### Story chain: 38 milestones, ~1180608 frames estimated
+### Story chain: 38 milestones, ~1190723 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3604,7 +3604,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [31-whirl-islands-lugia](soulsilver/31-whirl-islands-lugia/milestone.toml) | SoulSilver: Whirl Islands and Lugia | P0 | soulsilver | 45000 | prev + `None` | MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE | planned |
 | [32-route27-tohjo-falls-route26-league-gate](heartgold/32-route27-tohjo-falls-route26-league-gate/milestone.toml) | Route 27, Tohjo Falls, Route 26 to the League gate | P0 | both | 68951 | prev + `None` | MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE | passing |
 | [33-victory-road-rival](heartgold/33-victory-road-rival/milestone.toml) | Victory Road: the rival, Indigo Plateau | P0 | both | 79407 | prev + `None` | MAP_POKEMON_LEAGUE_ENTRANCE | passing |
-| [34-e4-will](heartgold/34-e4-will/milestone.toml) | Elite Four: Will | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_WILL_ROOM | planned |
+| [34-e4-will](heartgold/34-e4-will/milestone.toml) | Elite Four: Will | P0 | both | 19115 | prev + `None` | MAP_POKEMON_LEAGUE_WILL_ROOM | passing |
 | [35-e4-koga](heartgold/35-e4-koga/milestone.toml) | Elite Four: Koga | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_KOGA_ROOM | planned |
 | [36-e4-bruno](heartgold/36-e4-bruno/milestone.toml) | Elite Four: Bruno | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_BRUNO_ROOM | planned |
 | [37-e4-karen](heartgold/37-e4-karen/milestone.toml) | Elite Four: Karen | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_KAREN_ROOM | planned |
@@ -3946,7 +3946,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0820_T10R0201.s:45-71 (VAR_UNK_4135 < 8 -> TRAINER_ELITE_FOUR_WILL_WILL :58, FLAG_DEFEATED_WILL, the exit door and stoppers hidden); TRAINER_ELITE_FOUR_WILL_WILL (245, include/constants/trainers.h:250): XATU 40, JYNX 41, EXEGGUTOR 41, SLOWBRO 41, XATU 42
 - end state: map MAP_POKEMON_LEAGUE_WILL_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL; flags clear FLAG_HIDE_WILLS_ROOM_RETREAT
-- frames: estimate 9000, budget 13500
+- frames: estimate 19115, budget 28700
 - refs: zone_event 271_T10R0101 object 0 obj_T10R0101_pcwoman1 (6,19) (nurse); zone_event 271_T10R0101 warp 1 (11,7) -> MAP_POKEMON_LEAGUE_WILL_ROOM 0 (6,22); scr_seq_0820_T10R0201_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0820_T10R0201.s:22-36 (ClearFlag FLAG_HIDE_WILLS_ROOM_RETREAT); zone_event 272_T10R0201 object 0 obj_T10R0201_gsbigfour1 (6,10) -> 001; scr_seq_0820_T10R0201.s:45-71 (VAR_UNK_4135 < 8 -> TRAINER_ELITE_FOUR_WILL_WILL :58, FLAG_DEFEATED_WILL, the exit door and stoppers hidden); TRAINER_ELITE_FOUR_WILL_WILL (245, include/constants/trainers.h:250): XATU 40, JYNX 41, EXEGGUTOR 41, SLOWBRO 41, XATU 42
 - notes: First run: VAR_UNK_4135 < 8, so the first team (WILL_2 is the rematch). Coverage by boost: boost.recipe gives the lead its declined level-up moves (Lava Plume, Swift); the party is full since 26 (Flaaffy's Discharge, Pelipper's Ice Beam and Surf, Feraligatr). The heal tile in front of the nurse is [INFERENCE] (6,21) facing up.
 
@@ -3956,7 +3956,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened); TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44
 - end state: map MAP_POKEMON_LEAGUE_KOGA_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA; flags clear FLAG_HIDE_KOGAS_ROOM_RETREAT
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: zone_event 272_T10R0201 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KOGA_ROOM 0 (6,22); scr_seq_0821_T10R0301_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0821_T10R0301.s:22-36 (ClearFlag FLAG_HIDE_KOGAS_ROOM_RETREAT); zone_event 273_T10R0301 object 0 obj_T10R0301_gsbigfour2 (6,11) -> 001; scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened); TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44
 - notes: Fire handles Ariados/Venomoth/Forretress; Psychic/Ground for Muk and Crobat (boost).
 
@@ -3966,7 +3966,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened); TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46
 - end state: map MAP_POKEMON_LEAGUE_BRUNO_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO; flags clear FLAG_HIDE_BRUNOS_ROOM_RETREAT
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: zone_event 273_T10R0301 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_BRUNO_ROOM 0 (6,22); scr_seq_0822_T10R0401_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0822_T10R0401.s:22-36 (ClearFlag FLAG_HIDE_BRUNOS_ROOM_RETREAT); zone_event 274_T10R0401 object 0 obj_T10R0401_gsbigfour3 (6,10) -> 001; scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened); TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46
 - notes: Psychic/Flying coverage for the Fighting types, Water/Grass for Onix (boost).
 
@@ -3976,7 +3976,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0823_T10R0501.s:45-70 (TRAINER_ELITE_FOUR_KAREN_KAREN :59, FLAG_DEFEATED_KAREN, exit opened); TRAINER_ELITE_FOUR_KAREN_KAREN (246, include/constants/trainers.h:251): UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47
 - end state: map MAP_POKEMON_LEAGUE_KAREN_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO, FLAG_DEFEATED_KAREN; flags clear FLAG_HIDE_KARENS_ROOM_RETREAT
-- frames: estimate 9000, budget 13500
+- frames: estimate 9000, budget 40000
 - refs: zone_event 274_T10R0401 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KAREN_ROOM 0 (6,22); scr_seq_0823_T10R0501_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0823_T10R0501.s:22-36 (ClearFlag FLAG_HIDE_KARENS_ROOM_RETREAT); zone_event 275_T10R0501 object 0 obj_T10R0501_gsbigfour4 (6,10) -> 001; scr_seq_0823_T10R0501.s:45-70 (TRAINER_ELITE_FOUR_KAREN_KAREN :59, FLAG_DEFEATED_KAREN, exit opened); TRAINER_ELITE_FOUR_KAREN_KAREN (246, include/constants/trainers.h:251): UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47
 - notes: Fighting/Fire/Water coverage (boost).
 
@@ -3986,7 +3986,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0824_T10R0601.s:41-163 (VAR_UNK_4135 < 8 -> TRAINER_CHAMPION_LANCE :77; Lyra, Elm, Oak; ClearFlag FLAG_HIDE_OLIVINE_PORT_OAK, VAR_UNK_411A 1, Warp MAP_POKEMON_LEAGUE_HALL_OF_FAME (6,22)); TRAINER_CHAMPION_LANCE (244, include/constants/trainers.h:249): GYARADOS 46, DRAGONITE 49, DRAGONITE 49, AERODACTYL 48, CHARIZARD 48, DRAGONITE 50
 - end state: 8 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN, BADGE_FOG, BADGE_STORM, BADGE_MINERAL, BADGE_GLACIER, BADGE_RISING; >= 1 battles; flags set FLAG_GAME_CLEAR, FLAG_UNK_97E, FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO, FLAG_DEFEATED_KAREN; flags clear FLAG_HIDE_OLIVINE_PORT_OAK, FLAG_HIDE_LAKE_OF_RAGE_PRYCE; vars VAR_UNK_411A=1, VAR_SCENE_PLAYERS_HOUSE_1F=3
-- frames: estimate 26000, budget 39000
+- frames: estimate 26000, budget 70000
 - refs: zone_event 275_T10R0501 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_LANCE_ROOM 0 (6,28); scr_seq_0597_T10R0601_hdr.s (OnFrame VAR_UNK_40C8 0 -> 001: ClearFlag FLAG_UNK_210, VAR_UNK_40C8 1); zone_event 276_T10R0601 coord 0 (5,10) w3 VAR_UNK_40C7 0 -> 000; scr_seq_0824_T10R0601.s:41-163 (VAR_UNK_4135 < 8 -> TRAINER_CHAMPION_LANCE :77; Lyra, Elm, Oak; ClearFlag FLAG_HIDE_OLIVINE_PORT_OAK, VAR_UNK_411A 1, Warp MAP_POKEMON_LEAGUE_HALL_OF_FAME (6,22)); TRAINER_CHAMPION_LANCE (244, include/constants/trainers.h:249): GYARADOS 46, DRAGONITE 49, DRAGONITE 49, AERODACTYL 48, CHARIZARD 48, DRAGONITE 50; scr_seq_0598_T10R0701_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0825_T10R0701.s:16-89 (HallOfFameAnim :40, no S.S. Ticket -> VAR_SCENE_PLAYERS_HOUSE_1F 3 :45-48, FLAG_UNK_97E, ClearFlag FLAG_HIDE_LAKE_OF_RAGE_PRYCE, uncaught legendaries reset, HOFCredits 0 :84); src/scrcmd_c.c:2023-2027 (HOFCredits -> CallTask_GameClear); src/game_clear.c:263-300 (CallTask_GameClear: Location_SetToPlayerRoom, SetGameClearFlag -> FLAG_GAME_CLEAR include/constants/flags.h:1710, league wins); src/game_clear.c:156-258 (RegisterHallOfFame app, SaveGameNormal + AddHallOfFameEntry (state 4), credits (state 10), OS_ResetSystem(0) (state 11)); src/register_hall_of_fame.c:2207-2215 (REGHOF_WHOLE_SUBPROC_WAIT_BUTTON: the whole-team photo waits for a new A/B/touch, :2210); src/credits/credits.c:37-38,316-385 (CREDITS_FRAMES 4976; on the first clear only START/touch could skip, A is ignored :318; 'The End' waits for a new A/START/touch :363-382)
 - notes: Lance's three Dragonite: Pelipper's Ice Beam (18's boost) behind a fainted lead (send = best). After Lance every screen waits for input: the Hall of Fame photo waits for A/B (register_hall_of_fame.c:2210), 'The End' for a new A/START (credits.c:363-382); A does not skip the first clear's credits (credits.c:318). So one long A cadence from the Hall of Fame's arrival through the walk-in, Lance's speech, the registration and the photo (110 presses, 56 frames apart, ~6160 frames) [INFERENCE: the photo's wait is reached within that run], then the save and the credits (6500 frames), one A for 'The End', and wait_reset without keys (its keys are held, i.e. one press, and none is needed). The save the run is judged on is SaveGameNormal in Task_GameClear state 4, written after CallTask_GameClear set FLAG_GAME_CLEAR, so the E4 defeat flags are still set in it (the League entrance clears them only on its next OnTransition).
 <!-- plan.py:end soulsilver -->
