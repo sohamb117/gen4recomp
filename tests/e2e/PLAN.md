@@ -37,7 +37,9 @@ Every decomp fact in a milestone is in its `refs` list, in its step `note`s or a
 Platinum: `scripts_<map>.s:LINE` = `games/platinum/res/field/scripts/`, `events_<map>` = `res/field/events/*.json`,
 other paths relative to `games/platinum/`. Diamond/Pearl (binary field data, decoded by
 `tests/e2e/tools/dp_script.py`): `scr_seq NNNN @0xOFF`, `zone_event NNNN object|warp|coord|bg k`, `maps.h:LINE`,
-`map_header.c:LINE`, `trdata.json #N`, `msg NNNN #i`; C/asm paths relative to `games/diamond/`. `[INFERENCE]` marks
+`map_header.c:LINE`, `trdata.json #N`, `msg NNNN #i`; C/asm paths relative to `games/diamond/`. Black/White (no
+decomp: the cartridge's own files, decoded by `tests/e2e/tools/bw_script.py`): `scr NNNN @0xOFF` (a/0/5/7),
+`zone_event ZZZ object|warp|trigger|bg k`, `zone ZZZ`, `msg NNN #i` (a/0/0/3), `trdata #N`. `[INFERENCE]` marks
 what the scripts do not prove.
 
 ## Platinum story outline
@@ -105,6 +107,22 @@ Trainer's Eyes (R/S have no Match Call), the Lati TV news, Mystery Events (enabl
 a link partner), then P2: Mirage Island, Rayquaza atop the Sky Pillar, the Sealed Chamber's Braille and Regice. Link
 trades and battles are two-station runs, not e2e milestones: `tests/link/run_gba_link_tests.py` (`rs_trade`,
 `re_trade`, `rs_battle`) trades Ruby's and Sapphire's starters through the Trade Center.
+
+## Black and White story outline
+
+Nuvema (the gift box, Bianca's and Cheren's battles in the bedroom, Juniper's Pokédex) -> Route 1 (the catching
+lesson) -> Accumula (Ghetsis's speech, N) -> Route 2 (Bianca) -> Striaton (the Dreamyard's monkey, Cilan/Chili/Cress
+by the starter, the Trio Badge; Fennel and the Dreamyard's Plasma) -> Route 3 (Cheren, Wellspring Cave) -> Nacrene
+(N, Lenora; the Dragon Skull chase through Pinwheel Forest) -> Castelia (the Plasma hideout, Burgh) -> Route 4
+(Bianca, Cheren) -> Nimbasa (the Musical, N at the Ferris wheel, Elesa) -> Route 5 (Cheren) -> Driftveil (Cold
+Storage, Clay, Bianca's HM02) -> Chargestone (N) -> Mistralton (Skyla) -> Twist Mountain (Cheren) -> Icirrus
+(Brycen) -> Dragonspiral Tower (N's dragon) -> the Relic Castle and Nacrene's stone -> Route 8 (Bianca) ->
+Opelucid (Drayden on Black, Iris on White) -> Route 10 (Cheren), the Badge Check Gates, Victory Road -> the Elite
+Four -> N's Castle rises -> the legend from the stone (Black: Reshiram; White: Zekrom), N, Ghetsis, the credits.
+There is no decomp: every fact is read from the ROM by `tests/e2e/tools/bw_script.py` (the command table derived
+from overlay 10's handler table; every script file of both games decodes with every byte accounted for). White's
+chain lists Black's dirs (`version = "both"`) and its own where the scripts branch on GetVersion (27 Iris, 32 the
+throne room). The probe is docs/BW_RAM.md; 01 is proven, 02-33 are planned drafts.
 
 ## Side systems
 
@@ -6009,3 +6027,749 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - refs: data/maps/Route134/scripts.inc:5-7 (setdivewarp MAP_UNDERWATER_ROUTE134 8,6); data/field_move_scripts.inc:220-262 (UseDiveScript, S_UseDiveUnderwater); src/field_control_avatar.c:233,259,519-535 (A dives on deep water, B surfaces; FLAG_BADGE07_GET); data/maps/Underwater_Route134/map.json warp_events[0] (8,8) <-> Underwater_SealedChamber/map.json warp_events[0] (7,1); data/maps/Underwater_SealedChamber/scripts.inc (ON_DIVE_WARP at (12,44) -> MAP_SEALED_CHAMBER_OUTER_ROOM 10,19; Braille GO UP HERE at (12,43)); data/maps/SealedChamber_OuterRoom/scripts.inc:1-40 (setdivewarp/setescapewarp UNDERWATER_SEALED_CHAMBER 12,44; ON_LOAD covers (9..11,1..2) until FLAG_SYS_BRAILLE_DIG); src/braille_puzzles.c:27-69 (ShouldDoBrailleDigEffect at (9..11,3), DoBrailleDigEffect, CheckRelicanthWailord); src/rom6.c:175-215 (SetUpFieldMove_Dig: underground only; braille dig or the escape warp); src/pokemon_menu.c:192-230 (field moves first, in move-slot order), src/start_menu.c:263-276 (start menu order); data/maps/SealedChamber_InnerRoom/scripts.inc:5-34 (CheckRelicanthWailord -> shaking, FLAG_REGI_DOORS_OPENED); src/pokemon_menu.c:728,770-780 (Fly: FLAG_BADGE06_GET, CB2_InitFlyRegionMap); src/region_map.c:208-277,589-638,713,1575-1640 (cursor start/steps, visited town, heal-location warp); src/data/region_map/region_map_entries.h:97,139 (MAPSEC_PETALBURG_CITY {1,9}, MAPSEC_ROUTE_134 {9,10,3,1}); data/maps/PetalburgCity/scripts.inc:7,44 and map.json coord_events (8,10..13) (VAR_PETALBURG_STATE 0 -> walked to the Gym); data/maps/Route105/scripts.inc:5-12 (FLAG_REGI_DOORS_OPENED removes the rock wall at (9,19..20)); Route105/map.json warp_events[0] (9,20) -> ISLAND_CAVE; data/maps/IslandCave/scripts.inc:15-86 (Braille wait, S_OpenRegiceChamber FLAG_SYS_BRAILLE_WAIT, REGICE lv40 FLAG_HIDE_REGICE); src/braille_puzzles.c:153-205 (Task_BrailleWait 7200 frames); src/battle_setup.c:612-620 (ScrSpecial_StartRegiBattle)
 - notes: Regice is the Regi this milestone battles: its Braille needs no field move (a 7200-frame wait), where Desert Ruins needs Rock Smash + Strength at the Braille spot and the Ancient Tomb Flash. The start is on Route 134's dive patch because the currents around it are not plannable by walk_to (gba_world.py FORBIDDEN). Fly is driven by presses (no GBA fly bot): the fly-map shot shows the cursor on PETALBURG CITY. Regice is knocked out by auto_battle. Sapphire measured the same 19161 frames.
 <!-- plan.py:end sapphire -->
+
+## Black
+
+<!-- plan.py:begin black -->
+### Story chain: 33 milestones, ~738107 frames estimated
+
+| milestone | title | P | version | est. frames | start | end map | status |
+|---|---|---|---|---|---|---|---|
+| [01-newgame-bedroom](black/01-newgame-bedroom/milestone.toml) | New game to the bedroom, a walk, a talk with Cheren and the first save | P0 | both | 15107 | blank chip | 391 | passing |
+| [02-gift-box-starter-first-battles](black/02-gift-box-starter-first-battles/milestone.toml) | The gift box: the starter, Bianca's and Cheren's first battles | P0 | both | 9000 | prev + `None` | 391 | planned |
+| [03-mom-bianca-house-juniper-pokedex](black/03-mom-bianca-house-juniper-pokedex/milestone.toml) | Mom, Bianca's house and Professor Juniper's Pokédex | P0 | both | 12000 | prev + `None` | 389 | planned |
+| [04-route1-catching-lesson](black/04-route1-catching-lesson/milestone.toml) | Route 1: the catching lesson and the way to Accumula | P0 | both | 14000 | prev + `None` | 397 | planned |
+| [05-accumula-plasma-speech-n](black/05-accumula-plasma-speech-n/milestone.toml) | Accumula Town: the Pokémon Center, Team Plasma's speech and N | P0 | both | 10000 | prev + `None` | 397 | planned |
+| [06-route2-bianca-striaton](black/06-route2-bianca-striaton/milestone.toml) | Route 2: Bianca's battle and Striaton City | P0 | both | 12000 | prev + `None` | 6 | planned |
+| [07-striaton-dreamyard-monkey](black/07-striaton-dreamyard-monkey/milestone.toml) | Striaton City: the Trainers' School and the Dreamyard's monkey | P0 | both | 14000 | prev + `None` | 6 | planned |
+| [08-striaton-gym-trio-badge](black/08-striaton-gym-trio-badge/milestone.toml) | Striaton Gym: Cilan, Chili or Cress and the Trio Badge | P0 | both | 15000 | prev + `None` | 7 | planned |
+| [09-fennel-dreamyard-plasma-munna](black/09-fennel-dreamyard-plasma-munna/milestone.toml) | Fennel, the Dreamyard's Munna and Team Plasma | P0 | both | 16000 | prev + `None` | 10 | planned |
+| [10-route3-cheren-wellspring-plasma](black/10-route3-cheren-wellspring-plasma/milestone.toml) | Route 3: Cheren and Team Plasma at Wellspring Cave | P0 | both | 20000 | prev + `None` | 16 | planned |
+| [11-nacrene-n-lenora-basic-badge](black/11-nacrene-n-lenora-basic-badge/milestone.toml) | Nacrene City: N and Lenora's Basic Badge | P0 | both | 18000 | prev + `None` | 19 | planned |
+| [12-museum-skull-pinwheel-plasma](black/12-museum-skull-pinwheel-plasma/milestone.toml) | The Dragon Skull: Team Plasma in Pinwheel Forest | P0 | both | 18000 | prev + `None` | 155 | planned |
+| [13-castelia-plasma-burgh-insect-badge](black/13-castelia-plasma-burgh-insect-badge/milestone.toml) | Castelia City: Team Plasma's hideout and Burgh's Insect Badge | P0 | both | 30000 | prev + `None` | 29 | planned |
+| [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 20000 | prev + `None` | 62 | planned |
+| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 25000 | prev + `None` | 62 | planned |
+| [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 18000 | prev + `None` | 63 | planned |
+| [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 18000 | prev + `None` | 96 | planned |
+| [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 20000 | prev + `None` | 96 | planned |
+| [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 22000 | prev + `None` | 96 | planned |
+| [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 25000 | prev + `None` | 107 | planned |
+| [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
+| [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
+| [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 22000 | prev + `None` | 113 | planned |
+| [24-dragonspiral-tower-n-legend](black/24-dragonspiral-tower-n-legend/milestone.toml) | Dragonspiral Tower: N and the legendary dragon | P0 | both | 30000 | prev + `None` | 205 | planned |
+| [25-relic-castle-nacrene-stone](black/25-relic-castle-nacrene-stone/milestone.toml) | The Relic Castle and the stone at Nacrene's museum | P0 | both | 35000 | prev + `None` | 16 | planned |
+| [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 35000 | prev + `None` | 120 | planned |
+| [27-opelucid-drayden-legend-badge](black/27-opelucid-drayden-legend-badge/milestone.toml) | Opelucid Gym (Black): Drayden's Legend Badge | P0 | black | 25000 | prev + `None` | 132 | planned |
+| [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 45000 | prev + `None` | 136 | planned |
+| [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
+| [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
+| [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
+| [32-n-castle-reshiram-n](black/32-n-castle-reshiram-n/milestone.toml) | N's Castle (Black): Reshiram, and N with Zekrom | P0 | black | 30000 | prev + `None` | 278 | planned |
+| [33-ghetsis-ending](black/33-ghetsis-ending/milestone.toml) | Ghetsis, N's farewell and the credits | P0 | both | 30000 | prev + `None` | - | planned |
+
+#### black/01-newgame-bedroom — New game to the bedroom, a walk, a talk with Cheren and the first save
+- proves: Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the furniture, a talk with Cheren, and the save through the game's own X menu. Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
+- start: blank chip; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 391; at (7, 4); party size 0; 4 save check(s)
+- frames: estimate 15107, budget 23000
+- refs: docs/BW_PLAN.md; docs/BW_RAM.md
+- notes: Black and White play the same frames (the proposal run's ng.sched, its A presses cut where the player is free). The starter is the next milestone: the gift box's scene runs straight into Bianca's battle.
+
+#### black/02-gift-box-starter-first-battles — The gift box: the starter, Bianca's and Cheren's first battles
+- proves: Proves the starter scene: the gift box's three Pokémon, the choice (var 0x4030), Bianca's battle, Cheren healing both, Cheren's battle, and the bedroom left to the player with the stairs open (var 0x4081 2). Start: 01's save in the bedroom (zone 391, (7,4)) -> end: the bedroom, one Pokémon, 0x4081 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1
+- end state: map 391; party size 1; flags set 0x961, 0x1F4, 0x1F5, 0x2A8; vars 0x4081=2
+- frames: estimate 9000, budget -
+- refs: zone_event 391 object 2 gfx 0xD0 (5,8) hidden by flag 0x2A8 -> scr 0782 script 9; scr 0782 @0x0220 msg 430 #11 (the gift box opened); @0x023A Cmd153 var 0x8020 (the choice); scr 0782 @0x026F/@0x029F/@0x02BC SetVar 0x4030 0 Snivy (495) / 1 Tepig (498) / 2 Oshawott (501); scr 0782 @0x02E6 GivePokemon var 0x8021 lv 5; @0x02F0 SetFlag 0x961; scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0465 GetBattleResult -> msg 430 #37 (won) / #38 (lost): the scene goes on either way; scr 0782 @0x0513-@0x055A Cheren heals both (msg 430 #43/#45); scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1; scr 0782 @0x06BE-@0x06D2 RemoveObject 0/1, SetFlag 0x1F4/0x1F5/0x2A8, SetVar 0x4081 2; zone_event 391 trigger 0 (8,2) var 0x4081 == 1 -> scr 0782 script 6 (the stairs gate, msg 430 #8); docs/BW_RAM.md (party, vars, flags, battle)
+- notes: The proposal run's battle reached Bianca's battle intro (docs/BW_RAM.md); mode 1 battles cannot end the scene: a loss only changes the line. Pick by the menu cursor: Tepig is the one the docs' runs chose (0x4030 = 1). [INFERENCE] estimate.
+
+#### black/03-mom-bianca-house-juniper-pokedex — Mom, Bianca's house and Professor Juniper's Pokédex
+- proves: Proves leaving home: Mom's scene on the 1F (rest, Xtransceiver), Bianca's house, Cheren at the lab door, Professor Juniper's Pokédex, and Mom's Town Map outside. Start: the bedroom (zone 391) -> end: Nuvema Town (zone 389) south of the lab, 0x4080 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 389; flags set 0x217, 0x962, 0x2A7; vars 0x4085=1, 0x4078=1, 0x4079=1, 0x4080=2
+- frames: estimate 12000, budget -
+- refs: zone_event 391 warp 0 (9,2) -> zone 390 warp 1; zone_event 390 level type 1: var 0x4085 == 0 -> scr 0780 script 1 (Mom/Cheren/Bianca); scr 0780 @0x0200/@0x0226 CallStd 2805 (scr 0862 script 6) Xtransceiver by GetPlayerGender; @0x0244 SetFlag 0x217; @0x0248 SetVar 0x4085 1; @0x024E SetVar 0x407F 1; zone_event 390 warp 0 (5,10) 3x1 -> zone 389; zone_event 389 level type 1: 0x407F == 1 -> scr 0778 script 16 (0x407F 2); zone_event 389 object 4 gfx 0x7 (777,741) -> scr 0778 script 3: unless 0x4078 >= 1 msg 428 #1 (go to Bianca's house); zone_event 389 warp 1 (776,757) -> zone 392; zone_event 392 level type 1: 0x4078 == 0 -> scr 0784 script 3; scr 0784 @0x010D SetVar 0x4078 1; scr 0778 @0x024E-@0x0256 SetFlag 0x201/0x202, Warp zone 396 (4,11); zone_event 396 level type 1: 0x4079 == 0 -> scr 0792 script 1 (Juniper); @0x02C6 SetFlag 0x962; @0x02F6 msg 435 #19 (the Pokédex); @0x0394 SetVar 0x4079 1; @0x039A SetVar 0x4080 1; zone_event 396 warp 0 (3,11) -> zone 389 warp 3; zone_event 389 level type 1: 0x4080 == 1 -> scr 0778 script 12; @0x03AD CallStd 2805 Town Map; @0x04E9 SetVar 0x4080 2; @0x04EF SetFlag 0x2A7
+- notes: Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry. [INFERENCE] estimate.
+
+#### black/04-route1-catching-lesson — Route 1: the catching lesson and the way to Accumula
+- proves: Proves the first steps on Route 1: the three friends' walk out of Nuvema, Professor Juniper's catching lesson (five Poké Balls), Bianca's catch race, and the way north to Accumula Town. Start: Nuvema Town (zone 389), 0x4080 = 2 -> end: Accumula Town (zone 397) at its south entrance, 0x407C = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 397; flags set 0x1FC, 0x203; vars 0x407C=2
+- frames: estimate 14000, budget -
+- refs: zone_event 389 trigger 1 (786..791,739) 6x1 var 0x4080 == 2 -> scr 0778 script 14 (msg 428 #20, first step); zone_event 317 object 2 gfx 0x69 (788,724) hidden by flag 0x1FC -> scr 0634 script 1 (Juniper); scr 0634 @0x0106 CallStd 2805 Poké Ball x5; @0x0242 SetFlag 0x1FC; @0x0246 SetVar 0x407C 1; zone_event 317 trigger 0 (788..794,678) 7x1 var 0x407C == 1 -> scr 0634 script 5 (Bianca's compare, YES/NO var 0x8010); scr 0634 @0x066A SetFlag 0x203; @0x066E SetVar 0x407C 2; zone 317 (Route 1, sysmsg 89 #14); zone 397 (Accumula Town)
+- notes: Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path. [INFERENCE] estimate.
+
+#### black/05-accumula-plasma-speech-n — Accumula Town: the Pokémon Center, Team Plasma's speech and N
+- proves: Proves Accumula Town: Professor Juniper's Pokémon Center tour, Ghetsis's speech in the plaza, and the first battle with N. Start: Accumula Town (zone 397) -> end: Accumula Town, 0x407A = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0794 script 15 @0x06E8 msg 436 #9 (Ghetsis); @0x0CE4 TrainerBattle trdata #64 (N: Purrloin 7), mode 0; @0x0D0D BlackOut on a loss
+- end state: map 397; flags set 0x208, 0x20C, 0x20A; vars 0x407A=3
+- frames: estimate 10000, budget -
+- refs: zone_event 397 object 6 gfx 0x69 (796,658) hidden by flag 0x208 -> scr 0794 script 8 (Juniper); @0x031A Warp zone 398 (7,19); @0x0324 SetFlag 0x208; @0x0328 SetVar 0x407A 1; zone_event 397 level type 1: 0x407A == 1 -> scr 0794 script 13 (msg 436 #6); @0x03E9 SetVar 0x407A 2; zone_event 397 trigger 1 (786,658) 1x4 / trigger 2 (787..792,657) 6x1 var 0x407A == 2 -> scr 0794 script 14 / 10; scr 0794 script 15 @0x06E8 msg 436 #9 (Ghetsis); @0x0CE4 TrainerBattle trdata #64 (N: Purrloin 7), mode 0; @0x0D0D BlackOut on a loss; scr 0794 @0x0D63 SetVar 0x407A 3; @0x0D69-@0x0D79 SetFlag 0x20C/0x210/0x206/0x20D/0x20A; zone_event 397 trigger 0 (770,646) 1x5 var 0x407A == 0 -> scr 0794 script 7 (the west exit held until the tour)
+- notes: N's battle is the first real one (mode 0): a loss blacks out. [INFERENCE] estimate.
+
+#### black/06-route2-bianca-striaton — Route 2: Bianca's battle and Striaton City
+- proves: Proves Route 2: the entrance scene (var 0x407D 0 -> 1), Bianca's second battle, and the walk to Striaton City. Start: Accumula Town (zone 397) -> end: Striaton City (zone 6), 0x407D = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030
+- end state: map 6; vars 0x407D=2
+- frames: estimate 12000, budget -
+- refs: zone_event 397 warp 5 (768,647) 1x3 -> zone 320 (Accumula Gate) -> zone 319 (Route 2); zone_event 319 trigger 0 (754,647) var 0x407D == 0 -> scr 0638 script 1; @0x0557 SetVar 0x407D 1; zone_event 319 trigger 1 (784,613) var 0x407D == 1 -> scr 0638 script 2; @0x0284 SetVar 0x407D 2; scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030; zone 6 (Striaton City)
+- notes: Bianca's Route 2 battle is mode 0. Route 2 trainers: `bw_script.py events 319`. [INFERENCE] estimate.
+
+#### black/07-striaton-dreamyard-monkey — Striaton City: the Trainers' School and the Dreamyard's monkey
+- proves: Proves the Striaton gym's precondition: the Trainers' School (Cheren), the Dreamyard girl's elemental monkey (var 0x4083 2), back to the gym door. Start: Striaton City (zone 6) -> end: Striaton City at the gym door, a second Pokémon, 0x4083 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3
+- end state: map 6; party size 2; vars 0x4083=2
+- frames: estimate 14000, budget -
+- refs: scr 0012 script 13 (gym door, Cilan): unless 0x4083 == 2 the gym waits (msg 11 #1/#2); zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3; zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard); scr 0304 script 1 (the girl): @0x013F SetVar 0x4083 1; @0x0264/@0x0295/@0x02B3 GivePokemon Panpour/Pansage/Pansear lv 10 by 0x4030 (the one strong against the starter's weakness); @0x0319 SetVar 0x4083 2
+- notes: The monkey is given by talking to the Dreamyard girl twice [INFERENCE: first visit asks, second gives]. [INFERENCE] estimate.
+
+#### black/08-striaton-gym-trio-badge — Striaton Gym: Cilan, Chili or Cress and the Trio Badge
+- proves: Proves the Striaton Gym: the switch puzzle (var 0x4082 1..4), the leader picked by the starter, and the Trio Badge. Start: Striaton City at the gym door (zone 6) -> end: Striaton Gym (zone 7), 1 badge, 0x4088 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0014 @0x0B72 TrainerBattle trdata #11 (Chili: Lillipup 12, Pansear 14) when 0x4030 == 0 (Snivy); scr 0014 @0x0982 TrainerBattle trdata #13 (Cress: Lillipup 12, Panpour 14) when 0x4030 == 1 (Tepig); scr 0014 @0x0D62 TrainerBattle trdata #12 (Cilan: Lillipup 12, Pansage 14) when 0x4030 == 2 (Oshawott)
+- end state: map 7; 1 badges; flags set 0x971, 0x21E; vars 0x4088=1
+- frames: estimate 15000, budget -
+- refs: zone_event 6 warp 5 (788,586) -> zone 7 (the gym); zone_event 7 triggers 0-10 on var 0x4082 0..4 -> scr 0014 scripts 6-20 (the curtains/switches; @0x1037/@0x1091/@0x117F SetVar 0x4082 2/3/4); scr 0014 @0x0B72 TrainerBattle trdata #11 (Chili: Lillipup 12, Pansear 14) when 0x4030 == 0 (Snivy); scr 0014 @0x0982 TrainerBattle trdata #13 (Cress: Lillipup 12, Panpour 14) when 0x4030 == 1 (Tepig); scr 0014 @0x0D62 TrainerBattle trdata #12 (Cilan: Lillipup 12, Pansage 14) when 0x4030 == 2 (Oshawott); scr 0014 @0x09DF/@0x0BCF/@0x0DBF GiveBadge 0 (Trio); msg 12 #20-#22; scr 0014 @0x0A5D CallStd 2805 TM83; @0x0A83 SetFlag 0x21E; @0x0A8B SetVar 0x4088 1; @0x0A99 SetFlag 0x971
+- notes: Tepig (0x4030 1) faces Cress's Panpour: the Dreamyard's Pansage (Grass) is the counter. A loss is BlackOut (@0x09CF). [INFERENCE] estimate.
+
+#### black/09-fennel-dreamyard-plasma-munna — Fennel, the Dreamyard's Munna and Team Plasma
+- proves: Proves Fennel's errand: the C-Gear/HM01 visit, the Dreamyard's Munna and Team Plasma's grunts, and the Pal Pad back at Fennel's lab. Start: Striaton Gym (zone 7) -> end: Fennel's lab (zone 10), 0x4094 = 5, 0x4088 = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0304 @0x0777/@0x07DC TrainerBattle trdata #293/#308 (Plasma grunts: Patrat 10, Purrloin 10); @0x0B6E SetVar 0x4094 4
+- end state: map 10; vars 0x4088=3, 0x4094=5, 0x4086=2
+- frames: estimate 16000, budget -
+- refs: zone_event 6 level type 1: 0x4088 == 1 -> scr 0012 script 14 (Fennel, msg 11 #0); @0x04DC SetVar 0x4088 2; @0x04E2 SetVar 0x4087 1; @0x04E8 Warp zone 9 (7,10); zone_event 9 level type 1: 0x4087 == 1 -> scr 0018 script 5; @0x0148 Warp zone 10 (11,2); @0x0156 SetVar 0x4087 2; zone_event 10 level type 1: 0x4086 == 0 -> scr 0020 script 1; @0x006A CallStd 2805 HM01; @0x0092 SetVar 0x4086 1; @0x0098 SetVar 0x4094 1; zone_event 152 triggers 0-2 var 0x4094 == 1/2/3 -> scr 0304 scripts 2/4/5 (Bianca, the wall, Munna); scr 0304 @0x0777/@0x07DC TrainerBattle trdata #293/#308 (Plasma grunts: Patrat 10, Purrloin 10); @0x0B6E SetVar 0x4094 4; scr 0020 @0x039A CallStd 2805 Pal Pad; @0x041D SetVar 0x4094 5; @0x0423 SetVar 0x4086 2; @0x0429 SetVar 0x4088 3
+- notes: zone_event 6 trigger 1 (750,584) var 0x4088 == 2 -> scr 0012 script 20 sends the player back to Fennel. [INFERENCE] estimate.
+
+#### black/10-route3-cheren-wellspring-plasma — Route 3: Cheren and Team Plasma at Wellspring Cave
+- proves: Proves Route 3: the day care twins, Cheren's battle, Team Plasma's stolen Pokémon at Wellspring Cave, and the way on to Nacrene City. Start: Fennel's lab (zone 10) -> end: Nacrene City (zone 16), 0x4095 = 5, 0x407E = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone 321 (Route 3) scr 0642 @0x0344 TrainerBattle trdata #18 (Twins Kumi & Amy, double); @0x036D SetVar 0x407E 1; zone_event 321 trigger 0 (719,581) var 0x407E == 1 -> scr 0642 script 6 (msg 353 #6); @0x051F/@0x0569/@0x05A0 TrainerBattle trdata #56/#57/#58 (Cheren: starter 14, Purrloin 12); zone_event 324 trigger 0 (25,4) var 0x4095 == 3 -> scr 0648 script 1; @0x0155 TrainerBattle trdata #294 (grunt: Patrat 12); @0x0464 SetVar 0x4095 4
+- end state: map 16; vars 0x4095=5, 0x407E=2
+- frames: estimate 20000, budget -
+- refs: zone 321 (Route 3) scr 0642 @0x0344 TrainerBattle trdata #18 (Twins Kumi & Amy, double); @0x036D SetVar 0x407E 1; zone_event 321 trigger 0 (719,581) var 0x407E == 1 -> scr 0642 script 6 (msg 353 #6); @0x051F/@0x0569/@0x05A0 TrainerBattle trdata #56/#57/#58 (Cheren: starter 14, Purrloin 12); zone_event 321 triggers 1-7 on var 0x4095 0..4 -> scr 0642 scripts 5/7/8/11 (Bianca's stolen Pokémon); zone_event 324 trigger 0 (25,4) var 0x4095 == 3 -> scr 0648 script 1; @0x0155 TrainerBattle trdata #294 (grunt: Patrat 12); @0x0464 SetVar 0x4095 4; scr 0642 @0x0DF7 CallStd 2805 Heal Ball x3; @0x0E32 SetVar 0x4095 5; @0x0F68 SetVar 0x407E 2
+- notes: Which of the 0x4095 triggers fires depends on the side the player enters from; `bw_script.py events 321`. [INFERENCE] estimate.
+
+#### black/11-nacrene-n-lenora-basic-badge — Nacrene City: N and Lenora's Basic Badge
+- proves: Proves Nacrene City: Cheren's welcome, N's second battle, the museum's library gym (the bookshelf puzzle) and Lenora's Basic Badge. Start: Nacrene City (zone 16) -> end: the Nacrene Gym (zone 19), 2 badges, 0x4092 = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 16 trigger 1 (644,582) var 0x4092 == 1 -> scr 0032 script 11 (msg 21 #3); @0x03E6 SetVar 0x4092 2; @0x03F2 TrainerBattle trdata #65 (N: Pidove, Tympole, Timburr 13); scr 0038 @0x00C8 TrainerBattle trdata #21 (Lenora: Herdier 18, Watchog 20); @0x00FD GiveBadge 1 (Basic); @0x0167 CallStd 2805 TM67
+- end state: map 19; 2 badges; flags set 0x972; vars 0x4092=3, 0x4084=2, 0x408C=1
+- frames: estimate 18000, budget -
+- refs: zone_event 16 trigger 0 (665,598) var 0x4092 == 0 -> scr 0032 script 10; @0x0215 CallStd 2805 Chesto Berry x3; @0x024F SetVar 0x4092 1; zone_event 16 trigger 1 (644,582) var 0x4092 == 1 -> scr 0032 script 11 (msg 21 #3); @0x03E6 SetVar 0x4092 2; @0x03F2 TrainerBattle trdata #65 (N: Pidove, Tympole, Timburr 13); zone_event 17 trigger 0 (11,23) var 0x4084 == 0 -> scr 0034 script 16; @0x0423 SetVar 0x4084 1; zone 18 (the library) scr 0036 var 0x408A 1..7 bookshelf puzzle (@0x027E ... @0x12A2 SetVar 0x408A 7); scr 0038 @0x00C8 TrainerBattle trdata #21 (Lenora: Herdier 18, Watchog 20); @0x00FD GiveBadge 1 (Basic); @0x0167 CallStd 2805 TM67; scr 0038 @0x0059/@0x0069 SetFlag 0x972/0x970; @0x006D SetVar 0x4084 2; @0x0073 SetVar 0x408C 1; @0x0079 SetVar 0x4092 3
+- notes: Lenora's Watchog: Retaliate/Hypnosis; Fighting-type counters from Route 3/Pinwheel are [INFERENCE]. [INFERENCE] estimate.
+
+#### black/12-museum-skull-pinwheel-plasma — The Dragon Skull: Team Plasma in Pinwheel Forest
+- proves: Proves the stolen Dragon Skull: Team Plasma at the museum, Burgh and the chase into Pinwheel Forest, four grunts and the skull returned. Start: the Nacrene Gym (zone 19) -> end: Pinwheel Forest (zone 155), 0x408D = 3, 0x4092 = 5.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 155 triggers 2,4-6 on var 0x40AA 0..3; scr 0310 @0x0687/@0x08A4/@0x0996/@0x0A47 TrainerBattle trdata #295/#309/#296/#297 (grunts, Sandile 16 ... Patrat 14 x2 + Sandile 14)
+- end state: map 155; vars 0x408D=3, 0x40AA=4, 0x4092=5
+- frames: estimate 18000, budget -
+- refs: zone_event 17 trigger 1 (10,9) var 0x4084 == 2 -> scr 0034 script 17 (msg 22 #12); @0x07DB SetVar 0x4084 3; zone_event 16 level type 1: 0x4092 == 3 -> scr 0032 script 7; @0x065B CallStd 2805 Dowsing MCHN; @0x070D SetVar 0x4092 4; zone_event 154 trigger 0 (592,583) var 0x408C == 1 -> scr 0308 script 2 (Burgh, msg 162 #1); @0x005E SetVar 0x408C 2; @0x0064 SetVar 0x408D 1; zone_event 155 trigger 1 (71,71) var 0x408D == 1 -> scr 0310 script 10; @0x02DF SetVar 0x408D 2; zone_event 155 triggers 2,4-6 on var 0x40AA 0..3; scr 0310 @0x0687/@0x08A4/@0x0996/@0x0A47 TrainerBattle trdata #295/#309/#296/#297 (grunts, Sandile 16 ... Patrat 14 x2 + Sandile 14); scr 0310 @0x0ABB CallStd 2805 Dragon Skull; @0x0D0D SetVar 0x408D 3; @0x0D13 SetVar 0x40AA 4; @0x0D31 SetVar 0x4092 5
+- notes: [INFERENCE] estimate.
+
+#### black/13-castelia-plasma-burgh-insect-badge — Castelia City: Team Plasma's hideout and Burgh's Insect Badge
+- proves: Proves Castelia City: Skyarrow Bridge, Cheren's news, Burgh's chase after Team Plasma (Bianca's Munna) through the streets and their hideout, and Burgh's Insect Badge. Start: Pinwheel Forest (zone 155) -> end: the Castelia Gym (zone 29), 3 badges, 0x40AF = 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1; scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76
+- end state: map 29; 3 badges; flags set 0x973; vars 0x40AF=4, 0x409C=1, 0x40AC=1
+- frames: estimate 30000, budget -
+- refs: zone 249 (Skyarrow Bridge) -> zone 250 (Bridge Gate) -> Castelia; zone_event 31 trigger 0 (24,48) var 0x40AF == 0 -> scr 0062 script 4 (Cheren, msg 36 #0); @0x01BB SetVar 0x40AF 1; @0x01C9 SetVar 0x40D3 1; zone_event 38 level type 1: 0x40D3 == 1 -> scr 0076 script 8; @0x042E SetVar 0x40D3 2; @0x0434 SetVar 0x40AD 1; zone_event 28 trigger 0 (4,24) var 0x40AD == 1 -> scr 0056 script 19 (Burgh, msg 33 #0); @0x024C/@0x0256 SetVar 0x40AD 2, 0x40AF 2; zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1; zone_event 56 trigger 0 (6,10) var 0x40D9 == 1 -> scr 0112 script 1; @0x050D SetVar 0x40D9 2; @0x0517 SetVar 0x40D7 1; scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76; scr 0058 @0x030A SetVar 0x409C 1; @0x0310 SetVar 0x40AC 1; @0x0316 SetVar 0x40AD 2; @0x031C SetVar 0x40AF 4; @0x0332 SetFlag 0x973
+- notes: Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`. [INFERENCE] estimate.
+
+#### black/14-castelia-gate-bianca-route4-cheren — Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa
+- proves: Proves the road south: Bianca's battle in the Castelia Gate, Route 4's sandstorm and Cheren's battle, to Nimbasa City. Start: the Castelia Gym (zone 29) -> end: Nimbasa City (zone 62), 0x40AC = 2, 0x409C = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2; zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2
+- end state: map 62; vars 0x40AC=2, 0x409C=2
+- frames: estimate 20000, budget -
+- refs: zone_event 51 trigger 0 (1,9) var 0x40AC == 1 -> scr 0102 script 4 (MessageGender msg 56 #0/#1); scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2; zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2; zone_event 326 trigger 0 (430,564) var 0x409C == 0 -> scr 0652 script 2 (the road closed before the Insect Badge)
+- notes: [INFERENCE] estimate.
+
+#### black/15-nimbasa-musical-ferris-wheel-n — Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel
+- proves: Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father, and N's Ferris wheel battle. Start: Nimbasa City (zone 62) -> end: Nimbasa City, 0x4089 = 3, 0x408E = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
+- end state: map 62; vars 0x4089=3, 0x408E=1, 0x40B3=1
+- frames: estimate 25000, budget -
+- refs: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 62 trigger 0 (391,436) var 0x4089 == 1 -> scr 0124 script 2; @0x08B5 Warp zone 77 (14,20); zone_event 77 level type 1: 0x40B3 == 0 -> scr 0154 script 11; @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1; @0x01DC SetVar 0x4089 2; zone_event 62 level type 1: 0x4089 == 2 -> scr 0124 script 20 (msg 67 #18, Bianca's father); @0x0C38 SetVar 0x4089 3; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
+- notes: The Musical itself (the dress-up) is a separate app; [INFERENCE] its exit returns to zone 77. [INFERENCE] estimate.
+
+#### black/16-nimbasa-elesa-bolt-badge — Nimbasa Gym: Elesa's Bolt Badge
+- proves: Proves the Nimbasa Gym: the roller-coaster switches and Elesa's Bolt Badge. Start: Nimbasa City (zone 62) -> end: the Nimbasa Gym (zone 63), 4 badges, 0x4093 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974
+- end state: map 63; 4 badges; flags set 0x974; vars 0x4093=1
+- frames: estimate 18000, budget -
+- refs: scr 0126 @0x0362 msg 68 #16 (the switches change the roller coaster's path); scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974
+- notes: Emolga is Electric/Flying: Rock or Ice moves [INFERENCE]. [INFERENCE] estimate.
+
+#### black/17-route5-cheren-drawbridge-driftveil — Route 5: Cheren and Alder; Driftveil City
+- proves: Proves Route 5 (Cheren's battle and Alder) and the Driftveil Drawbridge into Driftveil City, where Clay meets the player. Start: the Nimbasa Gym (zone 63) -> end: Driftveil City (zone 96), 0x4093 = 3, 0x408F = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2
+- end state: map 96; vars 0x4093=3, 0x408F=1
+- frames: estimate 18000, budget -
+- refs: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2; zone_event 329 trigger 2 (339,431) var 0x4093 == 2 -> scr 0658 script 5; @0x09B0 SetVar 0x4093 3; zone 253/301 (Driftveil Drawbridge); zone_event 96 trigger 1 (204,430) var 0x408F == 0 -> scr 0192 script 8 (Clay, msg 101 #0); @0x01DB SetFlag 0x9B6; @0x01E3 SetVar 0x408F 1
+- notes: [INFERENCE] estimate.
+
+#### black/18-cold-storage-plasma — Cold Storage: Team Plasma and Ghetsis
+- proves: Proves the Cold Storage raid: Cheren at the entrance, the containers, four grunts and Zinzolin, and Ghetsis meeting Clay in Driftveil. Start: Driftveil City (zone 96) -> end: Driftveil City, 0x408B = 8, 0x408F = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24)
+- end state: map 96; vars 0x408B=8, 0x408F=3, 0x4090=1
+- frames: estimate 20000, budget -
+- refs: zone_event 191 trigger 0 (167,474) var 0x4090 == 0 -> scr 0382 script 1 (Cheren, msg 199 #2); @0x0109 SetVar 0x4090 1; zone_event 192 level type 1: 0x408B == 0 -> scr 0384 script 1; @0x00A6 SetVar 0x408B 1; trigger 0 (6,8) 0x408B == 1 -> script 2; @0x0117 SetVar 0x408B 2; zone_event 193 level type 1: 0x408B == 2 -> scr 0386 script 1 (Zinzolin, msg 201 #0); @0x01DA SetVar 0x408B 3; scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24); scr 0386 @0x08D3 SetVar 0x408B 8; @0x08ED SetVar 0x408F 2; zone_event 96 trigger 0 (206,404) var 0x408F == 2 -> scr 0192 script 9 (Ghetsis, msg 101 #6); @0x0444 SetVar 0x408F 3
+- notes: [INFERENCE] estimate.
+
+#### black/19-driftveil-clay-quake-badge-bianca — Driftveil Gym: Clay's Quake Badge; Bianca and HM02
+- proves: Proves the Driftveil Gym (the mine elevators) and Clay's Quake Badge, then Bianca's battle and HM02. Start: Driftveil City (zone 96) -> end: Driftveil City, 5 badges, 0x408F = 5, 0x409A = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975; zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5
+- end state: map 96; 5 badges; flags set 0x975; vars 0x408F=5, 0x409A=1
+- frames: estimate 22000, budget -
+- refs: scr 0194 @0x020E-@0x05C8 the gym's elevators; @0x05B0 Warp zone 98; scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975; zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5
+- notes: Excadrill (Ground/Steel): Water or Fighting [INFERENCE]. [INFERENCE] estimate.
+
+#### black/20-route6-chargestone-n — Chargestone Cave: N's battle
+- proves: Proves Route 6 and Chargestone Cave: Clay clears the nest at the entrance, Bianca and Professor Juniper inside, and N's battle, out to Mistralton City. Start: Driftveil City (zone 96) -> end: Mistralton City (zone 107), 0x409B = 5, 0x409A = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28)
+- end state: map 107; vars 0x409B=5, 0x409A=2
+- frames: estimate 25000, budget -
+- refs: scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2; zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg); scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28); zone 107 (Mistralton City)
+- notes: Chargestone's floating stones: [INFERENCE] the boulders the player pushes; no puzzle state found in the scripts. [INFERENCE] estimate.
+
+#### black/21-mistralton-skyla-jet-badge — Mistralton Gym: Skyla's Jet Badge
+- proves: Proves Mistralton City: Skyla's welcome, the cannon gym and Skyla's Jet Badge. Start: Mistralton City (zone 107) -> end: the Mistralton Gym (zone 108), 6 badges, 0x4099 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2
+- end state: map 108; 6 badges; flags set 0x976; vars 0x4099=2, 0x40B4=1
+- frames: estimate 20000, budget -
+- refs: zone_event 107 trigger 0 (100,302) var 0x4099 == 0 -> scr 0214 script 8 (msg 112 #0); @0x09B4 SetVar 0x4099 1; scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2; zone_event 107 level type 1: 0x4099 == 2 -> scr 0214 script 13 (N, msg 112 #21); @0x013D SetVar 0x4099 3
+- notes: The Celestial Tower (zone 342, vars 0x40BA/0x40D2) is [INFERENCE] optional here. [INFERENCE] estimate.
+
+#### black/22-twist-mountain-cheren-icirrus — Twist Mountain: Cheren; Icirrus City
+- proves: Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Team Plasma and Brycen in the mountain, out to Icirrus City and Cedric Juniper. Start: the Mistralton Gym (zone 108) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2
+- end state: map 113; vars 0x40B4=2, 0x4097=2, 0x40BB=1
+- frames: estimate 25000, budget -
+- refs: zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2; zone_event 202 trigger 0 (52,13) var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D; zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2
+- notes: [INFERENCE] estimate.
+
+#### black/23-icirrus-brycen-freeze-badge — Icirrus Gym: Brycen's Freeze Badge
+- proves: Proves the Icirrus Gym (the ice slides) and Brycen's Freeze Badge, then Cheren and Bianca's talk. Start: Icirrus City (zone 113) -> end: Icirrus City, 7 badges, 0x40A7 = 1, 0x4097 = 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977
+- end state: map 113; 7 badges; flags set 0x977; vars 0x40A7=1, 0x4097=4
+- frames: estimate 22000, budget -
+- refs: scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977; zone_event 113 level type 1: 0x4097 == 3 -> scr 0226 script 2 (Cheren, msg 118 #10); @0x03C0 SetVar 0x4097 4
+- notes: The gym's ice paths: `bw_script.py events 114` (triggers on var 0x400F/0x400A). [INFERENCE] estimate.
+
+#### black/24-dragonspiral-tower-n-legend — Dragonspiral Tower: N and the legendary dragon
+- proves: Proves Dragonspiral Tower: Cedric at the gate, Team Plasma's grunts on the climb, and N waking his legendary dragon at the top. Start: Icirrus City (zone 113) -> end: Dragonspiral Tower's foot (zone 205), 0x40A7 = 9.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34)
+- end state: map 205; vars 0x40A7=9
+- frames: estimate 30000, budget -
+- refs: zone_event 205 trigger 0 (177,146) var 0x40A7 == 1 -> scr 0410 script 1 (Cedric); @0x057B CallStd 2805 Old Gateau; @0x05C5 SetVar 0x40A7 2; @0x05CB SetVar 0x4097 5; zone_event 207 trigger 0 (24,2) 0x40A7 == 2 -> scr 0414 (@0x0064 SetVar 3); zone_event 208 trigger 0 (14,24) == 3 -> scr 0416 (@0x006A SetVar 4); zone_event 210 triggers (21,14)/(22,14) == 5/4 -> scr 0420 (@0x0073/@0x00C4 SetVar 5/6); zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34); zone_event 213 trigger 0 (16,21) var 0x40A7 == 8 -> scr 0426 script 1 (N, msg 221 #0); @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205 (179,146); scr 0410 @0x02D0 SetVar 0x409D 1 (Cedric: on to the Relic Castle)
+- notes: The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White. [INFERENCE] estimate.
+
+#### black/25-relic-castle-nacrene-stone — The Relic Castle and the stone at Nacrene's museum
+- proves: Proves the search for the other legend's stone: the Desert Resort and the Relic Castle with Cheren and Alder, then Nacrene's museum where Professor Juniper and Lenora hand over the stone. Start: Dragonspiral Tower's foot (zone 205) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 16; vars 0x4092=7, 0x409D=2
+- frames: estimate 35000, budget -
+- refs: zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; @0x02A7 SetVar 0x4092 6; scr 0328 (zone 164) @0x0014 unless 0x409F == 0 ...; @0x0038/@0x0046 Warp zone 165 (the Relic Castle's sand pits); zone_event 16 trigger 2 (640,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36); scr 0032 @0x0AE9 MessageVersion (White: Dark Stone msg 21 #48 / Black: Light Stone #49); @0x0BF3 CallStd 2805 Light Stone (Black) / @0x0C19 Dark Stone (White); @0x0DCE SetVar 0x4092 7
+- notes: The stone is the one version branch here, by item: Black's bag gets the Light Stone. Relic Castle's quicksand floors (zones 160-165, WarpC1 holes): `bw_script.py events 160` [INFERENCE: the path down]. [INFERENCE] estimate.
+
+#### black/26-route8-bianca-route9-opelucid — Route 8 (Bianca) and Route 9 to Opelucid City
+- proves: Proves the way to Opelucid City: Route 8 (Bianca's battle), the Moor of Icirrus, Tubeline Bridge, Route 9, and Opelucid's welcome by Alder, Iris and Drayden. Start: Nacrene City (zone 16) -> end: Opelucid City (zone 120), 0x40A8 = 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40)
+- end state: map 120; vars 0x40A8=4, 0x40CB=1
+- frames: estimate 35000, budget -
+- refs: zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40); zone 254 (Tubeline Bridge) scr 0508: vars 0x40DB/0x40A4; zone 308/348 (Route 9); zone_event 120 trigger 0 (395,173) var 0x40A8 == 0 -> scr 0240 script 1 (Alder, msg 125 #0); @0x0AA4 SetFlag 0x9B9; @0x0AAC SetVar 0x40A8 1; zone_event 120 triggers 1-3 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3; zone_event 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1; @0x013E SetVar 0x40A8 4
+- notes: Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion (scr 0240 @0x0EAB ...), no other branch: the dir serves White. [INFERENCE] estimate.
+
+#### black/27-opelucid-drayden-legend-badge — Opelucid Gym (Black): Drayden's Legend Badge
+- proves: Proves the Opelucid Gym (the dragon-head lifts) and Drayden's Legend Badge on Black, then Professor Juniper's Master Ball and the gate north. Start: Opelucid City (zone 120) -> end: the Opelucid Gate (zone 132), 8 badges, 0x40B8 = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0242 @0x00BD TrainerBattle trdata #133 (Drayden: Fraxure 41, Druddigon 41, Haxorus 43); @0x00F4 GiveBadge 7 (Legend); @0x0160 CallStd 2805 TM82; @0x01AE SetVar 0x40A9 1; @0x01B4 SetVar 0x40B8 1; @0x01BA SetFlag 0x979
+- end state: map 132; 8 badges; flags set 0x979; vars 0x40B8=3, 0x40A9=1
+- frames: estimate 25000, budget -
+- refs: scr 0242 script 1 @0x007F GetVersion: 21 (Black) -> Drayden; @0x0083 CheckBadge var 0x8008, 7; scr 0242 @0x00BD TrainerBattle trdata #133 (Drayden: Fraxure 41, Druddigon 41, Haxorus 43); @0x00F4 GiveBadge 7 (Legend); @0x0160 CallStd 2805 TM82; @0x01AE SetVar 0x40A9 1; @0x01B4 SetVar 0x40B8 1; @0x01BA SetFlag 0x979; zone_event 120 level type 1: 0x40B8 == 1 -> scr 0240 script 17; @0x0FD9 CallStd 2805 Master Ball; @0x100C SetVar 0x40B8 2; zone_event 132 trigger 0 (2,11) var 0x40B8 == 2 -> scr 0264 script 3; @0x01A4 SetVar 0x40B8 3; @0x01AA SetVar 0x40C0 1; @0x01B0 SetFlag 0x96F
+- notes: White plays white/27-opelucid-iris-legend-badge (Iris, trdata #132, the same party). Haxorus: Ice or Dragon [INFERENCE]. [INFERENCE] estimate.
+
+#### black/28-route10-cheren-victory-road — Route 10 (Cheren), the Badge Check Gates and Victory Road
+- proves: Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokémon League. Start: the Opelucid Gate (zone 132) -> end: the Pokémon League (zone 136), 0x40B8 = 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4
+- end state: map 136; vars 0x40B8=4
+- frames: estimate 45000, budget -
+- refs: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4; zones 356-363 (the Badge Check Gates): scr 0712 @0x011A ... scr 0726 @0x010E Warp to the next gate; zones 214-228 (Victory Road); scr 0428 @0x004E Warp zone 136 (32,60)
+- notes: Victory Road needs Strength/Surf [INFERENCE: HM04 Strength's source is not in these scripts]. [INFERENCE] estimate.
+
+#### black/29-elite-four — The Elite Four
+- proves: Proves the Elite Four: Shauntal, Grimsley, Marshal and Caitlin in any order, then the way to the Champion's room. Start: the Pokémon League (zone 136) -> end: the League's centre (zone 137) after the fourth win, 0x40A1 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137
+- end state: map 137; vars 0x40A1=1
+- frames: estimate 40000, budget -
+- refs: zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1; scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137; zones 140-143 (the four rooms)
+- notes: The rematch parties (trdata #563-#566, levels 71-73) are post-game. [INFERENCE] the order is free. [INFERENCE] estimate.
+
+#### black/30-champion-room-n-castle — The Champion's room: N's Castle rises
+- proves: Proves the Champion's room: N has beaten Alder, his castle rises around the League, and the bridge into N's Castle. Start: the League's centre (zone 137) -> end: N's Castle's entrance (zone 264), 0x40A2 = 1, 0x40A5 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
+- end state: map 264; flags set 0x97C; vars 0x40A2=1, 0x40A5=1
+- frames: estimate 20000, budget -
+- refs: zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1; zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between); zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1; scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
+- notes: [INFERENCE] estimate.
+
+#### black/31-n-castle-climb — N's Castle: the climb to the throne room
+- proves: Proves N's Castle's climb: the halls, the Shadow Triad and the Sages' rooms up to the throne room's door. Start: N's Castle's entrance (zone 264) -> end: the throne room (zone 278), 0x40DC = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 278; vars 0x40A6=1, 0x40D4=1, 0x40D5=1, 0x40DC=1
+- frames: estimate 30000, budget -
+- refs: zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
+- notes: The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
+
+#### black/32-n-castle-reshiram-n — N's Castle (Black): Reshiram, and N with Zekrom
+- proves: Proves the throne room on Black: Reshiram awakens from the Light Stone and is caught (WildBattle lv 50), then N's battle with Zekrom. Start: the throne room (zone 278) -> end: the throne room, Reshiram in the party, 0x40B6 = 5, 0x40A2 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0556 @0x095C GetVersion; @0x0981 TrainerBattle trdata #587 (N: Zekrom 52, Carracosta, Vanilluxe, Archeops, Zoroark, Klinklang 50) on Black; @0x09EF SetVar 0x40B6 4
+- end state: map 278; vars 0x40B6=5, 0x40A2=2; 1 save check(s)
+- frames: estimate 30000, budget -
+- refs: zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; scr 0556 @0x02FD/@0x0342 SetVar 0x40B6 1/2; @0x0B0A msg 301 #26; @0x0B30 SetVar 0x40B6 3; scr 0556 @0x0CDC unless var 0x8020 == 21 (Black): @0x0CFA WildBattle Reshiram (643) lv 50, var 0x802A; scr 0556 @0x0DEC SetVar 0x40B6 5; @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x095C GetVersion; @0x0981 TrainerBattle trdata #587 (N: Zekrom 52, Carracosta, Vanilluxe, Archeops, Zoroark, Klinklang 50) on Black; @0x09EF SetVar 0x40B6 4
+- notes: The legendary must be caught to go on [INFERENCE: the scene repeats otherwise, var 0x802A]; the Master Ball from 27 is the sure throw. White plays white/32-n-castle-zekrom-n. [INFERENCE] estimate.
+
+#### black/33-ghetsis-ending — Ghetsis, N's farewell and the credits
+- proves: Proves the end of the story: Ghetsis's battle in the throne room, N's farewell and the ending. Start: the throne room (zone 278), 0x40B6 = 5 -> end: after the credits [INFERENCE: the player's house].
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss
+- end state: vars 0x40B6=5, 0x40A2=2
+- frames: estimate 30000, budget -
+- refs: scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; scr 0556 @0x12A0 MessageVersion (msg 301 #62/#63); @0x1555-@0x15E7 N's farewell (msg 301 #75-#81, flag 0x154 picks the line); scr 0556 @0x15FC Cmd156 0: ends the scene [INFERENCE: the credits]; zone 145 (the Hall of Fame) scr 0290 script 1 is Alder's post-game room [INFERENCE: not part of the story's end]
+- notes: The end state after the credits is not in the scripts read so far: the expect names only what Ghetsis's win must leave [INFERENCE]. [INFERENCE] estimate.
+<!-- plan.py:end black -->
+
+## White
+
+White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
+
+<!-- plan.py:begin white -->
+### Story chain: 33 milestones, ~738107 frames estimated
+
+| milestone | title | P | version | est. frames | start | end map | status |
+|---|---|---|---|---|---|---|---|
+| [01-newgame-bedroom](black/01-newgame-bedroom/milestone.toml) | New game to the bedroom, a walk, a talk with Cheren and the first save | P0 | both | 15107 | blank chip | 391 | passing |
+| [02-gift-box-starter-first-battles](black/02-gift-box-starter-first-battles/milestone.toml) | The gift box: the starter, Bianca's and Cheren's first battles | P0 | both | 9000 | prev + `None` | 391 | planned |
+| [03-mom-bianca-house-juniper-pokedex](black/03-mom-bianca-house-juniper-pokedex/milestone.toml) | Mom, Bianca's house and Professor Juniper's Pokédex | P0 | both | 12000 | prev + `None` | 389 | planned |
+| [04-route1-catching-lesson](black/04-route1-catching-lesson/milestone.toml) | Route 1: the catching lesson and the way to Accumula | P0 | both | 14000 | prev + `None` | 397 | planned |
+| [05-accumula-plasma-speech-n](black/05-accumula-plasma-speech-n/milestone.toml) | Accumula Town: the Pokémon Center, Team Plasma's speech and N | P0 | both | 10000 | prev + `None` | 397 | planned |
+| [06-route2-bianca-striaton](black/06-route2-bianca-striaton/milestone.toml) | Route 2: Bianca's battle and Striaton City | P0 | both | 12000 | prev + `None` | 6 | planned |
+| [07-striaton-dreamyard-monkey](black/07-striaton-dreamyard-monkey/milestone.toml) | Striaton City: the Trainers' School and the Dreamyard's monkey | P0 | both | 14000 | prev + `None` | 6 | planned |
+| [08-striaton-gym-trio-badge](black/08-striaton-gym-trio-badge/milestone.toml) | Striaton Gym: Cilan, Chili or Cress and the Trio Badge | P0 | both | 15000 | prev + `None` | 7 | planned |
+| [09-fennel-dreamyard-plasma-munna](black/09-fennel-dreamyard-plasma-munna/milestone.toml) | Fennel, the Dreamyard's Munna and Team Plasma | P0 | both | 16000 | prev + `None` | 10 | planned |
+| [10-route3-cheren-wellspring-plasma](black/10-route3-cheren-wellspring-plasma/milestone.toml) | Route 3: Cheren and Team Plasma at Wellspring Cave | P0 | both | 20000 | prev + `None` | 16 | planned |
+| [11-nacrene-n-lenora-basic-badge](black/11-nacrene-n-lenora-basic-badge/milestone.toml) | Nacrene City: N and Lenora's Basic Badge | P0 | both | 18000 | prev + `None` | 19 | planned |
+| [12-museum-skull-pinwheel-plasma](black/12-museum-skull-pinwheel-plasma/milestone.toml) | The Dragon Skull: Team Plasma in Pinwheel Forest | P0 | both | 18000 | prev + `None` | 155 | planned |
+| [13-castelia-plasma-burgh-insect-badge](black/13-castelia-plasma-burgh-insect-badge/milestone.toml) | Castelia City: Team Plasma's hideout and Burgh's Insect Badge | P0 | both | 30000 | prev + `None` | 29 | planned |
+| [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 20000 | prev + `None` | 62 | planned |
+| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 25000 | prev + `None` | 62 | planned |
+| [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 18000 | prev + `None` | 63 | planned |
+| [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 18000 | prev + `None` | 96 | planned |
+| [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 20000 | prev + `None` | 96 | planned |
+| [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 22000 | prev + `None` | 96 | planned |
+| [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 25000 | prev + `None` | 107 | planned |
+| [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
+| [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
+| [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 22000 | prev + `None` | 113 | planned |
+| [24-dragonspiral-tower-n-legend](black/24-dragonspiral-tower-n-legend/milestone.toml) | Dragonspiral Tower: N and the legendary dragon | P0 | both | 30000 | prev + `None` | 205 | planned |
+| [25-relic-castle-nacrene-stone](black/25-relic-castle-nacrene-stone/milestone.toml) | The Relic Castle and the stone at Nacrene's museum | P0 | both | 35000 | prev + `None` | 16 | planned |
+| [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 35000 | prev + `None` | 120 | planned |
+| [27-opelucid-iris-legend-badge](white/27-opelucid-iris-legend-badge/milestone.toml) | Opelucid Gym (White): Iris's Legend Badge | P0 | white | 25000 | prev + `None` | 132 | planned |
+| [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 45000 | prev + `None` | 136 | planned |
+| [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
+| [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
+| [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
+| [32-n-castle-zekrom-n](white/32-n-castle-zekrom-n/milestone.toml) | N's Castle (White): Zekrom, and N with Reshiram | P0 | white | 30000 | prev + `None` | 278 | planned |
+| [33-ghetsis-ending](black/33-ghetsis-ending/milestone.toml) | Ghetsis, N's farewell and the credits | P0 | both | 30000 | prev + `None` | - | planned |
+
+#### white/01-newgame-bedroom — New game to the bedroom, a walk, a talk with Cheren and the first save
+- proves: Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the furniture, a talk with Cheren, and the save through the game's own X menu. Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
+- start: blank chip; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 391; at (7, 4); party size 0; 4 save check(s)
+- frames: estimate 15107, budget 23000
+- refs: docs/BW_PLAN.md; docs/BW_RAM.md
+- notes: Black and White play the same frames (the proposal run's ng.sched, its A presses cut where the player is free). The starter is the next milestone: the gift box's scene runs straight into Bianca's battle.
+
+#### white/02-gift-box-starter-first-battles — The gift box: the starter, Bianca's and Cheren's first battles
+- proves: Proves the starter scene: the gift box's three Pokémon, the choice (var 0x4030), Bianca's battle, Cheren healing both, Cheren's battle, and the bedroom left to the player with the stairs open (var 0x4081 2). Start: 01's save in the bedroom (zone 391, (7,4)) -> end: the bedroom, one Pokémon, 0x4081 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1
+- end state: map 391; party size 1; flags set 0x961, 0x1F4, 0x1F5, 0x2A8; vars 0x4081=2
+- frames: estimate 9000, budget -
+- refs: zone_event 391 object 2 gfx 0xD0 (5,8) hidden by flag 0x2A8 -> scr 0782 script 9; scr 0782 @0x0220 msg 430 #11 (the gift box opened); @0x023A Cmd153 var 0x8020 (the choice); scr 0782 @0x026F/@0x029F/@0x02BC SetVar 0x4030 0 Snivy (495) / 1 Tepig (498) / 2 Oshawott (501); scr 0782 @0x02E6 GivePokemon var 0x8021 lv 5; @0x02F0 SetFlag 0x961; scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0465 GetBattleResult -> msg 430 #37 (won) / #38 (lost): the scene goes on either way; scr 0782 @0x0513-@0x055A Cheren heals both (msg 430 #43/#45); scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1; scr 0782 @0x06BE-@0x06D2 RemoveObject 0/1, SetFlag 0x1F4/0x1F5/0x2A8, SetVar 0x4081 2; zone_event 391 trigger 0 (8,2) var 0x4081 == 1 -> scr 0782 script 6 (the stairs gate, msg 430 #8); docs/BW_RAM.md (party, vars, flags, battle)
+- notes: The proposal run's battle reached Bianca's battle intro (docs/BW_RAM.md); mode 1 battles cannot end the scene: a loss only changes the line. Pick by the menu cursor: Tepig is the one the docs' runs chose (0x4030 = 1). [INFERENCE] estimate.
+
+#### white/03-mom-bianca-house-juniper-pokedex — Mom, Bianca's house and Professor Juniper's Pokédex
+- proves: Proves leaving home: Mom's scene on the 1F (rest, Xtransceiver), Bianca's house, Cheren at the lab door, Professor Juniper's Pokédex, and Mom's Town Map outside. Start: the bedroom (zone 391) -> end: Nuvema Town (zone 389) south of the lab, 0x4080 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 389; flags set 0x217, 0x962, 0x2A7; vars 0x4085=1, 0x4078=1, 0x4079=1, 0x4080=2
+- frames: estimate 12000, budget -
+- refs: zone_event 391 warp 0 (9,2) -> zone 390 warp 1; zone_event 390 level type 1: var 0x4085 == 0 -> scr 0780 script 1 (Mom/Cheren/Bianca); scr 0780 @0x0200/@0x0226 CallStd 2805 (scr 0862 script 6) Xtransceiver by GetPlayerGender; @0x0244 SetFlag 0x217; @0x0248 SetVar 0x4085 1; @0x024E SetVar 0x407F 1; zone_event 390 warp 0 (5,10) 3x1 -> zone 389; zone_event 389 level type 1: 0x407F == 1 -> scr 0778 script 16 (0x407F 2); zone_event 389 object 4 gfx 0x7 (777,741) -> scr 0778 script 3: unless 0x4078 >= 1 msg 428 #1 (go to Bianca's house); zone_event 389 warp 1 (776,757) -> zone 392; zone_event 392 level type 1: 0x4078 == 0 -> scr 0784 script 3; scr 0784 @0x010D SetVar 0x4078 1; scr 0778 @0x024E-@0x0256 SetFlag 0x201/0x202, Warp zone 396 (4,11); zone_event 396 level type 1: 0x4079 == 0 -> scr 0792 script 1 (Juniper); @0x02C6 SetFlag 0x962; @0x02F6 msg 435 #19 (the Pokédex); @0x0394 SetVar 0x4079 1; @0x039A SetVar 0x4080 1; zone_event 396 warp 0 (3,11) -> zone 389 warp 3; zone_event 389 level type 1: 0x4080 == 1 -> scr 0778 script 12; @0x03AD CallStd 2805 Town Map; @0x04E9 SetVar 0x4080 2; @0x04EF SetFlag 0x2A7
+- notes: Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry. [INFERENCE] estimate.
+
+#### white/04-route1-catching-lesson — Route 1: the catching lesson and the way to Accumula
+- proves: Proves the first steps on Route 1: the three friends' walk out of Nuvema, Professor Juniper's catching lesson (five Poké Balls), Bianca's catch race, and the way north to Accumula Town. Start: Nuvema Town (zone 389), 0x4080 = 2 -> end: Accumula Town (zone 397) at its south entrance, 0x407C = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 397; flags set 0x1FC, 0x203; vars 0x407C=2
+- frames: estimate 14000, budget -
+- refs: zone_event 389 trigger 1 (786..791,739) 6x1 var 0x4080 == 2 -> scr 0778 script 14 (msg 428 #20, first step); zone_event 317 object 2 gfx 0x69 (788,724) hidden by flag 0x1FC -> scr 0634 script 1 (Juniper); scr 0634 @0x0106 CallStd 2805 Poké Ball x5; @0x0242 SetFlag 0x1FC; @0x0246 SetVar 0x407C 1; zone_event 317 trigger 0 (788..794,678) 7x1 var 0x407C == 1 -> scr 0634 script 5 (Bianca's compare, YES/NO var 0x8010); scr 0634 @0x066A SetFlag 0x203; @0x066E SetVar 0x407C 2; zone 317 (Route 1, sysmsg 89 #14); zone 397 (Accumula Town)
+- notes: Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path. [INFERENCE] estimate.
+
+#### white/05-accumula-plasma-speech-n — Accumula Town: the Pokémon Center, Team Plasma's speech and N
+- proves: Proves Accumula Town: Professor Juniper's Pokémon Center tour, Ghetsis's speech in the plaza, and the first battle with N. Start: Accumula Town (zone 397) -> end: Accumula Town, 0x407A = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0794 script 15 @0x06E8 msg 436 #9 (Ghetsis); @0x0CE4 TrainerBattle trdata #64 (N: Purrloin 7), mode 0; @0x0D0D BlackOut on a loss
+- end state: map 397; flags set 0x208, 0x20C, 0x20A; vars 0x407A=3
+- frames: estimate 10000, budget -
+- refs: zone_event 397 object 6 gfx 0x69 (796,658) hidden by flag 0x208 -> scr 0794 script 8 (Juniper); @0x031A Warp zone 398 (7,19); @0x0324 SetFlag 0x208; @0x0328 SetVar 0x407A 1; zone_event 397 level type 1: 0x407A == 1 -> scr 0794 script 13 (msg 436 #6); @0x03E9 SetVar 0x407A 2; zone_event 397 trigger 1 (786,658) 1x4 / trigger 2 (787..792,657) 6x1 var 0x407A == 2 -> scr 0794 script 14 / 10; scr 0794 script 15 @0x06E8 msg 436 #9 (Ghetsis); @0x0CE4 TrainerBattle trdata #64 (N: Purrloin 7), mode 0; @0x0D0D BlackOut on a loss; scr 0794 @0x0D63 SetVar 0x407A 3; @0x0D69-@0x0D79 SetFlag 0x20C/0x210/0x206/0x20D/0x20A; zone_event 397 trigger 0 (770,646) 1x5 var 0x407A == 0 -> scr 0794 script 7 (the west exit held until the tour)
+- notes: N's battle is the first real one (mode 0): a loss blacks out. [INFERENCE] estimate.
+
+#### white/06-route2-bianca-striaton — Route 2: Bianca's battle and Striaton City
+- proves: Proves Route 2: the entrance scene (var 0x407D 0 -> 1), Bianca's second battle, and the walk to Striaton City. Start: Accumula Town (zone 397) -> end: Striaton City (zone 6), 0x407D = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030
+- end state: map 6; vars 0x407D=2
+- frames: estimate 12000, budget -
+- refs: zone_event 397 warp 5 (768,647) 1x3 -> zone 320 (Accumula Gate) -> zone 319 (Route 2); zone_event 319 trigger 0 (754,647) var 0x407D == 0 -> scr 0638 script 1; @0x0557 SetVar 0x407D 1; zone_event 319 trigger 1 (784,613) var 0x407D == 1 -> scr 0638 script 2; @0x0284 SetVar 0x407D 2; scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030; zone 6 (Striaton City)
+- notes: Bianca's Route 2 battle is mode 0. Route 2 trainers: `bw_script.py events 319`. [INFERENCE] estimate.
+
+#### white/07-striaton-dreamyard-monkey — Striaton City: the Trainers' School and the Dreamyard's monkey
+- proves: Proves the Striaton gym's precondition: the Trainers' School (Cheren), the Dreamyard girl's elemental monkey (var 0x4083 2), back to the gym door. Start: Striaton City (zone 6) -> end: Striaton City at the gym door, a second Pokémon, 0x4083 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3
+- end state: map 6; party size 2; vars 0x4083=2
+- frames: estimate 14000, budget -
+- refs: scr 0012 script 13 (gym door, Cilan): unless 0x4083 == 2 the gym waits (msg 11 #1/#2); zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3; zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard); scr 0304 script 1 (the girl): @0x013F SetVar 0x4083 1; @0x0264/@0x0295/@0x02B3 GivePokemon Panpour/Pansage/Pansear lv 10 by 0x4030 (the one strong against the starter's weakness); @0x0319 SetVar 0x4083 2
+- notes: The monkey is given by talking to the Dreamyard girl twice [INFERENCE: first visit asks, second gives]. [INFERENCE] estimate.
+
+#### white/08-striaton-gym-trio-badge — Striaton Gym: Cilan, Chili or Cress and the Trio Badge
+- proves: Proves the Striaton Gym: the switch puzzle (var 0x4082 1..4), the leader picked by the starter, and the Trio Badge. Start: Striaton City at the gym door (zone 6) -> end: Striaton Gym (zone 7), 1 badge, 0x4088 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0014 @0x0B72 TrainerBattle trdata #11 (Chili: Lillipup 12, Pansear 14) when 0x4030 == 0 (Snivy); scr 0014 @0x0982 TrainerBattle trdata #13 (Cress: Lillipup 12, Panpour 14) when 0x4030 == 1 (Tepig); scr 0014 @0x0D62 TrainerBattle trdata #12 (Cilan: Lillipup 12, Pansage 14) when 0x4030 == 2 (Oshawott)
+- end state: map 7; 1 badges; flags set 0x971, 0x21E; vars 0x4088=1
+- frames: estimate 15000, budget -
+- refs: zone_event 6 warp 5 (788,586) -> zone 7 (the gym); zone_event 7 triggers 0-10 on var 0x4082 0..4 -> scr 0014 scripts 6-20 (the curtains/switches; @0x1037/@0x1091/@0x117F SetVar 0x4082 2/3/4); scr 0014 @0x0B72 TrainerBattle trdata #11 (Chili: Lillipup 12, Pansear 14) when 0x4030 == 0 (Snivy); scr 0014 @0x0982 TrainerBattle trdata #13 (Cress: Lillipup 12, Panpour 14) when 0x4030 == 1 (Tepig); scr 0014 @0x0D62 TrainerBattle trdata #12 (Cilan: Lillipup 12, Pansage 14) when 0x4030 == 2 (Oshawott); scr 0014 @0x09DF/@0x0BCF/@0x0DBF GiveBadge 0 (Trio); msg 12 #20-#22; scr 0014 @0x0A5D CallStd 2805 TM83; @0x0A83 SetFlag 0x21E; @0x0A8B SetVar 0x4088 1; @0x0A99 SetFlag 0x971
+- notes: Tepig (0x4030 1) faces Cress's Panpour: the Dreamyard's Pansage (Grass) is the counter. A loss is BlackOut (@0x09CF). [INFERENCE] estimate.
+
+#### white/09-fennel-dreamyard-plasma-munna — Fennel, the Dreamyard's Munna and Team Plasma
+- proves: Proves Fennel's errand: the C-Gear/HM01 visit, the Dreamyard's Munna and Team Plasma's grunts, and the Pal Pad back at Fennel's lab. Start: Striaton Gym (zone 7) -> end: Fennel's lab (zone 10), 0x4094 = 5, 0x4088 = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0304 @0x0777/@0x07DC TrainerBattle trdata #293/#308 (Plasma grunts: Patrat 10, Purrloin 10); @0x0B6E SetVar 0x4094 4
+- end state: map 10; vars 0x4088=3, 0x4094=5, 0x4086=2
+- frames: estimate 16000, budget -
+- refs: zone_event 6 level type 1: 0x4088 == 1 -> scr 0012 script 14 (Fennel, msg 11 #0); @0x04DC SetVar 0x4088 2; @0x04E2 SetVar 0x4087 1; @0x04E8 Warp zone 9 (7,10); zone_event 9 level type 1: 0x4087 == 1 -> scr 0018 script 5; @0x0148 Warp zone 10 (11,2); @0x0156 SetVar 0x4087 2; zone_event 10 level type 1: 0x4086 == 0 -> scr 0020 script 1; @0x006A CallStd 2805 HM01; @0x0092 SetVar 0x4086 1; @0x0098 SetVar 0x4094 1; zone_event 152 triggers 0-2 var 0x4094 == 1/2/3 -> scr 0304 scripts 2/4/5 (Bianca, the wall, Munna); scr 0304 @0x0777/@0x07DC TrainerBattle trdata #293/#308 (Plasma grunts: Patrat 10, Purrloin 10); @0x0B6E SetVar 0x4094 4; scr 0020 @0x039A CallStd 2805 Pal Pad; @0x041D SetVar 0x4094 5; @0x0423 SetVar 0x4086 2; @0x0429 SetVar 0x4088 3
+- notes: zone_event 6 trigger 1 (750,584) var 0x4088 == 2 -> scr 0012 script 20 sends the player back to Fennel. [INFERENCE] estimate.
+
+#### white/10-route3-cheren-wellspring-plasma — Route 3: Cheren and Team Plasma at Wellspring Cave
+- proves: Proves Route 3: the day care twins, Cheren's battle, Team Plasma's stolen Pokémon at Wellspring Cave, and the way on to Nacrene City. Start: Fennel's lab (zone 10) -> end: Nacrene City (zone 16), 0x4095 = 5, 0x407E = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone 321 (Route 3) scr 0642 @0x0344 TrainerBattle trdata #18 (Twins Kumi & Amy, double); @0x036D SetVar 0x407E 1; zone_event 321 trigger 0 (719,581) var 0x407E == 1 -> scr 0642 script 6 (msg 353 #6); @0x051F/@0x0569/@0x05A0 TrainerBattle trdata #56/#57/#58 (Cheren: starter 14, Purrloin 12); zone_event 324 trigger 0 (25,4) var 0x4095 == 3 -> scr 0648 script 1; @0x0155 TrainerBattle trdata #294 (grunt: Patrat 12); @0x0464 SetVar 0x4095 4
+- end state: map 16; vars 0x4095=5, 0x407E=2
+- frames: estimate 20000, budget -
+- refs: zone 321 (Route 3) scr 0642 @0x0344 TrainerBattle trdata #18 (Twins Kumi & Amy, double); @0x036D SetVar 0x407E 1; zone_event 321 trigger 0 (719,581) var 0x407E == 1 -> scr 0642 script 6 (msg 353 #6); @0x051F/@0x0569/@0x05A0 TrainerBattle trdata #56/#57/#58 (Cheren: starter 14, Purrloin 12); zone_event 321 triggers 1-7 on var 0x4095 0..4 -> scr 0642 scripts 5/7/8/11 (Bianca's stolen Pokémon); zone_event 324 trigger 0 (25,4) var 0x4095 == 3 -> scr 0648 script 1; @0x0155 TrainerBattle trdata #294 (grunt: Patrat 12); @0x0464 SetVar 0x4095 4; scr 0642 @0x0DF7 CallStd 2805 Heal Ball x3; @0x0E32 SetVar 0x4095 5; @0x0F68 SetVar 0x407E 2
+- notes: Which of the 0x4095 triggers fires depends on the side the player enters from; `bw_script.py events 321`. [INFERENCE] estimate.
+
+#### white/11-nacrene-n-lenora-basic-badge — Nacrene City: N and Lenora's Basic Badge
+- proves: Proves Nacrene City: Cheren's welcome, N's second battle, the museum's library gym (the bookshelf puzzle) and Lenora's Basic Badge. Start: Nacrene City (zone 16) -> end: the Nacrene Gym (zone 19), 2 badges, 0x4092 = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 16 trigger 1 (644,582) var 0x4092 == 1 -> scr 0032 script 11 (msg 21 #3); @0x03E6 SetVar 0x4092 2; @0x03F2 TrainerBattle trdata #65 (N: Pidove, Tympole, Timburr 13); scr 0038 @0x00C8 TrainerBattle trdata #21 (Lenora: Herdier 18, Watchog 20); @0x00FD GiveBadge 1 (Basic); @0x0167 CallStd 2805 TM67
+- end state: map 19; 2 badges; flags set 0x972; vars 0x4092=3, 0x4084=2, 0x408C=1
+- frames: estimate 18000, budget -
+- refs: zone_event 16 trigger 0 (665,598) var 0x4092 == 0 -> scr 0032 script 10; @0x0215 CallStd 2805 Chesto Berry x3; @0x024F SetVar 0x4092 1; zone_event 16 trigger 1 (644,582) var 0x4092 == 1 -> scr 0032 script 11 (msg 21 #3); @0x03E6 SetVar 0x4092 2; @0x03F2 TrainerBattle trdata #65 (N: Pidove, Tympole, Timburr 13); zone_event 17 trigger 0 (11,23) var 0x4084 == 0 -> scr 0034 script 16; @0x0423 SetVar 0x4084 1; zone 18 (the library) scr 0036 var 0x408A 1..7 bookshelf puzzle (@0x027E ... @0x12A2 SetVar 0x408A 7); scr 0038 @0x00C8 TrainerBattle trdata #21 (Lenora: Herdier 18, Watchog 20); @0x00FD GiveBadge 1 (Basic); @0x0167 CallStd 2805 TM67; scr 0038 @0x0059/@0x0069 SetFlag 0x972/0x970; @0x006D SetVar 0x4084 2; @0x0073 SetVar 0x408C 1; @0x0079 SetVar 0x4092 3
+- notes: Lenora's Watchog: Retaliate/Hypnosis; Fighting-type counters from Route 3/Pinwheel are [INFERENCE]. [INFERENCE] estimate.
+
+#### white/12-museum-skull-pinwheel-plasma — The Dragon Skull: Team Plasma in Pinwheel Forest
+- proves: Proves the stolen Dragon Skull: Team Plasma at the museum, Burgh and the chase into Pinwheel Forest, four grunts and the skull returned. Start: the Nacrene Gym (zone 19) -> end: Pinwheel Forest (zone 155), 0x408D = 3, 0x4092 = 5.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 155 triggers 2,4-6 on var 0x40AA 0..3; scr 0310 @0x0687/@0x08A4/@0x0996/@0x0A47 TrainerBattle trdata #295/#309/#296/#297 (grunts, Sandile 16 ... Patrat 14 x2 + Sandile 14)
+- end state: map 155; vars 0x408D=3, 0x40AA=4, 0x4092=5
+- frames: estimate 18000, budget -
+- refs: zone_event 17 trigger 1 (10,9) var 0x4084 == 2 -> scr 0034 script 17 (msg 22 #12); @0x07DB SetVar 0x4084 3; zone_event 16 level type 1: 0x4092 == 3 -> scr 0032 script 7; @0x065B CallStd 2805 Dowsing MCHN; @0x070D SetVar 0x4092 4; zone_event 154 trigger 0 (592,583) var 0x408C == 1 -> scr 0308 script 2 (Burgh, msg 162 #1); @0x005E SetVar 0x408C 2; @0x0064 SetVar 0x408D 1; zone_event 155 trigger 1 (71,71) var 0x408D == 1 -> scr 0310 script 10; @0x02DF SetVar 0x408D 2; zone_event 155 triggers 2,4-6 on var 0x40AA 0..3; scr 0310 @0x0687/@0x08A4/@0x0996/@0x0A47 TrainerBattle trdata #295/#309/#296/#297 (grunts, Sandile 16 ... Patrat 14 x2 + Sandile 14); scr 0310 @0x0ABB CallStd 2805 Dragon Skull; @0x0D0D SetVar 0x408D 3; @0x0D13 SetVar 0x40AA 4; @0x0D31 SetVar 0x4092 5
+- notes: [INFERENCE] estimate.
+
+#### white/13-castelia-plasma-burgh-insect-badge — Castelia City: Team Plasma's hideout and Burgh's Insect Badge
+- proves: Proves Castelia City: Skyarrow Bridge, Cheren's news, Burgh's chase after Team Plasma (Bianca's Munna) through the streets and their hideout, and Burgh's Insect Badge. Start: Pinwheel Forest (zone 155) -> end: the Castelia Gym (zone 29), 3 badges, 0x40AF = 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1; scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76
+- end state: map 29; 3 badges; flags set 0x973; vars 0x40AF=4, 0x409C=1, 0x40AC=1
+- frames: estimate 30000, budget -
+- refs: zone 249 (Skyarrow Bridge) -> zone 250 (Bridge Gate) -> Castelia; zone_event 31 trigger 0 (24,48) var 0x40AF == 0 -> scr 0062 script 4 (Cheren, msg 36 #0); @0x01BB SetVar 0x40AF 1; @0x01C9 SetVar 0x40D3 1; zone_event 38 level type 1: 0x40D3 == 1 -> scr 0076 script 8; @0x042E SetVar 0x40D3 2; @0x0434 SetVar 0x40AD 1; zone_event 28 trigger 0 (4,24) var 0x40AD == 1 -> scr 0056 script 19 (Burgh, msg 33 #0); @0x024C/@0x0256 SetVar 0x40AD 2, 0x40AF 2; zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1; zone_event 56 trigger 0 (6,10) var 0x40D9 == 1 -> scr 0112 script 1; @0x050D SetVar 0x40D9 2; @0x0517 SetVar 0x40D7 1; scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76; scr 0058 @0x030A SetVar 0x409C 1; @0x0310 SetVar 0x40AC 1; @0x0316 SetVar 0x40AD 2; @0x031C SetVar 0x40AF 4; @0x0332 SetFlag 0x973
+- notes: Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`. [INFERENCE] estimate.
+
+#### white/14-castelia-gate-bianca-route4-cheren — Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa
+- proves: Proves the road south: Bianca's battle in the Castelia Gate, Route 4's sandstorm and Cheren's battle, to Nimbasa City. Start: the Castelia Gym (zone 29) -> end: Nimbasa City (zone 62), 0x40AC = 2, 0x409C = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2; zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2
+- end state: map 62; vars 0x40AC=2, 0x409C=2
+- frames: estimate 20000, budget -
+- refs: zone_event 51 trigger 0 (1,9) var 0x40AC == 1 -> scr 0102 script 4 (MessageGender msg 56 #0/#1); scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2; zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2; zone_event 326 trigger 0 (430,564) var 0x409C == 0 -> scr 0652 script 2 (the road closed before the Insect Badge)
+- notes: [INFERENCE] estimate.
+
+#### white/15-nimbasa-musical-ferris-wheel-n — Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel
+- proves: Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father, and N's Ferris wheel battle. Start: Nimbasa City (zone 62) -> end: Nimbasa City, 0x4089 = 3, 0x408E = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
+- end state: map 62; vars 0x4089=3, 0x408E=1, 0x40B3=1
+- frames: estimate 25000, budget -
+- refs: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 62 trigger 0 (391,436) var 0x4089 == 1 -> scr 0124 script 2; @0x08B5 Warp zone 77 (14,20); zone_event 77 level type 1: 0x40B3 == 0 -> scr 0154 script 11; @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1; @0x01DC SetVar 0x4089 2; zone_event 62 level type 1: 0x4089 == 2 -> scr 0124 script 20 (msg 67 #18, Bianca's father); @0x0C38 SetVar 0x4089 3; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
+- notes: The Musical itself (the dress-up) is a separate app; [INFERENCE] its exit returns to zone 77. [INFERENCE] estimate.
+
+#### white/16-nimbasa-elesa-bolt-badge — Nimbasa Gym: Elesa's Bolt Badge
+- proves: Proves the Nimbasa Gym: the roller-coaster switches and Elesa's Bolt Badge. Start: Nimbasa City (zone 62) -> end: the Nimbasa Gym (zone 63), 4 badges, 0x4093 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974
+- end state: map 63; 4 badges; flags set 0x974; vars 0x4093=1
+- frames: estimate 18000, budget -
+- refs: scr 0126 @0x0362 msg 68 #16 (the switches change the roller coaster's path); scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974
+- notes: Emolga is Electric/Flying: Rock or Ice moves [INFERENCE]. [INFERENCE] estimate.
+
+#### white/17-route5-cheren-drawbridge-driftveil — Route 5: Cheren and Alder; Driftveil City
+- proves: Proves Route 5 (Cheren's battle and Alder) and the Driftveil Drawbridge into Driftveil City, where Clay meets the player. Start: the Nimbasa Gym (zone 63) -> end: Driftveil City (zone 96), 0x4093 = 3, 0x408F = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2
+- end state: map 96; vars 0x4093=3, 0x408F=1
+- frames: estimate 18000, budget -
+- refs: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2; zone_event 329 trigger 2 (339,431) var 0x4093 == 2 -> scr 0658 script 5; @0x09B0 SetVar 0x4093 3; zone 253/301 (Driftveil Drawbridge); zone_event 96 trigger 1 (204,430) var 0x408F == 0 -> scr 0192 script 8 (Clay, msg 101 #0); @0x01DB SetFlag 0x9B6; @0x01E3 SetVar 0x408F 1
+- notes: [INFERENCE] estimate.
+
+#### white/18-cold-storage-plasma — Cold Storage: Team Plasma and Ghetsis
+- proves: Proves the Cold Storage raid: Cheren at the entrance, the containers, four grunts and Zinzolin, and Ghetsis meeting Clay in Driftveil. Start: Driftveil City (zone 96) -> end: Driftveil City, 0x408B = 8, 0x408F = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24)
+- end state: map 96; vars 0x408B=8, 0x408F=3, 0x4090=1
+- frames: estimate 20000, budget -
+- refs: zone_event 191 trigger 0 (167,474) var 0x4090 == 0 -> scr 0382 script 1 (Cheren, msg 199 #2); @0x0109 SetVar 0x4090 1; zone_event 192 level type 1: 0x408B == 0 -> scr 0384 script 1; @0x00A6 SetVar 0x408B 1; trigger 0 (6,8) 0x408B == 1 -> script 2; @0x0117 SetVar 0x408B 2; zone_event 193 level type 1: 0x408B == 2 -> scr 0386 script 1 (Zinzolin, msg 201 #0); @0x01DA SetVar 0x408B 3; scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24); scr 0386 @0x08D3 SetVar 0x408B 8; @0x08ED SetVar 0x408F 2; zone_event 96 trigger 0 (206,404) var 0x408F == 2 -> scr 0192 script 9 (Ghetsis, msg 101 #6); @0x0444 SetVar 0x408F 3
+- notes: [INFERENCE] estimate.
+
+#### white/19-driftveil-clay-quake-badge-bianca — Driftveil Gym: Clay's Quake Badge; Bianca and HM02
+- proves: Proves the Driftveil Gym (the mine elevators) and Clay's Quake Badge, then Bianca's battle and HM02. Start: Driftveil City (zone 96) -> end: Driftveil City, 5 badges, 0x408F = 5, 0x409A = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975; zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5
+- end state: map 96; 5 badges; flags set 0x975; vars 0x408F=5, 0x409A=1
+- frames: estimate 22000, budget -
+- refs: scr 0194 @0x020E-@0x05C8 the gym's elevators; @0x05B0 Warp zone 98; scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975; zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5
+- notes: Excadrill (Ground/Steel): Water or Fighting [INFERENCE]. [INFERENCE] estimate.
+
+#### white/20-route6-chargestone-n — Chargestone Cave: N's battle
+- proves: Proves Route 6 and Chargestone Cave: Clay clears the nest at the entrance, Bianca and Professor Juniper inside, and N's battle, out to Mistralton City. Start: Driftveil City (zone 96) -> end: Mistralton City (zone 107), 0x409B = 5, 0x409A = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28)
+- end state: map 107; vars 0x409B=5, 0x409A=2
+- frames: estimate 25000, budget -
+- refs: scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2; zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg); scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28); zone 107 (Mistralton City)
+- notes: Chargestone's floating stones: [INFERENCE] the boulders the player pushes; no puzzle state found in the scripts. [INFERENCE] estimate.
+
+#### white/21-mistralton-skyla-jet-badge — Mistralton Gym: Skyla's Jet Badge
+- proves: Proves Mistralton City: Skyla's welcome, the cannon gym and Skyla's Jet Badge. Start: Mistralton City (zone 107) -> end: the Mistralton Gym (zone 108), 6 badges, 0x4099 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2
+- end state: map 108; 6 badges; flags set 0x976; vars 0x4099=2, 0x40B4=1
+- frames: estimate 20000, budget -
+- refs: zone_event 107 trigger 0 (100,302) var 0x4099 == 0 -> scr 0214 script 8 (msg 112 #0); @0x09B4 SetVar 0x4099 1; scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2; zone_event 107 level type 1: 0x4099 == 2 -> scr 0214 script 13 (N, msg 112 #21); @0x013D SetVar 0x4099 3
+- notes: The Celestial Tower (zone 342, vars 0x40BA/0x40D2) is [INFERENCE] optional here. [INFERENCE] estimate.
+
+#### white/22-twist-mountain-cheren-icirrus — Twist Mountain: Cheren; Icirrus City
+- proves: Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Team Plasma and Brycen in the mountain, out to Icirrus City and Cedric Juniper. Start: the Mistralton Gym (zone 108) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2
+- end state: map 113; vars 0x40B4=2, 0x4097=2, 0x40BB=1
+- frames: estimate 25000, budget -
+- refs: zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2; zone_event 202 trigger 0 (52,13) var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D; zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2
+- notes: [INFERENCE] estimate.
+
+#### white/23-icirrus-brycen-freeze-badge — Icirrus Gym: Brycen's Freeze Badge
+- proves: Proves the Icirrus Gym (the ice slides) and Brycen's Freeze Badge, then Cheren and Bianca's talk. Start: Icirrus City (zone 113) -> end: Icirrus City, 7 badges, 0x40A7 = 1, 0x4097 = 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977
+- end state: map 113; 7 badges; flags set 0x977; vars 0x40A7=1, 0x4097=4
+- frames: estimate 22000, budget -
+- refs: scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977; zone_event 113 level type 1: 0x4097 == 3 -> scr 0226 script 2 (Cheren, msg 118 #10); @0x03C0 SetVar 0x4097 4
+- notes: The gym's ice paths: `bw_script.py events 114` (triggers on var 0x400F/0x400A). [INFERENCE] estimate.
+
+#### white/24-dragonspiral-tower-n-legend — Dragonspiral Tower: N and the legendary dragon
+- proves: Proves Dragonspiral Tower: Cedric at the gate, Team Plasma's grunts on the climb, and N waking his legendary dragon at the top. Start: Icirrus City (zone 113) -> end: Dragonspiral Tower's foot (zone 205), 0x40A7 = 9.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34)
+- end state: map 205; vars 0x40A7=9
+- frames: estimate 30000, budget -
+- refs: zone_event 205 trigger 0 (177,146) var 0x40A7 == 1 -> scr 0410 script 1 (Cedric); @0x057B CallStd 2805 Old Gateau; @0x05C5 SetVar 0x40A7 2; @0x05CB SetVar 0x4097 5; zone_event 207 trigger 0 (24,2) 0x40A7 == 2 -> scr 0414 (@0x0064 SetVar 3); zone_event 208 trigger 0 (14,24) == 3 -> scr 0416 (@0x006A SetVar 4); zone_event 210 triggers (21,14)/(22,14) == 5/4 -> scr 0420 (@0x0073/@0x00C4 SetVar 5/6); zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34); zone_event 213 trigger 0 (16,21) var 0x40A7 == 8 -> scr 0426 script 1 (N, msg 221 #0); @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205 (179,146); scr 0410 @0x02D0 SetVar 0x409D 1 (Cedric: on to the Relic Castle)
+- notes: The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White. [INFERENCE] estimate.
+
+#### white/25-relic-castle-nacrene-stone — The Relic Castle and the stone at Nacrene's museum
+- proves: Proves the search for the other legend's stone: the Desert Resort and the Relic Castle with Cheren and Alder, then Nacrene's museum where Professor Juniper and Lenora hand over the stone. Start: Dragonspiral Tower's foot (zone 205) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 16; vars 0x4092=7, 0x409D=2
+- frames: estimate 35000, budget -
+- refs: zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; @0x02A7 SetVar 0x4092 6; scr 0328 (zone 164) @0x0014 unless 0x409F == 0 ...; @0x0038/@0x0046 Warp zone 165 (the Relic Castle's sand pits); zone_event 16 trigger 2 (640,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36); scr 0032 @0x0AE9 MessageVersion (White: Dark Stone msg 21 #48 / Black: Light Stone #49); @0x0BF3 CallStd 2805 Light Stone (Black) / @0x0C19 Dark Stone (White); @0x0DCE SetVar 0x4092 7
+- notes: The stone is the one version branch here, by item: Black's bag gets the Light Stone. Relic Castle's quicksand floors (zones 160-165, WarpC1 holes): `bw_script.py events 160` [INFERENCE: the path down]. [INFERENCE] estimate.
+
+#### white/26-route8-bianca-route9-opelucid — Route 8 (Bianca) and Route 9 to Opelucid City
+- proves: Proves the way to Opelucid City: Route 8 (Bianca's battle), the Moor of Icirrus, Tubeline Bridge, Route 9, and Opelucid's welcome by Alder, Iris and Drayden. Start: Nacrene City (zone 16) -> end: Opelucid City (zone 120), 0x40A8 = 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40)
+- end state: map 120; vars 0x40A8=4, 0x40CB=1
+- frames: estimate 35000, budget -
+- refs: zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40); zone 254 (Tubeline Bridge) scr 0508: vars 0x40DB/0x40A4; zone 308/348 (Route 9); zone_event 120 trigger 0 (395,173) var 0x40A8 == 0 -> scr 0240 script 1 (Alder, msg 125 #0); @0x0AA4 SetFlag 0x9B9; @0x0AAC SetVar 0x40A8 1; zone_event 120 triggers 1-3 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3; zone_event 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1; @0x013E SetVar 0x40A8 4
+- notes: Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion (scr 0240 @0x0EAB ...), no other branch: the dir serves White. [INFERENCE] estimate.
+
+#### white/27-opelucid-iris-legend-badge — Opelucid Gym (White): Iris's Legend Badge
+- proves: Proves the Opelucid Gym and Iris's Legend Badge on White, then Professor Juniper's Master Ball and the gate north. Start: Opelucid City (zone 120) -> end: the Opelucid Gate (zone 132), 8 badges, 0x40B8 = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0242 @0x0224 TrainerBattle trdata #132 (Iris: Fraxure 41, Druddigon 41, Haxorus 43); @0x025B GiveBadge 7 (Legend); @0x02C7 CallStd 2805 TM82; @0x0315 SetVar 0x40A9 1; @0x031B SetVar 0x40B8 1; @0x0321 SetFlag 0x978
+- end state: map 132; 8 badges; flags set 0x978; vars 0x40B8=3, 0x40A9=1
+- frames: estimate 25000, budget -
+- refs: scr 0242 script 1 @0x007F GetVersion: 20 (White) -> L_0203: Iris; zone_event 121 via scr 0242 script 2 (@0x0069 SetVar 0x4020 0x5C: the leader's sprite on White); scr 0242 @0x0224 TrainerBattle trdata #132 (Iris: Fraxure 41, Druddigon 41, Haxorus 43); @0x025B GiveBadge 7 (Legend); @0x02C7 CallStd 2805 TM82; @0x0315 SetVar 0x40A9 1; @0x031B SetVar 0x40B8 1; @0x0321 SetFlag 0x978; zone_event 120 level type 1: 0x40B8 == 1 -> scr 0240 script 17; @0x0FD9 CallStd 2805 Master Ball; @0x100C SetVar 0x40B8 2; zone_event 132 trigger 0 (2,11) var 0x40B8 == 2 -> scr 0264 script 3; @0x01A4 SetVar 0x40B8 3; @0x01AA SetVar 0x40C0 1; @0x01B0 SetFlag 0x96F
+- notes: Black plays black/27-opelucid-drayden-legend-badge. [INFERENCE] estimate.
+
+#### white/28-route10-cheren-victory-road — Route 10 (Cheren), the Badge Check Gates and Victory Road
+- proves: Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokémon League. Start: the Opelucid Gate (zone 132) -> end: the Pokémon League (zone 136), 0x40B8 = 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4
+- end state: map 136; vars 0x40B8=4
+- frames: estimate 45000, budget -
+- refs: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4; zones 356-363 (the Badge Check Gates): scr 0712 @0x011A ... scr 0726 @0x010E Warp to the next gate; zones 214-228 (Victory Road); scr 0428 @0x004E Warp zone 136 (32,60)
+- notes: Victory Road needs Strength/Surf [INFERENCE: HM04 Strength's source is not in these scripts]. [INFERENCE] estimate.
+
+#### white/29-elite-four — The Elite Four
+- proves: Proves the Elite Four: Shauntal, Grimsley, Marshal and Caitlin in any order, then the way to the Champion's room. Start: the Pokémon League (zone 136) -> end: the League's centre (zone 137) after the fourth win, 0x40A1 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137
+- end state: map 137; vars 0x40A1=1
+- frames: estimate 40000, budget -
+- refs: zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1; scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137; zones 140-143 (the four rooms)
+- notes: The rematch parties (trdata #563-#566, levels 71-73) are post-game. [INFERENCE] the order is free. [INFERENCE] estimate.
+
+#### white/30-champion-room-n-castle — The Champion's room: N's Castle rises
+- proves: Proves the Champion's room: N has beaten Alder, his castle rises around the League, and the bridge into N's Castle. Start: the League's centre (zone 137) -> end: N's Castle's entrance (zone 264), 0x40A2 = 1, 0x40A5 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
+- end state: map 264; flags set 0x97C; vars 0x40A2=1, 0x40A5=1
+- frames: estimate 20000, budget -
+- refs: zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1; zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between); zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1; scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
+- notes: [INFERENCE] estimate.
+
+#### white/31-n-castle-climb — N's Castle: the climb to the throne room
+- proves: Proves N's Castle's climb: the halls, the Shadow Triad and the Sages' rooms up to the throne room's door. Start: N's Castle's entrance (zone 264) -> end: the throne room (zone 278), 0x40DC = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 278; vars 0x40A6=1, 0x40D4=1, 0x40D5=1, 0x40DC=1
+- frames: estimate 30000, budget -
+- refs: zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
+- notes: The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
+
+#### white/32-n-castle-zekrom-n — N's Castle (White): Zekrom, and N with Reshiram
+- proves: Proves the throne room on White: Zekrom awakens from the Dark Stone and is caught (WildBattle lv 50), then N's battle with Reshiram. Start: the throne room (zone 278) -> end: the throne room, Zekrom in the party, 0x40B6 = 5, 0x40A2 = 2.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0556 @0x096C unless var 0x8020 == 20 ...: @0x0973 TrainerBattle trdata #586 (N: Reshiram 52, Carracosta, Vanilluxe, Archeops, Zoroark, Klinklang 50) on White; @0x09EF SetVar 0x40B6 4
+- end state: map 278; vars 0x40B6=5, 0x40A2=2; 1 save check(s)
+- frames: estimate 30000, budget -
+- refs: zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; scr 0556 @0x0CDC unless var 0x8020 == 21 -> L_0D08 (White): @0x0D13 WildBattle Zekrom (644) lv 50, var 0x802A; scr 0556 @0x0DEC SetVar 0x40B6 5; @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x096C unless var 0x8020 == 20 ...: @0x0973 TrainerBattle trdata #586 (N: Reshiram 52, Carracosta, Vanilluxe, Archeops, Zoroark, Klinklang 50) on White; @0x09EF SetVar 0x40B6 4
+- notes: Black plays black/32-n-castle-reshiram-n. [INFERENCE] estimate.
+
+#### white/33-ghetsis-ending — Ghetsis, N's farewell and the credits
+- proves: Proves the end of the story: Ghetsis's battle in the throne room, N's farewell and the ending. Start: the throne room (zone 278), 0x40B6 = 5 -> end: after the credits [INFERENCE: the player's house].
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss
+- end state: vars 0x40B6=5, 0x40A2=2
+- frames: estimate 30000, budget -
+- refs: scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; scr 0556 @0x12A0 MessageVersion (msg 301 #62/#63); @0x1555-@0x15E7 N's farewell (msg 301 #75-#81, flag 0x154 picks the line); scr 0556 @0x15FC Cmd156 0: ends the scene [INFERENCE: the credits]; zone 145 (the Hall of Fame) scr 0290 script 1 is Alder's post-game room [INFERENCE: not part of the story's end]
+- notes: The end state after the credits is not in the scripts read so far: the expect names only what Ghetsis's win must leave [INFERENCE]. [INFERENCE] estimate.
+<!-- plan.py:end white -->

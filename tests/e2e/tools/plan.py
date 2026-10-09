@@ -16,7 +16,7 @@ from pathlib import Path
 
 E2E = Path(__file__).resolve().parents[1]
 PLAN = E2E / "PLAN.md"
-GAMES = ("platinum", "diamond", "pearl", "heartgold", "soulsilver", "emerald", "ruby", "sapphire")
+GAMES = ("platinum", "diamond", "pearl", "heartgold", "soulsilver", "emerald", "ruby", "sapphire", "black", "white")
 STATE_VERBS = ("flag", "clear-flag", "var", "badge", "item", "poketch", "pokedex", "national-dex",
                "story-cleared", "register-item")
 
@@ -94,7 +94,7 @@ def fmt_expect(ex):
 
 
 def trainers(refs):
-    return [r for r in refs if "TRAINER_" in r]
+    return [r for r in refs if "TRAINER_" in r or "TrainerBattle trdata" in r]
 
 
 def section(game, dirs, kind):
