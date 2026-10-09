@@ -2274,19 +2274,26 @@ def bot_slide(s, step, ctx):
     dirs = step["dirs"].split()
     limit = s.frame + _int(step, "max", 300 * len(dirs))
     for i, d in enumerate(dirs):
-        s.run(8, d)
-        last, still = None, 0
-        while still < 6:
-            if s.frame >= limit:
-                raise HarnessError("slide: press %d (%s) has not settled by the step's bound" % (i + 1, d))
-            if s.in_battle or not s.field_ready:
-                limit += _field_or_handle(s, step, ctx, limit)
-                last, still = None, 0
-                continue
-            s.run(4)
-            p = s.probe()
-            still = still + 1 if (p.x, p.z) == last else 0
-            last = (p.x, p.z)
+        for attempt in range(2):
+            p0 = s.probe()
+            s.run(8, d)
+            last, still = None, 0
+            while still < 6:
+                if s.frame >= limit:
+                    raise HarnessError("slide: press %d (%s) has not settled by the step's bound" % (i + 1, d))
+                if s.in_battle or not s.field_ready:
+                    limit += _field_or_handle(s, step, ctx, limit)
+                    last, still = None, 0
+                    continue
+                s.run(4)
+                p = s.probe()
+                still = still + 1 if (p.x, p.z) == last else 0
+                last = (p.x, p.z)
+            # a press that only turned the player (HG/SS Ice Path B2F: the first press after falling through the
+            # B1F hole) is pressed again; a press that moved, or one already facing its way, is done
+            if last != (p0.x, p0.z) or p0.facing == FACINGS[d.lower()]:
+                break
+        s.note("slide: press %d %s -> (%d,%d)" % (i + 1, d, last[0], last[1]))
     p = s.probe()
     s.note("slide: %d presses, at (%d,%d)" % (len(dirs), p.x, p.z))
 # ---------------------------------------------------------------- fly

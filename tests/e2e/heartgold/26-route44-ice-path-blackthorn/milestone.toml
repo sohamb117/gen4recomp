@@ -2,10 +2,9 @@
 # Path (HM07 Waterfall item ball on 1F, the Kimono Girl, the B1F boulder holes, the ice slides) into Blackthorn City.
 # Start: MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK -> end: MAP_BLACKTHORN outside the Ice Path (697,145), HM07.
 title = "Route 44 and the Ice Path (HM07) to Blackthorn"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 50000
+estimate = 29673
 refs = [
   "zone_event 084_T28 coord 0 (540,176) h2 VAR_UNK_407A 0 -> 001 (RageCandyBar man blocks Route 44 until scr_seq_0034_D23R0106.s:142 sets VAR_UNK_407A 1)",
   "zone_event 043_R44 warp 0 (633,169) -> MAP_ICE_PATH_1F 0 (11,58)",
@@ -23,10 +22,9 @@ notes = "Route (`python3 tests/e2e/tools/hg_map.py MAP_ICE_PATH_<floor> --solve 
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
-boost = "boost.recipe"
 
 [run]
-frames = 80000
+frames = 44600
 
 [[step]]
 do = "walk_to"
@@ -54,9 +52,9 @@ map = "MAP_GOLDENROD_RADIO_TOWER_5F"
 
 [[step]]
 do = "walk_to"
-x = 3
+x = 19
 z = 5
-note = "5F stairs (warp 0) -> 4F (3,5)"
+note = "5F east stairs (warp 2) -> 4F (23,5): the elevator lands on 5F's east half, walled off from the west stairs (land data rows 5-7, x 8-10)"
 
 [[step]]
 do = "wait_map"
@@ -64,9 +62,9 @@ map = "MAP_GOLDENROD_RADIO_TOWER_4F"
 
 [[step]]
 do = "walk_to"
-x = 12
+x = 19
 z = 5
-note = "4F stairs (warp 0) -> 3F (12,5)"
+note = "4F stairs (warp 2) -> 3F east (19,5), the way 25 came up"
 
 [[step]]
 do = "wait_map"
@@ -76,7 +74,7 @@ map = "MAP_GOLDENROD_RADIO_TOWER_3F"
 do = "walk_to"
 x = 3
 z = 5
-note = "3F stairs (warp 0) -> 2F (3,5)"
+note = "3F west stairs (warp 0) -> 2F (3,5), through the shutters the Card Key opened in 25"
 
 [[step]]
 do = "wait_map"
@@ -229,8 +227,8 @@ map = "MAP_ICE_PATH_B2F"
 
 [[step]]
 do = "slide"
-dirs = "DOWN LEFT LEFT LEFT LEFT DOWN DOWN DOWN DOWN DOWN LEFT DOWN DOWN DOWN DOWN LEFT UP UP RIGHT"
-note = "--solve 50 5 43 22: onto the ladder (43,22) (warp 4)"
+dirs = "LEFT DOWN DOWN LEFT LEFT LEFT DOWN DOWN DOWN DOWN DOWN LEFT DOWN DOWN DOWN DOWN LEFT UP UP RIGHT UP"
+note = "--slide 50 4 (this string) --hide 1 2 3: the ladder up from B3F (24,11) lands on B2F (50,5) (0x3E) and steps the player off it to (50,4); pushing down onto (50,5) again climbs back down (seen in the first chained run), so the route goes round it west; onto the ladder (43,22) (warp 4, 0x3C: pushed north to climb)"
 
 [[step]]
 do = "wait_map"
@@ -248,8 +246,8 @@ map = "MAP_ICE_PATH_1F"
 
 [[step]]
 do = "slide"
-dirs = "DOWN DOWN DOWN LEFT LEFT DOWN DOWN LEFT DOWN RIGHT UP DOWN"
-note = "--solve 55 20 55 28 --last DOWN: ... (55,28) RIGHT, UP to (55,25), DOWN into the Kimono Girl: at (55,28) facing south"
+dirs = "LEFT DOWN DOWN DOWN DOWN LEFT DOWN DOWN LEFT DOWN RIGHT UP DOWN"
+note = "from (55,19), where the ladder up from B1F leaves the player (one tile north of the 0x3E ladder (55,20); a push back onto it climbs down): LEFT DOWN DOWN to (54,21), then --solve 54 21 55 28 --last DOWN: ... (55,28) RIGHT, UP to (55,25), DOWN into the Kimono Girl: at (55,28) facing south"
 
 [[step]]
 do = "walk_to"
@@ -285,7 +283,7 @@ flags = ["FLAG_HIDE_ITEMBALL_D39R0101_HM07", "FLAG_UNK_239", "FLAG_BEAT_RADIO_TO
 flags_clear = ["FLAG_HIDE_ICE_PATH_BOULDER_1_FALLEN"]
 save = ['any(i["item"] == 426 for k, p in s["bag"].items() if k != "registered" for i in p)']
 party = ["SPECIES_FERALIGATR"]
-party_size = 5
+party_size = 6  # Feraligatr added in 25 (boost.recipe) fills the party
 
 [expect.vars]
 VAR_UNK_40E8 = 1
