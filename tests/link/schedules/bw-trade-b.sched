@@ -1,0 +1,20 @@
+# Black/White Union Room trade, station B (LINKB). Into the Union Room as A
+# (40 frames later), then wait: A talks to B. Past "Hello!", accept A's trade
+# offer (A on "Will you accept this trade offer?" YES).
+5000:start:4
+5150:a:4:100:8
+6040:up:4
+6140:a:4:80:30
+10320:a:4
+11000:a:4:150:4
+# The trade screen, as A's, offering party slot 4.
+12540:tap:108:58:4
+12660:tap:140:58:4
+12780:tap:200:157:4
+13020:tap:216:179:4
+13270:tap:200:61:4
+13620:tap:200:61:4
+13970:tap:60:55:4
+14120:tap:60:45:4
+14320:tap:200:133:4
+14720:tap:200:157:4

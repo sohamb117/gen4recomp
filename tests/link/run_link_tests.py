@@ -11,16 +11,22 @@ fixed; the relay one runs the game's datagrams through server/relay with
 
   tests/link/run_link_tests.py [--game A[:B]] [--keep DIR] [NAME...]
 
---game picks the stations' games (platinum, diamond, pearl; one name for
-both, A:B for a cross-version pair, `all` for every pair below); the
-default is platinum. Each scenario belongs to one pair, because the press
-schedules are timed against what both stations draw. Diamond and Pearl run
-on build/core-dp, Platinum on build/core-plat (linkpair.py has the paths).
+--game picks the stations' games (platinum, diamond, pearl, black, white;
+one name for both, A:B for a cross-version pair, `all` for every pair
+below); the default is platinum. Each scenario belongs to one pair, because
+the press schedules are timed against what both stations draw. Diamond and
+Pearl run on build/core-dp, Platinum on build/core-plat, Black and White on
+build/core-bw (linkpair.py has the paths).
 
-Skips (exit 0, "SKIP") without a ROM, an np_headless build or np_save4;
-the relay scenario also skips without `go`. About 35 s of lockstep frames
-per 10000 on an idle machine. Interactive work on a scenario's tail goes
-through linkpair.py serve/job (a forked checkpoint, seconds per try).
+Black/White have no lab: their saves come from the e2e chain's milestone
+10 (linkpair.mint_bw), and the trade check is relative to the parties the
+mint produced (A's party slot 1 for B's slot 4).
+
+Skips (exit 0, "SKIP") without a ROM, an np_headless build, np_save4 (or,
+for Black/White, np_save5 and the milestone saves); the relay scenario also
+skips without `go`. About 35 s of lockstep frames per 10000 on an idle
+machine. Interactive work on a scenario's tail goes through linkpair.py
+serve/job (a forked checkpoint, seconds per try).
 """
 import argparse
 import os
@@ -85,6 +91,19 @@ SCENARIOS = [
          recipes={'a': 'recipes/dp-union-a.recipe', 'b': 'recipes/union-b.recipe'},
          scheds={'a': 'schedules/dp-pt-trade-a.sched', 'b': 'schedules/dp-pt-trade-b.sched'},
          frames=13000, party=TRADED),
+    # Black's A with White's B in the Union Room (WM over np_host_net, the
+    # same pc_wm.c model, TWL-SDK 5's WM library on the ARM9). A's party slot 1
+    # for B's slot 4; the game saves both after the trade animation.
+    dict(name='bw_trade', games=('black', 'white'),
+         scheds={'a': 'schedules/bw-trade-a.sched', 'b': 'schedules/bw-trade-b.sched'},
+         frames=17500, trade_slots=(0, 3), dump_from=12500, dump_every=100),
+    # A Single Battle in the Union Room's battle room: both trade a move on
+    # turn 1, A forfeits on turn 2; both stations leave the battle and stand
+    # in the battle room (zone 150) again.
+    dict(name='bw_battle', games=('black', 'white'),
+         scheds={'a': 'schedules/bw-battle-a.sched', 'b': 'schedules/bw-battle-b.sched'},
+         frames=18000, dump_from=13000, dump_every=100,
+         logs={s: ('in_battle 0 -> 1', 'in_battle 1 -> 0', 'map_id 0 -> 150') for s in 'ab'}),
 ]
 
 
@@ -93,9 +112,13 @@ def games_of(sc):
 
 
 def have_tools(games):
-    paths = [linkpair.SAVE4]
+    paths = []
     for g in games:
         paths += linkpair.GAMES[g]
+        if g in linkpair.BW_GAMES:
+            paths += [linkpair.SAVE5, linkpair.bw_base_save(g)]
+        elif linkpair.SAVE4 not in paths:
+            paths.append(linkpair.SAVE4)
     for path in paths:
         if not os.path.exists(path):
             return path
@@ -131,8 +154,17 @@ def run(sc, work):
     games = dict(zip('ab', games_of(sc)))
     saves = {}
     for side in 'ab':
-        saves[side] = linkpair.mint(os.path.join(HERE, sc['recipes'][side]), os.path.join(d, side.upper() + '.sav'),
-                                    games[side], base_dir=work)
+        out = os.path.join(d, side.upper() + '.sav')
+        if games[side] in linkpair.BW_GAMES:
+            saves[side] = linkpair.mint_bw(games[side], side, out)
+        else:
+            saves[side] = linkpair.mint(os.path.join(HERE, sc['recipes'][side]), out, games[side], base_dir=work)
+    want_party = dict(sc.get('party', {}))
+    if 'trade_slots' in sc:
+        before = {side: linkpair.party(saves[side], games[side]) for side in 'ab'}
+        sa, sb = sc['trade_slots']
+        want_party = {'a': list(before['a']), 'b': list(before['b'])}
+        want_party['a'][sa], want_party['b'][sb] = before['b'][sb], before['a'][sa]
     relay_proc = None
     extra = {'a': [], 'b': []}
     if sc.get('relay'):
@@ -161,8 +193,8 @@ def run(sc, work):
     if relay_proc:
         relay_proc.kill()
     fails = ['%s exited %d' % (s, rc) for s, rc in rcs.items() if rc != 0]
-    for side, want in sc.get('party', {}).items():
-        got = linkpair.party(saves[side])
+    for side, want in want_party.items():
+        got = linkpair.party(saves[side], games[side])
         if got != want:
             fails.append('%s party %s, want %s' % (side, got, want))
     if 'win' in sc:
@@ -178,9 +210,11 @@ def run(sc, work):
         if shown < 2:
             fails.append('%d dumps (from frame %d to %d) show the red WIN label at (%d,%d) on both stations, '
                          'want 2 or more' % (shown, sc['dump_from'], sc['frames'], x, y))
-    for side, needle in sc.get('logs', {}).items():
-        if needle not in open(os.path.join(d, side + '.log')).read():
-            fails.append('%s log lacks "%s"' % (side, needle))
+    for side, needles in sc.get('logs', {}).items():
+        log = open(os.path.join(d, side + '.log')).read()
+        for needle in (needles,) if isinstance(needles, str) else needles:
+            if needle not in log:
+                fails.append('%s log lacks "%s"' % (side, needle))
     return 'FAIL: ' + '; '.join(fails) if fails else 'ok'
 
 
@@ -192,7 +226,7 @@ def pairs(spec):
     b = b or a
     for g in (a, b):
         if g not in linkpair.GAMES:
-            sys.exit('run_link_tests: unknown game %s (platinum, diamond, pearl)' % g)
+            sys.exit('run_link_tests: unknown game %s (%s)' % (g, ', '.join(sorted(linkpair.GAMES))))
     return [(a, b)]
 
 

@@ -1,0 +1,11 @@
+# Black/White: CONTINUE outside Striaton's Pokemon Center (A answers the
+# C-Gear's "Launch C-Gear communications?" with YES), walk in, save from the
+# X menu (Save on the touch screen) and confirm. linkpair.mint_bw runs it to
+# frame 7800.
+5000:start:4
+5150:a:4:100:8
+6000:up:120
+6400:up:30
+6700:x:4
+6800:tap:64:142:4
+6900:a:4:60:8

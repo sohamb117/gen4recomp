@@ -765,3 +765,80 @@ trees and falling snow; in March it shows autumn's orange trees
 
 How to check a season: CONTINUE with `--rtc` set to the month you want, from
 a save made indoors, then walk out.
+
+## Link play: Black and White stations over np_host_net (2026-10-09)
+
+Two np_headless stations, Black's A and White's B, run in lockstep
+(`--lockstep`, `--net-id`). They meet in the Union Room, trade, and battle.
+The wireless model is the one D/P/Pt already use and needed no change:
+`games/platinum/pc/src/pc_wm.c`, the ARM7 WMSP half behind PXI tag 10. The
+BW core builds it with `PC_GAME_DP`, through `games/diamond/pc/mk/host.mk`.
+Black and White link TWL-SDK 5's ARM9 WM library (`WMi_StartMP` at
+0x0208FA28, `ndsrec_arm9_022.s`). That library sends the same requests and
+decodes the same callback records the model writes. No shared wireless code
+was touched.
+
+What runs, in order:
+
+- **The C-Gear** beacons as a WM parent after "Launch C-Gear
+  communications?" YES: ggid 0x1380, channels 1/7/13, as `PC_WM_TRACE=1`
+  shows.
+- **The Union Room.** The counter in Striaton's Pokémon Center (zone 8, the
+  attendant at (4,4) up the tier, y=3) needs flag 0x73 (scr 0855 script 2).
+  After the first-visit title, "DS Wireless Communications will be
+  launched" and the save, both stations are in zone 422.
+  - Each station sees the other's avatar.
+  - Both chat logs read "LINKA: I've entered the Union Room." and "LINKB:
+    I've entered the Union Room."
+  - B's avatar stands at (13,10). A walks to (13,11), presses A, and gets
+    "Talking to LINKB..." while B shows "Hello!". A's menu then offers
+    Greet, Battle, Trade, Draw, Spin and Cancel.
+- **The trade** is all touch.
+  - Each side offers up to three Pokémon, and each sees the other's offer
+    on the top screen.
+  - Two confirmations follow, then each picks the partner's Pokémon and
+    taps TRADE twice.
+  - The animation runs on both stations ("LINKB sent over ..."), the game
+    saves both, and the parties hold the swapped Pokémon.
+- **The battle**: Battle > Battles for two > Single Battle, No
+  Restrictions > Confirm; B accepts.
+  - Both are moved to the battle room (zone 150, the referee's "Please take
+    your designated position and start the battle.").
+  - The 1v1 positions are (3,5) and (9,5). They come from overlay 19's u16
+    table at 0x02180794: {3,5, 9,5}, then the 2v2 {3,4, 9,6, 3,6, 9,4}. That
+    is BW's counterpart of Platinum's `sub_020590C4` grid
+    (`comm_player_manager.c`).
+  - Standing there opens team selection. It shows the opponent's party, with
+    ENTER and CONFIRM.
+  - The battle runs with moves on both stations ("Emboar used Earthquake!" /
+    "The foe's Emboar used Earthquake!").
+  - It ends on the shared result screen (WIN for the winner on both) or on
+    "The match was forfeited.", and both stations return to the battle room.
+
+Tests: `tests/link/run_link_tests.py --game black:white` runs `bw_trade` and
+`bw_battle` (about two minutes each), and `linkpair.py` takes `black` and
+`white` stations.
+- Black/White have no lab, so `linkpair.mint_bw` builds each station's save
+  from the e2e chain's milestone 10 (`build/e2e/<game>/10-.../end.sav`, or
+  `NP_BW_LINK_BASE_<GAME>`):
+  1. `np_save5` renames the save (LINKA / LINKB), sets new IDs and places
+     the player outside the Pokémon Center door.
+  2. The game walks in and saves there (`schedules/bw-pc-save.sched`), so the
+     save holds the Center's own objects.
+  3. `np_save5` then moves the player in front of the Union Room counter.
+- `bw_trade` checks the swap with `np_save5`: A's party slot 1 against B's
+  slot 4, relative to the minted parties.
+- `bw_battle` checks that both stations enter the battle, leave it, and
+  return to zone 150. Turn 1 trades a move; on turn 2 A forfeits. A forfeit
+  is used because its timing does not depend on the chain's levels.
+- The schedules are timed against milestone 10's parties (two Tepig turns).
+  A chain change that alters those needs the battle taps retimed.
+
+Frames (A | B pairs), in `/tmp/bw2/link/report/`:
+1. `1-union-room.png`: both in the room.
+2. `2-trade-boosted.png`: the trade animation and "sent over".
+3. `3-trade-regression.png`: the regression trade, Patrat ↔ Tepig.
+4. `4-battle-ko-win.png`: a KO battle with the WIN screen on both.
+5. `5-battle-regression.png`: the regression battle, Ember / critical
+   Tackle / forfeit.
+6. `6-battle-room-team-select.png`: the battle room and team selection.

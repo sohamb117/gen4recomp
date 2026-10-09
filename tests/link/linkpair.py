@@ -16,19 +16,24 @@ into the Union Room.
   linkpair.py stop DIR
   linkpair.py sheet RUN OUT.png FRAME...
       side-by-side A|B contact sheet of dumped frames
-  linkpair.py party SAV
-      species of the save's party (np_save4 dump)
+  linkpair.py party SAV [G]
+      species of the save's party (np_save4 dump; np_save5 for black/white)
 
   linkpair.py mint [--game G] RECIPE OUT.sav
       mint a save from a lab recipe (tests/link/recipes) with this core
+  linkpair.py mint-bw GAME SIDE OUT.sav
+      a Black/White station's save inside Striaton's Pokemon Center, in front
+      of the Union Room counter (mint_bw)
 
-G is platinum (the default), diamond or pearl, per station: a Diamond and a
-Platinum station are two different cores (build/core-dp, build/core-plat)
-on the same lockstep wire.
+G is platinum (the default), diamond, pearl, black or white, per station: a
+Diamond and a Platinum station are two different cores (build/core-dp,
+build/core-plat) on the same lockstep wire; Black and White share
+build/core-bw.
 
 The regression scenarios themselves are in run_link_tests.py. Environment:
-NP_HEADLESS (Platinum's core), NP_DP_HEADLESS (Diamond/Pearl's), NP_SAVE4,
-NP_PLAT_ROM, NP_DIAMOND_ROM, NP_PEARL_ROM override the default build paths;
+NP_HEADLESS (Platinum's core), NP_DP_HEADLESS (Diamond/Pearl's),
+NP_BW_HEADLESS (Black/White's), NP_SAVE4, NP_PLAT_ROM, NP_DIAMOND_ROM,
+NP_PEARL_ROM, NP_BLACK_ROM, NP_WHITE_ROM override the default build paths;
 NP_DP_BASE_SAVE_<GAME> (DIAMOND, PEARL) names a ready new-game save for
 the D/P mint. --relay/--pin/--drop on serve put the game's datagrams
 through server/relay.
@@ -43,6 +48,7 @@ import time
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SAVE4 = os.environ.get('NP_SAVE4', os.path.join(ROOT, 'build', 'features', 'np_save4'))
+SAVE5 = os.environ.get('NP_SAVE5', os.path.join(ROOT, 'build', 'features', 'np_save5'))
 GAMES = {
     'platinum': (os.environ.get('NP_HEADLESS', os.path.join(ROOT, 'build', 'core-plat', 'np_headless')),
                  os.environ.get('NP_PLAT_ROM', os.path.join(ROOT, 'games', 'platinum', 'build', 'rom',
@@ -53,8 +59,15 @@ GAMES = {
     'pearl': (os.environ.get('NP_DP_HEADLESS', os.path.join(ROOT, 'build', 'core-dp', 'np_headless')),
               os.environ.get('NP_PEARL_ROM', os.path.join(ROOT, 'games', 'diamond', 'build', 'pearl.us',
                                                           'pokepearl.us.nds'))),
+    'black': (os.environ.get('NP_BW_HEADLESS', os.path.join(ROOT, 'build', 'core-bw', 'np_headless')),
+              os.environ.get('NP_BLACK_ROM', os.path.join(ROOT, 'roms',
+                                                           'Pokemon - Black Version (USA, Europe) (NDSi Enhanced).nds'))),
+    'white': (os.environ.get('NP_BW_HEADLESS', os.path.join(ROOT, 'build', 'core-bw', 'np_headless')),
+              os.environ.get('NP_WHITE_ROM', os.path.join(ROOT, 'roms',
+                                                           'Pokemon - White Version (USA, Europe) (NDSi Enhanced).nds'))),
 }
 IDS = {'a': '0x111111', 'b': '0x222222'}
+BW_GAMES = ('black', 'white')
 
 
 def core(game):
@@ -217,9 +230,51 @@ def sheet(run, out, frames, cols=2):
     os.remove(tmp)
 
 
-def party(sav):
-    out = subprocess.run([SAVE4, 'dump', sav], capture_output=True, text=True, check=True).stdout
+def party(sav, game='platinum'):
+    tool = SAVE5 if game in BW_GAMES else SAVE4
+    out = subprocess.run([tool, 'dump', sav], capture_output=True, text=True, check=True).stdout
     return [m['species'] for m in json.loads(out)['party']]
+
+
+# Black/White have no lab. A station's save is a chain milestone's (tests/e2e,
+# build/e2e/<game>/<BW_BASE>/end.sav, or NP_BW_LINK_BASE_<GAME>): it has the
+# C-Gear and flag 0x73, which opens the Union Room counter (scr 0855 script 2).
+# np_save5 renames it per side and puts the player outside Striaton's Pokemon
+# Center (zone 6, the door at (781,587)); the game walks in and saves there, so
+# the save holds the Center's own objects (a save moved straight into zone 8
+# would CONTINUE with the old map's objects, and no attendant); np_save5 then
+# moves the player to (4,3,6), in front of the Union Room attendant.
+BW_BASE = '10-route3-cheren-wellspring-plasma'
+BW_SIDE = {'a': ('LINKA', '11111', '1111'), 'b': ('LINKB', '22222', '2222')}
+
+
+def bw_base_save(game):
+    return os.environ.get('NP_BW_LINK_BASE_' + game.upper(),
+                          os.path.join(ROOT, 'build', 'e2e', game, BW_BASE, 'end.sav'))
+
+
+def mint_bw(game, side, out_sav):
+    base = bw_base_save(game)
+    name, tid, sid = BW_SIDE[side]
+    door = out_sav + '.door'
+    for args in (['set-name', base, name, '-o', door], ['set-ids', door, tid, sid],
+                 ['set-location', door, '6', '781', '0', '588']):
+        subprocess.run([SAVE5] + args, check=True, capture_output=True)
+    p = subprocess.run(core(game) + ['--frames', '7800', '--save', door, '--schedule',
+                                     os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                  'schedules', 'bw-pc-save.sched')],
+                       capture_output=True, text=True)
+    loc = json.loads(subprocess.run([SAVE5, 'dump', door], capture_output=True, text=True,
+                                    check=True).stdout)['location']
+    if p.returncode != 0 or loc['map'] != 8:
+        sys.exit('mint-bw %s %s: the in-Center save did not happen (rc %d, map %d)\n%s'
+                 % (game, side, p.returncode, loc['map'], p.stdout[-2000:]))
+    subprocess.run([SAVE5, 'set-location', door, '8', '4', '3', '6', '-o', out_sav], check=True,
+                   capture_output=True)
+    for leftover in (door, door + '.bak'):
+        if os.path.exists(leftover):
+            os.remove(leftover)
+    return out_sav
 
 
 def dp_base_save(game, workdir):
@@ -311,8 +366,10 @@ def main():
         if rest[:1] == ['--game']:
             game, rest = rest[1], rest[2:]
         print(mint(rest[0], rest[1], game))
+    elif cmd == 'mint-bw':
+        print(mint_bw(rest[0], rest[1], rest[2]))
     elif cmd == 'party':
-        print(party(rest[0]))
+        print(party(rest[0], rest[1] if len(rest) > 1 else 'platinum'))
     else:
         sys.exit(__doc__)
 
