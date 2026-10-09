@@ -97,6 +97,7 @@ map = "MAP_OLIVINE"
 
 [[step]]
 do = "advance_text"
+key = "b"  # a scripted Pokegear call: A on the contact list it leaves open would call again (README, HeartGold and SoulSilver)
 note = "OnFrame VAR_SCENE_LIGHTHOUSE_JASMINE 2 -> 3 (scr_seq_0911_T26.s:35-40)"
 
 [[step]]

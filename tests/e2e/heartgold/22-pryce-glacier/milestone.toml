@@ -206,6 +206,7 @@ map = "MAP_MAHOGANY"
 
 [[step]]
 do = "advance_text"
+key = "b"  # a scripted Pokegear call: A on the contact list it leaves open would call again (README, HeartGold and SoulSilver)
 note = "OnFrame VAR_MIDGAME_BADGES 4 -> the takeover: VAR_SCENE_ROCKET_TAKEOVER 2 (scr_seq_0930_T28.s:19-28)"
 
 [expect]

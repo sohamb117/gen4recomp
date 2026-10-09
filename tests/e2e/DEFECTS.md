@@ -3,16 +3,27 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
-## Open: HeartGold's first battle aborts in the 3D command FIFO (port; owner: the HG/SS port)
+## Open: HeartGold freezes at a trainer's sight encounter; scripted NPCs draw as a white block (port)
 
-HeartGold 02 (tests/e2e/heartgold/02-cherrygrove-guide-mr-pokemon-pokedex) stops at its first wild battle. Repro:
-start from 01's end save (New Bark west exit), CONTINUE, `walk_to (566,398)` west into Route 29's grass: the
-encounter starts at frame 2373 (`in_battle 0 -> 1`), the field's battle transition plays, and at frame 2513 the
-core stops: `pc-gpu3d: command 0x10 arrived while 0x16 still wanted 3 of its 16 parameters, a caller cached a
-command port's address and stored through it`, then `abort()`. Core: main 9d997a419 (hgss-play2's build). A
-16-parameter command (0x16 MTX_LOAD_4x4) cut short by a matrix-mode write is the shape of a geometry-port store
-that bypasses the runtime's port routing (the field's equivalent was fixed in 97814f2c5 for compiled C); the
-battle's 3D setup runs in overlay 12 [INFERENCE: which TU]. Every battle (wild, the rival in 03) waits on it.
+HeartGold 04 (tests/e2e/heartgold/04-route30-31-violet) stops at the first route trainer. Repro: start from 03's end
+save (Route 29 west of New Bark), CONTINUE, `walk_to (553,292)` north up Route 30 (wild battles fled): Youngster
+Joey (Route 30 object 4 at (553,332), std_trainer TRAINER_YOUNGSTER_JOEY) spots the player at (552,332) around
+frame 8759 and the field never moves again: no battle starts, `field_ready` stays 0, A/B do nothing. The top screen
+shows the player and Joey as one white/blue block with only the player's shadow drawn. The same block, without
+the freeze, stands where the player and a scripted NPC are during the Cherrygrove guide-gent tour (02) and the
+Cherrygrove rival scene (03); their milestones pass on their saves, their pictures show the block. Core: hgss-play2's
+22:23 build of main c2f26070e. Lead from the port side: before 165d72148 the player looked exactly like this when
+sprite textures were never uploaded (VBlank-queue tasks failing to be created): look for GF_AssertFail from
+SysTask_CreateOnVBlankQueue or a full 32-entry VBlank queue during the encounter (the emote and the approach
+loading textures in one long frame), else another unprototyped callback (unk_02037C94.c sub_020381C0, :1170;
+custom_safari_zone.c). Every route trainer waits on it.
+
+## Fixed: HeartGold's first battle aborted in the 3D command FIFO (port)
+
+The first wild battle (Route 29) stopped as it began: `pc-gpu3d: command 0x10 arrived while 0x16 still wanted 3 of
+its 16 parameters`, then `abort()`. G3_LoadMtx44 -> GX_SendFifo64B (gxasm.s) was recompiled without the geometry
+hook, so its stmia to the FIFO went to plain memory; GX_SendFifo64B is a host override since c2f26070e. Wild
+battles, the rival (03) and the catching tutorial now run.
 
 ## Fixed: HeartGold's first field load hung (port)
 

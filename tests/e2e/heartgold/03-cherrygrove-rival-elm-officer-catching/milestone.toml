@@ -2,10 +2,9 @@
 # (the officer, naming the rival, Elm keeps the Mystery Egg) and Lyra's Route 29 catching tutorial (5 Poke Balls).
 # Start: MAP_ROUTE_30 (568,295) -> end: MAP_ROUTE_29 east end (666,399), VAR_SCENE_ELMS_LAB 4, VAR_UNK_408B 0.
 title = "Cherrygrove rival, Elm's lab officer and rival name, Route 29 catching tutorial"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 18000
+estimate = 16587
 refs = [
   "zone_event 064_T21 coord 1 (575,398) h4 VAR_SCENE_CHERRYGROVE_CITY_OW 3 -> 003",
   "scr_seq_0850_T21.s:535-613 (rival: GetStarterChoice 155 -> TRAINER_PASSERBY_BOY_3 :555-557, FLAG_HIDE_CHERRYGROVE_RIVAL, VAR_SCENE_CHERRYGROVE_CITY_OW 4, FLAG_MET_PASSERBY_BOY)",
@@ -28,10 +27,11 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 27000
+frames = 24900
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 575
 z = 399
 on_text = "stop"
@@ -52,6 +52,7 @@ note = "rival leaves: FLAG_HIDE_CHERRYGROVE_RIVAL, VAR 4, FLAG_MET_PASSERBY_BOY 
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 684
 z = 393
 note = "east along Route 29 to Elm's lab (zone_event 057_T20 warp 0); Route 29's coord needs VAR_UNK_408B 1, still 0"
@@ -104,6 +105,7 @@ map = "MAP_NEW_BARK"
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 666
 z = 399
 on_text = "stop"

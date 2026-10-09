@@ -25,7 +25,15 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 30000
+frames = 100000
+
+[[step]]
+do = "grind"
+x = 476
+z = 290
+level = 12
+heal = [497, 271]
+note = "lead Cyndaquil to 12 (Ember at 10) before Sprout Tower (Elder Li: Bellsprout 7, 7, Hoothoot 10) and Falkner (Pidgey 9, Pidgeotto 13): Route 32's tall grass (476..477,290), reached from Violet without a gatehouse (tools/hg_world.py route 497 272 476 290), healing at Violet's Pokemon Center (zone_event T22 warp 7 (497,271))"
 
 [[step]]
 do = "walk_to"

@@ -6,7 +6,7 @@
 title = "New game, the bedroom, Mom, Elm's lab: Cyndaquil, Pokegear, Elm's number"
 priority = "P0"
 version = "both"
-estimate = 35895
+estimate = 34648
 refs = [
   "docs/HANDOFF-hgss.md:84-104 (intro schedule, both games)",
   "zone_event 061_T20R0202 warp 0 (3,4) -> MAP_NEW_BARK_PLAYER_HOUSE_1F",
@@ -43,7 +43,7 @@ notes = "Starter: CYNDAQUIL (VAR_PLAYER_STARTER 155). Fire hits Bugsy's whole te
 blank = true
 
 [run]
-frames = 53900
+frames = 52000
 options = ["text_instant=0"]  # intro.press was recorded at the real text speed
 
 [[step]]
@@ -137,7 +137,8 @@ note = "INSPECT -> CONFIRM_CHOICE (zoom in, Elm asks; src/choose_starter_app.c:1
 
 [[step]]
 do = "wait_frames"
-n = 90
+n = 300
+note = "Elm's question (\"You'll take CYNDAQUIL, the Fire-type Pokemon?\") prints at the real text speed; an A while it prints only completes the text, and the B presses after it then cancel the choice (seen: the starter re-chosen by advance_text, whose A answered the nickname YES and typed AAAAAAAAAA)"
 
 [[step]]
 do = "press"
@@ -232,6 +233,7 @@ flags = ["FLAG_GOT_BAG", "FLAG_GOT_TRAINER_CARD", "FLAG_GOT_SAVE_BUTTON", "FLAG_
 flags_clear = ["FLAG_ELMS_LAB_PREVENT_PLAYER_ESCAPE"]
 party = ["SPECIES_CYNDAQUIL"]
 party_size = 1
+save = ['s["party"][0]["nickname"] == "CYNDAQUIL"']  # the nickname question answered NO
 
 [expect.vars]
 VAR_PLAYER_STARTER = "SPECIES_CYNDAQUIL"

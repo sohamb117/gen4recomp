@@ -3,10 +3,9 @@
 # Elm's panic call on the way out.
 # Start: MAP_NEW_BARK west exit (676,399) -> end: MAP_ROUTE_30 outside Mr. Pokemon's house (568,295), VAR_SCENE_ROUTE_30_OW 3.
 title = "Cherrygrove guide gent, Route 30, Mr. Pokemon: Mystery Egg and Pokedex"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 16000
+estimate = 46249
 refs = [
   "zone_event 064_T21 coord 0 (566,397) h4 VAR_SCENE_CHERRYGROVE_CITY_OW 0 -> 001",
   "scr_seq_0850_T21.s:48-213 (guide gent tour, GiveRunningShoes :189, FLAG_HIDE_CHERRYGROVE_GUIDE_GENT, VAR_SCENE_CHERRYGROVE_CITY_OW 1)",
@@ -29,19 +28,26 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 24000
+frames = 69400
 
 [[step]]
 do = "walk_to"
 x = 566
 z = 398
 on_text = "stop"
-note = "Route 29 west into Cherrygrove; coord 0 (566,397..400) -> guide gent tour (scr_seq_0850_T21.s:48-213)"
+on_battle = "flee"
+note = "(wild battles fled: a lv5 Cyndaquil with Tackle alone whited out to Rattata + Pidgey in the first chained run) Route 29 west into Cherrygrove; coord 0 (566,397..400) -> guide gent tour (scr_seq_0850_T21.s:48-213)"
 
 [[step]]
 do = "advance_text"
 shot = "guide-gent"
 note = "the tour ends with the Running Shoes (GiveRunningShoes, :189)"
+
+[[step]]
+do = "heal"
+x = 564
+z = 391
+note = "Cherrygrove Pokemon Center (zone_event 064_T21 warp 0) before Route 30's trainers"
 
 [[step]]
 do = "walk_to"
@@ -54,10 +60,19 @@ note = "north exit coord 2 (547..550,385) VAR 1 -> the gent's Map Card (:450-508
 do = "advance_text"
 
 [[step]]
+do = "grind"
+x = 559
+z = 376
+level = 8
+heal = [564, 391]
+note = "Cyndaquil (lv5-6, Tackle) whited out twice to Route 29/30's Pidgey and Rattata in the first chained runs: level it in Route 30's tall grass (559..560,376) to 8 before the rival (TRAINER_PASSERBY_BOY_3 Totodile lv5, 03), healing at Cherrygrove's Pokemon Center (zone_event 064_T21 warp 0)"
+
+[[step]]
 do = "walk_to"
 x = 559
 z = 354
 on_text = "stop"
+on_battle = "flee"
 note = "Route 30 coord 0 (558..561,354) VAR_SCENE_ROUTE_30_OW 0 -> Apricorn Box (scr_seq_0227_R30.s:60-123)"
 
 [[step]]
@@ -67,6 +82,7 @@ do = "advance_text"
 do = "walk_to"
 x = 568
 z = 294
+on_battle = "flee"
 note = "north through Route 30 (Mikey, Don fought if they spot) to Mr. Pokemon's door (warp 0)"
 
 [[step]]
@@ -90,6 +106,7 @@ map = "MAP_ROUTE_30"
 
 [[step]]
 do = "advance_text"
+key = "b"  # a scripted Pokegear call: A on the contact list it leaves open would call again (README, HeartGold and SoulSilver)
 note = "OnFrame VAR_SCENE_ROUTE_30_OW 2 -> Elm's panic call (scr_seq_0227_R30.s:21-25)"
 
 [expect]

@@ -15,7 +15,7 @@ refs = [
   "scr_seq_0231_R31R0101.s:17-140 (ITEM_VS__RECORDER, VAR_UNK_4132 1)",
   "zone_event 094_R31R0101 warp 0 (1,7) -> MAP_VIOLET 0 (511,269)",
 ]
-notes = "No story battle; Joey/Mikey/Don/Wade fight if they spot the player (walk_to fights them). Mom's call (PhoneCall) needs only A [INFERENCE]. The gatehouse VS Recorder speech has no menu [INFERENCE: not read line by line; advance_text answers A]."
+notes = "No story battle; Joey/Mikey/Don/Wade fight if they spot the player (walk_to fights them). Mom's call (PhoneCall) is run out with B (advance_text key b). The gatehouse VS Recorder speech has no menu [INFERENCE: not read line by line; advance_text answers A]."
 
 [start]
 from = "prev"
@@ -26,6 +26,7 @@ frames = 22500
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 553
 z = 292
 on_text = "stop"
@@ -33,9 +34,11 @@ note = "west on Route 29, north up Route 30 to coord 1 (553,292) -> Mom's call (
 
 [[step]]
 do = "advance_text"
+key = "b"  # a scripted Pokegear call: A on the contact list it leaves open would call again (README, HeartGold and SoulSilver)
 
 [[step]]
 do = "walk_to"
+on_battle = "flee"
 x = 518
 z = 269
 note = "Route 31 west to the Violet gatehouse (zone_event 032_R31 warp 0)"

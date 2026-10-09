@@ -175,6 +175,7 @@ map = "MAP_BLACKTHORN"
 
 [[step]]
 do = "advance_text"
+key = "b"  # a scripted Pokegear call: A on the contact list it leaves open would call again (README, HeartGold and SoulSilver)
 note = "OnFrame VAR_UNK_407B 1 -> 2"
 
 [expect]
