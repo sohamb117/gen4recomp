@@ -3,10 +3,9 @@
 # VAR_SCENE_NEW_BARK_EAST_EXIT 2 (Lyra now holds the Route 27 exit until the legendary).
 # Start: MAP_BLACKTHORN (672,133) -> end: MAP_NEW_BARK outside Elm's lab (684,394), VAR_SCENE_ELMS_LAB 9, Master Ball.
 title = "New Bark: Elm's Master Ball"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 8000
+estimate = 4180
 refs = [
   "scr_seq_0112_D44R0103.s:190-192 (VAR_SCENE_ELMS_LAB 8, VAR_SCENE_NEW_BARK_EAST_EXIT 1)",
   "zone_event 057_T20 warp 0 (684,393) -> MAP_NEW_BARK_ELMS_LAB_1F",
@@ -23,7 +22,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 12000
+frames = 6300
 
 [[step]]
 do = "fly"

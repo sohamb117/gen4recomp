@@ -3,10 +3,9 @@
 # Master Ball) and VAR_SCENE_NEW_BARK_EAST_EXIT 1.
 # Start: MAP_BLACKTHORN (668,152) -> end: MAP_BLACKTHORN outside the den (672,133), badge Rising.
 title = "Dragon's Den: the Elder's quiz, Rising Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 18025
 refs = [
   "zone_event 086_T30 warp 2 (672,132) -> MAP_DRAGONS_DEN_ENTRANCE; zone_event 122_D44R0101 warp 1 (6,5) -> MAP_DRAGONS_DEN (28,6)",
   "zone_event 239_D44R0102 warp 2 (28,50) -> MAP_DRAGONS_DEN_SHRINE (6,19)",
@@ -17,19 +16,21 @@ refs = [
   "zone_event 239_D44R0102 coord 0 (27,14) w3 VAR_UNK_40C4 1 -> 000 (TM59, FLAG_GOT_TM59_FROM_CLAIR, VAR_UNK_40C4 2, scr_seq_0111_D44R0102.s:125-181)",
   "scr_seq_0941_T30_hdr.s (OnFrame VAR_UNK_407B 1 -> 007: VAR_UNK_407B 2)",
 ]
-notes = "Quiz answers (0-based items): Q1 0 or 2, Q2 0 or 1, Q3 1 or 2, Q4 0 or 2, Q5 1 or 2; the plan takes item 0 or item 2 (DOWN x2: the list does not wrap, so extra DOWNs stay on the last item). B advances the Elder's messages but does nothing on the menus (not cancellable), so generous B runs before each A are safe: the intro (msgs 00000/00001) takes 7 presses, each question after a right answer 1 (msg 00009, then the next question). The den's water route to the shrine needs Surf only (no whirlpool tiles in MAP_DRAGONS_DEN: tools/hg_map.py) [INFERENCE: walk_to surf = true]."
+notes = "Quiz answers (0-based items): Q1 0 or 2, Q2 0 or 1, Q3 1 or 2, Q4 0 or 2, Q5 1 or 2; the plan takes item 0 or item 2 (DOWN x2: the list does not wrap, so extra DOWNs stay on the last item). B advances the Elder's messages but does nothing on the menus (not cancellable), so generous B runs before each A are safe: the intro (msgs 00000/00001) takes 7 presses, each question after a right answer 1 (msg 00009, then the next question). The den's water route to the shrine needs Surf and Whirlpool: the whirlpool (13..15,36..38) is the only way from the entrance's water to the shrine's (tools/hg_map.py MAP_DRAGONS_DEN --hex: behaviour 0x11 with the collision bit; a flood fill over the rest finds two regions)."
 
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 27100
 
 [[step]]
 do = "walk_to"
 x = 672
 z = 132
+surf = true  # tools/hg_world.py route 668 152 672 133 --surf: the den lies across Blackthorn's pond (no land route)
 note = "Dragon's Den (warp 2); the guard steps aside after Clair"
 
 [[step]]
@@ -47,10 +48,23 @@ map = "MAP_DRAGONS_DEN"
 
 [[step]]
 do = "walk_to"
+x = 14
+z = 35
+surf = true
+face = "down"
+interact = true
+note = "across the den's water to the shrine (warp 2); Ace Trainers Kobe/Piper, Twins Clea and Gil fight if they spot: the shrine's water is walled off from the entrance's but for the whirlpool (13..15,36..38), behaviour 0x11 with the collision bit; to the tile above it, facing it: A -> the Whirlpool prompt (src/field_move.c:604-608: Glacier Badge)"
+
+[[step]]
+do = "advance_text"
+note = "YES (A on the default cursor) -> Whirlpool carries the player through to (14,39) [INFERENCE: as SoulSilver 31's]"
+
+[[step]]
+do = "walk_to"
 x = 28
 z = 50
 surf = true
-note = "across the den's water to the shrine (warp 2); Ace Trainers Kobe/Piper, Twins Clea and Gil fight if they spot"
+note = "south water to the shrine island (27..29,51), north into its door (warp 2)"
 
 [[step]]
 do = "wait_map"
@@ -142,6 +156,19 @@ note = "shrine door (warp 0)"
 [[step]]
 do = "wait_map"
 map = "MAP_DRAGONS_DEN"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 39
+surf = true
+face = "up"
+interact = true
+note = "back through the whirlpool (13..15,36..38) from below: A -> the Whirlpool prompt"
+
+[[step]]
+do = "advance_text"
+note = "YES -> carried through to (14,35) [INFERENCE]"
 
 [[step]]
 do = "walk_to"

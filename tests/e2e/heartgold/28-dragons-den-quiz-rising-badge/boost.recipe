@@ -1,0 +1,5 @@
+# Boost on 27's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# The den's whirlpool (13..15,36..38) stands between its entrance and the shrine, and 27's boost took Feraligatr's
+# Whirlpool for Ice Beam. PELIPPER (slot 4; HM05 among its hms, files/poketool/personal/personal.json) carries it
+# instead, over Blizzard: Feraligatr keeps Ice Beam and Dragon Pulse for the dragons ahead.
+party-move 4 3 MOVE_WHIRLPOOL

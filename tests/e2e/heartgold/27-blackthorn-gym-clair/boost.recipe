@@ -7,11 +7,11 @@
 # Coverage, keeping the field moves HeartGold still uses (Pelipper's Surf/Fly, Feraligatr's Strength/Waterfall/Dig):
 # - AMPHAROS: ThunderShock -> Thunderbolt (TM24; files/poketool/personal/personal.json AMPHAROS tms include 24);
 # - PELIPPER: Wing Attack -> Blizzard (TM14; PELIPPER tms include 14): a second Ice move for the Dragonair.
-# - FERALIGATR: Whirlpool -> Ice Beam (TM13; FERALIGATR tms include 13): HeartGold meets no whirlpool after this
-#   (28's den is Surf only); SoulSilver 31 (the Whirl Islands) sets Whirlpool back in its own boost;
+# - FERALIGATR: Whirlpool -> Ice Beam (TM13; FERALIGATR tms include 13); 28 gives Whirlpool to Pelipper for the
+#   Dragon's Den whirlpool, over Blizzard;
 # - FERALIGATR: Dig -> Dragon Pulse (TM59; FERALIGATR tms include 59): the fourth run, fresh after two heals, reached
 #   KINGDRA 41 (Water/Dragon: Ice neutral, Electric neutral) and lost every member to it. HeartGold flies off the Bell
-#   Tower roof without digging (32: dig = true acts only where the map allows Dig); SoulSilver 31 sets Dig back too.
+#   Tower roof without digging (32: dig = true acts only where the map allows Dig); SoulSilver 31 sets Dig back.
 party-move 3 1 MOVE_THUNDERBOLT
 party-move 4 3 MOVE_BLIZZARD
 party-move 5 1 MOVE_ICE_BEAM
