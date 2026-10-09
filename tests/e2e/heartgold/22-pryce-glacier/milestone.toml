@@ -25,13 +25,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 34400
-
-[[step]]
-do = "heal"
-x = 534
-z = 183
-note = "Mahogany's Pokemon Center (zone_event T28 warp 3): 21 ends after the hideout's grunts, Electrodes and executives; SoulSilver's first chained run met Pryce from there and whited out"
+frames = 45000
 
 [[step]]
 do = "walk_to"
@@ -63,6 +57,12 @@ note = "shop door (warp 0)"
 [[step]]
 do = "wait_map"
 map = "MAP_MAHOGANY"
+
+[[step]]
+do = "heal"
+x = 534
+z = 183
+note = "Mahogany's Pokemon Center (zone_event T28 warp 3): 21 ends after the hideout's grunts, Electrodes and executives; SoulSilver's first chained run met Pryce from there and whited out"
 
 [[step]]
 do = "walk_to"

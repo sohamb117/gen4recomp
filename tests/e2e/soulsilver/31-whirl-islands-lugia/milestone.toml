@@ -4,10 +4,9 @@
 # (VAR_SCENE_NEW_BARK_EAST_EXIT 3).
 # Start: MAP_ECRUTEAK (397,174) -> end: MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE (16,18), FLAG_UNK_109.
 title = "SoulSilver: Whirl Islands and Lugia"
-status = "planned"
 priority = "P0"
 version = "soulsilver"
-estimate = 45000
+estimate = 38080
 refs = [
   "scr_seq_0034_D23R0106.s:84-88 (SS: ITEM_SILVER_WING, FLAG_UNK_094)",
   "scr_seq_0928_T27R0501.s:813-816,872-874 (SS: ITEM_TIDAL_BELL, FLAG_UNK_104, ClearFlag FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS)",
@@ -30,7 +29,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 67500
+frames = 57200
 
 [[step]]
 do = "fly"

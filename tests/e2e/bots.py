@@ -2283,6 +2283,10 @@ def bot_slide(s, step, ctx):
     limit = s.frame + _int(step, "max", 300 * len(dirs))
     for i, d in enumerate(dirs):
         for attempt in range(2):
+            if s.in_battle or not s.field_ready:
+                # a battle or text the last step left running (HG/SS 26: a wild battle began as the walk onto the
+                # ice ended) would swallow the press
+                limit += _field_or_handle(s, step, ctx, limit)
             p0 = s.probe()
             s.run(8, d)
             last, still = None, 0

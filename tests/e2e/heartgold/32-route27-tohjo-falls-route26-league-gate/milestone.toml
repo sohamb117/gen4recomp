@@ -26,13 +26,24 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 103500
+frames = 111500
+
+[[step]]
+do = "fly"
+map = "MAP_CHERRYGROVE"
+dig = true
+note = "HG: from the Bell Tower roof; SS: Dig out of the Lugia cave first. Cherrygrove's Pokemon Center before Routes 27/26: 31 ends after the legendary's battle, and SoulSilver's first chained run met Route 27's trainers from there and whited out"
+
+[[step]]
+do = "heal"
+x = 564
+z = 391
+note = "Cherrygrove's Pokemon Center (zone_event T21 warp 0)"
 
 [[step]]
 do = "fly"
 map = "MAP_NEW_BARK"
-dig = true
-note = "HG: from the roof (world-map block (12,4)) RIGHT x9, DOWN x8 to New Bark (21,12); SS: Dig out of the Lugia cave, then from that block to (21,12). Lands at (695,397)"
+note = "lands at (695,397)"
 
 [[step]]
 do = "walk_to"

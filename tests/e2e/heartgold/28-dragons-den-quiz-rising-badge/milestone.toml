@@ -24,7 +24,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 27100
+frames = 40000
 
 [[step]]
 do = "walk_to"
