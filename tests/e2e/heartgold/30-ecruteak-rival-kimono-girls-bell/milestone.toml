@@ -3,10 +3,9 @@
 # bell (HG Clear Bell, SS Tidal Bell), VAR_UNK_40FA 1 for the legendary's summit/cave scene.
 # Start: MAP_NEW_BARK (684,394) -> end: MAP_ECRUTEAK outside the theater (397,174), VAR_UNK_410C 6, VAR_UNK_40FA 1.
 title = "Ecruteak: the rival, the five Kimono Girls, the bell"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 25000
+estimate = 26267
 refs = [
   "zone_event 075_T27 coord 0 (397,174) VAR_UNK_4079 3 -> 005",
   "scr_seq_0920_T27.s:79-124 (rival scene, FLAG_HIDE_ECRUTEAK_RIVAL, VAR_UNK_4079 4, VAR_UNK_410C 4, ClearFlag FLAG_HIDE_DANCE_STUDIO_KIMONO_GIRLS, FLAG_UNK_241)",
@@ -21,14 +20,21 @@ notes = "Version split inside the shared script: the bell and which Kimono Girls
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
-frames = 37500
+frames = 39500
 
 [[step]]
 do = "fly"
 map = "MAP_ECRUTEAK"
 note = "fly map: LEFT x9, UP x7 from New Bark (21,12) to Ecruteak (12,5); lands at (397,184), south of the coord at (397,174). Needs the Fly carrier of milestone 29"
+
+[[step]]
+do = "heal"
+x = 397
+z = 183
+note = "Ecruteak's Pokemon Center (warp 5) before the rival and the four Kimono Girls back to back: the first chained run came from the den unhealed and whited out to the second"
 
 [[step]]
 do = "walk_to"
@@ -57,6 +63,7 @@ note = "OnFrame VAR_UNK_410C 4: the Kimono Girls; YES (A) to battle"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 note = "TRAINER_KIMONO_GIRL_ZUKI: UMBREON 38"
 
 [[step]]
@@ -64,6 +71,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 note = "TRAINER_KIMONO_GIRL_NAOKO: ESPEON 38"
 
 [[step]]
@@ -71,6 +79,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 note = "TRAINER_KIMONO_GIRL_MIKI: FLAREON 38"
 
 [[step]]
@@ -78,6 +87,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 note = "TRAINER_KIMONO_GIRL_SAYO: JOLTEON 38"
 
 [[step]]
@@ -85,6 +95,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
+send = "best"
 snap = true
 note = "TRAINER_KIMONO_GIRL_KUNI: VAPOREON 38"
 
