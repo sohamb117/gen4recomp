@@ -642,3 +642,39 @@ wrecked bedroom:
   758 tiles, among them the C-Gear's hexagon icons. The C-Gear's screen
   is loaded but not shown until the game hands the C-Gear over (Fennel,
   scr 0020 @0x048F, Cmd19E 1).
+
+## Run-ahead: Striaton to Nacrene, and the C-Gear (2026-10-08)
+
+To look for port defects past the story chain, I made a scouting copy of
+bw-script's 06 save. `np_save5 add-mon 500 50 53 15 89 157` added an Emboar
+with Cut, and an in-game party SWITCH put it in front. add-mon takes moves
+only by id; without them the Pokémon fights with Struggle. The game reads
+the added Pokémon everywhere:
+
+- POKEPARTY's count is 2 after CONTINUE.
+- The X menu's Pokémon screen lists it.
+- It is in the battle client's party.
+
+With that party, bw-script's 07, 08 and 10 drafts and my legs for 09 ran
+on the core. That covers the Trainers' School, the Dreamyard (Cut, Plasma,
+Musharna), the gym's curtain switches (Cress, the Trio Badge), Fennel and
+the C-Gear, Route 3, Wellspring Cave, and Nacrene: N, the museum and the
+library gym's first bookshelf switches. No port defect appeared.
+
+The C-Gear, checked on the core:
+
+- It powers on with its start-up animation ("You see! The C-Gear was
+  activated").
+- Its IR, ONLINE and WIRELESS hexes, the clock and the battery draw on the
+  sub screen.
+- Touch works:
+  - "?" opens the help (overlay 124); its PREV/NEXT/QUIT bar takes taps
+    at y 168..192, as the hit table at 0x021D4BE4 says.
+  - IR opens the IR menu, and Battle saves the game.
+  - Battles for Two, then Single Battle, reaches the infrared search
+    screen, which waits for a partner.
+- The C-Gear's sub-apps answer touch only.
+- `ov20_021841C0`, the substituted field caller of ov230, did not run
+  anywhere on this path.
+- The area-name banner's letters fly in and settle ("Dreamyard"); that is
+  the game's animation, not garbled text.
