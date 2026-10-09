@@ -11,22 +11,28 @@ fixed; the relay one runs the game's datagrams through server/relay with
 
   tests/link/run_link_tests.py [--game A[:B]] [--keep DIR] [NAME...]
 
---game picks the stations' games (platinum, diamond, pearl, black, white;
-one name for both, A:B for a cross-version pair, `all` for every pair
-below); the default is platinum. Each scenario belongs to one pair, because
-the press schedules are timed against what both stations draw. Diamond and
-Pearl run on build/core-dp, Platinum on build/core-plat, Black and White on
-build/core-bw (linkpair.py has the paths).
+--game picks the stations' games (platinum, diamond, pearl, black, white,
+heartgold, soulsilver; one name for both, A:B for a cross-version pair,
+`all` for every pair below); the default is platinum. Each scenario belongs
+to one pair, because the press schedules are timed against what both
+stations draw. Diamond and Pearl run on build/core-dp, Platinum on
+build/core-plat, Black and White on build/core-bw, HeartGold and SoulSilver
+on build/core-hgss (linkpair.py has the paths).
 
 Black/White have no lab: their saves come from the e2e chain's milestone
 10 (linkpair.mint_bw), and the trade check is relative to the parties the
-mint produced (A's party slot 1 for B's slot 4).
+mint produced (A's party slot 1 for B's slot 4). Neither have HeartGold/
+SoulSilver: theirs are milestone 04's (linkpair.mint_hgss), and their
+schedules were recorded by linkbot.py from scenarios/*.json (the e2e bots
+driving two np_gp --lockstep stations), which run with PC_E2E and
+text_instant as the scenarios' env and opts pass them here.
 
 Skips (exit 0, "SKIP") without a ROM, an np_headless build, np_save4 (or,
-for Black/White, np_save5 and the milestone saves); the relay scenario also
-skips without `go`. About 35 s of lockstep frames per 10000 on an idle
-machine. Interactive work on a scenario's tail goes through linkpair.py
-serve/job (a forked checkpoint, seconds per try).
+for Black/White, np_save5 and the milestone saves; for HeartGold/SoulSilver
+the milestone saves); the relay scenario also skips without `go`. About 35 s
+of lockstep frames per 10000 on an idle machine. Interactive work on a
+scenario's tail goes through linkpair.py serve/job (a forked checkpoint,
+seconds per try).
 """
 import argparse
 import os
@@ -104,6 +110,25 @@ SCENARIOS = [
          scheds={'a': 'schedules/bw-battle-a.sched', 'b': 'schedules/bw-battle-b.sched'},
          frames=18000, dump_from=13000, dump_every=100,
          logs={s: ('in_battle 0 -> 1', 'in_battle 1 -> 0', 'map_id 0 -> 150') for s in 'ab'}),
+    # HeartGold's A with SoulSilver's B in the Union Room (the Pokemon
+    # Center's counter, WM over np_host_net, the same pc_wm.c model as D/P's:
+    # HG/SS build D/P's host fragment). Saves minted from the e2e chain's
+    # Violet City (linkpair.mint_hgss); the schedules were recorded by
+    # linkbot.py (scenarios/hgss-trade.json) on np_gp --lockstep stations,
+    # which run with PC_E2E and text_instant, as here. A's party slot 1 for
+    # B's slot 1; the game saves both after the animation.
+    dict(name='hgss_trade', games=('heartgold', 'soulsilver'),
+         scheds={'a': 'schedules/hgss-trade-a.sched', 'b': 'schedules/hgss-trade-b.sched'},
+         frames=13541, trade_slots=(1, 1), env={'PC_E2E': '1'}, opts=['text_instant=1'],
+         dump_from=9000, dump_every=200),
+    # The same pair's battle: BATTLE in the Union Room, both enter both
+    # Pokemon (the room's battles take two), then FIGHT and the first move
+    # each turn and the next Pokemon on a faint (linkbot.linked_battle) until
+    # the battle ends and both stations stand in the Union Room (map 2) again.
+    dict(name='hgss_battle', games=('heartgold', 'soulsilver'),
+         scheds={'a': 'schedules/hgss-battle-a.sched', 'b': 'schedules/hgss-battle-b.sched'},
+         frames=20377, env={'PC_E2E': '1'}, opts=['text_instant=1'], dump_from=9000, dump_every=500,
+         logs={s: ('map_id 158 -> 2', 'in_battle 0 -> 1', 'in_battle 1 -> 0') for s in 'ab'}),
 ]
 
 
@@ -117,6 +142,8 @@ def have_tools(games):
         paths += linkpair.GAMES[g]
         if g in linkpair.BW_GAMES:
             paths += [linkpair.SAVE5, linkpair.bw_base_save(g)]
+        elif g in linkpair.HGSS_GAMES:
+            paths += [linkpair.SAVE4, linkpair.hgss_base_save(g)]
         elif linkpair.SAVE4 not in paths:
             paths.append(linkpair.SAVE4)
     for path in paths:
@@ -157,6 +184,8 @@ def run(sc, work):
         out = os.path.join(d, side.upper() + '.sav')
         if games[side] in linkpair.BW_GAMES:
             saves[side] = linkpair.mint_bw(games[side], side, out)
+        elif games[side] in linkpair.HGSS_GAMES:
+            saves[side] = linkpair.mint_hgss(games[side], side, out)
         else:
             saves[side] = linkpair.mint(os.path.join(HERE, sc['recipes'][side]), out, games[side], base_dir=work)
     want_party = dict(sc.get('party', {}))
@@ -185,6 +214,8 @@ def run(sc, work):
         cmd = linkpair.core(games[side]) + ['--frames', str(sc['frames']), '--save', saves[side],
                '--schedule', os.path.join(HERE, sc['scheds'][side]), '--lockstep', '%d:%d' % ports[side],
                '--net-id', linkpair.IDS[side]] + extra[side]
+        for o in sc.get('opts', ()):
+            cmd += ['-o', o]
         if 'dump_every' in sc:
             cmd += ['--dump', dump, '--dump-every', str(sc['dump_every']), '--dump-from', str(sc['dump_from'])]
         procs[side] = subprocess.Popen(cmd, stdout=open(os.path.join(d, side + '.log'), 'w'),

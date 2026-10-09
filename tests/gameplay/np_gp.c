@@ -29,6 +29,13 @@
  *                         (addresses: games/<game>/build/pc-wasm/<game>.map)
  *     --serve 1           no frame count or schedule loop: commands on stdin
  *                         drive the run (tests/e2e's bots; see serve() below)
+ *     --lockstep MY:PEER  with --net-id ID: two instances on 127.0.0.1 ports MY
+ *                         and PEER advance frame by frame together and carry
+ *                         the game's datagrams between them, exactly as
+ *                         np_headless --lockstep does (same records, same
+ *                         delivery frame), so inputs recorded on a pair of
+ *                         np_gp instances replay on a pair of np_headless
+ *                         ones (tests/link/linkbot.py drives two of these)
  *
  * Prints status changes ("[status] frame K: map_id A -> B"), then a summary:
  *   frames N  hash H  ms/frame M  fps X  audio A  stalls S  audio-stalls T
@@ -42,6 +49,10 @@
  * lock shows up there; it is reported, not judged).
  */
 #define _POSIX_C_SOURCE 200809L
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <poll.h>
+#include <sys/socket.h>
 #include <pthread.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -361,13 +372,116 @@ static int usage(void) {
                     "             [--dump DIR [--dump-at F,..]... [--dump-every N\n"
                     "             [--dump-from F]]] [-o [F:]NAME=V]... [-e K=V]... [--random SEED\n"
                     "             [--random-from F]] [--hang-sec S] [--time-from F] [--peek F:ADDR:LEN]...\n"
-                    "             [--serve 1]\n");
+                    "             [--serve 1] [--lockstep MYPORT:PEERPORT --net-id ID]\n");
     return 2;
 }
 
 static int cmp_i64(const void *a, const void *b) {
     int64_t x = *(const int64_t *)a, y = *(const int64_t *)b;
     return x < y ? -1 : x > y;
+}
+
+/* ---- --lockstep: np_headless's frame lockstep (core/tools/np_headless.c,
+ * "--lockstep MY:PEER"), its record format and delivery rule, without the
+ * relay and the fork checkpoints. Record: u8 kind (bit 0: 0 DATA, 1 END;
+ * bits 1-7 the epoch, always 0 here), u32 sender id, u32 frame, payload.
+ * Before frame N each side waits for the peer's END(N - 1); what the peer
+ * sent during its frame N - 1 is delivered during frame N. Arrival frames
+ * are a function of the two input streams alone, so a pair of np_gp runs
+ * and a pair of np_headless runs fed the same inputs trade the same
+ * datagrams on the same frames. */
+#define LS_QUEUE 256
+static struct {
+    int on, sock;
+    uint32_t id, peer_id;
+    struct sockaddr_in peer;
+    struct {
+        uint16_t len;
+        uint8_t data[1500];
+    } q[LS_QUEUE];
+    int qhead, qcount;
+} g_ls;
+
+static int lockstep_open(const char *spec, uint32_t id) {
+    unsigned mine, theirs;
+    if (sscanf(spec, "%u:%u", &mine, &theirs) != 2 || mine > 65535 || theirs > 65535) return -1;
+    g_ls.sock = socket(AF_INET, SOCK_DGRAM, 0);
+    int big = 4 << 20;
+    setsockopt(g_ls.sock, SOL_SOCKET, SO_RCVBUF, &big, sizeof big);
+    struct sockaddr_in a = {0};
+    a.sin_family = AF_INET;
+    a.sin_addr.s_addr = htonl(0x7F000001u); /* 127.0.0.1 (INADDR_LOOPBACK is not POSIX) */
+    a.sin_port = htons((uint16_t)mine);
+    if (bind(g_ls.sock, (struct sockaddr *)&a, sizeof a) != 0) return -1;
+    g_ls.peer = a;
+    g_ls.peer.sin_port = htons((uint16_t)theirs);
+    g_ls.id = id;
+    g_ls.on = 1;
+    return 0;
+}
+
+static void lockstep_send(uint8_t kind, uint32_t frame, const void *buf, uint32_t len) {
+    uint8_t p[9 + 1500];
+    if (len > 1500) return;
+    p[0] = kind;
+    memcpy(p + 1, &g_ls.id, 4);
+    memcpy(p + 5, &frame, 4);
+    memcpy(p + 9, buf, len);
+    sendto(g_ls.sock, p, 9 + len, 0, (struct sockaddr *)&g_ls.peer, sizeof g_ls.peer);
+}
+
+/* The barrier before frame `frame`: the peer's records up to END(frame - 1)
+ * become this frame's delivery queue. Frame 0 trades hellos (END of frame
+ * -1) first, so either side may start first. */
+static void lockstep_barrier(int64_t frame) {
+    uint8_t p[9 + 1500];
+    double last_hello = -1;
+    g_ls.qhead = g_ls.qcount = 0;
+    for (;;) {
+        if (frame == 0 && now_s() - last_hello > 0.1) {
+            lockstep_send(1, 0xFFFFFFFFu, NULL, 0);
+            last_hello = now_s();
+        }
+        struct pollfd pf = {g_ls.sock, POLLIN, 0};
+        if (poll(&pf, 1, 100) <= 0) continue;
+        ssize_t n = recv(g_ls.sock, p, sizeof p, 0);
+        if (n < 9 || p[0] >> 1 != 0) continue;
+        uint32_t f;
+        memcpy(&g_ls.peer_id, p + 1, 4);
+        memcpy(&f, p + 5, 4);
+        if (p[0] & 1) {
+            if (frame == 0 ? f == 0xFFFFFFFFu : f == (uint32_t)(frame - 1)) break;
+            continue; /* a stale hello */
+        }
+        if (g_ls.qcount < LS_QUEUE) {
+            g_ls.q[g_ls.qcount].len = (uint16_t)(n - 9);
+            memcpy(g_ls.q[g_ls.qcount].data, p + 9, (size_t)(n - 9));
+            g_ls.qcount++;
+        }
+    }
+    if (frame == 0) lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* answer a late starter */
+}
+
+static uint32_t net_self_cb(void *user) {
+    (void)user;
+    return g_ls.id;
+}
+
+static int net_send_cb(void *user, uint32_t peer, const void *buf, uint32_t len) {
+    (void)user;
+    (void)peer;
+    lockstep_send(0, 0, buf, len);
+    return 0;
+}
+
+static int net_recv_cb(void *user, uint32_t *peer, void *buf, uint32_t cap) {
+    (void)user;
+    if (g_ls.qhead == g_ls.qcount) return 0;
+    int i = g_ls.qhead++;
+    if (g_ls.q[i].len > cap) return -1;
+    memcpy(buf, g_ls.q[i].data, g_ls.q[i].len);
+    *peer = g_ls.peer_id;
+    return g_ls.q[i].len;
 }
 
 /* ---- the per-frame work of both modes: run, hash, judge, report. */
@@ -392,11 +506,13 @@ static int run_frame(frame_run *fr, int64_t k, const np_input *in) {
     for (int o = 0; o < fr->nsets; o++)
         if (fr->sets[o].frame == k) np_core_set_option(fr->core, fr->sets[o].opt, fr->sets[o].value);
 
+    if (g_ls.on) lockstep_barrier(k);
     double t0 = now_s();
     g_wd_start = t0;
     g_wd_frame = k;
     fr->rc = np_core_run_frame(fr->core, in, &fr->f);
     g_wd_frame = -1;
+    if (g_ls.on) lockstep_send(1, (uint32_t)k, NULL, 0); /* END(k) */
     if (k >= fr->time_from) {
         fr->t_timed += now_s() - t0;
         fr->timed_frames++;
@@ -698,6 +814,8 @@ int main(int argc, char **argv) {
     int64_t frames = 600, dump_every = 0, dump_from = 0, random_from = -1, time_from = -1;
     struct { int64_t frame; uint32_t addr, len; } peeks[64];
     int npeeks = 0, serving = 0;
+    const char *lockstep = NULL;
+    uint32_t net_id = 0;
     const char *dump_dir = NULL;
     int game = NP_GAME_PLATINUM;
 
@@ -746,6 +864,8 @@ int main(int argc, char **argv) {
         else if (strcmp(a, "--hang-sec") == 0) g_hang_sec = atof(v);
         else if (strcmp(a, "--time-from") == 0) time_from = strtoll(v, NULL, 0);
         else if (strcmp(a, "--serve") == 0) serving = atoi(v) != 0;
+        else if (strcmp(a, "--lockstep") == 0) lockstep = v;
+        else if (strcmp(a, "--net-id") == 0) net_id = (uint32_t)strtoul(v, NULL, 0);
         else if (strcmp(a, "--peek") == 0 && npeeks < 64) {
             long long pf;
             unsigned pa, pl;
@@ -768,6 +888,15 @@ int main(int argc, char **argv) {
     host.save_load = save_load;
     host.save_store = save_store;
     host.log = log_line;
+    if (lockstep) {
+        if (!net_id || lockstep_open(lockstep, net_id) != 0) {
+            fprintf(stderr, "np_gp: --lockstep %s needs a free port pair and a nonzero --net-id\n", lockstep);
+            return 2;
+        }
+        host.net_self = net_self_cb;
+        host.net_send = net_send_cb;
+        host.net_recv = net_recv_cb;
+    }
     if (!np_core_available((np_game)game)) {
         fprintf(stderr, "np_gp: that game is not built into this binary\n");
         return 2;

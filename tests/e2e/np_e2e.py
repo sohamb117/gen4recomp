@@ -201,7 +201,7 @@ def key_arg(keys):
 
 
 class Session:
-    def __init__(self, gp, rom, game, save, log, budget, options=(), env=None):
+    def __init__(self, gp, rom, game, save, log, budget, options=(), env=None, extra_args=()):
         self.game = game
         self.save_path = save
         self.budget = budget
@@ -219,15 +219,23 @@ class Session:
             cmd += ["-e", "%s=%s" % (k, v)]
         for o in options:
             cmd += ["-o", o]
+        cmd += list(extra_args)
         self.proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self._log,
                                      text=True, bufsize=1)
 
     # ---- protocol
     def _cmd(self, line):
+        self._send(line)
+        return self._recv(line)
+
+    def _send(self, line):
         if self.proc.poll() is not None:
             raise Dead("np_gp exited (status %s) at frame %d" % (self.proc.returncode, self.frame))
         self.proc.stdin.write(line + "\n")
         self.proc.stdin.flush()
+
+    def _recv(self, line):
+        """The answer to `line` (sent with _send); DEFECT lines on the way are kept."""
         while True:
             out = self.proc.stdout.readline()
             if not out:
@@ -279,12 +287,20 @@ class Session:
         return False
 
     def _run(self, n, keys, touch, until):
+        line = self._run_line(n, keys, touch, until)
+        return self._ran(self._cmd(line))
+
+    @staticmethod
+    def _run_line(n, keys, touch, until):
         line = "run %d %s" % (n, key_arg(keys))
         if touch:
             line += " %d %d" % (touch[0], touch[1])
         for c in until:
             line += " until %s" % c
-        out = self._cmd(line)
+        return line
+
+    def _ran(self, out):
+        """Takes np_gp's answer to a run: the frame and status it reports; True if a condition stopped it."""
         if out.startswith("dead"):
             self.frame = int(out.split()[1])
             raise Dead("the core stopped at frame %d%s" % (self.frame, ": " + self.defects[-1] if self.defects else ""))

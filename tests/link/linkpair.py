@@ -24,19 +24,24 @@ into the Union Room.
   linkpair.py mint-bw GAME SIDE OUT.sav
       a Black/White station's save inside Striaton's Pokemon Center, in front
       of the Union Room counter (mint_bw)
+  linkpair.py mint-hgss GAME SIDE OUT.sav
+      a HeartGold/SoulSilver station's save in Violet City, near the Pokemon
+      Center (mint_hgss)
 
-G is platinum (the default), diamond, pearl, black or white, per station: a
-Diamond and a Platinum station are two different cores (build/core-dp,
-build/core-plat) on the same lockstep wire; Black and White share
-build/core-bw.
+G is platinum (the default), diamond, pearl, black, white, heartgold or
+soulsilver, per station: a Diamond and a Platinum station are two different
+cores (build/core-dp, build/core-plat) on the same lockstep wire; Black and
+White share build/core-bw, HeartGold and SoulSilver build/core-hgss.
 
 The regression scenarios themselves are in run_link_tests.py. Environment:
 NP_HEADLESS (Platinum's core), NP_DP_HEADLESS (Diamond/Pearl's),
-NP_BW_HEADLESS (Black/White's), NP_SAVE4, NP_PLAT_ROM, NP_DIAMOND_ROM,
-NP_PEARL_ROM, NP_BLACK_ROM, NP_WHITE_ROM override the default build paths;
+NP_BW_HEADLESS (Black/White's), NP_HGSS_HEADLESS (HeartGold/SoulSilver's),
+NP_SAVE4, NP_PLAT_ROM, NP_DIAMOND_ROM, NP_PEARL_ROM, NP_BLACK_ROM,
+NP_WHITE_ROM, NP_HG_ROM, NP_SS_ROM override the default build paths;
 NP_DP_BASE_SAVE_<GAME> (DIAMOND, PEARL) names a ready new-game save for
-the D/P mint. --relay/--pin/--drop on serve put the game's datagrams
-through server/relay.
+the D/P mint, NP_HGSS_LINK_BASE_<GAME> (HEARTGOLD, SOULSILVER) the chain
+save the HG/SS mint starts from. --relay/--pin/--drop on serve put the
+game's datagrams through server/relay.
 """
 import json
 import os
@@ -65,9 +70,16 @@ GAMES = {
     'white': (os.environ.get('NP_BW_HEADLESS', os.path.join(ROOT, 'build', 'core-bw', 'np_headless')),
               os.environ.get('NP_WHITE_ROM', os.path.join(ROOT, 'roms',
                                                            'Pokemon - White Version (USA, Europe) (NDSi Enhanced).nds'))),
+    'heartgold': (os.environ.get('NP_HGSS_HEADLESS', os.path.join(ROOT, 'build', 'core-hgss', 'np_headless')),
+                  os.environ.get('NP_HG_ROM', os.path.join(ROOT, 'games', 'heartgold', 'build', 'heartgold.us',
+                                                           'pokeheartgold.us.nds'))),
+    'soulsilver': (os.environ.get('NP_HGSS_HEADLESS', os.path.join(ROOT, 'build', 'core-hgss', 'np_headless')),
+                   os.environ.get('NP_SS_ROM', os.path.join(ROOT, 'games', 'heartgold', 'build', 'soulsilver.us',
+                                                            'pokesoulsilver.us.nds'))),
 }
 IDS = {'a': '0x111111', 'b': '0x222222'}
 BW_GAMES = ('black', 'white')
+HGSS_GAMES = ('heartgold', 'soulsilver')
 
 
 def core(game):
@@ -277,6 +289,32 @@ def mint_bw(game, side, out_sav):
     return out_sav
 
 
+# HeartGold/SoulSilver have no lab either. A station's save is the e2e
+# chain's milestone 04 (tests/e2e, build/e2e/<game>/<HGSS_BASE>/end.sav, or
+# NP_HGSS_LINK_BASE_<GAME>): the game's own save in Violet City, a few steps
+# from the Pokemon Center, so CONTINUE has the town's people (np_save4's
+# set-location would drop them). np_save4 renames it per side and adds a
+# second Pokemon to the party (a link trade never takes the last one): A
+# SENTRET, B HOOTHOOT, both level 8, behind the chain's CYNDAQUIL.
+HGSS_BASE = '04-route30-31-violet'
+HGSS_SIDE = {'a': ('LINKA', '11111', '1111', 161), 'b': ('LINKB', '22222', '2222', 163)}
+
+
+def hgss_base_save(game):
+    return os.environ.get('NP_HGSS_LINK_BASE_' + game.upper(),
+                          os.path.join(ROOT, 'build', 'e2e', game, HGSS_BASE, 'end.sav'))
+
+
+def mint_hgss(game, side, out_sav):
+    name, tid, sid, species = HGSS_SIDE[side]
+    for args in (['set-name', hgss_base_save(game), name, '-o', out_sav], ['set-ids', out_sav, tid, sid],
+                 ['add-mon', out_sav, GAMES[game][1], str(species), '8']):
+        subprocess.run([SAVE4] + args, check=True, capture_output=True)
+    if os.path.exists(out_sav + '.bak'):
+        os.remove(out_sav + '.bak')
+    return out_sav
+
+
 def dp_base_save(game, workdir):
     """Diamond/Pearl's lab works on a save being continued: the game's own
     new-game save, played by tests/dp/<game>_first_save.sched once per work
@@ -368,6 +406,8 @@ def main():
         print(mint(rest[0], rest[1], game))
     elif cmd == 'mint-bw':
         print(mint_bw(rest[0], rest[1], rest[2]))
+    elif cmd == 'mint-hgss':
+        print(mint_hgss(rest[0], rest[1], rest[2]))
     elif cmd == 'party':
         print(party(rest[0], rest[1] if len(rest) > 1 else 'platinum'))
     else:
