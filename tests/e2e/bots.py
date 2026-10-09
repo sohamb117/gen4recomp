@@ -204,16 +204,33 @@ def bot_schedule(s, step, ctx):
 
 
 # Black/White's in-game save through their own menu (they have no host quick save): X opens the start menu on the
-# touch screen, SAVE is its left button of the second row, A answers YES and closes the messages. The tap point and
-# the timings are the proven proposal run's (docs/BW_PLAN.md: X, then SAVE at (64,94), then A every 40 frames).
-BW_TAP_SAVE = (64, 94)
+# touch screen, a two-column grid of the entries the player has: POKEMON (once there is a party), POKEDEX (once
+# it is given), BAG, the trainer card, SAVE, OPTIONS. A answers YES and closes the messages. The timings are the
+# proven proposal run's (docs/BW_PLAN.md: X, then SAVE at (64,94), then A every 40 frames); the grid seen on the
+# core: no party BAG TRAINER / SAVE OPTIONS, a party POKEMON BAG / TRAINER SAVE / OPTIONS (milestone 02's end).
+BW_MENU_COLUMNS = (64, 192)
+BW_MENU_ROWS = (42, 94, 141)
+# the party (docs/BW_RAM.md: POKEPARTY, its u32 count at +4) and the event flags (event work + 0x27C, bit id) by
+# version; flag 0x962 is set as Juniper hands over the Pokedex (scr 0792 @0x02C6) [INFERENCE: the menu's POKEDEX]
+BW_POKEPARTY = {"black": 0x022349AC, "white": 0x022349CC}
+BW_FLAGS = {"black": 0x0223BCAC + 0x27C, "white": 0x0223BCCC + 0x27C}
+BW_FLAG_POKEDEX = 0x962
+
+
+def _bw_save_tap(s):
+    """The SAVE button's centre on the start menu, from what the player has."""
+    party = struct.unpack("<I", s.peek(BW_POKEPARTY[s.game] + 4, 4))[0]
+    dex = s.peek(BW_FLAGS[s.game] + BW_FLAG_POKEDEX // 8, 1)[0] >> (BW_FLAG_POKEDEX % 8) & 1
+    slot = (party > 0) + dex + 2
+    return BW_MENU_COLUMNS[slot % 2], BW_MENU_ROWS[slot // 2]
 
 
 def _bw_menu_save(s):
+    tap = _bw_save_tap(s)
     s.run(4, "x")
     if s.run(40, until="field_ready=1") or s.field_ready:
         raise HarnessError("save: X did not open the menu")
-    _tap(s, BW_TAP_SAVE, 4, 60)
+    _tap(s, tap, 4, 60)
     for _ in range(30):
         s.run(4, "a")
         if s.run(36, until="field_ready=1"):
@@ -885,9 +902,6 @@ def _bw_auto_battle(s, step, ctx):
             me = p.battlers[p.menu_battler] if fresh and p.menu_battler < len(p.battlers) else None
             foe = next((p.battlers[b] for b in (1, 3) if fresh and b < len(p.battlers) and p.battlers[b].alive), None)
             if idx == BW_UI_ACTION:
-                if snap_menu:
-                    snap_menu = False
-                    snap(s)
                 choice = BW_ACTION_FIGHT
                 if flee:
                     flee -= 1
@@ -896,7 +910,12 @@ def _bw_auto_battle(s, step, ctx):
                     rejected = []
                     turns += 1
                 if _bw_cursor(s, idx, choice):
+                    if snap_menu:  # once the cursor shows, the menu has slid in
+                        snap_menu = False
+                        snap(s)
                     _gba_press(s, "a")
+                    # the action menu stays reported while it slides out: not a second visit
+                    s.run(30, until=["ui_arg!=%d" % BW_UI_ACTION, "ui!=%d" % UI_BATTLE_MENU, "in_battle=0"])
             elif idx == BW_UI_MOVES:
                 again = again + 1 if last == BW_UI_MOVES else 0
                 refused = again >= 2

@@ -6031,12 +6031,12 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~738107 frames estimated
+### Story chain: 33 milestones, ~746740 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [01-newgame-bedroom](black/01-newgame-bedroom/milestone.toml) | New game to the bedroom, a walk, a talk with Cheren and the first save | P0 | both | 15107 | blank chip | 391 | passing |
-| [02-gift-box-starter-first-battles](black/02-gift-box-starter-first-battles/milestone.toml) | The gift box: the starter, Bianca's and Cheren's first battles | P0 | both | 9000 | prev + `None` | 391 | planned |
+| [02-gift-box-starter-first-battles](black/02-gift-box-starter-first-battles/milestone.toml) | The gift box: the starter, Bianca's and Cheren's first battles | P0 | both | 17633 | prev + `None` | 391 | passing |
 | [03-mom-bianca-house-juniper-pokedex](black/03-mom-bianca-house-juniper-pokedex/milestone.toml) | Mom, Bianca's house and Professor Juniper's Pokédex | P0 | both | 12000 | prev + `None` | 389 | planned |
 | [04-route1-catching-lesson](black/04-route1-catching-lesson/milestone.toml) | Route 1: the catching lesson and the way to Accumula | P0 | both | 14000 | prev + `None` | 397 | planned |
 | [05-accumula-plasma-speech-n](black/05-accumula-plasma-speech-n/milestone.toml) | Accumula Town: the Pokémon Center, Team Plasma's speech and N | P0 | both | 10000 | prev + `None` | 397 | planned |
@@ -6085,9 +6085,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1
 - end state: map 391; party size 1; flags set 0x961, 0x1F4, 0x1F5, 0x2A8; vars 0x4081=2; 1 save check(s)
-- frames: estimate 9000, budget 14000
+- frames: estimate 17633, budget 26500
 - refs: zone_event 391 object 2 gfx 0xD0 (5,8) hidden by flag 0x2A8 -> scr 0782 script 9; scr 0782 @0x0220 msg 430 #11 (the gift box opened); @0x023A Cmd153 var 0x8020 (the choice); scr 0782 @0x026F/@0x029F/@0x02BC SetVar 0x4030 0 Snivy (495) / 1 Tepig (498) / 2 Oshawott (501); scr 0782 @0x02E6 GivePokemon var 0x8021 lv 5; @0x02F0 SetFlag 0x961; scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0465 GetBattleResult -> msg 430 #37 (won) / #38 (lost): the scene goes on either way; scr 0782 @0x0513-@0x055A Cheren heals both (msg 430 #43/#45); scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1; scr 0782 @0x06BE-@0x06D2 RemoveObject 0/1, SetFlag 0x1F4/0x1F5/0x2A8, SetVar 0x4081 2; zone_event 391 trigger 0 (8,2) var 0x4081 == 1 -> scr 0782 script 6 (the stairs gate, msg 430 #8); docs/BW_RAM.md (party, vars, flags, battle)
-- notes: The proposal run's battle reached Bianca's battle intro (docs/BW_RAM.md); mode 1 battles cannot end the scene: a loss only changes the line. Pick by the menu cursor: Tepig is the one the docs' runs chose (0x4030 = 1). [INFERENCE] estimate.
+- notes: Measured from 01's end save (CONTINUE included): Black 17633, White 17372 frames on the core of 2026-10-08 (bw2 = main c2b11893e + the ov230-caller substitutions). Both battles are mode 1: a loss only changes the line. The A presses through the choice take Tepig (0x4030 = 1): Bianca sends Snivy (#60), Cheren Oshawott (#54); auto_battle drives the bottom screen's key cursor (docs/BW_RAM.md, Battle menu). The end save is made through the X menu, whose SAVE button moves once there is a party (bots.py _bw_save_tap).
 
 #### black/03-mom-bianca-house-juniper-pokedex — Mom, Bianca's house and Professor Juniper's Pokédex
 - proves: Proves leaving home: Mom's scene on the 1F (rest, Xtransceiver), Bianca's house, Cheren at the lab door, Professor Juniper's Pokédex, and Mom's Town Map outside. Start: the bedroom (zone 391) -> end: Nuvema Town (zone 389) south of the lab, 0x4080 = 2.
@@ -6405,12 +6405,12 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~738107 frames estimated
+### Story chain: 33 milestones, ~746740 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [01-newgame-bedroom](black/01-newgame-bedroom/milestone.toml) | New game to the bedroom, a walk, a talk with Cheren and the first save | P0 | both | 15107 | blank chip | 391 | passing |
-| [02-gift-box-starter-first-battles](black/02-gift-box-starter-first-battles/milestone.toml) | The gift box: the starter, Bianca's and Cheren's first battles | P0 | both | 9000 | prev + `None` | 391 | planned |
+| [02-gift-box-starter-first-battles](black/02-gift-box-starter-first-battles/milestone.toml) | The gift box: the starter, Bianca's and Cheren's first battles | P0 | both | 17633 | prev + `None` | 391 | passing |
 | [03-mom-bianca-house-juniper-pokedex](black/03-mom-bianca-house-juniper-pokedex/milestone.toml) | Mom, Bianca's house and Professor Juniper's Pokédex | P0 | both | 12000 | prev + `None` | 389 | planned |
 | [04-route1-catching-lesson](black/04-route1-catching-lesson/milestone.toml) | Route 1: the catching lesson and the way to Accumula | P0 | both | 14000 | prev + `None` | 397 | planned |
 | [05-accumula-plasma-speech-n](black/05-accumula-plasma-speech-n/milestone.toml) | Accumula Town: the Pokémon Center, Team Plasma's speech and N | P0 | both | 10000 | prev + `None` | 397 | planned |
@@ -6459,9 +6459,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1
 - end state: map 391; party size 1; flags set 0x961, 0x1F4, 0x1F5, 0x2A8; vars 0x4081=2; 1 save check(s)
-- frames: estimate 9000, budget 14000
+- frames: estimate 17633, budget 26500
 - refs: zone_event 391 object 2 gfx 0xD0 (5,8) hidden by flag 0x2A8 -> scr 0782 script 9; scr 0782 @0x0220 msg 430 #11 (the gift box opened); @0x023A Cmd153 var 0x8020 (the choice); scr 0782 @0x026F/@0x029F/@0x02BC SetVar 0x4030 0 Snivy (495) / 1 Tepig (498) / 2 Oshawott (501); scr 0782 @0x02E6 GivePokemon var 0x8021 lv 5; @0x02F0 SetFlag 0x961; scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0465 GetBattleResult -> msg 430 #37 (won) / #38 (lost): the scene goes on either way; scr 0782 @0x0513-@0x055A Cheren heals both (msg 430 #43/#45); scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1; scr 0782 @0x06BE-@0x06D2 RemoveObject 0/1, SetFlag 0x1F4/0x1F5/0x2A8, SetVar 0x4081 2; zone_event 391 trigger 0 (8,2) var 0x4081 == 1 -> scr 0782 script 6 (the stairs gate, msg 430 #8); docs/BW_RAM.md (party, vars, flags, battle)
-- notes: The proposal run's battle reached Bianca's battle intro (docs/BW_RAM.md); mode 1 battles cannot end the scene: a loss only changes the line. Pick by the menu cursor: Tepig is the one the docs' runs chose (0x4030 = 1). [INFERENCE] estimate.
+- notes: Measured from 01's end save (CONTINUE included): Black 17633, White 17372 frames on the core of 2026-10-08 (bw2 = main c2b11893e + the ov230-caller substitutions). Both battles are mode 1: a loss only changes the line. The A presses through the choice take Tepig (0x4030 = 1): Bianca sends Snivy (#60), Cheren Oshawott (#54); auto_battle drives the bottom screen's key cursor (docs/BW_RAM.md, Battle menu). The end save is made through the X menu, whose SAVE button moves once there is a party (bots.py _bw_save_tap).
 
 #### white/03-mom-bianca-house-juniper-pokedex — Mom, Bianca's house and Professor Juniper's Pokédex
 - proves: Proves leaving home: Mom's scene on the 1F (rest, Xtransceiver), Bianca's house, Cheren at the lab door, Professor Juniper's Pokédex, and Mom's Town Map outside. Start: the bedroom (zone 391) -> end: Nuvema Town (zone 389) south of the lab, 0x4080 = 2.

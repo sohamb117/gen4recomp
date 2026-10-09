@@ -97,7 +97,7 @@ disassembly (same Black ROM), which names some of these functions; everything be
 | client party | POKECON + 4 + 0x1C x client: BattleMon pointers by slot, u8 count at +0x18 | same | `ov93_021B9864` / `ov93_021B98AC` index parties by `client * 0x1C` from POKECON+4; `ov93_021B9B94` reads the count at +0x18, `ov93_021B9C00` slot i (bounded by it), `ov93_021B9C10` swaps two slots. In the battle: client 0 = Tepig, client 1 = Bianca's Snivy, counts 1 and 1 |
 | BattleMon | 0x214 bytes (`btl_pokeparam.c`) | same | +0x00 the source POKEMON (in the client's POKEPARTY), +0x0C species, +0x0E max HP, +0x10 HP, +0x16 ability, +0x18 level, +0xEE..+0xF6 the five battle stats, +0xF8/+0xF9 the current types, +0xFC seven stat stages (6 = neutral), +0x104 four 0x0E-byte move slots {u16 move, u8 PP, u8 max PP, ...}. `ov93_021D4D84` (the constructor) fills +0x0C/+0x10/+0x0E/+0x18/+0x16 from the POKEMON params species / HP / max HP / level / ability, and the level-up code `ov93_021D69B8` reloads only +0x0E from max HP. Values: Tepig 498, 22/22, level 5, Blaze 66, Fire/Fire (9), Tackle 35/35, Tail Whip 30/30; Snivy 495, 19/19, level 5, Overgrow 65, Grass/Grass (11), Tackle, Leer 30/30 |
 
-## Battle menu (derived from the generated assembly, confirmed with peek in Bianca's battle)
+## Battle menu (derived from the generated assembly; proven in the first two battles)
 
 The player's choices in a battle, followed from the client's action-selection states to the bottom screen. Every
 offset below is read in the code named. The chain was then read with np_gp `peek` on the core of 2026-10-08 (built
@@ -109,8 +109,11 @@ walks the cursor as the key tables say (action: left from FIGHT -> BAG 1, up -> 
 1 -> 3, left 3 -> 2, down 2 -> 4 back, up 4 -> 2, up 2 -> 0, frames showing the brackets on BAG and on the bottom right
 move slot); the chooser is client 0's slot 0 BattleMon (menu_battler 0). A press in the first frames of the menu's
 slide-in is not taken. White's chain is Black's 0x20 higher. auto_battle (tests/e2e/bots.py `_bw_auto_battle`) won
-Bianca's battle on both games through these reads (7 turns, Tackle). The compiled probe itself waits for a core built
-with it.
+Bianca's battle on both games through these reads (7 turns, Tackle). The compiled probe then ran on the core of
+2026-10-08 (bw2 = main c2b11893e + the ov230-caller substitutions): milestone 02 passes on Black and White, both
+battles fought by auto_battle on the probe's own `ui` 1/11, `ui_cursor` and `menu_battler` 0, the contact sheet's
+action-menu frame showing the brackets on FIGHT. Not seen yet: screens 3-7, a double battle's chooser, the party
+screen (not reported: a fainted lead is left to the text-advancing A presses).
 
 | field | where | how it was found |
 | --- | --- | --- |
@@ -139,10 +142,10 @@ reported. From the bedroom saves, the gift box and A presses, `in_battle` goes 1
 
 ## Not established
 
-- **Battle input and type**: the menu state (`ui`, the battle's own menus) and the battle type bits. Bianca's battle
-  waits in its intro on the core today, so no battle menu has been seen; the probe reports the battlers and the
-  party but `ui` stays 0, and `menu_battler` and `battle_type` are 0. Only a single battle has been seen: battler n
-  is client n's front Pokemon.
+- **Battle type and the rest of the battle UI**: `battle_type` stays 0; the input screens other than the action
+  menu and the moves (3-7: targets, YES/NO prompts [INFERENCE]) are reported as ui_arg 0x100 + n but not named, and
+  the battle party screen is not reported. Only single battles have been seen: battler n is client n's front
+  Pokemon.
 - **Menus and text**: no separate text-wait or menu state was needed: the running-event pointer (GAMESYS+0x18) is
   set for the whole of every held scene seen (menu, dialogue, save, the starter scene), and `field_ready` is "a
   field, no event, the player on a tile centre".
