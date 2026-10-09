@@ -19,6 +19,9 @@
 #define SYNTH_BADGES 0x07
 #define SYNTH_KANTO_BADGES 0x03 /* HG/SS only */
 #define SYNTH_BOX_SPECIES 396 /* Starly in box 1 slot 1 */
+#define SYNTH_HGSS_MAP 60 /* HG/SS saved Location: New Bark Town */
+#define SYNTH_HGSS_X 695
+#define SYNTH_HGSS_Z 397
 #define SYNTH_HGSS_BULBY_BALL 18 /* HG/SS: Bulby sits in a Level Ball (BALL_LEVEL, item 493) */
 
 /* Build a hand-made Pokémon (decrypted). Party data is filled when `party`. */

@@ -81,6 +81,7 @@ struct save4_layout {
     uint8_t mg_tag_end;    /* a slot's type is valid while 0 < type < mg_tag_end */
     uint32_t mg_types;     /* bit t: MysteryGiftType t can be delivered */
     uint32_t location;     /* FieldOverworldState / LocalFieldData: Location player, entrance */
+    uint32_t map_objects;  /* HG/SS SavedMapObjectList (64 SavedMapObject of 0x50); 0: not modelled */
     uint32_t poketch;      /* Poketch, the entry right after VarsFlags; 0: none */
     /* PC storage, relative to the storage block. */
     uint32_t box_current;  /* u32 current box */
@@ -143,6 +144,11 @@ static const uint8_t kPocketCapJohto[SAVE4_POCKET_COUNT] = {165, 50, 101, 12, 40
  *     A gift without card is linked to 3 (ov74 TryInsertGift(mg, gift, 3)),
  *     a card's gift to its slot (SaveMysteryGift_TryInsertCard).
  *   location: LocalFieldData.currentPosition 0x1234.
+ *   map_objects: SavedMapObjectList (save table entry SAVE_MAP_OBJECTS,
+ *     src/save_local_field_data.c: SavedMapObject subs[64], include/
+ *     map_object.h, 0x50 each) at 0x2348, measured: in every HG/SS save
+ *     looked at, the record there is the player's (objId 0xFF) at the saved
+ *     Location's x/z.
  *   PCStorage (include/pokemon_storage_system.h): PC_BOX boxes[18] (30
  *     BoxPokemon + 16 bytes = 0x1000 each), curBox 0x12000,
  *     boxModifiedFlag 0x12004, box_names 0x12008.
@@ -170,7 +176,7 @@ static const save4_layout kLayouts[] = {
      .mg_tag_end = SAVE4_MG_MEMORIAL_PHOTO + 1, /* MG_TAG_MAX */
      .mg_types = MG_TYPES(SAVE4_MG_POKEMON, SAVE4_MG_BATTLE_REG) | MG_TYPE(SAVE4_MG_COSMETICS) |
                  MG_TYPE(SAVE4_MG_MANAPHY_EGG) | MG_TYPES(SAVE4_MG_UNKNOWN, SAVE4_MG_MEMORIAL_PHOTO),
-     .location = 0x1234, .poketch = 0, .box_current = 0x12000, .box_mons = 0, .box_stride = 0x1000,
+     .location = 0x1234, .map_objects = 0x2348, .poketch = 0, .box_current = 0x12000, .box_mons = 0, .box_stride = 0x1000,
      .box_names = 0x12008, .box_modified = 0x12004},
 };
 
@@ -967,6 +973,80 @@ save4_status save4_get_location(const save4 *s, save4_location *loc)
     loc->x = g32(p + 8);
     loc->z = g32(p + 12);
     loc->dir = g32(p + 16);
+    return SAVE4_OK;
+}
+
+/* SavedMapObject (pokeheartgold include/map_object.h): u32 flags (bit 0
+ * MAPOBJECTFLAG_ACTIVE), u32 flags2, u8 objId, movement, s8 xRange, yRange,
+ * initialFacing, currentFacing, nextFacing, u16 mapId 0x10, spriteId, type,
+ * eventFlag, script, s16 param[3], s16 initialX 0x20, initialY, initialZ,
+ * currentX 0x26, currentY, currentZ, fx32 vecY 0x2C, u8 unk30[16],
+ * unk40[16]; 0x50 bytes. */
+enum {
+    MO_SIZE = 0x50,
+    MO_COUNT = 64,
+    MO_FLAGS = 0x00,
+    MO_ID = 0x08,
+    MO_INITIAL_FACING = 0x0C,
+    MO_CURRENT_FACING = 0x0D,
+    MO_NEXT_FACING = 0x0E,
+    MO_INITIAL_X = 0x20,
+    MO_INITIAL_Y = 0x22,
+    MO_INITIAL_Z = 0x24,
+    MO_CURRENT_X = 0x26,
+    MO_CURRENT_Y = 0x28,
+    MO_CURRENT_Z = 0x2A,
+    MO_VEC_Y = 0x2C,
+    MO_ID_PLAYER = 0xFF,     /* obj_player */
+    MO_ID_FOLLOWER = 0xFD,   /* obj_partner_poke */
+};
+
+save4_status save4_set_location(save4 *s, const save4_location *loc, int y)
+{
+    REQUIRE_LOADED(s);
+    if (!loc || loc->dir > 3 || loc->x > 0x7FFF || loc->z > 0x7FFF || y > 0x7FFF)
+        return SAVE4_ERR_ARG;
+    if (!s->layout->map_objects)
+        return SAVE4_ERR_UNSUPPORTED;
+    uint8_t *g = gen_m(s);
+    uint8_t *objs = g + s->layout->map_objects;
+    uint8_t *player = NULL;
+    for (int i = 0; i < MO_COUNT; i++) {
+        uint8_t *o = objs + i * MO_SIZE;
+        if ((g32(o + MO_FLAGS) & 1u) && o[MO_ID] == MO_ID_PLAYER) {
+            player = o;
+            break;
+        }
+    }
+    /* Not a save the field ever wrote: nothing for CONTINUE to restore. */
+    if (!player)
+        return SAVE4_ERR_RANGE;
+    if (y < 0)
+        y = (int16_t)g16(player + MO_CURRENT_Y);
+    for (int i = 0; i < MO_COUNT; i++) {
+        uint8_t *o = objs + i * MO_SIZE;
+        if (!(g32(o + MO_FLAGS) & 1u))
+            continue;
+        if (o[MO_ID] != MO_ID_PLAYER && o[MO_ID] != MO_ID_FOLLOWER) {
+            memset(o, 0, MO_SIZE);
+            continue;
+        }
+        s16(o + MO_INITIAL_X, (uint16_t)loc->x);
+        s16(o + MO_CURRENT_X, (uint16_t)loc->x);
+        s16(o + MO_INITIAL_Z, (uint16_t)loc->z);
+        s16(o + MO_CURRENT_Z, (uint16_t)loc->z);
+        s16(o + MO_INITIAL_Y, (uint16_t)y);
+        s16(o + MO_CURRENT_Y, (uint16_t)y);
+        s32(o + MO_VEC_Y, (uint32_t)y << 15);
+        o[MO_INITIAL_FACING] = o[MO_CURRENT_FACING] = o[MO_NEXT_FACING] = (uint8_t)loc->dir;
+    }
+    uint8_t *p = g + s->layout->location;
+    s32(p, loc->map);
+    s32(p + 4, 0xFFFFFFFFu);
+    s32(p + 8, loc->x);
+    s32(p + 12, loc->z);
+    s32(p + 16, loc->dir);
+    save4_commit_block(s, SAVE4_BLOCK_GENERAL);
     return SAVE4_OK;
 }
 

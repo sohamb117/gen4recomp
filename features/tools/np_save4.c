@@ -26,6 +26,10 @@
  *   np_save4 set-move <save> <rom.nds> <slot> <index> <move>   a party Pokemon's move (full PP)
  *   np_save4 set-level <save> <rom.nds> <slot> <level>   a party Pokemon's level (stats recalculated)
  *   np_save4 heal-party <save> <rom.nds>   the party's HP, status and PP restored (a Pokemon Center's)
+ *   np_save4 set-location <save> <map> <x> <z> [<dir> [<y>]]   HG/SS: where CONTINUE starts
+ *                                                (dir 0 up 1 down 2 left 3 right, default 1;
+ *                                                 y: map-object height, default the saved one;
+ *                                                 save4.h save4_set_location's caveats apply)
  *
  * Edits write back in place after copying the original to <save>.bak, or to
  * the path given with a trailing `-o <out>`.
@@ -60,6 +64,7 @@ static int usage(void)
             "  %s set-ids <save> <tid> <sid>\n"
             "  %s set-badges <save> <mask>\n"
             "  %s set-kanto-badges <save> <mask>\n"
+            "  %s set-location <save> <map> <x> <z> [<dir> [<y>]]\n"
             "  %s set-item <save> <pocket> <slot> <item> <qty>\n"
             "      pockets: items key_items tms_hms mail medicine berries balls battle_items\n"
             "  %s set-flag <save> <id|FLAG_NAME> <0|1>\n"
@@ -78,7 +83,7 @@ static int usage(void)
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
             prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
-            prog, prog, prog, prog, prog, prog);
+            prog, prog, prog, prog, prog, prog, prog);
     return EXIT_USAGE;
 }
 
@@ -1104,6 +1109,15 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[0], 0xFF, &v1);
         if (!bad)
             st = save4_set_kanto_badges(&s, (uint8_t)v1);
+    } else if (!strcmp(cmd, "set-location") && na >= 3 && na <= 5) {
+        unsigned long map = 0, x = 0, z = 0, dir = 1, y = 0;
+        bad = parse_ul(a[0], 0xFFFF, &map) || parse_ul(a[1], 0x7FFF, &x) || parse_ul(a[2], 0x7FFF, &z) ||
+              (na >= 4 && parse_ul(a[3], 3, &dir)) || (na >= 5 && parse_ul(a[4], 0x7FFF, &y));
+        if (!bad) {
+            save4_location loc = {.map = (uint32_t)map, .warp = -1, .x = (uint32_t)x, .z = (uint32_t)z,
+                                  .dir = (uint32_t)dir};
+            st = save4_set_location(&s, &loc, na >= 5 ? (int)y : -1);
+        }
     } else if (!strcmp(cmd, "set-item") && na == 4) {
         int pocket = -1;
         for (int i = 0; i < SAVE4_POCKET_COUNT; i++)

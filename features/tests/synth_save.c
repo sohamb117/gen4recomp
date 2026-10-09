@@ -221,6 +221,36 @@ static void build_copy(uint8_t *copy, save4_game game, uint32_t counter, uint32_
     if (L->hgss)
         gen[0x48] = 0;
 
+    /* HG/SS: LocalFieldData.currentPosition (Location: map, warp, x, z,
+     * direction) in New Bark (map 60), and the saved map objects CONTINUE
+     * restores (SavedMapObjectList at 0x2348, measured in the game's own
+     * saves; SavedMapObject 0x50 bytes, pokeheartgold include/map_object.h):
+     * the player (objId 0xFF), the walking Pokemon (0xFD) and one person of
+     * the map (objId 3), each active (flags bit 0). */
+    if (L->hgss) {
+        uint8_t *loc = gen + 0x1234;
+        w32(loc, SYNTH_HGSS_MAP);
+        w32(loc + 4, 0xFFFFFFFFu);
+        w32(loc + 8, SYNTH_HGSS_X);
+        w32(loc + 12, SYNTH_HGSS_Z);
+        w32(loc + 16, 1);
+        uint8_t *mo = gen + 0x2348;
+        memset(mo, 0, 64 * 0x50);
+        static const uint8_t ids[3] = {0xFF, 0xFD, 3};
+        for (int i = 0; i < 3; i++) {
+            uint8_t *o = mo + i * 0x50;
+            w32(o, 0x2000E431u);
+            o[8] = ids[i];
+            w16(o + 0x10, i == 2 ? SYNTH_HGSS_MAP : 1);
+            w16(o + 0x20, (uint16_t)(SYNTH_HGSS_X + i));
+            w16(o + 0x26, (uint16_t)(SYNTH_HGSS_X + i));
+            w16(o + 0x24, SYNTH_HGSS_Z);
+            w16(o + 0x2A, SYNTH_HGSS_Z);
+            w16(o + 0x28, 2);
+            w32(o + 0x2C, 2u << 15);
+        }
+    }
+
     /* PCBoxes / PCStorage: current box 0, every slot BoxPokemon_Init'd */
     memset(sto, 0, L->pc_size);
     for (int box = 0; box < SAVE4_BOX_COUNT; box++)

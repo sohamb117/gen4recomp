@@ -723,6 +723,53 @@ static void test_mystery_hgss(void)
     free(img);
 }
 
+/* HG/SS set-location: Location and the saved map objects move together; the
+ * old map's people go; D/P/Pt say unsupported. */
+static void test_location(save4_game game)
+{
+    static uint8_t img[SAVE4_IMAGE_SIZE];
+    synth_save_build(img, game);
+    save4 s;
+    CHECK(save4_load(&s, img, sizeof(img)) == SAVE4_OK);
+    save4_location loc = {.map = 76, .warp = 5, .x = 371, .z = 333, .dir = 2};
+    if (!save4_game_is_hgss(game)) {
+        CHECK(save4_set_location(&s, &loc, -1) == SAVE4_ERR_UNSUPPORTED);
+        return;
+    }
+    save4_location got;
+    CHECK(save4_get_location(&s, &got) == SAVE4_OK);
+    CHECK_EQ_INT(got.map, SYNTH_HGSS_MAP);
+    CHECK_EQ_INT(got.x, SYNTH_HGSS_X);
+    loc.dir = 4;
+    CHECK(save4_set_location(&s, &loc, -1) == SAVE4_ERR_ARG);
+    loc.dir = 2;
+    CHECK(save4_set_location(&s, &loc, -1) == SAVE4_OK);
+    size_t len;
+    const uint8_t *e = save4_image(&s, &len);
+    save4 r;
+    CHECK(save4_load(&r, e, len) == SAVE4_OK && r.load_result == SAVE4_LOAD_OK);
+    CHECK(save4_get_location(&r, &got) == SAVE4_OK);
+    CHECK_EQ_INT(got.map, 76);
+    CHECK_EQ_INT(got.warp, -1);
+    CHECK_EQ_INT(got.x, 371);
+    CHECK_EQ_INT(got.z, 333);
+    CHECK_EQ_INT(got.dir, 2);
+    const uint8_t *mo = e + SAVE4_COPY_SIZE + 0x2348; /* the newer copy */
+    for (int i = 0; i < 2; i++) {
+        const uint8_t *o = mo + i * 0x50;
+        CHECK_EQ_INT(r32(o) & 1u, 1);
+        CHECK_EQ_INT(o[0x26] | o[0x27] << 8, 371);
+        CHECK_EQ_INT(o[0x2A] | o[0x2B] << 8, 333);
+        CHECK_EQ_INT(o[0x28] | o[0x29] << 8, 2); /* the saved height kept */
+        CHECK_EQ_INT(o[0x0D], 2);
+    }
+    CHECK_EQ_INT(r32(mo + 2 * 0x50), 0); /* the old map's person dropped */
+    CHECK(save4_set_location(&s, &loc, 4) == SAVE4_OK);
+    e = save4_image(&s, &len);
+    CHECK_EQ_INT(e[SAVE4_COPY_SIZE + 0x2348 + 0x28], 4);
+    CHECK_EQ_INT(r32(e + SAVE4_COPY_SIZE + 0x2348 + 0x2C), 4u << 15);
+}
+
 int main(void)
 {
     test_game(SAVE4_GAME_PT);
@@ -733,6 +780,10 @@ int main(void)
     test_mystery_dp();
     test_hgss_selection();
     test_mystery_hgss();
+    test_location(SAVE4_GAME_PT);
+    test_location(SAVE4_GAME_DP);
+    test_location(SAVE4_GAME_HG);
+    test_location(SAVE4_GAME_SS);
 
     /* Flag/var names generated from the decomp. */
     uint16_t id = 0;

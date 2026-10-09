@@ -322,9 +322,10 @@ int save4_num_vars(const save4 *s);
 /* ---------------------------------------------------------- location */
 
 /* Where the player was saved (FieldOverworldState / LocalFieldData current
- * Location). Read-only: CONTINUE restores the player and the people around
- * from the saved map objects, not from this, so moving the player is a map
- * change in the game (Platinum's pc_lab `map`, Diamond/Pearl's PC_WARP). */
+ * Location). CONTINUE restores the player and the people around from the
+ * saved map objects, not from this; save4_set_location (HG/SS) moves both.
+ * On D/P/Pt moving the player is a map change in the game (Platinum's
+ * pc_lab `map`, Diamond/Pearl's PC_WARP). */
 typedef struct save4_location {
     uint32_t map;  /* map header id */
     int32_t warp;  /* -1: at x/z */
@@ -332,6 +333,24 @@ typedef struct save4_location {
     uint32_t dir;  /* 0 up, 1 down, 2 left, 3 right */
 } save4_location;
 save4_status save4_get_location(const save4 *s, save4_location *loc);
+
+/* HG/SS (SAVE4_ERR_UNSUPPORTED for D/P/Pt): moves the saved player to map
+ * `loc->map`, standing on tile (loc->x, loc->z) facing loc->dir (loc->warp
+ * is ignored; -1 is written), at map-object height `y`, or the saved
+ * height when y < 0. y is the terrain's BDHC height in world units / 8
+ * (16 units a tile): 2 on New Bark's and Goldenrod's ground, 4 on Route
+ * 30's ledge, 6 in Ecruteak (vecY = y << 15); the game takes it as given on
+ * CONTINUE, and a wrong y draws the player inside the terrain or above it
+ * until the first step. CONTINUE restores the
+ * player from the saved map objects (FieldSystem_RestoreMapObjectsFromSave),
+ * not from LocalFieldData, so the player's object (objId 0xFF) and the
+ * walking Pokemon's (0xFD) are moved too and every other saved object, the
+ * old map's people, is dropped: the new map's people appear after its
+ * first map change (a door, a map edge). The saved weather, music and
+ * camera type stay the old map's until then as well. Placing the player
+ * outside a building and walking in avoids all three, and is the safe way
+ * into a zone with a field gimmick (HG/SS's gyms, unk_020648EC.c). */
+save4_status save4_set_location(save4 *s, const save4_location *loc, int y);
 
 /* The game clock as the save last recorded it: SystemData.gameTime (Pt
  * GameTime) / SaveSysInfo.rtcInfo (D/P SysInfo_RTC) / SysInfo.rtc_info
