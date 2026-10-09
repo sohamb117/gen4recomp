@@ -5,10 +5,9 @@
 # Start: MAP_POKEMON_LEAGUE_KAREN_ROOM (6,11) -> end: the reset after "The End" (wait_reset); [expect] reads the save
 # Task_GameClear wrote.
 title = "Champion Lance, the Hall of Fame, credits and the reset"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 26000
+estimate = 36400
 refs = [
   "zone_event 275_T10R0501 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_LANCE_ROOM 0 (6,28)",
   "scr_seq_0597_T10R0601_hdr.s (OnFrame VAR_UNK_40C8 0 -> 001: ClearFlag FLAG_UNK_210, VAR_UNK_40C8 1)",
@@ -28,9 +27,10 @@ notes = "Lance's three Dragonite: Pelipper's Ice Beam (18's boost) behind a fain
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
-frames = 39000
+frames = 54600
 save = "none"
 
 [[step]]
@@ -76,16 +76,23 @@ map = "MAP_POKEMON_LEAGUE_HALL_OF_FAME"
 [[step]]
 do = "press"
 keys = "A"
-times = 110
+times = 40
 gap = 56
 shot = "hall-of-fame"
-note = "OnFrame walk-in and Lance's speech (scr_seq_0825_T10R0701.s:16-38), HallOfFameAnim, the registration screen up to the whole-team photo's wait (register_hall_of_fame.c:2210) [INFERENCE: reached within these ~6160 frames]; later A's land on the save and the credits, which ignore A"
+note = "OnFrame walk-in and Lance's speech (scr_seq_0825_T10R0701.s:16-38), then HallOfFameAnim: each party member's page (the first passing run showed Scyther's, the third, at the 40th press)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 70
+gap = 56
+note = "the rest of the pages, the whole-team photo (register_hall_of_fame.c:2210), SaveGameNormal (game_clear.c:182-219: '... saved the game.' seen 1800 frames on); later A's land on the credits, which ignore A"
 
 [[step]]
 do = "wait_frames"
-n = 6500
+n = 11000
 shot = "the-end"
-note = "SaveGameNormal (game_clear.c:182-219) and the credits (CREDITS_FRAMES 4976, credits.c:37) up to 'The End'"
+note = "the credits (credits.c) up to 'The End': seen some 10000 frames after they start, past the 4976 of CREDITS_FRAMES (credits.c:37)"
 
 [[step]]
 do = "press"
