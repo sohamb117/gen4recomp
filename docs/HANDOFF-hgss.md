@@ -33,18 +33,29 @@ loader's exact count still stops on a sixth entry). Verified: HeartGold
 headless frame 16170 loads overlays 124 and 123, frame 16176 overlays 1,
 123, 2, 3 and frame 16180 overlay 27 (`PC_TRACE_OVERLAYS=1`).
 
-## Current blocker (hgss-play2, 2026-10-08): field runs, top screen black
+## Current state (hgss-play2, 2026-10-08): the bedroom renders
 
 Fixed on main: armrec msl.s `.type @function` routines (fe357c02a), the
 cartridge IR chip (53b112d0c), the C OS_GetTick polling the timer model
-(13d513cd6). HeartGold now passes FieldMap_Init. From frame 16201 (same
-schedule) the bottom screen shows the field UI and 3D is submitted every
-frame (sampled), but the top screen stays black and unchanged through
-frame 18500: next, check master brightness/fade state and the 3D-to-top
-compositing. SoulSilver: not rebuilt with these fixes (its `make` sat at
-100% CPU after gen_bridge for over an hour, twice; HeartGold's finished in
-3 minutes; cause unknown). Checkpoint runs: /tmp/hgss2/forkrun.sh with
-/tmp/hgss2/np_headless-fork-at.patch applied (not on main).
+(13d513cd6), and compiled C's divider / geometry-port / GXFIFO registers
+routed through the armrec runtime (97814f2c5:
+`pc/include/nitro/hw/ARM9/io_reg.h`; HG/SS's monolithic io_reg.h never
+included Platinum's ioreg_CP/G3/G3X shadows, so `G3_SwapBuffers` never
+reached pc_gpu3d and the top screen was black). HeartGold frame 16600 of
+the intro schedule shows the player's bedroom (map_id 64) in 3D.
+
+D/P/Pt gate for fe357c02a, 53b112d0c and 13d513cd6: the shared gate cores
+were rebuilt at main 6ebed6312 and all 11 `tests/dp/regress.sh` cases
+(D/P/Pt and R/S/E) matched their expected hashes (build-infra's
+`tools/gate.sh --refresh-cores`). Before that: Diamond's and Pearl's armrec
+output (576 files each) was byte-identical between the old and new
+armrec.py, and the armrec bridge test passes 48/48.
+
+Open: the player's overworld sprite draws as rows of black dots every 8
+lines (bedroom, frame 16600) and its body never appears. SoulSilver: not yet
+rebuilt with these fixes; twice its `make` sat at 100% CPU after gen_bridge
+for over an hour while HeartGold's took 3 minutes. Checkpoint runs:
+/tmp/hgss2/forkrun.sh with /tmp/hgss2/np_headless-fork-at.patch applied (not on main).
 
 ## Previous blocker (hgss2, 2026-10-08): field init hangs in FieldMap_Init
 
