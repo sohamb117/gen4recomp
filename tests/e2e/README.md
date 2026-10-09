@@ -143,7 +143,8 @@ and how it was proven is in docs/BW_RAM.md. Differences:
 - **Names**: none; zones, flags, vars and species are numbers. No lab recipes; a boost (`[start] boost`) takes
   `party SPECIES LEVEL` and `party-move SLOT INDEX MOVE` as HG/SS's do (run.py's `addmon_boost`, `np_save5
   add-mon`): HM carriers, since no bot teaches an HM through the Bag. Give an added Pokemon its moves, or it has
-  none and battles with Struggle.
+  none and battles with Struggle. `party-level SLOT LEVEL` (`np_save5 set-level`) raises a member the save holds,
+  for a full party.
 - **Boot**: CONTINUE waits for the opening movie (START at frame 5000).
 
 ## How a milestone runs

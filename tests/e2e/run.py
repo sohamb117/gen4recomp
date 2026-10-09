@@ -348,11 +348,13 @@ def recipe_env(path, game):
 # uses items. Nothing else is edited.
 ADDMON_BOOST_VERBS = {"party", "party-move"}
 HGSS_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-heal"}
+# np_save5 set-level: a full party (6 from B/W milestone 13 on) is strengthened in place
+BW_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level"}
 ADDMON_BOOST_GAMES = HGSS_GAMES + BW_GAMES
 
 
 def addmon_boost_verbs(game):
-    return HGSS_BOOST_VERBS if game.name in HGSS_GAMES else ADDMON_BOOST_VERBS
+    return HGSS_BOOST_VERBS if game.name in HGSS_GAMES else BW_BOOST_VERBS
 
 
 def addmon_boost(game, inline, sav, log):
@@ -402,7 +404,7 @@ def addmon_boost(game, inline, sav, log):
             f.write("$ %s\n" % " ".join(cmd))
             f.flush()
             if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
-                raise HarnessError("boost: np_save4 %s failed (%s)" % (verb, log))
+                raise HarnessError("boost: %s %s failed (%s)" % (os.path.basename(game.save4[-1]), verb, log))
         for species, level, moves in adds:
             if sorted(moves) != list(range(len(moves))):
                 raise HarnessError("boost: the moves of slot %d must be indices 0..n-1" % first)
