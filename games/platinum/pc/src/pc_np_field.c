@@ -67,8 +67,12 @@
 
 #include "map_object.h"
 #include "terrain_collision_manager.h"
+#include "map_matrix.h"
+#include "overlay005/land_data.h"
+#include "struct_defs/map_load_mode.h"
 
 #include "constants/field/dynamic_map_features.h"
+#include "constants/field/map.h"
 #include "overlay008/gym_features.h"
 #include "persisted_map_features.h"
 #include "persisted_map_features_init.h"
@@ -255,12 +259,45 @@ static void pc_np_rules_check(FieldSystem *fs)
  * while the player is free, the terrain around them as the movement code
  * sees it (TerrainCollisionManager, the queries PlayerAvatar_CheckCollision
  * makes). Tiles off the loaded map blocks are left unknown.
+ *
+ * Only tiles on the map matrix are asked (as D/P's probe, pc_dp_field.c
+ * e2e_on_matrix). The land-data provider (GetTileAttributes ->
+ * LandDataManager_GetRelativeLoadedMapsQuadrantOfTile, overlay005/
+ * land_data.c) takes a block index past the matrix as a fault: with the
+ * comm layer up (the Union Room, the Underground) it raises
+ * CommManager_SetCommError(COMM_ERROR_RESET_SAVEPOINT), the "communication
+ * error" screen and the reset to the save point, and otherwise it
+ * GF_ASSERTs. The probe's 64x64 window reaches past a small map such as
+ * the Union Room on every frame, so it put the game there in seconds. A
+ * column past the right edge does not fault but reads the next block row,
+ * and the simple provider (GetSimpleTileAttributes, the separate terrain
+ * attributes) indexes its block table without a check: both off the
+ * matrix too, unknown rather than that. The matrix is the field's
+ * (fs->mapMatrix), whose width and height the land data manager copies;
+ * the land data's tile offset applies to the land-data provider.
  */
+static int e2e_on_matrix(FieldSystem *fs, int x, int z)
+{
+    int w, h;
+
+    if (x < 0 || z < 0 || fs->mapMatrix == NULL) return 0;
+    w = MapMatrix_GetWidth(fs->mapMatrix) * MAP_TILES_COUNT_X;
+    h = MapMatrix_GetHeight(fs->mapMatrix) * MAP_TILES_COUNT_Z;
+    if (!fs->mapLoadMode->useSimpleTerrainCollisions) {
+        if (fs->landDataMan == NULL) return 0;
+        x -= LandDataManager_GetOffsetTileX(fs->landDataMan);
+        z -= LandDataManager_GetOffsetTileZ(fs->landDataMan);
+    }
+    return x >= 0 && z >= 0 && x < w && z < h;
+}
+
 static unsigned e2e_tile(void *ctx, int x, int z)
 {
     FieldSystem *fs = ctx;
-    const u8 behavior = TerrainCollisionManager_GetTileBehavior(fs, x, z);
+    u8 behavior;
 
+    if (!e2e_on_matrix(fs, x, z)) return 0;
+    behavior = TerrainCollisionManager_GetTileBehavior(fs, x, z);
     /* 0xFF: terrain_collision_manager.c's INVALID_TILE_BEHAVIOR, off the loaded blocks */
     if (behavior == 0xFF) return 0;
     return PC_E2E_TILE_KNOWN | behavior | (TerrainCollisionManager_CheckCollision(fs, x, z) ? PC_E2E_TILE_COLLISION : 0);

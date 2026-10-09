@@ -71,6 +71,20 @@ The probe's tile grid asked GetMetatileBehavior about tiles past the map matrix;
 on such a block index (ov05_021EF844), harmless on the surface but a comm error and reset in the Underground. The
 probe (games/diamond/pc/game/pc_dp_field.c e2e_on_matrix) now asks only for tiles on the matrix.
 
+## Fixed: the Platinum e2e probe put the Union Room into a communication error
+
+The same class on Platinum. A Union Room station run with the probe on (PC_E2E=1: every np_gp / e2e bot run)
+showed "A communication error has occurred" about 180 frames after entering the room (map 466), alone or with a
+partner; without the probe, with PC_E2E=0 or with another variable in the environment, it stayed in the room. Repro:
+a station minted from tests/link/recipes/union-b.recipe on tests/link/schedules/trade-b.sched, np_headless
+--lockstep beside an idle station, 6000 frames: `link_active 1 -> 0` at 5657 with the probe, none without. The probe's
+tile grid (games/platinum/pc/src/pc_np_field.c e2e_tile) asked TerrainCollisionManager about every tile of its 64x64
+window; for a tile past the map matrix the land-data provider
+(LandDataManager_GetRelativeLoadedMapsQuadrantOfTile, overlay005/land_data.c) raises
+CommManager_SetCommError(COMM_ERROR_RESET_SAVEPOINT) while the comm layer is up (and GF_ASSERTs otherwise). The
+probe (pc_np_field.c e2e_on_matrix) now asks only for tiles on the matrix, as D/P's does; the guest's frames without
+the probe are unchanged.
+
 ## Fixed: OS_ResetSystem stopped the core (Platinum, Diamond, Pearl)
 
 Every reset the game makes itself ended the run: the player's L+R+START+SELECT, Platinum's NINTENDO WFC SETTINGS
