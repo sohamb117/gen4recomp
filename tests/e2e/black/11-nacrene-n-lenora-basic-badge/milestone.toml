@@ -18,6 +18,214 @@ notes = "Lenora's Watchog: Retaliate/Hypnosis; Fighting-type counters from Route
 
 [start]
 from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 60000
+
+[[step]]
+do = "moves"
+dirs = [["L", "x665"]]
+note = "zone_event 16 trigger 0 (665,598..603) 0x4092 == 0 -> scr 0032 script 10: Chesto Berry x3 (@0x0215), 0x4092 1"
+
+[[step]]
+do = "advance_text"
+shot = "nacrene"
+
+[[step]]
+do = "heal"
+x = 637
+z = 597
+note = "zone_event 16 warp 5 (637,597) -> zone 20, the Pokemon Center"
+
+[[step]]
+do = "walk_to"
+x = 644
+z = 583
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "trigger 1 (644,582) 0x4092 == 1 -> scr 0032 script 11: N, 0x4092 2 (@0x03E6)"
+
+[[step]]
+do = "advance_text"
+shot = "n"
+
+[[step]]
+do = "auto_battle"
+note = "N, trdata #65 (Pidove, Tympole, Timburr 13), scr 0032 @0x03F2"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "heal"
+x = 637
+z = 597
+
+[[step]]
+do = "walk_to"
+x = 644
+z = 581
+note = "zone_event 16 warp 11 (644,581) -> zone 17, the museum"
+
+[[step]]
+do = "wait_map"
+map = 17
+
+[[step]]
+do = "moves"
+dirs = [["U", "z23"]]
+note = "zone_event 17 trigger 0 (11..13,23) 0x4084 == 0 -> scr 0034 script 16, @0x0423 0x4084 1"
+
+[[step]]
+do = "advance_text"
+shot = "museum"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 2
+note = "zone_event 17 warp 1 (11..13,2) -> zone 18, the library"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 18
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 18 trigger 0 (8..10,29) 0x408A == 0 -> scr 0036 script 3: the gym guide, @0x027E 0x408A 1"
+
+[[step]]
+do = "advance_text"
+shot = "library"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 19
+face = "up"
+note = "bg 12 (7,18) -> scr 0036 script 20: 0x408A 1 -> 2 (@0x0FEA)"
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "advance_text"
+shot = "book-1"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 11
+face = "up"
+note = "bg 6 (5,10) -> scr 0036 script 14: 0x408A 2 -> 3 (@0x0D96, flag 0x80 clear)"
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "advance_text"
+shot = "book-2"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Scientist Satomi (zone_event 18 object 0) -> scr 0036 script 6: 0x408A == 3, her question (either answer)"
+
+[[step]]
+do = "advance_text"
+shot = "satomi"
+
+[[step]]
+do = "auto_battle"
+note = "Scientist Satomi, trdata #88 (Herdier 17), scr 0036 @0x0927"
+
+[[step]]
+do = "advance_text"
+note = "@0x09BE flag 0x80, @0x09C2 0x408A 4"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 3
+face = "up"
+note = "bg 3 (6,2) -> scr 0036 script 11: 0x408A 4 -> 5 (@0x0B17); (7,3) is a desk"
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "advance_text"
+shot = "book-3"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 19
+face = "up"
+note = "bg 17 (14,18) -> scr 0036 script 28: 0x408A 5 -> 6 (@0x14E4)"
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "advance_text"
+shot = "book-4"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 10
+face = "right"
+note = "(13,11) is School Kid Lydia (object 2), (12,10) faces the shelf; bg 24 (13,10) -> scr 0036 script 31, 'The Biology of Tepig': the switch, the hidden staircase, 0x408A 7 (@0x12A2)"
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "advance_text"
+shot = "staircase"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 9
+note = "zone_event 18 warp 1 (12,9) -> zone 19"
+
+[[step]]
+do = "wait_map"
+map = 19
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Lenora (zone_event 19 object 0) -> scr 0038 script 2"
+
+[[step]]
+do = "advance_text"
+shot = "lenora"
+
+[[step]]
+do = "auto_battle"
+note = "Lenora, trdata #21 (Herdier 18, Watchog 20), scr 0038 @0x00C8"
+
+[[step]]
+do = "advance_text"
+shot = "basic-badge"
+note = "GiveBadge 1 (@0x00FD), TM67 (@0x0167)"
 
 [expect]
 map = 19

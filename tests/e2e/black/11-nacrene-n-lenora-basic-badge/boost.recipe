@@ -1,0 +1,11 @@
+# Boost on 10's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# The library's trainers (School Kid Carter trdata #86 Patrat 17, Scientist Satomi #88 Herdier 17, School Kid
+# Lydia #87 Lillipup 15 x3) and Lenora (trdata #21: Herdier 18, Watchog 20; scr 0038 @0x00C8) are Normal types a
+# level or more above the chain's party, with no Pokemon Center inside the gym: the starter fainted to Satomi's
+# Herdier on Black. A Fighting carrier for them: Sawk (539) at 24 with Low Kick (67), Karate Chop (2), Double
+# Kick (24) and Rock Smash (249).
+party 539 24
+party-move 4 0 67
+party-move 4 1 2
+party-move 4 2 24
+party-move 4 3 249

@@ -227,7 +227,7 @@ class Milestone:
                 except SystemExit as e:
                     problems.append("[start] boost: %s" % e)
                 else:
-                    allowed = HGSS_BOOST_VERBS if game.name in HGSS_GAMES else BOOST_VERBS
+                    allowed = ADDMON_BOOST_VERBS if game.name in ADDMON_BOOST_GAMES else BOOST_VERBS
                     bad = sorted({op.split()[0] for op in inline[len("inline:"):].split(";") if op} - allowed)
                     if bad or env:
                         problems.append("[start] boost %s: only %s, not %s" % (
@@ -338,14 +338,16 @@ def recipe_env(path, game):
     return labc.compile_inline(path, game.name), {}
 
 
-# HG/SS boosts: `party SPECIES LEVEL` adds a Pokemon behind the party as the game's own gift makes it, with the
-# `party-move SLOT INDEX MOVE` lines that name its slot as its moves (np_save4 add-mon); nothing else is edited.
-HGSS_BOOST_VERBS = {"party", "party-move"}
+# HG/SS and B/W boosts (no save lab for them): `party SPECIES LEVEL` adds a Pokemon behind the party as the game's
+# own gift makes it, with the `party-move SLOT INDEX MOVE` lines that name its slot as its moves (np_save4/np_save5
+# add-mon); nothing else is edited.
+ADDMON_BOOST_VERBS = {"party", "party-move"}
+ADDMON_BOOST_GAMES = HGSS_GAMES + BW_GAMES
 
 
-def hgss_boost(game, inline, sav, log):
-    """Applies an HG/SS boost recipe to `sav` with np_save4 (there is no HG/SS save lab): each `party` line becomes
-    an add-mon after the save's party, carrying the moves its `party-move` lines give it (slot = its party slot)."""
+def addmon_boost(game, inline, sav, log):
+    """Applies an HG/SS or B/W boost recipe to `sav` with the save tool's add-mon: each `party` line becomes an
+    add-mon after the save's party, carrying the moves its `party-move` lines give it (slot = its party slot)."""
     ops = [op.split() for op in inline[len("inline:"):].split(";") if op]
     out = subprocess.run(game.save4 + ["dump", game.rom, sav], capture_output=True, text=True)
     if out.returncode != 0:
@@ -353,8 +355,9 @@ def hgss_boost(game, inline, sav, log):
     first = len(json.loads(out.stdout).get("party", []))
     adds = []
     for verb, *args in ops:
-        if verb not in HGSS_BOOST_VERBS:
-            raise HarnessError("boost: HG/SS boosts take only %s, not %s" % (" ".join(sorted(HGSS_BOOST_VERBS)), verb))
+        if verb not in ADDMON_BOOST_VERBS:
+            raise HarnessError("boost: %s boosts take only %s, not %s" % (
+                game.name, " ".join(sorted(ADDMON_BOOST_VERBS)), verb))
         if verb == "party":
             adds.append((int(args[0]), int(args[1]), {}))
             continue
@@ -373,7 +376,7 @@ def hgss_boost(game, inline, sav, log):
             f.write("$ %s\n" % " ".join(cmd))
             f.flush()
             if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
-                raise HarnessError("boost: np_save4 add-mon failed (%s)" % log)
+                raise HarnessError("boost: %s add-mon failed (%s)" % (os.path.basename(game.save4[-1]), log))
 
 
 
@@ -385,14 +388,14 @@ def mint(game, recipe, out_sav, base, workdir):
     if os.path.exists(work):
         os.remove(work)
     run_env = dict(os.environ, PC_LAB=inline, PC_LAB_AT="1800", **env)
-    if game.name in HGSS_GAMES:
+    if game.name in ADDMON_BOOST_GAMES:
         if base is None:
-            # no HG/SS save lab (Platinum's pc_lab.c / D/P's pc_dp_lab.c have no HG/SS twin): the chain runs from the
-            # previous milestone's end save
-            raise HarnessError("minting %s: HG/SS has no save lab yet; start from the previous milestone's end save"
-                               % os.path.basename(recipe))
+            # no HG/SS or B/W save lab (Platinum's pc_lab.c / D/P's pc_dp_lab.c have no twin there): the chain runs
+            # from the previous milestone's end save
+            raise HarnessError("minting %s: %s has no save lab yet; start from the previous milestone's end save"
+                               % (os.path.basename(recipe), game.name))
         shutil.copyfile(base, work)
-        hgss_boost(game, inline, work, log)
+        addmon_boost(game, inline, work, log)
         os.replace(work, out_sav)
         return env
     if game.name == "platinum":

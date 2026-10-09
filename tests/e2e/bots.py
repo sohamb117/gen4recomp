@@ -838,6 +838,52 @@ BW_KEYS = {
 }
 
 
+# The battle's YES/NO prompts (forget a move? / stop learning? ...) run outside the bottom screen's task stack, so
+# the probe does not report them yet: input screen 4 (ov95_0689B5A4 builds it), key table 0x0689DC48 (0 YES, 1 NO,
+# B -> NO). They are read here with peek along the chain docs/BW_RAM.md gives (Battle menu), as pc_bw_e2e.c does.
+BW_BATTLE_VIEW = {"black": 0x021F6398, "white": 0x021F63B8}
+BW_SCREEN_YESNO = 4
+# The forced replacement after the lead faints ("Battle using which Pokemon?") is a touch-screen party grid the
+# probe does not report either: the six slots where D/P's are (TAP_PARTY), a tap opens the Pokemon's page, whose
+# SHIFT panel sits in the middle (seen on the core: build/faint-*.png of the 07 scouting, Cheren's school battle).
+BW_TAP_SHIFT = (128, 84)
+
+
+def _bw_input(s):
+    """(screen, task depth, key cursor, cursor shown) of the battle's bottom screen, or None."""
+    def u32(a):
+        return struct.unpack("<I", s.peek(a, 4))[0]
+
+    def ram(a):
+        return 0x02000000 <= a < 0x02400000
+
+    main = u32(BW_BATTLE_VIEW[s.game])
+    view = u32(main + 4) if ram(main) else 0
+    scu = u32(view + 0x180) if ram(view) else 0
+    inp = u32(scu + 0xB0) if ram(scu) else 0
+    if not ram(inp):
+        return None
+    km = u32(inp + 0x274)
+    shown = ram(km & ~3) and s.peek(km, 1)[0] != 0
+    return u32(inp + 0x58), u32(scu + 0x60), (u32(inp + 0x68) >> 5) & 0xF, shown
+
+
+def _bw_yesno(s, yes):
+    """Answers the battle's YES/NO prompt: the cursor shown, moved onto the answer, A, again until the prompt goes
+    (the screen is reported before its buttons have slid in, when presses are not taken)."""
+    want = 0 if yes else 1
+    for _ in range(40):
+        cur = _bw_input(s)
+        if cur is None or cur[0] != BW_SCREEN_YESNO or not s.in_battle:
+            return
+        if not cur[3]:
+            _gba_press(s, "up")  # the first press only shows the cursor
+        elif cur[2] != want:
+            _gba_press(s, "up" if want == 0 else "down")
+        else:
+            _gba_press(s, "a", 10)
+
+
 def _bw_key_toward(idx, cur, want):
     """The first key of the shortest walk from cursor cur to want over the screen's key table; None if none."""
     table = BW_KEYS.get(idx, {})
@@ -879,8 +925,8 @@ def _bw_cursor(s, idx, want):
 def _bw_auto_battle(s, step, ctx):
     """bot_auto_battle for Black/White: the same move choice (choose_move over the probe's battle report, scored with
     the ROM's Gen 5 tables from np_save5 gamedata), made with the D-pad and A on the bottom screen's key cursor.
-    Single battles; the party screen (a fainted lead) is not reported by the probe yet, so it is left to the A
-    presses that advance text."""
+    The party screen after the lead faints and the YES/NO prompts are not reported by the probe: they are met by
+    touch and by peeking the battle's input screen (_bw_input)."""
     fixed = "move" in step
     move = _int(step, "move", 0)
     flee = FLEE_TRIES if step.get("flee") else 0
@@ -891,7 +937,7 @@ def _bw_auto_battle(s, step, ctx):
     gd = None if fixed else gamedata(ctx)
     p = s.probe()
     since = p.frame if p is not None else 0
-    turns, last, again, menus, rejected, slot = 0, None, 0, {}, [], None
+    turns, last, again, menus, rejected, slot, prompts, sent = 0, None, 0, {}, [], None, 0, set()
     while s.in_battle:
         if s.frame >= limit:
             raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
@@ -941,13 +987,55 @@ def _bw_auto_battle(s, step, ctx):
                 else:
                     again = 2  # the slot cannot be reached: the next one
             else:
-                _gba_press(s, "b", 10)  # a screen the probe does not name: back out of it
+                # a screen the probe does not name (0x100 + the input screen's number), e.g. a double battle's target
+                # choice after a move: A takes its default (the cursor's first place, a foe [INFERENCE])
+                s.note("auto_battle: screen %#x cursor %#x: A" % (idx, p.ui_cursor))
+                _gba_press(s, "a", 10)
+                s.run(30, until=["ui!=%d" % UI_BATTLE_MENU, "ui_arg!=%d" % idx, "in_battle=0"])
+            if idx == BW_UI_ACTION:
+                prompts = 0
             last = idx
             menus[idx] = menus.get(idx, 0) + 1
             continue
-        # text, animations: A advances text
+        lead = p.battlers[0] if p is not None and p.battlers and p.battle_frame >= since else None
+        if lead is not None and lead.species and lead.hp == 0:
+            # the grid lists the battle's own order, which a switch reshuffles, so the probe's party (the save's
+            # order) only ranks the first try; a slot that does not send anyone in (CANNOT BATTLE, or the grid
+            # not up yet) is backed out of with B and the next one is tried
+            alive = [k for k in range(1, len(p.party)) if p.party[k].alive]
+            if alive:
+                foe = next((b for b in p.battlers[1::2] if b.alive), None)
+                k = replacement(gd, p.party, foe, 1, best=True) if gd is not None else None
+                order = ([k] if k is not None else []) + alive + list(range(1, 6))
+                k = next((j for j in order if j not in sent), None)
+                if k is None:
+                    sent.clear()
+                    k = order[0]
+                sent.add(k)
+                s.note("auto_battle: the lead fainted; party grid slot %d" % k)
+                _tap(s, TAP_PARTY[k], 4, 30)
+                _tap(s, BW_TAP_SHIFT, 4, 30)
+                s.run(60, until="in_battle=0")
+                q = s.probe()
+                if q is not None and q.battlers and q.battlers[0].hp == 0:
+                    _gba_press(s, "b", 10)
+                    _gba_press(s, "b", 10)
+                continue
+        sent.clear()
+        inp = _bw_input(s)
+        if inp is not None and inp[0] == BW_SCREEN_YESNO:
+            # learning a fifth move asks "forget a move?" then "stop learning?": NO, then YES (alternating while
+            # no action menu comes between); the prompts are not told apart yet [INFERENCE]
+            prompts += 1
+            s.note("auto_battle: YES/NO prompt %d: %s" % (prompts, "NO" if prompts % 2 else "YES"))
+            _bw_yesno(s, yes=not prompts % 2)
+            continue
+        # text and animations: B advances text as A does, and answers the trainer's "Will you switch your
+        # Pokemon?" (a party screen the probe does not report) by keeping the one in battle; A there would pick the
+        # lead, which is IN BATTLE, and wait forever (bw-play2's y07 stall). The evolution scene comes after the
+        # battle, outside this loop.
         if not s.run(6, until=["ui!=0", "in_battle=0"]):
-            s.run(2, "a", until=["ui!=0", "in_battle=0"])
+            s.run(2, "b", until=["ui!=0", "in_battle=0"])
     s.note("auto_battle: battle over after %d turns (menus answered %s)" % (
         turns, ", ".join("%d x%d" % kv for kv in sorted(menus.items()))))
 
@@ -1003,6 +1091,8 @@ class Terrain:
         # Tall grass costs GRASS_COST steps: the planner goes round it where it can, as a player would, so a
         # walk meets fewer wild battles and reaches the route's trainers with more HP.
         self.grass = {b[k] for k in ("TALL_GRASS", "VERY_TALL_GRASS", "MUD_WITH_GRASS", "MUD_DEEP_WITH_GRASS") if k in b}
+        if game in BW_GAMES:
+            self.grass = set(BW_GRASS)
         # Bike slopes (e.g. Route 209 (562,691..692)) go uphill only at bicycle speed: on foot the player
         # slides back down forever, so walk_to never plans across one.
         self.slopes = {b[k] for k in ("BIKE_SLOPE_TOP", "BIKE_SLOPE_BOTTOM") if k in b}
@@ -1790,6 +1880,12 @@ GBA_PC_COUNTER, GBA_PC_EXIT = (7, 4), (7, 8)
 # and the town exit warp at (8,19) (games/heartgold/files/fielddata/eventdata/zone_event/*PC0101.json, e.g.
 # 066_T21PC0101 Cherrygrove)
 HGSS_PC_COUNTER, HGSS_PC_EXIT = (8, 13), (8, 19)
+# Black/White: the nurse at (7,10) behind the counter, the exit warp (6..8,19) (bw_script.py events 398, Accumula's
+# Pokemon Center); the exit mat is left by holding down on it (milestone 05)
+BW_PC_COUNTER, BW_PC_EXIT = (7, 12), (7, 18)
+# Black/White's tall grass: the MAPATTR values (the probe's tile byte) under the player when Route 2's wild battles
+# began (0x04 twice, 0x1F once) [INFERENCE: no attribute table decoded yet]
+BW_GRASS = (0x04, 0x1F)
 
 
 def bot_heal(s, step, ctx):
@@ -1805,10 +1901,15 @@ def bot_heal(s, step, ctx):
         raise HarnessError("heal: (%d,%d) is not a door on map %d" % (int(step["x"]), int(step["z"]), town))
     center = s.map_id
     counter, exit_ = ((GBA_PC_COUNTER, GBA_PC_EXIT) if ctx.game in GBA_GAMES
-                      else (HGSS_PC_COUNTER, HGSS_PC_EXIT) if ctx.game in HGSS_GAMES else (PC_COUNTER, PC_EXIT))
+                      else (HGSS_PC_COUNTER, HGSS_PC_EXIT) if ctx.game in HGSS_GAMES
+                      else (BW_PC_COUNTER, BW_PC_EXIT) if ctx.game in BW_GAMES else (PC_COUNTER, PC_EXIT))
     bot_walk_to(s, {"x": counter[0], "z": counter[1], "face": "up", "interact": True}, ctx)
     bot_advance_text(s, {}, ctx)  # A answers YES to resting the Pokemon
     bot_walk_to(s, {"x": exit_[0], "z": exit_[1]}, ctx)
+    if ctx.game in BW_GAMES:
+        s.run(20, "down", until="map_id!=%d" % center)
+        s.run(120, until="map_id!=%d" % center)
+        bot_wait_field(s, {}, ctx)
     if s.map_id == center:
         raise HarnessError("heal: did not leave the Pokemon Center (map %d)" % center)
     s.note("heal: healed in map %d, back on map %d" % (center, s.map_id))

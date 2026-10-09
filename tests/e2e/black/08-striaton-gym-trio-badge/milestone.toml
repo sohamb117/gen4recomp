@@ -2,10 +2,9 @@
 # Badge.
 # Start: Striaton City at the gym door (zone 6) -> end: Striaton Gym (zone 7), 1 badge, 0x4088 = 1.
 title = "Striaton Gym: Cilan, Chili or Cress and the Trio Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 29425
 refs = [
   "zone_event 6 warp 5 (788,586) -> zone 7 (the gym)",
   "zone_event 7 triggers 0-10 on var 0x4082 0..4 -> scr 0014 scripts 6-20 (the curtains/switches; @0x1037/@0x1091/@0x117F SetVar 0x4082 2/3/4)",
@@ -15,10 +14,103 @@ refs = [
   "scr 0014 @0x09DF/@0x0BCF/@0x0DBF GiveBadge 0 (Trio); msg 12 #20-#22",
   "scr 0014 @0x0A5D CallStd 2805 TM83; @0x0A83 SetFlag 0x21E; @0x0A8B SetVar 0x4088 1; @0x0A99 SetFlag 0x971",
 ]
-notes = "Tepig (0x4030 1) faces Cress's Panpour: the Dreamyard's Pansage (Grass) is the counter. A loss is BlackOut (@0x09CF). [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 29425, White 28536 frames on the core of 2026-10-08 (bw2 = main c2b11893e). boost.recipe adds Blitzle 20 (White's Cress whited out the starter and Pansage). Tepig (0x4030 1) faces Cress's Panpour: the Dreamyard's Pansage (Grass) is the counter. A loss is BlackOut (@0x09CF)."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 44500
+
+[[step]]
+do = "heal"
+x = 781
+z = 587
+
+[[step]]
+do = "talk_to"
+id = 8
+shot = "leader-at-door"
+note = "the leader at the gym door (zone_event 6 object 8, (788,587), shown once 0x21B is cleared) -> scr 0012 script 13: goes inside (@0x047D SetFlag 0x21B, RemoveObject 8)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 788
+z = 586
+note = "zone_event 6 warp 5 (788,586) -> zone 7 (the gym)"
+
+[[step]]
+do = "wait_map"
+map = 7
+
+[[step]]
+do = "advance_text"
+shot = "gym"
+note = "zone_event 7 trigger 10 (11..13,42) 0x4082 == 0 -> scr 0014 script 20 (@0x0444 0x4082 1)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 36
+avoid = [[9, 36], [12, 36], [12, 26], [15, 26], [9, 16], [15, 16]]
+note = "the right switch of the first row: trigger 6 (15,36) 0x4082 == 1 -> script 9 opens curtain object 4 (@0x1037 0x4082 2); (9,36) and (12,36) only buzz"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 26
+avoid = [[9, 36], [12, 36], [12, 26], [15, 26], [9, 16], [15, 16]]
+note = "trigger 1 (9,26) 0x4082 == 2 -> script 10 opens curtain object 5 (@0x1091 0x4082 3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 16
+avoid = [[9, 36], [12, 36], [12, 26], [15, 26], [9, 16], [15, 16]]
+note = "trigger 5 (12,16) 0x4082 == 3 -> script 14 opens curtain object 6 (@0x117F 0x4082 4)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 6
+avoid = [[9, 36], [12, 36], [12, 26], [15, 26], [9, 16], [15, 16]]
+shot = "triplets"
+note = "trigger 0 (11..13,6) 0x4082 == 4 -> script 6: the triplets name the leader by the starter (Tepig: Cress, msg 12 #9)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 2
+shot = "cress"
+note = "Cress (zone_event 7 object 2) -> scr 0014 script 4"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Cress (trdata #13: Lillipup 12, Panpour 14), mode 0 (scr 0014 @0x0982)"
+
+[[step]]
+do = "advance_text"
+shot = "trio-badge"
+note = "GiveBadge 0 (@0x09DF), TM83 (@0x0A5D), 0x4088 1 (@0x0A8B), flag 0x971"
 
 [expect]
 map = 7

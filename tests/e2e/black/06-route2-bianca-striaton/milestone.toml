@@ -21,6 +21,12 @@ from = "prev"
 frames = 40000
 
 [[step]]
+do = "heal"
+x = 796
+z = 657
+note = "zone_event 397 warp 0 (796,657) -> zone 398 (the Pokemon Center): 05's battle with N leaves the starter hurt, and Route 2's wild battles can white it out (seen on White)"
+
+[[step]]
 do = "walk_to"
 x = 768
 z = 648
@@ -66,7 +72,9 @@ shot = "xtransceiver"
 do = "walk_to"
 x = 786
 z = 615
+on_battle = "flee"
 shot = "before-bianca"
+note = "Route 2's grass: up to seven wild battles on the way whited the starter out on White; the grind is 07's"
 
 [[step]]
 do = "moves"

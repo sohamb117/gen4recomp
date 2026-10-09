@@ -19,6 +19,197 @@ notes = "[INFERENCE] estimate."
 [start]
 from = "prev"
 
+[run]
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 19
+note = "zone_event 19 warp 0 (4,19) -> zone 18, the library"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 18
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 30
+note = "zone_event 18 warp 0 (8..10,30) -> zone 17, the museum"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 17
+
+[[step]]
+do = "moves"
+dirs = [["D", "z9"]]
+note = "zone_event 17 trigger 1 (10..14,9) 0x4084 == 2 -> scr 0034 script 17: the Dragon Skull stolen, @0x07DB 0x4084 3"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "skull-stolen"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 28
+note = "zone_event 17 warp 0 (11..13,28) -> zone 16"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 16
+
+[[step]]
+do = "advance_text"
+shot = "burgh"
+note = "zone_event 16 level 2 (on entry) 0x4092 == 3 -> scr 0032 script 7: Burgh, Dowsing MCHN (@0x065B), 0x4092 4 (@0x070D)"
+
+[[step]]
+do = "heal"
+x = 637
+z = 597
+
+[[step]]
+do = "walk_to"
+x = 593
+z = 584
+note = "Nacrene's west edge joins Pinwheel Forest's outskirts (zone 154)"
+
+[[step]]
+do = "moves"
+dirs = [["L", "x592"]]
+note = "zone_event 154 trigger 0 (592,583..585) 0x408C == 1 -> scr 0308 script 2: Burgh, 0x408C 2, 0x408D 1 (@0x005E/@0x0064)"
+
+[[step]]
+do = "advance_text"
+shot = "burgh-forest"
+
+[[step]]
+do = "walk_to"
+x = 585
+z = 589
+note = "zone_event 154 warp 0 (584,588..591) -> zone 155"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 155
+
+[[step]]
+do = "walk_to"
+x = 73
+z = 72
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 155 trigger 1 (71..76,71) 0x408D == 1 -> scr 0310 script 10: Burgh takes the straight road, @0x02DF 0x408D 2"
+
+[[step]]
+do = "advance_text"
+shot = "two-ways"
+
+[[step]]
+do = "walk_to"
+x = 60
+z = 72
+note = "trigger 2 (59..62,73) 0x40AA == 0 -> scr 0310 script 13"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #295 (Sandile 16), scr 0310 @0x0687"
+
+[[step]]
+do = "advance_text"
+note = "@0x06C0 0x40AA 1"
+
+[[step]]
+do = "walk_to"
+x = 47
+z = 73
+note = "trigger 4 (46,69..79) 0x40AA == 1 -> scr 0310 script 17"
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #309 (Purrloin 16), scr 0310 @0x08A4"
+
+[[step]]
+do = "advance_text"
+note = "@0x08DD 0x40AA 2"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 53
+note = "trigger 5 (22,53) 0x40AA == 2 -> scr 0310 script 19"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #296 (Patrat 16), scr 0310 @0x0996"
+
+[[step]]
+do = "advance_text"
+note = "@0x09CF 0x40AA 3"
+
+[[step]]
+do = "walk_to"
+x = 43
+z = 33
+note = "trigger 6 (43,33) 0x40AA == 3 -> scr 0310 script 21"
+
+[[step]]
+do = "advance_text"
+shot = "last-grunt"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #297 (Patrat 14 x2, Sandile 14), scr 0310 @0x0A47"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "skull-returned"
+note = "Dragon Skull (@0x0ABB), Gorm, Burgh, Lenora: Moon Stone (@0x0CBB); 0x408D 3, 0x40AA 4, 0x4092 5 (@0x0D0D/@0x0D13/@0x0D31)"
+
 [expect]
 map = 155
 

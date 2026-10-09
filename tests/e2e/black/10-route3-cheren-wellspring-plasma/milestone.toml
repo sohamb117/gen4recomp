@@ -2,10 +2,9 @@
 # on to Nacrene City.
 # Start: Fennel's lab (zone 10) -> end: Nacrene City (zone 16), 0x4095 = 5, 0x407E = 2.
 title = "Route 3: Cheren and Team Plasma at Wellspring Cave"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 51928
 refs = [
   "zone 321 (Route 3) scr 0642 @0x0344 TrainerBattle trdata #18 (Twins Kumi & Amy, double); @0x036D SetVar 0x407E 1",
   "zone_event 321 trigger 0 (719,581) var 0x407E == 1 -> scr 0642 script 6 (msg 353 #6); @0x051F/@0x0569/@0x05A0 TrainerBattle trdata #56/#57/#58 (Cheren: starter 14, Purrloin 12)",
@@ -13,10 +12,218 @@ refs = [
   "zone_event 324 trigger 0 (25,4) var 0x4095 == 3 -> scr 0648 script 1; @0x0155 TrainerBattle trdata #294 (grunt: Patrat 12); @0x0464 SetVar 0x4095 4",
   "scr 0642 @0x0DF7 CallStd 2805 Heal Ball x3; @0x0E32 SetVar 0x4095 5; @0x0F68 SetVar 0x407E 2",
 ]
-notes = "Which of the 0x4095 triggers fires depends on the side the player enters from; `bw_script.py events 321`. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 48598, White 51928 frames on the core of 2026-10-08 (bw2 = main c2b11893e). Route 3's grass walks flee wild battles. Which of the 0x4095 triggers fires depends on the side the player enters from; `bw_script.py events 321`."
 
 [start]
 from = "prev"
+
+[run]
+frames = 78000
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 2
+note = "zone_event 10 warp 0 (10,2) -> zone 9"
+
+[[step]]
+do = "wait_map"
+map = 9
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 10
+note = "zone_event 9 warp 0 (6..8,10) -> zone 6"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 6
+
+[[step]]
+do = "heal"
+x = 781
+z = 587
+
+[[step]]
+do = "walk_to"
+x = 743
+z = 564
+shot = "route3"
+note = "Striaton's west edge joins Route 3 (zone 321)"
+
+[[step]]
+do = "moves"
+dirs = [["L", "x741"]]
+note = "zone_event 321 trigger 8 (741,563..565) 0x407E == 0 -> scr 0642 script 15: two or more Pokemon -> L_0328"
+
+[[step]]
+do = "advance_text"
+shot = "twins-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Twins Kumi & Amy, trdata #18 double (Purrloin 10 x2), scr 0642 @0x0344; @0x036D 0x407E 1"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 719
+z = 563
+
+[[step]]
+do = "moves"
+dirs = [["L", "x717"]]
+note = "trigger 2 (717,562..565) 0x4095 == 0 -> scr 0642 script 5: Cheren"
+
+[[step]]
+do = "advance_text"
+shot = "cheren-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Cheren, trdata #56/#57/#58 by 0x4030 (scr 0642 @0x051F/@0x0569/@0x05A0)"
+
+[[step]]
+do = "advance_text"
+shot = "plasma-theft"
+note = "Team Plasma steals the girl's Pokemon; @0x076A 0x4095 1"
+
+[[step]]
+do = "walk_to"
+x = 681
+z = 555
+on_battle = "flee"
+avoid = [[715, 566], [716, 566], [717, 566], [718, 566]]
+note = "west to Wellspring Cave, around trigger 1 (715..718,566), Bianca's 'get it back' push"
+
+[[step]]
+do = "moves"
+dirs = [["L", "x680"]]
+note = "trigger 5 (680,555) 0x4095 == 1 -> scr 0642 script 7: Cheren 'ready to go?' (A: YES) -> 0x4095 3"
+
+[[step]]
+do = "advance_text"
+shot = "cave-mouth"
+
+[[step]]
+do = "walk_to"
+x = 679
+z = 555
+note = "zone_event 321 warp 3 (679,554) 1x2 -> zone 324"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 324
+
+[[step]]
+do = "moves"
+dirs = [["L", "x25"]]
+note = "zone_event 324 trigger 0 (25,4..6) 0x4095 == 3 -> scr 0648 script 1"
+
+[[step]]
+do = "advance_text"
+shot = "grunts-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #294 (Patrat 12), scr 0648 @0x0155"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "with Cheren against two grunts: Cmd086 Cheren trdata #56/#57/#58, grunts #62/#63 (scr 0648 @0x024D/@0x02B6/@0x030C)"
+
+[[step]]
+do = "advance_text"
+shot = "returned"
+note = "@0x0464 0x4095 4"
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 5
+note = "zone_event 324 warp 0 (30,5) -> zone 321"
+
+[[step]]
+do = "wait_map"
+map = 321
+
+[[step]]
+do = "walk_to"
+x = 717
+z = 563
+avoid = [[715, 565], [716, 565], [717, 565]]
+note = "trigger 10 (718,562..565) 0x4095 == 4 -> scr 0642 script 20, entered from the west"
+
+[[step]]
+do = "moves"
+dirs = [["R", "x718"]]
+
+[[step]]
+do = "advance_text"
+shot = "heal-balls"
+note = "Heal Ball x3 (scr 0642 @0x0DF7), @0x0E32 0x4095 5"
+
+[[step]]
+do = "walk_to"
+x = 720
+z = 582
+note = "trigger 0 (719,581..584) 0x407E == 1 -> scr 0642 script 6, from the east"
+
+[[step]]
+do = "moves"
+dirs = [["L", "x719"]]
+
+[[step]]
+do = "advance_text"
+shot = "dark-grass"
+note = "Cheren on the dark grass, @0x0F68 0x407E 2"
+
+[[step]]
+do = "walk_to"
+x = 679
+z = 599
+on_battle = "flee"
+note = "zone_event 321 warp 0 (678,598) 1x3 -> zone 27 (Nacrene Gate)"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 27
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 5
+note = "zone_event 27 warp 1 (1,4) 1x3 -> zone 16"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 16
 
 [expect]
 map = 16

@@ -87,7 +87,7 @@ The DS harness as Platinum and D/P use it, with these differences:
   are `kanto_badges`) and `np_save4 gamedata` HG/SS ROMs.
 - **Saves**: no HG/SS save lab yet, so every milestone starts from the previous one's end save (01 from a blank chip,
   the intro schedule of docs/HANDOFF-hgss.md); lab recipes are refused. A boost (`[start] boost`) takes only
-  `party SPECIES LEVEL` and `party-move SLOT INDEX MOVE` for a Pokemon it adds: run.py's `hgss_boost` turns each into
+  `party SPECIES LEVEL` and `party-move SLOT INDEX MOVE` for a Pokemon it adds: run.py's `addmon_boost` turns each into
   `np_save4 add-mon` after the save's party (HM carriers, since no bot teaches an HM through the Bag; strength for
   the boss fights, which `auto_battle` reaches with `send = "best"`). SoulSilver's chain lists HeartGold's dirs and
   its own `31-whirl-islands-lugia`.
@@ -130,11 +130,17 @@ and how it was proven is in docs/BW_RAM.md. Differences:
   the planner gives none of them a meaning) and step layers from the game's own object movement check.
   `field_ready` is "a field, no event (script, menu, warp) running, the player on a tile centre". In a battle
   `in_battle` is 1 and the battle report carries each client's front Pokemon and the player's party (overlay 93's
-  POKECON); `ui` stays 0 (the battle's menus are not reported yet), so `auto_battle` cannot drive a BW battle.
+  POKECON); `ui` is `UI_BATTLE_MENU` while the bottom screen's action menu (ui_arg 1) or move list (11) waits for
+  input. `auto_battle` drives those with the D-pad; the screens the probe does not report are handled in bots.py:
+  the YES/NO prompts (forget a move?, stop learning?) by peeking the battle's input screen (`_bw_input`), the forced
+  replacement after the lead faints by touch (`TAP_PARTY`, then SHIFT), the trainer's "Will you switch?" by B.
 - **Saves**: `save` (and the end save) goes through the game's X menu (SAVE, then A); the host's quick save is
   refused. `features/tools/np_save5 dump` reads the end save in np_save4's shapes (`location`, `trainer`, `party`,
   `flags`, `vars`).
-- **Names**: none; zones, flags, vars and species are numbers. No lab or boost recipes.
+- **Names**: none; zones, flags, vars and species are numbers. No lab recipes; a boost (`[start] boost`) takes
+  `party SPECIES LEVEL` and `party-move SLOT INDEX MOVE` as HG/SS's do (run.py's `addmon_boost`, `np_save5
+  add-mon`): HM carriers, since no bot teaches an HM through the Bag. Give an added Pokemon its moves, or it has
+  none and battles with Struggle.
 - **Boot**: CONTINUE waits for the opening movie (START at frame 5000).
 
 ## How a milestone runs

@@ -1,0 +1,11 @@
+# Boost on 07's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# The gym's trainers and Cress (trdata #13: Lillipup 12, Panpour 14; scr 0014 @0x0982) wear the starter and the
+# Dreamyard's Pansage down between heals: on White the leader whited both out (ended in the Striaton PC, zone 8).
+# A carrier for when they faint (auto_battle sends the best of the party): Blitzle (522) at 20, Electric against
+# Panpour, with Shock Wave (351), Flame Charge (488), Quick Attack (98) and Thunder Wave (86). It carries on to
+# Route 3 (10), where the multi battle and the trainers leave no Pokemon Center between them.
+party 522 20
+party-move 2 0 351
+party-move 2 1 488
+party-move 2 2 98
+party-move 2 3 86

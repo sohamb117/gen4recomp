@@ -2,10 +2,9 @@
 # back at Fennel's lab.
 # Start: Striaton Gym (zone 7) -> end: Fennel's lab (zone 10), 0x4094 = 5, 0x4088 = 3.
 title = "Fennel, the Dreamyard's Munna and Team Plasma"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 16000
+estimate = 29527
 refs = [
   "zone_event 6 level type 1: 0x4088 == 1 -> scr 0012 script 14 (Fennel, msg 11 #0); @0x04DC SetVar 0x4088 2; @0x04E2 SetVar 0x4087 1; @0x04E8 Warp zone 9 (7,10)",
   "zone_event 9 level type 1: 0x4087 == 1 -> scr 0018 script 5; @0x0148 Warp zone 10 (11,2); @0x0156 SetVar 0x4087 2",
@@ -14,10 +13,188 @@ refs = [
   "scr 0304 @0x0777/@0x07DC TrainerBattle trdata #293/#308 (Plasma grunts: Patrat 10, Purrloin 10); @0x0B6E SetVar 0x4094 4",
   "scr 0020 @0x039A CallStd 2805 Pal Pad; @0x041D SetVar 0x4094 5; @0x0423 SetVar 0x4086 2; @0x0429 SetVar 0x4088 3",
 ]
-notes = "zone_event 6 trigger 1 (750,584) var 0x4088 == 2 -> scr 0012 script 20 sends the player back to Fennel. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 29527, White 26889 frames on the core of 2026-10-08 (bw2 = main c2b11893e). boost.recipe adds a Cut carrier for the Dreamyard tree. zone_event 6 trigger 1 (750,584) var 0x4088 == 2 -> scr 0012 script 20 sends the player back to Fennel."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 44500
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 42
+note = "the gym's exit (zone_event 7 warp 0 (11..13,43) -> zone 6)"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 6
+
+[[step]]
+do = "advance_text"
+shot = "fennel"
+note = "zone_event 6 level 0x4088 == 1 -> scr 0012 script 14 (Fennel: 0x4088 2, 0x4087 1, Warp zone 9), zone 9 level 0x4087 == 1 -> scr 0018 script 5 (Warp zone 10)"
+
+[[step]]
+do = "wait_map"
+map = 10
+
+[[step]]
+do = "advance_text"
+shot = "fennel-lab"
+note = "zone_event 10 level 0x4086 == 0 -> scr 0020 script 1: HM01 (@0x006A), 0x4086 1, 0x4094 1"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 2
+note = "zone_event 10 warp 0 (10,2) -> zone 9"
+
+[[step]]
+do = "wait_map"
+map = 9
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 10
+note = "zone_event 9 warp 0 (6..8,10) -> zone 6"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 6
+
+[[step]]
+do = "walk_to"
+x = 805
+z = 581
+note = "zone_event 6 warp 6 (805,580) 1x4 -> zone 152 (the Dreamyard)"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 152
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 27
+face = "up"
+note = "below the Cut tree, zone_event 152 object 8 at (23,26)"
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "advance_text"
+shot = "cut"
+note = "scr 0867 script 5: msg 280 #0 'Would you like to cut it?' (A: YES), the boost's Patrat cuts it"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 26
+note = "zone_event 152 trigger 0 (23,26) 0x4094 == 1 -> scr 0304 script 2 (Bianca; @0x0396 0x4094 2)"
+
+[[step]]
+do = "advance_text"
+shot = "bianca"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 23
+note = "trigger 1 (25,22..24) 0x4094 == 2 -> scr 0304 script 4 (the sound beyond the wall; @0x04F8 0x4094 3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 14
+note = "trigger 2 (26..29,14) 0x4094 == 3 -> scr 0304 script 5: Munna, Team Plasma"
+
+[[step]]
+do = "advance_text"
+shot = "plasma-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #293 (Patrat 10), scr 0304 @0x0777"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #308 (Purrloin 10), scr 0304 @0x07DC"
+
+[[step]]
+do = "advance_text"
+shot = "musharna"
+note = "Musharna's Dream Mist; @0x0B6E 0x4094 4"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 27
+note = "zone_event 152 warp 2 (8,26) 1x4 -> zone 6"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 6
+
+[[step]]
+do = "walk_to"
+x = 789
+z = 594
+note = "zone_event 6 warp 1 (789,594) -> zone 9 (Fennel's house)"
+
+[[step]]
+do = "wait_map"
+map = 9
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 2
+note = "zone_event 9 warp 1 (8,2) -> zone 10 (the lab upstairs)"
+
+[[step]]
+do = "wait_map"
+map = 10
+
+[[step]]
+do = "talk_to"
+id = 0
+shot = "pal-pad"
+note = "Fennel (zone_event 10 object 0) -> scr 0020 script 2: 0x4094 == 4 -> Pal Pad (@0x039A), 0x4094 5, 0x4086 2, 0x4088 3"
+
+[[step]]
+do = "advance_text"
 
 [expect]
 map = 10

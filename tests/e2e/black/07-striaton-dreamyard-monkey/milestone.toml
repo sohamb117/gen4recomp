@@ -18,7 +18,27 @@ notes = "The monkey is given by talking to the Dreamyard girl twice [INFERENCE: 
 from = "prev"
 
 [run]
-frames = 40000
+frames = 130000
+
+[[step]]
+do = "heal"
+x = 781
+z = 587
+note = "Striaton's Pokemon Center (zone_event 6 warp 0 (781,587) -> zone 8): Route 2's battles left the starter hurt"
+
+[[step]]
+do = "grind"
+x = 781
+z = 621
+level = 13
+heal = [781, 587]
+max = 80000
+note = "Route 2's tall grass (781..782,621) below Striaton: Cheren's Oshawott beat a level 10 Tepig in this run's first tries"
+
+[[step]]
+do = "heal"
+x = 781
+z = 587
 
 [[step]]
 do = "walk_to"
@@ -43,7 +63,7 @@ do = "advance_text"
 [[step]]
 do = "auto_battle"
 snap = true
-note = "Cheren (trdata #287 with Tepig: Tepig 8, Purrloin 8; mode 0, scr 0030 @0x0576)"
+note = "Cheren (trdata #288 against Tepig: Oshawott 8, Purrloin 8; mode 0, scr 0030 @0x05A5)"
 
 [[step]]
 do = "advance_text"
