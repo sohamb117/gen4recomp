@@ -847,6 +847,10 @@ BW_SCREEN_YESNO = 4
 # probe does not report either: the six slots where D/P's are (TAP_PARTY), a tap opens the Pokemon's page, whose
 # SHIFT panel sits in the middle (seen on the core: build/faint-*.png of the 07 scouting, Cheren's school battle).
 BW_TAP_SHIFT = (128, 84)
+BW_TAP_BACK = (240, 168)
+# frames without a reported menu after which auto_battle tries the party grid (a battle turn with its animations and
+# messages stays under ~600 frames on the core)
+BW_QUIET_GRID = 1500
 
 
 def _bw_input(s):
@@ -938,12 +942,15 @@ def _bw_auto_battle(s, step, ctx):
     p = s.probe()
     since = p.frame if p is not None else 0
     turns, last, again, menus, rejected, slot, prompts, sent = 0, None, 0, {}, [], None, 0, set()
+    quiet, tried = s.frame, set()  # the last frame a menu was reported; grid slots tried since
     while s.in_battle:
         if s.frame >= limit:
             raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
         p = s.probe()
         fresh = gd is not None and p is not None and p.battle_fresh and p.battle_frame >= since
         if p is not None and p.ui == UI_BATTLE_MENU:
+            quiet = s.frame
+            tried.clear()
             idx = p.ui_arg
             me = p.battlers[p.menu_battler] if fresh and p.menu_battler < len(p.battlers) else None
             foe = next((p.battlers[b] for b in (1, 3) if fresh and b < len(p.battlers) and p.battlers[b].alive), None)
@@ -997,30 +1004,34 @@ def _bw_auto_battle(s, step, ctx):
             last = idx
             menus[idx] = menus.get(idx, 0) + 1
             continue
-        lead = p.battlers[0] if p is not None and p.battlers and p.battle_frame >= since else None
-        if lead is not None and lead.species and lead.hp == 0:
-            # the grid lists the battle's own order, which a switch reshuffles, so the probe's party (the save's
-            # order) only ranks the first try; a slot that does not send anyone in (CANNOT BATTLE, or the grid
-            # not up yet) is backed out of with B and the next one is tried
-            alive = [k for k in range(1, len(p.party)) if p.party[k].alive]
-            if alive:
-                foe = next((b for b in p.battlers[1::2] if b.alive), None)
-                k = replacement(gd, p.party, foe, 1, best=True) if gd is not None else None
-                order = ([k] if k is not None else []) + alive + list(range(1, 6))
-                k = next((j for j in order if j not in sent), None)
-                if k is None:
-                    sent.clear()
-                    k = order[0]
-                sent.add(k)
-                s.note("auto_battle: the lead fainted; party grid slot %d" % k)
-                _tap(s, TAP_PARTY[k], 4, 30)
-                _tap(s, BW_TAP_SHIFT, 4, 30)
-                s.run(60, until="in_battle=0")
-                q = s.probe()
-                if q is not None and q.battlers and q.battlers[0].hp == 0:
-                    _gba_press(s, "b", 10)
-                    _gba_press(s, "b", 10)
-                continue
+        mine = [b for b in (0, 2) if p is not None and p.battle_frame >= since and b < len(p.battlers)
+                and p.battlers[b].species]
+        down = next((b for b in mine if p.battlers[b].hp == 0), None)
+        alive = [k for k in range(len(p.party)) if p.party[k].alive] if down is not None else []
+        if down is not None and len(alive) > sum(1 for b in mine if p.battlers[b].hp):
+            # a front Pokemon fainted and one on the bench can come in. The grid lists the battle's own order,
+            # which a switch reshuffles, so the probe's party (the save's order) only ranks the first try; the
+            # grid's first places are the ones on the field (one in a single battle, two in a double); a slot
+            # that does not send anyone in (CANNOT BATTLE, or the grid not up yet) is backed out of and the next
+            # one is tried
+            first = len(mine)
+            foe = next((b for b in p.battlers[1::2] if b.alive), None)
+            k = replacement(gd, p.party, foe, 1, best=True) if gd is not None else None
+            order = [j for j in ([k] if k is not None else []) + alive + list(range(first, 6)) if j >= first]
+            k = next((j for j in order if j not in sent), None)
+            if k is None:
+                sent.clear()
+                k = order[0]
+            sent.add(k)
+            s.note("auto_battle: battler %d fainted; party grid slot %d" % (down, k))
+            _tap(s, TAP_PARTY[k], 4, 30)
+            _tap(s, BW_TAP_SHIFT, 4, 30)
+            s.run(60, until="in_battle=0")
+            q = s.probe()
+            if q is not None and down < len(q.battlers) and q.battlers[down].species and q.battlers[down].hp == 0:
+                _gba_press(s, "b", 10)  # the "has no energy left" message
+                _tap(s, BW_TAP_BACK, 4, 30)  # the page's return button: back to the grid
+            continue
         sent.clear()
         inp = _bw_input(s)
         if inp is not None and inp[0] == BW_SCREEN_YESNO:
@@ -1029,6 +1040,24 @@ def _bw_auto_battle(s, step, ctx):
             prompts += 1
             s.note("auto_battle: YES/NO prompt %d: %s" % (prompts, "NO" if prompts % 2 else "YES"))
             _bw_yesno(s, yes=not prompts % 2)
+            quiet = s.frame
+            continue
+        if s.frame - quiet > BW_QUIET_GRID:
+            # no menu for this long: the party grid the probe cannot see (a double battle's empty place after a
+            # faint the battle report did not catch): the bench slots by touch in turn, as above
+            first = 2 if p is not None and len(p.battlers) > 2 else 1
+            k = next((j for j in range(first, 6) if j not in tried), None)
+            if k is None:
+                tried.clear()
+                k = first
+            tried.add(k)
+            s.note("auto_battle: no menu for %d frames; party grid slot %d" % (s.frame - quiet, k))
+            _tap(s, TAP_PARTY[k], 4, 30)
+            _tap(s, BW_TAP_SHIFT, 4, 30)
+            if not s.run(60, until=["ui!=0", "in_battle=0"]):
+                _gba_press(s, "b", 10)
+                _tap(s, BW_TAP_BACK, 4, 30)
+            quiet = s.frame - BW_QUIET_GRID + 240
             continue
         # text and animations: B advances text as A does, and answers the trainer's "Will you switch your
         # Pokemon?" (a party screen the probe does not report) by keeping the one in battle; A there would pick the
@@ -1945,6 +1974,41 @@ def _stores(s):
         return f.read().count("-byte save to ")
 
 
+def bot_rail(s, step, ctx):
+    """Black/White rail maps (Skyarrow Bridge, Castelia's waterfront): the player follows the map's rails, the field
+    never reports ready and walk_to cannot plan there. Hold `keys` (with B to run when `run = true`) until the probe's
+    position (the rail position the game keeps in the player's map object) is within `near` (default 2) of (x, z),
+    or, with `map`, until the map becomes `map`; a hold that stops moving the player for 120 frames fails, unless
+    `script = true` (a trigger on the way runs a script that stops the player: the hold ends there). The rails turn
+    with the camera: which key follows a street depends on where on its width the player is, so a route is the one
+    a probe walk found (a fresh press after a warp can turn another way than a key held through it)."""
+    keys = step["keys"] + ("+b" if step.get("run") else "")
+    want_map = ctx.resolve(step["map"]) if "map" in step else None
+    near = _int(step, "near", 2)
+    limit = s.frame + _int(step, "max", 6000)
+    still, last = 0, None
+    while True:
+        if want_map is not None and s.map_id == want_map:
+            break
+        p = s.probe()
+        pos = (p.x, p.z, s.map_id) if p is not None else None
+        if want_map is None and p is not None and "x" in step and \
+                abs(p.x - int(step["x"])) <= near and abs(p.z - int(step["z"])) <= near:
+            break
+        still = still + 6 if pos == last else 0
+        last = pos
+        if still >= 120:
+            if step.get("script"):
+                break  # a trigger's script took the player over: the hold ends there
+            raise HarnessError("rail: %s stopped moving at %s on map %d" % (keys, pos[:2] if pos else "?", s.map_id))
+        if s.frame >= limit:
+            raise HarnessError("rail: %s did not get there in %d frames (at %s, map %d)" % (
+                keys, _int(step, "max", 6000), pos[:2] if pos else "?", s.map_id))
+        s.run(6, keys)
+    p = s.probe()
+    s.note("rail: %s to (%d,%d) on map %d" % (keys, p.x if p else -1, p.z if p else -1, s.map_id))
+
+
 def bot_walk_onto(s, step, ctx):
     """walk_to the nearest tile of the probe's window whose metatile behavior is `behavior` (an MB_ value): the goal
     of a map the game lays out at run time, which the decomp's static layout does not show (the Battle Pyramid's
@@ -2753,6 +2817,7 @@ BOTS = {
     "walk_to": bot_walk_to,
     "walk_to_door": bot_walk_to_door,
     "walk_onto": bot_walk_onto,
+    "rail": bot_rail,
     "talk_to": bot_talk_to,
     "heal": bot_heal,
     "grind": bot_grind,

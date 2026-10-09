@@ -1,0 +1,9 @@
+# The boost's Sawk (party slot 4) to the lead, as a player orders the party: X, POKEMON (64,46), the lead (64,36),
+# SWITCH (200,133), Sawk (64,132: the field party screen's two columns of three, rows 48 apart), then B out of the
+# party screen and the menu. Positions seen on the core (bw-play2's y07s-lead, this milestone's scouting).
+0:x:4
+80:tap:64:46:4
+200:tap:64:36:4
+300:tap:200:133:4
+400:tap:64:132:4
+520:b:4:60:4

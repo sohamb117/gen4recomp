@@ -2,10 +2,9 @@
 # and the skull returned.
 # Start: the Nacrene Gym (zone 19) -> end: Pinwheel Forest (zone 155), 0x408D = 3, 0x4092 = 5.
 title = "The Dragon Skull: Team Plasma in Pinwheel Forest"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 18000
+estimate = 41974
 refs = [
   "zone_event 17 trigger 1 (10,9) var 0x4084 == 2 -> scr 0034 script 17 (msg 22 #12); @0x07DB SetVar 0x4084 3",
   "zone_event 16 level type 1: 0x4092 == 3 -> scr 0032 script 7; @0x065B CallStd 2805 Dowsing MCHN; @0x070D SetVar 0x4092 4",
@@ -14,13 +13,13 @@ refs = [
   "zone_event 155 triggers 2,4-6 on var 0x40AA 0..3; scr 0310 @0x0687/@0x08A4/@0x0996/@0x0A47 TrainerBattle trdata #295/#309/#296/#297 (grunts, Sandile 16 ... Patrat 14 x2 + Sandile 14)",
   "scr 0310 @0x0ABB CallStd 2805 Dragon Skull; @0x0D0D SetVar 0x408D 3; @0x0D13 SetVar 0x40AA 4; @0x0D31 SetVar 0x4092 5",
 ]
-notes = "[INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 41974, White 40243 frames on the core of 2026-10-08 (main 21cf05779, instant text). Pinwheel Forest's walks flee wild battles; the walk to (22,53) goes up the corridor at x 20."
 
 [start]
 from = "prev"
 
 [run]
-frames = 60000
+frames = 63000
 
 [[step]]
 do = "walk_to"
@@ -91,6 +90,7 @@ z = 597
 do = "walk_to"
 x = 593
 z = 584
+on_battle = "flee"
 note = "Nacrene's west edge joins Pinwheel Forest's outskirts (zone 154)"
 
 [[step]]
@@ -106,6 +106,7 @@ shot = "burgh-forest"
 do = "walk_to"
 x = 585
 z = 589
+on_battle = "flee"
 note = "zone_event 154 warp 0 (584,588..591) -> zone 155"
 
 [[step]]
@@ -121,6 +122,7 @@ map = 155
 do = "walk_to"
 x = 73
 z = 72
+on_battle = "flee"
 
 [[step]]
 do = "moves"
@@ -135,6 +137,7 @@ shot = "two-ways"
 do = "walk_to"
 x = 60
 z = 72
+on_battle = "flee"
 note = "trigger 2 (59..62,73) 0x40AA == 0 -> scr 0310 script 13"
 
 [[step]]
@@ -156,6 +159,7 @@ note = "@0x06C0 0x40AA 1"
 do = "walk_to"
 x = 47
 z = 73
+on_battle = "flee"
 note = "trigger 4 (46,69..79) 0x40AA == 1 -> scr 0310 script 17"
 
 [[step]]
@@ -177,7 +181,9 @@ note = "@0x08DD 0x40AA 2"
 do = "walk_to"
 x = 22
 z = 53
-note = "trigger 5 (22,53) 0x40AA == 2 -> scr 0310 script 19"
+on_battle = "flee"
+via = [[20, 66], [20, 57]]
+note = "trigger 5 (22,53) 0x40AA == 2 -> scr 0310 script 19, up the corridor at x 20 (the probe grid: the way from the north side of (19,50) stalled)"
 
 [[step]]
 do = "advance_text"
@@ -194,11 +200,12 @@ note = "@0x09CF 0x40AA 3"
 do = "walk_to"
 x = 43
 z = 33
+on_battle = "flee"
 note = "trigger 6 (43,33) 0x40AA == 3 -> scr 0310 script 21"
 
 [[step]]
 do = "advance_text"
-shot = "last-grunt"
+shot = "last-grunt-battle-in"
 
 [[step]]
 do = "auto_battle"

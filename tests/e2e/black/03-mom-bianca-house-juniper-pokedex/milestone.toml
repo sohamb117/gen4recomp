@@ -4,7 +4,7 @@
 title = "Mom, Bianca's house and Professor Juniper's Pokédex"
 priority = "P0"
 version = "both"
-estimate = 18079
+estimate = 13631
 refs = [
   "zone_event 391 warp 0 (9,2) -> zone 390 warp 1",
   "zone_event 390 level type 1: var 0x4085 == 0 -> scr 0780 script 1 (Mom/Cheren/Bianca)",
@@ -17,13 +17,13 @@ refs = [
   "zone_event 396 warp 0 (3,11) -> zone 389 warp 3",
   "zone_event 389 level type 1: 0x4080 == 1 -> scr 0778 script 12; @0x03AD CallStd 2805 Town Map; @0x04E9 SetVar 0x4080 2; @0x04EF SetFlag 0x2A7",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 17979, White 18079 frames on the core of 2026-10-08 (bw2 = main c2b11893e). Steps from bw-play2's run-ahead. A answers Juniper's nickname question YES and the keyboard's A presses name the starter AAAAAAAAAA (harmless); house and lab exits: walk onto the mat, then hold down. Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry."
+notes = "Measured from the previous end save (CONTINUE included): Black 13531, White 13631 frames on the core of 2026-10-08 (main 21cf05779, instant text). Steps from bw-play2's run-ahead. A answers Juniper's nickname question YES and the keyboard's A presses name the starter AAAAAAAAAA (harmless); house and lab exits: walk onto the mat, then hold down. Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry."
 
 [start]
 from = "prev"
 
 [run]
-frames = 27500
+frames = 20500
 
 [[step]]
 do = "walk_to"

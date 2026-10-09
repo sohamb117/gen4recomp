@@ -5,15 +5,15 @@
 title = "New game to the bedroom, a walk, a talk with Cheren and the first save"
 priority = "P0"
 version = "both"
-estimate = 15107
+estimate = 14931
 refs = ["docs/BW_PLAN.md", "docs/BW_RAM.md"]
-notes = "Black and White play the same frames (the proposal run's ng.sched, its A presses cut where the player is free). The starter is the next milestone: the gift box's scene runs straight into Bianca's battle."
+notes = "Measured from a blank chip: Black 14931, White 14931 frames on the core of 2026-10-08 (main 21cf05779, instant text). Black and White play the same frames (the proposal run's ng.sched, its A presses cut where the player is free). The starter is the next milestone: the gift box's scene runs straight into Bianca's battle."
 
 [start]
 blank = true
 
 [run]
-frames = 23000
+frames = 22500
 
 [[step]]
 do = "schedule"

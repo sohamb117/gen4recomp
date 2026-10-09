@@ -2,23 +2,22 @@
 # 0x4083 2), back to the gym door.
 # Start: Striaton City (zone 6) -> end: Striaton City at the gym door, a second Pokémon, 0x4083 = 2.
 title = "Striaton City: the Trainers' School and the Dreamyard's monkey"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 14000
+estimate = 80980
 refs = [
   "scr 0012 script 13 (gym door, Cilan): unless 0x4083 == 2 the gym waits (msg 11 #1/#2)",
   "zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3",
   "zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard)",
   "scr 0304 script 1 (the girl): @0x013F SetVar 0x4083 1; @0x0264/@0x0295/@0x02B3 GivePokemon Panpour/Pansage/Pansear lv 10 by 0x4030 (the one strong against the starter's weakness); @0x0319 SetVar 0x4083 2",
 ]
-notes = "The monkey is given by talking to the Dreamyard girl twice [INFERENCE: first visit asks, second gives]. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 73592, White 80980 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Dreamyard girl gives the monkey at the first talk (party_size 2 at the end). The starter is ground to 13 on Route 2 first: at 10 it lost to Cheren's Oshawott in the school, which whites out to the Pokemon Center."
 
 [start]
 from = "prev"
 
 [run]
-frames = 130000
+frames = 121500
 
 [[step]]
 do = "heal"
@@ -104,6 +103,8 @@ map = 152
 [[step]]
 do = "talk_to"
 id = 0
+on_battle = "flee"
+max = 12000
 shot = "girl"
 note = "the girl (zone_event 152 object 0, (32,27)) -> scr 0304 script 1: A answers YES (@0x01F7) -> Pansage lv 10 for Tepig (@0x0295)"
 

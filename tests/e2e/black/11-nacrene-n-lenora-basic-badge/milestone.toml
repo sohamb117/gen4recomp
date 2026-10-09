@@ -2,10 +2,9 @@
 # Lenora's Basic Badge.
 # Start: Nacrene City (zone 16) -> end: the Nacrene Gym (zone 19), 2 badges, 0x4092 = 3.
 title = "Nacrene City: N and Lenora's Basic Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 18000
+estimate = 32249
 refs = [
   "zone_event 16 trigger 0 (665,598) var 0x4092 == 0 -> scr 0032 script 10; @0x0215 CallStd 2805 Chesto Berry x3; @0x024F SetVar 0x4092 1",
   "zone_event 16 trigger 1 (644,582) var 0x4092 == 1 -> scr 0032 script 11 (msg 21 #3); @0x03E6 SetVar 0x4092 2; @0x03F2 TrainerBattle trdata #65 (N: Pidove, Tympole, Timburr 13)",
@@ -14,14 +13,23 @@ refs = [
   "scr 0038 @0x00C8 TrainerBattle trdata #21 (Lenora: Herdier 18, Watchog 20); @0x00FD GiveBadge 1 (Basic); @0x0167 CallStd 2805 TM67",
   "scr 0038 @0x0059/@0x0069 SetFlag 0x972/0x970; @0x006D SetVar 0x4084 2; @0x0073 SetVar 0x408C 1; @0x0079 SetVar 0x4092 3",
 ]
-notes = "Lenora's Watchog: Retaliate/Hypnosis; Fighting-type counters from Route 3/Pinwheel are [INFERENCE]. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 32181, White 32249 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds Sawk 24 and lead.press puts it first (auto_battle fights with the lead; the starter and Pansage arrive fainted from Route 3). The library: books (7,18), (5,10), Satomi, (6,2) ((7,3) is a desk), (14,18), then Lydia (she stands before the last shelf and steps aside after her battle), (13,10)."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 48500
+
+[[step]]
+do = "schedule"
+file = "lead.press"
+shot = "sawk-lead"
+note = "Sawk leads: auto_battle fights with the lead, and the starter and Pansage arrive fainted from Route 3"
+
+[[step]]
+do = "wait_field"
 
 [[step]]
 do = "moves"
@@ -50,7 +58,7 @@ note = "trigger 1 (644,582) 0x4092 == 1 -> scr 0032 script 11: N, 0x4092 2 (@0x0
 
 [[step]]
 do = "advance_text"
-shot = "n"
+shot = "n-battle-in"
 
 [[step]]
 do = "auto_battle"
@@ -144,7 +152,7 @@ note = "Scientist Satomi (zone_event 18 object 0) -> scr 0036 script 6: 0x408A =
 
 [[step]]
 do = "advance_text"
-shot = "satomi"
+shot = "satomi-battle-in"
 
 [[step]]
 do = "auto_battle"
@@ -185,11 +193,27 @@ do = "advance_text"
 shot = "book-4"
 
 [[step]]
+do = "talk_to"
+id = 2
+note = "School Kid Lydia (zone_event 18 object 2) stands before the last shelf: scr 0036 script 5, 0x408A == 6, her question (either answer)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "School Kid Lydia, trdata #87 (Lillipup 15 x3), scr 0036 @0x0748"
+
+[[step]]
+do = "advance_text"
+note = "she steps aside (M_0820), flag 0x81 (@0x07EB)"
+
+[[step]]
 do = "walk_to"
-x = 12
-z = 10
-face = "right"
-note = "(13,11) is School Kid Lydia (object 2), (12,10) faces the shelf; bg 24 (13,10) -> scr 0036 script 31, 'The Biology of Tepig': the switch, the hidden staircase, 0x408A 7 (@0x12A2)"
+x = 13
+z = 11
+face = "up"
+note = "bg 24 (13,10) -> scr 0036 script 31, 'The Biology of Tepig': the switch, the hidden staircase, 0x408A 7 (@0x12A2)"
 
 [[step]]
 do = "press"
@@ -216,7 +240,7 @@ note = "Lenora (zone_event 19 object 0) -> scr 0038 script 2"
 
 [[step]]
 do = "advance_text"
-shot = "lenora"
+shot = "lenora-battle-in"
 
 [[step]]
 do = "auto_battle"

@@ -4,7 +4,7 @@
 title = "Accumula Town: the Pokémon Center, Team Plasma's speech and N"
 priority = "P0"
 version = "both"
-estimate = 22380
+estimate = 16883
 refs = [
   "zone_event 397 object 6 gfx 0x69 (796,658) hidden by flag 0x208 -> scr 0794 script 8 (Juniper); @0x031A Warp zone 398 (7,19); @0x0324 SetFlag 0x208; @0x0328 SetVar 0x407A 1",
   "zone_event 397 level type 1: 0x407A == 1 -> scr 0794 script 13 (msg 436 #6); @0x03E9 SetVar 0x407A 2",
@@ -13,13 +13,13 @@ refs = [
   "scr 0794 @0x0D63 SetVar 0x407A 3; @0x0D69-@0x0D79 SetFlag 0x20C/0x210/0x206/0x20D/0x20A",
   "zone_event 397 trigger 0 (770,646) 1x5 var 0x407A == 0 -> scr 0794 script 7 (the west exit held until the tour)",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 22275, White 22380 frames on the core of 2026-10-08 (bw2 = main c2b11893e). The nurse sits behind the counter: walk_to (7,12) facing up, A. N's Purrloin falls to the starter (mode 0). N's battle is the first real one (mode 0): a loss blacks out."
+notes = "Measured from the previous end save (CONTINUE included): Black 16883, White 16162 frames on the core of 2026-10-08 (main 21cf05779, instant text). The nurse sits behind the counter: walk_to (7,12) facing up, A. N's Purrloin falls to the starter (mode 0). N's battle is the first real one (mode 0): a loss blacks out."
 
 [start]
 from = "prev"
 
 [run]
-frames = 34000
+frames = 25500
 
 [[step]]
 do = "talk_to"

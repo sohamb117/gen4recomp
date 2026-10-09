@@ -4,7 +4,7 @@
 title = "The gift box: the starter, Bianca's and Cheren's first battles"
 priority = "P0"
 version = "both"
-estimate = 17633
+estimate = 15388
 refs = [
   "zone_event 391 object 2 gfx 0xD0 (5,8) hidden by flag 0x2A8 -> scr 0782 script 9",
   "scr 0782 @0x0220 msg 430 #11 (the gift box opened); @0x023A Cmd153 var 0x8020 (the choice)",
@@ -18,13 +18,13 @@ refs = [
   "zone_event 391 trigger 0 (8,2) var 0x4081 == 1 -> scr 0782 script 6 (the stairs gate, msg 430 #8)",
   "docs/BW_RAM.md (party, vars, flags, battle)",
 ]
-notes = "Measured from 01's end save (CONTINUE included): Black 17633, White 17372 frames on the core of 2026-10-08 (bw2 = main c2b11893e + the ov230-caller substitutions). Both battles are mode 1: a loss only changes the line. The A presses through the choice take Tepig (0x4030 = 1): Bianca sends Snivy (#60), Cheren Oshawott (#54); auto_battle drives the bottom screen's key cursor (docs/BW_RAM.md, Battle menu). The end save is made through the X menu, whose SAVE button moves once there is a party (bots.py _bw_save_tap)."
+notes = "Measured from the previous end save (CONTINUE included): Black 15152, White 15388 frames on the core of 2026-10-08 (main 21cf05779, instant text). Both battles are mode 1: a loss only changes the line. The A presses through the choice take Tepig (0x4030 = 1): Bianca sends Snivy (#60), Cheren Oshawott (#54); auto_battle drives the bottom screen's key cursor (docs/BW_RAM.md, Battle menu). The end save is made through the X menu, whose SAVE button moves once there is a party (bots.py _bw_save_tap)."
 
 [start]
 from = "prev"
 
 [run]
-frames = 26500
+frames = 23500
 
 [[step]]
 do = "talk_to"
