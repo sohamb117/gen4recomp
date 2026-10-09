@@ -678,3 +678,39 @@ The C-Gear, checked on the core:
   anywhere on this path.
 - The area-name banner's letters fly in and settle ("Dreamyard"); that is
   the game's animation, not garbled text.
+
+## Run-ahead past Nacrene: seasons, rail maps, the Musical, the late game (2026-10-08)
+
+`np_save5 set-location <save> <zone> <x> <y> <z>` (main 3c0812a8d)
+moves a save's player, and the game CONTINUEs there. A zone that has its own
+field-gimmick overlay must still be entered through its door. A save placed
+directly in the Nimbasa or Icirrus gym (zones 63 and 114) loads without
+that overlay (39 or 45). It aborts on the first gimmick call, an
+"indirect branch to ov39_021F3D74 (not loaded)". Walking in from the city
+loads the overlay, and a save made inside then CONTINUEs cleanly. That is a
+limit of the tool, not of the port.
+
+All runs below are Black, on the core built from main 21cf05779, with the
+boosted scouting party. None found a port defect:
+
+- **Seasons.** January, February, March and April RTC values (`--rtc`)
+  give identical Nuvema and Accumula frames. The clock does reach the game:
+  the C-Gear shows 12:00, the time set. [INFERENCE] The season is likely
+  decided by how much play time or which day has passed since the save,
+  not by the month alone. Not settled.
+- **Skyarrow Bridge (249) and Castelia (28)** are rail maps: the probe's
+  field_ready stays 0 on them, and walk_to does not apply. Holding a key
+  works. From the gate 251, holding UP (B to run) crosses the bridge to 252
+  in about 3240 frames; the deck's y rises to 31 and falls again. From
+  252, holding LEFT follows Castelia's street; UP at a door enters a normal
+  building map.
+- **The Musical Theater** works: the Prop Case, the dress-up screen (drag
+  by touch), "Is this look OK?", and the dressing room.
+- **Late-game areas**, each entered by CONTINUE at a door or exit, then
+  walked: Black City, Nimbasa and its gym's rollercoaster, Driftveil and
+  the drawbridge, Mistralton and its gym, Icirrus and its gym's ice,
+  Opelucid, the Pokémon League, Desert Resort, Relic Castle with the "so
+  much sand" gate, Cold Storage, Chargestone Cave, Twist Mountain,
+  Dragonspiral Tower, and N's Castle with its "Those in accord with Fate"
+  text. All render and take input. The story events there (Reshiram,
+  the credits) need the chain's flags and were not reached.
