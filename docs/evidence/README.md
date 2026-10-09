@@ -147,6 +147,11 @@ in docs/FEATURE_PARITY.md ("Black / White and HeartGold / SoulSilver"). A 16th
 case, `n2_render`, was added afterwards and passes on all four: F12's core frame
 is 256x384 at render scale 1, 512x768 at 2 and 684x768 with widescreen
 (`<game>-n2_render-*-frame.png`; White's widescreen bedroom looked at).
+A 17th, `n2_battle_layout` (B/W only; 2026-10-09, an app built the same way with only
+the Black and White cores, build/app-bw, from main 73db46f55's cores), runs the bedroom save
+through the gift box into Bianca's battle with `battle_layout = hybrid`: the bedroom vertical,
+the battle hybrid (large top, the touch screen small at the right), the bedroom after it
+vertical again, on Black and White (`<game>-n2_battle_layout-{field,battle,after}.png`, looked at).
 Screenshots looked at: Black title (n2_boot), bedroom after CONTINUE
 (n2_continue), "Snapshot 1 loaded" in the bedroom (n2_snapshots-restored),
 the editor's Trainer tab on the real save (n2_editor-trainer: AAAAAAA, ID

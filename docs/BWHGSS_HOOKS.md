@@ -238,11 +238,11 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   3329; RUN ("Got away safely!") clears it at 4650 as the field comes back. Still missing: `in_battle_app`
   for battles that do not come from an `Encounter` (the Battle Frontier): patch `Battle_LaunchApp` /
   `gOverlayTemplate_Battle`'s init and exit (`src/launch_application.c`).
-- **B/W.** No game patch: GAMESYS+0x18 is the running `GMEVENT`. Once the battle-call event's function address
-  is known (the first battle's event, readable when it starts), `bw_frame` can compare the event's function
-  field against it. The event's layout is to be established; the pointer alone is also set for menus and
-  dialogue. Before the battle overlays run, report 0. This needs the overlay 93 fix (docs/BW_PLAN.md: the
-  bx-pc veneer at `ov93_021BB9D8`).
+- **B/W: done, no game patch.** `pc/src/pc_bw_e2e.c` `bw_frame` sets `in_battle_app` while overlay 93's battle
+  POKECON exists (`bw_pokecon`, docs/BW_RAM.md "Battle"), from the battle's intro to the fade back to the field.
+  Bianca's battle in the bedroom (`tests/bwhgss/bw-battle.sched`) sets it at ~9920 and clears it at ~14030
+  (parity.sh `battle`); in the app with `battle_layout = hybrid` the field is drawn in the vertical layout,
+  the battle in the hybrid one, and the field after it vertical again (`n2_battle_layout`).
 
 ## Ranking (value / effort)
 
@@ -261,7 +261,7 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 | 11 | Mods via FS/NARC hooks | HG/SS | medium | low over #10 | field for most assets | no |
 | 12 | `in_battle_app` | HG/SS | small | low (Frontier only) | field | no |
 | 13 | Camera zoom / tilt | B/W | medium: GFL camera hook on the field overlay's Switching calls | medium | nothing | no | **done** |
-| 14 | `IN_BATTLE` | B/W | small after the event layout | medium | overlay 93 | no |
+| 14 | `IN_BATTLE` | B/W | small: the probe's POKECON | medium | nothing | no | **done** (app) |
 | 15 | Rules | HG/SS, B/W | medium each, per documented bug | low | battles | no |
 
 The same B/W groundwork serves #8, #9, #13 and #14: the per-version emitted-assembly patch step in

@@ -1059,6 +1059,20 @@ def _(c):
         new_play(c, step=name)
 
 
+@case('n2_battle_layout', 'B/W: battle layout hybrid (large top) during Bianca\'s battle, the field layout '
+      'before and after it (NP_STAT_IN_BATTLE)', 'nds2')
+def _(c):
+    if not is_bw():
+        raise FileNotFoundError('no HG/SS save: the field does not load yet')
+    new_save(c, opts='[video]\nlayout = vertical\nbattle_layout = hybrid')
+    # tests/bwhgss/bw-battle.sched from the bedroom save: the gift box, Tepig,
+    # Bianca's battle from ~9900 to ~14000.
+    box = BW_CONTINUE + ';7000:down:4;7040:down:12;7100:down:4;7150:a:4:40:300'
+    for step, frames in (('field', 9000), ('battle', 11500), ('after', 15500)):
+        c.run('boot=app,frames=%d,press=%s,script=0:move:1:1' % (frames, box), step=step,
+              args=['--game', GAME, '--slot', NEW_SLOT])
+
+
 @case('n2_effects', 'Effects chain (LCD grid + scanlines, CRT + curvature) and a performance preset', 'nds2')
 def _(c):
     for name, video in (('lcd-scanlines', 'effect1 = lcd\neffect1_intensity = 80\neffect2 = scanlines\n'
