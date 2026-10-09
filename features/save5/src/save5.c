@@ -555,6 +555,21 @@ save5_status save5_get_location(const save5 *s, save5_location *loc)
     return SAVE5_OK;
 }
 
+save5_status save5_set_location(save5 *s, const save5_location *loc)
+{
+    if (!s || !s->img || !loc)
+        return SAVE5_ERR_ARG;
+    uint8_t *p = blk(s, SAVE5_BLK_POSITION);
+    /* fx32: the tile in the integer half, the tile's centre (8 of its 16
+     * units) in the fraction, as an object's position is kept */
+    s32(p + POS_MAP, loc->map);
+    s32(p + POS_X, (uint32_t)loc->x << 16 | 0x8000u);
+    s32(p + POS_Y, (uint32_t)loc->y << 16);
+    s32(p + POS_Z, (uint32_t)loc->z << 16 | 0x8000u);
+    save5_commit_block(s, SAVE5_BLK_POSITION);
+    return SAVE5_OK;
+}
+
 save5_status save5_get_last_saved(const save5 *s, save5_game_time *t)
 {
     if (!s || !s->img || !t)

@@ -197,6 +197,9 @@ typedef struct save5_location {
     uint16_t x, y, z;
 } save5_location;
 save5_status save5_get_location(const save5 *s, save5_location *loc);
+/* Moves the saved player to zone `map`, standing at the centre of tile (x, z)
+ * at height y (tiles): the game's CONTINUE places the player there. */
+save5_status save5_set_location(save5 *s, const save5_location *loc);
 
 /* The date and time of the last save (trainer block +0x28, packed: year
  * bits 0-6 (since 2000), month 7-10, day 11-15, hour 16-20, minute 21-26). */

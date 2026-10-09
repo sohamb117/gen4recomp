@@ -19,6 +19,7 @@
  *   np_save5 add-gift <save> <gift.pgf>
  *   np_save5 remove-gift <save> <card slot 1-12>
  *   np_save5 set-box-name <save> <box 1-24> <name>
+ *   np_save5 set-location <save> <zone> <x> <y> <z>       where CONTINUE starts
  *   np_save5 add-mon <save> <rom.nds> <species> <level> [move...]   party Pokemon
  *
  * np_save4's set-coins, set-dex-obtained and set-mystery-gift have no
@@ -65,10 +66,11 @@ static int usage(void)
             "  %s add-gift <save> <gift.pgf>\n"
             "  %s remove-gift <save> <card slot 1-12>\n"
             "  %s set-box-name <save> <box 1-24> <name>\n"
+            "  %s set-location <save> <zone> <x> <y> <z>\n"
             "  %s add-mon <save> <rom.nds> <species> <level> [move id...]\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
-            prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog);
+            prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog);
     return EXIT_USAGE;
 }
 
@@ -736,6 +738,14 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[0], SAVE5_BOX_COUNT, &v1) || v1 == 0;
         if (!bad)
             st = save5_set_box_name(&s, (int)v1 - 1, a[1]);
+    } else if (!strcmp(cmd, "set-location") && na == 4) {
+        unsigned long z;
+        bad = parse_ul(a[0], 0xFFFF, &v1) || parse_ul(a[1], 0xFFFF, &v2) || parse_ul(a[2], 0xFFFF, &v3) ||
+              parse_ul(a[3], 0xFFFF, &z);
+        if (!bad) {
+            save5_location loc = {(uint32_t)v1, (uint16_t)v2, (uint16_t)v3, (uint16_t)z};
+            st = save5_set_location(&s, &loc);
+        }
     } else if (!strcmp(cmd, "add-mon") && na >= 3 && na <= 7) {
         bad = parse_ul(a[1], SAVE5_DEX_MAX, &v1) || v1 == 0 || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)

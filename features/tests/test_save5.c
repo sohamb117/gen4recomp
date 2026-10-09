@@ -158,6 +158,8 @@ static void test_load(save5_game game)
     CHECK(save5_var_set(&e, 0x4011, 7) == SAVE5_OK);
     CHECK(save5_set_box_name(&e, 2, "Favs") == SAVE5_OK);
     CHECK(save5_set_box_name(&e, 2, "NineChars") == SAVE5_ERR_RANGE);
+    save5_location wl = {252, 8, 0, 9};
+    CHECK(save5_set_location(&e, &wl) == SAVE5_OK);
     CHECK(save5_get_party(&e, 0, &p) == SAVE5_OK);
     pkm5_set_held_item(&p, 234);
     pkm5_set_exp(&p, 1000);
@@ -195,6 +197,8 @@ static void test_load(save5_game game)
     CHECK(save5_var_get(&r, 0x4011, &var) == SAVE5_OK && var == 7);
     CHECK(save5_get_box_name(&r, 2, name, sizeof name) == SAVE5_OK);
     CHECK_EQ_STR(name, "Favs");
+    CHECK(save5_get_location(&r, &loc) == SAVE5_OK);
+    CHECK(loc.map == 252 && loc.x == 8 && loc.y == 0 && loc.z == 9);
     CHECK(save5_get_party(&r, 0, &p) == SAVE5_OK);
     pkm5_info_get(&p, &info);
     CHECK(info.held_item == 234 && info.exp == 1000 && info.level == 5);
