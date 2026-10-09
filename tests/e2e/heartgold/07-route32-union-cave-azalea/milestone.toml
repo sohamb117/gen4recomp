@@ -2,10 +2,9 @@
 # Union Cave 1F, Route 33 into Azalea Town.
 # Start: MAP_VIOLET (469,258) -> end: MAP_AZALEA east side (424,462).
 title = "Route 32, Union Cave, Route 33 to Azalea Town"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 24000
+estimate = 38267
 refs = [
   "zone_event 070_T22 (Violet) south edge -> Route 32 (no warp; connected maps)",
   "zone_event 033_R32 coord 0 (475,305) w2 VAR_UNK_408D 0 -> 002",
@@ -22,7 +21,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 36000
+frames = 57500
 
 [[step]]
 do = "walk_to"
@@ -70,4 +69,4 @@ map = "MAP_AZALEA"
 badges = 1
 badge = ["BADGE_ZEPHYR"]
 flags = ["FLAG_GOT_EGG_FROM_ELMS_ASSISTANT"]
-party = ["SPECIES_CYNDAQUIL"]
+save = ['s["party"][0]["species"] in (155, 156, 157)']  # the lead is the starter's line (Cyndaquil 155 .. Typhlosion 157): it evolves at 14

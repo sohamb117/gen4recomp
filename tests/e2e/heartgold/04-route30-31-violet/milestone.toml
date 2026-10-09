@@ -2,10 +2,9 @@
 # north end), Route 31 west, the Violet gatehouse VS Recorder scene, into Violet City.
 # Start: MAP_ROUTE_29 (666,399) -> end: MAP_VIOLET east entrance (510,269), VAR_SCENE_ROUTE_30_PHONE_CALL 0.
 title = "Route 30 and 31 to Violet City (Mom's call, VS Recorder)"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 20314
 refs = [
   "zone_event 031_R30 object 4 TRAINER_YOUNGSTER_JOEY (553,332) sight 4, hidden by FLAG_HIDE_ROUTE_30_YOUNGSTER_JOEY (cleared scr_seq_0843_T20R0101.s:759)",
   "zone_event 031_R30 coord 1 (553,292) VAR_SCENE_ROUTE_30_PHONE_CALL 1 -> 004",
@@ -22,7 +21,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 22500
+frames = 30500
 
 [[step]]
 do = "walk_to"
@@ -41,6 +40,7 @@ do = "walk_to"
 on_battle = "flee"
 x = 518
 z = 269
+via = [[552, 274], [536, 274], [534, 268]]  # tools/hg_world.py route 553 292 518 269
 note = "Route 31 west to the Violet gatehouse (zone_event 032_R31 warp 0)"
 
 [[step]]

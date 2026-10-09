@@ -2,10 +2,9 @@
 # Bug Catchers and Twins, Bugsy (TRAINER_LEADER_BUGSY_BUGSY) and the Hive Badge + TM89.
 # Start: MAP_AZALEA_KURT_HOUSE (4,5) -> end: MAP_AZALEA outside the gym (405,472), badge Hive.
 title = "Bugsy: Hive Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 14493
 refs = [
   "zone_event 071_T23 warp 2 (405,471) -> MAP_AZALEA_GYM_ENTRANCE; zone_event 132_T23GYM0101 warp 1 (7,3) -> MAP_AZALEA_GYM (9,37)",
   "zone_event 173_T23GYM0102 coords 0-11 (x 3/9/15, z 32/24/17/9) VAR_TEMP_x4000 0 -> 002..013",
@@ -21,7 +20,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 22500
+frames = 21800
 
 [[step]]
 do = "walk_to"

@@ -962,6 +962,7 @@ class Terrain:
         # e.g. D/P Veilstone Gym's sliding bars): never planned through, so never bumped
         self.avoid = {(int(x), int(z)) for x, z in avoid}
         self.gba = game in GBA_GAMES
+        self.hgss = game in HGSS_GAMES
         self.blocked_edges = {}  # (x, z, d) -> attempts that failed
         # (x, z) -> times the walk stood there: each visit makes the tile cost VISIT_COST more, so plans that
         # flip as the window slides (unknown tiles are hoped passable) stop swinging between two tiles
@@ -1012,11 +1013,6 @@ class Terrain:
                         ("WARP_EAST", 3), ("WARP_STAIRS_WEST", 2), ("WARP_STAIRS_EAST", 3)):
             if name in b:
                 self.mats[b[name]] = d
-        if game in HGSS_GAMES:
-            # HG/SS ladders (TILE_BEHAVIOR_LADDER_NORTH/_SOUTH 0x3C/0x3D) warp when the player stands on one and
-            # pushes north / south (src/field/field_control.c:500-511), as an exit mat does; LADDER_DOWN 0x3E warps
-            # when stepped onto (:743-745), as a door does
-            self.mats.update({0x3C: 0, 0x3D: 1})
 
     def _gba_tables(self):
         """Ruby/Sapphire/Emerald metatile behaviors (both decomps number include/constants/metatile_behaviors.h
@@ -1093,6 +1089,20 @@ class Terrain:
         c = self.cells.get((x, z))
         return c is None or (c & TILE_BEHAVIOR) not in (0x69, 0x8D)
 
+    # HG/SS ladders (src/field/field_control.c): LADDER_NORTH 0x3C warps when the player stands on it and pushes north,
+    # LADDER_SOUTH 0x3D pushing south (:500-511), LADDER_DOWN 0x3E as soon as it is stepped onto (:743-745)
+    HGSS_LADDER_PUSH = {0x3C: 0, 0x3D: 1}
+    HGSS_LADDER_DOWN = 0x3E
+
+    def _hgss_ladder_warp(self, x, z, d):
+        """The step into (x, z) moving in direction d takes an HG/SS ladder: never planned but onto the goal (a walk
+        climbs a ladder with the tile beyond it, or the LADDER_DOWN tile itself, as its goal)."""
+        c = self.cells.get((x, z))
+        if c is not None and (c & TILE_BEHAVIOR) == self.HGSS_LADDER_DOWN:
+            return True
+        src = self.cells.get((x - DIR_DELTA[d][0], z - DIR_DELTA[d][1]))
+        return src is not None and self.HGSS_LADDER_PUSH.get(src & TILE_BEHAVIOR) == d
+
     def passable(self, x, z, d, goal, terrain=False):
         """Can the player step into (x, z) moving in direction d? Unknown tiles are hoped passable. With terrain the
         game's own check already allowed the step (step layers), so the collision bit is not asked again."""
@@ -1101,6 +1111,8 @@ class Terrain:
         if (x, z) == goal:
             return self.goal_ok(x, z, d)
         if (x, z) in self.avoid or (x, z) in self.warp_tiles:
+            return False
+        if self.hgss and self._hgss_ladder_warp(x, z, d):
             return False
         if self.field_move(x, z, d):
             return True
@@ -1233,7 +1245,7 @@ def _field_or_handle(s, step, ctx, limit):
         waited += 20
         if waited >= 60:
             if on_text == "stop":
-                # GBA walks stop only for the goal's own scene (the coord event the goal is on): a trainer who
+                # GBA and HG/SS walks stop only for the goal's own scene (the coord event the goal is on): a trainer who
                 # spots the player on the way is fought, as with on_text = "advance"
                 at = step.get("_stop_at")
                 p = s.probe() if at is not None else None
@@ -1589,8 +1601,10 @@ def _walk_to(s, step, ctx):
                              **({"map": step["map"]} if i == 0 and "map" in step else {})), ctx)
         step = {k: v for k, v in step.items() if k not in ("via", "map")}
     goal = (int(step["x"]), int(step["z"]))
-    if ctx.game in GBA_GAMES and step.get("on_text") == "stop":
-        step = dict(step, _stop_at=goal)  # _field_or_handle: stop only for a scene at the goal
+    if (ctx.game in GBA_GAMES or ctx.game in HGSS_GAMES) and step.get("on_text") == "stop":
+        # _field_or_handle: stop only for a scene at the goal (HG/SS: a route trainer's sight on the way, e.g. Route
+        # 30's Joey before Mom's call at (553,292), is fought, not taken for the goal's coord scene)
+        step = dict(step, _stop_at=goal)
     bound = _int(step, "max", 6000)
     limit = s.frame + bound
     run_key = "b" if step.get("run", True) else None

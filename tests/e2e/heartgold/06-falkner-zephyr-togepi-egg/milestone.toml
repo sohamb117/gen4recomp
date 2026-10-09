@@ -3,10 +3,9 @@
 # Kimono Girl's scene outside (OnFrame OW 3).
 # Start: MAP_VIOLET (487,229) -> end: MAP_VIOLET outside the Poke Mart (469,258), badge Zephyr, egg in the party.
 title = "Falkner: Zephyr Badge; the aide's Togepi egg"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 18000
+estimate = 10844
 refs = [
   "zone_event 070_T22 warp 2 (479,257) -> MAP_VIOLET_GYM",
   "zone_event 131_T22GYM0101 coord 0 (15,20) VAR_TEMP_x4000 0 -> 004 (VioletGymElevator, scr_seq_0859_T22GYM0101.s:166-169)",
@@ -28,7 +27,13 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 27000
+frames = 16300
+
+[[step]]
+do = "heal"
+x = 497
+z = 271
+note = "Violet's Pokemon Center (zone_event T22 warp 7) before the gym: the first chained run met Falkner with Ember's PP spent at Sprout Tower and whited out to Tackle"
 
 [[step]]
 do = "walk_to"
@@ -136,7 +141,7 @@ map = "MAP_VIOLET"
 badges = 1
 badge = ["BADGE_ZEPHYR"]
 flags = ["FLAG_GOT_TM51_FROM_FALKNER", "FLAG_GOT_PICK_UP_EGG_CALL_FROM_ELM", "FLAG_GOT_EGG_FROM_ELMS_ASSISTANT", "FLAG_HIDE_VIOLET_SHOP_LAB_AIDE", "FLAG_HIDE_VIOLET_KIMONO_GIRL"]
-party = ["SPECIES_CYNDAQUIL"]
+save = ['s["party"][0]["species"] in (155, 156, 157)']  # the lead is the starter's line (Cyndaquil 155 .. Typhlosion 157): it evolves at 14
 party_size = 2
 battles = 1
 

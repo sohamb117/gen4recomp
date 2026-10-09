@@ -37,6 +37,7 @@ frames = 45000
 do = "walk_to"
 x = 395
 z = 464
+via = [[396, 464]]  # reach the coord column (x 395) at the goal row: the walk stops for the goal's own scene only
 on_text = "stop"
 note = "coord 0 (395,462..466) VAR_UNK_4075 1 -> rival (scr_seq_0866_T23.s:55-126)"
 

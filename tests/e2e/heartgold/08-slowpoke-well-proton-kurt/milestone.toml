@@ -3,10 +3,9 @@
 # thanks (OnFrame VAR_UNK_4080 2). Unlocks Bugsy (Azalea rocket gone), the Azalea rival and Ilex Forest's Farfetch'd.
 # Start: MAP_AZALEA (424,462) -> end: MAP_AZALEA_KURT_HOUSE (4,5), FLAG_BEAT_AZALEA_ROCKETS, VAR_UNK_4080 3.
 title = "Slowpoke Well: Kurt, Proton and the Rockets"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 22000
+estimate = 16622
 refs = [
   "zone_event 071_T23 warp 6 (399,454) -> MAP_AZALEA_KURT_HOUSE",
   "zone_event 158_T23R0501 object 0 obj_T23R0501_gantetsu (4,4) -> 001",
@@ -25,7 +24,13 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 33000
+frames = 25000
+
+[[step]]
+do = "heal"
+x = 410
+z = 460
+note = "Azalea's Pokemon Center (zone_event 071_T23 warp 3) after Union Cave: the first chained run entered the well with the HP 07's wild battles left and whited out to the first grunt"
 
 [[step]]
 do = "walk_to"
@@ -113,6 +118,7 @@ shot = "kurt-thanks"
 note = "OnFrame VAR_UNK_4080 2 -> Kurt's thanks, VAR_UNK_4080 3 (scr_seq_0874_T23R0501.s:26-37)"
 
 [expect]
+save = ['s["vars"]["16512"] in (3, 4)']  # VAR_UNK_4080 (0x4080): 3 after Kurt's thanks, 4 once an A talks to his granddaughter (scr_seq_0874_T23R0501.s:160-174)
 map = "MAP_AZALEA_KURT_HOUSE"
 badges = 1
 flags = ["FLAG_BEAT_AZALEA_ROCKETS", "FLAG_UNK_1A9", "FLAG_UNK_07C", "FLAG_UNK_077"]
@@ -121,5 +127,4 @@ battles = 1
 
 [expect.vars]
 VAR_UNK_4075 = 1
-VAR_UNK_4080 = 3
 VAR_UNK_40F4 = 1

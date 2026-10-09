@@ -2,10 +2,9 @@
 # TM70 Flash; Li's win hides the gym guy who blocks the Violet Gym (FLAG_HIDE_VIOLET_GYM_GYM_GUY_AFTER_SPROUT).
 # Start: MAP_VIOLET (510,269) -> end: MAP_VIOLET outside Sprout Tower (487,229), FLAG_UNK_076.
 title = "Sprout Tower: the sages and Elder Li (TM70)"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 36970
 refs = [
   "zone_event 070_T22 warp 5 (487,228) -> MAP_SPROUT_TOWER_1F",
   "zone_event 107_D15R0101 warps 1/5 (10,15/14) -> 2F 0, 2/6 (24,9/8) -> 2F 1, 4/3 (6,15/16) -> 2F 2; warp 0 (15,28) -> Violet",
@@ -25,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 100000
+frames = 55500
 
 [[step]]
 do = "grind"
