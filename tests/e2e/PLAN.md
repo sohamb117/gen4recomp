@@ -6031,7 +6031,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~999586 frames estimated
+### Story chain: 33 milestones, ~1009829 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6053,7 +6053,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 33876 | prev + `None` | 63 | passing |
 | [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 27352 | prev + `None` | 96 | passing |
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 30033 | prev + `None` | 96 | passing |
-| [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 22000 | prev + `None` | 96 | planned |
+| [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 32243 | prev + `None` | 96 | passing |
 | [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 25000 | prev + `None` | 107 | planned |
 | [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
 | [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
@@ -6255,9 +6255,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975; zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5
 - end state: map 96; 5 badges; flags set 0x975; vars 0x408F=5, 0x409A=1
-- frames: estimate 22000, budget -
+- frames: estimate 32243, budget 48500
 - refs: scr 0194 @0x020E-@0x05C8 the gym's elevators; @0x05B0 Warp zone 98; scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975; zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5
-- notes: Excadrill (Ground/Steel): Water or Fighting [INFERENCE]. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 31040, White 32243 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Gym's lifts (zone 97's floors stack at the same x,z) are worked by facing UP to a post and A; the route came from scouting. Excadrill (Ground/Steel): Water or Fighting [INFERENCE].
 
 #### black/20-route6-chargestone-n — Chargestone Cave: N's battle
 - proves: Proves Route 6 and Chargestone Cave: Clay clears the nest at the entrance, Bianca and Professor Juniper inside, and N's battle, out to Mistralton City. Start: Driftveil City (zone 96) -> end: Mistralton City (zone 107), 0x409B = 5, 0x409A = 2.
@@ -6405,7 +6405,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~999586 frames estimated
+### Story chain: 33 milestones, ~1009829 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6427,7 +6427,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 33876 | prev + `None` | 63 | passing |
 | [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 27352 | prev + `None` | 96 | passing |
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 30033 | prev + `None` | 96 | passing |
-| [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 22000 | prev + `None` | 96 | planned |
+| [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 32243 | prev + `None` | 96 | passing |
 | [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 25000 | prev + `None` | 107 | planned |
 | [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
 | [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
@@ -6629,9 +6629,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975; zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5
 - end state: map 96; 5 badges; flags set 0x975; vars 0x408F=5, 0x409A=1
-- frames: estimate 22000, budget -
+- frames: estimate 32243, budget 48500
 - refs: scr 0194 @0x020E-@0x05C8 the gym's elevators; @0x05B0 Warp zone 98; scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975; zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5
-- notes: Excadrill (Ground/Steel): Water or Fighting [INFERENCE]. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 31040, White 32243 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Gym's lifts (zone 97's floors stack at the same x,z) are worked by facing UP to a post and A; the route came from scouting. Excadrill (Ground/Steel): Water or Fighting [INFERENCE].
 
 #### white/20-route6-chargestone-n — Chargestone Cave: N's battle
 - proves: Proves Route 6 and Chargestone Cave: Clay clears the nest at the entrance, Bianca and Professor Juniper inside, and N's battle, out to Mistralton City. Start: Driftveil City (zone 96) -> end: Mistralton City (zone 107), 0x409B = 5, 0x409A = 2.

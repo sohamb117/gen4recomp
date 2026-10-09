@@ -1,19 +1,200 @@
 # Proves the Driftveil Gym (the mine elevators) and Clay's Quake Badge, then Bianca's battle and HM02.
 # Start: Driftveil City (zone 96) -> end: Driftveil City, 5 badges, 0x408F = 5, 0x409A = 1.
 title = "Driftveil Gym: Clay's Quake Badge; Bianca and HM02"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 22000
+estimate = 32243
 refs = [
   "scr 0194 @0x020E-@0x05C8 the gym's elevators; @0x05B0 Warp zone 98",
   "scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975",
   "zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5",
 ]
-notes = "Excadrill (Ground/Steel): Water or Fighting [INFERENCE]. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 31040, White 32243 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Gym's lifts (zone 97's floors stack at the same x,z) are worked by facing UP to a post and A; the route came from scouting. Excadrill (Ground/Steel): Water or Fighting [INFERENCE]."
 
 [start]
 from = "prev"
+
+[run]
+frames = 48500
+
+[[step]]
+do = "heal"
+x = 187
+z = 412
+note = "zone_event 96 warp 8 (187,412) -> zone 99, Driftveil's Pokemon Center"
+
+[[step]]
+do = "walk_to"
+x = 212
+z = 401
+note = "zone_event 96 warp 9 (212,400) -> zone 98, the Gym lobby"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 98
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 4
+face = "up"
+interact = true
+note = "the lift (zone_event 98 object 0 at (9,3) -> scr 0196 script 1: Warp zone 97)"
+
+[[step]]
+do = "wait_map"
+map = 97
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 25
+face = "up"
+interact = true
+note = "zone 97's floors stack at the same x,z (probe y 50/40/30/-60); a lift is the platform below two posts (gfx 0xB9 objects), worked by facing UP to a post and A (the route came from scouting); Worker Felix (trdata #201) on the way"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 19
+shot = "mine"
+
+[[step]]
+do = "moves"
+dirs = [["L", "x7"], ["D", "z23"], ["R", "x9"], ["D", "z25"], ["R", "x12"], ["A", "U"]]
+note = "Worker Don (trdata #203) on the way; the lift at (12,25)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "moves"
+dirs = [["L", "x10"], ["U", "z23"], ["L", "x8"], ["U", "z21"], ["A", "U"]]
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "moves"
+dirs = [["R", "x10"], ["U", "z19"], ["R", "x15"], ["D", "z21"], ["R", "x16"], ["A", "U"]]
+note = "Clerk Katie (trdata #95) at (15,19); the lift down to Clay's floor"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "moves"
+dirs = [["L", "x15"], ["U", "z6"]]
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Clay (zone_event 97 object 0 at (15,5)) -> scr 0194 script 1"
+
+[[step]]
+do = "advance_text"
+shot = "clay-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Clay, trdata #24 (Krokorok 29, Palpitoad 29, Excadrill 31), scr 0194 @0x009F"
+
+[[step]]
+do = "advance_text"
+shot = "quake-badge"
+note = "GiveBadge 4 (Quake, @0x00D6); 0x409A 1, 0x408F 4 (@0x0134/@0x013A); flag 0x975"
+
+[[step]]
+do = "moves"
+dirs = [["D", "z21"], ["L", "x14"], ["A", "U"]]
+note = "back up: lift 5 at the bottom, A on its left post at (14,21) facing up"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "moves"
+dirs = [["R", "x15"], ["D", "z25"], ["L", "x13"], ["A", "U"]]
+note = "Clay's win removed the barrier (object 16) at (15,23); A on the post at (13,25): scr 0194 script 16, Warp zone 98"
+
+[[step]]
+do = "wait_map"
+map = 98
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 15
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 96
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 165
+z = 405
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+note = "zone_event 96 trigger 2 (164,403..407) 0x408F == 4 -> scr 0192 script 16: Bianca"
+
+[[step]]
+do = "advance_text"
+shot = "bianca-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Bianca, trdata #491/#492/#493 by 0x4030 (scr 0192 @0x063B/@0x067D/@0x06AC)"
+
+[[step]]
+do = "advance_text"
+shot = "hm02"
+note = "HM02 (@0x06F7); 0x408F 5 (@0x0724)"
 
 [expect]
 map = 96
