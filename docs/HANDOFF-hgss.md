@@ -95,16 +95,30 @@ Since then (hgss-play3, 2026-10-09; frames under /tmp/hgss2):
 - In-battle bag/party SIGBUS: the battle controller's three calls to the
   sub-menu (overlay 8, loaded by ov12_02237B0C just before) are spelled
   `bl ov10_0221BE20` in pret's assembly, the trainer AI at the same address;
-  armrec bound the name. Patched to ov08_0221BE20. Verified: Potion, USE,
-  target screen, "It won't have any effect." (bag/bag2.png).
+  armrec bound the name. The class is fixed in armrec: with
+  `--overlay-dispatch` (HG/SS and D/P pass it) a call into another overlay
+  at an address other overlays can occupy is an armrec_dispatch() of the
+  address, resolved by residency as the hardware resolves it, and decompiled
+  C reached that way is registered at its guest address under its overlay.
+  HG/SS: 3512 such calls (438 into C); D and P: 1910 each, every one checked
+  mechanically to dispatch the named function's own address, and the D/P/Pt
+  regression hashes are unchanged. Verified: Potion, USE, target screen,
+  "It won't have any effect." (bag/bag3.png).
 - call_indirect type mismatches: every C indirect call site's reachable
   callees (an -O0 IR field-based flow over all game TUs) against their wasm
   types; two real ones patched (communication_club.c's task callbacks,
   custom_safari_zone.c's comm callback); the rest unreachable (a DSProt
   positive answer, the OS IRQ path the port does not take).
+- Music: every BGM was silent (title, field; only some sound effects were
+  heard). SND_WORK, which holds the sound heap, was a wasm C static at
+  0x0B1xxxxx, and SOUNDxSAD's 27 bits turned each wave address into
+  0x031xxxxx. It moves into the port window (pc/patches/src/sound.c.patch),
+  as D/P's SoundData and Platinum's SoundSystem do. CONTINUE runs now
+  measure rms ~3400 (they measured 0).
+- With these, hgss-e2e's chain 04-11 (Route 30 to Goldenrod, Falkner,
+  Bugsy) passes on this core (/tmp/hgss2/e2e).
 
-Open: CONTINUE runs are silent (audio rms 0.0 over 3500 frames, on the title
-and the field), from more than one save; not yet investigated. The make 3.81
+The make 3.81
 build cost did not reproduce: on a 437-object rebuild make itself used 2.4 s
 of CPU (GNU make 4.4.1: 1.5 s), so make is not where a guest rebuild's time
 goes. Checkpoint runs: np_headless --fork-at without --lockstep
