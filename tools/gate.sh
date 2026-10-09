@@ -238,7 +238,7 @@ while read -r f; do
         g=${f#tests/e2e/}
         g=${g%%/*}
         case $g in
-        platinum | diamond | pearl | emerald | ruby | sapphire) e2e="$e2e$g " ;;
+        platinum | diamond | pearl | heartgold | soulsilver | black | white | emerald | ruby | sapphire) e2e="$e2e$g " ;;
         *) all_e2e=1 ;;
         esac
         ;;
@@ -248,7 +248,7 @@ done <<EOF
 $changed
 EOF
 if [ $all_e2e = 1 ]; then
-    e2e="platinum diamond pearl emerald ruby sapphire"
+    e2e="platinum diamond pearl heartgold soulsilver black white emerald ruby sapphire"
 else
     e2e=$(printf '%s\n' $e2e | awk '!seen[$0]++' | xargs)
 fi
