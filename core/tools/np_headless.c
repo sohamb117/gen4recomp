@@ -59,9 +59,10 @@
  *                        (needs --net-id; no --net, except that with --net
  *                        PORT --net-relay the clocks stay in lockstep while
  *                        the game's datagrams take the relay and --net-drop)
- *     --fork-at F:CTL    with --lockstep: at frame F fork one child per line
- *                        of CTL (schedule, frames, dumps, save, log), so a
- *                        link test resumes from a checkpoint (see below)
+ *     --fork-at F:CTL    (POSIX) at frame F fork one child per line of CTL
+ *                        (schedule, frames, dumps, save, log), so a run
+ *                        resumes from a checkpoint (see below); with
+ *                        --lockstep, both linked instances do
  *     --net-relay H:P    internet play through a relay (server/relay) instead
  *     --net-pin PIN      of LAN discovery; PIN names the relay room
  *
@@ -453,17 +454,17 @@ static void lockstep_end_frame(uint64_t frame) {
     lockstep_send(1, (uint32_t)frame, NULL, 0);
 }
 
-/* --fork-at FRAME:CTL (with --lockstep): a checkpoint for link tests. Both
- * instances run to FRAME's barrier, then each serves its control file (a
- * FIFO or a plain file): per line
+/* --fork-at FRAME:CTL: a checkpoint. The run goes to FRAME, then serves its
+ * control file (a FIFO or a plain file): per line
  *   SCHEDULE FRAMES DUMPDIR DUMPEVERY SAVE LOG   ("-" = none)
  * it forks a child that replaces the schedule, the frame count, the dumps
  * (from FRAME) and the save path, sends its output to LOG and runs on from
- * FRAME, then waits for it. The two sides must be fed the same number of
- * lines; child pair N trades records in epoch N, so a finished pair's
- * leftovers on the shared socket are dropped. The parent exits at the
- * control file's end. A whole scenario then costs its tail, not its
- * 10000-frame walk to the Union Room. */
+ * FRAME, then waits for it. The parent exits at the control file's end. A
+ * scenario then costs its tail, not the walk to FRAME. With --lockstep both
+ * instances run to FRAME's barrier and each serves its own control file;
+ * the two sides must be fed the same number of lines, and child pair N
+ * trades records in epoch N, so a finished pair's leftovers on the shared
+ * socket are dropped. */
 typedef struct fork_job {
     char sched[512], dump[512], save[512], log[512];
     unsigned long long frames, every;
@@ -595,7 +596,7 @@ static int usage(void) {
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
                     "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT] [--net-wait SECS]\n"
                     "                    [--net-relay HOST:PORT --net-pin PIN]]\n"
-                    "                   [--lockstep MYPORT:PEERPORT --net-id ID [--fork-at FRAME:CTLFILE]]\n");
+                    "                   [--lockstep MYPORT:PEERPORT --net-id ID] [--fork-at FRAME:CTLFILE]\n");
     return 2;
 }
 
@@ -950,7 +951,7 @@ int main(int argc, char **argv) {
     for (; rc == 0 && state_rc >= 0 && ran < frames; ran++) {
         if (g_ls.on) lockstep_barrier(ran);
 #if !defined(_WIN32)
-        if (fork_ctl && g_ls.on && ran == fork_at) {
+        if (fork_ctl && ran == fork_at) {
             static fork_job job;
             const char *ctl = fork_ctl;
             fork_ctl = NULL;
@@ -965,7 +966,7 @@ int main(int argc, char **argv) {
             dump_every = job.every;
             dump_from = ran;
             r.save_path = strcmp(job.save, "-") != 0 ? job.save : NULL;
-            lockstep_barrier(ran); /* the new pair's hello */
+            if (g_ls.on) lockstep_barrier(ran); /* the new pair's hello */
         }
 #endif
         if (g_net) {
