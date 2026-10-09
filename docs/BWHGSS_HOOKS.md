@@ -93,9 +93,11 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   sees Platinum's numbering, so D/P/Pt are untouched. Black's title (rms from frame 4000, L): 7492 by
   default, 47 with `bgm_volume=0`, 7491 with `se_volume=0` (parity.sh `title, bgm_volume 0` / `se_volume 0`,
   on both games).
-- **HG/SS, still to do:** the same file for HG/SS, folding 8 -> 7. It cannot be proven until its core makes
-  sound (it is silent through the title and intro, docs/FEATURE_PARITY.md). The alternative, a weak
-  `pc_np_player_is_music(int)` in `pc_np_options.c`, changes a D/P/Pt input and **needs a D/P/Pt rebuild**.
+- **HG/SS: no code needed (2026-10-08).** HG/SS's players are Platinum's (1 FIELD, 2 ME, 7 BGM music), and
+  Diamond's `pc_dp_snd.c`, which HG/SS link, maps driver players back to them. PLAYER_OPED (8) has no SDAT
+  sequences and nothing in `src/` plays on it, so there is nothing to fold. Measured once HG/SS made sound
+  (main 9bfca2d74): the title rms 6591 by default, 0 with `bgm_volume=0`, 6295 with `se_volume=0` (both
+  games); New Bark Town 2407 -> 0 / 2407 (parity.sh `title, bgm_volume 0` / `se_volume 0`).
 
 ### F1 quick save
 
@@ -249,7 +251,7 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 | 4 | Quick save, `IN_BATTLE` (encounters) | HG/SS | none: already in source | high | overlay 123 field load | no | **done** (proven) |
 | 5 | Render scale, widescreen | HG/SS | none | medium | field (3D) | no | **done** (proven) |
 | 6 | Camera zoom / tilt | HG/SS | medium: fieldmap patch + Pt's maths on HG's Camera | medium | field | no (if copied, not shared) | **done** |
-| 7 | Volume split | HG/SS | small (fold 8 -> 7) | low until HG has sound | HG audio silence | no |
+| 7 | Volume split | HG/SS | none: Platinum's table fits (OPED unused) | low until HG has sound | HG audio silence | no | **done** (proven) |
 | 8 | Quick save | B/W | medium: the save API hunt, then `ARMREC_CALL` and a game event | high | nothing | no | **done** |
 | 9 | Instant text | B/W | medium: printer hunt, then a `bl` retarget | medium | nothing | no | **done** |
 | 10 | Mods via a ROM view | all DS | medium-high: FAT/NARC rebuild in the host's ROM read | medium | nothing | shared host code: shell tests |

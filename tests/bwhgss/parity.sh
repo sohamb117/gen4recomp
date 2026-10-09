@@ -22,9 +22,9 @@
 #   intro     hgss-intro.sched: title, the touch-screen tutorial driven by
 #             stylus taps, Prof. Oak, the boy, the default name accepted;
 #             snapshot round trips at the title and in Oak's introduction;
-#             the audio level is reported, not checked: the core is silent
-#             through the title and intro but for one sound near frame 8400;
-#             Oak's first page with and without instant text
+#             the ROM's music; Oak's first page with and without instant text
+#   title     the title screen's music with bgm_volume 0 (silent) and
+#             se_volume 0 (kept): HG/SS's music players are Platinum's
 #   field     with $NP_HG_FIELD_SAVE / $NP_SS_FIELD_SAVE, a save at New Bark
 #             Town's west exit (else SKIPped): CONTINUE into the field
 #             (hgss-field.sched); render scale 2 and widescreen frame sizes;
@@ -211,9 +211,15 @@ for g in "${games[@]}"; do
             --rms-from 1300 --state-test 6000 --state-span 120 --state-rounds 3
         check "$g title, touch tutorial, Oak, naming" "$w/intro.log" "exit 0"
         state_ok "$g intro snapshots" "$w/intro.log" 3
-        echo "note $g: $(grep '^audio rms' "$w/intro.log") (music: not yet)"
-        run title --frames 1700 --state-test 1400 --state-span 120 --state-rounds 2 --dump-from 1700
+        loud "$g intro music" "$w/intro.log"
+        run title --frames 1700 --state-test 1400 --state-span 120 --state-rounds 2 --dump-from 1700 \
+            --rms-from 1300
         state_ok "$g title snapshots" "$w/title.log" 2
+        loud "$g title music" "$w/title.log"
+        run title-bgm0 --frames 1700 --rms-from 1300 -o bgm_volume=0
+        quiet "$g title, bgm_volume 0" "$w/title.log" "$w/title-bgm0.log" 10
+        run title-se0 --frames 1700 --rms-from 1300 -o se_volume=0
+        quiet "$g title, se_volume 0" "$w/title.log" "$w/title-se0.log" -90
         # Oak's first page ("Huh? It's already become so bright outside!")
         # starts printing at ~7283; text_instant from 7284 fills it at once.
         run text-off --frames 7302 --schedule $here/hgss-intro.sched --dump-from 7284 --dump-every 16
@@ -267,7 +273,7 @@ for g in "${games[@]}"; do
             echo "exit $?" >> "$w/verify-quicksave.log"
             check "$g quick save verifies (np_save4)" "$w/verify-quicksave.log" "exit 0" "all checksums valid"
         fi
-        field wild --frames 4700 --schedule $here/hgss-wild.sched --dump-from 3399 --dump-every 100
+        field wild --frames 9000 --schedule $here/hgss-wild.sched --dump-from 3000 --dump-every 250
         check "$g NP_STAT_IN_BATTLE: a wild battle on Route 29, RUN, back in the field" "$w/wild.log" \
             "exit 0" "in_battle 0 -> 1" "in_battle 1 -> 0" "field_ready=1 .* in_battle=0"
         ;;

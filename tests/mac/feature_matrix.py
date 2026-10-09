@@ -1100,14 +1100,12 @@ def _(c):
 @case('n2_audio', 'Audio output (the ROM\'s own music), the music low-pass filter, bgm_volume 0 recorded',
       'nds2')
 def _(c):
-    if not is_bw():
-        # tests/bwhgss/parity.sh: the HG/SS core's output is silent through
-        # the title and intro (one sound around frame 8400).
-        raise FileNotFoundError('HG/SS music: the core plays no title/intro music yet')
     # The shell's low-pass filter lowers the output's treble. bgm_volume 0 is
-    # recorded, not asserted: the B/W cores answer it since pc/src/pc_bw_snd.c
-    # (tests/bwhgss/parity.sh measures it headless), the app this case last ran
-    # on predates that.
+    # recorded, not asserted: the cores answer it (B/W since pc/src/pc_bw_snd.c,
+    # HG/SS since main 9bfca2d74 made their music audible; tests/bwhgss/
+    # parity.sh measures both headless), the app this case last ran on
+    # predates both. An app with HG/SS cores older than 9bfca2d74 is silent
+    # and fails here.
     out = {}
     for name, opts in (('default', ''), ('filter3', '[audio]\nmusic_filter = 3'), ('bgm0', '[game]\nbgm_volume = 0')):
         new_save(c, opts=opts)

@@ -174,8 +174,8 @@ CONTINUE from it; Bianca's and Cheren's battles run (docs/BW_PLAN.md). HeartGold
 and SoulSilver play the title, the touch-screen tutorial, Prof. Oak and naming;
 HeartGold's field runs since main 165d72148 (New Bark Town, CONTINUE, Route
 29's wild battles; HeartGold field checks use a save at New Bark's west exit,
-`NP_HG_FIELD_SAVE`), and the sound is still near silent (the title and intro
-but for one sound near frame 8400; the field at rms ~220).
+`NP_HG_FIELD_SAVE`), and makes its music since main 9bfca2d74 (the sound heap
+in the port window).
 
 Status as above, plus **not yet** (what it needs is said). **core**:
 `tests/bwhgss/parity.sh` (np_headless; frames and logs in
@@ -203,9 +203,9 @@ SoulSilver's.
 | 3D render scale, widescreen 3D | app (renderer-side, no game hook: F12's core frame is 256x384 at 1x, 512x768 at render_scale 2, 684x768 with widescreen, the bedroom's walls in full) | app (same sizes) | app (same sizes) + core in the field: New Bark at 512x768 and 342x384, the wide frame showing more of the town | app | n2_render (`<game>-n2_render-*-frame.png`); `build/evidence/bwhgss/hooks/` |
 | Screenshots (F12) | app | app | app | app | n2_screenshot (`screenshots/<game>-*.png`) |
 | Trainer Card, Pokédex diploma PNG | app/shell (editor on the save; export in shell_editor_bw) | same | shell (shell_editor_hgss exports both) | same | Unova / Johto badge names, 649 / 493 species |
-| ROM-derived music / SFX | core + app (title rms 7424; app output treble 1219) | same | not yet: silent through the title and intro | same | parity.sh title; n2_audio |
-| Music / SFX volume | core: B/W's music players (0, 6) classed as music (`pc/src/pc_bw_snd.c`); title rms 7424, `bgm_volume=0` 46, `se_volume=0` 7491 | core (same numbers) | not yet: Platinum's numbering plus PLAYER_OPED 8; no music to hear yet | same | parity.sh `title, bgm_volume 0` / `se_volume 0`; app case not rerun (the app predates it) |
-| Music low-pass filter | app (treble 1219 to 895 at 3X) | app (1224 to 895) | shell (no music to filter yet) | same | n2_audio-filter3 |
+| ROM-derived music / SFX | core + app (title rms 7424; app output treble 1219) | same | core (since main 9bfca2d74: title rms 6591, intro 3754, New Bark 2407); the app build predates it | core (title 6591, intro 3757) | parity.sh title / intro music; n2_audio |
+| Music / SFX volume | core: B/W's music players (0, 6) classed as music (`pc/src/pc_bw_snd.c`); title rms 7424, `bgm_volume=0` 46, `se_volume=0` 7491 | core (same numbers) | core: the shared Platinum table already fits (players 1, 2, 7 music; PLAYER_OPED 8 has no sequences and nothing in src/ plays on it); title rms 6591, `bgm_volume=0` 0, `se_volume=0` 6295; New Bark 2407 -> 0 / 2407 | core (title: same numbers) | parity.sh `title, bgm_volume 0` / `se_volume 0`; app case not rerun (the app predates it) |
+| Music low-pass filter | app (treble 1219 to 895 at 3X) | app (1224 to 895) | shell (the filter is the shell's; the app build predates HG/SS music) | same | n2_audio-filter3 |
 | Speed hotkeys, fast-forward | app (4x: 7000 iterations ran 7294 frames; G: 28000) | app | app (1600 iterations ran 1894; G: 6400) | app | n2_speed |
 | Keyboard / gamepad rebinding | shell | shell | shell | shell |  |
 | Touch (stylus) | core (the SAVE item tapped in the X menu) | same | core (touch tutorial, naming done by taps) | same | parity.sh |
