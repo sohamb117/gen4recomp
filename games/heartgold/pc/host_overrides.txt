@@ -25,6 +25,11 @@ G3_RotX
 G3_RotY
 G3_RotZ
 GX_SendFifo48B
+# Not in D/P's set: D's 4x4 loads never reach it, HG/SS's battle does
+# (G3_LoadMtx44 -> GX_SendFifo64B, gxasm.s). Recompiled, its stmia to the
+# FIFO address in r1 is plain memory (the file names no register, so it has
+# no geometry hook) and 13 of MTX_LOAD_4x4's 16 parameters never arrived.
+GX_SendFifo64B
 GXi_NopClearFifo128_
 IC_InvalidateAll
 IC_InvalidateRange
