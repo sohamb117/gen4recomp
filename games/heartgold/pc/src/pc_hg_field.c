@@ -65,7 +65,9 @@ static int field_ready(FieldSystem *fs) {
 
     if (fs == NULL || fs->processManager == NULL || fs->location == NULL || fs->playerAvatar == NULL) return 0;
     if (!FieldSystem_IsPlayerMovementAllowed(fs)) return 0;
-    if (fs->processManager->child != NULL || fs->processManager->parent != NULL) return 0;
+    /* FieldProcessManager: parent is the field map's own OverlayManager (FieldMap_*), child an application over
+     * it (FieldSystem_LaunchApplication); sub_0203DF8C / sub_0203DFA4 (src/field_system.c:123-129) */
+    if (fs->processManager->parent == NULL || fs->processManager->child != NULL) return 0;
     move = PlayerAvatar_GetPlayerMoveState(fs->playerAvatar);
     return move == PLAYER_MOVE_STATE_END || move == PLAYER_MOVE_STATE_NONE;
 }
