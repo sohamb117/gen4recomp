@@ -82,9 +82,14 @@ ARMREC_DEFS := --undef DIAMOND --define $(GAME_VERSION) \
 ARMREC_INC := include . asm/include files lib/asm/include lib/NitroDWC/asm/include \
               lib/MSL_C/asm/include lib/NitroSDK/asm/include lib/syscall/asm/include \
               asm files/msgdata lib/include
+# --overlay-dispatch: a call into another overlay at an address other
+# overlays can occupy is dispatched by residency, not bound by the name
+# pret's disassembly gave it (the battle controller's `bl ov10_0221BE20` is
+# overlay 8's sub-menu entry at the trainer AI's address; armrec.py
+# OVL_SYMS).
 ARMREC_FLAGS := --wasm $(ARMREC_DEFS) $(addprefix --include ,$(ARMREC_INC)) \
                 $(if $(ARMREC_GUEST_LIBC),--guest-libc $(ARMREC_GUEST_LIBC)) \
-                --decomp-state /dev/null --xmap $(ROM_XMAP) \
+                --decomp-state /dev/null --xmap $(ROM_XMAP) --overlay-dispatch \
                 --host-override $(ARMREC_OVERRIDES)
 
 ARMREC_STEMS := $(shell cd $(ROOT) && $(PYTHON) -c 'import sys; \

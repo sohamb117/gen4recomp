@@ -40,3 +40,7 @@ signed char c_ret_s8(void) { return -5; }
 int c_cb5(int a, int b, int c, int d, int e) {
     return a + 10 * b + 100 * c + 1000 * d + 10000 * e;
 }
+
+/* Overlay 3 of the overlay-dispatch case (bridge.xMAP): decompiled C at
+ * 0x02100000, where overlays 1 and 2 have recompiled functions. */
+int ov03_02100000(int x) { return x + 300; }

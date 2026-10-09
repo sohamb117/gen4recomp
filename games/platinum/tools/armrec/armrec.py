@@ -1486,6 +1486,113 @@ XMAP_ORIGINS = {}
 # these the caller reloads them from the CPSR the MSR wrote. Set by main().
 FLAG_RESULT_FUNCS = frozenset()
 
+# --overlay-dispatch: a call into another overlay is bound by name only when
+# that overlay is the one thing that can be at the address. Overlays share
+# windows; the matching ROM assembles `bl ov10_0221BE20` to a branch to
+# 0x0221BE20, and whatever is resident there runs, so a disassembler's name
+# for an address several overlays occupy says nothing about which one the
+# code means (HG's battle controller named the trainer AI's ov10_0221BE20
+# where overlay 8's sub-menu entry, at the same address, is the one loaded:
+# the bag SIGBUSed). Such a call becomes armrec_dispatch() of the address,
+# resolved by residency as the hardware resolves it. Calls within the
+# caller's own overlay and calls into the static module keep their name.
+# Set by main() from the xMAP: {name: [(overlay, addr)]} for every symbol the
+# link places in an overlay, and {overlay: (start, end)}.
+OVL_SYMS = None
+OVL_RANGES = {}
+# The overlay of the file being translated (None: the static module). Set
+# by process().
+CUR_OVERLAY = None
+# Decompiled C reached through one of those dispatches, {name: (overlay,
+# addr)}: main() registers each at its guest address under its overlay
+# (through its c2u$ adapter), so a dispatch can find C as well as assembly.
+DISPATCHED_C = {}
+OVL_DISPATCHES = Counter()
+
+
+def overlay_dispatch_addr(target):
+    """The guest address to dispatch a call to `target` through, or None to
+    bind it by name. See OVL_SYMS."""
+    if OVL_SYMS is None:
+        return None
+    hits = OVL_SYMS.get(target)
+    if not hits:
+        return None
+    # A name more than one overlay defines (pret's .global data labels,
+    # `_0223DC20` in overlays 13 and 80) is the caller's own if the caller
+    # defines it; otherwise every definition is at the one address its name
+    # spells, and dispatch reaches whichever is resident.
+    if any(o == CUR_OVERLAY for o, _a in hits):
+        return None
+    if len(set(a for _o, a in hits)) != 1:
+        return None
+    ovl, addr = hits[0]
+    if CUR_OVERLAY is not None and CUR_OVERLAY in OVL_RANGES:
+        lo, hi = OVL_RANGES[CUR_OVERLAY]
+        # The named overlay overlaps the caller's own, so it is never whole
+        # while the caller runs: the call reaches what the caller's load left
+        # of it (HG/SS's overlay 73 calls overlay 0's code past its own end).
+        # Only the name can say which; keep it.
+        s, e = OVL_RANGES.get(ovl, (0, 0))
+        if s < hi and lo < e:
+            return None
+    else:
+        lo = hi = None
+    for k, (s, e) in OVL_RANGES.items():
+        if k in (ovl, CUR_OVERLAY) or not (s <= addr < e):
+            continue
+        # An overlay that overlaps the caller's own is never resident while
+        # the caller runs.
+        if lo is not None and s < hi and lo < e:
+            continue
+        return addr
+    return None
+
+
+XMAP_OVL_RE = re.compile(
+    r"^#>([0-9A-Fa-f]{8})\s+SDK_OVERLAY\.(\w+)\.(START|END) \(linker command file\)")
+
+
+def load_xmap_overlays(path):
+    """({name: (overlay, addr)}, {overlay: (start, end)}) from an mwld xMAP.
+
+    An overlay's id is its place in the link (the ROM's overlay table is in
+    link order): D/P's OVERLAY_NN and HG/SS's OVY_NN agree with it, and HG/SS
+    name some (`field`, `pokegear`). Every symbol listed between an overlay's
+    START and END belongs to it."""
+    ids, ranges, syms = {}, {}, {}
+    cur = None
+    with open(path, "r", errors="replace") as fh:
+        for line in fh:
+            m = XMAP_OVL_RE.match(line)
+            if m:
+                name, addr = m.group(2), int(m.group(1), 16)
+                if name not in ids:
+                    ids[name] = len(ids)
+                    n = re.search(r"(\d+)$", name)
+                    if n and int(n.group(1)) != ids[name]:
+                        sys.exit("armrec: xMAP overlay %s is number %d in link "
+                                 "order" % (name, ids[name]))
+                o = ids[name]
+                r = ranges.setdefault(o, [addr, addr])
+                if m.group(3) == "START":
+                    r[0] = addr
+                    cur = o
+                else:
+                    r[1] = addr
+                    cur = None
+                continue
+            if cur is None:
+                continue
+            m = XMAP_SYM_RE.match(line)
+            if not m:
+                continue
+            sec, name = m.group(2), m.group(3)
+            if name == sec or name.startswith("$") or name.startswith("."):
+                continue
+            syms.setdefault(name, []).append((cur, int(m.group(1), 16)))
+    return syms, dict((k, tuple(v)) for k, v in ranges.items())
+
 
 def writes_cpsr_flags(func):
     """Does the body contain an MSR to the CPSR's flags field?"""
@@ -2234,6 +2341,31 @@ def emit_branch(ctx, ins, out, func, is_call):
         else:
             out.append("return armrec_dispatch(0x%08Xu, r0, r1, r2, r3);" % addr)
         return
+    # A call into another overlay at an address other overlays can occupy
+    # beside the caller: the name is the disassembler's guess, the address
+    # is the ROM's. See OVL_SYMS.
+    if target not in ctx.rename:
+        oaddr = overlay_dispatch_addr(target)
+        if oaddr is not None:
+            OVL_DISPATCHES["C" if ctx.is_host_call(target) else "asm"] += 1
+            if ctx.is_host_call(target):
+                # Decompiled C: main() registers its c2u$ adapter at the
+                # address under its overlay, and the count keeps the adapter
+                # generated (the bridge makes one per boundary name).
+                hits = OVL_SYMS[target]
+                DISPATCHED_C[target] = hits
+                ctx.ext_calls[ctx.rename.get(target, sanitize(target))] += 1
+            if is_call:
+                t = ctx.newtmp()
+                out.append("{ uint64_t %s = armrec_dispatch(0x%08Xu, r0, r1, r2, r3); /* %s */"
+                           % (t, oaddr, target))
+                out.append("  r0 = (uint32_t)%s; r1 = (uint32_t)(%s >> 32); }" % (t, t))
+                if target in FLAG_RESULT_FUNCS:
+                    out.append("ARM_FLAGS_FROM_PSR(armrec_mrs(0));")
+            else:
+                out.append("return armrec_dispatch(0x%08Xu, r0, r1, r2, r3); /* %s */"
+                           % (oaddr, target))
+            return
     # branch/call to another function
     sym = ctx.rename.get(target, sanitize(target))
     if ctx.symtab.get(target) is None and target not in ctx.symtab:
@@ -3481,17 +3613,23 @@ def collect_symbols(paths, defines, incdirs, stems, local_rename=True):
         for f in parsed[p][0]:
             func_names.add(f.name)
 
-    # One data label declared `.global` in two files is a duplicate symbol the
-    # real linker rejects, and the one shape the per-file rule below cannot
-    # arbitrate. There are none here, so say so rather than picking one.
+    # One data label declared `.global` in two files at two addresses is a
+    # duplicate symbol the real linker rejects, and the one shape the per-file
+    # rule below cannot arbitrate. Overlays that share a window can each
+    # define one at the same address (HG/SS's _0223DC20 in overlays 13 and
+    # 80): a reference is that address, and what is there is whichever
+    # overlay is resident, as on the hardware, so those are not reported.
     global_data_owners = {}
+    global_data_addrs = {}
     for p in paths:
         _, data, globals_, _, _ = parsed[p]
         for addr, label, kind, _ in data:
             if (kind == "label" and label and addr is not None
                     and label in globals_ and label not in func_names):
                 global_data_owners.setdefault(label, set()).add(p)
-    for label in sorted(n for n, ps in global_data_owners.items() if len(ps) > 1):
+                global_data_addrs.setdefault(label, set()).add(addr)
+    for label in sorted(n for n, ps in global_data_owners.items()
+                        if len(ps) > 1 and len(global_data_addrs[n]) > 1):
         sys.stderr.write("armrec: data label %s is .global in %d files (%s); "
                          "one of them wins the symbol table\n"
                          % (label, len(global_data_owners[label]),
@@ -3628,6 +3766,8 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
     c2u$ adapter under --wasm) so a dispatch through a stored pointer still
     lands somewhere.
     """
+    global CUR_OVERLAY
+    CUR_OVERLAY = overlay
     literals_raw = collect_literals(path, lines)
     merge_multi_entry(funcs, path)
     for k, v in absorb_foreign_entries(funcs, path, foreign).items():
@@ -4101,10 +4241,15 @@ def main():
                     help="the ROM link's arm9.elf.xMAP: gives an address to a "
                          "function whose source carries none, and counts "
                          "every function whose address disagrees with it")
+    ap.add_argument("--overlay-dispatch", action="store_true",
+                    help="--wasm with --xmap: a call into another overlay at an "
+                         "address other overlays can occupy is dispatched by "
+                         "address and residency, not bound by name (OVL_SYMS)")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
 
     global TARGET_WASM, GUEST_LIBC_EXT, WASM_ASM_NAMES, XMAP_ORIGINS, FLAG_RESULT_FUNCS
+    global OVL_SYMS, OVL_RANGES
     TARGET_WASM = args.wasm
     GUEST_LIBC_EXT = frozenset(n for spec in args.guest_libc
                                for n in spec.split(",") if n)
@@ -4118,6 +4263,10 @@ def main():
     xmap = load_xmap(args.xmap) if args.xmap else None
     if xmap is not None:
         XMAP_ORIGINS = xmap[3]
+    if args.overlay_dispatch:
+        if not (args.wasm and args.xmap):
+            ap.error("--overlay-dispatch needs --wasm and --xmap")
+        OVL_SYMS, OVL_RANGES = load_xmap_overlays(args.xmap)
 
     abi_trap = {}
     for spec in args.abi_trap:
@@ -4146,6 +4295,22 @@ def main():
         for name in data_syms:
             if name in symtab:
                 data_syms[name] = symtab[name]
+    if OVL_SYMS is not None:
+        # armrec's overlay of a file (its path) and the link's (its place in
+        # the xMAP) must be the same numbering, or every decision above is
+        # about the wrong overlays.
+        wrong = []
+        for p in args.files:
+            ovl = overlay_of(p)
+            if ovl is None:
+                continue
+            for f in parsed[p][0]:
+                hits = OVL_SYMS.get(f.name)
+                if hits and all(o != ovl for o, _a in hits):
+                    wrong.append("%s: %s is overlay %s in the xMAP" % (p, f.name, [o for o, _a in hits]))
+        if wrong:
+            sys.exit("armrec: --overlay-dispatch: overlay numbering disagrees "
+                     "with the xMAP:\n  " + "\n  ".join(wrong[:10]))
     bad = entry_label_mismatches(args.files, parsed)
     if bad:
         for line in bad:
@@ -4305,10 +4470,24 @@ def main():
                 " * is deliberately NOT here, see armrec_overlay_data()\n"
                     " * below.\n"
                     " */\n")
+            # Decompiled C that an overlay dispatch can reach: registered at
+            # its guest address under its overlay, through its c2u$ adapter
+            # (OVL_SYMS; DISPATCHED_C). Every C definition of the name, in
+            # every overlay that has one.
+            creg = []
+            for name in sorted(DISPATCHED_C):
+                for ovl, addr in DISPATCHED_C[name]:
+                    creg.append((addr, ovl, name))
+            for name in sorted(DISPATCHED_C):
+                f.write("extern uint64_t %s%s(uint32_t, uint32_t, uint32_t, uint32_t);\n"
+                        % (C2U_PREFIX, sanitize(name)))
             f.write("void armrec_init_all(void);\n")
             f.write("void armrec_init_all(void) {\n")
             for n in names:
                 f.write("    armrec_init_%s();\n" % n)
+            for addr, ovl, name in creg:
+                f.write('    armrec_register_overlay(0x%08Xu, %s%s, "%s", %d);\n'
+                        % (addr, C2U_PREFIX, sanitize(name), name, ovl))
             f.write("}\n")
             f.write("\n/*\n"
                     " * The data half, one function per overlay, called by\n"
@@ -4335,6 +4514,11 @@ def main():
             f.write("    if (id >= 0 && id < %d && armrec_ovl_data[id])\n" % top)
             f.write("        armrec_ovl_data[id]();\n")
             f.write("}\n")
+    if OVL_SYMS is not None:
+        sys.stderr.write("armrec: --overlay-dispatch: %d calls into a shared overlay "
+                         "window dispatched by address (%d to recompiled code, %d to "
+                         "decompiled C)\n" % (sum(OVL_DISPATCHES.values()),
+                                               OVL_DISPATCHES["asm"], OVL_DISPATCHES["C"]))
     if args.out and not args.scan and not args.wasm:
         with open(os.path.join(args.out, "armrec_externs.c"), "w") as f:
             f.write('#include "armrec_rt.h"\n\n')

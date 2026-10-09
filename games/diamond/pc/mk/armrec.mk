@@ -78,10 +78,14 @@ endif
 # --decomp-state is Platinum's table of which decompiled functions are
 # Thumb; it says nothing true about Diamond, and on wasm a `.word` naming a
 # C function is a table index that must not carry a Thumb bit anyway.
+# --overlay-dispatch: a call into another overlay at an address other
+# overlays can occupy is dispatched by residency rather than bound by the
+# name the disassembly gave it (armrec.py OVL_SYMS; the C side of the same
+# class is pc/tools/dp_ovlabel_lint.py's).
 ARMREC_FLAGS := --wasm $(ARMREC_DEFS) --define ENGLISH \
                 --include include --include arm9 --include . \
                 --guest-libc $(ARMREC_GUEST_LIBC) \
-                --decomp-state /dev/null --xmap $(ROM_XMAP) \
+                --decomp-state /dev/null --xmap $(ROM_XMAP) --overlay-dispatch \
                 $(if $(ARMREC_OVERRIDES),--host-override $(ARMREC_OVERRIDES))
 
 # The stems armrec will write, from its own naming function.

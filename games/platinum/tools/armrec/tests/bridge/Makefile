@@ -41,20 +41,26 @@ include $(NPROOT)/games/diamond/pc/mk/bridge.mk
 
 # --- the assembly ----------------------------------------------------------
 # bridge_msl.s has HG/SS msl.s's shape and is called from bridge_test.s.
+# The two overlay files and bridge.xMAP are the --overlay-dispatch case: a
+# window overlays 1, 2 (recompiled) and 3 (bridge_c2.c's C) share.
 ARMREC_OUT  := $(BUILD)/armrec
-ARMREC_SRCS := bridge_test.s bridge_msl.s
+ARMREC_SRCS := bridge_test.s bridge_msl.s arm9/overlays/1/asm/bridge_ovl1.s \
+               arm9/overlays/2/asm/bridge_ovl2.s
 ARMREC_OBJS := $(ARMREC_OUT)/bridge_test.o $(ARMREC_OUT)/bridge_msl.o \
+               $(ARMREC_OUT)/bridge_ovl1.o $(ARMREC_OUT)/bridge_ovl2.o \
                $(ARMREC_OUT)/armrec_init.o
 OBJS += $(ARMREC_OBJS)
 
-$(ARMREC_OUT)/stamp: $(addprefix $(HERE)/,$(ARMREC_SRCS)) $(ARMREC)/armrec.py
+$(ARMREC_OUT)/stamp: $(addprefix $(HERE)/,$(ARMREC_SRCS)) $(HERE)/bridge.xMAP $(ARMREC)/armrec.py
 	@mkdir -p $(ARMREC_OUT)
 	cd $(HERE) && $(PYTHON) $(ARMREC)/armrec.py --wasm --quiet \
+	    --xmap bridge.xMAP --overlay-dispatch \
 	    --decomp-state /dev/null --out $(ARMREC_OUT) \
 	    --classes $(BRIDGE_CLASSES).tmp $(ARMREC_SRCS)
 	cmp -s $(BRIDGE_CLASSES).tmp $(BRIDGE_CLASSES) || mv $(BRIDGE_CLASSES).tmp $(BRIDGE_CLASSES)
 	@touch $@
-$(BRIDGE_CLASSES) $(ARMREC_OUT)/bridge_test.c $(ARMREC_OUT)/bridge_msl.c $(ARMREC_OUT)/armrec_init.c: $(ARMREC_OUT)/stamp ;
+$(BRIDGE_CLASSES) $(ARMREC_OUT)/bridge_test.c $(ARMREC_OUT)/bridge_msl.c \
+    $(ARMREC_OUT)/bridge_ovl1.c $(ARMREC_OUT)/bridge_ovl2.c $(ARMREC_OUT)/armrec_init.c: $(ARMREC_OUT)/stamp ;
 
 $(ARMREC_OUT)/%.o: $(ARMREC_OUT)/%.c
 	$(CC) $(WASM_ABI) $(OPT) -DPC_GAME_DP -I$(ARMREC) -c -o $@ $<

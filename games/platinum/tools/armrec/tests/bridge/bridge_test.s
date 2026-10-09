@@ -240,6 +240,30 @@ asm_call_typed: ; 0x020001C8
 	ldmia sp!, {pc}
 	arm_func_end asm_call_typed
 
+; int asm_call_ovl(int x): a call to ov01_02100000, an address overlays 1, 2
+; and 3 share (bridge.xMAP). --overlay-dispatch makes it a dispatch of
+; 0x02100000, so it reaches whichever overlay is resident, the way the ROM's
+; BL does, and not overlay 1's function by name.
+	arm_func_start asm_call_ovl
+asm_call_ovl: ; 0x020001E0
+	stmdb sp!, {lr}
+	sub sp, sp, #0x4
+	bl ov01_02100000
+	add sp, sp, #0x4
+	ldmia sp!, {pc}
+	arm_func_end asm_call_ovl
+
+; int asm_call_ovl3(int x): the same, named after overlay 3's decompiled C
+; (bridge_c2.c), which the dispatch reaches through its c2u$ adapter.
+	arm_func_start asm_call_ovl3
+asm_call_ovl3: ; 0x020001F4
+	stmdb sp!, {lr}
+	sub sp, sp, #0x4
+	bl ov03_02100000
+	add sp, sp, #0x4
+	ldmia sp!, {pc}
+	arm_func_end asm_call_ovl3
+
 	.data
 
 	.global asm_table

@@ -38,6 +38,8 @@ uint32_t asm_thumb_lit(void);
 int asm_call_typed(int);
 int asm_rt_neg(int);
 int asm_rt_twice(int);
+int asm_call_ovl(int);
+int asm_call_ovl3(int);
 extern int asm_table[];
 extern uint32_t asm_cptrs[];
 
@@ -168,6 +170,19 @@ int main(void) {
     CHECK("armrec_resolve_code(c_target)",
           (uintptr_t)armrec_resolve_code((uint32_t)(uintptr_t)c_target),
           (uintptr_t)c_target);
+
+    /* A call into a window three overlays share follows residency
+     * (armrec --overlay-dispatch; bridge.xMAP): overlay 1's and 2's
+     * recompiled functions and overlay 3's decompiled C, whichever is loaded,
+     * whatever the call site's name says. */
+    armrec_load_overlay(1, 0x02100000u, 0x100u);
+    CHECK("ov01_02100000 call, overlay 1 resident", asm_call_ovl(5), 105);
+    armrec_load_overlay(2, 0x02100000u, 0x100u);
+    CHECK("ov01_02100000 call, overlay 2 resident", asm_call_ovl(5), 205);
+    CHECK("ov03_02100000 call, overlay 2 resident", asm_call_ovl3(5), 205);
+    armrec_load_overlay(3, 0x02100000u, 0x100u);
+    CHECK("ov01_02100000 call, overlay 3 (C) resident", asm_call_ovl(5), 305);
+    CHECK("ov03_02100000 call, overlay 3 (C) resident", asm_call_ovl3(5), 305);
     CHECK("armrec_sp restored", armrec_sp, ARM_STACK_TOP);
 
     printf("bridge test: %d/%d checks passed\n", checks - failures, checks);
