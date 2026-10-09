@@ -1,5 +1,5 @@
 /*
- * Mods and custom carts on Black/White: the content packages
+ * Mods and custom carts on Black/White and HeartGold/SoulSilver: the content packages
  * (pc/src/pc_modfs.c, shared) served at the cartridge read instead of
  * through FS / NARC hooks (docs/BWHGSS_HOOKS.md, "Mods and custom carts").
  *
@@ -26,8 +26,11 @@
  * under the content root), so selecting and pinning them, the load order
  * and the claim rules are the same as on D/P/Pt. The view is built on the
  * first cartridge read; with nothing claimed it is not built and every read
- * goes straight to the cartridge as before. Only B/W compile this file and
- * its hook (pc_card_rom.c under ARMREC_TWL).
+ * goes straight to the cartridge as before. Only B/W and HeartGold /
+ * SoulSilver compile this file and its hook (pc_card_rom.c under
+ * PC_BW_ROMVIEW; games/ndsrec/pc/Makefile.wasm, games/heartgold/pc/
+ * Makefile.wasm): HG/SS's NitroSDK 4.2 FS finds its files through the same
+ * FAT, and its 128 MB cartridge has its padding after the used area too.
  */
 #include <stdint.h>
 #include <stdio.h>
@@ -285,8 +288,10 @@ static void build(void)
      * when not running on a DSi (Black sub_0207A980: offset >= the header's
      * u16 at 0x92 << 19, from the header copy at HW_ROM_HEADER_BUF), and the
      * moved files are past it; the copy's limit moves past the view. The
-     * cartridge's own TWL area is never read in DS mode. */
-    {
+     * cartridge's own TWL area is never read in DS mode. A DS-only
+     * cartridge's NitroSDK (HeartGold/SoulSilver) has no such limit, and its
+     * header copy is elsewhere: nothing to move. */
+    if ((h[0x12] & 2) != 0) {
         volatile uint8_t *twlLimit = (volatile uint8_t *)(uintptr_t)(ROM_HEADER_BUF + 0x92);
         const unsigned units = (sViewSize + TWL_AREA_UNIT - 1) / TWL_AREA_UNIT;
 

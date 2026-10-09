@@ -39,8 +39,11 @@
 #             camera zoom / tilt change the field and leave nothing behind;
 #             an F1 quick save (np_save4 verifies it); the game's own save
 #             from the touch menu (hgss-save.sched), np_save4 verifies it and
-#             CONTINUE comes back; hgss-wild.sched: a wild battle in Route
-#             29's grass sets in_battle, RUN clears it
+#             CONTINUE comes back; the main menu with hgss_mod_example.py's
+#             package (made from the ROM) in the ROM view: CONTINUE (MOD), the
+#             rest unchanged; PC_NP_RULES_CHECK's Rage fix, off and on;
+#             hgss-wild.sched: a wild battle in Route 29's grass sets
+#             in_battle, RUN clears it
 #
 # Frames are dumped as PNGs to build/evidence/bwhgss/<game>/ (outside git).
 # Exit status: 0 every check passed (games without core or ROM are SKIPped),
@@ -356,6 +359,35 @@ for g in "${games[@]}"; do
         cp "$w/save.sav" "$w/save-continue.sav"
         run save-continue --frames 2400 --schedule $here/hgss-field.sched --save "$w/save-continue.sav"
         check "$g CONTINUE from that save" "$w/save-continue.log" "exit 0" "field_ready=1 .* map_id=60"
+        # Content packages as a ROM view (games/ndsrec/pc/src/pc_bw_romview.c,
+        # linked by HG/SS too): tests/bwhgss/hgss_mod_example.py's package
+        # (made from this ROM) replaces the main menu's text bank (a/0/2/7
+        # member 442); its CONTINUE reads CONTINUE (MOD), the rest of the menu
+        # is the plain one.
+        python3 $here/hgss_mod_example.py "$rom" "$w/mods" > /dev/null
+        field menu-plain --frames 2060 --schedule $here/hgss-menu.sched --dump-from 2060
+        field menu-mod --frames 2060 --schedule $here/hgss-menu.sched --dump-from 2060 \
+            --content "$w/mods" -e PC_MODS=example_hgss_menu
+        check "$g the example package in the ROM view" "$w/menu-mod.log" "exit 0" \
+            "pc_bw_romview: a/0/2/7: .* members" "pc_bw_romview: 1 files moved"
+        if python3 $here/region_same.py "$w/menu-plain/frame_002060.png" "$w/menu-mod/frame_002060.png" \
+            20 198 140 216; then
+            echo "FAIL $g example package: the CONTINUE label is the plain one ($w/menu-mod)"
+            fail=1
+        elif ! python3 $here/region_same.py "$w/menu-plain/frame_002060.png" "$w/menu-mod/frame_002060.png" \
+            20 216 214 384; then
+            echo "FAIL $g example package: the rest of the menu changed ($w/menu-mod)"
+            fail=1
+        else
+            echo "ok   $g example package: CONTINUE (MOD) on the main menu, the rest of it unchanged"
+        fi
+
+        # PC_NP_RULES_CHECK: the fix-bugs rule's Rage case through the patched
+        # before-turn pass, with the bit off (the cartridge's bug) and on.
+        field rules --frames 2300 --schedule $here/hgss-field.sched -e PC_NP_RULES_CHECK=1
+        check "$g fix-bugs rule: Rage (PC_NP_RULES_CHECK)" "$w/rules.log" "exit 0" \
+            "status2 off 0x800000, on 0x1" "pc-np: rules check: PASS"
+
         field wild --frames 9000 --schedule $here/hgss-wild.sched --dump-from 3000 --dump-every 250
         check "$g NP_STAT_IN_BATTLE: a wild battle on Route 29, RUN, back in the field" "$w/wild.log" \
             "exit 0" "in_battle 0 -> 1" "in_battle 1 -> 0" "field_ready=1 .* in_battle=0"

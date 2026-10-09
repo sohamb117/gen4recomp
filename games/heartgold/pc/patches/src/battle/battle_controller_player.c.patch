@@ -1,0 +1,39 @@
+--- a/src/battle/battle_controller_player.c
++++ b/src/battle/battle_controller_player.c
+@@ -22,6 +22,8 @@
+ #include "sound.h"
+ #include "unk_02035900.h"
+ 
++#include "pc_np_options.h"
++
+ static void BattleControllerPlayer_GetBattleMon(BattleSystem *battleSystem, BattleContext *ctx);
+ static void BattleControllerPlayer_StartEncounter(BattleSystem *battleSystem, BattleContext *ctx);
+ static void BattleControllerPlayer_TrainerMessage(BattleSystem *battleSystem, BattleContext *ctx);
+@@ -753,7 +755,13 @@
+         case BT_STATE_RAGE:
+             for (battlerId = 0; battlerId < maxBattlers; battlerId++) {
+                 if ((ctx->battleMons[battlerId].status2 & STATUS2_RAGE) && GetBattlerSelectedMove(ctx, battlerId) != MOVE_RAGE) {
+-                    ctx->battleMons[battlerId].status2 &= STATUS2_RAGE;
++                    // bug: clears every volatile status except rage (Platinum's too)
++                    // (pc port: NP_RULE_FIX_BUGS clears only rage, the documented fix)
++                    if (pc_np_opt.rules & PC_NP_RULE_FIX_BUGS) {
++                        ctx->battleMons[battlerId].status2 &= ~STATUS2_RAGE;
++                    } else {
++                        ctx->battleMons[battlerId].status2 &= STATUS2_RAGE;
++                    }
+                 }
+             }
+             ctx->stateBeforeTurn++;
+@@ -775,6 +783,12 @@
+     }
+ }
+ 
++/* pc port: the NP_RULE_FIX_BUGS check (pc/src/pc_hg_field.c) runs the
++ * before-turn pass above on a battle it builds. */
++void PcHg_BeforeTurn(BattleSystem *battleSystem, BattleContext *ctx) {
++    BattleControllerPlayer_BeforeTurn(battleSystem, ctx);
++}
++
+ static void ov12_02249460(BattleSystem *battleSystem, BattleContext *ctx) {
+     int maxBattlers;
+     int battlerId;

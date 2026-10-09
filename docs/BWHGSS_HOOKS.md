@@ -196,10 +196,13 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   `trainer_data.c.patch` (form stats). D/P: `pc/game/pc_dp_rules.c` with `bl` retargets in
   `overlays/11/asm/ov11_02242B78.s.patch` and a `bl PcDp_RageAfterOtherMove; nop` pair replacement in
   `ov11_0223D1DC.s.patch`. A `PC_NP_RULES_CHECK` diagnostic runs the patched code with the bit off and on.
-- **HG/SS.** HG's battle engine descends from Platinum's, so check each Pt fix against `src/battle/` and the
-  pokeheartgold bug documentation. Apply only the bugs HG still has, each as a `.c.patch` guard reading
-  `pc_np_opt.rules`, plus a `pc_hg_rules.c` check modelled on `pc_np_field.c`'s. Testing needs a battle, so
-  the field first.
+- **HG/SS: done (2026-10-09).** Of Platinum's three, HG/SS still have the Rage bug: the before-turn pass
+  (`src/battle/battle_controller_player.c`, `BT_STATE_RAGE`) does `status2 &= STATUS2_RAGE` for a raging battler
+  that picked another move, keeping only rage. `pc/patches/src/battle/battle_controller_player.c.patch` gates
+  the fix (`&= ~STATUS2_RAGE`) on the bit, and `pc_hg_field.c`'s PC_NP_RULES_CHECK runs the pass on a built
+  battle with the bit off and on: status2 0x800000 (the bug) and 0x1 (only the confusion left). Fire Fang has
+  nothing to fix (HG/SS's multi-turn list, `BattleCtx_IsIdenticalToCurrentMove`, names Shadow Force), and the
+  form-stats bug cannot show: no HG/SS trainer's Pokemon has a form (`files/poketool/trainer/trainers.json`).
 - **B/W: done for the one documented bug at a single decision point** (`pc/src/pc_bw_rules.c`). Bulbapedia's Gen 5
   battle glitches: the 0 damage glitch is a clamp in the wrong place. Overlay 93's damage routine (Black
   `ov93_021C1E74`, White `ov93_021C1E94`) raises 0 to 1 at 0x021C1FEC, then multiplies by the "other" modifier
@@ -218,11 +221,13 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   (a strong `FS_OpenFile` over the weak SDK one serves claimed files from a memory archive) and
   `pc/patches/arm9/src/filesystem.c.patch` (NARC member stat / read / object paths). Pt adds cooked formats
   (maps, billboards). Carts pin a package set to a slot.
-- **HG/SS.** The same split: HG's FS is NitroSDK 4.2 assembly and its NARC layer is C (`NARC_New`,
-  `NARC_ReadWholeMember`, `NARC_AllocAndReadWholeMember`). Replace `FS_OpenFile` through `pc/host_overrides.txt`
-  with a 4.2 `FSFile` version of D's memory-archive opener. Add a `.c.patch` on HG's NARC functions calling
-  `pc_modfs_member_*`, binding each NARC to its path at open (`pc_modfs_bind_narc`). Medium effort, and only
-  title-screen assets can be checked before the field.
+- **HG/SS: B/W's ROM view, linked (2026-10-09).** HG/SS's NitroSDK 4.2 FS finds its files through the same
+  FAT, read off the cartridge through `pc_card_rom.c`, and the 128 MB cartridge has ~7 MB of padding after the
+  used area, so `games/ndsrec/pc/src/pc_bw_romview.c` serves HG/SS's packages unchanged (its TWL-only limit write
+  now only on a DSi-enhanced header). `games/heartgold/pc/Makefile.wasm` compiles it from its path with
+  `-DPC_BW_ROMVIEW`. `tests/bwhgss/hgss_mod_example.py` makes the example package from the player's ROM (the
+  main menu's text bank, a/0/2/7 member 442: CONTINUE (MOD)); parity.sh checks it. Still to prove on a core
+  with the link.
 - **B/W: done as a ROM view** (`games/ndsrec/pc/src/pc_bw_romview.c`, guest side, B/W builds only:
   `pc_card_rom.c`'s `rom_read` calls it under `PC_BW_ROMVIEW`, so D/P/Pt compile the same code as before). On the
   first cartridge read it walks the ROM's FNT, asks pc_modfs (packages, load order, claims: shared) for each

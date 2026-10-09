@@ -130,6 +130,12 @@ LINK_EXTRA_DEPS := $(filter-out $(HOST_OVSTATICS_O),$(LINK_EXTRA_DEPS)) $(HG_OVS
 LINK_EXTRA_OBJS := $(filter-out $(HOST_OVSTATICS_O),$(LINK_EXTRA_OBJS)) $(HG_OVSTATICS_O)
 
 HG_HOST_OBJS := $(OBJ)/hghost/pc_ndsrec_hooks.o
+# Mods and custom carts: content packages as a ROM view, B/W's
+# games/ndsrec/pc/src/pc_bw_romview.c compiled from its own path, and the
+# hook in pc_card_rom.c it answers (PC_BW_ROMVIEW).
+HG_HOST_OBJS += $(OBJ)/hghost/pc_bw_romview.o
+HOST_CFLAGS += -DPC_BW_ROMVIEW
+$(HOST_OBJ)/pc/pc_card_rom.o: $(MYPC)/Makefile.wasm
 $(OBJ)/hghost/%.o: $(NPROOT)/games/ndsrec/pc/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
 OBJS += $(HG_HOST_OBJS)

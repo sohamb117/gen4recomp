@@ -346,6 +346,61 @@ u8 PcHg_E2ePartyShift(void *battleParty) {
     return ov08_0221D4B0(battleParty);
 }
 
+/*
+ * PC_NP_RULES_CHECK: the NP_RULE_FIX_BUGS fix HG/SS have, run through the
+ * patched game code itself with the bit off and then on, so the log shows
+ * the cartridge's bug and the fix side by side (Platinum's pc_np_field.c
+ * pc_np_rules_check, its Rage case):
+ *
+ *   Rage   the battle controller's before-turn pass
+ *          (pc/patches/src/battle/battle_controller_player.c.patch) on a
+ *          raging, confused battler that picked another move: the bug
+ *          keeps only rage, the fix clears only rage.
+ *
+ * Platinum's other two have nothing to fix here: HG/SS's multi-turn list
+ * already names Shadow Force's effect (BattleCtx_IsIdenticalToCurrentMove),
+ * and no HG/SS trainer's Pokemon carries a form (files/poketool/trainer).
+ * The battle is a zeroed BattleSystem / BattleContext with only what the
+ * pass reads filled in. A diagnostic, run once at the first free moment in
+ * the field; the option is put back as it was.
+ */
+extern char *getenv(const char *name);
+extern void PcHg_BeforeTurn(BattleSystem *battleSystem, BattleContext *ctx); /* the patch above */
+
+static u32 rules_rage(BattleSystem *sys, BattleContext *ctx) {
+    const u32 confused = 1; /* one turn of confusion left */
+
+    memset(ctx->battleMons, 0, sizeof ctx->battleMons);
+    memset(ctx->playerActions, 0, sizeof ctx->playerActions); /* no move selected: not Rage */
+    ctx->stateBeforeTurn = 1; /* BT_STATE_RAGE */
+    ctx->beforeTurnData = 0;
+    ctx->battleMons[0].status2 = STATUS2_RAGE | confused;
+    PcHg_BeforeTurn(sys, ctx);
+    return ctx->battleMons[0].status2;
+}
+
+static void rules_check(void) {
+    static int done;
+    static BattleSystem sys;
+    static BattleContext ctx;
+    const unsigned saved = pc_np_opt.rules;
+    u32 rage[2];
+    unsigned bit;
+
+    if (done || getenv("PC_NP_RULES_CHECK") == NULL) return;
+    done = 1;
+    sys.maxBattlers = 2;
+    for (bit = 0; bit < 2; bit++) {
+        pc_np_opt.rules = bit ? (saved | PC_NP_RULE_FIX_BUGS) : (saved & ~PC_NP_RULE_FIX_BUGS);
+        rage[bit] = rules_rage(&sys, &ctx);
+    }
+    pc_np_opt.rules = saved;
+    fprintf(stderr, "pc-np: rules check: Rage with another move, confused: status2 off %#lx, on %#lx\n",
+            (unsigned long)rage[0], (unsigned long)rage[1]);
+    fprintf(stderr, "pc-np: rules check: %s\n",
+            rage[0] == STATUS2_RAGE && rage[1] == 1 ? "PASS" : "FAIL");
+}
+
 static void np_frame(void) {
     FieldSystem *fs = pc_hg_field_system();
     const int ready = field_ready(fs);
@@ -354,6 +409,7 @@ static void np_frame(void) {
     pc_np_stat.map_id = fs != NULL && fs->location != NULL ? (unsigned)fs->location->mapId : 0;
 
     e2e_frame(fs, ready);
+    if (ready) rules_check();
 
     if (pc_np_opt.quicksave_seq == pc_np_stat.quicksave_seq) return;
     if (ready) {
