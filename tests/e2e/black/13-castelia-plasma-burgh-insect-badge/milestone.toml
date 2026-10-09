@@ -4,7 +4,7 @@
 title = "Castelia City: Team Plasma's hideout and Burgh's Insect Badge"
 priority = "P0"
 version = "both"
-estimate = 63731
+estimate = 59234
 refs = [
   "zone 249 (Skyarrow Bridge) -> zone 250 (Bridge Gate) -> Castelia",
   "zone_event 31 trigger 0 (24,48) var 0x40AF == 0 -> scr 0062 script 4 (Cheren, msg 36 #0); @0x01BB SetVar 0x40AF 1; @0x01C9 SetVar 0x40D3 1",
@@ -15,20 +15,20 @@ refs = [
   "scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76",
   "scr 0058 @0x030A SetVar 0x409C 1; @0x0310 SetVar 0x40AC 1; @0x0316 SetVar 0x40AD 2; @0x031C SetVar 0x40AF 4; @0x0332 SetFlag 0x973",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 60432, White 63731 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds Darumaka 30 and lead.press puts it first: Burgh whited out the chain's party on Black (no Pokemon Center on the way; Castelia's is on the waterfront rails). Skyarrow Bridge and the waterfront are rail maps (the rail bot); the Gym's honey walls pass only straight up or down, held through, after both gates of a wall are opened by floor switches (overlay 38; the route and table came from scouting). Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`."
+notes = "Measured from the previous end save (CONTINUE included): Black 59234, White 57276 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds Darmanitan 36 and lead.press puts it first: Burgh whited out the chain's party on Black (no Pokemon Center on the way; Castelia's is on the waterfront rails). Skyarrow Bridge and the waterfront are rail maps (the rail bot); the Gym's honey walls pass only straight up or down, held through, after both gates of a wall are opened by floor switches (overlay 38; the route and table came from scouting). Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 96000
+frames = 89000
 
 [[step]]
 do = "schedule"
 file = "lead.press"
-shot = "darumaka-lead"
-note = "the boost's Darumaka leads (auto_battle fights with the lead)"
+shot = "darmanitan-lead"
+note = "the boost's Darmanitan leads (auto_battle fights with the lead)"
 
 [[step]]
 do = "wait_field"

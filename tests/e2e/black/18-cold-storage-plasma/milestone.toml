@@ -19,6 +19,194 @@ notes = "[INFERENCE] estimate."
 [start]
 from = "prev"
 
+[run]
+frames = 90000
+
+[[step]]
+do = "walk_to"
+x = 168
+z = 475
+on_battle = "flee"
+max = 12000
+note = "south-west from Driftveil to the Cold Storage yard (zone 191)"
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+note = "zone_event 191 trigger 0 (167,474..476) 0x4090 == 0 -> scr 0382 script 1: Cheren; 0x4090 1 (@0x0109)"
+
+[[step]]
+do = "advance_text"
+shot = "cold-storage-cheren"
+
+[[step]]
+do = "walk_to"
+x = 164
+z = 473
+note = "zone_event 191 warp 0 (164,472) -> zone 192"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 192
+
+[[step]]
+do = "advance_text"
+note = "zone_event 192 level 1 (on entry) 0x408B == 0 -> scr 0384 script 1; 0x408B 1 (@0x00A6)"
+
+[[step]]
+do = "steps"
+route = [[8, 15], [12, 15], [22, 15], [22, 9], [28, 9], [28, 6], [26, 6], [26, 22], [22, 22], [22, 25], [27, 25], [27, 29], [22, 29], [22, 26], [19, 26], [19, 25], [17, 25], [17, 8], [17, 5], [11, 5], [11, 8], [6, 8]]
+note = "ice floor (behavior 0x18) and container layers (probe step layers: heights 0, 48, 96): north with a slide to (8,15), Worker Victor near (13,15), a slide east to (22,15), the stairs (22,13..9) up onto the east container, ice slides (28,9)/(28,6)/(26,6) and down to (26,14), up onto the high container (22,22), across to (27,25), down (27,26..29) and (26..23,29) to the floor (22,29), round to (17,25), north with a slide (17,17..9) to (17,8), Worker Ryan at row 5, then west and south onto trigger 0 (6,8); the floor alone does not reach it (route from scouting)"
+
+[[step]]
+do = "advance_text"
+note = "zone_event 192 trigger 0 (6,8..11) 0x408B == 1 -> scr 0384 script 2: Cheren, yes/no (A: yes); 0x408B 2 (@0x0117)"
+
+[[step]]
+do = "steps"
+route = [[5, 8]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 30
+note = "zone_event 192 warp 1 (5,7) -> zone 193"
+
+[[step]]
+do = "wait_map"
+map = 193
+
+[[step]]
+do = "advance_text"
+shot = "zinzolin"
+note = "zone_event 193 level 1 (on entry) 0x408B == 2 -> scr 0386 script 1: Zinzolin; 0x408B 3 (@0x01DA)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 12
+face = "up"
+interact = true
+note = "grunt object 5, at (7,11) after Zinzolin's scene -> scr 0386 script 6 (talk_to cannot reach them in the crowd)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #81 (Sandile 23, Watchog 23), scr 0386 @0x02EA"
+
+[[step]]
+do = "advance_text"
+[[step]]
+do = "walk_to"
+x = 6
+z = 12
+face = "up"
+interact = true
+note = "grunt object 7 at (6,11) -> scr 0386 script 8"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #278 (Trubbish 24), scr 0386 @0x03A3"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 11
+face = "up"
+interact = true
+note = "grunt object 10 at (5,10) -> scr 0386 script 11"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #610 (Liepard 24), scr 0386 @0x0515"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 10
+face = "up"
+interact = true
+note = "grunt object 9 at (4,9) -> scr 0386 script 10"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "grunt trdata #276 (Watchog 23, Scraggy 23), scr 0386 @0x045C"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "plasma-routed"
+note = "the fourth: 0x408B 8, 0x408F 2 (@0x08D3/@0x08ED)"
+
+[[step]]
+do = "steps"
+route = [[5, 16]]
+note = "zone_event 193 warp 0 (3..5,17) -> zone 192"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 192
+
+[[step]]
+do = "steps"
+route = [[11, 8], [11, 5], [15, 5], [15, 8], [15, 16], [12, 16], [6, 16], [6, 30], [8, 30]]
+note = "back out on the floor (the game walks the player from (5,7) to (5,8) on arrival): round the trigger area by row 5, the ice slides (15,9..16), (11..7,16) and (6,17..23), then the floor to (8,30) (route from scouting: a search over the game's step layers with ice as slides)"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+note = "zone_event 192 warp 0 (7..9,31) -> zone 191"
+
+[[step]]
+do = "wait_map"
+map = 191
+
+[[step]]
+do = "walk_to"
+x = 205
+z = 405
+on_battle = "flee"
+max = 12000
+note = "north back into Driftveil (zone 96)"
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "zone_event 96 trigger 0 (206,404..407) 0x408F == 2 -> scr 0192 script 9: Ghetsis's speech; 0x408F 3 (@0x0444)"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "ghetsis"
+
 [expect]
 map = 96
 

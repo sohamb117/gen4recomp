@@ -1,18 +1,496 @@
 # Proves the Nimbasa Gym: the roller-coaster switches and Elesa's Bolt Badge.
 # Start: Nimbasa City (zone 62) -> end: the Nimbasa Gym (zone 63), 4 badges, 0x4093 = 1.
 title = "Nimbasa Gym: Elesa's Bolt Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 18000
+estimate = 33876
 refs = [
   "scr 0126 @0x0362 msg 68 #16 (the switches change the roller coaster's path)",
   "scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974",
 ]
-notes = "Emolga is Electric/Flying: Rock or Ice moves [INFERENCE]. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 33614, White 33876 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Gym runs twice: the four trainers, out by car 3 to heal, then back (the switches reset on entry). The Gym's roller-coaster cars (overlay 39) run all the time; a car is boarded with UP on its station tile while it is parked there, and left at the next stop by holding DOWN; floor switches 0-2 reroute cars 0-2 (Cmd180 toggles car k's route between 2k and 2k+1). The route came from scouting. Emolga is Electric/Flying: Rock moves (Darmanitan's Rock Tomb)."
 
 [start]
 from = "prev"
+
+[run]
+frames = 51000
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 13
+note = "zone_event 64 warp 0 (9,12..15) -> zone 62: heal first (the gym holds four trainers before Elesa, with no Pokemon Center between)"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 62
+
+[[step]]
+do = "heal"
+x = 406
+z = 467
+
+[[step]]
+do = "walk_to"
+x = 435
+z = 462
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 64
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 11
+note = "zone_event 64 warp 1 (39,10) -> zone 63, the Gym (its overlay 39 loads on this door entry)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 63
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 39
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=39"
+note = "board car 0 at station 0 (14,39): UP while the car is parked there (overlay 39, ov39_021F404C); cars always run, so UP is pressed until z changes"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 22
+z = 40
+near = 0
+max = 3000
+note = "hold DOWN through the ride: the player steps off at the next stop (ov39_021F41A8 checks DOWN at each stop), (22,40)"
+shot = "first-car-ride"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 33
+note = "switch 0 (29,33): scr 0126 script 3, Cmd180 0: car 0 now runs station 1 <-> 2 (16,27); Lady Magnolia (trdata #68) on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 39
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=39"
+note = "car 0 from station 1 (22,39)"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 16
+z = 28
+near = 0
+max = 3000
+note = "to station 2 (16,27)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 16
+note = "switch 1 (13,16): script 4, Cmd180 1: car 1 runs station 3 (16,15) <-> 4 (41,40); Rich Boy Cody (trdata #66) on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 15
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=15"
+note = "the first boarding of car 1 is Rich Boy Rolan's scene (scr 0126 scripts 7/8, trdata #67): he steps out, the player is pushed back two tiles"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 15
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=15"
+note = "board car 1 again"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 41
+z = 41
+near = 0
+max = 3000
+note = "to station 4 (41,40)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 46
+z = 41
+note = "switch 2 (46,41): script 5, Cmd180 2: car 2 runs station 5 (49,40) <-> 6 (34,8)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 49
+z = 40
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=40"
+note = "the first boarding of car 2 is Lady Colette's scene (trdata #69)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 49
+z = 40
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=40"
+note = "board car 2 again"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 34
+z = 9
+near = 0
+max = 3000
+note = "to station 6 (34,8)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 5
+note = "Elesa's tile (28,5)"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 9
+note = "switch 3 (25,9): script 6, Cmd180 3: car 3 runs station 7 (22,8) <-> 8 (5,39), the way back to the door"
+shot = "elesa-reached"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 8
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=8"
+note = "board car 3 at station 7"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 5
+z = 40
+near = 0
+max = 3000
+note = "to station 8 (5,39)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 44
+note = "zone_event 63 warp 0 (13..15,45) -> zone 64"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 64
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 13
+note = "back to Nimbasa's Pokemon Center: the four trainers wore the party down and Elesa whited it out on Black"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 62
+
+[[step]]
+do = "heal"
+x = 406
+z = 467
+
+[[step]]
+do = "walk_to"
+x = 435
+z = 462
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 64
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 11
+note = "the Gym again: the switches are temp vars (0x400B-0x400E), reset on entry, so the cars are rerouted again; the trainers stay beaten"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 63
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 39
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=39"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 22
+z = 40
+near = 0
+max = 3000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 33
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 39
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=39"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 16
+z = 28
+near = 0
+max = 3000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 16
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 15
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=15"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 41
+z = 41
+near = 0
+max = 3000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 46
+z = 41
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 49
+z = 40
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=40"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 34
+z = 9
+near = 0
+max = 3000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 5
+
+[[step]]
+do = "talk_to"
+id = 5
+note = "Elesa (zone_event 63 object 5 at (28,4)) -> scr 0126 script 1"
+
+[[step]]
+do = "advance_text"
+shot = "elesa-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Elesa, trdata #23 (Emolga 25 x2, Zebstrika 27), scr 0126 @0x019A"
+
+[[step]]
+do = "advance_text"
+shot = "bolt-badge"
+note = "the Bolt Badge (Cmd19F, msg 68 #2), TM72; 0x4093 1 (@0x025D), flag 0x974"
 
 [expect]
 map = 63

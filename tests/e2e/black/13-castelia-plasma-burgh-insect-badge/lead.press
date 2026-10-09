@@ -1,5 +1,5 @@
-# The boost's Darumaka (party slot 5) to the lead: X, POKEMON (64,46), the lead (64,36), SWITCH (200,133),
-# Darumaka (192,132: the field party screen's right column, third row), then B out (11's lead.press positions).
+# The boost's Darmanitan (party slot 5) to the lead: X, POKEMON (64,46), the lead (64,36), SWITCH (200,133),
+# Darmanitan (192,132: the field party screen's right column, third row), then B out (11's lead.press positions).
 0:x:4
 80:tap:64:46:4
 200:tap:64:36:4

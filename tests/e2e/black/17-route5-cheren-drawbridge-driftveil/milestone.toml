@@ -17,6 +17,189 @@ notes = "[INFERENCE] estimate."
 [start]
 from = "prev"
 
+[run]
+frames = 70000
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 9
+note = "out of the Gym: switch 3 (25,9) (scr 0126 script 6, Cmd180 3) sends car 3 between station 7 (22,8) and 8 (5,39) by the door"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 8
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 2
+times = 150
+until = "z!=8"
+note = "board car 3 at station 7"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 5
+z = 40
+near = 0
+max = 3000
+note = "to station 8 (5,39)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 44
+note = "zone_event 63 warp 0 (13..15,45) -> zone 64"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 64
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 13
+note = "zone_event 64 warp 0 (9,12..15) -> zone 62"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 62
+
+[[step]]
+do = "heal"
+x = 406
+z = 467
+
+[[step]]
+do = "walk_to"
+x = 385
+z = 438
+note = "zone_event 62 warp 1 (384,437..439) -> zone 91, the Nimbasa Gate (west)"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 91
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 5
+note = "zone_event 91 warp 1 (1,4..6) -> zone 329, Route 5"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 329
+
+[[step]]
+do = "moves"
+dirs = [["L", "x372"]]
+note = "zone_event 329 trigger 0 (372,437..441) 0x4093 == 1 -> scr 0658 script 1: Cheren"
+
+[[step]]
+do = "advance_text"
+shot = "cheren-battle-in"
+
+[[step]]
+do = "auto_battle"
+note = "Cheren, trdata #90/#91/#92 by 0x4030 (scr 0658 @0x014F/@0x0170/@0x017E)"
+
+[[step]]
+do = "advance_text"
+note = "0x4093 2 (@0x0594)"
+
+[[step]]
+do = "walk_to"
+x = 340
+z = 433
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["L", "x339"]]
+note = "trigger 2 (339,431..435) 0x4093 == 2 -> scr 0658 script 5: Elesa lowers the drawbridge; 0x4093 3 (@0x09B0)"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "drawbridge-lowered"
+
+[[step]]
+do = "walk_to"
+x = 330
+z = 432
+note = "zone_event 329 warp 1 (329,431..433) -> zone 253, the Driftveil Drawbridge"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 253
+
+[[step]]
+do = "walk_to"
+x = 44
+z = 47
+via = [[170, 47], [128, 47], [86, 47]]
+max = 12000
+shot = "drawbridge"
+note = "west along the bridge (169 tiles); zone_event 253 warp 0 (43,44..50) -> zone 96"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 30
+
+[[step]]
+do = "wait_map"
+map = 96
+
+[[step]]
+do = "walk_to"
+x = 205
+z = 432
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+note = "zone_event 96 trigger 1 (204,430..434) 0x408F == 0 -> scr 0192 script 8: Clay; flag 0x9B6, 0x408F 1 (@0x01DB/@0x01E3)"
+
+[[step]]
+do = "advance_text"
+shot = "clay"
+
 [expect]
 map = 96
 

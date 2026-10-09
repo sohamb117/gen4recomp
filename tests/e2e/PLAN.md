@@ -6031,7 +6031,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~983306 frames estimated
+### Story chain: 33 milestones, ~980201 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6047,10 +6047,10 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [10-route3-cheren-wellspring-plasma](black/10-route3-cheren-wellspring-plasma/milestone.toml) | Route 3: Cheren and Team Plasma at Wellspring Cave | P0 | both | 45813 | prev + `None` | 16 | passing |
 | [11-nacrene-n-lenora-basic-badge](black/11-nacrene-n-lenora-basic-badge/milestone.toml) | Nacrene City: N and Lenora's Basic Badge | P0 | both | 32249 | prev + `None` | 19 | passing |
 | [12-museum-skull-pinwheel-plasma](black/12-museum-skull-pinwheel-plasma/milestone.toml) | The Dragon Skull: Team Plasma in Pinwheel Forest | P0 | both | 41974 | prev + `None` | 155 | passing |
-| [13-castelia-plasma-burgh-insect-badge](black/13-castelia-plasma-burgh-insect-badge/milestone.toml) | Castelia City: Team Plasma's hideout and Burgh's Insect Badge | P0 | both | 63731 | prev + `None` | 29 | passing |
-| [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 40495 | prev + `None` | 62 | passing |
-| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 38808 | prev + `None` | 64 | passing |
-| [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 18000 | prev + `None` | 63 | planned |
+| [13-castelia-plasma-burgh-insect-badge](black/13-castelia-plasma-burgh-insect-badge/milestone.toml) | Castelia City: Team Plasma's hideout and Burgh's Insect Badge | P0 | both | 59234 | prev + `None` | 29 | passing |
+| [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 34342 | prev + `None` | 62 | passing |
+| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 30477 | prev + `None` | 64 | passing |
+| [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 33876 | prev + `None` | 63 | passing |
 | [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 18000 | prev + `None` | 96 | planned |
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 20000 | prev + `None` | 96 | planned |
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 22000 | prev + `None` | 96 | planned |
@@ -6195,9 +6195,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1; scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76
 - end state: map 29; 3 badges; flags set 0x973; vars 0x40AF=4, 0x409C=1, 0x40AC=1
-- frames: estimate 63731, budget 96000
+- frames: estimate 59234, budget 89000
 - refs: zone 249 (Skyarrow Bridge) -> zone 250 (Bridge Gate) -> Castelia; zone_event 31 trigger 0 (24,48) var 0x40AF == 0 -> scr 0062 script 4 (Cheren, msg 36 #0); @0x01BB SetVar 0x40AF 1; @0x01C9 SetVar 0x40D3 1; zone_event 38 level type 1: 0x40D3 == 1 -> scr 0076 script 8; @0x042E SetVar 0x40D3 2; @0x0434 SetVar 0x40AD 1; zone_event 28 trigger 0 (4,24) var 0x40AD == 1 -> scr 0056 script 19 (Burgh, msg 33 #0); @0x024C/@0x0256 SetVar 0x40AD 2, 0x40AF 2; zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1; zone_event 56 trigger 0 (6,10) var 0x40D9 == 1 -> scr 0112 script 1; @0x050D SetVar 0x40D9 2; @0x0517 SetVar 0x40D7 1; scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76; scr 0058 @0x030A SetVar 0x409C 1; @0x0310 SetVar 0x40AC 1; @0x0316 SetVar 0x40AD 2; @0x031C SetVar 0x40AF 4; @0x0332 SetFlag 0x973
-- notes: Measured from the previous end save (CONTINUE included): Black 60432, White 63731 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds Darumaka 30 and lead.press puts it first: Burgh whited out the chain's party on Black (no Pokemon Center on the way; Castelia's is on the waterfront rails). Skyarrow Bridge and the waterfront are rail maps (the rail bot); the Gym's honey walls pass only straight up or down, held through, after both gates of a wall are opened by floor switches (overlay 38; the route and table came from scouting). Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`.
+- notes: Measured from the previous end save (CONTINUE included): Black 59234, White 57276 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds Darmanitan 36 and lead.press puts it first: Burgh whited out the chain's party on Black (no Pokemon Center on the way; Castelia's is on the waterfront rails). Skyarrow Bridge and the waterfront are rail maps (the rail bot); the Gym's honey walls pass only straight up or down, held through, after both gates of a wall are opened by floor switches (overlay 38; the route and table came from scouting). Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`.
 
 #### black/14-castelia-gate-bianca-route4-cheren — Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa
 - proves: Proves the road south: Bianca's battle in the Castelia Gate, Route 4's sandstorm and Cheren's battle, to Nimbasa City. Start: the Castelia Gym (zone 29) -> end: Nimbasa City (zone 62), 0x40AC = 2, 0x409C = 2.
@@ -6205,9 +6205,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2; zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2
 - end state: map 62; vars 0x40AC=2, 0x409C=2
-- frames: estimate 40495, budget 61000
+- frames: estimate 34342, budget 52000
 - refs: zone_event 51 trigger 0 (1,9) var 0x40AC == 1 -> scr 0102 script 4 (MessageGender msg 56 #0/#1); scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2; zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2; zone_event 326 trigger 0 (430,564) var 0x409C == 0 -> scr 0652 script 2 (the road closed before the Insect Badge)
-- notes: Measured from the previous end save (CONTINUE included): Black 40495, White 35744 frames on the core of 2026-10-08 (main 21cf05779, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30.
+- notes: Measured from the previous end save (CONTINUE included): Black 34342, White 34147 frames on the core of 2026-10-08 (main 21cf05779, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30.
 
 #### black/15-nimbasa-musical-ferris-wheel-n — Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel
 - proves: Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father, and N's Ferris wheel battle. Start: Nimbasa City (zone 62) -> end: the amusement park (zone 64), 0x4089 = 3, 0x408E = 1.
@@ -6215,9 +6215,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
 - end state: map 64; vars 0x4089=3, 0x408E=1, 0x40B3=1
-- frames: estimate 38808, budget 58500
+- frames: estimate 30477, budget 46000
 - refs: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 62 trigger 0 (391,436) var 0x4089 == 1 -> scr 0124 script 2; @0x08B5 Warp zone 77 (14,20); zone_event 77 level type 1: 0x40B3 == 0 -> scr 0154 script 11; @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1; @0x01DC SetVar 0x4089 2; zone_event 62 level type 1: 0x4089 == 2 -> scr 0124 script 20 (msg 67 #18, Bianca's father); @0x0C38 SetVar 0x4089 3; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
-- notes: Measured from the previous end save (CONTINUE included): Black 38808, White 30485 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Musical's dress-up is a touch-only app (keys do nothing there): OK at (128,178), then OK at (20,170) for 'Is this look OK?'; it returns to the theater (zone 77).
+- notes: Measured from the previous end save (CONTINUE included): Black 29967, White 30477 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Musical's dress-up is a touch-only app (keys do nothing there): OK at (128,178), then OK at (20,170) for 'Is this look OK?'; it returns to the theater (zone 77).
 
 #### black/16-nimbasa-elesa-bolt-badge — Nimbasa Gym: Elesa's Bolt Badge
 - proves: Proves the Nimbasa Gym: the roller-coaster switches and Elesa's Bolt Badge. Start: Nimbasa City (zone 62) -> end: the Nimbasa Gym (zone 63), 4 badges, 0x4093 = 1.
@@ -6225,9 +6225,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974
 - end state: map 63; 4 badges; flags set 0x974; vars 0x4093=1
-- frames: estimate 18000, budget -
+- frames: estimate 33876, budget 51000
 - refs: scr 0126 @0x0362 msg 68 #16 (the switches change the roller coaster's path); scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974
-- notes: Emolga is Electric/Flying: Rock or Ice moves [INFERENCE]. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 33614, White 33876 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Gym runs twice: the four trainers, out by car 3 to heal, then back (the switches reset on entry). The Gym's roller-coaster cars (overlay 39) run all the time; a car is boarded with UP on its station tile while it is parked there, and left at the next stop by holding DOWN; floor switches 0-2 reroute cars 0-2 (Cmd180 toggles car k's route between 2k and 2k+1). The route came from scouting. Emolga is Electric/Flying: Rock moves (Darmanitan's Rock Tomb).
 
 #### black/17-route5-cheren-drawbridge-driftveil — Route 5: Cheren and Alder; Driftveil City
 - proves: Proves Route 5 (Cheren's battle and Alder) and the Driftveil Drawbridge into Driftveil City, where Clay meets the player. Start: the Nimbasa Gym (zone 63) -> end: Driftveil City (zone 96), 0x4093 = 3, 0x408F = 1.
@@ -6235,7 +6235,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2
 - end state: map 96; vars 0x4093=3, 0x408F=1
-- frames: estimate 18000, budget -
+- frames: estimate 18000, budget 70000
 - refs: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2; zone_event 329 trigger 2 (339,431) var 0x4093 == 2 -> scr 0658 script 5; @0x09B0 SetVar 0x4093 3; zone 253/301 (Driftveil Drawbridge); zone_event 96 trigger 1 (204,430) var 0x408F == 0 -> scr 0192 script 8 (Clay, msg 101 #0); @0x01DB SetFlag 0x9B6; @0x01E3 SetVar 0x408F 1
 - notes: [INFERENCE] estimate.
 
@@ -6245,7 +6245,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24)
 - end state: map 96; vars 0x408B=8, 0x408F=3, 0x4090=1
-- frames: estimate 20000, budget -
+- frames: estimate 20000, budget 90000
 - refs: zone_event 191 trigger 0 (167,474) var 0x4090 == 0 -> scr 0382 script 1 (Cheren, msg 199 #2); @0x0109 SetVar 0x4090 1; zone_event 192 level type 1: 0x408B == 0 -> scr 0384 script 1; @0x00A6 SetVar 0x408B 1; trigger 0 (6,8) 0x408B == 1 -> script 2; @0x0117 SetVar 0x408B 2; zone_event 193 level type 1: 0x408B == 2 -> scr 0386 script 1 (Zinzolin, msg 201 #0); @0x01DA SetVar 0x408B 3; scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24); scr 0386 @0x08D3 SetVar 0x408B 8; @0x08ED SetVar 0x408F 2; zone_event 96 trigger 0 (206,404) var 0x408F == 2 -> scr 0192 script 9 (Ghetsis, msg 101 #6); @0x0444 SetVar 0x408F 3
 - notes: [INFERENCE] estimate.
 
@@ -6405,7 +6405,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~983306 frames estimated
+### Story chain: 33 milestones, ~980201 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6421,10 +6421,10 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [10-route3-cheren-wellspring-plasma](black/10-route3-cheren-wellspring-plasma/milestone.toml) | Route 3: Cheren and Team Plasma at Wellspring Cave | P0 | both | 45813 | prev + `None` | 16 | passing |
 | [11-nacrene-n-lenora-basic-badge](black/11-nacrene-n-lenora-basic-badge/milestone.toml) | Nacrene City: N and Lenora's Basic Badge | P0 | both | 32249 | prev + `None` | 19 | passing |
 | [12-museum-skull-pinwheel-plasma](black/12-museum-skull-pinwheel-plasma/milestone.toml) | The Dragon Skull: Team Plasma in Pinwheel Forest | P0 | both | 41974 | prev + `None` | 155 | passing |
-| [13-castelia-plasma-burgh-insect-badge](black/13-castelia-plasma-burgh-insect-badge/milestone.toml) | Castelia City: Team Plasma's hideout and Burgh's Insect Badge | P0 | both | 63731 | prev + `None` | 29 | passing |
-| [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 40495 | prev + `None` | 62 | passing |
-| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 38808 | prev + `None` | 64 | passing |
-| [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 18000 | prev + `None` | 63 | planned |
+| [13-castelia-plasma-burgh-insect-badge](black/13-castelia-plasma-burgh-insect-badge/milestone.toml) | Castelia City: Team Plasma's hideout and Burgh's Insect Badge | P0 | both | 59234 | prev + `None` | 29 | passing |
+| [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 34342 | prev + `None` | 62 | passing |
+| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 30477 | prev + `None` | 64 | passing |
+| [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 33876 | prev + `None` | 63 | passing |
 | [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 18000 | prev + `None` | 96 | planned |
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 20000 | prev + `None` | 96 | planned |
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 22000 | prev + `None` | 96 | planned |
@@ -6569,9 +6569,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1; scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76
 - end state: map 29; 3 badges; flags set 0x973; vars 0x40AF=4, 0x409C=1, 0x40AC=1
-- frames: estimate 63731, budget 96000
+- frames: estimate 59234, budget 89000
 - refs: zone 249 (Skyarrow Bridge) -> zone 250 (Bridge Gate) -> Castelia; zone_event 31 trigger 0 (24,48) var 0x40AF == 0 -> scr 0062 script 4 (Cheren, msg 36 #0); @0x01BB SetVar 0x40AF 1; @0x01C9 SetVar 0x40D3 1; zone_event 38 level type 1: 0x40D3 == 1 -> scr 0076 script 8; @0x042E SetVar 0x40D3 2; @0x0434 SetVar 0x40AD 1; zone_event 28 trigger 0 (4,24) var 0x40AD == 1 -> scr 0056 script 19 (Burgh, msg 33 #0); @0x024C/@0x0256 SetVar 0x40AD 2, 0x40AF 2; zone_event 31 triggers 1-3 var 0x40AF == 2 -> scr 0062 script 8; @0x05F0 TrainerBattle trdata #552 (grunt: Sandile 17 x2); @0x0776 SetVar 0x40AF 3; @0x077C SetVar 0x40D9 1; zone_event 56 trigger 0 (6,10) var 0x40D9 == 1 -> scr 0112 script 1; @0x050D SetVar 0x40D9 2; @0x0517 SetVar 0x40D7 1; scr 0058 @0x0249 TrainerBattle trdata #22 (Burgh: Whirlipede 21, Dwebble 21, Leavanny 23); @0x027E GiveBadge 2 (Insect); @0x02E8 CallStd 2805 TM76; scr 0058 @0x030A SetVar 0x409C 1; @0x0310 SetVar 0x40AC 1; @0x0316 SetVar 0x40AD 2; @0x031C SetVar 0x40AF 4; @0x0332 SetFlag 0x973
-- notes: Measured from the previous end save (CONTINUE included): Black 60432, White 63731 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds Darumaka 30 and lead.press puts it first: Burgh whited out the chain's party on Black (no Pokemon Center on the way; Castelia's is on the waterfront rails). Skyarrow Bridge and the waterfront are rail maps (the rail bot); the Gym's honey walls pass only straight up or down, held through, after both gates of a wall are opened by floor switches (overlay 38; the route and table came from scouting). Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`.
+- notes: Measured from the previous end save (CONTINUE included): Black 59234, White 57276 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds Darmanitan 36 and lead.press puts it first: Burgh whited out the chain's party on Black (no Pokemon Center on the way; Castelia's is on the waterfront rails). Skyarrow Bridge and the waterfront are rail maps (the rail bot); the Gym's honey walls pass only straight up or down, held through, after both gates of a wall are opened by floor switches (overlay 38; the route and table came from scouting). Burgh is out until the hideout scene (scr 0058 @0x00AA: unless 0x40D7 == 0, msg 34 #17 'left for Prime Pier'). The gym's honey walls and switches: `bw_script.py script 58`.
 
 #### white/14-castelia-gate-bianca-route4-cheren — Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa
 - proves: Proves the road south: Bianca's battle in the Castelia Gate, Route 4's sandstorm and Cheren's battle, to Nimbasa City. Start: the Castelia Gym (zone 29) -> end: Nimbasa City (zone 62), 0x40AC = 2, 0x409C = 2.
@@ -6579,9 +6579,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2; zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2
 - end state: map 62; vars 0x40AC=2, 0x409C=2
-- frames: estimate 40495, budget 61000
+- frames: estimate 34342, budget 52000
 - refs: zone_event 51 trigger 0 (1,9) var 0x40AC == 1 -> scr 0102 script 4 (MessageGender msg 56 #0/#1); scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2; zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2; zone_event 326 trigger 0 (430,564) var 0x409C == 0 -> scr 0652 script 2 (the road closed before the Insect Badge)
-- notes: Measured from the previous end save (CONTINUE included): Black 40495, White 35744 frames on the core of 2026-10-08 (main 21cf05779, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30.
+- notes: Measured from the previous end save (CONTINUE included): Black 34342, White 34147 frames on the core of 2026-10-08 (main 21cf05779, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30.
 
 #### white/15-nimbasa-musical-ferris-wheel-n — Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel
 - proves: Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father, and N's Ferris wheel battle. Start: Nimbasa City (zone 62) -> end: the amusement park (zone 64), 0x4089 = 3, 0x408E = 1.
@@ -6589,9 +6589,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
 - end state: map 64; vars 0x4089=3, 0x408E=1, 0x40B3=1
-- frames: estimate 38808, budget 58500
+- frames: estimate 30477, budget 46000
 - refs: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 62 trigger 0 (391,436) var 0x4089 == 1 -> scr 0124 script 2; @0x08B5 Warp zone 77 (14,20); zone_event 77 level type 1: 0x40B3 == 0 -> scr 0154 script 11; @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1; @0x01DC SetVar 0x4089 2; zone_event 62 level type 1: 0x4089 == 2 -> scr 0124 script 20 (msg 67 #18, Bianca's father); @0x0C38 SetVar 0x4089 3; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
-- notes: Measured from the previous end save (CONTINUE included): Black 38808, White 30485 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Musical's dress-up is a touch-only app (keys do nothing there): OK at (128,178), then OK at (20,170) for 'Is this look OK?'; it returns to the theater (zone 77).
+- notes: Measured from the previous end save (CONTINUE included): Black 29967, White 30477 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Musical's dress-up is a touch-only app (keys do nothing there): OK at (128,178), then OK at (20,170) for 'Is this look OK?'; it returns to the theater (zone 77).
 
 #### white/16-nimbasa-elesa-bolt-badge — Nimbasa Gym: Elesa's Bolt Badge
 - proves: Proves the Nimbasa Gym: the roller-coaster switches and Elesa's Bolt Badge. Start: Nimbasa City (zone 62) -> end: the Nimbasa Gym (zone 63), 4 badges, 0x4093 = 1.
@@ -6599,9 +6599,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974
 - end state: map 63; 4 badges; flags set 0x974; vars 0x4093=1
-- frames: estimate 18000, budget -
+- frames: estimate 33876, budget 51000
 - refs: scr 0126 @0x0362 msg 68 #16 (the switches change the roller coaster's path); scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974
-- notes: Emolga is Electric/Flying: Rock or Ice moves [INFERENCE]. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 33614, White 33876 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Gym runs twice: the four trainers, out by car 3 to heal, then back (the switches reset on entry). The Gym's roller-coaster cars (overlay 39) run all the time; a car is boarded with UP on its station tile while it is parked there, and left at the next stop by holding DOWN; floor switches 0-2 reroute cars 0-2 (Cmd180 toggles car k's route between 2k and 2k+1). The route came from scouting. Emolga is Electric/Flying: Rock moves (Darmanitan's Rock Tomb).
 
 #### white/17-route5-cheren-drawbridge-driftveil — Route 5: Cheren and Alder; Driftveil City
 - proves: Proves Route 5 (Cheren's battle and Alder) and the Driftveil Drawbridge into Driftveil City, where Clay meets the player. Start: the Nimbasa Gym (zone 63) -> end: Driftveil City (zone 96), 0x4093 = 3, 0x408F = 1.
@@ -6609,7 +6609,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2
 - end state: map 96; vars 0x4093=3, 0x408F=1
-- frames: estimate 18000, budget -
+- frames: estimate 18000, budget 70000
 - refs: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2; zone_event 329 trigger 2 (339,431) var 0x4093 == 2 -> scr 0658 script 5; @0x09B0 SetVar 0x4093 3; zone 253/301 (Driftveil Drawbridge); zone_event 96 trigger 1 (204,430) var 0x408F == 0 -> scr 0192 script 8 (Clay, msg 101 #0); @0x01DB SetFlag 0x9B6; @0x01E3 SetVar 0x408F 1
 - notes: [INFERENCE] estimate.
 
@@ -6619,7 +6619,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24)
 - end state: map 96; vars 0x408B=8, 0x408F=3, 0x4090=1
-- frames: estimate 20000, budget -
+- frames: estimate 20000, budget 90000
 - refs: zone_event 191 trigger 0 (167,474) var 0x4090 == 0 -> scr 0382 script 1 (Cheren, msg 199 #2); @0x0109 SetVar 0x4090 1; zone_event 192 level type 1: 0x408B == 0 -> scr 0384 script 1; @0x00A6 SetVar 0x408B 1; trigger 0 (6,8) 0x408B == 1 -> script 2; @0x0117 SetVar 0x408B 2; zone_event 193 level type 1: 0x408B == 2 -> scr 0386 script 1 (Zinzolin, msg 201 #0); @0x01DA SetVar 0x408B 3; scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24); scr 0386 @0x08D3 SetVar 0x408B 8; @0x08ED SetVar 0x408F 2; zone_event 96 trigger 0 (206,404) var 0x408F == 2 -> scr 0192 script 9 (Ghetsis, msg 101 #6); @0x0444 SetVar 0x408F 3
 - notes: [INFERENCE] estimate.
 
