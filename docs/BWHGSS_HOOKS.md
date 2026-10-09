@@ -175,13 +175,16 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   untouched. In New Bark: zoom 512 shows the whole town, 128 the player close up, tilt 20 degrees a flatter
   view with the houses' fronts, and with both options set back to the defaults ten frames before the dump the
   frame is byte-identical to the plain one (`heartgold-camera-*.png`, parity.sh `camera zoom`).
-- **B/W: the most unknown.** No camera structure is in docs/BW_RAM.md. Gen 5's field camera is likely its own
-  library (with its own heap-stamped file name). Method: find the field draw's look-at load the way D/P's was
-  found. Signature-match `NNS_G3dGlbLookAt` (add it to `tools/ndsrec/primitives.txt` as `ref`). If B/W does not
-  call it, watch writes to `NNS_G3dGlb`'s camera matrix during the bedroom's draw, then find its caller in the
-  field overlay. Then retarget that `bl` to a host function that rebuilds the look-at from the camera's
-  position and target (read from the same arguments) with zoom/tilt applied, and restore after the swap (a
-  second `bl` retarget). Size: like D's two-line patch once found; finding it is the cost.
+- **B/W: done** (`pc/src/pc_bw_camera.c`). B/W's 3D camera is the GFL library's `GFL_G3D_CAMERA` (0x44 bytes:
+  the projection type and parameters, near +0x14, far +0x18, position +0x20, up +0x2C, target +0x38).
+  `GFL_G3D_CAMERA_Switching` (Black `sub_02048AD0`, White `sub_02048AE8`) loads one into `NNS_G3dGlb`. The field
+  map's camera is FIELDMAP+0xA4 (also field_camera.c's FIELD_CAMERA+0x0C, FIELDMAP+0x10; FIELD_CAMERA_Create is
+  `ov21_0218E018`, found by the `field_camera.c` heap-stamp string the decomp's ndsdisasm config names). The
+  field overlay's seven Switching calls are retargeted to `PcBw_CameraSwitch`
+  (`pc/patches/<VER>/arm9/overlays/21/asm/ndsrec_ov021_{000,002,008,011,014}.s.patch`). For the field camera with
+  an option off its default, it loads a copy: the distance to the target x zoom / 256, the elevation lowered by
+  the tilt (kept 5..85 degrees), the same heading and target, and the clip planes moved as on Platinum. Any
+  other camera, and the defaults, go straight to Switching.
 - **Proof:** bedroom frames at `camera_zoom=512` / `camera_tilt=160` against default (the room smaller / seen
   more from above), default byte-identical.
 
@@ -257,7 +260,7 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 | 10 | Mods via a ROM view | all DS | medium-high: FAT/NARC rebuild in the host's ROM read | medium | nothing | shared host code: shell tests |
 | 11 | Mods via FS/NARC hooks | HG/SS | medium | low over #10 | field for most assets | no |
 | 12 | `in_battle_app` | HG/SS | small | low (Frontier only) | field | no |
-| 13 | Camera zoom / tilt | B/W | high: no camera map yet | medium | nothing | no |
+| 13 | Camera zoom / tilt | B/W | medium: GFL camera hook on the field overlay's Switching calls | medium | nothing | no | **done** |
 | 14 | `IN_BATTLE` | B/W | small after the event layout | medium | overlay 93 | no |
 | 15 | Rules | HG/SS, B/W | medium each, per documented bug | low | battles | no |
 

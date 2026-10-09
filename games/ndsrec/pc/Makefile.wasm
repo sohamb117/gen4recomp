@@ -94,10 +94,12 @@ include $(PCDIR)/mk/host.mk
 MY_OBJS := $(OBJ)/ndsrec/pc_ndsrec_hooks.o
 # Black/White: the field status, F1 quick save and the e2e probe
 # (pc/src/pc_bw_e2e.c), instant text (pc/src/pc_bw_text.c, reached through
-# pc/patches/<VER>/), and B/W's sound-archive players for the music /
-# effects volumes (pc/src/pc_bw_snd.c, in place of D/P's pc_dp_snd.c).
+# pc/patches/<VER>/), the field camera's zoom / tilt (pc/src/pc_bw_camera.c,
+# also through pc/patches/<VER>/), and B/W's sound-archive players for the
+# music / effects volumes (pc/src/pc_bw_snd.c, in place of D/P's
+# pc_dp_snd.c).
 BW := $(filter black white,$(VER))
-MY_OBJS += $(if $(BW),$(addprefix $(OBJ)/ndsrec/,pc_bw_e2e.o pc_bw_text.o pc_bw_snd.o))
+MY_OBJS += $(if $(BW),$(addprefix $(OBJ)/ndsrec/,pc_bw_e2e.o pc_bw_text.o pc_bw_camera.o pc_bw_snd.o))
 $(OBJ)/ndsrec/pc_bw_%.o: HOST_CFLAGS += $(if $(filter white,$(VER)),-DPC_BW_VER_WHITE)
 $(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))

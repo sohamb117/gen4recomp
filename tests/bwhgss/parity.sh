@@ -18,6 +18,10 @@
 #   continue  bw-continue.sched from that save: title, CONTINUE, the bedroom
 #   quicksave the same with an F1 quick save in the bedroom (quicksave_seq):
 #             saved, the player free again, the file changed and verified
+#   camera    the bedroom at camera_zoom 512 / camera_tilt 160 against the
+#             plain one, and back at the defaults byte-identical to it
+#   battle    bw-battle.sched: the gift box and Bianca's battle set in_battle,
+#             the field after it clears it
 # HeartGold / SoulSilver:
 #   intro     hgss-intro.sched: title, the touch-screen tutorial driven by
 #             stylus taps, Prof. Oak, the boy, the default name accepted;
@@ -205,6 +209,38 @@ for g in "${games[@]}"; do
             echo "exit $?" >> "$w/verify-quicksave.log"
             check "$g quick save verifies (np_save5)" "$w/verify-quicksave.log" "exit 0" "all checksums valid"
         fi
+
+        # Camera zoom and tilt (pc/src/pc_bw_camera.c) on the bedroom's 3D,
+        # and nothing of the game's camera written: back at the defaults
+        # the frame is the plain one.
+        for step in camera-plain camera camera-back; do
+            cp "$w/game.sav" "$w/$step.sav"
+        done
+        run camera-plain --frames 7000 --schedule $here/bw-continue.sched --save "$w/camera-plain.sav" \
+            --dump-from 6999
+        run camera --frames 7000 --schedule $here/bw-continue.sched --save "$w/camera.sav" \
+            --dump-from 6999 -o 6000:camera_zoom=512 -o 6000:camera_tilt=160
+        run camera-back --frames 7000 --schedule $here/bw-continue.sched --save "$w/camera-back.sav" \
+            --dump-from 6999 -o 6000:camera_zoom=512 -o 6000:camera_tilt=160 \
+            -o 6990:camera_zoom=256 -o 6990:camera_tilt=0
+        if python3 $here/region_same.py "$w/camera-plain/frame_007000.png" "$w/camera/frame_007000.png" \
+            0 0 256 192; then
+            echo "FAIL $g camera zoom/tilt: the bedroom looks the same ($w/camera)"
+            fail=1
+        elif ! cmp -s "$w/camera-plain/frame_007000.png" "$w/camera-back/frame_007000.png"; then
+            echo "FAIL $g camera back at the defaults: not the plain bedroom ($w/camera-back)"
+            fail=1
+        else
+            echo "ok   $g camera zoom 512 / tilt 10 degrees in the bedroom, back to the plain picture at the defaults"
+        fi
+
+        # NP_STAT_IN_BATTLE: the gift box, then Bianca's battle (overlay 93's
+        # POKECON, pc/src/pc_bw_e2e.c) sets it; the field after it clears it.
+        cp "$w/game.sav" "$w/battle.sav"
+        run battle --frames 15000 --schedule $here/bw-battle.sched --save "$w/battle.sav" \
+            --dump-from 9000 --dump-every 1000
+        check "$g Bianca's battle sets in_battle, the field after it clears it" "$w/battle.log" "exit 0" \
+            "in_battle 0 -> 1" "in_battle 1 -> 0"
         ;;
     heartgold | soulsilver)
         run intro --frames 13900 --schedule $here/hgss-intro.sched --dump-from 1600 --dump-every 1500 \
