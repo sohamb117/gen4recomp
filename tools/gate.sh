@@ -32,11 +32,12 @@
 # --refresh-cores brings the gate cores up to BASE after core inputs change
 # there: NP_GATE_CORES's core-* and core-*.rev link into another checkout's
 # build/ (on this machine nativeplat-integrate, which no one works in). That
-# checkout is moved to BASE (detached; refused with tracked changes), and its
-# regress.sh rebuilds, incrementally, each core whose inputs differ from its
-# .rev's, with NP_MIN_FREE_GB=3 (a build step under 3 GiB free fails), then
-# stamps it and runs its cases. Exit status: 0 all passed, 1 a failure,
-# 2 usage.
+# checkout is moved to BASE (detached; refused with tracked changes). A core
+# whose inputs changed since its .rev in comments only (C files, as above)
+# is stamped BASE as it is; its regress.sh rebuilds, incrementally, each
+# other core whose inputs differ, with NP_MIN_FREE_GB=3 (a build step under
+# 3 GiB free fails), then stamps it and runs its cases. Exit status: 0 all
+# passed, 1 a failure, 2 usage.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
@@ -47,94 +48,17 @@ while [ $# -gt 0 ]; do
     --dry-run) dry=1; shift ;;
     --base) base=$2; shift 2 ;;
     --refresh-cores) refresh=1; shift ;;
-    -*) sed -n '2,39p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
+    -*) sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2 ;;
     *) branch=$1; shift ;;
     esac
 done
 gates=${NP_GATE_CORES:-$HOME/Library/Caches/nativeplat-gate-cores}
 
-if [ $refresh = 1 ]; then
-    host=$(cd -P "$gates/core-dp/../.." 2>/dev/null && pwd) &&
-        git -C "$host" rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
-        { echo "gate: $gates/core-dp is not in a checkout's build/" >&2; exit 2; }
-    if [ "$(cd -P "$host" && pwd)" = "$(pwd -P)" ]; then
-        echo "gate: the gate cores are this checkout's own; refresh them from a checkout of their own" >&2
-        exit 2
-    fi
-    if [ -n "$(git -C "$host" status --porcelain --untracked-files=no)" ]; then
-        echo "gate: $host has tracked changes; not moving it" >&2
-        exit 1
-    fi
-    git -C "$host" checkout -q --detach "$base"
-    rev=$(git -C "$host" rev-parse HEAD)
-    stale=" "
-    for grp in dp plat rse; do
-        r=$(cat "$gates/core-$grp.rev" 2>/dev/null || true)
-        # shellcheck disable=SC2046 # pathspec word list
-        if [ -n "$r" ] && git -C "$host" diff --quiet "$r" "$rev" -- $("$host/tests/dp/regress.sh" --inputs $grp); then
-            echo "gate: core-$grp: built from ${r:0:9}, its inputs unchanged since"
-        else
-            stale="$stale$grp "
-        fi
-    done
-    only=()
-    while read -r name game rest; do
-        case $name in '' | '#'*) continue ;; esac
-        case $game in diamond | pearl) grp=dp ;; platinum) grp=plat ;; *) grp=rse ;; esac
-        case $stale in *" $grp "*) only+=(--only "$name") ;; esac
-    done <"$host/tests/dp/expected.txt"
-    if [ ${#only[@]} = 0 ]; then
-        echo "gate: $gates is up to date with $base ($(git -C "$host" rev-parse --short HEAD))"
-        exit 0
-    fi
-    echo "gate: rebuilding$stale in $host at $base ($(git -C "$host" rev-parse --short HEAD))"
-    cd "$host"
-    NP_GATE_CORES= NP_MIN_FREE_GB=${NP_MIN_FREE_GB:-3} exec tests/dp/regress.sh "${only[@]}"
-fi
-
-head=$(git rev-parse --verify --quiet "$branch^{commit}") || { echo "gate: no commit $branch" >&2; exit 2; }
-mb=$(git merge-base "$base" "$head")
-here=0
-[ "$head" = "$(git rev-parse HEAD)" ] && here=1
-if [ $here = 0 ] && [ $dry = 0 ]; then
-    echo "gate: $branch is not checked out here; run the gate in its worktree (or --dry-run)" >&2
-    exit 2
-fi
-if [ $here = 1 ]; then
-    changed=$({ git diff --no-renames --name-only "$mb"; git ls-files --others --exclude-standard; } | sort -u)
-    show() { cat "$1"; }
-else
-    changed=$(git diff --no-renames --name-only "$mb" "$head")
-    show() { git show "$head:$1"; }
-fi
-echo "gate: $branch against $base (merge base $(git rev-parse --short "$mb")): $(printf '%s' "$changed" | grep -c . || true) changed files"
-
-under() { # under FILE SPEC...: FILE is one of the pathspecs or below one
-    local f=$1 s
-    shift
-    for s in "$@"; do
-        case $f in "$s" | "$s"/*) return 0 ;; esac
-    done
-    return 1
-}
-inputs_dp=$(tests/dp/regress.sh --inputs dp)
-inputs_plat=$(tests/dp/regress.sh --inputs plat)
-inputs_rse=$(tests/dp/regress.sh --inputs rse)
-
-# C sources and headers among the core inputs whose change is only comments
-# and whitespace (literals kept as they are).
-core_cfiles() { # the changed C sources and headers among the core inputs
-    local f
-    printf '%s\n' "$changed" | while read -r f; do
-        case $f in *.c | *.h | *.inc | *.c.in) ;; *) continue ;; esac
-        # shellcheck disable=SC2086 # pathspec word lists
-        if under "$f" $inputs_dp $inputs_plat $inputs_rse; then echo "$f"; fi
-    done
-}
-cfiles=$(core_cfiles)
-comment_only=
-if [ -n "$cfiles" ]; then
-    comment_only=$(printf '%s\n' "$cfiles" | python3 -c '
+# comment_only OLD NEW HERE: of the C files on stdin, those whose change
+# from commit OLD to NEW (HERE=1: the working tree) is only comments and
+# whitespace (literals kept as they are).
+comment_only() {
+    python3 -c '
 import re, subprocess, sys
 
 def blob(spec):
@@ -189,8 +113,101 @@ for f in sys.stdin.read().splitlines():
         new = blob(head + ":" + f)
     if old is not None and new is not None and code(old) == code(new):
         print(f)
-' "$mb" "$head" "$here")
+' "$@"
+}
+is_c() { case $1 in *.c | *.h | *.inc | *.c.in) return 0 ;; esac; return 1; }
+
+if [ $refresh = 1 ]; then
+    host=$(cd -P "$gates/core-dp/../.." 2>/dev/null && pwd) &&
+        git -C "$host" rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
+        { echo "gate: $gates/core-dp is not in a checkout's build/" >&2; exit 2; }
+    if [ "$(cd -P "$host" && pwd)" = "$(pwd -P)" ]; then
+        echo "gate: the gate cores are this checkout's own; refresh them from a checkout of their own" >&2
+        exit 2
+    fi
+    if [ -n "$(git -C "$host" status --porcelain --untracked-files=no)" ]; then
+        echo "gate: $host has tracked changes; not moving it" >&2
+        exit 1
+    fi
+    git -C "$host" checkout -q --detach "$base"
+    rev=$(git -C "$host" rev-parse HEAD)
+    stale=" "
+    for grp in dp plat rse; do
+        r=$(cat "$gates/core-$grp.rev" 2>/dev/null || true)
+        if [ -z "$r" ]; then stale="$stale$grp "; continue; fi
+        # shellcheck disable=SC2046 # pathspec word list
+        diff=$(git -C "$host" diff --no-renames --name-only "$r" "$rev" -- $("$host/tests/dp/regress.sh" --inputs $grp))
+        if [ -z "$diff" ]; then
+            echo "gate: core-$grp: built from ${r:0:9}, its inputs unchanged since"
+            continue
+        fi
+        # Changed only in comments (C files, as the gate counts them): the
+        # core stands for $rev too.
+        code=$(printf '%s\n' "$diff" | while read -r f; do is_c "$f" || echo "$f"; done)
+        if [ -z "$code" ] && [ "$(printf '%s\n' "$diff" | comment_only "$r" "$rev" 0)" = "$diff" ]; then
+            echo "$rev" >"$gates/core-$grp.rev"
+            echo "gate: core-$grp: built from ${r:0:9}, its inputs changed in comments only since; stamped ${rev:0:9}"
+            continue
+        fi
+        stale="$stale$grp "
+    done
+    only=()
+    while read -r name game rest; do
+        case $name in '' | '#'*) continue ;; esac
+        case $game in diamond | pearl) grp=dp ;; platinum) grp=plat ;; *) grp=rse ;; esac
+        case $stale in *" $grp "*) only+=(--only "$name") ;; esac
+    done <"$host/tests/dp/expected.txt"
+    if [ ${#only[@]} = 0 ]; then
+        echo "gate: $gates is up to date with $base ($(git -C "$host" rev-parse --short HEAD))"
+        exit 0
+    fi
+    echo "gate: rebuilding$stale in $host at $base ($(git -C "$host" rev-parse --short HEAD))"
+    cd "$host"
+    NP_GATE_CORES= NP_MIN_FREE_GB=${NP_MIN_FREE_GB:-3} exec tests/dp/regress.sh "${only[@]}"
 fi
+
+head=$(git rev-parse --verify --quiet "$branch^{commit}") || { echo "gate: no commit $branch" >&2; exit 2; }
+mb=$(git merge-base "$base" "$head")
+here=0
+[ "$head" = "$(git rev-parse HEAD)" ] && here=1
+if [ $here = 0 ] && [ $dry = 0 ]; then
+    echo "gate: $branch is not checked out here; run the gate in its worktree (or --dry-run)" >&2
+    exit 2
+fi
+if [ $here = 1 ]; then
+    changed=$({ git diff --no-renames --name-only "$mb"; git ls-files --others --exclude-standard; } | sort -u)
+    show() { cat "$1"; }
+else
+    changed=$(git diff --no-renames --name-only "$mb" "$head")
+    show() { git show "$head:$1"; }
+fi
+echo "gate: $branch against $base (merge base $(git rev-parse --short "$mb")): $(printf '%s' "$changed" | grep -c . || true) changed files"
+
+under() { # under FILE SPEC...: FILE is one of the pathspecs or below one
+    local f=$1 s
+    shift
+    for s in "$@"; do
+        case $f in "$s" | "$s"/*) return 0 ;; esac
+    done
+    return 1
+}
+inputs_dp=$(tests/dp/regress.sh --inputs dp)
+inputs_plat=$(tests/dp/regress.sh --inputs plat)
+inputs_rse=$(tests/dp/regress.sh --inputs rse)
+
+# The changed C files among the core inputs, and those changed only in
+# comments and whitespace.
+core_cfiles() {
+    local f
+    printf '%s\n' "$changed" | while read -r f; do
+        is_c "$f" || continue
+        # shellcheck disable=SC2086 # pathspec word lists
+        if under "$f" $inputs_dp $inputs_plat $inputs_rse; then echo "$f"; fi
+    done
+}
+cfiles=$(core_cfiles)
+comments=
+if [ -n "$cfiles" ]; then comments=$(printf '%s\n' "$cfiles" | comment_only "$mb" "$head" "$here"); fi
 
 # What each change selects.
 nl='
@@ -198,7 +215,7 @@ nl='
 groups=" " cases_by_name=" " e2e=" " all_e2e=0 all_cases=0 hits=
 while read -r f; do
     [ -n "$f" ] || continue
-    case "$nl$comment_only$nl" in *"$nl$f$nl"*) echo "gate: $f: comments only"; continue ;; esac
+    case "$nl$comments$nl" in *"$nl$f$nl"*) echo "gate: $f: comments only"; continue ;; esac
     # shellcheck disable=SC2086
     if under "$f" $inputs_dp; then groups="$groups dp "; fi
     # shellcheck disable=SC2086
