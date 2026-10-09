@@ -1,0 +1,17 @@
+--- a/src/field/overlay_01_02204004.c
++++ b/src/field/overlay_01_02204004.c
+@@ -268,7 +268,13 @@
+ static void ov01_022044B0(FieldSystemUnkSubCC_Sub0 *unkCC_Sub0, MapPropAnimation *animation, void *res, int arg3) {
+     void (*unkFunc)() = unkCC_Sub0->unk1C;
+     if (unkFunc != NULL) {
+-        unkFunc(unkCC_Sub0, animation, res, arg3);
++        /* nativeplat: called through its real three-parameter type. The
++         * only callback ever stored here is ov01_022046A4(allocator,
++         * &animObj, res); passing arg3 as a fourth argument is harmless on
++         * ARM but a call_indirect type mismatch (a trap) in wasm, reached
++         * on entering New Bark Town. */
++        ((void (*)(FieldSystemUnkSubCC_Sub0 *, MapPropAnimation *, void *))unkFunc)(unkCC_Sub0, animation, res);
++        (void)arg3;
+         animation->res = res;
+     }
+ }
