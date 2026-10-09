@@ -25,7 +25,8 @@ mint produced (A's party slot 1 for B's slot 4). Neither have HeartGold/
 SoulSilver: theirs are milestone 04's (linkpair.mint_hgss), and their
 schedules were recorded by linkbot.py from scenarios/*.json (the e2e bots
 driving two np_gp --lockstep stations), which run with PC_E2E and
-text_instant as the scenarios' env and opts pass them here.
+text_instant as the scenarios' env and opts pass them here (opts: a list
+for both stations, or a dict of lists per station).
 
 Skips (exit 0, "SKIP") without a ROM, an np_headless build, np_save4 (or,
 for Black/White, np_save5 and the milestone saves; for HeartGold/SoulSilver
@@ -129,6 +130,15 @@ SCENARIOS = [
          scheds={'a': 'schedules/hgss-battle-a.sched', 'b': 'schedules/hgss-battle-b.sched'},
          frames=20377, env={'PC_E2E': '1'}, opts=['text_instant=1'], dump_from=9000, dump_every=500,
          logs={s: ('map_id 158 -> 2', 'in_battle 0 -> 1', 'in_battle 1 -> 0') for s in 'ab'}),
+    # HeartGold's A (milestone 04) with Platinum's B (union-b.recipe) in
+    # the Union Room, each game's own WM traffic over the same pc_wm.c model.
+    # B walks in on trade-b.sched (no text_instant, as recorded),
+    # A talks to B, TRADE; A's party slot 1 for B's slot 0 (scenarios/
+    # hg-pt-trade.json); both save after the animation.
+    dict(name='hg_platinum_trade', games=('heartgold', 'platinum'), recipes={'b': UNION['b']},
+         scheds={'a': 'schedules/hg-pt-trade-a.sched', 'b': 'schedules/hg-pt-trade-b.sched'},
+         frames=17046, trade_slots=(1, 0), env={'PC_E2E': '1'}, opts={'a': ['text_instant=1']},
+         dump_from=12000, dump_every=500),
 ]
 
 
@@ -214,7 +224,8 @@ def run(sc, work):
         cmd = linkpair.core(games[side]) + ['--frames', str(sc['frames']), '--save', saves[side],
                '--schedule', os.path.join(HERE, sc['scheds'][side]), '--lockstep', '%d:%d' % ports[side],
                '--net-id', linkpair.IDS[side]] + extra[side]
-        for o in sc.get('opts', ()):
+        opts = sc.get('opts', ())
+        for o in opts.get(side, ()) if isinstance(opts, dict) else opts:
             cmd += ['-o', o]
         if 'dump_every' in sc:
             cmd += ['--dump', dump, '--dump-every', str(sc['dump_every']), '--dump-from', str(sc['dump_from'])]

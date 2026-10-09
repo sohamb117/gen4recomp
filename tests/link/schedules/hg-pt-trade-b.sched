@@ -1,0 +1,25 @@
+# HeartGold (A) <-> Platinum (B) Union Room trade, station B, recorded by
+# tests/link/linkbot.py from scenarios/hg-pt-trade.json (np_gp --lockstep):
+# trade-b.sched's way into the Union Room (to frame 6000), accept A's offer,
+# offer party slot 0 (A, down, A), YES, the animation, the save. No
+# text_instant on this station: the Union Room part is trade-b.sched's.
+900:a:20
+1200:a:20
+1800:a:20
+2100:a:20
+2400:a:20
+2800:a:24
+3100:a:10
+3300:a:10
+3500:a:10
+3700:a:10
+3900:a:10
+5250:a:10
+5450:a:10
+10856:a:6
+10922:a:6
+11488:a:6
+12230:a:6
+12602:down:6
+12648:a:6
+13340:a:6
