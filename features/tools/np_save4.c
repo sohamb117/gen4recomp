@@ -24,6 +24,7 @@
  *   np_save4 set-box-name <save> <box 1-18> <name>
  *   np_save4 add-mon <save> <rom.nds> <species> <level> [move...]   party Pokemon
  *   np_save4 set-move <save> <rom.nds> <slot> <index> <move>   a party Pokemon's move (full PP)
+ *   np_save4 set-level <save> <rom.nds> <slot> <level>   a party Pokemon's level (stats recalculated)
  *
  * Edits write back in place after copying the original to <save>.bak, or to
  * the path given with a trailing `-o <out>`.
@@ -71,10 +72,11 @@ static int usage(void)
             "  %s set-box-name <save> <box 1-18> <name>\n"
             "  %s add-mon <save> <rom.nds> <species> <level> [move id...]\n"
             "  %s set-move <save> <rom.nds> <party slot 0-5> <move index 0-3> <move id>\n"
+            "  %s set-level <save> <rom.nds> <party slot 0-5> <level 1-100>\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
             prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
-            prog, prog, prog, prog);
+            prog, prog, prog, prog, prog);
     return EXIT_USAGE;
 }
 
@@ -977,6 +979,43 @@ out:
     return st;
 }
 
+/* set-level: party slot `slot` at `level`: its growth rate's EXP for the level, its stats recalculated from its
+ * own IVs, EVs and nature, its HP the new maximum (the e2e boosts' party-level). Moves, friendship and the rest
+ * stay as they are: no level-up moves are learned and no evolution runs. */
+static save4_status set_level(save4 *s, const char *rom_path, unsigned long slot, unsigned long level)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return SAVE4_ERR_ARG;
+    nd_gamedata gd;
+    save4_status st = SAVE4_ERR_ARG;
+    int have_gd = nd_gamedata_load(&gd, &rom) == ND_OK;
+    pkm4 p;
+    pkm4_info info;
+    const nd_species *sp = NULL;
+    if (have_gd && slot < save4_party_count(s) && save4_get_party(s, (int)slot, &p) == SAVE4_OK
+        && !pkm4_is_empty(&p)) {
+        pkm4_info_get(&p, &info);
+        sp = nd_species_get(&gd, info.species);
+    }
+    if (!sp || !sp->valid || info.is_egg) {
+        fprintf(stderr, "%s: no party Pokemon in slot %lu (an egg, or an unreadable ROM)\n", prog, slot);
+        goto out;
+    }
+    pkm4_set_exp(&p, nd_exp_for_level(&gd, info.species, (uint32_t)level));
+    uint16_t stats[6];
+    pkm4_calc_stats(sp->base, info.ivs, info.evs, (uint8_t)level, info.nature, info.species == 292, stats);
+    pkm4_set_party_stats(&p, (uint8_t)level, stats[0], stats, info.status);
+    st = save4_set_party(s, (int)slot, &p);
+out:
+    if (have_gd)
+        nd_gamedata_free(&gd);
+    nd_rom_close(&rom);
+    fclose(rf);
+    return st;
+}
+
 static int cmd_edit(int argc, char **argv)
 {
     const char *cmd = argv[1];
@@ -1100,6 +1139,10 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[1], 5, &v1) || parse_ul(a[2], 3, &v2) || parse_ul(a[3], 0xFFFF, &v4);
         if (!bad)
             st = set_move(&s, a[0], v1, v2, v4);
+    } else if (!strcmp(cmd, "set-level") && na == 3) {
+        bad = parse_ul(a[1], 5, &v1) || parse_ul(a[2], 100, &v2) || v2 == 0;
+        if (!bad)
+            st = set_level(&s, a[0], v1, v2);
     } else if (!strcmp(cmd, "add-mon") && na >= 3 && na <= 7) {
         bad = parse_ul(a[1], 493, &v1) || v1 == 0 || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)

@@ -3140,7 +3140,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## HeartGold
 
 <!-- plan.py:begin heartgold -->
-### Story chain: 38 milestones, ~1068935 frames estimated
+### Story chain: 38 milestones, ~1101778 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3170,7 +3170,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [24-underground-rival-director-card-key](heartgold/24-underground-rival-director-card-key/milestone.toml) | Goldenrod Underground: rival, shutters, the director's Card Key | P0 | both | 42580 | prev + `None` | MAP_GOLDENROD_TUNNEL_WAREHOUSE | passing |
 | [25-radio-tower-card-key-archer-wing](heartgold/25-radio-tower-card-key-archer-wing/milestone.toml) | Radio Tower: the Card Key door, Archer, the director's wing | P0 | both | 44207 | prev + `None` | MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK | passing |
 | [26-route44-ice-path-blackthorn](heartgold/26-route44-ice-path-blackthorn/milestone.toml) | Route 44 and the Ice Path (HM07) to Blackthorn | P0 | both | 29673 | prev + `None` | MAP_BLACKTHORN | passing |
-| [27-blackthorn-gym-clair](heartgold/27-blackthorn-gym-clair/milestone.toml) | Blackthorn Gym: Clair (no badge yet) | P0 | both | 22000 | prev + `None` | MAP_BLACKTHORN | planned |
+| [27-blackthorn-gym-clair](heartgold/27-blackthorn-gym-clair/milestone.toml) | Blackthorn Gym: Clair (no badge yet) | P0 | both | 54843 | prev + `None` | MAP_BLACKTHORN | passing |
 | [28-dragons-den-quiz-rising-badge](heartgold/28-dragons-den-quiz-rising-badge/milestone.toml) | Dragon's Den: the Elder's quiz, Rising Badge | P0 | both | 20000 | prev + `None` | MAP_BLACKTHORN | planned |
 | [29-new-bark-elm-master-ball](heartgold/29-new-bark-elm-master-ball/milestone.toml) | New Bark: Elm's Master Ball | P0 | both | 8000 | prev + `None` | MAP_NEW_BARK | planned |
 | [30-ecruteak-rival-kimono-girls-bell](heartgold/30-ecruteak-rival-kimono-girls-bell/milestone.toml) | Ecruteak: the rival, the five Kimono Girls, the bell | P0 | both | 25000 | prev + `None` | MAP_ECRUTEAK | planned |
@@ -3449,7 +3449,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0943_T30GYM0101.s:87-112 (TRAINER_LEADER_CLAIR_CLAIR, FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT, ClearFlag FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE); TRAINER_LEADER_CLAIR_CLAIR (35, include/constants/trainers.h:40): GYARADOS 38, DRAGONAIR 38, DRAGONAIR 38, KINGDRA 41
 - end state: map MAP_BLACKTHORN; 7 badges; >= 1 battles; flags set FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT; flags clear FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE
-- frames: estimate 22000, budget 33000
+- frames: estimate 54843, budget 82300
 - refs: zone_event 086_T30 warp 1 (668,151) -> MAP_BLACKTHORN_GYM (13,87); scr_seq_0034_D23R0106.s:144-145 (FLAG_HIDE_BLACKTHORN_GYM_GUARD_INFRONT set, _ASIDE cleared by the Radio Tower); zone_event 137_T30GYM0101 coords 0-2 (5,9) (23,41) (3,62) VAR_UNK_4111 0 -> 002 (Warp MAP_BLACKTHORN_GYM (8,83), scr_seq_0943_T30GYM0101.s:147-155); coord 3 (12,82) w3 VAR_UNK_4120 0 -> 004; scr_seq_0943_T30GYM0101.s:16-18 (OnTransition BlackthornGymInit, VAR_UNK_4120 0); zone_event 137_T30GYM0101 object 0 obj_T30GYM0101_gsleader8 (12,3); Ace Trainers Paulo (11,66), Lola (8,61), Cody (20,54), Fran (21,45), Mike (13,40); scr_seq_0943_T30GYM0101.s:87-112 (TRAINER_LEADER_CLAIR_CLAIR, FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT, ClearFlag FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE); src/field/gymmick/blackthorn.c (BlackthornPlatform_Init, BlackthornGymmick_GetButtonAction, ov04_02255CBC, Task_BlackthornGymmick_MovePlatform), src/gymmick_init.c:104-121; TRAINER_LEADER_CLAIR_CLAIR (35, include/constants/trainers.h:40): GYARADOS 38, DRAGONAIR 38, DRAGONAIR 38, KINGDRA 41
 - notes: Kingdra (Water/Dragon) takes neutral damage from most types except Dragon: Ice/Dragon coverage, levels ~45. The floor puzzle is src/field/gymmick/blackthorn.c: three lava platforms (InitBlackthornGym, src/gymmick_init.c:104-121: (13,75) rot 0, (9,58) rot 1, (14,32) rot 0; reset on every entry by the OnTransition BlackthornGymInit, scr_seq_0943_T30GYM0101.s:16-18) whose 3x6 floors are walkable over the MAGMA 0x2C (GymmickCheckCollision_Blackthorn); stepping onto a platform's centre button rotates it a quarter turn about the player when its ring and sweep are lava (ov04_02255CBC), onto the side buttons moves it its width (5 or 4) carrying the player, all or nothing (Task_BlackthornGymmick_MovePlatform; triggered from FieldSystem_ProcessStep, src/field/field_control.c:633). The `steps` route below is a BFS over that model (player tile + the three platforms' x/z/rotation) on the decoded land data, splitting at every button tile and carry landing; it meets Paulo (14,66), Lola (7,61), Cody (20,57), Fran (21,49), Mike (15,40) as the plan around their approach tiles expects [INFERENCE: trainer sight crosses lava; Cody's movement 4 looks north/south]. From Clair's final platform layout no way back exists in the model, so the exit is pit coord 0 (5,9), whose script warps to (8,83) by the door (scr_seq_0943_T30GYM0101.s:147-159; VAR_UNK_4111 is never set). The whole model is untested in game [INFERENCE].
 
@@ -3567,7 +3567,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## SoulSilver
 
 <!-- plan.py:begin soulsilver -->
-### Story chain: 38 milestones, ~1073935 frames estimated
+### Story chain: 38 milestones, ~1106778 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3597,7 +3597,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [24-underground-rival-director-card-key](heartgold/24-underground-rival-director-card-key/milestone.toml) | Goldenrod Underground: rival, shutters, the director's Card Key | P0 | both | 42580 | prev + `None` | MAP_GOLDENROD_TUNNEL_WAREHOUSE | passing |
 | [25-radio-tower-card-key-archer-wing](heartgold/25-radio-tower-card-key-archer-wing/milestone.toml) | Radio Tower: the Card Key door, Archer, the director's wing | P0 | both | 44207 | prev + `None` | MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK | passing |
 | [26-route44-ice-path-blackthorn](heartgold/26-route44-ice-path-blackthorn/milestone.toml) | Route 44 and the Ice Path (HM07) to Blackthorn | P0 | both | 29673 | prev + `None` | MAP_BLACKTHORN | passing |
-| [27-blackthorn-gym-clair](heartgold/27-blackthorn-gym-clair/milestone.toml) | Blackthorn Gym: Clair (no badge yet) | P0 | both | 22000 | prev + `None` | MAP_BLACKTHORN | planned |
+| [27-blackthorn-gym-clair](heartgold/27-blackthorn-gym-clair/milestone.toml) | Blackthorn Gym: Clair (no badge yet) | P0 | both | 54843 | prev + `None` | MAP_BLACKTHORN | passing |
 | [28-dragons-den-quiz-rising-badge](heartgold/28-dragons-den-quiz-rising-badge/milestone.toml) | Dragon's Den: the Elder's quiz, Rising Badge | P0 | both | 20000 | prev + `None` | MAP_BLACKTHORN | planned |
 | [29-new-bark-elm-master-ball](heartgold/29-new-bark-elm-master-ball/milestone.toml) | New Bark: Elm's Master Ball | P0 | both | 8000 | prev + `None` | MAP_NEW_BARK | planned |
 | [30-ecruteak-rival-kimono-girls-bell](heartgold/30-ecruteak-rival-kimono-girls-bell/milestone.toml) | Ecruteak: the rival, the five Kimono Girls, the bell | P0 | both | 25000 | prev + `None` | MAP_ECRUTEAK | planned |
@@ -3876,7 +3876,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0943_T30GYM0101.s:87-112 (TRAINER_LEADER_CLAIR_CLAIR, FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT, ClearFlag FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE); TRAINER_LEADER_CLAIR_CLAIR (35, include/constants/trainers.h:40): GYARADOS 38, DRAGONAIR 38, DRAGONAIR 38, KINGDRA 41
 - end state: map MAP_BLACKTHORN; 7 badges; >= 1 battles; flags set FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT; flags clear FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE
-- frames: estimate 22000, budget 33000
+- frames: estimate 54843, budget 82300
 - refs: zone_event 086_T30 warp 1 (668,151) -> MAP_BLACKTHORN_GYM (13,87); scr_seq_0034_D23R0106.s:144-145 (FLAG_HIDE_BLACKTHORN_GYM_GUARD_INFRONT set, _ASIDE cleared by the Radio Tower); zone_event 137_T30GYM0101 coords 0-2 (5,9) (23,41) (3,62) VAR_UNK_4111 0 -> 002 (Warp MAP_BLACKTHORN_GYM (8,83), scr_seq_0943_T30GYM0101.s:147-155); coord 3 (12,82) w3 VAR_UNK_4120 0 -> 004; scr_seq_0943_T30GYM0101.s:16-18 (OnTransition BlackthornGymInit, VAR_UNK_4120 0); zone_event 137_T30GYM0101 object 0 obj_T30GYM0101_gsleader8 (12,3); Ace Trainers Paulo (11,66), Lola (8,61), Cody (20,54), Fran (21,45), Mike (13,40); scr_seq_0943_T30GYM0101.s:87-112 (TRAINER_LEADER_CLAIR_CLAIR, FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT, ClearFlag FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE); src/field/gymmick/blackthorn.c (BlackthornPlatform_Init, BlackthornGymmick_GetButtonAction, ov04_02255CBC, Task_BlackthornGymmick_MovePlatform), src/gymmick_init.c:104-121; TRAINER_LEADER_CLAIR_CLAIR (35, include/constants/trainers.h:40): GYARADOS 38, DRAGONAIR 38, DRAGONAIR 38, KINGDRA 41
 - notes: Kingdra (Water/Dragon) takes neutral damage from most types except Dragon: Ice/Dragon coverage, levels ~45. The floor puzzle is src/field/gymmick/blackthorn.c: three lava platforms (InitBlackthornGym, src/gymmick_init.c:104-121: (13,75) rot 0, (9,58) rot 1, (14,32) rot 0; reset on every entry by the OnTransition BlackthornGymInit, scr_seq_0943_T30GYM0101.s:16-18) whose 3x6 floors are walkable over the MAGMA 0x2C (GymmickCheckCollision_Blackthorn); stepping onto a platform's centre button rotates it a quarter turn about the player when its ring and sweep are lava (ov04_02255CBC), onto the side buttons moves it its width (5 or 4) carrying the player, all or nothing (Task_BlackthornGymmick_MovePlatform; triggered from FieldSystem_ProcessStep, src/field/field_control.c:633). The `steps` route below is a BFS over that model (player tile + the three platforms' x/z/rotation) on the decoded land data, splitting at every button tile and carry landing; it meets Paulo (14,66), Lola (7,61), Cody (20,57), Fran (21,49), Mike (15,40) as the plan around their approach tiles expects [INFERENCE: trainer sight crosses lava; Cody's movement 4 looks north/south]. From Clair's final platform layout no way back exists in the model, so the exit is pit coord 0 (5,9), whose script warps to (8,83) by the door (scr_seq_0943_T30GYM0101.s:147-159; VAR_UNK_4111 is never set). The whole model is untested in game [INFERENCE].
 

@@ -27,6 +27,7 @@ notes = "SS Lugia is lv45 (scr_seq_0104_D40R0107.s:75-82). Every outcome but a l
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
 frames = 67500

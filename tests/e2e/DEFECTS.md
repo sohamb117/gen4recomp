@@ -3,7 +3,7 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
-## Open: HeartGold freezes at a trainer's sight encounter; scripted NPCs draw as a white block (port)
+## Fixed: HeartGold froze at a trainer's sight encounter; scripted NPCs drew as a white block (port)
 
 HeartGold 04 (tests/e2e/heartgold/04-route30-31-violet) stops at the first route trainer. Repro: start from 03's end
 save (Route 29 west of New Bark), CONTINUE, `walk_to (553,292)` north up Route 30 (wild battles fled): Youngster
@@ -17,6 +17,10 @@ sprite textures were never uploaded (VBlank-queue tasks failing to be created): 
 SysTask_CreateOnVBlankQueue or a full 32-entry VBlank queue during the encounter (the emote and the approach
 loading textures in one long frame), else another unprototyped callback (unk_02037C94.c sub_020381C0, :1170;
 custom_safari_zone.c). Every route trainer waits on it.
+
+Fixed on the port side by hgss-play3 in ced1934b8: the trainer approach's sub_02064598 read its task from an r0 the
+C never passed (five more such C-to-assembly calls fixed with it). HeartGold 04 now passes through Joey and the
+route trainers after him, and the 02/03 sheets no longer show the block.
 
 ## Fixed: HeartGold's first battle aborted in the 3D command FIFO (port)
 

@@ -1,0 +1,6 @@
+# Boost on 30's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# HeartGold 27's boost gave FERALIGATR (slot 5, added in 25 with Strength/Whirlpool/Waterfall/Dig) Ice Beam over
+# Whirlpool and Dragon Pulse over Dig for Clair. SoulSilver needs both back: Whirlpool into the Whirl Islands
+# (src/field_move.c:604-608), Dig out of Lugia's cave (32's fly step, dig = true).
+party-move 5 1 MOVE_WHIRLPOOL
+party-move 5 3 MOVE_DIG

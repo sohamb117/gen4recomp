@@ -32,7 +32,7 @@ Passing (`status` removed from `milestone.toml`), as a continuity chain from a b
 | Diamond | 01-20: new game, Pokedex, Parcel + catching tutorial, Trainers' School, Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge, Barry's farewell, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Galactic building, Bicycle + Explorer Kit, Cycling Road + VS Seeker, Mt. Coronet + Route 208 to Hearthome, Contest Hall + rival, Route 209 to Solaceon |
 | Emerald | 01-48, the whole story: new game .. eight badges (Fortree's rotating gates, Mossdeep's statues, Sootopolis' thin ice from `tools/gba_puzzle.py`), Magma and Aqua hideouts, Seafloor Cavern (Dive, Strength boulders, currents), Sky Pillar, Victory Road, the Elite Four and Wallace, the Hall of Fame and credits to the game's own reset; boosts (`boost.recipe`, party levels, moves and items only) cited per milestone |
 | Ruby, Sapphire | 01-44: new game .. Hall of Fame, credits and the game's reset (`sapphire/chain.txt` reuses `ruby/`, with Sapphire-local 21, 25, 32, 35, 36 for Team Aqua, Archie and Kyogre where pokeruby's scripts branch on the version) |
-| HeartGold | 01-26: new game from a blank chip, Elm's Cyndaquil and the Pokegear, Mr. Pokemon's egg and the Pokedex, the rival, Route 30/31 to Violet, Sprout Tower and Elder Li, Falkner (Zephyr) and the Togepi egg, Union Cave to Azalea, the Slowpoke Well and Proton, Bugsy (Hive), the Azalea rival, Ilex Forest (both Farfetch'd, Cut), the Day Care, the Radio Tower quiz (Radio Card), Whitney (Plain), Sudowoodo, the Burned Tower rival and the legendary beasts, Morty (Fog), the Dance Theater (Surf), the Olivine rival and the Lighthouse (Amphy), Cianwood (the gym winch, Chuck, Fly, the SecretPotion), Jasmine (Mineral), the Lake of Rage (red Gyarados, Lance), the Rocket hideout with Lance (HM05), Pryce (Glacier), the Rocket disguise and Petrel (Basement Key), the Underground rival and the director (Card Key), Archer and the wing, the Ice Path (HM07) to Blackthorn; `grind` and `heal` where an honest lead needs levels (02, 05) |
+| HeartGold | 01-27: new game from a blank chip, Elm's Cyndaquil and the Pokegear, Mr. Pokemon's egg and the Pokedex, the rival, Route 30/31 to Violet, Sprout Tower and Elder Li, Falkner (Zephyr) and the Togepi egg, Union Cave to Azalea, the Slowpoke Well and Proton, Bugsy (Hive), the Azalea rival, Ilex Forest (both Farfetch'd, Cut), the Day Care, the Radio Tower quiz (Radio Card), Whitney (Plain), Sudowoodo, the Burned Tower rival and the legendary beasts, Morty (Fog), the Dance Theater (Surf), the Olivine rival and the Lighthouse (Amphy), Cianwood (the gym winch, Chuck, Fly, the SecretPotion), Jasmine (Mineral), the Lake of Rage (red Gyarados, Lance), the Rocket hideout with Lance (HM05), Pryce (Glacier), the Rocket disguise and Petrel (Basement Key), the Underground rival and the director (Card Key), Archer and the wing, the Ice Path (HM07) to Blackthorn, Clair; `grind` and `heal` where an honest lead needs levels (02, 05) |
 | SoulSilver | 01-03 (the shared dirs, same core) |
 | Black, White | 01: new game, the bedroom walked by the probe, Cheren, the first save through the X menu |
 
@@ -87,10 +87,11 @@ The DS harness as Platinum and D/P use it, with these differences:
   are `kanto_badges`) and `np_save4 gamedata` HG/SS ROMs.
 - **Saves**: no HG/SS save lab yet, so every milestone starts from the previous one's end save (01 from a blank chip,
   the intro schedule of docs/HANDOFF-hgss.md); lab recipes are refused. A boost (`[start] boost`) takes only
-  `party SPECIES LEVEL` and `party-move SLOT INDEX MOVE` for a Pokemon it adds: run.py's `addmon_boost` turns each into
-  `np_save4 add-mon` after the save's party (HM carriers, since no bot teaches an HM through the Bag; strength for
-  the boss fights, which `auto_battle` reaches with `send = "best"`). SoulSilver's chain lists HeartGold's dirs and
-  its own `31-whirl-islands-lugia`.
+  `party SPECIES LEVEL` with `party-move SLOT INDEX MOVE` for a Pokemon it adds (run.py's `addmon_boost`: `np_save4
+  add-mon` after the save's party), and `party-move SLOT INDEX MOVE` / `party-level SLOT LEVEL` for one the party
+  already holds (`np_save4 set-move` / `set-level`): HM carriers, since no bot teaches an HM through the Bag, and
+  coverage and levels for the boss fights, which `auto_battle` reaches with `send = "best"`. SoulSilver's chain
+  lists HeartGold's dirs and its own `31-whirl-islands-lugia`.
 - **Heal**: every Pokemon Center 1F has the nurse at (8,11) and the exit at (8,19).
 - **Fly and field moves** (bots.py `_hgss_open_party_move`, `_hgss_fly`; the probe sees none of these screens, so every
   key count is the decomp's and the bots note the presses they make; seen at runtime on HeartGold after 03: X opens the

@@ -228,7 +228,7 @@ class Milestone:
                 except SystemExit as e:
                     problems.append("[start] boost: %s" % e)
                 else:
-                    allowed = ADDMON_BOOST_VERBS if game.name in ADDMON_BOOST_GAMES else BOOST_VERBS
+                    allowed = addmon_boost_verbs(game) if game.name in ADDMON_BOOST_GAMES else BOOST_VERBS
                     bad = sorted({op.split()[0] for op in inline[len("inline:"):].split(";") if op} - allowed)
                     if bad or env:
                         problems.append("[start] boost %s: only %s, not %s" % (
@@ -341,10 +341,16 @@ def recipe_env(path, game):
 
 # HG/SS and B/W boosts (no save lab for them): `party SPECIES LEVEL` adds a Pokemon behind the party as the game's
 # own gift makes it, with the `party-move SLOT INDEX MOVE` lines that name its slot as its moves (np_save4/np_save5
-# add-mon); on HG/SS, `party-move` on a slot the save's party already holds sets that move with full PP (np_save4
-# set-move). Nothing else is edited.
+# add-mon). HG/SS also edits the members the save's party already holds: `party-move` there sets that move with
+# full PP (np_save4 set-move), and `party-level SLOT LEVEL` sets the level, stats recalculated and HP full (np_save4
+# set-level). Nothing else is edited.
 ADDMON_BOOST_VERBS = {"party", "party-move"}
+HGSS_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level"}
 ADDMON_BOOST_GAMES = HGSS_GAMES + BW_GAMES
+
+
+def addmon_boost_verbs(game):
+    return HGSS_BOOST_VERBS if game.name in HGSS_GAMES else ADDMON_BOOST_VERBS
 
 
 def addmon_boost(game, inline, sav, log):
@@ -355,30 +361,42 @@ def addmon_boost(game, inline, sav, log):
     if out.returncode != 0:
         raise HarnessError("boost: the save tool cannot read %s" % sav)
     first = len(json.loads(out.stdout).get("party", []))
-    adds, sets = [], []
+    adds, sets, levels = [], [], []
+    allowed = addmon_boost_verbs(game)
     for verb, *args in ops:
-        if verb not in ADDMON_BOOST_VERBS:
+        if verb not in allowed:
             raise HarnessError("boost: %s boosts take only %s, not %s" % (
-                game.name, " ".join(sorted(ADDMON_BOOST_VERBS)), verb))
+                game.name, " ".join(sorted(allowed)), verb))
         if verb == "party":
             adds.append((int(args[0]), int(args[1]), {}))
+            continue
+        if verb == "party-level":
+            slot, level = int(args[0]), int(args[1])
+            if not 0 <= slot < first or not 1 <= level <= 100:
+                raise HarnessError("boost: party-level %d %d: not a slot the save's party holds, or no such level"
+                                   % (slot, level))
+            levels.append((slot, level))
             continue
         slot, index, move = (int(a) for a in args[:3])
         if not 0 <= index < 4 or not 0 <= slot < first + len(adds):
             raise HarnessError("boost: party-move %d %d: no such party slot or move index" % (slot, index))
         if slot < first:
+            if game.name not in HGSS_GAMES:
+                raise HarnessError("boost: party-move %d on a member the save holds: np_save4 (HG/SS) only" % slot)
             sets.append((slot, index, move))
         else:
             adds[slot - first][2][index] = move
     if first + len(adds) > 6:
         raise HarnessError("boost: %d Pokemon after a party of %d" % (len(adds), first))
     with open(log, "w") as f:
-        for slot, index, move in sets:
-            cmd = game.save4 + ["set-move", sav, game.rom, str(slot), str(index), str(move)]
+        edits = [["set-move", str(slot), str(index), str(move)] for slot, index, move in sets]
+        edits += [["set-level", str(slot), str(level)] for slot, level in levels]
+        for verb, *args in edits:
+            cmd = game.save4 + [verb, sav, game.rom] + args
             f.write("$ %s\n" % " ".join(cmd))
             f.flush()
             if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
-                raise HarnessError("boost: np_save4 set-move failed (%s)" % log)
+                raise HarnessError("boost: np_save4 %s failed (%s)" % (verb, log))
         for species, level, moves in adds:
             if sorted(moves) != list(range(len(moves))):
                 raise HarnessError("boost: the moves of slot %d must be indices 0..n-1" % first)

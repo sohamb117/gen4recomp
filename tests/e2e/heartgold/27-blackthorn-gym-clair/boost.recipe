@@ -1,0 +1,26 @@
+# Boost on 26's end save (run.py hgss_boost: np_save4 set-move on members already in the party; the story stays
+# played). Party: 0 QUILAVA, 1 Togepi, 2 SCYTHER, 3 AMPHAROS (14's FLAAFFY), 4 PELIPPER (18), 5 FERALIGATR (25).
+# Two chained runs whited out to Clair (TRAINER_LEADER_CLAIR_CLAIR: GYARADOS 38, DRAGONAIR 38 x2, KINGDRA 41), the
+# second after a heal between the gym's trainers and her: Ampharos's ThunderShock and Pelipper's Ice Beam (10 PP) were
+# the only hits that told (a third run with the first two changes below lost too: Thunderbolt is resisted by the
+# Dragonair).
+# Coverage, keeping the field moves HeartGold still uses (Pelipper's Surf/Fly, Feraligatr's Strength/Waterfall/Dig):
+# - AMPHAROS: ThunderShock -> Thunderbolt (TM24; files/poketool/personal/personal.json AMPHAROS tms include 24);
+# - PELIPPER: Wing Attack -> Blizzard (TM14; PELIPPER tms include 14): a second Ice move for the Dragonair.
+# - FERALIGATR: Whirlpool -> Ice Beam (TM13; FERALIGATR tms include 13): HeartGold meets no whirlpool after this
+#   (28's den is Surf only); SoulSilver 31 (the Whirl Islands) sets Whirlpool back in its own boost;
+# - FERALIGATR: Dig -> Dragon Pulse (TM59; FERALIGATR tms include 59): the fourth run, fresh after two heals, reached
+#   KINGDRA 41 (Water/Dragon: Ice neutral, Electric neutral) and lost every member to it. HeartGold flies off the Bell
+#   Tower roof without digging (32: dig = true acts only where the map allows Dig); SoulSilver 31 sets Dig back too.
+party-move 3 1 MOVE_THUNDERBOLT
+party-move 4 3 MOVE_BLIZZARD
+party-move 5 1 MOVE_ICE_BEAM
+party-move 5 3 MOVE_DRAGON_PULSE
+# Levels (np_save4 set-level: stats from the mon's own IVs/EVs/nature, HP full): the fifth run, Dragon Pulse given,
+# still lost every member to KINGDRA 41 after the Dragonair. FERALIGATR 40 -> 46 and PELIPPER 34 -> 42, the two
+# that carry the Ice and Dragon hits, so they take a Kingdra hit and answer it. The sixth run with those two took
+# both Dragonair and Kingdra, then lost the last three to the GYARADOS Clair had switched out (Ampharos fainted
+# after one Thunderbolt on it): AMPHAROS 42 -> 46 as well.
+party-level 5 46
+party-level 4 42
+party-level 3 46
