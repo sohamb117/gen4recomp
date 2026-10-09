@@ -2,10 +2,9 @@
 # last story battle on 3F (TRAINER_RIVAL_SILVER_13), out to Indigo Plateau and into the Pokemon League entrance.
 # Start: MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE (11,15) -> end: MAP_POKEMON_LEAGUE_ENTRANCE (11,24), VAR_UNK_40C5 1.
 title = "Victory Road: the rival, Indigo Plateau"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 79407
 refs = [
   "zone_event 270_R22R0101 warp 1 (11,2) -> MAP_VICTORY_ROAD_1F 0 (46,59)",
   "zone_event 121_D43R0101 warps 1/2 (19,7/6) -> 2F 0 (7,31); objects 3-5 Strength boulders (43,52) (25,17) (24,15)",
@@ -26,7 +25,66 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 45000
+frames = 119200
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 23
+note = "the gate has no Pokemon Center and 32's Route 27/26 trainers leave the party fainted but for Feraligatr (the first chained run whited out on Victory Road): out by the south door (warp 0) to Route 26 to heal"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_26"
+
+[[step]]
+do = "fly"
+map = "MAP_CHERRYGROVE"
+note = "the nearest Pokemon Center Fly reaches"
+
+[[step]]
+do = "heal"
+x = 564
+z = 391
+note = "Cherrygrove's Pokemon Center (zone_event T21 warp 0)"
+
+[[step]]
+do = "fly"
+map = "MAP_NEW_BARK"
+
+[[step]]
+do = "walk_to"
+x = 740
+z = 396
+surf = true
+note = "32's way back: Route 27 by Surf to the Tohjo Falls west mouth (warp 0); its trainers are beaten"
+
+[[step]]
+do = "wait_map"
+map = "MAP_TOHJO_FALLS"
+
+[[step]]
+do = "walk_to"
+x = 45
+z = 20
+surf = true
+note = "up the west falls, across, down the east falls to the east mouth (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_27"
+
+[[step]]
+do = "walk_to"
+x = 909
+z = 296
+surf = true
+via = [[914, 348], [914, 331], [924, 331], [924, 325], [917, 325], [917, 307], [909, 305]]
+note = "Route 27 east, Route 26 north to the reception gate (warp 2), as 32"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE"
 
 [[step]]
 do = "walk_to"
