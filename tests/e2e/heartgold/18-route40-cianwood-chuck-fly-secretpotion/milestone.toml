@@ -2,10 +2,9 @@
 # HM02 Fly (OnFrame VAR_UNK_4116 1), the pharmacist's SecretPotion (VAR_SCENE_LIGHTHOUSE_JASMINE 1), and back to Olivine.
 # Start: MAP_OLIVINE_LIGHTHOUSE_1F (8,16) -> end: MAP_OLIVINE outside the Lighthouse (301,264), badge Storm.
 title = "Cianwood: Chuck, Storm Badge, HM02 Fly, the SecretPotion"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 60491
 refs = [
   "zone_event 112_D27R0101 warp 0 (8,17) -> MAP_OLIVINE",
   "zone_event 091_W40 coord 0 (252,265) w4 VAR_UNK_4090 0 (retired by HM03, scr_seq_0928_T27R0501.s:381)",
@@ -29,7 +28,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 75000
+frames = 90800
 
 [[step]]
 do = "walk_to"
@@ -107,6 +106,24 @@ do = "wait_map"
 map = "MAP_CIANWOOD_GYM"
 
 [[step]]
+do = "walk_to"
+x = 10
+z = 3
+face = "up"
+interact = true
+note = "Chuck trains under the waterfall and only battles once it stops (scr_seq_0877_T24GYM0101.s: scr 000 -> _010A while VAR_TEMP_x4000 is 0): the winch, bg 0 (10,2) (any facing), up past the Black Belts (they fight if they spot; tools/e2e/tools/hg_map.py MAP_CIANWOOD_GYM --solve 13 18 10 3 --fight)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "turn the winch: YES (GetMenuChoice 0 -> _0153, scr_seq_0877_T24GYM0101.s: script 002); the bottom-screen YES/NO opens on YES"
+
+[[step]]
+do = "advance_text"
+note = "again: VAR_TEMP_x4000 is a temporary var, reset by the trip out; the winch turns, the waterfall stops (FLAG_SYS_CIANWOOD_WATERFALL_DISABLE, CianwoodGymTurnWinch)"
+
+[[step]]
 do = "talk_to"
 id = 0
 note = "Chuck (13,10); Black Belts on the way fight"
@@ -148,9 +165,12 @@ do = "wait_map"
 map = "MAP_CIANWOOD_PHARMACY"
 
 [[step]]
-do = "talk_to"
-id = 0
-note = "pharmacist (5,5): SecretPotion (scr_seq_0881_T24R0501.s:32-45)"
+do = "walk_to"
+x = 5
+z = 7
+face = "up"
+interact = true
+note = "the pharmacist (5,5) stands behind the counter (row 6, land data): spoken to across it; SecretPotion (scr_seq_0881_T24R0501.s:32-45)"
 
 [[step]]
 do = "advance_text"

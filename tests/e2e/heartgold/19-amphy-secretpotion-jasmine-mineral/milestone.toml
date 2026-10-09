@@ -3,10 +3,9 @@
 # (TRAINER_LEADER_JASMINE_JASMINE), the Mineral Badge + TM23; the third mid-game badge starts the Rocket takeover count.
 # Start: MAP_OLIVINE (301,264) -> end: MAP_OLIVINE outside the gym (269,239), badge Mineral, VAR_SCENE_ROCKET_TAKEOVER 1.
 title = "Amphy's SecretPotion, Jasmine: Mineral Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 20503
 refs = [
   "zone_event 074_T26 warp 3 (301,263) -> MAP_OLIVINE_LIGHTHOUSE_1F; zone_event 112_D27R0101 warp 1 (8,4) -> elevator; scr_seq_0067_D27R0108.s:11-73",
   "scr_seq_0066_D27R0107.s:62-113 (YES/NO, TakeItem ITEM_SECRETPOTION, FLAG_UNK_96A, VAR_SCENE_LIGHTHOUSE_JASMINE 2, VAR_UNK_410E 1, FLAG_UNK_1D7, ClearFlag FLAG_HIDE_JASMINE_IN_GYM)",
@@ -24,7 +23,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 22500
+frames = 30800
 
 [[step]]
 do = "walk_to"
@@ -99,6 +98,12 @@ map = "MAP_OLIVINE"
 do = "advance_text"
 key = "b"  # a scripted Pokegear call: A on the contact list it leaves open would call again (README, HeartGold and SoulSilver)
 note = "OnFrame VAR_SCENE_LIGHTHOUSE_JASMINE 2 -> 3 (scr_seq_0911_T26.s:35-40)"
+
+[[step]]
+do = "heal"
+x = 272
+z = 257
+note = "Olivine's Pokemon Center (zone_event T26 warp 1) before Jasmine: the first chained run met her after the lighthouse trip and whited out"
 
 [[step]]
 do = "walk_to"

@@ -29,12 +29,18 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 60000
+frames = 65000
 
 [[step]]
 do = "fly"
 map = "MAP_ECRUTEAK"
 note = "Olivine's block (8,7) -> Ecruteak's fly point (11..12,4..5): RIGHT x3, UP x3 on the fly map; lands at (397,184) (tools/hg_world.py fly)"
+
+[[step]]
+do = "heal"
+x = 397
+z = 183
+note = "Ecruteak's Pokemon Center (warp 5) after the flight: the first chained run met Route 42's trainers and wild Pokemon with the HP Jasmine left and whited out"
 
 [[step]]
 do = "walk_to"
