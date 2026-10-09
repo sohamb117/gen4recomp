@@ -3,17 +3,25 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
-## Open: HeartGold's first field load hangs (port; owner: the HG/SS port)
+## Open: HeartGold's first battle aborts in the 3D command FIFO (port; owner: the HG/SS port)
 
-HeartGold 01 (tests/e2e/heartgold/01-newgame-cyndaquil-pokegear) cannot start: the intro schedule
-(`intro.press`, docs/HANDOFF-hgss.md) reaches the first map load at frame 16169 (`[status] map_id 0 -> 64`, the
-bedroom) and then no frame completes (no `[progress]` line in 55 minutes). Repro: `np_headless heartgold
-pokeheartgold.us.nds --frames 17000 --schedule tests/e2e/heartgold/01-*/intro.press --progress 100` on main
-ff616c003. Cause as the port side traced it (docs/HANDOFF-hgss.md, "Current blocker"): the field init (fieldmap.c
-ov01_021E662C) calls CARD_SpiWaitGetStatus twice, and the second call's OS_LockCard spins forever because armrec
-emits the first call's `bl _ll_udiv` as a goto into msl.s's helper body, whose `bx lr` returns before
-OS_UnLockCard; after that fix the same check needs the cartridge's IR chip on AUXSPI (command 0x08 -> 0xAA). Every
-HG/SS milestone waits on this.
+HeartGold 02 (tests/e2e/heartgold/02-cherrygrove-guide-mr-pokemon-pokedex) stops at its first wild battle. Repro:
+start from 01's end save (New Bark west exit), CONTINUE, `walk_to (566,398)` west into Route 29's grass: the
+encounter starts at frame 2373 (`in_battle 0 -> 1`), the field's battle transition plays, and at frame 2513 the
+core stops: `pc-gpu3d: command 0x10 arrived while 0x16 still wanted 3 of its 16 parameters, a caller cached a
+command port's address and stored through it`, then `abort()`. Core: main 9d997a419 (hgss-play2's build). A
+16-parameter command (0x16 MTX_LOAD_4x4) cut short by a matrix-mode write is the shape of a geometry-port store
+that bypasses the runtime's port routing (the field's equivalent was fixed in 97814f2c5 for compiled C); the
+battle's 3D setup runs in overlay 12 [INFERENCE: which TU]. Every battle (wild, the rival in 03) waits on it.
+
+## Fixed: HeartGold's first field load hung (port)
+
+The intro reached the first map load at frame 16169 and no frame completed after it: the field init (fieldmap.c
+ov01_021E662C) called CARD_SpiWaitGetStatus twice and the second OS_LockCard spun forever, because armrec emitted
+`bl _ll_udiv` as a goto into msl.s's helper body, whose `bx lr` returned before OS_UnLockCard; the same check
+then needed the cartridge's IR chip on AUXSPI (command 0x08 -> 0xAA). Fixed by armrec fe357c02a (a `.type NAME,
+@function` label starts a function), the IR chip model 53b112d0c, the timer/tick, geometry-port and card-timing
+fixes up to 165d72148 and the prop-animation callback 9d997a419: HeartGold 01 now passes from a blank chip.
 
 ## Fixed: Emerald dropped the player through Granite Cave B1F's floor on arrival (copyvar through NULL)
 

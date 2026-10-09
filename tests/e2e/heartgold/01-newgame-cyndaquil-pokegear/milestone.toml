@@ -4,10 +4,9 @@
 # west exit.
 # Start: blank chip -> end: MAP_NEW_BARK west exit (676,399), VAR_SCENE_NEW_BARK_WEST_EXIT 1, party Cyndaquil.
 title = "New game, the bedroom, Mom, Elm's lab: Cyndaquil, Pokegear, Elm's number"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 35895
 refs = [
   "docs/HANDOFF-hgss.md:84-104 (intro schedule, both games)",
   "zone_event 061_T20R0202 warp 0 (3,4) -> MAP_NEW_BARK_PLAYER_HOUSE_1F",
@@ -44,7 +43,7 @@ notes = "Starter: CYNDAQUIL (VAR_PLAYER_STARTER 155). Fire hits Bugsy's whole te
 blank = true
 
 [run]
-frames = 45000
+frames = 53900
 options = ["text_instant=0"]  # intro.press was recorded at the real text speed
 
 [[step]]

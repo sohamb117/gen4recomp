@@ -32,6 +32,7 @@ Passing (`status` removed from `milestone.toml`), as a continuity chain from a b
 | Diamond | 01-20: new game, Pokedex, Parcel + catching tutorial, Trainers' School, Poketch, Route 203 + Oreburgh Gate, Oreburgh Mine Roark, Coal Badge, Barry's farewell, Jubilife tag battle, Floaroma Meadow, Valley Windworks, Eterna Forest, Forest Badge, Galactic building, Bicycle + Explorer Kit, Cycling Road + VS Seeker, Mt. Coronet + Route 208 to Hearthome, Contest Hall + rival, Route 209 to Solaceon |
 | Emerald | 01-48, the whole story: new game .. eight badges (Fortree's rotating gates, Mossdeep's statues, Sootopolis' thin ice from `tools/gba_puzzle.py`), Magma and Aqua hideouts, Seafloor Cavern (Dive, Strength boulders, currents), Sky Pillar, Victory Road, the Elite Four and Wallace, the Hall of Fame and credits to the game's own reset; boosts (`boost.recipe`, party levels, moves and items only) cited per milestone |
 | Ruby, Sapphire | 01-44: new game .. Hall of Fame, credits and the game's reset (`sapphire/chain.txt` reuses `ruby/`, with Sapphire-local 21, 25, 32, 35, 36 for Team Aqua, Archie and Kyogre where pokeruby's scripts branch on the version) |
+| HeartGold | 01: new game from a blank chip (the intro schedule), the bedroom, Mom, Elm's lab and Cyndaquil, the Pokegear, New Bark's west exit (02 on stops at the first battle: DEFECTS.md) |
 | Black, White | 01: new game, the bedroom walked by the probe, Cheren, the first save through the X menu |
 
 Everything else is still `status = "planned"` and skipped unless `--planned`.
