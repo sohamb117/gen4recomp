@@ -21,6 +21,7 @@ notes = "Miltank (Rollout, Milk Drink) is the wall: boost (levels; a Fighting mo
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
 frames = 51000

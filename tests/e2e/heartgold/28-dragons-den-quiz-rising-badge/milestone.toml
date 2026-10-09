@@ -24,7 +24,13 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 40000
+frames = 43000
+
+[[step]]
+do = "heal"
+x = 674
+z = 176
+note = "Blackthorn's Pokemon Center (zone_event T30 warp 6): 27 ends after Clair with the party mostly fainted, and SoulSilver's chained run on hgss-play3's 4d9380ac6 core whited out to the den's trainers"
 
 [[step]]
 do = "walk_to"

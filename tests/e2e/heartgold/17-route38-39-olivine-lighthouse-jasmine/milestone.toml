@@ -24,7 +24,13 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 70200
+frames = 73200
+
+[[step]]
+do = "heal"
+x = 397
+z = 183
+note = "Ecruteak's Pokemon Center (warp 5): 16 ends after the Dance Theater with the party mostly fainted, and HeartGold's chained run on hgss-play3's 4d9380ac6 core whited out on Route 39"
 
 [[step]]
 do = "walk_to"

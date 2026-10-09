@@ -20,7 +20,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 21800
+frames = 24800
 
 [[step]]
 do = "walk_to"
@@ -30,6 +30,12 @@ z = 9
 [[step]]
 do = "wait_map"
 map = "MAP_AZALEA"
+
+[[step]]
+do = "heal"
+x = 410
+z = 460
+note = "Azalea's Pokemon Center (zone_event T23 warp 3) before the gym: 08 ends after the well's grunts and Proton with Quilava at 43/~60 HP, and SoulSilver's chained run on hgss-play3's 4d9380ac6 core whited out to Bugsy"
 
 [[step]]
 do = "walk_to"

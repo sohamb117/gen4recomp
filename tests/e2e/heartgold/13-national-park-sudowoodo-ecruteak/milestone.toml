@@ -102,7 +102,9 @@ shot = "sudowoodo"
 [[step]]
 do = "auto_battle"
 snap = true
-note = "WildBattle SPECIES_SUDOWOODO 20 (:100)"
+flee = true
+send = "best"
+note = "WildBattle SPECIES_SUDOWOODO 20 (:100); fled: CheckBattleWon is set for any outcome but a loss or draw (:102-107), so running progresses as winning does; SoulSilver's chained run on hgss-play3's 4d9380ac6 core fought it and whited out"
 
 [[step]]
 do = "advance_text"

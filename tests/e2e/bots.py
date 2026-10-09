@@ -2179,7 +2179,16 @@ def bot_grind(s, step, ctx):
                      and gd["moves"][m["id"]][1] != MOVE_CLASS_STATUS and gd["moves"][m["id"]][2] > 0)
         if door and (lead["hp"] * 2 < lead["stats"][0] or pp < 5):
             bot_heal(s, {"x": door[0], "z": door[1]}, ctx)
-        bot_walk_to(s, {"x": spot[0], "z": spot[1]}, ctx)
+        walk = {"x": spot[0], "z": spot[1]}
+        if ctx.game in HGSS_GAMES:
+            walk["on_battle"] = "flee"  # HG/SS 02: the lone lv5 lead whited out on the way to the grass
+        try:
+            bot_walk_to(s, walk, ctx)
+        except HarnessError as e:
+            if "unexpected warp" not in str(e):
+                raise
+            _grind_whiteout(s, ctx, battles)  # a battle on the way was lost
+            continue
         p = s.probe()
         t = Terrain(game=ctx.game)
         for c in (spot, (spot[0] + 1, spot[1])):
@@ -2192,10 +2201,26 @@ def bot_grind(s, step, ctx):
             s.run(24, "right" if k % 2 else "left", until=["in_battle=1", "x!=%d" % (spot[0] + (0 if k % 2 else 1))])
             s.run(12, until="in_battle=1")
         if s.in_battle:
+            here = s.map_id
             bot_auto_battle(s, {"move": step["move"]} if "move" in step else {}, ctx)
             battles += 1
+            if not s.run(900, until=["field_ready=1", "map_id!=%d" % here]):
+                # still held after the battle: the whiteout's "scurried to a Pokemon Center" text waits for A
+                bot_advance_text(s, {}, ctx)
+            if s.map_id != here:
+                _grind_whiteout(s, ctx, battles)
+                continue
             bot_wait_field(s, {}, ctx)
     s.note("grind: lead at level %d after %d battles" % (lead["level"], battles))
+
+
+def _grind_whiteout(s, ctx, battles):
+    """grind: the party whited out (a lone low-level lead can lose to the grass's Pidgey): the nurse's text, then out
+    of the Pokemon Center the game sent the party to; the grind walks back to its grass from there."""
+    bot_advance_text(s, {}, ctx)
+    exit_ = GBA_PC_EXIT if ctx.game in GBA_GAMES else HGSS_PC_EXIT if ctx.game in HGSS_GAMES else PC_EXIT
+    s.note("grind: whited out to map %d after battle %d; leaving its Pokemon Center" % (s.map_id, battles))
+    bot_walk_to(s, {"x": exit_[0], "z": exit_[1]}, ctx)
 
 
 # ---------------------------------------------------------------- talk_to
