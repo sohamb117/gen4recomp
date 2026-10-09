@@ -1,21 +1,9 @@
-# Boost on 33's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
-# Party before: 0 CYNDAQUIL (starter line), 1 Togepi (egg, 06), 2 SCYTHER (10, Cut), 3 PELIPPER (18, Surf/Fly),
-# 4 the 26 carrier (Strength/Whirlpool/Waterfall, heartgold/26-*/boost.recipe) -> size 5. The legendary of 31 is
-# fled from, not caught (HG Ho-Oh / SS Lugia), so both versions arrive with 5.
-# Adds slot 5, the last free one: one strong member for the Elite Four and Lance, fighting behind a fainted lead
-# (their auto_battle steps need send = "best" to send it before the weaker members). Lv50 is the top of the opponents'
-# levels (files/poketool/trainer/trainers.json): TRAINER_ELITE_FOUR_WILL_WILL XATU 40, JYNX 41, EXEGGUTOR 41,
-# SLOWBRO 41, XATU 42; TRAINER_ELITE_FOUR_KOGA_KOGA ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44;
-# TRAINER_ELITE_FOUR_BRUNO_BRUNO HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46;
-# TRAINER_ELITE_FOUR_KAREN_KAREN UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47;
-# TRAINER_CHAMPION_LANCE GYARADOS 46, DRAGONITE 49 x2, AERODACTYL 48, CHARIZARD 48, DRAGONITE 50.
-# LAPRAS (personal.json: TM13, TM24, TM29, HM03; Ice Beam also its lv32 level-up move, wotbl.narc):
-# Ice Beam x4 on Lance's Dragonite, x2 on Xatu, Exeggutor, Crobat, Vileplume, Murkrow; Thunderbolt x4 on Gyarados,
-# x2 on Xatu, Slowbro, Crobat, Murkrow; Psychic x2 on Koga's poisons and Bruno's fighters; Surf x4 on Onix, x2 on
-# Houndoom, Aerodactyl, Charizard.
-# Party after: 6 (full).
-party SPECIES_LAPRAS 50
-party-move 5 0 MOVE_ICE_BEAM
-party-move 5 1 MOVE_THUNDERBOLT
-party-move 5 2 MOVE_PSYCHIC
-party-move 5 3 MOVE_SURF
+# Boost on 33's end save (run.py hgss_boost; the story stays played). The party is full since 26 (0 the starter
+# line, 1 Togepi, 2 SCYTHER, 3 FLAAFFY (14), 4 PELIPPER (18), 5 FERALIGATR (26)), so the Elite Four boost is moves
+# only: the lead's level-up moves the bot declined (auto_battle answers "forget a move?" NO), as a player keeping the
+# best ones would have them. Typhlosion (files/poketool/personal/wotbl.narc #157): Swift 31, Lava Plume 35,
+# Flamethrower 42. Opponents (files/poketool/trainer/trainers.json): Will's Xatu/Jynx/Exeggutor/Slowbro, Koga's
+# Ariados/Venomoth/Forretress/Muk/Crobat, Bruno's fighters and Onix, Karen's Umbreon/Vileplume/Gengar/Murkrow/Houndoom,
+# Lance's Gyarados/Dragonite x3/Aerodactyl/Charizard (46-50).
+party-move 0 0 MOVE_LAVA_PLUME
+party-move 0 1 MOVE_SWIFT

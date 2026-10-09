@@ -1,0 +1,17 @@
+# Boost (party strength only): the level-up moves the lead has passed but the bot declined (auto_battle answers
+# "forget a move?" NO), as a player keeping the starter's best moves would have them. Party here: QUILAVA lv26
+# (slot 0), TOGEPI, SCYTHER (10's boost).
+# Quilava (files/poketool/personal/wotbl.narc #156): Quick Attack 13, Flame Wheel 20, Defense Curl 24.
+party-move 0 0 MOVE_FLAME_WHEEL    # over Tackle
+party-move 0 1 MOVE_QUICK_ATTACK   # over Leer
+# TRAINER_RIVAL_SILVER_11 (files/poketool/trainer/trainers.json): GASTLY 20, MAGNEMITE 18, ZUBAT 20, CROCONAW 22
+# Adds slot 3: an Electric member for the Water/Flying teams ahead, fighting behind a fainted lead (send = "best"):
+# the first chained run lost this rival twice (Flame Wheel into Croconaw, then Scyther's Cut into Magnemite). FLAAFFY
+# (Route 32's Mareep line) at 31, its level-up moves by 31 (wotbl.narc #180: Thunder Wave 14, Charge 25, Discharge
+# 31): Discharge for Croconaw/Zubat now, Chuck's Poliwrath (18), Pryce's Seel/Dewgong (22), Clair's Gyarados (27).
+# Party after: 4 (QUILAVA, TOGEPI, SCYTHER, FLAAFFY); 18 adds PELIPPER (5), 26 the HM carrier (6).
+party SPECIES_FLAAFFY 31
+party-move 3 0 MOVE_DISCHARGE
+party-move 3 1 MOVE_THUNDER_SHOCK
+party-move 3 2 MOVE_THUNDER_WAVE
+party-move 3 3 MOVE_CHARGE

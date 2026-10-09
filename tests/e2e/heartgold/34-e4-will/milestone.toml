@@ -14,7 +14,7 @@ refs = [
   "scr_seq_0820_T10R0201.s:45-71 (VAR_UNK_4135 < 8 -> TRAINER_ELITE_FOUR_WILL_WILL :58, FLAG_DEFEATED_WILL, the exit door and stoppers hidden)",
   "TRAINER_ELITE_FOUR_WILL_WILL (245, include/constants/trainers.h:250): XATU 40, JYNX 41, EXEGGUTOR 41, SLOWBRO 41, XATU 42",
 ]
-notes = "First run: VAR_UNK_4135 < 8, so the first team (WILL_2 is the rematch). Coverage by boost: boost.recipe adds a lv50 Lapras (Ice Beam, Thunderbolt, Psychic, Surf) for the Elite Four and Lance; it fights behind a fainted lead, so the auto_battle steps take send = \"best\" (else the first able member in slot order is sent). The heal tile in front of the nurse is [INFERENCE] (6,21) facing up."
+notes = "First run: VAR_UNK_4135 < 8, so the first team (WILL_2 is the rematch). Coverage by boost: boost.recipe gives the lead its declined level-up moves (Lava Plume, Swift); the party is full since 26 (Flaaffy's Discharge, Pelipper's Ice Beam and Surf, Feraligatr). The heal tile in front of the nurse is [INFERENCE] (6,21) facing up."
 
 [start]
 from = "prev"

@@ -292,7 +292,12 @@ if(EXISTS "${HGSS_ROM}")
     expect_json("${j}" "CHIKORITA" party 2 species_name)
     expect_json("${j}" "Poké Ball" party 2 ball name)
     expect_json("${j}" "Level Ball" party 1 ball name)
-    message(STATUS "HG/SS add-mon with ROM OK")
+    run(0 o set-move "${SS}" "${HGSS_ROM}" 2 1 22)  # Vine Whip into the added Chikorita's second move
+    run(0 j dump "${HGSS_ROM}" "${SS}")
+    expect_json("${j}" "22" party 2 moves 1 id)
+    expect_json("${j}" "15" party 2 moves 1 pp)  # Vine Whip's base PP in Gen 4
+    run(2 o set-move "${SS}" "${HGSS_ROM}" 5 0 33)  # no Pokemon in slot 5: invalid value
+    message(STATUS "HG/SS add-mon and set-move with ROM OK")
 else()
     message(STATUS "HG/SS ROM not found at '${HGSS_ROM}'; add-mon / name checks skipped")
 endif()

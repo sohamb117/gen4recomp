@@ -341,7 +341,8 @@ def recipe_env(path, game):
 
 # HG/SS and B/W boosts (no save lab for them): `party SPECIES LEVEL` adds a Pokemon behind the party as the game's
 # own gift makes it, with the `party-move SLOT INDEX MOVE` lines that name its slot as its moves (np_save4/np_save5
-# add-mon); nothing else is edited.
+# add-mon); on HG/SS, `party-move` on a slot the save's party already holds sets that move with full PP (np_save4
+# set-move). Nothing else is edited.
 ADDMON_BOOST_VERBS = {"party", "party-move"}
 ADDMON_BOOST_GAMES = HGSS_GAMES + BW_GAMES
 
@@ -354,7 +355,7 @@ def addmon_boost(game, inline, sav, log):
     if out.returncode != 0:
         raise HarnessError("boost: the save tool cannot read %s" % sav)
     first = len(json.loads(out.stdout).get("party", []))
-    adds = []
+    adds, sets = [], []
     for verb, *args in ops:
         if verb not in ADDMON_BOOST_VERBS:
             raise HarnessError("boost: %s boosts take only %s, not %s" % (
@@ -363,12 +364,21 @@ def addmon_boost(game, inline, sav, log):
             adds.append((int(args[0]), int(args[1]), {}))
             continue
         slot, index, move = (int(a) for a in args[:3])
-        if not 0 <= slot - first < len(adds) or not 0 <= index < 4:
-            raise HarnessError("boost: party-move %d %d: only the moves of a Pokemon the boost adds" % (slot, index))
-        adds[slot - first][2][index] = move
+        if not 0 <= index < 4 or not 0 <= slot < first + len(adds):
+            raise HarnessError("boost: party-move %d %d: no such party slot or move index" % (slot, index))
+        if slot < first:
+            sets.append((slot, index, move))
+        else:
+            adds[slot - first][2][index] = move
     if first + len(adds) > 6:
         raise HarnessError("boost: %d Pokemon after a party of %d" % (len(adds), first))
     with open(log, "w") as f:
+        for slot, index, move in sets:
+            cmd = game.save4 + ["set-move", sav, game.rom, str(slot), str(index), str(move)]
+            f.write("$ %s\n" % " ".join(cmd))
+            f.flush()
+            if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
+                raise HarnessError("boost: np_save4 set-move failed (%s)" % log)
         for species, level, moves in adds:
             if sorted(moves) != list(range(len(moves))):
                 raise HarnessError("boost: the moves of slot %d must be indices 0..n-1" % first)

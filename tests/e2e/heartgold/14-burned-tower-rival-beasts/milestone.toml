@@ -2,10 +2,9 @@
 # (TRAINER_RIVAL_SILVER_11), B1F's legendary beasts scene (VAR_UNK_4079 2, Morty back in his gym).
 # Start: MAP_ECRUTEAK (397,184) -> end: MAP_ECRUTEAK outside the Burned Tower (376,150), VAR_UNK_4079 2.
 title = "Burned Tower: Eusine, the rival, the legendary beasts"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 17157
 refs = [
   "zone_event 075_T27 warp 0 (376,149) -> MAP_BURNED_TOWER_1F (15,26)",
   "scr_seq_0922_T27GYM0101_hdr.s + scr_seq_0922_T27GYM0101.s:62-75 (before the tower, VAR_UNK_4079 0: the gym puts the player out, VAR 1; scr_seq_0920_T27.s:47-66 sets it back to 0)",
@@ -23,11 +22,18 @@ refs = [
 notes = "Firebreathers Richard (6,9) and Ned (22,8) are off the direct line. Rival's Croconaw lv22: the boosted Scyther (10) behind a fainted lead (send = best). 1F (22,16) is a ladder-down tile (0x3E): stepping on it drops to B1F (23,16); there is no scripted fall. The player ends the beasts scene at (19,16) or (19,17) [INFERENCE: the coord's two tiles, walked onto from the east]; the way back up is the B1F ladder (23,16) (0x3C) pushed north, i.e. walk_to (23,15) from (23,17)."
 
 [start]
+boost = "boost.recipe"
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 22500
+frames = 25800
+
+[[step]]
+do = "heal"
+x = 397
+z = 183
+note = "Ecruteak's Pokemon Center (warp 5 (397,183)) before the Burned Tower rival: 13 ends with the lead at 15/69 HP and Ember at 3 PP, and the first chained run lost the rival battle"
 
 [[step]]
 do = "walk_to"

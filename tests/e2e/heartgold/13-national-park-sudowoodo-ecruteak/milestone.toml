@@ -2,10 +2,9 @@
 # the SquirtBottle and fought (SPECIES_SUDOWOODO lv20), the florist's sister's Berry Pots, Route 37 north to Ecruteak.
 # Start: MAP_GOLDENROD (371,333) -> end: MAP_ECRUTEAK south entrance (397,184), FLAG_HIDE_ROUTE_36_SUDOWOODO.
 title = "National Park, Route 36 Sudowoodo, Route 37 to Ecruteak"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 24000
+estimate = 34543
 refs = [
   "zone_event 073_T25 warp 0 (358,325) -> MAP_ROUTE_35_GOLDENROD_GATEHOUSE; zone_event 098_R35R0101 warp 1 (5,2) -> MAP_ROUTE_35",
   "zone_event 036_R35 warp 2 (362,266) -> MAP_ROUTE_35_NATIONAL_PARK_POKEATHALON_GATEHOUSE; zone_event 099_R35R0201 warp 1 (25,2) -> MAP_NATIONAL_PARK",
@@ -24,7 +23,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 36000
+frames = 51900
 
 [[step]]
 do = "heal"
