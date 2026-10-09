@@ -1545,7 +1545,8 @@ def resolve_zone(arg):
     try:
         z = int(arg, 10) if arg.isdigit() else int(arg, 0)
     except ValueError:
-        hits = [x["id"] for x in zones() if arg.lower() in zone_name(x["id"]).lower()]
+        hits = ([x["id"] for x in zones() if arg.lower() == zone_name(x["id"]).lower()]
+                or [x["id"] for x in zones() if arg.lower() in zone_name(x["id"]).lower()])
         if not hits:
             raise SystemExit(f"no zone named like {arg!r}")
         if len(hits) > 1:
