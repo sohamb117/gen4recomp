@@ -203,14 +203,14 @@ SoulSilver's.
 | Screenshots (F12) | app | app | app | app | n2_screenshot (`screenshots/<game>-*.png`) |
 | Trainer Card, Pokédex diploma PNG | app/shell (editor on the save; export in shell_editor_bw) | same | shell (shell_editor_hgss exports both) | same | Unova / Johto badge names, 649 / 493 species |
 | ROM-derived music / SFX | core + app (title rms 7424; app output treble 1219) | same | not yet: silent through the title and intro | same | parity.sh title; n2_audio |
-| Music / SFX volume | not yet: the split classes players by Platinum's SDAT (1, 2, 7 music); B/W's music is players 0 and 6, so on Black's title `bgm_volume=0` leaves rms 7470 and `se_volume=0` takes it to 0; fix in docs/BWHGSS_HOOKS.md | same SDAT players | not yet: Platinum's numbering plus PLAYER_OPED 8; no music to hear yet | same | np_headless -o; n2_audio-bgm0 |
+| Music / SFX volume | core: B/W's music players (0, 6) classed as music (`pc/src/pc_bw_snd.c`); title rms 7424, `bgm_volume=0` 46, `se_volume=0` 7491 | core (same numbers) | not yet: Platinum's numbering plus PLAYER_OPED 8; no music to hear yet | same | parity.sh `title, bgm_volume 0` / `se_volume 0`; app case not rerun (the app predates it) |
 | Music low-pass filter | app (treble 1219 to 895 at 3X) | app (1224 to 895) | shell (no music to filter yet) | same | n2_audio-filter3 |
 | Speed hotkeys, fast-forward | app (4x: 7000 iterations ran 7294 frames; G: 28000) | app | app (1600 iterations ran 1894; G: 6400) | app | n2_speed |
 | Keyboard / gamepad rebinding | shell | shell | shell | shell |  |
 | Touch (stylus) | core (the SAVE item tapped in the X menu) | same | core (touch tutorial, naming done by taps) | same | parity.sh |
 | On-screen touch pad, layout editor | app | app | app | app | n2_touch |
 | Touch skins | app | app | app | app | n2_skin |
-| F1 quick save / F2 quick load | not yet: the core refuses every request (`pc_bw_e2e.c` bw_frame); needs the save routine (docs/BWHGSS_HOOKS.md) | same | not yet: the hook is in (`pc_hg_field.c`: Field_SaveGameNormal behind the start menu's gates), not reachable (no field) | same | n2_quicksave |
+| F1 quick save / F2 quick load | core: the game's own asynchronous save without the menu, the player held by a game event (`pc_bw_e2e.c` quicksave_frame); in the bedroom saved in ~85 frames, the player free again, np_save5 verifies; X-menu greying rules not applied | core (same) | not yet: the hook is in (`pc_hg_field.c`: Field_SaveGameNormal behind the start menu's gates), not reachable (no field) | same | parity.sh `F1 quick save in the bedroom`; `bwhgss/hooks/black-quicksave-005700.png`; app case not rerun |
 | Normal save, atomic writes, backups | core + app (X menu save; np_save5 verifies both copies; CONTINUE) | same | not yet: no in-game save (field load) | same | parity.sh save/continue, n2_continue |
 | Snapshots (F5/F6/F7), rewind | core + app (bedroom: 3/3 round trips; rewind depth 387 to 372) | app (401 to 386) | core + app (title and Oak: round trips; rewind 263 to 248) | same | parity.sh, n2_snapshots |
 | Folder sync | shell | shell | shell | shell | slot summaries read B/W and HG/SS saves |
@@ -223,7 +223,7 @@ SoulSilver's.
 | Fast-forward locked in link play | not yet (no link) | same | same | same |  |
 | Mystery Gift | shell: `.pgf` cards into the 12 slots; delivery in game needs story progress | same | shell: `.pcd` / `.pgt` import; delivery needs the field | same | shell_editor_bw / hgss |
 | Fix cartridge bugs | not yet: NP_OPT_RULES in the game code, per documented bug; needs battles (docs/BWHGSS_HOOKS.md) | same | same | same |  |
-| Instant text | not yet (docs/BWHGSS_HOOKS.md) | same | core: Platinum's rule on HG's printer (`pc/patches/src/text.c.patch`); Oak's first page whole at frame 7285 where the cartridge shows "H", button waits kept, the intro still reaches naming | same patch (SoulSilver's core not rebuilt) | parity.sh `instant text (Oak)`; `bwhgss/hooks/heartgold-text-*.png` |
+| Instant text | core: the print stream task's glyph call goes to `PcBw_RushPrinter` (`pc/patches/<VER>/arm9/asm/ndsrec_arm9_006.s.patch`, `pc/src/pc_bw_text.c`); the X menu's "Would you like to save the game?" whole with YES/NO open at frame 22101 where the cartridge shows "W"; the save then completes and verifies | core (same) | core: Platinum's rule on HG's printer (`pc/patches/src/text.c.patch`); Oak's first page whole at frame 7285 where the cartridge shows "H", button waits kept, the intro still reaches naming | same patch (SoulSilver's core not rebuilt) | parity.sh `instant text (Oak)`; `bwhgss/hooks/heartgold-text-*.png` |
 | macOS app | app (development build with these cores; packaging not run) | same | same | same | build/app-bwhgss |
 | Windows build | not yet | not yet | not yet | not yet |  |
 | URL launch, launch flags | app | app | app | app | n2_launch; `--game/--slot` in every case |

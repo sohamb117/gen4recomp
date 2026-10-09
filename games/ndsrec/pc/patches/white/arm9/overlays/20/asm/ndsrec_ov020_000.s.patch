@@ -1,0 +1,58 @@
+The B/W proposal for the callers of overlay 230 (docs/BW_PLAN.md):
+ov20_021841C0, the field: the overlay-230 load and unload and its
+three calls omitted (their results are not read).
+Each four-byte Thumb BL becomes two two-byte instructions, so every
+later guest address stays put. SHA256SUMS pins the result.
+
+--- a/arm9/overlays/20/asm/ndsrec_ov020_000.s
++++ b/arm9/overlays/20/asm/ndsrec_ov020_000.s
+@@ -837,7 +837,8 @@
+ 	b _ov020_02184366
+ _ov020_02184240: ; 0x02184240
+ 	ldr r0, _ov020_0218436C
+-	bl sub_02034ADC
++	nop
++	nop
+ 	ldrh r0, [r5, #0x14]
+ 	bl sub_02013D50
+ 	cmp r0, #0x1
+@@ -867,7 +868,8 @@
+ 	ldr r0, _ov020_02184370
+ 	ldr r1, _ov020_02184374
+ 	mov r2, #0x0
+-	bl armrec_dispatch_021882C0
++	nop
++	nop
+ 	add r0, r7, #0x0
+ 	bl ov20_02185B90
+ 	ldr r0, [r5, #0x40]
+@@ -906,7 +908,8 @@
+ 	ldr r0, _ov020_02184370
+ 	ldr r1, _ov020_02184378
+ 	mov r2, #0x0
+-	bl armrec_dispatch_02188338
++	nop
++	nop
+ 	ldrh r1, [r5, #0x14]
+ 	add r0, r7, #0x0
+ 	bl ov20_02185A88
+@@ -926,7 +929,8 @@
+ 	ldr r0, _ov020_02184370
+ 	ldr r1, _ov020_0218437C
+ 	mov r2, #0x0
+-	bl armrec_dispatch_021883EC
++	nop
++	nop
+ 	add r0, r5, #0x0
+ 	add r0, #0x30
+ 	ldrb r0, [r0, #0x0]
+@@ -953,7 +957,8 @@
+ 	bl ov10_0216447C
+ _ov020_0218433E: ; 0x0218433E
+ 	ldr r0, _ov020_0218436C
+-	bl sub_02034A74
++	nop
++	nop
+ 	ldr r0, [sp, #0x4]
+ 	bl ov10_0215876C
+ 	ldr r0, [r4, #0x0]

@@ -1,0 +1,15 @@
+NP_OPT_TEXT_INSTANT (pc/src/pc_bw_text.c): the print stream task's one
+call to the glyph renderer (sub_0201C974) goes to PcBw_RushPrinter, which makes
+that call and, with the option on, carries on through the page.
+
+--- a/arm9/asm/ndsrec_arm9_006.s
++++ b/arm9/asm/ndsrec_arm9_006.s
+@@ -7671,7 +7671,7 @@
+ _0201D068: ; 0x0201D068
+ 	ldr r0, [sp, #0x14]
+ 	mov r2, #0x0
+-	bl sub_0201C974
++	bl PcBw_RushPrinter
+ 	str r0, [r5, #0x14]
+ 	ldrh r1, [r0, #0x0]
+ 	ldr r0, _0201D10C

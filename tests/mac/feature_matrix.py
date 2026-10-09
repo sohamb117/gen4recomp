@@ -1097,15 +1097,17 @@ def _(c):
     assert 'rewind depth' in log
 
 
-@case('n2_audio', 'Audio output (the ROM\'s own music) and the music low-pass filter; volumes need game code',
+@case('n2_audio', 'Audio output (the ROM\'s own music), the music low-pass filter, bgm_volume 0 recorded',
       'nds2')
 def _(c):
     if not is_bw():
         # tests/bwhgss/parity.sh: the HG/SS core's output is silent through
         # the title and intro (one sound around frame 8400).
         raise FileNotFoundError('HG/SS music: the core plays no title/intro music yet')
-    # The shell's low-pass filter lowers the output's treble; bgm_volume needs
-    # the game's hook (NP_OPT_BGM_VOLUME), which the B/W core does not have yet.
+    # The shell's low-pass filter lowers the output's treble. bgm_volume 0 is
+    # recorded, not asserted: the B/W cores answer it since pc/src/pc_bw_snd.c
+    # (tests/bwhgss/parity.sh measures it headless), the app this case last ran
+    # on predates that.
     out = {}
     for name, opts in (('default', ''), ('filter3', '[audio]\nmusic_filter = 3'), ('bgm0', '[game]\nbgm_volume = 0')):
         new_save(c, opts=opts)
@@ -1175,7 +1177,8 @@ def _(c):
     assert 'game=%s' % GAME in log and 'view=game' in log, log[-1500:]
 
 
-@case('n2_quicksave', 'F1 quick save: needs the game\'s hook (NP_OPT_QUICKSAVE_SEQ); records what happens', 'nds2')
+@case('n2_quicksave', 'F1 quick save (NP_OPT_QUICKSAVE_SEQ): records the toasts; asserted headless by '
+      'tests/bwhgss/parity.sh', 'nds2')
 def _(c):
     new_save(c)
     base, _ = new_at()

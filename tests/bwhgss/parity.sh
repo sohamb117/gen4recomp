@@ -7,11 +7,17 @@
 #
 # Black / White:
 #   title     boot to the title: ROM-derived music (audio rms), snapshot round
-#             trips (--state-test) at the title
+#             trips (--state-test) at the title; the same title with
+#             bgm_volume 0 (the music silent) and se_volume 0 (the music
+#             kept): B/W's music players are 0 and 6 (pc/src/pc_bw_snd.c)
 #   save      bw-save.sched: NEW GAME to the controllable bedroom, snapshot
 #             round trips there, then the X menu SAVE: the game's own save,
-#             which np_save5 must verify (both copies, every CRC)
+#             which np_save5 must verify (both copies, every CRC); again
+#             with text_instant from just before the menu: its "save?"
+#             message whole at once, and the save still made
 #   continue  bw-continue.sched from that save: title, CONTINUE, the bedroom
+#   quicksave the same with an F1 quick save in the bedroom (quicksave_seq):
+#             saved, the player free again, the file changed and verified
 # HeartGold / SoulSilver (the field does not load yet, docs/HANDOFF-hgss.md):
 #   intro     hgss-intro.sched: title, the touch-screen tutorial driven by
 #             stylus taps, Prof. Oak, the boy, the default name accepted;
@@ -63,6 +69,20 @@ loud() { # NAME LOG: nonzero audio from the ROM's sound data
         return 1
     fi
     echo "ok   $1 (audio rms L $l)"
+}
+quiet() { # NAME LOG_DEFAULT LOG_MUTED PERCENT: LOG_MUTED's rms below PERCENT
+    # of LOG_DEFAULT's (PERCENT > 0), or at least -PERCENT of it (< 0)
+    local d m
+    d=$(sed -n 's/^audio rms from frame [0-9]*: L \([0-9]*\).*/\1/p' "$2")
+    m=$(sed -n 's/^audio rms from frame [0-9]*: L \([0-9]*\).*/\1/p' "$3")
+    if [ -z "$d" ] || [ -z "$m" ] || [ "$d" -lt 100 ] \
+        || { [ "$4" -gt 0 ] && [ $((m * 100)) -ge $((d * $4)) ]; } \
+        || { [ "$4" -lt 0 ] && [ $((m * 100)) -lt $((d * -$4)) ]; }; then
+        echo "FAIL $1: audio rms $m against $d (logs $2, $3)"
+        fail=1
+        return 1
+    fi
+    echo "ok   $1 (audio rms L $d -> $m)"
 }
 pngs() { # DIR: the dumped frames as PNGs
     local f
@@ -117,9 +137,13 @@ for g in "${games[@]}"; do
         check "$g title" "$w/title.log" "exit 0"
         state_ok "$g title snapshots" "$w/title.log" 3
         loud "$g title music" "$w/title.log"
+        run title-bgm0 --frames 5400 --rms-from 4000 -o bgm_volume=0
+        quiet "$g title, bgm_volume 0" "$w/title.log" "$w/title-bgm0.log" 10
+        run title-se0 --frames 5400 --rms-from 4000 -o se_volume=0
+        quiet "$g title, se_volume 0" "$w/title.log" "$w/title-se0.log" -90
 
         run save --frames 23200 --schedule $here/bw-save.sched --save "$w/game.sav" \
-            --dump-from 21400 --dump-every 300 --state-test 21500 --state-span 120 --state-rounds 3
+            --dump-from 21410 --dump-every 15 --state-test 21500 --state-span 120 --state-rounds 3
         check "$g new game to the bedroom, in-game save" "$w/save.log" "exit 0"
         state_ok "$g bedroom snapshots" "$w/save.log" 3
         if [ -x "$save5" ]; then
@@ -131,10 +155,38 @@ for g in "${games[@]}"; do
             echo "note $g: no $save5 (set NP_SAVE5); save not verified"
         fi
 
+        # The X menu's "Would you like to save the game?" prints from ~22097
+        # to ~22147; with text_instant it is whole (and YES/NO open) by 22101.
+        run save-text --frames 23200 --schedule $here/bw-save.sched --save "$w/game-text.sav" \
+            --dump-from 22100 --dump-every 15 -o 22090:text_instant=1
+        check "$g in-game save with instant text" "$w/save-text.log" "exit 0"
+        instant "$g instant text (the save prompt)" save save-text 022101 022116 4 198 244 228
+        if [ -x "$save5" ]; then
+            "$save5" verify "$w/game-text.sav" > "$w/verify-text.log" 2>&1
+            echo "exit $?" >> "$w/verify-text.log"
+            check "$g save with instant text verifies" "$w/verify-text.log" "exit 0" "all checksums valid"
+        fi
+
         cp "$w/game.sav" "$w/continue.sav"
         run continue --frames 7000 --schedule $here/bw-continue.sched --save "$w/continue.sav" \
             --dump-from 5000 --dump-every 1000
         check "$g CONTINUE to the bedroom" "$w/continue.log" "exit 0"
+
+        # F1 in the bedroom (free from ~5300): the game's save, ~230 frames.
+        cp "$w/game.sav" "$w/quicksave.sav"
+        run quicksave --frames 7000 --schedule $here/bw-continue.sched --save "$w/quicksave.sav" \
+            --dump-from 5600 --dump-every 200 -o 5600:quicksave_seq=1
+        check "$g F1 quick save in the bedroom" "$w/quicksave.log" "exit 0" \
+            "pc-np: quick save 1: saved" "field_ready=1 quicksave_seq=1 quicksave_result=1"
+        if cmp -s "$w/game.sav" "$w/quicksave.sav"; then
+            echo "FAIL $g quick save: the save file did not change"
+            fail=1
+        fi
+        if [ -x "$save5" ]; then
+            "$save5" verify "$w/quicksave.sav" > "$w/verify-quicksave.log" 2>&1
+            echo "exit $?" >> "$w/verify-quicksave.log"
+            check "$g quick save verifies (np_save5)" "$w/verify-quicksave.log" "exit 0" "all checksums valid"
+        fi
         ;;
     heartgold | soulsilver)
         run intro --frames 13900 --schedule $here/hgss-intro.sched --dump-from 1600 --dump-every 1500 \

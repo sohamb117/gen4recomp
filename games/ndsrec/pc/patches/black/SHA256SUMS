@@ -1,0 +1,3 @@
+6ac07a4b418fd9e22ca11402bc1f9341fb01718c62f73c4aea8ed9e833982b3e  arm9/asm/ndsrec_arm9_004.s
+9dc89ec2538a2231c2efece7a8f5d53916daff3eccc0d41db6ef90c15a43c22c  arm9/overlays/10/asm/ndsrec_ov010_005.s
+dcfb5aeb046ecad8c9b9fd51b6f645328efd20b8dd9fa0bbbab4ba080b834fd6  arm9/overlays/20/asm/ndsrec_ov020_000.s

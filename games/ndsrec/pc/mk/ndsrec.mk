@@ -6,12 +6,26 @@
 #   $(NDSREC_OUT)/asm/              ndsrec emit: arm9/asm/*.s and
 #                                   arm9/overlays/<id>/asm/*.s (armrec reads
 #                                   overlay membership from the path),
-#                                   host_overrides.txt, emit.txt
+#                                   host_overrides.txt, emit.txt; then
+#                                   pc/patches/$(VER)/ applied to it
 #   $(NDSREC_OUT)/lcf.xmap          crt0's link values, in xMAP form, for
 #                                   host.mk's launcher stack (ROM_XMAP)
 #   $(ARMREC_C)/*.c, classes.txt    armrec --wasm over all of it
 #
 # Generated code stays in build/; the two reviewed BW caller snapshots are tracked.
+
+# Assembly patches, per ROM: pc/patches/<VER>/<p>.s.patch is applied to the
+# emitted <p>.s (paths from the assembly root, e.g. arm9/overlays/10/asm/
+# ndsrec_ov010_002.s), as D/P's pc/patches/arm9/*.s.patch are to theirs:
+# size-neutral, so every guest address and literal pool stays where the ROM
+# has it (a `bl X` retargeted to host C, or an instruction pair replaced by
+# `bl Hook; nop`). No fuzz: a patch whose context the emission no longer
+# matches fails the build. pc/patches/<VER>/SHA256SUMS, when present, pins
+# patched files to exact reviewed contents (`shasum -a 256 -c`, paths from
+# the assembly root). A changed patch re-emits, so nothing is patched twice.
+NDSREC_PATCH_DIR := $(MYPC)/patches/$(VER)
+NDSREC_SPATCHES  := $(sort $(shell find $(NDSREC_PATCH_DIR) -name '*.s.patch' 2>/dev/null))
+NDSREC_PATCH_SUMS := $(wildcard $(NDSREC_PATCH_DIR)/SHA256SUMS)
 
 NDSREC_OUT     := $(BUILD)/ndsrec
 NDSREC_ASM     := $(NDSREC_OUT)/asm
@@ -40,24 +54,17 @@ $(ROM_XMAP): $(ROM) $(NDSREC_PY)
 	@mkdir -p $(dir $@)
 	$(PYTHON) $(NDSREC)/ndsrec.py lcf $(ROM) > $@.tmp && mv $@.tmp $@
 
-$(NDSREC_STAMP): $(ROM) $(PRIM_SYMS) $(NDSREC_PY)
+$(NDSREC_STAMP): $(ROM) $(PRIM_SYMS) $(NDSREC_PY) $(NDSREC_SPATCHES) $(NDSREC_PATCH_SUMS)
 	@rm -rf $(NDSREC_ASM)
 	$(PYTHON) $(NDSREC)/ndsrec.py emit $(ROM) --symbols $(PRIM_SYMS) \
 	    --out $(NDSREC_ASM)
+	@for p in $(NDSREC_SPATCHES); do \
+	   rel=$${p#$(NDSREC_PATCH_DIR)/}; rel=$${rel%.patch}; \
+	   patch --silent --forward -F 0 $(NDSREC_ASM)/$$rel $$p || \
+	     { echo "pc/patches/$(VER)/$$rel.patch no longer applies" >&2; exit 1; }; \
+	 done
+	$(if $(NDSREC_PATCH_SUMS),cd $(NDSREC_ASM) && shasum -a 256 -c --quiet $(NDSREC_PATCH_SUMS))
 	@touch $@
-
-# Experimental BW startup proposal, after emission and before translation.
-# The helper accepts only the reviewed original or exact proposed file hashes.
-ARMREC_ASM_READY := $(NDSREC_STAMP)
-ifneq ($(filter black white,$(VER)),)
-BW_STARTUP_PATCH := $(MYPC)/patch_bw_startup.py
-BW_STARTUP_STAMP := $(NDSREC_OUT)/bw-startup.stamp
-$(BW_STARTUP_STAMP): $(NDSREC_STAMP) $(BW_STARTUP_PATCH)
-	$(PYTHON) $(BW_STARTUP_PATCH) $(VER) \
-	    $(NDSREC_ASM)/arm9/asm/ndsrec_arm9_004.s
-	@touch $@
-ARMREC_ASM_READY := $(BW_STARTUP_STAMP)
-endif
 
 # armrec over every file at once (the symbol table is global). Paths are
 # relative to the assembly root so `arm9/overlays/<id>/asm/` names the
@@ -65,7 +72,7 @@ endif
 ARMREC_FLAGS := --wasm --decomp-state /dev/null \
                 --host-override $(NDSREC_ASM)/host_overrides.txt
 
-$(ARMREC_STAMP): $(ARMREC_ASM_READY) $(ARMREC)/armrec.py
+$(ARMREC_STAMP): $(NDSREC_STAMP) $(ARMREC)/armrec.py
 	@rm -rf $(ARMREC_C) && mkdir -p $(ARMREC_C)
 	cd $(NDSREC_ASM) && $(PYTHON) $(ARMREC)/armrec.py $(ARMREC_FLAGS) \
 	    --out $(ARMREC_C) --classes $(ARMREC_CLASSES).tmp \

@@ -321,20 +321,24 @@ the card layer from FS) and recorded as anchors in sigs.py.
 
 The active development build deliberately substitutes outcomes in `sub_02011D9C`; it does
 not faithfully implement overlay 230 or establish full playability.
-`pc/patch_bw_startup.py` makes the five reviewed call-site substitutions
+`pc/patches/<black|white>/arm9/asm/ndsrec_arm9_004.s.patch` makes the five reviewed call-site substitutions
 in Black and White's generated `ndsrec_arm9_004.s`: omit this caller's
 overlay load/unload and third call, return zero from the first check, and
 return the complement of `r1` from the second. Each four-byte Thumb BL
 becomes two two-byte instructions, preserving guest addresses. Making
 both comparisons equal would be a different, untested proposal.
 
-`pc/mk/ndsrec.mk` runs the helper after assembly emission and before
-armrec, only for `VER=black` or `VER=white`. Full-file SHA-256 guards
-accept only the reviewed original or already-patched output; unknown
-inputs fail without modification. Regeneration reapplies the same
-proposal. The two checked-in generated caller files are exact tested
-snapshots, not substitutes for this build step. No ROM bytes are changed
-and overlay 230 is not decoded.
+`pc/mk/ndsrec.mk` applies it after assembly emission and before armrec
+(the per-version assembly patch step: every `pc/patches/<VER>/*.s.patch`,
+no fuzz), only for `VER=black` or `VER=white`; `pc/patches/<VER>/SHA256SUMS`
+pins each patched file to the reviewed output, so an emission a patch no
+longer fits, or a result other than the reviewed one, fails the build.
+Regeneration reapplies the same proposal. The two checked-in generated
+caller files are exact tested snapshots, not substitutes for this build
+step. No ROM bytes are changed and overlay 230 is not decoded. (Until
+2026-10-08 a hash-guarded script, `pc/patch_bw_startup.py`, made these
+edits; the patches reproduce its output byte for byte, the SHA256SUMS
+lines being its "proposed" hashes.)
 
 Independent isolated runs used Black ROM SHA-1
 `26ad0b9967aa279c4a266ee69f52b9b2332399a5` and White ROM SHA-1
@@ -475,7 +479,7 @@ emits for every ROM; D/P/Pt's decompilation-built cores do not use it.
   for a target 2,048 bytes back (0x0201558C).
 
 The static's `ndsrec_arm9_004.s` is unchanged by all of this: the startup
-helper's hashes and both tracked snapshots stand. Diamond's ROM-only
+patch's SHA256SUMS and both tracked snapshots stand. Diamond's ROM-only
 emission gains 4 functions (static 3, ov13 1) and the new spellings; its
 hash check is in the report of this change.
 
@@ -548,12 +552,13 @@ $500 for winning!" at frame 13701 (Black Tepig 14/22, White 12/22).
 (White `ov10_0216EBB8`) calls `sub_02034AC4` (White `sub_02034ADC`) to
 start overlay 230: frame 13756 in Black, 13796 in White. ov230's five
 static initialisers have no translation, so the core trapped. By the
-user's decision, `pc/patch_bw_startup.py` now gives every ov230 caller the
-startup treatment. ov230 itself is never decoded, decrypted or
+user's decision, every ov230 caller now gets the startup treatment
+(`pc/patches/<VER>/arm9/overlays/{10,20}/asm/*.s.patch` beside the static's
+`arm9/asm/ndsrec_arm9_004.s.patch`). ov230 itself is never decoded, decrypted or
 recompiled. Its load, unload and calls are removed, each four-byte BL
 becomes two two-byte instructions (no guest address moves), and each
 caller gets the outcome a genuine cartridge produces, read from its own
-comparisons. Full-file SHA-256 guards cover each file, the same as for
+comparisons. `SHA256SUMS` pins each file, the same as
 `ndsrec_arm9_004.s`.
 
 | Caller (Black / White) | ov230 call | Substituted outcome |

@@ -42,15 +42,15 @@ How a hook reaches game code differs per game:
 | | D/P (recompiled asm + decomp C) | Platinum (decomp C) | HG/SS (decomp C + asm) | B/W (ROM-only asm) |
 |---|---|---|---|---|
 | patch C | `pc/patches/arm9/src/*.c.patch` | `pc/patches/src/*.c.patch` | `pc/patches/src/*.c.patch` (`pc/mk/game.mk`) | none (no C) |
-| patch asm | `*.s.patch`: `bl X` -> `bl PcDp_Hook`, or an instruction pair -> `bl Hook; nop`, size for size (`overlays/05/asm/ov05_021D74E0.s.patch`, `overlays/11/asm/ov11_0223D1DC.s.patch`) | n/a | `pc/patches/asm`, `lib/asm` `.s.patch` (`pc/mk/armrec.mk`) | `patch_bw_startup.py`: hash-guarded, size-neutral edits of one emitted file; nothing general yet |
+| patch asm | `*.s.patch`: `bl X` -> `bl PcDp_Hook`, or an instruction pair -> `bl Hook; nop`, size for size (`overlays/05/asm/ov05_021D74E0.s.patch`, `overlays/11/asm/ov11_0223D1DC.s.patch`) | n/a | `pc/patches/asm`, `lib/asm` `.s.patch` (`pc/mk/armrec.mk`) | `pc/patches/<VER>/*.s.patch` on the emitted assembly (`pc/mk/ndsrec.mk`), no fuzz, optional `SHA256SUMS` |
 | replace a function | strong C symbol over a weak SDK body (`FS_OpenFile`, `pc_dp_modfs.c`) | C | `pc/host_overrides.txt` | `tools/ndsrec/primitives.txt` `override` (signature-matched from Diamond: 71 of 136 placed, docs/BW_PLAN.md) |
 | call game code | direct C call | direct C call | direct C call | `ARMREC_CALL` / `armrec_call_code(addr, r0..r3)` on a host-owned guest stack |
 | read game state | C structs | C structs | C structs | RAM map, docs/BW_RAM.md (GAMESYS `*0x02146248` Black / `*0x02146268` White) |
 
 For B/W the D/P `.s.patch` is the model: the emitted assembly is deterministic per ROM, so a per-version patch
-under `games/ndsrec/pc/patches/<version>/` applied by `pc/mk/ndsrec.mk` after `ndsrec.py emit` (and guarded
-by the emitted file's hash, as `patch_bw_startup.py` is) can retarget a `bl` to host C. `patch_bw_startup.py`
-should become the first such patch instead of a second mechanism.
+under `games/ndsrec/pc/patches/<version>/`, applied by `pc/mk/ndsrec.mk` after `ndsrec.py emit` with no fuzz
+(and pinned by `SHA256SUMS` where an exact result is reviewed), can retarget a `bl` to host C. The startup
+proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 
 ## Per feature
 
@@ -89,16 +89,15 @@ should become the first such patch instead of a second mechanism.
 - **HG/SS:** players 0 PV, 1 FIELD, 2 ME, 3..6 SE_1..4, 7 BGM (Platinum's, also
   `include/constants/sndseq.h`) plus 8 PLAYER_OPED, the opening / ending music, which Platinum's table would
   class as effects.
-- **Plan, both games, without touching D/P/Pt inputs:** let the game answer "is this archive player music". B/W:
-  drop `pc_dp_snd.o` from the ndsrec link (as HG/SS already drops `pc_agb_slot.o` and `pc_dp_agb.o`) and give
-  `pc_bw_e2e.c` (or a `pc_bw_snd.c`) a `pc_np_seq_player_group` that reads the same two arrays and folds
-  B/W's numbers onto Platinum's classes (0, 6 -> 7; 1..5 -> 3). HG/SS: the same, folding 8 -> 7. Because
-  `pc_np_options.c` only ever sees Platinum's numbering, D/P/Pt stay byte-identical. The cleaner alternative is
-  a weak `pc_np_player_is_music(int)` in `pc_np_options.c`, but that changes a D/P/Pt input and **needs a D/P/Pt
-  rebuild**.
-- **Proof:** Black's title rms with `bgm_volume=0` drops to near 0, and with `se_volume=0` stays about 7470
-  (np_headless `-o`, then the app's n2_audio case with a `bgm0` assertion). HG/SS cannot be proven until its
-  core makes sound (it is silent through the title and intro, docs/FEATURE_PARITY.md).
+- **B/W: done (2026-10-08).** `games/ndsrec/pc/src/pc_bw_snd.c` is the B/W `pc_np_seq_player_group`: the
+  same two arrays, B/W's players folded onto Platinum's classes (0 and 6 answer 7, the rest 3), and
+  `pc/Makefile.wasm` links it in place of `pc_dp_snd.o` for Black and White. `pc_np_options.c` only ever
+  sees Platinum's numbering, so D/P/Pt are untouched. Black's title (rms from frame 4000, L): 7492 by
+  default, 47 with `bgm_volume=0`, 7491 with `se_volume=0` (parity.sh `title, bgm_volume 0` / `se_volume 0`,
+  on both games).
+- **HG/SS, still to do:** the same file for HG/SS, folding 8 -> 7. It cannot be proven until its core makes
+  sound (it is silent through the title and intro, docs/FEATURE_PARITY.md). The alternative, a weak
+  `pc_np_player_is_music(int)` in `pc_np_options.c`, changes a D/P/Pt input and **needs a D/P/Pt rebuild**.
 
 ### F1 quick save
 
@@ -110,24 +109,24 @@ should become the first such patch instead of a second mechanism.
   `quicksave_done` mirror D/P with `Field_SaveGameNormal` (overlay 1, the same call `TouchSaveApp_SaveGame` and
   `ScrCmd_SaveGameNormal` make). It needs nothing more than the field: the overlay 123 `ds_protect` fix.
   Then the app's n2_quicksave case should see "Saved" and the slot file change.
-- **B/W: needs the save routine.** The B/W gate already exists (`bw_frame`: `field_ready`). Missing is the
-  entry point the X menu's SAVE runs. Find it the way docs/BW_RAM.md found the terrain query. Set an LLDB
-  write watchpoint on the save footer's count (Black `0x0221BBAC + 0x23F8C`, White `+0x20`) during the parity
-  schedule's X-menu save (`tests/bwhgss/bw-save.sched`). The backtrace gives the writer and the chain up to
-  the menu's save event. The heap allocator's file stamps (`game_data.c`, and the save system's own file)
-  name the blocks along the way. Two shapes are possible:
-  1. a synchronous "save the game" function (D/P's shape): `ARMREC_CALL` it from `bw_frame` when ready;
-  2. an asynchronous save event (likely for Gen 5's two-slot 0x24000-byte writes): start the same `GMEVENT`
-     the menu starts. That needs the event-push function (its address appears in the menu's backtrace) called
-     with GAMESYS. Report the result when the event pointer (GAMESYS+0x18) returns to 0 and the footer count
-     has advanced.
+- **B/W: done (2026-10-08)**, in `games/ndsrec/pc/src/pc_bw_e2e.c` (`quicksave_frame`). There is no
+  synchronous save in B/W: the X menu's SAVE (`ov10_02169AB8`, its state the GMEVENT's seq) and the script
+  SAVE command (`ov10_02159A64`) both start with `sub_02012DAC(GAMEDATA)` (which writes the live GAMEDATA
+  back into the save blocks and starts the asynchronous write) and poll `sub_02012DD0(GAMEDATA)` every
+  frame (0 / 1 writing, 2 saved, 3 failed). Before the start they add 1 to the "times saved" record
+  (`sub_02008DF0(sub_02012F2C(gd), 1)`). The menu refuses when `sub_020071F0(savecontrol)` is 1, and a save
+  is running while `GAMEDATA+0x1CE` is set. The quick save does the same, from `field_ready`. It also holds
+  the player for the write the way the game does: an event of the game's own (`sub_020122C0` create,
+  `sub_02012108` make it the running one) whose function is `ov10_02161340` ("done once seq is not 0",
+  White `ov10_02161360`); setting its seq to 1 when the write ends lets the game's runner free it. A host C
+  function cannot be the event function: on wasm a C function pointer is a table index the dispatcher does
+  not know. The static functions are at the same addresses in White. Found by watching the menu's event
+  chain and its seq (`--watch`, no debugger: lldb cannot attach here). On Black's bedroom save, `-o
+  5600:quicksave_seq=1` saves by frame 5685 (the footer's count 2 -> 3 at 5672), the player is free again
+  at 5686, and np_save5 verifies the file (parity.sh `F1 quick save in the bedroom`).
 
-  Refusals: the X menu's own conditions. Read them from the menu's list builder, found from the same
-  backtrace (expected, not yet seen: link rooms, Entralink, the Battle Subway, the Musical). Until those
-  are known, refuse outside the zones the e2e milestones have saved in. Never write the save image directly:
-  that bypasses the game's CRCs and slot rotation.
-- **Proof:** np_headless with `-o quicksave_seq=1` at a bedroom frame, then `np_save5 verify` and the footer
-  count +1; the app's n2_quicksave "Saved".
+  Refusals still missing: the X menu's own list conditions (where it greys SAVE out) were not found. Only
+  `field_ready` (the field, no event, the player on a tile centre) and the two checks above gate it.
 
 ### Instant text
 
@@ -135,20 +134,25 @@ should become the first such patch instead of a second mechanism.
   option is on and the printer is only handing out characters (`RENDER_PRINT` / delay), it keeps rendering
   within the frame. It stops at waits, scrolls, pauses and the finish, so input and callbacks are unchanged.
   D/P: the same rule on D's printer (`pc/patches/arm9/src/text.c.patch`).
-- **HG/SS: a direct port.** HG's `src/text.c` has the same `RunTextPrinter` / `RenderFont` pair (lines 201 and
-  229) as Platinum's. Apply Pt's patch as `games/heartgold/pc/patches/src/text.c.patch` with HG's enum names.
-  This can be **tested now**: Prof. Oak's introduction is printed text before the field
-  (`tests/bwhgss/hgss-intro.sched`). Compare frames with `-o text_instant=1` and without: the first page
-  completes in the first frame of the box.
-- **B/W: find the printer.** Gen 5's printer is not mapped. Find it with a write watchpoint on the message
-  window's character buffer (or on VRAM of the window's BG) while the bedroom's first dialogue prints. The
-  callee that advances the string pointer by one character per wait is the target. Then either (a) a `bl`
-  retarget in its caller to a host `PcBw_RushPrinter` that loops the original while it returns "printed a
-  character" (Pt's rule, calling the original through `ARMREC_CALL`), or (b) if the per-character wait is a
-  counter in the printer object, zero it from `bw_frame` while the option is on. (a) is the faithful one; (b)
-  is simpler but also skips waits the game meant (scroll timing). Prefer (a).
-- **Proof:** the bedroom's opening dialogue (parity `bw-save.sched`) with `-o text_instant=1`: the box's full
-  page at its first frame.
+- **HG/SS: done (2026-10-08).** HG's `src/text.c` has the same `RunTextPrinter` / `RenderFont` pair as
+  Platinum's (HG's `unk2E` is Platinum's `callbackParam`), so `games/heartgold/pc/patches/src/text.c.patch`
+  is Platinum's patch with HG's names. Proven on Prof. Oak's introduction (`tests/bwhgss/hgss-intro.sched`):
+  with `-o 7284:text_instant=1` the first page ("Huh? It's already become so bright outside!") is whole at
+  frame 7285, where the cartridge has drawn "H", and stays until the tap; with the option on from frame 0
+  the intro still reaches the naming screen (parity.sh `instant text (Oak)`,
+  `build/evidence/bwhgss/hooks/heartgold-text-*.png`).
+- **B/W: done (2026-10-08).** B/W print through a print stream: a task (Black `sub_0201CEE0`, White
+  `sub_0201CEFC`) with its work block (+0x00 state: 0 running, 1 waiting for a button, 2 done; +0x14 the
+  current code; +0x1E the per-character delay; +0x24 / +0x2C / +0x30 the callback and its arguments; +0x34
+  the glyph job). Each frame it renders one glyph through `sub_0201C974` (White `sub_0201C990`) and handles
+  the 0xBEnn control tags through `sub_0201D110` (White `sub_0201D12C`): BE00 / BE01 wait for a button,
+  BE02 waits N frames. `pc/patches/<VER>/arm9/asm/ndsrec_arm9_006.s.patch` retargets the task's glyph call
+  to `PcBw_RushPrinter` (`pc/src/pc_bw_text.c`). Off, it is that call. On, it carries on within the frame
+  through text, newlines and BE03..BE09 tags, running the callback after each item as the task does. It
+  stops at the end, at BE00..BE02, when the callback is busy, or when the stream leaves the running state.
+  Proven on the X menu's "Would you like to save the game?" (`-o 22090:text_instant=1`): whole, with YES/NO
+  open, by frame 22101, where the cartridge has drawn "W"; the save then completes and verifies (parity.sh
+  `instant text (the save prompt)`).
 
 ### Camera zoom and tilt
 
@@ -232,17 +236,17 @@ should become the first such patch instead of a second mechanism.
 
 ## Ranking (value / effort)
 
-| # | Feature | Game | Effort | Value | Blocked by | Touches D/P/Pt inputs |
-|---|---|---|---|---|---|---|
-| 1 | Render scale, widescreen | B/W | none in game code: app cases + rows | high (works today) | nothing | no |
-| 2 | Volume split (player table) | B/W | small: `pc_np_seq_player_group` in ndsrec, drop `pc_dp_snd.o` | high (B/W makes music) | nothing | no (weak hook alternative: yes) |
-| 3 | Instant text | HG/SS | small: Pt's `text.c.patch` ported | medium | nothing (Oak's intro) | no |
+| # | Feature | Game | Effort | Value | Blocked by | Touches D/P/Pt inputs | Status |
+|---|---|---|---|---|---|---|---|
+| 1 | Render scale, widescreen | B/W | none in game code: app cases + rows | high (works today) | nothing | no | **done**: n2_render |
+| 2 | Volume split (player table) | B/W | small: `pc_np_seq_player_group` in ndsrec, drop `pc_dp_snd.o` | high (B/W makes music) | nothing | no (weak hook alternative: yes) | **done** |
+| 3 | Instant text | HG/SS | small: Pt's `text.c.patch` ported | medium | nothing (Oak's intro) | no | **done** |
 | 4 | Quick save, `IN_BATTLE` (encounters) | HG/SS | none: already in source | high | overlay 123 field load | no |
 | 5 | Render scale, widescreen | HG/SS | none | medium | field (3D) | no |
 | 6 | Camera zoom / tilt | HG/SS | medium: fieldmap patch + Pt's maths on HG's Camera | medium | field | no (if copied, not shared) |
 | 7 | Volume split | HG/SS | small (fold 8 -> 7) | low until HG has sound | HG audio silence | no |
-| 8 | Quick save | B/W | medium: watchpoint hunt, then `ARMREC_CALL` or event push | high | nothing | no |
-| 9 | Instant text | B/W | medium: printer hunt, then a `bl` retarget | medium | nothing | no |
+| 8 | Quick save | B/W | medium: the save API hunt, then `ARMREC_CALL` and a game event | high | nothing | no | **done** |
+| 9 | Instant text | B/W | medium: printer hunt, then a `bl` retarget | medium | nothing | no | **done** |
 | 10 | Mods via a ROM view | all DS | medium-high: FAT/NARC rebuild in the host's ROM read | medium | nothing | shared host code: shell tests |
 | 11 | Mods via FS/NARC hooks | HG/SS | medium | low over #10 | field for most assets | no |
 | 12 | `in_battle_app` | HG/SS | small | low (Frontier only) | field | no |
@@ -250,5 +254,5 @@ should become the first such patch instead of a second mechanism.
 | 14 | `IN_BATTLE` | B/W | small after the event layout | medium | overlay 93 | no |
 | 15 | Rules | HG/SS, B/W | medium each, per documented bug | low | battles | no |
 
-The same B/W groundwork serves #8, #9, #13 and #14: a general per-version emitted-assembly patch step in
-`pc/mk/ndsrec.mk`, with `patch_bw_startup.py` folded into it. Build it once before the first of them.
+The same B/W groundwork serves #8, #9, #13 and #14: the per-version emitted-assembly patch step in
+`pc/mk/ndsrec.mk` (in place since 2026-10-08, the startup proposal its first patch).

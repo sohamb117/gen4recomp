@@ -34,10 +34,33 @@
  *
  * The functions run on a guest stack of their own (as D/P's pc_dp_field.c
  * does): the frame boundary is the idle thread's, whose stack is tiny.
- * Nothing here writes game memory, so a run without PC_E2E is the run it
+ * The probe writes no game memory, so a run without PC_E2E is the run it
  * always was, and with it the game's frames and hashes are unchanged too.
+ *
+ * F1 quick save (NP_OPT_QUICKSAVE_SEQ) is the game's own save without the
+ * X menu, as the menu's SAVE and the script SAVE command do it (Black
+ * ov10_02169AB8 / ov10_02159A64; addresses are the same in White's static
+ * code below 0x02013100, the only code used here):
+ *
+ *   sub_020071F0(savecontrol) == 1  the menu answers "cannot save" (a new
+ *                                   adventure over an existing file)
+ *   GAMEDATA+0x1CE                  set while a save runs
+ *   sub_02008DF0(sub_02012F2C(gd), 1)   the records' "times saved" + 1
+ *   sub_02012DAC(gd)                start: the live GAMEDATA written back
+ *                                   into the save blocks, the async write
+ *   sub_02012DD0(gd)                each frame: 0 / 1 writing, 2 saved,
+ *                                   3 failed
+ *
+ * The save is asynchronous (about 230 frames), so the player is held for it
+ * by a GMEVENT of the game's own (sub_020122C0 create, sub_02012108 make it
+ * the running one): its function is ov10_02161340 ("done once seq is not
+ * 0", Black 0x02161341 / White 0x02161361), so setting its seq to 1 when
+ * the save ends lets the game's event runner free it and give the player
+ * back. It starts only where field_ready holds: the field running, no
+ * event, the player on a tile centre.
  */
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "armrec_rt.h"
@@ -49,17 +72,27 @@
 #define BW_GRID_QUERY ov21_0218DB0C
 #define BW_OFF_MAP ov21_0218DC24
 #define BW_HIT_CHECK ov10_021638EC
+#define BW_EVENT_UNTIL_SEQ 0x02161361u /* ov10_02161360, Thumb */
 #else
 #define BW_GAMESYS_PTR 0x02146248u
 #define BW_BATTLE_VIEW 0x021F6398u
 #define BW_GRID_QUERY ov21_0218DAEC
 #define BW_OFF_MAP ov21_0218DC04
 #define BW_HIT_CHECK ov10_021638CC
+#define BW_EVENT_UNTIL_SEQ 0x02161341u /* ov10_02161340, Thumb */
 #endif
 
 extern uint64_t BW_GRID_QUERY(uint32_t mapper, uint32_t pos, uint32_t out, uint32_t unused);
 extern uint64_t BW_OFF_MAP(uint32_t mapper, uint32_t pos, uint32_t unused2, uint32_t unused3);
 extern uint64_t BW_HIT_CHECK(uint32_t mmdl, uint32_t from, uint32_t x, uint32_t y);
+/* the save and the event, at the same addresses in both games */
+extern uint64_t sub_020071F0(uint32_t savecontrol, uint32_t u1, uint32_t u2, uint32_t u3);
+extern uint64_t sub_02012F2C(uint32_t gamedata, uint32_t u1, uint32_t u2, uint32_t u3);
+extern uint64_t sub_02008DF0(uint32_t records, uint32_t id, uint32_t u2, uint32_t u3);
+extern uint64_t sub_02012DAC(uint32_t gamedata, uint32_t u1, uint32_t u2, uint32_t u3);
+extern uint64_t sub_02012DD0(uint32_t gamedata, uint32_t u1, uint32_t u2, uint32_t u3);
+extern uint64_t sub_020122C0(uint32_t gamesys, uint32_t parent, uint32_t func, uint32_t worksize);
+extern uint64_t sub_02012108(uint32_t gamesys, uint32_t event, uint32_t u2, uint32_t u3);
 extern uint32_t armrec_sp;
 
 /* the field overlays the two functions live in */
@@ -124,6 +157,9 @@ extern uint32_t armrec_sp;
 #define GAMESYS_EVENT 0x18
 #define GAMESYS_GAMEDATA 0x1C
 #define GAMEDATA_ZONE 0x114
+#define GAMEDATA_SAVING 0x1CE
+#define GMEVENT_SEQ 0x08
+#define RECORD_SAVES 1
 #define GAMEDATA_MMDLSYS 0x1A8
 #define MMDLSYS_SLOTS 0x04
 #define MMDLSYS_ARRAY 0x18
@@ -380,6 +416,75 @@ static void bw_e2e_frame(const bw_field *f, int field, int ready, uint32_t pokec
     pc_e2e_end_frame();
 }
 
+/* ---- F1 quick save */
+
+/* A request waits this long for the player to be free (as on D/P and
+ * HG/SS); the write itself takes about 230 frames, and one that has not
+ * ended by QUICKSAVE_LIMIT gives the player back as failed. */
+#define QUICKSAVE_PATIENCE 60
+#define QUICKSAVE_LIMIT 1800
+
+static unsigned sQsWait, sQsFrames;
+static uint32_t sQsEvent, sQsGamedata;
+
+static void quicksave_done(unsigned result)
+{
+    fprintf(stderr, "pc-np: quick save %u: %s\n", pc_np_opt.quicksave_seq,
+            result == PC_NP_QS_SAVED     ? "saved"
+            : result == PC_NP_QS_REFUSED ? "refused, the player is not free in the field or the game cannot save"
+                                         : "FAILED");
+    pc_np_stat.quicksave_seq = pc_np_opt.quicksave_seq;
+    pc_np_stat.quicksave_result = result;
+    sQsWait = 0;
+    sQsFrames = 0;
+    sQsEvent = 0;
+}
+
+static void quicksave_frame(const bw_field *f, int ready)
+{
+    uint32_t gd, sc, ev;
+
+    if (sQsEvent != 0) {
+        const uint32_t gamesys = rd32(BW_GAMESYS_PTR);
+        unsigned r;
+
+        /* A snapshot loaded over the save: the event is not ours any more. */
+        if (!bw_ram(gamesys) || rd32(gamesys + GAMESYS_EVENT) != sQsEvent) {
+            quicksave_done(PC_NP_QS_FAILED);
+            return;
+        }
+        r = (unsigned)ARMREC_CALL(sub_02012DD0, sQsGamedata, 0, 0, 0);
+        if (r >= 2 || ++sQsFrames > QUICKSAVE_LIMIT) {
+            *(volatile uint32_t *)(uintptr_t)(sQsEvent + GMEVENT_SEQ) = 1; /* the event ends, the player is free */
+            quicksave_done(r == 2 ? PC_NP_QS_SAVED : PC_NP_QS_FAILED);
+        }
+        return;
+    }
+    if (pc_np_opt.quicksave_seq == pc_np_stat.quicksave_seq) return;
+    if (!ready) {
+        if (++sQsWait > QUICKSAVE_PATIENCE) quicksave_done(PC_NP_QS_REFUSED);
+        return;
+    }
+    gd = f->gamedata;
+    sc = rd32(gd);
+    if (!bw_ram(sc) || (uint32_t)ARMREC_CALL(sub_020071F0, sc, 0, 0, 0) == 1
+        || *(const volatile uint8_t *)(uintptr_t)(gd + GAMEDATA_SAVING) != 0) {
+        quicksave_done(PC_NP_QS_REFUSED);
+        return;
+    }
+    ev = (uint32_t)ARMREC_CALL(sub_020122C0, f->gamesys, 0, BW_EVENT_UNTIL_SEQ, 4);
+    if (!bw_ram(ev)) {
+        quicksave_done(PC_NP_QS_FAILED);
+        return;
+    }
+    ARMREC_CALL(sub_02012108, f->gamesys, ev, 0, 0);
+    ARMREC_CALL(sub_02008DF0, (uint32_t)ARMREC_CALL(sub_02012F2C, gd, 0, 0, 0), RECORD_SAVES, 0, 0);
+    ARMREC_CALL(sub_02012DAC, gd, 0, 0, 0);
+    sQsEvent = ev;
+    sQsGamedata = gd;
+    sQsFrames = 0;
+}
+
 static void bw_frame(void)
 {
     bw_field f;
@@ -391,12 +496,7 @@ static void bw_frame(void)
     pc_np_stat.map_id = field ? f.zone : 0;
     pokecon = bw_pokecon(field);
     pc_np_stat.in_battle_app = pokecon != 0;
-    /* Black/White have no quick save: a milestone saves through the game's
-     * own menu (tests/e2e bots, `save`), so a request is refused at once. */
-    if (pc_np_opt.quicksave_seq != pc_np_stat.quicksave_seq) {
-        pc_np_stat.quicksave_seq = pc_np_opt.quicksave_seq;
-        pc_np_stat.quicksave_result = PC_NP_QS_REFUSED;
-    }
+    quicksave_frame(&f, ready);
     if (pc_e2e_on()) bw_e2e_frame(&f, field, ready, pokecon);
 }
 

@@ -19,7 +19,7 @@ sit 0x20 bytes above Black's.
 
 | field | Black | White | how it was proven |
 | --- | --- | --- | --- |
-| GAMESYS pointer | `*0x02146248` | `*0x02146268` | `sub_02011D9C` (the game-system proc init, the function `pc/patch_bw_startup.py` edits) allocates `sub_02011F24()` = 0x34 bytes and stores the block there (`str r6, [r0]` with the literal 0x02146248 / 0x02146268); the same pointer heads the only static chain the pointer-graph search finds to the object system |
+| GAMESYS pointer | `*0x02146248` | `*0x02146268` | `sub_02011D9C` (the game-system proc init, the function the startup patch `pc/patches/<VER>/arm9/asm/ndsrec_arm9_004.s.patch` edits) allocates `sub_02011F24()` = 0x34 bytes and stores the block there (`str r6, [r0]` with the literal 0x02146248 / 0x02146268); the same pointer heads the only static chain the pointer-graph search finds to the object system |
 | FIELDMAP | GAMESYS+0x14 | same | the `fieldmap.c` block (0x170); 0 while the BAG application runs, the same address again when the field returns (+0x20 holds it too) |
 | running event (GMEVENT) | GAMESYS+0x18 | same | 0 while the player is free; non-zero while the X menu is open, while Cheren's dialogue runs, through the save prompt and the save, and through the starter scene; back to 0 after the last A |
 | GAMEDATA | GAMESYS+0x1C | same | the `game_data.c` block (0x6CC) |
@@ -126,6 +126,19 @@ screen (not reported: a fainted lead is left to the text-advancing A presses).
 | the screen shown | input +0x58 | `ov94_0220270C` builds screen 0..7 and stores the number: 1 the action menu (`ov95_0689A030`), 2 the moves (`ov95_0689A878`), 5 the moves of a multi-battler turn (`ov95_0689AB48`), 0 the standby screen; 3 and 4 are other menus |
 | the key cursor | input +0x68 bits 5..8 | `ov94_02206140` moves it through the screen's key table (12-byte entries: up/down/left/right at +6..+9, A's result +10, B's +11): the action menu's at 0x0689DF64 (0 FIGHT, 1 BAG, 2 POKEMON, 3 RUN; ov95 0x0689D828 maps them to results 1..4), the moves' at 0x0689E054 (0..3 the 2 x 2 moves, 4 back) |
 | the cursor shown | the byte at *(input +0x274) | `ov94_02206140` at 0x0220636A: while it is 0 a key press (mask 0xCF3) only sets it and shows the cursor |
+
+## Events, the save and the print stream (F1 quick save, instant text)
+
+Read from the generated assembly and confirmed with `--watch` over the X menu's save (bw-save.sched); the
+addresses below 0x02013100 are the same in both games. docs/BWHGSS_HOOKS.md has how the hooks use them.
+
+| field | Black | White | how it was found |
+| --- | --- | --- | --- |
+| GMEVENT | +0x00 parent, +0x04 function (Thumb), +0x08 seq, +0x0C work, +0x10 GAMESYS; 0x14 bytes, stamped `game_event.c` | same | the X menu's chain at GAMESYS+0x18 during the save: menu 0x0215FD0D, child 0x021607E1, the save event 0x021616F1 (ov10_021616F0), each with its parent at +0x00 |
+| event create / set running / runner | `sub_020122C0(gsys, parent, func, worksize)`, `sub_02012108(gsys, ev)`, `sub_02012380(gsys)` | same | the save event's creation in `ov10_021616A4`; the runner frees an event whose function returns 1 |
+| save start / poll | `sub_02012DAC(GAMEDATA)`, `sub_02012DD0(GAMEDATA)` -> 0 / 1 writing, 2 saved, 3 failed | same | the menu event's seq 8 and 9 (`ov10_02169AB8`, White `ov10_02169AD8`); the footer count rises inside seq 9 |
+| saving flag / cannot save | GAMEDATA+0x1CE; `sub_020071F0(*GAMEDATA) == 1` | same | set by the start, cleared by the poll's end; the menu's refusal (msg 8) |
+| print stream | the task `sub_0201CEE0`, glyph `sub_0201C974`, tags `sub_0201D110` | `sub_0201CEFC`, `sub_0201C990`, `sub_0201D12C` | the "save?" message's stream (+0x00 state, +0x14 the code, +0x1E the delay) watched advancing one glyph per two frames |
 
 ## The probe on the core
 
