@@ -1,25 +1,602 @@
-# Proves Mistralton City: Skyla's welcome, the cannon gym and Skyla's Jet Badge.
-# Start: Mistralton City (zone 107) -> end: the Mistralton Gym (zone 108), 6 badges, 0x4099 = 2.
-title = "Mistralton Gym: Skyla's Jet Badge"
-status = "planned"
+# Proves Mistralton City: Skyla's welcome, Route 7 and the Celestial Tower's bell, the cannon gym, Skyla's Jet Badge
+# and N's scene after it.
+# Start: Mistralton City (zone 107) -> end: Mistralton City (zone 107), 6 badges, 0x4099 = 3.
+title = "Mistralton: the Celestial Tower and Skyla's Jet Badge"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 136816
 refs = [
   "zone_event 107 trigger 0 (100,302) var 0x4099 == 0 -> scr 0214 script 8 (msg 112 #0); @0x09B4 SetVar 0x4099 1",
   "scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2",
   "zone_event 107 level type 1: 0x4099 == 2 -> scr 0214 script 13 (N, msg 112 #21); @0x013D SetVar 0x4099 3",
 ]
-notes = "The Celestial Tower (zone 342, vars 0x40BA/0x40D2) is [INFERENCE] optional here. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 136816, White 132936 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe raises the full party in place (party-level): a Route 7 double battle fainted White's Blitzle. The Celestial Tower is required: the man in front of the Gym door (zone_event 107 object 11) stays until flag 0x2AE, set only by ringing the tower's bell (scr 0684 @0x0251, zone 342) after Skyla's scene there. The tower's stairs are rails (wild battles on them: each climb is a repeat of a rail hold and a flee); the Gym's cannons fire the player the way he walks into them. Routes from scouting."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 205500
+
+[[step]]
+do = "walk_to"
+x = 102
+z = 303
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+shot = "skyla-meets"
+
+[[step]]
+do = "heal"
+x = 108
+z = 304
+
+[[step]]
+do = "walk_to"
+x = 107
+z = 232
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+on_battle = "flee"
+
+[[step]]
+do = "heal"
+x = 108
+z = 304
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 107
+z = 232
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 25
+on_battle = "flee"
+
+[[step]]
+do = "repeat"
+until = "map_id=339"
+max_rounds = 6
+
+[[step.steps]]
+do = "rail"
+keys = "left"
+map = 339
+script = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 60
+
+[[step.steps]]
+if = "in_battle=1"
+do = "auto_battle"
+flee = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 8
+on_battle = "flee"
+
+[[step]]
+do = "repeat"
+until = "map_id=340"
+max_rounds = 6
+
+[[step.steps]]
+do = "rail"
+keys = "right"
+map = 340
+script = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 60
+
+[[step.steps]]
+if = "in_battle=1"
+do = "auto_battle"
+flee = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 22
+on_battle = "flee"
+
+[[step]]
+do = "talk_to"
+id = 4
+on_battle = "flee"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 4
+on_battle = "flee"
+
+[[step]]
+do = "advance_text"
+shot = "tower-skyla"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 22
+on_battle = "flee"
+
+[[step]]
+do = "repeat"
+until = "map_id=341"
+max_rounds = 6
+
+[[step.steps]]
+do = "rail"
+keys = "left"
+map = 341
+script = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 60
+
+[[step.steps]]
+if = "in_battle=1"
+do = "auto_battle"
+flee = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 10
+on_battle = "flee"
+
+[[step]]
+do = "repeat"
+until = "map_id=342"
+max_rounds = 6
+
+[[step.steps]]
+do = "rail"
+keys = "right"
+map = 342
+script = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 60
+
+[[step.steps]]
+if = "in_battle=1"
+do = "auto_battle"
+flee = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 18
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+on_battle = "flee"
+
+[[step]]
+do = "advance_text"
+shot = "tower-bell"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 11
+face = "up"
+interact = true
+
+[[step]]
+do = "advance_text"
+shot = "tower-bell-2"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 15
+on_battle = "flee"
+
+[[step]]
+do = "repeat"
+until = "x=13"
+max_rounds = 6
+
+[[step.steps]]
+do = "rail"
+keys = "left"
+x = 13
+z = 10
+near = 0
+script = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 60
+
+[[step.steps]]
+if = "in_battle=1"
+do = "auto_battle"
+flee = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 21
+on_battle = "flee"
+
+[[step]]
+do = "repeat"
+until = "x=17"
+max_rounds = 6
+
+[[step.steps]]
+do = "rail"
+keys = "right"
+x = 17
+z = 22
+near = 0
+script = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 60
+
+[[step.steps]]
+if = "in_battle=1"
+do = "auto_battle"
+flee = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 9
+on_battle = "flee"
+
+[[step]]
+do = "repeat"
+until = "x=14"
+max_rounds = 6
+
+[[step.steps]]
+do = "rail"
+keys = "left"
+x = 14
+z = 8
+near = 0
+script = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 60
+
+[[step.steps]]
+if = "in_battle=1"
+do = "auto_battle"
+flee = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 23
+on_battle = "flee"
+
+[[step]]
+do = "repeat"
+until = "x=15"
+max_rounds = 6
+
+[[step.steps]]
+do = "rail"
+keys = "right"
+x = 15
+z = 25
+near = 0
+script = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 60
+
+[[step.steps]]
+if = "in_battle=1"
+do = "auto_battle"
+flee = true
+
+[[step.steps]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 28
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+on_battle = "flee"
+
+[[step]]
+do = "heal"
+x = 108
+z = 304
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 78
+z = 268
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 32
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 15
+z = 17
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 19
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 2
+z = 19
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 19
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 24
+z = 19
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 29
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 2
+z = 29
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 27
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 10
+z = 11
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 13
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 28
+z = 13
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 13
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 2
+z = 13
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 6
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 5
+z = 38
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 36
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 28
+z = 36
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 36
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 26
+z = 4
+near = 0
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 6
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 11
+z = 6
+near = 0
+
+[[step]]
+do = "talk_to"
+id = 1
+
+[[step]]
+do = "advance_text"
+shot = "skyla-battle-in"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+shot = "jet-badge"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 1
+on_battle = "flee"
+
+[[step]]
+do = "rail"
+keys = "down"
+map = 107
+
+[[step]]
+do = "advance_text"
+shot = "n-mistralton"
 
 [expect]
-map = 108
+map = 107
 badges = 6
-flags = ["0x976"]
+flags = ["0x976", "0x2AE", "0x2AF"]
 
 [expect.vars]
-"0x4099" = 2
+"0x4099" = 3
 "0x40B4" = 1

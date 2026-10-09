@@ -6031,7 +6031,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~1070360 frames estimated
+### Story chain: 33 milestones, ~1187176 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6055,7 +6055,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 30033 | prev + `None` | 96 | passing |
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 32243 | prev + `None` | 96 | passing |
 | [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 85531 | prev + `None` | 107 | passing |
-| [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
+| [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton: the Celestial Tower and Skyla's Jet Badge | P0 | both | 136816 | prev + `None` | 107 | passing |
 | [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
 | [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 22000 | prev + `None` | 113 | planned |
 | [24-dragonspiral-tower-n-legend](black/24-dragonspiral-tower-n-legend/milestone.toml) | Dragonspiral Tower: N and the legendary dragon | P0 | both | 30000 | prev + `None` | 205 | planned |
@@ -6269,15 +6269,15 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - refs: scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2; zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg); scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28); zone 107 (Mistralton City)
 - notes: Measured from the previous end save (CONTINUE included): Black 77518, White 85531 frames on the core of 2026-10-08 (main 21cf05779, instant text). Chargestone's floating boulders are pushed (moves P); the route through the cave came from scouting.
 
-#### black/21-mistralton-skyla-jet-badge — Mistralton Gym: Skyla's Jet Badge
-- proves: Proves Mistralton City: Skyla's welcome, the cannon gym and Skyla's Jet Badge. Start: Mistralton City (zone 107) -> end: the Mistralton Gym (zone 108), 6 badges, 0x4099 = 2.
+#### black/21-mistralton-skyla-jet-badge — Mistralton: the Celestial Tower and Skyla's Jet Badge
+- proves: Proves Mistralton City: Skyla's welcome, Route 7 and the Celestial Tower's bell, the cannon gym, Skyla's Jet Badge and N's scene after it. Start: Mistralton City (zone 107) -> end: Mistralton City (zone 107), 6 badges, 0x4099 = 3.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2
-- end state: map 108; 6 badges; flags set 0x976; vars 0x4099=2, 0x40B4=1
-- frames: estimate 20000, budget -
+- end state: map 107; 6 badges; flags set 0x976, 0x2AE, 0x2AF; vars 0x4099=3, 0x40B4=1
+- frames: estimate 136816, budget 205500
 - refs: zone_event 107 trigger 0 (100,302) var 0x4099 == 0 -> scr 0214 script 8 (msg 112 #0); @0x09B4 SetVar 0x4099 1; scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2; zone_event 107 level type 1: 0x4099 == 2 -> scr 0214 script 13 (N, msg 112 #21); @0x013D SetVar 0x4099 3
-- notes: The Celestial Tower (zone 342, vars 0x40BA/0x40D2) is [INFERENCE] optional here. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 136816, White 132936 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe raises the full party in place (party-level): a Route 7 double battle fainted White's Blitzle. The Celestial Tower is required: the man in front of the Gym door (zone_event 107 object 11) stays until flag 0x2AE, set only by ringing the tower's bell (scr 0684 @0x0251, zone 342) after Skyla's scene there. The tower's stairs are rails (wild battles on them: each climb is a repeat of a rail hold and a flee); the Gym's cannons fire the player the way he walks into them. Routes from scouting.
 
 #### black/22-twist-mountain-cheren-icirrus — Twist Mountain: Cheren; Icirrus City
 - proves: Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Team Plasma and Brycen in the mountain, out to Icirrus City and Cedric Juniper. Start: the Mistralton Gym (zone 108) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
@@ -6405,7 +6405,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~1070360 frames estimated
+### Story chain: 33 milestones, ~1187176 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6429,7 +6429,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 30033 | prev + `None` | 96 | passing |
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 32243 | prev + `None` | 96 | passing |
 | [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 85531 | prev + `None` | 107 | passing |
-| [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
+| [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton: the Celestial Tower and Skyla's Jet Badge | P0 | both | 136816 | prev + `None` | 107 | passing |
 | [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
 | [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 22000 | prev + `None` | 113 | planned |
 | [24-dragonspiral-tower-n-legend](black/24-dragonspiral-tower-n-legend/milestone.toml) | Dragonspiral Tower: N and the legendary dragon | P0 | both | 30000 | prev + `None` | 205 | planned |
@@ -6643,15 +6643,15 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - refs: scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2; zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg); scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28); zone 107 (Mistralton City)
 - notes: Measured from the previous end save (CONTINUE included): Black 77518, White 85531 frames on the core of 2026-10-08 (main 21cf05779, instant text). Chargestone's floating boulders are pushed (moves P); the route through the cave came from scouting.
 
-#### white/21-mistralton-skyla-jet-badge — Mistralton Gym: Skyla's Jet Badge
-- proves: Proves Mistralton City: Skyla's welcome, the cannon gym and Skyla's Jet Badge. Start: Mistralton City (zone 107) -> end: the Mistralton Gym (zone 108), 6 badges, 0x4099 = 2.
+#### white/21-mistralton-skyla-jet-badge — Mistralton: the Celestial Tower and Skyla's Jet Badge
+- proves: Proves Mistralton City: Skyla's welcome, Route 7 and the Celestial Tower's bell, the cannon gym, Skyla's Jet Badge and N's scene after it. Start: Mistralton City (zone 107) -> end: Mistralton City (zone 107), 6 badges, 0x4099 = 3.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2
-- end state: map 108; 6 badges; flags set 0x976; vars 0x4099=2, 0x40B4=1
-- frames: estimate 20000, budget -
+- end state: map 107; 6 badges; flags set 0x976, 0x2AE, 0x2AF; vars 0x4099=3, 0x40B4=1
+- frames: estimate 136816, budget 205500
 - refs: zone_event 107 trigger 0 (100,302) var 0x4099 == 0 -> scr 0214 script 8 (msg 112 #0); @0x09B4 SetVar 0x4099 1; scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2; zone_event 107 level type 1: 0x4099 == 2 -> scr 0214 script 13 (N, msg 112 #21); @0x013D SetVar 0x4099 3
-- notes: The Celestial Tower (zone 342, vars 0x40BA/0x40D2) is [INFERENCE] optional here. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 136816, White 132936 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe raises the full party in place (party-level): a Route 7 double battle fainted White's Blitzle. The Celestial Tower is required: the man in front of the Gym door (zone_event 107 object 11) stays until flag 0x2AE, set only by ringing the tower's bell (scr 0684 @0x0251, zone 342) after Skyla's scene there. The tower's stairs are rails (wild battles on them: each climb is a repeat of a rail hold and a flee); the Gym's cannons fire the player the way he walks into them. Routes from scouting.
 
 #### white/22-twist-mountain-cheren-icirrus — Twist Mountain: Cheren; Icirrus City
 - proves: Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Team Plasma and Brycen in the mountain, out to Icirrus City and Cedric Juniper. Start: the Mistralton Gym (zone 108) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
