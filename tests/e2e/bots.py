@@ -13,7 +13,7 @@ import struct
 import subprocess
 import sys
 
-from np_e2e import (BW_GAMES, DIR_DELTA, DIR_KEYS, E2E_GRID, FACINGS, GBA_GAMES, HGSS_GAMES, ROOT, TILE_BEHAVIOR,
+from np_e2e import (BW_GAMES, Budget, Dead, DIR_DELTA, DIR_KEYS, E2E_GRID, FACINGS, GBA_GAMES, HGSS_GAMES, ROOT, TILE_BEHAVIOR,
                     TILE_COLLISION, TILE_CONNECTED, TILE_KNOWN, UI_BATTLE_MENU, UI_BATTLE_PARTY, UI_FIELD_MENU,
                     HarnessError, behaviors)
 
@@ -1135,6 +1135,11 @@ class Terrain:
                         ("WARP_EAST", 3), ("WARP_STAIRS_WEST", 2), ("WARP_STAIRS_EAST", 3)):
             if name in b:
                 self.mats[b[name]] = d
+        if game in HGSS_GAMES:
+            # an HG/SS ladder's two tiles warp when stood on and pushed (LADDER_NORTH 0x3C north, LADDER_SOUTH 0x3D
+            # south; src/field/field_control.c:500-511): a walk that ends on one (reached from the side, not by the
+            # push _hgss_ladder_warp plans) leaves through it as through an exit mat
+            self.mats.update(self.HGSS_LADDER_PUSH)
 
     def _gba_tables(self):
         """Ruby/Sapphire/Emerald metatile behaviors (both decomps number include/constants/metatile_behaviors.h
@@ -1812,7 +1817,8 @@ def _walk_to(s, step, ctx):
             # Outdoors the matrix is one coordinate space: a step across a map border changes map_id
             # and moves one tile (two over a ledge). Anything else is a warp.
             nxt = (here[0] + DIR_DELTA[d][0], here[1] + DIR_DELTA[d][1])
-            if not terrain.gba and abs(p.x - here[0]) + abs(p.z - here[1]) <= 2:
+            if (not terrain.gba and abs(p.x - here[0]) + abs(p.z - here[1]) <= 2
+                    and (not terrain.hgss or (_hgss_overworld(start_map) and _hgss_overworld(p.map_id)))):
                 s.note("walk_to: crossed from map %d to %d at (%d,%d)" % (start_map, p.map_id, p.x, p.z))
                 start_map = p.map_id
                 steps += 1
@@ -2243,6 +2249,8 @@ def bot_talk_to(s, step, ctx):
             leg = 90 if ctx.game in GBA_GAMES else 900
             sub.update(x=c[0], z=c[1], max=min(leg, max(limit - s.frame, 1)))
             bot_walk_to(s, sub, ctx)
+        except (Budget, Dead):
+            raise  # the milestone's budget is spent or the core stopped: no re-plan can help
         except HarnessError as e:
             s.note("talk_to: %s; re-planning" % e)
     raise HarnessError("talk_to: object %d not reached in %d frames" % (oid, bound))
@@ -2469,6 +2477,19 @@ MOVE_DIG = 91
 # The fly map's cursor (fly_map.c:111-120, ov101_021EB654): x 2 .. maxXscroll - 1 (sMapXScrollLimits 26 Johto, 29
 # with the Indigo Plateau, 45 with Kanto), the fly points' y (playerY - 2) 0 .. 15
 HGSS_FLY_X, HGSS_FLY_Y = (2, 44), (0, 15)
+
+
+_HGSS_MAIN = {}
+
+
+def _hgss_overworld(map_id):
+    """An HG/SS map on the overworld matrix (src/data/map_headers.h, tools/hg_world.py `main`): only between two of
+    those is a map change a border crossing. Indoor maps share coordinates floor to floor (a lighthouse's ladders),
+    so there a change is a warp even when the tile barely moves."""
+    if map_id not in _HGSS_MAIN:
+        hw = _hg_world()
+        _HGSS_MAIN[map_id] = bool(hw.map_headers().get(hw.map_name(map_id), {}).get("main"))
+    return _HGSS_MAIN[map_id]
 
 
 def _hg_world():

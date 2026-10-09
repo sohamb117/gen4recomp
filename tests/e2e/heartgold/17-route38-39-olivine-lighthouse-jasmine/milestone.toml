@@ -2,10 +2,9 @@
 # (VAR_UNK_4078), the Lighthouse elevator to the Light Room and Jasmine's request (VAR_SCENE_LIGHTHOUSE_JASMINE 1).
 # Start: MAP_ECRUTEAK (397,174) -> end: MAP_OLIVINE_LIGHTHOUSE_1F (8,16) after the elevator ride down.
 title = "Routes 38-39, Olivine rival, the Lighthouse: Jasmine and Amphy"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 44083
 refs = [
   "zone_event 075_T27 warps 8/9 (358,166/167) -> MAP_ROUTE_38_ECRUTEAK_GATEHOUSE; zone_event 166_R38R0101 warp 1 (1,7) -> MAP_ROUTE_38 (351,166)",
   "zone_event 040_R39 coord 0 (278,171) h3 VAR_UNK_408F 0 -> 002 (Moomoo Farm scene)",
@@ -25,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 30000
+frames = 66200
 
 [[step]]
 do = "walk_to"
@@ -79,23 +78,79 @@ map = "MAP_OLIVINE_LIGHTHOUSE_1F"
 
 [[step]]
 do = "walk_to"
-x = 8
-z = 4
-note = "elevator (warp 1)"
+x = 2
+z = 3
+note = "1F stairs (warp 2, WARP_STAIRS_EAST 0x5E) -> 2F (5,3). The elevator reaches only the Light Room's outer ring; Jasmine's inner room opens from 5F (Light Room warp 0 (9,10)) until her talk removes the stop sign (FLAG_UNK_1D8, scr_seq_0066_D27R0107.s:59)"
 
 [[step]]
 do = "wait_map"
-map = "MAP_OLIVINE_LIGHTHOUSE_ELEVATOR"
+map = "MAP_OLIVINE_LIGHTHOUSE_2F"
 
 [[step]]
-do = "advance_text"
-note = "OnFrame: the car rises to the Light Room (scr_seq_0067_D27R0108.s:11-73)"
+do = "walk_to"
+x = 13
+z = 5
+note = "2F ladder (13,6) 0x3C pushed north -> 3F (13,7) (tests/e2e/tools/hg_map.py MAP_OLIVINE_LIGHTHOUSE_2F --solve 5 4 13 6)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_3F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 6
+note = "3F ladder (10,7) -> 4F (10,7); 3F's (6,7) ladder is not reachable from (13,7) (tests/e2e/tools/hg_map.py MAP_OLIVINE_LIGHTHOUSE_3F --solve)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_4F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "4F east opening: WARP_ENTRANCE_EAST 0x62 (15,9) pushed east onto coord 0 (16,9) VAR_UNK_40A3 0: the player drops to the exterior (15,3) (scr_seq_0064_D27R0105.s scr_seq_D27R0105_000 Warp); Gentleman Preston and Lass Connie fight if they spot"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_EXTERIOR"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "exterior warp 0 (WARP_NORTH 0x6E) -> 3F (8,18)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_3F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+note = "3F ladder (6,7) from the south part -> 4F (6,7) (tests/e2e/tools/hg_map.py MAP_OLIVINE_LIGHTHOUSE_3F --solve 8 17 6 7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_4F"
 
 [[step]]
 do = "walk_to"
 x = 3
-z = 6
-note = "elevator door (warp 0, dynamic) -> Light Room (8,4)"
+z = 4
+note = "4F ladder (3,5) -> 5F (4,5) (tests/e2e/tools/hg_map.py MAP_OLIVINE_LIGHTHOUSE_4F --solve 6 8 3 5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_LIGHTHOUSE_5F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 9
+note = "5F ladder (10,10) -> the Light Room's inner room (9,10) (tests/e2e/tools/hg_map.py MAP_OLIVINE_LIGHTHOUSE_5F --solve 4 6 10 10)"
 
 [[step]]
 do = "wait_map"

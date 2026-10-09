@@ -29,7 +29,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 45000
+frames = 75000
 
 [[step]]
 do = "walk_to"
@@ -57,6 +57,50 @@ do = "walk_to"
 x = 172
 z = 357
 note = "Cianwood Gym (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CIANWOOD_GYM"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 3
+face = "up"
+interact = true
+max = 30000
+note = "Chuck trains under the waterfall and only battles once it stops (scr_seq_0877_T24GYM0101.s: scr 000 -> _010A while VAR_TEMP_x4000 is 0): the winch, bg 0 (10,2) (any facing), up past the Black Belts (they fight if they spot; tools/e2e/tools/hg_map.py MAP_CIANWOOD_GYM --solve 13 18 10 3 --fight)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "turn the winch: YES (GetMenuChoice 0 -> _0153, scr_seq_0877_T24GYM0101.s: script 002); the bottom-screen YES/NO opens on YES"
+
+[[step]]
+do = "advance_text"
+note = "the winch turns, the waterfall stops (FLAG_SYS_CIANWOOD_WATERFALL_DISABLE, CianwoodGymTurnWinch)"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 19
+note = "out of the gym (warp 0) to heal before Chuck"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CIANWOOD"
+
+[[step]]
+do = "heal"
+x = 187
+z = 369
+note = "Cianwood's Pokemon Center (zone_event T24 warp 1)"
+
+[[step]]
+do = "walk_to"
+x = 172
+z = 357
 
 [[step]]
 do = "wait_map"

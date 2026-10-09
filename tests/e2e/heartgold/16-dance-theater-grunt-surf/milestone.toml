@@ -2,10 +2,9 @@
 # a Kimono Girl (TRAINER_TEAM_ROCKET_GRUNT_26), and the stage coord that hands over HM03 (VAR_UNK_410C 3).
 # Start: MAP_ECRUTEAK (376,184) -> end: MAP_ECRUTEAK outside the theater (397,174), FLAG_GOT_HM03.
 title = "Ecruteak Dance Theater: the Rocket grunt and HM03 Surf"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 8000
+estimate = 7417
 refs = [
   "zone_event 075_T27 warp 4 (397,173) -> MAP_ECRUTEAK_DANCE_THEATER (7,17)",
   "scr_seq_0928_T27R0501_hdr.s (OnFrame VAR_UNK_410C 0 -> 015); scr_seq_0928_T27R0501.s:73-108 (VAR_UNK_410C 1)",
@@ -23,7 +22,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 12000
+frames = 11200
 
 [[step]]
 do = "walk_to"

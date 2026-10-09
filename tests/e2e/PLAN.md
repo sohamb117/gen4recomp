@@ -3140,7 +3140,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## HeartGold
 
 <!-- plan.py:begin heartgold -->
-### Story chain: 38 milestones, ~982587 frames estimated
+### Story chain: 38 milestones, ~1021023 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3158,9 +3158,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [12-whitney-plain-squirtbottle](heartgold/12-whitney-plain-squirtbottle/milestone.toml) | Whitney: Plain Badge; the Flower Shop's SquirtBottle | P0 | both | 33941 | prev + `None` | MAP_GOLDENROD | passing |
 | [13-national-park-sudowoodo-ecruteak](heartgold/13-national-park-sudowoodo-ecruteak/milestone.toml) | National Park, Route 36 Sudowoodo, Route 37 to Ecruteak | P0 | both | 34543 | prev + `None` | MAP_ECRUTEAK | passing |
 | [14-burned-tower-rival-beasts](heartgold/14-burned-tower-rival-beasts/milestone.toml) | Burned Tower: Eusine, the rival, the legendary beasts | P0 | both | 17157 | prev + `None` | MAP_ECRUTEAK | passing |
-| [15-morty-fog](heartgold/15-morty-fog/milestone.toml) | Morty: Fog Badge | P0 | both | 15000 | prev + `None` | MAP_ECRUTEAK | planned |
-| [16-dance-theater-grunt-surf](heartgold/16-dance-theater-grunt-surf/milestone.toml) | Ecruteak Dance Theater: the Rocket grunt and HM03 Surf | P0 | both | 8000 | prev + `None` | MAP_ECRUTEAK | planned |
-| [17-route38-39-olivine-lighthouse-jasmine](heartgold/17-route38-39-olivine-lighthouse-jasmine/milestone.toml) | Routes 38-39, Olivine rival, the Lighthouse: Jasmine and Amphy | P0 | both | 20000 | prev + `None` | MAP_OLIVINE_LIGHTHOUSE_1F | planned |
+| [15-morty-fog](heartgold/15-morty-fog/milestone.toml) | Morty: Fog Badge | P0 | both | 29936 | prev + `None` | MAP_ECRUTEAK | passing |
+| [16-dance-theater-grunt-surf](heartgold/16-dance-theater-grunt-surf/milestone.toml) | Ecruteak Dance Theater: the Rocket grunt and HM03 Surf | P0 | both | 7417 | prev + `None` | MAP_ECRUTEAK | passing |
+| [17-route38-39-olivine-lighthouse-jasmine](heartgold/17-route38-39-olivine-lighthouse-jasmine/milestone.toml) | Routes 38-39, Olivine rival, the Lighthouse: Jasmine and Amphy | P0 | both | 44083 | prev + `None` | MAP_OLIVINE_LIGHTHOUSE_1F | passing |
 | [18-route40-cianwood-chuck-fly-secretpotion](heartgold/18-route40-cianwood-chuck-fly-secretpotion/milestone.toml) | Cianwood: Chuck, Storm Badge, HM02 Fly, the SecretPotion | P0 | both | 30000 | prev + `None` | MAP_OLIVINE | planned |
 | [19-amphy-secretpotion-jasmine-mineral](heartgold/19-amphy-secretpotion-jasmine-mineral/milestone.toml) | Amphy's SecretPotion, Jasmine: Mineral Badge | P0 | both | 15000 | prev + `None` | MAP_OLIVINE | planned |
 | [20-route42-mahogany-lake-of-rage-gyarados](heartgold/20-route42-mahogany-lake-of-rage-gyarados/milestone.toml) | Route 42, Mahogany, Lake of Rage: the red Gyarados and Lance | P0 | both | 40000 | prev + `None` | MAP_LAKE_OF_RAGE | planned |
@@ -3329,7 +3329,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0922_T27GYM0101.s:102-130 (TRAINER_LEADER_MORTY_MORTY, GiveBadge BADGE_FOG, AddVar VAR_MIDGAME_BADGES 1 :117, FLAG_GOT_TM30_FROM_MORTY); TRAINER_LEADER_MORTY_MORTY (31, include/constants/trainers.h:36): GASTLY 21, HAUNTER 21, GENGAR 25, HAUNTER 23
 - end state: map MAP_ECRUTEAK; 4 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN, BADGE_FOG; >= 1 battles; flags set FLAG_GOT_TM30_FROM_MORTY; vars VAR_MIDGAME_BADGES=1
-- frames: estimate 15000, budget 50000
+- frames: estimate 29936, budget 45000
 - refs: zone_event 075_T27 warp 7 (376,183) -> MAP_ECRUTEAK_GYM (16,53); zone_event 077_T27GYM0101 coords 0-14 VAR_UNK_4109 0 -> 002 (Warp MAP_ECRUTEAK_GYM (16,49), scr_seq_0922_T27GYM0101.s:156-164): the pit tiles; zone_event 077_T27GYM0101 object 1 obj_T27GYM0101_gsleader4 (10,8); Mediums Georgina (17,39), Grace (19,30), Edith (9,29), Martha (11,19); scr_seq_0922_T27GYM0101.s:102-130 (TRAINER_LEADER_MORTY_MORTY, GiveBadge BADGE_FOG, AddVar VAR_MIDGAME_BADGES 1 :117, FLAG_GOT_TM30_FROM_MORTY); TRAINER_LEADER_MORTY_MORTY (31, include/constants/trainers.h:36): GASTLY 21, HAUNTER 21, GENGAR 25, HAUNTER 23
 - notes: Ghosts are immune to Normal: the lead needs Ember plus a Dark/Ghost move (Bite/Shadow Ball); the party must also beat the Mediums (route below). The hidden floor: `python3 tests/e2e/tools/hg_map.py MAP_ECRUTEAK_GYM --pits` lists the 100 walkable tiles of coords 0-14 (VAR_UNK_4109 is never set by any script, so the pits never close); the complement inside the walls is one 1-wide path (16,52)..(10,9) (checked by BFS over the decoded land data). Mediums on it: Georgina (17,39) LOOK_WEST sight 1 and Grace (19,30) LOOK_SOUTH sight 1 are passed adjacent; Edith (9,29) LOOK_EAST sight 5 sees the only corridor (14..10,29) and walks up (row 30 (12..14,30) is the way round her); Martha (11,19) LOOK_SOUTH sight 3: (11,21),(11,22) are avoided too so she is met adjacent at (11,20) via (13,20..23) [INFERENCE: movement 14..17 = LOOK_NORTH..EAST as Platinum numbers them; param0 = sight]. The old man (16,49) is hidden by FLAG_UNK_247 (scr_seq_0024_D18R0102.s:135, milestone 14). Out again by a pit: (9,12) is coord 1, whose script warps to (16,49) by the door (scr_seq_0922_T27GYM0101.s:156-164).
 
@@ -3339,7 +3339,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0928_T27R0501.s:217-281 (TRAINER_TEAM_ROCKET_GRUNT_26, FLAG_UNK_23A, VAR_UNK_410C 2); TRAINER_TEAM_ROCKET_GRUNT_26 (601, include/constants/trainers.h:606): KOFFING 12
 - end state: map MAP_ECRUTEAK; 4 badges; >= 1 battles; flags set FLAG_GOT_HM03, FLAG_UNK_23A; vars VAR_UNK_410C=3, VAR_UNK_4090=1
-- frames: estimate 8000, budget 12000
+- frames: estimate 7417, budget 11200
 - refs: zone_event 075_T27 warp 4 (397,173) -> MAP_ECRUTEAK_DANCE_THEATER (7,17); scr_seq_0928_T27R0501_hdr.s (OnFrame VAR_UNK_410C 0 -> 015); scr_seq_0928_T27R0501.s:73-108 (VAR_UNK_410C 1); zone_event 083_T27R0501 object 9 obj_T27R0501_rocketm (7,6) FLAG_UNK_23A -> 003; scr_seq_0928_T27R0501.s:217-281 (TRAINER_TEAM_ROCKET_GRUNT_26, FLAG_UNK_23A, VAR_UNK_410C 2); TRAINER_TEAM_ROCKET_GRUNT_26 (601, include/constants/trainers.h:606): KOFFING 12; zone_event 083_T27R0501 coords 0/1 (3,8)/(11,8) VAR_UNK_410C 2 -> 011/012; scr_seq_0928_T27R0501.s:371-399 (ITEM_HM03, FLAG_GOT_HM03, VAR_UNK_410C 3, VAR_UNK_4090 1); src/field_move.c:250-254 (Surf in the field needs BADGE_FOG)
 - notes: No badge check in these scripts; Surf in the field needs the Fog Badge (15). VAR_UNK_4090 1 also retires Route 40's coord (zone_event 091_W40 coord 0).
 
@@ -3349,7 +3349,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: none
 - end state: map MAP_OLIVINE_LIGHTHOUSE_1F; 4 badges; flags set FLAG_UNK_1D8, FLAG_HIDE_OLIVINE_RIVAL; vars VAR_SCENE_LIGHTHOUSE_JASMINE=1, VAR_UNK_4078=1
-- frames: estimate 20000, budget 30000
+- frames: estimate 44083, budget 66200
 - refs: zone_event 075_T27 warps 8/9 (358,166/167) -> MAP_ROUTE_38_ECRUTEAK_GATEHOUSE; zone_event 166_R38R0101 warp 1 (1,7) -> MAP_ROUTE_38 (351,166); zone_event 040_R39 coord 0 (278,171) h3 VAR_UNK_408F 0 -> 002 (Moomoo Farm scene); zone_event 074_T26 coord 0 (272,239) h5 VAR_UNK_4078 0 -> 001 (rival scene: ClearFlag/SetFlag FLAG_HIDE_OLIVINE_RIVAL, VAR_UNK_4078 1, scr_seq_0911_T26.s:74-165; no battle); zone_event 074_T26 warp 3 (301,263) -> MAP_OLIVINE_LIGHTHOUSE_1F (8,17); zone_event 112_D27R0101 warp 1 (8,4) -> MAP_OLIVINE_LIGHTHOUSE_ELEVATOR; scr_seq_0067_D27R0108_hdr.s + scr_seq_0067_D27R0108.s:11-73 (OnFrame VAR_UNK_4125 0: walk in, the car goes to the other floor: SetDynamicWarp LIGHT_ROOM from 1F, 1F from the Light Room; no menu); zone_event 401_D27R0108 warp 0 (3,6) -> the dynamic warp; zone_event 211_D27R0107 object 1 obj_D27R0107_gsleader6 (7,8) -> 000; scr_seq_0066_D27R0107.s:25-60 (Jasmine: VAR_SCENE_LIGHTHOUSE_JASMINE 1, FLAG_UNK_1D8); zone_event 211_D27R0107 warp 1 (8,4) -> MAP_OLIVINE_LIGHTHOUSE_ELEVATOR
 - notes: Lighthouse trainers are skipped by the elevator (1F (8,4) <-> Light Room (8,4)); the elevator's script picks the other floor from GetDynamicWarpFloorNo, so one ride up and one down. Route 38/39 trainers fight if they spot. The Moomoo Farm coord scene (R39 002) needs only A [INFERENCE].
 
@@ -3359,7 +3359,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0877_T24GYM0101.s:19-57 (TRAINER_LEADER_CHUCK_CHUCK, GiveBadge BADGE_STORM, AddVar VAR_MIDGAME_BADGES 1, VAR_UNK_4116 1, FLAG_GOT_TM01_FROM_CHUCK); TRAINER_LEADER_CHUCK_CHUCK (34, include/constants/trainers.h:39): PRIMEAPE 29, POLIWRATH 31
 - end state: map MAP_OLIVINE; 5 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN, BADGE_FOG, BADGE_STORM; >= 1 battles; flags set FLAG_GOT_TM01_FROM_CHUCK, FLAG_GOT_HM02, FLAG_GOT_SECRETPOTION; vars VAR_UNK_4116=2, VAR_MIDGAME_BADGES=2; 1 save check(s)
-- frames: estimate 30000, budget 45000
+- frames: estimate 30000, budget 75000
 - refs: zone_event 112_D27R0101 warp 0 (8,17) -> MAP_OLIVINE; zone_event 091_W40 coord 0 (252,265) w4 VAR_UNK_4090 0 (retired by HM03, scr_seq_0928_T27R0501.s:381); zone_event 072_T24 warp 0 (172,357) -> MAP_CIANWOOD_GYM (13,19); zone_event 135_T24GYM0101 object 0 obj_T24GYM0101_gsleader5 (13,10); Black Belts Yoshi (6,9), Lao (18,7), Nob (7,5), Lung (15,3); scr_seq_0877_T24GYM0101.s:19-57 (TRAINER_LEADER_CHUCK_CHUCK, GiveBadge BADGE_STORM, AddVar VAR_MIDGAME_BADGES 1, VAR_UNK_4116 1, FLAG_GOT_TM01_FROM_CHUCK); TRAINER_LEADER_CHUCK_CHUCK (34, include/constants/trainers.h:39): PRIMEAPE 29, POLIWRATH 31; scr_seq_0875_T24_hdr.s (OnFrame VAR_UNK_4116 1 -> 006); scr_seq_0875_T24.s:31-41 (FLAG_GOT_HM02, VAR_UNK_4116 2); zone_event 072_T24 warp 2 (179,370) -> MAP_CIANWOOD_PHARMACY; zone_event 219_T24R0501 object 0 (5,5); scr_seq_0881_T24R0501.s:11-45 (VAR_SCENE_LIGHTHOUSE_JASMINE 1 -> ITEM_SECRETPOTION, FLAG_GOT_SECRETPOTION); include/constants/items.h:883 (ITEM_SECRETPOTION 464); zone_event 072_T24 coord 0 (176,334) VAR_UNK_4076 1 -> Suicune/Eusine (scr_seq_0875_T24.s:99-157; north end, not walked); src/field_move.c:250-254 (Surf needs BADGE_FOG), :217-221 (Fly needs BADGE_STORM); land data (tools/hg_world.py grid 160 250 300 383, via tools/hg_map.py): Olivine's west exit (252,262..266), Route 40's beach to (235,280) (0x17 shallow), sea 0x15 from (235,281); Route 41 sea; Cianwood's east beach sand 0x21 (171..191,349); the gym door (172,357) 0x69 with sand (172,358) below; whirlpools 0x11 at (214..216,331..333), (247..249,346..348), (203..205,360..362), (230..232,374..376), not on the route
 - notes: Surf needs the Fog Badge and a Surf carrier: boost.recipe adds PELIPPER (Surf, Fly) behind the party. Chuck: Poliwrath lv31 (Water/Fighting) - the lead wants a Psychic/Flying move (Pelipper's Fly behind a fainted lead). With Morty, Chuck and Jasmine VAR_MIDGAME_BADGES reaches 3 at the third of them (ROCKET_TAKEOVER 1). The via waypoints come from the static land data; walk_to plans each leg on the probe (Swimmers on Routes 40/41 that spot the player are fought).
 
@@ -3567,7 +3567,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## SoulSilver
 
 <!-- plan.py:begin soulsilver -->
-### Story chain: 38 milestones, ~987587 frames estimated
+### Story chain: 38 milestones, ~1026023 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3585,9 +3585,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [12-whitney-plain-squirtbottle](heartgold/12-whitney-plain-squirtbottle/milestone.toml) | Whitney: Plain Badge; the Flower Shop's SquirtBottle | P0 | both | 33941 | prev + `None` | MAP_GOLDENROD | passing |
 | [13-national-park-sudowoodo-ecruteak](heartgold/13-national-park-sudowoodo-ecruteak/milestone.toml) | National Park, Route 36 Sudowoodo, Route 37 to Ecruteak | P0 | both | 34543 | prev + `None` | MAP_ECRUTEAK | passing |
 | [14-burned-tower-rival-beasts](heartgold/14-burned-tower-rival-beasts/milestone.toml) | Burned Tower: Eusine, the rival, the legendary beasts | P0 | both | 17157 | prev + `None` | MAP_ECRUTEAK | passing |
-| [15-morty-fog](heartgold/15-morty-fog/milestone.toml) | Morty: Fog Badge | P0 | both | 15000 | prev + `None` | MAP_ECRUTEAK | planned |
-| [16-dance-theater-grunt-surf](heartgold/16-dance-theater-grunt-surf/milestone.toml) | Ecruteak Dance Theater: the Rocket grunt and HM03 Surf | P0 | both | 8000 | prev + `None` | MAP_ECRUTEAK | planned |
-| [17-route38-39-olivine-lighthouse-jasmine](heartgold/17-route38-39-olivine-lighthouse-jasmine/milestone.toml) | Routes 38-39, Olivine rival, the Lighthouse: Jasmine and Amphy | P0 | both | 20000 | prev + `None` | MAP_OLIVINE_LIGHTHOUSE_1F | planned |
+| [15-morty-fog](heartgold/15-morty-fog/milestone.toml) | Morty: Fog Badge | P0 | both | 29936 | prev + `None` | MAP_ECRUTEAK | passing |
+| [16-dance-theater-grunt-surf](heartgold/16-dance-theater-grunt-surf/milestone.toml) | Ecruteak Dance Theater: the Rocket grunt and HM03 Surf | P0 | both | 7417 | prev + `None` | MAP_ECRUTEAK | passing |
+| [17-route38-39-olivine-lighthouse-jasmine](heartgold/17-route38-39-olivine-lighthouse-jasmine/milestone.toml) | Routes 38-39, Olivine rival, the Lighthouse: Jasmine and Amphy | P0 | both | 44083 | prev + `None` | MAP_OLIVINE_LIGHTHOUSE_1F | passing |
 | [18-route40-cianwood-chuck-fly-secretpotion](heartgold/18-route40-cianwood-chuck-fly-secretpotion/milestone.toml) | Cianwood: Chuck, Storm Badge, HM02 Fly, the SecretPotion | P0 | both | 30000 | prev + `None` | MAP_OLIVINE | planned |
 | [19-amphy-secretpotion-jasmine-mineral](heartgold/19-amphy-secretpotion-jasmine-mineral/milestone.toml) | Amphy's SecretPotion, Jasmine: Mineral Badge | P0 | both | 15000 | prev + `None` | MAP_OLIVINE | planned |
 | [20-route42-mahogany-lake-of-rage-gyarados](heartgold/20-route42-mahogany-lake-of-rage-gyarados/milestone.toml) | Route 42, Mahogany, Lake of Rage: the red Gyarados and Lance | P0 | both | 40000 | prev + `None` | MAP_LAKE_OF_RAGE | planned |
@@ -3756,7 +3756,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0922_T27GYM0101.s:102-130 (TRAINER_LEADER_MORTY_MORTY, GiveBadge BADGE_FOG, AddVar VAR_MIDGAME_BADGES 1 :117, FLAG_GOT_TM30_FROM_MORTY); TRAINER_LEADER_MORTY_MORTY (31, include/constants/trainers.h:36): GASTLY 21, HAUNTER 21, GENGAR 25, HAUNTER 23
 - end state: map MAP_ECRUTEAK; 4 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN, BADGE_FOG; >= 1 battles; flags set FLAG_GOT_TM30_FROM_MORTY; vars VAR_MIDGAME_BADGES=1
-- frames: estimate 15000, budget 50000
+- frames: estimate 29936, budget 45000
 - refs: zone_event 075_T27 warp 7 (376,183) -> MAP_ECRUTEAK_GYM (16,53); zone_event 077_T27GYM0101 coords 0-14 VAR_UNK_4109 0 -> 002 (Warp MAP_ECRUTEAK_GYM (16,49), scr_seq_0922_T27GYM0101.s:156-164): the pit tiles; zone_event 077_T27GYM0101 object 1 obj_T27GYM0101_gsleader4 (10,8); Mediums Georgina (17,39), Grace (19,30), Edith (9,29), Martha (11,19); scr_seq_0922_T27GYM0101.s:102-130 (TRAINER_LEADER_MORTY_MORTY, GiveBadge BADGE_FOG, AddVar VAR_MIDGAME_BADGES 1 :117, FLAG_GOT_TM30_FROM_MORTY); TRAINER_LEADER_MORTY_MORTY (31, include/constants/trainers.h:36): GASTLY 21, HAUNTER 21, GENGAR 25, HAUNTER 23
 - notes: Ghosts are immune to Normal: the lead needs Ember plus a Dark/Ghost move (Bite/Shadow Ball); the party must also beat the Mediums (route below). The hidden floor: `python3 tests/e2e/tools/hg_map.py MAP_ECRUTEAK_GYM --pits` lists the 100 walkable tiles of coords 0-14 (VAR_UNK_4109 is never set by any script, so the pits never close); the complement inside the walls is one 1-wide path (16,52)..(10,9) (checked by BFS over the decoded land data). Mediums on it: Georgina (17,39) LOOK_WEST sight 1 and Grace (19,30) LOOK_SOUTH sight 1 are passed adjacent; Edith (9,29) LOOK_EAST sight 5 sees the only corridor (14..10,29) and walks up (row 30 (12..14,30) is the way round her); Martha (11,19) LOOK_SOUTH sight 3: (11,21),(11,22) are avoided too so she is met adjacent at (11,20) via (13,20..23) [INFERENCE: movement 14..17 = LOOK_NORTH..EAST as Platinum numbers them; param0 = sight]. The old man (16,49) is hidden by FLAG_UNK_247 (scr_seq_0024_D18R0102.s:135, milestone 14). Out again by a pit: (9,12) is coord 1, whose script warps to (16,49) by the door (scr_seq_0922_T27GYM0101.s:156-164).
 
@@ -3766,7 +3766,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0928_T27R0501.s:217-281 (TRAINER_TEAM_ROCKET_GRUNT_26, FLAG_UNK_23A, VAR_UNK_410C 2); TRAINER_TEAM_ROCKET_GRUNT_26 (601, include/constants/trainers.h:606): KOFFING 12
 - end state: map MAP_ECRUTEAK; 4 badges; >= 1 battles; flags set FLAG_GOT_HM03, FLAG_UNK_23A; vars VAR_UNK_410C=3, VAR_UNK_4090=1
-- frames: estimate 8000, budget 12000
+- frames: estimate 7417, budget 11200
 - refs: zone_event 075_T27 warp 4 (397,173) -> MAP_ECRUTEAK_DANCE_THEATER (7,17); scr_seq_0928_T27R0501_hdr.s (OnFrame VAR_UNK_410C 0 -> 015); scr_seq_0928_T27R0501.s:73-108 (VAR_UNK_410C 1); zone_event 083_T27R0501 object 9 obj_T27R0501_rocketm (7,6) FLAG_UNK_23A -> 003; scr_seq_0928_T27R0501.s:217-281 (TRAINER_TEAM_ROCKET_GRUNT_26, FLAG_UNK_23A, VAR_UNK_410C 2); TRAINER_TEAM_ROCKET_GRUNT_26 (601, include/constants/trainers.h:606): KOFFING 12; zone_event 083_T27R0501 coords 0/1 (3,8)/(11,8) VAR_UNK_410C 2 -> 011/012; scr_seq_0928_T27R0501.s:371-399 (ITEM_HM03, FLAG_GOT_HM03, VAR_UNK_410C 3, VAR_UNK_4090 1); src/field_move.c:250-254 (Surf in the field needs BADGE_FOG)
 - notes: No badge check in these scripts; Surf in the field needs the Fog Badge (15). VAR_UNK_4090 1 also retires Route 40's coord (zone_event 091_W40 coord 0).
 
@@ -3776,7 +3776,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: none
 - end state: map MAP_OLIVINE_LIGHTHOUSE_1F; 4 badges; flags set FLAG_UNK_1D8, FLAG_HIDE_OLIVINE_RIVAL; vars VAR_SCENE_LIGHTHOUSE_JASMINE=1, VAR_UNK_4078=1
-- frames: estimate 20000, budget 30000
+- frames: estimate 44083, budget 66200
 - refs: zone_event 075_T27 warps 8/9 (358,166/167) -> MAP_ROUTE_38_ECRUTEAK_GATEHOUSE; zone_event 166_R38R0101 warp 1 (1,7) -> MAP_ROUTE_38 (351,166); zone_event 040_R39 coord 0 (278,171) h3 VAR_UNK_408F 0 -> 002 (Moomoo Farm scene); zone_event 074_T26 coord 0 (272,239) h5 VAR_UNK_4078 0 -> 001 (rival scene: ClearFlag/SetFlag FLAG_HIDE_OLIVINE_RIVAL, VAR_UNK_4078 1, scr_seq_0911_T26.s:74-165; no battle); zone_event 074_T26 warp 3 (301,263) -> MAP_OLIVINE_LIGHTHOUSE_1F (8,17); zone_event 112_D27R0101 warp 1 (8,4) -> MAP_OLIVINE_LIGHTHOUSE_ELEVATOR; scr_seq_0067_D27R0108_hdr.s + scr_seq_0067_D27R0108.s:11-73 (OnFrame VAR_UNK_4125 0: walk in, the car goes to the other floor: SetDynamicWarp LIGHT_ROOM from 1F, 1F from the Light Room; no menu); zone_event 401_D27R0108 warp 0 (3,6) -> the dynamic warp; zone_event 211_D27R0107 object 1 obj_D27R0107_gsleader6 (7,8) -> 000; scr_seq_0066_D27R0107.s:25-60 (Jasmine: VAR_SCENE_LIGHTHOUSE_JASMINE 1, FLAG_UNK_1D8); zone_event 211_D27R0107 warp 1 (8,4) -> MAP_OLIVINE_LIGHTHOUSE_ELEVATOR
 - notes: Lighthouse trainers are skipped by the elevator (1F (8,4) <-> Light Room (8,4)); the elevator's script picks the other floor from GetDynamicWarpFloorNo, so one ride up and one down. Route 38/39 trainers fight if they spot. The Moomoo Farm coord scene (R39 002) needs only A [INFERENCE].
 
@@ -3786,7 +3786,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0877_T24GYM0101.s:19-57 (TRAINER_LEADER_CHUCK_CHUCK, GiveBadge BADGE_STORM, AddVar VAR_MIDGAME_BADGES 1, VAR_UNK_4116 1, FLAG_GOT_TM01_FROM_CHUCK); TRAINER_LEADER_CHUCK_CHUCK (34, include/constants/trainers.h:39): PRIMEAPE 29, POLIWRATH 31
 - end state: map MAP_OLIVINE; 5 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN, BADGE_FOG, BADGE_STORM; >= 1 battles; flags set FLAG_GOT_TM01_FROM_CHUCK, FLAG_GOT_HM02, FLAG_GOT_SECRETPOTION; vars VAR_UNK_4116=2, VAR_MIDGAME_BADGES=2; 1 save check(s)
-- frames: estimate 30000, budget 45000
+- frames: estimate 30000, budget 75000
 - refs: zone_event 112_D27R0101 warp 0 (8,17) -> MAP_OLIVINE; zone_event 091_W40 coord 0 (252,265) w4 VAR_UNK_4090 0 (retired by HM03, scr_seq_0928_T27R0501.s:381); zone_event 072_T24 warp 0 (172,357) -> MAP_CIANWOOD_GYM (13,19); zone_event 135_T24GYM0101 object 0 obj_T24GYM0101_gsleader5 (13,10); Black Belts Yoshi (6,9), Lao (18,7), Nob (7,5), Lung (15,3); scr_seq_0877_T24GYM0101.s:19-57 (TRAINER_LEADER_CHUCK_CHUCK, GiveBadge BADGE_STORM, AddVar VAR_MIDGAME_BADGES 1, VAR_UNK_4116 1, FLAG_GOT_TM01_FROM_CHUCK); TRAINER_LEADER_CHUCK_CHUCK (34, include/constants/trainers.h:39): PRIMEAPE 29, POLIWRATH 31; scr_seq_0875_T24_hdr.s (OnFrame VAR_UNK_4116 1 -> 006); scr_seq_0875_T24.s:31-41 (FLAG_GOT_HM02, VAR_UNK_4116 2); zone_event 072_T24 warp 2 (179,370) -> MAP_CIANWOOD_PHARMACY; zone_event 219_T24R0501 object 0 (5,5); scr_seq_0881_T24R0501.s:11-45 (VAR_SCENE_LIGHTHOUSE_JASMINE 1 -> ITEM_SECRETPOTION, FLAG_GOT_SECRETPOTION); include/constants/items.h:883 (ITEM_SECRETPOTION 464); zone_event 072_T24 coord 0 (176,334) VAR_UNK_4076 1 -> Suicune/Eusine (scr_seq_0875_T24.s:99-157; north end, not walked); src/field_move.c:250-254 (Surf needs BADGE_FOG), :217-221 (Fly needs BADGE_STORM); land data (tools/hg_world.py grid 160 250 300 383, via tools/hg_map.py): Olivine's west exit (252,262..266), Route 40's beach to (235,280) (0x17 shallow), sea 0x15 from (235,281); Route 41 sea; Cianwood's east beach sand 0x21 (171..191,349); the gym door (172,357) 0x69 with sand (172,358) below; whirlpools 0x11 at (214..216,331..333), (247..249,346..348), (203..205,360..362), (230..232,374..376), not on the route
 - notes: Surf needs the Fog Badge and a Surf carrier: boost.recipe adds PELIPPER (Surf, Fly) behind the party. Chuck: Poliwrath lv31 (Water/Fighting) - the lead wants a Psychic/Flying move (Pelipper's Fly behind a fainted lead). With Morty, Chuck and Jasmine VAR_MIDGAME_BADGES reaches 3 at the third of them (ROCKET_TAKEOVER 1). The via waypoints come from the static land data; walk_to plans each leg on the probe (Swimmers on Routes 40/41 that spot the player are fought).
 

@@ -2,10 +2,9 @@
 # Mediums, Morty (TRAINER_LEADER_MORTY_MORTY), the Fog Badge + TM30.
 # Start: MAP_ECRUTEAK (376,150) -> end: MAP_ECRUTEAK outside the gym (376,184), badge Fog.
 title = "Morty: Fog Badge"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 29936
 refs = [
   "zone_event 075_T27 warp 7 (376,183) -> MAP_ECRUTEAK_GYM (16,53)",
   "zone_event 077_T27GYM0101 coords 0-14 VAR_UNK_4109 0 -> 002 (Warp MAP_ECRUTEAK_GYM (16,49), scr_seq_0922_T27GYM0101.s:156-164): the pit tiles",
@@ -20,7 +19,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 50000
+frames = 45000
 
 [[step]]
 do = "walk_to"
