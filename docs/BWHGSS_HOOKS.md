@@ -223,7 +223,18 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   with a 4.2 `FSFile` version of D's memory-archive opener. Add a `.c.patch` on HG's NARC functions calling
   `pc_modfs_member_*`, binding each NARC to its path at open (`pc_modfs_bind_narc`). Medium effort, and only
   title-screen assets can be checked before the field.
-- **B/W, and any DS game: a ROM-level view.** B/W has no FS symbols placed, and its SDK is TWL-SDK 5. Instead
+- **B/W: done as a ROM view** (`games/ndsrec/pc/src/pc_bw_romview.c`, guest side, B/W builds only:
+  `pc_card_rom.c`'s `rom_read` calls it under `PC_BW_ROMVIEW`, so D/P/Pt compile the same code as before). On the
+  first cartridge read it walks the ROM's FNT, asks pc_modfs (packages, load order, claims: shared) for each
+  file and NARC member, and moves every claimed whole file and every NARC with claimed members (rebuilt, its BTAF
+  rewritten, appends included) past the image's used area (header 0x80 / the TWL total at 0x210), patching their
+  FAT entries in the reads. TWL-SDK's FS refuses ROM-archive reads at or past the TWL-only area in DS mode
+  (`sub_0207A980`: offset >= header 0x92 << 19), so the in-memory header's 0x92 moves past the view. Nothing
+  claimed: no view, every read the cartridge's. The example (`tests/bwhgss/bw_mod_example.py`) is made from the
+  player's ROM: `narc/a/0/0/2/179`, the main menu's bank with CONTINUE -> CONTINUE (MOD), and its empty-input
+  `.cooked/digest`. Proven headless (parity.sh `mods`) and in the app's Mods page and carts (`n2_mods`,
+  `n2_carts`).
+- **Any DS game: a ROM-level view.** The sketch B/W's view follows: B/W has no FS symbols placed, and its SDK is TWL-SDK 5. Instead
   of hooking the FS, serve the mod at the ROM read. Every cartridge read goes through `CARDi_ReadRom` ->
   `np_host_rom_read` (`pc/src/pc_card_rom.c`). The SDK finds files through the FAT it reads from the ROM. A host
   ROM view that (1) appends each claimed whole file past the ROM's end and rewrites its FAT entry, and (2)
@@ -265,7 +276,7 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 | 7 | Volume split | HG/SS | none: Platinum's table fits (OPED unused) | low until HG has sound | HG audio silence | no | **done** (proven) |
 | 8 | Quick save | B/W | medium: the save API hunt, then `ARMREC_CALL` and a game event | high | nothing | no | **done** |
 | 9 | Instant text | B/W | medium: printer hunt, then a `bl` retarget | medium | nothing | no | **done** |
-| 10 | Mods via a ROM view | all DS | medium-high: FAT/NARC rebuild in the host's ROM read | medium | nothing | shared host code: shell tests |
+| 10 | Mods via a ROM view | B/W (done, guest side); other DS games | medium-high: FAT/NARC rebuild at the cartridge read | medium | nothing | no (B/W only, `PC_BW_ROMVIEW`) | **done** for B/W |
 | 11 | Mods via FS/NARC hooks | HG/SS | medium | low over #10 | field for most assets | no |
 | 12 | `in_battle_app` | HG/SS | small | low (Frontier only) | field | no |
 | 13 | Camera zoom / tilt | B/W | medium: GFL camera hook on the field overlay's Switching calls | medium | nothing | no | **done** |

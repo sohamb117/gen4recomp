@@ -152,6 +152,11 @@ the Black and White cores, build/app-bw, from main 73db46f55's cores), runs the 
 through the gift box into Bianca's battle with `battle_layout = hybrid`: the bedroom vertical,
 the battle hybrid (large top, the touch screen small at the right), the bedroom after it
 vertical again, on Black and White (`<game>-n2_battle_layout-{field,battle,after}.png`, looked at).
+`n2_mods` and `n2_carts` (B/W; the app rebuilt with the ROM view, pc_bw_romview.c): the
+Mods page installs the example package (`tests/bwhgss/bw_mod_example.py`, made from the
+player's ROM), the main menu reads CONTINUE (MOD); sealed as "Menu Cart" and bound to the
+slot ("Start" now plays cart "Menu Cart"), it boots the same; ok on Black and White
+(`<game>-n2_mods-menu.png`, `<game>-n2_carts-{2-bound,3-boot}.png`, looked at).
 Screenshots looked at: Black title (n2_boot), bedroom after CONTINUE
 (n2_continue), "Snapshot 1 loaded" in the bedroom (n2_snapshots-restored),
 the editor's Trainer tab on the real save (n2_editor-trainer: AAAAAAA, ID

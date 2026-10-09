@@ -20,6 +20,9 @@
 #             saved, the player free again, the file changed and verified
 #   camera    the bedroom at camera_zoom 512 / camera_tilt 160 against the
 #             plain one, and back at the defaults byte-identical to it
+#   mods      bw-menu.sched: the main menu with tests/bwhgss/bw_mod_example.py's
+#             package (made from the ROM) in the ROM view: CONTINUE (MOD),
+#             the rest of the menu as without it
 #   battle    bw-battle.sched: the gift box and Bianca's battle set in_battle,
 #             the field after it clears it; PC_NP_RULES_CHECK there: the fix-
 #             bugs rule (the 0 damage glitch) off and on
@@ -233,6 +236,31 @@ for g in "${games[@]}"; do
             fail=1
         else
             echo "ok   $g camera zoom 512 / tilt 10 degrees in the bedroom, back to the plain picture at the defaults"
+        fi
+
+        # Content packages as a ROM view (pc/src/pc_bw_romview.c): the
+        # example package (tests/bwhgss/bw_mod_example.py, made from this
+        # ROM) replaces the main menu's bank; its CONTINUE reads CONTINUE
+        # (MOD), and the rest of the menu is the plain one.
+        python3 $here/bw_mod_example.py "$rom" "$w/mods" > /dev/null
+        for step in menu-plain menu-mod; do
+            cp "$w/game.sav" "$w/$step.sav"
+        done
+        run menu-plain --frames 5501 --schedule $here/bw-menu.sched --save "$w/menu-plain.sav" --dump-from 5500
+        run menu-mod --frames 5501 --schedule $here/bw-menu.sched --save "$w/menu-mod.sav" --dump-from 5500 \
+            --content "$w/mods" -e PC_MODS=example_bw_menu
+        check "$g the example package in the ROM view" "$w/menu-mod.log" "exit 0" \
+            "pc_bw_romview: a/0/0/2: .* members" "pc_bw_romview: 1 files moved"
+        if python3 $here/region_same.py "$w/menu-plain/frame_005501.png" "$w/menu-mod/frame_005501.png" \
+            30 18 220 34; then
+            echo "FAIL $g example package: the CONTINUE label is the plain one ($w/menu-mod)"
+            fail=1
+        elif ! python3 $here/region_same.py "$w/menu-plain/frame_005501.png" "$w/menu-mod/frame_005501.png" \
+            30 130 220 192; then
+            echo "FAIL $g example package: the rest of the menu changed ($w/menu-mod)"
+            fail=1
+        else
+            echo "ok   $g example package: CONTINUE (MOD) on the main menu, the rest of it unchanged"
         fi
 
         # NP_STAT_IN_BATTLE: the gift box, then Bianca's battle (overlay 93's

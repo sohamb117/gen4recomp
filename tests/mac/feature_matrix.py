@@ -1073,6 +1073,52 @@ def _(c):
               args=['--game', GAME, '--slot', NEW_SLOT])
 
 
+def bw_mod_zip(c):
+    """B/W's example package (tests/bwhgss/bw_mod_example.py: the main menu's
+    CONTINUE from a package, made from GAME's ROM) as a zip."""
+    out = os.path.join(c.work, 'pkg')
+    subprocess.run([sys.executable, os.path.join(ROOT, 'tests/bwhgss/bw_mod_example.py'), NEW_ROMS[GAME], out],
+                   check=True, stdout=subprocess.DEVNULL)
+    return fixtures.mod_zip(os.path.join(out, 'example_bw_menu'), os.path.join(c.work, 'example_bw_menu.zip'))
+
+
+@case('n2_mods', 'B/W: Mod manager installs the example package (ROM view, pc_bw_romview.c); the main menu '
+      'reads CONTINUE (MOD)', 'nds2')
+def _(c):
+    if not is_bw():
+        raise FileNotFoundError('the B/W example package only')
+    new_save(c)
+    z = bw_mod_zip(c)
+    s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='installed')
+    order = open(os.path.join(c.ud, 'mods', GAME, 'loadorder.txt')).read()
+    assert 'example_bw_menu' in order, order
+    # The title's START at ~5000, the main menu from ~5450.
+    log = c.run('boot=app,frames=5550,press=5000:start:4:60:2,script=0:move:1:1', step='menu',
+                args=['--game', GAME, '--slot', NEW_SLOT])
+    assert 'pc_bw_romview: a/0/0/2' in log, log[-1500:]
+
+
+@case('n2_carts', 'B/W: seal the enabled package as a cart, bind it to the slot, boot it', 'nds2')
+def _(c):
+    if not is_bw():
+        raise FileNotFoundError('the B/W example package only')
+    new_save(c)
+    z = bw_mod_zip(c)
+    s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='0-installed')
+    s3, f3 = keys(4, ['F10'] + opt_downs('Mods...') + ['Return', 'Down', 'Down', 'Return'])  # package, Install, Seal
+    c.run('boot=app,frames=%d,script=%s;%d:text:Menu Cart;%d:key:Return' % (f3 + 10, s3, f3 + 2, f3 + 4),
+          step='1-sealed')
+    assert glob.glob(os.path.join(c.ud, 'carts', GAME, '*.cart')), os.listdir(c.ud)
+    # The slots page (Continue: Start, New, Start, Import) -> Start -> Cart: none -> Menu Cart.
+    s, f = new_card(['Down', 'Down', 'Return'] + ['Down'] * 5 + ['Return'])
+    c.run('boot=app,frames=%d,script=%s' % (f + 4, s), step='2-bound')
+    log = c.run('boot=app,frames=5550,press=5000:start:4:60:2,script=0:move:1:1', step='3-boot',
+                args=['--game', GAME, '--slot', NEW_SLOT])
+    assert 'pc_bw_romview: a/0/0/2' in log, log[-1500:]
+
+
 @case('n2_effects', 'Effects chain (LCD grid + scanlines, CRT + curvature) and a performance preset', 'nds2')
 def _(c):
     for name, video in (('lcd-scanlines', 'effect1 = lcd\neffect1_intensity = 80\neffect2 = scanlines\n'

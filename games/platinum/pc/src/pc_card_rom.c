@@ -246,10 +246,22 @@ int pc_rom_init(void)
  * exactly the shape of a stall the pacer cannot do anything about. The span
  * is here so the late-frame autopsy can say whether that is what it was.
  */
+#if defined(PC_BW_ROMVIEW)
+/* Black/White (games/ndsrec/pc/src/pc_bw_romview.c): content packages as a
+ * ROM view; 1 = answered, 0 = nothing claimed, read the cartridge. */
+int pc_bw_romview_read(u32 src, void *dst, u32 len);
+#endif
+
 #if defined(__wasm__)
 static void rom_read(u32 src, void *dst, u32 len)
 {
     int32_t rc;
+
+#if defined(PC_BW_ROMVIEW)
+    if (pc_bw_romview_read(src, dst, len)) {
+        return;
+    }
+#endif
 
     /* Same contract as the pread below: a read the image cannot satisfy
      * whole is a fatal port bug, not a short read to hand back. */
