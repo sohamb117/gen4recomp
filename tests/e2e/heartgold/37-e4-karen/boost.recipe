@@ -1,0 +1,6 @@
+# Boost on 36 (Bruno)'s end save (run.py hgss_boost: np_save4 heal-party).
+# The Elite Four's rooms lead one into the next with no Pokemon Center between (the way back shuts behind
+# the player: scr_seq_0820_T10R0201.s:22-36), where a player uses Full Restores and Revives; no bot uses items.
+# party-heal stands in for them: HP, status and PP as a Pokemon Center leaves them. The first chained run
+# reached Bruno with all but Pelipper fainted after Will and Koga, and whited out in four turns.
+party-heal

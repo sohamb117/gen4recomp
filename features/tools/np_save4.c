@@ -25,6 +25,7 @@
  *   np_save4 add-mon <save> <rom.nds> <species> <level> [move...]   party Pokemon
  *   np_save4 set-move <save> <rom.nds> <slot> <index> <move>   a party Pokemon's move (full PP)
  *   np_save4 set-level <save> <rom.nds> <slot> <level>   a party Pokemon's level (stats recalculated)
+ *   np_save4 heal-party <save> <rom.nds>   the party's HP, status and PP restored (a Pokemon Center's)
  *
  * Edits write back in place after copying the original to <save>.bak, or to
  * the path given with a trailing `-o <out>`.
@@ -73,10 +74,11 @@ static int usage(void)
             "  %s add-mon <save> <rom.nds> <species> <level> [move id...]\n"
             "  %s set-move <save> <rom.nds> <party slot 0-5> <move index 0-3> <move id>\n"
             "  %s set-level <save> <rom.nds> <party slot 0-5> <level 1-100>\n"
+            "  %s heal-party <save> <rom.nds>\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
             prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
-            prog, prog, prog, prog, prog);
+            prog, prog, prog, prog, prog, prog);
     return EXIT_USAGE;
 }
 
@@ -1016,6 +1018,48 @@ out:
     return st;
 }
 
+/* heal-party: every party Pokemon (eggs left alone) as a Pokemon Center leaves it: HP at its maximum, no status,
+ * every move's PP at its maximum (the ROM's base PP raised by its PP Ups, base + base * ups / 5). The e2e boosts'
+ * party-heal: what a player's Full Restores and Revives do between the Elite Four's rooms, which no bot uses. */
+static save4_status heal_party(save4 *s, const char *rom_path)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return SAVE4_ERR_ARG;
+    nd_gamedata gd;
+    save4_status st = SAVE4_ERR_ARG;
+    if (nd_gamedata_load(&gd, &rom) != ND_OK) {
+        fprintf(stderr, "%s: unreadable ROM\n", prog);
+        goto out_rom;
+    }
+    st = SAVE4_OK;
+    for (int slot = 0; slot < save4_party_count(s) && st == SAVE4_OK; slot++) {
+        pkm4 p;
+        pkm4_info info;
+        if ((st = save4_get_party(s, slot, &p)) != SAVE4_OK)
+            break;
+        if (pkm4_is_empty(&p))
+            continue;
+        pkm4_info_get(&p, &info);
+        if (info.is_egg)
+            continue;
+        for (int i = 0; i < 4; i++) {
+            if (!info.moves[i])
+                continue;
+            uint8_t base = nd_move_base_pp(&gd, info.moves[i]);
+            pkm4_set_move(&p, i, info.moves[i], (uint8_t)(base + base * info.pp_ups[i] / 5), info.pp_ups[i]);
+        }
+        pkm4_set_party_stats(&p, info.level, info.stats[0], info.stats, 0);
+        st = save4_set_party(s, slot, &p);
+    }
+    nd_gamedata_free(&gd);
+out_rom:
+    nd_rom_close(&rom);
+    fclose(rf);
+    return st;
+}
+
 static int cmd_edit(int argc, char **argv)
 {
     const char *cmd = argv[1];
@@ -1143,6 +1187,8 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[1], 5, &v1) || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)
             st = set_level(&s, a[0], v1, v2);
+    } else if (!strcmp(cmd, "heal-party") && na == 1) {
+        st = heal_party(&s, a[0]);
     } else if (!strcmp(cmd, "add-mon") && na >= 3 && na <= 7) {
         bad = parse_ul(a[1], 493, &v1) || v1 == 0 || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)
@@ -1201,7 +1247,7 @@ int main(int argc, char **argv)
     if (!strcmp(cmd, "gamedata"))
         return argc == 3 ? cmd_gamedata(argv[2]) : usage();
     if (!strncmp(cmd, "set-", 4) || !strcmp(cmd, "add-gift") || !strcmp(cmd, "remove-gift") ||
-        !strcmp(cmd, "add-mon") || !strcmp(cmd, "set-move"))
+        !strcmp(cmd, "add-mon") || !strcmp(cmd, "heal-party"))
         return cmd_edit(argc, argv);
     return usage();
 }

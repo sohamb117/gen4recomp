@@ -343,9 +343,11 @@ def recipe_env(path, game):
 # own gift makes it, with the `party-move SLOT INDEX MOVE` lines that name its slot as its moves (np_save4/np_save5
 # add-mon). HG/SS also edits the members the save's party already holds: `party-move` there sets that move with
 # full PP (np_save4 set-move), and `party-level SLOT LEVEL` sets the level, stats recalculated and HP full (np_save4
-# set-level). Nothing else is edited.
+# set-level); `party-heal` restores the whole party as a Pokemon Center does (np_save4 heal-party), standing in for
+# the Full Restores and Revives a player uses where no Center is reachable (the Elite Four's rooms), since no bot
+# uses items. Nothing else is edited.
 ADDMON_BOOST_VERBS = {"party", "party-move"}
-HGSS_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level"}
+HGSS_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-heal"}
 ADDMON_BOOST_GAMES = HGSS_GAMES + BW_GAMES
 
 
@@ -361,7 +363,7 @@ def addmon_boost(game, inline, sav, log):
     if out.returncode != 0:
         raise HarnessError("boost: the save tool cannot read %s" % sav)
     first = len(json.loads(out.stdout).get("party", []))
-    adds, sets, levels = [], [], []
+    adds, sets, levels, heal = [], [], [], False
     allowed = addmon_boost_verbs(game)
     for verb, *args in ops:
         if verb not in allowed:
@@ -369,6 +371,9 @@ def addmon_boost(game, inline, sav, log):
                 game.name, " ".join(sorted(allowed)), verb))
         if verb == "party":
             adds.append((int(args[0]), int(args[1]), {}))
+            continue
+        if verb == "party-heal":
+            heal = True
             continue
         if verb == "party-level":
             slot, level = int(args[0]), int(args[1])
@@ -391,6 +396,7 @@ def addmon_boost(game, inline, sav, log):
     with open(log, "w") as f:
         edits = [["set-move", str(slot), str(index), str(move)] for slot, index, move in sets]
         edits += [["set-level", str(slot), str(level)] for slot, level in levels]
+        edits += [["heal-party"]] if heal else []
         for verb, *args in edits:
             cmd = game.save4 + [verb, sav, game.rom] + args
             f.write("$ %s\n" % " ".join(cmd))

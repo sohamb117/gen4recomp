@@ -304,7 +304,13 @@ if(EXISTS "${HGSS_ROM}")
     expect_json("${j}" "73" party 2 hp)  # (2*45 + IV 20) * 30/100 + 30 + 10, full
     expect_json("${j}" "22" party 2 moves 1 id)  # moves kept
     run(2 o set-level "${SS}" "${HGSS_ROM}" 5 30)  # no Pokemon in slot 5: invalid value
-    message(STATUS "HG/SS add-mon, set-move and set-level with ROM OK")
+    run(0 o heal-party "${SS}" "${HGSS_ROM}")  # already full: HP, PP and status as they were
+    run(0 j dump "${HGSS_ROM}" "${SS}")
+    expect_json("${j}" "73" party 2 hp)
+    expect_json("${j}" "15" party 2 moves 1 pp)  # Vine Whip's base PP, no PP Ups
+    expect_json("${j}" "0" party 2 status)
+    expect_json("${j}" "30" party 2 level)
+    message(STATUS "HG/SS add-mon, set-move, set-level and heal-party with ROM OK")
 else()
     message(STATUS "HG/SS ROM not found at '${HGSS_ROM}'; add-mon / name checks skipped")
 endif()

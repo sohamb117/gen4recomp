@@ -3140,7 +3140,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## HeartGold
 
 <!-- plan.py:begin heartgold -->
-### Story chain: 38 milestones, ~1166221 frames estimated
+### Story chain: 38 milestones, ~1201696 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3178,9 +3178,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [32-route27-tohjo-falls-route26-league-gate](heartgold/32-route27-tohjo-falls-route26-league-gate/milestone.toml) | Route 27, Tohjo Falls, Route 26 to the League gate | P0 | both | 68951 | prev + `None` | MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE | passing |
 | [33-victory-road-rival](heartgold/33-victory-road-rival/milestone.toml) | Victory Road: the rival, Indigo Plateau | P0 | both | 79407 | prev + `None` | MAP_POKEMON_LEAGUE_ENTRANCE | passing |
 | [34-e4-will](heartgold/34-e4-will/milestone.toml) | Elite Four: Will | P0 | both | 19115 | prev + `None` | MAP_POKEMON_LEAGUE_WILL_ROOM | passing |
-| [35-e4-koga](heartgold/35-e4-koga/milestone.toml) | Elite Four: Koga | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_KOGA_ROOM | planned |
-| [36-e4-bruno](heartgold/36-e4-bruno/milestone.toml) | Elite Four: Bruno | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_BRUNO_ROOM | planned |
-| [37-e4-karen](heartgold/37-e4-karen/milestone.toml) | Elite Four: Karen | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_KAREN_ROOM | planned |
+| [35-e4-koga](heartgold/35-e4-koga/milestone.toml) | Elite Four: Koga | P0 | both | 19042 | prev + `None` | MAP_POKEMON_LEAGUE_KOGA_ROOM | passing |
+| [36-e4-bruno](heartgold/36-e4-bruno/milestone.toml) | Elite Four: Bruno | P0 | both | 20900 | prev + `None` | MAP_POKEMON_LEAGUE_BRUNO_ROOM | passing |
+| [37-e4-karen](heartgold/37-e4-karen/milestone.toml) | Elite Four: Karen | P0 | both | 22533 | prev + `None` | MAP_POKEMON_LEAGUE_KAREN_ROOM | passing |
 | [38-champion-lance-hall-of-fame-credits](heartgold/38-champion-lance-hall-of-fame-credits/milestone.toml) | Champion Lance, the Hall of Fame, credits and the reset | P0 | both | 26000 | prev + `None` | - | planned |
 
 #### heartgold/01-newgame-cyndaquil-pokegear — New game, the bedroom, Mom, Elm's lab: Cyndaquil, Pokegear, Elm's number
@@ -3529,7 +3529,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened); TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44
 - end state: map MAP_POKEMON_LEAGUE_KOGA_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA; flags clear FLAG_HIDE_KOGAS_ROOM_RETREAT
-- frames: estimate 9000, budget 40000
+- frames: estimate 19042, budget 28600
 - refs: zone_event 272_T10R0201 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KOGA_ROOM 0 (6,22); scr_seq_0821_T10R0301_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0821_T10R0301.s:22-36 (ClearFlag FLAG_HIDE_KOGAS_ROOM_RETREAT); zone_event 273_T10R0301 object 0 obj_T10R0301_gsbigfour2 (6,11) -> 001; scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened); TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44
 - notes: Fire handles Ariados/Venomoth/Forretress; Psychic/Ground for Muk and Crobat (boost).
 
@@ -3539,7 +3539,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened); TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46
 - end state: map MAP_POKEMON_LEAGUE_BRUNO_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO; flags clear FLAG_HIDE_BRUNOS_ROOM_RETREAT
-- frames: estimate 9000, budget 40000
+- frames: estimate 20900, budget 31400
 - refs: zone_event 273_T10R0301 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_BRUNO_ROOM 0 (6,22); scr_seq_0822_T10R0401_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0822_T10R0401.s:22-36 (ClearFlag FLAG_HIDE_BRUNOS_ROOM_RETREAT); zone_event 274_T10R0401 object 0 obj_T10R0401_gsbigfour3 (6,10) -> 001; scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened); TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46
 - notes: Psychic/Flying coverage for the Fighting types, Water/Grass for Onix (boost).
 
@@ -3549,7 +3549,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0823_T10R0501.s:45-70 (TRAINER_ELITE_FOUR_KAREN_KAREN :59, FLAG_DEFEATED_KAREN, exit opened); TRAINER_ELITE_FOUR_KAREN_KAREN (246, include/constants/trainers.h:251): UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47
 - end state: map MAP_POKEMON_LEAGUE_KAREN_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO, FLAG_DEFEATED_KAREN; flags clear FLAG_HIDE_KARENS_ROOM_RETREAT
-- frames: estimate 9000, budget 40000
+- frames: estimate 22533, budget 33800
 - refs: zone_event 274_T10R0401 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KAREN_ROOM 0 (6,22); scr_seq_0823_T10R0501_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0823_T10R0501.s:22-36 (ClearFlag FLAG_HIDE_KARENS_ROOM_RETREAT); zone_event 275_T10R0501 object 0 obj_T10R0501_gsbigfour4 (6,10) -> 001; scr_seq_0823_T10R0501.s:45-70 (TRAINER_ELITE_FOUR_KAREN_KAREN :59, FLAG_DEFEATED_KAREN, exit opened); TRAINER_ELITE_FOUR_KAREN_KAREN (246, include/constants/trainers.h:251): UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47
 - notes: Fighting/Fire/Water coverage (boost).
 
@@ -3567,7 +3567,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## SoulSilver
 
 <!-- plan.py:begin soulsilver -->
-### Story chain: 38 milestones, ~1190723 frames estimated
+### Story chain: 38 milestones, ~1226198 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3605,9 +3605,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [32-route27-tohjo-falls-route26-league-gate](heartgold/32-route27-tohjo-falls-route26-league-gate/milestone.toml) | Route 27, Tohjo Falls, Route 26 to the League gate | P0 | both | 68951 | prev + `None` | MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE | passing |
 | [33-victory-road-rival](heartgold/33-victory-road-rival/milestone.toml) | Victory Road: the rival, Indigo Plateau | P0 | both | 79407 | prev + `None` | MAP_POKEMON_LEAGUE_ENTRANCE | passing |
 | [34-e4-will](heartgold/34-e4-will/milestone.toml) | Elite Four: Will | P0 | both | 19115 | prev + `None` | MAP_POKEMON_LEAGUE_WILL_ROOM | passing |
-| [35-e4-koga](heartgold/35-e4-koga/milestone.toml) | Elite Four: Koga | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_KOGA_ROOM | planned |
-| [36-e4-bruno](heartgold/36-e4-bruno/milestone.toml) | Elite Four: Bruno | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_BRUNO_ROOM | planned |
-| [37-e4-karen](heartgold/37-e4-karen/milestone.toml) | Elite Four: Karen | P0 | both | 9000 | prev + `None` | MAP_POKEMON_LEAGUE_KAREN_ROOM | planned |
+| [35-e4-koga](heartgold/35-e4-koga/milestone.toml) | Elite Four: Koga | P0 | both | 19042 | prev + `None` | MAP_POKEMON_LEAGUE_KOGA_ROOM | passing |
+| [36-e4-bruno](heartgold/36-e4-bruno/milestone.toml) | Elite Four: Bruno | P0 | both | 20900 | prev + `None` | MAP_POKEMON_LEAGUE_BRUNO_ROOM | passing |
+| [37-e4-karen](heartgold/37-e4-karen/milestone.toml) | Elite Four: Karen | P0 | both | 22533 | prev + `None` | MAP_POKEMON_LEAGUE_KAREN_ROOM | passing |
 | [38-champion-lance-hall-of-fame-credits](heartgold/38-champion-lance-hall-of-fame-credits/milestone.toml) | Champion Lance, the Hall of Fame, credits and the reset | P0 | both | 26000 | prev + `None` | - | planned |
 
 #### soulsilver/01-newgame-cyndaquil-pokegear — New game, the bedroom, Mom, Elm's lab: Cyndaquil, Pokegear, Elm's number
@@ -3956,7 +3956,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened); TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44
 - end state: map MAP_POKEMON_LEAGUE_KOGA_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA; flags clear FLAG_HIDE_KOGAS_ROOM_RETREAT
-- frames: estimate 9000, budget 40000
+- frames: estimate 19042, budget 28600
 - refs: zone_event 272_T10R0201 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KOGA_ROOM 0 (6,22); scr_seq_0821_T10R0301_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0821_T10R0301.s:22-36 (ClearFlag FLAG_HIDE_KOGAS_ROOM_RETREAT); zone_event 273_T10R0301 object 0 obj_T10R0301_gsbigfour2 (6,11) -> 001; scr_seq_0821_T10R0301.s:45-69 (TRAINER_ELITE_FOUR_KOGA_KOGA :58, FLAG_DEFEATED_KOGA, exit opened); TRAINER_ELITE_FOUR_KOGA_KOGA (247, include/constants/trainers.h:252): ARIADOS 40, VENOMOTH 41, FORRETRESS 43, MUK 42, CROBAT 44
 - notes: Fire handles Ariados/Venomoth/Forretress; Psychic/Ground for Muk and Crobat (boost).
 
@@ -3966,7 +3966,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened); TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46
 - end state: map MAP_POKEMON_LEAGUE_BRUNO_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO; flags clear FLAG_HIDE_BRUNOS_ROOM_RETREAT
-- frames: estimate 9000, budget 40000
+- frames: estimate 20900, budget 31400
 - refs: zone_event 273_T10R0301 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_BRUNO_ROOM 0 (6,22); scr_seq_0822_T10R0401_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0822_T10R0401.s:22-36 (ClearFlag FLAG_HIDE_BRUNOS_ROOM_RETREAT); zone_event 274_T10R0401 object 0 obj_T10R0401_gsbigfour3 (6,10) -> 001; scr_seq_0822_T10R0401.s:45-70 (TRAINER_ELITE_FOUR_BRUNO_BRUNO :59, FLAG_DEFEATED_BRUNO, exit opened); TRAINER_ELITE_FOUR_BRUNO_BRUNO (418, include/constants/trainers.h:423): HITMONTOP 42, HITMONLEE 42, HITMONCHAN 42, ONIX 43, MACHAMP 46
 - notes: Psychic/Flying coverage for the Fighting types, Water/Grass for Onix (boost).
 
@@ -3976,7 +3976,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0823_T10R0501.s:45-70 (TRAINER_ELITE_FOUR_KAREN_KAREN :59, FLAG_DEFEATED_KAREN, exit opened); TRAINER_ELITE_FOUR_KAREN_KAREN (246, include/constants/trainers.h:251): UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47
 - end state: map MAP_POKEMON_LEAGUE_KAREN_ROOM; 8 badges; >= 1 battles; flags set FLAG_DEFEATED_WILL, FLAG_DEFEATED_KOGA, FLAG_DEFEATED_BRUNO, FLAG_DEFEATED_KAREN; flags clear FLAG_HIDE_KARENS_ROOM_RETREAT
-- frames: estimate 9000, budget 40000
+- frames: estimate 22533, budget 33800
 - refs: zone_event 274_T10R0401 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KAREN_ROOM 0 (6,22); scr_seq_0823_T10R0501_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0823_T10R0501.s:22-36 (ClearFlag FLAG_HIDE_KARENS_ROOM_RETREAT); zone_event 275_T10R0501 object 0 obj_T10R0501_gsbigfour4 (6,10) -> 001; scr_seq_0823_T10R0501.s:45-70 (TRAINER_ELITE_FOUR_KAREN_KAREN :59, FLAG_DEFEATED_KAREN, exit opened); TRAINER_ELITE_FOUR_KAREN_KAREN (246, include/constants/trainers.h:251): UMBREON 42, VILEPLUME 42, GENGAR 45, MURKROW 44, HOUNDOOM 47
 - notes: Fighting/Fire/Water coverage (boost).
 

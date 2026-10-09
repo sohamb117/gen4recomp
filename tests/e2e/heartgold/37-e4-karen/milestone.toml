@@ -2,10 +2,9 @@
 # (TRAINER_ELITE_FOUR_KAREN_KAREN), her exit to the Champion's room opens.
 # Start: MAP_POKEMON_LEAGUE_BRUNO_ROOM (6,11) -> end: MAP_POKEMON_LEAGUE_KAREN_ROOM (6,11), FLAG_DEFEATED_KAREN.
 title = "Elite Four: Karen"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 9000
+estimate = 22533
 refs = [
   "zone_event 274_T10R0401 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_KAREN_ROOM 0 (6,22)",
   "scr_seq_0823_T10R0501_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0823_T10R0501.s:22-36 (ClearFlag FLAG_HIDE_KARENS_ROOM_RETREAT)",
@@ -18,9 +17,10 @@ notes = "Fighting/Fire/Water coverage (boost)."
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
-frames = 13500
+frames = 33800
 
 [[step]]
 do = "walk_to"
