@@ -97,11 +97,20 @@ disassembly (same Black ROM), which names some of these functions; everything be
 | client party | POKECON + 4 + 0x1C x client: BattleMon pointers by slot, u8 count at +0x18 | same | `ov93_021B9864` / `ov93_021B98AC` index parties by `client * 0x1C` from POKECON+4; `ov93_021B9B94` reads the count at +0x18, `ov93_021B9C00` slot i (bounded by it), `ov93_021B9C10` swaps two slots. In the battle: client 0 = Tepig, client 1 = Bianca's Snivy, counts 1 and 1 |
 | BattleMon | 0x214 bytes (`btl_pokeparam.c`) | same | +0x00 the source POKEMON (in the client's POKEPARTY), +0x0C species, +0x0E max HP, +0x10 HP, +0x16 ability, +0x18 level, +0xEE..+0xF6 the five battle stats, +0xF8/+0xF9 the current types, +0xFC seven stat stages (6 = neutral), +0x104 four 0x0E-byte move slots {u16 move, u8 PP, u8 max PP, ...}. `ov93_021D4D84` (the constructor) fills +0x0C/+0x10/+0x0E/+0x18/+0x16 from the POKEMON params species / HP / max HP / level / ability, and the level-up code `ov93_021D69B8` reloads only +0x0E from max HP. Values: Tepig 498, 22/22, level 5, Blaze 66, Fire/Fire (9), Tackle 35/35, Tail Whip 30/30; Snivy 495, 19/19, level 5, Overgrow 65, Grass/Grass (11), Tackle, Leer 30/30 |
 
-## Battle menu (derived from the generated assembly; not yet seen on a run)
+## Battle menu (derived from the generated assembly, confirmed with peek in Bianca's battle)
 
 The player's choices in a battle, followed from the client's action-selection states to the bottom screen. Every
-offset below is read in the code named; none has been watched on the core yet, so the probe's `ui`, `ui_cursor` and
-`menu_battler` (games/ndsrec/pc/src/pc_bw_e2e.c) are unproven until a battle run shows them next to the frames.
+offset below is read in the code named. The chain was then read with np_gp `peek` on the core of 2026-10-08 (built
+before the probe code, so the reads were made host-side exactly as pc_bw_e2e.c makes them) in Bianca's battle on
+both games, next to the dumped frames: the input screen goes 0 -> 1 when "What will Tepig do?" and FIGHT/BAG/RUN/
+POKEMON come up (controller depth 1), 1 -> 2 on FIGHT (the two move buttons), 2 -> 0 with depth 0 once the move is
+chosen; the shown byte is 0 until the first key press, which only puts the corner brackets on FIGHT; the D-pad then
+walks the cursor as the key tables say (action: left from FIGHT -> BAG 1, up -> FIGHT; moves: right 0 -> 1, down
+1 -> 3, left 3 -> 2, down 2 -> 4 back, up 4 -> 2, up 2 -> 0, frames showing the brackets on BAG and on the bottom right
+move slot); the chooser is client 0's slot 0 BattleMon (menu_battler 0). A press in the first frames of the menu's
+slide-in is not taken. White's chain is Black's 0x20 higher. auto_battle (tests/e2e/bots.py `_bw_auto_battle`) won
+Bianca's battle on both games through these reads (7 turns, Tackle). The compiled probe itself waits for a core built
+with it.
 
 | field | where | how it was found |
 | --- | --- | --- |
