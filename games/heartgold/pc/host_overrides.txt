@@ -6,15 +6,17 @@
 #
 # The set is the ROM-only core's (tools/ndsrec/primitives.txt, `override`)
 # joined with games/diamond/pc/host_overrides.txt; both were measured on
-# the same host objects this build links, less D's flash timer
-# (CheckFlashTimer, pc_dp_agb.c), which pc/Makefile.wasm leaves out with
-# the GBA slot model. HG/SS's own NitroSDK C (os, mi) needs no entry:
+# the same host objects this build links, with HG/SS's own flash timer for
+# D's (CheckFlashTimer: pc/src/pc_hg_agb.c, lib/asm/nitro.s's, in place of
+# pc_dp_agb.c's). HG/SS's own NitroSDK C (os, mi) needs no entry:
 # game.mk compiles it weak, and the host's strong definitions win at link.
 CARD_Init
 CARD_WaitRomAsync
 CARDi_ReadRom
 CARDi_Request
 CARDi_SetTask
+# pc/src/pc_hg_agb.c (lib/asm/nitro.s)
+CheckFlashTimer
 DC_FlushAll
 DC_FlushRange
 DC_InvalidateRange

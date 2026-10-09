@@ -458,3 +458,20 @@
  	arm_func_end CARDi_TaskThread
  
  	arm_func_start CARDi_Request
+@@ -15702,7 +15703,7 @@
+ 	strb r2, [r1]
+ 	strb r0, [r1, #-1]
+ _020E18F8:
+-	ldr r0, _020E1984 ; =0xFFFF0020
++	bl pc_agb_sysrom9_logo ; pc: the BIOS logo (0xFFFF0020) is outside guest memory; the DS header's verified copy (games/platinum/pc/src/pc_agb_slot.c)
+ 	ldr r1, _020E1988 ; =_021E4D84
+ 	mov r2, #0x9c
+ 	bl MIi_CpuCopy32
+@@ -19775,5 +19776,7 @@
+ 	.byte 0x00, 0x00, 0x01, 0x00
+ _02110FC4:
+ 	.byte 0x00, 0x00, 0x00, 0x00
++	.public AgbFlash
++AgbFlash: ; pc: the SDK's AgbFlash (the identified chip type), named for games/platinum/pc/src/pc_agb_slot.c
+ _02110FC8:
+ 	.byte 0x00, 0x00, 0x00, 0x00

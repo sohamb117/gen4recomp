@@ -10,13 +10,22 @@ mystery_gift  Two Wonder Cards stored the way the game stores a received gift
               both, and the game's save (the host quick save, -o) keeps them:
               the Rare Candy in the medicine pocket, both gifts consumed, course
               24 among the Pokewalker's unlocked courses (np_save4 dump).
+pal_park      Pal Park migration from a GBA cartridge: the National Pokedex
+              set (np_save4 set-national-dex), an Emerald save from
+              tools/gba/gen3_save.py in slot 2 with a pret/pokeemerald build
+              (NP_GBA_ROM, default .cache/gba/pokeemerald/pokeemerald.gba);
+              the main menu's MIGRATE FROM EMERALD takes the first six of box
+              1 (pal-park.sched): both saves are written, the six are the
+              Pal Park's migrated Pokemon (np_save4 dump "migrated") and the
+              Emerald boxes keep the other two (gen3_save.py --verify).
 
 The start save is the e2e chain's milestone 04 end save in Violet City
 (build/e2e/<game>/04-route30-31-violet/end.sav, or NP_HGSS_LINK_BASE_<GAME>,
 as tests/link/linkpair.py's mint_hgss). The schedules were recorded from the
 e2e bots on np_gp (PC_E2E=1, text_instant=1), so the runs pass the same.
 Environment: NP_HGSS_HEADLESS (default build/core-hgss/np_headless),
-NP_HG_ROM, NP_SS_ROM, NP_SAVE4. Missing pieces skip (exit 0, "SKIP").
+NP_HG_ROM, NP_SS_ROM, NP_SAVE4, NP_GBA_ROM. Missing pieces skip (exit 0,
+"SKIP").
 """
 import argparse
 import json
@@ -35,6 +44,12 @@ ITEM_RARE_CANDY = 50
 WALKER_COURSE = 24  # a special course only a gift unlocks
 # The quick save's frame in each game's recorded walk (mystery-gift-<game>.sched).
 MG_SAVE_FRAME = {'heartgold': 3057, 'soulsilver': 3058}
+ROOT = os.path.normpath(os.path.join(HERE, '..', '..'))
+GBA_ROM = os.environ.get('NP_GBA_ROM') or os.path.join(ROOT, '.cache/gba/pokeemerald/pokeemerald.gba')
+GEN3_SAVE = os.path.join(ROOT, 'tools/gba/gen3_save.py')
+# National numbers of gen3_save.py's box 1 slots 1-6 (BOX1: Treecko, Torchic,
+# Mudkip, Pikachu, Eevee, Zigzagoon); slots 7-8 (Bulbasaur, Ralts) stay.
+MIGRATED = [252, 255, 258, 25, 133, 263]
 
 
 def wonder_card(mg_type, event_id, data):
@@ -96,7 +111,35 @@ def mystery_gift(game, work):
     return 'FAIL: ' + '; '.join(fails) if fails else 'ok (courses %s)' % courses
 
 
-CASES = {'mystery_gift': mystery_gift}
+def pal_park(game, work):
+    sav, gsav = os.path.join(work, 'pp.sav'), os.path.join(work, 'emerald.sav')
+    shutil.copyfile(linkpair.hgss_base_save(game), sav)
+    subprocess.run([linkpair.SAVE4, 'set-national-dex', sav, '1'], check=True, capture_output=True)
+    subprocess.run([sys.executable, GEN3_SAVE, gsav], check=True, capture_output=True)
+    if dump(sav)['migrated']:
+        return 'FAIL: the start save already holds migrated Pokemon'
+    p = subprocess.run(linkpair.core(game) + ['--frames', '3800', '--save', sav, '--gba-rom', GBA_ROM,
+                                             '--gba-save', gsav, '--schedule',
+                                             os.path.join(HERE, 'pal-park.sched')],
+                       capture_output=True, text=True)
+    with open(os.path.join(work, 'pp.log'), 'w') as f:
+        f.write(p.stdout + p.stderr)
+    fails = []
+    if p.returncode != 0:
+        fails.append('np_headless exited %d' % p.returncode)
+    if 'GBA save to' not in p.stdout + p.stderr:
+        fails.append('the Emerald save was not written')
+    got = [m['species'] for m in dump(sav)['migrated']]
+    if got != MIGRATED:
+        fails.append('migrated %s, want %s' % (got, MIGRATED))
+    v = subprocess.run([sys.executable, GEN3_SAVE, '--verify', gsav, '--rom', GBA_ROM], capture_output=True,
+                       text=True)
+    if v.returncode != 0 or '2 Pokemon in the boxes' not in v.stdout:
+        fails.append('the Emerald save after: %s' % (v.stdout + v.stderr).strip().splitlines()[-2:])
+    return 'FAIL: ' + '; '.join(fails) if fails else 'ok (migrated %s)' % got
+
+
+CASES = {'mystery_gift': mystery_gift, 'pal_park': pal_park}
 
 
 def main():
@@ -111,6 +154,8 @@ def main():
     for name in a.names or sorted(CASES):
         for game in games:
             need = list(linkpair.GAMES[game]) + [linkpair.SAVE4, linkpair.hgss_base_save(game)]
+            if name == 'pal_park':
+                need.append(GBA_ROM)
             missing = [p for p in need if not os.path.exists(p)]
             d = os.path.join(work, '%s-%s' % (name, game))
             os.makedirs(d, exist_ok=True)

@@ -84,6 +84,7 @@ struct save4_layout {
     uint32_t map_objects;  /* HG/SS SavedMapObjectList (64 SavedMapObject of 0x50); 0: not modelled */
     uint32_t poketch;      /* Poketch, the entry right after VarsFlags; 0: none */
     uint32_t pokewalker;   /* HG/SS POKEWALKER; 0: none */
+    uint32_t migrated;     /* HG/SS MigratedPokemon (Pal Park); 0: not modelled */
     /* PC storage, relative to the storage block. */
     uint32_t box_current;  /* u32 current box */
     uint32_t box_mons;     /* box 0 slot 0 */
@@ -156,6 +157,12 @@ static const uint8_t kPocketCapJohto[SAVE4_POCKET_COUNT] = {165, 50, 101, 12, 40
  *     there in every HG/SS save looked at, and the bit of the course a
  *     Mystery Gift course card names set after the deliveryman gives it
  *     (MGGive_PokewalkerCourse, src/scrcmd_mystery_gift.c).
+ *   migrated: MigratedPokemon (include/palPark_migration.h: Pokemon
+ *     pokemon[6], then the migration ids and times; save table entry
+ *     SAVE_UNK_28, the entry after MysteryGiftSave and its CRC) at 0xB3C0,
+ *     measured: a migration from an Emerald cartridge (the main menu's
+ *     MIGRATE FROM EMERALD) writes the six there, its id at +0x588 and
+ *     time at +0x5D8, and nothing else in the entry.
  *   PCStorage (include/pokemon_storage_system.h): PC_BOX boxes[18] (30
  *     BoxPokemon + 16 bytes = 0x1000 each), curBox 0x12000,
  *     boxModifiedFlag 0x12004, box_names 0x12008.
@@ -183,8 +190,8 @@ static const save4_layout kLayouts[] = {
      .mg_tag_end = SAVE4_MG_MEMORIAL_PHOTO + 1, /* MG_TAG_MAX */
      .mg_types = MG_TYPES(SAVE4_MG_POKEMON, SAVE4_MG_BATTLE_REG) | MG_TYPE(SAVE4_MG_COSMETICS) |
                  MG_TYPE(SAVE4_MG_MANAPHY_EGG) | MG_TYPES(SAVE4_MG_UNKNOWN, SAVE4_MG_MEMORIAL_PHOTO),
-     .location = 0x1234, .map_objects = 0x2348, .poketch = 0, .pokewalker = 0xE5DC, .box_current = 0x12000,
-     .box_mons = 0, .box_stride = 0x1000, .box_names = 0x12008, .box_modified = 0x12004},
+     .location = 0x1234, .map_objects = 0x2348, .poketch = 0, .pokewalker = 0xE5DC, .migrated = 0xB3C0,
+     .box_current = 0x12000, .box_mons = 0, .box_stride = 0x1000, .box_names = 0x12008, .box_modified = 0x12004},
 };
 
 /* PlayerSave (include/save_player.h) = Options(2) + pad(2) + TrainerInfo
@@ -1095,6 +1102,16 @@ save4_status save4_get_pokewalker_courses(const save4 *s, uint32_t *courses)
         return SAVE4_ERR_UNSUPPORTED;
     *courses = g32(gen_c(s) + s->layout->pokewalker + 0x130);
     return SAVE4_OK;
+}
+
+save4_status save4_get_migrated(const save4 *s, int slot, pkm4 *out)
+{
+    REQUIRE_LOADED(s);
+    if (!s->layout->migrated)
+        return SAVE4_ERR_UNSUPPORTED;
+    if (slot < 0 || slot >= SAVE4_PARTY_MAX)
+        return SAVE4_ERR_RANGE;
+    return pkm4_decrypt(gen_c(s) + s->layout->migrated + slot * PKM4_PARTY_SIZE, PKM4_PARTY_SIZE, out);
 }
 
 int save4_pt_lookup_name(const char *name, uint16_t *id)

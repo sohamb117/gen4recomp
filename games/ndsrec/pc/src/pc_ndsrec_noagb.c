@@ -8,8 +8,8 @@
  * statics by name, which such a ROM does not have, so pc/Makefile.wasm
  * leaves them out and links this instead. The slot is the console's empty
  * one: pc_main.c's zero-filled window, which nothing in the game reads.
- * HG/SS's recompiled SDK (lib/asm/nitro.s) does name the backup bus, so
- * its byte accesses arrive here and are the window's plain ones.
+ * (HeartGold/SoulSilver have the CTRDG library and link the chip model:
+ * games/heartgold/pc/Makefile.wasm.)
  */
 #include <stdint.h>
 #include <stdio.h>

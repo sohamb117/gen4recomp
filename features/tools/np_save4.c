@@ -768,6 +768,24 @@ static int cmd_dump(const char *rom_path, const char *save_path)
                 fprintf(o, "%s%d", n++ ? ", " : "", c);
         fputs("]},\n", o);
     }
+    pkm4 mig;
+    if (save4_get_migrated(&s, 0, &mig) == SAVE4_ERR_UNSUPPORTED) {
+        fputs("  \"migrated\": null,\n", o); /* D/P/Pt: not modelled */
+    } else {
+        /* HG/SS Pal Park: the occupied MigratedPokemon slots */
+        fputs("  \"migrated\": [", o);
+        for (int i = 0, n = 0; i < 6; i++) {
+            save4_status mst = save4_get_migrated(&s, i, &mig);
+            pkm4_info mi;
+            pkm4_info_get(&mig, &mi);
+            if (!mi.species)
+                continue;
+            fprintf(o, "%s\n    {\"slot\": %d, ", n++ ? "," : "", i + 1);
+            dump_mon(o, &mig, mst, 1);
+            fputc('}', o);
+        }
+        fputs("],\n", o);
+    }
     dump_hall_of_fame(o, &s);
     dump_daycare(o, &s);
     dump_roamers(o, &s);

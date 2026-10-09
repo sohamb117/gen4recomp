@@ -787,6 +787,28 @@ static void test_pokewalker(save4_game game)
     CHECK_EQ_INT(courses, r32(img + SAVE4_COPY_SIZE + 0xE5DC + 0x130));
 }
 
+static void test_migrated(save4_game game)
+{
+    static uint8_t img[SAVE4_IMAGE_SIZE];
+    synth_save_build(img, game);
+    save4 s;
+    pkm4 p;
+    pkm4_info i;
+    CHECK(save4_load(&s, img, sizeof(img)) == SAVE4_OK);
+    if (!save4_game_is_hgss(game)) {
+        CHECK(save4_get_migrated(&s, 0, &p) == SAVE4_ERR_UNSUPPORTED);
+        return;
+    }
+    CHECK(save4_get_migrated(&s, 6, &p) == SAVE4_ERR_RANGE);
+    for (int slot = 0; slot < 6; slot++) {
+        CHECK(save4_get_migrated(&s, slot, &p) == SAVE4_OK);
+        pkm4_info_get(&p, &i);
+        CHECK_EQ_INT(i.species, slot == 2 ? SYNTH_HGSS_MIGRATED : 0);
+        if (slot == 2)
+            CHECK_EQ_INT(i.level, 10);
+    }
+}
+
 int main(void)
 {
     test_game(SAVE4_GAME_PT);
@@ -805,6 +827,10 @@ int main(void)
     test_pokewalker(SAVE4_GAME_DP);
     test_pokewalker(SAVE4_GAME_HG);
     test_pokewalker(SAVE4_GAME_SS);
+    test_migrated(SAVE4_GAME_PT);
+    test_migrated(SAVE4_GAME_DP);
+    test_migrated(SAVE4_GAME_HG);
+    test_migrated(SAVE4_GAME_SS);
 
     /* Flag/var names generated from the decomp. */
     uint16_t id = 0;

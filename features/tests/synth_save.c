@@ -249,6 +249,19 @@ static void build_copy(uint8_t *copy, save4_game game, uint32_t counter, uint32_
             w16(o + 0x28, 2);
             w32(o + 0x2C, 2u << 15);
         }
+        /* MigratedPokemon (Pal Park, pokeheartgold include/palPark_migration.h)
+         * at 0xB3C0, measured after a migration from Emerald: Pokemon[6],
+         * MigratedPokemon_Init's zeroed ones but slot 3. */
+        uint8_t *mig = gen + 0xB3C0;
+        for (int i = 0; i < 6; i++) {
+            if (i == 2)
+                synth_make_mon(&mon, SYNTH_HGSS_MIGRATED, 10, 0x2468ACE0u, "TREECKO", 1 /* Pound */, 1);
+            else {
+                memset(&mon, 0, sizeof(mon));
+                mon.party = true;
+            }
+            pkm4_encrypt(&mon, mig + i * PKM4_PARTY_SIZE, PKM4_PARTY_SIZE);
+        }
     }
 
     /* PCBoxes / PCStorage: current box 0, every slot BoxPokemon_Init'd */

@@ -23,6 +23,7 @@
 #define SYNTH_HGSS_X 695
 #define SYNTH_HGSS_Z 397
 #define SYNTH_HGSS_BULBY_BALL 18 /* HG/SS: Bulby sits in a Level Ball (BALL_LEVEL, item 493) */
+#define SYNTH_HGSS_MIGRATED 252 /* HG/SS: Treecko in MigratedPokemon slot 3 (Pal Park), the others empty */
 
 /* Build a hand-made Pokémon (decrypted). Party data is filled when `party`. */
 void synth_make_mon(pkm4 *p, uint16_t species, uint8_t level, uint32_t pid, const char *nickname,

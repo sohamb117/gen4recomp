@@ -29,6 +29,8 @@
  *                         (addresses: games/<game>/build/pc-wasm/<game>.map)
  *     --serve 1           no frame count or schedule loop: commands on stdin
  *                         drive the run (tests/e2e's bots; see serve() below)
+ *     --gba-rom FILE      a GBA cartridge in slot 2 (Pal Park); --gba-save FILE
+ *                         its backup, loaded if present, written on store
  *     --lockstep MY:PEER  with --net-id ID: two instances on 127.0.0.1 ports MY
  *                         and PEER advance frame by frame together and carry
  *                         the game's datagrams between them, exactly as
@@ -267,6 +269,9 @@ static void *watchdog(void *arg) {
 typedef struct runner {
     FILE *rom;
     const char *save_path;
+    FILE *gba_rom;
+    uint32_t gba_rom_size;
+    const char *gba_save_path;
 } runner;
 
 static int rom_read(void *user, uint32_t offset, void *dst, uint32_t len) {
@@ -295,6 +300,38 @@ static int save_store(void *user, const void *src, uint32_t len) {
     int ok = fwrite(src, 1, len, f) == len;
     ok &= fclose(f) == 0;
     fprintf(stderr, "[np_gp] frame %lld: stored %u-byte save to %s\n", (long long)g_frame, len, r->save_path);
+    return ok ? 0 : -1;
+}
+
+/* --gba-rom / --gba-save: a GBA cartridge in slot 2 (Pal Park), as
+ * np_headless has it. A missing save file is an erased chip; a shorter one
+ * is padded with 0xFF. */
+static int gba_rom_read(void *user, uint32_t offset, void *dst, uint32_t len) {
+    runner *r = user;
+    if (fseek(r->gba_rom, (long)offset, SEEK_SET) != 0) return -1;
+    return fread(dst, 1, len, r->gba_rom) == len ? 0 : -1;
+}
+
+static int gba_save_load(void *user, void *dst, uint32_t len) {
+    runner *r = user;
+    FILE *f = r->gba_save_path ? fopen(r->gba_save_path, "rb") : NULL;
+    if (!f) return 0;
+    size_t n = fread(dst, 1, len, f);
+    fclose(f);
+    if (n == 0) return 0;
+    memset((uint8_t *)dst + n, 0xFF, len - n);
+    return 1;
+}
+
+static int gba_save_store(void *user, const void *src, uint32_t len) {
+    runner *r = user;
+    if (!r->gba_save_path) return -1;
+    FILE *f = fopen(r->gba_save_path, "wb");
+    if (!f) return -1;
+    int ok = fwrite(src, 1, len, f) == len;
+    ok &= fclose(f) == 0;
+    fprintf(stderr, "[np_gp] frame %lld: stored %u-byte GBA save to %s\n", (long long)g_frame, len,
+            r->gba_save_path);
     return ok ? 0 : -1;
 }
 
@@ -372,7 +409,7 @@ static int usage(void) {
                     "             [--dump DIR [--dump-at F,..]... [--dump-every N\n"
                     "             [--dump-from F]]] [-o [F:]NAME=V]... [-e K=V]... [--random SEED\n"
                     "             [--random-from F]] [--hang-sec S] [--time-from F] [--peek F:ADDR:LEN]...\n"
-                    "             [--serve 1] [--lockstep MYPORT:PEERPORT --net-id ID]\n");
+                    "             [--serve 1] [--lockstep MYPORT:PEERPORT --net-id ID] [--gba-rom FILE [--gba-save FILE]]\n");
     return 2;
 }
 
@@ -865,6 +902,16 @@ int main(int argc, char **argv) {
         else if (strcmp(a, "--time-from") == 0) time_from = strtoll(v, NULL, 0);
         else if (strcmp(a, "--serve") == 0) serving = atoi(v) != 0;
         else if (strcmp(a, "--lockstep") == 0) lockstep = v;
+        else if (strcmp(a, "--gba-save") == 0) r.gba_save_path = v;
+        else if (strcmp(a, "--gba-rom") == 0) {
+            r.gba_rom = fopen(v, "rb");
+            if (!r.gba_rom) {
+                fprintf(stderr, "np_gp: cannot open %s\n", v);
+                return 2;
+            }
+            fseek(r.gba_rom, 0, SEEK_END);
+            r.gba_rom_size = (uint32_t)ftell(r.gba_rom);
+        }
         else if (strcmp(a, "--net-id") == 0) net_id = (uint32_t)strtoul(v, NULL, 0);
         else if (strcmp(a, "--peek") == 0 && npeeks < 64) {
             long long pf;
@@ -888,6 +935,12 @@ int main(int argc, char **argv) {
     host.save_load = save_load;
     host.save_store = save_store;
     host.log = log_line;
+    if (r.gba_rom) {
+        host.gba_rom_size = r.gba_rom_size;
+        host.gba_rom_read = gba_rom_read;
+        host.gba_save_load = gba_save_load;
+        host.gba_save_store = gba_save_store;
+    }
     if (lockstep) {
         if (!net_id || lockstep_open(lockstep, net_id) != 0) {
             fprintf(stderr, "np_gp: --lockstep %s needs a free port pair and a nonzero --net-id\n", lockstep);

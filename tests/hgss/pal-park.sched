@@ -1,0 +1,26 @@
+# HeartGold/SoulSilver Pal Park migration (tests/hgss/run_features.py
+# pal_park), an Emerald cartridge in slot 2: the title, the main menu down to
+# MIGRATE FROM EMERALD (shown with the National Pokedex), A; YES (touch) to
+# migrate from the Game Pak, A, YES to migrate to the Game Card, A; the box:
+# touch the first six Pokemon of box 1, YES, YES again (they cannot return);
+# both games save. No text_instant: the main menu's own timing.
+1250:start:4
+1400:a:4
+1500:a:4
+1600:down:4
+1640:down:4
+1680:down:4
+1720:down:4
+1780:a:4
+1950:tap:224:72:6
+2100:a:4
+2220:tap:224:72:6
+2400:a:4
+2600:tap:28:44:6
+2680:tap:68:44:6
+2760:tap:108:44:6
+2840:tap:148:44:6
+2920:tap:188:44:6
+3000:tap:228:44:6
+3150:tap:224:72:6
+3300:tap:224:72:6

@@ -381,6 +381,13 @@ save4_status save4_get_poketch(const save4 *s, save4_poketch *p);
  * D/P/Pt. */
 save4_status save4_get_pokewalker_courses(const save4 *s, uint32_t *courses);
 
+/* HG/SS: slot (0..5) of the Pal Park's migrated Pokemon
+ * (MigratedPokemon.pokemon: written by the main menu's MIGRATE FROM <GBA
+ * game>, moved to the PC and emptied after the Pal Park's Catching Show,
+ * src/scrcmd_12.c ScrCmd_510); an empty slot decodes as species 0.
+ * SAVE4_ERR_UNSUPPORTED for D/P/Pt. */
+save4_status save4_get_migrated(const save4 *s, int slot, pkm4 *out);
+
 /* Platinum flag/var names from pokeplatinum generated/vars_flags.txt
  * (generated at build time). Platinum ids only: HG/SS number theirs
  * differently. */

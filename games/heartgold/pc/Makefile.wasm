@@ -141,17 +141,18 @@ $(OBJ)/hghost/%.o: $(NPROOT)/games/ndsrec/pc/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 OBJS += $(HG_HOST_OBJS)
 -include $(addsuffix .d,$(HG_HOST_OBJS))
 
-# The GBA slot: HG/SS link no CTRDG backup library (no migration from the
-# GBA games), so the slot is the empty one the ROM-only core uses for a ROM
-# without it (games/ndsrec/pc/src/pc_ndsrec_noagb.c), in place of D/P's
-# flash-chip model.
-OBJS := $(filter-out $(HOST_OBJ)/pc/pc_agb_slot.o $(HOST_OBJ)/dp/pc_dp_agb.o,$(OBJS)) \
-        $(OBJ)/hghost/pc_ndsrec_noagb.o
+# The GBA slot (the main menu's migration from Ruby/Sapphire/Emerald/
+# FireRed/LeafGreen, overlay 74): D/P's flash-chip model
+# (games/platinum/pc/src/pc_agb_slot.c, from host.mk) on HG/SS's recompiled
+# SDK, whose lib/asm/nitro.s names the backup bus (ARMREC_AGB_HOOK); its
+# flash timer is HG/SS's (pc/src/pc_hg_agb.c) in place of D's pc_dp_agb.o.
+OBJS := $(filter-out $(HOST_OBJ)/dp/pc_dp_agb.o,$(OBJS))
 
 # HG/SS's own (pc/src), compiled as game C (bridged): the anti-piracy
 # overlay's entry points as a genuine console answers them (their callbacks
-# can be recompiled functions), and crt0's OSi_ReferSymbol.
-HG_GAME_HOST_OBJS := $(OBJ)/hgsrc/pc_hg_dsprot.o $(OBJ)/hgsrc/pc_hg_crt0.o
+# can be recompiled functions), crt0's OSi_ReferSymbol and the GBA slot's
+# flash timer (CheckFlashTimer).
+HG_GAME_HOST_OBJS := $(OBJ)/hgsrc/pc_hg_dsprot.o $(OBJ)/hgsrc/pc_hg_crt0.o $(OBJ)/hgsrc/pc_hg_agb.o
 $(OBJ)/hgsrc/%.o: $(MYPC)/src/%.c $(GAME_DEPS) $(BRIDGE_DEPS)
 	$(call BRIDGE_COMPILE,$(GAME_CFLAGS) $(GAME_GLB_DEFINES) $(GAME_DEPFLAGS))
 $(OBJ)/hgsrc/%.o.fpflow: $(MYPC)/src/%.c $(GAME_DEPS) $(FPFLOW)
