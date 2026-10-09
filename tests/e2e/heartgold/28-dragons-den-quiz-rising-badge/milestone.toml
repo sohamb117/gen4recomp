@@ -157,7 +157,7 @@ do = "advance_text"
 [[step]]
 do = "walk_to"
 x = 28
-z = 6
+z = 5  # the ladder's top tile: stepping north off its LADDER_NORTH 0x3C bottom (28,6) warps (field_control.c:500-505)
 note = "den exit (warp 0)"
 
 [[step]]

@@ -2,10 +2,9 @@
 # (FLAG_UNK_0B7), Whitney again for the Plain Badge + TM45, then the Flower Shop's SquirtBottle (needs the badge).
 # Start: MAP_GOLDENROD (366,336) -> end: MAP_GOLDENROD outside the Flower Shop (371,333), badge Plain, SquirtBottle.
 title = "Whitney: Plain Badge; the Flower Shop's SquirtBottle"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000
+estimate = 33941
 refs = [
   "zone_event 073_T25 warp 2 (366,334) -> MAP_GOLDENROD_GYM (6,25)",
   "zone_event 133_T25GYM0101 object 0 obj_T25GYM0101_gsleader3 (13,4); trainers Cathy (14,15), Carrie (9,18), Victoria (6,11), Samantha (24,18)",
@@ -24,13 +23,156 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 22500
+frames = 51000
+
+[[step]]
+do = "heal"
+x = 352
+z = 368
+note = "Goldenrod's Pokemon Center (zone_event 073_T25 warp 5) before Whitney (Clefairy 17, Miltank 19)"
+
+[[step]]
+do = "walk_to"
+x = 342
+z = 349
+note = "Radio Tower door (zone_event 073_T25 warp 7): the woman at the gym door (T25 object 20, FLAG_UNK_318) stands there until Whitney leaves the Radio Tower after the Radio Card quiz (scr_seq_0029_D23R0101.s:141-158)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 10
+face = "down"
+interact = true
+note = "the quiz receptionist (obj_D23R0101_gswoman6_3 (13,12), script 002) sits behind the counter (row 11, land data): spoken to across it from (13,10)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 3
+gap = 40
+note = "msg 00003's pages up to its YES/NO (files/msgdata/msg/msg_0065_D23R0101.gmm #3: four \\r/\\f waits, the first shown by the talk)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "take the quiz: YES (GetMenuChoice 1 declines, scr_seq_0029_D23R0101.s:90-94); the bottom-screen YES/NO opens on YES, B answers NO (01's nickname)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "Q1: the question's first page (one \\r wait, msg #4)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "Q1: YES (1 is wrong, scr_seq_0029_D23R0101.s:95-122)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "Q2: the question's first page (one \\r wait, msg #5)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "Q2: YES (1 is wrong, scr_seq_0029_D23R0101.s:95-122)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "Q3: the question's first page (one \\r wait, msg #6)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 150
+note = "Q3: NO (0 is wrong, scr_seq_0029_D23R0101.s:95-122)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "Q4: the question's first page (one \\r wait, msg #7)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "Q4: YES (1 is wrong, scr_seq_0029_D23R0101.s:95-122)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "Q5: the question's first page (one \\r wait, msg #8)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 150
+note = "Q5: NO (0 is wrong, scr_seq_0029_D23R0101.s:95-122)"
+
+[[step]]
+do = "advance_text"
+shot = "radio-card"
+note = "the Radio Card (FLAG_GOT_RADIO_CARD), Whitney leaves for her gym (FLAG_UNK_318, scr_seq_0029_D23R0101.s:127-158)"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 14
+note = "Radio Tower 1F exit (warp 0) -> Goldenrod"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
 
 [[step]]
 do = "walk_to"
 x = 366
 z = 334
 note = "gym door (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_GYM"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 6
+max = 30000
+note = "up the gym to below Whitney (13,4): Lass Carrie, Beauty Victoria, Lass Bridget and Beauty Samantha fight if they spot the player (land data, hg_map.py MAP_GOLDENROD_GYM)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 25
+note = "back out (warp 0 (6,25)) to heal before Miltank: the first chained run reached Whitney after three trainers"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "heal"
+x = 352
+z = 368
+
+[[step]]
+do = "walk_to"
+x = 366
+z = 334
 
 [[step]]
 do = "wait_map"
@@ -115,7 +257,7 @@ map = "MAP_GOLDENROD"
 map = "MAP_GOLDENROD"
 badges = 3
 badge = ["BADGE_ZEPHYR", "BADGE_HIVE", "BADGE_PLAIN"]
-flags = ["FLAG_GOT_TM45_FROM_WHITNEY", "FLAG_UNK_0B7"]
+flags = ["FLAG_GOT_RADIO_CARD", "FLAG_UNK_318", "FLAG_GOT_TM45_FROM_WHITNEY", "FLAG_UNK_0B7"]
 flags_clear = ["FLAG_UNK_084"]
 battles = 1
 save = ['any(i["item"] == 477 for k, p in s["bag"].items() if k != "registered" for i in p)']

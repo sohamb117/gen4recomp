@@ -2,10 +2,9 @@
 # herded back, the charcoal master's HM01 Cut, the Cut tree and the forest's north gate to Route 34.
 # Start: MAP_AZALEA (405,472) -> end: MAP_ROUTE_34 south end (372,448), FLAG_GOT_HM01, VAR_UNK_4075 2.
 title = "Azalea rival, Ilex Forest Farfetch'd, HM01 Cut"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 25252
 refs = [
   "zone_event 071_T23 coord 0 (395,462) h5 VAR_UNK_4075 1 -> 002",
   "scr_seq_0866_T23.s:55-126 (rival: GetStarterChoice 155 -> TRAINER_RIVAL_SILVER_10 :113, VAR_UNK_4075 2)",
@@ -31,7 +30,7 @@ from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 45000
+frames = 37900
 
 [[step]]
 do = "walk_to"
@@ -148,9 +147,9 @@ note = "Warp (15,65), the cut master walks up: HM01, FLAG_GOT_HM01 (scr_seq_0092
 [[step]]
 do = "walk_to"
 x = 12
-z = 18
+z = 17
 hm = true
-note = "north through the Cut tree (16,62) (the boost's Scyther; coords (37,42) and (40,20) scenes advanced) to the Route 34 gatehouse (warp 2)"
+note = "north through the Cut tree (16,62) (the boost's Scyther; coords (37,42) and (40,20) scenes advanced) to the Route 34 gatehouse: (12,17) is the WARP_NORTH 0x6E mat of warps 2-5 (land data), left pushing north"
 
 [[step]]
 do = "wait_map"

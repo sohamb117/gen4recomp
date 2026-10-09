@@ -214,7 +214,7 @@ map = "MAP_ICE_PATH_B3F"
 [[step]]
 do = "walk_to"
 x = 24
-z = 12
+z = 11  # the ladder's top tile: stepping north off its LADDER_NORTH 0x3C bottom (24,12) warps (field_control.c:500-505)
 note = "B3F (no ice; the Rock Smash rock (10,12) is off the way) -> B2F (50,5) (warp 2)"
 
 [[step]]
@@ -233,7 +233,7 @@ map = "MAP_ICE_PATH_B1F"
 [[step]]
 do = "walk_to"
 x = 6
-z = 42
+z = 41  # the ladder's top tile: stepping north off its LADDER_NORTH 0x3C bottom (6,42) warps (field_control.c:500-505)
 note = "B1F lower part (floor) -> 1F (55,20) (warp 4)"
 
 [[step]]

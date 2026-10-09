@@ -52,7 +52,7 @@ note = "Strength; boulder 3 -> (43,51)"
 [[step]]
 do = "walk_to"
 x = 19
-z = 7
+z = 6  # the ladder's top tile: stepping north off its LADDER_NORTH 0x3C bottom (19,7) warps (field_control.c:500-505)
 note = "1F -> 2F (warp 1)"
 
 [[step]]
@@ -146,7 +146,7 @@ do = "advance_text"
 [[step]]
 do = "walk_to"
 x = 38
-z = 14
+z = 13  # the WARP_NORTH 0x6E mat north of the warp event tile, left pushing north
 note = "3F exit (warp 0) -> Indigo Plateau"
 
 [[step]]

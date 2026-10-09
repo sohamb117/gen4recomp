@@ -3140,7 +3140,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## HeartGold
 
 <!-- plan.py:begin heartgold -->
-### Story chain: 38 milestones, ~950994 frames estimated
+### Story chain: 38 milestones, ~969887 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3153,9 +3153,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [07-route32-union-cave-azalea](heartgold/07-route32-union-cave-azalea/milestone.toml) | Route 32, Union Cave, Route 33 to Azalea Town | P0 | both | 38267 | prev + `None` | MAP_AZALEA | passing |
 | [08-slowpoke-well-proton-kurt](heartgold/08-slowpoke-well-proton-kurt/milestone.toml) | Slowpoke Well: Kurt, Proton and the Rockets | P0 | both | 16622 | prev + `None` | MAP_AZALEA_KURT_HOUSE | passing |
 | [09-bugsy-hive](heartgold/09-bugsy-hive/milestone.toml) | Bugsy: Hive Badge | P0 | both | 14493 | prev + `None` | MAP_AZALEA | passing |
-| [10-azalea-rival-ilex-farfetchd-cut](heartgold/10-azalea-rival-ilex-farfetchd-cut/milestone.toml) | Azalea rival, Ilex Forest Farfetch'd, HM01 Cut | P0 | both | 30000 | prev + `None` | MAP_ROUTE_34 | planned |
-| [11-route34-daycare-goldenrod](heartgold/11-route34-daycare-goldenrod/milestone.toml) | Route 34 Day-Care scene into Goldenrod City | P0 | both | 12000 | prev + `None` | MAP_GOLDENROD | planned |
-| [12-whitney-plain-squirtbottle](heartgold/12-whitney-plain-squirtbottle/milestone.toml) | Whitney: Plain Badge; the Flower Shop's SquirtBottle | P0 | both | 15000 | prev + `None` | MAP_GOLDENROD | planned |
+| [10-azalea-rival-ilex-farfetchd-cut](heartgold/10-azalea-rival-ilex-farfetchd-cut/milestone.toml) | Azalea rival, Ilex Forest Farfetch'd, HM01 Cut | P0 | both | 25252 | prev + `None` | MAP_ROUTE_34 | passing |
+| [11-route34-daycare-goldenrod](heartgold/11-route34-daycare-goldenrod/milestone.toml) | Route 34 Day-Care scene into Goldenrod City | P0 | both | 16700 | prev + `None` | MAP_GOLDENROD | passing |
+| [12-whitney-plain-squirtbottle](heartgold/12-whitney-plain-squirtbottle/milestone.toml) | Whitney: Plain Badge; the Flower Shop's SquirtBottle | P0 | both | 33941 | prev + `None` | MAP_GOLDENROD | passing |
 | [13-national-park-sudowoodo-ecruteak](heartgold/13-national-park-sudowoodo-ecruteak/milestone.toml) | National Park, Route 36 Sudowoodo, Route 37 to Ecruteak | P0 | both | 24000 | prev + `None` | MAP_ECRUTEAK | planned |
 | [14-burned-tower-rival-beasts](heartgold/14-burned-tower-rival-beasts/milestone.toml) | Burned Tower: Eusine, the rival, the legendary beasts | P0 | both | 15000 | prev + `None` | MAP_ECRUTEAK | planned |
 | [15-morty-fog](heartgold/15-morty-fog/milestone.toml) | Morty: Fog Badge | P0 | both | 15000 | prev + `None` | MAP_ECRUTEAK | planned |
@@ -3279,7 +3279,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0866_T23.s:55-126 (rival: GetStarterChoice 155 -> TRAINER_RIVAL_SILVER_10 :113, VAR_UNK_4075 2); TRAINER_RIVAL_SILVER_10 (269, include/constants/trainers.h:274): GASTLY 14, ZUBAT 16, CROCONAW 18
 - end state: map MAP_ROUTE_34; 2 badges; >= 1 battles; flags set FLAG_GOT_HM01, FLAG_FOUND_FIRST_FARFETCHD, FLAG_FOUND_SECOND_FARFETCHD, FLAG_HIDE_FARFETCHD_1_LOST, FLAG_HIDE_FARFETCHD_2_LOST; vars VAR_UNK_4075=2, VAR_UNK_40F4=0
-- frames: estimate 30000, budget 45000
+- frames: estimate 25252, budget 37900
 - refs: zone_event 071_T23 coord 0 (395,462) h5 VAR_UNK_4075 1 -> 002; scr_seq_0866_T23.s:55-126 (rival: GetStarterChoice 155 -> TRAINER_RIVAL_SILVER_10 :113, VAR_UNK_4075 2); TRAINER_RIVAL_SILVER_10 (269, include/constants/trainers.h:274): GASTLY 14, ZUBAT 16, CROCONAW 18; zone_event 071_T23 warp 0 (392,462) -> MAP_AZALEA_ILEX_FOREST_GATEHOUSE; zone_event 097_T23R0101 warp 1 (1,7) -> MAP_ILEX_FOREST (15,80); zone_event 114_D36R0101 coord 8 (15,65) h2 VAR_UNK_40F4 1 -> 017 (apprentice, VAR_UNK_40F4 0, scr_seq_0092_D36R0101.s:1262-1273); zone_event 114_D36R0101 objects 0 (25,62) / 2 (41,54) lost Farfetch'd; coords 0-5 the 2x2 stick tiles (25,66) (28,63) (46,64) (50,49) (52,53) (45,53) (VAR_FARFETCHD1_STICKS1/2, VAR_FARFETCHD2_STICKS3/1/2/4); scr_seq_0092_D36R0101.s:69-97 (OnTransition: bird 1 sticks1 active; bird 2 sticks4 active, sticks1-3 inactive; after bird 1 only bird 2's sticks4); scr_seq_0092_D36R0101.s:116-304 (Farfetch'd 1 on the corners x 25/32, z 52/62; at (25,62) facing south with FARFETCHD1_BLIND_SPOT -> caught :231-260, FLAG_FOUND_FIRST_FARFETCHD, Warp (15,65)), :310-387 (sticks1 sets the blind spot :315), :389-460 (sticks2 clears it :396); scr_seq_0092_D36R0101.s:470-680 (Farfetch'd 2 on the corners x 41/49, z 54/64; talked to at (41,54) facing north it runs right to (49,54) and arms sticks1/2 :513-526; at (49,54) facing east with FARFETCHD2_BLIND_SPOT -> caught :601-603,616-648), :755-826 (sticks2 sets the blind spot :758, arms sticks1/4 :812-820), :682-753 and :899-963 (sticks1/sticks4 clear it :685,:902); zone_event 114_D36R0101 object 4 obj_D36R0101_gsfighter (11,75) FLAG_HIDE_ILEX_CUT_MASTER; scr_seq_0092_D36R0101.s:1316-1350 (both found: ShowPerson the cut master, Warp (15,65), HM01 given in the same script: FLAG_GOT_HM01); zone_event 114_D36R0101 object 5 Cut tree (16,62) std_field_cut (the only way north: tools/hg_map.py MAP_ILEX_FOREST); zone_event 114_D36R0101 coord 7 (37,42) VAR_UNK_40EA 0 -> 016 (VAR_UNK_40EA 1); coord 6 (40,20) w2 VAR_UNK_40E9 0 -> 015 (Kimono Girl, FLAG_UNK_23D, VAR_UNK_40E9 1); zone_event 114_D36R0101 warps 2-5 (12/13,17/18) -> MAP_ROUTE_34_ILEX_FOREST_GATEHOUSE; zone_event 165_R34R0201 warp 0 (5,2) -> MAP_ROUTE_34; src/field_move.c:185-189 (Cut needs BADGE_HIVE)
 - notes: Rival's Croconaw (lv18): the boost's Scyther (lv21, Wing Attack/Pursuit) fights behind a fainted lead (send = best). Farfetch'd herding: each bird moves between the four corners of its rectangle depending on the side the player faces it from; the stick tiles (coords 0-5) arm/disarm a 'blind spot' (VAR_TEMP) that lets the player catch it from one side. Bird 1: sticks1 (25,66) sets the blind spot, then (25,61) facing down catches it; bird 2: pushed from (41,55) to (49,54), sticks2 (52,54) sets the blind spot, then (48,54) facing right catches it, avoiding sticks1/sticks4 on the way (they clear it). Catching the second bird runs the cut master's HM01 in the same script. Cut needs the Hive Badge (09) and the boost's Cut carrier.
 
@@ -3289,7 +3289,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: none
 - end state: map MAP_GOLDENROD; 2 badges; flags set FLAG_UNK_22D, FLAG_GOT_HM01; vars VAR_UNK_408E=3
-- frames: estimate 12000, budget 18000
+- frames: estimate 16700, budget 25100
 - refs: zone_event 035_R34 coord 0 (363,413) w7 VAR_UNK_408E 0 -> 003; scr_seq_0237_R34.s:112-288 (Lyra scene, VAR_UNK_408E 1, Warp MAP_ROUTE_34_DAYCARE (3,12)); scr_seq_0238_R34R0101_hdr.s (OnFrame VAR_UNK_408E 1 -> 001); scr_seq_0238_R34R0101.s:12-83 (VAR_UNK_408E 2, FLAG_UNK_22D); zone_event 302_R34R0101 warp 0 (3,12) -> MAP_ROUTE_34 2 (368,410); scr_seq_0237_R34_hdr.s (OnFrame VAR_UNK_408E 2 -> 001); scr_seq_0237_R34.s:68-88 (PHONE_CONTACT_DAY_C_MAN, PHONE_CONTACT_DAY_C_LADY, VAR_UNK_408E 3); zone_event 035_R34 coords 1/2 (370,472/473) VAR_UNK_4097 (Ace Trainer Irene/Jenn/Kate, south of the gate; not walked); zone_event 073_T25 warp 2 (366,334) -> MAP_GOLDENROD_GYM
 - notes: Route 34 runs north from the Ilex gatehouse (372,449) to Goldenrod's south side; the Day-Care coord spans the road at z=413 [INFERENCE: on the walk north]. Trainers on the way (Youngster Samuel, Pokefan Brandon, Camper Todd ...) fight if they spot.
 
@@ -3298,8 +3298,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: scr_seq_0886_T25GYM0101.s:86-118 (TRAINER_LEADER_WHITNEY; won -> no badge yet: VAR_UNK_410A 1, FLAG_UNK_084, VAR_UNK_40DA 1); TRAINER_LEADER_WHITNEY (30, include/constants/trainers.h:35): CLEFAIRY 17, MILTANK 19
-- end state: map MAP_GOLDENROD; 3 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN; >= 1 battles; flags set FLAG_GOT_TM45_FROM_WHITNEY, FLAG_UNK_0B7; flags clear FLAG_UNK_084; vars VAR_UNK_410A=2, VAR_UNK_40DA=1; 1 save check(s)
-- frames: estimate 15000, budget 22500
+- end state: map MAP_GOLDENROD; 3 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN; >= 1 battles; flags set FLAG_GOT_RADIO_CARD, FLAG_UNK_318, FLAG_GOT_TM45_FROM_WHITNEY, FLAG_UNK_0B7; flags clear FLAG_UNK_084; vars VAR_UNK_410A=2, VAR_UNK_40DA=1; 1 save check(s)
+- frames: estimate 33941, budget 51000
 - refs: zone_event 073_T25 warp 2 (366,334) -> MAP_GOLDENROD_GYM (6,25); zone_event 133_T25GYM0101 object 0 obj_T25GYM0101_gsleader3 (13,4); trainers Cathy (14,15), Carrie (9,18), Victoria (6,11), Samantha (24,18); scr_seq_0886_T25GYM0101.s:86-118 (TRAINER_LEADER_WHITNEY; won -> no badge yet: VAR_UNK_410A 1, FLAG_UNK_084, VAR_UNK_40DA 1); zone_event 133_T25GYM0101 coord 0 (13,11) VAR_UNK_410A 1 -> 001; scr_seq_0886_T25GYM0101.s:160-178 (Cathy: FLAG_UNK_0B7); scr_seq_0886_T25GYM0101.s:120-139 (FLAG_UNK_0B7 -> GiveBadge BADGE_PLAIN, VAR_UNK_410A 2, FLAG_GOT_TM45_FROM_WHITNEY); TRAINER_LEADER_WHITNEY (30, include/constants/trainers.h:35): CLEFAIRY 17, MILTANK 19; zone_event 073_T25 warp 4 (371,332) -> MAP_GOLDENROD_FLOWER_SHOP; zone_event 177_T25R0601 object 0 obj_T25R0601_gswoman1 (3,5); scr_seq_0896_T25R0601.s:120-140 (with BADGE_PLAIN: ITEM_SQUIRTBOTTLE via std_give_item_verbose); include/constants/items.h:898 (ITEM_SQUIRTBOTTLE 477)
 - notes: Miltank (Rollout, Milk Drink) is the wall: boost (levels; a Fighting move behind the lead helps). The gym's floor is a maze in HG/SS; walk_to plans over it.
 
@@ -3567,7 +3567,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## SoulSilver
 
 <!-- plan.py:begin soulsilver -->
-### Story chain: 38 milestones, ~955994 frames estimated
+### Story chain: 38 milestones, ~974887 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3580,9 +3580,9 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [07-route32-union-cave-azalea](heartgold/07-route32-union-cave-azalea/milestone.toml) | Route 32, Union Cave, Route 33 to Azalea Town | P0 | both | 38267 | prev + `None` | MAP_AZALEA | passing |
 | [08-slowpoke-well-proton-kurt](heartgold/08-slowpoke-well-proton-kurt/milestone.toml) | Slowpoke Well: Kurt, Proton and the Rockets | P0 | both | 16622 | prev + `None` | MAP_AZALEA_KURT_HOUSE | passing |
 | [09-bugsy-hive](heartgold/09-bugsy-hive/milestone.toml) | Bugsy: Hive Badge | P0 | both | 14493 | prev + `None` | MAP_AZALEA | passing |
-| [10-azalea-rival-ilex-farfetchd-cut](heartgold/10-azalea-rival-ilex-farfetchd-cut/milestone.toml) | Azalea rival, Ilex Forest Farfetch'd, HM01 Cut | P0 | both | 30000 | prev + `None` | MAP_ROUTE_34 | planned |
-| [11-route34-daycare-goldenrod](heartgold/11-route34-daycare-goldenrod/milestone.toml) | Route 34 Day-Care scene into Goldenrod City | P0 | both | 12000 | prev + `None` | MAP_GOLDENROD | planned |
-| [12-whitney-plain-squirtbottle](heartgold/12-whitney-plain-squirtbottle/milestone.toml) | Whitney: Plain Badge; the Flower Shop's SquirtBottle | P0 | both | 15000 | prev + `None` | MAP_GOLDENROD | planned |
+| [10-azalea-rival-ilex-farfetchd-cut](heartgold/10-azalea-rival-ilex-farfetchd-cut/milestone.toml) | Azalea rival, Ilex Forest Farfetch'd, HM01 Cut | P0 | both | 25252 | prev + `None` | MAP_ROUTE_34 | passing |
+| [11-route34-daycare-goldenrod](heartgold/11-route34-daycare-goldenrod/milestone.toml) | Route 34 Day-Care scene into Goldenrod City | P0 | both | 16700 | prev + `None` | MAP_GOLDENROD | passing |
+| [12-whitney-plain-squirtbottle](heartgold/12-whitney-plain-squirtbottle/milestone.toml) | Whitney: Plain Badge; the Flower Shop's SquirtBottle | P0 | both | 33941 | prev + `None` | MAP_GOLDENROD | passing |
 | [13-national-park-sudowoodo-ecruteak](heartgold/13-national-park-sudowoodo-ecruteak/milestone.toml) | National Park, Route 36 Sudowoodo, Route 37 to Ecruteak | P0 | both | 24000 | prev + `None` | MAP_ECRUTEAK | planned |
 | [14-burned-tower-rival-beasts](heartgold/14-burned-tower-rival-beasts/milestone.toml) | Burned Tower: Eusine, the rival, the legendary beasts | P0 | both | 15000 | prev + `None` | MAP_ECRUTEAK | planned |
 | [15-morty-fog](heartgold/15-morty-fog/milestone.toml) | Morty: Fog Badge | P0 | both | 15000 | prev + `None` | MAP_ECRUTEAK | planned |
@@ -3706,7 +3706,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: scr_seq_0866_T23.s:55-126 (rival: GetStarterChoice 155 -> TRAINER_RIVAL_SILVER_10 :113, VAR_UNK_4075 2); TRAINER_RIVAL_SILVER_10 (269, include/constants/trainers.h:274): GASTLY 14, ZUBAT 16, CROCONAW 18
 - end state: map MAP_ROUTE_34; 2 badges; >= 1 battles; flags set FLAG_GOT_HM01, FLAG_FOUND_FIRST_FARFETCHD, FLAG_FOUND_SECOND_FARFETCHD, FLAG_HIDE_FARFETCHD_1_LOST, FLAG_HIDE_FARFETCHD_2_LOST; vars VAR_UNK_4075=2, VAR_UNK_40F4=0
-- frames: estimate 30000, budget 45000
+- frames: estimate 25252, budget 37900
 - refs: zone_event 071_T23 coord 0 (395,462) h5 VAR_UNK_4075 1 -> 002; scr_seq_0866_T23.s:55-126 (rival: GetStarterChoice 155 -> TRAINER_RIVAL_SILVER_10 :113, VAR_UNK_4075 2); TRAINER_RIVAL_SILVER_10 (269, include/constants/trainers.h:274): GASTLY 14, ZUBAT 16, CROCONAW 18; zone_event 071_T23 warp 0 (392,462) -> MAP_AZALEA_ILEX_FOREST_GATEHOUSE; zone_event 097_T23R0101 warp 1 (1,7) -> MAP_ILEX_FOREST (15,80); zone_event 114_D36R0101 coord 8 (15,65) h2 VAR_UNK_40F4 1 -> 017 (apprentice, VAR_UNK_40F4 0, scr_seq_0092_D36R0101.s:1262-1273); zone_event 114_D36R0101 objects 0 (25,62) / 2 (41,54) lost Farfetch'd; coords 0-5 the 2x2 stick tiles (25,66) (28,63) (46,64) (50,49) (52,53) (45,53) (VAR_FARFETCHD1_STICKS1/2, VAR_FARFETCHD2_STICKS3/1/2/4); scr_seq_0092_D36R0101.s:69-97 (OnTransition: bird 1 sticks1 active; bird 2 sticks4 active, sticks1-3 inactive; after bird 1 only bird 2's sticks4); scr_seq_0092_D36R0101.s:116-304 (Farfetch'd 1 on the corners x 25/32, z 52/62; at (25,62) facing south with FARFETCHD1_BLIND_SPOT -> caught :231-260, FLAG_FOUND_FIRST_FARFETCHD, Warp (15,65)), :310-387 (sticks1 sets the blind spot :315), :389-460 (sticks2 clears it :396); scr_seq_0092_D36R0101.s:470-680 (Farfetch'd 2 on the corners x 41/49, z 54/64; talked to at (41,54) facing north it runs right to (49,54) and arms sticks1/2 :513-526; at (49,54) facing east with FARFETCHD2_BLIND_SPOT -> caught :601-603,616-648), :755-826 (sticks2 sets the blind spot :758, arms sticks1/4 :812-820), :682-753 and :899-963 (sticks1/sticks4 clear it :685,:902); zone_event 114_D36R0101 object 4 obj_D36R0101_gsfighter (11,75) FLAG_HIDE_ILEX_CUT_MASTER; scr_seq_0092_D36R0101.s:1316-1350 (both found: ShowPerson the cut master, Warp (15,65), HM01 given in the same script: FLAG_GOT_HM01); zone_event 114_D36R0101 object 5 Cut tree (16,62) std_field_cut (the only way north: tools/hg_map.py MAP_ILEX_FOREST); zone_event 114_D36R0101 coord 7 (37,42) VAR_UNK_40EA 0 -> 016 (VAR_UNK_40EA 1); coord 6 (40,20) w2 VAR_UNK_40E9 0 -> 015 (Kimono Girl, FLAG_UNK_23D, VAR_UNK_40E9 1); zone_event 114_D36R0101 warps 2-5 (12/13,17/18) -> MAP_ROUTE_34_ILEX_FOREST_GATEHOUSE; zone_event 165_R34R0201 warp 0 (5,2) -> MAP_ROUTE_34; src/field_move.c:185-189 (Cut needs BADGE_HIVE)
 - notes: Rival's Croconaw (lv18): the boost's Scyther (lv21, Wing Attack/Pursuit) fights behind a fainted lead (send = best). Farfetch'd herding: each bird moves between the four corners of its rectangle depending on the side the player faces it from; the stick tiles (coords 0-5) arm/disarm a 'blind spot' (VAR_TEMP) that lets the player catch it from one side. Bird 1: sticks1 (25,66) sets the blind spot, then (25,61) facing down catches it; bird 2: pushed from (41,55) to (49,54), sticks2 (52,54) sets the blind spot, then (48,54) facing right catches it, avoiding sticks1/sticks4 on the way (they clear it). Catching the second bird runs the cut master's HM01 in the same script. Cut needs the Hive Badge (09) and the boost's Cut carrier.
 
@@ -3716,7 +3716,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: the continued save
 - trainers: none
 - end state: map MAP_GOLDENROD; 2 badges; flags set FLAG_UNK_22D, FLAG_GOT_HM01; vars VAR_UNK_408E=3
-- frames: estimate 12000, budget 18000
+- frames: estimate 16700, budget 25100
 - refs: zone_event 035_R34 coord 0 (363,413) w7 VAR_UNK_408E 0 -> 003; scr_seq_0237_R34.s:112-288 (Lyra scene, VAR_UNK_408E 1, Warp MAP_ROUTE_34_DAYCARE (3,12)); scr_seq_0238_R34R0101_hdr.s (OnFrame VAR_UNK_408E 1 -> 001); scr_seq_0238_R34R0101.s:12-83 (VAR_UNK_408E 2, FLAG_UNK_22D); zone_event 302_R34R0101 warp 0 (3,12) -> MAP_ROUTE_34 2 (368,410); scr_seq_0237_R34_hdr.s (OnFrame VAR_UNK_408E 2 -> 001); scr_seq_0237_R34.s:68-88 (PHONE_CONTACT_DAY_C_MAN, PHONE_CONTACT_DAY_C_LADY, VAR_UNK_408E 3); zone_event 035_R34 coords 1/2 (370,472/473) VAR_UNK_4097 (Ace Trainer Irene/Jenn/Kate, south of the gate; not walked); zone_event 073_T25 warp 2 (366,334) -> MAP_GOLDENROD_GYM
 - notes: Route 34 runs north from the Ilex gatehouse (372,449) to Goldenrod's south side; the Day-Care coord spans the road at z=413 [INFERENCE: on the walk north]. Trainers on the way (Youngster Samuel, Pokefan Brandon, Camper Todd ...) fight if they spot.
 
@@ -3725,8 +3725,8 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: scr_seq_0886_T25GYM0101.s:86-118 (TRAINER_LEADER_WHITNEY; won -> no badge yet: VAR_UNK_410A 1, FLAG_UNK_084, VAR_UNK_40DA 1); TRAINER_LEADER_WHITNEY (30, include/constants/trainers.h:35): CLEFAIRY 17, MILTANK 19
-- end state: map MAP_GOLDENROD; 3 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN; >= 1 battles; flags set FLAG_GOT_TM45_FROM_WHITNEY, FLAG_UNK_0B7; flags clear FLAG_UNK_084; vars VAR_UNK_410A=2, VAR_UNK_40DA=1; 1 save check(s)
-- frames: estimate 15000, budget 22500
+- end state: map MAP_GOLDENROD; 3 badges; badge BADGE_ZEPHYR, BADGE_HIVE, BADGE_PLAIN; >= 1 battles; flags set FLAG_GOT_RADIO_CARD, FLAG_UNK_318, FLAG_GOT_TM45_FROM_WHITNEY, FLAG_UNK_0B7; flags clear FLAG_UNK_084; vars VAR_UNK_410A=2, VAR_UNK_40DA=1; 1 save check(s)
+- frames: estimate 33941, budget 51000
 - refs: zone_event 073_T25 warp 2 (366,334) -> MAP_GOLDENROD_GYM (6,25); zone_event 133_T25GYM0101 object 0 obj_T25GYM0101_gsleader3 (13,4); trainers Cathy (14,15), Carrie (9,18), Victoria (6,11), Samantha (24,18); scr_seq_0886_T25GYM0101.s:86-118 (TRAINER_LEADER_WHITNEY; won -> no badge yet: VAR_UNK_410A 1, FLAG_UNK_084, VAR_UNK_40DA 1); zone_event 133_T25GYM0101 coord 0 (13,11) VAR_UNK_410A 1 -> 001; scr_seq_0886_T25GYM0101.s:160-178 (Cathy: FLAG_UNK_0B7); scr_seq_0886_T25GYM0101.s:120-139 (FLAG_UNK_0B7 -> GiveBadge BADGE_PLAIN, VAR_UNK_410A 2, FLAG_GOT_TM45_FROM_WHITNEY); TRAINER_LEADER_WHITNEY (30, include/constants/trainers.h:35): CLEFAIRY 17, MILTANK 19; zone_event 073_T25 warp 4 (371,332) -> MAP_GOLDENROD_FLOWER_SHOP; zone_event 177_T25R0601 object 0 obj_T25R0601_gswoman1 (3,5); scr_seq_0896_T25R0601.s:120-140 (with BADGE_PLAIN: ITEM_SQUIRTBOTTLE via std_give_item_verbose); include/constants/items.h:898 (ITEM_SQUIRTBOTTLE 477)
 - notes: Miltank (Rollout, Milk Drink) is the wall: boost (levels; a Fighting move behind the lead helps). The gym's floor is a maze in HG/SS; walk_to plans over it.
 

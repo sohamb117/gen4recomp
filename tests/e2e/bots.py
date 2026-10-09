@@ -296,6 +296,7 @@ def bot_advance_text(s, step, ctx):
 # ---- auto_battle's move choice: the probe's battle report (np_e2e.py Probe.battlers / party) scored with the ROM's
 # move data and type chart (np_save4 gamedata). The constants are the game's (Platinum include/constants/battle.h,
 # generated/move_battle_effects.txt, generated/moves.h; D/P number them the same).
+BATTLE_TYPE_TRAINER = 0x01
 BATTLE_TYPE_DOUBLES, BATTLE_TYPE_2VS2, BATTLE_TYPE_TAG = 0x02, 0x08, 0x10
 MOVE_CLASS_STATUS = 2
 # moves a bot should not pick for damage: the user faints, they fail unless the foe sleeps / the user sleeps / it is
@@ -508,6 +509,8 @@ def bot_auto_battle(s, step, ctx):
             if idx in MENU_ACTION and snap_menu:
                 snap_menu = False
                 snap(s)
+            if idx in MENU_ACTION and flee and ctx.game in HGSS_GAMES and fresh and p.battle_type & BATTLE_TYPE_TRAINER:
+                flee = 0  # HG/SS: a trainer battle refuses RUN and the refusal costs the turn; fight it
             if idx in MENU_ACTION and flee:
                 flee -= 1
                 _tap(s, TAP_RUN)
@@ -2181,7 +2184,8 @@ def bot_talk_to(s, step, ctx):
     tile next to it, face it, A until a script starts. Wandering people are chased (re-planned) as they move. `surf`,
     `hm` and `avoid` go to the walks as walk_to takes them (an object on the water is reached surfing)."""
     oid = int(step["id"])
-    bound = _int(step, "max", 6000)
+    # HG/SS routes are long and their trainers fight on the way (battles count here, unlike in walk_to)
+    bound = _int(step, "max", 20000 if ctx.game in HGSS_GAMES else 6000)
     limit = s.frame + bound
     while s.frame < limit:
         limit += _field_or_handle(s, step, ctx, limit)

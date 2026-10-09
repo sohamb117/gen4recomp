@@ -27,6 +27,12 @@ from = "prev"
 frames = 36000
 
 [[step]]
+do = "heal"
+x = 352
+z = 368
+note = "Goldenrod's Pokemon Center first: Whitney's Miltank leaves the lead fainted, and Scyther alone whited out to Sudowoodo in the first chained run"
+
+[[step]]
 do = "walk_to"
 x = 358
 z = 325
