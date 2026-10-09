@@ -295,7 +295,16 @@ static void rom_read(u32 src, void *dst, u32 len)
  * failed, and among them the task that uploads the overworld sprites'
  * textures (ov01_021F19B4), so the player drew from VRAM nothing had written.
  *
- * The model: a frame's worth of card bandwidth, PC_CARD_BYTES_PER_FRAME, read
+ * The model is the card's own timing. The SDK reads the ROM in 0x200-byte
+ * pages (NitroSDK card_rom.c: CARD_ROM_PAGE_SIZE), one page-read command
+ * each, and keeps the last page it read in a one-page cache
+ * (CARDi_ReadFromCache), so a read costs the pages it touches less a first
+ * page the previous read already fetched. A page costs its 8 command bytes,
+ * the leading gap and the 0x200 data bytes, one card clock per byte, at the
+ * clock and gap the cartridge header gives for normal commands (ROMCTRL at
+ * header 0x60: gap1 in bits 0-12, bit 27 the clock, 33.51 MHz / 5 or / 8).
+ * HG/SS's header (0x00416657: gap1 0x657, 6.7 MHz) makes a page 10715 bus
+ * cycles, about 52 pages per 560190-cycle VBlank. A frame's worth owed
  * within one logical frame delivers one VBlank (OS_Halt, the port's whole
  * frame) from inside the read. Reads that fit in a frame cost nothing: the
  * frame's own VBlank, at the next natural halt, absorbs them (pc_card_step
@@ -303,25 +312,52 @@ static void rom_read(u32 src, void *dst, u32 len)
  * hardware: IME, the VBlank enable and the CPSR I bit; otherwise the time
  * stays owed until it can. Deterministic: a function of the reads only.
  *
- * 0x8000 bytes a frame is about 1.96 MB/s, the order of a retail card's
- * effective rate through the SDK (6.7 MHz bus, per-0x200-block latency).
+ * Counting bytes instead (0x8000 a frame, the first version) charged a
+ * 164-byte read 164 bytes where the card moves a whole page and waits out
+ * its gap. FieldEffectManager_InitRenderers creates 56 one-shot VBlank
+ * tasks (sub_02069714, texture loads) between small NARC reads; by bytes,
+ * 33-35 of them could fall between two VBlanks, the 32-entry queue refused
+ * the rest, and when the one refused was ov01_021FA6E0 (the map objects'
+ * texture loader) every sprite loaded after it drew untextured and a
+ * trainer's approach waited forever on its texture. By pages the worst
+ * stretch is 16.
+ *
  * Per game (Makefile): D/P/Pt do not define it yet, so their frames and
  * regression hashes are unchanged.
  */
-#define PC_CARD_BYTES_PER_FRAME 0x8000u
+#define PC_CARD_PAGE_SIZE 0x200u
+#define PC_CARD_CYCLES_PER_VBLANK 560190u /* 355 dots x 263 lines x 6, as pc_timers.c */
 
-static u32 sCardReadOwed;
+static u32 sCardReadOwed;       /* bus cycles of card time this frame */
+static u32 sCardPageCycles;     /* one page read, from the header's ROMCTRL */
+static u32 sCardCachedPage = 0xFFFFFFFFu;
 static int sCardReadHalting;
 
-static void card_read_elapse(u32 len)
+static void card_read_elapse(u32 src, u32 len)
 {
-    sCardReadOwed += len;
-    while (sCardReadOwed >= PC_CARD_BYTES_PER_FRAME && !sCardReadHalting) {
+    u32 first, last, pages;
+
+    if (len == 0) {
+        return;
+    }
+    if (sCardPageCycles == 0) {
+        u32 romctrl;
+
+        rom_read(0x60, &romctrl, sizeof romctrl);
+        sCardPageCycles = (8u + (romctrl & 0x1FFFu) + PC_CARD_PAGE_SIZE)
+                          * ((romctrl & (1u << 27)) ? 8u : 5u);
+    }
+    first = src / PC_CARD_PAGE_SIZE;
+    last = (src + len - 1) / PC_CARD_PAGE_SIZE;
+    pages = last - first + 1 - (first == sCardCachedPage);
+    sCardCachedPage = last;
+    sCardReadOwed += pages * sCardPageCycles;
+    while (sCardReadOwed >= PC_CARD_CYCLES_PER_VBLANK && !sCardReadHalting) {
         if (!(reg_OS_IME & 1) || !(reg_OS_IE & OS_IE_V_BLANK)
             || OS_GetCpsrIrq() != OS_INTRMODE_IRQ_ENABLE) {
             return;
         }
-        sCardReadOwed -= PC_CARD_BYTES_PER_FRAME;
+        sCardReadOwed -= PC_CARD_CYCLES_PER_VBLANK;
         sCardReadHalting = 1;
         OS_Halt();
         sCardReadHalting = 0;
@@ -346,7 +382,7 @@ void CARDi_ReadRom(u32 dma, const void *src, void *dst, u32 len,
 #endif
     rom_read((u32)src, dst, len);
 #if defined(PC_CARD_READ_TIME)
-    card_read_elapse(len);
+    card_read_elapse((u32)src, len);
 #endif
     if (callback) {
         callback(arg);
