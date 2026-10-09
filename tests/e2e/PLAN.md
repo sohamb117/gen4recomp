@@ -6031,7 +6031,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~969498 frames estimated
+### Story chain: 33 milestones, ~983306 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6049,7 +6049,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [12-museum-skull-pinwheel-plasma](black/12-museum-skull-pinwheel-plasma/milestone.toml) | The Dragon Skull: Team Plasma in Pinwheel Forest | P0 | both | 41974 | prev + `None` | 155 | passing |
 | [13-castelia-plasma-burgh-insect-badge](black/13-castelia-plasma-burgh-insect-badge/milestone.toml) | Castelia City: Team Plasma's hideout and Burgh's Insect Badge | P0 | both | 63731 | prev + `None` | 29 | passing |
 | [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 40495 | prev + `None` | 62 | passing |
-| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 25000 | prev + `None` | 62 | planned |
+| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 38808 | prev + `None` | 64 | passing |
 | [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 18000 | prev + `None` | 63 | planned |
 | [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 18000 | prev + `None` | 96 | planned |
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 20000 | prev + `None` | 96 | planned |
@@ -6210,14 +6210,14 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - notes: Measured from the previous end save (CONTINUE included): Black 40495, White 35744 frames on the core of 2026-10-08 (main 21cf05779, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30.
 
 #### black/15-nimbasa-musical-ferris-wheel-n — Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel
-- proves: Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father, and N's Ferris wheel battle. Start: Nimbasa City (zone 62) -> end: Nimbasa City, 0x4089 = 3, 0x408E = 1.
+- proves: Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father, and N's Ferris wheel battle. Start: Nimbasa City (zone 62) -> end: the amusement park (zone 64), 0x4089 = 3, 0x408E = 1.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
-- end state: map 62; vars 0x4089=3, 0x408E=1, 0x40B3=1
-- frames: estimate 25000, budget 60000
+- end state: map 64; vars 0x4089=3, 0x408E=1, 0x40B3=1
+- frames: estimate 38808, budget 58500
 - refs: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 62 trigger 0 (391,436) var 0x4089 == 1 -> scr 0124 script 2; @0x08B5 Warp zone 77 (14,20); zone_event 77 level type 1: 0x40B3 == 0 -> scr 0154 script 11; @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1; @0x01DC SetVar 0x4089 2; zone_event 62 level type 1: 0x4089 == 2 -> scr 0124 script 20 (msg 67 #18, Bianca's father); @0x0C38 SetVar 0x4089 3; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
-- notes: The Musical itself (the dress-up) is a separate app; [INFERENCE] its exit returns to zone 77. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 38808, White 30485 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Musical's dress-up is a touch-only app (keys do nothing there): OK at (128,178), then OK at (20,170) for 'Is this look OK?'; it returns to the theater (zone 77).
 
 #### black/16-nimbasa-elesa-bolt-badge — Nimbasa Gym: Elesa's Bolt Badge
 - proves: Proves the Nimbasa Gym: the roller-coaster switches and Elesa's Bolt Badge. Start: Nimbasa City (zone 62) -> end: the Nimbasa Gym (zone 63), 4 badges, 0x4093 = 1.
@@ -6405,7 +6405,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~969498 frames estimated
+### Story chain: 33 milestones, ~983306 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6423,7 +6423,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [12-museum-skull-pinwheel-plasma](black/12-museum-skull-pinwheel-plasma/milestone.toml) | The Dragon Skull: Team Plasma in Pinwheel Forest | P0 | both | 41974 | prev + `None` | 155 | passing |
 | [13-castelia-plasma-burgh-insect-badge](black/13-castelia-plasma-burgh-insect-badge/milestone.toml) | Castelia City: Team Plasma's hideout and Burgh's Insect Badge | P0 | both | 63731 | prev + `None` | 29 | passing |
 | [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 40495 | prev + `None` | 62 | passing |
-| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 25000 | prev + `None` | 62 | planned |
+| [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 38808 | prev + `None` | 64 | passing |
 | [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 18000 | prev + `None` | 63 | planned |
 | [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 18000 | prev + `None` | 96 | planned |
 | [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 20000 | prev + `None` | 96 | planned |
@@ -6584,14 +6584,14 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - notes: Measured from the previous end save (CONTINUE included): Black 40495, White 35744 frames on the core of 2026-10-08 (main 21cf05779, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30.
 
 #### white/15-nimbasa-musical-ferris-wheel-n — Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel
-- proves: Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father, and N's Ferris wheel battle. Start: Nimbasa City (zone 62) -> end: Nimbasa City, 0x4089 = 3, 0x408E = 1.
+- proves: Proves Nimbasa City's story: Team Plasma at the Day Care (the Bicycle), the Musical (Prop Case), Bianca's father, and N's Ferris wheel battle. Start: Nimbasa City (zone 62) -> end: the amusement park (zone 64), 0x4089 = 3, 0x408E = 1.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
-- end state: map 62; vars 0x4089=3, 0x408E=1, 0x40B3=1
-- frames: estimate 25000, budget 60000
+- end state: map 64; vars 0x4089=3, 0x408E=1, 0x40B3=1
+- frames: estimate 38808, budget 58500
 - refs: zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1; zone_event 62 trigger 0 (391,436) var 0x4089 == 1 -> scr 0124 script 2; @0x08B5 Warp zone 77 (14,20); zone_event 77 level type 1: 0x40B3 == 0 -> scr 0154 script 11; @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1; @0x01DC SetVar 0x4089 2; zone_event 62 level type 1: 0x4089 == 2 -> scr 0124 script 20 (msg 67 #18, Bianca's father); @0x0C38 SetVar 0x4089 3; zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1
-- notes: The Musical itself (the dress-up) is a separate app; [INFERENCE] its exit returns to zone 77. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 38808, White 30485 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Musical's dress-up is a touch-only app (keys do nothing there): OK at (128,178), then OK at (20,170) for 'Is this look OK?'; it returns to the theater (zone 77).
 
 #### white/16-nimbasa-elesa-bolt-badge — Nimbasa Gym: Elesa's Bolt Badge
 - proves: Proves the Nimbasa Gym: the roller-coaster switches and Elesa's Bolt Badge. Start: Nimbasa City (zone 62) -> end: the Nimbasa Gym (zone 63), 4 badges, 0x4093 = 1.
