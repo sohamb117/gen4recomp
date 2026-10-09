@@ -154,6 +154,31 @@ $(GAME_PREP:%.c=$(OBJ)/game/%.o): $(OBJ)/game/%.o: $(BUILD)/prep/%.c $(GAME_DEPS
 
 OBJS += $(GAME_OBJS)
 
+# ------------------------------------------------------------ flow facts
+#
+# pc/tools/hg_fpflow_lint.py's facts, <obj>.fpflow beside each object: the
+# TU's clang IR with the compile's own flags at -O0 (every store and load
+# of a function pointer still there), parsed, and dropped. The link solves
+# them (pc/Makefile.wasm, POST_LINK). FPFLOW_FACTS: $(1) the flags, $(2)
+# the TU's name in the report.
+FPFLOW := $(MYPC)/tools/hg_fpflow_lint.py
+GAME_FPFLOW := $(GAME_OBJS:%=%.fpflow)
+define FPFLOW_FACTS
+@mkdir -p $(dir $@)
+@$(filter-out $(CCACHE),$(CC)) $(1) -O0 -gline-tables-only -S -emit-llvm \
+    -MMD -MP -MF $@.d -MT $@ -o $@.ll $<
+@$(PYTHON) $(FPFLOW) facts $(2) $@.ll $@
+@rm -f $@.ll
+endef
+
+$(GAME_DIRECT:%.c=$(OBJ)/game/%.o.fpflow): $(OBJ)/game/%.o.fpflow: $(ROOT)/%.c $(GAME_DEPS) $(FPFLOW)
+	$(call FPFLOW_FACTS,$(call game_tu_flags,$*.c),$*.c)
+
+$(GAME_PREP:%.c=$(OBJ)/game/%.o.fpflow): $(OBJ)/game/%.o.fpflow: $(BUILD)/prep/%.c $(GAME_DEPS) $(FPFLOW)
+	$(call FPFLOW_FACTS,$(call game_tu_flags,$*.c),$*.c)
+
+-include $(wildcard $(GAME_FPFLOW:%=%.d))
+
 # ------------------------------------------------------------- targets
 .PHONY: game-objs extracted-asm game-dupcheck
 game-objs: $(GAME_OBJS)

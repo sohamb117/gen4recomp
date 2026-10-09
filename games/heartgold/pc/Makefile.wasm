@@ -148,6 +148,8 @@ OBJS := $(filter-out $(HOST_OBJ)/pc/pc_agb_slot.o $(HOST_OBJ)/dp/pc_dp_agb.o,$(O
 HG_GAME_HOST_OBJS := $(OBJ)/hgsrc/pc_hg_dsprot.o $(OBJ)/hgsrc/pc_hg_crt0.o
 $(OBJ)/hgsrc/%.o: $(MYPC)/src/%.c $(GAME_DEPS) $(BRIDGE_DEPS)
 	$(call BRIDGE_COMPILE,$(GAME_CFLAGS) $(GAME_GLB_DEFINES) $(GAME_DEPFLAGS))
+$(OBJ)/hgsrc/%.o.fpflow: $(MYPC)/src/%.c $(GAME_DEPS) $(FPFLOW)
+	$(call FPFLOW_FACTS,$(GAME_CFLAGS) $(GAME_GLB_DEFINES),pc/src/$*.c)
 OBJS += $(HG_GAME_HOST_OBJS)
 -include $(addsuffix .d,$(HG_GAME_HOST_OBJS))
 
@@ -156,17 +158,73 @@ OBJS += $(HG_GAME_HOST_OBJS)
 HG_FIELD_OBJ := $(OBJ)/hgsrc/pc_hg_field.o
 $(HG_FIELD_OBJ): $(MYPC)/src/pc_hg_field.c $(GAME_DEPS) $(BRIDGE_DEPS)
 	$(call BRIDGE_COMPILE,$(GAME_CFLAGS) $(GAME_GF_DEFINES) $(GAME_GLB_DEFINES) $(GAME_DEPFLAGS))
+$(HG_FIELD_OBJ).fpflow: $(MYPC)/src/pc_hg_field.c $(GAME_DEPS) $(FPFLOW)
+	$(call FPFLOW_FACTS,$(GAME_CFLAGS) $(GAME_GF_DEFINES) $(GAME_GLB_DEFINES),pc/src/pc_hg_field.c)
 OBJS += $(HG_FIELD_OBJ)
 -include $(HG_FIELD_OBJ).d
 
+# Every C TU's flow facts (pc/mk/game.mk), for hg_fpflow_lint.py at link.
+HG_FPFLOW := $(GAME_FPFLOW) $(addsuffix .fpflow,$(HG_GAME_HOST_OBJS) $(HG_FIELD_OBJ))
+-include $(wildcard $(addsuffix .fpflow.d,$(HG_GAME_HOST_OBJS) $(HG_FIELD_OBJ)))
+
+# Each C file's overlay (main.lsf's), for dp_ovlabel_lint.py --ovmap.
+HG_C_OVERLAYS := $(BUILD)/host/hg-c-overlays.txt
+$(HG_C_OVERLAYS): $(LSF) $(HG_LSF)
+	@mkdir -p $(dir $@)
+	$(PYTHON) $(HG_LSF) $(LSF) c > $@.tmp && mv $@.tmp $@
+
 all: $(TARGET)
 
-# The contract check and the overlay statics' addresses, as on D/P. D/P's
-# five assembly lints (dp_*_lint.py) are not run: each reads D/P's own
-# allow-list of measured exceptions, which says nothing about HG/SS.
-POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HG_OVSTATICS_C) && \
+# The overlay statics' addresses into the finished module and the contract
+# check, as on D/P, after the lints. Each lint exits 1 on a finding its
+# allow file (pc/<lint>_allow.txt, one reason per entry) does not explain.
+# D/P's (games/diamond/pc/tools, see their headers and D/P's Makefile.wasm)
+# read the assembly armrec translates (the staged overlay copies, patched)
+# and the mwcc asm bodies extracted from C:
+#
+# dp_arity_lint: a C call into assembly passing fewer argument words than
+#   the assembly reads on entry (the bridge passes 0 where ARM left a
+#   register: Route 30's trainer approach, sub_02064598, and five more,
+#   pc/patches/src/{scrcmd_battle,field_system,unk_0204A3F4,
+#   overlay_44_*}.c.patch).
+# dp_retwidth_lint: a C call into assembly through a return type narrower
+#   than the value, where mwcc's caller (the ROM object in $(ROMBUILD))
+#   uses the bits the bridge narrows away (the friend group id,
+#   pc/patches/src/save_rankings.c.patch).
+# dp_voidret_lint: assembly reading r0 after calling C the decomp declared
+#   void, where mwcc left the value the assembly wants (the map's prop
+#   animations and a movement's field effect, pc/patches/src/field/
+#   overlay_01_{02204004,021FFECC}.c.patch).
+# dp_adjacency_lint: assembly reaching past a C-defined object (laid out
+#   by wasm-ld, not as on the ROM).
+# dp_ovlabel_lint --xmap: what still binds a cross-overlay reference by
+#   name though another overlay the code can have resident has a function
+#   at that address: decompiled C naming another overlay's function (a call
+#   or a function pointer), assembly storing decompiled C of another
+#   overlay (`.word`, armrec's armrec_ext_), assembly calls armrec
+#   --overlay-dispatch does not dispatch; overlays and functions from the
+#   xMAP, each C file's overlay from main.lsf.
+# hg_fpflow_lint.py (pc/tools): a C indirect call whose wasm type differs
+#   from a C function the flow lets reach it (call_indirect traps: the
+#   communication club and custom Safari Zone callbacks,
+#   pc/patches/src/overlay_03); the facts are per TU (pc/mk/game.mk).
+HG_LINT_ASM = $(ARMREC_S) $(EXTRACTED_ASM)
+HG_LINT_C = $(addprefix $(ROOT)/,$(GAME_DIRECT)) $(GAME_PREP:%=$(BUILD)/prep/%) \
+            $(MYPC)/src/pc_hg_dsprot.c $(MYPC)/src/pc_hg_crt0.c $(MYPC)/src/pc_hg_field.c
+POST_LINK ?= $(PYTHON) $(PCDIR)/tools/dp_arity_lint.py --allow $(MYPC)/arity_allow.txt \
+               $(OBJ) $(HG_LINT_ASM) && \
+             $(PYTHON) $(PCDIR)/tools/dp_retwidth_lint.py --allow $(MYPC)/retwidth_allow.txt \
+               $(OBJ) $(ROMBUILD) $(HG_LINT_ASM) && \
+             $(PYTHON) $(PCDIR)/tools/dp_voidret_lint.py --allow $(MYPC)/voidret_allow.txt \
+               $(OBJ) $(HG_LINT_ASM) && \
+             $(PYTHON) $(PCDIR)/tools/dp_adjacency_lint.py $(WASM_MAP) $(HG_LINT_ASM) && \
+             $(PYTHON) $(PCDIR)/tools/dp_ovlabel_lint.py --allow $(MYPC)/ovlabel_allow.txt \
+               --xmap $(ROM_XMAP) --ovmap $(HG_C_OVERLAYS) $(HG_LINT_ASM) $(HG_LINT_C) && \
+             $(PYTHON) $(FPFLOW) solve --allow $(MYPC)/fpflow_allow.txt $(HG_FPFLOW) && \
+             $(PYTHON) $(PLAT)/pc/wasm/patch_ov_addrs.py $(TARGET) $(WASM_MAP) $(HG_OVSTATICS_C) && \
              $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
                $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
+$(TARGET): $(HG_FPFLOW) $(HG_C_OVERLAYS)
 $(TARGET): $(OBJS) $(LINK_EXTRA_DEPS)
 	@mkdir -p $(dir $@)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LINK_EXTRA_OBJS) $(LDLIBS)

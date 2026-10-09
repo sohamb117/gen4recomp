@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """pc/tools/dp_arity_lint.py: C calls into assembly that pass too few arguments.
 
-    dp_arity_lint.py [--allow FILE] OBJDIR ASMDIR...
+    dp_arity_lint.py [--allow FILE] OBJDIR ASM...
+
+ASM: directories searched for *.s, or .s files (HG/SS pass the exact list
+armrec translates, staged overlay copies included).
 
 Exits 1 on a short call site not named in the allow file (one name per
 line, `#` comments: each entry says why the call cannot matter).
@@ -20,7 +23,12 @@ each assembly function, the argument registers r0-r3 it reads before it
 writes them on its entry path (a linear scan to the first branch, call or
 return; a conservative under-approximation, so a hit is real and a miss
 proves nothing). A call site supplying fewer argument words than the
-callee reads is reported with the TUs that make it.
+callee reads is reported with the TUs that make it. ARM-mode bodies (HG/SS
+keep most of the SDK as ARM assembly) are read as such: a return's ldm/pop
+register list is written, not read; mrc writes its ARM register, mcr reads
+it; umull/smull write two registers, umlal/smlal also read them. Route 30's
+frozen trainer approach (HG's sub_02064598, called with no argument) and
+five more HG/SS sites were this class (games/heartgold/pc/patches).
 """
 import collections, glob, os, re, sys
 
@@ -60,7 +68,12 @@ def entry_reads(lines):
         if base in ("b", "bx", "bl", "blx") or mn.startswith("b") and base in ("beq", "bne") \
            or "pc" in ops.split(",")[0] or (base.startswith("pop") and "pc" in ops) \
            or (base.startswith("ldm") and "pc" in ops):
-            regs = REG.findall(ops)
+            if base.startswith("pop"):
+                regs = []          # a return's register list is written, not read
+            elif base.startswith("ldm"):
+                regs = REG.findall(ops.split(",")[0])   # only the base register is read
+            else:
+                regs = REG.findall(ops)
             for r in regs:
                 if r not in written:
                     read.add(r)
@@ -76,6 +89,19 @@ def entry_reads(lines):
             first = ops.split(",")[0]
             dsts = REG.findall(first)
             srcs = REG.findall(",".join(ops.split(",")[1:]))
+            if base in ("umull", "smull", "umlal", "smlal"):
+                # RdLo, RdHi, Rm, Rs: two destinations; the accumulating
+                # forms read them as well.
+                parts = ops.split(",")
+                dsts = REG.findall(",".join(parts[:2]))
+                srcs = REG.findall(",".join(parts[2:]))
+                if base.endswith("lal"):
+                    srcs += dsts
+            if base in ("mrc", "mcr"):
+                # coprocessor transfers: `mrc p15, 0, r0, c1, c0, 0` writes
+                # its ARM register, mcr reads it.
+                regs = REG.findall(ops)
+                dsts, srcs = (regs, []) if base == "mrc" else ([], regs)
             if base.startswith("ldm") or base.startswith("pop"):
                 dsts, srcs = REG.findall(ops), []
         for r in srcs:
@@ -93,10 +119,11 @@ def main(argv):
             if ln:
                 allow.add(ln)
         argv = argv[2:]
-    objdir, asmdirs = argv[0], [d for d in argv[1:] if os.path.isdir(d)]
+    objdir, asmdirs = argv[0], argv[1:]
     funcs = {}
     for d in asmdirs:
-        for p in glob.glob(os.path.join(d, "**", "*.s"), recursive=True):
+        for p in (glob.glob(os.path.join(d, "**", "*.s"), recursive=True) if os.path.isdir(d)
+                  else [d] if d.endswith(".s") and os.path.isfile(d) else []):
             lines = open(p, errors="replace").read().split("\n")
             for i, ln in enumerate(lines):
                 m = START.match(ln)

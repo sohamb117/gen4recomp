@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """pc/tools/dp_retwidth_lint.py: C calls into assembly through a too-narrow return type.
 
-    dp_retwidth_lint.py [--allow FILE] [-v] OBJDIR ROMBUILD ASMDIR...
+    dp_retwidth_lint.py [--allow FILE] [-v] OBJDIR ROMBUILD ASM...
+
+ASM: directories searched for *.s, or .s files (HG/SS pass the exact list
+armrec translates, staged overlay copies included). ROMBUILD holds mwcc's
+objects at the TU's path (D/P's arm9/build/<ver>.us, HG/SS's
+build/<ver>.us).
 
 Exits 1 on a call site that is a hit or an unknown and is not named in the
 allow file (`<callee> <caller TU basename>` or `<callee> *` per line, `#`
@@ -936,10 +941,13 @@ def main(argv):
             argv = argv[1:]
         else:
             break
-    objdir, rombuild, asmdirs = argv[0], argv[1], [d for d in argv[2:] if os.path.isdir(d)]
+    objdir, rombuild, asmdirs = argv[0], argv[1], argv[2:]
     paths = []
     for d in asmdirs:
-        paths.extend(sorted(glob.glob(os.path.join(d, "**", "*.s"), recursive=True)))
+        if os.path.isdir(d):
+            paths.extend(sorted(glob.glob(os.path.join(d, "**", "*.s"), recursive=True)))
+        elif d.endswith(".s") and os.path.isfile(d):
+            paths.append(d)
     funcs, words = parse_asm(paths)
     calls = collections.defaultdict(set)        # (name, sig) -> {tu}
     c_ret, c_params = {}, {}
