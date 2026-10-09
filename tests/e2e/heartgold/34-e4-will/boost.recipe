@@ -1,5 +1,5 @@
 # Boost on 33's end save (run.py hgss_boost; the story stays played). The party is full since 26 (0 the starter
-# line, 1 Togepi, 2 SCYTHER, 3 FLAAFFY (14), 4 PELIPPER (18), 5 FERALIGATR (26)), so the Elite Four boost is moves
+# line, 1 Togepi, 2 SCYTHER, 3 FLAAFFY (14), 4 PELIPPER (18), 5 FERALIGATR (25)), so the Elite Four boost is moves
 # only: the lead's level-up moves the bot declined (auto_battle answers "forget a move?" NO), as a player keeping the
 # best ones would have them. Typhlosion (files/poketool/personal/wotbl.narc #157): Swift 31, Lava Plume 35,
 # Flamethrower 42. Opponents (files/poketool/trainer/trainers.json): Will's Xatu/Jynx/Exeggutor/Slowbro, Koga's

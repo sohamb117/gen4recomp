@@ -1,17 +1,19 @@
-# Boost on 25's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
+# Boost on 24's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
 # Party along the chain: 01-05 1 (CYNDAQUIL), 06 2 (+ the aide's Togepi egg), 10 3 (+ SCYTHER: Cut), 18 4
 # (+ PELIPPER: Surf/Fly), with 14's FLAAFFY -> here 0 CYNDAQUIL, 1 Togepi, 2 SCYTHER, 3 FLAAFFY, 4 PELIPPER: size 5.
 # Adds slot 5, the last free one: the carrier of the field moves the rest of the story needs and no member knows:
-# - Strength (HM04, received in 20: scr_seq_0252_R42.s:16-96): the Ice Path B1F boulder (here), Victory Road 1F/2F
+# - Strength (HM04, received in 20: scr_seq_0252_R42.s:16-96): the Ice Path B1F boulder (26), Victory Road 1F/2F
 #   boulders (33); Rock Smash is not needed on either route (33's refs: Victory Road's breakrocks are off the way);
 # - Whirlpool (HM05, received in 21: scr_seq_0090_D35R0103.s:694): SoulSilver 31, the Whirl Islands;
-# - Waterfall (HM07, received here: the Ice Path 1F item ball): Tohjo Falls (32);
+# - Waterfall (HM07, received in 26: the Ice Path 1F item ball): Tohjo Falls (32);
 # - Dig (TM28, src/item.c:59): SoulSilver 32 digs out of Lugia's cave before flying.
 # FERALIGATR learns all four: files/poketool/personal/personal.json:12586 (FERALIGATR) tms include 28 (TM28 Dig) and
 # hms [1, 3, 4, 5, 6, 7, 8] (src/item.c:127-130: HM04 Strength, HM05 Whirlpool, HM07 Waterfall). The party menu
 # lists them as field moves (src/party_menu.c:206-213). Lv40 is the stretch's (TRAINER_LEADER_CLAIR_CLAIR (35):
 # GYARADOS 38, DRAGONAIR 38 x2, KINGDRA 41; TRAINER_RIVAL_SILVER_13 in 33: FERALIGATR 40 at the top); behind a fainted
 # lead it fights with Waterfall/Strength (80 power) and Dig (Ground).
+# Added here rather than in 26: the first chained run whited out to Archer (HOUNDOUR 35, KOFFING 35, HOUNDOOM 38)
+# after Proton and Ariana with the five, Quilava 34 and the rest fainted, Ampharos's Discharge spent.
 # Party after: 6, full (CYNDAQUIL, Togepi, SCYTHER, FLAAFFY, PELIPPER, FERALIGATR).
 party SPECIES_FERALIGATR 40
 party-move 5 0 MOVE_STRENGTH

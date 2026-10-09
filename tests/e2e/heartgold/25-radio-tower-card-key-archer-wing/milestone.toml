@@ -3,10 +3,9 @@
 # Wing) and opens Route 44 (VAR_UNK_407A 1) and the Blackthorn Gym (FLAG_HIDE_BLACKTHORN_GYM_GUARD_INFRONT).
 # Start: MAP_GOLDENROD_TUNNEL_WAREHOUSE (20,14) -> end: MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK, VAR_SCENE_ROCKET_TAKEOVER 5.
 title = "Radio Tower: the Card Key door, Archer, the director's wing"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 35000
+estimate = 44207
 refs = [
   "zone_event 195_D37R0105 warp 0 (3,18) -> MAP_GOLDENROD_TUNNEL_B2F 1 (26,14); zone_event 194_D37R0104 warp 0 (27,4) -> MAP_GOLDENROD_TUNNEL_1F 5 (25,3)",
   "scr_seq_0096_D37R0104.s:59-73 (FLAG_OPENED_GOLDENROD_PURPLE_GATE, set in 24: the purple gate is moved aside on every entry, joining the purple room to the north corridor)",
@@ -26,9 +25,10 @@ notes = "Version split: the wing differs (FLAG_UNK_093 HG / FLAG_UNK_094 SS, scr
 [start]
 from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
 
 [run]
-frames = 57500
+frames = 66400
 
 [[step]]
 do = "walk_to"
