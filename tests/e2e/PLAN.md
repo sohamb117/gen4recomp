@@ -6031,7 +6031,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~980201 frames estimated
+### Story chain: 33 milestones, ~999586 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6051,8 +6051,8 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 34342 | prev + `None` | 62 | passing |
 | [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 30477 | prev + `None` | 64 | passing |
 | [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 33876 | prev + `None` | 63 | passing |
-| [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 18000 | prev + `None` | 96 | planned |
-| [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 20000 | prev + `None` | 96 | planned |
+| [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 27352 | prev + `None` | 96 | passing |
+| [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 30033 | prev + `None` | 96 | passing |
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 22000 | prev + `None` | 96 | planned |
 | [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 25000 | prev + `None` | 107 | planned |
 | [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
@@ -6235,9 +6235,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2
 - end state: map 96; vars 0x4093=3, 0x408F=1
-- frames: estimate 18000, budget 70000
+- frames: estimate 27352, budget 41500
 - refs: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2; zone_event 329 trigger 2 (339,431) var 0x4093 == 2 -> scr 0658 script 5; @0x09B0 SetVar 0x4093 3; zone 253/301 (Driftveil Drawbridge); zone_event 96 trigger 1 (204,430) var 0x408F == 0 -> scr 0192 script 8 (Clay, msg 101 #0); @0x01DB SetFlag 0x9B6; @0x01E3 SetVar 0x408F 1
-- notes: [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 27352, White 25778 frames on the core of 2026-10-08 (main 21cf05779, instant text).
 
 #### black/18-cold-storage-plasma — Cold Storage: Team Plasma and Ghetsis
 - proves: Proves the Cold Storage raid: Cheren at the entrance, the containers, four grunts and Zinzolin, and Ghetsis meeting Clay in Driftveil. Start: Driftveil City (zone 96) -> end: Driftveil City, 0x408B = 8, 0x408F = 3.
@@ -6245,9 +6245,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24)
 - end state: map 96; vars 0x408B=8, 0x408F=3, 0x4090=1
-- frames: estimate 20000, budget 90000
+- frames: estimate 30033, budget 45500
 - refs: zone_event 191 trigger 0 (167,474) var 0x4090 == 0 -> scr 0382 script 1 (Cheren, msg 199 #2); @0x0109 SetVar 0x4090 1; zone_event 192 level type 1: 0x408B == 0 -> scr 0384 script 1; @0x00A6 SetVar 0x408B 1; trigger 0 (6,8) 0x408B == 1 -> script 2; @0x0117 SetVar 0x408B 2; zone_event 193 level type 1: 0x408B == 2 -> scr 0386 script 1 (Zinzolin, msg 201 #0); @0x01DA SetVar 0x408B 3; scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24); scr 0386 @0x08D3 SetVar 0x408B 8; @0x08ED SetVar 0x408F 2; zone_event 96 trigger 0 (206,404) var 0x408F == 2 -> scr 0192 script 9 (Ghetsis, msg 101 #6); @0x0444 SetVar 0x408F 3
-- notes: [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 29790, White 30033 frames on the core of 2026-10-08 (main 21cf05779, instant text). Cold Storage's floor is ice (behavior 0x18) and its containers are layered: fixed steps routes from scouting (in over the container tops, out on the floor); the four grunts are talked to from below, by position.
 
 #### black/19-driftveil-clay-quake-badge-bianca — Driftveil Gym: Clay's Quake Badge; Bianca and HM02
 - proves: Proves the Driftveil Gym (the mine elevators) and Clay's Quake Badge, then Bianca's battle and HM02. Start: Driftveil City (zone 96) -> end: Driftveil City, 5 badges, 0x408F = 5, 0x409A = 1.
@@ -6405,7 +6405,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~980201 frames estimated
+### Story chain: 33 milestones, ~999586 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6425,8 +6425,8 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [14-castelia-gate-bianca-route4-cheren](black/14-castelia-gate-bianca-route4-cheren/milestone.toml) | Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa | P0 | both | 34342 | prev + `None` | 62 | passing |
 | [15-nimbasa-musical-ferris-wheel-n](black/15-nimbasa-musical-ferris-wheel-n/milestone.toml) | Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel | P0 | both | 30477 | prev + `None` | 64 | passing |
 | [16-nimbasa-elesa-bolt-badge](black/16-nimbasa-elesa-bolt-badge/milestone.toml) | Nimbasa Gym: Elesa's Bolt Badge | P0 | both | 33876 | prev + `None` | 63 | passing |
-| [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 18000 | prev + `None` | 96 | planned |
-| [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 20000 | prev + `None` | 96 | planned |
+| [17-route5-cheren-drawbridge-driftveil](black/17-route5-cheren-drawbridge-driftveil/milestone.toml) | Route 5: Cheren and Alder; Driftveil City | P0 | both | 27352 | prev + `None` | 96 | passing |
+| [18-cold-storage-plasma](black/18-cold-storage-plasma/milestone.toml) | Cold Storage: Team Plasma and Ghetsis | P0 | both | 30033 | prev + `None` | 96 | passing |
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 22000 | prev + `None` | 96 | planned |
 | [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 25000 | prev + `None` | 107 | planned |
 | [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton Gym: Skyla's Jet Badge | P0 | both | 20000 | prev + `None` | 108 | planned |
@@ -6609,9 +6609,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2
 - end state: map 96; vars 0x4093=3, 0x408F=1
-- frames: estimate 18000, budget 70000
+- frames: estimate 27352, budget 41500
 - refs: zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2; zone_event 329 trigger 2 (339,431) var 0x4093 == 2 -> scr 0658 script 5; @0x09B0 SetVar 0x4093 3; zone 253/301 (Driftveil Drawbridge); zone_event 96 trigger 1 (204,430) var 0x408F == 0 -> scr 0192 script 8 (Clay, msg 101 #0); @0x01DB SetFlag 0x9B6; @0x01E3 SetVar 0x408F 1
-- notes: [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 27352, White 25778 frames on the core of 2026-10-08 (main 21cf05779, instant text).
 
 #### white/18-cold-storage-plasma — Cold Storage: Team Plasma and Ghetsis
 - proves: Proves the Cold Storage raid: Cheren at the entrance, the containers, four grunts and Zinzolin, and Ghetsis meeting Clay in Driftveil. Start: Driftveil City (zone 96) -> end: Driftveil City, 0x408B = 8, 0x408F = 3.
@@ -6619,9 +6619,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24)
 - end state: map 96; vars 0x408B=8, 0x408F=3, 0x4090=1
-- frames: estimate 20000, budget 90000
+- frames: estimate 30033, budget 45500
 - refs: zone_event 191 trigger 0 (167,474) var 0x4090 == 0 -> scr 0382 script 1 (Cheren, msg 199 #2); @0x0109 SetVar 0x4090 1; zone_event 192 level type 1: 0x408B == 0 -> scr 0384 script 1; @0x00A6 SetVar 0x408B 1; trigger 0 (6,8) 0x408B == 1 -> script 2; @0x0117 SetVar 0x408B 2; zone_event 193 level type 1: 0x408B == 2 -> scr 0386 script 1 (Zinzolin, msg 201 #0); @0x01DA SetVar 0x408B 3; scr 0386 @0x02EA/@0x03A3/@0x045C/@0x0515 TrainerBattle trdata #81/#278/#276/#610 (grunts, levels 23-24); scr 0386 @0x08D3 SetVar 0x408B 8; @0x08ED SetVar 0x408F 2; zone_event 96 trigger 0 (206,404) var 0x408F == 2 -> scr 0192 script 9 (Ghetsis, msg 101 #6); @0x0444 SetVar 0x408F 3
-- notes: [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 29790, White 30033 frames on the core of 2026-10-08 (main 21cf05779, instant text). Cold Storage's floor is ice (behavior 0x18) and its containers are layered: fixed steps routes from scouting (in over the container tops, out on the floor); the four grunts are talked to from below, by position.
 
 #### white/19-driftveil-clay-quake-badge-bianca — Driftveil Gym: Clay's Quake Badge; Bianca and HM02
 - proves: Proves the Driftveil Gym (the mine elevators) and Clay's Quake Badge, then Bianca's battle and HM02. Start: Driftveil City (zone 96) -> end: Driftveil City, 5 badges, 0x408F = 5, 0x409A = 1.
