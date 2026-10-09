@@ -693,11 +693,8 @@ limit of the tool, not of the port.
 All runs below are Black, on the core built from main 21cf05779, with the
 boosted scouting party. None found a port defect:
 
-- **Seasons.** January, February, March and April RTC values (`--rtc`)
-  give identical Nuvema and Accumula frames. The clock does reach the game:
-  the C-Gear shows 12:00, the time set. [INFERENCE] The season is likely
-  decided by how much play time or which day has passed since the save,
-  not by the month alone. Not settled.
+- **Seasons.** Settled below ("Seasons, from the code"): the season
+  changes at a map load, never on CONTINUE. Seasons on the port are correct.
 - **Skyarrow Bridge (249) and Castelia (28)** are rail maps: the probe's
   field_ready stays 0 on them, and walk_to does not apply. Holding a key
   works. From the gate 251, holding UP (B to run) crosses the bridge to 252
@@ -714,3 +711,57 @@ boosted scouting party. None found a port defect:
   Dragonspiral Tower, and N's Castle with its "Those in accord with Fate"
   text. All render and take input. The story events there (Reshiram,
   the credits) need the chain's flags and were not reached.
+
+White parity: the White save of bw-script's milestone 10, moved by
+`set-location`, crosses Skyarrow Bridge from gate 251 (hold UP) and follows
+Castelia's street from gate 252 (hold LEFT). It rides the Nimbasa gym's
+coaster after entering through the door, and it shows N's Castle's "Those in
+accord with Fate" line. Every run returned rc 0. On CONTINUE, a save that
+has the C-Gear asks "Launch C-Gear communications?", and that prompt takes
+the A presses before the walk starts.
+
+### Seasons, from the code (Black; White matches)
+
+- `sub_0202E888` computes the season from the clock. It calls
+  `sub_0203F4E4`, which copies out the RTC date, and returns
+  `(month - 1) & 3`: 0 spring (January, May, September), 1 summer, 2 autumn,
+  3 winter.
+- The current season is a byte at GAMEDATA+0x1C4: getter `sub_02012984`,
+  setter `sub_0201298C`, called through `sub_0202E8CC`.
+  - GAMEDATA's constructor (`sub_020124F4`) seeds it from the clock.
+  - Loading a save then restores the saved value, so CONTINUE always keeps
+    the season the save was made in.
+- `sub_0202E848(gamedata, &cur, &new)` decides whether the season changes:
+  - If the lock byte GAMEDATA+0x1CC is set (`sub_02012B70`; `ov20` sets it
+    to 1 and clears it again), nothing changes.
+  - Otherwise it reports a change when the stored season differs from the
+    clock's.
+- `ov20_0218403C` runs on a map change. If a change is reported and the
+  destination zone takes seasons (`sub_020140D8` on the zone header), it
+  records the old and new values.
+  - Overlay 20 then commits the new value (`sub_0202E8CC`) and plays the
+    season card, stepping through every season in between (`sub_0202E8A4`
+    returns `(s + 1) % 4`).
+  - This matches Bulbapedia's description: seasons change on leaving a
+    building or crossing a loading zone.
+
+The earlier identical frames were therefore correct: those runs CONTINUEd
+and stood still. Here, the player starts in an autumn save inside the house
+in Nuvema (zone 390, March 2009 clock) and walks out:
+
+| `--rtc` | card | Nuvema afterwards |
+| --- | --- | --- |
+| January 2011 | "Winter", then "Spring" | spring green |
+| February | "Winter", "Spring", "Summer" | summer teal |
+| March | none (still autumn) | autumn |
+| April | "Winter" | winter grey |
+
+Frames: `/tmp/bw2/seasons_exit.png` (cards and towns),
+`/tmp/bw2/sx_jan_splash.png` (January's two cards). Icirrus in April, on
+leaving its Pokémon Center (zone 115), has snow on the ground, snow-laden
+trees and falling snow; in March it shows autumn's orange trees
+(`/tmp/bw2/icirrus_seasons.png`). The port's RTC model (`pc_rtc.c`, the
+`--rtc` seconds) needed no change.
+
+How to check a season: CONTINUE with `--rtc` set to the month you want, from
+a save made indoors, then walk out.
