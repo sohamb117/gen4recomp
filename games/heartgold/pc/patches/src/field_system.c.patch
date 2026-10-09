@@ -1,14 +1,35 @@
 --- a/src/field_system.c
 +++ b/src/field_system.c
-@@ -45,6 +45,11 @@
+@@ -44,6 +44,11 @@
+ };
  
  static FieldSystem *sFieldSysPtr;
- 
++
 +/* nativeplat: the field for the port's frame-boundary work (pc/src/pc_hg_field.c). */
 +FieldSystem *pc_hg_field_system(void) {
 +    return sFieldSysPtr;
 +}
-+
+ 
  typedef struct UnkFieldSystemInit {
      int unk0;
-     int unk4;
+@@ -252,7 +257,10 @@
+             }
+             movementAllowed = 0;
+             if (sub_0203E324()) {
+-                movementAllowed = ov35_02259DB8();
++                /* nativeplat: ov35_02259DB8 reads its argument, which on ARM is
++                 * sub_0203E324's result still in r0; through the bridge it would
++                 * be 0. Passed explicitly. */
++                movementAllowed = ((int (*)(int))ov35_02259DB8)(sub_0203E324());
+             }
+             PlayerAvatar_MoveControl(fieldSystem->playerAvatar, fieldSystem->mapLoadManager, -1, fieldInput.newKeys, fieldInput.heldKeys, movementAllowed);
+         }
+@@ -275,7 +283,7 @@
+                 }
+                 u32 flag = 0;
+                 if (sub_0203E324()) {
+-                    flag = ov35_02259DB8();
++                    flag = ((int (*)(int))ov35_02259DB8)(sub_0203E324()); /* nativeplat: as above */
+                 }
+                 PlayerAvatar_MoveControl(fieldSystem->playerAvatar, fieldSystem->mapLoadManager, -1, fieldInput.newKeys, fieldInput.heldKeys, flag);
+             }

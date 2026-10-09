@@ -1,0 +1,16 @@
+--- a/src/scrcmd_battle.c
++++ b/src/scrcmd_battle.c
+@@ -58,7 +58,12 @@
+         return TRUE;
+     }
+ 
+-    if (sub_02064598() == TRUE) {
++    /* nativeplat: sub_02064598 asserts its argument, the approach task, and
++     * polls it; the decomp's call passes nothing because on ARM *r5 is still
++     * in r0 from the test above. Through the bridge r0 would be 0: the
++     * assert fired every frame and a trainer's approach never ended
++     * (Route 30's Youngster Joey froze the field). */
++    if (((BOOL (*)(int))sub_02064598)(*r5) == TRUE) {
+         sub_020645AC(*r5);
+         *r5 = 0;
+         *var1 = 1;

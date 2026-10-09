@@ -1,0 +1,25 @@
+--- a/src/overlay_44_0222CDAC.c
++++ b/src/overlay_44_0222CDAC.c
+@@ -1512,8 +1512,9 @@
+         sub_0202C03C(arg0->unk0);
+         void *saveArray = SaveArray_Get(arg0->saveData, 31);
+         sub_02031710(saveArray);
+-        Save_Frontier_GetStatic(arg0->saveData);
+-        sub_02031188();
++        /* nativeplat: sub_02031188 initialises what Save_Frontier_GetStatic
++         * returned (r0 on ARM); passed explicitly for the bridge. */
++        ((void (*)(void *))sub_02031188)(Save_Frontier_GetStatic(arg0->saveData));
+         arg0->unk348 = 14;
+         arg0->unk4 = sub_020396FC(arg0->saveData, 1188);
+         ov44_0222F510(arg0, 23, 1);
+@@ -4031,7 +4032,9 @@
+ 
+ void ov44_0222F910(UnkStruct_ov44_022319EC *arg0) {
+     if (arg0->unk18C != 0) {
+-        sub_0200F478();
++        /* nativeplat: sub_0200F478 takes unk18C, in r0 on ARM from the test
++         * above; passed explicitly for the bridge. */
++        ((void (*)(void *))sub_0200F478)((void *)arg0->unk18C);
+         arg0->unk18C = 0;
+         if (WindowIsInUse(&arg0->unk2D0) != 0) {
+             ClearFrameAndWindow2(&arg0->unk2D0, 0);

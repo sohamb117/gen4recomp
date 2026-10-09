@@ -1,0 +1,16 @@
+--- a/src/overlay_03/custom_safari_zone.c
++++ b/src/overlay_03/custom_safari_zone.c
+@@ -69,7 +69,12 @@
+         Heap_Free(unkCommStruct);
+         return TRUE;
+     }
+-    unkCommStruct->func();
++    /* nativeplat: every func stored here (ov03_022588B0, ov03_022588D4)
++     * takes the UnkCommStruct, which on ARM is still in r0 from
++     * TaskManager_GetEnvironment when the original calls it with no
++     * arguments. wasm's call_indirect traps on the type difference, so it is
++     * called through its real type with the argument it reads. */
++    ((void (*)(UnkCommStruct *))unkCommStruct->func)(unkCommStruct);
+     return FALSE;
+ }
+ 

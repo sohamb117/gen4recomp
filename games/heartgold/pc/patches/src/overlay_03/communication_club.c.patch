@@ -1,0 +1,53 @@
+--- a/src/overlay_03/communication_club.c
++++ b/src/overlay_03/communication_club.c
+@@ -62,7 +62,7 @@
+ static void ov03_022543AC(CommClubManager *commClubManager_unused);
+ static void ov03_02254100(struct ListMenu *list_unused, s32 index_unused, u8 onInit);
+ static void ov03_02254120(struct ListMenu *list, s32 index_unused, u8 y_unused);
+-static void ov03_02254420();
++static void ov03_02254420(SysTask *task_unused, void *arg1_unused);
+ static void ov03_02254500(void *arg0, CommClubManager *commClubManager);
+ static void ov03_02254600(CommClubManager *commClubManager_unused);
+ static void ov03_02254660(void *arg0, CommClubManager *commClubManager);
+@@ -94,8 +94,8 @@
+ static void ov03_02255804(CommClubManager *commClubManager);
+ static void ov03_02255860(u32 arg0_unused, CommClubManager *commClubManager);
+ static void ov03_022558C4(void *task, CommClubManager *commClubManager);
+-static void ov03_02255A00();
+-static void ov03_02255A2C(SysTask *task);
++static void ov03_02255A00(SysTask *task_unused, void *arg1_unused);
++static void ov03_02255A2C(SysTask *task, void *arg1_unused);
+ static void ov03_02255A70(CommClubManager *commClubManager);
+ static void ov03_02255AB0(SysTask *task, void *commClubManager);
+ static void ov03_02255ADC(void *commClubManager);
+@@ -375,7 +375,12 @@
+     AddTextPrinterParameterized(&sCommClubManager->windows[1], 0, sCommClubManager->string[7], 2, 2, 0, NULL);
+ }
+ 
+-static void ov03_02254420() {
++/* nativeplat: ov03_02254D64 calls every commClubTask as
++ * (SysTask *, void *) (CommClubManagerTaskFunc). On ARM a callback that
++ * declares fewer parameters just ignores r0/r1; in wasm the call_indirect
++ * traps on the type difference, so these three take the two parameters
++ * they are called with. */
++static void ov03_02254420(SysTask *task_unused, void *arg1_unused) {
+     if (DialogBox_IsPrintFinished(sCommClubManager->printerID)) {
+         sCommClubManager->items = ListMenuItems_New(16, HEAP_ID_FIELD1);
+         for (int i = 0; i < 16; i++) {
+@@ -1431,14 +1436,14 @@
+     }
+ }
+ 
+-static void ov03_02255A00() {
++static void ov03_02255A00(SysTask *task_unused, void *arg1_unused) {
+     if (DialogBox_IsPrintFinished(sCommClubManager->printerID)) {
+         ov03_02253E20(0, FALSE);
+         ov03_02254B4C(&ov03_02255A2C);
+     }
+ }
+ 
+-static void ov03_02255A2C(SysTask *task) {
++static void ov03_02255A2C(SysTask *task, void *arg1_unused) {
+     if (DialogBox_IsPrintFinished(sCommClubManager->printerID) && ((PAD_BUTTON_A | PAD_BUTTON_B) & gSystem.newKeys || System_GetTouchNew() == TRUE)) {
+         SysTask_Destroy(task);
+         ov03_02254B44();

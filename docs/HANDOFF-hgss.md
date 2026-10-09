@@ -72,15 +72,43 @@ Since then (HeartGold, inspected frames under /tmp/hgss2):
   west-exit save, Route 29 grass, wild Sentret vs Cyndaquil at the command
   menu (btsheet.png).
 
-Open: a CONTINUE run from a save is silent (audio rms 0.0 over 3500 frames
-on the title and the field) while intro runs have audio; not investigated.
-SoulSilver reaches the bedroom; a guest with all the fixes is building.
-Build time: make 3.81 re-walks the whole ~28 MB of `.d` dependencies after
-every finished job (`make -d`: one "File `all' does not exist" pass per
-reaped child), so a full HG or SS guest rebuild after a header change
-takes 30-60 min of make CPU; it is not a hang. Checkpoint runs:
-/tmp/hgss2/forkrun.sh with /tmp/hgss2/np_headless-fork-at.patch applied
-(not on main).
+Since then (hgss-play3, 2026-10-09; frames under /tmp/hgss2):
+- Route 30 trainers (Youngster Joey froze the field, sprites drew as
+  untextured blocks after some battles). Two defects. (1) Every field load's
+  FieldEffectManager_InitRenderers creates 56 one-shot VBlank tasks
+  (sub_02069714) in one logical frame against a 32-entry queue; only the
+  card time model delivers VBlanks inside a load, and counting bytes (0x8000
+  a frame) let 33-35 tasks fall between two VBlanks after some battles. The
+  refused one that mattered was ov01_021FA6E0, the map objects' texture
+  loader, so nothing loaded after it got a texture. pc_card_rom.c now charges
+  0x200-byte pages with the SDK's one-page cache, at the gap and clock of the
+  cartridge header's ROMCTRL (about 52 pages a VBlank); the worst stretch is
+  16 tasks. (2) ScrCmd_TrainerStepTowardsPlayer calls sub_02064598() with no
+  argument where the assembly reads the approach task from r0 (on ARM still
+  there from the test before it); through the bridge r0 was 0, the assert
+  fired every frame and the approach never ended. It and five more such calls
+  (ov35_02259DB8, sub_0202D3DC, sub_02005448, sub_0200F478, sub_02031188;
+  found by comparing every C call site's argument words in the bridge's .sigs
+  `W` records with the r0-r3 the assembly reads) pass the argument now
+  (pc/patches/src). Verified: Joey's "Wait! You look weak!", his Rattata vs
+  Cyndaquil, all sprites textured (jm2/s.png).
+- In-battle bag/party SIGBUS: the battle controller's three calls to the
+  sub-menu (overlay 8, loaded by ov12_02237B0C just before) are spelled
+  `bl ov10_0221BE20` in pret's assembly, the trainer AI at the same address;
+  armrec bound the name. Patched to ov08_0221BE20. Verified: Potion, USE,
+  target screen, "It won't have any effect." (bag/bag2.png).
+- call_indirect type mismatches: every C indirect call site's reachable
+  callees (an -O0 IR field-based flow over all game TUs) against their wasm
+  types; two real ones patched (communication_club.c's task callbacks,
+  custom_safari_zone.c's comm callback); the rest unreachable (a DSProt
+  positive answer, the OS IRQ path the port does not take).
+
+Open: CONTINUE runs are silent (audio rms 0.0 over 3500 frames, on the title
+and the field), from more than one save; not yet investigated. The make 3.81
+build cost did not reproduce: on a 437-object rebuild make itself used 2.4 s
+of CPU (GNU make 4.4.1: 1.5 s), so make is not where a guest rebuild's time
+goes. Checkpoint runs: np_headless --fork-at without --lockstep
+(/tmp/hgss2/forkrun.sh).
 
 ## Previous blocker (hgss2, 2026-10-08): field init hangs in FieldMap_Init
 

@@ -1,0 +1,14 @@
+--- a/src/overlay_44_02235340.c
++++ b/src/overlay_44_02235340.c
+@@ -821,8 +821,9 @@
+ 
+ void ov44_02233F3C(UnkStruct_ov44_02235340 *arg0) {
+     if (ov44_02233EF8(arg0) != 0) {
+-        GF_GetCurrentPlayingBGM();
+-        sub_02005448();
++        /* nativeplat: sub_02005448 takes the sequence GF_GetCurrentPlayingBGM
++         * returned (r0 on ARM); passed explicitly for the bridge. */
++        ((void (*)(u32))sub_02005448)(GF_GetCurrentPlayingBGM());
+     }
+ }
+ 
