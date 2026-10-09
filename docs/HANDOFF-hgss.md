@@ -117,6 +117,33 @@ Since then (hgss-play3, 2026-10-09; frames under /tmp/hgss2):
   measure rms ~3400 (they measured 0).
 - With these, hgss-e2e's chain 04-11 (Route 30 to Goldenrod, Falkner,
   Bugsy) passes on this core (/tmp/hgss2/e2e).
+- Build-time lints (pc/Makefile.wasm POST_LINK, both versions; a new finding
+  fails the link, allow files with a reason per entry): D/P's arity,
+  retwidth, voidret, adjacency and ovlabel (`--xmap`: decompiled C naming
+  another overlay's function, assembly storing another overlay's C, calls
+  armrec does not dispatch) and pc/tools/hg_fpflow_lint.py (the
+  call_indirect type flow above, per-TU facts beside each object). They found
+  three more C/assembly contract defects, patched: ov01_02204698 returns the
+  prop animation count its assembly callers test (map prop animations were
+  never added), ov01_021FFF5C returns the field effect it creates (a
+  movement's effect was never deleted, a new one made each step), and
+  Save_FriendGroup_GetGroupId's 32-bit word (rankings kept its low byte).
+  Binding a stored C function pointer by name is not a live defect: every
+  cross-overlay store was classified and the ovlabel lint checks the class.
+- `np_save4 set-location <save> <map> <x> <z> [<dir> [<y>]]` (HG/SS) for
+  scouting from synthetic saves; enter the target through a warp to get its
+  people (save4.h).
+- Scouted on this core with a boosted party (frames under /tmp/hgss2/sc): no
+  port defect found in Ecruteak/Burned Tower (chain 14, both games), Morty and
+  the Dance Theater (15-16), the Pokeathlon (reception, team select by D-pad
+  and drag, Hurdle Dash run to the end), Voltorb Flip, the Bug-Catching
+  Contest entry, Pokewalker connect without a walker, the Red Gyarados (rain,
+  surf, battle), Ho-Oh's Bell Tower cutscene and battle (HG), Lugia's Whirl
+  Islands cutscene and battle (SS), the Safari Zone (entry, Safari battle),
+  the League (Will's battle and the room's exit), the Magnet Train ride,
+  boarding the S.S. Aqua, and the towns/dungeons Mahogany, Lake of Rage,
+  Blackthorn, Ice Path, Radio Tower, Cianwood, Olivine, Vermilion, Saffron,
+  Mt. Silver.
 
 The make 3.81
 build cost did not reproduce: on a 437-object rebuild make itself used 2.4 s
