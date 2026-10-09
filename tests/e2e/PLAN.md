@@ -6031,15 +6031,15 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~746740 frames estimated
+### Story chain: 33 milestones, ~768482 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [01-newgame-bedroom](black/01-newgame-bedroom/milestone.toml) | New game to the bedroom, a walk, a talk with Cheren and the first save | P0 | both | 15107 | blank chip | 391 | passing |
 | [02-gift-box-starter-first-battles](black/02-gift-box-starter-first-battles/milestone.toml) | The gift box: the starter, Bianca's and Cheren's first battles | P0 | both | 17633 | prev + `None` | 391 | passing |
-| [03-mom-bianca-house-juniper-pokedex](black/03-mom-bianca-house-juniper-pokedex/milestone.toml) | Mom, Bianca's house and Professor Juniper's Pokédex | P0 | both | 12000 | prev + `None` | 389 | planned |
-| [04-route1-catching-lesson](black/04-route1-catching-lesson/milestone.toml) | Route 1: the catching lesson and the way to Accumula | P0 | both | 14000 | prev + `None` | 397 | planned |
-| [05-accumula-plasma-speech-n](black/05-accumula-plasma-speech-n/milestone.toml) | Accumula Town: the Pokémon Center, Team Plasma's speech and N | P0 | both | 10000 | prev + `None` | 397 | planned |
+| [03-mom-bianca-house-juniper-pokedex](black/03-mom-bianca-house-juniper-pokedex/milestone.toml) | Mom, Bianca's house and Professor Juniper's Pokédex | P0 | both | 18079 | prev + `None` | 389 | passing |
+| [04-route1-catching-lesson](black/04-route1-catching-lesson/milestone.toml) | Route 1: the catching lesson and the way to Accumula | P0 | both | 17283 | prev + `None` | 397 | passing |
+| [05-accumula-plasma-speech-n](black/05-accumula-plasma-speech-n/milestone.toml) | Accumula Town: the Pokémon Center, Team Plasma's speech and N | P0 | both | 22380 | prev + `None` | 397 | passing |
 | [06-route2-bianca-striaton](black/06-route2-bianca-striaton/milestone.toml) | Route 2: Bianca's battle and Striaton City | P0 | both | 12000 | prev + `None` | 6 | planned |
 | [07-striaton-dreamyard-monkey](black/07-striaton-dreamyard-monkey/milestone.toml) | Striaton City: the Trainers' School and the Dreamyard's monkey | P0 | both | 14000 | prev + `None` | 6 | planned |
 | [08-striaton-gym-trio-badge](black/08-striaton-gym-trio-badge/milestone.toml) | Striaton Gym: Cilan, Chili or Cress and the Trio Badge | P0 | both | 15000 | prev + `None` | 7 | planned |
@@ -6095,9 +6095,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map 389; flags set 0x217, 0x962, 0x2A7; vars 0x4085=1, 0x4078=1, 0x4079=1, 0x4080=2
-- frames: estimate 12000, budget -
+- frames: estimate 18079, budget 27500
 - refs: zone_event 391 warp 0 (9,2) -> zone 390 warp 1; zone_event 390 level type 1: var 0x4085 == 0 -> scr 0780 script 1 (Mom/Cheren/Bianca); scr 0780 @0x0200/@0x0226 CallStd 2805 (scr 0862 script 6) Xtransceiver by GetPlayerGender; @0x0244 SetFlag 0x217; @0x0248 SetVar 0x4085 1; @0x024E SetVar 0x407F 1; zone_event 390 warp 0 (5,10) 3x1 -> zone 389; zone_event 389 level type 1: 0x407F == 1 -> scr 0778 script 16 (0x407F 2); zone_event 389 object 4 gfx 0x7 (777,741) -> scr 0778 script 3: unless 0x4078 >= 1 msg 428 #1 (go to Bianca's house); zone_event 389 warp 1 (776,757) -> zone 392; zone_event 392 level type 1: 0x4078 == 0 -> scr 0784 script 3; scr 0784 @0x010D SetVar 0x4078 1; scr 0778 @0x024E-@0x0256 SetFlag 0x201/0x202, Warp zone 396 (4,11); zone_event 396 level type 1: 0x4079 == 0 -> scr 0792 script 1 (Juniper); @0x02C6 SetFlag 0x962; @0x02F6 msg 435 #19 (the Pokédex); @0x0394 SetVar 0x4079 1; @0x039A SetVar 0x4080 1; zone_event 396 warp 0 (3,11) -> zone 389 warp 3; zone_event 389 level type 1: 0x4080 == 1 -> scr 0778 script 12; @0x03AD CallStd 2805 Town Map; @0x04E9 SetVar 0x4080 2; @0x04EF SetFlag 0x2A7
-- notes: Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 17979, White 18079 frames on the core of 2026-10-08 (bw2 = main c2b11893e). Steps from bw-play2's run-ahead. A answers Juniper's nickname question YES and the keyboard's A presses name the starter AAAAAAAAAA (harmless); house and lab exits: walk onto the mat, then hold down. Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry.
 
 #### black/04-route1-catching-lesson — Route 1: the catching lesson and the way to Accumula
 - proves: Proves the first steps on Route 1: the three friends' walk out of Nuvema, Professor Juniper's catching lesson (five Poké Balls), Bianca's catch race, and the way north to Accumula Town. Start: Nuvema Town (zone 389), 0x4080 = 2 -> end: Accumula Town (zone 397) at its south entrance, 0x407C = 2.
@@ -6105,9 +6105,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map 397; flags set 0x1FC, 0x203; vars 0x407C=2
-- frames: estimate 14000, budget -
+- frames: estimate 17283, budget 26000
 - refs: zone_event 389 trigger 1 (786..791,739) 6x1 var 0x4080 == 2 -> scr 0778 script 14 (msg 428 #20, first step); zone_event 317 object 2 gfx 0x69 (788,724) hidden by flag 0x1FC -> scr 0634 script 1 (Juniper); scr 0634 @0x0106 CallStd 2805 Poké Ball x5; @0x0242 SetFlag 0x1FC; @0x0246 SetVar 0x407C 1; zone_event 317 trigger 0 (788..794,678) 7x1 var 0x407C == 1 -> scr 0634 script 5 (Bianca's compare, YES/NO var 0x8010); scr 0634 @0x066A SetFlag 0x203; @0x066E SetVar 0x407C 2; zone 317 (Route 1, sysmsg 89 #14); zone 397 (Accumula Town)
-- notes: Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 17283, White 15771 frames on the core of 2026-10-08 (bw2 = main c2b11893e). Steps from bw-play2's run-ahead: the Route 1 trigger runs straight into Juniper's demo battle (advance_text through_battle); Bianca's question answered YES by A. Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path.
 
 #### black/05-accumula-plasma-speech-n — Accumula Town: the Pokémon Center, Team Plasma's speech and N
 - proves: Proves Accumula Town: Professor Juniper's Pokémon Center tour, Ghetsis's speech in the plaza, and the first battle with N. Start: Accumula Town (zone 397) -> end: Accumula Town, 0x407A = 3.
@@ -6115,9 +6115,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0794 script 15 @0x06E8 msg 436 #9 (Ghetsis); @0x0CE4 TrainerBattle trdata #64 (N: Purrloin 7), mode 0; @0x0D0D BlackOut on a loss
 - end state: map 397; flags set 0x208, 0x20C, 0x20A; vars 0x407A=3
-- frames: estimate 10000, budget -
+- frames: estimate 22380, budget 34000
 - refs: zone_event 397 object 6 gfx 0x69 (796,658) hidden by flag 0x208 -> scr 0794 script 8 (Juniper); @0x031A Warp zone 398 (7,19); @0x0324 SetFlag 0x208; @0x0328 SetVar 0x407A 1; zone_event 397 level type 1: 0x407A == 1 -> scr 0794 script 13 (msg 436 #6); @0x03E9 SetVar 0x407A 2; zone_event 397 trigger 1 (786,658) 1x4 / trigger 2 (787..792,657) 6x1 var 0x407A == 2 -> scr 0794 script 14 / 10; scr 0794 script 15 @0x06E8 msg 436 #9 (Ghetsis); @0x0CE4 TrainerBattle trdata #64 (N: Purrloin 7), mode 0; @0x0D0D BlackOut on a loss; scr 0794 @0x0D63 SetVar 0x407A 3; @0x0D69-@0x0D79 SetFlag 0x20C/0x210/0x206/0x20D/0x20A; zone_event 397 trigger 0 (770,646) 1x5 var 0x407A == 0 -> scr 0794 script 7 (the west exit held until the tour)
-- notes: N's battle is the first real one (mode 0): a loss blacks out. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 22275, White 22380 frames on the core of 2026-10-08 (bw2 = main c2b11893e). The nurse sits behind the counter: walk_to (7,12) facing up, A. N's Purrloin falls to the starter (mode 0). N's battle is the first real one (mode 0): a loss blacks out.
 
 #### black/06-route2-bianca-striaton — Route 2: Bianca's battle and Striaton City
 - proves: Proves Route 2: the entrance scene (var 0x407D 0 -> 1), Bianca's second battle, and the walk to Striaton City. Start: Accumula Town (zone 397) -> end: Striaton City (zone 6), 0x407D = 2.
@@ -6125,7 +6125,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030
 - end state: map 6; vars 0x407D=2
-- frames: estimate 12000, budget -
+- frames: estimate 12000, budget 40000
 - refs: zone_event 397 warp 5 (768,647) 1x3 -> zone 320 (Accumula Gate) -> zone 319 (Route 2); zone_event 319 trigger 0 (754,647) var 0x407D == 0 -> scr 0638 script 1; @0x0557 SetVar 0x407D 1; zone_event 319 trigger 1 (784,613) var 0x407D == 1 -> scr 0638 script 2; @0x0284 SetVar 0x407D 2; scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030; zone 6 (Striaton City)
 - notes: Bianca's Route 2 battle is mode 0. Route 2 trainers: `bw_script.py events 319`. [INFERENCE] estimate.
 
@@ -6134,8 +6134,8 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3
-- end state: map 6; party size 2; vars 0x4083=2
-- frames: estimate 14000, budget -
+- end state: map 6; party size 2; flags set 0x21A; vars 0x4083=2
+- frames: estimate 14000, budget 40000
 - refs: scr 0012 script 13 (gym door, Cilan): unless 0x4083 == 2 the gym waits (msg 11 #1/#2); zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3; zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard); scr 0304 script 1 (the girl): @0x013F SetVar 0x4083 1; @0x0264/@0x0295/@0x02B3 GivePokemon Panpour/Pansage/Pansear lv 10 by 0x4030 (the one strong against the starter's weakness); @0x0319 SetVar 0x4083 2
 - notes: The monkey is given by talking to the Dreamyard girl twice [INFERENCE: first visit asks, second gives]. [INFERENCE] estimate.
 
@@ -6405,15 +6405,15 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~746740 frames estimated
+### Story chain: 33 milestones, ~768482 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
 | [01-newgame-bedroom](black/01-newgame-bedroom/milestone.toml) | New game to the bedroom, a walk, a talk with Cheren and the first save | P0 | both | 15107 | blank chip | 391 | passing |
 | [02-gift-box-starter-first-battles](black/02-gift-box-starter-first-battles/milestone.toml) | The gift box: the starter, Bianca's and Cheren's first battles | P0 | both | 17633 | prev + `None` | 391 | passing |
-| [03-mom-bianca-house-juniper-pokedex](black/03-mom-bianca-house-juniper-pokedex/milestone.toml) | Mom, Bianca's house and Professor Juniper's Pokédex | P0 | both | 12000 | prev + `None` | 389 | planned |
-| [04-route1-catching-lesson](black/04-route1-catching-lesson/milestone.toml) | Route 1: the catching lesson and the way to Accumula | P0 | both | 14000 | prev + `None` | 397 | planned |
-| [05-accumula-plasma-speech-n](black/05-accumula-plasma-speech-n/milestone.toml) | Accumula Town: the Pokémon Center, Team Plasma's speech and N | P0 | both | 10000 | prev + `None` | 397 | planned |
+| [03-mom-bianca-house-juniper-pokedex](black/03-mom-bianca-house-juniper-pokedex/milestone.toml) | Mom, Bianca's house and Professor Juniper's Pokédex | P0 | both | 18079 | prev + `None` | 389 | passing |
+| [04-route1-catching-lesson](black/04-route1-catching-lesson/milestone.toml) | Route 1: the catching lesson and the way to Accumula | P0 | both | 17283 | prev + `None` | 397 | passing |
+| [05-accumula-plasma-speech-n](black/05-accumula-plasma-speech-n/milestone.toml) | Accumula Town: the Pokémon Center, Team Plasma's speech and N | P0 | both | 22380 | prev + `None` | 397 | passing |
 | [06-route2-bianca-striaton](black/06-route2-bianca-striaton/milestone.toml) | Route 2: Bianca's battle and Striaton City | P0 | both | 12000 | prev + `None` | 6 | planned |
 | [07-striaton-dreamyard-monkey](black/07-striaton-dreamyard-monkey/milestone.toml) | Striaton City: the Trainers' School and the Dreamyard's monkey | P0 | both | 14000 | prev + `None` | 6 | planned |
 | [08-striaton-gym-trio-badge](black/08-striaton-gym-trio-badge/milestone.toml) | Striaton Gym: Cilan, Chili or Cress and the Trio Badge | P0 | both | 15000 | prev + `None` | 7 | planned |
@@ -6469,9 +6469,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: none
 - end state: map 389; flags set 0x217, 0x962, 0x2A7; vars 0x4085=1, 0x4078=1, 0x4079=1, 0x4080=2
-- frames: estimate 12000, budget -
+- frames: estimate 18079, budget 27500
 - refs: zone_event 391 warp 0 (9,2) -> zone 390 warp 1; zone_event 390 level type 1: var 0x4085 == 0 -> scr 0780 script 1 (Mom/Cheren/Bianca); scr 0780 @0x0200/@0x0226 CallStd 2805 (scr 0862 script 6) Xtransceiver by GetPlayerGender; @0x0244 SetFlag 0x217; @0x0248 SetVar 0x4085 1; @0x024E SetVar 0x407F 1; zone_event 390 warp 0 (5,10) 3x1 -> zone 389; zone_event 389 level type 1: 0x407F == 1 -> scr 0778 script 16 (0x407F 2); zone_event 389 object 4 gfx 0x7 (777,741) -> scr 0778 script 3: unless 0x4078 >= 1 msg 428 #1 (go to Bianca's house); zone_event 389 warp 1 (776,757) -> zone 392; zone_event 392 level type 1: 0x4078 == 0 -> scr 0784 script 3; scr 0784 @0x010D SetVar 0x4078 1; scr 0778 @0x024E-@0x0256 SetFlag 0x201/0x202, Warp zone 396 (4,11); zone_event 396 level type 1: 0x4079 == 0 -> scr 0792 script 1 (Juniper); @0x02C6 SetFlag 0x962; @0x02F6 msg 435 #19 (the Pokédex); @0x0394 SetVar 0x4079 1; @0x039A SetVar 0x4080 1; zone_event 396 warp 0 (3,11) -> zone 389 warp 3; zone_event 389 level type 1: 0x4080 == 1 -> scr 0778 script 12; @0x03AD CallStd 2805 Town Map; @0x04E9 SetVar 0x4080 2; @0x04EF SetFlag 0x2A7
-- notes: Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 17979, White 18079 frames on the core of 2026-10-08 (bw2 = main c2b11893e). Steps from bw-play2's run-ahead. A answers Juniper's nickname question YES and the keyboard's A presses name the starter AAAAAAAAAA (harmless); house and lab exits: walk onto the mat, then hold down. Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry.
 
 #### white/04-route1-catching-lesson — Route 1: the catching lesson and the way to Accumula
 - proves: Proves the first steps on Route 1: the three friends' walk out of Nuvema, Professor Juniper's catching lesson (five Poké Balls), Bianca's catch race, and the way north to Accumula Town. Start: Nuvema Town (zone 389), 0x4080 = 2 -> end: Accumula Town (zone 397) at its south entrance, 0x407C = 2.
@@ -6479,9 +6479,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: none
 - end state: map 397; flags set 0x1FC, 0x203; vars 0x407C=2
-- frames: estimate 14000, budget -
+- frames: estimate 17283, budget 26000
 - refs: zone_event 389 trigger 1 (786..791,739) 6x1 var 0x4080 == 2 -> scr 0778 script 14 (msg 428 #20, first step); zone_event 317 object 2 gfx 0x69 (788,724) hidden by flag 0x1FC -> scr 0634 script 1 (Juniper); scr 0634 @0x0106 CallStd 2805 Poké Ball x5; @0x0242 SetFlag 0x1FC; @0x0246 SetVar 0x407C 1; zone_event 317 trigger 0 (788..794,678) 7x1 var 0x407C == 1 -> scr 0634 script 5 (Bianca's compare, YES/NO var 0x8010); scr 0634 @0x066A SetFlag 0x203; @0x066E SetVar 0x407C 2; zone 317 (Route 1, sysmsg 89 #14); zone 397 (Accumula Town)
-- notes: Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 17283, White 15771 frames on the core of 2026-10-08 (bw2 = main c2b11893e). Steps from bw-play2's run-ahead: the Route 1 trigger runs straight into Juniper's demo battle (advance_text through_battle); Bianca's question answered YES by A. Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path.
 
 #### white/05-accumula-plasma-speech-n — Accumula Town: the Pokémon Center, Team Plasma's speech and N
 - proves: Proves Accumula Town: Professor Juniper's Pokémon Center tour, Ghetsis's speech in the plaza, and the first battle with N. Start: Accumula Town (zone 397) -> end: Accumula Town, 0x407A = 3.
@@ -6489,9 +6489,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0794 script 15 @0x06E8 msg 436 #9 (Ghetsis); @0x0CE4 TrainerBattle trdata #64 (N: Purrloin 7), mode 0; @0x0D0D BlackOut on a loss
 - end state: map 397; flags set 0x208, 0x20C, 0x20A; vars 0x407A=3
-- frames: estimate 10000, budget -
+- frames: estimate 22380, budget 34000
 - refs: zone_event 397 object 6 gfx 0x69 (796,658) hidden by flag 0x208 -> scr 0794 script 8 (Juniper); @0x031A Warp zone 398 (7,19); @0x0324 SetFlag 0x208; @0x0328 SetVar 0x407A 1; zone_event 397 level type 1: 0x407A == 1 -> scr 0794 script 13 (msg 436 #6); @0x03E9 SetVar 0x407A 2; zone_event 397 trigger 1 (786,658) 1x4 / trigger 2 (787..792,657) 6x1 var 0x407A == 2 -> scr 0794 script 14 / 10; scr 0794 script 15 @0x06E8 msg 436 #9 (Ghetsis); @0x0CE4 TrainerBattle trdata #64 (N: Purrloin 7), mode 0; @0x0D0D BlackOut on a loss; scr 0794 @0x0D63 SetVar 0x407A 3; @0x0D69-@0x0D79 SetFlag 0x20C/0x210/0x206/0x20D/0x20A; zone_event 397 trigger 0 (770,646) 1x5 var 0x407A == 0 -> scr 0794 script 7 (the west exit held until the tour)
-- notes: N's battle is the first real one (mode 0): a loss blacks out. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 22275, White 22380 frames on the core of 2026-10-08 (bw2 = main c2b11893e). The nurse sits behind the counter: walk_to (7,12) facing up, A. N's Purrloin falls to the starter (mode 0). N's battle is the first real one (mode 0): a loss blacks out.
 
 #### white/06-route2-bianca-striaton — Route 2: Bianca's battle and Striaton City
 - proves: Proves Route 2: the entrance scene (var 0x407D 0 -> 1), Bianca's second battle, and the walk to Striaton City. Start: Accumula Town (zone 397) -> end: Striaton City (zone 6), 0x407D = 2.
@@ -6499,7 +6499,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030
 - end state: map 6; vars 0x407D=2
-- frames: estimate 12000, budget -
+- frames: estimate 12000, budget 40000
 - refs: zone_event 397 warp 5 (768,647) 1x3 -> zone 320 (Accumula Gate) -> zone 319 (Route 2); zone_event 319 trigger 0 (754,647) var 0x407D == 0 -> scr 0638 script 1; @0x0557 SetVar 0x407D 1; zone_event 319 trigger 1 (784,613) var 0x407D == 1 -> scr 0638 script 2; @0x0284 SetVar 0x407D 2; scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030; zone 6 (Striaton City)
 - notes: Bianca's Route 2 battle is mode 0. Route 2 trainers: `bw_script.py events 319`. [INFERENCE] estimate.
 
@@ -6508,8 +6508,8 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3
-- end state: map 6; party size 2; vars 0x4083=2
-- frames: estimate 14000, budget -
+- end state: map 6; party size 2; flags set 0x21A; vars 0x4083=2
+- frames: estimate 14000, budget 40000
 - refs: scr 0012 script 13 (gym door, Cilan): unless 0x4083 == 2 the gym waits (msg 11 #1/#2); zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3; zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard); scr 0304 script 1 (the girl): @0x013F SetVar 0x4083 1; @0x0264/@0x0295/@0x02B3 GivePokemon Panpour/Pansage/Pansear lv 10 by 0x4030 (the one strong against the starter's weakness); @0x0319 SetVar 0x4083 2
 - notes: The monkey is given by talking to the Dreamyard girl twice [INFERENCE: first visit asks, second gives]. [INFERENCE] estimate.
 

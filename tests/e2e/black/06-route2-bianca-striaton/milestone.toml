@@ -17,6 +17,84 @@ notes = "Bianca's Route 2 battle is mode 0. Route 2 trainers: `bw_script.py even
 [start]
 from = "prev"
 
+[run]
+frames = 40000
+
+[[step]]
+do = "walk_to"
+x = 768
+z = 648
+note = "397 warp 5 (768,647) 1x3 -> 320"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 320
+shot = "gate"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 5
+note = "320 warp 1 (1,4) 1x3 -> 319"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 319
+shot = "route2"
+
+[[step]]
+do = "moves"
+dirs = [["L", "x754"]]
+note = "319 trigger (754,647) 1x4, 0x407D == 0 -> scr 0638 script 1 (the Xtransceiver)"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "xtransceiver"
+
+[[step]]
+do = "walk_to"
+x = 786
+z = 615
+shot = "before-bianca"
+
+[[step]]
+do = "moves"
+dirs = [["U", 2]]
+note = "319 trigger (784..789,613), 0x407D == 1 -> scr 0638 script 2"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "bianca-scene"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "advance_text"
+shot = "after-bianca"
+
+[[step]]
+do = "moves"
+dirs = [["U", "z596"]]
+shot = "north"
+
+[[step]]
+do = "advance_text"
+shot = "striaton"
+
 [expect]
 map = 6
 

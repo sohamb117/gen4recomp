@@ -17,9 +17,100 @@ notes = "The monkey is given by talking to the Dreamyard girl twice [INFERENCE: 
 [start]
 from = "prev"
 
+[run]
+frames = 40000
+
+[[step]]
+do = "walk_to"
+x = 774
+z = 586
+shot = "school-door"
+note = "zone_event 6 warp 4 (774,586) -> zone 15 (the Trainers' School)"
+
+[[step]]
+do = "wait_map"
+map = 15
+
+[[step]]
+do = "talk_to"
+id = 5
+shot = "cheren"
+note = "Cheren (zone_event 15 object 5, (9,2)) -> scr 0030 script 7: A answers YES to 'will you battle?' (@0x047B)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Cheren (trdata #287 with Tepig: Tepig 8, Purrloin 8; mode 0, scr 0030 @0x0576)"
+
+[[step]]
+do = "advance_text"
+shot = "after-cheren"
+note = "Oran Berry x3 (@0x05F3); @0x0617 SetFlag 0x21A (the gym's greeter gone), @0x061B ClearFlag 0x21B (the leader at the door)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 14
+note = "zone_event 15 warp 0 (7..9,15) -> zone 6"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 6
+
+[[step]]
+do = "walk_to"
+x = 805
+z = 581
+shot = "dreamyard-gate"
+note = "zone_event 6 warp 6 (805,580) 1x4 -> zone 152 (the Dreamyard)"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 152
+
+[[step]]
+do = "talk_to"
+id = 0
+shot = "girl"
+note = "the girl (zone_event 152 object 0, (32,27)) -> scr 0304 script 1: A answers YES (@0x01F7) -> Pansage lv 10 for Tepig (@0x0295)"
+
+[[step]]
+do = "advance_text"
+shot = "monkey"
+note = "0x4083 2 (@0x0319); A answers the nickname prompt YES and types the name"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 27
+note = "zone_event 152 warp 2 (8,26) 1x4 -> zone 6"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 6
+
 [expect]
 map = 6
 party_size = 2
+flags = ["0x21A"]
 
 [expect.vars]
 "0x4083" = 2

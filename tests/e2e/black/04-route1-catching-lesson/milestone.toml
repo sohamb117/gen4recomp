@@ -2,10 +2,9 @@
 # (five Poké Balls), Bianca's catch race, and the way north to Accumula Town.
 # Start: Nuvema Town (zone 389), 0x4080 = 2 -> end: Accumula Town (zone 397) at its south entrance, 0x407C = 2.
 title = "Route 1: the catching lesson and the way to Accumula"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 14000
+estimate = 17283
 refs = [
   "zone_event 389 trigger 1 (786..791,739) 6x1 var 0x4080 == 2 -> scr 0778 script 14 (msg 428 #20, first step)",
   "zone_event 317 object 2 gfx 0x69 (788,724) hidden by flag 0x1FC -> scr 0634 script 1 (Juniper)",
@@ -14,10 +13,64 @@ refs = [
   "scr 0634 @0x066A SetFlag 0x203; @0x066E SetVar 0x407C 2",
   "zone 317 (Route 1, sysmsg 89 #14); zone 397 (Accumula Town)",
 ]
-notes = "Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 17283, White 15771 frames on the core of 2026-10-08 (bw2 = main c2b11893e). Steps from bw-play2's run-ahead: the Route 1 trigger runs straight into Juniper's demo battle (advance_text through_battle); Bianca's question answered YES by A. Bianca's question: YES (var 0x8010 == 0, scr 0634 @0x0547) runs the count; NO skips to msg 349 #17 and leaves 0x407C at 1 [INFERENCE: the trigger then fires again]. Route 1's trainers (zone_event 317 objects 5-7, levels 34-35) stand off the path."
 
 [start]
 from = "prev"
+
+[run]
+frames = 26000
+
+[[step]]
+do = "walk_to"
+x = 788
+z = 740
+note = "below 389 trigger 1 (786..791,739), 0x4080 == 2"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+shot = "route1-trigger"
+note = "scr 0778 script 14: onto Route 1 together"
+
+[[step]]
+do = "advance_text"
+through_battle = true
+max = 16000
+shot = "after-lesson"
+note = "script 14 walks onto Route 1 and Juniper's Minccino catches a Patrat (a battle)"
+
+[[step]]
+do = "wait_map"
+map = 317
+
+[[step]]
+do = "walk_to"
+x = 790
+z = 679
+shot = "before-bianca"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "317 trigger (788..794,678), 0x407C == 1 -> scr 0634 script 5"
+
+[[step]]
+do = "advance_text"
+shot = "after-bianca"
+
+[[step]]
+do = "moves"
+dirs = [["U", "z664"]]
+note = "north out of Route 1 into Accumula (397)"
+
+[[step]]
+do = "wait_map"
+map = 397
+
+[[step]]
+do = "advance_text"
+shot = "accumula"
 
 [expect]
 map = 397
