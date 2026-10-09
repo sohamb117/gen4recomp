@@ -64,11 +64,9 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   the parity save, CONTINUE) at 512x768 is sharp; `-o widescreen=1` gives 342x384 frames with more of the room
   (both side walls in full where the 256 frame cuts the right one). Frames: `black-title-scale2.png`,
   `black-bedroom-scale2.png`, `black-title-widescreen.png`, `black-bedroom-widescreen.png`.
-- **HG/SS: the same path, not yet visible.** The intro frame grows to 512x768 and 342x384
-  (`heartgold-intro-widescreen.png`), but there is no 3D on screen before the field. Expect it to work as on
-  B/W once the field loads. Watch for one HG-specific case: `ov01_021E6220` (`src/field/fieldmap.c`) adds a
-  depth offset to `NNS_G3dGlb.projMtx` after `Camera_PushLookAtToNNSGlb`. It edits `_32` only, so the wide clip
-  X should survive. Check this when the field runs.
+- **HG/SS: works in the field (2026-10-08).** New Bark Town renders at 512x768 with `render_scale=2` and at
+  342x384 with `widescreen=1`, the wide frame showing more of the town (`heartgold-field-*.png`, parity.sh).
+  `ov01_021E6220`'s depth tweak of `NNS_G3dGlb.projMtx` (`_32` only) leaves the wide clip X alone, as expected.
 - **Remaining work:** app-level cases (`n2_render`: `render_scale = 2`, `widescreen = 1` in the slot's
   options, frame size and a screenshot) and the parity rows. No D/P/Pt inputs.
 
@@ -105,10 +103,10 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   60 frames (`QUICKSAVE_PATIENCE`) for `field_ready`, applies the start menu's refusals, and calls the game's
   own field save (`FieldSystem_Save` / `Field_SaveGame`) on a host guest stack (`pc_dp_on_guest_stack`). The
   result is saved / refused / failed.
-- **HG/SS: done in source, unreachable.** `pc_hg_field.c` `np_frame`, `field_ready`, `save_allowed` and
+- **HG/SS: proven in the field (2026-10-08).** `pc_hg_field.c` `np_frame`, `field_ready`, `save_allowed` and
   `quicksave_done` mirror D/P with `Field_SaveGameNormal` (overlay 1, the same call `TouchSaveApp_SaveGame` and
-  `ScrCmd_SaveGameNormal` make). It needs nothing more than the field: the overlay 123 `ds_protect` fix.
-  Then the app's n2_quicksave case should see "Saved" and the slot file change.
+  `ScrCmd_SaveGameNormal` make). In New Bark Town `-o 2300:quicksave_seq=1` saves in that frame, np_save4
+  verifies (the general and storage blocks' count +1), and CONTINUE comes back to map 60.
 - **B/W: done (2026-10-08)**, in `games/ndsrec/pc/src/pc_bw_e2e.c` (`quicksave_frame`). There is no
   synchronous save in B/W: the X menu's SAVE (`ov10_02169AB8`, its state the GMEVENT's seq) and the script
   SAVE command (`ov10_02159A64`) both start with `sub_02012DAC(GAMEDATA)` (which writes the live GAMEDATA
@@ -162,13 +160,19 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   `zoom/256`, adds the tilt to the pitch, adjusts near/far, and loads `NNS_G3dGlbLookAt` / the projection;
   `end` restores. D/P: `ov05_021D74E0.s.patch` retargets `bl Camera_PushLookAtToNNSGlb` -> `bl
   PcDp_FieldPushLookAt` and `bl sub_020222B4` (the swap) -> `bl PcDp_FieldSwapBuffers` (`pc_dp_field.c`).
-- **HG/SS.** `src/field/fieldmap.c` `ov01_021E6220` is the field draw: `Camera_PushLookAtToNNSGlb()` then the
-  map, props and the projection depth tweak. Patch it like Pt (`pc/patches/src/field/fieldmap.c.patch`). Put
-  `pc_np_camera_begin/end` in `pc_hg_field.c`, porting Pt's maths onto HG's `Camera` (`src/camera.c`:
-  distance, `CameraAngle`, `Camera_ApplyPerspectiveType`). Copy rather than share Pt's function: moving it into
-  a shared file **would change a D/P/Pt input**. Two HG specifics: the depth tweak after the push must see the
-  hook's projection (so call `begin` instead of the push, as D does, before the tweak), and the cutscene / photo
-  cameras (`field_take_photo.c`, title, starter app) stay untouched. Testing needs the field.
+- **HG/SS: done (2026-10-08).** `src/field/fieldmap.c` `ov01_021E6220` is the field draw:
+  `Camera_PushLookAtToNNSGlb()` (which advances the game's camera and loads its view), the map, props and the
+  projection's depth tweak, then the swap request. `pc/patches/src/field/fieldmap.c.patch` calls
+  `pc_np_camera_begin(fieldSystem->camera)` right after the push and `pc_np_camera_end` after the swap request.
+  The two are in `pc_hg_field.c`: Platinum's maths on a copy of HG's `Camera` (distance x zoom, pitch + tilt
+  clamped to 5..85 degrees below the horizon, the position as `Camera_CalcLookAtPosFromTargetAndAngle` forms
+  it, near / far widened as Pt does), loaded with `NNS_G3dGlbLookAt` and `NNS_G3dGlbPerspective` / `Ortho`
+  directly (`Camera_ApplyPerspectiveType` would also set the depth buffering mode). The draw's depth tweak then
+  applies to this projection, and `_end` copies the game's saved projection back. Copied, not shared, so
+  D/P/Pt's inputs are untouched; the cutscene / photo cameras (`field_take_photo.c`, title, starter app) are
+  untouched. In New Bark: zoom 512 shows the whole town, 128 the player close up, tilt 20 degrees a flatter
+  view with the houses' fronts, and with both options set back to the defaults ten frames before the dump the
+  frame is byte-identical to the plain one (`heartgold-camera-*.png`, parity.sh `camera zoom`).
 - **B/W: the most unknown.** No camera structure is in docs/BW_RAM.md. Gen 5's field camera is likely its own
   library (with its own heap-stamped file name). Method: find the field draw's look-at load the way D/P's was
   found. Signature-match `NNS_G3dGlbLookAt` (add it to `tools/ndsrec/primitives.txt` as `ref`). If B/W does not
@@ -224,10 +228,11 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 - **D/P/Pt.** `in_encounter` from encounter creation to its free (Pt `encounter.c.patch`; D/P the same in
   `pc_dp_field.c` plus its patch) and `in_battle_app` around the battle application for facility battles
   (Pt `unk_0203D1B8.c.patch`).
-- **HG/SS.** `in_encounter` is already in (`pc/patches/src/encounter.c.patch`). Missing: `in_battle_app` for
-  battles that do not come from an `Encounter` (the Battle Frontier). Patch `Battle_LaunchApp` /
-  `gOverlayTemplate_Battle`'s init and exit (`src/launch_application.c`) to set and clear it. Testing needs the
-  field and a battle.
+- **HG/SS: proven for field battles (2026-10-08).** `in_encounter` (`pc/patches/src/encounter.c.patch`):
+  on Route 29 (`tests/bwhgss/hgss-wild.sched` from New Bark's west exit) a wild Sentret sets in_battle at frame
+  3329; RUN ("Got away safely!") clears it at 4650 as the field comes back. Still missing: `in_battle_app`
+  for battles that do not come from an `Encounter` (the Battle Frontier): patch `Battle_LaunchApp` /
+  `gOverlayTemplate_Battle`'s init and exit (`src/launch_application.c`).
 - **B/W.** No game patch: GAMESYS+0x18 is the running `GMEVENT`. Once the battle-call event's function address
   is known (the first battle's event, readable when it starts), `bw_frame` can compare the event's function
   field against it. The event's layout is to be established; the pointer alone is also set for menus and
@@ -241,9 +246,9 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 | 1 | Render scale, widescreen | B/W | none in game code: app cases + rows | high (works today) | nothing | no | **done**: n2_render |
 | 2 | Volume split (player table) | B/W | small: `pc_np_seq_player_group` in ndsrec, drop `pc_dp_snd.o` | high (B/W makes music) | nothing | no (weak hook alternative: yes) | **done** |
 | 3 | Instant text | HG/SS | small: Pt's `text.c.patch` ported | medium | nothing (Oak's intro) | no | **done** |
-| 4 | Quick save, `IN_BATTLE` (encounters) | HG/SS | none: already in source | high | overlay 123 field load | no |
-| 5 | Render scale, widescreen | HG/SS | none | medium | field (3D) | no |
-| 6 | Camera zoom / tilt | HG/SS | medium: fieldmap patch + Pt's maths on HG's Camera | medium | field | no (if copied, not shared) |
+| 4 | Quick save, `IN_BATTLE` (encounters) | HG/SS | none: already in source | high | overlay 123 field load | no | **done** (proven) |
+| 5 | Render scale, widescreen | HG/SS | none | medium | field (3D) | no | **done** (proven) |
+| 6 | Camera zoom / tilt | HG/SS | medium: fieldmap patch + Pt's maths on HG's Camera | medium | field | no (if copied, not shared) | **done** |
 | 7 | Volume split | HG/SS | small (fold 8 -> 7) | low until HG has sound | HG audio silence | no |
 | 8 | Quick save | B/W | medium: the save API hunt, then `ARMREC_CALL` and a game event | high | nothing | no | **done** |
 | 9 | Instant text | B/W | medium: printer hunt, then a `bl` retarget | medium | nothing | no | **done** |

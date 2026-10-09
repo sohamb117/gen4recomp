@@ -1,0 +1,28 @@
+--- a/src/field/fieldmap.c
++++ b/src/field/fieldmap.c
+@@ -28,6 +28,7 @@
+ #include "camera.h"
+ #include "dialog_box.h"
+ #include "dsprot.h"
++#include "pc_np_options.h"
+ #include "field_bgm.h"
+ #include "field_system.h"
+ #include "field_warp_tasks.h"
+@@ -588,6 +589,9 @@
+     Thunk_G3X_Reset();
+ 
+     Camera_PushLookAtToNNSGlb();
++    /* pc port: survey zoom / tilt (pc/src/pc_hg_field.c); nothing at the
++     * defaults. */
++    pc_np_camera_begin(fieldSystem->camera);
+ 
+     MapLoadManager_RenderLoadedMaps(fieldSystem->mapLoadManager, fieldSystem->modelAttributes);
+ 
+@@ -619,6 +623,7 @@
+ 
+     Field3dObjectTaskManager_RunDrawTasks(fieldSystem->unk4->field3dObjectTaskManager);
+     RequestSwap3DBuffers(GX_SORTMODE_AUTO, gG3dDepthBufferingMode);
++    pc_np_camera_end(fieldSystem->camera);
+ }
+ 
+ void ov01_021E631C(FieldSystem *fieldSystem, BOOL setFlag) {

@@ -170,11 +170,12 @@ git). Branch rse, 2026-10-07.
 
 Where the cores are (docs/BW_PLAN.md, docs/HANDOFF-hgss.md): Black and White
 boot, play a new game to the controllable bedroom, save with the X menu and
-CONTINUE from it; the first battle stops (overlay 93). HeartGold and
-SoulSilver play the title, the touch-screen tutorial, Prof. Oak and naming;
-the first field load stops (overlay 123, `ds_protect`), so there is no in-game
-save, and their sound is silent through the title and intro (one sound near
-frame 8400).
+CONTINUE from it; Bianca's and Cheren's battles run (docs/BW_PLAN.md). HeartGold
+and SoulSilver play the title, the touch-screen tutorial, Prof. Oak and naming;
+HeartGold's field runs since main 165d72148 (New Bark Town, CONTINUE, Route
+29's wild battles; HeartGold field checks use a save at New Bark's west exit,
+`NP_HG_FIELD_SAVE`), and the sound is still near silent (the title and intro
+but for one sound near frame 8400; the field at rms ~220).
 
 Status as above, plus **not yet** (what it needs is said). **core**:
 `tests/bwhgss/parity.sh` (np_headless; frames and logs in
@@ -195,11 +196,11 @@ SoulSilver's.
 | Save slots, Continue / Edit | app (import, Continue, Edit save...) | app | not yet: New boots (n2_boot); Continue/Edit need an in-game save (field load) | same | n2_slots, n2_continue, n2_editor |
 | Custom carts, mods | not yet: a mod loader in the game code (pc_modfs.c / gba_mods.c equivalent) | same | same | same |  |
 | Screen layouts, swap, rotation, scaling | app | app | app | app | n2_layouts (8 layouts) |
-| Battle layout | not yet: no NP_STAT_IN_BATTLE source; B/W's battle stops (docs/BWHGSS_HOOKS.md) | same | not yet: the hook is in (`pc/patches/src/encounter.c.patch`, Encounter_New to _Delete), not reachable (no field) | same |  |
-| Camera zoom / tilt | not yet: NP_OPT_CAMERA_* hooks in the game code | same | same | same |  |
+| Battle layout | not yet: no NP_STAT_IN_BATTLE source; B/W's battle stops (docs/BWHGSS_HOOKS.md) | same | core: `pc/patches/src/encounter.c.patch` (Encounter_New to _Delete); a wild Sentret in Route 29's grass sets in_battle at frame 3329, RUN ("Got away safely!") clears it at 4650 with the field back | not tested (no SoulSilver field save) | parity.sh `NP_STAT_IN_BATTLE`, `hgss-wild.sched`; `bwhgss/hooks/heartgold-wild-*.png`; the layout switch itself is shell |
+| Camera zoom / tilt | not yet: no camera map in B/W (docs/BWHGSS_HOOKS.md) | same | core: Platinum's zoom / tilt on HG's field draw (`pc/patches/src/field/fieldmap.c.patch`, `pc_hg_field.c` pc_np_camera_begin/_end), the game's camera never written: New Bark farther (zoom 512), closer (128), flatter (tilt 20 degrees), and byte-identical to the plain frame once back at the defaults | same patch, not tested (no field save) | parity.sh `camera zoom`; `bwhgss/hooks/heartgold-camera-*.png` |
 | Shader FX, performance presets | app | app | app | app | n2_effects |
 | V-Sync, frame cap, logic clock, UI scale | shell | shell | shell | shell | game-independent |
-| 3D render scale, widescreen 3D | app (renderer-side, no game hook: F12's core frame is 256x384 at 1x, 512x768 at render_scale 2, 684x768 with widescreen, the bedroom's walls in full) | app (same sizes) | app (same sizes; no 3D on screen before the field) | app | n2_render (`<game>-n2_render-*-frame.png`); `build/evidence/bwhgss/hooks/` |
+| 3D render scale, widescreen 3D | app (renderer-side, no game hook: F12's core frame is 256x384 at 1x, 512x768 at render_scale 2, 684x768 with widescreen, the bedroom's walls in full) | app (same sizes) | app (same sizes) + core in the field: New Bark at 512x768 and 342x384, the wide frame showing more of the town | app | n2_render (`<game>-n2_render-*-frame.png`); `build/evidence/bwhgss/hooks/` |
 | Screenshots (F12) | app | app | app | app | n2_screenshot (`screenshots/<game>-*.png`) |
 | Trainer Card, Pokédex diploma PNG | app/shell (editor on the save; export in shell_editor_bw) | same | shell (shell_editor_hgss exports both) | same | Unova / Johto badge names, 649 / 493 species |
 | ROM-derived music / SFX | core + app (title rms 7424; app output treble 1219) | same | not yet: silent through the title and intro | same | parity.sh title; n2_audio |
@@ -210,7 +211,7 @@ SoulSilver's.
 | Touch (stylus) | core (the SAVE item tapped in the X menu) | same | core (touch tutorial, naming done by taps) | same | parity.sh |
 | On-screen touch pad, layout editor | app | app | app | app | n2_touch |
 | Touch skins | app | app | app | app | n2_skin |
-| F1 quick save / F2 quick load | core: the game's own asynchronous save without the menu, the player held by a game event (`pc_bw_e2e.c` quicksave_frame); in the bedroom saved in ~85 frames, the player free again, np_save5 verifies; X-menu greying rules not applied | core (same) | not yet: the hook is in (`pc_hg_field.c`: Field_SaveGameNormal behind the start menu's gates), not reachable (no field) | same | parity.sh `F1 quick save in the bedroom`; `bwhgss/hooks/black-quicksave-005700.png`; app case not rerun |
+| F1 quick save / F2 quick load | core: the game's own asynchronous save without the menu, the player held by a game event (`pc_bw_e2e.c` quicksave_frame); in the bedroom saved in ~85 frames, the player free again, np_save5 verifies; X-menu greying rules not applied | core (same) | core: `pc_hg_field.c` (Field_SaveGameNormal behind the start menu's gates) in New Bark: saved the same frame, np_save4 verifies, CONTINUE returns there | not tested (no field save) | parity.sh `F1 quick save in the bedroom`; `bwhgss/hooks/black-quicksave-005700.png`; app case not rerun |
 | Normal save, atomic writes, backups | core + app (X menu save; np_save5 verifies both copies; CONTINUE) | same | not yet: no in-game save (field load) | same | parity.sh save/continue, n2_continue |
 | Snapshots (F5/F6/F7), rewind | core + app (bedroom: 3/3 round trips; rewind depth 387 to 372) | app (401 to 386) | core + app (title and Oak: round trips; rewind 263 to 248) | same | parity.sh, n2_snapshots |
 | Folder sync | shell | shell | shell | shell | slot summaries read B/W and HG/SS saves |

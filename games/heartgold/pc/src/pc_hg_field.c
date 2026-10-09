@@ -397,3 +397,91 @@ void pc_np_frame(void) {
  * to their _Delete, which every field battle (wild, trainer, scripted)
  * goes through.
  */
+
+/*
+ * The field camera (NP_OPT_CAMERA_ZOOM / NP_OPT_CAMERA_TILT): Platinum's
+ * pc/src/pc_np_field.c pc_np_camera_begin / _end on HG's Camera, called from
+ * the field's 3D draw (src/field/fieldmap.c ov01_021E6220, through
+ * pc/patches/src/field/fieldmap.c.patch) once Camera_PushLookAtToNNSGlb has
+ * advanced the game's camera and loaded its view. Only while an option is
+ * off its default, the view and projection the renderer uses this frame are
+ * replaced by the same camera seen from farther away (zoom) and from a
+ * different pitch (tilt), still looking at the game's target. Nothing in
+ * the Camera is written, so putting the options back puts back the
+ * original picture, and every scripted camera move keeps working on the
+ * real values. The draw's own depth tweak of the projection then applies to
+ * this one; _end puts the game's projection matrix back as it was.
+ */
+static BOOL sCamOverride;
+static MtxFx44 sCamProj;
+
+#define TILT_UNIT_TO_IDX(t) ((s32)(t) * 65536 / (360 * 16))
+
+void pc_np_camera_begin(struct Camera *cam) {
+    const unsigned zoom = pc_np_opt.camera_zoom;
+    const int tilt = pc_np_opt.camera_tilt;
+    fx32 dist, nearClip, farClip;
+    s32 pitch;
+    u16 px, py;
+    VecFx32 pos;
+
+    sCamOverride = FALSE;
+    if (cam == NULL || (zoom == 256 && tilt == 0)) return;
+
+    dist = (fx32)(((s64)cam->distance * zoom) >> 8);
+    /* Pitch is negative looking down; a positive tilt brings it toward the
+     * horizon. Kept between 5 and 85 degrees below it. */
+    pitch = (s16)cam->angle.x + TILT_UNIT_TO_IDX(tilt);
+    if (pitch > -TILT_UNIT_TO_IDX(5 * 16)) pitch = -TILT_UNIT_TO_IDX(5 * 16);
+    if (pitch < -TILT_UNIT_TO_IDX(85 * 16)) pitch = -TILT_UNIT_TO_IDX(85 * 16);
+    px = (u16)pitch;
+    py = cam->angle.y;
+
+    /* camera.c's Camera_CalcLookAtPosFromTargetAndAngle, on a copy. */
+    pos.x = FX_Mul(FX_Mul(FX_SinIdx(py), dist), FX_CosIdx(px));
+    pos.z = FX_Mul(FX_Mul(FX_CosIdx(py), dist), FX_CosIdx(px));
+    pos.y = FX_Mul(FX_SinIdx((u16)-px), dist);
+    VEC_Add(&pos, &cam->lookAt.camTarget, &pos);
+
+    sCamProj = NNS_G3dGlb.projMtx;
+    NNS_G3dGlbLookAt(&pos, &cam->lookAt.camUp, &cam->lookAt.camTarget);
+
+    nearClip = cam->perspective.near;
+    farClip = cam->perspective.far;
+    if (zoom < 256) nearClip = (fx32)(((s64)nearClip * zoom) >> 8);
+    if (zoom > 256) farClip = (fx32)(((s64)farClip * zoom) >> 8);
+    if (tilt > 0) farClip += (fx32)(((s64)farClip * tilt) / (15 * 16)); /* +100% per 15 degrees */
+    if (farClip > FX32_CONST(30000)) farClip = FX32_CONST(30000);
+    /* MTX_PerspectiveW forms 2 * near * far in fx32, which wraps once near
+     * x far passes 2^18 square world units (Platinum's note): a farther far
+     * plane needs a nearer near plane. */
+    {
+        const s64 maxNearFar = 250000;
+        const s64 nearUnits = (s64)nearClip >> FX32_SHIFT, farUnits = (s64)farClip >> FX32_SHIFT;
+
+        if (nearUnits * farUnits > maxNearFar) nearClip = (fx32)((maxNearFar / farUnits) << FX32_SHIFT);
+    }
+    /* Camera_ApplyPerspectiveType's two cases, without its side effects
+     * (it also sets the perspective type and the depth buffering mode). */
+    if (cam->perspectiveType == CAMERA_PERSPECTIVE_TYPE_PERSPECTIVE) {
+        NNS_G3dGlbPerspective(cam->perspective.fovySin, cam->perspective.fovyCos, cam->perspective.aspect, nearClip,
+                              farClip);
+    } else {
+        fx32 top = FX_Mul(FX_Div(cam->perspective.fovySin, cam->perspective.fovyCos), dist);
+        fx32 right = FX_Mul(top, cam->perspective.aspect);
+
+        NNS_G3dGlbOrtho(top, -top, -right, right, nearClip, farClip);
+    }
+    sCamOverride = TRUE;
+}
+
+void pc_np_camera_end(struct Camera *cam) {
+    (void)cam;
+    if (!sCamOverride) return;
+    /* Back to the game's projection for everything drawn outside the field
+     * renderer and for the next frame (as ov01_021E6220 restores its own
+     * copy: MI_CpuCopyFast and the two flags). */
+    MI_CpuCopyFast((u32 *)&sCamProj, (u32 *)&NNS_G3dGlb.projMtx, sizeof(MtxFx44));
+    NNS_G3dGlb.flag &= ~(NNS_G3D_GLB_FLAG_INVPROJ_UPTODATE | NNS_G3D_GLB_FLAG_INVCAMERAPROJ_UPTODATE);
+    sCamOverride = FALSE;
+}

@@ -18,12 +18,19 @@
 #   continue  bw-continue.sched from that save: title, CONTINUE, the bedroom
 #   quicksave the same with an F1 quick save in the bedroom (quicksave_seq):
 #             saved, the player free again, the file changed and verified
-# HeartGold / SoulSilver (the field does not load yet, docs/HANDOFF-hgss.md):
+# HeartGold / SoulSilver:
 #   intro     hgss-intro.sched: title, the touch-screen tutorial driven by
 #             stylus taps, Prof. Oak, the boy, the default name accepted;
 #             snapshot round trips at the title and in Oak's introduction;
 #             the audio level is reported, not checked: the core is silent
-#             through the title and intro but for one sound near frame 8400
+#             through the title and intro but for one sound near frame 8400;
+#             Oak's first page with and without instant text
+#   field     with $NP_HG_FIELD_SAVE / $NP_SS_FIELD_SAVE, a save at New Bark
+#             Town's west exit (else SKIPped): CONTINUE into the field
+#             (hgss-field.sched); render scale 2 and widescreen frame sizes;
+#             camera zoom / tilt change the field and leave nothing behind;
+#             an F1 quick save (np_save4 verifies it); hgss-wild.sched: a
+#             wild battle in Route 29's grass sets in_battle, RUN clears it
 #
 # Frames are dumped as PNGs to build/evidence/bwhgss/<game>/ (outside git).
 # Exit status: 0 every check passed (games without core or ROM are SKIPped),
@@ -33,6 +40,7 @@ root=$(cd "$(dirname "$0")/../.." && pwd)
 cd "$root"
 here=tests/bwhgss
 save5=${NP_SAVE5:-build/features/np_save5}
+save4=${NP_SAVE4:-build/features/np_save4}
 games=("$@")
 [ ${#games[@]} -eq 0 ] && games=(black white heartgold soulsilver)
 
@@ -83,6 +91,16 @@ quiet() { # NAME LOG_DEFAULT LOG_MUTED PERCENT: LOG_MUTED's rms below PERCENT
         return 1
     fi
     echo "ok   $1 (audio rms L $d -> $m)"
+}
+size() { # NAME PNG W H: the frame (both screens stacked) is W x H
+    local d
+    d=$(sips -g pixelWidth -g pixelHeight "$2" 2>/dev/null | awk '/pixelWidth/ {w=$2} /pixelHeight/ {h=$2} END {print w "x" h}')
+    if [ "$d" != "$3x$4" ]; then
+        echo "FAIL $1: $2 is \"$d\", not $3x$4"
+        fail=1
+        return 1
+    fi
+    echo "ok   $1 ($d)"
 }
 pngs() { # DIR: the dumped frames as PNGs
     local f
@@ -202,6 +220,56 @@ for g in "${games[@]}"; do
         run text-on --frames 7302 --schedule $here/hgss-intro.sched --dump-from 7284 --dump-every 16 \
             -o 7284:text_instant=1
         instant "$g instant text (Oak)" text-off text-on 007285 007301 8 150 236 186
+
+        # The field, from a save at New Bark Town's west exit ($NP_HG_FIELD_SAVE
+        # / $NP_SS_FIELD_SAVE, e.g. tests/e2e heartgold 02's start save).
+        [ $g = heartgold ] && fsave=${NP_HG_FIELD_SAVE:-} || fsave=${NP_SS_FIELD_SAVE:-}
+        if [ ! -f "$fsave" ]; then
+            echo "SKIP $g field checks (no field save; set NP_HG_FIELD_SAVE / NP_SS_FIELD_SAVE)"
+            continue
+        fi
+        field() { # STEP ARGS...: CONTINUE into the field on a copy of the save
+            local step=$1
+            shift
+            cp "$fsave" "$w/$step.sav"
+            run "$step" --save "$w/$step.sav" "$@"
+        }
+        field field --frames 2400 --schedule $here/hgss-field.sched --dump-from 2399
+        check "$g CONTINUE into the field" "$w/field.log" "exit 0" "field_ready=1 .* map_id=60"
+        field field-scale2 --frames 2400 --schedule $here/hgss-field.sched --dump-from 2399 -o render_scale=2
+        size "$g field at render scale 2" "$w/field-scale2/frame_002400.png" 512 768
+        field field-wide --frames 2400 --schedule $here/hgss-field.sched --dump-from 2399 -o widescreen=1
+        size "$g field in widescreen" "$w/field-wide/frame_002400.png" 342 384
+        # Camera zoom and tilt on the field's 3D only, and nothing of the game's
+        # camera written: back at the defaults the frame is the plain one.
+        field field-camera --frames 2400 --schedule $here/hgss-field.sched --dump-from 2399 \
+            -o 2300:camera_zoom=512 -o 2300:camera_tilt=160
+        field field-camera-back --frames 2400 --schedule $here/hgss-field.sched --dump-from 2399 \
+            -o 2300:camera_zoom=512 -o 2300:camera_tilt=160 -o 2390:camera_zoom=256 -o 2390:camera_tilt=0
+        if python3 $here/region_same.py "$w/field/frame_002400.png" "$w/field-camera/frame_002400.png" 0 0 256 192; then
+            echo "FAIL $g camera zoom/tilt: the field looks the same ($w/field-camera)"
+            fail=1
+        elif ! cmp -s "$w/field/frame_002400.png" "$w/field-camera-back/frame_002400.png"; then
+            echo "FAIL $g camera back at the defaults: not the plain field ($w/field-camera-back)"
+            fail=1
+        else
+            echo "ok   $g camera zoom 512 / tilt 10 degrees in the field, back to the plain picture at the defaults"
+        fi
+        field field-quicksave --frames 2400 --schedule $here/hgss-field.sched -o 2300:quicksave_seq=1
+        check "$g F1 quick save in the field" "$w/field-quicksave.log" "exit 0" \
+            "pc-np: quick save 1: saved" "field_ready=1 quicksave_seq=1 quicksave_result=1"
+        if cmp -s "$fsave" "$w/field-quicksave.sav"; then
+            echo "FAIL $g quick save: the save file did not change"
+            fail=1
+        fi
+        if [ -x "$save4" ]; then
+            "$save4" verify "$w/field-quicksave.sav" > "$w/verify-quicksave.log" 2>&1
+            echo "exit $?" >> "$w/verify-quicksave.log"
+            check "$g quick save verifies (np_save4)" "$w/verify-quicksave.log" "exit 0" "all checksums valid"
+        fi
+        field wild --frames 4700 --schedule $here/hgss-wild.sched --dump-from 3399 --dump-every 100
+        check "$g NP_STAT_IN_BATTLE: a wild battle on Route 29, RUN, back in the field" "$w/wild.log" \
+            "exit 0" "in_battle 0 -> 1" "in_battle 1 -> 0" "field_ready=1 .* in_battle=0"
         ;;
     esac
 done
