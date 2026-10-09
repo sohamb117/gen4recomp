@@ -36,7 +36,9 @@ enum np_e2e_ui {
      * 12 the targets, 13 YES/NO (nickname, forfeit), 14 "forget another
      * move?", 15 "give up learning the move?", 16 "use the next Pokemon?",
      * 17 "switch Pokemon?" (Platinum battle_subscreen.c sBattleMenuConfigs;
-     * D/P ov11_0225FAAC is the same table) */
+     * D/P ov11_0225FAAC is the same table). Black/White report 1 the
+     * action menu, 11 the moves, and 0x100 + their own screen number for
+     * the bottom screen's other menus (games/ndsrec/pc/src/pc_bw_e2e.c) */
     NP_E2E_UI_BATTLE_MENU = 1,
     /* the battle's party screen; ui_arg 0 the six slots, 1 the chosen
      * Pokemon's SHIFT/SUMMARY/MOVES page */
@@ -133,7 +135,9 @@ typedef struct np_e2e_block {
      * connection_seq, soft_resets and the warps' elevation): the cursor of the menu ui
      * reports (the action/move cursor 0 top left, 1 top right, 2 bottom
      * left, 3 bottom right; the target battler; a YES/NO cursor, 0 YES 1 NO;
-     * the party menu's slot), the player avatar's state bits (the game's
+     * the party menu's slot; Black/White: the action menu's 0 FIGHT, 1 BAG,
+     * 2 POKEMON, 3 RUN, the moves' 4 back, and bit 8 set while the key
+     * cursor is not shown, when the first key press only shows it), the player avatar's state bits (the game's
      * PLAYER_AVATAR_FLAG_*: on foot, biking, surfing), and where the game
      * keeps what a bot may read with np_gp's `peek`: the event flags (bit n
      * of the bytes is flag n), the vars (u16 each, var 0x4000 + i), the party

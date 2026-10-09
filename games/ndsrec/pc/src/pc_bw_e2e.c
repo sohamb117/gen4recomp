@@ -86,6 +86,39 @@ extern uint32_t armrec_sp;
 #define BPP_MOVES 0x104
 #define BPP_MOVE_SIZE 0x0E
 
+/* The battle menu (derived from the generated assembly, not yet seen on a run: docs/BW_RAM.md, Battle menu).
+ * main+0x04 the view (BTLV_CORE: ov93_021E8F20 builds it, ov93_021CD95C hands it to each client),
+ * main+0x10 + 4*id the clients, main+0x46C (u8) the player's client id. The view's +0x180 the bottom
+ * screen's controller (overlay 95, mapped at 0x06898020: ov95_06899ED0 starts the action menu, ov95_06899F40
+ * the moves), +0xBC the chooser's BattleMon (ov93_021E9760 / ov93_021E97BC store it). The controller's +0x60
+ * the depth of its task stack (ov95_06899E48 pushes, ov95_06899E68 pops when a menu is done), +0xB0 the
+ * input screen (overlay 94). The input screen's +0x58 the screen it shows (ov94_0220270C builds it:
+ * 0 the standby screen, 1 the action menu FIGHT/BAG/POKEMON/RUN, 2 the four moves, 5 the moves of a
+ * multi-battler turn, 3/4 others), +0x68 bits 5..8 the key cursor (ov94_02206140 moves it through the
+ * screen's key table: action 0 FIGHT, 1 BAG, 2 POKEMON, 3 RUN; moves 0 top left, 1 top right, 2 bottom
+ * left, 3 bottom right, 4 back), +0x274 a pointer to the byte that says the cursor is shown (0: the first
+ * key press only shows it, ov94_02206140 at 0x0220636A). */
+#define MAIN_VIEW 0x04
+#define MAIN_CLIENTS 0x10
+#define VIEW_SCU 0x180
+#define VIEW_CHOOSER 0xBC
+#define SCU_DEPTH 0x60
+#define SCU_INPUT 0xB0
+#define INPUT_SCREEN 0x58
+#define INPUT_STATE 0x68
+#define INPUT_KEY_MODE 0x274
+#define SCREEN_ACTION 1
+#define SCREEN_MOVES 2
+#define SCREEN_MOVES_MULTI 5
+#define BW_OVERLAY_BATTLE_INPUT 94
+#define BW_OVERLAY_BATTLE_SCU 95
+/* np_e2e.h ui_arg: 1 the action menu, 11 the moves (D/P's menu config numbers); other B/W screens report
+ * 0x100 + the screen number; ui_cursor bit 8: the cursor is not shown yet */
+#define UI_ARG_ACTION 1
+#define UI_ARG_MOVES 11
+#define UI_ARG_RAW 0x100
+#define UI_CURSOR_HIDDEN 0x100
+
 #define GAMESYS_FIELDMAP 0x14
 #define GAMESYS_EVENT 0x18
 #define GAMESYS_GAMEDATA 0x1C
@@ -262,11 +295,12 @@ static uint32_t bw_pokecon(int field)
 }
 
 /* Each client's front Pokemon as battler 0..3 (0 the player, 1 the foe in a single battle) and the
- * player's party in slot order. */
-static void bw_battle_report(uint32_t pokecon)
+ * player's party in slot order; the battler whose menu is up, from the view's chooser (its BattleMon
+ * matched against the clients' front slots: client c, slot s -> battler c + 2s [INFERENCE: doubles]). */
+static void bw_battle_report(uint32_t pokecon, uint32_t chooser)
 {
     pc_e2e_mon battlers[BTL_CLIENTS], party[BTL_PARTY_MAX];
-    unsigned c, i, nparty = 0;
+    unsigned c, i, nparty = 0, menu_battler = 0;
 
     memset(battlers, 0, sizeof battlers);
     for (c = 0; c < BTL_CLIENTS; c++) {
@@ -280,9 +314,38 @@ static void bw_battle_report(uint32_t pokecon)
             if (!bw_ram(bpp)) continue;
             if (i == 0) bw_mon(bpp, &battlers[c]);
             if (c == 0) bw_mon(bpp, &party[nparty++]);
+            if (bpp == chooser && i < 2) menu_battler = c + 2 * i;
         }
     }
-    pc_e2e_battle(0, 0, battlers, BTL_CLIENTS, party, nparty);
+    pc_e2e_battle(menu_battler, 0, battlers, BTL_CLIENTS, party, nparty);
+}
+
+/* The bottom screen's menu while the player chooses: the ui report (np_e2e.h) and the key cursor; 0 and
+ * the chooser 0 when no menu waits. */
+static uint32_t bw_battle_menu(uint32_t pokecon)
+{
+    const uint32_t main_ = rd32(pokecon); /* POKECON +0x00: the main module */
+    uint32_t view, scu, input, key_mode;
+    unsigned screen, cursor, arg;
+
+    if (!armrec_overlay_resident(BW_OVERLAY_BATTLE_INPUT) || !armrec_overlay_resident(BW_OVERLAY_BATTLE_SCU))
+        return 0;
+    view = rd32(main_ + MAIN_VIEW);
+    if (!bw_ram(view)) return 0;
+    scu = rd32(view + VIEW_SCU);
+    if (!bw_ram(scu)) return 0;
+    input = rd32(scu + SCU_INPUT);
+    if (!bw_ram(input) || rd32(scu + SCU_DEPTH) == 0) return 0;
+    screen = rd32(input + INPUT_SCREEN);
+    if (screen == 0 || screen > 7) return 0;
+    arg = screen == SCREEN_ACTION ? UI_ARG_ACTION
+        : screen == SCREEN_MOVES || screen == SCREEN_MOVES_MULTI ? UI_ARG_MOVES : UI_ARG_RAW + screen;
+    cursor = (rd32(input + INPUT_STATE) >> 5) & 0xF;
+    key_mode = rd32(input + INPUT_KEY_MODE);
+    if (!bw_ram(key_mode & ~3u) || !*(const volatile uint8_t *)(uintptr_t)key_mode) cursor |= UI_CURSOR_HIDDEN;
+    pc_e2e_ui(PC_E2E_UI_BATTLE_MENU, arg);
+    pc_e2e_cursor(cursor);
+    return rd32(view + VIEW_CHOOSER);
 }
 
 /* ---- the frame */
@@ -292,7 +355,7 @@ static void bw_e2e_frame(const bw_field *f, int field, int ready, uint32_t pokec
     uint32_t arr;
     unsigned i, n;
 
-    if (pokecon) bw_battle_report(pokecon);
+    if (pokecon) bw_battle_report(pokecon, bw_battle_menu(pokecon));
     if (!field) {
         pc_e2e_field(0, 0, 0, 0, 0, 0, 0);
         pc_e2e_end_frame();

@@ -297,6 +297,17 @@ RANGE_ALL_ADJACENT, ALLY_HIT_FACTOR = 0x08, 0.25
 # super-effective moves through
 ABILITY_IMMUNE = {26: {4}, 11: {11}, 87: {11}, 10: {13}, 78: {13}, 18: {10}}
 WONDER_GUARD = 25
+# Black/White (np_save5 gamedata: the ROM's own tables): Gen 5 types have no ??? type, so Fire is 9, Water 10,
+# Grass 11, Electric 12; Gen 5's absorbing abilities add Lightningrod (31) and Storm Drain (114) to the immune ones,
+# and Sap Sipper (157, Grass). The move effect ids keep Gen 4's numbering (Solar Beam 151, Fly 155, Dig 256, Hyper
+# Beam 80 in the ROM's move data); Gen 5's own two-turn moves are Sky Drop (311), Freeze Shock (331), Ice Burn (332).
+ABILITY_IMMUNE_GEN5 = {26: {4}, 11: {10}, 87: {10}, 114: {10}, 10: {12}, 78: {12}, 31: {12}, 18: {9}, 157: {11}}
+TWO_TURN_EFFECTS_GEN5 = TWO_TURN_EFFECTS | {311, 331, 332}
+
+
+def _gen5(gd):
+    return gd.get("game") in BW_GAMES
+
 
 _GAMEDATA = {}
 
@@ -327,7 +338,8 @@ def blocking_abilities(gd, species, move, foe_types):
     for t in foe_types:
         eff *= gd["type_chart"][mtype][t] / 10.0
     have = [a for a in gd["species"][species][2:4] if a]
-    return [a for a in have if mtype in ABILITY_IMMUNE.get(a, ()) or (a == WONDER_GUARD and eff <= 1)], have
+    immune = ABILITY_IMMUNE_GEN5 if _gen5(gd) else ABILITY_IMMUNE
+    return [a for a in have if mtype in immune.get(a, ()) or (a == WONDER_GUARD and eff <= 1)], have
 
 
 def move_value(gd, move, user_types, foe_types, ally=False, foe_species=None):
@@ -350,7 +362,7 @@ def move_value(gd, move, user_types, foe_types, ally=False, foe_species=None):
     v *= (acc or 100) / 100.0
     if ally and rng & RANGE_ALL_ADJACENT:
         v *= ALLY_HIT_FACTOR
-    return v / 2 if effect in TWO_TURN_EFFECTS else v
+    return v / 2 if effect in (TWO_TURN_EFFECTS_GEN5 if _gen5(gd) else TWO_TURN_EFFECTS) else v
 
 
 def usable_slots(mon, rejected=()):
@@ -420,6 +432,8 @@ def bot_auto_battle(s, step, ctx):
     Ruby/Sapphire/Emerald have no touch screen: _gba_auto_battle makes the same choices with buttons."""
     if ctx.game in GBA_GAMES:
         return _gba_auto_battle(s, step, ctx)
+    if ctx.game in BW_GAMES:
+        return _bw_auto_battle(s, step, ctx)
     fixed = "move" in step
     move = _int(step, "move", 0)
     send_best = step.get("send") == "best"  # a fainted lead's replacement: the best scorer, not the first able
@@ -784,6 +798,135 @@ def _gba_auto_battle(s, step, ctx):
                 want = None
             continue
         # text, animations, the evolution scene: A advances text (B would cancel an evolution)
+        if not s.run(6, until=["ui!=0", "in_battle=0"]):
+            s.run(2, "a", until=["ui!=0", "in_battle=0"])
+    s.note("auto_battle: battle over after %d turns (menus answered %s)" % (
+        turns, ", ".join("%d x%d" % kv for kv in sorted(menus.items()))))
+
+
+# ---------------------------------------------------------------- auto_battle on Black/White
+# The probe (games/ndsrec/pc/src/pc_bw_e2e.c) reports the bottom screen's menu as ui_arg 1 (FIGHT/BAG/POKEMON/RUN)
+# or 11 (the moves), 0x100 + the screen number for the others, and the key cursor the game moves through the
+# screen's key table (overlay 95: the action menu's at 0x0689DF64, the moves' at 0x0689E054); ui_cursor bit 8 says
+# the cursor is not shown yet, when the first key press only shows it (overlay 94, ov94_02206140). The keys each
+# cursor position answers, from those tables: action 0 FIGHT, 1 BAG, 2 POKEMON, 3 RUN; moves 0 top left, 1 top
+# right, 2 bottom left, 3 bottom right, 4 back. [INFERENCE until a run shows them: docs/BW_RAM.md, Battle menu]
+BW_UI_ACTION, BW_UI_MOVES, BW_CURSOR_HIDDEN = 1, 11, 0x100
+BW_ACTION_FIGHT, BW_ACTION_POKEMON, BW_ACTION_RUN = 0, 2, 3
+BW_KEYS = {
+    BW_UI_ACTION: {0: {"left": 1, "right": 2}, 1: {"up": 0, "right": 3}, 2: {"up": 0, "left": 3},
+                   3: {"left": 1, "right": 2}},
+    BW_UI_MOVES: {0: {"down": 2, "right": 1}, 1: {"down": 3, "left": 0}, 2: {"up": 0, "right": 3, "down": 4},
+                  3: {"up": 1, "left": 2, "down": 4}, 4: {}},
+}
+
+
+def _bw_key_toward(idx, cur, want):
+    """The first key of the shortest walk from cursor cur to want over the screen's key table; None if none."""
+    table = BW_KEYS.get(idx, {})
+    seen, frontier = {cur}, [(cur, None)]
+    while frontier:
+        nxt = []
+        for pos, first in frontier:
+            for key, to in table.get(pos, {}).items():
+                if to in seen:
+                    continue
+                if to == want:
+                    return first or key
+                seen.add(to)
+                nxt.append((to, first or key))
+        frontier = nxt
+    return None
+
+
+def _bw_cursor(s, idx, want):
+    """Shows the cursor of battle menu idx and moves it onto want; False when the menu went away or want cannot be
+    reached."""
+    for _ in range(8):
+        p = s.probe()
+        if p is None or p.ui != UI_BATTLE_MENU or p.ui_arg != idx:
+            return False
+        cur = p.ui_cursor & 0xFF
+        if p.ui_cursor & BW_CURSOR_HIDDEN:
+            _gba_press(s, "up" if idx == BW_UI_ACTION else "right")  # shows the cursor without moving it
+            continue
+        if cur == want:
+            return True
+        key = _bw_key_toward(idx, cur, want)
+        if key is None:
+            return False
+        _gba_press(s, key)
+    return False
+
+
+def _bw_auto_battle(s, step, ctx):
+    """bot_auto_battle for Black/White: the same move choice (choose_move over the probe's battle report, scored with
+    the ROM's Gen 5 tables from np_save5 gamedata), made with the D-pad and A on the bottom screen's key cursor.
+    Single battles; the party screen (a fainted lead) is not reported by the probe yet, so it is left to the A
+    presses that advance text. [INFERENCE until proven on a run]"""
+    fixed = "move" in step
+    move = _int(step, "move", 0)
+    flee = FLEE_TRIES if step.get("flee") else 0
+    snap_menu = bool(step.get("snap"))
+    limit = s.frame + _int(step, "max", 30000)
+    if not s.in_battle and not s.run(_int(step, "wait", 900), until="in_battle=1"):
+        raise HarnessError("no battle started within %d frames" % _int(step, "wait", 900))
+    gd = None if fixed else gamedata(ctx)
+    p = s.probe()
+    since = p.frame if p is not None else 0
+    turns, last, again, menus, rejected, slot = 0, None, 0, {}, [], None
+    while s.in_battle:
+        if s.frame >= limit:
+            raise HarnessError("the battle did not end in %d frames" % _int(step, "max", 30000))
+        p = s.probe()
+        fresh = gd is not None and p is not None and p.battle_fresh and p.battle_frame >= since
+        if p is not None and p.ui == UI_BATTLE_MENU:
+            idx = p.ui_arg
+            me = p.battlers[p.menu_battler] if fresh and p.menu_battler < len(p.battlers) else None
+            foe = next((p.battlers[b] for b in (1, 3) if fresh and b < len(p.battlers) and p.battlers[b].alive), None)
+            if idx == BW_UI_ACTION:
+                if snap_menu:
+                    snap_menu = False
+                    snap(s)
+                choice = BW_ACTION_FIGHT
+                if flee:
+                    flee -= 1
+                    choice = BW_ACTION_RUN
+                else:
+                    rejected = []
+                    turns += 1
+                if _bw_cursor(s, idx, choice):
+                    _gba_press(s, "a")
+            elif idx == BW_UI_MOVES:
+                again = again + 1 if last == BW_UI_MOVES else 0
+                refused = again >= 2
+                if refused:
+                    again = 0
+                if fixed or me is None:
+                    if refused:
+                        move = (move + 1) % 4
+                        s.note("auto_battle: move slot %d" % move)
+                    slot = move
+                else:
+                    if refused and slot is not None:
+                        rejected.append(slot)
+                    slot = choose_move(gd, me, foe, rejected)
+                    if slot is None:
+                        rejected = []
+                        slot = choose_move(gd, me, foe) or 0
+                    s.note("auto_battle: battler %d slot %d (move %d, %d PP) on species %d" % (
+                        p.menu_battler, slot, me.moves[slot], me.pp[slot], foe.species if foe else 0))
+                if _bw_cursor(s, idx, slot):
+                    _gba_press(s, "a")
+                    s.run(30, until=["ui_arg!=%d" % BW_UI_MOVES, "ui!=%d" % UI_BATTLE_MENU, "in_battle=0"])
+                else:
+                    again = 2  # the slot cannot be reached: the next one
+            else:
+                _gba_press(s, "b", 10)  # a screen the probe does not name: back out of it
+            last = idx
+            menus[idx] = menus.get(idx, 0) + 1
+            continue
+        # text, animations: A advances text
         if not s.run(6, until=["ui!=0", "in_battle=0"]):
             s.run(2, "a", until=["ui!=0", "in_battle=0"])
     s.note("auto_battle: battle over after %d turns (menus answered %s)" % (

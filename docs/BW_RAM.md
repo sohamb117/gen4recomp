@@ -97,6 +97,24 @@ disassembly (same Black ROM), which names some of these functions; everything be
 | client party | POKECON + 4 + 0x1C x client: BattleMon pointers by slot, u8 count at +0x18 | same | `ov93_021B9864` / `ov93_021B98AC` index parties by `client * 0x1C` from POKECON+4; `ov93_021B9B94` reads the count at +0x18, `ov93_021B9C00` slot i (bounded by it), `ov93_021B9C10` swaps two slots. In the battle: client 0 = Tepig, client 1 = Bianca's Snivy, counts 1 and 1 |
 | BattleMon | 0x214 bytes (`btl_pokeparam.c`) | same | +0x00 the source POKEMON (in the client's POKEPARTY), +0x0C species, +0x0E max HP, +0x10 HP, +0x16 ability, +0x18 level, +0xEE..+0xF6 the five battle stats, +0xF8/+0xF9 the current types, +0xFC seven stat stages (6 = neutral), +0x104 four 0x0E-byte move slots {u16 move, u8 PP, u8 max PP, ...}. `ov93_021D4D84` (the constructor) fills +0x0C/+0x10/+0x0E/+0x18/+0x16 from the POKEMON params species / HP / max HP / level / ability, and the level-up code `ov93_021D69B8` reloads only +0x0E from max HP. Values: Tepig 498, 22/22, level 5, Blaze 66, Fire/Fire (9), Tackle 35/35, Tail Whip 30/30; Snivy 495, 19/19, level 5, Overgrow 65, Grass/Grass (11), Tackle, Leer 30/30 |
 
+## Battle menu (derived from the generated assembly; not yet seen on a run)
+
+The player's choices in a battle, followed from the client's action-selection states to the bottom screen. Every
+offset below is read in the code named; none has been watched on the core yet, so the probe's `ui`, `ui_cursor` and
+`menu_battler` (games/ndsrec/pc/src/pc_bw_e2e.c) are unproven until a battle run shows them next to the frames.
+
+| field | where | how it was found |
+| --- | --- | --- |
+| the client's selection state | client +0xD0 (the state function), +0xD4 its step | `ov93_021CE150` sets both, `ov93_021CE160` calls +0xD0; the states are `ov93_021CE4D0` (the action menu: it starts the view's action menu), `ov93_021CEA94` (the moves), `ov93_021CED4C` (the target), `ov93_021CF2F0` (done) |
+| a client's view, battler, party | client +0x54 the view, +0x08 the choosing BattleMon, +0x00 the main module, +0x04 POKECON | `ov93_021CE4D0` passes +0x54/+0x08 to `ov93_021E9760`; `ov93_021CD95C` stores +0x54; `ov93_021CD6F0` (the constructor) +0x00/+0x04 |
+| the view (BTLV_CORE) | main +0x04; clients main +0x10 + 4 x id; the player's client id main +0x46C (u8) | `ov93_021B835C` and two more callers of `ov93_021E8F20` (the view's constructor) store it at main +0x04 and hand it to the client at main +0x10 + 4 x [main +0x46C] |
+| the chooser | view +0xBC (BattleMon), +0xC4 the menu's result | `ov93_021E9760` (action) and `ov93_021E97BC` (moves) store their arguments; `ov93_021E97A4` returns +0xC4 |
+| the bottom screen's controller | view +0x180, in overlay 95 (mapped at 0x06898020) | `ov93_021E964C` passes +0x180 to `ov95_06899ED0` (the action menu's start) through a veneer; +0x20 a stack of 16-byte {init, wait, arg, step} tasks, +0x60 its depth (`ov95_06899E48` push, `ov95_06899E68` run/pop), +0x98 the result, +0xB0 the input screen |
+| the input screen | controller +0xB0, in overlay 94 | `ov95_0689A76C` passes +0xB0 to `ov94_02202DC4` (touch and keys) with the screen's touch and key tables |
+| the screen shown | input +0x58 | `ov94_0220270C` builds screen 0..7 and stores the number: 1 the action menu (`ov95_0689A030`), 2 the moves (`ov95_0689A878`), 5 the moves of a multi-battler turn (`ov95_0689AB48`), 0 the standby screen; 3 and 4 are other menus |
+| the key cursor | input +0x68 bits 5..8 | `ov94_02206140` moves it through the screen's key table (12-byte entries: up/down/left/right at +6..+9, A's result +10, B's +11): the action menu's at 0x0689DF64 (0 FIGHT, 1 BAG, 2 POKEMON, 3 RUN; ov95 0x0689D828 maps them to results 1..4), the moves' at 0x0689E054 (0..3 the 2 x 2 moves, 4 back) |
+| the cursor shown | the byte at *(input +0x274) | `ov94_02206140` at 0x0220636A: while it is 0 a key press (mask 0xCF3) only sets it and shows the cursor |
+
 ## The probe on the core
 
 `tests/e2e/tools/probe_map.py --game black` on the bedroom save (CONTINUE free at frame 5295) prints zone 391, the
