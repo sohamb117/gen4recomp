@@ -86,7 +86,8 @@ extern uint32_t armrec_sp;
 #define BPP_MOVES 0x104
 #define BPP_MOVE_SIZE 0x0E
 
-/* The battle menu (derived from the generated assembly, not yet seen on a run: docs/BW_RAM.md, Battle menu).
+/* The battle menu (derived from the generated assembly and read with peek in Bianca's battle, docs/BW_RAM.md,
+ * Battle menu; this code itself has not run on a core yet).
  * main+0x04 the view (BTLV_CORE: ov93_021E8F20 builds it, ov93_021CD95C hands it to each client),
  * main+0x10 + 4*id the clients, main+0x46C (u8) the player's client id. The view's +0x180 the bottom
  * screen's controller (overlay 95, mapped at 0x06898020: ov95_06899ED0 starts the action menu, ov95_06899F40

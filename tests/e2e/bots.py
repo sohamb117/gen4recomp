@@ -810,7 +810,7 @@ def _gba_auto_battle(s, step, ctx):
 # screen's key table (overlay 95: the action menu's at 0x0689DF64, the moves' at 0x0689E054); ui_cursor bit 8 says
 # the cursor is not shown yet, when the first key press only shows it (overlay 94, ov94_02206140). The keys each
 # cursor position answers, from those tables: action 0 FIGHT, 1 BAG, 2 POKEMON, 3 RUN; moves 0 top left, 1 top
-# right, 2 bottom left, 3 bottom right, 4 back. [INFERENCE until a run shows them: docs/BW_RAM.md, Battle menu]
+# right, 2 bottom left, 3 bottom right, 4 back (read with peek in Bianca's battle: docs/BW_RAM.md, Battle menu).
 BW_UI_ACTION, BW_UI_MOVES, BW_CURSOR_HIDDEN = 1, 11, 0x100
 BW_ACTION_FIGHT, BW_ACTION_POKEMON, BW_ACTION_RUN = 0, 2, 3
 BW_KEYS = {
@@ -863,7 +863,7 @@ def _bw_auto_battle(s, step, ctx):
     """bot_auto_battle for Black/White: the same move choice (choose_move over the probe's battle report, scored with
     the ROM's Gen 5 tables from np_save5 gamedata), made with the D-pad and A on the bottom screen's key cursor.
     Single battles; the party screen (a fainted lead) is not reported by the probe yet, so it is left to the A
-    presses that advance text. [INFERENCE until proven on a run]"""
+    presses that advance text."""
     fixed = "move" in step
     move = _int(step, "move", 0)
     flee = FLEE_TRIES if step.get("flee") else 0
