@@ -750,10 +750,10 @@ NAMES = r"""
 06C RemoveObject u
 06D SetObjectPosition u (object, x, y, z, dir) [INFERENCE]
 074 FacePlayer u
-085 TrainerBattle u (trainer, trainer 2, mode)
-08C BattleLost u ends the script (lost battle) [INFERENCE]
+085 TrainerBattle u (trainer, trainer 2, mode); story fights the player cannot lose use mode 1 [INFERENCE]
+08C BlackOut u after a lost battle; ends the script [INFERENCE]
 08D GetBattleResult u 1 = won
-08E BattleWon u [INFERENCE]
+08E EndBattle u back to the field after a battle [INFERENCE]
 098 PlayMusic u
 09E FadeMusic u [INFERENCE]
 0A6 PlaySound u
@@ -935,6 +935,8 @@ def decode_text(codes):
         elif c == 0xF100:
             out.append(decode_text(unpack9(codes[j + 1:])))
             break
+        elif c in (0x2486, 0x2487):  # the font's PK / MN glyphs ("PKMN Trainer")
+            out.append("PK" if c == 0x2486 else "MN")
         elif c == 0x246D:
             out.append("\u2642")
         elif c == 0x246E:
@@ -1530,7 +1532,7 @@ def render(sc, bank, zone, out):
 # ----------------------------------------------------------------------------------------------
 def resolve_zone(arg):
     try:
-        z = int(arg, 0)
+        z = int(arg, 10) if arg.isdigit() else int(arg, 0)
     except ValueError:
         hits = [x["id"] for x in zones() if arg.lower() in zone_name(x["id"]).lower()]
         if not hits:
@@ -1562,10 +1564,12 @@ def cmd_events(args):
     for k, b in enumerate(ev["bg"]):
         print(f"  bg {k}: ({b['x']},{b['z']}) y {b['y']} kind {b['kind']} -> {describe_sid(b['script'], z)}")
     for k, o in enumerate(ev["objects"]):
-        print(f"  object {k}: id {o['id']} gfx 0x{o['gfx']:X} at ({o['x']},{o['z']}) y 0x{o['y']:X} dir {o['dir']}"
+        print(f"  object {k}: id {o['id']} gfx 0x{o['gfx']:X} at ({o['x']},{o['z']}) y {o['y'] / 4096:g} dir {o['dir']}"
               f" move {o['move']} range {o['range']} kind {o['kind']} params {list(o['params'])}"
               + (f" hidden by flag 0x{o['flag']:X}" if o['flag'] else "")
-              + f" -> {describe_sid(o['script'], z)}")
+              + f" -> {describe_sid(o['script'], z)}"
+              + (f"; trainer {trainer_summary(o['script'] - 3000)} sight {o['params'][0]} [INFERENCE: id = script - 3000]"
+                 if o["kind"] == 1 and 3000 <= o["script"] < 5000 else ""))
     for k, w in enumerate(ev["warps"]):
         print(f"  warp {k}: tile ({w['x'] // 16},{w['z'] // 16}) (x 0x{w['x']:X} z 0x{w['z']:X} units of 1/16"
               f" tile) {w['w']}x{w['h']} -> {zone_label(w['dest'])} warp {w['dest_warp']} (bytes {w['a']},{w['b']})")
@@ -1595,7 +1599,7 @@ def resolve_target(arg):
         return f
     if arg.startswith("zone:"):
         return zones()[resolve_zone(arg[5:])]["scripts"]
-    return int(arg, 0)
+    return int(arg, 10) if arg.isdigit() else int(arg, 0)
 
 
 def cmd_script(args):
