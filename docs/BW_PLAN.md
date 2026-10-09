@@ -582,3 +582,42 @@ and the field returns (overlays 20/21/18/24/30 at frame 13920 in Black,
 10/25, White "Player defeated Pkmn Trainer Cheren" at 3/24 (frame 20501).
 The wrecked bedroom with the player free follows at frame 25001 (zone 391,
 field_ready 1), and the run exits 0.
+
+## Past the first battles: Nuvema to Striaton on the core (2026-10-08)
+
+The core with the VCOUNT fix, the three ndsrec rules and the ov230
+substitutions (main c2b11893e) was played on with tests/e2e's bots, each
+leg a fresh np_gp process that CONTINUEs from the previous leg's in-game
+save:
+
+- **Bianca's and Cheren's battles.** Both are won by auto_battle on the
+  probe's battle menu, then saved through the X menu. The menu now lists
+  POKéMON first, so SAVE is at (192,94). Results: Black 17663 frames, White
+  17339. This is milestone 02, which bw-script landed.
+- **Home and the lab.** A fresh process CONTINUEs from that post-battle
+  save. Then the stairs to 1F (zone 390) and Mom's scene, the door to Nuvema
+  (389), Bianca's house (392), Cheren at the lab door, and Juniper in the
+  lab (396): Pokédex, and the nickname typed by A. Back outside, Mom's Town
+  Map, then a save. The end save has vars 0x4085 1, 0x4078 1, 0x4079 1,
+  0x4080 2, 0x4081 2 and flags 0x217, 0x962, 0x2A7. Passes on both games.
+- **Route 1 to Accumula.** Script 14 walks the player onto Route 1 and runs
+  Juniper's Minccino-catches-Patrat battle. Then Bianca's comparison, and
+  Accumula Town (397) with its banner, then a save. Passes on both games.
+- **Accumula.** Juniper's Pokémon Center tour and the nurse's heal, then
+  the Plasma speech and N's battle (Purrloin 7, won; Tepig Lv 8), then a
+  save. Passes on both games.
+- **Route 2 to Striaton (Black).** The gate (320), Route 2 (319): the
+  Xtransceiver call and Mom, three wild battles fought, Bianca's battle
+  won. Then the "Striaton City" banner and a save, 24512 frames. White
+  blacked out in a wild battle on the way (it draws other encounters).
+  The game's own whiteout returned the player to Accumula's Pokémon
+  Center. That is play, not a port defect.
+
+No new port defect appeared on this route. Two White runs elsewhere stopped
+with np_gp's "DEFECT hang: run_frame did not return in 30s" while the
+machine was at load 30-45 with under 1 GiB of free disk. Four parallel
+reruns of the same leg and the same CONTINUE save at normal load gave the
+same 22905 frames and the same end, with no stall. The watchdog measures
+wall time, so a host stall under that much memory pressure explains it.
+The C-Gear (Fennel, after the Dreamyard's Dream Mist) and its wireless and
+IR features are not reached yet.
