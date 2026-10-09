@@ -24,7 +24,7 @@ from = "prev"
 # lab = "lab.recipe"  # HG/SS lab recipes: not written yet
 
 [run]
-frames = 66200
+frames = 70200
 
 [[step]]
 do = "walk_to"
@@ -65,6 +65,12 @@ note = "into Olivine; coord 0 (272,239..243) VAR_UNK_4078 0 -> the rival (scr_se
 [[step]]
 do = "advance_text"
 shot = "rival-olivine"
+
+[[step]]
+do = "heal"
+x = 272
+z = 257
+note = "Olivine's Pokemon Center (zone_event T26 warp 1) after Routes 38/39 and the rival, before the Lighthouse's trainers: SoulSilver's first chained run whited out on its 2F"
 
 [[step]]
 do = "walk_to"

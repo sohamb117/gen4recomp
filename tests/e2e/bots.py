@@ -1375,10 +1375,12 @@ def _field_or_handle(s, step, ctx, limit):
         if waited >= 60:
             if on_text == "stop":
                 # GBA and HG/SS walks stop only for the goal's own scene (the coord event the goal is on): a trainer who
-                # spots the player on the way is fought, as with on_text = "advance"
+                # spots the player on the way is fought, as with on_text = "advance". HG/SS: anywhere on that coord
+                # event's rectangle (Cherrygrove's guide gent, coord 0 (566,397..400), fires a row off a goal at 398)
                 at = step.get("_stop_at")
                 p = s.probe() if at is not None else None
-                if p is None or abs(p.x - at[0]) + abs(p.z - at[1]) <= 1:
+                if (p is None or abs(p.x - at[0]) + abs(p.z - at[1]) <= 1
+                        or (ctx.game in HGSS_GAMES and _hgss_same_coord(p.map_id, (p.x, p.z), at))):
                     raise _Held()
             if on_text not in ("advance", "stop"):
                 raise HarnessError("walk_to: the player is held (text or a cutscene; on_text = %r)" % on_text)
@@ -2514,6 +2516,23 @@ def _hgss_overworld(map_id):
         hw = _hg_world()
         _HGSS_MAIN[map_id] = bool(hw.map_headers().get(hw.map_name(map_id), {}).get("main"))
     return _HGSS_MAIN[map_id]
+
+
+_HGSS_COORDS = {}
+
+
+def _hgss_same_coord(map_id, here, goal):
+    """`here` and `goal` lie on one coord event's rectangle of the HG/SS map (zone_event coords, tools/hg_map.py)."""
+    if map_id not in _HGSS_COORDS:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools"))
+        import hg_map
+        try:
+            coords = hg_map.Map(_hg_world().map_name(map_id)).ev.get("coords", [])
+        except Exception:
+            coords = []
+        _HGSS_COORDS[map_id] = [(c["x"], c["z"], c["w"], c["h"]) for c in coords]
+    inside = lambda t, r: r[0] <= t[0] < r[0] + r[2] and r[1] <= t[1] < r[1] + r[3]
+    return any(inside(here, r) and inside(goal, r) for r in _HGSS_COORDS[map_id])
 
 
 def _hg_world():
