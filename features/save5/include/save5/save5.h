@@ -198,7 +198,10 @@ typedef struct save5_location {
 } save5_location;
 save5_status save5_get_location(const save5 *s, save5_location *loc);
 /* Moves the saved player to zone `map`, standing at the centre of tile (x, z)
- * at height y (tiles): the game's CONTINUE places the player there. */
+ * at height y (tiles): the game's CONTINUE places the player there. Only the
+ * position block changes: a zone whose field gimmick lives in its own overlay
+ * (the Nimbasa and Icirrus gyms, 63 and 114) then CONTINUEs without it and
+ * aborts on its first gimmick call; place the player outside and walk in. */
 save5_status save5_set_location(save5 *s, const save5_location *loc);
 
 /* The date and time of the last save (trainer block +0x28, packed: year
