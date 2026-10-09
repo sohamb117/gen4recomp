@@ -24,9 +24,41 @@ notes = "The proposal run's battle reached Bianca's battle intro (docs/BW_RAM.md
 [start]
 from = "prev"
 
+[run]
+frames = 14000
+
+[[step]]
+do = "talk_to"
+id = 2
+shot = "gift-box"
+note = "the gift box (zone_event 391 object 2, (5,8)) -> scr 0782 script 9"
+
+[[step]]
+do = "advance_text"
+note = "A through the box's text and the choice: the cursor starts on Tepig (the proposal runs' A presses chose it, 0x4030 = 1) and A answers YES; Bianca's battle stops it"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Bianca (trdata #60 Snivy 5 against Tepig), mode 1 (scr 0782 @0x0425)"
+
+[[step]]
+do = "advance_text"
+note = "Bianca's and Cheren's lines, the heal; Cheren's battle stops it"
+
+[[step]]
+do = "auto_battle"
+note = "Cheren (trdata #54 Oshawott 5 against Tepig), mode 1 (scr 0782 @0x0641)"
+
+[[step]]
+do = "advance_text"
+shot = "after-battles"
+note = "to the end of script 9: 0x4081 2 (@0x06D2), Cheren and Bianca gone"
+
 [expect]
 map = 391
 party_size = 1
+save = ['s["party"][0]["species"] == 498']
 flags = ["0x961", "0x1F4", "0x1F5", "0x2A8"]
 
 [expect.vars]

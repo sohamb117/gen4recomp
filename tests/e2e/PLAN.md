@@ -6084,8 +6084,8 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1
-- end state: map 391; party size 1; flags set 0x961, 0x1F4, 0x1F5, 0x2A8; vars 0x4081=2
-- frames: estimate 9000, budget -
+- end state: map 391; party size 1; flags set 0x961, 0x1F4, 0x1F5, 0x2A8; vars 0x4081=2; 1 save check(s)
+- frames: estimate 9000, budget 14000
 - refs: zone_event 391 object 2 gfx 0xD0 (5,8) hidden by flag 0x2A8 -> scr 0782 script 9; scr 0782 @0x0220 msg 430 #11 (the gift box opened); @0x023A Cmd153 var 0x8020 (the choice); scr 0782 @0x026F/@0x029F/@0x02BC SetVar 0x4030 0 Snivy (495) / 1 Tepig (498) / 2 Oshawott (501); scr 0782 @0x02E6 GivePokemon var 0x8021 lv 5; @0x02F0 SetFlag 0x961; scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0465 GetBattleResult -> msg 430 #37 (won) / #38 (lost): the scene goes on either way; scr 0782 @0x0513-@0x055A Cheren heals both (msg 430 #43/#45); scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1; scr 0782 @0x06BE-@0x06D2 RemoveObject 0/1, SetFlag 0x1F4/0x1F5/0x2A8, SetVar 0x4081 2; zone_event 391 trigger 0 (8,2) var 0x4081 == 1 -> scr 0782 script 6 (the stairs gate, msg 430 #8); docs/BW_RAM.md (party, vars, flags, battle)
 - notes: The proposal run's battle reached Bianca's battle intro (docs/BW_RAM.md); mode 1 battles cannot end the scene: a loss only changes the line. Pick by the menu cursor: Tepig is the one the docs' runs chose (0x4030 = 1). [INFERENCE] estimate.
 
@@ -6458,8 +6458,8 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1
-- end state: map 391; party size 1; flags set 0x961, 0x1F4, 0x1F5, 0x2A8; vars 0x4081=2
-- frames: estimate 9000, budget -
+- end state: map 391; party size 1; flags set 0x961, 0x1F4, 0x1F5, 0x2A8; vars 0x4081=2; 1 save check(s)
+- frames: estimate 9000, budget 14000
 - refs: zone_event 391 object 2 gfx 0xD0 (5,8) hidden by flag 0x2A8 -> scr 0782 script 9; scr 0782 @0x0220 msg 430 #11 (the gift box opened); @0x023A Cmd153 var 0x8020 (the choice); scr 0782 @0x026F/@0x029F/@0x02BC SetVar 0x4030 0 Snivy (495) / 1 Tepig (498) / 2 Oshawott (501); scr 0782 @0x02E6 GivePokemon var 0x8021 lv 5; @0x02F0 SetFlag 0x961; scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1; scr 0782 @0x0465 GetBattleResult -> msg 430 #37 (won) / #38 (lost): the scene goes on either way; scr 0782 @0x0513-@0x055A Cheren heals both (msg 430 #43/#45); scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1; scr 0782 @0x06BE-@0x06D2 RemoveObject 0/1, SetFlag 0x1F4/0x1F5/0x2A8, SetVar 0x4081 2; zone_event 391 trigger 0 (8,2) var 0x4081 == 1 -> scr 0782 script 6 (the stairs gate, msg 430 #8); docs/BW_RAM.md (party, vars, flags, battle)
 - notes: The proposal run's battle reached Bianca's battle intro (docs/BW_RAM.md); mode 1 battles cannot end the scene: a loss only changes the line. Pick by the menu cursor: Tepig is the one the docs' runs chose (0x4030 = 1). [INFERENCE] estimate.
 
