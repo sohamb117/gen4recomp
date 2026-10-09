@@ -21,7 +21,8 @@
 #   camera    the bedroom at camera_zoom 512 / camera_tilt 160 against the
 #             plain one, and back at the defaults byte-identical to it
 #   battle    bw-battle.sched: the gift box and Bianca's battle set in_battle,
-#             the field after it clears it
+#             the field after it clears it; PC_NP_RULES_CHECK there: the fix-
+#             bugs rule (the 0 damage glitch) off and on
 # HeartGold / SoulSilver:
 #   intro     hgss-intro.sched: title, the touch-screen tutorial driven by
 #             stylus taps, Prof. Oak, the boy, the default name accepted;
@@ -237,10 +238,15 @@ for g in "${games[@]}"; do
         # NP_STAT_IN_BATTLE: the gift box, then Bianca's battle (overlay 93's
         # POKECON, pc/src/pc_bw_e2e.c) sets it; the field after it clears it.
         cp "$w/game.sav" "$w/battle.sav"
+        # PC_NP_RULES_CHECK: on the battle's first frame the fix-bugs hook
+        # (pc/src/pc_bw_rules.c) runs on the game's own fx multiply, bit off
+        # and on.
         run battle --frames 15000 --schedule $here/bw-battle.sched --save "$w/battle.sav" \
-            --dump-from 9000 --dump-every 1000
+            --dump-from 9000 --dump-every 1000 -e PC_NP_RULES_CHECK=1
         check "$g Bianca's battle sets in_battle, the field after it clears it" "$w/battle.log" "exit 0" \
             "in_battle 0 -> 1" "in_battle 1 -> 0"
+        check "$g fix-bugs rule: the 0 damage glitch with the bit off, fixed with it on" "$w/battle.log" \
+            "rules check: 1 damage x other 1/2: off 0, on 1" "rules check: PASS"
         ;;
     heartgold | soulsilver)
         run intro --frames 13900 --schedule $here/hgss-intro.sched --dump-from 1600 --dump-every 1500 \

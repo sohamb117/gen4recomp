@@ -485,6 +485,8 @@ static void quicksave_frame(const bw_field *f, int ready)
     sQsFrames = 0;
 }
 
+void pc_bw_rules_frame(int in_battle); /* pc_bw_rules.c: PC_NP_RULES_CHECK */
+
 static void bw_frame(void)
 {
     bw_field f;
@@ -496,6 +498,7 @@ static void bw_frame(void)
     pc_np_stat.map_id = field ? f.zone : 0;
     pokecon = bw_pokecon(field);
     pc_np_stat.in_battle_app = pokecon != 0;
+    pc_bw_rules_frame(pokecon != 0);
     quicksave_frame(&f, ready);
     if (pc_e2e_on()) bw_e2e_frame(&f, field, ready, pokecon);
 }

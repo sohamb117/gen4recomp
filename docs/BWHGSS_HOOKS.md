@@ -200,8 +200,16 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
   pokeheartgold bug documentation. Apply only the bugs HG still has, each as a `.c.patch` guard reading
   `pc_np_opt.rules`, plus a `pc_hg_rules.c` check modelled on `pc_np_field.c`'s. Testing needs a battle, so
   the field first.
-- **B/W.** No B/W battle runs (overlay 93), and there is no Gen 5 bug list here yet. Once battles run, list the
-  documented Gen 5 cartridge bugs, then gate each at its function with the D/P asm technique. Last in order.
+- **B/W: done for the one documented bug at a single decision point** (`pc/src/pc_bw_rules.c`). Bulbapedia's Gen 5
+  battle glitches: the 0 damage glitch is a clamp in the wrong place. Overlay 93's damage routine (Black
+  `ov93_021C1E74`, White `ov93_021C1E94`) raises 0 to 1 at 0x021C1FEC, then multiplies by the "other" modifier
+  (handler event 0x47, work 0x35) with the fx multiply that rounds half down (Black `ov93_021D7B10`, White
+  `ov93_021D7B30`), so 1 x 1/2 is 0. That call goes to `PcBw_DamageOther`
+  (`pc/patches/<VER>/arm9/overlays/93/asm/ndsrec_ov093_002.s.patch`), which with the bit on keeps it at 1, as the
+  game's own `ov93_021D7B2C` does. The others (Sky Drop, the Choice lock under Klutz / Embargo / Magic Room,
+  confusion and pinch Berries, Trick Room's speed wrap, Shed Shell) are state across turns or handler order, not
+  one decision point, and stay as the cartridge has them. `PC_NP_RULES_CHECK` (parity.sh `battle`) runs the hook
+  on the real multiply with the bit off and on.
 
 ### Mods and custom carts
 
