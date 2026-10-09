@@ -621,3 +621,19 @@ same 22905 frames and the same end, with no stall. The watchdog measures
 wall time, so a host stall under that much memory pressure explains it.
 The C-Gear (Fennel, after the Dreamyard's Dream Mist) and its wireless and
 IR features are not reached yet.
+
+The dark teal striped bottom screen in the field before the C-Gear is
+what the game draws, not a rendering gap. Checked at Black frame 25400, the
+wrecked bedroom:
+
+- DISPCNT_B is 0x00011710, so BG0, BG1, BG2 and OBJ are on, in mode 0.
+- The sub-screen BGs are in VRAM H at 0x06200000.
+- A separate Python render of those three layers matches the core's dump
+  of that screen pixel for pixel. It was made from the game's own VRAM,
+  sub palette and BGxCNT/offset registers: 0 of 49152 pixels differ
+  (/tmp/bw2/sub/render.py).
+- BG2 holds the stripes: 9 tiles, palettes 0 and 7.
+- BG0 and BG1 maps are all tile 0. The character block already holds
+  758 tiles, among them the C-Gear's hexagon icons. The C-Gear's screen
+  is loaded but not shown until the game hands the C-Gear over (Fennel,
+  scr 0020 @0x048F, Cmd19E 1).
