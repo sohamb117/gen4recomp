@@ -91,8 +91,10 @@ The DS harness as Platinum and D/P use it, with these differences:
   the boss fights, which `auto_battle` reaches with `send = "best"`). SoulSilver's chain lists HeartGold's dirs and
   its own `31-whirl-islands-lugia`.
 - **Heal**: every Pokemon Center 1F has the nurse at (8,11) and the exit at (8,19).
-- **Fly and field moves** (bots.py `_hgss_open_party_move`, `_hgss_fly`; unverified at runtime: the probe sees none
-  of these screens, so every key count is the decomp's and the bots note the presses they make): X opens overlay 27's
+- **Fly and field moves** (bots.py `_hgss_open_party_move`, `_hgss_fly`; the probe sees none of these screens, so every
+  key count is the decomp's and the bots note the presses they make; seen at runtime on HeartGold after 03: X opens the
+  menu with the cursor on POKEDEX, DOWN reaches POKEMON, A opens the party on slot 0 and A its context menu SUMMARY,
+  SWITCH, ITEM, QUIT; the field-move entries and the fly map are not yet seen): X opens overlay 27's
   bottom-screen menu, slots POKEDEX, POKEMON, BAG, POKEGEAR (left column) and TRAINER CARD, SAVE, OPTIONS (right),
   each shown when its flag is set (FLAG_GOT_POKEDEX, _STARTER, _BAG, _POKEGEAR, _TRAINER_CARD, _SAVE_BUTTON,
   _OPTIONS_BUTTON, read from an in-game save's dump); the D-pad follows ov27's neighbour table and A takes the
