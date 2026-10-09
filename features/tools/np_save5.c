@@ -21,6 +21,8 @@
  *   np_save5 set-box-name <save> <box 1-24> <name>
  *   np_save5 set-location <save> <zone> <x> <y> <z>       where CONTINUE starts
  *   np_save5 add-mon <save> <rom.nds> <species> <level> [move...]   party Pokemon
+ *   np_save5 set-mon <save> <rom.nds> <slot> <species> <level> [move...]   a party slot replaced
+ *   np_save5 set-level <save> <rom.nds> <slot> <level>   a party Pokemon's level (stats recalculated)
  *
  * np_save4's set-coins, set-dex-obtained and set-mystery-gift have no
  * Black/White counterpart (no coin case; the Pokédex and Mystery Gift need
@@ -68,9 +70,12 @@ static int usage(void)
             "  %s set-box-name <save> <box 1-24> <name>\n"
             "  %s set-location <save> <zone> <x> <y> <z>\n"
             "  %s add-mon <save> <rom.nds> <species> <level> [move id...]\n"
+            "  %s set-mon <save> <rom.nds> <party slot 0-5> <species> <level> [move id...]\n"
+            "  %s set-level <save> <rom.nds> <party slot 0-5> <level 1-100>\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
-            prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog);
+            prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
+            prog);
     return EXIT_USAGE;
 }
 
@@ -565,12 +570,14 @@ static int edit_status(save5_status st)
     return EXIT_VALUE;
 }
 
-/* add-mon: a party Pokemon as np_save4 add-mon makes one (base friendship,
- * first ability, the growth rate's EXP for the level, stats from base stats
- * with IVs 20 and no EVs, nature pid % 25, a Poke Ball, the trainer as OT,
- * this game as origin), appended to the party. Moves are given by id. */
-static save5_status add_mon(save5 *s, const char *rom_path, unsigned long species, unsigned long level, char **moves,
-                            int nmoves)
+/* add-mon / set-mon: a party Pokemon as np_save4 add-mon makes one (base
+ * friendship, first ability, the growth rate's EXP for the level, stats from
+ * base stats with IVs 20 and no EVs, nature pid % 25, full HP, a Poke Ball,
+ * the trainer as OT, this game as origin). Moves are given by id. `slot` < 0
+ * appends it to the party (add-mon); otherwise it replaces the Pokemon in
+ * that slot (set-mon: the e2e boosts' way to strengthen a full party). */
+static save5_status put_mon(save5 *s, const char *rom_path, long slot, unsigned long species, unsigned long level,
+                            char **moves, int nmoves)
 {
     FILE *rf;
     nd_rom rom;
@@ -585,9 +592,14 @@ static save5_status add_mon(save5 *s, const char *rom_path, unsigned long specie
     const nd_species *sp = have_gd ? nd_species_get(&gd, (uint32_t)species) : NULL;
     uint8_t count = save5_party_count(s);
     save5_trainer t;
-    if (!sp || !sp->valid || !have_names || count >= SAVE5_PARTY_MAX || save5_get_trainer(s, &t) != SAVE5_OK) {
-        fprintf(stderr, "%s: cannot add species %lu (not a Black/White ROM, unknown species or full party)\n", prog,
-                species);
+    if (!sp || !sp->valid || !have_names || save5_get_trainer(s, &t) != SAVE5_OK
+        || (slot < 0 ? count >= SAVE5_PARTY_MAX : slot >= count)) {
+        if (slot < 0)
+            fprintf(stderr, "%s: cannot add species %lu (not a Black/White ROM, unknown species or full party)\n",
+                    prog, species);
+        else
+            fprintf(stderr, "%s: cannot put species %lu in slot %ld (not a Black/White ROM, unknown species or no "
+                    "Pokemon in that slot)\n", prog, species, slot);
         goto out;
     }
     pkm5 p;
@@ -628,12 +640,51 @@ static save5_status add_mon(save5 *s, const char *rom_path, unsigned long specie
     uint16_t stats[6];
     pkm5_calc_stats(sp->base, ivs, evs, (uint8_t)level, nature, species == 292, stats);
     pkm5_set_party_stats(&p, (uint8_t)level, stats[0], stats, 0);
-    st = save5_set_party(s, count, &p);
-    if (st == SAVE5_OK)
+    st = save5_set_party(s, slot < 0 ? count : (int)slot, &p);
+    if (st == SAVE5_OK && slot < 0)
         st = save5_set_party_count(s, (uint8_t)(count + 1));
 out:
     if (have_names)
         nd_names_free(&names);
+    if (have_gd)
+        nd_gamedata_free(&gd);
+    nd_rom_close(&rom);
+    fclose(rf);
+    return st;
+}
+
+/* set-level: party slot `slot` at `level`: its growth rate's EXP for the
+ * level, its stats recalculated from its own IVs, EVs and nature, its HP the
+ * new maximum (the e2e boosts' party-level; np_save4 set-level's rule).
+ * Moves, friendship and the rest stay as they are: no level-up moves are
+ * learned and no evolution runs. */
+static save5_status set_level(save5 *s, const char *rom_path, unsigned long slot, unsigned long level)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return SAVE5_ERR_ARG;
+    nd_gamedata gd;
+    save5_status st = SAVE5_ERR_ARG;
+    int have_gd = nd_game_gen(rom.game) == 5 && nd_gamedata_load(&gd, &rom) == ND_OK;
+    pkm5 p;
+    pkm5_info info;
+    const nd_species *sp = NULL;
+    if (have_gd && slot < save5_party_count(s) && save5_get_party(s, (int)slot, &p) == SAVE5_OK
+        && !pkm5_is_empty(&p)) {
+        pkm5_info_get(&p, &info);
+        sp = nd_species_get(&gd, info.species);
+    }
+    if (!sp || !sp->valid || info.is_egg) {
+        fprintf(stderr, "%s: no party Pokemon in slot %lu (an egg, or not a Black/White ROM)\n", prog, slot);
+        goto out;
+    }
+    pkm5_set_exp(&p, nd_exp_for_level(&gd, info.species, (uint32_t)level));
+    uint16_t stats[6];
+    pkm5_calc_stats(sp->base, info.ivs, info.evs, (uint8_t)level, info.nature, info.species == 292, stats);
+    pkm5_set_party_stats(&p, (uint8_t)level, stats[0], stats, info.status);
+    st = save5_set_party(s, (int)slot, &p);
+out:
     if (have_gd)
         nd_gamedata_free(&gd);
     nd_rom_close(&rom);
@@ -749,7 +800,16 @@ static int cmd_edit(int argc, char **argv)
     } else if (!strcmp(cmd, "add-mon") && na >= 3 && na <= 7) {
         bad = parse_ul(a[1], SAVE5_DEX_MAX, &v1) || v1 == 0 || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)
-            st = add_mon(&s, a[0], v1, v2, a + 3, na - 3);
+            st = put_mon(&s, a[0], -1, v1, v2, a + 3, na - 3);
+    } else if (!strcmp(cmd, "set-mon") && na >= 4 && na <= 8) {
+        bad = parse_ul(a[1], SAVE5_PARTY_MAX - 1, &v3) || parse_ul(a[2], SAVE5_DEX_MAX, &v1) || v1 == 0 ||
+              parse_ul(a[3], 100, &v2) || v2 == 0;
+        if (!bad)
+            st = put_mon(&s, a[0], (long)v3, v1, v2, a + 4, na - 4);
+    } else if (!strcmp(cmd, "set-level") && na == 3) {
+        bad = parse_ul(a[1], SAVE5_PARTY_MAX - 1, &v1) || parse_ul(a[2], 100, &v2) || v2 == 0;
+        if (!bad)
+            st = set_level(&s, a[0], v1, v2);
     } else {
         save5_free(&s);
         return usage();
