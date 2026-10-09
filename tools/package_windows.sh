@@ -8,8 +8,10 @@
 #   tools/package_windows.sh [--test]
 #
 # Every game whose wasm core exists is built in (NP_GUEST_WASM_<game>
-# overrides the defaults games/platinum/build/pc-wasm/pokeplatinum.wasm and
-# games/diamond/build/pc-wasm/poke{diamond,pearl}.wasm). NP_BUILD_DIR
+# overrides the defaults: games/{platinum,diamond}/build/pc-wasm/poke*.wasm,
+# games/ndsrec/build/pc-wasm/ndsrec-{black,white}.wasm,
+# games/heartgold/build/pc-wasm/poke{heartgold,soulsilver}.wasm,
+# games/{ruby,emerald}/build/pc-wasm/poke*.wasm). NP_BUILD_DIR
 # overrides build/win-app. The build honours CMAKE_BUILD_PARALLEL_LEVEL (run
 # it under tools/heavy.sh).
 #
@@ -17,8 +19,10 @@
 # amd64 container, tools/docker/wine.Dockerfile) with SDL's dummy video and
 # audio drivers and NP_AUTOTEST booting each built-in game whose ROM is in
 # the build tree (Platinum: NP_TEST_ROM, default
-# games/platinum/build/rom/pokeplatinum.us.nds; Ruby/Sapphire/Emerald: the
-# decomp ROMs in .cache/gba) to its title screen;
+# games/platinum/build/rom/pokeplatinum.us.nds; HeartGold/SoulSilver: NP_HG_ROM /
+# NP_SS_ROM, default their decomp ROMs in games/heartgold/build; Black/White:
+# NP_BLACK_ROM / NP_WHITE_ROM, default the dumps in roms/; Ruby/Sapphire/Emerald:
+# the decomp ROMs in .cache/gba) to its title screen;
 # NP_WIN_SHOTS=<dir> keeps the screenshots.
 set -euo pipefail
 
@@ -44,7 +48,11 @@ guest_args=() built=()
 : "${NP_GUEST_WASM_ruby:=$ROOT/games/ruby/build/pc-wasm/pokeruby.wasm}"
 : "${NP_GUEST_WASM_sapphire:=$ROOT/games/ruby/build/pc-wasm/pokesapphire.wasm}"
 : "${NP_GUEST_WASM_emerald:=$ROOT/games/emerald/build/pc-wasm/pokeemerald.wasm}"
-for game in diamond pearl platinum ruby sapphire emerald; do
+: "${NP_GUEST_WASM_black:=$ROOT/games/ndsrec/build/pc-wasm/ndsrec-black.wasm}"
+: "${NP_GUEST_WASM_white:=$ROOT/games/ndsrec/build/pc-wasm/ndsrec-white.wasm}"
+: "${NP_GUEST_WASM_heartgold:=$ROOT/games/heartgold/build/pc-wasm/pokeheartgold.wasm}"
+: "${NP_GUEST_WASM_soulsilver:=$ROOT/games/heartgold/build/pc-wasm/pokesoulsilver.wasm}"
+for game in diamond pearl platinum black white heartgold soulsilver ruby sapphire emerald; do
     var="NP_GUEST_WASM_$game"
     wasm="${!var:-}"
     if [ -n "$wasm" ] && [ -f "$wasm" ]; then
@@ -56,7 +64,7 @@ done
 [ ${#guest_args[@]} -gt 0 ] || { echo "package_windows: no wasm core found; build one first (docs/BUILDING.md)" >&2; exit 1; }
 
 # -g0: zig cc emits debug info by default, which the package strips anyway
-# (llvm-strip below); with it the six cores' objects take ~3.5 GB.
+# (llvm-strip below); with it the six cores' objects took ~3.5 GB.
 cmake -S "$ROOT/shell" -B "$BUILD" -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE="$ROOT/tools/cmake/windows-x64.cmake" \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS=-g0 -DNP_CORE=real -DBUILD_TESTING=OFF \
@@ -107,6 +115,13 @@ if [ "$TEST" = 1 ]; then
             pearl) ROM="$ROOT/games/diamond/build/pearl.us/pokepearl.us.nds" ;;
             ruby | sapphire) ROM="$ROOT/.cache/gba/pokeruby/poke$game.gba" run="frames=900,press=400:start:10" ;;
             emerald) ROM="$ROOT/.cache/gba/pokeemerald/pokeemerald.gba" run="frames=900,press=400:start:10" ;;
+            # B/W: the title (Reshiram / Zekrom) from ~4800, no input (START
+            # at 5000 would leave it); HG/SS: the intro runs to the title (Ho-Oh
+            # / Lugia below the logo) by ~4400 with no input.
+            black) ROM="${NP_BLACK_ROM:-$ROOT/roms/Pokemon - Black Version (USA, Europe) (NDSi Enhanced).nds}" run="frames=4950" ;;
+            white) ROM="${NP_WHITE_ROM:-$ROOT/roms/Pokemon - White Version (USA, Europe) (NDSi Enhanced).nds}" run="frames=4950" ;;
+            heartgold) ROM="${NP_HG_ROM:-$ROOT/games/heartgold/build/heartgold.us/pokeheartgold.us.nds}" run="frames=4800" ;;
+            soulsilver) ROM="${NP_SS_ROM:-$ROOT/games/heartgold/build/soulsilver.us/pokesoulsilver.us.nds}" run="frames=4800" ;;
         esac
         [ -f "$ROM" ] || { echo "package_windows: no $game ROM at $ROM; not tested"; continue; }
         ext="${ROM##*.}"
