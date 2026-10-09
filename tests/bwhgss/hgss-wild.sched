@@ -1,14 +1,17 @@
-# HeartGold: CONTINUE from a save at New Bark Town's west exit, west onto
-# Route 29, then up and down in its grass while tapping RUN's place on the
-# touch screen every 50 frames (in the field that spot of the menu panel
-# does nothing): the first wild Pokemon (a Sentret with hgss-e2e's 02
-# start save, at ~3300-3600 depending on the core) is run from ("Got away
+# HeartGold / SoulSilver: CONTINUE from a save at New Bark Town's west exit,
+# west onto Route 29, down and left into its grass, then up and down there
+# while tapping RUN's place on the touch screen every 50 frames (in the
+# field that spot of the menu panel does nothing): the first wild Pokemon
+# (~3300-3900, depending on the save and the core) is run from ("Got away
 # safely!") and the field comes back, wherever the encounter falls.
+# Checked from hgss-e2e's HeartGold 02 start save and SoulSilver 01 end save.
 1300:start
 1700:start
 2100:a:4:60:2
 2250:b:4
 2300:left:200
-2520:up:40:80:40
-2560:down:40:80:40
-2530:tap:128:176:4:50:120
+2510:down:40
+2560:left:40
+2610:up:40:80:40
+2650:down:40:80:40
+2620:tap:128:176:4:50:120

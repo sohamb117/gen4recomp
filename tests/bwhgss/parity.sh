@@ -37,8 +37,10 @@
 #             Town's west exit (else SKIPped): CONTINUE into the field
 #             (hgss-field.sched); render scale 2 and widescreen frame sizes;
 #             camera zoom / tilt change the field and leave nothing behind;
-#             an F1 quick save (np_save4 verifies it); hgss-wild.sched: a
-#             wild battle in Route 29's grass sets in_battle, RUN clears it
+#             an F1 quick save (np_save4 verifies it); the game's own save
+#             from the touch menu (hgss-save.sched), np_save4 verifies it and
+#             CONTINUE comes back; hgss-wild.sched: a wild battle in Route
+#             29's grass sets in_battle, RUN clears it
 #
 # Frames are dumped as PNGs to build/evidence/bwhgss/<game>/ (outside git).
 # Exit status: 0 every check passed (games without core or ROM are SKIPped),
@@ -343,6 +345,17 @@ for g in "${games[@]}"; do
             echo "exit $?" >> "$w/verify-quicksave.log"
             check "$g quick save verifies (np_save4)" "$w/verify-quicksave.log" "exit 0" "all checksums valid"
         fi
+        field save --frames 3700 --schedule $here/hgss-save.sched
+        check "$g the game's own save from the touch menu" "$w/save.log" "exit 0" "stored" \
+            "field_ready=1 .* map_id=60"
+        if [ -x "$save4" ]; then
+            "$save4" verify "$w/save.sav" > "$w/verify-save.log" 2>&1
+            echo "exit $?" >> "$w/verify-save.log"
+            check "$g its save verifies (np_save4)" "$w/verify-save.log" "exit 0" "all checksums valid"
+        fi
+        cp "$w/save.sav" "$w/save-continue.sav"
+        run save-continue --frames 2400 --schedule $here/hgss-field.sched --save "$w/save-continue.sav"
+        check "$g CONTINUE from that save" "$w/save-continue.log" "exit 0" "field_ready=1 .* map_id=60"
         field wild --frames 9000 --schedule $here/hgss-wild.sched --dump-from 3000 --dump-every 250
         check "$g NP_STAT_IN_BATTLE: a wild battle on Route 29, RUN, back in the field" "$w/wild.log" \
             "exit 0" "in_battle 0 -> 1" "in_battle 1 -> 0" "field_ready=1 .* in_battle=0"

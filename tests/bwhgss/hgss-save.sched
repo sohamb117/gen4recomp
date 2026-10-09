@@ -1,0 +1,10 @@
+# HeartGold / SoulSilver: CONTINUE into the field (New Bark), then the
+# game's own save from the touch-screen menu: SAVE (~2300), "Would you
+# like to save the game?" YES, "There is already a saved file. Is it OK to
+# overwrite it?" YES, the save, the menu closed (~3360).
+1300:start
+1700:start
+2100:a:4:60:2
+2300:tap:124:76:4
+2400:a:4:60:12
+3300:b:4:60:3
