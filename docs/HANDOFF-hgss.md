@@ -33,7 +33,7 @@ loader's exact count still stops on a sixth entry). Verified: HeartGold
 headless frame 16170 loads overlays 124 and 123, frame 16176 overlays 1,
 123, 2, 3 and frame 16180 overlay 27 (`PC_TRACE_OVERLAYS=1`).
 
-## Current state (hgss-play2, 2026-10-08): the bedroom renders
+## Current state (hgss-play2, 2026-10-09): New Bark Town, save, CONTINUE
 
 Fixed on main: armrec msl.s `.type @function` routines (fe357c02a), the
 cartridge IR chip (53b112d0c), the C OS_GetTick polling the timer model
@@ -51,11 +51,36 @@ were rebuilt at main 6ebed6312 and all 11 `tests/dp/regress.sh` cases
 output (576 files each) was byte-identical between the old and new
 armrec.py, and the armrec bridge test passes 48/48.
 
-Open: the player's overworld sprite draws as rows of black dots every 8
-lines (bedroom, frame 16600) and its body never appears. SoulSilver: not yet
-rebuilt with these fixes; twice its `make` sat at 100% CPU after gen_bridge
-for over an hour while HeartGold's took 3 minutes. Checkpoint runs:
-/tmp/hgss2/forkrun.sh with /tmp/hgss2/np_headless-fork-at.patch applied (not on main).
+Since then (HeartGold, inspected frames under /tmp/hgss2):
+- Player sprite (165d72148): card reads take time (`PC_CARD_READ_TIME`,
+  HG/SS only), so FieldMap_Init's VBlank-queue tasks drain and the
+  overworld sprite textures upload. Ethan in the bedroom: hgD_016800.png.
+- Stairs 2F -> 1F (map 64 -> 63), Mom's scene, the door to New Bark
+  (map 60 at frame 20344) and Lyra/Marill's scene: f1sheet.png,
+  hgF1_022000.png. The door warp trapped in wasm until 9d997a419 (an
+  unprototyped 4-argument callback call in ov01_022044B0).
+- In-game save from the touch menu ("Shae saved the game.", s1full.png) and
+  fresh-process CONTINUE back to New Bark (ksheet.png; the main menu also
+  lists CONNECT TO POKeWALKER, the IR chip answering).
+- Naming screen: no SIGBUS any more (the sentinel-lr leak was the msl goto
+  bug); typing ABC and OK reaches Oak's confirmation (nm2sheet.png).
+- hgss-e2e's milestone 01 (bedroom -> Elm -> Cyndaquil -> Pokegear -> west
+  exit, quick save) passes on HeartGold.
+- First battle (Route 29 grass): aborted in pc-gpu3d (MTX_LOAD_4x4 short of
+  parameters) because recompiled GX_SendFifo64B had no geometry hook; fixed
+  by making it a host override (2638875c6). Verified: CONTINUE from hgss-e2e's
+  west-exit save, Route 29 grass, wild Sentret vs Cyndaquil at the command
+  menu (btsheet.png).
+
+Open: a CONTINUE run from a save is silent (audio rms 0.0 over 3500 frames
+on the title and the field) while intro runs have audio; not investigated.
+SoulSilver reaches the bedroom; a guest with all the fixes is building.
+Build time: make 3.81 re-walks the whole ~28 MB of `.d` dependencies after
+every finished job (`make -d`: one "File `all' does not exist" pass per
+reaped child), so a full HG or SS guest rebuild after a header change
+takes 30-60 min of make CPU; it is not a hang. Checkpoint runs:
+/tmp/hgss2/forkrun.sh with /tmp/hgss2/np_headless-fork-at.patch applied
+(not on main).
 
 ## Previous blocker (hgss2, 2026-10-08): field init hangs in FieldMap_Init
 
