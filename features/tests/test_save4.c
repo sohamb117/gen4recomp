@@ -770,6 +770,23 @@ static void test_location(save4_game game)
     CHECK_EQ_INT(r32(e + SAVE4_COPY_SIZE + 0x2348 + 0x2C), 4u << 15);
 }
 
+/* HG/SS Pokewalker courses: POKEWALKER.unlockedCourses at 0xE5DC + 0x130 of
+ * the newer copy's general block; D/P/Pt have none. */
+static void test_pokewalker(save4_game game)
+{
+    static uint8_t img[SAVE4_IMAGE_SIZE];
+    synth_save_build(img, game);
+    save4 s;
+    uint32_t courses = 0;
+    CHECK(save4_load(&s, img, sizeof(img)) == SAVE4_OK);
+    if (!save4_game_is_hgss(game)) {
+        CHECK(save4_get_pokewalker_courses(&s, &courses) == SAVE4_ERR_UNSUPPORTED);
+        return;
+    }
+    CHECK(save4_get_pokewalker_courses(&s, &courses) == SAVE4_OK);
+    CHECK_EQ_INT(courses, r32(img + SAVE4_COPY_SIZE + 0xE5DC + 0x130));
+}
+
 int main(void)
 {
     test_game(SAVE4_GAME_PT);
@@ -784,6 +801,10 @@ int main(void)
     test_location(SAVE4_GAME_DP);
     test_location(SAVE4_GAME_HG);
     test_location(SAVE4_GAME_SS);
+    test_pokewalker(SAVE4_GAME_PT);
+    test_pokewalker(SAVE4_GAME_DP);
+    test_pokewalker(SAVE4_GAME_HG);
+    test_pokewalker(SAVE4_GAME_SS);
 
     /* Flag/var names generated from the decomp. */
     uint16_t id = 0;

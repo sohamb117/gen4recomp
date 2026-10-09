@@ -375,6 +375,12 @@ typedef struct save4_poketch {
 } save4_poketch;
 save4_status save4_get_poketch(const save4 *s, save4_poketch *p);
 
+/* HG/SS: the Pokewalker courses the save has unlocked
+ * (POKEWALKER.unlockedCourses, bit c = course c; Pokewalker_Init unlocks 0
+ * and 1, a Mystery Gift course card its own). SAVE4_ERR_UNSUPPORTED for
+ * D/P/Pt. */
+save4_status save4_get_pokewalker_courses(const save4 *s, uint32_t *courses);
+
 /* Platinum flag/var names from pokeplatinum generated/vars_flags.txt
  * (generated at build time). Platinum ids only: HG/SS number theirs
  * differently. */

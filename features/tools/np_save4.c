@@ -758,6 +758,16 @@ static int cmd_dump(const char *rom_path, const char *save_path)
                 fprintf(o, "%s%d", n++ ? ", " : "", a);
         fputs("]},\n", o);
     }
+    uint32_t courses;
+    if (save4_get_pokewalker_courses(&s, &courses) != SAVE4_OK) {
+        fputs("  \"pokewalker\": null,\n", o); /* D/P/Pt have no Pokewalker */
+    } else {
+        fputs("  \"pokewalker\": {\"unlocked_courses\": [", o);
+        for (int c = 0, n = 0; c < 32; c++)
+            if (courses >> c & 1)
+                fprintf(o, "%s%d", n++ ? ", " : "", c);
+        fputs("]},\n", o);
+    }
     dump_hall_of_fame(o, &s);
     dump_daycare(o, &s);
     dump_roamers(o, &s);

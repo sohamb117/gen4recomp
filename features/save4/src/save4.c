@@ -83,6 +83,7 @@ struct save4_layout {
     uint32_t location;     /* FieldOverworldState / LocalFieldData: Location player, entrance */
     uint32_t map_objects;  /* HG/SS SavedMapObjectList (64 SavedMapObject of 0x50); 0: not modelled */
     uint32_t poketch;      /* Poketch, the entry right after VarsFlags; 0: none */
+    uint32_t pokewalker;   /* HG/SS POKEWALKER; 0: none */
     /* PC storage, relative to the storage block. */
     uint32_t box_current;  /* u32 current box */
     uint32_t box_mons;     /* box 0 slot 0 */
@@ -149,6 +150,12 @@ static const uint8_t kPocketCapJohto[SAVE4_POCKET_COUNT] = {165, 50, 101, 12, 40
  *     map_object.h, 0x50 each) at 0x2348, measured: in every HG/SS save
  *     looked at, the record there is the player's (objId 0xFF) at the saved
  *     Location's x/z.
+ *   pokewalker: POKEWALKER (include/pokewalker.h, size 0x134; save table
+ *     entry SAVE_POKEWALKER) at 0xE5DC, its unlockedCourses at +0x130,
+ *     measured: 0x3 (Pokewalker_Init's Refreshing Field and Noisy Forest)
+ *     there in every HG/SS save looked at, and the bit of the course a
+ *     Mystery Gift course card names set after the deliveryman gives it
+ *     (MGGive_PokewalkerCourse, src/scrcmd_mystery_gift.c).
  *   PCStorage (include/pokemon_storage_system.h): PC_BOX boxes[18] (30
  *     BoxPokemon + 16 bytes = 0x1000 each), curBox 0x12000,
  *     boxModifiedFlag 0x12004, box_names 0x12008.
@@ -176,8 +183,8 @@ static const save4_layout kLayouts[] = {
      .mg_tag_end = SAVE4_MG_MEMORIAL_PHOTO + 1, /* MG_TAG_MAX */
      .mg_types = MG_TYPES(SAVE4_MG_POKEMON, SAVE4_MG_BATTLE_REG) | MG_TYPE(SAVE4_MG_COSMETICS) |
                  MG_TYPE(SAVE4_MG_MANAPHY_EGG) | MG_TYPES(SAVE4_MG_UNKNOWN, SAVE4_MG_MEMORIAL_PHOTO),
-     .location = 0x1234, .map_objects = 0x2348, .poketch = 0, .box_current = 0x12000, .box_mons = 0, .box_stride = 0x1000,
-     .box_names = 0x12008, .box_modified = 0x12004},
+     .location = 0x1234, .map_objects = 0x2348, .poketch = 0, .pokewalker = 0xE5DC, .box_current = 0x12000,
+     .box_mons = 0, .box_stride = 0x1000, .box_names = 0x12008, .box_modified = 0x12004},
 };
 
 /* PlayerSave (include/save_player.h) = Options(2) + pad(2) + TrainerInfo
@@ -1078,6 +1085,15 @@ save4_status save4_get_poketch(const save4 *s, save4_poketch *p)
     p->given = (k[0] & 1) != 0;
     for (int i = 0; i < SAVE4_POKETCH_APPS; i++)
         p->apps[i] = k[3 + i] != 0;
+    return SAVE4_OK;
+}
+
+save4_status save4_get_pokewalker_courses(const save4 *s, uint32_t *courses)
+{
+    REQUIRE_LOADED(s);
+    if (!s->layout->pokewalker)
+        return SAVE4_ERR_UNSUPPORTED;
+    *courses = g32(gen_c(s) + s->layout->pokewalker + 0x130);
     return SAVE4_OK;
 }
 
