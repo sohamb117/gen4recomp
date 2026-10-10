@@ -2017,7 +2017,11 @@ def bot_rail(s, step, ctx):
     position (the rail position the game keeps in the player's map object) is within `near` (default 2) of (x, z)
     (or of x alone, or z alone, when only one is given),
     or, with `map`, until the map becomes `map`; a hold that stops moving the player for 120 frames fails, unless
-    `script = true` (a trigger on the way runs a script that stops the player: the hold ends there). The rails turn
+    `script = true` (a trigger on the way runs a script that stops the player: the hold ends there). With
+    `on_battle = "fight"` a trainer whose sight stops the player on the way is fought (auto_battle) and the text
+    around the battle is advanced with A (one tap per 60 still frames, 600 still frames before the hold fails; the
+    field never reports ready on a rail map, so the hold itself says when the player walks again; battle frames do
+    not count against `max`): Victory Road's 214. The rails turn
     with the camera: which key follows a street depends on where on its width the player is, so a route is the one
     a probe walk found (a fresh press after a warp can turn another way than a key held through it)."""
     keys = step["keys"] + ("+b" if step.get("run") else "")
@@ -2025,6 +2029,10 @@ def bot_rail(s, step, ctx):
     near = _int(step, "near", 2)
     chunk = 1 if near == 0 else 6  # an exact stop is checked every frame: a 6-frame hold can step over the tile
     limit = s.frame + _int(step, "max", 6000)
+    fight = step.get("on_battle") == "fight"
+    if step.get("on_battle") not in (None, "fight"):
+        raise HarnessError("rail: on_battle is \"fight\" or absent, not %r" % step["on_battle"])
+    stall = 600 if fight else 120
     still, last, logged = 0, None, 0
     while True:
         if want_map is not None and s.map_id == want_map:
@@ -2037,9 +2045,19 @@ def bot_rail(s, step, ctx):
         if pos and pos != last and (s.frame - logged >= 60):
             logged = s.frame
             s.note("rail: at (%d,%d) on map %d" % pos)
+        if fight and s.in_battle:
+            f0 = s.frame
+            bot_auto_battle(s, {}, ctx)
+            limit += s.frame - f0
+            still, last = 0, None
+            continue
         still = still + chunk if pos == last else 0
         last = pos
-        if still >= 120:
+        if fight and still and still % 60 < chunk and still < stall:
+            s.run(2, "a")  # the trainer's lines before and after the battle
+            s.run(10)
+            continue
+        if still >= stall:
             if step.get("script"):
                 break  # a trigger's script took the player over: the hold ends there
             raise HarnessError("rail: %s stopped moving at %s on map %d" % (keys, pos[:2] if pos else "?", s.map_id))

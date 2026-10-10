@@ -6032,7 +6032,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 32 milestones, ~1363352 frames estimated
+### Story chain: 32 milestones, ~1397722 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6063,7 +6063,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [25-relic-castle-nacrene-stone](black/25-relic-castle-nacrene-stone/milestone.toml) | The Relic Castle and the stone at Nacrene's museum | P0 | both | 57608 | prev + `None` | 16 | passing |
 | [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 44485 | prev + `None` | 120 | passing |
 | [27-opelucid-drayden-legend-badge](black/27-opelucid-drayden-legend-badge/milestone.toml) | Opelucid Gym (Black): Drayden's Legend Badge | P0 | black | 53724 | prev + `None` | 132 | passing |
-| [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 45000 | prev + `None` | 136 | planned |
+| [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 79370 | prev + `None` | 136 | passing |
 | [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
 | [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
 | [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
@@ -6340,14 +6340,14 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - notes: Measured from the chain's 26 end save (CONTINUE included): Black 53724 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). The gym's dragon bodies and necks are rails; the six switches are ledge hops that toggle one arm of a dragon each, and a dragon's two arms set where its head (the lift) points. The route is IGN's order, tiles from the probe: rail stops are exact (a junction turns only from its exact tile), and each rail dead end takes a 16-frame press the same way before the next direction. The (18,29) switch is pressed twice and (33,27) twice. The leader's badge flag (0x979) is set by the leader's script and cleared again before the gate, so [expect] reads the badge count, TM82 and the Master Ball. White plays white/27-opelucid-iris-legend-badge (Iris, trdata #132, the same party) with the same steps. The boost levels the party (levels only): unboosted, scouting reached the leader with only Sawk standing.
 
 #### black/28-route10-cheren-victory-road — Route 10 (Cheren), the Badge Check Gates and Victory Road
-- proves: Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokémon League. Start: the Opelucid Gate (zone 132) -> end: the Pokémon League (zone 136), 0x40B8 = 4.
+- proves: Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokemon League. Start: the Opelucid Gate (zone 132, 27's end) -> end: the Pokemon League (zone 136), 0x40B8 = 4.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4
-- end state: map 136; vars 0x40B8=4
-- frames: estimate 45000, budget -
-- refs: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4; zones 356-363 (the Badge Check Gates): scr 0712 @0x011A ... scr 0726 @0x010E Warp to the next gate; zones 214-228 (Victory Road); scr 0428 @0x004E Warp zone 136 (32,60)
-- notes: Victory Road needs Strength/Surf [INFERENCE: HM04 Strength's source is not in these scripts]. [INFERENCE] estimate.
+- end state: map 136; 8 badges; >= 2 battles; vars 0x40B8=4
+- frames: estimate 79370, budget 119500
+- refs: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4; zones 356-363 (the Badge Check Gates): trigger (13..17,8) -> scr 0712 .. 0726: CheckBadge, Warp to the next gate (15,20); 364 warp 1 (15,3) -> zone 214 warp 14; zone_event 214 (Victory Road outdoors, a rail map): warps as (line, front, side): 15 (0,5,-3) -> 215, 6 (4,5,-3) -> 220, 3 (29,3,-2) -> 223, 9 (40,2,-2) -> 227, 18 (61,2,-2) -> 228 warp 0; warp 10 (60,2,-3) and trigger 0 (line 60, var 0x400A == 0 -> scr 0428 script 1) the road up to zone 136; trigger 1 (13,6) var 0x40CF == 0 -> scr 0428 script 4 (the slide hiker); 214's rail tables in RAM (docs/BW_PLAN.md, Rails): 76 points, 65 lines; terraces at y 0, 5, 10, 15, 20, 25, 30, joined by the caves (up) and the cliff slides (down); caves (zone_event warps): 215 w1 (16,24) -> 216 w0; 216 w1 (5,18) -> 214 w16; 220 w1 (3,16) -> 219 w0; 219 w2 (7,4) -> 221 w1; 221 w0 (8,10) -> 214 w13; 223 w1 (11,13) -> 224 w2; 224 w1 (13,6) -> 225 w1; 225 w2 (7,4) -> 226 w2; 226 w1 (23,22) -> 214 w5; 227 w1 (12,12) -> 228 w2; 228 w0 (9,10) -> 214 w18
+- notes: Measured from the previous end save (CONTINUE included): Black 63767, White 79370 frames on core-bwm (main 61a3cd008d, the chain's real 27 ends). Victory Road's outdoor zone 214 is a rail map: the rail bot's holds stop on exact probe positions found by reading the player's rail state (MMDL +0x98 line, +0x9C side and front) against the rail tables; a cliff slide is a down-hold past a terrace's edge at a slide point (line 15 front 2; line 57 front 0). Rail holds fight the trainers that spot the player (on_battle = "fight"). The route is the walkthrough's: 215, 216, slide, 220, 219, 221, 223, 224, 225, 226, its right-hand exit, the right slide, 227, 228, the road up. No Strength or Surf: the boulders only make shortcuts. Cheren and Victory Road were won without a boost.
 
 #### black/29-elite-four — The Elite Four
 - proves: Proves the Elite Four: Shauntal, Grimsley, Marshal and Caitlin in any order, then the way to the Champion's room. Start: the Pokémon League (zone 136) -> end: the League's centre (zone 137) after the fourth win, 0x40A1 = 1.
@@ -6395,7 +6395,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 32 milestones, ~1367107 frames estimated
+### Story chain: 32 milestones, ~1401477 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6426,7 +6426,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [25-relic-castle-nacrene-stone](black/25-relic-castle-nacrene-stone/milestone.toml) | The Relic Castle and the stone at Nacrene's museum | P0 | both | 57608 | prev + `None` | 16 | passing |
 | [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 44485 | prev + `None` | 120 | passing |
 | [27-opelucid-iris-legend-badge](white/27-opelucid-iris-legend-badge/milestone.toml) | Opelucid Gym (White): Iris's Legend Badge | P0 | white | 57479 | prev + `None` | 132 | passing |
-| [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 45000 | prev + `None` | 136 | planned |
+| [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 79370 | prev + `None` | 136 | passing |
 | [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
 | [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
 | [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
@@ -6703,14 +6703,14 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - notes: Measured from the chain's 26 end save (CONTINUE included): White 57479 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). The gym's dragon bodies and necks are rails; the six switches are ledge hops that toggle one arm of a dragon each, and a dragon's two arms set where its head (the lift) points. The route is IGN's order, tiles from the probe: rail stops are exact (a junction turns only from its exact tile), and each rail dead end takes a 16-frame press the same way before the next direction. The (18,29) switch is pressed twice and (33,27) twice. The leader's badge flag (0x978) is set by the leader's script and cleared again before the gate, so [expect] reads the badge count, TM82 and the Master Ball. Black plays black/27-opelucid-drayden-legend-badge (Drayden, trdata #133) with the same steps. The boost levels the party (levels only): unboosted, scouting reached the leader with only Sawk standing.
 
 #### white/28-route10-cheren-victory-road — Route 10 (Cheren), the Badge Check Gates and Victory Road
-- proves: Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokémon League. Start: the Opelucid Gate (zone 132) -> end: the Pokémon League (zone 136), 0x40B8 = 4.
+- proves: Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokemon League. Start: the Opelucid Gate (zone 132, 27's end) -> end: the Pokemon League (zone 136), 0x40B8 = 4.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4
-- end state: map 136; vars 0x40B8=4
-- frames: estimate 45000, budget -
-- refs: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4; zones 356-363 (the Badge Check Gates): scr 0712 @0x011A ... scr 0726 @0x010E Warp to the next gate; zones 214-228 (Victory Road); scr 0428 @0x004E Warp zone 136 (32,60)
-- notes: Victory Road needs Strength/Surf [INFERENCE: HM04 Strength's source is not in these scripts]. [INFERENCE] estimate.
+- end state: map 136; 8 badges; >= 2 battles; vars 0x40B8=4
+- frames: estimate 79370, budget 119500
+- refs: zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4; zones 356-363 (the Badge Check Gates): trigger (13..17,8) -> scr 0712 .. 0726: CheckBadge, Warp to the next gate (15,20); 364 warp 1 (15,3) -> zone 214 warp 14; zone_event 214 (Victory Road outdoors, a rail map): warps as (line, front, side): 15 (0,5,-3) -> 215, 6 (4,5,-3) -> 220, 3 (29,3,-2) -> 223, 9 (40,2,-2) -> 227, 18 (61,2,-2) -> 228 warp 0; warp 10 (60,2,-3) and trigger 0 (line 60, var 0x400A == 0 -> scr 0428 script 1) the road up to zone 136; trigger 1 (13,6) var 0x40CF == 0 -> scr 0428 script 4 (the slide hiker); 214's rail tables in RAM (docs/BW_PLAN.md, Rails): 76 points, 65 lines; terraces at y 0, 5, 10, 15, 20, 25, 30, joined by the caves (up) and the cliff slides (down); caves (zone_event warps): 215 w1 (16,24) -> 216 w0; 216 w1 (5,18) -> 214 w16; 220 w1 (3,16) -> 219 w0; 219 w2 (7,4) -> 221 w1; 221 w0 (8,10) -> 214 w13; 223 w1 (11,13) -> 224 w2; 224 w1 (13,6) -> 225 w1; 225 w2 (7,4) -> 226 w2; 226 w1 (23,22) -> 214 w5; 227 w1 (12,12) -> 228 w2; 228 w0 (9,10) -> 214 w18
+- notes: Measured from the previous end save (CONTINUE included): Black 63767, White 79370 frames on core-bwm (main 61a3cd008d, the chain's real 27 ends). Victory Road's outdoor zone 214 is a rail map: the rail bot's holds stop on exact probe positions found by reading the player's rail state (MMDL +0x98 line, +0x9C side and front) against the rail tables; a cliff slide is a down-hold past a terrace's edge at a slide point (line 15 front 2; line 57 front 0). Rail holds fight the trainers that spot the player (on_battle = "fight"). The route is the walkthrough's: 215, 216, slide, 220, 219, 221, 223, 224, 225, 226, its right-hand exit, the right slide, 227, 228, the road up. No Strength or Surf: the boulders only make shortcuts. Cheren and Victory Road were won without a boost.
 
 #### white/29-elite-four — The Elite Four
 - proves: Proves the Elite Four: Shauntal, Grimsley, Marshal and Caitlin in any order, then the way to the Champion's room. Start: the Pokémon League (zone 136) -> end: the League's centre (zone 137) after the fourth win, 0x40A1 = 1.

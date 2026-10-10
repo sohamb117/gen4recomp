@@ -97,7 +97,7 @@ STEP_KEYS = {
     "smash": {"dir", "on_battle"},
     "repeat": {"until", "steps", "max_rounds"},
     "walk_onto": {"behavior", "max", "on_battle", "on_text", "run"},
-    "rail": {"keys", "x", "z", "near", "map", "run", "script"},
+    "rail": {"keys", "x", "z", "near", "map", "run", "script", "on_battle"},
 }
 STEP_REQUIRED = {"press": {"keys"}, "push": {"dir"}, "smash": {"dir"}, "repeat": {"until", "steps"}, "walk_onto": {"behavior"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
                  "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},

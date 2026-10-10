@@ -868,6 +868,15 @@ folded into 32. On the fixed core the ending runs to the game's save (0x40B6 5, 
 flag 0x133) and OS_ResetSystem, about 17k frames after Ghetsis's win; CONTINUE from that save starts in the
 player's bedroom (zone 391).
 
+Victory Road (214), routed for milestone 28 (2026-10-10): the player's rail state is u16 line at MMDL +0x98 and s16
+side, front at +0x9C (the rail work at +0x94 holds at +4 a pointer to the current line's record, so the line array starts 72 x line before it and
+the points end where it starts; names RE_LINE_n / RE_POINT_n). A point's pos is fx32 world units (/0x10000 = tiles,
+the probe's x/z). 214 has 76 points and 65 lines in seven terraces (y 0, 5, 10, 15, 20, 25, 30) that share no line:
+caves join them upward, cliff slides downward. A rail map's warps and triggers are (line, front, side, width) in
+zone_event's x, y, z fields; a slide is a down-hold past side +2 at a slope (line 15 front 2, line 44 front 3,
+lines 54-57 front 0-3); side +2 elsewhere is a fence or a cliff. Trainers whose sight stops the player on the rails
+are fought by `rail` with `on_battle = "fight"`.
+
 ## Poké Transfer: what it would take (design note, 2026-10-09; being built)
 
 Read from the Black ROM (White matches by name; offsets below are Black's) with `tests/e2e/tools/bw_script.py`,

@@ -1,22 +1,552 @@
-# Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokémon League.
-# Start: the Opelucid Gate (zone 132) -> end: the Pokémon League (zone 136), 0x40B8 = 4.
+# Proves Route 10 (Cheren's last story battle), the eight Badge Check Gates, and Victory Road to the Pokemon League.
+# Start: the Opelucid Gate (zone 132, 27's end) -> end: the Pokemon League (zone 136), 0x40B8 = 4.
 title = "Route 10 (Cheren), the Badge Check Gates and Victory Road"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 45000
+estimate = 79370
 refs = [
   "zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4",
-  "zones 356-363 (the Badge Check Gates): scr 0712 @0x011A ... scr 0726 @0x010E Warp to the next gate",
-  "zones 214-228 (Victory Road); scr 0428 @0x004E Warp zone 136 (32,60)",
+  "zones 356-363 (the Badge Check Gates): trigger (13..17,8) -> scr 0712 .. 0726: CheckBadge, Warp to the next gate (15,20); 364 warp 1 (15,3) -> zone 214 warp 14",
+  "zone_event 214 (Victory Road outdoors, a rail map): warps as (line, front, side): 15 (0,5,-3) -> 215, 6 (4,5,-3) -> 220, 3 (29,3,-2) -> 223, 9 (40,2,-2) -> 227, 18 (61,2,-2) -> 228 warp 0; warp 10 (60,2,-3) and trigger 0 (line 60, var 0x400A == 0 -> scr 0428 script 1) the road up to zone 136; trigger 1 (13,6) var 0x40CF == 0 -> scr 0428 script 4 (the slide hiker)",
+  "214's rail tables in RAM (docs/BW_PLAN.md, Rails): 76 points, 65 lines; terraces at y 0, 5, 10, 15, 20, 25, 30, joined by the caves (up) and the cliff slides (down)",
+  "caves (zone_event warps): 215 w1 (16,24) -> 216 w0; 216 w1 (5,18) -> 214 w16; 220 w1 (3,16) -> 219 w0; 219 w2 (7,4) -> 221 w1; 221 w0 (8,10) -> 214 w13; 223 w1 (11,13) -> 224 w2; 224 w1 (13,6) -> 225 w1; 225 w2 (7,4) -> 226 w2; 226 w1 (23,22) -> 214 w5; 227 w1 (12,12) -> 228 w2; 228 w0 (9,10) -> 214 w18",
 ]
-notes = "Victory Road needs Strength/Surf [INFERENCE: HM04 Strength's source is not in these scripts]. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 63767, White 79370 frames on core-bwm (main 61a3cd008d, the chain's real 27 ends). Victory Road's outdoor zone 214 is a rail map: the rail bot's holds stop on exact probe positions found by reading the player's rail state (MMDL +0x98 line, +0x9C side and front) against the rail tables; a cliff slide is a down-hold past a terrace's edge at a slide point (line 15 front 2; line 57 front 0). Rail holds fight the trainers that spot the player (on_battle = \"fight\"). The route is the walkthrough's: 215, 216, slide, 220, 219, 221, 223, 224, 225, 226, its right-hand exit, the right slide, 227, 228, the road up. No Strength or Surf: the boulders only make shortcuts. Cheren and Victory Road were won without a boost."
 
 [start]
 from = "prev"
 
+[run]
+frames = 119500
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 14
+note = "the Opelucid Gate's south door: back to Opelucid for the Pokemon Center"
+
+[[step]]
+do = "moves"
+dirs = [["D", 2]]
+
+[[step]]
+do = "wait_map"
+map = 120
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "heal"
+x = 425
+z = 172
+note = "Opelucid Pokemon Center (zone_event 120 warp 1): 27 ends with fainted members, and Route 10 has no Center"
+
+[[step]]
+do = "walk_to"
+x = 430
+z = 134
+note = "zone_event 120 warp 8 -> the Opelucid Gate 132 (4,14)"
+
+[[step]]
+do = "wait_map"
+map = 132
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "the gate's north exit"
+
+[[step]]
+do = "moves"
+dirs = [["U", 2]]
+note = "-> Route 10 (zone 355) (431,126)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 476
+z = 118
+on_battle = "flee"
+shot = "route10"
+note = "Route 10 to Cheren; the trainers whose sight stops the player are fought"
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1"
+
+[[step]]
+do = "advance_text"
+note = "Cheren's YES/NO (msg 387 #1): A"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Cheren, trdata #588-#590 by starter"
+
+[[step]]
+do = "advance_text"
+shot = "cheren"
+note = "Max Revive x2 (@0x0237), 0x40B8 4 (@0x030A)"
+
+[[step]]
+do = "walk_to"
+x = 498
+z = 108
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 355 warp 1 (498,107) -> the first Badge Check Gate 356 (15,24)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "Badge Check Gate 1 (zone 356): the guard's trigger (13..17,8)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+note = "CheckBadge 1, then Warp to zone 357 (15,20)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "Badge Check Gate 2 (zone 357): the guard's trigger (13..17,8)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+note = "CheckBadge 2, then Warp to zone 358 (15,20)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "Badge Check Gate 3 (zone 358): the guard's trigger (13..17,8)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+note = "CheckBadge 3, then Warp to zone 359 (15,20)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "Badge Check Gate 4 (zone 359): the guard's trigger (13..17,8)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+note = "CheckBadge 4, then Warp to zone 360 (15,20)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "Badge Check Gate 5 (zone 360): the guard's trigger (13..17,8)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+note = "CheckBadge 5, then Warp to zone 361 (15,20)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "Badge Check Gate 6 (zone 361): the guard's trigger (13..17,8)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+note = "CheckBadge 6, then Warp to zone 362 (15,20)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "Badge Check Gate 7 (zone 362): the guard's trigger (13..17,8)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+note = "CheckBadge 7, then Warp to zone 363 (15,20)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 9
+note = "Badge Check Gate 8 (zone 363): the guard's trigger (13..17,8)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+
+[[step]]
+do = "advance_text"
+note = "CheckBadge 8, then Warp to zone 364 (15,20)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 4
+shot = "vr-door"
+note = "zone 364 (the eighth gate's far side): Victory Road's door, warp 1 (15,3) -> 214 warp 14"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 215
+note = "214 is a rail map (warps and triggers in rail units: line, front, side); its line 0 warp 15 (front 5, side -3) -> cave 215"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 24
+note = "215 warp 1 -> 216 warp 0"
+
+[[step]]
+do = "wait_map"
+map = 216
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 17
+note = "to 216 warp 1 (5,18): its south exit"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 31
+z = 47
+near = 0
+note = "-> 214 line 13 (y 5), the outdoor terrace"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 42
+z = 45
+near = 0
+script = true
+note = "214 trigger 1 (line 13, front 6) var 0x40CF == 0 -> scr 0428 script 4: the hiker who shows the cliff slide"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 30
+gap = 20
+note = "his lines (on a rail map the field never reports ready: A presses)"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 42
+z = 45
+near = 0
+note = "line 15, front 2: a slide point"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 43
+z = 57
+near = 0
+shot = "slide-1"
+note = "the slide down onto line 2 (y 0)"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 59
+z = 51
+near = 0
+on_battle = "fight"
+note = "line 4 front 5; a trainer on the way"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 220
+note = "214 warp 6 (line 4, front 5, side -3) -> cave 220"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 16
+note = "220 warp 1 -> 219 warp 0 (round the water)"
+
+[[step]]
+do = "wait_map"
+map = 219
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "repeat"
+until = "map_id=221"
+max_rounds = 6
+steps = [{ do = "auto_battle", if = "in_battle=1" }, { do = "walk_to", x = 8, z = 4, if = "field_ready=1" }, { do = "press", keys = "left", hold = 24, gap = 0, if = "field_ready=1" }, { do = "wait_frames", n = 40 }]
+note = "219 warp 2 (7,4) -> 221 warp 1"
+
+[[step]]
+do = "wait_map"
+map = 221
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 9
+note = "221's trainer, then its warp 0 (8,10)"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 40
+z = 34
+near = 0
+note = "-> 214 line 23 (y 10)"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 21
+z = 33
+near = 0
+on_battle = "fight"
+note = "line 29 front 3; a trainer on the way"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 223
+note = "214 warp 3 (line 29, front 3, side -2) -> cave 223"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "repeat"
+until = "map_id=224"
+max_rounds = 6
+steps = [{ do = "auto_battle", if = "in_battle=1" }, { do = "walk_to", x = 10, z = 13, if = "field_ready=1" }, { do = "press", keys = "right", hold = 24, gap = 0, if = "field_ready=1" }, { do = "wait_frames", n = 40 }]
+note = "223 warp 1 (11,13) -> 224 warp 2"
+
+[[step]]
+do = "wait_map"
+map = 224
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "repeat"
+until = "map_id=225"
+max_rounds = 6
+steps = [{ do = "auto_battle", if = "in_battle=1" }, { do = "walk_to", x = 12, z = 6, if = "field_ready=1" }, { do = "press", keys = "right", hold = 24, gap = 0, if = "field_ready=1" }, { do = "wait_frames", n = 40 }]
+note = "past the Doctor, round to 224 warp 1 (13,6) -> 225 warp 1"
+
+[[step]]
+do = "wait_map"
+map = 225
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "repeat"
+until = "map_id=226"
+max_rounds = 6
+steps = [{ do = "auto_battle", if = "in_battle=1" }, { do = "walk_to", x = 8, z = 4, if = "field_ready=1" }, { do = "press", keys = "left", hold = 24, gap = 0, if = "field_ready=1" }, { do = "wait_frames", n = 40 }]
+note = "225 warp 2 (7,4) -> 226 warp 2 (its lower part)"
+
+[[step]]
+do = "wait_map"
+map = 226
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 21
+note = "to 226 warp 1 (23,22): the right-hand exit"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 35
+z = 10
+near = 0
+note = "-> 214 line 54 (y 25)"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 41
+z = 7
+near = 0
+note = "line 57 front 0: the right-hand slide point"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 48
+z = 25
+near = 0
+shot = "slide-2"
+note = "the slide down onto line 63 (y 15), the ledge of cave 227"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 46
+z = 20
+near = 0
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 53
+z = 17
+near = 0
+note = "line 40 front 2"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 227
+note = "214 warp 9 (line 40, front 2, side -2) -> cave 227"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "repeat"
+until = "map_id=228"
+max_rounds = 6
+steps = [{ do = "auto_battle", if = "in_battle=1" }, { do = "walk_to", x = 13, z = 12, if = "field_ready=1" }, { do = "press", keys = "left", hold = 24, gap = 0, if = "field_ready=1" }, { do = "wait_frames", n = 40 }]
+note = "up 227's stairs (its trainers) to warp 1 (12,12) -> 228 warp 2"
+
+[[step]]
+do = "wait_map"
+map = 228
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 9
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 38
+z = 0
+near = 0
+note = "228 warp 0 (9,10) -> 214 line 61 (y 30), the top road"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 32
+z = 1
+near = 0
+note = "line 60 front 2"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 136
+note = "up the road to the League gate: 214 line 60 -> zone 136 (32,60)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+shot = "league"
+note = "the arrival: the camera shows the League and the player walks up to (32,57); the field is free for a frame as the map loads, so wait_field alone would save into the scene"
+
 [expect]
 map = 136
+badges = 8
+battles = 2
 
 [expect.vars]
 "0x40B8" = 4
