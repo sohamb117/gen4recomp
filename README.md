@@ -46,9 +46,10 @@ in use).
 
 ### Import your cartridges
 
-nativeplat ships no game data. Drop your own `.nds` dump on the window, or
-click **Import ROM**. The file is checked by SHA-1 and copied into your data
-folder; the launcher card then says **Ready**.
+nativeplat ships no game data. Drop your own `.nds` or `.gba` dump on the
+window, or click **Import ROM**. The Import ROM dialog accepts both `.nds` and
+`.gba`; the file is checked by SHA-1 and copied into your data folder, and the
+launcher card then says **Ready**.
 
 | Game | Accepted dump (SHA-1) |
 | --- | --- |
@@ -62,6 +63,7 @@ folder; the launcher card then says **Ready**.
 | Emerald (USA, Europe) | `f3ae088181bf583e55daf962a92bb46f4f1d07b7` |
 | Black (USA, Europe) | `26ad0b9967aa279c4a266ee69f52b9b2332399a5` |
 | White (USA, Europe) | `bc696a0dfb448c7b3a8a206f0f8214411a039208` |
+
 Click a game to see its **save slots**: *Continue* (the last one played),
 *New save slot...*, every slot (Play, Edit save..., Rename, Duplicate,
 Export .sav, Cart, Delete) and *Import .sav...* (or drop a `.sav`/`.dsv` from
