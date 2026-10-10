@@ -4,10 +4,9 @@
 # Start: 11's end MAP_GOLDENROD outside the gym (366,335) -> end: MAP_NATIONAL_PARK by the judge (46,50) after the
 # judging, FLAG_DAILY_DID_BUG_CONTEST, a Sport Ball mon in the party.
 title = "Bug-Catching Contest: entry, Sport Balls, a catch, judging and prize"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 14000
+estimate = 25937
 refs = [
   "zone_event 099_R35R0201 warp 1 (25,2) -> MAP_NATIONAL_PARK; warp 0 (25,11) -> MAP_ROUTE_35",
   "scr_seq_0487_R35R0201_hdr.s (OnTransition -> 012; OnFrame VAR_UNK_4118 1 -> 010)",
@@ -29,21 +28,125 @@ refs = [
   "include/constants/vars.h:103 VAR_BUG_CONTEST_HELD_PRIZE, :262 VAR_UNK_40F7, :295 VAR_UNK_4118",
   "include/constants/items.h:920 ITEM_SPORT_BALL 499 (np_save4 ball id 24, features/tools/np_save4.c:271-273)",
 ]
-notes = "Day gate: GetWeekday must be 2 (Tue), 4 (Thu) or 6 (Sat); the port's default epoch 2009-03-22 is a Sunday (games/platinum/pc/src/pc_rtc.c:47-50), so [run] clock picks Tuesday 2009-03-24 10:00; the save's last RTC day is earlier, so the day rolls forward on load (src/unk_02055418.c:41-52: daily flags cleared, no penalty). The 20-minute limit counts RTC minutes (72000 frames at 60 fps): this run ends the contest early through the gate's ask_end prompt, never meeting time_up. No badge/flag gate besides the day; Route 35 north of Goldenrod is open from 11 on (13 walks it). Entry: talk to object 7 (24,3) (the contest-day receptionist); YES, YES to using the lead (11's party: QUILAVA/CYNDAQUIL, the Togepi egg or Togepi, SCYTHER [INFERENCE: 3 members, so the caught bug joins the party]). Catch: walk_to into the contest park's grass until a wild battle; the contest menu has BALL in the BAG slot (battle_input.c:1898-1901), so auto_battle (FIGHT) would only knock it out: a new 'throw' step is needed (tap the BAG-slot button repeatedly until the catch; a level ~10 bug at full HP with the Sport Ball's 1.5x is not a sure catch [INFERENCE]). Then walk to (40,86) -> the gate's OnFrame asks to end, YES; National Park's OnFrame runs the judging (A cadence through the three places, the prize, NO to the nickname). Bots proven on HG/SS: walk_to, talk_to, advance_text; needed: contest ball throw (tap at the BAG-slot coordinates). Optional outline: talk_to obj 7 / advance_text (YES, YES) / walk_to grass / throw / walk_to (40,86) / advance_text YES / advance_text through judging. [INFERENCE] estimate 14000: ~3000 walk Goldenrod->gate, ~1500 entry, ~4000 grass+catch, ~1500 back, ~3500 judging."
+notes = "Day gate: GetWeekday must be 2 (Tue), 4 (Thu) or 6 (Sat); the port's default epoch 2009-03-22 is a Sunday (games/platinum/pc/src/pc_rtc.c:47-50), so [run] clock picks Tuesday 2009-03-24 10:00; the save's last RTC day is earlier, so the day rolls forward on load (src/unk_02055418.c:41-52: daily flags cleared, no penalty). The 20-minute limit counts RTC minutes (72000 frames at 60 fps): this run ends the contest early through the gate's ask_end prompt, never meeting time_up. No badge/flag gate besides the day; Route 35 north of Goldenrod is open from 11 on (13 walks it). Entry: talk to object 7 (24,3) (the contest-day receptionist); YES, YES to using the lead (11's party: QUILAVA/CYNDAQUIL, the Togepi egg or Togepi, SCYTHER [INFERENCE: 3 members, so the caught bug joins the party]). Catch: walk_to into the contest park's grass until a wild battle; the contest menu has BALL in the BAG slot (battle_input.c:1898-1901), so auto_battle (FIGHT) would only knock it out: a new 'throw' step is needed (tap the BAG-slot button repeatedly until the catch; a level ~10 bug at full HP with the Sport Ball's 1.5x is not a sure catch [INFERENCE]). Then walk to (40,86) -> the gate's OnFrame asks to end, YES; National Park's OnFrame runs the judging (A cadence through the three places, the prize, NO to the nickname). Scouted on HeartGold 11's end with PC_RTC 2009-03-24 10:00 (gap-fill): 'Today's Tuesday.', YES, 'Uh-oh... You have more than one Pokemon... Is that OK with you?' YES (the lead SCYTHER kept: QUILAVA is fainted at 11's end), 20 Sport Balls; the park (MAP_NATIONAL_PARK_BUG_CATCHING_CONTEST (40,86)); its grass (46..56,60); a wild CATERPIE lv7 after 4 laps; the contest action menu is BALL (40,168) / RUN / POKEMON round FIGHT; one Sport Ball caught it; the Pokedex page (A), 'Caught CATERPIE!'; 19 balls left; back at the gate (25,3) 'You still have 19 minute(s) left. Do you want to finish now?' YES; National Park's judging: 'Obtained the Shed Shell!' (4th place), 'CATERPIE's nickname?' (B: NO); party QUILAVA, TOGEPI, SCYTHER, CATERPIE (Sport Ball, ball id 24), FLAG_DAILY_DID_BUG_CONTEST set. The quick save is refused inside the contest (no dump steps there). No catch bot: repeat taps BALL whenever the action menu waits (probe ui 1) and presses A otherwise, until the battle ends. Measured: HeartGold 25481 frames (CATERPIE lv16 caught), SoulSilver 25937 (CATERPIE lv7, the Shed Shell)."
 
 [start]
 from = "11-route34-daycare-goldenrod"
 
 [run]
-frames = 21000
+frames = 39000
 clock = "2009-03-24 10:00:00"   # a Tuesday: GetWeekday 2 (scr_seq_0151.s:101-103, scr_seq_0242_R35R0201.s:90)
+
+[[step]]
+do = "heal"
+x = 352
+z = 368
+note = "Goldenrod's Pokemon Center first: 11 ends with QUILAVA fainted, and SoulSilver's first run lost a Route 35 trainer battle with SCYTHER alone and whited out to Azalea"
+
+[[step]]
+do = "walk_to"
+x = 358
+z = 325
+on_battle = "flee"
+note = "Goldenrod's north gate (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35_GOLDENROD_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35"
+
+[[step]]
+do = "walk_to"
+x = 362
+z = 266
+on_battle = "flee"
+note = "Route 35 north to the park gate (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35_NATIONAL_PARK_POKEATHALON_GATEHOUSE"
+
+[[step]]
+do = "talk_to"
+id = 7
+note = "the contest-day receptionist (24,3)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_NATIONAL_PARK_BUG_CATCHING_CONTEST"
+max = 3000
+note = "'Today's Tuesday.' YES (A) to the contest, YES to keeping the lead only, 20 Sport Balls, the walk to the park"
+
+[[step]]
+do = "wait_field"
+shot = "entered"
+
+[[step]]
+do = "walk_to"
+x = 50
+z = 60
+on_battle = "flee"
+note = "the park's grass (46..56,60)"
+
+[[step]]
+do = "repeat"
+until = "in_battle=1"
+max_rounds = 100
+steps = [
+  { do = "press", keys = "right", hold = 24, gap = 24 },
+  { do = "press", keys = "left", hold = 24, gap = 24 },
+]
+note = "laps in the grass until a wild bug appears"
+
+[[step]]
+do = "repeat"
+until = "in_battle=0"
+max_rounds = 80
+steps = [
+  { do = "wait_frames", n = 20, if = "ui=0" },
+  { do = "tap", x = 40, y = 168, gap = 40, if = "ui=1" },
+  { do = "press", keys = "a", hold = 2, gap = 40, if = "ui=0" },
+]
+shot = "caught"
+note = "BALL (the contest menu's bottom-left button) whenever the action menu waits; A through the throw, the Pokedex page and 'Caught ...!'"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 40
+z = 86
+on_battle = "flee"
+note = "back to the gate (warp 0)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_NATIONAL_PARK"
+max = 3000
+note = "'You still have N minute(s) left. Do you want to finish now?' YES -> 'Please wait in the National Park', the warp to (46,50)"
+
+[[step]]
+do = "advance_text"
+key = "b"
+max = 6000
+shot = "judged"
+note = "the judging (B advances it): the winners, the score, the prize; 'nickname?' NO"
 
 [expect]
 map = "MAP_NATIONAL_PARK"
 flags = ["FLAG_DAILY_DID_BUG_CONTEST"]
 flags_clear = ["FLAG_BUG_CONTEST_ACTIVE", "FLAG_BUG_CONTEST_OTHER_POKES_HELD"]
 battles = 1
-save = ['any(m["ball"]["id"] == 24 for m in s["party"])']  # the contest catch (Sport Ball) restored with the party
+save = ['any(m["ball"]["id"] == 24 for m in s["party"])', 'len(s["party"]) == 4']  # the contest catch (Sport Ball) restored with the party
 
 [expect.vars]
 VAR_UNK_4118 = 0
