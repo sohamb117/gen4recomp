@@ -6032,7 +6032,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 32 milestones, ~1402135 frames estimated
+### Story chain: 32 milestones, ~1358597 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6065,9 +6065,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [27-opelucid-drayden-legend-badge](black/27-opelucid-drayden-legend-badge/milestone.toml) | Opelucid Gym (Black): Drayden's Legend Badge | P0 | black | 53724 | prev + `None` | 132 | passing |
 | [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 79370 | prev + `None` | 136 | passing |
 | [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 44413 | prev + `None` | 137 | passing |
-| [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
-| [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
-| [32-n-castle-reshiram-ghetsis-credits](black/32-n-castle-reshiram-ghetsis-credits/milestone.toml) | N's Castle (Black): Reshiram, N, Ghetsis and the credits | P0 | black | 80000 | prev + `None` | - | planned |
+| [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 15195 | prev + `None` | 264 | passing |
+| [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 11011 | prev + `None` | 278 | passing |
+| [32-n-castle-reshiram-ghetsis-credits](black/32-n-castle-reshiram-ghetsis-credits/milestone.toml) | N's Castle (Black): Reshiram, N, Ghetsis and the credits | P0 | black | 60256 | prev + `None` | - | passing |
 
 #### black/01-newgame-bedroom — New game to the bedroom, a walk, a talk with Cheren and the first save
 - proves: Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the furniture, a talk with Cheren, and the save through the game's own X menu. Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
@@ -6365,9 +6365,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
 - end state: map 264; flags set 0x97C; vars 0x40A2=1, 0x40A5=1
-- frames: estimate 20000, budget 30000
+- frames: estimate 15195, budget 23000
 - refs: zone_event 137 bg 0 (31,44) -> scr 0274 script 1 (the statue); zone_event 138 warp 0 (31,2) -> zone 144; zone_event 139 warp 0 (30,11) -> zone 264; zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1; zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between); zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1; scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
-- notes: Route from scouting. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 15096, White 15195 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting.
 
 #### black/31-n-castle-climb — N's Castle: the climb to the throne room
 - proves: Proves N's Castle's climb: the halls, the Shadow Triad and the Sages' rooms up to the throne room's door. Start: N's Castle's entrance (zone 264) -> end: the throne room (zone 278), 0x40DC = 1.
@@ -6375,9 +6375,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map 278; vars 0x40A6=1, 0x40D4=1, 0x40D5=1, 0x40DC=1
-- frames: estimate 30000, budget 30000
-- refs: zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
-- notes: Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
+- frames: estimate 11011, budget 17000
+- refs: zone_event 265 warp 3 (22,8) -> zone 267; zone_event 267 object 0 (8,16) -> scr 0534 script 1 (Anthea, msg 290 #0): @0x002A Cmd104, the heal; zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
+- notes: Measured from the previous end save (CONTINUE included): Black 10927, White 11011 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`.
 
 #### black/32-n-castle-reshiram-ghetsis-credits — N's Castle (Black): Reshiram, N, Ghetsis and the credits
 - proves: Proves the end of the story on Black: the throne room, Reshiram awakening from the stone and caught, N's battle with Zekrom, Ghetsis's battle, N's farewell, the credits and the game's own save and reset after them. Start: the throne room's entrance (zone 278, 31's end) -> end: the game's save after the credits, 0x40A2 = 3.
@@ -6385,9 +6385,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0556 @0x0981 TrainerBattle trdata #587 (Black: N with Zekrom 52) / @0x0973 #586 (White: N with Reshiram 52); @0x09EF SetVar 0x40B6 4; @0x09F5 Cmd021 0xF -> script 15 @0x0DEC SetVar 0x40B6 5, @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; @0x1555-@0x15E7 N's farewell (msg 301 #75-#81); @0x15FC Cmd156 0: the ending
 - end state: flags set 0x133; vars 0x40B6=5, 0x40A2=3; 1 save check(s)
-- frames: estimate 80000, budget 120000
+- frames: estimate 60256, budget 90500
 - refs: zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; script 3 @0x0342 SetVar 0x40B6 2 (N calls his dragon; the stone answers); scr 0556 script 8 (talking to the legendary): @0x0CDC unless var 0x8020 == 21 (Black) -> @0x0CFA WildBattle Reshiram (643) lv 50 / L_0D08 (White) @0x0D13 WildBattle Zekrom (644) lv 50; @0x0B30 SetVar 0x40B6 3; @0x0B49 L_187E: a full party sends it to the Box, then msg 301 #101-#105 offer the swap; scr 0556 @0x0981 TrainerBattle trdata #587 (Black: N with Zekrom 52) / @0x0973 #586 (White: N with Reshiram 52); @0x09EF SetVar 0x40B6 4; @0x09F5 Cmd021 0xF -> script 15 @0x0DEC SetVar 0x40B6 5, @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; @0x1555-@0x15E7 N's farewell (msg 301 #75-#81); @0x15FC Cmd156 0: the ending; scr 0866 @0x0457 SetVar 0x40A2 3 (the game clear), then the credits; the game saves itself and resets (OS_ResetSystem); flag 0x133: the legendary caught (scr 0556 @0x0D55)
-- notes: No boost: 29's (Darmanitan and Sawk 85, the rest 78-80) is more than the throne room needs (scouting won with Darmanitan 70, Sawk 65, the rest 60). One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits. [INFERENCE] estimate.
+- notes: Measured from the chain's 31 end save (CONTINUE included) to the game's own OS_ResetSystem: Black 60256 frames on the core of 2026-10-09 (main with the armrec VRAM overlap fix, instant text). Route from scouting. No boost: 29's (Darmanitan and Sawk 85, the rest 78-80) is more than the throne room needs (scouting won with Darmanitan 70, Sawk 65, the rest 60). One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits.
 <!-- plan.py:end black -->
 
 ## White
@@ -6395,7 +6395,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 32 milestones, ~1405890 frames estimated
+### Story chain: 32 milestones, ~1374333 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6428,9 +6428,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [27-opelucid-iris-legend-badge](white/27-opelucid-iris-legend-badge/milestone.toml) | Opelucid Gym (White): Iris's Legend Badge | P0 | white | 57479 | prev + `None` | 132 | passing |
 | [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 79370 | prev + `None` | 136 | passing |
 | [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 44413 | prev + `None` | 137 | passing |
-| [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
-| [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
-| [32-n-castle-zekrom-ghetsis-credits](white/32-n-castle-zekrom-ghetsis-credits/milestone.toml) | N's Castle (White): Zekrom, N, Ghetsis and the credits | P0 | white | 80000 | prev + `None` | - | planned |
+| [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 15195 | prev + `None` | 264 | passing |
+| [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 11011 | prev + `None` | 278 | passing |
+| [32-n-castle-zekrom-ghetsis-credits](white/32-n-castle-zekrom-ghetsis-credits/milestone.toml) | N's Castle (White): Zekrom, N, Ghetsis and the credits | P0 | white | 72237 | prev + `None` | - | passing |
 
 #### white/01-newgame-bedroom — New game to the bedroom, a walk, a talk with Cheren and the first save
 - proves: Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the furniture, a talk with Cheren, and the save through the game's own X menu. Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
@@ -6728,9 +6728,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
 - end state: map 264; flags set 0x97C; vars 0x40A2=1, 0x40A5=1
-- frames: estimate 20000, budget 30000
+- frames: estimate 15195, budget 23000
 - refs: zone_event 137 bg 0 (31,44) -> scr 0274 script 1 (the statue); zone_event 138 warp 0 (31,2) -> zone 144; zone_event 139 warp 0 (30,11) -> zone 264; zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1; zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between); zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1; scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
-- notes: Route from scouting. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 15096, White 15195 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting.
 
 #### white/31-n-castle-climb — N's Castle: the climb to the throne room
 - proves: Proves N's Castle's climb: the halls, the Shadow Triad and the Sages' rooms up to the throne room's door. Start: N's Castle's entrance (zone 264) -> end: the throne room (zone 278), 0x40DC = 1.
@@ -6738,9 +6738,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: none
 - end state: map 278; vars 0x40A6=1, 0x40D4=1, 0x40D5=1, 0x40DC=1
-- frames: estimate 30000, budget 30000
-- refs: zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
-- notes: Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
+- frames: estimate 11011, budget 17000
+- refs: zone_event 265 warp 3 (22,8) -> zone 267; zone_event 267 object 0 (8,16) -> scr 0534 script 1 (Anthea, msg 290 #0): @0x002A Cmd104, the heal; zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
+- notes: Measured from the previous end save (CONTINUE included): Black 10927, White 11011 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`.
 
 #### white/32-n-castle-zekrom-ghetsis-credits — N's Castle (White): Zekrom, N, Ghetsis and the credits
 - proves: Proves the end of the story on White: the throne room, Zekrom awakening from the stone and caught, N's battle with Reshiram, Ghetsis's battle, N's farewell, the credits and the game's own save and reset after them. Start: the throne room's entrance (zone 278, 31's end) -> end: the game's save after the credits, 0x40A2 = 3.
@@ -6748,7 +6748,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0556 @0x0981 TrainerBattle trdata #587 (Black: N with Zekrom 52) / @0x0973 #586 (White: N with Reshiram 52); @0x09EF SetVar 0x40B6 4; @0x09F5 Cmd021 0xF -> script 15 @0x0DEC SetVar 0x40B6 5, @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; @0x1555-@0x15E7 N's farewell (msg 301 #75-#81); @0x15FC Cmd156 0: the ending
 - end state: flags set 0x133; vars 0x40B6=5, 0x40A2=3; 1 save check(s)
-- frames: estimate 80000, budget 120000
+- frames: estimate 72237, budget 108500
 - refs: zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; script 3 @0x0342 SetVar 0x40B6 2 (N calls his dragon; the stone answers); scr 0556 script 8 (talking to the legendary): @0x0CDC unless var 0x8020 == 21 (Black) -> @0x0CFA WildBattle Reshiram (643) lv 50 / L_0D08 (White) @0x0D13 WildBattle Zekrom (644) lv 50; @0x0B30 SetVar 0x40B6 3; @0x0B49 L_187E: a full party sends it to the Box, then msg 301 #101-#105 offer the swap; scr 0556 @0x0981 TrainerBattle trdata #587 (Black: N with Zekrom 52) / @0x0973 #586 (White: N with Reshiram 52); @0x09EF SetVar 0x40B6 4; @0x09F5 Cmd021 0xF -> script 15 @0x0DEC SetVar 0x40B6 5, @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; @0x1555-@0x15E7 N's farewell (msg 301 #75-#81); @0x15FC Cmd156 0: the ending; scr 0866 @0x0457 SetVar 0x40A2 3 (the game clear), then the credits; the game saves itself and resets (OS_ResetSystem); flag 0x133: the legendary caught (scr 0556 @0x0D55)
-- notes: No boost: 29's (Darmanitan and Sawk 85, the rest 78-80) is more than the throne room needs (scouting won with Darmanitan 70, Sawk 65, the rest 60). One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits. [INFERENCE] estimate.
+- notes: Measured from the chain's 31 end save (CONTINUE included) to the game's own OS_ResetSystem: White 72237 frames on the core of 2026-10-09 (main with the armrec VRAM overlap fix, instant text). Route from scouting. No boost: 29's (Darmanitan and Sawk 85, the rest 78-80) is more than the throne room needs (scouting won with Darmanitan 70, Sawk 65, the rest 60). One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits.
 <!-- plan.py:end white -->

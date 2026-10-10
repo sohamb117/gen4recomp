@@ -2,10 +2,9 @@
 # Castle.
 # Start: the League's centre (zone 137) -> end: N's Castle's entrance (zone 264), 0x40A2 = 1, 0x40A5 = 1.
 title = "The Champion's room: N's Castle rises"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 15195
 refs = [
   "zone_event 137 bg 0 (31,44) -> scr 0274 script 1 (the statue); zone_event 138 warp 0 (31,2) -> zone 144; zone_event 139 warp 0 (30,11) -> zone 264",
   "zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1",
@@ -13,13 +12,13 @@ refs = [
   "zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1",
   "scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)",
 ]
-notes = "Route from scouting. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 15096, White 15195 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting."
 
 [start]
 from = "prev"
 
 [run]
-frames = 30000
+frames = 23000
 
 [[step]]
 do = "walk_to"

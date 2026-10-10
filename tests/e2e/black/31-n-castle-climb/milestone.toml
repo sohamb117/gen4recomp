@@ -1,24 +1,24 @@
 # Proves N's Castle's climb: the halls, the Shadow Triad and the Sages' rooms up to the throne room's door.
 # Start: N's Castle's entrance (zone 264) -> end: the throne room (zone 278), 0x40DC = 1.
 title = "N's Castle: the climb to the throne room"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 11011
 refs = [
+  "zone_event 265 warp 3 (22,8) -> zone 267; zone_event 267 object 0 (8,16) -> scr 0534 script 1 (Anthea, msg 290 #0): @0x002A Cmd104, the heal",
   "zone_event 264 warp 0 (43,4) 1x4 -> zone 265",
   "zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1",
   "zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1",
   "zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1",
   "zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1",
 ]
-notes = "Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 10927, White 11011 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`."
 
 [start]
 from = "prev"
 
 [run]
-frames = 30000
+frames = 17000
 
 [[step]]
 do = "walk_to"
@@ -42,6 +42,39 @@ do = "advance_text"
 max = 8000
 shot = "castle-1f"
 note = "@0x015A SetVar 0x40A6 1"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 8
+note = "zone_event 265 warp 3 (22,8) -> zone 267, Anthea's room"
+
+[[step]]
+do = "wait_field"
+max = 2000
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "zone_event 267 object 0 (Anthea) -> scr 0534 script 1: @0x002A Cmd104 heals the party before the throne room (29 leaves half of it fainted)"
+
+[[step]]
+do = "advance_text"
+shot = "anthea-heal"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 19
+
+[[step]]
+do = "moves"
+dirs = [["D", 2]]
+note = "into zone_event 267 warp 0 (8..10,20) -> zone 265 (a room exit fires on a press into it)"
+
+[[step]]
+do = "wait_field"
+max = 2000
 
 [[step]]
 do = "walk_to"
