@@ -207,6 +207,7 @@ expect_type("${j}" NULL hall_of_fame)
 expect_type("${j}" ARRAY daycare mons) # HG/SS Daycare at general 0x15FC (np_save4.c); this synthetic save's bytes there are filler
 expect_type("${j}" BOOLEAN daycare egg_waiting)
 expect_type("${j}" ARRAY roamers slots) # HG/SS RoamerSaveData at general 0x68A4 (np_save4.c)
+expect_type("${j}" NUMBER gymmick type) # HG/SS Gymmick at general 0x22B0 (np_save4.c)
 expect_type("${j}" NULL poffins)
 expect_type("${j}" NULL trophy_garden)
 expect_type("${j}" NULL underground)

@@ -1,25 +1,99 @@
 # Proves the Kanto gym Lt. Surge (Thunder Badge).
 # Start: 90-ss-aqua-vermilion's end -> end: MAP_VERMILION_GYM after the leader, BADGE_THUNDER.
 title = "Kanto gym: Lt. Surge (Thunder Badge)"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 31276
 refs = [
   "scr_seq_0778_T06GYM0101.s:36-50 (OnTransition: FLAG_HIDE_VERMILION_GYM_STOPS unset -> ClearFlag FLAG_SYS_SOLVED_LT_SURGE_GYM, VermilionGymInit; the hour hiding is behind the rematch phone / FLAG_CAUGHT_ZAPDOS)",
   "scr_seq_0778_T06GYM0101.s:277-300 (Surge: CheckBadge BADGE_THUNDER, TRAINER_LEADER_LT_SURGE_LT__SURGE :287, GiveBadge BADGE_THUNDER, VAR_UNK_4135 +1, FLAG_HIDE_VERMILION_GYM_STOPS, the six barrier stops hidden)",
   "TRAINER_LEADER_LT_SURGE_LT__SURGE (255, include/constants/trainers.h:260)",
   "VermilionGymInit: the trash-can switch puzzle (FLAG_SYS_SOLVED_LT_SURGE_GYM) gates the barriers (obj_T06GYM0101_stop..stop_6)",
 ]
-notes = "Gate: none beyond reaching Vermilion (90). The gym's trash-can puzzle randomizes the two switch cans (VermilionGymInit): the implementer needs either a scripted search order (talk_to each can, reset on a miss) or to read the generated cans from RAM; no bot for that exists [INFERENCE]. Leader hour-hiding only applies once the rematch phone number is registered, so no RTC. Bots: walk_to, talk_to, advance_text, auto_battle (proven). [INFERENCE] estimate."
+notes = "Gate: none beyond reaching Vermilion (90). Scouted on HeartGold (core-proposal): from the port (1309,340) the way into town is the 3-wide pier east of it (walk_to does not plan across the pier's coord rows in one leg: (1309,331), (1324,331), (1324,312)); the gym's front is fenced and the way in is Cut through the tree (1300,319) (object 11, std_field_cut) to (1300,321), then the door (1295,319). VermilionGymInit (gymmick_init.c) places the two switch cans at random on entry; bots.py vermilion_cans reads them from np_save4's new HG/SS `gymmick` field (general 0x22B0, found by scanning a save made inside the gym) and checks each from the tile below (scouting: cans 7 and 2, 'Oh, you found a secret switch', the electric barrier gone). The gym trainers (Guitarist Vincent, Juggler Horton, Gentleman Gregory) see the player on the way and are fought. Lt. Surge (object 9, (6,4)): the Thunder Badge, Kanto badge 2: the save's kanto_badge_mask bit 2 (run.py's `badge` reads the Johto mask only). Boost (boost.recipe): TYPHLOSION learns Earthquake in Swift's place: without a Ground move Surge's Electric team took auto_battle 22-29 turns. Measured: HG 30819 frames (cans 13 and 12 on one run, 7 and 2 when scouted), SS 31276; the sheets show the port, the cut tree gone, the gym with the barrier down, Surge's Raichu lv51, the Thunder Badge scene."
 
 [start]
 from = "90-ss-aqua-vermilion"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 47000
+
+[[step]]
+do = "walk_to"
+x = 1309
+z = 331
+
+[[step]]
+do = "walk_to"
+x = 1324
+z = 331
+
+[[step]]
+do = "walk_to"
+x = 1324
+z = 312
+note = "up the pier into town"
+
+[[step]]
+do = "heal"
+x = 1297
+z = 294
+note = "Vermilion's Pokemon Center (zone_event 051_T06 warp 1): the chain's party reaches Kanto with its PP spent (the first run fought Surge with Lava Plume at 3 PP: 29 turns)"
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 318
+note = "above the Cut tree (1300,319)"
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 321
+hm = true
+note = "through the tree: bump, A, YES (Cut)"
+shot = "cut"
+
+[[step]]
+do = "walk_to"
+x = 1295
+z = 320
+
+[[step]]
+do = "walk_to"
+x = 1295
+z = 319
+note = "the gym door"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VERMILION_GYM"
+
+[[step]]
+do = "vermilion_cans"
+shot = "locks-open"
+
+[[step]]
+do = "talk_to"
+id = 9
+note = "Lt. Surge (6,4)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_LT_SURGE_LT__SURGE"
+
+[[step]]
+do = "advance_text"
+note = "the Thunder Badge, TM"
+shot = "badge"
 
 [expect]
 map = "MAP_VERMILION_GYM"
-badge = ["BADGE_THUNDER"]
+flags = ["FLAG_SYS_SOLVED_LT_SURGE_GYM", "FLAG_HIDE_VERMILION_GYM_STOPS"]
 battles = 1
+save = ['s["trainer"]["kanto_badge_mask"] >> 2 & 1']

@@ -449,6 +449,30 @@ static void dump_roamers(FILE *o, const save4 *s)
     fputs("]},\n", o);
 }
 
+/* HG/SS's Gymmick (pokeheartgold include/gymmick.h: GymmickType type, GymmickUnion data, a 0x20-byte union): the
+ * puzzle state of the gym the player last entered. Found by scanning a save made inside Vermilion Gym (91) for
+ * type GYMMICK_VERMILION (3) followed by two trash cans that are neighbours in gymmick_init.c's sTrashCans.
+ * Vermilion's part (switches[2], gates[2]) is the two switch cans (VermilionGymCanCheck ids, the gym's bg events
+ * 0-14) and whether each lock is open. */
+#define HGSS_GYMMICK_OFF 0x22B0
+#define GYMMICK_VERMILION 3
+
+static void dump_gymmick(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (!save4_game_is_hgss(s->game) || base + HGSS_GYMMICK_OFF + 0x24 > len) {
+        fputs("  \"gymmick\": null,\n", o);
+        return;
+    }
+    const uint8_t *g = img + base + HGSS_GYMMICK_OFF;
+    fprintf(o, "  \"gymmick\": {\"type\": %u", le32(g));
+    if (le32(g) == GYMMICK_VERMILION)
+        fprintf(o, ", \"vermilion\": {\"switches\": [%u, %u], \"gates\": [%u, %u]}", g[4], g[5], g[6], g[7]);
+    fputs("},\n", o);
+}
+
 /* Platinum's SpecialEncounter.trophyGarden (struct_defs/special_encounter.h: BOOL unused, u16 slot1, slot2), 8
  * bytes after the block's start (int marshDaily, swarmDaily): Mr. Backlot's daily Pokemon as indices into the
  * garden's 16-entry list (encounters_trophy_garden.json), 0xFFFF empty. Offset found by diffing a save before and
@@ -807,6 +831,7 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     dump_hall_of_fame(o, &s);
     dump_daycare(o, &s);
     dump_roamers(o, &s);
+    dump_gymmick(o, &s);
     dump_poffins(o, &s);
     dump_trophy_garden(o, &s);
     dump_underground(o, &s);

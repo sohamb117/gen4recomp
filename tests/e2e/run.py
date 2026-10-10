@@ -92,6 +92,7 @@ STEP_KEYS = {
     "fish": {"casts"},
     "pace": {"x", "z", "until", "every"},
     "roam_hunt": {"species", "a", "b"},
+    "vermilion_cans": set(),
     "dump": {"expr"},
     "menu": {"choose", "count"},
     "push": {"dir", "on_battle"},

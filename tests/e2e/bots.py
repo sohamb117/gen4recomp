@@ -2205,6 +2205,29 @@ def bot_roam_hunt(s, step, ctx):
     raise HarnessError("roam_hunt: %s not met in %d frames (%d arrivals)" % (step["species"], bound, crossings))
 
 
+def bot_vermilion_cans(s, step, ctx):
+    """HG/SS Vermilion Gym: open both locks by checking the two switch cans. VermilionGymInit (gymmick_init.c) puts
+    them at random on entry (the second next to the first); an in-game save's dump (np_save4 `gymmick`) names them,
+    as the gym's bg events 0-14 number them (scr_seq_0778_T06GYM0101.s: bg N checks can N, at (2 + 2 * (N % 5),
+    13 + 2 * (N // 5))). Each is checked from the tile below it, facing up; trainers on the way are fought."""
+    g = (save_dump(s, ctx).get("gymmick") or {}).get("vermilion")
+    if not g:
+        raise HarnessError("vermilion_cans: the save has no Vermilion gymmick (not inside the gym?)")
+    s.note("vermilion_cans: switch cans %d and %d" % tuple(g["switches"]))
+    for can in g["switches"]:
+        x, z = 2 + 2 * (can % 5), 13 + 2 * (can // 5)
+        bot_walk_to(s, {"x": x, "z": z + 1}, ctx)
+        s.run(6, "up")
+        s.run(10)
+        s.run(4, "a")
+        s.run(30)
+        bot_advance_text(s, {}, ctx)
+    g = save_dump(s, ctx)["gymmick"].get("vermilion") or {}
+    if g.get("gates") != [1, 1]:
+        raise HarnessError("vermilion_cans: the locks are %s after both cans" % g.get("gates"))
+    s.note("vermilion_cans: both locks open")
+
+
 def bot_pace(s, step, ctx):
     """Run back and forth between (x, z) and (x+1, z) until `until` (a Python expression over the save dump `s`,
     as [expect] save expressions) holds, checked by an in-game save every `every` steps (default 128): the steps
@@ -3087,6 +3110,7 @@ BOTS = {
     "hatch": bot_hatch,
     "pace": bot_pace,
     "roam_hunt": bot_roam_hunt,
+    "vermilion_cans": bot_vermilion_cans,
     "dump": bot_dump,
     "menu": bot_menu,
     "push": bot_push,
