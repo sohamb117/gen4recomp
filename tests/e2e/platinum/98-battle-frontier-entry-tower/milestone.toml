@@ -3,7 +3,7 @@
 # Frontier level cap 50 is [INFERENCE: not located in source].
 title = "Battle Tower: first single set"
 priority = "P1"
-estimate = 45077
+estimate = 48057
 refs = [
   "res/field/events/events_battle_tower.json",
   "res/field/scripts/scripts_battle_tower.s",
@@ -26,7 +26,7 @@ refs = [
 recipe = "start.recipe"
 
 [run]
-frames = 67700
+frames = 72100
 
 [[step]]
 do = "press"
@@ -105,6 +105,12 @@ max = 3000
 do = "auto_battle"
 snap = true
 note = "battle 1 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "battle-room"
+note = "the Battle Room after the first win: the room's floor, walls and pillars (BG3, BG extended palette slot 3 in VRAM G at 0x8C; black before the armrec fix, tests/e2e/DEFECTS.md)"
 
 [[step]]
 do = "advance_text"

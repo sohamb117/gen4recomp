@@ -369,13 +369,16 @@ void *armrec_vram_extpal(int which, int slot) {
     switch (which) {
     case ARMREC_EXTPAL_ABG:
         /* E covers all four slots with its first 32 KB; F and G are 16 KB and
-         * cover two, chosen by bit 0 of the placement field. */
+         * cover two, chosen by bit 0 of the placement field (ofs 0: slots 0
+         * and 1, ofs 1: 2 and 3; GX_VRAM_BGEXTPLTT_23_G writes G as 0x8C).
+         * mst is bits 0-2, so 0x87 picks "enabled at mst 4" and leaves the
+         * placement bits to the slot test. */
         CLAIM(4, (vram_cnt_live[4] & 0x87u) == 0x84u,
               (uint32_t)slot * 0x2000u, 0x7FFFu);
-        CLAIM(5, (vram_cnt_live[5] & 0x9Fu) == 0x84u &&
+        CLAIM(5, (vram_cnt_live[5] & 0x87u) == 0x84u &&
                  (slot >> 1) == (int)((vram_cnt_live[5] >> 3) & 1u),
               (uint32_t)slot * 0x2000u, 0x3FFFu);
-        CLAIM(6, (vram_cnt_live[6] & 0x9Fu) == 0x84u &&
+        CLAIM(6, (vram_cnt_live[6] & 0x87u) == 0x84u &&
                  (slot >> 1) == (int)((vram_cnt_live[6] >> 3) & 1u),
               (uint32_t)slot * 0x2000u, 0x3FFFu);
         break;

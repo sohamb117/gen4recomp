@@ -3,6 +3,44 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
+## Fixed: the Battle Frontier's rooms drew black on Platinum and HeartGold/SoulSilver (armrec, extended palettes)
+
+Platinum 98 (Battle Tower) and HeartGold/SoulSilver 87: after the elevator, the frontier engine's corridor and Battle
+Room showed only the sprites (attendant, player, trainer) on a black top screen, the bottom a flat colour. Platinum 98
+passed with it: its sheet never showed a room, so the pass was false. What the rooms should show is
+games/platinum/res/graphics/frontier/backgrounds/battle_tower.png (floor, walls, pillars, the carpet). Repro: Platinum
+98's lab recipe on the gate core, CHALLENGE, SINGLE, three picks, through the elevator; HeartGold 38's end save, Fly to
+Olivine, Route 40's gatehouse, the Tower, the same entry.
+
+State in Platinum's Battle Room: DISPCNT 0x40211F1D (mode 5, BG extended palettes on), BG3CNT 0x4533 (extended affine,
+256 colours, 16-bit map at 0x2800, chars at 0x30000; both loaded, 1926 and 7864 nonzero bytes), VRAMCNT A-I
+83 81 89 82 82 83 8C 81 82. The scene's palette goes to BG extended palette slot 3 (frontier_graphics.c
+InitBackgrounds: GX_VRAM_BGEXTPLTT_23_G, then GX_LoadBGExtPltt(..., 0x6000, 0x2000)); the SDK's
+GX_SetBankForBGExtPltt writes G = 0x8C for that (mst 4, ofs 1: slots 2 and 3).
+
+Cause: armrec_vram_extpal (tools/armrec/armrec_rt.c) tested F and G with `(cnt & 0x9F) == 0x84`, which folds the
+placement bits into the mst test, so ofs 1 matched nothing and slots 2 and 3 read as unmapped: every BG3 pixel took
+colour 0 of an all-zero palette. Fixed by testing `(cnt & 0x87) == 0x84` and leaving the slot choice to ofs bit 0, as the
+existing slot test already did; the 3DS port's pinned copy (3ds/src/3ds_vram.c, whose self-test comment had flagged
+the mask) has the same fix and now checks G at 0x8C. The OBJ extended-palette case (F or G at mst 5) keeps its
+`(cnt & 0x9F) == 0x85`: the SDK's GX_SetBankForOBJExtPltt only ever writes 0x85, so no game reaches ofs bits there,
+and what the console does with them is unverified.
+
+Shared runtime, so it reaches D/P, Platinum, HG/SS and B/W. B/W: black/02 stepped one frame at a time with VRAMCNT
+read every frame never puts F or G at mst 4 (F and G only 00, 80, 81, 89, 83, 8B), so the
+changed test answers as before on every frame and its picture cannot change.
+
+Proof, HG/SS: heartgold/87 on a core with the fix passes on both games (7 wins each) and its sheets show the
+elevator, the corridor (stone floor, the doors, the pillars) and the Battle Room (the floor, the yellow carpet, the
+pillars) drawn, the room again after each win; before the fix the same frames were black but for the sprites
+(build/evidence/hgss-sys/defect-frontier-rooms-black/). Field battles on the same core give the same np_gp hash over
+every frame as on the old core (HG 60, SS 60, HG 03, HG 101).
+
+Proof, Platinum: platinum/98 on a core-plat built with the fix passes (7 wins, 48057 frames) and its new
+`battle-room` shot after the first win shows the room drawn (stone floor, the walls and the door, the four
+pillars, the yellow carpet), as games/platinum/res/graphics/frontier/backgrounds/battle_tower.png lays it out;
+plat-600, d-boot and p-boot keep their expected hashes on the rebuilt cores.
+
 ## Fixed: Black/White's Musical show never opened its curtain (port: the ARM7's VBlank count)
 
 Black and White, tests/e2e/black/75-musical: the dress-up and the backstage scene (zone 78, "I guess everyone is

@@ -4,10 +4,9 @@
 # Start: 38's end save, continued in MAP_NEW_BARK_PLAYER_HOUSE_2F (6,6) -> end: MAP_BATTLE_TOWER lobby after the
 # 7th win, VAR_UNK_414B 0.
 title = "Battle Frontier: Battle Tower singles, 7 wins"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 47000
+estimate = 60698
 refs = [
   "src/game_clear.c:267-292 + src/location_backup.c:1-34 (the game-clear save continues in MAP_NEW_BARK_PLAYER_HOUSE_2F (6,6))",
   "zone_event W40R0101 (MAP_ROUTE_40_BATTLE_FRONTIER_GATEHOUSE) warps (5,12) -> MAP_ROUTE_40, (5,2) -> MAP_BATTLE_FRONTIER_FRONTIER_ACCESS; object gsmiddleman1 (5,3) blocks the north warp",
@@ -23,16 +22,370 @@ refs = [
   "scr_seq_0069_D31R0201.s:96-170 (006: the prize receptionist's trophies at 20/50/100 BP-level streaks: FLAG_HIDE_PLAYERS_ROOM_*_TROPHY)",
   "include/constants/vars.h:92 VAR_BATTLE_TOWER_PRINT_PROGRESS, :346 VAR_UNK_414B",
 ]
-notes = "Gate: FLAG_GAME_CLEAR (the Route 40 gatehouse guard, scr_seq_0963_W40R0101.s:10-18), so the start is 38's game-clear save, continued in the player's room. Route: walk out of the house, Fly to Olivine (proven fly bot), walk west to the Route 40 gatehouse, Frontier Access (its first-visit coord scene), the Frontier gatehouse, the Tower (48,17). Entry: talk_to object 0 (15,5), CHALLENGE, SINGLE BATTLE, the party pick (3 of the party, Level 50 rules: no Ho-Oh/Lugia-class species, no duplicate species or held items [INFERENCE: rules from the BattleTower regulation, not traced line by line]; 38's party is TYPHLOSION, Togepi line, SCYTHER line, AMPHAROS, PELIPPER, FERALIGATR around lv60, scaled to 50) and YES to the save (SaveGameNormal). Then 7 battles: auto_battle each, and between battles the frontier engine's 'continue / record / rest / retire' menu answered with the first entry [INFERENCE: the room scripts run in the frontier engine, src/frontier, not read]. The record: the game saves on entry and when the set ends; the Tower's streak data is outside np_save4's dump, so [expect] counts 7 battles and the lobby var reset. Bots proven on HG/SS: walk_to, talk_to, fly, advance_text, auto_battle; needed: the Tower party-pick screen (party menu selection with A, unproven), and possibly a frontier-menu step. Risks: losing a battle at Level 50 with auto_battle's move choice (the streak resets; the run fails on battles < 7). [INFERENCE] estimate 47000: ~2500 house + fly, ~4000 Route 40 + access scene, ~2000 Frontier walk, ~3000 entry and save, ~28000 seven battles, ~5600 between-battle menus, ~1500 return."
+notes = "Gate: FLAG_GAME_CLEAR (the Route 40 gatehouse guard, scr_seq_0963_W40R0101.s:10-18), so the start is 38's game-clear save, continued in the player's room. Scouted on HeartGold (core-proposal): Fly to Olivine lands at (272,258); Route 40's gatehouse door is (237,266); the gatehouse's north mat (5,2) leads to Frontier Access (14,34), whose first-visit coord scene ran no text; its gatehouse (14,7) has a warp panel at (7,20) that moves the player to (7,17) (walk_to stops on it as 'an unexpected warp panel'; a second walk_to goes on), and its north mats lead to the Battle Frontier (48,52); the Tower door is (48,17), the lobby arrival (15,19). The attendant (object 0, 15,5): 'Welcome', CHALLENGE, SINGLE BATTLE, 'Please select the Pokemon', the pick screen (two columns: slot 0 top left, 1 top right, 2 and 3 the middle row, 4 and 5 the bottom; A opens ENTER, A enters it; after the third the cursor jumps to CONFIRM): TYPHLOSION (0), AMPHAROS (3: RIGHT, DOWN), FERALIGATR (5: DOWN), all lv50 under the Tower's rules; then YES to the save, YES to overwrite, 'I will now show you to the Battle Room.', the elevator (map 266) and the frontier engine's corridor and Battle Room (the map id stays 266). Frontier battles start from the frontier engine (Frontier_LaunchApplication with gOverlayTemplate_Battle), not Encounter_New, so NP_STAT_IN_BATTLE needs the battle-app flag (pc/patches/src/launch_application.c.patch, as Platinum's unk_0203D1B8.c.patch). The rooms drew black until armrec's extended-palette fix (tests/e2e/DEFECTS.md: G at mst 4, ofs 1). Between battles the attendant's menu is answered with A (its first entry, CONTINUE). The boost: Earthquake on TYPHLOSION and FERALIGATR (the first run lost its third battle to a Volt Absorb Chinchou). After the seventh win the Battle Video question starts on NO; the lobby (a FieldSystem_Control map type with no SAVE) is left by its door for the end save. Measured on the trace core: HG 60698 frames (Porygon, Kabuto, Chinchou, Koffing, Castform, Smoochum, Electabuzz), SS 54518 (Farfetch'd, Squirtle, Larvitar, Azumarill, Chimchar, Mantyke, Mightyena); in_battle rose and fell 7 times on each. The sheets show the elevator, the corridor and the Battle Room drawn (floor, walls, pillars, the yellow carpet), the room again after each win."
 
 [start]
 from = "38-champion-lance-hall-of-fame-credits"
+boost = "boost.recipe"
 
 [run]
-frames = 70000
+frames = 91100
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 4
+note = "the player's room (6,6) to the stairs"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK_PLAYER_HOUSE_1F"
+
+[[step]]
+do = "advance_text"
+note = "Mom's post-game scene on 1F, if it runs"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 10
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK"
+
+[[step]]
+do = "fly"
+map = "MAP_OLIVINE"
+
+[[step]]
+do = "walk_to"
+x = 237
+z = 267
+note = "Route 40, below the Battle Frontier gatehouse's door"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+gap = 80
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_40_BATTLE_FRONTIER_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "the guard stood aside after the Hall of Fame; the north mat -> Frontier Access (14,34)"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 8
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+gap = 80
+note = "the Frontier gatehouse (273)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_FRONTIER_ACCESS_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 21
+note = "below the warp panel at (7,20)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+gap = 120
+note = "the panel moves the player to (7,17)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 2
+note = "the north mats -> the Battle Frontier (48,52)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER"
+
+[[step]]
+do = "walk_to"
+x = 48
+z = 18
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+gap = 120
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_TOWER"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the single-battle attendant (15,5): 'Welcome to the Battle Tower!'"
+shot = "lobby-attendant"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 50
+times = 5
+note = "CHALLENGE, SINGLE BATTLE, 'Please select the Pokemon you wish to enter.'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "the pick screen"
+shot = "select"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "TYPHLOSION (slot 0): ENTER -> FIRST"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "AMPHAROS (slot 3): SECOND"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 2
+note = "FERALIGATR (slot 5): THIRD; the cursor jumps to CONFIRM"
+shot = "three-entered"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "CONFIRM -> 'Would you like to save the game?'"
+
+[[step]]
+do = "advance_text"
+max = 4000
+map = "MAP_BATTLE_TOWER_ELEVATOR"
+note = "YES, overwrite YES, 'saved', 'I will now show you to the Battle Room.'; stops as the elevator loads"
+
+[[step]]
+do = "wait_frames"
+n = 200
+shot = "elevator"
+
+[[step]]
+do = "wait_frames"
+n = 500
+shot = "corridor"
+note = "the frontier engine's corridor (BG3 with its palette in BG extended palette slot 3, VRAM G = 0x8C)"
+
+[[step]]
+do = "wait_frames"
+n = 250
+shot = "battle-room"
+note = "the Battle Room: the attendant has led the player in; the first trainer has not come in yet"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the trainer's line; stops at the first battle"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 1 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "room-after-win-1"
+note = "back in the Battle Room (frontier BG3, extended palette slot 3 in VRAM G)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: continue? A = the first entry; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 2 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "room-after-win-2"
+note = "back in the Battle Room (frontier BG3, extended palette slot 3 in VRAM G)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: continue? A = the first entry; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 3 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "room-after-win-3"
+note = "back in the Battle Room (frontier BG3, extended palette slot 3 in VRAM G)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: continue? A = the first entry; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 4 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "room-after-win-4"
+note = "back in the Battle Room (frontier BG3, extended palette slot 3 in VRAM G)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: continue? A = the first entry; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 5 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "room-after-win-5"
+note = "back in the Battle Room (frontier BG3, extended palette slot 3 in VRAM G)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: continue? A = the first entry; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 6 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "room-after-win-6"
+note = "back in the Battle Room (frontier BG3, extended palette slot 3 in VRAM G)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the attendant: continue? A = the first entry; the next trainer walks in"
+
+[[step]]
+do = "wait_battle"
+max = 3000
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "battle 7 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "room-after-win-7"
+note = "back in the Battle Room (frontier BG3, extended palette slot 3 in VRAM G)"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the seventh win: 'Would you like to save the last battle as your Battle Video?' (the cursor starts on NO), back to the lobby, the game's own save of the streak"
+
+[[step]]
+do = "wait_field"
+max = 3000
+shot = "lobby-after-7-wins"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 19
+note = "the lobby's door (warp 0): the Battle Tower is FieldSystem_Control's own map type, with no SAVE in its menu, so the end save is made outside"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER"
+
+[[step]]
+do = "wait_field"
+shot = "outside"
 
 [expect]
-map = "MAP_BATTLE_TOWER"
+map = "MAP_BATTLE_FRONTIER"
 flags = ["FLAG_GAME_CLEAR"]
 battles = 7
 
