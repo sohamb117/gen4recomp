@@ -1,3 +1,9 @@
 # On 22's end save: a Surf (57) and Waterfall (127) carrier, Basculin (550) lv 45 with Aqua Jet (453), Crunch (242),
 # in place of Blitzle (slot 2) (scr 0867 scripts 3 and 7: Cmd116 0x39 / 0x7F).
 party-set 2 550 45 57 127 453 242
+# The Fly carrier black/25's boost.recipe makes, Unfezant (521) lv 40 with Fly (19), Air Slash (403), Quick Attack
+# (98), Wing Attack (17), in place of the Cut carrier Patrat (slot 3): Route 18 to Nimbasa (Lostlorn Forest's side).
+party-set 3 521 40 19 403 98 17
+# Inside the Route 18 house (zone 388), above its exit mat (zone_event 388 warp 0 (3..5,10)): the run walks out, so
+# Route 18 (zone 387) loads its own objects (the HM05 ball).
+location 388 4 0 9

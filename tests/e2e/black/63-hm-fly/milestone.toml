@@ -2,20 +2,88 @@
 # this proves the move alone, from the end save that first has HM02 and a town map with Nimbasa).
 # Start: Mistralton City (zone 107, 21's end) -> end: Nimbasa City (zone 62), the landing tile.
 title = "HM02 Fly: Mistralton to Nimbasa"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 4000   # [INFERENCE] frames, not measured
+estimate = 6929   # measured from 21's end save + start.recipe (CONTINUE included): Black 6829, White 6929 (core-bwm)
 refs = [
   "scr 0192 @0x06EB var 0x8000 = 0x1A5, @0x06F7 CallStd 2805 HM02 (Bianca, Driftveil; 19)",
   "Fly (the X menu's POKEMON, the carrier's FLY, the town tapped on the bottom screen's map, A): Nimbasa (zone 62) at tap (130,94) [black/25-relic-castle-nacrene-stone refs, from scouting]",
   "black/25's boost.recipe: party-set 3 521 40 19 403 98 17 (Unfezant with Fly in Patrat's slot)",
 ]
-notes = "No field-move script runs for Fly (code: the party menu's FLY opens the town map) [INFERENCE]. The recipe makes the same Fly carrier 25's boost does."
+notes = "Measured from the start save (CONTINUE included): Black 6829, White 6929 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). No field-move script runs for Fly (code: the party menu's FLY opens the town map) [INFERENCE]. The recipe makes the same Fly carrier 25's boost does."
 
 [start]
 from = "21-mistralton-skyla-jet-badge"
 recipe = "start.recipe"
+
+[run]
+frames = 10500
+
+[[step]]
+do = "wait_field"
+note = "Fly from Mistralton: the X menu"
+
+[[step]]
+do = "press"
+keys = "x"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "tap"
+x = 64
+y = 42
+note = "POKEMON"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "tap"
+x = 190
+y = 88
+note = "party slot 3 (the Fly carrier, start.recipe)"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "tap"
+x = 200
+y = 108
+note = "FLY"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "tap"
+x = 130
+y = 94
+note = "Nimbasa on the town map"
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "fly-map"
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "wait_frames"
+n = 30
+
+[[step]]
+do = "wait_field"
+max = 1500
+shot = "nimbasa"
 
 [expect]
 map = 62

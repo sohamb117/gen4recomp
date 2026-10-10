@@ -1,24 +1,186 @@
-# HM05 Waterfall: HM05 is an item ball on Route 18 (west of Route 1, reached by Surf over Route 17), then a Waterfall
-# carrier climbs a waterfall.
-# Start: Icirrus City (zone 113, 22's end) -> end: the top of a waterfall [INFERENCE: zone in PHASE2], HM05 in the bag.
-title = "HM05 Waterfall: Route 18's item ball and a waterfall climb"
-status = "planned"
+# HM05 Waterfall: HM05 is an item ball on Route 18, then a Waterfall carrier climbs Lostlorn Forest's waterfall
+# (the one waterfall in Black/White short of Route 11 and Route 14, both later in the story).
+# Start: inside the Route 18 house (zone 388; 22's end save + start.recipe) -> end: Lostlorn Forest (zone 385), (19,48)
+# on the water above the waterfall, HM05 in the bag.
+title = "HM05 Waterfall: Route 18's item ball and Lostlorn Forest's waterfall"
 priority = "P0"
 version = "both"
-estimate = 30000   # [INFERENCE] frames, not measured
+estimate = 19471   # measured from 22's end save + start.recipe (CONTINUE included): Black 19471, White 16591 (core-bwm)
 refs = [
   "zone_event 387 object 11 gfx 0x6E (613,753) y 0 hidden by flag 0x4CA -> script id 7278 -> scr 0864 script 279: @0x210C var 0x800C = 0x1A8 (HM05), @0x2118 Call script_307 (the item ball pickup: sets the object's hide flag)",
-  "zone_event 387 warp 0 (636,737) -> zone 388 (the Route 18 house); zones 423 (Route 17), 387/388 (Route 18)",
-  "scr 0867 script 7 (script id 10006, run by the field facing a waterfall): @0x0377 Cmd116 var 0x8010, 0x7F (Waterfall), msg 280 #23 YES/NO, @0x03E4 msg 280 #24 'used Waterfall!'",
+  "zone_event 387 warp 0 (636,737) -> zone 388 (the Route 18 house); zone_event 388 warp 0 (3..5,10) -> zone 387 warp 0",
+  "Fly (the X menu's POKEMON, the carrier's FLY, the town tapped on the bottom screen's map, A): Nimbasa (zone 62) at tap (130,94) [black/25-relic-castle-nacrene-stone refs]",
+  "zone_event 62 warp 2 (447,437) -> zone 92 (Nimbasa Gate) warp 1; zone_event 92 warp 0 (15,4..6) -> zone 383 (Route 16) warp 1 (454,437); zone_event 383 warp 2 (483,416) 2x1 -> zone 385 (Lostlorn Forest) warp 0 (12,52)",
+  "scr 0867 script 7 (script id 10006, run by the field facing a waterfall): @0x0377 Cmd116 var 0x8010, 0x7F (Waterfall), msg 280 #23 'It's a large waterfall. Would you like to use Waterfall?' YES/NO, @0x03E4 msg 280 #24 'used Waterfall!'",
+  "scr 0867 script 3 (script id 10002, run facing water): @0x019E Cmd116 var 0x8010, 0x39 (Surf), msg 280 #13 YES/NO",
 ]
-notes = "No NPC gives HM05: the only HM05 in the scripts is that item ball. Waterfall tiles are attributes the probe does not name: PHASE2 finds one (scr 0867 script 7 runs from the attribute) [INFERENCE: Route 18 or Victory Road]. Route 17/18 are reached by Surf west of Route 1 [INFERENCE: no flag blocks them before the clear; zone_event 387 object 9 (616,758) hidden by 0x2C4, which the game clear clears (scr 0866 @0x0489), is a post-game visitor, not a block]. The recipe swaps Blitzle (slot 2) for a Surf + Waterfall carrier."
+notes = "Measured from the start save (CONTINUE included): Black 19471, White 16591 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). No NPC gives HM05: the only HM05 in the scripts is that item ball. The waterfall (scouting, the probe's tile bytes): Lostlorn Forest's river along z 48 is water 0x3F at x 15..17 (low, height 0) and x 19..22 (high, height 72, up to the pool at (22..25,40..41)), split by the falls, attribute 0x40 (collision bit) at (18,47..49); A facing (18,48) from the water at (17,48) runs scr 0867 script 7, and YES climbs to (19,48). The low river is surfed onto from (16,46) over the bank 0x44 at (16,47). The Route 18 house start (a location line) makes Route 18 load its own objects when the run walks out; a Fly carrier crosses from Route 18 to Nimbasa. The trainers on Route 16 (Backpackers, trdata #442/#443) and wild Pokemon on Route 18 are fought on the way. The recipe swaps Blitzle (slot 2) for a Surf + Waterfall carrier and Patrat (slot 3) for 25's Fly carrier."
 
 [start]
 from = "22-twist-mountain-cheren-icirrus"
 recipe = "start.recipe"
 
+[run]
+frames = 29500
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+note = "onto the house's exit mat (4,10)"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+note = "zone_event 388 warp 0 -> Route 18 (636,738)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 11
+note = "the item ball at (613,753): scr 0864 script 279, HM05"
+
+[[step]]
+do = "advance_text"
+shot = "hm05"
+
+[[step]]
+do = "wait_field"
+note = "Fly to Nimbasa: the X menu"
+
+[[step]]
+do = "press"
+keys = "x"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "tap"
+x = 64
+y = 42
+note = "POKEMON"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "tap"
+x = 190
+y = 88
+note = "party slot 3 (the Fly carrier, start.recipe)"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "tap"
+x = 200
+y = 108
+note = "FLY"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "tap"
+x = 130
+y = 94
+note = "Nimbasa on the town map"
+
+[[step]]
+do = "wait_frames"
+n = 30
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "wait_frames"
+n = 30
+
+[[step]]
+do = "wait_field"
+max = 1500
+
+[[step]]
+do = "walk_to"
+x = 447
+z = 438
+on_battle = "flee"
+note = "zone_event 62 warp 2 -> Nimbasa Gate (zone 92)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 5
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "zone_event 92 warp 0 -> Route 16 (455,438)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 483
+z = 417
+on_battle = "flee"
+note = "below zone_event 383 warp 2"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 383 warp 2 -> Lostlorn Forest (zone 385) (12,51)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 46
+on_battle = "flee"
+note = "north of the low river"
+
+[[step]]
+do = "moves"
+dirs = [["F", "D"]]
+shot = "surf"
+note = "face the water: scr 0867 script 3, YES, the jump over the bank onto (16,48)"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 48
+on_battle = "flee"
+note = "on the water below the falls (18,48)"
+
+[[step]]
+do = "moves"
+dirs = [["F", "R"]]
+shot = "waterfall"
+note = "face the falls: A runs scr 0867 script 7 (msg 280 #23), A answers YES, 'used Waterfall!', the climb to (19,48)"
+
+[[step]]
+do = "wait_field"
+
 [expect]
+map = 385
+position = [19, 48]
 flags = ["0x4CA"]
 save = [
   "any(i[\"item\"] == 424 for i in s[\"bag\"][\"tms_hms\"])",
+  "s[\"location\"][\"y\"] == 4",
 ]

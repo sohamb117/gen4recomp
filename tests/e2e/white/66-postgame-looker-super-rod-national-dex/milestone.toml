@@ -5,18 +5,62 @@ title = "After the credits: Looker's Super Rod and the National Pokedex"
 status = "planned"
 priority = "P0"
 version = "white"
-estimate = 9000   # [INFERENCE] frames, not measured
+estimate = 10344
 refs = [
   "scr 0866 @0x047F SetVar 0x4085 2 (the game clear); zone_event 390 level type 1: var 0x4085 == 2 -> scr 0780 script 4",
   "scr 0780 script 4: msg 429 #24-#33 (Looker), @0x05E8 CallStd 2805 Super Rod (item 447), msg 429 #34-#41, @0x06D8 SetVar 0x4085 3, @0x06DE SetFlag 0x2E0, @0x06E2 SetVar 0x400F 0x14D, @0x06E8 SetVar 0x4080 4, @0x06EE/@0x06F2 ClearFlag 0x201/0x202",
   "zone_event 390 warp 0 (5,10) -> zone 389; zone 389 level type 1: var 0x4080 == 4 -> scr 0778 script 15 (Cedric: msg 428 #45)",
   "scr 0778 script 15: @0x0B09 msg 428 #49 'Pokedex was upgraded with the National Mode!', @0x0B15 Cmd1D0 [INFERENCE: the National Mode], @0x0BC8 SetVar 0x4080 5, @0x0BCE/@0x0BD2 SetFlag 0x201/0x202, @0x0BD6 ClearFlag 0x200",
 ]
-notes = "The Super Rod's giver is Looker, in the player's own house, right after the credits; the National Pokedex comes from Cedric Juniper (the professor's father), not Professor Juniper. Both scenes are forced level scripts, so black/34 plays them on its way (its steps note 0x4085 3 and 0x4080 5) but checks neither the rod nor the Pokedex: this system does. National Dex listed P1 in the plan; merged here (P0) because it is the same two scenes and the rod is fishing's prerequisite. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+notes = "The Super Rod's giver is Looker, in the player's own house, right after the credits; the National Pokedex comes from Cedric Juniper (the professor's father), not Professor Juniper. Both scenes are forced level scripts that white/34 (as black/34) already plays on its way to the Poke Transfer Lab (its steps 1-7, the 'looker' shot), but 34 checks neither the rod nor the Pokedex: this system replays the same opening from 32's end and proves only those (the Super Rod in the key items, the National Mode, the scenes' flags and vars), stopping in Nuvema Town where 34 goes on to Fly. It cannot chain from 34's end, where both scenes are spent. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so no location line. National Dex listed P1 in the plan; merged here (P0) because it is the same two scenes and the rod is fishing's prerequisite."
 
 [start]
 from = "32-n-castle-zekrom-ghetsis-credits"
-# post-game: switch to 34's end once it lands
+
+[run]
+frames = 15600
+
+[[step]]
+do = "wait_field"
+note = "CONTINUE after the credits: flag 0x966 -> zone 391 (the player's room) (5,6)"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 2
+note = "zone_event 391 warp 0 (9,2) -> 390 (the house's 1F)"
+
+[[step]]
+do = "advance_text"
+max = 20000
+shot = "looker"
+note = "zone 390 level script var 0x4085 == 2 -> scr 0780 script 4: Mom, then Looker; @0x05E8 CallStd 2805 the Super Rod (item 447); his YES/NO (Cmd047) takes A = YES; @0x06D8 0x4085 3, @0x06E8 0x4080 4"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+gap = 0
+note = "zone_event 390 warp 0 (5..7,10) -> Nuvema Town 389"
+
+[[step]]
+do = "wait_map"
+map = 389
+
+[[step]]
+do = "advance_text"
+max = 20000
+shot = "cedric"
+note = "zone 389 level script var 0x4080 == 4 -> scr 0778 script 15: Cedric Juniper with Bianca and Cheren, msg 428 #49 the National Mode (@0x0B15 Cmd1D0), @0x0BC8 0x4080 5"
+
+[[step]]
+do = "wait_field"
+shot = "nuvema"
 
 [expect]
 map = 389

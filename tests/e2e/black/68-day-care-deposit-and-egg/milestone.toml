@@ -19,6 +19,128 @@ notes = "Before 15 the Day Care holds one Pokemon and the man is not on Route 3 
 from = "16-nimbasa-elesa-bolt-badge"
 recipe = "start.recipe"
 
+[run]
+frames = 60000
+
+[[step]]
+do = "wait_field"
+shot = "route3"
+
+[[step]]
+do = "walk_to"
+x = 749
+z = 555
+note = "zone_event 321 warp 2 (749,555) -> the Day Care (zone 323)"
+
+[[step]]
+do = "wait_map"
+map = 323
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 9
+face = "up"
+note = "below the counter, facing the Day-Care Lady (zone_event 323 object 0 (6,7))"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 40
+times = 4
+note = "talk (scr 0856 script 2: msg 426 #12, @0x0301 SetFlag 0x70), A on the text, A on the menu's first entry 'Leave Pokemon' (Cmd0AF 0x1E), A on msg 426 #17 'Which Pokemon should we raise for you?'"
+
+[[step]]
+do = "wait_frames"
+n = 110
+note = "the party screen ('Deposit which Pokemon?'): touch panels, left column slots 0/2/4, right column 1/3/5"
+
+[[step]]
+do = "tap"
+x = 190
+y = 91
+gap = 52
+note = "slot 3 (right column, middle): Patrat"
+
+[[step]]
+do = "tap"
+x = 190
+y = 133
+gap = 132
+shot = "patrat-stored"
+note = "STORE (the panel menu: STORE, SUMMARY, QUIT): msg 426 #19 'Fine, we'll raise your Patrat for a while.'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 40
+times = 2
+note = "A on msg 426 #19, then YES to msg 426 #21 'We can raise two of your Pokemon. Would you like us to raise another?' (two slots: flag 0x99)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 150
+note = "A on msg 426 #17: the party screen again"
+
+[[step]]
+do = "tap"
+x = 190
+y = 91
+gap = 52
+note = "slot 3 again: Ditto (Tepig's old slot 4 moved up when Patrat left)"
+
+[[step]]
+do = "tap"
+x = 190
+y = 133
+gap = 132
+shot = "ditto-stored"
+note = "STORE: msg 426 #19 'Fine, we'll raise your Ditto for a while.'"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 12
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+gap = 0
+note = "zone_event 323 warp 2 (6,13) -> Route 3 (749,556)"
+
+[[step]]
+do = "wait_map"
+map = 321
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 749
+z = 557
+via = [[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557]]
+on_battle = "flee"
+note = "120 legs of 14 steps along the path below the Day Care (735..749,557): the steps the day care counts toward an egg"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the Day-Care Man (zone_event 321 object 0 (748,556)): scr 0856 script 1, var 0x8026 == 1 (an egg) -> msg 426 #6 and YES/NO"
+
+[[step]]
+do = "advance_text"
+shot = "egg"
+note = "A answers YES: @0x0146 Cmd0EC (the egg into the party), msg 426 #7 'received the Egg from the Day-Care Man'"
+
 [expect]
 map = 321
 party_size = 5

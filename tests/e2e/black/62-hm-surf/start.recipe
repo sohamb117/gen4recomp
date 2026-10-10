@@ -1,3 +1,6 @@
 # On 22's end save (Icirrus City): a Surf carrier, Basculin (550) lv 40 with Surf (57), Aqua Jet (453), Crunch (242),
 # in place of Blitzle (slot 2): scr 0867 script 3 @0x019E Cmd116 0x39 finds the member that knows Surf.
 party-set 2 550 40 57 453 242
+# Route 6 (zone 331), one tile below the door of zone 336 (zone_event 331 warp 2 (116,361)); Route 6's objects stand
+# at y 0. The run enters the house and leaves it, so Route 6 loads its own objects.
+location 331 116 0 362

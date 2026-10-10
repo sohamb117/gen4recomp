@@ -1,22 +1,113 @@
 # Fishing with the Super Rod from the Bag: face water, use the rod, reel in at the '!', fight what bites.
-# Start: Nuvema Town (zone 389, 66's end) -> end: Nuvema Town after one fished wild battle.
-title = "Fishing: the Super Rod in Nuvema Town"
+# Start: Nuvema Town (zone 389, 66's end) -> end: Route 1 (zone 317) at the pond (781,708) after one fished wild battle.
+title = "Fishing: the Super Rod at Route 1's pond"
 status = "planned"
 priority = "P0"
 version = "black"
-estimate = 6000   # [INFERENCE] frames, not measured
+estimate = 8604
 refs = [
   "scr 0780 @0x05E8 CallStd 2805 Super Rod (Looker; 66)",
   "msg 429 #41 (Looker): 'Face the water and employ the rod! ... When it occurs that these Pokemon bite, '!' will indicate. Immediately, reel in!'",
-  "zone 389 (Nuvema Town)",
+  "zone 317 (Route 1): the pond west of the road, its east bank (781,707..708) above the wooden fence (scouted: the rod casts there facing left)",
 ]
-notes = "B/W have one rod, the Super Rod, given post-game (66); no script runs fishing (the Bag's item and the field) [INFERENCE]. Which Nuvema tiles are water the probe does not say: [INFERENCE] the town's shore; PHASE2 picks a tile. Fishing sets nothing in the save, so [expect] is the battle and the place. Chained from 66 so the scenes there are not replayed."
+notes = "B/W have one rod, the Super Rod, given post-game (66); no script runs fishing (the Bag's item and the field) [INFERENCE]. Nuvema Town's sea is behind the south fence: the rod there gives Juniper's 'There's a time and place' (scouted at (780,761) facing down), so the cast is at Route 1's pond, the nearest fishable water. The Bag is reached through the X menu by touch (BAG, the left middle button), the Key Items pocket by the D-pad (left twice: the first press only shows the cursor; Items -> Key Items wraps), the Super Rod is the pocket's first entry and its menu's first is USE. bots.py's fish bot is GBA-only (the guest's PC_TRACE_FISH trace); on B/W nothing reports the bite, so the reel-in is a fixed delay after USE, scouted on 66's end saves: the '!' over the player shows from 308 to 370 frames after the USE press on Black, 276 to 338 on White (red pixels over the player's head); A at 320, inside both, lands the Pokemon ('Landed a Pokemon!'), then A starts the battle. The run is deterministic, so the same start and inputs replay the same bite; a changed start save or earlier step moves it. Fishing sets nothing in the save, so [expect] is the battle and the place. Chained from 66 so the scenes there are not replayed."
 
 [start]
 from = "66-postgame-looker-super-rod-national-dex"
 
+[run]
+frames = 13000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 781
+z = 708
+face = "left"
+on_battle = "flee"
+max = 3000
+note = "north out of Nuvema onto Route 1 (zone 317), the pond's east bank above the fence, facing the water"
+
+[[step]]
+do = "press"
+keys = "x"
+hold = 4
+gap = 40
+note = "the X menu"
+
+[[step]]
+do = "tap"
+x = 64
+y = 94
+note = "BAG (the left button of the menu's second row)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 4
+gap = 30
+note = "the first D-pad press shows the cursor"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 4
+gap = 40
+note = "Items -> Key Items (wraps); the cursor on its first entry, the Super Rod"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 40
+note = "the Super Rod's menu: USE, REGISTER, CANCEL"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 0
+note = "USE: the Bag closes and the player casts"
+
+[[step]]
+do = "wait_frames"
+n = 320
+note = "the bite: the '!' shows 308-370 frames after USE on Black's start, 276-338 on White's (scouted): 320 is in both"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 0
+shot = "landed"
+note = "reel in: 'Landed a Pokemon!'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 20
+times = 20
+until = "in_battle=1"
+note = "the message closes and the wild battle starts"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
 [expect]
-map = 389
+map = 317
+position = [781, 708]
 battles = 1
 save = [
   "any(i[\"item\"] == 447 for i in s[\"bag\"][\"key_items\"])",

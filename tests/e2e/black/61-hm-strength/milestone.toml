@@ -1,27 +1,103 @@
 # HM04 Strength: the man in a Nimbasa house gives HM04 (an NPC gift, not an item ball), then a Strength carrier
 # pushes Route 16's boulder (the nearest one east of Nimbasa).
-# Start: Nimbasa City (zone 62) below the house door (399,455) -> end: Route 16 (zone 383), the boulder (482,439) moved.
+# Start: Nimbasa City (zone 62) below the house door (399,455) -> end: Route 16 (zone 383), (482,439): the boulder
+# pushed north to (482,438).
 title = "HM04 Strength: Nimbasa's gift and Route 16's boulder"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000   # [INFERENCE] frames, not measured
+estimate = 16923   # measured from 16's end save + start.recipe (CONTINUE included): Black 16923, White 13001 (core-bwm)
 refs = [
   "zone_event 62 warp 8 (399,455) -> zone 88 warp 0; zone_event 88 warp 0 (6,10) 3x1 -> zone 62 warp 8",
   "zone_event 88 object 0 gfx 0x1E (4,3) -> scr 0176 script 1: @0x002C var 0x8000 = 0x1A7 (HM04), 0x8002 = 0x122 (the gift's flag), @0x0054 CallStd 2800 (scr 0862 script 1: give item, @0x00CA SetFlag var 0x8002)",
   "msg 70 #0 (scr 0130, Nimbasa): 'There was a guy who gave me an HM called Strength. For free...'",
-  "zone_event 62 warp 2 (447,437) -> zone 92 (Nimbasa Gate) warp 1; zone_event 383 warp 1 (454,437) -> zone 92 warp 0",
+  "zone_event 62 warp 2 (447,437) -> zone 92 (Nimbasa Gate) warp 1; zone_event 92 warp 0 (15,4..6) -> zone 383 warp 1 (454,437)",
   "zone_event 383 object 10 gfx 0x2003 (482,439) -> script id 10000 -> scr 0867 script 1 (boulder): @0x008D Cmd116 var 0x8010, 0x46 (Strength), msg 280 #6 YES/NO, @0x00FB SetFlag 0x964, msg 280 #10/#11",
   "other boulders (script id 10000): zone_event 152 object 13 (20,35), 319 object 2 (750,653), 208, 216, 224, 226, 231 (x4), 333-335, 346, 370, 378, 387",
 ]
-notes = "16's end save is in zone 63 (the Gym); the recipe places the player outside zone 88's door and swaps Tepig (slot 4) for a Strength carrier (no bot teaches an HM from the Bag). Flag 0x964 is the 'Strength is active' flag the boulder script sets [INFERENCE: cleared on a zone change, so the save must be on Route 16]."
+notes = "Measured from the start save (CONTINUE included): Black 16923, White 13001 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). 16's end save is in zone 63 (the Gym); the recipe places the player outside zone 88's door and swaps Tepig (slot 4) for a Strength carrier (no bot teaches an HM from the Bag). The boulder stands in a two-wide pocket (482..483, 438..440, open south; the probe's grid in scouting), so the run pushes it north from (482,440) and ends on its old tile. Flag 0x964 is the 'Strength is active' flag the boulder script sets [INFERENCE: cleared on a zone change, so the save must be on Route 16]. The Backpackers on Route 16 (trdata #442 Peter (482,443), #443 Stephen) spot the player on the way and are fought."
 
 [start]
 from = "16-nimbasa-elesa-bolt-badge"
 recipe = "start.recipe"
 
+[run]
+frames = 25500
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 62 warp 8 -> zone 88"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the man at (4,3): scr 0176 script 1, HM04"
+
+[[step]]
+do = "advance_text"
+shot = "hm04"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 10
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+note = "zone_event 88 warp 0 -> Nimbasa City (399,456)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 447
+z = 438
+on_battle = "flee"
+note = "zone_event 62 warp 2 -> Nimbasa Gate (zone 92)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 5
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "zone_event 92 warp 0 -> Route 16 (455,438)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 482
+z = 440
+on_battle = "flee"
+note = "below the boulder (482,439)"
+
+[[step]]
+do = "moves"
+dirs = [["F", "U"]]
+shot = "strength"
+note = "face the boulder: A starts scr 0867 script 1, A answers YES (msg 280 #6), 'used Strength!', flag 0x964"
+
+[[step]]
+do = "moves"
+dirs = [["P", "U"]]
+shot = "pushed"
+note = "push the boulder north to (482,438); the player steps onto (482,439)"
+
 [expect]
 map = 383
+position = [482, 439]
 flags = ["0x122", "0x964"]
 save = [
   "any(i[\"item\"] == 423 for i in s[\"bag\"][\"tms_hms\"])",

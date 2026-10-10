@@ -1,22 +1,80 @@
 # HM03 Surf in the field: a Surf carrier crosses Route 6's water to the Mistralton Cave entrance (HM03 came from
 # Cheren at Twist Mountain in 22).
-# Start: Icirrus City (zone 113, 22's end) -> end: Mistralton Cave (zone 333) through Route 6's warp (156,361).
+# Start: Route 6 (zone 331) below house 336's door (22's end save + start.recipe) -> end: Mistralton Cave (zone 333)
+# through Route 6's warp (156,361).
 title = "HM03 Surf: Route 6 to Mistralton Cave"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 15000   # [INFERENCE] frames, not measured
+estimate = 9528   # measured from 22's end save + start.recipe (CONTINUE included): Black 8559, White 9528 (core-bwm)
 refs = [
   "scr 0396 @0x029D var 0x8000 = 0x1A6, @0x02A9 CallStd 2805 HM03 (Cheren, Twist Mountain; 22)",
   "scr 0867 script 3 (script id 10002, run by the field facing water): @0x019E Cmd116 var 0x8010, 0x39 (Surf), msg 280 #13 'The water is a deep blue... surf on it?', msg 280 #15 (not with a partner), @0x020B msg 280 #14 'used Surf!'",
   "zone_event 331 warp 1 (156,361) 1x2 -> zone 333 (Mistralton Cave) warp 0 (1,6)",
-  "zone 107 (Mistralton City), Route 6 zones 331/332/336",
+  "zone_event 331 warp 2 (116,361) -> zone 336 warp 0; zone_event 336 warp 0 (5..7,9) -> zone 331 warp 2",
 ]
-notes = "The water tiles are terrain attributes the probe does not name (README, Black and White): [INFERENCE] the Route 6 river stands between the road and the cave entrance (156,361). Surf sets nothing in the save; the proof is reaching zone 333. The recipe swaps Blitzle (slot 2) for a Surf carrier."
+notes = "Measured from the start save (CONTINUE included): Black 8559, White 9528 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). The probe's tile bytes (scouting): Route 6's water is attribute 0x3F (no collision bit), each bank 0x44 (collision bit) that the surf jump crosses. The pond in front of the cave (128..148, 359..363) is walled off from the river west of it by collision 0x1 at x 127 (rocks in the water), so the run surfs from the path north of it, (130,357) facing down, and lands east at (150,361), the cave's ledge (150..155, 360..363). Wild battles on the water are fled. Surf sets nothing in the save; the proof is reaching zone 333. The recipe swaps Blitzle (slot 2) for a Surf carrier and puts the player on Route 6 (the house is entered and left so the zone loads its own objects)."
 
 [start]
 from = "22-twist-mountain-cheren-icirrus"
 recipe = "start.recipe"
+
+[run]
+frames = 14500
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 331 warp 2 -> zone 336"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+note = "zone_event 336 warp 0 -> Route 6 (116,362)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 130
+z = 357
+on_battle = "flee"
+note = "the path north of the pond (x 119 north, then east along z 356..357)"
+
+[[step]]
+do = "moves"
+dirs = [["F", "D"]]
+shot = "surf"
+note = "face the water: A starts scr 0867 script 3 (msg 280 #13), A answers YES, 'used Surf!', the jump over the bank to (130,359)"
+
+[[step]]
+do = "walk_to"
+x = 148
+z = 361
+on_battle = "flee"
+note = "across the pond on the water"
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "over the bank (149,361) onto the cave's ledge (150,361)"
+
+[[step]]
+do = "walk_to"
+x = 155
+z = 361
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "zone_event 331 warp 1 (156,361) -> Mistralton Cave (zone 333)"
+
+[[step]]
+do = "wait_field"
+shot = "cave"
 
 [expect]
 map = 333
