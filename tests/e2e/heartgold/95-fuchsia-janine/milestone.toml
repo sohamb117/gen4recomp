@@ -1,25 +1,507 @@
 # Proves the Kanto gym Janine (Soul Badge).
 # Start: 94-celadon-erika's end -> end: MAP_FUCHSIA_GYM after the leader, BADGE_SOUL.
 title = "Kanto gym: Janine (Soul Badge)"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 93545
 refs = [
   "scr_seq_0809_T08GYM0101.s:20-88 (OnTransition: CheckBadge BADGE_SOUL, hour hiding of FLAG_HIDE_FUCHSIA_GYM_JANINE after the badge)",
   "scr_seq_0809_T08GYM0101.s:515-520 (TRAINER_LEADER_JANINE_JANINE, GiveBadge BADGE_SOUL)",
   "TRAINER_LEADER_JANINE_JANINE (257, include/constants/trainers.h:262)",
   "scr_seq_0197_R11.s:44-58 / scr_seq_0199_R12.s:193-206 (Snorlax WildBattle 50, FLAG_SNORLAX_MEET): Route 11/12 blocked without the Poke Flute radio (FLAG_GOT_EXPN_CARD, scr_seq_0775_T05R0701.s:21-49)",
 ]
-notes = "Gate: Fuchsia from Celadon down Cycling Road (Route 16-18; the Bicycle is from Goldenrod) or from Vermilion/Lavender east past the Snorlax (needs the EXPN Card after FLAG_RESTORED_POWER) [INFERENCE]. Janine's gym has the disguised-trainer layout (invisible walls) [INFERENCE: tools/hg_map.py MAP_FUCHSIA_GYM]. No RTC. Cycling Road needs a bike step: 'walk_to' on the bike is unproven on HG/SS [INFERENCE]. [INFERENCE] estimate."
+notes = "Gate: none beyond Saffron and Lavender. HG/SS's Snorlax sleeps by Route 12's west gate ((1411,306), FLAG_HIDE_ROUTE_12_SNORLAX, scr_seq_0199_R12.s), off the pier, so the way south needs no Poke Flute: Saffron's east gate -> Route 8 -> Lavender -> Route 12's pier -> Route 13 -> Route 14 (Cut trees (1352..1353,411..414)) -> Route 15 -> the Fuchsia gatehouse. Route 13 is a fenced maze whose bottom corridor Camper object 6 (1372,374) closes: its legs were found by walking (row 368, 370, 372). Route 8's Cut trees (1375,246) and (1384,242) stand on the route's corners. The legs are hg_world.py route's corners (static land data; walk_to plans each leg on the probe), with surf allowed where the route left the pier. Janine's gym hides the leader among four disguised trainers (objects 6..9 dressed as her); the real one is object 2 (7,16), spoken to from (7,17). Soul Badge: Kanto badge 4. Measured: HG 80140 frames, SS 93545 (a first SS run ran out of a 90000 budget at Janine); the sheets show Erika's dais (start), Janine's gym after the badge, her Crobat lv47 against Typhlosion lv69."
 
 [start]
 from = "94-celadon-erika"
 
 [run]
-frames = 30000
+frames = 140400
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 46
+hm = true
+note = "out of Celadon Gym's maze (its Cut trees grow back)"
+
+[[step]]
+do = "fly"
+map = "MAP_SAFFRON"
+
+[[step]]
+do = "walk_to"
+x = 1336
+z = 240
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1337
+z = 240
+note = "Route 8's Saffron gatehouse"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "-> Route 8 (1345,240)"
+
+[[step]]
+do = "walk_to"
+x = 1360
+z = 240
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1360
+z = 244
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1374
+z = 244
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1374
+z = 246
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1376
+z = 246
+hm = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1376
+z = 242
+hm = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1391
+z = 242
+hm = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1391
+z = 245
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1398
+z = 245
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1398
+z = 238
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1411
+z = 238
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1411
+z = 235
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1418
+z = 236
+on_battle = "flee"
+
+[[step]]
+do = "heal"
+x = 1418
+z = 234
+note = "Lavender's Pokemon Center"
+
+[[step]]
+do = "walk_to"
+x = 1418
+z = 238
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1422
+z = 238
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1422
+z = 256
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 256
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 272
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 288
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 304
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 320
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1435
+z = 320
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1435
+z = 322
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1433
+z = 322
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1433
+z = 334
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1433
+z = 346
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1433
+z = 358
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1432
+z = 374
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1416
+z = 374
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1400
+z = 374
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1400
+z = 372
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1390
+z = 372
+on_battle = "flee"
+note = "Route 13: the bottom corridor (row 374) is closed at (1372,374) by Camper object 6, so the way west is row 368 -> row 370 -> row 372 -> (1351,374), then south at x 1355 to Route 14 (the static route went through the camper; walk_to's detours from there wandered back to Route 12)"
+
+[[step]]
+do = "walk_to"
+x = 1390
+z = 370
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1400
+z = 370
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1400
+z = 368
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1384
+z = 368
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1384
+z = 370
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1370
+z = 370
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1358
+z = 370
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1358
+z = 372
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1351
+z = 372
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1351
+z = 374
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1355
+z = 374
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1355
+z = 376
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1356
+z = 383
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1355
+z = 385
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1354
+z = 385
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1354
+z = 398
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1354
+z = 411
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1345
+z = 412
+hm = true
+on_battle = "flee"
+note = "Route 14's Cut trees (1352..1353,411..414)"
+
+[[step]]
+do = "walk_to"
+x = 1345
+z = 428
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1340
+z = 428
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1340
+z = 424
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1326
+z = 424
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1313
+z = 424
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 424
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1287
+z = 424
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1275
+z = 424
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1262
+z = 424
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1250
+z = 424
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1249
+z = 422
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1248
+z = 422
+note = "Route 15's Fuchsia gatehouse"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "-> Fuchsia"
+
+[[step]]
+do = "heal"
+x = 1209
+z = 439
+note = "Fuchsia's Pokemon Center"
+
+[[step]]
+do = "walk_to"
+x = 1195
+z = 440
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1195
+z = 439
+note = "the gym door -> (7,25)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_FUCHSIA_GYM"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 17
+note = "below the real Janine (7,16) (the other Janines are disguised trainers)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 4
+gap = 10
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "Janine"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_JANINE_JANINE"
+
+[[step]]
+do = "advance_text"
+note = "the Soul Badge"
+shot = "badge"
 
 [expect]
 map = "MAP_FUCHSIA_GYM"
-badge = ["BADGE_SOUL"]
 battles = 1
+save = ['s["trainer"]["kanto_badge_mask"] >> 4 & 1']
