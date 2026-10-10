@@ -26,7 +26,9 @@ SoulSilver: theirs are milestone 04's (linkpair.mint_hgss), and their
 schedules were recorded by linkbot.py from scenarios/*.json (the e2e bots
 driving two np_gp --lockstep stations), which run with PC_E2E and
 text_instant as the scenarios' env and opts pass them here (opts: a list
-for both stations, or a dict of lists per station).
+for both stations, or a dict of lists per station). A new milestone 04 save
+(the chain rerun) moves the Union Room's wandering avatars, so these
+schedules are recorded again from their scenarios when it changes.
 
 Skips (exit 0, "SKIP") without a ROM, an np_headless build, np_save4 (or,
 for Black/White, np_save5 and the milestone saves; for HeartGold/SoulSilver
@@ -120,7 +122,7 @@ SCENARIOS = [
     # B's slot 1; the game saves both after the animation.
     dict(name='hgss_trade', games=('heartgold', 'soulsilver'),
          scheds={'a': 'schedules/hgss-trade-a.sched', 'b': 'schedules/hgss-trade-b.sched'},
-         frames=13541, trade_slots=(1, 1), env={'PC_E2E': '1'}, opts=['text_instant=1'],
+         frames=13735, trade_slots=(1, 1), env={'PC_E2E': '1'}, opts=['text_instant=1'],
          dump_from=9000, dump_every=200),
     # The same pair's battle: BATTLE in the Union Room, both enter both
     # Pokemon (the room's battles take two), then FIGHT and the first move
