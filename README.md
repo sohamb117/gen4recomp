@@ -1,11 +1,14 @@
 # nativeplat
 
-Native ports of Pokémon Diamond, Pearl and Platinum (US). The games are
-built from the pret decompilations, compiled to WebAssembly, turned back into
-C with wasm2c and run natively by `core/runtime`; there is no emulator. The
-app (`shell/`) adds the Gen1Recomp-style player features: launcher, save
-slots, save editor, display effects, snapshots and rewind, local wireless
-over LAN or a relay, mods, folder sync and more.
+Native ports of Pokémon Diamond, Pearl, Platinum, HeartGold, SoulSilver,
+Ruby, Sapphire, Emerald, Black and White (US). Diamond, Pearl, Platinum,
+HeartGold, SoulSilver and the GBA games are built from the pret
+decompilations, compiled to WebAssembly, turned back into C with wasm2c and
+run natively by `core/runtime`; Black and White use a static recompilation of
+the cartridge image with `ndsrec` and `armrec`. There is no emulator. The app
+(`shell/`) adds the Gen1Recomp-style player features: launcher, save slots,
+save editor, display effects, snapshots and rewind, local wireless over LAN or
+a relay, mods, folder sync and more.
 
 - How to build everything: [docs/BUILDING.md](docs/BUILDING.md)
 - What works per game: [docs/FEATURE_PARITY.md](docs/FEATURE_PARITY.md)
@@ -14,9 +17,10 @@ over LAN or a relay, mods, folder sync and more.
 
 ## Playing on macOS
 
-Status: Diamond, Pearl and Platinum are all playable, with the same app
-features (see [docs/FEATURE_PARITY.md](docs/FEATURE_PARITY.md) for each game,
-with evidence).
+Status: all ten games boot in the packaged app. Diamond, Pearl, Platinum,
+Ruby, Sapphire and Emerald have the broad app-feature coverage documented in
+[docs/FEATURE_PARITY.md](docs/FEATURE_PARITY.md); Black, White, HeartGold and
+SoulSilver have the core and app coverage documented there.
 
 ### Install
 
@@ -28,6 +32,11 @@ with evidence).
 3. The app is ad-hoc signed, not notarized: the first time, right-click it
    and choose **Open** (or allow it under System Settings > Privacy &
    Security).
+
+The ten-core packages are `nativeplat-macos-arm64-c8948448c.zip` (SHA-256
+`58fa10e2ea39e12bfd3fef146e05ad3e5fdc4c8b43c8295090510f1258d94c12`) and
+`nativeplat-windows-x64-0bb574077.zip` (SHA-256
+`14b640be85b0813b85ed7e806b62e6055ab3b09308f0947d51575ef92c28336a`).
 
 Your data (imported cartridges, saves, screenshots, `options.ini`) lives in
 `~/Library/Application Support/nativeplat/`. **Portable mode:** put an empty
@@ -46,7 +55,13 @@ folder; the launcher card then says **Ready**.
 | Diamond (USA) | `a46233d8b79a69ea87aa295a0efad5237d02841e` |
 | Pearl (USA) | `99083bf15ec7c6b81b4ba241ee10abd9e80999ac` |
 | Platinum (USA, Rev 1) | `0862ec35b24de5c7e2dcb88c9eea0873110d755c` |
-
+| HeartGold (USA) | `4fcded0e2713dc03929845de631d0932ea2b5a37` |
+| SoulSilver (USA) | `f8dc38ea20c17541a43b58c5e6d18c1732c7e582` |
+| Ruby (USA) | `f28b6ffc97847e94a6c21a63cacf633ee5c8df1e` |
+| Sapphire (USA) | `3ccbbd45f8553c36463f13b938e833f652b793e4` |
+| Emerald (USA, Europe) | `f3ae088181bf583e55daf962a92bb46f4f1d07b7` |
+| Black (USA, Europe) | `26ad0b9967aa279c4a266ee69f52b9b2332399a5` |
+| White (USA, Europe) | `bc696a0dfb448c7b3a8a206f0f8214411a039208` |
 Click a game to see its **save slots**: *Continue* (the last one played),
 *New save slot...*, every slot (Play, Edit save..., Rename, Duplicate,
 Export .sav, Cart, Delete) and *Import .sav...* (or drop a `.sav`/`.dsv` from
