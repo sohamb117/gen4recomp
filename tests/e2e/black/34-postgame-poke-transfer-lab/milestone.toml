@@ -3,10 +3,9 @@
 # Start: the player's room (zone 391, 32's end: the save the game writes after the credits) -> end: the Poke Transfer
 # Lab (zone 381) at the counter (10,8) in front of the scientist, before talking to him.
 title = "After the credits (Black): the way to the Poke Transfer Lab"
-status = "planned"
 priority = "P1"
 version = "black"
-estimate = 22621
+estimate = 22112
 refs = [
   "scr 0866 script 2 (the game clear, after the credits): L_0443 on the first clear (flag 0x960): @0x0457 0x40A2 3, @0x047F 0x4085 2, @0x04A1 SetFlag 0x2E4; L_0316: @0x031C Cmd0DC 0x187, 1, 5, 0, 6 (the continue warp: zone 391 (5,6)), @0x0328 SetFlag 0x966",
   "flag 0x966: with it set, CONTINUE takes the continue warp; set on a save without that warp it lands on zone 0's warp 0 tile (Black City (9,50)), seen in scouting",

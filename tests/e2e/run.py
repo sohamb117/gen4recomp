@@ -215,9 +215,15 @@ class Milestone:
         for k in ("recipe", "lab"):
             if k in st and os.path.isfile(os.path.join(self.dir, st[k])):
                 try:
-                    labc.compile_inline(os.path.join(self.dir, st[k]), game.name)
+                    inline = labc.compile_inline(os.path.join(self.dir, st[k]), game.name)
                 except SystemExit as e:
                     problems.append("[start] %s: %s" % (k, e))
+                else:
+                    bad = sorted({op.split()[0] for op in inline[len("inline:"):].split(";") if op}
+                                 - BW_RECIPE_VERBS) if game.name in BW_GAMES else []
+                    if bad:
+                        problems.append("[start] %s %s: B/W recipes take only %s, not %s" % (
+                            k, st[k], " ".join(sorted(BW_RECIPE_VERBS)), " ".join(bad)))
         if "boost" in st:
             path = os.path.join(self.dir, st["boost"])
             if not os.path.isfile(path):
@@ -353,6 +359,13 @@ ADDMON_BOOST_VERBS = {"party", "party-move"}
 HGSS_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-heal"}
 # np_save5 set-level / set-mon: a full party (6 from B/W milestone 13 on) is strengthened in place
 BW_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-set"}
+# A B/W side system's [start] recipe (not a boost) may also place the player and stock the bag: `location ZONE X Y Z`
+# (np_save5 set-location: just outside a door, since a zone keeps the saved zone's objects and a gimmick zone
+# loads its overlay only when entered) and `item POCKET SLOT ITEM QTY` (np_save5 set-item; POCKET by number, as
+# recipes take numbers only: 0 items, 1 key_items, 2 tms_hms, 3 medicine, 4 berries; SLOT from 1). Flags and vars
+# stay the chain's.
+BW_POCKETS = ("items", "key_items", "tms_hms", "medicine", "berries")
+BW_RECIPE_VERBS = BW_BOOST_VERBS | {"location", "item"}
 ADDMON_BOOST_GAMES = HGSS_GAMES + BW_GAMES
 
 
@@ -360,7 +373,7 @@ def addmon_boost_verbs(game):
     return HGSS_BOOST_VERBS if game.name in HGSS_GAMES else BW_BOOST_VERBS
 
 
-def addmon_boost(game, inline, sav, log):
+def addmon_boost(game, inline, sav, log, recipe=False):
     """Applies an HG/SS or B/W boost recipe to `sav` with the save tool's add-mon: each `party` line becomes an
     add-mon after the save's party, carrying the moves its `party-move` lines give it (slot = its party slot)."""
     ops = [op.split() for op in inline[len("inline:"):].split(";") if op]
@@ -368,14 +381,19 @@ def addmon_boost(game, inline, sav, log):
     if out.returncode != 0:
         raise HarnessError("boost: the save tool cannot read %s" % sav)
     first = len(json.loads(out.stdout).get("party", []))
-    adds, sets, levels, replaces, heal = [], [], [], [], False
-    allowed = addmon_boost_verbs(game)
+    adds, sets, levels, replaces, heal, places = [], [], [], [], False, []
+    allowed = BW_RECIPE_VERBS if recipe and game.name in BW_GAMES else addmon_boost_verbs(game)
     for verb, *args in ops:
         if verb not in allowed:
             raise HarnessError("boost: %s boosts take only %s, not %s" % (
                 game.name, " ".join(sorted(allowed)), verb))
         if verb == "party":
             adds.append((int(args[0]), int(args[1]), {}))
+            continue
+        if verb in ("location", "item"):
+            if verb == "item":
+                args = [BW_POCKETS[int(args[0])]] + args[1:]
+            places.append(["set-" + verb] + args)
             continue
         if verb == "party-heal":
             heal = True
@@ -411,6 +429,13 @@ def addmon_boost(game, inline, sav, log):
         edits += [["set-mon"] + args for args in replaces]
         edits += [["set-level", str(slot), str(level)] for slot, level in levels]
         edits += [["heal-party"]] if heal else []
+        for verb, *args in places:
+            # np_save5's save-only edits (no ROM argument)
+            cmd = game.save4 + [verb, sav] + args
+            f.write("$ %s\n" % " ".join(cmd))
+            f.flush()
+            if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
+                raise HarnessError("recipe: np_save5 %s failed (%s)" % (verb, log))
         for verb, *args in edits:
             cmd = game.save4 + [verb, sav, game.rom] + args
             f.write("$ %s\n" % " ".join(cmd))
@@ -429,7 +454,7 @@ def addmon_boost(game, inline, sav, log):
 
 
 
-def mint(game, recipe, out_sav, base, workdir):
+def mint(game, recipe, out_sav, base, workdir, boost=False):
     """Applies a lab recipe: on a new game (Platinum, base None) or on the save `base`. Returns the env it used."""
     inline, env = recipe_env(recipe, game)
     log = out_sav + ".log"
@@ -444,7 +469,7 @@ def mint(game, recipe, out_sav, base, workdir):
             raise HarnessError("minting %s: %s has no save lab yet; start from the previous milestone's end save"
                                % (os.path.basename(recipe), game.name))
         shutil.copyfile(base, work)
-        addmon_boost(game, inline, work, log)
+        addmon_boost(game, inline, work, log, recipe=not boost)
         os.replace(work, out_sav)
         return env
     if game.name == "platinum":
@@ -572,7 +597,7 @@ def start_save(game, ms, prev, args, out, d, res):
     if boost:
         if not start:
             raise HarnessError("[start] boost needs a start save")
-        mint(game, os.path.join(ms.dir, boost), start, start, out)
+        mint(game, os.path.join(ms.dir, boost), start, start, out, boost=True)
         res.started += " + boost %s" % boost
     return env, start
 

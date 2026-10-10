@@ -3,7 +3,6 @@
 # Start: the player's room (zone 391, 32's end: the save the game writes after the credits) -> end: the Poke Transfer
 # Lab (zone 381) at the counter (10,8) in front of the scientist, before talking to him.
 title = "After the credits (White): the way to the Poke Transfer Lab"
-status = "planned"
 priority = "P1"
 version = "white"
 estimate = 22621
