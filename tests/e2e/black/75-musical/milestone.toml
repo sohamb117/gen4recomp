@@ -1,0 +1,21 @@
+# The Pokemon Musical: the reception's solo musical, dressing a Pokemon with the Prop Case (15) and the show.
+# Start: Nimbasa City (zone 62) below the Musical Theater door (433,433) -> end: the Musical Theater (zone 77).
+title = "The Pokemon Musical"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 15000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 62 warp 6 (433,433) -> zone 77 (Musical Theater) warp 0",
+  "scr 0154 @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1 (15)",
+  "zone_event 77 object 0 gfx 0x2B (14,11) -> script id 10440 -> scr 0892 script 1 (reception): @0x0070 msg 286 #0 'Welcome to the Pokemon Musical! Here you can participate in a musical alone.', @0x00DF msg 286 #1, @0x00FD Cmd167 var 0x8021, 0 [INFERENCE: starts the musical]",
+  "zone_event 78 (backstage) level scripts scr 0156 scripts 1/2; scr 0156 @0x081F-@0x0969 Set/ClearFlag 0x29E-0x2A2, 0x2F0-0x2F3 (the audience in zone 77: objects 1-5 hidden by 0x29E-0x2A2)",
+]
+notes = "The dressing room and the show are touch screens the probe does not report (PHASE2: tap schedule). The musical writes no var the decoder shows; [expect] is the theater [INFERENCE: the show ends back in zone 77]."
+
+[start]
+from = "15-nimbasa-musical-ferris-wheel-n"
+recipe = "start.recipe"
+
+[expect]
+map = 77

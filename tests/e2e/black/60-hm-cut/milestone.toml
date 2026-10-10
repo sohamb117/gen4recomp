@@ -1,0 +1,23 @@
+# HM01 Cut in the field: the Cut carrier the chain has had since 09 (Patrat, slot 3) cuts Route 2's tree, the one
+# Cut tree outside the Dreamyard's (which 09 already cut), through the field-move script's YES/NO.
+# Start: Striaton City, Fennel's lab (zone 10, 09's end) -> end: Route 2 (zone 319) past the tree at (773,618).
+title = "HM01 Cut: Route 2's tree"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 6000   # [INFERENCE] frames, not measured
+refs = [
+  "scr 0020 @0x006A CallStd 2805 HM01 (Fennel, zone 10; 09)",
+  "zone_event 319 object 11 gfx 0x6C (773,618) -> script id 10004 -> scr 0867 script 5 (the Cut tree)",
+  "scr 0867 script 5: @0x025E Cmd116 var 0x8010, 0xF (the party member that knows Cut; 6 = none -> msg 280 #2), @0x0283 msg 280 #0 YES/NO (Cmd047), L_02C0 @0x02D1 msg 280 #1 'used Cut!', @0x02F5 RemoveObject var 0x8011",
+  "zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard); zone_event 319 warp 0 (761,647) -> zone 320 (Accumula Gate); Route 2 joins Striaton (zone 6) outdoors",
+  "other Cut trees: zone_event 152 object 8 (23,26) (09 cuts it), 370 objects 2/3 (680,186)/(681,187) (Route 13), 383 object 6 (474,425) (Route 16)",
+  "09's end save: party slot 3 Patrat (504) lv 14 with Cut (15), Tackle (09's boost.recipe)",
+]
+notes = "No Badge check in the field-move script (scr 0867 has no CheckBadge): any gate on Cut is in code [INFERENCE]. Cut sets nothing in the save (the tree is a RemoveObject, back on the next zone load), so [expect] is the map. The 09 end save is inside Fennel's lab; the tree stands in Route 2's north part south of Striaton [INFERENCE: (773,618) is reached from Striaton's south edge]."
+
+[start]
+from = "09-fennel-dreamyard-plasma-munna"
+
+[expect]
+map = 319

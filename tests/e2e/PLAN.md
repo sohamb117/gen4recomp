@@ -6032,7 +6032,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~1381218 frames estimated
+### Story chain: 33 milestones, ~1380709 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6068,7 +6068,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 15195 | prev + `None` | 264 | passing |
 | [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 11011 | prev + `None` | 278 | passing |
 | [32-n-castle-reshiram-ghetsis-credits](black/32-n-castle-reshiram-ghetsis-credits/milestone.toml) | N's Castle (Black): Reshiram, N, Ghetsis and the credits | P0 | black | 60256 | prev + `None` | - | passing |
-| [34-postgame-poke-transfer-lab](black/34-postgame-poke-transfer-lab/milestone.toml) | After the credits (Black): the way to the Poke Transfer Lab | P1 | black | 22621 | prev + `None` | 381 | planned |
+| [34-postgame-poke-transfer-lab](black/34-postgame-poke-transfer-lab/milestone.toml) | After the credits (Black): the way to the Poke Transfer Lab | P1 | black | 22112 | prev + `None` | 381 | passing |
 
 #### black/01-newgame-bedroom — New game to the bedroom, a walk, a talk with Cheren and the first save
 - proves: Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the furniture, a talk with Cheren, and the save through the game's own X menu. Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
@@ -6396,9 +6396,322 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map 381; at (10, 8); flags set 0x95, 0x2E4; vars 0x40AE=1, 0x40E5=1, 0x40A2=3
-- frames: estimate 22621, budget 34000
+- frames: estimate 22112, budget 34000
 - refs: scr 0866 script 2 (the game clear, after the credits): L_0443 on the first clear (flag 0x960): @0x0457 0x40A2 3, @0x047F 0x4085 2, @0x04A1 SetFlag 0x2E4; L_0316: @0x031C Cmd0DC 0x187, 1, 5, 0, 6 (the continue warp: zone 391 (5,6)), @0x0328 SetFlag 0x966; flag 0x966: with it set, CONTINUE takes the continue warp; set on a save without that warp it lands on zone 0's warp 0 tile (Black City (9,50)), seen in scouting; zone_event 383 objects 8, 12 (502,431..432) hidden by flag 0x2E4 -> scr 0766 script 3 (msg 415 #0 'They said Marvelous Bridge is being checked!'); warp 0 (503,431) -> zone 384; zone_event 384 warp 1 (20,3) -> 263 warp 0; zone_event 263 warp 1 (161,31) -> 380 warp 0; zone_event 380 warp 1 (23,6) -> 378 warp 1; zone_event 263 trigger 0 (64,31) 1x6 var 0x40E5 == 0 -> scr 0526 script 1 (the Shadow Triad); @0x0495 SetVar 0x40E5 1; zone_event 378 warp 2 (608,425) -> zone 381 (the Poke Transfer Lab) warp 0 (9..11,23); zone_event 381 object 0 (10,7) the scientist -> scr 0878 script 1; trigger 0 (9..11,22) var 0x40AE == 0 -> scr 0878 script 2 (@0x0036 SetVar 0x40AE 1, L_055C the assistant, L_004E the offer: flag 0x95, Cmd1F0/Cmd121 six free box slots, Cmd047 YES/NO); zones 289-316 (Nimbasa .. Undella, Route 15 313, Route 16 314, Marvelous Bridge 303 among them): copies with no wild table (1071), no name popup and their own matrices, after the Entree Forest zones 280-288; their warps lead only among themselves and no script warps into them: [INFERENCE] the Entralink's copies, not a story variant of 378/383/263
 - notes: The post-game way to the Poke Transfer Lab, for Poke Transfer's link test (docs/BW_PLAN.md, Poke Transfer): Fly to Nimbasa, Route 16, the Bridge Gate (open once the game clear sets flag 0x2E4), the Marvelous Bridge, Route 15, the lab. The lab's first-entry scene makes the transfer offer at once; B answers it NO, so the run ends with nothing transferred, the player free at the counter in front of the scientist (381 (10,8)), where talking to him (A) starts the transfer (six free box slots, wireless on, a save). Route 15, Route 16 and the bridge's second zone entries (313, 314, 303) are not story variants (refs). The same steps as white/34-postgame-poke-transfer-lab. Scouted on a synthesized post-game save (29's end with the game clear's flags and vars, the location 391 (5,6)); then run from the chain's real 32 ends on core-bwm (main d72d3a46f4): Black 22112, White 22621 frames, both passing. Left planned for bw-chain to land after 32.
+
+### Side systems: 28 milestones, ~560000 frames estimated
+
+| milestone | title | P | version | est. frames | start | end map | status |
+|---|---|---|---|---|---|---|---|
+| [60-hm-cut](black/60-hm-cut/milestone.toml) | HM01 Cut: Route 2's tree | P0 | both | 6000 | prev + `None` | 319 | planned |
+| [61-hm-strength](black/61-hm-strength/milestone.toml) | HM04 Strength: Nimbasa's gift and Route 16's boulder | P0 | both | 12000 | prev + `start.recipe` | 383 | planned |
+| [62-hm-surf](black/62-hm-surf/milestone.toml) | HM03 Surf: Route 6 to Mistralton Cave | P0 | both | 15000 | prev + `start.recipe` | 333 | planned |
+| [63-hm-fly](black/63-hm-fly/milestone.toml) | HM02 Fly: Mistralton to Nimbasa | P0 | both | 4000 | prev + `start.recipe` | 62 | planned |
+| [64-hm-waterfall](black/64-hm-waterfall/milestone.toml) | HM05 Waterfall: Route 18's item ball and a waterfall climb | P0 | both | 30000 | prev + `start.recipe` | - | planned |
+| [65-hm-dive](black/65-hm-dive/milestone.toml) | HM06 Dive: Undella Town's gift and the Abyssal Ruins | P1 | both | 45000 | prev + `start.recipe` | - | planned |
+| [66-postgame-looker-super-rod-national-dex](black/66-postgame-looker-super-rod-national-dex/milestone.toml) | After the credits: Looker's Super Rod and the National Pokedex | P0 | black | 9000 | prev + `None` | 389 | planned |
+| [67-fishing-super-rod](black/67-fishing-super-rod/milestone.toml) | Fishing: the Super Rod in Nuvema Town | P0 | black | 6000 | prev + `None` | 389 | planned |
+| [68-day-care-deposit-and-egg](black/68-day-care-deposit-and-egg/milestone.toml) | Day Care: two deposits with the lady and an egg from the man | P0 | both | 25000 | prev + `start.recipe` | 321 | planned |
+| [69-egg-hatch](black/69-egg-hatch/milestone.toml) | Egg hatch: the Day Care's Patrat egg | P0 | both | 40000 | prev + `None` | 321 | planned |
+| [70-level-up-evolution-after-battle](black/70-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after battle: Lillipup -> Herdier | P0 | both | 9000 | prev + `start.recipe` | 383 | planned |
+| [71-trade-npc-boldore-for-emolga](black/71-trade-npc-boldore-for-emolga/milestone.toml) | Trades: Route 7's Boldore for Emolga (trade evolution needs a link) | P2 | both | 5000 | prev + `start.recipe` | 343 | planned |
+| [72-pc-storage-box-moves](black/72-pc-storage-box-moves/milestone.toml) | PC storage: deposit and a box-to-box move | P0 | both | 6000 | prev + `None` | 8 | planned |
+| [73-battle-subway-single-train](black/73-battle-subway-single-train/milestone.toml) | Battle Subway: one seven-win Single Train set | P0 | both | 60000 | prev + `start.recipe` | 67 | planned |
+| [74-hall-of-fame-pc](black/74-hall-of-fame-pc/milestone.toml) | Hall of Fame on the Pokemon Center PC | P0 | both | 12000 | prev + `None` | 398 | planned |
+| [75-musical](black/75-musical/milestone.toml) | The Pokemon Musical | P1 | both | 15000 | prev + `start.recipe` | 77 | planned |
+| [76-entralink](black/76-entralink/milestone.toml) | The Entralink (offline): first visit | P1 | both | 6000 | prev + `None` | 279 | planned |
+| [77-royal-unova](black/77-royal-unova/milestone.toml) | The Royal Unova | P1 | both | 20000 | prev + `None` | 52 | planned |
+| [78-tv-programs](black/78-tv-programs/milestone.toml) | TV programs | P2 | both | 3000 | prev + `None` | 54 | planned |
+| [79-black-city](black/79-black-city/milestone.toml) | Black City (Black) | P1 | black | 25000 | prev + `None` | 0 | planned |
+| [80-legendary-cobalion](black/80-legendary-cobalion/milestone.toml) | Cobalion (Guidance Chamber) | P1 | both | 30000 | prev + `start.recipe` | 335 | planned |
+| [81-legendary-terrakion](black/81-legendary-terrakion/milestone.toml) | Terrakion (Trial Chamber) | P1 | both | 20000 | prev + `None` | 229 | planned |
+| [82-legendary-virizion](black/82-legendary-virizion/milestone.toml) | Virizion (Rumination Field) | P1 | both | 20000 | prev + `None` | 156 | planned |
+| [83-legendary-kyurem](black/83-legendary-kyurem/milestone.toml) | Kyurem (Giant Chasm) | P1 | both | 40000 | prev + `start.recipe` | 234 | planned |
+| [84-legendary-volcarona](black/84-legendary-volcarona/milestone.toml) | Volcarona (Relic Castle) | P1 | both | 40000 | prev + `None` | 182 | planned |
+| [85-roamer-tornadus](black/85-roamer-tornadus/milestone.toml) | Roamer: Tornadus starts roaming (Black) | P1 | black | 12000 | prev + `None` | 337 | planned |
+| [86-legendary-landorus](black/86-legendary-landorus/milestone.toml) | Landorus (Abundant Shrine) | P2 | both | 30000 | prev + `start.recipe` | 376 | planned |
+| [87-dreamyard-musharna](black/87-dreamyard-musharna/milestone.toml) | The Dreamyard's basement: Musharna (post-game, Fridays) | P1 | both | 15000 | prev + `None` | 153 | planned |
+
+#### black/60-hm-cut — HM01 Cut: Route 2's tree
+- proves: HM01 Cut in the field: the Cut carrier the chain has had since 09 (Patrat, slot 3) cuts Route 2's tree, the one Cut tree outside the Dreamyard's (which 09 already cut), through the field-move script's YES/NO. Start: Striaton City, Fennel's lab (zone 10, 09's end) -> end: Route 2 (zone 319) past the tree at (773,618).
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 319
+- frames: estimate 6000, budget -
+- refs: scr 0020 @0x006A CallStd 2805 HM01 (Fennel, zone 10; 09); zone_event 319 object 11 gfx 0x6C (773,618) -> script id 10004 -> scr 0867 script 5 (the Cut tree); scr 0867 script 5: @0x025E Cmd116 var 0x8010, 0xF (the party member that knows Cut; 6 = none -> msg 280 #2), @0x0283 msg 280 #0 YES/NO (Cmd047), L_02C0 @0x02D1 msg 280 #1 'used Cut!', @0x02F5 RemoveObject var 0x8011; zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard); zone_event 319 warp 0 (761,647) -> zone 320 (Accumula Gate); Route 2 joins Striaton (zone 6) outdoors; other Cut trees: zone_event 152 object 8 (23,26) (09 cuts it), 370 objects 2/3 (680,186)/(681,187) (Route 13), 383 object 6 (474,425) (Route 16); 09's end save: party slot 3 Patrat (504) lv 14 with Cut (15), Tackle (09's boost.recipe)
+- notes: No Badge check in the field-move script (scr 0867 has no CheckBadge): any gate on Cut is in code [INFERENCE]. Cut sets nothing in the save (the tree is a RemoveObject, back on the next zone load), so [expect] is the map. The 09 end save is inside Fennel's lab; the tree stands in Route 2's north part south of Striaton [INFERENCE: (773,618) is reached from Striaton's south edge].
+
+#### black/61-hm-strength — HM04 Strength: Nimbasa's gift and Route 16's boulder
+- proves: HM04 Strength: the man in a Nimbasa house gives HM04 (an NPC gift, not an item ball), then a Strength carrier pushes Route 16's boulder (the nearest one east of Nimbasa). Start: Nimbasa City (zone 62) below the house door (399,455) -> end: Route 16 (zone 383), the boulder (482,439) moved.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 383; flags set 0x122, 0x964; 1 save check(s)
+- frames: estimate 12000, budget -
+- refs: zone_event 62 warp 8 (399,455) -> zone 88 warp 0; zone_event 88 warp 0 (6,10) 3x1 -> zone 62 warp 8; zone_event 88 object 0 gfx 0x1E (4,3) -> scr 0176 script 1: @0x002C var 0x8000 = 0x1A7 (HM04), 0x8002 = 0x122 (the gift's flag), @0x0054 CallStd 2800 (scr 0862 script 1: give item, @0x00CA SetFlag var 0x8002); msg 70 #0 (scr 0130, Nimbasa): 'There was a guy who gave me an HM called Strength. For free...'; zone_event 62 warp 2 (447,437) -> zone 92 (Nimbasa Gate) warp 1; zone_event 383 warp 1 (454,437) -> zone 92 warp 0; zone_event 383 object 10 gfx 0x2003 (482,439) -> script id 10000 -> scr 0867 script 1 (boulder): @0x008D Cmd116 var 0x8010, 0x46 (Strength), msg 280 #6 YES/NO, @0x00FB SetFlag 0x964, msg 280 #10/#11; other boulders (script id 10000): zone_event 152 object 13 (20,35), 319 object 2 (750,653), 208, 216, 224, 226, 231 (x4), 333-335, 346, 370, 378, 387
+- notes: 16's end save is in zone 63 (the Gym); the recipe places the player outside zone 88's door and swaps Tepig (slot 4) for a Strength carrier (no bot teaches an HM from the Bag). Flag 0x964 is the 'Strength is active' flag the boulder script sets [INFERENCE: cleared on a zone change, so the save must be on Route 16].
+
+#### black/62-hm-surf — HM03 Surf: Route 6 to Mistralton Cave
+- proves: HM03 Surf in the field: a Surf carrier crosses Route 6's water to the Mistralton Cave entrance (HM03 came from Cheren at Twist Mountain in 22). Start: Icirrus City (zone 113, 22's end) -> end: Mistralton Cave (zone 333) through Route 6's warp (156,361).
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 333
+- frames: estimate 15000, budget -
+- refs: scr 0396 @0x029D var 0x8000 = 0x1A6, @0x02A9 CallStd 2805 HM03 (Cheren, Twist Mountain; 22); scr 0867 script 3 (script id 10002, run by the field facing water): @0x019E Cmd116 var 0x8010, 0x39 (Surf), msg 280 #13 'The water is a deep blue... surf on it?', msg 280 #15 (not with a partner), @0x020B msg 280 #14 'used Surf!'; zone_event 331 warp 1 (156,361) 1x2 -> zone 333 (Mistralton Cave) warp 0 (1,6); zone 107 (Mistralton City), Route 6 zones 331/332/336
+- notes: The water tiles are terrain attributes the probe does not name (README, Black and White): [INFERENCE] the Route 6 river stands between the road and the cave entrance (156,361). Surf sets nothing in the save; the proof is reaching zone 333. The recipe swaps Blitzle (slot 2) for a Surf carrier.
+
+#### black/63-hm-fly — HM02 Fly: Mistralton to Nimbasa
+- proves: HM02 Fly through the field menu: the Fly carrier flies from Mistralton to Nimbasa (25 and 26 fly in the chain; this proves the move alone, from the end save that first has HM02 and a town map with Nimbasa). Start: Mistralton City (zone 107, 21's end) -> end: Nimbasa City (zone 62), the landing tile.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 62
+- frames: estimate 4000, budget -
+- refs: scr 0192 @0x06EB var 0x8000 = 0x1A5, @0x06F7 CallStd 2805 HM02 (Bianca, Driftveil; 19); Fly (the X menu's POKEMON, the carrier's FLY, the town tapped on the bottom screen's map, A): Nimbasa (zone 62) at tap (130,94) [black/25-relic-castle-nacrene-stone refs, from scouting]; black/25's boost.recipe: party-set 3 521 40 19 403 98 17 (Unfezant with Fly in Patrat's slot)
+- notes: No field-move script runs for Fly (code: the party menu's FLY opens the town map) [INFERENCE]. The recipe makes the same Fly carrier 25's boost does.
+
+#### black/64-hm-waterfall — HM05 Waterfall: Route 18's item ball and a waterfall climb
+- proves: HM05 Waterfall: HM05 is an item ball on Route 18 (west of Route 1, reached by Surf over Route 17), then a Waterfall carrier climbs a waterfall. Start: Icirrus City (zone 113, 22's end) -> end: the top of a waterfall [INFERENCE: zone in PHASE2], HM05 in the bag.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: flags set 0x4CA; 1 save check(s)
+- frames: estimate 30000, budget -
+- refs: zone_event 387 object 11 gfx 0x6E (613,753) y 0 hidden by flag 0x4CA -> script id 7278 -> scr 0864 script 279: @0x210C var 0x800C = 0x1A8 (HM05), @0x2118 Call script_307 (the item ball pickup: sets the object's hide flag); zone_event 387 warp 0 (636,737) -> zone 388 (the Route 18 house); zones 423 (Route 17), 387/388 (Route 18); scr 0867 script 7 (script id 10006, run by the field facing a waterfall): @0x0377 Cmd116 var 0x8010, 0x7F (Waterfall), msg 280 #23 YES/NO, @0x03E4 msg 280 #24 'used Waterfall!'
+- notes: No NPC gives HM05: the only HM05 in the scripts is that item ball. Waterfall tiles are attributes the probe does not name: PHASE2 finds one (scr 0867 script 7 runs from the attribute) [INFERENCE: Route 18 or Victory Road]. Route 17/18 are reached by Surf west of Route 1 [INFERENCE: no flag blocks them before the clear; zone_event 387 object 9 (616,758) hidden by 0x2C4, which the game clear clears (scr 0866 @0x0489), is a post-game visitor, not a block]. The recipe swaps Blitzle (slot 2) for a Surf + Waterfall carrier.
+
+#### black/65-hm-dive — HM06 Dive: Undella Town's gift and the Abyssal Ruins
+- proves: HM06 Dive (post-game): the sea-loving man in Undella Town gives HM06, and a Dive carrier dives in Undella Bay down to the Abyssal Ruins. Start: the player's room (zone 391, 32's end) -> end: the Abyssal Ruins [INFERENCE: zone 241..248], HM06 in the bag.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: flags set 0x15A; 1 save check(s)
+- frames: estimate 45000, budget -
+- refs: zone_event 412 object 1 gfx 0x11 (746,303) y -64 -> scr 0824 script 5: @0x0536 var 0x8000 = 0x1A9 (HM06), 0x8002 = 0x15A, msgs 451 #4/#5, @0x055E CallStd 2800 (scr 0862 script 1, @0x00CA SetFlag var 0x8002); msg 451 #5 'Inside this Hidden Machine is Dive! ... diving points'; scr 0867 script 12 (script id 10011, run by the field on a diving point): @0x04AE Cmd116 var 0x8010, 0x123 (Dive), msg 280 #31 YES/NO, @0x0513 msg 280 #32 'used Dive!'; zone 240 (Undella Bay), zones 241-248 (Abyssal Ruins); zone_event 372 warp 1 (4,14) -> zone 412 warp 4 (752,295); post-game: the road east is closed until the clear: zone_event 133 object 0 (10,6) hidden by flag 0x2F8 (the Opelucid Gate to Route 11), set by scr 0866 @0x04A9
+- notes: Dive is post-game in B/W: Undella Town is east of the Opelucid Gate the clear opens (refs). Lowered from P0 to P1: no story or system needs Dive. The diving points are terrain attributes (PHASE2 finds one in Undella Bay). The recipe swaps Blitzle (slot 2) for a Surf + Dive carrier. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### black/66-postgame-looker-super-rod-national-dex — After the credits: Looker's Super Rod and the National Pokedex
+- proves: The first post-game scenes at home: Looker of the International Police gives the Super Rod (B/W's only rod), then Cedric Juniper outside upgrades the Pokedex to the National Mode. Start: the player's room (zone 391, 32's end) -> end: Nuvema Town (zone 389) after Cedric's scene, 0x4080 = 5.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 389; flags set 0x2E0, 0x201, 0x202; flags clear 0x200; vars 0x4085=3, 0x4080=5; 2 save check(s)
+- frames: estimate 9000, budget -
+- refs: scr 0866 @0x047F SetVar 0x4085 2 (the game clear); zone_event 390 level type 1: var 0x4085 == 2 -> scr 0780 script 4; scr 0780 script 4: msg 429 #24-#33 (Looker), @0x05E8 CallStd 2805 Super Rod (item 447), msg 429 #34-#41, @0x06D8 SetVar 0x4085 3, @0x06DE SetFlag 0x2E0, @0x06E2 SetVar 0x400F 0x14D, @0x06E8 SetVar 0x4080 4, @0x06EE/@0x06F2 ClearFlag 0x201/0x202; zone_event 390 warp 0 (5,10) -> zone 389; zone 389 level type 1: var 0x4080 == 4 -> scr 0778 script 15 (Cedric: msg 428 #45); scr 0778 script 15: @0x0B09 msg 428 #49 'Pokedex was upgraded with the National Mode!', @0x0B15 Cmd1D0 [INFERENCE: the National Mode], @0x0BC8 SetVar 0x4080 5, @0x0BCE/@0x0BD2 SetFlag 0x201/0x202, @0x0BD6 ClearFlag 0x200
+- notes: The Super Rod's giver is Looker, in the player's own house, right after the credits; the National Pokedex comes from Cedric Juniper (the professor's father), not Professor Juniper. Both scenes are forced level scripts, so black/34 plays them on its way (its steps note 0x4085 3 and 0x4080 5) but checks neither the rod nor the Pokedex: this system does. National Dex listed P1 in the plan; merged here (P0) because it is the same two scenes and the rod is fishing's prerequisite. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### black/67-fishing-super-rod — Fishing: the Super Rod in Nuvema Town
+- proves: Fishing with the Super Rod from the Bag: face water, use the rod, reel in at the '!', fight what bites. Start: Nuvema Town (zone 389, 66's end) -> end: Nuvema Town after one fished wild battle.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 389; >= 1 battles; 1 save check(s)
+- frames: estimate 6000, budget -
+- refs: scr 0780 @0x05E8 CallStd 2805 Super Rod (Looker; 66); msg 429 #41 (Looker): 'Face the water and employ the rod! ... When it occurs that these Pokemon bite, '!' will indicate. Immediately, reel in!'; zone 389 (Nuvema Town)
+- notes: B/W have one rod, the Super Rod, given post-game (66); no script runs fishing (the Bag's item and the field) [INFERENCE]. Which Nuvema tiles are water the probe does not say: [INFERENCE] the town's shore; PHASE2 picks a tile. Fishing sets nothing in the save, so [expect] is the battle and the place. Chained from 66 so the scenes there are not replayed.
+
+#### black/68-day-care-deposit-and-egg — Day Care: two deposits with the lady and an egg from the man
+- proves: Route 3's Day Care: the Day-Care Lady (inside) takes two Pokemon, the player walks until an egg is laid, and the Day-Care Man (outside) hands it over. The man and the second deposit slot appear only after Nimbasa's scene (15). Start: Route 3 (zone 321) below the Day Care door (749,555) -> end: Route 3 by the man, a Patrat egg in the party.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 321; party size 5; flags set 0x70; 1 save check(s)
+- frames: estimate 25000, budget -
+- refs: zone_event 321 warp 2 (749,555) -> zone 323 (the Day Care); zone_event 323 warps 0-2 (5..7,13) -> zone 321 warp 2; zone_event 323 object 0 gfx 0x1D (6,7) -> script id 2201 -> scr 0856 script 2 (the Day-Care Lady): @0x0301 SetFlag 0x70 on the first talk (msg 426 #12), the menu Cmd0B2/Cmd0AF, L_04A1 / L_0884 deposit and withdraw; scr 0856 L_004C: @0x0054 CheckFlagToVar 0x70, @0x005A CheckFlagToVar 0x99 -> var 0x8028 = 2 deposit slots with flag 0x99, else 1; zone_event 321 object 0 gfx 0x1C (748,556) hidden by flag 0x271 -> script id 2200 -> scr 0856 script 1 (the Day-Care Man): var 0x8026 == 1 (an egg) -> msg 426 #6, YES/NO, @0x0146 Cmd0EC (the egg into the party), @0x0151 msg 426 #7; scr 0124 (Nimbasa, 15) @0x0401 ClearFlag 0x271 (the man on Route 3), @0x0405 SetFlag 0x99 (two slots); msg 67 #8 'Day-Care Man: I have a Day Care on Route 3!'
+- notes: Before 15 the Day Care holds one Pokemon and the man is not on Route 3 (refs), so it chains from 16. Deposits: the Cut carrier Patrat (slot 3) and a Ditto the recipe puts in Tepig's slot; the egg is a Patrat (504) [INFERENCE: Ditto + Patrat, compatible regardless of gender]. The day care's contents are not in np_save5's dump; the party is.
+
+#### black/69-egg-hatch — Egg hatch: the Day Care's Patrat egg
+- proves: Egg hatch: 68's Patrat egg hatches while the player paces Route 3 (the hatch bot). Start: Route 3 (zone 321, 68's end), the egg in the party -> end: Route 3, Patrat lv 1 hatched.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 321; party size 5; 2 save check(s)
+- frames: estimate 40000, budget -
+- refs: scr 0856 script 1 @0x0146 Cmd0EC (the Day-Care Man's egg; 68); msg 420 #5 (scr 0776, the Route 18 breeder): 'Pokemon Eggs hatch when you carry them with you.'; zone 321 (Route 3)
+- notes: Hatching is the field's step counter, no script [INFERENCE]. The post-game alternative is the Larvesta (636) egg from the breeder in the Route 18 house (zone_event 388 object 0 (3,5) -> scr 0776 script 1: @0x0081 Cmd10F var 0x8010, 0x27C, 0 [INFERENCE: give egg], @0x00A8 SetFlag 0x13B), a much longer hatch.
+
+#### black/70-level-up-evolution-after-battle — Level-up evolution after battle: Lillipup -> Herdier
+- proves: Level-up evolution at the end of a battle: a Lillipup at the base of lv 15 wins wild battles until lv 16 and evolves into Herdier after the battle that levels it (auto_battle allows evolution). Start: Nimbasa City (zone 63, 16's end) -> end: Route 16 (zone 383), slot 0 Herdier lv 16.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 383; >= 1 battles; 2 save check(s)
+- frames: estimate 9000, budget -
+- refs: zone_event 62 warp 2 (447,437) -> zone 92; zone_event 383 warp 1 (454,437) -> zone 92 warp 0 (Route 16's grass east of Nimbasa); Lillipup (506) evolves at lv 16 into Herdier (507) [INFERENCE: species data, not decoded]
+- notes: np_save5 set-mon makes the Pokemon at the base experience of its level (README, Black and White), so one battle's experience levels it [INFERENCE: 402 exp, Medium Slow lv 15 -> 16]; the lead gets strong moves so auto_battle wins fast. Evolution is code, no script.
+
+#### black/71-trade-npc-boldore-for-emolga — Trades: Route 7's Boldore for Emolga (trade evolution needs a link)
+- proves: In-game trade: the man in the Route 7 house trades his Emolga for the player's Boldore. No in-game trade gives a trade-evolution Pokemon (Basculin, Emolga, Rotom, Munchlax, Cottonee/Petilil), so trade evolution needs a link. Start: Route 7 (zone 337) below the house door (102,260) -> end: the house (zone 343), Emolga in the party.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 343; flags set 0x15B; 2 save check(s)
+- frames: estimate 5000, budget -
+- refs: zone_event 337 warp 1 (102,260) -> zone 343 warp 0 (5,9); zone_event 343 object 0 gfx 0x40 (4,5) -> scr 0686 script 1: @0x006E BufferSpeciesName Emolga / Boldore, msg 375 #0, @0x00A9 Cmd107 (the party pick), @0x00CA Cmd1BF var 0x8022, 4, var 0x8020 [INFERENCE: trade 4's checks], @0x00F1 Cmd1BE 4, var 0x8020 (the trade), @0x0107 SetFlag 0x15B; scr 0686 script 4 (zone 343 level script): GetVersion -> var 0x4020 = 0xD1 (Black) / 0x81 (White) [INFERENCE: not the trade's species, which are fixed]; the other in-game trades (Cmd1BE): scr 0046 (Nacrene, zone 23: Cottonee/Petilil by version), scr 0202 trades 2/3 (Driftveil, zone 101: Minccino -> Basculin), scr 0764 trade 6 (Route 15, zone 382: Ditto -> Rotom), scr 0830 trade 5 (Undella, zone 415: Cinccino -> Munchlax)
+- notes: P2: trade evolution (the plan's P0 item) cannot run offline in B/W: every NPC trade receives a Pokemon that does not evolve by trade (refs), and Karrablast/Shelmet and the rest need a link trade (tests/link). This system proves the NPC trade itself, as platinum/75 does. The recipe makes the Boldore the man asks for in Patrat's slot and places the player outside the house.
+
+#### black/72-pc-storage-box-moves — PC storage: deposit and a box-to-box move
+- proves: The Pokemon Storage System on a Pokemon Center PC: deposit the Cut carrier into BOX 1, then move it to BOX 2. Start: Striaton City, Fennel's lab (zone 10, 09's end) -> end: the Striaton Pokemon Center (zone 8) at the PC.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 8; party size 3; 2 save check(s)
+- frames: estimate 6000, budget -
+- refs: zone_event 6 warp 0 (781,587) -> zone 8 (the Pokemon Center); zone_event 8 warp 0 (6,19) 3x1 -> zone 6; zone_event 8 bg 0-2 (12,5) (12,6) (13,6) -> script id 2108 -> scr 0855 script 9 (the PC); scr 0868 script 1 (script id 10090, the PC menu): @0x0059 msg 314 #0 'booted up the PC', @0x0072 msg 314 #1 'Which PC should be accessed?', @0x0270 msg 314 #13 'The Pokemon Storage System was accessed.', @0x0226 Cmd132 var 0x8021 [INFERENCE: the storage screen]
+- notes: 09's party is Tepig, Pansage, Blitzle and the Cut carrier Patrat (504), the first end save with more than one Pokemon after the Striaton Center opens (06 has only the starter). The box screen is touch/menu UI the probe does not report (PHASE2: press schedule). np_save5 dumps the boxes (s['boxes'][i]['mons']).
+
+#### black/73-battle-subway-single-train — Battle Subway: one seven-win Single Train set
+- proves: The Battle Subway's Single Train: register three Pokemon at the platform, ride, win seven battles in a row. Start: Nimbasa City (zone 62) below the Gear Station door (422,458) -> end: the Single Train platform (zone 67).
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 67; >= 7 battles
+- frames: estimate 60000, budget -
+- refs: zone_event 62 warp 7 (422,458) -> zone 66 (Gear Station) warp 8; zone_event 66 warp 0 -> zone 67 (the Single Train platform; bg 8 msg 71 #18 'Platform for Single Trains'); zone_event 67 object 0 gfx 0x44 (12,15) -> script id 10333 -> scr 0882 script 4 (the Single Train clerk): @0x15F1 SetVar 0x4130 1; scr 0882 @0x2993 Warp zone 75 (the train) (7,0,4); scr 0882 script 8: @0x1EC1/@0x1EC7 SetVar 0x4130 4, 0x4132 1 / @0x1EDB 0x4132 2; @0x1EB3-@0x1EBB SetFlag 0x28E, 0x267, 0x268; zone_event 75 level type 1: var 0x4132 == 1 / 2 -> scr 0150 scripts 2 / 3; zone_event 76 level type 1: var 0x4133 == 1 -> scr 0152 script 6; scr 0132 script 3 (msg 71 #2/#3, flag 0x960): before the clear only the Single, Double and Multi lines run; the Super lines need the clear
+- notes: Reachable from 15 on (Nimbasa). The train's rules (three Pokemon, levels set to 50, no duplicates) are code [INFERENCE]; the recipe gives three strong lv 50 members. The streak record is not in np_save5's dump, so [expect] is seven battles and the return to the platform [INFERENCE: 0x4130's value after a finished set is PHASE2's to read].
+
+#### black/74-hall-of-fame-pc — Hall of Fame on the Pokemon Center PC
+- proves: The Hall of Fame on a Pokemon Center PC after the clear: the first post-clear Storage access adds wallpapers (flag 0x14B), and the Record System's HALL OF FAME shows the entry the credits wrote. Start: the player's room (zone 391, 32's end) -> end: the Accumula Pokemon Center (zone 398) at the PC.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 398; flags set 0x960, 0x14B
+- frames: estimate 12000, budget -
+- refs: zone_event 397 warp 0 (796,657) -> zone 398 (Accumula's Pokemon Center); zone_event 398 bg 0-2 (12,5)/(12,6)/(13,6) -> scr 0855 script 9 (the PC); scr 0868 script 1 (the PC): @0x004A CheckFlagToVar 0x960 (the clear) shapes the menu; @0x0260 CheckFlagToVar 0x960 -> @0x02A8 msg 314 #11 'More wallpapers were added', @0x02AE SetFlag 0x14B (first post-clear Storage access); scr 0868 @0x05D2 msg 314 #34 'Accessed the Record System!'; @0x06B4 Cmd14D 1, var 0x8010 [INFERENCE: the Hall of Fame screen], else @0x06E5 msg 314 #10 'Your Hall of Fame data is corrupted' (Cmd0EA var 0x8023 @0x0050); scr 0866 @0x0443 SetFlag 0x960 (the game clear)
+- notes: B/W show the Hall of Fame on the PC's Record System, gated by the clear flag 0x960. The Hall of Fame record itself is not in np_save5's dump; flag 0x14B proves the post-clear PC run [INFERENCE: its Storage visit comes first]. Nuvema has no Pokemon Center; Accumula's is the nearest. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### black/75-musical — The Pokemon Musical
+- proves: The Pokemon Musical: the reception's solo musical, dressing a Pokemon with the Prop Case (15) and the show. Start: Nimbasa City (zone 62) below the Musical Theater door (433,433) -> end: the Musical Theater (zone 77).
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 77
+- frames: estimate 15000, budget -
+- refs: zone_event 62 warp 6 (433,433) -> zone 77 (Musical Theater) warp 0; scr 0154 @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1 (15); zone_event 77 object 0 gfx 0x2B (14,11) -> script id 10440 -> scr 0892 script 1 (reception): @0x0070 msg 286 #0 'Welcome to the Pokemon Musical! Here you can participate in a musical alone.', @0x00DF msg 286 #1, @0x00FD Cmd167 var 0x8021, 0 [INFERENCE: starts the musical]; zone_event 78 (backstage) level scripts scr 0156 scripts 1/2; scr 0156 @0x081F-@0x0969 Set/ClearFlag 0x29E-0x2A2, 0x2F0-0x2F3 (the audience in zone 77: objects 1-5 hidden by 0x29E-0x2A2)
+- notes: The dressing room and the show are touch screens the probe does not report (PHASE2: tap schedule). The musical writes no var the decoder shows; [expect] is the theater [INFERENCE: the show ends back in zone 77].
+
+#### black/76-entralink — The Entralink (offline): first visit
+- proves: The Entralink alone: the C-Gear's ENTRALINK takes the player to the island; the guide's first-visit scene runs and the Entree Forest gate is there. Missions in someone's world need a second game (wireless). Start: Striaton City, Fennel's lab (zone 10, 09's end: the C-Gear) -> end: the Entralink (zone 279), 0x40C3 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 279; vars 0x40C3=1
+- frames: estimate 6000, budget -
+- refs: scr 0020 @0x048F msg 15 #9 'obtained the C-Gear!' (Fennel; 09); zone 279 (Entralink): level type 1 on entry: var 0x4000 == 0 -> scr 0558 script 3 (@0x004A SetVar 0x4000 1); var 0x40C3 == 0 -> scr 0558 script 8; scr 0558 script 8: msg 303 #11-#13 ('This is an island called the Entralink...'), @0x01F0 SetVar 0x40C3 1; zone_event 279 object 0 (29,30) -> scr 0558 script 5 (guide: msg 303 #3-#7); objects 1/2 (14,29)/(48,29) -> scripts 6/7 (the bridges: msg 303 #16 'a search will start to find a person to connect with'); object 5 (34,22) -> script 10 (the Entree Forest); zones 280-288 (Entree Forest): zone_event 280 triggers 0-3 on var 0x4111 == 0 -> scr 0895 scripts 5-8; zones 289-316: the Entralink's copies of the region (black/34's refs) where missions run in another player's world
+- notes: Entering the Entralink is the C-Gear's touch button [INFERENCE: no script warps to zone 279]. P1 keeps only what runs alone: the island, the guide, the Entree Forest gate; the missions (scr 0558 script 4: @0x00FC SetFlag 0x97F, @0x015C SetFlag 0x981, the Pass Power) need a connected game, and the Entree Forest's Pokemon come from the Dream World (online).
+
+#### black/77-royal-unova — The Royal Unova
+- proves: The Royal Unova cruise (post-game, evenings, once a day): the $1,000 ticket at Castelia's pier, boarding, and the ship's trainers. Start: the player's room (zone 391, 32's end) -> end: aboard the Royal Unova (zone 52).
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 52; flags set 0xAC2
+- frames: estimate 20000, budget -
+- refs: zone_event 39 object 0 gfx 0x4C (18,16) -> scr 0078 script 2 (the pier clerk): @0x0258 unless flag 0x960 -> @0x043D msg 44 #13 'now in preparation'; @0x026B flag 0xAC2 set -> msg 44 #11 'closed for the day'; @0x027E Cmd0CD var 0x8021 unless == 2 -> @0x0411 msg 44 #2 'operates only in the evening'; scr 0078 L_04DD msg 44 #4 'The ticket is $1,000'; @0x02FC Cmd0FB var 0x8022, 0x3E8 (the money check); L_0478 @0x0478 Cmd0FA 0x3E8 (pay), @0x04C3 SetVar 0x4135 0, @0x04C9 SetFlag 0xAC2, @0x04D1 Warp zone 52 (29,29); zone_event 52 objects 0-14 (crew and passengers) -> scr 0104 scripts 2-20; zone 52 level scripts: type 2 -> scr 0104 script 27, type 4 -> script 30; scr 0104 script 1 @0x0137 msg 57 #71 'This cruise ship will arrive in Castelia City shortly'; zone 28 warps 3/16 -> zone 39 (the pier) from Castelia's rail waterfront (black/14 refs)
+- notes: Post-game (flag 0x960), evenings only (Cmd0CD == 2 [INFERENCE: time of day, 2 = evening]) and once a day (flag 0xAC2, a daily flag [INFERENCE]): the run's clock is set to an evening. Castelia's waterfront is a rail map (the rail bot). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### black/78-tv-programs — TV programs
+- proves: A TV program: the TV in a Castelia house plays one of the programs (msg bank 462: 'Unova News', 'Eyes on Unova', ...), picked before or after the clear. Start: Castelia City (13's end) -> end: the Castelia house with the TV (zone 54).
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 54
+- frames: estimate 3000, budget -
+- refs: scr 0898 script 1 (script id 10520, text 462): @0x0012 Cmd23A 0x17, 1; @0x001E flag 0x960 -> var 0x8021 0/1; @0x0043 Cmd23D var 0x8021, var 0x8020 [INFERENCE: the program pick]; @0x004F MessageSystem var 0x8020; msg 462 #133 'Eyes on Unova', #166-#169 'Unova News' (the programs); zone_event 54 object 3 gfx 0x14 (3,3) -> scr 0108 script 4: msg 59 #10 'It's difficult to watch TV from here.' (the house's TV); zone_event 34 warp 2 (7,32) -> zone 54 warp 0; scr 0782 script 2 (the player's room, zone 391): msg 430 #60 'a flat-screen television that Dad bought!' (no program)
+- notes: P2 (planned P1): a program is text only and sets nothing in the save. No bg event names script id 10520: the TVs run it from their tile [INFERENCE], so PHASE2 confirms zone 54's TV tile. [expect] is the room.
+
+#### black/79-black-city — Black City (Black)
+- proves: Black City (Black only, post-game): through the Black Gate from Route 15 into the city whose residents the Entralink brings (each a trainer: scr 0000 script 2's TrainerBattle). Start: the player's room (zone 391, 32's end) -> end: Black City (zone 0).
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 0
+- frames: estimate 25000, budget -
+- refs: zone_event 379 (Black Gate) warp 1 (15,4) 1x3 -> zone 0 (Black City) warp 0 (9,50); warp 0 (1,4) -> zone 378 (Route 15) warp 0; zone_event 375 (Black Gate) warp 0 (4,14) -> zone 0 warp 2 (from Route 14); zone_event 0 warps 1-6 -> zones 1-5 (the Pokemon Center, zone 1, and the market buildings); bg 0 (48,35) -> scr 0000 script 3 msg 2 #121 'Black City Prosperous and Vibrant'; scr 0000 script 2 (a resident): Cmd1C4 0xA/0xB/0/1 (resident data), @0x00C2 TrainerBattle var 0x8022 [INFERENCE: the residents are trainers invited through the Entralink]; scr 0002 script 3 (zone 1): msg 3 #0 'Many people come here from White Forest. If you enter White Forest and invite people...'; the Black Gate's warps name zone 0 in both ROMs (a/1/2/5 identical: version-diff); White's field takes them to White Forest (zone 424) [INFERENCE]; zone 294 (Black City, sysmsg 89 #83) and 295 (White Forest): the Entralink's copies (black/34's refs)
+- notes: Black only; White's twin is white/79-white-forest. Black City has no Black Tower in B/W (that is B2W2): its content is the market and the residents, who come from other players' games through the Entralink, so offline the city may stand nearly empty [INFERENCE]. Route 15 is reached the way black/34 goes (Marvelous Bridge). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### black/80-legendary-cobalion — Cobalion (Guidance Chamber)
+- proves: Cobalion in the Guidance Chamber (Mistralton Cave, Route 6): the hiker's tale, then Cobalion; beating or catching it frees Terrakion's and Virizion's ways (rocks in Victory Road and Pinwheel Forest). Not post-game: Surf and Strength. Start: the Pokemon League's gate (zone 136, 28's end) -> end: the Guidance Chamber (zone 335), Cobalion caught.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 335; flags set 0x289, 0xA6, 0x28C, 0x28D, 0xB6; vars 0x40B7=1; 1 save check(s)
+- frames: estimate 30000, budget -
+- refs: zone_event 331 warp 1 (156,361) -> zone 333; zone_event 333 warp 1 (13,16) -> zone 334; zone_event 334 warp 1 (17,12) -> zone 335 warp 0 (16,27); boulders (script id 10000, Strength): zone_event 333 objects 0-2, 334 objects 0-2, 335 objects 0/1 (12,20)/(15,15); zone_event 335 trigger 0 (24,24) 3x1 var 0x40B7 == 0 -> scr 0670 script 2 (msg 367 #7-#16, the hiker); @0x029C SetVar 0x40B7 1; zone_event 335 object 2 gfx 0x73 (7,4) hidden by flag 0x289 -> scr 0670 script 1: @0x0424 WildBattle Cobalion (638) lv 42; @0x0443 SetFlag 0x289; result 0 (caught) -> @0x04D4 SetFlag 0xA6; then @0x04DE/@0x04E2/@0x04E6 SetFlag 0x28C, 0x28D, 0xB6; flag 0x28C hides zone_event 226 object 2 gfx 0xCE (5,12) (Victory Road, before the Trial Chamber); 0x28D hides zone_event 155 objects 32-35 (106..109,28) (Pinwheel Forest, before the Rumination Field); scr 0866 @0x0330/@0x0353 (game clear): flag 0x289 cleared again unless caught (a beaten Cobalion returns)
+- notes: Cobalion unlocks the other two (refs): 81 and 82 chain from here. Chained from 28 (shared; eight badges for Victory Road in 81) rather than 32; it is reachable from 22 on (Surf, Strength). Cmd17C's result 0 = caught [INFERENCE: the branch that sets 0xA6, which the game clear's respawn checks]. The full party sends Cobalion to the Box. The recipe swaps in Surf and Strength carriers; 28's bag has a Master Ball and Ultra Balls.
+
+#### black/81-legendary-terrakion — Terrakion (Trial Chamber)
+- proves: Terrakion in Victory Road's Trial Chamber, open once Cobalion moved (flag 0x28C hides the rock). Start: the Guidance Chamber (zone 335, 80's end) -> end: the Trial Chamber (zone 229), Terrakion caught.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 229; flags set 0x28A, 0xA7; 1 save check(s)
+- frames: estimate 20000, budget -
+- refs: zone_event 226 object 2 gfx 0xCE (5,12) hidden by flag 0x28C (scr 0670 @0x04DE, 80); zone_event 226 warp 3 (5,11) -> zone 229 warp 0 (5,9); zone_event 229 object 0 gfx 0x74 (5,4) hidden by flag 0x28A -> scr 0458 script 1: @0x001F WildBattle Terrakion (639) lv 42; @0x003E SetFlag 0x28A; result 0 (caught) -> @0x0097 SetFlag 0xA7; zone_event 226 warps 0/1 (13,22)/(23,22) -> zone 214 warps 1/5 (Victory Road outdoors, a rail map: black/28's refs)
+- notes: Chained from 80 (the rock needs Cobalion's flag, which no recipe can set). Victory Road's outdoors are rails (the rail bot).
+
+#### black/82-legendary-virizion — Virizion (Rumination Field)
+- proves: Virizion in Pinwheel Forest's Rumination Field, open once Cobalion moved (flag 0x28D hides the four rocks). Start: the Trial Chamber (zone 229, 81's end) -> end: the Rumination Field (zone 156), Virizion caught.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 156; flags set 0x28B, 0xA8; 1 save check(s)
+- frames: estimate 20000, budget -
+- refs: zone_event 155 objects 32-35 gfx 0xCE (106..109,28) hidden by flag 0x28D (scr 0670 @0x04E2, 80); zone_event 155 warp 2 (107,27) 2x1 -> zone 156 warp 0 (15,23); zone_event 156 object 0 gfx 0x75 (15,11) hidden by flag 0x28B -> scr 0312 script 1: @0x001F WildBattle Virizion (640) lv 42; @0x003E SetFlag 0x28B; result 0 (caught) -> @0x0097 SetFlag 0xA8
+- notes: Chained from 81 (the rocks need Cobalion's flag); Fly to Nacrene and walk into Pinwheel Forest [INFERENCE: Nacrene's fly flag set in the chain].
+
+#### black/83-legendary-kyurem — Kyurem (Giant Chasm)
+- proves: Kyurem in the Giant Chasm (post-game: Route 13, east of the gate the clear opens): the cave's boulders, the chasm's forest, and Kyurem in the crater's cave. Start: the player's room (zone 391, 32's end) -> end: the Giant Chasm's cave (zone 234), Kyurem caught.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 234; flags set 0x321, 0x152; vars 0x40D8=2; 1 save check(s)
+- frames: estimate 40000, budget -
+- refs: zone 230 (Giant Chasm, outdoors, joined to Route 13): zone_event 230 warp 0 (684,152) -> zone 231 warp 0 (23,62); level type 2 -> scr 0460 script 1 (@0x0019 SetVar 0x40D8 0 unless flag 0x321); zone_event 231 objects 0-3 (Strength boulders, script id 10000); zone_event 232 trigger 0 (49,51) 2x1 var 0x40D8 == 0 -> scr 0464 script 1 (@0x0025 SetVar 0x40D8 1); zone_event 232 warp 1 (62,21) -> zone 234 warp 1 (16,30); zone_event 234 object 0 gfx 0x79 (15,12) hidden by flag 0x321 -> scr 0468 script 1: @0x005E WildBattle Kyurem (646) lv 75; @0x007D SetFlag 0x321; caught -> @0x00D6 SetFlag 0x152; @0x00DA SetVar 0x40D8 2; scr 0866 @0x03F3-@0x0416 (game clear): flag 0x321 cleared unless 0x152 (an uncaught Kyurem returns after the next clear); zone_event 133 object 0 (10,6) hidden by flag 0x2F8 (the Opelucid Gate to Route 11), set at the clear (scr 0866 @0x04A9)
+- notes: Post-game (east Unova opens at the clear). The recipe swaps Blitzle for a Strength carrier (zone 231's boulders). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### black/84-legendary-volcarona — Volcarona (Relic Castle)
+- proves: Volcarona in the Relic Castle's depths: past the sand pits below the story's floors to the chamber where Volcarona (lv 70) waits. Start: the Pokemon League's gate (zone 136, 28's end) -> end: the Relic Castle's last chamber (zone 182), Volcarona caught.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 182; flags set 0x32A, 0x15C; 1 save check(s)
+- frames: estimate 40000, budget -
+- refs: zone_event 182 object 0 gfx 0x7C (16,4) hidden by flag 0x32A -> scr 0364 script 1: @0x001D WildBattle Volcarona (637) lv 70; @0x0040 SetFlag 0x32A; caught -> @0x00A1 SetFlag 0x15C; zone_event 182 warp 0 (16,27) -> zone 181 warp 2; zones 160-190 (Relic Castle); black/25 refs: the sand pits 161 -> 162 -> 163 -> 164 -> 165; scr 0866 @0x041A-@0x043D (game clear): flag 0x32A cleared unless 0x15C (an uncaught Volcarona returns after the next clear)
+- notes: No flag gates zone 182's Volcarona (only its own hide flag), so it is not post-game in the scripts [INFERENCE: the way down from zone 165 to 182 is open after 25]; chained from 28 (shared, a lv 68 lead for a lv 70 legend). The route through zones 165-181 is PHASE2's (scouting).
+
+#### black/85-roamer-tornadus — Roamer: Tornadus starts roaming (Black)
+- proves: The roaming Tornadus (Black) starts: after the Legend Badge the old woman on Route 7 takes the player into her house; leaving it, the storm and the legendary fly off and roam. Mid-story, not post-game. Start: the Opelucid Gate (zone 132, 27's end) -> end: Route 7 (zone 337) after the storm, 0x40C0 = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 337; flags clear 0x96F; vars 0x40C0=3
+- frames: estimate 12000, budget -
+- refs: scr 0264 (Opelucid Gate, 27) @0x01AA SetVar 0x40C0 1, @0x01B0 SetFlag 0x96F; zone_event 337 trigger 0 (130,243) 1x5 var 0x40C0 == 1 -> scr 0674 script 6 (msg 369 #5 'My, my... That Pokemon has come again, too.'); zone_event 337 warp 2 (130,242) -> zone 344 (the house); scr 0688 script 1 (zone 344): msg 376 #2-#11 (the soup, the storm Pokemon), @0x0175 SetVar 0x40C0 2, @0x017B ClearFlag 0x96F; zone 337 level type 1: var 0x40C0 == 2 -> scr 0674 script 7 (the storm): @0x051A GetVersion; Black: @0x0531 Cmd069 gfx 0x71, @0x05B5 Cmd136 7, @0x05E0 Cmd04A 9; @0x0604 msg 369 #10 'Whew, what a storm!'; @0x0629 SetVar 0x40C0 3; @0x0642 Cmd1BC 1 [INFERENCE: the roamer starts]; the chain's 27-34 end saves hold 0x40C0 = 1 (no story milestone visits the house)
+- notes: Black only (White's twin: white/85-roamer-thundurus); the scripts are one file in both ROMs, branching on GetVersion. The roamer's position is not in np_save5's dump; [expect] is the scripts' state. Catching the roamer is a random chase (P2, not here).
+
+#### black/86-legendary-landorus — Landorus (Abundant Shrine)
+- proves: Landorus at the Abundant Shrine (post-game, Route 14): with Tornadus and Thundurus in the party the children appear, the shrine calls Landorus, and it is fought. Start: the player's room (zone 391, 32's end) -> end: the Abundant Shrine (zone 376), Landorus caught.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 376; flags set 0x13D, 0x2EE, 0x139; vars 0x40CE=4; 1 save check(s)
+- frames: estimate 30000, budget -
+- refs: zone 376 level type 2 -> scr 0752 script 3: @0x0016 SetFlag 0x2ED, @0x0060/@0x0089 Cmd1BD 0 (White) / 1 (Black), var 0x8021 == 3 -> @0x0079/@0x00A2 SetVar 0x40CE 1, ClearFlag 0x2ED (the children); zone_event 376 trigger 0 (21,17) 3x1 var 0x40CE == 1 -> scr 0752 script 1 (msg 408 #0-#10); @0x030A SetVar 0x40CE 2, @0x0310 SetFlag 0x2ED; zone_event 376 bg 0 (22,12) (the shrine) -> scr 0752 script 2: party scan Cmd0FE for Tornadus (641) and Thundurus (642); Black needs its Tornadus to pass Cmd113 (== 1), White its Thundurus; L_0619 @0x0619 ClearFlag 0x2EE, msg 408 #13 'Tornadus and Thundurus are struggling inside their Poke Balls!', @0x069C SetVar 0x40CE 3, @0x06A2 SetFlag 0x13D; zone_event 376 object 3 gfx 0x78 (22,0) hidden by flag 0x2EE -> scr 0752 script 5: @0x06DB WildBattle Landorus (645) lv 70; won -> @0x06FE SetFlag 0x2EE, @0x0702 SetVar 0x40CE 4; caught -> @0x0759 SetFlag 0x139; zone_event 376 warp 0 (50,54) -> zone 374 (Route 14)
+- notes: P2: the shrine wants both roamers, one of them from the other version (the other version's legendary; scr 0752 script 2), so offline the recipe makes both with np_save5 set-mon. Cmd113 checks the own version's roamer [INFERENCE: owner or origin]; set-mon makes it with the save's trainer, which may or may not pass: if not, the own roamer must be caught (85) and this chains from there. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### black/87-dreamyard-musharna — The Dreamyard's basement: Musharna (post-game, Fridays)
+- proves: The Dreamyard after the clear: the blocker in the Dreamyard is gone (flag 0x334) and, on Fridays, Musharna (lv 50) waits in the basement. Start: the player's room (zone 391, 32's end) -> end: the Dreamyard's basement (zone 153), Musharna caught.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 153; flags set 0x2EC, 0xABC; 1 save check(s)
+- frames: estimate 15000, budget -
+- refs: zone_event 152 object 7 gfx 0xB5 (40,19) hidden by flag 0x334, set at the clear (scr 0866 @0x0491); zone_event 152 warps 0/1/3 -> zone 153; zone 153 level script -> scr 0306 script 2: @0x0010 Cmd0CF var 0x8020; unless (0x8020 == 5 and flag 0x960 and flag 0xABC clear) @0x0051 SetFlag 0x2EC, else @0x0047 ClearFlag 0x2EC; zone_event 153 object 0 gfx 0x7F (12,3) hidden by flag 0x2EC -> scr 0306 script 1: @0x008D WildBattle Musharna (518) lv 50; won -> @0x00B0 SetFlag 0x2EC; @0x00F2/@0x010F SetFlag 0xABC; zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard)
+- notes: Post-game (flag 0x960 and the blocker 0x334). Cmd0CF reads the weekday [INFERENCE: 5 = Friday], so the run's clock is a Friday; 0xABC is a daily flag [INFERENCE] that keeps Musharna away for the rest of the day. The Relic Castle half of 'post-game areas' is 84 (Volcarona, not gated by the clear). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
 <!-- plan.py:end black -->
 
 ## White
@@ -6442,7 +6755,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 15195 | prev + `None` | 264 | passing |
 | [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 11011 | prev + `None` | 278 | passing |
 | [32-n-castle-zekrom-ghetsis-credits](white/32-n-castle-zekrom-ghetsis-credits/milestone.toml) | N's Castle (White): Zekrom, N, Ghetsis and the credits | P0 | white | 72237 | prev + `None` | - | passing |
-| [34-postgame-poke-transfer-lab](white/34-postgame-poke-transfer-lab/milestone.toml) | After the credits (White): the way to the Poke Transfer Lab | P1 | white | 22621 | prev + `None` | 381 | planned |
+| [34-postgame-poke-transfer-lab](white/34-postgame-poke-transfer-lab/milestone.toml) | After the credits (White): the way to the Poke Transfer Lab | P1 | white | 22621 | prev + `None` | 381 | passing |
 
 #### white/01-newgame-bedroom — New game to the bedroom, a walk, a talk with Cheren and the first save
 - proves: Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the furniture, a talk with Cheren, and the save through the game's own X menu. Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
@@ -6773,4 +7086,317 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - frames: estimate 22621, budget 34000
 - refs: scr 0866 script 2 (the game clear, after the credits): L_0443 on the first clear (flag 0x960): @0x0457 0x40A2 3, @0x047F 0x4085 2, @0x04A1 SetFlag 0x2E4; L_0316: @0x031C Cmd0DC 0x187, 1, 5, 0, 6 (the continue warp: zone 391 (5,6)), @0x0328 SetFlag 0x966; flag 0x966: with it set, CONTINUE takes the continue warp; set on a save without that warp it lands on zone 0's warp 0 tile (Black City (9,50)), seen in scouting; zone_event 383 objects 8, 12 (502,431..432) hidden by flag 0x2E4 -> scr 0766 script 3 (msg 415 #0 'They said Marvelous Bridge is being checked!'); warp 0 (503,431) -> zone 384; zone_event 384 warp 1 (20,3) -> 263 warp 0; zone_event 263 warp 1 (161,31) -> 380 warp 0; zone_event 380 warp 1 (23,6) -> 378 warp 1; zone_event 263 trigger 0 (64,31) 1x6 var 0x40E5 == 0 -> scr 0526 script 1 (the Shadow Triad); @0x0495 SetVar 0x40E5 1; zone_event 378 warp 2 (608,425) -> zone 381 (the Poke Transfer Lab) warp 0 (9..11,23); zone_event 381 object 0 (10,7) the scientist -> scr 0878 script 1; trigger 0 (9..11,22) var 0x40AE == 0 -> scr 0878 script 2 (@0x0036 SetVar 0x40AE 1, L_055C the assistant, L_004E the offer: flag 0x95, Cmd1F0/Cmd121 six free box slots, Cmd047 YES/NO); zones 289-316 (Nimbasa .. Undella, Route 15 313, Route 16 314, Marvelous Bridge 303 among them): copies with no wild table (1071), no name popup and their own matrices, after the Entree Forest zones 280-288; their warps lead only among themselves and no script warps into them: [INFERENCE] the Entralink's copies, not a story variant of 378/383/263
 - notes: The post-game way to the Poke Transfer Lab, for Poke Transfer's link test (docs/BW_PLAN.md, Poke Transfer): Fly to Nimbasa, Route 16, the Bridge Gate (open once the game clear sets flag 0x2E4), the Marvelous Bridge, Route 15, the lab. The lab's first-entry scene makes the transfer offer at once; B answers it NO, so the run ends with nothing transferred, the player free at the counter in front of the scientist (381 (10,8)), where talking to him (A) starts the transfer (six free box slots, wireless on, a save). Route 15, Route 16 and the bridge's second zone entries (313, 314, 303) are not story variants (refs). The same steps as black/34-postgame-poke-transfer-lab. Scouted on a synthesized post-game save (29's end with the game clear's flags and vars, the location 391 (5,6)); then run from the chain's real 32 ends on core-bwm (main d72d3a46f4): Black 22112, White 22621 frames, both passing. Left planned for bw-chain to land after 32.
+
+### Side systems: 28 milestones, ~560000 frames estimated
+
+| milestone | title | P | version | est. frames | start | end map | status |
+|---|---|---|---|---|---|---|---|
+| [60-hm-cut](black/60-hm-cut/milestone.toml) | HM01 Cut: Route 2's tree | P0 | both | 6000 | prev + `None` | 319 | planned |
+| [61-hm-strength](black/61-hm-strength/milestone.toml) | HM04 Strength: Nimbasa's gift and Route 16's boulder | P0 | both | 12000 | prev + `start.recipe` | 383 | planned |
+| [62-hm-surf](black/62-hm-surf/milestone.toml) | HM03 Surf: Route 6 to Mistralton Cave | P0 | both | 15000 | prev + `start.recipe` | 333 | planned |
+| [63-hm-fly](black/63-hm-fly/milestone.toml) | HM02 Fly: Mistralton to Nimbasa | P0 | both | 4000 | prev + `start.recipe` | 62 | planned |
+| [64-hm-waterfall](black/64-hm-waterfall/milestone.toml) | HM05 Waterfall: Route 18's item ball and a waterfall climb | P0 | both | 30000 | prev + `start.recipe` | - | planned |
+| [65-hm-dive](black/65-hm-dive/milestone.toml) | HM06 Dive: Undella Town's gift and the Abyssal Ruins | P1 | both | 45000 | prev + `start.recipe` | - | planned |
+| [66-postgame-looker-super-rod-national-dex](white/66-postgame-looker-super-rod-national-dex/milestone.toml) | After the credits: Looker's Super Rod and the National Pokedex | P0 | white | 9000 | prev + `None` | 389 | planned |
+| [67-fishing-super-rod](white/67-fishing-super-rod/milestone.toml) | Fishing: the Super Rod in Nuvema Town | P0 | white | 6000 | prev + `None` | 389 | planned |
+| [68-day-care-deposit-and-egg](black/68-day-care-deposit-and-egg/milestone.toml) | Day Care: two deposits with the lady and an egg from the man | P0 | both | 25000 | prev + `start.recipe` | 321 | planned |
+| [69-egg-hatch](black/69-egg-hatch/milestone.toml) | Egg hatch: the Day Care's Patrat egg | P0 | both | 40000 | prev + `None` | 321 | planned |
+| [70-level-up-evolution-after-battle](black/70-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after battle: Lillipup -> Herdier | P0 | both | 9000 | prev + `start.recipe` | 383 | planned |
+| [71-trade-npc-boldore-for-emolga](black/71-trade-npc-boldore-for-emolga/milestone.toml) | Trades: Route 7's Boldore for Emolga (trade evolution needs a link) | P2 | both | 5000 | prev + `start.recipe` | 343 | planned |
+| [72-pc-storage-box-moves](black/72-pc-storage-box-moves/milestone.toml) | PC storage: deposit and a box-to-box move | P0 | both | 6000 | prev + `None` | 8 | planned |
+| [73-battle-subway-single-train](black/73-battle-subway-single-train/milestone.toml) | Battle Subway: one seven-win Single Train set | P0 | both | 60000 | prev + `start.recipe` | 67 | planned |
+| [74-hall-of-fame-pc](black/74-hall-of-fame-pc/milestone.toml) | Hall of Fame on the Pokemon Center PC | P0 | both | 12000 | prev + `None` | 398 | planned |
+| [75-musical](black/75-musical/milestone.toml) | The Pokemon Musical | P1 | both | 15000 | prev + `start.recipe` | 77 | planned |
+| [76-entralink](black/76-entralink/milestone.toml) | The Entralink (offline): first visit | P1 | both | 6000 | prev + `None` | 279 | planned |
+| [77-royal-unova](black/77-royal-unova/milestone.toml) | The Royal Unova | P1 | both | 20000 | prev + `None` | 52 | planned |
+| [78-tv-programs](black/78-tv-programs/milestone.toml) | TV programs | P2 | both | 3000 | prev + `None` | 54 | planned |
+| [79-white-forest](white/79-white-forest/milestone.toml) | White Forest (White) | P1 | white | 25000 | prev + `None` | 424 | planned |
+| [80-legendary-cobalion](black/80-legendary-cobalion/milestone.toml) | Cobalion (Guidance Chamber) | P1 | both | 30000 | prev + `start.recipe` | 335 | planned |
+| [81-legendary-terrakion](black/81-legendary-terrakion/milestone.toml) | Terrakion (Trial Chamber) | P1 | both | 20000 | prev + `None` | 229 | planned |
+| [82-legendary-virizion](black/82-legendary-virizion/milestone.toml) | Virizion (Rumination Field) | P1 | both | 20000 | prev + `None` | 156 | planned |
+| [83-legendary-kyurem](black/83-legendary-kyurem/milestone.toml) | Kyurem (Giant Chasm) | P1 | both | 40000 | prev + `start.recipe` | 234 | planned |
+| [84-legendary-volcarona](black/84-legendary-volcarona/milestone.toml) | Volcarona (Relic Castle) | P1 | both | 40000 | prev + `None` | 182 | planned |
+| [85-roamer-thundurus](white/85-roamer-thundurus/milestone.toml) | Roamer: Thundurus starts roaming (White) | P1 | white | 12000 | prev + `None` | 337 | planned |
+| [86-legendary-landorus](black/86-legendary-landorus/milestone.toml) | Landorus (Abundant Shrine) | P2 | both | 30000 | prev + `start.recipe` | 376 | planned |
+| [87-dreamyard-musharna](black/87-dreamyard-musharna/milestone.toml) | The Dreamyard's basement: Musharna (post-game, Fridays) | P1 | both | 15000 | prev + `None` | 153 | planned |
+
+#### white/60-hm-cut — HM01 Cut: Route 2's tree
+- proves: HM01 Cut in the field: the Cut carrier the chain has had since 09 (Patrat, slot 3) cuts Route 2's tree, the one Cut tree outside the Dreamyard's (which 09 already cut), through the field-move script's YES/NO. Start: Striaton City, Fennel's lab (zone 10, 09's end) -> end: Route 2 (zone 319) past the tree at (773,618).
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 319
+- frames: estimate 6000, budget -
+- refs: scr 0020 @0x006A CallStd 2805 HM01 (Fennel, zone 10; 09); zone_event 319 object 11 gfx 0x6C (773,618) -> script id 10004 -> scr 0867 script 5 (the Cut tree); scr 0867 script 5: @0x025E Cmd116 var 0x8010, 0xF (the party member that knows Cut; 6 = none -> msg 280 #2), @0x0283 msg 280 #0 YES/NO (Cmd047), L_02C0 @0x02D1 msg 280 #1 'used Cut!', @0x02F5 RemoveObject var 0x8011; zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard); zone_event 319 warp 0 (761,647) -> zone 320 (Accumula Gate); Route 2 joins Striaton (zone 6) outdoors; other Cut trees: zone_event 152 object 8 (23,26) (09 cuts it), 370 objects 2/3 (680,186)/(681,187) (Route 13), 383 object 6 (474,425) (Route 16); 09's end save: party slot 3 Patrat (504) lv 14 with Cut (15), Tackle (09's boost.recipe)
+- notes: No Badge check in the field-move script (scr 0867 has no CheckBadge): any gate on Cut is in code [INFERENCE]. Cut sets nothing in the save (the tree is a RemoveObject, back on the next zone load), so [expect] is the map. The 09 end save is inside Fennel's lab; the tree stands in Route 2's north part south of Striaton [INFERENCE: (773,618) is reached from Striaton's south edge].
+
+#### white/61-hm-strength — HM04 Strength: Nimbasa's gift and Route 16's boulder
+- proves: HM04 Strength: the man in a Nimbasa house gives HM04 (an NPC gift, not an item ball), then a Strength carrier pushes Route 16's boulder (the nearest one east of Nimbasa). Start: Nimbasa City (zone 62) below the house door (399,455) -> end: Route 16 (zone 383), the boulder (482,439) moved.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 383; flags set 0x122, 0x964; 1 save check(s)
+- frames: estimate 12000, budget -
+- refs: zone_event 62 warp 8 (399,455) -> zone 88 warp 0; zone_event 88 warp 0 (6,10) 3x1 -> zone 62 warp 8; zone_event 88 object 0 gfx 0x1E (4,3) -> scr 0176 script 1: @0x002C var 0x8000 = 0x1A7 (HM04), 0x8002 = 0x122 (the gift's flag), @0x0054 CallStd 2800 (scr 0862 script 1: give item, @0x00CA SetFlag var 0x8002); msg 70 #0 (scr 0130, Nimbasa): 'There was a guy who gave me an HM called Strength. For free...'; zone_event 62 warp 2 (447,437) -> zone 92 (Nimbasa Gate) warp 1; zone_event 383 warp 1 (454,437) -> zone 92 warp 0; zone_event 383 object 10 gfx 0x2003 (482,439) -> script id 10000 -> scr 0867 script 1 (boulder): @0x008D Cmd116 var 0x8010, 0x46 (Strength), msg 280 #6 YES/NO, @0x00FB SetFlag 0x964, msg 280 #10/#11; other boulders (script id 10000): zone_event 152 object 13 (20,35), 319 object 2 (750,653), 208, 216, 224, 226, 231 (x4), 333-335, 346, 370, 378, 387
+- notes: 16's end save is in zone 63 (the Gym); the recipe places the player outside zone 88's door and swaps Tepig (slot 4) for a Strength carrier (no bot teaches an HM from the Bag). Flag 0x964 is the 'Strength is active' flag the boulder script sets [INFERENCE: cleared on a zone change, so the save must be on Route 16].
+
+#### white/62-hm-surf — HM03 Surf: Route 6 to Mistralton Cave
+- proves: HM03 Surf in the field: a Surf carrier crosses Route 6's water to the Mistralton Cave entrance (HM03 came from Cheren at Twist Mountain in 22). Start: Icirrus City (zone 113, 22's end) -> end: Mistralton Cave (zone 333) through Route 6's warp (156,361).
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 333
+- frames: estimate 15000, budget -
+- refs: scr 0396 @0x029D var 0x8000 = 0x1A6, @0x02A9 CallStd 2805 HM03 (Cheren, Twist Mountain; 22); scr 0867 script 3 (script id 10002, run by the field facing water): @0x019E Cmd116 var 0x8010, 0x39 (Surf), msg 280 #13 'The water is a deep blue... surf on it?', msg 280 #15 (not with a partner), @0x020B msg 280 #14 'used Surf!'; zone_event 331 warp 1 (156,361) 1x2 -> zone 333 (Mistralton Cave) warp 0 (1,6); zone 107 (Mistralton City), Route 6 zones 331/332/336
+- notes: The water tiles are terrain attributes the probe does not name (README, Black and White): [INFERENCE] the Route 6 river stands between the road and the cave entrance (156,361). Surf sets nothing in the save; the proof is reaching zone 333. The recipe swaps Blitzle (slot 2) for a Surf carrier.
+
+#### white/63-hm-fly — HM02 Fly: Mistralton to Nimbasa
+- proves: HM02 Fly through the field menu: the Fly carrier flies from Mistralton to Nimbasa (25 and 26 fly in the chain; this proves the move alone, from the end save that first has HM02 and a town map with Nimbasa). Start: Mistralton City (zone 107, 21's end) -> end: Nimbasa City (zone 62), the landing tile.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 62
+- frames: estimate 4000, budget -
+- refs: scr 0192 @0x06EB var 0x8000 = 0x1A5, @0x06F7 CallStd 2805 HM02 (Bianca, Driftveil; 19); Fly (the X menu's POKEMON, the carrier's FLY, the town tapped on the bottom screen's map, A): Nimbasa (zone 62) at tap (130,94) [black/25-relic-castle-nacrene-stone refs, from scouting]; black/25's boost.recipe: party-set 3 521 40 19 403 98 17 (Unfezant with Fly in Patrat's slot)
+- notes: No field-move script runs for Fly (code: the party menu's FLY opens the town map) [INFERENCE]. The recipe makes the same Fly carrier 25's boost does.
+
+#### white/64-hm-waterfall — HM05 Waterfall: Route 18's item ball and a waterfall climb
+- proves: HM05 Waterfall: HM05 is an item ball on Route 18 (west of Route 1, reached by Surf over Route 17), then a Waterfall carrier climbs a waterfall. Start: Icirrus City (zone 113, 22's end) -> end: the top of a waterfall [INFERENCE: zone in PHASE2], HM05 in the bag.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: flags set 0x4CA; 1 save check(s)
+- frames: estimate 30000, budget -
+- refs: zone_event 387 object 11 gfx 0x6E (613,753) y 0 hidden by flag 0x4CA -> script id 7278 -> scr 0864 script 279: @0x210C var 0x800C = 0x1A8 (HM05), @0x2118 Call script_307 (the item ball pickup: sets the object's hide flag); zone_event 387 warp 0 (636,737) -> zone 388 (the Route 18 house); zones 423 (Route 17), 387/388 (Route 18); scr 0867 script 7 (script id 10006, run by the field facing a waterfall): @0x0377 Cmd116 var 0x8010, 0x7F (Waterfall), msg 280 #23 YES/NO, @0x03E4 msg 280 #24 'used Waterfall!'
+- notes: No NPC gives HM05: the only HM05 in the scripts is that item ball. Waterfall tiles are attributes the probe does not name: PHASE2 finds one (scr 0867 script 7 runs from the attribute) [INFERENCE: Route 18 or Victory Road]. Route 17/18 are reached by Surf west of Route 1 [INFERENCE: no flag blocks them before the clear; zone_event 387 object 9 (616,758) hidden by 0x2C4, which the game clear clears (scr 0866 @0x0489), is a post-game visitor, not a block]. The recipe swaps Blitzle (slot 2) for a Surf + Waterfall carrier.
+
+#### white/65-hm-dive — HM06 Dive: Undella Town's gift and the Abyssal Ruins
+- proves: HM06 Dive (post-game): the sea-loving man in Undella Town gives HM06, and a Dive carrier dives in Undella Bay down to the Abyssal Ruins. Start: the player's room (zone 391, 32's end) -> end: the Abyssal Ruins [INFERENCE: zone 241..248], HM06 in the bag.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: flags set 0x15A; 1 save check(s)
+- frames: estimate 45000, budget -
+- refs: zone_event 412 object 1 gfx 0x11 (746,303) y -64 -> scr 0824 script 5: @0x0536 var 0x8000 = 0x1A9 (HM06), 0x8002 = 0x15A, msgs 451 #4/#5, @0x055E CallStd 2800 (scr 0862 script 1, @0x00CA SetFlag var 0x8002); msg 451 #5 'Inside this Hidden Machine is Dive! ... diving points'; scr 0867 script 12 (script id 10011, run by the field on a diving point): @0x04AE Cmd116 var 0x8010, 0x123 (Dive), msg 280 #31 YES/NO, @0x0513 msg 280 #32 'used Dive!'; zone 240 (Undella Bay), zones 241-248 (Abyssal Ruins); zone_event 372 warp 1 (4,14) -> zone 412 warp 4 (752,295); post-game: the road east is closed until the clear: zone_event 133 object 0 (10,6) hidden by flag 0x2F8 (the Opelucid Gate to Route 11), set by scr 0866 @0x04A9
+- notes: Dive is post-game in B/W: Undella Town is east of the Opelucid Gate the clear opens (refs). Lowered from P0 to P1: no story or system needs Dive. The diving points are terrain attributes (PHASE2 finds one in Undella Bay). The recipe swaps Blitzle (slot 2) for a Surf + Dive carrier. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### white/66-postgame-looker-super-rod-national-dex — After the credits: Looker's Super Rod and the National Pokedex
+- proves: The first post-game scenes at home: Looker of the International Police gives the Super Rod (B/W's only rod), then Cedric Juniper outside upgrades the Pokedex to the National Mode. Start: the player's room (zone 391, 32's end) -> end: Nuvema Town (zone 389) after Cedric's scene, 0x4080 = 5.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 389; flags set 0x2E0, 0x201, 0x202; flags clear 0x200; vars 0x4085=3, 0x4080=5; 2 save check(s)
+- frames: estimate 9000, budget -
+- refs: scr 0866 @0x047F SetVar 0x4085 2 (the game clear); zone_event 390 level type 1: var 0x4085 == 2 -> scr 0780 script 4; scr 0780 script 4: msg 429 #24-#33 (Looker), @0x05E8 CallStd 2805 Super Rod (item 447), msg 429 #34-#41, @0x06D8 SetVar 0x4085 3, @0x06DE SetFlag 0x2E0, @0x06E2 SetVar 0x400F 0x14D, @0x06E8 SetVar 0x4080 4, @0x06EE/@0x06F2 ClearFlag 0x201/0x202; zone_event 390 warp 0 (5,10) -> zone 389; zone 389 level type 1: var 0x4080 == 4 -> scr 0778 script 15 (Cedric: msg 428 #45); scr 0778 script 15: @0x0B09 msg 428 #49 'Pokedex was upgraded with the National Mode!', @0x0B15 Cmd1D0 [INFERENCE: the National Mode], @0x0BC8 SetVar 0x4080 5, @0x0BCE/@0x0BD2 SetFlag 0x201/0x202, @0x0BD6 ClearFlag 0x200
+- notes: The Super Rod's giver is Looker, in the player's own house, right after the credits; the National Pokedex comes from Cedric Juniper (the professor's father), not Professor Juniper. Both scenes are forced level scripts, so black/34 plays them on its way (its steps note 0x4085 3 and 0x4080 5) but checks neither the rod nor the Pokedex: this system does. National Dex listed P1 in the plan; merged here (P0) because it is the same two scenes and the rod is fishing's prerequisite. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### white/67-fishing-super-rod — Fishing: the Super Rod in Nuvema Town
+- proves: Fishing with the Super Rod from the Bag: face water, use the rod, reel in at the '!', fight what bites. Start: Nuvema Town (zone 389, 66's end) -> end: Nuvema Town after one fished wild battle.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 389; >= 1 battles; 1 save check(s)
+- frames: estimate 6000, budget -
+- refs: scr 0780 @0x05E8 CallStd 2805 Super Rod (Looker; 66); msg 429 #41 (Looker): 'Face the water and employ the rod! ... When it occurs that these Pokemon bite, '!' will indicate. Immediately, reel in!'; zone 389 (Nuvema Town)
+- notes: B/W have one rod, the Super Rod, given post-game (66); no script runs fishing (the Bag's item and the field) [INFERENCE]. Which Nuvema tiles are water the probe does not say: [INFERENCE] the town's shore; PHASE2 picks a tile. Fishing sets nothing in the save, so [expect] is the battle and the place. Chained from 66 so the scenes there are not replayed.
+
+#### white/68-day-care-deposit-and-egg — Day Care: two deposits with the lady and an egg from the man
+- proves: Route 3's Day Care: the Day-Care Lady (inside) takes two Pokemon, the player walks until an egg is laid, and the Day-Care Man (outside) hands it over. The man and the second deposit slot appear only after Nimbasa's scene (15). Start: Route 3 (zone 321) below the Day Care door (749,555) -> end: Route 3 by the man, a Patrat egg in the party.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 321; party size 5; flags set 0x70; 1 save check(s)
+- frames: estimate 25000, budget -
+- refs: zone_event 321 warp 2 (749,555) -> zone 323 (the Day Care); zone_event 323 warps 0-2 (5..7,13) -> zone 321 warp 2; zone_event 323 object 0 gfx 0x1D (6,7) -> script id 2201 -> scr 0856 script 2 (the Day-Care Lady): @0x0301 SetFlag 0x70 on the first talk (msg 426 #12), the menu Cmd0B2/Cmd0AF, L_04A1 / L_0884 deposit and withdraw; scr 0856 L_004C: @0x0054 CheckFlagToVar 0x70, @0x005A CheckFlagToVar 0x99 -> var 0x8028 = 2 deposit slots with flag 0x99, else 1; zone_event 321 object 0 gfx 0x1C (748,556) hidden by flag 0x271 -> script id 2200 -> scr 0856 script 1 (the Day-Care Man): var 0x8026 == 1 (an egg) -> msg 426 #6, YES/NO, @0x0146 Cmd0EC (the egg into the party), @0x0151 msg 426 #7; scr 0124 (Nimbasa, 15) @0x0401 ClearFlag 0x271 (the man on Route 3), @0x0405 SetFlag 0x99 (two slots); msg 67 #8 'Day-Care Man: I have a Day Care on Route 3!'
+- notes: Before 15 the Day Care holds one Pokemon and the man is not on Route 3 (refs), so it chains from 16. Deposits: the Cut carrier Patrat (slot 3) and a Ditto the recipe puts in Tepig's slot; the egg is a Patrat (504) [INFERENCE: Ditto + Patrat, compatible regardless of gender]. The day care's contents are not in np_save5's dump; the party is.
+
+#### white/69-egg-hatch — Egg hatch: the Day Care's Patrat egg
+- proves: Egg hatch: 68's Patrat egg hatches while the player paces Route 3 (the hatch bot). Start: Route 3 (zone 321, 68's end), the egg in the party -> end: Route 3, Patrat lv 1 hatched.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 321; party size 5; 2 save check(s)
+- frames: estimate 40000, budget -
+- refs: scr 0856 script 1 @0x0146 Cmd0EC (the Day-Care Man's egg; 68); msg 420 #5 (scr 0776, the Route 18 breeder): 'Pokemon Eggs hatch when you carry them with you.'; zone 321 (Route 3)
+- notes: Hatching is the field's step counter, no script [INFERENCE]. The post-game alternative is the Larvesta (636) egg from the breeder in the Route 18 house (zone_event 388 object 0 (3,5) -> scr 0776 script 1: @0x0081 Cmd10F var 0x8010, 0x27C, 0 [INFERENCE: give egg], @0x00A8 SetFlag 0x13B), a much longer hatch.
+
+#### white/70-level-up-evolution-after-battle — Level-up evolution after battle: Lillipup -> Herdier
+- proves: Level-up evolution at the end of a battle: a Lillipup at the base of lv 15 wins wild battles until lv 16 and evolves into Herdier after the battle that levels it (auto_battle allows evolution). Start: Nimbasa City (zone 63, 16's end) -> end: Route 16 (zone 383), slot 0 Herdier lv 16.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 383; >= 1 battles; 2 save check(s)
+- frames: estimate 9000, budget -
+- refs: zone_event 62 warp 2 (447,437) -> zone 92; zone_event 383 warp 1 (454,437) -> zone 92 warp 0 (Route 16's grass east of Nimbasa); Lillipup (506) evolves at lv 16 into Herdier (507) [INFERENCE: species data, not decoded]
+- notes: np_save5 set-mon makes the Pokemon at the base experience of its level (README, Black and White), so one battle's experience levels it [INFERENCE: 402 exp, Medium Slow lv 15 -> 16]; the lead gets strong moves so auto_battle wins fast. Evolution is code, no script.
+
+#### white/71-trade-npc-boldore-for-emolga — Trades: Route 7's Boldore for Emolga (trade evolution needs a link)
+- proves: In-game trade: the man in the Route 7 house trades his Emolga for the player's Boldore. No in-game trade gives a trade-evolution Pokemon (Basculin, Emolga, Rotom, Munchlax, Cottonee/Petilil), so trade evolution needs a link. Start: Route 7 (zone 337) below the house door (102,260) -> end: the house (zone 343), Emolga in the party.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 343; flags set 0x15B; 2 save check(s)
+- frames: estimate 5000, budget -
+- refs: zone_event 337 warp 1 (102,260) -> zone 343 warp 0 (5,9); zone_event 343 object 0 gfx 0x40 (4,5) -> scr 0686 script 1: @0x006E BufferSpeciesName Emolga / Boldore, msg 375 #0, @0x00A9 Cmd107 (the party pick), @0x00CA Cmd1BF var 0x8022, 4, var 0x8020 [INFERENCE: trade 4's checks], @0x00F1 Cmd1BE 4, var 0x8020 (the trade), @0x0107 SetFlag 0x15B; scr 0686 script 4 (zone 343 level script): GetVersion -> var 0x4020 = 0xD1 (Black) / 0x81 (White) [INFERENCE: not the trade's species, which are fixed]; the other in-game trades (Cmd1BE): scr 0046 (Nacrene, zone 23: Cottonee/Petilil by version), scr 0202 trades 2/3 (Driftveil, zone 101: Minccino -> Basculin), scr 0764 trade 6 (Route 15, zone 382: Ditto -> Rotom), scr 0830 trade 5 (Undella, zone 415: Cinccino -> Munchlax)
+- notes: P2: trade evolution (the plan's P0 item) cannot run offline in B/W: every NPC trade receives a Pokemon that does not evolve by trade (refs), and Karrablast/Shelmet and the rest need a link trade (tests/link). This system proves the NPC trade itself, as platinum/75 does. The recipe makes the Boldore the man asks for in Patrat's slot and places the player outside the house.
+
+#### white/72-pc-storage-box-moves — PC storage: deposit and a box-to-box move
+- proves: The Pokemon Storage System on a Pokemon Center PC: deposit the Cut carrier into BOX 1, then move it to BOX 2. Start: Striaton City, Fennel's lab (zone 10, 09's end) -> end: the Striaton Pokemon Center (zone 8) at the PC.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 8; party size 3; 2 save check(s)
+- frames: estimate 6000, budget -
+- refs: zone_event 6 warp 0 (781,587) -> zone 8 (the Pokemon Center); zone_event 8 warp 0 (6,19) 3x1 -> zone 6; zone_event 8 bg 0-2 (12,5) (12,6) (13,6) -> script id 2108 -> scr 0855 script 9 (the PC); scr 0868 script 1 (script id 10090, the PC menu): @0x0059 msg 314 #0 'booted up the PC', @0x0072 msg 314 #1 'Which PC should be accessed?', @0x0270 msg 314 #13 'The Pokemon Storage System was accessed.', @0x0226 Cmd132 var 0x8021 [INFERENCE: the storage screen]
+- notes: 09's party is Tepig, Pansage, Blitzle and the Cut carrier Patrat (504), the first end save with more than one Pokemon after the Striaton Center opens (06 has only the starter). The box screen is touch/menu UI the probe does not report (PHASE2: press schedule). np_save5 dumps the boxes (s['boxes'][i]['mons']).
+
+#### white/73-battle-subway-single-train — Battle Subway: one seven-win Single Train set
+- proves: The Battle Subway's Single Train: register three Pokemon at the platform, ride, win seven battles in a row. Start: Nimbasa City (zone 62) below the Gear Station door (422,458) -> end: the Single Train platform (zone 67).
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 67; >= 7 battles
+- frames: estimate 60000, budget -
+- refs: zone_event 62 warp 7 (422,458) -> zone 66 (Gear Station) warp 8; zone_event 66 warp 0 -> zone 67 (the Single Train platform; bg 8 msg 71 #18 'Platform for Single Trains'); zone_event 67 object 0 gfx 0x44 (12,15) -> script id 10333 -> scr 0882 script 4 (the Single Train clerk): @0x15F1 SetVar 0x4130 1; scr 0882 @0x2993 Warp zone 75 (the train) (7,0,4); scr 0882 script 8: @0x1EC1/@0x1EC7 SetVar 0x4130 4, 0x4132 1 / @0x1EDB 0x4132 2; @0x1EB3-@0x1EBB SetFlag 0x28E, 0x267, 0x268; zone_event 75 level type 1: var 0x4132 == 1 / 2 -> scr 0150 scripts 2 / 3; zone_event 76 level type 1: var 0x4133 == 1 -> scr 0152 script 6; scr 0132 script 3 (msg 71 #2/#3, flag 0x960): before the clear only the Single, Double and Multi lines run; the Super lines need the clear
+- notes: Reachable from 15 on (Nimbasa). The train's rules (three Pokemon, levels set to 50, no duplicates) are code [INFERENCE]; the recipe gives three strong lv 50 members. The streak record is not in np_save5's dump, so [expect] is seven battles and the return to the platform [INFERENCE: 0x4130's value after a finished set is PHASE2's to read].
+
+#### white/74-hall-of-fame-pc — Hall of Fame on the Pokemon Center PC
+- proves: The Hall of Fame on a Pokemon Center PC after the clear: the first post-clear Storage access adds wallpapers (flag 0x14B), and the Record System's HALL OF FAME shows the entry the credits wrote. Start: the player's room (zone 391, 32's end) -> end: the Accumula Pokemon Center (zone 398) at the PC.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 398; flags set 0x960, 0x14B
+- frames: estimate 12000, budget -
+- refs: zone_event 397 warp 0 (796,657) -> zone 398 (Accumula's Pokemon Center); zone_event 398 bg 0-2 (12,5)/(12,6)/(13,6) -> scr 0855 script 9 (the PC); scr 0868 script 1 (the PC): @0x004A CheckFlagToVar 0x960 (the clear) shapes the menu; @0x0260 CheckFlagToVar 0x960 -> @0x02A8 msg 314 #11 'More wallpapers were added', @0x02AE SetFlag 0x14B (first post-clear Storage access); scr 0868 @0x05D2 msg 314 #34 'Accessed the Record System!'; @0x06B4 Cmd14D 1, var 0x8010 [INFERENCE: the Hall of Fame screen], else @0x06E5 msg 314 #10 'Your Hall of Fame data is corrupted' (Cmd0EA var 0x8023 @0x0050); scr 0866 @0x0443 SetFlag 0x960 (the game clear)
+- notes: B/W show the Hall of Fame on the PC's Record System, gated by the clear flag 0x960. The Hall of Fame record itself is not in np_save5's dump; flag 0x14B proves the post-clear PC run [INFERENCE: its Storage visit comes first]. Nuvema has no Pokemon Center; Accumula's is the nearest. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### white/75-musical — The Pokemon Musical
+- proves: The Pokemon Musical: the reception's solo musical, dressing a Pokemon with the Prop Case (15) and the show. Start: Nimbasa City (zone 62) below the Musical Theater door (433,433) -> end: the Musical Theater (zone 77).
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 77
+- frames: estimate 15000, budget -
+- refs: zone_event 62 warp 6 (433,433) -> zone 77 (Musical Theater) warp 0; scr 0154 @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1 (15); zone_event 77 object 0 gfx 0x2B (14,11) -> script id 10440 -> scr 0892 script 1 (reception): @0x0070 msg 286 #0 'Welcome to the Pokemon Musical! Here you can participate in a musical alone.', @0x00DF msg 286 #1, @0x00FD Cmd167 var 0x8021, 0 [INFERENCE: starts the musical]; zone_event 78 (backstage) level scripts scr 0156 scripts 1/2; scr 0156 @0x081F-@0x0969 Set/ClearFlag 0x29E-0x2A2, 0x2F0-0x2F3 (the audience in zone 77: objects 1-5 hidden by 0x29E-0x2A2)
+- notes: The dressing room and the show are touch screens the probe does not report (PHASE2: tap schedule). The musical writes no var the decoder shows; [expect] is the theater [INFERENCE: the show ends back in zone 77].
+
+#### white/76-entralink — The Entralink (offline): first visit
+- proves: The Entralink alone: the C-Gear's ENTRALINK takes the player to the island; the guide's first-visit scene runs and the Entree Forest gate is there. Missions in someone's world need a second game (wireless). Start: Striaton City, Fennel's lab (zone 10, 09's end: the C-Gear) -> end: the Entralink (zone 279), 0x40C3 = 1.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 279; vars 0x40C3=1
+- frames: estimate 6000, budget -
+- refs: scr 0020 @0x048F msg 15 #9 'obtained the C-Gear!' (Fennel; 09); zone 279 (Entralink): level type 1 on entry: var 0x4000 == 0 -> scr 0558 script 3 (@0x004A SetVar 0x4000 1); var 0x40C3 == 0 -> scr 0558 script 8; scr 0558 script 8: msg 303 #11-#13 ('This is an island called the Entralink...'), @0x01F0 SetVar 0x40C3 1; zone_event 279 object 0 (29,30) -> scr 0558 script 5 (guide: msg 303 #3-#7); objects 1/2 (14,29)/(48,29) -> scripts 6/7 (the bridges: msg 303 #16 'a search will start to find a person to connect with'); object 5 (34,22) -> script 10 (the Entree Forest); zones 280-288 (Entree Forest): zone_event 280 triggers 0-3 on var 0x4111 == 0 -> scr 0895 scripts 5-8; zones 289-316: the Entralink's copies of the region (black/34's refs) where missions run in another player's world
+- notes: Entering the Entralink is the C-Gear's touch button [INFERENCE: no script warps to zone 279]. P1 keeps only what runs alone: the island, the guide, the Entree Forest gate; the missions (scr 0558 script 4: @0x00FC SetFlag 0x97F, @0x015C SetFlag 0x981, the Pass Power) need a connected game, and the Entree Forest's Pokemon come from the Dream World (online).
+
+#### white/77-royal-unova — The Royal Unova
+- proves: The Royal Unova cruise (post-game, evenings, once a day): the $1,000 ticket at Castelia's pier, boarding, and the ship's trainers. Start: the player's room (zone 391, 32's end) -> end: aboard the Royal Unova (zone 52).
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 52; flags set 0xAC2
+- frames: estimate 20000, budget -
+- refs: zone_event 39 object 0 gfx 0x4C (18,16) -> scr 0078 script 2 (the pier clerk): @0x0258 unless flag 0x960 -> @0x043D msg 44 #13 'now in preparation'; @0x026B flag 0xAC2 set -> msg 44 #11 'closed for the day'; @0x027E Cmd0CD var 0x8021 unless == 2 -> @0x0411 msg 44 #2 'operates only in the evening'; scr 0078 L_04DD msg 44 #4 'The ticket is $1,000'; @0x02FC Cmd0FB var 0x8022, 0x3E8 (the money check); L_0478 @0x0478 Cmd0FA 0x3E8 (pay), @0x04C3 SetVar 0x4135 0, @0x04C9 SetFlag 0xAC2, @0x04D1 Warp zone 52 (29,29); zone_event 52 objects 0-14 (crew and passengers) -> scr 0104 scripts 2-20; zone 52 level scripts: type 2 -> scr 0104 script 27, type 4 -> script 30; scr 0104 script 1 @0x0137 msg 57 #71 'This cruise ship will arrive in Castelia City shortly'; zone 28 warps 3/16 -> zone 39 (the pier) from Castelia's rail waterfront (black/14 refs)
+- notes: Post-game (flag 0x960), evenings only (Cmd0CD == 2 [INFERENCE: time of day, 2 = evening]) and once a day (flag 0xAC2, a daily flag [INFERENCE]): the run's clock is set to an evening. Castelia's waterfront is a rail map (the rail bot). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### white/78-tv-programs — TV programs
+- proves: A TV program: the TV in a Castelia house plays one of the programs (msg bank 462: 'Unova News', 'Eyes on Unova', ...), picked before or after the clear. Start: Castelia City (13's end) -> end: the Castelia house with the TV (zone 54).
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 54
+- frames: estimate 3000, budget -
+- refs: scr 0898 script 1 (script id 10520, text 462): @0x0012 Cmd23A 0x17, 1; @0x001E flag 0x960 -> var 0x8021 0/1; @0x0043 Cmd23D var 0x8021, var 0x8020 [INFERENCE: the program pick]; @0x004F MessageSystem var 0x8020; msg 462 #133 'Eyes on Unova', #166-#169 'Unova News' (the programs); zone_event 54 object 3 gfx 0x14 (3,3) -> scr 0108 script 4: msg 59 #10 'It's difficult to watch TV from here.' (the house's TV); zone_event 34 warp 2 (7,32) -> zone 54 warp 0; scr 0782 script 2 (the player's room, zone 391): msg 430 #60 'a flat-screen television that Dad bought!' (no program)
+- notes: P2 (planned P1): a program is text only and sets nothing in the save. No bg event names script id 10520: the TVs run it from their tile [INFERENCE], so PHASE2 confirms zone 54's TV tile. [expect] is the room.
+
+#### white/79-white-forest — White Forest (White)
+- proves: White Forest (White only, post-game): through the Black Gate from Route 15 into the forest, whose residents and Pokemon grow with the Entralink's invitations (flags 0x277-0x27A by the resident count). Start: the player's room (zone 391, 32's end) -> end: White Forest (zone 424).
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 424; flags set 0x277, 0x278, 0x279, 0x27A
+- frames: estimate 25000, budget -
+- refs: zone_event 379 (Black Gate) warp 1 (15,4) -> zone 0 in the data; White's field takes it to White Forest (zone 424) [INFERENCE: a/1/2/5 is identical in both ROMs (version-diff)]; zone_event 424 warp 0 (8,50) 1x4 -> zone 379 warp 1, warp 2 (50,9) -> zone 375 warp 0; zone 424 level script type 2 -> scr 0848 script 1: @0x00FC-@0x0108 SetFlag 0x277-0x27A; @0x0112 Cmd1C4 3, var 0x8025 (resident count): >= 9 clears all four, >= 7 three, >= 5 two, ... [INFERENCE: thresholds below 5 from the same chain]; zone_event 424 objects 2-7 hidden by flags 0x277 (2,3), 0x278 (4,5), 0x279 (6), 0x27A (7) -> scr 0848 scripts 4-9 (residents); zone_event 424 warps 1 (43,36) -> zone 425 (the Pokemon Center), 3 (19,46) -> zone 426; scr 0850 script 3 (zone 425): msg 467 #0 'Many people have come here from Black City...'
+- notes: White only; Black's twin is black/79-black-city. Offline the resident count stays low [INFERENCE], so the level script leaves the four resident flags set. Route 15 is reached the way white/34 goes. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### white/80-legendary-cobalion — Cobalion (Guidance Chamber)
+- proves: Cobalion in the Guidance Chamber (Mistralton Cave, Route 6): the hiker's tale, then Cobalion; beating or catching it frees Terrakion's and Virizion's ways (rocks in Victory Road and Pinwheel Forest). Not post-game: Surf and Strength. Start: the Pokemon League's gate (zone 136, 28's end) -> end: the Guidance Chamber (zone 335), Cobalion caught.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 335; flags set 0x289, 0xA6, 0x28C, 0x28D, 0xB6; vars 0x40B7=1; 1 save check(s)
+- frames: estimate 30000, budget -
+- refs: zone_event 331 warp 1 (156,361) -> zone 333; zone_event 333 warp 1 (13,16) -> zone 334; zone_event 334 warp 1 (17,12) -> zone 335 warp 0 (16,27); boulders (script id 10000, Strength): zone_event 333 objects 0-2, 334 objects 0-2, 335 objects 0/1 (12,20)/(15,15); zone_event 335 trigger 0 (24,24) 3x1 var 0x40B7 == 0 -> scr 0670 script 2 (msg 367 #7-#16, the hiker); @0x029C SetVar 0x40B7 1; zone_event 335 object 2 gfx 0x73 (7,4) hidden by flag 0x289 -> scr 0670 script 1: @0x0424 WildBattle Cobalion (638) lv 42; @0x0443 SetFlag 0x289; result 0 (caught) -> @0x04D4 SetFlag 0xA6; then @0x04DE/@0x04E2/@0x04E6 SetFlag 0x28C, 0x28D, 0xB6; flag 0x28C hides zone_event 226 object 2 gfx 0xCE (5,12) (Victory Road, before the Trial Chamber); 0x28D hides zone_event 155 objects 32-35 (106..109,28) (Pinwheel Forest, before the Rumination Field); scr 0866 @0x0330/@0x0353 (game clear): flag 0x289 cleared again unless caught (a beaten Cobalion returns)
+- notes: Cobalion unlocks the other two (refs): 81 and 82 chain from here. Chained from 28 (shared; eight badges for Victory Road in 81) rather than 32; it is reachable from 22 on (Surf, Strength). Cmd17C's result 0 = caught [INFERENCE: the branch that sets 0xA6, which the game clear's respawn checks]. The full party sends Cobalion to the Box. The recipe swaps in Surf and Strength carriers; 28's bag has a Master Ball and Ultra Balls.
+
+#### white/81-legendary-terrakion — Terrakion (Trial Chamber)
+- proves: Terrakion in Victory Road's Trial Chamber, open once Cobalion moved (flag 0x28C hides the rock). Start: the Guidance Chamber (zone 335, 80's end) -> end: the Trial Chamber (zone 229), Terrakion caught.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 229; flags set 0x28A, 0xA7; 1 save check(s)
+- frames: estimate 20000, budget -
+- refs: zone_event 226 object 2 gfx 0xCE (5,12) hidden by flag 0x28C (scr 0670 @0x04DE, 80); zone_event 226 warp 3 (5,11) -> zone 229 warp 0 (5,9); zone_event 229 object 0 gfx 0x74 (5,4) hidden by flag 0x28A -> scr 0458 script 1: @0x001F WildBattle Terrakion (639) lv 42; @0x003E SetFlag 0x28A; result 0 (caught) -> @0x0097 SetFlag 0xA7; zone_event 226 warps 0/1 (13,22)/(23,22) -> zone 214 warps 1/5 (Victory Road outdoors, a rail map: black/28's refs)
+- notes: Chained from 80 (the rock needs Cobalion's flag, which no recipe can set). Victory Road's outdoors are rails (the rail bot).
+
+#### white/82-legendary-virizion — Virizion (Rumination Field)
+- proves: Virizion in Pinwheel Forest's Rumination Field, open once Cobalion moved (flag 0x28D hides the four rocks). Start: the Trial Chamber (zone 229, 81's end) -> end: the Rumination Field (zone 156), Virizion caught.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 156; flags set 0x28B, 0xA8; 1 save check(s)
+- frames: estimate 20000, budget -
+- refs: zone_event 155 objects 32-35 gfx 0xCE (106..109,28) hidden by flag 0x28D (scr 0670 @0x04E2, 80); zone_event 155 warp 2 (107,27) 2x1 -> zone 156 warp 0 (15,23); zone_event 156 object 0 gfx 0x75 (15,11) hidden by flag 0x28B -> scr 0312 script 1: @0x001F WildBattle Virizion (640) lv 42; @0x003E SetFlag 0x28B; result 0 (caught) -> @0x0097 SetFlag 0xA8
+- notes: Chained from 81 (the rocks need Cobalion's flag); Fly to Nacrene and walk into Pinwheel Forest [INFERENCE: Nacrene's fly flag set in the chain].
+
+#### white/83-legendary-kyurem — Kyurem (Giant Chasm)
+- proves: Kyurem in the Giant Chasm (post-game: Route 13, east of the gate the clear opens): the cave's boulders, the chasm's forest, and Kyurem in the crater's cave. Start: the player's room (zone 391, 32's end) -> end: the Giant Chasm's cave (zone 234), Kyurem caught.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 234; flags set 0x321, 0x152; vars 0x40D8=2; 1 save check(s)
+- frames: estimate 40000, budget -
+- refs: zone 230 (Giant Chasm, outdoors, joined to Route 13): zone_event 230 warp 0 (684,152) -> zone 231 warp 0 (23,62); level type 2 -> scr 0460 script 1 (@0x0019 SetVar 0x40D8 0 unless flag 0x321); zone_event 231 objects 0-3 (Strength boulders, script id 10000); zone_event 232 trigger 0 (49,51) 2x1 var 0x40D8 == 0 -> scr 0464 script 1 (@0x0025 SetVar 0x40D8 1); zone_event 232 warp 1 (62,21) -> zone 234 warp 1 (16,30); zone_event 234 object 0 gfx 0x79 (15,12) hidden by flag 0x321 -> scr 0468 script 1: @0x005E WildBattle Kyurem (646) lv 75; @0x007D SetFlag 0x321; caught -> @0x00D6 SetFlag 0x152; @0x00DA SetVar 0x40D8 2; scr 0866 @0x03F3-@0x0416 (game clear): flag 0x321 cleared unless 0x152 (an uncaught Kyurem returns after the next clear); zone_event 133 object 0 (10,6) hidden by flag 0x2F8 (the Opelucid Gate to Route 11), set at the clear (scr 0866 @0x04A9)
+- notes: Post-game (east Unova opens at the clear). The recipe swaps Blitzle for a Strength carrier (zone 231's boulders). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### white/84-legendary-volcarona — Volcarona (Relic Castle)
+- proves: Volcarona in the Relic Castle's depths: past the sand pits below the story's floors to the chamber where Volcarona (lv 70) waits. Start: the Pokemon League's gate (zone 136, 28's end) -> end: the Relic Castle's last chamber (zone 182), Volcarona caught.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 182; flags set 0x32A, 0x15C; 1 save check(s)
+- frames: estimate 40000, budget -
+- refs: zone_event 182 object 0 gfx 0x7C (16,4) hidden by flag 0x32A -> scr 0364 script 1: @0x001D WildBattle Volcarona (637) lv 70; @0x0040 SetFlag 0x32A; caught -> @0x00A1 SetFlag 0x15C; zone_event 182 warp 0 (16,27) -> zone 181 warp 2; zones 160-190 (Relic Castle); black/25 refs: the sand pits 161 -> 162 -> 163 -> 164 -> 165; scr 0866 @0x041A-@0x043D (game clear): flag 0x32A cleared unless 0x15C (an uncaught Volcarona returns after the next clear)
+- notes: No flag gates zone 182's Volcarona (only its own hide flag), so it is not post-game in the scripts [INFERENCE: the way down from zone 165 to 182 is open after 25]; chained from 28 (shared, a lv 68 lead for a lv 70 legend). The route through zones 165-181 is PHASE2's (scouting).
+
+#### white/85-roamer-thundurus — Roamer: Thundurus starts roaming (White)
+- proves: The roaming Thundurus (White) starts: after the Legend Badge the old woman on Route 7 takes the player into her house; leaving it, the storm and the legendary fly off and roam. Mid-story, not post-game. Start: the Opelucid Gate (zone 132, 27's end) -> end: Route 7 (zone 337) after the storm, 0x40C0 = 3.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 337; flags clear 0x96F; vars 0x40C0=3
+- frames: estimate 12000, budget -
+- refs: scr 0264 (Opelucid Gate, 27) @0x01AA SetVar 0x40C0 1, @0x01B0 SetFlag 0x96F; zone_event 337 trigger 0 (130,243) 1x5 var 0x40C0 == 1 -> scr 0674 script 6; zone_event 337 warp 2 (130,242) -> zone 344 (the house); scr 0688 script 1 (zone 344): @0x00E8 MessageVersion msg 376 #5 (White: 'a Pokemon called Thundurus') / #6; @0x0175 SetVar 0x40C0 2, @0x017B ClearFlag 0x96F; zone 337 level type 1: var 0x40C0 == 2 -> scr 0674 script 7 (the storm): White: @0x0545 Cmd069 gfx 0x72, @0x05C1 Cmd136 6, @0x05F5 Cmd04A 8; @0x0629 SetVar 0x40C0 3; @0x064C Cmd1BC 0 [INFERENCE: the roamer starts]
+- notes: White only (Black's twin: black/85-roamer-tornadus). The roamer's position is not in np_save5's dump; [expect] is the scripts' state.
+
+#### white/86-legendary-landorus — Landorus (Abundant Shrine)
+- proves: Landorus at the Abundant Shrine (post-game, Route 14): with Tornadus and Thundurus in the party the children appear, the shrine calls Landorus, and it is fought. Start: the player's room (zone 391, 32's end) -> end: the Abundant Shrine (zone 376), Landorus caught.
+- start: prev + `start.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 376; flags set 0x13D, 0x2EE, 0x139; vars 0x40CE=4; 1 save check(s)
+- frames: estimate 30000, budget -
+- refs: zone 376 level type 2 -> scr 0752 script 3: @0x0016 SetFlag 0x2ED, @0x0060/@0x0089 Cmd1BD 0 (White) / 1 (Black), var 0x8021 == 3 -> @0x0079/@0x00A2 SetVar 0x40CE 1, ClearFlag 0x2ED (the children); zone_event 376 trigger 0 (21,17) 3x1 var 0x40CE == 1 -> scr 0752 script 1 (msg 408 #0-#10); @0x030A SetVar 0x40CE 2, @0x0310 SetFlag 0x2ED; zone_event 376 bg 0 (22,12) (the shrine) -> scr 0752 script 2: party scan Cmd0FE for Tornadus (641) and Thundurus (642); Black needs its Tornadus to pass Cmd113 (== 1), White its Thundurus; L_0619 @0x0619 ClearFlag 0x2EE, msg 408 #13 'Tornadus and Thundurus are struggling inside their Poke Balls!', @0x069C SetVar 0x40CE 3, @0x06A2 SetFlag 0x13D; zone_event 376 object 3 gfx 0x78 (22,0) hidden by flag 0x2EE -> scr 0752 script 5: @0x06DB WildBattle Landorus (645) lv 70; won -> @0x06FE SetFlag 0x2EE, @0x0702 SetVar 0x40CE 4; caught -> @0x0759 SetFlag 0x139; zone_event 376 warp 0 (50,54) -> zone 374 (Route 14)
+- notes: P2: the shrine wants both roamers, one of them from the other version (the other version's legendary; scr 0752 script 2), so offline the recipe makes both with np_save5 set-mon. Cmd113 checks the own version's roamer [INFERENCE: owner or origin]; set-mon makes it with the save's trainer, which may or may not pass: if not, the own roamer must be caught (85) and this chains from there. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
+
+#### white/87-dreamyard-musharna — The Dreamyard's basement: Musharna (post-game, Fridays)
+- proves: The Dreamyard after the clear: the blocker in the Dreamyard is gone (flag 0x334) and, on Fridays, Musharna (lv 50) waits in the basement. Start: the player's room (zone 391, 32's end) -> end: the Dreamyard's basement (zone 153), Musharna caught.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map 153; flags set 0x2EC, 0xABC; 1 save check(s)
+- frames: estimate 15000, budget -
+- refs: zone_event 152 object 7 gfx 0xB5 (40,19) hidden by flag 0x334, set at the clear (scr 0866 @0x0491); zone_event 152 warps 0/1/3 -> zone 153; zone 153 level script -> scr 0306 script 2: @0x0010 Cmd0CF var 0x8020; unless (0x8020 == 5 and flag 0x960 and flag 0xABC clear) @0x0051 SetFlag 0x2EC, else @0x0047 ClearFlag 0x2EC; zone_event 153 object 0 gfx 0x7F (12,3) hidden by flag 0x2EC -> scr 0306 script 1: @0x008D WildBattle Musharna (518) lv 50; won -> @0x00B0 SetFlag 0x2EC; @0x00F2/@0x010F SetFlag 0xABC; zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard)
+- notes: Post-game (flag 0x960 and the blocker 0x334). Cmd0CF reads the weekday [INFERENCE: 5 = Friday], so the run's clock is a Friday; 0xABC is a daily flag [INFERENCE] that keeps Musharna away for the rest of the day. The Relic Castle half of 'post-game areas' is 84 (Volcarona, not gated by the clear). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15).
 <!-- plan.py:end white -->

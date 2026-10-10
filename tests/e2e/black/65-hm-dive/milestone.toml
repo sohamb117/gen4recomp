@@ -1,0 +1,26 @@
+# HM06 Dive (post-game): the sea-loving man in Undella Town gives HM06, and a Dive carrier dives in Undella Bay
+# down to the Abyssal Ruins.
+# Start: the player's room (zone 391, 32's end) -> end: the Abyssal Ruins [INFERENCE: zone 241..248], HM06 in the bag.
+title = "HM06 Dive: Undella Town's gift and the Abyssal Ruins"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 45000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 412 object 1 gfx 0x11 (746,303) y -64 -> scr 0824 script 5: @0x0536 var 0x8000 = 0x1A9 (HM06), 0x8002 = 0x15A, msgs 451 #4/#5, @0x055E CallStd 2800 (scr 0862 script 1, @0x00CA SetFlag var 0x8002)",
+  "msg 451 #5 'Inside this Hidden Machine is Dive! ... diving points'",
+  "scr 0867 script 12 (script id 10011, run by the field on a diving point): @0x04AE Cmd116 var 0x8010, 0x123 (Dive), msg 280 #31 YES/NO, @0x0513 msg 280 #32 'used Dive!'",
+  "zone 240 (Undella Bay), zones 241-248 (Abyssal Ruins); zone_event 372 warp 1 (4,14) -> zone 412 warp 4 (752,295)",
+  "post-game: the road east is closed until the clear: zone_event 133 object 0 (10,6) hidden by flag 0x2F8 (the Opelucid Gate to Route 11), set by scr 0866 @0x04A9",
+]
+notes = "Dive is post-game in B/W: Undella Town is east of the Opelucid Gate the clear opens (refs). Lowered from P0 to P1: no story or system needs Dive. The diving points are terrain attributes (PHASE2 finds one in Undella Bay). The recipe swaps Blitzle (slot 2) for a Surf + Dive carrier. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+
+[start]
+from = "34-postgame-poke-transfer-lab"
+recipe = "start.recipe"
+
+[expect]
+flags = ["0x15A"]
+save = [
+  "any(i[\"item\"] == 425 for i in s[\"bag\"][\"tms_hms\"])",
+]

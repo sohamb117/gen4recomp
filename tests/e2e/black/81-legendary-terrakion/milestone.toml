@@ -1,0 +1,23 @@
+# Terrakion in Victory Road's Trial Chamber, open once Cobalion moved (flag 0x28C hides the rock).
+# Start: the Guidance Chamber (zone 335, 80's end) -> end: the Trial Chamber (zone 229), Terrakion caught.
+title = "Terrakion (Trial Chamber)"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 20000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 226 object 2 gfx 0xCE (5,12) hidden by flag 0x28C (scr 0670 @0x04DE, 80); zone_event 226 warp 3 (5,11) -> zone 229 warp 0 (5,9)",
+  "zone_event 229 object 0 gfx 0x74 (5,4) hidden by flag 0x28A -> scr 0458 script 1: @0x001F WildBattle Terrakion (639) lv 42; @0x003E SetFlag 0x28A; result 0 (caught) -> @0x0097 SetFlag 0xA7",
+  "zone_event 226 warps 0/1 (13,22)/(23,22) -> zone 214 warps 1/5 (Victory Road outdoors, a rail map: black/28's refs)",
+]
+notes = "Chained from 80 (the rock needs Cobalion's flag, which no recipe can set). Victory Road's outdoors are rails (the rail bot)."
+
+[start]
+from = "80-legendary-cobalion"
+
+[expect]
+map = 229
+flags = ["0x28A", "0xA7"]
+save = [
+  "any(m[\"species\"] == 639 for m in s[\"party\"]) or any(m[\"species\"] == 639 for b in s[\"boxes\"] for m in b[\"mons\"])",
+]

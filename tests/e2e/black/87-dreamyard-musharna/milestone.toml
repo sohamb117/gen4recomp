@@ -1,0 +1,28 @@
+# The Dreamyard after the clear: the blocker in the Dreamyard is gone (flag 0x334) and, on Fridays, Musharna (lv 50)
+# waits in the basement.
+# Start: the player's room (zone 391, 32's end) -> end: the Dreamyard's basement (zone 153), Musharna caught.
+title = "The Dreamyard's basement: Musharna (post-game, Fridays)"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 15000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 152 object 7 gfx 0xB5 (40,19) hidden by flag 0x334, set at the clear (scr 0866 @0x0491); zone_event 152 warps 0/1/3 -> zone 153",
+  "zone 153 level script -> scr 0306 script 2: @0x0010 Cmd0CF var 0x8020; unless (0x8020 == 5 and flag 0x960 and flag 0xABC clear) @0x0051 SetFlag 0x2EC, else @0x0047 ClearFlag 0x2EC",
+  "zone_event 153 object 0 gfx 0x7F (12,3) hidden by flag 0x2EC -> scr 0306 script 1: @0x008D WildBattle Musharna (518) lv 50; won -> @0x00B0 SetFlag 0x2EC; @0x00F2/@0x010F SetFlag 0xABC",
+  "zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard)",
+]
+notes = "Post-game (flag 0x960 and the blocker 0x334). Cmd0CF reads the weekday [INFERENCE: 5 = Friday], so the run's clock is a Friday; 0xABC is a daily flag [INFERENCE] that keeps Musharna away for the rest of the day. The Relic Castle half of 'post-game areas' is 84 (Volcarona, not gated by the clear). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+
+[start]
+from = "34-postgame-poke-transfer-lab"
+
+[run]
+clock = "2026-10-09 12:00:00"   # [INFERENCE] see notes
+
+[expect]
+map = 153
+flags = ["0x2EC", "0xABC"]
+save = [
+  "any(m[\"species\"] == 518 for m in s[\"party\"]) or any(m[\"species\"] == 518 for b in s[\"boxes\"] for m in b[\"mons\"])",
+]

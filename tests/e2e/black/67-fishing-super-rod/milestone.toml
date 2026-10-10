@@ -1,0 +1,23 @@
+# Fishing with the Super Rod from the Bag: face water, use the rod, reel in at the '!', fight what bites.
+# Start: Nuvema Town (zone 389, 66's end) -> end: Nuvema Town after one fished wild battle.
+title = "Fishing: the Super Rod in Nuvema Town"
+status = "planned"
+priority = "P0"
+version = "black"
+estimate = 6000   # [INFERENCE] frames, not measured
+refs = [
+  "scr 0780 @0x05E8 CallStd 2805 Super Rod (Looker; 66)",
+  "msg 429 #41 (Looker): 'Face the water and employ the rod! ... When it occurs that these Pokemon bite, '!' will indicate. Immediately, reel in!'",
+  "zone 389 (Nuvema Town)",
+]
+notes = "B/W have one rod, the Super Rod, given post-game (66); no script runs fishing (the Bag's item and the field) [INFERENCE]. Which Nuvema tiles are water the probe does not say: [INFERENCE] the town's shore; PHASE2 picks a tile. Fishing sets nothing in the save, so [expect] is the battle and the place. Chained from 66 so the scenes there are not replayed."
+
+[start]
+from = "66-postgame-looker-super-rod-national-dex"
+
+[expect]
+map = 389
+battles = 1
+save = [
+  "any(i[\"item\"] == 447 for i in s[\"bag\"][\"key_items\"])",
+]

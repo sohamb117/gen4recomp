@@ -1,0 +1,4 @@
+# On 32's end save (party: Reshiram, Darmanitan, Blitzle, Unfezant (Fly), Tepig, Sawk): a Surf (57) and Dive (291)
+# carrier, Basculin (550) lv 60 with Aqua Jet (453), Crunch (242), in place of Blitzle (slot 2)
+# (scr 0867 scripts 3 and 12: Cmd116 0x39 / 0x123). No location line: flag 0x966 overrides it (milestone notes).
+party-set 2 550 60 57 291 453 242

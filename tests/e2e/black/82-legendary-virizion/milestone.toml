@@ -1,0 +1,22 @@
+# Virizion in Pinwheel Forest's Rumination Field, open once Cobalion moved (flag 0x28D hides the four rocks).
+# Start: the Trial Chamber (zone 229, 81's end) -> end: the Rumination Field (zone 156), Virizion caught.
+title = "Virizion (Rumination Field)"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 20000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 155 objects 32-35 gfx 0xCE (106..109,28) hidden by flag 0x28D (scr 0670 @0x04E2, 80); zone_event 155 warp 2 (107,27) 2x1 -> zone 156 warp 0 (15,23)",
+  "zone_event 156 object 0 gfx 0x75 (15,11) hidden by flag 0x28B -> scr 0312 script 1: @0x001F WildBattle Virizion (640) lv 42; @0x003E SetFlag 0x28B; result 0 (caught) -> @0x0097 SetFlag 0xA8",
+]
+notes = "Chained from 81 (the rocks need Cobalion's flag); Fly to Nacrene and walk into Pinwheel Forest [INFERENCE: Nacrene's fly flag set in the chain]."
+
+[start]
+from = "81-legendary-terrakion"
+
+[expect]
+map = 156
+flags = ["0x28B", "0xA8"]
+save = [
+  "any(m[\"species\"] == 640 for m in s[\"party\"]) or any(m[\"species\"] == 640 for b in s[\"boxes\"] for m in b[\"mons\"])",
+]

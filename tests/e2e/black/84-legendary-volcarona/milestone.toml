@@ -1,0 +1,24 @@
+# Volcarona in the Relic Castle's depths: past the sand pits below the story's floors to the chamber where
+# Volcarona (lv 70) waits.
+# Start: the Pokemon League's gate (zone 136, 28's end) -> end: the Relic Castle's last chamber (zone 182), Volcarona caught.
+title = "Volcarona (Relic Castle)"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 40000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 182 object 0 gfx 0x7C (16,4) hidden by flag 0x32A -> scr 0364 script 1: @0x001D WildBattle Volcarona (637) lv 70; @0x0040 SetFlag 0x32A; caught -> @0x00A1 SetFlag 0x15C",
+  "zone_event 182 warp 0 (16,27) -> zone 181 warp 2; zones 160-190 (Relic Castle); black/25 refs: the sand pits 161 -> 162 -> 163 -> 164 -> 165",
+  "scr 0866 @0x041A-@0x043D (game clear): flag 0x32A cleared unless 0x15C (an uncaught Volcarona returns after the next clear)",
+]
+notes = "No flag gates zone 182's Volcarona (only its own hide flag), so it is not post-game in the scripts [INFERENCE: the way down from zone 165 to 182 is open after 25]; chained from 28 (shared, a lv 68 lead for a lv 70 legend). The route through zones 165-181 is PHASE2's (scouting)."
+
+[start]
+from = "28-route10-cheren-victory-road"
+
+[expect]
+map = 182
+flags = ["0x32A", "0x15C"]
+save = [
+  "any(m[\"species\"] == 637 for m in s[\"party\"]) or any(m[\"species\"] == 637 for b in s[\"boxes\"] for m in b[\"mons\"])",
+]

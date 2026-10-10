@@ -1,0 +1,3 @@
+# On 16's end save: Lillipup (506) lv 15 (experience at the level's base: set-mon) in place of Darmanitan (slot 0, the
+# lead auto_battle fights with), with Earthquake (89), Rock Slide (157), Fire Punch (7), ThunderPunch (9)
+party-set 0 506 15 89 157 7 9

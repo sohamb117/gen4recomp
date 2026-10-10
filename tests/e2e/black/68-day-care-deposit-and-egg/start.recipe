@@ -1,0 +1,6 @@
+# On 16's end save (party: Darmanitan, Pansage, Blitzle, Patrat (Cut), Tepig, Sawk): Ditto (132) lv 30 with Transform
+# (144) in place of Tepig (slot 4), to be deposited with Patrat (slot 3) (scr 0856 script 2: two slots with flag 0x99).
+party-set 4 132 30 144
+# Route 3 (zone 321), one tile below the Day Care door (zone_event 321 warp 2 (749,555)); the man (748,556) stands
+# beside it at y 16 (y 1 in tiles [INFERENCE])
+location 321 749 1 556

@@ -1,0 +1,24 @@
+# HM05 Waterfall: HM05 is an item ball on Route 18 (west of Route 1, reached by Surf over Route 17), then a Waterfall
+# carrier climbs a waterfall.
+# Start: Icirrus City (zone 113, 22's end) -> end: the top of a waterfall [INFERENCE: zone in PHASE2], HM05 in the bag.
+title = "HM05 Waterfall: Route 18's item ball and a waterfall climb"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 30000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 387 object 11 gfx 0x6E (613,753) y 0 hidden by flag 0x4CA -> script id 7278 -> scr 0864 script 279: @0x210C var 0x800C = 0x1A8 (HM05), @0x2118 Call script_307 (the item ball pickup: sets the object's hide flag)",
+  "zone_event 387 warp 0 (636,737) -> zone 388 (the Route 18 house); zones 423 (Route 17), 387/388 (Route 18)",
+  "scr 0867 script 7 (script id 10006, run by the field facing a waterfall): @0x0377 Cmd116 var 0x8010, 0x7F (Waterfall), msg 280 #23 YES/NO, @0x03E4 msg 280 #24 'used Waterfall!'",
+]
+notes = "No NPC gives HM05: the only HM05 in the scripts is that item ball. Waterfall tiles are attributes the probe does not name: PHASE2 finds one (scr 0867 script 7 runs from the attribute) [INFERENCE: Route 18 or Victory Road]. Route 17/18 are reached by Surf west of Route 1 [INFERENCE: no flag blocks them before the clear; zone_event 387 object 9 (616,758) hidden by 0x2C4, which the game clear clears (scr 0866 @0x0489), is a post-game visitor, not a block]. The recipe swaps Blitzle (slot 2) for a Surf + Waterfall carrier."
+
+[start]
+from = "22-twist-mountain-cheren-icirrus"
+recipe = "start.recipe"
+
+[expect]
+flags = ["0x4CA"]
+save = [
+  "any(i[\"item\"] == 424 for i in s[\"bag\"][\"tms_hms\"])",
+]

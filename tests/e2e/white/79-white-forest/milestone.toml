@@ -1,0 +1,23 @@
+# White Forest (White only, post-game): through the Black Gate from Route 15 into the forest, whose residents and
+# Pokemon grow with the Entralink's invitations (flags 0x277-0x27A by the resident count).
+# Start: the player's room (zone 391, 32's end) -> end: White Forest (zone 424).
+title = "White Forest (White)"
+status = "planned"
+priority = "P1"
+version = "white"
+estimate = 25000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 379 (Black Gate) warp 1 (15,4) -> zone 0 in the data; White's field takes it to White Forest (zone 424) [INFERENCE: a/1/2/5 is identical in both ROMs (version-diff)]; zone_event 424 warp 0 (8,50) 1x4 -> zone 379 warp 1, warp 2 (50,9) -> zone 375 warp 0",
+  "zone 424 level script type 2 -> scr 0848 script 1: @0x00FC-@0x0108 SetFlag 0x277-0x27A; @0x0112 Cmd1C4 3, var 0x8025 (resident count): >= 9 clears all four, >= 7 three, >= 5 two, ... [INFERENCE: thresholds below 5 from the same chain]",
+  "zone_event 424 objects 2-7 hidden by flags 0x277 (2,3), 0x278 (4,5), 0x279 (6), 0x27A (7) -> scr 0848 scripts 4-9 (residents)",
+  "zone_event 424 warps 1 (43,36) -> zone 425 (the Pokemon Center), 3 (19,46) -> zone 426; scr 0850 script 3 (zone 425): msg 467 #0 'Many people have come here from Black City...'",
+]
+notes = "White only; Black's twin is black/79-black-city. Offline the resident count stays low [INFERENCE], so the level script leaves the four resident flags set. Route 15 is reached the way white/34 goes. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+
+[start]
+from = "32-n-castle-zekrom-ghetsis-credits"
+# post-game: switch to 34's end once it lands
+
+[expect]
+map = 424
+flags = ["0x277", "0x278", "0x279", "0x27A"]

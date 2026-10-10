@@ -1,0 +1,24 @@
+# Egg hatch: 68's Patrat egg hatches while the player paces Route 3 (the hatch bot).
+# Start: Route 3 (zone 321, 68's end), the egg in the party -> end: Route 3, Patrat lv 1 hatched.
+title = "Egg hatch: the Day Care's Patrat egg"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 40000   # [INFERENCE] frames, not measured
+refs = [
+  "scr 0856 script 1 @0x0146 Cmd0EC (the Day-Care Man's egg; 68)",
+  "msg 420 #5 (scr 0776, the Route 18 breeder): 'Pokemon Eggs hatch when you carry them with you.'",
+  "zone 321 (Route 3)",
+]
+notes = "Hatching is the field's step counter, no script [INFERENCE]. The post-game alternative is the Larvesta (636) egg from the breeder in the Route 18 house (zone_event 388 object 0 (3,5) -> scr 0776 script 1: @0x0081 Cmd10F var 0x8010, 0x27C, 0 [INFERENCE: give egg], @0x00A8 SetFlag 0x13B), a much longer hatch."
+
+[start]
+from = "68-day-care-deposit-and-egg"
+
+[expect]
+map = 321
+party_size = 5
+save = [
+  "not any(m[\"is_egg\"] for m in s[\"party\"])",
+  "any(m[\"species\"] == 504 and m[\"level\"] == 1 for m in s[\"party\"])",
+]

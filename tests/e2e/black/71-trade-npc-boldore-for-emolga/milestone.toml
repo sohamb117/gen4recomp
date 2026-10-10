@@ -1,0 +1,27 @@
+# In-game trade: the man in the Route 7 house trades his Emolga for the player's Boldore. No in-game trade gives a
+# trade-evolution Pokemon (Basculin, Emolga, Rotom, Munchlax, Cottonee/Petilil), so trade evolution needs a link.
+# Start: Route 7 (zone 337) below the house door (102,260) -> end: the house (zone 343), Emolga in the party.
+title = "Trades: Route 7's Boldore for Emolga (trade evolution needs a link)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 5000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 337 warp 1 (102,260) -> zone 343 warp 0 (5,9)",
+  "zone_event 343 object 0 gfx 0x40 (4,5) -> scr 0686 script 1: @0x006E BufferSpeciesName Emolga / Boldore, msg 375 #0, @0x00A9 Cmd107 (the party pick), @0x00CA Cmd1BF var 0x8022, 4, var 0x8020 [INFERENCE: trade 4's checks], @0x00F1 Cmd1BE 4, var 0x8020 (the trade), @0x0107 SetFlag 0x15B",
+  "scr 0686 script 4 (zone 343 level script): GetVersion -> var 0x4020 = 0xD1 (Black) / 0x81 (White) [INFERENCE: not the trade's species, which are fixed]",
+  "the other in-game trades (Cmd1BE): scr 0046 (Nacrene, zone 23: Cottonee/Petilil by version), scr 0202 trades 2/3 (Driftveil, zone 101: Minccino -> Basculin), scr 0764 trade 6 (Route 15, zone 382: Ditto -> Rotom), scr 0830 trade 5 (Undella, zone 415: Cinccino -> Munchlax)",
+]
+notes = "P2: trade evolution (the plan's P0 item) cannot run offline in B/W: every NPC trade receives a Pokemon that does not evolve by trade (refs), and Karrablast/Shelmet and the rest need a link trade (tests/link). This system proves the NPC trade itself, as platinum/75 does. The recipe makes the Boldore the man asks for in Patrat's slot and places the player outside the house."
+
+[start]
+from = "21-mistralton-skyla-jet-badge"
+recipe = "start.recipe"
+
+[expect]
+map = 343
+flags = ["0x15B"]
+save = [
+  "any(m[\"species\"] == 587 for m in s[\"party\"])",
+  "not any(m[\"species\"] == 525 for m in s[\"party\"])",
+]

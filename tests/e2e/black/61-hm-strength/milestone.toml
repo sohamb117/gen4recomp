@@ -1,0 +1,28 @@
+# HM04 Strength: the man in a Nimbasa house gives HM04 (an NPC gift, not an item ball), then a Strength carrier
+# pushes Route 16's boulder (the nearest one east of Nimbasa).
+# Start: Nimbasa City (zone 62) below the house door (399,455) -> end: Route 16 (zone 383), the boulder (482,439) moved.
+title = "HM04 Strength: Nimbasa's gift and Route 16's boulder"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 12000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 62 warp 8 (399,455) -> zone 88 warp 0; zone_event 88 warp 0 (6,10) 3x1 -> zone 62 warp 8",
+  "zone_event 88 object 0 gfx 0x1E (4,3) -> scr 0176 script 1: @0x002C var 0x8000 = 0x1A7 (HM04), 0x8002 = 0x122 (the gift's flag), @0x0054 CallStd 2800 (scr 0862 script 1: give item, @0x00CA SetFlag var 0x8002)",
+  "msg 70 #0 (scr 0130, Nimbasa): 'There was a guy who gave me an HM called Strength. For free...'",
+  "zone_event 62 warp 2 (447,437) -> zone 92 (Nimbasa Gate) warp 1; zone_event 383 warp 1 (454,437) -> zone 92 warp 0",
+  "zone_event 383 object 10 gfx 0x2003 (482,439) -> script id 10000 -> scr 0867 script 1 (boulder): @0x008D Cmd116 var 0x8010, 0x46 (Strength), msg 280 #6 YES/NO, @0x00FB SetFlag 0x964, msg 280 #10/#11",
+  "other boulders (script id 10000): zone_event 152 object 13 (20,35), 319 object 2 (750,653), 208, 216, 224, 226, 231 (x4), 333-335, 346, 370, 378, 387",
+]
+notes = "16's end save is in zone 63 (the Gym); the recipe places the player outside zone 88's door and swaps Tepig (slot 4) for a Strength carrier (no bot teaches an HM from the Bag). Flag 0x964 is the 'Strength is active' flag the boulder script sets [INFERENCE: cleared on a zone change, so the save must be on Route 16]."
+
+[start]
+from = "16-nimbasa-elesa-bolt-badge"
+recipe = "start.recipe"
+
+[expect]
+map = 383
+flags = ["0x122", "0x964"]
+save = [
+  "any(i[\"item\"] == 423 for i in s[\"bag\"][\"tms_hms\"])",
+]

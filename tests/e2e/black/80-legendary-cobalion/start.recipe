@@ -1,0 +1,6 @@
+# On 28's end save (party: Darmanitan 68, Pansage, Blitzle, Unfezant (Fly), Tepig, Sawk; bag: Master Ball, Ultra Ball x10):
+# a Surf carrier (Basculin (550) lv 50: Surf 57, Aqua Jet 453, Crunch 242) for Route 6's water in Blitzle's slot, and a
+# Strength carrier (Conkeldurr (534) lv 50: Strength 70, Hammer Arm 359, Stone Edge 444) for the cave's boulders in
+# Tepig's (scr 0867 scripts 3 and 1: Cmd116 0x39 / 0x46)
+party-set 2 550 50 57 453 242
+party-set 4 534 50 70 359 444

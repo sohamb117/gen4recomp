@@ -1,0 +1,3 @@
+# On 22's end save: a Surf (57) and Waterfall (127) carrier, Basculin (550) lv 45 with Aqua Jet (453), Crunch (242),
+# in place of Blitzle (slot 2) (scr 0867 scripts 3 and 7: Cmd116 0x39 / 0x7F).
+party-set 2 550 45 57 127 453 242

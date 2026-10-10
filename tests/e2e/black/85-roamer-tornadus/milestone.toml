@@ -1,0 +1,26 @@
+# The roaming Tornadus (Black) starts: after the Legend Badge the old woman on Route 7 takes the player into her
+# house; leaving it, the storm and the legendary fly off and roam. Mid-story, not post-game.
+# Start: the Opelucid Gate (zone 132, 27's end) -> end: Route 7 (zone 337) after the storm, 0x40C0 = 3.
+title = "Roamer: Tornadus starts roaming (Black)"
+status = "planned"
+priority = "P1"
+version = "black"
+estimate = 12000   # [INFERENCE] frames, not measured
+refs = [
+  "scr 0264 (Opelucid Gate, 27) @0x01AA SetVar 0x40C0 1, @0x01B0 SetFlag 0x96F",
+  "zone_event 337 trigger 0 (130,243) 1x5 var 0x40C0 == 1 -> scr 0674 script 6 (msg 369 #5 'My, my... That Pokemon has come again, too.'); zone_event 337 warp 2 (130,242) -> zone 344 (the house)",
+  "scr 0688 script 1 (zone 344): msg 376 #2-#11 (the soup, the storm Pokemon), @0x0175 SetVar 0x40C0 2, @0x017B ClearFlag 0x96F",
+  "zone 337 level type 1: var 0x40C0 == 2 -> scr 0674 script 7 (the storm): @0x051A GetVersion; Black: @0x0531 Cmd069 gfx 0x71, @0x05B5 Cmd136 7, @0x05E0 Cmd04A 9; @0x0604 msg 369 #10 'Whew, what a storm!'; @0x0629 SetVar 0x40C0 3; @0x0642 Cmd1BC 1 [INFERENCE: the roamer starts]",
+  "the chain's 27-34 end saves hold 0x40C0 = 1 (no story milestone visits the house)",
+]
+notes = "Black only (White's twin: white/85-roamer-thundurus); the scripts are one file in both ROMs, branching on GetVersion. The roamer's position is not in np_save5's dump; [expect] is the scripts' state. Catching the roamer is a random chase (P2, not here)."
+
+[start]
+from = "27-opelucid-drayden-legend-badge"
+
+[expect]
+map = 337
+flags_clear = ["0x96F"]
+
+[expect.vars]
+"0x40C0" = 3

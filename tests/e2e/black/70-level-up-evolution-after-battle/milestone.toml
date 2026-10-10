@@ -1,0 +1,25 @@
+# Level-up evolution at the end of a battle: a Lillipup at the base of lv 15 wins wild battles until lv 16 and
+# evolves into Herdier after the battle that levels it (auto_battle allows evolution).
+# Start: Nimbasa City (zone 63, 16's end) -> end: Route 16 (zone 383), slot 0 Herdier lv 16.
+title = "Level-up evolution after battle: Lillipup -> Herdier"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 9000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 62 warp 2 (447,437) -> zone 92; zone_event 383 warp 1 (454,437) -> zone 92 warp 0 (Route 16's grass east of Nimbasa)",
+  "Lillipup (506) evolves at lv 16 into Herdier (507) [INFERENCE: species data, not decoded]",
+]
+notes = "np_save5 set-mon makes the Pokemon at the base experience of its level (README, Black and White), so one battle's experience levels it [INFERENCE: 402 exp, Medium Slow lv 15 -> 16]; the lead gets strong moves so auto_battle wins fast. Evolution is code, no script."
+
+[start]
+from = "16-nimbasa-elesa-bolt-badge"
+recipe = "start.recipe"
+
+[expect]
+map = 383
+battles = 1
+save = [
+  "s[\"party\"][0][\"species\"] == 507",
+  "s[\"party\"][0][\"level\"] >= 16",
+]

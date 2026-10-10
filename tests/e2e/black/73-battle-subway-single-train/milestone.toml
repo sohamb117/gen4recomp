@@ -1,0 +1,23 @@
+# The Battle Subway's Single Train: register three Pokemon at the platform, ride, win seven battles in a row.
+# Start: Nimbasa City (zone 62) below the Gear Station door (422,458) -> end: the Single Train platform (zone 67).
+title = "Battle Subway: one seven-win Single Train set"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 60000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 62 warp 7 (422,458) -> zone 66 (Gear Station) warp 8; zone_event 66 warp 0 -> zone 67 (the Single Train platform; bg 8 msg 71 #18 'Platform for Single Trains')",
+  "zone_event 67 object 0 gfx 0x44 (12,15) -> script id 10333 -> scr 0882 script 4 (the Single Train clerk): @0x15F1 SetVar 0x4130 1; scr 0882 @0x2993 Warp zone 75 (the train) (7,0,4)",
+  "scr 0882 script 8: @0x1EC1/@0x1EC7 SetVar 0x4130 4, 0x4132 1 / @0x1EDB 0x4132 2; @0x1EB3-@0x1EBB SetFlag 0x28E, 0x267, 0x268",
+  "zone_event 75 level type 1: var 0x4132 == 1 / 2 -> scr 0150 scripts 2 / 3; zone_event 76 level type 1: var 0x4133 == 1 -> scr 0152 script 6",
+  "scr 0132 script 3 (msg 71 #2/#3, flag 0x960): before the clear only the Single, Double and Multi lines run; the Super lines need the clear",
+]
+notes = "Reachable from 15 on (Nimbasa). The train's rules (three Pokemon, levels set to 50, no duplicates) are code [INFERENCE]; the recipe gives three strong lv 50 members. The streak record is not in np_save5's dump, so [expect] is seven battles and the return to the platform [INFERENCE: 0x4130's value after a finished set is PHASE2's to read]."
+
+[start]
+from = "16-nimbasa-elesa-bolt-badge"
+recipe = "start.recipe"
+
+[expect]
+map = 67
+battles = 7

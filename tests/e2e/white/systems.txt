@@ -1,0 +1,31 @@
+# White side systems: Black's shared dirs (version = "both") played on White, and White's own: the twins of the
+# systems that chain from White's 27/32 end saves, White Forest (79) and the roaming Thundurus (85).
+# Exclusions and the Xtransceiver: black/systems.txt.
+../black/60-hm-cut
+../black/61-hm-strength
+../black/62-hm-surf
+../black/63-hm-fly
+../black/64-hm-waterfall
+../black/65-hm-dive
+66-postgame-looker-super-rod-national-dex
+67-fishing-super-rod
+../black/68-day-care-deposit-and-egg
+../black/69-egg-hatch
+../black/70-level-up-evolution-after-battle
+../black/71-trade-npc-boldore-for-emolga
+../black/72-pc-storage-box-moves
+../black/73-battle-subway-single-train
+../black/74-hall-of-fame-pc
+../black/75-musical
+../black/76-entralink
+../black/77-royal-unova
+../black/78-tv-programs
+79-white-forest
+../black/80-legendary-cobalion
+../black/81-legendary-terrakion
+../black/82-legendary-virizion
+../black/83-legendary-kyurem
+../black/84-legendary-volcarona
+85-roamer-thundurus
+../black/86-legendary-landorus
+../black/87-dreamyard-musharna

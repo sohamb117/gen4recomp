@@ -1,0 +1,24 @@
+# The Pokemon Storage System on a Pokemon Center PC: deposit the Cut carrier into BOX 1, then move it to BOX 2.
+# Start: Striaton City, Fennel's lab (zone 10, 09's end) -> end: the Striaton Pokemon Center (zone 8) at the PC.
+title = "PC storage: deposit and a box-to-box move"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 6000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 6 warp 0 (781,587) -> zone 8 (the Pokemon Center); zone_event 8 warp 0 (6,19) 3x1 -> zone 6",
+  "zone_event 8 bg 0-2 (12,5) (12,6) (13,6) -> script id 2108 -> scr 0855 script 9 (the PC)",
+  "scr 0868 script 1 (script id 10090, the PC menu): @0x0059 msg 314 #0 'booted up the PC', @0x0072 msg 314 #1 'Which PC should be accessed?', @0x0270 msg 314 #13 'The Pokemon Storage System was accessed.', @0x0226 Cmd132 var 0x8021 [INFERENCE: the storage screen]",
+]
+notes = "09's party is Tepig, Pansage, Blitzle and the Cut carrier Patrat (504), the first end save with more than one Pokemon after the Striaton Center opens (06 has only the starter). The box screen is touch/menu UI the probe does not report (PHASE2: press schedule). np_save5 dumps the boxes (s['boxes'][i]['mons'])."
+
+[start]
+from = "09-fennel-dreamyard-plasma-munna"
+
+[expect]
+map = 8
+party_size = 3
+save = [
+  "s[\"boxes\"][0][\"count\"] == 0",
+  "s[\"boxes\"][1][\"count\"] == 1 and s[\"boxes\"][1][\"mons\"][0][\"species\"] == 504",
+]

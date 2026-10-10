@@ -1,0 +1,4 @@
+# On 32's end save: a Strength carrier for the Giant Chasm's boulders (zone_event 231, scr 0867 script 1 Cmd116 0x46),
+# Conkeldurr (534) lv 60 with Strength (70), Hammer Arm (359), Stone Edge (444), in place of Blitzle (slot 2).
+# No location line: flag 0x966 overrides it (milestone notes).
+party-set 2 534 60 70 359 444

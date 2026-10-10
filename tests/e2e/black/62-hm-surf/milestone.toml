@@ -1,0 +1,22 @@
+# HM03 Surf in the field: a Surf carrier crosses Route 6's water to the Mistralton Cave entrance (HM03 came from
+# Cheren at Twist Mountain in 22).
+# Start: Icirrus City (zone 113, 22's end) -> end: Mistralton Cave (zone 333) through Route 6's warp (156,361).
+title = "HM03 Surf: Route 6 to Mistralton Cave"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 15000   # [INFERENCE] frames, not measured
+refs = [
+  "scr 0396 @0x029D var 0x8000 = 0x1A6, @0x02A9 CallStd 2805 HM03 (Cheren, Twist Mountain; 22)",
+  "scr 0867 script 3 (script id 10002, run by the field facing water): @0x019E Cmd116 var 0x8010, 0x39 (Surf), msg 280 #13 'The water is a deep blue... surf on it?', msg 280 #15 (not with a partner), @0x020B msg 280 #14 'used Surf!'",
+  "zone_event 331 warp 1 (156,361) 1x2 -> zone 333 (Mistralton Cave) warp 0 (1,6)",
+  "zone 107 (Mistralton City), Route 6 zones 331/332/336",
+]
+notes = "The water tiles are terrain attributes the probe does not name (README, Black and White): [INFERENCE] the Route 6 river stands between the road and the cave entrance (156,361). Surf sets nothing in the save; the proof is reaching zone 333. The recipe swaps Blitzle (slot 2) for a Surf carrier."
+
+[start]
+from = "22-twist-mountain-cheren-icirrus"
+recipe = "start.recipe"
+
+[expect]
+map = 333

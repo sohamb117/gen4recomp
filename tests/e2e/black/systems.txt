@@ -1,0 +1,46 @@
+# Black side systems (tests/e2e/PLAN.md): standalone skeletons drafted from the decoded scripts (tools/bw_script.py).
+# Each starts from a story milestone's end save (or another system's: 67 <- 66, 69 <- 68, 81 <- 80, 82 <- 81), plus a
+# start.recipe where a carrier, a location or a party is needed. version = "both" dirs serve White too
+# (white/systems.txt); dirs that chain from 27 or 32 (version-specific story dirs) have White twins, and 79/85
+# branch on the version (Black City / White Forest, Tornadus / Thundurus).
+# Post-game ones start from 34-postgame-poke-transfer-lab's end (the Poke Transfer Lab), except 66, which plays the scenes right after the credits from 32's end.
+60-hm-cut
+61-hm-strength
+62-hm-surf
+63-hm-fly
+64-hm-waterfall
+65-hm-dive
+66-postgame-looker-super-rod-national-dex
+67-fishing-super-rod
+68-day-care-deposit-and-egg
+69-egg-hatch
+70-level-up-evolution-after-battle
+71-trade-npc-boldore-for-emolga
+72-pc-storage-box-moves
+73-battle-subway-single-train
+74-hall-of-fame-pc
+75-musical
+76-entralink
+77-royal-unova
+78-tv-programs
+79-black-city
+80-legendary-cobalion
+81-legendary-terrakion
+82-legendary-virizion
+83-legendary-kyurem
+84-legendary-volcarona
+85-roamer-tornadus
+86-legendary-landorus
+87-dreamyard-musharna
+
+# Not systems here:
+# - The Xtransceiver: offline it only takes the story's scripted calls, which the chain plays (04: Route 1, scr 0634
+#   script 5 @0x061F; 22: Route 7, scr 0674 script 9 @0x0071, Cmd155 6, 0x40E7 = 1 in 22's end save); calls between
+#   players need a second DS (wireless).
+# - Trade evolution: no NPC trade gives a Pokemon that evolves by trade (71's refs); a link trade is tests/link's.
+# - Online-only, excluded: the Dream World and Game Sync (the Entree Forest's Pokemon), the GTS, the Global Link,
+#   the Wi-Fi Club (scr 0869, the Pokemon Center's 2F clerk: msg 470 #0 'Nintendo Wi-Fi Connection'), the Battle
+#   Subway's Wi-Fi Train (msg 71 #21), Entralink missions in another player's world (scr 0558 script 4) and the
+#   Mystery Gift deliveries (scr 0886, the Pokemon Center's delivery girl, flag 0x291).
+# - Event-only, excluded: Victini (Liberty Garden, zone 237, scr 0474 @0x0208: needs the Liberty Pass from a
+#   distribution) and Zoroark (Lostlorn Forest, zone 385, scr 0770 @0x0351: needs the event shiny legendary beasts in the party).

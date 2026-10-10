@@ -1,0 +1,25 @@
+# The Royal Unova cruise (post-game, evenings, once a day): the $1,000 ticket at Castelia's pier, boarding, and the
+# ship's trainers.
+# Start: the player's room (zone 391, 32's end) -> end: aboard the Royal Unova (zone 52).
+title = "The Royal Unova"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 20000   # [INFERENCE] frames, not measured
+refs = [
+  "zone_event 39 object 0 gfx 0x4C (18,16) -> scr 0078 script 2 (the pier clerk): @0x0258 unless flag 0x960 -> @0x043D msg 44 #13 'now in preparation'; @0x026B flag 0xAC2 set -> msg 44 #11 'closed for the day'; @0x027E Cmd0CD var 0x8021 unless == 2 -> @0x0411 msg 44 #2 'operates only in the evening'",
+  "scr 0078 L_04DD msg 44 #4 'The ticket is $1,000'; @0x02FC Cmd0FB var 0x8022, 0x3E8 (the money check); L_0478 @0x0478 Cmd0FA 0x3E8 (pay), @0x04C3 SetVar 0x4135 0, @0x04C9 SetFlag 0xAC2, @0x04D1 Warp zone 52 (29,29)",
+  "zone_event 52 objects 0-14 (crew and passengers) -> scr 0104 scripts 2-20; zone 52 level scripts: type 2 -> scr 0104 script 27, type 4 -> script 30; scr 0104 script 1 @0x0137 msg 57 #71 'This cruise ship will arrive in Castelia City shortly'",
+  "zone 28 warps 3/16 -> zone 39 (the pier) from Castelia's rail waterfront (black/14 refs)",
+]
+notes = "Post-game (flag 0x960), evenings only (Cmd0CD == 2 [INFERENCE: time of day, 2 = evening]) and once a day (flag 0xAC2, a daily flag [INFERENCE]): the run's clock is set to an evening. Castelia's waterfront is a rail map (the rail bot). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+
+[start]
+from = "34-postgame-poke-transfer-lab"
+
+[run]
+clock = "2026-10-09 19:00:00"   # [INFERENCE] see notes
+
+[expect]
+map = 52
+flags = ["0xAC2"]

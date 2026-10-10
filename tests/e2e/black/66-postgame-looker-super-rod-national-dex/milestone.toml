@@ -1,0 +1,32 @@
+# The first post-game scenes at home: Looker of the International Police gives the Super Rod (B/W's only rod), then
+# Cedric Juniper outside upgrades the Pokedex to the National Mode.
+# Start: the player's room (zone 391, 32's end) -> end: Nuvema Town (zone 389) after Cedric's scene, 0x4080 = 5.
+title = "After the credits: Looker's Super Rod and the National Pokedex"
+status = "planned"
+priority = "P0"
+version = "black"
+estimate = 9000   # [INFERENCE] frames, not measured
+refs = [
+  "scr 0866 @0x047F SetVar 0x4085 2 (the game clear); zone_event 390 level type 1: var 0x4085 == 2 -> scr 0780 script 4",
+  "scr 0780 script 4: msg 429 #24-#33 (Looker), @0x05E8 CallStd 2805 Super Rod (item 447), msg 429 #34-#41, @0x06D8 SetVar 0x4085 3, @0x06DE SetFlag 0x2E0, @0x06E2 SetVar 0x400F 0x14D, @0x06E8 SetVar 0x4080 4, @0x06EE/@0x06F2 ClearFlag 0x201/0x202",
+  "zone_event 390 warp 0 (5,10) -> zone 389; zone 389 level type 1: var 0x4080 == 4 -> scr 0778 script 15 (Cedric: msg 428 #45)",
+  "scr 0778 script 15: @0x0B09 msg 428 #49 'Pokedex was upgraded with the National Mode!', @0x0B15 Cmd1D0 [INFERENCE: the National Mode], @0x0BC8 SetVar 0x4080 5, @0x0BCE/@0x0BD2 SetFlag 0x201/0x202, @0x0BD6 ClearFlag 0x200",
+]
+notes = "The Super Rod's giver is Looker, in the player's own house, right after the credits; the National Pokedex comes from Cedric Juniper (the professor's father), not Professor Juniper. Both scenes are forced level scripts, so black/34 plays them on its way (its steps note 0x4085 3 and 0x4080 5) but checks neither the rod nor the Pokedex: this system does. National Dex listed P1 in the plan; merged here (P0) because it is the same two scenes and the rod is fishing's prerequisite. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+
+[start]
+from = "32-n-castle-reshiram-ghetsis-credits"
+# post-game: switch to 34's end once it lands
+
+[expect]
+map = 389
+flags = ["0x2E0", "0x201", "0x202"]
+flags_clear = ["0x200"]
+save = [
+  "s[\"pokedex\"][\"national\"]",
+  "any(i[\"item\"] == 447 for i in s[\"bag\"][\"key_items\"])",
+]
+
+[expect.vars]
+"0x4085" = 3
+"0x4080" = 5

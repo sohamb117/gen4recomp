@@ -1,0 +1,26 @@
+# The Entralink alone: the C-Gear's ENTRALINK takes the player to the island; the guide's first-visit scene runs and
+# the Entree Forest gate is there. Missions in someone's world need a second game (wireless).
+# Start: Striaton City, Fennel's lab (zone 10, 09's end: the C-Gear) -> end: the Entralink (zone 279), 0x40C3 = 1.
+title = "The Entralink (offline): first visit"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 6000   # [INFERENCE] frames, not measured
+refs = [
+  "scr 0020 @0x048F msg 15 #9 'obtained the C-Gear!' (Fennel; 09)",
+  "zone 279 (Entralink): level type 1 on entry: var 0x4000 == 0 -> scr 0558 script 3 (@0x004A SetVar 0x4000 1); var 0x40C3 == 0 -> scr 0558 script 8",
+  "scr 0558 script 8: msg 303 #11-#13 ('This is an island called the Entralink...'), @0x01F0 SetVar 0x40C3 1",
+  "zone_event 279 object 0 (29,30) -> scr 0558 script 5 (guide: msg 303 #3-#7); objects 1/2 (14,29)/(48,29) -> scripts 6/7 (the bridges: msg 303 #16 'a search will start to find a person to connect with'); object 5 (34,22) -> script 10 (the Entree Forest)",
+  "zones 280-288 (Entree Forest): zone_event 280 triggers 0-3 on var 0x4111 == 0 -> scr 0895 scripts 5-8",
+  "zones 289-316: the Entralink's copies of the region (black/34's refs) where missions run in another player's world",
+]
+notes = "Entering the Entralink is the C-Gear's touch button [INFERENCE: no script warps to zone 279]. P1 keeps only what runs alone: the island, the guide, the Entree Forest gate; the missions (scr 0558 script 4: @0x00FC SetFlag 0x97F, @0x015C SetFlag 0x981, the Pass Power) need a connected game, and the Entree Forest's Pokemon come from the Dream World (online)."
+
+[start]
+from = "09-fennel-dreamyard-plasma-munna"
+
+[expect]
+map = 279
+
+[expect.vars]
+"0x40C3" = 1
