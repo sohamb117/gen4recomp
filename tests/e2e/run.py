@@ -68,6 +68,7 @@ STEP_COMMON = {"do", "max", "shot", "note"}
 STEP_KEYS = {
     "press": {"keys", "hold", "gap", "times", "until"},
     "tap": {"x", "y", "hold", "gap", "times"},
+    "drag": {"from", "to", "steps", "gap"},
     "wait_frames": {"n"},
     "wait_map": {"map"},
     "wait_field": set(),
@@ -101,7 +102,7 @@ STEP_KEYS = {
     "walk_onto": {"behavior", "max", "on_battle", "on_text", "run"},
     "rail": {"keys", "x", "z", "near", "map", "run", "script", "on_battle"},
 }
-STEP_REQUIRED = {"press": {"keys"}, "push": {"dir"}, "smash": {"dir"}, "repeat": {"until", "steps"}, "walk_onto": {"behavior"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
+STEP_REQUIRED = {"press": {"keys"}, "drag": {"from", "to"}, "push": {"dir"}, "smash": {"dir"}, "repeat": {"until", "steps"}, "walk_onto": {"behavior"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
                  "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},
                  "heal": {"x", "z"}, "grind": {"x", "z", "level"}, "fly": {"map"},
                  "steps": {"route"}, "moves": {"dirs"}, "hatch": {"x", "z"}, "field_move": {"move"},

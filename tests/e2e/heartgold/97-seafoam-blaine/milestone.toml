@@ -1,25 +1,802 @@
 # Proves the Kanto gym Blaine (Volcano Badge) in the Seafoam Islands.
 # Start: 96-pewter-brock's end -> end: MAP_SEAFOAM_ISLANDS_CINNABAR_GYM after the leader, BADGE_VOLCANO.
 title = "Kanto gym: Blaine (Volcano Badge) in the Seafoam Islands"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 51410
 refs = [
   "scr_seq_0015_D11R0106.s:20-58 (OnTransition: hour hiding of FLAG_HIDE_SEAFOAM_GYM_BLAINE only with BADGE_EARTH / rematch)",
   "scr_seq_0015_D11R0106.s:83-92 (CheckBadge BADGE_VOLCANO, TRAINER_LEADER_BLAINE_BLAINE :88, GiveBadge BADGE_VOLCANO)",
   "TRAINER_LEADER_BLAINE_BLAINE (259, include/constants/trainers.h:264)",
   "scr_seq_0815_T09.s:85-166 (Blue on Cinnabar: FLAG_UNK_128; VAR_UNK_4135 >= 7 -> FLAG_UNK_129, FLAG_HIDE_VIRIDIAN_CITY_OLD_MAN_OUTSIDE_GYM_LOCKED set, ..._UNLOCKED cleared :163-166) - feeds 98",
 ]
-notes = "Gate: Surf from Pallet down Route 21 to Cinnabar, then Route 20 east to the Seafoam Islands; Blaine's gym is inside Seafoam (MAP_SEAFOAM_ISLANDS_CINNABAR_GYM) [INFERENCE: the Seafoam route may need Strength/boulders; check tools/hg_map.py]. After the 7th Kanto badge talk to Blue on Cinnabar (VAR_UNK_4135 >= 7) to unlock the Viridian Gym for 98. surf/walk_to proven; Strength (field_move) unproven on HG/SS. [INFERENCE] estimate."
+notes = "From Pewter (96) south: Route 2 east (the Cut trees (1034,137), (1041,218)), the southeast gatehouse, Viridian (the ledge at (1035,267) is jumped south), the Route 1 gatehouse, Pallet, then Surf down Route 21 to Cinnabar (its Pokemon Center heals) and east along Route 20 to the Seafoam Islands' east mouth (1127,501) (the legs keep off the trainers standing on the static route: (1077,502), (1085,502), (1111,504)). Blaine's gym is warp 4 (55,24) of Seafoam 1F. Its trainers stand in the rock maze's gaps and step aside once beaten, some to the side the player's facing picks (scr_seq_0015_D11R0106.s _002.._007); a search over tools/hg_map.py's maze with each one's moved tile gives Lowell (object 2) from (15,18), Cary (5) from (19,14), Merle (7) from (8,12), Blaine from (13,13) (talk_to plans only the side an object faces, so each is a walk_to, a turn and A). Volcano Badge: Kanto badge 6. Then Fly to Cinnabar: Blue (object 0, (1036,494)) after the 7th Kanto badge opens the Viridian Gym (98: the gym old man flags swap). Measured: HG 49618 frames, SS 51410; the sheets show Brock's gym (start), Blaine's cave gym after the badge, Cinnabar after Blue, Blaine's Magcargo lv54 against Typhlosion lv70."
 
 [start]
 from = "96-pewter-brock"
 
 [run]
-frames = 30000
+frames = 77200
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 27
+note = "out of Pewter Gym"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 96
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1040
+z = 96
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1040
+z = 85
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1054
+z = 85
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1054
+z = 87
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1055
+z = 87
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1055
+z = 101
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1054
+z = 101
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1054
+z = 102
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1051
+z = 102
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1051
+z = 107
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1050
+z = 107
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1050
+z = 116
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1043
+z = 116
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1043
+z = 136
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1034
+z = 136
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1034
+z = 140
+on_battle = "flee"
+hm = true
+
+[[step]]
+do = "walk_to"
+x = 1046
+z = 140
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1046
+z = 150
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1050
+z = 150
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1050
+z = 158
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 158
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 165
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1048
+z = 165
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1048
+z = 182
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1050
+z = 182
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1050
+z = 183
+note = "Route 2's southeast gatehouse"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 12
+note = "-> Route 2 (1050,192)"
+
+[[step]]
+do = "walk_to"
+x = 1049
+z = 193
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1049
+z = 204
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1049
+z = 216
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1044
+z = 216
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1044
+z = 218
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1036
+z = 218
+on_battle = "flee"
+hm = true
+
+[[step]]
+do = "walk_to"
+x = 1036
+z = 220
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1029
+z = 220
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1029
+z = 225
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1032
+z = 225
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1032
+z = 240
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1032
+z = 256
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1035
+z = 256
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1035
+z = 272
+on_battle = "flee"
+note = "below the ledge at (1035,267) (south into Viridian)"
+
+[[step]]
+do = "walk_to"
+x = 1035
+z = 279
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1036
+z = 279
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1036
+z = 280
+note = "Viridian's Route 1 gatehouse"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 12
+note = "-> Route 1 (1036,288)"
+
+[[step]]
+do = "walk_to"
+x = 1036
+z = 298
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1036
+z = 303
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 303
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 314
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 325
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 337
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 339
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1038
+z = 339
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1038
+z = 356
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 356
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 364
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1033
+z = 365
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1033
+z = 368
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 368
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 383
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 398
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 413
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 428
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 443
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 458
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1037
+z = 473
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1034
+z = 473
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1034
+z = 479
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1028
+z = 479
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1028
+z = 481
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1027
+z = 481
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1027
+z = 492
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1027
+z = 503
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1038
+z = 503
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "heal"
+x = 1039
+z = 502
+note = "Cinnabar's Pokemon Center"
+
+[[step]]
+do = "walk_to"
+x = 1041
+z = 504
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1041
+z = 506
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1042
+z = 506
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1042
+z = 508
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1051
+z = 508
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1051
+z = 507
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1054
+z = 507
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1054
+z = 505
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1056
+z = 505
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1056
+z = 503
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1061
+z = 503
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1061
+z = 502
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1073
+z = 502
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1089
+z = 502
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1105
+z = 502
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1105
+z = 503
+surf = true
+on_battle = "flee"
+note = "Route 20: the intermediate goals keep off the trainers standing on the static route (1077,502), (1085,502), (1111,504)"
+
+[[step]]
+do = "walk_to"
+x = 1116
+z = 503
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1126
+z = 503
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1126
+z = 502
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1127
+z = 502
+surf = true
+note = "ashore below the Seafoam Islands' east cave mouth"
+
+[[step]]
+do = "walk_to"
+x = 1127
+z = 501
+note = "the cave mouth (Route 20 warp 0) -> 1F (55,28)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEAFOAM_ISLANDS_1F"
+
+[[step]]
+do = "walk_to"
+x = 55
+z = 24
+note = "Blaine's gym (warp 4) -> (14,25)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEAFOAM_ISLANDS_CINNABAR_GYM"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 18
+note = "beside Scientist Lowell (object 2, (15,17)): steps north. The gym's trainers stand in the rock maze's gaps and step aside once beaten, some to a side the player's facing picks (scr_seq_0015_D11R0106.s _002.._007); a search over tools/hg_map.py's maze with each one's moved tile gives 2, 5, 7 from these tiles (talk_to plans only the side an object faces)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 4
+gap = 10
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 14
+note = "beside Super Nerd Cary (object 5, (20,14)): steps east"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 4
+gap = 10
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "beside Super Nerd Merle (object 7, (9,12)): steps south"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 4
+gap = 10
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 13
+note = "beside Blaine (object 0, (13,12))"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 4
+gap = 10
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_BLAINE_BLAINE"
+
+[[step]]
+do = "advance_text"
+note = "the Volcano Badge"
+shot = "after-badge"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 25
+note = "out of the gym"
+
+[[step]]
+do = "walk_to"
+x = 55
+z = 28
+note = "out of the Seafoam Islands -> Route 20 (1127,502)"
+
+[[step]]
+do = "fly"
+map = "MAP_CINNABAR_ISLAND"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Blue (1036,494): after the 7th Kanto badge (VAR_UNK_4135 >= 7) he opens the Viridian Gym (98)"
+
+[[step]]
+do = "advance_text"
+shot = "after-blue"
 
 [expect]
-map = "MAP_SEAFOAM_ISLANDS_CINNABAR_GYM"
-badge = ["BADGE_VOLCANO"]
+map = "MAP_CINNABAR_ISLAND"
 battles = 1
+flags = ["FLAG_HIDE_VIRIDIAN_CITY_OLD_MAN_OUTSIDE_GYM_LOCKED"]
+flags_clear = ["FLAG_HIDE_VIRIDIAN_CITY_OLD_MAN_OUTSIDE_GYM_UNLOCKED"]
+save = ['s["trainer"]["kanto_badge_mask"] >> 6 & 1']

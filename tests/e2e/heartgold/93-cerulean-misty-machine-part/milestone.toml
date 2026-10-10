@@ -3,7 +3,7 @@
 title = "Kanto gym: Misty (Cascade Badge), the Route 24 Rocket and the Machine Part"
 priority = "P2"
 version = "both"
-estimate = 100500
+estimate = 90972
 refs = [
   "scr_seq_0760_T04GYM0101.s:97-127 (the gym's Rocket scene: FLAG_HIDE_CERULEAN_GYM_ROCKET, ClearFlag FLAG_HIDE_ROUTE_24_ROCKET/ROUTE_25_MISTY/MISTYS_BOYFRIEND, VAR_SCENE_ROUTE_24_ROCKET 1)",
   "scr_seq_0215_R24.s:79-103 (TRAINER_TEAM_ROCKET_GRUNT_24, FLAG_HIDE_ROUTE_24_ROCKET, VAR_SCENE_ROUTE_24_ROCKET 3)",
@@ -13,14 +13,14 @@ refs = [
   "TRAINER_LEADER_MISTY_MISTY (254, include/constants/trainers.h:259)",
   "Power Plant (optional here, needed by 101/103 and the Route 11/12 Snorlax): zone_event 441_R10R0202 coord 0 (14,16) VAR_SCENE_ROUTE_10_POWER_PLANT 1; scr_seq_0196_R10R0202.s:24-56 (manager: ITEM_MACHINE_PART taken, FLAG_RESTORED_POWER :54, ITEM_TM57)",
 ]
-notes = "Scouted on HeartGold (core-proposal). Order: Misty is absent and the gym empty until the Power Plant manager (Route 10, object 6) tells of the stolen Machine Part; leaving the plant crosses the coord (14,16) where the policeman's call clears FLAG_HIDE_CERULEAN_GYM_ROCKET; the gym's Rocket then runs out to Route 24, whose bridge coord brings him over: beaten (VAR_SCENE_ROUTE_24_ROCKET 3), he names the gym; Misty's Route 25 date coord (1418,40..42) sends her home (VAR_UNK_4088 2, the gym's trainers back). The Machine Part is the stop sign object 8 (3,10) (VAR_SCENE_ROUTE_24_ROCKET 4). Misty (10,1) stands at the top of stairs that are climbed from (10,6) northward ((10,3) from the side does not step up: heights); A at (10,2). Then the part goes back to the manager (FLAG_RESTORED_POWER; the plant becomes MAP_ROUTE_10_POWER_PLANT_REPAIRED, which the Magnet Train, the EXPN Card/Snorlax and 103's roaming Lati need). Ways: out of Saffron Gym by the panels in reverse (30 -> 29, 28 -> 27, 15 -> 16, 2 -> 1); Route 5's gatehouse; Cerulean's east edge is crossed by a press (walk_to's probe window ends there); Route 9 to the plant: the legs that worked when scouting, the tree (1422,148) cut, the river surfed from (1434,141). Sailor Eddie paces the gym's one-tile east column and blocks it once beaten, so the pool is surfed to (11,8). Boost (boost.recipe): Typhlosion learns ThunderPunch and SolarBeam (the scouting run lost to Misty's Water team with the Fire lead). Badge: Cascade is Kanto badge 1 (kanto_badge_mask bit 1). Measured: HG 90291 frames, SS 100500; the sheets show Sabrina's room (start), Route 25's date spot, the gym pool by the Machine Part, Misty after the badge, the Power Plant restored, Misty's Golduck lv49 against Typhlosion lv65."
+notes = "Scouted on HeartGold (core-proposal). Order: Misty is absent and the gym empty until the Power Plant manager (Route 10, object 6) tells of the stolen Machine Part; leaving the plant crosses the coord (14,16) where the policeman's call clears FLAG_HIDE_CERULEAN_GYM_ROCKET; the gym's Rocket then runs out to Route 24, whose bridge coord brings him over: beaten (VAR_SCENE_ROUTE_24_ROCKET 3), he names the gym; Misty's Route 25 date coord (1418,40..42) sends her home (VAR_UNK_4088 2, the gym's trainers back). The Machine Part is the stop sign object 8 (3,10) (VAR_SCENE_ROUTE_24_ROCKET 4). Misty (10,1) stands at the top of stairs that are climbed from (10,6) northward ((10,3) from the side does not step up: heights); A at (10,2). Then the part goes back to the manager (FLAG_RESTORED_POWER; the plant becomes MAP_ROUTE_10_POWER_PLANT_REPAIRED, which the Magnet Train, the EXPN Card/Snorlax and 103's roaming Lati need). Ways: out of Saffron Gym by the panels in reverse (30 -> 29, 28 -> 27, 15 -> 16, 2 -> 1); Route 5's gatehouse; Cerulean's east edge is crossed by a press (walk_to's probe window ends there); Route 9 to the plant: the legs that worked when scouting, the tree (1422,148) cut, the river surfed from (1434,141). Sailor Eddie paces the gym's one-tile east column and blocks it once beaten, so the pool is surfed to (11,8). Boost (boost.recipe): Typhlosion learns ThunderPunch and SolarBeam (the scouting run lost to Misty's Water team with the Fire lead). Badge: Cascade is Kanto badge 1 (kanto_badge_mask bit 1). Measured: HG 90972 frames, SS 90789 (a first SS run took 100500); the sheets show Sabrina's room (start), Route 25's date spot after Misty left, 'Ross picked up the black item that was by the pool.', Misty after the badge, the Power Plant restored, Misty's Golduck lv49 against Typhlosion lv65."
 
 [start]
 from = "92-saffron-sabrina"
 boost = "boost.recipe"
 
 [run]
-frames = 150800
+frames = 136500
 
 [[step]]
 do = "walk_to"
@@ -403,7 +403,7 @@ note = "Misty's date coord (1418,40..42): she leaves for the gym (VAR_UNK_4088 2
 
 [[step]]
 do = "advance_text"
-shot = "date"
+shot = "after-date"
 
 [[step]]
 do = "fly"
@@ -444,8 +444,14 @@ id = 8
 note = "the Machine Part (3,10)"
 
 [[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "past the sign's first line: the Machine Part found"
+shot = "machine-part-found"
+
+[[step]]
 do = "advance_text"
-shot = "machine-part"
 
 [[step]]
 do = "walk_to"
@@ -476,7 +482,7 @@ note = "TRAINER_LEADER_MISTY_MISTY"
 [[step]]
 do = "advance_text"
 note = "the Cascade Badge"
-shot = "badge"
+shot = "after-badge"
 
 [[step]]
 do = "walk_to"

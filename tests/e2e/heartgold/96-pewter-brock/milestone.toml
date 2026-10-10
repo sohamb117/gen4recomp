@@ -1,10 +1,9 @@
 # Proves the Kanto gym Brock (Boulder Badge) and the Pewter wing.
 # Start: 95-fuchsia-janine's end -> end: MAP_PEWTER_GYM after the leader, BADGE_BOULDER.
 title = "Kanto gym: Brock (Boulder Badge) and the Pewter wing"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 39982
 refs = [
   "scr_seq_0752_T03GYM0101.s:14-62 (OnTransition: hour hiding of FLAG_HIDE_PEWTER_GYM_BROCK only with BADGE_EARTH / rematch)",
   "scr_seq_0752_T03GYM0101.s:94-98 (TRAINER_LEADER_BROCK_BROCK, GiveBadge BADGE_BOULDER)",
@@ -12,15 +11,408 @@ refs = [
   "zone_event 048_T03 object 0 obj_T03_gsoldman1 (1069,94) -> 000; scr_seq_0750_T03.s:44-79 (HG: ITEM_SILVER_WING, FLAG_UNK_094, ClearFlag FLAG_HIDE_WHIRL_ISLAND_LUGIA; SS: ITEM_RAINBOW_WING, FLAG_UNK_093, ClearFlag FLAG_HIDE_BELL_TOWER_HO_OH) - feeds 100",
   "scr_seq_0741_T02.s:42-46 (Viridian OnTransition: FLAG_UNLOCKED_WEST_KANTO)",
 ]
-notes = "Gate: Pewter via Viridian (fly from Vermilion is not yet possible: Viridian is reached on foot from Pallet/Route 1 or from Route 22/the League gate) and Route 2 [INFERENCE]. Pick up the version's wing from the Pewter old man on the way (100 uses it). No RTC. Bots proven. [INFERENCE] estimate."
+notes = "Way to Pewter, scouted on HeartGold (core-proposal): Route 22's reception-gate policeman sends the player back (scr_seq R22R0101_001, VAR_UNK_4121), and the sea way to Cinnabar/Pallet is closed by the Seafoam Islands (97), so the way is Diglett's Cave from Route 11, whose mouth Snorlax blocks. Lavender's radio director (object 5) gives the EXPN Card once the power is back (93, scr_seq_0775_T05R0701.s); the Pokegear radio (X, POKEGEAR (46,155), the radio tab (82,178)) is tuned by dragging the tuner from where the chain left it to (128,48), the Poke Flute's spot (sTuningHitboxes_KantoEXPN 8/9, station 4); the music keeps playing in the field, and A on Snorlax (1354,304) starts WildBattle SNORLAX 50; fleeing sets FLAG_SNORLAX_MEET and hides it. Diglett's Cave: the ladder (4,4) -> (34,86), the corners tools/hg_map.py --solve gives to the ladder (10,38) -> (43,6), the exit (37,10) -> Route 2 east (1048,138); the Cut tree (1034,137); Pewter. The old man (1069,94) gives the version's wing (HG: Silver Wing, SS: Rainbow Wing; HG's chain already holds a Rainbow Wing). Brock (object 1, (7,4)): the Boulder Badge, Kanto badge 0. Measured: HG 37831 frames, SS 39982; the sheets show Janine's gym (start), the radio station after the EXPN Card, the radio tuned to the Poke Flute, Pewter after the old man's wing, Brock's gym after the badge, his Graveler lv51 against Typhlosion lv69."
 
 [start]
 from = "95-fuchsia-janine"
 
 [run]
-frames = 30000
+frames = 60000
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 25
+note = "out of Fuchsia Gym"
+
+[[step]]
+do = "fly"
+map = "MAP_LAVENDER"
+
+[[step]]
+do = "walk_to"
+x = 1429
+z = 235
+
+[[step]]
+do = "walk_to"
+x = 1429
+z = 234
+note = "Lavender's radio station"
+
+[[step]]
+do = "talk_to"
+id = 5
+note = "the director (9,3): the EXPN Card (FLAG_RESTORED_POWER from 93)"
+
+[[step]]
+do = "advance_text"
+shot = "after-expn-card"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 12
+
+[[step]]
+do = "fly"
+map = "MAP_VERMILION"
+
+[[step]]
+do = "walk_to"
+x = 1297
+z = 299
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1302
+z = 299
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1302
+z = 303
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1308
+z = 303
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1308
+z = 310
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1322
+z = 310
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1322
+z = 309
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1331
+z = 309
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1331
+z = 304
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1353
+z = 304
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1353
+z = 303
+on_battle = "flee"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 40
+note = "beside Route 11's Snorlax (1354,304), in front of Diglett's Cave"
+
+[[step]]
+do = "tap"
+x = 46
+y = 155
+gap = 80
+note = "POKEGEAR"
+
+[[step]]
+do = "tap"
+x = 82
+y = 178
+gap = 80
+note = "the radio app"
+
+[[step]]
+do = "drag"
+from = [129, 130]
+to = [128, 48]
+gap = 120
+note = "grab the tuner where the chain left it (bottom of the dial) and drag it to the Poke Flute station (128,48) (sTuningHitboxes_KantoEXPN, station 4 -> RADIO_STATION_POKE_FLUTE)"
+shot = "poke-flute"
+
+[[step]]
+do = "tap"
+x = 232
+y = 178
+gap = 90
+note = "close the Pokegear; the flute music keeps playing"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 2
+
+[[step]]
+do = "walk_to"
+x = 1353
+z = 304
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 4
+gap = 10
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "Snorlax wakes (RadioMusicIsPlaying: scr_seq_0197_R11.s)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+flee = true
+note = "SPECIES_SNORLAX lv50, fled (FLAG_SNORLAX_MEET; it is gone)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 1354
+z = 302
+note = "Diglett's Cave -> (4,6)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 4
+note = "the ladder -> (34,86)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 34
+z = 72
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 33
+z = 72
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 33
+z = 69
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 69
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 62
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 62
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 61
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 61
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 60
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 60
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 53
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 53
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 39
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 39
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 38
+note = "the ladder -> (43,6)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 10
+note = "out to Route 2's east side (1048,138)"
+
+[[step]]
+do = "walk_to"
+x = 1048
+z = 140
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1034
+z = 140
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1034
+z = 134
+on_battle = "flee"
+hm = true
+
+[[step]]
+do = "walk_to"
+x = 1040
+z = 134
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1040
+z = 120
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1040
+z = 112
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1044
+z = 112
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1044
+z = 107
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1051
+z = 107
+on_battle = "flee"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Pewter's old man (1069,94): the version's wing (100)"
+
+[[step]]
+do = "advance_text"
+shot = "after-wing"
+
+[[step]]
+do = "heal"
+x = 1048
+z = 106
+note = "Pewter's Pokemon Center"
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 93
+
+[[step]]
+do = "walk_to"
+x = 1047
+z = 92
+note = "Pewter Gym"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Brock (7,4)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_BROCK_BROCK"
+
+[[step]]
+do = "advance_text"
+note = "the Boulder Badge"
+shot = "after-badge"
 
 [expect]
 map = "MAP_PEWTER_GYM"
-badge = ["BADGE_BOULDER"]
-battles = 1
+battles = 2
+flags = ["FLAG_GOT_EXPN_CARD", "FLAG_SNORLAX_MEET"]
+save = [
+  's["trainer"]["kanto_badge_mask"] & 1',
+  '("Silver Wing" if s["game"] == "heartgold" else "Rainbow Wing") in [i["name"] for i in s["bag"]["key_items"]]',
+]

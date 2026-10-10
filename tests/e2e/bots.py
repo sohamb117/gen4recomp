@@ -120,6 +120,18 @@ def bot_tap(s, step, ctx):
         _tap(s, (int(step["x"]), int(step["y"])), hold, gap)
 
 
+def bot_drag(s, step, ctx):
+    """A touch held from `from` = [x, y] to `to` = [x, y], moved in `steps` (default 20) even stretches of 2 frames,
+    then held 10 frames at `to` and released for `gap` (default 60): a slider or dial that follows the stylus only
+    once it is grabbed (HG/SS's Pokegear radio tuner, radio/overlay_101_021F4F34.c)."""
+    (x0, y0), (x1, y1) = (int(v) for v in step["from"]), (int(v) for v in step["to"])
+    n = _int(step, "steps", 20)
+    for k in range(n + 1):
+        s.run(2, None, touch=(x0 + (x1 - x0) * k // n, y0 + (y1 - y0) * k // n))
+    s.run(10, None, touch=(x1, y1))
+    s.run(_int(step, "gap", 60))
+
+
 def bot_wait_frames(s, step, ctx):
     s.run(_int(step, "n", 60))
 
@@ -3085,6 +3097,7 @@ def bot_repeat(s, step, ctx):
 BOTS = {
     "press": bot_press,
     "tap": bot_tap,
+    "drag": bot_drag,
     "wait_frames": bot_wait_frames,
     "wait_map": bot_wait_map,
     "wait_field": bot_wait_field,

@@ -292,6 +292,7 @@ Names resolve per game as the lab recipes do (Platinum `MAP_HEADER_*`, `FLAG_*`,
 | `wait_reset` | opt. `max` | until the game resets itself (Platinum's ClearGame after the credits: `OS_ResetSystem`; the port reboots the guest and the `resets` status goes up); the game ends there: no end save or probe, the end shot is the rebooted game |
 | `press` | `keys` (`A`, `UP+B`), opt. `hold`, `gap`, `times` | raw buttons (B answers a field YES/NO as NO) |
 | `tap` | `x`, `y`, opt. `hold`, `gap`, `times` | bottom-screen touch |
+| `drag` | `from` = [x, y], `to` = [x, y], opt. `steps`, `gap` | a bottom-screen touch held and moved from `from` to `to` (a dial that follows the stylus once grabbed: HG/SS's Pokegear radio tuner) |
 | `wait_frames` | `n` | idle |
 | `schedule` | `file`, opt. `frames` | a recorded `.press` schedule, frames relative to the step |
 | `save` | | in-game save now |

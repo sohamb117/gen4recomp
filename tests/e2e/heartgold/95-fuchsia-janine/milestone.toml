@@ -3,20 +3,20 @@
 title = "Kanto gym: Janine (Soul Badge)"
 priority = "P2"
 version = "both"
-estimate = 93545
+estimate = 97645
 refs = [
   "scr_seq_0809_T08GYM0101.s:20-88 (OnTransition: CheckBadge BADGE_SOUL, hour hiding of FLAG_HIDE_FUCHSIA_GYM_JANINE after the badge)",
   "scr_seq_0809_T08GYM0101.s:515-520 (TRAINER_LEADER_JANINE_JANINE, GiveBadge BADGE_SOUL)",
   "TRAINER_LEADER_JANINE_JANINE (257, include/constants/trainers.h:262)",
   "scr_seq_0197_R11.s:44-58 / scr_seq_0199_R12.s:193-206 (Snorlax WildBattle 50, FLAG_SNORLAX_MEET): Route 11/12 blocked without the Poke Flute radio (FLAG_GOT_EXPN_CARD, scr_seq_0775_T05R0701.s:21-49)",
 ]
-notes = "Gate: none beyond Saffron and Lavender. HG/SS's Snorlax sleeps by Route 12's west gate ((1411,306), FLAG_HIDE_ROUTE_12_SNORLAX, scr_seq_0199_R12.s), off the pier, so the way south needs no Poke Flute: Saffron's east gate -> Route 8 -> Lavender -> Route 12's pier -> Route 13 -> Route 14 (Cut trees (1352..1353,411..414)) -> Route 15 -> the Fuchsia gatehouse. Route 13 is a fenced maze whose bottom corridor Camper object 6 (1372,374) closes: its legs were found by walking (row 368, 370, 372). Route 8's Cut trees (1375,246) and (1384,242) stand on the route's corners. The legs are hg_world.py route's corners (static land data; walk_to plans each leg on the probe), with surf allowed where the route left the pier. Janine's gym hides the leader among four disguised trainers (objects 6..9 dressed as her); the real one is object 2 (7,16), spoken to from (7,17). Soul Badge: Kanto badge 4. Measured: HG 80140 frames, SS 93545 (a first SS run ran out of a 90000 budget at Janine); the sheets show Erika's dais (start), Janine's gym after the badge, her Crobat lv47 against Typhlosion lv69."
+notes = "Gate: none beyond Saffron and Lavender. HG/SS's Snorlax sleeps by Route 12's west gate ((1411,306), FLAG_HIDE_ROUTE_12_SNORLAX, scr_seq_0199_R12.s), off the pier, so the way south needs no Poke Flute: Saffron's east gate -> Route 8 -> Lavender -> Route 12's pier -> Route 13 -> Route 14 (Cut trees (1352..1353,411..414)) -> Route 15 -> the Fuchsia gatehouse. Route 13 is a fenced maze whose bottom corridor Camper object 6 (1372,374) closes: its legs were found by walking (row 368, 370, 372). Route 8's Cut trees (1375,246) and (1384,242) stand on the route's corners. The legs are hg_world.py route's corners (static land data; walk_to plans each leg on the probe), with surf allowed where the route left the pier. Janine's gym hides the leader among four disguised trainers (objects 6..9 dressed as her); the real one is object 2 (7,16), spoken to from (7,17). Soul Badge: Kanto badge 4. Measured: HG 80571 frames, SS 97645 (earlier runs 80140/93545; a first SS run ran out of a 90000 budget at Janine); the sheets show Erika's dais (start), Janine's gym after the badge, her Crobat lv47 against Typhlosion lv69."
 
 [start]
 from = "94-celadon-erika"
 
 [run]
-frames = 140400
+frames = 146500
 
 [[step]]
 do = "walk_to"
@@ -499,7 +499,7 @@ note = "TRAINER_LEADER_JANINE_JANINE"
 [[step]]
 do = "advance_text"
 note = "the Soul Badge"
-shot = "badge"
+shot = "after-badge"
 
 [expect]
 map = "MAP_FUCHSIA_GYM"

@@ -153,7 +153,7 @@ note = "TRAINER_LEADER_SABRINA_SABRINA"
 [[step]]
 do = "advance_text"
 note = "the Marsh Badge"
-shot = "badge"
+shot = "after-badge"
 
 [expect]
 map = "MAP_SAFFRON_GYM"
