@@ -4,10 +4,9 @@
 # Start: 19's end MAP_OLIVINE outside the gym (269,239) -> end: MAP_SAFARI_ZONE_ENTRANCE_INTERIOR after the exit
 # prompt, VAR_UNK_4057 2, FLAG_SYS_SAFARI clear, a Safari Ball mon in the party.
 title = "Safari Zone: Baoba's gate, entry, Safari Balls and a catch"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 18000
+estimate = 31788
 refs = [
   "scr_seq_0684_T26_hdr.s:15 (OnFrame VAR_SCENE_LIGHTHOUSE_JASMINE 2 -> 003); scr_seq_0911_T26.s:35-40 (FLAG_UNK_0F5, VAR_UNK_4057 1, PhoneCall PHONE_CONTACT_BAOBA, VAR_SCENE_LIGHTHOUSE_JASMINE 3) - played in 19",
   "zone_event 250_D48R0101 (Cliff Edge Gate) warp 0 (40,22) -> MAP_CIANWOOD, warp 1 (18,46) -> MAP_ROUTE_47; zone_event 146_R47 warp 0 (149,384) -> the gate, warps 1-3 -> MAP_CLIFF_CAVE",
@@ -25,19 +24,243 @@ refs = [
   "src/application/pokegear/phone/scripts/phone_scripts_baoba.c:9-45 (Baoba's later calls move VAR_UNK_4057 to 4/7: not needed for entry)",
   "include/constants/flags.h:1713 FLAG_SYS_SAFARI; include/constants/vars.h:102 VAR_UNK_4057; include/constants/items.h:274 ITEM_SAFARI_BALL 5",
 ]
-notes = "Gate: VAR_UNK_4057 1 from Baoba's call when Olivine's OnFrame runs after Jasmine leaves the Lighthouse (19); entering the gate building then plays Baoba's intro once (4057 2). The receptionist (4,4) takes 500 (money from the chain is ample [INFERENCE]) and refuses a full party with a full PC: 19's party is 5 (18's boost.recipe: CYNDAQUIL line, Togepi, SCYTHER, FLAAFFY, PELIPPER), so the catch joins the party. No RTC or badge gate besides that. Route: Fly to Cianwood (proven fly bot), Cliff Edge Gate north, Route 47 to Route 48 and the Safari Zone Gate [INFERENCE: Route 47 -> Route 48 runs through Cliff Cave and the overworld connection; whether Surf, Strength or Rock Smash is needed on the way is not traced - tools/hg_map.py and hg_world.py need the built map_matrix.naix]. Catch: walk_to laps in the entrance area's grass (encounters per safari area: src/safari_zone.c) until a wild battle; the safari menu's BALL sits in auto_battle's FIGHT slot (battle_input.c:1890-1893), as Platinum's 79-great-marsh-safari does - unproven on HG/SS. Leave: walk into the (79,100) warp, YES at the exit prompt. Bots proven on HG/SS: fly, walk_to, talk_to, advance_text, auto_battle; unproven here: auto_battle as the safari thrower (repeat until caught or the mon flees), field_move if a Rock Smash/Strength turns out to be on the path. [INFERENCE] estimate 18000: ~1500 fly, ~6000 Route 47/48, ~1500 Baoba, ~1500 entry, ~5000 grass and throws, ~1500 exit. Scouted on HeartGold 19's end (gap-fill): Fly Cianwood, Cliff Edge Gate (171,347) -> (18,46) -> Route 47 (149,385) works; tools/hg_world.py route 149 385 88 294 --surf: (146,389) (144,396) (102,396) (102,370) (103,367) (99,354) (101,339) (88,339) (88,294) (no route on foot). walk_to with those vias stepped into Cliff Cave's mouth (130,385) (an unexpected warp); through the cave (6,7) -> (4,22) -> (6,29) it comes out at (130,382) on the upper ledge, and from there the planner walks the raised x 103 column (behaviour 0x70, height 208 in the step layers) beside the x 102 water and cannot surf off it (5 west edges learned blocked), so the water lane x 102 must be entered from the south at water height ((144,396) -> (102,396)), avoiding the cave mouths (avoid = [[130,385],[131,391],[130,381]]). The Safari Zone Gate fly point (FLYPOINT_SAFARI, flag 30) needs a first visit."
+notes = "Gate: VAR_UNK_4057 1 from Baoba's call when Olivine's OnFrame runs after Jasmine leaves the Lighthouse (19); entering the gate building then plays Baoba's intro once (4057 2). The receptionist (4,4) takes 500 and refuses a full party with a full PC: 19's party is 5, so the first catch joins the party (a later one goes to BOX 1). No RTC or badge gate. Route (scouted, gap-fill): Fly to Cianwood, heal (19 ends with the party mostly fainted), the Cliff Edge Gate (171,347) -> (18,46) -> Route 47 (149,385); on foot there is no way north (tools/hg_world.py route ... no route; --surf gives the corners (144,396) (102,396) (102,370) (99,354) (101,339) (88,339) (88,294)), but walk_to from below steps into the Cliff Cave mouths, and from the upper ledge it cannot surf off the raised x 103 column (height 208). The way that works: Cliff Cave's mouth (130,385), its ladder (4,5) entered moving north (the arrival at (4,22) then steps off to (4,21); a walk that ended on (4,4) pushing south arrived facing south and LADDER_DOWN (4,22) took it back up), warp 2 (6,29) to the upper ledge (130,382), then walk_to (103,367) with surf and the cave mouths avoided, then the corners north over Route 48 to the building (88,293). The receptionist is talked to across the counter from (4,6) (talk_to finds no free tile beside him). The exterior's grass (79..82,84..88) is behaviour 0x02 in the probe (hg_map.py's land data shows none there). The safari action menu is BALL (128,80) / BAIT / RUN / MUD (src/battle/battle_input.c:1890-1893); a Pokemon may flee, so the run meets three encounters and throws at each. The quick save is refused inside (FLAG_SYS_SAFARI: pc_hg_field.c save_allowed), so no dump steps there. Measured: HeartGold 31041 frames (GEODUDE lv17 caught; two fled), SoulSilver 31788 (GEODUDE lv17 and MAGNEMITE caught, the second in BOX 1)."
 
 [start]
 from = "19-amphy-secretpotion-jasmine-mineral"
 
 [run]
-frames = 27000
+frames = 47700
+
+[[step]]
+do = "fly"
+map = "MAP_CIANWOOD"
+
+[[step]]
+do = "heal"
+x = 187
+z = 369
+note = "Cianwood's Pokemon Center: 19 ends with the party mostly fainted"
+
+[[step]]
+do = "walk_to"
+x = 171
+z = 347
+on_battle = "flee"
+note = "Cianwood's north exit (warp 6) -> the Cliff Edge Gate"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CLIFF_EDGE_GATE"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 46
+on_battle = "flee"
+note = "the gate's west door (warp 1) -> Route 47 (149,385)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_47"
+
+[[step]]
+do = "walk_to"
+x = 130
+z = 385
+surf = true
+on_battle = "flee"
+max = 20000
+note = "Cliff Cave's mouth (warp 1): the way up to the ledge over the falls"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CLIFF_CAVE"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 6
+on_battle = "flee"
+note = "below the ladder (4,5) (LADDER_NORTH 0x3C under 0x3D (4,4))"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1], ["U", 1]]
+on_battle = "flee"
+note = "onto (4,5) and north: warp 3 down to (4,22), facing north, so the arrival steps off to (4,21); a walk that ended on (4,4) pushing south arrived facing south and the LADDER_DOWN (4,22) took it straight back up (the second run)"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 29
+on_battle = "flee"
+note = "warp 2 -> Route 47's upper ledge (130,382)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_47"
+
+[[step]]
+do = "walk_to"
+x = 103
+z = 367
+surf = true
+avoid = [[130, 385], [131, 391], [130, 381]]
+on_battle = "flee"
+max = 12000
+note = "west along the ledge and the river, past the cave mouths, to the lane's top (103,367)"
+
+[[step]]
+do = "walk_to"
+x = 88
+z = 294
+surf = true
+via = [[99, 354], [101, 339], [88, 339]]
+on_battle = "flee"
+max = 20000
+note = "north over Route 48 to the Safari Zone Gate's building (tools/hg_world.py route corners)"
+
+[[step]]
+do = "walk_to"
+x = 88
+z = 293
+note = "the building's door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SAFARI_ZONE_ENTRANCE_INTERIOR"
+
+[[step]]
+do = "advance_text"
+shot = "baoba"
+note = "OnFrame VAR_UNK_4057 1: Baoba's intro, 'the Owner Aptitude Test?' YES (A) (scr_seq_0119_D47R0101.s:159-192)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 6
+face = "up"
+interact = true
+note = "across the counter from the receptionist (4,4)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_SAFARI_ZONE_ENTRANCE_EXTERIOR"
+max = 3000
+note = "'Welcome to the Safari Zone!' YES, 'That'll be 500, please!', 30 Safari Balls, the walk out"
+
+[[step]]
+do = "wait_field"
+shot = "safari"
+
+[[step]]
+do = "walk_to"
+x = 80
+z = 86
+note = "the grass north of the entrance (79..82,84..88, behaviour 0x02 in the probe)"
+
+[[step]]
+do = "repeat"
+until = "in_battle=1"
+max_rounds = 100
+steps = [
+  { do = "press", keys = "right", hold = 24, gap = 24 },
+  { do = "press", keys = "left", hold = 24, gap = 24 },
+]
+note = "laps in the grass until a wild Pokemon appears (encounter 1 of 3)"
+
+[[step]]
+do = "repeat"
+until = "in_battle=0"
+max_rounds = 150
+steps = [
+  { do = "wait_frames", n = 20, if = "ui=0" },
+  { do = "tap", x = 128, y = 80, gap = 40, if = "ui=1" },
+  { do = "press", keys = "a", hold = 2, gap = 40, if = "ui=0" },
+]
+shot = "battle-1"
+note = "BALL (the safari menu's big top button, src/battle/battle_input.c:1890-1893) whenever the menu waits; A through the throws, the Pokedex page, the nickname question; the Pokemon may flee instead"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "repeat"
+until = "in_battle=1"
+max_rounds = 100
+steps = [
+  { do = "press", keys = "right", hold = 24, gap = 24 },
+  { do = "press", keys = "left", hold = 24, gap = 24 },
+]
+note = "laps in the grass until a wild Pokemon appears (encounter 2 of 3)"
+
+[[step]]
+do = "repeat"
+until = "in_battle=0"
+max_rounds = 150
+steps = [
+  { do = "wait_frames", n = 20, if = "ui=0" },
+  { do = "tap", x = 128, y = 80, gap = 40, if = "ui=1" },
+  { do = "press", keys = "a", hold = 2, gap = 40, if = "ui=0" },
+]
+shot = "battle-2"
+note = "BALL (the safari menu's big top button, src/battle/battle_input.c:1890-1893) whenever the menu waits; A through the throws, the Pokedex page, the nickname question; the Pokemon may flee instead"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "repeat"
+until = "in_battle=1"
+max_rounds = 100
+steps = [
+  { do = "press", keys = "right", hold = 24, gap = 24 },
+  { do = "press", keys = "left", hold = 24, gap = 24 },
+]
+note = "laps in the grass until a wild Pokemon appears (encounter 3 of 3)"
+
+[[step]]
+do = "repeat"
+until = "in_battle=0"
+max_rounds = 150
+steps = [
+  { do = "wait_frames", n = 20, if = "ui=0" },
+  { do = "tap", x = 128, y = 80, gap = 40, if = "ui=1" },
+  { do = "press", keys = "a", hold = 2, gap = 40, if = "ui=0" },
+]
+shot = "battle-3"
+note = "BALL (the safari menu's big top button, src/battle/battle_input.c:1890-1893) whenever the menu waits; A through the throws, the Pokedex page, the nickname question; the Pokemon may flee instead"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 79
+z = 100
+note = "back into the building (dynamic warp)"
+
+[[step]]
+do = "advance_text"
+shot = "left"
+note = "'You still have Safari Balls left. Leave the Safari Zone?' YES (scr_seq_0119_D47R0101.s:22-53)"
 
 [expect]
 map = "MAP_SAFARI_ZONE_ENTRANCE_INTERIOR"
 flags_clear = ["FLAG_SYS_SAFARI"]
-battles = 1
+battles = 3
 save = [
-  'any(m["ball"]["id"] == 5 for m in s["party"])',  # a Safari Ball catch (ITEM_SAFARI_BALL 5)
+  'any(m["ball"]["id"] == 5 for m in s["party"]) or any(b["count"] for b in s["boxes"])',  # a Safari Ball catch (ITEM_SAFARI_BALL 5) joins the party as its 6th; one after a failed first lands in the empty boxes (box mons carry no ball in the dump)
   's["vars"]["16471"] >= 2',  # VAR_UNK_4057 (0x4057): 2 after Baoba's intro; a Baoba call during the run may move it on (4/7)
 ]
