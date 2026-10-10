@@ -189,6 +189,14 @@ static void now(int *y, int *mo, int *d, int *h, int *mi, int *s)
     }
 }
 
+/* The same time for host C that has no RTC library of its own to ask (the
+ * Poké Transfer child's Download Play client, games/ndsrec/pc/src/
+ * pc_pt_fw_os.c). */
+void pc_rtc_now_fields(int *y, int *mo, int *d, int *h, int *mi, int *s)
+{
+    now(y, mo, d, h, mi, s);
+}
+
 /* The raw image the library decodes, written where the ARM7 writes it. */
 static void write_raw(int date_half, int time_half)
 {

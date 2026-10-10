@@ -123,20 +123,51 @@ $(OBJ)/ndsrec/pc_bw_%.o: HOST_CFLAGS += $(if $(filter white,$(VER)),-DPC_BW_VER_
 HOST_CFLAGS += $(if $(BW),-DPC_BW_ROMVIEW)
 $(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
-# Poké Transfer's child (VER=poketransfer): booted as a Download Play child
-# (pc/src/pc_pt_child.c; pc_card_rom.c leaves the slot-1 card's header where
-# a child finds it under PC_MB_CHILD), with its own ROM header from the
-# image, generated here (the ROM's bytes, never committed).
+# Poké Transfer's child (VER=poketransfer), a Download Play child: its
+# station first receives it from the parent (pc/src/pc_pt_dlplay.c, over
+# NitroSDK 4.2's own ARM9 WM library and multiboot child, compiled here), checks
+# it against the image this build recompiled (pc_pt_image.c, generated: hashes
+# and sizes only), and boots it; pc_card_rom.c leaves the slot-1 card's header
+# where a child finds it under PC_MB_CHILD. pc/src/pc_pt_child.c has what the
+# child does not link.
 ifeq ($(VER),poketransfer)
 HOST_CFLAGS += -DPC_MB_CHILD
 PT_IMAGE_C := $(BUILD)/gen/pc_pt_image.c
-$(PT_IMAGE_C): $(ROM) $(NDSREC)/ndsrec.py
+$(PT_IMAGE_C): $(ROM) $(NDSREC)/ndsrec.py $(NDSREC)/nds.py
 	@mkdir -p $(dir $@)
-	$(PYTHON) $(NDSREC)/ndsrec.py header-c $(ROM) --name pc_pt_child_header --out $@
+	$(PYTHON) $(NDSREC)/ndsrec.py mbimage-c $(ROM) --prefix pc_pt_child --out $@
 $(OBJ)/ndsrec/pc_pt_image.o: $(PT_IMAGE_C)
 	@mkdir -p $(dir $@)
 	$(CC) $(WASM_ABI) $(OPT) -c -o $@ $<
-MY_OBJS += $(OBJ)/ndsrec/pc_pt_child.o $(OBJ)/ndsrec/pc_pt_image.o
+# The SDK pieces of the firmware's Download Play client: the ARM9 WM library,
+# the multiboot child and what it shares with the parent side (whose parent
+# half stays unreferenced), the owner information, and the SHA-1
+# (pc_dgt.c). WMi_StartMP is renamed because the child's own recompiled WM
+# library has that name (a primitive). mb_child.c's one lvalue cast, which
+# only mwcc takes (`pCwork = NULL;`, pCwork being `((MB_CommCWork *)mbc)`),
+# is compiled from a copy that says `mbc = NULL;`. The multiboot sources
+# receive the ROM header at the NITRO address (pc_pt_fw_mb.h).
+PTFW_CFLAGS = $(HOST_CFLAGS) -I$(HOST_NSDK)/libraries/mb/include -I$(HOST_NSDK)/libraries/wm/src \
+              -I$(HOST_NSDK)/libraries/wm/include \
+              -DWMi_StartMP=ptfw_WMi_StartMP
+PTFW_SRCS := wm/src/wm_system wm/src/wm_standard wm/src/wm_mp wm/src/wm_sync wm/src/wm_etc \
+             mb/src/mb_wm_base mb/src/mb_common mb/src/mb_block mb/src/mb_gameinfo mb/src/mb_fileinfo \
+             os/src/os_ownerInfo
+PTFW_OBJS := $(addprefix $(OBJ)/ptfw/,$(addsuffix .o,$(PTFW_SRCS))) $(OBJ)/ptfw/mb/src/mb_child.o
+$(OBJ)/ptfw/mb/%.o: PTFW_CFLAGS += -include $(MYPC)/src/pc_pt_fw_mb.h
+$(OBJ)/ptfw/%.o: $(HOST_NSDK)/libraries/%.c $(BRIDGE_DEPS) $(HOST_PRE)
+	@mkdir -p $(dir $@)
+	$(call BRIDGE_COMPILE,$(PTFW_CFLAGS) $(HOST_DEPFLAGS))
+PTFW_MB_CHILD_C := $(BUILD)/ptfw-src/mb_child.c
+$(PTFW_MB_CHILD_C): $(HOST_NSDK)/libraries/mb/src/mb_child.c $(SELF)
+	@mkdir -p $(dir $@)
+	grep -q '^		pCwork = NULL;$$' $< && sed 's/^		pCwork = NULL;$$/		mbc = NULL;/' $< > $@.tmp && mv $@.tmp $@
+$(OBJ)/ptfw/mb/src/mb_child.o: $(PTFW_MB_CHILD_C) $(BRIDGE_DEPS) $(HOST_PRE)
+	@mkdir -p $(dir $@)
+	$(call BRIDGE_COMPILE,$(PTFW_CFLAGS) -I$(HOST_NSDK)/libraries/mb/src $(HOST_DEPFLAGS))
+$(OBJ)/ndsrec/pc_pt_dlplay.o $(OBJ)/ndsrec/pc_pt_fw_os.o: HOST_CFLAGS += -I$(HOST_NSDK)/libraries/mb/include
+MY_OBJS += $(addprefix $(OBJ)/ndsrec/,pc_pt_child.o pc_pt_dlplay.o pc_pt_fw_os.o pc_pt_image.o) \
+           $(PTFW_OBJS) $(HOST_OBJ)/pc/pc_dgt.o
 BRIDGE_PLAIN_OBJS += $(OBJ)/ndsrec/pc_pt_image.o
 endif
 

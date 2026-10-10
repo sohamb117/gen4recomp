@@ -773,6 +773,16 @@ int main(int argc, char **argv)
         pc_os_reset_boot();
     }
 
+#if defined(PC_MB_CHILD)
+    /* A Download Play child (games/ndsrec VER=poketransfer): the firmware's
+     * download from its parent comes first, and places the program it then
+     * boots (games/ndsrec/pc/src/pc_pt_dlplay.c). */
+    {
+        extern void pc_mb_child_download(void);
+        pc_mb_child_download();
+    }
+#endif
+
     NitroMain();
 
     /* NitroMain's main loop never returns on hardware; reaching here is

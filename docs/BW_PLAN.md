@@ -984,31 +984,55 @@ Black and White; White's overlay 107 sits at 0x021EE760, the same size).
 - Overlay 230 stays opaque. Nothing found here calls it, but a run would need `PC_TRACE_OVERLAYS=1` to confirm no
   new caller.
 
-### Built: the child as its own guest (2026-10-10)
+### Built: the child station and its Download Play (2026-10-10)
 
-`games/ndsrec` with `VER=poketransfer BW_ROM=<Black or White ROM>` extracts `dl_rom/child_r_eng.srl`
-(`ndsrec.py extract`, into build/) and recompiles it like Black and White's static:
-- 3,011 functions (2,987 ARM, 24 Thumb), every one translated cleanly by armrec;
+**The child as a guest.** `games/ndsrec` with `VER=poketransfer BW_ROM=<Black or White ROM>` extracts
+`dl_rom/child_r_eng.srl` (`ndsrec.py extract`, into build/) and recompiles it like Black and White's static:
+- 2,961 functions (2,937 ARM, 24 Thumb); armrec translates every one it is given (2,882) cleanly;
 - 90 of 135 primitives matched (B/W's 102, less GX/MTX helpers the child does not link);
 - `OS_GetIrqFunction`, absent from the child, comes from `pc/src/pc_pt_child.c` over the child's own IRQ tables.
 
 The game id is `poketransfer` (`NP_GAME_POKETRANSFER`, core and tools). The runtime's ROM and save are the Gen 4
 card in the child's slot 1. `pc_card_rom.c` under `PC_MB_CHILD` puts that card's header at HW_CARD_ROM_HEADER, where
-a multiboot child finds it, and `pc_mb_child_boot()` writes the boot state the firmware leaves for a Download Play
-child:
-- the child's own ROM header at HW_ROM_HEADER_BUF, generated from the image (`ndsrec.py header-c`);
-- MB_TYPE_MULTIBOOT at HW_WM_BOOT_BUF.
+a multiboot child finds the inserted card (CARD_Init copies a program's own header there only on a card boot).
 
-The parent's BSS description and user parameter stay empty until the Download Play link (below) hands them over.
+**The firmware's Download Play client.** On a console the DS firmware receives the child and boots it. Here that is
+`pc/src/pc_pt_dlplay.c`, run by `pc_main.c` before NitroMain:
+- It is NitroSDK 4.2's own multiboot child (`libraries/mb`) over its ARM9 WM library, both compiled into the image
+  (`PTFW_SRCS`), talking to `pc_wm.c` like any WM library. It scans, takes the first game whose beacon validates,
+  connects, requests the file and receives every block.
+- The firmware is NITRO code, so it receives the ROM header at the NITRO HW_ROM_HEADER_BUF (0x027FFE00), which is
+  what B/W's parent sends; the image's TWL-SDK map has it at 0x02FFFE00, the same byte on a 4 MB DS
+  (`pc_pt_fw_mb.h`).
+- Nothing boots that was not received. The header, the ARM9 static and the ARM7 static are checked against the
+  SHA-1s of the image this build recompiled (`ndsrec.py mbimage-c`); a mismatch stops the run. The firmware's
+  check of the image's RSA signature is not modelled: only this build's recompiled code can run, so the hash check
+  is what matters.
+- Then crt0's steps: the ARM9 static is BLZ-decompressed in place and must hash to the recompiled image; each
+  autoload block is copied to its place and its bss cleared; then the static's bss is cleared (it begins on the
+  autoload bytes).
+- The boot state a child reads: MBParam at HW_WM_BOOT_BUF (MB_TYPE_MULTIBOOT and the parent's BSS description, which
+  the child reconnects to) and the parent's user parameter at HW_DOWNLOAD_PARAMETER. The display line goes back to
+  0, because the child's OS_Init waits for VCOUNT 0.
 
-The child boots and shows "Loading..." with the wireless icon while it reconnects to its parent. With none, it
-gives up after its own 1800 frames ("Unable to connect to the other DS system.").
-`tests/poketransfer/run_tests.py boot` checks the boot state and the run; it passes with Platinum and HeartGold
-cards.
+Two fixes outside the child station came with it:
+- `pc_wm.c`: a parent's MPEND_IND now also carries, in its receive buffer, what each child sent since the previous
+  one. The multiboot parent reads its children only there (`mb_parent.c` MBi_CommParentRecvData). Every other
+  caller reads the port records, as before.
+- `tools/ndsrec/discover.py`: a bounded ARM switch (`cmp rN, #K; addls pc, pc, rN, lsl #2`) may hold returns
+  (`ldmia sp!, {..., pc}`) among its branches. Discovery stopped at the first one, so the rest of the table and its
+  cases were not code. The child's sub_0200B8C8 reached one at run time. On Black the fix adds 226 instructions and
+  no functions.
 
-The child identifies the inserted card only after that connection:
-- its main state machine (0x02013D20) connects in states 4-5;
-- in state 6 it calls 0x0201EBD8, which locks the card, reads CARD_GetRomHeader's game code and sorts it into
-  D/P (ADAE, APAE), Pt (CPUE) or HG/SS (IPKE, IPGE).
-
-So identification is shown once the link carries the child to its parent.
+**What a run shows** (`tests/poketransfer/run_tests.py link`):
+- Station A: Black with bw-chain's milestone 34 save, at the lab counter (`pt-parent-black.sched`). It shows the
+  Download Play screen by frame 7300.
+- Station B: the Platinum card and a save with six Pokémon in box 1. The client connects at frame 7447, and the
+  download runs from 7470 to 10422, about 49 seconds, as a real one takes. The image verifies and boots at 10428.
+- The child reconnects to A as its own program, identifies the card (state 6 of its main state machine, 0x02013D20,
+  sorts the game code: D/P, Pt or HG/SS) and reads the save and the card's icon archive. By frame 11200 it shows
+  BOX 1 with the six icons and "Please choose the six Pokémon to transfer". A says "Please select Pokémon in the
+  other DS system."
+- With a save that has fewer than six boxed Pokémon, the child says "There aren't six Pokémon in the PC Boxes for
+  Poké Transfer to catch." It does this with a Platinum card and with a HeartGold card.
+- Nothing is written to the card save yet; the test checks it is unchanged.

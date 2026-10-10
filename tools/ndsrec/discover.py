@@ -235,17 +235,23 @@ class Module(object):
         """Entries of `add<cc> pc, pc, rN, lsl #2` at a: the run of
         unconditional branches from a+8 (a+4 is the out-of-range branch).
         When the condition is an unsigned upper bound (ls/cc) the
-        `cmp rN, #K` before it caps the run at K + 1; any other condition
-        (`addge` after a signed lower-bound check) relies on an earlier
-        compare, so the run alone counts."""
-        n_b = 0
-        while True:
-            w = self.u32(a + 8 + 4 * n_b)
-            if w is None or (w & 0xFF000000) != 0xEA000000:
-                break
-            n_b += 1
-            if n_b > 1024:
-                break
+        `cmp rN, #K` before it caps the run at K + 1, and an entry may also
+        be an unconditional return: mwcc puts a case that only returns in
+        the table as the function's `ldmia sp!, {..., pc}` (the Download
+        Play child's sub_0200B8C8). Any other condition (`addge` after a
+        signed lower-bound check) relies on an earlier compare, so the run
+        of branches alone counts."""
+        def run(kinds):
+            n = 0
+            while n <= 1024:
+                w = self.u32(a + 8 + 4 * n)
+                if w is None:
+                    break
+                ins = disasm.decode_arm(w, a + 8 + 4 * n)
+                if ins.kind not in kinds or ins.cond:
+                    break
+                n += 1
+            return n
         cond = self.u32(a) >> 28
         if cond in (9, 3):                            # ls, cc
             for back in range(4, 24, 4):
@@ -254,8 +260,9 @@ class Module(object):
                     break
                 if (w & 0x0FF00000) == 0x03500000:    # cmp rn, #imm
                     k = disasm.ror32(w & 0xFF, ((w >> 8) & 0xF) * 2) + (1 if cond == 9 else 0)
-                    return min(k, n_b) if n_b else k
-        return n_b
+                    n = run(("b", "ret"))
+                    return min(k, n) if n else k
+        return run(("b",))
 
     def arm_block_jump(self, a):
         """Entry points of `add<cc> pc, pc, rM, lsl #k` (3 <= k <= 5) at a:

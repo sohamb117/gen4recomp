@@ -311,7 +311,13 @@ if(EXISTS "${HGSS_ROM}")
     expect_json("${j}" "15" party 2 moves 1 pp)  # Vine Whip's base PP, no PP Ups
     expect_json("${j}" "0" party 2 status)
     expect_json("${j}" "30" party 2 level)
-    message(STATUS "HG/SS add-mon, set-move, set-level and heal-party with ROM OK")
+    run(0 o add-box-mon "${SS}" "${HGSS_ROM}" 152 5 33 45)  # box 1 slot 1 holds the synthesized one
+    run(0 j dump "${HGSS_ROM}" "${SS}")
+    expect_json("${j}" "2" boxes 0 mons 1 slot)
+    expect_json("${j}" "CHIKORITA" boxes 0 mons 1 species_name)
+    expect_json("${j}" "135" boxes 0 mons 1 exp)  # Medium Slow at 5
+    expect_json("${j}" "ON" boxes 0 mons 1 checksum_ok)
+    message(STATUS "HG/SS add-mon, add-box-mon, set-move, set-level and heal-party with ROM OK")
 else()
     message(STATUS "HG/SS ROM not found at '${HGSS_ROM}'; add-mon / name checks skipped")
 endif()

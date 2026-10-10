@@ -1,0 +1,50 @@
+# Black, Poké Transfer Lab (zone 381), at the counter facing the scientist
+# (bw-chain milestone 34's end save): title (START), CONTINUE and the C-Gear
+# prompt, then A through his questions (a second DS? YES), the wireless
+# check, the save (YES) and the walk to the machine; overlay 107 shows the DS
+# Download Play screen (Poké Transfer ID 45994) by about frame 7300.
+5000:start:4
+5150:a:4
+5250:a:4
+5350:a:4
+5395:a:2
+5398:a:4
+5462:a:4
+5526:a:4
+5590:a:4
+5654:a:4
+5718:a:4
+5782:a:4
+5846:a:4
+5910:a:4
+5974:a:4
+6038:a:4
+6102:a:4
+6166:a:4
+6230:a:4
+6294:a:4
+6358:a:4
+6422:a:4
+6486:a:4
+6550:a:4
+6614:a:4
+6678:a:4
+6742:a:4
+6806:a:4
+6870:a:4
+6934:a:4
+6998:a:4
+7062:a:4
+7126:a:4
+7190:a:4
+7254:a:4
+7318:a:4
+7382:a:4
+7446:a:4
+7510:a:4
+7574:a:4
+7638:a:4
+7702:a:4
+7766:a:4
+7830:a:4
+7894:a:4

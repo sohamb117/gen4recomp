@@ -23,6 +23,7 @@
  *   np_save4 remove-gift <save> <card slot 1-3>
  *   np_save4 set-box-name <save> <box 1-18> <name>
  *   np_save4 add-mon <save> <rom.nds> <species> <level> [move...]   party Pokemon
+ *   np_save4 add-box-mon <save> <rom.nds> <species> <level> [move...]   the same, in the first empty box slot
  *   np_save4 set-move <save> <rom.nds> <slot> <index> <move>   a party Pokemon's move (full PP)
  *   np_save4 set-level <save> <rom.nds> <slot> <level>   a party Pokemon's level (stats recalculated)
  *   np_save4 heal-party <save> <rom.nds>   the party's HP, status and PP restored (a Pokemon Center's)
@@ -77,13 +78,14 @@ static int usage(void)
             "  %s remove-gift <save> <card slot 1-3>\n"
             "  %s set-box-name <save> <box 1-18> <name>\n"
             "  %s add-mon <save> <rom.nds> <species> <level> [move id...]\n"
+            "  %s add-box-mon <save> <rom.nds> <species> <level> [move id...]\n"
             "  %s set-move <save> <rom.nds> <party slot 0-5> <move index 0-3> <move id>\n"
             "  %s set-level <save> <rom.nds> <party slot 0-5> <level 1-100>\n"
             "  %s heal-party <save> <rom.nds>\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
             prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
-            prog, prog, prog, prog, prog, prog, prog);
+            prog, prog, prog, prog, prog, prog, prog, prog);
     return EXIT_USAGE;
 }
 
@@ -914,9 +916,11 @@ static int edit_status(save4_status st)
  * level, stats from base stats, IVs 20 and no EVs, met here in a Poke Ball
  * with the trainer as OT; on an HG/SS save the ball also goes to the HGSS
  * ball byte, as HG/SS's SetMonData does), appended to the party. Moves are
- * given by id. The origin game is the ROM's (D 10, P 11, Pt 12, HG 7, SS 8). */
+ * given by id. The origin game is the ROM's (D 10, P 11, Pt 12, HG 7, SS 8).
+ * add-box-mon (`to_box`): the same Pokemon without the party tail, in the
+ * first empty PC box slot from box 1 slot 1 on. */
 static save4_status add_mon(save4 *s, const char *rom_path, unsigned long species, unsigned long level,
-                            char **moves, int nmoves)
+                            char **moves, int nmoves, bool to_box)
 {
     FILE *rf;
     nd_rom rom;
@@ -929,15 +933,28 @@ static save4_status add_mon(save4 *s, const char *rom_path, unsigned long specie
     int have_names = have_gd && nd_names_load(&names, &rom) == ND_OK;
     const nd_species *sp = have_gd ? nd_species_get(&gd, (uint32_t)species) : NULL;
     uint8_t count = save4_party_count(s);
+    int box = 0, slot = 0;
     save4_trainer t;
-    if (!sp || !sp->valid || !have_names || count >= SAVE4_PARTY_MAX || save4_get_trainer(s, &t) != SAVE4_OK) {
-        fprintf(stderr, "%s: cannot add species %lu (unknown species, unreadable ROM or full party)\n", prog,
-                species);
+    if (to_box) {
+        for (box = 0; box < SAVE4_BOX_COUNT; box++) {
+            for (slot = 0; slot < SAVE4_BOX_SLOTS; slot++) {
+                pkm4 cur;
+                if (save4_get_box_mon(s, box, slot, &cur) == SAVE4_OK && pkm4_is_empty(&cur))
+                    break;
+            }
+            if (slot < SAVE4_BOX_SLOTS)
+                break;
+        }
+    }
+    if (!sp || !sp->valid || !have_names || (to_box ? box >= SAVE4_BOX_COUNT : count >= SAVE4_PARTY_MAX) ||
+        save4_get_trainer(s, &t) != SAVE4_OK) {
+        fprintf(stderr, "%s: cannot add species %lu (unknown species, unreadable ROM or full %s)\n", prog, species,
+                to_box ? "boxes" : "party");
         goto out;
     }
     pkm4 p;
     memset(&p, 0, sizeof p);
-    p.party = true;
+    p.party = !to_box;
     /* A fixed personality per species, level and trainer: runs repeat. */
     uint32_t pid = (uint32_t)species * 2654435761u ^ (uint32_t)level * 40503u ^ ((uint32_t)t.sid << 16 | t.tid);
     pkm4_set_pid(&p, pid);
@@ -974,12 +991,16 @@ static save4_status add_mon(save4 *s, const char *rom_path, unsigned long specie
     pkm4_set_met(&p, 0, (uint8_t)level, 4 /* Poke Ball */, t.gender);
     if (save4_game_is_hgss(s->game))
         pkm4_set_ball_hgss(&p, 4);
-    uint16_t stats[6];
-    pkm4_calc_stats(sp->base, ivs, evs, (uint8_t)level, (uint8_t)(pid % 25), species == 292, stats);
-    pkm4_set_party_stats(&p, (uint8_t)level, stats[0], stats, 0);
-    st = save4_set_party(s, count, &p);
-    if (st == SAVE4_OK)
-        st = save4_set_party_count(s, (uint8_t)(count + 1));
+    if (to_box) {
+        st = save4_set_box_mon(s, box, slot, &p);
+    } else {
+        uint16_t stats[6];
+        pkm4_calc_stats(sp->base, ivs, evs, (uint8_t)level, (uint8_t)(pid % 25), species == 292, stats);
+        pkm4_set_party_stats(&p, (uint8_t)level, stats[0], stats, 0);
+        st = save4_set_party(s, count, &p);
+        if (st == SAVE4_OK)
+            st = save4_set_party_count(s, (uint8_t)(count + 1));
+    }
 out:
     if (have_names)
         nd_names_free(&names);
@@ -1235,10 +1256,10 @@ static int cmd_edit(int argc, char **argv)
             st = set_level(&s, a[0], v1, v2);
     } else if (!strcmp(cmd, "heal-party") && na == 1) {
         st = heal_party(&s, a[0]);
-    } else if (!strcmp(cmd, "add-mon") && na >= 3 && na <= 7) {
+    } else if ((!strcmp(cmd, "add-mon") || !strcmp(cmd, "add-box-mon")) && na >= 3 && na <= 7) {
         bad = parse_ul(a[1], 493, &v1) || v1 == 0 || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)
-            st = add_mon(&s, a[0], v1, v2, a + 3, na - 3);
+            st = add_mon(&s, a[0], v1, v2, a + 3, na - 3, !strcmp(cmd, "add-box-mon"));
     } else {
         save4_free(&s);
         return usage();
@@ -1293,7 +1314,7 @@ int main(int argc, char **argv)
     if (!strcmp(cmd, "gamedata"))
         return argc == 3 ? cmd_gamedata(argv[2]) : usage();
     if (!strncmp(cmd, "set-", 4) || !strcmp(cmd, "add-gift") || !strcmp(cmd, "remove-gift") ||
-        !strcmp(cmd, "add-mon") || !strcmp(cmd, "heal-party"))
+        !strcmp(cmd, "add-mon") || !strcmp(cmd, "add-box-mon") || !strcmp(cmd, "heal-party"))
         return cmd_edit(argc, argv);
     return usage();
 }
