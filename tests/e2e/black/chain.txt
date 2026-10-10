@@ -33,3 +33,4 @@
 30-champion-room-n-castle
 31-n-castle-climb
 32-n-castle-reshiram-ghetsis-credits
+34-postgame-poke-transfer-lab

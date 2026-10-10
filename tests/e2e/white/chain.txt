@@ -32,3 +32,4 @@
 ../black/30-champion-room-n-castle
 ../black/31-n-castle-climb
 32-n-castle-zekrom-ghetsis-credits
+34-postgame-poke-transfer-lab
