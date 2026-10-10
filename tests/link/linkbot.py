@@ -18,7 +18,9 @@ SCENARIO.json:
   {"games": ["heartgold", "soulsilver"],      station A's game, B's
    "saves": {"a": "A.sav", "b": "B.sav"},     copied into OUTDIR first; without
                                               it HG/SS stations are minted
-                                              (linkpair.mint_hgss), as the replay does
+                                              (linkpair.mint_hgss), B/W ones by
+                                              linkpair.mint_bw ("bw_mint": a
+                                              BW_CHAIN name), as the replay does
    "recipes": {"b": "recipes/union-b.recipe"}, a D/P/Pt station's lab recipe (linkpair.mint)
    "opts": {"b": []},                         a station's np_gp -o options (default
                                               text_instant=1)
@@ -250,6 +252,8 @@ def main():
             shutil.copyfile(sc['saves'][side], sav)
         elif games[side] in linkpair.HGSS_GAMES:
             linkpair.mint_hgss(games[side], side, sav)
+        elif games[side] in linkpair.BW_GAMES:
+            linkpair.mint_bw(games[side], side, sav, sc.get('bw_mint'))
         elif side in sc.get('recipes', {}):
             linkpair.mint(os.path.join(HERE, sc['recipes'][side]), sav, games[side], base_dir=out)
         else:

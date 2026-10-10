@@ -843,6 +843,33 @@ Frames (A | B pairs), in `/tmp/bw2/link/report/`:
    Tackle / forfeit.
 6. `6-battle-room-team-select.png`: the battle room and team selection.
 
+### The post-game trade: trade evolution and Landorus (2026-10-10)
+
+`run_link_tests.py --game black:white bw_trade_landorus` trades between the chain's own players after the credits.
+
+- **The stations.** Black's and White's milestone-85 end saves, each with its own roamer caught (`linkpair.BW_CHAIN`
+  `landorus`). They keep the chain's names and IDs, because the shrine checks the OT.
+  - Black's party slot 4 becomes a lv 30 Boldore (np_save5 set-mon, as the e2e boosts' party-set).
+  - At Striaton's PC, Black puts Sawk in BOX 1 and takes out its Tornadus, which 85 caught into BOX 1 because the
+    party was full.
+  - The schedules were recorded by `linkbot.py` from `scenarios/bw-trade-landorus.json`.
+- **Trade evolution.** Black offers the Boldore and White offers BOX 1's Thundurus. On White's station the Boldore
+  evolves by the trade: "What? Boldore is evolving!", then "Congratulations! Your Boldore evolved into Gigalith!".
+  White's save holds the Gigalith with the Boldore's PID.
+- **The saves.** The game saves both stations after the animation, and the case checks both with np_save5:
+  - Black: Thundurus with White's TID, and Tornadus with its own.
+  - White: the Gigalith, and no Thundurus or Boldore left.
+- **Handover to e2e.** A passing case leaves both saves as `build/e2e/<game>/link-bw_trade_landorus/end.sav`.
+- **Landorus.**
+  - tests/e2e/black/88 CONTINUEs Black's save. The Union Room's own return is what CONTINUE takes (flag 0x966 and
+    var 0x4041 = 1, scr 0855). It runs only in Striaton's Pokemon Center: set-location to Route 14 left the player
+    held there. So 88 shows the party (both roamers) and saves in the Center.
+  - black/89 moves to Route 14 below the Abundant Shrine and walks in. The shrine's level script shows the children
+    (Tornadus caught, 0x40CE 1), and their trigger plays their scene. The shrine's bg (scr 0752 script 2) counts
+    Tornadus with the player's OT and Thundurus, and calls Landorus (lv 70), which is caught with a Master Ball.
+- **Not covered here.** White's Landorus needs Tornadus traded to White, the same case with the sides swapped. That
+  is not recorded. Karrablast and Shelmet need both in the chain's saves; neither is.
+
 ## The late game on the core: N's Castle's VRAM hand-over (2026-10-09)
 
 The story chain's scouts (tests/e2e/black/22-33) ran the late game on synthesized saves. N's Castle's throne room

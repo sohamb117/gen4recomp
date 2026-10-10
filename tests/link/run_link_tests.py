@@ -21,9 +21,14 @@ on build/core-hgss (linkpair.py has the paths).
 
 Black/White have no lab: their saves come from the e2e chain's milestone
 10 (linkpair.mint_bw), and the trade check is relative to the parties the
-mint produced (A's party slot 1 for B's slot 4). Neither have HeartGold/
-SoulSilver: theirs are milestone 04's (linkpair.mint_hgss), and their
-schedules were recorded by linkbot.py from scenarios/*.json (the e2e bots
+mint produced (A's party slot 1 for B's slot 4). bw_trade_landorus mints
+from the chain's post-game 85 saves instead (bw_mint, linkpair.BW_CHAIN:
+the chain's own players), checks both saves with np_save5 expressions
+(`save`), and, passing, leaves them as e2e end saves (`e2e`: --e2e-out,
+default build/e2e, GAME/link-NAME/end.sav) for tests/e2e/black/88.
+Neither have HeartGold/SoulSilver: theirs are milestone 04's
+(linkpair.mint_hgss). Their schedules and bw_trade_landorus's were
+recorded by linkbot.py from scenarios/*.json (the e2e bots
 driving two np_gp --lockstep stations), which run with PC_E2E and
 text_instant as the scenarios' env and opts pass them here (opts: a list
 for both stations, or a dict of lists per station). A new milestone 04 save
@@ -38,6 +43,7 @@ scenario's tail goes through linkpair.py serve/job (a forked checkpoint,
 seconds per try).
 """
 import argparse
+import json
 import os
 import random
 import shutil
@@ -113,6 +119,27 @@ SCENARIOS = [
          scheds={'a': 'schedules/bw-battle-a.sched', 'b': 'schedules/bw-battle-b.sched'},
          frames=18000, dump_from=13000, dump_every=100,
          logs={s: ('in_battle 0 -> 1', 'in_battle 1 -> 0', 'map_id 0 -> 150') for s in 'ab'}),
+    # The post-game trade: the stations are the e2e chain's own players after
+    # the credits (linkpair.BW_CHAIN 'landorus': Black's and White's 85 end
+    # saves, the roamers caught; Black's party slot 4 a Boldore). Black first
+    # takes Tornadus out of BOX 1 at Striaton's PC (Sawk in), then trades the
+    # Boldore for White's Thundurus (BOX 1). The Boldore evolves on White's
+    # station by the trade (Gigalith, the same PID); Black holds both roamers,
+    # Tornadus with its own OT, which the Abundant Shrine needs (scr 0752
+    # script 2). Recorded by linkbot.py from scenarios/bw-trade-landorus.json
+    # (PC_E2E and text_instant, as here). The two saves become the e2e
+    # end saves link-bw_trade_landorus (--e2e-out, default build/e2e) that
+    # black/88's [start] continues.
+    dict(name='bw_trade_landorus', games=('black', 'white'), bw_mint='landorus', e2e=True,
+         scheds={'a': 'schedules/bw-trade-landorus-a.sched', 'b': 'schedules/bw-trade-landorus-b.sched'},
+         frames=31970, env={'PC_E2E': '1'}, opts=['text_instant=1'], dump_from=12000, dump_every=100,
+         save={'a': ['s["party"][4]["species"] == 642 and s["party"][4]["tid"] == 43677',
+                     'any(m["species"] == 641 and m["tid"] == 45994 for m in s["party"])',
+                     'not any(m["species"] in (525, 526) for m in s["party"])',
+                     'any(m["species"] == 539 for m in s["boxes"][0]["mons"])'],
+               'b': ['any(m["species"] == 526 and m["pid"] == "0xBEB0B625" for b in s["boxes"] for m in b["mons"])',
+                     'not any(m["species"] in (525, 642) for b in s["boxes"] for m in b["mons"])',
+                     'not any(m["species"] in (525, 642) for m in s["party"])']}),
     # HeartGold's A with SoulSilver's B in the Union Room (the Pokemon
     # Center's counter, WM over np_host_net, the same pc_wm.c model as D/P's:
     # HG/SS build D/P's host fragment). Saves minted from the e2e chain's
@@ -159,12 +186,12 @@ def games_of(sc):
     return sc.get('games', ('platinum', 'platinum'))
 
 
-def have_tools(games):
+def have_tools(sc):
     paths = []
-    for g in games:
+    for g in games_of(sc):
         paths += linkpair.GAMES[g]
         if g in linkpair.BW_GAMES:
-            paths += [linkpair.SAVE5, linkpair.bw_base_save(g)]
+            paths += [linkpair.SAVE5, linkpair.bw_base_save(g, sc.get('bw_mint'))]
         elif g in linkpair.HGSS_GAMES:
             paths += [linkpair.SAVE4, linkpair.hgss_base_save(g)]
         elif linkpair.SAVE4 not in paths:
@@ -198,7 +225,7 @@ def is_red(rgb):
     return r > 180 and g < 120 and b < 120
 
 
-def run(sc, work):
+def run(sc, work, e2e_out=None):
     d = os.path.join(work, sc['name'])
     os.makedirs(d, exist_ok=True)
     games = dict(zip('ab', games_of(sc)))
@@ -206,7 +233,7 @@ def run(sc, work):
     for side in 'ab':
         out = os.path.join(d, side.upper() + '.sav')
         if games[side] in linkpair.BW_GAMES:
-            saves[side] = linkpair.mint_bw(games[side], side, out)
+            saves[side] = linkpair.mint_bw(games[side], side, out, sc.get('bw_mint'))
         elif games[side] in linkpair.HGSS_GAMES:
             saves[side] = linkpair.mint_hgss(games[side], side, out)
         else:
@@ -252,6 +279,12 @@ def run(sc, work):
         got = linkpair.party(saves[side], games[side])
         if got != want:
             fails.append('%s party %s, want %s' % (side, got, want))
+    for side, exprs in sc.get('save', {}).items():
+        tool = linkpair.SAVE5 if games[side] in linkpair.BW_GAMES else linkpair.SAVE4
+        s = json.loads(subprocess.run([tool, 'dump', saves[side]], capture_output=True, text=True, check=True).stdout)
+        for expr in exprs:
+            if not eval(expr, {}, {'s': s}):
+                fails.append('%s save: not (%s)' % (side, expr))
     if 'win' in sc:
         x, y = sc['win']
         shown = 0
@@ -270,6 +303,12 @@ def run(sc, work):
         for needle in (needles,) if isinstance(needles, str) else needles:
             if needle not in log:
                 fails.append('%s log lacks "%s"' % (side, needle))
+    if not fails and sc.get('e2e') and e2e_out:
+        # the stations' saves as e2e end saves: a milestone's [start] from = "link-<name>" continues one
+        for side in 'ab':
+            dest = os.path.join(e2e_out, games[side], 'link-' + sc['name'])
+            os.makedirs(dest, exist_ok=True)
+            shutil.copyfile(saves[side], os.path.join(dest, 'end.sav'))
     return 'FAIL: ' + '; '.join(fails) if fails else 'ok'
 
 
@@ -290,6 +329,9 @@ def main():
     ap.add_argument('names', nargs='*')
     ap.add_argument('--game', default='platinum', help='A[:B] station games, or all (default platinum)')
     ap.add_argument('--keep', help='work directory to keep (default: a temporary one, removed)')
+    ap.add_argument('--e2e-out', default=os.path.join(linkpair.ROOT, 'build', 'e2e'),
+                    help='where an e2e scenario leaves its stations\' saves (default build/e2e: '
+                         'GAME/link-NAME/end.sav)')
     a = ap.parse_args()
     want = pairs(a.game)
     chosen = [sc for sc in SCENARIOS if games_of(sc) in want and (not a.names or sc['name'] in a.names)]
@@ -300,8 +342,8 @@ def main():
     os.makedirs(work, exist_ok=True)
     failed = 0
     for sc in chosen:
-        missing = have_tools(games_of(sc))
-        res = 'SKIP: %s missing' % missing if missing else run(sc, work)
+        missing = have_tools(sc)
+        res = 'SKIP: %s missing' % missing if missing else run(sc, work, a.e2e_out)
         print('%-24s %-18s %s' % (sc['name'], ':'.join(games_of(sc)), res), flush=True)
         failed += res.startswith('FAIL')
     if not a.keep:

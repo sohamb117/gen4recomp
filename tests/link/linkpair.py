@@ -8,7 +8,7 @@ pair per job, so a scenario's tail is replayed in seconds instead of its walk
 into the Union Room.
 
   linkpair.py serve DIR --frame F --a-sched S --b-sched S --a-save SAV --b-save SAV
-                        [--a-game G] [--b-game G]
+                        [--a-game G] [--b-game G] [--opt O ...]
       start the pair; at frame F it waits for jobs (Ctrl-C / `stop` ends it)
   linkpair.py job DIR NAME FRAMES EVERY A_SCHED B_SCHED
       run one child pair from the checkpoint to FRAMES, dumping both screens
@@ -21,9 +21,10 @@ into the Union Room.
 
   linkpair.py mint [--game G] RECIPE OUT.sav
       mint a save from a lab recipe (tests/link/recipes) with this core
-  linkpair.py mint-bw GAME SIDE OUT.sav
+  linkpair.py mint-bw GAME SIDE OUT.sav [CHAIN]
       a Black/White station's save inside Striaton's Pokemon Center, in front
-      of the Union Room counter (mint_bw)
+      of the Union Room counter (mint_bw; CHAIN: a BW_CHAIN entry, the chain's
+      later save with its own player)
   linkpair.py mint-hgss GAME SIDE OUT.sav
       a HeartGold/SoulSilver station's save in Violet City, near the Pokemon
       Center (mint_hgss)
@@ -88,7 +89,7 @@ def core(game):
     return [headless, game, rom]
 
 
-def start_pair(dirpath, frame, scheds, saves, ctls, relay=None, pin='4242', drop=0, games=None):
+def start_pair(dirpath, frame, scheds, saves, ctls, relay=None, pin='4242', drop=0, games=None, opts=()):
     """Starts both instances with --fork-at frame:ctl; returns the Popens.
     With relay (HOST:PORT) the game's datagrams take the relay and lose
     `drop` percent on the way out, the frame clocks still in lockstep."""
@@ -106,6 +107,8 @@ def start_pair(dirpath, frame, scheds, saves, ctls, relay=None, pin='4242', drop
                     '--net-drop', str(drop)]
         if scheds[side]:
             cmd += ['--schedule', scheds[side]]
+        for o in opts:  # np_headless -o options, as run_link_tests passes a scenario's opts
+            cmd += ['-o', o]
         log = open(os.path.join(dirpath, 'checkpoint-%s.log' % side), 'w')
         procs[side] = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT)
     return procs
@@ -132,6 +135,8 @@ def serve(argv):
     p.add_argument('--relay', help='HOST:PORT of server/relay')
     p.add_argument('--pin', default='4242')
     p.add_argument('--drop', type=int, default=0)
+    p.add_argument('--opt', action='append', default=[], help='an np_headless -o option for both stations '
+                                                             '(text_instant=1: linkbot-recorded schedules)')
     a = p.parse_args(argv)
     d = os.path.abspath(a.dir)
     os.makedirs(d, exist_ok=True)
@@ -150,7 +155,7 @@ def serve(argv):
         os.remove(jobs)
     os.mkfifo(jobs)
     procs = start_pair(d, a.frame, {'a': a.a_sched, 'b': a.b_sched}, saves, ctls, a.relay, a.pin, a.drop,
-                       {'a': a.a_game, 'b': a.b_game})
+                       {'a': a.a_game, 'b': a.b_game}, a.opt)
     w = {side: open(ctls[side], 'w') for side in 'ab'}  # blocks until each reaches the checkpoint
     print('checkpoint at frame %d ready' % a.frame, flush=True)
     try:
@@ -258,20 +263,42 @@ def party(sav, game='platinum'):
 # moves the player to (4,3,6), in front of the Union Room attendant.
 BW_BASE = '10-route3-cheren-wellspring-plasma'
 BW_SIDE = {'a': ('LINKA', '11111', '1111'), 'b': ('LINKB', '22222', '2222')}
+# A station minted from a later chain save keeps the chain's player: no new name or IDs, because what the save goes
+# on to do may check them (the Abundant Shrine counts the own version's roamer only when its OT is the player's,
+# scr 0752 @0x04E5 Cmd113). Per chain mint and game: the milestone whose end save is the base, and np_save5 edits
+# put on it before the walk into the Center (a ROM-taking verb gets the ROM after the save, as run.py's boosts).
+# landorus (run_link_tests bw_trade_landorus): Black's 85 (Tornadus caught after the credits, in BOX 1: the party
+# was full) with a Boldore (525) lv 30, Rock Slide/Rock Throw/Rock Tomb/Harden, in party slot 4 in place of the
+# Tepig (np_save5 set-mon, the e2e boosts' party-set): Black trades it away and it evolves by the trade on White's
+# station. White's 85 (Thundurus caught, in BOX 1) as it is.
+BW_CHAIN = {
+    'landorus': {'black': ('85-roamer-tornadus', [['set-mon', '4', '525', '30', '157', '88', '317', '106']]),
+                 'white': ('85-roamer-thundurus', [])},
+}
+BW_ROM_VERBS = ('set-mon', 'set-level', 'add-mon')
 
 
-def bw_base_save(game):
+def bw_base_save(game, chain=None):
+    if chain:
+        return os.path.join(ROOT, 'build', 'e2e', game, BW_CHAIN[chain][game][0], 'end.sav')
     return os.environ.get('NP_BW_LINK_BASE_' + game.upper(),
                           os.path.join(ROOT, 'build', 'e2e', game, BW_BASE, 'end.sav'))
 
 
-def mint_bw(game, side, out_sav):
-    base = bw_base_save(game)
-    name, tid, sid = BW_SIDE[side]
+def mint_bw(game, side, out_sav, chain=None):
+    base = bw_base_save(game, chain)
     door = out_sav + '.door'
-    for args in (['set-name', base, name, '-o', door], ['set-ids', door, tid, sid],
-                 ['set-location', door, '6', '781', '0', '588']):
-        subprocess.run([SAVE5] + args, check=True, capture_output=True)
+    edits = [['set-location', '6', '781', '0', '588']]
+    if chain:
+        edits += BW_CHAIN[chain][game][1]
+    else:
+        name, tid, sid = BW_SIDE[side]
+        edits = [['set-name', name], ['set-ids', tid, sid]] + edits
+    with open(base, 'rb') as s, open(door, 'wb') as o:
+        o.write(s.read())
+    for verb, *args in edits:
+        rom = [GAMES[game][1]] if verb in BW_ROM_VERBS else []
+        subprocess.run([SAVE5, verb, door] + rom + args, check=True, capture_output=True)
     p = subprocess.run(core(game) + ['--frames', '7800', '--save', door, '--schedule',
                                      os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                   'schedules', 'bw-pc-save.sched')],
@@ -405,7 +432,7 @@ def main():
             game, rest = rest[1], rest[2:]
         print(mint(rest[0], rest[1], game))
     elif cmd == 'mint-bw':
-        print(mint_bw(rest[0], rest[1], rest[2]))
+        print(mint_bw(rest[0], rest[1], rest[2], rest[3] if len(rest) > 3 else None))
     elif cmd == 'mint-hgss':
         print(mint_hgss(rest[0], rest[1], rest[2]))
     elif cmd == 'party':

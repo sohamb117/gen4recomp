@@ -1,4 +1,7 @@
 # Route 7's trade house (zone 343), one tile above its door mat (zone_event 343 warp 0 (5,9) 3x1 -> zone 337 warp 1
-# (102,260)), beside the old woman's house; set-location keeps the saved zone's (132's) objects, so Route 7 is entered
+# (102,260)), beside the old woman's house; set-location keeps the saved zone's objects, so Route 7 is entered
 # through the door, which loads its own (the trigger below the old woman's door).
 location 343 6 0 8
+# The Master Ball (item 1) in the items pocket's first slot: 34's end has none (the story's was thrown in 32), as
+# the other post-game legendaries' recipes (83) do.
+item 0 1 1 1

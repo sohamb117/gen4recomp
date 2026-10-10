@@ -1,0 +1,9 @@
+# On 88's end (the Black station after tests/link's bw_trade_landorus, saved in Striaton's Pokemon Center: Thundurus
+# from White in party slot 4, Tornadus, caught by this player, in slot 5): Route 14 (zone 374), one tile below the
+# Abundant Shrine's entrance (zone_event 374 warp 0 (677,357) 2x1 -> zone 376 warp 0). The route's river (Surf,
+# Waterfall, a waterfall surfed down) is not walked; set-location keeps the saved zone's objects, so the shrine is
+# entered by its warp, which loads the shrine's own (the children, Landorus's object 3).
+location 374 677 0 358
+# The Master Ball (item 1) in the items pocket's first slot, as the other post-game legendaries (83): the chain's was
+# thrown in 32.
+item 0 1 1 1
