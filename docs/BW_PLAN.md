@@ -858,3 +858,110 @@ so field_ready stays 0 there (the `rail` bot, and B/W `slide`'s held press for t
 are in RAM while it is loaded (Dragonspiral 211: the player's rail work at MMDL +0x94 leads to a header with the
 point and line arrays: points 112 bytes, u32 lines[4], keys[4] (1 U, 2 R, 3 D, 4 L), fx32 pos at +0x30; lines 72
 bytes, start and end point, key, position, camera, length).
+
+## Poké Transfer: what it would take (design note, 2026-10-09; not built)
+
+Read from the Black ROM (White matches by name; offsets below are Black's) with `tests/e2e/tools/bw_script.py`,
+`tools/ndsrec/nds.py` and the recompiler's generated assembly. Nothing here is implemented.
+
+**The lab and its gate.** The Poké Transfer Lab is zone 381, entered from Route 15 (zone 378 warp 2 at
+(608,425)). Its counter scientist (zone_event 381 object 0, scr 0878 script 1, text msg 313) checks only:
+- six free PC box slots: Cmd1F0 5, 0 then Cmd121 var 0x8021, 5, and "unless var 0x8021 >= 6" leads to msg 313 #2,
+  "make room for six Pokémon";
+- wireless on: Cmd13B, else std 2005 (msg 158 #22 "Wireless communications are turned OFF");
+- a save: std 2003.
+
+  It then runs Cmd1C0 and reads the outcome with Cmd1C1 into var 0x8024. Outcome 5 means "I put the Pokémon you
+  caught in your PC Box" (msg 313 #15); 0 and 1 count as successes. Cmd1C0's handler, ov21_021CC570, starts the
+  process whose data is at 0x021F6D78 in overlay 107 (`sub_02014840(..., 0x6B, 0x021F6D78)`).
+
+  No Pokédex, badge or Hall of Fame check appears in the lab's scripts. Access is reaching Route 15, through the
+  Black Gate (zone 379, from Black City) or the Bridge Gate (zone 380, from the Marvelous Bridge, zone 263). Route
+  15, Route 16 and the Marvelous Bridge each exist twice in the zone table (378/313, 383/314, 263/303).
+  [INFERENCE] These are story-dependent variants, and Route 15 opens only after the Hall of Fame. Not traced to the
+  variable that selects them. The chain's saves stop at milestone 27 (8 badges), so testing the lab needs a later
+  chain save or `np_save5 set-location 378 608 0 426`.
+
+**The parent: overlay 107.**
+- Location: RAM 0x021EE740, 0x8760 bytes, 202 functions (`ndsrec_ov107_000.s`). Strings: `mb_parent_sys.c`, `mbp.c`.
+- It names the child files `/dl_rom/child_r_eng.srl`, `/dl_rom/child2_r_eng.srl` and their icons
+  (`/dl_rom/icon_{b,w}.{char,plt}`).
+- Its only overlay loads are 14 and 21 (`sub_02034AC4` with 0xE and 0x15). **Overlay 230 is not on this path.**
+  Its known callers (startup, `ov10_0216EB98` after a battle, `ov20_021841C0` in the field) are the three this
+  plan already substitutes, and no transfer code calls it.
+
+**The Download Play child: `dl_rom/child_r_eng.srl`** (file 478, 1,369,088 bytes in the ROM, byte-identical in
+Black and White; White's overlay 107 sits at 0x021EE760, the same size).
+- Header: an NTR SRL, title `SYACHI_MB`, game code NTRJ, unit code 2 (DSi-enhanced). The ARM9i (7,816 bytes) and
+  ARM7i (291,064 bytes) modules are ignored in NTR mode, which is how a Download Play child runs.
+- ARM9 static: RAM 0x02004000, entry 0x02004850. It is BLZ-compressed (0x888A8 bytes) and expands to 1,050,464 bytes
+  with three autoloads. BSS runs to 0x0213F2A0. SDK version word 0x0503757C, the TWL-SDK 5 family Black and White
+  are built with.
+- ARM7: 167,812 bytes at 0x02380000.
+- No overlays and no FAT. The image's used size is 765,952 bytes, followed by the `ac` block of a Download Play
+  RSA signature.
+- Its sources, from the strings:
+  - `mb_child_sys.c`, `mb_comm_sys.c`;
+  - `mb_sel_poke.c` (choosing the six);
+  - `mb_cap_{obj,poke,down,ball,effect,demo}.c` (the capture minigame);
+  - `mb_data_main.c`, `mb_data_pt.c`, `mb_data_gs.c` (the Gen 4 save layouts: D/P in main, then Platinum and
+    HG/SS);
+  - the GF library (`gfl_use.c`, `net_*.c`, `wih.c`).
+- It reads the **inserted Gen 4 card**:
+  - an archive `child_rom` with `child_rom:/poketool/icongra/poke_icon.narc`, `pl_poke_icon.narc` and
+    `child_rom:/a/0/2/0`;
+  - the backup library (`[SDK+NINTENDO:BACKUP]`);
+  - a list of game codes, `ADAEAPAPCPUEIPKEIPGP` (Diamond, Pearl, Platinum, HeartGold, SoulSilver).
+- Seven 4 KiB blocks at 0x02067000-0x0206F000 are near 8 bits/byte of entropy: [INFERENCE] compressed embedded
+  graphics, since the child has no filesystem. Not checked.
+- `child2_r_eng.srl` (file 477) has the same shape, but `mb_movie_sys.c` takes the place of the selection and
+  capture sources. [INFERENCE] It is the movie-legendary "Relocator", opened by a Wonder Card. Out of scope here.
+
+**What our port would need.**
+1. **The child as a guest.** Run `child_r_eng.srl` through ndsrec the way Black and White's static is: TWL-SDK 5 in
+   NTR mode, one static module of about 1 MiB, no overlays, much smaller than B/W's 35,941 functions. Register it
+   as its own core guest, with the host layer the B/W core already uses. The SRL bytes come from the player's B/W
+   ROM at run time, so nothing new ships.
+2. **A second station.** The child runs on the other DS. In our terms that is a second instance, an np_headless
+   `--lockstep` pair or a second shell window, as the link scenarios already pair stations. The child station
+   boots from the SRL directly. The firmware's download and RSA check are the console's, not the game's.
+3. **Multiboot in `pc_wm.c`.** This is the main unknown.
+   - The parent's MB library sends the image to a child over WM. Today the model knows only an MB-flag beacon
+     (`WM_ATTR_FLAG_MB`, `childMaxSize`); it has no MB download protocol.
+   - Either `pc_wm.c` answers the download as a firmware child would (request, block acks, done), or the host has
+     to satisfy the parent's MB state machine some other way, after reading what it waits for.
+   - [INFERENCE] Once booted, the child rejoins the parent as an ordinary WM child (GF's `wih.c` / `net_whpipe.c`
+     on both sides), using the parent parameters the firmware leaves for a booted child. The model already carries
+     that part for the Union Room.
+4. **A foreign slot-1 card.** The child station needs the player's Gen 4 ROM and save as its inserted card:
+   - card-bus ROM reads served from that ROM image, with its header and game code (`pc_card_rom.c` serves only the
+     guest's own ROM today);
+   - the 512 KiB backup over SPI from that game's slot file, with D/P's backup model reused.
+   - Transfer takes the six out of the Gen 4 boxes, so the child writes the Gen 4 save back. The shell must store
+     it to that game's slot, and the test must run on a copy.
+5. **The shell.** Pick the Gen 4 slot, show the child station's screens (the capture minigame is touch), and hand
+   the two saves back.
+
+**Tests.**
+- A link scenario like `hgss_trade`: a B/W station at the lab with six free box slots, and a child station with a
+  D/P/Pt/HG/SS save holding six transferable Pokémon (no held items, as msg 313 #32 asks).
+- Check the six arrived in the B/W boxes (np_save5) and left the Gen 4 boxes (np_save4).
+
+**Effort.** About 2.5-4 weeks of agent time:
+- child guest through ndsrec and its first boot: 3-5 days;
+- foreign card ROM and backup: 2-3 days;
+- multiboot in `pc_wm.c`: 5-10 days, the widest range;
+- the capture minigame, results and save write-back on two stations: 2-4 days;
+- shell UX and app evidence: 2-3 days.
+
+**Risks.**
+- The MB download protocol is undocumented in our tree; the ARM7 WM firmware side is what we would model.
+- The parent may check the child's MAC or GGID, or a timeout, in ways only a run shows.
+- The child's ARM9 may do what B/W's needed rules for (VCOUNT, overlapping VRAM, ndsrec rules). Its high-entropy
+  blocks are unverified.
+- The Gen 4 card read may expect card states the host has never modelled (pulled-out checks, a second card's
+  KEY1/KEY2 mode).
+- Getting to Route 15 needs a post-game save the chain does not have yet.
+- Transfer is destructive on the Gen 4 save: a bug loses Pokémon. Write-back must go to a copy until verified.
+- Overlay 230 stays opaque. Nothing found here calls it, but a run would need `PC_TRACE_OVERLAYS=1` to confirm no
+  new caller.
