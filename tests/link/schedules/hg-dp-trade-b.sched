@@ -1,4 +1,4 @@
-# HeartGold (A) <-> Diamond (B) Union Room trade, station B
+# HeartGold (A) <-> Diamond or Pearl (B) Union Room trade, station B
 # (recipes/dp-union-b.recipe), recorded by tests/link/linkbot.py from
 # scenarios/hg-dp-trade.json: dp-trade-b.sched's way into the Union Room (to
 # frame 4300), accept A's offer, offer party slot 0 (A, down, A), YES, the

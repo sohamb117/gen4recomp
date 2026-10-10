@@ -1,4 +1,4 @@
-# HeartGold (A) <-> Diamond (B) Union Room trade, station A, recorded by
+# HeartGold (A) <-> Diamond or Pearl (B) Union Room trade, station A, recorded by
 # tests/link/linkbot.py from scenarios/hg-dp-trade.json (np_gp --lockstep):
 # CONTINUE in Violet City, the Pokemon Center Union Room counter (save), A
 # talks to B, TRADE, A offers party slot 1 (touch), YES, the animation, the
