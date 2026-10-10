@@ -1,0 +1,28 @@
+# HeartGold (A) <-> Diamond (B) Union Room trade, station B
+# (recipes/dp-union-b.recipe), recorded by tests/link/linkbot.py from
+# scenarios/hg-dp-trade.json: dp-trade-b.sched's way into the Union Room (to
+# frame 4300), accept A's offer, offer party slot 0 (A, down, A), YES, the
+# animation, the save. No text_instant on this station.
+1250:start:6
+1400:a:6
+1500:a:6
+1600:a:6
+1837:a:6
+2037:a:6
+2237:a:6
+2437:a:6
+2637:a:6
+2837:a:6
+3037:a:6
+3237:a:6
+3437:a:6
+3637:a:6
+3837:a:6
+4037:a:6
+9216:a:6
+9282:a:6
+9848:a:6
+10590:a:6
+10962:down:6
+11008:a:6
+11700:a:6

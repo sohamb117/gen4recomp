@@ -141,6 +141,12 @@ SCENARIOS = [
          scheds={'a': 'schedules/hg-pt-trade-a.sched', 'b': 'schedules/hg-pt-trade-b.sched'},
          frames=17046, trade_slots=(1, 0), env={'PC_E2E': '1'}, opts={'a': ['text_instant=1']},
          dump_from=12000, dump_every=500),
+    # The same with Diamond's B (dp-union-b.recipe), which walks in on
+    # dp-trade-b.sched (scenarios/hg-dp-trade.json).
+    dict(name='hg_diamond_trade', games=('heartgold', 'diamond'), recipes={'b': DP_UNION['b']},
+         scheds={'a': 'schedules/hg-dp-trade-a.sched', 'b': 'schedules/hg-dp-trade-b.sched'},
+         frames=15406, trade_slots=(1, 0), env={'PC_E2E': '1'}, opts={'a': ['text_instant=1']},
+         dump_from=11000, dump_every=500),
 ]
 
 
