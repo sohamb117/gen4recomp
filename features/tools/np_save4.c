@@ -408,31 +408,43 @@ static void dump_daycare(FILE *o, const save4 *s)
 /* Platinum's SpecialEncounter roamers (struct_defs/special_encounter.h) in the general block: PlayerRecentRoutes
  * (int current, previous map), then ROAMING_SLOT_MAX (6) Roamer of 20 bytes (int map, u32 ivs, u32 personality,
  * u16 species, u16 hp, u8 level, status, active). Offset found by scanning played saves for the activated
- * Mesprit (slot 0), Cresselia (slot 1) and Moltres (slot 3). */
+ * Mesprit (slot 0), Cresselia (slot 1) and Moltres (slot 3).
+ * HG/SS's RoamerSaveData (pokeheartgold include/roamer.h: u32 rand[2], playerLocationHistory[2], Roamer
+ * data[ROAMER_MAX 4] of the same 20 bytes, u8 locations[4] (ROAMER_LOC_* indices into field_roamer.c's
+ * sRoamerLocations)) sits at HGSS_ROAMERS_OFF; found by scanning saves past the Burned Tower (chain 14) for the
+ * activated Raikou (slot 0) and Entei (slot 1). Its Roamer.map is the map the roamer is on now. */
 #define PT_ROAMERS_OFF 0x7FF4
+#define HGSS_ROAMERS_OFF 0x68A4
 #define ROAMER_SIZE 20
 #define ROAMER_SLOTS 6
+#define HGSS_ROAMER_SLOTS 4
 
 static void dump_roamers(FILE *o, const save4 *s)
 {
     size_t len = 0;
     const uint8_t *img = save4_image(s, &len);
     uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
-    if (s->game != SAVE4_GAME_PT || base + PT_ROAMERS_OFF + ROAMER_SLOTS * ROAMER_SIZE > len) {
+    int hgss = save4_game_is_hgss(s->game);
+    uint32_t off = s->game == SAVE4_GAME_PT ? PT_ROAMERS_OFF : hgss ? HGSS_ROAMERS_OFF + 16 : 0;
+    int slots = hgss ? HGSS_ROAMER_SLOTS : ROAMER_SLOTS;
+    if (!off || base + off + slots * ROAMER_SIZE + (hgss ? slots : 0) > len) {
         fputs("  \"roamers\": null,\n", o);
         return;
     }
-    const uint8_t *r = img + base + PT_ROAMERS_OFF;
+    const uint8_t *r = img + base + off;
     fprintf(o, "  \"roamers\": {\"player_map\": %d, \"player_previous_map\": %d, \"slots\": [", (int32_t)le32(r - 8),
             (int32_t)le32(r - 4));
-    for (int i = 0, n = 0; i < ROAMER_SLOTS; i++) {
+    for (int i = 0, n = 0; i < slots; i++) {
         const uint8_t *m = r + i * ROAMER_SIZE;
         if (!le16(m + 12))
             continue;
         fprintf(o, "%s{\"slot\": %d, \"species\": %u, \"species_name\": ", n++ ? ", " : "", i, le16(m + 12));
         jname(o, ND_TEXT_SPECIES, le16(m + 12));
-        fprintf(o, ", \"level\": %u, \"hp\": %u, \"map\": %d, \"active\": %s}", m[16], le16(m + 14), (int32_t)le32(m),
+        fprintf(o, ", \"level\": %u, \"hp\": %u, \"map\": %d, \"active\": %s", m[16], le16(m + 14), (int32_t)le32(m),
                 m[18] ? "true" : "false");
+        if (hgss)
+            fprintf(o, ", \"location\": %u", r[slots * ROAMER_SIZE + i]);
+        fputc('}', o);
     }
     fputs("]},\n", o);
 }

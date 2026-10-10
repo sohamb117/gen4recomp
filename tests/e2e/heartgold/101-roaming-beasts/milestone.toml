@@ -1,11 +1,10 @@
 # Proves the roaming legendaries: Raikou and Entei start roaming when the Burned Tower B1F scene runs (CreateRoamer 0/1),
 # move between Johto routes, and are met by random wild encounter; Suicune is not a roamer (scripted chase ending at Route 25).
-# Start: 38's end save (post-game, both still roaming unless caught) -> end: a Johto route after catching Raikou (party species 243).
-title = "Roaming Raikou/Entei (and Suicune's Route 25 battle)"
-status = "planned"
+# Start: 38's end save (the player's room, both roaming) -> end: MAP_ROUTE_29 (655,402) after the Master Ball catch of RAIKOU.
+title = "Roaming Raikou: hunted on Route 29, caught with the Master Ball"
 priority = "P1"
 version = "both"
-estimate = 40000
+estimate = 36965
 refs = [
   "scr_seq_0024_D18R0102.s:77-78 (Burned Tower B1F: CreateRoamer 0 (Raikou), CreateRoamer 1 (Entei)); src/scrcmd_c.c:3441-3443 (ScrCmd_CreateRoamer -> Save_CreateRoamerByID)",
   "src/field_roamer.c:118-151,174-220,236-300 (RoamerLocationUpdateRand, Save_RandomizeRoamersLocation, Save_UpdateRoamersLocation on map change, Save_CreateRoamerByID, SpeciesToRoamerIdx, RoamerLocationSetRandom / ApplyRoamerLocation)",
@@ -16,14 +15,111 @@ refs = [
   "scr_seq_0216_R25.s:549-592 (Route 25: WildBattle SPECIES_SUICUNE 40 :559, FLAG_CAUGHT_SUICUNE include/constants/flags.h:392, VAR_SCENE_ROUTE_25 3)",
   "scr_seq_0825_T10R0701.s:162-165 (VAR_SCENE_ROUTE_25 3 and not caught -> ClearFlag FLAG_HIDE_BURNED_TOWER_STATIC_SUICUNE); scr_seq_0024_D18R0102.s:240-267 (B1F static Suicune WildBattle 40, FLAG_CAUGHT_SUICUNE)",
 ]
-notes = "Gates: 14 (Burned Tower) starts the roamers; nothing else. The roamers' locations are random per map change (field_roamer.c), so a deterministic run needs either a hunt bot (walk/fly between Johto routes, walk in grass until a roamer encounter, Mean Look/fast ball) - none exists in tests/e2e/bots.py - or a start recipe placing the player on the roamer's current route (recipes cannot set roamer save data). The roamer flees on turn 1: catching needs a trapping move or the Master Ball (29) [INFERENCE]. Check possible: np_save4 HG/SS dump has no roamer keys, so the only check is party species (243 Raikou / 244 Entei) via save = [...] over s['party']; VAR_ROAMER_*_STATUS via [expect.vars] if the status values are confirmed [INFERENCE]. Suicune is scripted (Route 25 after Misty / Route 14 sighting, then a Burned Tower static if it was knocked out) and could be a separate deterministic milestone from 93. RTC: none. [INFERENCE] estimate."
+notes = "Gates: 14 (Burned Tower) starts the roamers; nothing else. np_save4 dumps HG/SS's RoamerSaveData (general 0x68A4: the map each roamer is on, `location`, `active`). The roamers move on every map change (Save_UpdateRoamersLocation from sub_02067A88, asm/unk_02067A60.s:47-84; one in 16 a random jump, else to a neighbouring route) and half of the wild encounters on a roamer's map are it (src/field/encounter_check.c:1216-1241), so bots.py roam_hunt goes back and forth between Route 29's grass (655,402) and New Bark (674,399), reads the save after each arrival, and laps in the grass once RAIKOU is on Route 29; other wild battles are fled (the party is lv60+). The roamer flees on its first turn, so the catch is the Master Ball (29), thrown from the battle bag: BAG (40,172), POKE BALLS (192,64), Master Ball (64,80, the pocket's third), USE (100,168) (scouted on HeartGold: 'Gotcha! RAIKOU was caught!', the Pokedex page needs A). 38's party is six, so RAIKOU goes to BOX 1. A first scouting run read the battle report before it was this battle's and took a RAIKOU battle for ENTEI's: roam_hunt reads the foe only from a fresh report. Suicune (scripted, not a roamer) is out of scope. Measured: HG 36965 frames (RAIKOU met after 38 arrivals, 12 laps), SS 12691 (10 arrivals, 6 laps); the sheets show the room, RAIKOU lv40's action menu, 'Gotcha! RAIKOU was caught!', Route 29's grass."
 
 [start]
 from = "38-champion-lance-hall-of-fame-credits"
 
 [run]
-frames = 60000
+frames = 55500
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 4
+note = "the player's room (6,6) to the stairs (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK_PLAYER_HOUSE_1F"
+
+[[step]]
+do = "advance_text"
+note = "Mom's post-game scene on 1F, if it runs"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 10
+note = "the front door (warp 0) -> New Bark (695,397)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK"
+
+[[step]]
+do = "dump"
+expr = '[(r["species_name"], r["map"]) for r in s["roamers"]["slots"]]'
+
+[[step]]
+do = "roam_hunt"
+species = "SPECIES_RAIKOU"
+a = [655, 402]
+b = [674, 399]
+max = 100000
+note = "Route 29's grass and New Bark, until RAIKOU's battle"
+
+[[step]]
+do = "repeat"
+until = "ui=1"
+max_rounds = 60
+steps = [{ do = "wait_frames", n = 20 }]
+shot = "raikou"
+note = "the action menu: BAG / RUN / POKEMON round FIGHT"
+
+[[step]]
+do = "tap"
+x = 40
+y = 172
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 192
+y = 64
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 80
+gap = 60
+note = "the Master Ball (Poke Ball x5, Fast Ball x1, Master Ball x1)"
+
+[[step]]
+do = "tap"
+x = 100
+y = 168
+gap = 60
+note = "USE"
+
+[[step]]
+do = "wait_frames"
+n = 640
+shot = "gotcha"
+note = "'Ross used one Master Ball!', the shake, 'Gotcha! RAIKOU was caught!'"
+
+[[step]]
+do = "repeat"
+until = "in_battle=0"
+max_rounds = 80
+steps = [
+  { do = "press", keys = "a", hold = 2, gap = 40, if = "ui=0" },
+  { do = "press", keys = "b", hold = 2, gap = 40 },
+]
+note = "'RAIKOU's data was added to the Pokedex.', the Pokedex page (A closes it), then B: 'Give a nickname?' NO (the first run's A gave it the name AAAAAAAAAA), the box message"
+
+[[step]]
+do = "advance_text"
 
 [expect]
+map = "MAP_ROUTE_29"
 flags = ["FLAG_GAME_CLEAR"]
-# save = ['243 in [m["species"] for m in s["party"]]']  # np_save4 dump party; no roamer keys in the HG/SS dump
+save = [
+  'any("RAIKOU" in [m["species_name"] for m in b["mons"]] for b in s["boxes"]) or 243 in [m["species"] for m in s["party"]]',
+  'not any(r["species"] == 243 and r["active"] for r in s["roamers"]["slots"])',
+  'not any(i["item"] == 1 for i in s["bag"]["balls"])',
+  'any(m["species_name"] == "RAIKOU" and m["nickname"] == "RAIKOU" for b in s["boxes"] for m in b["mons"])',
+]

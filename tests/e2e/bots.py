@@ -2144,6 +2144,67 @@ def bot_hatch(s, step, ctx):
     raise HarnessError("hatch: %d egg(s) still unhatched after %d frames" % (eggs, bound))
 
 
+def bot_roam_hunt(s, step, ctx):
+    """HG/SS: meet a roaming Pokemon (`species`, a SPECIES_* name) by going back and forth between `a` = [x, z], a
+    grass tile on an overworld map the roamer visits, and `b` = [x, z] on the map next to it (world tiles). Every map
+    change moves the roamers (Save_UpdateRoamersLocation from sub_02067A88, asm/unk_02067A60.s:47-84), so after each
+    arrival on `a`'s map an in-game save's dump (np_save4 `roamers`) says where the roamer is; once it is on the
+    player's map, laps between (x, z) and (x+1, z) meet it (getRandomActiveRoamerInCurrMap,
+    src/field/encounter_check.c:1216-1241: half of the wild encounters there are the roamer). Other wild battles are
+    fled. Done when the roamer's battle starts (the probe's battler 1); its battle is the next steps'."""
+    want = ctx.resolve(step["species"])
+    a, b = (int(step["a"][0]), int(step["a"][1])), (int(step["b"][0]), int(step["b"][1]))
+    bound = _int(step, "max", 60000)
+    limit = s.frame + bound
+    crossings = 0
+    while s.frame < limit:
+        bot_walk_to(s, {"x": a[0], "z": a[1], "on_battle": "flee"}, ctx)
+        if s.in_battle:  # a wild battle that began on the walk's last step
+            bot_auto_battle(s, {"flee": True}, ctx)
+            bot_wait_field(s, {}, ctx)
+        crossings += 1
+        roamer = next((r for r in (save_dump(s, ctx).get("roamers") or {}).get("slots", [])
+                       if r["species"] == want and r["active"]), None)
+        if roamer is None:
+            raise HarnessError("roam_hunt: no active roamer %s in the save" % step["species"])
+        if roamer["map"] != s.map_id:
+            s.note("roam_hunt: arrival %d: %s on map %d, the player on %d" % (crossings, step["species"], roamer["map"],
+                                                                          s.map_id))
+            bot_walk_to(s, {"x": b[0], "z": b[1], "on_battle": "flee"}, ctx)
+            continue
+        s.note("roam_hunt: arrival %d: %s on the player's map %d" % (crossings, step["species"], s.map_id))
+        for k in range(1, 2000):
+            if s.frame >= limit:
+                break
+            p = s.probe()
+            d = "right" if p.x == a[0] else "left"
+            s.run(24, d, until=["x!=%d" % p.x, "in_battle=1"])
+            s.run(24, until=["field_ready=1", "in_battle=1"])
+            if not s.in_battle:
+                continue
+            for _ in range(300):  # the battle report is this battle's once the action menu waits (battle_fresh)
+                p = s.probe()
+                if p.battle_fresh and p.battlers[1].species:
+                    break
+                s.run(10)
+            foe = p.battlers[1].species if p.battle_fresh else 0
+            if foe == want:
+                s.note("roam_hunt: %s's battle after %d laps (%d arrivals)" % (step["species"], k, crossings))
+                return
+            s.note("roam_hunt: a wild %d, fled" % foe)
+            bot_auto_battle(s, {"flee": True}, ctx)
+            bot_wait_field(s, {}, ctx)
+            # the field reloads after a battle, and the roamers may move on with it [INFERENCE: the scouting run
+            # met 40 other battles on the roamer's map without it]: ask the save again
+            here = next((r for r in (save_dump(s, ctx).get("roamers") or {}).get("slots", [])
+                         if r["species"] == want and r["active"]), {}).get("map")
+            if here != s.map_id:
+                s.note("roam_hunt: %s moved on to map %s" % (step["species"], here))
+                bot_walk_to(s, {"x": b[0], "z": b[1], "on_battle": "flee"}, ctx)
+                break
+    raise HarnessError("roam_hunt: %s not met in %d frames (%d arrivals)" % (step["species"], bound, crossings))
+
+
 def bot_pace(s, step, ctx):
     """Run back and forth between (x, z) and (x+1, z) until `until` (a Python expression over the save dump `s`,
     as [expect] save expressions) holds, checked by an in-game save every `every` steps (default 128): the steps
@@ -3025,6 +3086,7 @@ BOTS = {
     "fish": bot_fish,
     "hatch": bot_hatch,
     "pace": bot_pace,
+    "roam_hunt": bot_roam_hunt,
     "dump": bot_dump,
     "menu": bot_menu,
     "push": bot_push,
