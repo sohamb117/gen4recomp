@@ -1,10 +1,9 @@
 # Proves the Kanto gym Misty (Cascade Badge), the Route 24 Rocket and the Machine Part.
 # Start: 92-saffron-sabrina's end -> end: MAP_CERULEAN_GYM after the leader, BADGE_CASCADE.
 title = "Kanto gym: Misty (Cascade Badge), the Route 24 Rocket and the Machine Part"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 100500
 refs = [
   "scr_seq_0760_T04GYM0101.s:97-127 (the gym's Rocket scene: FLAG_HIDE_CERULEAN_GYM_ROCKET, ClearFlag FLAG_HIDE_ROUTE_24_ROCKET/ROUTE_25_MISTY/MISTYS_BOYFRIEND, VAR_SCENE_ROUTE_24_ROCKET 1)",
   "scr_seq_0215_R24.s:79-103 (TRAINER_TEAM_ROCKET_GRUNT_24, FLAG_HIDE_ROUTE_24_ROCKET, VAR_SCENE_ROUTE_24_ROCKET 3)",
@@ -14,15 +13,658 @@ refs = [
   "TRAINER_LEADER_MISTY_MISTY (254, include/constants/trainers.h:259)",
   "Power Plant (optional here, needed by 101/103 and the Route 11/12 Snorlax): zone_event 441_R10R0202 coord 0 (14,16) VAR_SCENE_ROUTE_10_POWER_PLANT 1; scr_seq_0196_R10R0202.s:24-56 (manager: ITEM_MACHINE_PART taken, FLAG_RESTORED_POWER :54, ITEM_TM57)",
 ]
-notes = "Gates: Cerulean via Saffron's north gate [INFERENCE]. Misty is absent until the Route 24 Rocket is beaten and her Route 25 date interrupted. Cerulean Gym also holds the Machine Part; returning it to the Power Plant manager (Route 10, Route 9 needs Cut [INFERENCE]) sets FLAG_RESTORED_POWER, which the Magnet Train (Pass from the Copycat), the EXPN Card/Poke Flute (Snorlax) and the roaming Lati (103) need. Keep the Power Plant return in this milestone's tail or a separate dir. No RTC. Bots proven (hm=true Cut). [INFERENCE] estimate."
+notes = "Scouted on HeartGold (core-proposal). Order: Misty is absent and the gym empty until the Power Plant manager (Route 10, object 6) tells of the stolen Machine Part; leaving the plant crosses the coord (14,16) where the policeman's call clears FLAG_HIDE_CERULEAN_GYM_ROCKET; the gym's Rocket then runs out to Route 24, whose bridge coord brings him over: beaten (VAR_SCENE_ROUTE_24_ROCKET 3), he names the gym; Misty's Route 25 date coord (1418,40..42) sends her home (VAR_UNK_4088 2, the gym's trainers back). The Machine Part is the stop sign object 8 (3,10) (VAR_SCENE_ROUTE_24_ROCKET 4). Misty (10,1) stands at the top of stairs that are climbed from (10,6) northward ((10,3) from the side does not step up: heights); A at (10,2). Then the part goes back to the manager (FLAG_RESTORED_POWER; the plant becomes MAP_ROUTE_10_POWER_PLANT_REPAIRED, which the Magnet Train, the EXPN Card/Snorlax and 103's roaming Lati need). Ways: out of Saffron Gym by the panels in reverse (30 -> 29, 28 -> 27, 15 -> 16, 2 -> 1); Route 5's gatehouse; Cerulean's east edge is crossed by a press (walk_to's probe window ends there); Route 9 to the plant: the legs that worked when scouting, the tree (1422,148) cut, the river surfed from (1434,141). Sailor Eddie paces the gym's one-tile east column and blocks it once beaten, so the pool is surfed to (11,8). Boost (boost.recipe): Typhlosion learns ThunderPunch and SolarBeam (the scouting run lost to Misty's Water team with the Fire lead). Badge: Cascade is Kanto badge 1 (kanto_badge_mask bit 1). Measured: HG 90291 frames, SS 100500; the sheets show Sabrina's room (start), Route 25's date spot, the gym pool by the Machine Part, Misty after the badge, the Power Plant restored, Misty's Golduck lv49 against Typhlosion lv65."
 
 [start]
 from = "92-saffron-sabrina"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 150800
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 17
+avoid = [[18, 22], [28, 25], [28, 22], [28, 13], [28, 16], [2, 13], [2, 16], [8, 7], [8, 4], [17, 4], [17, 7], [2, 25], [2, 22], [28, 7], [28, 4], [22, 22], [22, 25], [8, 22], [8, 25], [8, 16], [8, 13], [13, 7], [13, 4], [22, 16], [22, 13], [22, 4], [22, 7], [2, 4], [2, 7]]
+note = "panel 30 -> (2,7)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 4
+avoid = [[18, 22], [28, 25], [28, 22], [28, 13], [28, 16], [2, 13], [2, 16], [8, 7], [8, 4], [17, 4], [17, 7], [2, 25], [2, 22], [28, 7], [28, 4], [22, 22], [22, 25], [8, 22], [8, 25], [8, 16], [8, 13], [13, 7], [13, 4], [22, 16], [22, 13], [22, 4], [22, 7], [2, 7], [18, 17]]
+note = "panel 28 -> (22,7)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 4
+avoid = [[18, 22], [28, 25], [28, 22], [28, 13], [28, 16], [2, 13], [2, 16], [8, 7], [8, 4], [17, 4], [17, 7], [2, 25], [2, 22], [28, 7], [22, 22], [22, 25], [8, 22], [8, 25], [8, 16], [8, 13], [13, 7], [13, 4], [22, 16], [22, 13], [22, 4], [22, 7], [2, 4], [2, 7], [18, 17]]
+note = "panel 15 -> (22,22)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 28
+z = 25
+avoid = [[18, 22], [28, 22], [28, 13], [28, 16], [2, 13], [2, 16], [8, 7], [8, 4], [17, 4], [17, 7], [2, 25], [2, 22], [28, 7], [28, 4], [22, 22], [22, 25], [8, 22], [8, 25], [8, 16], [8, 13], [13, 7], [13, 4], [22, 16], [22, 13], [22, 4], [22, 7], [2, 4], [2, 7], [18, 17]]
+note = "panel 2 -> (18,22)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 28
+note = "out of Saffron Gym"
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 198
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 197
+note = "Route 5's Saffron gatehouse"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "-> Route 5 (1300,189)"
+
+[[step]]
+do = "walk_to"
+x = 1318
+z = 135
+on_battle = "flee"
+note = "Cerulean, below the gym"
+
+[[step]]
+do = "walk_to"
+x = 1340
+z = 131
+on_battle = "flee"
+note = "Cerulean's east edge"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 64
+until = "map_id!=52"
+note = "across into Route 9 (walk_to's window ends at Cerulean's edge)"
+
+[[step]]
+do = "walk_to"
+x = 1347
+z = 133
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1347
+z = 147
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1354
+z = 147
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1354
+z = 150
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1382
+z = 150
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1385
+z = 151
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1385
+z = 153
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1415
+z = 153
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1416
+z = 151
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1416
+z = 147
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1422
+z = 147
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1422
+z = 152
+hm = true
+on_battle = "flee"
+note = "Cut the tree (1422,148)"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 152
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 157
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1430
+z = 157
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 141
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1434
+z = 141
+surf = true
+on_battle = "flee"
+note = "Surf down Route 9/10's river"
+
+[[step]]
+do = "walk_to"
+x = 1434
+z = 179
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1429
+z = 179
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1429
+z = 183
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1423
+z = 185
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1423
+z = 184
+note = "the Power Plant"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_10_POWER_PLANT_BROKEN"
+
+[[step]]
+do = "talk_to"
+id = 6
+note = "the manager (13,8): the stolen Machine Part (VAR_SCENE_ROUTE_10_POWER_PLANT 1)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 16
+note = "the coord on the way out: the policeman's call (FLAG_HIDE_CERULEAN_GYM_ROCKET cleared)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 20
+
+[[step]]
+do = "fly"
+map = "MAP_CERULEAN"
+
+[[step]]
+do = "heal"
+x = 1309
+z = 131
+note = "Cerulean's Pokemon Center: Route 9's and the Power Plant's battles spent the party (the second run lost to Super Nerd Pat on Route 25 and whited out)"
+
+[[step]]
+do = "walk_to"
+x = 1318
+z = 135
+
+[[step]]
+do = "walk_to"
+x = 1318
+z = 134
+note = "Cerulean Gym"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 20
+note = "the Rocket runs out (VAR_SCENE_ROUTE_24_ROCKET 1, VAR_UNK_4088 1)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 25
+
+[[step]]
+do = "walk_to"
+x = 1326
+z = 100
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1326
+z = 90
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1326
+z = 84
+note = "Route 24's coord: the Rocket on the bridge"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 2
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_TEAM_ROCKET_GRUNT_24 (VAR_SCENE_ROUTE_24_ROCKET 3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 1327
+z = 50
+
+[[step]]
+do = "walk_to"
+x = 1355
+z = 46
+
+[[step]]
+do = "walk_to"
+x = 1384
+z = 42
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 16
+gap = 10
+note = "Route 25's way east is row 44, past Super Nerd Pat (1384,43) (row 40 has the Cut tree (1388,40)); walk_to's own handling of his battle wandered back west to Route 24 twice, so the two steps and his battle are spelled out"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 16
+gap = 10
+note = "(1383,43): Pat sees the player"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "TRAINER_SUPER_NERD_PAT"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 1389
+z = 44
+
+[[step]]
+do = "walk_to"
+x = 1417
+z = 41
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 16
+gap = 20
+note = "Misty's date coord (1418,40..42): she leaves for the gym (VAR_UNK_4088 2)"
+
+[[step]]
+do = "advance_text"
+shot = "date"
+
+[[step]]
+do = "fly"
+map = "MAP_CERULEAN"
+
+[[step]]
+do = "heal"
+x = 1309
+z = 131
+note = "Cerulean's Pokemon Center before the gym"
+
+[[step]]
+do = "walk_to"
+x = 1318
+z = 135
+
+[[step]]
+do = "walk_to"
+x = 1318
+z = 134
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 12
+note = "the east column; Sailor Eddie (19,8) paces it and blocks it once beaten"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 8
+surf = true
+note = "across the pool instead"
+
+[[step]]
+do = "talk_to"
+id = 8
+note = "the Machine Part (3,10)"
+
+[[step]]
+do = "advance_text"
+shot = "machine-part"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 6
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+gap = 10
+times = 4
+note = "up the stairs (10,5)..(10,2) to Misty (10,1)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_MISTY_MISTY"
+
+[[step]]
+do = "advance_text"
+note = "the Cascade Badge"
+shot = "badge"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 8
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 12
+surf = true
+note = "back across the pool (Sailor Eddie still holds the east column)"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 25
+
+[[step]]
+do = "walk_to"
+x = 1340
+z = 131
+on_battle = "flee"
+note = "Cerulean's east edge"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 64
+until = "map_id!=52"
+note = "across into Route 9 (walk_to's window ends at Cerulean's edge)"
+
+[[step]]
+do = "walk_to"
+x = 1347
+z = 133
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1347
+z = 147
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1354
+z = 147
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1354
+z = 150
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1382
+z = 150
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1385
+z = 151
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1385
+z = 153
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1415
+z = 153
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1416
+z = 151
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1416
+z = 147
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1422
+z = 147
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1422
+z = 152
+hm = true
+on_battle = "flee"
+note = "Cut the tree (1422,148)"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 152
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 157
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1430
+z = 157
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1424
+z = 141
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1434
+z = 141
+surf = true
+on_battle = "flee"
+note = "Surf down Route 9/10's river"
+
+[[step]]
+do = "walk_to"
+x = 1434
+z = 179
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1429
+z = 179
+surf = true
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1429
+z = 183
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1423
+z = 185
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1423
+z = 184
+note = "the Power Plant"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_10_POWER_PLANT_BROKEN"
+
+[[step]]
+do = "talk_to"
+id = 6
+note = "the manager takes the Machine Part: FLAG_RESTORED_POWER, TM57"
+
+[[step]]
+do = "advance_text"
+shot = "power-restored"
 
 [expect]
-map = "MAP_CERULEAN_GYM"
-badge = ["BADGE_CASCADE"]
-battles = 1
+map = "MAP_ROUTE_10_POWER_PLANT_REPAIRED"
+battles = 2
+flags = ["FLAG_RESTORED_POWER", "FLAG_HIDE_ROUTE_24_ROCKET"]
+save = ['s["trainer"]["kanto_badge_mask"] >> 1 & 1']
+
+[expect.vars]
+VAR_SCENE_ROUTE_24_ROCKET = 4
