@@ -859,6 +859,15 @@ are in RAM while it is loaded (Dragonspiral 211: the player's rail work at MMDL 
 point and line arrays: points 112 bytes, u32 lines[4], keys[4] (1 U, 2 R, 3 D, 4 L), fx32 pos at +0x30; lines 72
 bytes, start and end point, key, position, camera, length).
 
+The story chain's last milestone is one per version: tests/e2e/black/32-n-castle-reshiram-ghetsis-credits and
+tests/e2e/white/32-n-castle-zekrom-ghetsis-credits run from the throne room's entrance to the game's own save after
+the credits. scr 0556 is one uninterrupted chain from talking to the legendary (script 8) through the capture, N's
+battle, Ghetsis's battle and N's farewell to Cmd156 (the ending); 0x40B6 = 5 is set inside it and never seen in the
+field, so the former split (32 ending at 0x40B6 = 5, 33 for Ghetsis) cannot be played, and 33-ghetsis-ending is
+folded into 32. On the fixed core the ending runs to the game's save (0x40B6 5, 0x40A2 3 from scr 0866 @0x0457,
+flag 0x133) and OS_ResetSystem, about 17k frames after Ghetsis's win; CONTINUE from that save starts in the
+player's bedroom (zone 391).
+
 ## Poké Transfer: what it would take (design note, 2026-10-09; being built)
 
 Read from the Black ROM (White matches by name; offsets below are Black's) with `tests/e2e/tools/bw_script.py`,

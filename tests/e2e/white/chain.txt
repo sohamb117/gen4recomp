@@ -31,5 +31,4 @@
 ../black/29-elite-four
 ../black/30-champion-room-n-castle
 ../black/31-n-castle-climb
-32-n-castle-zekrom-n
-../black/33-ghetsis-ending
+32-n-castle-zekrom-ghetsis-credits

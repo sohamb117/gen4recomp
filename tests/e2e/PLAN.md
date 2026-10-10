@@ -6032,7 +6032,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~1343352 frames estimated
+### Story chain: 32 milestones, ~1363352 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6067,8 +6067,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
 | [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
 | [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
-| [32-n-castle-reshiram-n](black/32-n-castle-reshiram-n/milestone.toml) | N's Castle (Black): Reshiram, and N with Zekrom | P0 | black | 30000 | prev + `None` | 278 | planned |
-| [33-ghetsis-ending](black/33-ghetsis-ending/milestone.toml) | Ghetsis, N's farewell and the credits | P0 | both | 30000 | prev + `None` | - | planned |
+| [32-n-castle-reshiram-ghetsis-credits](black/32-n-castle-reshiram-ghetsis-credits/milestone.toml) | N's Castle (Black): Reshiram, N, Ghetsis and the credits | P0 | black | 80000 | prev + `None` | - | planned |
 
 #### black/01-newgame-bedroom — New game to the bedroom, a walk, a talk with Cheren and the first save
 - proves: Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the furniture, a talk with Cheren, and the save through the game's own X menu. Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
@@ -6380,25 +6379,15 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - refs: zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
 - notes: The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
 
-#### black/32-n-castle-reshiram-n — N's Castle (Black): Reshiram, and N with Zekrom
-- proves: Proves the throne room on Black: Reshiram awakens from the Light Stone and is caught (WildBattle lv 50), then N's battle with Zekrom. Start: the throne room (zone 278) -> end: the throne room, Reshiram in the party, 0x40B6 = 5, 0x40A2 = 2.
+#### black/32-n-castle-reshiram-ghetsis-credits — N's Castle (Black): Reshiram, N, Ghetsis and the credits
+- proves: Proves the end of the story on Black: the throne room, Reshiram awakening from the stone and caught, N's battle with Zekrom, Ghetsis's battle, N's farewell, the credits and the game's own save and reset after them. Start: the throne room's entrance (zone 278, 31's end) -> end: the game's save after the credits, 0x40A2 = 3.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
-- trainers: scr 0556 @0x095C GetVersion; @0x0981 TrainerBattle trdata #587 (N: Zekrom 52, Carracosta, Vanilluxe, Archeops, Zoroark, Klinklang 50) on Black; @0x09EF SetVar 0x40B6 4
-- end state: map 278; vars 0x40B6=5, 0x40A2=2; 1 save check(s)
-- frames: estimate 30000, budget -
-- refs: zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; scr 0556 @0x02FD/@0x0342 SetVar 0x40B6 1/2; @0x0B0A msg 301 #26; @0x0B30 SetVar 0x40B6 3; scr 0556 @0x0CDC unless var 0x8020 == 21 (Black): @0x0CFA WildBattle Reshiram (643) lv 50, var 0x802A; scr 0556 @0x0DEC SetVar 0x40B6 5; @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x095C GetVersion; @0x0981 TrainerBattle trdata #587 (N: Zekrom 52, Carracosta, Vanilluxe, Archeops, Zoroark, Klinklang 50) on Black; @0x09EF SetVar 0x40B6 4
-- notes: The legendary must be caught to go on [INFERENCE: the scene repeats otherwise, var 0x802A]; the Master Ball from 27 is the sure throw. White plays white/32-n-castle-zekrom-n. [INFERENCE] estimate.
-
-#### black/33-ghetsis-ending — Ghetsis, N's farewell and the credits
-- proves: Proves the end of the story: Ghetsis's battle in the throne room, N's farewell and the ending. Start: the throne room (zone 278), 0x40B6 = 5 -> end: after the credits [INFERENCE: the player's house].
-- start: prev + `None`; -; lab state lines: none
-- party: the continued save
-- trainers: scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss
-- end state: vars 0x40B6=5, 0x40A2=2
-- frames: estimate 30000, budget -
-- refs: scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; scr 0556 @0x12A0 MessageVersion (msg 301 #62/#63); @0x1555-@0x15E7 N's farewell (msg 301 #75-#81, flag 0x154 picks the line); scr 0556 @0x15FC Cmd156 0: ends the scene [INFERENCE: the credits]; zone 145 (the Hall of Fame) scr 0290 script 1 is Alder's post-game room [INFERENCE: not part of the story's end]
-- notes: The end state after the credits is not in the scripts read so far: the expect names only what Ghetsis's win must leave [INFERENCE]. [INFERENCE] estimate.
+- trainers: scr 0556 @0x0981 TrainerBattle trdata #587 (Black: N with Zekrom 52) / @0x0973 #586 (White: N with Reshiram 52); @0x09EF SetVar 0x40B6 4; @0x09F5 Cmd021 0xF -> script 15 @0x0DEC SetVar 0x40B6 5, @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; @0x1555-@0x15E7 N's farewell (msg 301 #75-#81); @0x15FC Cmd156 0: the ending
+- end state: flags set 0x133; vars 0x40B6=5, 0x40A2=3; 1 save check(s)
+- frames: estimate 80000, budget -
+- refs: zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; script 3 @0x0342 SetVar 0x40B6 2 (N calls his dragon; the stone answers); scr 0556 script 8 (talking to the legendary): @0x0CDC unless var 0x8020 == 21 (Black) -> @0x0CFA WildBattle Reshiram (643) lv 50 / L_0D08 (White) @0x0D13 WildBattle Zekrom (644) lv 50; @0x0B30 SetVar 0x40B6 3; @0x0B49 L_187E: a full party sends it to the Box, then msg 301 #101-#105 offer the swap; scr 0556 @0x0981 TrainerBattle trdata #587 (Black: N with Zekrom 52) / @0x0973 #586 (White: N with Reshiram 52); @0x09EF SetVar 0x40B6 4; @0x09F5 Cmd021 0xF -> script 15 @0x0DEC SetVar 0x40B6 5, @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; @0x1555-@0x15E7 N's farewell (msg 301 #75-#81); @0x15FC Cmd156 0: the ending; scr 0866 @0x0457 SetVar 0x40A2 3 (the game clear), then the credits; the game saves itself and resets (OS_ResetSystem); flag 0x133: the legendary caught (scr 0556 @0x0D55)
+- notes: One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits. [INFERENCE] estimate.
 <!-- plan.py:end black -->
 
 ## White
@@ -6406,7 +6395,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~1347107 frames estimated
+### Story chain: 32 milestones, ~1367107 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6441,8 +6430,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
 | [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
 | [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
-| [32-n-castle-zekrom-n](white/32-n-castle-zekrom-n/milestone.toml) | N's Castle (White): Zekrom, and N with Reshiram | P0 | white | 30000 | prev + `None` | 278 | planned |
-| [33-ghetsis-ending](black/33-ghetsis-ending/milestone.toml) | Ghetsis, N's farewell and the credits | P0 | both | 30000 | prev + `None` | - | planned |
+| [32-n-castle-zekrom-ghetsis-credits](white/32-n-castle-zekrom-ghetsis-credits/milestone.toml) | N's Castle (White): Zekrom, N, Ghetsis and the credits | P0 | white | 80000 | prev + `None` | - | planned |
 
 #### white/01-newgame-bedroom — New game to the bedroom, a walk, a talk with Cheren and the first save
 - proves: Proves the Black/White new-game route from a blank chip to the first in-game save: the title, the professor's intro, the name, Bianca and Cheren in the bedroom, then the probe-driven field: walks across the room around the furniture, a talk with Cheren, and the save through the game's own X menu. Start: power-on (no save) -> end: the player's bedroom (zone 391), the trainer AAAAAAA saved there, no party yet.
@@ -6754,23 +6742,13 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - refs: zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
 - notes: The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
 
-#### white/32-n-castle-zekrom-n — N's Castle (White): Zekrom, and N with Reshiram
-- proves: Proves the throne room on White: Zekrom awakens from the Dark Stone and is caught (WildBattle lv 50), then N's battle with Reshiram. Start: the throne room (zone 278) -> end: the throne room, Zekrom in the party, 0x40B6 = 5, 0x40A2 = 2.
+#### white/32-n-castle-zekrom-ghetsis-credits — N's Castle (White): Zekrom, N, Ghetsis and the credits
+- proves: Proves the end of the story on White: the throne room, Zekrom awakening from the stone and caught, N's battle with Reshiram, Ghetsis's battle, N's farewell, the credits and the game's own save and reset after them. Start: the throne room's entrance (zone 278, 31's end) -> end: the game's save after the credits, 0x40A2 = 3.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
-- trainers: scr 0556 @0x096C unless var 0x8020 == 20 ...: @0x0973 TrainerBattle trdata #586 (N: Reshiram 52, Carracosta, Vanilluxe, Archeops, Zoroark, Klinklang 50) on White; @0x09EF SetVar 0x40B6 4
-- end state: map 278; vars 0x40B6=5, 0x40A2=2; 1 save check(s)
-- frames: estimate 30000, budget -
-- refs: zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; scr 0556 @0x0CDC unless var 0x8020 == 21 -> L_0D08 (White): @0x0D13 WildBattle Zekrom (644) lv 50, var 0x802A; scr 0556 @0x0DEC SetVar 0x40B6 5; @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x096C unless var 0x8020 == 20 ...: @0x0973 TrainerBattle trdata #586 (N: Reshiram 52, Carracosta, Vanilluxe, Archeops, Zoroark, Klinklang 50) on White; @0x09EF SetVar 0x40B6 4
-- notes: Black plays black/32-n-castle-reshiram-n. [INFERENCE] estimate.
-
-#### white/33-ghetsis-ending — Ghetsis, N's farewell and the credits
-- proves: Proves the end of the story: Ghetsis's battle in the throne room, N's farewell and the ending. Start: the throne room (zone 278), 0x40B6 = 5 -> end: after the credits [INFERENCE: the player's house].
-- start: prev + `None`; -; lab state lines: none
-- party: the continued save
-- trainers: scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss
-- end state: vars 0x40B6=5, 0x40A2=2
-- frames: estimate 30000, budget -
-- refs: scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; scr 0556 @0x12A0 MessageVersion (msg 301 #62/#63); @0x1555-@0x15E7 N's farewell (msg 301 #75-#81, flag 0x154 picks the line); scr 0556 @0x15FC Cmd156 0: ends the scene [INFERENCE: the credits]; zone 145 (the Hall of Fame) scr 0290 script 1 is Alder's post-game room [INFERENCE: not part of the story's end]
-- notes: The end state after the credits is not in the scripts read so far: the expect names only what Ghetsis's win must leave [INFERENCE]. [INFERENCE] estimate.
+- trainers: scr 0556 @0x0981 TrainerBattle trdata #587 (Black: N with Zekrom 52) / @0x0973 #586 (White: N with Reshiram 52); @0x09EF SetVar 0x40B6 4; @0x09F5 Cmd021 0xF -> script 15 @0x0DEC SetVar 0x40B6 5, @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; @0x1555-@0x15E7 N's farewell (msg 301 #75-#81); @0x15FC Cmd156 0: the ending
+- end state: flags set 0x133; vars 0x40B6=5, 0x40A2=3; 1 save check(s)
+- frames: estimate 80000, budget -
+- refs: zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; script 3 @0x0342 SetVar 0x40B6 2 (N calls his dragon; the stone answers); scr 0556 script 8 (talking to the legendary): @0x0CDC unless var 0x8020 == 21 (Black) -> @0x0CFA WildBattle Reshiram (643) lv 50 / L_0D08 (White) @0x0D13 WildBattle Zekrom (644) lv 50; @0x0B30 SetVar 0x40B6 3; @0x0B49 L_187E: a full party sends it to the Box, then msg 301 #101-#105 offer the swap; scr 0556 @0x0981 TrainerBattle trdata #587 (Black: N with Zekrom 52) / @0x0973 #586 (White: N with Reshiram 52); @0x09EF SetVar 0x40B6 4; @0x09F5 Cmd021 0xF -> script 15 @0x0DEC SetVar 0x40B6 5, @0x0DF2 SetVar 0x40A2 2; scr 0556 @0x1186 TrainerBattle trdata #232 (Ghetsis: Cofagrigus, Bouffalant, Seismitoad, Bisharp, Eelektross 52, Hydreigon 54); @0x1210 BlackOut on a loss; @0x1555-@0x15E7 N's farewell (msg 301 #75-#81); @0x15FC Cmd156 0: the ending; scr 0866 @0x0457 SetVar 0x40A2 3 (the game clear), then the credits; the game saves itself and resets (OS_ResetSystem); flag 0x133: the legendary caught (scr 0556 @0x0D55)
+- notes: One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits. [INFERENCE] estimate.
 <!-- plan.py:end white -->

@@ -32,5 +32,4 @@
 29-elite-four
 30-champion-room-n-castle
 31-n-castle-climb
-32-n-castle-reshiram-n
-33-ghetsis-ending
+32-n-castle-reshiram-ghetsis-credits
