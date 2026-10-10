@@ -2,10 +2,9 @@
 # Route 9, and Opelucid's welcome by Alder (Ghetsis's speech), Iris and Drayden.
 # Start: Nacrene City (zone 16, 25's end) -> end: Opelucid City (zone 120), 0x40A8 = 4.
 title = "Route 8 (Bianca) and Route 9 to Opelucid City"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 40000
+estimate = 44485
 refs = [
   "Fly (the X menu's POKEMON, slot 3's FLY, Icirrus tapped and held on the town map, A): needs Icirrus's fly flag 0x9B8, which the field sets on entering Icirrus from outdoors (24 ends that way); no script sets it",
   "zone_event 113 warp 1 (184,195) -> zone 115 (Pokemon Center)",
@@ -17,13 +16,13 @@ refs = [
   "zone_event 120 triggers 1-2 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3",
   "zone_event 120 warp 3 (418,159) -> zone 123; zone 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1 (Drayden, MessageVersion); @0x0179 SetVar 0x40A8 4 (Black) / @0x013E (White)",
 ]
-notes = "Gate exits (zones 349, 131) fire only on a press into the edge: walk_to the tile before, then moves. Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion, no other branch: the dir serves White. Route from scouting. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 39345, White 44485 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Gate exits (zones 349, 131) fire only on a press into the edge: walk_to the tile before, then moves. Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion, no other branch: the dir serves White. Route from scouting."
 
 [start]
 from = "prev"
 
 [run]
-frames = 60000
+frames = 67000
 
 [[step]]
 do = "wait_field"
