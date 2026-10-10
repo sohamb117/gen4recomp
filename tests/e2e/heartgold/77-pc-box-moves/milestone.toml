@@ -1,18 +1,357 @@
-# Proves the Pokemon Center PC (std_pokecenter_pc): deposit a party Pokemon, withdraw it back.
-# Start: 29's end, Fly to Cherrygrove, its Pokemon Center -> end: the party restored.
+# Proves the Pokemon Storage System on Cherrygrove's Pokemon Center PC (BILL'S PC), in three sessions: DEPOSIT puts
+# Togepi (party slot 1) into BOX 1; MOVE POKEMON picks it up and drops it on BOX 2's icon in the box tray; WITHDRAW
+# takes it back from BOX 2 (it rejoins the party last). A save dump after each session proves the boxes.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_CHERRYGROVE_POKECENTER_1F (11,13) below the PC, the boxes empty.
 title = "The PC: deposit, move and withdraw"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 6543
 refs = [
-  "games/heartgold/include/constants/std_script.h:23 std_pokecenter_pc 2010",
-  "README HG/SS Heal: every Pokemon Center 1F has the nurse at (8,11), the exit at (8,19)",
+  "games/heartgold/src/field/field_control.c:582 (MetatileBehavior_IsPC facing north -> the PC script); TILE_BEHAVIOR_PC 0x83 at (11,12) of every Johto Pokemon Center 1F (tools/hg_map.py Map tiles)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0003.s:754-812 (scr_seq_0003_010 std_pokecenter_pc 2010: 'booted up the PC', the PC menu BILL'S PC / <player>'s PC / SWITCH OFF without FLAG_GAME_CLEAR)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0003.s:814-870 (BILL'S PC: DEPOSIT, WITHDRAW, MOVE POKEMON, MOVE ITEMS, SEE YA! (msg_0191_00067..72); ScrCmd_158 0/1/2 opens the storage in that mode, the menu again after)",
+  "games/heartgold/src/scrcmd_c.c:1990 (ScrCmd_158: the box screen; its UI is undecompiled, every press here is scouted)",
+  "games/heartgold/files/msgdata/msg/msg_0025.gmm:56 ('Continue Box operations?'), :85 ('Deposit where?')",
 ]
-notes = "The PC's menus are touch/keys (no probe report): fixed presses. np_save4 dump has no HG/SS PC box keys: [expect] reads the party count before/after (dump steps), or np_save4 gains a box dump. estimate: a guess until measured."
+notes = "np_save4 dump reads HG/SS boxes (boxes[].mons: species_name, slot). The box screens are not in the probe: every press is the scouted one (HeartGold 29's end save). The menu of BILL'S PC opens with the cursor on DEPOSIT each time (2x3: DEPOSIT / WITHDRAW, MOVE / MOVE ITEMS, - / SEE YA!). Deposit: the party on the bottom screen, cursor on slot 0: RIGHT is Togepi, A its menu (DEPOSIT first), A the box picker 'Deposit where?' on BOX 1, A deposits. Move: the box opens on BOX 1 slot 0 (Togepi), A its menu (MOVE first), A picks it up and shows the box tray; the D-pad does not drop it into another box (UP, RIGHT to BOX 2's icon, A only points at it; the first run, tapping without R, left it in the grid): R moves the hand onto the tray at BOX 2's icon, and a touch on that icon (75,25) drops it there ('BOX 2 : 1/30'). Withdraw: the box opens on BOX 1; UP to its title, RIGHT shows BOX 2, DOWN to slot 0, A its menu (WITHDRAW first), A. B leaves each screen: 'Continue Box operations?' (YES first): DOWN, A; then B until the field. Measured: HeartGold 6543 frames, SoulSilver 6543."
 
 [start]
 from = "29-new-bark-elm-master-ball"
 
 [run]
-frames = 30000
+frames = 9900
+
+[[step]]
+do = "fly"
+map = "MAP_CHERRYGROVE"
+
+[[step]]
+do = "walk_to"
+x = 564
+z = 391
+note = "Cherrygrove's Pokemon Center door"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CHERRYGROVE_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 13
+face = "up"
+note = "below the PC (11,12)"
+
+# --- session 1: DEPOSIT
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+note = "'Ross booted up the PC.'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+note = "'Which PC should be accessed?' BILL'S PC / Ross's PC / SWITCH OFF"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 90
+note = "BILL'S PC: 'The Pokemon Storage System was accessed.'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+shot = "storage-menu"
+note = "the storage menu, cursor on DEPOSIT"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 150
+note = "DEPOSIT: the party, cursor on slot 0"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 2
+gap = 20
+note = "slot 1, Togepi"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+note = "'TOGEPI is selected.' DEPOSIT / SUMMARY / MARKING / RELEASE"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 80
+shot = "deposit-where"
+note = "'Deposit where?' BOX 1 0/30"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 80
+note = "into BOX 1"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+note = "'Continue Box operations?'"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 150
+note = "NO: the storage menu"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+times = 6
+until = "field_ready=1"
+note = "leave the PC"
+
+[[step]]
+do = "dump"
+expr = '(len(s["party"]), [(b["box"], [m["species_name"] for m in b["mons"]]) for b in s["boxes"] if b["count"]])'
+
+# --- session 2: MOVE POKEMON, BOX 1 -> BOX 2
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 90
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+note = "MOVE POKEMON"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 200
+note = "BOX 1, cursor on slot 0 (Togepi)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+note = "MOVE / SUMMARY / HELD ITEMS / MARKING / RELEASE"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+shot = "holding"
+note = "MOVE: Togepi in hand, the box tray up"
+
+[[step]]
+do = "press"
+keys = "r"
+hold = 2
+gap = 40
+note = "R: the hand goes up onto the tray, BOX 2's icon"
+
+[[step]]
+do = "tap"
+x = 75
+y = 25
+gap = 60
+shot = "dropped-in-box-2"
+note = "BOX 2's icon in the tray: 'BOX 2 : 1/30'"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+note = "the box view again"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+note = "'Continue Box operations?'"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 150
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+times = 6
+until = "field_ready=1"
+
+[[step]]
+do = "dump"
+expr = '(len(s["party"]), [(b["box"], [m["species_name"] for m in b["mons"]]) for b in s["boxes"] if b["count"]])'
+
+# --- session 3: WITHDRAW from BOX 2
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 90
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 2
+gap = 10
+note = "WITHDRAW"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 200
+note = "BOX 1 (empty)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 2
+gap = 20
+note = "the box title"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 2
+gap = 60
+note = "BOX 2"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 20
+shot = "box-2"
+note = "slot 0, Togepi"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+note = "WITHDRAW / SUMMARY / MARKING / RELEASE"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+shot = "withdrawn"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+note = "'Continue Box operations?'"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 150
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+times = 6
+until = "field_ready=1"
+
+[expect]
+map = "MAP_CHERRYGROVE_POKECENTER_1F"
+position = [11, 13]
+log = ["dump: .* = \\(5, \\[\\(1, \\['TOGEPI'\\]\\)\\]\\)", "dump: .* = \\(5, \\[\\(2, \\['TOGEPI'\\]\\)\\]\\)"]
+save = ['len(s["party"]) == 6', 's["party"][5]["species_name"] == "TOGEPI"', 'all(b["count"] == 0 for b in s["boxes"])']

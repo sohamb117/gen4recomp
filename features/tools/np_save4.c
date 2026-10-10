@@ -370,8 +370,11 @@ static void dump_hall_of_fame(FILE *o, const save4 *s)
 
 /* Platinum's Daycare (struct_defs/daycare.h) in the general block: two DaycareMon (BoxPokemon, DaycareMail,
  * u32 steps; 0xEC each), then u32 offspringPersonality (an egg waiting when non-zero) and u8 stepCounter (the
- * egg-cycle counter). Offset found by scanning lab saves for valid BoxPokemon (save_table.c sums the page sizes). */
+ * egg-cycle counter). Offset found by scanning lab saves for valid BoxPokemon (save_table.c sums the page sizes).
+ * HG/SS's Daycare (pokeheartgold include/daycare.h: mons[2], egg_pid, egg_cycles) has the same shape; its offset was
+ * found the same way, from the PIDs of two Pokemon deposited on Route 34 (tests/e2e/heartgold/73). */
 #define PT_DAYCARE_OFF 0x1654
+#define HGSS_DAYCARE_OFF 0x15FC
 #define DAYCARE_MON_SIZE 0xEC
 
 static void dump_daycare(FILE *o, const save4 *s)
@@ -379,11 +382,12 @@ static void dump_daycare(FILE *o, const save4 *s)
     size_t len = 0;
     const uint8_t *img = save4_image(s, &len);
     uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
-    if (s->game != SAVE4_GAME_PT || base + PT_DAYCARE_OFF + 2 * DAYCARE_MON_SIZE + 5 > len) {
+    uint32_t off = s->game == SAVE4_GAME_PT ? PT_DAYCARE_OFF : save4_game_is_hgss(s->game) ? HGSS_DAYCARE_OFF : 0;
+    if (!off || base + off + 2 * DAYCARE_MON_SIZE + 5 > len) {
         fputs("  \"daycare\": null,\n", o);
         return;
     }
-    const uint8_t *d = img + base + PT_DAYCARE_OFF;
+    const uint8_t *d = img + base + off;
     fputs("  \"daycare\": {\"mons\": [", o);
     for (int i = 0, n = 0; i < 2; i++) {
         const uint8_t *m = d + i * DAYCARE_MON_SIZE;

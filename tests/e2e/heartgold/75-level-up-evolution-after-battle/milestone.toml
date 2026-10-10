@@ -1,17 +1,37 @@
-# Proves level-up evolution: a party member one level short of its evolution wins a wild battle, levels up and evolves (the evolution scene runs).
-# Start: an early chain end with an unevolved member (e.g. Cyndaquil under 14) -> end: the evolved species in the party.
+# Proves level-up evolution: Cyndaquil, boosted to 13, fights wild battles in Route 32's tall grass until it reaches 14,
+# and the evolution scene after that battle makes it Quilava (EVO_LEVEL 14).
+# Start: 04's end, MAP_VIOLET (511,269) -> end: Route 32's grass (476,290) or Violet's Pokemon Center door, lead QUILAVA.
 title = "Level-up evolution after a wild battle"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 14915
 refs = [
-  "chain 02/05 grind (bots.py grind on HG/SS)",
+  "games/heartgold/files/poketool/personal/evo.json:117 (SPECIES_CYNDAQUIL: EVO_LEVEL 14 -> SPECIES_QUILAVA)",
+  "chain 05 (grind on Route 32's tall grass (476..477,290) from Violet, healing at Violet's Pokemon Center (497,271))",
 ]
-notes = "A boost `party-level SLOT LEVEL` puts the member at the level before its evolution (Cyndaquil 13 -> Quilava at 14); grind fights one wild battle. Pick the chain end from its party (np_save4 dump). estimate: a guess until measured."
+notes = "04's end is the last chain save with Cyndaquil unevolved (lv10; 05 ends with Quilava 15). The boost sets it to 13 (experience at that level's base, no evolution: run.py hgss_boost, np_save4 set-level), so the first level gained in a battle is 14 and the evolution runs at that battle's end (grind's auto_battle and its after-battle presses). Measured: HeartGold 13624 frames, SoulSilver 14915."
 
 [start]
-from = "05-sprout-tower-elder-li"
+from = "04-route30-31-violet"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 22400
+
+[[step]]
+do = "dump"
+expr = '(s["party"][0]["species_name"], s["party"][0]["level"])'
+note = "the boosted lead before the battles"
+
+[[step]]
+do = "grind"
+x = 476
+z = 290
+level = 14
+heal = [497, 271]
+shot = "after-grind"
+note = "wild battles in Route 32's tall grass until the lead is 14"
+
+[expect]
+log = ["dump: .* = \\('CYNDAQUIL', 13\\)"]
+save = ['s["party"][0]["species_name"] == "QUILAVA"', 's["party"][0]["level"] >= 14']

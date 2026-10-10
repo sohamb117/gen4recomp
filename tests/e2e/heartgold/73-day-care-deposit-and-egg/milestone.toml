@@ -1,23 +1,188 @@
-# Proves the Route 34 Day Care: the lady takes two compatible Pokemon (std_daycare_lady), steps outside make an egg, the man outside gives it (std_daycare_man).
-# Start: 29's end, Fly to Goldenrod, Route 34 -> end: MAP_ROUTE_34, an egg in the party.
+# Proves the Route 34 Day Care: the lady (std_daycare_lady) takes Pelipper (F) and Feraligatr (M), who share the
+# Water 1 egg group; laps outside until the save shows an egg waiting; the Day-Care Man (std_daycare_man) gives it:
+# a Wingull egg (the mother's line) joins the party.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_ROUTE_34 (364,410) beside the Day-Care Man, the egg in the party.
 title = "Day Care: two Pokemon in, an egg out"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 24474
 refs = [
-  "games/heartgold/src/script_manager.c:50 (_std_daycare -> scr_seq_0265; std_daycare_man 9500 / std_daycare_lady 9501, include/constants/std_script.h:615-617)",
-  "zone_event 302_R34R0101 object 0 SPRITE_GSOLDWOMAN1 (3,5) -> std_daycare_lady; zone_event 035_R34 object 10 SPRITE_GSOLDMAN1 (365,410) -> std_daycare_man",
-  "chain 11 (Route 34's Day Care scene, FLAG_UNK_22D)",
+  "games/heartgold/src/script_manager.c:50 (_std_daycare -> scr_seq_0265; include/constants/std_script.h:615-617 std_daycare_man 9500 / std_daycare_lady 9501)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0265.s:206-276 (scr_seq_0265_001, the lady: 'Would you like us to raise your Pokemon?', the party picker, PutMonInDaycare, 'raise another?')",
+  "zone_event 302_R34R0101 (MAP_ROUTE_34_DAYCARE) object 0 (3,5) std_daycare_lady behind the counter, warp 0 (3,12); zone_event 035_R34 warp 2 (368,410) -> the Day Care, object 10 (365,410) std_daycare_man",
+  "games/heartgold/include/daycare.h:7-26 (Daycare: mons[2] of 0xEC, egg_pid, egg_cycles); features/tools/np_save4.c dump_daycare (HGSS_DAYCARE_OFF 0x15FC in the general block, found from the deposited PIDs)",
+  "games/heartgold/src/get_egg.c:669-724 (ComputeCompatibilityBetweenBoxMons: egg groups, genders, OT ids); files/poketool/personal/personal.json (PELIPPER Water 1/Flying, FERALIGATR Monster/Water 1)",
+  "games/heartgold/src/get_egg.c:625-643 (GiveEggToPlayer: the mother's species, IS_EGG)",
 ]
-notes = "A compatible pair from 29's party: Pelipper (Water 1/Flying) and Feraligatr (Monster/Water 1) share Water 1 if their genders differ [INFERENCE: genders from the PIDs; np_save4 dump shows no gender]. A full party: depositing two leaves four. No HG/SS daycare keys in np_save4 dump (Platinum only): [expect] reads the party (two fewer, then an egg) or the dump gains HG/SS daycare keys. The pace bot (egg roll by in-game saves) needs a daycare key; else step a fixed distance and ask the man. estimate: a guess until measured."
+notes = "29's party: Pelipper is its only female (PID low byte 5 on HeartGold, 12 on SoulSilver, under the 0.5 ratio's 127); Feraligatr (M) shares Water 1 with it. Same OT, different species: the lowest egg chance per 256-step roll, so the laps run long (scouted: 2304 steps). Typhlosion and Togepi are fainted at 29's end; wild battles on the laps are fled (Scyther leads). Every press is the scouted one: the party picker opens on slot 0 and DOWN steps a column (slots 0, 2, 4 on the left): Pelipper is slot 4, then Feraligatr is slot 4 of the five left. The man's question 'You do want it, don't you?' is YES on A (advance_text). Measured: HeartGold 24474 frames, SoulSilver 13874."
 
 [start]
 from = "29-new-bark-elm-master-ball"
 
 [run]
-frames = 30000
+frames = 36800
+
+[[step]]
+do = "fly"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "walk_to"
+x = 368
+z = 410
+on_battle = "flee"
+note = "Route 34 south to the Day Care door (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_34_DAYCARE"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 7
+face = "up"
+note = "across the counter from the lady (3,5)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+note = "'I'm the Day-Care Lady. We can raise Pokemon for you.'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+note = "'Would you like us to raise your Pokemon?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+note = "YES: 'Which Pokemon should we raise for you?'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+shot = "picker"
+note = "the party picker, cursor on slot 0"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+times = 2
+note = "slot 4: PELIPPER (F)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+note = "'Do what with PELIPPER?' STORE / SUMMARY"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+note = "STORE: 'Fine, we'll raise your PELIPPER for a while.'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+note = "'We can raise two of your Pokemon. Would you like us to raise another?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+note = "YES: 'Which Pokemon should we raise for you?'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+note = "the party picker again"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+times = 2
+note = "slot 4: FERALIGATR"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+shot = "stored-second"
+note = "STORE: 'Fine, we'll raise your FERALIGATR for a while.'"
+
+[[step]]
+do = "advance_text"
+note = "'Come back for it later.'"
+
+[[step]]
+do = "dump"
+expr = '[m["species_name"] for m in s["daycare"]["mons"]]'
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 12
+note = "the door mat (warp 0) -> Route 34"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_34"
+
+[[step]]
+do = "pace"
+x = 361
+z = 408
+until = 's["daycare"]["egg_waiting"]'
+every = 64
+max = 50000
+shot = "egg-waiting"
+note = "laps north of the grass until the save shows the egg (np_save4 daycare.egg_waiting: egg_pid set)"
+
+[[step]]
+do = "talk_to"
+id = 10
+note = "the Day-Care Man (365,410): 'Ah, it's you! ... You do want it, don't you?'"
+
+[[step]]
+do = "advance_text"
+shot = "egg-received"
+note = "YES (A): 'Ross received the Egg from the Day-Care Man.' 'Take good care of it!'"
 
 [expect]
 map = "MAP_ROUTE_34"
-save = ["any(m[\"is_egg\"] for m in s[\"party\"])"]
+party_size = 5
+log = ["dump: .* = \\['PELIPPER', 'FERALIGATR'\\]", "pace: .* after \\d+ steps"]
+save = [
+  '[m["species_name"] for m in s["party"]][:4] == ["TYPHLOSION", "TOGEPI", "SCYTHER", "AMPHAROS"]',
+  's["party"][4]["is_egg"] and s["party"][4]["species_name"] == "WINGULL"',
+  '[m["species_name"] for m in s["daycare"]["mons"]] == ["PELIPPER", "FERALIGATR"]',
+  'not s["daycare"]["egg_waiting"]',
+]

@@ -1,0 +1,7 @@
+# Boost on 73's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
+# Party before: TYPHLOSION, TOGEPI, SCYTHER, AMPHAROS, the Wingull egg (73) -> size 5.
+# Adds slot 5: MAGMAR, whose only ability is Flame Body (files/poketool/personal/personal.json), so the egg loses two
+# cycles per 255 steps (games/heartgold/src/get_egg.c:645-656 GetEggCyclesToSubtract). It never battles; Ember keeps
+# it from Struggle.
+party SPECIES_MAGMAR 30
+party-move 5 0 MOVE_EMBER

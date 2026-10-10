@@ -1,20 +1,38 @@
-# Proves hatching: walking with 73's egg until it hatches (the nickname question answered NO).
-# Start: 73's end (an egg in the party) -> end: the hatched Pokemon in the party.
-title = "An egg hatches"
-status = "planned"
+# Proves hatching: laps beside the Day Care with 73's Wingull egg, a Flame Body Magmar in the party (two egg cycles off
+# per 255 steps), until the hatch scene runs (its nickname question answered NO): a lv1 Wingull joins the party.
+# Start: 73's end, MAP_ROUTE_34 (364,410) -> end: MAP_ROUTE_34 by (361,408), the egg hatched.
+title = "An egg hatches (Flame Body)"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 25156
 refs = [
-  "chain 06 (the Togepi egg, FLAG_GOT_EGG_FROM_ELMS_ASSISTANT; hatched on the chain's way: 29's Togepi is no egg)",
+  "games/heartgold/src/get_egg.c:786-800 (each 255 steps: every egg's friendship (its remaining cycles) drops by GetEggCyclesToSubtract), :645-656 (2 with ABILITY_FLAME_BODY or ABILITY_MAGMA_ARMOR in the party, else 1)",
+  "games/heartgold/src/get_egg.c:750-761 (Daycare_GetEggCycleLength: 255 steps, 230 on special dates)",
+  "files/poketool/personal/personal.json: WINGULL eggCycles 20, MAGMAR abilities ABILITY_FLAME_BODY / ABILITY_NONE (Flame Body whatever the PID)",
+  "chain 06 (the Togepi egg, hatched on the chain's way)",
 ]
-notes = "The hatch bot paces until no egg is left (checked by in-game saves; unproven on HG/SS). Starts from 73's end (systems chain), so 73 runs first. estimate: a guess until measured."
+notes = "Starts from 73's end (systems order: 73 first). The egg starts at 20 cycles (73 scouted friendship 20); with Flame Body 10 rolls of 255 steps, about 2550 laps, without it twice that. The boost adds MAGMAR lv30 behind the egg (party 6; np_save4 add-mon) with one move: it never battles (wild battles on the laps are fled). bots.py hatch: laps until no egg is left, the scene's text with B. Measured: HeartGold 25155 frames, SoulSilver 25156."
 
 [start]
 from = "73-day-care-deposit-and-egg"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 37800
+
+[[step]]
+do = "hatch"
+x = 361
+z = 408
+shot = "hatched"
+note = "laps north of Route 34's grass until the egg hatches"
 
 [expect]
-save = ["not any(m[\"is_egg\"] for m in s[\"party\"])"]
+map = "MAP_ROUTE_34"
+party_size = 6
+log = ["hatch: a scene of \\d+ frames after \\d+ steps; 0 egg\\(s\\) left"]
+save = [
+  '[m["species_name"] for m in s["party"]] == ["TYPHLOSION", "TOGEPI", "SCYTHER", "AMPHAROS", "WINGULL", "MAGMAR"]',
+  'not any(m["is_egg"] for m in s["party"])',
+  's["party"][4]["level"] == 1',
+]

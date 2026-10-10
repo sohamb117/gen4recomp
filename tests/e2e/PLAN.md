@@ -3564,7 +3564,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: zone_event 275_T10R0501 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_LANCE_ROOM 0 (6,28); scr_seq_0597_T10R0601_hdr.s (OnFrame VAR_UNK_40C8 0 -> 001: ClearFlag FLAG_UNK_210, VAR_UNK_40C8 1); zone_event 276_T10R0601 coord 0 (5,10) w3 VAR_UNK_40C7 0 -> 000; scr_seq_0824_T10R0601.s:41-163 (VAR_UNK_4135 < 8 -> TRAINER_CHAMPION_LANCE :77; Lyra, Elm, Oak; ClearFlag FLAG_HIDE_OLIVINE_PORT_OAK, VAR_UNK_411A 1, Warp MAP_POKEMON_LEAGUE_HALL_OF_FAME (6,22)); TRAINER_CHAMPION_LANCE (244, include/constants/trainers.h:249): GYARADOS 46, DRAGONITE 49, DRAGONITE 49, AERODACTYL 48, CHARIZARD 48, DRAGONITE 50; scr_seq_0598_T10R0701_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0825_T10R0701.s:16-89 (HallOfFameAnim :40, no S.S. Ticket -> VAR_SCENE_PLAYERS_HOUSE_1F 3 :45-48, FLAG_UNK_97E, ClearFlag FLAG_HIDE_LAKE_OF_RAGE_PRYCE, uncaught legendaries reset, HOFCredits 0 :84); src/scrcmd_c.c:2023-2027 (HOFCredits -> CallTask_GameClear); src/game_clear.c:263-300 (CallTask_GameClear: Location_SetToPlayerRoom, SetGameClearFlag -> FLAG_GAME_CLEAR include/constants/flags.h:1710, league wins); src/game_clear.c:156-258 (RegisterHallOfFame app, SaveGameNormal + AddHallOfFameEntry (state 4), credits (state 10), OS_ResetSystem(0) (state 11)); src/register_hall_of_fame.c:2207-2215 (REGHOF_WHOLE_SUBPROC_WAIT_BUTTON: the whole-team photo waits for a new A/B/touch, :2210); src/credits/credits.c:37-38,316-385 (CREDITS_FRAMES 4976; on the first clear only START/touch could skip, A is ignored :318; 'The End' waits for a new A/START/touch :363-382)
 - notes: Lance's three Dragonite: Pelipper's Ice Beam (18's boost) behind a fainted lead (send = best). After Lance every screen waits for input: the Hall of Fame photo waits for A/B (register_hall_of_fame.c:2210), 'The End' for a new A/START (credits.c:363-382); A does not skip the first clear's credits (credits.c:318). So one long A cadence from the Hall of Fame's arrival through the walk-in, Lance's speech, the registration and the photo (110 presses, 56 frames apart, ~6160 frames) [INFERENCE: the photo's wait is reached within that run], then the save and the credits (6500 frames), one A for 'The End', and wait_reset without keys (its keys are held, i.e. one press, and none is needed). The save the run is judged on is SaveGameNormal in Task_GameClear state 4, written after CallTask_GameClear set FLAG_GAME_CLEAR, so the E4 defeat flags are still set in it (the League entrance clears them only on its next OnTransition).
 
-### Side systems: 43 milestones, ~747841 frames estimated
+### Side systems: 43 milestones, ~738929 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -3581,11 +3581,11 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [70-fishing-old-rod](heartgold/70-fishing-old-rod/milestone.toml) | The Old Rod: Route 32's fisherman and a catch | P0 | both | 20000 | prev + `None` | - | planned |
 | [71-fishing-good-rod](heartgold/71-fishing-good-rod/milestone.toml) | The Good Rod: Olivine's fishing guru | P0 | both | 20000 | prev + `None` | - | planned |
 | [72-fishing-super-rod](heartgold/72-fishing-super-rod/milestone.toml) | The Super Rod: Route 12's house (Kanto) | P1 | both | 20000 | prev + `None` | - | planned |
-| [73-day-care-deposit-and-egg](heartgold/73-day-care-deposit-and-egg/milestone.toml) | Day Care: two Pokemon in, an egg out | P0 | both | 20000 | prev + `None` | MAP_ROUTE_34 | planned |
-| [74-egg-hatch](heartgold/74-egg-hatch/milestone.toml) | An egg hatches | P0 | both | 20000 | prev + `None` | - | planned |
-| [75-level-up-evolution-after-battle](heartgold/75-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after a wild battle | P0 | both | 20000 | prev + `None` | - | planned |
+| [73-day-care-deposit-and-egg](heartgold/73-day-care-deposit-and-egg/milestone.toml) | Day Care: two Pokemon in, an egg out | P0 | both | 24474 | prev + `None` | MAP_ROUTE_34 | passing |
+| [74-egg-hatch](heartgold/74-egg-hatch/milestone.toml) | An egg hatches (Flame Body) | P0 | both | 25156 | prev + `None` | MAP_ROUTE_34 | passing |
+| [75-level-up-evolution-after-battle](heartgold/75-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after a wild battle | P0 | both | 14915 | prev + `None` | - | passing |
 | [76-trade-evolution](heartgold/76-trade-evolution/milestone.toml) | Trade evolution over the link | P1 | both | 20000 | `None` | - | planned |
-| [77-pc-box-moves](heartgold/77-pc-box-moves/milestone.toml) | The PC: deposit, move and withdraw | P0 | both | 20000 | prev + `None` | - | planned |
+| [77-pc-box-moves](heartgold/77-pc-box-moves/milestone.toml) | The PC: deposit, move and withdraw | P0 | both | 6543 | prev + `None` | MAP_CHERRYGROVE_POKECENTER_1F | passing |
 | [80-bug-catching-contest](heartgold/80-bug-catching-contest/milestone.toml) | Bug-Catching Contest: entry, Sport Balls, a catch, judging and prize | P1 | both | 14000 | prev + `None` | MAP_NATIONAL_PARK | planned |
 | [81-pokeathlon-speed-course](heartgold/81-pokeathlon-speed-course/milestone.toml) | Pokeathlon Dome: Speed Course | P2 | both | 24000 | prev + `None` | MAP_POKEATHLON_DOME_INTERIOR_1F | planned |
 | [82-safari-zone](heartgold/82-safari-zone/milestone.toml) | Safari Zone: Baoba's gate, entry, Safari Balls and a catch | P1 | both | 18000 | prev + `None` | MAP_SAFARI_ZONE_ENTRANCE_INTERIOR | planned |
@@ -3743,34 +3743,34 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - notes: BLOCKED as 70, and needs the Kanto post-game (90-). estimate: a guess until measured.
 
 #### heartgold/73-day-care-deposit-and-egg — Day Care: two Pokemon in, an egg out
-- proves: Proves the Route 34 Day Care: the lady takes two compatible Pokemon (std_daycare_lady), steps outside make an egg, the man outside gives it (std_daycare_man). Start: 29's end, Fly to Goldenrod, Route 34 -> end: MAP_ROUTE_34, an egg in the party.
+- proves: Proves the Route 34 Day Care: the lady (std_daycare_lady) takes Pelipper (F) and Feraligatr (M), who share the Water 1 egg group; laps outside until the save shows an egg waiting; the Day-Care Man (std_daycare_man) gives it: a Wingull egg (the mother's line) joins the party. Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_ROUTE_34 (364,410) beside the Day-Care Man, the egg in the party.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: map MAP_ROUTE_34; 1 save check(s)
-- frames: estimate 20000, budget 30000
-- refs: games/heartgold/src/script_manager.c:50 (_std_daycare -> scr_seq_0265; std_daycare_man 9500 / std_daycare_lady 9501, include/constants/std_script.h:615-617); zone_event 302_R34R0101 object 0 SPRITE_GSOLDWOMAN1 (3,5) -> std_daycare_lady; zone_event 035_R34 object 10 SPRITE_GSOLDMAN1 (365,410) -> std_daycare_man; chain 11 (Route 34's Day Care scene, FLAG_UNK_22D)
-- notes: A compatible pair from 29's party: Pelipper (Water 1/Flying) and Feraligatr (Monster/Water 1) share Water 1 if their genders differ [INFERENCE: genders from the PIDs; np_save4 dump shows no gender]. A full party: depositing two leaves four. No HG/SS daycare keys in np_save4 dump (Platinum only): [expect] reads the party (two fewer, then an egg) or the dump gains HG/SS daycare keys. The pace bot (egg roll by in-game saves) needs a daycare key; else step a fixed distance and ask the man. estimate: a guess until measured.
+- end state: map MAP_ROUTE_34; party size 5; 4 save check(s); log /dump: .* = \['PELIPPER', 'FERALIGATR'\]/, /pace: .* after \d+ steps/
+- frames: estimate 24474, budget 36800
+- refs: games/heartgold/src/script_manager.c:50 (_std_daycare -> scr_seq_0265; include/constants/std_script.h:615-617 std_daycare_man 9500 / std_daycare_lady 9501); games/heartgold/files/fielddata/script/scr_seq/scr_seq_0265.s:206-276 (scr_seq_0265_001, the lady: 'Would you like us to raise your Pokemon?', the party picker, PutMonInDaycare, 'raise another?'); zone_event 302_R34R0101 (MAP_ROUTE_34_DAYCARE) object 0 (3,5) std_daycare_lady behind the counter, warp 0 (3,12); zone_event 035_R34 warp 2 (368,410) -> the Day Care, object 10 (365,410) std_daycare_man; games/heartgold/include/daycare.h:7-26 (Daycare: mons[2] of 0xEC, egg_pid, egg_cycles); features/tools/np_save4.c dump_daycare (HGSS_DAYCARE_OFF 0x15FC in the general block, found from the deposited PIDs); games/heartgold/src/get_egg.c:669-724 (ComputeCompatibilityBetweenBoxMons: egg groups, genders, OT ids); files/poketool/personal/personal.json (PELIPPER Water 1/Flying, FERALIGATR Monster/Water 1); games/heartgold/src/get_egg.c:625-643 (GiveEggToPlayer: the mother's species, IS_EGG)
+- notes: 29's party: Pelipper is its only female (PID low byte 5 on HeartGold, 12 on SoulSilver, under the 0.5 ratio's 127); Feraligatr (M) shares Water 1 with it. Same OT, different species: the lowest egg chance per 256-step roll, so the laps run long (scouted: 2304 steps). Typhlosion and Togepi are fainted at 29's end; wild battles on the laps are fled (Scyther leads). Every press is the scouted one: the party picker opens on slot 0 and DOWN steps a column (slots 0, 2, 4 on the left): Pelipper is slot 4, then Feraligatr is slot 4 of the five left. The man's question 'You do want it, don't you?' is YES on A (advance_text). Measured: HeartGold 24474 frames, SoulSilver 13874.
 
-#### heartgold/74-egg-hatch — An egg hatches
-- proves: Proves hatching: walking with 73's egg until it hatches (the nickname question answered NO). Start: 73's end (an egg in the party) -> end: the hatched Pokemon in the party.
+#### heartgold/74-egg-hatch — An egg hatches (Flame Body)
+- proves: Proves hatching: laps beside the Day Care with 73's Wingull egg, a Flame Body Magmar in the party (two egg cycles off per 255 steps), until the hatch scene runs (its nickname question answered NO): a lv1 Wingull joins the party. Start: 73's end, MAP_ROUTE_34 (364,410) -> end: MAP_ROUTE_34 by (361,408), the egg hatched.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: 1 save check(s)
-- frames: estimate 20000, budget 30000
-- refs: chain 06 (the Togepi egg, FLAG_GOT_EGG_FROM_ELMS_ASSISTANT; hatched on the chain's way: 29's Togepi is no egg)
-- notes: The hatch bot paces until no egg is left (checked by in-game saves; unproven on HG/SS). Starts from 73's end (systems chain), so 73 runs first. estimate: a guess until measured.
+- end state: map MAP_ROUTE_34; party size 6; 3 save check(s); log /hatch: a scene of \d+ frames after \d+ steps; 0 egg\(s\) left/
+- frames: estimate 25156, budget 37800
+- refs: games/heartgold/src/get_egg.c:786-800 (each 255 steps: every egg's friendship (its remaining cycles) drops by GetEggCyclesToSubtract), :645-656 (2 with ABILITY_FLAME_BODY or ABILITY_MAGMA_ARMOR in the party, else 1); games/heartgold/src/get_egg.c:750-761 (Daycare_GetEggCycleLength: 255 steps, 230 on special dates); files/poketool/personal/personal.json: WINGULL eggCycles 20, MAGMAR abilities ABILITY_FLAME_BODY / ABILITY_NONE (Flame Body whatever the PID); chain 06 (the Togepi egg, hatched on the chain's way)
+- notes: Starts from 73's end (systems order: 73 first). The egg starts at 20 cycles (73 scouted friendship 20); with Flame Body 10 rolls of 255 steps, about 2550 laps, without it twice that. The boost adds MAGMAR lv30 behind the egg (party 6; np_save4 add-mon) with one move: it never battles (wild battles on the laps are fled). bots.py hatch: laps until no egg is left, the scene's text with B. Measured: HeartGold 25155 frames, SoulSilver 25156.
 
 #### heartgold/75-level-up-evolution-after-battle — Level-up evolution after a wild battle
-- proves: Proves level-up evolution: a party member one level short of its evolution wins a wild battle, levels up and evolves (the evolution scene runs). Start: an early chain end with an unevolved member (e.g. Cyndaquil under 14) -> end: the evolved species in the party.
+- proves: Proves level-up evolution: Cyndaquil, boosted to 13, fights wild battles in Route 32's tall grass until it reaches 14, and the evolution scene after that battle makes it Quilava (EVO_LEVEL 14). Start: 04's end, MAP_VIOLET (511,269) -> end: Route 32's grass (476,290) or Violet's Pokemon Center door, lead QUILAVA.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: -
-- frames: estimate 20000, budget 30000
-- refs: chain 02/05 grind (bots.py grind on HG/SS)
-- notes: A boost `party-level SLOT LEVEL` puts the member at the level before its evolution (Cyndaquil 13 -> Quilava at 14); grind fights one wild battle. Pick the chain end from its party (np_save4 dump). estimate: a guess until measured.
+- end state: 2 save check(s); log /dump: .* = \('CYNDAQUIL', 13\)/
+- frames: estimate 14915, budget 22400
+- refs: games/heartgold/files/poketool/personal/evo.json:117 (SPECIES_CYNDAQUIL: EVO_LEVEL 14 -> SPECIES_QUILAVA); chain 05 (grind on Route 32's tall grass (476..477,290) from Violet, healing at Violet's Pokemon Center (497,271))
+- notes: 04's end is the last chain save with Cyndaquil unevolved (lv10; 05 ends with Quilava 15). The boost sets it to 13 (experience at that level's base, no evolution: run.py hgss_boost, np_save4 set-level), so the first level gained in a battle is 14 and the evolution runs at that battle's end (grind's auto_battle and its after-battle presses). Measured: HeartGold 13624 frames, SoulSilver 14915.
 
 #### heartgold/76-trade-evolution — Trade evolution over the link
 - proves: Proves a trade evolution between two HG/SS stations (or HG/SS and Pearl) through the link tests. Start: tests/link (hgss_trade) -> end: the evolved species on the receiving save.
@@ -3783,14 +3783,14 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - notes: Belongs with the link tests (two stations), as Platinum's 75; a skeleton here points at it. estimate: a guess until measured.
 
 #### heartgold/77-pc-box-moves — The PC: deposit, move and withdraw
-- proves: Proves the Pokemon Center PC (std_pokecenter_pc): deposit a party Pokemon, withdraw it back. Start: 29's end, Fly to Cherrygrove, its Pokemon Center -> end: the party restored.
+- proves: Proves the Pokemon Storage System on Cherrygrove's Pokemon Center PC (BILL'S PC), in three sessions: DEPOSIT puts Togepi (party slot 1) into BOX 1; MOVE POKEMON picks it up and drops it on BOX 2's icon in the box tray; WITHDRAW takes it back from BOX 2 (it rejoins the party last). A save dump after each session proves the boxes. Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_CHERRYGROVE_POKECENTER_1F (11,13) below the PC, the boxes empty.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: -
-- frames: estimate 20000, budget 30000
-- refs: games/heartgold/include/constants/std_script.h:23 std_pokecenter_pc 2010; README HG/SS Heal: every Pokemon Center 1F has the nurse at (8,11), the exit at (8,19)
-- notes: The PC's menus are touch/keys (no probe report): fixed presses. np_save4 dump has no HG/SS PC box keys: [expect] reads the party count before/after (dump steps), or np_save4 gains a box dump. estimate: a guess until measured.
+- end state: map MAP_CHERRYGROVE_POKECENTER_1F; at (11, 13); 3 save check(s); log /dump: .* = \(5, \[\(1, \['TOGEPI'\]\)\]\)/, /dump: .* = \(5, \[\(2, \['TOGEPI'\]\)\]\)/
+- frames: estimate 6543, budget 9900
+- refs: games/heartgold/src/field/field_control.c:582 (MetatileBehavior_IsPC facing north -> the PC script); TILE_BEHAVIOR_PC 0x83 at (11,12) of every Johto Pokemon Center 1F (tools/hg_map.py Map tiles); games/heartgold/files/fielddata/script/scr_seq/scr_seq_0003.s:754-812 (scr_seq_0003_010 std_pokecenter_pc 2010: 'booted up the PC', the PC menu BILL'S PC / <player>'s PC / SWITCH OFF without FLAG_GAME_CLEAR); games/heartgold/files/fielddata/script/scr_seq/scr_seq_0003.s:814-870 (BILL'S PC: DEPOSIT, WITHDRAW, MOVE POKEMON, MOVE ITEMS, SEE YA! (msg_0191_00067..72); ScrCmd_158 0/1/2 opens the storage in that mode, the menu again after); games/heartgold/src/scrcmd_c.c:1990 (ScrCmd_158: the box screen; its UI is undecompiled, every press here is scouted); games/heartgold/files/msgdata/msg/msg_0025.gmm:56 ('Continue Box operations?'), :85 ('Deposit where?')
+- notes: np_save4 dump reads HG/SS boxes (boxes[].mons: species_name, slot). The box screens are not in the probe: every press is the scouted one (HeartGold 29's end save). The menu of BILL'S PC opens with the cursor on DEPOSIT each time (2x3: DEPOSIT / WITHDRAW, MOVE / MOVE ITEMS, - / SEE YA!). Deposit: the party on the bottom screen, cursor on slot 0: RIGHT is Togepi, A its menu (DEPOSIT first), A the box picker 'Deposit where?' on BOX 1, A deposits. Move: the box opens on BOX 1 slot 0 (Togepi), A its menu (MOVE first), A picks it up and shows the box tray; the D-pad does not drop it into another box (UP, RIGHT to BOX 2's icon, A only points at it; the first run, tapping without R, left it in the grid): R moves the hand onto the tray at BOX 2's icon, and a touch on that icon (75,25) drops it there ('BOX 2 : 1/30'). Withdraw: the box opens on BOX 1; UP to its title, RIGHT shows BOX 2, DOWN to slot 0, A its menu (WITHDRAW first), A. B leaves each screen: 'Continue Box operations?' (YES first): DOWN, A; then B until the field. Measured: HeartGold 6543 frames, SoulSilver 6543.
 
 #### heartgold/80-bug-catching-contest — Bug-Catching Contest: entry, Sport Balls, a catch, judging and prize
 - proves: Proves the Bug-Catching Contest: on a contest day (Tuesday/Thursday/Saturday by the RTC) the Route 35 park gate's contest receptionist registers the player (one Pokemon kept, the rest held), 20 Sport Balls, the contest park, a bug caught with a Sport Ball, the gate's 'end the contest?' YES, the judging in National Park and the prize. Start: 11's end MAP_GOLDENROD outside the gym (366,335) -> end: MAP_NATIONAL_PARK by the judge (46,50) after the judging, FLAG_DAILY_DID_BUG_CONTEST, a Sport Ball mon in the party.
@@ -4469,7 +4469,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: zone_event 275_T10R0501 warp 1 (6,2) -> MAP_POKEMON_LEAGUE_LANCE_ROOM 0 (6,28); scr_seq_0597_T10R0601_hdr.s (OnFrame VAR_UNK_40C8 0 -> 001: ClearFlag FLAG_UNK_210, VAR_UNK_40C8 1); zone_event 276_T10R0601 coord 0 (5,10) w3 VAR_UNK_40C7 0 -> 000; scr_seq_0824_T10R0601.s:41-163 (VAR_UNK_4135 < 8 -> TRAINER_CHAMPION_LANCE :77; Lyra, Elm, Oak; ClearFlag FLAG_HIDE_OLIVINE_PORT_OAK, VAR_UNK_411A 1, Warp MAP_POKEMON_LEAGUE_HALL_OF_FAME (6,22)); TRAINER_CHAMPION_LANCE (244, include/constants/trainers.h:249): GYARADOS 46, DRAGONITE 49, DRAGONITE 49, AERODACTYL 48, CHARIZARD 48, DRAGONITE 50; scr_seq_0598_T10R0701_hdr.s (OnFrame VAR_TEMP_x4001 0 -> 000); scr_seq_0825_T10R0701.s:16-89 (HallOfFameAnim :40, no S.S. Ticket -> VAR_SCENE_PLAYERS_HOUSE_1F 3 :45-48, FLAG_UNK_97E, ClearFlag FLAG_HIDE_LAKE_OF_RAGE_PRYCE, uncaught legendaries reset, HOFCredits 0 :84); src/scrcmd_c.c:2023-2027 (HOFCredits -> CallTask_GameClear); src/game_clear.c:263-300 (CallTask_GameClear: Location_SetToPlayerRoom, SetGameClearFlag -> FLAG_GAME_CLEAR include/constants/flags.h:1710, league wins); src/game_clear.c:156-258 (RegisterHallOfFame app, SaveGameNormal + AddHallOfFameEntry (state 4), credits (state 10), OS_ResetSystem(0) (state 11)); src/register_hall_of_fame.c:2207-2215 (REGHOF_WHOLE_SUBPROC_WAIT_BUTTON: the whole-team photo waits for a new A/B/touch, :2210); src/credits/credits.c:37-38,316-385 (CREDITS_FRAMES 4976; on the first clear only START/touch could skip, A is ignored :318; 'The End' waits for a new A/START/touch :363-382)
 - notes: Lance's three Dragonite: Pelipper's Ice Beam (18's boost) behind a fainted lead (send = best). After Lance every screen waits for input: the Hall of Fame photo waits for A/B (register_hall_of_fame.c:2210), 'The End' for a new A/START (credits.c:363-382); A does not skip the first clear's credits (credits.c:318). So one long A cadence from the Hall of Fame's arrival through the walk-in, Lance's speech, the registration and the photo (110 presses, 56 frames apart, ~6160 frames) [INFERENCE: the photo's wait is reached within that run], then the save and the credits (6500 frames), one A for 'The End', and wait_reset without keys (its keys are held, i.e. one press, and none is needed). The save the run is judged on is SaveGameNormal in Task_GameClear state 4, written after CallTask_GameClear set FLAG_GAME_CLEAR, so the E4 defeat flags are still set in it (the League entrance clears them only on its next OnTransition).
 
-### Side systems: 43 milestones, ~747841 frames estimated
+### Side systems: 43 milestones, ~738929 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -4486,11 +4486,11 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [70-fishing-old-rod](heartgold/70-fishing-old-rod/milestone.toml) | The Old Rod: Route 32's fisherman and a catch | P0 | both | 20000 | prev + `None` | - | planned |
 | [71-fishing-good-rod](heartgold/71-fishing-good-rod/milestone.toml) | The Good Rod: Olivine's fishing guru | P0 | both | 20000 | prev + `None` | - | planned |
 | [72-fishing-super-rod](heartgold/72-fishing-super-rod/milestone.toml) | The Super Rod: Route 12's house (Kanto) | P1 | both | 20000 | prev + `None` | - | planned |
-| [73-day-care-deposit-and-egg](heartgold/73-day-care-deposit-and-egg/milestone.toml) | Day Care: two Pokemon in, an egg out | P0 | both | 20000 | prev + `None` | MAP_ROUTE_34 | planned |
-| [74-egg-hatch](heartgold/74-egg-hatch/milestone.toml) | An egg hatches | P0 | both | 20000 | prev + `None` | - | planned |
-| [75-level-up-evolution-after-battle](heartgold/75-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after a wild battle | P0 | both | 20000 | prev + `None` | - | planned |
+| [73-day-care-deposit-and-egg](heartgold/73-day-care-deposit-and-egg/milestone.toml) | Day Care: two Pokemon in, an egg out | P0 | both | 24474 | prev + `None` | MAP_ROUTE_34 | passing |
+| [74-egg-hatch](heartgold/74-egg-hatch/milestone.toml) | An egg hatches (Flame Body) | P0 | both | 25156 | prev + `None` | MAP_ROUTE_34 | passing |
+| [75-level-up-evolution-after-battle](heartgold/75-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after a wild battle | P0 | both | 14915 | prev + `None` | - | passing |
 | [76-trade-evolution](heartgold/76-trade-evolution/milestone.toml) | Trade evolution over the link | P1 | both | 20000 | `None` | - | planned |
-| [77-pc-box-moves](heartgold/77-pc-box-moves/milestone.toml) | The PC: deposit, move and withdraw | P0 | both | 20000 | prev + `None` | - | planned |
+| [77-pc-box-moves](heartgold/77-pc-box-moves/milestone.toml) | The PC: deposit, move and withdraw | P0 | both | 6543 | prev + `None` | MAP_CHERRYGROVE_POKECENTER_1F | passing |
 | [80-bug-catching-contest](heartgold/80-bug-catching-contest/milestone.toml) | Bug-Catching Contest: entry, Sport Balls, a catch, judging and prize | P1 | both | 14000 | prev + `None` | MAP_NATIONAL_PARK | planned |
 | [81-pokeathlon-speed-course](heartgold/81-pokeathlon-speed-course/milestone.toml) | Pokeathlon Dome: Speed Course | P2 | both | 24000 | prev + `None` | MAP_POKEATHLON_DOME_INTERIOR_1F | planned |
 | [82-safari-zone](heartgold/82-safari-zone/milestone.toml) | Safari Zone: Baoba's gate, entry, Safari Balls and a catch | P1 | both | 18000 | prev + `None` | MAP_SAFARI_ZONE_ENTRANCE_INTERIOR | planned |
@@ -4648,34 +4648,34 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - notes: BLOCKED as 70, and needs the Kanto post-game (90-). estimate: a guess until measured.
 
 #### soulsilver/73-day-care-deposit-and-egg — Day Care: two Pokemon in, an egg out
-- proves: Proves the Route 34 Day Care: the lady takes two compatible Pokemon (std_daycare_lady), steps outside make an egg, the man outside gives it (std_daycare_man). Start: 29's end, Fly to Goldenrod, Route 34 -> end: MAP_ROUTE_34, an egg in the party.
+- proves: Proves the Route 34 Day Care: the lady (std_daycare_lady) takes Pelipper (F) and Feraligatr (M), who share the Water 1 egg group; laps outside until the save shows an egg waiting; the Day-Care Man (std_daycare_man) gives it: a Wingull egg (the mother's line) joins the party. Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_ROUTE_34 (364,410) beside the Day-Care Man, the egg in the party.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: map MAP_ROUTE_34; 1 save check(s)
-- frames: estimate 20000, budget 30000
-- refs: games/heartgold/src/script_manager.c:50 (_std_daycare -> scr_seq_0265; std_daycare_man 9500 / std_daycare_lady 9501, include/constants/std_script.h:615-617); zone_event 302_R34R0101 object 0 SPRITE_GSOLDWOMAN1 (3,5) -> std_daycare_lady; zone_event 035_R34 object 10 SPRITE_GSOLDMAN1 (365,410) -> std_daycare_man; chain 11 (Route 34's Day Care scene, FLAG_UNK_22D)
-- notes: A compatible pair from 29's party: Pelipper (Water 1/Flying) and Feraligatr (Monster/Water 1) share Water 1 if their genders differ [INFERENCE: genders from the PIDs; np_save4 dump shows no gender]. A full party: depositing two leaves four. No HG/SS daycare keys in np_save4 dump (Platinum only): [expect] reads the party (two fewer, then an egg) or the dump gains HG/SS daycare keys. The pace bot (egg roll by in-game saves) needs a daycare key; else step a fixed distance and ask the man. estimate: a guess until measured.
+- end state: map MAP_ROUTE_34; party size 5; 4 save check(s); log /dump: .* = \['PELIPPER', 'FERALIGATR'\]/, /pace: .* after \d+ steps/
+- frames: estimate 24474, budget 36800
+- refs: games/heartgold/src/script_manager.c:50 (_std_daycare -> scr_seq_0265; include/constants/std_script.h:615-617 std_daycare_man 9500 / std_daycare_lady 9501); games/heartgold/files/fielddata/script/scr_seq/scr_seq_0265.s:206-276 (scr_seq_0265_001, the lady: 'Would you like us to raise your Pokemon?', the party picker, PutMonInDaycare, 'raise another?'); zone_event 302_R34R0101 (MAP_ROUTE_34_DAYCARE) object 0 (3,5) std_daycare_lady behind the counter, warp 0 (3,12); zone_event 035_R34 warp 2 (368,410) -> the Day Care, object 10 (365,410) std_daycare_man; games/heartgold/include/daycare.h:7-26 (Daycare: mons[2] of 0xEC, egg_pid, egg_cycles); features/tools/np_save4.c dump_daycare (HGSS_DAYCARE_OFF 0x15FC in the general block, found from the deposited PIDs); games/heartgold/src/get_egg.c:669-724 (ComputeCompatibilityBetweenBoxMons: egg groups, genders, OT ids); files/poketool/personal/personal.json (PELIPPER Water 1/Flying, FERALIGATR Monster/Water 1); games/heartgold/src/get_egg.c:625-643 (GiveEggToPlayer: the mother's species, IS_EGG)
+- notes: 29's party: Pelipper is its only female (PID low byte 5 on HeartGold, 12 on SoulSilver, under the 0.5 ratio's 127); Feraligatr (M) shares Water 1 with it. Same OT, different species: the lowest egg chance per 256-step roll, so the laps run long (scouted: 2304 steps). Typhlosion and Togepi are fainted at 29's end; wild battles on the laps are fled (Scyther leads). Every press is the scouted one: the party picker opens on slot 0 and DOWN steps a column (slots 0, 2, 4 on the left): Pelipper is slot 4, then Feraligatr is slot 4 of the five left. The man's question 'You do want it, don't you?' is YES on A (advance_text). Measured: HeartGold 24474 frames, SoulSilver 13874.
 
-#### soulsilver/74-egg-hatch — An egg hatches
-- proves: Proves hatching: walking with 73's egg until it hatches (the nickname question answered NO). Start: 73's end (an egg in the party) -> end: the hatched Pokemon in the party.
+#### soulsilver/74-egg-hatch — An egg hatches (Flame Body)
+- proves: Proves hatching: laps beside the Day Care with 73's Wingull egg, a Flame Body Magmar in the party (two egg cycles off per 255 steps), until the hatch scene runs (its nickname question answered NO): a lv1 Wingull joins the party. Start: 73's end, MAP_ROUTE_34 (364,410) -> end: MAP_ROUTE_34 by (361,408), the egg hatched.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: 1 save check(s)
-- frames: estimate 20000, budget 30000
-- refs: chain 06 (the Togepi egg, FLAG_GOT_EGG_FROM_ELMS_ASSISTANT; hatched on the chain's way: 29's Togepi is no egg)
-- notes: The hatch bot paces until no egg is left (checked by in-game saves; unproven on HG/SS). Starts from 73's end (systems chain), so 73 runs first. estimate: a guess until measured.
+- end state: map MAP_ROUTE_34; party size 6; 3 save check(s); log /hatch: a scene of \d+ frames after \d+ steps; 0 egg\(s\) left/
+- frames: estimate 25156, budget 37800
+- refs: games/heartgold/src/get_egg.c:786-800 (each 255 steps: every egg's friendship (its remaining cycles) drops by GetEggCyclesToSubtract), :645-656 (2 with ABILITY_FLAME_BODY or ABILITY_MAGMA_ARMOR in the party, else 1); games/heartgold/src/get_egg.c:750-761 (Daycare_GetEggCycleLength: 255 steps, 230 on special dates); files/poketool/personal/personal.json: WINGULL eggCycles 20, MAGMAR abilities ABILITY_FLAME_BODY / ABILITY_NONE (Flame Body whatever the PID); chain 06 (the Togepi egg, hatched on the chain's way)
+- notes: Starts from 73's end (systems order: 73 first). The egg starts at 20 cycles (73 scouted friendship 20); with Flame Body 10 rolls of 255 steps, about 2550 laps, without it twice that. The boost adds MAGMAR lv30 behind the egg (party 6; np_save4 add-mon) with one move: it never battles (wild battles on the laps are fled). bots.py hatch: laps until no egg is left, the scene's text with B. Measured: HeartGold 25155 frames, SoulSilver 25156.
 
 #### soulsilver/75-level-up-evolution-after-battle — Level-up evolution after a wild battle
-- proves: Proves level-up evolution: a party member one level short of its evolution wins a wild battle, levels up and evolves (the evolution scene runs). Start: an early chain end with an unevolved member (e.g. Cyndaquil under 14) -> end: the evolved species in the party.
+- proves: Proves level-up evolution: Cyndaquil, boosted to 13, fights wild battles in Route 32's tall grass until it reaches 14, and the evolution scene after that battle makes it Quilava (EVO_LEVEL 14). Start: 04's end, MAP_VIOLET (511,269) -> end: Route 32's grass (476,290) or Violet's Pokemon Center door, lead QUILAVA.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: -
-- frames: estimate 20000, budget 30000
-- refs: chain 02/05 grind (bots.py grind on HG/SS)
-- notes: A boost `party-level SLOT LEVEL` puts the member at the level before its evolution (Cyndaquil 13 -> Quilava at 14); grind fights one wild battle. Pick the chain end from its party (np_save4 dump). estimate: a guess until measured.
+- end state: 2 save check(s); log /dump: .* = \('CYNDAQUIL', 13\)/
+- frames: estimate 14915, budget 22400
+- refs: games/heartgold/files/poketool/personal/evo.json:117 (SPECIES_CYNDAQUIL: EVO_LEVEL 14 -> SPECIES_QUILAVA); chain 05 (grind on Route 32's tall grass (476..477,290) from Violet, healing at Violet's Pokemon Center (497,271))
+- notes: 04's end is the last chain save with Cyndaquil unevolved (lv10; 05 ends with Quilava 15). The boost sets it to 13 (experience at that level's base, no evolution: run.py hgss_boost, np_save4 set-level), so the first level gained in a battle is 14 and the evolution runs at that battle's end (grind's auto_battle and its after-battle presses). Measured: HeartGold 13624 frames, SoulSilver 14915.
 
 #### soulsilver/76-trade-evolution — Trade evolution over the link
 - proves: Proves a trade evolution between two HG/SS stations (or HG/SS and Pearl) through the link tests. Start: tests/link (hgss_trade) -> end: the evolved species on the receiving save.
@@ -4688,14 +4688,14 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - notes: Belongs with the link tests (two stations), as Platinum's 75; a skeleton here points at it. estimate: a guess until measured.
 
 #### soulsilver/77-pc-box-moves — The PC: deposit, move and withdraw
-- proves: Proves the Pokemon Center PC (std_pokecenter_pc): deposit a party Pokemon, withdraw it back. Start: 29's end, Fly to Cherrygrove, its Pokemon Center -> end: the party restored.
+- proves: Proves the Pokemon Storage System on Cherrygrove's Pokemon Center PC (BILL'S PC), in three sessions: DEPOSIT puts Togepi (party slot 1) into BOX 1; MOVE POKEMON picks it up and drops it on BOX 2's icon in the box tray; WITHDRAW takes it back from BOX 2 (it rejoins the party last). A save dump after each session proves the boxes. Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_CHERRYGROVE_POKECENTER_1F (11,13) below the PC, the boxes empty.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: -
-- frames: estimate 20000, budget 30000
-- refs: games/heartgold/include/constants/std_script.h:23 std_pokecenter_pc 2010; README HG/SS Heal: every Pokemon Center 1F has the nurse at (8,11), the exit at (8,19)
-- notes: The PC's menus are touch/keys (no probe report): fixed presses. np_save4 dump has no HG/SS PC box keys: [expect] reads the party count before/after (dump steps), or np_save4 gains a box dump. estimate: a guess until measured.
+- end state: map MAP_CHERRYGROVE_POKECENTER_1F; at (11, 13); 3 save check(s); log /dump: .* = \(5, \[\(1, \['TOGEPI'\]\)\]\)/, /dump: .* = \(5, \[\(2, \['TOGEPI'\]\)\]\)/
+- frames: estimate 6543, budget 9900
+- refs: games/heartgold/src/field/field_control.c:582 (MetatileBehavior_IsPC facing north -> the PC script); TILE_BEHAVIOR_PC 0x83 at (11,12) of every Johto Pokemon Center 1F (tools/hg_map.py Map tiles); games/heartgold/files/fielddata/script/scr_seq/scr_seq_0003.s:754-812 (scr_seq_0003_010 std_pokecenter_pc 2010: 'booted up the PC', the PC menu BILL'S PC / <player>'s PC / SWITCH OFF without FLAG_GAME_CLEAR); games/heartgold/files/fielddata/script/scr_seq/scr_seq_0003.s:814-870 (BILL'S PC: DEPOSIT, WITHDRAW, MOVE POKEMON, MOVE ITEMS, SEE YA! (msg_0191_00067..72); ScrCmd_158 0/1/2 opens the storage in that mode, the menu again after); games/heartgold/src/scrcmd_c.c:1990 (ScrCmd_158: the box screen; its UI is undecompiled, every press here is scouted); games/heartgold/files/msgdata/msg/msg_0025.gmm:56 ('Continue Box operations?'), :85 ('Deposit where?')
+- notes: np_save4 dump reads HG/SS boxes (boxes[].mons: species_name, slot). The box screens are not in the probe: every press is the scouted one (HeartGold 29's end save). The menu of BILL'S PC opens with the cursor on DEPOSIT each time (2x3: DEPOSIT / WITHDRAW, MOVE / MOVE ITEMS, - / SEE YA!). Deposit: the party on the bottom screen, cursor on slot 0: RIGHT is Togepi, A its menu (DEPOSIT first), A the box picker 'Deposit where?' on BOX 1, A deposits. Move: the box opens on BOX 1 slot 0 (Togepi), A its menu (MOVE first), A picks it up and shows the box tray; the D-pad does not drop it into another box (UP, RIGHT to BOX 2's icon, A only points at it; the first run, tapping without R, left it in the grid): R moves the hand onto the tray at BOX 2's icon, and a touch on that icon (75,25) drops it there ('BOX 2 : 1/30'). Withdraw: the box opens on BOX 1; UP to its title, RIGHT shows BOX 2, DOWN to slot 0, A its menu (WITHDRAW first), A. B leaves each screen: 'Continue Box operations?' (YES first): DOWN, A; then B until the field. Measured: HeartGold 6543 frames, SoulSilver 6543.
 
 #### soulsilver/80-bug-catching-contest — Bug-Catching Contest: entry, Sport Balls, a catch, judging and prize
 - proves: Proves the Bug-Catching Contest: on a contest day (Tuesday/Thursday/Saturday by the RTC) the Route 35 park gate's contest receptionist registers the player (one Pokemon kept, the rest held), 20 Sport Balls, the contest park, a bug caught with a Sport Ball, the gate's 'end the contest?' YES, the judging in National Park and the prize. Start: 11's end MAP_GOLDENROD outside the gym (366,335) -> end: MAP_NATIONAL_PARK by the judge (46,50) after the judging, FLAG_DAILY_DID_BUG_CONTEST, a Sport Ball mon in the party.
