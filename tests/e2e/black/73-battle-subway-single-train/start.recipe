@@ -1,8 +1,9 @@
-# On 16's end save: three lv 50 members for the train (the moves of black/29's boost): Darmanitan (555) Flare Blitz,
-# Crunch, Rock Slide, Earthquake; Zebstrika (523) Wild Charge (528), Flame Charge (488), Thunderbolt (85), Quick
-# Attack (98) in Blitzle's slot; Sawk (539) Close Combat (370), Stone Edge (444), Earthquake (89), Payback (371)
-party-set 0 555 50 394 242 157 89
-party-set 2 523 50 528 488 85 98
-party-set 5 539 50 370 444 89 371
+# On 16's end save: the three Pokemon the train registers in party slots 0-2 (the entry screen's first three), lv 50
+# (the Subway's own level): Garchomp (445) Earthquake (89), Dragon Claw (337), Stone Edge (444), Crunch (242);
+# Metagross (376) Meteor Mash (309), Earthquake (89), Zen Headbutt (428), Bullet Punch (418); Tyranitar (248) Stone
+# Edge (444), Crunch (242), Earthquake (89), Ice Punch (8). None is on the Subway's banned list [INFERENCE].
+party-set 0 445 50 89 337 444 242
+party-set 1 376 50 309 89 428 418
+party-set 2 248 50 444 242 89 8
 # Nimbasa City (zone 62), one tile below the Gear Station door (zone_event 62 warp 7 (422,458)), y 1 [INFERENCE]
 location 62 422 1 459

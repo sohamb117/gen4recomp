@@ -1,23 +1,233 @@
 # The Battle Subway's Single Train: register three Pokemon at the platform, ride, win seven battles in a row.
-# Start: Nimbasa City (zone 62) below the Gear Station door (422,458) -> end: the Single Train platform (zone 67).
+# Start: Nimbasa City (zone 62) below the Gear Station door (422,458) -> end: the Battle Subway's arrival platform
+# (zone 76) after the seven-win streak's BP.
 title = "Battle Subway: one seven-win Single Train set"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 60000   # [INFERENCE] frames, not measured
+estimate = 48467   # measured from 16's end save (CONTINUE included): Black 46821, White 48467 (core-bwm)
 refs = [
   "zone_event 62 warp 7 (422,458) -> zone 66 (Gear Station) warp 8; zone_event 66 warp 0 -> zone 67 (the Single Train platform; bg 8 msg 71 #18 'Platform for Single Trains')",
   "zone_event 67 object 0 gfx 0x44 (12,15) -> script id 10333 -> scr 0882 script 4 (the Single Train clerk): @0x15F1 SetVar 0x4130 1; scr 0882 @0x2993 Warp zone 75 (the train) (7,0,4)",
   "scr 0882 script 8: @0x1EC1/@0x1EC7 SetVar 0x4130 4, 0x4132 1 / @0x1EDB 0x4132 2; @0x1EB3-@0x1EBB SetFlag 0x28E, 0x267, 0x268",
   "zone_event 75 level type 1: var 0x4132 == 1 / 2 -> scr 0150 scripts 2 / 3; zone_event 76 level type 1: var 0x4133 == 1 -> scr 0152 script 6",
   "scr 0132 script 3 (msg 71 #2/#3, flag 0x960): before the clear only the Single, Double and Multi lines run; the Super lines need the clear",
+  "zone_event 66 warp 0 raw (67, 0, 3, 4, 1, 3, 9, 0xFFFC, 3, 1, 1): a rail warp, line 3, front 9, side -4, width 3 (docs/BW_PLAN.md: rail warps are (line, front, side, width)); the ring's lines 0-3 run front 0-15, side +3 inner to -3 outer (probed)",
+  "zone 76 level type 1: var 0x4133 == 1 -> scr 0152 script 6: @0x0DCC SetVar 0x4133 2; @0x1107 msg 81 #3 'Congratulations! You've successfully reached a seven-win streak!', @0x1129 #0 'received {1} BP!', @0x12A9 #1 'Saving your record data...'",
+  "0x4130 = 4: scr 0152 @0x0391 / @0x094E, scr 0882 @0x01DC..@0x03AC SetVar 0x4130 4",
 ]
-notes = "Reachable from 15 on (Nimbasa). The train's rules (three Pokemon, levels set to 50, no duplicates) are code [INFERENCE]; the recipe gives three strong lv 50 members. The streak record is not in np_save5's dump, so [expect] is seven battles and the return to the platform [INFERENCE: 0x4130's value after a finished set is PHASE2's to read]."
+notes = "Measured from the start save (CONTINUE included): Black 46821, White 48467 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Measured from the start save (CONTINUE included): Black 46821, White 48467 frames (core-bwm). The Gear Station is a rail map: the rail bot walks the ring to the probed rail positions. The recipe puts Garchomp, Metagross and Tyranitar (lv 50, the Subway's level) in slots 0-2; auto_battle won all seven (7-13 turns each). After the seventh win A answers YES to 'save the last battle as your Battle Video?'. The streak and BP live in the Subway's own save data (Cmd15A), not in np_save5's dump; the game's own record in the vars is 0x4133 = 2 (scr 0152 script 6, the seven-win arrival) with 0x4130 = 4, on zone 76."
 
 [start]
 from = "16-nimbasa-elesa-bolt-badge"
 recipe = "start.recipe"
 
-[expect]
+[run]
+frames = 73000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 66
+note = "the door (422,458) into the Gear Station (zone 66, a rail map: its warps are (line, front, side, width))"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 16
+z = 22
+near = 0
+note = "the entrance line onto the ring's line 2, front 3 (the rail state at MMDL +0x98, probed)"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 20
+z = 21
+near = 0
+note = "ring line 3, side +3 (the inner edge), front counting down from 15 to 11"
+
+[[step]]
+do = "rail"
+keys = "right"
 map = 67
+note = "across line 3 to side -4: zone_event 66 warp 0 (line 3, front 9, side -4, width 3) -> the Single Train platform (zone 67)"
+
+[[step]]
+do = "wait_field"
+shot = "single-platform"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "zone_event 67 object 0 (12,15): the Single Train clerk, scr 0882 script 4"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+times = 5
+shot = "entry-screen"
+note = "'Welcome to the Battle Subway!', 'I will guide you to the Single Train here.', 'Would you like to board the Single Train?' Board / Info / Cancel: A = Board; 'Please select the Pokemon you wish to enter.' and the entry screen (seen): the party in two columns, Garchomp, Metagross / Tyranitar, Patrat / Darmanitan, Sawk, CONFIRM and CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+times = 2
+note = "Garchomp: ENTER / SUMMARY / QUIT, A = ENTER: FIRST"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+times = 2
+note = "Metagross: SECOND"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+times = 2
+shot = "entered"
+note = "Tyranitar: THIRD; the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+times = 2
+shot = "save-prompt"
+note = "CONFIRM, then 'Would you like to save the game?' YES / NO: A = YES (the game saves before the first battle)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 150
+until = "in_battle=1"
+note = "the boarding and the ride: A through the clerk, the train car and the trainer walking up: battle 1 of 7"
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "battle-1"
+
+[[step]]
+do = "auto_battle"
+
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 150
+until = "in_battle=1"
+note = "A through the win text and the between-battles menu (its first item continues the set) to the next trainer: battle 2 of 7"
+
+[[step]]
+do = "auto_battle"
+
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 150
+until = "in_battle=1"
+note = "A through the win text and the between-battles menu (its first item continues the set) to the next trainer: battle 3 of 7"
+
+[[step]]
+do = "auto_battle"
+
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 150
+until = "in_battle=1"
+note = "A through the win text and the between-battles menu (its first item continues the set) to the next trainer: battle 4 of 7"
+
+[[step]]
+do = "auto_battle"
+
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 150
+until = "in_battle=1"
+note = "A through the win text and the between-battles menu (its first item continues the set) to the next trainer: battle 5 of 7"
+
+[[step]]
+do = "auto_battle"
+
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 150
+until = "in_battle=1"
+note = "A through the win text and the between-battles menu (its first item continues the set) to the next trainer: battle 6 of 7"
+
+[[step]]
+do = "auto_battle"
+
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 150
+until = "in_battle=1"
+note = "A through the win text and the between-battles menu (its first item continues the set) to the next trainer: battle 7 of 7"
+
+[[step]]
+do = "auto_battle"
+shot = "win-7"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 200
+until = "map_id=76"
+note = "after the seventh win (seen): 'Would you like to save the last battle as your Battle Video?' YES / NO (A = YES, 'saved as a Battle Video'), then the train pulls in at the arrival platform (zone 76)"
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "arrival"
+
+[[step]]
+do = "advance_text"
+shot = "seven-win-streak"
+note = "zone 76 level script var 0x4133 == 1 -> scr 0152 script 6: @0x0DCC SetVar 0x4133 2, msg 81 #3 'Congratulations! You've successfully reached a seven-win streak!' and the BP (#0 'received 3 BP!'), #1 'Saving your record data...', then 'talk to me' to continue or go back to Nimbasa City"
+
+[expect]
+map = 76
 battles = 7
+
+[expect.vars]
+"0x4130" = 4
+"0x4133" = 2

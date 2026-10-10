@@ -1,21 +1,101 @@
-# The Hall of Fame on a Pokemon Center PC after the clear: the first post-clear Storage access adds wallpapers
-# (flag 0x14B), and the Record System's HALL OF FAME shows the entry the credits wrote.
-# Start: the player's room (zone 391, 32's end) -> end: the Accumula Pokemon Center (zone 398) at the PC.
+# The Pokemon Center PC after the clear: the first post-clear Storage access adds wallpapers (flag 0x14B), and the
+# Record System's First game clear shows the party the credits recorded (the Hall of Fame item needs an E4 entry).
+# Start: Accumula Town below the Pokemon Center (zone 397, 34's end + start.recipe) -> end: the Accumula Pokemon
+# Center (zone 398) at the PC (4,12).
 title = "Hall of Fame on the Pokemon Center PC"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 12000   # [INFERENCE] frames, not measured
+estimate = 8626   # measured from 34's end save (CONTINUE included): Black 8526, White 8626 (core-bwm)
 refs = [
-  "zone_event 397 warp 0 (796,657) -> zone 398 (Accumula's Pokemon Center); zone_event 398 bg 0-2 (12,5)/(12,6)/(13,6) -> scr 0855 script 9 (the PC)",
+  "zone_event 397 warp 0 (796,657) -> zone 398 (Accumula's Pokemon Center); zone_event 398 bg 0-2 (12,5)/(12,6)/(13,6) -> scr 0855 script 9 (the Geonet globe: @0x0969 Cmd152; not the PC)",
   "scr 0868 script 1 (the PC): @0x004A CheckFlagToVar 0x960 (the clear) shapes the menu; @0x0260 CheckFlagToVar 0x960 -> @0x02A8 msg 314 #11 'More wallpapers were added', @0x02AE SetFlag 0x14B (first post-clear Storage access)",
   "scr 0868 @0x05D2 msg 314 #34 'Accessed the Record System!'; @0x06B4 Cmd14D 1, var 0x8010 [INFERENCE: the Hall of Fame screen], else @0x06E5 msg 314 #10 'Your Hall of Fame data is corrupted' (Cmd0EA var 0x8023 @0x0050)",
+  "scr 0868 L_05C2 @0x05F9-@0x0638: the Records submenu 0x1F First game clear (msg 314 #31, var 0x8022 = flag 0x960), 0x20 Hall of Fame (#32, only while var 0x8023 != 0), 0x21 Log out (#33); 0x1F -> @0x065D Cmd14D 0, var 0x8010",
   "scr 0866 @0x0443 SetFlag 0x960 (the game clear)",
 ]
-notes = "B/W show the Hall of Fame on the PC's Record System, gated by the clear flag 0x960. The Hall of Fame record itself is not in np_save5's dump; flag 0x14B proves the post-clear PC run [INFERENCE: its Storage visit comes first]. Nuvema has no Pokemon Center; Accumula's is the nearest. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+notes = "Measured from the start save (CONTINUE included): Black 8526, White 8626 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Measured from the start save (CONTINUE included): Black 8526, White 8626 frames (core-bwm). 34's end save CONTINUEs where it was saved (the Poke Transfer Lab (10,8), probed), so start.recipe sets Accumula Town. Nuvema has no Pokemon Center; Accumula's is the nearest. The PC is the terminal at (4,11) left of the nurse's round counter (A from (4,12) facing up starts scr 0868 script 1; no zone_event 398 entry names it: the bg events (12,5)/(12,6)/(13,6) are the Geonet globe, scr 0855 script 9 Cmd152), found by scouting. On the save after the first clear the Record System lists only First game clear and Log out (Cmd0EA var 0x8023 == 0 hides the Hall of Fame item, @0x061D) [INFERENCE: B/W's first clear ends with the credits, not a Hall of Fame entry; a later Elite Four win writes one], so the record shown is First game clear: COMPLETED FIRST ADVENTURE 03/22/2009 with the six credits party members (Reshiram on Black, Zekrom on White). Not in np_save5's dump; flag 0x14B (the post-clear Storage visit's wallpapers) is the save's proof of the PC run, flag 0x960 the clear that shapes the menu."
 
 [start]
 from = "34-postgame-poke-transfer-lab"
+recipe = "start.recipe"
+
+[run]
+frames = 13000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 796
+z = 657
+note = "zone_event 397 warp 0 (796,657) -> Accumula's Pokemon Center (zone 398)"
+
+[[step]]
+do = "wait_map"
+map = 398
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 12
+face = "up"
+note = "below the PC terminal (4,11) left of the nurse's round counter: no event of zone 398 runs scr 0868 (the bg events (12,5)/(12,6)/(13,6) are the Geonet globe, scr 0855 script 9 Cmd152); A on the terminal starts it from code, found by scouting"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+times = 2
+shot = "pc-menu"
+note = "A on the terminal starts scr 0868 script 1: msg 314 #0 'booted up the PC', A -> #1 'Which PC should be accessed?' and the post-clear menu (seen): Someone's PC (#2, flag 0x96D clear), <player>'s PC (#4), Professor's PC (#5, flag 0x962), Records (#6, flag 0x960), Help (#7), Switch off (#8)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+times = 6
+shot = "storage"
+note = "Someone's PC -> L_0242: #13 'The Pokemon Storage System was accessed.', #11 'Congratulations! More wallpapers were added to commemorate your success.' (@0x02AE SetFlag 0x14B), then the storage menu (Deposit, Withdraw, Move Pokemon, Battle Box, Move items, No thanks!)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 150
+note = "B leaves the storage menu: back to 'Which PC should be accessed?'"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 30
+times = 3
+shot = "records-cursor"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+times = 2
+shot = "records"
+note = "Records -> L_05C2: #34 'Accessed the Record System!', then the submenu (seen): First game clear (0x1F, var 0x8022 = the clear), Log out (0x21); 'Hall of Fame' (0x20) is listed only while Cmd0EA's var 0x8023 != 0 (@0x061D), and it is 0 here"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 450
+shot = "first-game-clear"
+note = "First game clear -> @0x065D Cmd14D 0, var 0x8010: the record screen, its first page Reshiram Lv. 51 (DragonBreath, Slash, Extrasensory, Fusion Flare): the party the credits recorded"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 150
+times = 4
+note = "B: the record screen, the Records submenu, the PC menu, the field"
+
+[[step]]
+do = "wait_field"
+max = 3000
 
 [expect]
 map = 398
