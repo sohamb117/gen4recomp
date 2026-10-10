@@ -2,10 +2,9 @@
 # FLAG_HIDE_BELL_TOWER_HO_OH); the Bell Tower barrier monk (Fog Badge), the ten floors and Ho-Oh (lv70 in SS) on the roof.
 # Start: 96-pewter-brock's end (Pewter, wing in the bag) -> end: MAP_BELL_TOWER_ROOF (15,17), FLAG_CAUGHT_HO_OH.
 title = "SoulSilver: Rainbow Wing and Ho-Oh"
-status = "planned"
 priority = "P1"
 version = "soulsilver"
-estimate = 25000
+estimate = 19517
 refs = [
   "zone_event 048_T03 object 0 obj_T03_gsoldman1 (1069,94) -> 000; scr_seq_0750_T03.s:44-79 (version != 7 = SS: ITEM_RAINBOW_WING (483), FLAG_UNK_093, ClearFlag FLAG_HIDE_BELL_TOWER_HO_OH, SetFlag FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS)",
   "scr_seq_0034_D23R0106.s:84-88 (SS's story wing is the Silver Wing; the Rainbow Wing is post-game only)",
@@ -14,15 +13,294 @@ refs = [
   "zone_event 311_D17R0110 object 5 obj_D17R0110_hou_obj01 (15,16) -> 000; scr_seq_0021_D17R0110.s:22,54-102 (FLAG_HIDE_BELL_TOWER_HO_OH; WildBattle 250 at 70 in SS; caught -> FLAG_CAUGHT_HO_OH include/constants/flags.h:297)",
   "scr_seq_0825_T10R0701.s:111-123 (Hall of Fame re-shows uncaught Ho-Oh/Lugia)",
 ]
-notes = "Gates: post-game Kanto (90) to Pewter (96), then fly to Ecruteak. The roof coord (VAR_UNK_40FA 1, Clear Bell scene) does not fire in SS (Lugia set VAR_UNK_40FA 2, scr_seq_0104_D40R0107.s:446). [INFERENCE: whether the SS Bell Tower 1F wing coord (zone_event 108_D17R0101 VAR_UNK_40F3) needs FLAG_UNK_093 - read scr_seq_0019_D17R0101.s:51-193.] The Bell Tower walk is proven by heartgold/31 (warp panels, ladders). Catch needs a catching auto_battle mode + a boost (lv70) [INFERENCE]. Check: party species 250. [INFERENCE] estimate."
+notes = "Gates: post-game Kanto (90) to Pewter (96), whose old man gives SoulSilver the Rainbow Wing (FLAG_UNK_093, ClearFlag FLAG_HIDE_BELL_TOWER_HO_OH). Pewter's Kanto fly map reaches Johto through the Indigo Plateau. The Bell Tower is heartgold/31's walk (the barrier monk's Fog Badge, the ladders, the 7F-9F warp panels); 1F's coord (VAR_UNK_40F3 0) plays the Rainbow Wing's glow. The roof's Clear Bell coord does not fire (Lugia's VAR_UNK_40FA 2): Ho-Oh (object 5, (15,16)) already stands there. WildBattle SPECIES_HO_OH 70 is caught with the Master Ball the chain never threw (Elm's, 29), as in heartgold/100: BAG, POKE BALLS, the Master Ball, USE; B answers the nickname, and HO-OH goes to BOX 1 (the party is full). Measured: 19517 frames; the sheet shows HO-OH on the roof, HO-OH lv70's action menu, 'Gotcha! HO-OH was caught!', the empty roof."
 
 [start]
 from = "96-pewter-brock"
 
 [run]
-frames = 37500
+frames = 29300
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 27
+note = "out of Pewter Gym"
+
+[[step]]
+do = "fly"
+map = "MAP_INDIGO_PLATEAU"
+note = "the fly map reaches only the player's region; the Indigo Plateau is in both"
+
+[[step]]
+do = "fly"
+map = "MAP_ECRUTEAK"
+
+[[step]]
+do = "heal"
+x = 397
+z = 183
+note = "Ecruteak's Pokemon Center (warp 5)"
+
+[[step]]
+do = "walk_to"
+x = 392
+z = 153
+note = "Bell Tower barrier station (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK_BELL_TOWER_BARRIER_STATION"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the monk (15,7): Fog Badge -> he steps aside (scr_seq_0926_T27R0201.s:49-64)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 3
+note = "-> corridor (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ECRUTEAK_BELL_TOWER_BARRIER_STATION_CORRIDOR"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 3
+note = "-> Bellchime Trail (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELLCHIME_TOWER"
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 16
+note = "-> Bell Tower 1F (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+on_text = "stop"
+note = "coord (7..9,12) VAR_UNK_40F3 0 -> the Rainbow Wing glows (scr_seq_0019_D17R0101.s:51-193); on_text = stop ends the walk there, the walk stops there and advance_text plays it (it fires in SoulSilver too: VAR_UNK_40F3 0 until now, 1 after)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 7
+via = [[9, 9]]
+note = "1F ladder (9,8) pushed north -> 2F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 24
+via = [[15, 26]]
+note = "2F ladder (15,25) -> 3F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 7
+via = [[24, 9]]
+note = "3F ladder (24,8) -> 4F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_4F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 7
+via = [[6, 9]]
+note = "4F ladder (6,8) (warps 1/2) -> 5F 0 (6,8), the part of 5F with the ladder up"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_5F"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 24
+via = [[13, 26]]
+note = "5F ladder (13,25) -> 6F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_6F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 18
+via = [[6, 20]]
+note = "6F ladder (6,19) -> 7F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_7F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 26
+note = "7F warp panel (15,26) -> 8F (7,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_8F"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 20
+note = "8F panel (7,20) (warp 1) -> 9F (20,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_9F"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 12
+note = "9F panel (6,12) (warp 0) -> 8F (23,17)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_8F"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 9
+note = "8F panel (16,9) (warp 2) -> 9F (18,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_9F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 16
+via = [[12, 18]]
+note = "9F ladder (12,17) -> 10F (11,17)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_10F"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 24
+via = [[15, 26]]
+note = "10F ladder (15,25) -> roof"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BELL_TOWER_ROOF"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 17
+face = "up"
+interact = true
+note = "below Ho-Oh (object 5, (15,16)), shown since the Pewter old man's Rainbow Wing (ClearFlag FLAG_HIDE_BELL_TOWER_HO_OH); A"
+shot = "ho-oh"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "repeat"
+until = "ui=1"
+max_rounds = 80
+steps = [{ do = "wait_frames", n = 20 }]
+note = "the battle: ui=1 comes while the bottom screen is still drawing its menu"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "ho-oh-battle"
+note = "HO-OH lv70's action menu"
+
+[[step]]
+do = "tap"
+x = 40
+y = 172
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 192
+y = 64
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 80
+gap = 60
+note = "the Master Ball (Poke Ball, Fast Ball, Master Ball)"
+
+[[step]]
+do = "tap"
+x = 100
+y = 168
+gap = 60
+note = "USE"
+
+[[step]]
+do = "wait_frames"
+n = 640
+shot = "gotcha"
+
+[[step]]
+do = "repeat"
+until = "in_battle=0"
+max_rounds = 80
+steps = [
+  { do = "press", keys = "a", hold = 2, gap = 40, if = "ui=0" },
+  { do = "press", keys = "b", hold = 2, gap = 40 },
+]
+note = "the Pokedex page (A), 'Give a nickname?' NO (B), the box message"
+
+[[step]]
+do = "advance_text"
 
 [expect]
 map = "MAP_BELL_TOWER_ROOF"
 flags = ["FLAG_UNK_093", "FLAG_CAUGHT_HO_OH"]
 battles = 1
+save = ['any(m["species"] == 250 for b in s["boxes"] for m in b["mons"]) or 250 in [m["species"] for m in s["party"]]']
