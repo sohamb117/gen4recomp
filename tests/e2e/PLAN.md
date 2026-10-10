@@ -6032,7 +6032,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 32 milestones, ~1397722 frames estimated
+### Story chain: 32 milestones, ~1402135 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6064,7 +6064,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 44485 | prev + `None` | 120 | passing |
 | [27-opelucid-drayden-legend-badge](black/27-opelucid-drayden-legend-badge/milestone.toml) | Opelucid Gym (Black): Drayden's Legend Badge | P0 | black | 53724 | prev + `None` | 132 | passing |
 | [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 79370 | prev + `None` | 136 | passing |
-| [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
+| [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 44413 | prev + `None` | 137 | passing |
 | [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
 | [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
 | [32-n-castle-reshiram-ghetsis-credits](black/32-n-castle-reshiram-ghetsis-credits/milestone.toml) | N's Castle (Black): Reshiram, N, Ghetsis and the credits | P0 | black | 80000 | prev + `None` | - | planned |
@@ -6354,10 +6354,10 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137
-- end state: map 137; vars 0x40A1=1
-- frames: estimate 40000, budget -
-- refs: zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1; scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137; zones 140-143 (the four rooms)
-- notes: The rematch parties (trdata #563-#566, levels 71-73) are post-game. [INFERENCE] the order is free. [INFERENCE] estimate.
+- end state: map 137; >= 4 battles; flags set 0x969, 0x96A, 0x96B, 0x96C; vars 0x40A1=1
+- frames: estimate 44413, budget 67000
+- refs: zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1; scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137; zones 140-143 (the four rooms): object 0 the Elite Four member; trigger 0 (15,25) var 0x4000 == 0 the lift; trigger 1 (18,8) / (17,8) Marshal / (18,9) Caitlin var 0x400A == 555 the warp pad back to 137; zone_event 137: rail warps (line, front) 1 -> 140 Shauntal, 3 -> 141 Grimsley, 6 -> 143 Caitlin, 8 -> 142 Marshal; their staircase feet (23,47), (25,45), (37,45), (39,47); zone_event 136 warp 2 (18,47) -> 146 (the League's Pokemon Center); warp 1 (31..33,45) -> 137
+- notes: Measured from the previous end save (CONTINUE included): Black 44413, White 41889 frames on core-bwm (main 61a3cd008d, from 28's ends; boost.recipe). Order Shauntal, Caitlin, Grimsley, Marshal (free: the four rooms open together; Shauntal's Ghosts first, at full HP). The League's centre (137) does not let the player out between rooms and no bot uses items, so the boost carries the party through all four. Each staircase in 137 is a rail up into its room; trigger 0 (15,25) rides the lift; the win sets 0x400A 555 and trigger 1 is the warp pad back to 137. Ends in 137 with the four beaten, where 30 walks to the statue. The rematch parties (trdata #563-#566, levels 71-73) are post-game.
 
 #### black/30-champion-room-n-castle — The Champion's room: N's Castle rises
 - proves: Proves the Champion's room: N has beaten Alder, his castle rises around the League, and the bridge into N's Castle. Start: the League's centre (zone 137) -> end: N's Castle's entrance (zone 264), 0x40A2 = 1, 0x40A5 = 1.
@@ -6395,7 +6395,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 32 milestones, ~1401477 frames estimated
+### Story chain: 32 milestones, ~1405890 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6427,7 +6427,7 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 44485 | prev + `None` | 120 | passing |
 | [27-opelucid-iris-legend-badge](white/27-opelucid-iris-legend-badge/milestone.toml) | Opelucid Gym (White): Iris's Legend Badge | P0 | white | 57479 | prev + `None` | 132 | passing |
 | [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 79370 | prev + `None` | 136 | passing |
-| [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
+| [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 44413 | prev + `None` | 137 | passing |
 | [30-champion-room-n-castle](black/30-champion-room-n-castle/milestone.toml) | The Champion's room: N's Castle rises | P0 | both | 20000 | prev + `None` | 264 | planned |
 | [31-n-castle-climb](black/31-n-castle-climb/milestone.toml) | N's Castle: the climb to the throne room | P0 | both | 30000 | prev + `None` | 278 | planned |
 | [32-n-castle-zekrom-ghetsis-credits](white/32-n-castle-zekrom-ghetsis-credits/milestone.toml) | N's Castle (White): Zekrom, N, Ghetsis and the credits | P0 | white | 80000 | prev + `None` | - | planned |
@@ -6717,10 +6717,10 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137
-- end state: map 137; vars 0x40A1=1
-- frames: estimate 40000, budget -
-- refs: zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1; scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137; zones 140-143 (the four rooms)
-- notes: The rematch parties (trdata #563-#566, levels 71-73) are post-game. [INFERENCE] the order is free. [INFERENCE] estimate.
+- end state: map 137; >= 4 battles; flags set 0x969, 0x96A, 0x96B, 0x96C; vars 0x40A1=1
+- frames: estimate 44413, budget 67000
+- refs: zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1; scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137; scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137; scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137; scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137; zones 140-143 (the four rooms): object 0 the Elite Four member; trigger 0 (15,25) var 0x4000 == 0 the lift; trigger 1 (18,8) / (17,8) Marshal / (18,9) Caitlin var 0x400A == 555 the warp pad back to 137; zone_event 137: rail warps (line, front) 1 -> 140 Shauntal, 3 -> 141 Grimsley, 6 -> 143 Caitlin, 8 -> 142 Marshal; their staircase feet (23,47), (25,45), (37,45), (39,47); zone_event 136 warp 2 (18,47) -> 146 (the League's Pokemon Center); warp 1 (31..33,45) -> 137
+- notes: Measured from the previous end save (CONTINUE included): Black 44413, White 41889 frames on core-bwm (main 61a3cd008d, from 28's ends; boost.recipe). Order Shauntal, Caitlin, Grimsley, Marshal (free: the four rooms open together; Shauntal's Ghosts first, at full HP). The League's centre (137) does not let the player out between rooms and no bot uses items, so the boost carries the party through all four. Each staircase in 137 is a rail up into its room; trigger 0 (15,25) rides the lift; the win sets 0x400A 555 and trigger 1 is the warp pad back to 137. Ends in 137 with the four beaten, where 30 walks to the statue. The rematch parties (trdata #563-#566, levels 71-73) are post-game.
 
 #### white/30-champion-room-n-castle — The Champion's room: N's Castle rises
 - proves: Proves the Champion's room: N has beaten Alder, his castle rises around the League, and the bridge into N's Castle. Start: the League's centre (zone 137) -> end: N's Castle's entrance (zone 264), 0x40A2 = 1, 0x40A5 = 1.

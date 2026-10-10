@@ -1,25 +1,332 @@
 # Proves the Elite Four: Shauntal, Grimsley, Marshal and Caitlin in any order, then the way to the Champion's room.
 # Start: the Pokémon League (zone 136) -> end: the League's centre (zone 137) after the fourth win, 0x40A1 = 1.
 title = "The Elite Four"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 40000
+estimate = 44413
 refs = [
   "zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1",
   "scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137",
   "scr 0282 @0x00E2 TrainerBattle trdata #230 (Grimsley: Scrafty, Liepard, Krookodile 48, Bisharp 50); @0x03A2 Warp zone 137",
   "scr 0284 @0x00E2 TrainerBattle trdata #229 (Marshal: Throh, Sawk, Conkeldurr 48, Mienshao 50); @0x0366 Warp zone 137",
   "scr 0286 @0x00D4 TrainerBattle trdata #231 (Caitlin: Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); @0x03AA Warp zone 137",
-  "zones 140-143 (the four rooms)",
+  "zones 140-143 (the four rooms): object 0 the Elite Four member; trigger 0 (15,25) var 0x4000 == 0 the lift; trigger 1 (18,8) / (17,8) Marshal / (18,9) Caitlin var 0x400A == 555 the warp pad back to 137",
+  "zone_event 137: rail warps (line, front) 1 -> 140 Shauntal, 3 -> 141 Grimsley, 6 -> 143 Caitlin, 8 -> 142 Marshal; their staircase feet (23,47), (25,45), (37,45), (39,47)",
+  "zone_event 136 warp 2 (18,47) -> 146 (the League's Pokemon Center); warp 1 (31..33,45) -> 137",
 ]
-notes = "The rematch parties (trdata #563-#566, levels 71-73) are post-game. [INFERENCE] the order is free. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 44413, White 41889 frames on core-bwm (main 61a3cd008d, from 28's ends; boost.recipe). Order Shauntal, Caitlin, Grimsley, Marshal (free: the four rooms open together; Shauntal's Ghosts first, at full HP). The League's centre (137) does not let the player out between rooms and no bot uses items, so the boost carries the party through all four. Each staircase in 137 is a rail up into its room; trigger 0 (15,25) rides the lift; the win sets 0x400A 555 and trigger 1 is the warp pad back to 137. Ends in 137 with the four beaten, where 30 walks to the statue. The rematch parties (trdata #563-#566, levels 71-73) are post-game."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 
+[run]
+frames = 67000
+
+[[step]]
+do = "heal"
+x = 18
+z = 47
+note = "the League's Pokemon Center (zone_event 136 warp 2 (18,47) -> 146): Victory Road leaves members fainted"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 49
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 136 trigger 0 (31..33,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0)"
+
+[[step]]
+do = "advance_text"
+note = "the guard's question: A answers YES; @0x0260 SetVar 0x40A1 1"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 46
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 30
+gap = 0
+note = "zone_event 136 warp 1 (31..33,45) -> the League's centre 137 (31,50)"
+
+[[step]]
+do = "wait_map"
+map = 137
+
+[[step]]
+do = "wait_field"
+max = 3000
+shot = "centre"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 47
+note = "the foot of Shauntal's staircase"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 140
+note = "137's staircases are rails: zone_event 137 warp -> zone 140"
+
+[[step]]
+do = "wait_field"
+max = 600
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 25
+note = "trigger 0 (15,25) var 0x4000 == 0: the room's lift"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+
+[[step]]
+do = "wait_field"
+max = 3000
+note = "the lift ride up to the Elite Four's platform"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Shauntal, zone_event 140 object 0"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "scr 0280 @0x00D2 TrainerBattle trdata #228 (Cofagrigus, Jellicent, Golurk 48, Chandelure 50); flag 0x969 (@0x00C8)"
+
+[[step]]
+do = "advance_text"
+shot = "shauntal"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 8
+note = "trigger 1 (18,8) var 0x400A == 555 (set by the win): the warp pad back to 137"
+
+[[step]]
+do = "wait_map"
+map = 137
+max = 3000
+
+[[step]]
+do = "wait_field"
+max = 3000
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 45
+note = "the foot of Caitlin's staircase"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 143
+note = "137's staircases are rails: zone_event 137 warp -> zone 143"
+
+[[step]]
+do = "wait_field"
+max = 600
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 25
+note = "trigger 0 (15,25) var 0x4000 == 0: the room's lift"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+
+[[step]]
+do = "wait_field"
+max = 3000
+note = "the lift ride up to the Elite Four's platform"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Caitlin, zone_event 143 object 0"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "scr 0286 @0x00D4 TrainerBattle trdata #231 (Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); flag 0x96C"
+
+[[step]]
+do = "advance_text"
+shot = "caitlin"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 9
+note = "trigger 1 (18,9) var 0x400A == 555 (set by the win): the warp pad back to 137"
+
+[[step]]
+do = "wait_map"
+map = 137
+max = 3000
+
+[[step]]
+do = "wait_field"
+max = 3000
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 45
+note = "the foot of Grimsley's staircase"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 141
+note = "137's staircases are rails: zone_event 137 warp -> zone 141"
+
+[[step]]
+do = "wait_field"
+max = 600
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 25
+note = "trigger 0 (15,25) var 0x4000 == 0: the room's lift"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+
+[[step]]
+do = "wait_field"
+max = 3000
+note = "the lift ride up to the Elite Four's platform"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Grimsley, zone_event 141 object 0"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "scr 0282 @0x00E2 TrainerBattle trdata #230 (Scrafty, Liepard, Krookodile 48, Bisharp 50); flag 0x96A (@0x00D8)"
+
+[[step]]
+do = "advance_text"
+shot = "grimsley"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 8
+note = "trigger 1 (18,8) var 0x400A == 555 (set by the win): the warp pad back to 137"
+
+[[step]]
+do = "wait_map"
+map = 137
+max = 3000
+
+[[step]]
+do = "wait_field"
+max = 3000
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 47
+note = "the foot of Marshal's staircase"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 142
+note = "137's staircases are rails: zone_event 137 warp -> zone 142"
+
+[[step]]
+do = "wait_field"
+max = 600
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 25
+note = "trigger 0 (15,25) var 0x4000 == 0: the room's lift"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+
+[[step]]
+do = "wait_field"
+max = 3000
+note = "the lift ride up to the Elite Four's platform"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Marshal, zone_event 142 object 0"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "scr 0284 @0x00E2 TrainerBattle trdata #229 (Throh, Sawk, Conkeldurr 48, Mienshao 50); flag 0x96B"
+
+[[step]]
+do = "advance_text"
+shot = "marshal"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 8
+note = "trigger 1 (17,8) var 0x400A == 555 (set by the win): the warp pad back to 137"
+
+[[step]]
+do = "wait_map"
+map = 137
+max = 3000
+
+[[step]]
+do = "wait_field"
+max = 3000
 [expect]
 map = 137
+battles = 4
+flags = ["0x969", "0x96A", "0x96B", "0x96C"]
 
 [expect.vars]
 "0x40A1" = 1
