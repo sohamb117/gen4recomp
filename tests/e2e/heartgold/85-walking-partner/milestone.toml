@@ -1,12 +1,11 @@
 # Proves talking to the walking partner: the lead Pokemon following the player (obj_partner_poke 253, script
 # std_following_mon), turned to and A pressed: FollowMonFacePlayer, FollowMonInteract (the mood/location message),
 # its cry/hop, and the field released again.
-# Start: 01's end MAP_NEW_BARK west exit (676,399), CYNDAQUIL following -> end: MAP_NEW_BARK, the interaction run.
+# Start: 29's end MAP_NEW_BARK (684,394), the first able member following (HG SCYTHER, SS TYPHLOSION) -> end: MAP_NEW_BARK (680,397).
 title = "Walking partner: talk to the following Pokemon"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 1500
+estimate = 2077
 refs = [
   "include/constants/scrcmd.h:41 obj_partner_poke 253; src/follow_mon.c:1902-1905 (the follower object: id 253, script std_following_mon)",
   "include/constants/std_script.h:622-623 std_following_mon 9700; src/script_manager.c:48 (-> scr_seq_0163, msg_0266)",
@@ -15,15 +14,56 @@ refs = [
   "src/follow_mon.c:1930-1992 (MON_DATA_MOOD helpers: the mood the message reads)",
   "asm/macros/script.inc:4050-4052 FollowMonInteract = opcode 711 (0x2c7)",
 ]
-notes = "No gate: the starter follows from 01 on (the field spawns obj_partner_poke for the first able party member). Observable: the interaction writes nothing to the save (mood is only read; np_save4's dump has no mood field), so [expect] checks the script trace for the FollowMonInteract opcode (PC_TRACE_SCRIPT in [run] env; 'pc-script: f=N op=02c7', games/platinum/pc/src/pc_probe2d.c) [INFERENCE: the trace is a Platinum-port feature, unproven on the HG/SS guest; without it the milestone needs a mood field in np_save4 or a text-box probe]. Input: the follower walks one tile behind the player: walk one step (e.g. west), press the opposite direction to face it (a turn in place), A; or talk_to id 253 [INFERENCE: talk_to chases moving objects, but the follower moves whenever the player does]. advance_text (A) closes the message. Bots proven on HG/SS: walk_to, talk_to, advance_text, press. [INFERENCE] estimate 1500."
+notes = "No gate: the first able party member follows (HeartGold 29's TYPHLOSION is fainted, so SCYTHER; SoulSilver's TYPHLOSION is not, so it follows). Observable: the interaction writes nothing to the save (mood is only read; np_save4's dump has no mood field), the probe's object list does not carry the follower (no id 253), and HG/SS has no script trace (PC_TRACE_SCRIPT is a Platinum patch). So the run places the follower: walk_to (680,396) then (680,397), the last step south, so it trails one tile north on (680,396) (scouted: nothing else on that tile: no object, no bg event; facing west there, A starts nothing); UP turns the player to it and A must start a script (press until field_ready=0, which fails the run otherwise); the sheet shows the emote bubble and the message (HeartGold: 'Your Pokemon stretched out its body and is relaxing.'; SoulSilver: 'TYPHLOSION seems to be about to fall over!'; the scout saw 'SCYTHER is staring intently at the sky.': the message is drawn per interaction). Measured: HeartGold 2076 frames, SoulSilver 2077."
 
 [start]
-from = "01-newgame-cyndaquil-pokegear"
+from = "29-new-bark-elm-master-ball"
 
 [run]
-frames = 2250
-env = ["PC_TRACE_SCRIPT=0"]
+frames = 3200
+
+[[step]]
+do = "walk_to"
+x = 680
+z = 396
+
+[[step]]
+do = "walk_to"
+x = 680
+z = 397
+note = "the last step south: the follower trails one tile north, on (680,396)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 2
+gap = 10
+note = "a turn in place toward the follower"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 30
+times = 3
+until = "field_ready=0"
+note = "A facing the follower: std_following_mon (FollowMonFacePlayer, FollowMonInteract)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "emote"
+note = "the follower turns and shows its emote bubble"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "message"
+note = "its message"
+
+[[step]]
+do = "advance_text"
 
 [expect]
 map = "MAP_NEW_BARK"
-log = ['pc-script: f=\d+ op=02c7']
+position = [680, 397]
