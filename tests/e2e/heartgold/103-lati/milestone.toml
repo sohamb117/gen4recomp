@@ -3,10 +3,9 @@
 # The static other one in Pewter needs the Enigma Stone (a distribution item) and is out of reach.
 # Start: 93's end (FLAG_RESTORED_POWER) -> end: MAP_VERMILION after Steven's scene, VAR_UNK_4130 2 (roamer created).
 title = "Latias/Latios: Steven's roamer (and the Enigma Stone static)"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 7135
 refs = [
   "scr_seq_0841_T11R0802.s:41-79 (MAP_SAFFRON_COPYCAT_HOUSE_2F: FLAG_UNK_119 :61 asks for the Lost Item; Lost Item -> ITEM_PASS :79)",
   "scr_seq_0782_T06R0301.s:66-97 (MAP_VERMILION_POKEMON_FAN_CLUB: FLAG_UNK_119 -> ITEM_LOST_ITEM, VAR_UNK_4130 1, ClearFlag FLAG_HIDE_VERMILION_CITY_STEVEN)",
@@ -16,17 +15,119 @@ refs = [
   "Enigma Stone static (blocked): scr_seq_0755_T03R0101.s:31-52,535-545,604 (MAP_PEWTER_MUSEUM_OF_SCIENCE: HasItem ITEM_ENIGMA_STONE (536) + ScrCmd_546 0 (src/scrcmd_c.c:3922-3929, sub_02066BC0 over the vars/flags)); scr_seq_0750_T03.s:356-400 (Pewter static Latios (HG)/Latias (SS) WildBattle 40, LatiCaughtCheck); zone_event 048_T03 objects 9/10 (1039,83) FLAG_HIDE_PEWTER_CITY_LATIOS/LATIAS",
   "scr_seq_0837_T11R0701.s:15-40 (Silph Co. Steven follow-ups on VAR_UNK_4130 >= 3 after Red)",
 ]
-notes = "Gates: FLAG_RESTORED_POWER (93's Power Plant tail), the Copycat (Saffron), the Fan Club (Vermilion). No RTC, no touch. Catching the roamer has the same blocker as 101 (no hunt bot; check only party species 380/381). The Enigma Stone is not given by any script in this decomp (no GiveItem ITEM_ENIGMA_STONE in scr_seq) [INFERENCE: it is a Mystery Gift distribution item]: the Pewter static is blocked on a distribution; a start recipe 'item 1 SLOT ITEM_ENIGMA_STONE 1' (key_items) could stand in but ScrCmd_546 also checks save state. [INFERENCE] estimate."
+notes = "Gates: FLAG_RESTORED_POWER (93's Power Plant tail), the Copycat (Saffron), the Fan Club (Vermilion). 93 ends inside the Power Plant, where Fly is not allowed: out by its door first. The Copycat (2F, object 0) sets FLAG_UNK_119 (scr_seq_0841_T11R0802.s:_00BD); the Fan Club's big man (object 3, (5,8)) gives the Lost Item (VAR_UNK_4130 1, Steven shown); stepping out into Vermilion runs Steven's OnFrame scene, which creates the roamer (VAR_UNK_4130 2). Measured: HG 7134 frames (roamer slot 2 LATIAS lv35 active), SS 7135 (LATIOS). Catching the roamer is 101's roam_hunt + Master Ball (not repeated here). The Enigma Stone static in Pewter stays blocked: no script gives ITEM_ENIGMA_STONE (a distribution item) [INFERENCE]."
 
 [start]
 from = "93-cerulean-misty-machine-part"
 
 [run]
-frames = 30000
+frames = 10800
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 20
+note = "93 ends in the Power Plant (13,7), where Fly is not allowed: out by its door"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_10"
+
+[[step]]
+do = "fly"
+map = "MAP_SAFFRON"
+
+[[step]]
+do = "walk_to"
+x = 1297
+z = 218
+on_battle = "flee"
+note = "the Copycat's house"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SAFFRON_COPYCAT_HOUSE_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 3
+note = "the stairs -> 2F (5,3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SAFFRON_COPYCAT_HOUSE_2F"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the Copycat (5,7): with the power back she asks for her Lost Item (FLAG_UNK_119)"
+
+[[step]]
+do = "advance_text"
+shot = "after-copycat"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 3
+
+[[step]]
+do = "wait_map"
+map = "MAP_SAFFRON_COPYCAT_HOUSE_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 11
+
+[[step]]
+do = "wait_map"
+map = "MAP_SAFFRON"
+
+[[step]]
+do = "fly"
+map = "MAP_VERMILION"
+
+[[step]]
+do = "walk_to"
+x = 1293
+z = 309
+on_battle = "flee"
+note = "the Pokemon Fan Club"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VERMILION_POKEMON_FAN_CLUB"
+
+[[step]]
+do = "talk_to"
+id = 3
+note = "the big man (5,8): the Lost Item (VAR_UNK_4130 1, Steven shown in Vermilion)"
+
+[[step]]
+do = "advance_text"
+shot = "after-lost-item"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 12
+
+[[step]]
+do = "wait_map"
+map = "MAP_VERMILION"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "Vermilion's OnFrame (VAR_UNK_4130 1): Steven's scene, CreateRoamer (HG Latias, SS Latios), VAR_UNK_4130 2"
+shot = "after-steven"
 
 [expect]
 map = "MAP_VERMILION"
 flags = ["FLAG_RESTORED_POWER", "FLAG_HIDE_VERMILION_FAN_CLUB_LOST_ITEM"]
+save = ['any(r["species"] in (380, 381) and r["active"] for r in s["roamers"]["slots"])']
 
 [expect.vars]
 VAR_UNK_4130 = 2

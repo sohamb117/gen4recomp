@@ -1,0 +1,15 @@
+# Boost on 98's end save (run.py hgss_boost: np_save4 set-move / set-level on members already in the party).
+# Party: 0 TYPHLOSION 71, 1 TOGEPI 41, 2 SCYTHER 61, 3 AMPHAROS 65, 4 PELIPPER 62, 5 FERALIGATR 64.
+# Mt. Silver's way up climbs rock walls (1F (44,54..58), the Upper Mountainside's three, 3F's (13,4..13)): the
+# HM08 Oak gives here goes on FERALIGATR (personal.json: hms include 8) over Dragon Pulse, as a player teaches it.
+party-move 5 3 MOVE_ROCK_CLIMB
+# Red (TRAINER_PKMN_TRAINER_RED_RED: PIKACHU 88, ESPEON 84, SNORLAX 82, VENUSAUR 84, CHARIZARD 84, BLASTOISE 84)
+# is the game's strongest trainer; auto_battle neither switches for a matchup nor uses items (38's boost note), so
+# the levels go past his, and Earthquake's PP (spent in 87's scouting chain) comes back with the heal.
+party-level 0 100
+party-level 1 100
+party-level 2 100
+party-level 3 100
+party-level 4 100
+party-level 5 100
+party-heal

@@ -1,11 +1,11 @@
 # Proves the Mt. Silver gate and Red: Oak's call after Blue, HM08 Rock Climb and FLAG_UNLOCKED_MT_SILVER from Oak,
 # the League reception gate's policeman stepping aside, Route 28, Mt. Silver to the summit, and Red.
-# Start: 98's end (MAP_VIRIDIAN after the call) -> end: MAP_MOUNT_SILVER_CAVE_SUMMIT, FLAG_UNLOCKED_MT_SILVER, VAR_UNK_40FD 1.
+# Start: 98's end (below Blue in the Viridian Gym) -> end: the game's save on MAP_MOUNT_SILVER_CAVE_SUMMIT (30,12) after
+# Red, FLAG_UNLOCKED_MT_SILVER, VAR_UNK_40FD 1; the credits end in a reset.
 title = "Mt. Silver and Red"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 40000
+estimate = 72220
 refs = [
   "scr_seq_0740_T01R0301.s:92-97,198-210 (Oak: VAR_UNK_4096 2 -> _0282: ITEM_HM08, VAR_UNK_4110 2, FLAG_UNLOCKED_MT_SILVER include/constants/flags.h:318, FLAG_GOT_HM08)",
   "scr_seq_0213_R22R0101.s:18-25 (MAP_ROUTE_22_POKEMON_LEAGUE_RECEPTION_GATE OnTransition: FLAG_UNLOCKED_MT_SILVER -> policeman_2 moved aside to (7,8))",
@@ -14,19 +14,283 @@ refs = [
   "TRAINER_PKMN_TRAINER_RED_RED (260, include/constants/trainers.h:265)",
   "include/constants/badge.h (16 badges: BADGE_ZEPHYR..BADGE_EARTH)",
 ]
-notes = "Gates: all 16 badges (Blue last, 98), Oak's call (VAR_UNK_4096 2) then talking to Oak in MAP_PALLET_TOWN_OAKS_LAB; then the reception gate west/north to Route 28 and Mt. Silver (MAP_MOUNT_SILVER_CAVE_1F..3F, SUMMIT). Mt. Silver needs Rock Climb/Waterfall/Flash field moves [INFERENCE: check tools/hg_map.py on each D41R01xx]; Rock Climb/Waterfall as field_move/hm walk are unproven on HG/SS. Red's team is the strongest in the game (levels in the trainer data, ~80s [INFERENCE]): a boost.recipe (party SPECIES LEVEL) is required for auto_battle to win. Winning runs HOFCredits 1 (a second credits roll; wait_reset-like handling may be needed, cf. 38). [INFERENCE] estimate."
+notes = "Gates: all 16 badges (Blue last, 98), Oak's call on leaving the Viridian Gym (VAR_UNK_4096 1 -> 2; the Pokegear's call, closed with B), then Oak in his lab: HM08 and FLAG_UNLOCKED_MT_SILVER. Scouted on HeartGold (core-proposal): back down the gym's arrow floor (the 98 BFS from (5,5)), Route 22 to the reception gate (the policeman aside), Route 28 (Cut tree, pond) to Mt. Silver's Pokemon Center (healed), the cave. Mt. Silver's floors are pockets joined by warps: a BFS over each map's tiles (surf, waterfall, rock walls 0x4B/0x4C) found 1F's hub unreachable from its mouth, so the way is 1F's rock wall (44,54..58) -> the Lower Mountainside -> 1F's hub -> 2F -> the Upper Mountainside (24,12) -> 2F (38,20) -> UM (39,43) -> 2F (34,38) -> UM (18,51), three rock walls -> 3F, its rock wall -> the summit. walk_to's own planner looped between a rock wall and the water when sent to 1F's far warp directly. The boost puts Rock Climb on FERALIGATR (the HM Oak gives) and levels the party to 100 with a heal for Red (PIKACHU 88 ... BLASTOISE 84; auto_battle won in 15 turns on HG). Winning: the game saves (the end save), HOFCredits 1 rolls the credits to 'The End', A, and OS_ResetSystem as after 38: the expectations read the save (on the summit (30,12)). Measured: HG 72220 frames, SS 71621; the sheets show the gym, Viridian after the call, Oak's lab, Route 28, Red's '...' on the summit, his PIKACHU lv88, 'The End'."
 
 [start]
 from = "98-viridian-blue"
+boost = "boost.recipe"
 
 [run]
-frames = 60000
+frames = 108400
+
+[[step]]
+do = "slide"
+dirs = "DOWN DOWN DOWN DOWN LEFT DOWN DOWN DOWN DOWN"
+max = 4000
+note = "back down the Viridian Gym's arrow floor from Blue's dais (the same BFS as 98): (5,9), the long slide west-then-south to (5,43), the exit mat (5,47)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 16
+gap = 30
+note = "off the mat into Viridian"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIRIDIAN"
+
+[[step]]
+do = "advance_text"
+key = "b"
+max = 6000
+note = "Oak's call (VAR_UNK_4096 1 -> 2): the Pokegear's call, closed with B"
+shot = "after-oak-call"
+
+[[step]]
+do = "fly"
+map = "MAP_PALLET"
+
+[[step]]
+do = "walk_to"
+x = 1045
+z = 373
+note = "Oak's lab door"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PALLET_TOWN_OAKS_LAB"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Oak (8,6)"
+
+[[step]]
+do = "advance_text"
+max = 8000
+note = "HM08 Rock Climb, FLAG_UNLOCKED_MT_SILVER (VAR_UNK_4110 2)"
+shot = "after-hm08"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 13
+
+[[step]]
+do = "wait_map"
+map = "MAP_PALLET"
+
+[[step]]
+do = "fly"
+map = "MAP_VIRIDIAN"
+
+[[step]]
+do = "walk_to"
+x = 936
+z = 266
+via = [[1008, 260], [992, 259], [987, 272], [979, 268], [958, 270], [953, 277], [952, 268]]
+on_battle = "flee"
+note = "Route 22 west to the League reception gate (tools/hg_world.py route 1032 263 936 266)"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 8
+note = "past the policeman, who has stepped aside (scr_seq_0213_R22R0101.s:18-25), to Route 28"
+shot = "route-28"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_28"
+
+[[step]]
+do = "walk_to"
+x = 820
+z = 266
+via = [[876, 272], [858, 272], [856, 278], [842, 279], [833, 279], [826, 274]]
+hm = true
+surf = true
+on_battle = "flee"
+note = "Route 28 (its Cut tree, its pond) to Mt. Silver's Pokemon Center"
+
+[[step]]
+do = "heal"
+x = 820
+z = 265
+
+[[step]]
+do = "walk_to"
+x = 811
+z = 260
+on_battle = "flee"
+note = "the cave mouth"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_1F"
+
+[[step]]
+do = "walk_to"
+x = 51
+z = 46
+hm = true
+on_battle = "flee"
+note = "1F (40,61): the rock wall (44,54..58) up, then warp 3 out to the Lower Mountainside; 1F's hub with the way up is reached only from outside (a BFS over surf/climb/waterfall finds no way inside)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_LOWER_MOUNTAINSIDE"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 37
+on_battle = "flee"
+note = "the Lower Mountainside (27,42) -> its warp 1 back into 1F (53,41)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_1F"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 9
+on_battle = "flee"
+note = "1F's hub north to warp 6 -> 2F (20,22)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_2F"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 1
+on_battle = "flee"
+note = "2F -> the Upper Mountainside (24,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_UPPER_MOUNTAINSIDE"
+
+[[step]]
+do = "walk_to"
+x = 39
+z = 31
+on_battle = "flee"
+note = "the Upper Mountainside and 2F are cut into pockets joined by their warps: (39,31) -> 2F (38,20)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_2F"
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 32
+on_battle = "flee"
+note = "-> the Upper Mountainside (39,43)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_UPPER_MOUNTAINSIDE"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 51
+on_battle = "flee"
+note = "-> 2F (34,38)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_2F"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 38
+on_battle = "flee"
+note = "-> the Upper Mountainside (18,51)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_UPPER_MOUNTAINSIDE"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 39
+hm = true
+on_battle = "flee"
+note = "three rock walls up ((20,50) (16,46) (14,42)) to warp 6 -> 3F (34,18)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_3F"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 1
+hm = true
+on_battle = "flee"
+note = "3F's rock wall (13,4..13) -> the summit (30,36)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_SILVER_CAVE_SUMMIT"
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 12
+face = "up"
+interact = true
+note = "below Red (30,11); A"
+shot = "red"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_PKMN_TRAINER_RED_RED"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 20
+gap = 40
+note = "Red's '...', the fade; he is gone (FLAG_UNK_25F, VAR_UNK_40FD 1, VAR_UNK_4131 1); HOFCredits 1 saves the game and starts the credits within 4000 frames of the win, and they ignore A"
+
+[[step]]
+do = "wait_frames"
+n = 11500
+shot = "the-end"
+note = "the credits again, up to 'The End' (as 38)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "'The End' waits for A"
+
+[[step]]
+do = "wait_reset"
+max = 1200
+note = "OS_ResetSystem(0), as after 38's credits; the game saved before them (the run's end save, frame ~60000)"
 
 [expect]
-map = "MAP_MOUNT_SILVER_CAVE_SUMMIT"
-badges = 16
+badges = 8
 flags = ["FLAG_UNLOCKED_MT_SILVER", "FLAG_GOT_HM08", "FLAG_UNK_25F"]
 battles = 1
+save = [
+  's["trainer"]["kanto_badge_mask"] == 255',
+  's["location"]["map"] == 465 and (s["location"]["x"], s["location"]["z"]) == (30, 12)',
+]
 
 [expect.vars]
 VAR_UNK_40FD = 1
