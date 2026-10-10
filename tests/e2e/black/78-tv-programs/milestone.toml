@@ -1,21 +1,65 @@
 # A TV program: the TV in a Castelia house plays one of the programs (msg bank 462: 'Unova News', 'Eyes on Unova',
 # ...), picked before or after the clear.
-# Start: Castelia City (13's end) -> end: the Castelia house with the TV (zone 54).
+# Start: Castelia City (zone 34) east of the house (34's end + start.recipe) -> end: the house (zone 54) before the TV
+# (12,3), a program watched.
 title = "TV programs"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 3000   # [INFERENCE] frames, not measured
+estimate = 6381   # measured from 34's end save + start.recipe (CONTINUE included), Black, core-bwm
 refs = [
   "scr 0898 script 1 (script id 10520, text 462): @0x0012 Cmd23A 0x17, 1; @0x001E flag 0x960 -> var 0x8021 0/1; @0x0043 Cmd23D var 0x8021, var 0x8020 [INFERENCE: the program pick]; @0x004F MessageSystem var 0x8020",
   "msg 462 #133 'Eyes on Unova', #166-#169 'Unova News' (the programs)",
   "zone_event 54 object 3 gfx 0x14 (3,3) -> scr 0108 script 4: msg 59 #10 'It's difficult to watch TV from here.' (the house's TV); zone_event 34 warp 2 (7,32) -> zone 54 warp 0",
   "scr 0782 script 2 (the player's room, zone 391): msg 430 #60 'a flat-screen television that Dad bought!' (no program)",
 ]
-notes = "P2 (planned P1): a program is text only and sets nothing in the save. No bg event names script id 10520: the TVs run it from their tile [INFERENCE], so PHASE2 confirms zone 54's TV tile. [expect] is the room."
+notes = "Measured from the start save (CONTINUE included): Black 6381, White 6489 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). P2 (planned P1): a program is text only; its one write, Cmd23A 0x17, 1 (a record count [INFERENCE]), is not in the save dump, so [expect] is the room and the tile before the TV, and the proof is the sheet's 'program' shot (scouted on Black: 'The Number One \"Struggle\" Trainer!', then 'According to our independent research, Nuvema Town's AAAAAAA has,' -- a post-clear program about the player). No bg event names script id 10520: the TV (the screen on the cabinet north of the two seated viewers, objects 1/2 at (11,5)/(12,5)) runs it from its tile, faced from (12,3) with A. Starts from 34's end (post-game: flag 0x960 picks the post-clear list, var 0x8021 1): 13's end save is in Burgh's Gym (zone 29, the honey walls) and a set location from it hung the port at boot (np_gp DEFECT hang frame 5284 seed 0: run_frame did not return in 30s), where 34's (the Poke Transfer Lab) boots."
 
 [start]
-from = "13-castelia-plasma-burgh-insect-badge"
+from = "34-postgame-poke-transfer-lab"
+recipe = "start.recipe"
+
+[run]
+frames = 10000
+
+[[step]]
+do = "wait_field"
+shot = "street"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 40
+gap = 0
+note = "zone_event 34 warp 2 (7,32..34) -> zone 54 warp 0"
+
+[[step]]
+do = "wait_map"
+map = 54
+
+[[step]]
+do = "wait_field"
+shot = "house"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 3
+face = "up"
+note = "below the TV, north of the viewers (11,5)/(12,5)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 90
+times = 2
+shot = "program"
+note = "scr 0898 script 1 (script id 10520): Cmd23A 0x17, 1; Cmd23D picks the program; MessageSystem msg 462"
+
+[[step]]
+do = "advance_text"
+max = 3000
 
 [expect]
 map = 54
+position = [12, 3]

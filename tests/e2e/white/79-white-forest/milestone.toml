@@ -1,23 +1,107 @@
-# White Forest (White only, post-game): through the Black Gate from Route 15 into the forest, whose residents and
-# Pokemon grow with the Entralink's invitations (flags 0x277-0x27A by the resident count).
-# Start: the player's room (zone 391, 32's end) -> end: White Forest (zone 424).
+# White Forest (White only, post-game): from the Poke Transfer Lab out onto Route 15, through the Black Gate into the
+# forest, whose level script shows the residents by the forest's resident count (flags 0x277-0x27A), and into the
+# research hut, whose researcher welcomes the player once (flag 0x9B).
+# Start: the Poke Transfer Lab (zone 381, 34's end) -> end: the White Forest hut (zone 426) before the researcher (5,5).
 title = "White Forest (White)"
-status = "planned"
 priority = "P1"
 version = "white"
-estimate = 25000   # [INFERENCE] frames, not measured
+estimate = 7212   # measured from 34's end save (CONTINUE included), White, core-bwm
 refs = [
-  "zone_event 379 (Black Gate) warp 1 (15,4) -> zone 0 in the data; White's field takes it to White Forest (zone 424) [INFERENCE: a/1/2/5 is identical in both ROMs (version-diff)]; zone_event 424 warp 0 (8,50) 1x4 -> zone 379 warp 1, warp 2 (50,9) -> zone 375 warp 0",
-  "zone 424 level script type 2 -> scr 0848 script 1: @0x00FC-@0x0108 SetFlag 0x277-0x27A; @0x0112 Cmd1C4 3, var 0x8025 (resident count): >= 9 clears all four, >= 7 three, >= 5 two, ... [INFERENCE: thresholds below 5 from the same chain]",
-  "zone_event 424 objects 2-7 hidden by flags 0x277 (2,3), 0x278 (4,5), 0x279 (6), 0x27A (7) -> scr 0848 scripts 4-9 (residents)",
-  "zone_event 424 warps 1 (43,36) -> zone 425 (the Pokemon Center), 3 (19,46) -> zone 426; scr 0850 script 3 (zone 425): msg 467 #0 'Many people have come here from Black City...'",
+  "zone_event 381 warp 0 (9,23) 3x1 -> zone 378 (Route 15) warp 2 (608,425)",
+  "zone_event 378 warp 0 (633,426) 1x3 -> zone 379 (Black Gate) warp 0; zone_event 379 warp 1 (15,4) -> zone 0 in both ROMs: White's zone 0 is White Forest (the run's map_id is 0 there, the forest on screen; the decoder names zone 0 Black City and shows zone 424's events as White Forest's) [INFERENCE: the field loads zone 424's events for zone 0 in White]; zone_event 424 warp 0 (8,50) 1x4 -> zone 379 warp 1",
+  "zone 424 level script type 2 -> scr 0848 script 1: @0x00FC-@0x0108 SetFlag 0x277-0x27A; @0x0112 Cmd1C4 3, var 0x8025 (resident count): >= 9 clears all four, >= 7 three, >= 5 two, >= 3 0x277",
+  "zone_event 424 objects 2-7 hidden by flags 0x277 (2,3), 0x278 (4,5), 0x279 (6), 0x27A (7) -> scr 0848 scripts 4-9 (residents); bg 0 (48,35) -> scr 0848 script 11 msg 466 #129 'White Forest People and Nature in Harmony'",
+  "zone_event 424 warp 3 (19,46) -> zone 426 (the hut); zone_event 426 object 0 gfx 0x1C (5,5) -> scr 0852 script 1: @0x0049 unless flag 0x9B: @0x005C msg 468 #0 'Ho! Hoo! Welcome to White Forest!', @0x0068 SetFlag 0x9B; msg 468 #1 'I do research into the Pokemon that live in this forest.'",
+  "zone_event 424 warp 1 (43,36) -> zone 425 (the Pokemon Center); scr 0850 script 3 (zone 425): msg 467 #0 'Many people have come here from Black City...'",
 ]
-notes = "White only; Black's twin is black/79-black-city. Offline the resident count stays low [INFERENCE], so the level script leaves the four resident flags set. Route 15 is reached the way white/34 goes. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+notes = "Measured from the start save (CONTINUE included): White 7212 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). White only; Black's twin is black/79-black-city. Measured from 34's end save (CONTINUE included): White 7212 frames on core-bwm. The same way as black/79 to the Black Gate's east side, which lands in zone 0, White's White Forest; zone 424's warp 3 (19,46) takes the player into zone 426 (seen). Chains from 34's end (the lab on Route 15): CONTINUE there lands in the lab (the continue warp of flag 0x966 is spent by 34's run, scouted). The zone edges' warps (the lab's door mat, the gate's east side) take a held press. Offline the forest is not empty: the resident count is already >= 9 (as in Black City), so the level script sets 0x277-0x27A and clears all four again (none set in the end save); flags_clear pins that branch. The researcher's welcome (flag 0x9B, clear in 34's end save) is the scripts' record of the visit."
 
 [start]
-from = "32-n-castle-zekrom-ghetsis-credits"
-# post-game: switch to 34's end once it lands
+from = "34-postgame-poke-transfer-lab"
+
+[run]
+frames = 11000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 22
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+gap = 0
+note = "zone_event 381 warp 0 (9..11,23) -> Route 15 (608,426)"
+
+[[step]]
+do = "wait_map"
+map = 378
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 633
+z = 427
+max = 8000
+note = "zone_event 378 warp 0 (633,426..428) -> the Black Gate (zone 379)"
+
+[[step]]
+do = "wait_map"
+map = 379
+
+[[step]]
+do = "wait_field"
+shot = "gate"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 5
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 30
+gap = 0
+note = "zone_event 379 warp 1 (15,4..6) -> White Forest (zone 424) (8,50): its level script, scr 0848 script 1"
+
+[[step]]
+do = "wait_map"
+map = 0
+
+[[step]]
+do = "wait_field"
+shot = "white-forest"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 46
+note = "zone_event 424 warp 3 (19,46) -> the hut (zone 426)"
+
+[[step]]
+do = "wait_map"
+map = 426
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the researcher at (5,5): scr 0852 script 1, msg 468 #0, flag 0x9B"
+
+[[step]]
+do = "advance_text"
+shot = "hut"
 
 [expect]
-map = 424
-flags = ["0x277", "0x278", "0x279", "0x27A"]
+map = 426
+flags = ["0x9B"]
+flags_clear = ["0x277", "0x278", "0x279", "0x27A"]

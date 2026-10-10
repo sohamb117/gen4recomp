@@ -1,24 +1,108 @@
-# Black City (Black only, post-game): through the Black Gate from Route 15 into the city whose residents the
-# Entralink brings (each a trainer: scr 0000 script 2's TrainerBattle).
-# Start: the player's room (zone 391, 32's end) -> end: Black City (zone 0).
+# Black City (Black only, post-game): from the Poke Transfer Lab out onto Route 15, through the Black Gate into the
+# city, into its market, whose level script shows the residents by the city's resident count (flags 0x273-0x276)
+# and whose owner welcomes the player once (flag 0x9A).
+# Start: the Poke Transfer Lab (zone 381, 34's end) -> end: the Black City market (zone 5) before the owner (8,5).
 title = "Black City (Black)"
-status = "planned"
 priority = "P1"
 version = "black"
-estimate = 25000   # [INFERENCE] frames, not measured
+estimate = 7384   # measured from 34's end save (CONTINUE included), Black, core-bwm
 refs = [
-  "zone_event 379 (Black Gate) warp 1 (15,4) 1x3 -> zone 0 (Black City) warp 0 (9,50); warp 0 (1,4) -> zone 378 (Route 15) warp 0; zone_event 375 (Black Gate) warp 0 (4,14) -> zone 0 warp 2 (from Route 14)",
-  "zone_event 0 warps 1-6 -> zones 1-5 (the Pokemon Center, zone 1, and the market buildings); bg 0 (48,35) -> scr 0000 script 3 msg 2 #121 'Black City Prosperous and Vibrant'",
-  "scr 0000 script 2 (a resident): Cmd1C4 0xA/0xB/0/1 (resident data), @0x00C2 TrainerBattle var 0x8022 [INFERENCE: the residents are trainers invited through the Entralink]",
-  "scr 0002 script 3 (zone 1): msg 3 #0 'Many people come here from White Forest. If you enter White Forest and invite people...'",
-  "the Black Gate's warps name zone 0 in both ROMs (a/1/2/5 identical: version-diff); White's field takes them to White Forest (zone 424) [INFERENCE]",
+  "zone_event 381 warp 0 (9,23) 3x1 -> zone 378 (Route 15) warp 2 (608,425)",
+  "zone_event 378 warp 0 (633,426) 1x3 -> zone 379 (Black Gate) warp 0; zone_event 379 warp 1 (15,4) 1x3 -> zone 0 (Black City) warp 0 (9,50)",
+  "zone_event 0 warp 4 (27,38) -> zone 5 (the market); zone 0 has no objects and an empty level script (scr 0001); bg 0 (48,35) -> scr 0000 script 3 msg 2 #121 'Black City Prosperous and Vibrant'",
+  "zone 5 level script type 2 -> scr 0010 script 1: @0x0046-@0x0052 SetFlag 0x273-0x276, @0x005C Cmd1C4 3, var 0x8020 (resident count): >= 9 clears all four, >= 7 three, >= 5 two, >= 3 0x273",
+  "zone_event 5 object 8 gfx 0x2C (8,5) -> scr 0010 script 2: @0x0104 unless flag 0x9A: @0x0117 msg 7 #0 'Welcome to Black City. This is the city of dreams, greed, and more greed.', @0x0123 SetFlag 0x9A",
+  "scr 0758 (Black Gate, zone 379) script 2-4: MessageVersion msg 411 #1/#3/#5 (Black's lines)",
   "zone 294 (Black City, sysmsg 89 #83) and 295 (White Forest): the Entralink's copies (black/34's refs)",
 ]
-notes = "Black only; White's twin is white/79-white-forest. Black City has no Black Tower in B/W (that is B2W2): its content is the market and the residents, who come from other players' games through the Entralink, so offline the city may stand nearly empty [INFERENCE]. Route 15 is reached the way black/34 goes (Marvelous Bridge). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+notes = "Measured from the start save (CONTINUE included): Black 7384 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Black only; White's twin is white/79-white-forest. Black City has no Black Tower in B/W (that is B2W2): its content is the market and the residents, who come through the Entralink. Measured from 34's end save (CONTINUE included): Black 7384 frames on core-bwm. Chains from 34's end (the lab on Route 15): CONTINUE there lands in the lab (the continue warp of flag 0x966 is spent by 34's run, scouted). The zone edges' warps (the lab's door mat, the gate's east side) take a held press, not walk_to onto the tile. Offline the city is not empty: the save's resident count is already >= 9 (residents stand in the city and the market, sheet), so the market's level script sets 0x273-0x276 and clears all four again (seen: none set in the end save); flags_clear pins that branch. Neither the city nor the gate records anything; the owner's welcome (flag 0x9A, clear in 34's end save) is the scripts' record of the visit."
 
 [start]
-from = "32-n-castle-reshiram-ghetsis-credits"
-# post-game: switch to 34's end once it lands
+from = "34-postgame-poke-transfer-lab"
+
+[run]
+frames = 11500
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 22
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 30
+gap = 0
+note = "zone_event 381 warp 0 (9..11,23) -> Route 15 (608,426)"
+
+[[step]]
+do = "wait_map"
+map = 378
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 633
+z = 427
+max = 8000
+note = "zone_event 378 warp 0 (633,426..428) -> the Black Gate (zone 379)"
+
+[[step]]
+do = "wait_map"
+map = 379
+
+[[step]]
+do = "wait_field"
+shot = "gate"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 5
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 30
+gap = 0
+note = "zone_event 379 warp 1 (15,4..6) -> Black City (zone 0) (9,50)"
+
+[[step]]
+do = "wait_map"
+map = 0
+
+[[step]]
+do = "wait_field"
+shot = "black-city"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 38
+note = "zone_event 0 warp 4 (27,38) -> the market (zone 5): its level script, scr 0010 script 1"
+
+[[step]]
+do = "wait_map"
+map = 5
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 8
+note = "the market's owner at (8,5): scr 0010 script 2, msg 7 #0, flag 0x9A"
+
+[[step]]
+do = "advance_text"
+shot = "market"
 
 [expect]
-map = 0
+map = 5
+flags = ["0x9A"]
+flags_clear = ["0x273", "0x274", "0x275", "0x276"]

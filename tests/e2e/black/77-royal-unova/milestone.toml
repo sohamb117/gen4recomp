@@ -1,25 +1,125 @@
-# The Royal Unova cruise (post-game, evenings, once a day): the $1,000 ticket at Castelia's pier, boarding, and the
-# ship's trainers.
-# Start: the player's room (zone 391, 32's end) -> end: aboard the Royal Unova (zone 52).
+# The Royal Unova cruise (post-game, evenings, once a day): the $1,000 ticket at Castelia's pier, boarding, the view
+# from the bow until the ship turns back, and the return to the pier.
+# Start: Castelia's pier (zone 39, 34's end + start.recipe) -> end: the pier before the clerk (17,16), the day's
+# cruise taken (flag 0xAC2).
 title = "The Royal Unova"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 20000   # [INFERENCE] frames, not measured
+estimate = 19193   # measured from 34's end save + start.recipe (CONTINUE included), Black, core-bwm
 refs = [
   "zone_event 39 object 0 gfx 0x4C (18,16) -> scr 0078 script 2 (the pier clerk): @0x0258 unless flag 0x960 -> @0x043D msg 44 #13 'now in preparation'; @0x026B flag 0xAC2 set -> msg 44 #11 'closed for the day'; @0x027E Cmd0CD var 0x8021 unless == 2 -> @0x0411 msg 44 #2 'operates only in the evening'",
   "scr 0078 L_04DD msg 44 #4 'The ticket is $1,000'; @0x02FC Cmd0FB var 0x8022, 0x3E8 (the money check); L_0478 @0x0478 Cmd0FA 0x3E8 (pay), @0x04C3 SetVar 0x4135 0, @0x04C9 SetFlag 0xAC2, @0x04D1 Warp zone 52 (29,29)",
-  "zone_event 52 objects 0-14 (crew and passengers) -> scr 0104 scripts 2-20; zone 52 level scripts: type 2 -> scr 0104 script 27, type 4 -> script 30; scr 0104 script 1 @0x0137 msg 57 #71 'This cruise ship will arrive in Castelia City shortly'",
-  "zone 28 warps 3/16 -> zone 39 (the pier) from Castelia's rail waterfront (black/14 refs)",
+  "zone_event 52 objects 0-14 (crew and passengers) -> scr 0104 scripts 2-20; zone 52 level scripts: type 2 -> scr 0104 script 27, type 4 -> script 30; scr 0104 script 29 (the welcome: the guide leads the player up, msg 57 #69, @0x082F 0x4135 1)",
+  "zone_event 52 trigger 0 (28,10) 3x1 var 0x400A == 0 -> scr 0104 script 28: the view from the bow (Cmd1AB var 0x8010; map_id 0 while it shows); var 0x8010 == 1 (the view ran to its end) -> msg 57 #71 'This cruise ship will arrive in Castelia City shortly', L_083B @0x0872 Warp zone 39 (19,16)",
+  "zone_event 39 warps 0 (10,3) 6x1 / 1 (16,3) 3x1 -> zone 28 warps 16/3 (Castelia's rail waterfront, black/14 refs)",
 ]
-notes = "Post-game (flag 0x960), evenings only (Cmd0CD == 2 [INFERENCE: time of day, 2 = evening]) and once a day (flag 0xAC2, a daily flag [INFERENCE]): the run's clock is set to an evening. Castelia's waterfront is a rail map (the rail bot). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+notes = "Measured from the start save (CONTINUE included): Black 19193, White 19292 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Measured from 34's end save + start.recipe (CONTINUE included): Black 19193, White 19292 frames on core-bwm. Post-game (flag 0x960), evenings only (Cmd0CD == 2: with [run] clock 19:00 the clerk sells; the port's default 10:00 gets msg 44 #2 'operates only in the evening', seen in scouting) and once a day (flag 0xAC2). 34's end is in the Poke Transfer Lab and its continue warp is spent, so the recipe sets the location on the pier; a set location keeps the saved zone's objects, so the run steps out to the waterfront (zone 28) and back in to load the clerk. The clerk's menu: A on msg 44 #0, A on the first choice (board), A on 'The power of the C-Gear will be turned off. Is that OK?' (YES), msg 44 #8. Aboard, the welcome scene holds the player; the save menu does not close on the ship (the bot's save timed out there), so the run sees the cruise out: stepping on the bow trigger shows the view (Skyarrow Bridge at sunset, the bay map below) for about 10000 frames, then the arrival message and the warp back to the pier, where the save is written. The ship's trainers are not fought. Money: 34's end less the $1,000 ticket (Cmd0FA 0x3E8): Black 275276 -> 274276, White 273348 -> 272348."
 
 [start]
 from = "34-postgame-poke-transfer-lab"
+recipe = "start.recipe"
 
 [run]
-clock = "2026-10-09 19:00:00"   # [INFERENCE] see notes
+frames = 29000
+clock = "2009-03-22 19:00:00"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 90
+gap = 0
+note = "out to the waterfront (zone 28) through zone_event 39 warp 1 (16..18,3)"
+
+[[step]]
+do = "wait_map"
+map = 28
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 60
+gap = 0
+note = "back down onto the pier: its objects load"
+
+[[step]]
+do = "wait_map"
+map = 39
+
+[[step]]
+do = "wait_field"
+shot = "pier"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the clerk at (18,16): scr 0078 script 2"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 60
+times = 6
+shot = "ticket"
+note = "msg 44 #0, the first choice (board), YES to turning the C-Gear off (msg 44 #7), msg 44 #8 'Bon voyage!': $1,000, 0xAC2, Warp zone 52 (29,29)"
+
+[[step]]
+do = "wait_map"
+map = 52
+
+[[step]]
+do = "wait_field"
+shot = "ship"
+
+[[step]]
+do = "advance_text"
+max = 4000
+shot = "deck"
+note = "the welcome: scr 0104 script 29 (the guide leads the player up the deck, msg 57 #69), @0x082F 0x4135 1"
+
+[[step]]
+do = "walk_to"
+x = 29
+z = 11
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+note = "onto zone_event 52 trigger 0 (28..30,10) var 0x400A == 0 -> scr 0104 script 28: the view from the bow (Cmd1AB)"
+
+[[step]]
+do = "wait_map"
+map = 0
+
+[[step]]
+do = "wait_frames"
+n = 600
+shot = "bow"
+
+[[step]]
+do = "wait_map"
+map = 52
+max = 20000
+note = "the view runs to its end (Cmd1AB var 0x8010 == 1): msg 57 #71 'This cruise ship will arrive in Castelia City shortly', L_083B"
+
+[[step]]
+do = "advance_text"
+max = 3000
+
+[[step]]
+do = "wait_map"
+map = 39
+
+[[step]]
+do = "wait_field"
+shot = "back"
 
 [expect]
-map = 52
+map = 39
 flags = ["0xAC2"]
+save = ['s["trainer"]["money"] in (274276, 272348)']   # 34's end less the $1,000 ticket: Black 275276, White 273348
