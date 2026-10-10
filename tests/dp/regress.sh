@@ -153,8 +153,19 @@ want_group() {
 }
 
 configure() { # configure DIR GAME...
-    local dir=$1
+    local dir=$1 home
     shift
+    # A build dir copied or linked from another checkout keeps that checkout's
+    # CMakeCache: cmake then regenerates into the other tree and ninja loops
+    # ("manifest 'build.ninja' still dirty after 100 tries"). Refuse it.
+    if [ -f "$dir/CMakeCache.txt" ]; then
+        home=$(sed -n 's/^CMAKE_HOME_DIRECTORY:INTERNAL=//p' "$dir/CMakeCache.txt")
+        if [ "$(cd "$home" 2>/dev/null && pwd -P)" != "$(cd "$root/core" && pwd -P)" ]; then
+            echo "regress: $dir was configured from $home, not this tree's core ($root/core):" \
+                "delete it (it is regenerable output) and rerun" >&2
+            return 1
+        fi
+    fi
     [ -f "$dir/build.ninja" ] && return 0
     local defs=() g
     for g in "$@"; do
