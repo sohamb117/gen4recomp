@@ -4,10 +4,9 @@
 # Start: 25's end MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK -> end: MAP_ROUTE_30 by Joey (553,332), Joey registered,
 # TRAINER_YOUNGSTER_JOEY_2 defeated.
 title = "Pokegear phone: register Joey, the rematch call, the rematch"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 17000
+estimate = 16996
 refs = [
   "zone_event 031_R30 object 4 std_trainer(TRAINER_YOUNGSTER_JOEY) (553,332), hidden by FLAG_HIDE_ROUTE_30_YOUNGSTER_JOEY (cleared in 03)",
   "scr_seq_0953.s:1524-1537 (std trainer: battle, then Call _0D9F/_0DCF the number offer); :1548-1572 (talked again after: GetPhoneBookRematch :1551 -> rematch _0D02; else the offer again _0DE4)",
@@ -23,7 +22,7 @@ refs = [
   "src/application/pokegear/phone/overlay_101_021F0F48.c:232,302 (the phone list takes A as well as touch)",
   "include/constants/flags.h:217 FLAG_BEAT_RADIO_TOWER_ROCKETS, :1394-1395 TRAINER_FLAG_BASE 0x550; include/constants/trainers.h:13 TRAINER_YOUNGSTER_JOEY 8, :284 TRAINER_YOUNGSTER_JOEY_2 279",
 ]
-notes = "Gates: FLAG_BEAT_RADIO_TOWER_ROCKETS and rematch group 2 (FLAG_UNK_97D) both come in 25; Joey shown since 03. RTC: [run] clock Monday 2009-03-23 12:00 (TIMEOFDAY_WILD_DAY); the save's last day is earlier, so the day rolls forward on load. Order: Fly to Cherrygrove (proven fly bot), walk to Joey; if 04 never fought him, the battle comes first and the number is offered right after (scr_seq_0953.s:1532-1534), else talking offers it (:1557-1559): YES. Then leave Route 30's map section (an outgoing call from Route 30 runs phoneScriptIfLocal instead: phone_scripts_generic.c:31-32), e.g. Cherrygrove, open the Pokegear phone, call Joey: POSTROCKETWEEKTIME (chance 100: rollPercentChance's <= makes it certain) -> PHONE_SCRIPT_033 marks him seeking. Back to Joey: GetPhoneBookRematch -> JOEY_2 (the first unbeaten, group 2 unlocked). Bots proven on HG/SS: fly (opens the Pokegear map), walk_to, talk_to, advance_text, auto_battle; needed: a phone-call bot (Pokegear phone tab, contact list to JOEY, A) - the Pokegear app takes buttons. 25's party is full (6) and ~lv40: Joey's rematch is no threat. [INFERENCE] estimate 17000: ~3000 out of the Radio Tower, ~1500 fly, ~1500 walk, ~2800 first battle + number, ~1500 to Cherrygrove, ~1500 the call, ~1500 back, ~2500 the rematch."
+notes = "Gates: FLAG_BEAT_RADIO_TOWER_ROCKETS and rematch group 2 (FLAG_UNK_97D) both come in 25; Joey shown since 03. RTC: [run] clock Monday 2009-03-23 12:00 (TIMEOFDAY_WILD_DAY); the save's last day is earlier, so the day rolls forward on load. Order: Fly to Cherrygrove (proven fly bot), walk to Joey; if 04 never fought him, the battle comes first and the number is offered right after (scr_seq_0953.s:1532-1534), else talking offers it (:1557-1559): YES. Then leave Route 30's map section (an outgoing call from Route 30 runs phoneScriptIfLocal instead: phone_scripts_generic.c:31-32), e.g. Cherrygrove, open the Pokegear phone, call Joey: POSTROCKETWEEKTIME (chance 100: rollPercentChance's <= makes it certain) -> PHONE_SCRIPT_033 marks him seeking. Back to Joey: GetPhoneBookRematch -> JOEY_2 (the first unbeaten, group 2 unlocked). Bots proven on HG/SS: fly (opens the Pokegear map), walk_to, talk_to, advance_text, auto_battle; needed: a phone-call bot (Pokegear phone tab, contact list to JOEY, A) - the Pokegear app takes buttons. 25's party is full (6) and ~lv40: Joey's rematch is no threat. [INFERENCE] estimate 17000: ~3000 out of the Radio Tower, ~1500 fly, ~1500 walk, ~2800 first battle + number, ~1500 to Cherrygrove, ~1500 the call, ~1500 back, ~2500 the rematch. Scouted and run (gap-fill): the Pokegear opens on the phone with the cursor in the app bar; A on the phone's own button moves it into the contact list (DOWN does nothing there); Joey is the last of nine contacts; Call / Sort / Quit; 'Let's get together and battle! I promise things will be different!' (PHONE_SCRIPT_033); back on Route 30 the rematch is RATICATE lv34 (JOEY_2). Measured: HeartGold 15461 frames, SoulSilver 16996."
 
 [start]
 from = "25-radio-tower-card-key-archer-wing"
@@ -31,6 +30,215 @@ from = "25-radio-tower-card-key-archer-wing"
 [run]
 frames = 25500
 clock = "2009-03-23 12:00:00"   # Monday daytime: Joey's rematchWeekday/rematchTimeOfDay
+
+# --- down from the Radio Tower's observation deck (no Fly there): chain 26's first 15 steps
+[[step]]
+do = "walk_to"
+x = 8
+z = 12
+note = "observation deck -> elevator (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_ELEVATOR"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 6
+note = "elevator exit (dynamic warp -> 5F warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_5F"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 5
+note = "5F east stairs (warp 2) -> 4F (23,5): the elevator lands on 5F's east half, walled off from the west stairs (land data rows 5-7, x 8-10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_4F"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 5
+note = "4F stairs (warp 2) -> 3F east (19,5), the way 25 came up"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+note = "3F west stairs (warp 0) -> 2F (3,5), through the shutters the Card Key opened in 25"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 5
+note = "2F stairs (warp 0) -> 1F (23,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 14
+note = "1F exit (warp 0) -> Goldenrod"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "fly"
+map = "MAP_CHERRYGROVE"
+
+[[step]]
+do = "heal"
+x = 564
+z = 391
+note = "Cherrygrove's Pokemon Center: 25 ends with four of six fainted"
+
+[[step]]
+do = "walk_to"
+x = 553
+z = 334
+on_battle = "flee"
+note = "Route 30, south of Joey (553,332)"
+
+[[step]]
+do = "talk_to"
+id = 4
+on_battle = "flee"
+note = "Joey (beaten in 04): 'Can I get your phone number?' (scr_seq_0953.s:1557-1559)"
+
+[[step]]
+do = "advance_text"
+shot = "registered"
+note = "YES (A): 'Registered the phone number in the Pokegear!' 'I'll ring you whenever I get the urge to battle!'"
+
+[[step]]
+do = "walk_to"
+x = 560
+z = 393
+on_battle = "flee"
+note = "Cherrygrove: another map section, so the outgoing call runs Joey's generic headers, not phoneScriptIfLocal"
+
+[[step]]
+do = "press"
+keys = "x"
+hold = 2
+gap = 30
+note = "the start menu, its cursor on POKEMON (the fly step's)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 2
+gap = 12
+times = 2
+note = "POKEGEAR (HGSS_START_MENU_MOVES: POKEMON up -> POKEDEX, up -> POKEGEAR)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+note = "the Pokegear on its phone (the last app), the cursor in the app bar"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 30
+note = "A on the phone's own button hands the cursor to the contact list (PokegearApp_HandleKeyInput_SwitchApps -> reselectAppCB)"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 15
+times = 10
+note = "the list's last entry, Joey (Mother, Elm, Oak, Kurt, Lyra, Day-C Man, Day-C Lady, Baoba, Joey: DOWN stops there, no wraparound)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 30
+note = "Call / Sort / Quit"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 90
+note = "Call: '...... ......'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 50
+times = 2
+shot = "lets-battle"
+note = "'Hello. This is Joey...', 'Let's get together and battle!'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 50
+times = 2
+note = "'Hello. This is Joey...' 'Let's get together and battle! I promise things will be different!' 'All right. Later!' 'Click!' (PHONE_SCRIPT_033: seeking a rematch)"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 40
+times = 16
+until = "field_ready=1"
+note = "out of the call, the list and the Pokegear (B: README, The Pokegear)"
+
+[[step]]
+do = "walk_to"
+x = 553
+z = 334
+on_battle = "flee"
+
+[[step]]
+do = "talk_to"
+id = 4
+on_battle = "flee"
+note = "Joey, seeking: the rematch (GetPhoneBookRematch -> TRAINER_YOUNGSTER_JOEY_2)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+send = "best"
+snap = true
+
+[[step]]
+do = "advance_text"
 
 [expect]
 map = "MAP_ROUTE_30"
