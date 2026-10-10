@@ -1,0 +1,17 @@
+# 76 TV: the house TV's Lati emergency news. Emerald airs it in a scene the Hall of Fame readies (unlike R/S's
+# FLAG_SYS_TV_LATI): data/scripts/hall_of_fame.inc:20,43-47 EverGrandeCity_HallOfFame_EventScript_ReadyReceiveSSTicketEvent
+# sets both Littleroot house states to 3 and brings Dad home; the house 1F's OnFrame then runs the SS Ticket and Lati
+# TV scene (data/maps/LittlerootTown_BrendansHouse_1F/scripts.inc:49-55 -> data/scripts/players_house.inc:392-452).
+var VAR_LITTLEROOT_HOUSES_STATE_MAY 3      # data/scripts/hall_of_fame.inc:44
+var VAR_LITTLEROOT_HOUSES_STATE_BRENDAN 3  # data/scripts/hall_of_fame.inc:45
+clear-flag FLAG_HIDE_PLAYERS_HOUSE_DAD     # data/scripts/hall_of_fame.inc:46
+# the movers leave once the wall clock is set (data/scripts/players_house.inc:59-60); the base save is before that,
+# and a Vigoroth stands on (4,5), the tile below the TV (LittlerootTown_BrendansHouse_1F/map.json object_events[2])
+flag FLAG_HIDE_LITTLEROOT_TOWN_PLAYERS_HOUSE_VIGOROTH_1   # data/scripts/players_house.inc:59
+flag FLAG_HIDE_LITTLEROOT_TOWN_PLAYERS_HOUSE_VIGOROTH_2   # data/scripts/players_house.inc:60
+# the Petalburg Gym report on the house TV (emerald/02) leaves the TV on its movie (data/scripts/players_house.inc:187);
+# without it the TV's own Lati path (data/scripts/tv.inc:5-7,36-45) would re-run InitRoamer on an unset VAR_0x8004
+flag FLAG_SYS_TV_HOME                      # data/scripts/players_house.inc:187
+# Brendan's house 1F at the foot of the stairs (map.json warp_events[2] (8,2) from 2F): the scene walks the player
+# down three tiles as if coming downstairs (players_house.inc:581-587 PlayerEnterRoomMale)
+map MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F 8 2

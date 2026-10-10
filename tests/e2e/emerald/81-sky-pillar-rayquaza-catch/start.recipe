@@ -1,0 +1,26 @@
+# Sky Pillar after Rayquaza calmed Sootopolis: SootopolisCity/scripts.inc:552 setvar VAR_SKY_PILLAR_STATE 2 (the
+# cracked floors on 2F/4F: SkyPillar_2F/scripts.inc:7-18, SkyPillar_4F/scripts.inc:7-18; Rayquaza back at the top:
+# SkyPillar_Top/scripts.inc:17-29 clears FLAG_HIDE_SKY_PILLAR_TOP_RAYQUAZA_STILL while FLAG_DEFEATED_RAYQUAZA is clear)
+var VAR_SKY_PILLAR_STATE 2
+# the top's wake-up coord event (SkyPillar_Top/map.json coord (14,9)) already played in the story (emerald/39)
+var VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE 1    # data/maps/SkyPillar_Top/scripts.inc:120-124
+# the sleeping Rayquaza (map.json object_events[0] (14,7)) flew off in that scene (removeobject sets its hide flag)
+flag FLAG_HIDE_SKY_PILLAR_TOP_RAYQUAZA
+# Wallace opened the Sky Pillar's door (data/maps/CaveOfOrigin_B1F/scripts.inc:50; SkyPillar_Outside/scripts.inc:20-27
+# OnLoad opens (14,4..5) only with it); his outside scene removed him (FLAG_HIDE_SKY_PILLAR_WALLACE)
+flag FLAG_WALLACE_GOES_TO_SKY_PILLAR
+flag FLAG_HIDE_SKY_PILLAR_WALLACE
+# the Mach Bike for the cracked floors (src/field_tasks.c: a step onto MB_CRACKED_FLOOR slower than the fastest speed
+# opens a hole), on SELECT (Rydel: data/maps/MauvilleCity_BikeShop/scripts.inc; register-item = the bag's REGISTER)
+item ITEM_MACH_BIKE 1
+register-item ITEM_MACH_BIKE
+# the lead for RAYQUAZA lv70 (Dragon/Flying: setwildbattle SPECIES_RAYQUAZA, 70, SkyPillar_Top/scripts.inc:43-48):
+# Ice x4, Walrein's Blizzard (level-up) and TM13 Ice Beam
+party SPECIES_WALREIN 100 ITEM_NONE
+party-move 0 0 MOVE_ICE_BEAM
+party-move 0 1 MOVE_BLIZZARD
+party-move 0 2 MOVE_SURF
+party-move 0 3 MOVE_BODY_SLAM
+# Route 131's Sky Pillar island (Route131/scripts.inc:5-12 LAYOUT_ROUTE131_SKY_PILLAR), below its door
+# (data/maps/Route131/map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE)
+map MAP_ROUTE131 36 7

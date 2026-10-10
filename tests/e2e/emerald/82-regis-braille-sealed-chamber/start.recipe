@@ -1,0 +1,36 @@
+# The Sealed Chamber: Dive on Route 134, read the Braille, Dig at the far wall, and with WAILORD first and RELICANTH
+# last read the inner room's Braille: FLAG_REGI_DOORS_OPENED (data/maps/SealedChamber_InnerRoom/scripts.inc:4-30);
+# then Fly to Petalburg and Island Cave's REGICE (data/maps/IslandCave/scripts.inc).
+
+# Surf (FLAG_BADGE05_GET, src/field_control_avatar.c:450), Fly (FLAG_BADGE06_GET, src/party_menu.c:3725) and Dive
+# (FLAG_BADGE07_GET, src/field_control_avatar.c:465,475)
+badge 5
+badge 6
+badge 7
+# the Fly map's Petalburg City (set on entering it in play: data/maps/PetalburgCity/scripts.inc:7)
+flag FLAG_VISITED_PETALBURG_CITY
+# Petalburg after the fifth badge's Wally scene (data/maps/PetalburgCity_WallysHouse/scripts.inc:25: state 5) and
+# Scott met (data/maps/PetalburgCity/scripts.inc:540): at 0 their coord events (PetalburgCity/map.json (8,10..13),
+# (4,10..13)) would stop the player on the way west to Route 104
+var VAR_PETALBURG_CITY_STATE 5
+var VAR_SCOTT_PETALBURG_ENCOUNTER 1
+# the start menu's POKEMON entry for Dig and Fly (src/start_menu.c:321-324; set by the starter: data/maps/Route101/scripts.inc:217)
+flag FLAG_SYS_POKEMON_GET
+# CheckRelicanthWailord (src/braille_puzzles.c:92-104): Emerald flipped R/S's order, party slot 0 WAILORD, the last
+# slot RELICANTH. The party popup lists SUMMARY, then a Pokemon's field moves in move-slot order (src/party_menu.c:
+# 2607-2630). WAILORD (HM03 Surf, HM08 Dive) leads and battles REGICE (Ice: Surf is neutral).
+party SPECIES_WAILORD 100 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_DIVE
+# the Fly carrier (HM02) for the way to Island Cave
+party SPECIES_SWELLOW 100 ITEM_NONE
+party-move 1 0 MOVE_FLY
+# the Dig carrier (TM28): DIG is its popup's second entry
+party SPECIES_DUGTRIO 50 ITEM_NONE
+party-move 2 0 MOVE_DIG
+party SPECIES_RELICANTH 50 ITEM_NONE
+# Route 134's deep-water patch (behaviour 0x11, (59..62,30..33)); Route134/scripts.inc:5-7 setdivewarp
+# MAP_UNDERWATER_ROUTE134 (8,6). The patch is ringed by Route 134's currents, which walk_to cannot plan
+# (tests/e2e/gba_world.py FORBIDDEN), so the start is a CONTINUE on it, as after saving there: the game starts the
+# player surfing on a water tile.
+map MAP_ROUTE134 60 31

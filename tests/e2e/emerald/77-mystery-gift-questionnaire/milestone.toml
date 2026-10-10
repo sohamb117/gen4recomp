@@ -1,0 +1,353 @@
+# Proves Emerald's Mystery Gift gate: a normal save's main menu is CONTINUE / NEW GAME / OPTION; the Poke Mart
+# questionnaire takes LINK TOGETHER WITH ALL through Easy Chat and the clerk sets FLAG_SYS_MYSTERY_GIFT_ENABLE; after a
+# save and a soft reset the main menu lists MYSTERY GIFT, which without a Wireless Adapter shows "not connected" and
+# returns to the title screen; CONTINUE goes back in. (Emerald's stand-in for R/S's Mystery Events, ruby/74.)
+# Start: boot (main menu) -> MAP_OLDALE_TOWN_MART (0,5) -> end: same tile after CONTINUE.
+title = "Mystery Gift: the questionnaire unlocks it, the menu entry needs a Wireless Adapter"
+priority = "P1"
+estimate = 5604
+refs = [
+  "src/main_menu.c:625-660 (save OK: HAS_SAVED_GAME, + 1 = HAS_MYSTERY_GIFT when IsMysteryGiftEnabled; IsMysteryEventEnabled is never checked)",
+  "src/event_data.c:97-110 (IsMysteryGiftEnabled: FLAG_SYS_MYSTERY_GIFT_ENABLE, include/constants/flags.h:1495)",
+  "src/main_menu.c:984-1006 (HAS_MYSTERY_GIFT: CONTINUE, NEW GAME, MYSTERY GIFT, OPTION; MYSTERY GIFT without a Wireless Adapter -> ACTION_INVALID)",
+  "src/main_menu.c:1087-1099,1122-1158 (ACTION_INVALID: 'The Wireless Adapter is not connected', A/B -> Task_HandleMainMenuBPressed -> the title screen)",
+  "src/field_control_avatar.c:407-408 (MB_QUESTIONNAIRE -> EventScript_Questionnaire); OldaleTown_Mart layout (0,4)",
+  "data/scripts/questionnaire.inc:1-12 (YES/NO, EASY_CHAT_TYPE_QUESTIONNAIRE, VAR_0x8004 2 -> PlayerInputMysteryGiftPhrase)",
+  "data/scripts/questionnaire.inc:28-40 (FLAG_SYS_POKEDEX_GET needed; the clerk's '!', 'You know those words!', setflag FLAG_SYS_MYSTERY_GIFT_ENABLE)",
+  "src/easy_chat.c:668-681 (the questionnaire's 2x2 words), :693-698 (sMysteryGiftPhrase: LINK, TOGETHER, WITH, ALL)",
+  "src/easy_chat.c:5613-5637 (the group list: POKeMON when a Pokemon is seen, TRAINER..ADJECTIVES; EVENTS and the moves only after FLAG_SYS_GAME_CLEAR)",
+  "src/easy_chat.c SetSelectedWordGroup_GroupMode (a group's words in its table order of alphabeticalOrder, enabled ones only); src/data/easy_chat/easy_chat_group_trainer.h, _conditions.h, _endings.h (LINK 10th of TRAINER, TOGETHER 62nd of CONDITIONS, WITH 64th and ALL 3rd of ENDINGS, 0-based)",
+]
+notes = "Emerald has no reachable MYSTERY EVENTS: the profile man (data/scripts/profile_man.inc) only shows a profile, and the main menu never checks FLAG_SYS_MYSTERY_EVENT_ENABLE (src/main_menu.c:643-647), so ruby/74's gate is replaced by Mystery Gift's. Group list (two per row, the cursor on POKeMON at each opening): TRAINER is entry 1 (RIGHT), ENDINGS 8 (4 DOWN), CONDITIONS 10 (5 DOWN). Word rows computed from the group tables (two per row). The flag lives in RAM until a save: the step `save` writes it before the soft reset (A+B+START+SELECT). The boot is by hand (boot = none) as ruby/74's."
+
+[start]
+recipe = "start.recipe"
+boot = "none"
+
+[run]
+frames = 8500
+
+[[step]]
+do = "wait_frames"
+n = 400
+note = "the copyright screen and the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 295
+note = "skip the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 195
+note = "the title screen"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 150
+shot = "main-menu-normal"
+note = "the main menu: CONTINUE, NEW GAME, OPTION (no MYSTERY GIFT)"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 5
+gap = 95
+times = 8
+until = "field_ready=1"
+note = "CONTINUE"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 0
+z = 5
+face = "up"
+interact = true
+note = "the questionnaire (0,4): EventScript_Questionnaire 'fill out the questionnaire?' (questionnaire.inc:1-4)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "YES -> EASY_CHAT_TYPE_QUESTIONNAIRE (questionnaire.inc:5-6)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "questionnaire"
+note = "the questionnaire: four blank words, 2x2 (easy_chat.c:668-681)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "slot 0: the group list, cursor on POKeMON"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 12
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "the group's words, two per row"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 5
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "LINK (TRAINER, row 5 left)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "slot 1"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "slot 1: the group list, cursor on POKeMON"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 5
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "the group's words, two per row"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 31
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "TOGETHER (CONDITIONS, row 31 left)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 20
+note = "slot 2"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "slot 2: the group list, cursor on POKeMON"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 4
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "the group's words, two per row"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 32
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "WITH (ENDINGS, row 32 left)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "slot 3"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "slot 3: the group list, cursor on POKeMON"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+times = 4
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "the group's words, two per row"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 12
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 12
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "link-together-with-all"
+note = "ALL (ENDINGS, row 1 right)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "the button row"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "OK"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "questionnaire-ok"
+note = "the confirmation YES / NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "YES: VAR_0x8004 = 2, the Mystery Gift phrase (easy_chat.c:693-698, DidPlayerInputMysteryGiftPhrase)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "you-know-those-words"
+note = "the clerk: 'You know those words!', setflag FLAG_SYS_MYSTERY_GIFT_ENABLE (questionnaire.inc:28-40)"
+
+[[step]]
+do = "advance_text"
+note = "'You can access MYSTERY GIFT'"
+
+[[step]]
+do = "save"
+note = "the flag into the save before the reset"
+
+[[step]]
+do = "press"
+keys = "A+B+START+SELECT"
+hold = 10
+gap = 30
+note = "soft reset"
+
+[[step]]
+do = "wait_frames"
+n = 400
+note = "the copyright screen and the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 295
+note = "skip the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 195
+note = "the title screen"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 150
+shot = "main-menu-mystery-gift"
+note = "CONTINUE, NEW GAME, MYSTERY GIFT, OPTION (main_menu.c:643-647 IsMysteryGiftEnabled -> HAS_MYSTERY_GIFT)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+note = "MYSTERY GIFT"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+shot = "wireless-not-connected"
+note = "no Wireless Adapter: ACTION_INVALID -> 'The Wireless Adapter is not connected' (main_menu.c:994-1000,1122-1131)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "title-screen"
+note = "A closes the error: fade, back to the title screen (main_menu.c:1151-1157,1109-1118)"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 150
+note = "the title screen's START (the A presses below also open the main menu)"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 5
+gap = 95
+times = 8
+until = "field_ready=1"
+note = "CONTINUE"
+
+[[step]]
+do = "wait_field"
+shot = "field"
+
+[expect]
+map = "MAP_OLDALE_TOWN_MART"
+position = [0, 5]
+flags = ["FLAG_SYS_MYSTERY_GIFT_ENABLE", "FLAG_SYS_POKEDEX_GET"]

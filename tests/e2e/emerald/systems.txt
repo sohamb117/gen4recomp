@@ -6,6 +6,10 @@
 # an Emerald dir (70-) where Emerald differs, its notes saying how. Not ported:
 # - ruby/68 Berry Blender and ruby/69 contest: Emerald blends and holds contests only in Lilycove's Contest Lobby (67, 68).
 # - ruby/71 Battle Tower: Emerald's Battle Tower is the Battle Frontier's (60).
+# - ruby/74 Mystery Events: unreachable in Emerald (the profile man's secret saying sets nothing, and the main menu never
+#   checks FLAG_SYS_MYSTERY_EVENT_ENABLE: src/main_menu.c:643-647); 77 proves the menu gate Emerald has, Mystery Gift's.
+# Emerald dirs in place of R/S's: 70 (ruby/60), 71 (63), 72 (64), 73 (65), 74 (70), 75 Match Call (72 Trainer's Eyes),
+# 76 (73), 81 and 82 (81, 82).
 # P1
 60-frontier-battle-tower-lv50-singles
 61-frontier-battle-factory-lv50
@@ -26,5 +30,9 @@
 ../ruby/67-berry-harvest
 74-safari-zone-catch
 75-pokenav-match-call
+76-tv-lati-news
+77-mystery-gift-questionnaire
 # P2
 ../ruby/80-mirage-island
+81-sky-pillar-rayquaza-catch
+82-regis-braille-sealed-chamber
