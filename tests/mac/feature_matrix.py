@@ -942,17 +942,20 @@ def _(c):
 
 # ---- Black / White, HeartGold / SoulSilver (--game black|white|heartgold|soulsilver) -------
 #
-# The cores boot, B/W reach the bedroom and save/CONTINUE there; HG/SS stop at
-# the first field load (docs/HANDOFF-hgss.md), so their cases run on the
-# title screen. ROMs from NP_BLACK_ROM, NP_WHITE_ROM, NP_HG_ROM, NP_SS_ROM; the
-# B/W bedroom save from tests/bwhgss/parity.sh (build/evidence/bwhgss/<game>).
+# B/W CONTINUE into the bedroom, HG/SS into New Bark Town, from the game's own
+# save (tests/bwhgss/parity.sh: build/evidence/bwhgss/<game>/game.sav for B/W,
+# save.sav for HG/SS). The other in-game cases look at B/W's bedroom and HG/SS's
+# title screen. ROMs from NP_BLACK_ROM, NP_WHITE_ROM, NP_HG_ROM, NP_SS_ROM.
 
 NEW_ROMS = {'black': os.environ.get('NP_BLACK_ROM', ''), 'white': os.environ.get('NP_WHITE_ROM', ''),
             'heartgold': os.environ.get('NP_HG_ROM', ''), 'soulsilver': os.environ.get('NP_SS_ROM', '')}
 NEW_CARD = {'black': 3, 'white': 4, 'heartgold': 5, 'soulsilver': 6}  # romdb.c np_launcher_games
-NEW_SAVE = {g: os.path.join(EVID, 'bwhgss', g, 'game.sav') for g in ('black', 'white')}
+NEW_SAVE = {g: os.path.join(EVID, 'bwhgss', g, 'game.sav' if g in ('black', 'white') else 'save.sav')
+            for g in NEW_ROMS}
 # B/W: title START at ~5000, CONTINUE: the bedroom from ~6500 (tests/bwhgss/bw-continue.sched).
 BW_CONTINUE = '5000:start:4:60:2;5300:a:4:40:20'
+# HG/SS: CONTINUE into New Bark, the player free at ~2176 (tests/bwhgss/hgss-field.sched).
+HGSS_CONTINUE = '1300:start;1700:start;2100:a:4:60:2'
 NEW_SLOT = 'Start'
 
 
@@ -960,12 +963,12 @@ def is_bw():
     return GAME in ('black', 'white')
 
 
-def new_save(c, opts=''):
-    """User data with GAME's ROM and the slot Start: B/W's bedroom save, an
-    empty slot (a new game) for HG/SS."""
+def new_save(c, opts='', field=False):
+    """User data with GAME's ROM and the slot Start: B/W's bedroom save, for
+    HG/SS the New Bark save with `field`, otherwise an empty slot (a new game)."""
     c.need(NEW_ROMS[GAME])
     c.fresh([GAME])
-    if is_bw():
+    if is_bw() or field:
         c.need(NEW_SAVE[GAME])
         c.put_save(GAME, NEW_SLOT, NEW_SAVE[GAME])
     else:
@@ -979,6 +982,11 @@ def new_at():
     """(frames, press): where the in-game cases look: B/W's bedroom after
     CONTINUE, HG/SS's title screen."""
     return (7000, BW_CONTINUE) if is_bw() else (1600, '')
+
+
+def continue_at():
+    """(frames, press): CONTINUE from the slot's save into the field."""
+    return (7000, BW_CONTINUE) if is_bw() else (2400, HGSS_CONTINUE)
 
 
 def new_play(c, step='', frames=None, script='', press=None, **kw):
@@ -1017,34 +1025,34 @@ def _(c):
     assert os.path.isdir(os.path.join(c.ud, 'saves', GAME))
 
 
-@case('n2_continue', 'B/W: --game/--slot, title CONTINUE to the bedroom (the game\'s own save)', 'nds2')
+@case('n2_continue', '--game/--slot, title CONTINUE into the field from the game\'s own save (B/W\'s bedroom, '
+      'HG/SS\'s New Bark)', 'nds2')
 def _(c):
-    if not is_bw():
-        raise FileNotFoundError('no HG/SS save: the field does not load yet')
-    new_save(c)
-    new_play(c)
+    new_save(c, field=True)
+    frames, press = continue_at()
+    c.run('boot=app,frames=%d,press=%s,script=0:move:1:1' % (frames, press), args=['--game', GAME, '--slot', NEW_SLOT])
 
 
 @case('n2_slots', 'Save slots: import the .sav from the card\'s slots page, Continue boots it', 'nds2')
 def _(c):
-    if not is_bw():
-        raise FileNotFoundError('no HG/SS save: the field does not load yet')
     c.need(NEW_ROMS[GAME], NEW_SAVE[GAME])
     c.fresh([GAME])
-    src = os.path.join(c.work, 'Bedroom.sav')
+    name = 'Bedroom' if is_bw() else 'NewBark'
+    src = os.path.join(c.work, name + '.sav')
     shutil.copyfile(NEW_SAVE[GAME], src)
     s, f = new_card(['Down', 'Return'])
     c.run('boot=app,frames=%d,script=%s;%d:dialog:%s' % (f + 16, s, f + 4, src), step='1-import')
-    assert os.path.getsize(os.path.join(c.ud, 'saves', GAME, 'Bedroom.sav')) == 524288
-    s, _ = new_card(['Return'])  # Continue: Bedroom
-    c.run('boot=app,frames=7000,press=%s,script=%s' % (BW_CONTINUE, s), step='2-continue')
+    assert os.path.getsize(os.path.join(c.ud, 'saves', GAME, name + '.sav')) == 524288
+    # Slots page: New, the imported slot, Import (no Continue row: no slot
+    # played yet) -> the slot's menu -> Play.
+    s, _ = new_card(['Down', 'Return', 'Return'])
+    frames, press = continue_at()
+    c.run('boot=app,frames=%d,press=%s,script=%s' % (frames, press, s), step='2-continue')
 
 
 @case('n2_editor', 'Save editor on the slot (Slot menu -> Edit save...): trainer and party tabs', 'nds2')
 def _(c):
-    if not is_bw():
-        raise FileNotFoundError('no HG/SS save: the field does not load yet')
-    new_save(c)
+    new_save(c, field=True)
     # Slots page: Continue: Start, New, Start, Import -> Start -> its menu -> Edit save...
     for step, extra in (('trainer', []), ('party', ['PageDown'])):
         s, f = new_card(['Down', 'Down', 'Return', 'Down', 'Return'])
@@ -1157,17 +1165,17 @@ def _(c):
     assert 'rewind depth' in log
 
 
-@case('n2_audio', 'Audio output (the ROM\'s own music), the music low-pass filter, bgm_volume 0 recorded',
+@case('n2_audio', 'Audio output (the ROM\'s own music), the music low-pass filter, music / SFX volume',
       'nds2')
 def _(c):
-    # The shell's low-pass filter lowers the output's treble. bgm_volume 0 is
-    # recorded, not asserted: the cores answer it (B/W since pc/src/pc_bw_snd.c,
-    # HG/SS since main 9bfca2d74 made their music audible; tests/bwhgss/
-    # parity.sh measures both headless), the app this case last ran on
-    # predates both. An app with HG/SS cores older than 9bfca2d74 is silent
-    # and fails here.
+    # The shell's low-pass filter lowers the output's treble; bgm_volume 0
+    # silences the music the cores class as music (B/W pc/src/pc_bw_snd.c,
+    # HG/SS Platinum's player table), measured on B/W's bedroom and HG/SS's
+    # title (tests/bwhgss/parity.sh measures the same headless). se_volume 0
+    # is recorded: these screens play no sound effects to lower.
     out = {}
-    for name, opts in (('default', ''), ('filter3', '[audio]\nmusic_filter = 3'), ('bgm0', '[game]\nbgm_volume = 0')):
+    for name, opts in (('default', ''), ('filter3', '[audio]\nmusic_filter = 3'), ('bgm0', '[game]\nbgm_volume = 0'),
+                       ('se0', '[game]\nse_volume = 0')):
         new_save(c, opts=opts)
         log = new_play(c, step=name)
         m = re.findall(r'audio_peak=(\d+) audio_treble=(\d+)', log)
@@ -1176,6 +1184,27 @@ def _(c):
     with open(os.path.join(EVID, '%s-peaks.txt' % c.name), 'w') as f:
         f.write(json.dumps(out) + '\n')
     assert out['default']['peak'] > 0 and out['filter3']['treble'] < out['default']['treble'], out
+    assert out['bgm0']['peak'] < out['default']['peak'], out
+
+
+@case('n2_instant_text', 'Instant text (Options): a text box half printed without it, whole with it', 'nds2')
+def _(c):
+    # B/W: the X menu's SAVE from the bedroom; "Would you like to save the
+    # game?" prints from ~6890 and reads "Wo" at 6905, whole with YES/NO at
+    # once with instant text. HG/SS: a new game's intro (hgss-intro.sched);
+    # Oak's first page prints from ~7283 (tests/bwhgss/parity.sh `instant text`).
+    if is_bw():
+        frames, press = 6905, BW_CONTINUE + ';6800:x:4;6860:tap:64:94:4'
+    else:
+        sched = os.path.join(ROOT, 'tests', 'bwhgss', 'hgss-intro.sched')
+        frames = 7290
+        press = ';'.join(l.split('#')[0].strip() for l in open(sched) if l.split('#')[0].strip())
+    shots = {}
+    for name, on in (('off', 0), ('on', 1)):
+        new_save(c, opts='[game]\ninstant_text = %d' % on)
+        new_play(c, step=name, frames=frames - new_at()[0], press=press)
+        shots[name] = os.path.join(EVID, '%s-%s-small.png' % (c.name, name))
+    assert open(shots['off'], 'rb').read() != open(shots['on'], 'rb').read(), 'the same picture with and without'
 
 
 @case('n2_screenshot', 'F12 screenshot: both screens to userdata/screenshots/<game>-*.png', 'nds2')
@@ -1235,14 +1264,18 @@ def _(c):
     assert 'game=%s' % GAME in log and 'view=game' in log, log[-1500:]
 
 
-@case('n2_quicksave', 'F1 quick save (NP_OPT_QUICKSAVE_SEQ): records the toasts; asserted headless by '
-      'tests/bwhgss/parity.sh', 'nds2')
+@case('n2_quicksave', 'F1 quick save (NP_OPT_QUICKSAVE_SEQ) in the field: records the toasts; asserted headless '
+      'by tests/bwhgss/parity.sh', 'nds2')
 def _(c):
-    new_save(c)
-    base, _ = new_at()
-    log = new_play(c, script='%d:key:F1' % (base - 200))
+    # B/W's bedroom, HG/SS's New Bark (the player free at ~2176).
+    new_save(c, field=True)
+    frames, press = continue_at()
+    log = c.run('boot=app,frames=%d,press=%s,script=%d:key:F1' % (frames, press, frames - (200 if is_bw() else 150)),
+                args=['--game', GAME, '--slot', NEW_SLOT])
+    toasts = [l for l in log.splitlines() if 'toast' in l]
     with open(os.path.join(EVID, '%s-toasts.txt' % c.name), 'w') as f:
-        f.write('\n'.join(l for l in log.splitlines() if 'toast' in l) + '\n')
+        f.write('\n'.join(toasts) + '\n')
+    assert any('toast: Saved' in l for l in toasts), toasts
 
 
 def main():
