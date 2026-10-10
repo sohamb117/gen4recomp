@@ -9,6 +9,26 @@ image (`tools/ndsrec` + armrec), linked with the shared machine model
 already done, what is different about a TWL-SDK 5.3 hybrid cartridge, and
 the exact steps.
 
+## Where Black and White stand (2026-10-10)
+
+The dated sections below are a log, kept as written; this is what is proven now, on the core with the ARM7 VBlank
+count (build/core-bwm2, "The Musical show"):
+
+- **The story.** tests/e2e's chain (black/white chain.txt, 01-32 and 34) plays a new game through the credits
+  (32 ends in the game's own `OS_ResetSystem`) and the post-credits lab, on both games ("The chain and the side
+  systems on the VBlank-count core"). Evidence: `build/evidence/bw/<game>-<milestone>/` (contact sheets, end saves).
+- **Side systems.** All 29 in each systems.txt pass: HMs, fishing, the day care and an egg, evolution, an NPC trade,
+  the PC, the Battle Subway, the Hall of Fame PC, the Musical, the Entralink, Royal Unova, TV, Black City / White
+  Forest, the legendaries, the roamers, and Landorus by link trade. The excluded ones (online, event, the
+  Xtransceiver's calls between players) are listed with reasons at the end of black/systems.txt.
+- **Link play.** The Union Room trade and battle-room battle (bw_trade, bw_battle; "Link play"), and the post-game
+  trades between the chain's players: trade evolution (a Boldore becomes Gigalith on White's station) and both
+  roamers to either game (bw_trade_landorus, bw_trade_landorus_white), each continued by the e2e Landorus run
+  (black/white 88-89; "The post-game trade"). Evidence: `build/evidence/bw/link-bw_trade_landorus*/`.
+- **Mystery Gift.** `tests/bwhgss/run_features.py mystery_gift` passes on both games on core-bwm2 (an item card and
+  a Pokemon card delivered by the Pokemon Center's deliveryman, both marked used in the game's save).
+- **Poké Transfer** is in progress ("Poké Transfer", maintained separately).
+
 ## Accepted ROMs
 
 | Game | File (No-Intro name) | SHA-1 | Source |
@@ -867,8 +887,11 @@ Frames (A | B pairs), in `/tmp/bw2/link/report/`:
   - black/89 moves to Route 14 below the Abundant Shrine and walks in. The shrine's level script shows the children
     (Tornadus caught, 0x40CE 1), and their trigger plays their scene. The shrine's bg (scr 0752 script 2) counts
     Tornadus with the player's OT and Thundurus, and calls Landorus (lv 70), which is caught with a Master Ball.
-- **Not covered here.** White's Landorus needs Tornadus traded to White, the same case with the sides swapped. That
-  is not recorded. Karrablast and Shelmet need both in the chain's saves; neither is.
+- **White's Landorus.** `bw_trade_landorus_white` swaps the sides (`linkpair.BW_CHAIN` `landorus-white`, both 85
+  saves as they are): White takes Thundurus out of BOX 1, Black trades its BOX 1 Tornadus for White's party slot 4
+  (Tepig). White's save then holds Tornadus with Black's TID and its own Thundurus; white/88 and white/89 continue it
+  as black/88-89 do, and Landorus is caught on White.
+- **Not covered here.** Karrablast and Shelmet need both in the chain's saves; neither is.
 
 ## The late game on the core: N's Castle's VRAM hand-over (2026-10-09)
 

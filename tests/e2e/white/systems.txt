@@ -1,5 +1,6 @@
 # White side systems: Black's shared dirs (version = "both") played on White, and White's own: the twins of the
-# systems that chain from White's 27/32 end saves, White Forest (79) and the roaming Thundurus (85).
+# systems that chain from White's 27/32 end saves, White Forest (79), the roaming Thundurus (85) and
+# the post-trade Landorus (88-89).
 # Exclusions and the Xtransceiver: black/systems.txt.
 ../black/60-hm-cut
 ../black/61-hm-strength
@@ -28,3 +29,8 @@
 ../black/84-legendary-volcarona
 85-roamer-thundurus
 ../black/../black/87-dreamyard-musharna
+# 88 starts from the White station's save after tests/link's bw_trade_landorus_white (run_link_tests.py --game
+# black:white bw_trade_landorus_white first: it leaves build/e2e/white/link-bw_trade_landorus_white/end.sav), which
+# trades Black's Tornadus to White's 85 player; 89 (Landorus) continues 88.
+88-link-trade-return
+89-landorus-abundant-shrine

@@ -274,6 +274,9 @@ BW_SIDE = {'a': ('LINKA', '11111', '1111'), 'b': ('LINKB', '22222', '2222')}
 BW_CHAIN = {
     'landorus': {'black': ('85-roamer-tornadus', [['set-mon', '4', '525', '30', '157', '88', '317', '106']]),
                  'white': ('85-roamer-thundurus', [])},
+    # landorus-white (bw_trade_landorus_white): the sides swapped, both 85 saves as they are; White takes Thundurus
+    # out of BOX 1, Black trades its BOX 1 Tornadus for White's party slot 4 (Tepig).
+    'landorus-white': {'black': ('85-roamer-tornadus', []), 'white': ('85-roamer-thundurus', [])},
 }
 BW_ROM_VERBS = ('set-mon', 'set-level', 'add-mon')
 

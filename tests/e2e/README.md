@@ -174,7 +174,8 @@ and how it was proven is in docs/BW_RAM.md. Differences:
    A `boost` recipe (party level/moves/held items/bag items only; AUTHORING.md, Boosts) is then applied on top of
    whichever start save was placed. `from` may also name a link case's station save: tests/link's
    `run_link_tests.py` leaves an `e2e` case's two saves as `<out>/<game>/link-<case>/end.sav` (black/88 continues
-   `link-bw_trade_landorus`, the Black station after the Union Room trade), so run the link case first.
+   `link-bw_trade_landorus`, the Black station after the Union Room trade; white/88 `link-bw_trade_landorus_white`), so run
+   the link case first.
 2. **Boot**: a save boots through the title and CONTINUE until the player is free; a blank chip starts at frame 0.
 3. **Steps**: the `[[step]]` bots in order (below). Every frame counts against `[run] frames`; a step's `max` bounds
    that step.

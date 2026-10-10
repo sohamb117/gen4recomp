@@ -1,0 +1,65 @@
+# Back from the Union Room after the link trade (White): tests/link's bw_trade_landorus_white leaves the White station's
+# save in the Union Room (zone 422) with Tornadus traded in; CONTINUE from it returns the player to Striaton's Pokemon
+# Center by the game's own return scene, and the run saves there, a save the next system (89) can place.
+# Start: the White station's save after bw_trade_landorus_white -> end: Striaton's Pokemon Center (zone 8), saved.
+title = "Back from the Union Room after the link trade (White)"
+priority = "P1"
+version = "white"
+estimate = 7078
+refs = [
+  "scr 0855 script 2 (the Union Room attendant) @0x0672 Call L_06D1: @0x06E9 SetVar 0x4041 1 (the player in the Union Room), then @0x067C SetFlag 0x966: CONTINUE takes the save's return",
+  "scr 0855 scripts 7/8 L_07DE (the return): @0x07FC SetVar 0x4041 0, @0x0802 ClearFlag 0x966, the player put in front of the counter (Cmd068 / Cmd070)",
+  "flag 0x966 is also the credits' (scr 0866 @0x0328, CONTINUE in the bedroom); with it set, np_save5 set-location's position is not where CONTINUE starts, and with var 0x4041 = 1 the return scene needs the Center (placed on Route 14 it never frees the player)",
+]
+notes = "Measured from the start save (CONTINUE included): White 7078 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). White only, from the post-trade save tests/link/run_link_tests.py --game black:white bw_trade_landorus_white leaves as build/e2e/white/link-bw_trade_landorus_white/end.sav (run it first). The run's expect checks the trade's result on the save the game itself writes after the return: both roamers in the party, Tornadus with Black's player as its OT, Thundurus with this player's."
+
+[start]
+from = "link-bw_trade_landorus_white"
+
+[run]
+frames = 11000
+
+[[step]]
+do = "wait_field"
+shot = "center"
+note = "CONTINUE: the return scene (scr 0855 script 7/8) in Striaton's Pokemon Center, then the player is free"
+
+[[step]]
+do = "press"
+keys = "x"
+hold = 4
+gap = 60
+note = "the start menu"
+
+[[step]]
+do = "tap"
+x = 64
+y = 46
+gap = 120
+shot = "party-both-roamers"
+note = "POKEMON: Tornadus (from Black, slot 4) and Thundurus (slot 5) in the party"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 4
+gap = 60
+times = 2
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "save"
+note = "an in-game save in the Center (X menu, SAVE): 0x4041 = 0 and 0x966 clear in the save"
+
+[expect]
+map = 8
+flags_clear = ["0x966"]
+save = [
+  "any(m[\"species\"] == 641 and m[\"tid\"] == 45994 for m in s[\"party\"])",
+  "any(m[\"species\"] == 642 and m[\"tid\"] == s[\"trainer\"][\"tid\"] for m in s[\"party\"])",
+]
+
+[expect.vars]
+"0x4041" = 0

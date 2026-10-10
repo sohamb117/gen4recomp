@@ -25,7 +25,8 @@ mint produced (A's party slot 1 for B's slot 4). bw_trade_landorus mints
 from the chain's post-game 85 saves instead (bw_mint, linkpair.BW_CHAIN:
 the chain's own players), checks both saves with np_save5 expressions
 (`save`), and, passing, leaves them as e2e end saves (`e2e`: --e2e-out,
-default build/e2e, GAME/link-NAME/end.sav) for tests/e2e/black/88.
+default build/e2e, GAME/link-NAME/end.sav) for tests/e2e/black/88;
+bw_trade_landorus_white swaps the sides for tests/e2e/white/88.
 Neither have HeartGold/SoulSilver: theirs are milestone 04's
 (linkpair.mint_hgss). Their schedules and bw_trade_landorus's were
 recorded by linkbot.py from scenarios/*.json (the e2e bots
@@ -140,6 +141,21 @@ SCENARIOS = [
                'b': ['any(m["species"] == 526 and m["pid"] == "0xBEB0B625" for b in s["boxes"] for m in b["mons"])',
                      'not any(m["species"] in (525, 642) for b in s["boxes"] for m in b["mons"])',
                      'not any(m["species"] in (525, 642) for m in s["party"])']}),
+    # The same with the sides swapped, for White's Landorus (white/88-89):
+    # both 85 saves as they are (linkpair.BW_CHAIN 'landorus-white'); White
+    # takes Thundurus out of BOX 1 at Striaton's PC (Sawk in); Black offers
+    # BOX 1's Tornadus for White's party slot 4 (Tepig, its PID checked in
+    # Black's BOX 1). Recorded by linkbot.py
+    # from scenarios/bw-trade-landorus-white.json.
+    dict(name='bw_trade_landorus_white', games=('black', 'white'), bw_mint='landorus-white', e2e=True,
+         scheds={'a': 'schedules/bw-trade-landorus-white-a.sched', 'b': 'schedules/bw-trade-landorus-white-b.sched'},
+         frames=32266, env={'PC_E2E': '1'}, opts=['text_instant=1'], dump_from=12000, dump_every=100,
+         save={'a': ['not any(m["species"] == 641 for b in s["boxes"] for m in b["mons"])',
+                     'not any(m["species"] == 641 for m in s["party"])',
+                     'any(m["species"] == 498 and m["pid"] == "0xD54AE63F" for b in s["boxes"] for m in b["mons"])'],
+               'b': ['s["party"][4]["species"] == 641 and s["party"][4]["tid"] == 45994',
+                     'any(m["species"] == 642 and m["tid"] == 43677 for m in s["party"])',
+                     'any(m["species"] == 539 for m in s["boxes"][0]["mons"])']}),
     # HeartGold's A with SoulSilver's B in the Union Room (the Pokemon
     # Center's counter, WM over np_host_net, the same pc_wm.c model as D/P's:
     # HG/SS build D/P's host fragment). Saves minted from the e2e chain's
