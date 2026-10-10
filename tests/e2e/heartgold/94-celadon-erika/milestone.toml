@@ -1,24 +1,156 @@
 # Proves the Kanto gym Erika (Rainbow Badge).
 # Start: 93-cerulean-misty-machine-part's end -> end: MAP_CELADON_GYM after the leader, BADGE_RAINBOW.
 title = "Kanto gym: Erika (Rainbow Badge)"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 24393
 refs = [
   "scr_seq_0786_T07GYM0101.s:13-78 (OnTransition: hour hiding of FLAG_HIDE_CELADON_GYM_ERIKA only with BADGE_EARTH / rematch)",
   "scr_seq_0786_T07GYM0101.s:104-108 (TRAINER_LEADER_ERIKA_ERIKA, GiveBadge BADGE_RAINBOW)",
   "TRAINER_LEADER_ERIKA_ERIKA (256, include/constants/trainers.h:261)",
 ]
-notes = "Gate: Celadon via Saffron's west gate (Route 7) [INFERENCE]. Erika's gym has a Cut tree at the entrance [INFERENCE: check tools/hg_map.py MAP_CELADON_GYM]; hm=true covers it. No RTC. Bots proven. [INFERENCE] estimate."
+notes = "Gate: none beyond Saffron (92). Scouted on HeartGold (core-proposal), from 93's end in the Power Plant: Fly to Saffron (the Pokemon Center (1294,243)), the west gate (1280,240) -> Route 7's gatehouse (10,7) -> (1,7) -> Route 7 (1273,240) and west into Celadon; the gym's side of town is closed by Cut tree object 11 (1227,267): the legs follow hg_world.py route's corners ((1203,260) (1215,260) (1215,266) (1227,266)), cut south to (1227,272), then west to (1201,267) below the door (1201,266) -> (7,46). The gym is a hedge maze with two more Cut trees ((7,42), (7,16)); walk_to with hm=true reaches Erika's tile (7,4) in one leg, fighting the trainers who see the player. Erika (object 8, (7,3)): A from (7,4); the Rainbow Badge, Kanto badge 3 (kanto_badge_mask bit 3). Heal at Celadon's Pokemon Center (1231,237) first: the gym trainers spend the party (Earthquake down to 3 PP when scouted). Boost (boost.recipe): Lava Plume back on Typhlosion. Measured: HG 24057 frames, SS 24393; the sheets show the Power Plant (start), Erika's dais after the badge, her Jumpluff lv51 against Typhlosion lv66."
 
 [start]
 from = "93-cerulean-misty-machine-part"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 36600
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 20
+note = "out of the Power Plant"
+
+[[step]]
+do = "fly"
+map = "MAP_SAFFRON"
+
+[[step]]
+do = "walk_to"
+x = 1281
+z = 240
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1280
+z = 240
+note = "Route 7's Saffron gatehouse"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "-> Route 7 (1273,240)"
+
+[[step]]
+do = "walk_to"
+x = 1240
+z = 240
+on_battle = "flee"
+note = "west along Route 7 into Celadon"
+
+[[step]]
+do = "heal"
+x = 1231
+z = 237
+note = "Celadon's Pokemon Center"
+
+[[step]]
+do = "walk_to"
+x = 1203
+z = 260
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1215
+z = 260
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1215
+z = 266
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1227
+z = 266
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1227
+z = 272
+hm = true
+note = "Cut tree object 11 (1227,267)"
+
+[[step]]
+do = "walk_to"
+x = 1203
+z = 272
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1203
+z = 269
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1201
+z = 269
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1201
+z = 267
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1201
+z = 266
+note = "the gym door -> (7,46)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CELADON_GYM"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 4
+hm = true
+note = "the hedge maze, its Cut trees (7,42) and (7,16), the trainers fought"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "Erika (7,3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_ERIKA_ERIKA"
+
+[[step]]
+do = "advance_text"
+note = "the Rainbow Badge"
+shot = "badge"
 
 [expect]
 map = "MAP_CELADON_GYM"
-badge = ["BADGE_RAINBOW"]
 battles = 1
+save = ['s["trainer"]["kanto_badge_mask"] >> 3 & 1']
