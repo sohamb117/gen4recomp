@@ -30,7 +30,6 @@
 83-legendary-kyurem
 84-legendary-volcarona
 85-roamer-tornadus
-86-legendary-landorus
 87-dreamyard-musharna
 
 # Not systems here:
@@ -44,3 +43,7 @@
 #   Mystery Gift deliveries (scr 0886, the Pokemon Center's delivery girl, flag 0x291).
 # - Event-only, excluded: Victini (Liberty Garden, zone 237, scr 0474 @0x0208: needs the Liberty Pass from a
 #   distribution) and Zoroark (Lostlorn Forest, zone 385, scr 0770 @0x0351: needs the event shiny legendary beasts in the party).
+# - Link-only, excluded: Landorus (the Abundant Shrine, scr 0752 script 2) needs Tornadus and Thundurus in the party with
+#   the own version's roamer the player's (Cmd113, the Name Rater's OT check, scr 0857 @0x00BE); Cmd1BC (scr 0674
+#   @0x0642 Black Tornadus / @0x064C White Thundurus, chosen by GetVersion) is the only source of either, so the other
+#   version's one comes only by a link trade.

@@ -1,24 +1,105 @@
-# The Dreamyard after the clear: the blocker in the Dreamyard is gone (flag 0x334) and, on Fridays, Musharna (lv 50)
-# waits in the basement.
-# Start: the player's room (zone 391, 32's end) -> end: the Dreamyard's basement (zone 153), Musharna caught.
+# The Dreamyard after the clear: on Fridays, Musharna (lv 50) waits in the basement's north-west room; caught with a
+# Master Ball.
+# Start: the Dreamyard (zone 152) west of the basement's south-west stairs (20,38), on 34's end save -> end: the
+# Dreamyard's basement (zone 153), Musharna caught.
 title = "The Dreamyard's basement: Musharna (post-game, Fridays)"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 15000   # [INFERENCE] frames, not measured
+estimate = 10584   # measured from 34's end save + start.recipe (CONTINUE included): Black 10584, White 9182 (core-bwm)
 refs = [
   "zone_event 152 object 7 gfx 0xB5 (40,19) hidden by flag 0x334, set at the clear (scr 0866 @0x0491); zone_event 152 warps 0/1/3 -> zone 153",
+  "zone_event 152 warp 3 (20,38) 1x3 -> zone 153 warp 2 (3,20): the only way into the basement's west column (x 4..6), which joins Musharna's room (x 8..13, z 2..7) at z 7 (the probe's grid; warps 0/1 lead to the east half, walled off from it)",
   "zone 153 level script -> scr 0306 script 2: @0x0010 Cmd0CF var 0x8020; unless (0x8020 == 5 and flag 0x960 and flag 0xABC clear) @0x0051 SetFlag 0x2EC, else @0x0047 ClearFlag 0x2EC",
   "zone_event 153 object 0 gfx 0x7F (12,3) hidden by flag 0x2EC -> scr 0306 script 1: @0x008D WildBattle Musharna (518) lv 50; won -> @0x00B0 SetFlag 0x2EC; @0x00F2/@0x010F SetFlag 0xABC",
   "zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard)",
 ]
-notes = "Post-game (flag 0x960 and the blocker 0x334). Cmd0CF reads the weekday [INFERENCE: 5 = Friday], so the run's clock is a Friday; 0xABC is a daily flag [INFERENCE] that keeps Musharna away for the rest of the day. The Relic Castle half of 'post-game areas' is 84 (Volcarona, not gated by the clear). The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+notes = "Measured from the start save (CONTINUE included): Black 10584, White 9182 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Post-game (flag 0x960 and the blocker 0x334). Cmd0CF reads the weekday (5 = Friday: on the clock 2026-10-09, a Friday, the probe shows Musharna at (12,3); on the probe's default clock it is hidden), so the run's clock is a Friday; 0xABC is a daily flag [INFERENCE] that keeps Musharna away for the rest of the day. The Relic Castle half of 'post-game areas' is 84 (Volcarona, not gated by the clear). Chained from 34's end (the Poke Transfer Lab, after the post-credits scenes), where set-location holds. The recipe starts in the Dreamyard west of the south-west stairs pit: set-location keeps the saved zone's objects, so the basement is entered by its warp (a step right into the pit's west column), which loads its own (Musharna). The basement's trainers (Scientists, Psychics, lv 63-65) stand east of the wall the route keeps to. 32 threw the Master Ball; the recipe puts one in the first items slot. Measured from the start save (CONTINUE included): Black 10584, White 9182 frames on the core of 2026-10-10 (bw-script, core-bwm), instant text."
 
 [start]
 from = "34-postgame-poke-transfer-lab"
+recipe = "start.recipe"
 
 [run]
-clock = "2026-10-09 12:00:00"   # [INFERENCE] see notes
+frames = 16000
+clock = "2026-10-09 12:00:00"   # a Friday: Cmd0CF's 5 (scr 0306 script 2)
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "zone_event 152 warp 3 (20,38) 1x3 -> zone 153 warp 2: (4,20) in the basement's west column"
+
+[[step]]
+do = "wait_field"
+shot = "basement"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 4
+on_battle = "flee"
+note = "north up the west column, east at z 7 into Musharna's room, below Musharna (zone_event 153 object 0 (12,3))"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Musharna: scr 0306 script 1 ('Mushar?!')"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "in_battle=1"
+times = 60
+note = "to its WildBattle (Musharna lv 50, @0x008D)"
+
+[[step]]
+do = "wait_frames"
+n = 900
+shot = "musharna-battle"
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 190
+y = 48
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 30
+gap = 60
+note = "the first ball, the Master Ball (start.recipe)"
+
+[[step]]
+do = "tap"
+x = 110
+y = 174
+gap = 60
+note = "USE"
+
+[[step]]
+do = "press"
+keys = "b"
+until = "in_battle=0"
+times = 80
+gap = 30
+shot = "caught"
+note = "the catch; B declines the nickname; the full party sends it to the Box"
+
+[[step]]
+do = "advance_text"
+note = "scr 0306 after the catch: @0x00B0 0x2EC, @0x010F 0xABC"
+
+[[step]]
+do = "wait_field"
+shot = "end"
 
 [expect]
 map = 153

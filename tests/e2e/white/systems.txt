@@ -27,5 +27,4 @@
 ../black/83-legendary-kyurem
 ../black/84-legendary-volcarona
 85-roamer-thundurus
-../black/86-legendary-landorus
-../black/87-dreamyard-musharna
+../black/../black/87-dreamyard-musharna

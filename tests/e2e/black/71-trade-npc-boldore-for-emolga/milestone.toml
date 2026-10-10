@@ -2,21 +2,74 @@
 # trade-evolution Pokemon (Basculin, Emolga, Rotom, Munchlax, Cottonee/Petilil), so trade evolution needs a link.
 # Start: Route 7 (zone 337) below the house door (102,260) -> end: the house (zone 343), Emolga in the party.
 title = "Trades: Route 7's Boldore for Emolga (trade evolution needs a link)"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 5000   # [INFERENCE] frames, not measured
+estimate = 7837   # measured from 21's end save + start.recipe (CONTINUE included): Black 7737, White 7837 (core-bwm)
 refs = [
   "zone_event 337 warp 1 (102,260) -> zone 343 warp 0 (5,9)",
   "zone_event 343 object 0 gfx 0x40 (4,5) -> scr 0686 script 1: @0x006E BufferSpeciesName Emolga / Boldore, msg 375 #0, @0x00A9 Cmd107 (the party pick), @0x00CA Cmd1BF var 0x8022, 4, var 0x8020 [INFERENCE: trade 4's checks], @0x00F1 Cmd1BE 4, var 0x8020 (the trade), @0x0107 SetFlag 0x15B",
   "scr 0686 script 4 (zone 343 level script): GetVersion -> var 0x4020 = 0xD1 (Black) / 0x81 (White) [INFERENCE: not the trade's species, which are fixed]",
   "the other in-game trades (Cmd1BE): scr 0046 (Nacrene, zone 23: Cottonee/Petilil by version), scr 0202 trades 2/3 (Driftveil, zone 101: Minccino -> Basculin), scr 0764 trade 6 (Route 15, zone 382: Ditto -> Rotom), scr 0830 trade 5 (Undella, zone 415: Cinccino -> Munchlax)",
 ]
-notes = "P2: trade evolution (the plan's P0 item) cannot run offline in B/W: every NPC trade receives a Pokemon that does not evolve by trade (refs), and Karrablast/Shelmet and the rest need a link trade (tests/link). This system proves the NPC trade itself, as platinum/75 does. The recipe makes the Boldore the man asks for in Patrat's slot and places the player outside the house."
+notes = "Measured from the start save (CONTINUE included): Black 7737, White 7837 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). P2: trade evolution (the plan's P0 item) cannot run offline in B/W: every NPC trade receives a Pokemon that does not evolve by trade (refs), and Karrablast/Shelmet and the rest need a link trade (tests/link). This system proves the NPC trade itself, as platinum/75 does. The recipe makes the Boldore the man asks for in Patrat's slot and places the player outside the house. The party pick (Cmd107) takes one tap on a panel (no panel menu, unlike the Day Care's); the traded Emolga arrives as 'Minipete' (the trade's own nickname). Measured from the start save (CONTINUE included): Black 7737, White 7837 frames on the core of 2026-10-10 (bw-script, core-bwm), instant text."
 
 [start]
 from = "21-mistralton-skyla-jet-badge"
 recipe = "start.recipe"
+
+[run]
+frames = 12000
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 337 warp 1 (102,260) -> the house (zone 343) warp 0: the warp loads the house's objects"
+
+[[step]]
+do = "wait_field"
+shot = "house"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the man (zone_event 343 object 0 (4,5)): scr 0686 script 1, msg 375 #0 'Kid! Have you caught any Boldore?'"
+
+[[step]]
+do = "wait_frames"
+n = 30
+note = "the first page settles (an A at once is swallowed: scouted)"
+
+[[step]]
+do = "press"
+keys = "a"
+gap = 40
+note = "the message's second page ('...would you trade your Boldore for my Emolga?') and its YES/NO (Cmd047)"
+
+[[step]]
+do = "press"
+keys = "a"
+gap = 60
+shot = "party-pick"
+note = "YES: Cmd107 opens the party screen (touch panels: left column slots 0/2/4, right column 1/3/5; scouted: A would pick slot 0, Darmanitan, and the man refuses with msg 375 #3)"
+
+[[step]]
+do = "tap"
+x = 190
+y = 91
+gap = 60
+note = "slot 3 (right column, middle): the Boldore; one tap picks it (no panel menu here): msg 375 #1 'OK! Let's start our Pokemon trade!'"
+
+[[step]]
+do = "advance_text"
+shot = "traded"
+note = "the trade (Cmd1BE 4), msg 375 #2 'Oh! Oh! What a cute Pokemon! Please cherish Emolga, too.', @0x0107 0x15B"
+
+[[step]]
+do = "wait_field"
+shot = "end"
+
+[[shots]]
+frames = [6200, 6600, 7000]   # the trade animation (Cmd1BE 4) between the party pick and msg 375 #2
 
 [expect]
 map = 343

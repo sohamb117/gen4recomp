@@ -1,0 +1,6 @@
+# On 34's end save (no Master Ball left: 32 threw it): the items pocket's first slot (set-item slots count from 1;
+# item 112) becomes a Master Ball (item 1), the first ball the battle bag lists.
+item 0 1 1 1
+# The Dreamyard (zone 152), west of the south-west stairs pit (zone_event 152 warp 3 (20,38) 1x3); set-location keeps
+# the saved zone's objects, so the basement (zone 153) is entered by the warp, which loads its own (Musharna).
+location 152 19 0 39
