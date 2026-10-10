@@ -124,7 +124,11 @@ $(ARMREC_STAMP): $(ARMREC_S) $(EXTRACTED_ASM) $(ARMREC)/armrec.py \
 	    || mv $(ARMREC_CLASSES).tmp $(ARMREC_CLASSES)
 	@touch $@
 
-$(ARMREC_C)/%.c: $(ARMREC_STAMP) ;
+# Named, not a pattern: an intermediate .c would be deleted after the build
+# that made it and hang the next parallel make (games/diamond/pc/mk/
+# armrec.mk says how).
+ARMREC_CS := $(addprefix $(ARMREC_C)/,$(addsuffix .c,$(ARMREC_STEMS) armrec_init))
+$(ARMREC_CS): $(ARMREC_STAMP) ;
 
 $(ARMREC_OBJDIR)/%.o: $(ARMREC_C)/%.c
 	@mkdir -p $(dir $@)

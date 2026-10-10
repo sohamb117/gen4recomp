@@ -125,7 +125,15 @@ $(ARMREC_STAMP): $(ARMREC_S) $(EXTRACTED_ASM) $(ARMREC)/armrec.py \
 	    || mv $(ARMREC_CLASSES).tmp $(ARMREC_CLASSES)
 	@touch $@
 
-$(ARMREC_C)/%.c: $(ARMREC_STAMP) ;
+# Named, not a pattern: a .c reached only through a pattern rule is an
+# intermediate file, which make deletes after the build that made it. The
+# next parallel build then finds every armrec .c missing, and make 3.81
+# loops forever over the armrec objects, each reported "The prerequisites
+# ... are being made" with no job running (seen with armrec.stamp behind
+# the FORCE'd .game-flags: -j4 no-op builds spun at full CPU for over half
+# an hour with no child, where -j1 finished in seconds).
+ARMREC_CS := $(addprefix $(ARMREC_C)/,$(addsuffix .c,$(ARMREC_STEMS) armrec_init))
+$(ARMREC_CS): $(ARMREC_STAMP) ;
 
 $(ARMREC_OBJDIR)/%.o: $(ARMREC_C)/%.c
 	@mkdir -p $(dir $@)
