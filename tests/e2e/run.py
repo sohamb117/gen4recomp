@@ -345,11 +345,14 @@ def recipe_env(path, game):
 # full PP (np_save4 set-move), and `party-level SLOT LEVEL` sets the level, stats recalculated and HP full (np_save4
 # set-level); `party-heal` restores the whole party as a Pokemon Center does (np_save4 heal-party), standing in for
 # the Full Restores and Revives a player uses where no Center is reachable (the Elite Four's rooms), since no bot
-# uses items. Nothing else is edited.
+# uses items. B/W edits the members its save holds with np_save5: `party-level SLOT LEVEL` (set-level, as HG/SS's),
+# and `party-set SLOT SPECIES LEVEL [MOVE...]` (set-mon) replaces that member with a Pokemon made as add-mon makes
+# one, carrying those moves: an HM carrier (Fly, Surf, Strength) for a full party, which add-mon cannot grow.
+# Nothing else is edited.
 ADDMON_BOOST_VERBS = {"party", "party-move"}
 HGSS_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-heal"}
-# np_save5 set-level: a full party (6 from B/W milestone 13 on) is strengthened in place
-BW_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level"}
+# np_save5 set-level / set-mon: a full party (6 from B/W milestone 13 on) is strengthened in place
+BW_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-set"}
 ADDMON_BOOST_GAMES = HGSS_GAMES + BW_GAMES
 
 
@@ -365,7 +368,7 @@ def addmon_boost(game, inline, sav, log):
     if out.returncode != 0:
         raise HarnessError("boost: the save tool cannot read %s" % sav)
     first = len(json.loads(out.stdout).get("party", []))
-    adds, sets, levels, heal = [], [], [], False
+    adds, sets, levels, replaces, heal = [], [], [], [], False
     allowed = addmon_boost_verbs(game)
     for verb, *args in ops:
         if verb not in allowed:
@@ -384,6 +387,14 @@ def addmon_boost(game, inline, sav, log):
                                    % (slot, level))
             levels.append((slot, level))
             continue
+        if verb == "party-set":
+            slot, species, level = (int(a) for a in args[:3])
+            moves = args[3:]
+            if not 0 <= slot < first or not 1 <= level <= 100 or len(moves) > 4:
+                raise HarnessError("boost: party-set %d %d %d: not a slot the save's party holds, no such level, or "
+                                   "more than 4 moves" % (slot, species, level))
+            replaces.append([str(slot), str(species), str(level)] + moves)
+            continue
         slot, index, move = (int(a) for a in args[:3])
         if not 0 <= index < 4 or not 0 <= slot < first + len(adds):
             raise HarnessError("boost: party-move %d %d: no such party slot or move index" % (slot, index))
@@ -397,6 +408,7 @@ def addmon_boost(game, inline, sav, log):
         raise HarnessError("boost: %d Pokemon after a party of %d" % (len(adds), first))
     with open(log, "w") as f:
         edits = [["set-move", str(slot), str(index), str(move)] for slot, index, move in sets]
+        edits += [["set-mon"] + args for args in replaces]
         edits += [["set-level", str(slot), str(level)] for slot, level in levels]
         edits += [["heal-party"]] if heal else []
         for verb, *args in edits:

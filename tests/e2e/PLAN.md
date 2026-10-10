@@ -6032,7 +6032,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 ## Black
 
 <!-- plan.py:begin black -->
-### Story chain: 33 milestones, ~1187176 frames estimated
+### Story chain: 33 milestones, ~1312535 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6057,11 +6057,11 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 32243 | prev + `None` | 96 | passing |
 | [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 85531 | prev + `None` | 107 | passing |
 | [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton: the Celestial Tower and Skyla's Jet Badge | P0 | both | 136816 | prev + `None` | 107 | passing |
-| [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
-| [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 22000 | prev + `None` | 113 | planned |
-| [24-dragonspiral-tower-n-legend](black/24-dragonspiral-tower-n-legend/milestone.toml) | Dragonspiral Tower: N and the legendary dragon | P0 | both | 30000 | prev + `None` | 205 | planned |
-| [25-relic-castle-nacrene-stone](black/25-relic-castle-nacrene-stone/milestone.toml) | The Relic Castle and the stone at Nacrene's museum | P0 | both | 35000 | prev + `None` | 16 | planned |
-| [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 35000 | prev + `None` | 120 | planned |
+| [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 82308 | prev + `None` | 113 | passing |
+| [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 42143 | prev + `None` | 113 | passing |
+| [24-dragonspiral-tower-n-legend](black/24-dragonspiral-tower-n-legend/milestone.toml) | Dragonspiral Tower: N and the legendary dragon | P0 | both | 47908 | prev + `None` | 113 | passing |
+| [25-relic-castle-nacrene-stone](black/25-relic-castle-nacrene-stone/milestone.toml) | The Relic Castle and the stone at Nacrene's museum | P0 | both | 60000 | prev + `None` | 16 | planned |
+| [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 40000 | prev + `None` | 120 | planned |
 | [27-opelucid-drayden-legend-badge](black/27-opelucid-drayden-legend-badge/milestone.toml) | Opelucid Gym (Black): Drayden's Legend Badge | P0 | black | 25000 | prev + `None` | 132 | planned |
 | [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 45000 | prev + `None` | 136 | planned |
 | [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
@@ -6281,54 +6281,54 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - notes: Measured from the previous end save (CONTINUE included): Black 136816, White 132936 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe raises the full party in place (party-level): a Route 7 double battle fainted White's Blitzle. The Celestial Tower is required: the man in front of the Gym door (zone_event 107 object 11) stays until flag 0x2AE, set only by ringing the tower's bell (scr 0684 @0x0251, zone 342) after Skyla's scene there. The tower's stairs are rails (wild battles on them: each climb is a repeat of a rail hold and a flee); the Gym's cannons fire the player the way he walks into them. Routes from scouting.
 
 #### black/22-twist-mountain-cheren-icirrus — Twist Mountain: Cheren; Icirrus City
-- proves: Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Team Plasma and Brycen in the mountain, out to Icirrus City and Cedric Juniper. Start: the Mistralton Gym (zone 108) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
+- proves: Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Clay's scene inside, Team Plasma in the mountain, out to Icirrus City and Cedric Juniper. Start: Mistralton City (zone 107, 21's end) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
-- trainers: zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2
-- end state: map 113; vars 0x40B4=2, 0x4097=2, 0x40BB=1
-- frames: estimate 25000, budget -
-- refs: zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2; zone_event 202 trigger 0 (52,13) var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D; zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2
-- notes: [INFERENCE] estimate.
+- trainers: zone_event 198 trigger 0 (144,206) 1x3 var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2
+- end state: map 113; >= 1 battles; vars 0x40B4=2, 0x4097=2, 0x40BB=1, 0x4096=1
+- frames: estimate 82308, budget 123500
+- refs: zone_event 107 warp 0 (108,304) -> zone 109 (Mistralton Pokemon Center); zone_event 198 trigger 0 (144,206) 1x3 var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2; zone_event 198 object 3 (140,203) hidden by flag 0x2AF (scr 0216, 21); zone_event 198 warp 0 (140,202) -> zone 200 warp 0; zone_event 200 trigger 0 (3,52) 3x1 var 0x4096 == 0 -> scr 0400 script 1 (Clay, msg 208 #1); Twist Mountain warps (zone_event 199/200/201/202): 200 w1 (17,48) -> 199 w0; 199 w1 (33,54) -> 200 w2; 200 w4 (53,36) -> 199 w3; 199 w4 (49,18) -> 200 w5; 200 w6 (48,18) -> 201 w5; 201 w0 (46,53) -> 199 w5; 199 w6 (17,42) -> 201 w1; 201 w2 (26,42) -> 199 w7; 199 w8 (22,15) -> 201 w3; 201 w4 (7,5) -> 202 w4; 202 w1 (7,26) -> 199 w9; 199 w10 (40,22) -> 202 w2; 202 w3 (61,14) -> 113 w4; zone_event 202 trigger 0 (52,13) 1x3 var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D; zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2
+- notes: Measured from the previous end save (CONTINUE included): Black 82308, White 60192 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Cheren's battle needs 21's party-level boost. Route from scouting (the mountain's floors are separate zones 199-202 joined by warps; the probe plans only within one, so each leg walks onto the next warp). Cheren's battle needs 21's party-level boost.
 
 #### black/23-icirrus-brycen-freeze-badge — Icirrus Gym: Brycen's Freeze Badge
-- proves: Proves the Icirrus Gym (the ice slides) and Brycen's Freeze Badge, then Cheren and Bianca's talk. Start: Icirrus City (zone 113) -> end: Icirrus City, 7 badges, 0x40A7 = 1, 0x4097 = 4.
+- proves: Proves the Icirrus Gym (ice slides, ramp and spin tiles, the three switches) and Brycen's Freeze Badge, then Cheren and Bianca's talk outside. Start: Icirrus City (zone 113, 22's end) -> end: Icirrus City, 7 badges, 0x40A7 = 1, 0x4097 = 4, 0x4035 = 790.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
-- trainers: scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977
-- end state: map 113; 7 badges; flags set 0x977; vars 0x40A7=1, 0x4097=4
-- frames: estimate 22000, budget -
-- refs: scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977; zone_event 113 level type 1: 0x4097 == 3 -> scr 0226 script 2 (Cheren, msg 118 #10); @0x03C0 SetVar 0x4097 4
-- notes: The gym's ice paths: `bw_script.py events 114` (triggers on var 0x400F/0x400A). [INFERENCE] estimate.
+- trainers: zone_event 114 object 11 (17,14) -> scr 0228 script 1: @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x014A Cmd0DA (var 0x4035 = 790: Dragonspiral's bridge, 24); @0x016A SetFlag 0x977
+- end state: map 113; 7 badges; flags set 0x977; vars 0x40A7=1, 0x4097=4, 0x4035=790
+- frames: estimate 42143, budget 63500
+- refs: zone_event 113 warp 1 (184,195) -> zone 115 (Pokemon Center); zone_event 113 warp 3 (171..173,167) -> zone 114 warp 0; zone_event 114 warp 0 (16..18,63) -> zone 113 warp 3; zone_event 114 triggers 3-10 (17,60) (22,53) (60,44) (54,39) (16,38) (12,34) (22,32) (18,29) var 0x400A == 0 -> scr 0228 scripts 7-14 (Cmd195 n: the ramp and spin tiles); zone_event 114 triggers 1/0/2 (23,53) (59,41) (15,29) var 0x400F == 0 -> scr 0228 scripts 4/5/6 (the switches: SetObjectPosition of objects 3/4, 6/7, 9/10); zone_event 114 object 11 (17,14) -> scr 0228 script 1: @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x014A Cmd0DA (var 0x4035 = 790: Dragonspiral's bridge, 24); @0x016A SetFlag 0x977; trdata #213/#214/#215/#216 (the gym's Battle Girls and Black Belts met on the route); zone_event 113 level type 1: 0x4097 == 3 -> scr 0226 script 2 (Cheren, msg 118 #10); @0x03C0 SetVar 0x4097 4
+- notes: Measured from the previous end save (CONTINUE included): Black 38810, White 42143 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting with the game as the oracle (a slide-by-slide search). The ramp and spin tiles leave the player off a tile centre waiting for a direction: slide holds the press made then (bots.py bot_slide, _bw_ramp_waiting).
 
 #### black/24-dragonspiral-tower-n-legend — Dragonspiral Tower: N and the legendary dragon
-- proves: Proves Dragonspiral Tower: Cedric at the gate, Team Plasma's grunts on the climb, and N waking his legendary dragon at the top. Start: Icirrus City (zone 113) -> end: Dragonspiral Tower's foot (zone 205), 0x40A7 = 9.
+- proves: Proves Dragonspiral Tower: Cedric at the gate, Team Plasma's grunts on the climb, and N waking his legendary dragon at the top. Start: Icirrus City (zone 113, 23's end) -> end: Icirrus City (zone 113), walked back into from 205, 0x40A7 = 9.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34)
-- end state: map 205; vars 0x40A7=9
-- frames: estimate 30000, budget -
+- end state: map 113; flags set 0x9B8; vars 0x40A7=9, 0x409D=1
+- frames: estimate 47908, budget 72000
 - refs: zone_event 205 trigger 0 (177,146) var 0x40A7 == 1 -> scr 0410 script 1 (Cedric); @0x057B CallStd 2805 Old Gateau; @0x05C5 SetVar 0x40A7 2; @0x05CB SetVar 0x4097 5; zone_event 207 trigger 0 (24,2) 0x40A7 == 2 -> scr 0414 (@0x0064 SetVar 3); zone_event 208 trigger 0 (14,24) == 3 -> scr 0416 (@0x006A SetVar 4); zone_event 210 triggers (21,14)/(22,14) == 5/4 -> scr 0420 (@0x0073/@0x00C4 SetVar 5/6); zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34); zone_event 213 trigger 0 (16,21) var 0x40A7 == 8 -> scr 0426 script 1 (N, msg 221 #0); @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205 (179,146); scr 0410 @0x02D0 SetVar 0x409D 1 (Cedric: on to the Relic Castle)
-- notes: The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 47908, White 47439 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting: 209 and 211 are rail maps (rail holds and exact presses; 211's from its rail tables in RAM). The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White.
 
 #### black/25-relic-castle-nacrene-stone — The Relic Castle and the stone at Nacrene's museum
-- proves: Proves the search for the other legend's stone: the Desert Resort and the Relic Castle with Cheren and Alder, then Nacrene's museum where Professor Juniper and Lenora hand over the stone. Start: Dragonspiral Tower's foot (zone 205) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
+- proves: Proves the search for the other legend's stone: Fly to Nimbasa, Route 4 and the Desert Resort (Cheren), the Relic Castle's sand pits down to Ghetsis and the Sages, then Fly to Nacrene, where Professor Juniper gives the stone. Start: Icirrus City (zone 113, 24's end) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: map 16; vars 0x4092=7, 0x409D=2
-- frames: estimate 35000, budget -
-- refs: zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; @0x02A7 SetVar 0x4092 6; scr 0328 (zone 164) @0x0014 unless 0x409F == 0 ...; @0x0038/@0x0046 Warp zone 165 (the Relic Castle's sand pits); zone_event 16 trigger 2 (640,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36); scr 0032 @0x0AE9 MessageVersion (White: Dark Stone msg 21 #48 / Black: Light Stone #49); @0x0BF3 CallStd 2805 Light Stone (Black) / @0x0C19 Dark Stone (White); @0x0DCE SetVar 0x4092 7
-- notes: The stone is the one version branch here, by item: Black's bag gets the Light Stone. Relic Castle's quicksand floors (zones 160-165, WarpC1 holes): `bw_script.py events 160` [INFERENCE: the path down]. [INFERENCE] estimate.
+- end state: map 16; vars 0x4092=7, 0x409D=2, 0x409F=1; 1 save check(s)
+- frames: estimate 60000, budget 90000
+- refs: Fly (the X menu's POKEMON, the Fly carrier's FLY, the town tapped on the bottom screen's map, A): Nimbasa (zone 62) at tap (130,94), Nacrene (zone 16) at tap (203,118) [from scouting: the town map takes the touch]; zone_event 62 warp 0 (429..431,479) -> zone 90 (Nimbasa Gate); zone_event 90 warp 1 (4..6,14) -> zone 326 (Route 4) warp 0; zone_event 157 warp 0 (370..372,488) -> zone 159; zone_event 159 warp 1 (4,1) -> zone 158 warp 0 (82,83); zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (Cheren, msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; zone_event 158 warp 1 (61,29) -> zone 160 warp 2; zone_event 160 warp 0 (7,20) -> zone 161 warp 2; zone_event 161 trigger 1 (20,18) 1x5 var 0x40BD == 0 -> scr 0322 script 3 (Ryoku); the sand pits, 5x5 triggers on var 0x4000 == 0 firing at their centre: 161 trigger 0 (24,14) -> scr 0322 script 1 Warp 162; 162 trigger 1 (9,20) -> scr 0324 script 2 Warp 163; 163 trigger 0 (6,21) -> scr 0326 script 3 Warp 164; 164 trigger 0 (7,19) -> scr 0328 (Cmd021 1, Warp zone 165); trdata #222/#225/#226/#224/#227 (the Relic Castle's grunts, fought on the way); scr 0330 script 1 (Ghetsis, msg 173): @0x0200 SetVar 0x409F 1; @0x0224 Warp zone 158 (61,32); scr 0316 script 5 on arrival: @0x02A7 SetVar 0x4092 6; zone_event 16 trigger 2 (640..648,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36); @0x0852 GetVersion; @0x0BF3 CallStd 2805 item 616 Light Stone (Black) / @0x0C19 item 617 Dark Stone (White); @0x0DCE SetVar 0x4092 7
+- notes: The stone is the one version branch here, by item (GetVersion, scr 0032 @0x0852). The pits: only 160's warp 0, 162's lower pit and 163's (8,23) pit lead down; the others drop into dead-end regions (scouting). [INFERENCE] estimate.
 
 #### black/26-route8-bianca-route9-opelucid — Route 8 (Bianca) and Route 9 to Opelucid City
-- proves: Proves the way to Opelucid City: Route 8 (Bianca's battle), the Moor of Icirrus, Tubeline Bridge, Route 9, and Opelucid's welcome by Alder, Iris and Drayden. Start: Nacrene City (zone 16) -> end: Opelucid City (zone 120), 0x40A8 = 4.
+- proves: Proves the way to Opelucid City: Fly back to Icirrus, Route 8 (Bianca's battle), Tubeline Bridge (the bikers), Route 9, and Opelucid's welcome by Alder (Ghetsis's speech), Iris and Drayden. Start: Nacrene City (zone 16, 25's end) -> end: Opelucid City (zone 120), 0x40A8 = 4.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40)
-- end state: map 120; vars 0x40A8=4, 0x40CB=1
-- frames: estimate 35000, budget -
-- refs: zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40); zone 254 (Tubeline Bridge) scr 0508: vars 0x40DB/0x40A4; zone 308/348 (Route 9); zone_event 120 trigger 0 (395,173) var 0x40A8 == 0 -> scr 0240 script 1 (Alder, msg 125 #0); @0x0AA4 SetFlag 0x9B9; @0x0AAC SetVar 0x40A8 1; zone_event 120 triggers 1-3 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3; zone_event 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1; @0x013E SetVar 0x40A8 4
-- notes: Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion (scr 0240 @0x0EAB ...), no other branch: the dir serves White. [INFERENCE] estimate.
+- end state: map 120; flags set 0x9B9; vars 0x40A8=4, 0x40CB=1, 0x40A4=1
+- frames: estimate 40000, budget 60000
+- refs: Fly (the X menu's POKEMON, slot 3's FLY, Icirrus tapped and held on the town map, A): needs Icirrus's fly flag 0x9B8, which the field sets on entering Icirrus from outdoors (24 ends that way); no script sets it; zone_event 113 warp 1 (184,195) -> zone 115 (Pokemon Center); zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40); zone_event 345 warp 0 (244,180) -> zone 347; zone_event 347 warps 1-3 (15,7..9) -> zone 254 (Tubeline Bridge); zone_event 254 trigger 2 (7..24,50) var 0x40A4 == 0 -> scr 0508 script 12 (the bikers); @0x0CAB SetVar 0x40A4 1; zone_event 254 warp 1 (7..24,32) -> zone 349; zone_event 349 warp 1 (14,7..9) -> zone 348 (Route 9); zone 348 level type 1: var 0x40C6 == 0 -> scr 0696 script 6 (TM56); zone_event 131 warp 1 (15,4..6) -> zone 120; zone_event 120 trigger 0 (395,173) var 0x40A8 == 0 -> scr 0240 script 1 (Alder, msg 125 #0); @0x0AA4 SetFlag 0x9B9; @0x0AAC SetVar 0x40A8 1; zone_event 120 triggers 1-2 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3; zone_event 120 warp 3 (418,159) -> zone 123; zone 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1 (Drayden, MessageVersion); @0x0179 SetVar 0x40A8 4 (Black) / @0x013E (White)
+- notes: Gate exits (zones 349, 131) fire only on a press into the edge: walk_to the tile before, then moves. Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion, no other branch: the dir serves White. Route from scouting. [INFERENCE] estimate.
 
 #### black/27-opelucid-drayden-legend-badge — Opelucid Gym (Black): Drayden's Legend Badge
 - proves: Proves the Opelucid Gym (the dragon-head lifts) and Drayden's Legend Badge on Black, then Professor Juniper's Master Ball and the gate north. Start: Opelucid City (zone 120) -> end: the Opelucid Gate (zone 132), 8 badges, 0x40B8 = 3.
@@ -6406,7 +6406,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except where the scripts branch on the version.
 
 <!-- plan.py:begin white -->
-### Story chain: 33 milestones, ~1187176 frames estimated
+### Story chain: 33 milestones, ~1312535 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -6431,11 +6431,11 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 | [19-driftveil-clay-quake-badge-bianca](black/19-driftveil-clay-quake-badge-bianca/milestone.toml) | Driftveil Gym: Clay's Quake Badge; Bianca and HM02 | P0 | both | 32243 | prev + `None` | 96 | passing |
 | [20-route6-chargestone-n](black/20-route6-chargestone-n/milestone.toml) | Chargestone Cave: N's battle | P0 | both | 85531 | prev + `None` | 107 | passing |
 | [21-mistralton-skyla-jet-badge](black/21-mistralton-skyla-jet-badge/milestone.toml) | Mistralton: the Celestial Tower and Skyla's Jet Badge | P0 | both | 136816 | prev + `None` | 107 | passing |
-| [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 25000 | prev + `None` | 113 | planned |
-| [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 22000 | prev + `None` | 113 | planned |
-| [24-dragonspiral-tower-n-legend](black/24-dragonspiral-tower-n-legend/milestone.toml) | Dragonspiral Tower: N and the legendary dragon | P0 | both | 30000 | prev + `None` | 205 | planned |
-| [25-relic-castle-nacrene-stone](black/25-relic-castle-nacrene-stone/milestone.toml) | The Relic Castle and the stone at Nacrene's museum | P0 | both | 35000 | prev + `None` | 16 | planned |
-| [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 35000 | prev + `None` | 120 | planned |
+| [22-twist-mountain-cheren-icirrus](black/22-twist-mountain-cheren-icirrus/milestone.toml) | Twist Mountain: Cheren; Icirrus City | P0 | both | 82308 | prev + `None` | 113 | passing |
+| [23-icirrus-brycen-freeze-badge](black/23-icirrus-brycen-freeze-badge/milestone.toml) | Icirrus Gym: Brycen's Freeze Badge | P0 | both | 42143 | prev + `None` | 113 | passing |
+| [24-dragonspiral-tower-n-legend](black/24-dragonspiral-tower-n-legend/milestone.toml) | Dragonspiral Tower: N and the legendary dragon | P0 | both | 47908 | prev + `None` | 113 | passing |
+| [25-relic-castle-nacrene-stone](black/25-relic-castle-nacrene-stone/milestone.toml) | The Relic Castle and the stone at Nacrene's museum | P0 | both | 60000 | prev + `None` | 16 | planned |
+| [26-route8-bianca-route9-opelucid](black/26-route8-bianca-route9-opelucid/milestone.toml) | Route 8 (Bianca) and Route 9 to Opelucid City | P0 | both | 40000 | prev + `None` | 120 | planned |
 | [27-opelucid-iris-legend-badge](white/27-opelucid-iris-legend-badge/milestone.toml) | Opelucid Gym (White): Iris's Legend Badge | P0 | white | 25000 | prev + `None` | 132 | planned |
 | [28-route10-cheren-victory-road](black/28-route10-cheren-victory-road/milestone.toml) | Route 10 (Cheren), the Badge Check Gates and Victory Road | P0 | both | 45000 | prev + `None` | 136 | planned |
 | [29-elite-four](black/29-elite-four/milestone.toml) | The Elite Four | P0 | both | 40000 | prev + `None` | 137 | planned |
@@ -6655,54 +6655,54 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - notes: Measured from the previous end save (CONTINUE included): Black 136816, White 132936 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe raises the full party in place (party-level): a Route 7 double battle fainted White's Blitzle. The Celestial Tower is required: the man in front of the Gym door (zone_event 107 object 11) stays until flag 0x2AE, set only by ringing the tower's bell (scr 0684 @0x0251, zone 342) after Skyla's scene there. The tower's stairs are rails (wild battles on them: each climb is a repeat of a rail hold and a flee); the Gym's cannons fire the player the way he walks into them. Routes from scouting.
 
 #### white/22-twist-mountain-cheren-icirrus — Twist Mountain: Cheren; Icirrus City
-- proves: Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Team Plasma and Brycen in the mountain, out to Icirrus City and Cedric Juniper. Start: the Mistralton Gym (zone 108) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
+- proves: Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Clay's scene inside, Team Plasma in the mountain, out to Icirrus City and Cedric Juniper. Start: Mistralton City (zone 107, 21's end) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
-- trainers: zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2
-- end state: map 113; vars 0x40B4=2, 0x4097=2, 0x40BB=1
-- frames: estimate 25000, budget -
-- refs: zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2; zone_event 202 trigger 0 (52,13) var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D; zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2
-- notes: [INFERENCE] estimate.
+- trainers: zone_event 198 trigger 0 (144,206) 1x3 var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2
+- end state: map 113; >= 1 battles; vars 0x40B4=2, 0x4097=2, 0x40BB=1, 0x4096=1
+- frames: estimate 82308, budget 123500
+- refs: zone_event 107 warp 0 (108,304) -> zone 109 (Mistralton Pokemon Center); zone_event 198 trigger 0 (144,206) 1x3 var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2; zone_event 198 object 3 (140,203) hidden by flag 0x2AF (scr 0216, 21); zone_event 198 warp 0 (140,202) -> zone 200 warp 0; zone_event 200 trigger 0 (3,52) 3x1 var 0x4096 == 0 -> scr 0400 script 1 (Clay, msg 208 #1); Twist Mountain warps (zone_event 199/200/201/202): 200 w1 (17,48) -> 199 w0; 199 w1 (33,54) -> 200 w2; 200 w4 (53,36) -> 199 w3; 199 w4 (49,18) -> 200 w5; 200 w6 (48,18) -> 201 w5; 201 w0 (46,53) -> 199 w5; 199 w6 (17,42) -> 201 w1; 201 w2 (26,42) -> 199 w7; 199 w8 (22,15) -> 201 w3; 201 w4 (7,5) -> 202 w4; 202 w1 (7,26) -> 199 w9; 199 w10 (40,22) -> 202 w2; 202 w3 (61,14) -> 113 w4; zone_event 202 trigger 0 (52,13) 1x3 var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D; zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2
+- notes: Measured from the previous end save (CONTINUE included): Black 82308, White 60192 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Cheren's battle needs 21's party-level boost. Route from scouting (the mountain's floors are separate zones 199-202 joined by warps; the probe plans only within one, so each leg walks onto the next warp). Cheren's battle needs 21's party-level boost.
 
 #### white/23-icirrus-brycen-freeze-badge — Icirrus Gym: Brycen's Freeze Badge
-- proves: Proves the Icirrus Gym (the ice slides) and Brycen's Freeze Badge, then Cheren and Bianca's talk. Start: Icirrus City (zone 113) -> end: Icirrus City, 7 badges, 0x40A7 = 1, 0x4097 = 4.
+- proves: Proves the Icirrus Gym (ice slides, ramp and spin tiles, the three switches) and Brycen's Freeze Badge, then Cheren and Bianca's talk outside. Start: Icirrus City (zone 113, 22's end) -> end: Icirrus City, 7 badges, 0x40A7 = 1, 0x4097 = 4, 0x4035 = 790.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
-- trainers: scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977
-- end state: map 113; 7 badges; flags set 0x977; vars 0x40A7=1, 0x4097=4
-- frames: estimate 22000, budget -
-- refs: scr 0228 @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x016A SetFlag 0x977; zone_event 113 level type 1: 0x4097 == 3 -> scr 0226 script 2 (Cheren, msg 118 #10); @0x03C0 SetVar 0x4097 4
-- notes: The gym's ice paths: `bw_script.py events 114` (triggers on var 0x400F/0x400A). [INFERENCE] estimate.
+- trainers: zone_event 114 object 11 (17,14) -> scr 0228 script 1: @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x014A Cmd0DA (var 0x4035 = 790: Dragonspiral's bridge, 24); @0x016A SetFlag 0x977
+- end state: map 113; 7 badges; flags set 0x977; vars 0x40A7=1, 0x4097=4, 0x4035=790
+- frames: estimate 42143, budget 63500
+- refs: zone_event 113 warp 1 (184,195) -> zone 115 (Pokemon Center); zone_event 113 warp 3 (171..173,167) -> zone 114 warp 0; zone_event 114 warp 0 (16..18,63) -> zone 113 warp 3; zone_event 114 triggers 3-10 (17,60) (22,53) (60,44) (54,39) (16,38) (12,34) (22,32) (18,29) var 0x400A == 0 -> scr 0228 scripts 7-14 (Cmd195 n: the ramp and spin tiles); zone_event 114 triggers 1/0/2 (23,53) (59,41) (15,29) var 0x400F == 0 -> scr 0228 scripts 4/5/6 (the switches: SetObjectPosition of objects 3/4, 6/7, 9/10); zone_event 114 object 11 (17,14) -> scr 0228 script 1: @0x0069 TrainerBattle trdata #131 (Brycen: Vanillish 37, Cryogonal 37, Beartic 39); @0x00A0 GiveBadge 6 (Freeze); @0x010C CallStd 2805 TM79; @0x0132 SetVar 0x40A7 1; @0x0138 SetVar 0x4097 3; @0x014A Cmd0DA (var 0x4035 = 790: Dragonspiral's bridge, 24); @0x016A SetFlag 0x977; trdata #213/#214/#215/#216 (the gym's Battle Girls and Black Belts met on the route); zone_event 113 level type 1: 0x4097 == 3 -> scr 0226 script 2 (Cheren, msg 118 #10); @0x03C0 SetVar 0x4097 4
+- notes: Measured from the previous end save (CONTINUE included): Black 38810, White 42143 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting with the game as the oracle (a slide-by-slide search). The ramp and spin tiles leave the player off a tile centre waiting for a direction: slide holds the press made then (bots.py bot_slide, _bw_ramp_waiting).
 
 #### white/24-dragonspiral-tower-n-legend — Dragonspiral Tower: N and the legendary dragon
-- proves: Proves Dragonspiral Tower: Cedric at the gate, Team Plasma's grunts on the climb, and N waking his legendary dragon at the top. Start: Icirrus City (zone 113) -> end: Dragonspiral Tower's foot (zone 205), 0x40A7 = 9.
+- proves: Proves Dragonspiral Tower: Cedric at the gate, Team Plasma's grunts on the climb, and N waking his legendary dragon at the top. Start: Icirrus City (zone 113, 23's end) -> end: Icirrus City (zone 113), walked back into from 205, 0x40A7 = 9.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34)
-- end state: map 205; vars 0x40A7=9
-- frames: estimate 30000, budget -
+- end state: map 113; flags set 0x9B8; vars 0x40A7=9, 0x409D=1
+- frames: estimate 47908, budget 72000
 - refs: zone_event 205 trigger 0 (177,146) var 0x40A7 == 1 -> scr 0410 script 1 (Cedric); @0x057B CallStd 2805 Old Gateau; @0x05C5 SetVar 0x40A7 2; @0x05CB SetVar 0x4097 5; zone_event 207 trigger 0 (24,2) 0x40A7 == 2 -> scr 0414 (@0x0064 SetVar 3); zone_event 208 trigger 0 (14,24) == 3 -> scr 0416 (@0x006A SetVar 4); zone_event 210 triggers (21,14)/(22,14) == 5/4 -> scr 0420 (@0x0073/@0x00C4 SetVar 5/6); zone_event 212 triggers (14,25) == 6 / (13,10) == 7 -> scr 0424; @0x0118 SetVar 0x40A7 7; @0x03CD SetVar 0x40A7 8; @0x03D9/@0x0404/@0x042F/@0x045A TrainerBattle trdata #305/#306/#307/#313 (grunts 33-34); zone_event 213 trigger 0 (16,21) var 0x40A7 == 8 -> scr 0426 script 1 (N, msg 221 #0); @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205 (179,146); scr 0410 @0x02D0 SetVar 0x409D 1 (Cedric: on to the Relic Castle)
-- notes: The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White. [INFERENCE] estimate.
+- notes: Measured from the previous end save (CONTINUE included): Black 47908, White 47439 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting: 209 and 211 are rail maps (rail holds and exact presses; 211's from its rail tables in RAM). The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White.
 
 #### white/25-relic-castle-nacrene-stone — The Relic Castle and the stone at Nacrene's museum
-- proves: Proves the search for the other legend's stone: the Desert Resort and the Relic Castle with Cheren and Alder, then Nacrene's museum where Professor Juniper and Lenora hand over the stone. Start: Dragonspiral Tower's foot (zone 205) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
+- proves: Proves the search for the other legend's stone: Fly to Nimbasa, Route 4 and the Desert Resort (Cheren), the Relic Castle's sand pits down to Ghetsis and the Sages, then Fly to Nacrene, where Professor Juniper gives the stone. Start: Icirrus City (zone 113, 24's end) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: map 16; vars 0x4092=7, 0x409D=2
-- frames: estimate 35000, budget -
-- refs: zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; @0x02A7 SetVar 0x4092 6; scr 0328 (zone 164) @0x0014 unless 0x409F == 0 ...; @0x0038/@0x0046 Warp zone 165 (the Relic Castle's sand pits); zone_event 16 trigger 2 (640,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36); scr 0032 @0x0AE9 MessageVersion (White: Dark Stone msg 21 #48 / Black: Light Stone #49); @0x0BF3 CallStd 2805 Light Stone (Black) / @0x0C19 Dark Stone (White); @0x0DCE SetVar 0x4092 7
-- notes: The stone is the one version branch here, by item: Black's bag gets the Light Stone. Relic Castle's quicksand floors (zones 160-165, WarpC1 holes): `bw_script.py events 160` [INFERENCE: the path down]. [INFERENCE] estimate.
+- end state: map 16; vars 0x4092=7, 0x409D=2, 0x409F=1; 1 save check(s)
+- frames: estimate 60000, budget 90000
+- refs: Fly (the X menu's POKEMON, the Fly carrier's FLY, the town tapped on the bottom screen's map, A): Nimbasa (zone 62) at tap (130,94), Nacrene (zone 16) at tap (203,118) [from scouting: the town map takes the touch]; zone_event 62 warp 0 (429..431,479) -> zone 90 (Nimbasa Gate); zone_event 90 warp 1 (4..6,14) -> zone 326 (Route 4) warp 0; zone_event 157 warp 0 (370..372,488) -> zone 159; zone_event 159 warp 1 (4,1) -> zone 158 warp 0 (82,83); zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (Cheren, msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; zone_event 158 warp 1 (61,29) -> zone 160 warp 2; zone_event 160 warp 0 (7,20) -> zone 161 warp 2; zone_event 161 trigger 1 (20,18) 1x5 var 0x40BD == 0 -> scr 0322 script 3 (Ryoku); the sand pits, 5x5 triggers on var 0x4000 == 0 firing at their centre: 161 trigger 0 (24,14) -> scr 0322 script 1 Warp 162; 162 trigger 1 (9,20) -> scr 0324 script 2 Warp 163; 163 trigger 0 (6,21) -> scr 0326 script 3 Warp 164; 164 trigger 0 (7,19) -> scr 0328 (Cmd021 1, Warp zone 165); trdata #222/#225/#226/#224/#227 (the Relic Castle's grunts, fought on the way); scr 0330 script 1 (Ghetsis, msg 173): @0x0200 SetVar 0x409F 1; @0x0224 Warp zone 158 (61,32); scr 0316 script 5 on arrival: @0x02A7 SetVar 0x4092 6; zone_event 16 trigger 2 (640..648,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36); @0x0852 GetVersion; @0x0BF3 CallStd 2805 item 616 Light Stone (Black) / @0x0C19 item 617 Dark Stone (White); @0x0DCE SetVar 0x4092 7
+- notes: The stone is the one version branch here, by item (GetVersion, scr 0032 @0x0852). The pits: only 160's warp 0, 162's lower pit and 163's (8,23) pit lead down; the others drop into dead-end regions (scouting). [INFERENCE] estimate.
 
 #### white/26-route8-bianca-route9-opelucid — Route 8 (Bianca) and Route 9 to Opelucid City
-- proves: Proves the way to Opelucid City: Route 8 (Bianca's battle), the Moor of Icirrus, Tubeline Bridge, Route 9, and Opelucid's welcome by Alder, Iris and Drayden. Start: Nacrene City (zone 16) -> end: Opelucid City (zone 120), 0x40A8 = 4.
+- proves: Proves the way to Opelucid City: Fly back to Icirrus, Route 8 (Bianca's battle), Tubeline Bridge (the bikers), Route 9, and Opelucid's welcome by Alder (Ghetsis's speech), Iris and Drayden. Start: Nacrene City (zone 16, 25's end) -> end: Opelucid City (zone 120), 0x40A8 = 4.
 - start: prev + `None`; -; lab state lines: none
 - party: the continued save
 - trainers: zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40)
-- end state: map 120; vars 0x40A8=4, 0x40CB=1
-- frames: estimate 35000, budget -
-- refs: zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40); zone 254 (Tubeline Bridge) scr 0508: vars 0x40DB/0x40A4; zone 308/348 (Route 9); zone_event 120 trigger 0 (395,173) var 0x40A8 == 0 -> scr 0240 script 1 (Alder, msg 125 #0); @0x0AA4 SetFlag 0x9B9; @0x0AAC SetVar 0x40A8 1; zone_event 120 triggers 1-3 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3; zone_event 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1; @0x013E SetVar 0x40A8 4
-- notes: Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion (scr 0240 @0x0EAB ...), no other branch: the dir serves White. [INFERENCE] estimate.
+- end state: map 120; flags set 0x9B9; vars 0x40A8=4, 0x40CB=1, 0x40A4=1
+- frames: estimate 40000, budget 60000
+- refs: Fly (the X menu's POKEMON, slot 3's FLY, Icirrus tapped and held on the town map, A): needs Icirrus's fly flag 0x9B8, which the field sets on entering Icirrus from outdoors (24 ends that way); no script sets it; zone_event 113 warp 1 (184,195) -> zone 115 (Pokemon Center); zone_event 345 trigger 0 (243,180) var 0x40CB == 0 -> scr 0690 script 8; @0x0119 SetVar 0x40CB 1; @0x0144/@0x0165/@0x0173 TrainerBattle trdata #494/#495/#496 (Bianca: Stoutland, monkey, Musharna 38, starter 40); zone_event 345 warp 0 (244,180) -> zone 347; zone_event 347 warps 1-3 (15,7..9) -> zone 254 (Tubeline Bridge); zone_event 254 trigger 2 (7..24,50) var 0x40A4 == 0 -> scr 0508 script 12 (the bikers); @0x0CAB SetVar 0x40A4 1; zone_event 254 warp 1 (7..24,32) -> zone 349; zone_event 349 warp 1 (14,7..9) -> zone 348 (Route 9); zone 348 level type 1: var 0x40C6 == 0 -> scr 0696 script 6 (TM56); zone_event 131 warp 1 (15,4..6) -> zone 120; zone_event 120 trigger 0 (395,173) var 0x40A8 == 0 -> scr 0240 script 1 (Alder, msg 125 #0); @0x0AA4 SetFlag 0x9B9; @0x0AAC SetVar 0x40A8 1; zone_event 120 triggers 1-2 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3; zone_event 120 warp 3 (418,159) -> zone 123; zone 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1 (Drayden, MessageVersion); @0x0179 SetVar 0x40A8 4 (Black) / @0x013E (White)
+- notes: Gate exits (zones 349, 131) fire only on a press into the edge: walk_to the tile before, then moves. Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion, no other branch: the dir serves White. Route from scouting. [INFERENCE] estimate.
 
 #### white/27-opelucid-iris-legend-badge — Opelucid Gym (White): Iris's Legend Badge
 - proves: Proves the Opelucid Gym and Iris's Legend Badge on White, then Professor Juniper's Master Ball and the gate north. Start: Opelucid City (zone 120) -> end: the Opelucid Gate (zone 132), 8 badges, 0x40B8 = 3.

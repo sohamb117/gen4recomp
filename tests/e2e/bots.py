@@ -2300,10 +2300,72 @@ def bot_talk_to(s, step, ctx):
     raise HarnessError("talk_to: object %d not reached in %d frames" % (oid, bound))
 
 
+def _bw_slide(s, step, ctx):
+    """Black/White ice (the Icirrus Gym). Its ramp and spin tiles (zone_event 114 triggers 3-10 -> scr 0228 scripts
+    7-14, Cmd195) put the player on a short rail (MMDL status bit 0x2000, 0x20 fx off the tile centre: the probe
+    never reports a rail ready) that waits for a direction; a trainer who spots the player holds him on his text.
+    Either way the player stands still, not free: after fifteen such probes the press is over and the player is
+    held, and the next press is held down until he is free and still again (the ride along the ramp's track and the
+    slide on from its end; a trainer's text gets B every 120 probes, its battle auto_battle). A press that neither
+    moved the player nor left him held (a turn in place) is pressed once more."""
+    dirs = step["dirs"].split()
+    limit = s.frame + _int(step, "max", 300 * len(dirs))
+
+    def where():
+        p = s.probe()
+        return (s.map_id, p.x, p.z, p.y)
+
+    def settle(d, hold):
+        still, last, idle = 0, None, 0
+        while True:
+            if s.frame >= limit:
+                raise HarnessError("slide: %s has not settled by the step's bound, at %s" % (d, where()))
+            if s.in_battle:
+                f0 = s.frame
+                bot_auto_battle(s, {}, ctx)
+                if s.frame == f0:
+                    s.run(4)  # the battle flag outlives the battle by a frame or two: no busy loop
+                still = 0
+                continue
+            if idle >= 15 and not hold:
+                return True
+            s.run(4, d if (hold and idle >= 2) else None)
+            q = where()
+            if q == last:
+                still += 1
+                if not s.field_ready:
+                    idle += 1
+            else:
+                still = 0
+            last = q
+            if still >= 6 and s.field_ready:
+                return False
+            if idle >= 120:
+                s.run(2, "b")
+                idle = 0
+
+    held = False
+    for i, d in enumerate(dirs):
+        hold = held
+        for attempt in range(2):
+            before = where()
+            s.run(8, d)
+            held = settle(d, hold)
+            if where() != before or held:
+                break
+        p = s.probe()
+        s.note("slide: press %d %s -> (%d,%d)%s" % (i + 1, d, p.x, p.z, " held" if held else ""))
+    p = s.probe()
+    s.note("slide: %d presses, at (%d,%d)" % (len(dirs), p.x, p.z))
+
+
 def bot_slide(s, step, ctx):
     """Ice: each direction in `dirs` (space separated) is a press, then a wait until the slide (or the step) has
     stopped -- the tile unchanged over six probes with the player free; battles and text met on the way are handled
-    as walk_to does. A press made mid-slide would be ignored, so a plain press list cannot replay an ice route."""
+    as walk_to does. A press made mid-slide would be ignored, so a plain press list cannot replay an ice route.
+    Black/White: _bw_slide."""
+    if ctx.game in BW_GAMES:
+        return _bw_slide(s, step, ctx)
     dirs = step["dirs"].split()
     limit = s.frame + _int(step, "max", 300 * len(dirs))
     for i, d in enumerate(dirs):

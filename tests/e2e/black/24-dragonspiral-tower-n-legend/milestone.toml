@@ -1,11 +1,10 @@
 # Proves Dragonspiral Tower: Cedric at the gate, Team Plasma's grunts on the climb, and N waking his legendary
 # dragon at the top.
-# Start: Icirrus City (zone 113) -> end: Dragonspiral Tower's foot (zone 205), 0x40A7 = 9.
+# Start: Icirrus City (zone 113, 23's end) -> end: Icirrus City (zone 113), walked back into from 205, 0x40A7 = 9.
 title = "Dragonspiral Tower: N and the legendary dragon"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 30000
+estimate = 47908
 refs = [
   "zone_event 205 trigger 0 (177,146) var 0x40A7 == 1 -> scr 0410 script 1 (Cedric); @0x057B CallStd 2805 Old Gateau; @0x05C5 SetVar 0x40A7 2; @0x05CB SetVar 0x4097 5",
   "zone_event 207 trigger 0 (24,2) 0x40A7 == 2 -> scr 0414 (@0x0064 SetVar 3); zone_event 208 trigger 0 (14,24) == 3 -> scr 0416 (@0x006A SetVar 4); zone_event 210 triggers (21,14)/(22,14) == 5/4 -> scr 0420 (@0x0073/@0x00C4 SetVar 5/6)",
@@ -13,13 +12,483 @@ refs = [
   "zone_event 213 trigger 0 (16,21) var 0x40A7 == 8 -> scr 0426 script 1 (N, msg 221 #0); @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205 (179,146)",
   "scr 0410 @0x02D0 SetVar 0x409D 1 (Cedric: on to the Relic Castle)",
 ]
-notes = "The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White. [INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 47908, White 47439 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting: 209 and 211 are rail maps (rail holds and exact presses; 211's from its rail tables in RAM). The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White."
 
 [start]
 from = "prev"
 
-[expect]
+[run]
+frames = 72000
+
+[[step]]
+do = "walk_to"
+x = 178
+z = 147
+on_battle = "flee"
+note = "Icirrus north into Dragonspiral's foot, zone 205"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "onto zone_event 205 trigger 0 (177..182,146): scr 0410 script 1 (Cedric)"
+
+[[step]]
+do = "advance_text"
+shot = "cedric-dragonspiral"
+
+[[step]]
+do = "walk_to"
+x = 179
+z = 142
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 205 warp 0 -> zone 206"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 35
+on_battle = "flee"
+note = "over the bridge var 0x4035 = 790 raised (23)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 206 warp 1 (21,34) -> zone 207"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 3
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "onto zone_event 207 trigger 0 (24..26,2): scr 0414"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "moves"
+dirs = [["U", 2]]
+note = "zone_event 207 warp 1 (25,0) -> zone 208"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 24
+on_battle = "flee"
+note = "zone_event 208 trigger 0 (14..16,24): scr 0416 (Cheren)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 14
+on_battle = "flee"
+note = "next to zone_event 208 warp 1 -> rail map 209"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 24
+z = 16
+near = 0
+note = "209 (rails): the corridor west"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 12
+z = 6
+near = 0
+note = "the outside stairs"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 16
+gap = 32
+times = 3
+note = "to line 11"
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 21
+z = 9
+near = 0
+note = "the east bridge"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 20
+z = 23
+near = 0
+note = "south along line 21"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 16
+gap = 32
+note = "line 22"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 32
+note = "line 24, the one-way drop"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 16
+gap = 32
+times = 3
+note = "to the stairs' foot"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 400
+gap = 8
+note = "up the west stairs to line 4"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 16
+gap = 32
+note = "line 4 front 1, the side -4 of zone_event 209 warp 1"
+
+[[step]]
+do = "rail"
+keys = "left"
+map = 210
+note = "zone_event 209 warp 1 -> zone 210"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 15
+on_battle = "flee"
+note = "zone_event 210 trigger 1 (22,14): scr 0420 script 1"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 15
+on_battle = "flee"
+note = "zone_event 210 trigger 0 (21,14): scr 0420 script 2"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 2
+on_battle = "fight"
+note = "past the grunts (trdata #302/#303/#304/#312/#612) to the exit warp (15,1)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 12
+note = "up onto zone_event 210 warp 1 (15,1) -> zone 211 (rail rings): a press switches lines only on a junction point, so the route is exact holds (scouting from the map's rail tables)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 300
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 16
+gap = 14
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 336
+gap = 12
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 4
+gap = 12
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 62
+gap = 12
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 8
+gap = 22
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 8
+gap = 22
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 12
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 4
+gap = 22
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 8
+gap = 22
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 32
+gap = 12
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 224
+gap = 26
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+gap = 26
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 2
+gap = 12
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 4
+gap = 22
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 6
+gap = 20
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 4
+gap = 26
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 4
+gap = 26
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 32
+gap = 12
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 160
+gap = 26
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 4
+gap = 26
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 4
+gap = 26
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 32
+gap = 12
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 274
+gap = 12
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 4
+gap = 22
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 92
+gap = 12
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 228
+gap = 26
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 4
+gap = 26
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 4
+gap = 26
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 92
+gap = 12
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 84
+gap = 26
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 4
+gap = 26
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 4
+gap = 26
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 92
+gap = 12
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 178
+gap = 240
+note = "along lines 30, 3, 4 into zone_event 211 warp 1 -> zone 212"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 25
+note = "zone_event 212 trigger 0 (14..16,25): scr 0424 script 8"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 12
+shot = "giallo"
+note = "zone_event 212 trigger 1 (13,10..14): scr 0424 script 1 (Giallo, grunts trdata #305/#306/#307/#313)"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 24
+note = "zone_event 212 warp 1 -> zone 213"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 21
+shot = "n-dragonspiral"
+note = "zone_event 213 trigger 0 (16,21): scr 0426 script 1 (N)"
+
+[[step]]
+do = "advance_text"
 map = 205
+note = "scr 0426 @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205"
+
+[[step]]
+do = "advance_text"
+shot = "alder-205"
+note = "scr 0410 script 4 (Alder): 0x409D 1"
+
+[[step]]
+do = "walk_to"
+x = 178
+z = 165
+on_battle = "flee"
+note = "south into Icirrus from outdoors: the field sets Icirrus's fly flag 0x9B8 (no script does), which 26's Fly needs"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = 113
+flags = ["0x9B8"]
 
 [expect.vars]
 "0x40A7" = 9
+"0x409D" = 1

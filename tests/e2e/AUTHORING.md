@@ -183,7 +183,8 @@ there; the report says `... + boost boost.recipe`. The boosted party carries dow
 A boost is party strength and items only: `--check` rejects any verb but `party`, `party-move`, `party-level`
 (slot, level: experience set to that level's base, stats recomputed, HP full; no evolution, no moves learned),
 `party-item` (slot, held item), `party-iv`, `party-ev`, `item` and `register-item` (the Y button item, e.g. the
-Bicycle), and any `clock` line. Story state (flags, vars,
+Bicycle), and any `clock` line; B/W adds `party-set` (slot, species, level, moves: the member replaced, for an HM
+carrier in a full party). Story state (flags, vars,
 badges, the map) is never boosted, so the chain still proves the story was played. Use a boost in place of a
 `grind`; keep `grind` only where a script itself needs a battle won or a level reached. Cite the opponents' teams in
 the recipe's comments, as for the lab party.

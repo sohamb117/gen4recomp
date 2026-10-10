@@ -1,0 +1,6 @@
+# Boost on 24's end save (AUTHORING.md, Boosts): party only, the story stays played.
+# 25 crosses the region twice (Icirrus -> Nimbasa for the Desert Resort, the Relic Castle -> Nacrene) and HM02 Fly is
+# in the bag but the party is full and no bot teaches an HM through the Bag. np_save5 set-mon puts an Unfezant
+# (species 521) Lv 40 with Fly (19), Air Slash (403), Quick Attack (98), Wing Attack (17) in slot 3, in place of the
+# Patrat that carried Cut: no step from here on cuts a tree (the routes of 25-26 from scouting).
+party-set 3 521 40 19 403 98 17

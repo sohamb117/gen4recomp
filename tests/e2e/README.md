@@ -136,12 +136,14 @@ and how it was proven is in docs/BW_RAM.md. Differences:
 - **Probe**: the field (zone id as map_id, the player's tile and facing, the map objects), the grid from the game's
   own terrain query (collision = the attribute's blocked flag; the attribute values are not mapped to behaviors, so
   the planner gives none of them a meaning) and step layers from the game's own object movement check.
-  `field_ready` is "a field, no event (script, menu, warp) running, the player on a tile centre". In a battle
-  `in_battle` is 1 and the battle report carries each client's front Pokemon and the player's party (overlay 93's
-  POKECON); `ui` is `UI_BATTLE_MENU` while the bottom screen's action menu (ui_arg 1) or move list (11) waits for
-  input. `auto_battle` drives those with the D-pad; the screens the probe does not report are handled in bots.py:
-  the YES/NO prompts (forget a move?, stop learning?) by peeking the battle's input screen (`_bw_input`), the forced
-  replacement after the lead faints by touch (`TAP_PARTY`, then SHIFT), the trainer's "Will you switch?" by B.
+  `field_ready` is "a field, no event (script, menu, warp) running, the player on a tile centre" (never on rail
+  maps, nor on the Icirrus Gym's ramp tiles, which are rails too: MMDL status bit 0x2000). In a battle `in_battle`
+  is 1 and the battle report carries each client's front Pokemon and the player's party (overlay 93's POKECON); `ui`
+  is `UI_BATTLE_MENU` while the bottom screen's action menu (ui_arg 1) or move list (11) waits for input.
+  `auto_battle` drives those with the D-pad; the screens the probe does not
+  report are handled in bots.py: the YES/NO prompts (forget a move?, stop learning?) by peeking the battle's input
+  screen (`_bw_input`), the forced replacement after the lead faints by touch (`TAP_PARTY`, then SHIFT), the
+  trainer's "Will you switch?" by B.
 - **Saves**: `save` (and the end save) goes through the game's X menu (SAVE, then A); the host's quick save is
   refused. `features/tools/np_save5 dump` reads the end save in np_save4's shapes (`location`, `trainer`, `party`,
   `flags`, `vars`).
@@ -149,7 +151,8 @@ and how it was proven is in docs/BW_RAM.md. Differences:
   `party SPECIES LEVEL` and `party-move SLOT INDEX MOVE` as HG/SS's do (run.py's `addmon_boost`, `np_save5
   add-mon`): HM carriers, since no bot teaches an HM through the Bag. Give an added Pokemon its moves, or it has
   none and battles with Struggle. `party-level SLOT LEVEL` (`np_save5 set-level`) raises a member the save holds,
-  for a full party.
+  for a full party; `party-set SLOT SPECIES LEVEL [MOVE...]` (`np_save5 set-mon`) replaces one with a Pokemon made
+  as `add-mon` makes it, carrying those moves: a Fly/Surf/Strength carrier once the party is full.
 - **Boot**: CONTINUE waits for the opening movie (START at frame 5000).
 
 ## How a milestone runs

@@ -1,25 +1,340 @@
-# Proves the search for the other legend's stone: the Desert Resort and the Relic Castle with Cheren and Alder, then
-# Nacrene's museum where Professor Juniper and Lenora hand over the stone.
-# Start: Dragonspiral Tower's foot (zone 205) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
+# Proves the search for the other legend's stone: Fly to Nimbasa, Route 4 and the Desert Resort (Cheren), the Relic
+# Castle's sand pits down to Ghetsis and the Sages, then Fly to Nacrene, where Professor Juniper gives the stone.
+# Start: Icirrus City (zone 113, 24's end) -> end: Nacrene City (zone 16), 0x4092 = 7, the stone in the bag.
 title = "The Relic Castle and the stone at Nacrene's museum"
 status = "planned"
 priority = "P0"
 version = "both"
-estimate = 35000
+estimate = 60000
 refs = [
-  "zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; @0x02A7 SetVar 0x4092 6",
-  "scr 0328 (zone 164) @0x0014 unless 0x409F == 0 ...; @0x0038/@0x0046 Warp zone 165 (the Relic Castle's sand pits)",
-  "zone_event 16 trigger 2 (640,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36)",
-  "scr 0032 @0x0AE9 MessageVersion (White: Dark Stone msg 21 #48 / Black: Light Stone #49); @0x0BF3 CallStd 2805 Light Stone (Black) / @0x0C19 Dark Stone (White); @0x0DCE SetVar 0x4092 7",
+  "Fly (the X menu's POKEMON, the Fly carrier's FLY, the town tapped on the bottom screen's map, A): Nimbasa (zone 62) at tap (130,94), Nacrene (zone 16) at tap (203,118) [from scouting: the town map takes the touch]",
+  "zone_event 62 warp 0 (429..431,479) -> zone 90 (Nimbasa Gate); zone_event 90 warp 1 (4..6,14) -> zone 326 (Route 4) warp 0; zone_event 157 warp 0 (370..372,488) -> zone 159; zone_event 159 warp 1 (4,1) -> zone 158 warp 0 (82,83)",
+  "zone_event 158 trigger 0 (61,30) var 0x409D == 1 -> scr 0316 script 3 (Cheren, msg 166 #13); @0x018F SetVar 0x409E 1; @0x0199 SetVar 0x409D 2; zone_event 158 warp 1 (61,29) -> zone 160 warp 2",
+  "zone_event 160 warp 0 (7,20) -> zone 161 warp 2; zone_event 161 trigger 1 (20,18) 1x5 var 0x40BD == 0 -> scr 0322 script 3 (Ryoku); the sand pits, 5x5 triggers on var 0x4000 == 0 firing at their centre: 161 trigger 0 (24,14) -> scr 0322 script 1 Warp 162; 162 trigger 1 (9,20) -> scr 0324 script 2 Warp 163; 163 trigger 0 (6,21) -> scr 0326 script 3 Warp 164; 164 trigger 0 (7,19) -> scr 0328 (Cmd021 1, Warp zone 165)",
+  "trdata #222/#225/#226/#224/#227 (the Relic Castle's grunts, fought on the way)",
+  "scr 0330 script 1 (Ghetsis, msg 173): @0x0200 SetVar 0x409F 1; @0x0224 Warp zone 158 (61,32); scr 0316 script 5 on arrival: @0x02A7 SetVar 0x4092 6",
+  "zone_event 16 trigger 2 (640..648,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36); @0x0852 GetVersion; @0x0BF3 CallStd 2805 item 616 Light Stone (Black) / @0x0C19 item 617 Dark Stone (White); @0x0DCE SetVar 0x4092 7",
 ]
-notes = "The stone is the one version branch here, by item: Black's bag gets the Light Stone. Relic Castle's quicksand floors (zones 160-165, WarpC1 holes): `bw_script.py events 160` [INFERENCE: the path down]. [INFERENCE] estimate."
+notes = "The stone is the one version branch here, by item (GetVersion, scr 0032 @0x0852). The pits: only 160's warp 0, 162's lower pit and 163's (8,23) pit lead down; the others drop into dead-end regions (scouting). [INFERENCE] estimate."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 90000
+
+[[step]]
+do = "wait_field"
+note = "Fly to Nimbasa: the X menu"
+
+[[step]]
+do = "press"
+keys = "x"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "tap"
+x = 64
+y = 42
+note = "POKEMON"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "tap"
+x = 190
+y = 88
+note = "party slot 3 (the Fly carrier, boost.recipe)"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "tap"
+x = 200
+y = 108
+note = "FLY"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "tap"
+x = 130
+y = 94
+note = "Nimbasa on the town map"
+
+[[step]]
+do = "wait_frames"
+n = 30
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "wait_frames"
+n = 30
+
+[[step]]
+do = "wait_field"
+max = 1500
+
+[[step]]
+do = "walk_to"
+x = 430
+z = 479
+on_battle = "flee"
+note = "zone_event 62 warp 0 -> zone 90"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 14
+on_battle = "flee"
+note = "to zone_event 90 warp 1"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+note = "zone_event 90 warp 1 -> Route 4 (zone 326)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 371
+z = 488
+on_battle = "flee"
+note = "Route 4 into the Desert Resort's gate, zone_event 157 warp 0 -> zone 159"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 1
+on_battle = "flee"
+note = "to zone_event 159 warp 1"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 159 warp 1 -> zone 158"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 61
+z = 31
+on_battle = "flee"
+note = "below zone_event 158 trigger 0"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "onto the trigger: scr 0316 script 3 (Cheren)"
+
+[[step]]
+do = "advance_text"
+shot = "cheren-desert"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 158 warp 1 -> zone 160"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "moves"
+dirs = [["U", "z19"], ["L", "x12"], ["U", "z15"], ["L", "x9"], ["D", "z16"], ["L", "x6"], ["D", "z20"], ["R", 1]]
+note = "zone 160 around its pits to warp 0 (7,20) -> zone 161"
+
+[[step]]
+do = "wait_field"
+max = 1000
+
+[[step]]
+do = "moves"
+dirs = [["D", 1], ["R", 1]]
+note = "onto zone_event 161 trigger 1 (Ryoku)"
+
+[[step]]
+do = "advance_text"
+shot = "ryoku"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1], ["R", "x26"], ["U", "z17"], ["U", 1]]
+note = "along z 21 past Ryoku to the pit centre (26,16): zone 162"
+
+[[step]]
+do = "wait_field"
+max = 1000
+
+[[step]]
+do = "moves"
+dirs = [["U", "z15"], ["L", "x9"], ["D", "z19"], ["D", "z21"], ["R", "x10"], ["R", 1]]
+note = "zone 162: grunts, then the lower pit"
+
+[[step]]
+do = "moves"
+dirs = [["D", 1]]
+note = "pit centre (11,22): zone 163"
+
+[[step]]
+do = "wait_field"
+max = 1000
+
+[[step]]
+do = "moves"
+dirs = [["D", "z21"], ["L", "x10"], ["D", "z23"], ["L", "x9"], ["L", 1]]
+note = "zone 163: a grunt, the pit (8,23): zone 164"
+
+[[step]]
+do = "wait_field"
+max = 1000
+
+[[step]]
+do = "moves"
+dirs = [["L", "x10"], ["L", 1]]
+note = "zone 164: grunts, the pit (9,21): zone 165"
+
+[[step]]
+do = "wait_map"
+map = 165
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "ghetsis-relic"
+
+[[step]]
+do = "advance_text"
+map = 158
+note = "Ghetsis and the Sages (scr 0330 script 1); Warp zone 158"
+
+[[step]]
+do = "advance_text"
+note = "scr 0316 script 5 on arrival (0x4092 6)"
+
+[[step]]
+do = "wait_field"
+max = 3000
+
+[[step]]
+do = "wait_field"
+note = "Fly to Nacrene"
+
+[[step]]
+do = "press"
+keys = "x"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "tap"
+x = 64
+y = 42
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "tap"
+x = 190
+y = 88
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "tap"
+x = 200
+y = 108
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "tap"
+x = 203
+y = 118
+note = "Nacrene on the town map"
+
+[[step]]
+do = "wait_frames"
+n = 30
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "wait_frames"
+n = 30
+
+[[step]]
+do = "wait_field"
+max = 1500
+
+[[step]]
+do = "walk_to"
+x = 644
+z = 587
+on_battle = "flee"
+note = "below zone_event 16 trigger 2"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "onto the trigger: scr 0032 script 12 (Juniper)"
+
+[[step]]
+do = "advance_text"
+shot = "stone"
+note = "the stone (YES/NO answered by A's default)"
+
+[[step]]
+do = "wait_field"
+max = 3000
 
 [expect]
 map = 16
+save = ["any(i[\"item\"] == (616 if s[\"game\"] == \"black\" else 617) for i in s[\"bag\"][\"key_items\"])"]
 
 [expect.vars]
 "0x4092" = 7
 "0x409D" = 2
+"0x409F" = 1

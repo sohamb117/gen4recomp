@@ -1,25 +1,300 @@
-# Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Team Plasma and Brycen in the mountain, out to Icirrus
-# City and Cedric Juniper.
-# Start: the Mistralton Gym (zone 108) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
+# Proves Route 7 and Twist Mountain: Cheren's battle (HM03), Clay's scene inside, Team Plasma in the mountain, out
+# to Icirrus City and Cedric Juniper.
+# Start: Mistralton City (zone 107, 21's end) -> end: Icirrus City (zone 113), 0x40B4 = 2, 0x4097 = 2.
 title = "Twist Mountain: Cheren; Icirrus City"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 25000
+estimate = 82308
 refs = [
-  "zone_event 198 trigger 0 (144,206) var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2",
-  "zone_event 202 trigger 0 (52,13) var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D",
+  "zone_event 107 warp 0 (108,304) -> zone 109 (Mistralton Pokemon Center)",
+  "zone_event 198 trigger 0 (144,206) 1x3 var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2",
+  "zone_event 198 object 3 (140,203) hidden by flag 0x2AF (scr 0216, 21); zone_event 198 warp 0 (140,202) -> zone 200 warp 0",
+  "zone_event 200 trigger 0 (3,52) 3x1 var 0x4096 == 0 -> scr 0400 script 1 (Clay, msg 208 #1)",
+  "Twist Mountain warps (zone_event 199/200/201/202): 200 w1 (17,48) -> 199 w0; 199 w1 (33,54) -> 200 w2; 200 w4 (53,36) -> 199 w3; 199 w4 (49,18) -> 200 w5; 200 w6 (48,18) -> 201 w5; 201 w0 (46,53) -> 199 w5; 199 w6 (17,42) -> 201 w1; 201 w2 (26,42) -> 199 w7; 199 w8 (22,15) -> 201 w3; 201 w4 (7,5) -> 202 w4; 202 w1 (7,26) -> 199 w9; 199 w10 (40,22) -> 202 w2; 202 w3 (61,14) -> 113 w4",
+  "zone_event 202 trigger 0 (52,13) 1x3 var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D",
   "zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2",
 ]
-notes = "[INFERENCE] estimate."
+notes = "Measured from the previous end save (CONTINUE included): Black 82308, White 60192 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Cheren's battle needs 21's party-level boost. Route from scouting (the mountain's floors are separate zones 199-202 joined by warps; the probe plans only within one, so each leg walks onto the next warp). Cheren's battle needs 21's party-level boost."
 
 [start]
 from = "prev"
 
+[run]
+frames = 123500
+
+[[step]]
+do = "heal"
+x = 108
+z = 304
+note = "heal at Mistralton's Pokemon Center (zone_event 107 warp 0)"
+
+[[step]]
+do = "walk_to"
+x = 144
+z = 209
+on_battle = "flee"
+max = 20000
+note = "Route 7 north to the tile below Cheren's trigger (zone_event 198 trigger 0 (144,206..208))"
+
+[[step]]
+do = "walk_to"
+x = 144
+z = 208
+on_text = "stop"
+shot = "cheren"
+note = "onto the trigger: scr 0396 script 2 starts"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+note = "Cheren (trdata #539/#540/#541 by starter)"
+
+[[step]]
+do = "advance_text"
+shot = "hm03"
+
+[[step]]
+do = "walk_to"
+x = 140
+z = 202
+note = "zone_event 198 warp 0 -> zone 200"
+
+[[step]]
+do = "wait_map"
+map = 200
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 53
+note = "below zone_event 200 trigger 0 (3,52)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "onto the trigger: scr 0400 script 1 (Clay)"
+
+[[step]]
+do = "advance_text"
+shot = "clay-twist"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 48
+on_battle = "flee"
+note = "zone_event 200 w1 -> 199"
+
+[[step]]
+do = "wait_map"
+map = 199
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 33
+z = 54
+on_battle = "flee"
+note = "zone_event 199 w1 -> 200"
+
+[[step]]
+do = "wait_map"
+map = 200
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 53
+z = 36
+on_battle = "flee"
+note = "zone_event 200 w4 -> 199"
+
+[[step]]
+do = "wait_map"
+map = 199
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 49
+z = 18
+on_battle = "flee"
+note = "zone_event 199 w4 -> 200"
+
+[[step]]
+do = "wait_map"
+map = 200
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 48
+z = 18
+on_battle = "flee"
+note = "zone_event 200 w6 -> 201"
+
+[[step]]
+do = "wait_map"
+map = 201
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 46
+z = 53
+on_battle = "flee"
+note = "zone_event 201 w0 -> 199"
+
+[[step]]
+do = "wait_map"
+map = 199
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 42
+on_battle = "flee"
+note = "zone_event 199 w6 -> 201"
+
+[[step]]
+do = "wait_map"
+map = 201
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 42
+on_battle = "flee"
+note = "zone_event 201 w2 -> 199"
+
+[[step]]
+do = "wait_map"
+map = 199
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 15
+on_battle = "flee"
+note = "zone_event 199 w8 -> 201"
+
+[[step]]
+do = "wait_map"
+map = 201
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 5
+on_battle = "flee"
+note = "zone_event 201 w4 -> 202"
+
+[[step]]
+do = "wait_map"
+map = 202
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 26
+on_battle = "flee"
+note = "zone_event 202 w1 -> 199"
+
+[[step]]
+do = "wait_map"
+map = 199
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 40
+z = 22
+on_battle = "flee"
+note = "zone_event 199 w10 -> 202"
+
+[[step]]
+do = "wait_map"
+map = 202
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 51
+z = 14
+on_battle = "flee"
+note = "next to zone_event 202 trigger 0 (52,13)"
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "onto the trigger: scr 0404 script 1 (Team Plasma)"
+
+[[step]]
+do = "advance_text"
+shot = "plasma-twist"
+
+[[step]]
+do = "walk_to"
+x = 61
+z = 14
+note = "zone_event 202 warp 3 -> zone 113 warp 4"
+
+[[step]]
+do = "wait_map"
+map = 113
+
+[[step]]
+do = "wait_frames"
+n = 150
+shot = "cedric-icirrus"
+
+[[step]]
+do = "advance_text"
+note = "scr 0226 script 1 (Cedric) on entry: 0x4097 1 -> 2"
+
+[[step]]
+do = "wait_field"
+
 [expect]
 map = 113
+battles = 1
 
 [expect.vars]
 "0x40B4" = 2
 "0x4097" = 2
 "0x40BB" = 1
+"0x4096" = 1
