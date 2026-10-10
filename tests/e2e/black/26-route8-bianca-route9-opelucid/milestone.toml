@@ -109,10 +109,10 @@ note = "onto zone_event 345 trigger 0: scr 0690 script 8"
 
 [[step]]
 do = "advance_text"
-shot = "bianca"
 
 [[step]]
 do = "auto_battle"
+snap = true
 note = "Bianca (trdata #494-#496)"
 
 [[step]]
