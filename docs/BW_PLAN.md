@@ -1036,3 +1036,19 @@ Two fixes outside the child station came with it:
 - With a save that has fewer than six boxed Pokémon, the child says "There aren't six Pokémon in the PC Boxes for
   Poké Transfer to catch." It does this with a Platinum card and with a HeartGold card.
 - Nothing is written to the card save yet; the test checks it is unchanged.
+
+## The Musical show: the ARM7's VBlank count (2026-10-10)
+
+The Musical's show (overlays 132 and 112, after the backstage zone 78) stayed on its closed curtain. Its main
+function, ov132_021F879C, steps the show's scripts once for each frame that has passed. It counts those frames by
+the change in `OS_GetVBlankCount()`, the shared word HW_VBLANK_COUNT_BUF (0x02FFFC3C on TWL-SDK). On a console, the
+ARM7's VBlank interrupt increments that word (NitroSDK os_irqTable.c, OSi_IrqVBlank). No host-side ARM7 code did, so
+the count stayed 0 and the show never took a step. OS_Halt (pc_os_lite.c) now increments it on each delivered VBlank,
+before the ARM9's handler. The other ports have the same counter at 0x027FFC3C, and it counts there too now.
+75-musical passes on Black and White, with the full show (tests/e2e/DEFECTS.md).
+
+How it was found, a method that works for any silent wait:
+- run macOS `sample <np_gp pid>` at the hang. The recompiled functions keep their guest names (w2c_black_ov132_...).
+- attach with `lldb -p` while np_gp is running frames, not while it is blocked reading stdin. Break on the function:
+  w1 is the guest r0.
+- `peek` that work area through np_gp's serve protocol.

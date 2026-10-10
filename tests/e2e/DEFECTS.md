@@ -3,6 +3,31 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
+## Fixed: Black/White's Musical show never opened its curtain (port: the ARM7's VBlank count)
+
+Black and White, tests/e2e/black/75-musical: the dress-up and the backstage scene (zone 78, "I guess everyone is
+ready. Let's go up on stage!") play. Then the show app (map_id 0 from frame 8007 on Black, 8107 on White) shows the
+closed red curtain with the Musical logo over the audience forever. The audience animates, and no key or tap does
+anything. There is no DEFECT or trap line. Repro: `NP_CORE_BUILD=$PWD/build/core-bwm tools/heavy.sh --run python3
+tests/e2e/run.py --game black --systems --only 75-musical --planned` (from 15's end save plus the milestone's recipe).
+Step 12 (advance_text) fails with "text did not end in 12000 frames".
+
+Cause: the show's main function, ov132_021F879C, was stuck in state 6, waiting for its show scripts to end. It was
+found with macOS `sample` on np_gp at the hang, and lldb read its work pointer at the function's entry. The scripts
+(ov132_021FAC74, run by the script VM sub_02011298) are stepped by ov132_021FABD8 once per elapsed frame. The elapsed
+count is how much `OS_GetVBlankCount()` changed since the last frame: work+0x1E8 = count - work+0x1EC. That count is
+the word at 0x02FFFC3C, TWL-SDK's HW_VBLANK_COUNT_BUF. On a console, the ARM7's VBlank interrupt (NitroSDK
+os_irqTable.c, OSi_IrqVBlank) increments it. The port models the ARM7 in host code, and nothing there incremented
+it. It read 0 at the hang, so the scripts never took a step.
+
+Fix: OS_Halt in pc_os_lite.c now increments HW_VBLANK_COUNT_BUF on each delivered VBlank, before the ARM9's handler
+runs. The address comes from the SDK header each build compiles against: 0x027FFC3C on D/P/Pt and HG/SS, 0x02FFFC3C
+on Black/White. So the counter now counts in every game.
+
+On the fixed core (build/core-bwm2, bw-script), the curtain is open by frame 8903. Darmanitan and three other
+performers dance on the lit stage until frame 13709. Then the run goes back to the backstage (78) and the theater
+(77). 75-musical passes on both games: Black in 14923 frames, White in 15055.
+
 ## Fixed: Black/White stopped in N's Castle's throne room and in the ending on a VRAM bank overlap (armrec)
 
 Black and White, zone 278 (the throne room): the scene where N calls his dragon and the stone answers (scr 0556

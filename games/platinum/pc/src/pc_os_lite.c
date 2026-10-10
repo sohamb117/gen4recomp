@@ -863,6 +863,15 @@ void OS_Halt(void)
     reg_GX_DISPSTAT |= 1;
     reg_OS_IF = OS_IE_V_BLANK;
     fn = OS_GetIrqFunction(OS_IE_V_BLANK);
+    /* The ARM7's half of the VBlank: its OSi_IrqVBlank counts every
+     * VBlank into the shared word HW_VBLANK_COUNT_BUF, which the ARM9's
+     * OS_GetVBlankCount reads (NitroSDK os_irqTable.c; TWL-SDK's shared
+     * page is 8 MB up, mmap_shared.h). Nothing counted it, so it read 0
+     * for the whole run: Black/White's Musical show (ov132_021F879C)
+     * advances its show scripts by the count's change since the last
+     * frame, and its curtain never opened. Counted here, as the ARM7's
+     * interrupt does at the same line the ARM9's handler below runs. */
+    (*(volatile u32 *)HW_VBLANK_COUNT_BUF)++;
     if (fn == NULL) {
         pc_trap("OS_Halt", "VBlank enabled but no handler is registered");
     }

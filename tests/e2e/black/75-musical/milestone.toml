@@ -1,21 +1,85 @@
 # The Pokemon Musical: the reception's solo musical, dressing a Pokemon with the Prop Case (15) and the show.
 # Start: Nimbasa City (zone 62) below the Musical Theater door (433,433) -> end: the Musical Theater (zone 77).
 title = "The Pokemon Musical"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 15000   # [INFERENCE] frames, not measured
+estimate = 15000   # [INFERENCE] frames, not measured (the show never starts: notes)
 refs = [
   "zone_event 62 warp 6 (433,433) -> zone 77 (Musical Theater) warp 0",
   "scr 0154 @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1 (15)",
   "zone_event 77 object 0 gfx 0x2B (14,11) -> script id 10440 -> scr 0892 script 1 (reception): @0x0070 msg 286 #0 'Welcome to the Pokemon Musical! Here you can participate in a musical alone.', @0x00DF msg 286 #1, @0x00FD Cmd167 var 0x8021, 0 [INFERENCE: starts the musical]",
   "zone_event 78 (backstage) level scripts scr 0156 scripts 1/2; scr 0156 @0x081F-@0x0969 Set/ClearFlag 0x29E-0x2A2, 0x2F0-0x2F3 (the audience in zone 77: objects 1-5 hidden by 0x29E-0x2A2)",
 ]
-notes = "The dressing room and the show are touch screens the probe does not report (PHASE2: tap schedule). The musical writes no var the decoder shows; [expect] is the theater [INFERENCE: the show ends back in zone 77]."
+notes = "Measured from the start save (CONTINUE included): Black 14923, White 15055 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Blocked by a port defect (the show never starts), scouted on Black: from 15's end + start.recipe, the reception (A through msg 286 #0, Participate, the lead Darmanitan, the first show, msg 286 #1) walks the player backstage (zone 78) into the dress-up app at about frame 7470 ('Let's Dress Up Darmanitan with Props!', the Prop Case's props around the heart; keys do nothing there); OK (128,178) and 'Is this look OK?' OK (20,170) as in 15 lead back to zone 78 ('I guess everyone is ready. Let's go up on stage!'), then the show app (map_id 0 from about frame 8000): the closed red curtain with the Musical logo above, the audience below, which animates (the bottom screen's frames differ) but the curtain never opens: no change over 12000 frames of advance_text and none for A, B, X, START or taps on either screen (probes to frame 15142). The port logs nothing then (run.log: only the boot lines; np_gp reports no DEFECT). Until the show runs, the run cannot get back to the theater to save, so [expect] (the theater, zone 77) is not reached. The musical writes no var or flag the decoder shows (its results live in the musical save block, Cmd169/Cmd16B, which the save dump does not read); the audience flags 0x29E-0x2A2, 0x2F0-0x2F3 (scr 0156 script 5) are the after-show record [INFERENCE: set by the fan count after the show]."
 
 [start]
 from = "15-nimbasa-musical-ferris-wheel-n"
 recipe = "start.recipe"
+
+[run]
+frames = 23000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 30
+gap = 0
+note = "zone_event 62 warp 6 (433,433) -> the Musical Theater (zone 77)"
+
+[[step]]
+do = "wait_map"
+map = 77
+
+[[step]]
+do = "wait_field"
+shot = "theater"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the reception at (14,11): scr 0892 script 1"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 56
+times = 30
+shot = "dress-up"
+note = "msg 286 #0, the menu (Participate first), the party choice (A: the lead), the show (msg 286 #3, the first), msg 286 #1, the walk backstage and Cmd167: the dress-up app, where keys do nothing"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "tap"
+x = 128
+y = 178
+note = "the dress-up's OK (15's steps)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "tap"
+x = 20
+y = 170
+note = "'Is this look OK?' OK"
+
+[[step]]
+do = "wait_frames"
+n = 200
+shot = "show"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "after"
 
 [expect]
 map = 77
