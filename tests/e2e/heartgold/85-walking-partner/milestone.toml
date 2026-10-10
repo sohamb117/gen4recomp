@@ -1,0 +1,29 @@
+# Proves talking to the walking partner: the lead Pokemon following the player (obj_partner_poke 253, script
+# std_following_mon), turned to and A pressed: FollowMonFacePlayer, FollowMonInteract (the mood/location message),
+# its cry/hop, and the field released again.
+# Start: 01's end MAP_NEW_BARK west exit (676,399), CYNDAQUIL following -> end: MAP_NEW_BARK, the interaction run.
+title = "Walking partner: talk to the following Pokemon"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 1500
+refs = [
+  "include/constants/scrcmd.h:41 obj_partner_poke 253; src/follow_mon.c:1902-1905 (the follower object: id 253, script std_following_mon)",
+  "include/constants/std_script.h:622-623 std_following_mon 9700; src/script_manager.c:48 (-> scr_seq_0163, msg_0266)",
+  "scr_seq_0163.s:11-16 (0163_000: FollowMonFacePlayer, FollowMonInteract, GoTo _00F0 ReleaseAll); :18-62 (cry / hop movements by facing)",
+  "src/scrcmd_c.c:4799-4802 (ScrCmd_FollowMonInteract -> FieldSystem_FollowMonInteract, asm/overlay_02_02248728.s:13939-14200: message picked by map section, species and mood, FieldSystem_UnkSub108_GetMonMood; no save write found in its callees)",
+  "src/follow_mon.c:1930-1992 (MON_DATA_MOOD helpers: the mood the message reads)",
+  "asm/macros/script.inc:4050-4052 FollowMonInteract = opcode 711 (0x2c7)",
+]
+notes = "No gate: the starter follows from 01 on (the field spawns obj_partner_poke for the first able party member). Observable: the interaction writes nothing to the save (mood is only read; np_save4's dump has no mood field), so [expect] checks the script trace for the FollowMonInteract opcode (PC_TRACE_SCRIPT in [run] env; 'pc-script: f=N op=02c7', games/platinum/pc/src/pc_probe2d.c) [INFERENCE: the trace is a Platinum-port feature, unproven on the HG/SS guest; without it the milestone needs a mood field in np_save4 or a text-box probe]. Input: the follower walks one tile behind the player: walk one step (e.g. west), press the opposite direction to face it (a turn in place), A; or talk_to id 253 [INFERENCE: talk_to chases moving objects, but the follower moves whenever the player does]. advance_text (A) closes the message. Bots proven on HG/SS: walk_to, talk_to, advance_text, press. [INFERENCE] estimate 1500."
+
+[start]
+from = "01-newgame-cyndaquil-pokegear"
+
+[run]
+frames = 2250
+env = ["PC_TRACE_SCRIPT=0"]
+
+[expect]
+map = "MAP_NEW_BARK"
+log = ['pc-script: f=\d+ op=02c7']

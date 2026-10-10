@@ -1,0 +1,24 @@
+# Proves the Kanto gym Erika (Rainbow Badge).
+# Start: 93-cerulean-misty-machine-part's end -> end: MAP_CELADON_GYM after the leader, BADGE_RAINBOW.
+title = "Kanto gym: Erika (Rainbow Badge)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0786_T07GYM0101.s:13-78 (OnTransition: hour hiding of FLAG_HIDE_CELADON_GYM_ERIKA only with BADGE_EARTH / rematch)",
+  "scr_seq_0786_T07GYM0101.s:104-108 (TRAINER_LEADER_ERIKA_ERIKA, GiveBadge BADGE_RAINBOW)",
+  "TRAINER_LEADER_ERIKA_ERIKA (256, include/constants/trainers.h:261)",
+]
+notes = "Gate: Celadon via Saffron's west gate (Route 7) [INFERENCE]. Erika's gym has a Cut tree at the entrance [INFERENCE: check tools/hg_map.py MAP_CELADON_GYM]; hm=true covers it. No RTC. Bots proven. [INFERENCE] estimate."
+
+[start]
+from = "93-cerulean-misty-machine-part"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_CELADON_GYM"
+badge = ["BADGE_RAINBOW"]
+battles = 1

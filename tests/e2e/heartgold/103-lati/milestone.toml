@@ -1,0 +1,32 @@
+# Proves the post-game Latias/Latios. Roaming one (no event): after the power is back the Copycat asks for her Lost Item,
+# the Vermilion Fan Club hands it over (VAR_UNK_4130 1), and Steven's Vermilion scene creates the roamer (HG Latias, SS Latios).
+# The static other one in Pewter needs the Enigma Stone (a distribution item) and is out of reach.
+# Start: 93's end (FLAG_RESTORED_POWER) -> end: MAP_VERMILION after Steven's scene, VAR_UNK_4130 2 (roamer created).
+title = "Latias/Latios: Steven's roamer (and the Enigma Stone static)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0841_T11R0802.s:41-79 (MAP_SAFFRON_COPYCAT_HOUSE_2F: FLAG_UNK_119 :61 asks for the Lost Item; Lost Item -> ITEM_PASS :79)",
+  "scr_seq_0782_T06R0301.s:66-97 (MAP_VERMILION_POKEMON_FAN_CLUB: FLAG_UNK_119 -> ITEM_LOST_ITEM, VAR_UNK_4130 1, ClearFlag FLAG_HIDE_VERMILION_CITY_STEVEN)",
+  "scr_seq_0549_T06_hdr.s:14 (Vermilion OnFrame VAR_UNK_4130 1 -> 013); zone_event 051_T06 object 18 obj_T06_daigo (1298,311) FLAG_HIDE_VERMILION_CITY_STEVEN",
+  "scr_seq_0776_T06.s:48-107 (Steven: version 8 (SS) -> Latios, CreateRoamer 3; HG -> Latias, CreateRoamer 2; VAR_UNK_4130 2 :107)",
+  "include/constants/vars.h:86-87 (VAR_ROAMER_LATIAS_STATUS, VAR_ROAMER_LATIOS_STATUS); scr_seq_0825_T10R0701.s:80-83,198-206 (Hall of Fame re-creates a knocked-out Lati)",
+  "Enigma Stone static (blocked): scr_seq_0755_T03R0101.s:31-52,535-545,604 (MAP_PEWTER_MUSEUM_OF_SCIENCE: HasItem ITEM_ENIGMA_STONE (536) + ScrCmd_546 0 (src/scrcmd_c.c:3922-3929, sub_02066BC0 over the vars/flags)); scr_seq_0750_T03.s:356-400 (Pewter static Latios (HG)/Latias (SS) WildBattle 40, LatiCaughtCheck); zone_event 048_T03 objects 9/10 (1039,83) FLAG_HIDE_PEWTER_CITY_LATIOS/LATIAS",
+  "scr_seq_0837_T11R0701.s:15-40 (Silph Co. Steven follow-ups on VAR_UNK_4130 >= 3 after Red)",
+]
+notes = "Gates: FLAG_RESTORED_POWER (93's Power Plant tail), the Copycat (Saffron), the Fan Club (Vermilion). No RTC, no touch. Catching the roamer has the same blocker as 101 (no hunt bot; check only party species 380/381). The Enigma Stone is not given by any script in this decomp (no GiveItem ITEM_ENIGMA_STONE in scr_seq) [INFERENCE: it is a Mystery Gift distribution item]: the Pewter static is blocked on a distribution; a start recipe 'item 1 SLOT ITEM_ENIGMA_STONE 1' (key_items) could stand in but ScrCmd_546 also checks save state. [INFERENCE] estimate."
+
+[start]
+from = "93-cerulean-misty-machine-part"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_VERMILION"
+flags = ["FLAG_RESTORED_POWER", "FLAG_HIDE_VERMILION_FAN_CLUB_LOST_ITEM"]
+
+[expect.vars]
+VAR_UNK_4130 = 2

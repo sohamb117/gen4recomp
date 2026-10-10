@@ -1,0 +1,26 @@
+# Proves the Kanto gym Brock (Boulder Badge) and the Pewter wing.
+# Start: 95-fuchsia-janine's end -> end: MAP_PEWTER_GYM after the leader, BADGE_BOULDER.
+title = "Kanto gym: Brock (Boulder Badge) and the Pewter wing"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0752_T03GYM0101.s:14-62 (OnTransition: hour hiding of FLAG_HIDE_PEWTER_GYM_BROCK only with BADGE_EARTH / rematch)",
+  "scr_seq_0752_T03GYM0101.s:94-98 (TRAINER_LEADER_BROCK_BROCK, GiveBadge BADGE_BOULDER)",
+  "TRAINER_LEADER_BROCK_BROCK (253, include/constants/trainers.h:258)",
+  "zone_event 048_T03 object 0 obj_T03_gsoldman1 (1069,94) -> 000; scr_seq_0750_T03.s:44-79 (HG: ITEM_SILVER_WING, FLAG_UNK_094, ClearFlag FLAG_HIDE_WHIRL_ISLAND_LUGIA; SS: ITEM_RAINBOW_WING, FLAG_UNK_093, ClearFlag FLAG_HIDE_BELL_TOWER_HO_OH) - feeds 100",
+  "scr_seq_0741_T02.s:42-46 (Viridian OnTransition: FLAG_UNLOCKED_WEST_KANTO)",
+]
+notes = "Gate: Pewter via Viridian (fly from Vermilion is not yet possible: Viridian is reached on foot from Pallet/Route 1 or from Route 22/the League gate) and Route 2 [INFERENCE]. Pick up the version's wing from the Pewter old man on the way (100 uses it). No RTC. Bots proven. [INFERENCE] estimate."
+
+[start]
+from = "95-fuchsia-janine"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_PEWTER_GYM"
+badge = ["BADGE_BOULDER"]
+battles = 1

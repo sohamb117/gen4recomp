@@ -219,11 +219,12 @@ class Milestone:
                 except SystemExit as e:
                     problems.append("[start] %s: %s" % (k, e))
                 else:
+                    allowed = recipe_verbs(game)
                     bad = sorted({op.split()[0] for op in inline[len("inline:"):].split(";") if op}
-                                 - BW_RECIPE_VERBS) if game.name in BW_GAMES else []
+                                 - allowed) if allowed else []
                     if bad:
-                        problems.append("[start] %s %s: B/W recipes take only %s, not %s" % (
-                            k, st[k], " ".join(sorted(BW_RECIPE_VERBS)), " ".join(bad)))
+                        problems.append("[start] %s %s: %s recipes take only %s, not %s" % (
+                            k, st[k], game.name, " ".join(sorted(allowed)), " ".join(bad)))
         if "boost" in st:
             path = os.path.join(self.dir, st["boost"])
             if not os.path.isfile(path):
@@ -359,18 +360,31 @@ ADDMON_BOOST_VERBS = {"party", "party-move"}
 HGSS_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-heal"}
 # np_save5 set-level / set-mon: a full party (6 from B/W milestone 13 on) is strengthened in place
 BW_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-set"}
-# A B/W side system's [start] recipe (not a boost) may also place the player and stock the bag: `location ZONE X Y Z`
-# (np_save5 set-location: just outside a door, since a zone keeps the saved zone's objects and a gimmick zone
-# loads its overlay only when entered) and `item POCKET SLOT ITEM QTY` (np_save5 set-item; POCKET by number, as
-# recipes take numbers only: 0 items, 1 key_items, 2 tms_hms, 3 medicine, 4 berries; SLOT from 1). Flags and vars
-# stay the chain's.
+# A B/W or HG/SS side system's [start] recipe (not a boost) may also place the player and stock the bag. B/W:
+# `location ZONE X Y Z` (np_save5 set-location: just outside a door, since a zone keeps the saved zone's objects and
+# a gimmick zone loads its overlay only when entered) and `item POCKET SLOT ITEM QTY` (np_save5 set-item; POCKET by
+# number, as recipes take numbers only: 0 items, 1 key_items, 2 tms_hms, 3 medicine, 4 berries; SLOT from 1).
+# HG/SS: `location MAP X Z [DIR [Y]]` (np_save4 set-location) and `item POCKET SLOT ITEM QTY` with np_save4's pockets
+# 0 items, 1 key_items, 2 tms_hms, 3 mail, 4 medicine, 5 berries, 6 balls, 7 battle_items. Flags and vars stay the
+# chain's.
 BW_POCKETS = ("items", "key_items", "tms_hms", "medicine", "berries")
+HGSS_POCKETS = ("items", "key_items", "tms_hms", "mail", "medicine", "berries", "balls", "battle_items")
 BW_RECIPE_VERBS = BW_BOOST_VERBS | {"location", "item"}
+HGSS_RECIPE_VERBS = HGSS_BOOST_VERBS | {"location", "item"}
 ADDMON_BOOST_GAMES = HGSS_GAMES + BW_GAMES
 
 
 def addmon_boost_verbs(game):
     return HGSS_BOOST_VERBS if game.name in HGSS_GAMES else BW_BOOST_VERBS
+
+
+def recipe_verbs(game):
+    """The verbs a [start] recipe applied on a save takes (B/W, HG/SS); None where the save lab takes recipes."""
+    if game.name in BW_GAMES:
+        return BW_RECIPE_VERBS
+    if game.name in HGSS_GAMES:
+        return HGSS_RECIPE_VERBS
+    return None
 
 
 def addmon_boost(game, inline, sav, log, recipe=False):
@@ -382,7 +396,7 @@ def addmon_boost(game, inline, sav, log, recipe=False):
         raise HarnessError("boost: the save tool cannot read %s" % sav)
     first = len(json.loads(out.stdout).get("party", []))
     adds, sets, levels, replaces, heal, places = [], [], [], [], False, []
-    allowed = BW_RECIPE_VERBS if recipe and game.name in BW_GAMES else addmon_boost_verbs(game)
+    allowed = recipe_verbs(game) if recipe else addmon_boost_verbs(game)
     for verb, *args in ops:
         if verb not in allowed:
             raise HarnessError("boost: %s boosts take only %s, not %s" % (
@@ -392,7 +406,7 @@ def addmon_boost(game, inline, sav, log, recipe=False):
             continue
         if verb in ("location", "item"):
             if verb == "item":
-                args = [BW_POCKETS[int(args[0])]] + args[1:]
+                args = [(BW_POCKETS if game.name in BW_GAMES else HGSS_POCKETS)[int(args[0])]] + args[1:]
             places.append(["set-" + verb] + args)
             continue
         if verb == "party-heal":
@@ -430,12 +444,12 @@ def addmon_boost(game, inline, sav, log, recipe=False):
         edits += [["set-level", str(slot), str(level)] for slot, level in levels]
         edits += [["heal-party"]] if heal else []
         for verb, *args in places:
-            # np_save5's save-only edits (no ROM argument)
+            # the save tool's save-only edits (no ROM argument)
             cmd = game.save4 + [verb, sav] + args
             f.write("$ %s\n" % " ".join(cmd))
             f.flush()
             if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
-                raise HarnessError("recipe: np_save5 %s failed (%s)" % (verb, log))
+                raise HarnessError("recipe: %s %s failed (%s)" % (os.path.basename(game.save4[-1]), verb, log))
         for verb, *args in edits:
             cmd = game.save4 + [verb, sav, game.rom] + args
             f.write("$ %s\n" % " ".join(cmd))

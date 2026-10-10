@@ -1,0 +1,50 @@
+# Proves the Bug-Catching Contest: on a contest day (Tuesday/Thursday/Saturday by the RTC) the Route 35 park gate's
+# contest receptionist registers the player (one Pokemon kept, the rest held), 20 Sport Balls, the contest park,
+# a bug caught with a Sport Ball, the gate's 'end the contest?' YES, the judging in National Park and the prize.
+# Start: 11's end MAP_GOLDENROD outside the gym (366,335) -> end: MAP_NATIONAL_PARK by the judge (46,50) after the
+# judging, FLAG_DAILY_DID_BUG_CONTEST, a Sport Ball mon in the party.
+title = "Bug-Catching Contest: entry, Sport Balls, a catch, judging and prize"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 14000
+refs = [
+  "zone_event 099_R35R0201 warp 1 (25,2) -> MAP_NATIONAL_PARK; warp 0 (25,11) -> MAP_ROUTE_35",
+  "scr_seq_0487_R35R0201_hdr.s (OnTransition -> 012; OnFrame VAR_UNK_4118 1 -> 010)",
+  "scr_seq_0242_R35R0201.s:81-112 (012: GetWeekday; 2/4/6 or VAR_UNK_4118 1 -> SetFlag FLAG_UNK_1C3 / ClearFlag FLAG_UNK_1C4, other days the reverse)",
+  "zone_event 099_R35R0201 object 7 counterm_3 (24,3) hidden by FLAG_UNK_1C4 = the contest-day receptionist; object 1 counterm (21,4) hidden by FLAG_UNK_1C3; both -> 001",
+  "scr_seq_0242_R35R0201.s:266-330 (001: CallStd std_bug_contest_guard_start; VAR_UNK_4118 1 -> the player walked to the door, Warp MAP_NATIONAL_PARK_BUG_CATCHING_CONTEST (40,86) :312)",
+  "include/constants/std_script.h:675-686 (_std_bug_contest 10400: time_up, balls_up 10401, retire 10404, guard_start 10405, guard_ask_end 10406, judging 10407); src/script_manager.c:37 (-> scr_seq_0151, msg_0246)",
+  "scr_seq_0151.s:92-185 (0151_005 guard_start: FLAG_DAILY_DID_BUG_CONTEST -> 'already done today' :100; GetWeekday 2/4/6 :101-121; YES :124-128; PC-full with a full party refused :134-139; 'use <lead>?' YES :148-155 sets FLAG_BUG_CONTEST_OTHER_POKES_HELD :165; FLAG_BUG_CONTEST_ACTIVE, FLAG_UNK_24E, VAR_UNK_4118 1, VAR_UNK_40F7 1 :175-178; BugContestAction 0 :180)",
+  "src/overlay_bug_contest.c:38-54 (BugContest_New: sport_balls = 20 :45, party backed up :49, FieldSystem_StartBugContestTimer :52)",
+  "src/unk_0206D494.c:384-388 (elapsed_time += RTC minutes, from src/unk_02055418.c:97-100); src/field/field_control.c:843-844 (elapsed_time >= 20 -> std_bug_contest_time_up); src/field/scrcmd_pokemon_misc.c:1523-1537 (time left = 20 - elapsed)",
+  "src/battle/battle_input.c:1898-1901 (contest battle menu: FIGHT, BALL in the BAG slot, POKEMON); src/encounter.c:534 (no balls left -> std_bug_contest_balls_up); src/unk_0206D494.c:403-408 (a second catch asks to swap)",
+  "zone_event 440_D22R0102 warps 0/1 (40/41,86) -> MAP_ROUTE_35_NATIONAL_PARK_POKEATHALON_GATEHOUSE anchor 1",
+  "scr_seq_0242_R35R0201.s:26-64 (010: CallStd std_bug_contest_guard_ask_end on re-entering the gate)",
+  "scr_seq_0151.s:243-262 (0151_006 ask_end: YES -> VAR_UNK_4118 2, Call _0076 = Warp MAP_NATIONAL_PARK (46,50) :39-45)",
+  "scr_seq_0286_D22R0101_hdr.s:15 (OnFrame VAR_UNK_40F7 1 -> std_bug_contest_judging)",
+  "scr_seq_0151.s:264-375 (0151_007 judging: VAR_UNK_4118 0, VAR_UNK_40F7 0 :267-268; JudgeBugContest :270; 1st place FLAG_WON_THIS_BUG_CONTEST :303; prize std_give_item_verbose :324 or held in VAR_BUG_CONTEST_HELD_PRIZE :330; nickname YES/NO :343; FLAG_DAILY_DID_BUG_CONTEST :366; FLAG_BUG_CONTEST_ACTIVE/FLAG_UNK_24E/FLAG_BUG_CONTEST_OTHER_POKES_HELD cleared :367-369)",
+  "src/overlay_bug_contest.c:104-127 (prize: 1st a Sun Stone (other stones with the national dex), 2nd Everstone, 3rd Sitrus Berry, else Shed Shell); :314-344 (score: species, level, IVs, HP)",
+  "include/constants/flags.h:340 FLAG_WON_THIS_BUG_CONTEST, :370 FLAG_BUG_CONTEST_OTHER_POKES_HELD, :473-474 FLAG_UNK_1C3/1C4, :1757 FLAG_BUG_CONTEST_ACTIVE, :2037 FLAG_DAILY_DID_BUG_CONTEST",
+  "include/constants/vars.h:103 VAR_BUG_CONTEST_HELD_PRIZE, :262 VAR_UNK_40F7, :295 VAR_UNK_4118",
+  "include/constants/items.h:920 ITEM_SPORT_BALL 499 (np_save4 ball id 24, features/tools/np_save4.c:271-273)",
+]
+notes = "Day gate: GetWeekday must be 2 (Tue), 4 (Thu) or 6 (Sat); the port's default epoch 2009-03-22 is a Sunday (games/platinum/pc/src/pc_rtc.c:47-50), so [run] clock picks Tuesday 2009-03-24 10:00; the save's last RTC day is earlier, so the day rolls forward on load (src/unk_02055418.c:41-52: daily flags cleared, no penalty). The 20-minute limit counts RTC minutes (72000 frames at 60 fps): this run ends the contest early through the gate's ask_end prompt, never meeting time_up. No badge/flag gate besides the day; Route 35 north of Goldenrod is open from 11 on (13 walks it). Entry: talk to object 7 (24,3) (the contest-day receptionist); YES, YES to using the lead (11's party: QUILAVA/CYNDAQUIL, the Togepi egg or Togepi, SCYTHER [INFERENCE: 3 members, so the caught bug joins the party]). Catch: walk_to into the contest park's grass until a wild battle; the contest menu has BALL in the BAG slot (battle_input.c:1898-1901), so auto_battle (FIGHT) would only knock it out: a new 'throw' step is needed (tap the BAG-slot button repeatedly until the catch; a level ~10 bug at full HP with the Sport Ball's 1.5x is not a sure catch [INFERENCE]). Then walk to (40,86) -> the gate's OnFrame asks to end, YES; National Park's OnFrame runs the judging (A cadence through the three places, the prize, NO to the nickname). Bots proven on HG/SS: walk_to, talk_to, advance_text; needed: contest ball throw (tap at the BAG-slot coordinates). Optional outline: talk_to obj 7 / advance_text (YES, YES) / walk_to grass / throw / walk_to (40,86) / advance_text YES / advance_text through judging. [INFERENCE] estimate 14000: ~3000 walk Goldenrod->gate, ~1500 entry, ~4000 grass+catch, ~1500 back, ~3500 judging."
+
+[start]
+from = "11-route34-daycare-goldenrod"
+
+[run]
+frames = 21000
+clock = "2009-03-24 10:00:00"   # a Tuesday: GetWeekday 2 (scr_seq_0151.s:101-103, scr_seq_0242_R35R0201.s:90)
+
+[expect]
+map = "MAP_NATIONAL_PARK"
+flags = ["FLAG_DAILY_DID_BUG_CONTEST"]
+flags_clear = ["FLAG_BUG_CONTEST_ACTIVE", "FLAG_BUG_CONTEST_OTHER_POKES_HELD"]
+battles = 1
+save = ['any(m["ball"]["id"] == 24 for m in s["party"])']  # the contest catch (Sport Ball) restored with the party
+
+[expect.vars]
+VAR_UNK_4118 = 0
+VAR_UNK_40F7 = 0

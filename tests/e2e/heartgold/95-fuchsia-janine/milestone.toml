@@ -1,0 +1,25 @@
+# Proves the Kanto gym Janine (Soul Badge).
+# Start: 94-celadon-erika's end -> end: MAP_FUCHSIA_GYM after the leader, BADGE_SOUL.
+title = "Kanto gym: Janine (Soul Badge)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0809_T08GYM0101.s:20-88 (OnTransition: CheckBadge BADGE_SOUL, hour hiding of FLAG_HIDE_FUCHSIA_GYM_JANINE after the badge)",
+  "scr_seq_0809_T08GYM0101.s:515-520 (TRAINER_LEADER_JANINE_JANINE, GiveBadge BADGE_SOUL)",
+  "TRAINER_LEADER_JANINE_JANINE (257, include/constants/trainers.h:262)",
+  "scr_seq_0197_R11.s:44-58 / scr_seq_0199_R12.s:193-206 (Snorlax WildBattle 50, FLAG_SNORLAX_MEET): Route 11/12 blocked without the Poke Flute radio (FLAG_GOT_EXPN_CARD, scr_seq_0775_T05R0701.s:21-49)",
+]
+notes = "Gate: Fuchsia from Celadon down Cycling Road (Route 16-18; the Bicycle is from Goldenrod) or from Vermilion/Lavender east past the Snorlax (needs the EXPN Card after FLAG_RESTORED_POWER) [INFERENCE]. Janine's gym has the disguised-trainer layout (invisible walls) [INFERENCE: tools/hg_map.py MAP_FUCHSIA_GYM]. No RTC. Cycling Road needs a bike step: 'walk_to' on the bike is unproven on HG/SS [INFERENCE]. [INFERENCE] estimate."
+
+[start]
+from = "94-celadon-erika"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_FUCHSIA_GYM"
+badge = ["BADGE_SOUL"]
+battles = 1

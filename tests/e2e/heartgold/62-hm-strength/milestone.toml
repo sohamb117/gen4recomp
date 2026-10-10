@@ -1,0 +1,42 @@
+# Proves Strength: in the Dark Cave (Route 31 side), A on the boulder (28,20) asks to use Strength
+# (std_field_strength), YES, then two pushes east carry it to (30,20) and open the way up to (29,19).
+# Start: 61's end, MAP_DARK_CAVE_ROUTE_31_SIDE (17,19) -> end: MAP_DARK_CAVE_ROUTE_31_SIDE (29,19), past the boulder.
+title = "HM04 Strength: a Dark Cave boulder"
+priority = "P0"
+version = "both"
+estimate = 2197
+refs = [
+  "games/heartgold/src/field_move.c:291-324 (FieldMove_CheckStrength: BADGE_PLAIN, FIELD_MOVE_CHECK_ROCK)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:338-424 (scr_seq_0146_002 std_field_strength: prompt, the move, the strength state)",
+  "games/heartgold/src/script_manager.c:43 (std 10000+ = scr_seq_0146, the field moves)",
+  "zone_event 169_D42R0102 (MAP_DARK_CAVE_ROUTE_31_SIDE) object 0 SPRITE_ROCK (28,20) -> std_field_strength",
+  "tools/hg_map.py MAP_DARK_CAVE_ROUTE_31_SIDE: (27,18), (28,19) and (28,21) are walls: west of the cave's middle the only way east is row 20 through the boulder's tile",
+  "chain 20 (Route 42's hiker: ITEM_HM04, scr_seq_0252_R42.s) and 26 (the Ice Path boulders) used Strength",
+]
+notes = "Continues 61's end save (the rocks smashed, the boulder's side of the cave reached). Feraligatr (slot 5) knows Strength. bots.py moves: F (bump, A, YES), then RIGHT held until x is 29: each hold pushes the boulder a tile and then steps into its place (the first run's fixed P/R counts overshot to (30,19): a 40-frame P push also steps), then UP. Scouted on HeartGold: the prompt 'It's a big boulder...', 'Would you like to use Strength?', the boulder at (29,20), then (30,20), the player at (29,19). Measured: HeartGold 2196 frames, SoulSilver 2197 (wild battles fled on the way vary it)."
+
+[start]
+from = "61-hm-rock-smash"
+
+[run]
+frames = 3300
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 20
+on_battle = "flee"
+shot = "boulder"
+note = "west of the boulder (28,20)"
+
+[[step]]
+do = "moves"
+dirs = [["F", "R"], ["R", "x29"], ["U", 1]]
+on_battle = "flee"
+shot = "past-boulder"
+note = "Strength (Feraligatr), push east until the player stands on (29,20) (the boulder at (30,20)), up to (29,19)"
+
+[expect]
+map = "MAP_DARK_CAVE_ROUTE_31_SIDE"
+position = [29, 19]
+log = ["walk_to: a field move R ahead, using the field move"]

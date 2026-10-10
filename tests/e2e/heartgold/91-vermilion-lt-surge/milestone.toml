@@ -1,0 +1,25 @@
+# Proves the Kanto gym Lt. Surge (Thunder Badge).
+# Start: 90-ss-aqua-vermilion's end -> end: MAP_VERMILION_GYM after the leader, BADGE_THUNDER.
+title = "Kanto gym: Lt. Surge (Thunder Badge)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0778_T06GYM0101.s:36-50 (OnTransition: FLAG_HIDE_VERMILION_GYM_STOPS unset -> ClearFlag FLAG_SYS_SOLVED_LT_SURGE_GYM, VermilionGymInit; the hour hiding is behind the rematch phone / FLAG_CAUGHT_ZAPDOS)",
+  "scr_seq_0778_T06GYM0101.s:277-300 (Surge: CheckBadge BADGE_THUNDER, TRAINER_LEADER_LT_SURGE_LT__SURGE :287, GiveBadge BADGE_THUNDER, VAR_UNK_4135 +1, FLAG_HIDE_VERMILION_GYM_STOPS, the six barrier stops hidden)",
+  "TRAINER_LEADER_LT_SURGE_LT__SURGE (255, include/constants/trainers.h:260)",
+  "VermilionGymInit: the trash-can switch puzzle (FLAG_SYS_SOLVED_LT_SURGE_GYM) gates the barriers (obj_T06GYM0101_stop..stop_6)",
+]
+notes = "Gate: none beyond reaching Vermilion (90). The gym's trash-can puzzle randomizes the two switch cans (VermilionGymInit): the implementer needs either a scripted search order (talk_to each can, reset on a miss) or to read the generated cans from RAM; no bot for that exists [INFERENCE]. Leader hour-hiding only applies once the rematch phone number is registered, so no RTC. Bots: walk_to, talk_to, advance_text, auto_battle (proven). [INFERENCE] estimate."
+
+[start]
+from = "90-ss-aqua-vermilion"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_VERMILION_GYM"
+badge = ["BADGE_THUNDER"]
+battles = 1

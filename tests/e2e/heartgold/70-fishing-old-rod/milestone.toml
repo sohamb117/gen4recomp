@@ -1,0 +1,21 @@
+# Proves fishing: the Old Rod from the fisherman in Route 32's Pokemon Center, a cast in water, a hooked Pokemon's battle.
+# Start: 29's end, Fly to Violet, Route 32's Pokemon Center -> end: after the battle.
+title = "The Old Rod: Route 32's fisherman and a catch"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0233_R32PC0101.s:30-40 (ITEM_OLD_ROD, SetFlag FLAG_GOT_OLD_ROD)",
+  "zone_event 163_R32PC0101 object 4 SPRITE_FISHING_2 (4,15) -> _EV_scr_seq_R32PC0101_001",
+]
+notes = "BLOCKED: the fish bot waits for the guest's fishing trace (PC_TRACE_FISH), which only Platinum's guest has; HG/SS needs the same trace in its fishing code (a core change) or another bite signal. The rod must also be registered (Y). estimate: a guess until measured."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 30000
+
+[expect]
+flags = ["FLAG_GOT_OLD_ROD"]

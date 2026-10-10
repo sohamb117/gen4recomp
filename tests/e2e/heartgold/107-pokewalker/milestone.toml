@@ -1,0 +1,21 @@
+# Reference only: the Pokewalker is out of reach (no walker device on the far end of the IR); do not duplicate.
+# Start: n/a -> end: n/a.
+title = "Pokewalker (out of reach)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 1
+refs = [
+  "docs/FEATURE_PARITY.md:226 (Pokewalker: the cartridge IR chip is modelled (53b112d0c), CONNECT TO POKeWALKER runs and stops on a save without a boxed Pokemon; a walker on the far end of the IR is not modelled)",
+  "docs/HANDOFF-hgss.md:39,64 (IR chip answering, CONNECT TO POKeWALKER listed), :388 (Pokewalker IR is not modelled)",
+]
+notes = "Out of reach: no walker device/protocol/EEPROM is modelled, so nothing can be transferred; the menu path is already recorded in docs/FEATURE_PARITY.md:226. Course gifts arrive by Mystery Gift. Do not implement as an e2e milestone. (The assignment cited docs/HANDOFF-hgss.md:270; the statement is at :388.)"
+
+[start]
+from = "38-champion-lance-hall-of-fame-credits"
+
+[run]
+frames = 1
+
+[expect]
+# none: reference-only skeleton

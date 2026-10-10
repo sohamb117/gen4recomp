@@ -1,0 +1,32 @@
+# Proves Flash (TM70 in HG/SS) from the party menu: in the dark Dark Cave (Route 31 side), X, POKEMON, Ampharos,
+# FLASH lights the cave (FLAG_SYS_FLASH set while the map stays loaded).
+# Start: 61's end, MAP_DARK_CAVE_ROUTE_31_SIDE (17,19) -> end: the same tile, the cave lit.
+title = "TM70 Flash: lighting the Dark Cave"
+priority = "P1"
+version = "both"
+estimate = 2233
+refs = [
+  "games/heartgold/src/field_move.c:431-465 (FieldMove_CheckFlash / UseFlash: not in the Union Room / Colosseum, the Alph chamber; :163-165 FIELD_MOVE_CHECK_FLASH from WEATHER_FLASH)",
+  "games/heartgold/src/sys_flags.c:241-249, include/constants/flags.h:1725 (FLAG_SYS_FLASH 0x973)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:771-773 (scr_seq_0146_006 std_field_flash), :604-674 (scr_seq_0146_013 std_menu_flash)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0018_D15R0103.s:124 (Elder Li's ITEM_TM70 Flash, chain 05)",
+  "files/poketool/personal/personal.json: AMPHAROS tms include 70",
+]
+notes = "Flash is TM70 in HG/SS (HM05 is Whirlpool). 29's bag has TM70 but nobody knows Flash: the boost teaches it to Ampharos (teaching through the Bag is not botted). bots.py field_move picks the move from the party menu (HG/SS: _hgss_field_move). The start shot shows the cave dark (a lit circle round the player); the end shot lit. Scouted on HeartGold (61's scouted save + this boost): 'field_move: move 148, party slot 3' at 1695, lit at 2227, FLAG_SYS_FLASH in the save. Measured: HeartGold 2232 frames, SoulSilver 2233 (wild battles fled on the way vary it)."
+
+[start]
+from = "61-hm-rock-smash"
+boost = "boost.recipe"
+
+[run]
+frames = 3400
+
+[[step]]
+do = "field_move"
+move = "MOVE_FLASH"
+shot = "lit"
+
+[expect]
+map = "MAP_DARK_CAVE_ROUTE_31_SIDE"
+flags = ["FLAG_SYS_FLASH"]
+log = ["field_move: move 148"]

@@ -1,0 +1,34 @@
+# Proves the US Goldenrod Game Corner: the Coin Case from the clerk (YES), the Voltorb Flip table (CasinoGame 0, 0),
+# one level-1 board cleared by flipping every x2/x3 card without a Voltorb, the coins paid into the case, and Quit.
+# Start: 11's end MAP_GOLDENROD outside the gym (366,335) -> end: MAP_GOLDENROD_GAME_CORNER at the table (7,8),
+# ITEM_COIN_CASE, coins > 0.
+title = "Goldenrod Game Corner: Voltorb Flip"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 6500
+refs = [
+  "zone_event 073_T25 warp 6 (351,360) -> MAP_GOLDENROD_GAME_CORNER (include/constants/maps.h:540, MAP_T25SP0101: the US corner; MAP_GOLDENROD_GAME_CORNER_JP :187 is the JP slots)",
+  "scr_seq_0910_T25SP0101.s:98-148 (002: no Coin Case -> YES/NO :134-138, GiveItemNoCheck ITEM_COIN_CASE :141)",
+  "scr_seq_0910_T25SP0101.s:15-34 (000: HasItem ITEM_COIN_CASE :19, CasinoGame 0, 0 :28, RestoreOverworld)",
+  "src/field/scrcmd_pokemon_misc.c:1217-1222 (ScrCmd_CasinoGame -> VoltorbFlip_LaunchApp)",
+  "src/voltorb_flip/voltorb_flip_input.c:124 (grid input: touch hitboxes and D-pad specs), :202-256 (D-pad moves the cursor, A flips, X memo, B)",
+  "include/voltorb_flip/voltorb_flip_game.h:71-84 (GameState: cards[5][5], points/voltorbs per row and column, payout, multiplierCards, multipliersFlipped)",
+  "src/voltorb_flip/voltorb_flip_game.c:276-300 (a flip multiplies the payout); src/voltorb_flip/voltorb_flip.c:486-489,597-599 (coins; 50000 cap)",
+  "features/tools/np_save4.c:635-637 (dump trainer.coins)",
+  "asm/macros/script.inc CasinoGame = opcode 780",
+]
+notes = "Gates: none past Goldenrod (11); no coins needed to play (Voltorb Flip pays out, a lost board only drops the level). Input: the board takes the D-pad and A (voltorb_flip_input.c:202-256) as well as touch, so no touch bot is strictly needed, but winning needs a solver: a new voltorb_flip bot that reads the board (GameState.cards in the app's heap) or deduces it from the row/column totals, and flips only the 2s and 3s (the round clears when multipliersFlipped == multiplierCards). Menus: the table's opening Play / Game Info / Quit and the end-of-round prompts answered with A; Quit at the end returns to the field. Bots proven on HG/SS: walk_to, talk_to, advance_text; needed: a Voltorb Flip solver (reading guest memory), hence P2. [INFERENCE] estimate 6500: ~1500 to the corner, ~800 Coin Case, ~400 to the table, ~3000 one board with intros, ~800 quit."
+
+[start]
+from = "11-route34-daycare-goldenrod"
+
+[run]
+frames = 10000
+
+[expect]
+map = "MAP_GOLDENROD_GAME_CORNER"
+save = [
+  's["trainer"]["coins"] > 0',
+  'any(i["item"] == 444 for i in s["bag"]["key_items"])',  # ITEM_COIN_CASE (include/constants/items.h:863)
+]

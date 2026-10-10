@@ -1,0 +1,18 @@
+# Proves the Pokemon Center PC (std_pokecenter_pc): deposit a party Pokemon, withdraw it back.
+# Start: 29's end, Fly to Cherrygrove, its Pokemon Center -> end: the party restored.
+title = "The PC: deposit, move and withdraw"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "games/heartgold/include/constants/std_script.h:23 std_pokecenter_pc 2010",
+  "README HG/SS Heal: every Pokemon Center 1F has the nurse at (8,11), the exit at (8,19)",
+]
+notes = "The PC's menus are touch/keys (no probe report): fixed presses. np_save4 dump has no HG/SS PC box keys: [expect] reads the party count before/after (dump steps), or np_save4 gains a box dump. estimate: a guess until measured."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 30000

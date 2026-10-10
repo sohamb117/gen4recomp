@@ -1,0 +1,23 @@
+# Proves the Route 34 Day Care: the lady takes two compatible Pokemon (std_daycare_lady), steps outside make an egg, the man outside gives it (std_daycare_man).
+# Start: 29's end, Fly to Goldenrod, Route 34 -> end: MAP_ROUTE_34, an egg in the party.
+title = "Day Care: two Pokemon in, an egg out"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "games/heartgold/src/script_manager.c:50 (_std_daycare -> scr_seq_0265; std_daycare_man 9500 / std_daycare_lady 9501, include/constants/std_script.h:615-617)",
+  "zone_event 302_R34R0101 object 0 SPRITE_GSOLDWOMAN1 (3,5) -> std_daycare_lady; zone_event 035_R34 object 10 SPRITE_GSOLDMAN1 (365,410) -> std_daycare_man",
+  "chain 11 (Route 34's Day Care scene, FLAG_UNK_22D)",
+]
+notes = "A compatible pair from 29's party: Pelipper (Water 1/Flying) and Feraligatr (Monster/Water 1) share Water 1 if their genders differ [INFERENCE: genders from the PIDs; np_save4 dump shows no gender]. A full party: depositing two leaves four. No HG/SS daycare keys in np_save4 dump (Platinum only): [expect] reads the party (two fewer, then an egg) or the dump gains HG/SS daycare keys. The pace bot (egg roll by in-game saves) needs a daycare key; else step a fixed distance and ask the man. estimate: a guess until measured."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_ROUTE_34"
+save = ["any(m[\"is_egg\"] for m in s[\"party\"])"]

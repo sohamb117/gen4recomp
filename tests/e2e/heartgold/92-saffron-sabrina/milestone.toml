@@ -1,0 +1,24 @@
+# Proves the Kanto gym Sabrina (Marsh Badge).
+# Start: 91-vermilion-lt-surge's end -> end: MAP_SAFFRON_GYM after the leader, BADGE_MARSH.
+title = "Kanto gym: Sabrina (Marsh Badge)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0829_T11GYM0101.s:15-46 (OnTransition: the hour hiding of FLAG_HIDE_SAFFRON_GYM_SABRINA applies only with BADGE_MARSH / the rematch)",
+  "scr_seq_0829_T11GYM0101.s:53-62 (CheckBadge BADGE_MARSH, TRAINER_LEADER_SABRINA_SABRINA :58, GiveBadge BADGE_MARSH)",
+  "TRAINER_LEADER_SABRINA_SABRINA (258, include/constants/trainers.h:263)",
+]
+notes = "Gate: Saffron from Vermilion via Route 6 north [INFERENCE: the Route 5/6 gatehouses are open in HG/SS]. The gym is a warp-panel maze: the implementer maps panels with tools/hg_map.py MAP_SAFFRON_GYM (needs the built map_matrix.naix; the tool failed here without games/heartgold build output) and chains walk_to steps. No RTC. Bots proven. [INFERENCE] estimate."
+
+[start]
+from = "91-vermilion-lt-surge"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_SAFFRON_GYM"
+badge = ["BADGE_MARSH"]
+battles = 1

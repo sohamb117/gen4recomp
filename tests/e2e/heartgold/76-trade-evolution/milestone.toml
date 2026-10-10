@@ -1,0 +1,15 @@
+# Proves a trade evolution between two HG/SS stations (or HG/SS and Pearl) through the link tests.
+# Start: tests/link (hgss_trade) -> end: the evolved species on the receiving save.
+title = "Trade evolution over the link"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 20000
+refs = [
+  "tests/link/run_link_tests.py:123 (hgss_trade: HeartGold <-> SoulSilver; :140-151 hg_platinum_trade / hg_diamond_trade / hg_pearl_trade), tests/link/scenarios/hgss-trade.json",
+  "tests/e2e/platinum/75-trade-evolution (the Platinum link evolution)",
+]
+notes = "Belongs with the link tests (two stations), as Platinum's 75; a skeleton here points at it. estimate: a guess until measured."
+
+[run]
+frames = 30000

@@ -1,0 +1,28 @@
+# SoulSilver only: proves Ho-Oh post-game. SS's Rainbow Wing comes from the Pewter old man (FLAG_UNK_093, ClearFlag
+# FLAG_HIDE_BELL_TOWER_HO_OH); the Bell Tower barrier monk (Fog Badge), the ten floors and Ho-Oh (lv70 in SS) on the roof.
+# Start: 96-pewter-brock's end (Pewter, wing in the bag) -> end: MAP_BELL_TOWER_ROOF (15,17), FLAG_CAUGHT_HO_OH.
+title = "SoulSilver: Rainbow Wing and Ho-Oh"
+status = "planned"
+priority = "P1"
+version = "soulsilver"
+estimate = 25000
+refs = [
+  "zone_event 048_T03 object 0 obj_T03_gsoldman1 (1069,94) -> 000; scr_seq_0750_T03.s:44-79 (version != 7 = SS: ITEM_RAINBOW_WING (483), FLAG_UNK_093, ClearFlag FLAG_HIDE_BELL_TOWER_HO_OH, SetFlag FLAG_HIDE_BELL_TOWER_SUMMIT_KIMONO_GIRLS)",
+  "scr_seq_0034_D23R0106.s:84-88 (SS's story wing is the Silver Wing; the Rainbow Wing is post-game only)",
+  "zone_event 080_T27R0201 object 0 obj_T27R0201_bozu (15,7) -> 000; scr_seq_0926_T27R0201.s:22-64 (CheckBadge BADGE_FOG: steps aside)",
+  "Bell Tower floors/warps/ladders: as in heartgold/31-bell-tower-ho-oh refs (zone_event 108_D17R0101 .. 312_D17R0112)",
+  "zone_event 311_D17R0110 object 5 obj_D17R0110_hou_obj01 (15,16) -> 000; scr_seq_0021_D17R0110.s:22,54-102 (FLAG_HIDE_BELL_TOWER_HO_OH; WildBattle 250 at 70 in SS; caught -> FLAG_CAUGHT_HO_OH include/constants/flags.h:297)",
+  "scr_seq_0825_T10R0701.s:111-123 (Hall of Fame re-shows uncaught Ho-Oh/Lugia)",
+]
+notes = "Gates: post-game Kanto (90) to Pewter (96), then fly to Ecruteak. The roof coord (VAR_UNK_40FA 1, Clear Bell scene) does not fire in SS (Lugia set VAR_UNK_40FA 2, scr_seq_0104_D40R0107.s:446). [INFERENCE: whether the SS Bell Tower 1F wing coord (zone_event 108_D17R0101 VAR_UNK_40F3) needs FLAG_UNK_093 - read scr_seq_0019_D17R0101.s:51-193.] The Bell Tower walk is proven by heartgold/31 (warp panels, ladders). Catch needs a catching auto_battle mode + a boost (lv70) [INFERENCE]. Check: party species 250. [INFERENCE] estimate."
+
+[start]
+from = "96-pewter-brock"
+
+[run]
+frames = 37500
+
+[expect]
+map = "MAP_BELL_TOWER_ROOF"
+flags = ["FLAG_UNK_093", "FLAG_CAUGHT_HO_OH"]
+battles = 1

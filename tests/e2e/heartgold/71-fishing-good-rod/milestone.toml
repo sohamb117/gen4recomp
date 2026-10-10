@@ -1,0 +1,20 @@
+# Proves the Good Rod from Olivine's fishing guru and a catch with it.
+# Start: 29's end, Fly to Olivine -> end: after the battle.
+title = "The Good Rod: Olivine's fishing guru"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0918_T26R0601.s:25-33 (ITEM_GOOD_ROD, SetFlag FLAG_GOT_GOOD_ROD)",
+]
+notes = "BLOCKED as 70: the HG/SS fishing trace. estimate: a guess until measured."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 30000
+
+[expect]
+flags = ["FLAG_GOT_GOOD_ROD"]

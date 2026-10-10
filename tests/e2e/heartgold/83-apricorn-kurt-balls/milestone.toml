@@ -1,0 +1,43 @@
+# Proves Kurt's Apricorn balls: Azalea's apricorn tree picked into the Apricorn Box (a WHT Apricorn), the Apricorn
+# handed to Kurt through the box app (FLAG_DAILY_KURT_MAKING_BALLS, the granddaughter's phone-number scene), the RTC
+# day rolling past midnight (daily flags cleared), and Kurt's Fast Ball the next day.
+# Start: 08's end MAP_AZALEA_KURT_HOUSE (4,5) -> end: MAP_AZALEA_KURT_HOUSE by Kurt, a second Fast Ball in the bag,
+# VAR_UNK_413B 1, FLAG_DAILY_KURT_MAKING_BALLS clear.
+title = "Apricorns: Azalea tree, Kurt, the ball the next day"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 20000
+refs = [
+  "zone_event 071_T23 object 10 obj_T23_bonguri (396,453) std_apricorn_tree, param0 30; src/apricorn_tree_sys.c:8-39 (tree 30 = Azalea Town, APRICORN_WHT)",
+  "zone_event 071_T23 warp 6 (399,454) -> MAP_AZALEA_KURT_HOUSE; zone_event 158_T23R0501 warp (4,9) -> MAP_AZALEA",
+  "scr_seq_0150.s (std_apricorn_tree 2800, src/script_manager.c:61: HasItem ITEM_APRICORN_BOX, AnimApricornTree, GiveApricornFromTree) - the box came in 02 (scr_seq_0227_R30.s:106, FLAG_GOT_APRICORN_BOX)",
+  "zone_event 158_T23R0501 object 0 obj_T23R0501_gantetsu (4,4) hidden by FLAG_UNK_19E -> 001",
+  "scr_seq_0874_T23R0501.s:26-40 (005, played in 08: VAR_UNK_4080 3, item 492 = ITEM_FAST_BALL x1, FLAG_UNK_07C)",
+  "scr_seq_0874_T23R0501.s:93-128 (001 with FLAG_UNK_07C -> _011A: ScrCmd_735 Kurt's apricorn 0, GetTotalApricornCount > 0 -> ScrCmd_739 the Apricorn Box app (mode 2, src/field/scrcmd_pokemon_misc.c:870-875) :109; one given -> SetFlag FLAG_DAILY_KURT_MAKING_BALLS :120)",
+  "scr_seq_0874_T23R0501.s:173-207 (first time, VAR_UNK_4080 3: VAR_UNK_4080 4, the granddaughter's YES/NO, RegisterGearNumber PHONE_CONTACT_KURT :195)",
+  "scr_seq_0874_T23R0501.s:130-167 (next talk: FLAG_DAILY_KURT_MAKING_BALLS set -> 'not ready' :154-156; clear -> ScrCmd_737 ball id, std_give_item_verbose :134-137, ClearKurtApricorn :138, VAR_UNK_413B +1 :139-143)",
+  "src/unk_02055418.c:41-52 (a new RTC day -> sub_02055508 -> ClearDailyFlags :78, apricorn trees regrow :89-90 unless a penalty); src/field/fieldmap.c:416-419 (checked every field frame with no task running)",
+  "src/sav_system_info.c:91-112 (the RTC penalty only after continuing on another console; a forward clock adds none)",
+  "include/constants/flags.h:128 FLAG_GOT_APRICORN_BOX, :143 FLAG_UNK_07C, :2032 FLAG_DAILY_KURT_MAKING_BALLS; include/constants/vars.h:143 VAR_UNK_4080, :330 VAR_UNK_413B",
+  "include/constants/items.h:911 ITEM_WHT_APRICORN 490, :913 ITEM_FAST_BALL 492",
+  "asm/overlay_58.s:7-124 (the Apricorn Box app: runs a child overlay, undecompiled)",
+]
+notes = "RTC: the ball needs a new day (FLAG_DAILY_KURT_MAKING_BALLS is a daily flag). The port's clock advances one second per 60 frames from the epoch (games/platinum/pc/src/pc_rtc.c:1-30), so a whole day cannot pass in a run: [run] clock boots at 23:55 on the chain's own day (2009-03-22, the default epoch; 08's save last saw 10:xx that day, so this is forward: no reset, no penalty), the apricorn is picked and given before midnight (~50 s of play), then the player waits in the house past 00:00 (frame ~18000 from boot; the field's per-frame RTC check rolls the day) and talks to Kurt again. Input: the Apricorn Box app (ScrCmd_739, overlay 58) is undecompiled asm; it is assumed to take D-pad/A like the bag [INFERENCE: not traced] - with one apricorn in the box the first entry is the WHT one. The granddaughter's phone YES/NO follows the first gift. Gates: Kurt home and FLAG_UNK_07C set (08); the box (02). Bots proven on HG/SS: walk_to, talk_to, advance_text; new: a wait_frames step to pass midnight (exists: wait_frames), and the apricorn-box choice (press A/arrows, unproven). Outline: walk_to (399,455) out, talk_to the tree (A, YES if asked), walk_to the door, talk_to Kurt (box app: A on the WHT apricorn, confirm), advance_text through the phone scene (YES), wait_frames to ~frame 18600, talk_to Kurt, advance_text. [INFERENCE] estimate 20000 (18000 of it the wait)."
+
+[start]
+from = "08-slowpoke-well-proton-kurt"
+
+[run]
+frames = 30000
+clock = "2009-03-22 23:55:00"   # 5 game minutes (18000 frames) before the day rolls over: give before, collect after
+
+[expect]
+map = "MAP_AZALEA_KURT_HOUSE"
+flags = ["FLAG_GOT_APRICORN_BOX"]
+flags_clear = ["FLAG_DAILY_KURT_MAKING_BALLS"]
+save = ['sum(i["qty"] for i in s["bag"]["balls"] if i["item"] == 492) >= 2']  # 08's Fast Ball plus Kurt's
+
+[expect.vars]
+VAR_UNK_4080 = 4
+VAR_UNK_413B = 1

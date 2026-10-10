@@ -1,0 +1,38 @@
+# Proves the Pokeathlon: the Route 35 gate's west door (open once Whitney is beaten), the Dome's first-visit Whitney
+# scene (VAR_UNK_40E2 1), the reception's JOIN -> SPEED COURSE -> YES, the Pokeathlon course app (three touch-screen
+# events) and the return to the reception with the points message.
+# Start: 12's end MAP_GOLDENROD outside the Flower Shop (371,333) -> end: MAP_POKEATHLON_DOME_INTERIOR_1F before the
+# reception (object 0 at (23,8)), VAR_UNK_40E2 >= 1, FLAG_SYS_FLYPOINT_POKEATHLON.
+title = "Pokeathlon Dome: Speed Course"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 24000
+refs = [
+  "zone_event 099_R35R0201 warp 2 (4,2) -> MAP_POKEATHLON_DOME; coord 0 (19,7) w1 h5 VAR_UNK_40DA 0 -> 008 (the workman turns the player back, scr_seq_0242_R35R0201.s:131-200)",
+  "scr_seq_0886_T25GYM0101.s:115-117 (Whitney beaten: VAR_UNK_40DA 1, FLAG_HIDE_PARK_SOUTH_GATE_POKEATHLON_ENTHUSIASTS_* swapped) -> the west door is open from 12 on",
+  "zone_event 251_D49 warp 0 (42,54) -> the gate; warps 1-3 (41-43,22) -> MAP_POKEATHLON_DOME_INTERIOR_1F",
+  "scr_seq_0123_D49R0101.s:34-35 (OnTransition: FLAG_SYS_FLYPOINT_POKEATHLON)",
+  "zone_event 252_D49R0101 coord 0 (23,10) VAR_UNK_40E2 0 -> 000; scr_seq_0123_D49R0101.s:58-145 (Whitney's first-visit scene, VAR_UNK_40E2 1 :145)",
+  "zone_event 252_D49R0101 object 0 pcwoman1 (23,8) script 9850 = _std_pokeathlon (include/constants/std_script.h:625; src/script_manager.c:46 -> scr_seq_0167, msg_0312)",
+  "scr_seq_0167.s:13-41 (0167_000: JOIN / INFO / EXIT, msg_0191.gmm 271/11/12)",
+  "scr_seq_0167.s:110-157 (JOIN: CountAliveMonsAndPC >= 3 :111-113; course menu SPEED (msg_0191.gmm index 273) first -> VAR_SPECIAL_x8000 0 :134-136)",
+  "scr_seq_0167.s:159-256 (YES :163-165, walk-in and avatar change :169-201, Call _0766 = the Pokeathlon command :205, points message msg_0312_00019/46 with VAR_SPECIAL_x8001/2 :228-233, sign/medal checks :236-249)",
+  "scr_seq_0167.s:481-500 (Pokeathlon 0, 0, course, result, points...: solo play)",
+  "src/scrcmd_c.c:4583-4593 (ScrCmd_Pokeathlon -> sub_02095DF4, asm/unk_02095DF4.s:12-42)",
+  "src/pokeathlon/pokeathlon_course.c:28-192 (course overlay Init/Main/Exit; the events run in undecompiled overlays ov96/ov97, asm)",
+  "asm/macros/script.inc Pokeathlon = opcode 611 (0x263)",
+]
+notes = "Gates: Whitney's badge (VAR_UNK_40DA 1, 12) opens the gate's west half; JOIN needs 3 able Pokemon (party + PC, CountAliveMonsAndPC): 12's party is CYNDAQUIL/QUILAVA, Togepi (still an egg until it hatches) and SCYTHER [INFERENCE], so boost.recipe adds a fourth. Input: the Speed Course's events (Hurdle Dash, Pennant Capture, Relay Run [INFERENCE: course contents not read from the asm overlays]) are stylus minigames with no decompiled source to plan from: new touch bots are needed (tap rhythm for jumps, drags for running), hence P2. A last place still finishes the course and returns to the reception, so the end state does not need a win. No RTC dependency. The Pokeathlon save (points, medals, records: src/pokeathlon/pokeathlon_save.c) is not in np_save4's dump, so [expect] checks the map, the first-visit var and the fly point; a stronger check would be a log of the Pokeathlon opcode (PC_TRACE_SCRIPT, op=0263) [INFERENCE: the HG/SS guest's script trace is unproven]. Bots proven on HG/SS: walk_to, talk_to, advance_text; needed: touch-event bots for the three events, and the course app's party pick (3 of the party) [INFERENCE: the pick is inside the course app]. [INFERENCE] estimate 24000: ~3000 to the Dome, ~2500 Whitney, ~1500 reception menus, ~15000 for three events with intros and results, ~2000 the return."
+
+[start]
+from = "12-whitney-plain-squirtbottle"
+boost = "boost.recipe"
+
+[run]
+frames = 36000
+
+[expect]
+map = "MAP_POKEATHLON_DOME_INTERIOR_1F"
+flags = ["FLAG_SYS_FLYPOINT_POKEATHLON"]
+save = ['s["vars"]["16610"] >= 1']  # VAR_UNK_40E2 (0x40E2): 1 after Whitney's scene, 2-4 after course milestones (scr_seq_0167.s:396-412)

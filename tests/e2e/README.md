@@ -98,7 +98,11 @@ The DS harness as Platinum and D/P use it, with these differences:
   coverage and levels for the boss fights, which `auto_battle` reaches with `send = "best"`. `party-heal`
   (`np_save4 heal-party`) restores the party as a Pokemon Center does, standing in for the Full Restores and
   Revives a player uses between the Elite Four's rooms (no bot uses items). SoulSilver's chain
-  lists HeartGold's dirs and its own `31-whirl-islands-lugia`.
+  lists HeartGold's dirs and its own `31-whirl-islands-lugia`. Side systems (`heartgold/systems.txt`, SoulSilver's
+  listing HeartGold's shared dirs) start `from` a chain dir's end save; a `[start] recipe` there takes the boost
+  verbs plus `location MAP X Z [DIR [Y]]` (`np_save4 set-location`: enter the target through a warp to get its
+  people) and `item POCKET SLOT ITEM QTY` (`np_save4 set-item`; POCKET by number: 0 items, 1 key_items, 2 tms_hms,
+  3 mail, 4 medicine, 5 berries, 6 balls, 7 battle_items), never flags or vars.
 - **Heal**: every Pokemon Center 1F has the nurse at (8,11) and the exit at (8,19).
 - **Fly and field moves** (bots.py `_hgss_open_party_move`, `_hgss_fly`; the probe sees none of these screens, so every
   key count is the decomp's and the bots note the presses they make; seen at runtime on HeartGold after 03: X opens the
@@ -152,7 +156,9 @@ and how it was proven is in docs/BW_RAM.md. Differences:
   add-mon`): HM carriers, since no bot teaches an HM through the Bag. Give an added Pokemon its moves, or it has
   none and battles with Struggle. `party-level SLOT LEVEL` (`np_save5 set-level`) raises a member the save holds,
   for a full party; `party-set SLOT SPECIES LEVEL [MOVE...]` (`np_save5 set-mon`) replaces one with a Pokemon made
-  as `add-mon` makes it, carrying those moves: a Fly/Surf/Strength carrier once the party is full.
+  as `add-mon` makes it, carrying those moves: a Fly/Surf/Strength carrier once the party is full. A side system's
+  `[start] recipe` on a `from` save also takes `location ZONE X Y Z` (`np_save5 set-location`) and
+  `item POCKET SLOT ITEM QTY` (`np_save5 set-item`; 0 items, 1 key_items, 2 tms_hms, 3 medicine, 4 berries).
 - **Boot**: CONTINUE waits for the opening movie (START at frame 5000).
 
 ## How a milestone runs

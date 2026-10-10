@@ -1,0 +1,25 @@
+# Proves the Kanto gym Blaine (Volcano Badge) in the Seafoam Islands.
+# Start: 96-pewter-brock's end -> end: MAP_SEAFOAM_ISLANDS_CINNABAR_GYM after the leader, BADGE_VOLCANO.
+title = "Kanto gym: Blaine (Volcano Badge) in the Seafoam Islands"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0015_D11R0106.s:20-58 (OnTransition: hour hiding of FLAG_HIDE_SEAFOAM_GYM_BLAINE only with BADGE_EARTH / rematch)",
+  "scr_seq_0015_D11R0106.s:83-92 (CheckBadge BADGE_VOLCANO, TRAINER_LEADER_BLAINE_BLAINE :88, GiveBadge BADGE_VOLCANO)",
+  "TRAINER_LEADER_BLAINE_BLAINE (259, include/constants/trainers.h:264)",
+  "scr_seq_0815_T09.s:85-166 (Blue on Cinnabar: FLAG_UNK_128; VAR_UNK_4135 >= 7 -> FLAG_UNK_129, FLAG_HIDE_VIRIDIAN_CITY_OLD_MAN_OUTSIDE_GYM_LOCKED set, ..._UNLOCKED cleared :163-166) - feeds 98",
+]
+notes = "Gate: Surf from Pallet down Route 21 to Cinnabar, then Route 20 east to the Seafoam Islands; Blaine's gym is inside Seafoam (MAP_SEAFOAM_ISLANDS_CINNABAR_GYM) [INFERENCE: the Seafoam route may need Strength/boulders; check tools/hg_map.py]. After the 7th Kanto badge talk to Blue on Cinnabar (VAR_UNK_4135 >= 7) to unlock the Viridian Gym for 98. surf/walk_to proven; Strength (field_move) unproven on HG/SS. [INFERENCE] estimate."
+
+[start]
+from = "96-pewter-brock"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_SEAFOAM_ISLANDS_CINNABAR_GYM"
+badge = ["BADGE_VOLCANO"]
+battles = 1

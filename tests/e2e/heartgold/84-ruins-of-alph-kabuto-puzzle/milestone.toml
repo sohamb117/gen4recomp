@@ -1,0 +1,40 @@
+# Proves the Ruins of Alph's Kabuto panel puzzle: the Violet -> Route 36 -> Ruins gatehouse walk, the northeast
+# chamber's slab (AlphPuzzle 0), the four loose tiles dragged into place and turned upright by touch, the solved
+# flag (FLAG_SYS_ALPH_PUZZLE_KABUTO), the floor giving way and the drop into the underground hall.
+# Start: 04's end MAP_VIOLET east entrance (510,269) -> end: MAP_RUINS_OF_ALPH_UNDERGROUND_HALL (25,6),
+# FLAG_SYS_ALPH_PUZZLE_KABUTO, VAR_UNK_40DD 1.
+title = "Ruins of Alph: Kabuto sliding-panel puzzle"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 9000
+refs = [
+  "zone_event 144_T22R0701 (Violet-Route 36 gatehouse) warps (10,7) -> MAP_VIOLET, (1,7) -> MAP_ROUTE_36; no coord events",
+  "zone_event 037_R36 warps 2/3 (430/431,252) -> MAP_ROUTE_36_RUINS_OF_ALPH_GATEHOUSE (east of the Sudowoodo at (415,246)); warps 4/5 (447,246/247) -> the Violet gatehouse",
+  "zone_event 100_R36R0101 warp 0 (5,2) -> MAP_ROUTE_36, warp 1 (5,12) -> MAP_RUINS_OF_ALPH",
+  "zone_event 110_D24R0101 warps 0/1 (430/431,261) -> the Route 36 gatehouse; warp 4 (436,266) -> MAP_RUINS_OF_ALPH_NORTHEAST_ENTRANCE_FIRST_ROOM",
+  "zone_event 283_D24R0202 bg 0 (6,6) dir 0 (read facing north from (6,7)) -> 000; warp 0 (6,17) -> MAP_RUINS_OF_ALPH",
+  "scr_seq_0039_D24R0202.s:15-83 (000: AlphPuzzle 0 :21; FLAG_SYS_ALPH_PUZZLE_KABUTO :25 -> FLAG_UNK_188 :30, FLAG_UNK_21C :39, VAR_UNK_40CE 1 :58, Warp MAP_RUINS_OF_ALPH_UNDERGROUND_HALL (25,6) :64/:77, VAR_UNK_40DD 1 :67/:80, VAR_UNK_40EC +1)",
+  "src/scrcmd_c.c:4826-4835 (ScrCmd_AlphPuzzle -> AlphPuzzle_LaunchApp); src/alph_puzzle.c:423-428 (dAlphPuzzles[0] = sAlphKabutoPuzzle)",
+  "src/alph_puzzle.c:219-268 (sAlphKabutoPuzzle, rows y 0-5 of {tile, rotation, immovable}: loose tiles 6 (0,1) rot 1, 11 (5,2) rot 2, 2 (0,4) rot 3, 9 (4,5) rot 1; tiles 1,3,4,5,7,8,10,12-16 fixed in place)",
+  "src/alph_puzzle.c:1266-1276 (AlphPuzzle_CheckComplete: tile i at x = i%4+1, y = i/4+1 (0-based i), rotation 0)",
+  "src/alph_puzzle.c:780-838 (input is touch only: System_GetTouchNew picks the tile at x = (tx-32)/32, y = ty/32; QUIT hitbox (169..191, 209..255) :205-208)",
+  "src/alph_puzzle.c:800-815 (released within 2 held frames -> rotate +90 degrees; held longer -> pick up), :885-940 (held: the tile follows the touch, clamped to x 48..208, y 16..176; release drops it on the hovered free tile, (0,0) or an occupied/corner tile snaps it back), :942-969 (rotation +1 mod 4, then the completion check)",
+  "src/alph_puzzle.c:670-675 (solved -> Save_VarsFlags_SetAlphPuzzleFlag; src/sys_flags.c:120-124 -> FLAG_SYS_ALPH_PUZZLE_KABUTO)",
+  "include/constants/flags.h:1729 FLAG_SYS_ALPH_PUZZLE_KABUTO",
+]
+notes = "Gates: none past Violet [INFERENCE: the Violet-Route 36 gatehouse and the Ruins gatehouse have no coord events; the Ruins gate sits east of the Sudowoodo], so the earliest save is 04's. Input code (touch-screen pixel centre of grid tile (x,y) = (48+32x, 16+32y)): (1) drag tile 6 from (48,48) to (112,80) [grid (0,1)->(2,2)], then 3 short taps at (112,80); (2) drag tile 11 from (208,80) to (144,112) [(5,2)->(3,3)], 2 taps at (144,112); (3) drag tile 2 from (48,144) to (112,48) [(0,4)->(2,1)], 1 tap at (112,48); (4) drag tile 9 from (176,176) to (80,112) [(4,5)->(1,3)], 3 taps at (80,112) - the last tap completes the picture. A drag = touch held at the source >= 4 frames (the pickup needs 3 held frames), then held at the target a few frames (the hover tile updates per held frame), then released; a tap = touch held 1-2 frames, then >= 12 frames released (the 8-frame rotation animation). The tap bot holds 4 frames by default (a pickup, not a turn): taps need hold = 1, and the drags need a continuous touch moved between two points - a new 'drag' bot, or a schedule file whose consecutive touch entries keep the stylus down [INFERENCE: unverified that schedule touch entries are continuous], hence P2. Bots proven on HG/SS: walk_to, talk_to (bg), advance_text; needed: touch drag (and tap with hold 1). [INFERENCE] estimate 9000: ~6000 walk Violet -> Ruins NE chamber, ~1500 puzzle input, ~1500 collapse and warp."
+
+[start]
+from = "04-route30-31-violet"
+
+[run]
+frames = 13500
+
+[expect]
+map = "MAP_RUINS_OF_ALPH_UNDERGROUND_HALL"
+flags = ["FLAG_SYS_ALPH_PUZZLE_KABUTO", "FLAG_UNK_188", "FLAG_UNK_21C"]
+
+[expect.vars]
+VAR_UNK_40DD = 1
+VAR_UNK_40CE = 1

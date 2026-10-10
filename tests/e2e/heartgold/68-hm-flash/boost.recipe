@@ -1,0 +1,6 @@
+# Boost on 61's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# Party: 0 TYPHLOSION (Rock Smash, 61's boost), 1 TOGEPI, 2 SCYTHER (Cut), 3 AMPHAROS (Discharge, Thunderbolt,
+# Thunder Wave, Charge), 4 PELIPPER, 5 FERALIGATR. TM70 (Flash) is in the bag since chain 05 (Elder Li,
+# scr_seq_0018_D15R0103.s:124); teaching through the Bag is not botted, so the boost gives the move: AMPHAROS takes TM70
+# (files/poketool/personal/personal.json), in Charge's place.
+party-move 3 3 MOVE_FLASH

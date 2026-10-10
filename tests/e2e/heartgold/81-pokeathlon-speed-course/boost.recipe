@@ -1,0 +1,5 @@
+# Boost on 12's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
+# The Pokeathlon reception refuses fewer than 3 able Pokemon (scr_seq_0167.s:111-113 CountAliveMonsAndPC >= 3); 12's
+# party is the starter, the aide's Togepi egg (an egg is not able until it hatches) and 10's SCYTHER [INFERENCE: the
+# egg may have hatched by 12; a fourth member is harmless either way]. PONYTA: a fast Speed Course entrant.
+party SPECIES_PONYTA 20

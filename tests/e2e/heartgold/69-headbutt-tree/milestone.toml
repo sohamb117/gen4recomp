@@ -1,0 +1,18 @@
+# Proves Headbutt in the field: the Ilex Forest tutor's Headbutt, a headbutt tree, a wild battle or nothing.
+# Start: 29's end, Fly to Azalea -> end: by a headbutt tree.
+title = "Headbutt: shaking a tree"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 20000
+refs = [
+  "games/heartgold/src/field_move.c:636-663 (FieldMove_CheckHeadbutt: FIELD_MOVE_CHECK_HEADBUTT)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:774-861 (scr_seq_0146_014 std_field_headbutt), :862- (scr_seq_0146_018 std_menu_headbutt)",
+]
+notes = "The field_move bot lists Headbutt for HG/SS (unverified at runtime). A boost can teach Headbutt instead of the tutor. estimate: a guess until measured."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 30000

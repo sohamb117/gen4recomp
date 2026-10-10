@@ -1,0 +1,23 @@
+# Reference only: HG/SS Pal Park migration is already covered outside tests/e2e; do not duplicate it here.
+# Start: n/a (covered elsewhere) -> end: n/a.
+title = "Pal Park (covered elsewhere)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 1
+refs = [
+  "docs/FEATURE_PARITY.md:222 (HeartGold/SoulSilver column: core: Pal Park migration from a GBA cartridge, pc/src/pc_hg_agb.c; MIGRATE FROM EMERALD with the National Pokedex)",
+  "docs/FEATURE_PARITY.md:97 (D/P/Pt Pal Park rows: palpark; diamond-palpark, pearl-palpark)",
+  "tests/mac/feature_matrix.py:550-564 (@case('palpark'): Emerald cartridge in the slot, MIGRATE FROM EMERALD on the main menu)",
+  "include/constants/maps.h:113,483 (MAP_PAL_PARK D10R0101, MAP_FUCHSIA_PAL_PARK_ENTRANCE T08R0201)",
+]
+notes = "Covered elsewhere: the migration is a main-menu GBA-cartridge feature exercised by tests/mac/feature_matrix.py and docs/FEATURE_PARITY.md; an e2e milestone would duplicate it and needs a GBA ROM + save the harness does not provide. Keep status planned, never implement here. The in-game Pal Park catching (Fuchsia, after a migration) could only follow a migration run."
+
+[start]
+from = "38-champion-lance-hall-of-fame-credits"
+
+[run]
+frames = 1
+
+[expect]
+# none: reference-only skeleton

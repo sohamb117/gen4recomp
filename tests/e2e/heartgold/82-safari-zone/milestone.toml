@@ -1,0 +1,43 @@
+# Proves the Johto Safari Zone: Baoba's access (his call after Jasmine's Lighthouse return sets VAR_UNK_4057 1), the
+# gate's first-entry Baoba scene (VAR_UNK_4057 2), the receptionist's paid entry (500, 30 Safari Balls,
+# SafariZoneAction 0), a wild catch with a Safari Ball, and leaving through the gate (SafariZoneAction 1).
+# Start: 19's end MAP_OLIVINE outside the gym (269,239) -> end: MAP_SAFARI_ZONE_ENTRANCE_INTERIOR after the exit
+# prompt, VAR_UNK_4057 2, FLAG_SYS_SAFARI clear, a Safari Ball mon in the party.
+title = "Safari Zone: Baoba's gate, entry, Safari Balls and a catch"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 18000
+refs = [
+  "scr_seq_0684_T26_hdr.s:15 (OnFrame VAR_SCENE_LIGHTHOUSE_JASMINE 2 -> 003); scr_seq_0911_T26.s:35-40 (FLAG_UNK_0F5, VAR_UNK_4057 1, PhoneCall PHONE_CONTACT_BAOBA, VAR_SCENE_LIGHTHOUSE_JASMINE 3) - played in 19",
+  "zone_event 250_D48R0101 (Cliff Edge Gate) warp 0 (40,22) -> MAP_CIANWOOD, warp 1 (18,46) -> MAP_ROUTE_47; zone_event 146_R47 warp 0 (149,384) -> the gate, warps 1-3 -> MAP_CLIFF_CAVE",
+  "zone_event 313_D50R0101 (Cliff Cave) warps 0-2 -> MAP_ROUTE_47; objects 1-6 std_field_rock_smash",
+  "zone_event 168_D47 (MAP_SAFARI_ZONE_GATE) warps 0/1 (88/89,293) -> MAP_SAFARI_ZONE_ENTRANCE_INTERIOR; warp 2 (82,302) -> its Pokemon Center; objects 13/14 workmen hidden by FLAG_HIDE_SAFARI_ZONE_WORKERS",
+  "scr_seq_0380_D47R0101_hdr.s:16-17 (OnFrame VAR_UNK_4057 1 -> 008, 4 -> 009)",
+  "scr_seq_0119_D47R0101.s:159-192 (008: Baoba's intro, a YES/NO loop, VAR_UNK_4057 2 :181)",
+  "zone_event 167_D47R0101 object 2 counterm_3 (4,4) -> 001 (entry); object 5 gsgentleman (7,12) -> 010 (Baoba); warps 1/2 (5,2)/(19,2) -> MAP_SAFARI_ZONE_ENTRANCE_EXTERIOR; warp 0 (4,15) -> MAP_SAFARI_ZONE_GATE",
+  "scr_seq_0119_D47R0101.s:555-628 (001: 500 shown :564-572, YES :576-579, PC-full with 6 in the party refused :580-585, money :587-594, 30 Safari Balls :598-603, VAR_SCENE_SAFARI_ZONE_ENTRANCE 1 :614, SafariZoneAction 0 :615, SetDynamicWarp (5,2) :616, Warp MAP_SAFARI_ZONE_ENTRANCE_EXTERIOR (79,100) :620)",
+  "src/scrcmd_c.c:3395-3418 (SafariZoneAction 0: FLAG_SYS_SAFARI on, 30 balls, steps 0; 1: off, balls 0)",
+  "src/encounter.c:405-460 (Safari Ball count; 0 balls -> std_safari_balls_out)",
+  "src/battle/battle_input.c:1890-1893 (safari menu: BALL in the FIGHT slot, BAIT, MUD)",
+  "zone_event 314_D47R0102 warps 0/1 (79/80,100) dynamic -> back into the gate",
+  "scr_seq_0119_D47R0101.s:22-53 (006: 'leave the Safari Zone?' YES -> SafariZoneAction 1 :33)",
+  "src/application/pokegear/phone/scripts/phone_scripts_baoba.c:9-45 (Baoba's later calls move VAR_UNK_4057 to 4/7: not needed for entry)",
+  "include/constants/flags.h:1713 FLAG_SYS_SAFARI; include/constants/vars.h:102 VAR_UNK_4057; include/constants/items.h:274 ITEM_SAFARI_BALL 5",
+]
+notes = "Gate: VAR_UNK_4057 1 from Baoba's call when Olivine's OnFrame runs after Jasmine leaves the Lighthouse (19); entering the gate building then plays Baoba's intro once (4057 2). The receptionist (4,4) takes 500 (money from the chain is ample [INFERENCE]) and refuses a full party with a full PC: 19's party is 5 (18's boost.recipe: CYNDAQUIL line, Togepi, SCYTHER, FLAAFFY, PELIPPER), so the catch joins the party. No RTC or badge gate besides that. Route: Fly to Cianwood (proven fly bot), Cliff Edge Gate north, Route 47 to Route 48 and the Safari Zone Gate [INFERENCE: Route 47 -> Route 48 runs through Cliff Cave and the overworld connection; whether Surf, Strength or Rock Smash is needed on the way is not traced - tools/hg_map.py and hg_world.py need the built map_matrix.naix]. Catch: walk_to laps in the entrance area's grass (encounters per safari area: src/safari_zone.c) until a wild battle; the safari menu's BALL sits in auto_battle's FIGHT slot (battle_input.c:1890-1893), as Platinum's 79-great-marsh-safari does - unproven on HG/SS. Leave: walk into the (79,100) warp, YES at the exit prompt. Bots proven on HG/SS: fly, walk_to, talk_to, advance_text, auto_battle; unproven here: auto_battle as the safari thrower (repeat until caught or the mon flees), field_move if a Rock Smash/Strength turns out to be on the path. [INFERENCE] estimate 18000: ~1500 fly, ~6000 Route 47/48, ~1500 Baoba, ~1500 entry, ~5000 grass and throws, ~1500 exit."
+
+[start]
+from = "19-amphy-secretpotion-jasmine-mineral"
+
+[run]
+frames = 27000
+
+[expect]
+map = "MAP_SAFARI_ZONE_ENTRANCE_INTERIOR"
+flags_clear = ["FLAG_SYS_SAFARI"]
+battles = 1
+save = [
+  'any(m["ball"]["id"] == 5 for m in s["party"])',  # a Safari Ball catch (ITEM_SAFARI_BALL 5)
+  's["vars"]["16471"] >= 2',  # VAR_UNK_4057 (0x4057): 2 after Baoba's intro; a Baoba call during the run may move it on (4/7)
+]

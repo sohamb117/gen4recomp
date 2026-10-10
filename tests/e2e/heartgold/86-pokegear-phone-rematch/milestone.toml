@@ -1,0 +1,42 @@
+# Proves Pokegear phone rematches: Youngster Joey on Route 30 beaten (if 04 did not) and his number registered,
+# an outgoing Pokegear call to him on his rematch day/time (Monday, day) after the Radio Tower, which marks him as
+# seeking a rematch, and the rematch battle (TRAINER_YOUNGSTER_JOEY_2) when he is talked to.
+# Start: 25's end MAP_GOLDENROD_RADIO_TOWER_OBSERVATION_DECK -> end: MAP_ROUTE_30 by Joey (553,332), Joey registered,
+# TRAINER_YOUNGSTER_JOEY_2 defeated.
+title = "Pokegear phone: register Joey, the rematch call, the rematch"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 17000
+refs = [
+  "zone_event 031_R30 object 4 std_trainer(TRAINER_YOUNGSTER_JOEY) (553,332), hidden by FLAG_HIDE_ROUTE_30_YOUNGSTER_JOEY (cleared in 03)",
+  "scr_seq_0953.s:1524-1537 (std trainer: battle, then Call _0D9F/_0DCF the number offer); :1548-1572 (talked again after: GetPhoneBookRematch :1551 -> rematch _0D02; else the offer again _0DE4)",
+  "scr_seq_0953.s:1618-1662 (_0D9F not yet registered; _0DF9 YES/NO, RegisterGearNumber :1653)",
+  "scr_seq_0953.s:1574-1591 (rematch: GetRematchMsgParams, TrainerBattle with the rematch id via _0C2F :1524)",
+  "files/tel/pmtel_book.json:203-222 (PHONE_CONTACT_JOEY: TRAINER_YOUNGSTER_JOEY, MAP_ROUTE_30, rematchWeekday RTC_WEEK_MONDAY, rematchTimeOfDay TIMEOFDAY_WILD_DAY, gift ITEM_HP_UP)",
+  "src/application/pokegear/phone/scripts/phone_scripts_generic.c:24-36 (outgoing call from another map section -> headers 0-7; from Route 30 itself -> phoneScriptIfLocal), :114-124 (POSTROCKETWEEKTIME: FLAG_BEAT_RADIO_TOWER_ROCKETS, weekday and time of day match)",
+  "src/application/pokegear/phone/phone_generic_headers.c:241-259 (Joey outgoing: FIGHTPOSTROCKETSNOTBUGCONTEST 100 -> 034 (already seeking), POSTROCKETWEEKTIME 100 -> PHONE_SCRIPT_033, RAND1 -> 035), :266-271 (incoming: FIGHTPOSTROCKETS 60% -> 033)",
+  "src/application/pokegear/phone/phone_script_defs.c:327-333 (PHONE_SCRIPT_033: PHONESCRIPTTYPE_REMATCH); src/application/pokegear/phone/overlay_101_021F1D74.c:254-261 (REMATCH -> PhoneRematches_SetSeeking TRUE)",
+  "src/unk_020932A4.c:9-21 (rematch only while seeking); src/overlay_26_022598C0.c:19 (Joey set: JOEY, JOEY, JOEY_2, JOEY_3, JOEY_4), :78-120 (first unbeaten entry, group flag FLAG_UNK_97B + n: src/sys_flags.c:116-118)",
+  "scr_seq_0034_D23R0106.s:135,147 (FLAG_BEAT_RADIO_TOWER_ROCKETS, FLAG_UNK_97D = rematch group 2, set in 25)",
+  "src/gf_rtc.c:164-206 (hours 10-19 are TIMEOFDAY_WILD_DAY via DAY/EVE)",
+  "src/application/pokegear/phone/overlay_101_021F0F48.c:232,302 (the phone list takes A as well as touch)",
+  "include/constants/flags.h:217 FLAG_BEAT_RADIO_TOWER_ROCKETS, :1394-1395 TRAINER_FLAG_BASE 0x550; include/constants/trainers.h:13 TRAINER_YOUNGSTER_JOEY 8, :284 TRAINER_YOUNGSTER_JOEY_2 279",
+]
+notes = "Gates: FLAG_BEAT_RADIO_TOWER_ROCKETS and rematch group 2 (FLAG_UNK_97D) both come in 25; Joey shown since 03. RTC: [run] clock Monday 2009-03-23 12:00 (TIMEOFDAY_WILD_DAY); the save's last day is earlier, so the day rolls forward on load. Order: Fly to Cherrygrove (proven fly bot), walk to Joey; if 04 never fought him, the battle comes first and the number is offered right after (scr_seq_0953.s:1532-1534), else talking offers it (:1557-1559): YES. Then leave Route 30's map section (an outgoing call from Route 30 runs phoneScriptIfLocal instead: phone_scripts_generic.c:31-32), e.g. Cherrygrove, open the Pokegear phone, call Joey: POSTROCKETWEEKTIME (chance 100: rollPercentChance's <= makes it certain) -> PHONE_SCRIPT_033 marks him seeking. Back to Joey: GetPhoneBookRematch -> JOEY_2 (the first unbeaten, group 2 unlocked). Bots proven on HG/SS: fly (opens the Pokegear map), walk_to, talk_to, advance_text, auto_battle; needed: a phone-call bot (Pokegear phone tab, contact list to JOEY, A) - the Pokegear app takes buttons. 25's party is full (6) and ~lv40: Joey's rematch is no threat. [INFERENCE] estimate 17000: ~3000 out of the Radio Tower, ~1500 fly, ~1500 walk, ~2800 first battle + number, ~1500 to Cherrygrove, ~1500 the call, ~1500 back, ~2500 the rematch."
+
+[start]
+from = "25-radio-tower-card-key-archer-wing"
+
+[run]
+frames = 25500
+clock = "2009-03-23 12:00:00"   # Monday daytime: Joey's rematchWeekday/rematchTimeOfDay
+
+[expect]
+map = "MAP_ROUTE_30"
+flags = ["FLAG_BEAT_RADIO_TOWER_ROCKETS"]
+battles = 1
+save = [
+  '0x550 + 8 in s["flags"]',    # TRAINER_YOUNGSTER_JOEY beaten (trainer flags at TRAINER_FLAG_BASE)
+  '0x550 + 279 in s["flags"]',  # TRAINER_YOUNGSTER_JOEY_2: the rematch
+]

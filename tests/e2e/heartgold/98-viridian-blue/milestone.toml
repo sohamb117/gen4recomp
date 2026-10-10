@@ -1,0 +1,26 @@
+# Proves the Kanto gym Blue (Earth Badge).
+# Start: 97-seafoam-blaine's end -> end: MAP_VIRIDIAN_GYM after the leader, BADGE_EARTH.
+title = "Kanto gym: Blue (Earth Badge)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0815_T09.s:91-111 (Blue on Cinnabar: VAR_UNK_40FD 0 and VAR_UNK_4135 >= 7 -> unlocks the gym :163-166)",
+  "scr_seq_0743_T02GYM0101.s:15-41 (OnTransition: before Red (VAR_UNK_40FD 0) Blue is always shown; the weekday hiding only after Red)",
+  "scr_seq_0743_T02GYM0101.s:46-66 (CheckBadge BADGE_EARTH, TRAINER_LEADER_BLUE_BLUE :51, GiveBadge BADGE_EARTH, FLAG_UNK_998/97F, VAR_UNK_4096 1 :66)",
+  "TRAINER_LEADER_BLUE_BLUE (261, include/constants/trainers.h:266)",
+  "scr_seq_0514_T02_hdr.s:14 + scr_seq_0741_T02.s:49-52 (back in Viridian: OnFrame VAR_UNK_4096 1 -> Oak's phone call, VAR_UNK_4096 2) - feeds 99",
+]
+notes = "Gate: the 7 other Kanto badges (VAR_UNK_4135 counts badges via AddVar in every gym) and Blue's Cinnabar talk. Leaving the gym into Viridian triggers Oak's call (VAR_UNK_4096 2), which 99 needs. No RTC before Red. Bots proven. [INFERENCE] estimate."
+
+[start]
+from = "97-seafoam-blaine"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_VIRIDIAN_GYM"
+badge = ["BADGE_EARTH"]
+battles = 1

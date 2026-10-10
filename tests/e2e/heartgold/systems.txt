@@ -1,0 +1,53 @@
+# HeartGold side systems (version = "both" unless noted), run standalone with --systems from the story chain's end
+# saves (build/e2e/heartgold/<chain dir>/end.sav). 62 and 68 continue 61's end, 74 continues 73's, the Kanto
+# post-game 91-99 each continue the one before. Priority per entry (milestone.toml `priority`): P0 core system,
+# P1 major activity, P2 minor/post-game. Pal Park and the Pokewalker are covered elsewhere (106/107 point there).
+# Field moves (P0; 67 Rock Climb P2 needs Kanto's Earth Badge, 68 Flash P1, 69 Headbutt P1)
+60-hm-cut
+61-hm-rock-smash
+62-hm-strength
+63-hm-surf
+64-hm-fly
+65-hm-whirlpool
+66-hm-waterfall
+67-hm-rock-climb
+68-hm-flash
+69-headbutt-tree
+# Core systems (P0: rods 70/71 wait on an HG/SS fishing trace; P1: 72 Super Rod (Kanto), 76 trade evolution (tests/link))
+70-fishing-old-rod
+71-fishing-good-rod
+72-fishing-super-rod
+73-day-care-deposit-and-egg
+74-egg-hatch
+75-level-up-evolution-after-battle
+76-trade-evolution
+77-pc-box-moves
+# Activities (P1: 80, 82, 83, 85, 86, 87; P2: 81, 84, 88)
+80-bug-catching-contest
+81-pokeathlon-speed-course
+82-safari-zone
+83-apricorn-kurt-balls
+84-ruins-of-alph-kabuto-puzzle
+85-walking-partner
+86-pokegear-phone-rematch
+87-battle-frontier-tower
+88-voltorb-flip
+# Kanto post-game (P2): the S.S. Aqua, the eight gyms, Red at Mt. Silver
+90-ss-aqua-vermilion
+91-vermilion-lt-surge
+92-saffron-sabrina
+93-cerulean-misty-machine-part
+94-celadon-erika
+95-fuchsia-janine
+96-pewter-brock
+97-seafoam-blaine
+98-viridian-blue
+99-mt-silver-red
+# Legendaries (P1: 100 the other mascot (HeartGold: Lugia), 101 the roaming beasts; P2: 102 HeartGold's Kyogre, 103 Lati)
+100-lugia-silver-wing
+101-roaming-beasts
+102-embedded-tower-kyogre
+103-lati
+# References only (P2): covered by tests/mac/feature_matrix.py palpark and docs/HANDOFF-hgss.md
+106-pal-park
+107-pokewalker

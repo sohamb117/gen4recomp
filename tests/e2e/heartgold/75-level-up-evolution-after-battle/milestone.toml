@@ -1,0 +1,17 @@
+# Proves level-up evolution: a party member one level short of its evolution wins a wild battle, levels up and evolves (the evolution scene runs).
+# Start: an early chain end with an unevolved member (e.g. Cyndaquil under 14) -> end: the evolved species in the party.
+title = "Level-up evolution after a wild battle"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "chain 02/05 grind (bots.py grind on HG/SS)",
+]
+notes = "A boost `party-level SLOT LEVEL` puts the member at the level before its evolution (Cyndaquil 13 -> Quilava at 14); grind fights one wild battle. Pick the chain end from its party (np_save4 dump). estimate: a guess until measured."
+
+[start]
+from = "05-sprout-tower-elder-li"
+
+[run]
+frames = 30000

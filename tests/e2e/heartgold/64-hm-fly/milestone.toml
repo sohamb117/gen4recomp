@@ -1,0 +1,29 @@
+# Proves Fly from the party menu: X, POKEMON, Pelipper, FLY, the Pokegear's fly map from New Bark (21,12) to
+# Cianwood, and the landing in front of Cianwood's Pokemon Center.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_CIANWOOD (187,370).
+title = "HM02 Fly: New Bark to Cianwood"
+priority = "P0"
+version = "both"
+estimate = 2892
+refs = [
+  "games/heartgold/src/field_move.c:217-248 (FieldMove_CheckFly: BADGE_STORM, not in the Safari Zone / Pal Park)",
+  "chain 18 (ITEM_HM02, scr_seq_0875_T24.s) and the chain's fly steps (20, 23, 26, 29-33)",
+  "tests/e2e/tools/hg_world.py fly (fly destinations, landing tiles)",
+]
+notes = "The fly bot (HG/SS, proven by the chain's 20-33) opens the party menu, picks Pelipper's FLY (field move 1) and moves the fly map's cursor. Here the whole trip is the milestone: New Bark to the far west of Johto. Scouted on HeartGold 29's end save: 'fly: landed on map 75 at (187,370)' at frame 2887. Measured: HeartGold 2892 frames, SoulSilver 2892 (wild battles fled on the way vary it)."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 4400
+
+[[step]]
+do = "fly"
+map = "MAP_CIANWOOD"
+shot = "landed"
+
+[expect]
+map = "MAP_CIANWOOD"
+position = [187, 370]
+log = ["fly: landed on map 75 at \\(187,370\\)"]

@@ -1,0 +1,47 @@
+# Proves Whirlpool in the field: surfing from Cianwood up to Route 41's whirlpool (214..216,331..333), A on it asks
+# to use Whirlpool (std_field_whirlpool), YES, and the current carries the player through to (215,334).
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_ROUTE_41 (215,334), south of the whirlpool.
+title = "HM05 Whirlpool: crossing a Route 41 whirlpool"
+priority = "P0"
+version = "both"
+estimate = 7687
+refs = [
+  "games/heartgold/src/field_move.c:601-634 (FieldMove_CheckWhirlpool: surfing, BADGE_GLACIER, FIELD_MOVE_CHECK_WHIRLPOOL); :150-163 (the facing tile's behaviour: MetatileBehavior_IsWhirlpool)",
+  "games/heartgold/src/metatile_behavior.c:434-436, include/constants/metatile_behavior.h:25 (TILE_BEHAVIOR_WHIRLPOOL 0x11)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:723-770 (scr_seq_0146_016 std_field_whirlpool, scr_seq_0146_017 std_menu_whirlpool); include/constants/std_script.h:648-649",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0090_D35R0103.s:694 (Lance's ITEM_HM05: Whirlpool in HG/SS, chain 21)",
+  "MAP_ROUTE_41 behaviour 0x11 tiles (tools/hg_map.py Map tiles): (203..205,360..362), (214..216,331..333), (230..232,374..376), (247..249,346..348); 0x11 with the collision bit",
+  "chain 28 (Dragon's Den, HeartGold) and soulsilver/31 (Whirl Islands) cross whirlpools inside story runs",
+]
+notes = "Pelipper (slot 4) knows Whirlpool. walk_to does not plan into whirlpools (bots.py Terrain: 0x11 is water, not surfable): the walk stops above it and bots.py moves F D bumps it, A, YES. Scouted on HeartGold 29's end save: landed in Cianwood (187,370), (215,330) on the water at 4568, the field move at 4585, (215,334) at 5103; the sheets show the whirlpool below the player, then above. Measured: HeartGold 5108 frames, SoulSilver 7687 (wild battles fled on the way vary it)."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 11600
+
+[[step]]
+do = "fly"
+map = "MAP_CIANWOOD"
+
+[[step]]
+do = "walk_to"
+x = 215
+z = 330
+surf = true
+on_battle = "flee"
+shot = "above-whirlpool"
+note = "surf east from Cianwood onto Route 41, north of the whirlpool"
+
+[[step]]
+do = "moves"
+dirs = [["F", "D"]]
+on_battle = "flee"
+shot = "past-whirlpool"
+note = "A facing the whirlpool, YES (Pelipper's Whirlpool): carried to (215,334)"
+
+[expect]
+map = "MAP_ROUTE_41"
+position = [215, 334]
+log = ["walk_to: a field move D ahead, using the field move"]

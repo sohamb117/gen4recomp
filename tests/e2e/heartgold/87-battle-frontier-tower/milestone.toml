@@ -1,0 +1,40 @@
+# Proves the Battle Frontier's Battle Tower: the Route 40 gatehouse (its guard steps aside only after the Hall of
+# Fame), Frontier Access, the Tower lobby's CHALLENGE -> SINGLE BATTLE, 3 Pokemon picked, the save before the climb,
+# the elevator, 7 Level 50 battles in a row and the return to the lobby with the streak recorded.
+# Start: 38's end save, continued in MAP_NEW_BARK_PLAYER_HOUSE_2F (6,6) -> end: MAP_BATTLE_TOWER lobby after the
+# 7th win, VAR_UNK_414B 0.
+title = "Battle Frontier: Battle Tower singles, 7 wins"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 47000
+refs = [
+  "src/game_clear.c:267-292 + src/location_backup.c:1-34 (the game-clear save continues in MAP_NEW_BARK_PLAYER_HOUSE_2F (6,6))",
+  "zone_event W40R0101 (MAP_ROUTE_40_BATTLE_FRONTIER_GATEHOUSE) warps (5,12) -> MAP_ROUTE_40, (5,2) -> MAP_BATTLE_FRONTIER_FRONTIER_ACCESS; object gsmiddleman1 (5,3) blocks the north warp",
+  "scr_seq_0963_W40R0101.s:10-18 (OnTransition: FLAG_GAME_CLEAR -> MovePersonFacing the guard to (3,3)); :19-50 (before: turned back)",
+  "zone_event 367_D32R0102 coord 0 (12,28) w6 VAR_UNK_40E5 0 -> 001 (first-visit walk-in, VAR_UNK_40E5 1, FLAG_UNK_25B: scr_seq_0081_D32R0102.s:65-117); warps 2/3 (14/15,7) -> MAP_BATTLE_FRONTIER_FRONTIER_ACCESS_GATEHOUSE",
+  "zone_event 244_D32R0101 warps 0-2 (6-8,2) -> MAP_BATTLE_FRONTIER; zone_event 243_D32 warps 0/1 (48/49,17) -> MAP_BATTLE_TOWER",
+  "zone_event 240_D31R0201 object 0 bfsm (15,5) -> 000",
+  "scr_seq_0069_D31R0201.s:173-243 (000: CHALLENGE/INFO/EXIT msg_0191.gmm 143-145; SINGLE BATTLE/DOUBLE BATTLE/CANCEL 475/476/94; ScrCmd_410 0, 0 single :221)",
+  "scr_seq_0069_D31R0201.s:244-513 (party checks ScrCmd_412 53 / DaycareSanitizeMon, pick, SaveGameNormal :503, Warp MAP_BATTLE_TOWER_ELEVATOR (3,6) :513)",
+  "scr_seq_0070_D31R0202.s:13-92 (elevator: ScrCmd_412 43 mode, Warp to the battle rooms)",
+  "src/scrcmd_9.c:61-200 (ScrCmd_412 Battle Tower sub-commands; 43 = FrontierFieldSystem_GetBattleTowerMode); src/frontier/ (the battle rooms' frontier script engine)",
+  "scr_seq_0330_D31R0201_hdr.s (OnFrame VAR_UNK_414B 1 -> 003, 2 -> 004, 3 -> 007, 255 -> 005); scr_seq_0069_D31R0201.s:973-1000 (003: back in the lobby after the set, results), :349-387 (004), :388-413 (005)",
+  "scr_seq_0069_D31R0201.s:96-170 (006: the prize receptionist's trophies at 20/50/100 BP-level streaks: FLAG_HIDE_PLAYERS_ROOM_*_TROPHY)",
+  "include/constants/vars.h:92 VAR_BATTLE_TOWER_PRINT_PROGRESS, :346 VAR_UNK_414B",
+]
+notes = "Gate: FLAG_GAME_CLEAR (the Route 40 gatehouse guard, scr_seq_0963_W40R0101.s:10-18), so the start is 38's game-clear save, continued in the player's room. Route: walk out of the house, Fly to Olivine (proven fly bot), walk west to the Route 40 gatehouse, Frontier Access (its first-visit coord scene), the Frontier gatehouse, the Tower (48,17). Entry: talk_to object 0 (15,5), CHALLENGE, SINGLE BATTLE, the party pick (3 of the party, Level 50 rules: no Ho-Oh/Lugia-class species, no duplicate species or held items [INFERENCE: rules from the BattleTower regulation, not traced line by line]; 38's party is TYPHLOSION, Togepi line, SCYTHER line, AMPHAROS, PELIPPER, FERALIGATR around lv60, scaled to 50) and YES to the save (SaveGameNormal). Then 7 battles: auto_battle each, and between battles the frontier engine's 'continue / record / rest / retire' menu answered with the first entry [INFERENCE: the room scripts run in the frontier engine, src/frontier, not read]. The record: the game saves on entry and when the set ends; the Tower's streak data is outside np_save4's dump, so [expect] counts 7 battles and the lobby var reset. Bots proven on HG/SS: walk_to, talk_to, fly, advance_text, auto_battle; needed: the Tower party-pick screen (party menu selection with A, unproven), and possibly a frontier-menu step. Risks: losing a battle at Level 50 with auto_battle's move choice (the streak resets; the run fails on battles < 7). [INFERENCE] estimate 47000: ~2500 house + fly, ~4000 Route 40 + access scene, ~2000 Frontier walk, ~3000 entry and save, ~28000 seven battles, ~5600 between-battle menus, ~1500 return."
+
+[start]
+from = "38-champion-lance-hall-of-fame-credits"
+
+[run]
+frames = 70000
+
+[expect]
+map = "MAP_BATTLE_TOWER"
+flags = ["FLAG_GAME_CLEAR"]
+battles = 7
+
+[expect.vars]
+VAR_UNK_414B = 0

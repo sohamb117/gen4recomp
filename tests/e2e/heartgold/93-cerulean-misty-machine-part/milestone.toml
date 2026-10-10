@@ -1,0 +1,28 @@
+# Proves the Kanto gym Misty (Cascade Badge), the Route 24 Rocket and the Machine Part.
+# Start: 92-saffron-sabrina's end -> end: MAP_CERULEAN_GYM after the leader, BADGE_CASCADE.
+title = "Kanto gym: Misty (Cascade Badge), the Route 24 Rocket and the Machine Part"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "scr_seq_0760_T04GYM0101.s:97-127 (the gym's Rocket scene: FLAG_HIDE_CERULEAN_GYM_ROCKET, ClearFlag FLAG_HIDE_ROUTE_24_ROCKET/ROUTE_25_MISTY/MISTYS_BOYFRIEND, VAR_SCENE_ROUTE_24_ROCKET 1)",
+  "scr_seq_0215_R24.s:79-103 (TRAINER_TEAM_ROCKET_GRUNT_24, FLAG_HIDE_ROUTE_24_ROCKET, VAR_SCENE_ROUTE_24_ROCKET 3)",
+  "scr_seq_0760_T04GYM0101.s:181-195 (the Machine Part in the gym: ITEM_MACHINE_PART, FLAG_HIDE_CERULEAN_GYM_MACHINE_PART, VAR_SCENE_ROUTE_24_ROCKET 4)",
+  "scr_seq_0216_R25.s:166-169 (Misty's date interrupted: FLAG_HIDE_ROUTE_25_MISTY, ClearFlag FLAG_HIDE_CERULEAN_GYM_POPULATION, VAR_UNK_4088 2)",
+  "scr_seq_0760_T04GYM0101.s:18-29 (OnTransition: Misty hidden until the date; Earth-badge/rematch hour hiding), :205-220 (TRAINER_LEADER_MISTY_MISTY :213, GiveBadge BADGE_CASCADE)",
+  "TRAINER_LEADER_MISTY_MISTY (254, include/constants/trainers.h:259)",
+  "Power Plant (optional here, needed by 101/103 and the Route 11/12 Snorlax): zone_event 441_R10R0202 coord 0 (14,16) VAR_SCENE_ROUTE_10_POWER_PLANT 1; scr_seq_0196_R10R0202.s:24-56 (manager: ITEM_MACHINE_PART taken, FLAG_RESTORED_POWER :54, ITEM_TM57)",
+]
+notes = "Gates: Cerulean via Saffron's north gate [INFERENCE]. Misty is absent until the Route 24 Rocket is beaten and her Route 25 date interrupted. Cerulean Gym also holds the Machine Part; returning it to the Power Plant manager (Route 10, Route 9 needs Cut [INFERENCE]) sets FLAG_RESTORED_POWER, which the Magnet Train (Pass from the Copycat), the EXPN Card/Poke Flute (Snorlax) and the roaming Lati (103) need. Keep the Power Plant return in this milestone's tail or a separate dir. No RTC. Bots proven (hm=true Cut). [INFERENCE] estimate."
+
+[start]
+from = "92-saffron-sabrina"
+
+[run]
+frames = 30000
+
+[expect]
+map = "MAP_CERULEAN_GYM"
+badge = ["BADGE_CASCADE"]
+battles = 1

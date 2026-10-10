@@ -1,0 +1,20 @@
+# Proves hatching: walking with 73's egg until it hatches (the nickname question answered NO).
+# Start: 73's end (an egg in the party) -> end: the hatched Pokemon in the party.
+title = "An egg hatches"
+status = "planned"
+priority = "P0"
+version = "both"
+estimate = 20000
+refs = [
+  "chain 06 (the Togepi egg, FLAG_GOT_EGG_FROM_ELMS_ASSISTANT; hatched on the chain's way: 29's Togepi is no egg)",
+]
+notes = "The hatch bot paces until no egg is left (checked by in-game saves; unproven on HG/SS). Starts from 73's end (systems chain), so 73 runs first. estimate: a guess until measured."
+
+[start]
+from = "73-day-care-deposit-and-egg"
+
+[run]
+frames = 30000
+
+[expect]
+save = ["not any(m[\"is_egg\"] for m in s[\"party\"])"]

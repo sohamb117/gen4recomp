@@ -1,0 +1,19 @@
+# Proves Rock Climb: HM08 (Route 2's house in Kanto) and a rock wall, gated by Blue's Earth Badge.
+# Start: post-game Kanto (after 98: the Earth Badge) -> end: past a rock-climb wall.
+title = "HM08 Rock Climb (Kanto: the Earth Badge)"
+status = "planned"
+priority = "P2"
+version = "both"
+estimate = 20000
+refs = [
+  "games/heartgold/src/field_move.c:393-429 (FieldMove_CheckRockClimb: BADGE_EARTH, FIELD_MOVE_CHECK_ROCKCLIMB)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:504-559 (scr_seq_0146_003 std_field_rock_climb, scr_seq_0146_010 std_menu_rock_climb)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0740_T01R0301.s (ITEM_HM08; FLAG_GOT_HM08 include/constants/flags.h:408)",
+]
+notes = "Needs the Kanto post-game through Viridian (90-98). walk_to hm = true covers Rock Climb walls (Platinum-proven). estimate: a guess until measured."
+
+[start]
+from = "38-champion-lance-hall-of-fame-credits"
+
+[run]
+frames = 30000

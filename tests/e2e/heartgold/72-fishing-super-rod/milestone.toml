@@ -1,0 +1,17 @@
+# Proves the Super Rod from the house on Route 12 (Kanto post-game) and a catch with it.
+# Start: post-game Kanto -> end: after the battle.
+title = "The Super Rod: Route 12's house (Kanto)"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 20000
+refs = [
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0200_R12R0101.s:15-25 (ITEM_SUPER_ROD)",
+]
+notes = "BLOCKED as 70, and needs the Kanto post-game (90-). estimate: a guess until measured."
+
+[start]
+from = "38-champion-lance-hall-of-fame-credits"
+
+[run]
+frames = 30000

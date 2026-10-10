@@ -1,0 +1,35 @@
+# HeartGold only: proves Kyogre at the Embedded Tower. NOTE: HG gets the Blue Orb and Kyogre, SS the Red Orb and Groudon
+# (scr_seq_0229_R30R0201.s version branch; scr_seq_0133_D52R0101.s hides Groudon in HG). No distribution event: the chain
+# is Red -> Oak's Kanto starter -> Mr. Pokemon's orb -> Cliff Edge Gate -> Route 47's Embedded Tower.
+# Start: 99-mt-silver-red's end -> end: MAP_EMBEDDED_TOWER_KYOGRE_ROOM (16,12), FLAG_CAUGHT_KYOGRE, VAR_SCENE_EMBEDDED_TOWER 4.
+title = "HeartGold: Blue Orb and Kyogre"
+status = "planned"
+priority = "P2"
+version = "heartgold"
+estimate = 35000
+refs = [
+  "scr_seq_0107_D41R0108.s:28-29,50 (beating Red: VAR_UNK_4131 1, Oak's Kanto starter balls shown)",
+  "scr_seq_0513_T01R0301_hdr.s:14 (Oak's lab OnFrame VAR_UNK_4131 1 -> 006); scr_seq_0740_T01R0301.s:505-526 (a Kanto starter chosen -> Call _0801), :601-673 (... VAR_SCENE_EMBEDDED_TOWER 1)",
+  "include/constants/vars.h:264 VAR_SCENE_EMBEDDED_TOWER (0x40F9)",
+  "scr_seq_0229_R30R0201.s:14-21 (VAR_SCENE_EMBEDDED_TOWER 1: Mr. Pokemon moved), :165-205 (MAP_ROUTE_30_MR_POKEMON_HOUSE scene with Oak: VAR_SCENE_EMBEDDED_TOWER 2; GetGameVersion 7 (HG) -> item 535 ITEM_BLUE_ORB, else 534 ITEM_RED_ORB (include/constants/items.h:955-956))",
+  "scr_seq_0121_D48R0101.s:60-93 (MAP_CLIFF_EDGE_GATE: Chuck's scene, FLAG_HIDE_CLIFFS_EDGE_GATE_CHUCK, VAR_SCENE_EMBEDDED_TOWER 3)",
+  "scr_seq_0134_D52R0102.s:13-45 (MAP_EMBEDDED_TOWER_KYOGRE_ROOM OnTransition: VAR_SCENE_EMBEDDED_TOWER >= 4 -> done; HG -> FLAG_BEAT_OR_ESCAPED_FROM_GROUDON_OR_KYOGRE unset and HasItem ITEM_BLUE_ORB -> ClearFlag FLAG_HIDE_EMBEDDED_TOWER_KYOGRE; SS -> hidden)",
+  "zone_event 477_D52R0102 object 0 obj_D52R0102_tsure_poke_static_kyogre (16,11) -> 000; warp 0 (16,29) <- MAP_ROUTE_47 5",
+  "scr_seq_0134_D52R0102.s:65-89 (WildBattle SPECIES_KYOGRE 50; fled/beaten -> FLAG_BEAT_OR_ESCAPED_FROM_GROUDON_OR_KYOGRE; caught -> VAR_SCENE_EMBEDDED_TOWER 4, FLAG_CAUGHT_KYOGRE include/constants/flags.h:397)",
+  "scr_seq_0825_T10R0701.s:170 (_023A: Hall of Fame re-arms uncaught Kyogre)",
+]
+notes = "Gates: Red (99), then Oak's lab (pick a Kanto starter), Mr. Pokemon's house (Route 30), the Cliff Edge Gate (Cianwood -> Route 47) and the Embedded Tower on Route 47 [INFERENCE: Route 47 needs Surf/Rock Climb/Waterfall]. No distribution event, no RTC (Route 47 weather is irrelevant). Catch needs a catching auto_battle mode (lv50) [INFERENCE]. Rayquaza (MAP_EMBEDDED_TOWER_RAYQUAZA_ROOM) needs both Kyogre and Groudon: one is SS-only, so it needs a trade (out of reach). Check: party species 382. Lines :601-673 hold more than one branch: confirm which Call reaches the SetVar at :673 [INFERENCE]. [INFERENCE] estimate."
+
+[start]
+from = "99-mt-silver-red"
+
+[run]
+frames = 52500
+
+[expect]
+map = "MAP_EMBEDDED_TOWER_KYOGRE_ROOM"
+flags = ["FLAG_CAUGHT_KYOGRE"]
+battles = 1
+
+[expect.vars]
+VAR_SCENE_EMBEDDED_TOWER = 4

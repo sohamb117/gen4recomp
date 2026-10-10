@@ -1,0 +1,29 @@
+# Proves the roaming legendaries: Raikou and Entei start roaming when the Burned Tower B1F scene runs (CreateRoamer 0/1),
+# move between Johto routes, and are met by random wild encounter; Suicune is not a roamer (scripted chase ending at Route 25).
+# Start: 38's end save (post-game, both still roaming unless caught) -> end: a Johto route after catching Raikou (party species 243).
+title = "Roaming Raikou/Entei (and Suicune's Route 25 battle)"
+status = "planned"
+priority = "P1"
+version = "both"
+estimate = 40000
+refs = [
+  "scr_seq_0024_D18R0102.s:77-78 (Burned Tower B1F: CreateRoamer 0 (Raikou), CreateRoamer 1 (Entei)); src/scrcmd_c.c:3441-3443 (ScrCmd_CreateRoamer -> Save_CreateRoamerByID)",
+  "src/field_roamer.c:118-151,174-220,236-300 (RoamerLocationUpdateRand, Save_RandomizeRoamersLocation, Save_UpdateRoamersLocation on map change, Save_CreateRoamerByID, SpeciesToRoamerIdx, RoamerLocationSetRandom / ApplyRoamerLocation)",
+  "src/encounter.c:389 (ov02_BattleExit_HandleRoamerAction: roamer HP/status saved, VAR_ROAMER_*_STATUS)",
+  "include/constants/vars.h:84-87 (VAR_ROAMER_RAIKOU_STATUS 0x4045, ENTEI 0x4046, LATIAS 0x4047, LATIOS 0x4048)",
+  "scr_seq_0825_T10R0701.s:76-83,186-206 (Hall of Fame: a roamer with status 2 (knocked out) is re-created: VAR 0 + CreateRoamer)",
+  "Suicune (both versions, not roaming): FLAG_HIDE_CIANWOOD_SUICUNE cleared at scr_seq_0024_D18R0102.s; sightings scr_seq_0252_R42.s:187, scr_seq_0776_T06.s:207-424 (Vermilion), scr_seq_0202_R14.s:195,307 (ClearFlag FLAG_HIDE_ROUTE_25_SUICUNE), scr_seq_0760_T04GYM0101.s:266",
+  "scr_seq_0216_R25.s:549-592 (Route 25: WildBattle SPECIES_SUICUNE 40 :559, FLAG_CAUGHT_SUICUNE include/constants/flags.h:392, VAR_SCENE_ROUTE_25 3)",
+  "scr_seq_0825_T10R0701.s:162-165 (VAR_SCENE_ROUTE_25 3 and not caught -> ClearFlag FLAG_HIDE_BURNED_TOWER_STATIC_SUICUNE); scr_seq_0024_D18R0102.s:240-267 (B1F static Suicune WildBattle 40, FLAG_CAUGHT_SUICUNE)",
+]
+notes = "Gates: 14 (Burned Tower) starts the roamers; nothing else. The roamers' locations are random per map change (field_roamer.c), so a deterministic run needs either a hunt bot (walk/fly between Johto routes, walk in grass until a roamer encounter, Mean Look/fast ball) - none exists in tests/e2e/bots.py - or a start recipe placing the player on the roamer's current route (recipes cannot set roamer save data). The roamer flees on turn 1: catching needs a trapping move or the Master Ball (29) [INFERENCE]. Check possible: np_save4 HG/SS dump has no roamer keys, so the only check is party species (243 Raikou / 244 Entei) via save = [...] over s['party']; VAR_ROAMER_*_STATUS via [expect.vars] if the status values are confirmed [INFERENCE]. Suicune is scripted (Route 25 after Misty / Route 14 sighting, then a Burned Tower static if it was knocked out) and could be a separate deterministic milestone from 93. RTC: none. [INFERENCE] estimate."
+
+[start]
+from = "38-champion-lance-hall-of-fame-credits"
+
+[run]
+frames = 60000
+
+[expect]
+flags = ["FLAG_GAME_CLEAR"]
+# save = ['243 in [m["species"] for m in s["party"]]']  # np_save4 dump party; no roamer keys in the HG/SS dump

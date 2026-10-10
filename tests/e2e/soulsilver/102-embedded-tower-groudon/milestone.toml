@@ -1,0 +1,33 @@
+# SoulSilver only: proves Groudon at the Embedded Tower. NOTE: SS gets the Red Orb and Groudon, HG the Blue Orb and Kyogre
+# (scr_seq_0229_R30R0201.s version branch; scr_seq_0134_D52R0102.s hides Kyogre in SS). No distribution event.
+# Start: 99-mt-silver-red's end -> end: MAP_EMBEDDED_TOWER_GROUDON_ROOM (16,12), FLAG_CAUGHT_GROUDON, VAR_SCENE_EMBEDDED_TOWER 4.
+title = "SoulSilver: Red Orb and Groudon"
+status = "planned"
+priority = "P2"
+version = "soulsilver"
+estimate = 35000
+refs = [
+  "scr_seq_0107_D41R0108.s:28-29,50 (beating Red: VAR_UNK_4131 1, Oak's Kanto starter balls shown)",
+  "scr_seq_0513_T01R0301_hdr.s:14 (Oak's lab OnFrame VAR_UNK_4131 1 -> 006); scr_seq_0740_T01R0301.s:505-526 (a Kanto starter chosen -> Call _0801), :601-673 (... VAR_SCENE_EMBEDDED_TOWER 1)",
+  "include/constants/vars.h:264 VAR_SCENE_EMBEDDED_TOWER (0x40F9)",
+  "scr_seq_0229_R30R0201.s:14-21 (VAR_SCENE_EMBEDDED_TOWER 1: Mr. Pokemon moved), :165-205 (MAP_ROUTE_30_MR_POKEMON_HOUSE scene with Oak: VAR_SCENE_EMBEDDED_TOWER 2; GetGameVersion 7 (HG) -> item 535 ITEM_BLUE_ORB, else 534 ITEM_RED_ORB (include/constants/items.h:955-956))",
+  "scr_seq_0121_D48R0101.s:60-93 (MAP_CLIFF_EDGE_GATE: Chuck's scene, FLAG_HIDE_CLIFFS_EDGE_GATE_CHUCK, VAR_SCENE_EMBEDDED_TOWER 3)",
+  "scr_seq_0133_D52R0101.s:13-56 (MAP_EMBEDDED_TOWER_GROUDON_ROOM OnTransition: HG -> hidden; SS -> HasItem ITEM_RED_ORB -> ClearFlag FLAG_HIDE_EMBEDDED_TOWER_GROUDON)",
+  "zone_event 476_D52R0101 object 0 obj_D52R0101_tsure_poke_static_groudon (16,11) -> 000; warp 0 (16,29) <- MAP_ROUTE_47 4",
+  "scr_seq_0133_D52R0101.s:65-89 (WildBattle SPECIES_GROUDON 50; caught -> VAR_SCENE_EMBEDDED_TOWER 4, FLAG_CAUGHT_GROUDON include/constants/flags.h:396)",
+]
+notes = "Same chain as heartgold/102-embedded-tower-kyogre with the SS orb. The SS chain needs SS dirs for 90-99 (the HG Kanto dirs are version 'both'; soulsilver/chain.txt would list them as ../heartgold/..). Catch needs a catching auto_battle mode [INFERENCE]. Check: party species 383. [INFERENCE] estimate."
+
+[start]
+from = "99-mt-silver-red"
+
+[run]
+frames = 52500
+
+[expect]
+map = "MAP_EMBEDDED_TOWER_GROUDON_ROOM"
+flags = ["FLAG_CAUGHT_GROUDON"]
+battles = 1
+
+[expect.vars]
+VAR_SCENE_EMBEDDED_TOWER = 4

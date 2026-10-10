@@ -1,0 +1,31 @@
+# HeartGold only: proves Lugia post-game. HG's Silver Wing comes from the Pewter old man (FLAG_UNK_094, ClearFlag
+# FLAG_HIDE_WHIRL_ISLAND_LUGIA); the Whirl Islands B2F monk sees it and Lugia (lv70 in HG) waits on B3F's water.
+# Start: 96-pewter-brock's end (Pewter, wing in the bag) -> end: MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE (16,18), FLAG_CAUGHT_LUGIA.
+title = "HeartGold: Silver Wing and Lugia"
+status = "planned"
+priority = "P1"
+version = "heartgold"
+estimate = 25000
+refs = [
+  "zone_event 048_T03 object 0 obj_T03_gsoldman1 (1069,94) -> 000; scr_seq_0750_T03.s:44-66 (GetGameVersion 7 = HG: ITEM_SILVER_WING (482), FLAG_UNK_094, ClearFlag FLAG_HIDE_WHIRL_ISLAND_LUGIA, SetFlag FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS)",
+  "scr_seq_0034_D23R0106.s:75-80 (HG's story wing is the Rainbow Wing; the Silver Wing is post-game only)",
+  "zone_event 092_W41 warps -> MAP_WHIRL_ISLANDS_1F; whirlpools (Whirlpool needs BADGE_GLACIER, src/field_move.c:604-608): route as in soulsilver/31-whirl-islands-lugia",
+  "zone_event 229_D40R0104 object 0 obj_D40R0104_bozu (36,30) -> 000; scr_seq_0103_D40R0104.s:31-66 (FLAG_CAUGHT_LUGIA -> done; FLAG_UNK_094 -> ShowLegendaryWing, FLAG_UNK_106)",
+  "zone_event 229_D40R0104 warp 5 (31,43) -> MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE 0 (16,38)",
+  "scr_seq_0104_D40R0107.s:19-40 (OnTransition/hide: FLAG_HIDE_WHIRL_ISLAND_LUGIA); :66-114 (WildBattle 249 at 70 in HG; caught -> FLAG_CAUGHT_LUGIA include/constants/flags.h:298)",
+  "zone_event 230_D40R0107 object 5 obj_D40R0107_lug_obj01 (16,17), faced from (16,18); coord 0 (16,36) VAR_UNK_40FA 1 (does not fire in HG: Ho-Oh set VAR_UNK_40FA 2, scr_seq_0021_D17R0110.s:342)",
+  "scr_seq_0825_T10R0701.s:111-123 (Hall of Fame re-shows uncaught Ho-Oh/Lugia)",
+]
+notes = "Gates: post-game Kanto access (90) and Pewter (96), Surf + Whirlpool (proven on SS chain). RTC: none. The battle must CATCH for FLAG_CAUGHT_LUGIA (lv70: needs a strong boost and a ball-throwing auto_battle mode; the Master Ball from 29 if still unused [INFERENCE]); otherwise expect only the encounter. auto_battle catch support on HG/SS is unproven [INFERENCE: check tests/e2e/bots.py]. Ref check: the HG B3F Lugia appears without the Tidal Bell scene [INFERENCE from the VAR_UNK_40FA values; confirm scr_seq_0104_D40R0107.s:19-40]. save check possible: party species 249. [INFERENCE] estimate."
+
+[start]
+from = "96-pewter-brock"
+
+[run]
+frames = 37500
+
+[expect]
+map = "MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE"
+flags = ["FLAG_UNK_094", "FLAG_UNK_106", "FLAG_CAUGHT_LUGIA"]
+battles = 1
+# save = ['249 in [m["species"] for m in s["party"]]']  # np_save4 dump party
