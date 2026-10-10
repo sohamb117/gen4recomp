@@ -1,24 +1,161 @@
 # Proves the Kanto gym Sabrina (Marsh Badge).
 # Start: 91-vermilion-lt-surge's end -> end: MAP_SAFFRON_GYM after the leader, BADGE_MARSH.
 title = "Kanto gym: Sabrina (Marsh Badge)"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 37350
 refs = [
   "scr_seq_0829_T11GYM0101.s:15-46 (OnTransition: the hour hiding of FLAG_HIDE_SAFFRON_GYM_SABRINA applies only with BADGE_MARSH / the rematch)",
   "scr_seq_0829_T11GYM0101.s:53-62 (CheckBadge BADGE_MARSH, TRAINER_LEADER_SABRINA_SABRINA :58, GiveBadge BADGE_MARSH)",
   "TRAINER_LEADER_SABRINA_SABRINA (258, include/constants/trainers.h:263)",
 ]
-notes = "Gate: Saffron from Vermilion via Route 6 north [INFERENCE: the Route 5/6 gatehouses are open in HG/SS]. The gym is a warp-panel maze: the implementer maps panels with tools/hg_map.py MAP_SAFFRON_GYM (needs the built map_matrix.naix; the tool failed here without games/heartgold build output) and chains walk_to steps. No RTC. Bots proven. [INFERENCE] estimate."
+notes = "Gate: none beyond Vermilion (91). Scouted on HeartGold (core-proposal): out of Vermilion Gym (6,22) the Cut tree (1300,319) has grown back (a map-temp flag), so it is cut again from the south; Route 6 north along hg_world.py route's corners (1304,310) (1305,300) (1305,286) (1304,275) to the gatehouse door (1300,261) (wild battles fled, Route 6's trainers fought); the gatehouse's north mat (5,2) -> Saffron (1300,253); the gym door (1328,204) -> (15,28). The gym is warp panels in a 3x3 of rooms around Sabrina's (zone_event 366_T11GYM0101.json: 31 warps; tools/hg_map.py lists only the first 29, missing 29 (2,7) <-> 30 (18,17), the way into the centre). The way: panel 1 (18,22) -> 2 (28,25); 16 (22,22) -> 15 (28,4); 27 (22,7) -> 28 (2,4); 29 (2,7) -> 30 (18,17), Sabrina's room. Each leg avoids every other panel (walk_to stops at an unplanned panel). The room trainers (Medium Darcy, Psychic Jared, Medium Rebecca) see the player on the way and are fought. Sabrina (object 5, (15,13)): the Marsh Badge, Kanto badge 5 (the save's kanto_badge_mask bit 5; run.py's `badge` reads the Johto mask only). Measured: HG 37350 frames, SS 35206; the sheets show Surge's gym, Sabrina's room after the badge, her Espeon lv53 at the action menu (HG against Scyther, SS against Ampharos)."
 
 [start]
 from = "91-vermilion-lt-surge"
 
 [run]
-frames = 30000
+frames = 56100
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 22
+note = "out of Vermilion Gym -> (1295,320)"
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 321
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 318
+hm = true
+note = "the Cut tree (1300,319) again, from the south"
+
+[[step]]
+do = "walk_to"
+x = 1304
+z = 310
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1305
+z = 300
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1305
+z = 286
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1304
+z = 275
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 262
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1300
+z = 261
+note = "Route 6's Saffron gatehouse"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+note = "the gatehouse's north mat -> Saffron (1300,253)"
+
+[[step]]
+do = "walk_to"
+x = 1328
+z = 205
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 1328
+z = 204
+note = "the gym door -> (15,28)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SAFFRON_GYM"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 22
+avoid = [[28, 25], [28, 22], [28, 13], [28, 16], [2, 13], [2, 16], [8, 7], [8, 4], [17, 4], [17, 7], [2, 25], [2, 22], [28, 7], [28, 4], [22, 22], [22, 25], [8, 22], [8, 25], [8, 16], [8, 13], [13, 7], [13, 4], [22, 16], [22, 13], [22, 4], [22, 7], [2, 4], [2, 7], [18, 17]]
+note = "panel 1 -> (28,25)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 22
+avoid = [[18, 22], [28, 25], [28, 22], [28, 13], [28, 16], [2, 13], [2, 16], [8, 7], [8, 4], [17, 4], [17, 7], [2, 25], [2, 22], [28, 7], [28, 4], [22, 25], [8, 22], [8, 25], [8, 16], [8, 13], [13, 7], [13, 4], [22, 16], [22, 13], [22, 4], [22, 7], [2, 4], [2, 7], [18, 17]]
+note = "panel 16 -> (28,4)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 7
+avoid = [[18, 22], [28, 25], [28, 22], [28, 13], [28, 16], [2, 13], [2, 16], [8, 7], [8, 4], [17, 4], [17, 7], [2, 25], [2, 22], [28, 7], [28, 4], [22, 22], [22, 25], [8, 22], [8, 25], [8, 16], [8, 13], [13, 7], [13, 4], [22, 16], [22, 13], [22, 4], [2, 4], [2, 7], [18, 17]]
+note = "panel 27 -> (2,4)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 7
+avoid = [[18, 22], [28, 25], [28, 22], [28, 13], [28, 16], [2, 13], [2, 16], [8, 7], [8, 4], [17, 4], [17, 7], [2, 25], [2, 22], [28, 7], [28, 4], [22, 22], [22, 25], [8, 22], [8, 25], [8, 16], [8, 13], [13, 7], [13, 4], [22, 16], [22, 13], [22, 4], [22, 7], [2, 4], [18, 17]]
+note = "panel 29 -> (18,17), Sabrina's room"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "talk_to"
+id = 5
+note = "Sabrina (15,13)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_LEADER_SABRINA_SABRINA"
+
+[[step]]
+do = "advance_text"
+note = "the Marsh Badge"
+shot = "badge"
 
 [expect]
 map = "MAP_SAFFRON_GYM"
-badge = ["BADGE_MARSH"]
 battles = 1
+save = ['s["trainer"]["kanto_badge_mask"] >> 5 & 1']
