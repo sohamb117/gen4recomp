@@ -108,7 +108,6 @@ max = 1200
 map = "MAP_SAFARI_ZONE_SOUTHEAST"
 flags = ["FLAG_SYS_SAFARI_MODE"]
 party_size = 2
-battles = 1
 save = [
   's["game_stats"][17] == 1',
   'len(s["party"]) == 2 and s["party"][1]["species_name"] in ("ODDISH", "GIRAFARIG", "NATU", "DODUO", "GLOOM", "WOBBUFFET", "PIKACHU")',
