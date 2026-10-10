@@ -1,18 +1,67 @@
-# Proves Headbutt in the field: the Ilex Forest tutor's Headbutt, a headbutt tree, a wild battle or nothing.
-# Start: 29's end, Fly to Azalea -> end: by a headbutt tree.
-title = "Headbutt: shaking a tree"
-status = "planned"
+# Proves Headbutt on a tree: facing a Route 29 headbutt tree (668,395) from the path, A asks 'It's a moderately sized
+# tree. Would you like to use Headbutt?' (std_field_headbutt), YES, 'SCYTHER used Headbutt.', the tree shakes and a
+# wild Pokemon drops out (this save and these inputs: deterministic); its battle is fled.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_ROUTE_29 by the tree, after the battle.
+title = "Headbutt: shaking a Route 29 tree"
 priority = "P1"
 version = "both"
-estimate = 20000
+estimate = 2896
 refs = [
-  "games/heartgold/src/field_move.c:636-663 (FieldMove_CheckHeadbutt: FIELD_MOVE_CHECK_HEADBUTT)",
-  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:774-861 (scr_seq_0146_014 std_field_headbutt), :862- (scr_seq_0146_018 std_menu_headbutt)",
+  "games/heartgold/src/field/field_control.c:282-287, :1133-1138, :1158-1165 (A facing a map model 0xD0 (MapModel_IsHeadbuttTree, src/unk_02054E00.c:6-11) starts std_field_headbutt); :604-605 (TILE_BEHAVIOR_HEADBUTT tiles likewise)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:774-861 (scr_seq_0146_014 std_field_headbutt: GetPartySlotWithMove MOVE_HEADBUTT, the YES/NO, the move and the encounter)",
+  "games/heartgold/files/msgdata/msg/msg_0211.gmm:133-137 (msg_0211_00032 the question, _00033 '... used Headbutt.')",
+  "games/heartgold/src/field_move.c:636-663 (FieldMove_CheckHeadbutt: the party menu's HEADBUTT entry)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0092_D36R0101.s:1112-1165 (the Ilex Forest tutor's MOVE_HEADBUTT; not on the chain's way)",
 ]
-notes = "The field_move bot lists Headbutt for HG/SS (unverified at runtime). A boost can teach Headbutt instead of the tutor. estimate: a guess until measured."
+notes = "Nobody in 29's party knows Headbutt (the Ilex tutor is not on the chain's way): the boost teaches it to Scyther (slot 2, Pursuit's place); TILE behaviour 0x06 marks Route 29's tree rows (tools/hg_map.py Map tiles), (668,395) north of the path tile (668,396). Scouted on HeartGold (29's end + this boost): the question, 'SCYTHER used Headbutt.', the tree shaking, a battle, fled. Whether a Pokemon drops is the encounter roll; the run is deterministic, so [expect] battles = 1 holds for this save. Measured: HeartGold 2859 frames (battle at 2184), SoulSilver 2896 (battle at 2199)."
 
 [start]
 from = "29-new-bark-elm-master-ball"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 4400
+
+[[step]]
+do = "walk_to"
+x = 668
+z = 396
+face = "up"
+on_battle = "flee"
+note = "Route 29's path below the tree (668,395)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+shot = "question"
+note = "'It's a moderately sized tree. Would you like to use Headbutt?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+note = "YES: 'SCYTHER used Headbutt.'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+times = 10
+until = "in_battle=1"
+shot = "dropped"
+note = "the tree shakes; a wild Pokemon drops out"
+
+[[step]]
+do = "auto_battle"
+flee = true
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ROUTE_29"
+battles = 1
