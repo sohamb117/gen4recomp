@@ -1,5 +1,5 @@
-# Sapphire side systems: Ruby's shared systems (version = "both"), run standalone with --systems.
-# Ruby-only 67-berry-harvest is intentionally omitted.
+# Sapphire side systems: Ruby's shared systems (version = "both"), run standalone with --systems
+# (67 continues 66's end save).
 ../ruby/60-daycare-deposit-egg-hatch
 ../ruby/61-pc-storage-box-moves
 ../ruby/62-fishing-old-good-super-rod
@@ -7,6 +7,7 @@
 ../ruby/64-trick-house-puzzle-1
 ../ruby/65-secret-base-secret-power-decorate
 ../ruby/66-berry-plant-water
+../ruby/67-berry-harvest
 ../ruby/68-berry-blender-pokeblock
 ../ruby/69-contest-normal-rank-win
 ../ruby/70-safari-zone-catch

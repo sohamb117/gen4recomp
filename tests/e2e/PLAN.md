@@ -5826,7 +5826,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - refs: data/maps/EverGrandeCity_ChampionsRoom/map.json object_events[0] STEVEN (6,5), warp_events[1] (6,2) -> HALL_OF_FAME; data/scripts/hall_of_fame.inc (SetGameClearFlags, special GameClear); src/hall_of_fame.c (HoF screen, the save, StartCredits); src/credits.c (The End, SoftReset)
 - notes: Steven: TRAINER_STEVEN (335): SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56, ARMALDO 56, METAGROSS 58 (Aggron x4 from Surf/Water, Claydol and Cradily resist: the boost levels the lead). After the battle May and Birch come in and the player is walked to the Hall of Fame; the HoF screen saves before the credits; the credits end in a SoftReset. [run] save = "none": the end save is the HoF save the game wrote.
 
-### Side systems: 17 milestones, ~259246 frames estimated
+### Side systems: 18 milestones, ~260508 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -5837,6 +5837,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [64-trick-house-puzzle-1](ruby/64-trick-house-puzzle-1/milestone.toml) | Trick House: the Trick Master and Puzzle 1 | P1 | both | 12661 | `start.recipe` | MAP_ROUTE110 | passing |
 | [65-secret-base-secret-power-decorate](ruby/65-secret-base-secret-power-decorate/milestone.toml) | Secret Base: Secret Power, a new base and a decoration | P1 | both | 7180 | `start.recipe` | MAP_SECRET_BASE_SHRUB3 | passing |
 | [66-berry-plant-water](ruby/66-berry-plant-water/milestone.toml) | Berries: plant a Cheri Berry and water it | P1 | both | 1526 | `start.recipe` | MAP_ROUTE104 | passing |
+| [67-berry-harvest](ruby/67-berry-harvest/milestone.toml) | Berries: harvest the grown Cheri Berry tree | P1 | both | 1262 | prev + `chain.recipe` | MAP_ROUTE104 | passing |
 | [68-berry-blender-pokeblock](ruby/68-berry-blender-pokeblock/milestone.toml) | Berry Blender: blend a Pokeblock with the old man | P1 | both | 6626 | `start.recipe` | MAP_SLATEPORT_CITY_CONTEST_LOBBY | passing |
 | [69-contest-normal-rank-win](ruby/69-contest-normal-rank-win/milestone.toml) | Contest: win the Normal Rank Cool contest | P1 | both | 22642 | `start.recipe` | MAP_VERDANTURF_TOWN_CONTEST_LOBBY | passing |
 | [70-safari-zone-catch](ruby/70-safari-zone-catch/milestone.toml) | Safari Zone: pay, enter and catch with Safari Balls | P1 | both | 4546 | `start.recipe` | MAP_SAFARI_ZONE_SOUTHEAST | passing |
@@ -5917,6 +5918,16 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - frames: estimate 1526, budget 2300
 - refs: data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree; data/scripts/new_game.inc:2-20 (setberrytree pre-plants 8 and 10 beside it, not 9); data/scripts/berry_tree.inc:1-11 (S_BerryTree: switch on the tree stage); data/scripts/berry_tree.inc:21-52 (empty soil: PlayerHasBerries, YES/NO, Berry_FadeAndGoToBerryBagMenu, removeitem); data/scripts/berry_tree.inc:174-180 (S_PlantBerryTree: incrementgamestat GAME_STAT_PLANTED_BERRIES); data/scripts/berry_tree.inc:54-59,146-172 (planted: checkitem ITEM_WAILMER_PAIL, YES/NO, S_WaterBerryTree); src/item_menu.c:2566-2578 (CB2_ChooseBerry: the berry pocket, A selects the item: OnItemSelect_Field4); src/berry.c:1155-1179 (ObjectEventInteractionWaterBerryTree: BERRY_STAGE_PLANTED -> watered1); src/berry.c:1451-1457 (ObjectEventInteractionPlantBerryTree: stage 1, growthSparkle off); include/constants/game_stat.h:7 (GAME_STAT_PLANTED_BERRIES 3); src/clock.c:19-35 (FLAG_SYS_CLOCK_SET gates DoTimeBasedEvents)
 - notes: No party: the soil is reached by the CONTINUE warp, no grass on the way. The bag opens on the berry pocket with the cursor on its first (only) slot, so one A plants the Cheri Berry.
+
+#### sapphire/67-berry-harvest — Berries: harvest the grown Cheri Berry tree
+- proves: Proves berry growth on the game clock and the harvest: 13 hours after 66 planted and watered a Cheri Berry in Route 104's berry tree 9 (start.sav's dump: stage 1, watered1), the tree bears berries (the dump step: stage 5, yield 2); picking them puts them in the berry pocket and leaves the soil empty (the tree gone from the end save's berry_trees). Start: 66's end save + the game clock 13 h later, MAP_ROUTE104 (35,7) below the tree -> end: same tile.
+- start: prev + `chain.recipe`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map MAP_ROUTE104; at (35, 7); 3 save check(s); log /dump: .* = \[\(1, 5, 2\)\]$/
+- frames: estimate 1262, budget 1900
+- refs: data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree; src/rtc.c:293-324 (RtcCalcTimeDifference, RtcCalcLocalTime: local time = RTC - localTimeOffset); src/clock.c:27-35,59-74 (DoTimeBasedEvents -> UpdatePerMinute -> BerryTreeTimeUpdate); src/berry.c:1210-1287 (BerryTreeGrow, BerryTreeTimeUpdate), src/berry.c:292 (Cheri stageDuration 3); src/berry.c:1374-1406 (CalcBerryYield: Cheri min 2, max 3, src/berry.c:288-289); data/scripts/berry_tree.inc:99-123 (stage 5: YES/NO, ObjectEventInteractionPickBerryTree, RemoveBerryTree); src/berry.c:1459-1471 (PickBerryTree: AddBagItem berry x yield; RemoveBerryTree)
+- notes: Chained: [start] from 66's end save (run 66 first, same --out and core). chain.recipe only moves the game clock on 780 minutes through the save's RTC offset (gen3_lab clock-advance: SaveBlock2 localTimeOffset), since the GBA RTC restarts at 2004-01-01 10:00 every run and takes no PC_RTC (games/gba-common/pc/src/gba_rtc.c); the tree's growth is the game's own, on CONTINUE's map load. No lab fallback: no lab verb plants a berry tree. One watering (66) gives a yield of exactly 2 (CalcBerryYieldInternal water 1: rand in [0, max-min] = [0,1], rand/4 = 0).
 
 #### sapphire/68-berry-blender-pokeblock — Berry Blender: blend a Pokeblock with the old man
 - proves: Proves the Berry Blender against the computer: the Slateport Contest Lobby's little girl gives the Pokeblock Case, the old man by the blender gives a Pecha Berry and blends it with the player and his partner; the Pokeblock goes in the case (GAME_STAT_POKEBLOCKS). Start: MAP_SLATEPORT_CITY_CONTEST_LOBBY (5,5) -> end: below the blender (12,6).
