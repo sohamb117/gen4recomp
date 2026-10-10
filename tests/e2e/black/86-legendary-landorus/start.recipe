@@ -1,5 +1,0 @@
-# On 32's end save: Tornadus (641) and Thundurus (642) lv 70 in place of Blitzle (slot 2) and Tepig (slot 4): the shrine
-# scans the party for both (scr 0752 script 2, Cmd0FE). Moves: Hurricane-free sets the ROM has: Air Slash (403),
-# scans the party for both (scr 0752 script 2, Cmd0FE). Moves: Air Slash (403), Crunch (242) / Thunderbolt (85), Crunch (242).
-party-set 2 641 70 403 242
-party-set 4 642 70 85 242
