@@ -741,11 +741,11 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - frames: estimate 28007, budget 42100
 - refs: scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67; src/clear_game.c:202-203; scripts_pokemon_league_hall_of_fame.s:10-62; src/clear_game.c:92-160; scripts_pokemon_league_hallway_to_hall_of_fame.s:15; scripts_pokemon_league_hallway_to_hall_of_fame.s:24; scripts_pokemon_league_hall_of_fame.s:47; scripts_pokemon_league_hall_of_fame.s:48-49; scripts_pokemon_league_hall_of_fame.s:68-70; scripts_pokemon_league_hall_of_fame.s:65; scripts_pokemon_league_hall_of_fame.s:123-143; scripts_pokemon_league_hall_of_fame.s:124; scripts_pokemon_league_hall_of_fame.s:125; scripts_pokemon_league_hall_of_fame.s:150-155; scripts_pokemon_league_hall_of_fame.s:158-169; scripts_pokemon_league_hall_of_fame.s:173; scripts_pokemon_league_hall_of_fame.s:177; scripts_pokemon_league_hall_of_fame.s:181; scripts_pokemon_league_hall_of_fame.s:184-203; scripts_pokemon_league_hall_of_fame.s:147; scripts_pokemon_league_hall_of_fame.s:139; scripts_pokemon_league_hall_of_fame.s:207; scripts_pokemon_league_hall_of_fame.s:141; scripts_pokemon_league_hall_of_fame.s:142; scripts_pokemon_league_hall_of_fame.s:143; src/clear_game.c:195-210; src/system_flags.c:64-67; src/clear_game.c:110-114; scripts_pokemon_league_hall_of_fame.s:110-114
 
-### Side systems: 52 milestones, ~494961 frames estimated
+### Side systems: 52 milestones, ~512554 frames estimated
 
 | milestone | title | P | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|
-| [31b-iron-island-riley-tag](platinum/31b-iron-island-riley-tag/milestone.toml) | Iron Island B2F: Riley tag battle and the Riolu egg (optional) | P1 | 15000 | prev + `lab.recipe` | MAP_HEADER_IRON_ISLAND_B2F_LEFT_ROOM | planned |
+| [31b-iron-island-riley-tag](platinum/31b-iron-island-riley-tag/milestone.toml) | Iron Island B2F: Riley tag battle and the Riolu egg (optional) | P1 | 32593 | prev + `lab.recipe` | MAP_HEADER_IRON_ISLAND_B2F_LEFT_ROOM | passing |
 | [60-hm-cut](platinum/60-hm-cut/milestone.toml) | HM01 Cut: clear the Eterna City tree | P1 | 2182 | `start.recipe` | 65 | passing |
 | [61-hm-rock-smash](platinum/61-hm-rock-smash/milestone.toml) | HM06 Rock Smash: break a Mt. Coronet rock | P1 | 2180 | `start.recipe` | 218 | passing |
 | [62-hm-strength](platinum/62-hm-strength/milestone.toml) | HM04 Strength: push a Mt. Coronet boulder | P1 | 2143 | `start.recipe` | 218 | passing |
@@ -799,13 +799,14 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [118-spiritomb-hallowed-tower](platinum/118-spiritomb-hallowed-tower/milestone.toml) | Spiritomb at the Hallowed Tower | P2 | 3025 | `start.recipe` | 356 | passing |
 
 #### platinum/31b-iron-island-riley-tag — Iron Island B2F: Riley tag battle and the Riolu egg (optional)
-- proves: Optional branch off 31: Riley follows from the B2F-left coord, tag double vs two grunts, Riolu egg. Start: 31's end (Iron Island exterior) -> end: Iron Island B2F left room (293), Riolu egg in the party.
+- proves: Optional branch off 31: Riley follows from the B2F-left coord, tag double vs two grunts, Riolu egg. Start: 31's end (Iron Island exterior) -> end: Iron Island B2F left room (293), Riolu egg in the party's last slot.
 - start: prev + `lab.recipe`; warp MAP_HEADER_IRON_ISLAND 0; lab state lines: 6 badge, 27 clear-flag, 150 flag, 24 item, 1 pokedex, 5 poketch, 1 register-item, 65 var
 - party: SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_SALAMENCE 100 (MOVE_DRAGON_CLAW)
 - trainers: none
-- end state: map MAP_HEADER_IRON_ISLAND_B2F_LEFT_ROOM; >= 1 battles; party size 3; flags set FLAG_RECEIVED_RIOLU_EGG_FROM_RILEY, FLAG_TALKED_TO_IRON_ISLAND_B2F_LEFT_ROOM_RILEY, FLAG_HIDE_IRON_ISLAND_B2F_LEFT_ROOM_RILEY; vars VAR_IRON_ISLAND_B2F_LEFT_ROOM_FOLLOWER_RILEY_STATE=2
-- frames: estimate 15000, budget 22500
-- refs: scripts_iron_island_b2f_left_room.s:38-60; scripts_iron_island_b2f_left_room.s:51; scripts_iron_island_b2f_left_room.s:52; scripts_iron_island_b2f_left_room.s:269; scripts_iron_island_b2f_left_room.s:56; scripts_iron_island_b2f_left_room.s:245; scripts_iron_island_b2f_left_room.s:246; scripts_iron_island_b2f_left_room.s:268; events_iron_island.json; events_iron_island_1f.json; events_iron_island_b1f_right_room.json; scripts_iron_island_b2f_left_room.s:149-196; scripts_iron_island_b2f_left_room.s:232-270
+- end state: map MAP_HEADER_IRON_ISLAND_B2F_LEFT_ROOM; >= 1 battles; flags set FLAG_RECEIVED_RIOLU_EGG_FROM_RILEY, FLAG_TALKED_TO_IRON_ISLAND_B2F_LEFT_ROOM_RILEY, FLAG_HIDE_IRON_ISLAND_B2F_LEFT_ROOM_RILEY; flags clear FLAG_COULD_NOT_RECEIVE_RIOLU_EGG; vars VAR_IRON_ISLAND_B2F_LEFT_ROOM_FOLLOWER_RILEY_STATE=2; 1 save check(s)
+- frames: estimate 32593, budget 48900
+- refs: scripts_iron_island_b2f_left_room.s:38-60; scripts_iron_island_b2f_left_room.s:51; scripts_iron_island_b2f_left_room.s:52; scripts_iron_island_b2f_left_room.s:269; scripts_iron_island_b2f_left_room.s:56; scripts_iron_island_b2f_left_room.s:245; scripts_iron_island_b2f_left_room.s:246; scripts_iron_island_b2f_left_room.s:268; events_iron_island.json; events_iron_island_1f.json; events_iron_island_b1f_right_room.json; scripts_iron_island_b2f_left_room.s:149-196; scripts_iron_island_b2f_left_room.s:232-270; events_iron_island_b2f_left_room.json coord_events[3] (21,40) 1x2, VAR_IRON_ISLAND_B2F_LEFT_ROOM_FOLLOWER_RILEY_STATE == 1
+- notes: From 31's chain save (party of 4, so the egg has a slot: :240-241); the lab fallback party is 2. Five B2F trainers spot the player on the way down and fight as doubles beside Riley (walk_to fights them). The last tile onto the grunts' coord is its own walk_to with on_text = stop, so advance_text's A, not walk_to's B, answers the egg's YES/NO.
 
 #### platinum/60-hm-cut — HM01 Cut: clear the Eterna City tree
 - proves: HM01 Cut, A-press path: face the Cut tree outside the Eterna Pokemon Center, answer YES, walk through where it stood. Start: Eterna City (304,522) facing the tree at (304,521). End: (304,520).

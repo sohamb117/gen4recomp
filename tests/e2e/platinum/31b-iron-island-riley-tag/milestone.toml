@@ -1,10 +1,9 @@
 # Optional branch off 31: Riley follows from the B2F-left coord, tag double vs two grunts, Riolu egg.
-# Start: 31's end (Iron Island exterior) -> end: Iron Island B2F left room (293), Riolu egg in the party.
+# Start: 31's end (Iron Island exterior) -> end: Iron Island B2F left room (293), Riolu egg in the party's last slot.
 
 title = "Iron Island B2F: Riley tag battle and the Riolu egg (optional)"
-status = "planned"
 priority = "P1"
-estimate = 15000
+estimate = 32593
 refs = [
   "scripts_iron_island_b2f_left_room.s:38-60",
   "scripts_iron_island_b2f_left_room.s:51",
@@ -19,14 +18,16 @@ refs = [
   "events_iron_island_b1f_right_room.json",
   "scripts_iron_island_b2f_left_room.s:149-196",
   "scripts_iron_island_b2f_left_room.s:232-270",
+  "events_iron_island_b2f_left_room.json coord_events[3] (21,40) 1x2, VAR_IRON_ISLAND_B2F_LEFT_ROOM_FOLLOWER_RILEY_STATE == 1",
 ]
+notes = "From 31's chain save (party of 4, so the egg has a slot: :240-241); the lab fallback party is 2. Five B2F trainers spot the player on the way down and fight as doubles beside Riley (walk_to fights them). The last tile onto the grunts' coord is its own walk_to with on_text = stop, so advance_text's A, not walk_to's B, answers the egg's YES/NO."
 
 [start]
 from = "31-iron-island-strength"
 lab = "lab.recipe"
 
 [run]
-frames = 22500
+frames = 48900
 
 [[step]]
 do = "walk_to"
@@ -66,31 +67,43 @@ note = "coord0 (35,2..3), Riley starts following (scripts_iron_island_b2f_left_r
 
 [[step]]
 do = "advance_text"
+shot = "riley_joins"
+note = "LetsTeamUp, the fanfare, IllHealYourPokemon; SetHasPartner, Riley follows (:38-60)"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 40
+max = 30000
+note = "one tile east of coord3 (21,40..41), off it: down the x 23-25 corridor; the B2F trainers that spot the player on the way are doubles with Riley, fought"
 
 [[step]]
 do = "walk_to"
 x = 21
-z = 41
-max = 12000
-note = "coord3 (21,40..41) -> tag double (:149-196); optional B2F trainers on the way are fought; [INFERENCE] path"
+z = 40
+on_text = "stop"
+note = "onto coord3 (21,40): CoordEvent_Grunts (:149-196) holds the player; the walk ends there and the scene is left to the next steps (walk_to's B would answer the egg's YES/NO as NO: RefusedEgg asks again, :262-265)"
 
 [[step]]
 do = "advance_text"
+note = "YoureResponsible .. WeCantLose; stops at StartTrainerBattle"
 
 [[step]]
 do = "auto_battle"
+snap = true
 shot = "riley_tag"
-note = "Grunts 835 + 836, partner TRAINER_RILEY_IRON_ISLAND (609)"
+note = "TRAINER_GALACTIC_GRUNT_IRON_ISLAND_1 + _2, partner TRAINER_RILEY_IRON_ISLAND"
 
 [[step]]
 do = "advance_text"
 max = 6000
 shot = "riolu_egg"
-note = "GiveEgg RIOLU (:232-270), needs a free party slot"
+note = "the grunts flee (RemoveObject), WouldYouTakeEgg: A takes YES (the menu's first entry) -> GiveEgg SPECIES_RIOLU (:232-270), LetsMeetAgain"
 
 [expect]
 map = "MAP_HEADER_IRON_ISLAND_B2F_LEFT_ROOM"
-party_size = 3
 flags = ["FLAG_RECEIVED_RIOLU_EGG_FROM_RILEY", "FLAG_TALKED_TO_IRON_ISLAND_B2F_LEFT_ROOM_RILEY", "FLAG_HIDE_IRON_ISLAND_B2F_LEFT_ROOM_RILEY"]
+flags_clear = ["FLAG_COULD_NOT_RECEIVE_RIOLU_EGG"]
 vars = { VAR_IRON_ISLAND_B2F_LEFT_ROOM_FOLLOWER_RILEY_STATE = 2 }
 battles = 1
+save = ['s["party"][-1]["species"] == 447 and s["party"][-1]["is_egg"]']
