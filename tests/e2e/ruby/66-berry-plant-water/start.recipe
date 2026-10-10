@@ -3,7 +3,6 @@
 # src/clock.c:19-25 InitTimeBasedEvents: FLAG_SYS_CLOCK_SET, lastBerryTreeUpdate = now). Without the flag
 # DoTimeBasedEvents (src/clock.c:27-35) never runs and no berry tree ever grows (67 harvests this tree).
 flag FLAG_SYS_CLOCK_SET                  # src/clock.c:21
-clock 2026-01-01 08:00:00
 # the Pail: Route104_PrettyPetalFlowerShop/scripts.inc:78-80 (giveitem ITEM_WAILMER_PAIL, FLAG_RECEIVED_WAILMER_PAIL)
 item ITEM_WAILMER_PAIL 1
 flag FLAG_RECEIVED_WAILMER_PAIL          # Route104_PrettyPetalFlowerShop/scripts.inc:80

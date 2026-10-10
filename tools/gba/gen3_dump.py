@@ -19,7 +19,11 @@
         bag {items, key_items, balls, tms_hms, berries: [{item, name, qty}], registered},
         pokedex {seen, caught, obtained, national, seen_list, caught_list (species ids)},
         hall_of_fame {total, latest: null | {party: [{species, species_name, level, nickname}]}},
-        game_stats [GAME_STAT_* values by id].
+        game_stats [GAME_STAT_* values by id],
+        clock {local_time_offset, last_berry_tree_update: {days, hours, minutes, seconds}}
+            (SaveBlock2's struct Times: the game's local time is the RTC minus the offset),
+        berry_trees [{id, berry, stage, sparkle, minutes_until_next_stage, yield, regrowth_count,
+                      watered [4]}] (SaveBlock1's berryTrees with a berry or a stage).
 
     tools/gba/gen3_dump.py gamedata ROM [--elf ELF]
         np_save4 gamedata's shape (tests/e2e/bots.py auto_battle):

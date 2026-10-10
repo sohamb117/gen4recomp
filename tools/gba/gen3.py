@@ -67,6 +67,7 @@ LAYOUT = {
         flags=0x1270, flags_bytes=0x139C - 0x1270,  # flags[NUM_FLAG_BYTES] (global.h:1020)
         vars=0x139C, vars_count=(0x159C - 0x139C) // 2,  # vars[VARS_COUNT] (global.h:1021)
         game_stats=0x159C, game_stats_count=64,     # gameStats[NUM_GAME_STATS] (global.h:1022, game_stat.h:58)
+        berry_trees=0x169C,                         # berryTrees[BERRY_TREES_COUNT] (global.h:1023)
     ),
     "rs": dict(
         sb2_size=0x890, sb1_size=0x3AC0, storage_size=0x83D0, encrypted=False,
@@ -76,6 +77,7 @@ LAYOUT = {
         flags=0x1220, flags_bytes=0x1340 - 0x1220,  # flags[FLAGS_COUNT] (global.h:701)
         vars=0x1340, vars_count=(0x1540 - 0x1340) // 2,  # vars[VARS_COUNT] (global.h:702)
         game_stats=0x1540, game_stats_count=50,     # gameStats[NUM_GAME_STATS] (global.h:703, game_stat.h:54)
+        berry_trees=0x1608,                         # berryTrees[BERRY_TREES_COUNT] (global.h:704)
         # secretBases[SECRET_BASES_COUNT 20] (global.h:705; struct SecretBaseRecord global.h:154-169: 0xA0 bytes,
         # secretBaseId +0, decorations[16] +0x12, decorationPos[16] +0x22; [0] is the player's own base)
         secret_bases=0x1A08, secret_base_size=0xA0, secret_base_count=20,
@@ -94,6 +96,13 @@ SB2_DEX = 0x18                                         # struct Pokedex (global.
 DEX_ORDER, DEX_MODE, DEX_MAGIC, DEX_OWNED, DEX_SEEN = 0x18, 0x19, 0x1A, 0x28, 0x5C
 DEX_BYTES = 52                                         # NUM_DEX_FLAG_BYTES / DEX_FLAGS_NO
 SB2_ENCRYPTION_KEY = 0xAC                              # Emerald only (global.h:532)
+# struct Time {s16 days; s8 hours, minutes, seconds} (pokeruby global.h:758-764, pokeemerald 198-204): the game's
+# local time is the RTC minus localTimeOffset (pokeruby src/rtc.c:293-324 RtcCalcTimeDifference, RtcCalcLocalTime)
+SB2_LOCAL_TIME_OFFSET, SB2_LAST_BERRY_UPDATE = 0x98, 0xA0  # (pokeruby global.h:860-861, pokeemerald 529-530)
+TIME_FMT = "<hbbb"
+# struct BerryTree (pokeruby include/global.berry.h:43-61, pokeemerald 63-76): u8 berry; u8 stage:7, sparkle:1;
+# u16 minutesUntilNextStage; u8 berryYield; u8 regrowthCount:4, watered1..4:1; 8 bytes
+BERRY_TREE_SIZE, BERRY_TREES_COUNT = 8, 128            # include/constants/global.h BERRY_TREES_COUNT
 CONTINUE_GAME_WARP = 1   # specialSaveWarpFlags bit 0 (pokeruby src/load_save.c:40-50; tools/gba/gen3_warp.py)
 NATIONAL_MAGIC = 0xDA    # EnableNationalPokedex (pokeemerald src/event_data.c:63-72, pokeruby 59-68)
 NATIONAL_VAR_VALUE = 0x302
@@ -1027,6 +1036,17 @@ def dump(rom, sav):
             dict(species=m["species"], species_name=rom.species_name(m["species"]), level=m["level"],
                  nickname=m["nickname"]) for m in teams[-1]]}}
     out["game_stats"] = [sav.u32_enc(lay["game_stats"] + 4 * i) for i in range(lay["game_stats_count"])]
+    out["clock"] = {name: dict(zip(("days", "hours", "minutes", "seconds"), struct.unpack_from(TIME_FMT, sb2, off)))
+                    for name, off in (("local_time_offset", SB2_LOCAL_TIME_OFFSET),
+                                      ("last_berry_tree_update", SB2_LAST_BERRY_UPDATE))}
+    trees = []
+    for i in range(BERRY_TREES_COUNT):
+        berry, st, mins, yld, bits = struct.unpack_from("<BBHBB", sb1, lay["berry_trees"] + i * BERRY_TREE_SIZE)
+        if berry or st:
+            trees.append({"id": i, "berry": berry, "stage": st & 0x7F, "sparkle": st >> 7,
+                          "minutes_until_next_stage": mins, "yield": yld, "regrowth_count": bits & 0xF,
+                          "watered": [bits >> (4 + k) & 1 for k in range(4)]})
+    out["berry_trees"] = trees
     if "secret_bases" in lay:  # Ruby/Sapphire
         out["secret_bases"] = []
         for i in range(lay["secret_base_count"]):

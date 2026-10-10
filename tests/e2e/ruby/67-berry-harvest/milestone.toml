@@ -1,27 +1,33 @@
-# Proves berry growth on the RTC and the harvest: 13 hours after 66 planted a Cheri Berry in Route 104's berry tree 9,
-# the tree bears berries; picking them puts them in the berry pocket and leaves the soil empty.
-# Start: 66's end save + the clock 13 h later, MAP_ROUTE104 (35,7) below the tree -> end: same tile.
+# Proves berry growth on the game clock and the harvest: 13 hours after 66 planted and watered a Cheri Berry in Route
+# 104's berry tree 9 (start.sav's dump: stage 1, watered1), the tree bears berries (the dump step: stage 5, yield 2);
+# picking them puts them in the berry pocket and leaves the soil empty (the tree gone from the end save's berry_trees).
+# Start: 66's end save + the game clock 13 h later, MAP_ROUTE104 (35,7) below the tree -> end: same tile.
 title = "Berries: harvest the grown Cheri Berry tree"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 4000
+estimate = 1262
 refs = [
   "data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree",
+  "src/rtc.c:293-324 (RtcCalcTimeDifference, RtcCalcLocalTime: local time = RTC - localTimeOffset)",
   "src/clock.c:27-35,59-74 (DoTimeBasedEvents -> UpdatePerMinute -> BerryTreeTimeUpdate)",
   "src/berry.c:1210-1287 (BerryTreeGrow, BerryTreeTimeUpdate), src/berry.c:292 (Cheri stageDuration 3)",
   "src/berry.c:1374-1406 (CalcBerryYield: Cheri min 2, max 3, src/berry.c:288-289)",
   "data/scripts/berry_tree.inc:99-123 (stage 5: YES/NO, ObjectEventInteractionPickBerryTree, RemoveBerryTree)",
   "src/berry.c:1459-1471 (PickBerryTree: AddBagItem berry x yield; RemoveBerryTree)",
 ]
-notes = "Chained: [start] from 66's end save (run 66 first, same --out and core); chain.recipe only moves the clock (labc clock -> PC_RTC, overriding 66's end.clock: run.py place_start), which needs the GBA RTC to take PC_RTC as its base (games/gba-common/pc/src/gba_rtc.c; before that every GBA run starts at 2004-01-01 10:00 and the 13 hours would be 2.6M frames of waiting). No lab fallback: no lab verb plants a berry tree. One watering (66) gives a yield of exactly 2 (CalcBerryYieldInternal water 1: rand in [0, max-min] = [0,1], rand/4 = 0)."
+notes = "Chained: [start] from 66's end save (run 66 first, same --out and core). chain.recipe only moves the game clock on 780 minutes through the save's RTC offset (gen3_lab clock-advance: SaveBlock2 localTimeOffset), since the GBA RTC restarts at 2004-01-01 10:00 every run and takes no PC_RTC (games/gba-common/pc/src/gba_rtc.c); the tree's growth is the game's own, on CONTINUE's map load. No lab fallback: no lab verb plants a berry tree. One watering (66) gives a yield of exactly 2 (CalcBerryYieldInternal water 1: rand in [0, max-min] = [0,1], rand/4 = 0)."
 
 [start]
 from = "66-berry-plant-water"
 recipe = "chain.recipe"
 
 [run]
-frames = 6000
+frames = 1900
+
+[[step]]
+do = "dump"
+expr = '[(t["berry"], t["stage"], t["yield"]) for t in s["berry_trees"] if t["id"] == 9]'
+note = "the tree after CONTINUE's DoTimeBasedEvents: CHERI (1), BERRY_STAGE_BERRIES (5), yield 2"
 
 [[step]]
 do = "talk_to"
@@ -46,7 +52,9 @@ shot = "empty-soil"
 [expect]
 map = "MAP_ROUTE104"
 position = [35, 7]
+log = ['dump: .* = \[\(1, 5, 2\)\]$']
 save = [
-  'any(i["item"] == 133 and i["qty"] >= 2 for i in s["bag"]["berries"])',
+  'any(i["item"] == 133 and i["qty"] == 2 for i in s["bag"]["berries"])',
+  'not any(t["id"] == 9 for t in s["berry_trees"])',
   's["game_stats"][3] >= 1',
 ]

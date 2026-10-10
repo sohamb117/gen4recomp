@@ -5128,7 +5128,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - refs: data/maps/EverGrandeCity_ChampionsRoom/map.json object_events[0] STEVEN (6,5), warp_events[1] (6,2) -> HALL_OF_FAME; data/scripts/hall_of_fame.inc (SetGameClearFlags, special GameClear); src/hall_of_fame.c (HoF screen, the save, StartCredits); src/credits.c (The End, SoftReset)
 - notes: Steven: TRAINER_STEVEN (335): SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56, ARMALDO 56, METAGROSS 58 (Aggron x4 from Surf/Water, Claydol and Cradily resist: the boost levels the lead). After the battle May and Birch come in and the player is walked to the Hall of Fame; the HoF screen saves before the credits; the credits end in a SoftReset. [run] save = "none": the end save is the HoF save the game wrote.
 
-### Side systems: 18 milestones, ~263246 frames estimated
+### Side systems: 18 milestones, ~260508 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -5139,7 +5139,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [64-trick-house-puzzle-1](ruby/64-trick-house-puzzle-1/milestone.toml) | Trick House: the Trick Master and Puzzle 1 | P1 | both | 12661 | `start.recipe` | MAP_ROUTE110 | passing |
 | [65-secret-base-secret-power-decorate](ruby/65-secret-base-secret-power-decorate/milestone.toml) | Secret Base: Secret Power, a new base and a decoration | P1 | both | 7180 | `start.recipe` | MAP_SECRET_BASE_SHRUB3 | passing |
 | [66-berry-plant-water](ruby/66-berry-plant-water/milestone.toml) | Berries: plant a Cheri Berry and water it | P1 | both | 1526 | `start.recipe` | MAP_ROUTE104 | passing |
-| [67-berry-harvest](ruby/67-berry-harvest/milestone.toml) | Berries: harvest the grown Cheri Berry tree | P1 | both | 4000 | prev + `chain.recipe` | MAP_ROUTE104 | planned |
+| [67-berry-harvest](ruby/67-berry-harvest/milestone.toml) | Berries: harvest the grown Cheri Berry tree | P1 | both | 1262 | prev + `chain.recipe` | MAP_ROUTE104 | passing |
 | [68-berry-blender-pokeblock](ruby/68-berry-blender-pokeblock/milestone.toml) | Berry Blender: blend a Pokeblock with the old man | P1 | both | 6626 | `start.recipe` | MAP_SLATEPORT_CITY_CONTEST_LOBBY | passing |
 | [69-contest-normal-rank-win](ruby/69-contest-normal-rank-win/milestone.toml) | Contest: win the Normal Rank Cool contest | P1 | both | 22642 | `start.recipe` | MAP_VERDANTURF_TOWN_CONTEST_LOBBY | passing |
 | [70-safari-zone-catch](ruby/70-safari-zone-catch/milestone.toml) | Safari Zone: pay, enter and catch with Safari Balls | P1 | both | 4546 | `start.recipe` | MAP_SAFARI_ZONE_SOUTHEAST | passing |
@@ -5222,14 +5222,14 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - notes: No party: the soil is reached by the CONTINUE warp, no grass on the way. The bag opens on the berry pocket with the cursor on its first (only) slot, so one A plants the Cheri Berry.
 
 #### ruby/67-berry-harvest — Berries: harvest the grown Cheri Berry tree
-- proves: Proves berry growth on the RTC and the harvest: 13 hours after 66 planted a Cheri Berry in Route 104's berry tree 9, the tree bears berries; picking them puts them in the berry pocket and leaves the soil empty. Start: 66's end save + the clock 13 h later, MAP_ROUTE104 (35,7) below the tree -> end: same tile.
+- proves: Proves berry growth on the game clock and the harvest: 13 hours after 66 planted and watered a Cheri Berry in Route 104's berry tree 9 (start.sav's dump: stage 1, watered1), the tree bears berries (the dump step: stage 5, yield 2); picking them puts them in the berry pocket and leaves the soil empty (the tree gone from the end save's berry_trees). Start: 66's end save + the game clock 13 h later, MAP_ROUTE104 (35,7) below the tree -> end: same tile.
 - start: prev + `chain.recipe`; -; lab state lines: none
 - party: the continued save
 - trainers: none
-- end state: map MAP_ROUTE104; at (35, 7); 2 save check(s)
-- frames: estimate 4000, budget 6000
-- refs: data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree; src/clock.c:27-35,59-74 (DoTimeBasedEvents -> UpdatePerMinute -> BerryTreeTimeUpdate); src/berry.c:1210-1287 (BerryTreeGrow, BerryTreeTimeUpdate), src/berry.c:292 (Cheri stageDuration 3); src/berry.c:1374-1406 (CalcBerryYield: Cheri min 2, max 3, src/berry.c:288-289); data/scripts/berry_tree.inc:99-123 (stage 5: YES/NO, ObjectEventInteractionPickBerryTree, RemoveBerryTree); src/berry.c:1459-1471 (PickBerryTree: AddBagItem berry x yield; RemoveBerryTree)
-- notes: Chained: [start] from 66's end save (run 66 first, same --out and core); chain.recipe only moves the clock (labc clock -> PC_RTC, overriding 66's end.clock: run.py place_start), which needs the GBA RTC to take PC_RTC as its base (games/gba-common/pc/src/gba_rtc.c; before that every GBA run starts at 2004-01-01 10:00 and the 13 hours would be 2.6M frames of waiting). No lab fallback: no lab verb plants a berry tree. One watering (66) gives a yield of exactly 2 (CalcBerryYieldInternal water 1: rand in [0, max-min] = [0,1], rand/4 = 0).
+- end state: map MAP_ROUTE104; at (35, 7); 3 save check(s); log /dump: .* = \[\(1, 5, 2\)\]$/
+- frames: estimate 1262, budget 1900
+- refs: data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree; src/rtc.c:293-324 (RtcCalcTimeDifference, RtcCalcLocalTime: local time = RTC - localTimeOffset); src/clock.c:27-35,59-74 (DoTimeBasedEvents -> UpdatePerMinute -> BerryTreeTimeUpdate); src/berry.c:1210-1287 (BerryTreeGrow, BerryTreeTimeUpdate), src/berry.c:292 (Cheri stageDuration 3); src/berry.c:1374-1406 (CalcBerryYield: Cheri min 2, max 3, src/berry.c:288-289); data/scripts/berry_tree.inc:99-123 (stage 5: YES/NO, ObjectEventInteractionPickBerryTree, RemoveBerryTree); src/berry.c:1459-1471 (PickBerryTree: AddBagItem berry x yield; RemoveBerryTree)
+- notes: Chained: [start] from 66's end save (run 66 first, same --out and core). chain.recipe only moves the game clock on 780 minutes through the save's RTC offset (gen3_lab clock-advance: SaveBlock2 localTimeOffset), since the GBA RTC restarts at 2004-01-01 10:00 every run and takes no PC_RTC (games/gba-common/pc/src/gba_rtc.c); the tree's growth is the game's own, on CONTINUE's map load. No lab fallback: no lab verb plants a berry tree. One watering (66) gives a yield of exactly 2 (CalcBerryYieldInternal water 1: rand in [0, max-min] = [0,1], rand/4 = 0).
 
 #### ruby/68-berry-blender-pokeblock — Berry Blender: blend a Pokeblock with the old man
 - proves: Proves the Berry Blender against the computer: the Slateport Contest Lobby's little girl gives the Pokeblock Case, the old man by the blender gives a Pecha Berry and blends it with the player and his partner; the Pokeblock goes in the case (GAME_STAT_POKEBLOCKS). Start: MAP_SLATEPORT_CITY_CONTEST_LOBBY (5,5) -> end: below the blender (12,6).

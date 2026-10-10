@@ -41,7 +41,17 @@ game's own code would leave it:
   map MAP X Z          the CONTINUE location: SaveBlock1's continue-game warp
                        (map, warp -1, X, Z) and its flag in SaveBlock2, so CONTINUE
                        warps there as after a link room (tools/gba/gen3_warp.py)
-  clock ...            ignored here (labc turns it into the run's PC_RTC)
+  clock ...            ignored here (labc turns it into the run's PC_RTC, which the
+                       GBA RTC does not take: games/gba-common/pc/src/gba_rtc.c)
+  clock-advance MINUTES
+                       the game's clock moved on MINUTES, as the cartridge's RTC
+                       running that long would: SaveBlock2's localTimeOffset lowered
+                       by MINUTES (local time = RTC - offset, pokeruby src/rtc.c:293-324),
+                       left normalized as RtcCalcTimeDifference leaves it (seconds,
+                       minutes, hours in range, the borrow in days). The time-based
+                       events (berry growth, the daily ones) then run from the game's
+                       own lastBerryTreeUpdate and VAR_DAYS on the next map load
+                       (src/clock.c DoTimeBasedEvents); nothing else is touched.
 
 Anything else, or a bad argument, stops with an error and writes nothing.
 Every changed SaveBlock sector of the newest slot gets its checksum
@@ -63,7 +73,7 @@ VERBS = {
     "name": None, "gender": 1, "trainer-id": 1, "money": 1, "badge": 1, "var": 2, "flag": 1,
     "clear-flag": 1, "party": 3, "party-move": 3, "party-level": 2, "party-item": 2, "party-iv": 3,
     "party-ev": 3, "item": 2, "register-item": 1, "pokedex": 1, "national-dex": 1, "dex-seen": 1,
-    "dex-caught": 1, "map": 3,
+    "dex-caught": 1, "map": 3, "clock-advance": 1,
 }
 MAIL_NONE = 0xFF        # pokeemerald include/constants/items.h:448; pokeruby src/pokemon_1.c:1346 (CreateMon)
 MAX_MONEY = 999999      # pokeemerald src/money.c:13 (R/S: the same cap in src/money.c)
@@ -282,6 +292,15 @@ class Lab:
         # WarpData continueGameWarp: s8 mapGroup, s8 mapNum, s8 warpId, pad, s16 x, s16 y
         struct.pack_into("<BBbxhh", self.sav.sb1, gen3.SB1_CONTINUE_WARP, map_id >> 8, map_id & 0xFF, -1, x, z)
         self.sav.sb2[gen3.SB2_SPECIAL_WARP] |= gen3.CONTINUE_GAME_WARP
+
+    def v_clock_advance(self, minutes):
+        self.need(minutes > 0, "clock-advance takes a positive number of minutes")
+        d, h, m, s = struct.unpack_from(gen3.TIME_FMT, self.sav.sb2, gen3.SB2_LOCAL_TIME_OFFSET)
+        total = ((d * 24 + h) * 60 + m) * 60 + s - minutes * 60
+        d, rest = divmod(total, 86400)
+        self.need(-0x8000 <= d < 0x8000, "the offset's days are s16")
+        struct.pack_into(gen3.TIME_FMT, self.sav.sb2, gen3.SB2_LOCAL_TIME_OFFSET,
+                         d, rest // 3600, rest // 60 % 60, rest % 60)
 
 
 def parse(recipe, game):

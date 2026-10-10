@@ -57,6 +57,11 @@ The same runner, bots and milestone format, with these differences:
   `np_save4` gives. Lab and boost recipes run through `tools/gba/gen3_lab.py` (D/P's verbs; `map MAP X Z`; `badge 1..8`)
   on a new-game base save, the house 1F after `tests/rse/littleroot.sched`. The GBA guest leaves storing its flash
   chip to the host, so the bots `flush` (np_gp's serve command) after an in-game save.
+- **Clock**: the GBA RTC (`games/gba-common/pc/src/gba_rtc.c`) starts every run at 2004-01-01 10:00:00 and runs with
+  the frames; it takes no `PC_RTC`, so a recipe `clock` line does nothing here. A recipe moves the game's clock on with
+  `clock-advance MINUTES` (the game's own RTC offset, SaveBlock2's `localTimeOffset`); the time-based events (berry
+  growth, the daily ones) then run from the save's `lastBerryTreeUpdate` and `VAR_DAYS` on the next map load. The
+  dump's `clock` and `berry_trees` show them (Ruby 66/67: a Cheri Berry planted, grown 13 hours on, harvested).
 - **Battles** take buttons: `auto_battle` makes the DS choices and moves the cursor the probe reports.
 - **Names** come from the decomp headers (`labc.py --game emerald|ruby|sapphire`). Badges are `badges = N` plus
   the `FLAG_BADGE0N_GET` flags. A `talk_to` id is the object's 1-based index in map.json.
