@@ -1,19 +1,110 @@
-# Proves Rock Climb: HM08 (Route 2's house in Kanto) and a rock wall, gated by Blue's Earth Badge.
-# Start: post-game Kanto (after 98: the Earth Badge) -> end: past a rock-climb wall.
-title = "HM08 Rock Climb (Kanto: the Earth Badge)"
-status = "planned"
+# Proves Rock Climb: HM08 from Oak (after Blue's Earth Badge and Oak's call) and Route 5's rock wall, up and down.
+# Start: 98's end (below Blue in the Viridian Gym) -> end: MAP_ROUTE_5 (1302,179), below the wall, after climbing it both ways.
+title = "HM08 Rock Climb: Oak's gift and Route 5's wall (the Earth Badge)"
 priority = "P2"
 version = "both"
-estimate = 20000
+estimate = 7811
 refs = [
   "games/heartgold/src/field_move.c:393-429 (FieldMove_CheckRockClimb: BADGE_EARTH, FIELD_MOVE_CHECK_ROCKCLIMB)",
   "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:504-559 (scr_seq_0146_003 std_field_rock_climb, scr_seq_0146_010 std_menu_rock_climb)",
   "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0740_T01R0301.s (ITEM_HM08; FLAG_GOT_HM08 include/constants/flags.h:408)",
+  "Route 5's wall: tools/hg_map.py MAP_ROUTE_5 --hex: (1302,177) and (1302,178) behaviour 0x4B (north/south) between (1302,179) and (1302,176)",
 ]
-notes = "Needs the Kanto post-game through Viridian (90-98). walk_to hm = true covers Rock Climb walls (Platinum-proven). estimate: a guess until measured."
+notes = "Gate: the Earth Badge (98) and Oak's call on leaving the Viridian Gym, after which Oak gives HM08 (not Route 2's house: scr_seq_0740_T01R0301.s). The move itself is the boost's, as 61's Rock Smash. Route 5's wall (1302,177..178, 0x4B) is the nearest one to a fly point (Cerulean); tools/hg_map.py lists Kanto's others on Rock Tunnel B1F, Cerulean Cave B1F and Mt. Silver. walk_to hm = true bumps the wall and answers YES ('FERALIGATR used Rock Climb!'), up from (1302,179) to (1302,176) and back down. Measured: HG 7810 frames, SS 7811; the sheets show Oak's lab after HM08, the player and FERALIGATR below the wall, the player above it, then below again."
 
 [start]
-from = "38-champion-lance-hall-of-fame-credits"
+from = "98-viridian-blue"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 11800
+
+[[step]]
+do = "slide"
+dirs = "DOWN DOWN DOWN DOWN LEFT DOWN DOWN DOWN DOWN"
+max = 4000
+note = "back down the Viridian Gym's arrow floor (99's presses) to the exit mat (5,47)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 16
+gap = 30
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIRIDIAN"
+
+[[step]]
+do = "advance_text"
+key = "b"
+max = 6000
+note = "Oak's call (VAR_UNK_4096 1 -> 2)"
+
+[[step]]
+do = "fly"
+map = "MAP_PALLET"
+
+[[step]]
+do = "walk_to"
+x = 1045
+z = 373
+
+[[step]]
+do = "wait_map"
+map = "MAP_PALLET_TOWN_OAKS_LAB"
+
+[[step]]
+do = "talk_to"
+id = 0
+
+[[step]]
+do = "advance_text"
+max = 8000
+note = "HM08 Rock Climb"
+shot = "after-hm08"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 13
+
+[[step]]
+do = "wait_map"
+map = "MAP_PALLET"
+
+[[step]]
+do = "fly"
+map = "MAP_CERULEAN"
+
+[[step]]
+do = "walk_to"
+x = 1302
+z = 179
+on_battle = "flee"
+note = "south out of Cerulean to Route 5, below the wall (1302,177..178)"
+shot = "below-wall"
+
+[[step]]
+do = "walk_to"
+x = 1302
+z = 176
+hm = true
+on_battle = "flee"
+note = "the bump into the wall: 'The wall is very rocky... Would you like to use Rock Climb?' YES, FERALIGATR climbs"
+shot = "on-top"
+
+[[step]]
+do = "walk_to"
+x = 1302
+z = 179
+hm = true
+on_battle = "flee"
+note = "and back down the same wall"
+shot = "back-down"
+
+[expect]
+map = "MAP_ROUTE_5"
+position = [1302, 179]
+flags = ["FLAG_GOT_HM08"]
+save = ['any(i["name"] == "HM08" for i in s["bag"]["tms_hms"])']

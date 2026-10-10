@@ -4,10 +4,9 @@
 # Start: 12's end MAP_GOLDENROD outside the Flower Shop (371,333) -> end: MAP_POKEATHLON_DOME_INTERIOR_1F before the
 # reception (object 0 at (23,8)), VAR_UNK_40E2 >= 1, FLAG_SYS_FLYPOINT_POKEATHLON.
 title = "Pokeathlon Dome: Speed Course"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 24000
+estimate = 56832
 refs = [
   "zone_event 099_R35R0201 warp 2 (4,2) -> MAP_POKEATHLON_DOME; coord 0 (19,7) w1 h5 VAR_UNK_40DA 0 -> 008 (the workman turns the player back, scr_seq_0242_R35R0201.s:131-200)",
   "scr_seq_0886_T25GYM0101.s:115-117 (Whitney beaten: VAR_UNK_40DA 1, FLAG_HIDE_PARK_SOUTH_GATE_POKEATHLON_ENTHUSIASTS_* swapped) -> the west door is open from 12 on",
@@ -23,14 +22,155 @@ refs = [
   "src/pokeathlon/pokeathlon_course.c:28-192 (course overlay Init/Main/Exit; the events run in undecompiled overlays ov96/ov97, asm)",
   "asm/macros/script.inc Pokeathlon = opcode 611 (0x263)",
 ]
-notes = "Gates: Whitney's badge (VAR_UNK_40DA 1, 12) opens the gate's west half; JOIN needs 3 able Pokemon (party + PC, CountAliveMonsAndPC): 12's party is CYNDAQUIL/QUILAVA, Togepi (still an egg until it hatches) and SCYTHER [INFERENCE], so boost.recipe adds a fourth. Input: the Speed Course's events (Hurdle Dash, Pennant Capture, Relay Run [INFERENCE: course contents not read from the asm overlays]) are stylus minigames with no decompiled source to plan from: new touch bots are needed (tap rhythm for jumps, drags for running), hence P2. A last place still finishes the course and returns to the reception, so the end state does not need a win. No RTC dependency. The Pokeathlon save (points, medals, records: src/pokeathlon/pokeathlon_save.c) is not in np_save4's dump, so [expect] checks the map, the first-visit var and the fly point; a stronger check would be a log of the Pokeathlon opcode (PC_TRACE_SCRIPT, op=0263) [INFERENCE: the HG/SS guest's script trace is unproven]. Bots proven on HG/SS: walk_to, talk_to, advance_text; needed: touch-event bots for the three events, and the course app's party pick (3 of the party) [INFERENCE: the pick is inside the course app]. [INFERENCE] estimate 24000: ~3000 to the Dome, ~2500 Whitney, ~1500 reception menus, ~15000 for three events with intros and results, ~2000 the return."
+notes = "Gates: Whitney's badge (VAR_UNK_40DA 1, 12) opens the gate's west half; JOIN needs 3 able Pokemon (CountAliveMonsAndPC): 12's save has QUILAVA fainted (HP 0) and an egg, so the boost adds PONYTA and heals. Scouted on HeartGold (core-proposal): Route 35's gatehouse, the Dome's warp panel (42,47) (walk_to stops on it: below it, UP), Whitney's first-visit scene at (23,10), which leaves the player facing down: UP turns to the reception across the counter. A x14: 'Welcome', JOIN, SPEED COURSE (the first entry), YES, the walk-in and the change of clothes, into the course app's pick screen. The pick is by drag, from the IN PARTY icons (18/68/93, 45) to the three slots (213, 48/88/128) (a tap and the D-pad hand cursor did not place them), then YES. The three events (Hurdle Dash, Pennant Capture, Relay Run: undecompiled overlays) run whether touched or not: the Pokemon run and crash through hurdles, flags are missed; the repeat touches each intro's START (232,172) and presses A for the text between, until the field is back. The [[shots]] frames show the events and the results boards. The Pokeathlon save (points, medals) is not in np_save4's dump; [expect] checks the map, the first-visit var and the fly point. Measured: HG 56832 frames, SS 54858."
 
 [start]
 from = "12-whitney-plain-squirtbottle"
 boost = "boost.recipe"
 
 [run]
-frames = 36000
+frames = 85300
+
+[[step]]
+do = "walk_to"
+x = 358
+z = 325
+on_battle = "flee"
+note = "Goldenrod's north gatehouse"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35_GOLDENROD_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35"
+
+[[step]]
+do = "walk_to"
+x = 362
+z = 266
+on_battle = "flee"
+note = "Route 35 north to the National Park / Pokeathlon gatehouse"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_35_NATIONAL_PARK_POKEATHALON_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 2
+note = "the west door: open since Whitney's badge (VAR_UNK_40DA 1; the coord at (19,7) turns the player back before)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEATHLON_DOME"
+
+[[step]]
+do = "walk_to"
+x = 42
+z = 48
+note = "below the warp panel at (42,47)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+gap = 120
+note = "the panel moves the player to (42,27)"
+
+[[step]]
+do = "walk_to"
+x = 42
+z = 22
+note = "the Dome's doors"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEATHLON_DOME_INTERIOR_1F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 10
+on_text = "stop"
+note = "the coord (23,10), VAR_UNK_40E2 0: Whitney's first-visit scene"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "after-whitney"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 8
+gap = 20
+note = "Whitney's scene leaves the player at (23,10) facing down: turn to the reception (object 0, (23,8), across the counter)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 14
+gap = 60
+note = "'Welcome!', JOIN, SPEED COURSE (the first entry), YES, 'Please come this way.', the walk-in, 'changed clothes', into the course app's pick screen"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "pick"
+
+[[step]]
+do = "drag"
+from = [18, 45]
+to = [213, 48]
+gap = 40
+note = "the pick is by drag (a tap or the D-pad cursor does not place them): QUILAVA (the list's first icon) to the first slot"
+
+[[step]]
+do = "drag"
+from = [68, 45]
+to = [213, 88]
+gap = 40
+note = "SCYTHER (the third icon; the second is the egg) to the second slot"
+
+[[step]]
+do = "drag"
+from = [93, 45]
+to = [213, 128]
+gap = 60
+shot = "three-ok"
+note = "PONYTA to the third slot: 'Are these three OK?' YES / NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "YES"
+
+[[step]]
+do = "repeat"
+until = "field_ready=1"
+max_rounds = 400
+steps = [
+  { do = "tap", x = 232, y = 172, hold = 4, gap = 10 },
+  { do = "press", keys = "A", gap = 100 },
+]
+note = "the three events: each intro's START (232,172) and the text between them; in the events nothing is touched but START's corner (the Pokemon run, hit hurdles, miss flags: a last place still finishes the course), until the field is back after the reception's points message"
+
+[[step]]
+do = "advance_text"
+max = 3000
+shot = "after-course"
+
+[[shots]]
+frames = [24500, 28000, 32000, 36000, 40000, 44000, 48000, 52000, 55500]  # the course's three events and results (absolute run frames: they drift with any earlier change)
 
 [expect]
 map = "MAP_POKEATHLON_DOME_INTERIOR_1F"

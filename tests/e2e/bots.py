@@ -123,7 +123,8 @@ def bot_tap(s, step, ctx):
 def bot_drag(s, step, ctx):
     """A touch held from `from` = [x, y] to `to` = [x, y], moved in `steps` (default 20) even stretches of 2 frames,
     then held 10 frames at `to` and released for `gap` (default 60): a slider or dial that follows the stylus only
-    once it is grabbed (HG/SS's Pokegear radio tuner, radio/overlay_101_021F4F34.c)."""
+    once it is grabbed (HG/SS's Pokegear radio tuner, radio/overlay_101_021F4F34.c), or a piece picked up by a held
+    touch and dropped where it is lifted (HG/SS's Ruins of Alph panels, src/alph_puzzle.c)."""
     (x0, y0), (x1, y1) = (int(v) for v in step["from"]), (int(v) for v in step["to"])
     n = _int(step, "steps", 20)
     for k in range(n + 1):
@@ -3017,6 +3018,100 @@ def bot_fish(s, step, ctx):
     raise HarnessError("fish: nothing hooked in %d casts" % casts)
 
 
+# ---- HG/SS Voltorb Flip (src/voltorb_flip): the app's VoltorbFlipGameState (include/voltorb_flip/
+# voltorb_flip_game.h) is found in main RAM by its shape: 25 Cards of {type 1..4, memo < 16, flipped 0/1} (u32 each),
+# then pointsPerCol/Row and voltorbsPerCol/Row, which must be the cards' own sums.
+VF_CARDS = re.compile(rb"(?s)(?:[\x01-\x04]\x00\x00\x00[\x00-\x0f]\x00\x00\x00[\x00\x01]\x00\x00\x00){25}")
+VF_TWO, VF_THREE, VF_VOLTORB = 2, 3, 4
+VF_WON = 2  # ROUND_OUTCOME_WON
+
+
+def _vf_find(s):
+    """The guest address of the dealt board's VoltorbFlipGameState, or None."""
+    ram = b"".join(s.peek(a, 0x10000) for a in range(0x02000000, 0x02400000, 0x10000))
+    for m in VF_CARDS.finditer(ram):
+        off = m.start()
+        if off % 4:
+            continue
+        types = struct.unpack_from("<75I", ram, off)[0::3]
+        sums = ram[off + 300:off + 320]
+        val = [0, 1, 2, 3, 0]
+        if (all(sums[c] == sum(val[types[r * 5 + c]] for r in range(5)) for c in range(5))
+                and all(sums[5 + r] == sum(val[t] for t in types[r * 5:r * 5 + 5]) for r in range(5))
+                and all(sums[10 + c] == sum(types[r * 5 + c] == VF_VOLTORB for r in range(5)) for c in range(5))):
+            return 0x02000000 + off
+    return None
+
+
+def _vf_state(s, addr):
+    """(types, flipped, roundOutcome, payout, multiplierCards, multipliersFlipped) read from the game state."""
+    b = s.peek(addr, 332)
+    cards = struct.unpack_from("<75I", b, 0)
+    outcome, payout, _, cards_mult, flipped_mult = struct.unpack_from("<IHHHH", b, 320)
+    return cards[0::3], cards[2::3], outcome, payout, cards_mult, flipped_mult
+
+
+def bot_voltorb_flip(s, step, ctx):
+    """HG/SS Voltorb Flip: one board cleared. From the table's 'Show me how you play' text: A opens the app, which
+    deals the board before its 'Play VOLTORB Flip Lv. N?' menu (the game state is found in RAM then). The board is
+    live once a touched x1 card reads flipped: a safe probe (an x1 card in rows 0-3, columns 0-2, clear of the menu
+    and the message box; flipping it multiplies the payout by 1); until then A answers the text and Play (the cursor's
+    first entry). A is never pressed on the live board, where it would flip the cursor's card. Then every x2/x3 card
+    is touched (its card hitbox centre, voltorb_flip_input.c sTouchscreenHitboxes: (20+32c, 20+32r)) and read back
+    flipped (a touch during the last flip's animation is not taken: it is touched again); no Voltorb is touched.
+    The round is won when the multipliers are all up (ROUND_OUTCOME_WON: the screen then goes on the contact sheet);
+    A then advances the coin messages until the next board is set up (the state reset). The bot stops there, before
+    'Advanced to Game Lv. N!' and the next 'Play?' menu: the step list answers those with B (any key advances the
+    app's messages; B at the menu is its cancel, which quits: VoltorbFlipTaskEngine_SelectMainMenu_Main)."""
+    limit = s.frame + _int(step, "max", 6000)
+    addr = None
+    while addr is None:
+        if s.frame >= limit:
+            raise HarnessError("voltorb_flip: no dealt board in RAM by the step's bound")
+        s.run(4, "a")
+        s.run(60)
+        addr = _vf_find(s)
+    types, flipped, _, _, cards_mult, _ = _vf_state(s, addr)
+    s.note("voltorb_flip: board at 0x%08X, %d multipliers, rows %s" % (
+        addr, cards_mult, " ".join("".join("?123V"[t] for t in types[r * 5:r * 5 + 5]) for r in range(5))))
+    probe = next((i for i in range(20) if i % 5 < 3 and types[i] == 1), None)
+    if probe is None:
+        raise HarnessError("voltorb_flip: no x1 card in rows 0-3, columns 0-2 to tell the live board by")
+    while True:
+        r, c = divmod(probe, 5)
+        _tap(s, (20 + 32 * c, 20 + 32 * r), 2, 30)
+        s.run(30)
+        if _vf_state(s, addr)[1][probe]:
+            break
+        if s.frame >= limit:
+            raise HarnessError("voltorb_flip: the board did not take a touch by the step's bound")
+        s.run(4, "a")
+        s.run(60)
+    s.note("voltorb_flip: live (x1 card %d flipped)" % probe)
+    for i in [i for i in range(25) if types[i] in (VF_TWO, VF_THREE)]:
+        r, c = divmod(i, 5)
+        while not _vf_state(s, addr)[1][i]:
+            if s.frame >= limit:
+                raise HarnessError("voltorb_flip: card %d did not flip by the step's bound" % i)
+            _tap(s, (20 + 32 * c, 20 + 32 * r), 2, 30)
+            s.run(30)
+    while True:
+        st = _vf_state(s, addr)
+        if st[2] == VF_WON:
+            break
+        if s.frame >= limit:
+            raise HarnessError("voltorb_flip: the round did not end won (outcome %d)" % st[2])
+        s.run(4, "a")
+        s.run(60)
+    s.note("voltorb_flip: won (%d coins of the payout still to count into the case)" % st[3])
+    snap(s)
+    while _vf_state(s, addr)[2] == VF_WON:
+        if s.frame >= limit:
+            raise HarnessError("voltorb_flip: the won round's messages did not end")
+        s.run(4, "a")
+        s.run(60)
+    s.run(_int(step, "gap", 120))
+
 
 def bot_menu(s, step, ctx):
     """GBA: answer the field menu a script is about to show (np_e2e.h NP_E2E_UI_FIELD_MENU: a multichoice or a
@@ -3162,6 +3257,7 @@ BOTS = {
     "moves": bot_moves,
     "field_move": bot_field_move,
     "fish": bot_fish,
+    "voltorb_flip": bot_voltorb_flip,
     "hatch": bot_hatch,
     "pace": bot_pace,
     "roam_hunt": bot_roam_hunt,

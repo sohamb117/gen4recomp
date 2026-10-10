@@ -282,6 +282,7 @@ Names resolve per game as the lab recipes do (Platinum `MAP_HEADER_*`, `FLAG_*`,
 | `smash` | `dir`, opt. `on_battle` | GBA Rock Smash: A on the rock ahead in `dir` and YES, the wild battle it may start fought; done when the rock has gone |
 | `field_move` | `move`, opt. `slot`, `text` | a field move from the party menu as a player does (Defog, Flash, Teleport, Dig, Sweet Scent, Softboiled; HG/SS also Headbutt, Whirlpool): X, POKEMON, the member that knows `move` (a MOVE_* name), the move in its context menu, then the text advanced; the start menu needs the Pokedex and a starter (VAR_PLAYER_STARTER). HG/SS menus: HeartGold and SoulSilver (unverified at runtime) |
 | `fish` | opt. `casts` | Y casts the registered rod; the guest's fishing trace (`[run] env` PC_TRACE_FISH=1) says when the bite window opens and A hooks then; no-nibble casts are closed with B and recast; done when the hooked Pokemon's battle starts (the bite screen goes on the contact sheet) |
+| `voltorb_flip` | opt. `gap` | HG/SS Voltorb Flip, one board: from the table's 'Play?' text, A until the board is dealt (the app's VoltorbFlipGameState found in main RAM by its shape and its row/column sums), every x2/x3 card touched until it reads flipped, A through the win's coin messages; stops before the next 'Play?' menu |
 | `pace` | `x`, `z`, `until`, opt. `every` | run laps between (x, z) and (x+1, z) until `until` (a Python expression over the save dump `s`) holds, checked by an in-game save every `every` steps (the Day Care's egg roll: `s["daycare"]["egg_waiting"]`) |
 | `roam_hunt` | `species`, `a`, `b` | HG/SS: back and forth between `a` = [x, z] (a grass tile on a roamer's route) and `b` on the next map until an in-game save's dump (`roamers`) puts the roamer (a SPECIES_* name) on `a`'s map, then laps there until its battle starts (other wild battles fled); the battle itself is the next steps' |
 | `vermilion_cans` | (none) | HG/SS Vermilion Gym: reads the two switch cans from an in-game save's dump (`gymmick`) and checks each from the tile below it, facing up (trainers on the way fought); fails unless both locks are open |
@@ -293,7 +294,7 @@ Names resolve per game as the lab recipes do (Platinum `MAP_HEADER_*`, `FLAG_*`,
 | `wait_reset` | opt. `max` | until the game resets itself (Platinum's ClearGame after the credits: `OS_ResetSystem`; the port reboots the guest and the `resets` status goes up); the game ends there: no end save or probe, the end shot is the rebooted game |
 | `press` | `keys` (`A`, `UP+B`), opt. `hold`, `gap`, `times` | raw buttons (B answers a field YES/NO as NO) |
 | `tap` | `x`, `y`, opt. `hold`, `gap`, `times` | bottom-screen touch |
-| `drag` | `from` = [x, y], `to` = [x, y], opt. `steps`, `gap` | a bottom-screen touch held and moved from `from` to `to` (a dial that follows the stylus once grabbed: HG/SS's Pokegear radio tuner) |
+| `drag` | `from` = [x, y], `to` = [x, y], opt. `steps`, `gap` | a bottom-screen touch held and moved from `from` to `to` (a dial that follows the stylus once grabbed: HG/SS's Pokegear radio tuner; a piece picked up and dropped: the Ruins of Alph panels) |
 | `wait_frames` | `n` | idle |
 | `schedule` | `file`, opt. `frames` | a recorded `.press` schedule, frames relative to the step |
 | `save` | | in-game save now |

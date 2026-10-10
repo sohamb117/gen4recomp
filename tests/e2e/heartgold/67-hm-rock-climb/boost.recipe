@@ -1,0 +1,5 @@
+# Boost on 98's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# HM08 is played (Oak gives it in this run, after his call: scr_seq_0740_T01R0301.s:198-210); teaching it through the
+# bag's TM case is not, as in 61's Rock Smash: the move goes on FERALIGATR (personal.json: hms include 8) over
+# Dragon Pulse. Party: 0 TYPHLOSION, 1 TOGEPI, 2 SCYTHER, 3 AMPHAROS, 4 PELIPPER, 5 FERALIGATR.
+party-move 5 3 MOVE_ROCK_CLIMB

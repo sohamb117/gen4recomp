@@ -3,10 +3,9 @@
 # Start: 11's end MAP_GOLDENROD outside the gym (366,335) -> end: MAP_GOLDENROD_GAME_CORNER at the table (7,8),
 # ITEM_COIN_CASE, coins > 0.
 title = "Goldenrod Game Corner: Voltorb Flip"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 6500
+estimate = 4343
 refs = [
   "zone_event 073_T25 warp 6 (351,360) -> MAP_GOLDENROD_GAME_CORNER (include/constants/maps.h:540, MAP_T25SP0101: the US corner; MAP_GOLDENROD_GAME_CORNER_JP :187 is the JP slots)",
   "scr_seq_0910_T25SP0101.s:98-148 (002: no Coin Case -> YES/NO :134-138, GiveItemNoCheck ITEM_COIN_CASE :141)",
@@ -18,13 +17,61 @@ refs = [
   "features/tools/np_save4.c:635-637 (dump trainer.coins)",
   "asm/macros/script.inc CasinoGame = opcode 780",
 ]
-notes = "Gates: none past Goldenrod (11); no coins needed to play (Voltorb Flip pays out, a lost board only drops the level). Input: the board takes the D-pad and A (voltorb_flip_input.c:202-256) as well as touch, so no touch bot is strictly needed, but winning needs a solver: a new voltorb_flip bot that reads the board (GameState.cards in the app's heap) or deduces it from the row/column totals, and flips only the 2s and 3s (the round clears when multipliersFlipped == multiplierCards). Menus: the table's opening Play / Game Info / Quit and the end-of-round prompts answered with A; Quit at the end returns to the field. Bots proven on HG/SS: walk_to, talk_to, advance_text; needed: a Voltorb Flip solver (reading guest memory), hence P2. [INFERENCE] estimate 6500: ~1500 to the corner, ~800 Coin Case, ~400 to the table, ~3000 one board with intros, ~800 quit."
+notes = "Gates: none past Goldenrod (11); no coins needed to play. Mr. Game (object 0, (7,5)) gives the Coin Case (A: YES); the table is bg 0 (7,7), read from (7,8). bots.py voltorb_flip reads the board from the app's VoltorbFlipGameState, found in main RAM by its shape (25 cards, then the row/column sums that must match them): the app deals the board before its 'Play?' menu, so the board is live only once a touched x1 card (rows 0-3, columns 0-2, clear of the menu) reads flipped; A answers the text and Play until then and is never pressed on the live board (it flips the cursor's card). Each x2/x3 card is touched at its hitbox centre and read back (a touch during the previous flip's animation is dropped and touched again). After the win, B through 'Advanced to Game Lv. 2!' and at the next 'Play?' menu, whose cancel is Quit. Measured: HG 4343 frames (5 x2 cards: 32 coins), SS 4216 (two x2 and two x3: 36 coins); the sheets show the Coin Case, the cleared board with 'received N Coin(s)!', 'Advanced to Game Lv. 2!', the table again."
 
 [start]
 from = "11-route34-daycare-goldenrod"
 
 [run]
-frames = 10000
+frames = 6600
+
+[[step]]
+do = "walk_to"
+x = 351
+z = 360
+on_battle = "flee"
+note = "the Game Corner (warp 6)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_GAME_CORNER"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Mr. Game (7,5)"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "'Would you like a Coin Case?' YES (A): ITEM_COIN_CASE"
+shot = "coin-case"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 8
+face = "up"
+interact = true
+note = "the Voltorb Flip table (bg 0 (7,7)): 'Show me how you play...'"
+
+[[step]]
+do = "voltorb_flip"
+max = 5000
+shot = "level-2-message"
+note = "one level-1 board: every x2/x3 card touched, no Voltorb (the snap at the win shows the board)"
+
+[[step]]
+do = "repeat"
+until = "field_ready=1"
+max_rounds = 60
+steps = [{ do = "press", keys = "b", hold = 2, gap = 40 }]
+note = "'Advanced to Game Lv. 2!' (any key), then B at 'Play VOLTORB Flip Lv. 2?': the menu's cancel, Quit"
+
+[[step]]
+do = "advance_text"
+max = 3000
+shot = "back-at-table"
 
 [expect]
 map = "MAP_GOLDENROD_GAME_CORNER"

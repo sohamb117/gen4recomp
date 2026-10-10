@@ -92,6 +92,7 @@ STEP_KEYS = {
     "hatch": {"x", "z"},
     "field_move": {"move", "slot", "text"},
     "fish": {"casts"},
+    "voltorb_flip": {"gap"},
     "pace": {"x", "z", "until", "every"},
     "roam_hunt": {"species", "a", "b"},
     "vermilion_cans": set(),

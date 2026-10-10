@@ -4,10 +4,9 @@
 # Start: 04's end MAP_VIOLET east entrance (510,269) -> end: MAP_RUINS_OF_ALPH_UNDERGROUND_HALL (25,6),
 # FLAG_SYS_ALPH_PUZZLE_KABUTO, VAR_UNK_40DD 1.
 title = "Ruins of Alph: Kabuto sliding-panel puzzle"
-status = "planned"
 priority = "P2"
 version = "both"
-estimate = 9000
+estimate = 6022
 refs = [
   "zone_event 144_T22R0701 (Violet-Route 36 gatehouse) warps (10,7) -> MAP_VIOLET, (1,7) -> MAP_ROUTE_36; no coord events",
   "zone_event 037_R36 warps 2/3 (430/431,252) -> MAP_ROUTE_36_RUINS_OF_ALPH_GATEHOUSE (east of the Sudowoodo at (415,246)); warps 4/5 (447,246/247) -> the Violet gatehouse",
@@ -23,18 +22,159 @@ refs = [
   "src/alph_puzzle.c:670-675 (solved -> Save_VarsFlags_SetAlphPuzzleFlag; src/sys_flags.c:120-124 -> FLAG_SYS_ALPH_PUZZLE_KABUTO)",
   "include/constants/flags.h:1729 FLAG_SYS_ALPH_PUZZLE_KABUTO",
 ]
-notes = "Gates: none past Violet [INFERENCE: the Violet-Route 36 gatehouse and the Ruins gatehouse have no coord events; the Ruins gate sits east of the Sudowoodo], so the earliest save is 04's. Input code (touch-screen pixel centre of grid tile (x,y) = (48+32x, 16+32y)): (1) drag tile 6 from (48,48) to (112,80) [grid (0,1)->(2,2)], then 3 short taps at (112,80); (2) drag tile 11 from (208,80) to (144,112) [(5,2)->(3,3)], 2 taps at (144,112); (3) drag tile 2 from (48,144) to (112,48) [(0,4)->(2,1)], 1 tap at (112,48); (4) drag tile 9 from (176,176) to (80,112) [(4,5)->(1,3)], 3 taps at (80,112) - the last tap completes the picture. A drag = touch held at the source >= 4 frames (the pickup needs 3 held frames), then held at the target a few frames (the hover tile updates per held frame), then released; a tap = touch held 1-2 frames, then >= 12 frames released (the 8-frame rotation animation). The tap bot holds 4 frames by default (a pickup, not a turn): taps need hold = 1, and the drags need a continuous touch moved between two points - a new 'drag' bot, or a schedule file whose consecutive touch entries keep the stylus down [INFERENCE: unverified that schedule touch entries are continuous], hence P2. Bots proven on HG/SS: walk_to, talk_to (bg), advance_text; needed: touch drag (and tap with hold 1). [INFERENCE] estimate 9000: ~6000 walk Violet -> Ruins NE chamber, ~1500 puzzle input, ~1500 collapse and warp."
+notes = "Gates: none past Violet; the earliest save is 04's. The puzzle is touch only (AlphPuzzle_CheckInput). Touch pixel centre of grid tile (x,y) = (48+32x, 16+32y) (tile x = (tx-32)/32, y = ty/32). Each loose tile is moved by bots.py drag (the stylus held on the tile, moved in 2-frame stretches, held 10 frames on the target, lifted: a hold of 3+ frames picks it up, the release drops it on the hovered free tile) and turned by taps held 2 frames (a release within 2 held frames turns it a quarter; a first try with 1-frame taps left the tiles unturned: the app does not see a touch that short). Order and turns from sAlphKabutoPuzzle and AlphPuzzle_CheckComplete (tile i at (i%4+1, i/4+1), rotation 0): tile 6 (0,1)->(2,2) x3, tile 11 (5,2)->(3,3) x2, tile 2 (0,4)->(2,1) x1, tile 9 (4,5)->(1,3) x3. Solved: the floor gives way and the player lands in the underground hall (25,6). VAR_UNK_40CE (set 1 before the warp) does not survive in the save, so it is not expected. Measured: HG 6021 frames, SS 6022; the sheets show the puzzle with the loose tiles on the border, the completed picture, the underground hall."
 
 [start]
 from = "04-route30-31-violet"
 
 [run]
-frames = 13500
+frames = 9100
+
+[[step]]
+do = "walk_to"
+x = 454
+z = 246
+on_battle = "flee"
+note = "Violet's west gatehouse"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIOLET_ROUTE_36_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_36"
+
+[[step]]
+do = "walk_to"
+x = 430
+z = 252
+on_battle = "flee"
+note = "the Ruins gatehouse, east of the Sudowoodo"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_36_RUINS_OF_ALPH_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 12
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUINS_OF_ALPH"
+
+[[step]]
+do = "walk_to"
+x = 436
+z = 266
+on_battle = "flee"
+note = "the northeast chamber"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUINS_OF_ALPH_NORTHEAST_ENTRANCE_FIRST_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 7
+face = "up"
+interact = true
+note = "the slab (bg 0 at (6,6)): AlphPuzzle 0"
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "puzzle"
+note = "the fade and the puzzle on the bottom screen: the loose tiles on the border"
+
+[[step]]
+do = "drag"
+from = [48, 48]
+to = [112, 80]
+gap = 30
+note = "tile 6: (0,1) -> (2,2), rotation 1 -> 0: held on the tile >= 3 frames picks it up (AlphPuzzleMainSeq_PickupTile_impl), the release drops it on the hovered free tile"
+
+[[step]]
+do = "tap"
+x = 112
+y = 80
+hold = 2
+gap = 30
+times = 3
+note = "released within 2 held frames: a quarter turn each (a 1-frame touch is not seen)"
+
+[[step]]
+do = "drag"
+from = [208, 80]
+to = [144, 112]
+gap = 30
+note = "tile 11: (5,2) -> (3,3), rotation 2 -> 0: held on the tile >= 3 frames picks it up (AlphPuzzleMainSeq_PickupTile_impl), the release drops it on the hovered free tile"
+
+[[step]]
+do = "tap"
+x = 144
+y = 112
+hold = 2
+gap = 30
+times = 2
+note = "released within 2 held frames: a quarter turn each (a 1-frame touch is not seen)"
+
+[[step]]
+do = "drag"
+from = [48, 144]
+to = [112, 48]
+gap = 30
+note = "tile 2: (0,4) -> (2,1), rotation 3 -> 0: held on the tile >= 3 frames picks it up (AlphPuzzleMainSeq_PickupTile_impl), the release drops it on the hovered free tile"
+
+[[step]]
+do = "tap"
+x = 112
+y = 48
+hold = 2
+gap = 30
+times = 1
+note = "released within 2 held frames: a quarter turn each (a 1-frame touch is not seen)"
+
+[[step]]
+do = "drag"
+from = [176, 176]
+to = [80, 112]
+gap = 30
+note = "tile 9: (4,5) -> (1,3), rotation 1 -> 0; the last turn completes the picture: held on the tile >= 3 frames picks it up (AlphPuzzleMainSeq_PickupTile_impl), the release drops it on the hovered free tile"
+
+[[step]]
+do = "tap"
+x = 80
+y = 112
+hold = 2
+gap = 30
+times = 3
+note = "released within 2 held frames: a quarter turn each (a 1-frame touch is not seen)"
+shot = "solved"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUINS_OF_ALPH_UNDERGROUND_HALL"
+max = 1500
+note = "solved: FLAG_SYS_ALPH_PUZZLE_KABUTO, the floor shakes and gives way, the drop to (25,6)"
+
+[[step]]
+do = "advance_text"
+max = 3000
+shot = "underground-hall"
 
 [expect]
 map = "MAP_RUINS_OF_ALPH_UNDERGROUND_HALL"
+position = [25, 6]
 flags = ["FLAG_SYS_ALPH_PUZZLE_KABUTO", "FLAG_UNK_188", "FLAG_UNK_21C"]
 
 [expect.vars]
 VAR_UNK_40DD = 1
-VAR_UNK_40CE = 1
