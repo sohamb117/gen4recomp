@@ -1207,6 +1207,44 @@ def _(c):
     assert open(shots['off'], 'rb').read() != open(shots['on'], 'rb').read(), 'the same picture with and without'
 
 
+# Poké Transfer (tests/poketransfer/run_tests.py's inputs): Black at the lab
+# counter (bw-chain's milestone 34 save), the Platinum card with six Pokémon
+# added to box 1.
+PT_PARENT_SAVE = os.environ.get('NP_PT_PARENT_SAVE', os.path.join(ROOT, 'build', 'e2e', 'black',
+                                                                  '34-postgame-poke-transfer-lab', 'end.sav'))
+PT_CARD_SAVE = os.environ.get('NP_PT_CARD_SAVE', os.path.join(ROOT, 'build', 'e2e', 'platinum',
+                                                              '25-pastoria-explosion', 'end.sav'))
+
+
+@case('n2_poke_transfer', 'Poke Transfer: Black\'s lab in one window, a second install as the child station '
+      '(--poke-transfer with the Platinum card) receives the child over local wireless', 'nds2')
+def _(c):
+    if GAME != 'black':
+        raise FileNotFoundError('the lab case runs with --game black')
+    c.need(NEW_ROMS['black'], ROMS['platinum'], PT_PARENT_SAVE, PT_CARD_SAVE, SAVE4)
+    card = os.path.join(c.work, 'Six.sav')
+    shutil.copyfile(PT_CARD_SAVE, card)
+    for species in (399, 396, 403, 401, 406, 54):  # run_tests.py CARDS['platinum']
+        subprocess.run([SAVE4, 'add-box-mon', card, ROMS['platinum'], str(species), '10', '33', '-o', card],
+                       check=True, capture_output=True)
+    b = c.second()
+    sched = os.path.join(ROOT, 'tests', 'poketransfer', 'pt-parent-black.sched')
+    press = ';'.join(l.split('#')[0].strip() for l in open(sched) if l.split('#')[0].strip())
+    for st, game, slot, src, port, peer, sid in ((c, 'black', 'Lab', PT_PARENT_SAVE, 41011, 41012, '111111'),
+                                                 (b, 'platinum', 'Six', card, 41012, 41011, '222222')):
+        st.fresh([game])
+        st.put_save(game, slot, src)
+        st.options('[wireless]\nenabled = 1\nport = %d\npeer = 127.0.0.1:%d\nstation_id = %s' % (port, peer, sid))
+    frames = 12500
+    pa = c.start('boot=app,realtime=1,frames=%d,shots=1000,press=%s' % (frames, press), step='lab',
+                 args=['--game', 'black', '--slot', 'Lab'])
+    pb = b.start('boot=app,realtime=1,frames=%d,shots=1000' % frames, step='child',
+                 args=['--poke-transfer', '--game', 'platinum', '--slot', 'Six'])
+    log_b = b.finish(pb, timeout=1800)
+    c.finish(pa, timeout=1800)
+    assert 'image verified; booting the child' in log_b, 'the child station did not boot the child'
+
+
 @case('n2_screenshot', 'F12 screenshot: both screens to userdata/screenshots/<game>-*.png', 'nds2')
 def _(c):
     new_save(c)
