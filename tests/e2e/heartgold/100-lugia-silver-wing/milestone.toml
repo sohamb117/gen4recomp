@@ -2,10 +2,9 @@
 # FLAG_HIDE_WHIRL_ISLAND_LUGIA); the Whirl Islands B2F monk sees it and Lugia (lv70 in HG) waits on B3F's water.
 # Start: 96-pewter-brock's end (Pewter, wing in the bag) -> end: MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE (16,18), FLAG_CAUGHT_LUGIA.
 title = "HeartGold: Silver Wing and Lugia"
-status = "planned"
 priority = "P1"
 version = "heartgold"
-estimate = 25000
+estimate = 31329
 refs = [
   "zone_event 048_T03 object 0 obj_T03_gsoldman1 (1069,94) -> 000; scr_seq_0750_T03.s:44-66 (GetGameVersion 7 = HG: ITEM_SILVER_WING (482), FLAG_UNK_094, ClearFlag FLAG_HIDE_WHIRL_ISLAND_LUGIA, SetFlag FLAG_HIDE_WHIRL_ISLANDS_BOTTOM_KIMONO_GIRLS)",
   "scr_seq_0034_D23R0106.s:75-80 (HG's story wing is the Rainbow Wing; the Silver Wing is post-game only)",
@@ -16,16 +15,171 @@ refs = [
   "zone_event 230_D40R0107 object 5 obj_D40R0107_lug_obj01 (16,17), faced from (16,18); coord 0 (16,36) VAR_UNK_40FA 1 (does not fire in HG: Ho-Oh set VAR_UNK_40FA 2, scr_seq_0021_D17R0110.s:342)",
   "scr_seq_0825_T10R0701.s:111-123 (Hall of Fame re-shows uncaught Ho-Oh/Lugia)",
 ]
-notes = "Gates: post-game Kanto access (90) and Pewter (96), Surf + Whirlpool (proven on SS chain). RTC: none. The battle must CATCH for FLAG_CAUGHT_LUGIA (lv70: needs a strong boost and a ball-throwing auto_battle mode; the Master Ball from 29 if still unused [INFERENCE]); otherwise expect only the encounter. auto_battle catch support on HG/SS is unproven [INFERENCE: check tests/e2e/bots.py]. Ref check: the HG B3F Lugia appears without the Tidal Bell scene [INFERENCE from the VAR_UNK_40FA values; confirm scr_seq_0104_D40R0107.s:19-40]. save check possible: party species 249. [INFERENCE] estimate."
+notes = "Gates: Pewter's old man's Silver Wing (96); Surf and Whirlpool. The way in is soulsilver/31's (Olivine's beach, the whirlpool (247..249,346..348), the north-east entrance, the drops to B2F); the B2F monk is shown the wing (FLAG_UNK_106), and in HeartGold Lugia waits on B3F's water without the Tidal Bell scene (VAR_UNK_40FA is 2 after the chain's Ho-Oh). WildBattle SPECIES_LUGIA 70 must be caught for FLAG_CAUGHT_LUGIA: the Master Ball the chain never threw (Elm's, 29), from the battle bag as in 101: BAG (40,172), POKE BALLS (192,64), the Master Ball (64,80; Poke Ball, Fast Ball, Master Ball), USE (100,168); The boost puts Whirlpool back on PELIPPER (38's Blizzard had replaced it). B answers the nickname question (the party is full: Lugia goes to a box). The fly map only reaches the player's region, so Kanto -> Johto goes by the Indigo Plateau. Measured: 31329 frames; the sheet shows the B2F monk beside the player, LUGIA lv70 against AMPHAROS, 'Gotcha! LUGIA was caught!', the empty cave (Lugia boxed, the Master Ball gone)."
 
 [start]
 from = "96-pewter-brock"
+boost = "boost.recipe"
 
 [run]
-frames = 37500
+frames = 47000
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 27
+note = "out of Pewter Gym"
+
+[[step]]
+do = "fly"
+map = "MAP_INDIGO_PLATEAU"
+note = "the fly map only reaches the player's region; the Indigo Plateau is in both"
+
+[[step]]
+do = "fly"
+map = "MAP_OLIVINE"
+
+[[step]]
+do = "walk_to"
+x = 248
+z = 349
+surf = true
+via = [[250, 300], [250, 335]]
+face = "up"
+interact = true
+note = "Olivine's west beach and south by Surf to the tile below the whirlpool, facing it: A -> the Whirlpool prompt"
+
+[[step]]
+do = "advance_text"
+note = "YES -> through the whirlpool to (248,345)"
+
+[[step]]
+do = "walk_to"
+x = 237
+z = 340
+surf = true
+note = "the north-east entrance (zone_event 092_W41 warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_WHIRL_ISLANDS_1F"
+
+[[step]]
+do = "walk_to"
+x = 56
+z = 9
+surf = true
+note = "1F -> the drop (56,9) -> B1F (73,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_WHIRL_ISLANDS_B1F"
+
+[[step]]
+do = "walk_to"
+x = 54
+z = 43
+surf = true
+note = "B1F -> the drop (54,43) -> B2F (32,14)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_WHIRL_ISLANDS_B2F"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the monk (36,30): the Silver Wing shown (FLAG_UNK_106)"
+
+[[step]]
+do = "advance_text"
+shot = "after-monk"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 43
+surf = true
+note = "B2F (31,43) -> Lugia's cave (16,38)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 18
+surf = true
+face = "up"
+interact = true
+note = "by Surf below Lugia (16,17); A"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "repeat"
+until = "ui=1"
+max_rounds = 80
+steps = [{ do = "wait_frames", n = 20 }]
+note = "Lugia lv70's battle: ui=1 comes while the bottom screen is still drawing its menu"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "lugia"
+note = "the action menu: BAG / RUN / POKEMON round FIGHT"
+
+[[step]]
+do = "tap"
+x = 40
+y = 172
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 192
+y = 64
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 80
+gap = 60
+note = "the Master Ball"
+
+[[step]]
+do = "tap"
+x = 100
+y = 168
+gap = 60
+note = "USE"
+
+[[step]]
+do = "wait_frames"
+n = 640
+shot = "gotcha"
+note = "the throw, the shake, 'Gotcha! LUGIA was caught!'"
+
+[[step]]
+do = "repeat"
+until = "in_battle=0"
+max_rounds = 80
+steps = [
+  { do = "press", keys = "a", hold = 2, gap = 40, if = "ui=0" },
+  { do = "press", keys = "b", hold = 2, gap = 40 },
+]
+note = "the Pokedex page (A), 'Give a nickname?' NO (B), the box message"
+
+[[step]]
+do = "advance_text"
 
 [expect]
 map = "MAP_WHIRL_ISLANDS_B3F_LUGIA_CAVE"
 flags = ["FLAG_UNK_094", "FLAG_UNK_106", "FLAG_CAUGHT_LUGIA"]
 battles = 1
-# save = ['249 in [m["species"] for m in s["party"]]']  # np_save4 dump party
+save = ['any(m["species"] == 249 for b in s["boxes"] for m in b["mons"]) or 249 in [m["species"] for m in s["party"]]']
