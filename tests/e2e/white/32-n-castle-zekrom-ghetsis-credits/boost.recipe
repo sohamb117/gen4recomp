@@ -1,0 +1,12 @@
+# Boost on 31's end save (AUTHORING.md, Boosts): party only, the story stays played.
+# The throne room's fights come back to back with no Center: N (trdata #587/#586: his dragon 52, Carracosta,
+# Vanilluxe, Archeops, Zoroark, Klinklang 50) and Ghetsis (trdata #232: Cofagrigus, Bouffalant, Seismitoad, Bisharp,
+# Eelektross 52, Hydreigon 54). The chain's party after 27's boost lost to N in scouting; this won on both games.
+# Darmanitan 555 Lv 70 (Flare Blitz 394, Hammer Arm 359, Rock Slide 157, Earthquake 89) and Sawk 539 Lv 65 (Close
+# Combat 370, Stone Edge 444, Earthquake 89, Brick Break 280) replace slots 0 and 5; slots 2-4 go to Lv 60. Pansage
+# (slot 1) is the member the scene sends to the Box for the legendary.
+party-set 0 555 70 394 359 157 89
+party-set 5 539 65 370 444 89 280
+party-level 2 60
+party-level 3 60
+party-level 4 60

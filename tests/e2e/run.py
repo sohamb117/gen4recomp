@@ -73,7 +73,7 @@ STEP_KEYS = {
     "wait_field": set(),
     "slide": {"dirs", "on_battle", "on_text", "move"},
     "wait_battle": set(),
-    "wait_reset": {"keys"},
+    "wait_reset": {"keys", "press", "gap"},
     "schedule": {"file", "frames"},
     "save": set(),
     "advance_text": {"through_battle", "map", "key"},

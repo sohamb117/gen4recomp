@@ -18,9 +18,169 @@ notes = "One uninterrupted script chain (scr 0556) runs from talking to the lege
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 
 [run]
 save = "none"
+frames = 120000
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 9
+note = "zone 277 to the throne room's door"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "into zone 278"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 49
+
+[[step]]
+do = "moves"
+dirs = [["U", 2]]
+note = "onto zone_event 278 trigger 0 (14,47): scr 0556 script 2"
+
+[[step]]
+do = "advance_text"
+shot = "throne-room"
+
+[[step]]
+do = "moves"
+dirs = [["U", 5]]
+note = "onto zone_event 278 trigger 1 (14,42): scr 0556 script 3 (N calls his dragon; the stone answers: the VRAM hand-over, DEFECTS.md)"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "field_ready=1"
+times = 400
+gap = 20
+shot = "legendary-awakes"
+note = "through the legendary's demo (map 0) and back to the field"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "the legendary: scr 0556 script 8"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "in_battle=1"
+times = 60
+note = "to its WildBattle (lv 50)"
+
+[[step]]
+do = "wait_frames"
+n = 900
+shot = "legendary-battle"
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 190
+y = 48
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 30
+gap = 60
+note = "[INFERENCE] the first ball, the Master Ball (the chain's bag lists it first; the 3rd ball is at (64,78) and the 4th at (190,78) from scouting)"
+
+[[step]]
+do = "tap"
+x = 110
+y = 174
+gap = 60
+note = "USE"
+
+[[step]]
+do = "press"
+keys = "b"
+until = "map_id=278"
+times = 80
+gap = 30
+shot = "caught"
+note = "the catch; B declines the nickname"
+
+[[step]]
+do = "wait_frames"
+n = 400
+
+[[step]]
+do = "press"
+keys = "a"
+note = "YES: add it to the party from the Box (msg 301 #101-#105)"
+
+[[step]]
+do = "wait_frames"
+n = 400
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "wait_frames"
+n = 300
+
+[[step]]
+do = "tap"
+x = 190
+y = 35
+note = "party slot 1 (Pansage) goes to the Box"
+
+[[step]]
+do = "wait_frames"
+n = 120
+
+[[step]]
+do = "press"
+keys = "a"
+times = 4
+note = "YES"
+
+[[step]]
+do = "advance_text"
+note = "to N's battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "N (trdata #587 Black / #586 White)"
+
+[[step]]
+do = "advance_text"
+note = "script 15: 0x40B6 5, 0x40A2 2; Ghetsis"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Ghetsis (trdata #232)"
+
+[[step]]
+do = "wait_reset"
+press = "a"
+gap = 26
+max = 40000
+note = "N's farewell, Cmd156, the credits, the game's own save and OS_ResetSystem"
 
 [expect]
 flags = ["0x133"]

@@ -95,7 +95,7 @@ VAR_OREBURGH_CITY_STATE = 2
 | `wait_map` | `map` | until the map id matches |
 | `wait_field` | | until the player is free in the field |
 | `wait_battle` | | until a battle starts (after walking into a trainer's sight) |
-| `wait_reset` | opt. `max` | the last step of a run that ends the game: until the game's own `OS_ResetSystem` after the credits (the port reboots the guest: the `resets` status goes up); needs `[run] save = "none"`; `[expect]` reads the save the game wrote |
+| `wait_reset` | opt. `max`, `keys` (held), `press` + `gap` (pressed every `gap` frames: text in the ending) | the last step of a run that ends the game: until the game's own `OS_ResetSystem` after the credits (the port reboots the guest: the `resets` status goes up); needs `[run] save = "none"`; `[expect]` reads the save the game wrote |
 | `press` | `keys` (`A`, `UP+B`, ...), opt. `hold`, `gap`, `times` | raw buttons, for menus |
 | `tap` | `x`, `y`, opt. `hold`, `gap`, `times` | bottom-screen touch (Pokétch, touch menus) |
 | `wait_frames` | `n` | idle |

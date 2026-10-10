@@ -167,7 +167,16 @@ def bot_wait_reset(s, step, ctx):
                 return
         raise HarnessError("no SoftReset in %d frames" % bound)
     resets = s.stat("resets")
-    if not s.run(bound, step.get("keys"), until="resets!=%d" % resets):
+    if "press" in step:
+        # the ending's text waits for presses, not a held key (Black/White: N's farewell runs straight into the
+        # credits, then the game's save and OS_ResetSystem): press every `gap` frames until the reset
+        end, gap = s.frame + bound, _int(step, "gap", 26)
+        while s.stat("resets") == resets:
+            if s.frame >= end:
+                raise HarnessError("no OS_ResetSystem in %d frames" % bound)
+            s.run(4, step["press"])
+            s.run(gap, until="resets!=%d" % resets)
+    elif not s.run(bound, step.get("keys"), until="resets!=%d" % resets):
         raise HarnessError("no OS_ResetSystem in %d frames" % bound)
     s.ended = "OS_ResetSystem"
     s.note("wait_reset: the game reset itself (soft reset %d)" % s.stat("resets"))
