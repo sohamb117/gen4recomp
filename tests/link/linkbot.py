@@ -21,6 +21,8 @@ SCENARIO.json:
                                               (linkpair.mint_hgss), B/W ones by
                                               linkpair.mint_bw ("bw_mint": a
                                               BW_CHAIN name), as the replay does
+   "species": {"b": 64},                      a minted HG/SS station's added Pokemon (default
+                                              linkpair.HGSS_SIDE's)
    "recipes": {"b": "recipes/union-b.recipe"}, a D/P/Pt station's lab recipe (linkpair.mint)
    "opts": {"b": []},                         a station's np_gp -o options (default
                                               text_instant=1)
@@ -251,7 +253,7 @@ def main():
         if 'saves' in sc:
             shutil.copyfile(sc['saves'][side], sav)
         elif games[side] in linkpair.HGSS_GAMES:
-            linkpair.mint_hgss(games[side], side, sav)
+            linkpair.mint_hgss(games[side], side, sav, sc.get('species', {}).get(side))
         elif games[side] in linkpair.BW_GAMES:
             linkpair.mint_bw(games[side], side, sav, sc.get('bw_mint'))
         elif side in sc.get('recipes', {}):

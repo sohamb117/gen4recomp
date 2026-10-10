@@ -332,8 +332,11 @@ def hgss_base_save(game):
                           os.path.join(ROOT, 'build', 'e2e', game, HGSS_BASE, 'end.sav'))
 
 
-def mint_hgss(game, side, out_sav):
-    name, tid, sid, species = HGSS_SIDE[side]
+def mint_hgss(game, side, out_sav, species=None):
+    """`species` replaces the side's own added Pokemon (party slot 1, the one the trades swap): a trade evolver
+    for run_link_tests' hgss_trade_evolve."""
+    name, tid, sid, own = HGSS_SIDE[side]
+    species = species or own
     for args in (['set-name', hgss_base_save(game), name, '-o', out_sav], ['set-ids', out_sav, tid, sid],
                  ['add-mon', out_sav, GAMES[game][1], str(species), '8']):
         subprocess.run([SAVE4] + args, check=True, capture_output=True)

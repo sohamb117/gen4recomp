@@ -1,0 +1,4 @@
+# Boost on 04's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
+# Violet's trader (MAP_VIOLET_BELLSPROUT_ONYX_TRADE_HOUSE, NPC_TRADE_ROCKY_ONIX) asks for a BELLSPROUT; 04's party is
+# CYNDAQUIL alone, so BELLSPROUT lands in party slot 1, as one caught on Route 31 would.
+party SPECIES_BELLSPROUT 10

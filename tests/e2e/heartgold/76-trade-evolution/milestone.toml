@@ -1,15 +1,83 @@
-# Proves a trade evolution between two HG/SS stations (or HG/SS and Pearl) through the link tests.
-# Start: tests/link (hgss_trade) -> end: the evolved species on the receiving save.
-title = "Trade evolution over the link"
-status = "planned"
+# Trades on HG/SS. The in-game NPC trade (Violet City: BELLSPROUT for Rudy's ONIX "Rocky") never evolves the received
+# Pokemon: only the wireless trade's app checks EVOCTX_TRADE (src/launch_application.c:956; src/npc_trade.c has no
+# evolution call). The trade evolution is the two-station link case hgss_trade_evolve (tests/link/run_link_tests.py):
+# HeartGold's A and SoulSilver's B trade in the Union Room, B's KADABRA arrives on A, "KADABRA is evolving!",
+# "Congratulations! Your KADABRA evolved into ALAKAZAM!", and A's save keeps ALAKAZAM (65), B's the SENTRET.
+# Start: 04's end (Violet City) + a BELLSPROUT -> end: the trade house, ONIX "Rocky" in party slot 1.
+title = "Trades: NPC trade (and link trade evolution)"
 priority = "P1"
 version = "both"
-estimate = 20000
+estimate = 5418
 refs = [
-  "tests/link/run_link_tests.py:123 (hgss_trade: HeartGold <-> SoulSilver; :140-151 hg_platinum_trade / hg_diamond_trade / hg_pearl_trade), tests/link/scenarios/hgss-trade.json",
-  "tests/e2e/platinum/75-trade-evolution (the Platinum link evolution)",
+  "files/fielddata/script/scr_seq/scr_seq_0864_T22R0601.s:15-64 (the trader: YES, GetPartySelection, LoadNPCTrade 0, NPCTradeGetReqSpecies, NPCTradeExec, FLAG_TRADE_VIOLET_CITY_BELLSPROUT_ONIX)",
+  "include/constants/npc_trade.h:5 (NPC_TRADE_ROCKY_ONIX); src/npc_trade.c (the trade's mon made from the trade data: no GetMonEvolution)",
+  "src/launch_application.c:956 (the wireless trade: GetMonEvolution(..., EVOCTX_TRADE, heldItem, ...)); src/pokemon.c:2962 (EVOCTX_TRADE)",
+  "tests/link/run_link_tests.py hgss_trade_evolve; tests/link/scenarios/hgss-trade-evolve.json; tests/link/schedules/hgss-trade-evolve-a.sched (+ hgss-trade-b.sched); tests/link/linkpair.py mint_hgss species",
 ]
-notes = "Belongs with the link tests (two stations), as Platinum's 75; a skeleton here points at it. estimate: a guess until measured."
+notes = "The NPC half: 04's save (Violet) and a boost BELLSPROUT; Rudy (object 1) asks, YES opens the party screen with the cursor on slot 0, RIGHT and A pick BELLSPROUT (no submenu), the animation, 'Rudy sent over Rocky.' (ONIX, holding a Persim Berry, not evolved). The link half, run by tests/link/run_link_tests.py hgss_trade_evolve --game heartgold:soulsilver: hgss_trade's stations with B's slot 1 minted KADABRA (linkpair.mint_hgss species); recorded by linkbot.py from scenarios/hgss-trade-evolve.json on np_gp --lockstep (core-proposal): A's inputs are hgss_trade's plus one A at 14635 that dismisses 'Congratulations! Your KADABRA evolved into ALAKAZAM!'; B's are hgss-trade-b.sched unchanged. Replayed on np_headless: ok (A's party [155, 65], B's [155, 161]), with hgss_trade still ok. Measured: HG 5409 frames, SS 5418."
+
+[start]
+from = "04-route30-31-violet"
+boost = "boost.recipe"
 
 [run]
-frames = 30000
+frames = 8200
+
+[[step]]
+do = "walk_to"
+x = 484
+z = 277
+on_battle = "flee"
+note = "the trade house (warp 9)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VIOLET_BELLSPROUT_ONYX_TRADE_HOUSE"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Rudy (object 1, (2,5)): 'Want to trade it for my ONIX?'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "the question's text"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "choose"
+note = "YES: the party screen, 'Choose a Pokemon.'"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 40
+note = "BELLSPROUT (slot 1)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 400
+shot = "bye-bellsprout"
+note = "picked: 'BELLSPROUT will be sent to Rudy.', the trade animation"
+
+[[step]]
+do = "advance_text"
+max = 4000
+shot = "after-trade"
+note = "the animation, ONIX arrives, Rudy's thanks"
+
+[[shots]]
+frames = [3800, 4300, 4700, 5100]  # the exchange and ONIX's arrival (absolute run frames: they drift with any earlier change)
+
+[expect]
+map = "MAP_VIOLET_BELLSPROUT_ONYX_TRADE_HOUSE"
+flags = ["FLAG_TRADE_VIOLET_CITY_BELLSPROUT_ONIX"]
+save = [
+  '[m["species"] for m in s["party"]] == [155, 95]',
+  's["party"][1]["nickname"] == "Rocky"',
+]

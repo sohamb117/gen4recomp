@@ -151,6 +151,13 @@ SCENARIOS = [
          scheds={'a': 'schedules/hgss-trade-a.sched', 'b': 'schedules/hgss-trade-b.sched'},
          frames=13735, trade_slots=(1, 1), env={'PC_E2E': '1'}, opts=['text_instant=1'],
          dump_from=9000, dump_every=200),
+    # The same trade with B's slot 1 minted KADABRA (linkpair.mint_hgss species): it evolves into ALAKAZAM on
+    # A's station after the animation (scenarios/hgss-trade-evolve.json; B's inputs are hgss_trade's), A
+    # dismisses the evolution's message, and the game saves A's ALAKAZAM and B's SENTRET.
+    dict(name='hgss_trade_evolve', games=('heartgold', 'soulsilver'), species={'b': 64},
+         scheds={'a': 'schedules/hgss-trade-evolve-a.sched', 'b': 'schedules/hgss-trade-b.sched'},
+         frames=17100, trade_slots=(1, 1), evolve={'a': 65}, env={'PC_E2E': '1'}, opts=['text_instant=1'],
+         dump_from=14000, dump_every=200),
     # The same pair's battle: BATTLE in the Union Room, both enter both
     # Pokemon (the room's battles take two), then FIGHT and the first move
     # each turn and the next Pokemon on a faint (linkbot.linked_battle) until
@@ -235,7 +242,7 @@ def run(sc, work, e2e_out=None):
         if games[side] in linkpair.BW_GAMES:
             saves[side] = linkpair.mint_bw(games[side], side, out, sc.get('bw_mint'))
         elif games[side] in linkpair.HGSS_GAMES:
-            saves[side] = linkpair.mint_hgss(games[side], side, out)
+            saves[side] = linkpair.mint_hgss(games[side], side, out, sc.get('species', {}).get(side))
         else:
             saves[side] = linkpair.mint(os.path.join(HERE, sc['recipes'][side]), out, games[side], base_dir=work)
     want_party = dict(sc.get('party', {}))
@@ -244,6 +251,9 @@ def run(sc, work, e2e_out=None):
         sa, sb = sc['trade_slots']
         want_party = {'a': list(before['a']), 'b': list(before['b'])}
         want_party['a'][sa], want_party['b'][sb] = before['b'][sb], before['a'][sa]
+        # a trade evolver arrives evolved: `evolve` is the species the receiving side keeps
+        for side, species in sc.get('evolve', {}).items():
+            want_party[side][sa if side == 'a' else sb] = species
     relay_proc = None
     extra = {'a': [], 'b': []}
     if sc.get('relay'):
