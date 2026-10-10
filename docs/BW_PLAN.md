@@ -842,3 +842,19 @@ Frames (A | B pairs), in `/tmp/bw2/link/report/`:
 5. `5-battle-regression.png`: the regression battle, Ember / critical
    Tackle / forfeit.
 6. `6-battle-room-team-select.png`: the battle room and team selection.
+
+## The late game on the core: N's Castle's VRAM hand-over (2026-10-09)
+
+The story chain's scouts (tests/e2e/black/22-33) ran the late game on synthesized saves. N's Castle's throne room
+(zone 278, scr 0556 script 3) and the ending after Ghetsis stopped the core on armrec's VRAM overlap trap (banks D
+and I both sub OBJ, VRAMCNT 83 8B 80 84 83 81 82 80 82). The SDK's bank setters store the new bank before moving the
+old one to LCDC, and the recompiled SDK's per-store VRAMCNT hook sees that moment; armrec now models overlapping
+banks as the console does (reads OR, writes to both; tests/e2e/DEFECTS.md has the details). No new overlay-230
+caller appeared in the throne room, the capture, N's battle, Ghetsis's battle or the farewell.
+
+Rails, for the e2e probe: the Icirrus Gym's ramp and spin tiles (zone 114, Cmd195) and Victory Road's outdoor zone
+214 are rails like Skyarrow Bridge's: the player's MMDL has status bit 0x2000 and sits 0x20 fx off the tile centre,
+so field_ready stays 0 there (the `rail` bot, and B/W `slide`'s held press for the gym's ramps). A rail map's tables
+are in RAM while it is loaded (Dragonspiral 211: the player's rail work at MMDL +0x94 leads to a header with the
+point and line arrays: points 112 bytes, u32 lines[4], keys[4] (1 U, 2 R, 3 D, 4 L), fx32 pos at +0x30; lines 72
+bytes, start and end point, key, position, camera, length).

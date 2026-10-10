@@ -236,7 +236,8 @@ void armrec_vram_render_end(void);
  * Which bank, if any, guest address `a` currently reads, and at what offset
  * into it. Returns 0 when nothing is mapped there. A read of such an address
  * gives zero, as on hardware, and a write to it is refused loudly rather than
- * dropped.
+ * dropped. Where two banks are mapped at once (a VRAMCNT hand-over, see
+ * vram_place in armrec_rt.c) this names the lower-lettered one.
  */
 int armrec_vram_lookup(uint32_t a, int *bank, uint32_t *off);
 

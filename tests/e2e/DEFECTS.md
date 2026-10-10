@@ -3,6 +3,26 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
+## Fixed: Black/White stopped in N's Castle's throne room and in the ending on a VRAM bank overlap (armrec)
+
+Black and White, zone 278 (the throne room): the scene where N calls his dragon and the stone answers (scr 0556
+script 3, zone_event 278 trigger 1 on 0x40B6 == 1) aborted the core every time, Black at frame 7618 and White at 7760
+of the repro: `armrec: VRAM banks D and I are both mapped at 0x06600000 ... VRAMCNT = 83 8B 80 84 83 81 82 80 82,
+window sub OBJ block 0`, then `guest trap: abort()`. The same trap fired about 14.6k frames after Ghetsis's win, in N's
+farewell before the credits. Repro: /tmp/League2833/t277.sav (a synthesized save at zone 277: 8 badges, 0x40A1/A2/A5/
+A6/D4/D5/DC set, the stone), walk into 278, trigger 0's scene, then trigger 1.
+
+Cause: armrec's VRAM model refused two banks in one window block ("this port aliases each window onto one bank's
+storage"), on the claim that the SDK never makes that state. It does: GxSetBankForSubOBJ (NitroSDK gx_vramcnt.c, and
+every role's setter has the same shape) stores the new bank first, then moves the old one to LCDC, so between two
+register stores D (128 KB) and I (16 KB) are both sub OBJ. The decompiled C ports never saw it (their VRAM hook runs
+at the setter's return); the recompiled ROM's per-store hook (ARMREC_VRAM_HOOK) does. Fixed in armrec_rt.c by modelling
+the console: overlapping banks are legal, reads OR them and a write reaches each of them. The copying VRAM model
+(wasm and Windows, every shipped core) shows the OR in the window and writes the bytes the guest changed back to
+every bank; the native aliasing model fences such a block and stops only if a frame renders while the overlap stands.
+On the fixed core (build/core-bwm, bw-script) the repro plays the whole scene (N, then Reshiram and Zekrom in the
+room) and saves at frame 16932.
+
 ## Fixed: HeartGold froze at a trainer's sight encounter; scripted NPCs drew as a white block (port)
 
 HeartGold 04 (tests/e2e/heartgold/04-route30-31-violet) stops at the first route trainer. Repro: start from 03's end
