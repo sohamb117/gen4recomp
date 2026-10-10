@@ -1034,7 +1034,7 @@ Black and White; White's overlay 107 sits at 0x021EE760, the same size).
 - Overlay 230 stays opaque. Nothing found here calls it, but a run would need `PC_TRACE_OVERLAYS=1` to confirm no
   new caller.
 
-### Built: the child station and its Download Play (2026-10-10)
+### Built: the child station, its Download Play and the transfer (2026-10-10)
 
 **The child as a guest.** `games/ndsrec` with `VER=poketransfer BW_ROM=<Black or White ROM>` extracts
 `dl_rom/child_r_eng.srl` (`ndsrec.py extract`, into build/) and recompiles it like Black and White's static:
@@ -1085,7 +1085,32 @@ Two fixes outside the child station came with it:
   other DS system."
 - With a save that has fewer than six boxed Pokémon, the child says "There aren't six Pokémon in the PC Boxes for
   Poké Transfer to catch." It does this with a Platinum card and with a HeartGold card.
-- Nothing is written to the card save yet; the test checks it is unchanged.
+- `link` checks the steps up to here and that the card save is unchanged.
+
+**The transfer** (`run_tests.py transfer_platinum`, `transfer_heartgold`, 2026-10-10). The child is played with the
+stylus. The six icons are dragged into the frame on the right and YES confirms. Then comes the capture minigame
+(mb_cap_*): the ball is pulled back on the bottom screen's slingshot and lands where the reticle shows, about 24
+frames after release. Pulling (dx, dy) from (128, 85) lands near (128 - 2.43 dx, 201 - 2.48 dy). The Pokémon hop
+between the bushes and hide. A ball landing on a hidden one flushes it out, and one landing on a Pokémon in the open
+catches it. With all six caught: "Finish!", "Pokémon CANNOT be returned once they transfer." (tapped), "Transfer
+these Pokémon?" YES.
+- The child then saves the card ("Saving... Don't turn off the power."). Its backup writes go through the card model
+  that already served its reads.
+- Black saves the six into its boxes, and the lab says "Poké Transfer will end."
+- Both saves verify after the games' own writes. Black's box 1 holds its Pansage and the six, with the same
+  personality values they had in the Gen 4 boxes. The card save's boxes are empty.
+- It works with a Platinum card (milestone 25's save) and with a HeartGold card (milestone 04's save): Sentret,
+  Hoothoot, Pidgey, Rattata, Caterpie and Weedle, with HeartGold's icons.
+
+The two stations run in lockstep, so a recorded touch schedule repeats exactly. `tests/poketransfer/catchbot.py`
+records `pt-child-<card>.sched` greedily:
+- It plays from np_headless `--fork-at` checkpoints: a second's tries take seconds, not the 13000-frame walk to the
+  minigame.
+- It records a stretch and finds what moved against the field's background. It tries shots landing where something
+  will be, and keeps a shot when the icon bar shows one more Poké Ball. When nothing in the stretch is caught, it
+  keeps a flush shot.
+- Platinum needed 11 shots (released 13347 to 14455), HeartGold 10 (13663 to 15180), 10-40 minutes each.
+- A schedule fits only the saves it was recorded with; the test checks their SHA-1s and names the tool otherwise.
 
 ## The Musical show: the ARM7's VBlank count (2026-10-10)
 
