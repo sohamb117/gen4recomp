@@ -1,0 +1,12 @@
+# Secret Power from Route 111's man to a decorated base on Route 120, on the GBA new-game base save (Brendan, house 1F).
+flag FLAG_SYS_POKEMON_GET                 # data/maps/Route101/scripts.inc:217 (Birch's bag): POKEMON in the start menu
+money 10000                               # the Small Desk's 3000 (src/data/decoration/header.h:15-22)
+badge 6                                   # data/maps/FortreeCity_Gym/scripts.inc (Winona): Fly in the field (src/party_menu.c:3725, FIELD_MOVE_FLY 5)
+flag FLAG_VISITED_FORTREE_CITY            # data/maps/FortreeCity/scripts.inc (on transition): Fortree on the Fly map (src/region_map.c)
+# the Fly carrier leads (HM02: data/maps/Route119/scripts.inc), the Secret Power pupil has two moves at lv 5
+# (src/data/pokemon/level_up_learnsets.h sMudkipLevelUpLearnset: Tackle, Growl) so the TM fills a free slot
+party SPECIES_SWELLOW 45 ITEM_NONE
+party-move 0 0 MOVE_FLY
+party SPECIES_MUDKIP 5 ITEM_NONE
+# Route 111 north, below the Secret Power man (data/maps/Route111/map.json object 33 (13,20), MOVEMENT_TYPE_FACE_UP)
+map MAP_ROUTE111 13 21

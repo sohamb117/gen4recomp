@@ -21,6 +21,7 @@
 ../ruby/62-fishing-old-good-super-rod
 71-hm-fly-surf-dive-waterfall
 72-trick-house-puzzle-1
+73-secret-base-secret-power-decorate
 ../ruby/66-berry-plant-water
 ../ruby/67-berry-harvest
 74-safari-zone-catch

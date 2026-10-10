@@ -68,6 +68,12 @@ LAYOUT = {
         vars=0x139C, vars_count=(0x159C - 0x139C) // 2,  # vars[VARS_COUNT] (global.h:1021)
         game_stats=0x159C, game_stats_count=64,     # gameStats[NUM_GAME_STATS] (global.h:1022, game_stat.h:58)
         berry_trees=0x169C,                         # berryTrees[BERRY_TREES_COUNT] (global.h:1023)
+        # secretBases[SECRET_BASES_COUNT 20] (global.h:1024; struct SecretBase global.h:556-573: 0xA0 bytes,
+        # secretBaseId +0, decorations[16] +0x12, decorationPositions[16] +0x22; [0] is the player's own base)
+        secret_bases=0x1A9C, secret_base_size=0xA0, secret_base_count=20,
+        # the decoration inventories decorationDesks..decorationCushions (global.h:1027-1034)
+        decor=[("desk", 0x2734, 10), ("chair", 0x273E, 10), ("plant", 0x2748, 10), ("ornament", 0x2752, 30),
+               ("mat", 0x2770, 30), ("poster", 0x278E, 10), ("doll", 0x2798, 40), ("cushion", 0x27C0, 10)],
     ),
     "rs": dict(
         sb2_size=0x890, sb1_size=0x3AC0, storage_size=0x83D0, encrypted=False,
@@ -1047,7 +1053,7 @@ def dump(rom, sav):
                           "minutes_until_next_stage": mins, "yield": yld, "regrowth_count": bits & 0xF,
                           "watered": [bits >> (4 + k) & 1 for k in range(4)]})
     out["berry_trees"] = trees
-    if "secret_bases" in lay:  # Ruby/Sapphire
+    if "secret_bases" in lay:
         out["secret_bases"] = []
         for i in range(lay["secret_base_count"]):
             off = lay["secret_bases"] + i * lay["secret_base_size"]
