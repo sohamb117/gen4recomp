@@ -1,20 +1,141 @@
-# Proves the Good Rod from Olivine's fishing guru and a catch with it.
-# Start: 29's end, Fly to Olivine -> end: after the battle.
+# Proves the Good Rod: the fishing guru in Olivine's northwest house (5,5) gives it, it is registered to Y in the Bag,
+# and it is cast from Olivine's dock into the harbour until a bite is hooked; the hooked Pokemon's battle is fought.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_OLIVINE (277,273) on the dock, after the battle.
 title = "The Good Rod: Olivine's fishing guru"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 5976
 refs = [
-  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0918_T26R0601.s:25-33 (ITEM_GOOD_ROD, SetFlag FLAG_GOT_GOOD_ROD)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0918_T26R0601.s:15-37 (YES -> ITEM_GOOD_ROD, SetFlag FLAG_GOT_GOOD_ROD)",
+  "zone_event 216_T26R0601 (MAP_OLIVINE_NORTHWEST_HOUSE) object 0 SPRITE_FISHING_2 (5,5), warp 0 (4,8); zone_event 074_T26 warp 4 (273,247)",
+  "games/heartgold/src/field_use_item.c:120-122, :431-465 (the rods' field use: Task_OverworldFish)",
+  "games/heartgold/asm/overlay_01_021FC66C.s:273-379 (SetFishWait, WaitForFish, CheckForReelInFish), :973-975 (windows 45/30/15 frames)",
+  "games/heartgold/pc/src/pc_hg_field.c fish_trace (PC_TRACE_FISH=1)",
+  "tools/hg_map.py MAP_OLIVINE: the dock x 277..281 from z 270 south, water west of x 277 at z 273",
 ]
-notes = "BLOCKED as 70: the HG/SS fishing trace. estimate: a guess until measured."
+notes = "The start menu remembers its cursor: the fly step leaves it on POKEMON, DOWN is BAG. The Good Rod is KEY ITEMS' 9th: page 2, slot 3, the same touches as 70 (scouted on HeartGold 29's end save: 'Good Rod 1 SET', bag.registered 446; a first try with DOWN x2 opened the Pokegear). walk_to (276,273) stops at (277,273), the dock's west edge; the step turns west to the water. Scouted: a cast there showed the rod out over the water. Needs the core with the HG/SS fishing trace. Measured on the trace core: HG 5893 frames (KRABBY lv20 hooked), SS 5976 (MAGIKARP lv20). Probe-only as 70: the replay without PC_TRACE_FISH gave the same hash (HG 5fbb1b13fac4984d, SS 4de10088439cc9b2)."
 
 [start]
 from = "29-new-bark-elm-master-ball"
 
 [run]
-frames = 30000
+frames = 9000
+env = { PC_TRACE_FISH = "1" }
+
+[[step]]
+do = "fly"
+map = "MAP_OLIVINE"
+
+[[step]]
+do = "walk_to"
+x = 273
+z = 247
+on_battle = "flee"
+note = "the northwest house (warp 4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_OLIVINE_NORTHWEST_HOUSE"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the fishing guru (5,5): 'Would you like to face the sea and fish?'"
+
+[[step]]
+do = "advance_text"
+shot = "good-rod"
+note = "YES (A): the Good Rod"
+
+[[step]]
+do = "press"
+keys = "x"
+hold = 2
+gap = 30
+note = "the start menu; its cursor on POKEMON, where the fly step left it"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+note = "BAG"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 90
+
+[[step]]
+do = "tap"
+x = 240
+y = 15
+gap = 50
+note = "the KEY ITEMS tab"
+
+[[step]]
+do = "tap"
+x = 60
+y = 175
+gap = 50
+note = "page 2"
+
+[[step]]
+do = "tap"
+x = 60
+y = 83
+gap = 50
+note = "the Good Rod"
+
+[[step]]
+do = "tap"
+x = 155
+y = 143
+gap = 60
+shot = "registered"
+note = "REGISTER"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 50
+times = 4
+until = "field_ready=1"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+note = "the house's door mat -> Olivine"
+
+[[step]]
+do = "walk_to"
+x = 277
+z = 273
+face = "left"
+on_battle = "flee"
+note = "the dock's west edge, facing the harbour"
+
+[[step]]
+do = "fish"
+casts = 20
+max = 20000
+shot = "battle-starts"
+note = "the frame the hooked Pokemon's battle begins (the field still drawn); the bite's own frame is the bot's \"fish\" snap"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "advance_text"
+shot = "after"
 
 [expect]
+map = "MAP_OLIVINE"
+position = [277, 273]
 flags = ["FLAG_GOT_GOOD_ROD"]
+log = ['pc-fish: f=\d+ rod=1 bite', 'pc-fish: f=\d+ rod=1 caught', 'fish: cast \d+: caught']
+save = ['s["bag"]["registered"] == 446']

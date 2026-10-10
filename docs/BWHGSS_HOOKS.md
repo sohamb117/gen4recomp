@@ -257,11 +257,15 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 - **D/P/Pt.** `in_encounter` from encounter creation to its free (Pt `encounter.c.patch`; D/P the same in
   `pc_dp_field.c` plus its patch) and `in_battle_app` around the battle application for facility battles
   (Pt `unk_0203D1B8.c.patch`).
-- **HG/SS: proven for field battles (2026-10-08).** `in_encounter` (`pc/patches/src/encounter.c.patch`):
+- **HG/SS: proven for field and Battle Frontier battles.** `in_encounter` (`pc/patches/src/encounter.c.patch`):
   on Route 29 (`tests/bwhgss/hgss-wild.sched` from New Bark's west exit) a wild Sentret sets in_battle at frame
-  3329; RUN ("Got away safely!") clears it at 4650 as the field comes back. Still missing: `in_battle_app`
-  for battles that do not come from an `Encounter` (the Battle Frontier): patch `Battle_LaunchApp` /
-  `gOverlayTemplate_Battle`'s init and exit (`src/launch_application.c`).
+  3329; RUN ("Got away safely!") clears it at 4650 as the field comes back. `in_battle_app`
+  (`pc/patches/src/launch_application.c.patch`: `Battle_Init` / `Battle_Exit`, `gOverlayTemplate_Battle`'s init
+  and exit) covers the battles that do not come from an `Encounter`: the Battle Frontier's engine launches the
+  battle application itself. tests/e2e/heartgold/87-battle-frontier-tower's seven Battle Tower battles each
+  raise and drop in_battle on both games. Field battles are unchanged: HG 60 (Cut), SS 60, HG 03 (the rival,
+  the catching lesson) and HG 101 (24 wild battles) give the same np_gp hash over every frame's screens and
+  audio before and after the patch.
 - **B/W: done, no game patch.** `pc/src/pc_bw_e2e.c` `bw_frame` sets `in_battle_app` while overlay 93's battle
   POKECON exists (`bw_pokecon`, docs/BW_RAM.md "Battle"), from the battle's intro to the fade back to the field.
   Bianca's battle in the bedroom (`tests/bwhgss/bw-battle.sched`) sets it at ~9920 and clears it at ~14030
@@ -283,7 +287,7 @@ proposal (formerly `pc/patch_bw_startup.py`) is the first such patch.
 | 9 | Instant text | B/W | medium: printer hunt, then a `bl` retarget | medium | nothing | no | **done** |
 | 10 | Mods via a ROM view | B/W (done, guest side); other DS games | medium-high: FAT/NARC rebuild at the cartridge read | medium | nothing | no (B/W only, `PC_BW_ROMVIEW`) | **done** for B/W |
 | 11 | Mods via FS/NARC hooks | HG/SS | medium | low over #10 | field for most assets | no |
-| 12 | `in_battle_app` | HG/SS | small | low (Frontier only) | field | no |
+| 12 | `in_battle_app` | HG/SS | small | low (Frontier only) | field | no | **done** (proven) |
 | 13 | Camera zoom / tilt | B/W | medium: GFL camera hook on the field overlay's Switching calls | medium | nothing | no | **done** |
 | 14 | `IN_BATTLE` | B/W | small: the probe's POKECON | medium | nothing | no | **done** (app) |
 | 15 | Rules | HG/SS, B/W | medium each, per documented bug | low | battles | no |

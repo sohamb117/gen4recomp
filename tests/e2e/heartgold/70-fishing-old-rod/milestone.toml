@@ -1,21 +1,144 @@
-# Proves fishing: the Old Rod from the fisherman in Route 32's Pokemon Center, a cast in water, a hooked Pokemon's battle.
-# Start: 29's end, Fly to Violet, Route 32's Pokemon Center -> end: after the battle.
+# Proves fishing with the Old Rod: the rod from the fisherman in Route 32's Pokemon Center (4,15), registered to Y in
+# the Bag (KEY ITEMS, page 2, REGISTER), then cast from Route 32's pier into the water east of it until a bite is
+# hooked; the hooked Pokemon's battle is fought.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_ROUTE_32 (467,370) on the pier, after the battle.
 title = "The Old Rod: Route 32's fisherman and a catch"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 20000
+estimate = 13020
 refs = [
-  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0233_R32PC0101.s:30-40 (ITEM_OLD_ROD, SetFlag FLAG_GOT_OLD_ROD)",
-  "zone_event 163_R32PC0101 object 4 SPRITE_FISHING_2 (4,15) -> _EV_scr_seq_R32PC0101_001",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0233_R32PC0101.s:19-42 (scr_seq_R32PC0101_001: YES -> ITEM_OLD_ROD, SetFlag FLAG_GOT_OLD_ROD)",
+  "zone_event 163_R32PC0101 object 4 SPRITE_FISHING_2 (4,15) -> _EV_scr_seq_R32PC0101_001; zone_event 033_R32 warp 3 (468,418) the Pokemon Center",
+  "games/heartgold/src/field_use_item.c:120-122, :431-465 (the rods' field use: Task_OverworldFish with ROD_TYPE_OLD/GOOD/SUPER)",
+  "games/heartgold/asm/overlay_01_021FC66C.s:42-120 (Task_OverworldFish), :171-194 (the fishing SysTask's action loop), :273-379 (SetFishWait: delay (LCRandom() % 4 + 1) * 30; WaitForFish; CheckForReelInFish: A within the window hooks), :973-975 (windows 45/30/15 frames)",
+  "games/heartgold/pc/src/pc_hg_field.c fish_trace (PC_TRACE_FISH=1: Platinum's pc-fish lines, read from the fishing task between frames)",
+  "tools/hg_map.py MAP_ROUTE_32: the pier x 467..469 from z 360, water east of it (470..,370)",
 ]
-notes = "BLOCKED: the fish bot waits for the guest's fishing trace (PC_TRACE_FISH), which only Platinum's guest has; HG/SS needs the same trace in its fishing code (a core change) or another bite signal. The rod must also be registered (Y). estimate: a guess until measured."
+notes = "The start menu remembers its cursor (FieldSystem.unkD3): the fly step leaves it on POKEMON, DOWN is BAG. The Old Rod is in KEY ITEMS (the last tab), 9th: page 2, slot 3. The Bag's pocket tabs and page arrows are touch (scouted on HeartGold 29's end save: the tab at (240,15), the next-page arrow (60,175), the rod (60,83), REGISTER (155,143)); 'Old Rod 1 SET' after, bag.registered 445. Y casts it (bots.py fish), A at the trace's bite line hooks. Scouted: a cast from (467,370) facing east ended 'Not even a nibble...'. Needs the core with the HG/SS fishing trace. Measured on the trace core: HG 12522 frames (MAGIKARP lv10 hooked), SS 13020 (MAGIKARP lv10). The trace is probe-only: each game's run, its inputs replayed for the same frame counts with PC_TRACE_FISH unset, gave the same np_gp hash over every frame's screens and audio (HG 57a6fb5ca9c86916, SS 0e5f106e7463a77d)."
 
 [start]
 from = "29-new-bark-elm-master-ball"
 
 [run]
-frames = 30000
+frames = 19600
+env = { PC_TRACE_FISH = "1" }
+
+[[step]]
+do = "fly"
+map = "MAP_VIOLET"
+
+[[step]]
+do = "walk_to"
+x = 468
+z = 418
+on_battle = "flee"
+note = "Route 32's Pokemon Center (warp 3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_32_POKECENTER_1F"
+
+[[step]]
+do = "talk_to"
+id = 4
+note = "the fisherman (4,15): 'Looking at all those people fishing, did you feel like you wanted to try?'"
+
+[[step]]
+do = "advance_text"
+shot = "old-rod"
+note = "YES (A): 'Ross obtained the Old Rod!'"
+
+[[step]]
+do = "press"
+keys = "x"
+hold = 2
+gap = 30
+note = "the start menu; its cursor on POKEMON, where the fly step left it (bots.py s.hgss_menu_index)"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+note = "BAG (HGSS_START_MENU_MOVES: POKEMON down -> BAG)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 90
+note = "the Bag on its first pocket"
+
+[[step]]
+do = "tap"
+x = 240
+y = 15
+gap = 50
+note = "the KEY ITEMS tab"
+
+[[step]]
+do = "tap"
+x = 60
+y = 175
+gap = 50
+note = "page 2"
+
+[[step]]
+do = "tap"
+x = 60
+y = 83
+gap = 50
+note = "the Old Rod: USE / REGISTER / MOVE / CANCEL"
+
+[[step]]
+do = "tap"
+x = 155
+y = 143
+gap = 60
+shot = "registered"
+note = "REGISTER: 'Old Rod 1 SET'"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 50
+times = 4
+until = "field_ready=1"
+note = "out of the Bag and the menu"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 19
+note = "the Pokemon Center's exit"
+
+[[step]]
+do = "walk_to"
+x = 467
+z = 370
+face = "right"
+on_battle = "flee"
+note = "Route 32's pier, facing the water east"
+
+[[step]]
+do = "fish"
+casts = 20
+max = 20000
+shot = "battle-starts"
+note = "the frame the hooked Pokemon's battle begins (the field still drawn); the bite's own frame is the bot's \"fish\" snap"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "advance_text"
+shot = "after"
 
 [expect]
+map = "MAP_ROUTE_32"
+position = [467, 370]
 flags = ["FLAG_GOT_OLD_ROD"]
+log = ['pc-fish: f=\d+ rod=0 bite', 'pc-fish: f=\d+ rod=0 caught', 'fish: cast \d+: caught']
+save = ['s["bag"]["registered"] == 445']

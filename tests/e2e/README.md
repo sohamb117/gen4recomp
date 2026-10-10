@@ -84,7 +84,7 @@ The DS harness as Platinum and D/P use it, with these differences:
   addresses, the map's warps (WarpEvent: tile, header, anchor) and, in the battle menu, `ui_cursor` = the raw
   BattleMenuCursor (menuY << 4 | menuX, 0 while hidden). The battle report comes from `BattleInput_CheckTouch`
   (`pc/patches/src/battle/battle_input.c.patch`), the party screen's two checks from overlay 8
-  (`pc/patches/asm/overlay_08.s.patch`), `in_battle` from `pc/patches/src/encounter.c.patch`. HG/SS's battle menu
+  (`pc/patches/asm/overlay_08.s.patch`), `in_battle` from `pc/patches/src/encounter.c.patch` and, for the Battle Frontier's battles, `pc/patches/src/launch_application.c.patch`. HG/SS's battle menu
   ids and touch rects are Platinum's, so `auto_battle` taps the same points.
 - **Coordinates** are world tiles outdoors, as the zone_event JSON (`files/fielddata/eventdata/zone_event/`) gives
   them; a `talk_to` id is the object's number in `files/fielddata/script/scr_seq/event_<MAP>.h`.

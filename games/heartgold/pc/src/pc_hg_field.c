@@ -16,6 +16,9 @@
  *                start menu would offer SAVE at all.
  *   e2e probe    core/include/np_e2e.h through the plain-typed calls of
  *                Platinum's pc/src/pc_e2e.c (below).
+ *   fish trace   PC_TRACE_FISH=1: Platinum's `pc-fish:` lines (its
+ *                pc/src/pc_probe2d.c pc_fish_trace), read from the fishing
+ *                task between frames (below).
  *
  * The FieldSystem is field_system.c's sFieldSysPtr, read through
  * pc_hg_field_system() (pc/patches/src/field_system.c.patch).
@@ -46,6 +49,7 @@
 #include "script.h"
 #include "start_menu.h"
 #include "sys_flags.h"
+#include "sys_task.h"
 #include "task.h"
 #include "unk_02054648.h"
 #include "unk_02066EDC.h"
@@ -401,6 +405,125 @@ static void rules_check(void) {
             rage[0] == STATUS2_RAGE && rage[1] == 1 ? "PASS" : "FAIL");
 }
 
+/*
+ * PC_TRACE_FISH=1: Platinum's fishing trace (pc/src/pc_probe2d.c
+ * pc_fish_trace, from its GoFish hook), the same line and the same words,
+ * for tests/e2e/bots.py bot_fish: `wait` (the delay drawn, the rod's
+ * window), `bite` (the window is open), `caught` (hooked), and the three
+ * other ways a cast ends, `early`, `away`, `none`. One line per change.
+ *
+ * HG/SS's fishing is still assembly (asm/overlay_01_021FC66C.s), so this
+ * is an observer instead of a hook: read once per frame boundary, no guest
+ * memory written, nothing called but host C (getenv, the frame count,
+ * stderr). The rod's field task Task_OverworldFish (env 0x18 bytes,
+ * CreateFishingRodTaskEnv) starts the SysTask ov01_021FC798 (data 0x4c
+ * bytes, ov01_021FC748) in its state 1
+ * and frees both in the frame the SysTask says it is done, the same frame
+ * the task ends or jumps to the battle. The SysTask runs the action table
+ * ov01_02208DC4 on data[0xC] until an action returns FALSE; the table is
+ * Platinum's FishingActions one for one (0 Start .. 17 FinishFishing).
+ *
+ * Read between frames, an action that hands straight on to the next is
+ * never seen, so the outcome is told from where the cast came from:
+ *
+ *   4  WaitForFish (ov01_021FC88C): `wait`; delay data[0x14], drawn by 3
+ *      (ov01_021FC84C) as (LCRandom() % 4 + 1) * 30, already counted down
+ *      once here; window data[0x18] = 45/30/15 (old/good/super,
+ *      ov01_02208D7C) plus the walking Pokemon's mood bonus (ov01_021FCCB0).
+ *   5  CheckForReelInFish (ov01_021FC8E8): `bite`, window counted once.
+ *   6..9 the hook to the landed message (ov01_021FC914.._021FC980): `caught`.
+ *   13 WaitForNoFish (ov01_021FC9E8, after 12 set 120 in data[0x10]): `none`.
+ *   14 WaitCloseMessage (ov01_021FCA2C), the message 10 (ReeledInEarly) or
+ *      11 (FishGotAway) or 13's own timeout printed in the same frame:
+ *      from 4 `early`, from 5 `away`; from 13 `early` when its countdown had
+ *      more than one frame left (A then, not the timeout; on the last frame
+ *      the two cannot be told apart and nothing prints: `none` already did).
+ *
+ * The asm names below are guest addresses here (the bridge's irbridge.py),
+ * as the values the game stores are; the SysTask's is compared without the
+ * Thumb bit.
+ */
+extern void ov01_021FC798(SysTask *task, void *data); /* the fishing SysTask */
+extern unsigned long long pc_irq_frames(void);       /* Platinum's pc_os_lite.c: the frame Platinum's probe prints */
+
+typedef struct PcHgFishEnv { /* Task_OverworldFish's env */
+    u32 state;               /* 0 starting, 1 the SysTask runs */
+    u32 rodItem;
+    u32 encounter;
+    u32 rod;
+    void *battleSetup;
+    SysTask *sysTask;
+} PcHgFishEnv;
+
+typedef struct PcHgFishWork { /* ov01_021FC798's data, its first 0x20 bytes */
+    u32 encounter;
+    u32 done;
+    u32 caught;
+    u32 action;               /* index into ov01_02208DC4 */
+    s32 timer;
+    s32 delay;
+    s32 window;
+    u32 rod;                  /* ROD_TYPE_OLD/GOOD/SUPER */
+} PcHgFishWork;
+
+static const PcHgFishWork *fish_work(FieldSystem *fs) {
+    const TaskManager *taskman;
+    const PcHgFishEnv *env;
+    const SysTask *task;
+
+    if (fs == NULL || (taskman = fs->taskman) == NULL || taskman->func != Task_OverworldFish) return NULL;
+    env = taskman->env;
+    if (env == NULL || env->state != 1 || (task = env->sysTask) == NULL || task->data == NULL) return NULL;
+    if (((u32)task->func & ~1u) != ((u32)ov01_021FC798 & ~1u)) return NULL;
+    return task->data;
+}
+
+static void fish_trace(FieldSystem *fs) {
+    static int on = -1;
+    static int last = -1; /* the action seen last, -1 outside a cast */
+    static s32 lastTimer;
+    const PcHgFishWork *work;
+    const char *what = NULL;
+    int action;
+
+    if (on < 0) {
+        const char *s = getenv("PC_TRACE_FISH");
+        on = (s != NULL && *s != '\0' && *s != '0');
+    }
+    if (!on) return;
+
+    work = fish_work(fs);
+    if (work == NULL) {
+        last = -1;
+        return;
+    }
+    action = (int)work->action;
+    if (action != last) {
+        switch (action) {
+        case 4: what = "wait"; break;
+        case 5: what = "bite"; break;
+        case 6: case 7: case 8: case 9:
+            if (last < 6 || last > 9) what = "caught";
+            break;
+        case 12: case 13:
+            if (last != 12 && last != 13) what = "none";
+            break;
+        case 10: what = "early"; break;
+        case 11: what = "away"; break;
+        case 14:
+            if (last == 4 || (last == 13 && lastTimer > 1)) what = "early";
+            else if (last == 5) what = "away";
+            break;
+        }
+        last = action;
+        if (what != NULL) {
+            fprintf(stderr, "pc-fish: f=%u rod=%d %s delay=%d window=%d\n", (unsigned)pc_irq_frames(),
+                    (int)work->rod, what, (int)work->delay, (int)work->window);
+        }
+    }
+    lastTimer = work->timer;
+}
+
 static void np_frame(void) {
     FieldSystem *fs = pc_hg_field_system();
     const int ready = field_ready(fs);
@@ -409,6 +532,7 @@ static void np_frame(void) {
     pc_np_stat.map_id = fs != NULL && fs->location != NULL ? (unsigned)fs->location->mapId : 0;
 
     e2e_frame(fs, ready);
+    fish_trace(fs);
     if (ready) rules_check();
 
     if (pc_np_opt.quicksave_seq == pc_np_stat.quicksave_seq) return;
@@ -448,10 +572,14 @@ void pc_np_frame(void) {
 }
 
 /*
- * NP_STAT_IN_BATTLE (pc_np_stat.in_encounter): set by
+ * NP_STAT_IN_BATTLE (pc_np_stat.in_encounter / in_battle_app, ORed in
+ * Platinum's pc_view.c): in_encounter is set by
  * pc/patches/src/encounter.c.patch from Encounter_New / WildEncounter_New
  * to their _Delete, which every field battle (wild, trainer, scripted)
- * goes through.
+ * goes through. in_battle_app covers the battle application itself
+ * (pc/patches/src/launch_application.c.patch: Battle_Init to Battle_Exit),
+ * all a Battle Frontier battle has: the frontier engine launches
+ * gOverlayTemplate_Battle itself, without an encounter.
  */
 
 /*
