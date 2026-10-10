@@ -5128,7 +5128,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - refs: data/maps/EverGrandeCity_ChampionsRoom/map.json object_events[0] STEVEN (6,5), warp_events[1] (6,2) -> HALL_OF_FAME; data/scripts/hall_of_fame.inc (SetGameClearFlags, special GameClear); src/hall_of_fame.c (HoF screen, the save, StartCredits); src/credits.c (The End, SoftReset)
 - notes: Steven: TRAINER_STEVEN (335): SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56, ARMALDO 56, METAGROSS 58 (Aggron x4 from Surf/Water, Claydol and Cradily resist: the boost levels the lead). After the battle May and Birch come in and the player is walked to the Hall of Fame; the HoF screen saves before the credits; the credits end in a SoftReset. [run] save = "none": the end save is the HoF save the game wrote.
 
-### Side systems: 18 milestones, ~263268 frames estimated
+### Side systems: 18 milestones, ~263246 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -5142,7 +5142,7 @@ are fought with buttons. Player Brendan, starter Mudkip.
 | [67-berry-harvest](ruby/67-berry-harvest/milestone.toml) | Berries: harvest the grown Cheri Berry tree | P1 | both | 4000 | prev + `chain.recipe` | MAP_ROUTE104 | planned |
 | [68-berry-blender-pokeblock](ruby/68-berry-blender-pokeblock/milestone.toml) | Berry Blender: blend a Pokeblock with the old man | P1 | both | 6626 | `start.recipe` | MAP_SLATEPORT_CITY_CONTEST_LOBBY | passing |
 | [69-contest-normal-rank-win](ruby/69-contest-normal-rank-win/milestone.toml) | Contest: win the Normal Rank Cool contest | P1 | both | 22642 | `start.recipe` | MAP_VERDANTURF_TOWN_CONTEST_LOBBY | passing |
-| [70-safari-zone-catch](ruby/70-safari-zone-catch/milestone.toml) | Safari Zone: pay, enter and catch with Safari Balls | P1 | both | 4568 | `start.recipe` | MAP_SAFARI_ZONE_SOUTHEAST | passing |
+| [70-safari-zone-catch](ruby/70-safari-zone-catch/milestone.toml) | Safari Zone: pay, enter and catch with Safari Balls | P1 | both | 4546 | `start.recipe` | MAP_SAFARI_ZONE_SOUTHEAST | passing |
 | [71-battle-tower-lv50](ruby/71-battle-tower-lv50/milestone.toml) | Battle Tower: a Level 50 single set of seven wins | P1 | both | 34397 | `start.recipe` | MAP_BATTLE_TOWER_LOBBY | passing |
 | [72-pokenav-trainers-eyes](ruby/72-pokenav-trainers-eyes/milestone.toml) | PokeNav: Trainer's Eyes lists a beaten rematch trainer | P1 | both | 3201 | `start.recipe` | MAP_ROUTE102 | passing |
 | [73-tv-show](ruby/73-tv-show/milestone.toml) | TV: watch the emergency news on the house TV | P1 | both | 1273 | `start.recipe` | MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F | passing |
@@ -5257,9 +5257,9 @@ are fought with buttons. Player Brendan, starter Mudkip.
 - party: SPECIES_MUDKIP 10
 - trainers: none
 - end state: map MAP_SAFARI_ZONE_SOUTHEAST; >= 1 battles; party size 2; flags set FLAG_SYS_SAFARI_MODE; vars VAR_SAFARI_ZONE_STATE=0; 6 save check(s)
-- frames: estimate 4568, budget 6900
+- frames: estimate 4546, budget 6900
 - refs: data/maps/Route121_SafariZoneEntrance/map.json coord_events[0] (8,4) VAR_TEMP_1 0 -> EventScript_15C383; data/maps/Route121_SafariZoneEntrance/scripts.inc:48-58 (money box, MSGBOX_YESNO); data/maps/Route121_SafariZoneEntrance/scripts.inc:61-87 (ITEM_POKEBLOCK_CASE, checkmoney/removemoney 500, EnterSafariMode, VAR_SAFARI_ZONE_STATE 2, warp MAP_SAFARI_ZONE_SOUTHEAST (32,33)); data/maps/SafariZone_Southeast/scripts.inc:6-20 (OnFrame VAR_SAFARI_ZONE_STATE 2: the attendant steps aside, state back to 0); src/safari_zone.c:57-64 (EnterSafariMode: GAME_STAT_ENTERED_SAFARI_ZONE, FLAG_SYS_SAFARI_MODE, 30 balls, 500 steps); src/data/wild_encounters.json:9162-9215 (MAP_SAFARI_ZONE_SOUTHEAST land_mons, encounter_rate 25: Oddish, Girafarig, Natu, Doduo, Gloom, Wobbuffet, Pikachu); src/battle_controller_safari.c:207-230 (bx_battle_menu_t6_2: A picks the action under gActionSelectionCursor, 0 = BALL; LEFT on cursor 0 does nothing, B nothing); src/battle_script_commands.c atkF3_trygivecaughtmonnick (the nickname YES/NO: probe ui 1 / ui_arg 13, games/ruby/pc/src/ruby_e2e.c:329-331); include/constants/game_stat.h:21 (GAME_STAT_ENTERED_SAFARI_ZONE 17); include/constants/game_stat.h:15 GAME_STAT_POKEMON_CAPTURES 11: pokeruby never increments it (no IncrementGameStat of it in src/), so the catch is proven by the party, its Safari Ball (ITEM_SAFARI_BALL 5) and the dex
-- notes: The encounter is the game's RNG over the row-32 tall grass (x 19..27): LEFT presses walk west through it until a battle starts. In the battle A throws a Safari Ball from the menu's default BALL and advances the battle text; the run stops pressing at the nickname question (B = NO). A wild Pokemon that flees ends the battle without the catch (the expects fail). Measured (Ruby and Sapphire alike): a wild PIKACHU Lv25 after 3 steps into the grass, caught with Safari Balls.
+- notes: The encounter is the game's RNG over the row-32 tall grass (x 19..27). The repeat walks to the east edge and crosses the grass in both directions after a flee, until the nickname prompt; it stays within Safari's 30 balls and 500-step limit. In the battle A throws a Safari Ball from the menu's default BALL and B declines the nickname. Measured (Ruby and Sapphire): 4546 frames.
 
 #### ruby/71-battle-tower-lv50 — Battle Tower: a Level 50 single set of seven wins
 - proves: Proves the Battle Tower's Level 50 single challenge: the receptionist's menus (MAKE A CHALLENGE, LV. 50), the three-member entry screen (src/choose_party.c), the save before the challenge (GAME_STAT_ENTERED_BATTLE_TOWER), the elevator and corridor scenes, seven battle-room trainers in a row (healed and asked to continue between them), and the lobby's prize for the seven-win set (GAME_STAT_BATTLE_TOWER_BEST_STREAK 7). Start: MAP_BATTLE_TOWER_LOBBY (6,6) -> end: MAP_BATTLE_TOWER_LOBBY (6,6), the prize in the bag.
@@ -5825,7 +5825,7 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - refs: data/maps/EverGrandeCity_ChampionsRoom/map.json object_events[0] STEVEN (6,5), warp_events[1] (6,2) -> HALL_OF_FAME; data/scripts/hall_of_fame.inc (SetGameClearFlags, special GameClear); src/hall_of_fame.c (HoF screen, the save, StartCredits); src/credits.c (The End, SoftReset)
 - notes: Steven: TRAINER_STEVEN (335): SKARMORY 57, CLAYDOL 55, AGGRON 56, CRADILY 56, ARMALDO 56, METAGROSS 58 (Aggron x4 from Surf/Water, Claydol and Cradily resist: the boost levels the lead). After the battle May and Birch come in and the player is walked to the Hall of Fame; the HoF screen saves before the credits; the credits end in a SoftReset. [run] save = "none": the end save is the HoF save the game wrote.
 
-### Side systems: 18 milestones, ~263268 frames estimated
+### Side systems: 17 milestones, ~259246 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -5836,10 +5836,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 | [64-trick-house-puzzle-1](ruby/64-trick-house-puzzle-1/milestone.toml) | Trick House: the Trick Master and Puzzle 1 | P1 | both | 12661 | `start.recipe` | MAP_ROUTE110 | passing |
 | [65-secret-base-secret-power-decorate](ruby/65-secret-base-secret-power-decorate/milestone.toml) | Secret Base: Secret Power, a new base and a decoration | P1 | both | 7180 | `start.recipe` | MAP_SECRET_BASE_SHRUB3 | passing |
 | [66-berry-plant-water](ruby/66-berry-plant-water/milestone.toml) | Berries: plant a Cheri Berry and water it | P1 | both | 1526 | `start.recipe` | MAP_ROUTE104 | passing |
-| [67-berry-harvest](ruby/67-berry-harvest/milestone.toml) | Berries: harvest the grown Cheri Berry tree | P1 | both | 4000 | prev + `chain.recipe` | MAP_ROUTE104 | planned |
 | [68-berry-blender-pokeblock](ruby/68-berry-blender-pokeblock/milestone.toml) | Berry Blender: blend a Pokeblock with the old man | P1 | both | 6626 | `start.recipe` | MAP_SLATEPORT_CITY_CONTEST_LOBBY | passing |
 | [69-contest-normal-rank-win](ruby/69-contest-normal-rank-win/milestone.toml) | Contest: win the Normal Rank Cool contest | P1 | both | 22642 | `start.recipe` | MAP_VERDANTURF_TOWN_CONTEST_LOBBY | passing |
-| [70-safari-zone-catch](ruby/70-safari-zone-catch/milestone.toml) | Safari Zone: pay, enter and catch with Safari Balls | P1 | both | 4568 | `start.recipe` | MAP_SAFARI_ZONE_SOUTHEAST | passing |
+| [70-safari-zone-catch](ruby/70-safari-zone-catch/milestone.toml) | Safari Zone: pay, enter and catch with Safari Balls | P1 | both | 4546 | `start.recipe` | MAP_SAFARI_ZONE_SOUTHEAST | passing |
 | [71-battle-tower-lv50](ruby/71-battle-tower-lv50/milestone.toml) | Battle Tower: a Level 50 single set of seven wins | P1 | both | 34397 | `start.recipe` | MAP_BATTLE_TOWER_LOBBY | passing |
 | [72-pokenav-trainers-eyes](ruby/72-pokenav-trainers-eyes/milestone.toml) | PokeNav: Trainer's Eyes lists a beaten rematch trainer | P1 | both | 3201 | `start.recipe` | MAP_ROUTE102 | passing |
 | [73-tv-show](ruby/73-tv-show/milestone.toml) | TV: watch the emergency news on the house TV | P1 | both | 1273 | `start.recipe` | MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F | passing |
@@ -5918,16 +5917,6 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - refs: data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree; data/scripts/new_game.inc:2-20 (setberrytree pre-plants 8 and 10 beside it, not 9); data/scripts/berry_tree.inc:1-11 (S_BerryTree: switch on the tree stage); data/scripts/berry_tree.inc:21-52 (empty soil: PlayerHasBerries, YES/NO, Berry_FadeAndGoToBerryBagMenu, removeitem); data/scripts/berry_tree.inc:174-180 (S_PlantBerryTree: incrementgamestat GAME_STAT_PLANTED_BERRIES); data/scripts/berry_tree.inc:54-59,146-172 (planted: checkitem ITEM_WAILMER_PAIL, YES/NO, S_WaterBerryTree); src/item_menu.c:2566-2578 (CB2_ChooseBerry: the berry pocket, A selects the item: OnItemSelect_Field4); src/berry.c:1155-1179 (ObjectEventInteractionWaterBerryTree: BERRY_STAGE_PLANTED -> watered1); src/berry.c:1451-1457 (ObjectEventInteractionPlantBerryTree: stage 1, growthSparkle off); include/constants/game_stat.h:7 (GAME_STAT_PLANTED_BERRIES 3); src/clock.c:19-35 (FLAG_SYS_CLOCK_SET gates DoTimeBasedEvents)
 - notes: No party: the soil is reached by the CONTINUE warp, no grass on the way. The bag opens on the berry pocket with the cursor on its first (only) slot, so one A plants the Cheri Berry.
 
-#### sapphire/67-berry-harvest — Berries: harvest the grown Cheri Berry tree
-- proves: Proves berry growth on the RTC and the harvest: 13 hours after 66 planted a Cheri Berry in Route 104's berry tree 9, the tree bears berries; picking them puts them in the berry pocket and leaves the soil empty. Start: 66's end save + the clock 13 h later, MAP_ROUTE104 (35,7) below the tree -> end: same tile.
-- start: prev + `chain.recipe`; -; lab state lines: none
-- party: the continued save
-- trainers: none
-- end state: map MAP_ROUTE104; at (35, 7); 2 save check(s)
-- frames: estimate 4000, budget 6000
-- refs: data/maps/Route104/map.json object_events[11] (35,6) berry tree 9, script S_BerryTree; src/clock.c:27-35,59-74 (DoTimeBasedEvents -> UpdatePerMinute -> BerryTreeTimeUpdate); src/berry.c:1210-1287 (BerryTreeGrow, BerryTreeTimeUpdate), src/berry.c:292 (Cheri stageDuration 3); src/berry.c:1374-1406 (CalcBerryYield: Cheri min 2, max 3, src/berry.c:288-289); data/scripts/berry_tree.inc:99-123 (stage 5: YES/NO, ObjectEventInteractionPickBerryTree, RemoveBerryTree); src/berry.c:1459-1471 (PickBerryTree: AddBagItem berry x yield; RemoveBerryTree)
-- notes: Chained: [start] from 66's end save (run 66 first, same --out and core); chain.recipe only moves the clock (labc clock -> PC_RTC, overriding 66's end.clock: run.py place_start), which needs the GBA RTC to take PC_RTC as its base (games/gba-common/pc/src/gba_rtc.c; before that every GBA run starts at 2004-01-01 10:00 and the 13 hours would be 2.6M frames of waiting). No lab fallback: no lab verb plants a berry tree. One watering (66) gives a yield of exactly 2 (CalcBerryYieldInternal water 1: rand in [0, max-min] = [0,1], rand/4 = 0).
-
 #### sapphire/68-berry-blender-pokeblock — Berry Blender: blend a Pokeblock with the old man
 - proves: Proves the Berry Blender against the computer: the Slateport Contest Lobby's little girl gives the Pokeblock Case, the old man by the blender gives a Pecha Berry and blends it with the player and his partner; the Pokeblock goes in the case (GAME_STAT_POKEBLOCKS). Start: MAP_SLATEPORT_CITY_CONTEST_LOBBY (5,5) -> end: below the blender (12,6).
 - start: `start.recipe`; map MAP_SLATEPORT_CITY_CONTEST_LOBBY 5 5; lab state lines: none
@@ -5954,9 +5943,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: SPECIES_MUDKIP 10
 - trainers: none
 - end state: map MAP_SAFARI_ZONE_SOUTHEAST; >= 1 battles; party size 2; flags set FLAG_SYS_SAFARI_MODE; vars VAR_SAFARI_ZONE_STATE=0; 6 save check(s)
-- frames: estimate 4568, budget 6900
+- frames: estimate 4546, budget 6900
 - refs: data/maps/Route121_SafariZoneEntrance/map.json coord_events[0] (8,4) VAR_TEMP_1 0 -> EventScript_15C383; data/maps/Route121_SafariZoneEntrance/scripts.inc:48-58 (money box, MSGBOX_YESNO); data/maps/Route121_SafariZoneEntrance/scripts.inc:61-87 (ITEM_POKEBLOCK_CASE, checkmoney/removemoney 500, EnterSafariMode, VAR_SAFARI_ZONE_STATE 2, warp MAP_SAFARI_ZONE_SOUTHEAST (32,33)); data/maps/SafariZone_Southeast/scripts.inc:6-20 (OnFrame VAR_SAFARI_ZONE_STATE 2: the attendant steps aside, state back to 0); src/safari_zone.c:57-64 (EnterSafariMode: GAME_STAT_ENTERED_SAFARI_ZONE, FLAG_SYS_SAFARI_MODE, 30 balls, 500 steps); src/data/wild_encounters.json:9162-9215 (MAP_SAFARI_ZONE_SOUTHEAST land_mons, encounter_rate 25: Oddish, Girafarig, Natu, Doduo, Gloom, Wobbuffet, Pikachu); src/battle_controller_safari.c:207-230 (bx_battle_menu_t6_2: A picks the action under gActionSelectionCursor, 0 = BALL; LEFT on cursor 0 does nothing, B nothing); src/battle_script_commands.c atkF3_trygivecaughtmonnick (the nickname YES/NO: probe ui 1 / ui_arg 13, games/ruby/pc/src/ruby_e2e.c:329-331); include/constants/game_stat.h:21 (GAME_STAT_ENTERED_SAFARI_ZONE 17); include/constants/game_stat.h:15 GAME_STAT_POKEMON_CAPTURES 11: pokeruby never increments it (no IncrementGameStat of it in src/), so the catch is proven by the party, its Safari Ball (ITEM_SAFARI_BALL 5) and the dex
-- notes: The encounter is the game's RNG over the row-32 tall grass (x 19..27): LEFT presses walk west through it until a battle starts. In the battle A throws a Safari Ball from the menu's default BALL and advances the battle text; the run stops pressing at the nickname question (B = NO). A wild Pokemon that flees ends the battle without the catch (the expects fail). Measured (Ruby and Sapphire alike): a wild PIKACHU Lv25 after 3 steps into the grass, caught with Safari Balls.
+- notes: The encounter is the game's RNG over the row-32 tall grass (x 19..27). The repeat walks to the east edge and crosses the grass in both directions after a flee, until the nickname prompt; it stays within Safari's 30 balls and 500-step limit. In the battle A throws a Safari Ball from the menu's default BALL and B declines the nickname. Measured (Ruby and Sapphire): 4546 frames.
 
 #### sapphire/71-battle-tower-lv50 — Battle Tower: a Level 50 single set of seven wins
 - proves: Proves the Battle Tower's Level 50 single challenge: the receptionist's menus (MAKE A CHALLENGE, LV. 50), the three-member entry screen (src/choose_party.c), the save before the challenge (GAME_STAT_ENTERED_BATTLE_TOWER), the elevator and corridor scenes, seven battle-room trainers in a row (healed and asked to continue between them), and the lobby's prize for the seven-win set (GAME_STAT_BATTLE_TOWER_BEST_STREAK 7). Start: MAP_BATTLE_TOWER_LOBBY (6,6) -> end: MAP_BATTLE_TOWER_LOBBY (6,6), the prize in the bag.

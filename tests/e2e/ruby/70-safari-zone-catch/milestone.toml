@@ -5,7 +5,7 @@
 title = "Safari Zone: pay, enter and catch with Safari Balls"
 priority = "P1"
 version = "both"
-estimate = 4568
+estimate = 4546
 refs = [
   "data/maps/Route121_SafariZoneEntrance/map.json coord_events[0] (8,4) VAR_TEMP_1 0 -> EventScript_15C383",
   "data/maps/Route121_SafariZoneEntrance/scripts.inc:48-58 (money box, MSGBOX_YESNO)",
@@ -18,7 +18,7 @@ refs = [
   "include/constants/game_stat.h:21 (GAME_STAT_ENTERED_SAFARI_ZONE 17)",
   "include/constants/game_stat.h:15 GAME_STAT_POKEMON_CAPTURES 11: pokeruby never increments it (no IncrementGameStat of it in src/), so the catch is proven by the party, its Safari Ball (ITEM_SAFARI_BALL 5) and the dex",
 ]
-notes = "The encounter is the game's RNG over the row-32 tall grass (x 19..27): LEFT presses walk west through it until a battle starts. In the battle A throws a Safari Ball from the menu's default BALL and advances the battle text; the run stops pressing at the nickname question (B = NO). A wild Pokemon that flees ends the battle without the catch (the expects fail). Measured (Ruby and Sapphire alike): a wild PIKACHU Lv25 after 3 steps into the grass, caught with Safari Balls."
+notes = "The encounter is the game's RNG over the row-32 tall grass (x 19..27). The repeat walks to the east edge and crosses the grass in both directions after a flee, until the nickname prompt; it stays within Safari's 30 balls and 500-step limit. In the battle A throws a Safari Ball from the menu's default BALL and B declines the nickname. Measured (Ruby and Sapphire): 4546 frames."
 
 [start]
 recipe = "start.recipe"
@@ -49,34 +49,50 @@ note = "500 paid, 30 Safari Balls, the walk to the west door and the warp (scrip
 do = "wait_field"
 
 [[step]]
-do = "walk_to"
-x = 28
-z = 32
-note = "east of the row-32 tall grass (x 19..27), round the grass (gba_world_cli map MAP_SAFARI_ZONE_SOUTHEAST)"
+do = "repeat"
+until = "ui_arg=13"
+max_rounds = 30
+note = "retry the grass encounter after a Safari Pokemon flees; stop at the nickname prompt after a catch (up to 30 Safari Balls)"
 
-[[step]]
-do = "press"
-keys = "LEFT"
-hold = 16
-gap = 8
-times = 20
-until = "in_battle=1"
-note = "west through the tall grass until a wild Pokemon appears (encounter_rate 25)"
+  [[step.steps]]
+  do = "walk_to"
+  x = 27
+  z = 32
+  note = "east edge of the row-32 tall grass (x 19..27)"
 
-[[step]]
-do = "wait_frames"
-n = 240
-shot = "safari-battle"
-note = "the Safari battle's opening ('Wild X appeared!') and its action menu"
+  [[step.steps]]
+  do = "press"
+  keys = "LEFT"
+  hold = 16
+  gap = 8
+  times = 20
+  until = "in_battle=1"
+  note = "west through the tall grass until a wild Pokemon appears"
 
-[[step]]
-do = "press"
-keys = "A"
-hold = 4
-gap = 40
-times = 200
-until = ["ui_arg=13", "in_battle=0"]
-note = "BALL (cursor 0) thrown and the text advanced until the nickname question after 'Gotcha!' (or the battle's end)"
+  [[step.steps]]
+  if = "in_battle=0"
+  do = "press"
+  keys = "RIGHT"
+  hold = 16
+  gap = 8
+  times = 20
+  until = "in_battle=1"
+  note = "return east across the grass after a flee"
+
+  [[step.steps]]
+  do = "wait_frames"
+  n = 240
+  shot = "safari-battle"
+  note = "the Safari battle's opening and action menu"
+
+  [[step.steps]]
+  do = "press"
+  keys = "A"
+  hold = 4
+  gap = 40
+  times = 200
+  until = ["ui_arg=13", "in_battle=0"]
+  note = "throw Safari Balls until the nickname question after 'Gotcha!' or a flee"
 
 [[step]]
 do = "press"
