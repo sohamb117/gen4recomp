@@ -1,6 +1,10 @@
-# On 16's end save (party: Darmanitan, Pansage, Blitzle, Patrat (Cut), Tepig, Sawk): Ditto (132) lv 30 with Transform
-# (144) in place of Tepig (slot 4), to be deposited with Patrat (slot 3) (scr 0856 script 2: two slots with flag 0x99).
-party-set 4 132 30 144
-# Route 3 (zone 321), one tile below the Day Care door (zone_event 321 warp 2 (749,555)); the man (748,556) stands
-# beside it at y 16 (y 1 in tiles [INFERENCE])
+# On 16's end save (party: Darmanitan, Pansage, Blitzle, Patrat (Cut, lv 14, male), Tepig, Sawk): a female Patrat (504)
+# lv 13 with Tackle (33) in place of Tepig (slot 4), to be deposited with the male Patrat (slot 3) (scr 0856 script 2:
+# two slots with flag 0x99). np_save5 set-mon's PID is species * 2654435761 ^ level * 40503 ^ (SID << 16 | TID): at
+# lv 13 its low byte is below Patrat's gender ratio 127 (female) on both versions' 16 end saves (Black 0xB4592F19,
+# White 0xCB99362E), where the lv 14 Cut carrier's is male (0x...D0, 0x...E7). Same species, same trainer: the
+# day care's middle compatibility, where a Ditto with the same trainer gets the lowest (White's 1680 steps with a
+# Ditto laid no egg).
+party-set 4 504 13 33
+# Route 3 (zone 321), one tile below the Day Care door (zone_event 321 warp 2 (749,555)); the man (748,556) beside it
 location 321 749 1 556

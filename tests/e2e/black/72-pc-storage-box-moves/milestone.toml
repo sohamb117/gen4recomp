@@ -1,24 +1,202 @@
-# The Pokemon Storage System on a Pokemon Center PC: deposit the Cut carrier into BOX 1, then move it to BOX 2.
-# Start: Striaton City, Fennel's lab (zone 10, 09's end) -> end: the Striaton Pokemon Center (zone 8) at the PC.
-title = "PC storage: deposit and a box-to-box move"
-status = "planned"
+# The Pokemon Storage System on a Pokemon Center PC: deposit the Cut carrier Patrat and Pansage into BOX 1, then
+# withdraw Pansage, all by the PC's menus.
+# Start: Striaton City (zone 6) below the Pokemon Center door (09's end + start.recipe) -> end: the Striaton Pokemon
+# Center (zone 8) at the PC (4,12), Patrat in BOX 1, Pansage back in the party.
+title = "PC storage: deposit and withdraw"
 priority = "P0"
 version = "both"
-estimate = 6000   # [INFERENCE] frames, not measured
+estimate = 8607
 refs = [
   "zone_event 6 warp 0 (781,587) -> zone 8 (the Pokemon Center); zone_event 8 warp 0 (6,19) 3x1 -> zone 6",
-  "zone_event 8 bg 0-2 (12,5) (12,6) (13,6) -> script id 2108 -> scr 0855 script 9 (the PC)",
+  "zone_event 8 bg 0-2 (12,5) (12,6) (13,6) -> script id 2108 -> scr 0855 script 9: the upstairs globe (flag 0x73, Cmd152), not the PC; the PC is the terminal left of the nurse's counter, the blocked tile (4,11), used facing up from (4,12) (scouted: 'booted up the PC.')",
   "scr 0868 script 1 (script id 10090, the PC menu): @0x0059 msg 314 #0 'booted up the PC', @0x0072 msg 314 #1 'Which PC should be accessed?', @0x0270 msg 314 #13 'The Pokemon Storage System was accessed.', @0x0226 Cmd132 var 0x8021 [INFERENCE: the storage screen]",
+  "msg 314 #2-#8 (the PC list: Someone's PC first), #14-#19 (the storage menu: Deposit Pokemon, Withdraw Pokemon, Move Pokemon, Battle Box, Move items, No thanks!)",
 ]
-notes = "09's party is Tepig, Pansage, Blitzle and the Cut carrier Patrat (504), the first end save with more than one Pokemon after the Striaton Center opens (06 has only the starter). The box screen is touch/menu UI the probe does not report (PHASE2: press schedule). np_save5 dumps the boxes (s['boxes'][i]['mons'])."
+notes = "Measured from the start save (CONTINUE included): Black 8507, White 8607 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). 09's party is Tepig, Pansage, Blitzle and the Cut carrier Patrat (504), boxes empty: the first end save with more than one Pokemon after the Striaton Center opens (06 has only the starter). The menus (scouted): A on the PC boots it, A on 'Someone's PC' (the list's first entry), A on 'The Pokemon Storage System was accessed.', then the storage menu (Deposit Pokemon, Withdraw Pokemon, Move Pokemon, Battle Box, Move items, No thanks!) with the cursor on Deposit. The deposit screen's bottom shows the party as a 2x3 grid (slot 0 (40,72), 1 (78,72), 2 (40,105), 3 (78,105)); a tap selects a Pokemon and opens DEPOSIT/SUMMARY/MARKING/RELEASE/CANCEL on the right (DEPOSIT (212,51)); 'Place it in which Box?' shows BOX 1, where the first A shows the cursor and the second stores it. B asks 'Continue Box operations?' (YES (224,108) stays, NO (224,133) back to the storage menu). The withdraw screen shows BOX 1's grid (box slot 0 (22,50), 1 (48,50)) and the same panel with WITHDRAW at (212,51). np_save5 dumps the boxes (s['boxes'][i]['mons'])."
 
 [start]
 from = "09-fennel-dreamyard-plasma-munna"
+recipe = "start.recipe"
+
+[run]
+frames = 13000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 781
+z = 587
+note = "zone_event 6 warp 0 (781,587) -> the Pokemon Center (zone 8)"
+
+[[step]]
+do = "wait_map"
+map = 8
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 12
+face = "up"
+note = "below the PC (4,11), left of the nurse's counter"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 60
+times = 5
+note = "boot the PC (msg 314 #0), 'Which PC should be accessed?' (msg 314 #1) -> Someone's PC, msg 314 #13: the storage menu, the cursor on Deposit Pokemon"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 150
+shot = "deposit-screen"
+note = "Deposit Pokemon: the party grid"
+
+[[step]]
+do = "tap"
+x = 78
+y = 105
+gap = 60
+note = "party slot 3: Patrat"
+
+[[step]]
+do = "tap"
+x = 212
+y = 51
+gap = 60
+note = "DEPOSIT: 'Place it in which Box?' (BOX 1)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 90
+times = 2
+note = "the first A shows the cursor, the second stores Patrat in BOX 1"
+
+[[step]]
+do = "tap"
+x = 78
+y = 72
+gap = 60
+note = "party slot 1: Pansage"
+
+[[step]]
+do = "tap"
+x = 212
+y = 51
+gap = 60
+note = "DEPOSIT"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 90
+times = 2
+shot = "deposited"
+note = "Pansage into BOX 1: the party is Tepig and Blitzle"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 4
+gap = 120
+note = "'Continue Box operations?'"
+
+[[step]]
+do = "tap"
+x = 224
+y = 133
+gap = 150
+note = "NO: back to the storage menu, the cursor on Deposit Pokemon"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 4
+gap = 30
+note = "Withdraw Pokemon"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 150
+note = "the withdraw screen: BOX 1 holds Patrat (box slot 0) and Pansage (box slot 1)"
+
+[[step]]
+do = "tap"
+x = 48
+y = 50
+gap = 60
+note = "box slot 1: Pansage"
+
+[[step]]
+do = "tap"
+x = 212
+y = 51
+gap = 90
+shot = "withdrawn"
+note = "WITHDRAW: Pansage back to the party, Patrat left in BOX 1"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 4
+gap = 120
+note = "'Continue Box operations?'"
+
+[[step]]
+do = "tap"
+x = 224
+y = 133
+gap = 150
+note = "NO: the storage menu"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 4
+gap = 20
+times = 5
+note = "the storage menu's cursor is back on Deposit Pokemon (B does not close it): down to No thanks!"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 90
+note = "No thanks!: 'Which PC should be accessed?' again (Someone's PC, the player's PC, Professor's PC, Help, Switch off)"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 4
+gap = 20
+times = 4
+note = "Switch off"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 30
+
+[[step]]
+do = "wait_field"
 
 [expect]
 map = 8
+position = [4, 12]
 party_size = 3
 save = [
-  "s[\"boxes\"][0][\"count\"] == 0",
-  "s[\"boxes\"][1][\"count\"] == 1 and s[\"boxes\"][1][\"mons\"][0][\"species\"] == 504",
+  "s[\"boxes\"][0][\"count\"] == 1 and s[\"boxes\"][0][\"mons\"][0][\"species\"] == 504",
+  "all(b[\"count\"] == 0 for b in s[\"boxes\"][1:])",
+  "sorted(m[\"species\"] for m in s[\"party\"]) == [498, 511, 522]",
 ]

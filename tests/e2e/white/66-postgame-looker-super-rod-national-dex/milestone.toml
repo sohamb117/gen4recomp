@@ -2,7 +2,6 @@
 # Cedric Juniper outside upgrades the Pokedex to the National Mode.
 # Start: the player's room (zone 391, 32's end) -> end: Nuvema Town (zone 389) after Cedric's scene, 0x4080 = 5.
 title = "After the credits: Looker's Super Rod and the National Pokedex"
-status = "planned"
 priority = "P0"
 version = "white"
 estimate = 10344
@@ -12,13 +11,13 @@ refs = [
   "zone_event 390 warp 0 (5,10) -> zone 389; zone 389 level type 1: var 0x4080 == 4 -> scr 0778 script 15 (Cedric: msg 428 #45)",
   "scr 0778 script 15: @0x0B09 msg 428 #49 'Pokedex was upgraded with the National Mode!', @0x0B15 Cmd1D0 [INFERENCE: the National Mode], @0x0BC8 SetVar 0x4080 5, @0x0BCE/@0x0BD2 SetFlag 0x201/0x202, @0x0BD6 ClearFlag 0x200",
 ]
-notes = "The Super Rod's giver is Looker, in the player's own house, right after the credits; the National Pokedex comes from Cedric Juniper (the professor's father), not Professor Juniper. Both scenes are forced level scripts that white/34 (as black/34) already plays on its way to the Poke Transfer Lab (its steps 1-7, the 'looker' shot), but 34 checks neither the rod nor the Pokedex: this system replays the same opening from 32's end and proves only those (the Super Rod in the key items, the National Mode, the scenes' flags and vars), stopping in Nuvema Town where 34 goes on to Fly. It cannot chain from 34's end, where both scenes are spent. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so no location line. National Dex listed P1 in the plan; merged here (P0) because it is the same two scenes and the rod is fishing's prerequisite."
+notes = "Measured from the start save (CONTINUE included): White 10344 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). The Super Rod's giver is Looker, in the player's own house, right after the credits; the National Pokedex comes from Cedric Juniper (the professor's father), not Professor Juniper. Both scenes are forced level scripts that white/34 (as black/34) already plays on its way to the Poke Transfer Lab (its steps 1-7, the 'looker' shot), but 34 checks neither the rod nor the Pokedex: this system replays the same opening from 32's end and proves only those (the Super Rod in the key items, the National Mode, the scenes' flags and vars), stopping in Nuvema Town where 34 goes on to Fly. It cannot chain from 34's end, where both scenes are spent. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so no location line. National Dex listed P1 in the plan; merged here (P0) because it is the same two scenes and the rod is fishing's prerequisite."
 
 [start]
 from = "32-n-castle-zekrom-ghetsis-credits"
 
 [run]
-frames = 15600
+frames = 16000
 
 [[step]]
 do = "wait_field"

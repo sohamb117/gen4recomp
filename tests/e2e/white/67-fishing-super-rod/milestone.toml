@@ -1,7 +1,6 @@
 # Fishing with the Super Rod from the Bag: face water, use the rod, reel in at the '!', fight what bites.
 # Start: Nuvema Town (zone 389, 66's end) -> end: Route 1 (zone 317) at the pond (781,708) after one fished wild battle.
 title = "Fishing: the Super Rod at Route 1's pond"
-status = "planned"
 priority = "P0"
 version = "white"
 estimate = 8802
@@ -10,13 +9,13 @@ refs = [
   "msg 429 #41 (Looker): 'Face the water and employ the rod! ... When it occurs that these Pokemon bite, '!' will indicate. Immediately, reel in!'",
   "zone 317 (Route 1): the pond west of the road, its east bank (781,707..708) above the wooden fence (scouted: the rod casts there facing left)",
 ]
-notes = "B/W have one rod, the Super Rod, given post-game (66); no script runs fishing (the Bag's item and the field) [INFERENCE]. Nuvema Town's sea is behind the south fence: the rod there gives Juniper's 'There's a time and place' (scouted at (780,761) facing down), so the cast is at Route 1's pond, the nearest fishable water. The Bag is reached through the X menu by touch (BAG, the left middle button), the Key Items pocket by the D-pad (left twice: the first press only shows the cursor; Items -> Key Items wraps), the Super Rod is the pocket's first entry and its menu's first is USE. bots.py's fish bot is GBA-only (the guest's PC_TRACE_FISH trace); on B/W nothing reports the bite, so the reel-in is a fixed delay after USE, scouted on 66's end saves: the '!' over the player shows from 308 to 370 frames after the USE press on Black, 276 to 338 on White (red pixels over the player's head); A at 320, inside both, lands the Pokemon ('Landed a Pokemon!'), then A starts the battle. The run is deterministic, so the same start and inputs replay the same bite; a changed start save or earlier step moves it. Fishing sets nothing in the save, so [expect] is the battle and the place. Chained from 66 so the scenes there are not replayed."
+notes = "Measured from the start save (CONTINUE included): White 8802 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). B/W have one rod, the Super Rod, given post-game (66); no script runs fishing (the Bag's item and the field) [INFERENCE]. Nuvema Town's sea is behind the south fence: the rod there gives Juniper's 'There's a time and place' (scouted at (780,761) facing down), so the cast is at Route 1's pond, the nearest fishable water. The Bag is reached through the X menu by touch (BAG, the left middle button), the Key Items pocket by the D-pad (left twice: the first press only shows the cursor; Items -> Key Items wraps), the Super Rod is the pocket's first entry and its menu's first is USE. bots.py's fish bot is GBA-only (the guest's PC_TRACE_FISH trace); on B/W nothing reports the bite, so the reel-in is a fixed delay after USE, scouted on 66's end saves: the '!' over the player shows from 308 to 370 frames after the USE press on Black, 276 to 338 on White (red pixels over the player's head); A at 320, inside both, lands the Pokemon ('Landed a Pokemon!'), then A starts the battle. The run is deterministic, so the same start and inputs replay the same bite; a changed start save or earlier step moves it. Fishing sets nothing in the save, so [expect] is the battle and the place. Chained from 66 so the scenes there are not replayed."
 
 [start]
 from = "66-postgame-looker-super-rod-national-dex"
 
 [run]
-frames = 13300
+frames = 13500
 
 [[step]]
 do = "wait_field"

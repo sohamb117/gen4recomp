@@ -1,19 +1,39 @@
 # Egg hatch: 68's Patrat egg hatches while the player paces Route 3 (the hatch bot).
 # Start: Route 3 (zone 321, 68's end), the egg in the party -> end: Route 3, Patrat lv 1 hatched.
 title = "Egg hatch: the Day Care's Patrat egg"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 40000   # [INFERENCE] frames, not measured
+estimate = 37718
 refs = [
   "scr 0856 script 1 @0x0146 Cmd0EC (the Day-Care Man's egg; 68)",
   "msg 420 #5 (scr 0776, the Route 18 breeder): 'Pokemon Eggs hatch when you carry them with you.'",
   "zone 321 (Route 3)",
 ]
-notes = "Hatching is the field's step counter, no script [INFERENCE]. The post-game alternative is the Larvesta (636) egg from the breeder in the Route 18 house (zone_event 388 object 0 (3,5) -> scr 0776 script 1: @0x0081 Cmd10F var 0x8010, 0x27C, 0 [INFERENCE: give egg], @0x00A8 SetFlag 0x13B), a much longer hatch."
+notes = "Measured from the start save (CONTINUE included): Black 37718, White 37506 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Hatching is the field's step counter, no script [INFERENCE]. The post-game alternative is the Larvesta (636) egg from the breeder in the Route 18 house (zone_event 388 object 0 (3,5) -> scr 0776 script 1: @0x0081 Cmd10F var 0x8010, 0x27C, 0 [INFERENCE: give egg], @0x00A8 SetFlag 0x13B), a much longer hatch."
 
 [start]
 from = "68-day-care-deposit-and-egg"
+
+[run]
+frames = 57000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "hatch"
+x = 740
+z = 557
+max = 80000
+note = "pace (740,557)/(741,557) on the path below the Day Care until the egg hatches (the hatch scene's nickname question answered NO with B)"
+
+[[step]]
+do = "wait_field"
+shot = "hatched"
+
+[[shots]]
+frames = [36000]
+note = "inside the hatch scene on both versions (Black 35513-37233: the egg on its backdrop; White 35301-37021)"
 
 [expect]
 map = 321

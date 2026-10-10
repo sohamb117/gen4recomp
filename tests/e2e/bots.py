@@ -2222,15 +2222,20 @@ def bot_grind(s, step, ctx):
             cell = p.cell(*c)
             if cell is None or (cell & TILE_BEHAVIOR) not in t.grass:
                 raise HarnessError("grind: (%d,%d) is not tall grass" % c)
+        # the field's map before the battle (B/W's probe reports map 0 for the whole battle)
+        here = s.map_id
         k = 0
         while not s.in_battle and s.frame < limit:
             k += 1
             s.run(24, "right" if k % 2 else "left", until=["in_battle=1", "x!=%d" % (spot[0] + (0 if k % 2 else 1))])
             s.run(12, until="in_battle=1")
         if s.in_battle:
-            here = s.map_id
             bot_auto_battle(s, {"move": step["move"]} if "move" in step else {}, ctx)
             battles += 1
+            if ctx.game in BW_GAMES:
+                # B/W's probe says map 0 until the field is back (the battle, then an evolution scene): wait it out
+                # before telling a whiteout's warp from the field
+                s.run(4000, until="map_id!=0")
             if not s.run(900, until=["field_ready=1", "map_id!=%d" % here]):
                 # still held after the battle: the whiteout's "scurried to a Pokemon Center" text waits for A
                 bot_advance_text(s, {}, ctx)

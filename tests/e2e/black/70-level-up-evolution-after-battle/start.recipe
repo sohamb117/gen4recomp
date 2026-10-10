@@ -1,3 +1,5 @@
 # On 16's end save: Lillipup (506) lv 15 (experience at the level's base: set-mon) in place of Darmanitan (slot 0, the
 # lead auto_battle fights with), with Earthquake (89), Rock Slide (157), Fire Punch (7), ThunderPunch (9)
 party-set 0 506 15 89 157 7 9
+# Route 16 (zone 383), one tile east of the Nimbasa Gate's door (zone_event 383 warp 1 (454,437..439) -> zone 92)
+location 383 455 0 438

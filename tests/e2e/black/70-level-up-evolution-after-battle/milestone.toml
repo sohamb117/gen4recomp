@@ -1,24 +1,77 @@
 # Level-up evolution at the end of a battle: a Lillipup at the base of lv 15 wins wild battles until lv 16 and
 # evolves into Herdier after the battle that levels it (auto_battle allows evolution).
-# Start: Nimbasa City (zone 63, 16's end) -> end: Route 16 (zone 383), slot 0 Herdier lv 16.
+# Start: Route 16 (zone 383) east of the Nimbasa Gate (16's end + start.recipe) -> end: Route 16's grass, slot 0 Herdier lv 16.
 title = "Level-up evolution after battle: Lillipup -> Herdier"
-status = "planned"
 priority = "P0"
 version = "both"
-estimate = 9000   # [INFERENCE] frames, not measured
+estimate = 15267
 refs = [
   "zone_event 62 warp 2 (447,437) -> zone 92; zone_event 383 warp 1 (454,437) -> zone 92 warp 0 (Route 16's grass east of Nimbasa)",
   "Lillipup (506) evolves at lv 16 into Herdier (507) [INFERENCE: species data, not decoded]",
 ]
-notes = "np_save5 set-mon makes the Pokemon at the base experience of its level (README, Black and White), so one battle's experience levels it [INFERENCE: 402 exp, Medium Slow lv 15 -> 16]; the lead gets strong moves so auto_battle wins fast. Evolution is code, no script."
+notes = "Measured from the start save (CONTINUE included): Black 13033, White 15267 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). np_save5 set-mon makes the Pokemon at the base experience of its level (README, Black and White): lv 15 Medium Slow is 2035 exp, lv 16 2535. Measured: Black evolves after battle 2 (Minccino lv 19, then Minccino lv 22), White after battle 1 (Purrloin); White's battle 2 then faints the lv 16 Herdier and the bench before Tepig wins, so the end is a Herdier at 0 HP there. grind (until lv 16) is the right bot but on B/W it took the ~5000-frame evolution scene (map 0, waiting for A) for a whiteout (reported to bw-chain); hence two fixed rounds of repeat + auto_battle + advance_text, where advance_text's A presses carry the scene. Evolution is code, no script."
 
 [start]
 from = "16-nimbasa-elesa-bolt-badge"
 recipe = "start.recipe"
 
+[run]
+frames = 23000
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 474
+z = 431
+note = "Route 16's tall grass north of the path (473..477,430..433)"
+
+[[step]]
+do = "repeat"
+until = "in_battle=1"
+max_rounds = 100
+steps = [
+  { do = "press", keys = "down", hold = 16, gap = 8 },
+  { do = "press", keys = "up", hold = 16, gap = 8 },
+]
+note = "pace (474,431)/(474,432) in the grass until a wild battle starts"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the evolution scene after the battle that levels the lead (A advances it; ~1400 frames), else nothing"
+
+[[step]]
+do = "repeat"
+until = "in_battle=1"
+max_rounds = 100
+steps = [
+  { do = "press", keys = "down", hold = 16, gap = 8 },
+  { do = "press", keys = "up", hold = 16, gap = 8 },
+]
+note = "pace (474,431)/(474,432) in the grass until a wild battle starts"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the evolution scene after the battle that levels the lead (A advances it; ~1400 frames), else nothing"
+
+[[step]]
+do = "wait_field"
+shot = "end-field"
+
 [expect]
 map = 383
-battles = 1
+battles = 2
 save = [
   "s[\"party\"][0][\"species\"] == 507",
   "s[\"party\"][0][\"level\"] >= 16",
