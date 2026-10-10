@@ -1,0 +1,60 @@
+# Black Mystery Gift delivery (tests/bwhgss/run_features.py mystery_gift),
+# recorded from the e2e bots (np_gp, PC_E2E, text_instant): CONTINUE in
+# Striaton City (milestone 07's end), walk into the Pokemon Center (the door
+# at (781,587), zone 8), talk to the Mystery Gift deliveryman (object 8 at
+# (5,18), there only while a gift waits) twice: the item card's Rare Candy,
+# then the Pokemon card's Pikachu; the quick save follows (-o).
+5000:start:4
+5150:a:4
+5250:a:4
+5295:left+b:2
+5303:left+b:2
+5311:left+b:2
+5319:left+b:2
+5327:left+b:2
+5335:left+b:2
+5343:left+b:2
+5351:left+b:2
+5359:left+b:2
+5367:left+b:2
+5375:left+b:2
+5383:down+b:2
+5391:down+b:2
+5399:down+b:2
+5407:down+b:2
+5415:left+b:2
+5423:down+b:2
+5431:down+b:2
+5439:down+b:2
+5447:left+b:2
+5455:left+b:2
+5463:left+b:2
+5471:left+b:2
+5479:left+b:2
+5487:left+b:2
+5495:left+b:2
+5503:left+b:2
+5511:left+b:2
+5519:left+b:2
+5527:left+b:2
+5535:up+b:16
+5635:b:2
+5663:b:2
+5700:left+b:2
+5708:up+b:2
+5732:left:2
+5742:a:2
+5745:a:4
+5839:a:4
+5933:a:4
+6027:a:4
+6121:a:4
+6215:a:4
+6309:a:2
+6312:a:4
+6406:a:4
+6500:a:4
+6594:a:4
+6688:a:4
+6782:a:4
+6876:a:4
