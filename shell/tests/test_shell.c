@@ -440,6 +440,22 @@ static void test_launch(void)
     CHECK(np_launch_parse_args(2, e2, &l, err, sizeof err) == -1, "args: --editor needs --save");
     char *e3[] = {"nativeplat", "--editor", "--save", "x.sav", "--slot", "1", "--game", "platinum"};
     CHECK(np_launch_parse_args(8, e3, &l, err, sizeof err) == -1, "args: --editor with a slot");
+    char *p1[] = {"nativeplat", "--poke-transfer", "--game", "soulsilver", "--slot", "2"};
+    CHECK(np_launch_parse_args(6, p1, &l, err, sizeof err) == 0 && l.poke_transfer && l.game == NP_GAME_SOULSILVER &&
+              np_launch_slot_number(l.slot) == 2,
+          "args: --poke-transfer with a Gen 4 card (%s)", err);
+    char *p2[] = {"nativeplat", "--poke-transfer", "--game", "white"};
+    CHECK(np_launch_parse_args(4, p2, &l, err, sizeof err) == -1 && strstr(err, "card"),
+          "args: --poke-transfer refuses a Gen 5 card (%s)", err);
+    char *p3[] = {"nativeplat", "--poke-transfer"};
+    CHECK(np_launch_parse_args(2, p3, &l, err, sizeof err) == -1, "args: --poke-transfer needs the card's game");
+    char *p4[] = {"nativeplat", "--poke-transfer", "--launcher", "--game", "diamond"};
+    CHECK(np_launch_parse_args(5, p4, &l, err, sizeof err) == -1, "args: --poke-transfer with --launcher");
+    char *p5[] = {"nativeplat", "--game", "pearl"};
+    CHECK(np_launch_parse_args(3, p5, &l, err, sizeof err) == 0 && !l.poke_transfer, "args: no --poke-transfer");
+    CHECK(np_game_is_gen4(NP_GAME_HEARTGOLD) && np_game_is_gen4(NP_GAME_DIAMOND) && !np_game_is_gen4(NP_GAME_BLACK) &&
+              !np_game_is_gen4(NP_GAME_EMERALD) && !np_game_is_gen4(NP_GAME_POKETRANSFER),
+          "the Gen 4 cards");
 
     CHECK(np_launch_is_url("nativeplat://launch") && np_launch_is_url("NativePlat:launch") &&
               !np_launch_is_url("/Users/x/nativeplat.nds") && !np_launch_is_url("nativeplat"),

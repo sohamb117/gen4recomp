@@ -2,13 +2,18 @@
  * Launch requests: what to start, from the command line
  *   nativeplat [--game diamond|pearl|platinum] [--slot <name|number>] [--launcher]
  *   nativeplat --editor --save <file.sav> [--game diamond|pearl|platinum]
+ *   nativeplat --poke-transfer --game <Gen 4 game> [--slot <name|number>]
  * or from a URL
  *   nativeplat://launch?game=platinum&slot=My%20Run
  * (SDL delivers opened URLs as SDL_EVENT_DROP_FILE on macOS and iOS).
  * Only parsing lives here (SDL-free, unit-tested); main.c resolves the slot
  * against the slots on disk and falls back to the launcher with a message.
  * --editor opens the save editor on any save file (no slot, no game core)
- * and quits when the editor closes.
+ * and quits when the editor closes. --poke-transfer runs this window as
+ * Poké Transfer's second DS: the child station (core `poketransfer`) with
+ * the Gen 4 game's cartridge and save slot as the card in slot 1, which
+ * receives Poké Transfer over local wireless from Black/White's lab in
+ * another window (docs/BW_PLAN.md "Poké Transfer").
  */
 #ifndef NP_LAUNCH_H
 #define NP_LAUNCH_H
@@ -23,6 +28,7 @@ typedef struct np_launch {
     int force_launcher;
     int editor;      /* --editor: edit `save` standalone */
     char save[1024]; /* --save */
+    int poke_transfer; /* --poke-transfer: the child station with `game`'s card */
 } np_launch;
 
 /* Returns 0, or -1 with a message in `err`. Ignores arguments macOS and

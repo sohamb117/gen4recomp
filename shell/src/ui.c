@@ -1117,7 +1117,19 @@ static void draw_slots(np_app *app)
     np_ui_end_page(app, &f, "Enter/A: open  Esc/B: back  Drop .sav: import", n);
 }
 
-enum { SM_PLAY, SM_EDIT, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_CART, SM_DELETE, SM_COUNT };
+enum { SM_PLAY, SM_EDIT, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_CART, SM_TRANSFER, SM_DELETE, SM_COUNT };
+
+/* The slot menu's items for the game shown: Poké Transfer's child station
+ * (this window as the second DS, the slot's game as its card) only for the
+ * Gen 4 games. */
+static int slot_menu_items(const np_app *app, int *items)
+{
+    int n = 0;
+    for (int i = 0; i < SM_COUNT; i++)
+        if (i != SM_TRANSFER || np_game_is_gen4(app->slots_game))
+            items[n++] = i;
+    return n;
+}
 
 /* The slot menu's cart line, reread only when another slot is shown or the
  * binding changes (not every frame). */
@@ -1171,6 +1183,7 @@ static void slot_menu_activate(np_app *app, int item)
     np_game g = app->slots_game;
     switch (item) {
     case SM_PLAY: np_app_start_game(app, g, name); break;
+    case SM_TRANSFER: np_app_start_poke_transfer(app, g, name); break;
     case SM_EDIT:
         if (!s->size)
             np_app_toast(app, "\"%s\" has no save yet", name);
@@ -1215,8 +1228,10 @@ static void draw_slot_menu(np_app *app)
     }
     np_page_frame f;
     np_ui_begin_page(app, &f, s->name);
-    static const char *const labels[SM_COUNT] = {"Play",           "Edit save...", "Rename...", "Duplicate",
-                                                 "Export .sav...", "",             "Delete..."};
+    static const char *const labels[SM_COUNT] = {"Play",           "Edit save...", "Rename...",
+                                                 "Duplicate",      "Export .sav...", "",
+                                                 "Poke Transfer station", "Delete..."};
+    int items[SM_COUNT], n = slot_menu_items(app, items);
     char cart_label[64];
     const char *cart = bound_cart(app->slots_game, s->name);
     SDL_snprintf(cart_label, sizeof cart_label, "Cart: %s", cart[0] ? cart : "none");
@@ -1227,14 +1242,14 @@ static void draw_slot_menu(np_app *app)
     else
         SDL_snprintf(info, sizeof info, "%s, not saved yet", np_game_title(app->slots_game));
     np_ui_text_clip(app, f.panel.x + 2 * f.cw, f.list_y, f.s, info, f.cols, dim);
-    app->sel = SDL_clamp(app->sel, 0, SM_COUNT - 1);
-    for (int i = 0; i < SM_COUNT; i++) {
+    app->sel = SDL_clamp(app->sel, 0, n - 1);
+    for (int i = 0; i < n; i++) {
         float y = f.list_y + (float)(i + 2) * f.lh;
         SDL_FRect row = {f.panel.x + f.cw, y - 2 * f.s, f.panel.w - 2 * f.cw, f.lh};
         if (i == app->sel)
             np_ui_fill(app, row, (SDL_Color){255, 205, 80, 40});
-        np_ui_text(app, f.panel.x + 2 * f.cw, y, f.s, i == SM_CART ? cart_label : labels[i],
-                   i == app->sel ? (i == SM_DELETE ? warn : accent) : white);
+        np_ui_text(app, f.panel.x + 2 * f.cw, y, f.s, items[i] == SM_CART ? cart_label : labels[items[i]],
+                   i == app->sel ? (items[i] == SM_DELETE ? warn : accent) : white);
         np_ui_hit(app, row, i);
     }
     np_ui_end_page(app, &f, "Enter/A: select  Esc/B: back", 0);
@@ -1245,7 +1260,8 @@ static void confirm_activate(np_app *app, int yes)
     const np_slot_info *s = cur_slot(app);
     if (!yes || !s) {
         np_app_open_page(app, NP_PAGE_SLOT_MENU);
-        app->sel = SM_DELETE;
+        int items[SM_COUNT];
+        app->sel = slot_menu_items(app, items) - 1; /* Delete..., the last item */
         return;
     }
     char name[NP_SLOT_NAME_MAX + 1];
@@ -1566,12 +1582,14 @@ static void slot_pages_command(np_app *app, np_menu_cmd cmd)
             slots_activate(app, app->sel);
         break;
     }
-    case NP_PAGE_SLOT_MENU:
+    case NP_PAGE_SLOT_MENU: {
+        int items[SM_COUNT], n = slot_menu_items(app, items);
         if (cmd == NP_CMD_UP || cmd == NP_CMD_DOWN)
-            app->sel = wrapi(app->sel + (cmd == NP_CMD_UP ? -1 : 1), SM_COUNT);
-        else if (cmd == NP_CMD_CONFIRM)
-            slot_menu_activate(app, app->sel);
+            app->sel = wrapi(app->sel + (cmd == NP_CMD_UP ? -1 : 1), n);
+        else if (cmd == NP_CMD_CONFIRM && app->sel < n)
+            slot_menu_activate(app, items[app->sel]);
         break;
+    }
     case NP_PAGE_CONFIRM:
         if (cmd == NP_CMD_LEFT || cmd == NP_CMD_RIGHT || cmd == NP_CMD_UP || cmd == NP_CMD_DOWN)
             app->sel = !app->sel;
@@ -1755,7 +1773,9 @@ static void activate_hit(np_app *app, int id, int dir)
     } else if (app->page == NP_PAGE_SLOTS) {
         slots_activate(app, id);
     } else if (app->page == NP_PAGE_SLOT_MENU) {
-        slot_menu_activate(app, id);
+        int items[SM_COUNT], n = slot_menu_items(app, items);
+        if (id < n)
+            slot_menu_activate(app, items[id]);
     } else if (app->page == NP_PAGE_CONFIRM) {
         confirm_activate(app, id == 1);
     } else if (app->page == NP_PAGE_OPTIONS) {

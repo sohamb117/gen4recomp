@@ -196,7 +196,7 @@ static int copy_file(const char *src, const char *dst, int keep_backup)
 
 static int running_slot(const np_app *app, np_game game, const char *slot)
 {
-    return app->core && app->game == game && np_slot_name_eq(app->slot, slot);
+    return app->core && app->card_game == game && np_slot_name_eq(app->slot, slot);
 }
 
 typedef struct sync_tally {

@@ -36,6 +36,8 @@ int np_game_known(np_game game);
 /* A Game Boy Advance game (Ruby, Sapphire, Emerald): one 240x160 screen,
  * no touch, a .gba cartridge. */
 int np_game_is_gba(np_game game);
+/* Diamond, Pearl, Platinum, HeartGold, SoulSilver: the cards Poké Transfer reads. */
+int np_game_is_gen4(np_game game);
 /* np_game_id() -> game, or -1 (case-insensitive). */
 int np_game_from_id(const char *id);
 

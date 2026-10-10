@@ -9,7 +9,8 @@
 #
 # Every game whose wasm core exists is built in (NP_GUEST_WASM_<game>
 # overrides the defaults: games/{platinum,diamond}/build/pc-wasm/poke*.wasm,
-# games/ndsrec/build/pc-wasm/ndsrec-{black,white}.wasm,
+# games/ndsrec/build/pc-wasm/ndsrec-{black,white,poketransfer}.wasm (Poke Transfer's
+# child station),
 # games/heartgold/build/pc-wasm/poke{heartgold,soulsilver}.wasm,
 # games/{ruby,emerald}/build/pc-wasm/poke*.wasm). NP_BUILD_DIR
 # overrides build/win-app. The build honours CMAKE_BUILD_PARALLEL_LEVEL (run
@@ -52,7 +53,8 @@ guest_args=() built=()
 : "${NP_GUEST_WASM_white:=$ROOT/games/ndsrec/build/pc-wasm/ndsrec-white.wasm}"
 : "${NP_GUEST_WASM_heartgold:=$ROOT/games/heartgold/build/pc-wasm/pokeheartgold.wasm}"
 : "${NP_GUEST_WASM_soulsilver:=$ROOT/games/heartgold/build/pc-wasm/pokesoulsilver.wasm}"
-for game in diamond pearl platinum black white heartgold soulsilver ruby sapphire emerald; do
+: "${NP_GUEST_WASM_poketransfer:=$ROOT/games/ndsrec/build/pc-wasm/ndsrec-poketransfer.wasm}"
+for game in diamond pearl platinum black white heartgold soulsilver ruby sapphire emerald poketransfer; do
     var="NP_GUEST_WASM_$game"
     wasm="${!var:-}"
     if [ -n "$wasm" ] && [ -f "$wasm" ]; then
@@ -122,6 +124,9 @@ if [ "$TEST" = 1 ]; then
             white) ROM="${NP_WHITE_ROM:-$ROOT/roms/Pokemon - White Version (USA, Europe) (NDSi Enhanced).nds}" run="frames=4950" ;;
             heartgold) ROM="${NP_HG_ROM:-$ROOT/games/heartgold/build/heartgold.us/pokeheartgold.us.nds}" run="frames=4800" ;;
             soulsilver) ROM="${NP_SS_ROM:-$ROOT/games/heartgold/build/soulsilver.us/pokesoulsilver.us.nds}" run="frames=4800" ;;
+            # Poke Transfer's child station shows nothing until Black/White's
+            # lab sends it the child (tests/poketransfer/run_tests.py).
+            poketransfer) continue ;;
         esac
         [ -f "$ROM" ] || { echo "package_windows: no $game ROM at $ROM; not tested"; continue; }
         ext="${ROM##*.}"

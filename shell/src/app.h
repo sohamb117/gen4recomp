@@ -212,7 +212,10 @@ typedef struct np_app {
 
     np_core *core;
     np_game game;
-    char slot[NP_SLOT_NAME_MAX + 1]; /* save slot of the running game */
+    /* Whose cartridge and save slot the session runs on: `game`, or for
+     * Poké Transfer's child station (NP_GAME_POKETRANSFER) the Gen 4 card. */
+    np_game card_game;
+    char slot[NP_SLOT_NAME_MAX + 1]; /* save slot of the running game (of card_game) */
     SDL_IOStream *rom_io;
     SDL_IOStream *gba_io; /* the cartridge in the GBA slot while a core runs */
     np_host host;
@@ -244,6 +247,10 @@ void np_app_toast(np_app *app, const char *fmt, ...);
 int np_app_start_game(np_app *app, np_game game, const char *slot);
 /* Boots the last used slot, or a new "Slot 1" when the game has none. */
 int np_app_continue(np_app *app, np_game game);
+/* Poké Transfer's child station: the poketransfer core with Gen 4 game
+ * `card`'s cartridge and save slot `slot` in its slot 1. It waits for
+ * Black/White's lab on local wireless, which must be on. */
+int np_app_start_poke_transfer(np_app *app, np_game card, const char *slot);
 /* Reboots the running game from its slot's last save. */
 int np_app_reload_game(np_app *app);
 void np_app_stop_game(np_app *app);

@@ -67,6 +67,12 @@ int np_game_is_gba(np_game game)
     return game == NP_GAME_RUBY || game == NP_GAME_SAPPHIRE || game == NP_GAME_EMERALD;
 }
 
+int np_game_is_gen4(np_game game)
+{
+    return game == NP_GAME_DIAMOND || game == NP_GAME_PEARL || game == NP_GAME_PLATINUM ||
+           game == NP_GAME_HEARTGOLD || game == NP_GAME_SOULSILVER;
+}
+
 int np_game_from_id(const char *id)
 {
     for (int g = 0; g < NP_GAME_COUNT; g++) {
