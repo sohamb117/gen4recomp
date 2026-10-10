@@ -30,7 +30,7 @@ include_guard(GLOBAL)
 # where directory-scope variables of core/ are not visible, so anything they
 # need is defined inside them or cached (NP_CORE_DIR, NP_WASM2C).
 macro(_np_games OUT)
-  set(${OUT} diamond pearl platinum black white heartgold soulsilver ruby sapphire emerald)
+  set(${OUT} diamond pearl platinum black white heartgold soulsilver ruby sapphire emerald poketransfer)
 endmacro()
 
 function(np_guest_link_flags OUT)
@@ -168,6 +168,7 @@ const np_guest_module *const np_guest_registry[NP_GAME_COUNT] = {
     [NP_GAME_RUBY] = ${entry_ruby},
     [NP_GAME_SAPPHIRE] = ${entry_sapphire},
     [NP_GAME_EMERALD] = ${entry_emerald},
+    [NP_GAME_POKETRANSFER] = ${entry_poketransfer},
 };
 " @ONLY)
   target_sources(${EXE} PRIVATE "${out}")

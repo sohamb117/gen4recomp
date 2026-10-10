@@ -147,6 +147,38 @@ class Rom(object):
         start, end = struct.unpack_from("<II", self.raw, self.fat_off + 8 * fid)
         return self.raw[start:end]
 
+    def file_id(self, path):
+        """The FAT index of `path` ("dl_rom/child_r_eng.srl"), from the file
+        name table (GBATEK "NitroROM File System": per directory a main
+        table entry {u32 sub-table offset, u16 first file id, u16 parent},
+        sub-table entries a length byte, bit 7 set for a directory followed
+        by its u16 id, 0 ending the table)."""
+        r = self.raw
+        did = 0xF000
+        parts = [p for p in path.split("/") if p]
+        for depth, want in enumerate(parts):
+            sub, fid = struct.unpack_from("<IH", r, self.fnt_off + 8 * (did & 0xFFF))
+            p = self.fnt_off + sub
+            found = None
+            while r[p]:
+                n, is_dir = r[p] & 0x7F, r[p] & 0x80
+                name = r[p + 1:p + 1 + n].decode("latin-1")
+                p += 1 + n
+                if is_dir:
+                    child = struct.unpack_from("<H", r, p)[0]
+                    p += 2
+                    if name == want and depth < len(parts) - 1:
+                        found = child
+                        break
+                else:
+                    if name == want and depth == len(parts) - 1:
+                        return fid
+                    fid += 1
+            if found is None:
+                raise KeyError("%s: no %s in the file name table" % (self.path, path))
+            did = found
+        raise KeyError("%s: %s is a directory" % (self.path, path))
+
     # ------------------------------------------------------------ ARM9
     def _find_module_params(self, img):
         """Offset of _start_ModuleParams in the static image, by its markers."""

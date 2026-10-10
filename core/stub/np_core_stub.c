@@ -179,7 +179,8 @@ static void draw_top(np_core *c, const np_input *in)
         [NP_GAME_PLATINUM] = {120, 115, 100}, [NP_GAME_BLACK] = {70, 70, 80},
         [NP_GAME_WHITE] = {200, 200, 205}, [NP_GAME_HEARTGOLD] = {200, 160, 40},
         [NP_GAME_SOULSILVER] = {150, 160, 175},
-        [NP_GAME_RUBY] = {0, 0, 0}, [NP_GAME_SAPPHIRE] = {0, 0, 0}, [NP_GAME_EMERALD] = {0, 0, 0}};
+        [NP_GAME_RUBY] = {0, 0, 0}, [NP_GAME_SAPPHIRE] = {0, 0, 0}, [NP_GAME_EMERALD] = {0, 0, 0},
+        [NP_GAME_POKETRANSFER] = {0, 0, 0}};
     const uint32_t *b = base[c->game];
     uint32_t *fb = c->fb[0];
     unsigned t = (unsigned)c->frame;
@@ -265,7 +266,8 @@ static void make_audio(np_core *c, const np_input *in)
         [NP_GAME_DIAMOND] = 440.0, [NP_GAME_PEARL] = 493.88, [NP_GAME_PLATINUM] = 523.25,
         [NP_GAME_BLACK] = 587.33, [NP_GAME_WHITE] = 659.25,
         [NP_GAME_HEARTGOLD] = 698.46, [NP_GAME_SOULSILVER] = 783.99,
-        [NP_GAME_RUBY] = 0.0, [NP_GAME_SAPPHIRE] = 0.0, [NP_GAME_EMERALD] = 0.0};
+        [NP_GAME_RUBY] = 0.0, [NP_GAME_SAPPHIRE] = 0.0, [NP_GAME_EMERALD] = 0.0,
+        [NP_GAME_POKETRANSFER] = 0.0};
     /* Samples owed after `frame` frames at 59.8261 Hz, in integer math so the
      * stream never drifts. */
     uint64_t due = c->frame * (uint64_t)AUDIO_RATE * 10000u / 598261u;

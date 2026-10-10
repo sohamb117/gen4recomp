@@ -859,7 +859,7 @@ are in RAM while it is loaded (Dragonspiral 211: the player's rail work at MMDL 
 point and line arrays: points 112 bytes, u32 lines[4], keys[4] (1 U, 2 R, 3 D, 4 L), fx32 pos at +0x30; lines 72
 bytes, start and end point, key, position, camera, length).
 
-## Poké Transfer: what it would take (design note, 2026-10-09; not built)
+## Poké Transfer: what it would take (design note, 2026-10-09; being built)
 
 Read from the Black ROM (White matches by name; offsets below are Black's) with `tests/e2e/tools/bw_script.py`,
 `tools/ndsrec/nds.py` and the recompiler's generated assembly. Nothing here is implemented.
@@ -965,3 +965,32 @@ Black and White; White's overlay 107 sits at 0x021EE760, the same size).
 - Transfer is destructive on the Gen 4 save: a bug loses Pokémon. Write-back must go to a copy until verified.
 - Overlay 230 stays opaque. Nothing found here calls it, but a run would need `PC_TRACE_OVERLAYS=1` to confirm no
   new caller.
+
+### Built: the child as its own guest (2026-10-10)
+
+`games/ndsrec` with `VER=poketransfer BW_ROM=<Black or White ROM>` extracts `dl_rom/child_r_eng.srl`
+(`ndsrec.py extract`, into build/) and recompiles it like Black and White's static:
+- 3,011 functions (2,987 ARM, 24 Thumb), every one translated cleanly by armrec;
+- 90 of 135 primitives matched (B/W's 102, less GX/MTX helpers the child does not link);
+- `OS_GetIrqFunction`, absent from the child, comes from `pc/src/pc_pt_child.c` over the child's own IRQ tables.
+
+The game id is `poketransfer` (`NP_GAME_POKETRANSFER`, core and tools). The runtime's ROM and save are the Gen 4
+card in the child's slot 1. `pc_card_rom.c` under `PC_MB_CHILD` puts that card's header at HW_CARD_ROM_HEADER, where
+a multiboot child finds it, and `pc_mb_child_boot()` writes the boot state the firmware leaves for a Download Play
+child:
+- the child's own ROM header at HW_ROM_HEADER_BUF, generated from the image (`ndsrec.py header-c`);
+- MB_TYPE_MULTIBOOT at HW_WM_BOOT_BUF.
+
+The parent's BSS description and user parameter stay empty until the Download Play link (below) hands them over.
+
+The child boots and shows "Loading..." with the wireless icon while it reconnects to its parent. With none, it
+gives up after its own 1800 frames ("Unable to connect to the other DS system.").
+`tests/poketransfer/run_tests.py boot` checks the boot state and the run; it passes with Platinum and HeartGold
+cards.
+
+The child identifies the inserted card only after that connection:
+- its main state machine (0x02013D20) connects in states 4-5;
+- in state 6 it calls 0x0201EBD8, which locks the card, reads CARD_GetRomHeader's game code and sorts it into
+  D/P (ADAE, APAE), Pt (CPUE) or HG/SS (IPKE, IPGE).
+
+So identification is shown once the link carries the child to its parent.

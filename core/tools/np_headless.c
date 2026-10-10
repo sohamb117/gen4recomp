@@ -6,7 +6,10 @@
  * reports the guest's log, a running hash of the frames and audio, and
  * optional PPM screenshots. Nothing here is mock-specific.
  *
- *   np_headless <diamond|pearl|platinum|black|white|heartgold|soulsilver|ruby|sapphire|emerald> <rom> [options]
+ *   np_headless <diamond|pearl|platinum|black|white|heartgold|soulsilver|ruby|sapphire|emerald|poketransfer>
+ *               <rom> [options]
+ *     (poketransfer: Black/White's Poké Transfer child; <rom> and --save are
+ *     the Gen 4 card in its slot 1)
  *     --frames N         frames to run (default 600)
  *     --save FILE        backup chip file: loaded if present, written on store
  *     --dump DIR         write DIR/frame_NNNNNN.ppm (both screens stacked)
@@ -589,7 +592,8 @@ static void wav_header(FILE *fp, uint32_t rate, uint32_t bytes) {
 }
 
 static int usage(void) {
-    fprintf(stderr, "usage: np_headless <diamond|pearl|platinum|black|white|heartgold|soulsilver|ruby|sapphire|emerald> <rom> [--frames N] [--save FILE] [--dump DIR]\n"
+    fprintf(stderr, "usage: np_headless <diamond|pearl|platinum|black|white|heartgold|soulsilver|ruby|sapphire|emerald|poketransfer>\n"
+                    "                   <rom> [--frames N] [--save FILE] [--dump DIR]\n"
                     "                   [--content DIR] [--gba-rom FILE [--gba-save FILE]]\n"
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--wav FILE] [--schedule FILE] [--progress N]\n"
@@ -732,7 +736,8 @@ int main(int argc, char **argv) {
         [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
         [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white",
         [NP_GAME_HEARTGOLD] = "heartgold", [NP_GAME_SOULSILVER] = "soulsilver",
-        [NP_GAME_RUBY] = "ruby", [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
+        [NP_GAME_RUBY] = "ruby", [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald",
+        [NP_GAME_POKETRANSFER] = "poketransfer"};
     int game = -1;
     for (int g = 0; g < NP_GAME_COUNT; g++)
         if (names[g] && strcmp(argv[1], names[g]) == 0) game = g;

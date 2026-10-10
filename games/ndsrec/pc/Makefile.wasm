@@ -54,6 +54,20 @@ BUILD  := $(ROOT)/build/pc-wasm/$(VER)
 OBJ    := $(BUILD)/obj
 TARGET := $(ROOT)/build/pc-wasm/ndsrec-$(VER).wasm
 
+# VER=poketransfer: Poké Transfer's Download Play child, which Black and
+# White send from the Poké Transfer Lab to a second DS (docs/BW_PLAN.md
+# "Poké Transfer"). It is a file of their cartridge, dl_rom/child_r_eng.srl
+# (the same bytes in both), recompiled as an image of its own; BW_ROM is the
+# player's Black or White ROM (a path without spaces, e.g. a symlink under
+# build/). The cartridge the child's station has in slot 1 is the Gen 4
+# game it reads, served by the runtime as any core's ROM.
+ifeq ($(VER),poketransfer)
+ROM := $(BUILD)/child_r_eng.srl
+$(ROM): $(BW_ROM) $(NDSREC)/ndsrec.py $(NDSREC)/nds.py
+	@mkdir -p $(dir $@)
+	$(PYTHON) $(NDSREC)/ndsrec.py extract $(BW_ROM) dl_rom/child_r_eng.srl --out $@
+endif
+
 # Compiles go through tools/ccache.sh when it says so (its header).
 CCACHE := $(shell $(NPROOT)/tools/ccache.sh --enabled)
 CC  := $(strip $(CCACHE) $(WASI_SDK)/bin/clang --target=wasm32-wasip1)
@@ -109,6 +123,23 @@ $(OBJ)/ndsrec/pc_bw_%.o: HOST_CFLAGS += $(if $(filter white,$(VER)),-DPC_BW_VER_
 HOST_CFLAGS += $(if $(BW),-DPC_BW_ROMVIEW)
 $(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
 	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
+# Poké Transfer's child (VER=poketransfer): booted as a Download Play child
+# (pc/src/pc_pt_child.c; pc_card_rom.c leaves the slot-1 card's header where
+# a child finds it under PC_MB_CHILD), with its own ROM header from the
+# image, generated here (the ROM's bytes, never committed).
+ifeq ($(VER),poketransfer)
+HOST_CFLAGS += -DPC_MB_CHILD
+PT_IMAGE_C := $(BUILD)/gen/pc_pt_image.c
+$(PT_IMAGE_C): $(ROM) $(NDSREC)/ndsrec.py
+	@mkdir -p $(dir $@)
+	$(PYTHON) $(NDSREC)/ndsrec.py header-c $(ROM) --name pc_pt_child_header --out $@
+$(OBJ)/ndsrec/pc_pt_image.o: $(PT_IMAGE_C)
+	@mkdir -p $(dir $@)
+	$(CC) $(WASM_ABI) $(OPT) -c -o $@ $<
+MY_OBJS += $(OBJ)/ndsrec/pc_pt_child.o $(OBJ)/ndsrec/pc_pt_image.o
+BRIDGE_PLAIN_OBJS += $(OBJ)/ndsrec/pc_pt_image.o
+endif
+
 OBJS := $(if $(BW),$(filter-out $(HOST_OBJ)/dp/pc_dp_snd.o,$(OBJS)),$(OBJS)) $(MY_OBJS)
 
 # The TWL-SDK memory map (Black/White). TWL-SDK links the DTCM and the

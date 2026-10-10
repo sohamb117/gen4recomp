@@ -33,6 +33,10 @@ typedef enum np_game {
     NP_GAME_RUBY = 7,
     NP_GAME_SAPPHIRE = 8,
     NP_GAME_EMERALD = 9,
+    /* Black/White's Poké Transfer: the Download Play child the Poké Transfer
+     * Lab sends to a second DS (games/ndsrec VER=poketransfer); its ROM is the
+     * Gen 4 card in that DS's slot 1. */
+    NP_GAME_POKETRANSFER = 10,
     NP_GAME_COUNT
 } np_game;
 

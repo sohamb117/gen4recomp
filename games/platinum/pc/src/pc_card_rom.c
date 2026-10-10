@@ -192,13 +192,27 @@ int pc_rom_init(void)
     if (np_host_rom_read(0, header, sizeof header) != 0) {
         pc_wasm_fatal("pc_card_rom: reading the ROM header failed");
     }
+#if defined(PC_MB_CHILD)
+    /* A Download Play child (games/ndsrec/pc/src/pc_pt_child.c): the
+     * runtime's image is the card in slot 1, not the program, so its header
+     * is where a child finds the inserted card's (CARD_GetRomHeader), and
+     * the firmware's boot state for a child follows the card's words. */
+    memcpy((void *)HW_CARD_ROM_HEADER, header, HW_CARD_ROM_HEADER_SIZE);
+#else
     /* HW_CARD_ROM_HEADER_SIZE, not sizeof header: see the comment in the
      * file-backed pc_rom_init below. */
     memcpy((void *)HW_ROM_HEADER_BUF, header, HW_CARD_ROM_HEADER_SIZE);
+#endif
     sCardIr = header[0x0C] == 'I';
 #if defined(ARMREC_TWL)
     card_firmware_words();
     pc_pxi_set_responder(PXI_FIFO_TAG_FS, card_fs_responder);
+#endif
+#if defined(PC_MB_CHILD)
+    {
+        extern void pc_mb_child_boot(void);
+        pc_mb_child_boot();
+    }
 #endif
     sRomSize = size;
     fprintf(stderr, "pokeplatinum-wasm: rom: %u bytes from the runtime\n",

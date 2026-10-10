@@ -864,7 +864,8 @@ int main(int argc, char **argv) {
                 [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
                 [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white",
                 [NP_GAME_HEARTGOLD] = "heartgold", [NP_GAME_SOULSILVER] = "soulsilver",
-                [NP_GAME_RUBY] = "ruby", [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald"};
+                [NP_GAME_RUBY] = "ruby", [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald",
+                [NP_GAME_POKETRANSFER] = "poketransfer"};
             game = -1;
             for (int g = 0; g < NP_GAME_COUNT; g++)
                 if (names[g] && strcmp(v, names[g]) == 0) game = g;
