@@ -7,15 +7,77 @@ priority = "P0"
 version = "both"
 estimate = 20000
 refs = [
+  "zone_event 137 bg 0 (31,44) -> scr 0274 script 1 (the statue); zone_event 138 warp 0 (31,2) -> zone 144; zone_event 139 warp 0 (30,11) -> zone 264",
   "zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1",
   "zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between)",
   "zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1",
   "scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)",
 ]
-notes = "[INFERENCE] estimate."
+notes = "Route from scouting. [INFERENCE] estimate."
 
 [start]
 from = "prev"
+
+[run]
+frames = 30000
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 45
+face = "up"
+interact = true
+note = "the statue, zone_event 137 bg 0 (31,44) -> scr 0274 script 1: with the four Elite Four beaten it lowers the way up to zone 138"
+
+[[step]]
+do = "advance_text"
+max = 4000
+shot = "statue"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 2
+note = "zone 138 up the stairs into zone_event 138 warp 0 (31,2) -> zone 144"
+
+[[step]]
+do = "wait_field"
+max = 2000
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 12
+on_text = "stop"
+note = "onto zone_event 144 trigger 0 (15..17,12): scr 0288 script 1"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "champion-room"
+note = "N has beaten Alder; the castle rises (MessageVersion msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 0
+note = "zone_event 144 warp 1 (14,0) -> zone 139 (the bridge)"
+
+[[step]]
+do = "wait_field"
+max = 2000
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 11
+note = "zone_event 139 warp 0 (30,11) -> zone 264"
+
+[[step]]
+do = "advance_text"
+max = 12000
+shot = "n-castle"
+note = "zone 264 level script: scr 0528 script 1 (the Sages, the Gym Leaders arrive); @0x03F9 SetVar 0x40A5 1"
 
 [expect]
 map = 264

@@ -6365,9 +6365,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
 - end state: map 264; flags set 0x97C; vars 0x40A2=1, 0x40A5=1
-- frames: estimate 20000, budget -
-- refs: zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1; zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between); zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1; scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
-- notes: [INFERENCE] estimate.
+- frames: estimate 20000, budget 30000
+- refs: zone_event 137 bg 0 (31,44) -> scr 0274 script 1 (the statue); zone_event 138 warp 0 (31,2) -> zone 144; zone_event 139 warp 0 (30,11) -> zone 264; zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1; zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between); zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1; scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
+- notes: Route from scouting. [INFERENCE] estimate.
 
 #### black/31-n-castle-climb — N's Castle: the climb to the throne room
 - proves: Proves N's Castle's climb: the halls, the Shadow Triad and the Sages' rooms up to the throne room's door. Start: N's Castle's entrance (zone 264) -> end: the throne room (zone 278), 0x40DC = 1.
@@ -6375,9 +6375,9 @@ Sapphire reuses Ruby's dirs (`sapphire/chain.txt` lines `../ruby/<dir>`) except 
 - party: the continued save
 - trainers: none
 - end state: map 278; vars 0x40A6=1, 0x40D4=1, 0x40D5=1, 0x40DC=1
-- frames: estimate 30000, budget -
+- frames: estimate 30000, budget 30000
 - refs: zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
-- notes: The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
+- notes: Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
 
 #### black/32-n-castle-reshiram-ghetsis-credits — N's Castle (Black): Reshiram, N, Ghetsis and the credits
 - proves: Proves the end of the story on Black: the throne room, Reshiram awakening from the stone and caught, N's battle with Zekrom, Ghetsis's battle, N's farewell, the credits and the game's own save and reset after them. Start: the throne room's entrance (zone 278, 31's end) -> end: the game's save after the credits, 0x40A2 = 3.
@@ -6728,9 +6728,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
 - end state: map 264; flags set 0x97C; vars 0x40A2=1, 0x40A5=1
-- frames: estimate 20000, budget -
-- refs: zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1; zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between); zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1; scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
-- notes: [INFERENCE] estimate.
+- frames: estimate 20000, budget 30000
+- refs: zone_event 137 bg 0 (31,44) -> scr 0274 script 1 (the statue); zone_event 138 warp 0 (31,2) -> zone 144; zone_event 139 warp 0 (30,11) -> zone 264; zone_event 144 trigger 0 (15,12) 3x1 var 0x40A2 == 0 -> scr 0288 script 1; @0x00EC MessageVersion (msg 149 #0/#1); @0x01A0 SetFlag 0x97C; @0x029D SetVar 0x40A2 1; zone_event 144 warp 1 (14,0) -> zone 139 warp 1; zone_event 264 warp 1 (25,20) -> zone 139 warp 0 (the bridge between); zone_event 264 level type 1: 0x40A5 == 0 -> scr 0528 script 1 (the Sages, the Gym Leaders arrive, msg 287 #20-#33); @0x03F9 SetVar 0x40A5 1; scr 0288 @0x0427 TrainerBattle trdata #407 (Alder) is the post-game fight (trigger 1: 0x40A2 == 3)
+- notes: Route from scouting. [INFERENCE] estimate.
 
 #### white/31-n-castle-climb — N's Castle: the climb to the throne room
 - proves: Proves N's Castle's climb: the halls, the Shadow Triad and the Sages' rooms up to the throne room's door. Start: N's Castle's entrance (zone 264) -> end: the throne room (zone 278), 0x40DC = 1.
@@ -6738,9 +6738,9 @@ White reuses Black's dirs (`white/chain.txt` lines `../black/<dir>`) except wher
 - party: the continued save
 - trainers: none
 - end state: map 278; vars 0x40A6=1, 0x40D4=1, 0x40D5=1, 0x40DC=1
-- frames: estimate 30000, budget -
+- frames: estimate 30000, budget 30000
 - refs: zone_event 264 warp 0 (43,4) 1x4 -> zone 265; zone_event 265 trigger 0 (16,13) var 0x40A6 == 0 -> scr 0530 script 1; @0x015A SetVar 0x40A6 1; zone_event 269 trigger 0 (3,13) var 0x40D4 == 0 -> scr 0538 script 1 (msg 292 #0); @0x00D6 SetVar 0x40D4 1; zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1; zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1
-- notes: The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
+- notes: Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`. [INFERENCE] estimate.
 
 #### white/32-n-castle-zekrom-ghetsis-credits — N's Castle (White): Zekrom, N, Ghetsis and the credits
 - proves: Proves the end of the story on White: the throne room, Zekrom awakening from the stone and caught, N's battle with Reshiram, Ghetsis's battle, N's farewell, the credits and the game's own save and reset after them. Start: the throne room's entrance (zone 278, 31's end) -> end: the game's save after the credits, 0x40A2 = 3.

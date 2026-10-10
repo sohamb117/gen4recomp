@@ -26,20 +26,6 @@ frames = 120000
 
 [[step]]
 do = "walk_to"
-x = 24
-z = 9
-note = "zone 277 to the throne room's door"
-
-[[step]]
-do = "moves"
-dirs = [["U", 1]]
-note = "into zone 278"
-
-[[step]]
-do = "wait_field"
-
-[[step]]
-do = "walk_to"
 x = 16
 z = 49
 
@@ -102,7 +88,7 @@ do = "tap"
 x = 64
 y = 30
 gap = 60
-note = "[INFERENCE] the first ball, the Master Ball (the chain's bag lists it first; the 3rd ball is at (64,78) and the 4th at (190,78) from scouting)"
+note = "the first ball, the Master Ball (the chain's bag lists it first; from scouting)"
 
 [[step]]
 do = "tap"
