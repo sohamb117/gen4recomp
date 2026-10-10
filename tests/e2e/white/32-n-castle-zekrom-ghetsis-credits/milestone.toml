@@ -14,11 +14,10 @@ refs = [
   "scr 0866 @0x0457 SetVar 0x40A2 3 (the game clear), then the credits; the game saves itself and resets (OS_ResetSystem)",
   "flag 0x133: the legendary caught (scr 0556 @0x0D55)",
 ]
-notes = "One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits. [INFERENCE] estimate."
+notes = "No boost: 29's (Darmanitan and Sawk 85, the rest 78-80) is more than the throne room needs (scouting won with Darmanitan 70, Sawk 65, the rest 60). One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits. [INFERENCE] estimate."
 
 [start]
 from = "prev"
-boost = "boost.recipe"
 
 [run]
 save = "none"
