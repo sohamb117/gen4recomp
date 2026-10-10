@@ -3,10 +3,9 @@
 # is Red -> Oak's Kanto starter -> Mr. Pokemon's orb -> Cliff Edge Gate -> Route 47's Embedded Tower.
 # Start: 99-mt-silver-red's end -> end: MAP_EMBEDDED_TOWER_KYOGRE_ROOM (16,12), FLAG_CAUGHT_KYOGRE, VAR_SCENE_EMBEDDED_TOWER 4.
 title = "HeartGold: Blue Orb and Kyogre"
-status = "planned"
 priority = "P2"
 version = "heartgold"
-estimate = 35000
+estimate = 34296
 refs = [
   "scr_seq_0107_D41R0108.s:28-29,50 (beating Red: VAR_UNK_4131 1, Oak's Kanto starter balls shown)",
   "scr_seq_0513_T01R0301_hdr.s:14 (Oak's lab OnFrame VAR_UNK_4131 1 -> 006); scr_seq_0740_T01R0301.s:505-526 (a Kanto starter chosen -> Call _0801), :601-673 (... VAR_SCENE_EMBEDDED_TOWER 1)",
@@ -18,18 +17,400 @@ refs = [
   "scr_seq_0134_D52R0102.s:65-89 (WildBattle SPECIES_KYOGRE 50; fled/beaten -> FLAG_BEAT_OR_ESCAPED_FROM_GROUDON_OR_KYOGRE; caught -> VAR_SCENE_EMBEDDED_TOWER 4, FLAG_CAUGHT_KYOGRE include/constants/flags.h:397)",
   "scr_seq_0825_T10R0701.s:170 (_023A: Hall of Fame re-arms uncaught Kyogre)",
 ]
-notes = "Gates: Red (99), then Oak's lab (pick a Kanto starter), Mr. Pokemon's house (Route 30), the Cliff Edge Gate (Cianwood -> Route 47) and the Embedded Tower on Route 47 [INFERENCE: Route 47 needs Surf/Rock Climb/Waterfall]. No distribution event, no RTC (Route 47 weather is irrelevant). Catch needs a catching auto_battle mode (lv50) [INFERENCE]. Rayquaza (MAP_EMBEDDED_TOWER_RAYQUAZA_ROOM) needs both Kyogre and Groudon: one is SS-only, so it needs a trade (out of reach). Check: party species 382. Lines :601-673 hold more than one branch: confirm which Call reaches the SetVar at :673 [INFERENCE]. [INFERENCE] estimate."
+notes = "Gates: Red (99: VAR_UNK_4131 1), then Oak's lab, Mr. Pokemon's house, the Cliff Edge Gate, Route 47. Scouted on HeartGold (core-proposal). 99's save continues in the player's room. Oak's Kanto starter needs a free party slot (_0801 refuses at 6), so TOGEPI goes to BOX 1 first by 77's BILL'S PC presses (Cherrygrove). Oak's lab OnFrame offers the starters; CHARMANDER's ball (7,3) from (7,4): A for YES, B through the messages and 'Give a nickname?' (VAR_SCENE_EMBEDDED_TOWER 1). Mr. Pokemon's house OnFrame scene gives the orb (2); Chuck's scene in the Cliff Edge Gate plays on the walk through (3). Route 47's cliff paths west of Cliff Cave drop into pockets (a first walk_to west was stranded on one and had to Fly out), so the way is Cliff Cave: warp 1 in, the ladder (8,5), out at (26,13) onto the beach (131,392), Surf west to (89,396), Rock Climb up to the tower (87,389), whose door leads to the version's room. The catch is the Master Ball the chain never threw (Elm's, 29), as in 100: BAG, POKE BALLS, the Master Ball, USE; the party is full again (CHARMANDER), so the legendary goes to BOX 1. Rayquaza needs both orbs' legendaries: one is the other version's (a trade). Measured: 34296 frames; the sheet shows the deposit, CHARMANDER's prompt, Mr. Pokemon's house after the Blue Orb, KYOGRE lv50, 'Gotcha! KYOGRE was caught!', the empty room."
 
 [start]
 from = "99-mt-silver-red"
 
 [run]
-frames = 52500
+frames = 51500
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 4
+note = "99's save continues in the player's room (the game-clear location): the stairs"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK_PLAYER_HOUSE_1F"
+
+[[step]]
+do = "advance_text"
+note = "Mom's post-game scene on 1F, if it runs"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 10
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK"
+
+[[step]]
+do = "fly"
+map = "MAP_CHERRYGROVE"
+
+[[step]]
+do = "walk_to"
+x = 564
+z = 391
+note = "Cherrygrove's Pokemon Center: the party is full, and Oak's Kanto starter needs a free slot (scr_seq_0740_T01R0301.s _0801: GetPartyCount 6 -> refused)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CHERRYGROVE_POKECENTER_1F"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 13
+face = "up"
+note = "below the PC (11,12)"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 120
+note = "BILL'S PC as in 77: 'booted up the PC'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 90
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 60
+note = "the storage menu, cursor on DEPOSIT"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 150
+note = "DEPOSIT: the party"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 2
+gap = 20
+note = "slot 1, TOGEPI"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 40
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 80
+shot = "deposit-where"
+note = "'Deposit where?' BOX 1"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 80
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 2
+gap = 10
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 2
+gap = 150
+note = "'Continue Box operations?' NO"
+
+[[step]]
+do = "press"
+keys = "b"
+hold = 2
+gap = 60
+times = 6
+until = "field_ready=1"
+note = "leave the PC"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 19
+
+[[step]]
+do = "wait_map"
+map = "MAP_CHERRYGROVE"
+
+[[step]]
+do = "fly"
+map = "MAP_INDIGO_PLATEAU"
+note = "the fly map reaches only the player's region; the Indigo Plateau is in both"
+
+[[step]]
+do = "fly"
+map = "MAP_PALLET"
+
+[[step]]
+do = "walk_to"
+x = 1045
+z = 373
+
+[[step]]
+do = "wait_map"
+map = "MAP_PALLET_TOWN_OAKS_LAB"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "the lab's OnFrame (VAR_UNK_4131 1 -> 006): Oak offers the Kanto starters"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 4
+face = "up"
+interact = true
+note = "below CHARMANDER's ball (7,3)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "charmander"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 30
+note = "YES"
+
+[[step]]
+do = "repeat"
+until = "field_ready=1"
+max_rounds = 40
+steps = [{ do = "press", keys = "b", hold = 4, gap = 30 }]
+note = "the messages, 'Give a nickname?' NO (B), Oak's line; VAR_SCENE_EMBEDDED_TOWER 1"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 13
+
+[[step]]
+do = "wait_map"
+map = "MAP_PALLET"
+
+[[step]]
+do = "fly"
+map = "MAP_INDIGO_PLATEAU"
+
+[[step]]
+do = "fly"
+map = "MAP_CHERRYGROVE"
+
+[[step]]
+do = "walk_to"
+x = 568
+z = 294
+via = [[551, 390], [550, 374], [557, 371], [558, 353], [559, 329], [565, 322], [567, 311], [571, 309], [569, 305]]
+on_battle = "flee"
+note = "Route 30 north to Mr. Pokemon's house (tools/hg_world.py route 564 392 568 295)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_30_MR_POKEMON_HOUSE"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "Mr. Pokemon's OnFrame scene with Oak (VAR_SCENE_EMBEDDED_TOWER 2): HeartGold's Blue Orb"
+shot = "after-orb"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 9
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_30"
+
+[[step]]
+do = "fly"
+map = "MAP_CIANWOOD"
+
+[[step]]
+do = "walk_to"
+x = 171
+z = 347
+on_battle = "flee"
+note = "the Cliff Edge Gate"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CLIFF_EDGE_GATE"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 46
+on_battle = "flee"
+note = "through the gate to Route 47: Chuck's scene on the way (VAR_SCENE_EMBEDDED_TOWER 3; walk_to advances it)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_47"
+
+[[step]]
+do = "walk_to"
+x = 130
+z = 385
+on_battle = "flee"
+note = "Route 47's upper path to Cliff Cave (warp 1); the cliff paths west of it drop into pockets with no way down to the beach"
+
+[[step]]
+do = "wait_map"
+map = "MAP_CLIFF_CAVE"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 5
+on_battle = "flee"
+note = "the ladder (warp 6) -> (27,4)"
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 13
+on_battle = "flee"
+note = "-> Route 47's beach (131,392)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_47"
+
+[[step]]
+do = "walk_to"
+x = 89
+z = 396
+hm = true
+surf = true
+on_battle = "flee"
+note = "west by Surf below the tower's rock wall"
+
+[[step]]
+do = "walk_to"
+x = 87
+z = 389
+hm = true
+on_battle = "flee"
+note = "Rock Climb (89,393..395), the Embedded Tower's door: the version's room"
+
+[[step]]
+do = "wait_map"
+map = "MAP_EMBEDDED_TOWER_KYOGRE_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 12
+face = "up"
+interact = true
+note = "below Kyogre (16,11)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "repeat"
+until = "ui=1"
+max_rounds = 80
+steps = [{ do = "wait_frames", n = 20 }]
+note = "the battle: ui=1 comes while the bottom screen is still drawing its menu"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "kyogre"
+note = "the action menu"
+
+[[step]]
+do = "tap"
+x = 40
+y = 172
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 192
+y = 64
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 80
+gap = 60
+note = "the Master Ball (Poke Ball, Fast Ball, Master Ball)"
+
+[[step]]
+do = "tap"
+x = 100
+y = 168
+gap = 60
+note = "USE"
+
+[[step]]
+do = "wait_frames"
+n = 640
+shot = "gotcha"
+
+[[step]]
+do = "repeat"
+until = "in_battle=0"
+max_rounds = 80
+steps = [
+  { do = "press", keys = "a", hold = 2, gap = 40, if = "ui=0" },
+  { do = "press", keys = "b", hold = 2, gap = 40 },
+]
+note = "the Pokedex page (A), 'Give a nickname?' NO (B), the box message"
+
+[[step]]
+do = "advance_text"
 
 [expect]
 map = "MAP_EMBEDDED_TOWER_KYOGRE_ROOM"
 flags = ["FLAG_CAUGHT_KYOGRE"]
 battles = 1
+save = ['any(m["species"] == 382 for b in s["boxes"] for m in b["mons"]) or 382 in [m["species"] for m in s["party"]]']
 
 [expect.vars]
 VAR_SCENE_EMBEDDED_TOWER = 4
