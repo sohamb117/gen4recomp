@@ -4,7 +4,7 @@
 title = "Route 8 (Bianca) and Route 9 to Opelucid City"
 priority = "P0"
 version = "both"
-estimate = 44485
+estimate = 37851
 refs = [
   "Fly (the X menu's POKEMON, slot 3's FLY, Icirrus tapped and held on the town map, A): needs Icirrus's fly flag 0x9B8, which the field sets on entering Icirrus from outdoors (24 ends that way); no script sets it",
   "zone_event 113 warp 1 (184,195) -> zone 115 (Pokemon Center)",
@@ -16,13 +16,14 @@ refs = [
   "zone_event 120 triggers 1-2 (415,167)/(415,162) var 0x40A8 == 1/2 -> scr 0240 scripts 14/15 (Iris, msg 125 #39/#40); @0x0DE6/@0x0E46 SetVar 0x40A8 2/3",
   "zone_event 120 warp 3 (418,159) -> zone 123; zone 123 level type 1: 0x40A8 == 3 -> scr 0246 script 1 (Drayden, MessageVersion); @0x0179 SetVar 0x40A8 4 (Black) / @0x013E (White)",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 39345, White 44485 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Gate exits (zones 349, 131) fire only on a press into the edge: walk_to the tile before, then moves. Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion, no other branch: the dir serves White. Route from scouting."
+notes = "Measured from the previous end save (CONTINUE included): Black 37851, White 34169 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Gate exits (zones 349, 131) fire only on a press into the edge: walk_to the tile before, then moves. Opelucid's scenes swap Drayden's and Iris's lines by MessageVersion, no other branch: the dir serves White. Route from scouting."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
 
 [run]
-frames = 67000
+frames = 57000
 
 [[step]]
 do = "wait_field"
@@ -112,7 +113,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "bianca-battle"
 note = "Bianca (trdata #494-#496)"
 
 [[step]]
@@ -234,7 +235,7 @@ note = "onto zone_event 120 trigger 0: scr 0240 script 1"
 [[step]]
 do = "advance_text"
 max = 20000
-shot = "alder-opelucid"
+shot = "after-alder-opelucid"
 
 [[step]]
 do = "walk_to"

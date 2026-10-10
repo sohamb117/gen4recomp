@@ -4,12 +4,12 @@
 title = "Virizion (Rumination Field)"
 priority = "P1"
 version = "both"
-estimate = 9142   # measured from 81's end save + start.recipe (CONTINUE included): Black 9042, White 9142 (core-bwm)
+estimate = 9326   # measured from 81's end save + start.recipe (CONTINUE included): Black 9226, White 9326 (core-bwm2)
 refs = [
   "zone_event 155 objects 32-35 gfx 0xCE (106..109,28) hidden by flag 0x28D (scr 0670 @0x04E2, 80); zone_event 155 warp 2 (107,27) 2x1 -> zone 156 warp 0 (15,23)",
   "zone_event 156 object 0 gfx 0x75 (15,11) hidden by flag 0x28B -> scr 0312 script 1: @0x001F WildBattle Virizion (640) lv 42; @0x003E SetFlag 0x28B; result 0 (caught) -> @0x0097 SetFlag 0xA8",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 9042, White 9142 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Chained from 81 (the rocks need Cobalion's flag, which no recipe can set). The recipe puts the player on a rock's tile, freed by 0x28D, below the field's mouth, and refills the Master Ball 81 threw."
+notes = "Measured from the start save (CONTINUE included): Black 9226, White 9326 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Chained from 81 (the rocks need Cobalion's flag, which no recipe can set). The recipe puts the player on a rock's tile, freed by 0x28D, below the field's mouth, and refills the Master Ball 81 threw."
 
 [start]
 from = "81-legendary-terrakion"
@@ -80,12 +80,17 @@ gap = 60
 note = "USE"
 
 [[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the Master Ball's throw and shakes run without input; the catch's Pokedex message then waits"
+
+[[step]]
 do = "press"
 keys = "b"
 until = "in_battle=0"
 times = 80
 gap = 30
-shot = "caught"
 note = "the catch; B declines the nickname; the full party sends it to the Box"
 
 [[step]]

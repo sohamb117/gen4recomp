@@ -3,13 +3,13 @@
 title = "Driftveil Gym: Clay's Quake Badge; Bianca and HM02"
 priority = "P0"
 version = "both"
-estimate = 32243
+estimate = 32115
 refs = [
   "scr 0194 @0x020E-@0x05C8 the gym's elevators; @0x05B0 Warp zone 98",
   "scr 0194 @0x009F TrainerBattle trdata #24 (Clay: Krokorok 29, Palpitoad 29, Excadrill 31); @0x00D6 GiveBadge 4 (Quake); @0x0134 SetVar 0x409A 1; @0x013A SetVar 0x408F 4; @0x015C SetFlag 0x975",
   "zone_event 96 trigger 2 (164,403) var 0x408F == 4 -> scr 0192 script 16; @0x063B/@0x067D/@0x06AC TrainerBattle trdata #491/#492/#493 (Bianca: Herdier, monkey, Musharna 26, starter 28); @0x06F7 CallStd 2805 HM02; @0x0724 SetVar 0x408F 5",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 31040, White 32243 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Gym's lifts (zone 97's floors stack at the same x,z) are worked by facing UP to a post and A; the route came from scouting. Excadrill (Ground/Steel): Water or Fighting [INFERENCE]."
+notes = "Measured from the previous end save (CONTINUE included): Black 31564, White 32115 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). The Gym's lifts (zone 97's floors stack at the same x,z) are worked by facing UP to a post and A; the route came from scouting. Excadrill (Ground/Steel): Water or Fighting [INFERENCE]."
 
 [start]
 from = "prev"
@@ -120,10 +120,10 @@ note = "Clay (zone_event 97 object 0 at (15,5)) -> scr 0194 script 1"
 
 [[step]]
 do = "advance_text"
-shot = "clay-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "clay-battle"
 note = "Clay, trdata #24 (Krokorok 29, Palpitoad 29, Excadrill 31), scr 0194 @0x009F"
 
 [[step]]
@@ -185,10 +185,10 @@ note = "zone_event 96 trigger 2 (164,403..407) 0x408F == 4 -> scr 0192 script 16
 
 [[step]]
 do = "advance_text"
-shot = "bianca-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "bianca-battle"
 note = "Bianca, trdata #491/#492/#493 by 0x4030 (scr 0192 @0x063B/@0x067D/@0x06AC)"
 
 [[step]]

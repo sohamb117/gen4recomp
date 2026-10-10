@@ -23,6 +23,7 @@
  *   np_save5 add-mon <save> <rom.nds> <species> <level> [move...]   party Pokemon
  *   np_save5 set-mon <save> <rom.nds> <slot> <species> <level> [move...]   a party slot replaced
  *   np_save5 set-level <save> <rom.nds> <slot> <level>   a party Pokemon's level (stats recalculated)
+ *   np_save5 set-held <save> <slot> <item>   a party Pokemon's held item (0: none)
  *
  * np_save4's set-coins, set-dex-obtained and set-mystery-gift have no
  * Black/White counterpart (no coin case; the Pokédex and Mystery Gift need
@@ -72,10 +73,11 @@ static int usage(void)
             "  %s add-mon <save> <rom.nds> <species> <level> [move id...]\n"
             "  %s set-mon <save> <rom.nds> <party slot 0-5> <species> <level> [move id...]\n"
             "  %s set-level <save> <rom.nds> <party slot 0-5> <level 1-100>\n"
+            "  %s set-held <save> <party slot 0-5> <item id, 0 for none>\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
             prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
-            prog);
+            prog, prog);
     return EXIT_USAGE;
 }
 
@@ -692,6 +694,20 @@ out:
     return st;
 }
 
+/* set-held: party slot `slot` holds `item` (0: nothing). The item id is not
+ * checked against the ROM's item table; the rest of the Pokemon is kept (the
+ * e2e recipes' party-item: an Exp. Share on a member that does not fight). */
+static save5_status set_held(save5 *s, unsigned long slot, unsigned long item)
+{
+    pkm5 p;
+    if (slot >= save5_party_count(s) || save5_get_party(s, (int)slot, &p) != SAVE5_OK || pkm5_is_empty(&p)) {
+        fprintf(stderr, "%s: no party Pokemon in slot %lu\n", prog, slot);
+        return SAVE5_ERR_ARG;
+    }
+    pkm5_set_held_item(&p, (uint16_t)item);
+    return save5_set_party(s, (int)slot, &p);
+}
+
 static int cmd_edit(int argc, char **argv)
 {
     const char *cmd = argv[1];
@@ -810,6 +826,10 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[1], SAVE5_PARTY_MAX - 1, &v1) || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)
             st = set_level(&s, a[0], v1, v2);
+    } else if (!strcmp(cmd, "set-held") && na == 2) {
+        bad = parse_ul(a[0], SAVE5_PARTY_MAX - 1, &v1) || parse_ul(a[1], 0xFFFF, &v2);
+        if (!bad)
+            st = set_held(&s, v1, v2);
     } else {
         save5_free(&s);
         return usage();

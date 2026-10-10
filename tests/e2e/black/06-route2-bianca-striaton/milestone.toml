@@ -3,7 +3,7 @@
 title = "Route 2: Bianca's battle and Striaton City"
 priority = "P0"
 version = "both"
-estimate = 24520
+estimate = 23883
 refs = [
   "zone_event 397 warp 5 (768,647) 1x3 -> zone 320 (Accumula Gate) -> zone 319 (Route 2)",
   "zone_event 319 trigger 0 (754,647) var 0x407D == 0 -> scr 0638 script 1; @0x0557 SetVar 0x407D 1",
@@ -11,13 +11,13 @@ refs = [
   "scr 0638 @0x02AF/@0x02D0/@0x02DE TrainerBattle trdata #498/#499/#500 (Bianca: Lillipup 6 + the starter strong against yours, 7) by 0x4030",
   "zone 6 (Striaton City)",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 24520, White 23871 frames on the core of 2026-10-08 (main 21cf05779, instant text). Bianca's Route 2 battle is mode 0. Route 2 trainers: `bw_script.py events 319`."
+notes = "Measured from the previous end save (CONTINUE included): Black 23883, White 23456 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Bianca's Route 2 battle is mode 0. Route 2 trainers: `bw_script.py events 319`."
 
 [start]
 from = "prev"
 
 [run]
-frames = 37000
+frames = 36000
 
 [[step]]
 do = "heal"
@@ -55,11 +55,11 @@ hold = 20
 [[step]]
 do = "wait_map"
 map = 319
-shot = "route2"
 
 [[step]]
 do = "moves"
 dirs = [["L", "x754"]]
+shot = "route2"
 note = "319 trigger (754,647) 1x4, 0x407D == 0 -> scr 0638 script 1 (the Xtransceiver)"
 
 [[step]]
@@ -83,11 +83,10 @@ note = "319 trigger (784..789,613), 0x407D == 1 -> scr 0638 script 2"
 [[step]]
 do = "advance_text"
 max = 12000
-shot = "bianca-scene"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "bianca-battle"
 
 [[step]]
 do = "advance_text"

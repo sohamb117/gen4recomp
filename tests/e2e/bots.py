@@ -1016,6 +1016,12 @@ def _bw_auto_battle(s, step, ctx):
                     _gba_press(s, "a")
                     s.run(30, until=["ui_arg!=%d" % BW_UI_MOVES, "ui!=%d" % UI_BATTLE_MENU, "in_battle=0"])
                 else:
+                    # the cursor stands where the screen's key table leads nowhere (4, the back button, has no keys
+                    # in BW_KEYS; [INFERENCE] where it stood when this spun without a frame on core-bwm2 after a
+                    # replacement came in, a hang: the log did not say). Up leaves the back button [INFERENCE], and
+                    # the press lets frames pass, so a cursor that never comes back runs into `max` instead
+                    s.note("auto_battle: moves cursor %#x: slot %d not reachable; up" % (p.ui_cursor, slot))
+                    _gba_press(s, "up")
                     again = 2  # the slot cannot be reached: the next one
             else:
                 # a screen the probe does not name (0x100 + the input screen's number), e.g. a double battle's target
@@ -2342,6 +2348,41 @@ def bot_grind(s, step, ctx):
     s.note("grind: lead at level %d after %d battles" % (lead["level"], battles))
 
 
+def bot_hunt(s, step, ctx):
+    """Pace the tall grass at (x, z)/(x+1, z) until a wild battle against `species` reaches its first action menu,
+    and return there (the steps after it throw the ball); every other wild battle is fled. For a Pokemon whose
+    meeting is the game's draw, not a place: B/W's roamers, whose route the game redraws on every zone change and
+    after every battle, so a counted number of battles holds only until the core's luck moves. `max` bounds the
+    frames (default 60000), every battle included."""
+    target = int(step["species"])
+    spot = (int(step["x"]), int(step["z"]))
+    limit = s.frame + _int(step, "max", 60000)
+    battles = 0
+    bot_walk_to(s, {"x": spot[0], "z": spot[1], "on_battle": "flee"}, ctx)
+    while s.frame < limit:
+        k = 0
+        while not s.in_battle and s.frame < limit:
+            k += 1
+            # grind's pacing: a tap shorter than the turn only turns the player, so hold until the step is taken
+            s.run(24, "right" if k % 2 else "left", until=["in_battle=1", "x!=%d" % (spot[0] + (0 if k % 2 else 1))])
+            s.run(12, until="in_battle=1")
+        if not s.in_battle:
+            break
+        battles += 1
+        s.run(3000, until=["ui=%d" % UI_BATTLE_MENU, "in_battle=0"])
+        p = s.probe()
+        foe = p.battlers[1].species if p is not None and len(p.battlers) > 1 else None
+        if foe == target:
+            s.note("hunt: species %d in battle %d" % (target, battles))
+            return
+        s.note("hunt: battle %d is species %s; fled" % (battles, foe))
+        bot_auto_battle(s, {"flee": True}, ctx)
+        if ctx.game in BW_GAMES:
+            s.run(4000, until="map_id!=0")  # B/W's probe says map 0 for the whole battle
+        bot_wait_field(s, {}, ctx)
+    raise HarnessError("hunt: no battle against species %d in %d battles" % (target, battles))
+
+
 def _grind_whiteout(s, ctx, battles):
     """grind: the party whited out (a lone low-level lead can lose to the grass's Pidgey): the nurse's text, then out
     of the Pokemon Center the game sent the party to; the grind walks back to its grass from there."""
@@ -3114,6 +3155,7 @@ BOTS = {
     "talk_to": bot_talk_to,
     "heal": bot_heal,
     "grind": bot_grind,
+    "hunt": bot_hunt,
     "slide": bot_slide,
     "fly": bot_fly,
     "steps": bot_steps,

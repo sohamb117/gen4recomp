@@ -4,7 +4,7 @@
 title = "Twist Mountain: Cheren; Icirrus City"
 priority = "P0"
 version = "both"
-estimate = 82308
+estimate = 74492
 refs = [
   "zone_event 107 warp 0 (108,304) -> zone 109 (Mistralton Pokemon Center)",
   "zone_event 198 trigger 0 (144,206) 1x3 var 0x40B4 == 1 -> scr 0396 script 2 (msg 206 #0); @0x010E/@0x0158/@0x018F TrainerBattle trdata #539/#540/#541 (Cheren: Unfezant, Liepard, monkey 33, starter 35); @0x02A9 CallStd 2805 HM03; @0x032A SetVar 0x40B4 2",
@@ -14,13 +14,13 @@ refs = [
   "zone_event 202 trigger 0 (52,13) 1x3 var 0x40BB == 0 -> scr 0404 script 1 (Team Plasma, msg 210 #0); @0x014A SetVar 0x40BB 1; @0x0154 SetVar 0x4097 1; @0x015A SetFlag 0x97D",
   "zone_event 113 level type 1: 0x4097 == 1 -> scr 0226 script 1 (Cedric, msg 118 #0); @0x0140 SetVar 0x4097 2",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 82308, White 60192 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Cheren's battle needs 21's party-level boost. Route from scouting (the mountain's floors are separate zones 199-202 joined by warps; the probe plans only within one, so each leg walks onto the next warp). Cheren's battle needs 21's party-level boost."
+notes = "Measured from the previous end save (CONTINUE included): Black 74492, White 68726 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Cheren's battle needs 21's party-level boost. Route from scouting (the mountain's floors are separate zones 199-202 joined by warps; the probe plans only within one, so each leg walks onto the next warp). Cheren's battle needs 21's party-level boost."
 
 [start]
 from = "prev"
 
 [run]
-frames = 123500
+frames = 112000
 
 [[step]]
 do = "heal"
@@ -41,7 +41,7 @@ do = "walk_to"
 x = 144
 z = 208
 on_text = "stop"
-shot = "cheren"
+shot = "after-cheren"
 note = "onto the trigger: scr 0396 script 2 starts"
 
 [[step]]
@@ -81,7 +81,7 @@ note = "onto the trigger: scr 0400 script 1 (Clay)"
 
 [[step]]
 do = "advance_text"
-shot = "clay-twist"
+shot = "after-clay-twist"
 
 [[step]]
 do = "walk_to"

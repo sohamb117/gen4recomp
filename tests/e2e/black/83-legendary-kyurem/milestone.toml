@@ -5,7 +5,7 @@
 title = "Kyurem (Giant Chasm)"
 priority = "P1"
 version = "both"
-estimate = 10050   # measured from 34's end save + start.recipe (CONTINUE included): Black 9950, White 10050 (core-bwm)
+estimate = 10234   # measured from 34's end save + start.recipe (CONTINUE included): Black 10134, White 10234 (core-bwm2)
 refs = [
   "zone 230 (Giant Chasm, outdoors, joined to Route 13): zone_event 230 warp 0 (684,152) -> zone 231 warp 0 (23,62); level type 2 -> scr 0460 script 1 (@0x0019 SetVar 0x40D8 0 unless flag 0x321)",
   "zone_event 231 objects 0-3 (Strength boulders, script id 10000)",
@@ -14,7 +14,7 @@ refs = [
   "scr 0866 @0x03F3-@0x0416 (game clear): flag 0x321 cleared unless 0x152 (an uncaught Kyurem returns after the next clear)",
   "zone_event 133 object 0 (10,6) hidden by flag 0x2F8 (the Opelucid Gate to Route 11), set at the clear (scr 0866 @0x04A9)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 9950, White 10050 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Post-game (east Unova opens at the clear). Chained from 34's end (the Poke Transfer Lab, after the post-credits scenes: Looker, Cedric Juniper), where set-location holds (the clear's flag 0x966 sends CONTINUE to the bedroom only from 32's end, 34's notes). The recipe starts in the crater forest below the cave: set-location keeps the saved zone's objects, so the cave is entered by its warp, which loads Kyurem (the chasm's outdoors, zone 231's boulders and the crater trigger (scr 0464, 0x40D8 = 1) are not played; the catch sets 0x40D8 to 2 either way). 32 threw the Master Ball; the recipe puts one in the first items slot. Kyurem's entrance runs past 900 frames, so the bag taps wait 1800. Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text."
+notes = "Measured from the start save (CONTINUE included): Black 10134, White 10234 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Post-game (east Unova opens at the clear). Chained from 34's end (the Poke Transfer Lab, after the post-credits scenes: Looker, Cedric Juniper), where set-location holds (the clear's flag 0x966 sends CONTINUE to the bedroom only from 32's end, 34's notes). The recipe starts in the crater forest below the cave: set-location keeps the saved zone's objects, so the cave is entered by its warp, which loads Kyurem (the chasm's outdoors, zone 231's boulders and the crater trigger (scr 0464, 0x40D8 = 1) are not played; the catch sets 0x40D8 to 2 either way). 32 threw the Master Ball; the recipe puts one in the first items slot. Kyurem's entrance runs past 900 frames, so the bag taps wait 1800. Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text."
 
 [start]
 from = "34-postgame-poke-transfer-lab"
@@ -86,12 +86,17 @@ gap = 60
 note = "USE"
 
 [[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the Master Ball's throw and shakes run without input; the catch message then waits"
+
+[[step]]
 do = "press"
 keys = "b"
 until = "in_battle=0"
 times = 80
 gap = 30
-shot = "caught"
 note = "the catch; B declines the nickname; the full party sends it to the Box"
 
 [[step]]

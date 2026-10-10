@@ -4,7 +4,7 @@
 title = "Battle Subway: one seven-win Single Train set"
 priority = "P0"
 version = "both"
-estimate = 48467   # measured from 16's end save (CONTINUE included): Black 46821, White 48467 (core-bwm)
+estimate = 42083   # measured from 16's end save (CONTINUE included): Black 41268, White 42083 (core-bwm2)
 refs = [
   "zone_event 62 warp 7 (422,458) -> zone 66 (Gear Station) warp 8; zone_event 66 warp 0 -> zone 67 (the Single Train platform; bg 8 msg 71 #18 'Platform for Single Trains')",
   "zone_event 67 object 0 gfx 0x44 (12,15) -> script id 10333 -> scr 0882 script 4 (the Single Train clerk): @0x15F1 SetVar 0x4130 1; scr 0882 @0x2993 Warp zone 75 (the train) (7,0,4)",
@@ -15,14 +15,14 @@ refs = [
   "zone 76 level type 1: var 0x4133 == 1 -> scr 0152 script 6: @0x0DCC SetVar 0x4133 2; @0x1107 msg 81 #3 'Congratulations! You've successfully reached a seven-win streak!', @0x1129 #0 'received {1} BP!', @0x12A9 #1 'Saving your record data...'",
   "0x4130 = 4: scr 0152 @0x0391 / @0x094E, scr 0882 @0x01DC..@0x03AC SetVar 0x4130 4",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 46821, White 48467 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Measured from the start save (CONTINUE included): Black 46821, White 48467 frames (core-bwm). The Gear Station is a rail map: the rail bot walks the ring to the probed rail positions. The recipe puts Garchomp, Metagross and Tyranitar (lv 50, the Subway's level) in slots 0-2; auto_battle won all seven (7-13 turns each). After the seventh win A answers YES to 'save the last battle as your Battle Video?'. The streak and BP live in the Subway's own save data (Cmd15A), not in np_save5's dump; the game's own record in the vars is 0x4133 = 2 (scr 0152 script 6, the seven-win arrival) with 0x4130 = 4, on zone 76."
+notes = "Measured from the start save (CONTINUE included): Black 41268, White 42083 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Measured from the start save (CONTINUE included): Black 46821, White 48467 frames (core-bwm). The Gear Station is a rail map: the rail bot walks the ring to the probed rail positions. The recipe puts Garchomp, Metagross and Tyranitar (lv 50, the Subway's level) in slots 0-2; auto_battle won all seven (7-13 turns each). After the seventh win A answers YES to 'save the last battle as your Battle Video?'. The streak and BP live in the Subway's own save data (Cmd15A), not in np_save5's dump; the game's own record in the vars is 0x4133 = 2 (scr 0152 script 6, the seven-win arrival) with 0x4130 = 4, on zone 76."
 
 [start]
 from = "16-nimbasa-elesa-bolt-badge"
 recipe = "start.recipe"
 
 [run]
-frames = 73000
+frames = 63500
 
 [[step]]
 do = "wait_field"
@@ -204,7 +204,7 @@ note = "A through the win text and the between-battles menu (its first item cont
 
 [[step]]
 do = "auto_battle"
-shot = "win-7"
+snap = "battle-7"
 
 [[step]]
 do = "press"
@@ -216,12 +216,19 @@ note = "after the seventh win (seen): 'Would you like to save the last battle as
 
 [[step]]
 do = "wait_frames"
-n = 240
+n = 200
 shot = "arrival"
+note = "the train in at the Gear Station platform (zone 76), the clerk walking up"
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "seven-win-streak"
+note = "the clerk's first line, 'Congratulations! You've successfully reached a seven-win streak!' (msg 81 #3; on screen from 400-600 frames after the platform loads, scouted on core-bwm2)"
 
 [[step]]
 do = "advance_text"
-shot = "seven-win-streak"
+shot = "after"
 note = "zone 76 level script var 0x4133 == 1 -> scr 0152 script 6: @0x0DCC SetVar 0x4133 2, msg 81 #3 'Congratulations! You've successfully reached a seven-win streak!' and the BP (#0 'received 3 BP!'), #1 'Saving your record data...', then 'talk to me' to continue or go back to Nimbasa City"
 
 [expect]

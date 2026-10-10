@@ -4,20 +4,20 @@
 title = "Striaton City: the Trainers' School and the Dreamyard's monkey"
 priority = "P0"
 version = "both"
-estimate = 80980
+estimate = 85733
 refs = [
   "scr 0012 script 13 (gym door, Cilan): unless 0x4083 == 2 the gym waits (msg 11 #1/#2)",
   "zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3",
   "zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard)",
   "scr 0304 script 1 (the girl): @0x013F SetVar 0x4083 1; @0x0264/@0x0295/@0x02B3 GivePokemon Panpour/Pansage/Pansear lv 10 by 0x4030 (the one strong against the starter's weakness); @0x0319 SetVar 0x4083 2",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 73592, White 80980 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Dreamyard girl gives the monkey at the first talk (party_size 2 at the end). The starter is ground to 13 on Route 2 first: at 10 it lost to Cheren's Oshawott in the school, which whites out to the Pokemon Center."
+notes = "Measured from the previous end save (CONTINUE included): Black 82545, White 85733 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). The Dreamyard girl gives the monkey at the first talk (party_size 2 at the end). The starter is ground to 13 on Route 2 first: at 10 it lost to Cheren's Oshawott in the school, which whites out to the Pokemon Center."
 
 [start]
 from = "prev"
 
 [run]
-frames = 121500
+frames = 129000
 
 [[step]]
 do = "heal"
@@ -61,7 +61,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "cheren-battle"
 note = "Cheren (trdata #288 against Tepig: Oshawott 8, Purrloin 8; mode 0, scr 0030 @0x05A5)"
 
 [[step]]

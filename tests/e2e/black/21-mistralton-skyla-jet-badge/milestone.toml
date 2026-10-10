@@ -4,20 +4,20 @@
 title = "Mistralton: the Celestial Tower and Skyla's Jet Badge"
 priority = "P0"
 version = "both"
-estimate = 136816
+estimate = 137026
 refs = [
   "zone_event 107 trigger 0 (100,302) var 0x4099 == 0 -> scr 0214 script 8 (msg 112 #0); @0x09B4 SetVar 0x4099 1",
   "scr 0216 @0x01F2 TrainerBattle trdata #25 (Skyla: Swoobat 33, Unfezant 33, Swanna 35); @0x0229 GiveBadge 5 (Jet); @0x0295 CallStd 2805 TM62; @0x02C9 SetVar 0x40B4 1; @0x02CF SetFlag 0x976; @0x02D3 SetVar 0x4099 2",
   "zone_event 107 level type 1: 0x4099 == 2 -> scr 0214 script 13 (N, msg 112 #21); @0x013D SetVar 0x4099 3",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 136816, White 132936 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe raises the full party in place (party-level): a Route 7 double battle fainted White's Blitzle. The Celestial Tower is required: the man in front of the Gym door (zone_event 107 object 11) stays until flag 0x2AE, set only by ringing the tower's bell (scr 0684 @0x0251, zone 342) after Skyla's scene there. The tower's stairs are rails (wild battles on them: each climb is a repeat of a rail hold and a flee); the Gym's cannons fire the player the way he walks into them. Routes from scouting."
+notes = "Measured from the previous end save (CONTINUE included): Black 124243, White 137026 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). boost.recipe raises the full party in place (party-level): a Route 7 double battle fainted White's Blitzle. The Celestial Tower is required: the man in front of the Gym door (zone_event 107 object 11) stays until flag 0x2AE, set only by ringing the tower's bell (scr 0684 @0x0251, zone 342) after Skyla's scene there. The tower's stairs are rails (wild battles on them: each climb is a repeat of a rail hold and a flee); the Gym's cannons fire the player the way he walks into them. Routes from scouting."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 205500
+frames = 206000
 
 [[step]]
 do = "walk_to"
@@ -31,7 +31,7 @@ dirs = [["U", 1]]
 
 [[step]]
 do = "advance_text"
-shot = "skyla-meets"
+shot = "after-skyla-meets"
 
 [[step]]
 do = "heal"
@@ -568,10 +568,10 @@ id = 1
 
 [[step]]
 do = "advance_text"
-shot = "skyla-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "skyla-battle"
 
 [[step]]
 do = "advance_text"
@@ -590,7 +590,7 @@ map = 107
 
 [[step]]
 do = "advance_text"
-shot = "n-mistralton"
+shot = "after-n-mistralton"
 
 [expect]
 map = 107

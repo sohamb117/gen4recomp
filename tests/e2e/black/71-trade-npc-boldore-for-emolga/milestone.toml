@@ -4,14 +4,14 @@
 title = "Trades: Route 7's Boldore for Emolga (trade evolution needs a link)"
 priority = "P2"
 version = "both"
-estimate = 7837   # measured from 21's end save + start.recipe (CONTINUE included): Black 7737, White 7837 (core-bwm)
+estimate = 7837   # measured from 21's end save + start.recipe (CONTINUE included): Black 7737, White 7837 (core-bwm2)
 refs = [
   "zone_event 337 warp 1 (102,260) -> zone 343 warp 0 (5,9)",
   "zone_event 343 object 0 gfx 0x40 (4,5) -> scr 0686 script 1: @0x006E BufferSpeciesName Emolga / Boldore, msg 375 #0, @0x00A9 Cmd107 (the party pick), @0x00CA Cmd1BF var 0x8022, 4, var 0x8020 [INFERENCE: trade 4's checks], @0x00F1 Cmd1BE 4, var 0x8020 (the trade), @0x0107 SetFlag 0x15B",
   "scr 0686 script 4 (zone 343 level script): GetVersion -> var 0x4020 = 0xD1 (Black) / 0x81 (White) [INFERENCE: not the trade's species, which are fixed]",
   "the other in-game trades (Cmd1BE): scr 0046 (Nacrene, zone 23: Cottonee/Petilil by version), scr 0202 trades 2/3 (Driftveil, zone 101: Minccino -> Basculin), scr 0764 trade 6 (Route 15, zone 382: Ditto -> Rotom), scr 0830 trade 5 (Undella, zone 415: Cinccino -> Munchlax)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 7737, White 7837 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). P2: trade evolution (the plan's P0 item) cannot run offline in B/W: every NPC trade receives a Pokemon that does not evolve by trade (refs), and Karrablast/Shelmet and the rest need a link trade (tests/link). This system proves the NPC trade itself, as platinum/75 does. The recipe makes the Boldore the man asks for in Patrat's slot and places the player outside the house. The party pick (Cmd107) takes one tap on a panel (no panel menu, unlike the Day Care's); the traded Emolga arrives as 'Minipete' (the trade's own nickname). Measured from the start save (CONTINUE included): Black 7737, White 7837 frames on the core of 2026-10-10 (bw-script, core-bwm), instant text."
+notes = "Measured from the start save (CONTINUE included): Black 7737, White 7837 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). P2: trade evolution (the plan's P0 item) cannot run offline in B/W: every NPC trade receives a Pokemon that does not evolve by trade (refs), and Karrablast/Shelmet and the rest need a link trade (tests/link). This system proves the NPC trade itself, as platinum/75 does. The recipe makes the Boldore the man asks for in Patrat's slot and places the player outside the house. The party pick (Cmd107) takes one tap on a panel (no panel menu, unlike the Day Care's); the traded Emolga arrives as 'Minipete' (the trade's own nickname). Measured from the start save (CONTINUE included): Black 7737, White 7837 frames on the core of 2026-10-10 (bw-script, core-bwm), instant text."
 
 [start]
 from = "21-mistralton-skyla-jet-badge"

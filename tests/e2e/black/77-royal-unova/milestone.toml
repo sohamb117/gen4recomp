@@ -5,7 +5,7 @@
 title = "The Royal Unova"
 priority = "P1"
 version = "both"
-estimate = 19193   # measured from 34's end save + start.recipe (CONTINUE included), Black, core-bwm
+estimate = 19293   # measured from 34's end save + start.recipe (CONTINUE included): Black 19193, White 19293 (core-bwm2)
 refs = [
   "zone_event 39 object 0 gfx 0x4C (18,16) -> scr 0078 script 2 (the pier clerk): @0x0258 unless flag 0x960 -> @0x043D msg 44 #13 'now in preparation'; @0x026B flag 0xAC2 set -> msg 44 #11 'closed for the day'; @0x027E Cmd0CD var 0x8021 unless == 2 -> @0x0411 msg 44 #2 'operates only in the evening'",
   "scr 0078 L_04DD msg 44 #4 'The ticket is $1,000'; @0x02FC Cmd0FB var 0x8022, 0x3E8 (the money check); L_0478 @0x0478 Cmd0FA 0x3E8 (pay), @0x04C3 SetVar 0x4135 0, @0x04C9 SetFlag 0xAC2, @0x04D1 Warp zone 52 (29,29)",
@@ -13,7 +13,7 @@ refs = [
   "zone_event 52 trigger 0 (28,10) 3x1 var 0x400A == 0 -> scr 0104 script 28: the view from the bow (Cmd1AB var 0x8010; map_id 0 while it shows); var 0x8010 == 1 (the view ran to its end) -> msg 57 #71 'This cruise ship will arrive in Castelia City shortly', L_083B @0x0872 Warp zone 39 (19,16)",
   "zone_event 39 warps 0 (10,3) 6x1 / 1 (16,3) 3x1 -> zone 28 warps 16/3 (Castelia's rail waterfront, black/14 refs)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 19193, White 19292 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Measured from 34's end save + start.recipe (CONTINUE included): Black 19193, White 19292 frames on core-bwm. Post-game (flag 0x960), evenings only (Cmd0CD == 2: with [run] clock 19:00 the clerk sells; the port's default 10:00 gets msg 44 #2 'operates only in the evening', seen in scouting) and once a day (flag 0xAC2). 34's end is in the Poke Transfer Lab and its continue warp is spent, so the recipe sets the location on the pier; a set location keeps the saved zone's objects, so the run steps out to the waterfront (zone 28) and back in to load the clerk. The clerk's menu: A on msg 44 #0, A on the first choice (board), A on 'The power of the C-Gear will be turned off. Is that OK?' (YES), msg 44 #8. Aboard, the welcome scene holds the player; the save menu does not close on the ship (the bot's save timed out there), so the run sees the cruise out: stepping on the bow trigger shows the view (Skyarrow Bridge at sunset, the bay map below) for about 10000 frames, then the arrival message and the warp back to the pier, where the save is written. The ship's trainers are not fought. Money: 34's end less the $1,000 ticket (Cmd0FA 0x3E8): Black 275276 -> 274276, White 273348 -> 272348."
+notes = "The fare ($1,000) is not checked by amount: the money 34 leaves depends on the battles' luck. Measured from the start save (CONTINUE included): Black 19193, White 19293 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Measured from 34's end save + start.recipe (CONTINUE included): Black 19193, White 19292 frames on core-bwm. Post-game (flag 0x960), evenings only (Cmd0CD == 2: with [run] clock 19:00 the clerk sells; the port's default 10:00 gets msg 44 #2 'operates only in the evening', seen in scouting) and once a day (flag 0xAC2). 34's end is in the Poke Transfer Lab and its continue warp is spent, so the recipe sets the location on the pier; a set location keeps the saved zone's objects, so the run steps out to the waterfront (zone 28) and back in to load the clerk. The clerk's menu: A on msg 44 #0, A on the first choice (board), A on 'The power of the C-Gear will be turned off. Is that OK?' (YES), msg 44 #8. Aboard, the welcome scene holds the player; the save menu does not close on the ship (the bot's save timed out there), so the run sees the cruise out: stepping on the bow trigger shows the view (Skyarrow Bridge at sunset, the bay map below) for about 10000 frames, then the arrival message and the warp back to the pier, where the save is written. The ship's trainers are not fought. Money: 34's end less the $1,000 ticket (Cmd0FA 0x3E8): Black 275276 -> 274276, White 273348 -> 272348."
 
 [start]
 from = "34-postgame-poke-transfer-lab"
@@ -122,4 +122,3 @@ shot = "back"
 [expect]
 map = 39
 flags = ["0xAC2"]
-save = ['s["trainer"]["money"] in (274276, 272348)']   # 34's end less the $1,000 ticket: Black 275276, White 273348

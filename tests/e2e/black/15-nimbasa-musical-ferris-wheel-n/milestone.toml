@@ -4,7 +4,7 @@
 title = "Nimbasa City: the Musical, Bianca's father and N at the Ferris wheel"
 priority = "P0"
 version = "both"
-estimate = 30477
+estimate = 30063
 refs = [
   "zone_event 62 trigger 1 (427,471) var 0x4089 == 0 -> scr 0124 script 1; @0x0288 TrainerBattle trdata #279 (grunt); @0x0323 CallStd 2805 Bicycle; @0x03F7 SetVar 0x4089 1",
   "zone_event 62 trigger 0 (391,436) var 0x4089 == 1 -> scr 0124 script 2; @0x08B5 Warp zone 77 (14,20)",
@@ -12,13 +12,13 @@ refs = [
   "zone_event 62 level type 1: 0x4089 == 2 -> scr 0124 script 20 (msg 67 #18, Bianca's father); @0x0C38 SetVar 0x4089 3",
   "zone_event 64 trigger 0 (22,12) var 0x408E == 0 -> scr 0128 script 5 (msg 69 #0); @0x0394 TrainerBattle trdata #89 (N: Sandile, Darumaka, Scraggy, Sigilyph 22); @0x041D SetVar 0x408E 1",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 29967, White 30477 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Musical's dress-up is a touch-only app (keys do nothing there): OK at (128,178), then OK at (20,170) for 'Is this look OK?'; it returns to the theater (zone 77)."
+notes = "Measured from the previous end save (CONTINUE included): Black 29995, White 30063 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). The Musical's dress-up is a touch-only app (keys do nothing there): OK at (128,178), then OK at (20,170) for 'Is this look OK?'; it returns to the theater (zone 77)."
 
 [start]
 from = "prev"
 
 [run]
-frames = 46000
+frames = 45500
 
 [[step]]
 do = "moves"
@@ -27,10 +27,10 @@ note = "zone_event 62 trigger 1 (427..433,471) 0x4089 == 0 -> scr 0124 script 1:
 
 [[step]]
 do = "advance_text"
-shot = "day-care-grunts-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "day-care-grunts-battle"
 note = "grunt trdata #279 (Watchog 18, Trubbish 18), scr 0124 @0x0288"
 
 [[step]]
@@ -135,10 +135,10 @@ note = "zone_event 64 trigger 0 (22,12..16) 0x408E == 0 -> scr 0128 script 5: N,
 [[step]]
 do = "advance_text"
 max = 12000
-shot = "n-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "n-battle"
 note = "N, trdata #89 (Sandile, Darumaka, Scraggy, Sigilyph 22), scr 0128 @0x0394"
 
 [[step]]

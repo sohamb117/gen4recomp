@@ -4,7 +4,7 @@
 title = "Icirrus Gym: Brycen's Freeze Badge"
 priority = "P0"
 version = "both"
-estimate = 42143
+estimate = 40805
 refs = [
   "zone_event 113 warp 1 (184,195) -> zone 115 (Pokemon Center); zone_event 113 warp 3 (171..173,167) -> zone 114 warp 0; zone_event 114 warp 0 (16..18,63) -> zone 113 warp 3",
   "zone_event 114 triggers 3-10 (17,60) (22,53) (60,44) (54,39) (16,38) (12,34) (22,32) (18,29) var 0x400A == 0 -> scr 0228 scripts 7-14 (Cmd195 n: the ramp and spin tiles)",
@@ -13,13 +13,13 @@ refs = [
   "trdata #213/#214/#215/#216 (the gym's Battle Girls and Black Belts met on the route)",
   "zone_event 113 level type 1: 0x4097 == 3 -> scr 0226 script 2 (Cheren, msg 118 #10); @0x03C0 SetVar 0x4097 4",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 38810, White 42143 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting with the game as the oracle (a slide-by-slide search). The ramp and spin tiles leave the player off a tile centre waiting for a direction: slide holds the press made then (bots.py bot_slide, _bw_ramp_waiting)."
+notes = "Measured from the previous end save (CONTINUE included): Black 39962, White 40805 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Route from scouting with the game as the oracle (a slide-by-slide search). The ramp and spin tiles leave the player off a tile centre waiting for a direction: slide holds the press made then (bots.py bot_slide, _bw_ramp_waiting)."
 
 [start]
 from = "prev"
 
 [run]
-frames = 63500
+frames = 61500
 
 [[step]]
 do = "heal"

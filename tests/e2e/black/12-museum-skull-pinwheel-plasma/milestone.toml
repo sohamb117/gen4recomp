@@ -4,7 +4,7 @@
 title = "The Dragon Skull: Team Plasma in Pinwheel Forest"
 priority = "P0"
 version = "both"
-estimate = 41974
+estimate = 39943
 refs = [
   "zone_event 17 trigger 1 (10,9) var 0x4084 == 2 -> scr 0034 script 17 (msg 22 #12); @0x07DB SetVar 0x4084 3",
   "zone_event 16 level type 1: 0x4092 == 3 -> scr 0032 script 7; @0x065B CallStd 2805 Dowsing MCHN; @0x070D SetVar 0x4092 4",
@@ -13,13 +13,13 @@ refs = [
   "zone_event 155 triggers 2,4-6 on var 0x40AA 0..3; scr 0310 @0x0687/@0x08A4/@0x0996/@0x0A47 TrainerBattle trdata #295/#309/#296/#297 (grunts, Sandile 16 ... Patrat 14 x2 + Sandile 14)",
   "scr 0310 @0x0ABB CallStd 2805 Dragon Skull; @0x0D0D SetVar 0x408D 3; @0x0D13 SetVar 0x40AA 4; @0x0D31 SetVar 0x4092 5",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 41974, White 40243 frames on the core of 2026-10-08 (main 21cf05779, instant text). Pinwheel Forest's walks flee wild battles; the walk to (22,53) goes up the corridor at x 20."
+notes = "Measured from the previous end save (CONTINUE included): Black 39943, White 38072 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Pinwheel Forest's walks flee wild battles; the walk to (22,53) goes up the corridor at x 20."
 
 [start]
 from = "prev"
 
 [run]
-frames = 63000
+frames = 60000
 
 [[step]]
 do = "walk_to"
@@ -78,7 +78,7 @@ map = 16
 
 [[step]]
 do = "advance_text"
-shot = "burgh"
+shot = "after-burgh"
 note = "zone_event 16 level 2 (on entry) 0x4092 == 3 -> scr 0032 script 7: Burgh, Dowsing MCHN (@0x065B), 0x4092 4 (@0x070D)"
 
 [[step]]
@@ -205,10 +205,10 @@ note = "trigger 6 (43,33) 0x40AA == 3 -> scr 0310 script 21"
 
 [[step]]
 do = "advance_text"
-shot = "last-grunt-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "last-grunt-battle"
 note = "grunt trdata #297 (Patrat 14 x2, Sandile 14), scr 0310 @0x0A47"
 
 [[step]]

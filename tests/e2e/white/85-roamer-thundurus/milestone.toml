@@ -6,7 +6,7 @@
 title = "Roamer: Thundurus starts roaming and is caught (White)"
 priority = "P1"
 version = "white"
-estimate = 18454   # measured from 27's end save + start.recipe (CONTINUE included), core-bwm
+estimate = 20052   # measured from 27's end save + start.recipe (CONTINUE included): White 20052 (core-bwm2)
 refs = [
   "scr 0264 (Opelucid Gate, 27) @0x01AA SetVar 0x40C0 1, @0x01B0 SetFlag 0x96F",
   "zone_event 337 trigger 0 (130,243) 1x5 var 0x40C0 == 1 -> scr 0674 script 6 (msg 369 #5 'My, my... That Pokemon has come again, too.'); @0x040F Cmd021 1, @0x0413 Warp zone 344 (the house; Cmd021: the house's script 1 runs on arrival [INFERENCE])",
@@ -16,14 +16,14 @@ refs = [
   "the roamer's slot (scouting on Black, black/85's refs: save offset 0x21B18, RAM 0x0223D6C4 on core-bwm): u16 zone, ..., species, level 40, u8 route index; rewritten on every zone change and at every battle's end: at 12:00 the zones drawn were 326/329/383/none (south), at 19:30 331/337/345/none (north: Route 6, 7, 8)",
   "the chain's 27-34 end saves hold 0x40C0 = 1 (no story milestone visits the house)",
 ]
-notes = "Measured from the start save (CONTINUE included): White 18454 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). White only (Black's twin: black/85-roamer-tornadus); the scripts are one file in both ROMs, branching on GetVersion. The roamer's position is not in np_save5's dump. The clock is 19:30 so the roamer's draws include Route 7 (msg 376 #11; Black's scouting: at noon it never was). A zone change or a battle's end moves the roamer (entering the house, zone 344, also named Route 7, does not), and a grass encounter while it is on Route 7 is the roamer only sometimes, so which wild battle is Thundurus is the RNG's: the run is deterministic and the scouted count of fled battles is in the steps (White: one, a Zebstrika; a scouting run with 25 fled battles met Thundurus as battles 2, 12 and 20); a core change that moves the RNG needs it scouted again (each fled battle's snap shows its foe). The recipe starts in the trade house beside the old woman's (set-location keeps the saved zone's objects, so Route 7 is entered through the door). 27's bag holds the Master Ball (first in the items pocket); the full party sends Thundurus to the Box. Measured from the start save (CONTINUE included): 18454 frames on the core of 2026-10-10 (bw-script, core-bwm), instant text."
+notes = "Measured from the start save (CONTINUE included): White 20052 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). White only (Black's twin: black/85-roamer-tornadus); the scripts are one file in both ROMs, branching on GetVersion. The roamer's position is not in np_save5's dump. The clock is 19:30 so the roamer's draws include Route 7 (msg 376 #11; Black's scouting: at noon it never was). A zone change or a battle's end moves the roamer (entering the house, zone 344, also named Route 7, does not), and a grass encounter while it is on Route 7 is the roamer only sometimes, so which wild battle is Thundurus is the RNG's: the hunt bot flees every other battle and stops at the first one against it (a fixed count of fled battles broke when the core's luck moved). The recipe starts in the trade house beside the old woman's (set-location keeps the saved zone's objects, so Route 7 is entered through the door). 27's bag holds the Master Ball (first in the items pocket); the full party sends Thundurus to the Box."
 
 [start]
 from = "27-opelucid-iris-legend-badge"
 recipe = "start.recipe"
 
 [run]
-frames = 28000
+frames = 100000   # more than 1.5x the estimate: the hunt step may take up to its max of 80000 frames (the game's luck)
 clock = "2026-10-09 19:30:00"   # evening: the roamer roams north Unova, Route 7 included (msg 376 #11)
 
 [[step]]
@@ -74,33 +74,17 @@ on_battle = "flee"
 note = "west along z 244..245 to the tall grass (attribute 0x8, x 121..124, z 244..247)"
 
 [[step]]
-do = "repeat"
-until = "in_battle=1"
-max_rounds = 80
-steps = [{ do = "press", keys = "right", hold = 8, gap = 24 }, { do = "press", keys = "left", hold = 8, gap = 24 }]
-note = "pace the tall grass (attribute 0x8) between (123,245) and (124,245) until a wild battle: battle 1"
-
-[[step]]
-do = "auto_battle"
-flee = true
-snap = true
-note = "battle 1: Zebstrika, not Thundurus (scouted), RUN; every battle's end moves the roamer again"
-
-[[step]]
-do = "wait_field"
-
-[[step]]
-do = "repeat"
-until = "in_battle=1"
-max_rounds = 80
-steps = [{ do = "press", keys = "right", hold = 8, gap = 24 }, { do = "press", keys = "left", hold = 8, gap = 24 }]
-note = "pace the tall grass (attribute 0x8) between (123,245) and (124,245) until a wild battle: battle 2, Thundurus (scouted)"
+do = "hunt"
+x = 123
+z = 245
+species = 642
+max = 80000
+note = "Route 7's grass at 19:30: the roamer's route is redrawn on every zone change and after every battle, so the battles before it are fled until one is species 642 (bots.py bot_hunt)"
 
 [[step]]
 do = "wait_frames"
-n = 1200
+n = 60
 shot = "thundurus-battle"
-note = "Thundurus lv 40; its entrance runs ~750 frames to the action menu (scouting)"
 
 [[step]]
 do = "tap"
@@ -131,12 +115,17 @@ gap = 60
 note = "USE: the bag's turn comes before the roamer's flight"
 
 [[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the Master Ball's throw and shakes run without input; the catch's Pokedex message then waits"
+
+[[step]]
 do = "press"
 keys = "b"
 until = "in_battle=0"
 times = 80
 gap = 30
-shot = "caught"
 note = "the catch; B declines the nickname; the full party sends it to the Box"
 
 [[step]]

@@ -12,7 +12,7 @@ refs = [
   "zone_event 273 level type 1: 0x40D5 == 0 -> scr 0546 script 1; @0x016C SetVar 0x40D5 1",
   "zone_event 277 trigger 0 (23,9) var 0x40DC == 0 -> scr 0554 script 1; @0x015A MessageVersion (White: Dark Stone msg 300 #0 / Black: Light Stone #1); @0x0251 SetVar 0x40DC 1",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 10927, White 11011 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`."
+notes = "Measured from the previous end save (CONTINUE included): Black 10927, White 11011 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Route from scouting. The castle's room graph: `bw_script.py events 264` ... `events 278`."
 
 [start]
 from = "prev"

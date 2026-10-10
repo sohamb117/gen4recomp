@@ -5,7 +5,7 @@
 title = "After the credits (White): the way to the Poke Transfer Lab"
 priority = "P1"
 version = "white"
-estimate = 22621
+estimate = 24112
 refs = [
   "scr 0866 script 2 (the game clear, after the credits): L_0443 on the first clear (flag 0x960): @0x0457 0x40A2 3, @0x047F 0x4085 2, @0x04A1 SetFlag 0x2E4; L_0316: @0x031C Cmd0DC 0x187, 1, 5, 0, 6 (the continue warp: zone 391 (5,6)), @0x0328 SetFlag 0x966",
   "flag 0x966: with it set, CONTINUE takes the continue warp; set on a save without that warp it lands on zone 0's warp 0 tile (Black City (9,50)), seen in scouting",
@@ -16,13 +16,13 @@ refs = [
   "zone_event 381 object 0 (10,7) the scientist -> scr 0878 script 1; trigger 0 (9..11,22) var 0x40AE == 0 -> scr 0878 script 2 (@0x0036 SetVar 0x40AE 1, L_055C the assistant, L_004E the offer: flag 0x95, Cmd1F0/Cmd121 six free box slots, Cmd047 YES/NO)",
   "zones 289-316 (Nimbasa .. Undella, Route 15 313, Route 16 314, Marvelous Bridge 303 among them): copies with no wild table (1071), no name popup and their own matrices, after the Entree Forest zones 280-288; their warps lead only among themselves and no script warps into them: [INFERENCE] the Entralink's copies, not a story variant of 378/383/263",
 ]
-notes = "The post-game way to the Poke Transfer Lab, for Poke Transfer's link test (docs/BW_PLAN.md, Poke Transfer): Fly to Nimbasa, Route 16, the Bridge Gate (open once the game clear sets flag 0x2E4), the Marvelous Bridge, Route 15, the lab. The lab's first-entry scene makes the transfer offer at once; B answers it NO, so the run ends with nothing transferred, the player free at the counter in front of the scientist (381 (10,8)), where talking to him (A) starts the transfer (six free box slots, wireless on, a save). Route 15, Route 16 and the bridge's second zone entries (313, 314, 303) are not story variants (refs). The same steps as black/34-postgame-poke-transfer-lab. Scouted on a synthesized post-game save (29's end with the game clear's flags and vars, the location 391 (5,6)); then run from the chain's real 32 ends on core-bwm (main d72d3a46f4): Black 22112, White 22621 frames, both passing. Left planned for bw-chain to land after 32."
+notes = "Measured from the start save (CONTINUE included): White 24112 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). The post-game way to the Poke Transfer Lab, for Poke Transfer's link test (docs/BW_PLAN.md, Poke Transfer): Fly to Nimbasa, Route 16, the Bridge Gate (open once the game clear sets flag 0x2E4), the Marvelous Bridge, Route 15, the lab. The lab's first-entry scene makes the transfer offer at once; B answers it NO, so the run ends with nothing transferred, the player free at the counter in front of the scientist (381 (10,8)), where talking to him (A) starts the transfer (six free box slots, wireless on, a save). Route 15, Route 16 and the bridge's second zone entries (313, 314, 303) are not story variants (refs). The same steps as black/34-postgame-poke-transfer-lab. Scouted on a synthesized post-game save (29's end with the game clear's flags and vars, the location 391 (5,6)); then run from the chain's real 32 ends on core-bwm (main d72d3a46f4): Black 22112, White 22621 frames, both passing. Left planned for bw-chain to land after 32."
 
 [start]
 from = "prev"
 
 [run]
-frames = 34000
+frames = 36500
 
 [[step]]
 do = "wait_field"
@@ -36,9 +36,14 @@ z = 2
 note = "zone_event 391 warp 0 (9,2) -> 390 (the house's 1F)"
 
 [[step]]
+do = "wait_frames"
+n = 240
+shot = "looker"
+note = "Looker's scene on the stairs' arrival, its first line up"
+
+[[step]]
 do = "advance_text"
 max = 20000
-shot = "looker"
 note = "zone 390 level script var 0x4085 == 2 (scr 0866 @0x047F) -> scr 0780 script 4: Mom, then Looker of the International Police; his YES/NO (Cmd047) takes A = YES; @0x06D8 0x4085 3, @0x06E8 0x4080 4"
 
 [[step]]

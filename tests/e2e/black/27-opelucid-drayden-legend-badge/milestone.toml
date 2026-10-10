@@ -4,7 +4,7 @@
 title = "Opelucid Gym (Black): Drayden's Legend Badge"
 priority = "P0"
 version = "black"
-estimate = 53724
+estimate = 53541
 refs = [
   "scr 0242 script 1 @0x007F GetVersion: 21 (Black) -> Drayden; @0x0083 CheckBadge var 0x8008, 7",
   "scr 0242 @0x00BD TrainerBattle trdata #133 (Drayden: Fraxure 41, Druddigon 41, Haxorus 43); @0x00F4 GiveBadge 7 (Legend); @0x0160 CallStd 2805 TM82; @0x01AE SetVar 0x40A9 1; @0x01B4 SetVar 0x40B8 1; @0x01BA SetFlag 0x979",
@@ -15,14 +15,14 @@ refs = [
   "zone_event 120 level type 1: 0x40B8 == 1 -> scr 0240 script 17; @0x0FD9 CallStd 2805 Master Ball; @0x100C SetVar 0x40B8 2",
   "zone_event 132 trigger 0 (2..7,11) var 0x40B8 == 2 -> scr 0264 script 3; @0x01A4 SetVar 0x40B8 3; @0x01AA SetVar 0x40C0 1; @0x01B0 SetFlag 0x96F",
 ]
-notes = "Measured from the chain's 26 end save (CONTINUE included): Black 53724 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). The gym's dragon bodies and necks are rails; the six switches are ledge hops that toggle one arm of a dragon each, and a dragon's two arms set where its head (the lift) points. The route is IGN's order, tiles from the probe: rail stops are exact (a junction turns only from its exact tile), and each rail dead end takes a 16-frame press the same way before the next direction. The (18,29) switch is pressed twice and (33,27) twice. The leader's badge flag (0x979) is set by the leader's script and cleared again before the gate, so [expect] reads the badge count, TM82 and the Master Ball. White plays white/27-opelucid-iris-legend-badge (Iris, trdata #132, the same party) with the same steps. The boost levels the party (levels only): unboosted, scouting reached the leader with only Sawk standing."
+notes = "Measured from the chain's 26 end save (CONTINUE included): Black 53541 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). The gym's dragon bodies and necks are rails; the six switches are ledge hops that toggle one arm of a dragon each, and a dragon's two arms set where its head (the lift) points. The route is IGN's order, tiles from the probe: rail stops are exact (a junction turns only from its exact tile), and each rail dead end takes a 16-frame press the same way before the next direction. The (18,29) switch is pressed twice and (33,27) twice. The leader's badge flag (0x979) is set by the leader's script and cleared again before the gate, so [expect] reads the badge count, TM82 and the Master Ball. White plays white/27-opelucid-iris-legend-badge (Iris, trdata #132, the same party) with the same steps. The boost levels the party (levels only): unboosted, scouting reached the leader with only Sawk standing."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 81000
+frames = 80500
 
 [[step]]
 do = "heal"
@@ -555,7 +555,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "leader-battle"
 note = "the leader's first action menu goes on the sheet"
 
 [[step]]

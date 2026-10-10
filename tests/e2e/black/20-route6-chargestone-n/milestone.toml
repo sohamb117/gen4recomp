@@ -4,20 +4,20 @@
 title = "Chargestone Cave: N's battle"
 priority = "P0"
 version = "both"
-estimate = 85531
+estimate = 83462
 refs = [
   "scr 0388 @0x0085 unless 0x409A == 0 ... msg 202 #0 (the nest blocks the entrance until Clay's badge); @0x0343 CallStd 2805 TM78; @0x0429 SetVar 0x409A 2",
   "zone_event 195 triggers 0-4 on var 0x409B 0..4 -> scr 0390 scripts 1/2/3/4/7 (@0x033B ... @0x093D SetVar 0x409B 1..4; @0x0583 CallStd 2805 Lucky Egg)",
   "scr 0390 @0x0B85 SetVar 0x409B 5; @0x0B9D TrainerBattle trdata #218 (N: Boldore, Ferroseed, Joltik, Klink 28)",
   "zone 107 (Mistralton City)",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 77518, White 85531 frames on the core of 2026-10-08 (main 21cf05779, instant text). Chargestone's floating boulders are pushed (moves P); the route through the cave came from scouting."
+notes = "Measured from the previous end save (CONTINUE included): Black 82053, White 83462 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Chargestone's floating boulders are pushed (moves P); the route through the cave came from scouting."
 
 [start]
 from = "prev"
 
 [run]
-frames = 128500
+frames = 125500
 
 [[step]]
 do = "walk_to"
@@ -34,7 +34,7 @@ note = "the Galvantula nest (zone_event 194 object 0 on the door (107,339)) -> s
 
 [[step]]
 do = "advance_text"
-shot = "clay-clears-the-nest"
+shot = "nest-cleared"
 
 [[step]]
 do = "walk_to"
@@ -220,10 +220,10 @@ note = "trigger 2 (66,12..14) 0x409B == 4 -> script 4: N; 0x409B 5 (@0x0B85)"
 
 [[step]]
 do = "advance_text"
-shot = "n-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "n-battle"
 note = "N, trdata #218 (Boldore, Ferroseed, Joltik, Klink 28), scr 0390 @0x0B9D"
 
 [[step]]

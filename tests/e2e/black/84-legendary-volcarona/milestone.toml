@@ -5,21 +5,21 @@
 title = "Volcarona (Relic Castle)"
 priority = "P1"
 version = "both"
-estimate = 11513   # measured from 28's end save + start.recipe (CONTINUE included): Black 10628, White 11513 (core-bwm)
+estimate = 11700   # measured from 28's end save + start.recipe (CONTINUE included): Black 10812, White 11700 (core-bwm2)
 refs = [
   "zone_event 182 object 0 gfx 0x7C (16,4) hidden by flag 0x32A -> scr 0364 script 1: @0x001D WildBattle Volcarona (637) lv 70; @0x0040 SetFlag 0x32A; caught -> @0x00A1 SetFlag 0x15C",
   "zone_event 176 warp 1 (0,7) -> zone 181 warp 1 (12,7); zone_event 181 object 0 gfx 0xBD (6,2) hidden by flag 0x329 -> scr 0362 script 1 (Ryoku: msg 189 #0-#3, TM04 through CallStd 2805 @0x0128, @0x0588 SetFlag 0x329); zone_event 181 warp 2 (6,1) -> zone 182 warp 0",
   "zone_event 182 warp 0 (16,27) -> zone 181 warp 2; zones 160-190 (Relic Castle); black/25 refs: the sand pits 161 -> 162 -> 163 -> 164 -> 165",
   "scr 0866 @0x041A-@0x043D (game clear): flag 0x32A cleared unless 0x15C (an uncaught Volcarona returns after the next clear)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 10628, White 11513 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). No flag gates zone 182's Volcarona (only its own hide flag), so it is not post-game in the scripts; chained from 28 (shared, its bag has the Master Ball first). The sage Ryoku (zone_event 181 object 0) stands on the stairs down (warp 2 (6,1)) until talked to: scr 0362 gives TM04, steps aside and sets his hide flag 0x329. The recipe starts in zone 176 by the door to 181: set-location keeps the saved zone's objects, so 181 and 182 are entered by their warps, which load their own (the sand pits from the entrance, zones 160-176, are not played). Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text."
+notes = "Measured from the start save (CONTINUE included): Black 10812, White 11700 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). No flag gates zone 182's Volcarona (only its own hide flag), so it is not post-game in the scripts; chained from 28 (shared, its bag has the Master Ball first). The sage Ryoku (zone_event 181 object 0) stands on the stairs down (warp 2 (6,1)) until talked to: scr 0362 gives TM04, steps aside and sets his hide flag 0x329. The recipe starts in zone 176 by the door to 181: set-location keeps the saved zone's objects, so 181 and 182 are entered by their warps, which load their own (the sand pits from the entrance, zones 160-176, are not played). Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text."
 
 [start]
 from = "28-route10-cheren-victory-road"
 recipe = "start.recipe"
 
 [run]
-frames = 17500
+frames = 18000
 
 [[step]]
 do = "moves"
@@ -106,12 +106,17 @@ gap = 60
 note = "USE"
 
 [[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the Master Ball's throw and shakes run without input; the catch's Pokedex message then waits"
+
+[[step]]
 do = "press"
 keys = "b"
 until = "in_battle=0"
 times = 80
 gap = 30
-shot = "caught"
 note = "the catch; B declines the nickname; the full party sends it to the Box"
 
 [[step]]

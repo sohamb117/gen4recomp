@@ -4,20 +4,20 @@
 title = "Castelia Gate (Bianca) and Route 4 (Cheren) to Nimbasa"
 priority = "P0"
 version = "both"
-estimate = 34342
+estimate = 38077
 refs = [
   "zone_event 51 trigger 0 (1,9) var 0x40AC == 1 -> scr 0102 script 4 (MessageGender msg 56 #0/#1)",
   "scr 0102 @0x02A5/@0x02E7/@0x0316 TrainerBattle trdata #509/#507/#508 (Bianca: Herdier, monkey, Munna 18, starter 20); @0x044E SetVar 0x40AC 2",
   "zone_event 326 trigger 1 (427,585) var 0x409C == 1 -> scr 0652 script 6 (msg 358 #4); @0x032F/@0x0371/@0x03A0 TrainerBattle trdata #405/#403/#404 (Cheren: Pidove, Liepard, monkey 20, starter 22); @0x054C SetVar 0x409C 2",
   "zone_event 326 trigger 0 (430,564) var 0x409C == 0 -> scr 0652 script 2 (the road closed before the Insect Badge)",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 34342, White 34147 frames on the core of 2026-10-08 (main 21cf05779, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30."
+notes = "Measured from the previous end save (CONTINUE included): Black 33737, White 38077 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Castelia's Pokemon Center is on the waterfront rails (zone 41 behind rail warp 10): rail right to x 67, then UP. From Castelia's Gym street (zone 31) north: the avenue (zone 30) is a rail map (bw_script: its warps are rail positions); probe walk on the core: hold UP from 31 (15,18) runs into 30 and stops at (3,8), RIGHT runs east along z 8, and UP from x 13..17 enters zone 32 at (13..17,58); from x 9 or 20+ UP stays on 30."
 
 [start]
 from = "prev"
 
 [run]
-frames = 52000
+frames = 57500
 
 [[step]]
 do = "rail"
@@ -202,10 +202,10 @@ note = "zone_event 51 trigger 0 (1..7,9) 0x40AC == 1 -> scr 0102 script 4: Bianc
 
 [[step]]
 do = "advance_text"
-shot = "bianca-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "bianca-battle"
 note = "Bianca, trdata #507/#508/#509 by 0x4030 (scr 0102 @0x02A5/@0x02E7/@0x0316)"
 
 [[step]]
@@ -240,10 +240,10 @@ note = "zone_event 326 trigger 1 (427..433,585) 0x409C == 1 -> scr 0652 script 6
 
 [[step]]
 do = "advance_text"
-shot = "cheren-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "cheren-battle"
 note = "Cheren, trdata #403/#404/#405 by 0x4030 (scr 0652 @0x032F/@0x0371/@0x03A0)"
 
 [[step]]

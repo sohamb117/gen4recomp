@@ -4,7 +4,7 @@
 title = "N's Castle (Black): Reshiram, N, Ghetsis and the credits"
 priority = "P0"
 version = "black"
-estimate = 60256
+estimate = 65799
 refs = [
   "zone_event 278 triggers 0-3 (14,47)/(14,42) on var 0x40B6 0/1/3/5 -> scr 0556 scripts 2/3/4/16; script 3 @0x0342 SetVar 0x40B6 2 (N calls his dragon; the stone answers)",
   "scr 0556 script 8 (talking to the legendary): @0x0CDC unless var 0x8020 == 21 (Black) -> @0x0CFA WildBattle Reshiram (643) lv 50 / L_0D08 (White) @0x0D13 WildBattle Zekrom (644) lv 50; @0x0B30 SetVar 0x40B6 3; @0x0B49 L_187E: a full party sends it to the Box, then msg 301 #101-#105 offer the swap",
@@ -13,14 +13,14 @@ refs = [
   "scr 0866 @0x0457 SetVar 0x40A2 3 (the game clear), then the credits; the game saves itself and resets (OS_ResetSystem)",
   "flag 0x133: the legendary caught (scr 0556 @0x0D55)",
 ]
-notes = "Measured from the chain's 31 end save (CONTINUE included) to the game's own OS_ResetSystem: Black 60256 frames on the core of 2026-10-09 (main with the armrec VRAM overlap fix, instant text). Route from scouting. No boost: 29's (Darmanitan and Sawk 85, the rest 78-80) is more than the throne room needs (scouting won with Darmanitan 70, Sawk 65, the rest 60). One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits."
+notes = "Measured from the chain's 31 end save (CONTINUE included) to the game's own OS_ResetSystem: Black 65799 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Route from scouting. No boost: 29's (Darmanitan and Sawk 85, the rest 78-80) is more than the throne room needs (scouting won with Darmanitan 70, Sawk 65, the rest 60). One uninterrupted script chain (scr 0556) runs from talking to the legendary through the capture, N's battle, Ghetsis's battle and N's farewell to the ending, so the story's last milestone is a single one per version: 0x40B6 = 5 is never seen in the field, and the old 33-ghetsis-ending is folded in here (docs/BW_PLAN.md). The run ends with wait_reset; [expect] reads the save the game writes after the credits."
 
 [start]
 from = "prev"
 
 [run]
 save = "none"
-frames = 90500
+frames = 99000
 
 [[step]]
 do = "walk_to"
@@ -96,12 +96,17 @@ gap = 60
 note = "USE"
 
 [[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the Master Ball's throw and shakes run without input; the catch's Pokedex message then waits"
+
+[[step]]
 do = "press"
 keys = "b"
 until = "map_id=278"
 times = 80
 gap = 30
-shot = "caught"
 note = "the catch; B declines the nickname"
 
 [[step]]
@@ -147,7 +152,7 @@ note = "to N's battle"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "n-battle"
 note = "N (trdata #587 Black / #586 White)"
 
 [[step]]
@@ -156,7 +161,7 @@ note = "script 15: 0x40B6 5, 0x40A2 2; Ghetsis"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "ghetsis-battle"
 note = "Ghetsis (trdata #232)"
 
 [[step]]

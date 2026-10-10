@@ -5,7 +5,7 @@
 title = "HM05 Waterfall: Route 18's item ball and Lostlorn Forest's waterfall"
 priority = "P0"
 version = "both"
-estimate = 19471   # measured from 22's end save + start.recipe (CONTINUE included): Black 19471, White 16591 (core-bwm)
+estimate = 22098   # measured from 22's end save + start.recipe (CONTINUE included): Black 18044, White 22098 (core-bwm2)
 refs = [
   "zone_event 387 object 11 gfx 0x6E (613,753) y 0 hidden by flag 0x4CA -> script id 7278 -> scr 0864 script 279: @0x210C var 0x800C = 0x1A8 (HM05), @0x2118 Call script_307 (the item ball pickup: sets the object's hide flag)",
   "zone_event 387 warp 0 (636,737) -> zone 388 (the Route 18 house); zone_event 388 warp 0 (3..5,10) -> zone 387 warp 0",
@@ -14,14 +14,14 @@ refs = [
   "scr 0867 script 7 (script id 10006, run by the field facing a waterfall): @0x0377 Cmd116 var 0x8010, 0x7F (Waterfall), msg 280 #23 'It's a large waterfall. Would you like to use Waterfall?' YES/NO, @0x03E4 msg 280 #24 'used Waterfall!'",
   "scr 0867 script 3 (script id 10002, run facing water): @0x019E Cmd116 var 0x8010, 0x39 (Surf), msg 280 #13 YES/NO",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 19471, White 16591 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). No NPC gives HM05: the only HM05 in the scripts is that item ball. The waterfall (scouting, the probe's tile bytes): Lostlorn Forest's river along z 48 is water 0x3F at x 15..17 (low, height 0) and x 19..22 (high, height 72, up to the pool at (22..25,40..41)), split by the falls, attribute 0x40 (collision bit) at (18,47..49); A facing (18,48) from the water at (17,48) runs scr 0867 script 7, and YES climbs to (19,48). The low river is surfed onto from (16,46) over the bank 0x44 at (16,47). The Route 18 house start (a location line) makes Route 18 load its own objects when the run walks out; a Fly carrier crosses from Route 18 to Nimbasa. The trainers on Route 16 (Backpackers, trdata #442/#443) and wild Pokemon on Route 18 are fought on the way. The recipe swaps Blitzle (slot 2) for a Surf + Waterfall carrier and Patrat (slot 3) for 25's Fly carrier."
+notes = "Measured from the start save (CONTINUE included): Black 18044, White 22098 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). No NPC gives HM05: the only HM05 in the scripts is that item ball. The waterfall (scouting, the probe's tile bytes): Lostlorn Forest's river along z 48 is water 0x3F at x 15..17 (low, height 0) and x 19..22 (high, height 72, up to the pool at (22..25,40..41)), split by the falls, attribute 0x40 (collision bit) at (18,47..49); A facing (18,48) from the water at (17,48) runs scr 0867 script 7, and YES climbs to (19,48). The low river is surfed onto from (16,46) over the bank 0x44 at (16,47). The Route 18 house start (a location line) makes Route 18 load its own objects when the run walks out; a Fly carrier crosses from Route 18 to Nimbasa. The trainers on Route 16 (Backpackers, trdata #442/#443) and wild Pokemon on Route 18 are fought on the way. The recipe swaps Blitzle (slot 2) for a Surf + Waterfall carrier and Patrat (slot 3) for 25's Fly carrier."
 
 [start]
 from = "22-twist-mountain-cheren-icirrus"
 recipe = "start.recipe"
 
 [run]
-frames = 29500
+frames = 33500
 
 [[step]]
 do = "moves"
@@ -39,7 +39,9 @@ do = "wait_field"
 [[step]]
 do = "talk_to"
 id = 11
-note = "the item ball at (613,753): scr 0864 script 279, HM05"
+on_battle = "flee"
+max = 20000
+note = "the item ball at (613,753): scr 0864 script 279, HM05. Route 18's grass is on the way and a wild battle's frames count against talk_to's budget: on core-bwm2 White met an Emolga that RUN could not leave (a 6100-frame fight), hence max 20000"
 
 [[step]]
 do = "advance_text"

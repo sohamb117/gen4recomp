@@ -1052,3 +1052,42 @@ How it was found, a method that works for any silent wait:
 - attach with `lldb -p` while np_gp is running frames, not while it is blocked reading stdin. Break on the function:
   w1 is the guest r0.
 - `peek` that work area through np_gp's serve protocol.
+
+## The chain and the side systems on the VBlank-count core (2026-10-10)
+
+With the VBlank count running, the game's luck comes out differently on build/core-bwm2: which wild Pokemon a
+walk meets, where the roamers go, and the day care's egg rolls. The whole story chain (01-32 to the credits, 34
+after them) and every side system in black/systems.txt and white/systems.txt were run again on that core, on both
+games, and pass. The estimates and `[run] frames` in the milestones are this core's measurements.
+
+What the new luck needed:
+- 26 (Black): Bianca's battle on Route 8 whited out the chained party. `boost.recipe` raises the levels only.
+- 64: a wild Emolga on Route 18 that RUN could not leave took 6100 frames, more than talk_to's budget for the
+  HM05 ball. The step now has `max = 20000`.
+- 67: one fixed delay after the Bag's USE no longer met the bite on Black. The rod is registered on Y and cast
+  again until a battle starts.
+- 68: 240 legs of 14 steps laid no egg on Black. The same number of legs at 13 steps lays one on both games.
+- 70: a lv 15 Lillipup leading lost to Route 16's lv 20 wild Pokemon, and fleeing with it let a Liepard faint it.
+  The Lillipup now sits on the bench holding an Exp. Share, and the lead Darmanitan wins the battles. Recipes gain
+  `party-item` for B/W (np_save5 set-held). The sheet ends on the party screen, which shows the Herdier.
+- 77: the money check is gone. The amount depends on the luck.
+- 85: the fixed number of fled battles before the roamer no longer holds. The new `hunt` bot paces the grass and
+  flees every battle until the one against the roamer.
+
+Harness changes found on the way:
+- auto_battle could spin without a frame on a moves cursor its key table has no way out of (the back button). It
+  now presses up and lets frames pass.
+- The bots' snaps (auto_battle's first menu, a fish on the hook) go on the contact sheet in step order, labelled by
+  their step or by the step's `snap` string, not at the end labelled by frame. A run that ends the game labels its
+  last frame `reset`.
+
+The contact sheets were also gone over for black or wrongly labelled shots:
+- A `shot` on the step that walks into a trainer battle caught the black or white transition. 22 of them became
+  `snap = "<name>-battle"` on the auto_battle after it.
+- Shots named after a person who had already left became `after-...`.
+- 06's Route 2 shot moves off the map's black fade-in, to the step after it.
+- 66 and 34 take Looker's shot during his scene, and 66 the Nuvema scene's first line.
+- 68 shows the Day-Care Man's egg offer.
+- 73 shows the seventh battle and the clerk's line.
+- 75 shows the curtain open, the performers, and the results.
+- 32, 80-85 and 87 take the "caught" shot on the Pokedex line.

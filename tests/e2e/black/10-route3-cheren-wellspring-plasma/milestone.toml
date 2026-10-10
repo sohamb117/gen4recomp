@@ -4,7 +4,7 @@
 title = "Route 3: Cheren and Team Plasma at Wellspring Cave"
 priority = "P0"
 version = "both"
-estimate = 45813
+estimate = 44430
 refs = [
   "zone 321 (Route 3) scr 0642 @0x0344 TrainerBattle trdata #18 (Twins Kumi & Amy, double); @0x036D SetVar 0x407E 1",
   "zone_event 321 trigger 0 (719,581) var 0x407E == 1 -> scr 0642 script 6 (msg 353 #6); @0x051F/@0x0569/@0x05A0 TrainerBattle trdata #56/#57/#58 (Cheren: starter 14, Purrloin 12)",
@@ -12,13 +12,13 @@ refs = [
   "zone_event 324 trigger 0 (25,4) var 0x4095 == 3 -> scr 0648 script 1; @0x0155 TrainerBattle trdata #294 (grunt: Patrat 12); @0x0464 SetVar 0x4095 4",
   "scr 0642 @0x0DF7 CallStd 2805 Heal Ball x3; @0x0E32 SetVar 0x4095 5; @0x0F68 SetVar 0x407E 2",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 43703, White 45813 frames on the core of 2026-10-08 (main 21cf05779, instant text). Route 3's grass walks flee wild battles. Which of the 0x4095 triggers fires depends on the side the player enters from; `bw_script.py events 321`."
+notes = "Measured from the previous end save (CONTINUE included): Black 43577, White 44430 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Route 3's grass walks flee wild battles. Which of the 0x4095 triggers fires depends on the side the player enters from; `bw_script.py events 321`."
 
 [start]
 from = "prev"
 
 [run]
-frames = 69000
+frames = 67000
 
 [[step]]
 do = "walk_to"
@@ -64,10 +64,10 @@ note = "zone_event 321 trigger 8 (741,563..565) 0x407E == 0 -> scr 0642 script 1
 
 [[step]]
 do = "advance_text"
-shot = "twins-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "twins-battle"
 note = "Twins Kumi & Amy, trdata #18 double (Purrloin 10 x2), scr 0642 @0x0344; @0x036D 0x407E 1"
 
 [[step]]
@@ -85,10 +85,10 @@ note = "trigger 2 (717,562..565) 0x4095 == 0 -> scr 0642 script 5: Cheren"
 
 [[step]]
 do = "advance_text"
-shot = "cheren-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "cheren-battle"
 note = "Cheren, trdata #56/#57/#58 by 0x4030 (scr 0642 @0x051F/@0x0569/@0x05A0)"
 
 [[step]]
@@ -135,10 +135,10 @@ note = "zone_event 324 trigger 0 (25,4..6) 0x4095 == 3 -> scr 0648 script 1"
 
 [[step]]
 do = "advance_text"
-shot = "grunts-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "grunts-battle"
 note = "grunt trdata #294 (Patrat 12), scr 0648 @0x0155"
 
 [[step]]

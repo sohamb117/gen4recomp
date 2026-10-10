@@ -5,7 +5,7 @@
 title = "Black City (Black)"
 priority = "P1"
 version = "black"
-estimate = 7384   # measured from 34's end save (CONTINUE included), Black, core-bwm
+estimate = 7384   # measured from 34's end save (CONTINUE included): Black 7384 (core-bwm2)
 refs = [
   "zone_event 381 warp 0 (9,23) 3x1 -> zone 378 (Route 15) warp 2 (608,425)",
   "zone_event 378 warp 0 (633,426) 1x3 -> zone 379 (Black Gate) warp 0; zone_event 379 warp 1 (15,4) 1x3 -> zone 0 (Black City) warp 0 (9,50)",
@@ -15,7 +15,7 @@ refs = [
   "scr 0758 (Black Gate, zone 379) script 2-4: MessageVersion msg 411 #1/#3/#5 (Black's lines)",
   "zone 294 (Black City, sysmsg 89 #83) and 295 (White Forest): the Entralink's copies (black/34's refs)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 7384 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Black only; White's twin is white/79-white-forest. Black City has no Black Tower in B/W (that is B2W2): its content is the market and the residents, who come through the Entralink. Measured from 34's end save (CONTINUE included): Black 7384 frames on core-bwm. Chains from 34's end (the lab on Route 15): CONTINUE there lands in the lab (the continue warp of flag 0x966 is spent by 34's run, scouted). The zone edges' warps (the lab's door mat, the gate's east side) take a held press, not walk_to onto the tile. Offline the city is not empty: the save's resident count is already >= 9 (residents stand in the city and the market, sheet), so the market's level script sets 0x273-0x276 and clears all four again (seen: none set in the end save); flags_clear pins that branch. Neither the city nor the gate records anything; the owner's welcome (flag 0x9A, clear in 34's end save) is the scripts' record of the visit."
+notes = "Measured from the start save (CONTINUE included): Black 7384 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Black only; White's twin is white/79-white-forest. Black City has no Black Tower in B/W (that is B2W2): its content is the market and the residents, who come through the Entralink. Measured from 34's end save (CONTINUE included): Black 7384 frames on core-bwm. Chains from 34's end (the lab on Route 15): CONTINUE there lands in the lab (the continue warp of flag 0x966 is spent by 34's run, scouted). The zone edges' warps (the lab's door mat, the gate's east side) take a held press, not walk_to onto the tile. Offline the city is not empty: the save's resident count is already >= 9 (residents stand in the city and the market, sheet), so the market's level script sets 0x273-0x276 and clears all four again (seen: none set in the end save); flags_clear pins that branch. Neither the city nor the gate records anything; the owner's welcome (flag 0x9A, clear in 34's end save) is the scripts' record of the visit."
 
 [start]
 from = "34-postgame-poke-transfer-lab"

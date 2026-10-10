@@ -4,13 +4,13 @@
 title = "Terrakion (Trial Chamber)"
 priority = "P1"
 version = "both"
-estimate = 9085   # measured from 80's end save + start.recipe (CONTINUE included): Black 8985, White 9085 (core-bwm)
+estimate = 9269   # measured from 80's end save + start.recipe (CONTINUE included): Black 9169, White 9269 (core-bwm2)
 refs = [
   "zone_event 226 object 2 gfx 0xCE (5,12) hidden by flag 0x28C (scr 0670 @0x04DE, 80); zone_event 226 warp 3 (5,11) -> zone 229 warp 0 (5,9)",
   "zone_event 229 object 0 gfx 0x74 (5,4) hidden by flag 0x28A -> scr 0458 script 1: @0x001F WildBattle Terrakion (639) lv 42; @0x003E SetFlag 0x28A; result 0 (caught) -> @0x0097 SetFlag 0xA7",
   "zone_event 226 warps 0/1 (13,22)/(23,22) -> zone 214 warps 1/5 (Victory Road outdoors, a rail map: black/28's refs)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 8985, White 9085 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Chained from 80 (the rock needs Cobalion's flag, which no recipe can set). The recipe puts the player on the rock's tile, freed by 0x28C, below the chamber's mouth (Victory Road's outdoors are rails), and refills the Master Ball 80 threw."
+notes = "Measured from the start save (CONTINUE included): Black 9169, White 9269 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Chained from 80 (the rock needs Cobalion's flag, which no recipe can set). The recipe puts the player on the rock's tile, freed by 0x28C, below the chamber's mouth (Victory Road's outdoors are rails), and refills the Master Ball 80 threw."
 
 [start]
 from = "80-legendary-cobalion"
@@ -74,12 +74,17 @@ gap = 60
 note = "USE"
 
 [[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the Master Ball's throw and shakes run without input; the catch's Pokedex message then waits"
+
+[[step]]
 do = "press"
 keys = "b"
 until = "in_battle=0"
 times = 80
 gap = 30
-shot = "caught"
 note = "the catch; B declines the nickname; the full party sends it to the Box"
 
 [[step]]

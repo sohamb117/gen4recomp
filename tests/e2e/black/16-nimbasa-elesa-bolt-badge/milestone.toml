@@ -3,18 +3,18 @@
 title = "Nimbasa Gym: Elesa's Bolt Badge"
 priority = "P0"
 version = "both"
-estimate = 33876
+estimate = 34228
 refs = [
   "scr 0126 @0x0362 msg 68 #16 (the switches change the roller coaster's path)",
   "scr 0126 @0x019A TrainerBattle trdata #23 (Elesa: Emolga 25 x2, Zebstrika 27); @0x01CF GiveBadge 3 (Bolt); @0x0239 CallStd 2805 TM72; @0x025D SetVar 0x4093 1; @0x0277 SetFlag 0x974",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 33614, White 33876 frames on the core of 2026-10-08 (main 21cf05779, instant text). The Gym runs twice: the four trainers, out by car 3 to heal, then back (the switches reset on entry). The Gym's roller-coaster cars (overlay 39) run all the time; a car is boarded with UP on its station tile while it is parked there, and left at the next stop by holding DOWN; floor switches 0-2 reroute cars 0-2 (Cmd180 toggles car k's route between 2k and 2k+1). The route came from scouting. Emolga is Electric/Flying: Rock moves (Darmanitan's Rock Tomb)."
+notes = "Measured from the previous end save (CONTINUE included): Black 34228, White 33430 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). The Gym runs twice: the four trainers, out by car 3 to heal, then back (the switches reset on entry). The Gym's roller-coaster cars (overlay 39) run all the time; a car is boarded with UP on its station tile while it is parked there, and left at the next stop by holding DOWN; floor switches 0-2 reroute cars 0-2 (Cmd180 toggles car k's route between 2k and 2k+1). The route came from scouting. Emolga is Electric/Flying: Rock moves (Darmanitan's Rock Tomb)."
 
 [start]
 from = "prev"
 
 [run]
-frames = 51000
+frames = 51500
 
 [[step]]
 do = "walk_to"
@@ -481,10 +481,10 @@ note = "Elesa (zone_event 63 object 5 at (28,4)) -> scr 0126 script 1"
 
 [[step]]
 do = "advance_text"
-shot = "elesa-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "elesa-battle"
 note = "Elesa, trdata #23 (Emolga 25 x2, Zebstrika 27), scr 0126 @0x019A"
 
 [[step]]

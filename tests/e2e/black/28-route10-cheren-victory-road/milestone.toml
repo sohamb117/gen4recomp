@@ -3,7 +3,7 @@
 title = "Route 10 (Cheren), the Badge Check Gates and Victory Road"
 priority = "P0"
 version = "both"
-estimate = 79370
+estimate = 79788
 refs = [
   "zone_event 355 trigger 0 (477,117) var 0x40B8 == 3 -> scr 0710 script 1; @0x0125/@0x016B/@0x019E TrainerBattle trdata #588/#589/#590 (Cheren: Unfezant, Liepard, monkey 43, starter 45); @0x0237 CallStd 2805 Max Revive x2; @0x030A SetVar 0x40B8 4",
   "zones 356-363 (the Badge Check Gates): trigger (13..17,8) -> scr 0712 .. 0726: CheckBadge, Warp to the next gate (15,20); 364 warp 1 (15,3) -> zone 214 warp 14",
@@ -11,13 +11,13 @@ refs = [
   "214's rail tables in RAM (docs/BW_PLAN.md, Rails): 76 points, 65 lines; terraces at y 0, 5, 10, 15, 20, 25, 30, joined by the caves (up) and the cliff slides (down)",
   "caves (zone_event warps): 215 w1 (16,24) -> 216 w0; 216 w1 (5,18) -> 214 w16; 220 w1 (3,16) -> 219 w0; 219 w2 (7,4) -> 221 w1; 221 w0 (8,10) -> 214 w13; 223 w1 (11,13) -> 224 w2; 224 w1 (13,6) -> 225 w1; 225 w2 (7,4) -> 226 w2; 226 w1 (23,22) -> 214 w5; 227 w1 (12,12) -> 228 w2; 228 w0 (9,10) -> 214 w18",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 63767, White 79370 frames on core-bwm (main 61a3cd008d, the chain's real 27 ends). Victory Road's outdoor zone 214 is a rail map: the rail bot's holds stop on exact probe positions found by reading the player's rail state (MMDL +0x98 line, +0x9C side and front) against the rail tables; a cliff slide is a down-hold past a terrace's edge at a slide point (line 15 front 2; line 57 front 0). Rail holds fight the trainers that spot the player (on_battle = \"fight\"). The route is the walkthrough's: 215, 216, slide, 220, 219, 221, 223, 224, 225, 226, its right-hand exit, the right slide, 227, 228, the road up. No Strength or Surf: the boulders only make shortcuts. Cheren and Victory Road were won without a boost."
+notes = "Measured from the start save (CONTINUE included): Black 77223, White 79788 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Measured from the previous end save (CONTINUE included): Black 63767, White 79370 frames on core-bwm (main 61a3cd008d, the chain's real 27 ends). Victory Road's outdoor zone 214 is a rail map: the rail bot's holds stop on exact probe positions found by reading the player's rail state (MMDL +0x98 line, +0x9C side and front) against the rail tables; a cliff slide is a down-hold past a terrace's edge at a slide point (line 15 front 2; line 57 front 0). Rail holds fight the trainers that spot the player (on_battle = \"fight\"). The route is the walkthrough's: 215, 216, slide, 220, 219, 221, 223, 224, 225, 226, its right-hand exit, the right slide, 227, 228, the road up. No Strength or Surf: the boulders only make shortcuts. Cheren and Victory Road were won without a boost."
 
 [start]
 from = "prev"
 
 [run]
-frames = 119500
+frames = 120000
 
 [[step]]
 do = "walk_to"
@@ -88,12 +88,12 @@ note = "Cheren's YES/NO (msg 387 #1): A"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "cheren-battle"
 note = "Cheren, trdata #588-#590 by starter"
 
 [[step]]
 do = "advance_text"
-shot = "cheren"
+shot = "after-cheren"
 note = "Max Revive x2 (@0x0237), 0x40B8 4 (@0x030A)"
 
 [[step]]

@@ -17,7 +17,7 @@ refs = [
   "zone_event 396 warp 0 (3,11) -> zone 389 warp 3",
   "zone_event 389 level type 1: 0x4080 == 1 -> scr 0778 script 12; @0x03AD CallStd 2805 Town Map; @0x04E9 SetVar 0x4080 2; @0x04EF SetFlag 0x2A7",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 13531, White 13631 frames on the core of 2026-10-08 (main 21cf05779, instant text). Steps from bw-play2's run-ahead. A answers Juniper's nickname question YES and the keyboard's A presses name the starter AAAAAAAAAA (harmless); house and lab exits: walk onto the mat, then hold down. Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry."
+notes = "Measured from the previous end save (CONTINUE included): Black 13531, White 13631 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Steps from bw-play2's run-ahead. A answers Juniper's nickname question YES and the keyboard's A presses name the starter AAAAAAAAAA (harmless); house and lab exits: walk onto the mat, then hold down. Juniper asks YES/NO questions (nickname, scr 0792 @0x0411-@0x0454; var 0x8010); A on the default answers. Bianca's house is the door at (776,757), its scene starts on entry."
 
 [start]
 from = "prev"
@@ -125,7 +125,7 @@ map = 389
 
 [[step]]
 do = "advance_text"
-shot = "mom-town-map"
+shot = "after-mom-town-map"
 note = "389 on entry 0x4080 == 1 -> scr 0778 script 12"
 
 [expect]

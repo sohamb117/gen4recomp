@@ -5,14 +5,14 @@
 title = "TV programs"
 priority = "P2"
 version = "both"
-estimate = 6381   # measured from 34's end save + start.recipe (CONTINUE included), Black, core-bwm
+estimate = 6481   # measured from 34's end save + start.recipe (CONTINUE included): Black 6397, White 6481 (core-bwm2)
 refs = [
   "scr 0898 script 1 (script id 10520, text 462): @0x0012 Cmd23A 0x17, 1; @0x001E flag 0x960 -> var 0x8021 0/1; @0x0043 Cmd23D var 0x8021, var 0x8020 [INFERENCE: the program pick]; @0x004F MessageSystem var 0x8020",
   "msg 462 #133 'Eyes on Unova', #166-#169 'Unova News' (the programs)",
   "zone_event 54 object 3 gfx 0x14 (3,3) -> scr 0108 script 4: msg 59 #10 'It's difficult to watch TV from here.' (the house's TV); zone_event 34 warp 2 (7,32) -> zone 54 warp 0",
   "scr 0782 script 2 (the player's room, zone 391): msg 430 #60 'a flat-screen television that Dad bought!' (no program)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 6381, White 6489 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). P2 (planned P1): a program is text only; its one write, Cmd23A 0x17, 1 (a record count [INFERENCE]), is not in the save dump, so [expect] is the room and the tile before the TV, and the proof is the sheet's 'program' shot (scouted on Black: 'The Number One \"Struggle\" Trainer!', then 'According to our independent research, Nuvema Town's AAAAAAA has,' -- a post-clear program about the player). No bg event names script id 10520: the TV (the screen on the cabinet north of the two seated viewers, objects 1/2 at (11,5)/(12,5)) runs it from its tile, faced from (12,3) with A. Starts from 34's end (post-game: flag 0x960 picks the post-clear list, var 0x8021 1): 13's end save is in Burgh's Gym (zone 29, the honey walls) and a set location from it hung the port at boot (np_gp DEFECT hang frame 5284 seed 0: run_frame did not return in 30s), where 34's (the Poke Transfer Lab) boots."
+notes = "Measured from the start save (CONTINUE included): Black 6397, White 6481 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). P2 (planned P1): a program is text only; its one write, Cmd23A 0x17, 1 (a record count [INFERENCE]), is not in the save dump, so [expect] is the room and the tile before the TV, and the proof is the sheet's 'program' shot (scouted on Black: 'The Number One \"Struggle\" Trainer!', then 'According to our independent research, Nuvema Town's AAAAAAA has,' -- a post-clear program about the player). No bg event names script id 10520: the TV (the screen on the cabinet north of the two seated viewers, objects 1/2 at (11,5)/(12,5)) runs it from its tile, faced from (12,3) with A. Starts from 34's end (post-game: flag 0x960 picks the post-clear list, var 0x8021 1): 13's end save is in Burgh's Gym (zone 29, the honey walls) and a set location from it hung the port at boot (np_gp DEFECT hang frame 5284 seed 0: run_frame did not return in 30s), where 34's (the Poke Transfer Lab) boots."
 
 [start]
 from = "34-postgame-poke-transfer-lab"

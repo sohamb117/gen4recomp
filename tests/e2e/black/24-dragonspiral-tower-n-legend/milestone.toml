@@ -4,7 +4,7 @@
 title = "Dragonspiral Tower: N and the legendary dragon"
 priority = "P0"
 version = "both"
-estimate = 47908
+estimate = 48537
 refs = [
   "zone_event 205 trigger 0 (177,146) var 0x40A7 == 1 -> scr 0410 script 1 (Cedric); @0x057B CallStd 2805 Old Gateau; @0x05C5 SetVar 0x40A7 2; @0x05CB SetVar 0x4097 5",
   "zone_event 207 trigger 0 (24,2) 0x40A7 == 2 -> scr 0414 (@0x0064 SetVar 3); zone_event 208 trigger 0 (14,24) == 3 -> scr 0416 (@0x006A SetVar 4); zone_event 210 triggers (21,14)/(22,14) == 5/4 -> scr 0420 (@0x0073/@0x00C4 SetVar 5/6)",
@@ -12,13 +12,13 @@ refs = [
   "zone_event 213 trigger 0 (16,21) var 0x40A7 == 8 -> scr 0426 script 1 (N, msg 221 #0); @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205 (179,146)",
   "scr 0410 @0x02D0 SetVar 0x409D 1 (Cedric: on to the Relic Castle)",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 47908, White 47439 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Route from scouting: 209 and 211 are rail maps (rail holds and exact presses; 211's from its rail tables in RAM). The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White."
+notes = "Measured from the previous end save (CONTINUE included): Black 46448, White 48537 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Route from scouting: 209 and 211 are rail maps (rail holds and exact presses; 211's from its rail tables in RAM). The dragon's sprite follows the version through var 0x4020 (scr 0426 @0x0038/@0x0044), no GetVersion branch: the dir serves White."
 
 [start]
 from = "prev"
 
 [run]
-frames = 72000
+frames = 73000
 
 [[step]]
 do = "walk_to"
@@ -472,7 +472,7 @@ note = "scr 0426 @0x056D SetVar 0x40A7 9; @0x059B Warp zone 205"
 
 [[step]]
 do = "advance_text"
-shot = "alder-205"
+shot = "after-alder-205"
 note = "scr 0410 script 4 (Alder): 0x409D 1"
 
 [[step]]

@@ -5,7 +5,7 @@
 title = "Cobalion (Guidance Chamber)"
 priority = "P1"
 version = "both"
-estimate = 15494   # measured from 28's end save + start.recipe (CONTINUE included): Black 13336, White 15494 (core-bwm)
+estimate = 14639   # measured from 28's end save + start.recipe (CONTINUE included): Black 13222, White 14639 (core-bwm2)
 refs = [
   "zone_event 331 warp 1 (156,361) -> zone 333; zone_event 333 warp 1 (13,16) -> zone 334; zone_event 334 warp 1 (17,12) -> zone 335 warp 0 (16,27)",
   "boulders (script id 10000, Strength): zone_event 333 objects 0-2, 334 objects 0-2, 335 objects 0/1 (12,20)/(15,15)",
@@ -14,14 +14,14 @@ refs = [
   "flag 0x28C hides zone_event 226 object 2 gfx 0xCE (5,12) (Victory Road, before the Trial Chamber); 0x28D hides zone_event 155 objects 32-35 (106..109,28) (Pinwheel Forest, before the Rumination Field)",
   "scr 0866 @0x0330/@0x0353 (game clear): flag 0x289 cleared again unless caught (a beaten Cobalion returns)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 13336, White 15494 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Cobalion unlocks the other two (refs): 81 and 82 chain from here. Chained from 28 (shared; eight badges for Victory Road in 81) rather than 32; it is reachable from 22 on (Surf, Strength). Cmd17C's result 0 = caught [INFERENCE: the branch that sets 0xA6, which the game clear's respawn checks]. The full party sends Cobalion to the Box. The recipe swaps in a Strength carrier and starts on 2F below the chamber's stairs: set-location keeps the saved zone's objects (zone 136's), so the chamber is entered by its warp, which loads its own (Route 6's water and the floors below, Surf and boulders, are not played). In the chamber walk_to's grid shows no heights: the route from the hiker to the boulder above the hole is the one an explorer with the game as the oracle found (scouting), and the pushed boulder fills the hole (it lands at (15,17)). Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text; 28's bag has the Master Ball first."
+notes = "Measured from the start save (CONTINUE included): Black 13222, White 14639 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Cobalion unlocks the other two (refs): 81 and 82 chain from here. Chained from 28 (shared; eight badges for Victory Road in 81) rather than 32; it is reachable from 22 on (Surf, Strength). Cmd17C's result 0 = caught [INFERENCE: the branch that sets 0xA6, which the game clear's respawn checks]. The full party sends Cobalion to the Box. The recipe swaps in a Strength carrier and starts on 2F below the chamber's stairs: set-location keeps the saved zone's objects (zone 136's), so the chamber is entered by its warp, which loads its own (Route 6's water and the floors below, Surf and boulders, are not played). In the chamber walk_to's grid shows no heights: the route from the hiker to the boulder above the hole is the one an explorer with the game as the oracle found (scouting), and the pushed boulder fills the hole (it lands at (15,17)). Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text; 28's bag has the Master Ball first."
 
 [start]
 from = "28-route10-cheren-victory-road"
 recipe = "start.recipe"
 
 [run]
-frames = 23500
+frames = 22000
 
 [[step]]
 do = "moves"
@@ -123,12 +123,17 @@ gap = 60
 note = "USE"
 
 [[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the Master Ball's throw and shakes run without input; the catch's Pokedex message then waits"
+
+[[step]]
 do = "press"
 keys = "b"
 until = "in_battle=0"
 times = 80
 gap = 30
-shot = "caught"
 note = "the catch; B declines the nickname; the full party sends it to the Box"
 
 [[step]]

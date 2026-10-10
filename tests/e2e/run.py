@@ -85,6 +85,7 @@ STEP_KEYS = {
     "talk_to": {"id", "on_battle", "on_text", "move", "surf", "hm", "avoid"},
     "heal": {"x", "z", "on_battle", "map", "surf", "hm"},
     "grind": {"x", "z", "level", "heal", "move"},
+    "hunt": {"x", "z", "species"},
     "fly": {"map", "slot", "block", "start", "dig"},
     "steps": {"route", "run", "on_battle", "on_text", "move", "face", "interact"},
     "moves": {"dirs", "on_battle", "on_text", "move", "face", "interact"},
@@ -104,7 +105,7 @@ STEP_KEYS = {
 }
 STEP_REQUIRED = {"press": {"keys"}, "drag": {"from", "to"}, "push": {"dir"}, "smash": {"dir"}, "repeat": {"until", "steps"}, "walk_onto": {"behavior"}, "tap": {"x", "y"}, "wait_map": {"map"}, "schedule": {"file"}, "slide": {"dirs"},
                  "walk_to": {"x", "z"}, "talk_to": {"id"}, "walk_to_door": {"pattern", "doors"},
-                 "heal": {"x", "z"}, "grind": {"x", "z", "level"}, "fly": {"map"},
+                 "heal": {"x", "z"}, "grind": {"x", "z", "level"}, "hunt": {"x", "z", "species"}, "fly": {"map"},
                  "steps": {"route"}, "moves": {"dirs"}, "hatch": {"x", "z"}, "field_move": {"move"},
                  "pace": {"x", "z", "until"}, "dump": {"expr"},
                  "roam_hunt": {"species", "a", "b"}}
@@ -357,13 +358,14 @@ def recipe_env(path, game):
 # set-level); `party-heal` restores the whole party as a Pokemon Center does (np_save4 heal-party), standing in for
 # the Full Restores and Revives a player uses where no Center is reachable (the Elite Four's rooms), since no bot
 # uses items. B/W edits the members its save holds with np_save5: `party-level SLOT LEVEL` (set-level, as HG/SS's),
-# and `party-set SLOT SPECIES LEVEL [MOVE...]` (set-mon) replaces that member with a Pokemon made as add-mon makes
-# one, carrying those moves: an HM carrier (Fly, Surf, Strength) for a full party, which add-mon cannot grow.
+# `party-set SLOT SPECIES LEVEL [MOVE...]` (set-mon) replaces that member with a Pokemon made as add-mon makes
+# one, carrying those moves: an HM carrier (Fly, Surf, Strength) for a full party, which add-mon cannot grow; and
+# `party-item SLOT ITEM` (set-held, after the other edits) gives that member a held item (an Exp. Share).
 # Nothing else is edited.
 ADDMON_BOOST_VERBS = {"party", "party-move"}
 HGSS_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-heal"}
 # np_save5 set-level / set-mon: a full party (6 from B/W milestone 13 on) is strengthened in place
-BW_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-set"}
+BW_BOOST_VERBS = ADDMON_BOOST_VERBS | {"party-level", "party-set", "party-item"}
 # A B/W or HG/SS side system's [start] recipe (not a boost) may also place the player and stock the bag. B/W:
 # `location ZONE X Y Z` (np_save5 set-location: just outside a door, since a zone keeps the saved zone's objects and
 # a gimmick zone loads its overlay only when entered) and `item POCKET SLOT ITEM QTY` (np_save5 set-item; POCKET by
@@ -399,7 +401,7 @@ def addmon_boost(game, inline, sav, log, recipe=False):
     if out.returncode != 0:
         raise HarnessError("boost: the save tool cannot read %s" % sav)
     first = len(json.loads(out.stdout).get("party", []))
-    adds, sets, levels, replaces, heal, places = [], [], [], [], False, []
+    adds, sets, levels, replaces, heal, places, helds = [], [], [], [], False, [], []
     allowed = recipe_verbs(game) if recipe else addmon_boost_verbs(game)
     for verb, *args in ops:
         if verb not in allowed:
@@ -422,6 +424,11 @@ def addmon_boost(game, inline, sav, log, recipe=False):
                 raise HarnessError("boost: party-level %d %d: not a slot the save's party holds, or no such level"
                                    % (slot, level))
             levels.append((slot, level))
+            continue
+        if verb == "party-item":
+            if not 0 <= int(args[0]) < first:
+                raise HarnessError("boost: party-item %s: not a slot the save's party holds" % args[0])
+            helds.append(["set-held", str(int(args[0])), str(int(args[1]))])
             continue
         if verb == "party-set":
             slot, species, level = (int(a) for a in args[:3])
@@ -456,6 +463,13 @@ def addmon_boost(game, inline, sav, log, recipe=False):
                 raise HarnessError("recipe: %s %s failed (%s)" % (os.path.basename(game.save4[-1]), verb, log))
         for verb, *args in edits:
             cmd = game.save4 + [verb, sav, game.rom] + args
+            f.write("$ %s\n" % " ".join(cmd))
+            f.flush()
+            if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
+                raise HarnessError("boost: %s %s failed (%s)" % (os.path.basename(game.save4[-1]), verb, log))
+        for verb, *args in helds:
+            # a held item goes on after set-mon, which makes the member anew
+            cmd = game.save4 + [verb, sav] + args
             f.write("$ %s\n" % " ".join(cmd))
             f.flush()
             if subprocess.call(cmd, stdout=f, stderr=subprocess.STDOUT) != 0:
@@ -741,6 +755,21 @@ def run_milestone(game, ms, prev, args, out):
     s = None
     shots = []
     end = os.path.join(d, "end.sav")
+    seen = set()
+
+    def collect(i, step):
+        # bot snaps (auto_battle's first menu, a fish on the hook) and [shots] frames dumped during step i join the
+        # sheet in step order: a snap labelled with its step (the step's `snap` string, else its verb), a [shots]
+        # frame with its frame number
+        for path in sorted(set(glob.glob(os.path.join(d, "frame_*.ppm"))) - seen):
+            seen.add(path)
+            frame = int(os.path.basename(path)[6:-4])
+            if frame in s.shot_frames:
+                shots.append(("%d" % frame, path))
+            else:
+                name = step["snap"] if isinstance(step.get("snap"), str) else step["do"]
+                shots.append(("%d %s f%d" % (i, name, frame), path))
+
     try:
         env, start = start_save(game, ms, prev, args, out, d, res)
         extra = run.get("env", {})  # extra guest env: a table, or a list of "NAME=VALUE"
@@ -774,12 +803,14 @@ def run_milestone(game, ms, prev, args, out):
             try:
                 BOTS[step["do"]](s, step, ctx)
             except HarnessError as e:
+                collect(i, step)
                 res.steps.append((i, step["do"], s.frame - f0, "FAIL: %s" % e))
                 fail = os.path.join(d, "s%02d-fail.ppm" % i)
                 s.dump(fail)
                 shots.append(("step %d FAIL f%d" % (i, s.frame), fail))
                 raise HarnessError("step %d (%s): %s" % (i, step["do"], e))
             res.steps.append((i, step["do"], s.frame - f0, "ok"))
+            collect(i, step)
             if step.get("shot") and not s.ended:
                 path = os.path.join(d, "s%02d-%s.ppm" % (i, re.sub(r"[^\w.-]", "_", str(step["shot"]))))
                 s.dump(path)
@@ -792,7 +823,8 @@ def run_milestone(game, ms, prev, args, out):
             res.steps.append((len(res.steps) + 1, "save (end)", s.frame - f0, "ok"))
         shot = os.path.join(d, "s99-end.ppm")
         s.dump(shot)
-        shots.append(("end f%d" % s.frame, shot))
+        # a run that ended the game (wait_reset) ends on the rebooted guest's first frames, a blank screen
+        shots.append(("%s f%d" % ("reset" if s.ended else "end", s.frame), shot))
         res.frames = s.frame
         end_state = (s.map_id, None if s.ended else s.probe())
         if env.get("PC_RTC"):
@@ -816,7 +848,7 @@ def run_milestone(game, ms, prev, args, out):
         # the next milestone must not continue a failed run: it falls back to its lab recipe
         os.replace(end, os.path.join(d, "failed.sav"))
     res.seconds = time.time() - t0
-    for path in sorted(glob.glob(os.path.join(d, "frame_*.ppm"))):
+    for path in sorted(set(glob.glob(os.path.join(d, "frame_*.ppm"))) - seen):  # [shots] frames before step 1
         shots.append((os.path.basename(path)[6:-4].lstrip("0") or "0", path))
     shots = [(label, ppm_to_png(p)) for label, p in shots if os.path.isfile(p)]
     res.sheet = contact_sheet(d, ms.name, shots, gba=game.name in GBA_GAMES)

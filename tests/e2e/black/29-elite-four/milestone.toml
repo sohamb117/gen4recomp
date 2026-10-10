@@ -3,7 +3,7 @@
 title = "The Elite Four"
 priority = "P0"
 version = "both"
-estimate = 44413
+estimate = 45792
 refs = [
   "zone_event 136 trigger 0 (31,48) var 0x40A1 == 0 -> scr 0272 script 3 (msg 141 #0); @0x0260 SetVar 0x40A1 1",
   "scr 0280 @0x00D2 TrainerBattle trdata #228 (Shauntal: Cofagrigus, Jellicent, Golurk 48, Chandelure 50); @0x00C8 SetFlag 0x969; @0x038F Warp zone 137",
@@ -14,14 +14,14 @@ refs = [
   "zone_event 137: rail warps (line, front) 1 -> 140 Shauntal, 3 -> 141 Grimsley, 6 -> 143 Caitlin, 8 -> 142 Marshal; their staircase feet (23,47), (25,45), (37,45), (39,47)",
   "zone_event 136 warp 2 (18,47) -> 146 (the League's Pokemon Center); warp 1 (31..33,45) -> 137",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 44413, White 41889 frames on core-bwm (main 61a3cd008d, from 28's ends; boost.recipe). Order Shauntal, Caitlin, Grimsley, Marshal (free: the four rooms open together; Shauntal's Ghosts first, at full HP). The League's centre (137) does not let the player out between rooms and no bot uses items, so the boost carries the party through all four. Each staircase in 137 is a rail up into its room; trigger 0 (15,25) rides the lift; the win sets 0x400A 555 and trigger 1 is the warp pad back to 137. Ends in 137 with the four beaten, where 30 walks to the statue. The rematch parties (trdata #563-#566, levels 71-73) are post-game."
+notes = "Measured from the start save (CONTINUE included): Black 44626, White 45792 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Measured from the previous end save (CONTINUE included): Black 44413, White 41889 frames on core-bwm (main 61a3cd008d, from 28's ends; boost.recipe). Order Shauntal, Caitlin, Grimsley, Marshal (free: the four rooms open together; Shauntal's Ghosts first, at full HP). The League's centre (137) does not let the player out between rooms and no bot uses items, so the boost carries the party through all four. Each staircase in 137 is a rail up into its room; trigger 0 (15,25) rides the lift; the win sets 0x400A 555 and trigger 1 is the warp pad back to 137. Ends in 137 with the four beaten, where 30 walks to the statue. The rematch parties (trdata #563-#566, levels 71-73) are post-game."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 67000
+frames = 69000
 
 [[step]]
 do = "heal"
@@ -107,7 +107,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "shauntal-battle"
 note = "scr 0280 @0x00D2 TrainerBattle trdata #228 (Cofagrigus, Jellicent, Golurk 48, Chandelure 50); flag 0x969 (@0x00C8)"
 
 [[step]]
@@ -172,7 +172,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "caitlin-battle"
 note = "scr 0286 @0x00D4 TrainerBattle trdata #231 (Reuniclus, Musharna, Sigilyph 48, Gothitelle 50); flag 0x96C"
 
 [[step]]
@@ -237,7 +237,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "grimsley-battle"
 note = "scr 0282 @0x00E2 TrainerBattle trdata #230 (Scrafty, Liepard, Krookodile 48, Bisharp 50); flag 0x96A (@0x00D8)"
 
 [[step]]
@@ -302,7 +302,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "marshal-battle"
 note = "scr 0284 @0x00E2 TrainerBattle trdata #229 (Throh, Sawk, Conkeldurr 48, Mienshao 50); flag 0x96B"
 
 [[step]]

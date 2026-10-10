@@ -157,7 +157,8 @@ and how it was proven is in docs/BW_RAM.md. Differences:
   add-mon`): HM carriers, since no bot teaches an HM through the Bag. Give an added Pokemon its moves, or it has
   none and battles with Struggle. `party-level SLOT LEVEL` (`np_save5 set-level`) raises a member the save holds,
   for a full party; `party-set SLOT SPECIES LEVEL [MOVE...]` (`np_save5 set-mon`) replaces one with a Pokemon made
-  as `add-mon` makes it, carrying those moves: a Fly/Surf/Strength carrier once the party is full. A side system's
+  as `add-mon` makes it, carrying those moves: a Fly/Surf/Strength carrier once the party is full; `party-item SLOT
+  ITEM` (`np_save5 set-held`, after the other edits) gives a member a held item (70's Exp. Share). A side system's
   `[start] recipe` on a `from` save also takes `location ZONE X Y Z` (`np_save5 set-location`) and
   `item POCKET SLOT ITEM QTY` (`np_save5 set-item`; 0 items, 1 key_items, 2 tms_hms, 3 medicine, 4 berries).
 - **Boot**: CONTINUE waits for the opening movie (START at frame 5000).

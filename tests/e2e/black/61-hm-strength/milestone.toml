@@ -5,7 +5,7 @@
 title = "HM04 Strength: Nimbasa's gift and Route 16's boulder"
 priority = "P0"
 version = "both"
-estimate = 16923   # measured from 16's end save + start.recipe (CONTINUE included): Black 16923, White 13001 (core-bwm)
+estimate = 16549   # measured from 16's end save + start.recipe (CONTINUE included): Black 16549, White 12410 (core-bwm2)
 refs = [
   "zone_event 62 warp 8 (399,455) -> zone 88 warp 0; zone_event 88 warp 0 (6,10) 3x1 -> zone 62 warp 8",
   "zone_event 88 object 0 gfx 0x1E (4,3) -> scr 0176 script 1: @0x002C var 0x8000 = 0x1A7 (HM04), 0x8002 = 0x122 (the gift's flag), @0x0054 CallStd 2800 (scr 0862 script 1: give item, @0x00CA SetFlag var 0x8002)",
@@ -14,14 +14,14 @@ refs = [
   "zone_event 383 object 10 gfx 0x2003 (482,439) -> script id 10000 -> scr 0867 script 1 (boulder): @0x008D Cmd116 var 0x8010, 0x46 (Strength), msg 280 #6 YES/NO, @0x00FB SetFlag 0x964, msg 280 #10/#11",
   "other boulders (script id 10000): zone_event 152 object 13 (20,35), 319 object 2 (750,653), 208, 216, 224, 226, 231 (x4), 333-335, 346, 370, 378, 387",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 16923, White 13001 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). 16's end save is in zone 63 (the Gym); the recipe places the player outside zone 88's door and swaps Tepig (slot 4) for a Strength carrier (no bot teaches an HM from the Bag). The boulder stands in a two-wide pocket (482..483, 438..440, open south; the probe's grid in scouting), so the run pushes it north from (482,440) and ends on its old tile. Flag 0x964 is the 'Strength is active' flag the boulder script sets [INFERENCE: cleared on a zone change, so the save must be on Route 16]. The Backpackers on Route 16 (trdata #442 Peter (482,443), #443 Stephen) spot the player on the way and are fought."
+notes = "Measured from the start save (CONTINUE included): Black 16549, White 12410 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). 16's end save is in zone 63 (the Gym); the recipe places the player outside zone 88's door and swaps Tepig (slot 4) for a Strength carrier (no bot teaches an HM from the Bag). The boulder stands in a two-wide pocket (482..483, 438..440, open south; the probe's grid in scouting), so the run pushes it north from (482,440) and ends on its old tile. Flag 0x964 is the 'Strength is active' flag the boulder script sets [INFERENCE: cleared on a zone change, so the save must be on Route 16]. The Backpackers on Route 16 (trdata #442 Peter (482,443), #443 Stephen) spot the player on the way and are fought."
 
 [start]
 from = "16-nimbasa-elesa-bolt-badge"
 recipe = "start.recipe"
 
 [run]
-frames = 25500
+frames = 25000
 
 [[step]]
 do = "moves"

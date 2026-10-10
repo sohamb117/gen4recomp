@@ -4,7 +4,7 @@
 title = "The Relic Castle and the stone at Nacrene's museum"
 priority = "P0"
 version = "both"
-estimate = 57608
+estimate = 46496
 refs = [
   "Fly (the X menu's POKEMON, the Fly carrier's FLY, the town tapped on the bottom screen's map, A): Nimbasa (zone 62) at tap (130,94), Nacrene (zone 16) at tap (203,118) [from scouting: the town map takes the touch]",
   "zone_event 62 warp 0 (429..431,479) -> zone 90 (Nimbasa Gate); zone_event 90 warp 1 (4..6,14) -> zone 326 (Route 4) warp 0; zone_event 157 warp 0 (370..372,488) -> zone 159; zone_event 159 warp 1 (4,1) -> zone 158 warp 0 (82,83)",
@@ -14,14 +14,14 @@ refs = [
   "scr 0330 script 1 (Ghetsis, msg 173): @0x0200 SetVar 0x409F 1; @0x0224 Warp zone 158 (61,32); scr 0316 script 5 on arrival: @0x02A7 SetVar 0x4092 6",
   "zone_event 16 trigger 2 (640..648,586) var 0x4092 == 6 -> scr 0032 script 12 (Juniper, msg 21 #36); @0x0852 GetVersion; @0x0BF3 CallStd 2805 item 616 Light Stone (Black) / @0x0C19 item 617 Dark Stone (White); @0x0DCE SetVar 0x4092 7",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 47452, White 57608 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). The stone is the one version branch here, by item (GetVersion, scr 0032 @0x0852). The pits: only 160's warp 0, 162's lower pit and 163's (8,23) pit lead down; the others drop into dead-end regions (scouting)."
+notes = "Measured from the previous end save (CONTINUE included): Black 46496, White 44573 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). The stone is the one version branch here, by item (GetVersion, scr 0032 @0x0852). The pits: only 160's warp 0, 162's lower pit and 163's (8,23) pit lead down; the others drop into dead-end regions (scouting)."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 86500
+frames = 70000
 
 [[step]]
 do = "wait_field"

@@ -4,7 +4,7 @@
 title = "Cold Storage: Team Plasma and Ghetsis"
 priority = "P0"
 version = "both"
-estimate = 30033
+estimate = 29506
 refs = [
   "zone_event 191 trigger 0 (167,474) var 0x4090 == 0 -> scr 0382 script 1 (Cheren, msg 199 #2); @0x0109 SetVar 0x4090 1",
   "zone_event 192 level type 1: 0x408B == 0 -> scr 0384 script 1; @0x00A6 SetVar 0x408B 1; trigger 0 (6,8) 0x408B == 1 -> script 2; @0x0117 SetVar 0x408B 2",
@@ -13,13 +13,13 @@ refs = [
   "scr 0386 @0x08D3 SetVar 0x408B 8; @0x08ED SetVar 0x408F 2",
   "zone_event 96 trigger 0 (206,404) var 0x408F == 2 -> scr 0192 script 9 (Ghetsis, msg 101 #6); @0x0444 SetVar 0x408F 3",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 29790, White 30033 frames on the core of 2026-10-08 (main 21cf05779, instant text). Cold Storage's floor is ice (behavior 0x18) and its containers are layered: fixed steps routes from scouting (in over the container tops, out on the floor); the four grunts are talked to from below, by position."
+notes = "Measured from the previous end save (CONTINUE included): Black 29506, White 29376 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Cold Storage's floor is ice (behavior 0x18) and its containers are layered: fixed steps routes from scouting (in over the container tops, out on the floor); the four grunts are talked to from below, by position."
 
 [start]
 from = "prev"
 
 [run]
-frames = 45500
+frames = 44500
 
 [[step]]
 do = "walk_to"
@@ -204,7 +204,7 @@ note = "zone_event 96 trigger 0 (206,404..407) 0x408F == 2 -> scr 0192 script 9:
 [[step]]
 do = "advance_text"
 max = 12000
-shot = "ghetsis"
+shot = "after-ghetsis"
 
 [expect]
 map = 96

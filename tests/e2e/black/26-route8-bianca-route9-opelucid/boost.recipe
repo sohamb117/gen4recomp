@@ -1,0 +1,10 @@
+# Boost on 25's end save (AUTHORING.md, Boosts): party levels only, the story stays played.
+# Bianca on Route 8 (trdata #494-#496: Stoutland, her monkey and Musharna 38, her starter 40) whited out Black's
+# party on the core with the ARM7 VBlank count (the battle's luck moved); levels in place: Darmanitan 58, Pansage 42,
+# Blitzle, Unfezant (25's Fly carrier) and the starter 45, Sawk 50.
+party-level 0 58
+party-level 1 42
+party-level 2 45
+party-level 3 45
+party-level 4 45
+party-level 5 50

@@ -4,7 +4,7 @@
 title = "Fennel, the Dreamyard's Munna and Team Plasma"
 priority = "P0"
 version = "both"
-estimate = 23948
+estimate = 22805
 refs = [
   "zone_event 6 level type 1: 0x4088 == 1 -> scr 0012 script 14 (Fennel, msg 11 #0); @0x04DC SetVar 0x4088 2; @0x04E2 SetVar 0x4087 1; @0x04E8 Warp zone 9 (7,10)",
   "zone_event 9 level type 1: 0x4087 == 1 -> scr 0018 script 5; @0x0148 Warp zone 10 (11,2); @0x0156 SetVar 0x4087 2",
@@ -13,14 +13,14 @@ refs = [
   "scr 0304 @0x0777/@0x07DC TrainerBattle trdata #293/#308 (Plasma grunts: Patrat 10, Purrloin 10); @0x0B6E SetVar 0x4094 4",
   "scr 0020 @0x039A CallStd 2805 Pal Pad; @0x041D SetVar 0x4094 5; @0x0423 SetVar 0x4086 2; @0x0429 SetVar 0x4088 3",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 23948, White 22817 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds a Cut carrier for the Dreamyard tree. zone_event 6 trigger 1 (750,584) var 0x4088 == 2 -> scr 0012 script 20 sends the player back to Fennel."
+notes = "Measured from the previous end save (CONTINUE included): Black 22805, White 22271 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). boost.recipe adds a Cut carrier for the Dreamyard tree. zone_event 6 trigger 1 (750,584) var 0x4088 == 2 -> scr 0012 script 20 sends the player back to Fennel."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 36000
+frames = 34500
 
 [[step]]
 do = "walk_to"
@@ -134,10 +134,10 @@ note = "trigger 2 (26..29,14) 0x4094 == 3 -> scr 0304 script 5: Munna, Team Plas
 
 [[step]]
 do = "advance_text"
-shot = "plasma-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "plasma-battle"
 note = "grunt trdata #293 (Patrat 10), scr 0304 @0x0777"
 
 [[step]]

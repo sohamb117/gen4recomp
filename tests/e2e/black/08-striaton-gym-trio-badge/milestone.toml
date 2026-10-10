@@ -4,7 +4,7 @@
 title = "Striaton Gym: Cilan, Chili or Cress and the Trio Badge"
 priority = "P0"
 version = "both"
-estimate = 25746
+estimate = 27941
 refs = [
   "zone_event 6 warp 5 (788,586) -> zone 7 (the gym)",
   "zone_event 7 triggers 0-10 on var 0x4082 0..4 -> scr 0014 scripts 6-20 (the curtains/switches; @0x1037/@0x1091/@0x117F SetVar 0x4082 2/3/4)",
@@ -14,14 +14,14 @@ refs = [
   "scr 0014 @0x09DF/@0x0BCF/@0x0DBF GiveBadge 0 (Trio); msg 12 #20-#22",
   "scr 0014 @0x0A5D CallStd 2805 TM83; @0x0A83 SetFlag 0x21E; @0x0A8B SetVar 0x4088 1; @0x0A99 SetFlag 0x971",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 24838, White 25746 frames on the core of 2026-10-08 (main 21cf05779, instant text). boost.recipe adds Blitzle 20 (White's Cress whited out the starter and Pansage). Tepig (0x4030 1) faces Cress's Panpour: the Dreamyard's Pansage (Grass) is the counter. A loss is BlackOut (@0x09CF)."
+notes = "Measured from the previous end save (CONTINUE included): Black 24341, White 27941 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). boost.recipe adds Blitzle 20 (White's Cress whited out the starter and Pansage). Tepig (0x4030 1) faces Cress's Panpour: the Dreamyard's Pansage (Grass) is the counter. A loss is BlackOut (@0x09CF)."
 
 [start]
 from = "prev"
 boost = "boost.recipe"
 
 [run]
-frames = 39000
+frames = 42000
 
 [[step]]
 do = "heal"
@@ -104,7 +104,7 @@ do = "advance_text"
 
 [[step]]
 do = "auto_battle"
-snap = true
+snap = "cress-battle"
 note = "Cress (trdata #13: Lillipup 12, Panpour 14), mode 0 (scr 0014 @0x0982)"
 
 [[step]]

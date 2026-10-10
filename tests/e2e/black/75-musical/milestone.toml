@@ -3,14 +3,14 @@
 title = "The Pokemon Musical"
 priority = "P1"
 version = "both"
-estimate = 15000   # [INFERENCE] frames, not measured (the show never starts: notes)
+estimate = 15059   # measured from the start save (CONTINUE included): Black 14927, White 15059 (core-bwm2)
 refs = [
   "zone_event 62 warp 6 (433,433) -> zone 77 (Musical Theater) warp 0",
   "scr 0154 @0x00E9 CallStd 2805 Prop Case; @0x01D6 SetVar 0x40B3 1 (15)",
   "zone_event 77 object 0 gfx 0x2B (14,11) -> script id 10440 -> scr 0892 script 1 (reception): @0x0070 msg 286 #0 'Welcome to the Pokemon Musical! Here you can participate in a musical alone.', @0x00DF msg 286 #1, @0x00FD Cmd167 var 0x8021, 0 [INFERENCE: starts the musical]",
   "zone_event 78 (backstage) level scripts scr 0156 scripts 1/2; scr 0156 @0x081F-@0x0969 Set/ClearFlag 0x29E-0x2A2, 0x2F0-0x2F3 (the audience in zone 77: objects 1-5 hidden by 0x29E-0x2A2)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 14923, White 15055 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Blocked by a port defect (the show never starts), scouted on Black: from 15's end + start.recipe, the reception (A through msg 286 #0, Participate, the lead Darmanitan, the first show, msg 286 #1) walks the player backstage (zone 78) into the dress-up app at about frame 7470 ('Let's Dress Up Darmanitan with Props!', the Prop Case's props around the heart; keys do nothing there); OK (128,178) and 'Is this look OK?' OK (20,170) as in 15 lead back to zone 78 ('I guess everyone is ready. Let's go up on stage!'), then the show app (map_id 0 from about frame 8000): the closed red curtain with the Musical logo above, the audience below, which animates (the bottom screen's frames differ) but the curtain never opens: no change over 12000 frames of advance_text and none for A, B, X, START or taps on either screen (probes to frame 15142). The port logs nothing then (run.log: only the boot lines; np_gp reports no DEFECT). Until the show runs, the run cannot get back to the theater to save, so [expect] (the theater, zone 77) is not reached. The musical writes no var or flag the decoder shows (its results live in the musical save block, Cmd169/Cmd16B, which the save dump does not read); the audience flags 0x29E-0x2A2, 0x2F0-0x2F3 (scr 0156 script 5) are the after-show record [INFERENCE: set by the fan count after the show]."
+notes = "Measured from the start save (CONTINUE included): Black 14927, White 15059 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Blocked by a port defect (the show never starts), scouted on Black: from 15's end + start.recipe, the reception (A through msg 286 #0, Participate, the lead Darmanitan, the first show, msg 286 #1) walks the player backstage (zone 78) into the dress-up app at about frame 7470 ('Let's Dress Up Darmanitan with Props!', the Prop Case's props around the heart; keys do nothing there); OK (128,178) and 'Is this look OK?' OK (20,170) as in 15 lead back to zone 78 ('I guess everyone is ready. Let's go up on stage!'), then the show app (map_id 0 from about frame 8000): the closed red curtain with the Musical logo above, the audience below, which animates (the bottom screen's frames differ) but the curtain never opens: no change over 12000 frames of advance_text and none for A, B, X, START or taps on either screen (probes to frame 15142). The port logs nothing then (run.log: only the boot lines; np_gp reports no DEFECT). Until the show runs, the run cannot get back to the theater to save, so [expect] (the theater, zone 77) is not reached. The musical writes no var or flag the decoder shows (its results live in the musical save block, Cmd169/Cmd16B, which the save dump does not read); the audience flags 0x29E-0x2A2, 0x2F0-0x2F3 (scr 0156 script 5) are the after-show record [INFERENCE: set by the fan count after the show]."
 
 [start]
 from = "15-nimbasa-musical-ferris-wheel-n"
@@ -74,7 +74,33 @@ note = "'Is this look OK?' OK"
 [[step]]
 do = "wait_frames"
 n = 200
-shot = "show"
+shot = "backstage"
+
+[[step]]
+do = "advance_text"
+map = 0
+max = 3000
+note = "up on stage: the show app (map 0)"
+
+[[step]]
+do = "wait_frames"
+n = 900
+shot = "curtain-open"
+
+[[step]]
+do = "wait_frames"
+n = 1600
+shot = "performing"
+
+[[step]]
+do = "wait_frames"
+n = 2000
+shot = "performing-2"
+
+[[step]]
+do = "wait_frames"
+n = 1150
+shot = "results"
 
 [[step]]
 do = "advance_text"

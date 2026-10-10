@@ -4,7 +4,7 @@
 title = "Day Care: two deposits with the lady and an egg from the man"
 priority = "P0"
 version = "both"
-estimate = 26120
+estimate = 39158
 refs = [
   "zone_event 321 warp 2 (749,555) -> zone 323 (the Day Care); zone_event 323 warps 0-2 (5..7,13) -> zone 321 warp 2",
   "zone_event 323 object 0 gfx 0x1D (6,7) -> script id 2201 -> scr 0856 script 2 (the Day-Care Lady): @0x0301 SetFlag 0x70 on the first talk (msg 426 #12), the menu Cmd0B2/Cmd0AF, L_04A1 / L_0884 deposit and withdraw",
@@ -12,14 +12,14 @@ refs = [
   "zone_event 321 object 0 gfx 0x1C (748,556) hidden by flag 0x271 -> script id 2200 -> scr 0856 script 1 (the Day-Care Man): var 0x8026 == 1 (an egg) -> msg 426 #6, YES/NO, @0x0146 Cmd0EC (the egg into the party), @0x0151 msg 426 #7",
   "scr 0124 (Nimbasa, 15) @0x0401 ClearFlag 0x271 (the man on Route 3), @0x0405 SetFlag 0x99 (two slots); msg 67 #8 'Day-Care Man: I have a Day Care on Route 3!'",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 26120, White 25674 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Before 15 the Day Care holds one Pokemon and the man is not on Route 3 (refs), so it chains from 16. Deposits: the male Cut carrier Patrat (slot 3) and a female Patrat the recipe puts in Tepig's slot (start.recipe: the PIDs), so the egg is a Patrat (504). The lady's menus (scouted): talk, A on the text, A on the first entry 'Leave Pokemon', A on 'Which Pokemon...?' opens the party screen (touch panels: left column slots 0/2/4, right column 1/3/5); a panel's tap opens STORE/SUMMARY/QUIT at the bottom right; YES (A) to 'raise another?' opens it again. The egg then waits on the steps: the walk is a fixed number of legs along the path below the Day Care, measured to be enough on both versions; the man's YES/NO (msg 426 #6) is answered YES with A. The day care's contents are not in np_save5's dump; the party is."
+notes = "240 legs: an egg is the day care's draw every 256 steps (120 legs once ended with no egg after the core's luck moved). Measured from the start save (CONTINUE included): Black 39064, White 39158 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Before 15 the Day Care holds one Pokemon and the man is not on Route 3 (refs), so it chains from 16. Deposits: the male Cut carrier Patrat (slot 3) and a female Patrat the recipe puts in Tepig's slot (start.recipe: the PIDs), so the egg is a Patrat (504). The lady's menus (scouted): talk, A on the text, A on the first entry 'Leave Pokemon', A on 'Which Pokemon...?' opens the party screen (touch panels: left column slots 0/2/4, right column 1/3/5); a panel's tap opens STORE/SUMMARY/QUIT at the bottom right; YES (A) to 'raise another?' opens it again. The egg then waits on the steps: the walk is a fixed number of legs along the path below the Day Care, measured to be enough on both versions; the man's YES/NO (msg 426 #6) is answered YES with A. The day care's contents are not in np_save5's dump; the party is."
 
 [start]
 from = "16-nimbasa-elesa-bolt-badge"
 recipe = "start.recipe"
 
 [run]
-frames = 39500
+frames = 59000
 
 [[step]]
 do = "wait_field"
@@ -126,9 +126,9 @@ do = "wait_field"
 do = "walk_to"
 x = 749
 z = 557
-via = [[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557],[735,557],[749,557]]
+via = [[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557], [736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557],[736,557],[749,557]]
 on_battle = "flee"
-note = "120 legs of 14 steps along the path below the Day Care (735..749,557): the steps the day care counts toward an egg"
+note = "240 legs of 14 steps along the path below the Day Care (735..749,557): the steps the day care counts toward an egg"
 
 [[step]]
 do = "talk_to"
@@ -136,8 +136,14 @@ id = 0
 note = "the Day-Care Man (zone_event 321 object 0 (748,556)): scr 0856 script 1, var 0x8026 == 1 (an egg) -> msg 426 #6 and YES/NO"
 
 [[step]]
+do = "wait_frames"
+n = 60
+shot = "egg-offer"
+note = "the Day-Care Man's first line (msg 426 #6: the egg), before A answers"
+
+[[step]]
 do = "advance_text"
-shot = "egg"
+shot = "egg-received"
 note = "A answers YES: @0x0146 Cmd0EC (the egg into the party), msg 426 #7 'received the Egg from the Day-Care Man'"
 
 [expect]

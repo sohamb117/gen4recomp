@@ -4,7 +4,7 @@
 title = "HM01 Cut: Route 2's tree"
 priority = "P0"
 version = "both"
-estimate = 6989   # measured from 09's end save (CONTINUE included): Black 6889, White 6989 (core-bwm)
+estimate = 6989   # measured from 09's end save (CONTINUE included): Black 6889, White 6989 (core-bwm2)
 refs = [
   "scr 0020 @0x006A CallStd 2805 HM01 (Fennel, zone 10; 09)",
   "zone_event 319 object 11 gfx 0x6C (773,618) -> script id 10004 -> scr 0867 script 5 (the Cut tree)",
@@ -13,7 +13,7 @@ refs = [
   "other Cut trees: zone_event 152 object 8 (23,26) (09 cuts it), 370 objects 2/3 (680,186)/(681,187) (Route 13), 383 object 6 (474,425) (Route 16)",
   "09's end save: party slot 3 Patrat (504) lv 14 with Cut (15), Tackle (09's boost.recipe)",
 ]
-notes = "Measured from the start save (CONTINUE included): Black 6889, White 6989 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). No Badge check in the field-move script (scr 0867 has no CheckBadge): any gate on Cut is in code [INFERENCE]. Cut sets nothing in the save (the tree is a RemoveObject, back on the next zone load), so [expect] is the map and the tile west of the tree: the probe's grid (scouting) shows (773,618) as the only way from Route 2's road (774,617..618) to the west ledge path (766..772,618..619), walled on rows 617 and 620."
+notes = "Measured from the start save (CONTINUE included): Black 6889, White 6989 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). No Badge check in the field-move script (scr 0867 has no CheckBadge): any gate on Cut is in code [INFERENCE]. Cut sets nothing in the save (the tree is a RemoveObject, back on the next zone load), so [expect] is the map and the tile west of the tree: the probe's grid (scouting) shows (773,618) as the only way from Route 2's road (774,617..618) to the west ledge path (766..772,618..619), walled on rows 617 and 620."
 
 [start]
 from = "09-fennel-dreamyard-plasma-munna"

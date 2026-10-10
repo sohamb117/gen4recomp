@@ -4,20 +4,20 @@
 title = "Route 5: Cheren and Alder; Driftveil City"
 priority = "P0"
 version = "both"
-estimate = 27352
+estimate = 25682
 refs = [
   "zone_event 329 trigger 0 (372,437) var 0x4093 == 1 -> scr 0658 script 1 (msg 361 #0); @0x014F/@0x0170/@0x017E TrainerBattle trdata #90/#91/#92 (Cheren: Liepard, monkey, Tranquill 24, starter 26); @0x0594 SetVar 0x4093 2",
   "zone_event 329 trigger 2 (339,431) var 0x4093 == 2 -> scr 0658 script 5; @0x09B0 SetVar 0x4093 3",
   "zone 253/301 (Driftveil Drawbridge)",
   "zone_event 96 trigger 1 (204,430) var 0x408F == 0 -> scr 0192 script 8 (Clay, msg 101 #0); @0x01DB SetFlag 0x9B6; @0x01E3 SetVar 0x408F 1",
 ]
-notes = "Measured from the previous end save (CONTINUE included): Black 27352, White 25778 frames on the core of 2026-10-08 (main 21cf05779, instant text)."
+notes = "Measured from the previous end save (CONTINUE included): Black 24980, White 25682 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text)."
 
 [start]
 from = "prev"
 
 [run]
-frames = 41500
+frames = 39000
 
 [[step]]
 do = "walk_to"
@@ -126,10 +126,10 @@ note = "zone_event 329 trigger 0 (372,437..441) 0x4093 == 1 -> scr 0658 script 1
 
 [[step]]
 do = "advance_text"
-shot = "cheren-battle-in"
 
 [[step]]
 do = "auto_battle"
+snap = "cheren-battle"
 note = "Cheren, trdata #90/#91/#92 by 0x4030 (scr 0658 @0x014F/@0x0170/@0x017E)"
 
 [[step]]
@@ -197,7 +197,7 @@ note = "zone_event 96 trigger 1 (204,430..434) 0x408F == 0 -> scr 0192 script 8:
 
 [[step]]
 do = "advance_text"
-shot = "clay"
+shot = "after-clay"
 
 [expect]
 map = 96
