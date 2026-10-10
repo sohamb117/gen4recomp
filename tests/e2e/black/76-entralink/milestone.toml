@@ -1,26 +1,122 @@
-# The Entralink alone: the C-Gear's ENTRALINK takes the player to the island; the guide's first-visit scene runs and
-# the Entree Forest gate is there. Missions in someone's world need a second game (wireless).
-# Start: Striaton City, Fennel's lab (zone 10, 09's end: the C-Gear) -> end: the Entralink (zone 279), 0x40C3 = 1.
+# The Entralink alone: the C-Gear's WIRELESS -> ENTRALINK takes the player to the island; the guide's first-visit
+# scene runs (0x40C3 = 1), and the island's return point sends him back to his own world, where the save keeps it.
+# Missions, the bridges and the Entree Forest need a second game or Game Sync (notes).
+# Start: Fennel's lab ground floor (zone 9; 09's end save + start.recipe) -> end: Striaton City (zone 6), outside the
+# lab, after a visit to the Entralink (zone 279), 0x40C3 = 1 in the save.
 title = "The Entralink (offline): first visit"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 6000   # [INFERENCE] frames, not measured
+estimate = 7769   # measured from 09's end save + start.recipe (CONTINUE included): Black 7669, White 7769 (core-bwm2)
 refs = [
   "scr 0020 @0x048F msg 15 #9 'obtained the C-Gear!' (Fennel; 09)",
+  "sysmsg 62 #128 (the C-Gear's help): 'You can move to the center of the Unova region, called the Entralink, by tapping the yellow frame with \"WIRELESS\" on it on your C-Gear'; sysmsg 21 #17 'Press the button, and you will be sent to the Entralink instantly.'",
+  "msg 263 #7 '{player} warped to the Entralink!'; #8 'You can't warp to the Entralink here!' (indoors: Fennel's lab, zone 10)",
   "zone 279 (Entralink): level type 1 on entry: var 0x4000 == 0 -> scr 0558 script 3 (@0x004A SetVar 0x4000 1); var 0x40C3 == 0 -> scr 0558 script 8",
-  "scr 0558 script 8: msg 303 #11-#13 ('This is an island called the Entralink...'), @0x01F0 SetVar 0x40C3 1",
-  "zone_event 279 object 0 (29,30) -> scr 0558 script 5 (guide: msg 303 #3-#7); objects 1/2 (14,29)/(48,29) -> scripts 6/7 (the bridges: msg 303 #16 'a search will start to find a person to connect with'); object 5 (34,22) -> script 10 (the Entree Forest)",
-  "zones 280-288 (Entree Forest): zone_event 280 triggers 0-3 on var 0x4111 == 0 -> scr 0895 scripts 5-8",
+  "scr 0558 script 8: msg 303 #11-#13 ('Oh, someone showed up... Welcome to the Entralink.', 'This is an island called the Entralink...'), @0x01F0 SetVar 0x40C3 1",
+  "zone_event 279 object 4 (32,43) -> scr 0558 script 11: msg 303 #38 'You can go back to the original world from this place'; the return point beside him (31,44): sysmsg 45 #84 'You can go back to your own world from here. Do you want to go back?' YES/NO (field code, no zone_event)",
+  "zone_event 279 object 0 (29,30) -> scr 0558 script 5 (guide: msg 303 #3-#7); objects 1/2 (14,29)/(48,29) -> scripts 6/7 (the bridges: msg 303 #16 'a search will start to find a person to connect with'); object 5 (34,22) -> script 10 (the Entree Forest: msg 303 #32 'When a dreaming Pokemon wakes up in Game Sync, its dream will come true in this forest', #34)",
+  "scr 0558 script 4 (the Entree): @0x0097 msg 303 #48 'First, cross a bridge in the Entralink, and go to someone's world.' unless a mission is running (Cmd170/Cmd173/Cmd176); @0x00FC SetFlag 0x97F, @0x015C SetFlag 0x981 (the Pass Power) only after one",
+  "scr 0558 script 9 (the Entree in someone else's world): msg 303 #39 'Welcome to someone else's world... touch this tree to receive a mission'",
+  "zone_event 279 object 3 (29,22) hidden by flag 0x2D7 -> scr 0885 script 2 (Dream Remnants: msg 315 #0); scr 0885 script 1 (level type 2): Cmd1EF 0 == 1 clears 0x2D7, else sets it",
+  "zones 280-288 (Entree Forest): no zone_event 279 warp or script warp leads there; zone_event 280 triggers 0-3 on var 0x4111 == 0 -> scr 0895 scripts 5-8; scr 0895 script 1 (msg 427 #1-#9: the Dream World Pokemon)",
   "zones 289-316: the Entralink's copies of the region (black/34's refs) where missions run in another player's world",
 ]
-notes = "Entering the Entralink is the C-Gear's touch button [INFERENCE: no script warps to zone 279]. P1 keeps only what runs alone: the island, the guide, the Entree Forest gate; the missions (scr 0558 script 4: @0x00FC SetFlag 0x97F, @0x015C SetFlag 0x981, the Pass Power) need a connected game, and the Entree Forest's Pokemon come from the Dream World (online)."
+notes = "Measured from the start save (CONTINUE included): Black 7669, White 7769 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Scouted on Black (09's end save + this recipe, core-bwm2, 2026-10-10). Offline, the Entralink gives: the warp (the C-Gear), the guide's first-visit scene (0x40C3 = 1) and the way back; the run proves those, and the end save (taken back in Striaton: the menu's SAVE is not offered in the Entralink, sysmsg 62 #135) holds 0x40C3 = 1 (09's end save has it 0). The C-Gear: the WIRELESS frame's color group is one button; its layout differs by version (Black: IR top, ONLINE left, WIRELESS right (193,95); White: IR left, ONLINE centre, WIRELESS top right (193,63)), and the orange hex at (225,78) belongs to WIRELESS on both, so one tap serves both. A tap in the first frames after CONTINUE is ignored (scouted: nothing happens at f+16, works at f+60). The Wireless screen's ENTRALINK panel (70,55) shows msg 263 #7 '... warped to the Entralink!' (A), and the player lands at (31,30) beside the Entree, where scr 0558 script 8 runs at once. The return point is (31,44), beside the man at (32,43): stepping onto it asks sysmsg 45 #84 (A, then YES) and warps back to where the C-Gear was used (zone 6 (788,594)). What cannot run alone (evidence, scouted): the bridges (objects 1/2): walking west across the bridge to its end (0,31) shows '...Not connected to any other worlds yet.' and the bottom screen 'Connecting... Searching for someone near your Entralink.' (sysmsg 45 #51), and nothing more; the missions are received only from the Entree in someone else's world (scr 0558 script 9) and the own Entree's script 4 answers msg 303 #48 without a mission; the bottom screen's OWN WORLD map's nodes do nothing when tapped (scouted: the top node (128,56)). The Entree Forest has no entrance offline: zone_event 279 has no warp, no script warps to zones 280-288, and the island's north paths end in walls at (24,20) and (39,20) (scouted: moves U from (24,21) stops at (24,20)); its Pokemon and the Dream Remnants (object 3, flag 0x2D7) come from Game Sync (msg 303 #32, msg 315 #0) [INFERENCE: the forest is opened by Game Sync data, which needs Nintendo Wi-Fi]. So the run records the first visit (0x40C3), the only Entralink state a single offline game writes."
 
 [start]
 from = "09-fennel-dreamyard-plasma-munna"
+recipe = "start.recipe"
+
+[run]
+frames = 12000
+
+[[step]]
+do = "moves"
+dirs = [["D", 2]]
+note = "zone_event 9 warp 0 (6..8,10) -> Striaton City (zone 6), outside the lab (789,595)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "wait_frames"
+n = 60
+note = "a tap in the first frames after a load is ignored"
+
+[[step]]
+do = "tap"
+x = 225
+y = 78
+hold = 10
+note = "the C-Gear's WIRELESS group (an orange hex WIRELESS owns on Black and White): the Wireless screen"
+
+[[step]]
+do = "wait_frames"
+n = 200
+shot = "wireless"
+
+[[step]]
+do = "tap"
+x = 70
+y = 55
+hold = 10
+note = "ENTRALINK: msg 263 #7"
+
+[[step]]
+do = "wait_frames"
+n = 230
+shot = "warp"
+
+[[step]]
+do = "press"
+keys = "a"
+note = "close msg 263 #7: the warp to zone 279"
+
+[[step]]
+do = "wait_frames"
+n = 300
+shot = "guide"
+note = "scr 0558 script 8: msg 303 #11"
+
+[[step]]
+do = "advance_text"
+note = "msg 303 #11-#13, SetVar 0x40C3 1"
+
+[[step]]
+do = "wait_field"
+shot = "entralink"
+
+[[step]]
+do = "walk_to"
+x = 31
+z = 44
+note = "the return point beside the man at (32,43): sysmsg 45 #84"
+
+[[step]]
+do = "wait_frames"
+n = 40
+
+[[step]]
+do = "press"
+keys = "a"
+
+[[step]]
+do = "wait_frames"
+n = 40
+shot = "go_back"
+note = "'Do you want to go back?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "a"
+note = "YES: back to Striaton City"
+
+[[step]]
+do = "wait_field"
+max = 2000
 
 [expect]
-map = 279
+map = 6
 
 [expect.vars]
 "0x40C3" = 1

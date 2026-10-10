@@ -1,25 +1,109 @@
-# HM06 Dive (post-game): the sea-loving man in Undella Town gives HM06, and a Dive carrier dives in Undella Bay
-# down to the Abyssal Ruins.
-# Start: the player's room (zone 391, 32's end) -> end: the Abyssal Ruins [INFERENCE: zone 241..248], HM06 in the bag.
+# HM06 Dive (post-game): the sea-loving man in Undella Town gives HM06, a Surf + Dive carrier surfs into Undella Bay
+# and dives at a diving point down to the Abyssal Ruins, then swims into the ruins.
+# Start: Undella Gate (zone 372; 34's end save + start.recipe) -> end: inside the Abyssal Ruins (zone 245), HM06 in
+# the bag.
 title = "HM06 Dive: Undella Town's gift and the Abyssal Ruins"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 45000   # [INFERENCE] frames, not measured
+estimate = 11516   # measured from 34's end save + start.recipe (CONTINUE included): Black 11516, White 10078 (core-bwm2)
 refs = [
   "zone_event 412 object 1 gfx 0x11 (746,303) y -64 -> scr 0824 script 5: @0x0536 var 0x8000 = 0x1A9 (HM06), 0x8002 = 0x15A, msgs 451 #4/#5, @0x055E CallStd 2800 (scr 0862 script 1, @0x00CA SetFlag var 0x8002)",
   "msg 451 #5 'Inside this Hidden Machine is Dive! ... diving points'",
   "scr 0867 script 12 (script id 10011, run by the field on a diving point): @0x04AE Cmd116 var 0x8010, 0x123 (Dive), msg 280 #31 YES/NO, @0x0513 msg 280 #32 'used Dive!'",
   "zone 240 (Undella Bay), zones 241-248 (Abyssal Ruins); zone_event 372 warp 1 (4,14) -> zone 412 warp 4 (752,295)",
+  "the diving point (scouting, the probe's tile bytes): Undella Bay (zone 240) attribute 0x43 at (785..787,289..291) in the open sea (0x3F); A standing on it runs scr 0867 script 12",
+  "zone 242 (Abyssal Ruins, outside; a rail map: zone header u16 0 = 0x1007): trigger 0 when var 0x400A == 0 -> scr 0484 script 3: @0x0018 the player swims up (M_0038), @0x0022 Cmd0DC 0xF0, 1, 0x312, 5, 0x122 (back to zone 240 (786,290), the diving point); zone_event 241/243/244 trigger 0 the same for the other three diving points (241: (801,276))",
+  "zone_event 242 warp 0 (a rail warp: line 3) -> zone 245 (Abyssal Ruins, inside; header 0x1000, a tile map) warp 2 (5,93)",
   "post-game: the road east is closed until the clear: zone_event 133 object 0 (10,6) hidden by flag 0x2F8 (the Opelucid Gate to Route 11), set by scr 0866 @0x04A9",
 ]
-notes = "Dive is post-game in B/W: Undella Town is east of the Opelucid Gate the clear opens (refs). Lowered from P0 to P1: no story or system needs Dive. The diving points are terrain attributes (PHASE2 finds one in Undella Bay). The recipe swaps Blitzle (slot 2) for a Surf + Dive carrier. The game clear's flag 0x966 (scr 0866 @0x0328) makes CONTINUE take the continue warp to zone 391 (5,6) whatever location the save holds (34's notes), so a set-location on 32's end save is overridden: no location line until this chains from 34's end. CONTINUE lands in the bedroom; going down to zone 390 runs Looker's forced scene first (zone 390 level script var 0x4085 == 2 -> scr 0780 script 4; @0x05E8 the Super Rod, @0x06D8 0x4085 3, @0x06E8 0x4080 4), and leaving the house runs Cedric Juniper's (zone 389 level script 0x4080 == 4 -> scr 0778 script 15)."
+notes = "Measured from the start save (CONTINUE included): Black 11516, White 10078 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Measured from the start save (CONTINUE included): Black 11516, White 10078 frames on core-bwm2 (2026-10-10); the surf meets wild battles (Black 2, White 1), which moves fights. Dive is post-game in B/W: Undella Town is east of the Opelucid Gate the clear opens (refs). Lowered from P0 to P1: no story or system needs Dive. The recipe swaps Blitzle (slot 2) for a Surf + Dive carrier and places the player in Undella Gate (34's end resumes in the Poke Transfer Lab, so a location line holds). The man's HM06 (scr 0824 script 5) has no precondition. The bay: walk_to cannot plan Undella's sea (it wanders south into Route 14, zone 374), so the surf is a fixed route of moves on open water (0x3F) from Undella Town's beach (746,312) to the diving point (786,290). The diving point is a 3x3 patch of attribute 0x43 (refs); A on it asks 'It's a deep part of the sea. Would you like to use Dive?' (msg 280 #31), A answers YES, A closes 'Basculin used Dive!'. The dive lands in zone 242, the ruins' outside, a rail map (status bit 0x2000, the field never ready): the player sinks onto rail line 1, and a player left idle there drifts back along line 1 onto line 5, where trigger 0 (var 0x400A == 0) swims him up to the diving point (scouted: idle, the dive ended back in zone 240 about 420 frames after landing). Held up, the rails run line 1 -> 2 -> 4 -> 0 -> 3 and line 3's warp enters the ruins (zone 245 (6,93), a tile map), about 550 frames after landing. The same route and taps on White."
 
 [start]
 from = "34-postgame-poke-transfer-lab"
 recipe = "start.recipe"
 
+[run]
+frames = 17500
+
+[[step]]
+do = "moves"
+dirs = [["D", 2]]
+note = "zone_event 372 warp 1 -> Undella Town (zone 412) (753,296)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the man at (746,303): scr 0824 script 5, HM06"
+
+[[step]]
+do = "advance_text"
+shot = "hm06"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 746
+z = 311
+note = "the beach above the sea"
+
+[[step]]
+do = "moves"
+dirs = [["F", "D"]]
+shot = "surf"
+note = "face the sea: scr 0867 script 3, YES, onto (746,312)"
+
+[[step]]
+do = "moves"
+dirs = [["R", 11], ["U", 5], ["R", 24], ["U", 17], ["R", 5]]
+note = "open water into Undella Bay (zone 240): (757,312), (757,307), (781,307), (781,290), the diving point (786,290)"
+
+[[step]]
+do = "press"
+keys = "a"
+note = "on the diving point: scr 0867 script 12, msg 280 #31 YES/NO"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "dive_ask"
+
+[[step]]
+do = "press"
+keys = "a"
+note = "YES: msg 280 #32 'Basculin used Dive!'"
+
+[[step]]
+do = "wait_frames"
+n = 60
+
+[[step]]
+do = "press"
+keys = "a"
+note = "close the text: the dive"
+
+[[step]]
+do = "wait_frames"
+n = 380
+shot = "ruins_outside"
+note = "sinking onto zone 242's rail line 1"
+
+[[step]]
+do = "rail"
+keys = "up"
+map = 245
+note = "rail lines 1, 2, 4, 0, 3; line 3's warp -> the ruins (zone 245) (6,93)"
+
+[[step]]
+do = "wait_field"
+shot = "ruins"
+
 [expect]
+map = 245
 flags = ["0x15A"]
 save = [
   "any(i[\"item\"] == 425 for i in s[\"bag\"][\"tms_hms\"])",

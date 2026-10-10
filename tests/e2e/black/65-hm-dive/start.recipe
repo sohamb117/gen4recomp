@@ -1,4 +1,7 @@
-# On 32's end save (party: Reshiram, Darmanitan, Blitzle, Unfezant (Fly), Tepig, Sawk): a Surf (57) and Dive (291)
+# On 34's end save (party: Reshiram, Darmanitan, Blitzle, Unfezant (Fly), Tepig, Sawk): a Surf (57) and Dive (291)
 # carrier, Basculin (550) lv 60 with Aqua Jet (453), Crunch (242), in place of Blitzle (slot 2)
-# (scr 0867 scripts 3 and 12: Cmd116 0x39 / 0x123). No location line: flag 0x966 overrides it (milestone notes).
+# (scr 0867 scripts 3 and 12: Cmd116 0x39 / 0x123).
 party-set 2 550 60 57 291 453 242
+# Undella Gate (zone 372), one tile above its south warp (zone_event 372 warp 1 (4,14) 3x1 -> Undella Town, zone 412);
+# 34's end is in the Poke Transfer Lab. The run walks out, so Undella Town loads its own objects (the HM06 man).
+location 372 5 0 13
