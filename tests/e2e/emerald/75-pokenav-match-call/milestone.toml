@@ -1,0 +1,160 @@
+# Proves the PokeNav's MATCH CALL, Emerald's rematch registry (R/S's Trainer's Eyes, ruby/72, does not exist here):
+# the player beats Youngster Calvin on Route 102, Calvin registers in Match Call after the battle (register_matchcall:
+# FLAG_REGISTERED_CALVIN, the fanfare), then the start menu's POKENAV, MATCH CALL lists MR. STONE and CALVIN, and
+# CHECK opens Calvin's page.
+# Start: MAP_ROUTE102 (35,14) beside Calvin -> end: MAP_ROUTE102 next to Calvin, PokeNav closed.
+title = "PokeNav: Match Call registers a beaten trainer"
+priority = "P1"
+estimate = 3761
+refs = [
+  "data/maps/Route102/map.json object_events[1] (33,14) Youngster, sight 3, Route102_EventScript_Calvin",
+  "data/maps/Route102/scripts.inc:20-42 (trainerbattle_single TRAINER_CALVIN_1 ... CalvinRegisterMatchCallAfterBattle: FLAG_HAS_MATCH_CALL -> msgbox, register_matchcall TRAINER_CALVIN_1)",
+  "asm/macros/event.inc:1968-1973 (register_matchcall: special SetMatchCallRegisteredFlag, STD_REGISTER_MATCH_CALL)",
+  "data/scripts/trainer_script.inc:1-11 (Std_RegisteredInMatchCall: the fanfare, 'Registered ... in the POKeNAV.')",
+  "src/data/trainer_parties.h:4206-4212 (Calvin: POOCHYENA lv5)",
+  "include/constants/opponents.h:322 (TRAINER_CALVIN_1 318; his trainer flag TRAINER_FLAGS_START 0x500 + 318, include/constants/flags.h:1343)",
+  "include/constants/flags.h:383 (TRAINER_REGISTERED_FLAGS_START 0x15C), include/constants/rematches.h (REMATCH_CALVIN 34): FLAG_REGISTERED_CALVIN 0x17E",
+  "src/start_menu.c:315-337 (BuildNormalStartMenu: POKEMON (FLAG_SYS_POKEMON_GET), BAG, POKENAV (FLAG_SYS_POKENAV_GET), ...)",
+  "src/pokenav_menu_handler.c:44-58,85-98 (FLAG_ADDED_MATCH_CALL_TO_POKENAV, no FLAG_SYS_RIBBON_GET: HOENN MAP, CONDITION, MATCH CALL, SWITCH OFF), :100-112 (cursor on HOENN MAP), :214-258 (A on MATCH CALL; B exits)",
+  "src/pokenav_match_call_data.c:194-202 (MR. STONE's header: no enabling flag, always listed)",
+  "src/pokenav_match_call_list.c:78-126 (the list: A -> options, B -> the main menu), :41-52,133-176 (a trainer's options CALL / CHECK / CANCEL, cursor on CALL)",
+  "src/data/text/match_call_messages.h:171-174,427 (Calvin's check-page texts)",
+]
+notes = "CHECK, not CALL: on Route 102 a call to Calvin only gets the nearby message (src/pokenav_match_call_list.c:491-516 ShouldDoNearbyMessage: his map section, no rematch pending), so his check page is the entry's proof. The list holds the special contacts whose flags are set (only MR. STONE in this start) and then the registered trainers."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5700
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "Calvin (object 2, (33,14)): trainerbattle_single TRAINER_CALVIN_1 (Route102/scripts.inc:20-21)"
+
+[[step]]
+do = "advance_text"
+note = "his challenge, until the battle starts"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Mudkip lv20 vs POOCHYENA lv5"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "calvin-register"
+note = "CalvinRegisterMatchCallAfterBattle: he faces the player, FLAG_HAS_MATCH_CALL -> his 'register' line (Route102/scripts.inc:31-39)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+shot = "registered"
+note = "register_matchcall: FLAG_REGISTERED_CALVIN, the fanfare, 'Registered YOUNGSTER CALVIN in the POKeNAV.' (trainer_script.inc:1-11)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "START"
+gap = 30
+note = "start menu: POKEMON, BAG, POKENAV, ... (no Pokedex), cursor on 0"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 10
+times = 2
+shot = "start-menu-pokenav"
+note = "POKENAV (entry 2)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+shot = "pokenav-main"
+note = "the PokeNav main menu: HOENN MAP, CONDITION, MATCH CALL, SWITCH OFF, cursor on HOENN MAP"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 15
+times = 2
+shot = "pokenav-match-call"
+note = "MATCH CALL (entry 2)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+shot = "match-call-list"
+note = "the Match Call list: MR. STONE, CALVIN (pokenav_match_call_list.c LoopedTask_BuildMatchCallList)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "CALVIN"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+shot = "calvin-options"
+note = "CALL / CHECK / CANCEL, cursor on CALL"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "CHECK"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "calvin-check"
+note = "Calvin's check page (match_call_messages.h:171-174)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 90
+note = "back to the list"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 120
+note = "the main menu, cursor on MATCH CALL (GetExitMatchCallMenuId)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 120
+note = "B on the main menu: the PokeNav switches off (pokenav_menu_handler.c:254-255)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 4
+until = "field_ready=1"
+note = "close the start menu"
+
+[[step]]
+do = "wait_field"
+shot = "field"
+
+[expect]
+map = "MAP_ROUTE102"
+flags = ["FLAG_SYS_POKENAV_GET", "FLAG_HAS_MATCH_CALL", "FLAG_ADDED_MATCH_CALL_TO_POKENAV"]
+battles = 1
+save = [
+  '0x500 + 318 in s["flags"]',
+  '0x15C + 34 in s["flags"]',
+]

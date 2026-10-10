@@ -1,9 +1,11 @@
-# Emerald side systems (standalone: each starts from its start.recipe minted on the new-game base save, run with
-# --systems). Emerald-only systems first (the Battle Frontier, Trainer Hill, ...); the ones Ruby/Sapphire share
-# follow ruby/systems.txt's shapes. Kept to where Emerald differs: contests (Lilycove only, no Contest Pass, the
-# Pokeblock Case from the receptionist) and the Berry Blender (Lilycove's lobby). The secret base (Secret Power from
-# Route 111, the base, the PC's decorations), berry planting/watering/harvest, the Day Care, the PC, the rods and the
-# HMs run Emerald the R/S scripts' way (data/scripts/secret_base.inc, berry_tree.inc): ruby/60-68 cover them.
+# Emerald side systems, run with --systems: each starts from its start.recipe minted on the new-game base save (68
+# continues 67's end save, ../ruby/67 continues ../ruby/66's).
+# Emerald-only systems first: the Battle Frontier (60-66), Lilycove's contest (67) and Berry Blender (68).
+# Then the systems Emerald shares with Ruby/Sapphire. A ../ruby dir is listed where it was run on Emerald unchanged and
+# proves the system there (its shots and end save checked against Emerald's own scripts, maps, menus and save layout);
+# an Emerald dir (70-) where Emerald differs, its notes saying how. Not ported:
+# - ruby/68 Berry Blender and ruby/69 contest: Emerald blends and holds contests only in Lilycove's Contest Lobby (67, 68).
+# - ruby/71 Battle Tower: Emerald's Battle Tower is the Battle Frontier's (60).
 # P1
 60-frontier-battle-tower-lv50-singles
 61-frontier-battle-factory-lv50
@@ -14,3 +16,14 @@
 66-frontier-battle-pyramid-lv50
 67-contest-lilycove-normal-rank-win
 68-berry-blender-lilycove-pokeblock
+70-daycare-deposit-egg-hatch
+../ruby/61-pc-storage-box-moves
+../ruby/62-fishing-old-good-super-rod
+71-hm-fly-surf-dive-waterfall
+72-trick-house-puzzle-1
+../ruby/66-berry-plant-water
+../ruby/67-berry-harvest
+74-safari-zone-catch
+75-pokenav-match-call
+# P2
+../ruby/80-mirage-island

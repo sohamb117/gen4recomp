@@ -1,0 +1,120 @@
+# Proves Emerald's Safari Zone: the Route 121 gate takes 500 money (Pokeblock Case checked), EnterSafariMode (30
+# Safari Balls, 500 steps, GAME_STAT_ENTERED_SAFARI_ZONE), the South area's tall grass (Emerald's name for R/S's
+# Southeast, the same layout and encounters), a Safari battle driven through its own action menu (BALL / POKeBLOCK /
+# GO NEAR / RUN) with Safari Balls thrown until the wild Pokemon is caught.
+# Start: MAP_ROUTE121_SAFARI_ZONE_ENTRANCE (14,12) -> end: MAP_SAFARI_ZONE_SOUTH, the catch in the party.
+title = "Safari Zone: pay, enter and catch with Safari Balls"
+priority = "P1"
+estimate = 3647
+refs = [
+  "data/maps/Route121_SafariZoneEntrance/map.json coord_events[0] (8,4) VAR_TEMP_1 0 -> EntranceCounterTrigger",
+  "data/maps/Route121_SafariZoneEntrance/scripts.inc:45-53 (money box, MSGBOX_YESNO)",
+  "data/maps/Route121_SafariZoneEntrance/scripts.inc:55-78 (ITEM_POKEBLOCK_CASE, checkmoney/removemoney 500, EnterSafariMode, VAR_SAFARI_ZONE_STATE 2, warp MAP_SAFARI_ZONE_SOUTH (32,33))",
+  "data/maps/SafariZone_South/scripts.inc:6-17 (OnFrame VAR_SAFARI_ZONE_STATE 2: the attendant blocks the door, state back to 0)",
+  "src/safari_zone.c:55-64 (EnterSafariMode: GAME_STAT_ENTERED_SAFARI_ZONE, FLAG_SYS_SAFARI_MODE, 30 balls, 500 steps)",
+  "src/data/wild_encounters.json:2199 (MAP_SAFARI_ZONE_SOUTH land_mons: Oddish, Girafarig, Natu, Doduo, Gloom, Wobbuffet, Pikachu)",
+  "src/battle_controller_safari.c:170-191 (HandleInputChooseAction: A picks the action under gActionSelectionCursor, 0 = BALL)",
+  "src/battle_script_commands.c:10220 Cmd_trygivecaughtmonnick (the nickname YES/NO: probe ui 1 / ui_arg 13, games/emerald/pc/src/emerald_e2e.c:288)",
+  "include/constants/game_stat.h:21 (GAME_STAT_ENTERED_SAFARI_ZONE 17)",
+  "data/scripts/contest_hall.inc:7,17-18 (the Pokeblock Case: Lilycove's contest receptionist, FLAG_RECEIVED_POKEBLOCK_CASE)",
+]
+notes = "Ruby's dir (ruby/70) passes every step on Emerald but ends on MAP_SAFARI_ZONE_SOUTH: Emerald renamed the areas (SOUTH = R/S's SOUTHEAST, group 26 map 3; Emerald's SOUTHEAST is the post-game extension, map 13). The encounter is the game's RNG over the row-32 tall grass (x 19..27). The repeat walks to the east edge and crosses the grass in both directions after a flee, until the nickname prompt; it stays within Safari's 30 balls and 500-step limit. In the battle A throws a Safari Ball from the menu's default BALL and B declines the nickname."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5500
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 4
+on_text = "stop"
+note = "the gate's coord event (8,4) (map.json coord_events[0]): the attendant asks 500 for the Safari Zone"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+shot = "safari-gate-500"
+note = "YES (scripts.inc:49-50): 'That will be 500, please.' (:62), the money box still at 3000"
+
+[[step]]
+do = "advance_text"
+map = "MAP_SAFARI_ZONE_SOUTH"
+note = "500 paid, 30 Safari Balls, the walk to the west door and the warp (scripts.inc:61-78)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "repeat"
+until = "ui_arg=13"
+max_rounds = 30
+note = "retry the grass encounter after a Safari Pokemon flees; stop at the nickname prompt after a catch (up to 30 Safari Balls)"
+
+  [[step.steps]]
+  do = "walk_to"
+  x = 27
+  z = 32
+  note = "east edge of the row-32 tall grass (x 19..27)"
+
+  [[step.steps]]
+  do = "press"
+  keys = "LEFT"
+  hold = 16
+  gap = 8
+  times = 20
+  until = "in_battle=1"
+  note = "west through the tall grass until a wild Pokemon appears"
+
+  [[step.steps]]
+  if = "in_battle=0"
+  do = "press"
+  keys = "RIGHT"
+  hold = 16
+  gap = 8
+  times = 20
+  until = "in_battle=1"
+  note = "return east across the grass after a flee"
+
+  [[step.steps]]
+  do = "wait_frames"
+  n = 240
+  note = "the Safari battle's opening and action menu (a repeat's inner steps take no shots: the catch's shot below shows the battle)"
+
+  [[step.steps]]
+  do = "press"
+  keys = "A"
+  hold = 4
+  gap = 40
+  times = 200
+  until = ["ui_arg=13", "in_battle=0"]
+  note = "throw Safari Balls until the nickname question after 'Gotcha!' or a flee"
+
+[[step]]
+do = "press"
+keys = "B"
+shot = "safari-caught"
+note = "nickname: NO"
+
+[[step]]
+do = "wait_field"
+max = 1200
+
+[expect]
+map = "MAP_SAFARI_ZONE_SOUTH"
+flags = ["FLAG_SYS_SAFARI_MODE"]
+party_size = 2
+save = [
+  's["game_stats"][17] == 1',
+  'len(s["party"]) == 2 and s["party"][1]["species_name"] in ("ODDISH", "GIRAFARIG", "NATU", "DODUO", "GLOOM", "WOBBUFFET", "PIKACHU")',
+  's["party"][1]["ball"]["id"] == 5',
+  's["party"][1]["species"] in s["pokedex"]["caught_list"]',
+  'not any(i["item"] == 5 for i in s["bag"]["balls"])',
+  's["trainer"]["money"] == 2500',
+]
+
+[expect.vars]
+VAR_SAFARI_ZONE_STATE = 0
