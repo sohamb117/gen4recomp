@@ -4,10 +4,9 @@
 # Start: Spear Pillar at the entrance (49's end) -> end: Spear Pillar (31,52), var 0x4098 = 4 (51's start).
 # Twin: ../../diamond/50-spear-pillar-dialga (Dialga, 483).
 title = "Spear Pillar: Galactic, Cyrus and Palkia (Pearl)"
-status = "planned"
 priority = "P0"
 version = "pearl"
-estimate = 30000
+estimate = 40179
 refs = [
   "zone_event 0217 coord 0",
   "scr_seq 0230 @0x02C7",
@@ -38,7 +37,7 @@ from = "prev"
 lab = "lab.recipe"
 
 [run]
-frames = 60000
+frames = 60300
 
 [[step]]
 do = "walk_to"

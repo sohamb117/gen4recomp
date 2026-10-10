@@ -2205,7 +2205,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 ## Pearl
 
 <!-- plan.py:begin pearl -->
-### Story chain: 61 milestones, ~1328657 frames estimated
+### Story chain: 61 milestones, ~1338836 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
@@ -2257,7 +2257,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [47-galactic-hq-cyrus](diamond/47-galactic-hq-cyrus/milestone.toml) | Galactic HQ: the key doors, the warp panels and Cyrus | P0 | both | 23863 | prev + `lab.recipe` | MAP_VEILSTONE_GALACTIC_HEADQUARTERS_4F_1 | passing |
 | [48-galactic-hq-saturn-free-lake-trio](diamond/48-galactic-hq-saturn-free-lake-trio/milestone.toml) | Galactic HQ: Saturn, the lake trio freed, out of the HQ | P0 | both | 9153 | prev + `lab.recipe` | MAP_VEILSTONE | passing |
 | [49-mt-coronet-climb](diamond/49-mt-coronet-climb/milestone.toml) | Mt. Coronet: Route 208 up to Spear Pillar | P0 | both | 59215 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
-| [50-spear-pillar-palkia](pearl/50-spear-pillar-palkia/milestone.toml) | Spear Pillar: Galactic, Cyrus and Palkia (Pearl) | P0 | pearl | 30000 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | planned |
+| [50-spear-pillar-palkia](pearl/50-spear-pillar-palkia/milestone.toml) | Spear Pillar: Galactic, Cyrus and Palkia (Pearl) | P0 | pearl | 40179 | prev + `lab.recipe` | MAP_MOUNT_CORONET_SPEAR_PILLAR | passing |
 | [51-coronet-exit-valor-lakefront](diamond/51-coronet-exit-valor-lakefront/milestone.toml) | Leave Spear Pillar: Mt. Coronet down to Valor Lakefront, Route 222 opens | P0 | both | 8304 | prev + `lab.recipe` | MAP_VALOR_LAKEFRONT | passing |
 | [52-route222-sunyshore-flint-lighthouse](diamond/52-route222-sunyshore-flint-lighthouse/milestone.toml) | Route 222 to Sunyshore: Flint, Volkner at Vista Lighthouse | P0 | both | 14675 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
 | [53-sunyshore-gym-volkner](diamond/53-sunyshore-gym-volkner/milestone.toml) | Sunyshore Gym: Volkner and the Beacon Badge | P0 | both | 39723 | prev + `lab.recipe` | MAP_SUNYSHORE | passing |
@@ -2757,7 +2757,7 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - party: SPECIES_EMPOLEON 100 (MOVE_SURF); SPECIES_GARCHOMP 100 (MOVE_DRAGON_CLAW); SPECIES_STARAPTOR 100 (MOVE_FLY)
 - trainers: none
 - end state: map MAP_MOUNT_CORONET_SPEAR_PILLAR; at (31, 52); >= 4 battles; flags set 0x986, 0x15E, 0x2B3, 0x2AD, 0x981, 0x1EB; flags clear 0x8E; vars 0x4098=4
-- frames: estimate 30000, budget 60000
+- frames: estimate 40179, budget 60300
 - refs: zone_event 0217 coord 0; scr_seq 0230 @0x02C7; scr_seq 0230 @0x02DE; zone_event 0217 coord 1; scr_seq 0230 @0x035B; scr_seq 0230 @0x04F7; zone_event 0217 coord 2; scr_seq 0230 @0x0803; scr_seq 0230 @0x0BC0; scr_seq 0230 @0x0C1F; scr_seq 0230 @0x0DAD; zone_event 0217 coord 4; zone_event 0217 coord 3; scr_seq 0230 @0x0EE0; scr_seq 0230 @0x0FB0; scr_seq 0230 @0x0FF8; trdata.json #521; trdata.json #527; trdata.json #528; trdata.json #407; trdata.json #404
 - notes: Coordinate triggers by var 0x4098 (zone_event 0217): coord 0 (31,48) == 0: TrainerBattle 521, 527 (two grunts, double) -> 1; coord 1 (29..33,35) == 1: SpearPillarSequence, warps to Valley Windworks (240,660) and Hearthome (479,692) and back (scr_seq 0230 @0x03B7-@0x0458) -> 2; coord 2 (30..32,32) == 2: TrainerBattleWithPartner (Barry) vs Mars 528 + Jupiter 407, HealParty, the trio, TrainerBattle 404 (Cyrus), Rowan and Dawn/Lucas -> 3 (@0x0DAD); coord 4 (29..33,31) == 3 only nudges the player north; coord 3 (30..32,26) == 3: LegendaryBattle 0x8004, 47 (L_01E8: GetGameVersion Pearl -> 484 PALKIA), any non-loss goes on (caught sets 0x15F), Rowan, Warp 220 (31,52), SetFlag 0x15E/0x2B3/0x2AD/0x981/0x1EB, var 0x4098 = 4 (@0x0F30-@0x0FF8).
 
