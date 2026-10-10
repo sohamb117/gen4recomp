@@ -1,18 +1,100 @@
 # Virizion in Pinwheel Forest's Rumination Field, open once Cobalion moved (flag 0x28D hides the four rocks).
-# Start: the Trial Chamber (zone 229, 81's end) -> end: the Rumination Field (zone 156), Virizion caught.
+# Start: Pinwheel Forest (zone 155) below the Rumination Field's mouth (107,28) on 81's end save -> end: the Rumination
+# Field (zone 156), Virizion caught.
 title = "Virizion (Rumination Field)"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 20000   # [INFERENCE] frames, not measured
+estimate = 9142   # measured from 81's end save + start.recipe (CONTINUE included): Black 9042, White 9142 (core-bwm)
 refs = [
   "zone_event 155 objects 32-35 gfx 0xCE (106..109,28) hidden by flag 0x28D (scr 0670 @0x04E2, 80); zone_event 155 warp 2 (107,27) 2x1 -> zone 156 warp 0 (15,23)",
   "zone_event 156 object 0 gfx 0x75 (15,11) hidden by flag 0x28B -> scr 0312 script 1: @0x001F WildBattle Virizion (640) lv 42; @0x003E SetFlag 0x28B; result 0 (caught) -> @0x0097 SetFlag 0xA8",
 ]
-notes = "Chained from 81 (the rocks need Cobalion's flag); Fly to Nacrene and walk into Pinwheel Forest [INFERENCE: Nacrene's fly flag set in the chain]."
+notes = "Measured from the start save (CONTINUE included): Black 9042, White 9142 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Chained from 81 (the rocks need Cobalion's flag, which no recipe can set). The recipe puts the player on a rock's tile, freed by 0x28D, below the field's mouth, and refills the Master Ball 81 threw."
 
 [start]
 from = "81-legendary-terrakion"
+recipe = "start.recipe"
+
+[run]
+frames = 14000
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 155 warp 2 (107,27) 2x1 -> the Rumination Field (zone 156) warp 0 (15,23): the warp loads 156's own objects"
+
+[[step]]
+do = "wait_field"
+shot = "rumination-field"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 12
+on_battle = "flee"
+note = "below Virizion; wild battles on the way are fled"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Virizion (zone_event 156 object 0 (15,11)): scr 0312 script 1"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "in_battle=1"
+times = 60
+note = "to its WildBattle (Virizion lv 42, @0x001F)"
+
+[[step]]
+do = "wait_frames"
+n = 900
+shot = "virizion-battle"
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 190
+y = 48
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 30
+gap = 60
+note = "the first ball, the Master Ball (start.recipe)"
+
+[[step]]
+do = "tap"
+x = 110
+y = 174
+gap = 60
+note = "USE"
+
+[[step]]
+do = "press"
+keys = "b"
+until = "in_battle=0"
+times = 80
+gap = 30
+shot = "caught"
+note = "the catch; B declines the nickname; the full party sends it to the Box"
+
+[[step]]
+do = "advance_text"
+note = "scr 0312 after the catch: @0x0097 0xA8"
+
+[[step]]
+do = "wait_field"
+shot = "end"
 
 [expect]
 map = 156

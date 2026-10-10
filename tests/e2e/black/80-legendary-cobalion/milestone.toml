@@ -1,11 +1,11 @@
 # Cobalion in the Guidance Chamber (Mistralton Cave, Route 6): the hiker's tale, then Cobalion; beating or catching it
 # frees Terrakion's and Virizion's ways (rocks in Victory Road and Pinwheel Forest). Not post-game: Surf and Strength.
-# Start: the Pokemon League's gate (zone 136, 28's end) -> end: the Guidance Chamber (zone 335), Cobalion caught.
+# Start: Mistralton Cave 2F (zone 334) below the Guidance Chamber's stairs (18,13), on 28's end save -> end: the Guidance
+# Chamber (zone 335), Cobalion caught.
 title = "Cobalion (Guidance Chamber)"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 30000   # [INFERENCE] frames, not measured
+estimate = 15494   # measured from 28's end save + start.recipe (CONTINUE included): Black 13336, White 15494 (core-bwm)
 refs = [
   "zone_event 331 warp 1 (156,361) -> zone 333; zone_event 333 warp 1 (13,16) -> zone 334; zone_event 334 warp 1 (17,12) -> zone 335 warp 0 (16,27)",
   "boulders (script id 10000, Strength): zone_event 333 objects 0-2, 334 objects 0-2, 335 objects 0/1 (12,20)/(15,15)",
@@ -14,11 +14,130 @@ refs = [
   "flag 0x28C hides zone_event 226 object 2 gfx 0xCE (5,12) (Victory Road, before the Trial Chamber); 0x28D hides zone_event 155 objects 32-35 (106..109,28) (Pinwheel Forest, before the Rumination Field)",
   "scr 0866 @0x0330/@0x0353 (game clear): flag 0x289 cleared again unless caught (a beaten Cobalion returns)",
 ]
-notes = "Cobalion unlocks the other two (refs): 81 and 82 chain from here. Chained from 28 (shared; eight badges for Victory Road in 81) rather than 32; it is reachable from 22 on (Surf, Strength). Cmd17C's result 0 = caught [INFERENCE: the branch that sets 0xA6, which the game clear's respawn checks]. The full party sends Cobalion to the Box. The recipe swaps in Surf and Strength carriers; 28's bag has a Master Ball and Ultra Balls."
+notes = "Measured from the start save (CONTINUE included): Black 13336, White 15494 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Cobalion unlocks the other two (refs): 81 and 82 chain from here. Chained from 28 (shared; eight badges for Victory Road in 81) rather than 32; it is reachable from 22 on (Surf, Strength). Cmd17C's result 0 = caught [INFERENCE: the branch that sets 0xA6, which the game clear's respawn checks]. The full party sends Cobalion to the Box. The recipe swaps in a Strength carrier and starts on 2F below the chamber's stairs: set-location keeps the saved zone's objects (zone 136's), so the chamber is entered by its warp, which loads its own (Route 6's water and the floors below, Surf and boulders, are not played). In the chamber walk_to's grid shows no heights: the route from the hiker to the boulder above the hole is the one an explorer with the game as the oracle found (scouting), and the pushed boulder fills the hole (it lands at (15,17)). Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text; 28's bag has the Master Ball first."
 
 [start]
 from = "28-route10-cheren-victory-road"
 recipe = "start.recipe"
+
+[run]
+frames = 23500
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 334 warp 1 (17,12) 3x1 -> the Guidance Chamber (zone 335) warp 0, (16,26): the warp loads 335's own objects"
+
+[[step]]
+do = "wait_field"
+shot = "chamber"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 25
+on_battle = "flee"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 24
+on_battle = "flee"
+note = "zone_event 335 trigger 0 (24,24) 3x1, var 0x40B7 == 0: scr 0670 script 2, the hiker's tale (@0x029C 0x40B7 = 1)"
+
+[[step]]
+do = "advance_text"
+shot = "hiker"
+
+[[step]]
+do = "moves"
+dirs = [["L", 1], ["U", 4], ["L", 1], ["U", 6], ["L", 3], ["U", 1], ["L", 1], ["U", 1], ["L", 2], ["U", 3], ["L", 2], ["D", 4]]
+note = "north past the hiker, west along the upper ledges and down to (15,13), above the boulder (zone_event 335 object 1); a route the game found (scouting: an explorer with the game as the oracle; walk_to's grid has no heights here)"
+
+[[step]]
+do = "moves"
+dirs = [["F", "D"]]
+note = "face the boulder: scr 0867 script 1, YES, 'used Strength!'"
+
+[[step]]
+do = "moves"
+dirs = [["P", "D"]]
+shot = "strength"
+note = "push it south: it drops into the hole below and fills it"
+
+[[step]]
+do = "moves"
+dirs = [["D", 6]]
+note = "over the filled hole to (15,20)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 5
+on_battle = "flee"
+note = "west and north to below Cobalion (zone_event 335 object 2 (7,4))"
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "Cobalion: scr 0670 script 1"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "in_battle=1"
+times = 60
+note = "to its WildBattle (Cobalion lv 42, @0x0424)"
+
+[[step]]
+do = "wait_frames"
+n = 900
+shot = "cobalion-battle"
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 190
+y = 48
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 30
+gap = 60
+note = "the first ball, the Master Ball (28's bag lists it first)"
+
+[[step]]
+do = "tap"
+x = 110
+y = 174
+gap = 60
+note = "USE"
+
+[[step]]
+do = "press"
+keys = "b"
+until = "in_battle=0"
+times = 80
+gap = 30
+shot = "caught"
+note = "the catch; B declines the nickname; the full party sends it to the Box"
+
+[[step]]
+do = "advance_text"
+note = "scr 0670 after the catch: @0x04D4 0xA6, then 0x28C, 0x28D, 0xB6"
+
+[[step]]
+do = "wait_field"
+shot = "end"
 
 [expect]
 map = 335

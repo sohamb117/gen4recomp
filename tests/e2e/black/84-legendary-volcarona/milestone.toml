@@ -1,24 +1,130 @@
-# Volcarona in the Relic Castle's depths: past the sand pits below the story's floors to the chamber where
-# Volcarona (lv 70) waits.
-# Start: the Pokemon League's gate (zone 136, 28's end) -> end: the Relic Castle's last chamber (zone 182), Volcarona caught.
+# Volcarona in the Relic Castle's depths: the sage Ryoku steps off the stairs, then the chamber where Volcarona (lv 70)
+# waits, caught with the Master Ball.
+# Start: the Relic Castle's zone 176 by its west door (1,7), on 28's end save -> end: the Relic Castle's last chamber
+# (zone 182), Volcarona caught.
 title = "Volcarona (Relic Castle)"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 40000   # [INFERENCE] frames, not measured
+estimate = 11513   # measured from 28's end save + start.recipe (CONTINUE included): Black 10628, White 11513 (core-bwm)
 refs = [
   "zone_event 182 object 0 gfx 0x7C (16,4) hidden by flag 0x32A -> scr 0364 script 1: @0x001D WildBattle Volcarona (637) lv 70; @0x0040 SetFlag 0x32A; caught -> @0x00A1 SetFlag 0x15C",
+  "zone_event 176 warp 1 (0,7) -> zone 181 warp 1 (12,7); zone_event 181 object 0 gfx 0xBD (6,2) hidden by flag 0x329 -> scr 0362 script 1 (Ryoku: msg 189 #0-#3, TM04 through CallStd 2805 @0x0128, @0x0588 SetFlag 0x329); zone_event 181 warp 2 (6,1) -> zone 182 warp 0",
   "zone_event 182 warp 0 (16,27) -> zone 181 warp 2; zones 160-190 (Relic Castle); black/25 refs: the sand pits 161 -> 162 -> 163 -> 164 -> 165",
   "scr 0866 @0x041A-@0x043D (game clear): flag 0x32A cleared unless 0x15C (an uncaught Volcarona returns after the next clear)",
 ]
-notes = "No flag gates zone 182's Volcarona (only its own hide flag), so it is not post-game in the scripts [INFERENCE: the way down from zone 165 to 182 is open after 25]; chained from 28 (shared, a lv 68 lead for a lv 70 legend). The route through zones 165-181 is PHASE2's (scouting)."
+notes = "Measured from the start save (CONTINUE included): Black 10628, White 11513 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). No flag gates zone 182's Volcarona (only its own hide flag), so it is not post-game in the scripts; chained from 28 (shared, its bag has the Master Ball first). The sage Ryoku (zone_event 181 object 0) stands on the stairs down (warp 2 (6,1)) until talked to: scr 0362 gives TM04, steps aside and sets his hide flag 0x329. The recipe starts in zone 176 by the door to 181: set-location keeps the saved zone's objects, so 181 and 182 are entered by their warps, which load their own (the sand pits from the entrance, zones 160-176, are not played). Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text."
 
 [start]
 from = "28-route10-cheren-victory-road"
+recipe = "start.recipe"
+
+[run]
+frames = 17500
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+note = "zone_event 176 warp 1 (0,7) -> zone 181 warp 1 (12,7): the warp loads 181's own objects (Ryoku)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the sage Ryoku (zone_event 181 object 0 (6,2), on the stairs down, warp 2 (6,1)): scr 0362 script 1, TM04, @0x0588 SetFlag 0x329"
+
+[[step]]
+do = "advance_text"
+shot = "ryoku"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 2
+on_battle = "flee"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 181 warp 2 (6,1) -> zone 182 warp 0 (16,27)"
+
+[[step]]
+do = "wait_field"
+shot = "volcarona-chamber"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 5
+on_battle = "flee"
+note = "below Volcarona; wild battles on the way are fled"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Volcarona (zone_event 182 object 0 (16,4)): scr 0364 script 1"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "in_battle=1"
+times = 60
+note = "to its WildBattle (Volcarona lv 70, @0x001D)"
+
+[[step]]
+do = "wait_frames"
+n = 900
+shot = "volcarona-battle"
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 190
+y = 48
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 30
+gap = 60
+note = "the first ball, the Master Ball (28's bag lists it first)"
+
+[[step]]
+do = "tap"
+x = 110
+y = 174
+gap = 60
+note = "USE"
+
+[[step]]
+do = "press"
+keys = "b"
+until = "in_battle=0"
+times = 80
+gap = 30
+shot = "caught"
+note = "the catch; B declines the nickname; the full party sends it to the Box"
+
+[[step]]
+do = "advance_text"
+note = "scr 0364 after the catch: @0x00A1 0x15C"
+
+[[step]]
+do = "wait_field"
+shot = "end"
 
 [expect]
 map = 182
-flags = ["0x32A", "0x15C"]
+flags = ["0x329", "0x32A", "0x15C"]
 save = [
   "any(m[\"species\"] == 637 for m in s[\"party\"]) or any(m[\"species\"] == 637 for b in s[\"boxes\"] for m in b[\"mons\"])",
 ]

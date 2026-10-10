@@ -1,19 +1,94 @@
 # Terrakion in Victory Road's Trial Chamber, open once Cobalion moved (flag 0x28C hides the rock).
-# Start: the Guidance Chamber (zone 335, 80's end) -> end: the Trial Chamber (zone 229), Terrakion caught.
+# Start: Victory Road (zone 226) below the Trial Chamber's mouth (5,12) on 80's end save -> end: the Trial Chamber
+# (zone 229), Terrakion caught.
 title = "Terrakion (Trial Chamber)"
-status = "planned"
 priority = "P1"
 version = "both"
-estimate = 20000   # [INFERENCE] frames, not measured
+estimate = 9085   # measured from 80's end save + start.recipe (CONTINUE included): Black 8985, White 9085 (core-bwm)
 refs = [
   "zone_event 226 object 2 gfx 0xCE (5,12) hidden by flag 0x28C (scr 0670 @0x04DE, 80); zone_event 226 warp 3 (5,11) -> zone 229 warp 0 (5,9)",
   "zone_event 229 object 0 gfx 0x74 (5,4) hidden by flag 0x28A -> scr 0458 script 1: @0x001F WildBattle Terrakion (639) lv 42; @0x003E SetFlag 0x28A; result 0 (caught) -> @0x0097 SetFlag 0xA7",
   "zone_event 226 warps 0/1 (13,22)/(23,22) -> zone 214 warps 1/5 (Victory Road outdoors, a rail map: black/28's refs)",
 ]
-notes = "Chained from 80 (the rock needs Cobalion's flag, which no recipe can set). Victory Road's outdoors are rails (the rail bot)."
+notes = "Measured from the start save (CONTINUE included): Black 8985, White 9085 frames on the core of 2026-10-09 (bw-script on main 2364eec77 with the armrec VRAM overlap fix, instant text). Chained from 80 (the rock needs Cobalion's flag, which no recipe can set). The recipe puts the player on the rock's tile, freed by 0x28C, below the chamber's mouth (Victory Road's outdoors are rails), and refills the Master Ball 80 threw."
 
 [start]
 from = "80-legendary-cobalion"
+recipe = "start.recipe"
+
+[run]
+frames = 14000
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 226 warp 3 (5,11) -> the Trial Chamber (zone 229) warp 0 (5,9): the warp loads 229's own objects"
+
+[[step]]
+do = "wait_field"
+shot = "chamber"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Terrakion (zone_event 229 object 0 (5,4)): scr 0458 script 1"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "in_battle=1"
+times = 60
+note = "to its WildBattle (Terrakion lv 42, @0x001F)"
+
+[[step]]
+do = "wait_frames"
+n = 900
+shot = "terrakion-battle"
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 190
+y = 48
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 30
+gap = 60
+note = "the first ball, the Master Ball (start.recipe)"
+
+[[step]]
+do = "tap"
+x = 110
+y = 174
+gap = 60
+note = "USE"
+
+[[step]]
+do = "press"
+keys = "b"
+until = "in_battle=0"
+times = 80
+gap = 30
+shot = "caught"
+note = "the catch; B declines the nickname; the full party sends it to the Box"
+
+[[step]]
+do = "advance_text"
+note = "scr 0458 after the catch: @0x0097 0xA7"
+
+[[step]]
+do = "wait_field"
+shot = "end"
 
 [expect]
 map = 229
