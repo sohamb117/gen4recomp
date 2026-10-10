@@ -927,10 +927,25 @@ zone_event's x, y, z fields; a slide is a down-hold past side +2 at a slope (lin
 lines 54-57 front 0-3); side +2 elsewhere is a fence or a cliff. Trainers whose sight stops the player on the rails
 are fought by `rail` with `on_battle = "fight"`.
 
-## Poké Transfer: what it would take (design note, 2026-10-09; being built)
+## Poké Transfer (design note 2026-10-09; done 2026-10-10)
 
-Read from the Black ROM (White matches by name; offsets below are Black's) with `tests/e2e/tools/bw_script.py`,
-`tools/ndsrec/nds.py` and the recompiler's generated assembly. Nothing here is implemented.
+**Status: done in the core.** A Black lab sends the child to a second station with a Platinum or HeartGold card. The
+six are caught and moved, and both saves verify after the games' own writes; see "Built" below. The shell runs the
+second station with `--poke-transfer`. Not covered:
+- Diamond, Pearl and SoulSilver cards (not run). D/P use the child's `mb_data_main` layout, Platinum `mb_data_pt` and
+  HG/SS `mb_data_gs`; SoulSilver shares HeartGold's.
+- White's lab. The child program is byte-identical to Black's, but no White lab schedule has been recorded.
+- An app run. The app case `n2_poke_transfer` (tests/mac/feature_matrix.py) needs an app built with the poketransfer
+  guest; the stations there are free-running, so it checks the download and boot, not the minigame.
+- Paths not tested: the timer running out with some but not all caught, held items and eggs (msg 313 #32 asks
+  for none held), boxes other than box 1, and a second round ("use Poké Transfer again?" YES). The timer running
+  out with none caught was seen: the child asks "again?", and NO ends with nothing written.
+- The firmware's RSA check of the download (the hash check against the recompiled image stands in for it).
+- The Relocator (`dl_rom/child2_r_eng.srl`) is out of scope.
+
+The design note follows as written before the work. It was read from the Black ROM (White matches by name; offsets
+below are Black's) with `tests/e2e/tools/bw_script.py`, `tools/ndsrec/nds.py` and the recompiler's generated
+assembly.
 
 **The lab and its gate.** The Poké Transfer Lab is zone 381, entered from Route 15 (zone 378 warp 2 at
 (608,425)). Its counter scientist (zone_event 381 object 0, scr 0878 script 1, text msg 313) checks only:
@@ -1034,7 +1049,7 @@ Black and White; White's overlay 107 sits at 0x021EE760, the same size).
 - Overlay 230 stays opaque. Nothing found here calls it, but a run would need `PC_TRACE_OVERLAYS=1` to confirm no
   new caller.
 
-### Built: the child station, its Download Play and the transfer (2026-10-10)
+### Built: the child station, its Download Play, the transfer and the shell (2026-10-10)
 
 **The child as a guest.** `games/ndsrec` with `VER=poketransfer BW_ROM=<Black or White ROM>` extracts
 `dl_rom/child_r_eng.srl` (`ndsrec.py extract`, into build/) and recompiles it like Black and White's static:
@@ -1111,6 +1126,14 @@ records `pt-child-<card>.sched` greedily:
   keeps a flush shot.
 - Platinum needed 11 shots (released 13347 to 14455), HeartGold 10 (13663 to 15180), 10-40 minutes each.
 - A schedule fits only the saves it was recorded with; the test checks their SHA-1s and names the tool otherwise.
+
+**The shell.** `nativeplat --poke-transfer --game <diamond|pearl|platinum|heartgold|soulsilver> [--slot S]`, or a Gen 4
+slot's *Poke Transfer station*, makes the window the second DS:
+- The window runs the `poketransfer` core with that game's cartridge and save slot as the card (`app->card_game`:
+  whose ROM and slot a session uses). The child's writes go to that slot.
+- Local wireless must be on, since the lab is in another window or on another machine. Carts and content packages
+  stay the card game's.
+- The packages build the guest in when `ndsrec-poketransfer.wasm` exists.
 
 ## The Musical show: the ARM7's VBlank count (2026-10-10)
 
