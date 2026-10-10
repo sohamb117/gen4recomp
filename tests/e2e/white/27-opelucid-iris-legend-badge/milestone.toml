@@ -1,26 +1,642 @@
-# Proves the Opelucid Gym and Iris's Legend Badge on White, then Professor Juniper's Master Ball and the gate north.
-# Start: Opelucid City (zone 120) -> end: the Opelucid Gate (zone 132), 8 badges, 0x40B8 = 3.
+# Proves the Opelucid Gym (the dragon-head lifts) and Iris's Legend Badge on White, then Professor Juniper's
+# Master Ball and the gate north.
+# Start: Opelucid City (zone 120, 26's end) -> end: the Opelucid Gate (zone 132), 8 badges, 0x40B8 = 3.
 title = "Opelucid Gym (White): Iris's Legend Badge"
-status = "planned"
 priority = "P0"
 version = "white"
-estimate = 25000
+estimate = 50107
 refs = [
   "scr 0242 script 1 @0x007F GetVersion: 20 (White) -> L_0203: Iris; zone_event 121 via scr 0242 script 2 (@0x0069 SetVar 0x4020 0x5C: the leader's sprite on White)",
   "scr 0242 @0x0224 TrainerBattle trdata #132 (Iris: Fraxure 41, Druddigon 41, Haxorus 43); @0x025B GiveBadge 7 (Legend); @0x02C7 CallStd 2805 TM82; @0x0315 SetVar 0x40A9 1; @0x031B SetVar 0x40B8 1; @0x0321 SetFlag 0x978",
+  "zone_event 121 triggers 0-5 (switches (6,29) (18,29) (21,27) (33,27) (36,22) (48,22), one-way ledge hops) -> scr 0242 scripts 3-8 -> L_0704 Cmd19A var 0x8020 (dragon), var 0x8022 (arm): each press toggles that arm; the two arms set where the head points",
+  "zone_event 121 trainers: Webster #270, Olwen #265, Jose #271, Clara #266, Hugo #274 (scr 0242 script 12 at (32,35)), Tom #272, Dara #267, Kim #275",
+  "zone_event 121 object 4 (27,2) -> scr 0242 script 1; (27,0) -> (26,45) (warp 1 -> warp 2); door (26..28,50) -> zone 120 (405,145)",
+  "zone_event 120 warp 1 (425,172) -> zone 122 (Pokemon Center); warp 2 (405,144) -> zone 121 (27,50)",
   "zone_event 120 level type 1: 0x40B8 == 1 -> scr 0240 script 17; @0x0FD9 CallStd 2805 Master Ball; @0x100C SetVar 0x40B8 2",
-  "zone_event 132 trigger 0 (2,11) var 0x40B8 == 2 -> scr 0264 script 3; @0x01A4 SetVar 0x40B8 3; @0x01AA SetVar 0x40C0 1; @0x01B0 SetFlag 0x96F",
+  "zone_event 132 trigger 0 (2..7,11) var 0x40B8 == 2 -> scr 0264 script 3; @0x01A4 SetVar 0x40B8 3; @0x01AA SetVar 0x40C0 1; @0x01B0 SetFlag 0x96F",
 ]
-notes = "Black plays black/27-opelucid-drayden-legend-badge. [INFERENCE] estimate."
+notes = "The gym's dragon bodies and necks are rails; the six switches are ledge hops that toggle one arm of a dragon each, and a dragon's two arms set where its head (the lift) points. The route is IGN's order, tiles from the probe: rail stops are exact (a junction turns only from its exact tile), and each rail dead end takes a 16-frame press the same way before the next direction. The (18,29) switch is pressed twice and (33,27) twice. The leader's badge flag (0x978) is set by the leader's script and cleared again before the gate, so [expect] reads the badge count, TM82 and the Master Ball. Black plays black/27-opelucid-drayden-legend-badge (Drayden, trdata #133) with the same steps. The boost levels the party (levels only): unboosted, scouting reached the leader with only Sawk standing."
 
 [start]
 from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 75200
+
+[[step]]
+do = "heal"
+x = 425
+z = 172
+note = "Opelucid Pokemon Center (zone_event 120 warp 1 -> 122): 26 arrives with fainted members"
+
+[[step]]
+do = "walk_to"
+x = 405
+z = 144
+note = "the gym door: zone_event 120 warp 2 (405,144) -> 121 (27,50)"
+
+[[step]]
+do = "wait_map"
+map = 121
+
+[[step]]
+do = "wait_field"
+shot = "gym"
+
+[[step]]
+do = "walk_to"
+x = 44
+z = 44
+note = "Webster (trdata #270) sees the player on the way; walk_to fights him"
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "onto the east dragon's tail: its body and neck are rails"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 47
+z = 28
+near = 0
+note = "exact stop: the branch toward Olwen turns right only from (47,28), not (47,29)/(47,30)"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 54
+z = 29
+near = 0
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 49
+z = 22
+note = "Olwen (#265)"
+
+[[step]]
+do = "moves"
+dirs = [["L", 1]]
+note = "the ledge hop onto switch (48,22): zone_event 121 trigger -> scr 0242 script 6 -> L_0704 Cmd19A (var 0x8020 dragon, 0x8022 arm): the east dragon's first arm toggles"
+
+[[step]]
+do = "advance_text"
+shot = "east-arm-1"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 42
+z = 23
+near = 0
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 42
+z = 12
+near = 0
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 30
+z = 12
+near = 0
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 35
+z = 22
+note = "Jose (#271)"
+
+[[step]]
+do = "moves"
+dirs = [["R", 1]]
+note = "switch (36,22): scr 0242 script 5, the east dragon's other arm"
+
+[[step]]
+do = "advance_text"
+shot = "east-arm-2"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 42
+z = 23
+near = 0
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 42
+z = 0
+near = 0
+note = "up the east dragon's neck onto its head (42,0)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 35
+z = 27
+note = "Clara (#266)"
+
+[[step]]
+do = "moves"
+dirs = [["L", 2]]
+note = "switch (33,27): scr 0242 script 8, the middle dragon"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 27
+z = 28
+near = 0
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 32
+z = 35
+near = 0
+note = "down the middle dragon's neck: Hugo (#274) stops the player at (32,35) (scr 0242 script 12, @0x0478 SetVar 0x40A9 1)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 15
+z = 34
+near = 0
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 27
+note = "back up to the middle dragon's second switch"
+
+[[step]]
+do = "moves"
+dirs = [["R", 2]]
+note = "switch (21,27): scr 0242 script 7, the middle dragon's other arm"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 27
+z = 28
+near = 0
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 27
+z = 17
+near = 0
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 39
+z = 17
+near = 0
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 39
+z = 8
+near = 0
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 29
+note = "Tom (#272)"
+
+[[step]]
+do = "moves"
+dirs = [["L", 2]]
+note = "switch (18,29): scr 0242 script 4, the west dragon"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 12
+z = 30
+near = 0
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 9
+z = 7
+near = 0
+note = "the loop: up the west dragon's north line and back along its tail to (18,29)'s side"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 18
+z = 7
+near = 0
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 20
+z = 29
+note = "the same switch again"
+
+[[step]]
+do = "moves"
+dirs = [["L", 2]]
+note = "switch (18,29) once more: each press toggles its arm, so the west head points the other way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 12
+z = 30
+near = 0
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 12
+z = 39
+near = 0
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 0
+z = 39
+near = 0
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 29
+note = "Dara (#267), on the way to the west dragon's second switch"
+
+[[step]]
+do = "moves"
+dirs = [["R", 2]]
+note = "switch (6,29): scr 0242 script 3, the west dragon's other arm"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 12
+z = 30
+near = 0
+
+[[step]]
+do = "rail"
+keys = "down"
+x = 12
+z = 51
+near = 0
+note = "down the west snout to (12,51)"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 49
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 30
+z = 49
+near = 0
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 23
+z = 40
+near = 0
+
+[[step]]
+do = "rail"
+keys = "right"
+x = 39
+z = 41
+near = 0
+script = true
+note = "Kim (#275): a trigger on the way stops the ride and runs his scene (script = true ends the hold there)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 40
+z = 29
+note = "up to the middle dragon's switch line"
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 40
+z = 20
+near = 0
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 35
+z = 27
+note = "switch (33,27) the second time"
+
+[[step]]
+do = "moves"
+dirs = [["L", 2]]
+note = "switch (33,27): the middle dragon's head now points up to the leader"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "rail"
+keys = "left"
+x = 27
+z = 28
+near = 0
+
+[[step]]
+do = "rail"
+keys = "up"
+x = 27
+z = 3
+near = 0
+note = "up the middle dragon's neck to the leader's platform (27,3)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 16
+gap = 0
+note = "a rail's dead end: a 16-frame press the same way leaves it"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 4
+shot = "leader"
+note = "the leader: object 4 (27,2) -> scr 0242 script 1 (GetVersion picks Drayden on Black, Iris on White)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "the leader's first action menu goes on the sheet"
+
+[[step]]
+do = "advance_text"
+shot = "badge"
+note = "the Legend Badge (GiveBadge 7), TM82, 0x40A9 1, 0x40B8 1"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 0
+note = "the leader's platform exit: (27,0) warps to (26,45) inside the gym"
+
+[[step]]
+do = "wait_frames"
+n = 300
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 49
+
+[[step]]
+do = "moves"
+dirs = [["D", 2]]
+note = "the gym door (26..28,50) -> zone 120 (405,145)"
+
+[[step]]
+do = "wait_map"
+map = 120
+
+[[step]]
+do = "advance_text"
+max = 20000
+shot = "juniper"
+note = "zone 120 level script 0x40B8 == 1 -> scr 0240 script 17: Juniper's Master Ball (@0x0FD9), 0x40B8 2"
+
+[[step]]
+do = "walk_to"
+x = 430
+z = 134
+note = "zone_event 120 warp 8 (430..432,134) -> the Opelucid Gate 132 (4,14)"
+
+[[step]]
+do = "wait_map"
+map = 132
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 12
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "trigger 0 (2..7,11) var 0x40B8 == 2 -> scr 0264 script 3: 0x40B8 3, 0x40C0 1, flag 0x96F"
+
+[[step]]
+do = "advance_text"
+shot = "gate"
+
+[[shots]]
+frames = [40620, 41050, 41200, 41350]  # the leader's lines and the battle's opening
 
 [expect]
 map = 132
 badges = 8
-flags = ["0x978"]
+battles = 9
+flags = ["0x96F"]
+save = [
+  'any(i["item"] == 1 for i in s["bag"]["items"])',
+  'any(i["item"] == 409 for i in s["bag"]["tms_hms"])',
+]
 
 [expect.vars]
 "0x40B8" = 3
 "0x40A9" = 1
+"0x40C0" = 1
