@@ -13,7 +13,7 @@
 67-hm-rock-climb
 68-hm-flash
 69-headbutt-tree
-# Core systems (P0: rods 70/71 wait on an HG/SS fishing trace; P1: 72 Super Rod (Kanto), 76 trade evolution (tests/link))
+# Core systems (P0; P1: 72 Super Rod (Kanto), 76 trade evolution (tests/link)); the rods 70-72 fish with the guest's PC_TRACE_FISH
 70-fishing-old-rod
 71-fishing-good-rod
 72-fishing-super-rod
