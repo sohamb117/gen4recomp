@@ -1243,6 +1243,7 @@ def _(c):
     log_b = b.finish(pb, timeout=1800)
     c.finish(pa, timeout=1800)
     assert 'image verified; booting the child' in log_b, 'the child station did not boot the child'
+    assert 'pc_card_rom: save: loaded' in log_b, 'the child did not read the card\'s save'
 
 
 @case('n2_screenshot', 'F12 screenshot: both screens to userdata/screenshots/<game>-*.png', 'nds2')

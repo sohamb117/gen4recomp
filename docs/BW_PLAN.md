@@ -929,14 +929,18 @@ are fought by `rail` with `on_battle = "fight"`.
 
 ## Poké Transfer (design note 2026-10-09; done 2026-10-10)
 
-**Status: done in the core.** A Black lab sends the child to a second station with a Platinum or HeartGold card. The
-six are caught and moved, and both saves verify after the games' own writes; see "Built" below. The shell runs the
-second station with `--poke-transfer`. Not covered:
+**Status: done in the core, and the app runs the second station.** A Black lab sends the child to a second station
+with a Platinum or HeartGold card. The six are caught and moved, and both saves verify after the games' own writes;
+see "Built" below. In the app, `--poke-transfer` makes a window that station; two windows meet over local wireless and
+reach the child's selection screen. Not covered:
 - Diamond, Pearl and SoulSilver cards (not run). D/P use the child's `mb_data_main` layout, Platinum `mb_data_pt` and
   HG/SS `mb_data_gs`; SoulSilver shares HeartGold's.
 - White's lab. The child program is byte-identical to Black's, but no White lab schedule has been recorded.
-- An app run. The app case `n2_poke_transfer` (tests/mac/feature_matrix.py) needs an app built with the poketransfer
-  guest; the stations there are free-running, so it checks the download and boot, not the minigame.
+- The minigame and the transfer in the app. `n2_poke_transfer` (tests/mac/feature_matrix.py) runs two app installs
+  over local wireless, Black's lab and `--poke-transfer` with the Platinum card. The child is received, verified and
+  booted, and BOX 1 shows the six. The windows are free-running, not in lockstep, so the minigame's shots are not
+  scripted there.
+- While it waits for and receives the download, the station shows nothing; a DS shows its Download Play menu.
 - Paths not tested: the timer running out with some but not all caught, held items and eggs (msg 313 #32 asks
   for none held), boxes other than box 1, and a second round ("use Poké Transfer again?" YES). The timer running
   out with none caught was seen: the child asks "again?", and NO ends with nothing written.
