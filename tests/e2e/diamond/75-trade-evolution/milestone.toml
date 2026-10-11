@@ -1,0 +1,66 @@
+# In-game NPC trade: the girl in Oreburgh's north house trades her ABRA for MACHOP (NPCTradeInit 0). An NPC trade
+# never evolves the received mon [INFERENCE: CallTask_NPCTrade, scrcmd.c:3849-3853, runs the trade animation only];
+# D/P evolves a traded mon after a link trade. That half is the two-station link scenario dp_trade_evolve
+# (tests/link/run_link_tests.py): B's KADABRA arrives on A's station, evolves, and A's save keeps ALAKAZAM (65).
+# Start: MAP_OREBURGH_NORTH_HOUSE_1F (11,8) facing the girl. End: same map, ABRA in slot 0.
+title = "Trades: NPC trade (and link trade evolution)"
+priority = "P1"
+version = "both"
+estimate = 4817
+refs = [
+  "maps.h:58",
+  "zone_event 0053 object 1",
+  "scr_seq 0058 @0x001D-0x0099",
+  "games/diamond/arm9/src/scrcmd.c:3828-3860",
+  "games/diamond/files/fielddata/pokemon_trade/fld_trade/narc_0000.bin",
+  "games/diamond/files/poketool/personal/evo.json:497-505",
+  "tests/link/run_link_tests.py dp_trade_evolve",
+  "tests/link/recipes/dp-union-b-kadabra.recipe",
+  "tests/link/schedules/dp-trade-evolve-a.sched",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 7300
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the girl (zone_event 0053 object 1, wanders round (11,7)): 'Do you have a Pokemon called MACHOP? Would you be willing to trade your MACHOP for my ABRA?' (msg 67 #0, scr_seq 0058 @0x001D)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "the text to the YES/NO (@0x0020)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "YES -> OpenTradeScreen (@0x0045): the party menu, MACHOP (slot 0) highlighted"
+shot = "party-menu"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "MACHOP picked -> NPCTradeExecute (@0x0086)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "the trade animation (MACHOP sent, ABRA arrives), then 'Be nice to my ABRA!' (msg 67 #1)"
+shot = "traded"
+
+[expect]
+map = "MAP_OREBURGH_NORTH_HOUSE_1F"
+# 0x85: set after the trade (scr_seq 0058 @0x008C)
+flags = ["0x85"]
+party = ["SPECIES_ABRA"]
+save = ['s["party"][0]["species"] == 63', 's["party"][1]["species"] == 396']
+
+[[shots]]
+frames = [2300, 2900, 3500, 4100, 4600]   # the trade animation: MACHOP sent, the exchange, ABRA arriving, the girl's text

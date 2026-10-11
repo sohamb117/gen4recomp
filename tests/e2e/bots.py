@@ -2975,10 +2975,71 @@ def _log_since(s, pos):
     return data.decode("utf-8", "replace"), pos + len(data)
 
 
+# ---- D/P fishing without the trace (pokediamond arm9/overlays/05/asm/ov05_021F5C44.s): the rod's field task
+# ov05_021F5C70 starts a SysTask (SysTask_CreateOnMainQueue, priority 0x80) running ov05_021F5D7C on a 0x4c-byte
+# FishingTask: +0x0 fish encountered, +0x4 done, +0x8 caught, +0xC state (an index into the action table
+# ov05_021FC9B8), +0x1C rod type, +0x20 FieldSystem. A SysTask holds +0xC priority, +0x10 data, +0x14 func
+# (arm9/asm/unk_0201B4E8.s sub_0201B620), so the task is found in main RAM by its function and priority.
+DP_FISH_TASK = re.compile(rb"(?s)\x80\x00\x00\x00(....)[\x7c\x7d]\x5d\x1f\x02")  # priority 0x80, data, func
+DP_FISH_BITE = 5               # ov05_021F5EA8: the hook window, 45/30/15 frames by rod (ov05_021FC9AC)
+DP_FISH_CAUGHT = (6, 7, 8, 9)  # ov05_021F5ED4 .. : the reel-in, "Landed a Pokemon!", caught = 1
+DP_FISH_CLOSE = 14             # ov05_021F5FEC: the end message ("not even a nibble", "got away", "too quickly")
+
+
+def _dp_fish_find(s):
+    """The guest address of the live FishingTask, or None."""
+    ram = b"".join(s.peek(a, 0x10000) for a in range(0x02000000, 0x02400000, 0x10000))
+    for m in DP_FISH_TASK.finditer(ram):
+        if m.start() % 4:
+            continue
+        data = struct.unpack("<I", m.group(1))[0]
+        if 0x02000000 <= data < 0x02400000 and data % 4 == 0:
+            done, caught, state = struct.unpack_from("<3I", ram, data - 0x02000000 + 4)
+            rod = struct.unpack_from("<I", ram, data - 0x02000000 + 0x1C)[0]
+            if done == 0 and caught == 0 and state < 18 and rod < 3:
+                return data
+    return None
+
+
+def _dp_fish_cast(s, n, limit, max_frames):
+    """One D/P cast (Y already pressed): the FishingTask's state word read every frame; A when the bite window
+    opens. Returns the outcome as the trace names it (FISH_ENDS)."""
+    addr = None
+    while addr is None:
+        if s.frame >= limit:
+            raise HarnessError("fish: cast %d: no fishing task in RAM in %d frames (not facing water?)" % (n, max_frames))
+        s.run(4)
+        addr = _dp_fish_find(s)
+    s.note("fish: cast %d: FishingTask at 0x%08X" % (n, addr))
+    last = None
+    while True:
+        if s.frame >= limit:
+            raise HarnessError("fish: cast %d did not end in %d frames (state %s)" % (n, max_frames, last))
+        state, = struct.unpack("<I", s.peek(addr + 0xC, 4))
+        if state != last:
+            s.note("fish: cast %d: state %d" % (n, state))
+            if state == DP_FISH_BITE:
+                s.note("fish: cast %d: bite" % n)
+                snap(s)
+                s.run(2, "a")
+                last = state
+                continue
+            if state in DP_FISH_CAUGHT:
+                return "caught"
+            if state >= DP_FISH_CLOSE:
+                return {DP_FISH_BITE: "away", 4: "early", 3: "early"}.get(last, "none")
+            last = state
+        s.run(1)
+
+
+
+
 def bot_fish(s, step, ctx):
     """Fish with the registered rod as a player does: Y casts; the guest's fishing trace (PC_TRACE_FISH=1 in [run]
     env; pc_fish_trace, pc_probe2d.c: one line per state change) says when the bite window opens, and A hooks
-    then (a press before the bite reels in early, fishing.c). A cast that ends without a catch ("none": not even a
+    then (a press before the bite reels in early, fishing.c). Diamond/Pearl have no trace: the FishingTask's state
+    word is read from guest RAM instead (_dp_fish_cast; each state change is a `fish: cast N: state S` line in the
+    run log, the hook window `fish: cast N: bite`). A cast that ends without a catch ("none": not even a
     nibble, "away", "early") has its message closed with B and the rod is cast again, up to `casts` (default 12).
     Done when the hooked Pokemon's battle starts; the screen at the bite goes on the contact sheet."""
     casts = _int(step, "casts", 12)
@@ -2989,6 +3050,8 @@ def bot_fish(s, step, ctx):
     for n in range(1, casts + 1):
         s.run(2, "y")
         outcome = None
+        if ctx.game in ("diamond", "pearl"):
+            outcome = _dp_fish_cast(s, n, limit, _int(step, "max", 9000))
         while outcome is None:
             if s.frame >= limit:
                 raise HarnessError("fish: cast %d did not end in %d frames%s" % (

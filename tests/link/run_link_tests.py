@@ -95,6 +95,16 @@ SCENARIOS = [
     # ends, so the parties are checked without leaving the trade screen.
     dict(name='dp_trade', games=('diamond', 'diamond'), recipes=DP_UNION, scheds=DP_TRADE,
          frames=11500, party=TRADED),
+    # Diamond's A with Pearl's B: B's slot 0 KADABRA (dp-union-b-kadabra.recipe)
+    # for A's TURTWIG. It evolves into ALAKAZAM on A's station after the trade
+    # animation (EVO_TRADE; "KADABRA is evolving!" ~11100), A dismisses the
+    # "evolved into ALAKAZAM!" text (12400), and the game saves A's ALAKAZAM
+    # and B's TURTWIG (both back on the trade screen by 13000). The dumps
+    # show the arrival, the evolution and the trade screen after it.
+    dict(name='dp_trade_evolve', games=('diamond', 'pearl'),
+         recipes={'a': DP_UNION['a'], 'b': 'recipes/dp-union-b-kadabra.recipe'},
+         scheds={'a': 'schedules/dp-trade-evolve-a.sched', 'b': DP_TRADE['b']},
+         frames=16000, dump_from=10400, dump_every=200, party={'a': [65, 396], 'b': [387, 396]}),
     # As union_battle: B wins, WIN (left) for UNIONB on both stations.
     dict(name='dp_battle', games=('diamond', 'diamond'), recipes=DP_UNION,
          scheds={'a': 'schedules/dp-battle-a.sched', 'b': 'schedules/dp-battle-b.sched'},

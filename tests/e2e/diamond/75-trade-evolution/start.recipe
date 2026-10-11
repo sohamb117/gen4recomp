@@ -1,0 +1,9 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 26075
+money 3000
+# the trade wants MACHOP: NPCTradeGetRequestedSpecies compared with the picked slot (scr_seq 0058 @0x0066-0x007F)
+party SPECIES_MACHOP 15 ITEM_NONE
+party SPECIES_STARLY 12 ITEM_NONE
+# one tile south of the girl (11,7), who wanders range (1,1) (zone_event 0053 object 1)
+map MAP_OREBURGH_NORTH_HOUSE_1F 11 8 FACE_UP

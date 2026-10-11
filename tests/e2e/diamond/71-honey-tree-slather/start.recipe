@@ -1,0 +1,13 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 30071
+money 3000
+# HONEY (94): the honey tree script asks to slather only with one in the bag (scr_seq 0205 @0x0577 HasItem 94);
+# two: one for this slather, one for the re-slather after 71b's battle (scr_seq 0205 @0x0629)
+item ITEM_HONEY 2
+# STARAPTOR Brave Bird KOs any honey tree Pokemon (lv5-15: overlay_06.s ov06_0223CCDC, LCRandom % 11 + 5) in 71b
+party SPECIES_STARAPTOR 40 ITEM_NONE
+party-move 0 0 MOVE_BRAVE_BIRD
+# tree 0 = MAP_ROUTE_205_SOUTH (347, ov05_021FC650 entry 0, ov05_021F4CF8.s:750); its prop is checked on the
+# tile north of the player, facing up (ov05_021F4D2C, ov05_021F4CF8.s:37-76): (213,652), as in Platinum (the run shows it)
+map MAP_ROUTE_205_SOUTH 213 653 FACE_UP

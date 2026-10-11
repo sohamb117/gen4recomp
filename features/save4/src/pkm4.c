@@ -269,6 +269,13 @@ void pkm4_set_ev(pkm4 *p, int stat, uint8_t v)
         p->data[OFS_EVS + stat] = v;
 }
 
+/* Block A's contest conditions (cool, beauty, cute, smart, tough, then sheen: `contest` in pkm4_info). */
+void pkm4_set_contest(pkm4 *p, int stat, uint8_t v)
+{
+    if (stat >= 0 && stat < 6)
+        p->data[OFS_CONTEST + stat] = v;
+}
+
 void pkm4_set_move(pkm4 *p, int slot, uint16_t move, uint8_t pp, uint8_t pp_ups)
 {
     if (slot < 0 || slot >= 4)

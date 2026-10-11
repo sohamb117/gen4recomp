@@ -1,0 +1,12 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31181
+money 20000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+party SPECIES_INFERNAPE 40 ITEM_NONE
+# the clerk and every machine refuse without the Coin Case (HasItem 444 at scr_seq 0136 @0x00EC, @0x0145);
+# in play the Veilstone south house's game gives it (scr_seq 0145 @0x00CA SetVar 0x8004 444, std 2016; msg 148 #4)
+item ITEM_COIN_CASE 1
+# facing machine 0 at (12,6) from the west (zone_event 0135 bg 0); the door is warp 0 (5,11)
+map MAP_VEILSTONE_GAME_CORNER 11 6 FACE_RIGHT

@@ -1,0 +1,17 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 10412
+money 9000
+# BIBAREL (gender ratio 127: female when the PID's low byte is below 127) so that a male and a female of the same
+# species and OT go in (compatibility 50 per 256 steps: Daycare_Update ov05_021ED378, ov05_021EC458.s:1918-2051).
+# The lab's GiveMon rolls the PIDs from the game's RNG, the same on every mint: slots 0-4 come out male (PID low
+# bytes E9 8E E1 94 84), slot 5 female (2F). 73 adds the Flame Body MAGBY by its boost.
+party SPECIES_BIBAREL 25 ITEM_NONE
+party SPECIES_BIBAREL 26 ITEM_NONE
+party SPECIES_BIBAREL 27 ITEM_NONE
+party SPECIES_BIBAREL 28 ITEM_NONE
+party SPECIES_BIBAREL 29 ITEM_NONE
+party SPECIES_BIBAREL 30 ITEM_NONE
+# inside the Day Care, south of the counter; the lady (9,4) (zone_event 0415 object 0) is spoken to across it from
+# (9,6) (tools/probe_map.py)
+map MAP_SOLACEON_DAYCARE 9 10 FACE_UP

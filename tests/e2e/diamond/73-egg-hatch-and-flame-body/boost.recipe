@@ -1,0 +1,5 @@
+# Boost on 72's end save (party only): BIBAREL lv26-29 and the BIDOOF egg (slot 4) -> size 5.
+# Adds slot 5: MAGBY, whose only ability is Flame Body (files/poketool/personal/personal.json:18807-18809), so the
+# egg loses two cycles per 255 steps instead of one (ov05_021ED190, ov05_021EC458.s:1653-1695: cmp 0x28 Magma
+# Armor / 0x31 Flame Body -> 2). It never battles (wild battles on the laps are fled).
+party SPECIES_MAGBY 20 ITEM_NONE

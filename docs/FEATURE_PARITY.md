@@ -11,17 +11,21 @@ Status: **done** shown working in the packaged macOS app (evidence linked) ·
 progress · **no** not started · **n/a** no counterpart (reason given).
 
 Evidence names are cases in [docs/evidence/README.md](evidence/README.md)
-(screenshots in `build/evidence/`, made by `tests/mac/feature_matrix.py` on
-`build/dist/nativeplat-macos-arm64.zip`, 2026-10-04). Platinum, Diamond,
-Pearl, and Windows rows: main 80dc9d8c7.
+(screenshots made by `tests/mac/feature_matrix.py`). The Platinum, Diamond
+and Pearl rows were re-run on 2026-10-11 on the ten-core macOS package built
+from main c8948448c (`~/Downloads/nativeplat/nativeplat-macos-arm64-c8948448c.zip`,
+sha256 `58fa10e2ea39e12bfd3fef146e05ad3e5fdc4c8b43c8295090510f1258d94c12`);
+that pass's screenshots, logs and `matrix.json` are in
+`build/evidence/dppt-app-c8948448c/`. Windows rows: main 80dc9d8c7 (not
+re-run in this pass).
 
-**All three games** were run in the packaged app (main 80dc9d8c7 plus this
-shell): the in-game rows were run on Diamond, Pearl and Platinum from saves
-minted with `tests/gameplay` recipes (`--game diamond|pearl` runs of
-`tests/mac/feature_matrix.py`; Diamond and Pearl evidence names carry a
-`diamond-` / `pearl-` prefix). Shell rows that do not depend on the game
-(launcher, slots, options UI, sync, updater, skins, relay) were exercised
-with Platinum data and run the same code for every game.
+**All three games** were run in the packaged app: every `ds` case of
+`tests/mac/feature_matrix.py` (33) ran with `--game platinum`, `--game diamond`
+and `--game pearl`, 33/33 ok on each game, from saves minted with
+`tests/gameplay` and `tests/link` recipes on the gate cores. Diamond and Pearl
+evidence names carry a `diamond-` / `pearl-` prefix. The shell cases (launcher,
+slots, sync, skins, touch editor, URL) ran in each game's pass with that game's
+ROM and save; the relay, updater, UI scale and About cases use no game data.
 
 ## Launcher and import
 
@@ -31,7 +35,7 @@ with Platinum data and run the same code for every game.
 | ROM import with SHA-1 verification | US dumps; Platinum rev 0 recognised and refused | done | done | done | launcher_import |
 | File picker and drag-and-drop import | SDL3 dialog + drop | done | done | done | launcher_import (2 drops, 1 dialog) |
 | Generated cache from ROM | Not needed: the core reads the cartridge filesystem at runtime | n/a | n/a | n/a |  |
-| Save slots, Continue / Edit / Delete | Named slots: new, duplicate, rename, export/import .sav, delete | done | done | done | slots, continue; diamond-continue, pearl-continue |
+| Save slots, Continue / Edit / Delete | Named slots: new, duplicate, rename, export/import .sav, delete | done | done | done | slots, continue; diamond-slots, diamond-continue, pearl-slots, pearl-continue |
 | Custom carts | Sealed mod package sets bound to a slot | done | done | done | carts; diamond-carts, pearl-carts |
 | Import inbox (mobile Documents) | Same on iOS | no (iOS deferred) | no | no |  |
 
@@ -67,9 +71,9 @@ with Platinum data and run the same code for every game.
 |---|---|---|---|---|---|
 | Keyboard / gamepad defaults, rebinding | Every action, 3 keys + 1 pad button | done | done | done | controls |
 | Touch: mouse and fingers | Stylus on the bottom screen in every layout | done | done (touch bag in tests/gameplay) | done (touch bag in tests/gameplay) |  |
-| On-screen touch pad, layout editor | Same, per orientation | done | shell | shell | touch_editor |
-| Touch skins | Delta `.deltaskin` (hand-made test skin) | done | shell | shell | skin |
-| Speed hotkeys up to very high | `1` cycles 1x-8x/uncapped; F hold, G toggle | done (1800 iterations ran 6642 frames with G) | done (6648 frames) | done | speed; diamond-speed, pearl-speed |
+| On-screen touch pad, layout editor | Same, per orientation | done | done | done | touch_editor; diamond-touch_editor, pearl-touch_editor |
+| Touch skins | Delta `.deltaskin` (hand-made test skin) | done | done | done | skin; diamond-skin, pearl-skin |
+| Speed hotkeys up to very high | `1` cycles 1x-8x/uncapped; F hold, G toggle | done (1800 iterations ran 6642 frames with G) | done (6648 frames) | done (6648 frames) | speed; diamond-speed, pearl-speed |
 | F1 quick save / F2 quick load | The game's own save without its menu; reboot from it | done | done | done | quicksave; diamond-quicksave, pearl-quicksave |
 
 ## Saves
@@ -78,7 +82,7 @@ with Platinum data and run the same code for every game.
 |---|---|---|---|---|---|
 | Normal save, atomic writes, backups | Backup chip image, temp + rename, `.bak` | done | done | done | slots, editor; diamond-editor, pearl-editor |
 | Semantic checkpoints | 4 in-memory snapshot slots (F5/F6/F7) and hold-to-rewind | done | done (snapshot 1 loaded; rewind depth 286 to 271) | done (snapshot 1 loaded; rewind depth 286 to 271) | snapshots; diamond-snapshots, pearl-snapshots |
-| Cloud / device sync | Folder sync, three-way with conflict chooser | done | shell | shell | sync |
+| Cloud / device sync | Folder sync, three-way with conflict chooser | done | done (Diamond slot mirrored, conflict chooser) | done (Pearl slot mirrored, conflict chooser) | sync; diamond-sync, pearl-sync |
 | Portable mode (`portable.txt`) | Same | done | done | done | portable (every case runs portable) |
 
 ## Save editor
@@ -93,14 +97,14 @@ with Platinum data and run the same code for every game.
 
 | Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
 |---|---|---|---|---|---|
-| Save import/export | Raw 512 KiB `.sav` / DeSmuME `.dsv` | done | shell | shell | slots |
+| Save import/export | Raw 512 KiB `.sav` / DeSmuME `.dsv` | done | done (import, export byte-identical) | done (import, export byte-identical) | slots; diamond-slots, pearl-slots |
 | Cross-generation transfer | Pal Park: GBA cart + save in the slot | done (MIGRATE FROM EMERALD on the main menu) | done (MIGRATE FROM EMERALD) | done (MIGRATE FROM EMERALD) | palpark; diamond-palpark, pearl-palpark |
 
 ## Link and online
 
 | Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
 |---|---|---|---|---|---|
-| LAN link battles/trades | DS local wireless over LAN (Union Room, Underground) | done (two installs on one Mac, see `lan`); headless: tests/link trade, battle, Underground | done (Diamond app meets a Platinum app; D↔D, D↔P, D↔Pt trades headless in tests/link) | done (Diamond app meets a Platinum app; D↔D, D↔P, D↔Pt trades headless in tests/link) | lan; diamond-lan |
+| LAN link battles/trades | DS local wireless over LAN (Union Room, Underground) | done (two installs on one Mac meet in the Union Room, see `lan`); headless: tests/link trade, battle, Underground | done (a Diamond app meets a Platinum app in the Union Room; the free-running app trade did not complete on c8948448c, see diamond-lan; D↔D, D↔P, D↔Pt trades headless in tests/link) | done (a Pearl app meets a Platinum app in the Union Room; the app trade did not complete, see pearl-lan; trades headless in tests/link) | lan; diamond-lan, pearl-lan |
 | Relay lobby, PINs | UDP relay rooms keyed by PIN | done (two installs, both "1 in range") | shell (relay transport is game-independent) | shell (relay transport is game-independent) | relay |
 | Spectators, tournaments |  | no | no | no |  |
 | Fast-forward locked to 1x in link play | `NP_STAT_LINK_ACTIVE` | done (snapshots/rewind/quick load refused while active) | core | core |  |
@@ -126,13 +130,19 @@ with Platinum data and run the same code for every game.
 
 | Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
 |---|---|---|---|---|---|
-| macOS build | Self-contained ad-hoc signed app zip, all six cores (D/P/Pt, R/S/E) | done | done (boots) | done (boots) | games_boot; `tools/package_macos.sh --test` (pkg-mac) |
+| macOS build | Self-contained ad-hoc signed app zip, ten cores (D/P/Pt, B/W, HG/SS, R/S/E), package c8948448c | done | done | done | games_boot, diamond-games_boot, pearl-games_boot; `tools/package_macos.sh --test` (pkg-mac10) |
 | Windows build | exe zip, all six cores (zig cross-build) | done (title under wine) | done (title under wine) | done (title under wine) | windows, pkg-win (`tools/package_windows.sh --test`) |
 | iOS IPA |  | no (needs Xcode) |  |  |  |
-| URL launch | `nativeplat://launch?game=&slot=` through LaunchServices | done | shell | shell | url_open, launch |
-| Launch flags | `--game`, `--slot`, `--launcher`, `--editor` | done | done | done | launch, games_boot |
+| URL launch | `nativeplat://launch?game=&slot=` through LaunchServices | done | done | done | url_open, launch; diamond-url_open, pearl-url_open |
+| Launch flags | `--game`, `--slot`, `--launcher`, `--editor` | done | done | done | launch, games_boot; diamond-launch, pearl-launch |
 | In-place updater | Release check + verified download (never self-replaces) | done |  |  | updater |
 | UI scale, reduced motion, About |  | done |  |  | ui_scale, about |
+
+## Story and side systems
+
+| Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
+|---|---|---|---|---|---|
+| Story and side systems (e2e) | The bot-driven milestones of tests/e2e on the core (headless) | core: chain.txt 01-56, new game to the credits and the game's own reset; systems.txt 31b, 60-81, 90-118 (HMs, rods, honey tree, Day Care and hatching, evolution, trades, contest, Poffins, Amity Square, Great Marsh, Trophy Garden, Game Corner, Underground, VS Seeker, Pokétch, Battle Zone, Battle Frontier, Global Terminal offline, TV, National Dex, Pal Park, Hall of Fame PC, roamers, legendaries) | core: chain.txt 01-59b to the credits and the reset; systems.txt 68-75, 78, 80, 81, 90-112 (rods, honey tree, Day Care and hatching, evolution, NPC trade, Amity Square, Trophy Garden, Game Corner, Underground, Battle Zone, Battle Tower, GTS offline, TV, VS Seeker, Pokétch, roamers, legendaries, National Dex, Pal Park, Hall of Fame PC); trade evolution by link (`dp_trade_evolve`); **not yet**: 60-67 (HM field uses), 76 (contest first place), 77 (Poffins: a guest trap, tests/e2e/DEFECTS.md), 79 (Great Marsh); exclusions in diamond/systems.txt | core: Diamond's dirs with its own 50 and 103 (Palkia) | `tests/e2e/run.py --game <game>` (+ `--systems`); sheets in `build/evidence/dppt-main/<game>-<milestone>/` |
 
 ## Ruby / Sapphire / Emerald (GBA)
 

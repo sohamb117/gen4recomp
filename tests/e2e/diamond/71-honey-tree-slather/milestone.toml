@@ -1,0 +1,75 @@
+# Honey tree, part 1: slather HONEY on Route 205 South's honey tree (tree 0) as the game does: A facing the tree,
+# "Slather the bark with Honey?" YES (scr_seq 0205 @0x0642-0x0679): UpdateHoneyTree sets its timer to 1440 minutes
+# and rolls the Pokemon that will come (ov05_021F4CF8.s:114-191). 71b plays the encounter 7 hours later.
+# Start: MAP_ROUTE_205_SOUTH (213,653) below the tree, facing up. End: same tile, one HONEY used.
+title = "Honey tree: slather HONEY on the Route 205 South tree"
+priority = "P2"
+version = "both"
+estimate = 1969
+refs = [
+  "scr_seq 0205 @0x0571-0x05B7",
+  "scr_seq 0205 @0x05B9-0x05E4",
+  "scr_seq 0205 @0x05FC",
+  "scr_seq 0205 @0x0642-0x0679",
+  "maps.h:351",
+  "map_header.c:431",
+  "games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:508-522",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:37-76",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:78-112",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:114-191",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:568-581",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-756",
+  "games/diamond/arm9/asm/unk_0202A924.s:119-144",
+  "games/diamond/arm9/src/unk_0204B0A0.c:29-71",
+  "games/diamond/arm9/src/unk_0204B0A0.c:109-116",
+  "games/diamond/arm9/overlays/52/src/overlay_52.c:352-355",
+  "games/diamond/arm9/src/save_system_info.c:93-108",
+]
+notes = "The run's clock is the [run] clock; 71b starts from this end save with a clock 7 hours later (the timer ticks by elapsed RTC minutes)."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 3000
+clock = "2009-03-22 09:00:00"   # 71b's clock is 7 hours later: the end.clock this run writes is replaced there
+
+[[shots]]
+frames = [1688, 1720]  # "Slather the bark with Honey?" YES/NO; "The bark was slathered with Honey."
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing the tree prop north: ov05_021F4D2C starts script 2008 (std 2000+8 -> scr_seq 0205 entry 8)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "HONEY in the bag -> CheckHoneyTree 1 (no honey) -> msg 199 #47 'There is a sweet scent in the air...', #50 'Slather the bark with Honey?' YES (the menu opens on YES) -> TakeItem, UpdateHoneyTree, #51 'The bark was slathered with Honey.'"
+shot = "slathered"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "again at the tree: CheckHoneyTree 2 (timer 1440 > 1080) -> msg 199 #49 'The bark is slathered with Honey...' and the slather prompt again"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "still-slathered"
+
+[[step]]
+do = "press"
+keys = "B"
+note = "B through #49 and the prompt answers NO (scr_seq 0205 @0x064B-0x065A: NO releases, keeping the second HONEY: the end save holds one)"
+times = 3
+gap = 30
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_ROUTE_205_SOUTH"
+position = [213, 653]
+# one of the two HONEY (94) slathered: TakeItem 94, 1 (scr_seq 0205 @0x065C)
+save = ['[i["qty"] for i in s["bag"]["items"] if i["item"] == 94] == [1]']

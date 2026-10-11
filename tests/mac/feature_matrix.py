@@ -187,8 +187,10 @@ def _(c):
 
 # Title screen -> CONTINUE -> the field, as tests/gameplay/schedules/continue.press.
 CONTINUE = '1250:start;1400:a;1500:a;1600:a'
-PLAT_CARD = (784, 270)
-CARDS = {'diamond': (176, 270), 'pearl': (480, 270), 'platinum': PLAT_CARD}
+# Card centres on the ten-card launcher (romdb.c np_launcher_games: Diamond,
+# Pearl, Platinum first; cards 75 wide, 91 apart from x=33 in the 960x720 window).
+PLAT_CARD = (252, 270)
+CARDS = {'diamond': (70, 270), 'pearl': (161, 270), 'platinum': PLAT_CARD}
 # The game in-game cases run (--game); evidence names get a <game>- prefix
 # for Diamond and Pearl.
 GAME = 'platinum'
@@ -292,7 +294,8 @@ def _(c):
 @case('games_boot', 'All three cores boot in the packaged app: card -> New save slot -> OK -> title (Start)')
 def _(c):
     c.need(*ROMS.values())
-    for g, card in (('diamond', (176, 270)), ('pearl', (480, 270)), ('platinum', PLAT_CARD)):
+    for g in ('diamond', 'pearl', 'platinum'):
+        card = CARDS[g]
         c.fresh(list(ROMS))
         # Slots page (New, Import): New -> the name page -> OK boots the game at ~iteration 8.
         c.run('boot=app,frames=1700,press=1400:start:10,script=%s;5:key:Return;7:key:Return' % click(2, card),

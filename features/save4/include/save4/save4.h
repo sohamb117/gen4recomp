@@ -238,6 +238,7 @@ void pkm4_set_friendship(pkm4 *p, uint8_t v);
 void pkm4_set_ability(pkm4 *p, uint8_t ability);
 void pkm4_set_language(pkm4 *p, uint8_t lang);
 void pkm4_set_ev(pkm4 *p, int stat, uint8_t v);
+void pkm4_set_contest(pkm4 *p, int stat, uint8_t v); /* 0..4 cool beauty cute smart tough, 5 sheen */
 void pkm4_set_move(pkm4 *p, int slot, uint16_t move, uint8_t pp, uint8_t pp_ups);
 void pkm4_set_iv(pkm4 *p, int stat, uint8_t v);
 void pkm4_set_is_egg(pkm4 *p, bool egg);

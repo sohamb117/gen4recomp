@@ -1,0 +1,12 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 26074
+money 3000
+# CATERPIE lv6 (MEDIUM_FAST: 216 exp, 343 for lv7) evolves at 7 into METAPOD (files/poketool/personal/evo.json)
+party SPECIES_CATERPIE 6 ITEM_NONE
+# fixed 40 damage, one-shots every Route 202 grass Pokemon: SHINX/BIDOOF/STARLY/KRICKETOT lv2-4
+# (d_enc_data/p_enc_data narc_0141, the map's encounters: map_header.c:427)
+party-move 0 0 MOVE_DRAGON_RAGE
+# Route 202, west of Youngster Tristan's sight (166,813 facing S; zone_event 0328 object 0), one tile above the
+# tall grass x 162..165, z 819..824 (tools/probe_map.py)
+map MAP_ROUTE_202 163 818 FACE_DOWN

@@ -73,7 +73,28 @@ HM05 Defog is not on the story path (`scripts_visible_items.s:923-924`, Solaceon
 ## Diamond and Pearl story outline
 
 <!-- dp-outline -->
-(written when the D/P skeletons land; see the generated tables below)
+Gym order (the badge is the gym milestone's `GiveBadge`, cited in its refs): Roark (Coal, 08) → Gardenia (Forest,
+14) → Maylene (Cobble, 22) → Crasher Wake (Fen, 26) → Fantina (Relic, 34) → Byron (Mine, 38) → Candice (Icicle, 44) →
+Volkner (Beacon, 53). Unlike Platinum, Fantina is away on the first Hearthome visit (19), so her badge is the fifth.
+
+| stage | milestones |
+|---|---|
+| New game, Lake Verity starter, Pokédex, Parcel, Trainers' School, Pokétch | 01–05 |
+| Route 203, Oreburgh Gate (HM06), the mine, Coal Badge, Barry's farewell | 06–09 |
+| Galactic in Jubilife, Floaroma, Valley Windworks (Mars), Eterna Forest, Forest Badge, Galactic Eterna Building (Jupiter) | 10–15 |
+| Bicycle and Explorer Kit, Cycling Road and the VS Seeker, Mt. Coronet to Hearthome, the Contest Hall | 16–19 |
+| Solaceon, Veilstone, Cobble Badge, the warehouse tag battle | 20–24 |
+| Valor Lakefront, Pastoria, Fen Badge, the Galactic chase and the SecretPotion | 25–29 |
+| Celestic (Cyrus, Surf), back to Hearthome and the Relic Badge | 30–34 |
+| Canalave, Iron Island (Riley, the Riolu egg), Mine Badge, the library and the lakes (Saturn, Mars) | 35–41 |
+| Route 216/217 (HM08), Snowpoint, Icicle Badge, Lake Acuity (Jupiter) | 42–45 |
+| Veilstone's Galactic warehouse (Fly), Galactic HQ, the lake trio freed | 46–48 |
+| Mt. Coronet, Spear Pillar (Diamond: Dialga, 50; Pearl: Palkia, `pearl/50-spear-pillar-palkia`) | 49–51 |
+| Sunyshore, Beacon Badge, Waterfall, Victory Road | 52–55 |
+| The League: rival, Aaron, Bertha, Flint, Lucian, Cynthia, Hall of Fame and the game's own reset | 56–59b |
+
+`pearl/chain.txt` lists Diamond's dirs (`version = "both"`) and its own 50; `pearl/systems.txt` likewise, with its
+own 103 (Palkia after the Hall of Fame).
 <!-- /dp-outline -->
 
 ## HeartGold and SoulSilver story outline
@@ -137,8 +158,7 @@ P1 = a major system every player meets; P2 = minor or post-game. Rows name the m
 - Platinum's cumulative `lab.recipe`s grow toward the lab cap: 56 has 441 ops of `LAB_MAX_OPS 512`
   (`games/platinum/pc/src/pc_lab.c:140`); keep new state lines minimal.
 - D/P story recipes carry the cumulative state (`tests/e2e/tools/dp_prior.py`, at most ~410 ops of the D/P lab's
-  `LAB_MAX_OPS 512`). Diamond 46-50 (Veilstone/Galactic HQ, Mt. Coronet, Spear Pillar with Dialga; Pearl twin
-  with Palkia) have no milestone dirs yet: the chain jumps from 45 (Lake Acuity) to 51.
+  `LAB_MAX_OPS 512`).
 - Steps marked `# PHASE2:` in a `milestone.toml` stop where the plan could not state the input (random puzzles,
   touch minigames); `[expect]` is complete regardless.
 - `[INFERENCE]` notes mark tiles and timings not proven by the scripts.
@@ -1947,10 +1967,22 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 25 milestones, ~174518 frames estimated
+### Side systems: 37 milestones, ~268700 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
+| [68-fishing-old-rod](diamond/68-fishing-old-rod/milestone.toml) | Old Rod: fish on Route 205 South | P2 | both | 3313 | `start.recipe` | MAP_ROUTE_205_SOUTH | passing |
+| [69-fishing-good-rod](diamond/69-fishing-good-rod/milestone.toml) | Good Rod: fish on Route 205 South | P2 | both | 3425 | `start.recipe` | MAP_ROUTE_205_SOUTH | passing |
+| [70-fishing-super-rod](diamond/70-fishing-super-rod/milestone.toml) | Super Rod: fish on Route 205 South | P2 | both | 3497 | `start.recipe` | MAP_ROUTE_205_SOUTH | passing |
+| [71-honey-tree-slather](diamond/71-honey-tree-slather/milestone.toml) | Honey tree: slather HONEY on the Route 205 South tree | P2 | both | 1969 | `start.recipe` | MAP_ROUTE_205_SOUTH | passing |
+| [71b-honey-tree-encounter](diamond/71b-honey-tree-encounter/milestone.toml) | Honey tree: the Route 205 South tree's Pokemon, 7 hours later | P2 | both | 3503 | prev + `None` | MAP_ROUTE_205_SOUTH | passing |
+| [72-day-care-deposit-and-egg](diamond/72-day-care-deposit-and-egg/milestone.toml) | Day Care: deposit two parents with the lady and collect an egg | P1 | both | 15729 | `start.recipe` | MAP_SOLACEON | passing |
+| [73-egg-hatch-and-flame-body](diamond/73-egg-hatch-and-flame-body/milestone.toml) | Egg hatch (and Flame Body cycle halving) | P1 | both | 39347 | prev + `None` | MAP_SOLACEON | passing |
+| [74-level-up-evolution-after-battle](diamond/74-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after battle: Caterpie -> Metapod | P1 | both | 11399 | `start.recipe` | MAP_ROUTE_202 | passing |
+| [75-trade-evolution](diamond/75-trade-evolution/milestone.toml) | Trades: NPC trade (and link trade evolution) | P1 | both | 4817 | `start.recipe` | MAP_OREBURGH_NORTH_HOUSE_1F | passing |
+| [78-amity-square](diamond/78-amity-square/milestone.toml) | Amity Square: walk with Pikachu | P2 | both | 1899 | `start.recipe` | MAP_AMITY_SQUARE | passing |
+| [80-trophy-garden](diamond/80-trophy-garden/milestone.toml) | Trophy Garden: Mr. Backlot's daily Pokemon | P2 | both | 2145 | `start.recipe` | MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM | passing |
+| [81-game-corner](diamond/81-game-corner/milestone.toml) | Game Corner: play the slots | P2 | both | 3139 | `start.recipe` | MAP_VEILSTONE_GAME_CORNER | passing |
 | [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 6538 | `start.recipe` | MAP_UNDERGROUND | passing |
 | [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 9684 | `start.recipe` | MAP_UNDERGROUND | passing |
 | [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 8178 | `start.recipe` | MAP_UNDERGROUND | passing |
@@ -1976,6 +2008,120 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [110-national-dex-upgrade](diamond/110-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | both | 5000 | `start.recipe` | MAP_SANDGEM_ROWANS_LAB | passing |
 | [111-pal-park](diamond/111-pal-park/milestone.toml) | Pal Park: entrance, Oak's Trainer Counter and the receptionist | P2 | both | 3000 | prev + `start.recipe` | MAP_ROUTE_221_PAL_PARK_ENTRANCE | passing |
 | [112-hall-of-fame-pc-and-game-complete](diamond/112-hall-of-fame-pc-and-game-complete/milestone.toml) | Hall of Fame on the Pokemon Center PC (game complete) | P2 | both | 3000 | prev + `chain.recipe` | MAP_SNOWPOINT_POKECENTER_1F | passing |
+
+#### diamond/68-fishing-old-rod — Old Rod: fish on Route 205 South
+- proves: Old Rod: cast the registered Old Rod at the Route 205 South river, hook the bite, win the wild battle. The bite is read from guest RAM (bots.py fish, _dp_fish_cast: the FishingTask's state word, ov05_021F5C44.s). Start: MAP_ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle.
+- start: `start.recipe`; map MAP_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 flag, 1 item, 1 register-item
+- party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (180, 604); >= 1 battles; 1 save check(s); log /fish: cast \d+: bite/, /fish: cast \d+: caught/, /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 129\b/
+- frames: estimate 3313, budget 5000
+- refs: scr_seq 0440 @0x0025; scr_seq 0440 @0x00B9; maps.h:351; map_header.c:431; games/diamond/arm9/asm/unk_0205CE48.s:26-29; games/diamond/arm9/asm/unk_0205CE48.s:1330-1373; games/diamond/arm9/asm/unk_0201B4E8.s:194-209; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:30-113; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:115-182; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:258-365; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:824-834; games/diamond/arm9/overlays/06/asm/overlay_06.s:5180; games/diamond/files/fielddata/encountdata/d_enc_data/narc_0145.bin; games/diamond/files/fielddata/encountdata/p_enc_data/narc_0145.bin
+- notes: d_enc_data/p_enc_data 0145 (identical in both versions), old rod, rate 25 @0x124: MAGIKARP lv3-10 in all five slots
+
+#### diamond/69-fishing-good-rod — Good Rod: fish on Route 205 South
+- proves: Good Rod: cast the registered Good Rod at the Route 205 South river, hook the bite, win the wild battle. The bite is read from guest RAM (bots.py fish, _dp_fish_cast: the FishingTask's state word, ov05_021F5C44.s). Start: MAP_ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle.
+- start: `start.recipe`; map MAP_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 flag, 1 item, 1 register-item
+- party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (180, 604); >= 1 battles; 1 save check(s); log /fish: cast \d+: bite/, /fish: cast \d+: caught/, /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species (129|456)\b/
+- frames: estimate 3425, budget 5200
+- refs: scr_seq 0406 @0x01CF; scr_seq 0406 @0x0266; maps.h:351; map_header.c:431; games/diamond/arm9/asm/unk_0205CE48.s:26-29; games/diamond/arm9/asm/unk_0205CE48.s:1330-1373; games/diamond/arm9/asm/unk_0201B4E8.s:194-209; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:30-113; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:115-182; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:258-365; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:824-834; games/diamond/arm9/overlays/06/asm/overlay_06.s:5180; games/diamond/files/fielddata/encountdata/d_enc_data/narc_0145.bin; games/diamond/files/fielddata/encountdata/p_enc_data/narc_0145.bin
+- notes: d_enc_data/p_enc_data 0145 (identical in both versions), good rod, rate 50 @0x150: MAGIKARP / FINNEON lv10-25
+
+#### diamond/70-fishing-super-rod — Super Rod: fish on Route 205 South
+- proves: Super Rod: cast the registered Super Rod at the Route 205 South river, hook the bite, win the wild battle. The bite is read from guest RAM (bots.py fish, _dp_fish_cast: the FishingTask's state word, ov05_021F5C44.s). Start: MAP_ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle.
+- start: `start.recipe`; map MAP_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 flag, 1 item, 1 register-item
+- party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (180, 604); >= 1 battles; 1 save check(s); log /fish: cast \d+: bite/, /fish: cast \d+: caught/, /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species (130|457|90)\b/
+- frames: estimate 3497, budget 5300
+- refs: scr_seq 0195 @0x027C; scr_seq 0195 @0x028C; maps.h:351; map_header.c:431; games/diamond/arm9/asm/unk_0205CE48.s:26-29; games/diamond/arm9/asm/unk_0205CE48.s:1330-1373; games/diamond/arm9/asm/unk_0201B4E8.s:194-209; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:30-113; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:115-182; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:258-365; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:824-834; games/diamond/arm9/overlays/06/asm/overlay_06.s:5180; games/diamond/files/fielddata/encountdata/d_enc_data/narc_0145.bin; games/diamond/files/fielddata/encountdata/p_enc_data/narc_0145.bin
+- notes: d_enc_data/p_enc_data 0145 (identical in both versions), super rod, rate 75 @0x17C: GYARADOS / LUMINEON / SHELLDER lv20-50
+
+#### diamond/71-honey-tree-slather — Honey tree: slather HONEY on the Route 205 South tree
+- proves: Honey tree, part 1: slather HONEY on Route 205 South's honey tree (tree 0) as the game does: A facing the tree, "Slather the bark with Honey?" YES (scr_seq 0205 @0x0642-0x0679): UpdateHoneyTree sets its timer to 1440 minutes and rolls the Pokemon that will come (ov05_021F4CF8.s:114-191). 71b plays the encounter 7 hours later. Start: MAP_ROUTE_205_SOUTH (213,653) below the tree, facing up. End: same tile, one HONEY used.
+- start: `start.recipe`; map MAP_ROUTE_205_SOUTH 213 653 FACE_UP; lab state lines: 1 item
+- party: SPECIES_STARAPTOR 40 (MOVE_BRAVE_BIRD)
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (213, 653); 1 save check(s)
+- frames: estimate 1969, budget 3000
+- refs: scr_seq 0205 @0x0571-0x05B7; scr_seq 0205 @0x05B9-0x05E4; scr_seq 0205 @0x05FC; scr_seq 0205 @0x0642-0x0679; maps.h:351; map_header.c:431; games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:508-522; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:37-76; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:78-112; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:114-191; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:568-581; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-756; games/diamond/arm9/asm/unk_0202A924.s:119-144; games/diamond/arm9/src/unk_0204B0A0.c:29-71; games/diamond/arm9/src/unk_0204B0A0.c:109-116; games/diamond/arm9/overlays/52/src/overlay_52.c:352-355; games/diamond/arm9/src/save_system_info.c:93-108
+- notes: The run's clock is the [run] clock; 71b starts from this end save with a clock 7 hours later (the timer ticks by elapsed RTC minutes).
+
+#### diamond/71b-honey-tree-encounter — Honey tree: the Route 205 South tree's Pokemon, 7 hours later
+- proves: Honey tree, part 2: 7 hours after 71's slather the Route 205 South tree has a Pokemon: the RTC minutes elapsed since the save's clock tick the timer down (unk_0204B0A0.c:53-71 -> sub_0202A9D0), 1440 - 420 <= 1080 is CheckHoneyTree 3 and A at the tree starts HoneyTreeBattle (scr_seq 0205 @0x067B). After the win, the second HONEY is slathered (scr_seq 0205 @0x0629-0x0679). Start: 71's end save, MAP_ROUTE_205_SOUTH (213,653) below the tree. End: same tile after the wild battle.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (213, 653); >= 1 battles; 2 save check(s); log /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 420\b/
+- frames: estimate 3503, budget 5300
+- refs: scr_seq 0205 @0x05B9-0x05E4; scr_seq 0205 @0x0629-0x0679; scr_seq 0205 @0x067B-0x069A; maps.h:351; map_header.c:431; games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:508-522; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:37-76; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:78-112; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:114-191; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:568-581; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-756; games/diamond/arm9/asm/unk_0202A924.s:119-144; games/diamond/arm9/src/unk_0204B0A0.c:29-71; games/diamond/arm9/src/unk_0204B0A0.c:109-116; games/diamond/arm9/overlays/52/src/overlay_52.c:352-355; games/diamond/arm9/src/save_system_info.c:93-108; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:664-697; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-748; games/diamond/arm9/overlays/06/asm/overlay_06.s ov06_0223CCDC; games/diamond/arm9/src/encounter.c:500-513; games/diamond/files/arc/encdata_ex/narc_0002.bin; games/diamond/files/arc/encdata_ex/narc_0003.bin; games/diamond/files/arc/encdata_ex/narc_0004.bin
+- notes: The timer is the save's RTC minutes: the field's RTC update subtracts the minutes between the save's last clock and now (a clock behind the save resets it, no decrement). A changed MAC/RTC offset on CONTINUE would restart the save clock and add the 24h penalty (overlay_52.c:352-355); the port's fixed console keeps both.
+
+#### diamond/72-day-care-deposit-and-egg — Day Care: deposit two parents with the lady and collect an egg
+- proves: Day Care, played: the Day-Care Lady takes a male and a female BIBAREL through her own menus (YES, the party menu, STORE, "raise another?" YES, the second pick), the player walks out and runs laps in Solaceon until the second parent's step count rolls an egg (Daycare_Update ov05_021ED378: every 256 steps, compatibility 50 for the same species and OT), and the Day-Care Man hands the egg over. Start: MAP_SOLACEON_DAYCARE (9,10). End: MAP_SOLACEON (555,649) below the man, BIDOOF egg in party slot 4.
+- start: `start.recipe`; map MAP_SOLACEON_DAYCARE 9 10 FACE_UP; lab state lines: none
+- party: SPECIES_BIBAREL 25; SPECIES_BIBAREL 26; SPECIES_BIBAREL 27; SPECIES_BIBAREL 28; SPECIES_BIBAREL 29; SPECIES_BIBAREL 30
+- trainers: none
+- end state: map MAP_SOLACEON; at (555, 649); party size 5; flags set 0xFE; flags clear 0x73; 5 save check(s)
+- frames: estimate 15729, budget 23600
+- refs: maps.h:441; zone_event 0415 object 0; zone_event 0415 warp 0; zone_event 0411 object 3; scr_seq 0464 @0x0124-0x0170; scr_seq 0464 @0x017E-0x0231; scr_seq 0464 @0x024C-0x025D; scr_seq 0464 @0x028C-0x0299; scr_seq 0464 @0x004A-0x0057; scr_seq 0464 @0x0083-0x00BC; games/diamond/include/daycare.h:16-27; games/diamond/arm9/src/save_arrays.c:75-76; games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1918-2051; features/tools/np_save4.c dump_daycare (DP_DAYCARE_OFF)
+
+#### diamond/73-egg-hatch-and-flame-body — Egg hatch (and Flame Body cycle halving)
+- proves: Egg hatch, played, with Flame Body: 72's BIDOOF egg (15 egg cycles) hatches while the player runs laps in Solaceon with MAGBY (Flame Body) in the party, which takes two cycles off per 255 steps instead of one (ov05_021ED190, called from Daycare_Update ov05_021ED378): about 2040 steps instead of about 3825. Start: 72's end, MAP_SOLACEON (555,649), egg in slot 4, + boost MAGBY. End: MAP_SOLACEON, BIDOOF hatched in slot 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map MAP_SOLACEON; party SPECIES_BIDOOF, SPECIES_MAGBY; party size 6; 3 save check(s); log /hatch: a scene of \d+ frames after (1[5-9]\d\d|2\d\d\d) steps; 0 egg\(s\) left/
+- frames: estimate 39347, budget 59100
+- refs: games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1653-1695; games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1882-1917 (ov05_021ED334: 255 steps per cycle, 230 on special dates); games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1918-2051; games/diamond/files/poketool/personal/personal.json:18807-18809; games/diamond/files/poketool/personal/personal.json:31496
+- notes: Starts from 72's end (systems order: 72 first; run with 72's --out). The D/P lab has no Day Care or egg verb, so there is no standalone start.
+
+#### diamond/74-level-up-evolution-after-battle — Level-up evolution after battle: Caterpie -> Metapod
+- proves: Level-up evolution at the end of a battle: CATERPIE lv6 fights wild Pokemon in Route 202's tall grass (Dragon Rage, 40 fixed, one-shots every lv2-4 there) until it reaches lv7, and evolves into METAPOD after the battle that levels it (evolution allowed, never B). Start: MAP_ROUTE_202 (163,818) above the grass. End: MAP_ROUTE_202, slot 0 METAPOD lv7.
+- start: `start.recipe`; map MAP_ROUTE_202 163 818 FACE_DOWN; lab state lines: none
+- party: SPECIES_CATERPIE 6 (MOVE_DRAGON_RAGE)
+- trainers: none
+- end state: map MAP_ROUTE_202; >= 1 battles; party SPECIES_METAPOD; 2 save check(s)
+- frames: estimate 11399, budget 17100
+- refs: maps.h:347; map_header.c:427; games/diamond/files/fielddata/encountdata/d_enc_data/narc_0141.bin; games/diamond/files/fielddata/encountdata/p_enc_data/narc_0141.bin; games/diamond/files/poketool/personal/evo.json; zone_event 0328 object 0; tests/e2e/tools/probe_map.py (Route 202 grass x 162..165, z 819..824)
+
+#### diamond/75-trade-evolution — Trades: NPC trade (and link trade evolution)
+- proves: In-game NPC trade: the girl in Oreburgh's north house trades her ABRA for MACHOP (NPCTradeInit 0). An NPC trade never evolves the received mon [INFERENCE: CallTask_NPCTrade, scrcmd.c:3849-3853, runs the trade animation only]; D/P evolves a traded mon after a link trade. That half is the two-station link scenario dp_trade_evolve (tests/link/run_link_tests.py): B's KADABRA arrives on A's station, evolves, and A's save keeps ALAKAZAM (65). Start: MAP_OREBURGH_NORTH_HOUSE_1F (11,8) facing the girl. End: same map, ABRA in slot 0.
+- start: `start.recipe`; map MAP_OREBURGH_NORTH_HOUSE_1F 11 8 FACE_UP; lab state lines: none
+- party: SPECIES_MACHOP 15; SPECIES_STARLY 12
+- trainers: none
+- end state: map MAP_OREBURGH_NORTH_HOUSE_1F; party SPECIES_ABRA; flags set 0x85; 2 save check(s)
+- frames: estimate 4817, budget 7300
+- refs: maps.h:58; zone_event 0053 object 1; scr_seq 0058 @0x001D-0x0099; games/diamond/arm9/src/scrcmd.c:3828-3860; games/diamond/files/fielddata/pokemon_trade/fld_trade/narc_0000.bin; games/diamond/files/poketool/personal/evo.json:497-505; tests/link/run_link_tests.py dp_trade_evolve; tests/link/recipes/dp-union-b-kadabra.recipe; tests/link/schedules/dp-trade-evolve-a.sched
+
+#### diamond/78-amity-square — Amity Square: walk with Pikachu
+- proves: Amity Square entry: step onto the west coord event with an allowed PIKACHU, answer YES, and the Pikachu follower (object 5) is placed beside the player and walks with them (var 0x4099 1, 0x409A its species). Start: MAP_AMITY_SQUARE (12,47). End: (12,45), one step on with the PIKACHU behind (flag 0x200 clear).
+- start: `start.recipe`; map MAP_AMITY_SQUARE 12 47 FACE_UP; lab state lines: 1 var
+- party: SPECIES_PIKACHU 20
+- trainers: none
+- end state: map MAP_AMITY_SQUARE; at (12, 45); party SPECIES_PIKACHU; flags clear 0x200; vars 0x4099=1, 0x409A=25, 0x409D=0
+- frames: estimate 1899, budget 2900
+- refs: maps.h:257; zone_event 0245 coord 0; zone_event 0245 object 0; zone_event 0245 object 5; scr_seq 0266 @0x006A-0x009A; scr_seq 0266 @0x009C-0x00AE; scr_seq 0266 @0x00CC-0x00F6; scr_seq 0266 @0x026C-0x02E1; scr_seq 0266 @0x0450-0x0476; scr_seq 0266 @0x050D-0x0513; scr_seq 0266 @0x05BD-0x0614; scr_seq 0266 @0x07C0-0x07D7; msg 236 #2; msg 236 #3
+
+#### diamond/80-trophy-garden — Trophy Garden: Mr. Backlot's daily Pokemon
+- proves: Trophy Garden daily mon: Mr. Backlot in the Pokemon Mansion (Route 212), with the National Dex: YES, YES -> AddTrophyGardenMon (Unk01EC), the butler's scene, Backlot names the species; daily flag 0xAA2 set. Start: MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM (16,9) below Backlot. End: same tile, flag 0xAA2 set.
+- start: `start.recipe`; map MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM 16 9 FACE_UP; lab state lines: 1 national-dex, 1 pokedex, 1 var
+- party: SPECIES_INFERNAPE 50
+- trainers: none
+- end state: map MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM; at (16, 9); flags set 0xAA2; vars 0x400B=1; 1 save check(s)
+- frames: estimate 2145, budget 3300
+- refs: maps.h:374; zone_event 0355 object 1; zone_event 0355 warp 0; scr_seq 0421 @0x006F; scr_seq 0421 @0x0087; scr_seq 0421 @0x00AA-0x00DB; scr_seq 0421 @0x00FB-0x0109; scr_seq 0421 @0x013F-0x014B; scr_seq 0421 @0x0155-0x0161; msg 441 #3; msg 441 #6; msg 441 #10; games/diamond/arm9/src/scrcmd.c:3657-3666; games/diamond/pc/game/pc_dp_lab.c:299-307
+
+#### diamond/81-game-corner — Game Corner: play the slots
+- proves: Veilstone Game Corner: buy 50 coins from the clerk (1000 money), then play slot machine 0 once (the US D/P slots: SlotMachine 0x8004 from the machine's bg script). Start: MAP_VEILSTONE_GAME_CORNER (11,6) facing machine 0 at (12,6). End: same tile, money -1000, coins changed from 50 by the spin. The slot app's bottom screen was white before armrec ef93d8d397 (DEFECTS.md).
+- start: `start.recipe`; map MAP_VEILSTONE_GAME_CORNER 11 6 FACE_RIGHT; lab state lines: 1 item, 1 var
+- party: SPECIES_INFERNAPE 40
+- trainers: none
+- end state: map MAP_VEILSTONE_GAME_CORNER; at (11, 6); 2 save check(s)
+- frames: estimate 3139, budget 4800
+- refs: maps.h:140; zone_event 0135 object 0; zone_event 0135 bg 0; scr_seq 0136 @0x0056-0x005C; scr_seq 0136 @0x00E6-0x012D; scr_seq 0136 @0x013A-0x0197; scr_seq 0136 @0x01A8-0x023C; scr_seq 0136 @0x02AF-0x02BC; scr_seq 0145 @0x00CA; msg 139 #2; msg 139 #3; games/diamond/arm9/src/scrcmd.c:4243-4247; games/diamond/arm9/asm/unk_020377F0.s:2453-2497
 
 #### diamond/90-underground-explorer-kit — Underground: Explorer Kit and first entry
 - proves: Underground Man gives the Explorer Kit and becomes mentor (YES); walk out to Eterna and use the kit to enter the Underground. D/P has no lab underground hook (Platinum's PC_LAB_UNDERGROUND): input-driven. Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door (warp 0, (4,8)). End: MAP_UNDERGROUND (2).
@@ -2882,10 +3028,22 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 - refs: maps.h:190; scr_seq 0654 @0x0006; scr_seq 0191 @0x000A; scr_seq 0191 @0x001E; scr_seq 0191 @0x0049; scr_seq 0191 @0x00F8; maps.h:191; scr_seq 0655 @0x0006; scr_seq 0192 @0x0006; scr_seq 0192 @0x00AD; scr_seq 0192 @0x00B1; scr_seq 0192 @0x00C3; scr_seq 0192 @0x0106; scr_seq 0192 @0x00EC; scr_seq 0192 @0x0178; scr_seq 0192 @0x017C; scr_seq 0192 @0x0180; scr_seq 0192 @0x01D2; scr_seq 0192 @0x01DC; scr_seq 0192 @0x018B; scr_seq 0192 @0x0196; scr_seq 0192 @0x0211; scr_seq 0192 @0x0217; scr_seq 0192 @0x01B7; scr_seq 0192 @0x01CA; scr_seq 0192 @0x01C4; scr_seq 0192 @0x00F2; games/diamond/arm9/src/scrcmd.c:2336-2338; games/diamond/arm9/asm/unk_020484A8.s:257-330; games/diamond/arm9/asm/unk_020484A8.s:312; games/diamond/arm9/asm/unk_020484A8.s:314-316; games/diamond/arm9/asm/unk_020484A8.s:318; games/diamond/arm9/asm/unk_020484A8.s:320; games/diamond/arm9/asm/unk_020484A8.s:322; games/diamond/arm9/asm/unk_020484A8.s:325-326; games/diamond/arm9/src/unk_0205EC84.c:51-53; games/diamond/arm9/src/unk_0205EC84.c:280-282; games/diamond/arm9/asm/unk_020377B0.s:7-14; games/diamond/arm9/asm/unk_020484A8.s:165; games/diamond/arm9/asm/unk_020484A8.s:245; scr_seq 0911 @0x0011; scr_seq 0978 @0x0026; msg 0182 #6
 - notes: Conditional HoF respawns as minted for this chain: 0x15F clear (legendary KO'd, not caught, 50's end) -> var 0x4098 5 + ClearFlag 0x1E2; 0x120/0x125/0x11B clear and no National Dex -> nothing; 0x126/0x127 clear -> ClearFlag 0x1FE/0x1FF. Not script-visible / not lab-mintable: HoF record (Save_HOF_RecordParty, unk_020484A8.s:51), PlayerProfile game-clear bit, Champ ribbon, game stat 0x2E. Post-game start: sub_020377B0 copies UNK_020F2B9C {map 0x19F=415, warp -1, x 4, z 6, dir 0} (unk_020377B0.s:7-9) into the dynamic warp, sub_020377C8 copies {411 Twinleaf, (116,886), dir 1} (:12-14) into the special spawn warp; 415 is the player's 2F room (maps.h names 414/415 RIVAL_HOUSE, but tests/gameplay/dp/scenarios/1-rival.scn:6-10 has home = 414). The post-game Mom scene (var 0x410F==1, scr_seq 0911 @0x0011 on map 414) and Twinleaf's 0x40F4 scene (scr_seq 0978 @0x0026) belong to the next span.
 
-### Side systems: 25 milestones, ~174518 frames estimated
+### Side systems: 37 milestones, ~268700 frames estimated
 
 | milestone | title | P | version | est. frames | start | end map | status |
 |---|---|---|---|---|---|---|---|
+| [68-fishing-old-rod](diamond/68-fishing-old-rod/milestone.toml) | Old Rod: fish on Route 205 South | P2 | both | 3313 | `start.recipe` | MAP_ROUTE_205_SOUTH | passing |
+| [69-fishing-good-rod](diamond/69-fishing-good-rod/milestone.toml) | Good Rod: fish on Route 205 South | P2 | both | 3425 | `start.recipe` | MAP_ROUTE_205_SOUTH | passing |
+| [70-fishing-super-rod](diamond/70-fishing-super-rod/milestone.toml) | Super Rod: fish on Route 205 South | P2 | both | 3497 | `start.recipe` | MAP_ROUTE_205_SOUTH | passing |
+| [71-honey-tree-slather](diamond/71-honey-tree-slather/milestone.toml) | Honey tree: slather HONEY on the Route 205 South tree | P2 | both | 1969 | `start.recipe` | MAP_ROUTE_205_SOUTH | passing |
+| [71b-honey-tree-encounter](diamond/71b-honey-tree-encounter/milestone.toml) | Honey tree: the Route 205 South tree's Pokemon, 7 hours later | P2 | both | 3503 | prev + `None` | MAP_ROUTE_205_SOUTH | passing |
+| [72-day-care-deposit-and-egg](diamond/72-day-care-deposit-and-egg/milestone.toml) | Day Care: deposit two parents with the lady and collect an egg | P1 | both | 15729 | `start.recipe` | MAP_SOLACEON | passing |
+| [73-egg-hatch-and-flame-body](diamond/73-egg-hatch-and-flame-body/milestone.toml) | Egg hatch (and Flame Body cycle halving) | P1 | both | 39347 | prev + `None` | MAP_SOLACEON | passing |
+| [74-level-up-evolution-after-battle](diamond/74-level-up-evolution-after-battle/milestone.toml) | Level-up evolution after battle: Caterpie -> Metapod | P1 | both | 11399 | `start.recipe` | MAP_ROUTE_202 | passing |
+| [75-trade-evolution](diamond/75-trade-evolution/milestone.toml) | Trades: NPC trade (and link trade evolution) | P1 | both | 4817 | `start.recipe` | MAP_OREBURGH_NORTH_HOUSE_1F | passing |
+| [78-amity-square](diamond/78-amity-square/milestone.toml) | Amity Square: walk with Pikachu | P2 | both | 1899 | `start.recipe` | MAP_AMITY_SQUARE | passing |
+| [80-trophy-garden](diamond/80-trophy-garden/milestone.toml) | Trophy Garden: Mr. Backlot's daily Pokemon | P2 | both | 2145 | `start.recipe` | MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM | passing |
+| [81-game-corner](diamond/81-game-corner/milestone.toml) | Game Corner: play the slots | P2 | both | 3139 | `start.recipe` | MAP_VEILSTONE_GAME_CORNER | passing |
 | [90-underground-explorer-kit](diamond/90-underground-explorer-kit/milestone.toml) | Underground: Explorer Kit and first entry | P1 | both | 6538 | `start.recipe` | MAP_UNDERGROUND | passing |
 | [91-underground-dig-spheres-traps](diamond/91-underground-dig-spheres-traps/milestone.toml) | Underground: trap reward, digging and burying Spheres | P2 | both | 9684 | `start.recipe` | MAP_UNDERGROUND | passing |
 | [92-underground-secret-base](diamond/92-underground-secret-base/milestone.toml) | Underground: Digger Drill and Secret Base | P2 | both | 8178 | `start.recipe` | MAP_UNDERGROUND | passing |
@@ -2911,6 +3069,120 @@ move), trainers, expected end state, frame estimate/budget, and the citations.
 | [110-national-dex-upgrade](diamond/110-national-dex-upgrade/milestone.toml) | National Dex upgrade from Rowan and Oak | P1 | both | 5000 | `start.recipe` | MAP_SANDGEM_ROWANS_LAB | passing |
 | [111-pal-park](diamond/111-pal-park/milestone.toml) | Pal Park: entrance, Oak's Trainer Counter and the receptionist | P2 | both | 3000 | prev + `start.recipe` | MAP_ROUTE_221_PAL_PARK_ENTRANCE | passing |
 | [112-hall-of-fame-pc-and-game-complete](diamond/112-hall-of-fame-pc-and-game-complete/milestone.toml) | Hall of Fame on the Pokemon Center PC (game complete) | P2 | both | 3000 | prev + `chain.recipe` | MAP_SNOWPOINT_POKECENTER_1F | passing |
+
+#### pearl/68-fishing-old-rod — Old Rod: fish on Route 205 South
+- proves: Old Rod: cast the registered Old Rod at the Route 205 South river, hook the bite, win the wild battle. The bite is read from guest RAM (bots.py fish, _dp_fish_cast: the FishingTask's state word, ov05_021F5C44.s). Start: MAP_ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle.
+- start: `start.recipe`; map MAP_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 flag, 1 item, 1 register-item
+- party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (180, 604); >= 1 battles; 1 save check(s); log /fish: cast \d+: bite/, /fish: cast \d+: caught/, /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 129\b/
+- frames: estimate 3313, budget 5000
+- refs: scr_seq 0440 @0x0025; scr_seq 0440 @0x00B9; maps.h:351; map_header.c:431; games/diamond/arm9/asm/unk_0205CE48.s:26-29; games/diamond/arm9/asm/unk_0205CE48.s:1330-1373; games/diamond/arm9/asm/unk_0201B4E8.s:194-209; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:30-113; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:115-182; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:258-365; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:824-834; games/diamond/arm9/overlays/06/asm/overlay_06.s:5180; games/diamond/files/fielddata/encountdata/d_enc_data/narc_0145.bin; games/diamond/files/fielddata/encountdata/p_enc_data/narc_0145.bin
+- notes: d_enc_data/p_enc_data 0145 (identical in both versions), old rod, rate 25 @0x124: MAGIKARP lv3-10 in all five slots
+
+#### pearl/69-fishing-good-rod — Good Rod: fish on Route 205 South
+- proves: Good Rod: cast the registered Good Rod at the Route 205 South river, hook the bite, win the wild battle. The bite is read from guest RAM (bots.py fish, _dp_fish_cast: the FishingTask's state word, ov05_021F5C44.s). Start: MAP_ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle.
+- start: `start.recipe`; map MAP_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 flag, 1 item, 1 register-item
+- party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (180, 604); >= 1 battles; 1 save check(s); log /fish: cast \d+: bite/, /fish: cast \d+: caught/, /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species (129|456)\b/
+- frames: estimate 3425, budget 5200
+- refs: scr_seq 0406 @0x01CF; scr_seq 0406 @0x0266; maps.h:351; map_header.c:431; games/diamond/arm9/asm/unk_0205CE48.s:26-29; games/diamond/arm9/asm/unk_0205CE48.s:1330-1373; games/diamond/arm9/asm/unk_0201B4E8.s:194-209; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:30-113; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:115-182; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:258-365; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:824-834; games/diamond/arm9/overlays/06/asm/overlay_06.s:5180; games/diamond/files/fielddata/encountdata/d_enc_data/narc_0145.bin; games/diamond/files/fielddata/encountdata/p_enc_data/narc_0145.bin
+- notes: d_enc_data/p_enc_data 0145 (identical in both versions), good rod, rate 50 @0x150: MAGIKARP / FINNEON lv10-25
+
+#### pearl/70-fishing-super-rod — Super Rod: fish on Route 205 South
+- proves: Super Rod: cast the registered Super Rod at the Route 205 South river, hook the bite, win the wild battle. The bite is read from guest RAM (bots.py fish, _dp_fish_cast: the FishingTask's state word, ov05_021F5C44.s). Start: MAP_ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle.
+- start: `start.recipe`; map MAP_ROUTE_205_SOUTH 180 604 FACE_UP; lab state lines: 1 flag, 1 item, 1 register-item
+- party: SPECIES_GARCHOMP 70 (MOVE_DRAGON_CLAW)
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (180, 604); >= 1 battles; 1 save check(s); log /fish: cast \d+: bite/, /fish: cast \d+: caught/, /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species (130|457|90)\b/
+- frames: estimate 3497, budget 5300
+- refs: scr_seq 0195 @0x027C; scr_seq 0195 @0x028C; maps.h:351; map_header.c:431; games/diamond/arm9/asm/unk_0205CE48.s:26-29; games/diamond/arm9/asm/unk_0205CE48.s:1330-1373; games/diamond/arm9/asm/unk_0201B4E8.s:194-209; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:30-113; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:115-182; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:258-365; games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:824-834; games/diamond/arm9/overlays/06/asm/overlay_06.s:5180; games/diamond/files/fielddata/encountdata/d_enc_data/narc_0145.bin; games/diamond/files/fielddata/encountdata/p_enc_data/narc_0145.bin
+- notes: d_enc_data/p_enc_data 0145 (identical in both versions), super rod, rate 75 @0x17C: GYARADOS / LUMINEON / SHELLDER lv20-50
+
+#### pearl/71-honey-tree-slather — Honey tree: slather HONEY on the Route 205 South tree
+- proves: Honey tree, part 1: slather HONEY on Route 205 South's honey tree (tree 0) as the game does: A facing the tree, "Slather the bark with Honey?" YES (scr_seq 0205 @0x0642-0x0679): UpdateHoneyTree sets its timer to 1440 minutes and rolls the Pokemon that will come (ov05_021F4CF8.s:114-191). 71b plays the encounter 7 hours later. Start: MAP_ROUTE_205_SOUTH (213,653) below the tree, facing up. End: same tile, one HONEY used.
+- start: `start.recipe`; map MAP_ROUTE_205_SOUTH 213 653 FACE_UP; lab state lines: 1 item
+- party: SPECIES_STARAPTOR 40 (MOVE_BRAVE_BIRD)
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (213, 653); 1 save check(s)
+- frames: estimate 1969, budget 3000
+- refs: scr_seq 0205 @0x0571-0x05B7; scr_seq 0205 @0x05B9-0x05E4; scr_seq 0205 @0x05FC; scr_seq 0205 @0x0642-0x0679; maps.h:351; map_header.c:431; games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:508-522; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:37-76; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:78-112; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:114-191; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:568-581; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-756; games/diamond/arm9/asm/unk_0202A924.s:119-144; games/diamond/arm9/src/unk_0204B0A0.c:29-71; games/diamond/arm9/src/unk_0204B0A0.c:109-116; games/diamond/arm9/overlays/52/src/overlay_52.c:352-355; games/diamond/arm9/src/save_system_info.c:93-108
+- notes: The run's clock is the [run] clock; 71b starts from this end save with a clock 7 hours later (the timer ticks by elapsed RTC minutes).
+
+#### pearl/71b-honey-tree-encounter — Honey tree: the Route 205 South tree's Pokemon, 7 hours later
+- proves: Honey tree, part 2: 7 hours after 71's slather the Route 205 South tree has a Pokemon: the RTC minutes elapsed since the save's clock tick the timer down (unk_0204B0A0.c:53-71 -> sub_0202A9D0), 1440 - 420 <= 1080 is CheckHoneyTree 3 and A at the tree starts HoneyTreeBattle (scr_seq 0205 @0x067B). After the win, the second HONEY is slathered (scr_seq 0205 @0x0629-0x0679). Start: 71's end save, MAP_ROUTE_205_SOUTH (213,653) below the tree. End: same tile after the wild battle.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map MAP_ROUTE_205_SOUTH; at (213, 653); >= 1 battles; 2 save check(s); log /auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 420\b/
+- frames: estimate 3503, budget 5300
+- refs: scr_seq 0205 @0x05B9-0x05E4; scr_seq 0205 @0x0629-0x0679; scr_seq 0205 @0x067B-0x069A; maps.h:351; map_header.c:431; games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:508-522; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:37-76; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:78-112; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:114-191; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:568-581; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-756; games/diamond/arm9/asm/unk_0202A924.s:119-144; games/diamond/arm9/src/unk_0204B0A0.c:29-71; games/diamond/arm9/src/unk_0204B0A0.c:109-116; games/diamond/arm9/overlays/52/src/overlay_52.c:352-355; games/diamond/arm9/src/save_system_info.c:93-108; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:664-697; games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-748; games/diamond/arm9/overlays/06/asm/overlay_06.s ov06_0223CCDC; games/diamond/arm9/src/encounter.c:500-513; games/diamond/files/arc/encdata_ex/narc_0002.bin; games/diamond/files/arc/encdata_ex/narc_0003.bin; games/diamond/files/arc/encdata_ex/narc_0004.bin
+- notes: The timer is the save's RTC minutes: the field's RTC update subtracts the minutes between the save's last clock and now (a clock behind the save resets it, no decrement). A changed MAC/RTC offset on CONTINUE would restart the save clock and add the 24h penalty (overlay_52.c:352-355); the port's fixed console keeps both.
+
+#### pearl/72-day-care-deposit-and-egg — Day Care: deposit two parents with the lady and collect an egg
+- proves: Day Care, played: the Day-Care Lady takes a male and a female BIBAREL through her own menus (YES, the party menu, STORE, "raise another?" YES, the second pick), the player walks out and runs laps in Solaceon until the second parent's step count rolls an egg (Daycare_Update ov05_021ED378: every 256 steps, compatibility 50 for the same species and OT), and the Day-Care Man hands the egg over. Start: MAP_SOLACEON_DAYCARE (9,10). End: MAP_SOLACEON (555,649) below the man, BIDOOF egg in party slot 4.
+- start: `start.recipe`; map MAP_SOLACEON_DAYCARE 9 10 FACE_UP; lab state lines: none
+- party: SPECIES_BIBAREL 25; SPECIES_BIBAREL 26; SPECIES_BIBAREL 27; SPECIES_BIBAREL 28; SPECIES_BIBAREL 29; SPECIES_BIBAREL 30
+- trainers: none
+- end state: map MAP_SOLACEON; at (555, 649); party size 5; flags set 0xFE; flags clear 0x73; 5 save check(s)
+- frames: estimate 15729, budget 23600
+- refs: maps.h:441; zone_event 0415 object 0; zone_event 0415 warp 0; zone_event 0411 object 3; scr_seq 0464 @0x0124-0x0170; scr_seq 0464 @0x017E-0x0231; scr_seq 0464 @0x024C-0x025D; scr_seq 0464 @0x028C-0x0299; scr_seq 0464 @0x004A-0x0057; scr_seq 0464 @0x0083-0x00BC; games/diamond/include/daycare.h:16-27; games/diamond/arm9/src/save_arrays.c:75-76; games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1918-2051; features/tools/np_save4.c dump_daycare (DP_DAYCARE_OFF)
+
+#### pearl/73-egg-hatch-and-flame-body — Egg hatch (and Flame Body cycle halving)
+- proves: Egg hatch, played, with Flame Body: 72's BIDOOF egg (15 egg cycles) hatches while the player runs laps in Solaceon with MAGBY (Flame Body) in the party, which takes two cycles off per 255 steps instead of one (ov05_021ED190, called from Daycare_Update ov05_021ED378): about 2040 steps instead of about 3825. Start: 72's end, MAP_SOLACEON (555,649), egg in slot 4, + boost MAGBY. End: MAP_SOLACEON, BIDOOF hatched in slot 4.
+- start: prev + `None`; -; lab state lines: none
+- party: the continued save
+- trainers: none
+- end state: map MAP_SOLACEON; party SPECIES_BIDOOF, SPECIES_MAGBY; party size 6; 3 save check(s); log /hatch: a scene of \d+ frames after (1[5-9]\d\d|2\d\d\d) steps; 0 egg\(s\) left/
+- frames: estimate 39347, budget 59100
+- refs: games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1653-1695; games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1882-1917 (ov05_021ED334: 255 steps per cycle, 230 on special dates); games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1918-2051; games/diamond/files/poketool/personal/personal.json:18807-18809; games/diamond/files/poketool/personal/personal.json:31496
+- notes: Starts from 72's end (systems order: 72 first; run with 72's --out). The D/P lab has no Day Care or egg verb, so there is no standalone start.
+
+#### pearl/74-level-up-evolution-after-battle — Level-up evolution after battle: Caterpie -> Metapod
+- proves: Level-up evolution at the end of a battle: CATERPIE lv6 fights wild Pokemon in Route 202's tall grass (Dragon Rage, 40 fixed, one-shots every lv2-4 there) until it reaches lv7, and evolves into METAPOD after the battle that levels it (evolution allowed, never B). Start: MAP_ROUTE_202 (163,818) above the grass. End: MAP_ROUTE_202, slot 0 METAPOD lv7.
+- start: `start.recipe`; map MAP_ROUTE_202 163 818 FACE_DOWN; lab state lines: none
+- party: SPECIES_CATERPIE 6 (MOVE_DRAGON_RAGE)
+- trainers: none
+- end state: map MAP_ROUTE_202; >= 1 battles; party SPECIES_METAPOD; 2 save check(s)
+- frames: estimate 11399, budget 17100
+- refs: maps.h:347; map_header.c:427; games/diamond/files/fielddata/encountdata/d_enc_data/narc_0141.bin; games/diamond/files/fielddata/encountdata/p_enc_data/narc_0141.bin; games/diamond/files/poketool/personal/evo.json; zone_event 0328 object 0; tests/e2e/tools/probe_map.py (Route 202 grass x 162..165, z 819..824)
+
+#### pearl/75-trade-evolution — Trades: NPC trade (and link trade evolution)
+- proves: In-game NPC trade: the girl in Oreburgh's north house trades her ABRA for MACHOP (NPCTradeInit 0). An NPC trade never evolves the received mon [INFERENCE: CallTask_NPCTrade, scrcmd.c:3849-3853, runs the trade animation only]; D/P evolves a traded mon after a link trade. That half is the two-station link scenario dp_trade_evolve (tests/link/run_link_tests.py): B's KADABRA arrives on A's station, evolves, and A's save keeps ALAKAZAM (65). Start: MAP_OREBURGH_NORTH_HOUSE_1F (11,8) facing the girl. End: same map, ABRA in slot 0.
+- start: `start.recipe`; map MAP_OREBURGH_NORTH_HOUSE_1F 11 8 FACE_UP; lab state lines: none
+- party: SPECIES_MACHOP 15; SPECIES_STARLY 12
+- trainers: none
+- end state: map MAP_OREBURGH_NORTH_HOUSE_1F; party SPECIES_ABRA; flags set 0x85; 2 save check(s)
+- frames: estimate 4817, budget 7300
+- refs: maps.h:58; zone_event 0053 object 1; scr_seq 0058 @0x001D-0x0099; games/diamond/arm9/src/scrcmd.c:3828-3860; games/diamond/files/fielddata/pokemon_trade/fld_trade/narc_0000.bin; games/diamond/files/poketool/personal/evo.json:497-505; tests/link/run_link_tests.py dp_trade_evolve; tests/link/recipes/dp-union-b-kadabra.recipe; tests/link/schedules/dp-trade-evolve-a.sched
+
+#### pearl/78-amity-square — Amity Square: walk with Pikachu
+- proves: Amity Square entry: step onto the west coord event with an allowed PIKACHU, answer YES, and the Pikachu follower (object 5) is placed beside the player and walks with them (var 0x4099 1, 0x409A its species). Start: MAP_AMITY_SQUARE (12,47). End: (12,45), one step on with the PIKACHU behind (flag 0x200 clear).
+- start: `start.recipe`; map MAP_AMITY_SQUARE 12 47 FACE_UP; lab state lines: 1 var
+- party: SPECIES_PIKACHU 20
+- trainers: none
+- end state: map MAP_AMITY_SQUARE; at (12, 45); party SPECIES_PIKACHU; flags clear 0x200; vars 0x4099=1, 0x409A=25, 0x409D=0
+- frames: estimate 1899, budget 2900
+- refs: maps.h:257; zone_event 0245 coord 0; zone_event 0245 object 0; zone_event 0245 object 5; scr_seq 0266 @0x006A-0x009A; scr_seq 0266 @0x009C-0x00AE; scr_seq 0266 @0x00CC-0x00F6; scr_seq 0266 @0x026C-0x02E1; scr_seq 0266 @0x0450-0x0476; scr_seq 0266 @0x050D-0x0513; scr_seq 0266 @0x05BD-0x0614; scr_seq 0266 @0x07C0-0x07D7; msg 236 #2; msg 236 #3
+
+#### pearl/80-trophy-garden — Trophy Garden: Mr. Backlot's daily Pokemon
+- proves: Trophy Garden daily mon: Mr. Backlot in the Pokemon Mansion (Route 212), with the National Dex: YES, YES -> AddTrophyGardenMon (Unk01EC), the butler's scene, Backlot names the species; daily flag 0xAA2 set. Start: MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM (16,9) below Backlot. End: same tile, flag 0xAA2 set.
+- start: `start.recipe`; map MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM 16 9 FACE_UP; lab state lines: 1 national-dex, 1 pokedex, 1 var
+- party: SPECIES_INFERNAPE 50
+- trainers: none
+- end state: map MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM; at (16, 9); flags set 0xAA2; vars 0x400B=1; 1 save check(s)
+- frames: estimate 2145, budget 3300
+- refs: maps.h:374; zone_event 0355 object 1; zone_event 0355 warp 0; scr_seq 0421 @0x006F; scr_seq 0421 @0x0087; scr_seq 0421 @0x00AA-0x00DB; scr_seq 0421 @0x00FB-0x0109; scr_seq 0421 @0x013F-0x014B; scr_seq 0421 @0x0155-0x0161; msg 441 #3; msg 441 #6; msg 441 #10; games/diamond/arm9/src/scrcmd.c:3657-3666; games/diamond/pc/game/pc_dp_lab.c:299-307
+
+#### pearl/81-game-corner — Game Corner: play the slots
+- proves: Veilstone Game Corner: buy 50 coins from the clerk (1000 money), then play slot machine 0 once (the US D/P slots: SlotMachine 0x8004 from the machine's bg script). Start: MAP_VEILSTONE_GAME_CORNER (11,6) facing machine 0 at (12,6). End: same tile, money -1000, coins changed from 50 by the spin. The slot app's bottom screen was white before armrec ef93d8d397 (DEFECTS.md).
+- start: `start.recipe`; map MAP_VEILSTONE_GAME_CORNER 11 6 FACE_RIGHT; lab state lines: 1 item, 1 var
+- party: SPECIES_INFERNAPE 40
+- trainers: none
+- end state: map MAP_VEILSTONE_GAME_CORNER; at (11, 6); 2 save check(s)
+- frames: estimate 3139, budget 4800
+- refs: maps.h:140; zone_event 0135 object 0; zone_event 0135 bg 0; scr_seq 0136 @0x0056-0x005C; scr_seq 0136 @0x00E6-0x012D; scr_seq 0136 @0x013A-0x0197; scr_seq 0136 @0x01A8-0x023C; scr_seq 0136 @0x02AF-0x02BC; scr_seq 0145 @0x00CA; msg 139 #2; msg 139 #3; games/diamond/arm9/src/scrcmd.c:4243-4247; games/diamond/arm9/asm/unk_020377F0.s:2453-2497
 
 #### pearl/90-underground-explorer-kit — Underground: Explorer Kit and first entry
 - proves: Underground Man gives the Explorer Kit and becomes mentor (YES); walk out to Eterna and use the kit to enter the Underground. D/P has no lab underground hook (Platinum's PC_LAB_UNDERGROUND): input-driven. Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door (warp 0, (4,8)). End: MAP_UNDERGROUND (2).

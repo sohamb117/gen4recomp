@@ -26,6 +26,8 @@
  *   np_save4 add-box-mon <save> <rom.nds> <species> <level> [move...]   the same, in the first empty box slot
  *   np_save4 set-move <save> <rom.nds> <slot> <index> <move>   a party Pokemon's move (full PP)
  *   np_save4 set-level <save> <rom.nds> <slot> <level>   a party Pokemon's level (stats recalculated)
+ *   np_save4 set-condition <save> <slot> <cool> <beauty> <cute> <smart> <tough> <sheen>   a party Pokemon's
+ *                                                contest conditions (what fed poffins leave; the e2e `condition`)
  *   np_save4 heal-party <save> <rom.nds>   the party's HP, status and PP restored (a Pokemon Center's)
  *   np_save4 set-location <save> <map> <x> <z> [<dir> [<y>]]   HG/SS: where CONTINUE starts
  *                                                (dir 0 up 1 down 2 left 3 right, default 1;
@@ -81,11 +83,12 @@ static int usage(void)
             "  %s add-box-mon <save> <rom.nds> <species> <level> [move id...]\n"
             "  %s set-move <save> <rom.nds> <party slot 0-5> <move index 0-3> <move id>\n"
             "  %s set-level <save> <rom.nds> <party slot 0-5> <level 1-100>\n"
+            "  %s set-condition <save> <party slot 0-5> <cool> <beauty> <cute> <smart> <tough> <sheen>\n"
             "  %s heal-party <save> <rom.nds>\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
             prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
-            prog, prog, prog, prog, prog, prog, prog, prog);
+            prog, prog, prog, prog, prog, prog, prog, prog, prog);
     return EXIT_USAGE;
 }
 
@@ -265,6 +268,8 @@ static void dump_mon(FILE *o, const pkm4 *p, save4_status dst, int full)
     }
     fprintf(o, "], \"ivs\": [%u, %u, %u, %u, %u, %u]", i.ivs[0], i.ivs[1], i.ivs[2], i.ivs[3], i.ivs[4], i.ivs[5]);
     fprintf(o, ", \"evs\": [%u, %u, %u, %u, %u, %u]", i.evs[0], i.evs[1], i.evs[2], i.evs[3], i.evs[4], i.evs[5]);
+    fprintf(o, ", \"conditions\": [%u, %u, %u, %u, %u, %u]", i.contest[0], i.contest[1], i.contest[2], i.contest[3],
+            i.contest[4], i.contest[5]);   /* cool, beauty, cute, smart, tough, sheen */
     fprintf(o, ", \"friendship\": %u, \"ot_name\": ", i.friendship);
     jstr(o, i.ot_name);
     fprintf(o, ", \"tid\": %u, \"sid\": %u, \"met_location\": {\"id\": %u, \"name\": ", i.tid, i.sid, i.met_location);
@@ -374,9 +379,13 @@ static void dump_hall_of_fame(FILE *o, const save4 *s)
  * u32 steps; 0xEC each), then u32 offspringPersonality (an egg waiting when non-zero) and u8 stepCounter (the
  * egg-cycle counter). Offset found by scanning lab saves for valid BoxPokemon (save_table.c sums the page sizes).
  * HG/SS's Daycare (pokeheartgold include/daycare.h: mons[2], egg_pid, egg_cycles) has the same shape; its offset was
- * found the same way, from the PIDs of two Pokemon deposited on Route 34 (tests/e2e/heartgold/73). */
+ * found the same way, from the PIDs of two Pokemon deposited on Route 34 (tests/e2e/heartgold/73).
+ * Diamond/Pearl's Daycare (pokediamond include/daycare.h: mons[2], egg_pid, egg_cycles) has the same shape too: save
+ * chunk 8, after the Pokedex (chunk 7 at 0x12DC; arm9/src/save_arrays.c:75-76). Its offset was found the same way,
+ * from the PIDs of the two BIBAREL deposited in Solaceon (tests/e2e/diamond/72): 0x141C, not the Pokedex's end. */
 #define PT_DAYCARE_OFF 0x1654
 #define HGSS_DAYCARE_OFF 0x15FC
+#define DP_DAYCARE_OFF 0x141C
 #define DAYCARE_MON_SIZE 0xEC
 
 static void dump_daycare(FILE *o, const save4 *s)
@@ -384,7 +393,9 @@ static void dump_daycare(FILE *o, const save4 *s)
     size_t len = 0;
     const uint8_t *img = save4_image(s, &len);
     uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
-    uint32_t off = s->game == SAVE4_GAME_PT ? PT_DAYCARE_OFF : save4_game_is_hgss(s->game) ? HGSS_DAYCARE_OFF : 0;
+    uint32_t off = s->game == SAVE4_GAME_PT ? PT_DAYCARE_OFF
+                   : save4_game_is_hgss(s->game) ? HGSS_DAYCARE_OFF
+                   : s->game == SAVE4_GAME_DP ? DP_DAYCARE_OFF : 0;
     if (!off || base + off + 2 * DAYCARE_MON_SIZE + 5 > len) {
         fputs("  \"daycare\": null,\n", o);
         return;
@@ -1076,6 +1087,20 @@ out:
     return st;
 }
 
+/* set-condition: party slot `slot`'s six contest conditions (cool, beauty, cute, smart, tough, sheen; 0-255), as
+ * poffins fed to it leave them (the D/P e2e recipes' `condition`, Platinum's lab verb of that name). */
+static save4_status set_condition(save4 *s, unsigned long slot, const unsigned long v[6])
+{
+    pkm4 p;
+    if (slot >= save4_party_count(s) || save4_get_party(s, (int)slot, &p) != SAVE4_OK || pkm4_is_empty(&p)) {
+        fprintf(stderr, "%s: no party Pokemon in slot %lu\n", prog, slot);
+        return SAVE4_ERR_ARG;
+    }
+    for (int i = 0; i < 6; i++)
+        pkm4_set_contest(&p, i, (uint8_t)v[i]);
+    return save4_set_party(s, (int)slot, &p);
+}
+
 /* set-level: party slot `slot` at `level`: its growth rate's EXP for the level, its stats recalculated from its
  * own IVs, EVs and nature, its HP the new maximum (the e2e boosts' party-level). Moves, friendship and the rest
  * stay as they are: no level-up moves are learned and no evolution runs. */
@@ -1291,6 +1316,13 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[1], 5, &v1) || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)
             st = set_level(&s, a[0], v1, v2);
+    } else if (!strcmp(cmd, "set-condition") && na == 7) {
+        unsigned long cv[6];
+        bad = parse_ul(a[0], 5, &v1);
+        for (int i = 0; i < 6 && !bad; i++)
+            bad = parse_ul(a[1 + i], 255, &cv[i]);
+        if (!bad)
+            st = set_condition(&s, v1, cv);
     } else if (!strcmp(cmd, "heal-party") && na == 1) {
         st = heal_party(&s, a[0]);
     } else if ((!strcmp(cmd, "add-mon") || !strcmp(cmd, "add-box-mon")) && na >= 3 && na <= 7) {

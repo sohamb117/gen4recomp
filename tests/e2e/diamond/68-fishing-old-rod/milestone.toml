@@ -1,0 +1,55 @@
+# Old Rod: cast the registered Old Rod at the Route 205 South river, hook the bite, win the wild battle.
+# The bite is read from guest RAM (bots.py fish, _dp_fish_cast: the FishingTask's state word, ov05_021F5C44.s).
+# Start: MAP_ROUTE_205_SOUTH (180,604) on the river bank facing the water. End: same tile after the wild battle.
+title = "Old Rod: fish on Route 205 South"
+priority = "P2"
+version = "both"
+estimate = 3313
+refs = [
+  "scr_seq 0440 @0x0025",
+  "scr_seq 0440 @0x00B9",
+  "maps.h:351",
+  "map_header.c:431",
+  "games/diamond/arm9/asm/unk_0205CE48.s:26-29",
+  "games/diamond/arm9/asm/unk_0205CE48.s:1330-1373",
+  "games/diamond/arm9/asm/unk_0201B4E8.s:194-209",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:30-113",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:115-182",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:258-365",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F5C44.s:824-834",
+  "games/diamond/arm9/overlays/06/asm/overlay_06.s:5180",
+  "games/diamond/files/fielddata/encountdata/d_enc_data/narc_0145.bin",
+  "games/diamond/files/fielddata/encountdata/p_enc_data/narc_0145.bin",
+]
+notes = "d_enc_data/p_enc_data 0145 (identical in both versions), old rod, rate 25 @0x124: MAGIKARP lv3-10 in all five slots"
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5000
+
+[[shots]]
+frames = [1760, 1820]  # the cast rod over the water; "Landed a Pokemon!"
+
+[[step]]
+do = "fish"
+note = "Y casts the registered Old Rod; A in the FishingTask's hook state 5 (ov05_021F5EA8) hooks; no-nibble casts are closed with B and recast"
+shot = "hooked"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "GARCHOMP Dragon Claw one-shots the hooked Pokemon"
+
+[[step]]
+do = "advance_text"
+shot = "after"
+
+[expect]
+map = "MAP_ROUTE_205_SOUTH"
+position = [180, 604]
+battles = 1
+# the hooked species, seen in the Pokedex (old rod, rate 25 @0x124: MAGIKARP lv3-10 in all five slots)
+save = ['129 in s["pokedex"]["seen_list"]']
+log = ['fish: cast \d+: bite', 'fish: cast \d+: caught', 'auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 129\b']

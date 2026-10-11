@@ -3,6 +3,56 @@
 Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
 pinned in the port or shown to be the cartridge's own behaviour.
 
+## Open: Diamond's Poffin cooking app traps the guest when it closes (port; shadow stack guard)
+
+Diamond 77 (tests/e2e/diamond/77-poffin-making, planned): cooking works (the berry, the burnt batter, RESULTS
+'Foul Poffin Lv. 02', 'put away in the case'); two frames after NO on 'Would you like to keep cooking Poffins?'
+closes the app (scr_seq 0391's Unk01D7 0 @0x010F, then RestoreOverworld @0x0097) the guest stops: `pc_os_context:
+shadow stack 0 (0xdf0b110, 262144 bytes) overflowed` (games/platinum/pc/wasm/src/pc_os_context_wasm.c
+ctx_check_guards: the guard word at the lowest address of a context's 256 KiB wasm shadow stack was overwritten),
+frame 9793 on core-dp at 9feb1ea70. Repro: 77's steps as written. Cause not yet pinned: a genuine shadow-stack
+overflow (a deep call chain or a large address-taken local on thread 0's stack) or a stray write onto the guard; under
+investigation (PC_CTX_TRACE, watchpoints). No shared code changed for it.
+
+## Fixed: the Game Corner's slot machine drew a white bottom screen on Diamond, Pearl and Platinum (armrec, VRAM mirrors)
+
+Diamond/Pearl 81 and Platinum 81 (the Veilstone Game Corner): the slot app plays (coins in, a spin, the reels stop,
+the credit counts down) but its bottom screen is plain white in every frame, where the cartridge draws a night sky
+with a moon over a field (slot.narc members 3 NCLR, 2 NCGR, 4 NSCR, games/diamond/files/data/slot, decoded). The
+milestones pass on their expects (the system works); the picture is wrong. Repro: Diamond 81 from its start.recipe
+on the gate core, or Platinum 81 on core-plat: the `slots` / `spinning` shots (build/evidence/dppt-main/
+diamond-81-game-corner/).
+
+State at the slot screen (Diamond 81's run with a guest-memory peek at frame 2625): DB_BG3CNT = 0x0323, char base
+block 8 = offset 0x20000 (the layer template's GX_BG_CHARBASE_0x20000: D/P ov85 0x021DED0C; Platinum
+src/overlay101/ov101_021D0D80.c:345-346). Engine B's BG VRAM is bank C alone (128 KB), so on a console 0x06220000
+is a mirror of 0x06200000: the game's tile upload to char base 0x20000 lands at offset 0 and the layer reads it back
+there. In the port the two addresses hold different bytes (the first 16 KB: 4343 nonzero at 0x06200000, 8140 at
+0x06220000), so the renderer (games/platinum/pc/hw/pc_gpu2d.c, BBG_BASE + (off & BBG_MASK 0x1FFFF)) reads offset 0,
+where the upload never arrived: every tile is transparent and the backdrop, palette 0 = 0x7FFF, shows.
+
+Cause: armrec's copying VRAM model (games/platinum/tools/armrec/armrec_rt.c, ARMREC_VRAM_COPY: wasm and Windows,
+so every shipped core and the gate cores) reconciles only the first mirror of each window. armrec_vram_render_begin
+and vram_remap pull windows to the store with vram_copy(0, 0) (mirror 0 only), and render_end pushes back to mirror
+0 only; the comment at armrec_rt.c:638-644 records "writes through a mirror other than the first" as unsolved. A
+write through 0x06220000 therefore never reaches bank C. The native aliasing model (mmap views) mirrors for real.
+
+Fixed in ef93d8d397 (armrec_rt.c, the copying model only; the native aliasing model and the 3DS port's per-access
+lookup, 3ds/src/3ds_vram.c vram_lookup's `% period`, already mirror): a reconcile (the render, a VRAMCNT remap) reads
+every alias of each mapped bank block, every window block that maps it in every mirror, merges what the guest
+changed through any of them into the bank byte by byte against the bank as it was before the pass, and pushes each
+changed block to all of its aliases; the render's own bank writes (display capture) reach every mirror too. A remap
+reads every mirror only of the blocks it moves (and of blocks whose bank the pass changed), so texture streaming
+keeps its cost. `PC_VRAM_MIRROR_STATS=1` counts, per window, the blocks found written through a non-primary mirror
+(stderr).
+
+Proof: Diamond 81 on the rebuilt gate core-dp passes in the same 3139 frames and its `slots`, `spinning` and
+`stopped` shots show the moon over the field (the decoded slot.narc screen); with PC_VRAM_MIRROR_STATS=1 its log
+has `first write through a non-primary mirror: sub BG mirror 1 block 0 (0x06220000), render 2520` (the slot app's
+upload). The gate cases (d-boot, d-intro, p-boot, p-intro, plat-600, d-state-boot, d-state-save) keep their hashes
+on the rebuilt cores (tools/gate.sh --refresh-cores). Evidence: build/evidence/dppt-main/diamond-81-game-corner/
+(after), build/evidence/dppt-main/diamond-81-game-corner-before/ (the white screen on 9feb1ea70).
+
 ## Fixed: the Battle Frontier's rooms drew black on Platinum and HeartGold/SoulSilver (armrec, extended palettes)
 
 Platinum 98 (Battle Tower) and HeartGold/SoulSilver 87: after the elevator, the frontier engine's corridor and Battle

@@ -1,0 +1,72 @@
+# Honey tree, part 2: 7 hours after 71's slather the Route 205 South tree has a Pokemon: the RTC minutes elapsed
+# since the save's clock tick the timer down (unk_0204B0A0.c:53-71 -> sub_0202A9D0), 1440 - 420 <= 1080 is
+# CheckHoneyTree 3 and A at the tree starts HoneyTreeBattle (scr_seq 0205 @0x067B). After the win, the second HONEY
+# is slathered (scr_seq 0205 @0x0629-0x0679).
+# Start: 71's end save, MAP_ROUTE_205_SOUTH (213,653) below the tree. End: same tile after the wild battle.
+title = "Honey tree: the Route 205 South tree's Pokemon, 7 hours later"
+priority = "P2"
+version = "both"
+estimate = 3503
+refs = [
+  "scr_seq 0205 @0x05B9-0x05E4",
+  "scr_seq 0205 @0x0629-0x0679",
+  "scr_seq 0205 @0x067B-0x069A",
+  "maps.h:351",
+  "map_header.c:431",
+  "games/diamond/arm9/overlays/05/asm/ov05_021D80E8.s:508-522",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:37-76",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:78-112",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:114-191",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:568-581",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-756",
+  "games/diamond/arm9/asm/unk_0202A924.s:119-144",
+  "games/diamond/arm9/src/unk_0204B0A0.c:29-71",
+  "games/diamond/arm9/src/unk_0204B0A0.c:109-116",
+  "games/diamond/arm9/overlays/52/src/overlay_52.c:352-355",
+  "games/diamond/arm9/src/save_system_info.c:93-108",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:664-697",
+  "games/diamond/arm9/overlays/05/asm/ov05_021F4CF8.s:742-748",
+  "games/diamond/arm9/overlays/06/asm/overlay_06.s ov06_0223CCDC",
+  "games/diamond/arm9/src/encounter.c:500-513",
+  "games/diamond/files/arc/encdata_ex/narc_0002.bin",
+  "games/diamond/files/arc/encdata_ex/narc_0003.bin",
+  "games/diamond/files/arc/encdata_ex/narc_0004.bin",
+]
+notes = "The timer is the save's RTC minutes: the field's RTC update subtracts the minutes between the save's last clock and now (a clock behind the save resets it, no decrement). A changed MAC/RTC offset on CONTINUE would restart the save clock and add the 24h penalty (overlay_52.c:352-355); the port's fixed console keeps both."
+
+[start]
+from = "71-honey-tree-slather"
+
+[run]
+frames = 5300
+clock = "2009-03-22 16:00:00"   # 7 hours after 71's 09:00 (its end save's clock ~09:00:30)
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing the tree prop north (script 2008)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "CheckHoneyTree 3 -> HoneyTreeBattle; advance_text stops at the battle"
+shot = "tree"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "STARAPTOR Brave Bird KOs the lv5-15 honey tree Pokemon"
+
+[[step]]
+do = "advance_text"
+note = "won -> StopHoneyTreeAnimation, HONEY in the bag -> 'Slather the bark with Honey?' YES -> TakeItem, UpdateHoneyTree"
+shot = "slathered"
+
+[expect]
+map = "MAP_ROUTE_205_SOUTH"
+position = [213, 653]
+battles = 1
+# CHERUBI (420): this save + clock's roll (UpdateHoneyTree in 71: group, slot); CHERUBI is in Diamond's tables
+# (encdata_ex 2 slot 4, 3 slot 2) and Pearl's (5 slot 4, 6 slot 2) alike. The last HONEY slathered after the battle.
+save = ['420 in s["pokedex"]["seen_list"]', '[i["qty"] for i in s["bag"]["items"] if i["item"] == 94] == []']
+log = ['auto_battle: battler \d slot \d \(move \d+, \d+ PP\) on species 420\b']
