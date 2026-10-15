@@ -1,7 +1,8 @@
+import { nativeGames, type NativeGameId } from "../shared/native-games.mjs";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { GuestHost } from "../src/runtime/host.ts";
-const game = process.argv[2] || "platinum",
+const game = (process.argv[2] || "platinum") as NativeGameId,
   frames = Number(process.argv[3] || 600),
   batch = Number(process.argv[4] || 1);
 if (![1, 2].includes(batch)) throw Error("Batch must be 1 or 2");
@@ -9,10 +10,7 @@ const root = resolve(import.meta.dirname, "../..");
 const manifest = JSON.parse(
   readFileSync(resolve(root, "web/public/cores/manifest.json"), "utf8"),
 );
-const rom =
-  game === "platinum"
-    ? "games/platinum/build/rom/pokeplatinum.us.nds"
-    : `games/diamond/build/${game}.us/poke${game}.us.nds`;
+const rom = nativeGames[game].rom;
 const host = new GuestHost(
   new Uint8Array(readFileSync(resolve(root, rom))),
   undefined,
@@ -40,8 +38,12 @@ for (let i = 0; i < frames; i += batch) {
       `fibers=${host.fibers.size}`,
     );
   if (i + count === frames) {
-    const header = Buffer.from(`P6\n${frame.width} ${frame.height * 2}\n255\n`),
-      rgb = Buffer.alloc(frame.width * frame.height * 6);
+    const header = Buffer.from(
+        `P6\n${frame.width} ${frame.height * (frame.bottom.length ? 2 : 1)}\n255\n`,
+      ),
+      rgb = Buffer.alloc(
+        frame.width * frame.height * (frame.bottom.length ? 6 : 3),
+      );
     [frame.top, frame.bottom].forEach((p, s) => {
       for (let j = 0; j < p.length / 4; j++) {
         rgb[((s * p.length) / 4 + j) * 3] = p[j * 4];

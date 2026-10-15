@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { loadCartridges, fetchCartridge } from "../src/cartridges";
 import { GuestHost } from "../src/runtime/host";
-import { games, isGen4, type CoreManifest } from "../src/catalog";
+import { games, isNative, type CoreManifest } from "../src/catalog";
 import { readFileSync } from "node:fs";
 
 const base = new URL(process.argv[2] || "http://127.0.0.1:8088/").href;
@@ -26,9 +26,21 @@ if (process.env.NP_WITH_SAVE_API === "1") {
   assert.match(anonymous.headers.get("cache-control") || "", /no-store/);
 }
 const catalog = await loadCartridges(base);
+const localCores = JSON.parse(
+  readFileSync(
+    new URL("../public/cores/manifest.json", import.meta.url),
+    "utf8",
+  ),
+) as CoreManifest;
+const expectedNative = Object.entries(localCores.games)
+  .filter(([, c]) => c?.verification === "passed")
+  .map(([id]) => id);
+const expectedGames = games.filter(
+  (g) => !isNative(g.id) || g.id === "emerald" || expectedNative.includes(g.id),
+);
 assert.deepEqual(
   Object.keys(catalog).sort(),
-  games.map((game) => game.id).sort(),
+  expectedGames.map((g) => g.id).sort(),
 );
 // Previously published plaintext URLs must no longer be served (including gzip).
 for (const file of [
@@ -53,11 +65,12 @@ for (const file of [
 const manifest = (await fetch(new URL("cores/manifest.json", base)).then((r) =>
   r.json(),
 )) as CoreManifest;
-assert.deepEqual(Object.keys(manifest.games).sort(), [
-  "diamond",
-  "pearl",
-  "platinum",
-]);
+assert.deepEqual(Object.keys(manifest.games).sort(), expectedNative.sort());
+for (const game of expectedNative)
+  assert.deepEqual(
+    manifest.games[game as keyof typeof manifest.games],
+    localCores.games[game as keyof typeof localCores.games],
+  );
 const engine = await fetch(new URL("engines/gen123/manifest.json", base)).then(
   (r) => r.json(),
 );
@@ -89,7 +102,7 @@ for (const [file, expected] of Object.entries(engine.files) as [
 console.log(
   "Gen 1–3: all eight deployed engine/source/license files match the prepared release",
 );
-for (const { id: game, hash: sha1 } of games) {
+for (const { id: game, hash: sha1 } of expectedGames) {
   const data = await fetchCartridge(base, game, catalog[game]!, () => {});
   console.log(
     `${game}: downloaded encrypted package, decrypted and verified ${data.byteLength} cartridge bytes`,
@@ -98,7 +111,7 @@ for (const { id: game, hash: sha1 } of games) {
     Buffer.from(await crypto.subtle.digest("SHA-1", data)).toString("hex"),
     sha1,
   );
-  if (!isGen4(game)) continue;
+  if (!isNative(game) || !manifest.games[game]) continue;
   const core = manifest.games[game]!;
   const response = await fetch(new URL(`cores/${core.file}`, base));
   assert.equal(response.status, 200);

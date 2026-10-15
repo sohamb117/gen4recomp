@@ -1,3 +1,4 @@
+import { nativeGames } from "../shared/native-games.mjs";
 // Test the prepared artifacts with LOCAL cartridges, never included in the site.
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, renameSync, existsSync } from "node:fs";
@@ -17,12 +18,7 @@ for (const game of selected) {
 for (const [game, core] of Object.entries(manifest.games)) {
   if (selected.length && !selected.includes(game)) continue;
   const frames = core.recipe === "asyncify-o3-v2" ? 12000 : 600;
-  const rom = resolve(
-    root,
-    game === "platinum"
-      ? "games/platinum/build/rom/pokeplatinum.us.nds"
-      : `games/diamond/build/${game}.us/poke${game}.us.nds`,
-  );
+  const rom = resolve(root, nativeGames[game].rom);
   if (!existsSync(rom)) {
     core.verification = "unverified";
     console.error(`${game}: missing local verification cartridge`);

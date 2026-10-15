@@ -1,3 +1,4 @@
+import { nativeGames } from "../shared/native-games.mjs";
 import {
   existsSync,
   mkdirSync,
@@ -21,11 +22,12 @@ const nativeOptimizer =
   (existsSync(cachedOptimizer) ? cachedOptimizer : undefined);
 mkdirSync(output, { recursive: true });
 mkdirSync(temp, { recursive: true });
-const games = {
-  diamond: "games/diamond/build/pc-wasm/pokediamond.wasm",
-  pearl: "games/diamond/build/pc-wasm/pokepearl.wasm",
-  platinum: "games/platinum/build/pc-wasm/pokeplatinum.wasm",
-};
+const games = Object.fromEntries(
+  Object.keys(nativeGames).map((game) => [
+    game,
+    `build/web-guest/${game}.wasm`,
+  ]),
+);
 const forceOptimize = process.argv.includes("--optimize");
 const noOptimize = process.argv.includes("--no-optimize");
 const selected = process.argv

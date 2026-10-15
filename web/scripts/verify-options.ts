@@ -1,3 +1,4 @@
+import { nativeGames } from "../shared/native-games.mjs";
 // Exercise the real copied cores without modifying cartridge/save inputs.
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -14,10 +15,7 @@ const selected = process.argv.slice(2);
 const games = selected.length ? selected : ["platinum"];
 for (const game of games) {
   assert.ok(game === "platinum" || game === "diamond" || game === "pearl");
-  const rom =
-    game === "platinum"
-      ? "games/platinum/build/rom/pokeplatinum.us.nds"
-      : `games/diamond/build/${game}.us/poke${game}.us.nds`;
+  const rom = nativeGames[game].rom;
   let stored = 0;
   const host = new GuestHost(
     new Uint8Array(readFileSync(resolve(root, rom))),

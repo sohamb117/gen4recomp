@@ -1,3 +1,4 @@
+import { nativeGames } from "../shared/native-games.mjs";
 import { stageGen123 } from "./gen123-package.mjs";
 // Explicit deployment bundle: verified engines and twelve allowlisted cartridges.
 import { createHash } from "node:crypto";
@@ -18,7 +19,7 @@ const root = resolve(import.meta.dirname, "../..");
 const dist = resolve(root, "web/dist");
 const stage = resolve(root, "build/gcp-nativeplat");
 const site = resolve(stage, "dist");
-const dsGames = ["diamond", "pearl", "platinum"];
+
 const selected = {
   red: [
     "build/gen123-roms/pokered/pokered.gbc",
@@ -56,25 +57,20 @@ const selected = {
     "build/gen123-roms/pokeemerald/pokeemerald.gba",
     "f3ae088181bf583e55daf962a92bb46f4f1d07b7",
   ],
-
-  diamond: [
-    "games/diamond/build/diamond.us/pokediamond.us.nds",
-    "a46233d8b79a69ea87aa295a0efad5237d02841e",
-  ],
-  pearl: [
-    "games/diamond/build/pearl.us/pokepearl.us.nds",
-    "99083bf15ec7c6b81b4ba241ee10abd9e80999ac",
-  ],
-  platinum: [
-    "games/platinum/build/rom/pokeplatinum.us.nds",
-    "0862ec35b24de5c7e2dcb88c9eea0873110d755c",
-  ],
 };
 const hash = (data, algorithm = "sha256") =>
   createHash(algorithm).update(data).digest("hex");
 const cores = JSON.parse(
   readFileSync(resolve(dist, "cores/manifest.json"), "utf8"),
 );
+const dsGames = Object.keys(nativeGames).filter(
+  (game) => cores.games[game]?.verification === "passed",
+);
+for (const game of ["diamond", "pearl", "platinum"])
+  if (!dsGames.includes(game))
+    throw Error(`${game}: required core is not qualified`);
+for (const game of dsGames)
+  selected[game] = [nativeGames[game].rom, nativeGames[game].sha1];
 const cartridges = { version: 2, games: {} };
 rmSync(stage, { recursive: true, force: true });
 mkdirSync(resolve(site, "cores"), { recursive: true });
