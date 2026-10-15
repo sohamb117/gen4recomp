@@ -1,5 +1,6 @@
 FROM node:22-alpine
-RUN apk add --no-cache nginx
+# Cloud Run allocates one vCPU; auto can count host CPUs and over-spawn workers.
+RUN apk add --no-cache nginx && sed -i 's/worker_processes auto;/worker_processes 1;/' /etc/nginx/nginx.conf
 WORKDIR /app
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
@@ -7,6 +8,7 @@ COPY server/ ./
 COPY shared/ /shared/
 COPY deploy/nginx.conf /etc/nginx/http.d/default.conf
 COPY dist/ /usr/share/nginx/html/
-ENV SERVE_STATIC=true
+# Keep API garbage collection inside the shared 512 MiB nginx/Node budget.
+ENV SERVE_STATIC=true NODE_OPTIONS=--max-old-space-size=128
 EXPOSE 8080
 CMD ["node", "index.mjs"]
