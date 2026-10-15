@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { loadCartridges, fetchCartridge } from "../src/cartridges";
 import { GuestHost } from "../src/runtime/host";
-import { games, isNative, type CoreManifest } from "../src/catalog";
+import {
+  games,
+  isNative,
+  isSingleScreen,
+  type CoreManifest,
+} from "../src/catalog";
 import { readFileSync } from "node:fs";
 
 const base = new URL(process.argv[2] || "http://127.0.0.1:8088/").href;
@@ -136,8 +141,9 @@ for (const { id: game, hash: sha1 } of expectedGames) {
   let lit = false;
   for (let i = 0; i < 600; i++) {
     const frame = host.runFrame();
-    assert.equal(frame.width, 256);
-    assert.equal(frame.height, 192);
+    assert.equal(frame.width, isSingleScreen(game) ? 240 : 256);
+    assert.equal(frame.height, isSingleScreen(game) ? 160 : 192);
+    assert.equal(frame.bottom.length, isSingleScreen(game) ? 0 : 256 * 192 * 4);
     lit ||= frame.top.some((byte, j) => j % 4 !== 3 && byte !== 0);
   }
   assert.ok(lit, `${game} rendered no picture`);
