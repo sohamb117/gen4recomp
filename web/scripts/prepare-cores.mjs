@@ -1,3 +1,4 @@
+import { updateCoreManifest } from "./core-manifest.mjs";
 import { nativeGames } from "../shared/native-games.mjs";
 import {
   existsSync,
@@ -113,15 +114,16 @@ for (const [game, path] of Object.entries(games)) {
   if (prior?.sha256 === manifest.games[game].sha256 && prior.verification) {
     manifest.games[game].verification = prior.verification;
     manifest.games[game].note = prior.note;
+    manifest.games[game].browserVerification = prior.browserVerification;
+    manifest.games[game].browserNote = prior.browserNote;
+    manifest.games[game].runtimeSha256 = prior.runtimeSha256;
   }
 }
-const latest = existsSync(manifestPath)
-  ? JSON.parse(readFileSync(manifestPath, "utf8"))
-  : { ...manifest, games: {} };
-for (const game of preparedGames) latest.games[game] = manifest.games[game];
-writeFileSync(
-  resolve(output, "manifest.json.tmp"),
-  JSON.stringify(latest, null, 2) + "\n",
+updateCoreManifest(
+  manifestPath,
+  (latest) => {
+    for (const game of preparedGames) latest.games[game] = manifest.games[game];
+  },
+  { ...manifest, games: {} },
 );
-renameSync(resolve(output, "manifest.json.tmp"), manifestPath);
 console.log("Browser cores prepared. No cartridges or saves were copied.");

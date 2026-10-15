@@ -1,6 +1,6 @@
 import { nativeGames } from "../shared/native-games.mjs";
 import { stageGen123 } from "./gen123-package.mjs";
-// Explicit deployment bundle: verified engines and twelve allowlisted cartridges.
+// Explicit deployment bundle: qualified engines and explicitly allowlisted cartridges.
 import { createHash } from "node:crypto";
 import {
   readFileSync,
@@ -63,15 +63,15 @@ const hash = (data, algorithm = "sha256") =>
 const cores = JSON.parse(
   readFileSync(resolve(dist, "cores/manifest.json"), "utf8"),
 );
-const dsGames = Object.keys(nativeGames).filter(
+const qualifiedGames = Object.keys(nativeGames).filter(
   (game) =>
     cores.games[game]?.verification === "passed" &&
     cores.games[game]?.browserVerification === "passed",
 );
 for (const game of ["diamond", "pearl", "platinum"])
-  if (!dsGames.includes(game))
+  if (!qualifiedGames.includes(game))
     throw Error(`${game}: required core is not qualified`);
-for (const game of dsGames)
+for (const game of qualifiedGames)
   selected[game] = [nativeGames[game].rom, nativeGames[game].sha1];
 const cartridges = { version: 2, games: {} };
 rmSync(stage, { recursive: true, force: true });
@@ -81,7 +81,7 @@ stageGen123(resolve(dist, "engines/gen123"), resolve(site, "engines/gen123"));
 // Allowlist site outputs, never the repository or user storage.
 for (const name of ["index.html", "icon.svg", "assets"])
   cpSync(resolve(dist, name), resolve(site, name), { recursive: true });
-for (const game of dsGames) {
+for (const game of qualifiedGames) {
   const core = cores.games[game];
   if (
     !core ||
@@ -103,7 +103,7 @@ for (const [game, [source, sha1]] of Object.entries(selected)) {
   cartridges.games[game] = entry;
 }
 cores.games = Object.fromEntries(
-  dsGames.map((game) => [game, cores.games[game]]),
+  qualifiedGames.map((game) => [game, cores.games[game]]),
 );
 writeFileSync(
   resolve(site, "cores/manifest.json"),

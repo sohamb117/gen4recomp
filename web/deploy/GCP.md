@@ -39,7 +39,8 @@ an existing save. The domain mapping does not alter the game binaries or pacing.
 - Initial encrypted-package revision: `nativeplat-00002-dl6` (historical).
 
 The user explicitly selected public hosting of Red, Blue, Yellow, Gold, Silver,
-Crystal, FireRed, LeafGreen, Emerald, Diamond, Pearl, and Platinum. The separate
+Crystal, FireRed, LeafGreen, Emerald, Diamond, Pearl, Platinum, HeartGold,
+SoulSilver, Ruby, Sapphire, Black, and White after browser checks pass. The separate
 `scripts/stage-gcp.mjs` allowlists those exact local ROMs and verified engines,
 checks their fingerprints, and writes only deployment assets into ignored
 `build/gcp-nativeplat/`. Cartridges are gzip-compressed then AES-256-GCM encrypted
@@ -62,7 +63,7 @@ from the browser. Existing downloaded copies cannot be revoked.
 
 Local saves stay in that browser, with import/export available. Optional accounts
 can sync one save per account to Neon through Save manager. Localhost saves do not
-migrate automatically to the production origin; export/import a `.sav` (DS) or `.pws` (Gen 1–3). Browser
+migrate automatically to the production origin; export/import a `.sav` (native DS/GBA) or `.pws` (LÖVE engine). Browser
 storage remains scoped to the origin.
 
 Gzip sidecars and immutable hashed asset filenames reduce repeat downloads.
@@ -76,7 +77,7 @@ See Google's [HTTP/2 configuration](https://docs.cloud.google.com/run/docs/confi
 ## Redeploy
 
 Requires Node 22+, the repo's existing test toolchain, prepared cores and Gen 1–3
-engine (`npm --prefix web run prepare:gen123`), all twelve allowlisted ROM inputs, Docker
+engine (`npm --prefix web run prepare:gen123`), the allowlisted ROM inputs for the qualified catalog, Docker
 (OrbStack on this Mac), and a signed-in gcloud account with deployment access.
 Existing GCP infrastructure is reused; the script does not provision projects or
 grant project roles.
@@ -92,7 +93,7 @@ bash web/scripts/deploy-gcp.sh
 The script runs tests/build, stages the explicit assets, builds linux/amd64,
 pushes using a short-lived token in a temporary Docker config (removed on exit),
 migrates the existing Neon schema, deploys publicly with bounded scaling, then
-validates all twelve downloaded cartridges and the prepared engines.
+validates the selected downloaded cartridges and the prepared engines.
 `NP_GCP_PROJECT`, `NP_GCP_REGION`, `NP_GCP_TAG` override the defaults; the selected
 project needs the matching Artifact Registry repository and runtime identity.
 It builds locally, so no Cloud Build service-account role is needed.
@@ -104,10 +105,10 @@ cd web
 npm run verify:deployment -- https://nativeplat-1066182835702.us-east1.run.app/
 ```
 
-This checks HTML/security headers, all twelve selected games, complete ROM
+This checks HTML/security headers, all selected games, complete ROM
 fingerprints after decryption, raw ROM URLs returning 404, all eight Gen 1–3
-engine/source/license files, and DS WASM MIME/cache/digests plus 600 runtime
-frames per downloaded DS core.
+engine/source/license files, and native WASM MIME/cache/digests plus 600 runtime
+frames per downloaded native core.
 It is a boot check, not full-game qualification. UI confirmation should also
 exercise first play in a browser with no cached cartridge. The deployment does
 not change game execution speed: gameplay still runs on the player's device.
@@ -215,7 +216,7 @@ secret, runtime identity, optional-login behavior and service limits remain in u
 
 ## Gen 1–3 hosted release — 2026-10-04
 
-Current revision: `nativeplat-00008-dn7`, 100% traffic. Platform image:
+Historical revision: `nativeplat-00008-dn7`. Platform image:
 `us-east1-docker.pkg.dev/nativeplat-20261004/nativeplat/web@sha256:59f3759197a9b094d6b4ed522a48b340ae10c7df709cf4ba2e0f67ecc3a9ed4a`.
 Tag: `20261004-gen123-webgl-check`. Initial twelve-game revision was
 `nativeplat-00007-vc2`; this follow-up adds the blocked-WebGL startup check.

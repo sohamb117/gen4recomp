@@ -14,8 +14,12 @@ const report: Record<string, unknown> = {};
 const selected = process.argv.slice(2);
 const games = selected.length ? selected : ["platinum"];
 for (const game of games) {
-  assert.ok(game === "platinum" || game === "diamond" || game === "pearl");
-  const rom = nativeGames[game].rom;
+  assert.ok(
+    game in nativeGames &&
+      nativeGames[game as keyof typeof nativeGames].generation >= 4,
+    "DS native core required",
+  );
+  const rom = nativeGames[game as keyof typeof nativeGames].rom;
   let stored = 0;
   const host = new GuestHost(
     new Uint8Array(readFileSync(resolve(root, rom))),

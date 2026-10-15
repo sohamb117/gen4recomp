@@ -21,23 +21,22 @@ npm run dev
 Open http://127.0.0.1:5173, import a matching cartridge, then start a journey.
 ROM identification matches the native shell's SHA-1 registry. Imported ROMs stay
 in IndexedDB. Local saves need no account; the Neon backend syncs one selected save per username/password account on the live site. The GCP release additionally
-offers encrypted Diamond, Pearl, and Platinum packages, downloaded, decrypted and
+offers encrypted packages for qualified games, downloaded, decrypted and
 verified on first play before caching in IndexedDB. This is download obfuscation;
 the client receives the key. Gameplay and subsequent launches use the existing
 decrypted cartridge cache. Existing desktop saves can
-be imported as raw 512 KiB `.sav` or DeSmuME `.dsv`. Each import creates a new
+be imported as raw 512 KiB DS or 128 KiB GBA `.sav` files (DS also accepts DeSmuME `.dsv`). Each import creates a new
 slot; committing a game save preserves the previous image as a backup.
 
 No generated core is committed. `prepare:cores` reads these files, creates
 browser variants under `public/cores`, and writes a versioned SHA-256 manifest:
 
-- `../games/diamond/build/pc-wasm/pokediamond.wasm`
-- `../games/diamond/build/pc-wasm/pokepearl.wasm`
-- `../games/platinum/build/pc-wasm/pokeplatinum.wasm`
+- `../build/web-guest/<game>.wasm`
+- `../build/web-guest/<game>-source.json` (source commit and artifact hash)
 
 Override with `NP_GUEST_WASM_diamond`, `NP_GUEST_WASM_pearl`, or
 `NP_GUEST_WASM_platinum`; `WABT_BIN` can select a different tool location.
-Optional positional game IDs restrict the manifest to those games, e.g.
+Optional positional game IDs update just those manifest entries, e.g.
 `npm run prepare:cores -- platinum diamond`. Old content-addressed files may
 remain on disk, but the manifest determines which cores players can launch.
 
@@ -242,3 +241,38 @@ The database uses a persistent Docker volume; stopping containers preserves it.
 See [server/README.md](server/README.md) for development, tests, and lifecycle
 commands. The live GCP service uses Neon through a Secret Manager-injected
 `DATABASE_URL`; CockroachDB is not yet qualified.
+
+## Native WASM release qualification
+
+`build-cores-copy.py` supports Platinum, Diamond, Pearl, HeartGold, SoulSilver,
+Ruby, Sapphire, Emerald, Black, and White. Use `--source-root` for the read-only
+nativeplat checkout, `--hg-inputs` for a built HG/SS input tree, and `--bw-inputs`
+for the local B/W cartridge directory. Build outputs and SDK/decomp inputs are
+copied into a disposable snapshot; `--resume-snapshot` can resume that copy.
+
+```sh
+python3 web/scripts/build-cores-copy.py ruby sapphire emerald --source-root /path/to/nativeplat
+node web/scripts/prepare-cores.mjs ruby sapphire emerald --optimize
+node web/scripts/verify-cores.mjs ruby sapphire emerald
+NP_TEST_SAVE=/path/to/ruby.sav node web/scripts/verify-native-browser.mjs ruby
+```
+
+Run these examples from the repository root with the Vite development server on
+port 4185. The browser check uses a separate Chromium profile, blocks WebGL,
+imports a cartridge and read-only field-save fixture, reaches the field, exercises
+input, quick-saves with an IndexedDB backup, and closes/reloads the saved game.
+It records the exact core and browser harness hashes and captures the game canvas.
+A cached check is reused only when those hashes match; `--force` repeats it.
+Staging requires both runtime and browser qualification for each native game.
+These checks cover the tested field/save paths, not an entire playthrough.
+
+GBA native games have one 240x160 screen and raw 128 KiB saves. Existing Emerald
+`.pws` saves continue to use the prior Gen1Recomp engine; they are not converted.
+The remaining Gen 1–3 games retain their existing LÖVE runtime and WebGL requirement.
+Cartridges are stored as IndexedDB Blobs to avoid Chromium's single-value
+ArrayBuffer size limit; older ArrayBuffer records remain readable. Conversion
+occurs during import/load and adds no work to the frame loop.
+
+The host implements guest reset/reset_carry by rebuilding an instance, preserving
+the save chip and up to 256 carry bytes, and continuing in the worker. Unit checks
+cover reset, fibers, input, options, save persistence, and single-screen geometry.
