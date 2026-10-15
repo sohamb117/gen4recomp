@@ -14,7 +14,19 @@ if (!spec || !fixture || !existsSync(fixture))
   throw Error("Pass a native game and NP_TEST_SAVE fixture");
 const manifestPath = resolve(root, "web/public/cores/manifest.json");
 const originalCore = JSON.parse(readFileSync(manifestPath, "utf8")).games[game];
-const out = resolve(root, "build/browser-native");
+const hosted = process.argv.includes("--hosted");
+const base = process.env.NP_BROWSER_URL || "http://127.0.0.1:4185";
+const out = resolve(root, "build/browser-native", hosted ? "hosted" : ".");
+if (hosted) {
+  const remote = await fetch(new URL("cores/manifest.json", base)).then((r) =>
+    r.json(),
+  );
+  assert.equal(
+    remote.games[game]?.sha256,
+    originalCore.sha256,
+    "Hosted core must match qualified artifact",
+  );
+}
 mkdirSync(out, { recursive: true });
 const harnessHash = createHash("sha256");
 for (const file of [
@@ -30,7 +42,7 @@ for (const file of [
   harnessHash.update(readFileSync(resolve(root, "web", file)));
 const browserHarnessSha256 = harnessHash.digest("hex");
 const reportPath = resolve(out, `${game}.json`);
-if (!process.argv.includes("--force") && existsSync(reportPath)) {
+if (!hosted && !process.argv.includes("--force") && existsSync(reportPath)) {
   const previous = JSON.parse(readFileSync(reportPath, "utf8"));
   if (
     previous.coreSha256 === originalCore.sha256 &&
@@ -54,7 +66,11 @@ try {
   const page = await browser.newPage({
       viewport: { width: 1280, height: 1000 },
     }),
-    errors = [];
+    errors = [],
+    packages = [];
+  page.on("response", (r) => {
+    if (r.url().endsWith(".npc")) packages.push({ status: r.status() });
+  });
   page.on("console", (m) => {
     if (m.type() === "error") console.log("BROWSER", m.text());
   });
@@ -127,16 +143,28 @@ try {
       }
     };
   }, spec.generation === 3);
-  await page.goto(process.env.NP_BROWSER_URL || "http://127.0.0.1:4185");
-  await page
-    .locator("input[type=file]")
-    .nth(0)
-    .setInputFiles(resolve(root, spec.rom));
-  await page.waitForFunction(
-    (name) => document.body.textContent.includes(name + " imported."),
-    spec.name,
-    { timeout: 60000 },
-  );
+  await page.goto(base);
+  if (hosted) {
+    await page
+      .getByLabel("Generation", { exact: true })
+      .selectOption(String(spec.generation));
+    await page
+      .locator("button.cartridge")
+      .filter({
+        has: page.getByRole("heading", { name: spec.name, exact: true }),
+      })
+      .click();
+  } else {
+    await page
+      .locator("input[type=file]")
+      .nth(0)
+      .setInputFiles(resolve(root, spec.rom));
+    await page.waitForFunction(
+      (name) => document.body.textContent.includes(name + " imported."),
+      spec.name,
+      { timeout: 60000 },
+    );
+  }
   await page.locator("input[type=file]").nth(1).setInputFiles(fixture);
   await page.waitForFunction(() =>
     document.body.textContent.includes("Save imported into a new slot."),
@@ -244,28 +272,37 @@ try {
   );
   assert.equal(await page.evaluate(() => window.nativeError), undefined);
   assert.deepEqual(errors, []);
+  if (hosted)
+    assert.deepEqual(
+      packages,
+      [{ status: 200 }],
+      "First launch downloads one package; reload uses IndexedDB cache",
+    );
   Object.assign(report, {
     game,
     saved,
     reloadedField: true,
     coreSha256: originalCore.sha256,
     browserHarnessSha256,
+    hosted,
+    packages,
   });
   writeFileSync(
     resolve(out, `${game}.json`),
     JSON.stringify(report, null, 2) + "\n",
   );
   console.log(JSON.stringify(report));
-  updateCoreManifest(manifestPath, (manifest) => {
-    assert.equal(
-      manifest.games[game].sha256,
-      originalCore.sha256,
-      "Core changed during browser qualification",
-    );
-    manifest.games[game].browserVerification = "passed";
-    manifest.games[game].browserNote =
-      "WebGL-blocked field, input, raw quick save with backup, and reload passed";
-  });
+  if (!hosted)
+    updateCoreManifest(manifestPath, (manifest) => {
+      assert.equal(
+        manifest.games[game].sha256,
+        originalCore.sha256,
+        "Core changed during browser qualification",
+      );
+      manifest.games[game].browserVerification = "passed";
+      manifest.games[game].browserNote =
+        "WebGL-blocked field, input, raw quick save with backup, and reload passed";
+    });
 } catch (error) {
   if (activePage)
     await activePage

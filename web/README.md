@@ -263,6 +263,9 @@ imports a cartridge and read-only field-save fixture, reaches the field, exercis
 input, quick-saves with an IndexedDB backup, and closes/reloads the saved game.
 It records the exact core and browser harness hashes and captures the game canvas.
 A cached check is reused only when those hashes match; `--force` repeats it.
+After deployment, set `NP_BROWSER_URL=https://pokeweb.morisoba.moe/` and add
+`--hosted` to exercise first download/decryption and confirm the second launch
+reuses IndexedDB without another package request. Hosted checks always run fresh.
 Staging requires both runtime and browser qualification for each native game.
 These checks cover the tested field/save paths, not an entire playthrough.
 
