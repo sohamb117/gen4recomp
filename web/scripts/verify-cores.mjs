@@ -3,7 +3,7 @@ import { updateCoreManifest } from "./core-manifest.mjs";
 import { nativeGames } from "../shared/native-games.mjs";
 // Test the prepared artifacts with LOCAL cartridges, never included in the site.
 import { execFileSync } from "node:child_process";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 const web = resolve(import.meta.dirname, ".."),
   root = resolve(web, ".."),
@@ -46,7 +46,7 @@ for (const [game, core] of Object.entries(manifest.games)) {
     continue;
   }
   try {
-    execFileSync(
+    const output = execFileSync(
       process.execPath,
       [
         "--liftoff-only",
@@ -62,11 +62,19 @@ for (const [game, core] of Object.entries(manifest.games)) {
         stdio: ["ignore", "pipe", "pipe"],
       },
     );
+    writeFileSync(
+      resolve(root, `build/web-cores/${game}-verification.log`),
+      output,
+    );
     core.verification = "passed";
     core.runtimeSha256 = runtimeSha256;
     core.note = `${frames.toLocaleString("en-US")}-frame browser-runtime smoke passed`;
     console.log(`${game}: passed`);
   } catch (e) {
+    writeFileSync(
+      resolve(root, `build/web-cores/${game}-verification.log`),
+      `${e.stdout || ""}\n${e.stderr || ""}\n${e.message}`,
+    );
     failed = true;
     core.verification = "blocked";
     core.note =

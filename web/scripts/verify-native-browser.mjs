@@ -184,6 +184,11 @@ try {
   await page.keyboard.down("ArrowRight");
   await page.waitForTimeout(500);
   await page.keyboard.up("ArrowRight");
+  await page.waitForFunction(
+    () => window.lastNativeFrame?.status.fieldReady,
+    null,
+    { timeout: 30000 },
+  );
   await page.getByRole("button", { name: "Quick save", exact: true }).click();
   await page.waitForFunction(
     () =>
