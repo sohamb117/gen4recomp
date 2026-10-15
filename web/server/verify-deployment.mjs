@@ -1,3 +1,4 @@
+import { nativeGames } from "../shared/native-games.mjs";
 // Verify the deployed API; cleanup is limited to the random accounts created here.
 import assert from "node:assert/strict";
 import { randomBytes, createHash } from "node:crypto";
@@ -101,14 +102,19 @@ try {
   }
   assert.equal((await api("save", "PUT", payload, login.cookie)).status, 409);
   let revision = 3;
-  for (const game of gen123Games) {
-    const bytes = Buffer.from(
-      JSON.stringify({
-        format: "pokeweb-gen123-v1",
-        game,
-        save: 'return { player = { name = "DEPLOY" } }',
-      }),
-    );
+  for (const game of [...gen123Games, ...Object.keys(nativeGames)]) {
+    const native =
+      Object.keys(nativeGames).includes(game) &&
+      (!gen123Games.includes(game) || revision >= 12);
+    const bytes = native
+      ? randomBytes(nativeGames[game].saveBytes)
+      : Buffer.from(
+          JSON.stringify({
+            format: "pokeweb-gen123-v1",
+            game,
+            save: 'return { player = { name = "DEPLOY" } }',
+          }),
+        );
     const replacement = {
       ...payload,
       game,

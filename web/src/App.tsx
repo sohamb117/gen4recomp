@@ -34,6 +34,10 @@ import {
   identifyRom,
   generation,
   isGen4,
+  isNative,
+  isSingleScreen,
+  usesLegacySave,
+  saveExtension,
   type CoreManifest,
   type GameId,
 } from "./catalog";
@@ -93,7 +97,16 @@ export function App() {
   };
   const dsSession = useSession(settings, saved, setNotice);
   const earlySession = useGen123Session(settings, saved, setNotice);
-  const early = !isGen4(selected);
+  const [legacyEmerald, setLegacyEmerald] = useState(false);
+  const early =
+    !isNative(selected) || (selected === "emerald" && legacyEmerald);
+  const visibleGames = games.filter(
+    (g) =>
+      !isNative(g.id) ||
+      isGen4(g.id) ||
+      manifest?.games[g.id]?.verification === "passed" ||
+      (g.id === "emerald" && gen123Ready),
+  );
   const session = early ? earlySession : dsSession;
   const game = games.find((g) => g.id === selected)!,
     gameSlots = slots.filter((s) => s.game === selected);
@@ -209,7 +222,11 @@ export function App() {
         setNotice("");
       }
       const target = slot ?? gameSlots[0] ?? (await newSlot());
-      if (early) {
+      const legacy =
+        usesLegacySave(selected, target.data) ||
+        (selected === "emerald" && !manifest?.games.emerald);
+      setLegacyEmerald(selected === "emerald" && legacy);
+      if (legacy) {
         if (!gen123Ready)
           throw Error("Gen 1–3 engine is not prepared in this build.");
         await earlySession.start(selected, target);
@@ -249,7 +266,7 @@ export function App() {
   const running = !!session.active,
     ready =
       (roms.includes(selected) || !!hosted[selected]) &&
-      (early
+      (early || (selected === "emerald" && !manifest?.games.emerald)
         ? gen123Ready
         : !!manifest?.games[selected] &&
           manifest.games[selected]?.verification !== "blocked");
@@ -285,7 +302,7 @@ export function App() {
                 value={generation(selected)}
                 onChange={(e) =>
                   setSelected(
-                    games.find(
+                    visibleGames.find(
                       (g) => generation(g.id) === Number(e.target.value),
                     )!.id,
                   )
@@ -294,10 +311,13 @@ export function App() {
                 <option value="1">Gen 1 / Kanto</option>
                 <option value="2">Gen 2 / Johto</option>
                 <option value="3">Gen 3 / GBA</option>
-                <option value="4">Gen 4 / Sinnoh</option>
+                <option value="4">Gen 4 / Sinnoh + Johto</option>
+                {visibleGames.some((g) => generation(g.id) === 5) && (
+                  <option value="5">Gen 5 / Unova</option>
+                )}
               </select>
               <div className="cartridges">
-                {games
+                {visibleGames
                   .filter((g) => generation(g.id) === generation(selected))
                   .map((g, i) => (
                     <button
@@ -426,10 +446,17 @@ export function App() {
                         <div className="screen">
                           <canvas
                             ref={session.top}
-                            aria-label="Top game screen"
+                            aria-label={
+                              isSingleScreen(selected)
+                                ? "Game screen"
+                                : "Top game screen"
+                            }
                           />
                         </div>
-                        <div className="screen touch-screen">
+                        <div
+                          className="screen touch-screen"
+                          hidden={isSingleScreen(selected)}
+                        >
                           <canvas
                             ref={session.bottom}
                             aria-label="Touch game screen"
@@ -612,7 +639,9 @@ export function App() {
         <input
           ref={saveInput}
           type="file"
-          accept={early ? ".pws" : ".sav,.dsv"}
+          accept={
+            selected === "emerald" ? ".sav,.pws" : early ? ".pws" : ".sav,.dsv"
+          }
           hidden
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -699,7 +728,7 @@ export function App() {
                         s.data &&
                         download(
                           s.data,
-                          `${s.name}.${isGen4(s.game) ? "sav" : "pws"}`,
+                          `${s.name}.${saveExtension(s.game, s.data)}`,
                         )
                       }
                     >
@@ -726,7 +755,7 @@ export function App() {
                         onClick={() =>
                           download(
                             s.backup!,
-                            `${s.name}.previous.${isGen4(s.game) ? "sav" : "pws"}`,
+                            `${s.name}.previous.${saveExtension(s.game, s.data)}`,
                           )
                         }
                       >

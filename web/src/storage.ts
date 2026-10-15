@@ -1,5 +1,6 @@
+import { nativeGames } from "../shared/native-games.mjs";
 import { validateSave } from "../shared/save-format.mjs";
-import { isGen4, type GameId } from "./catalog";
+import { isGen4, isNative, usesLegacySave, type GameId } from "./catalog";
 export type Cartridge = {
   game: GameId;
   name: string;
@@ -80,15 +81,19 @@ export const storage = {
   },
 };
 export function saveData(data: ArrayBuffer, game: GameId = "platinum") {
-  if (!isGen4(game)) {
+  if (usesLegacySave(game, data)) {
     validateSave(new Uint8Array(data), game);
     return data.slice(0);
   }
-  if (data.byteLength !== 512 * 1024 && data.byteLength !== 512 * 1024 + 122)
+  const bytes = isNative(game) ? nativeGames[game].saveBytes : 524288;
+  if (
+    data.byteLength !== bytes &&
+    !(bytes === 524288 && data.byteLength === bytes + 122)
+  )
     throw Error(
-      "Save must be a 512 KiB raw .sav or a DeSmuME .dsv with its 122-byte footer.",
+      `Save must be ${bytes / 1024} KiB${bytes === 524288 ? " raw .sav or a DeSmuME .dsv with its 122-byte footer" : " raw .sav"}.`,
     );
-  return data.slice(0, 512 * 1024);
+  return data.slice(0, bytes);
 }
 export function download(
   data: ArrayBuffer,

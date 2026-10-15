@@ -1,4 +1,10 @@
-import { gen123Games, gen4Games, MAX_SAVE_BYTES, validateSave } from "../shared/save-format.mjs";
+import {
+  allSaveGames,
+  gen123Games,
+  gen4Games,
+  MAX_SAVE_BYTES,
+  validateSave,
+} from "../shared/save-format.mjs";
 import { createServer } from "node:http";
 import {
   randomBytes,
@@ -248,11 +254,13 @@ export function createApp({
       };
     }
     if (req.method === "PUT" && path === "/api/save") {
-      const body = await jsonBody(req, Math.ceil(MAX_SAVE_BYTES * 4 / 3) + 4096);
+      const body = await jsonBody(
+        req,
+        Math.ceil((MAX_SAVE_BYTES * 4) / 3) + 4096,
+      );
       if (body.accountId !== user.id)
         fail(403, "The signed-in account changed. Sign in again.");
-      if (![...gen4Games, ...gen123Games].includes(body.game))
-        fail(400, "Unknown game.");
+      if (!allSaveGames.includes(body.game)) fail(400, "Unknown game.");
       if (
         typeof body.name !== "string" ||
         !body.name.trim() ||
@@ -280,7 +288,11 @@ export function createApp({
         data.every((x) => x === 255)
       )
         fail(400, "Invalid or empty save image.");
-      try { validateSave(data, body.game); } catch (error) { fail(400, error.message); }
+      try {
+        validateSave(data, body.game);
+      } catch (error) {
+        fail(400, error.message);
+      }
       const digest = hash(data);
       if (body.sha256 !== digest) fail(400, "Save checksum does not match.");
       const db = await pool.connect();

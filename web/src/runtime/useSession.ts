@@ -215,7 +215,7 @@ export function useSession(
           });
         }
         draw(top.current, frame, frame.top);
-        draw(bottom.current, frame, frame.bottom);
+        if (frame.bottom.length) draw(bottom.current, frame, frame.bottom);
         profiler.current.rendered(
           data.ticks,
           data.workerMs,

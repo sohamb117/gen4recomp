@@ -23,6 +23,8 @@ export type GuestStatus = {
   quickSaveSequence: number;
   quickSaveResult: number;
   mapId: number;
+  inBattle?: boolean;
+  resets?: number;
 };
 export type Input = { keys: number; touch: boolean; x: number; y: number };
 export type Frame = {

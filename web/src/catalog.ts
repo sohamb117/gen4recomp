@@ -1,3 +1,4 @@
+import { nativeGames, type NativeGameId } from "../shared/native-games.mjs";
 export type Gen4GameId = "diamond" | "pearl" | "platinum";
 export type Gen123GameId =
   | "red"
@@ -9,12 +10,26 @@ export type Gen123GameId =
   | "firered"
   | "leafgreen"
   | "emerald";
-export type GameId = Gen4GameId | Gen123GameId;
+export type GameId = Gen4GameId | Gen123GameId | NativeGameId;
+export function isNative(id: GameId): id is NativeGameId {
+  return id in nativeGames;
+}
+export function isSingleScreen(id: GameId) {
+  return isNative(id) && nativeGames[id].generation === 3;
+}
+export function usesLegacySave(id: GameId, data?: ArrayBuffer) {
+  return (
+    !isNative(id) || (id === "emerald" && !!data && data.byteLength !== 131072)
+  );
+}
+export function saveExtension(id: GameId, data?: ArrayBuffer) {
+  return usesLegacySave(id, data) ? "pws" : "sav";
+}
 export function isGen4(id: GameId): id is Gen4GameId {
   return id === "diamond" || id === "pearl" || id === "platinum";
 }
-export function generation(id: GameId): 1 | 2 | 3 | 4 {
-  if (isGen4(id)) return 4;
+export function generation(id: GameId): 1 | 2 | 3 | 4 | 5 {
+  if (isNative(id)) return nativeGames[id].generation;
   if (["red", "blue", "yellow"].includes(id)) return 1;
   if (["gold", "silver", "crystal"].includes(id)) return 2;
   return 3;
@@ -140,6 +155,32 @@ export const games = [
     hash: "0862ec35b24de5c7e2dcb88c9eea0873110d755c",
     description: "Somewhere between this world and the next.",
   },
+  ...(
+    ["ruby", "sapphire", "heartgold", "soulsilver", "black", "white"] as const
+  ).map((id) => ({
+    id,
+    name: nativeGames[id].name,
+    code: "USA",
+    year: {
+      ruby: "2003",
+      sapphire: "2003",
+      heartgold: "2010",
+      soulsilver: "2010",
+      black: "2011",
+      white: "2011",
+    }[id],
+    color: {
+      ruby: "#cf8888",
+      sapphire: "#93b4c5",
+      heartgold: "#c8b06d",
+      soulsilver: "#b4bdc6",
+      black: "#9ca2af",
+      white: "#d4d8ce",
+    }[id],
+    symbol: "◇",
+    hash: nativeGames[id].sha1,
+    description: "",
+  })),
 ];
 export type CoreManifest = {
   version: number;

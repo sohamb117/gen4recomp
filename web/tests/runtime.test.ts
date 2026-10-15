@@ -157,3 +157,55 @@ test("prepared division matches cartridge zero-divisor and overflow behavior", a
   assert.equal(e["i64.div_s"](-(2n ** 63n), -1n), -(2n ** 63n));
   assert.equal(e["i32.div_s"](-7, 2), -3);
 });
+
+test("soft reset replaces memory/fibers and preserves chip, carry, options and input", async () => {
+  const saves: Uint8Array[] = [];
+  const host = new GuestHost(
+    rom(),
+    undefined,
+    (s) => saves.push(s.slice()),
+    () => {},
+  );
+  await host.load(wasm);
+  for (let i = 0; i < 10; i++) host.runFrame();
+  const oldMemory = host.exports.memory,
+    oldSave = host.save!.slice();
+  host.options[0] = 123;
+  host.input = { keys: 256 | 8, touch: false, x: 0, y: 0 };
+  const frame = host.runFrame();
+  assert.equal(frame.status.resets, 1);
+  assert.notEqual(host.exports.memory, oldMemory);
+  assert.equal(host.fibers.size, 4);
+  assert.equal(host.options[0], 123);
+  assert.equal(host.input.keys, 264);
+  assert.deepEqual(host.save, oldSave);
+  const bottom = host.view().getUint32(host.descriptor + 12, true);
+  assert.ok(host.view().getUint32(bottom, true) & 16, "save reloaded");
+  assert.ok(host.view().getUint32(bottom, true) & 2048, "carry received");
+  assert.ok(
+    host.view().getUint32(bottom + 20, true) > 0,
+    "reset frame carried",
+  );
+  host.input.keys = 0;
+  for (let i = 0; i < 10; i++) host.runFrame();
+  assert.equal(host.resets, 1);
+});
+
+test("single-screen guest validates 240x160 and produces no second framebuffer", async () => {
+  const host = new GuestHost(
+    rom(),
+    undefined,
+    () => {},
+    () => {},
+  );
+  await host.load(wasm);
+  host.runFrame();
+  const d = host.descriptor;
+  host.u32(d + 12, 0);
+  host.u32(d + 16, 240);
+  host.u32(d + 20, 160);
+  host.validateDescriptor(d);
+  const frame = host.frame();
+  assert.equal(frame.top.length, 240 * 160 * 4);
+  assert.equal(frame.bottom.length, 0);
+});

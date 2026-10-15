@@ -122,3 +122,17 @@ https://github.com/sohamb117/love-canvas (initial commit `7484544`). Game-specif
 CPU PPU/palette effects stay here. Optional GLSL effects are translated from
 copied, pinned shader sources at build time; translation is not visual parity
 validation. `GLSL-TRANSPILER-NOTICE.txt` accompanies generated shader helpers.
+
+## 2026-10-15 — native WASM release from web-ready
+
+Merged nativeplat main `7dc5e22a41` into the isolated `web-ready` worktree,
+alongside pokeweb `903ecd50`. Nativeplat main and all source worktrees remain
+read-only. Builds clone the source and GBA/HG/BW input assets into ignored
+`build/web-source-*`; copied depfiles are remapped to prevent make writing to
+source worktrees. Browser preparation patches only generated WAT/WASM.
+
+The web host implements the new reset/reset_carry imports, preserves the backup
+chip and carry across fresh instances, and accepts single-screen 240x160 GBA
+frames. No decomp patch is introduced by this integration. Candidate games
+ship only after browser qualification; legacy Emerald engine saves retain their
+original runtime and are not converted or overwritten.

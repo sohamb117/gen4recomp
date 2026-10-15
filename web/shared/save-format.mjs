@@ -1,3 +1,4 @@
+import { nativeGames } from "./native-games.mjs";
 export const gen123Games = [
   "red",
   "blue",
@@ -9,7 +10,18 @@ export const gen123Games = [
   "leafgreen",
   "emerald",
 ];
-export const gen4Games = ["diamond", "pearl", "platinum"];
+export const gen4Games = [
+  "diamond",
+  "pearl",
+  "platinum",
+  "heartgold",
+  "soulsilver",
+  "black",
+  "white",
+];
+export const allSaveGames = [
+  ...new Set([...gen123Games, ...Object.keys(nativeGames)]),
+];
 export const MAX_SAVE_BYTES = 4 * 1024 * 1024;
 /** Gen 1–3 use engine saves, never a raw cartridge SRAM image or executable Lua. */
 export function readEngineSave(bytes, game) {
@@ -36,7 +48,10 @@ export function readEngineSave(bytes, game) {
   return value;
 }
 export function validateSave(bytes, game) {
-  if (gen4Games.includes(game)) {
-    if (bytes.byteLength !== 524288) throw Error("DS saves must be 512 KiB.");
+  if (game === "emerald" && bytes.byteLength !== 131072)
+    return readEngineSave(bytes, game);
+  if (game in nativeGames) {
+    if (bytes.byteLength !== nativeGames[game].saveBytes)
+      throw Error(`Save must be ${nativeGames[game].saveBytes / 1024} KiB.`);
   } else readEngineSave(bytes, game);
 }

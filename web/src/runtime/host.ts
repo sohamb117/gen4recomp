@@ -19,10 +19,15 @@ type Fiber = {
   data: number;
   started: boolean;
 };
+const RESET = Symbol("guest soft reset");
 const STACK_BYTES = 512 * 1024;
 /** Browser implementation of np_guest_abi.h. No UI or storage dependencies. */
 export class GuestHost {
   exports!: Exports;
+  private module!: WebAssembly.Module;
+  private imports!: WebAssembly.Imports;
+  private resetCarry = new Uint8Array();
+  resets = 0;
   fibers = new Map<number, Fiber>();
   current = 1;
   next = 1;
@@ -125,6 +130,18 @@ export class GuestHost {
       trap: (ptr: number, size: number) => {
         throw Error(this.text(ptr, size));
       },
+      reset: (ptr: number, size: number) => {
+        if (size < 0 || size > 256) throw Error("Invalid soft reset carry");
+        this.resetCarry = this.bytes(ptr, size).slice();
+        this.flush();
+        throw RESET;
+      },
+      reset_carry: (ptr: number, cap: number) => {
+        if (cap < this.resetCarry.length)
+          throw Error("Soft reset carry buffer too small");
+        this.bytes(ptr, this.resetCarry.length).set(this.resetCarry);
+        return this.resetCarry.length;
+      },
       net_self: () => 0,
       net_send: () => -1,
       net_recv: () => 0,
@@ -201,11 +218,17 @@ export class GuestHost {
         throw Error(`Game exited (${code})`);
       },
     };
-    const result = await WebAssembly.instantiate(wasm, {
-      np_host: host,
-      wasi_snapshot_preview1: wasi,
-    });
-    this.exports = result.instance.exports as Exports;
+    this.module = await WebAssembly.compile(wasm);
+    this.imports = { np_host: host, wasi_snapshot_preview1: wasi };
+    this.restart();
+  }
+  private restart() {
+    this.fibers.clear();
+    this.current = this.next = this.serial = 1;
+    this.descriptor = this.audioHead = 0;
+    this.parked = this.stopped = false;
+    this.exports = new WebAssembly.Instance(this.module, this.imports)
+      .exports as Exports;
     if (!this.exports.asyncify_start_unwind || !this.exports.__stack_pointer)
       throw Error("This core needs the browser preparation step");
     this.newFiber(Number(this.exports.__stack_pointer.value), 0);
@@ -225,16 +248,20 @@ export class GuestHost {
       h = v.getUint32(ptr + 20, true),
       stride = v.getUint32(ptr + 24, true);
     if (
-      w < 256 ||
+      w < 240 ||
       w > 2048 ||
-      h < 192 ||
+      h < 160 ||
       h > 1536 ||
       stride < w ||
       stride > 2048
     )
       throw Error("Invalid frame geometry");
-    for (const offset of [8, 12])
-      this.bytes(v.getUint32(ptr + offset, true), stride * h * 4);
+    const top = v.getUint32(ptr + 8, true),
+      bottom = v.getUint32(ptr + 12, true);
+    if (!top) throw Error("Missing primary screen");
+    this.bytes(top, stride * h * 4);
+    if (bottom) this.bytes(bottom, stride * h * 4);
+    this.u32(ptr + ABI.status + 28, this.resets);
   }
   persist(ptr: number, size: number) {
     this.save = this.bytes(ptr, size).slice();
@@ -273,7 +300,8 @@ export class GuestHost {
       this.options.forEach((x, i) => this.u32(d + ABI.options + i * 4, x));
     }
     this.parked = false;
-    let switches = 0;
+    let switches = 0,
+      resetsThisFrame = 0;
     while (!this.parked) {
       if (++switches > 100000)
         throw Error("Core failed to reach a frame boundary");
@@ -282,8 +310,16 @@ export class GuestHost {
       this.exports.__stack_pointer.value = f.stack;
       if (f.started) this.exports.asyncify_start_rewind(f.data);
       f.started = true;
-      if (f.id === 1) this.exports._start();
-      else this.exports.np_fiber_entry(f.arg);
+      try {
+        if (f.id === 1) this.exports._start();
+        else this.exports.np_fiber_entry(f.arg);
+      } catch (error) {
+        if (error !== RESET) throw error;
+        if (++resetsThisFrame > 8) throw Error("Guest reset loop");
+        this.resets++;
+        this.restart();
+        continue;
+      }
       if (this.exports.asyncify_get_state() !== 1)
         throw Error("Guest fiber returned unexpectedly");
       this.exports.asyncify_stop_unwind();
@@ -329,7 +365,7 @@ export class GuestHost {
       width,
       height,
       top: pixels(get(8)),
-      bottom: pixels(get(12)),
+      bottom: get(12) ? pixels(get(12)) : new Uint8ClampedArray(),
       audio,
       rate,
       number: get(28),
@@ -339,6 +375,8 @@ export class GuestHost {
         quickSaveSequence: get(ABI.status + 8),
         quickSaveResult: get(ABI.status + 12),
         mapId: get(ABI.status + 16),
+        inBattle: get(ABI.status + 20) !== 0,
+        resets: this.resets,
       },
     };
   }

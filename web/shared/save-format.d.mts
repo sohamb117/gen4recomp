@@ -1,5 +1,6 @@
 export const gen123Games: string[];
 export const gen4Games: string[];
+export const allSaveGames: string[];
 export const MAX_SAVE_BYTES: number;
 export function readEngineSave(
   bytes: Uint8Array,

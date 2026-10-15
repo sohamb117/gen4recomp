@@ -1,10 +1,10 @@
 # pokeweb development
 
-- This is a standalone repository derived from gen4recomp/web-ready. Work here;
-  do not modify the original gen4recomp checkouts as part of pokeweb work.
-- `origin` is sohamb117/pokeweb. Its `main` is independent of gen4recomp/main.
-  Fetch/merge from `upstream` when requested; do not push to upstream unless the
-  user explicitly asks to change that repository.
+- Active release work belongs on web-ready in this isolated worktree. Never
+  edit, check out, commit to, reset, or push nativeplat main. Read-only source
+  inspection and merges from main into web-ready are authorized.
+- This worktree shares nativeplat Git metadata. origin is gen4recomp; publish
+  only web-ready there. The independent pokeweb main remains a source input.
 - The primary application is `web/`; follow `web/AGENTS.md`. Keep web UI/runtime,
   save API, native UI copies, and upstream translation sources compartmentalized.
 - Build game cores in disposable copies. Record any web-specific decomp patches

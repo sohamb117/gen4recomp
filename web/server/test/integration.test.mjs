@@ -1,3 +1,4 @@
+import { nativeGames } from "../../shared/native-games.mjs";
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, createHash } from "node:crypto";
@@ -296,19 +297,83 @@ test("production cookies are secure and repeated login attempts are limited in P
   }
 });
 
-test('engine saves replace DS saves without adding a second row; cross-game envelopes are rejected', async () => {
+test("engine saves replace DS saves without adding a second row; cross-game envelopes are rejected", async () => {
   const account = await register();
   const id = account.body.user.id;
-  assert.equal((await request('save','PUT',save(id),account.cookie)).status,200);
-  const bytes = Buffer.from(JSON.stringify({format:'pokeweb-gen123-v1',game:'red',save:'return {version = "red", name = "RED",}'}));
-  const payload = save(id,1,'red',bytes);
-  assert.equal((await request('save','PUT',{...payload,game:'blue'},account.cookie)).status,400);
-  assert.equal((await request('save','PUT',payload,account.cookie)).status,200);
-  const loaded = await request('save','GET',undefined,account.cookie);
-  assert.equal(loaded.body.game,'red');
-  assert.equal(Buffer.from(loaded.body.data,'base64').toString(),bytes.toString());
-  assert.equal((await pool.query('SELECT count(*) FROM cloud_saves WHERE account_id=$1',[id])).rows[0].count,'1');
-  assert.equal((await request('save','PUT',save(id,2,'platinum'),account.cookie)).status,200);
+  assert.equal(
+    (await request("save", "PUT", save(id), account.cookie)).status,
+    200,
+  );
+  const bytes = Buffer.from(
+    JSON.stringify({
+      format: "pokeweb-gen123-v1",
+      game: "red",
+      save: 'return {version = "red", name = "RED",}',
+    }),
+  );
+  const payload = save(id, 1, "red", bytes);
+  assert.equal(
+    (await request("save", "PUT", { ...payload, game: "blue" }, account.cookie))
+      .status,
+    400,
+  );
+  assert.equal(
+    (await request("save", "PUT", payload, account.cookie)).status,
+    200,
+  );
+  const loaded = await request("save", "GET", undefined, account.cookie);
+  assert.equal(loaded.body.game, "red");
+  assert.equal(
+    Buffer.from(loaded.body.data, "base64").toString(),
+    bytes.toString(),
+  );
+  assert.equal(
+    (
+      await pool.query("SELECT count(*) FROM cloud_saves WHERE account_id=$1", [
+        id,
+      ])
+    ).rows[0].count,
+    "1",
+  );
+  assert.equal(
+    (await request("save", "PUT", save(id, 2, "platinum"), account.cookie))
+      .status,
+    200,
+  );
   await migrate(pool);
-  assert.equal((await request('save','GET',undefined,account.cookie)).body.game,'platinum');
+  assert.equal(
+    (await request("save", "GET", undefined, account.cookie)).body.game,
+    "platinum",
+  );
+});
+
+test("all native games roundtrip raw chip saves and keep one row per account", async () => {
+  const a = await register();
+  let revision = 0;
+  for (const [game, spec] of Object.entries(nativeGames)) {
+    const bytes = randomBytes(spec.saveBytes);
+    const payload = {
+      accountId: a.body.user.id,
+      game,
+      name: "Native fixture",
+      revision,
+      data: bytes.toString("base64"),
+      sha256: createHash("sha256").update(bytes).digest("hex"),
+    };
+    const put = await request("save", "PUT", payload, a.cookie);
+    assert.equal(put.status, 200, game + ": " + JSON.stringify(put.body));
+    revision++;
+    const get = await request("save", "GET", undefined, a.cookie);
+    assert.deepEqual(Buffer.from(get.body.data, "base64"), bytes);
+    assert.equal(get.body.revision, revision);
+    assert.equal(
+      (
+        await pool.query(
+          "SELECT count(*) FROM cloud_saves WHERE account_id=$1",
+          [a.body.user.id],
+        )
+      ).rows[0].count,
+      "1",
+    );
+  }
 });
