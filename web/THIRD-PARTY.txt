@@ -1,9 +1,14 @@
-nativeplat / wired
+morisoba//pokeweb
 
-Game cores: pret's pokeplatinum and pokediamond decompilations and nativeplat's
-port layer. See the accompanying GPL-3.0 license and the repository sources.
+Native game cores: pret's pokeplatinum, pokediamond, pokeheartgold, pokeruby,
+and pokeemerald decompilations, plus nativeplat's port and ROM recompilation
+layers. See the accompanying GPL-3.0 license and repository sources:
+https://github.com/sohamb117/gen4recomp/tree/web-ready
+Core provenance is recorded in cores/manifest.json. The separate Gen1Recomp
+engine retains its source archive and notices under engines/gen123/.
 Pokemon is a trademark of Nintendo / Creatures Inc. / GAME FREAK inc.
-Cartridge images and save files are not included in the distribution.
+The portable release excludes cartridge images and save files. The hosted
+deployment distributes its separately allowlisted encrypted cartridge packages.
 
 React and React DOM: Meta Platforms, Inc. and affiliates, MIT.
 Lucide icons: Lucide contributors, ISC.
