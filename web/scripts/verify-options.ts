@@ -1,4 +1,4 @@
-import { nativeGames } from "../shared/native-games.mjs";
+import { nativeGames, type NativeGameId } from "../shared/native-games.mjs";
 // Exercise the real copied cores without modifying cartridge/save inputs.
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -13,13 +13,13 @@ const manifest = JSON.parse(
 const report: Record<string, unknown> = {};
 const selected = process.argv.slice(2);
 const games = selected.length ? selected : ["platinum"];
-for (const game of games) {
+for (const candidate of games) {
+  const game = candidate as NativeGameId;
   assert.ok(
-    game in nativeGames &&
-      nativeGames[game as keyof typeof nativeGames].generation >= 4,
+    game in nativeGames && nativeGames[game].generation >= 4,
     "DS native core required",
   );
-  const rom = nativeGames[game as keyof typeof nativeGames].rom;
+  const rom = nativeGames[game].rom;
   let stored = 0;
   const host = new GuestHost(
     new Uint8Array(readFileSync(resolve(root, rom))),

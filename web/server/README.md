@@ -115,3 +115,16 @@ NP_TEST_SAVE=/absolute/path/to/platinum.sav node --import ./web/node_modules/tsx
 This check only targets loopback, reads the fixture without changing it, and
 removes only its randomly named test accounts. Without a fixture it tests binary
 storage integrity using generated data, without claiming game-save compatibility.
+
+## Native GBA / expanded DS saves
+
+The native runtime uses 512 KiB saves for Diamond, Pearl, Platinum, HeartGold,
+SoulSilver, Black, and White, and 128 KiB saves for Ruby, Sapphire, and Emerald.
+Existing Emerald `.pws` engine envelopes remain accepted and keep their original
+runtime. The schema expansion preserves accounts, sessions, and stored saves.
+All formats share the same account primary key: one cloud save total per account.
+
+The current local validation has 30 web tests and six real-Postgres tests. The
+production verifier replaces and reads back each supported format using temporary
+accounts, checks exact bytes in Neon, and removes only the accounts it created.
+It never runs the destructive local integration suite against production.
