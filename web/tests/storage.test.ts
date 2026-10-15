@@ -41,3 +41,31 @@ test("unrecognized ROMs are rejected with their fingerprint", async () => {
     /SHA-1: [a-f0-9]{40}/,
   );
 });
+
+test("cartridge blobs roundtrip exact bytes and old ArrayBuffer records remain readable", async () => {
+  const data = Uint8Array.from([1, 2, 3, 4, 255]).buffer;
+  await storage.importRom({
+    game: "platinum",
+    name: "fixture.nds",
+    data,
+    imported: 1,
+  });
+  assert.deepEqual((await storage.cartridge("platinum"))?.data, data);
+  const db = await new Promise<IDBDatabase>((resolve, reject) => {
+    const r = indexedDB.open("nativeplat-wired", 1);
+    r.onsuccess = () => resolve(r.result);
+    r.onerror = () => reject(r.error);
+  });
+  await new Promise<void>((resolve, reject) => {
+    const tx = db.transaction("roms", "readwrite");
+    tx.objectStore("roms").put({
+      game: "diamond",
+      name: "legacy.nds",
+      data,
+      imported: 1,
+    });
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+  assert.deepEqual((await storage.cartridge("diamond"))?.data, data);
+});

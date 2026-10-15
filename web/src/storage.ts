@@ -44,17 +44,42 @@ async function request<T>(
     tx.onabort = () => reject(tx.error ?? Error("Storage write aborted"));
   });
 }
+type StoredCartridge = Omit<Cartridge, "data"> & { data: ArrayBuffer | Blob };
+async function decodeCartridge(
+  stored: StoredCartridge | undefined,
+): Promise<Cartridge | undefined> {
+  if (!stored) return undefined;
+  return {
+    ...stored,
+    data:
+      stored.data instanceof Blob
+        ? await stored.data.arrayBuffer()
+        : stored.data,
+  };
+}
 export const storage = {
   cartridgeIds: () =>
     request("roms", "readonly", (s) => s.getAllKeys()) as Promise<GameId[]>,
-  cartridges: () =>
-    request("roms", "readonly", (s) => s.getAll()) as Promise<Cartridge[]>,
-  cartridge: (id: GameId) =>
-    request("roms", "readonly", (s) => s.get(id)) as Promise<
-      Cartridge | undefined
-    >,
+  cartridges: async () => {
+    const records = await request<StoredCartridge[]>("roms", "readonly", (s) =>
+      s.getAll(),
+    );
+    return Promise.all(
+      records.map(async (record) => (await decodeCartridge(record))!),
+    );
+  },
+  cartridge: async (id: GameId) =>
+    decodeCartridge(
+      await request<StoredCartridge | undefined>("roms", "readonly", (s) =>
+        s.get(id),
+      ),
+    ),
+  // Blob payloads are stored out of line by IndexedDB. Large ArrayBuffers can
+  // exceed Chromium's per-record serialization limit even with ample quota.
   importRom: (rom: Cartridge) =>
-    request("roms", "readwrite", (s) => s.put(rom)),
+    request("roms", "readwrite", (s) =>
+      s.put({ ...rom, data: new Blob([rom.data]) }),
+    ),
   slots: () =>
     request("slots", "readonly", (s) => s.getAll()) as Promise<SaveSlot[]>,
   putSlot: (slot: SaveSlot) =>

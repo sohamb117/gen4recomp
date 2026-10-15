@@ -196,6 +196,8 @@ export type CoreManifest = {
         sourceSha256: string;
         verification?: "passed" | "blocked" | "unverified";
         note?: string;
+        browserVerification?: "passed";
+        browserNote?: string;
       }
     >
   >;

@@ -5,6 +5,7 @@ import {
   readFileSync,
   writeFileSync,
   renameSync,
+  rmSync,
 } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,6 +29,7 @@ const games = Object.fromEntries(
     `build/web-guest/${game}.wasm`,
   ]),
 );
+const preparedGames = new Set();
 const forceOptimize = process.argv.includes("--optimize");
 const noOptimize = process.argv.includes("--no-optimize");
 const selected = process.argv
@@ -88,7 +90,10 @@ for (const [game, path] of Object.entries(games)) {
       ]);
     run(resolve(wabt, "wasm-validate"), [`${dest}.tmp`]);
     renameSync(`${dest}.tmp`, dest);
+    rmSync(wat);
+    rmSync(patched);
   }
+  preparedGames.add(game);
   const bytes = readFileSync(dest);
   const prior = previous?.games[game];
   manifest.games[game] = {
@@ -110,12 +115,13 @@ for (const [game, path] of Object.entries(games)) {
     manifest.games[game].note = prior.note;
   }
 }
+const latest = existsSync(manifestPath)
+  ? JSON.parse(readFileSync(manifestPath, "utf8"))
+  : { ...manifest, games: {} };
+for (const game of preparedGames) latest.games[game] = manifest.games[game];
 writeFileSync(
   resolve(output, "manifest.json.tmp"),
-  JSON.stringify(manifest, null, 2) + "\n",
+  JSON.stringify(latest, null, 2) + "\n",
 );
-renameSync(
-  resolve(output, "manifest.json.tmp"),
-  resolve(output, "manifest.json"),
-);
+renameSync(resolve(output, "manifest.json.tmp"), manifestPath);
 console.log("Browser cores prepared. No cartridges or saves were copied.");

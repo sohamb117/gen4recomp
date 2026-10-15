@@ -55,7 +55,16 @@ for (const [game, core] of Object.entries(manifest.games)) {
     console.log(`${game}: ${core.note}`);
   }
 }
-writeFileSync(path + ".tmp", JSON.stringify(manifest, null, 2) + "\n");
+const latest = JSON.parse(readFileSync(path, "utf8"));
+for (const [game, core] of Object.entries(manifest.games)) {
+  if (selected.length && !selected.includes(game)) continue;
+  if (latest.games[game]?.sha256 !== core.sha256)
+    throw Error(`${game}: core changed during verification`);
+  Object.assign(latest.games[game], {
+    verification: core.verification,
+    note: core.note,
+  });
+}
+writeFileSync(path + ".tmp", JSON.stringify(latest, null, 2) + "\n");
 renameSync(path + ".tmp", path);
-
 if (failed) process.exitCode = 1;

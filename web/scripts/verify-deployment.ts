@@ -33,7 +33,10 @@ const localCores = JSON.parse(
   ),
 ) as CoreManifest;
 const expectedNative = Object.entries(localCores.games)
-  .filter(([, c]) => c?.verification === "passed")
+  .filter(
+    ([, c]) =>
+      c?.verification === "passed" && c?.browserVerification === "passed",
+  )
   .map(([id]) => id);
 const expectedGames = games.filter(
   (g) => !isNative(g.id) || g.id === "emerald" || expectedNative.includes(g.id),

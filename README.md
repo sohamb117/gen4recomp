@@ -7,7 +7,8 @@ WASM game cores running in a Web Worker, local saves, and optional Neon cloud sa
 
 This is the standalone continuation of [`gen4recomp`'s `web-ready` branch](https://github.com/sohamb117/gen4recomp/tree/web-ready),
 starting at `5a0c45c1b`. Its commit history and the source trees needed to rebuild
-the game cores are preserved. Development happens on this repository's `main`.
+the game cores are preserved. This release is maintained on `web-ready` in an isolated worktree. Nativeplat's
+`main` is a read-only merge source and must never be changed by web release work.
 
 - [Web development and core builds](web/README.md)
 - [Current deployment and verification](web/deploy/GCP.md)

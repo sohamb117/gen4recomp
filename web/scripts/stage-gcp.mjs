@@ -64,7 +64,9 @@ const cores = JSON.parse(
   readFileSync(resolve(dist, "cores/manifest.json"), "utf8"),
 );
 const dsGames = Object.keys(nativeGames).filter(
-  (game) => cores.games[game]?.verification === "passed",
+  (game) =>
+    cores.games[game]?.verification === "passed" &&
+    cores.games[game]?.browserVerification === "passed",
 );
 for (const game of ["diamond", "pearl", "platinum"])
   if (!dsGames.includes(game))

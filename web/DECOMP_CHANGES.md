@@ -136,3 +136,8 @@ chip and carry across fresh instances, and accepts single-screen 240x160 GBA
 frames. No decomp patch is introduced by this integration. Candidate games
 ship only after browser qualification; legacy Emerald engine saves retain their
 original runtime and are not converted or overwritten.
+
+The snapshot builder also copies ignored generated HG SDK headers from the ROM
+build and uses space-free local Black/White ROM filenames for make. These are
+build-input adaptations, not decomp edits. Absolute depfile paths are remapped;
+relative prerequisites retain their original meaning.

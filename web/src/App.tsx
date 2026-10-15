@@ -99,7 +99,8 @@ export function App() {
   const earlySession = useGen123Session(settings, saved, setNotice);
   const [legacyEmerald, setLegacyEmerald] = useState(false);
   const early =
-    !isNative(selected) || (selected === "emerald" && legacyEmerald);
+    !isNative(selected) ||
+    (selected === "emerald" && (legacyEmerald || !manifest?.games.emerald));
   const visibleGames = games.filter(
     (g) =>
       !isNative(g.id) ||
@@ -188,10 +189,6 @@ export function App() {
   async function launch(slot?: SaveSlot) {
     session.unlockAudio();
     await action(async () => {
-      if (!early && !manifest)
-        throw Error("Browser cores are unavailable in this build.");
-      if (!early && !manifest?.games[selected])
-        throw Error(`${game.name} is not built for this release yet.`);
       if (!(await storage.cartridge(selected))) {
         const entry = hosted[selected];
         if (!entry) throw Error("Import a cartridge to play this game.");
@@ -230,7 +227,11 @@ export function App() {
         if (!gen123Ready)
           throw Error("Gen 1–3 engine is not prepared in this build.");
         await earlySession.start(selected, target);
-      } else await dsSession.start(selected, target, manifest!);
+      } else {
+        if (!manifest)
+          throw Error("Browser cores are unavailable in this build.");
+        await dsSession.start(selected, target, manifest);
+      }
       setPopup(null);
     });
   }
@@ -426,7 +427,7 @@ export function App() {
             >
               <div
                 ref={display}
-                className={`display ${early ? "single" : "stacked"} ${settings.effect ? "lcd" : ""}`}
+                className={`display ${early || isSingleScreen(selected) ? "single" : "stacked"} ${settings.effect ? "lcd" : ""}`}
               >
                 {running ? (
                   <>
@@ -476,7 +477,7 @@ export function App() {
                           {session.state === "loading"
                             ? early
                               ? earlySession.progress
-                              : "CONNECTING TO SINNOH…"
+                              : "CONNECTING…"
                             : session.state === "error"
                               ? "SIGNAL INTERRUPTED"
                               : "PAUSED"}
